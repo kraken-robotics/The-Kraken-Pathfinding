@@ -4,6 +4,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import enums.ServiceNames;
 import robot.*;
 import smartMath.Vec2;
 import table.Table;
@@ -25,9 +26,9 @@ public class JUnit_EnnemyCollisionAvoidance extends JUnit_Test
 		super.setUp();
 		log.debug("JUnit_DetectionEnnemiTest.setUp()", this);
 		config.set("couleur", "jaune");
-		robotvrai = (RobotReal) container.getService("RobotVrai");
-		table = (Table) container.getService("Table");
-		container.getService("threadCapteurs");
+		robotvrai = (RobotReal) container.getService(ServiceNames.ROBOT_REAL);
+		table = (Table) container.getService(ServiceNames.TABLE);
+		container.getService(ServiceNames.THREAD_SENSOR);
 	}
 
 	@Test

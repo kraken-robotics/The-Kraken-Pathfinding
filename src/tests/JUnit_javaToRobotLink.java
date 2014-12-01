@@ -4,6 +4,7 @@ package tests;
 import org.junit.Before;
 import org.junit.Test;
 
+import enums.ServiceNames;
 import enums.Speed;
 import robot.RobotReal;
 import smartMath.Vec2;
@@ -25,7 +26,7 @@ public class JUnit_javaToRobotLink  extends JUnit_Test
 		super.setUp();
 		config.set("couleur", "jaune");
 		
-		robotvrai = (RobotReal)container.getService("RobotVrai");
+		robotvrai = (RobotReal)container.getService(ServiceNames.ROBOT_REAL);
 		robotvrai.setPosition(new Vec2(1251, 1695));	// TODO : cette position doit être la position de départ du robot 
 		//On démarre avec la cale !!!!
 		robotvrai.setOrientation((float)(-Math.PI/2));

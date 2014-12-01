@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.Assert;
 
+import enums.ServiceNames;
 import robot.cardsWrappers.SensorsCardWrapper;
 
 /**
@@ -21,7 +22,7 @@ public class JUnit_Sensors extends JUnit_Test
 	public void setUp() throws Exception {
 		super.setUp();
 		log.debug("JUnit_ActionneursTest.setUp()", this);
-		capteurs = (SensorsCardWrapper)container.getService("Capteur");
+		capteurs = (SensorsCardWrapper)container.getService(ServiceNames.SENSORS_CARD_WRAPPER);
 		config.set("capteurs_on", true);
 		capteurs.updateConfig();
 	}

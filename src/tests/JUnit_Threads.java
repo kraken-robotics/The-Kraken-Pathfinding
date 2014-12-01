@@ -3,6 +3,7 @@ package tests;
 import org.junit.Assert;
 import org.junit.Test;
 
+import enums.ServiceNames;
 import robot.RobotReal;
 import robot.cardsWrappers.LocomotionCardWrapper;
 import smartMath.Vec2;
@@ -20,13 +21,13 @@ public class JUnit_Threads extends JUnit_Test {
 	@Test
 	public void test_arret() throws Exception
 	{
-		LocomotionCardWrapper deplacements = (LocomotionCardWrapper)container.getService("Deplacements");
+		LocomotionCardWrapper deplacements = (LocomotionCardWrapper)container.getService(ServiceNames.LOCOMOTION_CARD_WRAPPER);
 		deplacements.setX(0);
 		deplacements.setY(1500);
 		deplacements.setOrientation(0);
 		deplacements.setTranslationnalSpeed(80);
-		RobotReal robotvrai = (RobotReal) container.getService("RobotVrai");
-		container.getService("threadPosition");
+		RobotReal robotvrai = (RobotReal) container.getService(ServiceNames.ROBOT_REAL);
+// TODO démarrer thread position
 		container.startInstanciedThreads();
 		Thread.sleep(100);
 		Assert.assertTrue(robotvrai.getPosition().equals(new Vec2(0,1500)));
@@ -40,14 +41,14 @@ public class JUnit_Threads extends JUnit_Test {
 	@Test
 	public void test_detection_obstacle() throws Exception
 	{
-		RobotReal robotvrai = (RobotReal) container.getService("RobotVrai");
+		RobotReal robotvrai = (RobotReal) container.getService(ServiceNames.ROBOT_REAL);
 		robotvrai.setPosition(new Vec2(0, 900));
 		robotvrai.setOrientation(0);
 		
-		Table table = (Table) container.getService("Table");
+		Table table = (Table) container.getService(ServiceNames.TABLE);
 		Assert.assertTrue(table.gestionobstacles.nb_obstacles() == 0);
 		
-		container.getService("threadCapteurs");
+		container.getService(ServiceNames.THREAD_SENSOR);
 		container.startInstanciedThreads();
 		Thread.sleep(300);
 		Assert.assertTrue(table.gestionobstacles.nb_obstacles() >= 1);
@@ -58,7 +59,7 @@ public class JUnit_Threads extends JUnit_Test {
 	public void test_fin_match() throws Exception
 	{
 		config.set("temps_match", 3);
-		container.getService("threadTimer");
+		container.getService(ServiceNames.THREAD_TIMER);
 		long t1 = System.currentTimeMillis();
 		container.startAllThreads();
 		while(!ThreadTimer.fin_match)
@@ -73,7 +74,7 @@ public class JUnit_Threads extends JUnit_Test {
 	@Test
 	public void test_demarrage_match() throws Exception
 	{
-		container.getService("threadTimer");
+		container.getService(ServiceNames.THREAD_TIMER);
 		System.out.println("Veuillez mettre le jumper");
 		Thread.sleep(2000);
 		container.startInstanciedThreads();
@@ -87,7 +88,7 @@ public class JUnit_Threads extends JUnit_Test {
 	@Test
 	public void test_serie() throws Exception
 	{
-		RobotReal robotvrai = (RobotReal) container.getService("RobotVrai");
+		RobotReal robotvrai = (RobotReal) container.getService(ServiceNames.ROBOT_REAL);
 		robotvrai.setPosition(new Vec2(1000, 1400));
 		robotvrai.setOrientation((float)Math.PI);
 		container.startAllThreads();

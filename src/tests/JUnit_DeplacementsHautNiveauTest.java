@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import org.junit.Before;
 import org.junit.Test;
 
+import enums.ServiceNames;
 import robot.Locomotion;
 import robot.RobotReal;
 import smartMath.Vec2;
@@ -34,9 +35,9 @@ public class JUnit_DeplacementsHautNiveauTest extends JUnit_Test
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        robot = (Locomotion) container.getService("DeplacementsHautNiveau");
-        hookgenerator = (HookFactory) container.getService("HookGenerator");
-        real_state = (GameState<RobotReal>) container.getService("RealGameState");
+        robot = (Locomotion) container.getService(ServiceNames.LOCOMOTION);
+        hookgenerator = (HookFactory) container.getService(ServiceNames.HOOK_FACTORY);
+        real_state = (GameState<RobotReal>) container.getService(ServiceNames.GAME_STATE);
         robot.setPosition(new Vec2(1000, 900));
         robot.setOrientation(Math.PI/2);
         Vec2 consigne = new Vec2(700, 1400);

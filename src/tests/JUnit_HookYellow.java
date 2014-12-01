@@ -6,6 +6,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import enums.ServiceNames;
 import enums.Speed;
 import robot.RobotReal;
 import smartMath.Vec2;
@@ -28,7 +29,7 @@ public class JUnit_HookYellow extends JUnit_Test
 		super.setUp();
 		log.debug("JUnit_HookJauneTest.setUp()", this);
 		config.set("couleur", "jaune");
-		robotvrai = (RobotReal) container.getService("RobotVrai");
+		robotvrai = (RobotReal) container.getService(ServiceNames.ROBOT_REAL);
 		robotvrai.setPosition(new Vec2(0, 1500));
 		robotvrai.setOrientation(0);
 		robotvrai.set_vitesse(Speed.BETWEEN_SCRIPTS);

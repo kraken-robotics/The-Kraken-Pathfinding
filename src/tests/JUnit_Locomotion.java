@@ -4,6 +4,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import enums.ServiceNames;
 import robot.cardsWrappers.*;
 import utils.Sleep;
 
@@ -22,7 +23,7 @@ public class JUnit_Locomotion extends JUnit_Test
 	{
 		super.setUp();
 		log.debug("JUnit_DeplacementsTest.setUp()", this);
-		deplacements = (LocomotionCardWrapper)container.getService("Deplacements");
+		deplacements = (LocomotionCardWrapper)container.getService(ServiceNames.LOCOMOTION_CARD_WRAPPER);
 		deplacements.setX(0);
 		deplacements.setY(1500);
 		deplacements.setOrientation(0);

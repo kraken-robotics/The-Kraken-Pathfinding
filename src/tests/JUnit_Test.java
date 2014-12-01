@@ -6,6 +6,7 @@ import org.junit.After;
 import utils.Log;
 import utils.Config;
 import container.Container;
+import enums.ServiceNames;
 
 public abstract class JUnit_Test
 {
@@ -18,8 +19,8 @@ public abstract class JUnit_Test
 	public void setUp() throws Exception
 	{
 		container = new Container();
-		config = (Config) container.getService("Read_Ini");
-		log = (Log) container.getService("Log");
+		config = (Config) container.getService(ServiceNames.CONFIG);
+		log = (Log) container.getService(ServiceNames.LOG);
 	}
 
 	@After

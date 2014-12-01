@@ -2,8 +2,8 @@ package tests;
 
 import org.junit.Test;
 
+import enums.ServiceNames;
 import exceptions.ContainerException;
-import exceptions.serial.SerialManagerException;
 
 /**
  * Tests unitaires pour le container
@@ -16,119 +16,98 @@ public class JUnit_Container extends JUnit_Test {
 	public void test_erreur() throws Exception
 	{
 		log.debug("JUnit_ContainerTest.test_erreur()", this);
-		container.getService("ABWABWA");
+		container.getService(ServiceNames.CARTE_TEST);
 	}
 	
 	@Test
 	public void test_log() throws Exception
 	{
 		log.debug("JUnit_ContainerTest.test_log()", this);
-		container.getService("Log");
+		container.getService(ServiceNames.LOG);
 	}
 
 	@Test
 	public void test_config() throws Exception
 	{
 		log.debug("JUnit_ContainerTest.test_config()", this);
-		container.getService("Read_Ini");
+		container.getService(ServiceNames.CONFIG);
 	}
 
 	@Test
 	public void test_table() throws Exception
 	{
 		log.debug("JUnit_ContainerTest.test_table()", this);
-		container.getService("Table");
+		container.getService(ServiceNames.TABLE);
 	}
 
     @Test
     public void test_deplacementshautniveau() throws Exception
     {
         log.debug("JUnit_ContainerTest.test_deplacementshautniveau()", this);
-        container.getService("DeplacementsHautNiveau");
-    }
-
-    @Test
-    public void test_actionneurshautniveau() throws Exception
-    {
-        log.debug("JUnit_ContainerTest.test_actionneurshautniveau()", this);
-        container.getService("ActionneursHautNiveau");
+        container.getService(ServiceNames.LOCOMOTION);
     }
 
 	@Test
 	public void test_deplacements() throws Exception
 	{
 		log.debug("JUnit_ContainerTest.test_deplacements()", this);
-		container.getService("Deplacements");
+		container.getService(ServiceNames.LOCOMOTION_CARD_WRAPPER);
 	}
 
 	@Test
 	public void test_capteurs() throws Exception
 	{
 		log.debug("JUnit_ContainerTest.test_capteurs()", this);
-		container.getService("Capteur");
+		container.getService(ServiceNames.SENSORS_CARD_WRAPPER);
 	}
 
 	@Test
 	public void test_actionneurs() throws Exception
 	{
 		log.debug("JUnit_ContainerTest.test_actionneurs()", this);
-		container.getService("Actionneurs");
+		container.getService(ServiceNames.ACTUATOR_CARD_WRAPPER);
 	}
 
 	@Test
 	public void test_HookGenerator() throws Exception
 	{
 		log.debug("JUnit_ContainerTest.test_HookGenerator()", this);
-		container.getService("HookGenerator");
+		container.getService(ServiceNames.HOOK_FACTORY);
 	}
 
 	@Test
 	public void test_RobotVrai() throws Exception
 	{
 		log.debug("JUnit_ContainerTest.test_RobotVrai()", this);
-		container.getService("RobotVrai");
+		container.getService(ServiceNames.ROBOT_REAL);
 	}
 
 	@Test
 	public void test_ScriptManager() throws Exception
 	{
 		log.debug("JUnit_ContainerTest.test_ScriptManager()", this);
-		container.getService("ScriptManager");
-	}
-
-	@Test
-	public void test_Strategie() throws Exception
-	{
-		log.debug("JUnit_ContainerTest.test_Strategie()", this);
-		container.getService("Strategie");
+		container.getService(ServiceNames.SCRIPT_MANAGER);
 	}
 
 	@Test
 	public void test_pathfinding() throws Exception
 	{
 		log.debug("JUnit_ContainerTest.test_pathfinding()", this);
-		container.getService("Pathfinding");
-	}
-
-	@Test
-	public void test_MemoryManager() throws Exception
-	{
-		log.debug("JUnit_ContainerTest.test_MemoryManager()", this);
-		container.getService("MemoryManager");
+		container.getService(ServiceNames.PATHFINDING);
 	}
 
 	@Test
 	public void test_Laser() throws Exception
 	{
 		log.debug("JUnit_ContainerTest.test_Laser()", this);
-		container.getService("Laser");
+		container.getService(ServiceNames.LASER);
 	}
 
 	@Test
 	public void test_FiltrageLaser() throws Exception
 	{
 		log.debug("JUnit_ContainerTest.test_FiltrageLaser()", this);
-		container.getService("FiltrageLaser");
+		container.getService(ServiceNames.LASER_FILTRATION);
 	}
 
 	/**
@@ -139,86 +118,57 @@ public class JUnit_Container extends JUnit_Test {
 	public void test_doublon() throws Exception
 	{
 		log.debug("JUnit_ContainerTest.test_doublon()", this);
-		container.getService("FiltrageLaser");
-		container.getService("FiltrageLaser");
+		container.getService(ServiceNames.LASER_FILTRATION);
+		container.getService(ServiceNames.LASER_FILTRATION);
 	}
 
 	@Test
 	public void test_CheckUp() throws Exception
 	{
 		log.debug("JUnit_ContainerTest.test_CheckUp()", this);
-		container.getService("CheckUp");
+		container.getService(ServiceNames.CHECK_UP);
 	}
 
 	@Test
 	public void test_serieAsservissement() throws Exception
 	{
 		log.debug("JUnit_ContainerTest.test_serieAsservissement()", this);
-		container.getService("serieAsservissement");
+		container.getService(ServiceNames.SERIE_ASSERVISSEMENT);
 	}
 
 	@Test
 	public void test_serieCapteursActionneurs() throws Exception
 	{
 		log.debug("JUnit_ContainerTest.test_serieCapteursActionneurs()", this);
-		container.getService("serieCapteursActionneurs");
+		container.getService(ServiceNames.SERIE_CAPTEURS_ACTIONNEURS);
 	}
 
 	@Test
 	public void test_serieLaser() throws Exception
 	{
 		log.debug("JUnit_ContainerTest.test_serieLaser()", this);
-		container.getService("serieLaser");
-	}
-
-	@Test(expected=SerialManagerException.class)
-	public void test_serieErreur() throws Exception
-	{
-		log.debug("JUnit_ContainerTest.test_serieErreur()", this);
-		container.getService("serieABWAWA");
-	}
-
-	@Test(expected=ContainerException.class)
-	public void test_threadErreur() throws Exception
-	{
-		log.debug("JUnit_ContainerTest.test_threadErreur()", this);
-		container.getService("threadABWABWA");
+		container.getService(ServiceNames.SERIE_LASER);
 	}
 
 	@Test
 	public void test_threadTimer() throws Exception
 	{
 		log.debug("JUnit_ContainerTest.test_threadTimer()", this);
-		container.getService("threadTimer");
+		container.getService(ServiceNames.THREAD_TIMER);
 	}
 
 	@Test
 	public void test_threadLaser() throws Exception
 	{
 		log.debug("JUnit_ContainerTest.test_threadLaser()", this);
-		container.getService("threadLaser");
+		container.getService(ServiceNames.THREAD_LASER);
 	}
 
-	@Test
-	public void test_threadStrategie() throws Exception
-	{
-		log.debug("JUnit_ContainerTest.test_threadStrategie()", this);
-		container.getService("threadStrategie");
-	}
-	
-	// TODO : delate ?
-	@Test
-	public void test_threadAnalyseEnnemi() throws Exception
-	{
-		log.debug("JUnit_ContainerTest.test_threadAnalyseEnnemi()", this);
-		container.getService("threadAnalyseEnnemi");
-	}
-	
 	@Test
 	public void test_threadCapteurs() throws Exception
 	{
 		log.debug("JUnit_ContainerTest.test_threadCapteurs()", this);
-		container.getService("threadCapteurs");
+		container.getService(ServiceNames.THREAD_SENSOR);
 	}
 
 }
