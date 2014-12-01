@@ -4,6 +4,7 @@ import robot.serial.SerialConnexion;
 import utils.Log;
 import utils.Config;
 import container.Service;
+import enums.ActuatorOrder;
 import exceptions.serial.SerialConnexionException;
 
 
@@ -31,6 +32,16 @@ public class ActuatorCardWrapper implements Service
 
 	public void updateConfig()
 	{
+	}
+	
+	/**
+	 * Envoie un ordre à la série. Le protocole est défini dans l'enum ActuatorOrder
+	 * @param order
+	 * @throws SerialConnexionException
+	 */
+	public void useActuator(ActuatorOrder order) throws SerialConnexionException
+	{
+		serie.communiquer(order.getSerialOrder(), 0);
 	}
 
 }
