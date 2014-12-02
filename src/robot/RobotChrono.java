@@ -38,8 +38,6 @@ public class RobotChrono extends Robot
 		this.orientation = orientation;
 	}
 
-	// La plupart de ces méthodes resteront vides
-
 	@Override
     public void avancer(int distance, ArrayList<Hook> hooks, boolean mur)
             throws UnableToMoveException
@@ -139,7 +137,8 @@ public class RobotChrono extends Robot
 	{
 		this.duree += duree;
 	}
-	    @Override
+	
+	@Override
     public void stopper()
     {
     }
@@ -169,18 +168,6 @@ public class RobotChrono extends Robot
 
     public void activer_asservissement_rotation()
     {}
-
-	@Override
-	public Vec2 getPositionFast() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public double getOrientationFast() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
 
 	@Override
 	public void setInsiste(boolean insiste) {

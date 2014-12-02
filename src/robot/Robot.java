@@ -35,8 +35,6 @@ public abstract class Robot implements Service
 	public abstract void setOrientation(double orientation);
     public abstract Vec2 getPosition();
     public abstract double getOrientation();
-    public abstract Vec2 getPositionFast();
-    public abstract double getOrientationFast();
     public abstract void sleep(long duree);
     public abstract void setInsiste(boolean insiste);
 
@@ -45,8 +43,9 @@ public abstract class Robot implements Service
 	 * 
 	 * @param rc
 	 */
-    public void copy(RobotChrono rc) // 15,3%
+    public void copy(RobotChrono rc)
     {
+    	rc.vitesse = vitesse;
     }
 
 	// Dépendances
@@ -70,8 +69,7 @@ public abstract class Robot implements Service
 	public Speed get_vitesse_() {
 		return vitesse;
 	}
-	
-	
+
 	public void tourner_relatif(double angle) throws UnableToMoveException
 	{
 		tourner(getOrientation() + angle, null, false);
@@ -82,6 +80,11 @@ public abstract class Robot implements Service
         tourner(angle, null, false);
     }
 
+    /**
+     * Utilisé lorsque le robot n'a pas de symétrie gauche/droite
+     * @param angle
+     * @throws UnableToMoveException
+     */
     public void tourner_sans_symetrie(double angle) throws UnableToMoveException
     {
         if(symetrie)
@@ -89,7 +92,6 @@ public abstract class Robot implements Service
         else
             tourner(angle, null, false);
     }
-
 
     public void avancer(int distance) throws UnableToMoveException
     {
@@ -105,21 +107,14 @@ public abstract class Robot implements Service
     {
         Speed sauv_vitesse = vitesse; 
         set_vitesse(Speed.INTO_WALL);
-        avancer(distance, null, true);
-        set_vitesse(sauv_vitesse);
-    }
-    
-    /**
-     * Va au point "arrivée" en utilisant le pathfinding.
-     * @param arrivee
-     * @throws PathfindingException
-     * @throws UnableToMoveException
-     */
-    public boolean va_au_point_pathfinding(Vec2 arrivee) throws UnableToMoveException
-    {
-    	// TODO
-    	
-    	return 666 == 42;
+        try {
+        	avancer(distance, null, true);
+        }
+        finally
+        {
+        	// Dans tous les cas, il faut restaurer l'ancienne vitesse
+        	set_vitesse(sauv_vitesse);
+        }
     }
 
     public abstract void desactiver_asservissement_rotation();

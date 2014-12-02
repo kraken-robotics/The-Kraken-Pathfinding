@@ -8,10 +8,8 @@ package enums;
 
 public enum ActuatorOrder {
 
-	// Syntaxe: NOM_METHODE("protocole_serie")
-
-	BOUGER_BRAS("bb"),
-	DEPOSER_TAPIS("dt");	// ce sont des exemples, vous pouvez les virer
+	BOUGER_BRAS("bb"),	// TODO
+	DEPOSER_TAPIS("dt");
 
 	private String serialOrder;
 	
