@@ -174,7 +174,8 @@ public class Container
                                                              (RobotReal)getService(ServiceNames.ROBOT_REAL));
  
 		else if(serviceRequested == ServiceNames.SCRIPT_MANAGER)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new ScriptManager(	(Config)getService(ServiceNames.CONFIG),
+			instanciedServices[serviceRequested.ordinal()] = (Service)new ScriptManager(	(HookFactory)getService(ServiceNames.HOOK_FACTORY),
+																					(Config)getService(ServiceNames.CONFIG),
 																					(Log)getService(ServiceNames.LOG));
 		else if(serviceRequested == ServiceNames.THREAD_TIMER)
 			instanciedServices[serviceRequested.ordinal()] = (Service)threadmanager.getThreadTimer(	(Table)getService(ServiceNames.TABLE),
