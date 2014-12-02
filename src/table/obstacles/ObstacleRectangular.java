@@ -82,10 +82,10 @@ public class ObstacleRectangular extends Obstacle
 		 */		
 		
 		// calcul des positions des coins
-		Vec2 coinBasGauche = position.PlusNewVector((new Vec2(0,-sizeY)));
-		Vec2 coinHautGauche = position.PlusNewVector((new Vec2(0,0)));
-		Vec2 coinBasDroite = position.PlusNewVector((new Vec2(sizeX,-sizeY)));
-		Vec2 coinHautDroite = position.PlusNewVector((new Vec2(sizeX,0)));
+		Vec2 coinBasGauche = position.PlusNewVector((new Vec2(-sizeX/2,-sizeY/2)));
+		Vec2 coinHautGauche = position.PlusNewVector((new Vec2(-sizeX/2,sizeY/2)));
+		Vec2 coinBasDroite = position.PlusNewVector((new Vec2(sizeX/2,-sizeY/2)));
+		Vec2 coinHautDroite = position.PlusNewVector((new Vec2(sizeX/2,sizeY/2)));
 		
 		// si le point fourni est dans lesquarts-de-plans n°2,4,6 ou 8
 		if(in.x < coinBasGauche.x && in.y < coinBasGauche.y)
