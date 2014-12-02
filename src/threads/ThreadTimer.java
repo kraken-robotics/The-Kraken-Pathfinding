@@ -1,10 +1,10 @@
 package threads;
 
+import obstacles.ObstacleManager;
 import exceptions.serial.SerialConnexionException;
 import robot.cardsWrappers.LocomotionCardWrapper;
 import robot.cardsWrappers.SensorsCardWrapper;
 import smartMath.Vec2;
-import table.obstacles.ObstacleManager;
 import utils.Sleep;
 
 /**

@@ -1,8 +1,8 @@
 package pathfinding;
 
+import obstacles.ObstacleManager;
 import container.Service;
 import smartMath.Vec2;
-import table.obstacles.ObstacleManager;
 import utils.Config;
 import utils.Log;
 import enums.NodesConnection;

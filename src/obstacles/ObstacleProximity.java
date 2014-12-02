@@ -1,4 +1,4 @@
-package table.obstacles;
+package obstacles;
 
 import smartMath.Vec2;
 
@@ -8,7 +8,7 @@ import smartMath.Vec2;
  */
 class ObstacleProximity extends ObstacleCircular
 {
-	public long death_date;
+	private long death_date;
 
 	public ObstacleProximity (Vec2 position, int rad, long death_date)
 	{
@@ -18,11 +18,16 @@ class ObstacleProximity extends ObstacleCircular
 	
 	public ObstacleProximity clone()
 	{
-		return new ObstacleProximity(position.clone(), getRadius(), death_date);
+		return new ObstacleProximity(position.clone(), radius, death_date);
 	}
 	
 	public String toString()
 	{
 		return super.toString()+", meurt dans "+(death_date-System.currentTimeMillis())+" ms";
+	}
+	
+	public boolean isDestructionNecessary(long date)
+	{
+		return death_date < date;
 	}
 }

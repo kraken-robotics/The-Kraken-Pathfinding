@@ -1,4 +1,4 @@
-package table.obstacles;
+package obstacles;
 import smartMath.Vec2;
 
 /**
@@ -8,7 +8,6 @@ import smartMath.Vec2;
  */
 public abstract class Obstacle
 {
-
 	protected Vec2 position;
 	
 	public Obstacle (Vec2 position)
@@ -18,9 +17,18 @@ public abstract class Obstacle
 	
 	public abstract Obstacle clone();
 
+	public abstract boolean isInObstacle(Vec2 point);
+	
+	public abstract boolean isProcheObstacle(Vec2 point, int distance);
+	
 	public Vec2 getPosition()
 	{
 		return this.position;
+	}
+	
+	public boolean isDestructionNecessary(long date)
+	{
+		return false;
 	}
 	
 	public String toString()

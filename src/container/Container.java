@@ -1,5 +1,6 @@
 package container;
 
+import obstacles.ObstacleManager;
 import pathfinding.Pathfinding;
 import pathfinding.GridSpace;
 import hook.types.HookFactory;
@@ -13,7 +14,6 @@ import scripts.ScriptManager;
 import strategie.GameState;
 import strategie.MemoryManager;
 import table.Table;
-import table.obstacles.ObstacleManager;
 import threads.ThreadManager;
 import robot.Locomotion;
 import robot.RobotReal;

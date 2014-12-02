@@ -1,4 +1,4 @@
-package table.obstacles;
+package obstacles;
 
 import smartMath.Vec2;
 
@@ -53,7 +53,7 @@ public class ObstacleRectangular extends Obstacle
 	
 	public float distance(Vec2 point)
 	{
-		return (float) Math.sqrt(SquaredDistance(point));
+		return (float) Math.sqrt(squaredDistance(point));
 	}
 	
 	/**
@@ -61,7 +61,7 @@ public class ObstacleRectangular extends Obstacle
 	 * @param in
 	 * @return la plus petite distance au carré entre le point fourni et l'obstacle
 	 */
-	public float SquaredDistance(Vec2 in)
+	public float squaredDistance(Vec2 in)
 	{
 		
 		/*		
@@ -116,5 +116,15 @@ public class ObstacleRectangular extends Obstacle
 		// Sinon, on est dans l'obstacle
 		return 0f;
 	}
-	
+
+	public boolean isInObstacle(Vec2 point)
+	{
+		return squaredDistance(point) < 0.1f; // vu qu'on a une précision limitée, mieux vaut prendre un peu de marge
+	}
+
+	public boolean isProcheObstacle(Vec2 point, int distance)
+	{
+		return squaredDistance(point) < distance;
+	}
+
 }

@@ -1,11 +1,11 @@
 package strategie;
 
+import obstacles.ObstacleManager;
 import container.Service;
 import robot.Robot;
 import robot.RobotChrono;
 import robot.RobotReal;
 import table.Table;
-import table.obstacles.ObstacleManager;
 import utils.Log;
 import utils.Config;
 

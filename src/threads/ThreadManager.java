@@ -2,11 +2,11 @@ package threads;
 
 import java.util.Hashtable;
 
+import obstacles.ObstacleManager;
 import robot.cardsWrappers.ActuatorCardWrapper;
 import robot.cardsWrappers.LocomotionCardWrapper;
 import robot.cardsWrappers.SensorsCardWrapper;
 import table.Table;
-import table.obstacles.ObstacleManager;
 import robot.RobotReal;
 import utils.Log;
 import utils.Config;

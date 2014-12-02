@@ -17,15 +17,17 @@ import utils.Log;
 public class Pathfinding implements Service
 {
 	GridSpace gridspace;
-	
+
 	/**
 	 * Constructeur du système de recherche de chemin
 	 */
 	public Pathfinding(Log log, Config config, GridSpace gridspace)
 	{
 		this.gridspace = gridspace;
+
 	}
 	
+	// TODO
 	public ArrayList<Vec2> computePath(Vec2 orig, Vec2 dest) throws PathfindingException
 	{
 		Vec2 point_depart = gridspace.nearestReachableNode(orig);
@@ -33,7 +35,7 @@ public class Pathfinding implements Service
 		// Aucun point de passage n'est accessible... TODO: trouver une solution
 		if(point_depart == null)
 			throw new PathfindingException();
-		
+		return null;
 	}
 	
 	@Override
@@ -41,4 +43,5 @@ public class Pathfinding implements Service
 		// TODO Auto-generated method stub
 		
 	}
+
 }

@@ -34,6 +34,12 @@ public class Vec2
 		y = requestedY;
 	}
 	
+	public Vec2(Vec2 other)
+	{
+		x = other.x;
+		y = other.y;
+	}
+	
 	// Do not square a length, use squared length directly
 	// to increase performances
 	public int squaredLength()

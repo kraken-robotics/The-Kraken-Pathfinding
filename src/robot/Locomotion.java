@@ -2,6 +2,7 @@ package robot;
 
 import java.util.ArrayList;
 
+import obstacles.ObstacleManager;
 import container.Service;
 //import hook.Callback;
 //import hook.Executable;
@@ -15,7 +16,6 @@ import exceptions.Locomotion.UnableToMoveException;
 import exceptions.serial.SerialConnexionException;
 import robot.cardsWrappers.LocomotionCardWrapper;
 import smartMath.Vec2;
-import table.obstacles.ObstacleManager;
 import utils.Log;
 import utils.Config;
 import utils.Sleep;
@@ -754,7 +754,7 @@ public class Locomotion implements Service
 		int rayon_detection = largeur_robot/2 + distance_detection;
 		Vec2 centre_detection = new Vec2((int)(signe * rayon_detection * Math.cos(orientation)), (int)(signe * rayon_detection * Math.sin(orientation)));
 		centre_detection.plus(position);
-		if(obstaclemanager.obstaclePresent(centre_detection, distance_detection))
+		if(obstaclemanager.obstacle_existe(centre_detection, distance_detection))
 		{
 			log.warning("Ennemi détecté en : " + centre_detection, this);
 			throw new UnexpectedObstacleOnPathException();

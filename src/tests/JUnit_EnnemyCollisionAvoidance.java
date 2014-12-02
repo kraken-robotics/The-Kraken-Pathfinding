@@ -1,5 +1,7 @@
 package tests;
 
+import obstacles.ObstacleManager;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -7,7 +9,6 @@ import org.junit.Test;
 import enums.ServiceNames;
 import robot.*;
 import smartMath.Vec2;
-import table.obstacles.ObstacleManager;
 
 /**
  * Tests unitaires pour la détection d'ennemi

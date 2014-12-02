@@ -1,5 +1,7 @@
 package tests;
 
+import obstacles.ObstacleManager;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -7,7 +9,6 @@ import enums.ServiceNames;
 import robot.RobotReal;
 import robot.cardsWrappers.LocomotionCardWrapper;
 import smartMath.Vec2;
-import table.obstacles.ObstacleManager;
 import threads.ThreadTimer;
 
 /**
