@@ -28,7 +28,7 @@ public class HookFactory implements Service
 	// la valeur de 20 est en mm, elle est remplcée par la valeur spécifié dans le fichier de config s'il y en a une
 	private int positionTolerancy = 20;
 	
-	// spécifie de quelle couleur est le robot (vert ou jaune). Uniquement donné par le fichier de config. // TODO: en faire un booléen
+	// spécifie de quelle couleur est le robot (vert ou jaune). Uniquement donné par le fichier de config. // TODO: en faire une enum
 	String color;
 	
 	

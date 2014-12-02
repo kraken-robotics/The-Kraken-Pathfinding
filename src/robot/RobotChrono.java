@@ -68,13 +68,6 @@ public class RobotChrono extends Robot
 		return duree;
 	}
 
-	public RobotChrono clone()
-	{
-		RobotChrono cloned_robotchrono = new RobotChrono(config, log);
-		copy(cloned_robotchrono);
-		return cloned_robotchrono;
-	}
-
 	@Override
     public void tourner(double angle, ArrayList<Hook> hooks, boolean mur)
             throws UnableToMoveException
@@ -154,14 +147,6 @@ public class RobotChrono extends Robot
     public double getOrientation()
     {
         return orientation;
-    }
-    
-    @Override
-    public void copy(RobotChrono rc)
-    {
-        super.copy(rc);
-        position.copy(rc.position);
-        rc.orientation = orientation;
     }
 
     public void desactiver_asservissement_rotation()

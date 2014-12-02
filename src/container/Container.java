@@ -27,27 +27,8 @@ import robot.serial.SerialConnexion;
  * 
  * Gestionnaire de la durée de vie des objets dans le code.
  * Permet à n'importe quelle classe implémentant l'interface "Service" d'appeller d'autres instances de services via son constructeur.
- * Une classse implémentant service n'est instanciée que par la classe "Container"
- * Les différents services appelables sont: //TODO; update this
- * Log
- * Config
- * Table
- * serie* (serieAsservissement, serieCapteursActionneurs, serieLaser)
- * Deplacements
- * Capteur
- * Actionneurs
- * HookGenerator
- * RobotVrai
- * ScriptManager
- * Strategie
- * thread* (threadTimer, threadStrategie, threadCapteurs, threadLaser)
- * Pathfinding
- * MemoryManager
- * Laser
- * FiltrageLaser
- * CheckUp
- * GameState
- * (à compléter peut-être) ===>  penser a mettre a jour le test unitaire en fonction de l'ajout de services
+ * Une classe implémentant service n'est instanciée que par la classe "Container"
+ * La liste des services est disponible dans l'énumération ServiceNames 
  * 
  * @author pf
  */
