@@ -3,7 +3,7 @@ package strategie;
 import java.util.Vector;
 
 import robot.RobotChrono;
-import robot.RobotVrai;
+import robot.RobotReal;
 import strategie.GameState;
 import threads.ThreadTimer;
 import utils.Log;
@@ -19,10 +19,10 @@ import container.Service;
 public class MemoryManager implements Service {
 
 	private Vector<GameState<RobotChrono>> products = new Vector<GameState<RobotChrono>>();
-	private GameState<RobotVrai> real_state;
+	private GameState<RobotReal> real_state;
 	private GameState<RobotChrono> out ;
-	
-	public MemoryManager(Read_Ini config, Log log, GameState<RobotVrai> real_state)
+
+	public MemoryManager(Read_Ini config, Log log, GameState<RobotReal> real_state)
 	{
 	    this.real_state = real_state;
 	    products.add(real_state.clone());
@@ -57,7 +57,7 @@ public class MemoryManager implements Service {
 	}
 	
 	@Override
-	public void maj_config()
+	public void updateConfig()
 	{}
 			
 }
