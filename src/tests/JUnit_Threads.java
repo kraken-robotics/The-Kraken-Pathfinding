@@ -7,7 +7,7 @@ import enums.ServiceNames;
 import robot.RobotReal;
 import robot.cardsWrappers.LocomotionCardWrapper;
 import smartMath.Vec2;
-import table.Table;
+import table.obstacles.ObstacleManager;
 import threads.ThreadTimer;
 
 /**
@@ -44,14 +44,14 @@ public class JUnit_Threads extends JUnit_Test {
 		RobotReal robotvrai = (RobotReal) container.getService(ServiceNames.ROBOT_REAL);
 		robotvrai.setPosition(new Vec2(0, 900));
 		robotvrai.setOrientation(0);
+		ObstacleManager obstaclemanager = (ObstacleManager)container.getService(ServiceNames.OBSTACLE_MANAGER);
 		
-		Table table = (Table) container.getService(ServiceNames.TABLE);
-		Assert.assertTrue(table.gestionobstacles.nb_obstacles() == 0);
+		Assert.assertTrue(obstaclemanager.nb_obstacles() == 0);
 		
 		container.getService(ServiceNames.THREAD_SENSOR);
 		container.startInstanciedThreads();
 		Thread.sleep(300);
-		Assert.assertTrue(table.gestionobstacles.nb_obstacles() >= 1);
+		Assert.assertTrue(obstaclemanager.nb_obstacles() >= 1);
 
 	}
 	

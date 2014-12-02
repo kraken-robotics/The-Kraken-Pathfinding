@@ -7,7 +7,7 @@ import org.junit.Test;
 import enums.ServiceNames;
 import robot.*;
 import smartMath.Vec2;
-import table.Table;
+import table.obstacles.ObstacleManager;
 
 /**
  * Tests unitaires pour la détection d'ennemi
@@ -18,8 +18,7 @@ public class JUnit_EnnemyCollisionAvoidance extends JUnit_Test
 {
 
 	private RobotReal robotvrai;
-	private Table table;
-	
+	private ObstacleManager obstaclemanager;
 	@Before
 	public void setUp() throws Exception
 	{
@@ -27,8 +26,8 @@ public class JUnit_EnnemyCollisionAvoidance extends JUnit_Test
 		log.debug("JUnit_DetectionEnnemiTest.setUp()", this);
 		config.set("couleur", "jaune");
 		robotvrai = (RobotReal) container.getService(ServiceNames.ROBOT_REAL);
-		table = (Table) container.getService(ServiceNames.TABLE);
 		container.getService(ServiceNames.THREAD_SENSOR);
+		obstaclemanager = (ObstacleManager)container.getService(ServiceNames.OBSTACLE_MANAGER);
 	}
 
 	@Test
@@ -40,11 +39,11 @@ public class JUnit_EnnemyCollisionAvoidance extends JUnit_Test
 		Thread.sleep(1000);
 		container.startInstanciedThreads();
 		Thread.sleep(1000);
-		Assert.assertEquals(table.gestionobstacles.nb_obstacles(), 0);
+		Assert.assertEquals(obstaclemanager.nb_obstacles(), 0);
 		log.warning("!!!!!!!!!!!!!!!!!!!!!!!!!!!!", this);
 		log.warning("Vous avez 5 secondes pour placer un obstacle devant le robot", this);
 		Thread.sleep(6000);
-		Assert.assertTrue(table.gestionobstacles.nb_obstacles() >= 1);
+		Assert.assertTrue(obstaclemanager.nb_obstacles() >= 1);
 	}
 
 	//TODO: écrire un test pour chaque élément de la table, et vérifier s'il est détecté ou non (selon ce qui devrait se passer).
