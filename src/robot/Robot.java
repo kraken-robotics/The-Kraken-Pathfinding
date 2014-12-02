@@ -40,6 +40,15 @@ public abstract class Robot implements Service
     public abstract void sleep(long duree);
     public abstract void setInsiste(boolean insiste);
 
+	/**
+	 * Copy this dans rc. this reste inchangé.
+	 * 
+	 * @param rc
+	 */
+    public void copy(RobotChrono rc) // 15,3%
+    {
+    }
+
 	// Dépendances
 	protected Config config;
 	protected Log log;
