@@ -1,5 +1,6 @@
 package container;
 
+import pathfinding.Pathfinding;
 import hook.types.HookFactory;
 import enums.ServiceNames;
 import enums.ServiceNames.TypeService;
@@ -9,6 +10,7 @@ import exceptions.serial.SerialManagerException;
 import utils.*;
 import scripts.ScriptManager;
 import strategie.GameState;
+import strategie.MemoryManager;
 import table.Table;
 import threads.ThreadManager;
 import robot.Locomotion;
@@ -26,26 +28,6 @@ import robot.serial.SerialConnexion;
  * Gestionnaire de la durée de vie des objets dans le code.
  * Permet à n'importe quelle classe implémentant l'interface "Service" d'appeller d'autres instances de services via son constructeur.
  * Une classse implémentant service n'est instanciée que par la classe "Container"
- * Les différents services appelables sont: //TODO; update this
- * Log
- * Config
- * Table
- * serie* (serieAsservissement, serieCapteursActionneurs, serieLaser)
- * Deplacements
- * Capteur
- * Actionneurs
- * HookGenerator
- * RobotVrai
- * ScriptManager
- * Strategie
- * thread* (threadTimer, threadStrategie, threadCapteurs, threadLaser)
- * Pathfinding
- * MemoryManager
- * Laser
- * FiltrageLaser
- * CheckUp
- * GameState
- * (à compléter peut-être) ===>  penser a mettre a jour le test unitaire en fonction de l'ajout de services
  * 
  * @author pf
  */
@@ -136,6 +118,11 @@ public class Container
 		else if(serviceRequested == ServiceNames.TABLE)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new Table((Log)getService(ServiceNames.LOG),
 																				(Config)getService(ServiceNames.CONFIG));
+		else if(serviceRequested == ServiceNames.PATHFINDING)
+			instanciedServices[serviceRequested.ordinal()] = (Service)new Pathfinding((Log)getService(ServiceNames.LOG),
+																				(Config)getService(ServiceNames.CONFIG),
+																				(Table)getService(ServiceNames.TABLE));
+
 		else if(serviceRequested.getType() == TypeService.SERIE) // les séries
 		{
 			if(serialmanager == null)
@@ -156,7 +143,7 @@ public class Container
 		else if(serviceRequested == ServiceNames.HOOK_FACTORY)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new HookFactory((Config)getService(ServiceNames.CONFIG),
 															 (Log)getService(ServiceNames.LOG),
-															 (GameState<RobotReal>)getService(ServiceNames.GAME_STATE));
+															 (GameState<RobotReal>)getService(ServiceNames.REAL_GAME_STATE));
 		else if(serviceRequested == ServiceNames.ROBOT_REAL)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new RobotReal((Locomotion)getService(ServiceNames.LOCOMOTION),
 															 (Table)getService(ServiceNames.TABLE),
@@ -167,7 +154,7 @@ public class Container
                                                              (Config)getService(ServiceNames.CONFIG),
                                                              (Table)getService(ServiceNames.TABLE),
                                                              (LocomotionCardWrapper)getService(ServiceNames.LOCOMOTION_CARD_WRAPPER));
-        else if(serviceRequested == ServiceNames.GAME_STATE)
+        else if(serviceRequested == ServiceNames.REAL_GAME_STATE)
             instanciedServices[serviceRequested.ordinal()] = (Service)new GameState<RobotReal>(  (Config)getService(ServiceNames.CONFIG),
                                                              (Log)getService(ServiceNames.LOG),
                                                              (Table)getService(ServiceNames.TABLE),
@@ -189,6 +176,10 @@ public class Container
 		else if(serviceRequested == ServiceNames.CHECK_UP)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new CheckUp(	(Log)getService(ServiceNames.LOG),
 													(RobotReal)getService(ServiceNames.ROBOT_REAL));
+		else if(serviceRequested == ServiceNames.MEMORY_MANAGER)
+			instanciedServices[serviceRequested.ordinal()] = (Service)new MemoryManager(	(Config)getService(ServiceNames.CONFIG),
+													(Log)getService(ServiceNames.LOG),
+													(GameState<RobotReal>)getService(ServiceNames.REAL_GAME_STATE));
 		
 		// si le service demandé n'est pas connu, alors on log une erreur.
 		else
@@ -232,6 +223,23 @@ public class Container
 			e.printStackTrace();
 		}
 		threadmanager.startInstanciedThreads();
+	}
+	
+	/**
+	 * Méthode qui affiche le nom de tous les services non-instanciés.
+	 * Renvoie true si cette liste est vide
+	 */
+	public boolean afficheNonInstancies()
+	{
+		boolean out = true;
+		
+		for(ServiceNames s : ServiceNames.values())
+			if(instanciedServices[s.ordinal()] == null)
+			{
+				out = false;
+				log.critical(s, this);
+			}
+		return out;
 	}
 
 	/**

@@ -37,7 +37,7 @@ public class JUnit_DeplacementsHautNiveauTest extends JUnit_Test
         super.setUp();
         robot = (Locomotion) container.getService(ServiceNames.LOCOMOTION);
         hookgenerator = (HookFactory) container.getService(ServiceNames.HOOK_FACTORY);
-        real_state = (GameState<RobotReal>) container.getService(ServiceNames.GAME_STATE);
+        real_state = (GameState<RobotReal>) container.getService(ServiceNames.REAL_GAME_STATE);
         robot.setPosition(new Vec2(1000, 900));
         robot.setOrientation(Math.PI/2);
         Vec2 consigne = new Vec2(700, 1400);

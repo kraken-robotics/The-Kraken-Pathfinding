@@ -104,7 +104,7 @@ public class SerialManager
 				if (!deja_attribues.contains(k))
 				{
 					//Creation d'une serie de test
-					SerialConnexion serialTest = new SerialConnexion(log, ServiceNames.CARTE_TEST);
+					SerialConnexion serialTest = new SerialConnexion(log, "Carte de test");
 					serialTest.initialize(this.connectedSerial.get(k), baudrate);
 					
 					

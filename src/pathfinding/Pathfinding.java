@@ -3,6 +3,9 @@ import java.util.ArrayList;
 
 import container.Service;
 import smartMath.Vec2;
+import table.Table;
+import utils.Config;
+import utils.Log;
 
 /**
  * Classe encapsulant les calculs de pathfinding
@@ -35,11 +38,9 @@ public class Pathfinding implements Service
 	/**
 	 * Constructeur du système de recherche de chemin
 	 */
-	public Pathfinding()
+	public Pathfinding(Log log, Config config, Table table)
 	{
-				
 		
-		// TODO écrire le pathfinding
 	}
 	
 	public ArrayList<Vec2> computePath(Vec2 start, Vec2 end)

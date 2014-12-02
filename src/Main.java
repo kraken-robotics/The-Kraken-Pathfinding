@@ -88,7 +88,7 @@ public class Main
 			
 			// initialise les singletons
 		    dep = (LocomotionCardWrapper)container.getService(ServiceNames.LOCOMOTION_CARD_WRAPPER);
-			real_state = (GameState<RobotReal>) container.getService(ServiceNames.GAME_STATE);
+			real_state = (GameState<RobotReal>) container.getService(ServiceNames.REAL_GAME_STATE);
 		    scriptmanager = (ScriptManager) container.getService(ServiceNames.SCRIPT_MANAGER);
 		    deplacements = (Locomotion)container.getService(ServiceNames.LOCOMOTION);
 		    capteurs = (SensorsCardWrapper) container.getService(ServiceNames.SENSORS_CARD_WRAPPER);
