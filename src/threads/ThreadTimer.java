@@ -4,7 +4,7 @@ import exceptions.serial.SerialConnexionException;
 import robot.cardsWrappers.LocomotionCardWrapper;
 import robot.cardsWrappers.SensorsCardWrapper;
 import smartMath.Vec2;
-import table.Table;
+import table.obstacles.ObstacleManager;
 import utils.Sleep;
 
 /**
@@ -18,7 +18,7 @@ public class ThreadTimer extends AbstractThread
 {
 
 	// Dépendance
-	private Table table;
+	private ObstacleManager obstaclemanager;
 	private SensorsCardWrapper capteur;
 	private LocomotionCardWrapper deplacements;
 	
@@ -28,9 +28,9 @@ public class ThreadTimer extends AbstractThread
 	public static long duree_match = 90000;
 	public static int obstacleRefreshInterval = 500; // temps en ms entre deux appels par le thread timer du rafraichissement des obstacles de la table
 		
-	ThreadTimer(Table table, SensorsCardWrapper capteur, LocomotionCardWrapper deplacements)
+	ThreadTimer(ObstacleManager obstaclemanager, SensorsCardWrapper capteur, LocomotionCardWrapper deplacements)
 	{
-		this.table = table;
+		this.obstaclemanager = obstaclemanager;
 		this.capteur = capteur;
 		this.deplacements = deplacements;
 		
@@ -74,7 +74,7 @@ public class ThreadTimer extends AbstractThread
 				log.debug("Arrêt du thread timer demandé durant le match", this);
 				return;
 			}
-			table.gestionobstacles.supprimerObstaclesPerimes(System.currentTimeMillis());
+			obstaclemanager.supprimerObstaclesPerimes(System.currentTimeMillis());
 			
 			try
 			{

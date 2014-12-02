@@ -3,6 +3,7 @@ package table.obstacles;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import container.Service;
 import smartMath.Vec2;
 import utils.Config;
 import utils.Log;
@@ -13,7 +14,7 @@ import utils.Log;
  *
  */
 
-public class ObstacleManager
+public class ObstacleManager implements Service
 {
     // On met cette variable en static afin que, dans deux instances dupliquées, elle ne redonne pas les mêmes nombres
     private static int indice = 1;
@@ -42,15 +43,8 @@ public class ObstacleManager
             // TODO obstacles
         }
             
-        maj_config();
-    }
-    
-    public void maj_config()
-    {
-        rayon_robot_adverse = Integer.parseInt(config.get("rayon_robot_adverse"));
-        duree = Integer.parseInt(config.get("duree_peremption_obstacles"));
-    }
-    
+        updateConfig();
+    }   
 
     /**
      * Utilisé par le pathfinding. Retourne uniquement les obstacles temporaires.
@@ -136,6 +130,14 @@ public class ObstacleManager
         return listObstacles.size();
     }
 
+    public ObstacleManager clone(long date)
+    {
+    	ObstacleManager cloned_manager = new ObstacleManager(log, config);
+		copy(cloned_manager);
+		cloned_manager.supprimerObstaclesPerimes(date);
+		return cloned_manager;
+    }
+    
     /**
      * Nécessaire au fonctionnement du memory manager
      * @param other
@@ -299,6 +301,12 @@ public class ObstacleManager
     {
         return hashObstacles == other.hashObstacles;
     }
+
+	@Override
+	public void updateConfig() {
+		rayon_robot_adverse = Integer.parseInt(config.get("rayon_robot_adverse"));
+		duree = Integer.parseInt(config.get("duree_peremption_obstacles"));		
+	}
     
 
 }

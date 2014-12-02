@@ -15,7 +15,7 @@ import exceptions.Locomotion.UnableToMoveException;
 import exceptions.serial.SerialConnexionException;
 import robot.cardsWrappers.LocomotionCardWrapper;
 import smartMath.Vec2;
-import table.Table;
+import table.obstacles.ObstacleManager;
 import utils.Log;
 import utils.Config;
 import utils.Sleep;
@@ -39,10 +39,10 @@ public class Locomotion implements Service
 	
 	//endroit ou lire la configuration du robot
 	private Config config;
-	
-	// La table sur laquelle le robot se déplace
-	private Table table;
-	
+
+	// Les obstacles de la table
+	private ObstacleManager obstaclemanager;
+
 	// la ditance minimale entre le centre du robot et un obstacle
 	private int largeur_robot;
 	
@@ -81,8 +81,7 @@ public class Locomotion implements Service
 	private int unexpectedObstacleOnPathRetryDelay = 200; 
 	
 	private double angle_degagement_robot;
-	private boolean insiste = false;
-	
+	private boolean insiste = false;	
 	
 	// TODO: voir si on pet vraiment supprimer ces variables
 	@SuppressWarnings("unused")
@@ -100,13 +99,12 @@ public class Locomotion implements Service
 	 * @param table : l'aire de jeu sur laquelle on se d�place
 	 * @param mLocomotion : service de d�placement de bas niveau
 	 */
-	public Locomotion(Log log, Config config, Table table, LocomotionCardWrapper mLocomotion)
+	public Locomotion(Log log, Config config, LocomotionCardWrapper mLocomotion, ObstacleManager obstaclemanager)
 	{
 		this.log = log;
 		this.config = config;
 		this.mLocomotionCardWrapper = mLocomotion;
 		//        this.hookgenerator = hookgenerator;
-		this.table = table;
 		updateConfig();
 	}
 
@@ -756,7 +754,7 @@ public class Locomotion implements Service
 		int rayon_detection = largeur_robot/2 + distance_detection;
 		Vec2 centre_detection = new Vec2((int)(signe * rayon_detection * Math.cos(orientation)), (int)(signe * rayon_detection * Math.sin(orientation)));
 		centre_detection.plus(position);
-		if(table.gestionobstacles.obstaclePresent(centre_detection, distance_detection))
+		if(obstaclemanager.obstaclePresent(centre_detection, distance_detection))
 		{
 			log.warning("Ennemi détecté en : " + centre_detection, this);
 			throw new UnexpectedObstacleOnPathException();

@@ -6,6 +6,7 @@ import robot.cardsWrappers.ActuatorCardWrapper;
 import robot.cardsWrappers.LocomotionCardWrapper;
 import robot.cardsWrappers.SensorsCardWrapper;
 import table.Table;
+import table.obstacles.ObstacleManager;
 import robot.RobotReal;
 import utils.Log;
 import utils.Config;
@@ -46,11 +47,11 @@ public class ThreadManager
 	 * @throws ConfigException
 	 * @throws SerialManagerException
 	 */
-	public AbstractThread getThreadTimer(Table table, SensorsCardWrapper capteur, LocomotionCardWrapper deplacements, ActuatorCardWrapper actionneurs)
+	public AbstractThread getThreadTimer(ObstacleManager obstaclemanager, SensorsCardWrapper capteur, LocomotionCardWrapper deplacements, ActuatorCardWrapper actionneurs)
 	{
 		AbstractThread thread = threads.get("threadTimer");
 		if(thread == null)
-			threads.put("threadTimer", new ThreadTimer(table, capteur, deplacements));
+			threads.put("threadTimer", new ThreadTimer(obstaclemanager, capteur, deplacements));
 		return threads.get("threadTimer");
 	}
 

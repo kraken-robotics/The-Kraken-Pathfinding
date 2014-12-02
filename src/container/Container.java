@@ -12,6 +12,7 @@ import scripts.ScriptManager;
 import strategie.GameState;
 import strategie.MemoryManager;
 import table.Table;
+import table.obstacles.ObstacleManager;
 import threads.ThreadManager;
 import robot.Locomotion;
 import robot.RobotReal;
@@ -118,11 +119,12 @@ public class Container
 		else if(serviceRequested == ServiceNames.TABLE)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new Table((Log)getService(ServiceNames.LOG),
 																				(Config)getService(ServiceNames.CONFIG));
+		else if(serviceRequested == ServiceNames.OBSTACLE_MANAGER)
+			instanciedServices[serviceRequested.ordinal()] = (Service)new ObstacleManager((Log)getService(ServiceNames.LOG),
+																				(Config)getService(ServiceNames.CONFIG));
 		else if(serviceRequested == ServiceNames.PATHFINDING)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new Pathfinding((Log)getService(ServiceNames.LOG),
-																				(Config)getService(ServiceNames.CONFIG),
-																				(Table)getService(ServiceNames.TABLE));
-
+																				(Config)getService(ServiceNames.CONFIG));
 		else if(serviceRequested.getType() == TypeService.SERIE) // les séries
 		{
 			if(serialmanager == null)
@@ -152,20 +154,21 @@ public class Container
         else if(serviceRequested == ServiceNames.LOCOMOTION)
             instanciedServices[serviceRequested.ordinal()] = (Service)new Locomotion((Log)getService(ServiceNames.LOG),
                                                              (Config)getService(ServiceNames.CONFIG),
-                                                             (Table)getService(ServiceNames.TABLE),
-                                                             (LocomotionCardWrapper)getService(ServiceNames.LOCOMOTION_CARD_WRAPPER));
+                                                             (LocomotionCardWrapper)getService(ServiceNames.LOCOMOTION_CARD_WRAPPER),
+															 (ObstacleManager)getService(ServiceNames.OBSTACLE_MANAGER));
         else if(serviceRequested == ServiceNames.REAL_GAME_STATE)
-            instanciedServices[serviceRequested.ordinal()] = (Service)new GameState<RobotReal>(  (Config)getService(ServiceNames.CONFIG),
+        	// ici la construction est un petit peu différente car on interdit l'instanciation publique d'un GameSTate<RobotChrono>
+            instanciedServices[serviceRequested.ordinal()] = (Service)GameState.constructRealGameState(  (Config)getService(ServiceNames.CONFIG),
                                                              (Log)getService(ServiceNames.LOG),
                                                              (Table)getService(ServiceNames.TABLE),
-                                                             (RobotReal)getService(ServiceNames.ROBOT_REAL));
- 
+                                                             (ObstacleManager)getService(ServiceNames.OBSTACLE_MANAGER),                                                             
+                                                             (RobotReal)getService(ServiceNames.ROBOT_REAL)); 
 		else if(serviceRequested == ServiceNames.SCRIPT_MANAGER)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ScriptManager(	(HookFactory)getService(ServiceNames.HOOK_FACTORY),
 																					(Config)getService(ServiceNames.CONFIG),
 																					(Log)getService(ServiceNames.LOG));
 		else if(serviceRequested == ServiceNames.THREAD_TIMER)
-			instanciedServices[serviceRequested.ordinal()] = (Service)threadmanager.getThreadTimer(	(Table)getService(ServiceNames.TABLE),
+			instanciedServices[serviceRequested.ordinal()] = (Service)threadmanager.getThreadTimer(	(ObstacleManager)getService(ServiceNames.OBSTACLE_MANAGER),
 																		(SensorsCardWrapper)getService(ServiceNames.SENSORS_CARD_WRAPPER),
 																		(LocomotionCardWrapper)getService(ServiceNames.LOCOMOTION_CARD_WRAPPER),
 		                                                                (ActuatorCardWrapper)getService(ServiceNames.ACTUATOR_CARD_WRAPPER));
