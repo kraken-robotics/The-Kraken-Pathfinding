@@ -42,7 +42,7 @@ public class SerialManager
 	//Liste pour stocker les baudrates des differentes serie
 
 	private ArrayList<Integer> baudrate = new ArrayList<Integer>();
-
+	
 	/**
 	 * Recuperation de toutes les cartes dans cards et des baudrates dans baudrate
 	 */
@@ -67,7 +67,7 @@ public class SerialManager
 
 		this.series[this.carteAsservissement.name.getNbSerie()] = this.serieAsservissement;
 		this.series[this.carteCapteursActionneurs.name.getNbSerie()] = this.serieCapteursActionneurs;
-
+		
 		checkSerial();
 		createSerial();
 	}
@@ -208,9 +208,9 @@ public class SerialManager
 	 */
 	public SerialConnexion getSerial(ServiceNames name)	throws SerialManagerException
 	{
-		if (this.series[name.ordinal()] != null)
+		if (this.series[name.getNbSerie()] != null)
 		{
-			return this.series[name.ordinal()];
+			return this.series[name.getNbSerie()];
 		}
 		else
 		{

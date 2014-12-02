@@ -19,9 +19,9 @@ import container.Service;
 
 public class SerialConnexion implements SerialPortEventListener, Service
 {
-	SerialPort serialPort;
-	Log log;
-	String name;
+	private SerialPort serialPort;
+	protected Log log;
+	protected String name;
 
 	SerialConnexion (Log log, ServiceNames name)
 	{

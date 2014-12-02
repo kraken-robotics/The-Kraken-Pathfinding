@@ -127,12 +127,18 @@ public class Container
 		else if(serviceRequested == ServiceNames.GRID_SPACE)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new GridSpace((Log)getService(ServiceNames.LOG),
 																				(Config)getService(ServiceNames.CONFIG),
-																				(ObstacleManager)getService(ServiceNames.OBSTACLE_MANAGER));		
+																				(ObstacleManager)getService(ServiceNames.OBSTACLE_MANAGER));
 		else if(serviceRequested.getType() == TypeService.SERIE) // les séries
 		{
-			if(serialmanager == null)
-				serialmanager = new SerialManager(log);
-			instanciedServices[serviceRequested.ordinal()] = (Service)serialmanager.getSerial(serviceRequested);
+			try {
+				if(serialmanager == null)
+					serialmanager = new SerialManager(log);
+				instanciedServices[serviceRequested.ordinal()] = (Service)serialmanager.getSerial(serviceRequested);
+			}
+			catch(Exception e)
+			{
+				log.critical("Série introuvable!", this);
+			}
 		}
 		else if(serviceRequested == ServiceNames.LOCOMOTION_CARD_WRAPPER)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new LocomotionCardWrapper((Log)getService(ServiceNames.LOG),

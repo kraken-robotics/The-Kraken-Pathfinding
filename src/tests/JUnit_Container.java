@@ -17,7 +17,7 @@ public class JUnit_Container extends JUnit_Test {
 	{
 		for(ServiceNames s : ServiceNames.values())
 		{
-			log.debug("JUnit_ContainerTest.test_log()", this);
+			log.debug("JUnit_ContainerTest: "+s.toString(), this);
 			container.getService(s);
 		}
 		Assert.assertTrue(container.afficheNonInstancies());
