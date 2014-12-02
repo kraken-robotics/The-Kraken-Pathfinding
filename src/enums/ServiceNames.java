@@ -25,7 +25,8 @@ public enum ServiceNames {
 	 THREAD_LASER,
 	 THREAD_TIMER,
 	 CHECK_UP,
-	 OBSTACLE_MANAGER;
+	 OBSTACLE_MANAGER,
+	 GRID_SPACE;
 	
 	 private TypeService type = TypeService.RIEN;
 	 private int nbSerie = 0;

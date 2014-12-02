@@ -1,6 +1,7 @@
 package container;
 
 import pathfinding.Pathfinding;
+import pathfinding.GridSpace;
 import hook.types.HookFactory;
 import enums.ServiceNames;
 import enums.ServiceNames.TypeService;
@@ -124,7 +125,12 @@ public class Container
 																				(Config)getService(ServiceNames.CONFIG));
 		else if(serviceRequested == ServiceNames.PATHFINDING)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new Pathfinding((Log)getService(ServiceNames.LOG),
-																				(Config)getService(ServiceNames.CONFIG));
+																				(Config)getService(ServiceNames.CONFIG),
+																				(GridSpace)getService(ServiceNames.GRID_SPACE));
+		else if(serviceRequested == ServiceNames.GRID_SPACE)
+			instanciedServices[serviceRequested.ordinal()] = (Service)new GridSpace((Log)getService(ServiceNames.LOG),
+																				(Config)getService(ServiceNames.CONFIG),
+																				(ObstacleManager)getService(ServiceNames.OBSTACLE_MANAGER));		
 		else if(serviceRequested.getType() == TypeService.SERIE) // les séries
 		{
 			if(serialmanager == null)
