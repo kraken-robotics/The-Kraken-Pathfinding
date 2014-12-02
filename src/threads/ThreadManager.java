@@ -2,8 +2,6 @@ package threads;
 
 import java.util.Hashtable;
 
-import robot.cards.laser.LaserFiltration;
-import robot.cards.laser.Laser;
 import robot.cardsWrappers.ActuatorCardWrapper;
 import robot.cardsWrappers.LocomotionCardWrapper;
 import robot.cardsWrappers.SensorsCardWrapper;
@@ -62,14 +60,6 @@ public class ThreadManager
 		if(thread == null)
 			threads.put("threadCapteurs", new ThreadSensor(robotvrai, table, capteurs));
 		return threads.get("threadCapteurs");
-	}
-
-	public AbstractThread getThreadLaser(Laser laser, Table table, LaserFiltration filtragelaser)
-	{
-		AbstractThread thread = threads.get("threadLaser");
-		if(thread == null)
-			threads.put("threadLaser", new ThreadLaser(laser, table, filtragelaser));
-		return threads.get("threadLaser");
 	}
 
 	public void startInstanciedThreads()
