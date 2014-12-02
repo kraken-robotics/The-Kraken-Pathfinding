@@ -113,8 +113,8 @@ public class ThreadTimer extends AbstractThread
 			Vec2 positionMammouth1 = new Vec2(-750, 2000);
 			Vec2 positionMammouth2 = new Vec2(750, 2000);
 			double angle;
-			if (position.SquaredDistance(positionMammouth1) < position
-					.SquaredDistance(positionMammouth2))
+			if (position.squaredDistance(positionMammouth1) < position
+					.squaredDistance(positionMammouth2))
 				angle = Math.atan2(positionMammouth1.y - position.y,
 						positionMammouth1.x - position.x);
 			else

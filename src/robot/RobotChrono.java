@@ -48,7 +48,7 @@ public class RobotChrono extends Robot
 		Vec2 ecart;
         ecart = new Vec2((int)(distance*Math.cos(orientation)), (int)(distance*Math.sin(orientation)));
 
-		position.Plus(ecart);
+		position.plus(ecart);
 	}
 	
 	@Override

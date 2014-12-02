@@ -82,23 +82,23 @@ public class ObstacleRectangular extends Obstacle
 		 */		
 		
 		// calcul des positions des coins
-		Vec2 coinBasGauche = position.PlusNewVector((new Vec2(-sizeX/2,-sizeY/2)));
-		Vec2 coinHautGauche = position.PlusNewVector((new Vec2(-sizeX/2,sizeY/2)));
-		Vec2 coinBasDroite = position.PlusNewVector((new Vec2(sizeX/2,-sizeY/2)));
-		Vec2 coinHautDroite = position.PlusNewVector((new Vec2(sizeX/2,sizeY/2)));
+		Vec2 coinBasGauche = position.plusNewVector((new Vec2(-sizeX/2,-sizeY/2)));
+		Vec2 coinHautGauche = position.plusNewVector((new Vec2(-sizeX/2,sizeY/2)));
+		Vec2 coinBasDroite = position.plusNewVector((new Vec2(sizeX/2,-sizeY/2)));
+		Vec2 coinHautDroite = position.plusNewVector((new Vec2(sizeX/2,sizeY/2)));
 		
 		// si le point fourni est dans lesquarts-de-plans n°2,4,6 ou 8
 		if(in.x < coinBasGauche.x && in.y < coinBasGauche.y)
-			return in.SquaredDistance(coinBasGauche);
+			return in.squaredDistance(coinBasGauche);
 		
 		else if(in.x < coinHautGauche.x && in.y > coinHautGauche.y)
-			return in.SquaredDistance(coinHautGauche);
+			return in.squaredDistance(coinHautGauche);
 		
 		else if(in.x > coinBasDroite.x && in.y < coinBasDroite.y)
-			return in.SquaredDistance(coinBasDroite);
+			return in.squaredDistance(coinBasDroite);
 
 		else if(in.x > coinHautDroite.x && in.y > coinHautDroite.y)
-			return in.SquaredDistance(coinHautDroite);
+			return in.squaredDistance(coinHautDroite);
 
 		// Si le point fourni est dans les demi-bandes n°1,3,5,ou 7
 		if(in.x > coinHautDroite.x)

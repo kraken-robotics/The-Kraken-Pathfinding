@@ -114,13 +114,13 @@ public class ObstacleManager
         for(Obstacle obstacle: listObstacles)
         {
             // On regarde si l'intersection des cercles est vide
-            if(obstacle instanceof ObstacleCirculaire && obstacle.position.SquaredDistance(centre_detection) < (distance+((ObstacleCirculaire)obstacle).radius)*(distance+((ObstacleCirculaire)obstacle).radius))
+            if(obstacle instanceof ObstacleCirculaire && obstacle.position.squaredDistance(centre_detection) < (distance+((ObstacleCirculaire)obstacle).radius)*(distance+((ObstacleCirculaire)obstacle).radius))
                 return true;
             else if(!(obstacle instanceof ObstacleCirculaire))
             {
                 // Normalement, les obstacles non fixes sont toujours circulaires
                 log.warning("Etrange, un obstacle non circulaire... actualiser \"obstaclePresent\" dans Table", this);
-                if(obstacle.position.SquaredDistance(centre_detection) < distance*distance)
+                if(obstacle.position.squaredDistance(centre_detection) < distance*distance)
                     return true;            
             }
         }
@@ -199,9 +199,9 @@ public class ObstacleManager
 	    if (pscal1>=0 && pscal2>=0)
 	       return true;   // I entre A et B, ok.
 	    // dernière possibilité, A ou B dans le cercle
-	    if (A.SquaredDistance(C) < obs.getRadius()*obs.getRadius())
+	    if (A.squaredDistance(C) < obs.getRadius()*obs.getRadius())
 	      return true;
-	    if (B.SquaredDistance(C) < obs.getRadius()*obs.getRadius())
+	    if (B.squaredDistance(C) < obs.getRadius()*obs.getRadius())
 	      return true;
 	    return false;
     }
@@ -260,13 +260,13 @@ public class ObstacleManager
     private boolean obstacle_existe(Vec2 position, Obstacle o)
     {
         // Obstacle circulaire
-        if(o instanceof ObstacleCirculaire && position.SquaredDistance(o.position) <= (1.2*((ObstacleCirculaire)o).getRadius())*1.2*((ObstacleCirculaire)o).getRadius())
+        if(o instanceof ObstacleCirculaire && position.squaredDistance(o.position) <= (1.2*((ObstacleCirculaire)o).getRadius())*1.2*((ObstacleCirculaire)o).getRadius())
             return true;
         // Obstacle rectangulaire
         else if(o instanceof ObstacleRectangulaire && ((ObstacleRectangulaire)o).SquaredDistance(position) <= 100*100)
             return true;
         // Autre obstacle
-        else if(position.SquaredDistance(o.position) <= 100)
+        else if(position.squaredDistance(o.position) <= 100)
             return true;
         return false;
     }

@@ -542,8 +542,8 @@ public class Locomotion implements Service
 		update_x_y_orientation();
 		long t2 = System.currentTimeMillis();
 
-		delta.Minus(position);
-		double distance = delta.Length();
+		delta.minus(position);
+		double distance = delta.length();
 		if(correction)
 			distance -= (t2-t1);
 
@@ -663,11 +663,11 @@ public class Locomotion implements Service
 			double[] new_infos = mLocomotionCardWrapper.getCurrentPositionAndOrientation();
 			
 			// Le robot bouge-t-il encore ?
-			if(new Vec2((int)oldInfos[0], (int)oldInfos[1]).SquaredDistance(new Vec2((int)new_infos[0], (int)new_infos[1])) > motionThreshold || Math.abs(new_infos[2] - oldInfos[2]) > motionThreshold)
+			if(new Vec2((int)oldInfos[0], (int)oldInfos[1]).squaredDistance(new Vec2((int)new_infos[0], (int)new_infos[1])) > motionThreshold || Math.abs(new_infos[2] - oldInfos[2]) > motionThreshold)
 				out = false;
 
 			// le robot est-t-il arrivé ?
-			else if(new Vec2((int)new_infos[0], (int)new_infos[1]).SquaredDistance(consigne) < aimThreshold)
+			else if(new Vec2((int)new_infos[0], (int)new_infos[1]).squaredDistance(consigne) < aimThreshold)
 				out = true;
 
 			// si on ne bouge plus, et qu'on n'est pas arrivé, c'est que ca bloque
@@ -755,7 +755,7 @@ public class Locomotion implements Service
 
 		int rayon_detection = largeur_robot/2 + distance_detection;
 		Vec2 centre_detection = new Vec2((int)(signe * rayon_detection * Math.cos(orientation)), (int)(signe * rayon_detection * Math.sin(orientation)));
-		centre_detection.Plus(position);
+		centre_detection.plus(position);
 		if(table.gestionobstacles.obstaclePresent(centre_detection, distance_detection))
 		{
 			log.warning("Ennemi détecté en : " + centre_detection, this);
