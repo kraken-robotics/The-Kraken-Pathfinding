@@ -1,6 +1,7 @@
 package strategie;
 
 import obstacles.ObstacleManager;
+import pathfinding.GridSpace;
 import container.Service;
 import robot.Robot;
 import robot.RobotChrono;
@@ -12,7 +13,7 @@ import utils.Config;
 /**
  * Le game state rassemble toutes les informations disponibles à un instant
  * - infos sur le robot (position, objet, ...) dans R
- * - infos sur les obstacles (robot ennemi, ...) dans ObstacleManager
+ * - infos sur les obstacles (robot ennemi, ...) dans GridSpace
  * - infos sur les éléments de jeux (pris ou non, ...) dans Table
  * @author pf
  *
@@ -25,9 +26,10 @@ public class GameState<R extends Robot> implements Service
      * Les attributs public sont en "final". Cela signifie que les objets
      * peuvent être modifiés mais pas ces références.
      */
-    public final Table table;
-    public final R robot;
-    public final ObstacleManager obstaclemanager;
+    private Table table;
+    public R robot;
+    private ObstacleManager obstaclemanager;
+    private GridSpace gridspace;
 
     private Log log;
     private Config config;
@@ -47,17 +49,17 @@ public class GameState<R extends Robot> implements Service
      * @param robot
      * @return
      */
-    public static GameState<RobotReal> constructRealGameState(Config config, Log log, Table table, ObstacleManager obstaclemanager, RobotReal robot)
+    public static GameState<RobotReal> constructRealGameState(Config config, Log log, Table table, GridSpace gridspace, RobotReal robot)
     {
-    	return new GameState<RobotReal>(config, log, table, obstaclemanager, robot);
+    	return new GameState<RobotReal>(config, log, table, gridspace, robot);
     }
     
-    private GameState(Config config, Log log, Table table, ObstacleManager obstaclemanager, R robot)
+    private GameState(Config config, Log log, Table table, GridSpace gridspace, R robot)
     {
         this.config = config;
         this.log = log;
         this.table = table;
-        this.obstaclemanager = obstaclemanager;
+        this.gridspace = gridspace;
         this.robot = robot;
         pointsObtenus = 0;
     }
@@ -69,10 +71,10 @@ public class GameState<R extends Robot> implements Service
     {
         Table new_table = table.clone();
         RobotChrono new_rc = new RobotChrono(config, log); 
-        robot.copy(new_rc);
-        ObstacleManager new_obstaclemanager = obstaclemanager.clone(time_depuis_debut);
+        robot.copy(new_rc);;
+        GridSpace new_gridspace = gridspace.clone(time_depuis_debut);
         
-        GameState<RobotChrono> out = new GameState<RobotChrono>(config, log, new_table, new_obstaclemanager, new_rc);
+        GameState<RobotChrono> out = new GameState<RobotChrono>(config, log, new_table, new_gridspace, new_rc);
         out.time_depuis_debut = time_depuis_debut;
         out.time_depuis_racine = time_depuis_racine;
         out.pointsObtenus = pointsObtenus;
@@ -87,6 +89,7 @@ public class GameState<R extends Robot> implements Service
     {
         table.copy(other.table);
         robot.copy(other.robot);
+        
         obstaclemanager.copy(other.obstaclemanager);
 
         other.time_depuis_debut = time_depuis_debut;

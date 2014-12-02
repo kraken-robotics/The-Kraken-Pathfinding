@@ -17,8 +17,6 @@ public abstract class Obstacle
 	
 	public abstract Obstacle clone();
 
-	public abstract boolean isInObstacle(Vec2 point);
-	
 	public abstract boolean isProcheObstacle(Vec2 point, int distance);
 	
 	public Vec2 getPosition()

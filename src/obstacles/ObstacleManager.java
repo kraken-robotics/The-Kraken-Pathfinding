@@ -1,6 +1,7 @@
 package obstacles;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 
 import container.Service;
@@ -21,9 +22,13 @@ public class ObstacleManager implements Service
     private Log log;
     private Config config;
 
+    // Les obstacles mobiles, c'est-à-dire des obstacles de proximité et de balise
     private ArrayList<ObstacleCircular> listObstacles = new ArrayList<ObstacleCircular>();
-    private static ArrayList<Obstacle> listObstaclesFixes = null;
+
+    // Les obstacles fixes sont surtout utilisés pour savoir si un capteur détecte un ennemi ou un obstacle fixe
+    private ArrayList<Obstacle> listObstaclesFixes;
   
+    // Utilisé pour accélérer la copie
     private int hashObstacles;
 
     private int rayon_robot_adverse = 200;
@@ -38,7 +43,16 @@ public class ObstacleManager implements Service
         hashObstacles = 0;
 
         listObstaclesFixes = new ArrayList<Obstacle>();
-            // TODO obstacles fixees
+        listObstaclesFixes.add(new ObstacleRectangular(new Vec2(0,100),800,200)); // plaque rouge
+        listObstaclesFixes.add(new ObstacleRectangular(new Vec2(0,2000-580/2),1066,580)); // escalier
+        listObstaclesFixes.add(new ObstacleRectangular(new Vec2(-1500+400/2,1200),22,400)); // bandes de bois zone de départ
+        listObstaclesFixes.add(new ObstacleRectangular(new Vec2(1500-400/2,1200),22,400));
+        listObstaclesFixes.add(new ObstacleRectangular(new Vec2(-1500+400/2,800),22,400));
+        listObstaclesFixes.add(new ObstacleRectangular(new Vec2(1500-400/2,800),22,400));
+        listObstaclesFixes.add(new ObstacleRectangular(new Vec2(-1200+50/2,2000-50/2),50,50)); // distributeurs
+        listObstaclesFixes.add(new ObstacleRectangular(new Vec2(-900+50/2,2000-50/2),50,50));
+        listObstaclesFixes.add(new ObstacleRectangular(new Vec2(900-50/2,2000-50/2),50,50));
+        listObstaclesFixes.add(new ObstacleRectangular(new Vec2(1200-50/2,2000-50/2),50,50));
             
         updateConfig();
     }   
@@ -110,13 +124,50 @@ public class ObstacleManager implements Service
     {
         if(other.hashObstacles != hashObstacles)
         {
-            other.listObstacles.clear();
-            for(ObstacleCircular item: listObstacles)
-                other.listObstacles.add(item.clone());
+        	Collections.copy(other.listObstacles, listObstacles);
             other.hashObstacles = hashObstacles;
         }
     }
  
+    /**
+     * Cette méthode vérifie les obstacles fixes et les obstacles mobiles.
+     * Elle est *bien* plus lente que obstacle_proximite_dans_segment et ne doit être utilisé qu'une seule fois
+     * @param A
+     * @param B
+     * @return
+     */
+	public boolean obstacle_dans_segment(Vec2 A, Vec2 B)
+	{
+		int x0 = A.x, y0 = A.y;
+		int x1 = B.x, y1 = B.y;
+
+		// Bresenham's line algorithm
+		
+		int dx = Math.abs(x1-x0), sx = x0<x1 ? 1 : -1;
+		int dy = Math.abs(y1-y0), sy = y0<y1 ? 1 : -1; 
+		int err = (dx>dy ? dx : -dy)/2;
+		int e2;
+		 
+		while(x0!=x1 || y0!=y1)
+		{
+			if(obstacle_existe(new Vec2(x0, y0), 0))
+				return false;
+			
+			e2 = err;
+			if (e2 >-dx)
+			{
+				err -= dy;
+				x0 += sx;
+			}
+			if (e2 < dy)
+			{
+				err += dx;
+				y0 += sy;
+			}
+		}
+		return true;
+	}
+    
     /**
      * Y a-t-il un obstacle de proximité dans ce segment?
      * @param sommet1

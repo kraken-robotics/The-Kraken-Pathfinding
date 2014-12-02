@@ -163,7 +163,7 @@ public class Container
             instanciedServices[serviceRequested.ordinal()] = (Service)GameState.constructRealGameState(  (Config)getService(ServiceNames.CONFIG),
                                                              (Log)getService(ServiceNames.LOG),
                                                              (Table)getService(ServiceNames.TABLE),
-                                                             (ObstacleManager)getService(ServiceNames.OBSTACLE_MANAGER),                                                             
+                                                             (GridSpace)getService(ServiceNames.GRID_SPACE),                                                             
                                                              (RobotReal)getService(ServiceNames.ROBOT_REAL)); 
 		else if(serviceRequested == ServiceNames.SCRIPT_MANAGER)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ScriptManager(	(HookFactory)getService(ServiceNames.HOOK_FACTORY),

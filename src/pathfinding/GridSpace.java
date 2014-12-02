@@ -16,27 +16,52 @@ import enums.NodesConnection;
 
 public class GridSpace implements Service {
 	
-	ObstacleManager obstaclemanager;
+	private Log log;
+	private Config config;
+	private ObstacleManager obstaclemanager;
 		
 	private static Vec2[] nodes = {new Vec2(100, 200), new Vec2(400, 800)};
 
 	// Constante bien utile
 	private static final int NB_NODES = nodes.length;
 
-	// TODO: à calculer
-	private NodesConnection[][] isConnected = {{NodesConnection.POSSIBLE, NodesConnection.POSSIBLE}, {NodesConnection.POSSIBLE, NodesConnection.POSSIBLE}};
+	// Rempli de ALWAYS_IMPOSSIBLE et UNKNOW. Ne change pas.
+	private static NodesConnection[][] isConnectedModel = null;
+
+	// Dynamique.
+	private NodesConnection[][] isConnected = new NodesConnection[NB_NODES][NB_NODES];
 	
 	// Contient les distances entre chaque point de passage
-	private double[][] distances = new double[NB_NODES][NB_NODES];
+	private static double[][] distances = new double[NB_NODES][NB_NODES];
 
 	public GridSpace(Log log, Config config, ObstacleManager obstaclemanager)
 	{
+		this.log = log;
+		this.config = config;
 		this.obstaclemanager = obstaclemanager;
 		
-		// TODO calculer isConnected avec calculs de collision
+		// Il est très important de ne faire ce long calcul qu'une seule fois,
+		// à la première initialisation
+		if(isConnectedModel == null)
+			initStatic();
+	}
+	
+	private void initStatic()
+	{
+		isConnectedModel = new NodesConnection[NB_NODES][NB_NODES];
 		for(int i = 0; i < NB_NODES; i++)
 			for(int j = 0; j < i; j++)
-				if(isConnected[i][j] != NodesConnection.ALWAYS_IMPOSSIBLE)
+			{
+				if(obstaclemanager.obstacle_dans_segment(nodes[i], nodes[j]))
+					isConnectedModel[i][j] = NodesConnection.ALWAYS_IMPOSSIBLE;
+				else
+					isConnectedModel[i][j] = NodesConnection.UNKNOW;
+				isConnectedModel[j][i] = isConnectedModel[i][j];
+			}				
+	
+		for(int i = 0; i < NB_NODES; i++)
+			for(int j = 0; j < i; j++)
+				if(isConnectedModel[i][j] != NodesConnection.ALWAYS_IMPOSSIBLE)
 				{
 					distances[i][j] = nodes[i].distance(nodes[j]);
 					distances[i][j] = distances[j][i];
@@ -50,12 +75,8 @@ public class GridSpace implements Service {
 	public void reinitConnections()
 	{
 		for(int i = 0; i < NB_NODES; i++)
-			for(int j = 0; j < i; j++)
-				if(isConnected[i][j] != NodesConnection.ALWAYS_IMPOSSIBLE)
-				{
-					isConnected[i][j] = NodesConnection.UNKNOW;
-					isConnected[j][i] = NodesConnection.UNKNOW;
-				}
+			for(int j = 0; j < NB_NODES; j++)
+				isConnected[i][j] = isConnectedModel[i][j];
 	}
 
 	/**
@@ -102,4 +123,21 @@ public class GridSpace implements Service {
 		
 	}
 
+	public void copy(GridSpace other)
+	{
+		obstaclemanager.copy(other.obstaclemanager);
+		other.reinitConnections();
+	}
+	
+	public GridSpace clone(long date)
+	{
+		GridSpace cloned_gridspace = new GridSpace(log, config, obstaclemanager);
+		copy(cloned_gridspace);
+		
+		cloned_gridspace.obstaclemanager.supprimerObstaclesPerimes(date);
+		cloned_gridspace.reinitConnections();
+		return cloned_gridspace;
+		
+	}
+	
 }

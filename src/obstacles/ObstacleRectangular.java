@@ -117,14 +117,9 @@ public class ObstacleRectangular extends Obstacle
 		return 0f;
 	}
 
-	public boolean isInObstacle(Vec2 point)
-	{
-		return squaredDistance(point) < 0.1f; // vu qu'on a une précision limitée, mieux vaut prendre un peu de marge
-	}
-
 	public boolean isProcheObstacle(Vec2 point, int distance)
 	{
-		return squaredDistance(point) < distance;
+		return squaredDistance(point) < distance+0.1f; // vu qu'on a une précision limitée, mieux vaut prendre un peu de marge
 	}
 
 }
