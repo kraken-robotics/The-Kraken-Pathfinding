@@ -154,7 +154,7 @@ public class Container
 		else if(serviceRequested == ServiceNames.HOOK_FACTORY)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new HookFactory((Config)getService(ServiceNames.CONFIG),
 															 (Log)getService(ServiceNames.LOG),
-															 (GameState<RobotReal>)getService(ServiceNames.EXECUTION));
+															 (GameState<RobotReal>)getService(ServiceNames.REAL_GAME_STATE));
 		else if(serviceRequested == ServiceNames.ROBOT_REAL)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new RobotReal((Locomotion)getService(ServiceNames.LOCOMOTION),
 															 (Table)getService(ServiceNames.TABLE),

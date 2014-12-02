@@ -5,6 +5,7 @@ import hook.types.HookFactory;
 
 import java.util.ArrayList;
 
+import container.Service;
 import pathfinding.Pathfinding;
 import enums.ScriptNames;
 import exceptions.PathfindingException;
@@ -19,7 +20,7 @@ import smartMath.Vec2;
 import utils.Config;
 import utils.Log;
 
-public class Execution {
+public class Execution implements Service {
 
 	private GameState<RobotReal> gamestate;
 	private Log log;
@@ -82,6 +83,12 @@ public class Execution {
 		chemin = pathfinding.computePath(gamestate.robot.getPosition(), s.point_entree(id_version));
 		gamestate.robot.suit_chemin(chemin, hooks_entre_scripts);
 		s.agit(id_version, gamestate, false);	
+	}
+
+	@Override
+	public void updateConfig() {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }
