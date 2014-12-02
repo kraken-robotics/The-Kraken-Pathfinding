@@ -1,22 +1,44 @@
 package pathfinding;
 import java.util.ArrayList;
 
+import container.Service;
 import smartMath.Vec2;
 
 /**
  * Classe encapsulant les calculs de pathfinding
- * @author Marsya
+ * @author pf
  *
  */
 
-// TODO: pathfinding doit-il être un service ?
-public class Pathfinding
+public class Pathfinding implements Service
 {
+	private static Vec2[] nodes = {new Vec2(100, 200), new Vec2(400, 800)};
+	/**
+	 * Contient le graphe des connexions avec les distances entre points
+	 * Mettre -1 pour une distance infinie
+	 */
+	private static double[][] isConnected = {{0, 0}, {0, 0}};
+
+	static {
+		/** Initialisation static (et donc une fois pour toutes)
+		 * des distances entre les points de passages
+		 */
+		for(int i = 0; i < 2; i++)
+			for(int j = 0; j < 2; j++)
+				if(isConnected[i][j] == 0)
+				{
+					isConnected[i][j] = nodes[i].distance(nodes[j]);
+					isConnected[i][j] = isConnected[j][i];
+				}
+	}
+	
 	/**
 	 * Constructeur du système de recherche de chemin
 	 */
 	public Pathfinding()
 	{
+				
+		
 		// TODO écrire le pathfinding
 	}
 	
@@ -32,5 +54,11 @@ public class Pathfinding
 		ArrayList<Vec2> out = new ArrayList<Vec2>();
 		out.add(end);
 		return out;
+	}
+
+	@Override
+	public void updateConfig() {
+		// TODO Auto-generated method stub
+		
 	}
 }
