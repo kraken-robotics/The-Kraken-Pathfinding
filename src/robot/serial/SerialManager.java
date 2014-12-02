@@ -64,11 +64,9 @@ public class SerialManager
 
 		this.serieAsservissement = new SerialConnexion(log, this.carteAsservissement.name);
 		this.serieCapteursActionneurs = new SerialConnexion(log, this.carteCapteursActionneurs.name);
-//		this.serieLaser = new Serial(log, this.carteLaser.name);
 
-		this.series[this.carteAsservissement.name.ordinal()] = this.serieAsservissement;
-		this.series[this.carteCapteursActionneurs.name.ordinal()] = this.serieCapteursActionneurs;
-//		this.series.put(this.carteLaser.name, this.serieLaser);
+		this.series[this.carteAsservissement.name.getNbSerie()] = this.serieAsservissement;
+		this.series[this.carteCapteursActionneurs.name.getNbSerie()] = this.serieCapteursActionneurs;
 
 		checkSerial();
 		createSerial();

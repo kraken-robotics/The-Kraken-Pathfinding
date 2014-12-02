@@ -19,20 +19,27 @@ public enum ServiceNames {
 	 PATHFINDING,
 	 REAL_GAME_STATE,
 	 SCRIPT_MANAGER,
-	 SERIE_ASSERVISSEMENT(TypeService.SERIE),
-	 SERIE_CAPTEURS_ACTIONNEURS(TypeService.SERIE),
+	 SERIE_ASSERVISSEMENT(TypeService.SERIE, 0),
+	 SERIE_CAPTEURS_ACTIONNEURS(TypeService.SERIE, 1),
 	 THREAD_SENSOR,
 	 THREAD_LASER,
 	 THREAD_TIMER,
 	 CHECK_UP;
 	
 	 private TypeService type = TypeService.RIEN;
+	 private int nbSerie = 0;
 
 	 private ServiceNames()
 	 {}
 	 
-	 private ServiceNames(TypeService type)
+	 public int getNbSerie()
 	 {
+		 return nbSerie;
+	 }
+	 
+	 private ServiceNames(TypeService type, int nbSerie)
+	 {
+		 this.nbSerie = nbSerie;
 		 this.type = type;
 	 }
 	 
