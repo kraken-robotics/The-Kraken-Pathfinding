@@ -11,6 +11,7 @@ import exceptions.ThreadException;
 import exceptions.serial.SerialManagerException;
 import utils.*;
 import scripts.ScriptManager;
+import strategie.Execution;
 import strategie.GameState;
 import strategie.MemoryManager;
 import table.Table;
@@ -147,7 +148,7 @@ public class Container
 		else if(serviceRequested == ServiceNames.HOOK_FACTORY)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new HookFactory((Config)getService(ServiceNames.CONFIG),
 															 (Log)getService(ServiceNames.LOG),
-															 (GameState<RobotReal>)getService(ServiceNames.REAL_GAME_STATE));
+															 (GameState<RobotReal>)getService(ServiceNames.EXECUTION));
 		else if(serviceRequested == ServiceNames.ROBOT_REAL)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new RobotReal((Locomotion)getService(ServiceNames.LOCOMOTION),
 															 (Table)getService(ServiceNames.TABLE),
@@ -160,11 +161,19 @@ public class Container
 															 (ObstacleManager)getService(ServiceNames.OBSTACLE_MANAGER));
         else if(serviceRequested == ServiceNames.REAL_GAME_STATE)
         	// ici la construction est un petit peu différente car on interdit l'instanciation publique d'un GameSTate<RobotChrono>
-            instanciedServices[serviceRequested.ordinal()] = (Service)GameState.constructRealGameState(  (Config)getService(ServiceNames.CONFIG),
+            instanciedServices[serviceRequested.ordinal()] = (Service) GameState.constructRealGameState(  (Config)getService(ServiceNames.CONFIG),
                                                              (Log)getService(ServiceNames.LOG),
                                                              (Table)getService(ServiceNames.TABLE),
                                                              (GridSpace)getService(ServiceNames.GRID_SPACE),                                                             
                                                              (RobotReal)getService(ServiceNames.ROBOT_REAL)); 
+		
+		else if(serviceRequested == ServiceNames.EXECUTION)
+			instanciedServices[serviceRequested.ordinal()] = (Service)new Execution((Log)getService(ServiceNames.LOG),
+			                                                 (Config)getService(ServiceNames.CONFIG),
+			                                                 (Pathfinding)getService(ServiceNames.PATHFINDING),
+			                                                 (GameState<RobotReal>)getService(ServiceNames.REAL_GAME_STATE),
+			                                                 (ScriptManager)getService(ServiceNames.SCRIPT_MANAGER),
+			                                                 (HookFactory)getService(ServiceNames.HOOK_FACTORY));
 		else if(serviceRequested == ServiceNames.SCRIPT_MANAGER)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ScriptManager(	(HookFactory)getService(ServiceNames.HOOK_FACTORY),
 																					(Config)getService(ServiceNames.CONFIG),
