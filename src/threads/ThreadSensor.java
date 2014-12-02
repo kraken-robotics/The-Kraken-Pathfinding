@@ -1,8 +1,12 @@
 package threads;
 
+import container.Service;
+import obstacles.ObstacleManager;
 import robot.RobotReal;
 import robot.cardsWrappers.SensorsCardWrapper;
-import table.Table;
+import smartMath.Vec2;
+import utils.Config;
+import utils.Log;
 import utils.Sleep;
 
 /**
@@ -11,29 +15,42 @@ import utils.Sleep;
  *
  */
 
-class ThreadSensor extends AbstractThread
+public class ThreadSensor extends AbstractThread implements Service
 {
-
+	private Log log;
+	private Config config;
 	private SensorsCardWrapper capteur;
+	private RobotReal robotreal;
+	private ObstacleManager obstaclemanager;
 	
-	// Valeurs par défaut s'il y a un problème de config
+	private double tempo = 0;
+	private int horizon_capteurs = 700;
+	private int rayon_robot_adverse = 230;
+	private int largeur_robot = 300;
+	private int table_x = 3000;
+	private int table_y = 2000;
 	private int capteurs_frequence = 5;
 	
-	ThreadSensor(RobotReal robotvrai, Table table, SensorsCardWrapper capteur)
+	public ThreadSensor(Log log, Config config, RobotReal robotreal, ObstacleManager obstaclemanager, SensorsCardWrapper capteur)
 	{
-		super(config, log);
+		this.log = log;
+		this.config = config;
 		this.capteur = capteur;
+		this.robotreal = robotreal;
+		this.obstaclemanager = obstaclemanager;
+		
 		Thread.currentThread().setPriority(2);
+		updateConfig();
 	}
 	
 	@Override
 	public void run()
 	{
 		log.debug("Lancement du thread de capteurs", this);
+		int date_dernier_ajout = 0;
 //		boolean marche_arriere = false;
-		updateConfig();
 		
-		while(!ThreadTimer.match_demarre)
+		while(!matchDemarre)
 		{
 			if(stopThreads)
 			{
@@ -44,7 +61,7 @@ class ThreadSensor extends AbstractThread
 		}
 		
 		log.debug("Activation des capteurs", this);
-		while(!ThreadTimer.fin_match)
+		while(!finMatch)
 		{
 			if(stopThreads)
 			{
@@ -52,24 +69,55 @@ class ThreadSensor extends AbstractThread
 				return;
 			}
 
-			// affiche la distance mesurée par l'ultrason
 			int distance = capteur.mesurer();
-			log.debug("Distance selon ultrason: "+distance, this);
 			if (distance > 0 && distance < 70)
 				log.debug("Câlin !", this);
 			
-			
+			if(distance >= 40 && distance < horizon_capteurs)
+			{
+				int distance_inter_robots = distance + rayon_robot_adverse + largeur_robot/2;
+				int distance_brute = distance + largeur_robot/2;
+				double theta = robotreal.getOrientation();
+//				if(marche_arriere)
+//					theta += Math.PI;
+				// On ne prend pas en compte le rayon du robot adverse dans la position brute. Il s'agit en fait du point effectivement vu
+				// Utilisé pour voir si l'obstacle n'est justement pas un robot adverse.
+				Vec2 position_brute = robotreal.getPosition().plusNewVector(new Vec2((int)((float)distance_brute * (float)Math.cos(theta)), (int)((float)distance_brute * (float)Math.sin(theta)))); // position du point détecté
+				Vec2 position = robotreal.getPosition().plusNewVector(new Vec2((int)(distance_inter_robots * Math.cos(theta)), (int)((float)distance_inter_robots * (float)Math.sin(theta)))); // centre supposé de l'obstacle détecté
+
+				// si la position est bien sur la table (histoire de pas détecter un arbitre)
+				if(position.x-200 > -table_x/2 && position.y > 200 && position.x+200 < table_x/2 && position.y+200 < table_y)
+					// on vérifie qu'un obstacle n'a pas été ajouté récemment
+					if(System.currentTimeMillis() - date_dernier_ajout > tempo)
+					{
+						if(!obstaclemanager.obstacle_existe(position_brute))
+						{
+							obstaclemanager.creer_obstacle(position);
+							date_dernier_ajout = (int)System.currentTimeMillis();
+							log.debug("Nouvel obstacle en "+position, this);
+						}
+						else	
+						    log.debug("L'objet vu est un obstacle fixe.", this);
+					}
+
+			}
 			
 			Sleep.sleep((long)(1000./capteurs_frequence));
 			
 		}
         log.debug("Fin du thread de capteurs", this);
-		
 	}
 	
 	public void updateConfig()
 	{
+			tempo = Double.parseDouble(config.get("capteurs_temporisation_obstacles"));
+			horizon_capteurs = Integer.parseInt(config.get("horizon_capteurs"));
+			rayon_robot_adverse = Integer.parseInt(config.get("rayon_robot_adverse"));
+			largeur_robot = Integer.parseInt(config.get("largeur_robot"));
+			table_x = Integer.parseInt(config.get("table_x"));
+			table_y = Integer.parseInt(config.get("table_y"));
 			capteurs_frequence = Integer.parseInt(config.get("capteurs_frequence"));
 	}
 	
+
 }

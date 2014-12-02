@@ -14,7 +14,9 @@ import scripts.ScriptManager;
 import strategie.GameState;
 import strategie.MemoryManager;
 import table.Table;
-import threads.ThreadManager;
+import threads.AbstractThread;
+import threads.ThreadSensor;
+import threads.ThreadTimer;
 import robot.Locomotion;
 import robot.RobotReal;
 import robot.cardsWrappers.ActuatorCardWrapper;
@@ -24,7 +26,6 @@ import robot.serial.SerialManager;
 import robot.serial.SerialConnexion;
 
 
-//TODO: virer proprement de tous les fichiers le ThreadPosition
 /**
  * 
  * Gestionnaire de la durée de vie des objets dans le code.
@@ -40,7 +41,6 @@ public class Container
 	private Service[] instanciedServices = new Service[ServiceNames.values().length];
 	
 	private SerialManager serialmanager = null; //idem que threadmanager
-	private ThreadManager threadmanager;	 // TODO: Pourquoi ce manager est-il memebre de container ?
 	
 	//gestion des log
 	private Log log;
@@ -79,7 +79,6 @@ public class Container
 	 * Services instanciés:
 	 * 		Config
 	 * 		Log
-	 * Instancie aussi le ThreadManager. // TODO: voir si l'on peut proprer cela ( ce n'est pa a priori le role de container puisque ThreadManager n'est pas un service) 
 	 * @throws ContainerException en cas de problème avec le fichier de configuration ou le système de log
 	 */
 	public Container() throws ContainerException
@@ -102,9 +101,6 @@ public class Container
 		{
 			throw new ContainerException();
 		}
-		
-		// instancie le gestionnnaire de thread
-		threadmanager = new ThreadManager(config, log); //TODO: pourquoi ce manager est instancié ici alors que le manager des serial ne l'est qu'au premier appel ?
 	}
 
 	@SuppressWarnings("unchecked")
@@ -174,13 +170,16 @@ public class Container
 																					(Config)getService(ServiceNames.CONFIG),
 																					(Log)getService(ServiceNames.LOG));
 		else if(serviceRequested == ServiceNames.THREAD_TIMER)
-			instanciedServices[serviceRequested.ordinal()] = (Service)threadmanager.getThreadTimer(	(ObstacleManager)getService(ServiceNames.OBSTACLE_MANAGER),
+			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadTimer((Log)getService(ServiceNames.LOG),
+																		(Config)getService(ServiceNames.CONFIG),
+																		(ObstacleManager)getService(ServiceNames.OBSTACLE_MANAGER),
 																		(SensorsCardWrapper)getService(ServiceNames.SENSORS_CARD_WRAPPER),
-																		(LocomotionCardWrapper)getService(ServiceNames.LOCOMOTION_CARD_WRAPPER),
-		                                                                (ActuatorCardWrapper)getService(ServiceNames.ACTUATOR_CARD_WRAPPER));
+																		(LocomotionCardWrapper)getService(ServiceNames.LOCOMOTION_CARD_WRAPPER));
 		else if(serviceRequested == ServiceNames.THREAD_SENSOR)
-			instanciedServices[serviceRequested.ordinal()] = (Service)threadmanager.getThreadCapteurs(	(RobotReal)getService(ServiceNames.ROBOT_REAL),
-																		(Table)getService(ServiceNames.TABLE),
+			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadSensor((Log)getService(ServiceNames.LOG),
+																		(Config)getService(ServiceNames.CONFIG),
+																		(RobotReal)getService(ServiceNames.ROBOT_REAL),
+																		(ObstacleManager)getService(ServiceNames.OBSTACLE_MANAGER),
 																		(SensorsCardWrapper)getService(ServiceNames.SENSORS_CARD_WRAPPER));
 		else if(serviceRequested == ServiceNames.CHECK_UP)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new CheckUp(	(Log)getService(ServiceNames.LOG),
@@ -200,38 +199,20 @@ public class Container
 		// retourne le service en mémoire à l'utilisateur
 		return instanciedServices[serviceRequested.ordinal()];
 	}	
-		
-	/**
-	 * Demande au thread manager de démarrer les threads instanciés 
-	 * (ie ceux qui ont étés demandés à getService)
-	 */
-	public void startInstanciedThreads()
-	{
-		threadmanager.startInstanciedThreads();
-	}
 
 	/**
 	 * Demande au thread manager de démarrer tous les threads
 	 */
-	//TODO: gestion propre des exeptions
 	public void startAllThreads()
 	{
 		try {
-			getService(ServiceNames.THREAD_LASER);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		try {
 			getService(ServiceNames.THREAD_SENSOR);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		try {
+			((Thread)instanciedServices[ServiceNames.THREAD_SENSOR.ordinal()]).run();
 			getService(ServiceNames.THREAD_TIMER);
+			((Thread)instanciedServices[ServiceNames.THREAD_TIMER.ordinal()]).run();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		threadmanager.startInstanciedThreads();
 	}
 	
 	/**
@@ -252,12 +233,12 @@ public class Container
 	}
 
 	/**
-	 * Demande au thread manager d'arrêter tout les threads
+	 * Arrête tous les threads
 	 * Le thread principal (appellant cette méthode) continue son exécution
 	 */
 	public void stopAllThreads()
 	{
-		threadmanager.stopAllThreads();
+		AbstractThread.stopAllThread();
 	}
 	
 }

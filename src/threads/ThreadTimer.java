@@ -1,10 +1,12 @@
 package threads;
 
+import container.Service;
 import obstacles.ObstacleManager;
 import exceptions.serial.SerialConnexionException;
 import robot.cardsWrappers.LocomotionCardWrapper;
 import robot.cardsWrappers.SensorsCardWrapper;
-import smartMath.Vec2;
+import utils.Config;
+import utils.Log;
 import utils.Sleep;
 
 /**
@@ -14,22 +16,24 @@ import utils.Sleep;
  *
  */
 
-public class ThreadTimer extends AbstractThread
+public class ThreadTimer extends AbstractThread implements Service
 {
 
 	// Dépendance
+	private Log log;
+	private Config config;
 	private ObstacleManager obstaclemanager;
 	private SensorsCardWrapper capteur;
 	private LocomotionCardWrapper deplacements;
 	
-	public static boolean match_demarre = false;
-	public static boolean fin_match = false;
-	public static long date_debut;
-	public static long duree_match = 90000;
+	private long dureeMatch = 90000;
+	private long dateFin;
 	public static int obstacleRefreshInterval = 500; // temps en ms entre deux appels par le thread timer du rafraichissement des obstacles de la table
 		
-	ThreadTimer(ObstacleManager obstaclemanager, SensorsCardWrapper capteur, LocomotionCardWrapper deplacements)
+	public ThreadTimer(Log log, Config config, ObstacleManager obstaclemanager, SensorsCardWrapper capteur, LocomotionCardWrapper deplacements)
 	{
+		this.log = log;
+		this.config = config;
 		this.obstaclemanager = obstaclemanager;
 		this.capteur = capteur;
 		this.deplacements = deplacements;
@@ -43,12 +47,12 @@ public class ThreadTimer extends AbstractThread
 	{
 		log.debug("Lancement du thread timer", this);
 
-		// allume les capteurs
+		// les capteurs sont initialement éteints
 		config.set("capteurs_on", false);
 		capteur.updateConfig();	
 		
 		// Attente du démarrage du match
-		while(!capteur.demarrage_match() && !match_demarre)
+		while(!capteur.demarrage_match() && !matchDemarre)
 		{
 			if(stopThreads)
 			{
@@ -57,24 +61,29 @@ public class ThreadTimer extends AbstractThread
 			}
 			Sleep.sleep(50);
 		}
-		date_debut = System.currentTimeMillis();
-		match_demarre = true;
 
+		Config.dateDebutMatch = System.currentTimeMillis();
+
+		// Permet de signaler que le match a démarré
+		matchDemarre = true;
+
+		// On démarre les capteurs
 		config.set("capteurs_on", true);
 		capteur.updateConfig();
 
 		log.debug("LE MATCH COMMENCE !", this);
 
+		dateFin = dureeMatch + Config.dateDebutMatch;
 
 		// Le match à démarré. On retire périodiquement les obstacles périmés
-		while(System.currentTimeMillis() - date_debut < duree_match)
+		while(System.currentTimeMillis() < dateFin)
 		{
 			if(stopThreads)
 			{
 				log.debug("Arrêt du thread timer demandé durant le match", this);
 				return;
 			}
-			obstaclemanager.supprimerObstaclesPerimes(System.currentTimeMillis());
+			obstaclemanager.supprimerObstaclesPerimes();
 			
 			try
 			{
@@ -94,62 +103,27 @@ public class ThreadTimer extends AbstractThread
 	
 	private void onMatchEnded()
 	{
-
 		log.debug("Fin du Match !", this);
+		
+		finMatch = true;
 
-		// Le match est fini, désasservissement
-		fin_match = true;
-
+		// TODO: ici la funny action s'il y en a une
+		
+		// fin du match : désasser final
 		try {
-			deplacements.immobilise();
+			deplacements.disableRotationnalFeedbackLoop();
+			deplacements.disableTranslationnalFeedbackLoop();
 		} catch (SerialConnexionException e) {
 			e.printStackTrace();
 		}
-
-		try {
-			// on s'oriente pour tirer le fillet
-			double[] infos = deplacements.getCurrentPositionAndOrientation();
-			Vec2 position = new Vec2((int) infos[0], (int) infos[1]);
-			Vec2 positionMammouth1 = new Vec2(-750, 2000);
-			Vec2 positionMammouth2 = new Vec2(750, 2000);
-			double angle;
-			if (position.squaredDistance(positionMammouth1) < position
-					.squaredDistance(positionMammouth2))
-				angle = Math.atan2(positionMammouth1.y - position.y,
-						positionMammouth1.x - position.x);
-			else
-				angle = Math.atan2(positionMammouth2.y - position.y,
-						positionMammouth2.x - position.x);
-			deplacements.immobilise();
-			deplacements.turn(angle - Math.PI / 2); // le filet est sur le coté
-													// gauche
-
-			// fin du match : désasser final
-			try {
-				deplacements.disableRotationnalFeedbackLoop();
-				deplacements.disableTranslationnalFeedbackLoop();
-			} catch (SerialConnexionException e) {
-				e.printStackTrace();
-			}
-			deplacements.closeLocomotion();
-
-		} catch (SerialConnexionException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-	}
-	
-	
-	public long temps_restant()
-	{
-		return date_debut + duree_match - System.currentTimeMillis();
+		deplacements.closeLocomotion();
 	}
 	
 	public void updateConfig()
 	{
 		// facteur 1000 car temps_match est en secondes et duree_match en ms
 		try {
-			duree_match = 1000*Long.parseLong(config.get("temps_match"));
+			dureeMatch = 1000*Long.parseLong(config.get("temps_match"));
 		}
 		catch(Exception e)
 		{

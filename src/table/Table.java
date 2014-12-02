@@ -13,14 +13,10 @@ public class Table implements Service
 	{
 		this.log = log;
 		this.config = config;
-		initialise();
+		
+		// TODO initialisation des éléments de jeux
 	}
 	
-	public void initialise()
-	{
-	}
-	
-	//La table
 	/**
 	 * La table en argument deviendra la copie de this (this reste inchangé)
 	 * @param ct

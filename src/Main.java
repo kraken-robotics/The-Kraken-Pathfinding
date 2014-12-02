@@ -4,26 +4,12 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-//import org.junit.runner.JUnitCore;
-
-
-
-
-
-
-
-
-
-
-
-
 import robot.Locomotion;
 import robot.RobotReal;
 import robot.cardsWrappers.LocomotionCardWrapper;
 import robot.cardsWrappers.SensorsCardWrapper;
 import scripts.ScriptManager;
 import strategie.GameState;
-import threads.ThreadTimer;
 //import tests.JUnit_StrategieThreadTest;
 //import sun.rmi.runtime.Log;
 //import threads.ThreadTimer;
@@ -200,7 +186,7 @@ public class Main
 		System.out.println("Robot pret pour le match, attente du retrait du jumper");
 		
 		// hack si le jumper est inopérant
-		ThreadTimer.match_demarre = true;
+		Config.dateDebutMatch = System.currentTimeMillis();
 
 		// while(!capteurs.demarrage_match())
 		//	 	Sleep.sleep(100);

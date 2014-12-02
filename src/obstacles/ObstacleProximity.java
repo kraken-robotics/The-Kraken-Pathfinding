@@ -16,16 +16,19 @@ class ObstacleProximity extends ObstacleCircular
 		this.death_date = death_date;
 	}
 	
+	@Override
 	public ObstacleProximity clone()
 	{
 		return new ObstacleProximity(position.clone(), radius, death_date);
 	}
 	
+	@Override
 	public String toString()
 	{
 		return super.toString()+", meurt dans "+(death_date-System.currentTimeMillis())+" ms";
 	}
 	
+	@Override
 	public boolean isDestructionNecessary(long date)
 	{
 		return death_date < date;

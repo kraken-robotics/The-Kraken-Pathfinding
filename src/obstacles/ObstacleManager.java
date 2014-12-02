@@ -58,6 +58,15 @@ public class ObstacleManager implements Service
     }
 
     /**
+     * Supprime les obstacles périmés (maintenant)
+     * @param date
+     */
+    public void supprimerObstaclesPerimes()
+    {
+    	supprimerObstaclesPerimes(System.currentTimeMillis());
+    }
+
+    /**
      * Appel fait lors de l'anticipation, supprime les obstacles périmés à une date future
      * @param date
      */

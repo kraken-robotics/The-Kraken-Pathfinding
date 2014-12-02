@@ -31,7 +31,7 @@ public class JUnit_javaToRobotLink  extends JUnit_Test
 		//On démarre avec la cale !!!!
 		robotvrai.setOrientation((float)(-Math.PI/2));
 		robotvrai.set_vitesse(Speed.BETWEEN_SCRIPTS);
-		container.startInstanciedThreads();
+		container.startAllThreads();
 		
 	}
 	

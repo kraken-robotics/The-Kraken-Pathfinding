@@ -9,7 +9,6 @@ import enums.ServiceNames;
 import robot.RobotReal;
 import robot.cardsWrappers.LocomotionCardWrapper;
 import smartMath.Vec2;
-import threads.ThreadTimer;
 
 /**
  * Tests unitaires des threads
@@ -29,7 +28,7 @@ public class JUnit_Threads extends JUnit_Test {
 		deplacements.setTranslationnalSpeed(80);
 		RobotReal robotvrai = (RobotReal) container.getService(ServiceNames.ROBOT_REAL);
 // TODO démarrer thread position
-		container.startInstanciedThreads();
+		container.startAllThreads();
 		Thread.sleep(100);
 		Assert.assertTrue(robotvrai.getPosition().equals(new Vec2(0,1500)));
 		container.stopAllThreads();
@@ -50,42 +49,12 @@ public class JUnit_Threads extends JUnit_Test {
 		Assert.assertTrue(obstaclemanager.nb_obstacles() == 0);
 		
 		container.getService(ServiceNames.THREAD_SENSOR);
-		container.startInstanciedThreads();
+		container.startAllThreads();
 		Thread.sleep(300);
 		Assert.assertTrue(obstaclemanager.nb_obstacles() >= 1);
 
 	}
 	
-	@Test
-	public void test_fin_match() throws Exception
-	{
-		config.set("temps_match", 3);
-		container.getService(ServiceNames.THREAD_TIMER);
-		long t1 = System.currentTimeMillis();
-		container.startAllThreads();
-		while(!ThreadTimer.fin_match)
-		{
-			Thread.sleep(500);
-			if(System.currentTimeMillis()-t1 >= 4000)
-				break;
-		}
-		Assert.assertTrue(System.currentTimeMillis()-t1 < 4000);
-	}
-	
-	@Test
-	public void test_demarrage_match() throws Exception
-	{
-		container.getService(ServiceNames.THREAD_TIMER);
-		System.out.println("Veuillez mettre le jumper");
-		Thread.sleep(2000);
-		container.startInstanciedThreads();
-		Thread.sleep(200);
-		Assert.assertTrue(!ThreadTimer.match_demarre);
-		System.out.println("Veuillez retirer le jumper");
-		Thread.sleep(2000);
-		Assert.assertTrue(ThreadTimer.match_demarre);
-	}
-
 	@Test
 	public void test_serie() throws Exception
 	{

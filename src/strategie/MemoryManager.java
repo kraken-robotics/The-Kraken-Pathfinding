@@ -5,14 +5,12 @@ import java.util.Vector;
 import robot.RobotChrono;
 import robot.RobotReal;
 import strategie.GameState;
-import threads.ThreadTimer;
 import utils.Log;
 import utils.Config;
 import container.Service;
 
 /**
  * Classe qui gère les objets utilisés dans l'arbre des possibles de la stratégie
- * Benchmark (eeepc): pour 1000 tables, il y a 35ms d'instanciation et 70ms d'affectation
  * @author pf
  */
 
@@ -35,18 +33,21 @@ public class MemoryManager implements Service {
 	 */
 	public GameState<RobotChrono> getClone(int profondeur)
 	{
-	    GameState<RobotChrono> dernier = products.get(products.size()-1);
-
-	    // On agrandit products si besoin est
-	    while(products.size() <= profondeur)
-            products.add(dernier.clone());
+		// On doit agrandit products
+		if(products.size() <= profondeur)
+		{
+			GameState<RobotChrono> dernier = products.get(products.size()-1);
+	
+		    while(products.size() <= profondeur)
+	            products.add(dernier.clone());
+		}
 	    
         out = products.get(profondeur);
         
         // Si la profondeur vaut 0, alors l'arbre veut un clone de real_state
         if(profondeur == 0)
         {
-            real_state.time_depuis_debut = System.currentTimeMillis() - ThreadTimer.date_debut;
+            real_state.time_depuis_debut = System.currentTimeMillis() - Config.dateDebutMatch;
             real_state.time_depuis_racine = 0;
             real_state.copy(out);
         }

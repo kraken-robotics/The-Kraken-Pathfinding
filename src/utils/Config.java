@@ -16,6 +16,9 @@ import java.util.Properties;
  */
 public class Config implements Service
 {
+	// Permet de savoir si le match a démarré et quand
+	public static long dateDebutMatch = 0;	
+	
 	private String name_local_file = "local.ini";
 	private String name_config_file = "config.ini";
 	private String path;
