@@ -6,6 +6,7 @@ package enums;
  *
  */
 
+// DEPENDS_ON_RULES
 public enum ActuatorOrder {
 
 	BOUGER_BRAS("bb"),	// TODO

@@ -33,7 +33,7 @@ public class ObstacleManager implements Service
 
     private int rayon_robot_adverse = 200;
     private int distanceApproximation = 100; // TODO: mettre dans config
-    private long duree = 0;
+    private long dureeAvantPeremption = 0;
 
     public ObstacleManager(Log log, Config config)
     {
@@ -65,7 +65,7 @@ public class ObstacleManager implements Service
     {
         Vec2 position_sauv = position.clone();
         
-        ObstacleProximity obstacle = new ObstacleProximity(position_sauv, rayon_robot_adverse, System.currentTimeMillis()+duree);
+        ObstacleProximity obstacle = new ObstacleProximity(position_sauv, rayon_robot_adverse, System.currentTimeMillis()+dureeAvantPeremption);
         log.warning("Obstacle créé, rayon = "+rayon_robot_adverse+", centre = "+position, this);
         listObstacles.add(obstacle);
         hashObstacles = indice++;
@@ -103,7 +103,7 @@ public class ObstacleManager implements Service
      * Utilisé pour les tests
      * @return le nombre d'obstacles mobiles détectés
      */
-    public int nb_obstacles()
+    public int nbObstaclesMobiles()
     {
         return listObstacles.size();
     }
@@ -130,7 +130,7 @@ public class ObstacleManager implements Service
     }
  
     /**
-     * Cette méthode vérifie les obstacles fixes et les obstacles mobiles.
+     * Cette méthode vérifie les obstacles fixes uniquement.
      * Elle est *bien* plus lente que obstacle_proximite_dans_segment et ne doit être utilisé qu'une seule fois
      * @param A
      * @param B
@@ -150,7 +150,7 @@ public class ObstacleManager implements Service
 		 
 		while(x0!=x1 || y0!=y1)
 		{
-			if(obstacle_existe(new Vec2(x0, y0), 0))
+			if(is_obstacle_fixe_present(new Vec2(x0, y0), 0))
 				return false;
 			
 			e2 = err;
@@ -193,8 +193,8 @@ public class ObstacleManager implements Service
      * @param position
      * @return
      */
-    public boolean obstacle_existe(Vec2 position) {
-    	return obstacle_existe(position, distanceApproximation);
+    public boolean is_obstacle_fixe_present(Vec2 position) {
+    	return is_obstacle_fixe_present(position, distanceApproximation);
     }
     
     /**
@@ -205,12 +205,12 @@ public class ObstacleManager implements Service
      * @param position
      * @return
      */
-    public synchronized boolean obstacle_existe(Vec2 position, int distance) {
-        Iterator<Obstacle> iterator2 = listObstaclesFixes.iterator();
+    public synchronized boolean is_obstacle_mobile_present(Vec2 position, int distance) {
+        Iterator<ObstacleCircular> iterator2 = listObstacles.iterator();
         while(iterator2.hasNext())
         {
             Obstacle o = iterator2.next();
-            if(obstacle_existe(position, o, distance))
+            if(is_obstacle_present(position, o, distance))
             {
                 System.out.println("Obstacle: "+o);
                 return true;
@@ -218,7 +218,27 @@ public class ObstacleManager implements Service
         }
         return false;
     }
-    
+
+    /**
+     * Y a-t-il un obstacle fixe près de ce point?
+     * @param position
+     * @param distance
+     * @return
+     */
+    public boolean is_obstacle_fixe_present(Vec2 position, int distance) {
+        Iterator<Obstacle> iterator2 = listObstaclesFixes.iterator();
+        while(iterator2.hasNext())
+        {
+            Obstacle o = iterator2.next();
+            if(is_obstacle_present(position, o, distance))
+            {
+                System.out.println("Obstacle: "+o);
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * Vérifie pour un seul obstacle.
      * Renvoie true si un obstacle est proche
@@ -227,7 +247,7 @@ public class ObstacleManager implements Service
      * @param distance
      * @return
      */
-    private boolean obstacle_existe(Vec2 position, Obstacle o, int distance)
+    private boolean is_obstacle_present(Vec2 position, Obstacle o, int distance)
     {
     	return o.isProcheObstacle(position, distance);
     }
@@ -245,7 +265,7 @@ public class ObstacleManager implements Service
 	@Override
 	public void updateConfig() {
 		rayon_robot_adverse = Integer.parseInt(config.get("rayon_robot_adverse"));
-		duree = Integer.parseInt(config.get("duree_peremption_obstacles"));		
+		dureeAvantPeremption = Integer.parseInt(config.get("duree_peremption_obstacles"));		
 	}
     
 

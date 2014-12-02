@@ -90,7 +90,7 @@ public class ThreadSensor extends AbstractThread implements Service
 					// on vérifie qu'un obstacle n'a pas été ajouté récemment
 					if(System.currentTimeMillis() - date_dernier_ajout > tempo)
 					{
-						if(!obstaclemanager.obstacle_existe(position_brute))
+						if(!obstaclemanager.is_obstacle_fixe_present(position_brute))
 						{
 							obstaclemanager.creer_obstacle(position);
 							date_dernier_ajout = (int)System.currentTimeMillis();

@@ -40,6 +40,7 @@ public class Execution implements Service {
 		this.scriptmanager = scriptmanager;
 		this.hookfactory = hookfactory;
 		
+	    // DEPENDS_ON_RULES
 		// TODO: hook qui renverse les plots en passant
 		hooks_entre_scripts = new ArrayList<Hook>();
 	}

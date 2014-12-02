@@ -16,10 +16,12 @@ public class ActuatorCardWrapper implements Service
 {
 	
 	// pour parler aux cartes du robot
+	private Log log;
 	private SerialConnexion serie;
 
 	public ActuatorCardWrapper(Config config, Log log, SerialConnexion serie)
 	{
+		this.log = log;
 		this.serie = serie;		
 	}
 
@@ -34,6 +36,7 @@ public class ActuatorCardWrapper implements Service
 	 */
 	public void useActuator(ActuatorOrder order) throws SerialConnexionException
 	{
+		log.debug("Ordre série: "+order.toString(), this);
 		serie.communiquer(order.getSerialOrder(), 0);
 	}
 
