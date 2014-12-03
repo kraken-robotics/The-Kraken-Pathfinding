@@ -68,6 +68,7 @@ public class GameState<R extends Robot> implements Service
 
     /**
      * Copie this dans other. this reste inchangé.
+     * Cette copie met à jour les obstacles et les attributs de temps.
      * @param other
      */
     public void copy(GameState<RobotChrono> other)
