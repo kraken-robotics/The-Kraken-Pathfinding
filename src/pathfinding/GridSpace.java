@@ -6,6 +6,7 @@ import smartMath.Vec2;
 import utils.Config;
 import utils.Log;
 import enums.NodesConnection;
+import enums.PathfindingNodes;
 import exceptions.GridSpaceException;
 
 /**
@@ -21,21 +22,17 @@ public class GridSpace implements Service {
 	private Config config;
 	private ObstacleManager obstaclemanager;
 		
-	private static Vec2[] nodes = {new Vec2(100, 200), new Vec2(400, 800)};
-
 	private int iterator, id_node_iterator;
+	private PathfindingNodes nearestReachableNodeCache = null;
 	
-	// Constante bien utile
-	public static final int NB_NODES = nodes.length;
-
 	// Rempli de ALWAYS_IMPOSSIBLE et UNKNOW. Ne change pas.
 	private static NodesConnection[][] isConnectedModel = null;
 
 	// Dynamique.
-	private NodesConnection[][] isConnected = new NodesConnection[NB_NODES][NB_NODES];
+	private NodesConnection[][] isConnected = new NodesConnection[PathfindingNodes.values().length][PathfindingNodes.values().length];
 	
 	// Contient les distances entre chaque point de passage
-	private static double[][] distances = new double[NB_NODES][NB_NODES];
+	private static double[][] distances = new double[PathfindingNodes.values().length][PathfindingNodes.values().length];
 
 	public GridSpace(Log log, Config config, ObstacleManager obstaclemanager)
 	{
@@ -51,23 +48,22 @@ public class GridSpace implements Service {
 	
 	private void initStatic()
 	{
-		isConnectedModel = new NodesConnection[NB_NODES][NB_NODES];
-		for(int i = 0; i < NB_NODES; i++)
-			for(int j = 0; j < i; j++)
+		isConnectedModel = new NodesConnection[PathfindingNodes.values().length][PathfindingNodes.values().length];
+		for(PathfindingNodes i : PathfindingNodes.values())
+			for(PathfindingNodes j : PathfindingNodes.values())
 			{
-				if(obstaclemanager.obstacle_fixe_dans_segment(nodes[i], nodes[j]))
-					isConnectedModel[i][j] = NodesConnection.ALWAYS_IMPOSSIBLE;
+				if(obstaclemanager.obstacle_fixe_dans_segment(i.getCoordonnees(), j.getCoordonnees()))
+					isConnectedModel[i.ordinal()][j.ordinal()] = NodesConnection.ALWAYS_IMPOSSIBLE;
 				else
-					isConnectedModel[i][j] = NodesConnection.UNKNOW;
-				isConnectedModel[j][i] = isConnectedModel[i][j];
+					isConnectedModel[i.ordinal()][j.ordinal()] = NodesConnection.UNKNOW;
+				isConnectedModel[j.ordinal()][i.ordinal()] = isConnectedModel[i.ordinal()][j.ordinal()];
 			}				
 	
-		for(int i = 0; i < NB_NODES; i++)
-			for(int j = 0; j < i; j++)
-				if(isConnectedModel[i][j] != NodesConnection.ALWAYS_IMPOSSIBLE)
+		for(PathfindingNodes i : PathfindingNodes.values())
+			for(PathfindingNodes j : PathfindingNodes.values())
+				if(isConnectedModel[i.ordinal()][j.ordinal()] != NodesConnection.ALWAYS_IMPOSSIBLE)
 				{
-					distances[i][j] = nodes[i].distance(nodes[j]);
-					distances[i][j] = distances[j][i];
+					distances[i.ordinal()][j.ordinal()] = i.getCoordonnees().distance(j.getCoordonnees());
 				}
 	}
 	
@@ -78,25 +74,25 @@ public class GridSpace implements Service {
 	public void reinitConnections(long date)
 	{
 		obstaclemanager.supprimerObstaclesPerimes(date);
-		for(int i = 0; i < NB_NODES; i++)
-			for(int j = 0; j < NB_NODES; j++)
-				isConnected[i][j] = isConnectedModel[i][j];
+		for(PathfindingNodes i : PathfindingNodes.values())
+			for(PathfindingNodes j : PathfindingNodes.values())
+				isConnected[i.ordinal()][j.ordinal()] = isConnectedModel[i.ordinal()][j.ordinal()];
 	}
 
 	/**
 	 * Surcouche de isConnected qui gère le cache
 	 * @return
 	 */
-	public boolean isTraversable(int i, int j)
+	public boolean isTraversable(PathfindingNodes i, PathfindingNodes j)
 	{
-		if(isConnected[i][j] != NodesConnection.UNKNOW)
-			return isConnected[i][j].isTraversable();
-		else if(obstaclemanager.obstacle_proximite_dans_segment(nodes[i], nodes[j]))
-			isConnected[i][j] = NodesConnection.TMP_IMPOSSIBLE;
+		if(isConnected[i.ordinal()][j.ordinal()] != NodesConnection.UNKNOW)
+			return isConnected[i.ordinal()][j.ordinal()].isTraversable();
+		else if(obstaclemanager.obstacle_proximite_dans_segment(i.getCoordonnees(), j.getCoordonnees()))
+			isConnected[i.ordinal()][j.ordinal()] = NodesConnection.TMP_IMPOSSIBLE;
 		else
-			isConnected[i][j] = NodesConnection.POSSIBLE;
-		isConnected[j][i] = isConnected[i][j];
-		return isConnected[i][j].isTraversable();
+			isConnected[i.ordinal()][j.ordinal()] = NodesConnection.POSSIBLE;
+		isConnected[j.ordinal()][i.ordinal()] = isConnected[i.ordinal()][j.ordinal()];
+		return isConnected[i.ordinal()][j.ordinal()].isTraversable();
 	}
 	
 	/**
@@ -106,23 +102,26 @@ public class GridSpace implements Service {
 	 * @return
 	 * @throws GridSpaceException 
 	 */
-	public int nearestReachableNode(Vec2 point) throws GridSpaceException
+	public PathfindingNodes nearestReachableNode(Vec2 point) throws GridSpaceException
 	{
-		int indice_point_depart = -1;
+		if(nearestReachableNodeCache != null)
+			return nearestReachableNodeCache;
+		PathfindingNodes indice_point_depart = null;
 		float distance_min = Float.MAX_VALUE;
-		for(int i = 0; i < NB_NODES; i++)
+		for(PathfindingNodes i : PathfindingNodes.values())
 		{
-			float tmp = point.squaredDistance(nodes[i]);
-			if(tmp < distance_min && !obstaclemanager.obstacle_proximite_dans_segment(point, nodes[i]))
+			float tmp = point.squaredDistance(i.getCoordonnees());
+			if(tmp < distance_min && !obstaclemanager.obstacle_proximite_dans_segment(point, i.getCoordonnees()))
 			{
 				distance_min = tmp;
 				indice_point_depart = i;
 			}
 		}
-		if(indice_point_depart < 0)
+		if(indice_point_depart == null)
 			throw new GridSpaceException();
 
-		return indice_point_depart;
+		nearestReachableNodeCache = indice_point_depart;
+		return nearestReachableNodeCache;
 	}
 	
 	@Override
@@ -134,6 +133,8 @@ public class GridSpace implements Service {
 	public void copy(GridSpace other, long date)
 	{
 		obstaclemanager.copy(other.obstaclemanager);
+		// On détruit le cache car le robot aura bougé
+		other.nearestReachableNodeCache = null;
 		other.reinitConnections(date);
 	}
 	
@@ -165,32 +166,27 @@ public class GridSpace implements Service {
     	return !obstaclemanager.obstacle_proximite_dans_segment(pointA, pointB) && !obstaclemanager.obstacle_fixe_dans_segment(pointA, pointB);
     }
 
-    public Vec2 getNode(int id)
+    public double getDistance(PathfindingNodes id1, PathfindingNodes id2)
     {
-    	return nodes[id];
+    	return distances[id1.ordinal()][id2.ordinal()];
     }
     
-    public double getDistance(int id1, int id2)
+    public PathfindingNodes next()
     {
-    	return distances[id1][id2];
-    }
-    
-    public int next()
-    {
-    	return iterator;
+    	return PathfindingNodes.values()[iterator];
     }
     
     public boolean hasNext()
     {
     	do {
-    	iterator++;
-    	} while((iterator == id_node_iterator || !isTraversable(iterator, id_node_iterator)) && iterator < NB_NODES);
-    	return iterator == NB_NODES;
+    		iterator++;
+    	} while((iterator == id_node_iterator || !isTraversable(PathfindingNodes.values()[iterator], PathfindingNodes.values()[id_node_iterator])) && iterator < PathfindingNodes.values().length);
+    	return iterator == PathfindingNodes.values().length;
     }
     
-    public void reinitIterator(int id)
+    public void reinitIterator(PathfindingNodes node)
     {
-    	id_node_iterator = id;
+    	id_node_iterator = node.ordinal();
     	iterator = -1;
     }
     

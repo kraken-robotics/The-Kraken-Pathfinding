@@ -7,6 +7,7 @@ import container.Service;
 //import hook.Callback;
 //import hook.Executable;
 import hook.Hook;
+import enums.PathfindingNodes;
 import enums.Speed;
 //import hook.methodes.ChangeConsigne;
 //import hook.sortes.HookGenerator;
@@ -248,7 +249,7 @@ public class Locomotion implements Service
 	 * @param insiste
 	 * @throws UnableToMoveException
 	 */
-	public void followPath(ArrayList<Vec2> chemin, ArrayList<Hook> hooks) throws UnableToMoveException
+	public void followPath(ArrayList<PathfindingNodes> chemin, ArrayList<Hook> hooks) throws UnableToMoveException
 	{
 		// en cas de coup de folie a INTech, on active la trajectoire courbe.
 		if(trajectoire_courbe)
@@ -286,9 +287,9 @@ public class Locomotion implements Service
 		
 		// sinon on fait rotation puis translation pour chaque point du chemin
 		else
-			for(Vec2 point: chemin)
+			for(PathfindingNodes point: chemin)
 			{
-				consigne = point.clone();
+				consigne = point.getCoordonnees();
 				moveBackwardInDirection(hooks, false, false);
 			}
 	}

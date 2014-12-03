@@ -6,6 +6,7 @@ import hook.Hook;
 import smartMath.Vec2;
 import utils.Log;
 import utils.Config;
+import enums.PathfindingNodes;
 import enums.Speed;
 import exceptions.Locomotion.UnableToMoveException;
 
@@ -92,11 +93,11 @@ public class RobotChrono extends Robot
 	}
 
 	@Override
-    public void suit_chemin(ArrayList<Vec2> chemin, ArrayList<Hook> hooks)
+    public void suit_chemin(ArrayList<PathfindingNodes> chemin, ArrayList<Hook> hooks)
             throws UnableToMoveException
 	{
-		for(Vec2 point: chemin)
-			va_au_point(point);
+		for(PathfindingNodes point: chemin)
+			va_au_point(point.getCoordonnees());
 	}
 	
 	public void va_au_point(Vec2 point)

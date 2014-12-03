@@ -7,8 +7,10 @@ import java.util.ArrayList;
 
 import container.Service;
 import pathfinding.Pathfinding;
+import enums.PathfindingNodes;
 import enums.ScriptNames;
 import exceptions.PathfindingException;
+import exceptions.PathfindingRobotInObstacleException;
 import exceptions.UnknownScriptException;
 import exceptions.Locomotion.UnableToMoveException;
 import exceptions.strategie.ScriptException;
@@ -19,6 +21,7 @@ import scripts.ScriptManager;
 import smartMath.Vec2;
 import utils.Config;
 import utils.Log;
+import utils.Sleep;
 
 public class Execution implements Service {
 
@@ -47,8 +50,6 @@ public class Execution implements Service {
 
 	public void executerScript(ArrayList<Decision> decisions, ScriptNames scriptSecours, int id_version) throws UnknownScriptException
 	{
-		ArrayList<Vec2> chemin;
-
 		for(int id_decision = 0; id_decision < decisions.size(); id_decision++)
 		{
 			Decision decision_actuelle = decisions.get(id_decision);
@@ -71,6 +72,10 @@ public class Execution implements Service {
 					// Quelque soit le problème, on change de script.
 					continue;
 				}
+			} catch (PathfindingRobotInObstacleException e) {
+				// On est dans un obstacle. Le mieux est encore d'attendre un peu.
+				Sleep.sleep(1000);
+				break; // on annule l'exécution.
 			}
 			// Tout s'est bien passé? On s'arrête là.
 			break;
@@ -78,9 +83,9 @@ public class Execution implements Service {
 		}
 	}
 	
-	public void tryOnce(Script s, int id_version) throws PathfindingException, UnableToMoveException, ScriptException
+	public void tryOnce(Script s, int id_version) throws PathfindingException, UnableToMoveException, ScriptException, PathfindingRobotInObstacleException
 	{
-		ArrayList<Vec2> chemin;
+		ArrayList<PathfindingNodes> chemin;
 		chemin = pathfinding.computePath(gamestate.robot.getPosition(), s.point_entree(id_version));
 		gamestate.robot.suit_chemin(chemin, hooks_entre_scripts);
 		s.agit(id_version, gamestate, false);	

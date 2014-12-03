@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import hook.Hook;
 import smartMath.Vec2;
 import container.Service;
+import enums.PathfindingNodes;
 import enums.Speed;
 import exceptions.Locomotion.UnableToMoveException;
 import utils.Log;
@@ -27,7 +28,7 @@ public abstract class Robot implements Service
             throws UnableToMoveException;
     public abstract void avancer(int distance, ArrayList<Hook> hooks, boolean mur)
             throws UnableToMoveException;
-    public abstract void suit_chemin(ArrayList<Vec2> chemin, ArrayList<Hook> hooks)
+    public abstract void suit_chemin(ArrayList<PathfindingNodes> chemin, ArrayList<Hook> hooks)
             throws UnableToMoveException;
 	public abstract void set_vitesse(Speed vitesse);
 	
