@@ -1,11 +1,14 @@
 package tests;
 
+import obstacles.ObstacleManager;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import robot.RobotChrono;
 import robot.RobotVrai;
+import smartMath.Vec2;
 import strategie.GameState;
 import strategie.MemoryManager;
 import table.Table;
@@ -15,6 +18,7 @@ public class JUnit_MemoryManager extends JUnit_Test {
 
 	private GameState<RobotVrai> state;
 	private MemoryManager memorymanager;
+	private ObstacleManager obstaclemanager;
 	
     @SuppressWarnings("unchecked")
 	@Before
@@ -22,6 +26,7 @@ public class JUnit_MemoryManager extends JUnit_Test {
         super.setUp();
         memorymanager = (MemoryManager) container.getService(ServiceNames.MEMORY_MANAGER);
 		state = (GameState<RobotVrai>)container.getService(ServiceNames.REAL_GAME_STATE);
+		obstaclemanager = (ObstacleManager) container.getService(ServiceNames.OBSTACLE_MANAGER);
     }
     
 	@Test
@@ -73,27 +78,51 @@ public class JUnit_MemoryManager extends JUnit_Test {
 	@Test
 	public void test_temps() throws Exception
 	{
-		GameState<RobotChrono> clone0 = memorymanager.getClone(0);
-		Assert.assertEquals(0, clone0.temps_depuis_racine);
-		long date_initiale = clone0.temps_depuis_debut;
-		clone0.robot.sleep(2000);
-		GameState<RobotChrono> clone1 = memorymanager.getClone(1);
-		Assert.assertEquals(2000, clone1.temps_depuis_racine);
-		Assert.assertEquals(2000+date_initiale, clone1.temps_depuis_debut);
-		GameState<RobotChrono> clone2 = memorymanager.getClone(2);
-		Assert.assertEquals(2000, clone2.temps_depuis_racine);
-		Assert.assertEquals(2000+date_initiale, clone2.temps_depuis_debut);
+		for(int i = 0; i < 2; i++)
+		{
+			GameState<RobotChrono> clone0 = memorymanager.getClone(0);
+			Assert.assertEquals(0, clone0.temps_depuis_racine);
+			long date_initiale = clone0.temps_depuis_debut;
+			clone0.robot.sleep(2000);
+			GameState<RobotChrono> clone1 = memorymanager.getClone(1);
+			Assert.assertEquals(2000, clone1.temps_depuis_racine);
+			Assert.assertEquals(2000+date_initiale, clone1.temps_depuis_debut);
+			GameState<RobotChrono> clone2 = memorymanager.getClone(2);
+			Assert.assertEquals(2000, clone2.temps_depuis_racine);
+			Assert.assertEquals(2000+date_initiale, clone2.temps_depuis_debut);
+		}
 	}	
 
 	@Test
 	public void test_points() throws Exception
 	{
-		GameState<RobotChrono> clone0 = memorymanager.getClone(0);
-		Assert.assertEquals(0, clone0.robot.getPointsObtenus());
-		clone0.robot.clapTombe();
-		GameState<RobotChrono> clone1 = memorymanager.getClone(1);
-		Assert.assertEquals(5, clone1.robot.getPointsObtenus());
-		GameState<RobotChrono> clone2 = memorymanager.getClone(2);
-		Assert.assertEquals(5, clone2.robot.getPointsObtenus());
+		for(int i = 0; i < 2; i++)
+		{
+			GameState<RobotChrono> clone0 = memorymanager.getClone(0);
+			Assert.assertEquals(0, clone0.robot.getPointsObtenus());
+			clone0.robot.clapTombe();
+			GameState<RobotChrono> clone1 = memorymanager.getClone(1);
+			Assert.assertEquals(5, clone1.robot.getPointsObtenus());
+			GameState<RobotChrono> clone2 = memorymanager.getClone(2);
+			Assert.assertEquals(5, clone2.robot.getPointsObtenus());
+		}
 	}
+	
+	@Test
+	public void test_suppression_obstacle() throws Exception
+	{
+		// il faut faire les tests en double. Une fois en clone, une fois un copy.
+		for(int i = 0; i < 2; i++)
+		{
+	    	config.set("duree_peremption_obstacles", 200); // 200 ms de péremption
+	    	obstaclemanager.updateConfig();
+	    	obstaclemanager.creer_obstacle(new Vec2(500, 500));
+			GameState<RobotChrono> clone0 = memorymanager.getClone(0);
+			Assert.assertEquals(1,clone0.gridspace.nbObstaclesMobiles());
+			clone0.robot.sleep(300);
+			GameState<RobotChrono> clone1 = memorymanager.getClone(1);
+			Assert.assertEquals(0,clone1.gridspace.nbObstaclesMobiles());
+		}
+	}
+	
 }

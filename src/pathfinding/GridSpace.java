@@ -72,8 +72,9 @@ public class GridSpace implements Service {
 	 * Réinitialise l'état des liaisons.
 	 * A faire quand les obstacles mobiles ont changé.
 	 */
-	public void reinitConnections()
+	public void reinitConnections(long date)
 	{
+		obstaclemanager.supprimerObstaclesPerimes(date);
 		for(int i = 0; i < NB_NODES; i++)
 			for(int j = 0; j < NB_NODES; j++)
 				isConnected[i][j] = isConnectedModel[i][j];
@@ -123,21 +124,27 @@ public class GridSpace implements Service {
 		
 	}
 
-	public void copy(GridSpace other)
+	public void copy(GridSpace other, long date)
 	{
 		obstaclemanager.copy(other.obstaclemanager);
-		other.reinitConnections();
+		other.reinitConnections(date);
 	}
 	
 	public GridSpace clone(long date)
 	{
 		GridSpace cloned_gridspace = new GridSpace(log, config, obstaclemanager);
-		copy(cloned_gridspace);
-		
-		cloned_gridspace.obstaclemanager.supprimerObstaclesPerimes(date);
-		cloned_gridspace.reinitConnections();
+		copy(cloned_gridspace, date);
 		return cloned_gridspace;
-		
 	}
-	
+    
+	/**
+	 * Utilisé uniquement pour les tests
+	 * @return
+	 */
+    public int nbObstaclesMobiles()
+    {
+    	return obstaclemanager.nbObstaclesMobiles();
+    }
+    
+
 }

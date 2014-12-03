@@ -59,7 +59,18 @@ public class GameState<R extends Robot> implements Service
     /**
      * Fournit un clone de this. Le clone sera un GameState<RobotChrono>, peu importe si this est un GameState<RobotVrai> ou un GameState<RobotChrono>
      */
-    public GameState<RobotChrono> clone()
+	public GameState<RobotChrono> clone()
+	{
+		GameState<RobotChrono> cloned = new GameState<RobotChrono>(config, log, table.clone(), gridspace.clone(temps_depuis_debut), new RobotChrono(config, log));
+		copy(cloned);
+		return cloned;
+	}
+
+    /**
+     * Copie this dans other. this reste inchangé.
+     * @param other
+     */
+    public void copy(GameState<RobotChrono> other)
     {
     	// Si on fait le clone d'un GameState<RobotChrono>, on met à jour son temps auparavant
     	if(robot instanceof RobotChrono)
@@ -70,26 +81,11 @@ public class GameState<R extends Robot> implements Service
     		temps_depuis_racine = temps_depuis_racine + temps_ecoule;    		
     	}
 
-    	Table new_table = table.clone();
-        RobotChrono new_rc = new RobotChrono(config, log); 
-        robot.copy(new_rc);;
-        GridSpace new_gridspace = gridspace.clone(temps_depuis_debut);
-        
-        GameState<RobotChrono> out = new GameState<RobotChrono>(config, log, new_table, new_gridspace, new_rc);
-        out.temps_depuis_debut = temps_depuis_debut;
-        out.temps_depuis_racine = temps_depuis_racine;
-        return out;
-    }
-
-    /**
-     * Copie this dans other. this reste inchangé.
-     * @param other
-     */
-    public void copy(GameState<RobotChrono> other)
-    {
         table.copy(other.table);
-        robot.copy(other.robot);        
-        gridspace.copy(other.gridspace);
+        robot.copy(other.robot);
+        
+        // mise à jour des obstacles incluse dans la copie
+        gridspace.copy(other.gridspace, temps_depuis_debut);
 
         other.temps_depuis_debut = temps_depuis_debut;
         other.temps_depuis_racine = temps_depuis_racine;
@@ -102,5 +98,4 @@ public class GameState<R extends Robot> implements Service
         robot.updateConfig();
         gridspace.updateConfig();
     }
-    
 }
