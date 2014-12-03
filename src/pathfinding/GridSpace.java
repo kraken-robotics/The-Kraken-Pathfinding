@@ -6,6 +6,7 @@ import smartMath.Vec2;
 import utils.Config;
 import utils.Log;
 import enums.NodesConnection;
+import exceptions.GridSpaceException;
 
 /**
  * Contient les informations sur le graphe utilisé par le pathfinding.
@@ -22,8 +23,10 @@ public class GridSpace implements Service {
 		
 	private static Vec2[] nodes = {new Vec2(100, 200), new Vec2(400, 800)};
 
+	private int iterator, id_node_iterator;
+	
 	// Constante bien utile
-	private static final int NB_NODES = nodes.length;
+	public static final int NB_NODES = nodes.length;
 
 	// Rempli de ALWAYS_IMPOSSIBLE et UNKNOW. Ne change pas.
 	private static NodesConnection[][] isConnectedModel = null;
@@ -84,16 +87,16 @@ public class GridSpace implements Service {
 	 * Surcouche de isConnected qui gère le cache
 	 * @return
 	 */
-	public NodesConnection getIsConnected(int i, int j)
+	public boolean isTraversable(int i, int j)
 	{
 		if(isConnected[i][j] != NodesConnection.UNKNOW)
-			return isConnected[i][j];
+			return isConnected[i][j].isTraversable();
 		else if(obstaclemanager.obstacle_proximite_dans_segment(nodes[i], nodes[j]))
 			isConnected[i][j] = NodesConnection.TMP_IMPOSSIBLE;
 		else
 			isConnected[i][j] = NodesConnection.POSSIBLE;
 		isConnected[j][i] = isConnected[i][j];
-		return isConnected[i][j];		
+		return isConnected[i][j].isTraversable();
 	}
 	
 	/**
@@ -101,10 +104,11 @@ public class GridSpace implements Service {
 	 * Attention, peut renvoyer "null" si aucun point de passage n'est atteignable en ligne droite.
 	 * @param point
 	 * @return
+	 * @throws GridSpaceException 
 	 */
-	public Vec2 nearestReachableNode(Vec2 point)
+	public int nearestReachableNode(Vec2 point) throws GridSpaceException
 	{
-		Vec2 point_depart = null;
+		int indice_point_depart = -1;
 		float distance_min = Float.MAX_VALUE;
 		for(int i = 0; i < NB_NODES; i++)
 		{
@@ -112,10 +116,13 @@ public class GridSpace implements Service {
 			if(tmp < distance_min && !obstaclemanager.obstacle_proximite_dans_segment(point, nodes[i]))
 			{
 				distance_min = tmp;
-				point_depart = nodes[i];
+				indice_point_depart = i;
 			}
 		}
-		return point_depart;
+		if(indice_point_depart < 0)
+			throw new GridSpaceException();
+
+		return indice_point_depart;
 	}
 	
 	@Override
@@ -145,6 +152,46 @@ public class GridSpace implements Service {
     {
     	return obstaclemanager.nbObstaclesMobiles();
     }
-    
 
+    /** 
+     * A utiliser entre un node et un point quelconque (l'arrivée)
+     * @param pointA
+     * @param pointB
+     * @return
+     */
+    public boolean isTraversable(Vec2 pointA, Vec2 pointB)
+    {
+    	// Evaluation paresseuse importante, car obstacle_proximite_dans_segment est bien plus rapide que obstacle_fixe_dans_segment
+    	return !obstaclemanager.obstacle_proximite_dans_segment(pointA, pointB) && !obstaclemanager.obstacle_fixe_dans_segment(pointA, pointB);
+    }
+
+    public Vec2 getNode(int id)
+    {
+    	return nodes[id];
+    }
+    
+    public double getDistance(int id1, int id2)
+    {
+    	return distances[id1][id2];
+    }
+    
+    public int next()
+    {
+    	return iterator;
+    }
+    
+    public boolean hasNext()
+    {
+    	do {
+    	iterator++;
+    	} while((iterator == id_node_iterator || !isTraversable(iterator, id_node_iterator)) && iterator < NB_NODES);
+    	return iterator == NB_NODES;
+    }
+    
+    public void reinitIterator(int id)
+    {
+    	id_node_iterator = id;
+    	iterator = -1;
+    }
+    
 }

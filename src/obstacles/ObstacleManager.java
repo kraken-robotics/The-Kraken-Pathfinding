@@ -15,6 +15,8 @@ import utils.Log;
  *
  */
 
+// TODO: dilatation obstacle pour pathfinding
+
 public class ObstacleManager implements Service
 {
     // On met cette variable en static afin que, dans deux instances dupliquées, elle ne redonne pas les mêmes nombres
