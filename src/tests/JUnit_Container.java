@@ -7,9 +7,10 @@ import enums.ServiceNames;
 
 /**
  * Tests unitaires pour le container
- * Sert surtout à vérifier l'absence de dépendances circulaires, et d'éventuelles fautes de frappe...
+ * Sert surtout à vérifier l'absence de dépendances circulaires.
  * @author pf
  */
+
 public class JUnit_Container extends JUnit_Test {
 	
 	@Test

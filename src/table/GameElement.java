@@ -2,9 +2,18 @@ package table;
 
 import smartMath.Vec2;
 
-abstract class GameElement
+/**
+ * Un élément de jeu.
+ * Visibilité "friendly" afin qu'il ne puisse être manipulé directement
+ * que par la table (afin de ne pas bypasser le mécanisme de hash).
+ * @author pf
+ *
+ */
+
+class GameElement
 {
-	protected Vec2 position;
+	private Vec2 position;
+	private boolean done = false; 
 	
 	public GameElement(Vec2 position)
 	{
@@ -15,4 +24,31 @@ abstract class GameElement
 	{
 		return position;
 	}
+	
+	public void setDone()
+	{
+		done = true;
+	}
+	
+	public boolean isDone()
+	{
+		return done;
+	}
+	
+	/**
+	 * Attention, ce clone ne modifie que ce qui peut changer, c'est-à-dire done.
+	 * Utilisé pour mettre à jour rapidement un objet.
+	 * @param other
+	 */
+	public void fastClone(GameElement other)
+	{
+		other.done = done;
+	}
+
+	public void clone(GameElement other)
+	{
+		other.position = position.clone();
+		other.done = done;
+	}
+
 }

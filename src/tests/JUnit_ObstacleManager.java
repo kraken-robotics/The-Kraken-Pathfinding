@@ -9,12 +9,11 @@ import org.junit.Test;
 import smartMath.Vec2;
 import enums.ServiceNames;
 
-// TODO
-// création d'obstacle
-// péremption
-// collision
-// ...
-
+/**
+ * Tests unitaires pour ObstacleManager
+ * @author pf
+ *
+ */
 
 public class JUnit_ObstacleManager extends JUnit_Test {
 
