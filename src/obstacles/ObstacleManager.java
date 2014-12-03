@@ -136,7 +136,7 @@ public class ObstacleManager implements Service
      * @param B
      * @return
      */
-	public boolean obstacle_dans_segment(Vec2 A, Vec2 B)
+	public boolean obstacle_fixe_dans_segment(Vec2 A, Vec2 B)
 	{
 		int x0 = A.x, y0 = A.y;
 		int x1 = B.x, y1 = B.y;
@@ -150,8 +150,9 @@ public class ObstacleManager implements Service
 		 
 		while(x0!=x1 || y0!=y1)
 		{
+			// il y a un obstacle: pas besoin de vérifier le reste du segment
 			if(is_obstacle_fixe_present(new Vec2(x0, y0), 0))
-				return false;
+				return true;
 			
 			e2 = err;
 			if (e2 >-dx)
@@ -165,7 +166,7 @@ public class ObstacleManager implements Service
 				y0 += sy;
 			}
 		}
-		return true;
+		return false;
 	}
     
     /**

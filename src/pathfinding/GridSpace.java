@@ -52,7 +52,7 @@ public class GridSpace implements Service {
 		for(int i = 0; i < NB_NODES; i++)
 			for(int j = 0; j < i; j++)
 			{
-				if(obstaclemanager.obstacle_dans_segment(nodes[i], nodes[j]))
+				if(obstaclemanager.obstacle_fixe_dans_segment(nodes[i], nodes[j]))
 					isConnectedModel[i][j] = NodesConnection.ALWAYS_IMPOSSIBLE;
 				else
 					isConnectedModel[i][j] = NodesConnection.UNKNOW;

@@ -71,8 +71,8 @@ public class JUnit_ObstacleManager extends JUnit_Test {
     @Test
     public void test_collision_obstacle_fixe() throws Exception
     {
-    	Assert.assertTrue(obstaclemanager.obstacle_dans_segment(new Vec2(-1000, 30), new Vec2(1000, 30)));
-    	Assert.assertTrue(!obstaclemanager.obstacle_dans_segment(new Vec2(500, 500), new Vec2(800, 800)));
+    	Assert.assertTrue(obstaclemanager.obstacle_fixe_dans_segment(new Vec2(-1000, 30), new Vec2(1000, 30)));
+    	Assert.assertTrue(!obstaclemanager.obstacle_fixe_dans_segment(new Vec2(500, 500), new Vec2(800, 800)));
     }
 
     @Test
