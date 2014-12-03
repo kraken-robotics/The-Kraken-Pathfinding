@@ -84,4 +84,16 @@ public class JUnit_MemoryManager extends JUnit_Test {
 		Assert.assertEquals(2000, clone2.temps_depuis_racine);
 		Assert.assertEquals(2000+date_initiale, clone2.temps_depuis_debut);
 	}	
+
+	@Test
+	public void test_points() throws Exception
+	{
+		GameState<RobotChrono> clone0 = memorymanager.getClone(0);
+		Assert.assertEquals(0, clone0.robot.getPointsObtenus());
+		clone0.robot.clapTombe();
+		GameState<RobotChrono> clone1 = memorymanager.getClone(1);
+		Assert.assertEquals(5, clone1.robot.getPointsObtenus());
+		GameState<RobotChrono> clone2 = memorymanager.getClone(2);
+		Assert.assertEquals(5, clone2.robot.getPointsObtenus());
+	}
 }

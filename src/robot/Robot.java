@@ -37,6 +37,8 @@ public abstract class Robot implements Service
     public abstract double getOrientation();
     public abstract void sleep(long duree);
     public abstract void setInsiste(boolean insiste);
+    public abstract void desactiver_asservissement_rotation();
+    public abstract void activer_asservissement_rotation();
 
 	/**
 	 * Copy this dans rc. this reste inchangé.
@@ -47,6 +49,7 @@ public abstract class Robot implements Service
     {
     	// pas besoin de copier symétrie car elle ne change pas en cours de match
     	rc.vitesse = vitesse;
+    	((Robot)rc).pointsObtenus = pointsObtenus;
     }
 
 	// Dépendances
@@ -54,7 +57,8 @@ public abstract class Robot implements Service
 	protected Log log;
 	protected boolean symetrie;
 	protected Speed vitesse;
-
+	private int pointsObtenus = 0;
+	
 	public Robot(Config config, Log log)
 	{
 		this.config = config;
@@ -117,8 +121,25 @@ public abstract class Robot implements Service
         	set_vitesse(sauv_vitesse);
         }
     }
+    
+    // DEPENDS ON RULES
 
-    public abstract void desactiver_asservissement_rotation();
-    public abstract void activer_asservissement_rotation();
+    public int getPointsObtenus()
+    {
+    	return pointsObtenus;
+    }
+    
+    public void tapisRougePose(int nbTapis)
+    {
+    	pointsObtenus = pointsObtenus + 12*nbTapis;    	
+    }
+    
+    /**
+     * A appeler quand un clap est tombé
+     */
+    public void clapTombe()
+    {
+    	pointsObtenus = pointsObtenus + 5;
+    }
     
 }

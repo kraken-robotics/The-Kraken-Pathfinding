@@ -32,7 +32,6 @@ public class GameState<R extends Robot> implements Service
     // utilisé uniquement dans l'arbre des possibles
     public long temps_depuis_debut;
     public long temps_depuis_racine;  
-    public int pointsObtenus;	// points marqués depus le debut du match
 
     /**
      * De manière publique, on ne peut créer qu'un GameState<RobotReal>, et pas de GameState<RobotChrono>
@@ -55,7 +54,6 @@ public class GameState<R extends Robot> implements Service
         this.table = table;
         this.gridspace = gridspace;
         this.robot = robot;
-        pointsObtenus = 0;
     }
     
     /**
@@ -80,7 +78,6 @@ public class GameState<R extends Robot> implements Service
         GameState<RobotChrono> out = new GameState<RobotChrono>(config, log, new_table, new_gridspace, new_rc);
         out.temps_depuis_debut = temps_depuis_debut;
         out.temps_depuis_racine = temps_depuis_racine;
-        out.pointsObtenus = pointsObtenus;
         return out;
     }
 
@@ -96,7 +93,6 @@ public class GameState<R extends Robot> implements Service
 
         other.temps_depuis_debut = temps_depuis_debut;
         other.temps_depuis_racine = temps_depuis_racine;
-        other.pointsObtenus = pointsObtenus;
     }
 
     @Override
