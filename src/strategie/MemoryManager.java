@@ -47,8 +47,8 @@ public class MemoryManager implements Service {
         // Si la profondeur vaut 0, alors l'arbre veut un clone de real_state
         if(profondeur == 0)
         {
-            real_state.time_depuis_debut = System.currentTimeMillis() - Config.dateDebutMatch;
-            real_state.time_depuis_racine = 0;
+            real_state.temps_depuis_debut = System.currentTimeMillis() - Config.dateDebutMatch;
+            real_state.temps_depuis_racine = 0;
             real_state.copy(out);
         }
         else

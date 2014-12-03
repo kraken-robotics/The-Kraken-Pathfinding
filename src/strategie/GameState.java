@@ -1,8 +1,8 @@
 package strategie;
 
-import obstacles.ObstacleManager;
 import pathfinding.GridSpace;
 import container.Service;
+import exceptions.GameStateException;
 import robot.Robot;
 import robot.RobotChrono;
 import robot.RobotReal;
@@ -22,22 +22,17 @@ import utils.Config;
 
 public class GameState<R extends Robot> implements Service
 {    
-    /*
-     * Les attributs public sont en "final". Cela signifie que les objets
-     * peuvent être modifiés mais pas ces références.
-     */
-    private Table table;
+    public final Table table;
     public R robot;
-    private ObstacleManager obstaclemanager;
-    private GridSpace gridspace;
+    public final GridSpace gridspace;
 
     private Log log;
     private Config config;
     
     // time contient le temps écoulé depuis le début du match en ms
     // utilisé uniquement dans l'arbre des possibles
-    public long time_depuis_debut;
-    public long time_depuis_racine;  
+    public long temps_depuis_debut;
+    public long temps_depuis_racine;  
     public int pointsObtenus;	// points marqués depus le debut du match
 
     /**
@@ -69,14 +64,23 @@ public class GameState<R extends Robot> implements Service
      */
     public GameState<RobotChrono> clone()
     {
-        Table new_table = table.clone();
+    	// Si on fait le clone d'un GameState<RobotChrono>, on met à jour son temps auparavant
+    	if(robot instanceof RobotChrono)
+    	{
+    		int temps_ecoule = ((RobotChrono)robot).get_compteur();
+    		((RobotChrono)robot).initChrono();
+    		temps_depuis_debut = temps_depuis_debut + temps_ecoule;
+    		temps_depuis_racine = temps_depuis_racine + temps_ecoule;    		
+    	}
+
+    	Table new_table = table.clone();
         RobotChrono new_rc = new RobotChrono(config, log); 
         robot.copy(new_rc);;
-        GridSpace new_gridspace = gridspace.clone(time_depuis_debut);
+        GridSpace new_gridspace = gridspace.clone(temps_depuis_debut);
         
         GameState<RobotChrono> out = new GameState<RobotChrono>(config, log, new_table, new_gridspace, new_rc);
-        out.time_depuis_debut = time_depuis_debut;
-        out.time_depuis_racine = time_depuis_racine;
+        out.temps_depuis_debut = temps_depuis_debut;
+        out.temps_depuis_racine = temps_depuis_racine;
         out.pointsObtenus = pointsObtenus;
         return out;
     }
@@ -88,12 +92,11 @@ public class GameState<R extends Robot> implements Service
     public void copy(GameState<RobotChrono> other)
     {
         table.copy(other.table);
-        robot.copy(other.robot);
-        
-        obstaclemanager.copy(other.obstaclemanager);
+        robot.copy(other.robot);        
+        gridspace.copy(other.gridspace);
 
-        other.time_depuis_debut = time_depuis_debut;
-        other.time_depuis_racine = time_depuis_racine;
+        other.temps_depuis_debut = temps_depuis_debut;
+        other.temps_depuis_racine = temps_depuis_racine;
         other.pointsObtenus = pointsObtenus;
     }
 
@@ -102,7 +105,7 @@ public class GameState<R extends Robot> implements Service
     {
         table.updateConfig();
         robot.updateConfig();
-        obstaclemanager.updateConfig();
+        gridspace.updateConfig();
     }
     
 }

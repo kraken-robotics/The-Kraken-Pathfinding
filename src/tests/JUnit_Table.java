@@ -7,6 +7,12 @@ import org.junit.Test;
 import table.Table;
 import enums.ServiceNames;
 
+/**
+ * Tests unitaires pour Table
+ * @author pf
+ *
+ */
+
 public class JUnit_Table extends JUnit_Test {
 
 	private Table table;
@@ -45,5 +51,17 @@ public class JUnit_Table extends JUnit_Test {
     	new_hash = table.getHash();
     	Assert.assertNotEquals(old_hash, new_hash);
     }
-    
+
+    @Test
+    public void test_clone() throws Exception
+    {
+    	Table cloned_table = table.clone();
+    	Assert.assertTrue(table.equals(cloned_table));
+    	cloned_table.setClapDone(0);
+    	Assert.assertTrue(!table.equals(cloned_table));
+    	cloned_table.copy(table);
+    	Assert.assertTrue(table.equals(cloned_table));
+    	table.setClapDone(0);
+    	Assert.assertTrue(!table.equals(cloned_table));
+    }
 }

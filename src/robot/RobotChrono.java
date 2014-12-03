@@ -58,7 +58,7 @@ public class RobotChrono extends Robot
 	// Méthodes propres à RobotChrono
 	public void initChrono()
 	{
-			duree = 0;
+		duree = 0;
 	}
 	
 	public int get_compteur()
@@ -88,14 +88,6 @@ public class RobotChrono extends Robot
 		if(delta > Math.PI)
 			delta = 2*(float)Math.PI - delta;
 		orientation = angle;
-/*		if(delta != 0) 
-		{
-			try {
-				dureePositive((long)(delta/vitesse_rpms));
-			} catch (RobotChronoException e) {
-				e.printStackTrace();
-			}
-		}*/
 		duree += delta*vitesse.invertedRotationnalSpeed;
 	}
 
@@ -111,11 +103,6 @@ public class RobotChrono extends Robot
 	{
 		if(symetrie)
 			point.x *= -1;
-/*		try {
-			dureePositive((long)(position.distance(point)/vitesse_mmpms));
-		} catch (RobotChronoException e) {
-			e.printStackTrace();
-		}*/
 		duree += position.distance(point)*vitesse.invertedTranslationnalSpeed;
 		position = point.clone();
 	}

@@ -45,6 +45,7 @@ public abstract class Robot implements Service
 	 */
     public void copy(RobotChrono rc)
     {
+    	// pas besoin de copier symétrie car elle ne change pas en cours de match
     	rc.vitesse = vitesse;
     }
 
