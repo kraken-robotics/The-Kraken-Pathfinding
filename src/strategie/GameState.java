@@ -2,7 +2,6 @@ package strategie;
 
 import pathfinding.GridSpace;
 import container.Service;
-import exceptions.GameStateException;
 import robot.Robot;
 import robot.RobotChrono;
 import robot.RobotReal;
