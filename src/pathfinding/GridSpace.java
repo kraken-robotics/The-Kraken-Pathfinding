@@ -55,7 +55,7 @@ public class GridSpace implements Service {
 				if(obstaclemanager.obstacle_fixe_dans_segment(i.getCoordonnees(), j.getCoordonnees()))
 					isConnectedModel[i.ordinal()][j.ordinal()] = NodesConnection.ALWAYS_IMPOSSIBLE;
 				else
-					isConnectedModel[i.ordinal()][j.ordinal()] = NodesConnection.UNKNOW;
+					isConnectedModel[i.ordinal()][j.ordinal()] = null;
 				isConnectedModel[j.ordinal()][i.ordinal()] = isConnectedModel[i.ordinal()][j.ordinal()];
 			}				
 	
@@ -85,7 +85,7 @@ public class GridSpace implements Service {
 	 */
 	public boolean isTraversable(PathfindingNodes i, PathfindingNodes j)
 	{
-		if(isConnected[i.ordinal()][j.ordinal()] != NodesConnection.UNKNOW)
+		if(isConnected[i.ordinal()][j.ordinal()] != null)
 			return isConnected[i.ordinal()][j.ordinal()].isTraversable();
 		else if(obstaclemanager.obstacle_proximite_dans_segment(i.getCoordonnees(), j.getCoordonnees()))
 			isConnected[i.ordinal()][j.ordinal()] = NodesConnection.TMP_IMPOSSIBLE;

@@ -22,9 +22,6 @@ import utils.Log;
 
 public class Pathfinding implements Service
 {
-	private GridSpace gridspace;
-	private ArrayList<PathfindingNodes> chemin;	// réceptacle du calcul
-		
 	private static final int COEFF_HEURISTIC = 5;
 	
 	private Set<PathfindingNodes> openset = new LinkedHashSet<PathfindingNodes>();	 // The set of tentative nodes to be evaluated
@@ -32,12 +29,11 @@ public class Pathfinding implements Service
 	/**
 	 * Constructeur du système de recherche de chemin
 	 */
-	public Pathfinding(Log log, Config config, GridSpace gridspace)
+	public Pathfinding(Log log, Config config)
 	{
-		this.gridspace = gridspace;		
 	}
 	
-	public ArrayList<PathfindingNodes> computePath(Vec2 orig, PathfindingNodes indice_point_arrivee) throws PathfindingException, PathfindingRobotInObstacleException
+	public ArrayList<PathfindingNodes> computePath(Vec2 orig, PathfindingNodes indice_point_arrivee, GridSpace gridspace) throws PathfindingException, PathfindingRobotInObstacleException
 	{
 		PathfindingNodes indice_point_depart;
 		try {
@@ -46,7 +42,7 @@ public class Pathfinding implements Service
 			throw new PathfindingRobotInObstacleException();
 		}
 
-		return process(indice_point_depart, indice_point_arrivee);
+		return process(indice_point_depart, indice_point_arrivee, gridspace);
 	}
 	
 	@Override
@@ -55,9 +51,9 @@ public class Pathfinding implements Service
 		
 	}
 	
-	public ArrayList<PathfindingNodes> process(PathfindingNodes depart, PathfindingNodes arrivee) throws PathfindingException
+	private ArrayList<PathfindingNodes> process(PathfindingNodes depart, PathfindingNodes arrivee, GridSpace gridspace) throws PathfindingException
 	{
-		chemin.clear();
+		ArrayList<PathfindingNodes> chemin = new ArrayList<PathfindingNodes>();
 		chemin.add(depart);
 
 		// optimisation si depart == arrivee

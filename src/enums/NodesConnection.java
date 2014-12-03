@@ -9,8 +9,7 @@ package enums;
 public enum NodesConnection {
 	ALWAYS_IMPOSSIBLE(false), 	// Impossible à cause d'obstacles fixes
 	TMP_IMPOSSIBLE(false),		// Impossible à cause d'obstacles mobiles
-	POSSIBLE(true),			// Possible
-	UNKNOW(false);				// Status inconnu (TMP_IMPOSSIBLE ou POSSIBLE)
+	POSSIBLE(true);			// Possible
 	
 	private boolean traversable;
 	

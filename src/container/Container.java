@@ -122,8 +122,7 @@ public class Container
 																				(Config)getService(ServiceNames.CONFIG));
 		else if(serviceRequested == ServiceNames.PATHFINDING)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new Pathfinding((Log)getService(ServiceNames.LOG),
-																				(Config)getService(ServiceNames.CONFIG),
-																				(GridSpace)getService(ServiceNames.GRID_SPACE));
+																				(Config)getService(ServiceNames.CONFIG));
 		else if(serviceRequested == ServiceNames.GRID_SPACE)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new GridSpace((Log)getService(ServiceNames.LOG),
 																				(Config)getService(ServiceNames.CONFIG),

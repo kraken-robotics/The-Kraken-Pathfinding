@@ -86,7 +86,7 @@ public class Execution implements Service {
 	public void tryOnce(Script s, int id_version) throws PathfindingException, UnableToMoveException, ScriptException, PathfindingRobotInObstacleException
 	{
 		ArrayList<PathfindingNodes> chemin;
-		chemin = pathfinding.computePath(gamestate.robot.getPosition(), s.point_entree(id_version));
+		chemin = pathfinding.computePath(gamestate.robot.getPosition(), s.point_entree(id_version), gamestate.gridspace);
 		gamestate.robot.suit_chemin(chemin, hooks_entre_scripts);
 		s.agit(id_version, gamestate, false);	
 	}
