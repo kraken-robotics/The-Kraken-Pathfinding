@@ -3,6 +3,7 @@ package pathfinding;
 import obstacles.ObstacleManager;
 import container.Service;
 import smartMath.Vec2;
+import table.Table;
 import utils.Config;
 import utils.Log;
 import enums.NodesConnection;
@@ -20,7 +21,12 @@ public class GridSpace implements Service {
 	
 	private Log log;
 	private Config config;
+	
+	// afin d'éviter les obstacles fixes et mobiles
 	private ObstacleManager obstaclemanager;
+	
+	// afin d'éviter les éléments de jeux
+	private Table table;
 		
 	private int iterator, id_node_iterator;
 	private PathfindingNodes nearestReachableNodeCache = null;
@@ -35,10 +41,13 @@ public class GridSpace implements Service {
 	// Contient les distances entre chaque point de passage
 	private static double[][] distances = new double[PathfindingNodes.values().length][PathfindingNodes.values().length];
 
-	public GridSpace(Log log, Config config, ObstacleManager obstaclemanager)
+	private boolean avoidGameElement = true;
+	
+	public GridSpace(Log log, Config config, Table table, ObstacleManager obstaclemanager)
 	{
 		this.log = log;
 		this.config = config;
+		this.table = table;
 		this.obstaclemanager = obstaclemanager;
 				
 		// Il est très important de ne faire ce long calcul qu'une seule fois,
@@ -155,21 +164,23 @@ public class GridSpace implements Service {
 	
 	@Override
 	public void updateConfig() {
-		// TODO Auto-generated method stub
-		
+		avoidGameElement = Boolean.parseBoolean(config.get("evite_element_jeu"));
 	}
 
 	public void copy(GridSpace other, long date)
 	{
+		table.copy(other.table);
 		obstaclemanager.copy(other.obstaclemanager);
 		// On détruit le cache car le robot aura bougé
 		other.nearestReachableNodeCache = null;
 		other.reinitConnections(date);
 	}
 	
-	public GridSpace clone(long date)
+	public GridSpace clone(long date, Table table)
 	{
-		GridSpace cloned_gridspace = new GridSpace(log, config, obstaclemanager);
+		// On réutilise la table donnée.
+		// Sinon, la table dans le GameState n'est pas la table du GridSpace.
+		GridSpace cloned_gridspace = new GridSpace(log, config, table, obstaclemanager.clone(date));
 		copy(cloned_gridspace, date);
 		return cloned_gridspace;
 	}
