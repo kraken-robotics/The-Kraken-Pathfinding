@@ -47,9 +47,8 @@ public class ObstacleCircular extends Obstacle
 		return point.squaredDistance(position) <= (radius+distance)*(radius+distance);
 	}
 
-	public boolean collisionDroite(Vec2 A, Vec2 B)
+	private boolean collisionDroite(Vec2 A, Vec2 B)
 	{
-		
 		Vec2 C = position;
 		Vec2 AB = B.minusNewVector(A);
 		Vec2 AC = C.minusNewVector(A);
@@ -64,9 +63,8 @@ public class ObstacleCircular extends Obstacle
 	
     /**
      * Ce cercle croise-t-il le segment [A,B]?
-     * @param sommet1
-     * @param sommet2
-     * @param obs
+     * @param A
+     * @param B
      * @return
      */
     public boolean obstacle_proximite_dans_segment(Vec2 A, Vec2 B)

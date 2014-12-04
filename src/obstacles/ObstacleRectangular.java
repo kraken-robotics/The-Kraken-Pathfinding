@@ -3,7 +3,7 @@ package obstacles;
 import smartMath.Vec2;
 
 /**
- * Obstacle rectangulaire sont les bords sont alignés avec les axes X et Y (pas de possibilité de faire un rectangle en biais)
+ * Obstacle rectangulaire dont les bords sont alignés avec les axes X et Y (pas de possibilité de faire un rectangle en biais)
  * @author pf, marsu
  */
 public class ObstacleRectangular extends Obstacle
@@ -24,31 +24,15 @@ public class ObstacleRectangular extends Obstacle
 		this.sizeX = sizeX;
 	}
 
+	// A priori non utilisé
 	public ObstacleRectangular clone()
 	{
 		return new ObstacleRectangular(position.clone(), sizeX, sizeY);
 	}
+	
 	public String toString()
 	{
 		return "ObstacleRectangulaire";
-	}
-	
-	/**
-	 * Taille selon l'axe Y
-	 * @return
-	 */
-	public int getSizeY()
-	{
-		return this.sizeY;
-	}
-	
-	/**
-	 * Taille selon l'axe X
-	 * @return
-	 */
-	public int getSizeX()
-	{
-		return this.sizeX;
 	}
 	
 	public float distance(Vec2 point)

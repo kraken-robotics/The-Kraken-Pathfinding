@@ -66,8 +66,6 @@ public class Container
 				serialmanager.serieAsservissement.close();
 			if(serialmanager.serieCapteursActionneurs != null)
 				serialmanager.serieCapteursActionneurs.close();
-			if(serialmanager.serieLaser != null)
-				serialmanager.serieLaser.close();
 		}
 		
 		// ferme le log

@@ -23,7 +23,6 @@ public class SerialManager
 	//Series a instancier
 	public SerialConnexion serieAsservissement = null;
 	public SerialConnexion serieCapteursActionneurs = null;
-	public SerialConnexion serieLaser = null;
 
 	//On stock les series dans une liste
 	private SerialConnexion[] series = new SerialConnexion[3];
@@ -31,7 +30,6 @@ public class SerialManager
 	//Pour chaque carte, on connait a l'avance son nom, son ping et son baudrate
 	private SpecificationCard carteAsservissement = new SpecificationCard(ServiceNames.SERIE_ASSERVISSEMENT, 0, 9600);
 	private SpecificationCard carteCapteursActionneurs = new SpecificationCard(ServiceNames.SERIE_CAPTEURS_ACTIONNEURS, 3, 9600);
-//	private SpecificationCard carteLaser = new SpecificationCard("serieLaser", 4, 57600);
 
 	//On stock les cartes dans une liste
 	private ArrayList <SpecificationCard> cards = new ArrayList <SpecificationCard>();
@@ -52,7 +50,6 @@ public class SerialManager
 
 		cards.add(this.carteAsservissement);
 		cards.add(this.carteCapteursActionneurs);
-//		cards.add(this.carteLaser);
 
 		Iterator<SpecificationCard> e = cards.iterator();
 		while (e.hasNext())
@@ -152,10 +149,6 @@ public class SerialManager
 			{
 				this.serieCapteursActionneurs.initialize(pings[serial.id], serial.baudrate);
 			}	
-			else if(serial.id == 4 && pings[serial.id] != null)
-			{
-				this.serieLaser.initialize(pings[serial.id], serial.baudrate);
-			}
 
 			if (pings[serial.id] == null)
 			{
