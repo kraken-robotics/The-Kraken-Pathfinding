@@ -1,5 +1,6 @@
 package hook.types;
 
+import exceptions.FinMatchException;
 import hook.types.HookY;
 import robot.RobotReal;
 import strategie.GameState;
@@ -34,7 +35,7 @@ class HookYisGreater extends HookY
      * @return true si les déplacements du robot ont étés modifiés par cette méthode.
      */
     @Override
-    public boolean evaluate()
+    public boolean evaluate() throws FinMatchException
     {
     	if(real_state.robot.getPosition().y >= yValue)
             return trigger();

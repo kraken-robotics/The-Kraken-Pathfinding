@@ -4,6 +4,7 @@ import robot.serial.SerialConnexion;
 import utils.Log;
 import utils.Config;
 import container.Service;
+import exceptions.FinMatchException;
 import exceptions.serial.SerialConnexionException;
 
 /**
@@ -41,8 +42,9 @@ public class SensorsCardWrapper implements Service
 	-	 * les données des capteurs qund c'est pas du même type.
 	-	 * @param capteur (soit "ir", soit "us")
 	-	 * @return la valeur la plus optimiste des capteurs
-	-	 */
-	public int mesurer()
+	-	 
+	 * @throws FinMatchException */
+	public int mesurer() throws FinMatchException
 	{
 		if(!capteurs_on)
     		return 3000;

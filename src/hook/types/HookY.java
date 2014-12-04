@@ -1,5 +1,6 @@
 package hook.types;
 
+import exceptions.FinMatchException;
 import hook.Hook;
 import robot.RobotReal;
 import strategie.GameState;
@@ -40,7 +41,7 @@ class HookY extends Hook
      * Déclenche le hook si la coordonnée y du robot est dans [yValue - tolerance, yValue + tolerance]
      * @return true si les déplacements du robot ont étés modifiés par cette méthode.
      */
-    public boolean evaluate()
+    public boolean evaluate() throws FinMatchException
     {
         if(Math.abs(real_state.robot.getPosition().y-yValue) < tolerancy)
             return trigger();

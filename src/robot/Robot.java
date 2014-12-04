@@ -7,6 +7,7 @@ import smartMath.Vec2;
 import container.Service;
 import enums.PathfindingNodes;
 import enums.Speed;
+import exceptions.FinMatchException;
 import exceptions.Locomotion.UnableToMoveException;
 import utils.Log;
 import utils.Config;
@@ -23,23 +24,23 @@ public abstract class Robot implements Service
 	 * DÉPLACEMENT HAUT NIVEAU
 	 */
 	
-	public abstract void stopper();
+	public abstract void stopper() throws FinMatchException;
     public abstract void tourner(double angle, ArrayList<Hook> hooks, boolean mur)
-            throws UnableToMoveException;
+            throws UnableToMoveException, FinMatchException;
     public abstract void avancer(int distance, ArrayList<Hook> hooks, boolean mur)
-            throws UnableToMoveException;
+            throws UnableToMoveException, FinMatchException;
     public abstract void suit_chemin(ArrayList<PathfindingNodes> chemin, ArrayList<Hook> hooks)
-            throws UnableToMoveException;
-	public abstract void set_vitesse(Speed vitesse);
+            throws UnableToMoveException, FinMatchException;
+	public abstract void set_vitesse(Speed vitesse) throws FinMatchException;
 	
-	public abstract void setPosition(Vec2 position);
-	public abstract void setOrientation(double orientation);
-    public abstract Vec2 getPosition();
-    public abstract double getOrientation();
+	public abstract void setPosition(Vec2 position) throws FinMatchException;
+	public abstract void setOrientation(double orientation) throws FinMatchException;
+    public abstract Vec2 getPosition() throws FinMatchException;
+    public abstract double getOrientation() throws FinMatchException;
     public abstract void sleep(long duree);
     public abstract void setInsiste(boolean insiste);
-    public abstract void desactiver_asservissement_rotation();
-    public abstract void activer_asservissement_rotation();
+    public abstract void desactiver_asservissement_rotation() throws FinMatchException;
+    public abstract void activer_asservissement_rotation() throws FinMatchException;
     public abstract long getDate();
     
 	/**
@@ -47,7 +48,7 @@ public abstract class Robot implements Service
 	 * 
 	 * @param rc
 	 */
-    public void copy(RobotChrono rc)
+    public void copy(RobotChrono rc) throws FinMatchException
     {
     	// pas besoin de copier symétrie car elle ne change pas en cours de match
     	rc.vitesse = vitesse;
@@ -78,12 +79,12 @@ public abstract class Robot implements Service
 		return vitesse;
 	}
 
-	public void tourner_relatif(double angle) throws UnableToMoveException
+	public void tourner_relatif(double angle) throws UnableToMoveException, FinMatchException
 	{
 		tourner(getOrientation() + angle, null, false);
 	}
 
-    public void tourner(double angle) throws UnableToMoveException
+    public void tourner(double angle) throws UnableToMoveException, FinMatchException
     {
         tourner(angle, null, false);
     }
@@ -93,7 +94,7 @@ public abstract class Robot implements Service
      * @param angle
      * @throws UnableToMoveException
      */
-    public void tourner_sans_symetrie(double angle) throws UnableToMoveException
+    public void tourner_sans_symetrie(double angle) throws UnableToMoveException, FinMatchException
     {
         if(symetrie)
             tourner(Math.PI-angle, null, false);
@@ -101,17 +102,17 @@ public abstract class Robot implements Service
             tourner(angle, null, false);
     }
 
-    public void avancer(int distance) throws UnableToMoveException
+    public void avancer(int distance) throws UnableToMoveException, FinMatchException
     {
         avancer(distance, null, false);
     }
 
-    public void avancer(int distance, ArrayList<Hook> hooks) throws UnableToMoveException
+    public void avancer(int distance, ArrayList<Hook> hooks) throws UnableToMoveException, FinMatchException
     {
         avancer(distance, hooks, false);
     }
 
-    public void avancer_dans_mur(int distance) throws UnableToMoveException
+    public void avancer_dans_mur(int distance) throws UnableToMoveException, FinMatchException
     {
         Speed sauv_vitesse = vitesse; 
         set_vitesse(Speed.INTO_WALL);

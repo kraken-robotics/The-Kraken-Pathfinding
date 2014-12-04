@@ -1,5 +1,6 @@
 package hook.types;
 
+import exceptions.FinMatchException;
 import hook.types.HookX;
 import robot.RobotReal;
 import strategie.GameState;
@@ -35,7 +36,7 @@ class HookXisGreater extends HookX
      * @return true si la position/orientation du robot a été modifiée par cette méthode.
      */
     @Override
-    public boolean evaluate()
+    public boolean evaluate() throws FinMatchException
     {
         if(real_state.robot.getPosition().x > xValue)
             return trigger();

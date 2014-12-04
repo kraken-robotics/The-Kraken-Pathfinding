@@ -7,6 +7,7 @@ import hook.types.HookFactory;
 import enums.ServiceNames;
 import enums.ServiceNames.TypeService;
 import exceptions.ContainerException;
+import exceptions.FinMatchException;
 import exceptions.ThreadException;
 import exceptions.serial.SerialManagerException;
 import utils.*;
@@ -42,8 +43,6 @@ public class Container
 	// liste des services déjà instanciés. Contient au moins Config et Log. Les autres services appelables seront présents s'ils ont déjà étés appellés au moins une fois
 	private Service[] instanciedServices = new Service[ServiceNames.values().length];
 	
-	private SerialManager serialmanager = null; //idem que threadmanager
-	
 	//gestion des log
 	private Log log;
 	
@@ -61,14 +60,14 @@ public class Container
 		Sleep.sleep(700); // attends qu'ils soient bien tous arrètés
 		
 		// coupe les connexions séries
-		if(serialmanager != null)
-		{
-			if(serialmanager.serieAsservissement != null)
-				serialmanager.serieAsservissement.close();
-			if(serialmanager.serieCapteursActionneurs != null)
-				serialmanager.serieCapteursActionneurs.close();
+		SerialManager serialmanager;
+		try {
+			serialmanager = (SerialManager)getService(ServiceNames.SERIAL_MANAGER);
+			serialmanager.closeAll();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		
+
 		// ferme le log
 		log.close();
 	}
@@ -104,7 +103,7 @@ public class Container
 	}
 
 	@SuppressWarnings("unchecked")
-	public Service getService(ServiceNames serviceRequested) throws ContainerException, ThreadException, SerialManagerException
+	public Service getService(ServiceNames serviceRequested) throws ContainerException, ThreadException, SerialManagerException, FinMatchException
 	{
     	// instancie le service demandé lors de son premier appel 
     	
@@ -126,16 +125,20 @@ public class Container
 			instanciedServices[serviceRequested.ordinal()] = (Service)new GridSpace((Log)getService(ServiceNames.LOG),
 																				(Config)getService(ServiceNames.CONFIG),
 																				(ObstacleManager)getService(ServiceNames.OBSTACLE_MANAGER));
+		else if(serviceRequested == ServiceNames.SERIAL_MANAGER)
+			instanciedServices[serviceRequested.ordinal()] = (Service)new SerialManager((Log)getService(ServiceNames.LOG),
+																				(Config)getService(ServiceNames.CONFIG));
+		
 		else if(serviceRequested.getType() == TypeService.SERIE) // les séries
 		{
 			try {
-				if(serialmanager == null)
-					serialmanager = new SerialManager(log);
+				SerialManager serialmanager = (SerialManager)getService(ServiceNames.SERIAL_MANAGER);
 				instanciedServices[serviceRequested.ordinal()] = (Service)serialmanager.getSerial(serviceRequested);
 			}
 			catch(Exception e)
 			{
 				log.critical("Série introuvable!", this);
+				e.printStackTrace();
 			}
 		}
 		else if(serviceRequested == ServiceNames.LOCOMOTION_CARD_WRAPPER)
@@ -188,7 +191,8 @@ public class Container
 																		(Config)getService(ServiceNames.CONFIG),
 																		(ObstacleManager)getService(ServiceNames.OBSTACLE_MANAGER),
 																		(SensorsCardWrapper)getService(ServiceNames.SENSORS_CARD_WRAPPER),
-																		(LocomotionCardWrapper)getService(ServiceNames.LOCOMOTION_CARD_WRAPPER));
+																		(LocomotionCardWrapper)getService(ServiceNames.LOCOMOTION_CARD_WRAPPER),
+																		(SerialManager)getService(ServiceNames.SERIAL_MANAGER));
 		else if(serviceRequested == ServiceNames.THREAD_SENSOR)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadSensor((Log)getService(ServiceNames.LOG),
 																		(Config)getService(ServiceNames.CONFIG),

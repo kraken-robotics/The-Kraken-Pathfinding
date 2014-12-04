@@ -5,6 +5,7 @@ import java.util.Hashtable;
 import robot.serial.SerialConnexion;
 import utils.*;
 import container.Service;
+import exceptions.FinMatchException;
 import exceptions.Locomotion.BlockedException;
 import exceptions.serial.SerialConnexionException;
 
@@ -55,8 +56,9 @@ public class LocomotionCardWrapper implements Service
 	 * @param derivee_erreur_rotation
 	 * @param derivee_erreur_translation
 	 * @throws BlockedException 
+	 * @throws FinMatchException 
 	 */
-	public void raiseExeptionIfBlocked() throws BlockedException, SerialConnexionException
+	public void raiseExeptionIfBlocked() throws BlockedException, SerialConnexionException, FinMatchException
 	{
 		// nombre de miliseconde de tolérance entre la détection d'un patinage et la levée de l'exeption.
 		//  trop basse il y a des faux positifs, trop haute on va forcer dans les murs pendant longtemps
@@ -139,8 +141,9 @@ public class LocomotionCardWrapper implements Service
 	/** 
 	 * Fait avancer le robot. Méthode non bloquante
 	 * @param distance
+	 * @throws FinMatchException 
 	 */
-	public void moveForward(double distance) throws SerialConnexionException
+	public void moveForward(double distance) throws SerialConnexionException, FinMatchException
 	{
 		String chaines[] = {"d", Double.toString(distance)};
 		serie.communiquer(chaines, 0);
@@ -149,8 +152,9 @@ public class LocomotionCardWrapper implements Service
 	/** 
 	 * Fait tourner le robot. Méthode non bloquante
 	 * @param angle
+	 * @throws FinMatchException 
 	 */
-	public void turn(double angle) throws SerialConnexionException
+	public void turn(double angle) throws SerialConnexionException, FinMatchException
 	{
 		String chaines[] = {"t", Double.toString(angle)};
 		serie.communiquer(chaines, 0);		
@@ -158,8 +162,9 @@ public class LocomotionCardWrapper implements Service
 	
 	/**
 	 * Arrête le robot
+	 * @throws FinMatchException 
 	 */
-	public void immobilise() throws SerialConnexionException
+	public void immobilise() throws SerialConnexionException, FinMatchException
 	{
         disableTranslationnalFeedbackLoop();
         disableRotationnalFeedbackLoop();
@@ -171,8 +176,9 @@ public class LocomotionCardWrapper implements Service
 	/**
 	 * Ecrase la position x du robot au niveau de la carte
 	 * @param x
+	 * @throws FinMatchException 
 	 */
-	public void setX(int x) throws SerialConnexionException
+	public void setX(int x) throws SerialConnexionException, FinMatchException
 	{
 		String chaines[] = {"cx", Integer.toString(x)};
 		serie.communiquer(chaines, 0);
@@ -181,8 +187,9 @@ public class LocomotionCardWrapper implements Service
 	/**
 	 * Ecrase la position y du robot au niveau de la carte
 	 * @param y
+	 * @throws FinMatchException 
 	 */
-	public void setY(int y) throws SerialConnexionException
+	public void setY(int y) throws SerialConnexionException, FinMatchException
 	{
 		String chaines[] = {"cy", Integer.toString(y)};
 		serie.communiquer(chaines, 0);	
@@ -191,8 +198,9 @@ public class LocomotionCardWrapper implements Service
 	/**
 	 * Ecrase l'orientation du robot au niveau de la carte
 	 * @param orientation
+	 * @throws FinMatchException 
 	 */
-	public void setOrientation(double orientation) throws SerialConnexionException
+	public void setOrientation(double orientation) throws SerialConnexionException, FinMatchException
 	{
 		String chaines[] = {"co", Double.toString(orientation)};
 		serie.communiquer(chaines, 0);
@@ -200,32 +208,36 @@ public class LocomotionCardWrapper implements Service
 	
 	/**
 	 * Active l'asservissement en translation du robot
+	 * @throws FinMatchException 
 	 */
-	public void enableTranslationnalFeedbackLoop() throws SerialConnexionException
+	public void enableTranslationnalFeedbackLoop() throws SerialConnexionException, FinMatchException
 	{
 		serie.communiquer("ct1", 0);
 	}
 
 	/**
 	 * Active l'asservissement en rotation du robot
+	 * @throws FinMatchException 
 	 */
-	public void enableRotationnalFeedbackLoop() throws SerialConnexionException
+	public void enableRotationnalFeedbackLoop() throws SerialConnexionException, FinMatchException
 	{
 		serie.communiquer("cr1", 0);
 	}
 
 	/**
 	 * Désactive l'asservissement en translation du robot
+	 * @throws FinMatchException 
 	 */
-	public void disableTranslationnalFeedbackLoop() throws SerialConnexionException
+	public void disableTranslationnalFeedbackLoop() throws SerialConnexionException, FinMatchException
 	{
 		serie.communiquer("ct0", 0);
 	}
 
 	/**
 	 * Désactive l'asservissement en rotation du robot
+	 * @throws FinMatchException 
 	 */
-	public void disableRotationnalFeedbackLoop() throws SerialConnexionException
+	public void disableRotationnalFeedbackLoop() throws SerialConnexionException, FinMatchException
 	{
 		serie.communiquer("cr0", 0);
 	}
@@ -233,8 +245,9 @@ public class LocomotionCardWrapper implements Service
 	/**
 	 * Modifie la vitesse en translation
 	 * @param pwm_max
+	 * @throws FinMatchException 
 	 */
-	public void setTranslationnalSpeed(int pwm_max) throws SerialConnexionException
+	public void setTranslationnalSpeed(int pwm_max) throws SerialConnexionException, FinMatchException
 	{
 		double kp, kd;
 		if(pwm_max >= 195)
@@ -280,8 +293,9 @@ public class LocomotionCardWrapper implements Service
 	/**
 	 * Modifie la vitesse en rotation
 	 * @param pwm_max
+	 * @throws FinMatchException 
 	 */
-	public void setRotationnalSpeed(int pwm_max) throws SerialConnexionException
+	public void setRotationnalSpeed(int pwm_max) throws SerialConnexionException, FinMatchException
 	{
 		double kp, kd;
 		if(pwm_max > 155)
@@ -309,13 +323,13 @@ public class LocomotionCardWrapper implements Service
 		serie.communiquer(chaines, 0);
 	}
 	
-	public void changeTranslationnalFeedbackParameters(double kp, double kd, int pwm_max) throws SerialConnexionException
+	public void changeTranslationnalFeedbackParameters(double kp, double kd, int pwm_max) throws SerialConnexionException, FinMatchException
 	{
 		String chaines[] = {"ctv", Double.toString(kp), Double.toString(kd), Integer.toString(pwm_max)};
 		serie.communiquer(chaines, 0);
 	}
 	
-	public void changeRotationnalFeedbackParameters(double kp, double kd, int pwm_max) throws SerialConnexionException
+	public void changeRotationnalFeedbackParameters(double kp, double kd, int pwm_max) throws SerialConnexionException, FinMatchException
 	{
 		String chaines[] = {"crv", Double.toString(kp), Double.toString(kd), Integer.toString(pwm_max)};
 		serie.communiquer(chaines, 0);
@@ -324,8 +338,9 @@ public class LocomotionCardWrapper implements Service
 	/**
 	 * Met à jour PWMmoteurGauche, PWMmoteurDroit, erreur_rotation, erreur_translation, derivee_erreur_rotation, derivee_erreur_translation
 	 * les nouvelles valeurs sont stokées dans la map
+	 * @throws FinMatchException 
 	 */
-	public void refreshFeedbackLoopStatistics() throws SerialConnexionException
+	public void refreshFeedbackLoopStatistics() throws SerialConnexionException, FinMatchException
 	{
 		// on envois "?infos" et on lis les 4 int (dans l'ordre : PWM droit, PWM gauche, erreurRotation, erreurTranslation)
 		String[] infos_string = serie.communiquer("?infos", 4);
@@ -360,8 +375,9 @@ public class LocomotionCardWrapper implements Service
 	/**
 	 * Renvoie x, y et orientation du robot
 	 * @return un tableau de 3 cases: [x, y, orientation]
+	 * @throws FinMatchException 
 	 */
-	public double[] getCurrentPositionAndOrientation() throws SerialConnexionException
+	public double[] getCurrentPositionAndOrientation() throws SerialConnexionException, FinMatchException
 	{
 		String[] infos_string = serie.communiquer("?xyo", 3);
 		double[] infos_double = new double[3];

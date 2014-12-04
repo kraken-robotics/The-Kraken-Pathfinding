@@ -1,6 +1,7 @@
 package threads;
 
 import container.Service;
+import exceptions.FinMatchException;
 import obstacles.ObstacleManager;
 import robot.RobotReal;
 import robot.cardsWrappers.SensorsCardWrapper;
@@ -49,7 +50,7 @@ public class ThreadSensor extends AbstractThread implements Service
 		log.debug("Lancement du thread de capteurs", this);
 		int date_dernier_ajout = 0;
 		
-		while(!matchDemarre)
+		while(!Config.matchDemarre)
 		{
 			if(stopThreads)
 			{
@@ -62,6 +63,7 @@ public class ThreadSensor extends AbstractThread implements Service
 		log.debug("Activation des capteurs", this);
 		while(!finMatch)
 		{
+			try {
 			if(stopThreads)
 			{
 				log.debug("Stoppage du thread capteurs", this);
@@ -101,7 +103,11 @@ public class ThreadSensor extends AbstractThread implements Service
 			}
 			
 			Sleep.sleep((long)(1000./capteurs_frequence));
-			
+			}
+			catch(FinMatchException e)
+			{
+				break;
+			}
 		}
         log.debug("Fin du thread de capteurs", this);
 	}

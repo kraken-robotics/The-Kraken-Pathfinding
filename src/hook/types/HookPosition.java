@@ -1,5 +1,6 @@
 package hook.types;
 
+import exceptions.FinMatchException;
 import hook.Hook;
 import robot.RobotReal;
 import smartMath.Vec2;
@@ -47,7 +48,7 @@ class HookPosition extends Hook
      * Déclenche le hook si la distance entre la position du robot et la position de de déclenchement du hook est inférieure a tolerancy
      * @return true si la position/oriantation du robot a été modifiée.
      */
-	public boolean evaluate()
+	public boolean evaluate() throws FinMatchException
 	{
 		Vec2 positionRobot = real_state.robot.getPosition();
 		if(position.squaredDistance(positionRobot) <= squaredTolerancy)

@@ -1,6 +1,7 @@
 package robot.serial;
 
 import enums.ServiceNames;
+import exceptions.FinMatchException;
 import exceptions.serial.SerialConnexionException;
 import gnu.io.CommPortIdentifier;
 import gnu.io.NoSuchPortException;
@@ -22,6 +23,7 @@ public class SerialConnexion implements SerialPortEventListener, Service
 	private SerialPort serialPort;
 	protected Log log;
 	protected String name;
+	private boolean isClosed = false;
 
 	SerialConnexion (Log log, ServiceNames name)
 	{
@@ -111,8 +113,9 @@ public class SerialConnexion implements SerialPortEventListener, Service
 	 * @return
 	 * 					Un tableau contenant le message
 	 * @throws SerialConnexionException 
+	 * @throws FinMatchException 
 	 */
-	public String[] communiquer(String message, int nb_lignes_reponse) throws SerialConnexionException
+	public String[] communiquer(String message, int nb_lignes_reponse) throws SerialConnexionException, FinMatchException
 	{
 		String[] messages = {message};
 		return communiquer(messages, nb_lignes_reponse);
@@ -127,9 +130,13 @@ public class SerialConnexion implements SerialPortEventListener, Service
 	 * @return
 	 * 					Un tableau contenant le message
 	 * @throws SerialConnexionException 
+	 * @throws FinMatchException 
 	 */
-	public String[] communiquer(String[] messages, int nb_lignes_reponse) throws SerialConnexionException
+	public String[] communiquer(String[] messages, int nb_lignes_reponse) throws SerialConnexionException, FinMatchException
 	{
+		if(isClosed)
+			throw new FinMatchException();
+		
 		synchronized(output)
 		{
 			String inputLines[] = new String[nb_lignes_reponse];
@@ -188,10 +195,11 @@ public class SerialConnexion implements SerialPortEventListener, Service
 	 */
 	public void close()
 	{
-		if (serialPort != null)
+		if (!isClosed && serialPort != null)
 		{
 			log.debug("Fermeture de "+name, this);
 			serialPort.close();
+			isClosed = true;
 		}
 	}
 

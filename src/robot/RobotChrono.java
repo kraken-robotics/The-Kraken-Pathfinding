@@ -8,6 +8,7 @@ import utils.Log;
 import utils.Config;
 import enums.PathfindingNodes;
 import enums.Speed;
+import exceptions.FinMatchException;
 
 /**
  * Robot particulier qui fait pas bouger le robot réel, mais détermine la durée des actions
@@ -60,7 +61,7 @@ public class RobotChrono extends Robot
 		return date;
 	}
 
-	public RobotChrono clone()
+	public RobotChrono cloneRobot() throws FinMatchException
 	{
 		RobotChrono cloned_robotchrono = new RobotChrono(config, log);
 		copy(cloned_robotchrono);
@@ -135,7 +136,7 @@ public class RobotChrono extends Robot
     }
     
     @Override
-    public void copy(RobotChrono rc)
+    public void copy(RobotChrono rc) throws FinMatchException
     {
         super.copy(rc);
         position.copy(rc.position);

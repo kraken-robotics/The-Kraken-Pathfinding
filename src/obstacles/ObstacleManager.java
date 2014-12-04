@@ -15,8 +15,6 @@ import utils.Log;
  *
  */
 
-// TODO: dilatation obstacle pour pathfinding
-
 public class ObstacleManager implements Service
 {
     // On met cette variable en static afin que, dans deux instances dupliquées, elle ne redonne pas les mêmes nombres
@@ -25,7 +23,7 @@ public class ObstacleManager implements Service
     private Config config;
 
     // Les obstacles mobiles, c'est-à-dire des obstacles de proximité et de balise
-    private ArrayList<ObstacleCircular> listObstacles = new ArrayList<ObstacleCircular>();
+    private ArrayList<ObstacleCircular> listObstaclesMobiles = new ArrayList<ObstacleCircular>();
 
     // Les obstacles fixes sont surtout utilisés pour savoir si un capteur détecte un ennemi ou un obstacle fixe
     private ArrayList<Obstacle> listObstaclesFixes;
@@ -71,7 +69,7 @@ public class ObstacleManager implements Service
         
         ObstacleProximity obstacle = new ObstacleProximity(position_sauv, rayon_robot_adverse, System.currentTimeMillis()+dureeAvantPeremption);
         log.warning("Obstacle créé, rayon = "+rayon_robot_adverse+", centre = "+position, this);
-        listObstacles.add(obstacle);
+        listObstaclesMobiles.add(obstacle);
         hashObstacles = indice++;
     }
 
@@ -90,7 +88,7 @@ public class ObstacleManager implements Service
      */
     public synchronized void supprimerObstaclesPerimes(long date)
     {
-        Iterator<ObstacleCircular> iterator = listObstacles.iterator();
+        Iterator<ObstacleCircular> iterator = listObstaclesMobiles.iterator();
         while(iterator.hasNext())
         {
             ObstacleCircular obstacle = iterator.next();
@@ -109,7 +107,7 @@ public class ObstacleManager implements Service
      */
     public int nbObstaclesMobiles()
     {
-        return listObstacles.size();
+        return listObstaclesMobiles.size();
     }
 
     public ObstacleManager clone(long date)
@@ -128,7 +126,7 @@ public class ObstacleManager implements Service
     {
         if(other.hashObstacles != hashObstacles)
         {
-        	Collections.copy(other.listObstacles, listObstacles);
+        	Collections.copy(other.listObstaclesMobiles, listObstaclesMobiles);
             other.hashObstacles = hashObstacles;
         }
     }
@@ -181,7 +179,7 @@ public class ObstacleManager implements Service
      */
     public boolean obstacle_proximite_dans_segment(Vec2 A, Vec2 B)
     {
-        Iterator<ObstacleCircular> iterator = listObstacles.iterator();
+        Iterator<ObstacleCircular> iterator = listObstaclesMobiles.iterator();
         while(iterator.hasNext())
         {
             ObstacleCircular o = iterator.next();
@@ -215,7 +213,7 @@ public class ObstacleManager implements Service
      * @return
      */
     public synchronized boolean is_obstacle_mobile_present(Vec2 position, int distance) {
-        Iterator<ObstacleCircular> iterator2 = listObstacles.iterator();
+        Iterator<ObstacleCircular> iterator2 = listObstaclesMobiles.iterator();
         while(iterator2.hasNext())
         {
             Obstacle o = iterator2.next();

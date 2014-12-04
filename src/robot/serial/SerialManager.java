@@ -1,4 +1,5 @@
 package robot.serial;
+import utils.Config;
 import utils.Log;
 import enums.ServiceNames;
 import gnu.io.CommPortIdentifier;
@@ -7,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Iterator;
 
+import container.Service;
 import exceptions.serial.SerialManagerException;
 
 /**
@@ -15,7 +17,7 @@ import exceptions.serial.SerialManagerException;
  * @author pf
  *
  */
-public class SerialManager 
+public class SerialManager implements Service
 {
 	// Dépendances
 	private Log log;
@@ -25,7 +27,7 @@ public class SerialManager
 	public SerialConnexion serieCapteursActionneurs = null;
 
 	//On stock les series dans une liste
-	private SerialConnexion[] series = new SerialConnexion[3];
+	private SerialConnexion[] series = new SerialConnexion[2];
 
 	//Pour chaque carte, on connait a l'avance son nom, son ping et son baudrate
 	private SpecificationCard carteAsservissement = new SpecificationCard(ServiceNames.SERIE_ASSERVISSEMENT, 0, 9600);
@@ -43,11 +45,12 @@ public class SerialManager
 	
 	/**
 	 * Recuperation de toutes les cartes dans cards et des baudrates dans baudrate
+	 * @param config 
 	 */
-	public SerialManager(Log log) throws SerialManagerException
+	public SerialManager(Log log, Config config) throws SerialManagerException
 	{
 		this.log = log;
-
+		log.debug("Instanciation serialmanager", this);
 		cards.add(this.carteAsservissement);
 		cards.add(this.carteCapteursActionneurs);
 
@@ -213,4 +216,14 @@ public class SerialManager
 			throw new SerialManagerException("serie non trouvée");
 		}
 	}
+	
+	public void closeAll()
+	{
+		for(SerialConnexion s: series)
+			s.close();
+	}
 
+	@Override
+	public void updateConfig() {
+	}
+}

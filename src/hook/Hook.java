@@ -2,6 +2,7 @@ package hook;
 
 import java.util.ArrayList;
 
+import exceptions.FinMatchException;
 import robot.RobotReal;
 import strategie.GameState;
 import utils.Log;
@@ -69,7 +70,7 @@ abstract public class Hook
 	 * @param robot
 	 * @return true si ce hook modifie les déplacements du robot, false sinon
 	 */
-	public abstract boolean evaluate();
+	public abstract boolean evaluate() throws FinMatchException;
 	
 	/**
 	 * On peut supprimer le hook s'il n'y a plus aucun callback déclenchable.

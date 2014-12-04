@@ -2,6 +2,7 @@ package strategie;
 
 import pathfinding.GridSpace;
 import container.Service;
+import exceptions.FinMatchException;
 import robot.Robot;
 import robot.RobotChrono;
 import robot.RobotReal;
@@ -55,7 +56,7 @@ public class GameState<R extends Robot> implements Service
     /**
      * Fournit un clone de this. Le clone sera un GameState<RobotChrono>, peu importe si this est un GameState<RobotVrai> ou un GameState<RobotChrono>
      */
-	public GameState<RobotChrono> clone()
+	public GameState<RobotChrono> cloneGameState() throws FinMatchException
 	{
 		GameState<RobotChrono> cloned = new GameState<RobotChrono>(config, log, table.clone(), gridspace.clone(getTempsDepuisDebut()), new RobotChrono(config, log));
 		copy(cloned);
@@ -66,8 +67,9 @@ public class GameState<R extends Robot> implements Service
      * Copie this dans other. this reste inchangé.
      * Cette copie met à jour les obstacles et les attributs de temps.
      * @param other
+     * @throws FinMatchException 
      */
-    public void copy(GameState<RobotChrono> other)
+    public void copy(GameState<RobotChrono> other) throws FinMatchException
     {
         table.copy(other.table);
         // réinitialisation de la durée incluse dans la copie

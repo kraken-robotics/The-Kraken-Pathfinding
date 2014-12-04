@@ -8,6 +8,7 @@ import strategie.GameState;
 import utils.Log;
 import utils.Config;
 import container.Service;
+import exceptions.FinMatchException;
 
 /**
  * Classe qui gère les objets utilisés dans l'arbre des possibles de la stratégie
@@ -21,19 +22,20 @@ public class MemoryManager implements Service {
 	private GameState<RobotChrono> out;
 	private Log log;
 
-	public MemoryManager(Config config, Log log, GameState<RobotReal> real_state)
+	public MemoryManager(Config config, Log log, GameState<RobotReal> real_state) throws FinMatchException
 	{
 		this.log = log;
 	    this.real_state = real_state;
-	    products.add(real_state.clone());
+	    products.add(real_state.cloneGameState());
 	}
 	
 	/**
 	 * Fournit un clone pour la profondeur donnée. Augmente la taille si besoin est.
 	 * @param profondeur. Il s'agit d'un entier entre 0 et beaucoup. Il doit s'agir de la profondeur de l'arbre: l'instance de profondeur 3 est le fils de l'instance de profondeur 2.
 	 * @return
+	 * @throws FinMatchException 
 	 */
-	public GameState<RobotChrono> getClone(int profondeur)
+	public GameState<RobotChrono> getClone(int profondeur) throws FinMatchException
 	{
 		// On doit agrandit products
 		if(products.size() <= profondeur)
@@ -42,7 +44,7 @@ public class MemoryManager implements Service {
 			GameState<RobotChrono> dernier = products.get(products.size()-1);
 	
 		    while(products.size() <= profondeur)
-	            products.add(dernier.clone());
+	            products.add(dernier.cloneGameState());
 		    return products.get(profondeur);
 		    // c'est déjà à jour (vu qu'on vient de faire un clone)
 		    // pas besoin de copy en plus

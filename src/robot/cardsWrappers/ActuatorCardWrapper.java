@@ -5,6 +5,7 @@ import utils.Log;
 import utils.Config;
 import container.Service;
 import enums.ActuatorOrder;
+import exceptions.FinMatchException;
 import exceptions.serial.SerialConnexionException;
 
 
@@ -33,8 +34,9 @@ public class ActuatorCardWrapper implements Service
 	 * Envoie un ordre à la série. Le protocole est défini dans l'enum ActuatorOrder
 	 * @param order
 	 * @throws SerialConnexionException
+	 * @throws FinMatchException 
 	 */
-	public void useActuator(ActuatorOrder order) throws SerialConnexionException
+	public void useActuator(ActuatorOrder order) throws SerialConnexionException, FinMatchException
 	{
 		log.debug("Ordre série: "+order.toString(), this);
 		serie.communiquer(order.getSerialOrder(), 0);

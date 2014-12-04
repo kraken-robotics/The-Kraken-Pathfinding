@@ -6,6 +6,7 @@ import pathfinding.Pathfinding;
 import container.Service;
 import enums.PathfindingNodes;
 import enums.ScriptNames;
+import exceptions.FinMatchException;
 import exceptions.PathfindingException;
 import exceptions.PathfindingRobotInObstacleException;
 import exceptions.UnknownScriptException;
@@ -56,8 +57,9 @@ public class ThreadStrategy extends AbstractThread implements Service
 	 * Renvoie null si le temps est écoulé ou s'il n'y a aucun choix possible.
 	 * @param profondeur
 	 * @return
+	 * @throws FinMatchException 
 	 */
-	private Decision parcourtArbre(int profondeur, ScriptNames nomScript, int id_meta_version)
+	private Decision parcourtArbre(int profondeur, ScriptNames nomScript, int id_meta_version) throws FinMatchException
 	{
 		Decision meilleure_decision = new Decision(null, -1, -1);
 		try {

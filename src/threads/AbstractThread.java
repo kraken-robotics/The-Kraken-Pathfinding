@@ -10,11 +10,8 @@ public abstract class AbstractThread extends Thread {
 
 	// Permet d'arrêter tous les threads d'un coup
 	protected static boolean stopThreads = false;
-	
-	protected static boolean matchDemarre = false;
-	
-	protected static boolean finMatch = false;
-	
+	public static boolean finMatch = false;
+		
 	/**
 	 * Arrête tous les threads.
 	 */

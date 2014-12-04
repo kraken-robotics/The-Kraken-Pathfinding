@@ -10,6 +10,7 @@ import pathfinding.Pathfinding;
 import enums.PathfindingNodes;
 import enums.ScriptNames;
 import enums.Speed;
+import exceptions.FinMatchException;
 import exceptions.PathfindingException;
 import exceptions.PathfindingRobotInObstacleException;
 import exceptions.UnknownScriptException;
@@ -51,7 +52,13 @@ public class Execution implements Service {
 	// Appelé par le lanceur
 	public void boucleExecution()
 	{
-		// jumper
+		while(!Config.matchDemarre)
+			Sleep.sleep(100);
+		
+		// la sortie se fait par l'exception FinMatchException
+		while(true)
+		{
+		}
 		
 		// boucle exécution
 		
@@ -59,7 +66,7 @@ public class Execution implements Service {
 		
 	}
 	
-	public void executerScript(ArrayList<Decision> decisions, ScriptNames scriptSecours, int id_version) throws UnknownScriptException
+	public void executerScript(ArrayList<Decision> decisions, ScriptNames scriptSecours, int id_version) throws UnknownScriptException, FinMatchException
 	{
 		for(int id_decision = 0; id_decision < decisions.size(); id_decision++)
 		{
@@ -99,7 +106,7 @@ public class Execution implements Service {
 		}
 	}
 	
-	public void tryOnce(Script s, int id_version) throws PathfindingException, UnableToMoveException, ScriptException, PathfindingRobotInObstacleException
+	public void tryOnce(Script s, int id_version) throws PathfindingException, UnableToMoveException, ScriptException, PathfindingRobotInObstacleException, FinMatchException
 	{
 		ArrayList<PathfindingNodes> chemin;
 		chemin = pathfinding.computePath(gamestate.robot.getPosition(), s.point_entree(id_version), gamestate.gridspace);

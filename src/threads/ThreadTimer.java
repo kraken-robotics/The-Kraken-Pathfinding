@@ -2,9 +2,11 @@ package threads;
 
 import container.Service;
 import obstacles.ObstacleManager;
+import exceptions.FinMatchException;
 import exceptions.serial.SerialConnexionException;
 import robot.cardsWrappers.LocomotionCardWrapper;
 import robot.cardsWrappers.SensorsCardWrapper;
+import robot.serial.SerialManager;
 import utils.Config;
 import utils.Log;
 import utils.Sleep;
@@ -25,18 +27,20 @@ public class ThreadTimer extends AbstractThread implements Service
 	private ObstacleManager obstaclemanager;
 	private SensorsCardWrapper capteur;
 	private LocomotionCardWrapper deplacements;
+	private SerialManager serialmanager;
 	
 	private long dureeMatch = 90000;
 	private long dateFin;
 	public static int obstacleRefreshInterval = 500; // temps en ms entre deux appels par le thread timer du rafraichissement des obstacles de la table
 		
-	public ThreadTimer(Log log, Config config, ObstacleManager obstaclemanager, SensorsCardWrapper capteur, LocomotionCardWrapper deplacements)
+	public ThreadTimer(Log log, Config config, ObstacleManager obstaclemanager, SensorsCardWrapper capteur, LocomotionCardWrapper deplacements, SerialManager serialmanager)
 	{
 		this.log = log;
 		this.config = config;
 		this.obstaclemanager = obstaclemanager;
 		this.capteur = capteur;
 		this.deplacements = deplacements;
+		this.serialmanager = serialmanager;
 		
 		updateConfig();
 		Thread.currentThread().setPriority(1);
@@ -52,7 +56,7 @@ public class ThreadTimer extends AbstractThread implements Service
 		capteur.updateConfig();	
 		
 		// Attente du démarrage du match
-		while(!capteur.demarrage_match() && !matchDemarre)
+		while(!capteur.demarrage_match() && !Config.matchDemarre)
 		{
 			if(stopThreads)
 			{
@@ -65,7 +69,7 @@ public class ThreadTimer extends AbstractThread implements Service
 		Config.dateDebutMatch = System.currentTimeMillis();
 
 		// Permet de signaler que le match a démarré
-		matchDemarre = true;
+		Config.matchDemarre = true;
 
 		// On démarre les capteurs
 		config.set("capteurs_on", true);
@@ -111,12 +115,15 @@ public class ThreadTimer extends AbstractThread implements Service
 		
 		// fin du match : désasser final
 		try {
-			deplacements.disableRotationnalFeedbackLoop();
+				deplacements.disableRotationnalFeedbackLoop();
 			deplacements.disableTranslationnalFeedbackLoop();
 		} catch (SerialConnexionException e) {
 			e.printStackTrace();
+		} catch (FinMatchException e) {
+			e.printStackTrace();
 		}
-		deplacements.closeLocomotion();
+		
+		serialmanager.closeAll();
 	}
 	
 	public void updateConfig()

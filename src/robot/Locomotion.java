@@ -9,6 +9,7 @@ import container.Service;
 import hook.Hook;
 import enums.PathfindingNodes;
 import enums.Speed;
+import exceptions.FinMatchException;
 //import hook.methodes.ChangeConsigne;
 //import hook.sortes.HookGenerator;
 import exceptions.Locomotion.BlockedException;
@@ -174,8 +175,9 @@ public class Locomotion implements Service
 	/**
 	 * Fait tourner le robot (méthode bloquante)
 	 * @throws UnableToMoveException 
+	 * @throws FinMatchException 
 	 */
-	public void turn(double angle, ArrayList<Hook> hooks, boolean mur) throws UnableToMoveException
+	public void turn(double angle, ArrayList<Hook> hooks, boolean mur) throws UnableToMoveException, FinMatchException
 	{
 
 		if(symetrie)
@@ -223,8 +225,9 @@ public class Locomotion implements Service
 	 * @param hooks	// TODO : trouver ce que sont ces hooks a vérifier
 	 * @param insiste // TODO : trouver ce que insiste fait
 	 * @throws UnableToMoveException si le robot rencontre un problème dans son déplacement
+	 * @throws FinMatchException 
 	 */
-	public void moveForward(int distance, ArrayList<Hook> hooks, boolean mur) throws UnableToMoveException
+	public void moveForward(int distance, ArrayList<Hook> hooks, boolean mur) throws UnableToMoveException, FinMatchException
 	{
 		
 		update_x_y_orientation();
@@ -248,8 +251,9 @@ public class Locomotion implements Service
 	 * @param hooks
 	 * @param insiste
 	 * @throws UnableToMoveException
+	 * @throws FinMatchException 
 	 */
-	public void followPath(ArrayList<PathfindingNodes> chemin, ArrayList<Hook> hooks) throws UnableToMoveException
+	public void followPath(ArrayList<PathfindingNodes> chemin, ArrayList<Hook> hooks) throws UnableToMoveException, FinMatchException
 	{
 		// en cas de coup de folie a INTech, on active la trajectoire courbe.
 		if(trajectoire_courbe)
@@ -299,8 +303,9 @@ public class Locomotion implements Service
 	 * @param hooks
 	 * @param insiste
 	 * @throws UnableToMoveException
+	 * @throws FinMatchException 
 	 */
-	private void moveBackwardInDirection(ArrayList<Hook> hooks, boolean trajectoire_courbe, boolean mur) throws UnableToMoveException
+	private void moveBackwardInDirection(ArrayList<Hook> hooks, boolean trajectoire_courbe, boolean mur) throws UnableToMoveException, FinMatchException
 	{
 		// choisit de manière intelligente la marche arrière ou non
 		// mais cette année, on ne peut aller, de manière automatique, que tout droit.
@@ -336,8 +341,9 @@ public class Locomotion implements Service
 	 * @param isBackward true si le déplacement doit se faire en marche arrière, false si le robot doit avancer en marche avant.
 	 * @param expectsWallImpact true si le robot doit s'attendre a percuter un mur au cours du déplacement. false si la route est sensée être dégagée.
 	 * @throws UnableToMoveException losrque quelque chose sur le chemin cloche et que le robot ne peut s'en défaire simplement: bloquage mécanique immobilisant le robot ou obstacle percu par les capteurs
+	 * @throws FinMatchException 
 	 */
-	public void moveForwardInDirectionExeptionHandler(ArrayList<Hook> hooks, boolean allowCurvedPath, boolean isBackward, boolean expectsWallImpact) throws UnableToMoveException
+	public void moveForwardInDirectionExeptionHandler(ArrayList<Hook> hooks, boolean allowCurvedPath, boolean isBackward, boolean expectsWallImpact) throws UnableToMoveException, FinMatchException
 	{
 		// nombre d'exception (et donc de nouvels essais) que l'on va lever avant de prévenir
 		// l'utilisateur en cas de bloquage mécanique du robot l'empéchant d'avancer plus loin
@@ -402,8 +408,9 @@ public class Locomotion implements Service
 	 * Réaction générique face a un souci dans le déplacment du robot. (arreter les moteurs de propultion par exemple)
 	 * @param exeptionCountStillAllowed nombre d'exception pour ce déplacement que l'on tolère encore avant de remonter le problème a l'utilisateur de la classe
 	 * @throws UnableToMoveException exception lancée quand on ne tolère plus de soucis interne au déplacement. Elle indique soit un obstacle détecté sur la route, soit que le robot a un blocage mécanique pour continuer a avancer
+	 * @throws FinMatchException 
 	 */
-	private void generalLocomotionExeptionReaction(int exeptionCountStillAllowed) throws UnableToMoveException
+	private void generalLocomotionExeptionReaction(int exeptionCountStillAllowed) throws UnableToMoveException, FinMatchException
 	{
 		log.warning("Exeption de déplacement lancée, Immobilisation du robot.", this);
 		/* TODO: si on veut pouvoir enchaîner avec un autre chemin, il ne faut pas arrêter le robot.
@@ -425,8 +432,9 @@ public class Locomotion implements Service
 	 * @param isBackward true si le déplacement doit se faire en marche arrière, false si le robot doit avancer en marche avant.
 	 * @param expectsWallImpact true si le robot doit s'attendre a percuter un mur au cours du déplacement. false si la route est sensée être dégagée.
 	 * @return true si l'on doit essayer de nouveau d'atteindre le point d'arrivée du mouvement, faux si l'on doit rester sur place.
+	 * @throws FinMatchException 
 	 */
-	private boolean BlockedExceptionReaction(BlockedException e, boolean isBackward, boolean expectsWallImpact)
+	private boolean BlockedExceptionReaction(BlockedException e, boolean isBackward, boolean expectsWallImpact) throws FinMatchException
 	{
 		// valeur de retour: faut-t-il réessayer d'atteindre le point d'arrivée ? Par défaut, non.
 		boolean out  = false;
@@ -484,8 +492,9 @@ public class Locomotion implements Service
 	 * @param trajectoire_courbe
 	 * @throws BlockedException 
 	 * @throws UnexpectedObstacleOnPathException 
+	 * @throws FinMatchException 
 	 */
-	public void va_au_point_hook_correction_detection(ArrayList<Hook> hooks, boolean trajectoire_courbe, boolean marche_arriere) throws BlockedException, UnexpectedObstacleOnPathException
+	public void va_au_point_hook_correction_detection(ArrayList<Hook> hooks, boolean trajectoire_courbe, boolean marche_arriere) throws BlockedException, UnexpectedObstacleOnPathException, FinMatchException
 	{
 		boolean relancer;
 		va_au_point_symetrie(trajectoire_courbe, marche_arriere, false);
@@ -530,8 +539,9 @@ public class Locomotion implements Service
 	 * @param trajectoire_courbe
 	 * @param marche_arriere
 	 * @throws BlockedException 
+	 * @throws FinMatchException 
 	 */
-	public void va_au_point_symetrie(boolean trajectoire_courbe, boolean marche_arriere, boolean correction) throws BlockedException
+	public void va_au_point_symetrie(boolean trajectoire_courbe, boolean marche_arriere, boolean correction) throws BlockedException, FinMatchException
 	{
 		Vec2 delta = consigne.clone();
 		if(symetrie)
@@ -566,8 +576,9 @@ public class Locomotion implements Service
 	 * @param distance valeur en mm indiquant de combien on veut avancer.
 	 * @param allowCurvedPath si true, le robot essayera de tourner et avancer en m�me temps
 	 * @throws BlockedException si blocage mécanique du robot en chemin (pas de gestion des capteurs ici)
+	 * @throws FinMatchException 
 	 */
-	public void moveForwardInDirection(double direction, double distance, boolean allowCurvedPath) throws BlockedException
+	public void moveForwardInDirection(double direction, double distance, boolean allowCurvedPath) throws BlockedException, FinMatchException
 	{
 		// On interdit la trajectoire courbe si on doit faire un virage trop grand (plus d'un quart de tour).
 		if(Math.abs(direction - orientation) > Math.PI/2)
@@ -606,8 +617,9 @@ public class Locomotion implements Service
 	 * @param finalOrientation on d�cr�te que le robot a fini de tourner lorsque son orientation �gale cette valeur (en radian, valeur absolue) 
 	 * @return Faux si le robot tourne encore, vrai si arrivée au bon point, exception si blocage
 	 * @throws BlockedException si un obstacle est rencontr� durant la rotation
+	 * @throws FinMatchException 
 	 */
-	private boolean isTurnFinished(float finalOrientation) throws BlockedException
+	private boolean isTurnFinished(float finalOrientation) throws BlockedException, FinMatchException
 	{
 		boolean out = false; 
 		try
@@ -643,8 +655,9 @@ public class Locomotion implements Service
 	 * Faux si le robot bouge encore, vrai si arrivée au bon point, exception si blocage
 	 * @return
 	 * @throws BlockedException
+	 * @throws FinMatchException 
 	 */
-	private boolean isMovementFinished() throws BlockedException
+	private boolean isMovementFinished() throws BlockedException, FinMatchException
 	{
 		boolean out = false;
 		
@@ -713,10 +726,11 @@ public class Locomotion implements Service
 	 * @param sans_lever_exception
 	 * @return true si le robot est arrivé à destination, false si encore en mouvement
 	 * @throws BlockedException
+	 * @throws FinMatchException 
 	 * @throws UnexpectedObstacleOnPathException
 	 */
 	@SuppressWarnings("unused") // TODO: Voir ce qu'il se passe: pourquoi elle n'est jamais appllée ?
-	private boolean mouvement_fini_routine() throws BlockedException
+	private boolean mouvement_fini_routine() throws BlockedException, FinMatchException
 	{
 		// récupérations des informations d'acquittement
 		try {
@@ -765,9 +779,10 @@ public class Locomotion implements Service
 
 	/**
 	 * Met à jour position et orientation via la carte d'asservissement.
+	 * @throws FinMatchException 
 	 * @throws SerialConnexionException
 	 */
-	private void update_x_y_orientation()
+	private void update_x_y_orientation() throws FinMatchException
 	{
 		try {
 			double[] infos = mLocomotionCardWrapper.getCurrentPositionAndOrientation();
@@ -796,8 +811,9 @@ public class Locomotion implements Service
 
 	/**
 	 * Arrête le robot.
+	 * @throws FinMatchException 
 	 */
-	public void immobilise()
+	public void immobilise() throws FinMatchException
 	{
 
 		try
@@ -823,8 +839,9 @@ public class Locomotion implements Service
 	/**
 	 * Met à jour la position. A ne faire qu'en début de match.
 	 * @param position
+	 * @throws FinMatchException 
 	 */
-	public void setPosition(Vec2 position)
+	public void setPosition(Vec2 position) throws FinMatchException
 	{
 		this.position = position.clone();
 		try {
@@ -839,8 +856,9 @@ public class Locomotion implements Service
 	/**
 	 * Met à jour l'orientation. A ne faire qu'en début de match.
 	 * @param orientation
+	 * @throws FinMatchException 
 	 */
-	public void setOrientation(double orientation)
+	public void setOrientation(double orientation) throws FinMatchException
 	{
 		this.orientation = orientation;
 		try {
@@ -850,29 +868,19 @@ public class Locomotion implements Service
 		}
 	}
 
-	public Vec2 getPosition()
+	public Vec2 getPosition() throws FinMatchException
 	{
 		update_x_y_orientation();
 		return position.clone();
 	}
 
-	public Vec2 getPositionFast()
-	{
-		return position.clone();
-	}
-
-	public double getOrientation()
+	public double getOrientation() throws FinMatchException
 	{
 		update_x_y_orientation();
 		return orientation;
 	}
 
-	public double getOrientationFast()
-	{
-		return orientation;
-	}
-
-	public void disableFeedbackLoop()
+	public void disableFeedbackLoop() throws FinMatchException
 	{
 		try
 		{
@@ -884,7 +892,7 @@ public class Locomotion implements Service
 		}
 	}
 
-	public void setRotationnalSpeed(int pwm_max)
+	public void setRotationnalSpeed(int pwm_max) throws FinMatchException
 	{
 		try
 		{
@@ -895,7 +903,7 @@ public class Locomotion implements Service
 		}
 	}
 
-	public void setTranslationnalSpeed(int pwm_max)
+	public void setTranslationnalSpeed(int pwm_max) throws FinMatchException
 	{
 		try
 		{
