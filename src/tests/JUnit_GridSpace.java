@@ -61,6 +61,9 @@ public class JUnit_GridSpace extends JUnit_Test {
 	{
 		Assert.assertTrue(!gridspace.isTraversable(PathfindingNodes.SCRIPT_PLOT_10, PathfindingNodes.SCRIPT_PLOT_9));
 		Assert.assertTrue(!gridspace.isTraversable(PathfindingNodes.SCRIPT_PLOT_7, PathfindingNodes.SCRIPT_PLOT_9));
+		gridspace.setAvoidGameElement(true);
+		Assert.assertTrue(!gridspace.isTraversable(PathfindingNodes.SCRIPT_PLOT_3, PathfindingNodes.SCRIPT_PLOT_1));
+		gridspace.setAvoidGameElement(false);
 		Assert.assertTrue(gridspace.isTraversable(PathfindingNodes.SCRIPT_PLOT_3, PathfindingNodes.SCRIPT_PLOT_1));
 		gridspace.creer_obstacle(new Vec2(0, 600));
 		// mise à jour du gridspace

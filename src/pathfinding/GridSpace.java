@@ -25,9 +25,6 @@ public class GridSpace implements Service {
 	// afin d'éviter les obstacles fixes et mobiles
 	private ObstacleManager obstaclemanager;
 	
-	// afin d'éviter les éléments de jeux
-	private Table table;
-		
 	private int iterator, id_node_iterator;
 	private PathfindingNodes nearestReachableNodeCache = null;
 	
@@ -43,11 +40,10 @@ public class GridSpace implements Service {
 
 	private boolean avoidGameElement = true;
 	
-	public GridSpace(Log log, Config config, Table table, ObstacleManager obstaclemanager)
+	public GridSpace(Log log, Config config, ObstacleManager obstaclemanager)
 	{
 		this.log = log;
 		this.config = config;
-		this.table = table;
 		this.obstaclemanager = obstaclemanager;
 				
 		// Il est très important de ne faire ce long calcul qu'une seule fois,
@@ -108,13 +104,7 @@ public class GridSpace implements Service {
 	public void reinitConnections(long date)
 	{
 		obstaclemanager.supprimerObstaclesPerimes(date);
-		for(PathfindingNodes i : PathfindingNodes.values())
-			for(PathfindingNodes j : PathfindingNodes.values())
-				if(i.ordinal() < j.ordinal())
-				{
-					isConnected[i.ordinal()][j.ordinal()] = isConnectedModel[i.ordinal()][j.ordinal()];
-					isConnected[j.ordinal()][i.ordinal()] = isConnectedModel[i.ordinal()][j.ordinal()];
-				}
+		initIsConnected();
 	}
 
 	/**
@@ -124,9 +114,20 @@ public class GridSpace implements Service {
 	public boolean isTraversable(PathfindingNodes i, PathfindingNodes j)
 	{
 		if(isConnected[i.ordinal()][j.ordinal()] != null)
+		{
+			log.debug("Trajet impossible à cause d'un obstacle fixe", this);			
 			return isConnected[i.ordinal()][j.ordinal()].isTraversable();
+		}
 		else if(obstaclemanager.obstacle_proximite_dans_segment(i.getCoordonnees(), j.getCoordonnees()))
+		{
+			log.debug("Trajet impossible à cause d'un obstacle de proximité", this);
 			isConnected[i.ordinal()][j.ordinal()] = NodesConnection.TMP_IMPOSSIBLE;
+		}
+		else if(avoidGameElement && obstaclemanager.obstacle_table_dans_segment(i.getCoordonnees(), j.getCoordonnees()))
+		{
+			log.debug("Trajet impossible à cause d'un élément de jeu", this);
+			isConnected[i.ordinal()][j.ordinal()] = NodesConnection.TMP_IMPOSSIBLE;
+		}
 		else
 			isConnected[i.ordinal()][j.ordinal()] = NodesConnection.POSSIBLE;
 		isConnected[j.ordinal()][i.ordinal()] = isConnected[i.ordinal()][j.ordinal()];
@@ -169,7 +170,6 @@ public class GridSpace implements Service {
 
 	public void copy(GridSpace other, long date)
 	{
-		table.copy(other.table);
 		obstaclemanager.copy(other.obstaclemanager);
 		// On détruit le cache car le robot aura bougé
 		other.nearestReachableNodeCache = null;
@@ -179,8 +179,8 @@ public class GridSpace implements Service {
 	public GridSpace clone(long date, Table table)
 	{
 		// On réutilise la table donnée.
-		// Sinon, la table dans le GameState n'est pas la table du GridSpace.
-		GridSpace cloned_gridspace = new GridSpace(log, config, table, obstaclemanager.clone(date));
+		// Sinon, la table dans le GameState n'est pas la table de l'ObstacleManager.
+		GridSpace cloned_gridspace = new GridSpace(log, config, obstaclemanager.clone(date, table));
 		copy(cloned_gridspace, date);
 		return cloned_gridspace;
 	}
@@ -250,6 +250,14 @@ public class GridSpace implements Service {
     public void creer_obstacle(Vec2 position)
     {
     	creer_obstacle(position, System.currentTimeMillis());
+    }
+
+    public void setAvoidGameElement(boolean avoidGameElement)
+    {
+    	// il faut remettre à jour le cache
+    	if(this.avoidGameElement != avoidGameElement)
+    		initIsConnected();
+    	this.avoidGameElement = avoidGameElement;
     }
     
 }

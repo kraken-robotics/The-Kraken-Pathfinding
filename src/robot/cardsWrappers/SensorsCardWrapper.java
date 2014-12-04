@@ -87,5 +87,10 @@ public class SensorsCardWrapper implements Service
     		return false;
     	}
     }
+    
+    public void setCapteursOn(boolean capteurs_on)
+    {
+    	this.capteurs_on = capteurs_on;
+    }
      
 }

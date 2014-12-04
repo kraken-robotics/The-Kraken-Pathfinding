@@ -13,6 +13,7 @@ public class Table implements Service
 	// DEPENDS ON RULES
 	
 	// Les éléments de jeu de notre couleur.
+	private GameElement[] total = new GameElement[22];
 	private GameElement[] emplacementsTapis = new GameElement[2];
 	private GameElement[] plots = new GameElement[8];
 	private GameElement[] claps = new GameElement[3];
@@ -26,34 +27,34 @@ public class Table implements Service
 	public Table(Log log, Config config)
 	{
 		this.log = log;
-		this.config = config;
+		this.config = config;	
 		
-		emplacementsTapis[0] = new GameElement(new Vec2(-50, 1500));
-		emplacementsTapis[1] = new GameElement(new Vec2(450, 1500));
+		total[0] = emplacementsTapis[0] = new GameElement(new Vec2(-50, 1500), -1);
+		total[1] = emplacementsTapis[1] = new GameElement(new Vec2(450, 1500), -1);
 		
-		plots[0] = new GameElement(new Vec2(1410, 150));
-		plots[1] = new GameElement(new Vec2(1410, 250));
-		plots[2] = new GameElement(new Vec2(1410, 1300));
-		plots[3] = new GameElement(new Vec2(650, 1300));
-		plots[4] = new GameElement(new Vec2(650, 1400));
-		plots[5] = new GameElement(new Vec2(200, 600));
-		plots[6] = new GameElement(new Vec2(630, 645));
-		plots[7] = new GameElement(new Vec2(400, 230));
+		total[2] = plots[0] = new GameElement(new Vec2(1410, 150), 30);
+		total[3] = plots[1] = new GameElement(new Vec2(1410, 250), 30);
+		total[4] = plots[2] = new GameElement(new Vec2(1410, 1300), 30);
+		total[5] = plots[3] = new GameElement(new Vec2(650, 1300), 30);
+		total[6] = plots[4] = new GameElement(new Vec2(650, 1400), 30);
+		total[7] = plots[5] = new GameElement(new Vec2(200, 600), 30);
+		total[8] = plots[6] = new GameElement(new Vec2(630, 645), 30);
+		total[9] = plots[7] = new GameElement(new Vec2(400, 230), 30);
 		
-		claps[0] = new GameElement(new Vec2(650, 0));
-		claps[1] = new GameElement(new Vec2(-950, 0));
-		claps[2] = new GameElement(new Vec2(1250, 0));
+		total[10] = claps[0] = new GameElement(new Vec2(650, 0), -1);
+		total[11] = claps[1] = new GameElement(new Vec2(-950, 0), -1);
+		total[12] = claps[2] = new GameElement(new Vec2(1250, 0), -1);
 		
-		verres[0] = new GameElement(new Vec2(-1250, 250));
-		verres[1] = new GameElement(new Vec2(1250, 250));
-		verres[2] = new GameElement(new Vec2(-590, 1200));
-		verres[3] = new GameElement(new Vec2(590, 1200));
-		verres[4] = new GameElement(new Vec2(0, 350));
+		total[13] = verres[0] = new GameElement(new Vec2(-1250, 250), 50);
+		total[14] = verres[1] = new GameElement(new Vec2(1250, 250), 50);
+		total[15] = verres[2] = new GameElement(new Vec2(-590, 1200), 50);
+		total[16] = verres[3] = new GameElement(new Vec2(590, 1200), 50);
+		total[17] = verres[4] = new GameElement(new Vec2(0, 350), 50);
 
-		distributeurs[0] = new GameElement(new Vec2(900, 1950));
-		distributeurs[1] = new GameElement(new Vec2(1200, 1950));
-		distributeurs[2] = new GameElement(new Vec2(-900, 1950));
-		distributeurs[3] = new GameElement(new Vec2(-1200, 1950));
+		total[18] = distributeurs[0] = new GameElement(new Vec2(900, 1950), 25);
+		total[19] = distributeurs[1] = new GameElement(new Vec2(1200, 1950), 25);
+		total[20] = distributeurs[2] = new GameElement(new Vec2(-900, 1950), 25);
+		total[21] = distributeurs[3] = new GameElement(new Vec2(-1200, 1950), 25);
 	}
 	
 	public void setClapDone(int id)
@@ -134,6 +135,11 @@ public class Table implements Service
 	public void updateConfig() {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	public GameElement[] getObstacles()
+	{
+		return total;
 	}
 	
 	/**

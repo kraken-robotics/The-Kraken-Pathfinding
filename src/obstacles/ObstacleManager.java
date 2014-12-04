@@ -6,6 +6,8 @@ import java.util.Iterator;
 
 import container.Service;
 import smartMath.Vec2;
+import table.GameElement;
+import table.Table;
 import utils.Config;
 import utils.Log;
 
@@ -21,7 +23,8 @@ public class ObstacleManager implements Service
     private static int indice = 1;
     private Log log;
     private Config config;
-
+    private Table table;
+    
     // Les obstacles mobiles, c'est-à-dire des obstacles de proximité et de balise
     private ArrayList<ObstacleCircular> listObstaclesMobiles = new ArrayList<ObstacleCircular>();
 
@@ -36,10 +39,11 @@ public class ObstacleManager implements Service
     private int distanceApproximation = 50;
     private long dureeAvantPeremption = 0;
 
-    public ObstacleManager(Log log, Config config)
+    public ObstacleManager(Log log, Config config, Table table)
     {
         this.log = log;
         this.config = config;
+        this.table = table;
 
         hashObstacles = 0;
 
@@ -110,9 +114,10 @@ public class ObstacleManager implements Service
         return listObstaclesMobiles.size();
     }
 
-    public ObstacleManager clone(long date)
+    // Clone en utilisant la table donnée en paramètre
+    public ObstacleManager clone(long date, Table table)
     {
-    	ObstacleManager cloned_manager = new ObstacleManager(log, config);
+    	ObstacleManager cloned_manager = new ObstacleManager(log, config, table);
 		copy(cloned_manager);
 		cloned_manager.supprimerObstaclesPerimes(date);
 		return cloned_manager;
@@ -124,9 +129,12 @@ public class ObstacleManager implements Service
      */
     public void copy(ObstacleManager other)
     {
+    	table.copy(other.table);
         if(other.hashObstacles != hashObstacles)
         {
-        	Collections.copy(other.listObstaclesMobiles, listObstaclesMobiles);
+        	other.listObstaclesMobiles.clear();
+        	for(ObstacleCircular o: listObstaclesMobiles)
+        		other.listObstaclesMobiles.add(o);
             other.hashObstacles = hashObstacles;
         }
     }
@@ -170,7 +178,24 @@ public class ObstacleManager implements Service
 		}
 		return false;
 	}
-    
+
+	/**
+	 * Y a-t-il un obstacle
+	 * @param A
+	 * @param B
+	 * @return
+	 */
+    public boolean obstacle_table_dans_segment(Vec2 A, Vec2 B)
+    {
+        GameElement[] obstacles = table.getObstacles();
+        for(GameElement o: obstacles)
+        {
+            if(!o.isDone() && o.obstacle_proximite_dans_segment(A, B))
+                return true;
+        }
+        return false;    	
+    }
+
     /**
      * Y a-t-il un obstacle de proximité dans ce segment?
      * @param sommet1

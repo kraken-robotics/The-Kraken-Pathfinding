@@ -52,8 +52,7 @@ public class ThreadTimer extends AbstractThread implements Service
 		log.debug("Lancement du thread timer", this);
 
 		// les capteurs sont initialement éteints
-		config.set("capteurs_on", false);
-		capteur.updateConfig();	
+		capteur.setCapteursOn(false);
 		
 		// Attente du démarrage du match
 		while(!Config.matchDemarre)
@@ -79,8 +78,7 @@ public class ThreadTimer extends AbstractThread implements Service
 		Config.dateDebutMatch = System.currentTimeMillis();
 
 		// On démarre les capteurs
-		config.set("capteurs_on", true);
-		capteur.updateConfig();
+		capteur.setCapteursOn(true);
 
 		log.debug("LE MATCH COMMENCE !", this);
 

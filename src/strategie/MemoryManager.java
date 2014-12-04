@@ -62,7 +62,10 @@ public class MemoryManager implements Service {
         	real_state.commenceRacine();
             real_state.copy(out);
             if(obstacle_position != null)
+            {
             	out.gridspace.creer_obstacle(obstacle_position);
+            	obstacle_position = null;
+            }
         }
         else
             products.get(profondeur-1).copy(out);

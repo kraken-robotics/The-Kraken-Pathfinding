@@ -1,28 +1,23 @@
 package table;
 
+import obstacles.ObstacleCircular;
 import smartMath.Vec2;
 
 /**
  * Un élément de jeu.
- * Visibilité "friendly" afin qu'il ne puisse être manipulé directement
- * que par la table (afin de ne pas bypasser le mécanisme de hash).
+ * On demande à ce qu'il soit circulaire afin de faciliter les calculs de collision.
  * @author pf
  *
  */
 
-class GameElement
+public class GameElement extends ObstacleCircular
 {
-	private Vec2 position;
 	private boolean done = false; 
 	
-	public GameElement(Vec2 position)
+	public GameElement(Vec2 position, int rayon)
 	{
+		super(position, rayon);
 		this.position = position;
-	}
-	
-	public Vec2 getPosition()
-	{
-		return position;
 	}
 	
 	public void setDone()

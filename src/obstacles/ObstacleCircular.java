@@ -69,6 +69,9 @@ public class ObstacleCircular extends Obstacle
      */
     public boolean obstacle_proximite_dans_segment(Vec2 A, Vec2 B)
     {
+    	// Ceci peut être le cas pour certain élément de jeu dont il ne faut pas vérifier les collisions
+    	if(radius < 0)
+    		return false;
     	/**
     	 * Ce code a été honteusement pompé sur http://openclassrooms.com/courses/theorie-des-collisions/formes-plus-complexes
     	 */
