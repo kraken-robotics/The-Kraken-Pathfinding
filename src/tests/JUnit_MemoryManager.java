@@ -81,13 +81,10 @@ public class JUnit_MemoryManager extends JUnit_Test {
 		for(int i = 0; i < 2; i++)
 		{
 			GameState<RobotChrono> clone0 = memorymanager.getClone(0);
-			log.debug("AAA", this);
 			Assert.assertEquals(0, clone0.getTempsDepuisRacine());
 			long date_initiale = clone0.getTempsDepuisDebut();
 			clone0.robot.sleep(2000);
-			log.debug("BBB", this);
 			GameState<RobotChrono> clone1 = memorymanager.getClone(1);
-			log.debug("CCC", this);
 			Assert.assertEquals(2000, clone1.getTempsDepuisRacine());
 			Assert.assertEquals(2000+date_initiale, clone1.getTempsDepuisDebut());
 			GameState<RobotChrono> clone2 = memorymanager.getClone(2);

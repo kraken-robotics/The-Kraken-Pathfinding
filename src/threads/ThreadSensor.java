@@ -3,6 +3,7 @@ package threads;
 import container.Service;
 import exceptions.FinMatchException;
 import obstacles.ObstacleManager;
+import pathfinding.GridSpace;
 import robot.RobotReal;
 import robot.cardsWrappers.SensorsCardWrapper;
 import smartMath.Vec2;
@@ -22,6 +23,7 @@ public class ThreadSensor extends AbstractThread implements Service
 	private Config config;
 	private SensorsCardWrapper capteur;
 	private RobotReal robotreal;
+	private GridSpace gridspace;
 	private ObstacleManager obstaclemanager;
 	
 	private double tempo = 0;
@@ -32,12 +34,13 @@ public class ThreadSensor extends AbstractThread implements Service
 	private int table_y = 2000;
 	private int capteurs_frequence = 5;
 	
-	public ThreadSensor(Log log, Config config, RobotReal robotreal, ObstacleManager obstaclemanager, SensorsCardWrapper capteur)
+	public ThreadSensor(Log log, Config config, RobotReal robotreal, GridSpace gridspace, ObstacleManager obstaclemanager, SensorsCardWrapper capteur)
 	{
 		this.log = log;
 		this.config = config;
 		this.capteur = capteur;
 		this.robotreal = robotreal;
+		this.gridspace = gridspace;
 		this.obstaclemanager = obstaclemanager;
 		
 		Thread.currentThread().setPriority(2);
@@ -93,6 +96,8 @@ public class ThreadSensor extends AbstractThread implements Service
 						if(!obstaclemanager.is_obstacle_fixe_present_capteurs(position_brute))
 						{
 							obstaclemanager.creer_obstacle(position);
+							// on recalcule les connexions
+							gridspace.reinitConnections(System.currentTimeMillis());
 							date_dernier_ajout = (int)System.currentTimeMillis();
 							log.debug("Nouvel obstacle en "+position, this);
 						}
