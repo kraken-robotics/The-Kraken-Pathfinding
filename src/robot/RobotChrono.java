@@ -7,6 +7,7 @@ import smartMath.Vec2;
 import utils.Log;
 import utils.Config;
 import enums.PathfindingNodes;
+import enums.SleepValues;
 import enums.Speed;
 import exceptions.FinMatchException;
 
@@ -22,7 +23,7 @@ public class RobotChrono extends Robot
 	protected double orientation;
 	
 	// Durée en millisecondes
-	protected long date = 0;
+	protected long date;
 	
 	public RobotChrono(Config config, Log log)
 	{
@@ -153,6 +154,16 @@ public class RobotChrono extends Robot
 	public void setInsiste(boolean insiste) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public void poserDeuxTapis() throws FinMatchException {
+		date += SleepValues.SLEEP_POSER_TAPIS.duree;
+	}
+
+	@Override
+	public void leverDeuxTapis() throws FinMatchException {
+		date += SleepValues.SLEEP_LEVER_TAPIS.duree;		
 	}
 
 }

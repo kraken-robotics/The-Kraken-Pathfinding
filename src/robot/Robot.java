@@ -43,6 +43,14 @@ public abstract class Robot implements Service
     public abstract void activer_asservissement_rotation() throws FinMatchException;
     public abstract long getDate();
     
+    /*
+     * Actionneurs
+     */
+    
+	public abstract void poserDeuxTapis() throws FinMatchException;
+	public abstract void leverDeuxTapis() throws FinMatchException;
+
+    
 	/**
 	 * Copy this dans rc. this reste inchangé.
 	 * 
@@ -62,6 +70,8 @@ public abstract class Robot implements Service
 	protected boolean symetrie;
 	protected Speed vitesse;
 	private int pointsObtenus = 0;
+	
+	private boolean tapisPoses = false;
 	
 	public Robot(Config config, Log log)
 	{
@@ -134,9 +144,16 @@ public abstract class Robot implements Service
     	return pointsObtenus;
     }
     
-    public void tapisRougePose(int nbTapis)
+    protected void tapisRougePose(int nbTapis)
     {
-    	pointsObtenus = pointsObtenus + 12*nbTapis;    	
+    	if(!tapisPoses)
+    		pointsObtenus = pointsObtenus + 12*nbTapis;    	
+    	tapisPoses = true;
+    }
+    
+    public boolean areTapisPoses()
+    {
+    	return tapisPoses;
     }
     
     /**
