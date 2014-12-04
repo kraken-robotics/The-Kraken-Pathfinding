@@ -56,6 +56,14 @@ public class ObstacleRectangular extends Obstacle
 		return (float) Math.sqrt(squaredDistance(point));
 	}
 	
+	public boolean isInObstacle(Vec2 point)
+	{
+		return (point.x < position.x + sizeX/2) &&
+				(point.x > position.x - sizeX/2) &&
+				(point.y < position.y + sizeY/2) &&
+				(point.y > position.y - sizeY/2);
+	}
+	
 	/**
 	 * Fourni la plus petite distance au carré entre le point fourni et l'obstacle
 	 * @param in
@@ -119,7 +127,7 @@ public class ObstacleRectangular extends Obstacle
 
 	public boolean isProcheObstacle(Vec2 point, int distance)
 	{
-		return squaredDistance(point) < distance+0.1f; // vu qu'on a une précision limitée, mieux vaut prendre un peu de marge
+		return squaredDistance(point) < (distance+0.01f) * (distance+0.01f); // vu qu'on a une précision limitée, mieux vaut prendre un peu de marge
 	}
 
 }

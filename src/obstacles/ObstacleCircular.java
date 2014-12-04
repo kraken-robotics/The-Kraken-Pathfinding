@@ -44,7 +44,7 @@ public class ObstacleCircular extends Obstacle
 
 	public boolean isProcheObstacle(Vec2 point, int distance)
 	{
-		return point.squaredDistance(position) <= (radius*+distance)*(radius*+distance);
+		return point.squaredDistance(position) <= (radius+distance)*(radius+distance);
 	}
 
 	public boolean collisionDroite(Vec2 A, Vec2 B)
