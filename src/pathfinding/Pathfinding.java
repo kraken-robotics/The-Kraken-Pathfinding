@@ -55,6 +55,7 @@ public class Pathfinding implements Service
 	{
 		ArrayList<PathfindingNodes> chemin = new ArrayList<PathfindingNodes>();
 		chemin.add(depart);
+		depart.incrementUse();
 
 		// optimisation si depart == arrivee
 		if(depart == arrivee)
@@ -99,10 +100,12 @@ public class Pathfinding implements Service
 		    	
 			if(current == arrivee)
 			{
+				arrivee.incrementUse();
 				chemin.add(arrivee);
 				tmp = came_from[current.ordinal()];
 				while (tmp != depart)
 				{
+					tmp.incrementUse();
 					chemin.add(0, tmp); // insert le point d'avant au debut du parcours
 			    	tmp = came_from[tmp.ordinal()];
 				}

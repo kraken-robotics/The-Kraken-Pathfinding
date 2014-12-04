@@ -33,8 +33,9 @@ public class ObstacleManager implements Service
     // Utilisé pour accélérer la copie
     private int hashObstacles;
 
+    private int dilatation_obstacle = 300;
     private int rayon_robot_adverse = 200;
-    private int distanceApproximation = 100; // TODO: mettre dans config
+    private int distanceApproximation = 50;
     private long dureeAvantPeremption = 0;
 
     public ObstacleManager(Log log, Config config)
@@ -45,17 +46,18 @@ public class ObstacleManager implements Service
         hashObstacles = 0;
 
         listObstaclesFixes = new ArrayList<Obstacle>();
-        listObstaclesFixes.add(new ObstacleRectangular(new Vec2(0,100),800,200)); // plaque rouge
+
+        listObstaclesFixes.add(new ObstacleRectangular(new Vec2(0,100),800,200)); // plaque rouge        
         listObstaclesFixes.add(new ObstacleRectangular(new Vec2(0,2000-580/2),1066,580)); // escalier
-        listObstaclesFixes.add(new ObstacleRectangular(new Vec2(-1500+400/2,1200),22,400)); // bandes de bois zone de départ
-        listObstaclesFixes.add(new ObstacleRectangular(new Vec2(1500-400/2,1200),22,400));
-        listObstaclesFixes.add(new ObstacleRectangular(new Vec2(-1500+400/2,800),22,400));
-        listObstaclesFixes.add(new ObstacleRectangular(new Vec2(1500-400/2,800),22,400));
+        listObstaclesFixes.add(new ObstacleRectangular(new Vec2(-1500+400/2,1200),400,22)); // bandes de bois zone de départ
+        listObstaclesFixes.add(new ObstacleRectangular(new Vec2(1500-400/2,1200),400,22));
+        listObstaclesFixes.add(new ObstacleRectangular(new Vec2(-1500+400/2,800),400,22));
+        listObstaclesFixes.add(new ObstacleRectangular(new Vec2(1500-400/2,800),400,22));
         listObstaclesFixes.add(new ObstacleRectangular(new Vec2(-1200+50/2,2000-50/2),50,50)); // distributeurs
         listObstaclesFixes.add(new ObstacleRectangular(new Vec2(-900+50/2,2000-50/2),50,50));
         listObstaclesFixes.add(new ObstacleRectangular(new Vec2(900-50/2,2000-50/2),50,50));
         listObstaclesFixes.add(new ObstacleRectangular(new Vec2(1200-50/2,2000-50/2),50,50));
-            
+ 
         updateConfig();
     }   
 
@@ -138,7 +140,7 @@ public class ObstacleManager implements Service
      * @param B
      * @return
      */
-	public boolean obstacle_fixe_dans_segment(Vec2 A, Vec2 B)
+	public boolean obstacle_fixe_dans_segment_pathfinding(Vec2 A, Vec2 B)
 	{
 		int x0 = A.x, y0 = A.y;
 		int x1 = B.x, y1 = B.y;
@@ -153,7 +155,7 @@ public class ObstacleManager implements Service
 		while(x0!=x1 || y0!=y1)
 		{
 			// il y a un obstacle: pas besoin de vérifier le reste du segment
-			if(is_obstacle_fixe_present(new Vec2(x0, y0), 0))
+			if(is_obstacle_fixe_present(new Vec2(x0, y0), dilatation_obstacle))
 				return true;
 			
 			e2 = err;
@@ -196,8 +198,12 @@ public class ObstacleManager implements Service
      * @param position
      * @return
      */
-    public boolean is_obstacle_fixe_present(Vec2 position) {
+    public boolean is_obstacle_fixe_present_capteurs(Vec2 position) {
     	return is_obstacle_fixe_present(position, distanceApproximation);
+    }
+
+    public boolean is_obstacle_fixe_present_pathfinding(Vec2 position) {
+    	return is_obstacle_fixe_present(position, dilatation_obstacle);
     }
     
     /**
@@ -214,10 +220,7 @@ public class ObstacleManager implements Service
         {
             Obstacle o = iterator2.next();
             if(is_obstacle_present(position, o, distance))
-            {
-                System.out.println("Obstacle: "+o);
                 return true;
-            }
         }
         return false;
     }
@@ -228,16 +231,13 @@ public class ObstacleManager implements Service
      * @param distance
      * @return
      */
-    public boolean is_obstacle_fixe_present(Vec2 position, int distance) {
+    private boolean is_obstacle_fixe_present(Vec2 position, int distance) {
         Iterator<Obstacle> iterator2 = listObstaclesFixes.iterator();
         while(iterator2.hasNext())
         {
             Obstacle o = iterator2.next();
             if(is_obstacle_present(position, o, distance))
-            {
-                System.out.println("Obstacle: "+o);
                 return true;
-            }
         }
         return false;
     }
@@ -269,6 +269,8 @@ public class ObstacleManager implements Service
 	public void updateConfig() {
 		rayon_robot_adverse = Integer.parseInt(config.get("rayon_robot_adverse"));
 		dureeAvantPeremption = Integer.parseInt(config.get("duree_peremption_obstacles"));		
+		dilatation_obstacle = Integer.parseInt(config.get("marge"))+Integer.parseInt(config.get("rayon_robot"));
+		distanceApproximation = Integer.parseInt(config.get("distance_max_entre_mesure_et_objet"));
 	}
     
 

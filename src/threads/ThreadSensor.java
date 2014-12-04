@@ -48,7 +48,6 @@ public class ThreadSensor extends AbstractThread implements Service
 	{
 		log.debug("Lancement du thread de capteurs", this);
 		int date_dernier_ajout = 0;
-//		boolean marche_arriere = false;
 		
 		while(!matchDemarre)
 		{
@@ -71,15 +70,14 @@ public class ThreadSensor extends AbstractThread implements Service
 
 			int distance = capteur.mesurer();
 			if (distance > 0 && distance < 70)
-				log.debug("Câlin !", this);
+				log.critical("Câlin !", this);
 			
 			if(distance >= 40 && distance < horizon_capteurs)
 			{
 				int distance_inter_robots = distance + rayon_robot_adverse + largeur_robot/2;
 				int distance_brute = distance + largeur_robot/2;
 				double theta = robotreal.getOrientation();
-//				if(marche_arriere)
-//					theta += Math.PI;
+
 				// On ne prend pas en compte le rayon du robot adverse dans la position brute. Il s'agit en fait du point effectivement vu
 				// Utilisé pour voir si l'obstacle n'est justement pas un robot adverse.
 				Vec2 position_brute = robotreal.getPosition().plusNewVector(new Vec2((int)((float)distance_brute * (float)Math.cos(theta)), (int)((float)distance_brute * (float)Math.sin(theta)))); // position du point détecté
@@ -90,7 +88,7 @@ public class ThreadSensor extends AbstractThread implements Service
 					// on vérifie qu'un obstacle n'a pas été ajouté récemment
 					if(System.currentTimeMillis() - date_dernier_ajout > tempo)
 					{
-						if(!obstaclemanager.is_obstacle_fixe_present(position_brute))
+						if(!obstaclemanager.is_obstacle_fixe_present_capteurs(position_brute))
 						{
 							obstaclemanager.creer_obstacle(position);
 							date_dernier_ajout = (int)System.currentTimeMillis();
@@ -118,6 +116,5 @@ public class ThreadSensor extends AbstractThread implements Service
 			table_y = Integer.parseInt(config.get("table_y"));
 			capteurs_frequence = Integer.parseInt(config.get("capteurs_frequence"));
 	}
-	
 
 }

@@ -40,25 +40,42 @@ public class GridSpace implements Service {
 		this.config = config;
 		this.obstaclemanager = obstaclemanager;
 		
+		check_pathfinding_nodes();
+		
 		// Il est très important de ne faire ce long calcul qu'une seule fois,
 		// à la première initialisation
 		if(isConnectedModel == null)
+		{
 			initStatic();
+		}
 	}
-	
+
+    public void check_pathfinding_nodes()
+    {
+    	for(PathfindingNodes i: PathfindingNodes.values())
+    		if(obstaclemanager.is_obstacle_fixe_present_pathfinding(i.getCoordonnees()))
+    			log.warning("Node "+i+" dans obstacle!", this);
+    }
+    
+
 	private void initStatic()
 	{
+		log.debug("Calcul de isConnectedModel", this);
 		isConnectedModel = new NodesConnection[PathfindingNodes.values().length][PathfindingNodes.values().length];
-		for(PathfindingNodes i : PathfindingNodes.values())
+
+		for(PathfindingNodes i : PathfindingNodes.values())			
 			for(PathfindingNodes j : PathfindingNodes.values())
 			{
-				if(obstaclemanager.obstacle_fixe_dans_segment(i.getCoordonnees(), j.getCoordonnees()))
+				if(i.ordinal() >= j.ordinal())
+					continue;
+				if(obstaclemanager.obstacle_fixe_dans_segment_pathfinding(i.getCoordonnees(), j.getCoordonnees()))
 					isConnectedModel[i.ordinal()][j.ordinal()] = NodesConnection.ALWAYS_IMPOSSIBLE;
 				else
 					isConnectedModel[i.ordinal()][j.ordinal()] = null;
-				isConnectedModel[j.ordinal()][i.ordinal()] = isConnectedModel[i.ordinal()][j.ordinal()];
+				isConnected[i.ordinal()][j.ordinal()] = isConnectedModel[i.ordinal()][j.ordinal()];
+				isConnected[j.ordinal()][i.ordinal()] = isConnectedModel[i.ordinal()][j.ordinal()];
 			}				
-	
+
 		for(PathfindingNodes i : PathfindingNodes.values())
 			for(PathfindingNodes j : PathfindingNodes.values())
 				if(isConnectedModel[i.ordinal()][j.ordinal()] != NodesConnection.ALWAYS_IMPOSSIBLE)
@@ -76,7 +93,11 @@ public class GridSpace implements Service {
 		obstaclemanager.supprimerObstaclesPerimes(date);
 		for(PathfindingNodes i : PathfindingNodes.values())
 			for(PathfindingNodes j : PathfindingNodes.values())
-				isConnected[i.ordinal()][j.ordinal()] = isConnectedModel[i.ordinal()][j.ordinal()];
+				if(i.ordinal() < j.ordinal())
+				{
+					isConnected[i.ordinal()][j.ordinal()] = isConnectedModel[i.ordinal()][j.ordinal()];
+					isConnected[j.ordinal()][i.ordinal()] = isConnectedModel[i.ordinal()][j.ordinal()];
+				}
 	}
 
 	/**
@@ -163,7 +184,7 @@ public class GridSpace implements Service {
     public boolean isTraversable(Vec2 pointA, Vec2 pointB)
     {
     	// Evaluation paresseuse importante, car obstacle_proximite_dans_segment est bien plus rapide que obstacle_fixe_dans_segment
-    	return !obstaclemanager.obstacle_proximite_dans_segment(pointA, pointB) && !obstaclemanager.obstacle_fixe_dans_segment(pointA, pointB);
+    	return !obstaclemanager.obstacle_proximite_dans_segment(pointA, pointB) && !obstaclemanager.obstacle_fixe_dans_segment_pathfinding(pointA, pointB);
     }
 
     public double getDistance(PathfindingNodes id1, PathfindingNodes id2)
@@ -180,8 +201,8 @@ public class GridSpace implements Service {
     {
     	do {
     		iterator++;
-    	} while((iterator == id_node_iterator || !isTraversable(PathfindingNodes.values()[iterator], PathfindingNodes.values()[id_node_iterator])) && iterator < PathfindingNodes.values().length);
-    	return iterator == PathfindingNodes.values().length;
+    	} while(iterator < PathfindingNodes.values().length && (iterator == id_node_iterator || !isTraversable(PathfindingNodes.values()[iterator], PathfindingNodes.values()[id_node_iterator])));
+    	return iterator != PathfindingNodes.values().length;
     }
     
     public void reinitIterator(PathfindingNodes node)
