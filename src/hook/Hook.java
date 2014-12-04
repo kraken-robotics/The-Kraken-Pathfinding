@@ -19,12 +19,10 @@ abstract public class Hook
 	protected ArrayList<Callback> callbacks = new ArrayList<Callback>();
 
 	//gestion des log
-	@SuppressWarnings("unused")
-	private Log log;
+	protected Log log;
 	
 	//endroit ou lire la configuration du robot
-	@SuppressWarnings("unused")
-	private Config config;
+	protected Config config;
 	
 	protected GameState<RobotReal> real_state;
 

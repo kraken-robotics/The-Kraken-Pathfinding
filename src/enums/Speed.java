@@ -18,14 +18,14 @@ public enum Speed
     READJUSTMENT(90, 90);
     
     
-    // valeurs des PWM (Phase Wave Modulation) // TODO: utilité ?
+    // valeurs des PWM (Phase Wave Modulation)
     public int PWMTranslation;
     public int PWMTotation;
     
-    // en milimètre par milisecondes ? //TODO: check this
+    // en milliseconde par millimètre
     public int invertedTranslationnalSpeed;
     
-    // en radians par milisecondes ? // TODO: check this
+    // en millisecondes par radians
     public int invertedRotationnalSpeed;
         
     /**

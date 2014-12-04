@@ -9,6 +9,8 @@ import container.Service;
 import pathfinding.Pathfinding;
 import enums.PathfindingNodes;
 import enums.ScriptNames;
+import enums.Speed;
+import enums.Vitesse;
 import exceptions.PathfindingException;
 import exceptions.PathfindingRobotInObstacleException;
 import exceptions.UnknownScriptException;
@@ -87,6 +89,7 @@ public class Execution implements Service {
 	{
 		ArrayList<PathfindingNodes> chemin;
 		chemin = pathfinding.computePath(gamestate.robot.getPosition(), s.point_entree(id_version), gamestate.gridspace);
+		gamestate.robot.set_vitesse(Speed.BETWEEN_SCRIPTS);
 		gamestate.robot.suit_chemin(chemin, hooks_entre_scripts);
 		s.agit(id_version, gamestate, false);	
 	}
