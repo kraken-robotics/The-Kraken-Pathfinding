@@ -2,6 +2,7 @@ package hook.types;
 
 import hook.Hook;
 import container.Service;
+import enums.RobotColor;
 import robot.RobotReal;
 import smartMath.Vec2;
 import strategie.GameState;
@@ -28,8 +29,8 @@ public class HookFactory implements Service
 	// la valeur de 20 est en mm, elle est remplcée par la valeur spécifié dans le fichier de config s'il y en a une
 	private int positionTolerancy = 20;
 	
-	// spécifie de quelle couleur est le robot (vert ou jaune). Uniquement donné par le fichier de config. // TODO: en faire un booléen
-	String color;
+	// spécifie de quelle couleur est le robot (vert ou jaune). Uniquement donné par le fichier de config.
+	RobotColor color;
 	
 	
 	
@@ -56,7 +57,7 @@ public class HookFactory implements Service
 	public void updateConfig()
 	{
 		// demande la couleur du robot pour ce match
-		color = config.get("couleur");
+		color = RobotColor.parse(config.get("couleur"));
 		
 		// demande avec quelle tolérance sur la précision on déclenche les hooks
 		positionTolerancy = Integer.parseInt(this.config.get("hooks_tolerance_mm"));		
@@ -76,7 +77,7 @@ public class HookFactory implements Service
 	 */
 	public Hook newHookPosition(Vec2 position, int tolerancy)
 	{
-		return new HookPosition(config, log, realState, position, tolerancy, color=="yellow");
+		return new HookPosition(config, log, realState, position, tolerancy, color == RobotColor.YELLOW);
 	}
 
 	/**
@@ -105,7 +106,7 @@ public class HookFactory implements Service
 	 */
 	public Hook newHookX(float xValue, int tolerancy)
 	{
-		return new HookX(config, log, realState, xValue, tolerancy, color=="yellow");
+		return new HookX(config, log, realState, xValue, tolerancy, color == RobotColor.YELLOW);
 	}
 	
 
@@ -132,9 +133,9 @@ public class HookFactory implements Service
     public Hook newHookXisGreater(float xValue, float tolerancy)
     {
     	// TODO: vérifier si ce if et le color=="yellow" ne font pas double emploi (et su coup s'annulent)
-        if(color=="yellow")
-            return new HookXisLesser(config, log, realState, xValue, tolerancy, color=="yellow");
-        return new HookXisGreater(config, log, realState, xValue, tolerancy, color=="yellow");
+        if(color == RobotColor.YELLOW)
+            return new HookXisLesser(config, log, realState, xValue, tolerancy, color == RobotColor.YELLOW);
+        return new HookXisGreater(config, log, realState, xValue, tolerancy, color == RobotColor.YELLOW);
     }
 
 	/**
@@ -148,9 +149,9 @@ public class HookFactory implements Service
     public Hook newHookXisLesser(float xValue, float tolerancy)
     {
     	// TODO: vérifier si ce if et le color=="yellow" ne font pas double emploi (et su coup s'annulent)
-        if(color=="yellow")
-            return new HookXisGreater(config, log, realState, xValue, tolerancy, color=="yellow");
-        return new HookXisLesser(config, log, realState, xValue, tolerancy, color=="yellow");
+        if(color == RobotColor.YELLOW)
+            return new HookXisGreater(config, log, realState, xValue, tolerancy, color == RobotColor.YELLOW);
+        return new HookXisLesser(config, log, realState, xValue, tolerancy, color == RobotColor.YELLOW);
     }
     
     
