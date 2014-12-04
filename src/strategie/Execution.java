@@ -55,14 +55,17 @@ public class Execution implements Service {
 		while(!Config.matchDemarre)
 			Sleep.sleep(100);
 		
-		// la sortie se fait par l'exception FinMatchException
-		while(true)
-		{
-		}
-		
 		// boucle exécution
+//		while(true)
+//		{
+		// la sortie se fait par l'exception FinMatchException
+//		}
+		
 		
 		// affichage stat
+		for(PathfindingNodes n: PathfindingNodes.values())
+			log.debug("Nous sommes passé "+n.getNbUse()+" fois par "+n, this);
+		log.debug("Nous avons normalement marqué "+gamestate.robot.getPointsObtenus()+" points.", this);			
 		
 	}
 	
