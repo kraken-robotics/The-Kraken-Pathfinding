@@ -26,6 +26,7 @@ public class GridSpace implements Service {
 	private PathfindingNodes nearestReachableNodeCache = null;
 	
 	// Rempli de ALWAYS_IMPOSSIBLE et null. Ne change pas.
+	// ATTENTION: valeur valide que si le premier indice est plus petit que le deuxième
 	private static NodesConnection[][] isConnectedModel = null;
 
 	// Dynamique.
@@ -48,10 +49,10 @@ public class GridSpace implements Service {
 			check_pathfinding_nodes();
 		}
 		// comme isConnected n'est pas static, il faut l'updater pour chaque instance.
-		updateIsConnected();
+		initIsConnected();
 	}
 
-	public void updateIsConnected()
+	private void initIsConnected()
 	{
     	for(PathfindingNodes i: PathfindingNodes.values())
         	for(PathfindingNodes j: PathfindingNodes.values())
@@ -66,7 +67,7 @@ public class GridSpace implements Service {
     {
     	for(PathfindingNodes i: PathfindingNodes.values())
     		if(obstaclemanager.is_obstacle_fixe_present_pathfinding(i.getCoordonnees()))
-    			log.warning("Node "+i+" dans obstacle!", this);
+    			log.warning("Node "+i+" dans obstacle fixe!", this);
     }
     
 
@@ -88,10 +89,7 @@ public class GridSpace implements Service {
 
 		for(PathfindingNodes i : PathfindingNodes.values())
 			for(PathfindingNodes j : PathfindingNodes.values())
-				if(isConnectedModel[i.ordinal()][j.ordinal()] != NodesConnection.ALWAYS_IMPOSSIBLE)
-				{
-					distances[i.ordinal()][j.ordinal()] = i.getCoordonnees().distance(j.getCoordonnees());
-				}
+				distances[i.ordinal()][j.ordinal()] = i.getCoordonnees().distance(j.getCoordonnees());
 	}
 	
 	/**
@@ -219,6 +217,28 @@ public class GridSpace implements Service {
     {
     	id_node_iterator = node.ordinal();
     	iterator = -1;
+    }
+    
+    /**
+     * Créer un obstacle à une certaine date
+     * Utilisé dans l'arbre des possibles.
+     * @param position
+     * @param date
+     */
+    public void creer_obstacle(Vec2 position, long date)
+    {
+    	obstaclemanager.creer_obstacle(position);
+    	reinitConnections(date);
+    }
+    
+    /**
+     * Créer un obstacle maintenant.
+     * Utilisé par le thread de capteurs.
+     * @param position
+     */
+    public void creer_obstacle(Vec2 position)
+    {
+    	creer_obstacle(position, System.currentTimeMillis());
     }
     
 }

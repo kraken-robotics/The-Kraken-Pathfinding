@@ -2,8 +2,6 @@ package tests;
 
 import org.junit.Assert;
 
-import obstacles.ObstacleManager;
-
 import org.junit.Before;
 import org.junit.Test;
 
@@ -21,13 +19,11 @@ import enums.ServiceNames;
 public class JUnit_GridSpace extends JUnit_Test {
 
 	private GridSpace gridspace;
-	private ObstacleManager obstaclemanager;
 	
 	@Before
     public void setUp() throws Exception {
         super.setUp();
         gridspace = (GridSpace) container.getService(ServiceNames.GRID_SPACE);
-		obstaclemanager = (ObstacleManager) container.getService(ServiceNames.OBSTACLE_MANAGER);
     }
    
 	@Test
@@ -66,12 +62,12 @@ public class JUnit_GridSpace extends JUnit_Test {
 		Assert.assertTrue(!gridspace.isTraversable(PathfindingNodes.SCRIPT_PLOT_10, PathfindingNodes.SCRIPT_PLOT_9));
 		Assert.assertTrue(!gridspace.isTraversable(PathfindingNodes.SCRIPT_PLOT_7, PathfindingNodes.SCRIPT_PLOT_9));
 		Assert.assertTrue(gridspace.isTraversable(PathfindingNodes.SCRIPT_PLOT_3, PathfindingNodes.SCRIPT_PLOT_1));
-		obstaclemanager.creer_obstacle(new Vec2(0, 600));
+		gridspace.creer_obstacle(new Vec2(0, 600));
 		// mise à jour du gridspace
 		gridspace.reinitConnections(System.currentTimeMillis());
 		Assert.assertTrue(!gridspace.isTraversable(PathfindingNodes.SCRIPT_PLOT_3, PathfindingNodes.SCRIPT_PLOT_1));
 	}
-	
+
     @Test
     public void test_symetrie() throws Exception
     {

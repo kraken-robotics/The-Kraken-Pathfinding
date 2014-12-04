@@ -95,9 +95,7 @@ public class ThreadSensor extends AbstractThread implements Service
 					{
 						if(!obstaclemanager.is_obstacle_fixe_present_capteurs(position_brute))
 						{
-							obstaclemanager.creer_obstacle(position);
-							// on recalcule les connexions
-							gridspace.reinitConnections(System.currentTimeMillis());
+							gridspace.creer_obstacle(position);
 							date_dernier_ajout = (int)System.currentTimeMillis();
 							log.debug("Nouvel obstacle en "+position, this);
 						}

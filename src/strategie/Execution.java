@@ -64,7 +64,7 @@ public class Execution implements Service {
 		
 		// affichage stat
 		for(PathfindingNodes n: PathfindingNodes.values())
-			log.debug("Nous sommes passé "+n.getNbUse()+" fois par "+n, this);
+			log.debug("Nous sommes passé "+n.getNbUse()+" fois par "+n+" "+n.getCoordonnees(), this);
 		log.debug("Nous avons normalement marqué "+gamestate.robot.getPointsObtenus()+" points.", this);			
 		
 	}
