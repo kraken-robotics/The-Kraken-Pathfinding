@@ -56,8 +56,18 @@ public class ThreadTimer extends AbstractThread implements Service
 		capteur.updateConfig();	
 		
 		// Attente du démarrage du match
-		while(!capteur.demarrage_match() && !Config.matchDemarre)
+		while(!Config.matchDemarre)
 		{
+			// Permet de signaler que le match a démarré
+			try {
+				Config.matchDemarre = capteur.demarrage_match();
+			} catch (SerialConnexionException e) {
+				e.printStackTrace();
+			} catch (FinMatchException e) {
+				// Normalement impossible...
+				stopThreads = true;
+				e.printStackTrace();
+			}
 			if(stopThreads)
 			{
 				log.debug("Arrêt du thread timer avant le début du match", this);
@@ -67,9 +77,6 @@ public class ThreadTimer extends AbstractThread implements Service
 		}
 
 		Config.dateDebutMatch = System.currentTimeMillis();
-
-		// Permet de signaler que le match a démarré
-		Config.matchDemarre = true;
 
 		// On démarre les capteurs
 		config.set("capteurs_on", true);
@@ -84,19 +91,11 @@ public class ThreadTimer extends AbstractThread implements Service
 		{
 			if(stopThreads)
 			{
-				log.debug("Arrêt du thread timer demandé durant le match", this);
+				log.debug("Arrêt du thread timer", this);
 				return;
 			}
 			obstaclemanager.supprimerObstaclesPerimes();
-			
-			try
-			{
-				Thread.sleep(obstacleRefreshInterval);
-			}
-			catch(Exception e)
-			{
-				log.warning(e.toString(), this);
-			}
+			Sleep.sleep(obstacleRefreshInterval);
 		}
 
 		onMatchEnded();

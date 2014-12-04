@@ -20,6 +20,7 @@ import strategie.GameState;
 import strategie.MemoryManager;
 import utils.Config;
 import utils.Log;
+import utils.Sleep;
 
 public class ThreadStrategy extends AbstractThread implements Service
 {
@@ -49,7 +50,17 @@ public class ThreadStrategy extends AbstractThread implements Service
 	public void run()
 	{
 		log.debug("Lancement du thread de stratégie", this);
-// TODO
+		while(!Config.matchDemarre)
+		{
+			if(stopThreads)
+			{
+				log.debug("Stoppage du thread de stratégie", this);
+				return;
+			}
+			Sleep.sleep(50);
+		}
+		
+		// TODO
 	}
 	
 	/**

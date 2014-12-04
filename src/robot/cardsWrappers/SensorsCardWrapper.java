@@ -75,9 +75,9 @@ public class SensorsCardWrapper implements Service
 		}
 	}
 	
-    public boolean demarrage_match()
+    public boolean demarrage_match() throws SerialConnexionException, FinMatchException
     {
-//    	log.debug(serie.communiquer("j", 1)[0], this);
+    	log.debug(serie.communiquer("j", 1)[0], this);
     	try {
     		return Integer.parseInt(serie.communiquer("j", 1)[0]) != 0;
     	}

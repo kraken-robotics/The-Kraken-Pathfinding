@@ -67,45 +67,45 @@ public class ThreadSensor extends AbstractThread implements Service
 		while(!finMatch)
 		{
 			try {
-			if(stopThreads)
-			{
-				log.debug("Stoppage du thread capteurs", this);
-				return;
-			}
+				if(stopThreads)
+				{
+					log.debug("Stoppage du thread capteurs", this);
+					return;
+				}
 
-			int distance = capteur.mesurer();
-			if (distance > 0 && distance < 70)
-				log.critical("Câlin !", this);
-			
-			if(distance >= 40 && distance < horizon_capteurs)
-			{
-				int distance_inter_robots = distance + rayon_robot_adverse + largeur_robot/2;
-				int distance_brute = distance + largeur_robot/2;
-				double theta = robotreal.getOrientation();
-
-				// On ne prend pas en compte le rayon du robot adverse dans la position brute. Il s'agit en fait du point effectivement vu
-				// Utilisé pour voir si l'obstacle n'est justement pas un robot adverse.
-				Vec2 position_brute = robotreal.getPosition().plusNewVector(new Vec2((int)((float)distance_brute * (float)Math.cos(theta)), (int)((float)distance_brute * (float)Math.sin(theta)))); // position du point détecté
-				Vec2 position = robotreal.getPosition().plusNewVector(new Vec2((int)(distance_inter_robots * Math.cos(theta)), (int)((float)distance_inter_robots * (float)Math.sin(theta)))); // centre supposé de l'obstacle détecté
-
-				// si la position est bien sur la table (histoire de pas détecter un arbitre)
-				if(position.x-200 > -table_x/2 && position.y > 200 && position.x+200 < table_x/2 && position.y+200 < table_y)
-					// on vérifie qu'un obstacle n'a pas été ajouté récemment
-					if(System.currentTimeMillis() - date_dernier_ajout > tempo)
-					{
-						if(!obstaclemanager.is_obstacle_fixe_present_capteurs(position_brute))
+				int distance = capteur.mesurer();
+				if (distance > 0 && distance < 70)
+					log.critical("Câlin !", this);
+				
+				if(distance >= 40 && distance < horizon_capteurs)
+				{
+					int distance_inter_robots = distance + rayon_robot_adverse + largeur_robot/2;
+					int distance_brute = distance + largeur_robot/2;
+					double theta = robotreal.getOrientation();
+	
+					// On ne prend pas en compte le rayon du robot adverse dans la position brute. Il s'agit en fait du point effectivement vu
+					// Utilisé pour voir si l'obstacle n'est justement pas un robot adverse.
+					Vec2 position_brute = robotreal.getPosition().plusNewVector(new Vec2((int)((float)distance_brute * (float)Math.cos(theta)), (int)((float)distance_brute * (float)Math.sin(theta)))); // position du point détecté
+					Vec2 position = robotreal.getPosition().plusNewVector(new Vec2((int)(distance_inter_robots * Math.cos(theta)), (int)((float)distance_inter_robots * (float)Math.sin(theta)))); // centre supposé de l'obstacle détecté
+	
+					// si la position est bien sur la table (histoire de pas détecter un arbitre)
+					if(position.x-200 > -table_x/2 && position.y > 200 && position.x+200 < table_x/2 && position.y+200 < table_y)
+						// on vérifie qu'un obstacle n'a pas été ajouté récemment
+						if(System.currentTimeMillis() - date_dernier_ajout > tempo)
 						{
-							gridspace.creer_obstacle(position);
-							date_dernier_ajout = (int)System.currentTimeMillis();
-							log.debug("Nouvel obstacle en "+position, this);
+							if(!obstaclemanager.is_obstacle_fixe_present_capteurs(position_brute))
+							{
+								gridspace.creer_obstacle(position);
+								date_dernier_ajout = (int)System.currentTimeMillis();
+								log.debug("Nouvel obstacle en "+position, this);
+							}
+							else	
+							    log.debug("L'objet vu en "+position_brute+" est un obstacle fixe.", this);
 						}
-						else	
-						    log.debug("L'objet vu est un obstacle fixe.", this);
-					}
-
-			}
-			
-			Sleep.sleep((long)(1000./capteurs_frequence));
+	
+				}
+				
+				Sleep.sleep((long)(1000./capteurs_frequence));
 			}
 			catch(FinMatchException e)
 			{
