@@ -25,7 +25,7 @@ public class GridSpace implements Service {
 	private int iterator, id_node_iterator;
 	private PathfindingNodes nearestReachableNodeCache = null;
 	
-	// Rempli de ALWAYS_IMPOSSIBLE et UNKNOW. Ne change pas.
+	// Rempli de ALWAYS_IMPOSSIBLE et null. Ne change pas.
 	private static NodesConnection[][] isConnectedModel = null;
 
 	// Dynamique.
@@ -47,8 +47,21 @@ public class GridSpace implements Service {
 			initStatic();
 			check_pathfinding_nodes();
 		}
+		// comme isConnected n'est pas static, il faut l'updater pour chaque instance.
+		updateIsConnected();
 	}
 
+	public void updateIsConnected()
+	{
+    	for(PathfindingNodes i: PathfindingNodes.values())
+        	for(PathfindingNodes j: PathfindingNodes.values())
+        		if(i.ordinal() < j.ordinal())
+        		{
+        			isConnected[i.ordinal()][j.ordinal()] = isConnectedModel[i.ordinal()][j.ordinal()];
+        			isConnected[j.ordinal()][i.ordinal()] = isConnectedModel[i.ordinal()][j.ordinal()];
+        		}
+	}
+	
     public void check_pathfinding_nodes()
     {
     	for(PathfindingNodes i: PathfindingNodes.values())
@@ -71,8 +84,6 @@ public class GridSpace implements Service {
 					isConnectedModel[i.ordinal()][j.ordinal()] = NodesConnection.ALWAYS_IMPOSSIBLE;
 				else
 					isConnectedModel[i.ordinal()][j.ordinal()] = null;
-				isConnected[i.ordinal()][j.ordinal()] = isConnectedModel[i.ordinal()][j.ordinal()];
-				isConnected[j.ordinal()][i.ordinal()] = isConnectedModel[i.ordinal()][j.ordinal()];
 			}				
 
 		for(PathfindingNodes i : PathfindingNodes.values())

@@ -50,7 +50,7 @@ public class SerialManager implements Service
 	public SerialManager(Log log, Config config) throws SerialManagerException
 	{
 		this.log = log;
-		log.debug("Instanciation serialmanager", this);
+
 		cards.add(this.carteAsservissement);
 		cards.add(this.carteCapteursActionneurs);
 

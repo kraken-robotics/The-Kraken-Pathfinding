@@ -60,16 +60,17 @@ public class JUnit_GridSpace extends JUnit_Test {
 		}
 	}
 	
-/*	@Test
+	@Test
 	public void test_traversable() throws Exception
 	{
 		Assert.assertTrue(!gridspace.isTraversable(PathfindingNodes.SCRIPT_PLOT_10, PathfindingNodes.SCRIPT_PLOT_9));
 		Assert.assertTrue(!gridspace.isTraversable(PathfindingNodes.SCRIPT_PLOT_7, PathfindingNodes.SCRIPT_PLOT_9));
 		Assert.assertTrue(gridspace.isTraversable(PathfindingNodes.SCRIPT_PLOT_3, PathfindingNodes.SCRIPT_PLOT_1));
-		obstaclemanager.creer_obstacle(new Vec2(0, 800));
+		obstaclemanager.creer_obstacle(new Vec2(0, 600));
+		// mise à jour du gridspace
+		gridspace.reinitConnections(System.currentTimeMillis());
 		Assert.assertTrue(!gridspace.isTraversable(PathfindingNodes.SCRIPT_PLOT_3, PathfindingNodes.SCRIPT_PLOT_1));
-	}*/
-
+	}
 	
     @Test
     public void test_symetrie() throws Exception
