@@ -110,8 +110,9 @@ public class ThreadTimer extends AbstractThread implements Service
 		
 		finMatch = true;
 
-		// TODO: ici la funny action s'il y en a une
-		
+		// DEPENDS_ON_RULES
+		// potentielle attente avant de tout désactiver afin de laisser la funny action
+
 		// fin du match : désasser final
 		try {
 				deplacements.disableRotationnalFeedbackLoop();

@@ -181,7 +181,8 @@ public class Container
 			                                                 (Pathfinding)getService(ServiceNames.PATHFINDING),
 			                                                 (GameState<RobotReal>)getService(ServiceNames.REAL_GAME_STATE),
 			                                                 (ScriptManager)getService(ServiceNames.SCRIPT_MANAGER),
-			                                                 (HookFactory)getService(ServiceNames.HOOK_FACTORY));
+			                                                 (HookFactory)getService(ServiceNames.HOOK_FACTORY),
+        													 (ThreadStrategy)getService(ServiceNames.THREAD_STRATEGY));
 		else if(serviceRequested == ServiceNames.SCRIPT_MANAGER)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ScriptManager(	(HookFactory)getService(ServiceNames.HOOK_FACTORY),
 																					(Config)getService(ServiceNames.CONFIG),
@@ -205,7 +206,8 @@ public class Container
 																		(Config)getService(ServiceNames.CONFIG),
 																		(MemoryManager)getService(ServiceNames.MEMORY_MANAGER),
 																		(ScriptManager)getService(ServiceNames.SCRIPT_MANAGER),
-																		(Pathfinding)getService(ServiceNames.PATHFINDING));
+																		(Pathfinding)getService(ServiceNames.PATHFINDING),
+																		(GameState<RobotReal>)getService(ServiceNames.REAL_GAME_STATE));
 		else if(serviceRequested == ServiceNames.MEMORY_MANAGER)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new MemoryManager(	(Config)getService(ServiceNames.CONFIG),
 													(Log)getService(ServiceNames.LOG),

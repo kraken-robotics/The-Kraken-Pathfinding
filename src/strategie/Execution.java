@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import container.Service;
 import pathfinding.Pathfinding;
 import enums.PathfindingNodes;
-import enums.ScriptNames;
 import enums.Speed;
 import exceptions.FinMatchException;
 import exceptions.PathfindingException;
@@ -20,6 +19,7 @@ import robot.RobotReal;
 import scripts.Decision;
 import scripts.Script;
 import scripts.ScriptManager;
+import threads.ThreadStrategy;
 import utils.Config;
 import utils.Log;
 import utils.Sleep;
@@ -32,10 +32,11 @@ public class Execution implements Service {
 	private ScriptManager scriptmanager;
 	private Pathfinding pathfinding;
 //	private HookFactory hookfactory;
+	private ThreadStrategy threadstrategy;
 	
 	private ArrayList<Hook> hooks_entre_scripts;
 	
-	public Execution(Log log, Config config, Pathfinding pathfinding, GameState<RobotReal> gamestate, ScriptManager scriptmanager, HookFactory hookfactory)
+	public Execution(Log log, Config config, Pathfinding pathfinding, GameState<RobotReal> gamestate, ScriptManager scriptmanager, HookFactory hookfactory, ThreadStrategy threadstrategy)
 	{
 		this.log = log;
 //		this.config = config;
@@ -43,6 +44,7 @@ public class Execution implements Service {
 		this.gamestate = gamestate;
 		this.scriptmanager = scriptmanager;
 //		this.hookfactory = hookfactory;
+		this.threadstrategy = threadstrategy;
 		
 	    // DEPENDS_ON_RULES
 		// TODO: hook qui renverse les plots en passant
@@ -53,14 +55,24 @@ public class Execution implements Service {
 	public void boucleExecution()
 	{
 		while(!Config.matchDemarre)
-			Sleep.sleep(100);
+			Sleep.sleep(20);
 		
 		// boucle exécution
-//		while(true)
-//		{
-		// la sortie se fait par l'exception FinMatchException
-//		}
+		while(true)
+		{
+			try {
+				executerScript(threadstrategy.getDecisions());
+			} catch (UnknownScriptException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (FinMatchException e) {
+				// la sortie se fait par l'exception FinMatchException
+				break;
+			}
+		}
 		
+		// DEPENDS_ON_RULES
+		// funny action (aucune cette année)
 		
 		// affichage stat
 		for(PathfindingNodes n: PathfindingNodes.values())
@@ -69,11 +81,11 @@ public class Execution implements Service {
 		
 	}
 	
-	public void executerScript(ArrayList<Decision> decisions, ScriptNames scriptSecours, int id_version) throws UnknownScriptException, FinMatchException
+	public void executerScript(Decision[] decisions) throws UnknownScriptException, FinMatchException
 	{
-		for(int id_decision = 0; id_decision < decisions.size(); id_decision++)
+		for(int id_decision = 0; id_decision < 2; id_decision++)
 		{
-			Decision decision_actuelle = decisions.get(id_decision);
+			Decision decision_actuelle = decisions[id_decision];
 			Script s = scriptmanager.getScript(decision_actuelle.script_name);
 
 			log.debug("On tente d'exécuter "+decision_actuelle.script_name, this);

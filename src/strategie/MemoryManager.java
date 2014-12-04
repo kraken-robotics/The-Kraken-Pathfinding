@@ -4,6 +4,7 @@ import java.util.Vector;
 
 import robot.RobotChrono;
 import robot.RobotReal;
+import smartMath.Vec2;
 import strategie.GameState;
 import utils.Log;
 import utils.Config;
@@ -22,6 +23,8 @@ public class MemoryManager implements Service {
 	private GameState<RobotChrono> out;
 	private Log log;
 
+	private Vec2 obstacle_position = null;
+	
 	public MemoryManager(Config config, Log log, GameState<RobotReal> real_state) throws FinMatchException
 	{
 		this.log = log;
@@ -58,6 +61,8 @@ public class MemoryManager implements Service {
         	// ça veut dire qu'on commence un nouvel arbre
         	real_state.commenceRacine();
             real_state.copy(out);
+            if(obstacle_position != null)
+            	out.gridspace.creer_obstacle(obstacle_position);
         }
         else
             products.get(profondeur-1).copy(out);
@@ -68,5 +73,11 @@ public class MemoryManager implements Service {
 	@Override
 	public void updateConfig()
 	{}
-			
+		
+
+	public void obstacle_dans_prochain_arbre(Vec2 pos)
+	{
+		obstacle_position = pos;
+	}
+
 }

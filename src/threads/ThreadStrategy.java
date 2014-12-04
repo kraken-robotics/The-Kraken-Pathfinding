@@ -13,6 +13,7 @@ import exceptions.UnknownScriptException;
 import exceptions.Locomotion.UnableToMoveException;
 import exceptions.serial.SerialConnexionException;
 import robot.RobotChrono;
+import robot.RobotReal;
 import scripts.Decision;
 import scripts.Script;
 import scripts.ScriptManager;
@@ -27,21 +28,32 @@ public class ThreadStrategy extends AbstractThread implements Service
 
 	private Log log;
 	private Config config;
+	
+	// Utilisation de l'arbre des possibles, branche avec obstacle
 	private MemoryManager memorymanager;
+	
+	// Parcours et appel des scripts
 	private ScriptManager scriptmanager;
+	
+	// Calcul des chemins entre scripts
 	private Pathfinding pathfinding;
 	
-	private ArrayList<Decision> decisions;
+	// Nécessaire aux scripts pour donner les versions disponibles
+	private GameState<RobotReal> real_gamestate;
+	
 	private long temps_max_anticipation;
 	private long dureeMatch;
+
+	private Decision[] decisions = null;
 	
-	public ThreadStrategy(Log log, Config config, MemoryManager memorymanager, ScriptManager scriptmanager, Pathfinding pathfinding) 
+	public ThreadStrategy(Log log, Config config, MemoryManager memorymanager, ScriptManager scriptmanager, Pathfinding pathfinding, GameState<RobotReal> real_gamestate) 
 	{
 		this.log = log;
 		this.config = config;
 		this.memorymanager = memorymanager;
 		this.scriptmanager = scriptmanager;
 		this.pathfinding = pathfinding;
+		this.real_gamestate = real_gamestate;
 		
 		Thread.currentThread().setPriority(4); // TODO
 	}
@@ -60,7 +72,50 @@ public class ThreadStrategy extends AbstractThread implements Service
 			Sleep.sleep(50);
 		}
 		
-		// TODO
+		while(!finMatch)
+		{
+			try {
+				synchronized(decisions)
+				{
+					decisions = new Decision[2];
+					// Décision optimale
+					decisions[0] = findMeilleureDecision();
+					try {
+						memorymanager.obstacle_dans_prochain_arbre(scriptmanager.getScript(decisions[0].script_name).point_entree(decisions[0].id_version).getCoordonnees());
+						// Décision de secours
+						decisions[1] = findMeilleureDecision();
+					} catch (UnknownScriptException e) {
+						e.printStackTrace();
+					}
+				}
+			} catch(FinMatchException e) {
+				// fin du match: on arrête le thread
+				break;
+			}
+			
+			// Tant qu'on n'a pas besoin d'une nouvelle décision
+			while(decisions != null)
+				Sleep.sleep(50);
+			
+		}
+	}
+
+	public Decision findMeilleureDecision() throws FinMatchException
+	{
+		Decision meilleure_decision = new Decision(null, -1, -1);
+		for(ScriptNames n: ScriptNames.values())
+			try {
+				for(int meta_version : scriptmanager.getScript(n).meta_version(real_gamestate))
+				{
+					Decision decision_trouvee = parcourtArbre(0, n, meta_version);
+					if(decision_trouvee.note > meilleure_decision.note)
+						meilleure_decision = decision_trouvee;
+				}
+			} catch (UnknownScriptException e) {
+				// Script inconnu, on le passe
+				continue;
+			}
+		return meilleure_decision;
 	}
 	
 	/**
@@ -137,18 +192,20 @@ public class ThreadStrategy extends AbstractThread implements Service
 		return ((double)temps) / ((double)points);
 	}
 
-	public ArrayList<Decision> getDecisions()
-	{
-		synchronized(decisions)
-		{
-			return decisions;
-		}
-	}
-
 	@Override
 	public void updateConfig() {
 		temps_max_anticipation = Integer.parseInt(config.get("temps_max_anticipation"));	
 		dureeMatch = 1000*Long.parseLong(config.get("temps_match"));
 	}
-	
+
+	public Decision[] getDecisions()
+	{
+		synchronized(decisions)
+		{
+			Decision[] tmp = decisions;
+			decisions = null;
+			return tmp;
+		}
+	}
+
 }
