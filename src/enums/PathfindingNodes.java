@@ -38,8 +38,7 @@ public enum PathfindingNodes {
 	SCRIPT_VERRE_1(new Vec2(750, 1100)), // verres
 	SCRIPT_VERRE_2(new Vec2(-750, 1100)),
 	
-	SCRIPT_TAPIS_1(new Vec2(250, 1300)), // tapis
-	SCRIPT_TAPIS_2(new Vec2(-250, 1300)),
+	SCRIPT_TAPIS(new Vec2(250, 1300)), // tapis
 	
 	SCRIPT_CLAP_1(new Vec2(1200, 300)), // clap
 	SCRIPT_CLAP_2(new Vec2(-900, 300)),
