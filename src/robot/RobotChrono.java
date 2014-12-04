@@ -8,7 +8,6 @@ import utils.Log;
 import utils.Config;
 import enums.PathfindingNodes;
 import enums.Speed;
-import exceptions.Locomotion.UnableToMoveException;
 
 /**
  * Robot particulier qui fait pas bouger le robot réel, mais détermine la durée des actions
@@ -22,7 +21,7 @@ public class RobotChrono extends Robot
 	protected double orientation;
 	
 	// Durée en millisecondes
-	private int duree = 0;
+	protected long date = 0;
 	
 	public RobotChrono(Config config, Log log)
 	{
@@ -41,9 +40,8 @@ public class RobotChrono extends Robot
 
 	@Override
     public void avancer(int distance, ArrayList<Hook> hooks, boolean mur)
-            throws UnableToMoveException
 	{
-		duree += Math.abs(distance)*vitesse.invertedTranslationnalSpeed;
+		date += Math.abs(distance)*vitesse.invertedTranslationnalSpeed;
 		Vec2 ecart;
         ecart = new Vec2((int)(distance*Math.cos(orientation)), (int)(distance*Math.sin(orientation)));
 
@@ -55,16 +53,11 @@ public class RobotChrono extends Robot
 	{
 	    this.vitesse = vitesse;
 	}
-
-	// Méthodes propres à RobotChrono
-	public void initChrono()
-	{
-		duree = 0;
-	}
 	
-	public int get_compteur()
+	@Override
+	public long getDate()
 	{
-		return duree;
+		return date;
 	}
 
 	public RobotChrono clone()
@@ -76,7 +69,6 @@ public class RobotChrono extends Robot
 
 	@Override
     public void tourner(double angle, ArrayList<Hook> hooks, boolean mur)
-            throws UnableToMoveException
 	{
         if(symetrie)
             angle = Math.PI-angle;
@@ -89,12 +81,11 @@ public class RobotChrono extends Robot
 		if(delta > Math.PI)
 			delta = 2*(float)Math.PI - delta;
 		orientation = angle;
-		duree += delta*vitesse.invertedRotationnalSpeed;
+		date += delta*vitesse.invertedRotationnalSpeed;
 	}
 
 	@Override
     public void suit_chemin(ArrayList<PathfindingNodes> chemin, ArrayList<Hook> hooks)
-            throws UnableToMoveException
 	{
 		for(PathfindingNodes point: chemin)
 			va_au_point(point.getCoordonnees());
@@ -104,7 +95,7 @@ public class RobotChrono extends Robot
 	{
 		if(symetrie)
 			point.x *= -1;
-		duree += position.distance(point)*vitesse.invertedTranslationnalSpeed;
+		date += position.distance(point)*vitesse.invertedTranslationnalSpeed;
 		position = point.clone();
 	}
 
@@ -123,7 +114,7 @@ public class RobotChrono extends Robot
 	@Override
 	public void sleep(long duree) 
 	{
-		this.duree += duree;
+		this.date += duree;
 	}
 	
 	@Override

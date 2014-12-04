@@ -39,14 +39,13 @@ public class GridSpace implements Service {
 		this.log = log;
 		this.config = config;
 		this.obstaclemanager = obstaclemanager;
-		
-		check_pathfinding_nodes();
-		
+				
 		// Il est très important de ne faire ce long calcul qu'une seule fois,
 		// à la première initialisation
 		if(isConnectedModel == null)
 		{
 			initStatic();
+			check_pathfinding_nodes();
 		}
 	}
 

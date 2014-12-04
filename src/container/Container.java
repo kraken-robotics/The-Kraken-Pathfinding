@@ -17,6 +17,7 @@ import strategie.MemoryManager;
 import table.Table;
 import threads.AbstractThread;
 import threads.ThreadSensor;
+import threads.ThreadStrategy;
 import threads.ThreadTimer;
 import robot.Locomotion;
 import robot.RobotReal;
@@ -193,6 +194,12 @@ public class Container
 																		(RobotReal)getService(ServiceNames.ROBOT_REAL),
 																		(ObstacleManager)getService(ServiceNames.OBSTACLE_MANAGER),
 																		(SensorsCardWrapper)getService(ServiceNames.SENSORS_CARD_WRAPPER));
+		else if(serviceRequested == ServiceNames.THREAD_STRATEGY)
+			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadStrategy((Log)getService(ServiceNames.LOG),
+																		(Config)getService(ServiceNames.CONFIG),
+																		(MemoryManager)getService(ServiceNames.MEMORY_MANAGER),
+																		(ScriptManager)getService(ServiceNames.SCRIPT_MANAGER),
+																		(Pathfinding)getService(ServiceNames.PATHFINDING));
 		else if(serviceRequested == ServiceNames.CHECK_UP)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new CheckUp(	(Log)getService(ServiceNames.LOG),
 													(RobotReal)getService(ServiceNames.ROBOT_REAL));
@@ -222,6 +229,8 @@ public class Container
 			((Thread)instanciedServices[ServiceNames.THREAD_SENSOR.ordinal()]).run();
 			getService(ServiceNames.THREAD_TIMER);
 			((Thread)instanciedServices[ServiceNames.THREAD_TIMER.ordinal()]).run();
+			getService(ServiceNames.THREAD_STRATEGY);
+			((Thread)instanciedServices[ServiceNames.THREAD_STRATEGY.ordinal()]).run();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

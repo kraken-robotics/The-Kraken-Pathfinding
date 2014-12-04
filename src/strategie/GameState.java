@@ -27,11 +27,7 @@ public class GameState<R extends Robot> implements Service
 
     private Log log;
     private Config config;
-    
-    // time contient le temps écoulé depuis le début du match en ms
-    // utilisé uniquement dans l'arbre des possibles
-    public long temps_depuis_debut;
-    public long temps_depuis_racine;  
+    private long dateDebutRacine;
 
     /**
      * De manière publique, on ne peut créer qu'un GameState<RobotReal>, et pas de GameState<RobotChrono>
@@ -61,7 +57,7 @@ public class GameState<R extends Robot> implements Service
      */
 	public GameState<RobotChrono> clone()
 	{
-		GameState<RobotChrono> cloned = new GameState<RobotChrono>(config, log, table.clone(), gridspace.clone(temps_depuis_debut), new RobotChrono(config, log));
+		GameState<RobotChrono> cloned = new GameState<RobotChrono>(config, log, table.clone(), gridspace.clone(getTempsDepuisDebut()), new RobotChrono(config, log));
 		copy(cloned);
 		return cloned;
 	}
@@ -73,23 +69,12 @@ public class GameState<R extends Robot> implements Service
      */
     public void copy(GameState<RobotChrono> other)
     {
-    	// Si on fait le clone d'un GameState<RobotChrono>, on met à jour son temps auparavant
-    	if(robot instanceof RobotChrono)
-    	{
-    		int temps_ecoule = ((RobotChrono)robot).get_compteur();
-    		((RobotChrono)robot).initChrono();
-    		temps_depuis_debut = temps_depuis_debut + temps_ecoule;
-    		temps_depuis_racine = temps_depuis_racine + temps_ecoule;    		
-    	}
-
         table.copy(other.table);
-        robot.copy(other.robot);
-        
-        // mise à jour des obstacles incluse dans la copie
-        gridspace.copy(other.gridspace, temps_depuis_debut);
-
-        other.temps_depuis_debut = temps_depuis_debut;
-        other.temps_depuis_racine = temps_depuis_racine;
+        // réinitialisation de la durée incluse dans la copie
+        robot.copy(other.robot);        
+        // mise à jour des obstacles et du cache incluse dans la copie
+        gridspace.copy(other.gridspace, robot.getDate() - Config.dateDebutMatch);
+        other.dateDebutRacine = dateDebutRacine;
     }
 
     @Override
@@ -99,4 +84,20 @@ public class GameState<R extends Robot> implements Service
         robot.updateConfig();
         gridspace.updateConfig();
     }
+   
+    public long getTempsDepuisDebut()
+    {
+    	return robot.getDate() - Config.dateDebutMatch;
+    }
+
+    public long getTempsDepuisRacine()
+    {
+    	return robot.getDate() - dateDebutRacine;
+    }
+    
+    public void commenceRacine()
+    {
+    	dateDebutRacine = System.currentTimeMillis();
+    }
+
 }

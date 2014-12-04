@@ -40,7 +40,8 @@ public abstract class Robot implements Service
     public abstract void setInsiste(boolean insiste);
     public abstract void desactiver_asservissement_rotation();
     public abstract void activer_asservissement_rotation();
-
+    public abstract long getDate();
+    
 	/**
 	 * Copy this dans rc. this reste inchangé.
 	 * 
@@ -51,6 +52,7 @@ public abstract class Robot implements Service
     	// pas besoin de copier symétrie car elle ne change pas en cours de match
     	rc.vitesse = vitesse;
     	((Robot)rc).pointsObtenus = pointsObtenus;
+    	rc.date = getDate();
     }
 
 	// Dépendances
@@ -125,6 +127,7 @@ public abstract class Robot implements Service
     
     // DEPENDS ON RULES
 
+    // Point obtenus depuis le dernier clone! Et pas depuis le début du match.
     public int getPointsObtenus()
     {
     	return pointsObtenus;

@@ -18,10 +18,12 @@ public class MemoryManager implements Service {
 
 	private Vector<GameState<RobotChrono>> products = new Vector<GameState<RobotChrono>>();
 	private GameState<RobotReal> real_state;
-	private GameState<RobotChrono> out ;
+	private GameState<RobotChrono> out;
+	private Log log;
 
 	public MemoryManager(Config config, Log log, GameState<RobotReal> real_state)
 	{
+		this.log = log;
 	    this.real_state = real_state;
 	    products.add(real_state.clone());
 	}
@@ -36,10 +38,14 @@ public class MemoryManager implements Service {
 		// On doit agrandit products
 		if(products.size() <= profondeur)
 		{
+			log.debug("Aggrandissement arbre", this);
 			GameState<RobotChrono> dernier = products.get(products.size()-1);
 	
 		    while(products.size() <= profondeur)
 	            products.add(dernier.clone());
+		    return products.get(profondeur);
+		    // c'est déjà à jour (vu qu'on vient de faire un clone)
+		    // pas besoin de copy en plus
 		}
 	    
         out = products.get(profondeur);
@@ -47,8 +53,8 @@ public class MemoryManager implements Service {
         // Si la profondeur vaut 0, alors l'arbre veut un clone de real_state
         if(profondeur == 0)
         {
-            real_state.temps_depuis_debut = System.currentTimeMillis() - Config.dateDebutMatch;
-            real_state.temps_depuis_racine = 0;
+        	// ça veut dire qu'on commence un nouvel arbre
+        	real_state.commenceRacine();
             real_state.copy(out);
         }
         else
