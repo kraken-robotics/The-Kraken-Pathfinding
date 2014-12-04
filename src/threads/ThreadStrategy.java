@@ -66,7 +66,7 @@ public class ThreadStrategy extends AbstractThread implements Service
 			if(state.getTempsDepuisRacine() > temps_max_anticipation || state.getTempsDepuisDebut() > dureeMatch)
 				return null;
 
-			long tempsAvantScript = state.getTempsDepuisDebut();
+			long tempsAvantScript = state.robot.getDate();
 			int pointsAvantScript = state.robot.getPointsObtenus();
 			
 			Script s = scriptmanager.getScript(nomScript);
@@ -95,9 +95,11 @@ public class ThreadStrategy extends AbstractThread implements Service
 				e.printStackTrace();
 			}
 
-			long tempsApresScript = state.getTempsDepuisDebut();
+			long tempsApresScript = state.robot.getDate();
 			int pointsApresScript = state.robot.getPointsObtenus();
 
+			double note = calculeNote((int)(tempsApresScript-tempsAvantScript), pointsApresScript-pointsAvantScript);
+			
 			Decision tmp_decision;
 			
 			for(ScriptNames n : ScriptNames.values())
@@ -107,7 +109,7 @@ public class ThreadStrategy extends AbstractThread implements Service
 					if(meilleure_decision == null || meilleure_decision.note < tmp_decision.note)
 						meilleure_decision = tmp_decision;
 				}
-			meilleure_decision.note = meilleure_decision.note + calculeNote(state, meilleure_decision.state);
+			meilleure_decision.note = meilleure_decision.note + note;
 			meilleure_decision.state = state;
 		} catch (UnknownScriptException e) {
 			// Script inconnu? On annule cette décision.
@@ -117,9 +119,9 @@ public class ThreadStrategy extends AbstractThread implements Service
 		return meilleure_decision;		
 	}
 	
-	private double calculeNote(GameState<RobotChrono> stateBefore, GameState<RobotChrono> stateAfter)
+	private double calculeNote(int temps, int points)
 	{
-		return ((double)(stateAfter.robot.getPointsObtenus() - stateBefore.robot.getPointsObtenus())) / ((double)(stateAfter.getTempsDepuisRacine() - stateBefore.getTempsDepuisRacine()));
+		return ((double)temps) / ((double)points);
 	}
 
 	public ArrayList<Decision> getDecisions()

@@ -154,7 +154,8 @@ public class Container
 															 (Log)getService(ServiceNames.LOG),
 															 (GameState<RobotReal>)getService(ServiceNames.REAL_GAME_STATE));
 		else if(serviceRequested == ServiceNames.ROBOT_REAL)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new RobotReal((Locomotion)getService(ServiceNames.LOCOMOTION),
+			instanciedServices[serviceRequested.ordinal()] = (Service)new RobotReal((ActuatorCardWrapper)getService(ServiceNames.ACTUATOR_CARD_WRAPPER),
+															(Locomotion)getService(ServiceNames.LOCOMOTION),
 															 (Table)getService(ServiceNames.TABLE),
 															 (Config)getService(ServiceNames.CONFIG),
 															 (Log)getService(ServiceNames.LOG));		
@@ -200,9 +201,6 @@ public class Container
 																		(MemoryManager)getService(ServiceNames.MEMORY_MANAGER),
 																		(ScriptManager)getService(ServiceNames.SCRIPT_MANAGER),
 																		(Pathfinding)getService(ServiceNames.PATHFINDING));
-		else if(serviceRequested == ServiceNames.CHECK_UP)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new CheckUp(	(Log)getService(ServiceNames.LOG),
-													(RobotReal)getService(ServiceNames.ROBOT_REAL));
 		else if(serviceRequested == ServiceNames.MEMORY_MANAGER)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new MemoryManager(	(Config)getService(ServiceNames.CONFIG),
 													(Log)getService(ServiceNames.LOG),
@@ -226,11 +224,16 @@ public class Container
 	{
 		try {
 			getService(ServiceNames.THREAD_SENSOR);
-			((Thread)instanciedServices[ServiceNames.THREAD_SENSOR.ordinal()]).run();
+			log.debug("AA", this);
+			((Thread)instanciedServices[ServiceNames.THREAD_SENSOR.ordinal()]).start();
+			log.debug("AA'", this);
 			getService(ServiceNames.THREAD_TIMER);
-			((Thread)instanciedServices[ServiceNames.THREAD_TIMER.ordinal()]).run();
+			log.debug("BB", this);
+
+			((Thread)instanciedServices[ServiceNames.THREAD_TIMER.ordinal()]).start();
+			log.debug("CC", this);
 			getService(ServiceNames.THREAD_STRATEGY);
-			((Thread)instanciedServices[ServiceNames.THREAD_STRATEGY.ordinal()]).run();
+			((Thread)instanciedServices[ServiceNames.THREAD_STRATEGY.ordinal()]).start();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

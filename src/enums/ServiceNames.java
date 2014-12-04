@@ -25,7 +25,6 @@ public enum ServiceNames {
 	 THREAD_SENSOR,
 	 THREAD_TIMER,
 	 THREAD_STRATEGY,
-	 CHECK_UP,
 	 OBSTACLE_MANAGER,
 	 GRID_SPACE;
 	

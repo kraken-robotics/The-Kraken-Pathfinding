@@ -25,6 +25,16 @@ public class JUnit_Container extends JUnit_Test {
 		Assert.assertTrue(container.afficheNonInstancies());
 	}
 
+	// Tous les services doivent être appelés par le lanceur au final
+	// Sinon, ils ne seraient pas utilisés...
+	@Test
+	public void test_instanciation_par_lanceur() throws Exception
+	{
+		container.getService(ServiceNames.EXECUTION);
+		container.startAllThreads();
+		Assert.assertTrue(container.afficheNonInstancies());
+	}
+
 	/**
 	 * Test vérifiant que le système de containers se comporte bien si on appelle deux fois  le meme service 
 	 * @throws Exception
