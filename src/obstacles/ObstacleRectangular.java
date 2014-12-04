@@ -24,6 +24,16 @@ public class ObstacleRectangular extends Obstacle
 		this.sizeX = sizeX;
 	}
 
+	public int getSizeX()
+	{
+		return sizeX;
+	}
+
+	public int getSizeY()
+	{
+		return sizeY;
+	}
+
 	// A priori non utilisé
 	public ObstacleRectangular clone()
 	{

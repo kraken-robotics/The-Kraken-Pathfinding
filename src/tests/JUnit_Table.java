@@ -42,11 +42,6 @@ public class JUnit_Table extends JUnit_Test {
     	Assert.assertNotEquals(old_hash, new_hash);
 
     	old_hash = new_hash;
-    	table.setTapisPut(0);
-    	new_hash = table.getHash();
-    	Assert.assertNotEquals(old_hash, new_hash);
-
-    	old_hash = new_hash;
     	table.setVerreDone(0);
     	new_hash = table.getHash();
     	Assert.assertNotEquals(old_hash, new_hash);

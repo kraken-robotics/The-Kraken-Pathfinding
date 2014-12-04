@@ -1,0 +1,188 @@
+package tests.graphicLib;
+
+import javax.imageio.ImageIO;
+import javax.swing.*;
+
+import obstacles.Obstacle;
+import obstacles.ObstacleCircular;
+import obstacles.ObstacleRectangular;
+import smartMath.Vec2;
+import table.GameElement;
+
+import java.awt.*;
+import java.awt.font.TextAttribute;
+import java.io.File;
+import java.io.IOException;
+import java.text.AttributedString;
+import java.util.ArrayList;
+
+public class Fenetre extends JPanel {
+
+	private static final long serialVersionUID = 1L;
+
+	private int sizeX = 450, sizeY = 300;
+	private ArrayList<Vec2> pointsADessiner = new ArrayList<Vec2>();
+	private GameElement[] listGameElement;
+	private ArrayList<Obstacle> listObstaclesFixes;
+	private ArrayList<ObstacleCircular> listObstaclesMobiles;
+	private Image image;
+	private int dilatationObstacle;
+    private Font font = new Font("Consolas", Font.PLAIN, 14);
+	private AttributedString affichage = new AttributedString("");
+    
+	public Fenetre()
+	{
+		try {
+			image = ImageIO.read(new File("table.png"));
+			sizeX = image.getWidth(this);
+			sizeY = image.getHeight(this);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		new MouseListener(this);
+	}
+	
+	public void setDilatationObstacle(int dilatationObstacle)
+	{
+		this.dilatationObstacle = dilatationObstacle;
+	}
+	
+	public void addPoint(Vec2 point)
+	{
+		pointsADessiner.add(point);
+	}
+	
+	private int distanceXtoWindow(int dist)
+	{
+		return dist*sizeX/3000;
+	}
+
+	private int distanceYtoWindow(int dist)
+	{
+		return dist*sizeY/2000;
+	}
+
+	private int WindowToX(int x)
+	{
+		return x*3000/sizeX-1500;
+	}
+
+	private int WindowToY(int y)
+	{
+		return 2000-y*2000/sizeY;
+	}
+
+	private int XtoWindow(int x)
+	{
+		return (x+1500)*sizeX/3000;
+	}
+
+	private int YtoWindow(int y)
+	{
+		return (2000-y)*sizeY/2000;
+	}
+
+	public void paint(Graphics g)
+	{
+		g.drawImage(image, 0, 0, this);
+
+		// rouge transparent
+		g.setColor(new Color(255, 0, 0, 40));
+		g.setColor(Color.RED);
+		for(Obstacle o : listObstaclesFixes)
+			paintObstacle(o,g,dilatationObstacle);
+
+		g.setColor(Color.RED);
+		for(Obstacle o : listObstaclesFixes)
+			paintObstacle(o, g,0);
+
+		g.setColor(Color.YELLOW);
+		for(Vec2 pos : pointsADessiner)
+			g.fillOval(XtoWindow(pos.x)-5, YtoWindow(pos.y)-5, 10, 10);
+
+		// vert transparent
+		g.setColor(new Color(0, 255, 0, 40));
+		for(GameElement o : listGameElement)
+			paintObstacle(o,g,dilatationObstacle);
+
+		g.setColor(Color.GREEN);
+		for(GameElement o : listGameElement)
+			paintObstacle(o,g,0);
+		
+		g.setColor(Color.BLUE);
+		for(ObstacleCircular o : listObstaclesMobiles)
+			paintObstacle(o, g, 0);
+		
+		g.setColor(Color.WHITE);
+		g.fillRect(sizeX, 0, 200, sizeY);		
+
+		g.setColor(Color.BLACK);
+	    g.drawString(affichage.getIterator(), sizeX+50, 30);
+
+	}
+
+	public void showOnFrame() {
+		setBackground(Color.WHITE);
+		setPreferredSize(new Dimension(sizeX+200,sizeY));
+		JFrame frame = new JFrame("Test");
+		frame.getContentPane().add(this);
+		frame.pack();
+		frame.setVisible(true);
+	}
+
+	public void setGameElement(GameElement[] listGameElement)
+	{
+		this.listGameElement = listGameElement;
+	}
+
+	public void setObstaclesFixes(ArrayList<Obstacle> listObstaclesFixes)
+	{
+		this.listObstaclesFixes = listObstaclesFixes;
+	}
+
+	public void setObstaclesMobiles(ArrayList<ObstacleCircular> listObstaclesMobiles)
+	{
+		this.listObstaclesMobiles = listObstaclesMobiles;
+	}
+
+	public void paintObstacle(ObstacleCircular o, Graphics g, int dilatationObstacle)
+	{
+		if(o.getRadius() <= 0)
+			g.fillOval(XtoWindow(o.getPosition().x)-5, YtoWindow(o.getPosition().y)-5, 10, 10);
+		else
+			g.fillOval(XtoWindow(o.getPosition().x-o.getRadius()-dilatationObstacle), YtoWindow(o.getPosition().y+o.getRadius()+dilatationObstacle), distanceXtoWindow((o.getRadius()+dilatationObstacle)*2), distanceYtoWindow((o.getRadius()+dilatationObstacle)*2));		
+	}
+	
+	public void paintObstacle(ObstacleRectangular o, Graphics g, int dilatationObstacle)
+	{
+		if(dilatationObstacle != 0)
+		{
+			// les quatre coins
+			g.fillOval(XtoWindow(o.getPosition().x-o.getSizeX()/2-dilatationObstacle), YtoWindow(o.getPosition().y+o.getSizeY()/2+dilatationObstacle), distanceXtoWindow(dilatationObstacle*2), distanceYtoWindow(dilatationObstacle*2));
+			g.fillOval(XtoWindow(o.getPosition().x-o.getSizeX()/2-dilatationObstacle), YtoWindow(o.getPosition().y-o.getSizeY()/2+dilatationObstacle), distanceXtoWindow(dilatationObstacle*2), distanceYtoWindow(dilatationObstacle*2));		
+			g.fillOval(XtoWindow(o.getPosition().x+o.getSizeX()/2-dilatationObstacle), YtoWindow(o.getPosition().y+o.getSizeY()/2+dilatationObstacle), distanceXtoWindow(dilatationObstacle*2), distanceYtoWindow(dilatationObstacle*2));		
+			g.fillOval(XtoWindow(o.getPosition().x+o.getSizeX()/2-dilatationObstacle), YtoWindow(o.getPosition().y-o.getSizeY()/2+dilatationObstacle), distanceXtoWindow(dilatationObstacle*2), distanceYtoWindow(dilatationObstacle*2));		
+
+			g.fillRect(XtoWindow(o.getPosition().x-o.getSizeX()/2-dilatationObstacle), YtoWindow(o.getPosition().y+o.getSizeY()/2), distanceXtoWindow(dilatationObstacle), distanceYtoWindow(o.getSizeY()));
+			g.fillRect(XtoWindow(o.getPosition().x+o.getSizeX()/2), YtoWindow(o.getPosition().y+o.getSizeY()/2), distanceXtoWindow(dilatationObstacle), distanceYtoWindow(o.getSizeY()));
+			g.fillRect(XtoWindow(o.getPosition().x-o.getSizeX()/2), YtoWindow(o.getPosition().y+o.getSizeY()/2+dilatationObstacle), distanceXtoWindow(o.getSizeX()), distanceYtoWindow(dilatationObstacle));
+			g.fillRect(XtoWindow(o.getPosition().x-o.getSizeX()/2), YtoWindow(o.getPosition().y-o.getSizeY()/2), distanceXtoWindow(o.getSizeX()), distanceYtoWindow(dilatationObstacle));
+		}
+		g.fillRect(XtoWindow(o.getPosition().x-o.getSizeX()/2), YtoWindow(o.getPosition().y+o.getSizeY()/2), distanceXtoWindow(o.getSizeX()), distanceYtoWindow(o.getSizeY()));
+	}
+	
+	// Impossible
+	public void paintObstacle(Obstacle o, Graphics g, int dilatationObstacle)
+	{
+		if(o instanceof ObstacleRectangular)
+			paintObstacle((ObstacleRectangular)o, g, dilatationObstacle);
+		else if(o instanceof ObstacleCircular)
+			paintObstacle((ObstacleCircular)o, g, dilatationObstacle);
+	}
+
+	public void afficheCoordonnees(Point point)
+	{
+		affichage = new AttributedString("("+WindowToX((int)point.getX())+", "+WindowToY((int)point.getY())+")");
+	}
+	
+}

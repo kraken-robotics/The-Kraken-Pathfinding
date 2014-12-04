@@ -58,7 +58,13 @@ public class ObstacleManager implements Service
         listObstaclesFixes.add(new ObstacleRectangular(new Vec2(-900+50/2,2000-50/2),50,50));
         listObstaclesFixes.add(new ObstacleRectangular(new Vec2(900-50/2,2000-50/2),50,50));
         listObstaclesFixes.add(new ObstacleRectangular(new Vec2(1200-50/2,2000-50/2),50,50));
- 
+
+        // bords
+        listObstaclesFixes.add(new ObstacleRectangular(new Vec2(0,0),3000,1));
+        listObstaclesFixes.add(new ObstacleRectangular(new Vec2(-1500,1000),1,2000));
+        listObstaclesFixes.add(new ObstacleRectangular(new Vec2(1500,1000),1,2000));
+        listObstaclesFixes.add(new ObstacleRectangular(new Vec2(0,2000),3000,1));
+
         updateConfig();
     }   
 
@@ -294,6 +300,41 @@ public class ObstacleManager implements Service
 		dilatation_obstacle = Integer.parseInt(config.get("marge"))+Integer.parseInt(config.get("rayon_robot"));
 		distanceApproximation = Integer.parseInt(config.get("distance_max_entre_mesure_et_objet"));
 	}
-    
+	
+	/**
+	 * Utilisé pour l'affichage
+	 * @return 
+	 */
+	public ArrayList<Obstacle> getListObstaclesFixes()
+	{
+		return listObstaclesFixes;
+	}
+
+	/**
+	 * Utilisé pour l'affichage
+	 * @return 
+	 */
+	public ArrayList<ObstacleCircular> getListObstaclesMobiles()
+	{
+		return listObstaclesMobiles;
+	}
+	
+	/**
+	 * Utilisé pour l'affichage
+	 * @return 
+	 */
+	public GameElement[] getListGameElement()
+	{
+		return table.getObstacles();
+	}
+
+	/**
+	 * Utilisé pour l'affichage
+	 * @return 
+	 */
+	public int getDilatationObstacle()
+	{
+		return dilatation_obstacle;
+	}
 
 }

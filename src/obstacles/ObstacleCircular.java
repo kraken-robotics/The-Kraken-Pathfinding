@@ -25,6 +25,11 @@ public class ObstacleCircular extends Obstacle
 		return new ObstacleCircular(position.clone(), radius);
 	}
 
+	public int getRadius()
+	{
+		return radius;
+	}
+	
 	// Copie this dans oc, sans modifier this
 	public void clone(ObstacleCircular oc)
 	{
