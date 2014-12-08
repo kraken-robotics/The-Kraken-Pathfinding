@@ -22,7 +22,7 @@ import utils.Log;
 
 public class Pathfinding implements Service
 {
-	private int COEFF_HEURISTIC = 5;
+	private int COEFF_HEURISTIC = 1;
 	private int compteur;
 	
 	private Set<PathfindingNodes> openset = new LinkedHashSet<PathfindingNodes>();	 // The set of tentative nodes to be evaluated

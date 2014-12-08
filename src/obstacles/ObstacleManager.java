@@ -78,7 +78,20 @@ public class ObstacleManager implements Service
         ObstacleProximity obstacle = new ObstacleProximity(position_sauv, rayon_robot_adverse, System.currentTimeMillis()+dureeAvantPeremption);
         log.warning("Obstacle créé, rayon = "+rayon_robot_adverse+", centre = "+position, this);
         listObstaclesMobiles.add(obstacle);
+        check_game_element(position);
         hashObstacles = indice++;
+    }
+    
+    /**
+     * Supprime les éléments de jeux qui sont près de cette position.
+     * @param position
+     */
+    private void check_game_element(Vec2 position)
+    {
+        GameElement[] obstacles = table.getObstacles();
+        for(GameElement o: obstacles)
+            if(!o.isDone() && o.isProcheObstacle(position, rayon_robot_adverse))
+            	o.setDone();
     }
 
     /**

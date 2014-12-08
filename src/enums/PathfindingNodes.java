@@ -29,7 +29,9 @@ public enum PathfindingNodes {
 	SECOURS_4(new Vec2(820, 880), true),
 	SECOURS_5(new Vec2(-820, 880), true),
 	SECOURS_6(new Vec2(425, 520), true),
-	SECOURS_7(new Vec2(-425, 520), true);
+	SECOURS_7(new Vec2(-425, 520), true),
+	SECOURS_8(new Vec2(575, 800), true),
+	SECOURS_9(new Vec2(-575, 800), true);
 	
 	private Vec2 coordonnees;
 	private boolean emergency_point;

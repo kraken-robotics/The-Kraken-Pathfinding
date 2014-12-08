@@ -8,6 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import smartMath.Vec2;
+import table.Table;
 import enums.PathfindingNodes;
 import enums.ServiceNames;
 
@@ -20,11 +21,13 @@ import enums.ServiceNames;
 public class JUnit_ObstacleManager extends JUnit_Test {
 
 	private ObstacleManager obstaclemanager;
+	private Table table;
 	
     @Before
     public void setUp() throws Exception {
         super.setUp();
         obstaclemanager = (ObstacleManager) container.getService(ServiceNames.OBSTACLE_MANAGER);
+        table = (Table) container.getService(ServiceNames.TABLE);
     }
 
     @Test
@@ -94,5 +97,12 @@ public class JUnit_ObstacleManager extends JUnit_Test {
     	Assert.assertTrue(obstaclemanager.obstacle_table_dans_segment(PathfindingNodes.BAS_DROITE.getCoordonnees(), PathfindingNodes.DEVANT_DEPART_GAUCHE.getCoordonnees()));
     }
 	
+    @Test
+    public void test_ennemi_dans_element_jeu() throws Exception
+    {
+    	Assert.assertTrue(!table.getObstacles()[0].isDone());
+    	obstaclemanager.creer_obstacle(new Vec2(1500, 150));
+    	Assert.assertTrue(table.getObstacles()[0].isDone());
+    }
 
 }
