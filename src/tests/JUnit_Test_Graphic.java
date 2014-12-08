@@ -12,6 +12,7 @@ import pathfinding.GridSpace;
 import pathfinding.Pathfinding;
 import enums.PathfindingNodes;
 import enums.ServiceNames;
+import smartMath.Vec2;
 import tests.graphicLib.Fenetre;
 import utils.Sleep;
 
@@ -54,13 +55,24 @@ public class JUnit_Test_Graphic extends JUnit_Test {
     {
 		gridspace.setAvoidGameElement(false);
 		Random randomgenerator = new Random();
-		for(int k = 0; k < 10; k++)
+		for(int k = 0; k < 20; k++)
 		{
+			gridspace.copy(gridspace, System.currentTimeMillis());
+			// nearestReachableNode a été réinitialisé
+
 			PathfindingNodes i = PathfindingNodes.values()[randomgenerator.nextInt(PathfindingNodes.values().length)];
 			PathfindingNodes j = PathfindingNodes.values()[randomgenerator.nextInt(PathfindingNodes.values().length)];
 			log.debug("Recherche chemin entre "+i+" et "+j, this);
-    		ArrayList<PathfindingNodes> chemin = pathfinding.computePath(i.getCoordonnees(), j, gridspace);
-    		fenetre.setPath(chemin);
+			Vec2 entree = i.getCoordonnees().plusNewVector(new Vec2(randomgenerator.nextInt(100)-50, randomgenerator.nextInt(100)-50));
+    		ArrayList<PathfindingNodes> chemin = pathfinding.computePath(entree, j, gridspace);
+    		ArrayList<Vec2> cheminVec2 = new ArrayList<Vec2>();
+    		cheminVec2.add(entree);
+    		for(PathfindingNodes n: chemin)
+    		{
+    			log.debug(n, this);
+    			cheminVec2.add(n.getCoordonnees());
+    		}
+    		fenetre.setPath(cheminVec2);
     		fenetre.repaint();
     		Sleep.sleep(2000);
 		}

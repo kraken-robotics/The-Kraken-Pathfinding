@@ -26,11 +26,31 @@ public class Pathfinding implements Service
 	
 	private Set<PathfindingNodes> openset = new LinkedHashSet<PathfindingNodes>();	 // The set of tentative nodes to be evaluated
 
+	private Log log;
+	
 	/**
 	 * Constructeur du système de recherche de chemin
 	 */
 	public Pathfinding(Log log, Config config)
 	{
+		this.log = log;
+	}
+
+	/**
+	 * Cherche un chemin en ignorant les éléments de jeux. A utiliser si on est coincé.
+	 * @param orig
+	 * @param indice_point_arrivee
+	 * @param gridspace
+	 * @return
+	 * @throws PathfindingException
+	 * @throws PathfindingRobotInObstacleException
+	 */
+	public ArrayList<PathfindingNodes> computePathForce(Vec2 orig, PathfindingNodes indice_point_arrivee, GridSpace gridspace) throws PathfindingException, PathfindingRobotInObstacleException
+	{
+		gridspace.setAvoidGameElement(false);
+		ArrayList<PathfindingNodes> chemin = computePath(orig, indice_point_arrivee, gridspace);
+		gridspace.setAvoidGameElement(true);
+		return chemin;
 	}
 	
 	public ArrayList<PathfindingNodes> computePath(Vec2 orig, PathfindingNodes indice_point_arrivee, GridSpace gridspace) throws PathfindingException, PathfindingRobotInObstacleException
@@ -38,17 +58,26 @@ public class Pathfinding implements Service
 		PathfindingNodes indice_point_depart;
 		try {
 			indice_point_depart = gridspace.nearestReachableNode(orig);
+			log.debug("Plus proche de "+orig+": "+indice_point_depart, this);
+			ArrayList<PathfindingNodes> chemin = process(indice_point_depart, indice_point_arrivee, gridspace);
+			return lissage(orig, chemin, gridspace);
 		} catch (GridSpaceException e1) {
 			throw new PathfindingRobotInObstacleException();
 		}
-
-		return process(indice_point_depart, indice_point_arrivee, gridspace);
 	}
 	
 	@Override
 	public void updateConfig() {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	private ArrayList<PathfindingNodes> lissage(Vec2 depart, ArrayList<PathfindingNodes> chemin, GridSpace gridspace)
+	{
+		// si on peut sauter le premier point, on le fait
+		while(chemin.size() >= 2 && gridspace.isTraversable(depart, chemin.get(1).getCoordonnees()))
+			chemin.remove(0);
+		return chemin;
 	}
 	
 	private ArrayList<PathfindingNodes> process(PathfindingNodes depart, PathfindingNodes arrivee, GridSpace gridspace) throws PathfindingException

@@ -139,6 +139,8 @@ public class GridSpace implements Service {
 	/**
 	 * Retourne le point de passage le plus proche et accessible en ligne droite
 	 * Attention, peut renvoyer "null" si aucun point de passage n'est atteignable en ligne droite.
+	 * Cette méthode ne prend en compte que les obstacles de proximité, et pas les obstacles fixes.
+	 * Donc elle ne peut pas planter parce qu'on est trop près d'un mur, par exemple.
 	 * @param point
 	 * @return
 	 * @throws GridSpaceException 

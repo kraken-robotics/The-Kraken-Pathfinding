@@ -3,7 +3,6 @@ package tests.graphicLib;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
-import enums.PathfindingNodes;
 import obstacles.GameElement;
 import obstacles.Obstacle;
 import obstacles.ObstacleCircular;
@@ -29,7 +28,7 @@ public class Fenetre extends JPanel {
 	private Image image;
 	private int dilatationObstacle;
 	private AttributedString affichage = new AttributedString("");
-	private ArrayList<PathfindingNodes> path = new ArrayList<PathfindingNodes>();
+	private ArrayList<Vec2> path = new ArrayList<Vec2>();
     
 	public Fenetre()
 	{
@@ -126,11 +125,11 @@ public class Fenetre extends JPanel {
 	    g.setColor(Color.BLUE);
 	    if(path.size() >= 1)
 	    {
-	    	g.fillOval(XtoWindow(path.get(0).getCoordonnees().x)-5, YtoWindow(path.get(0).getCoordonnees().y)-5, 10, 10);
-	    	g.fillOval(XtoWindow(path.get(path.size()-1).getCoordonnees().x)-5, YtoWindow(path.get(path.size()-1).getCoordonnees().y)-5, 10, 10);
+	    	g.fillOval(XtoWindow(path.get(0).x)-5, YtoWindow(path.get(0).y)-5, 10, 10);
+	    	g.fillOval(XtoWindow(path.get(path.size()-1).x)-5, YtoWindow(path.get(path.size()-1).y)-5, 10, 10);
 		    for(int i = 0; i < path.size()-1; i++)
 		    {
-		    	g.drawLine(XtoWindow(path.get(i).getCoordonnees().x), YtoWindow(path.get(i).getCoordonnees().y), XtoWindow(path.get(i+1).getCoordonnees().x), YtoWindow(path.get(i+1).getCoordonnees().y));
+		    	g.drawLine(XtoWindow(path.get(i).x), YtoWindow(path.get(i).y), XtoWindow(path.get(i+1).x), YtoWindow(path.get(i+1).y));
 		    }
 	    }
 	}
@@ -213,9 +212,9 @@ public class Fenetre extends JPanel {
 			g.drawLine(XtoWindow(v[0].x), YtoWindow(v[0].y), XtoWindow(v[1].x), YtoWindow(v[1].y));
 	}
 	
-	public void setPath(ArrayList<PathfindingNodes> chemin)
+	public void setPath(ArrayList<Vec2> cheminVec2)
 	{
-		this.path = chemin;
+		this.path = cheminVec2;
 	}
 	
 }
