@@ -2,7 +2,6 @@ package hook.types;
 
 import exceptions.FinMatchException;
 import hook.types.HookY;
-import robot.RobotReal;
 import smartMath.Vec2;
 import strategie.GameState;
 import utils.Log;
@@ -25,9 +24,9 @@ class HookYisGreater extends HookY
      * @param realState : lien avec le robot a surveiller pour le déclenchement du hook
      * @param yValue : la valeur en y ou doit se déclencher le hook
      */
-    public HookYisGreater(Config config, Log log, GameState<RobotReal> realState, float yValue)
+    public HookYisGreater(Config config, Log log, GameState<?> state, float yValue)
     {
-        super(config, log, realState, yValue, 0);
+        super(config, log, state, yValue, 0);
     }
     
 

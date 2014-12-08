@@ -2,7 +2,6 @@ package hook.types;
 
 import exceptions.FinMatchException;
 import hook.types.HookX;
-import robot.RobotReal;
 import smartMath.Vec2;
 import strategie.GameState;
 import utils.Log;
@@ -26,9 +25,9 @@ class HookXisGreater extends HookX
      * @param tolerancy : imprécision admise sur la position qui déclenche le hook
 	 * @param isYellowTeam La table étant symétrisée si l'on est équipe jaune, le XisGreater devient un XisLesser si l'on est jaune
      */
-    public HookXisGreater(Config config, Log log,GameState<RobotReal> realState, float xValue, float tolerancy, boolean isYellowTeam)
+    public HookXisGreater(Config config, Log log,GameState<?> state, float xValue, float tolerancy, boolean isYellowTeam)
     {
-		super(config, log, realState, xValue, tolerancy, isYellowTeam);
+		super(config, log, state, xValue, tolerancy, isYellowTeam);
 	}
     
 

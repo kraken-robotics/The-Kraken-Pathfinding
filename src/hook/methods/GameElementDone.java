@@ -1,7 +1,7 @@
 package hook.methods;
 
-import enums.GameElementNames;
-import table.Table;
+import obstacles.GameElement;
+import enums.Tribool;
 import hook.Executable;
 
 /**
@@ -12,18 +12,17 @@ import hook.Executable;
 
 public class GameElementDone implements Executable {
 
-	private GameElementNames id_element;
-	private Table table;
+	private GameElement o;
 	
-	public GameElementDone(GameElementNames id_element, Table table)
+	public GameElementDone(GameElement o)
 	{
-		this.id_element = id_element;
-		this.table = table;
+		this.o = o;
 	}
 	
 	@Override
-	public boolean execute() {
-		table.setDone(id_element);
+	public boolean execute()
+	{
+		o.setDone(Tribool.TRUE);
 		return false;
 	}
 

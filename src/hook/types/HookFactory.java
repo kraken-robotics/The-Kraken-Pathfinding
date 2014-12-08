@@ -3,7 +3,6 @@ package hook.types;
 import hook.Hook;
 import container.Service;
 import enums.RobotColor;
-import robot.RobotReal;
 import smartMath.Vec2;
 import strategie.GameState;
 import utils.Log;
@@ -23,9 +22,6 @@ public class HookFactory implements Service
 	//gestion des log
 	private Log log;
 	
-	// robot a surveiller pour le déclenchement des hooks
-	private GameState<RobotReal> realState;
-	
 	// la valeur de 20 est en mm, elle est remplcée par la valeur spécifié dans le fichier de config s'il y en a une
 	private int positionTolerancy = 20;
 	
@@ -42,11 +38,10 @@ public class HookFactory implements Service
 	 * @param log système de d log
 	 * @param realState état du jeu
 	 */
-	public HookFactory(Config config, Log log, GameState<RobotReal> realState)
+	public HookFactory(Config config, Log log)
 	{
 		this.config = config;
 		this.log = log;
-		this.realState = realState;
 		updateConfig();
 	}
 
@@ -75,9 +70,9 @@ public class HookFactory implements Service
 	 * @param tolerancy le hook sera déclenché si la distance entre le point de déclenchement et la position du robot est inférieure a cette valeur
 	 * @return le hook créé
 	 */
-	public Hook newHookPosition(Vec2 position, int tolerancy)
+	public Hook newHookPosition(Vec2 position, int tolerancy, GameState<?> state)
 	{
-		return new HookPosition(config, log, realState, position, tolerancy, color == RobotColor.YELLOW);
+		return new HookPosition(config, log, state, position, tolerancy, color == RobotColor.YELLOW);
 	}
 
 	/**
@@ -86,9 +81,9 @@ public class HookFactory implements Service
 	 * @param position de déclenchement du hook
 	 * @return le hook créé
 	 */
-	public Hook newHookPosition(Vec2 position)
+	public Hook newHookPosition(Vec2 position, GameState<?> state)
 	{
-		return newHookPosition(position, positionTolerancy);
+		return newHookPosition(position, positionTolerancy, state);
 	}
 	
 	/* ======================================================================
@@ -104,9 +99,9 @@ public class HookFactory implements Service
 	 * @param tolerancy le hook sera déclenché si l'écart entre l'abscisse de déclenchement et la position du robot est inférieur a cette valeur
 	 * @return le hook créé
 	 */
-	public Hook newHookX(float xValue, int tolerancy)
+	public Hook newHookX(float xValue, int tolerancy, GameState<?> state)
 	{
-		return new HookX(config, log, realState, xValue, tolerancy, color == RobotColor.YELLOW);
+		return new HookX(config, log, state, xValue, tolerancy, color == RobotColor.YELLOW);
 	}
 	
 
@@ -116,9 +111,9 @@ public class HookFactory implements Service
 	 * @param xValue de déclenchement du hook
 	 * @return le hook créé
 	 */
-	public Hook newHookX(float xValue)
+	public Hook newHookX(float xValue, GameState<?> state)
 	{
-		return newHookX(xValue, positionTolerancy);
+		return newHookX(xValue, positionTolerancy, state);
 	}
 	
 
@@ -130,12 +125,12 @@ public class HookFactory implements Service
 	 * @param tolerancy le hook sera déclenché si l'écart entre l'abscisse de déclenchement et la position du robot est inférieur a cette valeur
 	 * @return le hook créé
 	 */
-    public Hook newHookXisGreater(float xValue, float tolerancy)
+    public Hook newHookXisGreater(float xValue, float tolerancy, GameState<?> state)
     {
     	// TODO: vérifier si ce if et le color=="yellow" ne font pas double emploi (et su coup s'annulent)
         if(color == RobotColor.YELLOW)
-            return new HookXisLesser(config, log, realState, xValue, tolerancy, color == RobotColor.YELLOW);
-        return new HookXisGreater(config, log, realState, xValue, tolerancy, color == RobotColor.YELLOW);
+            return new HookXisLesser(config, log, state, xValue, tolerancy, color == RobotColor.YELLOW);
+        return new HookXisGreater(config, log, state, xValue, tolerancy, color == RobotColor.YELLOW);
     }
 
 	/**
@@ -146,12 +141,12 @@ public class HookFactory implements Service
 	 * @param tolerancy le hook sera déclenché si l'écart entre l'abscisse de déclenchement et la position du robot est inférieur a cette valeur
 	 * @return le hook créé
 	 */
-    public Hook newHookXisLesser(float xValue, float tolerancy)
+    public Hook newHookXisLesser(float xValue, float tolerancy, GameState<?> state)
     {
     	// TODO: vérifier si ce if et le color=="yellow" ne font pas double emploi (et su coup s'annulent)
         if(color == RobotColor.YELLOW)
-            return new HookXisGreater(config, log, realState, xValue, tolerancy, color == RobotColor.YELLOW);
-        return new HookXisLesser(config, log, realState, xValue, tolerancy, color == RobotColor.YELLOW);
+            return new HookXisGreater(config, log, state, xValue, tolerancy, color == RobotColor.YELLOW);
+        return new HookXisLesser(config, log, state, xValue, tolerancy, color == RobotColor.YELLOW);
     }
     
     
@@ -168,9 +163,9 @@ public class HookFactory implements Service
 	 * @param tolerancy le hook sera déclenché si l'écart entre l'ordonnée de déclenchement et la position du robot est inférieur a cette valeur
 	 * @return le hook créé
 	 */
-    public Hook newHookY(float yValue, int tolerancy)
+    public Hook newHookY(float yValue, int tolerancy, GameState<?> state)
     {
-        return new HookY(config, log, realState, yValue, tolerancy);
+        return new HookY(config, log, state, yValue, tolerancy);
     }
     
 
@@ -181,9 +176,9 @@ public class HookFactory implements Service
 	 * @param tolerancy le hook sera déclenché si l'écart entre l'ordonnée de déclenchement et la position du robot est inférieur a cette valeur
 	 * @return le hook créé
 	 */
-    public Hook newHookY(float yValue)
+    public Hook newHookY(float yValue, GameState<?> state)
     {
-        return newHookY(yValue, positionTolerancy);
+        return newHookY(yValue, positionTolerancy, state);
     }
 
 	/**
@@ -191,9 +186,9 @@ public class HookFactory implements Service
 	 * @param yValue de déclenchement du hook
 	 * @return le hook créé
 	 */
-    public Hook newHookYisGreater(float yValue)
+    public Hook newHookYisGreater(float yValue, GameState<?> state)
     {
-        return new HookYisGreater(config, log, realState, yValue);
+        return new HookYisGreater(config, log, state, yValue);
     }
 
 

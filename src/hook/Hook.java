@@ -58,7 +58,7 @@ abstract public class Hook
 	 * Tous ses callbacks sont exécutés
 	 * @return true si ce hook modifie les déplacements du robot
 	 */
-	protected boolean trigger()
+	public boolean trigger()
 	{
 		boolean retour = false;
 		

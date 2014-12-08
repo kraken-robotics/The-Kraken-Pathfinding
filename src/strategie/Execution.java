@@ -1,10 +1,13 @@
 package strategie;
 
+import hook.Callback;
 import hook.Hook;
+import hook.methods.GameElementDone;
 import hook.types.HookFactory;
 
 import java.util.ArrayList;
 
+import obstacles.GameElement;
 import container.Service;
 import pathfinding.Pathfinding;
 import enums.PathfindingNodes;
@@ -33,6 +36,7 @@ public class Execution implements Service {
 	private Pathfinding pathfinding;
 //	private HookFactory hookfactory;
 	private ThreadStrategy threadstrategy;
+//	private RobotColor color;
 	
 	private ArrayList<Hook> hooks_entre_scripts;
 	
@@ -45,10 +49,18 @@ public class Execution implements Service {
 		this.scriptmanager = scriptmanager;
 //		this.hookfactory = hookfactory;
 		this.threadstrategy = threadstrategy;
-		
+
 	    // DEPENDS_ON_RULES
-		// TODO: hook qui renverse les plots en passant
+		// TODO: peut-être d'autres hooks?
 		hooks_entre_scripts = new ArrayList<Hook>();
+		GameElement[] obstacles = gamestate.table.getObstacles();
+		for(GameElement o: obstacles)
+		{
+			Hook hook = hookfactory.newHookPosition(o.getPosition(), o.getRadius(), gamestate);
+			GameElementDone action = new GameElementDone(o);
+			hook.ajouter_callback(new Callback(action));
+			hooks_entre_scripts.add(hook);
+		}
 	}
 
 	// Appelé par le lanceur
@@ -137,8 +149,7 @@ public class Execution implements Service {
 
 	@Override
 	public void updateConfig() {
-		// TODO Auto-generated method stub
-		
+//		color = RobotColor.parse(config.get("couleur"));
 	}
 	
 }

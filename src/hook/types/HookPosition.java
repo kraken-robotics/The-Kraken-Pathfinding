@@ -3,7 +3,6 @@ package hook.types;
 import obstacles.ObstacleCircular;
 import exceptions.FinMatchException;
 import hook.Hook;
-import robot.RobotReal;
 import smartMath.Vec2;
 import strategie.GameState;
 import utils.Log;
@@ -36,9 +35,9 @@ class HookPosition extends Hook
      * @param tolerance : imprécision admise sur la position qui déclenche le hook
      * @param isYellowTeam : la couleur du robot: vert ou jaune 
      */
-	public HookPosition(Config config, Log log, GameState<RobotReal> realState, Vec2 position, int tolerancy, boolean isYellowTeam)
+	public HookPosition(Config config, Log log, GameState<?> state, Vec2 position, int tolerancy, boolean isYellowTeam)
 	{
-		super(config, log, realState);
+		super(config, log, state);
 		this.position = position;
 		this.tolerancy = tolerancy;
 		this.squaredTolerancy = tolerancy*tolerancy;

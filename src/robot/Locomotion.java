@@ -145,7 +145,7 @@ public class Locomotion implements Service
 
 			Sleep.sleep(500);
 			moveForward(40, null, true);
-			turn(-Math.PI/2, null, false);
+			turn(-Math.PI/2, false);
 
 
 			log.debug("recale Y",this);
@@ -178,7 +178,7 @@ public class Locomotion implements Service
 	 * @throws UnableToMoveException 
 	 * @throws FinMatchException 
 	 */
-	public void turn(double angle, ArrayList<Hook> hooks, boolean mur) throws UnableToMoveException, FinMatchException
+	public void turn(double angle, boolean mur) throws UnableToMoveException, FinMatchException
 	{
 
 		if(symetrie)

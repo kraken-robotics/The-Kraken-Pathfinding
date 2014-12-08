@@ -2,7 +2,6 @@ package hook.types;
 
 import exceptions.FinMatchException;
 import hook.Hook;
-import robot.RobotReal;
 import smartMath.Vec2;
 import strategie.GameState;
 import utils.Log;
@@ -31,9 +30,9 @@ class HookX extends Hook
      * @param tolerancy : imprécision admise sur la position qui déclenche le hook
      * @param isYellowTeam : la couleur du robot: vert ou jaune 
      */
-	public HookX(Config config, Log log, GameState<RobotReal> realState, float xValue, float tolerancy, boolean isYellowTeam)
+	public HookX(Config config, Log log, GameState<?> state, float xValue, float tolerancy, boolean isYellowTeam)
 	{
-	    super(config, log, realState);
+	    super(config, log, state);
 		this.xValue = xValue;
 		this.tolerancy = tolerancy;
 		if(isYellowTeam)

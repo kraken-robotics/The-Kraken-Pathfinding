@@ -155,8 +155,7 @@ public class Container
 															 (SerialConnexion)getService(ServiceNames.SERIE_CAPTEURS_ACTIONNEURS));
 		else if(serviceRequested == ServiceNames.HOOK_FACTORY)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new HookFactory((Config)getService(ServiceNames.CONFIG),
-															 (Log)getService(ServiceNames.LOG),
-															 (GameState<RobotReal>)getService(ServiceNames.REAL_GAME_STATE));
+															 (Log)getService(ServiceNames.LOG));
 		else if(serviceRequested == ServiceNames.ROBOT_REAL)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new RobotReal((ActuatorCardWrapper)getService(ServiceNames.ACTUATOR_CARD_WRAPPER),
 															(Locomotion)getService(ServiceNames.LOCOMOTION),

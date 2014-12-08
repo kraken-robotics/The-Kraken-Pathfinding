@@ -2,7 +2,6 @@ package hook.types;
 
 import exceptions.FinMatchException;
 import hook.Hook;
-import robot.RobotReal;
 import smartMath.Vec2;
 import strategie.GameState;
 import utils.Log;
@@ -31,9 +30,9 @@ class HookY extends Hook
      * @param yValue : la valeur en y ou doit se déclencher le hook
      * @param tolerancy : imprécision admise sur la position qui déclenche le hook
      */
-    public HookY(Config config, Log log, GameState<RobotReal> realState, float yValue, float tolerancy)
+    public HookY(Config config, Log log, GameState<?> state, float yValue, float tolerancy)
     {
-        super(config, log, realState);
+        super(config, log, state);
         this.yValue = yValue;
         this.tolerancy = tolerancy;
     }

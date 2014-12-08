@@ -50,6 +50,7 @@ public class RobotChrono extends Robot
 		Vec2 ecart;
         ecart = new Vec2((int)(distance*Math.cos(orientation)), (int)(distance*Math.sin(orientation)));
 
+		checkHooks(position, position.plusNewVector(ecart), hooks);
 		position.plus(ecart);
 	}
 	
@@ -73,7 +74,7 @@ public class RobotChrono extends Robot
 	}
 
 	@Override
-    public void tourner(double angle, ArrayList<Hook> hooks, boolean mur)
+    public void tourner(double angle, boolean mur)
 	{
         if(symetrie)
             angle = Math.PI-angle;
@@ -98,7 +99,7 @@ public class RobotChrono extends Robot
 	
 	public void va_au_point(Vec2 point, ArrayList<Hook> hooks)
 	{
-		// TODO gestion des hooks, notamment si on passe sur un élément de jeu
+		checkHooks(position, point, hooks);
 		if(symetrie)
 			point.x *= -1;
 		date += position.distance(point)*vitesse.invertedTranslationnalSpeed;
@@ -176,4 +177,18 @@ public class RobotChrono extends Robot
 		// a priori en hook, donc immédiat
 	}
 
+	/**
+	 * On déclenche tous les hooks entre le point A et le point B.
+	 * @param pointA
+	 * @param pointB
+	 * @param hooks
+	 */
+	private void checkHooks(Vec2 pointA, Vec2 pointB, ArrayList<Hook> hooks)
+	{
+		for(Hook hook: hooks)
+			if(hook.simulated_evaluate(pointA, pointB))
+				hook.trigger();
+	}
+	
+	
 }

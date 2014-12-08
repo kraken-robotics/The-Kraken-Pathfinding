@@ -28,7 +28,7 @@ public abstract class Robot implements Service
 	 */
 	
 	public abstract void stopper() throws FinMatchException;
-    public abstract void tourner(double angle, ArrayList<Hook> hooks, boolean mur)
+    public abstract void tourner(double angle, boolean mur)
             throws UnableToMoveException, FinMatchException;
     public abstract void avancer(int distance, ArrayList<Hook> hooks, boolean mur)
             throws UnableToMoveException, FinMatchException;
@@ -95,12 +95,12 @@ public abstract class Robot implements Service
 
 	public void tourner_relatif(double angle) throws UnableToMoveException, FinMatchException
 	{
-		tourner(getOrientation() + angle, null, false);
+		tourner(getOrientation() + angle, false);
 	}
 
     public void tourner(double angle) throws UnableToMoveException, FinMatchException
     {
-        tourner(angle, null, false);
+        tourner(angle, false);
     }
 
     /**
@@ -111,9 +111,9 @@ public abstract class Robot implements Service
     public void tourner_sans_symetrie(double angle) throws UnableToMoveException, FinMatchException
     {
         if(symetrie)
-            tourner(Math.PI-angle, null, false);
+            tourner(Math.PI-angle, false);
         else
-            tourner(angle, null, false);
+            tourner(angle, false);
     }
 
     public void avancer(int distance) throws UnableToMoveException, FinMatchException
