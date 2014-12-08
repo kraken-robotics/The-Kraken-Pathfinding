@@ -6,9 +6,11 @@ import smartMath.Vec2;
  * @author pf, marsu
  *
  */
+
 public abstract class Obstacle
 {
 	protected Vec2 position;
+	protected int distance_dilatation;
 	
 	public Obstacle (Vec2 position)
 	{

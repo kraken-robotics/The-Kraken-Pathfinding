@@ -72,8 +72,10 @@ public class Pathfinding implements Service
 		double[] g_score = new double[PathfindingNodes.values().length];
 		double[] f_score = new double[PathfindingNodes.values().length];
 
-		// TODO: vérifier que c'est bien initialisé à false
-		boolean[] closedset = new boolean[PathfindingNodes.values().length]; // The set of nodes already evaluated.		// The set of nodes already evaluated.
+		// TODO: vérifier que c'est bien initialisé à false même sans la boucle
+		boolean[] closedset = new boolean[PathfindingNodes.values().length]; // The set of nodes already evaluated.
+		for(int i = 0; i < PathfindingNodes.values().length; i++)
+			closedset[i] = false;
 		
 		openset.clear();
 		openset.add(depart);	// The set of tentative nodes to be evaluated, initially containing the start node
@@ -91,13 +93,14 @@ public class Pathfinding implements Service
 			// current is affected by the node in openset having the lowest f_score[] value
 			nodeIterator = openset.iterator();
 			current = nodeIterator.next();
+
 			while(nodeIterator.hasNext())
 			{
 				tmp = nodeIterator.next();
 				if (f_score[tmp.ordinal()] < f_score[current.ordinal()])
 					current  = tmp;
 			}
-		    	
+
 			if(current == arrivee)
 			{
 				arrivee.incrementUse();
@@ -106,7 +109,7 @@ public class Pathfinding implements Service
 				while (tmp != depart)
 				{
 					tmp.incrementUse();
-					chemin.add(0, tmp); // insert le point d'avant au debut du parcours
+					chemin.add(1, tmp); // insert le point d'avant après l'entrée
 			    	tmp = came_from[tmp.ordinal()];
 				}
 				return chemin;	//  reconstructed path
@@ -121,7 +124,7 @@ public class Pathfinding implements Service
 			{
 				tmp = gridspace.next();
 
-				if(closedset[current.ordinal()]) // si closedset contient current
+				if(closedset[tmp.ordinal()]) // si closedset contient current
 					continue;
 				
 				tentative_g_score = g_score[current.ordinal()] + gridspace.getDistance(current, tmp);
@@ -134,7 +137,6 @@ public class Pathfinding implements Service
 					f_score[tmp.ordinal()] = tentative_g_score + COEFF_HEURISTIC * gridspace.getDistance(tmp, arrivee);
 					if(!openset.contains(tmp))
 						openset.add(tmp);
-		    				
 				}
 			}	
 		}

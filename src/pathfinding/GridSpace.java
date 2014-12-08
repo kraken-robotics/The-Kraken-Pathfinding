@@ -1,5 +1,7 @@
 package pathfinding;
 
+import java.util.ArrayList;
+
 import obstacles.ObstacleManager;
 import container.Service;
 import smartMath.Vec2;
@@ -29,7 +31,6 @@ public class GridSpace implements Service {
 	private PathfindingNodes nearestReachableNodeCache = null;
 	
 	// Rempli de ALWAYS_IMPOSSIBLE et null. Ne change pas.
-	// ATTENTION: valeur valide que si le premier indice est plus petit que le deuxième
 	private static NodesConnection[][] isConnectedModel = null;
 
 	// Dynamique.
@@ -38,6 +39,7 @@ public class GridSpace implements Service {
 	// Contient les distances entre chaque point de passage
 	private static double[][] distances = new double[PathfindingNodes.values().length][PathfindingNodes.values().length];
 
+	// Doit-on éviter les éléments de jeux? Ou peut-on foncer dedans?
 	private boolean avoidGameElement = true;
 	
 	public GridSpace(Log log, Config config, ObstacleManager obstaclemanager)
@@ -61,11 +63,7 @@ public class GridSpace implements Service {
 	{
     	for(PathfindingNodes i: PathfindingNodes.values())
         	for(PathfindingNodes j: PathfindingNodes.values())
-        		if(i.ordinal() < j.ordinal())
-        		{
         			isConnected[i.ordinal()][j.ordinal()] = isConnectedModel[i.ordinal()][j.ordinal()];
-        			isConnected[j.ordinal()][i.ordinal()] = isConnectedModel[i.ordinal()][j.ordinal()];
-        		}
 	}
 	
     public void check_pathfinding_nodes()
@@ -83,14 +81,10 @@ public class GridSpace implements Service {
 
 		for(PathfindingNodes i : PathfindingNodes.values())			
 			for(PathfindingNodes j : PathfindingNodes.values())
-			{
-				if(i.ordinal() >= j.ordinal())
-					continue;
 				if(obstaclemanager.obstacle_fixe_dans_segment_pathfinding(i.getCoordonnees(), j.getCoordonnees()))
 					isConnectedModel[i.ordinal()][j.ordinal()] = NodesConnection.ALWAYS_IMPOSSIBLE;
 				else
 					isConnectedModel[i.ordinal()][j.ordinal()] = null;
-			}				
 
 		for(PathfindingNodes i : PathfindingNodes.values())
 			for(PathfindingNodes j : PathfindingNodes.values())
@@ -113,23 +107,31 @@ public class GridSpace implements Service {
 	 */
 	public boolean isTraversable(PathfindingNodes i, PathfindingNodes j)
 	{
-		if(isConnected[i.ordinal()][j.ordinal()] != null)
+		if(isConnectedModel[i.ordinal()][j.ordinal()] == NodesConnection.ALWAYS_IMPOSSIBLE)
 		{
-			log.debug("Trajet impossible à cause d'un obstacle fixe", this);			
-			return isConnected[i.ordinal()][j.ordinal()].isTraversable();
+//			log.debug("Trajet impossible à cause d'un obstacle fixe!", this);			
+			return false;
+		}
+		else if(isConnected[i.ordinal()][j.ordinal()] != null)
+		{
+//			log.debug("Is traversable: use cache", this);			
+			return isConnected[i.ordinal()][j.ordinal()].isTraversable();			
 		}
 		else if(obstaclemanager.obstacle_proximite_dans_segment(i.getCoordonnees(), j.getCoordonnees()))
 		{
-			log.debug("Trajet impossible à cause d'un obstacle de proximité", this);
+//			log.debug("Trajet impossible à cause d'un obstacle de proximité", this);
 			isConnected[i.ordinal()][j.ordinal()] = NodesConnection.TMP_IMPOSSIBLE;
 		}
 		else if(avoidGameElement && obstaclemanager.obstacle_table_dans_segment(i.getCoordonnees(), j.getCoordonnees()))
 		{
-			log.debug("Trajet impossible à cause d'un élément de jeu", this);
+//			log.debug("Trajet impossible à cause d'un élément de jeu", this);
 			isConnected[i.ordinal()][j.ordinal()] = NodesConnection.TMP_IMPOSSIBLE;
 		}
 		else
+		{
+//			log.debug("Pas de problème entre "+i+" et "+j, this);
 			isConnected[i.ordinal()][j.ordinal()] = NodesConnection.POSSIBLE;
+		}
 		isConnected[j.ordinal()][i.ordinal()] = isConnected[i.ordinal()][j.ordinal()];
 		return isConnected[i.ordinal()][j.ordinal()].isTraversable();
 	}
@@ -195,7 +197,7 @@ public class GridSpace implements Service {
     }
 
     /** 
-     * A utiliser entre un node et un point quelconque (l'arrivée)
+     * A utiliser entre deux points
      * @param pointA
      * @param pointB
      * @return
@@ -258,6 +260,25 @@ public class GridSpace implements Service {
     	if(this.avoidGameElement != avoidGameElement)
     		initIsConnected();
     	this.avoidGameElement = avoidGameElement;
+    }
+
+    /**
+     * Retourne la distance cumulée d'un chemin entre deux PathfindingNodes.
+     * @param chemin
+     * @return
+     */
+    public double distanceCumulee(ArrayList<PathfindingNodes> chemin)
+    {
+    	PathfindingNodes last = chemin.get(0);
+    	double distance = 0;
+    	for(PathfindingNodes n: chemin)
+    	{
+    		if(!isTraversable(last, n))
+    			return Double.MAX_VALUE;
+    		distance += distances[last.ordinal()][n.ordinal()];
+    		last = n;
+    	}
+    	return distance;
     }
     
 }

@@ -1,6 +1,5 @@
-package table;
+package obstacles;
 
-import obstacles.ObstacleCircular;
 import smartMath.Vec2;
 
 /**

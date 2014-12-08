@@ -3,14 +3,14 @@ package tests.graphicLib;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
+import enums.PathfindingNodes;
+import obstacles.GameElement;
 import obstacles.Obstacle;
 import obstacles.ObstacleCircular;
 import obstacles.ObstacleRectangular;
 import smartMath.Vec2;
-import table.GameElement;
 
 import java.awt.*;
-import java.awt.font.TextAttribute;
 import java.io.File;
 import java.io.IOException;
 import java.text.AttributedString;
@@ -25,10 +25,11 @@ public class Fenetre extends JPanel {
 	private GameElement[] listGameElement;
 	private ArrayList<Obstacle> listObstaclesFixes;
 	private ArrayList<ObstacleCircular> listObstaclesMobiles;
+	private ArrayList<Vec2[]> segments = new ArrayList<Vec2[]>();
 	private Image image;
 	private int dilatationObstacle;
-    private Font font = new Font("Consolas", Font.PLAIN, 14);
 	private AttributedString affichage = new AttributedString("");
+	private ArrayList<PathfindingNodes> path = new ArrayList<PathfindingNodes>();
     
 	public Fenetre()
 	{
@@ -119,6 +120,19 @@ public class Fenetre extends JPanel {
 		g.setColor(Color.BLACK);
 	    g.drawString(affichage.getIterator(), sizeX+50, 30);
 
+	    g.setColor(Color.PINK);
+	    paintSegments(g);
+
+	    g.setColor(Color.BLUE);
+	    if(path.size() >= 1)
+	    {
+	    	g.fillOval(XtoWindow(path.get(0).getCoordonnees().x)-5, YtoWindow(path.get(0).getCoordonnees().y)-5, 10, 10);
+	    	g.fillOval(XtoWindow(path.get(path.size()-1).getCoordonnees().x)-5, YtoWindow(path.get(path.size()-1).getCoordonnees().y)-5, 10, 10);
+		    for(int i = 0; i < path.size()-1; i++)
+		    {
+		    	g.drawLine(XtoWindow(path.get(i).getCoordonnees().x), YtoWindow(path.get(i).getCoordonnees().y), XtoWindow(path.get(i+1).getCoordonnees().x), YtoWindow(path.get(i+1).getCoordonnees().y));
+		    }
+	    }
 	}
 
 	public void showOnFrame() {
@@ -183,6 +197,25 @@ public class Fenetre extends JPanel {
 	public void afficheCoordonnees(Point point)
 	{
 		affichage = new AttributedString("("+WindowToX((int)point.getX())+", "+WindowToY((int)point.getY())+")");
+	}
+	
+	public void addSegment(Vec2 a, Vec2 b)
+	{
+		Vec2[] v = new Vec2[2];
+		v[0] = a;
+		v[1] = b;
+		segments.add(v);
+	}
+	
+	public void paintSegments(Graphics g)
+	{
+		for(Vec2[] v : segments)
+			g.drawLine(XtoWindow(v[0].x), YtoWindow(v[0].y), XtoWindow(v[1].x), YtoWindow(v[1].y));
+	}
+	
+	public void setPath(ArrayList<PathfindingNodes> chemin)
+	{
+		this.path = chemin;
 	}
 	
 }

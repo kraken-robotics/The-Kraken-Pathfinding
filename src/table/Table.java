@@ -1,5 +1,6 @@
 package table;
 
+import obstacles.GameElement;
 import container.Service;
 import smartMath.Vec2;
 import utils.*;

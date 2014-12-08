@@ -41,10 +41,16 @@ public class ObstacleCircular extends Obstacle
 	{
 		return super.toString()+", rayon: "+radius;
 	}
+
+
+	private boolean isInObstacle(Vec2 point, int distance)
+	{
+		return point.squaredDistance(position) <= (radius+distance)*(radius+distance);
+	}
 	
 	public boolean isInObstacle(Vec2 point)
 	{
-		return point.squaredDistance(position) <= radius*radius;
+		return isInObstacle(point, 0);
 	}
 
 	public boolean isProcheObstacle(Vec2 point, int distance)
@@ -52,7 +58,7 @@ public class ObstacleCircular extends Obstacle
 		return point.squaredDistance(position) <= (radius+distance)*(radius+distance);
 	}
 
-	private boolean collisionDroite(Vec2 A, Vec2 B)
+	private boolean collisionDroite(Vec2 A, Vec2 B, int distance)
 	{
 		Vec2 C = position;
 		Vec2 AB = B.minusNewVector(A);
@@ -60,7 +66,7 @@ public class ObstacleCircular extends Obstacle
 	    float numerateur = Math.abs(AB.x*AC.y - AB.y*AC.x);
 	    float denominateur = AB.squaredLength();
 	    float CI = numerateur*numerateur / denominateur;
-	    if (CI < radius*radius)
+	    if (CI < (radius+distance)*(radius+distance))
 	       return true;
 	    else
 	       return false;
@@ -70,9 +76,10 @@ public class ObstacleCircular extends Obstacle
      * Ce cercle croise-t-il le segment [A,B]?
      * @param A
      * @param B
+     * @param distance: dilatation. 0 pour les obstacles de proximité, non nul pour les éléments de jeux circulaires.
      * @return
      */
-    public boolean obstacle_proximite_dans_segment(Vec2 A, Vec2 B)
+    public boolean obstacle_proximite_dans_segment(Vec2 A, Vec2 B, int distance)
     {
     	// Ceci peut être le cas pour certain élément de jeu dont il ne faut pas vérifier les collisions
     	if(radius < 0)
@@ -81,7 +88,7 @@ public class ObstacleCircular extends Obstacle
     	 * Ce code a été honteusement pompé sur http://openclassrooms.com/courses/theorie-des-collisions/formes-plus-complexes
     	 */
     	
-    	if (!collisionDroite(A, B))
+    	if (!collisionDroite(A, B, distance))
 	        return false;  // si on ne touche pas la droite, on ne touchera jamais le segment
     	
     	float pscal1 = B.minusNewVector(A).dot(position.minusNewVector(A));
@@ -89,7 +96,7 @@ public class ObstacleCircular extends Obstacle
 	    if (pscal1>=0 && pscal2>=0)
 	       return true;
 	    // dernière possibilité, A ou B dans le cercle
-	    if(isInObstacle(A) || isInObstacle(B))
+	    if(isInObstacle(A, distance) || isInObstacle(B, distance))
 	      return true;
 	    return false;
     }

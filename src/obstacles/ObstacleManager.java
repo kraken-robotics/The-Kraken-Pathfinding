@@ -5,7 +5,6 @@ import java.util.Iterator;
 
 import container.Service;
 import smartMath.Vec2;
-import table.GameElement;
 import table.Table;
 import utils.Config;
 import utils.Log;
@@ -72,7 +71,7 @@ public class ObstacleManager implements Service
      * Créer un obstacle de proximité
      * @param position
      */
-    public synchronized void creer_obstacle(final Vec2 position)
+    public void creer_obstacle(final Vec2 position)
     {
         Vec2 position_sauv = position.clone();
         
@@ -95,7 +94,7 @@ public class ObstacleManager implements Service
      * Appel fait lors de l'anticipation, supprime les obstacles périmés à une date future
      * @param date
      */
-    public synchronized void supprimerObstaclesPerimes(long date)
+    public void supprimerObstaclesPerimes(long date)
     {
         Iterator<ObstacleCircular> iterator = listObstaclesMobiles.iterator();
         while(iterator.hasNext())
@@ -194,10 +193,9 @@ public class ObstacleManager implements Service
     {
         GameElement[] obstacles = table.getObstacles();
         for(GameElement o: obstacles)
-        {
-            if(!o.isDone() && o.obstacle_proximite_dans_segment(A, B))
+            if(!o.isDone() && o.obstacle_proximite_dans_segment(A, B, dilatation_obstacle))
                 return true;
-        }
+
         return false;    	
     }
 
@@ -209,12 +207,23 @@ public class ObstacleManager implements Service
      */
     public boolean obstacle_proximite_dans_segment(Vec2 A, Vec2 B)
     {
+    	return obstacle_proximite_dans_segment(A,B,dilatation_obstacle);
+    }
+
+    /**
+     * Y a-t-il un obstacle de proximité dans ce segment?
+     * @param sommet1
+     * @param sommet2
+     * @return
+     */
+    public boolean obstacle_proximite_dans_segment(Vec2 A, Vec2 B, int distance)
+    {
         Iterator<ObstacleCircular> iterator = listObstaclesMobiles.iterator();
         while(iterator.hasNext())
         {
             ObstacleCircular o = iterator.next();
             
-            if(o.obstacle_proximite_dans_segment(A, B))
+            if(o.obstacle_proximite_dans_segment(A, B, distance))
                 return true;
         }
         return false;
@@ -226,11 +235,13 @@ public class ObstacleManager implements Service
      * @param position
      * @return
      */
-    public boolean is_obstacle_fixe_present_capteurs(Vec2 position) {
+    public boolean is_obstacle_fixe_present_capteurs(Vec2 position)
+    {
     	return is_obstacle_fixe_present(position, distanceApproximation);
     }
 
-    public boolean is_obstacle_fixe_present_pathfinding(Vec2 position) {
+    public boolean is_obstacle_fixe_present_pathfinding(Vec2 position)
+    {
     	return is_obstacle_fixe_present(position, dilatation_obstacle);
     }
     
@@ -242,7 +253,8 @@ public class ObstacleManager implements Service
      * @param position
      * @return
      */
-    public synchronized boolean is_obstacle_mobile_present(Vec2 position, int distance) {
+    public boolean is_obstacle_mobile_present(Vec2 position, int distance) 
+    {
         Iterator<ObstacleCircular> iterator2 = listObstaclesMobiles.iterator();
         while(iterator2.hasNext())
         {

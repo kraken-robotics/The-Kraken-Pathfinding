@@ -6,7 +6,6 @@ import org.junit.Test;
 import pathfinding.GridSpace;
 import pathfinding.Pathfinding;
 import smartMath.Vec2;
-import utils.Sleep;
 import enums.PathfindingNodes;
 import enums.ServiceNames;
 import exceptions.PathfindingException;
@@ -17,8 +16,6 @@ import exceptions.PathfindingRobotInObstacleException;
  * @author pf
  *
  */
-
-// TODO: ajouter des tests avec des vérifications de chemin
 
 public class JUnit_Pathfinding extends JUnit_Test {
 
@@ -35,15 +32,24 @@ public class JUnit_Pathfinding extends JUnit_Test {
 	@Test(expected=PathfindingRobotInObstacleException.class)
     public void test_robot_dans_obstacle() throws Exception
     {
-    	gridspace.creer_obstacle(new Vec2(100, 100));
-    	pathfinding.computePath(new Vec2(80, 80), PathfindingNodes.COIN_1, gridspace);
+    	gridspace.creer_obstacle(new Vec2(80, 80));
+    	pathfinding.computePath(new Vec2(80, 80), PathfindingNodes.values()[0], gridspace);
     }
 
 	@Test(expected=PathfindingException.class)
     public void test_obstacle() throws Exception
     {
-    	gridspace.creer_obstacle(PathfindingNodes.SCRIPT_PLOT_7.getCoordonnees());
-    	pathfinding.computePath(new Vec2(80, 80), PathfindingNodes.SCRIPT_PLOT_7, gridspace);
+    	gridspace.creer_obstacle(PathfindingNodes.values()[0].getCoordonnees());
+    	pathfinding.computePath(new Vec2(80, 80), PathfindingNodes.values()[0], gridspace);
+    }
+
+	@Test
+    public void test_brute_force() throws Exception
+    {
+    	gridspace.setAvoidGameElement(false);
+    	for(PathfindingNodes i: PathfindingNodes.values())
+        	for(PathfindingNodes j: PathfindingNodes.values())
+            	pathfinding.computePath(i.getCoordonnees(), j, gridspace);
     }
 
 }

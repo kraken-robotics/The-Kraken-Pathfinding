@@ -1,12 +1,14 @@
 package tests;
 
 import org.junit.Assert;
+
 import obstacles.ObstacleManager;
 
 import org.junit.Before;
 import org.junit.Test;
 
 import smartMath.Vec2;
+import enums.PathfindingNodes;
 import enums.ServiceNames;
 
 /**
@@ -78,12 +80,19 @@ public class JUnit_ObstacleManager extends JUnit_Test {
     public void test_collision_obstacle_mobile() throws Exception
     {
     	Assert.assertTrue(!obstaclemanager.obstacle_proximite_dans_segment(new Vec2(100, 100), new Vec2(900, 900)));
-    	obstaclemanager.creer_obstacle(new Vec2(-200, 500));    	
+    	obstaclemanager.creer_obstacle(new Vec2(-300, 500));
     	Assert.assertTrue(!obstaclemanager.obstacle_proximite_dans_segment(new Vec2(100, 100), new Vec2(900, 900)));
-    	obstaclemanager.creer_obstacle(new Vec2(1200, 1200));    	
+    	obstaclemanager.creer_obstacle(new Vec2(1300, 1300));
     	Assert.assertTrue(!obstaclemanager.obstacle_proximite_dans_segment(new Vec2(100, 100), new Vec2(900, 900)));
     	obstaclemanager.creer_obstacle(new Vec2(400, 500));    	
     	Assert.assertTrue(obstaclemanager.obstacle_proximite_dans_segment(new Vec2(100, 100), new Vec2(900, 900)));
     }
+
+    @Test
+    public void test_collision_element_jeu() throws Exception
+    {
+    	Assert.assertTrue(obstaclemanager.obstacle_table_dans_segment(PathfindingNodes.BAS_DROITE.getCoordonnees(), PathfindingNodes.DEVANT_DEPART_GAUCHE.getCoordonnees()));
+    }
+	
 
 }
