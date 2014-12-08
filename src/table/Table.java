@@ -2,6 +2,7 @@ package table;
 
 import obstacles.GameElement;
 import container.Service;
+import enums.GameElementNames;
 import enums.Tribool;
 import smartMath.Vec2;
 import utils.*;
@@ -55,57 +56,26 @@ public class Table implements Service
 		total[19] = distributeurs[3] = new GameElement(new Vec2(-1200, 1950), 25);
 	}
 	
-	public void setClapDone(int id)
+	/**
+	 * On a pris l'objet ou on est passé dessus.
+	 * @param id
+	 */
+	public void setDone(GameElementNames id)
 	{
 		indice++;
 		hash = indice;
-		claps[id].setDone(Tribool.TRUE);
+		total[id.ordinal()].setDone(Tribool.TRUE);
 	}
 
-	public void setVerreDone(int id)
+	/**
+	 * Cet objet est-il présent ou non?
+	 * @param id
+	 */
+	public Tribool isDone(GameElementNames id)
 	{
-		indice++;
-		hash = indice;
-		verres[id].setDone(Tribool.TRUE);
-	}
-	
-	public void setDistributeurDone(int id)
-	{
-		indice++;
-		hash = indice;
-		distributeurs[id].setDone(Tribool.TRUE);
-	}
+		return total[id.ordinal()].isDone();
+	}	
 
-	public void setPlotTaken(int id)
-	{
-		indice++;
-		hash = indice;
-		plots[id].setDone(Tribool.TRUE);
-	}
-	
-	public Tribool isClapDone(int id)
-	{
-		return claps[id].isDone();
-	}
-
-	public Tribool isVerreDone(int id)
-	{
-		return verres[id].isDone();
-	}
-	
-	public Tribool isDistributeurDone(int id)
-	{
-		return distributeurs[id].isDone();
-	}
-
-	public Tribool isPlotTaken(int id)
-	{
-		return plots[id].isDone();
-	}
-	
-	
-	
-	
 	/**
 	 * La table en argument deviendra la copie de this (this reste inchangé)
 	 * @param ct
@@ -134,7 +104,7 @@ public class Table implements Service
 	 */
 	public boolean equals(Table other)
 	{
-		return other.hash == hash; //TODO
+		return other.hash == hash;
  	}
 
 	@Override

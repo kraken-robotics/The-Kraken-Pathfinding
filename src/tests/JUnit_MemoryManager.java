@@ -12,6 +12,7 @@ import smartMath.Vec2;
 import strategie.GameState;
 import strategie.MemoryManager;
 import table.Table;
+import enums.GameElementNames;
 import enums.ServiceNames;
 
 public class JUnit_MemoryManager extends JUnit_Test {
@@ -47,7 +48,7 @@ public class JUnit_MemoryManager extends JUnit_Test {
 	public void test_clone_1etage_modification() throws Exception
 	{
         Table cloned = memorymanager.getClone(0).table;
-        cloned.setClapDone(0);
+        cloned.setDone(GameElementNames.CLAP_1);
         Assert.assertTrue(!state.table.equals(cloned));
 	}
 
@@ -55,7 +56,7 @@ public class JUnit_MemoryManager extends JUnit_Test {
 	public void test_clone_2etages() throws Exception
 	{
 		Table cloned = memorymanager.getClone(0).table;
-        cloned.setClapDone(0);
+        cloned.setDone(GameElementNames.CLAP_1);
 		Assert.assertTrue(!state.table.equals(cloned));
 		Table cloned2 = memorymanager.getClone(1).table;
 		Assert.assertTrue(!cloned2.equals(state.table));
@@ -66,7 +67,7 @@ public class JUnit_MemoryManager extends JUnit_Test {
 	public void test_clone_encore_un_test() throws Exception
 	{
 		Table cloned = memorymanager.getClone(0).table;
-        cloned.setClapDone(0);
+        cloned.setDone(GameElementNames.CLAP_1);
 		Assert.assertTrue(!state.table.equals(cloned));
 		Table cloned2 = memorymanager.getClone(0).table;
 		Assert.assertTrue(cloned2.equals(state.table));

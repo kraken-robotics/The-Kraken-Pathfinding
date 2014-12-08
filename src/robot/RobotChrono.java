@@ -93,11 +93,12 @@ public class RobotChrono extends Robot
     public void suit_chemin(ArrayList<PathfindingNodes> chemin, ArrayList<Hook> hooks)
 	{
 		for(PathfindingNodes point: chemin)
-			va_au_point(point.getCoordonnees());
+			va_au_point(point.getCoordonnees(), hooks);
 	}
 	
-	public void va_au_point(Vec2 point)
+	public void va_au_point(Vec2 point, ArrayList<Hook> hooks)
 	{
+		// TODO gestion des hooks, notamment si on passe sur un élément de jeu
 		if(symetrie)
 			point.x *= -1;
 		date += position.distance(point)*vitesse.invertedTranslationnalSpeed;

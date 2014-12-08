@@ -43,6 +43,7 @@ public class ThreadStrategy extends AbstractThread implements Service
 	
 	private long temps_max_anticipation;
 	private long dureeMatch;
+	private int profondeur_max = 1;
 
 	private Decision[] decisions = null;
 	
@@ -109,6 +110,7 @@ public class ThreadStrategy extends AbstractThread implements Service
 					for(int meta_version : scriptmanager.getScript(n).meta_version(real_gamestate))
 					{
 						Decision decision_trouvee = parcourtArbre(0, n, meta_version);
+						log.debug("Note de "+n+" ("+meta_version+"): "+decision_trouvee.note, this);
 						if(decision_trouvee.note > meilleure_decision.note)
 							meilleure_decision = decision_trouvee;
 					}
@@ -132,8 +134,11 @@ public class ThreadStrategy extends AbstractThread implements Service
 		try {
 			// Récupération du gamestate
 			GameState<RobotChrono> state = memorymanager.getClone(profondeur);
-			if(state.getTempsDepuisRacine() > temps_max_anticipation || state.getTempsDepuisDebut() > dureeMatch)
-				return null;
+			if(profondeur >= profondeur_max || state.getTempsDepuisRacine() > temps_max_anticipation || state.getTempsDepuisDebut() > dureeMatch)
+			{
+				log.debug("Profondeur max atteinte", this);
+				return meilleure_decision;
+			}
 
 			long tempsAvantScript = state.robot.getDate();
 			int pointsAvantScript = state.robot.getPointsObtenus();
@@ -155,7 +160,7 @@ public class ThreadStrategy extends AbstractThread implements Service
 
 			// Exécution du script
 			try {
-				s.execute(id_meta_version, state);
+				s.execute(s.closest_version(state, id_meta_version), state);
 			} catch (UnableToMoveException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -207,6 +212,11 @@ public class ThreadStrategy extends AbstractThread implements Service
 			decisions = null;
 			return tmp;
 		}
+	}
+	
+	public void setProfondeurMax(int profondeur_max)
+	{
+		this.profondeur_max = profondeur_max;
 	}
 
 }

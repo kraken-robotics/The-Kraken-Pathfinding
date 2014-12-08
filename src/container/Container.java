@@ -233,9 +233,10 @@ public class Container
 		try {
 			getService(ServiceNames.THREAD_SENSOR);
 			((Thread)instanciedServices[ServiceNames.THREAD_SENSOR.ordinal()]).start();
-			getService(ServiceNames.THREAD_TIMER);
 
+			getService(ServiceNames.THREAD_TIMER);
 			((Thread)instanciedServices[ServiceNames.THREAD_TIMER.ordinal()]).start();
+
 			getService(ServiceNames.THREAD_STRATEGY);
 			((Thread)instanciedServices[ServiceNames.THREAD_STRATEGY.ordinal()]).start();
 		} catch (Exception e) {

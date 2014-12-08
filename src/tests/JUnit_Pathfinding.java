@@ -7,6 +7,7 @@ import pathfinding.GridSpace;
 import pathfinding.Pathfinding;
 import smartMath.Vec2;
 import table.Table;
+import enums.GameElementNames;
 import enums.PathfindingNodes;
 import enums.ServiceNames;
 import exceptions.PathfindingException;
@@ -64,7 +65,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
     public void test_element_jeu_disparu() throws Exception
     {
     	// une fois ce verre pris, le chemin est libre
-    	table.setVerreDone(2);
+    	table.setDone(GameElementNames.VERRE_3);
     	pathfinding.computePath(PathfindingNodes.BAS_GAUCHE.getCoordonnees(), PathfindingNodes.COTE_MARCHE_GAUCHE, gridspace, false, false);
     }
 
