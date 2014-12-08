@@ -51,7 +51,11 @@ public class JUnit_Pathfinding extends JUnit_Test {
     {
     	for(PathfindingNodes i: PathfindingNodes.values())
         	for(PathfindingNodes j: PathfindingNodes.values())
-            	pathfinding.computePath(i.getCoordonnees(), j, gridspace, false, true);
+        		if(!j.is_an_emergency_point()) // on n'arrive jamais dans un emergency point
+        		{
+        			pathfinding.computePath(i.getCoordonnees(), j, gridspace, false, true);
+        			pathfinding.computePath(i.getCoordonnees(), j, gridspace, true, true);
+        		}
     }
 	
 	@Test

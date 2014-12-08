@@ -8,8 +8,6 @@ import smartMath.Vec2;
  *
  */
 
-// TODO: tester et ajuster
-
 public enum PathfindingNodes {
 	DEVANT_DEPART_DROITE(new Vec2(700, 1100), false),
 	HAUT_DROITE(new Vec2(1000, 1600), false),
@@ -20,7 +18,18 @@ public enum PathfindingNodes {
 	BAS_GAUCHE(new Vec2(-800, 450), false),
 	COTE_MARCHE_GAUCHE(new Vec2(-830, 1600), false),
 	NODE_TAPIS(new Vec2(250, 1100), false),
-	BAS(new Vec2(0, 500), false);
+	CLAP_GAUCHE(new Vec2(1150, 300), false),
+	CLAP_DROIT(new Vec2(-1150, 300), false),
+	BAS(new Vec2(0, 500), false),
+
+	// Les points de secours ne doivent pas être des points d'entrée de scripts.
+	SECOURS_1(new Vec2(800, 1300), true),
+	SECOURS_2(new Vec2(-800, 1300), true),
+	SECOURS_3(new Vec2(0, 800), true),
+	SECOURS_4(new Vec2(820, 880), true),
+	SECOURS_5(new Vec2(-820, 880), true),
+	SECOURS_6(new Vec2(425, 520), true),
+	SECOURS_7(new Vec2(-425, 520), true);
 	
 	private Vec2 coordonnees;
 	private boolean emergency_point;
