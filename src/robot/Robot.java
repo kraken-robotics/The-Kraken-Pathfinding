@@ -5,10 +5,13 @@ import java.util.ArrayList;
 import hook.Hook;
 import smartMath.Vec2;
 import container.Service;
+import enums.HauteurBrasClap;
 import enums.PathfindingNodes;
+import enums.Side;
 import enums.Speed;
 import exceptions.FinMatchException;
 import exceptions.Locomotion.UnableToMoveException;
+import exceptions.serial.SerialConnexionException;
 import utils.Log;
 import utils.Config;
 
@@ -49,6 +52,7 @@ public abstract class Robot implements Service
     
 	public abstract void poserDeuxTapis() throws FinMatchException;
 	public abstract void leverDeuxTapis() throws FinMatchException;
+	public abstract void bougeBrasClap(Side cote, HauteurBrasClap hauteur) throws SerialConnexionException, FinMatchException;
 
     
 	/**

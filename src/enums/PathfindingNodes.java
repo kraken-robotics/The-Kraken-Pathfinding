@@ -18,8 +18,8 @@ public enum PathfindingNodes {
 	BAS_GAUCHE(new Vec2(-800, 450), false),
 	COTE_MARCHE_GAUCHE(new Vec2(-830, 1600), false),
 	NODE_TAPIS(new Vec2(250, 1100), false),
-	CLAP_GAUCHE(new Vec2(1150, 300), false),
-	CLAP_DROIT(new Vec2(-1150, 300), false),
+	CLAP_GAUCHE(new Vec2(-1050, 300), false), // les claps ne sont pas symétriques, c'est normal
+	CLAP_DROIT(new Vec2(1150, 300), false),
 	BAS(new Vec2(0, 500), false),
 
 	// Les points de secours ne doivent pas être des points d'entrée de scripts.

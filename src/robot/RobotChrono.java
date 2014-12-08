@@ -6,10 +6,13 @@ import hook.Hook;
 import smartMath.Vec2;
 import utils.Log;
 import utils.Config;
+import enums.HauteurBrasClap;
 import enums.PathfindingNodes;
+import enums.Side;
 import enums.SleepValues;
 import enums.Speed;
 import exceptions.FinMatchException;
+import exceptions.serial.SerialConnexionException;
 
 /**
  * Robot particulier qui fait pas bouger le robot réel, mais détermine la durée des actions
@@ -164,6 +167,12 @@ public class RobotChrono extends Robot
 	@Override
 	public void leverDeuxTapis() throws FinMatchException {
 		date += SleepValues.SLEEP_LEVER_TAPIS.duree;		
+	}
+
+	@Override
+	public void bougeBrasClap(Side cote, HauteurBrasClap hauteur)
+			throws SerialConnexionException, FinMatchException {
+		// a priori en hook, donc immédiat
 	}
 
 }

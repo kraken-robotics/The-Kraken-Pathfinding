@@ -8,6 +8,7 @@ import container.Service;
 //import hook.Executable;
 import hook.Hook;
 import enums.PathfindingNodes;
+import enums.RobotColor;
 import enums.Speed;
 import exceptions.FinMatchException;
 //import hook.methodes.ChangeConsigne;
@@ -806,7 +807,8 @@ public class Locomotion implements Service
 		angle_degagement_robot = Double.parseDouble(config.get("angle_degagement_robot"));
 		//        anticipation_trajectoire_courbe = Integer.parseInt(config.get("anticipation_trajectoire_courbe"));
 		trajectoire_courbe = Boolean.parseBoolean(config.get("trajectoire_courbe"));
-		symetrie = config.get("couleur").equals("rouge");
+		symetrie = (RobotColor.parse(config.get("couleur")) == RobotColor.YELLOW);
+
 	}
 
 	/**

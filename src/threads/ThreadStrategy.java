@@ -104,17 +104,18 @@ public class ThreadStrategy extends AbstractThread implements Service
 	{
 		Decision meilleure_decision = new Decision(null, -1, -1);
 		for(ScriptNames n: ScriptNames.values())
-			try {
-				for(int meta_version : scriptmanager.getScript(n).meta_version(real_gamestate))
-				{
-					Decision decision_trouvee = parcourtArbre(0, n, meta_version);
-					if(decision_trouvee.note > meilleure_decision.note)
-						meilleure_decision = decision_trouvee;
+			if(n.canIDoIt())
+				try {
+					for(int meta_version : scriptmanager.getScript(n).meta_version(real_gamestate))
+					{
+						Decision decision_trouvee = parcourtArbre(0, n, meta_version);
+						if(decision_trouvee.note > meilleure_decision.note)
+							meilleure_decision = decision_trouvee;
+					}
+				} catch (UnknownScriptException e) {
+					// Script inconnu, on le passe
+					continue;
 				}
-			} catch (UnknownScriptException e) {
-				// Script inconnu, on le passe
-				continue;
-			}
 		return meilleure_decision;
 	}
 	

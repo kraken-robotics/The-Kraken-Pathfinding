@@ -8,7 +8,20 @@ package enums;
  */
 
 public enum ScriptNames {
-	script_A, // TODO
-	script_B,
-	script_C;	
+	ScriptClap(true), // TODO
+	ScriptTapis(true);
+	
+	private boolean canIDoIt; // ce booléan dépend du robot!
+	// si on a deux robots, ils ne pourront pas faire la même chose...
+	
+	ScriptNames(boolean canIDoIt)
+	{
+		this.canIDoIt = canIDoIt;
+	}
+	
+	public boolean canIDoIt()
+	{
+		return canIDoIt;
+	}
+	
 }
