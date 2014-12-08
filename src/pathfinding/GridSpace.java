@@ -209,7 +209,7 @@ public class GridSpace implements Service {
     	// Evaluation paresseuse importante, car obstacle_proximite_dans_segment est bien plus rapide que obstacle_fixe_dans_segment
     	return !obstaclemanager.obstacle_proximite_dans_segment(pointA, pointB) && !obstaclemanager.obstacle_fixe_dans_segment_pathfinding(pointA, pointB);
     }
-
+    
     public double getDistance(PathfindingNodes id1, PathfindingNodes id2)
     {
     	return distances[id1.ordinal()][id2.ordinal()];
@@ -220,11 +220,18 @@ public class GridSpace implements Service {
     	return PathfindingNodes.values()[iterator];
     }
     
-    public boolean hasNext()
+    public boolean hasNext(boolean emergency)
     {
     	do {
     		iterator++;
-    	} while(iterator < PathfindingNodes.values().length && (iterator == id_node_iterator || !isTraversable(PathfindingNodes.values()[iterator], PathfindingNodes.values()[id_node_iterator])));
+    		// Ce point n'est pas bon si:
+    		// c'est le noeud appelant (un noeud n'est pas son propre voisin)
+    		// c'est un noeud d'urgence et nous ne sommes pas en mode urgence
+    		// le noeud appelant et ce noeud ne peuvent être joints par une ligne droite
+    	} while(iterator < PathfindingNodes.values().length
+    			&& (iterator == id_node_iterator
+    			|| (!emergency && PathfindingNodes.values()[iterator].is_an_emergency_point())
+    			|| !isTraversable(PathfindingNodes.values()[iterator], PathfindingNodes.values()[id_node_iterator])));
     	return iterator != PathfindingNodes.values().length;
     }
     

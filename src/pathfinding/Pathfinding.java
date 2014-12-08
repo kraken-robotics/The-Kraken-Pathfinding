@@ -22,10 +22,12 @@ import utils.Log;
 
 public class Pathfinding implements Service
 {
-	private static final int COEFF_HEURISTIC = 5;
+	private int COEFF_HEURISTIC = 5;
+	private int compteur;
 	
 	private Set<PathfindingNodes> openset = new LinkedHashSet<PathfindingNodes>();	 // The set of tentative nodes to be evaluated
 
+	@SuppressWarnings("unused")
 	private Log log;
 	
 	/**
@@ -35,31 +37,14 @@ public class Pathfinding implements Service
 	{
 		this.log = log;
 	}
-
-	/**
-	 * Cherche un chemin en ignorant les éléments de jeux. A utiliser si on est coincé.
-	 * @param orig
-	 * @param indice_point_arrivee
-	 * @param gridspace
-	 * @return
-	 * @throws PathfindingException
-	 * @throws PathfindingRobotInObstacleException
-	 */
-	public ArrayList<PathfindingNodes> computePathForce(Vec2 orig, PathfindingNodes indice_point_arrivee, GridSpace gridspace) throws PathfindingException, PathfindingRobotInObstacleException
-	{
-		gridspace.setAvoidGameElement(false);
-		ArrayList<PathfindingNodes> chemin = computePath(orig, indice_point_arrivee, gridspace);
-		gridspace.setAvoidGameElement(true);
-		return chemin;
-	}
 	
-	public ArrayList<PathfindingNodes> computePath(Vec2 orig, PathfindingNodes indice_point_arrivee, GridSpace gridspace) throws PathfindingException, PathfindingRobotInObstacleException
+	public ArrayList<PathfindingNodes> computePath(Vec2 orig, PathfindingNodes indice_point_arrivee, GridSpace gridspace, boolean more_points, boolean shoot_game_element) throws PathfindingException, PathfindingRobotInObstacleException
 	{
 		PathfindingNodes indice_point_depart;
 		try {
+			gridspace.setAvoidGameElement(!shoot_game_element);
 			indice_point_depart = gridspace.nearestReachableNode(orig);
-			log.debug("Plus proche de "+orig+": "+indice_point_depart, this);
-			ArrayList<PathfindingNodes> chemin = process(indice_point_depart, indice_point_arrivee, gridspace);
+			ArrayList<PathfindingNodes> chemin = process(indice_point_depart, indice_point_arrivee, gridspace, more_points);
 			return lissage(orig, chemin, gridspace);
 		} catch (GridSpaceException e1) {
 			throw new PathfindingRobotInObstacleException();
@@ -68,10 +53,9 @@ public class Pathfinding implements Service
 	
 	@Override
 	public void updateConfig() {
-		// TODO Auto-generated method stub
-		
 	}
 	
+	// Si le point de départ est dans un obstacle fixe, le lissage ne changera rien.
 	private ArrayList<PathfindingNodes> lissage(Vec2 depart, ArrayList<PathfindingNodes> chemin, GridSpace gridspace)
 	{
 		// si on peut sauter le premier point, on le fait
@@ -80,8 +64,9 @@ public class Pathfinding implements Service
 		return chemin;
 	}
 	
-	private ArrayList<PathfindingNodes> process(PathfindingNodes depart, PathfindingNodes arrivee, GridSpace gridspace) throws PathfindingException
+	private ArrayList<PathfindingNodes> process(PathfindingNodes depart, PathfindingNodes arrivee, GridSpace gridspace, boolean more_points) throws PathfindingException
 	{
+//		compteur = 0;
 		ArrayList<PathfindingNodes> chemin = new ArrayList<PathfindingNodes>();
 		chemin.add(depart);
 		depart.incrementUse();
@@ -101,7 +86,6 @@ public class Pathfinding implements Service
 		double[] g_score = new double[PathfindingNodes.values().length];
 		double[] f_score = new double[PathfindingNodes.values().length];
 
-		// TODO: vérifier que c'est bien initialisé à false même sans la boucle
 		boolean[] closedset = new boolean[PathfindingNodes.values().length]; // The set of nodes already evaluated.
 		for(int i = 0; i < PathfindingNodes.values().length; i++)
 			closedset[i] = false;
@@ -119,6 +103,7 @@ public class Pathfinding implements Service
 
 		while (openset.size() != 0)
 		{
+//			compteur++;
 			// current is affected by the node in openset having the lowest f_score[] value
 			nodeIterator = openset.iterator();
 			current = nodeIterator.next();
@@ -149,7 +134,7 @@ public class Pathfinding implements Service
 			
 			gridspace.reinitIterator(current);
 		    	
-			while(gridspace.hasNext())
+			while(gridspace.hasNext(more_points))
 			{
 				tmp = gridspace.next();
 
@@ -162,7 +147,6 @@ public class Pathfinding implements Service
 				{
 					came_from[tmp.ordinal()] = current;
 					g_score[tmp.ordinal()] = tentative_g_score;
-					// TODO: vérifier que 5 est bien le meilleur coefficient
 					f_score[tmp.ordinal()] = tentative_g_score + COEFF_HEURISTIC * gridspace.getDistance(tmp, arrivee);
 					if(!openset.contains(tmp))
 						openset.add(tmp);
@@ -172,6 +156,23 @@ public class Pathfinding implements Service
 		    		    	
 	throw new PathfindingException();
 	
+	}
+	
+	/**
+	 * Recherche de constante
+	 */
+	public void setHeuristiqueCoeff(int n)
+	{
+		COEFF_HEURISTIC = n;
+	}
+	
+	/**
+	 * Recherche de constante
+	 * @return
+	 */
+	public int getCompteur()
+	{
+		return compteur;
 	}
 	
 }

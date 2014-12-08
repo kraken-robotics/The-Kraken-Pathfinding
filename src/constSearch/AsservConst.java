@@ -1,4 +1,4 @@
-package asservissement;
+package constSearch;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -17,7 +17,7 @@ import robot.cardsWrappers.LocomotionCardWrapper;
  * @author pf, kayou
  * 
  */
-public class SearchConst
+public class AsservConst
 {
     private static float kp = 0, kd = 0;
     private static int pwm_max = 0;

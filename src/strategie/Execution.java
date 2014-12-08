@@ -81,6 +81,12 @@ public class Execution implements Service {
 		
 	}
 	
+	// TODO
+	/*
+	 * En gros, on peut jouer sur 2 paramètres dans le pathfinding
+	 * D'abord, "more points". Ca ajoute des points dans la recherche de chemin: c'est plus long mais on a moins de chances d'être bloqué.
+	 * Ensuite, "shoot game elements". Quand on est vraiment bloqué, on peut décider de shooter dans les éléments de jeux pour avancer.
+	 */
 	public void executerScript(Decision[] decisions) throws UnknownScriptException, FinMatchException
 	{
 		for(int id_decision = 0; id_decision < 2; id_decision++)
@@ -90,11 +96,10 @@ public class Execution implements Service {
 
 			log.debug("On tente d'exécuter "+decision_actuelle.script_name, this);
 			try {
-				tryOnce(s, decision_actuelle.id_version);
+				tryOnce(s, decision_actuelle.id_version, false, false);
 			} catch (PathfindingException e) {
-				log.critical("Abandon: pas de chemin pour "+decision_actuelle.script_name, this);
-				// Problème de pathfinding: pas de chemin. On change de script.
-				continue;
+// TODO				tryOnce(s, decision_actuelle.id_version, true, false);
+				// Problème de pathfinding: pas de chemin. On rajoute des points
 			} catch (ScriptException e) {
 				log.critical("Abandon: erreur de script", this);
 				// On a eu un problème au milieu du script. On change de script.
@@ -104,7 +109,7 @@ public class Execution implements Service {
 				// On a rencontré l'ennemi en chemin. On retente avec un autre chemin.
 				try {
 					log.debug("On réessaye d'exécuter "+decision_actuelle.script_name, this);
-					tryOnce(s, decision_actuelle.id_version);
+					tryOnce(s, decision_actuelle.id_version, true, false);
 				} catch (Exception e1) {
 					log.critical("Abandon: erreur pendant l'itinéraire de secours.", this);
 					continue;
@@ -121,10 +126,10 @@ public class Execution implements Service {
 		}
 	}
 	
-	public void tryOnce(Script s, int id_version) throws PathfindingException, UnableToMoveException, ScriptException, PathfindingRobotInObstacleException, FinMatchException
+	public void tryOnce(Script s, int id_version, boolean more_points, boolean dont_avoid_game_element) throws PathfindingException, UnableToMoveException, ScriptException, PathfindingRobotInObstacleException, FinMatchException
 	{
 		ArrayList<PathfindingNodes> chemin;
-		chemin = pathfinding.computePath(gamestate.robot.getPosition(), s.point_entree(id_version), gamestate.gridspace);
+		chemin = pathfinding.computePath(gamestate.robot.getPosition(), s.point_entree(id_version), gamestate.gridspace, more_points, dont_avoid_game_element);
 		gamestate.robot.set_vitesse(Speed.BETWEEN_SCRIPTS);
 		gamestate.robot.suit_chemin(chemin, hooks_entre_scripts);
 		s.agit(id_version, gamestate, false);	

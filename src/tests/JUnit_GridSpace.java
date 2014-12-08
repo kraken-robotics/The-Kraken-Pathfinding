@@ -42,17 +42,17 @@ public class JUnit_GridSpace extends JUnit_Test {
 	{
 		gridspace.setAvoidGameElement(false);
 		gridspace.reinitIterator(PathfindingNodes.BAS_DROITE);
-		Assert.assertTrue(gridspace.hasNext());
+		Assert.assertTrue(gridspace.hasNext(false));
 		Assert.assertEquals(PathfindingNodes.DEVANT_DEPART_DROITE, gridspace.next());
-		Assert.assertTrue(gridspace.hasNext());
+		Assert.assertTrue(gridspace.hasNext(false));
 		Assert.assertEquals(PathfindingNodes.COTE_MARCHE_DROITE, gridspace.next());
-		Assert.assertTrue(gridspace.hasNext());
+		Assert.assertTrue(gridspace.hasNext(false));
 		Assert.assertEquals(PathfindingNodes.DEVANT_DEPART_GAUCHE, gridspace.next());
-		Assert.assertTrue(gridspace.hasNext());
+		Assert.assertTrue(gridspace.hasNext(false));
 		Assert.assertEquals(PathfindingNodes.NODE_TAPIS, gridspace.next());
-		Assert.assertTrue(gridspace.hasNext());
+		Assert.assertTrue(gridspace.hasNext(false));
 		Assert.assertEquals(PathfindingNodes.BAS, gridspace.next());
-		Assert.assertTrue(!gridspace.hasNext());
+		Assert.assertTrue(!gridspace.hasNext(false));
 	}
 	
 	@Test
@@ -64,7 +64,7 @@ public class JUnit_GridSpace extends JUnit_Test {
 			gridspace.reinitIterator(j);
 			for(PathfindingNodes i : PathfindingNodes.values())
 				verification[i.ordinal()] = false;
-			while(gridspace.hasNext())
+			while(gridspace.hasNext(true))
 			{
 				Assert.assertTrue(verification[gridspace.next().ordinal()] == false);
 				verification[gridspace.next().ordinal()] = true;

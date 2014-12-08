@@ -232,14 +232,10 @@ public class Container
 	{
 		try {
 			getService(ServiceNames.THREAD_SENSOR);
-			log.debug("AA", this);
 			((Thread)instanciedServices[ServiceNames.THREAD_SENSOR.ordinal()]).start();
-			log.debug("AA'", this);
 			getService(ServiceNames.THREAD_TIMER);
-			log.debug("BB", this);
 
 			((Thread)instanciedServices[ServiceNames.THREAD_TIMER.ordinal()]).start();
-			log.debug("CC", this);
 			getService(ServiceNames.THREAD_STRATEGY);
 			((Thread)instanciedServices[ServiceNames.THREAD_STRATEGY.ordinal()]).start();
 		} catch (Exception e) {

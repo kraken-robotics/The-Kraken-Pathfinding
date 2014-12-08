@@ -64,7 +64,7 @@ public class JUnit_Test_Graphic extends JUnit_Test {
 			PathfindingNodes j = PathfindingNodes.values()[randomgenerator.nextInt(PathfindingNodes.values().length)];
 			log.debug("Recherche chemin entre "+i+" et "+j, this);
 			Vec2 entree = i.getCoordonnees().plusNewVector(new Vec2(randomgenerator.nextInt(100)-50, randomgenerator.nextInt(100)-50));
-    		ArrayList<PathfindingNodes> chemin = pathfinding.computePath(entree, j, gridspace);
+    		ArrayList<PathfindingNodes> chemin = pathfinding.computePath(entree, j, gridspace, false, true);
     		ArrayList<Vec2> cheminVec2 = new ArrayList<Vec2>();
     		cheminVec2.add(entree);
     		for(PathfindingNodes n: chemin)

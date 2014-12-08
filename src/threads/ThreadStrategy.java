@@ -142,7 +142,7 @@ public class ThreadStrategy extends AbstractThread implements Service
 			// Chemin pour aller au script
 			ArrayList<PathfindingNodes> chemin;
 			try {
-				chemin = pathfinding.computePath(state.robot.getPosition(), s.point_entree(s.version_asso(id_meta_version).get(0)), state.gridspace);
+				chemin = pathfinding.computePath(state.robot.getPosition(), s.point_entree(s.version_asso(id_meta_version).get(0)), state.gridspace, false, false);
 			} catch (PathfindingException e) {
 				// En cas d'erreur, on coupe la branche
 				return meilleure_decision;
