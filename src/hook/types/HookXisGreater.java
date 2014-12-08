@@ -3,6 +3,7 @@ package hook.types;
 import exceptions.FinMatchException;
 import hook.types.HookX;
 import robot.RobotReal;
+import smartMath.Vec2;
 import strategie.GameState;
 import utils.Log;
 import utils.Config;
@@ -38,10 +39,16 @@ class HookXisGreater extends HookX
     @Override
     public boolean evaluate() throws FinMatchException
     {
-        if(real_state.robot.getPosition().x > xValue)
+        if(state.robot.getPosition().x > xValue)
             return trigger();
 
         return false;
     }
-    
+
+	@Override
+	public boolean simulated_evaluate(Vec2 pointA, Vec2 pointB)
+	{
+		return (pointA.x > xValue) || (pointB.x > xValue);
+	}
+
 }

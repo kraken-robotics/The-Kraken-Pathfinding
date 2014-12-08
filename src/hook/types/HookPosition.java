@@ -1,5 +1,6 @@
 package hook.types;
 
+import obstacles.ObstacleCircular;
 import exceptions.FinMatchException;
 import hook.Hook;
 import robot.RobotReal;
@@ -23,6 +24,7 @@ class HookPosition extends Hook
 	// tolérance sur la position de déclenchement du hook. On mémorise le carré pour ne pas avoir a calculer des racines a chaque vérifications
 	private int squaredTolerancy;
 	
+	private int tolerancy;
 	
 
     /**
@@ -38,6 +40,7 @@ class HookPosition extends Hook
 	{
 		super(config, log, realState);
 		this.position = position;
+		this.tolerancy = tolerancy;
 		this.squaredTolerancy = tolerancy*tolerancy;
 		if(isYellowTeam)
 			position.x *= -1;
@@ -50,10 +53,18 @@ class HookPosition extends Hook
      */
 	public boolean evaluate() throws FinMatchException
 	{
-		Vec2 positionRobot = real_state.robot.getPosition();
+		Vec2 positionRobot = state.robot.getPosition();
 		if(position.squaredDistance(positionRobot) <= squaredTolerancy)
 			return trigger();
 		return false;
+	}
+
+
+	@Override
+	public boolean simulated_evaluate(Vec2 pointA, Vec2 pointB)
+	{
+		ObstacleCircular o = new ObstacleCircular(position, tolerancy);
+		return o.obstacle_proximite_dans_segment(pointA, pointB, rayon_robot);
 	}
 	
 }

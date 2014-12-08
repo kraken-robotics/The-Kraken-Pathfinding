@@ -3,6 +3,7 @@ package hook.types;
 import exceptions.FinMatchException;
 import hook.Hook;
 import robot.RobotReal;
+import smartMath.Vec2;
 import strategie.GameState;
 import utils.Log;
 import utils.Config;
@@ -43,10 +44,16 @@ class HookY extends Hook
      */
     public boolean evaluate() throws FinMatchException
     {
-        if(Math.abs(real_state.robot.getPosition().y-yValue) < tolerancy)
+        if(Math.abs(state.robot.getPosition().y-yValue) < tolerancy)
             return trigger();
 
         return false;
     }
     
+	@Override
+	public boolean simulated_evaluate(Vec2 pointA, Vec2 pointB)
+	{
+		return (pointA.y - yValue) * (pointB.y - yValue) < 0;
+	}
+
 }

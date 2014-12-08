@@ -3,7 +3,7 @@ package hook;
 import java.util.ArrayList;
 
 import exceptions.FinMatchException;
-import robot.RobotReal;
+import smartMath.Vec2;
 import strategie.GameState;
 import utils.Log;
 import utils.Config;
@@ -25,19 +25,22 @@ abstract public class Hook
 	//endroit ou lire la configuration du robot
 	protected Config config;
 	
-	protected GameState<RobotReal> real_state;
+	protected GameState<?> state;
 
+	protected int rayon_robot = 300;
+	
 	/**
 	 *  ce constructeur ne sera appellé que par les constructeurs des classes filles (des hooks bien précis)  
 	 * @param config
 	 * @param log
 	 * @param real_state
 	 */
-	public Hook(Config config, Log log, GameState<RobotReal> real_state)
+	public Hook(Config config, Log log, GameState<?> state)
 	{
 		this.config = config;
 		this.log = log;
-		this.real_state = real_state;
+		this.state = state;
+		rayon_robot = Integer.parseInt(config.get("rayon_robot"));
 	}
 	
 	/**
@@ -71,6 +74,15 @@ abstract public class Hook
 	 * @return true si ce hook modifie les déplacements du robot, false sinon
 	 */
 	public abstract boolean evaluate() throws FinMatchException;
+	
+	/**
+	 * Méthode appelée par RobotChrono. Elle doit dire si, sur un trajet entre A et B,
+	 * le hook est sensé s'activer.
+	 * @param pointA
+	 * @param pointB
+	 * @return
+	 */
+	public abstract boolean simulated_evaluate(Vec2 pointA, Vec2 pointB);
 	
 	/**
 	 * On peut supprimer le hook s'il n'y a plus aucun callback déclenchable.
