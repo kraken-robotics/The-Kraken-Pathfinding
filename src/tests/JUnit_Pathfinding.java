@@ -71,12 +71,14 @@ public class JUnit_Pathfinding extends JUnit_Test {
 	@Test(expected=PathfindingException.class)
     public void test_element_jeu_disparu_2() throws Exception
     {
+		// Exception car il y a un verre sur le passage
     	pathfinding.computePath(PathfindingNodes.BAS_GAUCHE.getCoordonnees(), PathfindingNodes.COTE_MARCHE_GAUCHE, gridspace, false, false);
     }
 	
 	@Test
     public void test_element_jeu_disparu_3() throws Exception
     {
+		// Pas d'exception car on demande au pathfinding de passer sur les éléments de jeux.
     	pathfinding.computePath(PathfindingNodes.BAS_GAUCHE.getCoordonnees(), PathfindingNodes.COTE_MARCHE_GAUCHE, gridspace, false, true);
     }
 

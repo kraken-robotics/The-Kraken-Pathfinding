@@ -1,5 +1,6 @@
 package obstacles;
 
+import enums.Tribool;
 import smartMath.Vec2;
 
 /**
@@ -11,7 +12,7 @@ import smartMath.Vec2;
 
 public class GameElement extends ObstacleCircular
 {
-	private boolean done = false; 
+	private Tribool done = Tribool.FALSE; 
 	
 	public GameElement(Vec2 position, int rayon)
 	{
@@ -19,12 +20,12 @@ public class GameElement extends ObstacleCircular
 		this.position = position;
 	}
 	
-	public void setDone()
+	public void setDone(Tribool etat)
 	{
-		done = true;
+		done = etat;
 	}
 	
-	public boolean isDone()
+	public Tribool isDone()
 	{
 		return done;
 	}

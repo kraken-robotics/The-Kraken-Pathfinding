@@ -11,6 +11,7 @@ import smartMath.Vec2;
 import table.Table;
 import enums.PathfindingNodes;
 import enums.ServiceNames;
+import enums.Tribool;
 
 /**
  * Tests unitaires pour ObstacleManager
@@ -100,9 +101,9 @@ public class JUnit_ObstacleManager extends JUnit_Test {
     @Test
     public void test_ennemi_dans_element_jeu() throws Exception
     {
-    	Assert.assertTrue(!table.getObstacles()[0].isDone());
+    	Assert.assertTrue(table.getObstacles()[0].isDone() == Tribool.FALSE);
     	obstaclemanager.creer_obstacle(new Vec2(1500, 150));
-    	Assert.assertTrue(table.getObstacles()[0].isDone());
+    	Assert.assertTrue(table.getObstacles()[0].isDone() == Tribool.MAYBE);
     }
 
 }

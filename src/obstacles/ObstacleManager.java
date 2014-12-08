@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import container.Service;
+import enums.Tribool;
 import smartMath.Vec2;
 import table.Table;
 import utils.Config;
@@ -90,8 +91,8 @@ public class ObstacleManager implements Service
     {
         GameElement[] obstacles = table.getObstacles();
         for(GameElement o: obstacles)
-            if(!o.isDone() && o.isProcheObstacle(position, rayon_robot_adverse))
-            	o.setDone();
+            if(o.isDone() == Tribool.FALSE && o.isProcheObstacle(position, rayon_robot_adverse))
+            	o.setDone(Tribool.MAYBE);
     }
 
     /**
@@ -197,7 +198,7 @@ public class ObstacleManager implements Service
 	}
 
 	/**
-	 * Y a-t-il un obstacle
+	 * Y a-t-il un obstacle de table dans ce segment?
 	 * @param A
 	 * @param B
 	 * @return
@@ -206,7 +207,9 @@ public class ObstacleManager implements Service
     {
         GameElement[] obstacles = table.getObstacles();
         for(GameElement o: obstacles)
-            if(!o.isDone() && o.obstacle_proximite_dans_segment(A, B, dilatation_obstacle))
+        	// Si on a interprété que l'ennemi est passé sur un obstacle,
+        	// on peut passer dessus par la suite.
+            if(o.isDone() == Tribool.FALSE && o.obstacle_proximite_dans_segment(A, B, dilatation_obstacle))
                 return true;
 
         return false;    	

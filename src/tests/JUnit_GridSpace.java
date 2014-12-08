@@ -51,6 +51,8 @@ public class JUnit_GridSpace extends JUnit_Test {
 		Assert.assertTrue(gridspace.hasNext(false));
 		Assert.assertEquals(PathfindingNodes.NODE_TAPIS, gridspace.next());
 		Assert.assertTrue(gridspace.hasNext(false));
+		Assert.assertEquals(PathfindingNodes.CLAP_GAUCHE, gridspace.next());
+		Assert.assertTrue(gridspace.hasNext(false));
 		Assert.assertEquals(PathfindingNodes.BAS, gridspace.next());
 		Assert.assertTrue(!gridspace.hasNext(false));
 	}

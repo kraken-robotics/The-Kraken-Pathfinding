@@ -2,6 +2,7 @@ package table;
 
 import obstacles.GameElement;
 import container.Service;
+import enums.Tribool;
 import smartMath.Vec2;
 import utils.*;
 
@@ -58,29 +59,52 @@ public class Table implements Service
 	{
 		indice++;
 		hash = indice;
-		claps[id].setDone();
+		claps[id].setDone(Tribool.TRUE);
 	}
 
 	public void setVerreDone(int id)
 	{
 		indice++;
 		hash = indice;
-		verres[id].setDone();
+		verres[id].setDone(Tribool.TRUE);
 	}
 	
 	public void setDistributeurDone(int id)
 	{
 		indice++;
 		hash = indice;
-		distributeurs[id].setDone();
+		distributeurs[id].setDone(Tribool.TRUE);
 	}
 
 	public void setPlotTaken(int id)
 	{
 		indice++;
 		hash = indice;
-		plots[id].setDone();
+		plots[id].setDone(Tribool.TRUE);
 	}
+	
+	public Tribool isClapDone(int id)
+	{
+		return claps[id].isDone();
+	}
+
+	public Tribool isVerreDone(int id)
+	{
+		return verres[id].isDone();
+	}
+	
+	public Tribool isDistributeurDone(int id)
+	{
+		return distributeurs[id].isDone();
+	}
+
+	public Tribool isPlotTaken(int id)
+	{
+		return plots[id].isDone();
+	}
+	
+	
+	
 	
 	/**
 	 * La table en argument deviendra la copie de this (this reste inchangé)
