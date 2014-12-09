@@ -226,14 +226,14 @@ public class HookFactory implements Service
 			// L'ennemi peut prendre les distributeurs
 			if(o.isDone() == Tribool.FALSE && o.getName().getType() == GameElementType.DISTRIBUTEUR)
 			{
-				hook = newHookDate(Config.dateDebutMatch + 20000, state);
+				hook = newHookDate(20000, state);
 				action = new GameElementDone(o, Tribool.MAYBE);
 				hook.ajouter_callback(new Callback(action));
 				hooks_entre_scripts.add(hook);
 			}
 			else if(o.isDone() == Tribool.FALSE && o.getName().getType() == GameElementType.VERRE)
 			{
-				hook = newHookDate(Config.dateDebutMatch + 20000, state);
+				hook = newHookDate(20000, state);
 				action = new GameElementDone(o, Tribool.MAYBE);
 				hook.ajouter_callback(new Callback(action));
 				hooks_entre_scripts.add(hook);

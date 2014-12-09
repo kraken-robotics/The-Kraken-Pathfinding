@@ -15,7 +15,6 @@ import robot.RobotChrono;
 import robot.RobotReal;
 import smartMath.Vec2;
 import strategie.GameState;
-import utils.Config;
 import enums.GameElementNames;
 import enums.PathfindingNodes;
 import enums.ServiceNames;
@@ -48,7 +47,7 @@ public class JUnit_Hook extends JUnit_Test {
 	@Test
 	public void test_hook_chrono_avancer() throws Exception
 	{
-		Config.dateDebutMatch = System.currentTimeMillis();
+		config.setDateDebutMatch();
 		ArrayList<Hook> hooks_table = hookfactory.getHooksEntreScripts(chrono_gamestate);
 		chrono_gamestate.robot.setPosition(new Vec2(600, 350));
 		chrono_gamestate.robot.setOrientation(Math.PI);
@@ -63,7 +62,7 @@ public class JUnit_Hook extends JUnit_Test {
 	@Test
 	public void test_hook_vrai_avancer() throws Exception
 	{
-		Config.dateDebutMatch = System.currentTimeMillis();
+		config.setDateDebutMatch();
 		ArrayList<Hook> hooks_table = hookfactory.getHooksEntreScripts(real_gamestate);
 		real_gamestate.robot.setPosition(new Vec2(600, 350));
 		real_gamestate.robot.setOrientation(Math.PI);
@@ -75,9 +74,21 @@ public class JUnit_Hook extends JUnit_Test {
 	}
 
 	@Test
+	public void test_hook_chrono_sleep() throws Exception
+	{
+		config.setDateDebutMatch();
+		ArrayList<Hook> hooks_table = hookfactory.getHooksEntreScripts(real_gamestate);
+		Assert.assertTrue(real_gamestate.table.isDone(GameElementNames.VERRE_5) == Tribool.FALSE);
+		chrono_gamestate.robot.sleep(5000, hooks_table);
+		Assert.assertTrue(real_gamestate.table.isDone(GameElementNames.VERRE_5) == Tribool.FALSE);
+		chrono_gamestate.robot.sleep(90000, hooks_table);
+		Assert.assertTrue(real_gamestate.table.isDone(GameElementNames.VERRE_5) == Tribool.MAYBE);
+	}
+
+	@Test
 	public void test_hook_chrono_suit_chemin() throws Exception
 	{
-		Config.dateDebutMatch = System.currentTimeMillis();
+		config.setDateDebutMatch();
 		ArrayList<Hook> hooks_table = hookfactory.getHooksEntreScripts(chrono_gamestate);
 		chrono_gamestate.robot.setPosition(PathfindingNodes.BAS.getCoordonnees());
     	ArrayList<PathfindingNodes> chemin = pathfinding.computePath(PathfindingNodes.BAS.getCoordonnees(), PathfindingNodes.COTE_MARCHE_DROITE, chrono_gamestate.gridspace, false, true);

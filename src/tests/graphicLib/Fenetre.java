@@ -6,6 +6,7 @@ import javax.swing.*;
 import obstacles.GameElement;
 import obstacles.Obstacle;
 import obstacles.ObstacleCircular;
+import obstacles.ObstacleProximity;
 import obstacles.ObstacleRectangular;
 import smartMath.Vec2;
 
@@ -23,7 +24,7 @@ public class Fenetre extends JPanel {
 	private ArrayList<Vec2> pointsADessiner = new ArrayList<Vec2>();
 	private GameElement[] listGameElement;
 	private ArrayList<Obstacle> listObstaclesFixes;
-	private ArrayList<ObstacleCircular> listObstaclesMobiles;
+	private ArrayList<ObstacleProximity> listObstaclesMobiles;
 	private ArrayList<Vec2[]> segments = new ArrayList<Vec2[]>();
 	private Image image;
 	private int dilatationObstacle;
@@ -153,7 +154,7 @@ public class Fenetre extends JPanel {
 		this.listObstaclesFixes = listObstaclesFixes;
 	}
 
-	public void setObstaclesMobiles(ArrayList<ObstacleCircular> listObstaclesMobiles)
+	public void setObstaclesMobiles(ArrayList<ObstacleProximity> listObstaclesMobiles)
 	{
 		this.listObstaclesMobiles = listObstaclesMobiles;
 	}

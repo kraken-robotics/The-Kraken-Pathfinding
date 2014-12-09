@@ -40,11 +40,11 @@ public abstract class Robot implements Service
 	public abstract void setOrientation(double orientation) throws FinMatchException;
     public abstract Vec2 getPosition() throws FinMatchException;
     public abstract double getOrientation() throws FinMatchException;
-    public abstract void sleep(long duree);
+    public abstract void sleep(long duree, ArrayList<Hook> hooks);
     public abstract void setInsiste(boolean insiste);
     public abstract void desactiver_asservissement_rotation() throws FinMatchException;
     public abstract void activer_asservissement_rotation() throws FinMatchException;
-    public abstract long getDate();
+    public abstract long getTempsDepuisDebutMatch();
     
     /*
      * Actionneurs
@@ -65,7 +65,7 @@ public abstract class Robot implements Service
     	// pas besoin de copier symétrie car elle ne change pas en cours de match
     	rc.vitesse = vitesse;
     	((Robot)rc).pointsObtenus = pointsObtenus;
-    	rc.date = getDate();
+    	rc.date = getTempsDepuisDebutMatch();
     }
 
 	// Dépendances
@@ -139,6 +139,12 @@ public abstract class Robot implements Service
         	set_vitesse(sauv_vitesse);
         }
     }
+
+    public void sleep(long duree)
+    {
+    	sleep(duree, null);
+    }
+
     
     // DEPENDS ON RULES
 

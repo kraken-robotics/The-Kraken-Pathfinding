@@ -25,7 +25,7 @@ public class ObstacleManager implements Service
     private Table table;
     
     // Les obstacles mobiles, c'est-à-dire des obstacles de proximité et de balise
-    private ArrayList<ObstacleCircular> listObstaclesMobiles = new ArrayList<ObstacleCircular>();
+    private ArrayList<ObstacleProximity> listObstaclesMobiles = new ArrayList<ObstacleProximity>();
 
     // Les obstacles fixes sont surtout utilisés pour savoir si un capteur détecte un ennemi ou un obstacle fixe
     private ArrayList<Obstacle> listObstaclesFixes;
@@ -107,11 +107,13 @@ public class ObstacleManager implements Service
 
     /**
      * Appel fait lors de l'anticipation, supprime les obstacles périmés à une date future
+     * Les obstacles étant triés du plus anciens au plus récent, le premier qui n'est pas supprimable
+     * permet d'arrêter la recherche.
      * @param date
      */
     public void supprimerObstaclesPerimes(long date)
     {
-        Iterator<ObstacleCircular> iterator = listObstaclesMobiles.iterator();
+        Iterator<ObstacleProximity> iterator = listObstaclesMobiles.iterator();
         while(iterator.hasNext())
         {
             ObstacleCircular obstacle = iterator.next();
@@ -121,6 +123,8 @@ public class ObstacleManager implements Service
                 iterator.remove();
                 hashObstacles = indice++;
             }
+            else
+            	break;
         }   
     }    
 
@@ -152,7 +156,7 @@ public class ObstacleManager implements Service
         if(other.hashObstacles != hashObstacles)
         {
         	other.listObstaclesMobiles.clear();
-        	for(ObstacleCircular o: listObstaclesMobiles)
+        	for(ObstacleProximity o: listObstaclesMobiles)
         		other.listObstaclesMobiles.add(o);
             other.hashObstacles = hashObstacles;
         }
@@ -235,7 +239,7 @@ public class ObstacleManager implements Service
      */
     public boolean obstacle_proximite_dans_segment(Vec2 A, Vec2 B, int distance)
     {
-        Iterator<ObstacleCircular> iterator = listObstaclesMobiles.iterator();
+        Iterator<ObstacleProximity> iterator = listObstaclesMobiles.iterator();
         while(iterator.hasNext())
         {
             ObstacleCircular o = iterator.next();
@@ -272,7 +276,7 @@ public class ObstacleManager implements Service
      */
     public boolean is_obstacle_mobile_present(Vec2 position, int distance) 
     {
-        Iterator<ObstacleCircular> iterator2 = listObstaclesMobiles.iterator();
+        Iterator<ObstacleProximity> iterator2 = listObstaclesMobiles.iterator();
         while(iterator2.hasNext())
         {
             Obstacle o = iterator2.next();
@@ -343,7 +347,7 @@ public class ObstacleManager implements Service
 	 * Utilisé pour l'affichage
 	 * @return 
 	 */
-	public ArrayList<ObstacleCircular> getListObstaclesMobiles()
+	public ArrayList<ObstacleProximity> getListObstaclesMobiles()
 	{
 		return listObstaclesMobiles;
 	}

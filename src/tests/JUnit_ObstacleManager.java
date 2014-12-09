@@ -64,7 +64,9 @@ public class JUnit_ObstacleManager extends JUnit_Test {
     	config.set("duree_peremption_obstacles", 200); // 200 ms de péremption
     	obstaclemanager.updateConfig();
     	
+    	obstaclemanager.creer_obstacle(new Vec2(0, 0));
     	obstaclemanager.creer_obstacle(new Vec2(500, 500));
+    	obstaclemanager.creer_obstacle(new Vec2(0, 0));
     	Assert.assertTrue(obstaclemanager.is_obstacle_mobile_present(new Vec2(500, 500), 1));
     	obstaclemanager.supprimerObstaclesPerimes(System.currentTimeMillis()+100); // pas encore périmé
     	Assert.assertTrue(obstaclemanager.is_obstacle_mobile_present(new Vec2(500, 500), 1));

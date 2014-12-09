@@ -76,7 +76,7 @@ public class GameState<R extends Robot> implements Service
         // réinitialisation de la durée incluse dans la copie
         robot.copy(other.robot);        
         // mise à jour des obstacles et du cache incluse dans la copie
-        gridspace.copy(other.gridspace, robot.getDate() - Config.dateDebutMatch);
+        gridspace.copy(other.gridspace, robot.getTempsDepuisDebutMatch());
         other.dateDebutRacine = dateDebutRacine;
     }
 
@@ -90,12 +90,12 @@ public class GameState<R extends Robot> implements Service
    
     public long getTempsDepuisDebut()
     {
-    	return robot.getDate() - Config.dateDebutMatch;
+    	return robot.getTempsDepuisDebutMatch();
     }
 
     public long getTempsDepuisRacine()
     {
-    	return robot.getDate() - dateDebutRacine;
+    	return robot.getTempsDepuisDebutMatch() + Config.getDateDebutMatch() - dateDebutRacine;
     }
     
     public void commenceRacine()

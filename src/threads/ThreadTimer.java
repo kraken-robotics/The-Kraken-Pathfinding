@@ -75,14 +75,14 @@ public class ThreadTimer extends AbstractThread implements Service
 			Sleep.sleep(50);
 		}
 
-		Config.dateDebutMatch = System.currentTimeMillis();
+		config.setDateDebutMatch();
 
 		// On démarre les capteurs
 		capteur.setCapteursOn(true);
 
 		log.debug("LE MATCH COMMENCE !", this);
 
-		dateFin = dureeMatch + Config.dateDebutMatch;
+		dateFin = dureeMatch + Config.getDateDebutMatch();
 
 		// Le match à démarré. On retire périodiquement les obstacles périmés
 		while(System.currentTimeMillis() < dateFin)

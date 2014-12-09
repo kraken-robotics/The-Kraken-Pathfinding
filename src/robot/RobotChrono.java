@@ -61,7 +61,7 @@ public class RobotChrono extends Robot
 	}
 	
 	@Override
-	public long getDate()
+	public long getTempsDepuisDebutMatch()
 	{
 		return date;
 	}
@@ -119,9 +119,10 @@ public class RobotChrono extends Robot
 	}
 
 	@Override
-	public void sleep(long duree) 
+	public void sleep(long duree, ArrayList<Hook> hooks) 
 	{
 		this.date += duree;
+		checkHooks(position, position, hooks);
 	}
 	
 	@Override

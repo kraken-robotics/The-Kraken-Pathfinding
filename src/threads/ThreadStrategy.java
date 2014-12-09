@@ -47,7 +47,7 @@ public class ThreadStrategy extends AbstractThread implements Service
 	private ArrayList<Hook> hooks_entre_scripts;
 	
 	private long temps_max_anticipation;
-	private long dureeMatch;
+	private long dateFinMatch;
 	private int profondeur_max = 1;
 
 	private Decision[] decisions = null;
@@ -109,16 +109,24 @@ public class ThreadStrategy extends AbstractThread implements Service
 
 	public Decision findMeilleureDecision() throws FinMatchException
 	{
-		Decision meilleure_decision = new Decision(null, -1, -1);
+		Decision meilleure_decision = new Decision(null, -1, -1, false);
 		for(ScriptNames n: ScriptNames.values())
 			if(n.canIDoIt())
 				try {
 					for(int meta_version : scriptmanager.getScript(n).meta_version(real_gamestate))
 					{
-						Decision decision_trouvee = parcourtArbre(0, n, meta_version);
+						// sans casser les éléments de jeux
+						Decision decision_trouvee = parcourtArbre(0, n, meta_version, true);
 						log.debug("Note de "+n+" ("+meta_version+"): "+decision_trouvee.note, this);
 						if(decision_trouvee.note > meilleure_decision.note)
 							meilleure_decision = decision_trouvee;
+
+						// en les cassant
+						decision_trouvee = parcourtArbre(0, n, meta_version, false);
+						log.debug("Note de "+n+" ("+meta_version+"): "+decision_trouvee.note, this);
+						if(decision_trouvee.note > meilleure_decision.note)
+							meilleure_decision = decision_trouvee;
+
 					}
 				} catch (UnknownScriptException e) {
 					// Script inconnu, on le passe
@@ -134,31 +142,37 @@ public class ThreadStrategy extends AbstractThread implements Service
 	 * @return
 	 * @throws FinMatchException 
 	 */
-	private Decision parcourtArbre(int profondeur, ScriptNames nomScript, int id_meta_version) throws FinMatchException
+	private Decision parcourtArbre(int profondeur, ScriptNames nomScript, int id_meta_version, boolean shoot_game_element) throws FinMatchException
 	{
-		Decision meilleure_decision = new Decision(null, -1, -1);
+		Decision meilleure_decision = new Decision(null, -1, -1, false);
 		try {
 			// Récupération du gamestate
 			GameState<RobotChrono> state = memorymanager.getClone(profondeur);
-			if(profondeur >= profondeur_max || state.getTempsDepuisRacine() > temps_max_anticipation || state.getTempsDepuisDebut() > dureeMatch)
+			if(profondeur >= profondeur_max || state.getTempsDepuisRacine() > temps_max_anticipation || state.getTempsDepuisDebut() > dateFinMatch)
 			{
+				log.debug("profondeur >= profondeur_max = "+(profondeur >= profondeur_max), this);
+				log.debug("state.getTempsDepuisRacine() > temps_max_anticipation = "+(state.getTempsDepuisRacine() > temps_max_anticipation), this);
+				log.debug("state.getTempsDepuisDebut() > dureeMatch = "+(state.getTempsDepuisDebut() > dateFinMatch), this);
 				log.debug("Profondeur max atteinte", this);
 				return meilleure_decision;
 			}
+			log.debug("WOLOLOOOOOOO", this);
 
-			long tempsAvantScript = state.robot.getDate();
+			long tempsAvantScript = state.robot.getTempsDepuisDebutMatch();
 			int pointsAvantScript = state.robot.getPointsObtenus();
 			
 			Script s = scriptmanager.getScript(nomScript);
 
-			// Chemin pour aller au script
 			ArrayList<PathfindingNodes> chemin;
+			int version_a_executer = s.closest_version(state, id_meta_version);
+			PathfindingNodes point_entree = s.point_entree(version_a_executer);
 			try {
-				chemin = pathfinding.computePath(state.robot.getPosition(), s.point_entree(s.version_asso(id_meta_version).get(0)), state.gridspace, false, false);
+				chemin = pathfinding.computePath(state.robot.getPosition(), point_entree, state.gridspace, false, shoot_game_element);
 			} catch (PathfindingException e) {
-				// En cas d'erreur, on coupe la branche
+				log.warning("Arbre des possibles: PathfindingException pour aller à "+s+" ("+s.closest_version(state, id_meta_version)+")", this);
 				return meilleure_decision;
 			} catch (PathfindingRobotInObstacleException e) {
+				log.warning("Arbre des possibles: PathfindingRobotInObstacleException pour aller à "+s+" ("+s.closest_version(state, id_meta_version)+")", this);
 				return meilleure_decision;
 			}
 
@@ -166,31 +180,38 @@ public class ThreadStrategy extends AbstractThread implements Service
 
 			// Exécution du script
 			try {
-				s.execute(s.closest_version(state, id_meta_version), state);
+				s.execute(version_a_executer, state);
 			} catch (UnableToMoveException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				log.warning("Arbre des possibles: UnableToMoveException dans "+s+" ("+s.closest_version(state, id_meta_version)+")", this);
+				return meilleure_decision;
 			} catch (SerialConnexionException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				log.warning("Arbre des possibles: SerialConnexionException dans "+s+" ("+s.closest_version(state, id_meta_version)+")", this);
+				return meilleure_decision;
 			}
 
-			long tempsApresScript = state.robot.getDate();
+			long tempsApresScript = state.robot.getTempsDepuisDebutMatch();
 			int pointsApresScript = state.robot.getPointsObtenus();
 
 			double note = calculeNote((int)(tempsApresScript-tempsAvantScript), pointsApresScript-pointsAvantScript);
+
+			log.debug("Durée script: "+(int)(tempsApresScript-tempsAvantScript)+", point scripts: "+(pointsApresScript-pointsAvantScript)+", note du noeud: "+note, this);
 			
 			Decision tmp_decision;
 			
 			for(ScriptNames n : ScriptNames.values())
 				for(int meta_version : scriptmanager.getScript(n).meta_version(state))
 				{
-					tmp_decision = parcourtArbre(profondeur+1, n, meta_version);
-					if(meilleure_decision == null || meilleure_decision.note < tmp_decision.note)
+					// sans casser les éléments de jeux
+					tmp_decision = parcourtArbre(profondeur+1, n, meta_version, false);
+					if(meilleure_decision.script_name == null || meilleure_decision.note < tmp_decision.note)
 						meilleure_decision = tmp_decision;
+					// en cassant les éléments de jeux
+					tmp_decision = parcourtArbre(profondeur+1, n, meta_version, true);
+					if(meilleure_decision.script_name == null || meilleure_decision.note < tmp_decision.note)
+						meilleure_decision = tmp_decision;
+
 				}
 			meilleure_decision.note = meilleure_decision.note + note;
-			meilleure_decision.state = state;
 		} catch (UnknownScriptException e) {
 			// Script inconnu? On annule cette décision.
 			e.printStackTrace();
@@ -207,7 +228,7 @@ public class ThreadStrategy extends AbstractThread implements Service
 	@Override
 	public void updateConfig() {
 		temps_max_anticipation = Integer.parseInt(config.get("temps_max_anticipation"));	
-		dureeMatch = 1000*Long.parseLong(config.get("temps_match"));
+		dateFinMatch = 1000*Long.parseLong(config.get("temps_match"));
 	}
 
 	public Decision[] getDecisions()

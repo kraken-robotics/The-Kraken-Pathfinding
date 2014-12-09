@@ -6,7 +6,7 @@ import smartMath.Vec2;
  * Obstacles détectés par capteurs de proximité (ultrasons et infrarouges)
  * @author pf, marsu
  */
-class ObstacleProximity extends ObstacleCircular
+public class ObstacleProximity extends ObstacleCircular
 {
 	private long death_date;
 
