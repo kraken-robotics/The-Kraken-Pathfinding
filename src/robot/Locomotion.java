@@ -107,6 +107,7 @@ public class Locomotion implements Service
 		this.log = log;
 		this.config = config;
 		this.mLocomotionCardWrapper = mLocomotion;
+		this.obstaclemanager = obstaclemanager;
 		//        this.hookgenerator = hookgenerator;
 		updateConfig();
 	}

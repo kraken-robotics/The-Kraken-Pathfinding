@@ -9,24 +9,26 @@ import hook.Hook;
 
 public class HookDate extends Hook {
 
-	private long date;
+	private long date_hook;
 	
 	public HookDate(Config config, Log log, GameState<?> state, long date)
 	{
 		super(config, log, state);
-		this.date = date;
+		this.date_hook = date;
 	}
 
 	@Override
 	public boolean evaluate() throws FinMatchException {
-		// TODO Auto-generated method stub
+		if(System.currentTimeMillis() > date_hook)
+			return trigger();
 		return false;
 	}
 
 	@Override
-	public boolean simulated_evaluate(Vec2 pointA, Vec2 pointB, long date) {
+	public boolean simulated_evaluate(Vec2 pointA, Vec2 pointB, long date_appel) {
 		// vrai si on a dépassé la date donné au constructeur
-		return date > this.date;
+		log.debug("Hook date: appel="+date_appel+", date_hook="+this.date_hook, this);
+		return date_appel > this.date_hook;
 	}
 
 }

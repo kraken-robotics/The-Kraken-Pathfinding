@@ -1,5 +1,6 @@
 package obstacles;
 
+import enums.GameElementNames;
 import enums.Tribool;
 import smartMath.Vec2;
 
@@ -13,11 +14,13 @@ import smartMath.Vec2;
 public class GameElement extends ObstacleCircular
 {
 	private Tribool done = Tribool.FALSE; 
+	private GameElementNames nom;
 	
-	public GameElement(Vec2 position, int rayon)
+	public GameElement(Vec2 position, int rayon, GameElementNames nom)
 	{
 		super(position, rayon);
 		this.position = position;
+		this.nom = nom;
 	}
 	
 	public void setDone(Tribool etat)
@@ -44,6 +47,11 @@ public class GameElement extends ObstacleCircular
 	{
 		other.position = position.clone();
 		other.done = done;
+	}
+	
+	public GameElementNames getName()
+	{
+		return nom;
 	}
 
 }

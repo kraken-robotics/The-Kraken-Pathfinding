@@ -7,6 +7,7 @@ import hook.Callback;
 import hook.Hook;
 import hook.methods.GameElementDone;
 import container.Service;
+import enums.GameElementType;
 import enums.RobotColor;
 import enums.Tribool;
 import smartMath.Vec2;
@@ -222,14 +223,24 @@ public class HookFactory implements Service
 		GameElementDone action;
 		for(GameElement o: obstacles)
 		{
-			// TODO
-			hook = newHookDate(Config.dateDebutMatch + 20000, state);
-			action = new GameElementDone(o, Tribool.MAYBE);
-			hook.ajouter_callback(new Callback(action));
-			hooks_entre_scripts.add(hook);
+			// L'ennemi peut prendre les distributeurs
+			if(o.isDone() == Tribool.FALSE && o.getName().getType() == GameElementType.DISTRIBUTEUR)
+			{
+				hook = newHookDate(Config.dateDebutMatch + 20000, state);
+				action = new GameElementDone(o, Tribool.MAYBE);
+				hook.ajouter_callback(new Callback(action));
+				hooks_entre_scripts.add(hook);
+			}
+			else if(o.isDone() == Tribool.FALSE && o.getName().getType() == GameElementType.VERRE)
+			{
+				hook = newHookDate(Config.dateDebutMatch + 20000, state);
+				action = new GameElementDone(o, Tribool.MAYBE);
+				hook.ajouter_callback(new Callback(action));
+				hooks_entre_scripts.add(hook);
+			}
 			// Les éléments de jeu avec un rayon négatif sont ceux qu'on ne peut pas percuter.
 			// Exemple: clap, distributeur. 
-			if(o.getRadius() > 0)
+			if(o.isDone() != Tribool.TRUE && o.getRadius() > 0)
 			{
 				hook = newHookPosition(o.getPosition(), o.getRadius(), state);
 				action = new GameElementDone(o, Tribool.TRUE);

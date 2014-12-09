@@ -5,24 +5,37 @@ package enums;
  */
 
 public enum GameElementNames {
-	PLOT_1,
-	PLOT_2,
-	PLOT_3,
-	PLOT_4,
-	PLOT_5,
-	PLOT_6,
-	PLOT_7,
-	PLOT_8,
-	CLAP_1,
-	CLAP_2,
-	CLAP_3,
-	VERRE_1,
-	VERRE_2,
-	VERRE_3,
-	VERRE_4,
-	VERRE_5,
-	DISTRIB_1,
-	DISTRIB_2,
-	DISTRIB_3,
-	DISTRIB_4;
+	PLOT_1(GameElementType.PLOT),
+	PLOT_2(GameElementType.PLOT),
+	PLOT_3(GameElementType.PLOT),
+	PLOT_4(GameElementType.PLOT),
+	PLOT_5(GameElementType.PLOT),
+	PLOT_6(GameElementType.PLOT),
+	PLOT_7(GameElementType.PLOT),
+	PLOT_8(GameElementType.PLOT),
+	CLAP_1(GameElementType.CLAP),
+	CLAP_2(GameElementType.CLAP),
+	CLAP_3(GameElementType.CLAP),
+	VERRE_1(GameElementType.VERRE),
+	VERRE_2(GameElementType.VERRE),
+	VERRE_3(GameElementType.VERRE),
+	VERRE_4(GameElementType.VERRE),
+	VERRE_5(GameElementType.VERRE),
+	DISTRIB_1(GameElementType.DISTRIBUTEUR),
+	DISTRIB_2(GameElementType.DISTRIBUTEUR),
+	DISTRIB_3(GameElementType.DISTRIBUTEUR),
+	DISTRIB_4(GameElementType.DISTRIBUTEUR);
+	
+	GameElementType type;
+	
+	private GameElementNames(GameElementType type)
+	{
+		this.type = type;
+	}
+	
+	public GameElementType getType()
+	{
+		return type;
+	}
+	
 }

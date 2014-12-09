@@ -70,16 +70,18 @@ abstract public class Hook
 	/**
 	 * Méthode qui sera surchargée par les classes filles.
 	 * Elle contient la condition d'appel du hook
+	 * Elle est appelée par RobotVrai.
 	 * @param robot
 	 * @return true si ce hook modifie les déplacements du robot, false sinon
 	 */
 	public abstract boolean evaluate() throws FinMatchException;
 	
 	/**
-	 * Méthode appelée par RobotChrono. Elle doit dire si, sur un trajet entre A et B,
-	 * le hook est sensé s'activer.
+	 * Méthode appelée par RobotChrono. Elle doit dire si, sur un trajet entre A et B et
+	 * à une certaine date, le hook est sensé s'activer.
 	 * @param pointA
 	 * @param pointB
+	 * @param date
 	 * @return
 	 */
 	public abstract boolean simulated_evaluate(Vec2 pointA, Vec2 pointB, long date);

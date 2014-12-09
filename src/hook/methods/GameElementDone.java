@@ -24,6 +24,7 @@ public class GameElementDone implements Executable {
 	@Override
 	public boolean execute()
 	{
+		System.out.println(o.getName()+" is done by hook");
 		o.setDone(done);
 		return false;
 	}
