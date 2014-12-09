@@ -1,13 +1,10 @@
 package strategie;
 
-import hook.Callback;
 import hook.Hook;
-import hook.methods.GameElementDone;
 import hook.types.HookFactory;
 
 import java.util.ArrayList;
 
-import obstacles.GameElement;
 import container.Service;
 import pathfinding.Pathfinding;
 import enums.PathfindingNodes;
@@ -26,6 +23,12 @@ import threads.ThreadStrategy;
 import utils.Config;
 import utils.Log;
 import utils.Sleep;
+
+/**
+ * Exécute ce qu'a décidé la stratégie.
+ * @author pf
+ *
+ */
 
 public class Execution implements Service {
 
@@ -52,15 +55,7 @@ public class Execution implements Service {
 
 	    // DEPENDS_ON_RULES
 		// TODO: peut-être d'autres hooks?
-		hooks_entre_scripts = new ArrayList<Hook>();
-		GameElement[] obstacles = gamestate.table.getObstacles();
-		for(GameElement o: obstacles)
-		{
-			Hook hook = hookfactory.newHookPosition(o.getPosition(), o.getRadius(), gamestate);
-			GameElementDone action = new GameElementDone(o);
-			hook.ajouter_callback(new Callback(action));
-			hooks_entre_scripts.add(hook);
-		}
+		hooks_entre_scripts = hookfactory.getHooksEntreScripts(gamestate);
 	}
 
 	// Appelé par le lanceur

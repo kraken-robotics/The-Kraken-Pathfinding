@@ -60,7 +60,7 @@ class HookPosition extends Hook
 
 
 	@Override
-	public boolean simulated_evaluate(Vec2 pointA, Vec2 pointB)
+	public boolean simulated_evaluate(Vec2 pointA, Vec2 pointB, long date)
 	{
 		ObstacleCircular o = new ObstacleCircular(position, tolerancy);
 		return o.obstacle_proximite_dans_segment(pointA, pointB, rayon_robot);

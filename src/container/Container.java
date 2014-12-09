@@ -207,7 +207,8 @@ public class Container
 																		(MemoryManager)getService(ServiceNames.MEMORY_MANAGER),
 																		(ScriptManager)getService(ServiceNames.SCRIPT_MANAGER),
 																		(Pathfinding)getService(ServiceNames.PATHFINDING),
-																		(GameState<RobotReal>)getService(ServiceNames.REAL_GAME_STATE));
+																		(GameState<RobotReal>)getService(ServiceNames.REAL_GAME_STATE),
+																		(HookFactory)getService(ServiceNames.HOOK_FACTORY));
 		else if(serviceRequested == ServiceNames.MEMORY_MANAGER)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new MemoryManager(	(Config)getService(ServiceNames.CONFIG),
 													(Log)getService(ServiceNames.LOG),

@@ -50,7 +50,7 @@ class HookY extends Hook
     }
     
 	@Override
-	public boolean simulated_evaluate(Vec2 pointA, Vec2 pointB)
+	public boolean simulated_evaluate(Vec2 pointA, Vec2 pointB, long date)
 	{
 		return (pointA.y - yValue) * (pointB.y - yValue) < 0;
 	}

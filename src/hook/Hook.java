@@ -82,7 +82,7 @@ abstract public class Hook
 	 * @param pointB
 	 * @return
 	 */
-	public abstract boolean simulated_evaluate(Vec2 pointA, Vec2 pointB);
+	public abstract boolean simulated_evaluate(Vec2 pointA, Vec2 pointB, long date);
 	
 	/**
 	 * On peut supprimer le hook s'il n'y a plus aucun callback déclenchable.

@@ -1,5 +1,8 @@
 package threads;
 
+import hook.Hook;
+import hook.types.HookFactory;
+
 import java.util.ArrayList;
 
 import pathfinding.Pathfinding;
@@ -41,13 +44,15 @@ public class ThreadStrategy extends AbstractThread implements Service
 	// Nécessaire aux scripts pour donner les versions disponibles
 	private GameState<RobotReal> real_gamestate;
 	
+	private ArrayList<Hook> hooks_entre_scripts;
+	
 	private long temps_max_anticipation;
 	private long dureeMatch;
 	private int profondeur_max = 1;
 
 	private Decision[] decisions = null;
 	
-	public ThreadStrategy(Log log, Config config, MemoryManager memorymanager, ScriptManager scriptmanager, Pathfinding pathfinding, GameState<RobotReal> real_gamestate) 
+	public ThreadStrategy(Log log, Config config, MemoryManager memorymanager, ScriptManager scriptmanager, Pathfinding pathfinding, GameState<RobotReal> real_gamestate, HookFactory hookfactory) 
 	{
 		this.log = log;
 		this.config = config;
@@ -55,7 +60,8 @@ public class ThreadStrategy extends AbstractThread implements Service
 		this.scriptmanager = scriptmanager;
 		this.pathfinding = pathfinding;
 		this.real_gamestate = real_gamestate;
-		
+		hooks_entre_scripts = hookfactory.getHooksEntreScripts(real_gamestate);
+	
 		Thread.currentThread().setPriority(4); // TODO
 	}
 	
@@ -156,7 +162,7 @@ public class ThreadStrategy extends AbstractThread implements Service
 				return meilleure_decision;
 			}
 
-			state.robot.suit_chemin(chemin, null);
+			state.robot.suit_chemin(chemin, hooks_entre_scripts);
 
 			// Exécution du script
 			try {

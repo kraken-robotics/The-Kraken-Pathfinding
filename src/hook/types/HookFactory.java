@@ -1,8 +1,14 @@
 package hook.types;
 
+import java.util.ArrayList;
+
+import obstacles.GameElement;
+import hook.Callback;
 import hook.Hook;
+import hook.methods.GameElementDone;
 import container.Service;
 import enums.RobotColor;
+import enums.Tribool;
 import smartMath.Vec2;
 import strategie.GameState;
 import utils.Log;
@@ -85,6 +91,23 @@ public class HookFactory implements Service
 	{
 		return newHookPosition(position, positionTolerancy, state);
 	}
+
+	/* ======================================================================
+	 * 							Hooks de date
+	 * ======================================================================
+	 */
+
+	/**
+	 * 
+	 * @param date
+	 * @param state
+	 * @return
+	 */
+	public Hook newHookDate(long date, GameState<?> state)
+	{
+		return new HookDate(config, log, state, date);
+	}
+
 	
 	/* ======================================================================
 	 * 							Hooks d'abscisse (sur X)
@@ -191,5 +214,30 @@ public class HookFactory implements Service
         return new HookYisGreater(config, log, state, yValue);
     }
 
+    public ArrayList<Hook> getHooksEntreScripts(GameState<?> state)
+    {
+    	ArrayList<Hook> hooks_entre_scripts = new ArrayList<Hook>();
+		GameElement[] obstacles = state.table.getObstacles();
+		Hook hook;
+		GameElementDone action;
+		for(GameElement o: obstacles)
+		{
+			// TODO
+			hook = newHookDate(Config.dateDebutMatch + 20000, state);
+			action = new GameElementDone(o, Tribool.MAYBE);
+			hook.ajouter_callback(new Callback(action));
+			hooks_entre_scripts.add(hook);
+			// Les éléments de jeu avec un rayon négatif sont ceux qu'on ne peut pas percuter.
+			// Exemple: clap, distributeur. 
+			if(o.getRadius() > 0)
+			{
+				hook = newHookPosition(o.getPosition(), o.getRadius(), state);
+				action = new GameElementDone(o, Tribool.TRUE);
+				hook.ajouter_callback(new Callback(action));
+				hooks_entre_scripts.add(hook);
+			}
+		}
+		return hooks_entre_scripts;
+    }
 
 }

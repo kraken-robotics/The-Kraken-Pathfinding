@@ -186,7 +186,7 @@ public class RobotChrono extends Robot
 	private void checkHooks(Vec2 pointA, Vec2 pointB, ArrayList<Hook> hooks)
 	{
 		for(Hook hook: hooks)
-			if(hook.simulated_evaluate(pointA, pointB))
+			if(hook.simulated_evaluate(pointA, pointB, date))
 				hook.trigger();
 	}
 	

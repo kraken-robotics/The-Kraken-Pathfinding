@@ -90,6 +90,7 @@ public class ObstacleManager implements Service
     private void check_game_element(Vec2 position)
     {
         GameElement[] obstacles = table.getObstacles();
+        // On vérifie aussi ceux qui ont un rayon nul (distributeur, clap, ..)
         for(GameElement o: obstacles)
             if(o.isDone() == Tribool.FALSE && o.isProcheObstacle(position, rayon_robot_adverse))
             	o.setDone(Tribool.MAYBE);

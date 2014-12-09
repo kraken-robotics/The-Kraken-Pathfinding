@@ -45,7 +45,7 @@ class HookXisGreater extends HookX
     }
 
 	@Override
-	public boolean simulated_evaluate(Vec2 pointA, Vec2 pointB)
+	public boolean simulated_evaluate(Vec2 pointA, Vec2 pointB, long date)
 	{
 		return (pointA.x > xValue) || (pointB.x > xValue);
 	}
