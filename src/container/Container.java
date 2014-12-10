@@ -161,7 +161,8 @@ public class Container
 															(Locomotion)getService(ServiceNames.LOCOMOTION),
 															 (Table)getService(ServiceNames.TABLE),
 															 (Config)getService(ServiceNames.CONFIG),
-															 (Log)getService(ServiceNames.LOG));		
+															 (Log)getService(ServiceNames.LOG),
+		 													 (HookFactory)getService(ServiceNames.HOOK_FACTORY));		
         else if(serviceRequested == ServiceNames.LOCOMOTION)
             instanciedServices[serviceRequested.ordinal()] = (Service)new Locomotion((Log)getService(ServiceNames.LOG),
                                                              (Config)getService(ServiceNames.CONFIG),
@@ -173,8 +174,8 @@ public class Container
                                                              (Log)getService(ServiceNames.LOG),
                                                              (Table)getService(ServiceNames.TABLE),
                                                              (GridSpace)getService(ServiceNames.GRID_SPACE),                                                             
-                                                             (RobotReal)getService(ServiceNames.ROBOT_REAL)); 
-		
+                                                             (RobotReal)getService(ServiceNames.ROBOT_REAL),
+        													 (HookFactory)getService(ServiceNames.HOOK_FACTORY));
 		else if(serviceRequested == ServiceNames.EXECUTION)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new Execution((Log)getService(ServiceNames.LOG),
 			                                                 (Config)getService(ServiceNames.CONFIG),

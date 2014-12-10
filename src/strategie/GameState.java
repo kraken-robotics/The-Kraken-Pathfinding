@@ -1,5 +1,6 @@
 package strategie;
 
+import hook.types.HookFactory;
 import pathfinding.GridSpace;
 import container.Service;
 import exceptions.FinMatchException;
@@ -25,7 +26,8 @@ public class GameState<R extends Robot> implements Service
     public final Table table;
     public R robot;
     public final GridSpace gridspace;
-
+    private HookFactory hookfactory;
+    
     private Log log;
     private Config config;
     private long dateDebutRacine;
@@ -39,18 +41,19 @@ public class GameState<R extends Robot> implements Service
      * @param robot
      * @return
      */
-    public static GameState<RobotReal> constructRealGameState(Config config, Log log, Table table, GridSpace gridspace, RobotReal robot)
+    public static GameState<RobotReal> constructRealGameState(Config config, Log log, Table table, GridSpace gridspace, RobotReal robot, HookFactory hookfactory)
     {
-    	return new GameState<RobotReal>(config, log, table, gridspace, robot);
+    	return new GameState<RobotReal>(config, log, table, gridspace, robot, hookfactory);
     }
     
-    private GameState(Config config, Log log, Table table, GridSpace gridspace, R robot)
+    private GameState(Config config, Log log, Table table, GridSpace gridspace, R robot, HookFactory hookfactory)
     {
         this.config = config;
         this.log = log;
         this.table = table;
         this.gridspace = gridspace;
         this.robot = robot;
+        this.hookfactory = hookfactory;
     }
     
     /**
@@ -59,7 +62,7 @@ public class GameState<R extends Robot> implements Service
 	public GameState<RobotChrono> cloneGameState() throws FinMatchException
 	{
 		Table new_table = table.clone();
-		GameState<RobotChrono> cloned = new GameState<RobotChrono>(config, log, new_table, gridspace.clone(getTempsDepuisDebut(), new_table), new RobotChrono(config, log));
+		GameState<RobotChrono> cloned = new GameState<RobotChrono>(config, log, new_table, gridspace.clone(getTempsDepuisDebut(), new_table), new RobotChrono(config, log, hookfactory), hookfactory);
 		copy(cloned);
 		return cloned;
 	}
@@ -74,7 +77,13 @@ public class GameState<R extends Robot> implements Service
     {
     	// la copie de la table est faite dans gridspace
         // réinitialisation de la durée incluse dans la copie
-        robot.copy(other.robot);        
+        robot.copy(other.robot);
+        try {
+			other.robot.initHooksTable(other);
+		} catch (Exception e) {
+			// Ne devrait jamais arriver
+			e.printStackTrace();
+		}
         // mise à jour des obstacles et du cache incluse dans la copie
         gridspace.copy(other.gridspace, robot.getTempsDepuisDebutMatch());
         other.dateDebutRacine = dateDebutRacine;

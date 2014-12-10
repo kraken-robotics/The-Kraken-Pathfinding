@@ -3,16 +3,13 @@ package robot;
 import java.util.ArrayList;
 
 import hook.Hook;
+import hook.types.HookFactory;
 import smartMath.Vec2;
 import utils.Log;
 import utils.Config;
-import enums.HauteurBrasClap;
 import enums.PathfindingNodes;
-import enums.Side;
-import enums.SleepValues;
 import enums.Speed;
 import exceptions.FinMatchException;
-import exceptions.serial.SerialConnexionException;
 
 /**
  * Robot particulier qui fait pas bouger le robot réel, mais détermine la durée des actions
@@ -21,16 +18,18 @@ import exceptions.serial.SerialConnexionException;
 
 public class RobotChrono extends Robot
 {
-
+	private HookFactory hookfactory;
+	
 	protected Vec2 position = new Vec2();
 	protected double orientation;
 	
 	// Durée en millisecondes
 	protected long date;
 	
-	public RobotChrono(Config config, Log log)
+	public RobotChrono(Config config, Log log, HookFactory hookfactory)
 	{
-		super(config, log);
+		super(config, log, hookfactory);
+		this.hookfactory = hookfactory;
 	}
 	
 	@Override
@@ -44,7 +43,7 @@ public class RobotChrono extends Robot
 	}
 
 	@Override
-    public void avancer(int distance, ArrayList<Hook> hooks, boolean mur)
+    public void avancer(int distance, ArrayList<Hook> hooks, boolean mur) throws FinMatchException
 	{
 		date += Math.abs(distance)*vitesse.invertedTranslationnalSpeed;
 		Vec2 ecart;
@@ -68,7 +67,7 @@ public class RobotChrono extends Robot
 
 	public RobotChrono cloneRobot() throws FinMatchException
 	{
-		RobotChrono cloned_robotchrono = new RobotChrono(config, log);
+		RobotChrono cloned_robotchrono = new RobotChrono(config, log, hookfactory);
 		copy(cloned_robotchrono);
 		return cloned_robotchrono;
 	}
@@ -91,13 +90,13 @@ public class RobotChrono extends Robot
 	}
 
 	@Override
-    public void suit_chemin(ArrayList<PathfindingNodes> chemin, ArrayList<Hook> hooks)
+    public void suit_chemin(ArrayList<PathfindingNodes> chemin, ArrayList<Hook> hooks) throws FinMatchException
 	{
 		for(PathfindingNodes point: chemin)
 			va_au_point(point.getCoordonnees(), hooks);
 	}
 	
-	public void va_au_point(Vec2 point, ArrayList<Hook> hooks)
+	public void va_au_point(Vec2 point, ArrayList<Hook> hooks) throws FinMatchException
 	{
 		checkHooks(position, point, hooks);
 		if(symetrie)
@@ -119,7 +118,7 @@ public class RobotChrono extends Robot
 	}
 
 	@Override
-	public void sleep(long duree, ArrayList<Hook> hooks) 
+	public void sleep(long duree, ArrayList<Hook> hooks) throws FinMatchException 
 	{
 		this.date += duree;
 		checkHooks(position, position, hooks);
@@ -162,33 +161,19 @@ public class RobotChrono extends Robot
 		
 	}
 
-	@Override
-	public void poserDeuxTapis() throws FinMatchException {
-		date += SleepValues.SLEEP_POSER_TAPIS.duree;
-	}
-
-	@Override
-	public void leverDeuxTapis() throws FinMatchException {
-		date += SleepValues.SLEEP_LEVER_TAPIS.duree;		
-	}
-
-	@Override
-	public void bougeBrasClap(Side cote, HauteurBrasClap hauteur)
-			throws SerialConnexionException, FinMatchException {
-		// a priori en hook, donc immédiat
-	}
-
 	/**
 	 * On déclenche tous les hooks entre le point A et le point B.
 	 * @param pointA
 	 * @param pointB
 	 * @param hooks
+	 * @throws FinMatchException 
 	 */
-	private void checkHooks(Vec2 pointA, Vec2 pointB, ArrayList<Hook> hooks)
+	private void checkHooks(Vec2 pointA, Vec2 pointB, ArrayList<Hook> hooks) throws FinMatchException
 	{
-		for(Hook hook: hooks)
-			if(hook.simulated_evaluate(pointA, pointB, date))
-				hook.trigger();
+		if(hooks != null)
+			for(Hook hook: hooks)
+				if(hook.simulated_evaluate(pointA, pointB, date))
+					hook.trigger();
 	}
 	
 	

@@ -68,9 +68,9 @@ public class JUnit_ObstacleManager extends JUnit_Test {
     	obstaclemanager.creer_obstacle(new Vec2(500, 500));
     	obstaclemanager.creer_obstacle(new Vec2(0, 0));
     	Assert.assertTrue(obstaclemanager.is_obstacle_mobile_present(new Vec2(500, 500), 1));
-    	obstaclemanager.supprimerObstaclesPerimes(System.currentTimeMillis()+100); // pas encore périmé
+    	obstaclemanager.supprimerObstaclesPerimes(100); // pas encore périmé
     	Assert.assertTrue(obstaclemanager.is_obstacle_mobile_present(new Vec2(500, 500), 1));
-    	obstaclemanager.supprimerObstaclesPerimes(System.currentTimeMillis()+300); // ce sera périmé à cette date 
+    	obstaclemanager.supprimerObstaclesPerimes(300); // ce sera périmé à cette date 
     	Assert.assertTrue(!obstaclemanager.is_obstacle_mobile_present(new Vec2(500, 500), 1));
     }
     

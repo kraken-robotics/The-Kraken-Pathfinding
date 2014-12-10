@@ -25,7 +25,7 @@ public class ObstacleProximity extends ObstacleCircular
 	@Override
 	public String toString()
 	{
-		return super.toString()+", meurt dans "+(death_date-System.currentTimeMillis())+" ms";
+		return super.toString()+", meurt à "+death_date+" ms";
 	}
 	
 	@Override

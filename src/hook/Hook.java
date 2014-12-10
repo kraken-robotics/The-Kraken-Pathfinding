@@ -57,8 +57,9 @@ abstract public class Hook
 	 * Déclenche le hook.
 	 * Tous ses callbacks sont exécutés
 	 * @return true si ce hook modifie les déplacements du robot
+	 * @throws FinMatchException 
 	 */
-	public boolean trigger()
+	public boolean trigger() throws FinMatchException
 	{
 		boolean retour = false;
 		

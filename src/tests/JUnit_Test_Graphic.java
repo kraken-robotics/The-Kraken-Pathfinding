@@ -57,7 +57,7 @@ public class JUnit_Test_Graphic extends JUnit_Test {
 		Random randomgenerator = new Random();
 		for(int k = 0; k < 20; k++)
 		{
-			gridspace.copy(gridspace, System.currentTimeMillis());
+			gridspace.copy(gridspace, 0);
 			// nearestReachableNode a été réinitialisé
 
 			PathfindingNodes i = PathfindingNodes.values()[randomgenerator.nextInt(PathfindingNodes.values().length)];

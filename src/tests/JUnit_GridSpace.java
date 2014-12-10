@@ -1,7 +1,6 @@
 package tests;
 
 import org.junit.Assert;
-
 import org.junit.Before;
 import org.junit.Test;
 
@@ -32,7 +31,7 @@ public class JUnit_GridSpace extends JUnit_Test {
 		Assert.assertEquals(PathfindingNodes.BAS_DROITE, gridspace.nearestReachableNode(PathfindingNodes.BAS_DROITE.getCoordonnees().plusNewVector(new Vec2(10, -40))));
 		// du fait du cache, test_nearestReachableNode renverra toujours BAS_DROITE 
 		Assert.assertEquals(PathfindingNodes.BAS_DROITE, gridspace.nearestReachableNode(PathfindingNodes.COTE_MARCHE_DROITE.getCoordonnees().plusNewVector(new Vec2(30, -10))));
-		gridspace.copy(gridspace, System.currentTimeMillis());
+		gridspace.copy(gridspace, 0);
 		// nearestReachableNode a été réinitialisé
 		Assert.assertEquals(PathfindingNodes.COTE_MARCHE_DROITE, gridspace.nearestReachableNode(PathfindingNodes.COTE_MARCHE_DROITE.getCoordonnees().plusNewVector(new Vec2(30, -10))));
 	}
@@ -79,14 +78,17 @@ public class JUnit_GridSpace extends JUnit_Test {
 	@Test
 	public void test_traversable() throws Exception
 	{
+		config.setDateDebutMatch();
 		Assert.assertTrue(!gridspace.isTraversable(PathfindingNodes.BAS_DROITE, PathfindingNodes.BAS_GAUCHE));
 		gridspace.setAvoidGameElement(true);
 		Assert.assertTrue(!gridspace.isTraversable(PathfindingNodes.BAS_DROITE, PathfindingNodes.DEVANT_DEPART_GAUCHE));
 		gridspace.setAvoidGameElement(false);
 		Assert.assertTrue(gridspace.isTraversable(PathfindingNodes.BAS_DROITE, PathfindingNodes.DEVANT_DEPART_GAUCHE));
+
+		Assert.assertTrue(gridspace.isTraversable(PathfindingNodes.NODE_TAPIS, PathfindingNodes.BAS_GAUCHE));
 		gridspace.creer_obstacle(new Vec2(-220, 830));
 		// mise à jour du gridspace
-		gridspace.reinitConnections(System.currentTimeMillis());
+		gridspace.reinitConnections(0);
 		Assert.assertTrue(!gridspace.isTraversable(PathfindingNodes.NODE_TAPIS, PathfindingNodes.BAS_GAUCHE));
 	}
 
@@ -96,7 +98,7 @@ public class JUnit_GridSpace extends JUnit_Test {
 		for(PathfindingNodes i : PathfindingNodes.values())
 			for(PathfindingNodes j : PathfindingNodes.values())
 				Assert.assertTrue(gridspace.isTraversable(i,j) == gridspace.isTraversable(j,i));
-		gridspace.reinitConnections(System.currentTimeMillis());
+		gridspace.reinitConnections(0);
 		for(PathfindingNodes i : PathfindingNodes.values())
 			for(PathfindingNodes j : PathfindingNodes.values())
 				Assert.assertTrue(gridspace.isTraversable(i,j) == gridspace.isTraversable(j,i));

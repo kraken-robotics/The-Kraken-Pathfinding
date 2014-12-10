@@ -131,4 +131,12 @@ public class Config implements Service
 		return dateDebutMatch;
 	}
 	
+	/**
+	 * Utilisé par les tests.
+	 */
+	public void reinitDateDebutMatch()
+	{
+		dateDebutMatch = 0;
+	}
+	
 }

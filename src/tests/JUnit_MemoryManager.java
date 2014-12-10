@@ -81,6 +81,9 @@ public class JUnit_MemoryManager extends JUnit_Test {
 	{
 		for(int i = 0; i < 2; i++)
 		{
+			log.debug("i = "+i, this);
+			config.setDateDebutMatch();
+	    	obstaclemanager.clear_obstacles_mobiles();
 			GameState<RobotChrono> clone0 = memorymanager.getClone(0);
 			Assert.assertEquals(0, clone0.getTempsDepuisRacine());
 			long date_initiale = clone0.getTempsDepuisDebut();
@@ -99,6 +102,7 @@ public class JUnit_MemoryManager extends JUnit_Test {
 	{
 		for(int i = 0; i < 2; i++)
 		{
+			log.debug("i = "+i, this);
 			GameState<RobotChrono> clone0 = memorymanager.getClone(0);
 			Assert.assertEquals(0, clone0.robot.getPointsObtenus());
 			clone0.robot.clapTombe();
@@ -115,8 +119,13 @@ public class JUnit_MemoryManager extends JUnit_Test {
 		// il faut faire les tests en double. Une fois en clone, une fois un copy.
 		for(int i = 0; i < 2; i++)
 		{
+			log.debug("i = "+i, this);
+			config.setDateDebutMatch();
+	    	obstaclemanager.clear_obstacles_mobiles();
 	    	config.set("duree_peremption_obstacles", 200); // 200 ms de péremption
 	    	obstaclemanager.updateConfig();
+	    	obstaclemanager.clear_obstacles_mobiles();
+			Assert.assertEquals(0,obstaclemanager.nbObstaclesMobiles());
 	    	obstaclemanager.creer_obstacle(new Vec2(500, 500));
 			GameState<RobotChrono> clone0 = memorymanager.getClone(0);
 			Assert.assertEquals(1,clone0.gridspace.nbObstaclesMobiles());

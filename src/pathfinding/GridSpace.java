@@ -174,7 +174,7 @@ public class GridSpace implements Service {
 
 	public void copy(GridSpace other, long date)
 	{
-		obstaclemanager.copy(other.obstaclemanager);
+		obstaclemanager.copy(other.obstaclemanager, date);
 		// On détruit le cache car le robot aura bougé
 		other.nearestReachableNodeCache = null;
 		other.reinitConnections(date);
@@ -260,7 +260,7 @@ public class GridSpace implements Service {
      */
     public void creer_obstacle(Vec2 position)
     {
-    	creer_obstacle(position, System.currentTimeMillis());
+    	creer_obstacle(position, System.currentTimeMillis() - Config.getDateDebutMatch());
     }
 
     public void setAvoidGameElement(boolean avoidGameElement)

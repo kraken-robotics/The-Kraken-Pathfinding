@@ -38,26 +38,13 @@ public class JUnit_Hook extends JUnit_Test {
 	@Before
     public void setUp() throws Exception {
         super.setUp();
+		config.setDateDebutMatch();
         hookfactory = (HookFactory) container.getService(ServiceNames.HOOK_FACTORY);
         real_gamestate = (GameState<RobotReal>) container.getService(ServiceNames.REAL_GAME_STATE);
         chrono_gamestate = real_gamestate.cloneGameState();
         pathfinding = (Pathfinding)container.getService(ServiceNames.PATHFINDING);
     }
    
-	@Test
-	public void test_hook_chrono_avancer() throws Exception
-	{
-		config.setDateDebutMatch();
-		ArrayList<Hook> hooks_table = hookfactory.getHooksEntreScripts(chrono_gamestate);
-		chrono_gamestate.robot.setPosition(new Vec2(600, 350));
-		chrono_gamestate.robot.setOrientation(Math.PI);
-		Assert.assertTrue(chrono_gamestate.table.isDone(GameElementNames.VERRE_5) == Tribool.FALSE);
-		chrono_gamestate.robot.avancer(100, hooks_table);
-		Assert.assertTrue(chrono_gamestate.table.isDone(GameElementNames.VERRE_5) == Tribool.FALSE);
-		chrono_gamestate.robot.avancer(500, hooks_table);
-		Assert.assertTrue(chrono_gamestate.table.isDone(GameElementNames.VERRE_5) == Tribool.TRUE);
-	}
-
 	// TODO: devrait marcher, mais bug à cause de locomotion
 	@Test
 	public void test_hook_vrai_avancer() throws Exception
@@ -71,6 +58,19 @@ public class JUnit_Hook extends JUnit_Test {
 		Assert.assertTrue(real_gamestate.table.isDone(GameElementNames.VERRE_5) == Tribool.FALSE);
 		real_gamestate.robot.avancer(500, hooks_table);
 		Assert.assertTrue(real_gamestate.table.isDone(GameElementNames.VERRE_5) == Tribool.TRUE);
+	}
+
+	@Test
+	public void test_hook_chrono_avancer() throws Exception
+	{
+		ArrayList<Hook> hooks_table = hookfactory.getHooksEntreScripts(chrono_gamestate);
+		chrono_gamestate.robot.setPosition(new Vec2(600, 350));
+		chrono_gamestate.robot.setOrientation(Math.PI);
+		Assert.assertTrue(chrono_gamestate.table.isDone(GameElementNames.VERRE_5) == Tribool.FALSE);
+		chrono_gamestate.robot.avancer(100, hooks_table);
+		Assert.assertTrue(chrono_gamestate.table.isDone(GameElementNames.VERRE_5) == Tribool.FALSE);
+		chrono_gamestate.robot.avancer(500, hooks_table);
+		Assert.assertTrue(chrono_gamestate.table.isDone(GameElementNames.VERRE_5) == Tribool.TRUE);
 	}
 
 	@Test
@@ -88,7 +88,6 @@ public class JUnit_Hook extends JUnit_Test {
 	@Test
 	public void test_hook_chrono_suit_chemin() throws Exception
 	{
-		config.setDateDebutMatch();
 		ArrayList<Hook> hooks_table = hookfactory.getHooksEntreScripts(chrono_gamestate);
 		chrono_gamestate.robot.setPosition(PathfindingNodes.BAS.getCoordonnees());
     	ArrayList<PathfindingNodes> chemin = pathfinding.computePath(PathfindingNodes.BAS.getCoordonnees(), PathfindingNodes.COTE_MARCHE_DROITE, chrono_gamestate.gridspace, false, true);

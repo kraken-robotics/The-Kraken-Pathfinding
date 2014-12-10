@@ -9,49 +9,56 @@ package enums;
 // DEPENDS_ON_RULES
 public enum ActuatorOrder {
 
-	BAISSE_TAPIS_GAUCHE("ptg"),
-	BAISSE_TAPIS_DROIT("ptd"),
-	LEVE_TAPIS_GAUCHE("rtg"),
-	LEVE_TAPIS_DROIT("rtd"),
-	LEVE_CLAP_DROIT("cdh"),
-	POSITION_TAPE_CLAP_DROIT("cdm"),
-	BAISSE_CLAP_DROIT("cdb"),
-	LEVE_CLAP_GAUCHE("cgh"),
-	POSITION_TAPE_CLAP_GAUCHE("cgm"),
-	BAISSE_CLAP_GAUCHE("cgb"),
-	OUVRE_GUIDE_DROIT("ogd"),
-	OUVRE_GUIDE_GAUCHE("ogg"),
-	FERME_GUIDE_DROIT("fgd"),
-	FERME_GUIDE_GAUCHE("fgg"),
-	MILIEU_GUIDE_DROIT("gdi"),
-	MILIEU_GUIDE_GAUCHE("ggi"),
-	ASCENSEUR_HAUT("ah"),
-	ASCENSEUR_BAS("ab"),
-	ASCENSEUR_SOL("as"),
-	ASCENSEUR_ESTRADE("ae"),
-	OUVRE_MACHOIRE_DROITE("omd"),
-	OUVRE_MACHOIRE_GAUCHE("omg"),
-	FERME_MACHOIRE_DROITE("fmd"),
-	FERME_MACHOIRE_GAUCHE("fmg"),
-	OUVRE_BRAS_DROIT("obd"),
-	OUVRE_BRAS_GAUCHE("obg"),
-	FERME_BRAS_DROIT("fbd"),
-	FERME_BRAS_GAUCHE("fbg"),
-	OUVRE_BRAS_DROIT_LENT("obdl"),
-	OUVRE_BRAS_GAUCHE_LENT("obgl"),
-	FERME_BRAS_DROIT_LENT("fbdl"),
-	FERME_BRAS_GAUCHE_LENT("fbgl");
+	BAISSE_TAPIS_GAUCHE("ptg", 0),
+	BAISSE_TAPIS_DROIT("ptd", 0),
+	LEVE_TAPIS_GAUCHE("rtg", 0),
+	LEVE_TAPIS_DROIT("rtd", 0),
+	LEVE_CLAP_DROIT("cdh", 0),
+	POSITION_TAPE_CLAP_DROIT("cdm", 0),
+	BAISSE_CLAP_DROIT("cdb", 0),
+	LEVE_CLAP_GAUCHE("cgh", 0),
+	POSITION_TAPE_CLAP_GAUCHE("cgm", 0),
+	BAISSE_CLAP_GAUCHE("cgb", 0),
+	OUVRE_GUIDE_DROIT("ogd", 0),
+	OUVRE_GUIDE_GAUCHE("ogg", 0),
+	FERME_GUIDE_DROIT("fgd", 0),
+	FERME_GUIDE_GAUCHE("fgg", 0),
+	MILIEU_GUIDE_DROIT("gdi", 0),
+	MILIEU_GUIDE_GAUCHE("ggi", 0),
+	ASCENSEUR_HAUT("ah", 0),
+	ASCENSEUR_BAS("ab", 0),
+	ASCENSEUR_SOL("as", 0),
+	ASCENSEUR_ESTRADE("ae", 0),
+	OUVRE_MACHOIRE_DROITE("omd", 0),
+	OUVRE_MACHOIRE_GAUCHE("omg", 0),
+	FERME_MACHOIRE_DROITE("fmd", 0),
+	FERME_MACHOIRE_GAUCHE("fmg", 0),
+	OUVRE_BRAS_DROIT("obd", 0),
+	OUVRE_BRAS_GAUCHE("obg", 0),
+	FERME_BRAS_DROIT("fbd", 0),
+	FERME_BRAS_GAUCHE("fbg", 0),
+	OUVRE_BRAS_DROIT_LENT("obdl", 0),
+	OUVRE_BRAS_GAUCHE_LENT("obgl", 0),
+	FERME_BRAS_DROIT_LENT("fbdl", 0),
+	FERME_BRAS_GAUCHE_LENT("fbgl", 0);
 	
 	private String serialOrder;
+	private int sleepValue;
 	
-	private ActuatorOrder(String serialOrder)
+	private ActuatorOrder(String serialOrder, int sleepValue)
 	{
 		this.serialOrder = serialOrder;
+		this.sleepValue = sleepValue;
 	}
 	
 	public String getSerialOrder()
 	{
 		return serialOrder;
+	}
+	
+	public int getSleepValue()
+	{
+		return sleepValue;
 	}
 	
 }

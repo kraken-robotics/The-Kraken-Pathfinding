@@ -3,8 +3,11 @@ package robot;
 import java.util.ArrayList;
 
 import hook.Hook;
+import hook.types.HookFactory;
 import smartMath.Vec2;
+import strategie.GameState;
 import container.Service;
+import enums.ActuatorOrder;
 import enums.HauteurBrasClap;
 import enums.PathfindingNodes;
 import enums.Side;
@@ -40,7 +43,7 @@ public abstract class Robot implements Service
 	public abstract void setOrientation(double orientation) throws FinMatchException;
     public abstract Vec2 getPosition() throws FinMatchException;
     public abstract double getOrientation() throws FinMatchException;
-    public abstract void sleep(long duree, ArrayList<Hook> hooks);
+    public abstract void sleep(long duree, ArrayList<Hook> hooks) throws FinMatchException;
     public abstract void setInsiste(boolean insiste);
     public abstract void desactiver_asservissement_rotation() throws FinMatchException;
     public abstract void activer_asservissement_rotation() throws FinMatchException;
@@ -50,10 +53,6 @@ public abstract class Robot implements Service
      * Actionneurs
      */
     
-	public abstract void poserDeuxTapis() throws FinMatchException;
-	public abstract void leverDeuxTapis() throws FinMatchException;
-	public abstract void bougeBrasClap(Side cote, HauteurBrasClap hauteur) throws SerialConnexionException, FinMatchException;
-
     
 	/**
 	 * Copy this dans rc. this reste inchangé.
@@ -71,19 +70,32 @@ public abstract class Robot implements Service
 	// Dépendances
 	protected Config config;
 	protected Log log;
+	private HookFactory hookfactory;
 	protected boolean symetrie;
 	protected Speed vitesse;
 	private int pointsObtenus = 0;
 	
 	private boolean tapisPoses = false;
+	protected ArrayList<Hook> hooksTable = new ArrayList<Hook>();
 	
-	public Robot(Config config, Log log)
+	public Robot(Config config, Log log, HookFactory hookfactory)
 	{
 		this.config = config;
 		this.log = log;
+		this.hookfactory = hookfactory;
+		vitesse = Speed.BETWEEN_SCRIPTS;		
 		updateConfig();
 	}
-		
+
+	public void initHooksTable(GameState<?> state) throws Exception
+	{
+		if(state.robot == this)
+			hooksTable = hookfactory.getHooksEntreScripts(state);
+		else
+			throw new Exception();
+	}
+
+	
 	public void updateConfig()
 	{
 		symetrie = config.get("couleur").equals("rouge");
@@ -140,7 +152,7 @@ public abstract class Robot implements Service
         }
     }
 
-    public void sleep(long duree)
+    public void sleep(long duree) throws FinMatchException
     {
     	sleep(duree, null);
     }
@@ -174,4 +186,38 @@ public abstract class Robot implements Service
     	pointsObtenus = pointsObtenus + 5;
     }
     
+	public ActuatorOrder bougeBrasClapOrder(Side cote, HauteurBrasClap hauteur) throws SerialConnexionException, FinMatchException
+	{
+		if(cote == Side.LEFT && hauteur == HauteurBrasClap.TOUT_EN_HAUT)
+			return ActuatorOrder.LEVE_CLAP_GAUCHE;
+		else if(cote == Side.LEFT && hauteur == HauteurBrasClap.FRAPPE_CLAP)
+			return ActuatorOrder.POSITION_TAPE_CLAP_GAUCHE;
+		else if(cote == Side.LEFT && hauteur == HauteurBrasClap.RENTRE)
+			return ActuatorOrder.BAISSE_CLAP_GAUCHE;
+		else if(cote == Side.RIGHT && hauteur == HauteurBrasClap.TOUT_EN_HAUT)
+			return ActuatorOrder.LEVE_CLAP_DROIT;
+		else if(cote == Side.RIGHT && hauteur == HauteurBrasClap.FRAPPE_CLAP)
+			return ActuatorOrder.POSITION_TAPE_CLAP_DROIT;
+		else if(cote == Side.RIGHT && hauteur == HauteurBrasClap.RENTRE)
+			return ActuatorOrder.BAISSE_CLAP_DROIT;
+		return null;
+	}
+
+	public void bougeBrasClap(Side cote, HauteurBrasClap hauteur) throws SerialConnexionException, FinMatchException
+	{
+		ActuatorOrder order = bougeBrasClapOrder(cote, hauteur);
+		sleep(order.getSleepValue());
+	}
+
+	public void poserDeuxTapis() throws FinMatchException {
+		sleep(ActuatorOrder.BAISSE_TAPIS_DROIT.getSleepValue());
+		sleep(ActuatorOrder.BAISSE_TAPIS_GAUCHE.getSleepValue());
+	}
+
+	public void leverDeuxTapis() throws FinMatchException {
+		sleep(ActuatorOrder.LEVE_TAPIS_DROIT.getSleepValue());
+		sleep(ActuatorOrder.LEVE_TAPIS_GAUCHE.getSleepValue());
+	}
+
+	
 }

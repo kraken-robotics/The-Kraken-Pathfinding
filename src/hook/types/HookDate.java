@@ -19,15 +19,14 @@ public class HookDate extends Hook {
 
 	@Override
 	public boolean evaluate() throws FinMatchException {
-		if(System.currentTimeMillis() > date_hook)
+		if(System.currentTimeMillis() - Config.getDateDebutMatch() > date_hook)
 			return trigger();
 		return false;
 	}
 
 	@Override
 	public boolean simulated_evaluate(Vec2 pointA, Vec2 pointB, long date_appel) {
-		// vrai si on a dépassé la date donné au constructeur
-		log.debug("Hook date: appel="+date_appel+", date_hook="+this.date_hook, this);
+//		log.debug("Hook date: appel="+date_appel+", date_hook="+this.date_hook, this);
 		return date_appel > this.date_hook;
 	}
 

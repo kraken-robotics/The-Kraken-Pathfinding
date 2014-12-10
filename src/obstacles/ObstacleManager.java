@@ -76,7 +76,7 @@ public class ObstacleManager implements Service
     {
         Vec2 position_sauv = position.clone();
         
-        ObstacleProximity obstacle = new ObstacleProximity(position_sauv, rayon_robot_adverse, System.currentTimeMillis()+dureeAvantPeremption);
+        ObstacleProximity obstacle = new ObstacleProximity(position_sauv, rayon_robot_adverse, dureeAvantPeremption);
         log.warning("Obstacle créé, rayon = "+rayon_robot_adverse+", centre = "+position, this);
         listObstaclesMobiles.add(obstacle);
         check_game_element(position);
@@ -102,7 +102,7 @@ public class ObstacleManager implements Service
      */
     public void supprimerObstaclesPerimes()
     {
-    	supprimerObstaclesPerimes(System.currentTimeMillis());
+    	supprimerObstaclesPerimes(System.currentTimeMillis() - Config.getDateDebutMatch());
     }
 
     /**
@@ -126,7 +126,15 @@ public class ObstacleManager implements Service
             else
             	break;
         }   
-    }    
+    }  
+    
+    /**
+     * Utilisé UNIQUEMENT pour les tests!
+     */
+    public void clear_obstacles_mobiles()
+    {
+    	listObstaclesMobiles.clear();
+    }
 
     /**
      * Utilisé pour les tests
@@ -141,8 +149,7 @@ public class ObstacleManager implements Service
     public ObstacleManager clone(long date, Table table)
     {
     	ObstacleManager cloned_manager = new ObstacleManager(log, config, table);
-		copy(cloned_manager);
-		cloned_manager.supprimerObstaclesPerimes(date);
+		copy(cloned_manager, date);
 		return cloned_manager;
     }
     
@@ -150,8 +157,9 @@ public class ObstacleManager implements Service
      * Nécessaire au fonctionnement du memory manager
      * @param other
      */
-    public void copy(ObstacleManager other)
+    public void copy(ObstacleManager other, long date)
     {
+		supprimerObstaclesPerimes(date);
     	table.copy(other.table);
         if(other.hashObstacles != hashObstacles)
         {
