@@ -20,7 +20,7 @@ public enum Speed
     
     // valeurs des PWM (Phase Wave Modulation)
     public int PWMTranslation;
-    public int PWMTotation;
+    public int PWMRotation;
     
     // en milliseconde par millimètre
     public int invertedTranslationnalSpeed;
@@ -36,7 +36,7 @@ public enum Speed
     private Speed(int PWM_translation, int PWM_rotation)
     {
         this.PWMTranslation = PWM_translation;
-        this.PWMTotation = PWM_rotation;
+        this.PWMRotation = PWM_rotation;
         
         invertedTranslationnalSpeed = (int) (1./(((float)2500)/((float)613.52 * (float)(Math.pow((double)PWM_translation,(double)(-1.034))))/1000));
         invertedRotationnalSpeed = (int) (1./(((float)Math.PI)/((float)277.85 * (float)Math.pow(PWM_rotation,(-1.222)))/1000));

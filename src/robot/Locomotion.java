@@ -8,7 +8,6 @@ import container.Service;
 //import hook.Executable;
 import hook.Hook;
 import enums.PathfindingNodes;
-import enums.RobotColor;
 import enums.Speed;
 import exceptions.FinMatchException;
 //import hook.methodes.ChangeConsigne;
@@ -24,74 +23,79 @@ import utils.Config;
 import utils.Sleep;
 
 /**
- * Entre LocomtionCardWrapper (appels à la série) et RobotReal (déplacements haut niveau), Locomotion
- * s'occupe de la position, de la symétrie, des hooks, des trajectoires courbes et des blocages.
+ * Entre LocomtionCardWrapper (appels à la série) et RobotReal (Interface avec les utilisateurs de haut niveau), Locomotion
+ * s'occupe de la position, de la symétrie, des hooks, des trajectoires courbes et tente de réagir en cas de problème
+ * .
  * Structure, du bas au haut niveau: symétrie, hook, trajectoire courbe et blocage.
- * Les méthodes "non-bloquantes" se finissent alors que le robot roule encore.
- * (les méthodes non-bloquantes s'exécutent très rapidement)
- * Les méthodes "bloquantes" se finissent alors que le robot est arrêté.
+ * 
+ * Les méthodes "non-bloquantes" se finissent alors que le robot roule encore. (les méthodes non-bloquantes s'exécutent très rapidement)
+ * Les méthodes "bloquantes" se finissent quand le robot a atteind le point et l'orientation désirée en fin de mouvment.
  * @author pf, marsu
  *
  */
+// TODO: les utilisateurs de cette classe utilisent la méthode turn. Mais turn n'utilise pas les fonction moveForwardInDirection, il faut retravailler la série de fonction moveForwardInDirection
+// afin de la rendre plus générique ( notamment, moveInDirection est semi-bloquante: la rotation pour se mettre dans la bonne direction est bloquante, mais pas la tranlation qui la suit)
+// il faudrait que toutes les rotations (celles de moveForwardInDirection et celles appellées directement par l'utilisateur via la méthode turn) passent idéalement par les moveForwardInDirection
+// ca mermetterait d'avoir une gestion propre des hooks, des capteurs, etc.
 
+
+// TODO: gestion propre des exceptions de communication série: Les exceptions de séries sont toujours mise dans des try/catch avec des printStackTrace. Le problème c'est que le comportement du
+// java n'est pas déterminé en cas de coupure de la connexion. Il faudrait que les exceptions soient remontées quand nécessaire, voir s'il faut interrompre le mouvement dans le code, et même
+// le remonter au code de très haut niveau si par exemeple l'asservissement meurs en plein match. (histoire que l'IA puisse prendre une décision en conséquence)
 public class Locomotion implements Service
 {
 
-	//gestion des log
+	/** système de log sur lequel écrire*/
 	private Log log;
 	
-	//endroit ou lire la configuration du robot
+	/** endroit ou lire la configuration du robot */
 	private Config config;
-
-	// Les obstacles de la table
+	
 	private ObstacleManager obstaclemanager;
-
-	// la ditance minimale entre le centre du robot et un obstacle
-	private int largeur_robot;
 	
-	// TODO c'est quoi ?
-	private int distance_detection;
+	/** la longueur du robot (ie la distance qui sépare son devant de son arrière)
+	 * Cette valeur est utilisée pour placer le disque devant le robot ou l'on va vérifier qu'il n'y a pas d'obstacle */
+	private int robotLengh; //TODO: cette variable n'a pas sa place ici. Elle n'est même pas initialisée ici
 	
-	// Position courante du robot sur la table. La coordonnée X est multipliée par -1 si on est équipe jaune
+	/** Rayon du disque que l'on place devant le robot et ou l'on vérifie auprès de la table qu'il n'y a pas d'obstacle si on doit avancer dans ce disque.  */
+	private int obstacleDetectionDiscRadius;
+	
+	/** Position courante du robot sur la table. La coordonnée X est multipliée par -1 si on est équipe jaune */
 	private Vec2 position = new Vec2(); //TODO: spécifier dans la doc a un endroit logique ou est défini le système d'axe (plus le système d'orientation)
 	
-	 // Position de la table que le robot cherche a ateindre. Elle peut être modifiée au sein d'un même mouvement.
-	private Vec2 consigne = new Vec2();
+	/** Position de la table que le robot cherche a ateindre. Elle peut être modifiée au sein d'un même mouvement. */
+	private Vec2 aim = new Vec2();
 	
-	// Le système de trajectoire courbe ou de "tourner en avançant" fait rêver des génération d'INTechiens,
-	// mais ça a toujours fais perdre du temps pour un truc qui ne marche pas
-	private boolean trajectoire_courbe = false;
+	/** Le système de trajectoire courbe ou de "tourner en avançant" fait rêver des génération d'INTechiens,
+	 * mais ça a toujours fais perdre du temps pour un truc qui ne marche pas */
+	private boolean allowCurvedPath = false;
 
-	// orientation actuelle du robot. L'orientation est multipliée par -1 si on est équipe jaune
+	/** orientation actuelle du robot. L'orientation est multipliée par -1 si on est équipe jaune */
 	private double orientation;
 	
-	// interface de communication avec la carte d'asservissement
+	/** interface de communication avec la carte d'asservissement */
 	private LocomotionCardWrapper mLocomotionCardWrapper;
 	
-	// la table est symétrisée si on est équipe jaune
-	private boolean symetrie;
+	/** la table est symétrisée si on est équipe jaune */
+	private boolean symmetry;
 	
-	// Lorsque le robot doit bouge, C'est le temps d'attente entre deux vérification de l'état de ce déplacement. (arrivée, blocage, etc.)
-	private int sleep_boucle_acquittement = 10;
+	/** Temps d'attente e miliseconde entre deux vérification de l'état du déplacement quand le robot bouge. (arrivée, blocage, etc.) */
+	private int minimumDelayBetweenMovementStatusCheck = 50;
 	
-	// nombre maximum d'excpetions levés d'un certain type lors d'un déplacement
+	/** nombre maximum d'excpetions levés d'un certain type lors d'un déplacement */
 	private int maxAllowedExceptionCount = 5;
 	
-	// distance en mm sur laquelle on revient sur nos pas avant de réessayer d'atteindre le point d'arrivée lorsque le robot faire face a un obstacle qui immobilise mécaniquement le robot
+	/** distance en mm sur laquelle on revient sur nos pas avant de réessayer d'atteindre le point d'arrivée lorsque le robot faire face a un obstacle qui immobilise mécaniquement le robot */
 	private int blockedExceptionRetraceDistance = 50;
 	
-	// temps en ms que l'on attends après avoir vu un ennemi avant de réessayer d'atteindre le point d'arrivée lorsque le robot détecte que sa route est obstruée
+	/** temps en ms que l'on attends après avoir vu un ennemi avant de réessayer d'atteindre le point d'arrivée lorsque le robot détecte que sa route est obstruée */
 	private int unexpectedObstacleOnPathRetryDelay = 200; 
 	
-	private double angle_degagement_robot;
-	private boolean insiste = false;	
+	/** angle en radiant de dégagement du robot utilisé lorsque l'utilisateur demande une rotation (via la méthode turn), et que le robot rencontre un obstacle: le robot tourne alors de cet angle
+	 * dans l'autre sens que celui demandé pour se dégager de l'obstacle rencontré  */
+	private double pullOutAngleInCaseOfBlockageWhileTurning; // TODO: passer la réaction du robot en cas de blocage mécanique en cours de rotation dans BlockedExceptionReaction
 	
-	// TODO: voir si on pet vraiment supprimer ces variables
-	@SuppressWarnings("unused")
-	private long debut_mouvement_fini;
-	
-	@SuppressWarnings("unused")
-	private boolean fini = true;
+	/** ancienne valeur de l'assevissement, dans l'ordre: X, Y, orientation. */
 	private double[] oldInfos;
 
 	/**
@@ -101,38 +105,42 @@ public class Locomotion implements Service
 	 * @param config : sur quel objet lire la configuration du match
 	 * @param table : l'aire de jeu sur laquelle on se d�place
 	 * @param mLocomotion : service de d�placement de bas niveau
-	 */
+	 */	
 	public Locomotion(Log log, Config config, LocomotionCardWrapper mLocomotion, ObstacleManager obstaclemanager)
 	{
 		this.log = log;
 		this.config = config;
 		this.mLocomotionCardWrapper = mLocomotion;
-		this.obstaclemanager = obstaclemanager;
 		//        this.hookgenerator = hookgenerator;
+		this.obstaclemanager = obstaclemanager;
 		updateConfig();
 	}
 
 	/**
-	 * Recale le robot sur la table pour qu'il sache ou il est sur la table et dans quel sens il est.
-	 * c'est obligatoire avant un match,
+	 * Recale le robot pour qu'il sache ou il est sur la table et dans quel sens il se trouve.
+	 * La méthode est de le faire pecuter contre les coins de la table, ce qui lui donne des repères.
+	 * TODO: réécrire, et documenter en fonction de la table de cette année.
 	 */
 	public void readjust()
 	{
 		try
 		{
+	        setTranslationnalSpeed(Speed.READJUSTMENT.PWMTranslation);
+	        setRotationnalSpeed(Speed.READJUSTMENT.PWMRotation);
+	        
 			// Retrouve l'abscisse du robot en foncant dans un mur d'abscisse connue
 			log.debug("recale X",this);
 
-			moveForward(-200, null, true);
+			moveLengthwise(-200, null, true);
 			mLocomotionCardWrapper.setTranslationnalSpeed(200);
 			mLocomotionCardWrapper.disableRotationnalFeedbackLoop();
 			Sleep.sleep(1000);
-			moveForward(-200, null, true);
+			moveLengthwise(-200, null, true);
 			mLocomotionCardWrapper.enableRotationnalFeedbackLoop();
 			mLocomotionCardWrapper.setTranslationnalSpeed(Speed.READJUSTMENT.PWMTranslation);
 
 			position.x = 1500 - 165;
-			if(symetrie)
+			if(symmetry)
 			{
 				setOrientation(0f);
 				mLocomotionCardWrapper.setX(-1500+165);
@@ -145,16 +153,16 @@ public class Locomotion implements Service
 
 
 			Sleep.sleep(500);
-			moveForward(40, null, true);
-			turn(-Math.PI/2, false);
+			moveLengthwise(40, null, true);
+			turn(-Math.PI/2, null, false);
 
 
 			log.debug("recale Y",this);
-			moveForward(-600, null, true);
+			moveLengthwise(-600, null, true);
 			mLocomotionCardWrapper.setTranslationnalSpeed(200);
 			mLocomotionCardWrapper.disableRotationnalFeedbackLoop();
 			Sleep.sleep(1000);
-			moveForward(-200, null, true);
+			moveLengthwise(-200, null, true);
 			mLocomotionCardWrapper.enableRotationnalFeedbackLoop();
 			mLocomotionCardWrapper.setTranslationnalSpeed(Speed.READJUSTMENT.PWMTranslation);
 			position.y = 2000 - 165;
@@ -163,104 +171,179 @@ public class Locomotion implements Service
 
 			log.debug("Done !",this);
 			Sleep.sleep(500);
-			moveForward(100, null, false);
+			moveLengthwise(100, null, false);
 			orientation = -Math.PI/2;
 			setOrientation(-Math.PI/2);
 			//Normalement on se trouve à (1500 - 165 - 100 = 1225 ; 2000 - 165 - 100 = 1725)
 			mLocomotionCardWrapper.enableRotationnalFeedbackLoop();
-		} catch (Exception e) {
+		}
+		catch (Exception e)
+		{
 			e.printStackTrace();
 		}
 	}
-
 
 	/**
 	 * Fait tourner le robot (méthode bloquante)
-	 * @throws UnableToMoveException 
+	 * @param angle : valeur absolue en radiant de l'orientation que le robot doit avoir après cet appel
+	 * @param hooksToConsider hooks a considérer lors de ce déplacement. Le hook n'est déclenché que s'il est dans cette liste et que sa condition d'activation est remplie
+	 * @param expectsWallImpact true si le robot doit s'attendre a percuter un mur au cours de la rotation. false si les alentours du robot sont sensés être dégagés.
+	 * @throws UnableToMoveException losrque quelque chose sur le chemin cloche et que le robot ne peut s'en défaire simplement: bloquage mécanique immobilisant le robot ou obstacle percu par les capteurs
 	 * @throws FinMatchException 
 	 */
-	public void turn(double angle, boolean mur) throws UnableToMoveException, FinMatchException
+	// TODO: refactor massif de la facon dont le robot tourne en haut niveau. La rotation ne passe pas du tout par le système de moveForwardInDirection. 
+	// C'est la faute au système de moveForwardInDirection, qui n'est pas complètement générique. notamment BlockedExceptionReaction qui est en réalité spécialisé dans une réaction a un blocage lors d'une translation.
+	public void turn(double angle, ArrayList<Hook> hooksToConsider, boolean expectsWallImpact) throws UnableToMoveException, FinMatchException
 	{
 
-		if(symetrie)
+		// prends en compte la symétrie: si on est équipe jaune, et non équipe verte on doit tourner de PI moins l'angle
+		if(symmetry)
 			angle = Math.PI-angle;
+		
+		// on souhaite rester ou l'on est : la position d'arrivée est le position courrante
+		aim = position.clone();
 
 		// Tourne-t-on dans le sens trigonométrique?
 		// C'est important de savoir pour se dégager.
-		boolean trigo = angle > orientation;
+		boolean isTurnCCW = angle > orientation; // CCw pour  Counter-ClocWise, ie sens trigonométrique
 
-		try {
-			oldInfos = mLocomotionCardWrapper.getCurrentPositionAndOrientation();
-			mLocomotionCardWrapper.turn(angle);
+		// On donnera l'odre de se déplacer au robot
+		boolean haveToGiveOrderToMove = true;
+		
+		try
+		{
+			// boucle surveillant que tout se passe bien lors de la rotation
 			while(!isMovementFinished()) // on attend la fin du mouvement
 			{
-				Sleep.sleep(sleep_boucle_acquittement);
-				//   log.debug("abwa?", this);
-			}
-		} catch(BlockedException e)
-		{
-			try
-			{
-				update_x_y_orientation();
-				if(!mur)
+				// donne (éventuellement de nouveau) l'ordre de se déplacer
+				if(haveToGiveOrderToMove)
 				{
-					if(trigo ^ symetrie)
-						mLocomotionCardWrapper.turn(orientation+angle_degagement_robot);
-					else
-						mLocomotionCardWrapper.turn(orientation-angle_degagement_robot);
+					oldInfos = mLocomotionCardWrapper.getCurrentPositionAndOrientation();
+					mLocomotionCardWrapper.turn(angle);
 				}
-			} catch (SerialConnexionException e1)
-			{
-				e1.printStackTrace();
+				
+				// Vérifie si les hooks fournis doivent être déclenchés, et les déclenche si besoin
+				haveToGiveOrderToMove = false;
+				if(hooksToConsider != null)
+					for(Hook currentHook : hooksToConsider)
+					{
+						// savegarde la consige de position, ca si un hook fait appel a cette classe, il écrase l'ancienne valeur de aim
+						Vec2 oldAim = aim.clone();
+						
+						// vérifie si ce hook doit être déclenché, le déclenche si c'est le cas, et fera renvoyer au prochain tour de while l'ordre de déplacement si le hook a fait bouger le robot
+						haveToGiveOrderToMove |= currentHook.evaluate();
+						
+						// restaure le aim de ce déplacement (au lieu ce celui d'un hook)
+						aim = oldAim;
+					}
+				
+				//attends un peu entre deux tours de boucle histoire de ne pas trop spammer la connexion série
+				Sleep.sleep(minimumDelayBetweenMovementStatusCheck);
 			}
-			throw new UnableToMoveException();
-		} catch (SerialConnexionException e)
+		}
+		catch(BlockedException e)	// TODO: a fusionner avec BlockedExceptionReaction
+		{
+			updatePositionAndOrientation();
+			
+			// Si on ne devait pas tapper dans un obstacle, il faut essayer de s'en dégager puis faire rementer le problème
+			if(!expectsWallImpact)
+			{
+				// essaye de s'en dégager
+				try
+				{
+					// on se dégage en sens trigo si on tournait initialement en sens horraire, et réciproquement
+					if(isTurnCCW ^ symmetry)
+						mLocomotionCardWrapper.turn(orientation+pullOutAngleInCaseOfBlockageWhileTurning);
+					else
+						mLocomotionCardWrapper.turn(orientation-pullOutAngleInCaseOfBlockageWhileTurning);
+				}
+
+				catch(SerialConnexionException e1)
+				{
+					e1.printStackTrace();
+				}
+
+				// informe l'utilisateur qu'un problème est survenu
+				throw new UnableToMoveException();
+			}
+		}
+		catch(SerialConnexionException e)
 		{
 			e.printStackTrace();
 		}
 	}
 
 	/**
-	 * Fait avancer le robot de la distance spécifiée.
+	 * Fait avancer le robot de la distance spécifiée. Le robot garde son orientation actuelle et va simplement avancer
 	 * C'est la méthode que les utilisateurs (externes au développement du système de locomotion) vont utiliser
+	 * Cette méthode est bloquante: son exécution ne se termine que lorsque le robot a atteint le point d'arrivée
 	 * @param distance en mm que le robot doit franchir
-	 * @param hooks	// TODO : trouver ce que sont ces hooks a vérifier
-	 * @param insiste // TODO : trouver ce que insiste fait
-	 * @throws UnableToMoveException si le robot rencontre un problème dans son déplacement
+	 * @param hooksToConsider hooks a considérer lors de ce déplacement. Le hook n'est déclenché que s'il est dans cette liste et que sa condition d'activation est remplie	 
+	 * @param expectsWallImpact true si le robot doit s'attendre a percuter un mur au cours du déplacement. false si la route est sensée être dégagée.
+	 * @throws UnableToMoveException losrque quelque chose sur le chemin cloche et que le robot ne peut s'en défaire simplement: bloquage mécanique immobilisant le robot ou obstacle percu par les capteurs
 	 * @throws FinMatchException 
 	 */
-	public void moveForward(int distance, ArrayList<Hook> hooks, boolean mur) throws UnableToMoveException, FinMatchException
+	public void moveLengthwise(int distance, ArrayList<Hook> hooksToConsider, boolean expectsWallImpact) throws UnableToMoveException, FinMatchException
 	{
-		
-		update_x_y_orientation();
+		// demande une position et une oriantation a jour du robot
+		updatePositionAndOrientation();
 
 		
 		// calcule la position a atteindre en fin de mouvement
-		consigne.x = (int) (position.x + distance*Math.cos(orientation));
-		consigne.y = (int) (position.y + distance*Math.sin(orientation));
-		if(symetrie)
-			consigne.x = -consigne.x;
+		aim.x = (int) (position.x + distance*Math.cos(orientation));
+		aim.y = (int) (position.y + distance*Math.sin(orientation));
+		if(symmetry)	// on considère le point d'abscisse opposée si on est équipe jaune et non verte
+			aim.x = -aim.x;
 		  
+		
+		// choisit de manière intelligente la marche arrière ou non
+		// mais cette année, on ne peut aller, de manière automatique, que tout droit (pas de capteur d'obstacle à l'arrière).
+		// Donc on force marche_arriere à true. (ie pas de décision intelligente)
 
-		moveForwardInDirectionExeptionHandler(hooks, false, distance < 0, mur);
+		/*
+		 * Ce qui suit est une méthode qui permet de choisir si la marche arrière
+		 * est plus rapide que la marche avant. Non utilisé, mais ca peut servir un jour.
+		 */
+		
+		/*
+		 // TODO : refactor
+        Vec2 delta = aim.clone();
+        if(symmetry)
+            delta.x *= -1;
+        delta.minus(position);
+        // Le coeff 1000 vient du fait que Vec2 est constitué d'entiers
+        Vec2 orientationVec = new Vec2((int)(1000*Math.cos(orientation)), (int)(1000*Math.sin(orientation)));
 
-		update_x_y_orientation();
+        // On regarde le produit scalaire; si c'est positif, alors on est dans le bon sens, et inversement
+        boolean marche_arriere = delta.dot(orientationVec) > 0;
+		*/
+		
+		
+		// fais le déplacement
+		moveInDirectionExeptionHandler(hooksToConsider, false, distance < 0, expectsWallImpact);
+
+		// demande une position et une oriantation a jour du robot
+		updatePositionAndOrientation();
 	}
 
 	/**
-	 * Suit un chemin. Crée les hooks de trajectoire courbe si besoin est.
-	 * @param chemin
-	 * @param hooks
-	 * @param insiste
-	 * @throws UnableToMoveException
+	 * Fais suivre un chemin au robot décrit par une liste de point.
+	 * @param path liste des points sur la table a atteindre, dans l'ordre. Le robot parcourera une ligne brisée dont les sommets sont ces points.
+	 * @param hooksToConsider hooks a considérer lors de ce déplacement. Le hook n'est déclenché que s'il est dans cette liste et que sa condition d'activation est remplie
+	 * @throws UnableToMoveException losrque quelque chose sur le chemin cloche et que le robot ne peut s'en défaire simplement: bloquage mécanique immobilisant le robot ou obstacle percu par les capteurs
 	 * @throws FinMatchException 
 	 */
-	public void followPath(ArrayList<PathfindingNodes> chemin, ArrayList<Hook> hooks) throws UnableToMoveException, FinMatchException
+	public void followPath(ArrayList<PathfindingNodes> path_pathfinding, ArrayList<Hook> hooksToConsider) throws UnableToMoveException, FinMatchException
 	{
+		ArrayList<Vec2> path = new ArrayList<Vec2>();
+		for(PathfindingNodes n: path_pathfinding)
+			path.add(n.getCoordonnees());
+		
 		// en cas de coup de folie a INTech, on active la trajectoire courbe.
-		if(trajectoire_courbe)
+		if(allowCurvedPath)
 		{
-			log.critical("Désactive la trajectoire courbe, pauvre fou!", this);
+			log.critical("Désactive la trajectoire courbe, pauvre fou! (appel a followPath ignoré)", this);
+			// TODO: refactor
 			/*            consigne = chemin.get(0).clone();
             ArrayList<Hook> hooks_trajectoire = new ArrayList<Hook>();
             for(int i = 0; i < chemin.size()-2; i++)
@@ -293,59 +376,25 @@ public class Locomotion implements Service
 		
 		// sinon on fait rotation puis translation pour chaque point du chemin
 		else
-			for(PathfindingNodes point: chemin)
+			for(Vec2 point: path)
 			{
-				consigne = point.getCoordonnees();
-				moveBackwardInDirection(hooks, false, false);
+				aim = point.clone();
+				moveInDirectionExeptionHandler(hooksToConsider, false, false, false);
 			}
-	}
-
-	/**
-	 * Bloquant. Gère la marche arrière automatique.
-	 * @param hooks
-	 * @param insiste
-	 * @throws UnableToMoveException
-	 * @throws FinMatchException 
-	 */
-	private void moveBackwardInDirection(ArrayList<Hook> hooks, boolean trajectoire_courbe, boolean mur) throws UnableToMoveException, FinMatchException
-	{
-		// choisit de manière intelligente la marche arrière ou non
-		// mais cette année, on ne peut aller, de manière automatique, que tout droit.
-		// Donc on force marche_arriere à false.
-		// Dans les rares cas où on veut la marche arrière, c'est en utilisant avancer.
-		// Or, avancer parle directement à va_au_point_gestion_exception
-
-		/*
-		 * Ce qui suit est une méthode qui permet de choisir si la marche arrière
-		 * est plus rapide que la marche avant. Non utilisé, mais bon à savoir.
-		 */
-		/*
-        Vec2 delta = consigne.clone();
-        if(symetrie)
-            delta.x *= -1;
-        delta.Minus(position);
-        // Le coeff 1000 vient du fait que Vec2 est constitué d'entiers
-        Vec2 orientationVec = new Vec2((int)(1000*Math.cos(orientation)), (int)(1000*Math.sin(orientation)));
-
-        // On regarde le produit scalaire; si c'est positif, alors on est dans le bon sens, et inversement
-        boolean marche_arriere = delta.dot(orientationVec) > 0;
-		 */
-
-		moveForwardInDirectionExeptionHandler(hooks, trajectoire_courbe, false, mur);
 	}
 
 	/**
 	 * Intercepte les exceptions des capteurs (on va rentrer dans un ennemi) et les exceptions de l'asservissement (le robot est mécaniquement bloqué)
 	 * Déclenche différentes réactions sur ces évènements, et si les réactions mises en places ici sont insuffisantes (on n'arrive pas a se dégager)
 	 * fais remonter l'exeption a l'utilisateur de la classe
-	 * @param hooks a considérer lors de ce déplacement. Le hook n'est déclenché que s'il est dans cette liste et que sa condition d'activation est remplie
+	 * @param hooksToConsider hooks a considérer lors de ce déplacement. Un hook n'est déclenché que s'il est dans cette liste et que sa condition d'activation est remplie
 	 * @param allowCurvedPath true si l'on autorise le robot à se déplacer le long d'une trajectoire curviligne.  false pour une simple ligne brisée
 	 * @param isBackward true si le déplacement doit se faire en marche arrière, false si le robot doit avancer en marche avant.
 	 * @param expectsWallImpact true si le robot doit s'attendre a percuter un mur au cours du déplacement. false si la route est sensée être dégagée.
 	 * @throws UnableToMoveException losrque quelque chose sur le chemin cloche et que le robot ne peut s'en défaire simplement: bloquage mécanique immobilisant le robot ou obstacle percu par les capteurs
 	 * @throws FinMatchException 
 	 */
-	public void moveForwardInDirectionExeptionHandler(ArrayList<Hook> hooks, boolean allowCurvedPath, boolean isBackward, boolean expectsWallImpact) throws UnableToMoveException, FinMatchException
+	private void moveInDirectionExeptionHandler(ArrayList<Hook> hooksToConsider, boolean allowCurvedPath, boolean isBackward, boolean expectsWallImpact) throws UnableToMoveException, FinMatchException
 	{
 		// nombre d'exception (et donc de nouvels essais) que l'on va lever avant de prévenir
 		// l'utilisateur en cas de bloquage mécanique du robot l'empéchant d'avancer plus loin
@@ -355,12 +404,9 @@ public class Locomotion implements Service
 		
 		// nombre d'exception (et donc de nouvels essais) que l'on va lever avant de prévenir
 		// l'utilisateur en cas de découverte d'un obstacle imprévu (robot adverse ou autre) sur la route
-		int unexpectedObstacleOnPathExceptionStillAllowed;
-		if(insiste)
+		int unexpectedObstacleOnPathExceptionStillAllowed = 2;
+		if (unexpectedObstacleOnPathExceptionStillAllowed > maxAllowedExceptionCount)
 			unexpectedObstacleOnPathExceptionStillAllowed = maxAllowedExceptionCount;
-		else
-			unexpectedObstacleOnPathExceptionStillAllowed = 2;
-		
 		
 		
 		// drapeau indiquant s'il faut retenter d'atteindre le point d'arrivée. Initialisé à vrai pour l'essai initial.
@@ -373,7 +419,7 @@ public class Locomotion implements Service
 			tryAgain = false;
 			try
 			{
-				va_au_point_hook_correction_detection(hooks, allowCurvedPath, isBackward);
+				moveInDirectionEventWatcher(hooksToConsider, allowCurvedPath, isBackward);
 			}
 			
 			// Si on remarque que le robot a percuté un obstacle l'empéchant d'avancer plus loin
@@ -400,6 +446,12 @@ public class Locomotion implements Service
 				
 				// Réagit spécifiquement à la présence d'un obstacle
 				tryAgain = unexpectedObstacleOnPathExceptionReaction(e);
+			}
+			catch (SerialConnexionException e)
+			{
+				// TODO: faire une réaction propre si la carte d'asser déconne
+				log.critical("La carte d'asservissement a cessé de répondre !", this);
+				e.printStackTrace();
 			}
 		} // while
 
@@ -451,9 +503,9 @@ public class Locomotion implements Service
 				// On cherche a se dégager de cet obstacle : on reviens sur nos pas, et on reprend le mouvement
 				// si le mouvement était initialent en marche arrière, revenir sur nos pas est en marche avant, sinon c'est en marche arrière
 				if(isBackward)
-					mLocomotionCardWrapper.moveForward(blockedExceptionRetraceDistance);
+					mLocomotionCardWrapper.moveLengthwise(blockedExceptionRetraceDistance);
 				else
-					mLocomotionCardWrapper.moveForward(-blockedExceptionRetraceDistance);
+					mLocomotionCardWrapper.moveLengthwise(-blockedExceptionRetraceDistance);
 				
 				// on suppose qu'on s'est dégagé, alors on va réessayer d'atteindre le point d'arrivée
 				out = true;
@@ -487,91 +539,110 @@ public class Locomotion implements Service
 		return true;
 	}
 
+	
 	/**
-	 * Bloquant. Gère les hooks, la correction de trajectoire et la détection.
-	 * @param point
-	 * @param hooks
-	 * @param trajectoire_courbe
-	 * @throws BlockedException 
-	 * @throws UnexpectedObstacleOnPathException 
+	 * Méthode bloquante surveillant tout le long du déplacement s'il y a des évènement qui méritent un traitement.
+	 * Les hooks et la détection d'obstacle a distance font partie de ces évènnements.
+	 * Les évènements de type hooks seront traités en interne, les évènements empéchant le robot de continuer le déplacement sont signalé à l'utilisateur par des exceptions 
+	 * @param hooksToConsider hooks a considérer lors de ce déplacement. Le hook n'est déclenché que s'il est dans cette liste et que sa condition d'activation est remplie
+	 * @param allowCurvedPath true si l'on autorise le robot à se déplacer le long d'une trajectoire curviligne.  false pour une simple ligne brisée
+	 * @param isBackward true si le déplacement doit se faire en marche arrière, false si le robot doit avancer en marche avant.
+	 * @throws BlockedException en cas de blocage mécanique du robot: un obstacle non détecté par les capteurs a distance immobilise le robot
+	 * @throws UnexpectedObstacleOnPathException en cas de détection par les capteurs a distance d'un obstacle sur la route que le robot s'apprête a suivre
+	 * @throws SerialConnexionException si la carte d'asservissement cesse de répondre
 	 * @throws FinMatchException 
 	 */
-	public void va_au_point_hook_correction_detection(ArrayList<Hook> hooks, boolean trajectoire_courbe, boolean marche_arriere) throws BlockedException, UnexpectedObstacleOnPathException, FinMatchException
-	{
-		boolean relancer;
-		va_au_point_symetrie(trajectoire_courbe, marche_arriere, false);
-		try
+	private void moveInDirectionEventWatcher(ArrayList<Hook> hooksToConsider, boolean allowCurvedPath, boolean isBackward) throws BlockedException, UnexpectedObstacleOnPathException, SerialConnexionException, FinMatchException
+	{	
+		// On donnera l'odre de se déplacer au robot
+		boolean haveToGiveOrderToMove = true;
+		
+		// Surveille les évènements qui peuvent survenir durant le déplacement
+		// le mouvement dure tant qu'il n'est pas fini
+		while(!isMovementFinished() || haveToGiveOrderToMove)	
 		{
-			oldInfos = mLocomotionCardWrapper.getCurrentPositionAndOrientation();
-		} catch (SerialConnexionException e)
-		{
-			e.printStackTrace();
-		}
-		do
-		{
-			relancer = false;
-			detecter_collision(!marche_arriere);
+			// donne (éventuellement de nouveau) l'ordre de se déplacer
+			if(haveToGiveOrderToMove)
+				moveInDirectionPlanner(allowCurvedPath, isBackward, allowCurvedPath);
+			
+			// vérifie qu'il n'y a pas de blocage mécanique (n'importe quoi faisant que les moteurs tournent sans que les codeuses tournent)
+			// TODO: il y a double emploi entre isMovementFinished et checkRobotNotBlocked, les deux vérifient de deux facons différentes que le robot n'est pas mécaniquement bloqué. Il faut centraliser la vérification.
+			checkRobotNotBlocked();
+			
+			// met a jour ou nous sommes sur la table
+			updatePositionAndOrientation();
+			
+			// vérifie qu'il n'y a rien la ou l'on se dirige qui pourrait obstruer le passage
+			checkPathIsObstacleFree(!isBackward);
 
-			if(hooks != null)
-				for(Hook hook : hooks)
+			// Vérifie si les hooks fournis doivent être déclenchés, et les déclenche si besoin
+			haveToGiveOrderToMove = false;
+			if(hooksToConsider != null)
+				for(Hook hook : hooksToConsider)
 				{
-					Vec2 sauv_consigne = consigne.clone();
-					relancer |= hook.evaluate();
-					consigne = sauv_consigne;
+					// savegarde la consige de position, ca si un hook fait appel a cette classe, il écrase l'ancienne valeur de aim
+					Vec2 oldAim = aim.clone();
+					
+					// vérifie si ce hook doit être déclenché, le déclenche si c'est le cas, et fera renvoyer au prochain tour de while l'ordre de déplacement si le hook a fait bouger le robot
+					haveToGiveOrderToMove |= hook.evaluate();
+					
+					// restaure le aim de ce déplacement (au lieu ce celui d'un hook)
+					aim = oldAim;
 				}
-
-			// Correction de la trajectoire ou reprise du mouvement
-			// Si on ne fait que relancer et qu'on a interdit la trajectoire courbe, on attend à la rotation.
-			if(relancer)
-			{
-				log.debug("On relance", this);
-				va_au_point_symetrie(false, marche_arriere, trajectoire_courbe);
-			}
-			else
-				update_x_y_orientation();
-
-		} while(!isMovementFinished());
-
+			
+			// on attends un peu pour ne pas saturer la série
+			Sleep.sleep(minimumDelayBetweenMovementStatusCheck);
+		}
 	}
 
 	/**
-	 * Non bloquant. Gère la symétrie et la marche arrière.
-	 * @param point
-	 * @param sans_lever_exception
-	 * @param trajectoire_courbe
-	 * @param marche_arriere
-	 * @throws BlockedException 
+	 * Calcule l'angle duquel il faut tourner, de la distance de laquelle il faut avancer, et transmet les instructions au bas niveau.
+	 * Non bloquant. Les calculs tiennent compte de la demande de symétrie et de marche arrière.
+	 * @param allowCurvedPath true si l'on autorise le robot à se déplacer le long d'une trajectoire curviligne.  false pour une simple ligne brisée
+	 * @param isBackward true si le déplacement doit se faire en marche arrière, false si le robot doit avancer en marche avant.
+	 * @throws BlockedException en cas de blocage mécanique du robot: un obstacle non détecté par les capteurs a distance immobilise le robot
 	 * @throws FinMatchException 
 	 */
-	public void va_au_point_symetrie(boolean trajectoire_courbe, boolean marche_arriere, boolean correction) throws BlockedException, FinMatchException
+	private void moveInDirectionPlanner(boolean allowCurvedPath, boolean isBackward, boolean correction) throws BlockedException, FinMatchException
 	{
-		Vec2 delta = consigne.clone();
-		if(symetrie)
-			delta.x = -delta.x;
-
+		// Calcul du vecteur de déplacement: on doit se déplacer du vecteur égal a la position visée soustrait de la position actuelle
+		// mise a jour de la position actuelle pour avoir un vecteur de déplacement a jour
 		long t1 = System.currentTimeMillis();
-		update_x_y_orientation();
+		updatePositionAndOrientation();
 		long t2 = System.currentTimeMillis();
-
-		delta.minus(position);
-		double distance = delta.length();
+		
+		Vec2 displacement = aim.clone();
+		if(symmetry)	// on oppose la composante X si l'on est de l'équipe jaune et non verte
+			displacement.x = -displacement.x;
+		// soustraction de la position actuelle a la position visée
+		displacement.minus(position);
+				
+		// le robot doit avancer d'une distance égale a la longeur du vecteur délacement
+		double distance = displacement.length();
+		
+		// TODO: trouver a quoi sert cette instruction conditionelle
 		if(correction)
 			distance -= (t2-t1);
 
+		// calcul de l'angle duquel le robot doit tourner pour pointer dans la bonne direction avant d'avancer
+		double angle =  Math.atan2(displacement.y, displacement.x);
+
 		//gestion de la marche arrière du déplacement (peut aller à l'encontre de marche_arriere)
-		double angle =  Math.atan2(delta.y, delta.x);
-		if(marche_arriere)
+		// Si on demande faire ce mouvemnet en marche arrière, on doit tourner d'un demi-tour supplémentaire, puis avancer d'une distance négative.
+		if(isBackward)
 		{
 			distance *= -1;
 			angle += Math.PI;
 		}        
 
-		moveForwardInDirection(angle, distance, trajectoire_courbe);
+		// transmet les instructions de mouvement aux cartes électroniques
+		moveInDirection(angle, distance, allowCurvedPath);
 
 	}
 
 	/**
 	 * Fait avancer le robot de la distance voulue dans la direction d�sir�e
+	 * Cette classe est publique pour permettre aux utilisateurs d'avoir un contrôle parfois bas niveau sur le robot
 	 * compatible avec les trajectoires courbes.
 	 * Le d�placement n'est pas bloquant, mais le changement d'orientation pour que l'avant du robot pointe dans la bonne direction l'est.
 	 * @param direction valeur relative en radian indiquant la direction dans laquelle on veut avancer
@@ -580,7 +651,7 @@ public class Locomotion implements Service
 	 * @throws BlockedException si blocage mécanique du robot en chemin (pas de gestion des capteurs ici)
 	 * @throws FinMatchException 
 	 */
-	public void moveForwardInDirection(double direction, double distance, boolean allowCurvedPath) throws BlockedException, FinMatchException
+	public void moveInDirection(double direction, double distance, boolean allowCurvedPath) throws BlockedException, FinMatchException
 	{
 		// On interdit la trajectoire courbe si on doit faire un virage trop grand (plus d'un quart de tour).
 		if(Math.abs(direction - orientation) > Math.PI/2)
@@ -600,11 +671,11 @@ public class Locomotion implements Service
 				oldInfos = mLocomotionCardWrapper.getCurrentPositionAndOrientation();
 				float newOrientation = (float)oldInfos[2] + (float)direction*1000; // valeur absolue de l'orientation � atteindre
 				while(!isTurnFinished(newOrientation)) 
-					Sleep.sleep(sleep_boucle_acquittement);
+					Sleep.sleep(minimumDelayBetweenMovementStatusCheck);
 			}
 
 			// demande aux moteurs d'avancer le robot de la distance demand�e
-			mLocomotionCardWrapper.moveForward(distance);
+			mLocomotionCardWrapper.moveLengthwise(distance);
 		} 
 		catch (SerialConnexionException e)
 		{
@@ -618,14 +689,16 @@ public class Locomotion implements Service
 	 * V�rifie si le robot a fini de tourner. (On suppose que l'on a pr�c�demment demand� au robot de tourner)
 	 * @param finalOrientation on d�cr�te que le robot a fini de tourner lorsque son orientation �gale cette valeur (en radian, valeur absolue) 
 	 * @return Faux si le robot tourne encore, vrai si arrivée au bon point, exception si blocage
-	 * @throws BlockedException si un obstacle est rencontr� durant la rotation
+	 * @throws BlockedException si blocage mécanique du robot survient durant la rotation (pas de gestion des capteurs ici)
 	 * @throws FinMatchException 
 	 */
+	// TODO: pourquoi ne pas utiliser mLocomotionCardWrapper.isRobotMoving() ?
 	private boolean isTurnFinished(float finalOrientation) throws BlockedException, FinMatchException
 	{
 		boolean out = false; 
 		try
 		{
+			// demande ou l'on est et comment on est orienté a la carte d'asser
 			double[] newInfos = mLocomotionCardWrapper.getCurrentPositionAndOrientation();
 
 			// Le robot tourne-t-il encore ?
@@ -640,13 +713,11 @@ public class Locomotion implements Service
 			else
 				throw new BlockedException();
 
-
-
 			oldInfos = newInfos;
-		} catch (SerialConnexionException e)
+		} 
+		catch (SerialConnexionException e)
 		{
 			log.critical("Erreur de communication avec la carte d'asser", this);
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return out;
@@ -654,166 +725,190 @@ public class Locomotion implements Service
 
 
 	/**
-	 * Faux si le robot bouge encore, vrai si arrivée au bon point, exception si blocage
-	 * @return
-	 * @throws BlockedException
+	 * Vérifie si le robot a fini d'avancer. ( vérification d'un mouvement de translation uniquement)
+	 * Renvois Faux si le robot bouge encore, vrai si arrivée au bon point, exception si blocage
+	 * @returnFaux si le robot bouge encore, vrai si il est arrivée au bon point.
+	 * @throws BlockedException en cas de bloquange mécanique du robot l'empéchant d'aller plus loin
 	 * @throws FinMatchException 
 	 */
+	//TODO: le if... else if.... else.... est redondant avec la fonction checkRobotNotBlocked qui est elle aussi appellée dans moveInDirectionEventWatcher. 
 	private boolean isMovementFinished() throws BlockedException, FinMatchException
 	{
+		// si on vérifie si l'ona fini de bouger pour la première fois depuis l'initialisation de tout le, il faut remplir oldInfos
+		if(oldInfos == null)
+		{
+			try
+			{
+				oldInfos = mLocomotionCardWrapper.getCurrentPositionAndOrientation();
+			}
+			catch (SerialConnexionException e)
+			{
+				e.printStackTrace();
+			}
+			return false;
+		}
+		
 		boolean out = false;
 		
-		//distance parcourue par le robot entre deux rafraichissement de la position a partir de laquelle on cosidère que le robot est en mouvement
-		// (distance en trasnlation ou en rotation)
+		//distance parcourue par le robot entre deux rafraichissement de la position a partir de laquelle on considère que le robot est en mouvement
 		// TODO : faire une détection paramétrable différamment en translation et en rotation, plus un calcul premant en compte le temps de rafraichissement de la position du robot
 		// car on veut un seuil de vitesse (donc dépendant du temps dt de rafraichissement de l'asser) et non un seuil sur V*dt
-		int motionThreshold = 10;
+		int motionThreshold = 0;
 		
 		// tolérance sur la position d'arrivée. L'exécution sera rendue a l'utilisateur de la classe Locomotion quand le robot sera plus proche de l'arrivée que cette distance
-		int aimThreshold = 10;
+		int aimThreshold = 400;
 		
+		// demande ou l'on est et comment on est orienté a la carte d'asser
+		double[] newInfos = null;
 		try
 		{
-			double[] new_infos = mLocomotionCardWrapper.getCurrentPositionAndOrientation();
-			
-			// Le robot bouge-t-il encore ?
-			if(new Vec2((int)oldInfos[0], (int)oldInfos[1]).squaredDistance(new Vec2((int)new_infos[0], (int)new_infos[1])) > motionThreshold || Math.abs(new_infos[2] - oldInfos[2]) > motionThreshold)
-				out = false;
+			newInfos = mLocomotionCardWrapper.getCurrentPositionAndOrientation();
 
-			// le robot est-t-il arrivé ?
-			else if(new Vec2((int)new_infos[0], (int)new_infos[1]).squaredDistance(consigne) < aimThreshold)
-				out = true;
-
-			// si on ne bouge plus, et qu'on n'est pas arrivé, c'est que ca bloque
-			  else
-			     throw new BlockedException();
-
-			oldInfos = new_infos;
-		} catch (SerialConnexionException e)
+		}
+		catch (SerialConnexionException e)
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+			
+		// Le robot bouge-t-il encore ?
+		if(new Vec2((int)oldInfos[0], (int)oldInfos[1]).squaredDistance(new Vec2((int)newInfos[0], (int)newInfos[1])) > motionThreshold || Math.abs(newInfos[2] - oldInfos[2]) > motionThreshold)
+			out = false;
+		//TODO: si l'on veut savoir si le robot bouge encore, pourquoi ne pas utiliser mLocomotionCardWrapper.isRobotMoving() plutot ?
+
+		// le robot est-t-il arrivé ?
+		else if(new Vec2((int)newInfos[0], (int)newInfos[1]).squaredDistance(aim) < aimThreshold)
+			out = true;
+
+		// si on ne bouge plus, et qu'on n'est pas arrivé, c'est que ca bloque
+		else
+			throw new BlockedException();
+
+		oldInfos = newInfos;
+			
+			
 		return out;
 	}
-
-	/**
-	 * Surcouche de mouvement_fini afin de ne pas freezer
-	 * @return
-	 * @throws BlocageException
-	 */
-	/*    private boolean mouvement_fini() throws BlocageException
-    {
-        if(nouveau_mouvement)
-            debut_mouvement_fini = System.currentTimeMillis();
-        nouveau_mouvement = false;
-        fini = mouvement_fini_routine();
-        if(!fini && ((System.currentTimeMillis() - debut_mouvement_fini) > 2000))
-        {
-            log.critical("Erreur d'acquittement. On arrête l'attente du robot.", this);
-            fini = true;
-        }
-        return fini;
-    }*/
 
 	/**
 	 * Boucle d'acquittement générique. Retourne des valeurs spécifiques en cas d'arrêt anormal (blocage, capteur)
-	 *  	
 	 *  	false : si on roule
-	 *  	true : si arrivé a destination
+	 *  	true : si on est immobile 
 	 *  	exeption : si patinage
-	 * 
-	 * 
-	 * @param detection_collision
-	 * @param sans_lever_exception
-	 * @return true si le robot est arrivé à destination, false si encore en mouvement
-	 * @throws BlockedException
+	 * @return true si le robot ne bouge plus parce que les moteurs ne tournent plus, false si le robot est encore en mouvement
+	 * @throws BlockedException si blocage mécanique du robot survient durant le mouvement (a un moment, les moteurs tournaient mais pas les codeuses)
+	 * @throws SerialConnexionException si la carte d'asservissement cesse de répondre
 	 * @throws FinMatchException 
-	 * @throws UnexpectedObstacleOnPathException
 	 */
-	@SuppressWarnings("unused") // TODO: Voir ce qu'il se passe: pourquoi elle n'est jamais appllée ?
-	private boolean mouvement_fini_routine() throws BlockedException, FinMatchException
+	//TODO: cette fonction est redondante avec le if... else if.... else.... de la fonction isMovementFinished qui est elle aussi appellée dans moveInDirectionEventWatcher. 
+	private boolean checkRobotNotBlocked() throws BlockedException, SerialConnexionException, FinMatchException
 	{
 		// récupérations des informations d'acquittement
-		try {
-
-			// met a jour: 	l'écart entre la position actuelle et la position sur laquelle on est asservi
-			//				la variation de l'écart a la position sur laquelle on est asservi
-			//				la puissance demandée par les moteurs 	
+		// met a jour: 	l'écart entre la position actuelle et la position sur laquelle on est asservi
+		//				la variation de l'écart a la position sur laquelle on est asservi
+		//				la puissance demandée par les moteurs 	
+		try 
+		{
 			mLocomotionCardWrapper.refreshFeedbackLoopStatistics();
-
-			// lève une exeption de blocage si le robot patine (ie force sur ses moteurs sans bouger) 
-			mLocomotionCardWrapper.raiseExeptionIfBlocked();
-
-			// robot arrivé?
-			//            System.out.println("deplacements.update_enMouvement() : " + deplacements.isRobotMoving());
-			return !mLocomotionCardWrapper.isRobotMoving();
-
 		} 
 		catch (SerialConnexionException e) 
 		{
 			e.printStackTrace();
 			return false;
 		}
+		
+		// lève une exeption de blocage si le robot patine (ie force sur ses moteurs sans bouger) 
+		mLocomotionCardWrapper.raiseExeptionIfBlocked();
+
+		// renvois true si le robot est immobile, false si encore en mouvement
+		return !mLocomotionCardWrapper.isRobotMoving();
 	}
 
 	/**
-	 * fonction vérifiant que l'on ne va pas taper dans le robot adverse. 
-	 * @param devant: fait la détection derrière le robot si l'on avance à reculons 
+	 * fonction vérifiant que l'on ne va pas bientot taper dans un obstacle si l'on continue a se déplacer dans le sens spécifié
+	 * @param isForward : fait la détection derrière le robot si l'on avance à reculons 
 	 * @throws UnexpectedObstacleOnPathException si obstacle sur le chemin
 	 */
-	private void detecter_collision(boolean devant) throws UnexpectedObstacleOnPathException
+	private void checkPathIsObstacleFree(boolean isForward) throws UnexpectedObstacleOnPathException
 	{
-		int signe = -1;
-		if(devant)
-			signe = 1;
+		// Le principe de cette fonction est de regarder dans le gestionnaire d'obstacle de la table s'il y a un obstacle qui est sur notre chemin.
 
-		int rayon_detection = largeur_robot/2 + distance_detection;
-		Vec2 centre_detection = new Vec2((int)(signe * rayon_detection * Math.cos(orientation)), (int)(signe * rayon_detection * Math.sin(orientation)));
-		centre_detection.plus(position);
-		if(obstaclemanager.is_obstacle_mobile_present(centre_detection, distance_detection))
+		// la zone de détection d'obstacle est un disque comme suit:
+		//    			          o  o
+		//    			+----+ o        o		 Sens de déplacement du robot: ====>
+		//   robot ->	|    |o          o
+		//    			|    |o          o  <- Zone de vérification (ce disque est tangent au robot)
+		//    			+----+ o        o 
+		//    			          o  o
+		
+
+
+		// on vérifie la présence d'obstacle devant le robot si on est en marche avant, et derrière le robot si on est en marche arrière
+		int sign = -1;
+		if(isForward)
+			sign = 1;
+
+		// la distance entre le centre du disque a l'intérieur duquel on vérifie qu'il n'y a pas d'obstacle et le centre du robot est égale à
+		// la demi longeur
+		int distanceBetweenDiscCenterAndRobotCenter = robotLengh/2 + obstacleDetectionDiscRadius;
+		
+		// calcule la position du centre du cercle 
+		Vec2 discCenter = new Vec2(	(int)(sign * distanceBetweenDiscCenterAndRobotCenter * Math.cos(orientation)),
+									(int)(sign * distanceBetweenDiscCenterAndRobotCenter * Math.sin(orientation))	); // Ce calcul donne la position relative du centre du disque par rapport au centre du robot
+		discCenter.plus(position);	// converti les coordonnées relative au centre du robot en coordonnées absolues sur la table
+		
+		// fais remonter un problème s'il y a un obstacle dans ce disque.
+		if(obstaclemanager.is_obstacle_mobile_present(discCenter, obstacleDetectionDiscRadius))
 		{
-			log.warning("Ennemi détecté en : " + centre_detection, this);
+			log.warning("Obstacle sur notre chemin ! Nous somme en :" +position + ", et on détecte un obstacle dans un rayon de " + obstacleDetectionDiscRadius + "mm autour du point " + discCenter, this);
 			throw new UnexpectedObstacleOnPathException();
 		}
 
 	}
 
 	/**
-	 * Met à jour position et orientation via la carte d'asservissement.
+	 * Demande la position et orientation du robot a la carte d'asservissement et stocke ces nouvelles inforamtions dans les champs position et orientation de Locomotion.
 	 * @throws FinMatchException 
-	 * @throws SerialConnexionException
 	 */
-	private void update_x_y_orientation() throws FinMatchException
+	private void updatePositionAndOrientation() throws FinMatchException
 	{
-		try {
-			double[] infos = mLocomotionCardWrapper.getCurrentPositionAndOrientation();
-			position.x = (int)infos[0];
-			position.y = (int)infos[1];
-			orientation = infos[2]/1000; // car get_infos renvoie des milliradians
+		double[] infos = null;
+		
+		// demande a la carte d'asservissement de nouvelles informations sur la position et l'orientation du robot.
+		try
+		{
+			infos = mLocomotionCardWrapper.getCurrentPositionAndOrientation();
 		}
 		catch(SerialConnexionException e)
 		{
 			e.printStackTrace();
 		}
+
+		// Stoque les informations extraites de la carte d'asservissement dans les attributs de cette instance de Locomotion.
+		position.x = (int)infos[0];
+		position.y = (int)infos[1];
+		orientation = infos[2]/1000; // cette division par 1000 converti les miliradiants renvoyés par le Wrapper de la carte d'asservissement en radiants pour cette classe
 	}
 
+	
+	/**
+	 * Met a jour la configuration de la classe via le fichier de configuration fourni par le sysème de container
+	 */
 	@Override
 	public void updateConfig()
 	{
 		maxAllowedExceptionCount = Integer.parseInt(config.get("nb_tentatives"));
-		distance_detection = Integer.parseInt(config.get("distance_detection"));
+		obstacleDetectionDiscRadius = Integer.parseInt(config.get("distance_detection"));
 		blockedExceptionRetraceDistance = Integer.parseInt(config.get("distance_degagement_robot"));
-		sleep_boucle_acquittement = Integer.parseInt(config.get("sleep_boucle_acquittement"));
-		angle_degagement_robot = Double.parseDouble(config.get("angle_degagement_robot"));
-		//        anticipation_trajectoire_courbe = Integer.parseInt(config.get("anticipation_trajectoire_courbe"));
-		trajectoire_courbe = Boolean.parseBoolean(config.get("trajectoire_courbe"));
-		symetrie = (RobotColor.parse(config.get("couleur")) == RobotColor.YELLOW);
-
+		minimumDelayBetweenMovementStatusCheck = Integer.parseInt(config.get("sleep_boucle_acquittement"));
+		pullOutAngleInCaseOfBlockageWhileTurning = Double.parseDouble(config.get("angle_degagement_robot"));
+		//anticipation_trajectoire_courbe = Integer.parseInt(config.get("anticipation_trajectoire_courbe"));
+		allowCurvedPath = Boolean.parseBoolean(config.get("trajectoire_courbe"));
+		symmetry = config.get("couleur").equals("rouge");
 	}
 
 	/**
-	 * Arrête le robot.
+	 * Arrête le robot sur la table.
+	 * Le robot sera immobile après appel de cette méthode.
 	 * @throws FinMatchException 
 	 */
 	public void immobilise() throws FinMatchException
@@ -830,94 +925,160 @@ public class Locomotion implements Service
 	}
 
 	/**
-	 * Met à jour la consigne (utilisé par les hooks)
-	 * @param point
+	 * Met à jour le point d'arrivée du mouvement.
+	 * Le robot, dans son déplacement, ne s'arrètera que s'il atteint ce point.
+	 * @param newAim nouvelle valeur du point d'arrivée
 	 */
-	public void setConsigne(Vec2 point)
+	public void setAim(Vec2 newAim)
 	{
-		log.debug("Nouvelle consigne: "+point, this);
-		consigne = point.clone();
+		aim = newAim.clone();
 	}
 
 	/**
-	 * Met à jour la position. A ne faire qu'en début de match.
+	 * Change dans l'asservissement la position du robot sur la table .
+	 * Après appel de cette méthode, le robot considèrera qu'il se trouve sur la table aux coordonnées fournies.
+	 * Cette fonction n'est pas instantannée, un petit délai (de 300ms) pour que la communication série se fasse est nécéssaire.
 	 * @param position
 	 * @throws FinMatchException 
 	 */
 	public void setPosition(Vec2 position) throws FinMatchException
 	{
 		this.position = position.clone();
-		try {
+		try
+		{
 			mLocomotionCardWrapper.setX(position.x);
 			mLocomotionCardWrapper.setY(position.y);
-		} catch (SerialConnexionException e) {
+		}
+		catch (SerialConnexionException e)
+		{
 			e.printStackTrace();
 		}
 		Sleep.sleep(300);
 	}
 
+
 	/**
-	 * Met à jour l'orientation. A ne faire qu'en début de match.
+	 * Change dans l'asservissement l'orientation du robot sur la table .
+	 * Après appel de cette méthode, le robot considèrera qu'il se trouve sur la table avec l'orientation fournie.
+	 * Cette fonction n'est pas instantannée, un petit délai (de 300ms) pour que la communication série se fasse est nécéssaire.
 	 * @param orientation
 	 * @throws FinMatchException 
 	 */
 	public void setOrientation(double orientation) throws FinMatchException
 	{
 		this.orientation = orientation;
-		try {
+		try
+		{
 			mLocomotionCardWrapper.setOrientation(orientation);
-		} catch (SerialConnexionException e) {
+		}
+		catch (SerialConnexionException e)
+		{
 			e.printStackTrace();
 		}
+		Sleep.sleep(300);
 	}
 
+	/**
+	 * Donne la position du robot sur la table.
+	 * Cette méthode est lente mais très précise: elle déclenche un appel a la série pour obtenir une position a jour.
+	 * @return la position courante du robot sur la table
+	 * @throws FinMatchException 
+	 */
 	public Vec2 getPosition() throws FinMatchException
 	{
-		update_x_y_orientation();
+		updatePositionAndOrientation();
 		return position.clone();
 	}
 
+	/**
+	 * Donne la position du robot sur la table.
+	 * Cette méthode est rapide mais peu précise: elle ne déclenche pas d'appel a la série pour obtenir une position a jour.
+	 * La position revoyée est celle mémorisée lors de sa dernière mise a jour (la date de la dernière mise a jour est inconnue).
+	 * @return la dernière position mémorisée du robot sur la table
+	 */
+	public Vec2 getPositionFast()
+	{
+		return position.clone();
+	}
+
+	/**
+	 * Donne l'orientation du robot sur la table.
+	 * Cette méthode est lente mais très précise: elle déclenche un appel a la série pour obtenir une orientation a jour.
+	 * @return l'orientation en radiants courante du robot sur la table
+	 * @throws FinMatchException 
+	 */
 	public double getOrientation() throws FinMatchException
 	{
-		update_x_y_orientation();
+		updatePositionAndOrientation();
+		return orientation;
+	}
+	
+	/**
+	 * Donne l'orientation du robot sur la table.
+	 * Cette méthode est rapide mais peu précise: elle ne déclenche pas d'appel a la série pour obtenir une orientation a jour.
+	 * L'orientation revoyée est celle mémorisée lors de sa dernière mise a jour (la date de la dernière mise a jour est inconnue).
+	 * @return la dernière orientation mémorisée du robot sur la table
+	 */
+	public double getOrientationFast()
+	{
 		return orientation;
 	}
 
+	/**
+	 *  désactive l'asservissement du robot sur la table. 
+	 *  Après l'appel de cette méthode, le robot ne sera ni asservi dans son orientation, ni dans sa position.
+	 * @throws FinMatchException 
+	 */
 	public void disableFeedbackLoop() throws FinMatchException
 	{
 		try
 		{
 			mLocomotionCardWrapper.disableRotationnalFeedbackLoop();
 			mLocomotionCardWrapper.disableTranslationnalFeedbackLoop();
-		} catch (SerialConnexionException e)
-		{
-			e.printStackTrace();
 		}
-	}
-
-	public void setRotationnalSpeed(int pwm_max) throws FinMatchException
-	{
-		try
-		{
-			mLocomotionCardWrapper.setRotationnalSpeed(pwm_max);
-		} catch (SerialConnexionException e)
-		{
-			e.printStackTrace();
-		}
-	}
-
-	public void setTranslationnalSpeed(int pwm_max) throws FinMatchException
-	{
-		try
-		{
-			mLocomotionCardWrapper.setTranslationnalSpeed(pwm_max);
-		} catch (SerialConnexionException e)
+		catch (SerialConnexionException e)
 		{
 			e.printStackTrace();
 		}
 	}
 
 	/**
+	 * Change la vitesse a laquelle le robot tourne sur lui-même.
+	 * @param pwm la vitesse de rotation désirée
+	 * @throws FinMatchException 
+	 */
+	public void setRotationnalSpeed(int pwm) throws FinMatchException
+	{
+		try
+		{
+			mLocomotionCardWrapper.setRotationnalSpeed(pwm);
+		}
+		catch (SerialConnexionException e)
+		{
+			e.printStackTrace();
+		}
+	}
+
+
+	/**
+	 * Change la vitesse a laquelle le robot se translate sur la table.
+	 * @param pwm la vitesse de translation désirée
+	 * @throws FinMatchException 
+	 */
+	public void setTranslationnalSpeed(int pwm) throws FinMatchException
+	{
+		try
+		{
+			mLocomotionCardWrapper.setTranslationnalSpeed(pwm);
+		}
+		catch (SerialConnexionException e)
+		{
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * Renvois la classe de communication avec la carte d'asservissement
 	 * @return the mLocomotion
 	 */
 	public LocomotionCardWrapper getLocomotionCardWrapper()
