@@ -1,5 +1,6 @@
 package enums;
 
+import pathfinding.NodeInterface;
 import smartMath.Vec2;
 
 /**
@@ -8,7 +9,7 @@ import smartMath.Vec2;
  *
  */
 
-public enum PathfindingNodes {
+public enum PathfindingNodes implements NodeInterface {
 	DEVANT_DEPART_DROITE(new Vec2(700, 1100), false),
 	HAUT_DROITE(new Vec2(1000, 1600), false),
 	BAS_DROITE(new Vec2(800, 450), false),
@@ -32,6 +33,15 @@ public enum PathfindingNodes {
 	SECOURS_7(new Vec2(-425, 520), true),
 	SECOURS_8(new Vec2(575, 800), true),
 	SECOURS_9(new Vec2(-575, 800), true);
+	
+	// Contient les distances entre chaque point de passage
+	private static double[][] distances = new double[PathfindingNodes.values().length][PathfindingNodes.values().length];
+
+	static {
+		for(PathfindingNodes i : PathfindingNodes.values())
+			for(PathfindingNodes j : PathfindingNodes.values())
+				distances[i.ordinal()][j.ordinal()] = i.getCoordonnees().distance(j.getCoordonnees());
+	}
 	
 	private Vec2 coordonnees;
 	private boolean emergency_point;
@@ -63,6 +73,16 @@ public enum PathfindingNodes {
 	public int getNbUse()
 	{
 		return use;
+	}
+
+	@Override
+	public double distanceTo(NodeInterface other) {
+		return distances[ordinal()][((PathfindingNodes)other).ordinal()];
+	}
+
+	@Override
+	public double heuristicCost(NodeInterface other) {
+		return distances[ordinal()][((PathfindingNodes)other).ordinal()];
 	}
 	
 }

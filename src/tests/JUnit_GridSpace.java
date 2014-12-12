@@ -6,7 +6,6 @@ import org.junit.Test;
 
 import pathfinding.GridSpace;
 import smartMath.Vec2;
-import utils.Config;
 import enums.PathfindingNodes;
 import enums.ServiceNames;
 
@@ -36,20 +35,20 @@ public class JUnit_GridSpace extends JUnit_Test {
 	public void test_iterator() throws Exception
 	{
 		gridspace.setAvoidGameElement(false);
-		gridspace.reinitIterator(PathfindingNodes.BAS_DROITE, Config.getDateDebutMatch());
-		Assert.assertTrue(gridspace.hasNext(false));
+		gridspace.reinitIterator(PathfindingNodes.BAS_DROITE);
+		Assert.assertTrue(gridspace.hasNext());
 		Assert.assertEquals(PathfindingNodes.DEVANT_DEPART_DROITE, gridspace.next());
-		Assert.assertTrue(gridspace.hasNext(false));
+		Assert.assertTrue(gridspace.hasNext());
 		Assert.assertEquals(PathfindingNodes.COTE_MARCHE_DROITE, gridspace.next());
-		Assert.assertTrue(gridspace.hasNext(false));
+		Assert.assertTrue(gridspace.hasNext());
 		Assert.assertEquals(PathfindingNodes.DEVANT_DEPART_GAUCHE, gridspace.next());
-		Assert.assertTrue(gridspace.hasNext(false));
+		Assert.assertTrue(gridspace.hasNext());
 		Assert.assertEquals(PathfindingNodes.NODE_TAPIS, gridspace.next());
-		Assert.assertTrue(gridspace.hasNext(false));
+		Assert.assertTrue(gridspace.hasNext());
 		Assert.assertEquals(PathfindingNodes.CLAP_DROIT, gridspace.next());
-		Assert.assertTrue(gridspace.hasNext(false));
+		Assert.assertTrue(gridspace.hasNext());
 		Assert.assertEquals(PathfindingNodes.BAS, gridspace.next());
-		Assert.assertTrue(!gridspace.hasNext(false));
+		Assert.assertTrue(!gridspace.hasNext());
 	}
 	
 	@Test
@@ -58,10 +57,10 @@ public class JUnit_GridSpace extends JUnit_Test {
 		boolean[] verification = new boolean[PathfindingNodes.values().length];
 		for(PathfindingNodes j : PathfindingNodes.values())
 		{
-			gridspace.reinitIterator(j, Config.getDateDebutMatch());
+			gridspace.reinitIterator(j);
 			for(PathfindingNodes i : PathfindingNodes.values())
 				verification[i.ordinal()] = false;
-			while(gridspace.hasNext(true))
+			while(gridspace.hasNext())
 			{
 				Assert.assertTrue(verification[gridspace.next().ordinal()] == false);
 				verification[gridspace.next().ordinal()] = true;

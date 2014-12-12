@@ -101,7 +101,7 @@ public class Pathfinding implements Service
 			
 		g_score[depart.ordinal()] = 0;	// Cost from start along best known path.
 		// Estimated total cost from start to goal through y.
-		f_score[depart.ordinal()] = g_score[depart.ordinal()] + COEFF_HEURISTIC * state.gridspace.getDistance(depart, arrivee);
+		f_score[depart.ordinal()] = g_score[depart.ordinal()] + COEFF_HEURISTIC * depart.heuristicCost(arrivee);
 		
 		GameState<RobotChrono> current, tmp;
 		Iterator<GameState<RobotChrono>> nodeIterator = openset.iterator();
@@ -140,9 +140,9 @@ public class Pathfinding implements Service
 			openset.remove(current);
 			closedset[current.robot.getPositionPathfinding().ordinal()] = true;
 			
-			state.gridspace.reinitIterator(current.robot.getPositionPathfinding(), current.robot.getTempsDepuisDebutMatch());
+			state.gridspace.reinitIterator(current.robot.getPositionPathfinding());
 		    	
-			while(state.gridspace.hasNext(more_points))
+			while(state.gridspace.hasNext())
 			{
 				PathfindingNodes voisin = state.gridspace.next();
 				
@@ -154,13 +154,13 @@ public class Pathfinding implements Service
 				tmp = current.cloneGameState();
 				tmp.robot.va_au_point_pathfinding(voisin, null);
 				
-				tentative_g_score = g_score[current.robot.getPositionPathfinding().ordinal()] + state.gridspace.getDistance(current.robot.getPositionPathfinding(), tmp.robot.getPositionPathfinding());
+				tentative_g_score = g_score[current.robot.getPositionPathfinding().ordinal()] + current.robot.getPositionPathfinding().distanceTo(tmp.robot.getPositionPathfinding());
 		    			
 				if(!openset.contains(tmp) || tentative_g_score < g_score[tmp.robot.getPositionPathfinding().ordinal()])
 				{
 					came_from[tmp.robot.getPositionPathfinding().ordinal()] = current.robot.getPositionPathfinding();
 					g_score[tmp.robot.getPositionPathfinding().ordinal()] = tentative_g_score;
-					f_score[tmp.robot.getPositionPathfinding().ordinal()] = tentative_g_score + COEFF_HEURISTIC * state.gridspace.getDistance(tmp.robot.getPositionPathfinding(), arrivee);
+					f_score[tmp.robot.getPositionPathfinding().ordinal()] = tentative_g_score + COEFF_HEURISTIC * tmp.robot.getPositionPathfinding().heuristicCost(arrivee);
 					if(!openset.contains(tmp))
 						openset.add(tmp);
 				}

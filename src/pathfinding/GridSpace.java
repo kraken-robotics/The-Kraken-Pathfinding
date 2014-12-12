@@ -19,7 +19,7 @@ import exceptions.GridSpaceException;
  *
  */
 
-public class GridSpace implements Service {
+public class GridSpace implements Service, NodeManagerInterface {
 	
 	private Log log;
 	private Config config;
@@ -35,8 +35,6 @@ public class GridSpace implements Service {
 	// Dynamique.
 	private NodesConnection[][] isConnected = new NodesConnection[PathfindingNodes.values().length][PathfindingNodes.values().length];
 	
-	// Contient les distances entre chaque point de passage
-	private static double[][] distances = new double[PathfindingNodes.values().length][PathfindingNodes.values().length];
 
 	// Doit-on éviter les éléments de jeux? Ou peut-on foncer dedans?
 	private boolean avoidGameElement = true;
@@ -84,10 +82,6 @@ public class GridSpace implements Service {
 					isConnectedModel[i.ordinal()][j.ordinal()] = NodesConnection.ALWAYS_IMPOSSIBLE;
 				else
 					isConnectedModel[i.ordinal()][j.ordinal()] = null;
-
-		for(PathfindingNodes i : PathfindingNodes.values())
-			for(PathfindingNodes j : PathfindingNodes.values())
-				distances[i.ordinal()][j.ordinal()] = i.getCoordonnees().distance(j.getCoordonnees());
 	}
 	
 	/**
@@ -205,18 +199,15 @@ public class GridSpace implements Service {
     	return !obstaclemanager.obstacle_proximite_dans_segment(pointA, pointB) && !obstaclemanager.obstacle_fixe_dans_segment_pathfinding(pointA, pointB);
     }
     
-    public double getDistance(PathfindingNodes id1, PathfindingNodes id2)
-    {
-    	return distances[id1.ordinal()][id2.ordinal()];
-    }
-    
     public PathfindingNodes next()
     {
     	return PathfindingNodes.values()[iterator];
     }
     
-    public boolean hasNext(boolean emergency)
+    public boolean hasNext()
     {
+        // TODO emergency, s'en occuper
+    	boolean emergency = false;
     	do {
     		iterator++;
     		// Ce point n'est pas bon si:
@@ -230,10 +221,9 @@ public class GridSpace implements Service {
     	return iterator != PathfindingNodes.values().length;
     }
     
-    public void reinitIterator(PathfindingNodes node, long date)
+    public void reinitIterator(NodeInterface node)
     {
-//    	obstaclemanager.supprimerObstaclesPerimes(date);
-    	id_node_iterator = node.ordinal();
+    	id_node_iterator = ((PathfindingNodes)node).ordinal();
     	iterator = -1;
     }
     
@@ -280,7 +270,7 @@ public class GridSpace implements Service {
     	{
     		if(!isTraversable(last, n))
     			return Double.MAX_VALUE;
-    		distance += distances[last.ordinal()][n.ordinal()];
+    		distance += last.distanceTo(n);
     		last = n;
     	}
     	return distance;
