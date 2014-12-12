@@ -46,7 +46,7 @@ public class ThreadStrategy extends AbstractThread implements Service
 	
 	private ArrayList<Hook> hooks_entre_scripts;
 	
-	private long temps_max_anticipation;
+	private long temps_max_anticipation = 20000;
 	private long dateFinMatch;
 	private int profondeur_max = 1;
 
@@ -63,6 +63,7 @@ public class ThreadStrategy extends AbstractThread implements Service
 		hooks_entre_scripts = hookfactory.getHooksEntreScripts(real_gamestate);
 	
 		Thread.currentThread().setPriority(4); // TODO
+		updateConfig();
 	}
 	
 	@Override
@@ -151,8 +152,8 @@ public class ThreadStrategy extends AbstractThread implements Service
 			if(profondeur >= profondeur_max || state.getTempsDepuisRacine() > temps_max_anticipation || state.getTempsDepuisDebut() > dateFinMatch)
 			{
 				log.debug("profondeur >= profondeur_max = "+(profondeur >= profondeur_max), this);
-				log.debug("state.getTempsDepuisRacine() > temps_max_anticipation = "+(state.getTempsDepuisRacine() > temps_max_anticipation), this);
-				log.debug("state.getTempsDepuisDebut() > dureeMatch = "+(state.getTempsDepuisDebut() > dateFinMatch), this);
+				log.debug("state.getTempsDepuisRacine() > temps_max_anticipation = "+(state.getTempsDepuisRacine() > temps_max_anticipation)+" "+state.getTempsDepuisRacine()+" "+temps_max_anticipation, this);
+				log.debug("state.getTempsDepuisDebut() > dureeMatch = "+(state.getTempsDepuisDebut() > dateFinMatch)+" "+state.getTempsDepuisDebut()+" "+dateFinMatch, this);
 				log.debug("Profondeur max atteinte", this);
 				return meilleure_decision;
 			}
@@ -227,7 +228,8 @@ public class ThreadStrategy extends AbstractThread implements Service
 
 	@Override
 	public void updateConfig() {
-		temps_max_anticipation = Integer.parseInt(config.get("temps_max_anticipation"));	
+		// temps en secondes dans la config
+		temps_max_anticipation = 1000*Integer.parseInt(config.get("temps_max_anticipation"));	
 		dateFinMatch = 1000*Long.parseLong(config.get("temps_match"));
 	}
 
