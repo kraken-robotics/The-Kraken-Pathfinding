@@ -35,14 +35,12 @@ class HookPosition extends Hook
      * @param tolerance : imprécision admise sur la position qui déclenche le hook
      * @param isYellowTeam : la couleur du robot: vert ou jaune 
      */
-	public HookPosition(Config config, Log log, GameState<?> state, Vec2 position, int tolerancy, boolean isYellowTeam)
+	public HookPosition(Config config, Log log, GameState<?> state, Vec2 position, int tolerancy)
 	{
 		super(config, log, state);
 		this.position = position;
 		this.tolerancy = tolerancy;
 		this.squaredTolerancy = tolerancy*tolerancy;
-		if(isYellowTeam)
-			position.x *= -1;
 	}
 	
 

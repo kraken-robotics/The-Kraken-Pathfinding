@@ -24,9 +24,9 @@ class HookXisLesser extends HookX
      * @param tolerancy : imprécision admise sur la position qui déclenche le hook
 	 * @param isYellowTeam La table étant symétrisée si l'on est équipe jaune, le XisLesser devient un XisGreater si l'on est jaune
      */
-    public HookXisLesser(Config config, Log log, GameState<?> state, float xValue, float tolerancy, boolean isYellowTeam)
+    public HookXisLesser(Config config, Log log, GameState<?> state, float xValue, float tolerancy)
     {
-		super(config, log, state, xValue, tolerancy, isYellowTeam);
+		super(config, log, state, xValue, tolerancy);
 	}
 
 

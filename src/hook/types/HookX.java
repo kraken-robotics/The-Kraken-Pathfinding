@@ -28,15 +28,12 @@ class HookX extends Hook
      * @param realState : lien avec le robot a surveiller pour le déclenchement du hook
      * @param ordonnee : la valeur en y ou doit se déclencher le hook
      * @param tolerancy : imprécision admise sur la position qui déclenche le hook
-     * @param isYellowTeam : la couleur du robot: vert ou jaune 
      */
-	public HookX(Config config, Log log, GameState<?> state, float xValue, float tolerancy, boolean isYellowTeam)
+	public HookX(Config config, Log log, GameState<?> state, float xValue, float tolerancy)
 	{
 	    super(config, log, state);
 		this.xValue = xValue;
 		this.tolerancy = tolerancy;
-		if(isYellowTeam)
-			xValue *= -1;
 	}
 
     /**
