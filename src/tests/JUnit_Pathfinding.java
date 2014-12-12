@@ -1,10 +1,13 @@
 package tests;
 
+import hook.types.HookFactory;
+
 import org.junit.Before;
 import org.junit.Test;
 
 import pathfinding.GridSpace;
 import pathfinding.Pathfinding;
+import robot.RobotChrono;
 import smartMath.Vec2;
 import table.Table;
 import enums.GameElementNames;
@@ -24,6 +27,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
 	private Pathfinding pathfinding;
 	private GridSpace gridspace;
 	private Table table;
+	private RobotChrono robotchrono;
 	
 	@Before
     public void setUp() throws Exception {
@@ -31,20 +35,24 @@ public class JUnit_Pathfinding extends JUnit_Test {
         pathfinding = (Pathfinding) container.getService(ServiceNames.PATHFINDING);
 		gridspace = (GridSpace) container.getService(ServiceNames.GRID_SPACE);
 		table = (Table) container.getService(ServiceNames.TABLE);
-    }
+		HookFactory hookfactory = (HookFactory)container.getService(ServiceNames.HOOK_FACTORY);
+		robotchrono = new RobotChrono(config, log, hookfactory);
+	}
 
 	@Test(expected=PathfindingRobotInObstacleException.class)
     public void test_robot_dans_obstacle() throws Exception
     {
+		robotchrono.setPosition(new Vec2(80, 80));
     	gridspace.creer_obstacle(new Vec2(80, 80));
-    	pathfinding.computePath(new Vec2(80, 80), PathfindingNodes.values()[0], gridspace, false, false);
+    	pathfinding.computePath(robotchrono, PathfindingNodes.values()[0], gridspace, false, false);
     }
 
 	@Test(expected=PathfindingException.class)
     public void test_obstacle() throws Exception
     {
+		robotchrono.setPosition(new Vec2(80, 80));
     	gridspace.creer_obstacle(PathfindingNodes.values()[0].getCoordonnees());
-    	pathfinding.computePath(new Vec2(80, 80), PathfindingNodes.values()[0], gridspace, false, false);
+    	pathfinding.computePath(robotchrono, PathfindingNodes.values()[0], gridspace, false, false);
     }
 
 	@Test
@@ -54,8 +62,9 @@ public class JUnit_Pathfinding extends JUnit_Test {
         	for(PathfindingNodes j: PathfindingNodes.values())
         		if(!j.is_an_emergency_point()) // on n'arrive jamais dans un emergency point
         		{
-        			pathfinding.computePath(i.getCoordonnees(), j, gridspace, false, true);
-        			pathfinding.computePath(i.getCoordonnees(), j, gridspace, true, true);
+        			robotchrono.setPosition(i.getCoordonnees());
+        			pathfinding.computePath(robotchrono, j, gridspace, false, true);
+        			pathfinding.computePath(robotchrono, j, gridspace, true, true);
         		}
 		for(PathfindingNodes n: PathfindingNodes.values())
 			log.debug("Nous sommes passé "+n.getNbUse()+" fois par "+n+" "+n.getCoordonnees(), this);
@@ -66,21 +75,24 @@ public class JUnit_Pathfinding extends JUnit_Test {
     {
     	// une fois ce verre pris, le chemin est libre
     	table.setDone(GameElementNames.VERRE_3);
-    	pathfinding.computePath(PathfindingNodes.BAS_GAUCHE.getCoordonnees(), PathfindingNodes.COTE_MARCHE_GAUCHE, gridspace, false, false);
+		robotchrono.setPositionPathfinding(PathfindingNodes.BAS_GAUCHE);
+    	pathfinding.computePath(robotchrono, PathfindingNodes.COTE_MARCHE_GAUCHE, gridspace, false, false);
     }
 
 	@Test(expected=PathfindingException.class)
     public void test_element_jeu_disparu_2() throws Exception
     {
 		// Exception car il y a un verre sur le passage
-    	pathfinding.computePath(PathfindingNodes.BAS_GAUCHE.getCoordonnees(), PathfindingNodes.COTE_MARCHE_GAUCHE, gridspace, false, false);
+		robotchrono.setPositionPathfinding(PathfindingNodes.BAS_GAUCHE);
+    	pathfinding.computePath(robotchrono, PathfindingNodes.COTE_MARCHE_GAUCHE, gridspace, false, false);
     }
 	
 	@Test
     public void test_element_jeu_disparu_3() throws Exception
     {
 		// Pas d'exception car on demande au pathfinding de passer sur les éléments de jeux.
-    	pathfinding.computePath(PathfindingNodes.BAS_GAUCHE.getCoordonnees(), PathfindingNodes.COTE_MARCHE_GAUCHE, gridspace, false, true);
+		robotchrono.setPositionPathfinding(PathfindingNodes.BAS_GAUCHE);
+    	pathfinding.computePath(robotchrono, PathfindingNodes.COTE_MARCHE_GAUCHE, gridspace, false, true);
     }
 
 }

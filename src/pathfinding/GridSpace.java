@@ -148,12 +148,17 @@ public class GridSpace implements Service {
 	public PathfindingNodes nearestReachableNode(Vec2 point) throws GridSpaceException
 	{
 		if(nearestReachableNodeCache != null)
+		{
+			log.debug("nearestReachableNode utilise le cache", this);
 			return nearestReachableNodeCache;
+		}
+		log.debug("Calul de nearestReachableNode", this);
 		PathfindingNodes indice_point_depart = null;
 		float distance_min = Float.MAX_VALUE;
 		for(PathfindingNodes i : PathfindingNodes.values())
 		{
 			float tmp = point.squaredDistance(i.getCoordonnees());
+			log.debug("Distance avec "+i+": "+tmp, this);
 			if(tmp < distance_min && !obstaclemanager.obstacle_proximite_dans_segment(point, i.getCoordonnees()))
 			{
 				distance_min = tmp;
@@ -235,7 +240,7 @@ public class GridSpace implements Service {
     	return iterator != PathfindingNodes.values().length;
     }
     
-    public void reinitIterator(PathfindingNodes node)
+    public void reinitIterator(PathfindingNodes node, long date)
     {
     	id_node_iterator = node.ordinal();
     	iterator = -1;

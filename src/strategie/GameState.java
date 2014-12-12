@@ -61,8 +61,9 @@ public class GameState<R extends Robot> implements Service
      */
 	public GameState<RobotChrono> cloneGameState() throws FinMatchException
 	{
+		// On instancie la table avant car il faut donner le même objet deux fois en paramètres
 		Table new_table = table.clone();
-		GameState<RobotChrono> cloned = new GameState<RobotChrono>(config, log, new_table, gridspace.clone(getTempsDepuisDebut(), new_table), new RobotChrono(config, log, hookfactory), hookfactory);
+		GameState<RobotChrono> cloned = new GameState<RobotChrono>(config, log, new_table, gridspace.clone(getTempsDepuisDebut(), new_table), robot.cloneIntoRobotChrono(), hookfactory);
 		copy(cloned);
 		return cloned;
 	}
@@ -75,8 +76,6 @@ public class GameState<R extends Robot> implements Service
      */
     public void copy(GameState<RobotChrono> other) throws FinMatchException
     {
-    	// la copie de la table est faite dans gridspace
-        // réinitialisation de la durée incluse dans la copie
         robot.copy(other.robot);
         try {
 			other.robot.initHooksTable(other);
@@ -84,6 +83,7 @@ public class GameState<R extends Robot> implements Service
 			// Ne devrait jamais arriver
 			e.printStackTrace();
 		}
+    	// la copie de la table est faite dans gridspace
         // mise à jour des obstacles et du cache incluse dans la copie
         gridspace.copy(other.gridspace, robot.getTempsDepuisDebutMatch());
         other.dateDebutRacine = dateDebutRacine;

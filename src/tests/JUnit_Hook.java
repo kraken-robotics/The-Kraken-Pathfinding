@@ -90,17 +90,19 @@ public class JUnit_Hook extends JUnit_Test {
 	{
 		ArrayList<Hook> hooks_table = hookfactory.getHooksEntreScripts(chrono_gamestate);
 		chrono_gamestate.robot.setPosition(PathfindingNodes.BAS.getCoordonnees());
-    	ArrayList<PathfindingNodes> chemin = pathfinding.computePath(PathfindingNodes.BAS.getCoordonnees(), PathfindingNodes.COTE_MARCHE_DROITE, chrono_gamestate.gridspace, false, true);
+    	ArrayList<PathfindingNodes> chemin = pathfinding.computePath(chrono_gamestate.robot, PathfindingNodes.COTE_MARCHE_DROITE, chrono_gamestate.gridspace, false, true);
     	chrono_gamestate.robot.suit_chemin(chemin, hooks_table);
     	
     	// on vérifie qu'à présent qu'on a emprunté ce chemin, il n'y a plus d'élément de jeu dessus et donc qu'on peut demander un pathfinding sans exception
-    	pathfinding.computePath(PathfindingNodes.BAS.getCoordonnees(), PathfindingNodes.COTE_MARCHE_DROITE, chrono_gamestate.gridspace, false, false);
+		chrono_gamestate.robot.setPosition(PathfindingNodes.BAS.getCoordonnees());
+    	pathfinding.computePath(chrono_gamestate.robot, PathfindingNodes.COTE_MARCHE_DROITE, chrono_gamestate.gridspace, false, false);
 	}
 
 	@Test(expected=PathfindingException.class)
 	public void test_hook_chrono_suit_chemin2() throws Exception
 	{
-    	pathfinding.computePath(PathfindingNodes.BAS.getCoordonnees(), PathfindingNodes.COTE_MARCHE_DROITE, chrono_gamestate.gridspace, false, false);
+		chrono_gamestate.robot.setPosition(PathfindingNodes.BAS.getCoordonnees());
+    	pathfinding.computePath(chrono_gamestate.robot, PathfindingNodes.COTE_MARCHE_DROITE, chrono_gamestate.gridspace, false, false);
 	}
 
 }

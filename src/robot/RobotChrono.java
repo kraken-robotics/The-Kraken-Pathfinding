@@ -204,6 +204,7 @@ public class RobotChrono extends Robot
 
 	public void setPositionPathfinding(PathfindingNodes n)
 	{
+		position = n.getCoordonnees();
 		positionPathfinding = n;
 		isPositionPathfindingActive = true;
 	}

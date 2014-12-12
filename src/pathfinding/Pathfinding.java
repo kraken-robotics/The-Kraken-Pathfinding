@@ -7,9 +7,11 @@ import java.util.Set;
 
 import container.Service;
 import enums.PathfindingNodes;
+import exceptions.FinMatchException;
 import exceptions.GridSpaceException;
 import exceptions.PathfindingException;
 import exceptions.PathfindingRobotInObstacleException;
+import robot.RobotChrono;
 import smartMath.Vec2;
 import utils.Config;
 import utils.Log;
@@ -25,7 +27,7 @@ public class Pathfinding implements Service
 	private int COEFF_HEURISTIC = 1;
 	private int compteur;
 	
-	private Set<PathfindingNodes> openset = new LinkedHashSet<PathfindingNodes>();	 // The set of tentative nodes to be evaluated
+	private Set<RobotChrono> openset = new LinkedHashSet<RobotChrono>();	 // The set of tentative nodes to be evaluated
 
 	@SuppressWarnings("unused")
 	private Log log;
@@ -38,14 +40,13 @@ public class Pathfinding implements Service
 		this.log = log;
 	}
 	
-	public ArrayList<PathfindingNodes> computePath(Vec2 orig, PathfindingNodes indice_point_arrivee, GridSpace gridspace, boolean more_points, boolean shoot_game_element) throws PathfindingException, PathfindingRobotInObstacleException
+	public ArrayList<PathfindingNodes> computePath(RobotChrono robotchrono, PathfindingNodes indice_point_arrivee, GridSpace gridspace, boolean more_points, boolean shoot_game_element) throws PathfindingException, PathfindingRobotInObstacleException, FinMatchException
 	{
-		PathfindingNodes indice_point_depart;
 		try {
 			gridspace.setAvoidGameElement(!shoot_game_element);
-			indice_point_depart = gridspace.nearestReachableNode(orig);
-			ArrayList<PathfindingNodes> chemin = process(indice_point_depart, indice_point_arrivee, gridspace, more_points);
-			return lissage(orig, chemin, gridspace);
+			robotchrono.va_au_point_pathfinding(gridspace.nearestReachableNode(robotchrono.getPosition()), null);
+			ArrayList<PathfindingNodes> chemin = process(robotchrono, indice_point_arrivee, gridspace, more_points);
+			return lissage(robotchrono.getPosition(), robotchrono, chemin, gridspace);
 		} catch (GridSpaceException e1) {
 			throw new PathfindingRobotInObstacleException();
 		}
@@ -56,18 +57,22 @@ public class Pathfinding implements Service
 	}
 	
 	// Si le point de départ est dans un obstacle fixe, le lissage ne changera rien.
-	private ArrayList<PathfindingNodes> lissage(Vec2 depart, ArrayList<PathfindingNodes> chemin, GridSpace gridspace)
+	private ArrayList<PathfindingNodes> lissage(Vec2 depart, RobotChrono robotchrono, ArrayList<PathfindingNodes> chemin, GridSpace gridspace)
 	{
 		// si on peut sauter le premier point, on le fait
 		while(chemin.size() >= 2 && gridspace.isTraversable(depart, chemin.get(1).getCoordonnees()))
+		{
+			robotchrono.corrige_temps(depart, chemin.get(0).getCoordonnees(), chemin.get(1).getCoordonnees());
 			chemin.remove(0);
+		}
 		return chemin;
 	}
 	
-	private ArrayList<PathfindingNodes> process(PathfindingNodes depart, PathfindingNodes arrivee, GridSpace gridspace, boolean more_points) throws PathfindingException
+	private ArrayList<PathfindingNodes> process(RobotChrono robotchrono, PathfindingNodes arrivee, GridSpace gridspace, boolean more_points) throws PathfindingException, FinMatchException
 	{
 //		compteur = 0;
 		ArrayList<PathfindingNodes> chemin = new ArrayList<PathfindingNodes>();
+		PathfindingNodes depart = robotchrono.getPositionPathfinding();
 		chemin.add(depart);
 		depart.incrementUse();
 
@@ -91,14 +96,14 @@ public class Pathfinding implements Service
 			closedset[i] = false;
 		
 		openset.clear();
-		openset.add(depart);	// The set of tentative nodes to be evaluated, initially containing the start node
+		openset.add(robotchrono);	// The set of tentative nodes to be evaluated, initially containing the start node
 			
 		g_score[depart.ordinal()] = 0;	// Cost from start along best known path.
 		// Estimated total cost from start to goal through y.
 		f_score[depart.ordinal()] = g_score[depart.ordinal()] + COEFF_HEURISTIC * gridspace.getDistance(depart, arrivee);
 		
-		PathfindingNodes current, tmp;
-		Iterator<PathfindingNodes> nodeIterator = openset.iterator();
+		RobotChrono current, tmp;
+		Iterator<RobotChrono> nodeIterator = openset.iterator();
 		double tentative_g_score = 0;
 
 		while (openset.size() != 0)
@@ -111,43 +116,47 @@ public class Pathfinding implements Service
 			while(nodeIterator.hasNext())
 			{
 				tmp = nodeIterator.next();
-				if (f_score[tmp.ordinal()] < f_score[current.ordinal()])
-					current  = tmp;
+				if (f_score[tmp.getPositionPathfinding().ordinal()] < f_score[current.getPositionPathfinding().ordinal()])
+					current = tmp;
 			}
 
-			if(current == arrivee)
+			if(current.getPositionPathfinding() == arrivee)
 			{
 				arrivee.incrementUse();
 				chemin.add(arrivee);
-				tmp = came_from[current.ordinal()];
-				while (tmp != depart)
+				PathfindingNodes tmp2 = came_from[current.getPositionPathfinding().ordinal()];
+				while (tmp2 != depart)
 				{
-					tmp.incrementUse();
-					chemin.add(1, tmp); // insert le point d'avant après l'entrée
-			    	tmp = came_from[tmp.ordinal()];
+					tmp2.incrementUse();
+					chemin.add(1, tmp2); // insert le point d'avant après l'entrée
+			    	tmp2 = came_from[tmp2.ordinal()];
 				}
 				return chemin;	//  reconstructed path
 			}
 		    	
 			openset.remove(current);
-			closedset[current.ordinal()] = true;
+			closedset[current.getPositionPathfinding().ordinal()] = true;
 			
-			gridspace.reinitIterator(current);
+			gridspace.reinitIterator(current.getPositionPathfinding(), current.getTempsDepuisDebutMatch());
 		    	
 			while(gridspace.hasNext(more_points))
 			{
-				tmp = gridspace.next();
-
-				if(closedset[tmp.ordinal()]) // si closedset contient current
+				PathfindingNodes voisin = gridspace.next();
+				
+				if(closedset[voisin.ordinal()]) // si closedset contient current
 					continue;
 				
-				tentative_g_score = g_score[current.ordinal()] + gridspace.getDistance(current, tmp);
+				// On construit tmp, qui est un robot chrono, en faisant bouger current.
+				tmp = current.cloneIntoRobotChrono();
+				tmp.va_au_point_pathfinding(voisin, null);
+				
+				tentative_g_score = g_score[current.getPositionPathfinding().ordinal()] + gridspace.getDistance(current.getPositionPathfinding(), tmp.getPositionPathfinding());
 		    			
-				if(!openset.contains(tmp) || tentative_g_score < g_score[tmp.ordinal()])
+				if(!openset.contains(tmp) || tentative_g_score < g_score[tmp.getPositionPathfinding().ordinal()])
 				{
-					came_from[tmp.ordinal()] = current;
-					g_score[tmp.ordinal()] = tentative_g_score;
-					f_score[tmp.ordinal()] = tentative_g_score + COEFF_HEURISTIC * gridspace.getDistance(tmp, arrivee);
+					came_from[tmp.getPositionPathfinding().ordinal()] = current.getPositionPathfinding();
+					g_score[tmp.getPositionPathfinding().ordinal()] = tentative_g_score;
+					f_score[tmp.getPositionPathfinding().ordinal()] = tentative_g_score + COEFF_HEURISTIC * gridspace.getDistance(tmp.getPositionPathfinding(), arrivee);
 					if(!openset.contains(tmp))
 						openset.add(tmp);
 				}

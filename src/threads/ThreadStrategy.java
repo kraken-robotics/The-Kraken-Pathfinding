@@ -168,7 +168,7 @@ public class ThreadStrategy extends AbstractThread implements Service
 			int version_a_executer = s.closest_version(state, id_meta_version);
 			PathfindingNodes point_entree = s.point_entree(version_a_executer);
 			try {
-				chemin = pathfinding.computePath(state.robot.getPosition(), point_entree, state.gridspace, false, shoot_game_element);
+				chemin = pathfinding.computePath(state.robot, point_entree, state.gridspace, false, shoot_game_element);
 			} catch (PathfindingException e) {
 				log.warning("Arbre des possibles: PathfindingException pour aller à "+s+" ("+s.closest_version(state, id_meta_version)+")", this);
 				return meilleure_decision;

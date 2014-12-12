@@ -6,6 +6,7 @@ import org.junit.Test;
 
 import pathfinding.GridSpace;
 import smartMath.Vec2;
+import utils.Config;
 import enums.PathfindingNodes;
 import enums.ServiceNames;
 
@@ -40,7 +41,7 @@ public class JUnit_GridSpace extends JUnit_Test {
 	public void test_iterator() throws Exception
 	{
 		gridspace.setAvoidGameElement(false);
-		gridspace.reinitIterator(PathfindingNodes.BAS_DROITE);
+		gridspace.reinitIterator(PathfindingNodes.BAS_DROITE, Config.getDateDebutMatch());
 		Assert.assertTrue(gridspace.hasNext(false));
 		Assert.assertEquals(PathfindingNodes.DEVANT_DEPART_DROITE, gridspace.next());
 		Assert.assertTrue(gridspace.hasNext(false));
@@ -62,7 +63,7 @@ public class JUnit_GridSpace extends JUnit_Test {
 		boolean[] verification = new boolean[PathfindingNodes.values().length];
 		for(PathfindingNodes j : PathfindingNodes.values())
 		{
-			gridspace.reinitIterator(j);
+			gridspace.reinitIterator(j, Config.getDateDebutMatch());
 			for(PathfindingNodes i : PathfindingNodes.values())
 				verification[i.ordinal()] = false;
 			while(gridspace.hasNext(true))
