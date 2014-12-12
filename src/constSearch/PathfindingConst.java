@@ -1,10 +1,9 @@
 package constSearch;
 
-import hook.types.HookFactory;
-import pathfinding.GridSpace;
 import pathfinding.Pathfinding;
 import robot.RobotChrono;
-import utils.Config;
+import robot.RobotReal;
+import strategie.GameState;
 import utils.Log;
 import container.Container;
 import enums.PathfindingNodes;
@@ -17,11 +16,11 @@ public class PathfindingConst {
     	try {
     		Container container = new Container();
 			Pathfinding pathfinding = (Pathfinding)container.getService(ServiceNames.PATHFINDING);
-			GridSpace gridspace = (GridSpace)container.getService(ServiceNames.GRID_SPACE);
 			Log log = (Log)container.getService(ServiceNames.LOG);
-			Config config = (Config)container.getService(ServiceNames.CONFIG);
-			HookFactory hookfactory = (HookFactory)container.getService(ServiceNames.HOOK_FACTORY);
-			RobotChrono robotchrono = new RobotChrono(config, log, hookfactory);
+			@SuppressWarnings("unchecked")
+			GameState<RobotReal> state = (GameState<RobotReal>)container.getService(ServiceNames.REAL_GAME_STATE);
+			GameState<RobotChrono> state_chrono = state.cloneGameState();
+
 			for(int i = 1; i < 10; i++)
 			{
 				pathfinding.setHeuristiqueCoeff(i);
@@ -29,8 +28,8 @@ public class PathfindingConst {
 				for(PathfindingNodes m: PathfindingNodes.values())
 					for(PathfindingNodes n: PathfindingNodes.values())
 					{
-						robotchrono.setPositionPathfinding(m);
-						pathfinding.computePath(robotchrono, n, gridspace, false, true);
+						state_chrono.robot.setPositionPathfinding(m);
+						pathfinding.computePath(state_chrono, n, false, true);
 						compteur += pathfinding.getCompteur();
 					}
 				log.appel_static(i+": "+compteur);

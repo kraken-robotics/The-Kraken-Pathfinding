@@ -30,11 +30,6 @@ public class JUnit_GridSpace extends JUnit_Test {
 	public void test_nearestReachableNode() throws Exception
 	{
 		Assert.assertEquals(PathfindingNodes.BAS_DROITE, gridspace.nearestReachableNode(PathfindingNodes.BAS_DROITE.getCoordonnees().plusNewVector(new Vec2(10, -40))));
-		// du fait du cache, test_nearestReachableNode renverra toujours BAS_DROITE 
-		Assert.assertEquals(PathfindingNodes.BAS_DROITE, gridspace.nearestReachableNode(PathfindingNodes.COTE_MARCHE_DROITE.getCoordonnees().plusNewVector(new Vec2(30, -10))));
-		gridspace.copy(gridspace, 0);
-		// nearestReachableNode a été réinitialisé
-		Assert.assertEquals(PathfindingNodes.COTE_MARCHE_DROITE, gridspace.nearestReachableNode(PathfindingNodes.COTE_MARCHE_DROITE.getCoordonnees().plusNewVector(new Vec2(30, -10))));
 	}
 
 	@Test

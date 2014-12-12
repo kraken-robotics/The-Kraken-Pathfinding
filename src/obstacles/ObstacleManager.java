@@ -232,7 +232,10 @@ public class ObstacleManager implements Service
         	// Si on a interprété que l'ennemi est passé sur un obstacle,
         	// on peut passer dessus par la suite.
             if(o.isDone() == Tribool.FALSE && o.obstacle_proximite_dans_segment(A, B, dilatation_obstacle))
+            {
+            	log.debug(o.getName()+" est dans le chemin.", this);
                 return true;
+            }
 
         return false;    	
     }

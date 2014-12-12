@@ -26,6 +26,8 @@ public class GameState<R extends Robot> implements Service
     public final Table table;
     public R robot;
     public final GridSpace gridspace;
+    
+    // La hook factory est privée. Elle n'est pas copiée d'un gamestate à l'autre.
     private HookFactory hookfactory;
     
     private Log log;

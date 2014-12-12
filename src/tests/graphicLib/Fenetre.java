@@ -120,8 +120,8 @@ public class Fenetre extends JPanel {
 		g.setColor(Color.BLACK);
 	    g.drawString(affichage.getIterator(), sizeX+50, 30);
 
-//	    g.setColor(Color.PINK);
-//	    paintSegments(g);
+	    g.setColor(Color.PINK);
+	    paintSegments(g);
 
 	    g.setColor(Color.BLUE);
 	    if(path.size() >= 1)

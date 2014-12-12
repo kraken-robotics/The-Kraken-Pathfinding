@@ -28,7 +28,6 @@ public class GridSpace implements Service {
 	private ObstacleManager obstaclemanager;
 	
 	private int iterator, id_node_iterator;
-	private PathfindingNodes nearestReachableNodeCache = null;
 	
 	// Rempli de ALWAYS_IMPOSSIBLE et null. Ne change pas.
 	private static NodesConnection[][] isConnectedModel = null;
@@ -109,22 +108,22 @@ public class GridSpace implements Service {
 	{
 		if(isConnectedModel[i.ordinal()][j.ordinal()] == NodesConnection.ALWAYS_IMPOSSIBLE)
 		{
-//			log.debug("Trajet impossible à cause d'un obstacle fixe!", this);			
+			log.debug("Trajet entre "+i+" et "+j+" impossible à cause d'un obstacle fixe!", this);			
 			return false;
 		}
-		else if(isConnected[i.ordinal()][j.ordinal()] != null)
+/*		else if(isConnected[i.ordinal()][j.ordinal()] != null)
 		{
 //			log.debug("Is traversable: use cache", this);			
 			return isConnected[i.ordinal()][j.ordinal()].isTraversable();			
-		}
+		}*/
 		else if(obstaclemanager.obstacle_proximite_dans_segment(i.getCoordonnees(), j.getCoordonnees()))
 		{
-//			log.debug("Trajet impossible à cause d'un obstacle de proximité", this);
+//			log.debug("Trajet entre "+i+" et "+j+" impossible à cause d'un obstacle de proximité", this);
 			isConnected[i.ordinal()][j.ordinal()] = NodesConnection.TMP_IMPOSSIBLE;
 		}
 		else if(avoidGameElement && obstaclemanager.obstacle_table_dans_segment(i.getCoordonnees(), j.getCoordonnees()))
 		{
-//			log.debug("Trajet impossible à cause d'un élément de jeu", this);
+//			log.debug("Trajet entre "+i+" et "+j+" impossible à cause d'un élément de jeu", this);
 			isConnected[i.ordinal()][j.ordinal()] = NodesConnection.TMP_IMPOSSIBLE;
 		}
 		else
@@ -147,18 +146,11 @@ public class GridSpace implements Service {
 	 */
 	public PathfindingNodes nearestReachableNode(Vec2 point) throws GridSpaceException
 	{
-		if(nearestReachableNodeCache != null)
-		{
-			log.debug("nearestReachableNode utilise le cache", this);
-			return nearestReachableNodeCache;
-		}
-		log.debug("Calul de nearestReachableNode", this);
 		PathfindingNodes indice_point_depart = null;
 		float distance_min = Float.MAX_VALUE;
 		for(PathfindingNodes i : PathfindingNodes.values())
 		{
 			float tmp = point.squaredDistance(i.getCoordonnees());
-			log.debug("Distance avec "+i+": "+tmp, this);
 			if(tmp < distance_min && !obstaclemanager.obstacle_proximite_dans_segment(point, i.getCoordonnees()))
 			{
 				distance_min = tmp;
@@ -168,8 +160,7 @@ public class GridSpace implements Service {
 		if(indice_point_depart == null)
 			throw new GridSpaceException();
 
-		nearestReachableNodeCache = indice_point_depart;
-		return nearestReachableNodeCache;
+		return indice_point_depart;
 	}
 	
 	@Override
@@ -181,7 +172,6 @@ public class GridSpace implements Service {
 	{
 		obstaclemanager.copy(other.obstaclemanager, date);
 		// On détruit le cache car le robot aura bougé
-		other.nearestReachableNodeCache = null;
 		other.reinitConnections(date);
 	}
 	
@@ -236,12 +226,13 @@ public class GridSpace implements Service {
     	} while(iterator < PathfindingNodes.values().length
     			&& (iterator == id_node_iterator
     			|| (!emergency && PathfindingNodes.values()[iterator].is_an_emergency_point())
-    			|| !isTraversable(PathfindingNodes.values()[iterator], PathfindingNodes.values()[id_node_iterator])));
+    			|| !isTraversable(PathfindingNodes.values()[id_node_iterator], PathfindingNodes.values()[iterator])));
     	return iterator != PathfindingNodes.values().length;
     }
     
     public void reinitIterator(PathfindingNodes node, long date)
     {
+//    	obstaclemanager.supprimerObstaclesPerimes(date);
     	id_node_iterator = node.ordinal();
     	iterator = -1;
     }

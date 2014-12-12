@@ -1,7 +1,5 @@
 package tests;
 
-import hook.types.HookFactory;
-
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -15,7 +13,9 @@ import pathfinding.Pathfinding;
 import enums.PathfindingNodes;
 import enums.ServiceNames;
 import robot.RobotChrono;
+import robot.RobotReal;
 import smartMath.Vec2;
+import strategie.GameState;
 import tests.graphicLib.Fenetre;
 import utils.Sleep;
 
@@ -25,7 +25,7 @@ public class JUnit_Test_Graphic extends JUnit_Test {
 	ObstacleManager obstaclemanager;
 	private Pathfinding pathfinding;
 	private GridSpace gridspace;
-	private RobotChrono robotchrono;
+	private GameState<RobotChrono> state_chrono;
 	
 	@Before
 	public void setUp() throws Exception
@@ -34,8 +34,9 @@ public class JUnit_Test_Graphic extends JUnit_Test {
         pathfinding = (Pathfinding) container.getService(ServiceNames.PATHFINDING);
 		gridspace = (GridSpace) container.getService(ServiceNames.GRID_SPACE);
 		obstaclemanager = (ObstacleManager) container.getService(ServiceNames.OBSTACLE_MANAGER);
-		HookFactory hookfactory = (HookFactory)container.getService(ServiceNames.HOOK_FACTORY);
-		robotchrono = new RobotChrono(config, log, hookfactory);
+		@SuppressWarnings("unchecked")
+		GameState<RobotReal> state = (GameState<RobotReal>)container.getService(ServiceNames.REAL_GAME_STATE);
+		state_chrono = state.cloneGameState();
 
 		fenetre = new Fenetre();
 		fenetre.setDilatationObstacle(obstaclemanager.getDilatationObstacle());
@@ -71,8 +72,8 @@ public class JUnit_Test_Graphic extends JUnit_Test {
 			PathfindingNodes j = PathfindingNodes.values()[randomgenerator.nextInt(PathfindingNodes.values().length)];
 			log.debug("Recherche chemin entre "+i+" et "+j, this);
 			Vec2 entree = i.getCoordonnees().plusNewVector(new Vec2(randomgenerator.nextInt(500)-250, randomgenerator.nextInt(500)-250));
-			robotchrono.setPosition(entree);
-			ArrayList<PathfindingNodes> chemin = pathfinding.computePath(robotchrono, j, gridspace, true, true);
+			state_chrono.robot.setPosition(entree);
+			ArrayList<PathfindingNodes> chemin = pathfinding.computePath(state_chrono, j, true, true);
     		ArrayList<Vec2> cheminVec2 = new ArrayList<Vec2>();
     		cheminVec2.add(entree);
     		for(PathfindingNodes n: chemin)
@@ -85,6 +86,6 @@ public class JUnit_Test_Graphic extends JUnit_Test {
     		Sleep.sleep(2000);
 		}
     }
-	
+
 
 }

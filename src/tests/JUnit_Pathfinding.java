@@ -1,15 +1,13 @@
 package tests;
 
-import hook.types.HookFactory;
-
 import org.junit.Before;
 import org.junit.Test;
 
-import pathfinding.GridSpace;
 import pathfinding.Pathfinding;
 import robot.RobotChrono;
+import robot.RobotReal;
 import smartMath.Vec2;
-import table.Table;
+import strategie.GameState;
 import enums.GameElementNames;
 import enums.PathfindingNodes;
 import enums.ServiceNames;
@@ -25,34 +23,31 @@ import exceptions.PathfindingRobotInObstacleException;
 public class JUnit_Pathfinding extends JUnit_Test {
 
 	private Pathfinding pathfinding;
-	private GridSpace gridspace;
-	private Table table;
-	private RobotChrono robotchrono;
+	private GameState<RobotChrono> state_chrono;
 	
 	@Before
     public void setUp() throws Exception {
         super.setUp();
         pathfinding = (Pathfinding) container.getService(ServiceNames.PATHFINDING);
-		gridspace = (GridSpace) container.getService(ServiceNames.GRID_SPACE);
-		table = (Table) container.getService(ServiceNames.TABLE);
-		HookFactory hookfactory = (HookFactory)container.getService(ServiceNames.HOOK_FACTORY);
-		robotchrono = new RobotChrono(config, log, hookfactory);
+		@SuppressWarnings("unchecked")
+		GameState<RobotReal> state = (GameState<RobotReal>)container.getService(ServiceNames.REAL_GAME_STATE);
+		state_chrono = state.cloneGameState();
 	}
 
 	@Test(expected=PathfindingRobotInObstacleException.class)
     public void test_robot_dans_obstacle() throws Exception
     {
-		robotchrono.setPosition(new Vec2(80, 80));
-    	gridspace.creer_obstacle(new Vec2(80, 80));
-    	pathfinding.computePath(robotchrono, PathfindingNodes.values()[0], gridspace, false, false);
+		state_chrono.robot.setPosition(new Vec2(80, 80));
+    	state_chrono.gridspace.creer_obstacle(new Vec2(80, 80));
+    	pathfinding.computePath(state_chrono, PathfindingNodes.values()[0], false, false);
     }
 
 	@Test(expected=PathfindingException.class)
     public void test_obstacle() throws Exception
     {
-		robotchrono.setPosition(new Vec2(80, 80));
-    	gridspace.creer_obstacle(PathfindingNodes.values()[0].getCoordonnees());
-    	pathfinding.computePath(robotchrono, PathfindingNodes.values()[0], gridspace, false, false);
+		state_chrono.robot.setPosition(new Vec2(80, 80));
+		state_chrono.gridspace.creer_obstacle(PathfindingNodes.values()[0].getCoordonnees());
+    	pathfinding.computePath(state_chrono, PathfindingNodes.values()[0], false, false);
     }
 
 	@Test
@@ -62,9 +57,9 @@ public class JUnit_Pathfinding extends JUnit_Test {
         	for(PathfindingNodes j: PathfindingNodes.values())
         		if(!j.is_an_emergency_point()) // on n'arrive jamais dans un emergency point
         		{
-        			robotchrono.setPosition(i.getCoordonnees());
-        			pathfinding.computePath(robotchrono, j, gridspace, false, true);
-        			pathfinding.computePath(robotchrono, j, gridspace, true, true);
+        			state_chrono.robot.setPosition(i.getCoordonnees());
+        			pathfinding.computePath(state_chrono, j, false, true);
+        			pathfinding.computePath(state_chrono, j, true, true);
         		}
 		for(PathfindingNodes n: PathfindingNodes.values())
 			log.debug("Nous sommes passé "+n.getNbUse()+" fois par "+n+" "+n.getCoordonnees(), this);
@@ -74,25 +69,25 @@ public class JUnit_Pathfinding extends JUnit_Test {
     public void test_element_jeu_disparu() throws Exception
     {
     	// une fois ce verre pris, le chemin est libre
-    	table.setDone(GameElementNames.VERRE_3);
-		robotchrono.setPositionPathfinding(PathfindingNodes.BAS_GAUCHE);
-    	pathfinding.computePath(robotchrono, PathfindingNodes.COTE_MARCHE_GAUCHE, gridspace, false, false);
+    	state_chrono.table.setDone(GameElementNames.VERRE_3);
+    	state_chrono.robot.setPositionPathfinding(PathfindingNodes.BAS_GAUCHE);
+    	pathfinding.computePath(state_chrono, PathfindingNodes.COTE_MARCHE_GAUCHE, false, false);
     }
 
 	@Test(expected=PathfindingException.class)
     public void test_element_jeu_disparu_2() throws Exception
     {
 		// Exception car il y a un verre sur le passage
-		robotchrono.setPositionPathfinding(PathfindingNodes.BAS_GAUCHE);
-    	pathfinding.computePath(robotchrono, PathfindingNodes.COTE_MARCHE_GAUCHE, gridspace, false, false);
+		state_chrono.robot.setPositionPathfinding(PathfindingNodes.BAS_GAUCHE);
+    	pathfinding.computePath(state_chrono, PathfindingNodes.COTE_MARCHE_GAUCHE, false, false);
     }
 	
 	@Test
     public void test_element_jeu_disparu_3() throws Exception
     {
 		// Pas d'exception car on demande au pathfinding de passer sur les éléments de jeux.
-		robotchrono.setPositionPathfinding(PathfindingNodes.BAS_GAUCHE);
-    	pathfinding.computePath(robotchrono, PathfindingNodes.COTE_MARCHE_GAUCHE, gridspace, false, true);
+		state_chrono.robot.setPositionPathfinding(PathfindingNodes.BAS_GAUCHE);
+    	pathfinding.computePath(state_chrono, PathfindingNodes.COTE_MARCHE_GAUCHE, false, true);
     }
 
 }
