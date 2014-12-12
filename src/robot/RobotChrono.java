@@ -21,6 +21,8 @@ public class RobotChrono extends Robot
 	private HookFactory hookfactory;
 	
 	protected Vec2 position = new Vec2();
+	protected PathfindingNodes positionPathfinding;
+	protected boolean isPositionPathfindingActive = false;
 	protected double orientation;
 	
 	// Date en millisecondes depuis le début du match.
@@ -38,6 +40,7 @@ public class RobotChrono extends Robot
 	@Override
 	public void setPosition(Vec2 position) {
 		this.position = position;
+		isPositionPathfindingActive = false;
 		this.date += approximateSerialLatency;
 	}
 	
@@ -56,6 +59,7 @@ public class RobotChrono extends Robot
 
 		checkHooks(position, position.plusNewVector(ecart), hooks);
 		position.plus(ecart);
+		isPositionPathfindingActive = false;
 		this.date += approximateSerialLatency;
 	}
 	
@@ -72,7 +76,8 @@ public class RobotChrono extends Robot
 		return date;
 	}
 
-	public RobotChrono cloneRobot() throws FinMatchException
+	@Override
+	public RobotChrono cloneIntoRobotChrono() throws FinMatchException
 	{
 		RobotChrono cloned_robotchrono = new RobotChrono(config, log, hookfactory);
 		copy(cloned_robotchrono);
@@ -82,9 +87,6 @@ public class RobotChrono extends Robot
 	@Override
     public void tourner(double angle, boolean mur)
 	{
-        if(symetrie)
-            angle = Math.PI-angle;
-	    
 		double delta = angle-orientation;
 		if(delta < 0)
 			delta *= -1;
@@ -94,6 +96,7 @@ public class RobotChrono extends Robot
 			delta = 2*(float)Math.PI - delta;
 		orientation = angle;
 		date += delta*vitesse.invertedRotationnalSpeed;
+		isPositionPathfindingActive = false;
 		this.date += approximateSerialLatency;
 	}
 
@@ -107,10 +110,19 @@ public class RobotChrono extends Robot
 	public void va_au_point(Vec2 point, ArrayList<Hook> hooks) throws FinMatchException
 	{
 		checkHooks(position, point, hooks);
-		if(symetrie)
-			point.x *= -1;
 		date += position.distance(point)*vitesse.invertedTranslationnalSpeed;
 		position = point.clone();
+		isPositionPathfindingActive = false;
+		this.date += approximateSerialLatency;
+	}
+
+	public void va_au_point_pathfinding(PathfindingNodes n, ArrayList<Hook> hooks) throws FinMatchException
+	{
+		Vec2 point = n.getCoordonnees();
+		checkHooks(position, point, hooks);
+		date += position.distance(point)*vitesse.invertedTranslationnalSpeed;
+		positionPathfinding = n;
+		isPositionPathfindingActive = true;
 		this.date += approximateSerialLatency;
 	}
 
@@ -189,6 +201,33 @@ public class RobotChrono extends Robot
 				if(hook.simulated_evaluate(pointA, pointB, date))
 					hook.trigger();
 	}
+
+	public void setPositionPathfinding(PathfindingNodes n)
+	{
+		positionPathfinding = n;
+		isPositionPathfindingActive = true;
+	}
 	
+	public PathfindingNodes getPositionPathfinding()
+	{
+		if(isPositionPathfindingActive)
+			return positionPathfinding;
+		return null;
+	}
+
+	/**
+	 * Appelé par le pathfinding. Corrige le temps d'une trajectoire lorsqu'on la lisse.
+	 * Au lieu de passer par "depart, n1, n2" on saute n1 et on fait le trajet "depart, n2".
+	 * @param depart
+	 * @param n1
+	 * @param n2
+	 */
+	public void corrige_temps(Vec2 depart, Vec2 n1,
+			Vec2 n2)
+	{
+		date -= depart.distance(n1)*vitesse.invertedTranslationnalSpeed;
+		date -= n1.distance(n2)*vitesse.invertedTranslationnalSpeed;
+		date += n1.distance(n2)*vitesse.invertedTranslationnalSpeed;
+	}
 	
 }

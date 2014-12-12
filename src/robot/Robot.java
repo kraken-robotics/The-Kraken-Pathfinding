@@ -10,6 +10,7 @@ import container.Service;
 import enums.ActuatorOrder;
 import enums.HauteurBrasClap;
 import enums.PathfindingNodes;
+import enums.RobotColor;
 import enums.Side;
 import enums.Speed;
 import exceptions.FinMatchException;
@@ -48,7 +49,8 @@ public abstract class Robot implements Service
     public abstract void desactiver_asservissement_rotation() throws FinMatchException;
     public abstract void activer_asservissement_rotation() throws FinMatchException;
     public abstract long getTempsDepuisDebutMatch();
-    
+    public abstract RobotChrono cloneIntoRobotChrono() throws FinMatchException;
+
     /*
      * Actionneurs
      */
@@ -70,8 +72,8 @@ public abstract class Robot implements Service
 	// Dépendances
 	protected Config config;
 	protected Log log;
-	private HookFactory hookfactory;
-	protected boolean symetrie;
+	protected HookFactory hookfactory;
+	private boolean symetrie; // normalement, RobotReal et RobotChrono n'ont pas à connaître notre couleur.
 	protected Speed vitesse;
 	private int pointsObtenus = 0;
 	
@@ -98,7 +100,7 @@ public abstract class Robot implements Service
 	
 	public void updateConfig()
 	{
-		symetrie = config.get("couleur").equals("rouge");
+		symetrie = (RobotColor.parse(config.get("couleur")) == RobotColor.YELLOW);
 	}
 	
 	public Speed get_vitesse_() {
