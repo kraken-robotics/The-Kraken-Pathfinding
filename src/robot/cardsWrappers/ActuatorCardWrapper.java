@@ -10,20 +10,32 @@ import exceptions.serial.SerialConnexionException;
 
 
 /**
- * Utilisée par robot pour bouger les actionneurs.
- * @author pf
+ * Surcouche user-friendly pour parler a la carte actionneurs.
+ * Utilisée par le package robot pour bouger les actionneurs.
+ * @author pf, marsu
  */
 public class ActuatorCardWrapper implements Service
 {
-	
-	// pour parler aux cartes du robot
-	private Log log;
-	private SerialConnexion serie;
 
-	public ActuatorCardWrapper(Config config, Log log, SerialConnexion serie)
+
+	@SuppressWarnings("unused")
+	/** service de log a utiliser en cas de soucis */
+	private Log log;
+	
+	/** connexion série avec la carte actionneurs */
+	private SerialConnexion actuatorCardSerial;
+
+	/**
+	 * Construit la surchouche de la carte actionneurs
+	 * @param config le fichoer ou lire la configuration du robot
+	 * @param log le système de log ou écrire  
+	 * @param serial la connexion série avec la carte actionneurs
+	 */
+	public ActuatorCardWrapper(Config config, Log log, SerialConnexion serial)
 	{
 		this.log = log;
-		this.serie = serie;		
+		this.actuatorCardSerial = serial;
+		
 	}
 
 	public void updateConfig()
@@ -32,14 +44,13 @@ public class ActuatorCardWrapper implements Service
 	
 	/**
 	 * Envoie un ordre à la série. Le protocole est défini dans l'enum ActuatorOrder
-	 * @param order
-	 * @throws SerialConnexionException
+	 * @param order l'ordre a envoyer
+	 * @throws SerialConnexionException en cas de problème de communication avec la carte actionneurs
 	 * @throws FinMatchException 
 	 */
 	public void useActuator(ActuatorOrder order) throws SerialConnexionException, FinMatchException
 	{
-		log.debug("Ordre série: "+order.toString(), this);
-		serie.communiquer(order.getSerialOrder(), 0);
+		actuatorCardSerial.communiquer(order.getSerialOrder(), 0);
 	}
 
 }

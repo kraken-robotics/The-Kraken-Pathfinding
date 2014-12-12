@@ -23,9 +23,12 @@ public class RobotChrono extends Robot
 	protected Vec2 position = new Vec2();
 	protected double orientation;
 	
-	// Durée en millisecondes
+	// Date en millisecondes depuis le début du match.
 	protected long date;
 	
+	/** valeur approchée du temps (en milisecondes) nécéssaire pour qu'une information que l'on envois a la série soit aquité */
+	private int approximateSerialLatency = 50;
+
 	public RobotChrono(Config config, Log log, HookFactory hookfactory)
 	{
 		super(config, log, hookfactory);
@@ -35,11 +38,13 @@ public class RobotChrono extends Robot
 	@Override
 	public void setPosition(Vec2 position) {
 		this.position = position;
+		this.date += approximateSerialLatency;
 	}
 	
 	@Override
 	public void setOrientation(double orientation) {
 		this.orientation = orientation;
+		this.date += approximateSerialLatency;
 	}
 
 	@Override
@@ -51,12 +56,14 @@ public class RobotChrono extends Robot
 
 		checkHooks(position, position.plusNewVector(ecart), hooks);
 		position.plus(ecart);
+		this.date += approximateSerialLatency;
 	}
 	
 	@Override
 	public void set_vitesse(Speed vitesse)
 	{
 	    this.vitesse = vitesse;
+		this.date += approximateSerialLatency;
 	}
 	
 	@Override
@@ -87,6 +94,7 @@ public class RobotChrono extends Robot
 			delta = 2*(float)Math.PI - delta;
 		orientation = angle;
 		date += delta*vitesse.invertedRotationnalSpeed;
+		this.date += approximateSerialLatency;
 	}
 
 	@Override
@@ -103,6 +111,7 @@ public class RobotChrono extends Robot
 			point.x *= -1;
 		date += position.distance(point)*vitesse.invertedTranslationnalSpeed;
 		position = point.clone();
+		this.date += approximateSerialLatency;
 	}
 
 	/**
@@ -127,6 +136,7 @@ public class RobotChrono extends Robot
 	@Override
     public void stopper()
     {
+		this.date += approximateSerialLatency;
     }
 
     @Override
@@ -150,10 +160,14 @@ public class RobotChrono extends Robot
     }
 
     public void desactiver_asservissement_rotation()
-    {}
+    {
+		this.date += approximateSerialLatency;
+    }
 
     public void activer_asservissement_rotation()
-    {}
+    {
+    	this.date += approximateSerialLatency;
+    }
 
 	@Override
 	public void setInsiste(boolean insiste) {
