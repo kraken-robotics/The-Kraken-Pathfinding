@@ -24,13 +24,4 @@ public class JUnit_ThreadStrategy extends JUnit_Test {
 		// le thread n'est pas démarré.
     }
 
-    @Test
-    public void test_profondeur_1() throws Exception
-    {
-    	// un étage maximum. On prévoit uniquement le prochain script
-    	config.setDateDebutMatch();
-    	threadstrategy.setProfondeurMax(1);
-    	threadstrategy.findMeilleureDecision();
-    }
-
 }
