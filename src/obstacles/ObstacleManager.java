@@ -28,7 +28,8 @@ public class ObstacleManager implements Service
     private ArrayList<ObstacleProximity> listObstaclesMobiles = new ArrayList<ObstacleProximity>();
 
     // Les obstacles fixes sont surtout utilisés pour savoir si un capteur détecte un ennemi ou un obstacle fixe
-    private ArrayList<Obstacle> listObstaclesFixes;
+    // Commun à toutes les instances
+    private static ArrayList<Obstacle> listObstaclesFixes;
   
     // Utilisé pour accélérer la copie
     private int hashObstacles;
@@ -38,14 +39,9 @@ public class ObstacleManager implements Service
     private int distanceApproximation = 50;
     private long dureeAvantPeremption = 0;
 
-    public ObstacleManager(Log log, Config config, Table table)
+    // L'initialisation a lieu une seule fois pour tous les objets.
+    static
     {
-        this.log = log;
-        this.config = config;
-        this.table = table;
-
-        hashObstacles = 0;
-
         listObstaclesFixes = new ArrayList<Obstacle>();
 
         listObstaclesFixes.add(new ObstacleRectangular(new Vec2(0,100),800,200)); // plaque rouge        
@@ -64,6 +60,15 @@ public class ObstacleManager implements Service
         listObstaclesFixes.add(new ObstacleRectangular(new Vec2(-1500,1000),1,2000));
         listObstaclesFixes.add(new ObstacleRectangular(new Vec2(1500,1000),1,2000));
         listObstaclesFixes.add(new ObstacleRectangular(new Vec2(0,2000),3000,1));
+    }
+    
+    public ObstacleManager(Log log, Config config, Table table)
+    {
+        this.log = log;
+        this.config = config;
+        this.table = table;
+
+        hashObstacles = 0;
 
         updateConfig();
     }   
@@ -100,20 +105,22 @@ public class ObstacleManager implements Service
      * Supprime les obstacles périmés (maintenant)
      * @param date
      */
-    public void supprimerObstaclesPerimes()
+    public boolean supprimerObstaclesPerimes()
     {
-    	supprimerObstaclesPerimes(System.currentTimeMillis() - Config.getDateDebutMatch());
+    	return supprimerObstaclesPerimes(System.currentTimeMillis() - Config.getDateDebutMatch());
     }
 
     /**
      * Appel fait lors de l'anticipation, supprime les obstacles périmés à une date future
      * Les obstacles étant triés du plus anciens au plus récent, le premier qui n'est pas supprimable
      * permet d'arrêter la recherche.
+     * Renvoie vrai s'il y a eu une suppression, faux sinon.
      * @param date
      */
-    public void supprimerObstaclesPerimes(long date)
+    public boolean supprimerObstaclesPerimes(long date)
     {
         Iterator<ObstacleProximity> iterator = listObstaclesMobiles.iterator();
+        boolean out = false;
         while(iterator.hasNext())
         {
             ObstacleCircular obstacle = iterator.next();
@@ -122,10 +129,12 @@ public class ObstacleManager implements Service
                 System.out.println("Suppression d'un obstacle de proximité: "+obstacle);
                 iterator.remove();
                 hashObstacles = indice++;
+                out = true;
             }
             else
             	break;
         }   
+        return out;
     }  
     
     /**
