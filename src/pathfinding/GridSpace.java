@@ -4,12 +4,15 @@ import java.util.ArrayList;
 
 import obstacles.ObstacleManager;
 import container.Service;
+import robot.RobotChrono;
 import smartMath.Vec2;
+import strategie.GameState;
 import table.Table;
 import utils.Config;
 import utils.Log;
 import enums.NodesConnection;
 import enums.PathfindingNodes;
+import exceptions.FinMatchException;
 import exceptions.GridSpaceException;
 
 /**
@@ -19,7 +22,7 @@ import exceptions.GridSpaceException;
  *
  */
 
-public class GridSpace implements Service, NodeManagerInterface {
+public class GridSpace implements Service, ArcManagerInterface {
 	
 	private Log log;
 	private Config config;
@@ -221,9 +224,9 @@ public class GridSpace implements Service, NodeManagerInterface {
     	return iterator != PathfindingNodes.values().length;
     }
     
-    public void reinitIterator(NodeInterface node)
+    public void reinitIterator(GameState<RobotChrono> gamestate)
     {
-    	id_node_iterator = ((PathfindingNodes)node).ordinal();
+    	id_node_iterator = gamestate.robot.getPositionPathfinding().ordinal();
     	iterator = -1;
     }
     
@@ -275,5 +278,29 @@ public class GridSpace implements Service, NodeManagerInterface {
     	}
     	return distance;
     }
-    
+
+	@Override
+	public boolean areEquals(GameState<RobotChrono> state1,
+			GameState<RobotChrono> state2) {
+		return state1.robot.getPositionPathfinding() == state2.robot.getPositionPathfinding();
+	}
+
+	@Override
+	public double distanceTo(GameState<RobotChrono> state, ArcInterface arc)
+	{
+		double out = state.robot.getPositionPathfinding().distanceTo((PathfindingNodes)arc);
+		try {
+			state.robot.va_au_point_pathfinding((PathfindingNodes)arc, null);
+			return out;
+		} catch (FinMatchException e) {
+			return Double.MAX_VALUE;
+		}
+	}
+
+	@Override
+	public double heuristicCost(GameState<RobotChrono> state1, GameState<RobotChrono> state2)
+	{
+		return 0;
+	}
+
 }

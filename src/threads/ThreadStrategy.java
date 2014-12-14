@@ -87,7 +87,7 @@ public class ThreadStrategy extends AbstractThread implements Service
 		}
 	}
 
-	private double calculeNote(int temps, int points)
+	public double calculeNote(int temps, int points)
 	{
 		return ((double)temps) / ((double)points);
 	}

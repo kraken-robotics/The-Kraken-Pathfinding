@@ -61,8 +61,6 @@ public class JUnit_Pathfinding extends JUnit_Test {
         			pathfinding.computePath(state_chrono, j, false, true);
         			pathfinding.computePath(state_chrono, j, true, true);
         		}
-		for(PathfindingNodes n: PathfindingNodes.values())
-			log.debug("Nous sommes passé "+n.getNbUse()+" fois par "+n+" "+n.getCoordonnees(), this);
     }
 	
 	@Test

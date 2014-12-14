@@ -1,7 +1,6 @@
 package tests;
 
 import org.junit.Before;
-import org.junit.Test;
 
 import threads.ThreadStrategy;
 import enums.ServiceNames;

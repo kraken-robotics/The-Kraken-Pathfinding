@@ -14,7 +14,6 @@ import utils.*;
 import scripts.ScriptManager;
 import strategie.Execution;
 import strategie.GameState;
-import strategie.MemoryManager;
 import table.Table;
 import threads.AbstractThread;
 import threads.ThreadSensor;

@@ -3,6 +3,7 @@ package pathfinding;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Set;
 
 import container.Service;
@@ -25,20 +26,29 @@ import utils.Log;
 
 public class Pathfinding implements Service
 {
+	/**
+	 * Les analogies sont:
+	 * un noeud est un GameState<RobotChrono> dans les deux cas
+	 * un arc est un script pour l'arbre des possibles,
+	 *   un pathfindingnode pour le pathfinding
+	 */
+	
 	private int COEFF_HEURISTIC = 1;
-	private int compteur;
 	
 	private Set<GameState<RobotChrono>> openset = new LinkedHashSet<GameState<RobotChrono>>();	 // The set of tentative nodes to be evaluated
+	private ArrayList<GameState<RobotChrono>> closedset = new ArrayList<GameState<RobotChrono>>();	 // The set of tentative nodes to be evaluated
+	private Map<GameState<RobotChrono>, GameState<RobotChrono>>	came_from; // The map of navigated nodes.
+	private Map<GameState<RobotChrono>, ArcInterface>	came_from_arc;
+	private Map<GameState<RobotChrono>, Double>	g_score, f_score;
 
-	@SuppressWarnings("unused")
-	private Log log;
+//	private Log log;
 	
 	/**
 	 * Constructeur du système de recherche de chemin
 	 */
 	public Pathfinding(Log log, Config config)
 	{
-		this.log = log;
+//		this.log = log;
 	}
 	
 	public ArrayList<PathfindingNodes> computePath(GameState<RobotChrono> state, PathfindingNodes indice_point_arrivee, boolean more_points, boolean shoot_game_element) throws PathfindingException, PathfindingRobotInObstacleException, FinMatchException
@@ -46,7 +56,13 @@ public class Pathfinding implements Service
 		try {
 			state.gridspace.setAvoidGameElement(!shoot_game_element);
 			state.robot.va_au_point_pathfinding(state.gridspace.nearestReachableNode(state.robot.getPosition()), null);
-			ArrayList<PathfindingNodes> chemin = process(state, indice_point_arrivee, more_points);
+			
+			GameState<RobotChrono> arrivee = state.cloneGameState();
+			arrivee.robot.setPositionPathfinding(indice_point_arrivee);
+			ArrayList<ArcInterface> cheminArc = process(state, arrivee, state.gridspace);
+			ArrayList<PathfindingNodes> chemin = new ArrayList<PathfindingNodes>(); 
+			for(ArcInterface arc: cheminArc)
+				chemin.add((PathfindingNodes)arc);
 			return lissage(state.robot.getPosition(), state, chemin);
 		} catch (GridSpaceException e1) {
 			throw new PathfindingRobotInObstacleException();
@@ -69,100 +85,79 @@ public class Pathfinding implements Service
 		return chemin;
 	}
 	
-	private ArrayList<PathfindingNodes> process(GameState<RobotChrono> state, PathfindingNodes arrivee, boolean more_points) throws PathfindingException, FinMatchException
+	private ArrayList<ArcInterface> process(GameState<RobotChrono> depart, GameState<RobotChrono> arrivee, ArcManagerInterface arcmanager) throws PathfindingException, FinMatchException
 	{
-//		compteur = 0;
-		ArrayList<PathfindingNodes> chemin = new ArrayList<PathfindingNodes>();
-		PathfindingNodes depart = state.robot.getPositionPathfinding();
-		chemin.add(depart);
-		depart.incrementUse();
+		ArrayList<ArcInterface> chemin = new ArrayList<ArcInterface>();
 
 		// optimisation si depart == arrivee
-		if(depart == arrivee)
+		if(arcmanager.areEquals(depart, arrivee))
 			return chemin;
-		
-		// optimisation si arrivée est directement accessible de départ
-		if(state.gridspace.isTraversable(depart, arrivee))
-		{
-			chemin.add(arrivee);
-			return chemin;
-		}
 
-		PathfindingNodes[] came_from = new PathfindingNodes[PathfindingNodes.values().length]; // The map of navigated nodes.
-		double[] g_score = new double[PathfindingNodes.values().length];
-		double[] f_score = new double[PathfindingNodes.values().length];
-
-		boolean[] closedset = new boolean[PathfindingNodes.values().length]; // The set of nodes already evaluated.
-		for(int i = 0; i < PathfindingNodes.values().length; i++)
-			closedset[i] = false;
-		
+		closedset.clear();
 		openset.clear();
-		openset.add(state);	// The set of tentative nodes to be evaluated, initially containing the start node
-			
-		g_score[depart.ordinal()] = 0;	// Cost from start along best known path.
+		openset.add(depart);	// The set of tentative nodes to be evaluated, initially containing the start node
+		came_from_arc.clear();
+		came_from.clear();
+		g_score.put(depart, 0.);	// Cost from start along best known path.
 		// Estimated total cost from start to goal through y.
-		f_score[depart.ordinal()] = g_score[depart.ordinal()] + COEFF_HEURISTIC * depart.heuristicCost(arrivee);
+		f_score.put(depart, g_score.get(depart) + COEFF_HEURISTIC * arcmanager.heuristicCost(depart, arrivee));
 		
-		GameState<RobotChrono> current, tmp;
-		Iterator<GameState<RobotChrono>> nodeIterator = openset.iterator();
+		GameState<RobotChrono> current;
+		Iterator<GameState<RobotChrono>> nodeIterator;
 		double tentative_g_score = 0;
 
 		// TODO: modifier le state à renvoyer
 		
 		while (openset.size() != 0)
 		{
-//			compteur++;
+			// TODO: openset trié automatiquement à l'insertion
 			// current is affected by the node in openset having the lowest f_score[] value
 			nodeIterator = openset.iterator();
 			current = nodeIterator.next();
 
 			while(nodeIterator.hasNext())
 			{
-				tmp = nodeIterator.next();
-				if (f_score[tmp.robot.getPositionPathfinding().ordinal()] < f_score[current.robot.getPositionPathfinding().ordinal()])
+				GameState<RobotChrono> tmp = nodeIterator.next();
+				if(f_score.get(tmp) < f_score.get(current))
 					current = tmp;
 			}
 
-			if(current.robot.getPositionPathfinding() == arrivee)
+			if(arcmanager.areEquals(current, arrivee))
 			{
-				arrivee.incrementUse();
-				chemin.add(arrivee);
-				PathfindingNodes tmp2 = came_from[current.robot.getPositionPathfinding().ordinal()];
-				while (tmp2 != depart)
+				GameState<RobotChrono> noeud_parent = came_from.get(current);
+				ArcInterface arc_parent = came_from_arc.get(current);
+				while (noeud_parent != null)
 				{
-					tmp2.incrementUse();
-					chemin.add(1, tmp2); // insert le point d'avant après l'entrée
-			    	tmp2 = came_from[tmp2.ordinal()];
+					chemin.add(1, arc_parent); // insert le point d'avant après l'entrée
+					arc_parent = came_from_arc.get(noeud_parent);
+					noeud_parent = came_from.get(noeud_parent);
 				}
 				return chemin;	//  reconstructed path
 			}
 
 			openset.remove(current);
-			closedset[current.robot.getPositionPathfinding().ordinal()] = true;
+			closedset.add(current);
 			
-			state.gridspace.reinitIterator(current.robot.getPositionPathfinding());
+			arcmanager.reinitIterator(current);
 		    	
-			while(state.gridspace.hasNext())
+			while(arcmanager.hasNext())
 			{
-				PathfindingNodes voisin = state.gridspace.next();
-				
-				if(closedset[voisin.ordinal()]) // si closedset contient current
-					continue;
+				ArcInterface voisin = arcmanager.next();
 				
 				// On construit tmp, qui est un game state, en faisant bouger current.
 				// Met automatiquement à jour les obstacles de proximité
-				tmp = current.cloneGameState();
-				tmp.robot.va_au_point_pathfinding(voisin, null);
+				GameState<RobotChrono> successeur = current.cloneGameState();
 				
-				tentative_g_score = g_score[current.robot.getPositionPathfinding().ordinal()] + current.robot.getPositionPathfinding().distanceTo(tmp.robot.getPositionPathfinding());
+				tentative_g_score = g_score.get(current) + arcmanager.distanceTo(successeur, voisin);
 		    			
-				if(!openset.contains(tmp) || tentative_g_score < g_score[tmp.robot.getPositionPathfinding().ordinal()])
+				if(!openset.contains(successeur) || tentative_g_score < g_score.get(successeur))
 				{
-					came_from[tmp.robot.getPositionPathfinding().ordinal()] = current.robot.getPositionPathfinding();
-					g_score[tmp.robot.getPositionPathfinding().ordinal()] = tentative_g_score;
-					f_score[tmp.robot.getPositionPathfinding().ordinal()] = tentative_g_score + COEFF_HEURISTIC * tmp.robot.getPositionPathfinding().heuristicCost(arrivee);
-					if(!openset.contains(tmp))
-						openset.add(tmp);
+					came_from.put(successeur, current);
+					came_from_arc.put(successeur, voisin);
+					g_score.put(successeur, tentative_g_score);
+					f_score.put(successeur, tentative_g_score + COEFF_HEURISTIC * arcmanager.heuristicCost(successeur, arrivee));
+					if(!openset.contains(successeur))
+						openset.add(successeur);
 				}
 			}	
 		}
@@ -178,14 +173,5 @@ public class Pathfinding implements Service
 	{
 		COEFF_HEURISTIC = n;
 	}
-	
-	/**
-	 * Recherche de constante
-	 * @return
-	 */
-	public int getCompteur()
-	{
-		return compteur;
-	}
-	
+		
 }

@@ -9,6 +9,8 @@ import container.Container;
 import enums.PathfindingNodes;
 import enums.ServiceNames;
 
+// TODO: réparer ce code
+
 public class PathfindingConst {
 
     public static void main(String[] args)
@@ -30,7 +32,7 @@ public class PathfindingConst {
 					{
 						state_chrono.robot.setPositionPathfinding(m);
 						pathfinding.computePath(state_chrono, n, false, true);
-						compteur += pathfinding.getCompteur();
+//						compteur += pathfinding.getCompteur();
 					}
 				log.appel_static(i+": "+compteur);
 			}

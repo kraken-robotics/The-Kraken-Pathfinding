@@ -9,8 +9,6 @@
 
 package smartMath;
 
-import pathfinding.NodeInterface;
-
 /**
  * Classe de calcul de vecteurs de dimension 2
  * @author martial
@@ -18,7 +16,7 @@ import pathfinding.NodeInterface;
  *
  */
 
-public class Vec2 implements NodeInterface
+public class Vec2
 {
 
 	public int x;
@@ -165,16 +163,6 @@ public class Vec2 implements NodeInterface
 	{
 	    other.x = x;
 	    other.y = y;
-	}
-
-	@Override
-	public double distanceTo(NodeInterface other) {
-		return distance((Vec2)other);
-	}
-
-	@Override
-	public double heuristicCost(NodeInterface other) {
-		return distance((Vec2)other);
 	}
 	
 }

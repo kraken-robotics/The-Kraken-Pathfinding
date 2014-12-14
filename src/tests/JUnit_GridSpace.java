@@ -5,7 +5,10 @@ import org.junit.Before;
 import org.junit.Test;
 
 import pathfinding.GridSpace;
+import robot.RobotChrono;
+import robot.RobotReal;
 import smartMath.Vec2;
+import strategie.GameState;
 import enums.PathfindingNodes;
 import enums.ServiceNames;
 
@@ -18,11 +21,15 @@ import enums.ServiceNames;
 public class JUnit_GridSpace extends JUnit_Test {
 
 	private GridSpace gridspace;
+	private GameState<RobotChrono> state_chrono;
 	
 	@Before
     public void setUp() throws Exception {
         super.setUp();
         gridspace = (GridSpace) container.getService(ServiceNames.GRID_SPACE);
+		@SuppressWarnings("unchecked")
+		GameState<RobotReal> state = (GameState<RobotReal>)container.getService(ServiceNames.REAL_GAME_STATE);
+		state_chrono = state.cloneGameState();
     }
    
 	@Test
@@ -35,7 +42,8 @@ public class JUnit_GridSpace extends JUnit_Test {
 	public void test_iterator() throws Exception
 	{
 		gridspace.setAvoidGameElement(false);
-		gridspace.reinitIterator(PathfindingNodes.BAS_DROITE);
+		state_chrono.robot.setPositionPathfinding(PathfindingNodes.BAS_DROITE);
+		gridspace.reinitIterator(state_chrono);
 		Assert.assertTrue(gridspace.hasNext());
 		Assert.assertEquals(PathfindingNodes.DEVANT_DEPART_DROITE, gridspace.next());
 		Assert.assertTrue(gridspace.hasNext());
@@ -57,7 +65,8 @@ public class JUnit_GridSpace extends JUnit_Test {
 		boolean[] verification = new boolean[PathfindingNodes.values().length];
 		for(PathfindingNodes j : PathfindingNodes.values())
 		{
-			gridspace.reinitIterator(j);
+			state_chrono.robot.setPositionPathfinding(j);
+			gridspace.reinitIterator(state_chrono);
 			for(PathfindingNodes i : PathfindingNodes.values())
 				verification[i.ordinal()] = false;
 			while(gridspace.hasNext())

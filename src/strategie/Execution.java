@@ -81,11 +81,6 @@ public class Execution implements Service {
 		// DEPENDS_ON_RULES
 		// funny action (aucune cette année)
 		
-		// affichage stat
-		for(PathfindingNodes n: PathfindingNodes.values())
-			log.debug("Nous sommes passé "+n.getNbUse()+" fois par "+n+" "+n.getCoordonnees(), this);
-		log.debug("Nous avons normalement marqué "+gamestate.robot.getPointsObtenus()+" points.", this);			
-		
 	}
 	
 	// TODO

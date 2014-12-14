@@ -1,6 +1,6 @@
 package enums;
 
-import pathfinding.NodeInterface;
+import pathfinding.ArcInterface;
 import smartMath.Vec2;
 
 /**
@@ -9,7 +9,7 @@ import smartMath.Vec2;
  *
  */
 
-public enum PathfindingNodes implements NodeInterface {
+public enum PathfindingNodes implements ArcInterface {
 	DEVANT_DEPART_DROITE(new Vec2(700, 1100), false),
 	HAUT_DROITE(new Vec2(1000, 1600), false),
 	BAS_DROITE(new Vec2(800, 450), false),
@@ -46,9 +46,6 @@ public enum PathfindingNodes implements NodeInterface {
 	private Vec2 coordonnees;
 	private boolean emergency_point;
 	
-	// Permet surtout de savoir si on n'emprunte jamais certains noeuds...
-	private int use;
-	
 	private PathfindingNodes(Vec2 coordonnees, boolean emergency_point)
 	{
 		this.coordonnees = coordonnees;
@@ -64,25 +61,10 @@ public enum PathfindingNodes implements NodeInterface {
 	{
 		return coordonnees;
 	}
-	
-	public void incrementUse()
+
+	public double distanceTo(PathfindingNodes n)
 	{
-		use++;
-	}
-	
-	public int getNbUse()
-	{
-		return use;
+		return distances[ordinal()][n.ordinal()];
 	}
 
-	@Override
-	public double distanceTo(NodeInterface other) {
-		return distances[ordinal()][((PathfindingNodes)other).ordinal()];
-	}
-
-	@Override
-	public double heuristicCost(NodeInterface other) {
-		return distances[ordinal()][((PathfindingNodes)other).ordinal()];
-	}
-	
 }
