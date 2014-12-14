@@ -233,7 +233,7 @@ public class ObstacleManager implements Service
         	// on peut passer dessus par la suite.
             if(o.isDone() == Tribool.FALSE && o.obstacle_proximite_dans_segment(A, B, dilatation_obstacle))
             {
-            	log.debug(o.getName()+" est dans le chemin.", this);
+//            	log.debug(o.getName()+" est dans le chemin.", this);
                 return true;
             }
 

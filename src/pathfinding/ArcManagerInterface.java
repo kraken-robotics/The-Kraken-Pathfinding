@@ -22,14 +22,6 @@ public interface ArcManagerInterface {
 	 */
 	public ArcInterface next();
 	
-	/**
-	 * Renvoie vrai s'il y a égalité.
-	 * @param state1
-	 * @param state2
-	 * @return
-	 */
-	public boolean areEquals(GameState<RobotChrono> state1, GameState<RobotChrono> state2);
-	
 	/** 
 	 * Donne la distance exacte entre les deux points.
 	 * Exécute un script pour l'arbre des possibles.
@@ -46,4 +38,6 @@ public interface ArcManagerInterface {
 	 */
 	public double heuristicCost(GameState<RobotChrono> state1, GameState<RobotChrono> state2);
 
+	public int getHash(GameState<RobotChrono> state);	
+	
 }

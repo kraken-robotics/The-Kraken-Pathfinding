@@ -1,10 +1,9 @@
 package pathfinding;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedHashSet;
 import java.util.Map;
-import java.util.Set;
 
 import container.Service;
 import enums.PathfindingNodes;
@@ -35,11 +34,12 @@ public class Pathfinding implements Service
 	
 	private int COEFF_HEURISTIC = 1;
 	
-	private Set<GameState<RobotChrono>> openset = new LinkedHashSet<GameState<RobotChrono>>();	 // The set of tentative nodes to be evaluated
-	private ArrayList<GameState<RobotChrono>> closedset = new ArrayList<GameState<RobotChrono>>();	 // The set of tentative nodes to be evaluated
-	private Map<GameState<RobotChrono>, GameState<RobotChrono>>	came_from; // The map of navigated nodes.
-	private Map<GameState<RobotChrono>, ArcInterface>	came_from_arc;
-	private Map<GameState<RobotChrono>, Double>	g_score, f_score;
+	private ArrayList<GameState<RobotChrono>> openset = new ArrayList<GameState<RobotChrono>>();	 // The set of tentative nodes to be evaluated
+	private ArrayList<Integer> closedset = new ArrayList<Integer>();	 // The set of tentative nodes to be evaluated
+	private Map<Integer, Integer>	came_from = new HashMap<Integer, Integer>(); // The map of navigated nodes.
+	private Map<Integer, ArcInterface>	came_from_arc = new HashMap<Integer, ArcInterface>();
+	private Map<Integer, Double>	g_score = new HashMap<Integer, Double>(), 
+				f_score = new HashMap<Integer, Double>();
 
 //	private Log log;
 	
@@ -90,7 +90,7 @@ public class Pathfinding implements Service
 		ArrayList<ArcInterface> chemin = new ArrayList<ArcInterface>();
 
 		// optimisation si depart == arrivee
-		if(arcmanager.areEquals(depart, arrivee))
+		if(arcmanager.getHash(depart) == arcmanager.getHash(arrivee))
 			return chemin;
 
 		closedset.clear();
@@ -98,16 +98,15 @@ public class Pathfinding implements Service
 		openset.add(depart);	// The set of tentative nodes to be evaluated, initially containing the start node
 		came_from_arc.clear();
 		came_from.clear();
-		g_score.put(depart, 0.);	// Cost from start along best known path.
+		g_score.put(arcmanager.getHash(depart), 0.);	// Cost from start along best known path.
 		// Estimated total cost from start to goal through y.
-		f_score.put(depart, g_score.get(depart) + COEFF_HEURISTIC * arcmanager.heuristicCost(depart, arrivee));
+		f_score.put(arcmanager.getHash(depart), g_score.get(arcmanager.getHash(depart)) + COEFF_HEURISTIC * arcmanager.heuristicCost(depart, arrivee));
 		
 		GameState<RobotChrono> current;
 		Iterator<GameState<RobotChrono>> nodeIterator;
-		double tentative_g_score = 0;
 
 		// TODO: modifier le state à renvoyer
-		
+
 		while (openset.size() != 0)
 		{
 			// TODO: openset trié automatiquement à l'insertion
@@ -118,17 +117,17 @@ public class Pathfinding implements Service
 			while(nodeIterator.hasNext())
 			{
 				GameState<RobotChrono> tmp = nodeIterator.next();
-				if(f_score.get(tmp) < f_score.get(current))
+				if(f_score.get(arcmanager.getHash(tmp)) < f_score.get(arcmanager.getHash((current))))
 					current = tmp;
 			}
 
-			if(arcmanager.areEquals(current, arrivee))
+			if(arcmanager.getHash(current) == arcmanager.getHash(arrivee))
 			{
-				GameState<RobotChrono> noeud_parent = came_from.get(current);
+				Integer noeud_parent = came_from.get(current);
 				ArcInterface arc_parent = came_from_arc.get(current);
 				while (noeud_parent != null)
 				{
-					chemin.add(1, arc_parent); // insert le point d'avant après l'entrée
+					chemin.add(0, arc_parent); // insert le point d'avant après l'entrée
 					arc_parent = came_from_arc.get(noeud_parent);
 					noeud_parent = came_from.get(noeud_parent);
 				}
@@ -136,7 +135,7 @@ public class Pathfinding implements Service
 			}
 
 			openset.remove(current);
-			closedset.add(current);
+			closedset.add(arcmanager.getHash(current));
 			
 			arcmanager.reinitIterator(current);
 		    	
@@ -144,19 +143,21 @@ public class Pathfinding implements Service
 			{
 				ArcInterface voisin = arcmanager.next();
 				
-				// On construit tmp, qui est un game state, en faisant bouger current.
-				// Met automatiquement à jour les obstacles de proximité
 				GameState<RobotChrono> successeur = current.cloneGameState();
 				
-				tentative_g_score = g_score.get(current) + arcmanager.distanceTo(successeur, voisin);
-		    			
-				if(!openset.contains(successeur) || tentative_g_score < g_score.get(successeur))
+				// successeur est modifié lors du "distanceTo"
+				double tentative_g_score = g_score.get(arcmanager.getHash(current)) + arcmanager.distanceTo(successeur, voisin);
+				
+				if(closedset.contains(arcmanager.getHash(successeur)))
+					continue;
+
+				if(!contains(openset, successeur, arcmanager) || tentative_g_score < g_score.get(arcmanager.getHash(successeur)))
 				{
-					came_from.put(successeur, current);
-					came_from_arc.put(successeur, voisin);
-					g_score.put(successeur, tentative_g_score);
-					f_score.put(successeur, tentative_g_score + COEFF_HEURISTIC * arcmanager.heuristicCost(successeur, arrivee));
-					if(!openset.contains(successeur))
+					came_from.put(arcmanager.getHash(successeur), arcmanager.getHash(current));
+					came_from_arc.put(arcmanager.getHash(successeur), voisin);
+					g_score.put(arcmanager.getHash(successeur), tentative_g_score);
+					f_score.put(arcmanager.getHash(successeur), tentative_g_score + COEFF_HEURISTIC * arcmanager.heuristicCost(successeur, arrivee));
+					if(!contains(openset, successeur, arcmanager))
 						openset.add(successeur);
 				}
 			}	
@@ -166,6 +167,23 @@ public class Pathfinding implements Service
 	
 	}
 	
+	
+	/**
+	 * Return true si openset contient successeur, compte tenu de l'égalité de
+	 * gamestate fournie par l'arcmanager.
+	 * @param openset
+	 * @param successeur
+	 * @param arcmanager
+	 * @return
+	 */
+	private boolean contains(ArrayList<GameState<RobotChrono>> openset,
+			GameState<RobotChrono> successeur, ArcManagerInterface arcmanager) {
+		for(GameState<RobotChrono> state: openset)
+			if(arcmanager.getHash(successeur) == arcmanager.getHash(state))
+				return true;
+		return false;
+	}
+
 	/**
 	 * Recherche de constante
 	 */

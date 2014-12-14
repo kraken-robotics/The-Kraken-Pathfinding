@@ -169,6 +169,8 @@ public class RobotChrono extends Robot
         super.copy(rc);
         position.copy(rc.position);
         rc.orientation = orientation;
+    	rc.positionPathfinding = positionPathfinding;
+    	rc.isPositionPathfindingActive = isPositionPathfindingActive;
     }
 
     public void desactiver_asservissement_rotation()

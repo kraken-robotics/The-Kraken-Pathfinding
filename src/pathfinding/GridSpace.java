@@ -35,10 +35,6 @@ public class GridSpace implements Service, ArcManagerInterface {
 	// Rempli de ALWAYS_IMPOSSIBLE et null. Ne change pas.
 	private static NodesConnection[][] isConnectedModel = null;
 
-	// Dynamique.
-	private NodesConnection[][] isConnected = new NodesConnection[PathfindingNodes.values().length][PathfindingNodes.values().length];
-	
-
 	// Doit-on éviter les éléments de jeux? Ou peut-on foncer dedans?
 	private boolean avoidGameElement = true;
 	
@@ -55,15 +51,6 @@ public class GridSpace implements Service, ArcManagerInterface {
 			initStatic();
 			check_pathfinding_nodes();
 		}
-		// comme isConnected n'est pas static, il faut l'updater pour chaque instance.
-		initIsConnected();
-	}
-
-	private void initIsConnected()
-	{
-    	for(PathfindingNodes i: PathfindingNodes.values())
-        	for(PathfindingNodes j: PathfindingNodes.values())
-        			isConnected[i.ordinal()][j.ordinal()] = isConnectedModel[i.ordinal()][j.ordinal()];
 	}
 	
     public void check_pathfinding_nodes()
@@ -94,7 +81,6 @@ public class GridSpace implements Service, ArcManagerInterface {
 	public void reinitConnections(long date)
 	{
 		obstaclemanager.supprimerObstaclesPerimes(date);
-		initIsConnected();
 	}
 
 	/**
@@ -105,7 +91,7 @@ public class GridSpace implements Service, ArcManagerInterface {
 	{
 		if(isConnectedModel[i.ordinal()][j.ordinal()] == NodesConnection.ALWAYS_IMPOSSIBLE)
 		{
-			log.debug("Trajet entre "+i+" et "+j+" impossible à cause d'un obstacle fixe!", this);			
+//			log.debug("Trajet entre "+i+" et "+j+" impossible à cause d'un obstacle fixe!", this);			
 			return false;
 		}
 /*		else if(isConnected[i.ordinal()][j.ordinal()] != null)
@@ -116,20 +102,18 @@ public class GridSpace implements Service, ArcManagerInterface {
 		else if(obstaclemanager.obstacle_proximite_dans_segment(i.getCoordonnees(), j.getCoordonnees()))
 		{
 //			log.debug("Trajet entre "+i+" et "+j+" impossible à cause d'un obstacle de proximité", this);
-			isConnected[i.ordinal()][j.ordinal()] = NodesConnection.TMP_IMPOSSIBLE;
+			return NodesConnection.TMP_IMPOSSIBLE.isTraversable();
 		}
 		else if(avoidGameElement && obstaclemanager.obstacle_table_dans_segment(i.getCoordonnees(), j.getCoordonnees()))
 		{
 //			log.debug("Trajet entre "+i+" et "+j+" impossible à cause d'un élément de jeu", this);
-			isConnected[i.ordinal()][j.ordinal()] = NodesConnection.TMP_IMPOSSIBLE;
+			return NodesConnection.TMP_IMPOSSIBLE.isTraversable();
 		}
 		else
 		{
 //			log.debug("Pas de problème entre "+i+" et "+j, this);
-			isConnected[i.ordinal()][j.ordinal()] = NodesConnection.POSSIBLE;
+			return NodesConnection.POSSIBLE.isTraversable();
 		}
-		isConnected[j.ordinal()][i.ordinal()] = isConnected[i.ordinal()][j.ordinal()];
-		return isConnected[i.ordinal()][j.ordinal()].isTraversable();
 	}
 	
 	/**
@@ -254,9 +238,6 @@ public class GridSpace implements Service, ArcManagerInterface {
 
     public void setAvoidGameElement(boolean avoidGameElement)
     {
-    	// il faut remettre à jour le cache
-    	if(this.avoidGameElement != avoidGameElement)
-    		initIsConnected();
     	this.avoidGameElement = avoidGameElement;
     }
 
@@ -280,12 +261,6 @@ public class GridSpace implements Service, ArcManagerInterface {
     }
 
 	@Override
-	public boolean areEquals(GameState<RobotChrono> state1,
-			GameState<RobotChrono> state2) {
-		return state1.robot.getPositionPathfinding() == state2.robot.getPositionPathfinding();
-	}
-
-	@Override
 	public double distanceTo(GameState<RobotChrono> state, ArcInterface arc)
 	{
 		double out = state.robot.getPositionPathfinding().distanceTo((PathfindingNodes)arc);
@@ -300,7 +275,12 @@ public class GridSpace implements Service, ArcManagerInterface {
 	@Override
 	public double heuristicCost(GameState<RobotChrono> state1, GameState<RobotChrono> state2)
 	{
-		return 0;
+		return state1.robot.getPositionPathfinding().distanceTo(state2.robot.getPositionPathfinding());
+	}
+
+	@Override
+	public int getHash(GameState<RobotChrono> state) {
+		return state.robot.getPositionPathfinding().ordinal();
 	}
 
 }
