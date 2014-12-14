@@ -7,7 +7,5 @@ package pathfinding;
  *
  */
 
-public interface ArcInterface
-{
-	
-}
+public interface Arc
+{}

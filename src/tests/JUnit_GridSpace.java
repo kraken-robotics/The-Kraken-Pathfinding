@@ -5,10 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import pathfinding.GridSpace;
-import robot.RobotChrono;
-import robot.RobotReal;
 import smartMath.Vec2;
-import strategie.GameState;
 import enums.PathfindingNodes;
 import enums.ServiceNames;
 
@@ -21,15 +18,11 @@ import enums.ServiceNames;
 public class JUnit_GridSpace extends JUnit_Test {
 
 	private GridSpace gridspace;
-	private GameState<RobotChrono> state_chrono;
 	
 	@Before
     public void setUp() throws Exception {
         super.setUp();
         gridspace = (GridSpace) container.getService(ServiceNames.GRID_SPACE);
-		@SuppressWarnings("unchecked")
-		GameState<RobotReal> state = (GameState<RobotReal>)container.getService(ServiceNames.REAL_GAME_STATE);
-		state_chrono = state.cloneGameState();
     }
    
 	@Test
@@ -38,47 +31,6 @@ public class JUnit_GridSpace extends JUnit_Test {
 		Assert.assertEquals(PathfindingNodes.BAS_DROITE, gridspace.nearestReachableNode(PathfindingNodes.BAS_DROITE.getCoordonnees().plusNewVector(new Vec2(10, -40))));
 	}
 
-	@Test
-	public void test_iterator() throws Exception
-	{
-		gridspace.setAvoidGameElement(false);
-		state_chrono.robot.setPositionPathfinding(PathfindingNodes.BAS_DROITE);
-		gridspace.reinitIterator(state_chrono);
-		Assert.assertTrue(gridspace.hasNext());
-		Assert.assertEquals(PathfindingNodes.DEVANT_DEPART_DROITE, gridspace.next());
-		Assert.assertTrue(gridspace.hasNext());
-		Assert.assertEquals(PathfindingNodes.COTE_MARCHE_DROITE, gridspace.next());
-		Assert.assertTrue(gridspace.hasNext());
-		Assert.assertEquals(PathfindingNodes.DEVANT_DEPART_GAUCHE, gridspace.next());
-		Assert.assertTrue(gridspace.hasNext());
-		Assert.assertEquals(PathfindingNodes.NODE_TAPIS, gridspace.next());
-		Assert.assertTrue(gridspace.hasNext());
-		Assert.assertEquals(PathfindingNodes.CLAP_DROIT, gridspace.next());
-		Assert.assertTrue(gridspace.hasNext());
-		Assert.assertEquals(PathfindingNodes.BAS, gridspace.next());
-		Assert.assertTrue(!gridspace.hasNext());
-	}
-	
-	@Test
-	public void test_iterator2() throws Exception
-	{
-		boolean[] verification = new boolean[PathfindingNodes.values().length];
-		for(PathfindingNodes j : PathfindingNodes.values())
-		{
-			state_chrono.robot.setPositionPathfinding(j);
-			gridspace.reinitIterator(state_chrono);
-			for(PathfindingNodes i : PathfindingNodes.values())
-				verification[i.ordinal()] = false;
-			while(gridspace.hasNext())
-			{
-				Assert.assertTrue(verification[gridspace.next().ordinal()] == false);
-				verification[gridspace.next().ordinal()] = true;
-			}
-			for(PathfindingNodes i : PathfindingNodes.values())
-				Assert.assertTrue((gridspace.isTraversable(i, j) && i != j) == verification[i.ordinal()]);
-		}
-	}
-	
 	@Test
 	public void test_traversable() throws Exception
 	{

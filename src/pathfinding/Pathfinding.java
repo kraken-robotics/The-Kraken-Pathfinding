@@ -12,6 +12,7 @@ import exceptions.GridSpaceException;
 import exceptions.PathfindingException;
 import exceptions.PathfindingRobotInObstacleException;
 import robot.RobotChrono;
+import scripts.Decision;
 import smartMath.Vec2;
 import strategie.GameState;
 import utils.Config;
@@ -37,33 +38,52 @@ public class Pathfinding implements Service
 	private ArrayList<GameState<RobotChrono>> openset = new ArrayList<GameState<RobotChrono>>();	 // The set of tentative nodes to be evaluated
 	private ArrayList<Integer> closedset = new ArrayList<Integer>();	 // The set of tentative nodes to be evaluated
 	private Map<Integer, Integer>	came_from = new HashMap<Integer, Integer>(); // The map of navigated nodes.
-	private Map<Integer, ArcInterface>	came_from_arc = new HashMap<Integer, ArcInterface>();
+	private Map<Integer, Arc>	came_from_arc = new HashMap<Integer, Arc>();
 	private Map<Integer, Double>	g_score = new HashMap<Integer, Double>(), 
 				f_score = new HashMap<Integer, Double>();
 
-//	private Log log;
+	private Log log;
+	private PathfindingArcManager pfarcmanager;
+	private StrategyArcManager stratarcmanager;
 	
 	/**
 	 * Constructeur du système de recherche de chemin
 	 */
-	public Pathfinding(Log log, Config config)
+	public Pathfinding(Log log, Config config, PathfindingArcManager pfarcmanager, StrategyArcManager stratarcmanager)
 	{
-//		this.log = log;
+		this.log = log;
+		this.pfarcmanager = pfarcmanager;
+		this.stratarcmanager = stratarcmanager;
 	}
 	
-	public ArrayList<PathfindingNodes> computePath(GameState<RobotChrono> state, PathfindingNodes indice_point_arrivee, boolean more_points, boolean shoot_game_element) throws PathfindingException, PathfindingRobotInObstacleException, FinMatchException
+	public ArrayList<Decision> computeStrategy(GameState<RobotChrono> state) throws FinMatchException, PathfindingException
+	{
+		// TODO
+		GameState<RobotChrono> arrivee = state.cloneGameState();
+		ArrayList<Arc> cheminArc = process(state, arrivee, stratarcmanager);
+		ArrayList<Decision> decisions = new ArrayList<Decision>();
+		for(Arc arc: cheminArc)
+			decisions.add((Decision)arc);
+		return decisions;
+	}
+	
+	public ArrayList<PathfindingNodes> computePath(GameState<RobotChrono> state, PathfindingNodes indice_point_arrivee, boolean shoot_game_element) throws PathfindingException, PathfindingRobotInObstacleException, FinMatchException
 	{
 		try {
+			Vec2 positionInitiale = state.robot.getPosition();
 			state.gridspace.setAvoidGameElement(!shoot_game_element);
-			state.robot.va_au_point_pathfinding(state.gridspace.nearestReachableNode(state.robot.getPosition()), null);
+			PathfindingNodes pointDepart = state.gridspace.nearestReachableNode(state.robot.getPosition());
+			state.robot.va_au_point_pathfinding(pointDepart, null);
 			
 			GameState<RobotChrono> arrivee = state.cloneGameState();
 			arrivee.robot.setPositionPathfinding(indice_point_arrivee);
-			ArrayList<ArcInterface> cheminArc = process(state, arrivee, state.gridspace);
+			ArrayList<Arc> cheminArc = process(state, arrivee, pfarcmanager);
+			log.debug("Fin: "+state.robot.getPositionPathfinding()+" "+arrivee.robot.getPositionPathfinding(), this);
 			ArrayList<PathfindingNodes> chemin = new ArrayList<PathfindingNodes>(); 
-			for(ArcInterface arc: cheminArc)
+			chemin.add(pointDepart);
+			for(Arc arc: cheminArc)
 				chemin.add((PathfindingNodes)arc);
-			return lissage(state.robot.getPosition(), state, chemin);
+			return lissage(positionInitiale, state, chemin);
 		} catch (GridSpaceException e1) {
 			throw new PathfindingRobotInObstacleException();
 		}
@@ -85,9 +105,9 @@ public class Pathfinding implements Service
 		return chemin;
 	}
 	
-	private ArrayList<ArcInterface> process(GameState<RobotChrono> depart, GameState<RobotChrono> arrivee, ArcManagerInterface arcmanager) throws PathfindingException, FinMatchException
+	private ArrayList<Arc> process(GameState<RobotChrono> depart, GameState<RobotChrono> arrivee, ArcManager arcmanager) throws PathfindingException, FinMatchException
 	{
-		ArrayList<ArcInterface> chemin = new ArrayList<ArcInterface>();
+		ArrayList<Arc> chemin = new ArrayList<Arc>();
 
 		// optimisation si depart == arrivee
 		if(arcmanager.getHash(depart) == arcmanager.getHash(arrivee))
@@ -123,11 +143,13 @@ public class Pathfinding implements Service
 
 			if(arcmanager.getHash(current) == arcmanager.getHash(arrivee))
 			{
-				Integer noeud_parent = came_from.get(current);
-				ArcInterface arc_parent = came_from_arc.get(current);
+				// On renvoie le robot final, celui qui a parcouru toutes les épreuves, current.
+				current.copy(depart);
+				Integer noeud_parent = came_from.get(arcmanager.getHash(current));
+				Arc arc_parent = came_from_arc.get(arcmanager.getHash(current));
 				while (noeud_parent != null)
 				{
-					chemin.add(0, arc_parent); // insert le point d'avant après l'entrée
+					chemin.add(0, arc_parent);
 					arc_parent = came_from_arc.get(noeud_parent);
 					noeud_parent = came_from.get(noeud_parent);
 				}
@@ -139,9 +161,9 @@ public class Pathfinding implements Service
 			
 			arcmanager.reinitIterator(current);
 		    	
-			while(arcmanager.hasNext())
+			while(arcmanager.hasNext(current))
 			{
-				ArcInterface voisin = arcmanager.next();
+				Arc voisin = arcmanager.next();
 				
 				GameState<RobotChrono> successeur = current.cloneGameState();
 				
@@ -177,7 +199,7 @@ public class Pathfinding implements Service
 	 * @return
 	 */
 	private boolean contains(ArrayList<GameState<RobotChrono>> openset,
-			GameState<RobotChrono> successeur, ArcManagerInterface arcmanager) {
+			GameState<RobotChrono> successeur, ArcManager arcmanager) {
 		for(GameState<RobotChrono> state: openset)
 			if(arcmanager.getHash(successeur) == arcmanager.getHash(state))
 				return true;

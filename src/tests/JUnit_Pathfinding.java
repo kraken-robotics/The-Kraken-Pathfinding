@@ -1,5 +1,6 @@
 package tests;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -28,6 +29,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
 	@Before
     public void setUp() throws Exception {
         super.setUp();
+    	config.set("duree_peremption_obstacles", 100);
         pathfinding = (Pathfinding) container.getService(ServiceNames.PATHFINDING);
 		@SuppressWarnings("unchecked")
 		GameState<RobotReal> state = (GameState<RobotReal>)container.getService(ServiceNames.REAL_GAME_STATE);
@@ -39,7 +41,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
     {
 		state_chrono.robot.setPosition(new Vec2(80, 80));
     	state_chrono.gridspace.creer_obstacle(new Vec2(80, 80));
-    	pathfinding.computePath(state_chrono, PathfindingNodes.values()[0], false, false);
+    	pathfinding.computePath(state_chrono, PathfindingNodes.values()[0], false);
     }
 
 	@Test(expected=PathfindingException.class)
@@ -47,7 +49,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
     {
 		state_chrono.robot.setPosition(new Vec2(80, 80));
 		state_chrono.gridspace.creer_obstacle(PathfindingNodes.values()[0].getCoordonnees());
-    	pathfinding.computePath(state_chrono, PathfindingNodes.values()[0], false, false);
+    	pathfinding.computePath(state_chrono, PathfindingNodes.values()[0], false);
     }
 
 	@Test
@@ -57,9 +59,12 @@ public class JUnit_Pathfinding extends JUnit_Test {
         	for(PathfindingNodes j: PathfindingNodes.values())
         		if(!j.is_an_emergency_point()) // on n'arrive jamais dans un emergency point
         		{
+        			log.debug(i+" et "+j, this);
         			state_chrono.robot.setPosition(i.getCoordonnees());
-        			pathfinding.computePath(state_chrono, j, false, true);
-        			pathfinding.computePath(state_chrono, j, true, true);
+        			pathfinding.computePath(state_chrono, j, true);
+        			Assert.assertTrue(state_chrono.robot.getPositionPathfinding() == j);
+        			pathfinding.computePath(state_chrono, j, true);
+        			Assert.assertTrue(state_chrono.robot.getPositionPathfinding() == j);
         		}
     }
 	
@@ -69,7 +74,8 @@ public class JUnit_Pathfinding extends JUnit_Test {
     	// une fois ce verre pris, le chemin est libre
     	state_chrono.table.setDone(GameElementNames.VERRE_3);
     	state_chrono.robot.setPositionPathfinding(PathfindingNodes.BAS_GAUCHE);
-    	pathfinding.computePath(state_chrono, PathfindingNodes.COTE_MARCHE_GAUCHE, false, false);
+    	pathfinding.computePath(state_chrono, PathfindingNodes.COTE_MARCHE_GAUCHE, false);
+		Assert.assertTrue(state_chrono.robot.getPositionPathfinding() == PathfindingNodes.COTE_MARCHE_GAUCHE);
     }
 
 	@Test(expected=PathfindingException.class)
@@ -77,7 +83,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
     {
 		// Exception car il y a un verre sur le passage
 		state_chrono.robot.setPositionPathfinding(PathfindingNodes.BAS_GAUCHE);
-    	pathfinding.computePath(state_chrono, PathfindingNodes.COTE_MARCHE_GAUCHE, false, false);
+    	pathfinding.computePath(state_chrono, PathfindingNodes.COTE_MARCHE_GAUCHE, false);
     }
 	
 	@Test
@@ -85,7 +91,16 @@ public class JUnit_Pathfinding extends JUnit_Test {
     {
 		// Pas d'exception car on demande au pathfinding de passer sur les éléments de jeux.
 		state_chrono.robot.setPositionPathfinding(PathfindingNodes.BAS_GAUCHE);
-    	pathfinding.computePath(state_chrono, PathfindingNodes.COTE_MARCHE_GAUCHE, false, true);
+    	pathfinding.computePath(state_chrono, PathfindingNodes.COTE_MARCHE_GAUCHE, true);
+		Assert.assertTrue(state_chrono.robot.getPositionPathfinding() == PathfindingNodes.COTE_MARCHE_GAUCHE);
     }
 
+	@Test
+    public void test_peremption_pendant_trajet() throws Exception
+    {
+    	state_chrono.robot.setPosition(new Vec2(80, 80));
+		state_chrono.gridspace.creer_obstacle(PathfindingNodes.values()[0].getCoordonnees());
+    	pathfinding.computePath(state_chrono, PathfindingNodes.values()[0], true);
+    }
+	
 }

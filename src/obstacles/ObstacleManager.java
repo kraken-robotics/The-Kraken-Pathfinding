@@ -71,7 +71,7 @@ public class ObstacleManager implements Service
         hashObstacles = 0;
 
         updateConfig();
-    }   
+    }
 
     /**
      * Créer un obstacle de proximité
@@ -80,7 +80,6 @@ public class ObstacleManager implements Service
     public void creer_obstacle(final Vec2 position)
     {
         Vec2 position_sauv = position.clone();
-        
         ObstacleProximity obstacle = new ObstacleProximity(position_sauv, rayon_robot_adverse, dureeAvantPeremption);
         log.warning("Obstacle créé, rayon = "+rayon_robot_adverse+", centre = "+position, this);
         listObstaclesMobiles.add(obstacle);
@@ -349,7 +348,7 @@ public class ObstacleManager implements Service
 	@Override
 	public void updateConfig() {
 		rayon_robot_adverse = Integer.parseInt(config.get("rayon_robot_adverse"));
-		dureeAvantPeremption = Integer.parseInt(config.get("duree_peremption_obstacles"));		
+		dureeAvantPeremption = Integer.parseInt(config.get("duree_peremption_obstacles"));
 		dilatation_obstacle = Integer.parseInt(config.get("marge"))+Integer.parseInt(config.get("rayon_robot"));
 		distanceApproximation = Integer.parseInt(config.get("distance_max_entre_mesure_et_objet"));
 	}

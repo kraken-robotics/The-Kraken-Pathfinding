@@ -26,7 +26,9 @@ public enum ServiceNames {
 	 THREAD_STRATEGY,
 	 SERIAL_MANAGER,
 	 OBSTACLE_MANAGER,
-	 GRID_SPACE;
+	 GRID_SPACE,
+	 PATHFINDING_ARC_MANAGER,
+	 STRATEGY_ARC_MANAGER;
 	
 	 private TypeService type = TypeService.RIEN;
 	 private int nbSerie = 0;

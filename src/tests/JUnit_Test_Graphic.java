@@ -8,7 +8,6 @@ import obstacles.ObstacleManager;
 import org.junit.Before;
 import org.junit.Test;
 
-import pathfinding.GridSpace;
 import pathfinding.Pathfinding;
 import enums.PathfindingNodes;
 import enums.ServiceNames;
@@ -24,7 +23,6 @@ public class JUnit_Test_Graphic extends JUnit_Test {
 	Fenetre fenetre;
 	ObstacleManager obstaclemanager;
 	private Pathfinding pathfinding;
-	private GridSpace gridspace;
 	private GameState<RobotChrono> state_chrono;
 	
 	@Before
@@ -32,7 +30,6 @@ public class JUnit_Test_Graphic extends JUnit_Test {
 	{
 		super.setUp();
         pathfinding = (Pathfinding) container.getService(ServiceNames.PATHFINDING);
-		gridspace = (GridSpace) container.getService(ServiceNames.GRID_SPACE);
 		obstaclemanager = (ObstacleManager) container.getService(ServiceNames.OBSTACLE_MANAGER);
 		@SuppressWarnings("unchecked")
 		GameState<RobotReal> state = (GameState<RobotReal>)container.getService(ServiceNames.REAL_GAME_STATE);
@@ -61,19 +58,15 @@ public class JUnit_Test_Graphic extends JUnit_Test {
 	@Test
     public void test_verification_humaine() throws Exception
     {
-		gridspace.setAvoidGameElement(false);
 		Random randomgenerator = new Random();
 		for(int k = 0; k < 20; k++)
 		{
-			gridspace.copy(gridspace, 0);
-			// nearestReachableNode a été réinitialisé
-
 			PathfindingNodes i = PathfindingNodes.values()[randomgenerator.nextInt(PathfindingNodes.values().length)];
 			PathfindingNodes j = PathfindingNodes.values()[randomgenerator.nextInt(PathfindingNodes.values().length)];
 			log.debug("Recherche chemin entre "+i+" et "+j, this);
-			Vec2 entree = i.getCoordonnees().plusNewVector(new Vec2(randomgenerator.nextInt(500)-250, randomgenerator.nextInt(500)-250));
+			Vec2 entree = i.getCoordonnees().plusNewVector(new Vec2(randomgenerator.nextInt(100)-50, randomgenerator.nextInt(100)-50));
 			state_chrono.robot.setPosition(entree);
-			ArrayList<PathfindingNodes> chemin = pathfinding.computePath(state_chrono, j, true, true);
+			ArrayList<PathfindingNodes> chemin = pathfinding.computePath(state_chrono, j, true);
     		ArrayList<Vec2> cheminVec2 = new ArrayList<Vec2>();
     		cheminVec2.add(entree);
     		for(PathfindingNodes n: chemin)

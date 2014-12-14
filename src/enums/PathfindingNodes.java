@@ -1,6 +1,6 @@
 package enums;
 
-import pathfinding.ArcInterface;
+import pathfinding.Arc;
 import smartMath.Vec2;
 
 /**
@@ -9,7 +9,7 @@ import smartMath.Vec2;
  *
  */
 
-public enum PathfindingNodes implements ArcInterface {
+public enum PathfindingNodes implements Arc {
 	DEVANT_DEPART_DROITE(new Vec2(700, 1100), false),
 	HAUT_DROITE(new Vec2(1000, 1600), false),
 	BAS_DROITE(new Vec2(800, 450), false),

@@ -1,8 +1,7 @@
 package container;
 
 import obstacles.ObstacleManager;
-import pathfinding.Pathfinding;
-import pathfinding.GridSpace;
+import pathfinding.*;
 import hook.types.HookFactory;
 import enums.ServiceNames;
 import enums.ServiceNames.TypeService;
@@ -120,7 +119,9 @@ public class Container
 																				(Table)getService(ServiceNames.TABLE));
 		else if(serviceRequested == ServiceNames.PATHFINDING)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new Pathfinding((Log)getService(ServiceNames.LOG),
-																				(Config)getService(ServiceNames.CONFIG));
+																				(Config)getService(ServiceNames.CONFIG),
+																				(PathfindingArcManager)getService(ServiceNames.PATHFINDING_ARC_MANAGER),
+																				(StrategyArcManager)getService(ServiceNames.STRATEGY_ARC_MANAGER));
 		else if(serviceRequested == ServiceNames.GRID_SPACE)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new GridSpace((Log)getService(ServiceNames.LOG),
 																				(Config)getService(ServiceNames.CONFIG),
@@ -208,6 +209,12 @@ public class Container
 																		(Pathfinding)getService(ServiceNames.PATHFINDING),
 																		(GameState<RobotReal>)getService(ServiceNames.REAL_GAME_STATE),
 																		(HookFactory)getService(ServiceNames.HOOK_FACTORY));
+		else if(serviceRequested == ServiceNames.PATHFINDING_ARC_MANAGER)
+			instanciedServices[serviceRequested.ordinal()] = (Service)new PathfindingArcManager((Log)getService(ServiceNames.LOG),
+																		(Config)getService(ServiceNames.CONFIG));
+		else if(serviceRequested == ServiceNames.STRATEGY_ARC_MANAGER)
+			instanciedServices[serviceRequested.ordinal()] = (Service)new StrategyArcManager((Log)getService(ServiceNames.LOG),
+																		(Config)getService(ServiceNames.CONFIG));
 		
 		// si le service demandé n'est pas connu, alors on log une erreur.
 		else

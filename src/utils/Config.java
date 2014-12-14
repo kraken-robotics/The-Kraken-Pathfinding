@@ -27,7 +27,6 @@ public class Config implements Service
 	private Properties local = new Properties();
 	
     Enumeration<?> e = local.propertyNames();
-
 	
 	public Config(String path) throws Exception
 	{
@@ -99,11 +98,9 @@ public class Config implements Service
 	 */
 	public void set(String nom, Object value)
 	{
-		System.out.println(nom+" = "+value.toString()+" (ancienne valeur: "+config.getProperty(nom)+")");
 		set(nom, value.toString());
 	}
 
-	// TODO private
 	private void affiche_tout()
 	{
 		if(Boolean.parseBoolean(config.getProperty("affiche_debug")))
@@ -129,14 +126,6 @@ public class Config implements Service
 		if(dateDebutMatch == 0)
 			return System.currentTimeMillis();
 		return dateDebutMatch;
-	}
-	
-	/**
-	 * Utilisé par les tests.
-	 */
-	public void reinitDateDebutMatch()
-	{
-		dateDebutMatch = 0;
 	}
 	
 }

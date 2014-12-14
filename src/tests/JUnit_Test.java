@@ -21,7 +21,6 @@ public abstract class JUnit_Test
 		container = new Container();
 		config = (Config) container.getService(ServiceNames.CONFIG);
 		log = (Log) container.getService(ServiceNames.LOG);
-		config.reinitDateDebutMatch();
 	}
 
 	@After

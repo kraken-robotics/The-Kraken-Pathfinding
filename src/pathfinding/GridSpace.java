@@ -4,15 +4,12 @@ import java.util.ArrayList;
 
 import obstacles.ObstacleManager;
 import container.Service;
-import robot.RobotChrono;
 import smartMath.Vec2;
-import strategie.GameState;
 import table.Table;
 import utils.Config;
 import utils.Log;
 import enums.NodesConnection;
 import enums.PathfindingNodes;
-import exceptions.FinMatchException;
 import exceptions.GridSpaceException;
 
 /**
@@ -22,16 +19,14 @@ import exceptions.GridSpaceException;
  *
  */
 
-public class GridSpace implements Service, ArcManagerInterface {
+public class GridSpace implements Service {
 	
 	private Log log;
 	private Config config;
 	
 	// afin d'éviter les obstacles fixes et mobiles
 	private ObstacleManager obstaclemanager;
-	
-	private int iterator, id_node_iterator;
-	
+		
 	// Rempli de ALWAYS_IMPOSSIBLE et null. Ne change pas.
 	private static NodesConnection[][] isConnectedModel = null;
 
@@ -186,33 +181,6 @@ public class GridSpace implements Service, ArcManagerInterface {
     	return !obstaclemanager.obstacle_proximite_dans_segment(pointA, pointB) && !obstaclemanager.obstacle_fixe_dans_segment_pathfinding(pointA, pointB);
     }
     
-    public PathfindingNodes next()
-    {
-    	return PathfindingNodes.values()[iterator];
-    }
-    
-    public boolean hasNext()
-    {
-        // TODO emergency, s'en occuper
-    	boolean emergency = false;
-    	do {
-    		iterator++;
-    		// Ce point n'est pas bon si:
-    		// c'est le noeud appelant (un noeud n'est pas son propre voisin)
-    		// c'est un noeud d'urgence et nous ne sommes pas en mode urgence
-    		// le noeud appelant et ce noeud ne peuvent être joints par une ligne droite
-    	} while(iterator < PathfindingNodes.values().length
-    			&& (iterator == id_node_iterator
-    			|| (!emergency && PathfindingNodes.values()[iterator].is_an_emergency_point())
-    			|| !isTraversable(PathfindingNodes.values()[id_node_iterator], PathfindingNodes.values()[iterator])));
-    	return iterator != PathfindingNodes.values().length;
-    }
-    
-    public void reinitIterator(GameState<RobotChrono> gamestate)
-    {
-    	id_node_iterator = gamestate.robot.getPositionPathfinding().ordinal();
-    	iterator = -1;
-    }
     
     /**
      * Créer un obstacle à une certaine date
@@ -259,28 +227,5 @@ public class GridSpace implements Service, ArcManagerInterface {
     	}
     	return distance;
     }
-
-	@Override
-	public double distanceTo(GameState<RobotChrono> state, ArcInterface arc)
-	{
-		double out = state.robot.getPositionPathfinding().distanceTo((PathfindingNodes)arc);
-		try {
-			state.robot.va_au_point_pathfinding((PathfindingNodes)arc, null);
-			return out;
-		} catch (FinMatchException e) {
-			return Double.MAX_VALUE;
-		}
-	}
-
-	@Override
-	public double heuristicCost(GameState<RobotChrono> state1, GameState<RobotChrono> state2)
-	{
-		return state1.robot.getPositionPathfinding().distanceTo(state2.robot.getPositionPathfinding());
-	}
-
-	@Override
-	public int getHash(GameState<RobotChrono> state) {
-		return state.robot.getPositionPathfinding().ordinal();
-	}
 
 }

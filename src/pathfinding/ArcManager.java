@@ -10,17 +10,17 @@ import strategie.GameState;
  *
  */
 
-public interface ArcManagerInterface {
+public interface ArcManager {
 
 	public void reinitIterator(GameState<RobotChrono> gamestate);
 
-	public boolean hasNext();
+	public boolean hasNext(GameState<RobotChrono> state);
 	
 	/**
 	 * Donne l'arc pour aller au noeud suivant
 	 * @return
 	 */
-	public ArcInterface next();
+	public Arc next();
 	
 	/** 
 	 * Donne la distance exacte entre les deux points.
@@ -28,7 +28,7 @@ public interface ArcManagerInterface {
 	 * @param other
 	 * @return
 	 */
-	public double distanceTo(GameState<RobotChrono> state, ArcInterface arc);
+	public double distanceTo(GameState<RobotChrono> state, Arc arc);
 	
 	/**
 	 * Evalue la distance entre deux sommets.
