@@ -10,6 +10,7 @@ import robot.Robot;
 import robot.RobotChrono;
 import robot.RobotReal;
 import smartMath.Vec2;
+import enums.ConfigInfo;
 import enums.PathfindingNodes;
 import enums.ServiceNames;
 
@@ -39,9 +40,9 @@ public class JUnit_Robot extends JUnit_Test
 	    	for(int i = 0; i < 2; i++)
 	    	{
 	    		if(i == 0)
-	    			config.set("couleur", "vert");
+	    			config.set(ConfigInfo.COULEUR, "vert");
 	    		else
-	    			config.set("couleur", "jaune");
+	    			config.set(ConfigInfo.COULEUR, "jaune");
 	    		robot.updateConfig();
 	    		robot.setPosition(new Vec2(200, 600));
 	    		robot.setOrientation(0);

@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 import pathfinding.Pathfinding;
 import container.Service;
+import enums.ConfigInfo;
 import enums.PathfindingNodes;
 import enums.ScriptNames;
 import exceptions.FinMatchException;
@@ -95,8 +96,8 @@ public class ThreadStrategy extends AbstractThread implements Service
 	@Override
 	public void updateConfig() {
 		// temps en secondes dans la config
-		temps_max_anticipation = 1000*Integer.parseInt(config.get("temps_max_anticipation"));	
-		dateFinMatch = 1000*Long.parseLong(config.get("temps_match"));
+		temps_max_anticipation = 1000*Integer.parseInt(config.get(ConfigInfo.TEMPS_MAX_ANTICIPATION));	
+		dateFinMatch = 1000*Long.parseLong(config.get(ConfigInfo.DUREE_MATCH_EN_S));
 	}
 
 	public Decision[] getDecisions()

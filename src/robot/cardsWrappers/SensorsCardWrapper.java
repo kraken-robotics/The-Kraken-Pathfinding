@@ -4,6 +4,7 @@ import robot.serial.SerialConnexion;
 import utils.Log;
 import utils.Config;
 import container.Service;
+import enums.ConfigInfo;
 import exceptions.FinMatchException;
 import exceptions.serial.SerialConnexionException;
 
@@ -32,7 +33,7 @@ public class SensorsCardWrapper implements Service
 	
 	public void updateConfig()
 	{
-		capteurs_on = Boolean.parseBoolean(config.get("capteurs_on"));
+		capteurs_on = Boolean.parseBoolean(config.get(ConfigInfo.CAPTEURS_ON));
 	}
 
 	/**

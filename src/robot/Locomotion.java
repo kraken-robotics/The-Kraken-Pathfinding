@@ -7,6 +7,7 @@ import container.Service;
 //import hook.Callback;
 //import hook.Executable;
 import hook.Hook;
+import enums.ConfigInfo;
 import enums.PathfindingNodes;
 import enums.Speed;
 import exceptions.FinMatchException;
@@ -896,14 +897,14 @@ public class Locomotion implements Service
 	@Override
 	public void updateConfig()
 	{
-		maxAllowedExceptionCount = Integer.parseInt(config.get("nb_tentatives"));
-		obstacleDetectionDiscRadius = Integer.parseInt(config.get("distance_detection"));
-		blockedExceptionRetraceDistance = Integer.parseInt(config.get("distance_degagement_robot"));
-		minimumDelayBetweenMovementStatusCheck = Integer.parseInt(config.get("sleep_boucle_acquittement"));
-		pullOutAngleInCaseOfBlockageWhileTurning = Double.parseDouble(config.get("angle_degagement_robot"));
+		maxAllowedExceptionCount = Integer.parseInt(config.get(ConfigInfo.NB_TENTATIVES));
+		obstacleDetectionDiscRadius = Integer.parseInt(config.get(ConfigInfo.DISTANCE_DETECTION));
+		blockedExceptionRetraceDistance = Integer.parseInt(config.get(ConfigInfo.DISTANCE_DEGAGEMENT_ROBOT));
+		minimumDelayBetweenMovementStatusCheck = Integer.parseInt(config.get(ConfigInfo.SLEEP_BOUCLE_ACQUITTEMENT));
+		pullOutAngleInCaseOfBlockageWhileTurning = Double.parseDouble(config.get(ConfigInfo.ANGLE_DEGAGEMENT_ROBOT));
 		//anticipation_trajectoire_courbe = Integer.parseInt(config.get("anticipation_trajectoire_courbe"));
-		allowCurvedPath = Boolean.parseBoolean(config.get("trajectoire_courbe"));
-		symmetry = config.get("couleur").equals("rouge");
+		allowCurvedPath = Boolean.parseBoolean(config.get(ConfigInfo.TRAJECTOIRE_COURBE));
+		symmetry = config.get(ConfigInfo.COULEUR).equals("rouge");
 	}
 
 	/**

@@ -7,6 +7,7 @@ import hook.Callback;
 import hook.Hook;
 import hook.methods.GameElementDone;
 import container.Service;
+import enums.ConfigInfo;
 import enums.GameElementType;
 import enums.Tribool;
 import smartMath.Vec2;
@@ -53,7 +54,7 @@ public class HookFactory implements Service
 	public void updateConfig()
 	{
 		// demande avec quelle tolérance sur la précision on déclenche les hooks
-		positionTolerancy = Integer.parseInt(this.config.get("hooks_tolerance_mm"));		
+		positionTolerancy = Integer.parseInt(this.config.get(ConfigInfo.HOOKS_TOLERANCE_MM));		
 	}
 	
 	/* ======================================================================

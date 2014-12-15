@@ -9,6 +9,7 @@ import org.junit.Test;
 
 import smartMath.Vec2;
 import table.Table;
+import enums.ConfigInfo;
 import enums.PathfindingNodes;
 import enums.ServiceNames;
 import enums.Tribool;
@@ -61,7 +62,7 @@ public class JUnit_ObstacleManager extends JUnit_Test {
     @Test
     public void test_peremption() throws Exception
     {
-    	config.set("duree_peremption_obstacles", 200); // 200 ms de péremption
+    	config.set(ConfigInfo.DUREE_PEREMPTION_OBSTACLES, 200); // 200 ms de péremption
     	obstaclemanager.updateConfig();
     	
     	obstaclemanager.creer_obstacle(new Vec2(0, 0));

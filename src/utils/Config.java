@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.util.Enumeration;
 import java.util.Properties;
 
+import enums.ConfigInfo;
+
 
 /**
  * 
@@ -69,10 +71,10 @@ public class Config implements Service
 	 * @return
 	 * @throws ConfigException
 	 */
-	public String get(String nom)
+	public String get(ConfigInfo nom)
 	{
 		String out = null;
-		out = config.getProperty(nom);
+		out = config.getProperty(nom.toString());
 		if(out == null)
 		{
 			System.out.println("Erreur config: "+nom+" introuvable.");
@@ -85,10 +87,10 @@ public class Config implements Service
 	 * @param nom
 	 * @return
 	 */
-	private void set(String nom, String value)
+	private void set(ConfigInfo nom, String value)
 	{
-		System.out.println(nom+" = "+value+" (ancienne valeur: "+config.getProperty(nom)+")");
-		config.setProperty(nom, value);
+		System.out.println(nom+" = "+value+" (ancienne valeur: "+config.getProperty(nom.toString())+")");
+		config.setProperty(nom.toString(), value);
 	}
 	
 	/**
@@ -96,7 +98,7 @@ public class Config implements Service
 	 * @param nom
 	 * @param value
 	 */
-	public void set(String nom, Object value)
+	public void set(ConfigInfo nom, Object value)
 	{
 		set(nom, value.toString());
 	}

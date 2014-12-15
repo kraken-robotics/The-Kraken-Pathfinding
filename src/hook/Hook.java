@@ -2,6 +2,7 @@ package hook;
 
 import java.util.ArrayList;
 
+import enums.ConfigInfo;
 import exceptions.FinMatchException;
 import smartMath.Vec2;
 import strategie.GameState;
@@ -40,7 +41,7 @@ abstract public class Hook
 		this.config = config;
 		this.log = log;
 		this.state = state;
-		rayon_robot = Integer.parseInt(config.get("rayon_robot"));
+		rayon_robot = Integer.parseInt(config.get(ConfigInfo.RAYON_ROBOT));
 	}
 	
 	/**

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import container.Service;
+import enums.ConfigInfo;
 import enums.Tribool;
 import smartMath.Vec2;
 import table.Table;
@@ -347,10 +348,10 @@ public class ObstacleManager implements Service
 
 	@Override
 	public void updateConfig() {
-		rayon_robot_adverse = Integer.parseInt(config.get("rayon_robot_adverse"));
-		dureeAvantPeremption = Integer.parseInt(config.get("duree_peremption_obstacles"));
-		dilatation_obstacle = Integer.parseInt(config.get("marge"))+Integer.parseInt(config.get("rayon_robot"));
-		distanceApproximation = Integer.parseInt(config.get("distance_max_entre_mesure_et_objet"));
+		rayon_robot_adverse = Integer.parseInt(config.get(ConfigInfo.RAYON_ROBOT_ADVERSE));
+		dureeAvantPeremption = Integer.parseInt(config.get(ConfigInfo.DUREE_PEREMPTION_OBSTACLES));		
+		dilatation_obstacle = Integer.parseInt(config.get(ConfigInfo.MARGE))+Integer.parseInt(config.get(ConfigInfo.RAYON_ROBOT));
+		distanceApproximation = Integer.parseInt(config.get(ConfigInfo.DISTANCE_MAX_ENTRE_MESURE_ET_OBJET));
 	}
 	
 	/**

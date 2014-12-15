@@ -8,6 +8,7 @@ import smartMath.Vec2;
 import strategie.GameState;
 import container.Service;
 import enums.ActuatorOrder;
+import enums.ConfigInfo;
 import enums.HauteurBrasClap;
 import enums.PathfindingNodes;
 import enums.RobotColor;
@@ -100,7 +101,7 @@ public abstract class Robot implements Service
 	
 	public void updateConfig()
 	{
-		symetrie = (RobotColor.parse(config.get("couleur")) == RobotColor.YELLOW);
+		symetrie = (RobotColor.parse(config.get(ConfigInfo.COULEUR)) == RobotColor.YELLOW);
 	}
 	
 	public Speed get_vitesse_() {

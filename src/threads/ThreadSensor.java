@@ -1,6 +1,7 @@
 package threads;
 
 import container.Service;
+import enums.ConfigInfo;
 import exceptions.FinMatchException;
 import obstacles.ObstacleManager;
 import pathfinding.GridSpace;
@@ -117,13 +118,13 @@ public class ThreadSensor extends AbstractThread implements Service
 	
 	public void updateConfig()
 	{
-			tempo = Double.parseDouble(config.get("capteurs_temporisation_obstacles"));
-			horizon_capteurs = Integer.parseInt(config.get("horizon_capteurs"));
-			rayon_robot_adverse = Integer.parseInt(config.get("rayon_robot_adverse"));
-			largeur_robot = Integer.parseInt(config.get("largeur_robot"));
-			table_x = Integer.parseInt(config.get("table_x"));
-			table_y = Integer.parseInt(config.get("table_y"));
-			capteurs_frequence = Integer.parseInt(config.get("capteurs_frequence"));
+			tempo = Double.parseDouble(config.get(ConfigInfo.CAPTEURS_TEMPORISATION_OBSTACLES));
+			horizon_capteurs = Integer.parseInt(config.get(ConfigInfo.HORIZON_CAPTEURS));
+			rayon_robot_adverse = Integer.parseInt(config.get(ConfigInfo.RAYON_ROBOT_ADVERSE));
+			largeur_robot = Integer.parseInt(config.get(ConfigInfo.LARGEUR_ROBOT));
+			table_x = Integer.parseInt(config.get(ConfigInfo.TABLE_X));
+			table_y = Integer.parseInt(config.get(ConfigInfo.TABLE_Y));
+			capteurs_frequence = Integer.parseInt(config.get(ConfigInfo.CAPTEURS_FREQUENCE));
 	}
 
 }

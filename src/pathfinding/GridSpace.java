@@ -8,6 +8,7 @@ import smartMath.Vec2;
 import table.Table;
 import utils.Config;
 import utils.Log;
+import enums.ConfigInfo;
 import enums.NodesConnection;
 import enums.PathfindingNodes;
 import exceptions.GridSpaceException;
@@ -141,7 +142,7 @@ public class GridSpace implements Service {
 	
 	@Override
 	public void updateConfig() {
-		avoidGameElement = Boolean.parseBoolean(config.get("evite_element_jeu"));
+		avoidGameElement = Boolean.parseBoolean(config.get(ConfigInfo.EVITE_ELEMENT_JEU));
 	}
 
 	public void copy(GridSpace other, long date)
