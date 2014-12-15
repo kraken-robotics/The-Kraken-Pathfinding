@@ -68,7 +68,11 @@ public class Execution implements Service {
 		while(true)
 		{
 			try {
-				executerScript(threadstrategy.getDecisions());
+				Decision[] decisions = threadstrategy.getDecisions();
+				if(decisions == null)
+					Sleep.sleep(500);
+				else
+					executerScript(decisions);
 			} catch (UnknownScriptException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -98,7 +102,7 @@ public class Execution implements Service {
 
 			log.debug("On tente d'exécuter "+decision_actuelle.script_name, this);
 			try {
-				tryOnce(s, decision_actuelle.id_version, false, false);
+				tryOnce(s, decision_actuelle.meta_version, false);
 			} catch (PathfindingException e) {
 // TODO				tryOnce(s, decision_actuelle.id_version, true, false);
 				// Problème de pathfinding: pas de chemin. On rajoute des points
@@ -111,7 +115,7 @@ public class Execution implements Service {
 				// On a rencontré l'ennemi en chemin. On retente avec un autre chemin.
 				try {
 					log.debug("On réessaye d'exécuter "+decision_actuelle.script_name, this);
-					tryOnce(s, decision_actuelle.id_version, true, false);
+					tryOnce(s, decision_actuelle.meta_version, false);
 				} catch (Exception e1) {
 					log.critical("Abandon: erreur pendant l'itinéraire de secours.", this);
 					continue;
@@ -128,10 +132,10 @@ public class Execution implements Service {
 		}
 	}
 	
-	public void tryOnce(Script s, int id_version, boolean more_points, boolean dont_avoid_game_element) throws PathfindingException, UnableToMoveException, ScriptException, PathfindingRobotInObstacleException, FinMatchException
+	public void tryOnce(Script s, int id_version, boolean dont_avoid_game_element) throws PathfindingException, UnableToMoveException, ScriptException, PathfindingRobotInObstacleException, FinMatchException
 	{
 		ArrayList<PathfindingNodes> chemin;
-		chemin = pathfinding.computePath(gamestate.cloneGameState(), s.point_entree(id_version), more_points, dont_avoid_game_element);
+		chemin = pathfinding.computePath(gamestate.cloneGameState(), s.point_entree(id_version), dont_avoid_game_element);
 		gamestate.robot.set_vitesse(Speed.BETWEEN_SCRIPTS);
 		gamestate.robot.suit_chemin(chemin, hooks_entre_scripts);
 		s.agit(id_version, gamestate, false);	

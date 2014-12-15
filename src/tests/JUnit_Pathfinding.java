@@ -25,14 +25,15 @@ public class JUnit_Pathfinding extends JUnit_Test {
 
 	private Pathfinding pathfinding;
 	private GameState<RobotChrono> state_chrono;
+	private GameState<RobotReal> state;
 	
+	@SuppressWarnings("unchecked")
 	@Before
     public void setUp() throws Exception {
         super.setUp();
     	config.set("duree_peremption_obstacles", 100);
         pathfinding = (Pathfinding) container.getService(ServiceNames.PATHFINDING);
-		@SuppressWarnings("unchecked")
-		GameState<RobotReal> state = (GameState<RobotReal>)container.getService(ServiceNames.REAL_GAME_STATE);
+		state = (GameState<RobotReal>)container.getService(ServiceNames.REAL_GAME_STATE);
 		state_chrono = state.cloneGameState();
 	}
 
@@ -59,10 +60,8 @@ public class JUnit_Pathfinding extends JUnit_Test {
         	for(PathfindingNodes j: PathfindingNodes.values())
         		if(!j.is_an_emergency_point()) // on n'arrive jamais dans un emergency point
         		{
-        			log.debug(i+" et "+j, this);
+        			state_chrono = state.cloneGameState();
         			state_chrono.robot.setPosition(i.getCoordonnees());
-        			pathfinding.computePath(state_chrono, j, true);
-        			Assert.assertTrue(state_chrono.robot.getPositionPathfinding() == j);
         			pathfinding.computePath(state_chrono, j, true);
         			Assert.assertTrue(state_chrono.robot.getPositionPathfinding() == j);
         		}

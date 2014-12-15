@@ -13,11 +13,11 @@ import exceptions.FinMatchException;
 	private int iterator, id_node_iterator;
 	private int date_precision_diminue;
 	private Config config;
-//	private Log log;
+	private Log log;
 	
 	public PathfindingArcManager(Log log, Config config)
 	{
-//		this.log = log;
+		this.log = log;
 		this.config = config;
 		updateConfig();
 	}
@@ -41,7 +41,7 @@ import exceptions.FinMatchException;
 	}
 
 	@Override
-	public int getHash(GameState<RobotChrono> state) {
+	public double getHash(GameState<RobotChrono> state) {
 		return state.robot.getPositionPathfinding().ordinal();
 	}
 
@@ -56,6 +56,8 @@ import exceptions.FinMatchException;
     {
     	// La précision diminue après la date.
     	boolean emergency = state.robot.getTempsDepuisDebutMatch() < date_precision_diminue;
+    	if(!emergency)
+    		log.debug("Précision diminuée", this);
     	do {
     		iterator++;
     		// Ce point n'est pas bon si:

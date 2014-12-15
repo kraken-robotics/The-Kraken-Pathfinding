@@ -31,7 +31,7 @@ import robot.serial.SerialConnexion;
  * 
  * Gestionnaire de la durée de vie des objets dans le code.
  * Permet à n'importe quelle classe implémentant l'interface "Service" d'appeller d'autres instances de services via son constructeur.
- * Une classse implémentant service n'est instanciée que par la classe "Container"
+ * Une classe implémentant service n'est instanciée que par la classe "Container"
  * 
  * @author pf
  */
@@ -214,7 +214,10 @@ public class Container
 																		(Config)getService(ServiceNames.CONFIG));
 		else if(serviceRequested == ServiceNames.STRATEGY_ARC_MANAGER)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new StrategyArcManager((Log)getService(ServiceNames.LOG),
-																		(Config)getService(ServiceNames.CONFIG));
+																		(Config)getService(ServiceNames.CONFIG),
+																		(ScriptManager)getService(ServiceNames.SCRIPT_MANAGER),
+																		(GameState<RobotReal>)getService(ServiceNames.REAL_GAME_STATE),
+																		(HookFactory)getService(ServiceNames.HOOK_FACTORY));
 		
 		// si le service demandé n'est pas connu, alors on log une erreur.
 		else

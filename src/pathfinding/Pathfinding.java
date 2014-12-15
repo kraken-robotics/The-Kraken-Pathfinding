@@ -36,13 +36,13 @@ public class Pathfinding implements Service
 	private int COEFF_HEURISTIC = 1;
 	
 	private ArrayList<GameState<RobotChrono>> openset = new ArrayList<GameState<RobotChrono>>();	 // The set of tentative nodes to be evaluated
-	private ArrayList<Integer> closedset = new ArrayList<Integer>();	 // The set of tentative nodes to be evaluated
-	private Map<Integer, Integer>	came_from = new HashMap<Integer, Integer>(); // The map of navigated nodes.
-	private Map<Integer, Arc>	came_from_arc = new HashMap<Integer, Arc>();
-	private Map<Integer, Double>	g_score = new HashMap<Integer, Double>(), 
-				f_score = new HashMap<Integer, Double>();
+	private ArrayList<Double> closedset = new ArrayList<Double>();	 // The set of tentative nodes to be evaluated
+	private Map<Double, Double>	came_from = new HashMap<Double, Double>(); // The map of navigated nodes.
+	private Map<Double, Arc>	came_from_arc = new HashMap<Double, Arc>();
+	private Map<Double, Double>	g_score = new HashMap<Double, Double>(), 
+				f_score = new HashMap<Double, Double>();
 
-	private Log log;
+//	private Log log;
 	private PathfindingArcManager pfarcmanager;
 	private StrategyArcManager stratarcmanager;
 	
@@ -51,7 +51,7 @@ public class Pathfinding implements Service
 	 */
 	public Pathfinding(Log log, Config config, PathfindingArcManager pfarcmanager, StrategyArcManager stratarcmanager)
 	{
-		this.log = log;
+//		this.log = log;
 		this.pfarcmanager = pfarcmanager;
 		this.stratarcmanager = stratarcmanager;
 	}
@@ -78,7 +78,6 @@ public class Pathfinding implements Service
 			GameState<RobotChrono> arrivee = state.cloneGameState();
 			arrivee.robot.setPositionPathfinding(indice_point_arrivee);
 			ArrayList<Arc> cheminArc = process(state, arrivee, pfarcmanager);
-			log.debug("Fin: "+state.robot.getPositionPathfinding()+" "+arrivee.robot.getPositionPathfinding(), this);
 			ArrayList<PathfindingNodes> chemin = new ArrayList<PathfindingNodes>(); 
 			chemin.add(pointDepart);
 			for(Arc arc: cheminArc)
@@ -145,7 +144,7 @@ public class Pathfinding implements Service
 			{
 				// On renvoie le robot final, celui qui a parcouru toutes les épreuves, current.
 				current.copy(depart);
-				Integer noeud_parent = came_from.get(arcmanager.getHash(current));
+				Double noeud_parent = came_from.get(arcmanager.getHash(current));
 				Arc arc_parent = came_from_arc.get(arcmanager.getHash(current));
 				while (noeud_parent != null)
 				{
