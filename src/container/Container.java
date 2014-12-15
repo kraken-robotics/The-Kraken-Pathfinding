@@ -118,7 +118,7 @@ public class Container
 																				(Config)getService(ServiceNames.CONFIG),
 																				(Table)getService(ServiceNames.TABLE));
 		else if(serviceRequested == ServiceNames.PATHFINDING)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new Pathfinding((Log)getService(ServiceNames.LOG),
+			instanciedServices[serviceRequested.ordinal()] = (Service)new AStar((Log)getService(ServiceNames.LOG),
 																				(Config)getService(ServiceNames.CONFIG),
 																				(PathfindingArcManager)getService(ServiceNames.PATHFINDING_ARC_MANAGER),
 																				(StrategyArcManager)getService(ServiceNames.STRATEGY_ARC_MANAGER));
@@ -179,7 +179,7 @@ public class Container
 		else if(serviceRequested == ServiceNames.EXECUTION)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new Execution((Log)getService(ServiceNames.LOG),
 			                                                 (Config)getService(ServiceNames.CONFIG),
-			                                                 (Pathfinding)getService(ServiceNames.PATHFINDING),
+			                                                 (AStar)getService(ServiceNames.PATHFINDING),
 			                                                 (GameState<RobotReal>)getService(ServiceNames.REAL_GAME_STATE),
 			                                                 (ScriptManager)getService(ServiceNames.SCRIPT_MANAGER),
 			                                                 (HookFactory)getService(ServiceNames.HOOK_FACTORY),
@@ -206,7 +206,7 @@ public class Container
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadStrategy((Log)getService(ServiceNames.LOG),
 																		(Config)getService(ServiceNames.CONFIG),
 																		(ScriptManager)getService(ServiceNames.SCRIPT_MANAGER),
-																		(Pathfinding)getService(ServiceNames.PATHFINDING),
+																		(AStar)getService(ServiceNames.PATHFINDING),
 																		(GameState<RobotReal>)getService(ServiceNames.REAL_GAME_STATE),
 																		(HookFactory)getService(ServiceNames.HOOK_FACTORY));
 		else if(serviceRequested == ServiceNames.PATHFINDING_ARC_MANAGER)

@@ -8,7 +8,7 @@ import obstacles.ObstacleManager;
 import org.junit.Before;
 import org.junit.Test;
 
-import pathfinding.Pathfinding;
+import pathfinding.AStar;
 import enums.PathfindingNodes;
 import enums.ServiceNames;
 import robot.RobotChrono;
@@ -22,14 +22,14 @@ public class JUnit_Test_Graphic extends JUnit_Test {
 
 	Fenetre fenetre;
 	ObstacleManager obstaclemanager;
-	private Pathfinding pathfinding;
+	private AStar pathfinding;
 	private GameState<RobotChrono> state_chrono;
 	
 	@Before
 	public void setUp() throws Exception
 	{
 		super.setUp();
-        pathfinding = (Pathfinding) container.getService(ServiceNames.PATHFINDING);
+        pathfinding = (AStar) container.getService(ServiceNames.PATHFINDING);
 		obstaclemanager = (ObstacleManager) container.getService(ServiceNames.OBSTACLE_MANAGER);
 		@SuppressWarnings("unchecked")
 		GameState<RobotReal> state = (GameState<RobotReal>)container.getService(ServiceNames.REAL_GAME_STATE);

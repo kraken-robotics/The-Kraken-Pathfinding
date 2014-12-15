@@ -4,7 +4,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import pathfinding.Pathfinding;
+import pathfinding.AStar;
 import robot.RobotChrono;
 import robot.RobotReal;
 import smartMath.Vec2;
@@ -24,7 +24,7 @@ import exceptions.PathfindingRobotInObstacleException;
 
 public class JUnit_Pathfinding extends JUnit_Test {
 
-	private Pathfinding pathfinding;
+	private AStar pathfinding;
 	private GameState<RobotChrono> state_chrono;
 	private GameState<RobotReal> state;
 	
@@ -33,7 +33,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
     public void setUp() throws Exception {
         super.setUp();
     	config.set(ConfigInfo.DUREE_PEREMPTION_OBSTACLES, 100);
-        pathfinding = (Pathfinding) container.getService(ServiceNames.PATHFINDING);
+        pathfinding = (AStar) container.getService(ServiceNames.PATHFINDING);
 		state = (GameState<RobotReal>)container.getService(ServiceNames.REAL_GAME_STATE);
 		state_chrono = state.cloneGameState();
 	}

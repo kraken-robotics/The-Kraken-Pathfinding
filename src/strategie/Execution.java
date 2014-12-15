@@ -6,7 +6,7 @@ import hook.types.HookFactory;
 import java.util.ArrayList;
 
 import container.Service;
-import pathfinding.Pathfinding;
+import pathfinding.AStar;
 import enums.PathfindingNodes;
 import enums.Speed;
 import exceptions.FinMatchException;
@@ -36,14 +36,14 @@ public class Execution implements Service {
 	private Log log;
 //	private Config config;
 	private ScriptManager scriptmanager;
-	private Pathfinding pathfinding;
+	private AStar pathfinding;
 //	private HookFactory hookfactory;
 	private ThreadStrategy threadstrategy;
 //	private RobotColor color;
 	
 	private ArrayList<Hook> hooks_entre_scripts;
 	
-	public Execution(Log log, Config config, Pathfinding pathfinding, GameState<RobotReal> gamestate, ScriptManager scriptmanager, HookFactory hookfactory, ThreadStrategy threadstrategy)
+	public Execution(Log log, Config config, AStar pathfinding, GameState<RobotReal> gamestate, ScriptManager scriptmanager, HookFactory hookfactory, ThreadStrategy threadstrategy)
 	{
 		this.log = log;
 //		this.config = config;

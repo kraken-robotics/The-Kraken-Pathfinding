@@ -5,7 +5,7 @@ import hook.types.HookFactory;
 
 import java.util.ArrayList;
 
-import pathfinding.Pathfinding;
+import pathfinding.AStar;
 import container.Service;
 import enums.ConfigInfo;
 import enums.PathfindingNodes;
@@ -37,7 +37,7 @@ public class ThreadStrategy extends AbstractThread implements Service
 	private ScriptManager scriptmanager;
 	
 	// Calcul des chemins entre scripts
-	private Pathfinding pathfinding;
+	private AStar pathfinding;
 	
 	// Nécessaire aux scripts pour donner les versions disponibles
 	private GameState<RobotReal> real_gamestate;
@@ -50,7 +50,7 @@ public class ThreadStrategy extends AbstractThread implements Service
 
 	private Decision[] decisions = null;
 	
-	public ThreadStrategy(Log log, Config config, ScriptManager scriptmanager, Pathfinding pathfinding, GameState<RobotReal> real_gamestate, HookFactory hookfactory) 
+	public ThreadStrategy(Log log, Config config, ScriptManager scriptmanager, AStar pathfinding, GameState<RobotReal> real_gamestate, HookFactory hookfactory) 
 	{
 		this.log = log;
 		this.config = config;

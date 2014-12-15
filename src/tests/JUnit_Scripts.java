@@ -14,6 +14,13 @@ import enums.PathfindingNodes;
 import enums.ScriptNames;
 import enums.ServiceNames;
 
+/**
+ * Tests unitaires des scripts.
+ * Utilisé pour voir en vrai comment agit le robot.
+ * @author pf
+ *
+ */
+
 public class JUnit_Scripts extends JUnit_Test {
 
 	private ScriptManager scriptmanager;

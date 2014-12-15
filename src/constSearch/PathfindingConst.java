@@ -1,6 +1,6 @@
 package constSearch;
 
-import pathfinding.Pathfinding;
+import pathfinding.AStar;
 import robot.RobotChrono;
 import robot.RobotReal;
 import strategie.GameState;
@@ -17,7 +17,7 @@ public class PathfindingConst {
     {
     	try {
     		Container container = new Container();
-			Pathfinding pathfinding = (Pathfinding)container.getService(ServiceNames.PATHFINDING);
+			AStar pathfinding = (AStar)container.getService(ServiceNames.PATHFINDING);
 			Log log = (Log)container.getService(ServiceNames.LOG);
 			@SuppressWarnings("unchecked")
 			GameState<RobotReal> state = (GameState<RobotReal>)container.getService(ServiceNames.REAL_GAME_STATE);
