@@ -33,7 +33,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
     public void setUp() throws Exception {
         super.setUp();
     	config.set(ConfigInfo.DUREE_PEREMPTION_OBSTACLES, 100);
-        pathfinding = (AStar) container.getService(ServiceNames.PATHFINDING);
+        pathfinding = (AStar) container.getService(ServiceNames.A_STAR);
 		state = (GameState<RobotReal>)container.getService(ServiceNames.REAL_GAME_STATE);
 		state_chrono = state.cloneGameState();
 	}

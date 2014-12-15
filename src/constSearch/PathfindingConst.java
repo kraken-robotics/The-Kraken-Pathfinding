@@ -17,7 +17,7 @@ public class PathfindingConst {
     {
     	try {
     		Container container = new Container();
-			AStar pathfinding = (AStar)container.getService(ServiceNames.PATHFINDING);
+			AStar pathfinding = (AStar)container.getService(ServiceNames.A_STAR);
 			Log log = (Log)container.getService(ServiceNames.LOG);
 			@SuppressWarnings("unchecked")
 			GameState<RobotReal> state = (GameState<RobotReal>)container.getService(ServiceNames.REAL_GAME_STATE);

@@ -29,7 +29,7 @@ public class JUnit_Test_Graphic extends JUnit_Test {
 	public void setUp() throws Exception
 	{
 		super.setUp();
-        pathfinding = (AStar) container.getService(ServiceNames.PATHFINDING);
+        pathfinding = (AStar) container.getService(ServiceNames.A_STAR);
 		obstaclemanager = (ObstacleManager) container.getService(ServiceNames.OBSTACLE_MANAGER);
 		@SuppressWarnings("unchecked")
 		GameState<RobotReal> state = (GameState<RobotReal>)container.getService(ServiceNames.REAL_GAME_STATE);

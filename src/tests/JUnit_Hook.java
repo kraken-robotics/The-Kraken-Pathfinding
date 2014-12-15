@@ -42,7 +42,7 @@ public class JUnit_Hook extends JUnit_Test {
         hookfactory = (HookFactory) container.getService(ServiceNames.HOOK_FACTORY);
         real_gamestate = (GameState<RobotReal>) container.getService(ServiceNames.REAL_GAME_STATE);
         chrono_gamestate = real_gamestate.cloneGameState();
-        pathfinding = (AStar)container.getService(ServiceNames.PATHFINDING);
+        pathfinding = (AStar)container.getService(ServiceNames.A_STAR);
     }
    
 	@Test
