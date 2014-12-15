@@ -5,6 +5,7 @@ import robot.RobotChrono;
 import strategie.GameState;
 import utils.Log;
 import utils.Config;
+import enums.ConfigInfo;
 import enums.PathfindingNodes;
 import exceptions.FinMatchException;
 
@@ -80,7 +81,7 @@ import exceptions.FinMatchException;
 
 	@Override
 	public void updateConfig() {
-		date_precision_diminue = 1000*Integer.parseInt(config.get("date_precision_diminue"));	
+		date_precision_diminue = 1000*Integer.parseInt(config.get(ConfigInfo.DATE_PRECISION_DIMINUE));	
 	}
 
 }

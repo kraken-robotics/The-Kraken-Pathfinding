@@ -9,6 +9,7 @@ import robot.RobotChrono;
 import robot.RobotReal;
 import smartMath.Vec2;
 import strategie.GameState;
+import enums.ConfigInfo;
 import enums.GameElementNames;
 import enums.PathfindingNodes;
 import enums.ServiceNames;
@@ -31,7 +32,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
 	@Before
     public void setUp() throws Exception {
         super.setUp();
-    	config.set("duree_peremption_obstacles", 100);
+    	config.set(ConfigInfo.DUREE_PEREMPTION_OBSTACLES, 100);
         pathfinding = (Pathfinding) container.getService(ServiceNames.PATHFINDING);
 		state = (GameState<RobotReal>)container.getService(ServiceNames.REAL_GAME_STATE);
 		state_chrono = state.cloneGameState();
