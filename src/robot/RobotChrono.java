@@ -7,6 +7,7 @@ import hook.types.HookFactory;
 import smartMath.Vec2;
 import utils.Log;
 import utils.Config;
+import enums.ConfigInfo;
 import enums.PathfindingNodes;
 import enums.Speed;
 import exceptions.FinMatchException;
@@ -233,4 +234,10 @@ public class RobotChrono extends Robot
 		date += n1.distance(n2)*vitesse.invertedTranslationnalSpeed;
 	}
 	
+	public void setFinalState()
+	{
+		super.setFinalState();
+		date = Integer.parseInt(config.get(ConfigInfo.DUREE_MATCH_EN_S))*1000;
+	}
+
 }

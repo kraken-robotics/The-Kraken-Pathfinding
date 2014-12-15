@@ -42,7 +42,7 @@ import exceptions.FinMatchException;
 	}
 
 	@Override
-	public double getHash(GameState<RobotChrono> state) {
+	public int getHash(GameState<RobotChrono> state) {
 		return state.robot.getPositionPathfinding().ordinal();
 	}
 
@@ -56,9 +56,9 @@ import exceptions.FinMatchException;
     public boolean hasNext(GameState<RobotChrono> state)
     {
     	// La précision diminue après la date.
-    	boolean emergency = state.robot.getTempsDepuisDebutMatch() < date_precision_diminue;
-    	if(!emergency)
-    		log.debug("Précision diminuée", this);
+    	boolean low_precision = state.robot.getTempsDepuisDebutMatch() < date_precision_diminue;
+//    	if(!low_precision)
+//    		log.debug("Précision diminuée", this);
     	do {
     		iterator++;
     		// Ce point n'est pas bon si:
@@ -67,7 +67,7 @@ import exceptions.FinMatchException;
     		// le noeud appelant et ce noeud ne peuvent être joints par une ligne droite
     	} while(iterator < PathfindingNodes.values().length
     			&& (iterator == id_node_iterator
-    			|| (!emergency && PathfindingNodes.values()[iterator].is_an_emergency_point())
+    			|| (!low_precision && PathfindingNodes.values()[iterator].is_an_emergency_point())
     			|| !state.gridspace.isTraversable(PathfindingNodes.values()[id_node_iterator], PathfindingNodes.values()[iterator])));
     	return iterator != PathfindingNodes.values().length;
     }

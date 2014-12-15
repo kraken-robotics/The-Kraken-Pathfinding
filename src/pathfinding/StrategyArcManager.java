@@ -12,8 +12,11 @@ import strategie.GameState;
 import utils.Log;
 import utils.Config;
 import container.Service;
+import enums.PathfindingNodes;
 import enums.ScriptNames;
 import exceptions.FinMatchException;
+import exceptions.PathfindingException;
+import exceptions.PathfindingRobotInObstacleException;
 import exceptions.UnknownScriptException;
 import exceptions.Locomotion.UnableToMoveException;
 import exceptions.serial.SerialConnexionException;
@@ -22,7 +25,8 @@ public class StrategyArcManager implements Service, ArcManager {
 
 	private Log log;
 	private ScriptManager scriptmanager;
-
+	private AStar astar;
+	
 	private ArrayList<Decision> listeDecisions = new ArrayList<Decision>();
 	private int iterator;
 	
@@ -66,6 +70,7 @@ public class StrategyArcManager implements Service, ArcManager {
 	@Override
 	public Arc next()
 	{
+//		log.debug("Prochain voisin: "+listeDecisions.get(iterator).script_name, this);
 		return listeDecisions.get(iterator);
 	}
 
@@ -77,6 +82,14 @@ public class StrategyArcManager implements Service, ArcManager {
 			try {
 				int old_points = state.robot.getPointsObtenus();
 				long old_temps = state.robot.getTempsDepuisDebutMatch();
+				ArrayList<PathfindingNodes> chemin;
+				try {
+					chemin = astar.computePath(state, s.point_entree(d.meta_version), d.shoot_game_element);
+				} catch (PathfindingException
+						| PathfindingRobotInObstacleException e) {
+					return Double.MAX_VALUE;
+				}
+				state.robot.suit_chemin(chemin, null);
 				s.execute(d.meta_version, state);
 				int new_points = state.robot.getPointsObtenus();
 				long new_temps = state.robot.getTempsDepuisDebutMatch();
@@ -112,9 +125,10 @@ public class StrategyArcManager implements Service, ArcManager {
 	}
 
 	@Override
-	public double getHash(GameState<RobotChrono> state)
+	public int getHash(GameState<RobotChrono> state)
 	{
-		return ((double)state.robot.getPointsObtenus())/((double)state.robot.getTempsDepuisDebutMatch());
+//		log.debug("Hash: "+(((double)state.robot.getPointsObtenus())/((double)state.robot.getTempsDepuisDebutMatch())), this);
+		return (int)(100000*((double)state.robot.getPointsObtenus())/((double)state.robot.getTempsDepuisDebutMatch()));
 	}
 
 	@Override
@@ -122,4 +136,9 @@ public class StrategyArcManager implements Service, ArcManager {
 	{
 	}
 
+	public void setAStar(AStar astar)
+	{
+		this.astar = astar;
+	}
+	
 }

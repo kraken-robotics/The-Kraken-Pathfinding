@@ -98,6 +98,12 @@ public abstract class Robot implements Service
 			throw new Exception();
 	}
 
+	protected void setFinalState()
+	{
+		// TODO
+		pointsObtenus = 20;
+	}
+	
 	
 	public void updateConfig()
 	{

@@ -38,6 +38,6 @@ public interface ArcManager {
 	 */
 	public double heuristicCost(GameState<RobotChrono> state1, GameState<RobotChrono> state2);
 
-	public double getHash(GameState<RobotChrono> state);	
+	public int getHash(GameState<RobotChrono> state);	
 	
 }

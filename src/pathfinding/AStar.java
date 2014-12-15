@@ -36,13 +36,13 @@ public class AStar implements Service
 	private int COEFF_HEURISTIC = 1;
 	
 	private ArrayList<GameState<RobotChrono>> openset = new ArrayList<GameState<RobotChrono>>();	 // The set of tentative nodes to be evaluated
-	private ArrayList<Double> closedset = new ArrayList<Double>();	 // The set of tentative nodes to be evaluated
-	private Map<Double, Double>	came_from = new HashMap<Double, Double>(); // The map of navigated nodes.
-	private Map<Double, Arc>	came_from_arc = new HashMap<Double, Arc>();
-	private Map<Double, Double>	g_score = new HashMap<Double, Double>(), 
-				f_score = new HashMap<Double, Double>();
+	private ArrayList<Integer> closedset = new ArrayList<Integer>();	 // The set of tentative nodes to be evaluated
+	private Map<Integer, Integer>	came_from = new HashMap<Integer, Integer>(); // The map of navigated nodes.
+	private Map<Integer, Arc>	came_from_arc = new HashMap<Integer, Arc>();
+	private Map<Integer, Double>	g_score = new HashMap<Integer, Double>(), 
+				f_score = new HashMap<Integer, Double>();
 
-//	private Log log;
+	private Log log;
 	private PathfindingArcManager pfarcmanager;
 	private StrategyArcManager stratarcmanager;
 	
@@ -51,15 +51,19 @@ public class AStar implements Service
 	 */
 	public AStar(Log log, Config config, PathfindingArcManager pfarcmanager, StrategyArcManager stratarcmanager)
 	{
-//		this.log = log;
+		this.log = log;
 		this.pfarcmanager = pfarcmanager;
 		this.stratarcmanager = stratarcmanager;
+		// Afin d'outrepasser la dépendance circulaire qui provient de la double
+		// utilisation de l'AStar (stratégie et pathfinding)
+		stratarcmanager.setAStar(this);
 	}
 	
 	public ArrayList<Decision> computeStrategy(GameState<RobotChrono> state) throws FinMatchException, PathfindingException
 	{
 		// TODO
 		GameState<RobotChrono> arrivee = state.cloneGameState();
+		arrivee.robot.setFinalState();
 		ArrayList<Arc> cheminArc = process(state, arrivee, stratarcmanager);
 		ArrayList<Decision> decisions = new ArrayList<Decision>();
 		for(Arc arc: cheminArc)
@@ -144,7 +148,7 @@ public class AStar implements Service
 			{
 				// On renvoie le robot final, celui qui a parcouru toutes les épreuves, current.
 				current.copy(depart);
-				Double noeud_parent = came_from.get(arcmanager.getHash(current));
+				Integer noeud_parent = came_from.get(arcmanager.getHash(current));
 				Arc arc_parent = came_from_arc.get(arcmanager.getHash(current));
 				while (noeud_parent != null)
 				{
@@ -157,6 +161,8 @@ public class AStar implements Service
 
 			openset.remove(current);
 			closedset.add(arcmanager.getHash(current));
+			
+			log.debug("Closedset: "+arcmanager.getHash(current), this);
 			
 			arcmanager.reinitIterator(current);
 		    	
@@ -171,6 +177,8 @@ public class AStar implements Service
 				
 				if(closedset.contains(arcmanager.getHash(successeur)))
 					continue;
+				else
+					log.debug("Closedset ne contient pas "+arcmanager.getHash(successeur), this);
 
 				if(!contains(openset, successeur, arcmanager) || tentative_g_score < g_score.get(arcmanager.getHash(successeur)))
 				{
