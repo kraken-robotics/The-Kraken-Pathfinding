@@ -30,6 +30,7 @@ public class JUnit_StrategicAStar extends JUnit_Test
     @Test
     public void test_astar() throws Exception
     {
+    	config.setDateDebutMatch();
     	ArrayList<Decision> decisions = astar.computeStrategy(gamestate.cloneGameState());
     	for(Decision d: decisions)
     		log.debug(d.meta_version+" "+d.meta_version+" "+d.shoot_game_element, this);

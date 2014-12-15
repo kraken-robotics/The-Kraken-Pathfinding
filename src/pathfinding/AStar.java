@@ -41,7 +41,7 @@ public class AStar implements Service
 	private Map<Integer, Arc>	came_from_arc = new HashMap<Integer, Arc>();
 	private Map<Integer, Double>	g_score = new HashMap<Integer, Double>(), 
 				f_score = new HashMap<Integer, Double>();
-
+	
 	private Log log;
 	private PathfindingArcManager pfarcmanager;
 	private StrategyArcManager stratarcmanager;
@@ -86,6 +86,11 @@ public class AStar implements Service
 			chemin.add(pointDepart);
 			for(Arc arc: cheminArc)
 				chemin.add((PathfindingNodes)arc);
+
+			// si le chemin renvoyé est incomplet, on annule tout
+			if(chemin.get(chemin.size()-1) != indice_point_arrivee)
+				throw new PathfindingException();
+
 			return lissage(positionInitiale, state, chemin);
 		} catch (GridSpaceException e1) {
 			throw new PathfindingRobotInObstacleException();
@@ -110,11 +115,9 @@ public class AStar implements Service
 	
 	private ArrayList<Arc> process(GameState<RobotChrono> depart, GameState<RobotChrono> arrivee, ArcManager arcmanager) throws PathfindingException, FinMatchException
 	{
-		ArrayList<Arc> chemin = new ArrayList<Arc>();
-
 		// optimisation si depart == arrivee
 		if(arcmanager.getHash(depart) == arcmanager.getHash(arrivee))
-			return chemin;
+			return new ArrayList<Arc>();
 
 		closedset.clear();
 		openset.clear();
@@ -146,17 +149,10 @@ public class AStar implements Service
 
 			if(arcmanager.getHash(current) == arcmanager.getHash(arrivee))
 			{
-				// On renvoie le robot final, celui qui a parcouru toutes les épreuves, current.
+				int old_hash = arcmanager.getHash(current);
 				current.copy(depart);
-				Integer noeud_parent = came_from.get(arcmanager.getHash(current));
-				Arc arc_parent = came_from_arc.get(arcmanager.getHash(current));
-				while (noeud_parent != null)
-				{
-					chemin.add(0, arc_parent);
-					arc_parent = came_from_arc.get(noeud_parent);
-					noeud_parent = came_from.get(noeud_parent);
-				}
-				return chemin;	//  reconstructed path
+				return reconstruct(old_hash);
+				// On renvoie le robot final, celui qui a parcouru toutes les épreuves, current.
 			}
 
 			openset.remove(current);
@@ -191,12 +187,37 @@ public class AStar implements Service
 				}
 			}	
 		}
-		    		    	
+
+		/**
+		 * Même si on n'a pas atteint l'objectif, on reconstruit un chemin partiel
+		 */
+		Integer best = null;
+		for(Integer h: f_score.keySet())
+		{
+			if(best == null || f_score.get(h) < f_score.get(best))
+				best = h;
+		}
+		if(best != null)
+			return reconstruct(best);
+		
 	throw new PathfindingException();
 	
 	}
 	
 	
+	private ArrayList<Arc> reconstruct(int hash) {
+		ArrayList<Arc> chemin = new ArrayList<Arc>();
+		Integer noeud_parent = came_from.get(hash);
+		Arc arc_parent = came_from_arc.get(hash);
+		while (noeud_parent != null)
+		{
+			chemin.add(0, arc_parent);
+			arc_parent = came_from_arc.get(noeud_parent);
+			noeud_parent = came_from.get(noeud_parent);
+		}
+		return chemin;	//  reconstructed path
+	}
+
 	/**
 	 * Return true si openset contient successeur, compte tenu de l'égalité de
 	 * gamestate fournie par l'arcmanager.
