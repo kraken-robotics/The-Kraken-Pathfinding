@@ -24,16 +24,16 @@ public class JUnit_Test_Graphic extends JUnit_Test {
 	ObstacleManager obstaclemanager;
 	private AStar pathfinding;
 	private GameState<RobotChrono> state_chrono;
+	private GameState<RobotReal> state;
 	
+	@SuppressWarnings("unchecked")
 	@Before
 	public void setUp() throws Exception
 	{
 		super.setUp();
         pathfinding = (AStar) container.getService(ServiceNames.A_STAR);
 		obstaclemanager = (ObstacleManager) container.getService(ServiceNames.OBSTACLE_MANAGER);
-		@SuppressWarnings("unchecked")
-		GameState<RobotReal> state = (GameState<RobotReal>)container.getService(ServiceNames.REAL_GAME_STATE);
-		state_chrono = state.cloneGameState();
+		state = (GameState<RobotReal>)container.getService(ServiceNames.REAL_GAME_STATE);
 
 		fenetre = new Fenetre();
 		fenetre.setDilatationObstacle(obstaclemanager.getDilatationObstacle());
@@ -65,6 +65,8 @@ public class JUnit_Test_Graphic extends JUnit_Test {
 			PathfindingNodes j = PathfindingNodes.values()[randomgenerator.nextInt(PathfindingNodes.values().length)];
 			log.debug("Recherche chemin entre "+i+" et "+j, this);
 			Vec2 entree = i.getCoordonnees().plusNewVector(new Vec2(randomgenerator.nextInt(100)-50, randomgenerator.nextInt(100)-50));
+			config.setDateDebutMatch(); // afin d'avoir toujours une haute précision
+			state_chrono = state.cloneGameState();
 			state_chrono.robot.setPosition(entree);
 			ArrayList<PathfindingNodes> chemin = pathfinding.computePath(state_chrono, j, true);
     		ArrayList<Vec2> cheminVec2 = new ArrayList<Vec2>();

@@ -158,14 +158,12 @@ public class AStar implements Service
 			openset.remove(current);
 			closedset.add(arcmanager.getHash(current));
 			
-			log.debug("Closedset: "+arcmanager.getHash(current), this);
-			
 			arcmanager.reinitIterator(current);
 		    	
 			while(arcmanager.hasNext(current))
 			{
 				Arc voisin = arcmanager.next();
-				
+//				log.debug("Voisin de "+current.robot.getPositionPathfinding()+": "+voisin, this);
 				GameState<RobotChrono> successeur = current.cloneGameState();
 				
 				// successeur est modifié lors du "distanceTo"
@@ -173,8 +171,6 @@ public class AStar implements Service
 				
 				if(closedset.contains(arcmanager.getHash(successeur)))
 					continue;
-				else
-					log.debug("Closedset ne contient pas "+arcmanager.getHash(successeur), this);
 
 				if(!contains(openset, successeur, arcmanager) || tentative_g_score < g_score.get(arcmanager.getHash(successeur)))
 				{
@@ -198,7 +194,10 @@ public class AStar implements Service
 				best = h;
 		}
 		if(best != null)
+		{
+			log.warning("Reconstruction partielle", this);
 			return reconstruct(best);
+		}
 		
 	throw new PathfindingException();
 	

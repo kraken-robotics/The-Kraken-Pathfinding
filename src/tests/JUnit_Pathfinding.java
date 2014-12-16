@@ -59,7 +59,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
     {
     	for(PathfindingNodes i: PathfindingNodes.values())
         	for(PathfindingNodes j: PathfindingNodes.values())
-        		if(!j.is_an_emergency_point()) // on n'arrive jamais dans un emergency point
+        		if(!j.is_high_precision_point()) // on n'arrive jamais dans un point de haute précision
         		{
         			state_chrono = state.cloneGameState();
         			state_chrono.robot.setPosition(i.getCoordonnees());

@@ -1,14 +1,11 @@
 package pathfinding;
 
-import java.util.ArrayList;
-
 import obstacles.ObstacleManager;
 import container.Service;
 import smartMath.Vec2;
 import table.Table;
 import utils.Config;
 import utils.Log;
-import enums.ConfigInfo;
 import enums.NodesConnection;
 import enums.PathfindingNodes;
 import exceptions.GridSpaceException;
@@ -90,11 +87,6 @@ public class GridSpace implements Service {
 //			log.debug("Trajet entre "+i+" et "+j+" impossible à cause d'un obstacle fixe!", this);			
 			return false;
 		}
-/*		else if(isConnected[i.ordinal()][j.ordinal()] != null)
-		{
-//			log.debug("Is traversable: use cache", this);			
-			return isConnected[i.ordinal()][j.ordinal()].isTraversable();			
-		}*/
 		else if(obstaclemanager.obstacle_proximite_dans_segment(i.getCoordonnees(), j.getCoordonnees()))
 		{
 //			log.debug("Trajet entre "+i+" et "+j+" impossible à cause d'un obstacle de proximité", this);
@@ -142,12 +134,12 @@ public class GridSpace implements Service {
 	
 	@Override
 	public void updateConfig() {
-		avoidGameElement = Boolean.parseBoolean(config.get(ConfigInfo.EVITE_ELEMENT_JEU));
 	}
 
 	public void copy(GridSpace other, long date)
 	{
 		obstaclemanager.copy(other.obstaclemanager, date);
+		other.avoidGameElement = avoidGameElement;
 		// On détruit le cache car le robot aura bougé
 		other.reinitConnections(date);
 	}
@@ -181,8 +173,7 @@ public class GridSpace implements Service {
     	// Evaluation paresseuse importante, car obstacle_proximite_dans_segment est bien plus rapide que obstacle_fixe_dans_segment
     	return !obstaclemanager.obstacle_proximite_dans_segment(pointA, pointB) && !obstaclemanager.obstacle_fixe_dans_segment_pathfinding(pointA, pointB);
     }
-    
-    
+        
     /**
      * Créer un obstacle à une certaine date
      * Utilisé dans l'arbre des possibles.
@@ -191,7 +182,7 @@ public class GridSpace implements Service {
      */
     public void creer_obstacle(Vec2 position, long date)
     {
-    	obstaclemanager.creer_obstacle(position);
+    	obstaclemanager.creer_obstacle(position, date);
     	reinitConnections(date);
     }
     
@@ -209,24 +200,4 @@ public class GridSpace implements Service {
     {
     	this.avoidGameElement = avoidGameElement;
     }
-
-    /**
-     * Retourne la distance cumulée d'un chemin entre deux PathfindingNodes.
-     * @param chemin
-     * @return
-     */
-    public double distanceCumulee(ArrayList<PathfindingNodes> chemin)
-    {
-    	PathfindingNodes last = chemin.get(0);
-    	double distance = 0;
-    	for(PathfindingNodes n: chemin)
-    	{
-    		if(!isTraversable(last, n))
-    			return Double.MAX_VALUE;
-    		distance += last.distanceTo(n);
-    		last = n;
-    	}
-    	return distance;
-    }
-
 }

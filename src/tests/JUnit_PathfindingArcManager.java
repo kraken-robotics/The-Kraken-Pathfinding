@@ -43,6 +43,22 @@ public class JUnit_PathfindingArcManager extends JUnit_Test {
 		Assert.assertEquals(PathfindingNodes.CLAP_DROIT, pathfindingarcmanager.next());
 		Assert.assertTrue(pathfindingarcmanager.hasNext(state_chrono));
 		Assert.assertEquals(PathfindingNodes.BAS, pathfindingarcmanager.next());
+		Assert.assertTrue(pathfindingarcmanager.hasNext(state_chrono));
+		Assert.assertEquals(PathfindingNodes.SECOURS_1, pathfindingarcmanager.next());
+		Assert.assertTrue(pathfindingarcmanager.hasNext(state_chrono));
+		Assert.assertEquals(PathfindingNodes.SECOURS_3, pathfindingarcmanager.next());
+		Assert.assertTrue(pathfindingarcmanager.hasNext(state_chrono));
+		Assert.assertEquals(PathfindingNodes.SECOURS_4, pathfindingarcmanager.next());
+		Assert.assertTrue(pathfindingarcmanager.hasNext(state_chrono));
+		Assert.assertEquals(PathfindingNodes.SECOURS_5, pathfindingarcmanager.next());
+		Assert.assertTrue(pathfindingarcmanager.hasNext(state_chrono));
+		Assert.assertEquals(PathfindingNodes.SECOURS_6, pathfindingarcmanager.next());
+		Assert.assertTrue(pathfindingarcmanager.hasNext(state_chrono));
+		Assert.assertEquals(PathfindingNodes.SECOURS_7, pathfindingarcmanager.next());
+		Assert.assertTrue(pathfindingarcmanager.hasNext(state_chrono));
+		Assert.assertEquals(PathfindingNodes.SECOURS_8, pathfindingarcmanager.next());
+		Assert.assertTrue(pathfindingarcmanager.hasNext(state_chrono));
+		Assert.assertEquals(PathfindingNodes.SECOURS_9, pathfindingarcmanager.next());
 		Assert.assertTrue(!pathfindingarcmanager.hasNext(state_chrono));
 	}
 	
@@ -62,7 +78,7 @@ public class JUnit_PathfindingArcManager extends JUnit_Test {
 				verification[pathfindingarcmanager.next().ordinal()] = true;
 			}
 			for(PathfindingNodes i : PathfindingNodes.values())
-				Assert.assertTrue((state_chrono.gridspace.isTraversable(i, j) && i != j) == verification[i.ordinal()]);
+				Assert.assertEquals((state_chrono.gridspace.isTraversable(i, j) && i != j), verification[i.ordinal()]);
 		}
 	}
 	

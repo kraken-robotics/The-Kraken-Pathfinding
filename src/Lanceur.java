@@ -8,6 +8,11 @@ import enums.ServiceNames;
  *
  */
 
+/* TODO LIST
+ * se renseigner sur la compilation sans bytecode (GCJ)
+ *
+ */
+
 public class Lanceur {
 
 	public static void main(String[] args) {

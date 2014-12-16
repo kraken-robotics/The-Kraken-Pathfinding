@@ -44,17 +44,17 @@ public enum PathfindingNodes implements Arc {
 	}
 	
 	private Vec2 coordonnees;
-	private boolean emergency_point;
+	private boolean high_precision_point;
 	
-	private PathfindingNodes(Vec2 coordonnees, boolean emergency_point)
+	private PathfindingNodes(Vec2 coordonnees, boolean high_precision_point)
 	{
 		this.coordonnees = coordonnees;
-		this.emergency_point = emergency_point;
+		this.high_precision_point = high_precision_point;
 	}
 	
-	public boolean is_an_emergency_point()
+	public boolean is_high_precision_point()
 	{
-		return emergency_point;
+		return high_precision_point;
 	}
 	
 	public Vec2 getCoordonnees()

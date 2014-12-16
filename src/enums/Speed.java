@@ -22,10 +22,10 @@ public enum Speed
     public int PWMTranslation;
     public int PWMRotation;
     
-    // en milliseconde par millimètre
+    /** en milliseconde par millimètre */
     public int invertedTranslationnalSpeed;
     
-    // en millisecondes par radians
+    /** en millisecondes par radians */
     public int invertedRotationnalSpeed;
         
     /**
