@@ -30,30 +30,7 @@ public class Table implements Service
 	{
 		this.log = log;
 		this.config = config;	
-		
-		total[0] = plots[0] = new GameElement(new Vec2(1410, 150), 30, GameElementNames.PLOT_1);
-		total[1] = plots[1] = new GameElement(new Vec2(1410, 250), 30, GameElementNames.PLOT_2);
-		total[2] = plots[2] = new GameElement(new Vec2(1410, 1300), 30, GameElementNames.PLOT_3);
-		total[3] = plots[3] = new GameElement(new Vec2(650, 1300), 30, GameElementNames.PLOT_4);
-		total[4] = plots[4] = new GameElement(new Vec2(650, 1400), 30, GameElementNames.PLOT_5);
-		total[5] = plots[5] = new GameElement(new Vec2(200, 600), 30, GameElementNames.PLOT_6);
-		total[6] = plots[6] = new GameElement(new Vec2(630, 645), 30, GameElementNames.PLOT_7);
-		total[7] = plots[7] = new GameElement(new Vec2(400, 230), 30, GameElementNames.PLOT_8);
-		
-		total[8] = claps[0] = new GameElement(new Vec2(650, 0), -1, GameElementNames.CLAP_1);
-		total[9] = claps[1] = new GameElement(new Vec2(-950, 0), -1, GameElementNames.CLAP_2);
-		total[10] = claps[2] = new GameElement(new Vec2(1250, 0), -1, GameElementNames.CLAP_3);
-		
-		total[11] = verres[0] = new GameElement(new Vec2(-1250, 250), 50, GameElementNames.VERRE_1);
-		total[12] = verres[1] = new GameElement(new Vec2(1250, 250), 50, GameElementNames.VERRE_2);
-		total[13] = verres[2] = new GameElement(new Vec2(-590, 1200), 50, GameElementNames.VERRE_3);
-		total[14] = verres[3] = new GameElement(new Vec2(590, 1200), 50, GameElementNames.VERRE_4);
-		total[15] = verres[4] = new GameElement(new Vec2(0, 350), 50, GameElementNames.VERRE_5);
-
-		total[16] = distributeurs[0] = new GameElement(new Vec2(900, 1950), 25, GameElementNames.DISTRIB_1);
-		total[17] = distributeurs[1] = new GameElement(new Vec2(1200, 1950), 25, GameElementNames.DISTRIB_2);
-		total[18] = distributeurs[2] = new GameElement(new Vec2(-900, 1950), 25, GameElementNames.DISTRIB_3);
-		total[19] = distributeurs[3] = new GameElement(new Vec2(-1200, 1950), 25, GameElementNames.DISTRIB_4);
+		// TODO: s'occuper de cette table...
 	}
 	
 	/**

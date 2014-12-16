@@ -1,6 +1,7 @@
 package obstacles;
 
 import smartMath.Vec2;
+import utils.Log;
 
 /**
  * Obstacle circulaire
@@ -14,15 +15,15 @@ public class ObstacleCircular extends Obstacle
 	// rayon de cet obstacle
 	protected int radius;
 	
-	public ObstacleCircular(Vec2 position, int rad)
+	public ObstacleCircular(Log log, Vec2 position, int rad)
 	{
-		super(position);
+		super(log, position);
 		this.radius = rad;
 	}
 	
 	public ObstacleCircular clone()
 	{
-		return new ObstacleCircular(position.clone(), radius);
+		return new ObstacleCircular(log, position.clone(), radius);
 	}
 
 	public int getRadius()

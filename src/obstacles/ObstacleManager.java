@@ -30,7 +30,7 @@ public class ObstacleManager implements Service
 
     // Les obstacles fixes sont surtout utilisés pour savoir si un capteur détecte un ennemi ou un obstacle fixe
     // Commun à toutes les instances
-    private static ArrayList<Obstacle> listObstaclesFixes;
+    private static ArrayList<Obstacle> listObstaclesFixes = null;
   
     // Utilisé pour accélérer la copie
     private int hashObstacles;
@@ -41,26 +41,26 @@ public class ObstacleManager implements Service
     private long dureeAvantPeremption = 0;
 
     // L'initialisation a lieu une seule fois pour tous les objets.
-    static
+    private void createListObstaclesFixes()
     {
         listObstaclesFixes = new ArrayList<Obstacle>();
 
-        listObstaclesFixes.add(new ObstacleRectangular(new Vec2(0,100),800,200)); // plaque rouge        
-        listObstaclesFixes.add(new ObstacleRectangular(new Vec2(0,2000-580/2),1066,580)); // escalier
-        listObstaclesFixes.add(new ObstacleRectangular(new Vec2(-1500+400/2,1200),400,22)); // bandes de bois zone de départ
-        listObstaclesFixes.add(new ObstacleRectangular(new Vec2(1500-400/2,1200),400,22));
-        listObstaclesFixes.add(new ObstacleRectangular(new Vec2(-1500+400/2,800),400,22));
-        listObstaclesFixes.add(new ObstacleRectangular(new Vec2(1500-400/2,800),400,22));
-        listObstaclesFixes.add(new ObstacleRectangular(new Vec2(-1200+50/2,2000-50/2),50,50)); // distributeurs
-        listObstaclesFixes.add(new ObstacleRectangular(new Vec2(-900+50/2,2000-50/2),50,50));
-        listObstaclesFixes.add(new ObstacleRectangular(new Vec2(900-50/2,2000-50/2),50,50));
-        listObstaclesFixes.add(new ObstacleRectangular(new Vec2(1200-50/2,2000-50/2),50,50));
+        listObstaclesFixes.add(new ObstacleRectangular(log, new Vec2(0,100),800,200)); // plaque rouge        
+        listObstaclesFixes.add(new ObstacleRectangular(log, new Vec2(0,2000-580/2),1066,580)); // escalier
+        listObstaclesFixes.add(new ObstacleRectangular(log, new Vec2(-1500+400/2,1200),400,22)); // bandes de bois zone de départ
+        listObstaclesFixes.add(new ObstacleRectangular(log, new Vec2(1500-400/2,1200),400,22));
+        listObstaclesFixes.add(new ObstacleRectangular(log, new Vec2(-1500+400/2,800),400,22));
+        listObstaclesFixes.add(new ObstacleRectangular(log, new Vec2(1500-400/2,800),400,22));
+        listObstaclesFixes.add(new ObstacleRectangular(log, new Vec2(-1200+50/2,2000-50/2),50,50)); // distributeurs
+        listObstaclesFixes.add(new ObstacleRectangular(log, new Vec2(-900+50/2,2000-50/2),50,50));
+        listObstaclesFixes.add(new ObstacleRectangular(log, new Vec2(900-50/2,2000-50/2),50,50));
+        listObstaclesFixes.add(new ObstacleRectangular(log, new Vec2(1200-50/2,2000-50/2),50,50));
 
         // bords
-        listObstaclesFixes.add(new ObstacleRectangular(new Vec2(0,0),3000,1));
-        listObstaclesFixes.add(new ObstacleRectangular(new Vec2(-1500,1000),1,2000));
-        listObstaclesFixes.add(new ObstacleRectangular(new Vec2(1500,1000),1,2000));
-        listObstaclesFixes.add(new ObstacleRectangular(new Vec2(0,2000),3000,1));
+        listObstaclesFixes.add(new ObstacleRectangular(log, new Vec2(0,0),3000,1));
+        listObstaclesFixes.add(new ObstacleRectangular(log, new Vec2(-1500,1000),1,2000));
+        listObstaclesFixes.add(new ObstacleRectangular(log, new Vec2(1500,1000),1,2000));
+        listObstaclesFixes.add(new ObstacleRectangular(log, new Vec2(0,2000),3000,1));
     }
     
     public ObstacleManager(Log log, Config config, Table table)
@@ -70,7 +70,8 @@ public class ObstacleManager implements Service
         this.table = table;
 
         hashObstacles = 0;
-
+        if(listObstaclesFixes != null)
+        	createListObstaclesFixes();
         updateConfig();
     }
 
@@ -81,7 +82,7 @@ public class ObstacleManager implements Service
     public void creer_obstacle(final Vec2 position)
     {
         Vec2 position_sauv = position.clone();
-        ObstacleProximity obstacle = new ObstacleProximity(position_sauv, rayon_robot_adverse, dureeAvantPeremption);
+        ObstacleProximity obstacle = new ObstacleProximity(log, position_sauv, rayon_robot_adverse, dureeAvantPeremption);
         log.warning("Obstacle créé, rayon = "+rayon_robot_adverse+", centre = "+position, this);
         listObstaclesMobiles.add(obstacle);
         check_game_element(position);
@@ -126,7 +127,7 @@ public class ObstacleManager implements Service
             ObstacleCircular obstacle = iterator.next();
             if (obstacle.isDestructionNecessary(date))
             {
-                System.out.println("Suppression d'un obstacle de proximité: "+obstacle);
+                log.debug("Suppression à "+date+" d'un obstacle de proximité: "+obstacle, this);
                 iterator.remove();
                 hashObstacles = indice++;
                 out = true;
@@ -259,6 +260,7 @@ public class ObstacleManager implements Service
      */
     public boolean obstacle_proximite_dans_segment(Vec2 A, Vec2 B, int distance)
     {
+    	log.debug("Obstacle entre "+A+" et "+B+" ?", this);
         Iterator<ObstacleProximity> iterator = listObstaclesMobiles.iterator();
         while(iterator.hasNext())
         {

@@ -1,5 +1,6 @@
 package obstacles;
 import smartMath.Vec2;
+import utils.Log;
 
 /**
  * Superclasse abstraite des obstacles.
@@ -11,9 +12,11 @@ public abstract class Obstacle
 {
 	protected Vec2 position;
 	protected int distance_dilatation;
+	protected Log log;
 	
-	public Obstacle (Vec2 position)
+	public Obstacle (Log log, Vec2 position)
 	{
+		this.log = log;
 		this.position = position;
 	}
 	

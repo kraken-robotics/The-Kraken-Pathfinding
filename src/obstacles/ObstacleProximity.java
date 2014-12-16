@@ -1,6 +1,7 @@
 package obstacles;
 
 import smartMath.Vec2;
+import utils.Log;
 
 /**
  * Obstacles détectés par capteurs de proximité (ultrasons et infrarouges)
@@ -10,16 +11,16 @@ public class ObstacleProximity extends ObstacleCircular
 {
 	private long death_date;
 
-	public ObstacleProximity (Vec2 position, int rad, long death_date)
+	public ObstacleProximity(Log log, Vec2 position, int rad, long death_date)
 	{
-		super(position,rad);
+		super(log, position,rad);
 		this.death_date = death_date;
 	}
 	
 	@Override
 	public ObstacleProximity clone()
 	{
-		return new ObstacleProximity(position.clone(), radius, death_date);
+		return new ObstacleProximity(log, position.clone(), radius, death_date);
 	}
 	
 	@Override
