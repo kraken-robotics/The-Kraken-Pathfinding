@@ -7,6 +7,7 @@ import utils.Log;
 import utils.Config;
 import enums.ConfigInfo;
 import enums.PathfindingNodes;
+import enums.Speed;
 import exceptions.FinMatchException;
 
  public class PathfindingArcManager implements ArcManager, Service {
@@ -26,10 +27,10 @@ import exceptions.FinMatchException;
 	@Override
 	public double distanceTo(GameState<RobotChrono> state, Arc arc)
 	{
-		double out = state.robot.getPositionPathfinding().distanceTo((PathfindingNodes)arc);
+		double temps_debut = state.robot.getTempsDepuisDebutMatch();
 		try {
 			state.robot.va_au_point_pathfinding((PathfindingNodes)arc, null);
-			return out;
+			return state.robot.getTempsDepuisDebutMatch() - temps_debut;
 		} catch (FinMatchException e) {
 			return Double.MAX_VALUE;
 		}
@@ -38,7 +39,7 @@ import exceptions.FinMatchException;
 	@Override
 	public double heuristicCost(GameState<RobotChrono> state1, GameState<RobotChrono> state2)
 	{
-		return state1.robot.getPositionPathfinding().distanceTo(state2.robot.getPositionPathfinding());
+		return state1.robot.getPositionPathfinding().distanceTo(state2.robot.getPositionPathfinding())*Speed.BETWEEN_SCRIPTS.invertedTranslationnalSpeed;
 	}
 
 	@Override
@@ -56,18 +57,18 @@ import exceptions.FinMatchException;
     public boolean hasNext(GameState<RobotChrono> state)
     {
     	// La précision diminue après la date.
-    	boolean low_precision = state.robot.getTempsDepuisDebutMatch() < date_precision_diminue;
-//    	if(!low_precision)
-//    		log.debug("Précision diminuée", this);
+    	boolean high_precision = true;//state.robot.getTempsDepuisDebutMatch() < date_precision_diminue;
     	do {
     		iterator++;
     		// Ce point n'est pas bon si:
     		// c'est le noeud appelant (un noeud n'est pas son propre voisin)
     		// c'est un noeud d'urgence et nous ne sommes pas en mode urgence
     		// le noeud appelant et ce noeud ne peuvent être joints par une ligne droite
+//    		if(iterator != PathfindingNodes.values().length)
+//    			log.debug(PathfindingNodes.values()[id_node_iterator]+" "+PathfindingNodes.values()[iterator]+": "+state.gridspace.isTraversable(PathfindingNodes.values()[id_node_iterator], PathfindingNodes.values()[iterator]), this);
     	} while(iterator < PathfindingNodes.values().length
     			&& (iterator == id_node_iterator
-    			|| (!low_precision && PathfindingNodes.values()[iterator].is_an_emergency_point())
+    			|| (!high_precision && PathfindingNodes.values()[iterator].is_an_emergency_point())
     			|| !state.gridspace.isTraversable(PathfindingNodes.values()[id_node_iterator], PathfindingNodes.values()[iterator])));
     	return iterator != PathfindingNodes.values().length;
     }
