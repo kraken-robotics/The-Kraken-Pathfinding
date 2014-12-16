@@ -70,8 +70,10 @@ public class ObstacleManager implements Service
         this.table = table;
 
         hashObstacles = 0;
-        if(listObstaclesFixes != null)
+
+        if(listObstaclesFixes == null)
         	createListObstaclesFixes();
+        
         updateConfig();
     }
 
@@ -79,10 +81,10 @@ public class ObstacleManager implements Service
      * Créer un obstacle de proximité
      * @param position
      */
-    public void creer_obstacle(final Vec2 position)
+    public void creer_obstacle(final Vec2 position, long date_actuelle)
     {
         Vec2 position_sauv = position.clone();
-        ObstacleProximity obstacle = new ObstacleProximity(log, position_sauv, rayon_robot_adverse, dureeAvantPeremption);
+        ObstacleProximity obstacle = new ObstacleProximity(log, position_sauv, rayon_robot_adverse, date_actuelle+dureeAvantPeremption);
         log.warning("Obstacle créé, rayon = "+rayon_robot_adverse+", centre = "+position, this);
         listObstaclesMobiles.add(obstacle);
         check_game_element(position);
@@ -260,7 +262,6 @@ public class ObstacleManager implements Service
      */
     public boolean obstacle_proximite_dans_segment(Vec2 A, Vec2 B, int distance)
     {
-    	log.debug("Obstacle entre "+A+" et "+B+" ?", this);
         Iterator<ObstacleProximity> iterator = listObstaclesMobiles.iterator();
         while(iterator.hasNext())
         {

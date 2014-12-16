@@ -36,11 +36,11 @@ public class JUnit_ObstacleManager extends JUnit_Test {
     public void test_creation() throws Exception
     {
     	Assert.assertTrue(obstaclemanager.nbObstaclesMobiles() == 0);
-    	obstaclemanager.creer_obstacle(new Vec2(500, 500));
+    	obstaclemanager.creer_obstacle(new Vec2(500, 500), 0);
     	Assert.assertTrue(obstaclemanager.nbObstaclesMobiles() == 1);
-    	obstaclemanager.creer_obstacle(new Vec2(-20, 10));
+    	obstaclemanager.creer_obstacle(new Vec2(-20, 10), 0);
     	Assert.assertTrue(obstaclemanager.nbObstaclesMobiles() == 2);
-    	obstaclemanager.creer_obstacle(new Vec2(5000, 200));
+    	obstaclemanager.creer_obstacle(new Vec2(5000, 200), 0);
     	Assert.assertTrue(obstaclemanager.nbObstaclesMobiles() == 3);
     }
 
@@ -54,7 +54,7 @@ public class JUnit_ObstacleManager extends JUnit_Test {
     	// Vérification de la présence d'obstacles mobiles
     	Assert.assertTrue(!obstaclemanager.is_obstacle_mobile_present(new Vec2(500, 500), 1));
     	Assert.assertTrue(!obstaclemanager.is_obstacle_mobile_present(new Vec2(520, 520), 100));
-    	obstaclemanager.creer_obstacle(new Vec2(500, 500));
+    	obstaclemanager.creer_obstacle(new Vec2(500, 500), 0);
     	Assert.assertTrue(obstaclemanager.is_obstacle_mobile_present(new Vec2(500, 500), 1));
     	Assert.assertTrue(obstaclemanager.is_obstacle_mobile_present(new Vec2(520, 520), 100));
     }
@@ -65,9 +65,9 @@ public class JUnit_ObstacleManager extends JUnit_Test {
     	config.set(ConfigInfo.DUREE_PEREMPTION_OBSTACLES, 200); // 200 ms de péremption
     	obstaclemanager.updateConfig();
     	
-    	obstaclemanager.creer_obstacle(new Vec2(0, 0));
-    	obstaclemanager.creer_obstacle(new Vec2(500, 500));
-    	obstaclemanager.creer_obstacle(new Vec2(0, 0));
+    	obstaclemanager.creer_obstacle(new Vec2(0, 0), 0);
+    	obstaclemanager.creer_obstacle(new Vec2(500, 500), 0);
+    	obstaclemanager.creer_obstacle(new Vec2(0, 0), 0);
     	Assert.assertTrue(obstaclemanager.is_obstacle_mobile_present(new Vec2(500, 500), 1));
     	obstaclemanager.supprimerObstaclesPerimes(100); // pas encore périmé
     	Assert.assertTrue(obstaclemanager.is_obstacle_mobile_present(new Vec2(500, 500), 1));
@@ -87,11 +87,11 @@ public class JUnit_ObstacleManager extends JUnit_Test {
     public void test_collision_obstacle_mobile() throws Exception
     {
     	Assert.assertTrue(!obstaclemanager.obstacle_proximite_dans_segment(new Vec2(100, 100), new Vec2(900, 900)));
-    	obstaclemanager.creer_obstacle(new Vec2(-300, 500));
+    	obstaclemanager.creer_obstacle(new Vec2(-300, 500), 0);
     	Assert.assertTrue(!obstaclemanager.obstacle_proximite_dans_segment(new Vec2(100, 100), new Vec2(900, 900)));
-    	obstaclemanager.creer_obstacle(new Vec2(1300, 1300));
+    	obstaclemanager.creer_obstacle(new Vec2(1300, 1300), 0);
     	Assert.assertTrue(!obstaclemanager.obstacle_proximite_dans_segment(new Vec2(100, 100), new Vec2(900, 900)));
-    	obstaclemanager.creer_obstacle(new Vec2(400, 500));    	
+    	obstaclemanager.creer_obstacle(new Vec2(400, 500), 0);
     	Assert.assertTrue(obstaclemanager.obstacle_proximite_dans_segment(new Vec2(100, 100), new Vec2(900, 900)));
     }
 
@@ -105,7 +105,7 @@ public class JUnit_ObstacleManager extends JUnit_Test {
     public void test_ennemi_dans_element_jeu() throws Exception
     {
     	Assert.assertTrue(table.getObstacles()[0].isDone() == Tribool.FALSE);
-    	obstaclemanager.creer_obstacle(new Vec2(1500, 150));
+    	obstaclemanager.creer_obstacle(new Vec2(1500, 150), 0);
     	Assert.assertTrue(table.getObstacles()[0].isDone() == Tribool.MAYBE);
     }
 
