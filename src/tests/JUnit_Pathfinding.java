@@ -2,7 +2,6 @@ package tests;
 
 import java.util.Random;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -102,19 +101,22 @@ public class JUnit_Pathfinding extends JUnit_Test {
     	pathfinding.computePath(state_chrono, PathfindingNodes.values()[0], true);
     }
 
-//	@Test
+	@Test
     public void test_benchmark() throws Exception
     {
 		Random randomgenerator = new Random();
-		for(int k = 0; k < 100000; k++)
+		int nb_iter = 10000;
+		long date_avant = System.currentTimeMillis();
+		for(int k = 0; k < nb_iter; k++)
 		{
+			// TODO: pourquoi y a-t-il besoin de cette ligne?
+			state_chrono.robot.reinitDate(); // afin d'avoir toujours une haute précision
 			PathfindingNodes i = PathfindingNodes.values()[randomgenerator.nextInt(PathfindingNodes.values().length)];
 			PathfindingNodes j = PathfindingNodes.values()[randomgenerator.nextInt(PathfindingNodes.values().length)];
-			config.setDateDebutMatch(); // afin d'avoir toujours une haute précision
-			state_chrono = state.cloneGameState();
 			state_chrono.robot.setPosition(i.getCoordonnees());
 			pathfinding.computePath(state_chrono, j, true);
 		}
+		log.debug("Durée moyenne en µs: "+1000*(System.currentTimeMillis()-date_avant)/nb_iter, this);
     }
 
 }

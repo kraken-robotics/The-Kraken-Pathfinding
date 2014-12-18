@@ -143,7 +143,16 @@ public class RobotChrono extends Robot
 
 	public void va_au_point_pathfinding(PathfindingNodes n, ArrayList<Hook> hooks) throws FinMatchException
 	{
-		va_au_point(n.getCoordonnees(), hooks);
+		if(!isPositionPathfindingActive)
+			va_au_point(n.getCoordonnees(), hooks);
+		else
+		{
+			tourner(positionPathfinding.getOrientationFinale(n));
+			checkHooks(position, n.getCoordonnees(), hooks);
+			date += positionPathfinding.distanceTo(n)*vitesse.invertedTranslationnalSpeed;
+			date += approximateSerialLatency;
+			date += Speed.translationStopDuration;			
+		}
 		setPositionPathfinding(n);
 	}
 
@@ -264,4 +273,12 @@ public class RobotChrono extends Robot
 		date = Integer.parseInt(config.get(ConfigInfo.DUREE_MATCH_EN_S))*1000;
 	}
 
+	/**
+	 * UTILISE UNIQUEMENT PAR LES TESTS
+	 */
+	public void reinitDate()
+	{
+		date = 0;
+	}
+	
 }

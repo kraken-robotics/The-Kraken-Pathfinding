@@ -82,12 +82,12 @@ public class JUnit_Test_Graphic extends JUnit_Test {
     		cheminVec2.add(entree);
     		for(PathfindingNodes n: chemin)
     		{
-//    			log.debug(n, this);
+    			log.debug(n, this);
     			cheminVec2.add(n.getCoordonnees());
     		}
     		fenetre.setPath(orientation_initiale, cheminVec2);
     		fenetre.repaint();
-    		Sleep.sleep(2000);
+    		Sleep.sleep(1000);
 		}
     }
 

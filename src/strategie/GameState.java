@@ -29,6 +29,7 @@ public class GameState<R extends Robot> implements Service
     
     // La hook factory est privée. Elle n'est pas copiée d'un gamestate à l'autre.
     private HookFactory hookfactory;
+    private int indice_memory_manager;
     
     private Log log;
     private Config config;
@@ -58,15 +59,21 @@ public class GameState<R extends Robot> implements Service
         this.hookfactory = hookfactory;
     }
     
-    /**
+	public GameState<RobotChrono> cloneGameState() throws FinMatchException
+	{
+		return cloneGameState(-1);
+	}
+
+	/**
      * Fournit un clone de this. Le clone sera un GameState<RobotChrono>, peu importe si this est un GameState<RobotVrai> ou un GameState<RobotChrono>
      */
-	public GameState<RobotChrono> cloneGameState() throws FinMatchException
+	public GameState<RobotChrono> cloneGameState(int indice_memory_manager) throws FinMatchException
 	{
 		// On instancie la table avant car il faut donner le même objet deux fois en paramètres
 		Table new_table = table.clone();
 		GameState<RobotChrono> cloned = new GameState<RobotChrono>(config, log, new_table, gridspace.clone(getTempsDepuisDebut(), new_table), robot.cloneIntoRobotChrono(), hookfactory);
 		copy(cloned);
+		cloned.indice_memory_manager = indice_memory_manager;
 		return cloned;
 	}
 
@@ -113,5 +120,10 @@ public class GameState<R extends Robot> implements Service
     {
     	dateDebutRacine = System.currentTimeMillis();
     }
-
+    
+    public int getIndiceMemoryManager()
+    {
+    	return indice_memory_manager;
+    }
+    
 }

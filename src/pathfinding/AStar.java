@@ -15,6 +15,7 @@ import robot.RobotChrono;
 import scripts.Decision;
 import smartMath.Vec2;
 import strategie.GameState;
+import strategie.MemoryManager;
 import utils.Config;
 import utils.Log;
 
@@ -45,21 +46,23 @@ public class AStar implements Service
 	private Log log;
 	private PathfindingArcManager pfarcmanager;
 	private StrategyArcManager stratarcmanager;
+	private MemoryManager memorymanager;
 	
 	/**
 	 * Constructeur du système de recherche de chemin
 	 */
-	public AStar(Log log, Config config, PathfindingArcManager pfarcmanager, StrategyArcManager stratarcmanager)
+	public AStar(Log log, Config config, PathfindingArcManager pfarcmanager, StrategyArcManager stratarcmanager, MemoryManager memorymanager)
 	{
 		this.log = log;
 		this.pfarcmanager = pfarcmanager;
 		this.stratarcmanager = stratarcmanager;
+		this.memorymanager = memorymanager;
 		// Afin d'outrepasser la dépendance circulaire qui provient de la double
 		// utilisation de l'AStar (stratégie et pathfinding)
 		stratarcmanager.setAStar(this);
 	}
 	
-	public ArrayList<Decision> computeStrategy(GameState<RobotChrono> state) throws FinMatchException, PathfindingException
+	public ArrayList<Decision> computeStrategy(GameState<RobotChrono> state) throws FinMatchException
 	{
 		// TODO
 		GameState<RobotChrono> arrivee = state.cloneGameState();
@@ -78,13 +81,15 @@ public class AStar implements Service
 			state.gridspace.setAvoidGameElement(!shoot_game_element);
 			PathfindingNodes pointDepart = state.gridspace.nearestReachableNode(state.robot.getPosition());
 
-			GameState<RobotChrono> depart = state.cloneGameState();
+			GameState<RobotChrono> depart = memorymanager.getNewGameState();
+			state.copy(depart);
 			depart.robot.setPositionPathfinding(pointDepart);
 			
-			// On pourrait alléger cela... en ayant un gamestate complètement vide, sauf la position
-			GameState<RobotChrono> arrivee = state.cloneGameState();
+			GameState<RobotChrono> arrivee = memorymanager.getNewGameState();
+			state.copy(arrivee);
 			arrivee.robot.setPositionPathfinding(indice_point_arrivee);
 			ArrayList<Arc> cheminArc = process(depart, arrivee, pfarcmanager);
+			
 			ArrayList<PathfindingNodes> chemin = new ArrayList<PathfindingNodes>(); 
 			chemin.add(pointDepart);
 			for(Arc arc: cheminArc)
@@ -109,17 +114,20 @@ public class AStar implements Service
 	{
 		// si on peut sauter le premier point, on le fait
 		while(chemin.size() >= 2 && state.gridspace.isTraversable(depart, chemin.get(1).getCoordonnees()))
-		{
 			chemin.remove(0);
-		}
+
 		return chemin;
 	}
 	
-	private ArrayList<Arc> process(GameState<RobotChrono> depart, GameState<RobotChrono> arrivee, ArcManager arcmanager) throws PathfindingException, FinMatchException
+	private ArrayList<Arc> process(GameState<RobotChrono> depart, GameState<RobotChrono> arrivee, ArcManager arcmanager) throws FinMatchException
 	{
 		// optimisation si depart == arrivee
 		if(arcmanager.getHash(depart) == arcmanager.getHash(arrivee))
+		{
+			depart = memorymanager.destroyGameState(depart);
+			arrivee = memorymanager.destroyGameState(arrivee);
 			return new ArrayList<Arc>();
+		}
 
 		closedset.clear();
 		openset.clear();
@@ -148,24 +156,31 @@ public class AStar implements Service
 			}
 
 			if(arcmanager.getHash(current) == arcmanager.getHash(arrivee))
+			{
+				freeGameStateOpenSet(openset);
+				arrivee = memorymanager.destroyGameState(arrivee);
 				return reconstruct(arcmanager.getHash(current));
+			}
 
 			openset.remove(current);
 			closedset.add(arcmanager.getHash(current));
-			
 			arcmanager.reinitIterator(current);
 		    	
 			while(arcmanager.hasNext(current))
 			{
 				Arc voisin = arcmanager.next();
 //				log.debug("Voisin de "+current.robot.getPositionPathfinding()+": "+voisin, this);
-				GameState<RobotChrono> successeur = current.cloneGameState();
+				GameState<RobotChrono> successeur = memorymanager.getNewGameState();
+				current.copy(successeur);
 				
 				// successeur est modifié lors du "distanceTo"
 				double tentative_g_score = g_score.get(arcmanager.getHash(current)) + arcmanager.distanceTo(successeur, voisin);
 				
 				if(closedset.contains(arcmanager.getHash(successeur)))
+				{
+					successeur = memorymanager.destroyGameState(successeur);
 					continue;
+				}
 
 				if(!contains(openset, successeur, arcmanager) || tentative_g_score < g_score.get(arcmanager.getHash(successeur)))
 				{
@@ -173,12 +188,22 @@ public class AStar implements Service
 					came_from_arc.put(arcmanager.getHash(successeur), voisin);
 					g_score.put(arcmanager.getHash(successeur), tentative_g_score);
 					f_score.put(arcmanager.getHash(successeur), tentative_g_score + COEFF_HEURISTIC * arcmanager.heuristicCost(successeur, arrivee));
+					// TODO: remplacer celui qui existe déjà par successeur?
 					if(!contains(openset, successeur, arcmanager))
 						openset.add(successeur);
+					else
+						successeur = memorymanager.destroyGameState(successeur);
 				}
-			}	
+				else
+					successeur = memorymanager.destroyGameState(successeur);
+			}
+			
+			current = memorymanager.destroyGameState(current);	
 		}
-
+		
+		// Pathfinding terminé sans avoir atteint l'arrivée
+		freeGameStateOpenSet(openset);
+		arrivee = memorymanager.destroyGameState(arrivee);
 		/**
 		 * Même si on n'a pas atteint l'objectif, on reconstruit un chemin partiel
 		 */
@@ -188,14 +213,11 @@ public class AStar implements Service
 			if(best == null || f_score.get(h) < f_score.get(best))
 				best = h;
 		}
-		if(best != null)
-		{
-			log.warning("Reconstruction partielle", this);
-			return reconstruct(best);
-		}
 		
-	throw new PathfindingException();
-	
+		// best est nécessairement non nul car f_score contient au moins le point de départ
+		log.warning("Reconstruction partielle", this);
+		return reconstruct(best);
+		
 	}
 	
 	
@@ -235,5 +257,11 @@ public class AStar implements Service
 	{
 		COEFF_HEURISTIC = n;
 	}
-		
+
+	public void freeGameStateOpenSet(ArrayList<GameState<RobotChrono>> openset)
+	{
+		for(GameState<RobotChrono> state: openset)
+			state = memorymanager.destroyGameState(state);
+	}
+	
 }

@@ -13,6 +13,7 @@ import utils.*;
 import scripts.ScriptManager;
 import strategie.Execution;
 import strategie.GameState;
+import strategie.MemoryManager;
 import table.Table;
 import threads.AbstractThread;
 import threads.ThreadSensor;
@@ -121,7 +122,8 @@ public class Container
 			instanciedServices[serviceRequested.ordinal()] = (Service)new AStar((Log)getService(ServiceNames.LOG),
 																				(Config)getService(ServiceNames.CONFIG),
 																				(PathfindingArcManager)getService(ServiceNames.PATHFINDING_ARC_MANAGER),
-																				(StrategyArcManager)getService(ServiceNames.STRATEGY_ARC_MANAGER));
+																				(StrategyArcManager)getService(ServiceNames.STRATEGY_ARC_MANAGER),
+																				(MemoryManager)getService(ServiceNames.MEMORY_MANAGER));
 		else if(serviceRequested == ServiceNames.GRID_SPACE)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new GridSpace((Log)getService(ServiceNames.LOG),
 																				(Config)getService(ServiceNames.CONFIG),
@@ -153,12 +155,16 @@ public class Container
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ActuatorCardWrapper((Config)getService(ServiceNames.CONFIG),
 															 (Log)getService(ServiceNames.LOG),
 															 (SerialConnexion)getService(ServiceNames.SERIE_CAPTEURS_ACTIONNEURS));
+		else if(serviceRequested == ServiceNames.MEMORY_MANAGER)
+			instanciedServices[serviceRequested.ordinal()] = (Service)new MemoryManager((Log)getService(ServiceNames.LOG),
+															 (Config)getService(ServiceNames.CONFIG),
+        													 (GameState<RobotReal>)getService(ServiceNames.REAL_GAME_STATE));
 		else if(serviceRequested == ServiceNames.HOOK_FACTORY)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new HookFactory((Config)getService(ServiceNames.CONFIG),
 															 (Log)getService(ServiceNames.LOG));
 		else if(serviceRequested == ServiceNames.ROBOT_REAL)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new RobotReal((ActuatorCardWrapper)getService(ServiceNames.ACTUATOR_CARD_WRAPPER),
-															(Locomotion)getService(ServiceNames.LOCOMOTION),
+															 (Locomotion)getService(ServiceNames.LOCOMOTION),
 															 (Table)getService(ServiceNames.TABLE),
 															 (Config)getService(ServiceNames.CONFIG),
 															 (Log)getService(ServiceNames.LOG),

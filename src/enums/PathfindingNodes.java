@@ -37,10 +37,17 @@ public enum PathfindingNodes implements Arc {
 	// Contient les distances entre chaque point de passage
 	private static double[][] distances = new double[PathfindingNodes.values().length][PathfindingNodes.values().length];
 
+	// contient l'orientation du robot après le trajet
+	private static double[][] orientations = new double[PathfindingNodes.values().length][PathfindingNodes.values().length];
+
 	static {
 		for(PathfindingNodes i : PathfindingNodes.values())
 			for(PathfindingNodes j : PathfindingNodes.values())
+			{
 				distances[i.ordinal()][j.ordinal()] = i.getCoordonnees().distance(j.getCoordonnees());
+				orientations[i.ordinal()][j.ordinal()] = Math.atan2(i.getCoordonnees().y - j.getCoordonnees().y, i.getCoordonnees().x - j.getCoordonnees().y);
+			}
+		
 	}
 	
 	private Vec2 coordonnees;
@@ -65,6 +72,11 @@ public enum PathfindingNodes implements Arc {
 	public double distanceTo(PathfindingNodes n)
 	{
 		return distances[ordinal()][n.ordinal()];
+	}
+	
+	public double getOrientationFinale(PathfindingNodes n)
+	{
+		return orientations[ordinal()][n.ordinal()];
 	}
 
 }
