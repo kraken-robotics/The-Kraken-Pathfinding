@@ -2,12 +2,12 @@ package hook.types;
 
 import java.util.ArrayList;
 
-import obstacles.GameElement;
 import hook.Callback;
 import hook.Hook;
 import hook.methods.GameElementDone;
 import container.Service;
 import enums.ConfigInfo;
+import enums.GameElementNames;
 import enums.GameElementType;
 import enums.Tribool;
 import smartMath.Vec2;
@@ -204,32 +204,31 @@ public class HookFactory implements Service
     public ArrayList<Hook> getHooksEntreScripts(GameState<?> state)
     {
     	ArrayList<Hook> hooks_entre_scripts = new ArrayList<Hook>();
-		GameElement[] obstacles = state.table.getObstacles();
 		Hook hook;
 		GameElementDone action;
-		for(GameElement o: obstacles)
+		for(GameElementNames n: GameElementNames.values())
 		{
 			// L'ennemi peut prendre les distributeurs
-			if(o.isDone() == Tribool.FALSE && o.getName().getType() == GameElementType.DISTRIBUTEUR)
+			if(state.gridspace.isDone(n) == Tribool.FALSE && n.getType() == GameElementType.DISTRIBUTEUR)
 			{
 				hook = newHookDate(20000, state);
-				action = new GameElementDone(o, Tribool.MAYBE);
+				action = new GameElementDone(state.gridspace, n, Tribool.MAYBE);
 				hook.ajouter_callback(new Callback(action));
 				hooks_entre_scripts.add(hook);
 			}
-			else if(o.isDone() == Tribool.FALSE && o.getName().getType() == GameElementType.VERRE)
+			else if(state.gridspace.isDone(n) == Tribool.FALSE && n.getType() == GameElementType.VERRE)
 			{
 				hook = newHookDate(20000, state);
-				action = new GameElementDone(o, Tribool.MAYBE);
+				action = new GameElementDone(state.gridspace, n, Tribool.MAYBE);
 				hook.ajouter_callback(new Callback(action));
 				hooks_entre_scripts.add(hook);
 			}
 			// Les éléments de jeu avec un rayon négatif sont ceux qu'on ne peut pas percuter.
 			// Exemple: clap, distributeur. 
-			if(o.isDone() != Tribool.TRUE && o.getRadius() > 0)
+			if(state.gridspace.isDone(n) != Tribool.TRUE && n.getRadius() > 0)
 			{
-				hook = newHookPosition(o.getPosition(), o.getRadius(), state);
-				action = new GameElementDone(o, Tribool.TRUE);
+				hook = newHookPosition(n.getPosition(), n.getRadius(), state);
+				action = new GameElementDone(state.gridspace, n, Tribool.TRUE);
 				hook.ajouter_callback(new Callback(action));
 				hooks_entre_scripts.add(hook);
 			}

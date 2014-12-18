@@ -44,7 +44,7 @@ public class JUnit_GridSpace extends JUnit_Test {
 		Assert.assertTrue(gridspace.isTraversable(PathfindingNodes.NODE_TAPIS, PathfindingNodes.BAS_GAUCHE));
 		gridspace.creer_obstacle(new Vec2(-220, 830));
 		// mise à jour du gridspace
-		gridspace.reinitConnections(0);
+		gridspace.reinitConnections();
 		Assert.assertTrue(!gridspace.isTraversable(PathfindingNodes.NODE_TAPIS, PathfindingNodes.BAS_GAUCHE));
 	}
 
@@ -54,7 +54,7 @@ public class JUnit_GridSpace extends JUnit_Test {
 		for(PathfindingNodes i : PathfindingNodes.values())
 			for(PathfindingNodes j : PathfindingNodes.values())
 				Assert.assertTrue(gridspace.isTraversable(i,j) == gridspace.isTraversable(j,i));
-		gridspace.reinitConnections(0);
+		gridspace.reinitConnections();
 		for(PathfindingNodes i : PathfindingNodes.values())
 			for(PathfindingNodes j : PathfindingNodes.values())
 				Assert.assertTrue(gridspace.isTraversable(i,j) == gridspace.isTraversable(j,i));

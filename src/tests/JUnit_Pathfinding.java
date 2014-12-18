@@ -14,6 +14,7 @@ import enums.ConfigInfo;
 import enums.GameElementNames;
 import enums.PathfindingNodes;
 import enums.ServiceNames;
+import enums.Tribool;
 import exceptions.PathfindingException;
 import exceptions.PathfindingRobotInObstacleException;
 
@@ -61,7 +62,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
     	for(PathfindingNodes i: PathfindingNodes.values())
         	for(PathfindingNodes j: PathfindingNodes.values())
     		{
-    			state_chrono = state.cloneGameState();
+        		state_chrono.robot.reinitDate();
     			state_chrono.robot.setPosition(i.getCoordonnees());
     			pathfinding.computePath(state_chrono, j, true, false);
     		}
@@ -71,7 +72,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
     public void test_element_jeu_disparu() throws Exception
     {
     	// une fois ce verre pris, le chemin est libre
-    	state_chrono.table.setDone(GameElementNames.VERRE_3);
+    	state_chrono.gridspace.setDone(GameElementNames.VERRE_3, Tribool.TRUE);
     	state_chrono.robot.setPositionPathfinding(PathfindingNodes.BAS_GAUCHE);
     	pathfinding.computePath(state_chrono, PathfindingNodes.COTE_MARCHE_GAUCHE, false, false);
     }
@@ -104,7 +105,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
     public void test_benchmark() throws Exception
     {
 		Random randomgenerator = new Random();
-		int nb_iter = 1000000;
+		int nb_iter = 100000;
 		long date_avant = System.currentTimeMillis();
 		for(int k = 0; k < nb_iter; k++)
 		{

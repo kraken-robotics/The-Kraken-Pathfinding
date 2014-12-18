@@ -1,6 +1,7 @@
 package hook.methods;
 
-import obstacles.GameElement;
+import pathfinding.GridSpace;
+import enums.GameElementNames;
 import enums.Tribool;
 import hook.Executable;
 
@@ -12,20 +13,21 @@ import hook.Executable;
 
 public class GameElementDone implements Executable {
 
-	private GameElement o;
+	private GridSpace gridspace;
 	private Tribool done;
+	private GameElementNames element;
 	
-	public GameElementDone(GameElement o, Tribool done)
+	public GameElementDone(GridSpace gridspace, GameElementNames element, Tribool done)
 	{
-		this.o = o;
+		this.gridspace = gridspace;
 		this.done = done;
+		this.element = element;
 	}
 	
 	@Override
 	public boolean execute()
 	{
-		System.out.println(o.getName()+" is done by hook");
-		o.setDone(done);
+		gridspace.setDone(element, done);
 		return false;
 	}
 

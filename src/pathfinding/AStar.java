@@ -1,9 +1,7 @@
 package pathfinding;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 
 import container.Service;
 import enums.PathfindingNodes;
@@ -35,13 +33,14 @@ public class AStar implements Service
 	 */
 	
 	private int COEFF_HEURISTIC = 1;
+	private static final int nb_max_element = 100;
 	
 	private ArrayList<GameState<RobotChrono>> openset = new ArrayList<GameState<RobotChrono>>();	 // The set of tentative nodes to be evaluated
-	private ArrayList<Integer> closedset = new ArrayList<Integer>();	 // The set of tentative nodes to be evaluated
-	private Map<Integer, Integer>	came_from = new HashMap<Integer, Integer>(); // The map of navigated nodes.
-	private Map<Integer, Arc>	came_from_arc = new HashMap<Integer, Arc>();
-	private Map<Integer, Double>	g_score = new HashMap<Integer, Double>(), 
-				f_score = new HashMap<Integer, Double>();
+	private boolean[] closedset = new boolean[nb_max_element];
+	private int[] came_from = new int[nb_max_element];
+	private Arc[] came_from_arc = new Arc[nb_max_element];
+	private double[] g_score = new double[nb_max_element];
+	private double[] f_score = new double[nb_max_element];
 	
 	private Log log;
 	private PathfindingArcManager pfarcmanager;
@@ -123,22 +122,29 @@ public class AStar implements Service
 	
 	private ArrayList<Arc> process(GameState<RobotChrono> depart, GameState<RobotChrono> arrivee, ArcManager arcmanager) throws FinMatchException
 	{
+		int hash_arrivee = arcmanager.getHash(arrivee);
+		int hash_depart = arcmanager.getHash(depart);
 		// optimisation si depart == arrivee
-		if(arcmanager.getHash(depart) == arcmanager.getHash(arrivee))
+		if(hash_depart == hash_arrivee)
 		{
 			depart = memorymanager.destroyGameState(depart);
 			arrivee = memorymanager.destroyGameState(arrivee);
 			return new ArrayList<Arc>();
 		}
 
-		closedset.clear();
+		for(int i = 0; i < nb_max_element; i++)
+		{
+			closedset[i] = false;
+			came_from_arc[i] = null;
+			came_from[i] = -1;
+			g_score[i] = Double.MAX_VALUE;
+			f_score[i] = Double.MAX_VALUE;
+		}
 		openset.clear();
 		openset.add(depart);	// The set of tentative nodes to be evaluated, initially containing the start node
-		came_from_arc.clear();
-		came_from.clear();
-		g_score.put(arcmanager.getHash(depart), 0.);	// Cost from start along best known path.
+		g_score[hash_depart] = 0.;	// Cost from start along best known path.
 		// Estimated total cost from start to goal through y.
-		f_score.put(arcmanager.getHash(depart), g_score.get(arcmanager.getHash(depart)) + COEFF_HEURISTIC * arcmanager.heuristicCost(depart, arrivee));
+		f_score[hash_depart] = g_score[hash_depart] + COEFF_HEURISTIC * arcmanager.heuristicCost(depart, arrivee);
 		
 		GameState<RobotChrono> current;
 		Iterator<GameState<RobotChrono>> nodeIterator;
@@ -149,23 +155,25 @@ public class AStar implements Service
 			// current is affected by the node in openset having the lowest f_score[] value
 			nodeIterator = openset.iterator();
 			current = nodeIterator.next();
-
+			
 			while(nodeIterator.hasNext())
 			{
 				GameState<RobotChrono> tmp = nodeIterator.next();
-				if(f_score.get(arcmanager.getHash(tmp)) < f_score.get(arcmanager.getHash((current))))
+				if(f_score[arcmanager.getHash(tmp)] < f_score[arcmanager.getHash((current))])
 					current = tmp;
 			}
 
-			if(arcmanager.getHash(current) == arcmanager.getHash(arrivee))
+			int hash_current = arcmanager.getHash(current);
+			
+			if(hash_current == hash_arrivee)
 			{
 				freeGameStateOpenSet(openset);
 				arrivee = memorymanager.destroyGameState(arrivee);
-				return reconstruct(arcmanager.getHash(current));
+				return reconstruct(hash_current);
 			}
 
 			openset.remove(current);
-			closedset.add(arcmanager.getHash(current));
+			closedset[hash_current] = true;
 			arcmanager.reinitIterator(current);
 		    	
 			while(arcmanager.hasNext(current))
@@ -176,22 +184,24 @@ public class AStar implements Service
 				current.copy(successeur);
 				
 				// successeur est modifié lors du "distanceTo"
-				double tentative_g_score = g_score.get(arcmanager.getHash(current)) + arcmanager.distanceTo(successeur, voisin);
+				double tentative_g_score = g_score[hash_current] + arcmanager.distanceTo(successeur, voisin);
 				
-				if(closedset.contains(arcmanager.getHash(successeur)))
+				int hash_successeur = arcmanager.getHash(successeur);
+				
+				if(closedset[hash_successeur]) // si closedset contient ce hash
 				{
 					successeur = memorymanager.destroyGameState(successeur);
 					continue;
 				}
 
-				if(!contains(openset, successeur, arcmanager) || tentative_g_score < g_score.get(arcmanager.getHash(successeur)))
+				if(!contains(openset, hash_successeur, arcmanager) || tentative_g_score < g_score[hash_successeur])
 				{
-					came_from.put(arcmanager.getHash(successeur), arcmanager.getHash(current));
-					came_from_arc.put(arcmanager.getHash(successeur), voisin);
-					g_score.put(arcmanager.getHash(successeur), tentative_g_score);
-					f_score.put(arcmanager.getHash(successeur), tentative_g_score + COEFF_HEURISTIC * arcmanager.heuristicCost(successeur, arrivee));
+					came_from[hash_successeur] = hash_current;
+					came_from_arc[hash_successeur] = voisin;
+					g_score[hash_successeur] = tentative_g_score;
+					f_score[hash_successeur] = tentative_g_score + COEFF_HEURISTIC * arcmanager.heuristicCost(successeur, arrivee);
 					// TODO: remplacer celui qui existe déjà par successeur?
-					if(!contains(openset, successeur, arcmanager))
+					if(!contains(openset, hash_successeur, arcmanager))
 						openset.add(successeur);
 					else
 						successeur = memorymanager.destroyGameState(successeur);
@@ -210,9 +220,9 @@ public class AStar implements Service
 		 * Même si on n'a pas atteint l'objectif, on reconstruit un chemin partiel
 		 */
 		Integer best = null;
-		for(Integer h: f_score.keySet())
+		for(int h = 0; h < nb_max_element; h++)
 		{
-			if(best == null || f_score.get(h) < f_score.get(best))
+			if(best == null || f_score[h] < f_score[best])
 				best = h;
 		}
 		
@@ -225,13 +235,13 @@ public class AStar implements Service
 	
 	private ArrayList<Arc> reconstruct(int hash) {
 		ArrayList<Arc> chemin = new ArrayList<Arc>();
-		Integer noeud_parent = came_from.get(hash);
-		Arc arc_parent = came_from_arc.get(hash);
-		while (noeud_parent != null)
+		int noeud_parent = came_from[hash];
+		Arc arc_parent = came_from_arc[hash];
+		while (noeud_parent != -1)
 		{
 			chemin.add(0, arc_parent);
-			arc_parent = came_from_arc.get(noeud_parent);
-			noeud_parent = came_from.get(noeud_parent);
+			arc_parent = came_from_arc[noeud_parent];
+			noeud_parent = came_from[noeud_parent];
 		}
 		return chemin;	//  reconstructed path
 	}
@@ -245,9 +255,9 @@ public class AStar implements Service
 	 * @return
 	 */
 	private boolean contains(ArrayList<GameState<RobotChrono>> openset,
-			GameState<RobotChrono> successeur, ArcManager arcmanager) {
+			int hash_successeur, ArcManager arcmanager) {
 		for(GameState<RobotChrono> state: openset)
-			if(arcmanager.getHash(successeur) == arcmanager.getHash(state))
+			if(hash_successeur == arcmanager.getHash(state))
 				return true;
 		return false;
 	}

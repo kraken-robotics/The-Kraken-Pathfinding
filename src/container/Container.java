@@ -177,7 +177,6 @@ public class Container
         	// ici la construction est un petit peu différente car on interdit l'instanciation publique d'un GameSTate<RobotChrono>
             instanciedServices[serviceRequested.ordinal()] = (Service) GameState.constructRealGameState(  (Config)getService(ServiceNames.CONFIG),
                                                              (Log)getService(ServiceNames.LOG),
-                                                             (Table)getService(ServiceNames.TABLE),
                                                              (GridSpace)getService(ServiceNames.GRID_SPACE),                                                             
                                                              (RobotReal)getService(ServiceNames.ROBOT_REAL),
         													 (HookFactory)getService(ServiceNames.HOOK_FACTORY));

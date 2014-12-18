@@ -111,9 +111,9 @@ public class JUnit_Test_Graphic extends JUnit_Test {
 		fenetre.repaint();
     	
 		Assert.assertEquals(PathfindingNodes.BAS.getCoordonnees().plusNewVector(new Vec2(10, 10)), state_chrono.robot.getPosition());
-		Assert.assertTrue(state_chrono.table.isDone(GameElementNames.PLOT_6) == Tribool.FALSE);
+		Assert.assertTrue(state_chrono.gridspace.isDone(GameElementNames.PLOT_6) == Tribool.FALSE);
 		state_chrono.robot.suit_chemin(chemin, hooks_table);
-		Assert.assertTrue(state_chrono.table.isDone(GameElementNames.PLOT_6) == Tribool.TRUE);
+		Assert.assertTrue(state_chrono.gridspace.isDone(GameElementNames.PLOT_6) == Tribool.TRUE);
 		Assert.assertEquals(PathfindingNodes.COTE_MARCHE_DROITE.getCoordonnees(), state_chrono.robot.getPosition());
 		
     	// on vérifie qu'à présent qu'on a emprunté ce chemin, il n'y a plus d'élément de jeu dessus et donc qu'on peut demander un pathfinding sans exception

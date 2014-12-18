@@ -2,7 +2,6 @@ package obstacles;
 
 import enums.GameElementNames;
 import enums.Tribool;
-import smartMath.Vec2;
 import utils.Log;
 
 /**
@@ -17,10 +16,9 @@ public class GameElement extends ObstacleCircular
 	private Tribool done = Tribool.FALSE; 
 	private GameElementNames nom;
 	
-	public GameElement(Log log, Vec2 position, int rayon, GameElementNames nom)
+	public GameElement(Log log, GameElementNames nom)
 	{
-		super(log, position, rayon);
-		this.position = position;
+		super(log, nom.getPosition(), nom.getRadius());
 		this.nom = nom;
 	}
 	

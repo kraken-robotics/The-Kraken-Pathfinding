@@ -5,6 +5,7 @@ import java.util.Iterator;
 
 import container.Service;
 import enums.ConfigInfo;
+import enums.GameElementNames;
 import enums.Tribool;
 import smartMath.Vec2;
 import table.Table;
@@ -129,7 +130,7 @@ public class ObstacleManager implements Service
             ObstacleCircular obstacle = iterator.next();
             if (obstacle.isDestructionNecessary(date))
             {
-                log.debug("Suppression à "+date+" d'un obstacle de proximité: "+obstacle, this);
+//                log.debug("Suppression à "+date+" d'un obstacle de proximité: "+obstacle, this);
                 iterator.remove();
                 hashObstacles = indice++;
                 out = true;
@@ -157,10 +158,9 @@ public class ObstacleManager implements Service
         return listObstaclesMobiles.size();
     }
 
-    // Clone en utilisant la table donnée en paramètre
-    public ObstacleManager clone(long date, Table table)
+    public ObstacleManager clone(long date)
     {
-    	ObstacleManager cloned_manager = new ObstacleManager(log, config, table);
+    	ObstacleManager cloned_manager = new ObstacleManager(log, config, table.clone());
 		copy(cloned_manager, date);
 		return cloned_manager;
     }
@@ -391,6 +391,21 @@ public class ObstacleManager implements Service
 	public int getDilatationObstacle()
 	{
 		return dilatation_obstacle;
+	}
+
+	public void setDone(GameElementNames element, Tribool done)
+	{
+		table.setDone(element, done);
+	}
+
+	public Tribool isDone(GameElementNames element)
+	{
+		return table.isDone(element);
+	}
+
+	public int getHashTable()
+	{
+		return table.getHash();
 	}
 
 }

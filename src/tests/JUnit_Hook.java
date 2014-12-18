@@ -52,11 +52,11 @@ public class JUnit_Hook extends JUnit_Test {
 		ArrayList<Hook> hooks_table = hookfactory.getHooksEntreScripts(real_gamestate);
 		real_gamestate.robot.setPosition(new Vec2(600, 350));
 		real_gamestate.robot.setOrientation(Math.PI);
-		Assert.assertTrue(real_gamestate.table.isDone(GameElementNames.VERRE_5) == Tribool.FALSE);
+		Assert.assertTrue(real_gamestate.gridspace.isDone(GameElementNames.VERRE_5) == Tribool.FALSE);
 		real_gamestate.robot.avancer(100, hooks_table);
-		Assert.assertTrue(real_gamestate.table.isDone(GameElementNames.VERRE_5) == Tribool.FALSE);
+		Assert.assertTrue(real_gamestate.gridspace.isDone(GameElementNames.VERRE_5) == Tribool.FALSE);
 		real_gamestate.robot.avancer(500, hooks_table);
-		Assert.assertTrue(real_gamestate.table.isDone(GameElementNames.VERRE_5) == Tribool.TRUE);
+		Assert.assertTrue(real_gamestate.gridspace.isDone(GameElementNames.VERRE_5) == Tribool.TRUE);
 	}
 
 	@Test
@@ -65,11 +65,11 @@ public class JUnit_Hook extends JUnit_Test {
 		ArrayList<Hook> hooks_table = hookfactory.getHooksEntreScripts(chrono_gamestate);
 		chrono_gamestate.robot.setPosition(new Vec2(600, 350));
 		chrono_gamestate.robot.setOrientation(Math.PI);
-		Assert.assertTrue(chrono_gamestate.table.isDone(GameElementNames.VERRE_5) == Tribool.FALSE);
+		Assert.assertTrue(chrono_gamestate.gridspace.isDone(GameElementNames.VERRE_5) == Tribool.FALSE);
 		chrono_gamestate.robot.avancer(100, hooks_table);
-		Assert.assertTrue(chrono_gamestate.table.isDone(GameElementNames.VERRE_5) == Tribool.FALSE);
+		Assert.assertTrue(chrono_gamestate.gridspace.isDone(GameElementNames.VERRE_5) == Tribool.FALSE);
 		chrono_gamestate.robot.avancer(500, hooks_table);
-		Assert.assertTrue(chrono_gamestate.table.isDone(GameElementNames.VERRE_5) == Tribool.TRUE);
+		Assert.assertTrue(chrono_gamestate.gridspace.isDone(GameElementNames.VERRE_5) == Tribool.TRUE);
 	}
 
 	@Test
@@ -77,11 +77,11 @@ public class JUnit_Hook extends JUnit_Test {
 	{
 		config.setDateDebutMatch();
 		ArrayList<Hook> hooks_table = hookfactory.getHooksEntreScripts(real_gamestate);
-		Assert.assertTrue(real_gamestate.table.isDone(GameElementNames.VERRE_5) == Tribool.FALSE);
+		Assert.assertTrue(real_gamestate.gridspace.isDone(GameElementNames.VERRE_5) == Tribool.FALSE);
 		chrono_gamestate.robot.sleep(5000, hooks_table);
-		Assert.assertTrue(real_gamestate.table.isDone(GameElementNames.VERRE_5) == Tribool.FALSE);
+		Assert.assertTrue(real_gamestate.gridspace.isDone(GameElementNames.VERRE_5) == Tribool.FALSE);
 		chrono_gamestate.robot.sleep(90000, hooks_table);
-		Assert.assertTrue(real_gamestate.table.isDone(GameElementNames.VERRE_5) == Tribool.MAYBE);
+		Assert.assertTrue(real_gamestate.gridspace.isDone(GameElementNames.VERRE_5) == Tribool.MAYBE);
 	}
 
 	@Test(expected=PathfindingException.class)

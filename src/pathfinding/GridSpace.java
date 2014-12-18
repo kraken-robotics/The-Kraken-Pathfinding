@@ -3,11 +3,12 @@ package pathfinding;
 import obstacles.ObstacleManager;
 import container.Service;
 import smartMath.Vec2;
-import table.Table;
 import utils.Config;
 import utils.Log;
+import enums.GameElementNames;
 import enums.NodesConnection;
 import enums.PathfindingNodes;
+import enums.Tribool;
 import exceptions.GridSpaceException;
 
 /**
@@ -28,15 +29,20 @@ public class GridSpace implements Service {
 	// Rempli de ALWAYS_IMPOSSIBLE et null. Ne change pas.
 	private static NodesConnection[][] isConnectedModel = null;
 
+	// Rempli de ALWAYS_IMPOSSIBLE, TMP_IMPOSSIBLE, POSSIBLE et null
+	private NodesConnection[][] isConnectedModelCache = new NodesConnection[PathfindingNodes.values().length][PathfindingNodes.values().length];
+
 	// Doit-on éviter les éléments de jeux? Ou peut-on foncer dedans?
 	private boolean avoidGameElement = true;
+	
+	private int hashTable;
 	
 	public GridSpace(Log log, Config config, ObstacleManager obstaclemanager)
 	{
 		this.log = log;
 		this.config = config;
 		this.obstaclemanager = obstaclemanager;
-				
+		hashTable = obstaclemanager.getHashTable();
 		// Il est très important de ne faire ce long calcul qu'une seule fois,
 		// à la première initialisation
 		if(isConnectedModel == null)
@@ -44,6 +50,8 @@ public class GridSpace implements Service {
 			initStatic();
 			check_pathfinding_nodes();
 		}
+
+		reinitConnections();
 	}
 	
     public void check_pathfinding_nodes()
@@ -61,19 +69,23 @@ public class GridSpace implements Service {
 
 		for(PathfindingNodes i : PathfindingNodes.values())			
 			for(PathfindingNodes j : PathfindingNodes.values())
+			{
 				if(obstaclemanager.obstacle_fixe_dans_segment_pathfinding(i.getCoordonnees(), j.getCoordonnees()))
 					isConnectedModel[i.ordinal()][j.ordinal()] = NodesConnection.ALWAYS_IMPOSSIBLE;
 				else
 					isConnectedModel[i.ordinal()][j.ordinal()] = null;
+			}
 	}
 	
 	/**
 	 * Réinitialise l'état des liaisons.
 	 * A faire quand les obstacles mobiles ont changé.
 	 */
-	public void reinitConnections(long date)
+	public void reinitConnections()
 	{
-		obstaclemanager.supprimerObstaclesPerimes(date);
+		for(PathfindingNodes i : PathfindingNodes.values())			
+			for(PathfindingNodes j : PathfindingNodes.values())
+				isConnectedModelCache[i.ordinal()][j.ordinal()] = isConnectedModel[i.ordinal()][j.ordinal()];
 	}
 
 	/**
@@ -82,7 +94,7 @@ public class GridSpace implements Service {
 	 */
 	public boolean isTraversable(PathfindingNodes i, PathfindingNodes j)
 	{
-		if(isConnectedModel[i.ordinal()][j.ordinal()] == NodesConnection.ALWAYS_IMPOSSIBLE)
+		if(isConnectedModelCache[i.ordinal()][j.ordinal()] == NodesConnection.ALWAYS_IMPOSSIBLE)
 		{
 //			log.debug("Trajet entre "+i+" et "+j+" impossible à cause d'un obstacle fixe!", this);			
 			return false;
@@ -90,18 +102,22 @@ public class GridSpace implements Service {
 		else if(obstaclemanager.obstacle_proximite_dans_segment(i.getCoordonnees(), j.getCoordonnees()))
 		{
 //			log.debug("Trajet entre "+i+" et "+j+" impossible à cause d'un obstacle de proximité", this);
-			return NodesConnection.TMP_IMPOSSIBLE.isTraversable();
+			isConnectedModelCache[i.ordinal()][j.ordinal()] = NodesConnection.TMP_IMPOSSIBLE;
 		}
 		else if(avoidGameElement && obstaclemanager.obstacle_table_dans_segment(i.getCoordonnees(), j.getCoordonnees()))
 		{
 //			log.debug("Trajet entre "+i+" et "+j+" impossible à cause d'un élément de jeu", this);
-			return NodesConnection.TMP_IMPOSSIBLE.isTraversable();
+			isConnectedModelCache[i.ordinal()][j.ordinal()] = NodesConnection.TMP_IMPOSSIBLE;
 		}
 		else
 		{
 //			log.debug("Pas de problème entre "+i+" et "+j, this);
-			return NodesConnection.POSSIBLE.isTraversable();
+			isConnectedModelCache[i.ordinal()][j.ordinal()] = NodesConnection.POSSIBLE;
 		}
+
+		// symétrie!
+		isConnectedModelCache[j.ordinal()][i.ordinal()] = isConnectedModelCache[i.ordinal()][j.ordinal()];
+		return isConnectedModelCache[i.ordinal()][j.ordinal()].isTraversable();
 	}
 	
 	/**
@@ -134,21 +150,28 @@ public class GridSpace implements Service {
 	
 	@Override
 	public void updateConfig() {
+		obstaclemanager.updateConfig();
 	}
 
 	public void copy(GridSpace other, long date)
 	{
+		int oldHashTable = hashTable;
+		boolean hasChanged = obstaclemanager.supprimerObstaclesPerimes(date);
+		hashTable = obstaclemanager.getHashTable();
+		hasChanged |= oldHashTable != hashTable;
+
+		// On détruit le cache si les obstacles de proximité ou les éléments de jeux ont changé
+		if(hasChanged)
+			reinitConnections();
+
 		obstaclemanager.copy(other.obstaclemanager, date);
 		other.avoidGameElement = avoidGameElement;
-		// On détruit le cache car le robot aura bougé
-		other.reinitConnections(date);
+		other.hashTable = hashTable;
 	}
 	
-	public GridSpace clone(long date, Table table)
+	public GridSpace clone(long date)
 	{
-		// On réutilise la table donnée.
-		// Sinon, la table dans le GameState n'est pas la table de l'ObstacleManager.
-		GridSpace cloned_gridspace = new GridSpace(log, config, obstaclemanager.clone(date, table));
+		GridSpace cloned_gridspace = new GridSpace(log, config, obstaclemanager.clone(date));
 		copy(cloned_gridspace, date);
 		return cloned_gridspace;
 	}
@@ -183,7 +206,7 @@ public class GridSpace implements Service {
     public void creer_obstacle(Vec2 position, long date)
     {
     	obstaclemanager.creer_obstacle(position, date);
-    	reinitConnections(date);
+    	reinitConnections();
     }
     
     /**
@@ -200,4 +223,14 @@ public class GridSpace implements Service {
     {
     	this.avoidGameElement = avoidGameElement;
     }
+
+	public void setDone(GameElementNames element, Tribool done)
+	{
+		obstaclemanager.setDone(element, done);
+	}
+
+	public Tribool isDone(GameElementNames element)
+	{
+		return obstaclemanager.isDone(element);
+	}
 }

@@ -30,13 +30,13 @@ public class JUnit_Table extends JUnit_Test {
     {
     	Table cloned_table = table.clone();
     	Assert.assertTrue(table.equals(cloned_table));
-        cloned_table.setDone(GameElementNames.CLAP_1);
+        cloned_table.setDone(GameElementNames.CLAP_1, Tribool.TRUE);
     	Assert.assertTrue(!table.equals(cloned_table));
     	cloned_table.copy(table);
 		Assert.assertTrue(table.isDone(GameElementNames.CLAP_1) == Tribool.TRUE);
 		Assert.assertTrue(cloned_table.isDone(GameElementNames.CLAP_1) == Tribool.TRUE);
     	Assert.assertTrue(table.equals(cloned_table));
-    	table.setDone(GameElementNames.CLAP_2);
+    	table.setDone(GameElementNames.CLAP_2, Tribool.TRUE);
     	Assert.assertTrue(!table.equals(cloned_table));
     }
 

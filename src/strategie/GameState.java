@@ -7,7 +7,6 @@ import exceptions.FinMatchException;
 import robot.Robot;
 import robot.RobotChrono;
 import robot.RobotReal;
-import table.Table;
 import utils.Log;
 import utils.Config;
 
@@ -23,7 +22,6 @@ import utils.Config;
 
 public class GameState<R extends Robot> implements Service
 {    
-    public final Table table;
     public R robot;
     public final GridSpace gridspace;
     
@@ -44,16 +42,15 @@ public class GameState<R extends Robot> implements Service
      * @param robot
      * @return
      */
-    public static GameState<RobotReal> constructRealGameState(Config config, Log log, Table table, GridSpace gridspace, RobotReal robot, HookFactory hookfactory)
+    public static GameState<RobotReal> constructRealGameState(Config config, Log log, GridSpace gridspace, RobotReal robot, HookFactory hookfactory)
     {
-    	return new GameState<RobotReal>(config, log, table, gridspace, robot, hookfactory);
+    	return new GameState<RobotReal>(config, log, gridspace, robot, hookfactory);
     }
     
-    private GameState(Config config, Log log, Table table, GridSpace gridspace, R robot, HookFactory hookfactory)
+    private GameState(Config config, Log log, GridSpace gridspace, R robot, HookFactory hookfactory)
     {
         this.config = config;
         this.log = log;
-        this.table = table;
         this.gridspace = gridspace;
         this.robot = robot;
         this.hookfactory = hookfactory;
@@ -70,8 +67,7 @@ public class GameState<R extends Robot> implements Service
 	public GameState<RobotChrono> cloneGameState(int indice_memory_manager) throws FinMatchException
 	{
 		// On instancie la table avant car il faut donner le même objet deux fois en paramètres
-		Table new_table = table.clone();
-		GameState<RobotChrono> cloned = new GameState<RobotChrono>(config, log, new_table, gridspace.clone(getTempsDepuisDebut(), new_table), robot.cloneIntoRobotChrono(), hookfactory);
+		GameState<RobotChrono> cloned = new GameState<RobotChrono>(config, log, gridspace.clone(getTempsDepuisDebut()), robot.cloneIntoRobotChrono(), hookfactory);
 		copy(cloned);
 		cloned.indice_memory_manager = indice_memory_manager;
 		return cloned;
@@ -95,7 +91,6 @@ public class GameState<R extends Robot> implements Service
     @Override
     public void updateConfig()
     {
-        table.updateConfig();
         robot.updateConfig();
         gridspace.updateConfig();
     }

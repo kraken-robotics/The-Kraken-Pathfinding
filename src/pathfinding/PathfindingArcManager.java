@@ -58,14 +58,13 @@ import exceptions.FinMatchException;
     @Override
     public boolean hasNext(GameState<RobotChrono> state)
     {
+    	// TODO: accélérer
     	do {
     		iterator++;
     		// Ce point n'est pas bon si:
     		// c'est le noeud appelant (un noeud n'est pas son propre voisin)
-    		// c'est un noeud de haute précision et qu'on est en basse précision
     		// le noeud appelant et ce noeud ne peuvent être joints par une ligne droite
-//    		if(iterator != PathfindingNodes.values().length)
-//    			log.debug(PathfindingNodes.values()[id_node_iterator]+" "+PathfindingNodes.values()[iterator]+": "+state.gridspace.isTraversable(PathfindingNodes.values()[id_node_iterator], PathfindingNodes.values()[iterator]), this);
+
     	} while(iterator < PathfindingNodes.values().length
     			&& (iterator == id_node_iterator
     			|| !state.gridspace.isTraversable(PathfindingNodes.values()[id_node_iterator], PathfindingNodes.values()[iterator])));

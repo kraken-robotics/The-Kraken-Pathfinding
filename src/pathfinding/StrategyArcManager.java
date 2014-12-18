@@ -1,6 +1,7 @@
 package pathfinding;
 
 import java.util.ArrayList;
+import java.util.Vector;
 
 import hook.Hook;
 import hook.types.HookFactory;
@@ -31,6 +32,7 @@ public class StrategyArcManager implements Service, ArcManager {
 	
 	private ArrayList<Decision> listeDecisions = new ArrayList<Decision>();
 	private int iterator;
+	private Vector<Integer> hashes = new Vector<Integer>(); // TODO
 	
 	public StrategyArcManager(Log log, Config config, ScriptManager scriptmanager, GameState<RobotReal> real_gamestate, HookFactory hookfactory)
 	{
@@ -131,6 +133,8 @@ public class StrategyArcManager implements Service, ArcManager {
 	@Override
 	public int getHash(GameState<RobotChrono> state)
 	{
+		// TODO: doit renvoyer des valeurs entières contigues débutant à 0
+		// pour cela, on utilise un vecteur et getIndexOf
 //		log.debug("Hash: "+(((double)state.robot.getPointsObtenus())/((double)state.robot.getTempsDepuisDebutMatch())), this);
 		return (int)(100000*((double)state.robot.getPointsObtenus())/((double)state.robot.getTempsDepuisDebutMatch()));
 	}
