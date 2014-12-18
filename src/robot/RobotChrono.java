@@ -131,15 +131,14 @@ public class RobotChrono extends Robot
 	
 	public void va_au_point(Vec2 point, ArrayList<Hook> hooks) throws FinMatchException
 	{
-		log.debug("Va au point"+point, this);
 		double orientation_finale = Math.atan2(point.y - position.y, point.x - position.x);
 		tourner(orientation_finale);
 		checkHooks(position, point, hooks);
 		date += position.distance(point)*vitesse.invertedTranslationnalSpeed;
 		position = point.clone();
 		isPositionPathfindingActive = false;
-		this.date += approximateSerialLatency;
-		this.date += Speed.translationStopDuration;
+		date += approximateSerialLatency;
+		date += Speed.translationStopDuration;
 	}
 
 	public void va_au_point_pathfinding(PathfindingNodes n, ArrayList<Hook> hooks) throws FinMatchException

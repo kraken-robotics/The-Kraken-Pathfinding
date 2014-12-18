@@ -6,9 +6,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import container.Service;
-import enums.GameElementNames;
 import enums.PathfindingNodes;
-import enums.Tribool;
 import exceptions.FinMatchException;
 import exceptions.GridSpaceException;
 import exceptions.PathfindingException;
