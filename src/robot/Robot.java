@@ -182,7 +182,7 @@ public abstract class Robot implements Service
     	pointsObtenus = pointsObtenus + 5;
     }
     
-	public ActuatorOrder bougeBrasClapOrder(Side cote, HauteurBrasClap hauteur) throws SerialConnexionException, FinMatchException
+	protected ActuatorOrder bougeBrasClapOrder(Side cote, HauteurBrasClap hauteur)
 	{
 		if(cote == Side.LEFT && hauteur == HauteurBrasClap.TOUT_EN_HAUT)
 			return ActuatorOrder.LEVE_CLAP_GAUCHE;
@@ -199,18 +199,39 @@ public abstract class Robot implements Service
 		return null;
 	}
 
+	public abstract void bougeBrasClap(Side cote, HauteurBrasClap hauteur, boolean needToSleep) throws SerialConnexionException, FinMatchException;
+	public abstract void poserDeuxTapis(boolean needToSleep) throws FinMatchException;
+	public abstract void leverDeuxTapis(boolean needToSleep) throws FinMatchException;
+
+	// Utilisé par les scripts
 	public void bougeBrasClap(Side cote, HauteurBrasClap hauteur) throws SerialConnexionException, FinMatchException
 	{
-		ActuatorOrder order = bougeBrasClapOrder(cote, hauteur);
+		bougeBrasClap(cote, hauteur, true);
+	}
+
+	public void poserDeuxTapis() throws FinMatchException
+	{
+		poserDeuxTapis(true);
+	}
+
+	public void leverDeuxTapis() throws FinMatchException
+	{
+		leverDeuxTapis(true);
+	}
+
+	protected void bougeBrasClapSleep(ActuatorOrder order) throws FinMatchException
+	{
 		sleep(order.getSleepValue());
 	}
 
-	public void poserDeuxTapis() throws FinMatchException {
+	protected void poserDeuxTapisSleep() throws FinMatchException
+	{
 		sleep(ActuatorOrder.BAISSE_TAPIS_DROIT.getSleepValue());
 		sleep(ActuatorOrder.BAISSE_TAPIS_GAUCHE.getSleepValue());
 	}
 
-	public void leverDeuxTapis() throws FinMatchException {
+	protected void leverDeuxTapisSleep() throws FinMatchException
+	{
 		sleep(ActuatorOrder.LEVE_TAPIS_DROIT.getSleepValue());
 		sleep(ActuatorOrder.LEVE_TAPIS_GAUCHE.getSleepValue());
 	}

@@ -7,7 +7,9 @@ import smartMath.Vec2;
 import utils.Log;
 import utils.Config;
 import enums.ConfigInfo;
+import enums.HauteurBrasClap;
 import enums.PathfindingNodes;
+import enums.Side;
 import enums.Speed;
 import exceptions.FinMatchException;
 
@@ -275,6 +277,28 @@ public class RobotChrono extends Robot
 	public void reinitDate()
 	{
 		date = 0;
+	}
+
+	@Override
+	public void bougeBrasClap(Side cote, HauteurBrasClap hauteur,
+			boolean needToSleep) throws FinMatchException
+	{
+		if(needToSleep)
+			bougeBrasClapSleep(bougeBrasClapOrder(cote, hauteur));
+	}
+
+	@Override
+	public void poserDeuxTapis(boolean needToSleep) throws FinMatchException
+	{
+		if(needToSleep)
+			poserDeuxTapisSleep();
+	}
+
+	@Override
+	public void leverDeuxTapis(boolean needToSleep) throws FinMatchException
+	{
+		if(needToSleep)
+			leverDeuxTapisSleep();		
 	}
 	
 }
