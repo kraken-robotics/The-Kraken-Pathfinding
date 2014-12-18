@@ -87,7 +87,7 @@ public class StrategyArcManager implements Service, ArcManager {
 				long old_temps = state.robot.getTempsDepuisDebutMatch();
 				ArrayList<PathfindingNodes> chemin;
 				try {
-					chemin = astar.computePath(state, s.point_entree(d.meta_version), d.shoot_game_element);
+					chemin = astar.computePath(state, s.point_entree(d.meta_version), d.shoot_game_element, false);
 				} catch (PathfindingException
 						| PathfindingRobotInObstacleException e) {
 					return Double.MAX_VALUE;

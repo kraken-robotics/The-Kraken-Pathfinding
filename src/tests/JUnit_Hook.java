@@ -88,7 +88,7 @@ public class JUnit_Hook extends JUnit_Test {
 	public void test_hook_chrono_suit_chemin2() throws Exception
 	{
 		chrono_gamestate.robot.setPosition(PathfindingNodes.BAS.getCoordonnees());
-    	pathfinding.computePath(chrono_gamestate, PathfindingNodes.COTE_MARCHE_DROITE, false);
+    	pathfinding.computePath(chrono_gamestate, PathfindingNodes.COTE_MARCHE_DROITE, false, false);
 	}
 
 }

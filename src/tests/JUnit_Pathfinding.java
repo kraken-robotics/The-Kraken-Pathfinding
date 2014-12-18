@@ -44,7 +44,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
     {
 		state_chrono.robot.setPosition(new Vec2(80, 80));
     	state_chrono.gridspace.creer_obstacle(new Vec2(80, 80));
-    	pathfinding.computePath(state_chrono, PathfindingNodes.values()[0], false);
+    	pathfinding.computePath(state_chrono, PathfindingNodes.values()[0], false, false);
     }
 
 	@Test(expected=PathfindingException.class)
@@ -52,7 +52,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
     {
 		state_chrono.robot.setPosition(new Vec2(80, 80));
 		state_chrono.gridspace.creer_obstacle(PathfindingNodes.values()[0].getCoordonnees());
-    	pathfinding.computePath(state_chrono, PathfindingNodes.values()[0], false);
+    	pathfinding.computePath(state_chrono, PathfindingNodes.values()[0], false, false);
     }
 
 	@Test
@@ -60,12 +60,11 @@ public class JUnit_Pathfinding extends JUnit_Test {
     {
     	for(PathfindingNodes i: PathfindingNodes.values())
         	for(PathfindingNodes j: PathfindingNodes.values())
-        		if(!j.is_high_precision_point()) // on n'arrive jamais dans un point de haute précision
-        		{
-        			state_chrono = state.cloneGameState();
-        			state_chrono.robot.setPosition(i.getCoordonnees());
-        			pathfinding.computePath(state_chrono, j, true);
-        		}
+    		{
+    			state_chrono = state.cloneGameState();
+    			state_chrono.robot.setPosition(i.getCoordonnees());
+    			pathfinding.computePath(state_chrono, j, true, false);
+    		}
     }
 	
 	@Test
@@ -74,7 +73,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
     	// une fois ce verre pris, le chemin est libre
     	state_chrono.table.setDone(GameElementNames.VERRE_3);
     	state_chrono.robot.setPositionPathfinding(PathfindingNodes.BAS_GAUCHE);
-    	pathfinding.computePath(state_chrono, PathfindingNodes.COTE_MARCHE_GAUCHE, false);
+    	pathfinding.computePath(state_chrono, PathfindingNodes.COTE_MARCHE_GAUCHE, false, false);
     }
 
 	@Test(expected=PathfindingException.class)
@@ -82,7 +81,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
     {
 		// Exception car il y a un verre sur le passage
 		state_chrono.robot.setPositionPathfinding(PathfindingNodes.BAS_GAUCHE);
-    	pathfinding.computePath(state_chrono, PathfindingNodes.COTE_MARCHE_GAUCHE, false);
+    	pathfinding.computePath(state_chrono, PathfindingNodes.COTE_MARCHE_GAUCHE, false, false);
     }
 	
 	@Test
@@ -90,7 +89,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
     {
 		// Pas d'exception car on demande au pathfinding de passer sur les éléments de jeux.
 		state_chrono.robot.setPositionPathfinding(PathfindingNodes.BAS_GAUCHE);
-    	pathfinding.computePath(state_chrono, PathfindingNodes.COTE_MARCHE_GAUCHE, true);
+    	pathfinding.computePath(state_chrono, PathfindingNodes.COTE_MARCHE_GAUCHE, true, false);
     }
 
 	@Test
@@ -98,14 +97,14 @@ public class JUnit_Pathfinding extends JUnit_Test {
     {
     	state_chrono.robot.setPosition(new Vec2(80, 80));
 		state_chrono.gridspace.creer_obstacle(PathfindingNodes.values()[0].getCoordonnees());
-    	pathfinding.computePath(state_chrono, PathfindingNodes.values()[0], true);
+    	pathfinding.computePath(state_chrono, PathfindingNodes.values()[0], true, false);
     }
 
 	@Test
     public void test_benchmark() throws Exception
     {
 		Random randomgenerator = new Random();
-		int nb_iter = 10000;
+		int nb_iter = 1000000;
 		long date_avant = System.currentTimeMillis();
 		for(int k = 0; k < nb_iter; k++)
 		{
@@ -114,7 +113,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
 			PathfindingNodes i = PathfindingNodes.values()[randomgenerator.nextInt(PathfindingNodes.values().length)];
 			PathfindingNodes j = PathfindingNodes.values()[randomgenerator.nextInt(PathfindingNodes.values().length)];
 			state_chrono.robot.setPosition(i.getCoordonnees());
-			pathfinding.computePath(state_chrono, j, true);
+			pathfinding.computePath(state_chrono, j, true, false);
 		}
 		log.debug("Durée moyenne en µs: "+1000*(System.currentTimeMillis()-date_avant)/nb_iter, this);
     }

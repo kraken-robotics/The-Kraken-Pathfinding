@@ -86,12 +86,6 @@ public class GameState<R extends Robot> implements Service
     public void copy(GameState<RobotChrono> other) throws FinMatchException
     {
         robot.copy(other.robot);
-        try {
-			other.robot.initHooksTable(other);
-		} catch (Exception e) {
-			// Ne devrait jamais arriver
-			e.printStackTrace();
-		}
     	// la copie de la table est faite dans gridspace
         // mise à jour des obstacles et du cache incluse dans la copie
         gridspace.copy(other.gridspace, robot.getTempsDepuisDebutMatch());

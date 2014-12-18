@@ -3,7 +3,6 @@ package robot;
 import java.util.ArrayList;
 
 import hook.Hook;
-import hook.types.HookFactory;
 import smartMath.Vec2;
 import utils.Log;
 import utils.Config;
@@ -19,8 +18,6 @@ import exceptions.FinMatchException;
 
 public class RobotChrono extends Robot
 {
-	private HookFactory hookfactory;
-	
 	protected Vec2 position = new Vec2();
 	protected PathfindingNodes positionPathfinding;
 	protected boolean isPositionPathfindingActive = false;
@@ -32,10 +29,9 @@ public class RobotChrono extends Robot
 	/** valeur approchée du temps (en milisecondes) nécéssaire pour qu'une information que l'on envois a la série soit aquité */
 	private final static int approximateSerialLatency = 50;
 
-	public RobotChrono(Config config, Log log, HookFactory hookfactory)
+	public RobotChrono(Config config, Log log)
 	{
-		super(config, log, hookfactory);
-		this.hookfactory = hookfactory;
+		super(config, log);
 	}
 	
 	@Override
@@ -81,7 +77,7 @@ public class RobotChrono extends Robot
 	@Override
 	public RobotChrono cloneIntoRobotChrono() throws FinMatchException
 	{
-		RobotChrono cloned_robotchrono = new RobotChrono(config, log, hookfactory);
+		RobotChrono cloned_robotchrono = new RobotChrono(config, log);
 		copy(cloned_robotchrono);
 		return cloned_robotchrono;
 	}

@@ -67,6 +67,7 @@ public class ObstacleRectangular extends Obstacle
 	public float squaredDistance(Vec2 in)
 	{
 		
+		// TODO: accélérer
 		/*		
 		 *  Shéma de la situation :
 		 *

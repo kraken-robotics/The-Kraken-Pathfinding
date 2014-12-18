@@ -3,9 +3,7 @@ package robot;
 import java.util.ArrayList;
 
 import hook.Hook;
-import hook.types.HookFactory;
 import smartMath.Vec2;
-import strategie.GameState;
 import container.Service;
 import enums.ActuatorOrder;
 import enums.ConfigInfo;
@@ -73,29 +71,18 @@ public abstract class Robot implements Service
 	// Dépendances
 	protected Config config;
 	protected Log log;
-	protected HookFactory hookfactory;
 	private boolean symetrie; // normalement, RobotReal et RobotChrono n'ont pas à connaître notre couleur.
 	protected Speed vitesse;
 	private int pointsObtenus = 0;
 	
 	private boolean tapisPoses = false;
-	protected ArrayList<Hook> hooksTable = new ArrayList<Hook>();
 	
-	public Robot(Config config, Log log, HookFactory hookfactory)
+	public Robot(Config config, Log log)
 	{
 		this.config = config;
 		this.log = log;
-		this.hookfactory = hookfactory;
 		vitesse = Speed.BETWEEN_SCRIPTS;		
 		updateConfig();
-	}
-
-	public void initHooksTable(GameState<?> state) throws Exception
-	{
-		if(state.robot == this)
-			hooksTable = hookfactory.getHooksEntreScripts(state);
-		else
-			throw new Exception();
 	}
 
 	protected void setFinalState()

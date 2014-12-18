@@ -31,7 +31,7 @@ public class PathfindingConst {
 					for(PathfindingNodes n: PathfindingNodes.values())
 					{
 						state_chrono.robot.setPositionPathfinding(m);
-						pathfinding.computePath(state_chrono, n, true);
+						pathfinding.computePath(state_chrono, n, true, true);
 //						compteur += pathfinding.getCompteur();
 					}
 				log.appel_static(i+": "+compteur);

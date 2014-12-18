@@ -167,8 +167,7 @@ public class Container
 															 (Locomotion)getService(ServiceNames.LOCOMOTION),
 															 (Table)getService(ServiceNames.TABLE),
 															 (Config)getService(ServiceNames.CONFIG),
-															 (Log)getService(ServiceNames.LOG),
-		 													 (HookFactory)getService(ServiceNames.HOOK_FACTORY));		
+															 (Log)getService(ServiceNames.LOG));
         else if(serviceRequested == ServiceNames.LOCOMOTION)
             instanciedServices[serviceRequested.ordinal()] = (Service)new Locomotion((Log)getService(ServiceNames.LOG),
                                                              (Config)getService(ServiceNames.CONFIG),

@@ -74,7 +74,7 @@ public class AStar implements Service
 		return decisions;
 	}
 	
-	public ArrayList<PathfindingNodes> computePath(GameState<RobotChrono> state, PathfindingNodes indice_point_arrivee, boolean shoot_game_element) throws PathfindingException, PathfindingRobotInObstacleException, FinMatchException
+	public ArrayList<PathfindingNodes> computePath(GameState<RobotChrono> state, PathfindingNodes indice_point_arrivee, boolean shoot_game_element, boolean lisse_chemin) throws PathfindingException, PathfindingRobotInObstacleException, FinMatchException
 	{
 		try {
 			Vec2 positionInitiale = state.robot.getPosition();
@@ -99,7 +99,9 @@ public class AStar implements Service
 			if(chemin.get(chemin.size()-1) != indice_point_arrivee)
 				throw new PathfindingException();
 
-			return lissage(positionInitiale, state, chemin);
+			if(lisse_chemin)
+				chemin = lissage(positionInitiale, state, chemin);
+			return chemin;
 		} catch (GridSpaceException e1) {
 			throw new PathfindingRobotInObstacleException();
 		}

@@ -5,7 +5,6 @@ import robot.RobotChrono;
 import strategie.GameState;
 import utils.Log;
 import utils.Config;
-import enums.ConfigInfo;
 import enums.PathfindingNodes;
 import enums.Speed;
 import exceptions.FinMatchException;
@@ -13,14 +12,13 @@ import exceptions.FinMatchException;
  public class PathfindingArcManager implements ArcManager, Service {
 
 	private int iterator, id_node_iterator;
-	private int date_precision_diminue;
-	private Config config;
+//	private Config config;
 //	private Log log;
 	
 	public PathfindingArcManager(Log log, Config config)
 	{
 //		this.log = log;
-		this.config = config;
+//		this.config = config;
 		updateConfig();
 	}
 	
@@ -40,7 +38,7 @@ import exceptions.FinMatchException;
 	public double heuristicCost(GameState<RobotChrono> state1, GameState<RobotChrono> state2)
 	{
 		// durée de rotation minimale
-		double duree = state1.robot.calculateDelta(state2.robot.getOrientation()) * Speed.BETWEEN_SCRIPTS.invertedRotationnalSpeed;
+		double duree = state1.robot.calculateDelta(state1.robot.getPositionPathfinding().getOrientationFinale(state2.robot.getPositionPathfinding())) * Speed.BETWEEN_SCRIPTS.invertedRotationnalSpeed;
 		// durée de translation minimale
 		duree += state1.robot.getPositionPathfinding().distanceTo(state2.robot.getPositionPathfinding())*Speed.BETWEEN_SCRIPTS.invertedTranslationnalSpeed;
 		return duree;
@@ -60,10 +58,6 @@ import exceptions.FinMatchException;
     @Override
     public boolean hasNext(GameState<RobotChrono> state)
     {
-    	// La précision diminue après la date.
-    	boolean high_precision = state.robot.getTempsDepuisDebutMatch() < date_precision_diminue;
-//    	if(!high_precision)
-//    		log.debug("Basse précision", this);
     	do {
     		iterator++;
     		// Ce point n'est pas bon si:
@@ -74,7 +68,6 @@ import exceptions.FinMatchException;
 //    			log.debug(PathfindingNodes.values()[id_node_iterator]+" "+PathfindingNodes.values()[iterator]+": "+state.gridspace.isTraversable(PathfindingNodes.values()[id_node_iterator], PathfindingNodes.values()[iterator]), this);
     	} while(iterator < PathfindingNodes.values().length
     			&& (iterator == id_node_iterator
-    			|| (!high_precision && PathfindingNodes.values()[iterator].is_high_precision_point())
     			|| !state.gridspace.isTraversable(PathfindingNodes.values()[id_node_iterator], PathfindingNodes.values()[iterator])));
     	return iterator != PathfindingNodes.values().length;
     }
@@ -88,7 +81,6 @@ import exceptions.FinMatchException;
 
 	@Override
 	public void updateConfig() {
-		date_precision_diminue = 1000*Integer.parseInt(config.get(ConfigInfo.DATE_PRECISION_DIMINUE));	
 	}
 
 }

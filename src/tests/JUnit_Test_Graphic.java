@@ -77,7 +77,7 @@ public class JUnit_Test_Graphic extends JUnit_Test {
 			state_chrono = state.cloneGameState();
 			double orientation_initiale = state_chrono.robot.getOrientation();
 			state_chrono.robot.setPosition(entree);
-			ArrayList<PathfindingNodes> chemin = pathfinding.computePath(state_chrono, j, true);
+			ArrayList<PathfindingNodes> chemin = pathfinding.computePath(state_chrono, j, true, true);
     		ArrayList<Vec2> cheminVec2 = new ArrayList<Vec2>();
     		cheminVec2.add(entree);
     		for(PathfindingNodes n: chemin)
@@ -98,7 +98,7 @@ public class JUnit_Test_Graphic extends JUnit_Test {
 		ArrayList<Hook> hooks_table = hookfactory.getHooksEntreScripts(state_chrono);
 		state_chrono.robot.setPosition(PathfindingNodes.BAS.getCoordonnees().plusNewVector(new Vec2(10, 10)));
 		double orientation_initiale = state_chrono.robot.getOrientation();
-    	ArrayList<PathfindingNodes> chemin = pathfinding.computePath(state_chrono, PathfindingNodes.COTE_MARCHE_DROITE, true);
+    	ArrayList<PathfindingNodes> chemin = pathfinding.computePath(state_chrono, PathfindingNodes.COTE_MARCHE_DROITE, true, false);
 
 		ArrayList<Vec2> cheminVec2 = new ArrayList<Vec2>();
 		cheminVec2.add(PathfindingNodes.BAS.getCoordonnees().plusNewVector(new Vec2(10, 10)));
@@ -118,7 +118,7 @@ public class JUnit_Test_Graphic extends JUnit_Test {
 		
     	// on vérifie qu'à présent qu'on a emprunté ce chemin, il n'y a plus d'élément de jeu dessus et donc qu'on peut demander un pathfinding sans exception
     	state_chrono.robot.setPosition(PathfindingNodes.BAS.getCoordonnees());
-    	pathfinding.computePath(state_chrono, PathfindingNodes.COTE_MARCHE_DROITE, false);
+    	pathfinding.computePath(state_chrono, PathfindingNodes.COTE_MARCHE_DROITE, false, false);
 	}
 
 }
