@@ -2,6 +2,7 @@ package pathfinding;
 
 import java.util.ArrayList;
 
+import hook.Hook;
 import hook.types.HookFactory;
 import robot.RobotChrono;
 import robot.RobotReal;
@@ -26,6 +27,7 @@ public class StrategyArcManager implements Service, ArcManager {
 	private Log log;
 	private ScriptManager scriptmanager;
 	private AStar astar;
+	private HookFactory hookfactory;
 	
 	private ArrayList<Decision> listeDecisions = new ArrayList<Decision>();
 	private int iterator;
@@ -34,6 +36,7 @@ public class StrategyArcManager implements Service, ArcManager {
 	{
 		this.log = log;
 		this.scriptmanager = scriptmanager;
+		this.hookfactory = hookfactory;
 	}
 
 	@Override
@@ -89,7 +92,8 @@ public class StrategyArcManager implements Service, ArcManager {
 						| PathfindingRobotInObstacleException e) {
 					return Double.MAX_VALUE;
 				}
-				state.robot.suit_chemin(chemin, null);
+				ArrayList<Hook> hooks_table = hookfactory.getHooksEntreScripts(state);
+				state.robot.suit_chemin(chemin, hooks_table);
 				s.execute(d.meta_version, state);
 				int new_points = state.robot.getPointsObtenus();
 				long new_temps = state.robot.getTempsDepuisDebutMatch();

@@ -24,7 +24,7 @@ public class JUnit_Table extends JUnit_Test {
         super.setUp();
         table = (Table) container.getService(ServiceNames.TABLE);
     }
-
+/*
     @Test
     public void test_modif_hash() throws Exception
     {
@@ -35,7 +35,7 @@ public class JUnit_Table extends JUnit_Test {
     	Assert.assertTrue(table.isDone(GameElementNames.DISTRIB_2) == Tribool.TRUE);
     	Assert.assertNotEquals(old_hash, new_hash);
     }
-
+*/
     @Test
     public void test_clone() throws Exception
     {
@@ -44,6 +44,8 @@ public class JUnit_Table extends JUnit_Test {
         cloned_table.setDone(GameElementNames.CLAP_1);
     	Assert.assertTrue(!table.equals(cloned_table));
     	cloned_table.copy(table);
+		Assert.assertTrue(table.isDone(GameElementNames.CLAP_1) == Tribool.TRUE);
+		Assert.assertTrue(cloned_table.isDone(GameElementNames.CLAP_1) == Tribool.TRUE);
     	Assert.assertTrue(table.equals(cloned_table));
     	table.setDone(GameElementNames.CLAP_1);
     	Assert.assertTrue(!table.equals(cloned_table));

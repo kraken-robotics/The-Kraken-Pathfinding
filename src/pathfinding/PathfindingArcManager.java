@@ -15,11 +15,11 @@ import exceptions.FinMatchException;
 	private int iterator, id_node_iterator;
 	private int date_precision_diminue;
 	private Config config;
-	private Log log;
+//	private Log log;
 	
 	public PathfindingArcManager(Log log, Config config)
 	{
-		this.log = log;
+//		this.log = log;
 		this.config = config;
 		updateConfig();
 	}
@@ -39,7 +39,11 @@ import exceptions.FinMatchException;
 	@Override
 	public double heuristicCost(GameState<RobotChrono> state1, GameState<RobotChrono> state2)
 	{
-		return state1.robot.getPositionPathfinding().distanceTo(state2.robot.getPositionPathfinding())*Speed.BETWEEN_SCRIPTS.invertedTranslationnalSpeed;
+		// durée de rotation minimale
+		double duree = state1.robot.calculateDelta(state2.robot.getOrientation()) * Speed.BETWEEN_SCRIPTS.invertedRotationnalSpeed;
+		// durée de translation minimale
+		duree += state1.robot.getPositionPathfinding().distanceTo(state2.robot.getPositionPathfinding())*Speed.BETWEEN_SCRIPTS.invertedTranslationnalSpeed;
+		return duree;
 	}
 
 	@Override

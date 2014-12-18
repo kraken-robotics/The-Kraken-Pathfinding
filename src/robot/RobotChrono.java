@@ -30,7 +30,7 @@ public class RobotChrono extends Robot
 	protected long date;
 	
 	/** valeur approchée du temps (en milisecondes) nécéssaire pour qu'une information que l'on envois a la série soit aquité */
-	private int approximateSerialLatency = 50;
+	private final static int approximateSerialLatency = 50;
 
 	public RobotChrono(Config config, Log log, HookFactory hookfactory)
 	{
@@ -40,7 +40,7 @@ public class RobotChrono extends Robot
 	
 	@Override
 	public void setPosition(Vec2 position) {
-		this.position = position;
+		this.position = position.clone();
 		isPositionPathfindingActive = false;
 		this.date += approximateSerialLatency;
 	}
@@ -62,6 +62,7 @@ public class RobotChrono extends Robot
 		position.plus(ecart);
 		isPositionPathfindingActive = false;
 		this.date += approximateSerialLatency;
+		this.date += Speed.translationStopDuration;
 	}
 	
 	@Override
@@ -86,19 +87,39 @@ public class RobotChrono extends Robot
 	}
 
 	@Override
-    public void tourner(double angle, boolean mur)
+    public void tourner(double angle)
+    {
+        tourner(angle, false);
+    }
+	
+	/**
+	 * Donne l'angle entre l'orientation actuelle et l'angle donné en argument
+	 * @param angle
+	 * @return
+	 */
+	public double calculateDelta(double angle)
 	{
-		double delta = angle-orientation;
+		double delta = orientation-angle;
 		if(delta < 0)
 			delta *= -1;
 		while(delta > 2*Math.PI)
 			delta -= 2*Math.PI;
 		if(delta > Math.PI)
 			delta = 2*(float)Math.PI - delta;
+		return delta;
+	}
+	
+	@Override
+    public void tourner(double angle, boolean mur)
+	{
+		// TODO: avec les trajectoires courbes, les durées changent
+		// et la marche arrière automatique?
+		double delta = calculateDelta(angle);
 		orientation = angle;
 		date += delta*vitesse.invertedRotationnalSpeed;
 		isPositionPathfindingActive = false;
 		this.date += approximateSerialLatency;
+		this.date += Speed.rotationStopDuration;
 	}
 
 	@Override
@@ -110,21 +131,21 @@ public class RobotChrono extends Robot
 	
 	public void va_au_point(Vec2 point, ArrayList<Hook> hooks) throws FinMatchException
 	{
+		log.debug("Va au point"+point, this);
+		double orientation_finale = Math.atan2(point.y - position.y, point.x - position.x);
+		tourner(orientation_finale);
 		checkHooks(position, point, hooks);
 		date += position.distance(point)*vitesse.invertedTranslationnalSpeed;
 		position = point.clone();
 		isPositionPathfindingActive = false;
 		this.date += approximateSerialLatency;
+		this.date += Speed.translationStopDuration;
 	}
 
 	public void va_au_point_pathfinding(PathfindingNodes n, ArrayList<Hook> hooks) throws FinMatchException
 	{
-		Vec2 point = n.getCoordonnees();
-		checkHooks(position, point, hooks);
-		date += position.distance(point)*vitesse.invertedTranslationnalSpeed;
-		positionPathfinding = n;
-		isPositionPathfindingActive = true;
-		this.date += approximateSerialLatency;
+		va_au_point(n.getCoordonnees(), hooks);
+		setPositionPathfinding(n);
 	}
 
 	/**
@@ -136,7 +157,11 @@ public class RobotChrono extends Robot
 	public boolean equals(RobotChrono other)
 	{
 		return 	position.equals(other.position)
-				&& orientation == other.orientation;
+				&& orientation == other.orientation
+				&& positionPathfinding == other.positionPathfinding
+				&& isPositionPathfindingActive == other.isPositionPathfindingActive
+				&& date == other.date;
+
 	}
 
 	@Override
@@ -150,6 +175,7 @@ public class RobotChrono extends Robot
     public void stopper()
     {
 		this.date += approximateSerialLatency;
+		this.date += Speed.translationStopDuration;
     }
 
     @Override
@@ -207,7 +233,7 @@ public class RobotChrono extends Robot
 
 	public void setPositionPathfinding(PathfindingNodes n)
 	{
-		position = n.getCoordonnees();
+		position = n.getCoordonnees().clone();
 		positionPathfinding = n;
 		isPositionPathfindingActive = true;
 	}
@@ -226,8 +252,7 @@ public class RobotChrono extends Robot
 	 * @param n1
 	 * @param n2
 	 */
-	public void corrige_temps(Vec2 depart, Vec2 n1,
-			Vec2 n2)
+	public void corrige_temps(Vec2 depart, Vec2 n1, Vec2 n2)
 	{
 		date -= depart.distance(n1)*vitesse.invertedTranslationnalSpeed;
 		date -= n1.distance(n2)*vitesse.invertedTranslationnalSpeed;

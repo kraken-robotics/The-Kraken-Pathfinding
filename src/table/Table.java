@@ -23,8 +23,8 @@ public class Table implements Service
 	private GameElement[] distributeurs = new GameElement[4];
 	// Et potentiellement les balles de tennis
 	
-	private static int indice = 0;
-	private int hash = 0;
+//	private static int indice = 0;
+//	private int hash = 0;
 	
 	public Table(Log log, Config config)
 	{
@@ -62,8 +62,8 @@ public class Table implements Service
 	 */
 	public void setDone(GameElementNames id)
 	{
-		indice++;
-		hash = indice;
+//		indice++;
+//		hash = indice;
 		total[id.ordinal()].setDone(Tribool.TRUE);
 	}
 
@@ -82,12 +82,12 @@ public class Table implements Service
 	 */
 	public void copy(Table ct)
 	{
-        if(!equals(ct))
-		{
+//        if(!equals(ct))
+//		{
         	for(int i = 0; i < 20; i++)
         		total[i].fastClone(ct.total[i]);
-        	ct.hash = hash;
-		}
+//        	ct.hash = hash;
+//		}
 	}
 	
 	public Table clone()
@@ -102,10 +102,11 @@ public class Table implements Service
 	 * @param other
 	 * @return
 	 */
-	public boolean equals(Table other)
+/*	public boolean equals(Table other)
 	{
+		log.debug(other.hash+", "+hash, this);
 		return other.hash == hash;
- 	}
+ 	}*/
 
 	@Override
 	public void updateConfig()
@@ -121,9 +122,9 @@ public class Table implements Service
 	 * Utilisé par les tests
 	 * @return
 	 */
-	public int getHash()
+/*	public int getHash()
 	{
 		return hash;
-	}
+	}*/
 
 }

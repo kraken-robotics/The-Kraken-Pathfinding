@@ -6,7 +6,9 @@ import java.util.Iterator;
 import java.util.Map;
 
 import container.Service;
+import enums.GameElementNames;
 import enums.PathfindingNodes;
+import enums.Tribool;
 import exceptions.FinMatchException;
 import exceptions.GridSpaceException;
 import exceptions.PathfindingException;
@@ -77,11 +79,14 @@ public class AStar implements Service
 			Vec2 positionInitiale = state.robot.getPosition();
 			state.gridspace.setAvoidGameElement(!shoot_game_element);
 			PathfindingNodes pointDepart = state.gridspace.nearestReachableNode(state.robot.getPosition());
-			state.robot.va_au_point_pathfinding(pointDepart, null);
+
+			GameState<RobotChrono> depart = state.cloneGameState();
+			depart.robot.setPositionPathfinding(pointDepart);
 			
+			// On pourrait alléger cela... en ayant un gamestate complètement vide, sauf la position
 			GameState<RobotChrono> arrivee = state.cloneGameState();
 			arrivee.robot.setPositionPathfinding(indice_point_arrivee);
-			ArrayList<Arc> cheminArc = process(state, arrivee, pfarcmanager);
+			ArrayList<Arc> cheminArc = process(depart, arrivee, pfarcmanager);
 			ArrayList<PathfindingNodes> chemin = new ArrayList<PathfindingNodes>(); 
 			chemin.add(pointDepart);
 			for(Arc arc: cheminArc)
@@ -107,7 +112,6 @@ public class AStar implements Service
 		// si on peut sauter le premier point, on le fait
 		while(chemin.size() >= 2 && state.gridspace.isTraversable(depart, chemin.get(1).getCoordonnees()))
 		{
-			state.robot.corrige_temps(depart, chemin.get(0).getCoordonnees(), chemin.get(1).getCoordonnees());
 			chemin.remove(0);
 		}
 		return chemin;
@@ -131,8 +135,6 @@ public class AStar implements Service
 		GameState<RobotChrono> current;
 		Iterator<GameState<RobotChrono>> nodeIterator;
 
-		// TODO: modifier le state à renvoyer
-
 		while (openset.size() != 0)
 		{
 			// TODO: openset trié automatiquement à l'insertion
@@ -148,12 +150,7 @@ public class AStar implements Service
 			}
 
 			if(arcmanager.getHash(current) == arcmanager.getHash(arrivee))
-			{
-				int old_hash = arcmanager.getHash(current);
-				current.copy(depart);
-				return reconstruct(old_hash);
-				// On renvoie le robot final, celui qui a parcouru toutes les épreuves, current.
-			}
+				return reconstruct(arcmanager.getHash(current));
 
 			openset.remove(current);
 			closedset.add(arcmanager.getHash(current));

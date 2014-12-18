@@ -84,19 +84,6 @@ public class JUnit_Hook extends JUnit_Test {
 		Assert.assertTrue(real_gamestate.table.isDone(GameElementNames.VERRE_5) == Tribool.MAYBE);
 	}
 
-	@Test
-	public void test_hook_chrono_suit_chemin() throws Exception
-	{
-		ArrayList<Hook> hooks_table = hookfactory.getHooksEntreScripts(chrono_gamestate);
-		chrono_gamestate.robot.setPosition(PathfindingNodes.BAS.getCoordonnees());
-    	ArrayList<PathfindingNodes> chemin = pathfinding.computePath(chrono_gamestate, PathfindingNodes.COTE_MARCHE_DROITE, true);
-    	chrono_gamestate.robot.suit_chemin(chemin, hooks_table);
-    	
-    	// on vérifie qu'à présent qu'on a emprunté ce chemin, il n'y a plus d'élément de jeu dessus et donc qu'on peut demander un pathfinding sans exception
-		chrono_gamestate.robot.setPosition(PathfindingNodes.BAS.getCoordonnees());
-    	pathfinding.computePath(chrono_gamestate, PathfindingNodes.COTE_MARCHE_DROITE, false);
-	}
-
 	@Test(expected=PathfindingException.class)
 	public void test_hook_chrono_suit_chemin2() throws Exception
 	{

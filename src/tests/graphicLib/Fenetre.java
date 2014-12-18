@@ -30,6 +30,7 @@ public class Fenetre extends JPanel {
 	private int dilatationObstacle;
 	private AttributedString affichage = new AttributedString("");
 	private ArrayList<Vec2> path = new ArrayList<Vec2>();
+	private double orientation = 0;
     
 	public Fenetre()
 	{
@@ -126,6 +127,9 @@ public class Fenetre extends JPanel {
 	    g.setColor(Color.BLUE);
 	    if(path.size() >= 1)
 	    {
+		    g.setColor(Color.RED);
+	    	g.fillOval(XtoWindow(path.get(0).x)-3+(int)(30*Math.cos(orientation)), YtoWindow(path.get(0).y)-3-(int)(30*Math.sin(orientation)), 6, 6);
+		    g.setColor(Color.BLUE);
 	    	g.fillOval(XtoWindow(path.get(0).x)-5, YtoWindow(path.get(0).y)-5, 10, 10);
 	    	g.fillOval(XtoWindow(path.get(path.size()-1).x)-5, YtoWindow(path.get(path.size()-1).y)-5, 10, 10);
 		    for(int i = 0; i < path.size()-1; i++)
@@ -202,8 +206,8 @@ public class Fenetre extends JPanel {
 	public void addSegment(Vec2 a, Vec2 b)
 	{
 		Vec2[] v = new Vec2[2];
-		v[0] = a;
-		v[1] = b;
+		v[0] = a.clone();
+		v[1] = b.clone();
 		segments.add(v);
 	}
 	
@@ -213,8 +217,9 @@ public class Fenetre extends JPanel {
 			g.drawLine(XtoWindow(v[0].x), YtoWindow(v[0].y), XtoWindow(v[1].x), YtoWindow(v[1].y));
 	}
 	
-	public void setPath(ArrayList<Vec2> cheminVec2)
+	public void setPath(double orientation, ArrayList<Vec2> cheminVec2)
 	{
+		this.orientation = orientation;
 		this.path = cheminVec2;
 	}
 	
