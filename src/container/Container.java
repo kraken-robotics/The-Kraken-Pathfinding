@@ -215,10 +215,8 @@ public class Container
 		else if(serviceRequested == ServiceNames.THREAD_STRATEGY)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadStrategy((Log)getService(ServiceNames.LOG),
 																		(Config)getService(ServiceNames.CONFIG),
-																		(ScriptManager)getService(ServiceNames.SCRIPT_MANAGER),
 																		(AStar<StrategyArcManager, Decision>)getService(ServiceNames.A_STAR_STRATEGY),
-																		(GameState<RobotReal>)getService(ServiceNames.REAL_GAME_STATE),
-																		(HookFactory)getService(ServiceNames.HOOK_FACTORY));
+																		(GameState<RobotReal>)getService(ServiceNames.REAL_GAME_STATE));
 		else if(serviceRequested == ServiceNames.PATHFINDING_ARC_MANAGER)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new PathfindingArcManager((Log)getService(ServiceNames.LOG),
 																		(Config)getService(ServiceNames.CONFIG));

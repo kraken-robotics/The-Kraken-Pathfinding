@@ -70,7 +70,7 @@ public class Execution implements Service {
 		while(true)
 		{
 			try {
-				Decision[] decisions = threadstrategy.getDecisions();
+				ArrayList<Decision> decisions = threadstrategy.getDecisions();
 				if(decisions == null)
 					Sleep.sleep(500);
 				else
@@ -95,11 +95,11 @@ public class Execution implements Service {
 	 * D'abord, "more points". Ca ajoute des points dans la recherche de chemin: c'est plus long mais on a moins de chances d'être bloqué.
 	 * Ensuite, "shoot game elements". Quand on est vraiment bloqué, on peut décider de shooter dans les éléments de jeux pour avancer.
 	 */
-	public void executerScript(Decision[] decisions) throws UnknownScriptException, FinMatchException
+	public void executerScript(ArrayList<Decision> decisions) throws UnknownScriptException, FinMatchException
 	{
 		for(int id_decision = 0; id_decision < 2; id_decision++)
 		{
-			Decision decision_actuelle = decisions[id_decision];
+			Decision decision_actuelle = decisions.get(id_decision);
 			Script s = scriptmanager.getScript(decision_actuelle.script_name);
 
 			log.debug("On tente d'exécuter "+decision_actuelle.script_name, this);

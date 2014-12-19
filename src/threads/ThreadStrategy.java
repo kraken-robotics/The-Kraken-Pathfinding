@@ -1,28 +1,14 @@
 package threads;
 
-import hook.Hook;
-import hook.types.HookFactory;
-
 import java.util.ArrayList;
 
 import pathfinding.AStar;
+import pathfinding.StrategyArcManager;
 import container.Service;
-import enums.ConfigInfo;
-import enums.PathfindingNodes;
-import enums.ScriptNames;
 import exceptions.FinMatchException;
-import exceptions.PathfindingException;
-import exceptions.PathfindingRobotInObstacleException;
-import exceptions.UnknownScriptException;
-import exceptions.Locomotion.UnableToMoveException;
-import exceptions.serial.SerialConnexionException;
-import robot.RobotChrono;
 import robot.RobotReal;
 import scripts.Decision;
-import scripts.Script;
-import scripts.ScriptManager;
 import strategie.GameState;
-import strategie.MemoryManager;
 import utils.Config;
 import utils.Log;
 import utils.Sleep;
@@ -31,33 +17,16 @@ public class ThreadStrategy extends AbstractThread implements Service
 {
 
 	private Log log;
-	private Config config;
+	private AStar<StrategyArcManager, Decision> strategie;
+	private GameState<RobotReal> realstate;
 	
-	// Parcours et appel des scripts
-	private ScriptManager scriptmanager;
+	private ArrayList<Decision> decisions = null;
 	
-	// Calcul des chemins entre scripts
-	private AStar pathfinding;
-	
-	// Nécessaire aux scripts pour donner les versions disponibles
-	private GameState<RobotReal> real_gamestate;
-	
-	private ArrayList<Hook> hooks_entre_scripts;
-	
-	private long temps_max_anticipation = 20000;
-	private long dateFinMatch;
-	private int profondeur_max = 1;
-
-	private Decision[] decisions = null;
-	
-	public ThreadStrategy(Log log, Config config, ScriptManager scriptmanager, AStar pathfinding, GameState<RobotReal> real_gamestate, HookFactory hookfactory) 
+	public ThreadStrategy(Log log, Config config, AStar<StrategyArcManager, Decision> strategie, GameState<RobotReal> realstate)
 	{
 		this.log = log;
-		this.config = config;
-		this.scriptmanager = scriptmanager;
-		this.pathfinding = pathfinding;
-		this.real_gamestate = real_gamestate;
-		hooks_entre_scripts = hookfactory.getHooksEntreScriptsReal(real_gamestate);
+		this.strategie = strategie;
+		this.realstate = realstate;
 	
 		Thread.currentThread().setPriority(4); // TODO
 		updateConfig();
@@ -79,40 +48,28 @@ public class ThreadStrategy extends AbstractThread implements Service
 		
 		while(!finMatch)
 		{
-			// TODO: appel arbre des possibles
-			
+			try {
+				decisions = strategie.computeStrategy(realstate);
+			} catch (FinMatchException e) {
+				stopAllThread();
+			}
 			// Tant qu'on n'a pas besoin d'une nouvelle décision
 			while(decisions != null)
-				Sleep.sleep(50);
-			
+				Sleep.sleep(50);			
 		}
 	}
 
-	public double calculeNote(int temps, int points)
-	{
-		return ((double)temps) / ((double)points);
-	}
-
-	@Override
-	public void updateConfig() {
-		// temps en secondes dans la config
-		temps_max_anticipation = 1000*Integer.parseInt(config.get(ConfigInfo.TEMPS_MAX_ANTICIPATION));	
-		dateFinMatch = 1000*Long.parseLong(config.get(ConfigInfo.DUREE_MATCH_EN_S));
-	}
-
-	public Decision[] getDecisions()
+	public ArrayList<Decision> getDecisions()
 	{
 		synchronized(decisions)
 		{
-			Decision[] tmp = decisions;
+			ArrayList<Decision> tmp = decisions;
 			decisions = null;
 			return tmp;
 		}
 	}
-	
-	public void setProfondeurMax(int profondeur_max)
-	{
-		this.profondeur_max = profondeur_max;
-	}
 
+	@Override
+	public void updateConfig() {
+	}
 }

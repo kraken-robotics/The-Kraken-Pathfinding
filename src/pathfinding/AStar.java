@@ -13,6 +13,7 @@ import exceptions.PathfindingRobotInObstacleException;
 import exceptions.UnknownScriptException;
 import exceptions.strategie.ScriptException;
 import robot.RobotChrono;
+import robot.RobotReal;
 import smartMath.Vec2;
 import strategie.GameState;
 import strategie.MemoryManager;
@@ -60,7 +61,7 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 		this.memorymanager = memorymanager;
 	}
 
-	public ArrayList<A> computeStrategy(GameState<RobotChrono> state) throws FinMatchException
+	public ArrayList<A> computeStrategy(GameState<RobotReal> state) throws FinMatchException
 	{
 		if(!(arcmanager instanceof StrategyArcManager))
 		{
