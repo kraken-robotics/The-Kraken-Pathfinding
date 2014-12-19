@@ -8,7 +8,15 @@ package enums;
  */
 
 public enum Tribool {
-	TRUE,
-	FALSE,
-	MAYBE;	
+	FALSE(0), // ces hashs sont utilisés dans la génération du hash de la table
+	MAYBE(1),
+	TRUE(3);
+	
+	public final int hash;
+	
+	private Tribool(int hash)
+	{
+		this.hash = hash;
+	}
+	
 }

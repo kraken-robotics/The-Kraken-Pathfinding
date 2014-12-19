@@ -32,7 +32,7 @@ public class StrategyArcManager implements Service, ArcManager {
 	
 	private ArrayList<Decision> listeDecisions = new ArrayList<Decision>();
 	private int iterator;
-	private Vector<Integer> hashes = new Vector<Integer>();
+	private Vector<Long> hashes = new Vector<Long>();
 	
 	public StrategyArcManager(Log log, Config config, ScriptManager scriptmanager, GameState<RobotReal> real_gamestate, HookFactory hookfactory)
 	{
@@ -55,19 +55,21 @@ public class StrategyArcManager implements Service, ArcManager {
 					{
 						// On n'ajoute que les versions qui sont accessibles
 						try {
-							ArrayList<PathfindingNodes> chemin = astar.computePath(gamestate, script.point_entree(v), true, false);
+							ArrayList<PathfindingNodes> chemin = astar.computePath(gamestate, script.point_entree(v), true);
 							listeDecisions.add(new Decision(chemin, s, v, true));
+							try {
+								// On ne rajoute la version où on ne shoot pas seulement si le chemin proposé est différent
+								ArrayList<PathfindingNodes> chemin2 = astar.computePath(gamestate, script.point_entree(v), false);
+								if(!chemin2.equals(chemin))
+									listeDecisions.add(new Decision(chemin2, s, v, true));
+							} catch (PathfindingException
+									| PathfindingRobotInObstacleException
+									| FinMatchException e) {
+							}
 						} catch (PathfindingException
 								| PathfindingRobotInObstacleException
 								| FinMatchException e) {
 							e.printStackTrace();
-						}
-						try {
-							ArrayList<PathfindingNodes> chemin = astar.computePath(gamestate, script.point_entree(v), false, false);
-							listeDecisions.add(new Decision(chemin, s, v, true));
-						} catch (PathfindingException
-								| PathfindingRobotInObstacleException
-								| FinMatchException e) {
 						}
 					}
 				} catch (UnknownScriptException e) {
@@ -96,54 +98,29 @@ public class StrategyArcManager implements Service, ArcManager {
 	}
 
 	@Override
-	public double distanceTo(GameState<RobotChrono> state, Arc arc) {
+	public int distanceTo(GameState<RobotChrono> state, Arc arc) throws FinMatchException, UnknownScriptException, UnableToMoveException, SerialConnexionException
+	{
 		Decision d = (Decision)arc;
-		try {
-			Script s = scriptmanager.getScript(d.script_name);
-			try {
-				int old_points = state.robot.getPointsObtenus();
-				long old_temps = state.robot.getTempsDepuisDebutMatch();
-				ArrayList<Hook> hooks_table = hookfactory.getHooksEntreScripts(state);
-				state.robot.suit_chemin(d.chemin, hooks_table);
-				s.execute(d.version, state);
-				int new_points = state.robot.getPointsObtenus();
-				long new_temps = state.robot.getTempsDepuisDebutMatch();
-				return -((double)(new_points - old_points))/((double)(new_temps - old_temps));
-				
-				// On renvoie une valeur négative, car le A* minimise la distance.
-				// En minimisant l'opposé du nombre de points qu'on fait,
-				// on maximise le nombre de points qu'on fait.
-			} catch (UnableToMoveException e) {
-				e.printStackTrace();
-			} catch (SerialConnexionException e) {
-				e.printStackTrace();
-			} catch (FinMatchException e) {
-				// C'est normal et probable, donc pas de printStackTrace
-			}
-		} catch (UnknownScriptException e) {
-			log.warning("Script inconnu: "+d.script_name, this);
-			// Ne devrait jamais arriver
-			e.printStackTrace();
-		}
-		// En cas d'erreur
-		return Double.MAX_VALUE;
+		Script s = scriptmanager.getScript(d.script_name);
+		int old_temps = (int)state.robot.getTempsDepuisDebutMatch();
+		ArrayList<Hook> hooks_table = hookfactory.getHooksEntreScriptsChrono(state);
+		state.robot.suit_chemin(d.chemin, hooks_table);
+		s.execute(d.version, state);
+		state.robot.setPositionPathfinding(s.point_sortie(d.version));
+		int new_temps = (int)state.robot.getTempsDepuisDebutMatch();
+		return new_temps - old_temps;
 	}
 
 	@Override
-	public double heuristicCost(GameState<RobotChrono> state1,
-			GameState<RobotChrono> state2)
+	public int heuristicCost(GameState<RobotChrono> state)
 	{
-		int points1 = state1.robot.getPointsObtenus();
-		long temps1 = state1.robot.getTempsDepuisDebutMatch();
-		int points2 = state2.robot.getPointsObtenus();
-		long temps2 = state2.robot.getTempsDepuisDebutMatch();
-		return -((double)(points2 - points1))/((double)(temps2 - temps1));
+		return 0;
 	}
 
 	@Override
 	public int getHash(GameState<RobotChrono> state)
 	{
-		int hash = (int)(100000*((double)state.robot.getPointsObtenus())/((double)state.robot.getTempsDepuisDebutMatch()));
+		long hash = state.getHash();
 		int indice = hashes.indexOf(hash);
 		if(indice == -1)
 		{
@@ -172,6 +149,16 @@ public class StrategyArcManager implements Service, ArcManager {
 	public String toString()
 	{
 		return "Arbre des possibles";
+	}
+
+	@Override
+	public boolean isArrive(int hash) {
+		return false;
+	}
+
+	@Override
+	public int getNoteReconstruct(int hash) {
+		return hash&511; // la composante "note" du hash (cf gamestate.getHash())
 	}
 
 }

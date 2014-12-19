@@ -1,6 +1,5 @@
 package strategie;
 
-import java.util.ArrayList;
 import java.util.Vector;
 
 import container.Service;
@@ -20,13 +19,14 @@ import utils.Log;
 
 public class MemoryManager implements Service {
 
-	private ArrayList<GameState<RobotChrono>> gamestate = new ArrayList<GameState<RobotChrono>>();
-	private Vector<Boolean> available = new Vector<Boolean>();
+	private static final int nb_instances = 100;
 
+	private Vector<GameState<RobotChrono>> gamestate = new Vector<GameState<RobotChrono>>();
 	private Log log;
 	private GameState<RobotChrono> model;
 	
-	private static final int nb_instances = 100;
+	// gamestate est triés: avant firstAvailable, les gamestate sont indisponibles, après, ils sont disponibles
+	private int firstAvailable = 0;
 	
 	@Override
 	public void updateConfig() {
@@ -43,7 +43,6 @@ public class MemoryManager implements Service {
 		
 			for(int i = 0; i < nb_instances; i++)
 			{
-				available.add(Boolean.TRUE);
 				gamestate.add(model.cloneGameState(gamestate.size()));
 			}
 		} catch (FinMatchException e) {
@@ -54,32 +53,40 @@ public class MemoryManager implements Service {
 	
 	public GameState<RobotChrono> getNewGameState() throws FinMatchException
 	{
-		int indice = available.indexOf(Boolean.TRUE);
-		if(indice == -1) // pas de gamestate disponible
+		if(firstAvailable == gamestate.size())
 		{
-			available.add(Boolean.FALSE);
-			if(available.size() > 1000)
-			{
-				int z = 0;
-				z = 1/z;
-			}
+			firstAvailable++;
 			GameState<RobotChrono> out = model.cloneGameState(gamestate.size());
 			gamestate.add(out);
 			return out;
 		}
 		else // on a un robot disponible
 		{
-//			log.debug("Réutilisation de "+indice, this);
-			available.setElementAt(Boolean.FALSE, indice);
-			return gamestate.get(indice);
+			GameState<RobotChrono> out = gamestate.get(firstAvailable);
+			firstAvailable++;
+			return out;
 		}
 	}
 	
 	public GameState<RobotChrono> destroyGameState(GameState<RobotChrono> state)
 	{
-		if(available.get(state.getIndiceMemoryManager()) == Boolean.TRUE)
+		int indice_state = state.getIndiceMemoryManager();
+		if(indice_state >= firstAvailable)
 			log.warning("Objet déjà détruit!", this);
-		available.setElementAt(Boolean.TRUE, state.getIndiceMemoryManager());
+		else
+		{
+			// On inverse dans le Vector les deux gamestates,
+			// de manière à avoir toujours un Vector trié.
+			firstAvailable--;
+			GameState<RobotChrono> tmp1 = gamestate.get(indice_state);
+			GameState<RobotChrono> tmp2 = gamestate.get(firstAvailable);
+
+			tmp1.setIndiceMemoryManager(firstAvailable);
+			tmp2.setIndiceMemoryManager(indice_state);
+
+			gamestate.setElementAt(tmp1, firstAvailable);
+			gamestate.setElementAt(tmp2, indice_state);
+		}
 		return null;
 	}
 	
@@ -88,7 +95,7 @@ public class MemoryManager implements Service {
 	 */
 	public boolean isMemoryManagerEmpty()
 	{
-		return available.indexOf(Boolean.FALSE) == -1;
+		return firstAvailable == 0;
 	}
 	
 }

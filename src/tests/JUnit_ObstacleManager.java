@@ -9,6 +9,7 @@ import org.junit.Test;
 
 import smartMath.Vec2;
 import table.Table;
+import utils.Config;
 import enums.ConfigInfo;
 import enums.PathfindingNodes;
 import enums.ServiceNames;
@@ -86,13 +87,14 @@ public class JUnit_ObstacleManager extends JUnit_Test {
     @Test
     public void test_collision_obstacle_mobile() throws Exception
     {
-    	Assert.assertTrue(!obstaclemanager.obstacle_proximite_dans_segment(new Vec2(100, 100), new Vec2(900, 900)));
+    	config.setDateDebutMatch();
+    	Assert.assertTrue(!obstaclemanager.obstacle_proximite_dans_segment(new Vec2(100, 100), new Vec2(900, 900), Config.getDateDebutMatch()));
     	obstaclemanager.creer_obstacle(new Vec2(-300, 500), 0);
-    	Assert.assertTrue(!obstaclemanager.obstacle_proximite_dans_segment(new Vec2(100, 100), new Vec2(900, 900)));
+    	Assert.assertTrue(!obstaclemanager.obstacle_proximite_dans_segment(new Vec2(100, 100), new Vec2(900, 900), Config.getDateDebutMatch()));
     	obstaclemanager.creer_obstacle(new Vec2(1300, 1300), 0);
-    	Assert.assertTrue(!obstaclemanager.obstacle_proximite_dans_segment(new Vec2(100, 100), new Vec2(900, 900)));
+    	Assert.assertTrue(!obstaclemanager.obstacle_proximite_dans_segment(new Vec2(100, 100), new Vec2(900, 900), Config.getDateDebutMatch()));
     	obstaclemanager.creer_obstacle(new Vec2(400, 500), 0);
-    	Assert.assertTrue(obstaclemanager.obstacle_proximite_dans_segment(new Vec2(100, 100), new Vec2(900, 900)));
+    	Assert.assertTrue(obstaclemanager.obstacle_proximite_dans_segment(new Vec2(100, 100), new Vec2(900, 900), Config.getDateDebutMatch()));
     }
 
     @Test

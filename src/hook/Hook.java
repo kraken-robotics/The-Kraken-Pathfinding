@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import enums.ConfigInfo;
 import exceptions.FinMatchException;
+import robot.RobotChrono;
 import smartMath.Vec2;
 import strategie.GameState;
 import utils.Log;
@@ -102,6 +103,11 @@ abstract public class Hook
 	        if(!c.shouldBeDeleted())
 	            return false;
 	    return true;
+	}
+
+	public void updateGameState(GameState<RobotChrono> state)
+	{
+		this.state = state;
 	}
 
 }

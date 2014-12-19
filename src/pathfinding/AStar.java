@@ -9,6 +9,9 @@ import exceptions.FinMatchException;
 import exceptions.GridSpaceException;
 import exceptions.PathfindingException;
 import exceptions.PathfindingRobotInObstacleException;
+import exceptions.UnknownScriptException;
+import exceptions.Locomotion.UnableToMoveException;
+import exceptions.serial.SerialConnexionException;
 import robot.RobotChrono;
 import scripts.Decision;
 import smartMath.Vec2;
@@ -38,8 +41,8 @@ public class AStar implements Service
 	private boolean[] closedset = new boolean[nb_max_element];
 	private int[] came_from = new int[nb_max_element];
 	private Arc[] came_from_arc = new Arc[nb_max_element];
-	private double[] g_score = new double[nb_max_element];
-	private double[] f_score = new double[nb_max_element];
+	private int[] g_score = new int[nb_max_element];
+	private int[] f_score = new int[nb_max_element];
 	
 	private Log log;
 	private PathfindingArcManager pfarcmanager;
@@ -64,44 +67,51 @@ public class AStar implements Service
 	{
 		GameState<RobotChrono> depart = memorymanager.getNewGameState();
 		state.copy(depart);
-		GameState<RobotChrono> arrivee = memorymanager.getNewGameState();
-		arrivee.robot.setFinalState();
 		stratarcmanager.reinitHashes();
-		ArrayList<Arc> cheminArc = process(depart, arrivee, stratarcmanager);
+		ArrayList<Arc> cheminArc;
 		ArrayList<Decision> decisions = new ArrayList<Decision>();
-		for(Arc arc: cheminArc)
-			decisions.add((Decision)arc);
+		try {
+			cheminArc = process(depart, stratarcmanager, true);
+			for(Arc arc: cheminArc)
+				decisions.add((Decision)arc);
+		} catch (PathfindingException e) {
+			// impossible car on a appelé process avec shouldReconstruct = true;
+			e.printStackTrace();
+		}
 		return decisions;
 	}
 	
-	public ArrayList<PathfindingNodes> computePath(GameState<RobotChrono> state, PathfindingNodes indice_point_arrivee, boolean shoot_game_element, boolean lisse_chemin) throws PathfindingException, PathfindingRobotInObstacleException, FinMatchException
+	public ArrayList<PathfindingNodes> computePath(GameState<RobotChrono> state, PathfindingNodes indice_point_arrivee, boolean shoot_game_element) throws PathfindingException, PathfindingRobotInObstacleException, FinMatchException
 	{
 		try {
-			Vec2 positionInitiale = state.robot.getPosition();
 			state.gridspace.setAvoidGameElement(!shoot_game_element);
-			PathfindingNodes pointDepart = state.gridspace.nearestReachableNode(state.robot.getPosition());
+
+			PathfindingNodes pointDepart;
+			if(state.robot.isAtPathfindingNodes())
+				pointDepart = state.robot.getPositionPathfinding();
+			else
+			{
+				pointDepart = state.gridspace.nearestReachableNode(state.robot.getPosition(), state.robot.getTempsDepuisDebutMatch());
+			}
 
 			GameState<RobotChrono> depart = memorymanager.getNewGameState();
 			state.copy(depart);
 			depart.robot.setPositionPathfinding(pointDepart);
 			
-			GameState<RobotChrono> arrivee = memorymanager.getNewGameState();
-			state.copy(arrivee);
-			arrivee.robot.setPositionPathfinding(indice_point_arrivee);
+			pfarcmanager.chargePointArrivee(indice_point_arrivee);
+			
 //			log.debug("Recherche de chemin entre "+pointDepart+" et "+indice_point_arrivee, this);
-			ArrayList<Arc> cheminArc = process(depart, arrivee, pfarcmanager);
+			ArrayList<Arc> cheminArc = process(depart, pfarcmanager, false);
 			
 			ArrayList<PathfindingNodes> chemin = new ArrayList<PathfindingNodes>(); 
 			chemin.add(pointDepart);
 			for(Arc arc: cheminArc)
 				chemin.add((PathfindingNodes)arc);
 
-			// si le chemin renvoyé est incomplet, on annule tout
-			if(chemin.get(chemin.size()-1) != indice_point_arrivee)
-				throw new PathfindingException();
-
-			if(lisse_chemin)
-				chemin = lissage(positionInitiale, state, chemin);
+			// on n'a besoin de lisser que si on ne partait pas d'un pathfindingnode
+			if(state.robot.isAtPathfindingNodes())
+				chemin = lissage(state.robot.getPosition(), state, chemin);
+			
 //			log.debug("Recherche de chemin terminée", this);
 			return chemin;
 		} catch (GridSpaceException e1) {
@@ -116,22 +126,21 @@ public class AStar implements Service
 	// Si le point de départ est dans un obstacle fixe, le lissage ne changera rien.
 	private ArrayList<PathfindingNodes> lissage(Vec2 depart, GameState<RobotChrono> state, ArrayList<PathfindingNodes> chemin)
 	{
+		// TODO: attention! avec quel robot lisse-t-on? et si on zappe des points, ça modifie le timing et tout... 
 		// si on peut sauter le premier point, on le fait
-		while(chemin.size() >= 2 && state.gridspace.isTraversable(depart, chemin.get(1).getCoordonnees()))
+		while(chemin.size() >= 2 && state.gridspace.isTraversable(depart, chemin.get(1).getCoordonnees(), state.robot.getTempsDepuisDebutMatch()))
 			chemin.remove(0);
 
 		return chemin;
 	}
 	
-	private ArrayList<Arc> process(GameState<RobotChrono> depart, GameState<RobotChrono> arrivee, ArcManager arcmanager) throws FinMatchException
+	private ArrayList<Arc> process(GameState<RobotChrono> depart, ArcManager arcmanager, boolean shouldReconstruct) throws PathfindingException, FinMatchException
 	{
-		int hash_arrivee = arcmanager.getHash(arrivee);
 		int hash_depart = arcmanager.getHash(depart);
 		// optimisation si depart == arrivee
-		if(hash_depart == hash_arrivee)
+		if(arcmanager.isArrive(hash_depart))
 		{
 			depart = memorymanager.destroyGameState(depart);
-			arrivee = memorymanager.destroyGameState(arrivee);
 			return new ArrayList<Arc>();
 		}
 
@@ -140,15 +149,15 @@ public class AStar implements Service
 			closedset[i] = false;
 			came_from_arc[i] = null;
 			came_from[i] = -1;
-			g_score[i] = Double.MAX_VALUE;
-			f_score[i] = Double.MAX_VALUE;
+			g_score[i] = Integer.MAX_VALUE;
+			f_score[i] = Integer.MAX_VALUE;
 		}
 		
 		openset.clear();
 		openset.add(depart);	// The set of tentative nodes to be evaluated, initially containing the start node
-		g_score[hash_depart] = 0.;	// Cost from start along best known path.
+		g_score[hash_depart] = 0;	// Cost from start along best known path.
 		// Estimated total cost from start to goal through y.
-		f_score[hash_depart] = g_score[hash_depart] + arcmanager.heuristicCost(depart, arrivee);
+		f_score[hash_depart] = g_score[hash_depart] + arcmanager.heuristicCost(depart);
 		
 		GameState<RobotChrono> current;
 		Iterator<GameState<RobotChrono>> nodeIterator;
@@ -169,10 +178,9 @@ public class AStar implements Service
 
 			int hash_current = arcmanager.getHash(current);
 			
-			if(hash_current == hash_arrivee)
+			if(arcmanager.isArrive(hash_current))
 			{
 				freeGameStateOpenSet(openset);
-				arrivee = memorymanager.destroyGameState(arrivee);
 				return reconstruct(hash_current);
 			}
 
@@ -189,7 +197,15 @@ public class AStar implements Service
 				current.copy(successeur);
 				
 				// successeur est modifié lors du "distanceTo"
-				double tentative_g_score = g_score[hash_current] + arcmanager.distanceTo(successeur, voisin);
+				// si ce successeur dépasse la date limite, on l'annule
+				int tentative_g_score;
+					try {
+						tentative_g_score = g_score[hash_current] + arcmanager.distanceTo(successeur, voisin);
+					} catch (UnknownScriptException | SerialConnexionException
+							| UnableToMoveException e) {
+						continue;
+					}
+				
 
 //				if(arcmanager instanceof StrategyArcManager)
 //					log.debug(voisin+" "+successeur.robot.areTapisPoses(), this);
@@ -206,7 +222,7 @@ public class AStar implements Service
 					came_from[hash_successeur] = hash_current;
 					came_from_arc[hash_successeur] = voisin;
 					g_score[hash_successeur] = tentative_g_score;
-					f_score[hash_successeur] = tentative_g_score + arcmanager.heuristicCost(successeur, arrivee);
+					f_score[hash_successeur] = tentative_g_score + arcmanager.heuristicCost(successeur);
 					// TODO: remplacer celui qui existe déjà par successeur?
 					if(!contains(openset, hash_successeur, arcmanager))
 						openset.add(successeur);
@@ -222,15 +238,24 @@ public class AStar implements Service
 		
 		// Pathfinding terminé sans avoir atteint l'arrivée
 		freeGameStateOpenSet(openset);
-		arrivee = memorymanager.destroyGameState(arrivee);
+		
+		// La stratégie renvoie un chemin partiel, pas le pathfinding qui lève une exception
+		if(!shouldReconstruct)
+			throw new PathfindingException();
+
 		/**
 		 * Même si on n'a pas atteint l'objectif, on reconstruit un chemin partiel
 		 */
 		int best = 0;
+		int note_best = arcmanager.getNoteReconstruct(0);
 		for(int h = 1; h < nb_max_element; h++)
 		{
-			if(f_score[h] < f_score[best])
+			int potentiel_note_best = arcmanager.getNoteReconstruct(h);
+			if(f_score[h] != Integer.MAX_VALUE && potentiel_note_best > note_best)
+			{
 				best = h;
+				note_best = potentiel_note_best;
+			}
 		}
 		
 		// best est nécessairement non nul car f_score contient au moins le point de départ

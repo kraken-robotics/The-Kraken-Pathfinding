@@ -14,12 +14,10 @@ import utils.Log;
 public class GameElement extends ObstacleCircular
 {
 	private Tribool done = Tribool.FALSE; 
-	private GameElementNames nom;
 	
 	public GameElement(Log log, GameElementNames nom)
 	{
 		super(log, nom.getPosition(), nom.getRadius());
-		this.nom = nom;
 	}
 	
 	public void setDone(Tribool etat)
@@ -42,15 +40,14 @@ public class GameElement extends ObstacleCircular
 		other.done = done;
 	}
 
+	/**
+	 * Normalement inutilisé, mais bon.
+	 * @param other
+	 */
 	public void clone(GameElement other)
 	{
 		other.position = position.clone();
 		other.done = done;
-	}
-	
-	public GameElementNames getName()
-	{
-		return nom;
 	}
 
 }

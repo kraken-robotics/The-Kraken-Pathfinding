@@ -98,11 +98,10 @@ public class ObstacleManager implements Service
      */
     private void check_game_element(Vec2 position)
     {
-        GameElement[] obstacles = table.getObstacles();
         // On vérifie aussi ceux qui ont un rayon nul (distributeur, clap, ..)
-        for(GameElement o: obstacles)
-            if(o.isDone() == Tribool.FALSE && o.isProcheObstacle(position, rayon_robot_adverse))
-            	o.setDone(Tribool.MAYBE);
+        for(GameElementNames g: GameElementNames.values())
+            if(table.isDone(g) == Tribool.FALSE && table.isProcheObstacle(g, position, rayon_robot_adverse))
+            	table.setDone(g, Tribool.MAYBE);
     }
 
     /**
@@ -230,11 +229,10 @@ public class ObstacleManager implements Service
 	 */
     public boolean obstacle_table_dans_segment(Vec2 A, Vec2 B)
     {
-        GameElement[] obstacles = table.getObstacles();
-        for(GameElement o: obstacles)
+        for(GameElementNames g: GameElementNames.values())
         	// Si on a interprété que l'ennemi est passé sur un obstacle,
         	// on peut passer dessus par la suite.
-            if(o.isDone() == Tribool.FALSE && o.obstacle_proximite_dans_segment(A, B, dilatation_obstacle))
+            if(table.isDone(g) == Tribool.FALSE && table.obstacle_proximite_dans_segment(g, A, B, dilatation_obstacle))
             {
 //            	log.debug(o.getName()+" est dans le chemin.", this);
                 return true;
@@ -249,18 +247,19 @@ public class ObstacleManager implements Service
      * @param sommet2
      * @return
      */
-    public boolean obstacle_proximite_dans_segment(Vec2 A, Vec2 B)
+    public boolean obstacle_proximite_dans_segment(Vec2 A, Vec2 B, long date)
     {
-    	return obstacle_proximite_dans_segment(A,B,dilatation_obstacle);
+    	return obstacle_proximite_dans_segment(A,B,dilatation_obstacle,date);
     }
 
     /**
      * Y a-t-il un obstacle de proximité dans ce segment?
+     * Va-t-il disparaître pendant le temps de parcours?
      * @param sommet1
      * @param sommet2
      * @return
      */
-    public boolean obstacle_proximite_dans_segment(Vec2 A, Vec2 B, int distance)
+    public boolean obstacle_proximite_dans_segment(Vec2 A, Vec2 B, int distance, long date)
     {
         Iterator<ObstacleProximity> iterator = listObstaclesMobiles.iterator();
         while(iterator.hasNext())

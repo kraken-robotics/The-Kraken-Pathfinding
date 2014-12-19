@@ -6,6 +6,7 @@ import org.junit.Test;
 
 import pathfinding.GridSpace;
 import smartMath.Vec2;
+import utils.Config;
 import enums.PathfindingNodes;
 import enums.ServiceNames;
 
@@ -28,24 +29,24 @@ public class JUnit_GridSpace extends JUnit_Test {
 	@Test
 	public void test_nearestReachableNode() throws Exception
 	{
-		Assert.assertEquals(PathfindingNodes.BAS_DROITE, gridspace.nearestReachableNode(PathfindingNodes.BAS_DROITE.getCoordonnees().plusNewVector(new Vec2(10, -40))));
+		Assert.assertEquals(PathfindingNodes.BAS_DROITE, gridspace.nearestReachableNode(PathfindingNodes.BAS_DROITE.getCoordonnees().plusNewVector(new Vec2(10, -40)), Config.getDateDebutMatch()));
 	}
 
 	@Test
 	public void test_traversable() throws Exception
 	{
 		config.setDateDebutMatch();
-		Assert.assertTrue(!gridspace.isTraversable(PathfindingNodes.BAS_DROITE, PathfindingNodes.BAS_GAUCHE));
+		Assert.assertTrue(!gridspace.isTraversable(PathfindingNodes.BAS_DROITE, PathfindingNodes.BAS_GAUCHE, Config.getDateDebutMatch()));
 		gridspace.setAvoidGameElement(true);
-		Assert.assertTrue(!gridspace.isTraversable(PathfindingNodes.BAS_DROITE, PathfindingNodes.DEVANT_DEPART_GAUCHE));
+		Assert.assertTrue(!gridspace.isTraversable(PathfindingNodes.BAS_DROITE, PathfindingNodes.DEVANT_DEPART_GAUCHE, Config.getDateDebutMatch()));
 		gridspace.setAvoidGameElement(false);
-		Assert.assertTrue(gridspace.isTraversable(PathfindingNodes.BAS_DROITE, PathfindingNodes.DEVANT_DEPART_GAUCHE));
+		Assert.assertTrue(gridspace.isTraversable(PathfindingNodes.BAS_DROITE, PathfindingNodes.DEVANT_DEPART_GAUCHE, Config.getDateDebutMatch()));
 
-		Assert.assertTrue(gridspace.isTraversable(PathfindingNodes.NODE_TAPIS, PathfindingNodes.BAS_GAUCHE));
+		Assert.assertTrue(gridspace.isTraversable(PathfindingNodes.NODE_TAPIS, PathfindingNodes.BAS_GAUCHE, Config.getDateDebutMatch()));
 		gridspace.creer_obstacle(new Vec2(-220, 830));
 		// mise à jour du gridspace
 		gridspace.reinitConnections();
-		Assert.assertTrue(!gridspace.isTraversable(PathfindingNodes.NODE_TAPIS, PathfindingNodes.BAS_GAUCHE));
+		Assert.assertTrue(!gridspace.isTraversable(PathfindingNodes.NODE_TAPIS, PathfindingNodes.BAS_GAUCHE, Config.getDateDebutMatch()));
 	}
 
     @Test
@@ -53,11 +54,11 @@ public class JUnit_GridSpace extends JUnit_Test {
     {
 		for(PathfindingNodes i : PathfindingNodes.values())
 			for(PathfindingNodes j : PathfindingNodes.values())
-				Assert.assertTrue(gridspace.isTraversable(i,j) == gridspace.isTraversable(j,i));
+				Assert.assertTrue(gridspace.isTraversable(i,j, Config.getDateDebutMatch()) == gridspace.isTraversable(j,i, Config.getDateDebutMatch()));
 		gridspace.reinitConnections();
 		for(PathfindingNodes i : PathfindingNodes.values())
 			for(PathfindingNodes j : PathfindingNodes.values())
-				Assert.assertTrue(gridspace.isTraversable(i,j) == gridspace.isTraversable(j,i));
+				Assert.assertTrue(gridspace.isTraversable(i,j, Config.getDateDebutMatch()) == gridspace.isTraversable(j,i, Config.getDateDebutMatch()));
     }
 
 }

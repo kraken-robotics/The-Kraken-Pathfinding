@@ -10,6 +10,7 @@ import enums.ConfigInfo;
 import enums.GameElementNames;
 import enums.GameElementType;
 import enums.Tribool;
+import robot.RobotChrono;
 import smartMath.Vec2;
 import strategie.GameState;
 import utils.Log;
@@ -31,6 +32,8 @@ public class HookFactory implements Service
 	
 	// la valeur de 20 est en mm, elle est remplcée par la valeur spécifié dans le fichier de config s'il y en a une
 	private int positionTolerancy = 20;	
+	
+	private ArrayList<Hook> hooks_table_chrono = null;
 	
 	/**
 	 *  appellé uniquement par Container.
@@ -201,7 +204,20 @@ public class HookFactory implements Service
         return new HookYisGreater(config, log, state, yValue);
     }
 
-    public ArrayList<Hook> getHooksEntreScripts(GameState<?> state)
+    public ArrayList<Hook> getHooksEntreScriptsChrono(GameState<RobotChrono> state)
+    {
+    	if(hooks_table_chrono == null)
+    		hooks_table_chrono = getHooksEntreScriptsReal(state);
+    	else
+    		// on met à jour dans les hooks les références (gridspace, robot, ...)
+    		// C'est bien plus rapide que de créer de nouveaux hooks
+    		for(Hook hook: hooks_table_chrono)
+    			hook.updateGameState(state);
+
+    	return hooks_table_chrono;
+    }
+    
+    public ArrayList<Hook> getHooksEntreScriptsReal(GameState<?> state)
     {
     	ArrayList<Hook> hooks_entre_scripts = new ArrayList<Hook>();
 		Hook hook;
@@ -209,14 +225,14 @@ public class HookFactory implements Service
 		for(GameElementNames n: GameElementNames.values())
 		{
 			// L'ennemi peut prendre les distributeurs
-			if(state.gridspace.isDone(n) == Tribool.FALSE && n.getType() == GameElementType.DISTRIBUTEUR)
+			if(/*state.gridspace.isDone(n) == Tribool.FALSE && */n.getType() == GameElementType.DISTRIBUTEUR)
 			{
 				hook = newHookDate(20000, state);
 				action = new GameElementDone(state.gridspace, n, Tribool.MAYBE);
 				hook.ajouter_callback(new Callback(action));
 				hooks_entre_scripts.add(hook);
 			}
-			else if(state.gridspace.isDone(n) == Tribool.FALSE && n.getType() == GameElementType.VERRE)
+			else if(/*state.gridspace.isDone(n) == Tribool.FALSE && */n.getType() == GameElementType.VERRE)
 			{
 				hook = newHookDate(20000, state);
 				action = new GameElementDone(state.gridspace, n, Tribool.MAYBE);
@@ -225,7 +241,7 @@ public class HookFactory implements Service
 			}
 			// Les éléments de jeu avec un rayon négatif sont ceux qu'on ne peut pas percuter.
 			// Exemple: clap, distributeur. 
-			if(state.gridspace.isDone(n) != Tribool.TRUE && n.getRadius() > 0)
+			if(/*state.gridspace.isDone(n) != Tribool.TRUE &&*/ n.getRadius() > 0)
 			{
 				hook = newHookPosition(n.getPosition(), n.getRadius(), state);
 				action = new GameElementDone(state.gridspace, n, Tribool.TRUE);

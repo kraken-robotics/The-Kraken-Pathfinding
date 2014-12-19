@@ -3,6 +3,7 @@ package strategie;
 import hook.types.HookFactory;
 import pathfinding.GridSpace;
 import container.Service;
+import enums.GameElementNames;
 import exceptions.FinMatchException;
 import robot.Robot;
 import robot.RobotChrono;
@@ -114,5 +115,28 @@ public class GameState<R extends Robot> implements Service
     {
     	return indice_memory_manager;
     }
+
+	public long getHash()
+	{
+		// un long est codé sur 64 bits.
+		// Du coup, on a de la marge.
+		long hash = 0;
+		try {
+			hash = gridspace.nbObstaclesMobiles(); // codé sur autant de bits qu'il le faut puisqu'il est dans les bits de poids forts
+			hash = (hash << 12) + robot.getPosition().x+1500; // codé sur 12 bits (0 à 3000)
+			hash = (hash << 11) + robot.getPosition().y; // codé sur 11 bits (0 à 2000)
+			hash = (hash << (2*GameElementNames.values().length)) + gridspace.getHashTable(); // codé sur 2 bits par élément de jeux (2 bit par Tribool)
+			hash = (hash << 9) + robot.getPointsObtenus(); // d'ici provient le &511 de StrategyArcManager (511 = 2^9 - 1)
+		} catch (FinMatchException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return hash;
+	}
+
+	public void setIndiceMemoryManager(int indice)
+	{
+		indice_memory_manager = indice;
+	}
     
 }

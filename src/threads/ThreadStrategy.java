@@ -57,7 +57,7 @@ public class ThreadStrategy extends AbstractThread implements Service
 		this.scriptmanager = scriptmanager;
 		this.pathfinding = pathfinding;
 		this.real_gamestate = real_gamestate;
-		hooks_entre_scripts = hookfactory.getHooksEntreScripts(real_gamestate);
+		hooks_entre_scripts = hookfactory.getHooksEntreScriptsReal(real_gamestate);
 	
 		Thread.currentThread().setPriority(4); // TODO
 		updateConfig();

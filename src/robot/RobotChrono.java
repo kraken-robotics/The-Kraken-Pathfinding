@@ -6,7 +6,6 @@ import hook.Hook;
 import smartMath.Vec2;
 import utils.Log;
 import utils.Config;
-import enums.ConfigInfo;
 import enums.HauteurBrasClap;
 import enums.PathfindingNodes;
 import enums.Side;
@@ -251,12 +250,6 @@ public class RobotChrono extends Robot
 		return null;
 	}
 
-	public void setFinalState()
-	{
-		super.setFinalState();
-		date = Integer.parseInt(config.get(ConfigInfo.DUREE_MATCH_EN_S))*1000;
-	}
-
 	/**
 	 * UTILISE UNIQUEMENT PAR LES TESTS
 	 */
@@ -286,6 +279,12 @@ public class RobotChrono extends Robot
 	{
 		if(needToSleep)
 			leverDeuxTapisSleep();		
+	}
+
+	// Permet de commander le lissage en vérifiant si on part d'un point qui n'est pas un node
+	public boolean isAtPathfindingNodes()
+	{
+		return isPositionPathfindingActive;
 	}
 	
 }

@@ -55,7 +55,7 @@ public class Execution implements Service {
 
 	    // DEPENDS_ON_RULES
 		// TODO: peut-être d'autres hooks?
-		hooks_entre_scripts = hookfactory.getHooksEntreScripts(gamestate);
+		hooks_entre_scripts = hookfactory.getHooksEntreScriptsReal(gamestate);
 	}
 
 	// Appelé par le lanceur
@@ -135,7 +135,7 @@ public class Execution implements Service {
 	public void tryOnce(Script s, int id_version, boolean dont_avoid_game_element) throws PathfindingException, UnableToMoveException, ScriptException, PathfindingRobotInObstacleException, FinMatchException
 	{
 		ArrayList<PathfindingNodes> chemin;
-		chemin = pathfinding.computePath(gamestate.cloneGameState(), s.point_entree(id_version), dont_avoid_game_element, true);
+		chemin = pathfinding.computePath(gamestate.cloneGameState(), s.point_entree(id_version), dont_avoid_game_element);
 		gamestate.robot.set_vitesse(Speed.BETWEEN_SCRIPTS);
 		gamestate.robot.suit_chemin(chemin, hooks_entre_scripts);
 		s.agit(id_version, gamestate, false);	

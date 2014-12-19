@@ -4,6 +4,7 @@ import obstacles.GameElement;
 import container.Service;
 import enums.GameElementNames;
 import enums.Tribool;
+import smartMath.Vec2;
 import utils.*;
 
 public class Table implements Service
@@ -18,7 +19,8 @@ public class Table implements Service
 	private GameElement[] total = new GameElement[20];
 	// Et potentiellement les balles de tennis
 	
-	private static int indice = 0;
+	// Le hash est exact; pas de collisions possibles.
+	// La valeur initiale 0 provient des hash des Tribool.
 	private int hash = 0;
 	
 	public Table(Log log, Config config)
@@ -36,8 +38,7 @@ public class Table implements Service
 	 */
 	public void setDone(GameElementNames id, Tribool done)
 	{
-		indice++;
-		hash = indice;
+		hash |= (done.hash << (2*id.ordinal()));
 		total[id.ordinal()].setDone(done);
 	}
 
@@ -88,9 +89,19 @@ public class Table implements Service
 	public void updateConfig()
 	{
 	}
-	
+
+	public boolean isProcheObstacle(GameElementNames g, Vec2 position, int rayon_robot_adverse)
+	{
+		return total[g.ordinal()].isProcheObstacle(position, rayon_robot_adverse);
+	}
+
+	public boolean obstacle_proximite_dans_segment(GameElementNames g, Vec2 a, Vec2 b, int dilatation_obstacle)
+	{
+		return total[g.ordinal()].obstacle_proximite_dans_segment(a, b, dilatation_obstacle);
+	}
+
 	/**
-	 * Utilisé par l'obstacle manager
+	 * Utilisé pour l'affichage uniquement.
 	 * @return
 	 */
 	public GameElement[] getObstacles()

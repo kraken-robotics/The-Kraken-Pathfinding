@@ -23,7 +23,8 @@ public enum PathfindingNodes implements Arc {
 	CLAP_DROIT(new Vec2(1150, 300)),
 	BAS(new Vec2(0, 500)),
 
-	// Les points de secours ne doivent pas être des points d'entrée de scripts.
+	// TODO: point de sortie des scripts
+	
 	SECOURS_1(new Vec2(800, 1300)),
 	SECOURS_2(new Vec2(-800, 1300)),
 	SECOURS_3(new Vec2(0, 800)),

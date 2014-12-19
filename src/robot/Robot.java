@@ -85,13 +85,6 @@ public abstract class Robot implements Service
 		updateConfig();
 	}
 
-	protected void setFinalState()
-	{
-		// TODO
-		pointsObtenus = 20;
-	}
-	
-	
 	public void updateConfig()
 	{
 		symetrie = (RobotColor.parse(config.get(ConfigInfo.COULEUR)) == RobotColor.YELLOW);

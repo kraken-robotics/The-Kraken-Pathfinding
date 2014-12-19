@@ -49,7 +49,7 @@ public class JUnit_Hook extends JUnit_Test {
 	public void test_hook_vrai_avancer() throws Exception
 	{
 		config.setDateDebutMatch();
-		ArrayList<Hook> hooks_table = hookfactory.getHooksEntreScripts(real_gamestate);
+		ArrayList<Hook> hooks_table = hookfactory.getHooksEntreScriptsReal(real_gamestate);
 		real_gamestate.robot.setPosition(new Vec2(600, 350));
 		real_gamestate.robot.setOrientation(Math.PI);
 		Assert.assertTrue(real_gamestate.gridspace.isDone(GameElementNames.VERRE_5) == Tribool.FALSE);
@@ -62,7 +62,7 @@ public class JUnit_Hook extends JUnit_Test {
 	@Test
 	public void test_hook_chrono_avancer() throws Exception
 	{
-		ArrayList<Hook> hooks_table = hookfactory.getHooksEntreScripts(chrono_gamestate);
+		ArrayList<Hook> hooks_table = hookfactory.getHooksEntreScriptsReal(chrono_gamestate);
 		chrono_gamestate.robot.setPosition(new Vec2(600, 350));
 		chrono_gamestate.robot.setOrientation(Math.PI);
 		Assert.assertTrue(chrono_gamestate.gridspace.isDone(GameElementNames.VERRE_5) == Tribool.FALSE);
@@ -76,7 +76,7 @@ public class JUnit_Hook extends JUnit_Test {
 	public void test_hook_chrono_sleep() throws Exception
 	{
 		config.setDateDebutMatch();
-		ArrayList<Hook> hooks_table = hookfactory.getHooksEntreScripts(real_gamestate);
+		ArrayList<Hook> hooks_table = hookfactory.getHooksEntreScriptsReal(real_gamestate);
 		Assert.assertTrue(real_gamestate.gridspace.isDone(GameElementNames.VERRE_5) == Tribool.FALSE);
 		chrono_gamestate.robot.sleep(5000, hooks_table);
 		Assert.assertTrue(real_gamestate.gridspace.isDone(GameElementNames.VERRE_5) == Tribool.FALSE);
@@ -88,7 +88,7 @@ public class JUnit_Hook extends JUnit_Test {
 	public void test_hook_chrono_suit_chemin2() throws Exception
 	{
 		chrono_gamestate.robot.setPosition(PathfindingNodes.BAS.getCoordonnees());
-    	pathfinding.computePath(chrono_gamestate, PathfindingNodes.COTE_MARCHE_DROITE, false, false);
+    	pathfinding.computePath(chrono_gamestate, PathfindingNodes.COTE_MARCHE_DROITE, false);
 	}
 
 }

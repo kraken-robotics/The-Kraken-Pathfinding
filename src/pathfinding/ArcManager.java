@@ -1,5 +1,9 @@
 package pathfinding;
 
+import exceptions.FinMatchException;
+import exceptions.UnknownScriptException;
+import exceptions.Locomotion.UnableToMoveException;
+import exceptions.serial.SerialConnexionException;
 import robot.RobotChrono;
 import strategie.GameState;
 
@@ -27,8 +31,9 @@ public interface ArcManager {
 	 * Exécute un script pour l'arbre des possibles.
 	 * @param other
 	 * @return
+	 * @throws UnableToMoveException 
 	 */
-	public double distanceTo(GameState<RobotChrono> state, Arc arc);
+	public int distanceTo(GameState<RobotChrono> state, Arc arc) throws FinMatchException, UnknownScriptException, SerialConnexionException, UnableToMoveException;
 	
 	/**
 	 * Evalue la distance entre deux sommets.
@@ -36,8 +41,12 @@ public interface ArcManager {
 	 * @param other
 	 * @return
 	 */
-	public double heuristicCost(GameState<RobotChrono> state1, GameState<RobotChrono> state2);
+	public int heuristicCost(GameState<RobotChrono> state);
 
 	public int getHash(GameState<RobotChrono> state);	
+	
+	public boolean isArrive(int hash);
+	
+	public int getNoteReconstruct(int hash);
 	
 }

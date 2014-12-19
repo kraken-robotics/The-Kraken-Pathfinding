@@ -92,14 +92,14 @@ public class GridSpace implements Service {
 	 * Surcouche de isConnected qui gère le cache
 	 * @return
 	 */
-	public boolean isTraversable(PathfindingNodes i, PathfindingNodes j)
+	public boolean isTraversable(PathfindingNodes i, PathfindingNodes j, long date)
 	{
 		if(isConnectedModelCache[i.ordinal()][j.ordinal()] == NodesConnection.ALWAYS_IMPOSSIBLE)
 		{
 //			log.debug("Trajet entre "+i+" et "+j+" impossible à cause d'un obstacle fixe!", this);			
 			return false;
 		}
-		else if(obstaclemanager.obstacle_proximite_dans_segment(i.getCoordonnees(), j.getCoordonnees()))
+		else if(obstaclemanager.obstacle_proximite_dans_segment(i.getCoordonnees(), j.getCoordonnees(), date))
 		{
 //			log.debug("Trajet entre "+i+" et "+j+" impossible à cause d'un obstacle de proximité", this);
 			isConnectedModelCache[i.ordinal()][j.ordinal()] = NodesConnection.TMP_IMPOSSIBLE;
@@ -129,14 +129,14 @@ public class GridSpace implements Service {
 	 * @return
 	 * @throws GridSpaceException 
 	 */
-	public PathfindingNodes nearestReachableNode(Vec2 point) throws GridSpaceException
+	public PathfindingNodes nearestReachableNode(Vec2 point, long date) throws GridSpaceException
 	{
 		PathfindingNodes indice_point_depart = null;
 		float distance_min = Float.MAX_VALUE;
 		for(PathfindingNodes i : PathfindingNodes.values())
 		{
 			float tmp = point.squaredDistance(i.getCoordonnees());
-			if(tmp < distance_min && !obstaclemanager.obstacle_proximite_dans_segment(point, i.getCoordonnees()))
+			if(tmp < distance_min && !obstaclemanager.obstacle_proximite_dans_segment(point, i.getCoordonnees(), date))
 			{
 				distance_min = tmp;
 				indice_point_depart = i;
@@ -191,10 +191,10 @@ public class GridSpace implements Service {
      * @param pointB
      * @return
      */
-    public boolean isTraversable(Vec2 pointA, Vec2 pointB)
+    public boolean isTraversable(Vec2 pointA, Vec2 pointB, long date)
     {
     	// Evaluation paresseuse importante, car obstacle_proximite_dans_segment est bien plus rapide que obstacle_fixe_dans_segment
-    	return !obstaclemanager.obstacle_proximite_dans_segment(pointA, pointB) && !obstaclemanager.obstacle_fixe_dans_segment_pathfinding(pointA, pointB);
+    	return !obstaclemanager.obstacle_proximite_dans_segment(pointA, pointB, date) && !obstaclemanager.obstacle_fixe_dans_segment_pathfinding(pointA, pointB);
     }
         
     /**
@@ -232,5 +232,10 @@ public class GridSpace implements Service {
 	public Tribool isDone(GameElementNames element)
 	{
 		return obstaclemanager.isDone(element);
+	}
+
+	public int getHashTable()
+	{
+		return obstaclemanager.getHashTable();
 	}
 }

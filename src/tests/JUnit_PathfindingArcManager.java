@@ -8,6 +8,7 @@ import pathfinding.PathfindingArcManager;
 import robot.RobotChrono;
 import robot.RobotReal;
 import strategie.GameState;
+import utils.Config;
 import enums.PathfindingNodes;
 import enums.ServiceNames;
 
@@ -65,6 +66,7 @@ public class JUnit_PathfindingArcManager extends JUnit_Test {
 	@Test
 	public void test_iterator2() throws Exception
 	{
+		config.setDateDebutMatch();
 		boolean[] verification = new boolean[PathfindingNodes.values().length];
 		for(PathfindingNodes j : PathfindingNodes.values())
 		{
@@ -78,7 +80,7 @@ public class JUnit_PathfindingArcManager extends JUnit_Test {
 				verification[pathfindingarcmanager.next().ordinal()] = true;
 			}
 			for(PathfindingNodes i : PathfindingNodes.values())
-				Assert.assertEquals((state_chrono.gridspace.isTraversable(i, j) && i != j), verification[i.ordinal()]);
+				Assert.assertEquals((state_chrono.gridspace.isTraversable(i, j, Config.getDateDebutMatch()) && i != j), verification[i.ordinal()]);
 		}
 	}
 	
