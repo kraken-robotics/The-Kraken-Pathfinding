@@ -23,22 +23,23 @@ import exceptions.UnknownScriptException;
 import exceptions.Locomotion.UnableToMoveException;
 import exceptions.serial.SerialConnexionException;
 
-public class StrategyArcManager implements Service, ArcManager {
+public class StrategyArcManager extends ArcManager implements Service {
 
 	private Log log;
 	private ScriptManager scriptmanager;
-	private AStar astar;
+	private AStar<PathfindingArcManager> astar;
 	private HookFactory hookfactory;
 	
 	private ArrayList<Decision> listeDecisions = new ArrayList<Decision>();
 	private int iterator;
 	private Vector<Long> hashes = new Vector<Long>();
 	
-	public StrategyArcManager(Log log, Config config, ScriptManager scriptmanager, GameState<RobotReal> real_gamestate, HookFactory hookfactory)
+	public StrategyArcManager(Log log, Config config, ScriptManager scriptmanager, GameState<RobotReal> real_gamestate, HookFactory hookfactory, AStar<PathfindingArcManager> astar)
 	{
 		this.log = log;
 		this.scriptmanager = scriptmanager;
 		this.hookfactory = hookfactory;
+		this.astar = astar;
 	}
 
 	@Override
@@ -125,6 +126,7 @@ public class StrategyArcManager implements Service, ArcManager {
 		if(indice == -1)
 		{
 			hashes.add(hash);
+			log.debug("size: "+hashes.size(), this);
 			return hashes.size()-1;
 		}
 		else
@@ -136,11 +138,6 @@ public class StrategyArcManager implements Service, ArcManager {
 	{
 	}
 
-	public void setAStar(AStar astar)
-	{
-		this.astar = astar;
-	}
-	
 	public void reinitHashes()
 	{
 		hashes.clear();
@@ -158,7 +155,7 @@ public class StrategyArcManager implements Service, ArcManager {
 
 	@Override
 	public int getNoteReconstruct(int hash) {
-		return hash&511; // la composante "note" du hash (cf gamestate.getHash())
+		return (int)(hashes.get(hash)&511); // la composante "note" du hash (cf gamestate.getHash())
 	}
 
 }

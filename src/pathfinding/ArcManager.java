@@ -14,17 +14,17 @@ import strategie.GameState;
  *
  */
 
-public interface ArcManager {
+public abstract class ArcManager {
 
-	public void reinitIterator(GameState<RobotChrono> gamestate);
+	public abstract void reinitIterator(GameState<RobotChrono> gamestate);
 
-	public boolean hasNext(GameState<RobotChrono> state);
+	public abstract boolean hasNext(GameState<RobotChrono> state);
 	
 	/**
 	 * Donne l'arc pour aller au noeud suivant
 	 * @return
 	 */
-	public Arc next();
+	public abstract Arc next();
 	
 	/** 
 	 * Donne la distance exacte entre les deux points.
@@ -33,7 +33,7 @@ public interface ArcManager {
 	 * @return
 	 * @throws UnableToMoveException 
 	 */
-	public int distanceTo(GameState<RobotChrono> state, Arc arc) throws FinMatchException, UnknownScriptException, SerialConnexionException, UnableToMoveException;
+	public abstract int distanceTo(GameState<RobotChrono> state, Arc arc) throws FinMatchException, UnknownScriptException, SerialConnexionException, UnableToMoveException;
 	
 	/**
 	 * Evalue la distance entre deux sommets.
@@ -41,12 +41,12 @@ public interface ArcManager {
 	 * @param other
 	 * @return
 	 */
-	public int heuristicCost(GameState<RobotChrono> state);
+	public abstract int heuristicCost(GameState<RobotChrono> state);
 
-	public int getHash(GameState<RobotChrono> state);	
+	public abstract int getHash(GameState<RobotChrono> state);	
 	
-	public boolean isArrive(int hash);
+	public abstract boolean isArrive(int hash);
 	
-	public int getNoteReconstruct(int hash);
+	public abstract int getNoteReconstruct(int hash);
 	
 }

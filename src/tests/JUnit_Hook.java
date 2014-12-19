@@ -11,6 +11,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import pathfinding.AStar;
+import pathfinding.PathfindingArcManager;
 import robot.RobotChrono;
 import robot.RobotReal;
 import smartMath.Vec2;
@@ -32,7 +33,7 @@ public class JUnit_Hook extends JUnit_Test {
 	private HookFactory hookfactory;
 	private GameState<RobotReal> real_gamestate;
 	private GameState<RobotChrono> chrono_gamestate;
-	private AStar pathfinding;
+	private AStar<PathfindingArcManager> pathfinding;
 
 	@SuppressWarnings("unchecked")
 	@Before
@@ -42,7 +43,7 @@ public class JUnit_Hook extends JUnit_Test {
         hookfactory = (HookFactory) container.getService(ServiceNames.HOOK_FACTORY);
         real_gamestate = (GameState<RobotReal>) container.getService(ServiceNames.REAL_GAME_STATE);
         chrono_gamestate = real_gamestate.cloneGameState();
-        pathfinding = (AStar)container.getService(ServiceNames.A_STAR);
+        pathfinding = (AStar<PathfindingArcManager>)container.getService(ServiceNames.A_STAR_PATHFINDING);
     }
    
 	@Test

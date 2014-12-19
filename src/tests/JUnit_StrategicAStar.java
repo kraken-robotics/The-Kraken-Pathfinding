@@ -6,6 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import pathfinding.AStar;
+import pathfinding.StrategyArcManager;
 import robot.RobotReal;
 import scripts.Decision;
 import smartMath.Vec2;
@@ -15,14 +16,14 @@ import enums.ServiceNames;
 public class JUnit_StrategicAStar extends JUnit_Test
 {
 	private GameState<RobotReal> gamestate;
-	private AStar astar;
+	private AStar<StrategyArcManager> astar;
 	
     @SuppressWarnings("unchecked")
 	@Before
     public void setUp() throws Exception {
         super.setUp();
         gamestate = (GameState<RobotReal>) container.getService(ServiceNames.REAL_GAME_STATE);
-        astar = (AStar) container.getService(ServiceNames.A_STAR);
+        astar = (AStar<StrategyArcManager>) container.getService(ServiceNames.A_STAR_STRATEGY);
         gamestate.robot.setPosition(new Vec2(1100, 1000));
     }
     

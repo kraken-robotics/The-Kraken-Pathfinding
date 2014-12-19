@@ -27,7 +27,7 @@ import utils.Log;
  *
  */
 
-public class AStar implements Service
+public class AStar<AM extends ArcManager> implements Service
 {
 	/**
 	 * Les analogies sont:
@@ -46,34 +46,33 @@ public class AStar implements Service
 	private int[] f_score = new int[nb_max_element];
 	
 //	private Log log;
-	private PathfindingArcManager pfarcmanager;
-	private StrategyArcManager stratarcmanager;
+	private AM arcmanager;
 	private MemoryManager memorymanager;
 	
 	/**
-	 * Constructeur du système de recherche de chemin
+	 * Constructeur du AStar de pathfinding ou de stratégie, selon AM
 	 */
-	public AStar(Log log, Config config, PathfindingArcManager pfarcmanager, StrategyArcManager stratarcmanager, MemoryManager memorymanager)
+	public AStar(Log log, Config config, AM arcmanager, MemoryManager memorymanager)
 	{
 //		this.log = log;
-		this.pfarcmanager = pfarcmanager;
-		this.stratarcmanager = stratarcmanager;
+		this.arcmanager = arcmanager;
 		this.memorymanager = memorymanager;
-		// Afin d'outrepasser la dépendance circulaire qui provient de la double
-		// utilisation de l'AStar (stratégie et pathfinding)
-
-		stratarcmanager.setAStar(this);
 	}
-	
+
 	public ArrayList<Decision> computeStrategy(GameState<RobotChrono> state) throws FinMatchException
 	{
+		if(!(arcmanager instanceof StrategyArcManager))
+		{
+			new Exception().printStackTrace();
+			return null;
+		}
 		GameState<RobotChrono> depart = memorymanager.getNewGameState();
 		state.copy(depart);
-		stratarcmanager.reinitHashes();
+		((StrategyArcManager)arcmanager).reinitHashes();
 		ArrayList<Arc> cheminArc;
 		ArrayList<Decision> decisions = new ArrayList<Decision>();
 		try {
-			cheminArc = process(depart, stratarcmanager, true);
+			cheminArc = process(depart, arcmanager, true);
 			for(Arc arc: cheminArc)
 				decisions.add((Decision)arc);
 		} catch (PathfindingException e) {
@@ -85,6 +84,11 @@ public class AStar implements Service
 	
 	public ArrayList<PathfindingNodes> computePath(GameState<RobotChrono> state, PathfindingNodes indice_point_arrivee, boolean shoot_game_element) throws PathfindingException, PathfindingRobotInObstacleException, FinMatchException
 	{
+		if(!(arcmanager instanceof PathfindingArcManager))
+		{
+			new Exception().printStackTrace();
+			return null;
+		}
 		try {
 			state.gridspace.setAvoidGameElement(!shoot_game_element);
 
@@ -98,10 +102,10 @@ public class AStar implements Service
 			state.copy(depart);
 			depart.robot.setPositionPathfinding(pointDepart);
 			
-			pfarcmanager.chargePointArrivee(indice_point_arrivee);
+			((PathfindingArcManager)arcmanager).chargePointArrivee(indice_point_arrivee);
 			
 //			log.debug("Recherche de chemin entre "+pointDepart+" et "+indice_point_arrivee, this);
-			ArrayList<Arc> cheminArc = process(depart, pfarcmanager, false);
+			ArrayList<Arc> cheminArc = process(depart, arcmanager, false);
 			
 			ArrayList<PathfindingNodes> chemin = new ArrayList<PathfindingNodes>(); 
 
@@ -201,14 +205,14 @@ public class AStar implements Service
 			}
 
 			openset.removeFirst();
+			
 			closedset[hash_current] = true;
 			arcmanager.reinitIterator(current);
-		    	
+		    
 			while(arcmanager.hasNext(current))
 			{
 				Arc voisin = arcmanager.next();
 
-//				log.debug("Voisin de "+current.robot.getPositionPathfinding()+": "+voisin, this);
 				GameState<RobotChrono> successeur = memorymanager.getNewGameState();
 				current.copy(successeur);
 				
@@ -258,19 +262,20 @@ public class AStar implements Service
 		/**
 		 * Même si on n'a pas atteint l'objectif, on reconstruit un chemin partiel
 		 */
-		int best = 0;
-		int note_best = arcmanager.getNoteReconstruct(0);
-		for(int h = 1; h < nb_max_element; h++)
-		{
-			int potentiel_note_best = arcmanager.getNoteReconstruct(h);
-			if(f_score[h] != Integer.MAX_VALUE && potentiel_note_best > note_best)
+		int note_best = Integer.MIN_VALUE;
+		int best = -1;
+		for(int h = 0; h < nb_max_element; h++)
+			if(closedset[h]) // si ce noeud a été parcouru (sinon getNoteReconstruct va paniquer)
 			{
-				best = h;
-				note_best = potentiel_note_best;
+				int potentiel_note_best = arcmanager.getNoteReconstruct(h);
+				if(potentiel_note_best > note_best)
+				{
+					best = h;
+					note_best = potentiel_note_best;
+				}
 			}
-		}
 		
-		// best est nécessairement non nul car f_score contient au moins le point de départ
+		// best est nécessairement non nul car closedset contient au moins le point de départ
 		return reconstruct(best);
 		
 	}
