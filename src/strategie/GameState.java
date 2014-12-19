@@ -138,5 +138,5 @@ public class GameState<R extends Robot> implements Service
 	{
 		indice_memory_manager = indice;
 	}
-    
+
 }

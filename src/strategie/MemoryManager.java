@@ -22,7 +22,7 @@ public class MemoryManager implements Service {
 	private static final int nb_instances = 100;
 
 	private Vector<GameState<RobotChrono>> gamestate = new Vector<GameState<RobotChrono>>();
-	private Log log;
+//	private Log log;
 	private GameState<RobotChrono> model;
 	
 	// gamestate est triés: avant firstAvailable, les gamestate sont indisponibles, après, ils sont disponibles
@@ -34,7 +34,7 @@ public class MemoryManager implements Service {
 
 	public MemoryManager(Log log, Config config, GameState<RobotReal> realstate)
 	{	
-		this.log = log;
+//		this.log = log;
 
 		try {
 			this.model = realstate.cloneGameState();
@@ -53,17 +53,15 @@ public class MemoryManager implements Service {
 	
 	public GameState<RobotChrono> getNewGameState() throws FinMatchException
 	{
-		if(firstAvailable == gamestate.size())
-		{
+		GameState<RobotChrono> out;
+		try {
 			firstAvailable++;
-			GameState<RobotChrono> out = model.cloneGameState(gamestate.size());
-			gamestate.add(out);
-			return out;
+			return out = gamestate.get(firstAvailable-1);
 		}
-		else // on a un robot disponible
+		catch(ArrayIndexOutOfBoundsException e)
 		{
-			GameState<RobotChrono> out = gamestate.get(firstAvailable);
-			firstAvailable++;
+			out = model.cloneGameState(firstAvailable);
+			gamestate.add(out);
 			return out;
 		}
 	}
@@ -71,10 +69,10 @@ public class MemoryManager implements Service {
 	public GameState<RobotChrono> destroyGameState(GameState<RobotChrono> state)
 	{
 		int indice_state = state.getIndiceMemoryManager();
-		if(indice_state >= firstAvailable)
-			log.warning("Objet déjà détruit!", this);
-		else
-		{
+//		if(indice_state >= firstAvailable)
+//			log.warning("Objet déjà détruit!", this);
+//		else
+//		{
 			// On inverse dans le Vector les deux gamestates,
 			// de manière à avoir toujours un Vector trié.
 			firstAvailable--;
@@ -86,7 +84,7 @@ public class MemoryManager implements Service {
 
 			gamestate.setElementAt(tmp1, firstAvailable);
 			gamestate.setElementAt(tmp2, indice_state);
-		}
+//		}
 		return null;
 	}
 	

@@ -94,10 +94,10 @@ public class GridSpace implements Service {
 	 */
 	public boolean isTraversable(PathfindingNodes i, PathfindingNodes j, long date)
 	{
-		if(isConnectedModelCache[i.ordinal()][j.ordinal()] == NodesConnection.ALWAYS_IMPOSSIBLE)
+		if(isConnectedModelCache[i.ordinal()][j.ordinal()] != null)
 		{
-//			log.debug("Trajet entre "+i+" et "+j+" impossible à cause d'un obstacle fixe!", this);			
-			return false;
+//			log.debug("Trajet entre "+i+" et "+j+": utilisation du cache", this);			
+			return isConnectedModelCache[i.ordinal()][j.ordinal()].isTraversable();
 		}
 		else if(obstaclemanager.obstacle_proximite_dans_segment(i.getCoordonnees(), j.getCoordonnees(), date))
 		{

@@ -2,6 +2,7 @@ package pathfinding;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedList;
 
 import container.Service;
 import enums.PathfindingNodes;
@@ -37,14 +38,14 @@ public class AStar implements Service
 	
 	private static final int nb_max_element = 100;
 	
-	private ArrayList<GameState<RobotChrono>> openset = new ArrayList<GameState<RobotChrono>>();	 // The set of tentative nodes to be evaluated
+	private LinkedList<GameState<RobotChrono>> openset = new LinkedList<GameState<RobotChrono>>();	 // The set of tentative nodes to be evaluated
 	private boolean[] closedset = new boolean[nb_max_element];
 	private int[] came_from = new int[nb_max_element];
 	private Arc[] came_from_arc = new Arc[nb_max_element];
 	private int[] g_score = new int[nb_max_element];
 	private int[] f_score = new int[nb_max_element];
 	
-	private Log log;
+//	private Log log;
 	private PathfindingArcManager pfarcmanager;
 	private StrategyArcManager stratarcmanager;
 	private MemoryManager memorymanager;
@@ -54,12 +55,13 @@ public class AStar implements Service
 	 */
 	public AStar(Log log, Config config, PathfindingArcManager pfarcmanager, StrategyArcManager stratarcmanager, MemoryManager memorymanager)
 	{
-		this.log = log;
+//		this.log = log;
 		this.pfarcmanager = pfarcmanager;
 		this.stratarcmanager = stratarcmanager;
 		this.memorymanager = memorymanager;
 		// Afin d'outrepasser la dépendance circulaire qui provient de la double
 		// utilisation de l'AStar (stratégie et pathfinding)
+
 		stratarcmanager.setAStar(this);
 	}
 	
@@ -90,9 +92,7 @@ public class AStar implements Service
 			if(state.robot.isAtPathfindingNodes())
 				pointDepart = state.robot.getPositionPathfinding();
 			else
-			{
 				pointDepart = state.gridspace.nearestReachableNode(state.robot.getPosition(), state.robot.getTempsDepuisDebutMatch());
-			}
 
 			GameState<RobotChrono> depart = memorymanager.getNewGameState();
 			state.copy(depart);
@@ -104,13 +104,17 @@ public class AStar implements Service
 			ArrayList<Arc> cheminArc = process(depart, pfarcmanager, false);
 			
 			ArrayList<PathfindingNodes> chemin = new ArrayList<PathfindingNodes>(); 
-			chemin.add(pointDepart);
+
 			for(Arc arc: cheminArc)
 				chemin.add((PathfindingNodes)arc);
 
 			// on n'a besoin de lisser que si on ne partait pas d'un pathfindingnode
-			if(state.robot.isAtPathfindingNodes())
+			if(!state.robot.isAtPathfindingNodes())
+			{
+				// parce qu'on ne part pas du point de départ directement...
+				chemin.add(0, pointDepart);
 				chemin = lissage(state.robot.getPosition(), state, chemin);
+			}
 			
 //			log.debug("Recherche de chemin terminée", this);
 			return chemin;
@@ -126,7 +130,7 @@ public class AStar implements Service
 	// Si le point de départ est dans un obstacle fixe, le lissage ne changera rien.
 	private ArrayList<PathfindingNodes> lissage(Vec2 depart, GameState<RobotChrono> state, ArrayList<PathfindingNodes> chemin)
 	{
-		// TODO: attention! avec quel robot lisse-t-on? et si on zappe des points, ça modifie le timing et tout... 
+		// ATTENTION! LE LISSAGE COÛTE TRÈS CHER!
 		// si on peut sauter le premier point, on le fait
 		while(chemin.size() >= 2 && state.gridspace.isTraversable(depart, chemin.get(1).getCoordonnees(), state.robot.getTempsDepuisDebutMatch()))
 			chemin.remove(0);
@@ -144,6 +148,7 @@ public class AStar implements Service
 			return new ArrayList<Arc>();
 		}
 
+		// plus rapide que des arraycopy
 		for(int i = 0; i < nb_max_element; i++)
 		{
 			closedset[i] = false;
@@ -169,14 +174,25 @@ public class AStar implements Service
 			nodeIterator = openset.iterator();
 			current = nodeIterator.next();
 			
+			// La liste est triée, on a donc directement l'élément minimisant f
+/*			
 			while(nodeIterator.hasNext())
 			{
 				GameState<RobotChrono> tmp = nodeIterator.next();
 				if(f_score[arcmanager.getHash(tmp)] < f_score[arcmanager.getHash((current))])
 					current = tmp;
 			}
-
+*/
 			int hash_current = arcmanager.getHash(current);
+
+			// élément déjà fait
+			// cela parce qu'il y a des doublons dans openset
+			if(closedset[hash_current])
+			{
+				current = memorymanager.destroyGameState(current);
+				openset.removeFirst();
+				continue;
+			}
 			
 			if(arcmanager.isArrive(hash_current))
 			{
@@ -184,7 +200,7 @@ public class AStar implements Service
 				return reconstruct(hash_current);
 			}
 
-			openset.remove(current);
+			openset.removeFirst();
 			closedset[hash_current] = true;
 			arcmanager.reinitIterator(current);
 		    	
@@ -217,17 +233,13 @@ public class AStar implements Service
 					continue;
 				}
 
-				if(!contains(openset, hash_successeur, arcmanager) || tentative_g_score < g_score[hash_successeur])
+				if(tentative_g_score < g_score[hash_successeur])
 				{
 					came_from[hash_successeur] = hash_current;
 					came_from_arc[hash_successeur] = voisin;
 					g_score[hash_successeur] = tentative_g_score;
 					f_score[hash_successeur] = tentative_g_score + arcmanager.heuristicCost(successeur);
-					// TODO: remplacer celui qui existe déjà par successeur?
-					if(!contains(openset, hash_successeur, arcmanager))
-						openset.add(successeur);
-					else
-						successeur = memorymanager.destroyGameState(successeur);
+					add_to_openset(successeur, f_score[hash_successeur], arcmanager);
 				}
 				else
 					successeur = memorymanager.destroyGameState(successeur);
@@ -277,26 +289,23 @@ public class AStar implements Service
 		return chemin;	//  reconstructed path
 	}
 
-	/**
-	 * Return true si openset contient successeur, compte tenu de l'égalité de
-	 * gamestate fournie par l'arcmanager.
-	 * @param openset
-	 * @param successeur
-	 * @param arcmanager
-	 * @return
-	 */
-	private boolean contains(ArrayList<GameState<RobotChrono>> openset,
-			int hash_successeur, ArcManager arcmanager) {
-		for(GameState<RobotChrono> state: openset)
-			if(hash_successeur == arcmanager.getHash(state))
-				return true;
-		return false;
-	}
-
-	public void freeGameStateOpenSet(ArrayList<GameState<RobotChrono>> openset)
+	public void freeGameStateOpenSet(LinkedList<GameState<RobotChrono>> openset2)
 	{
-		for(GameState<RobotChrono> state: openset)
+		for(GameState<RobotChrono> state: openset2)
 			state = memorymanager.destroyGameState(state);
+	}
+	
+	public void add_to_openset(GameState<RobotChrono> state, int score, ArcManager arcmanager)
+	{
+		int i = 0;
+		Iterator<GameState<RobotChrono>> iterator = openset.iterator();
+		while(iterator.hasNext())
+		{
+			if(score < f_score[arcmanager.getHash(iterator.next())])
+				break;
+			i++;
+		}
+		openset.add(i, state);
 	}
 	
 }

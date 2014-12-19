@@ -32,9 +32,9 @@ import exceptions.FinMatchException;
 		 * Et la disparition éléments de jeu n'influence pas la recherche de chemin
 		 * Par contre, à l'"exécution" par robotchrono du chemin entre deux scripts, là ils seront exécutés.
 		 */
-		int temps_debut = (int)state.robot.getTempsDepuisDebutMatch();
+		int temps_debut = state.robot.getTempsDepuisDebutMatch();
 		state.robot.va_au_point_pathfinding((PathfindingNodes)arc, null);
-		return (int)state.robot.getTempsDepuisDebutMatch() - temps_debut;
+		return state.robot.getTempsDepuisDebutMatch() - temps_debut;
 	}
 
 	@Override

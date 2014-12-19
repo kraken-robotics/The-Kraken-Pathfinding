@@ -109,12 +109,10 @@ public class JUnit_Pathfinding extends JUnit_Test {
     public void test_benchmark() throws Exception
     {
 		Random randomgenerator = new Random();
-		int nb_iter = 100000;
+		int nb_iter = 500000;
 		long date_avant = System.currentTimeMillis();
 		for(int k = 0; k < nb_iter; k++)
 		{
-			// TODO: pourquoi y a-t-il besoin de cette ligne?
-			state_chrono.robot.reinitDate(); // afin d'avoir toujours une haute précision
 			PathfindingNodes i = PathfindingNodes.values()[randomgenerator.nextInt(PathfindingNodes.values().length)];
 			PathfindingNodes j = PathfindingNodes.values()[randomgenerator.nextInt(PathfindingNodes.values().length)];
 			state_chrono.robot.setPositionPathfinding(i);
@@ -124,7 +122,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
     }
 
 	@Test
-    public void test_memorymanager() throws Exception
+    public void test_memorymanager_vide() throws Exception
     {
 		Random randomgenerator = new Random();
 		for(int k = 0; k < 100; k++)

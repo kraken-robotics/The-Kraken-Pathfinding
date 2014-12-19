@@ -47,7 +47,7 @@ public abstract class Robot implements Service
     public abstract void setInsiste(boolean insiste);
     public abstract void desactiver_asservissement_rotation() throws FinMatchException;
     public abstract void activer_asservissement_rotation() throws FinMatchException;
-    public abstract long getTempsDepuisDebutMatch();
+    public abstract int getTempsDepuisDebutMatch();
     public abstract RobotChrono cloneIntoRobotChrono() throws FinMatchException;
 
     /*

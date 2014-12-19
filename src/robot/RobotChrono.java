@@ -25,7 +25,7 @@ public class RobotChrono extends Robot
 	protected double orientation;
 	
 	// Date en millisecondes depuis le début du match.
-	protected long date;
+	protected int date;
 	
 	/** valeur approchée du temps (en milisecondes) nécéssaire pour qu'une information que l'on envois a la série soit aquité */
 	private final static int approximateSerialLatency = 50;
@@ -70,7 +70,7 @@ public class RobotChrono extends Robot
 	}
 	
 	@Override
-	public long getTempsDepuisDebutMatch()
+	public int getTempsDepuisDebutMatch()
 	{
 		return date;
 	}
@@ -115,8 +115,8 @@ public class RobotChrono extends Robot
 		orientation = angle;
 		date += delta*vitesse.invertedRotationnalSpeed;
 		isPositionPathfindingActive = false;
-		this.date += approximateSerialLatency;
-		this.date += Speed.rotationStopDuration;
+		date += approximateSerialLatency;
+		date += Speed.rotationStopDuration;
 	}
 
 	@Override
