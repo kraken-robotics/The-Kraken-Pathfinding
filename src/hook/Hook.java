@@ -28,7 +28,7 @@ abstract public class Hook
 	
 	protected GameState<?> state;
 
-	protected int rayon_robot = 300;
+	protected static Integer rayon_robot = null;
 	
 	/**
 	 *  ce constructeur ne sera appellé que par les constructeurs des classes filles (des hooks bien précis)  
@@ -41,7 +41,11 @@ abstract public class Hook
 		this.config = config;
 		this.log = log;
 		this.state = state;
-		rayon_robot = Integer.parseInt(config.get(ConfigInfo.RAYON_ROBOT));
+		
+		// Cette optimisation est nécessaire car une lecture
+		// en config est très lente et on crée beaucoup de hook.
+		if(rayon_robot == null)
+			rayon_robot = Integer.parseInt(config.get(ConfigInfo.RAYON_ROBOT));
 	}
 	
 	/**

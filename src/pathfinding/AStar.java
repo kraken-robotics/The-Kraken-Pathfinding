@@ -32,7 +32,6 @@ public class AStar implements Service
 	 *   un pathfindingnode pour le pathfinding
 	 */
 	
-	private int COEFF_HEURISTIC = 1;
 	private static final int nb_max_element = 100;
 	
 	private ArrayList<GameState<RobotChrono>> openset = new ArrayList<GameState<RobotChrono>>();	 // The set of tentative nodes to be evaluated
@@ -63,10 +62,12 @@ public class AStar implements Service
 	
 	public ArrayList<Decision> computeStrategy(GameState<RobotChrono> state) throws FinMatchException
 	{
-		// TODO
-		GameState<RobotChrono> arrivee = state.cloneGameState();
+		GameState<RobotChrono> depart = memorymanager.getNewGameState();
+		state.copy(depart);
+		GameState<RobotChrono> arrivee = memorymanager.getNewGameState();
 		arrivee.robot.setFinalState();
-		ArrayList<Arc> cheminArc = process(state, arrivee, stratarcmanager);
+		stratarcmanager.reinitHashes();
+		ArrayList<Arc> cheminArc = process(depart, arrivee, stratarcmanager);
 		ArrayList<Decision> decisions = new ArrayList<Decision>();
 		for(Arc arc: cheminArc)
 			decisions.add((Decision)arc);
@@ -87,6 +88,7 @@ public class AStar implements Service
 			GameState<RobotChrono> arrivee = memorymanager.getNewGameState();
 			state.copy(arrivee);
 			arrivee.robot.setPositionPathfinding(indice_point_arrivee);
+//			log.debug("Recherche de chemin entre "+pointDepart+" et "+indice_point_arrivee, this);
 			ArrayList<Arc> cheminArc = process(depart, arrivee, pfarcmanager);
 			
 			ArrayList<PathfindingNodes> chemin = new ArrayList<PathfindingNodes>(); 
@@ -100,6 +102,7 @@ public class AStar implements Service
 
 			if(lisse_chemin)
 				chemin = lissage(positionInitiale, state, chemin);
+//			log.debug("Recherche de chemin terminée", this);
 			return chemin;
 		} catch (GridSpaceException e1) {
 			throw new PathfindingRobotInObstacleException();
@@ -140,11 +143,12 @@ public class AStar implements Service
 			g_score[i] = Double.MAX_VALUE;
 			f_score[i] = Double.MAX_VALUE;
 		}
+		
 		openset.clear();
 		openset.add(depart);	// The set of tentative nodes to be evaluated, initially containing the start node
 		g_score[hash_depart] = 0.;	// Cost from start along best known path.
 		// Estimated total cost from start to goal through y.
-		f_score[hash_depart] = g_score[hash_depart] + COEFF_HEURISTIC * arcmanager.heuristicCost(depart, arrivee);
+		f_score[hash_depart] = g_score[hash_depart] + arcmanager.heuristicCost(depart, arrivee);
 		
 		GameState<RobotChrono> current;
 		Iterator<GameState<RobotChrono>> nodeIterator;
@@ -179,13 +183,16 @@ public class AStar implements Service
 			while(arcmanager.hasNext(current))
 			{
 				Arc voisin = arcmanager.next();
+
 //				log.debug("Voisin de "+current.robot.getPositionPathfinding()+": "+voisin, this);
 				GameState<RobotChrono> successeur = memorymanager.getNewGameState();
 				current.copy(successeur);
 				
 				// successeur est modifié lors du "distanceTo"
 				double tentative_g_score = g_score[hash_current] + arcmanager.distanceTo(successeur, voisin);
-				
+
+//				if(arcmanager instanceof StrategyArcManager)
+//					log.debug(voisin+" "+successeur.robot.areTapisPoses(), this);
 				int hash_successeur = arcmanager.getHash(successeur);
 				
 				if(closedset[hash_successeur]) // si closedset contient ce hash
@@ -199,7 +206,7 @@ public class AStar implements Service
 					came_from[hash_successeur] = hash_current;
 					came_from_arc[hash_successeur] = voisin;
 					g_score[hash_successeur] = tentative_g_score;
-					f_score[hash_successeur] = tentative_g_score + COEFF_HEURISTIC * arcmanager.heuristicCost(successeur, arrivee);
+					f_score[hash_successeur] = tentative_g_score + arcmanager.heuristicCost(successeur, arrivee);
 					// TODO: remplacer celui qui existe déjà par successeur?
 					if(!contains(openset, hash_successeur, arcmanager))
 						openset.add(successeur);
@@ -219,15 +226,14 @@ public class AStar implements Service
 		/**
 		 * Même si on n'a pas atteint l'objectif, on reconstruit un chemin partiel
 		 */
-		Integer best = null;
-		for(int h = 0; h < nb_max_element; h++)
+		int best = 0;
+		for(int h = 1; h < nb_max_element; h++)
 		{
-			if(best == null || f_score[h] < f_score[best])
+			if(f_score[h] < f_score[best])
 				best = h;
 		}
 		
 		// best est nécessairement non nul car f_score contient au moins le point de départ
-		log.warning("Reconstruction partielle", this);
 		return reconstruct(best);
 		
 	}
@@ -260,14 +266,6 @@ public class AStar implements Service
 			if(hash_successeur == arcmanager.getHash(state))
 				return true;
 		return false;
-	}
-
-	/**
-	 * Recherche de constante
-	 */
-	public void setHeuristiqueCoeff(int n)
-	{
-		COEFF_HEURISTIC = n;
 	}
 
 	public void freeGameStateOpenSet(ArrayList<GameState<RobotChrono>> openset)

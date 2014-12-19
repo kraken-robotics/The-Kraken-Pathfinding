@@ -32,7 +32,7 @@ public class StrategyArcManager implements Service, ArcManager {
 	
 	private ArrayList<Decision> listeDecisions = new ArrayList<Decision>();
 	private int iterator;
-	private Vector<Integer> hashes = new Vector<Integer>(); // TODO
+	private Vector<Integer> hashes = new Vector<Integer>();
 	
 	public StrategyArcManager(Log log, Config config, ScriptManager scriptmanager, GameState<RobotReal> real_gamestate, HookFactory hookfactory)
 	{
@@ -50,10 +50,25 @@ public class StrategyArcManager implements Service, ArcManager {
 			if(s.canIDoIt())
 			{
 				try {
-					for(Integer v: scriptmanager.getScript(s).meta_version(gamestate))
+					Script script = scriptmanager.getScript(s);
+					for(Integer v: script.meta_version(gamestate))
 					{
-						listeDecisions.add(new Decision(s, v, true));
-						listeDecisions.add(new Decision(s, v, false));
+						// On n'ajoute que les versions qui sont accessibles
+						try {
+							ArrayList<PathfindingNodes> chemin = astar.computePath(gamestate, script.point_entree(v), true, false);
+							listeDecisions.add(new Decision(chemin, s, v, true));
+						} catch (PathfindingException
+								| PathfindingRobotInObstacleException
+								| FinMatchException e) {
+							e.printStackTrace();
+						}
+						try {
+							ArrayList<PathfindingNodes> chemin = astar.computePath(gamestate, script.point_entree(v), false, false);
+							listeDecisions.add(new Decision(chemin, s, v, true));
+						} catch (PathfindingException
+								| PathfindingRobotInObstacleException
+								| FinMatchException e) {
+						}
 					}
 				} catch (UnknownScriptException e) {
 					log.warning("Script inconnu: "+s, this);
@@ -62,6 +77,7 @@ public class StrategyArcManager implements Service, ArcManager {
 				}
 			}
 		}
+		
 		iterator = -1;
 	}
 
@@ -87,16 +103,9 @@ public class StrategyArcManager implements Service, ArcManager {
 			try {
 				int old_points = state.robot.getPointsObtenus();
 				long old_temps = state.robot.getTempsDepuisDebutMatch();
-				ArrayList<PathfindingNodes> chemin;
-				try {
-					chemin = astar.computePath(state, s.point_entree(d.meta_version), d.shoot_game_element, false);
-				} catch (PathfindingException
-						| PathfindingRobotInObstacleException e) {
-					return Double.MAX_VALUE;
-				}
 				ArrayList<Hook> hooks_table = hookfactory.getHooksEntreScripts(state);
-				state.robot.suit_chemin(chemin, hooks_table);
-				s.execute(d.meta_version, state);
+				state.robot.suit_chemin(d.chemin, hooks_table);
+				s.execute(d.version, state);
 				int new_points = state.robot.getPointsObtenus();
 				long new_temps = state.robot.getTempsDepuisDebutMatch();
 				return -((double)(new_points - old_points))/((double)(new_temps - old_temps));
@@ -116,6 +125,7 @@ public class StrategyArcManager implements Service, ArcManager {
 			// Ne devrait jamais arriver
 			e.printStackTrace();
 		}
+		// En cas d'erreur
 		return Double.MAX_VALUE;
 	}
 
@@ -133,10 +143,15 @@ public class StrategyArcManager implements Service, ArcManager {
 	@Override
 	public int getHash(GameState<RobotChrono> state)
 	{
-		// TODO: doit renvoyer des valeurs entières contigues débutant à 0
-		// pour cela, on utilise un vecteur et getIndexOf
-//		log.debug("Hash: "+(((double)state.robot.getPointsObtenus())/((double)state.robot.getTempsDepuisDebutMatch())), this);
-		return (int)(100000*((double)state.robot.getPointsObtenus())/((double)state.robot.getTempsDepuisDebutMatch()));
+		int hash = (int)(100000*((double)state.robot.getPointsObtenus())/((double)state.robot.getTempsDepuisDebutMatch()));
+		int indice = hashes.indexOf(hash);
+		if(indice == -1)
+		{
+			hashes.add(hash);
+			return hashes.size()-1;
+		}
+		else
+			return indice;
 	}
 
 	@Override
@@ -149,4 +164,14 @@ public class StrategyArcManager implements Service, ArcManager {
 		this.astar = astar;
 	}
 	
+	public void reinitHashes()
+	{
+		hashes.clear();
+	}
+	
+	public String toString()
+	{
+		return "Arbre des possibles";
+	}
+
 }

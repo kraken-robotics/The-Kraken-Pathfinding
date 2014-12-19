@@ -102,7 +102,7 @@ public class Execution implements Service {
 
 			log.debug("On tente d'exécuter "+decision_actuelle.script_name, this);
 			try {
-				tryOnce(s, decision_actuelle.meta_version, false);
+				tryOnce(s, decision_actuelle.version, false);
 			} catch (PathfindingException e) {
 // TODO				tryOnce(s, decision_actuelle.id_version, true, false);
 				// Problème de pathfinding: pas de chemin. On rajoute des points
@@ -115,7 +115,7 @@ public class Execution implements Service {
 				// On a rencontré l'ennemi en chemin. On retente avec un autre chemin.
 				try {
 					log.debug("On réessaye d'exécuter "+decision_actuelle.script_name, this);
-					tryOnce(s, decision_actuelle.meta_version, false);
+					tryOnce(s, decision_actuelle.version, false);
 				} catch (Exception e1) {
 					log.critical("Abandon: erreur pendant l'itinéraire de secours.", this);
 					continue;

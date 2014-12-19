@@ -2,9 +2,11 @@ package tests;
 
 import java.util.ArrayList;
 
-import org.junit.Before;
 import org.junit.Test;
+import org.junit.Before;
+import org.junit.Assert;
 
+import robot.RobotChrono;
 import robot.RobotReal;
 import scripts.Script;
 import scripts.ScriptManager;
@@ -27,6 +29,7 @@ public class JUnit_Scripts extends JUnit_Test {
 
 	private ScriptManager scriptmanager;
 	private GameState<RobotReal> gamestate;
+	private GameState<RobotChrono> state_chrono;
 		
     @SuppressWarnings("unchecked")
 	@Before
@@ -35,8 +38,29 @@ public class JUnit_Scripts extends JUnit_Test {
         gamestate = (GameState<RobotReal>) container.getService(ServiceNames.REAL_GAME_STATE);
         scriptmanager = (ScriptManager) container.getService(ServiceNames.SCRIPT_MANAGER);
         gamestate.robot.setPosition(new Vec2(1100, 1000));
+        state_chrono = gamestate.cloneGameState();
     }
-    
+
+    @Test
+    public void test_script_tapis_chrono() throws Exception
+    {
+    	Script s = scriptmanager.getScript(ScriptNames.ScriptTapis);
+    	Assert.assertTrue(s.meta_version(state_chrono).size() == 1);
+    	s.execute(0, state_chrono);
+    	Assert.assertTrue(s.meta_version(state_chrono).size() == 0);
+    }
+
+    @Test
+    public void test_script_clap_chrono() throws Exception
+    {
+    	Script s = scriptmanager.getScript(ScriptNames.ScriptClap);
+    	Assert.assertTrue(s.meta_version(state_chrono).size() == 2);
+    	s.execute(0, state_chrono);
+    	Assert.assertTrue(s.meta_version(state_chrono).size() == 1);
+    	s.execute(1, state_chrono);
+    	Assert.assertTrue(s.meta_version(state_chrono).size() == 0);
+    }
+
     @Test
     public void test_script_tapis() throws Exception
     {

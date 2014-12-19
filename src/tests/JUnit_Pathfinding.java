@@ -2,6 +2,7 @@ package tests;
 
 import java.util.Random;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -10,6 +11,7 @@ import robot.RobotChrono;
 import robot.RobotReal;
 import smartMath.Vec2;
 import strategie.GameState;
+import strategie.MemoryManager;
 import enums.ConfigInfo;
 import enums.GameElementNames;
 import enums.PathfindingNodes;
@@ -29,6 +31,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
 	private AStar pathfinding;
 	private GameState<RobotChrono> state_chrono;
 	private GameState<RobotReal> state;
+	private MemoryManager memorymanager;
 	
 	@SuppressWarnings("unchecked")
 	@Before
@@ -38,6 +41,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
         pathfinding = (AStar) container.getService(ServiceNames.A_STAR);
 		state = (GameState<RobotReal>)container.getService(ServiceNames.REAL_GAME_STATE);
 		state_chrono = state.cloneGameState();
+		memorymanager = (MemoryManager) container.getService(ServiceNames.MEMORY_MANAGER);
 	}
 
 	@Test(expected=PathfindingRobotInObstacleException.class)
@@ -117,6 +121,22 @@ public class JUnit_Pathfinding extends JUnit_Test {
 			pathfinding.computePath(state_chrono, j, true, false);
 		}
 		log.debug("Durée moyenne en µs: "+1000*(System.currentTimeMillis()-date_avant)/nb_iter, this);
+    }
+
+	@Test
+    public void test_memorymanager() throws Exception
+    {
+		Random randomgenerator = new Random();
+		for(int k = 0; k < 100; k++)
+		{
+			// TODO: pourquoi y a-t-il besoin de cette ligne?
+			state_chrono.robot.reinitDate(); // afin d'avoir toujours une haute précision
+			PathfindingNodes i = PathfindingNodes.values()[randomgenerator.nextInt(PathfindingNodes.values().length)];
+			PathfindingNodes j = PathfindingNodes.values()[randomgenerator.nextInt(PathfindingNodes.values().length)];
+			state_chrono.robot.setPosition(i.getCoordonnees());
+			pathfinding.computePath(state_chrono, j, true, false);
+			Assert.assertTrue(memorymanager.isMemoryManagerEmpty());
+		}
     }
 
 }

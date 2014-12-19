@@ -14,7 +14,7 @@ import exceptions.FinMatchException;
 	private int iterator, id_node_iterator;
 //	private Config config;
 //	private Log log;
-	
+
 	public PathfindingArcManager(Log log, Config config)
 	{
 //		this.log = log;
@@ -25,6 +25,12 @@ import exceptions.FinMatchException;
 	@Override
 	public double distanceTo(GameState<RobotChrono> state, Arc arc)
 	{
+		/*
+		 * Il n'y a pas d'utilisation de hook.
+		 * En effet, les obstacles temporaires sont vérifiés à chaque copie (=chaque segment)
+		 * Et la disparition éléments de jeu n'influence pas la recherche de chemin
+		 * Par contre, à l'"exécution" par robotchrono du chemin entre deux scripts, là ils seront exécutés.
+		 */
 		double temps_debut = state.robot.getTempsDepuisDebutMatch();
 		try {
 			state.robot.va_au_point_pathfinding((PathfindingNodes)arc, null);
@@ -58,7 +64,6 @@ import exceptions.FinMatchException;
     @Override
     public boolean hasNext(GameState<RobotChrono> state)
     {
-    	// TODO: accélérer
     	do {
     		iterator++;
     		// Ce point n'est pas bon si:
@@ -82,4 +87,9 @@ import exceptions.FinMatchException;
 	public void updateConfig() {
 	}
 
+	public String toString()
+	{
+		return "Recherche de chemin";
+	}
+	
 }

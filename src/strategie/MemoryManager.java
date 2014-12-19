@@ -26,6 +26,8 @@ public class MemoryManager implements Service {
 	private Log log;
 	private GameState<RobotChrono> model;
 	
+	private static final int nb_instances = 100;
+	
 	@Override
 	public void updateConfig() {
 	}
@@ -37,9 +39,9 @@ public class MemoryManager implements Service {
 		try {
 			this.model = realstate.cloneGameState();
 			// on prépare déjà des gamestate
-			log.debug("Instanciation de 100 GameState<RobotChrono>", this);
+			log.debug("Instanciation de "+nb_instances+" GameState<RobotChrono>", this);
 		
-			for(int i = 0; i < 100; i++)
+			for(int i = 0; i < nb_instances; i++)
 			{
 				available.add(Boolean.TRUE);
 				gamestate.add(model.cloneGameState(gamestate.size()));
@@ -52,13 +54,15 @@ public class MemoryManager implements Service {
 	
 	public GameState<RobotChrono> getNewGameState() throws FinMatchException
 	{
-//		if(true)
-//			return realstate.cloneGameState();
 		int indice = available.indexOf(Boolean.TRUE);
 		if(indice == -1) // pas de gamestate disponible
 		{
 			available.add(Boolean.FALSE);
-			log.debug("Taille memory manager: "+available.size(), this);
+			if(available.size() > 1000)
+			{
+				int z = 0;
+				z = 1/z;
+			}
 			GameState<RobotChrono> out = model.cloneGameState(gamestate.size());
 			gamestate.add(out);
 			return out;
@@ -73,13 +77,9 @@ public class MemoryManager implements Service {
 	
 	public GameState<RobotChrono> destroyGameState(GameState<RobotChrono> state)
 	{
-//		if(true)
-//			return null;
 		if(available.get(state.getIndiceMemoryManager()) == Boolean.TRUE)
 			log.warning("Objet déjà détruit!", this);
-//		log.debug("Destruction de "+state.getIndiceMemoryManager(), this);
 		available.setElementAt(Boolean.TRUE, state.getIndiceMemoryManager());
-//		log.debug("Empty? "+isMemoryManagerEmpty(), this);
 		return null;
 	}
 	

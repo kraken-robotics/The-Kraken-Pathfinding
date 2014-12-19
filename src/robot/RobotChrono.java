@@ -251,20 +251,6 @@ public class RobotChrono extends Robot
 		return null;
 	}
 
-	/**
-	 * Appelé par le pathfinding. Corrige le temps d'une trajectoire lorsqu'on la lisse.
-	 * Au lieu de passer par "depart, n1, n2" on saute n1 et on fait le trajet "depart, n2".
-	 * @param depart
-	 * @param n1
-	 * @param n2
-	 */
-	public void corrige_temps(Vec2 depart, Vec2 n1, Vec2 n2)
-	{
-		date -= depart.distance(n1)*vitesse.invertedTranslationnalSpeed;
-		date -= n1.distance(n2)*vitesse.invertedTranslationnalSpeed;
-		date += n1.distance(n2)*vitesse.invertedTranslationnalSpeed;
-	}
-	
 	public void setFinalState()
 	{
 		super.setFinalState();
@@ -290,6 +276,7 @@ public class RobotChrono extends Robot
 	@Override
 	public void poserDeuxTapis(boolean needToSleep) throws FinMatchException
 	{
+		tapisRougePose(2);
 		if(needToSleep)
 			poserDeuxTapisSleep();
 	}
