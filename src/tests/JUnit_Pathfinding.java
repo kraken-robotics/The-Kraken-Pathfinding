@@ -29,7 +29,7 @@ import exceptions.PathfindingRobotInObstacleException;
 
 public class JUnit_Pathfinding extends JUnit_Test {
 
-	private AStar<PathfindingArcManager> pathfinding;
+	private AStar<PathfindingArcManager, PathfindingNodes> pathfinding;
 	private GameState<RobotChrono> state_chrono;
 	private GameState<RobotReal> state;
 	private MemoryManager memorymanager;
@@ -39,7 +39,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
     public void setUp() throws Exception {
         super.setUp();
     	config.set(ConfigInfo.DUREE_PEREMPTION_OBSTACLES, 100);
-        pathfinding = (AStar<PathfindingArcManager>) container.getService(ServiceNames.A_STAR_PATHFINDING);
+        pathfinding = (AStar<PathfindingArcManager, PathfindingNodes>) container.getService(ServiceNames.A_STAR_PATHFINDING);
 		state = (GameState<RobotReal>)container.getService(ServiceNames.REAL_GAME_STATE);
 		state_chrono = state.cloneGameState();
 		memorymanager = (MemoryManager) container.getService(ServiceNames.MEMORY_MANAGER);
@@ -107,7 +107,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
     }
 
 	@Test
-    public void test_benchmark() throws Exception
+    public void test_benchmark_pathfinding() throws Exception
     {
 		Random randomgenerator = new Random();
 		int nb_iter = 500000;

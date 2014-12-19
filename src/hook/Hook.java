@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import enums.ConfigInfo;
 import exceptions.FinMatchException;
+import exceptions.ScriptHookException;
 import robot.RobotChrono;
 import smartMath.Vec2;
 import strategie.GameState;
@@ -64,14 +65,12 @@ abstract public class Hook
 	 * Tous ses callbacks sont exécutés
 	 * @return true si ce hook modifie les déplacements du robot
 	 * @throws FinMatchException 
+	 * @throws ScriptHookException 
 	 */
-	public boolean trigger() throws FinMatchException
+	public void trigger() throws FinMatchException, ScriptHookException
 	{
-		boolean retour = false;
-		
 		for(Callback callback : callbacks)
-			retour |= callback.call();
-		return retour;
+			callback.call();
 	}
 
 	/**
@@ -80,8 +79,9 @@ abstract public class Hook
 	 * Elle est appelée par RobotVrai.
 	 * @param robot
 	 * @return true si ce hook modifie les déplacements du robot, false sinon
+	 * @throws ScriptHookException 
 	 */
-	public abstract boolean evaluate() throws FinMatchException;
+	public abstract void evaluate() throws FinMatchException, ScriptHookException;
 	
 	/**
 	 * Méthode appelée par RobotChrono. Elle doit dire si, sur un trajet entre A et B et

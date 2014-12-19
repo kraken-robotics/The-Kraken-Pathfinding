@@ -46,7 +46,7 @@ public class JUnit_Scripts extends JUnit_Test {
     {
     	Script s = scriptmanager.getScript(ScriptNames.ScriptTapis);
     	Assert.assertTrue(s.meta_version(state_chrono).size() == 1);
-    	s.execute(0, state_chrono);
+    	s.agit(0, state_chrono);
     	Assert.assertTrue(s.meta_version(state_chrono).size() == 0);
     }
 
@@ -55,9 +55,9 @@ public class JUnit_Scripts extends JUnit_Test {
     {
     	Script s = scriptmanager.getScript(ScriptNames.ScriptClap);
     	Assert.assertTrue(s.meta_version(state_chrono).size() == 2);
-    	s.execute(0, state_chrono);
+    	s.agit(0, state_chrono);
     	Assert.assertTrue(s.meta_version(state_chrono).size() == 1);
-    	s.execute(1, state_chrono);
+    	s.agit(1, state_chrono);
     	Assert.assertTrue(s.meta_version(state_chrono).size() == 0);
     }
 
@@ -69,7 +69,7 @@ public class JUnit_Scripts extends JUnit_Test {
     	ArrayList<PathfindingNodes> chemin = new ArrayList<PathfindingNodes>(); 
     	chemin.add(s.point_entree(0));
     	gamestate.robot.suit_chemin(chemin, null);
-    	s.execute(0, gamestate);
+    	s.agit(0, gamestate);
     }
 
     @Test
@@ -79,7 +79,7 @@ public class JUnit_Scripts extends JUnit_Test {
     	ArrayList<PathfindingNodes> chemin = new ArrayList<PathfindingNodes>(); 
     	chemin.add(s.point_entree(0));
     	gamestate.robot.suit_chemin(chemin, null);
-    	s.execute(0, gamestate);
+    	s.agit(0, gamestate);
     }
 
 }

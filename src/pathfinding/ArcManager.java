@@ -2,8 +2,7 @@ package pathfinding;
 
 import exceptions.FinMatchException;
 import exceptions.UnknownScriptException;
-import exceptions.Locomotion.UnableToMoveException;
-import exceptions.serial.SerialConnexionException;
+import exceptions.strategie.ScriptException;
 import robot.RobotChrono;
 import strategie.GameState;
 
@@ -14,26 +13,26 @@ import strategie.GameState;
  *
  */
 
-public abstract class ArcManager {
+public interface ArcManager {
 
-	public abstract void reinitIterator(GameState<RobotChrono> gamestate);
+	public void reinitIterator(GameState<RobotChrono> gamestate);
 
-	public abstract boolean hasNext(GameState<RobotChrono> state);
+	public boolean hasNext(GameState<RobotChrono> state);
 	
 	/**
 	 * Donne l'arc pour aller au noeud suivant
 	 * @return
 	 */
-	public abstract Arc next();
+	public <A> A next();
 	
 	/** 
 	 * Donne la distance exacte entre les deux points.
 	 * Exécute un script pour l'arbre des possibles.
 	 * @param other
 	 * @return
-	 * @throws UnableToMoveException 
+	 * @throws ScriptException 
 	 */
-	public abstract int distanceTo(GameState<RobotChrono> state, Arc arc) throws FinMatchException, UnknownScriptException, SerialConnexionException, UnableToMoveException;
+	public int distanceTo(GameState<RobotChrono> state, Arc arc) throws FinMatchException, UnknownScriptException, ScriptException;
 	
 	/**
 	 * Evalue la distance entre deux sommets.
@@ -41,12 +40,12 @@ public abstract class ArcManager {
 	 * @param other
 	 * @return
 	 */
-	public abstract int heuristicCost(GameState<RobotChrono> state);
+	public int heuristicCost(GameState<RobotChrono> state);
 
-	public abstract int getHash(GameState<RobotChrono> state);	
+	public int getHash(GameState<RobotChrono> state);	
 	
-	public abstract boolean isArrive(int hash);
+	public boolean isArrive(int hash);
 	
-	public abstract int getNoteReconstruct(int hash);
+	public int getNoteReconstruct(int hash);
 	
 }

@@ -25,7 +25,7 @@ public class GameElementDone implements Executable {
 	}
 	
 	@Override
-	public boolean execute()
+	public void execute()
 	{
 		// on ne peut faire qu'augmenter l'état d'un élément de jeu.
 		// c'est-à-dire qu'on peut passer de FALSE à MAYBE et TRUE
@@ -34,7 +34,6 @@ public class GameElementDone implements Executable {
 		// TODO: créer une méthode "executable"? ça éviterait de faire les comparaisons de trucs inutiles
 		if(gridspace.isDone(element).hash < done.hash)
 			gridspace.setDone(element, done);
-		return false;
 	}
 
 }

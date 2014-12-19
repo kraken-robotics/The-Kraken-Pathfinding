@@ -11,6 +11,7 @@ import enums.PathfindingNodes;
 import enums.Side;
 import enums.Speed;
 import exceptions.FinMatchException;
+import exceptions.ScriptHookException;
 
 /**
  * Robot particulier qui fait pas bouger le robot réel, mais détermine la durée des actions
@@ -233,7 +234,12 @@ public class RobotChrono extends Robot
 		if(hooks != null)
 			for(Hook hook: hooks)
 				if(hook.simulated_evaluate(pointA, pointB, date))
-					hook.trigger();
+					try {
+						hook.trigger();
+					} catch (ScriptHookException e) {
+						// Impossible qu'en simulation on ait des script de hooks
+						e.printStackTrace();
+					}
 	}
 
 	public void setPositionPathfinding(PathfindingNodes n)

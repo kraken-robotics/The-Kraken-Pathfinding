@@ -29,7 +29,7 @@ public class JUnit_Test_Graphic extends JUnit_Test {
 
 	private Fenetre fenetre;
 	private ObstacleManager obstaclemanager;
-	private AStar<PathfindingArcManager> pathfinding;
+	private AStar<PathfindingArcManager, PathfindingNodes> pathfinding;
 	private GameState<RobotChrono> state_chrono;
 	private GameState<RobotReal> state;
 	private HookFactory hookfactory;
@@ -39,7 +39,7 @@ public class JUnit_Test_Graphic extends JUnit_Test {
 	public void setUp() throws Exception
 	{
 		super.setUp();
-        pathfinding = (AStar<PathfindingArcManager>) container.getService(ServiceNames.A_STAR_PATHFINDING);
+        pathfinding = (AStar<PathfindingArcManager, PathfindingNodes>) container.getService(ServiceNames.A_STAR_PATHFINDING);
 		obstaclemanager = (ObstacleManager) container.getService(ServiceNames.OBSTACLE_MANAGER);
 		state = (GameState<RobotReal>)container.getService(ServiceNames.REAL_GAME_STATE);
         hookfactory = (HookFactory) container.getService(ServiceNames.HOOK_FACTORY);

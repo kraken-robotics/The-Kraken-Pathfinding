@@ -19,13 +19,12 @@ public class LeveClap implements Executable
 	}
 	
 	@Override
-	public boolean execute() throws FinMatchException {
+	public void execute() throws FinMatchException {
 		try {
 			robot.bougeBrasClap(cote, HauteurBrasClap.TOUT_EN_HAUT, false);
 		} catch (SerialConnexionException e) {
 			e.printStackTrace();
 		}
-		return false;
 	}
 
 }

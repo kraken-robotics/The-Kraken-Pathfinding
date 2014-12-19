@@ -8,8 +8,7 @@ package enums;
  */
 
 public enum ScriptNames {
-	// clap interdit pour les tests
-	ScriptClap(false), // TODO
+	ScriptClap(true),
 	ScriptTapis(true);
 	
 	private boolean canIDoIt; // ce booléan dépend du robot!

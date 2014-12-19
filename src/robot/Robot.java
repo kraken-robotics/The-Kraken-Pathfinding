@@ -13,6 +13,7 @@ import enums.RobotColor;
 import enums.Side;
 import enums.Speed;
 import exceptions.FinMatchException;
+import exceptions.ScriptHookException;
 import exceptions.Locomotion.UnableToMoveException;
 import exceptions.serial.SerialConnexionException;
 import utils.Log;
@@ -32,11 +33,11 @@ public abstract class Robot implements Service
 	
 	public abstract void stopper() throws FinMatchException;
     public abstract void tourner(double angle, boolean mur)
-            throws UnableToMoveException, FinMatchException;
+            throws UnableToMoveException, FinMatchException, ScriptHookException;
     public abstract void avancer(int distance, ArrayList<Hook> hooks, boolean mur)
-            throws UnableToMoveException, FinMatchException;
+            throws UnableToMoveException, FinMatchException, ScriptHookException;
     public abstract void suit_chemin(ArrayList<PathfindingNodes> chemin, ArrayList<Hook> hooks)
-            throws UnableToMoveException, FinMatchException;
+            throws UnableToMoveException, FinMatchException, ScriptHookException;
 	public abstract void set_vitesse(Speed vitesse) throws FinMatchException;
 	
 	public abstract void setPosition(Vec2 position) throws FinMatchException;
@@ -94,12 +95,12 @@ public abstract class Robot implements Service
 		return vitesse;
 	}
 
-	public void tourner_relatif(double angle) throws UnableToMoveException, FinMatchException
+	public void tourner_relatif(double angle) throws UnableToMoveException, FinMatchException, ScriptHookException
 	{
 		tourner(getOrientation() + angle, false);
 	}
 
-    public void tourner(double angle) throws UnableToMoveException, FinMatchException
+    public void tourner(double angle) throws UnableToMoveException, FinMatchException, ScriptHookException
     {
         tourner(angle, false);
     }
@@ -108,8 +109,9 @@ public abstract class Robot implements Service
      * Utilisé lorsque le robot n'a pas de symétrie gauche/droite
      * @param angle
      * @throws UnableToMoveException
+     * @throws ScriptHookException 
      */
-    public void tourner_sans_symetrie(double angle) throws UnableToMoveException, FinMatchException
+    public void tourner_sans_symetrie(double angle) throws UnableToMoveException, FinMatchException, ScriptHookException
     {
         if(symetrie)
             tourner(Math.PI-angle, false);
@@ -117,17 +119,17 @@ public abstract class Robot implements Service
             tourner(angle, false);
     }
 
-    public void avancer(int distance) throws UnableToMoveException, FinMatchException
+    public void avancer(int distance) throws UnableToMoveException, FinMatchException, ScriptHookException
     {
         avancer(distance, null, false);
     }
 
-    public void avancer(int distance, ArrayList<Hook> hooks) throws UnableToMoveException, FinMatchException
+    public void avancer(int distance, ArrayList<Hook> hooks) throws UnableToMoveException, FinMatchException, ScriptHookException
     {
         avancer(distance, hooks, false);
     }
 
-    public void avancer_dans_mur(int distance) throws UnableToMoveException, FinMatchException
+    public void avancer_dans_mur(int distance) throws UnableToMoveException, FinMatchException, ScriptHookException
     {
         Speed sauv_vitesse = vitesse; 
         set_vitesse(Speed.INTO_WALL);

@@ -1,6 +1,7 @@
 package hook;
 
 import exceptions.FinMatchException;
+import exceptions.ScriptHookException;
 
 /**
  * Interface utilisée pour passer des méthodes à Callback.
@@ -15,8 +16,8 @@ public interface Executable
 
 	/**
 	 * La méthode qui sera exécutée par le hook
-     * @return un booléen qui renseignera sur le fait que la méthode fait ou non bouger le robot
+	 * @throws ScriptHookException 
 	 */
-	public boolean execute() throws FinMatchException;
+	public void execute() throws FinMatchException, ScriptHookException;
 	
 }

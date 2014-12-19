@@ -11,10 +11,8 @@ import exceptions.GridSpaceException;
 import exceptions.PathfindingException;
 import exceptions.PathfindingRobotInObstacleException;
 import exceptions.UnknownScriptException;
-import exceptions.Locomotion.UnableToMoveException;
-import exceptions.serial.SerialConnexionException;
+import exceptions.strategie.ScriptException;
 import robot.RobotChrono;
-import scripts.Decision;
 import smartMath.Vec2;
 import strategie.GameState;
 import strategie.MemoryManager;
@@ -27,7 +25,7 @@ import utils.Log;
  *
  */
 
-public class AStar<AM extends ArcManager> implements Service
+public class AStar<AM extends ArcManager, A extends Arc> implements Service
 {
 	/**
 	 * Les analogies sont:
@@ -41,9 +39,12 @@ public class AStar<AM extends ArcManager> implements Service
 	private LinkedList<GameState<RobotChrono>> openset = new LinkedList<GameState<RobotChrono>>();	 // The set of tentative nodes to be evaluated
 	private boolean[] closedset = new boolean[nb_max_element];
 	private int[] came_from = new int[nb_max_element];
-	private Arc[] came_from_arc = new Arc[nb_max_element];
+	@SuppressWarnings("unchecked")
+	private A[] came_from_arc = (A[]) new Arc[nb_max_element];
 	private int[] g_score = new int[nb_max_element];
 	private int[] f_score = new int[nb_max_element];
+	
+	private PathfindingException pathfindingexception = new PathfindingException();
 	
 //	private Log log;
 	private AM arcmanager;
@@ -59,7 +60,7 @@ public class AStar<AM extends ArcManager> implements Service
 		this.memorymanager = memorymanager;
 	}
 
-	public ArrayList<Decision> computeStrategy(GameState<RobotChrono> state) throws FinMatchException
+	public ArrayList<A> computeStrategy(GameState<RobotChrono> state) throws FinMatchException
 	{
 		if(!(arcmanager instanceof StrategyArcManager))
 		{
@@ -69,20 +70,19 @@ public class AStar<AM extends ArcManager> implements Service
 		GameState<RobotChrono> depart = memorymanager.getNewGameState();
 		state.copy(depart);
 		((StrategyArcManager)arcmanager).reinitHashes();
-		ArrayList<Arc> cheminArc;
-		ArrayList<Decision> decisions = new ArrayList<Decision>();
+		ArrayList<A> cheminArc;
 		try {
 			cheminArc = process(depart, arcmanager, true);
-			for(Arc arc: cheminArc)
-				decisions.add((Decision)arc);
+			return cheminArc;
 		} catch (PathfindingException e) {
 			// impossible car on a appelé process avec shouldReconstruct = true;
 			e.printStackTrace();
 		}
-		return decisions;
+		return null;
 	}
 	
-	public ArrayList<PathfindingNodes> computePath(GameState<RobotChrono> state, PathfindingNodes indice_point_arrivee, boolean shoot_game_element) throws PathfindingException, PathfindingRobotInObstacleException, FinMatchException
+	@SuppressWarnings("unchecked")
+	public ArrayList<A> computePath(GameState<RobotChrono> state, PathfindingNodes indice_point_arrivee, boolean shoot_game_element) throws PathfindingException, PathfindingRobotInObstacleException, FinMatchException
 	{
 		if(!(arcmanager instanceof PathfindingArcManager))
 		{
@@ -105,23 +105,18 @@ public class AStar<AM extends ArcManager> implements Service
 			((PathfindingArcManager)arcmanager).chargePointArrivee(indice_point_arrivee);
 			
 //			log.debug("Recherche de chemin entre "+pointDepart+" et "+indice_point_arrivee, this);
-			ArrayList<Arc> cheminArc = process(depart, arcmanager, false);
+			ArrayList<A> cheminArc = process(depart, arcmanager, false);
 			
-			ArrayList<PathfindingNodes> chemin = new ArrayList<PathfindingNodes>(); 
-
-			for(Arc arc: cheminArc)
-				chemin.add((PathfindingNodes)arc);
-
 			// on n'a besoin de lisser que si on ne partait pas d'un pathfindingnode
 			if(!state.robot.isAtPathfindingNodes())
 			{
 				// parce qu'on ne part pas du point de départ directement...
-				chemin.add(0, pointDepart);
-				chemin = lissage(state.robot.getPosition(), state, chemin);
+				cheminArc.add(0, (A)pointDepart);
+				cheminArc = lissage(state.robot.getPosition(), state, cheminArc);
 			}
 			
 //			log.debug("Recherche de chemin terminée", this);
-			return chemin;
+			return cheminArc;
 		} catch (GridSpaceException e1) {
 			throw new PathfindingRobotInObstacleException();
 		}
@@ -132,24 +127,24 @@ public class AStar<AM extends ArcManager> implements Service
 	}
 	
 	// Si le point de départ est dans un obstacle fixe, le lissage ne changera rien.
-	private ArrayList<PathfindingNodes> lissage(Vec2 depart, GameState<RobotChrono> state, ArrayList<PathfindingNodes> chemin)
+	private ArrayList<A> lissage(Vec2 depart, GameState<RobotChrono> state, ArrayList<A> chemin)
 	{
 		// ATTENTION! LE LISSAGE COÛTE TRÈS CHER!
 		// si on peut sauter le premier point, on le fait
-		while(chemin.size() >= 2 && state.gridspace.isTraversable(depart, chemin.get(1).getCoordonnees(), state.robot.getTempsDepuisDebutMatch()))
+		while(chemin.size() >= 2 && state.gridspace.isTraversable(depart, ((PathfindingNodes)chemin.get(1)).getCoordonnees(), state.robot.getTempsDepuisDebutMatch()))
 			chemin.remove(0);
 
 		return chemin;
 	}
 	
-	private ArrayList<Arc> process(GameState<RobotChrono> depart, ArcManager arcmanager, boolean shouldReconstruct) throws PathfindingException, FinMatchException
+	private ArrayList<A> process(GameState<RobotChrono> depart, ArcManager arcmanager, boolean shouldReconstruct) throws PathfindingException, FinMatchException
 	{
 		int hash_depart = arcmanager.getHash(depart);
 		// optimisation si depart == arrivee
 		if(arcmanager.isArrive(hash_depart))
 		{
 			depart = memorymanager.destroyGameState(depart);
-			return new ArrayList<Arc>();
+			return new ArrayList<A>();
 		}
 
 		// plus rapide que des arraycopy
@@ -211,7 +206,7 @@ public class AStar<AM extends ArcManager> implements Service
 		    
 			while(arcmanager.hasNext(current))
 			{
-				Arc voisin = arcmanager.next();
+				A voisin = arcmanager.next();
 
 				GameState<RobotChrono> successeur = memorymanager.getNewGameState();
 				current.copy(successeur);
@@ -221,8 +216,7 @@ public class AStar<AM extends ArcManager> implements Service
 				int tentative_g_score;
 					try {
 						tentative_g_score = g_score[hash_current] + arcmanager.distanceTo(successeur, voisin);
-					} catch (UnknownScriptException | SerialConnexionException
-							| UnableToMoveException e) {
+					} catch (UnknownScriptException | ScriptException e) {
 						continue;
 					}
 				
@@ -257,7 +251,7 @@ public class AStar<AM extends ArcManager> implements Service
 		
 		// La stratégie renvoie un chemin partiel, pas le pathfinding qui lève une exception
 		if(!shouldReconstruct)
-			throw new PathfindingException();
+			throw pathfindingexception;
 
 		/**
 		 * Même si on n'a pas atteint l'objectif, on reconstruit un chemin partiel
@@ -281,10 +275,10 @@ public class AStar<AM extends ArcManager> implements Service
 	}
 	
 	
-	private ArrayList<Arc> reconstruct(int hash) {
-		ArrayList<Arc> chemin = new ArrayList<Arc>();
+	private ArrayList<A> reconstruct(int hash) {
+		ArrayList<A> chemin = new ArrayList<A>();
 		int noeud_parent = came_from[hash];
-		Arc arc_parent = came_from_arc[hash];
+		A arc_parent = came_from_arc[hash];
 		while (noeud_parent != -1)
 		{
 			chemin.add(0, arc_parent);

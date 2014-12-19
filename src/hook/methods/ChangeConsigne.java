@@ -23,10 +23,9 @@ public class ChangeConsigne implements Executable
 	}
         
 	@Override
-	public boolean execute()
+	public void execute()
 	{
 		robot.setAim(newConsigne);
-		return true; // le robot doit bouger
 	}
         
 }

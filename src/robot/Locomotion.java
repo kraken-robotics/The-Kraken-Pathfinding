@@ -11,6 +11,7 @@ import enums.ConfigInfo;
 import enums.PathfindingNodes;
 import enums.Speed;
 import exceptions.FinMatchException;
+import exceptions.ScriptHookException;
 //import hook.methodes.ChangeConsigne;
 //import hook.sortes.HookGenerator;
 import exceptions.Locomotion.BlockedException;
@@ -191,10 +192,11 @@ public class Locomotion implements Service
 	 * @param expectsWallImpact true si le robot doit s'attendre a percuter un mur au cours de la rotation. false si les alentours du robot sont sensés être dégagés.
 	 * @throws UnableToMoveException losrque quelque chose sur le chemin cloche et que le robot ne peut s'en défaire simplement: bloquage mécanique immobilisant le robot ou obstacle percu par les capteurs
 	 * @throws FinMatchException 
+	 * @throws ScriptHookException 
 	 */
 	// TODO: refactor massif de la facon dont le robot tourne en haut niveau. La rotation ne passe pas du tout par le système de moveForwardInDirection. 
 	// C'est la faute au système de moveForwardInDirection, qui n'est pas complètement générique. notamment BlockedExceptionReaction qui est en réalité spécialisé dans une réaction a un blocage lors d'une translation.
-	public void turn(double angle, ArrayList<Hook> hooksToConsider, boolean expectsWallImpact) throws UnableToMoveException, FinMatchException
+	public void turn(double angle, ArrayList<Hook> hooksToConsider, boolean expectsWallImpact) throws UnableToMoveException, FinMatchException, ScriptHookException
 	{
 
 		// prends en compte la symétrie: si on est équipe jaune, et non équipe verte on doit tourner de PI moins l'angle
@@ -232,7 +234,7 @@ public class Locomotion implements Service
 						Vec2 oldAim = aim.clone();
 						
 						// vérifie si ce hook doit être déclenché, le déclenche si c'est le cas, et fera renvoyer au prochain tour de while l'ordre de déplacement si le hook a fait bouger le robot
-						haveToGiveOrderToMove |= currentHook.evaluate();
+						currentHook.evaluate();
 						
 						// restaure le aim de ce déplacement (au lieu ce celui d'un hook)
 						aim = oldAim;
@@ -283,8 +285,9 @@ public class Locomotion implements Service
 	 * @param expectsWallImpact true si le robot doit s'attendre a percuter un mur au cours du déplacement. false si la route est sensée être dégagée.
 	 * @throws UnableToMoveException losrque quelque chose sur le chemin cloche et que le robot ne peut s'en défaire simplement: bloquage mécanique immobilisant le robot ou obstacle percu par les capteurs
 	 * @throws FinMatchException 
+	 * @throws ScriptHookException 
 	 */
-	public void moveLengthwise(int distance, ArrayList<Hook> hooksToConsider, boolean expectsWallImpact) throws UnableToMoveException, FinMatchException
+	public void moveLengthwise(int distance, ArrayList<Hook> hooksToConsider, boolean expectsWallImpact) throws UnableToMoveException, FinMatchException, ScriptHookException
 	{
 		// demande une position et une oriantation a jour du robot
 		updatePositionAndOrientation();
@@ -333,8 +336,9 @@ public class Locomotion implements Service
 	 * @param hooksToConsider hooks a considérer lors de ce déplacement. Le hook n'est déclenché que s'il est dans cette liste et que sa condition d'activation est remplie
 	 * @throws UnableToMoveException losrque quelque chose sur le chemin cloche et que le robot ne peut s'en défaire simplement: bloquage mécanique immobilisant le robot ou obstacle percu par les capteurs
 	 * @throws FinMatchException 
+	 * @throws ScriptHookException 
 	 */
-	public void followPath(ArrayList<PathfindingNodes> path_pathfinding, ArrayList<Hook> hooksToConsider) throws UnableToMoveException, FinMatchException
+	public void followPath(ArrayList<PathfindingNodes> path_pathfinding, ArrayList<Hook> hooksToConsider) throws UnableToMoveException, FinMatchException, ScriptHookException
 	{
 		ArrayList<Vec2> path = new ArrayList<Vec2>();
 		for(PathfindingNodes n: path_pathfinding)
@@ -394,8 +398,9 @@ public class Locomotion implements Service
 	 * @param expectsWallImpact true si le robot doit s'attendre a percuter un mur au cours du déplacement. false si la route est sensée être dégagée.
 	 * @throws UnableToMoveException losrque quelque chose sur le chemin cloche et que le robot ne peut s'en défaire simplement: bloquage mécanique immobilisant le robot ou obstacle percu par les capteurs
 	 * @throws FinMatchException 
+	 * @throws ScriptHookException 
 	 */
-	private void moveInDirectionExeptionHandler(ArrayList<Hook> hooksToConsider, boolean allowCurvedPath, boolean isBackward, boolean expectsWallImpact) throws UnableToMoveException, FinMatchException
+	private void moveInDirectionExeptionHandler(ArrayList<Hook> hooksToConsider, boolean allowCurvedPath, boolean isBackward, boolean expectsWallImpact) throws UnableToMoveException, FinMatchException, ScriptHookException
 	{
 		// nombre d'exception (et donc de nouvels essais) que l'on va lever avant de prévenir
 		// l'utilisateur en cas de bloquage mécanique du robot l'empéchant d'avancer plus loin
@@ -552,8 +557,9 @@ public class Locomotion implements Service
 	 * @throws UnexpectedObstacleOnPathException en cas de détection par les capteurs a distance d'un obstacle sur la route que le robot s'apprête a suivre
 	 * @throws SerialConnexionException si la carte d'asservissement cesse de répondre
 	 * @throws FinMatchException 
+	 * @throws ScriptHookException 
 	 */
-	private void moveInDirectionEventWatcher(ArrayList<Hook> hooksToConsider, boolean allowCurvedPath, boolean isBackward) throws BlockedException, UnexpectedObstacleOnPathException, SerialConnexionException, FinMatchException
+	private void moveInDirectionEventWatcher(ArrayList<Hook> hooksToConsider, boolean allowCurvedPath, boolean isBackward) throws BlockedException, UnexpectedObstacleOnPathException, SerialConnexionException, FinMatchException, ScriptHookException
 	{	
 		// On donnera l'odre de se déplacer au robot
 		boolean haveToGiveOrderToMove = true;
@@ -585,7 +591,7 @@ public class Locomotion implements Service
 					Vec2 oldAim = aim.clone();
 					
 					// vérifie si ce hook doit être déclenché, le déclenche si c'est le cas, et fera renvoyer au prochain tour de while l'ordre de déplacement si le hook a fait bouger le robot
-					haveToGiveOrderToMove |= hook.evaluate();
+					hook.evaluate();
 					
 					// restaure le aim de ce déplacement (au lieu ce celui d'un hook)
 					aim = oldAim;

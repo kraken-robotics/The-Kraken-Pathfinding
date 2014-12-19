@@ -12,7 +12,7 @@ import hook.Executable;
 public class FinMatchCheck implements Executable {
 
 	@Override
-	public boolean execute() throws FinMatchException
+	public void execute() throws FinMatchException
 	{
 		throw new FinMatchException();
 	}

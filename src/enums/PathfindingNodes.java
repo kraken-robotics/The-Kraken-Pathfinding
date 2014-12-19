@@ -23,7 +23,9 @@ public enum PathfindingNodes implements Arc {
 	CLAP_DROIT(new Vec2(1150, 300)),
 	BAS(new Vec2(0, 500)),
 
-	// TODO: point de sortie des scripts
+	SORTIE_CLAP_GAUCHE(CLAP_GAUCHE),
+	SORTIE_CLAP_DROIT(CLAP_DROIT),
+	SORTIE_TAPIS(NODE_TAPIS),
 	
 	SECOURS_1(new Vec2(800, 1300)),
 	SECOURS_2(new Vec2(-800, 1300)),
@@ -57,7 +59,17 @@ public enum PathfindingNodes implements Arc {
 	{
 		this.coordonnees = coordonnees;
 	}
-	
+
+	private PathfindingNodes(PathfindingNodes n)
+	{
+		this.coordonnees = n.getCoordonnees();
+	}
+
+	public void setCoordonnees(Vec2 coordonnees)
+	{
+		coordonnees = coordonnees.clone();
+	}
+
 	public Vec2 getCoordonnees()
 	{
 		return coordonnees;

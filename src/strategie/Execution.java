@@ -13,6 +13,7 @@ import enums.Speed;
 import exceptions.FinMatchException;
 import exceptions.PathfindingException;
 import exceptions.PathfindingRobotInObstacleException;
+import exceptions.ScriptHookException;
 import exceptions.UnknownScriptException;
 import exceptions.Locomotion.UnableToMoveException;
 import exceptions.strategie.ScriptException;
@@ -37,14 +38,14 @@ public class Execution implements Service {
 	private Log log;
 //	private Config config;
 	private ScriptManager scriptmanager;
-	private AStar<PathfindingArcManager> pathfinding;
+	private AStar<PathfindingArcManager, PathfindingNodes> pathfinding;
 //	private HookFactory hookfactory;
 	private ThreadStrategy threadstrategy;
 //	private RobotColor color;
 	
 	private ArrayList<Hook> hooks_entre_scripts;
 	
-	public Execution(Log log, Config config, AStar<PathfindingArcManager> pathfinding, GameState<RobotReal> gamestate, ScriptManager scriptmanager, HookFactory hookfactory, ThreadStrategy threadstrategy)
+	public Execution(Log log, Config config, AStar<PathfindingArcManager, PathfindingNodes> pathfinding, GameState<RobotReal> gamestate, ScriptManager scriptmanager, HookFactory hookfactory, ThreadStrategy threadstrategy)
 	{
 		this.log = log;
 //		this.config = config;
@@ -138,8 +139,13 @@ public class Execution implements Service {
 		ArrayList<PathfindingNodes> chemin;
 		chemin = pathfinding.computePath(gamestate.cloneGameState(), s.point_entree(id_version), dont_avoid_game_element);
 		gamestate.robot.set_vitesse(Speed.BETWEEN_SCRIPTS);
-		gamestate.robot.suit_chemin(chemin, hooks_entre_scripts);
-		s.agit(id_version, gamestate, false);	
+		try {
+			gamestate.robot.suit_chemin(chemin, hooks_entre_scripts);
+			s.agit(id_version, gamestate);	
+		} catch (ScriptHookException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	@Override

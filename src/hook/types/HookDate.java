@@ -1,6 +1,7 @@
 package hook.types;
 
 import exceptions.FinMatchException;
+import exceptions.ScriptHookException;
 import smartMath.Vec2;
 import strategie.GameState;
 import utils.Config;
@@ -18,10 +19,9 @@ public class HookDate extends Hook {
 	}
 
 	@Override
-	public boolean evaluate() throws FinMatchException {
+	public void evaluate() throws FinMatchException, ScriptHookException {
 		if(System.currentTimeMillis() - Config.getDateDebutMatch() > date_hook)
-			return trigger();
-		return false;
+			trigger();
 	}
 
 	@Override

@@ -9,7 +9,7 @@ import enums.PathfindingNodes;
 import enums.Speed;
 import exceptions.FinMatchException;
 
- public class PathfindingArcManager extends ArcManager implements Service {
+ public class PathfindingArcManager implements Service, ArcManager {
 
 	private int iterator, id_node_iterator;
 	private PathfindingNodes arrivee;
@@ -52,7 +52,8 @@ import exceptions.FinMatchException;
 		return state.robot.getPositionPathfinding().ordinal();
 	}
 
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
     public PathfindingNodes next()
     {
     	return PathfindingNodes.values()[iterator];

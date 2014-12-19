@@ -1,6 +1,7 @@
 package hook.types;
 
 import exceptions.FinMatchException;
+import exceptions.ScriptHookException;
 import hook.Hook;
 import smartMath.Vec2;
 import strategie.GameState;
@@ -40,13 +41,12 @@ class HookY extends Hook
     /**
      * Déclenche le hook si la coordonnée y du robot est dans [yValue - tolerance, yValue + tolerance]
      * @return true si les déplacements du robot ont étés modifiés par cette méthode.
+     * @throws ScriptHookException 
      */
-    public boolean evaluate() throws FinMatchException
+    public void evaluate() throws FinMatchException, ScriptHookException
     {
         if(Math.abs(state.robot.getPosition().y-yValue) < tolerancy)
-            return trigger();
-
-        return false;
+            trigger();
     }
     
 	@Override

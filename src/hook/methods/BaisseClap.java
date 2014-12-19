@@ -19,13 +19,12 @@ public class BaisseClap implements Executable
 	}
 	
 	@Override
-	public boolean execute() throws FinMatchException {
+	public void execute() throws FinMatchException {
 		try {
 			robot.bougeBrasClap(cote, HauteurBrasClap.FRAPPE_CLAP, false);
 		} catch (SerialConnexionException e) {
 			e.printStackTrace();
 		}
-		return false;
 	}
 
 }

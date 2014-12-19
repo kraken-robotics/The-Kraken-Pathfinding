@@ -1,6 +1,7 @@
 package hook;
 
 import exceptions.FinMatchException;
+import exceptions.ScriptHookException;
 
 /**
  * Classe de callback. Contient la fonction et ses arguments à appeler.
@@ -44,15 +45,15 @@ public class Callback
 	 * Le callback appelle la méthode, si elle n'est pas unique ou si elle n'est pas déjà faite
 	 * @return vrai si le robot a été déplacé/ tourné, faux sinon
 	 * @throws FinMatchException 
+	 * @throws ScriptHookException 
 	 */
-	public boolean call() throws FinMatchException
+	public void call() throws FinMatchException, ScriptHookException
 	{
 		if(!(shouldBeDeleted()))
 		{
             isDone = true;
-			return method.execute();
+			method.execute();
 		}
-		return false;
 	}
 	
 	/**

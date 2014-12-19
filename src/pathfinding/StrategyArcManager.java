@@ -19,27 +19,32 @@ import enums.ScriptNames;
 import exceptions.FinMatchException;
 import exceptions.PathfindingException;
 import exceptions.PathfindingRobotInObstacleException;
+import exceptions.ScriptHookException;
 import exceptions.UnknownScriptException;
-import exceptions.Locomotion.UnableToMoveException;
-import exceptions.serial.SerialConnexionException;
+import exceptions.strategie.ScriptException;
 
-public class StrategyArcManager extends ArcManager implements Service {
+public class StrategyArcManager implements Service, ArcManager {
 
 	private Log log;
 	private ScriptManager scriptmanager;
-	private AStar<PathfindingArcManager> astar;
+	private AStar<PathfindingArcManager, PathfindingNodes> astar;
 	private HookFactory hookfactory;
 	
 	private ArrayList<Decision> listeDecisions = new ArrayList<Decision>();
 	private int iterator;
 	private Vector<Long> hashes = new Vector<Long>();
 	
-	public StrategyArcManager(Log log, Config config, ScriptManager scriptmanager, GameState<RobotReal> real_gamestate, HookFactory hookfactory, AStar<PathfindingArcManager> astar)
+	public StrategyArcManager(Log log, Config config, ScriptManager scriptmanager, GameState<RobotReal> real_gamestate, HookFactory hookfactory, AStar<PathfindingArcManager, PathfindingNodes> astar)
 	{
 		this.log = log;
 		this.scriptmanager = scriptmanager;
 		this.hookfactory = hookfactory;
 		this.astar = astar;
+		try {
+			initPointSortie(real_gamestate.cloneGameState());
+		} catch (FinMatchException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -70,7 +75,6 @@ public class StrategyArcManager extends ArcManager implements Service {
 						} catch (PathfindingException
 								| PathfindingRobotInObstacleException
 								| FinMatchException e) {
-							e.printStackTrace();
 						}
 					}
 				} catch (UnknownScriptException e) {
@@ -91,22 +95,28 @@ public class StrategyArcManager extends ArcManager implements Service {
 		return iterator < listeDecisions.size();
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public Arc next()
+	public Decision next()
 	{
 //		log.debug("Prochain voisin: "+listeDecisions.get(iterator).script_name, this);
 		return listeDecisions.get(iterator);
 	}
 
 	@Override
-	public int distanceTo(GameState<RobotChrono> state, Arc arc) throws FinMatchException, UnknownScriptException, UnableToMoveException, SerialConnexionException
+	public int distanceTo(GameState<RobotChrono> state, Arc arc) throws FinMatchException, UnknownScriptException, ScriptException
 	{
 		Decision d = (Decision)arc;
 		Script s = scriptmanager.getScript(d.script_name);
 		int old_temps = (int)state.robot.getTempsDepuisDebutMatch();
 		ArrayList<Hook> hooks_table = hookfactory.getHooksEntreScriptsChrono(state);
 		state.robot.suit_chemin(d.chemin, hooks_table);
-		s.execute(d.version, state);
+		try {
+			s.agit(d.version, state);
+		} catch (ScriptHookException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		state.robot.setPositionPathfinding(s.point_sortie(d.version));
 		int new_temps = (int)state.robot.getTempsDepuisDebutMatch();
 		return new_temps - old_temps;
@@ -126,7 +136,6 @@ public class StrategyArcManager extends ArcManager implements Service {
 		if(indice == -1)
 		{
 			hashes.add(hash);
-			log.debug("size: "+hashes.size(), this);
 			return hashes.size()-1;
 		}
 		else
@@ -156,6 +165,32 @@ public class StrategyArcManager extends ArcManager implements Service {
 	@Override
 	public int getNoteReconstruct(int hash) {
 		return (int)(hashes.get(hash)&511); // la composante "note" du hash (cf gamestate.getHash())
+	}
+	
+	public void initPointSortie(GameState<RobotChrono> gamestate)
+	{
+		for(ScriptNames s: ScriptNames.values())
+		{
+			if(s.canIDoIt())
+			{
+				try {
+					Script script = scriptmanager.getScript(s);
+					for(Integer v: script.meta_version(gamestate))
+					{
+						gamestate.robot.setPositionPathfinding(script.point_entree(v));
+						try {
+							script.agit(v, gamestate);
+						} catch (FinMatchException | ScriptException | ScriptHookException e) {
+							e.printStackTrace();
+						}
+						script.setPointSortie(v, gamestate.robot.getPosition());
+					}
+				} catch (UnknownScriptException e) {
+					log.warning("Script inconnu: "+s, this);
+					e.printStackTrace();
+				}
+			}
+		}		
 	}
 
 }

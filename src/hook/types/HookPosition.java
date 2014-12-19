@@ -2,6 +2,7 @@ package hook.types;
 
 import obstacles.ObstacleCircular;
 import exceptions.FinMatchException;
+import exceptions.ScriptHookException;
 import hook.Hook;
 import smartMath.Vec2;
 import strategie.GameState;
@@ -47,13 +48,13 @@ class HookPosition extends Hook
     /**
      * Déclenche le hook si la distance entre la position du robot et la position de de déclenchement du hook est inférieure a tolerancy
      * @return true si la position/oriantation du robot a été modifiée.
+     * @throws ScriptHookException 
      */
-	public boolean evaluate() throws FinMatchException
+	public void evaluate() throws FinMatchException, ScriptHookException
 	{
 		Vec2 positionRobot = state.robot.getPosition();
 		if(position.squaredDistance(positionRobot) <= squaredTolerancy)
-			return trigger();
-		return false;
+			trigger();
 	}
 
 
