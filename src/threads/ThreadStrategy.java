@@ -21,6 +21,7 @@ public class ThreadStrategy extends AbstractThread implements Service
 	private GameState<RobotReal> realstate;
 	
 	private ArrayList<Decision> decisions = null;
+	private ArrayList<Decision> decisionsSecours = null;
 	
 	public ThreadStrategy(Log log, Config config, AStar<StrategyArcManager, Decision> strategie, GameState<RobotReal> realstate)
 	{
@@ -49,7 +50,8 @@ public class ThreadStrategy extends AbstractThread implements Service
 		while(!finMatch)
 		{
 			try {
-				decisions = strategie.computeStrategy(realstate);
+				decisions = strategie.computeStrategy(realstate, false);
+				decisionsSecours = strategie.computeStrategy(realstate, true);
 			} catch (FinMatchException e) {
 				stopAllThread();
 			}

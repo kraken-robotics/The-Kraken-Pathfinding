@@ -60,8 +60,12 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 		this.arcmanager = arcmanager;
 		this.memorymanager = memorymanager;
 	}
-
 	public ArrayList<A> computeStrategy(GameState<RobotReal> state) throws FinMatchException
+	{
+		return computeStrategy(state, false);
+	}
+
+	public ArrayList<A> computeStrategy(GameState<RobotReal> state, boolean addEnnemi) throws FinMatchException
 	{
 		if(!(arcmanager instanceof StrategyArcManager))
 		{
@@ -70,6 +74,16 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 		}
 		GameState<RobotChrono> depart = memorymanager.getNewGameState();
 		state.copy(depart);
+
+		// pour le calcul de trajectoire de secours
+		if(addEnnemi)
+		{
+			int distance_ennemie = 500;
+			double orientation_actuelle = state.robot.getOrientation();
+			Vec2 positionEnnemie = state.robot.getPosition().plusNewVector(new Vec2((int)(distance_ennemie*Math.cos(orientation_actuelle)), (int)(distance_ennemie*Math.sin(orientation_actuelle))));
+			depart.gridspace.creer_obstacle(positionEnnemie);
+		}
+		
 		((StrategyArcManager)arcmanager).reinitHashes();
 		ArrayList<A> cheminArc;
 		try {

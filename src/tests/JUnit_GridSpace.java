@@ -40,6 +40,7 @@ public class JUnit_GridSpace extends JUnit_Test {
 		gridspace.setAvoidGameElement(true);
 		Assert.assertTrue(!gridspace.isTraversable(PathfindingNodes.BAS_DROITE, PathfindingNodes.DEVANT_DEPART_GAUCHE, Config.getDateDebutMatch()));
 		gridspace.setAvoidGameElement(false);
+		gridspace.reinitConnections();
 		Assert.assertTrue(gridspace.isTraversable(PathfindingNodes.BAS_DROITE, PathfindingNodes.DEVANT_DEPART_GAUCHE, Config.getDateDebutMatch()));
 
 		Assert.assertTrue(gridspace.isTraversable(PathfindingNodes.NODE_TAPIS, PathfindingNodes.BAS_GAUCHE, Config.getDateDebutMatch()));

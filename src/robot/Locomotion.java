@@ -324,7 +324,7 @@ public class Locomotion implements Service
 		
 		
 		// fais le déplacement
-		moveInDirectionExeptionHandler(hooksToConsider, false, distance < 0, expectsWallImpact);
+		moveInDirectionExceptionHandler(hooksToConsider, false, distance < 0, expectsWallImpact);
 
 		// demande une position et une oriantation a jour du robot
 		updatePositionAndOrientation();
@@ -384,14 +384,14 @@ public class Locomotion implements Service
 			for(Vec2 point: path)
 			{
 				aim = point.clone();
-				moveInDirectionExeptionHandler(hooksToConsider, false, false, false);
+				moveInDirectionExceptionHandler(hooksToConsider, false, false, false);
 			}
 	}
 
 	/**
 	 * Intercepte les exceptions des capteurs (on va rentrer dans un ennemi) et les exceptions de l'asservissement (le robot est mécaniquement bloqué)
 	 * Déclenche différentes réactions sur ces évènements, et si les réactions mises en places ici sont insuffisantes (on n'arrive pas a se dégager)
-	 * fais remonter l'exeption a l'utilisateur de la classe
+	 * fais remonter l'exception a l'utilisateur de la classe
 	 * @param hooksToConsider hooks a considérer lors de ce déplacement. Un hook n'est déclenché que s'il est dans cette liste et que sa condition d'activation est remplie
 	 * @param allowCurvedPath true si l'on autorise le robot à se déplacer le long d'une trajectoire curviligne.  false pour une simple ligne brisée
 	 * @param isBackward true si le déplacement doit se faire en marche arrière, false si le robot doit avancer en marche avant.
@@ -400,7 +400,7 @@ public class Locomotion implements Service
 	 * @throws FinMatchException 
 	 * @throws ScriptHookException 
 	 */
-	private void moveInDirectionExeptionHandler(ArrayList<Hook> hooksToConsider, boolean allowCurvedPath, boolean isBackward, boolean expectsWallImpact) throws UnableToMoveException, FinMatchException, ScriptHookException
+	private void moveInDirectionExceptionHandler(ArrayList<Hook> hooksToConsider, boolean allowCurvedPath, boolean isBackward, boolean expectsWallImpact) throws UnableToMoveException, FinMatchException, ScriptHookException
 	{
 		// nombre d'exception (et donc de nouvels essais) que l'on va lever avant de prévenir
 		// l'utilisateur en cas de bloquage mécanique du robot l'empéchant d'avancer plus loin
@@ -432,7 +432,7 @@ public class Locomotion implements Service
 			catch (BlockedException e)
 			{
 				// Réaction générique aux exceptions de déplacement du robot
-				generalLocomotionExeptionReaction(blockedExceptionStillAllowed);
+				generalLocomotionExceptionReaction(blockedExceptionStillAllowed);
 				
 				//On tolère une exception de moins
 				blockedExceptionStillAllowed--;
@@ -445,7 +445,7 @@ public class Locomotion implements Service
 			catch (UnexpectedObstacleOnPathException e)
 			{
 				// Réaction générique aux exceptions de déplacement du robot
-				generalLocomotionExeptionReaction(unexpectedObstacleOnPathExceptionStillAllowed);
+				generalLocomotionExceptionReaction(unexpectedObstacleOnPathExceptionStillAllowed);
 				
 				//On tolère une exception de moins
 				unexpectedObstacleOnPathExceptionStillAllowed--;
@@ -466,19 +466,19 @@ public class Locomotion implements Service
 	
 	/**
 	 * Réaction générique face a un souci dans le déplacment du robot. (arreter les moteurs de propultion par exemple)
-	 * @param exeptionCountStillAllowed nombre d'exception pour ce déplacement que l'on tolère encore avant de remonter le problème a l'utilisateur de la classe
+	 * @param exceptionCountStillAllowed nombre d'exception pour ce déplacement que l'on tolère encore avant de remonter le problème a l'utilisateur de la classe
 	 * @throws UnableToMoveException exception lancée quand on ne tolère plus de soucis interne au déplacement. Elle indique soit un obstacle détecté sur la route, soit que le robot a un blocage mécanique pour continuer a avancer
 	 * @throws FinMatchException 
 	 */
-	private void generalLocomotionExeptionReaction(int exeptionCountStillAllowed) throws UnableToMoveException, FinMatchException
+	private void generalLocomotionExceptionReaction(int exceptionCountStillAllowed) throws UnableToMoveException, FinMatchException
 	{
-		log.warning("Exeption de déplacement lancée, Immobilisation du robot.", this);
+		log.warning("Exception de déplacement lancée, Immobilisation du robot.", this);
 		/* TODO: si on veut pouvoir enchaîner avec un autre chemin, il ne faut pas arrêter le robot.
 		 * ATTENTION! ceci peut être dangereux, car si aucun autre chemin ne lui est donné, le robot va continuer sa course et percuter l'obstacle ! */
 		immobilise();
 		
 		// Si cette exception fait dépasser le quota autorisé, on la remonte a l'utilisateur de la classe
-		if(exeptionCountStillAllowed <= 0)
+		if(exceptionCountStillAllowed <= 0)
 		{
 			log.critical("Abandon du déplacement.", this);
 			throw new UnableToMoveException();
@@ -800,7 +800,7 @@ public class Locomotion implements Service
 	 * Boucle d'acquittement générique. Retourne des valeurs spécifiques en cas d'arrêt anormal (blocage, capteur)
 	 *  	false : si on roule
 	 *  	true : si on est immobile 
-	 *  	exeption : si patinage
+	 *  	exception : si patinage
 	 * @return true si le robot ne bouge plus parce que les moteurs ne tournent plus, false si le robot est encore en mouvement
 	 * @throws BlockedException si blocage mécanique du robot survient durant le mouvement (a un moment, les moteurs tournaient mais pas les codeuses)
 	 * @throws SerialConnexionException si la carte d'asservissement cesse de répondre
@@ -823,8 +823,8 @@ public class Locomotion implements Service
 			return false;
 		}
 		
-		// lève une exeption de blocage si le robot patine (ie force sur ses moteurs sans bouger) 
-		mLocomotionCardWrapper.raiseExeptionIfBlocked();
+		// lève une exception de blocage si le robot patine (ie force sur ses moteurs sans bouger) 
+		mLocomotionCardWrapper.raiseExceptionIfBlocked();
 
 		// renvois true si le robot est immobile, false si encore en mouvement
 		return !mLocomotionCardWrapper.isRobotMoving();

@@ -46,13 +46,13 @@ public class LocomotionCardWrapper implements Service
 	private long blockageStartTimestamp;
 	
 	/**
-	 *  utilisé par raiseExeptionIfBlocked, pour savoir si lors du dernier appel de raiseExeptionIfBlocked, la robot était déja bloqué (auquel cas il ne faut plus considérer que c'est le début du bloquage)
+	 *  utilisé par raiseExceptionIfBlocked, pour savoir si lors du dernier appel de raiseExceptionIfBlocked, la robot était déja bloqué (auquel cas il ne faut plus considérer que c'est le début du bloquage)
 	 */
     private boolean wasBlockedAtPreviousCall = false;
     
 
 	/**
-	 *  nombre de miliseconde de tolérance entre la détection d'un patinage et la levée de l'exeption. Trop basse il y aura des faux positifs, trop haute on va forcer dans les murs pendant longtemps
+	 *  nombre de miliseconde de tolérance entre la détection d'un patinage et la levée de l'exception. Trop basse il y aura des faux positifs, trop haute on va forcer dans les murs pendant longtemps
 	 */
 	int blockedTolerancy = 200;//TODO: mettre dans le fichier de config
 
@@ -86,7 +86,7 @@ public class LocomotionCardWrapper implements Service
 	 * @throws BlockedException si le robot est mécaniquement bloqué contre un obstacle qui l'empèche d'avancer plus loin
 	 * @throws FinMatchException 
 	 */
-	public void raiseExeptionIfBlocked() throws BlockedException, FinMatchException
+	public void raiseExceptionIfBlocked() throws BlockedException, FinMatchException
 	{
 		
 		// demande des information sur l'asservissement du robot
@@ -105,7 +105,7 @@ public class LocomotionCardWrapper implements Service
 		// si on patine
 		if(isRobotImmobile && areMotorsActive)
 		{
-			// si on patinais déja auparavant, on fait remonter le patinage au code de haut niveau (via BlocageExeption)
+			// si on patinais déja auparavant, on fait remonter le patinage au code de haut niveau (via BlocageException)
 			if(wasBlockedAtPreviousCall)
 			{
                 // la durée de tolérance au patinage est fixée ici (200ms)
@@ -113,14 +113,14 @@ public class LocomotionCardWrapper implements Service
 				// le robot mettera plus de temps a réagir ( le temps de réaction est égal au temps qui sépare 2 appels successifs de cette fonction)
 				if((System.currentTimeMillis() - blockageStartTimestamp) > blockedTolerancy)
 				{
-					log.warning("raiseExeptionIfBlocked : le robot a dû s'arrêter suite à un patinage. (levage de BlockedException)", this);
+					log.warning("raiseExceptionIfBlocked : le robot a dû s'arrêter suite à un patinage. (levage de BlockedException)", this);
 					try
 					{
 						immobilise();
 					} 
 					catch (SerialConnexionException e)
 					{
-						log.critical("raiseExeptionIfBlocked : Impossible d'immobiliser le robot: la carte d'asser ne répond plus.", this);
+						log.critical("raiseExceptionIfBlocked : Impossible d'immobiliser le robot: la carte d'asser ne répond plus.", this);
 						e.printStackTrace();
 					}
 					
