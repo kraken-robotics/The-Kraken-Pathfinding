@@ -84,7 +84,7 @@ public class Vec2
 		return new Vec2(this.x, this.y);
 	}
 	
-	public float squaredDistance(Vec2 other)
+	public int squaredDistance(Vec2 other)
 	{
 		return (x-other.x)*(x-other.x) + (y-other.y)*(y-other.y);
 	}

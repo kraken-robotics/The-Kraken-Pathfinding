@@ -36,10 +36,10 @@ public class ObstacleManager implements Service
     // Utilisé pour accélérer la copie
     private int hashObstacles;
 
-    private int dilatation_obstacle = 300;
+    private int dilatation_obstacle = 30;
     private int rayon_robot_adverse = 200;
     private int distanceApproximation = 50;
-    private long dureeAvantPeremption = 0;
+    private int dureeAvantPeremption = 0;
 
     // L'initialisation a lieu une seule fois pour tous les objets.
     private void createListObstaclesFixes()
@@ -82,11 +82,11 @@ public class ObstacleManager implements Service
      * Créer un obstacle de proximité
      * @param position
      */
-    public void creer_obstacle(final Vec2 position, long date_actuelle)
+    public void creer_obstacle(final Vec2 position, int date_actuelle)
     {
         Vec2 position_sauv = position.clone();
         ObstacleProximity obstacle = new ObstacleProximity(log, position_sauv, rayon_robot_adverse, date_actuelle+dureeAvantPeremption);
-        log.warning("Obstacle créé, rayon = "+rayon_robot_adverse+", centre = "+position, this);
+        log.warning("Obstacle créé, rayon = "+rayon_robot_adverse+", centre = "+position+", meurt à "+(date_actuelle+dureeAvantPeremption), this);
         listObstaclesMobiles.add(obstacle);
         check_game_element(position);
         hashObstacles = indice++;
@@ -247,7 +247,7 @@ public class ObstacleManager implements Service
      * @param sommet2
      * @return
      */
-    public boolean obstacle_proximite_dans_segment(Vec2 A, Vec2 B, long date)
+    public boolean obstacle_proximite_dans_segment(Vec2 A, Vec2 B, int date)
     {
     	return obstacle_proximite_dans_segment(A,B,dilatation_obstacle,date);
     }
@@ -259,14 +259,13 @@ public class ObstacleManager implements Service
      * @param sommet2
      * @return
      */
-    public boolean obstacle_proximite_dans_segment(Vec2 A, Vec2 B, int distance, long date)
+    public boolean obstacle_proximite_dans_segment(Vec2 A, Vec2 B, int distance, int date)
     {
         Iterator<ObstacleProximity> iterator = listObstaclesMobiles.iterator();
         while(iterator.hasNext())
         {
-            ObstacleCircular o = iterator.next();
-            
-            if(o.obstacle_proximite_dans_segment(A, B, distance))
+        	ObstacleProximity o = iterator.next();
+            if(o.obstacle_proximite_dans_segment(A, B, distance, date))
                 return true;
         }
         return false;

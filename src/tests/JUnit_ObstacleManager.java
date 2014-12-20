@@ -9,7 +9,6 @@ import org.junit.Test;
 
 import smartMath.Vec2;
 import table.Table;
-import utils.Config;
 import enums.ConfigInfo;
 import enums.PathfindingNodes;
 import enums.ServiceNames;
@@ -88,13 +87,21 @@ public class JUnit_ObstacleManager extends JUnit_Test {
     public void test_collision_obstacle_mobile() throws Exception
     {
     	config.setDateDebutMatch();
-    	Assert.assertTrue(!obstaclemanager.obstacle_proximite_dans_segment(new Vec2(100, 100), new Vec2(900, 900), Config.getDateDebutMatch()));
+    	Assert.assertTrue(!obstaclemanager.obstacle_proximite_dans_segment(new Vec2(100, 100), new Vec2(900, 900), 0));
     	obstaclemanager.creer_obstacle(new Vec2(-300, 500), 0);
-    	Assert.assertTrue(!obstaclemanager.obstacle_proximite_dans_segment(new Vec2(100, 100), new Vec2(900, 900), Config.getDateDebutMatch()));
+    	Assert.assertTrue(!obstaclemanager.obstacle_proximite_dans_segment(new Vec2(100, 100), new Vec2(900, 900), 0));
     	obstaclemanager.creer_obstacle(new Vec2(1300, 1300), 0);
-    	Assert.assertTrue(!obstaclemanager.obstacle_proximite_dans_segment(new Vec2(100, 100), new Vec2(900, 900), Config.getDateDebutMatch()));
+    	Assert.assertTrue(!obstaclemanager.obstacle_proximite_dans_segment(new Vec2(100, 100), new Vec2(900, 900), 0));
     	obstaclemanager.creer_obstacle(new Vec2(400, 500), 0);
-    	Assert.assertTrue(obstaclemanager.obstacle_proximite_dans_segment(new Vec2(100, 100), new Vec2(900, 900), Config.getDateDebutMatch()));
+    }
+    @Test
+    public void test_peremption_en_mouvement() throws Exception
+    {
+    	config.set(ConfigInfo.DUREE_PEREMPTION_OBSTACLES, 500); // 200 ms de péremption
+    	obstaclemanager.updateConfig();
+    	obstaclemanager.creer_obstacle(new Vec2(1200, 900), 0);
+    	// Le temps qu'on y arrive, il devrait être périmé
+    	Assert.assertTrue(!obstaclemanager.obstacle_proximite_dans_segment(new Vec2(-1200, 100), new Vec2(1200, 900), 0));
     }
 
     @Test

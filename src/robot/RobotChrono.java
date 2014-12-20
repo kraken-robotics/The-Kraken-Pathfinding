@@ -275,7 +275,9 @@ public class RobotChrono extends Robot
 	@Override
 	public void poserDeuxTapis(boolean needToSleep) throws FinMatchException
 	{
-		tapisRougePose(2);
+    	tapisPoses = true;
+    	// TODO points
+		pointsObtenus = pointsObtenus + 24;
 		if(needToSleep)
 			poserDeuxTapisSleep();
 	}
@@ -284,13 +286,20 @@ public class RobotChrono extends Robot
 	public void leverDeuxTapis(boolean needToSleep) throws FinMatchException
 	{
 		if(needToSleep)
-			leverDeuxTapisSleep();		
+			leverDeuxTapisSleep();
 	}
 
 	// Permet de commander le lissage en vérifiant si on part d'un point qui n'est pas un node
 	public boolean isAtPathfindingNodes()
 	{
 		return isPositionPathfindingActive;
+	}
+
+	@Override
+	public void clapTombe()
+	{
+		// TODO points
+		pointsObtenus = pointsObtenus + 5;				
 	}
 	
 }

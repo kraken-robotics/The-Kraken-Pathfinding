@@ -92,7 +92,7 @@ public class GridSpace implements Service {
 	 * Surcouche de isConnected qui gère le cache
 	 * @return
 	 */
-	public boolean isTraversable(PathfindingNodes i, PathfindingNodes j, long date)
+	public boolean isTraversable(PathfindingNodes i, PathfindingNodes j, int date)
 	{
 		if(isConnectedModelCache[i.ordinal()][j.ordinal()] != null)
 		{
@@ -129,7 +129,7 @@ public class GridSpace implements Service {
 	 * @return
 	 * @throws GridSpaceException 
 	 */
-	public PathfindingNodes nearestReachableNode(Vec2 point, long date) throws GridSpaceException
+	public PathfindingNodes nearestReachableNode(Vec2 point, int date) throws GridSpaceException
 	{
 		PathfindingNodes indice_point_depart = null;
 		float distance_min = Float.MAX_VALUE;
@@ -191,7 +191,7 @@ public class GridSpace implements Service {
      * @param pointB
      * @return
      */
-    public boolean isTraversable(Vec2 pointA, Vec2 pointB, long date)
+    public boolean isTraversable(Vec2 pointA, Vec2 pointB, int date)
     {
     	// Evaluation paresseuse importante, car obstacle_proximite_dans_segment est bien plus rapide que obstacle_fixe_dans_segment
     	return !obstaclemanager.obstacle_proximite_dans_segment(pointA, pointB, date) && !obstaclemanager.obstacle_fixe_dans_segment_pathfinding(pointA, pointB);
@@ -203,7 +203,7 @@ public class GridSpace implements Service {
      * @param position
      * @param date
      */
-    public void creer_obstacle(Vec2 position, long date)
+    public void creer_obstacle(Vec2 position, int date)
     {
     	obstaclemanager.creer_obstacle(position, date);
     	reinitConnections();
@@ -216,7 +216,7 @@ public class GridSpace implements Service {
      */
     public void creer_obstacle(Vec2 position)
     {
-    	creer_obstacle(position, System.currentTimeMillis() - Config.getDateDebutMatch());
+    	creer_obstacle(position, (int)(System.currentTimeMillis() - Config.getDateDebutMatch()));
     }
 
     public void setAvoidGameElement(boolean avoidGameElement)

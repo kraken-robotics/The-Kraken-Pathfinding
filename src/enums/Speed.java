@@ -25,12 +25,18 @@ public enum Speed
     public static final int translationStopDuration = 200; // le temps de s'arrêter en translation
     public static final int rotationStopDuration = 100; // le temps de s'arrêter en rotation
     
-    /** en milliseconde par millimètre */
-    public int invertedTranslationnalSpeed;
+    /** en millisecondes par millimètre */
+    public final int invertedTranslationnalSpeed;
     
-    /** en millisecondes par radians */
-    public int invertedRotationnalSpeed;
+    /** en millisecondes par radian */
+    public final int invertedRotationnalSpeed;
         
+    /** en millimètres par milliseconde */
+    public final double translationnalSpeed;
+    
+    /** en radians par milliseconde */
+    public final double rotationnalSpeed;
+    
     /**
      * @param PWM_translation
      * @param PWM_rotation
@@ -41,8 +47,11 @@ public enum Speed
         this.PWMRotation = PWM_rotation;
         
         // TODO: faire des MESURES
+        
         invertedTranslationnalSpeed = (int) (1./(((float)2500)/((float)613.52 * (float)(Math.pow((double)PWM_translation,(double)(-1.034))))/1000));
         invertedRotationnalSpeed = (int) (1./(((float)Math.PI)/((float)277.85 * (float)Math.pow(PWM_rotation,(-1.222)))/1000));
+        translationnalSpeed = 1./((double)invertedTranslationnalSpeed);
+        rotationnalSpeed = 1./((double)invertedRotationnalSpeed);
     }
     
 }

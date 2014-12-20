@@ -74,9 +74,9 @@ public abstract class Robot implements Service
 	protected Log log;
 	private boolean symetrie; // normalement, RobotReal et RobotChrono n'ont pas à connaître notre couleur.
 	protected Speed vitesse;
-	private int pointsObtenus = 0;
+	protected int pointsObtenus = 0;
 	
-	private boolean tapisPoses = false;
+	protected boolean tapisPoses = false;
 	
 	public Robot(Config config, Log log)
 	{
@@ -155,14 +155,7 @@ public abstract class Robot implements Service
     public int getPointsObtenus()
     {
     	return pointsObtenus;
-    }
-    
-    protected void tapisRougePose(int nbTapis)
-    {
-    	if(!tapisPoses)
-    		pointsObtenus = pointsObtenus + 12*nbTapis;    	
-    	tapisPoses = true;
-    }
+    }    
     
     public boolean areTapisPoses()
     {
@@ -172,10 +165,7 @@ public abstract class Robot implements Service
     /**
      * A appeler quand un clap est tombé
      */
-    public void clapTombe()
-    {
-    	pointsObtenus = pointsObtenus + 5;
-    }
+    public abstract void clapTombe();
     
 	protected ActuatorOrder bougeBrasClapOrder(Side cote, HauteurBrasClap hauteur)
 	{
@@ -230,6 +220,5 @@ public abstract class Robot implements Service
 		sleep(ActuatorOrder.LEVE_TAPIS_DROIT.getSleepValue());
 		sleep(ActuatorOrder.LEVE_TAPIS_GAUCHE.getSleepValue());
 	}
-
 	
 }
