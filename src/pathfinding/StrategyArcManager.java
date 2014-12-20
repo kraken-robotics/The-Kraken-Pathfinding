@@ -23,6 +23,12 @@ import exceptions.ScriptHookException;
 import exceptions.UnknownScriptException;
 import exceptions.strategie.ScriptException;
 
+/**
+ * Réalise les calculs sur les scripts et les gamestate pour l'AStar.
+ * @author pf
+ *
+ */
+
 public class StrategyArcManager implements Service, ArcManager {
 
 	private Log log;

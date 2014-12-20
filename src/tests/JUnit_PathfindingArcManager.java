@@ -11,6 +11,12 @@ import strategie.GameState;
 import enums.PathfindingNodes;
 import enums.ServiceNames;
 
+/**
+ * Tests unitaires des calculs sur les PathfindingNodes
+ * @author pf
+ *
+ */
+
 public class JUnit_PathfindingArcManager extends JUnit_Test {
 	
 	private PathfindingArcManager pathfindingarcmanager;

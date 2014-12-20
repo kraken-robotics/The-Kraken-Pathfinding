@@ -7,6 +7,12 @@ import hook.Executable;
 import enums.HauteurBrasClap;
 import enums.Side;
 
+/**
+ * Lève un bras de clap
+ * @author pf
+ *
+ */
+
 public class LeveClap implements Executable
 {
 	private Robot robot;

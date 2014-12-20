@@ -6,6 +6,12 @@ import robot.RobotReal;
 import strategie.GameState;
 import utils.Log;
 
+/**
+ * Classe mère de tous les scripts de hook
+ * @author pf
+ *
+ */
+
 public abstract class ScriptHook {
 
 	protected Log log;

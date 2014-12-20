@@ -14,8 +14,7 @@ import utils.Config;
 /**
  * Le game state rassemble toutes les informations disponibles à un instant
  * - infos sur le robot (position, objet, ...) dans R
- * - infos sur les obstacles (robot ennemi, ...) dans GridSpace
- * - infos sur les éléments de jeux (pris ou non, ...) dans Table
+ * - infos sur les obstacles et les éléments de jeux (robot ennemi, table, ...) dans GridSpace
  * @author pf
  *
  * @param <R>
@@ -23,7 +22,7 @@ import utils.Config;
 
 public class GameState<R extends Robot> implements Service
 {    
-    public R robot;
+    public final R robot;
     public final GridSpace gridspace;
     
     // La hook factory est privée. Elle n'est pas copiée d'un gamestate à l'autre.

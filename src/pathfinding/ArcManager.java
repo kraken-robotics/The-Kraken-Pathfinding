@@ -7,8 +7,7 @@ import robot.RobotChrono;
 import strategie.GameState;
 
 /**
- * Interface du NodeManager.
- * C'est lui qui s'occupe de calculer les voisins d'un sommet.
+ * Réalise les calculs entre différents Arc
  * @author pf
  *
  */

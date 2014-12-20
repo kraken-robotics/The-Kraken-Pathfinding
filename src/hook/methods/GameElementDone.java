@@ -6,7 +6,7 @@ import enums.Tribool;
 import hook.Executable;
 
 /**
- * 
+ * Modifie l'état des éléments de jeux
  * @author pf
  *
  */

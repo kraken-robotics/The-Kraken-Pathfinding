@@ -8,6 +8,13 @@ import utils.Config;
 import container.Container;
 import enums.ServiceNames;
 
+/**
+ * Classe mère de tous les tests.
+ * Prépare container, log et config. Détruit le tout à la fin.
+ * @author pf
+ *
+ */
+
 public abstract class JUnit_Test
 {
 

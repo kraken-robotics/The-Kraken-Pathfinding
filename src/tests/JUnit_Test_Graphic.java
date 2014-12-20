@@ -25,6 +25,13 @@ import strategie.GameState;
 import tests.graphicLib.Fenetre;
 import utils.Sleep;
 
+/**
+ * Tests unitaires disposant d'une interface graphique.
+ * Utilisé pour la vérification humaine.
+ * @author pf
+ *
+ */
+
 public class JUnit_Test_Graphic extends JUnit_Test {
 
 	private Fenetre fenetre;

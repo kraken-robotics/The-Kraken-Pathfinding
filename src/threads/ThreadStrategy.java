@@ -13,6 +13,12 @@ import utils.Config;
 import utils.Log;
 import utils.Sleep;
 
+/**
+ * Effectue les calculs de stratégie
+ * @author pf
+ *
+ */
+
 public class ThreadStrategy extends AbstractThread implements Service
 {
 

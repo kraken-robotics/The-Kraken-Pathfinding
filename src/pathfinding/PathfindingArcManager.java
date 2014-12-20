@@ -9,7 +9,13 @@ import enums.PathfindingNodes;
 import enums.Speed;
 import exceptions.FinMatchException;
 
- public class PathfindingArcManager implements Service, ArcManager {
+/**
+ * Réalise les calculs entre PathfindingNodes pour l'AStar.
+ * @author pf
+ *
+ */
+
+public class PathfindingArcManager implements Service, ArcManager {
 
 	private int iterator, id_node_iterator;
 	private PathfindingNodes arrivee;

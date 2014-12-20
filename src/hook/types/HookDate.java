@@ -8,6 +8,12 @@ import utils.Config;
 import utils.Log;
 import hook.Hook;
 
+/**
+ * Hook déclenché sur une date
+ * @author pf
+ *
+ */
+
 public class HookDate extends Hook {
 
 	private long date_hook;

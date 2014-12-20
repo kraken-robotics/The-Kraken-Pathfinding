@@ -28,6 +28,7 @@ import utils.Sleep;
 
 /**
  * Exécute ce qu'a décidé la stratégie.
+ * Gère en particulier les réponses du système aux différentes erreurs.
  * @author pf
  *
  */

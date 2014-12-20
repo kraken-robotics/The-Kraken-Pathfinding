@@ -9,7 +9,7 @@ import utils.Sleep;
 import enums.ServiceNames;
 
 /**
- * Tests unitaires de l'arbre des possibles.
+ * Tests unitaires des threads.
  * @author pf
  *
  */

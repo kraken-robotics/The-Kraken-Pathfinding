@@ -16,6 +16,12 @@ import java.io.IOException;
 import java.text.AttributedString;
 import java.util.ArrayList;
 
+/**
+ * Interface graphique écrite à l'arrache
+ * @author pf
+ *
+ */
+
 public class Fenetre extends JPanel {
 
 	private static final long serialVersionUID = 1L;

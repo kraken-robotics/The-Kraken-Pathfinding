@@ -12,7 +12,7 @@ import enums.ConfigInfo;
 
 
 /**
- * 
+ * Gère le fichier de configuration externe.
  * @author pf, marsu
  *
  */

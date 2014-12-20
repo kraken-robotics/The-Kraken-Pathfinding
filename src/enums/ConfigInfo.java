@@ -1,5 +1,11 @@
 package enums;
 
+/**
+ * Informations accessibles par la config
+ * @author pf
+ *
+ */
+
 public enum ConfigInfo {
 	TABLE_X,
 	TABLE_Y,

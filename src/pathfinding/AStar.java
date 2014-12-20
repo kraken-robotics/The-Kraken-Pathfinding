@@ -21,7 +21,9 @@ import utils.Config;
 import utils.Log;
 
 /**
- * Classe encapsulant les calculs de pathfinding
+ * AStar, fonctionnant avec un certain ArcManager
+ * Le AStar avec le PathfindingArcManager donne une recherche de chemin
+ * Le AStar avec le StrategyArcManager donne un planificateur de scripts
  * @author pf, Martial
  *
  */

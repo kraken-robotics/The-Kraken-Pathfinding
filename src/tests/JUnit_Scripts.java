@@ -18,7 +18,7 @@ import enums.ServiceNames;
 
 /**
  * Tests unitaires des scripts.
- * Utilisé pour voir en vrai comment agit le robot.
+ * Utilisé pour voir en vrai comment agit le robot et si la table est bien mise à jour.
  * @author pf
  *
  */

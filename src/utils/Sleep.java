@@ -2,6 +2,7 @@ package utils;
 
 /**
  * Classe qui fournie juste un sleep sans try/catch
+ * NE PAS UTILISER CETTE MÉTHODE DANS UN SCRIPT!
  * @author pf
  *
  */

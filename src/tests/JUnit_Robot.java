@@ -14,6 +14,12 @@ import enums.ConfigInfo;
 import enums.PathfindingNodes;
 import enums.ServiceNames;
 
+/**
+ * Tests unitaires sur Robot, RobotReal et RobotChrono
+ * @author pf
+ *
+ */
+
 public class JUnit_Robot extends JUnit_Test
 {
 	private RobotReal robotreal;

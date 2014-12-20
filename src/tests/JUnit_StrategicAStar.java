@@ -13,6 +13,12 @@ import smartMath.Vec2;
 import strategie.GameState;
 import enums.ServiceNames;
 
+/**
+ * Tests unitaires du planificateur de scripts
+ * @author pf
+ *
+ */
+
 public class JUnit_StrategicAStar extends JUnit_Test
 {
 	private GameState<RobotReal> gamestate;

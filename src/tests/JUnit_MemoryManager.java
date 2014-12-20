@@ -11,6 +11,12 @@ import enums.ConfigInfo;
 import enums.PathfindingNodes;
 import enums.ServiceNames;
 
+/**
+ * Tests unitaires du memorymanager
+ * @author pf
+ *
+ */
+
 public class JUnit_MemoryManager extends JUnit_Test {
 
 	private MemoryManager memorymanager;

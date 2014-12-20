@@ -4,6 +4,8 @@ import smartMath.Vec2;
 
 /**
  * Enumérations contenant tous les éléments de jeux
+ * @author pf
+ *
  */
 
 public enum GameElementNames {

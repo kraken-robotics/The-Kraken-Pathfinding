@@ -7,6 +7,12 @@ import enums.Tribool;
 import smartMath.Vec2;
 import utils.*;
 
+/**
+ * Gère les éléments de jeux
+ * @author pf
+ *
+ */
+
 public class Table implements Service
 {
 	// Dépendances

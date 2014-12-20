@@ -1,7 +1,7 @@
 package enums;
 
 /**
- * Caractérise une liaison entre deux noeuds de la grille du pathfinding
+ * Caractérise une liaison entre deux PathfindingNodes dans GridSpace
  * @author pf
  *
  */
