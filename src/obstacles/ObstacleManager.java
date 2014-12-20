@@ -20,21 +20,22 @@ import utils.Log;
 
 public class ObstacleManager implements Service
 {
-    // On met cette variable en static afin que, dans deux instances dupliquées, elle ne redonne pas les mêmes nombres
-    private static int indice = 1;
     private Log log;
     private Config config;
     private Table table;
     
     // Les obstacles mobiles, c'est-à-dire des obstacles de proximité et de balise
-    private ArrayList<ObstacleProximity> listObstaclesMobiles = new ArrayList<ObstacleProximity>();
+    // Comme ces obstacles ne peuvent que disparaître, on les retient tous et chaque instance aura un indice vers sur le premier obstacle non mort
+    private static ArrayList<ObstacleProximity> listObstaclesMobiles = new ArrayList<ObstacleProximity>();
 
+    private static ObstacleProximity hypotheticalEnemy = null;
+    private boolean isThereHypotheticalEnemy = false;
+    
     // Les obstacles fixes sont surtout utilisés pour savoir si un capteur détecte un ennemi ou un obstacle fixe
     // Commun à toutes les instances
     private static ArrayList<Obstacle> listObstaclesFixes = null;
   
-    // Utilisé pour accélérer la copie
-    private int hashObstacles;
+    private int firstNotDead = 0;
 
     private int dilatation_obstacle = 30;
     private int rayon_robot_adverse = 200;
@@ -70,14 +71,22 @@ public class ObstacleManager implements Service
         this.config = config;
         this.table = table;
 
-        hashObstacles = 0;
-
         if(listObstaclesFixes == null)
         	createListObstaclesFixes();
-        
+
+        // On n'instancie hypotheticalEnnemy qu'un seul fois
+        if(hypotheticalEnemy == null)
+        	new ObstacleProximity(log, new Vec2(), rayon_robot_adverse, -1000);
         updateConfig();
     }
 
+    public void createHypotheticalEnnemy(Vec2 position, int date_actuelle)
+    {
+    	isThereHypotheticalEnemy = true;
+    	hypotheticalEnemy.setPosition(position);
+    	hypotheticalEnemy.setDeathDate(date_actuelle+dureeAvantPeremption);
+    }
+    
     /**
      * Créer un obstacle de proximité
      * @param position
@@ -86,10 +95,9 @@ public class ObstacleManager implements Service
     {
         Vec2 position_sauv = position.clone();
         ObstacleProximity obstacle = new ObstacleProximity(log, position_sauv, rayon_robot_adverse, date_actuelle+dureeAvantPeremption);
-        log.warning("Obstacle créé, rayon = "+rayon_robot_adverse+", centre = "+position+", meurt à "+(date_actuelle+dureeAvantPeremption), this);
+//        log.warning("Obstacle créé, rayon = "+rayon_robot_adverse+", centre = "+position+", meurt à "+(date_actuelle+dureeAvantPeremption), this);
         listObstaclesMobiles.add(obstacle);
         check_game_element(position);
-        hashObstacles = indice++;
     }
     
     /**
@@ -122,16 +130,15 @@ public class ObstacleManager implements Service
      */
     public boolean supprimerObstaclesPerimes(long date)
     {
-        Iterator<ObstacleProximity> iterator = listObstaclesMobiles.iterator();
         boolean out = false;
-        while(iterator.hasNext())
+        if(isThereHypotheticalEnemy && hypotheticalEnemy.isDestructionNecessary(date))
+        	isThereHypotheticalEnemy = false;
+        for(int i = firstNotDead; i < listObstaclesMobiles.size(); i++)
         {
-            ObstacleCircular obstacle = iterator.next();
+            ObstacleProximity obstacle = listObstaclesMobiles.get(i);
             if (obstacle.isDestructionNecessary(date))
             {
-//                log.debug("Suppression à "+date+" d'un obstacle de proximité: "+obstacle, this);
-                iterator.remove();
-                hashObstacles = indice++;
+            	firstNotDead++;
                 out = true;
             }
             else
@@ -145,6 +152,8 @@ public class ObstacleManager implements Service
      */
     public void clear_obstacles_mobiles()
     {
+    	isThereHypotheticalEnemy = false;
+    	firstNotDead = listObstaclesMobiles.size();
     	listObstaclesMobiles.clear();
     }
 
@@ -154,7 +163,7 @@ public class ObstacleManager implements Service
      */
     public int nbObstaclesMobiles()
     {
-        return listObstaclesMobiles.size();
+        return listObstaclesMobiles.size() - firstNotDead + 1 + (isThereHypotheticalEnemy?1:0);
     }
 
     public ObstacleManager clone(long date)
@@ -172,13 +181,7 @@ public class ObstacleManager implements Service
     {
 		supprimerObstaclesPerimes(date);
     	table.copy(other.table);
-        if(other.hashObstacles != hashObstacles)
-        {
-        	other.listObstaclesMobiles.clear();
-        	for(ObstacleProximity o: listObstaclesMobiles)
-        		other.listObstaclesMobiles.add(o);
-            other.hashObstacles = hashObstacles;
-        }
+    	other.isThereHypotheticalEnemy = isThereHypotheticalEnemy;
     }
  
     /**
@@ -261,10 +264,11 @@ public class ObstacleManager implements Service
      */
     public boolean obstacle_proximite_dans_segment(Vec2 A, Vec2 B, int distance, int date)
     {
-        Iterator<ObstacleProximity> iterator = listObstaclesMobiles.iterator();
-        while(iterator.hasNext())
+        if(isThereHypotheticalEnemy && hypotheticalEnemy.obstacle_proximite_dans_segment(A, B, distance, date))
+        	return true;
+        for(int i = firstNotDead; i < listObstaclesMobiles.size(); i++)
         {
-        	ObstacleProximity o = iterator.next();
+        	ObstacleProximity o = listObstaclesMobiles.get(i);
             if(o.obstacle_proximite_dans_segment(A, B, distance, date))
                 return true;
         }
@@ -297,10 +301,11 @@ public class ObstacleManager implements Service
      */
     public boolean is_obstacle_mobile_present(Vec2 position, int distance) 
     {
-        Iterator<ObstacleProximity> iterator2 = listObstaclesMobiles.iterator();
-        while(iterator2.hasNext())
+        if(isThereHypotheticalEnemy && is_obstacle_present(position, hypotheticalEnemy, distance))
+        	return true;
+        for(int i = firstNotDead; i < listObstaclesMobiles.size(); i++)
         {
-            Obstacle o = iterator2.next();
+        	ObstacleProximity o = listObstaclesMobiles.get(i);
             if(is_obstacle_present(position, o, distance))
                 return true;
         }
@@ -339,12 +344,12 @@ public class ObstacleManager implements Service
     
     public int hash()
     {
-        return hashObstacles;
+        return firstNotDead;
     }
 
     public boolean equals(ObstacleManager other)
     {
-        return hashObstacles == other.hashObstacles;
+        return firstNotDead == other.firstNotDead;
     }
 
 	@Override

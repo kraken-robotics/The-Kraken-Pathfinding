@@ -1,12 +1,11 @@
 package tests;
 
-import java.util.ArrayList;
-
 import org.junit.Before;
 import org.junit.Test;
 
 import pathfinding.AStar;
 import pathfinding.StrategyArcManager;
+import robot.RobotChrono;
 import robot.RobotReal;
 import scripts.Decision;
 import smartMath.Vec2;
@@ -37,24 +36,16 @@ public class JUnit_StrategicAStar extends JUnit_Test
     public void test_benchmark_strategie() throws Exception
     {
     	config.setDateDebutMatch();
-		int nb_iter = 50;
+    	GameState<RobotChrono> chronostate = gamestate.cloneGameState();
+   		int nb_iter = 500000;
 		long date_avant = System.currentTimeMillis();
     	for(int k = 0; k < nb_iter; k++)
     	{
-    		/*ArrayList<Decision> decisions = */astar.computeStrategy(gamestate);
+    		/*ArrayList<Decision> decisions = */astar.computeStrategyEmergency(chronostate);
     		//for(Decision d: decisions)
     		//	log.debug(d, this);
     	}
 		log.debug("Durée moyenne en µs: "+1000*(System.currentTimeMillis()-date_avant)/nb_iter, this);
-    }
-
-    @Test
-    public void test_ennemi() throws Exception
-    {
-    	config.setDateDebutMatch();
-    	ArrayList<Decision> decisions = astar.computeStrategy(gamestate, true);
-    	for(Decision d: decisions)
-    		log.debug(d, this);
     }
 
 }

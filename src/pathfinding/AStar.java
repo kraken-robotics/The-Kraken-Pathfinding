@@ -13,7 +13,7 @@ import exceptions.PathfindingRobotInObstacleException;
 import exceptions.UnknownScriptException;
 import exceptions.strategie.ScriptException;
 import robot.RobotChrono;
-import robot.RobotReal;
+import scripts.Decision;
 import smartMath.Vec2;
 import strategie.GameState;
 import strategie.MemoryManager;
@@ -62,30 +62,48 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 		this.arcmanager = arcmanager;
 		this.memorymanager = memorymanager;
 	}
-	public ArrayList<A> computeStrategy(GameState<RobotReal> state) throws FinMatchException
-	{
-		return computeStrategy(state, false);
-	}
 
-	public ArrayList<A> computeStrategy(GameState<RobotReal> state, boolean addEnnemi) throws FinMatchException
+	/**
+	 * Les méthodes publiques sont "synchronized".
+	 * Cela signifique que si un AStar calcule une recherche de chemin pour un thread, l'autre thread devra attendre.
+	 * Par contre, on peut faire un AStar stratégique et un AStar de pathfinding simultanément.
+	 * Normalement, ce n'est pas utile car tous appels à AStar devrait être fait par le StrategyThread
+	 * @param state
+	 * @return
+	 * @throws FinMatchException
+	 */
+	
+	public synchronized ArrayList<A> computeStrategyEmergency(GameState<RobotChrono> state) throws FinMatchException
 	{
 		if(!(arcmanager instanceof StrategyArcManager))
 		{
 			new Exception().printStackTrace();
 			return null;
 		}
+		int distance_ennemie = 500;
+		double orientation_actuelle = state.robot.getOrientation();
+		Vec2 positionEnnemie = state.robot.getPosition().plusNewVector(new Vec2((int)(distance_ennemie*Math.cos(orientation_actuelle)), (int)(distance_ennemie*Math.sin(orientation_actuelle))));
+		state.gridspace.creer_obstacle(positionEnnemie);
+		return computeStrategy(state);
+	}
+
+	public synchronized ArrayList<A> computeStrategyAfter(GameState<RobotChrono> state, A decision) throws FinMatchException
+	{
+		if(!(arcmanager instanceof StrategyArcManager))
+		{
+			new Exception().printStackTrace();
+			return null;
+		}
+		((StrategyArcManager)arcmanager).executeDecision(state, (Decision)decision);
+		return computeStrategy(state);
+	}
+
+	private ArrayList<A> computeStrategy(GameState<?> state) throws FinMatchException
+	{
 		GameState<RobotChrono> depart = memorymanager.getNewGameState();
 		state.copy(depart);
 
-		// pour le calcul de trajectoire de secours
-		if(addEnnemi)
-		{
-			int distance_ennemie = 500;
-			double orientation_actuelle = state.robot.getOrientation();
-			Vec2 positionEnnemie = state.robot.getPosition().plusNewVector(new Vec2((int)(distance_ennemie*Math.cos(orientation_actuelle)), (int)(distance_ennemie*Math.sin(orientation_actuelle))));
-			depart.gridspace.creer_obstacle(positionEnnemie);
-		}
-		
+		// pour le calcul de trajectoire de secours		
 		((StrategyArcManager)arcmanager).reinitHashes();
 		ArrayList<A> cheminArc;
 		try {
@@ -99,7 +117,7 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 	}
 	
 	@SuppressWarnings("unchecked")
-	public ArrayList<A> computePath(GameState<RobotChrono> state, PathfindingNodes indice_point_arrivee, boolean shoot_game_element) throws PathfindingException, PathfindingRobotInObstacleException, FinMatchException
+	public synchronized ArrayList<A> computePath(GameState<RobotChrono> state, PathfindingNodes indice_point_arrivee, boolean shoot_game_element) throws PathfindingException, PathfindingRobotInObstacleException, FinMatchException
 	{
 		if(!(arcmanager instanceof PathfindingArcManager))
 		{

@@ -189,7 +189,6 @@ public class Container
 		else if(serviceRequested == ServiceNames.EXECUTION)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new Execution((Log)getService(ServiceNames.LOG),
 			                                                 (Config)getService(ServiceNames.CONFIG),
-			                                                 (AStar<PathfindingArcManager, PathfindingNodes>)getService(ServiceNames.A_STAR_PATHFINDING),
 			                                                 (GameState<RobotReal>)getService(ServiceNames.REAL_GAME_STATE),
 			                                                 (ScriptManager)getService(ServiceNames.SCRIPT_MANAGER),
 			                                                 (HookFactory)getService(ServiceNames.HOOK_FACTORY),

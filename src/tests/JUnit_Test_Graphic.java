@@ -68,6 +68,7 @@ public class JUnit_Test_Graphic extends JUnit_Test {
 	{
 		fenetre.setGameElement(obstaclemanager.getListGameElement());
 		fenetre.setObstaclesFixes(obstaclemanager.getListObstaclesFixes());
+		// TODO: affiche aussi les obstacles périmés
 		fenetre.setObstaclesMobiles(obstaclemanager.getListObstaclesMobiles());		
 	}
 

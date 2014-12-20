@@ -6,9 +6,6 @@ import hook.types.HookFactory;
 import java.util.ArrayList;
 
 import container.Service;
-import pathfinding.AStar;
-import pathfinding.PathfindingArcManager;
-import enums.PathfindingNodes;
 import enums.Speed;
 import exceptions.FinMatchException;
 import exceptions.PathfindingException;
@@ -19,7 +16,6 @@ import exceptions.Locomotion.UnableToMoveException;
 import exceptions.strategie.ScriptException;
 import robot.RobotReal;
 import scripts.Decision;
-import scripts.Script;
 import scripts.ScriptManager;
 import threads.ThreadStrategy;
 import utils.Config;
@@ -39,25 +35,20 @@ public class Execution implements Service {
 	private Log log;
 //	private Config config;
 	private ScriptManager scriptmanager;
-	private AStar<PathfindingArcManager, PathfindingNodes> pathfinding;
-//	private HookFactory hookfactory;
 	private ThreadStrategy threadstrategy;
 //	private RobotColor color;
 	
 	private ArrayList<Hook> hooks_entre_scripts;
 	
-	public Execution(Log log, Config config, AStar<PathfindingArcManager, PathfindingNodes> pathfinding, GameState<RobotReal> gamestate, ScriptManager scriptmanager, HookFactory hookfactory, ThreadStrategy threadstrategy)
+	public Execution(Log log, Config config, GameState<RobotReal> gamestate, ScriptManager scriptmanager, HookFactory hookfactory, ThreadStrategy threadstrategy)
 	{
 		this.log = log;
 //		this.config = config;
-		this.pathfinding = pathfinding;
 		this.gamestate = gamestate;
 		this.scriptmanager = scriptmanager;
-//		this.hookfactory = hookfactory;
 		this.threadstrategy = threadstrategy;
 
 	    // DEPENDS_ON_RULES
-		// TODO: peut-être d'autres hooks?
 		hooks_entre_scripts = hookfactory.getHooksEntreScriptsReal(gamestate);
 	}
 
@@ -71,11 +62,11 @@ public class Execution implements Service {
 		while(true)
 		{
 			try {
-				ArrayList<Decision> decisions = threadstrategy.getDecisions();
-				if(decisions == null)
-					Sleep.sleep(500);
+				Decision bestDecision = threadstrategy.getBestDecision();
+				if(bestDecision == null)
+					Sleep.sleep(50);
 				else
-					executerScript(decisions);
+					executerScript(bestDecision);
 			} catch (UnknownScriptException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -90,22 +81,20 @@ public class Execution implements Service {
 		
 	}
 	
-	// TODO
-	/*
-	 * En gros, on peut jouer sur 2 paramètres dans le pathfinding
-	 * D'abord, "more points". Ca ajoute des points dans la recherche de chemin: c'est plus long mais on a moins de chances d'être bloqué.
-	 * Ensuite, "shoot game elements". Quand on est vraiment bloqué, on peut décider de shooter dans les éléments de jeux pour avancer.
-	 */
-	public void executerScript(ArrayList<Decision> decisions) throws UnknownScriptException, FinMatchException
+	public void executerScript(Decision decision_actuelle) throws UnknownScriptException, FinMatchException
 	{
-		for(int id_decision = 0; id_decision < 2; id_decision++)
+		for(int essai = 0; essai < 2; essai++)
 		{
-			Decision decision_actuelle = decisions.get(id_decision);
-			Script s = scriptmanager.getScript(decision_actuelle.script_name);
-
+			if(essai == 1)
+			do {
+				// Normalement, cette décision n'est jamais vide (sauf au tout tout début du match)
+				decision_actuelle = threadstrategy.getEmergencyDecision();
+				if(decision_actuelle == null)
+					Sleep.sleep(10);
+			} while(decision_actuelle == null);
 			log.debug("On tente d'exécuter "+decision_actuelle.script_name, this);
 			try {
-				tryOnce(s, decision_actuelle.version, false);
+				tryOnce(decision_actuelle);
 			} catch (PathfindingException e) {
 // TODO				tryOnce(s, decision_actuelle.id_version, true, false);
 				// Problème de pathfinding: pas de chemin. On rajoute des points
@@ -118,7 +107,7 @@ public class Execution implements Service {
 				// On a rencontré l'ennemi en chemin. On retente avec un autre chemin.
 				try {
 					log.debug("On réessaye d'exécuter "+decision_actuelle.script_name, this);
-					tryOnce(s, decision_actuelle.version, false);
+					tryOnce(decision_actuelle);
 				} catch (Exception e1) {
 					log.critical("Abandon: erreur pendant l'itinéraire de secours.", this);
 					continue;
@@ -135,16 +124,18 @@ public class Execution implements Service {
 		}
 	}
 	
-	public void tryOnce(Script s, int id_version, boolean dont_avoid_game_element) throws PathfindingException, UnableToMoveException, ScriptException, PathfindingRobotInObstacleException, FinMatchException
+	public void tryOnce(Decision d) throws PathfindingException, UnableToMoveException, ScriptException, PathfindingRobotInObstacleException, FinMatchException
 	{
-		ArrayList<PathfindingNodes> chemin;
-		chemin = pathfinding.computePath(gamestate.cloneGameState(), s.point_entree(id_version), dont_avoid_game_element);
 		gamestate.robot.set_vitesse(Speed.BETWEEN_SCRIPTS);
 		try {
-			gamestate.robot.suit_chemin(chemin, hooks_entre_scripts);
-			s.agit(id_version, gamestate);	
+			gamestate.robot.suit_chemin(d.chemin, hooks_entre_scripts);
+			threadstrategy.computeBestDecisionAfter(d);
+			scriptmanager.getScript(d.script_name).agit(d.version, gamestate);
 		} catch (ScriptHookException e) {
 			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (UnknownScriptException e) {
+			// Ne devrait jamais arriver
 			e.printStackTrace();
 		}
 	}

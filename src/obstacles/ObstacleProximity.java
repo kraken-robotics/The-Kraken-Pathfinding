@@ -65,4 +65,22 @@ public class ObstacleProximity extends ObstacleCircular
     	return false;
     }
 
+    /**
+     * Utilisé pour mettre à jour l'ennemi hypothétique
+     * @param clone
+     */
+	public void setPosition(Vec2 position)
+	{
+		position.copy(this.position);
+	}
+
+    /**
+     * Utilisé pour mettre à jour l'ennemi hypothétique
+     * @param clone
+     */
+	public void setDeathDate(int death_date)
+	{
+		this.death_date = death_date;
+	}
+
 }

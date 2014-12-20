@@ -6,6 +6,7 @@ import pathfinding.AStar;
 import pathfinding.StrategyArcManager;
 import container.Service;
 import exceptions.FinMatchException;
+import robot.RobotChrono;
 import robot.RobotReal;
 import scripts.Decision;
 import strategie.GameState;
@@ -25,6 +26,7 @@ public class ThreadStrategy extends AbstractThread implements Service
 	private Log log;
 	private AStar<StrategyArcManager, Decision> strategie;
 	private GameState<RobotReal> realstate;
+	private GameState<RobotChrono> chronostate;
 	
 	private ArrayList<Decision> decisions = null;
 	private ArrayList<Decision> decisionsSecours = null;
@@ -56,27 +58,38 @@ public class ThreadStrategy extends AbstractThread implements Service
 		while(!finMatch)
 		{
 			try {
-				decisions = strategie.computeStrategy(realstate, false);
-				decisionsSecours = strategie.computeStrategy(realstate, true);
+				realstate.copy(chronostate);
+				decisionsSecours = strategie.computeStrategyEmergency(chronostate);
 			} catch (FinMatchException e) {
-				stopAllThread();
+				break;
 			}
-			// Tant qu'on n'a pas besoin d'une nouvelle décision
-			while(decisions != null)
-				Sleep.sleep(50);			
 		}
 	}
 
-	public ArrayList<Decision> getDecisions()
+	public void computeBestDecisionAfter(Decision d)
 	{
-		synchronized(decisions)
-		{
-			ArrayList<Decision> tmp = decisions;
-			decisions = null;
-			return tmp;
+		try {
+			realstate.copy(chronostate);
+			decisions = strategie.computeStrategyAfter(chronostate, d);
+		} catch (FinMatchException e) {
+			e.printStackTrace();
 		}
 	}
+	
+	public Decision getBestDecision()
+	{
+		Decision out = decisions.get(0);
+		return out;
+	}
 
+	public Decision getEmergencyDecision()
+	{
+		// Il y a un problème; il faut renouveler également bestDecision
+		Decision out = decisionsSecours.get(0);
+		return out;
+	}
+
+	
 	@Override
 	public void updateConfig() {
 	}

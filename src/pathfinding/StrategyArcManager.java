@@ -195,4 +195,23 @@ public class StrategyArcManager implements Service, ArcManager {
 		}		
 	}
 
+	public void executeDecision(GameState<RobotChrono> state, Decision decision)
+	{
+		Script s;
+		try {
+			s = scriptmanager.getScript(decision.script_name);
+			state.robot.setPositionPathfinding(s.point_entree(decision.version));
+			s.agit(decision.version, state);
+			state.robot.setPositionPathfinding(s.point_sortie(decision.version));
+		} catch (UnknownScriptException e) { // Ne devraient jamais arriver
+			e.printStackTrace();
+		} catch (ScriptException e) {
+			e.printStackTrace();
+		} catch (FinMatchException e) {
+			e.printStackTrace();
+		} catch (ScriptHookException e) {
+			e.printStackTrace();
+		}
+	}
+	
 }

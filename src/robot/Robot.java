@@ -65,7 +65,7 @@ public abstract class Robot implements Service
     {
     	// pas besoin de copier symétrie car elle ne change pas en cours de match
     	rc.vitesse = vitesse;
-    	((Robot)rc).pointsObtenus = pointsObtenus;
+    	rc.pointsObtenus = pointsObtenus;
     	rc.date = getTempsDepuisDebutMatch();
     }
 
