@@ -127,7 +127,7 @@ public class GameState<R extends Robot> implements Service
 		RobotChrono robotchrono = (RobotChrono) robot;
 		if(robotchrono.isAtPathfindingNodes())
 		{
-			hash = gridspace.nbObstaclesMobiles(); // codé sur autant de bits qu'il le faut puisqu'il est dans les bits de poids forts
+			hash = gridspace.getHashObstaclesMobiles(); // codé sur autant de bits qu'il le faut puisqu'il est dans les bits de poids forts
 			hash = (hash << 1) | (robotchrono.areTapisPoses()?1:0); // information sur les tapis
 			hash = (hash << 6) | robotchrono.getPositionPathfinding().ordinal(); // codé sur 6 bits (ce qui laisse de la marge)
 			hash = (hash << (2*GameElementNames.values().length)) | gridspace.getHashTable(); // codé sur 2 bits par élément de jeux (2 bit par Tribool)
@@ -136,7 +136,7 @@ public class GameState<R extends Robot> implements Service
 		else
 		{
 			// Pour la position, on ne prend pas les bits de poids trop faibles dont le risque de collision est trop grand
-			hash = gridspace.nbObstaclesMobiles(); // codé sur autant de bits qu'il le faut puisqu'il est dans les bits de poids forts
+			hash = gridspace.getHashObstaclesMobiles(); // codé sur autant de bits qu'il le faut puisqu'il est dans les bits de poids forts
 			hash = (hash << 1) | (robotchrono.areTapisPoses()?1:0); // information sur les tapis
 			hash = (hash << 3) | ((robotchrono.getPosition().x >> 2)&7); // petit hash sur 3 bits
 			hash = (hash << 3) | ((robotchrono.getPosition().y >> 2)&7); // petit hash sur 3 bits

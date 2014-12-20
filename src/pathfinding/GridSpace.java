@@ -238,4 +238,9 @@ public class GridSpace implements Service {
 	{
 		return obstaclemanager.getHashTable();
 	}
+
+	public int getHashObstaclesMobiles()
+	{
+		return obstaclemanager.getHashObstaclesMobiles();
+	}
 }

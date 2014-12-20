@@ -1,5 +1,7 @@
 package tests;
 
+import obstacles.ObstacleManager;
+
 import org.junit.Before;
 import org.junit.After;
 
@@ -21,6 +23,7 @@ public abstract class JUnit_Test
 	protected Container container;
 	protected Config config;
 	protected Log log;
+	private ObstacleManager obstaclemanager;
 	
 	@Before
 	public void setUp() throws Exception
@@ -29,6 +32,9 @@ public abstract class JUnit_Test
 		config = (Config) container.getService(ServiceNames.CONFIG);
 		log = (Log) container.getService(ServiceNames.LOG);
 		config.setDateDebutMatch();
+        obstaclemanager = (ObstacleManager) container.getService(ServiceNames.OBSTACLE_MANAGER);
+        // afin d'assurer l'indépendance entre tests
+        obstaclemanager.clear_obstacles_mobiles();
 	}
 
 	@After

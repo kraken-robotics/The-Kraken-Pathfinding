@@ -23,14 +23,13 @@ public class JUnit_GameState extends JUnit_Test {
         super.setUp();
         gamestate = ((GameState<RobotReal>) container.getService(ServiceNames.REAL_GAME_STATE)).cloneGameState();
         gamestate.robot.setPosition(new Vec2(1100, 1000));
-        
     }
 
 	@Test
 	public void test_hash() throws Exception
 	{
 		long hash = gamestate.getHash();
-		Assert.assertEquals(gamestate.gridspace.nbObstaclesMobiles(), (hash >> (16+(2*GameElementNames.values().length))));
+		Assert.assertEquals(gamestate.gridspace.getHashObstaclesMobiles(), (hash >> (16+(2*GameElementNames.values().length))));
 		Assert.assertEquals(gamestate.robot.areTapisPoses()?1:0, (hash >> (15+(2*GameElementNames.values().length))) % (1 << 1));
 		Assert.assertEquals((gamestate.robot.getPosition().x >> 2) % (1 << 3), (hash >> (12+(2*GameElementNames.values().length))) % (1 << 3));
 		Assert.assertEquals((gamestate.robot.getPosition().y >> 2) % (1 << 3), (hash >> (9+(2*GameElementNames.values().length))) % (1 << 3));
@@ -39,7 +38,7 @@ public class JUnit_GameState extends JUnit_Test {
 
 		gamestate.robot.poserDeuxTapis();
 		hash = gamestate.getHash();
-		Assert.assertEquals(gamestate.gridspace.nbObstaclesMobiles(), (hash >> (16+(2*GameElementNames.values().length))));
+		Assert.assertEquals(gamestate.gridspace.getHashObstaclesMobiles(), (hash >> (16+(2*GameElementNames.values().length))));
 		Assert.assertEquals(gamestate.robot.areTapisPoses()?1:0, (hash >> (15+(2*GameElementNames.values().length))) % (1 << 1));
 		Assert.assertEquals((gamestate.robot.getPosition().x >> 2) % (1 << 3), (hash >> (12+(2*GameElementNames.values().length))) % (1 << 3));
 		Assert.assertEquals((gamestate.robot.getPosition().y >> 2) % (1 << 3), (hash >> (9+(2*GameElementNames.values().length))) % (1 << 3));

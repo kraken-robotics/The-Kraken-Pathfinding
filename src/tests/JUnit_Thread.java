@@ -33,6 +33,7 @@ public class JUnit_Thread extends JUnit_Test {
     	Config.matchDemarre = true;
     	// on laisse tourner un peu pour vérifier qu'il n'y a pas d'erreurs
     	Sleep.sleep(5000);
+    	container.stopAllThreads();
     }
 
 }

@@ -37,7 +37,7 @@ public class JUnit_StrategicAStar extends JUnit_Test
     {
     	config.setDateDebutMatch();
     	GameState<RobotChrono> chronostate = gamestate.cloneGameState();
-   		int nb_iter = 500000;
+   		int nb_iter = 5000;
 		long date_avant = System.currentTimeMillis();
     	for(int k = 0; k < nb_iter; k++)
     	{

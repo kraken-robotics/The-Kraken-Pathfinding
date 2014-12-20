@@ -1,5 +1,9 @@
 package tests;
 
+import hook.Hook;
+import hook.types.HookFactory;
+
+import java.util.ArrayList;
 import java.util.Random;
 
 import org.junit.Assert;
@@ -33,6 +37,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
 	private GameState<RobotChrono> state_chrono;
 	private GameState<RobotReal> state;
 	private MemoryManager memorymanager;
+	private HookFactory hookfactory;
 	
 	@SuppressWarnings("unchecked")
 	@Before
@@ -43,6 +48,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
 		state = (GameState<RobotReal>)container.getService(ServiceNames.REAL_GAME_STATE);
 		state_chrono = state.cloneGameState();
 		memorymanager = (MemoryManager) container.getService(ServiceNames.MEMORY_MANAGER);
+		hookfactory = (HookFactory) container.getService(ServiceNames.HOOK_FACTORY);
 	}
 
 	@Test(expected=PathfindingRobotInObstacleException.class)
@@ -110,7 +116,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
     public void test_benchmark_pathfinding() throws Exception
     {
 		Random randomgenerator = new Random();
-		int nb_iter = 500000;
+		int nb_iter = 50000;
 		long date_avant = System.currentTimeMillis();
 		for(int k = 0; k < nb_iter; k++)
 		{
@@ -137,5 +143,33 @@ public class JUnit_Pathfinding extends JUnit_Test {
 			Assert.assertTrue(memorymanager.isMemoryManagerEmpty());
 		}
     }
+
+	@Test
+	public void test_hook_chrono_suit_chemin() throws Exception
+	{
+		state_chrono = state.cloneGameState();
+		ArrayList<Hook> hooks_table = hookfactory.getHooksEntreScriptsReal(state_chrono);
+		state_chrono.robot.setPosition(PathfindingNodes.BAS.getCoordonnees().plusNewVector(new Vec2(10, 10)));
+    	ArrayList<PathfindingNodes> chemin = pathfinding.computePath(state_chrono, PathfindingNodes.COTE_MARCHE_DROITE, true);
+
+		ArrayList<Vec2> cheminVec2 = new ArrayList<Vec2>();
+		cheminVec2.add(PathfindingNodes.BAS.getCoordonnees().plusNewVector(new Vec2(10, 10)));
+		for(PathfindingNodes n: chemin)
+		{
+			log.debug(n, this);
+			cheminVec2.add(n.getCoordonnees());
+		}
+    	
+		Assert.assertEquals(PathfindingNodes.BAS.getCoordonnees().plusNewVector(new Vec2(10, 10)), state_chrono.robot.getPosition());
+		Assert.assertTrue(state_chrono.gridspace.isDone(GameElementNames.PLOT_6) == Tribool.FALSE);
+		state_chrono.robot.suit_chemin(chemin, hooks_table);
+		Assert.assertTrue(state_chrono.gridspace.isDone(GameElementNames.PLOT_6) == Tribool.TRUE);
+		Assert.assertEquals(PathfindingNodes.COTE_MARCHE_DROITE.getCoordonnees(), state_chrono.robot.getPosition());
+		
+    	// on vérifie qu'à présent qu'on a emprunté ce chemin, il n'y a plus d'élément de jeu dessus et donc qu'on peut demander un pathfinding sans exception
+    	state_chrono.robot.setPosition(PathfindingNodes.BAS.getCoordonnees());
+    	pathfinding.computePath(state_chrono, PathfindingNodes.COTE_MARCHE_DROITE, false);
+	}
+
 
 }

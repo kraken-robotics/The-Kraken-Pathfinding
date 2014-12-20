@@ -153,19 +153,29 @@ public class ObstacleManager implements Service
     public void clear_obstacles_mobiles()
     {
     	isThereHypotheticalEnemy = false;
-    	firstNotDead = listObstaclesMobiles.size();
     	listObstaclesMobiles.clear();
+    	firstNotDead = 0;
     }
 
     /**
-     * Utilisé pour les tests
+     * Utilisé pour le calcul de hash
      * @return le nombre d'obstacles mobiles détectés
      */
     public int nbObstaclesMobiles()
     {
-        return listObstaclesMobiles.size() - firstNotDead + 1 + (isThereHypotheticalEnemy?1:0);
+        return listObstaclesMobiles.size() - firstNotDead + (isThereHypotheticalEnemy?1:0);
     }
 
+    /**
+     * Utilisé pour le calcul de hash
+     * @return le nombre d'obstacles mobiles détectés
+     */
+    public int getHashObstaclesMobiles()
+    {
+        return firstNotDead*2 + (isThereHypotheticalEnemy?1:0);
+    }
+
+    
     public ObstacleManager clone(long date)
     {
     	ObstacleManager cloned_manager = new ObstacleManager(log, config, table.clone());

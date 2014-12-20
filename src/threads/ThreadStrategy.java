@@ -36,7 +36,13 @@ public class ThreadStrategy extends AbstractThread implements Service
 		this.log = log;
 		this.strategie = strategie;
 		this.realstate = realstate;
-	
+		try {
+			chronostate = realstate.cloneGameState();
+		} catch (FinMatchException e) {
+			// Impossible
+			e.printStackTrace();
+		}
+		
 		Thread.currentThread().setPriority(4); // TODO
 		updateConfig();
 	}
@@ -55,7 +61,7 @@ public class ThreadStrategy extends AbstractThread implements Service
 			Sleep.sleep(50);
 		}
 		
-		while(!finMatch)
+		while(!finMatch && !stopThreads)
 		{
 			try {
 				realstate.copy(chronostate);

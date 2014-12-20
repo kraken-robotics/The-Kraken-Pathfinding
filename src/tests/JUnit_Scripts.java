@@ -47,6 +47,7 @@ public class JUnit_Scripts extends JUnit_Test {
     	long hash_avant = state_chrono.getHash();
     	Script s = scriptmanager.getScript(ScriptNames.ScriptTapis);
     	Assert.assertTrue(s.meta_version(state_chrono).size() == 1);
+    	state_chrono.robot.setPositionPathfinding(s.point_entree(0));
     	s.agit(0, state_chrono);
     	Assert.assertTrue(s.meta_version(state_chrono).size() == 0);
     	Assert.assertNotEquals(hash_avant, state_chrono.getHash());
@@ -91,10 +92,12 @@ public class JUnit_Scripts extends JUnit_Test {
     	long hash_avant = state_chrono.gridspace.getHashTable();
     	Script s = scriptmanager.getScript(ScriptNames.ScriptClap);
     	Assert.assertTrue(s.meta_version(state_chrono).size() == 2);
+    	state_chrono.robot.setPositionPathfinding(s.point_entree(0));
     	s.agit(0, state_chrono);
     	Assert.assertNotEquals(hash_avant, state_chrono.gridspace.getHashTable());
     	long hash_apres = state_chrono.gridspace.getHashTable();
     	Assert.assertTrue(s.meta_version(state_chrono).size() == 1);
+    	state_chrono.robot.setPositionPathfinding(s.point_entree(1));
     	s.agit(1, state_chrono);
     	Assert.assertTrue(s.meta_version(state_chrono).size() == 0);
     	Assert.assertNotEquals(hash_apres, state_chrono.gridspace.getHashTable());

@@ -30,6 +30,7 @@ public class JUnit_ObstacleManager extends JUnit_Test {
         super.setUp();
         obstaclemanager = (ObstacleManager) container.getService(ServiceNames.OBSTACLE_MANAGER);
         table = (Table) container.getService(ServiceNames.TABLE);
+        obstaclemanager.clear_obstacles_mobiles();
     }
 
     @Test
