@@ -116,20 +116,32 @@ public class GameState<R extends Robot> implements Service
     	return indice_memory_manager;
     }
 
+    /**
+     * Disponible uniquement pour GameState<RobotChrono>
+     * @return
+     */
 	public long getHash()
 	{
 		// un long est codé sur 64 bits.
-		// Du coup, on a de la marge.
 		long hash = 0;
-		try {
+		RobotChrono robotchrono = (RobotChrono) robot;
+		if(robotchrono.isAtPathfindingNodes())
+		{
 			hash = gridspace.nbObstaclesMobiles(); // codé sur autant de bits qu'il le faut puisqu'il est dans les bits de poids forts
-			hash = (hash << 12) + robot.getPosition().x+1500; // codé sur 12 bits (0 à 3000)
-			hash = (hash << 11) + robot.getPosition().y; // codé sur 11 bits (0 à 2000)
-			hash = (hash << (2*GameElementNames.values().length)) + gridspace.getHashTable(); // codé sur 2 bits par élément de jeux (2 bit par Tribool)
-			hash = (hash << 9) + robot.getPointsObtenus(); // d'ici provient le &511 de StrategyArcManager (511 = 2^9 - 1)
-		} catch (FinMatchException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			hash = (hash << 1) | (robotchrono.areTapisPoses()?1:0); // information sur les tapis
+			hash = (hash << 6) | robotchrono.getPositionPathfinding().ordinal(); // codé sur 6 bits (ce qui laisse de la marge)
+			hash = (hash << (2*GameElementNames.values().length)) | gridspace.getHashTable(); // codé sur 2 bits par élément de jeux (2 bit par Tribool)
+			hash = (hash << 9) | robot.getPointsObtenus(); // d'ici provient le &511 de StrategyArcManager (511 = 2^9 - 1)
+		}
+		else
+		{
+			// Pour la position, on ne prend pas les bits de poids trop faibles dont le risque de collision est trop grand
+			hash = gridspace.nbObstaclesMobiles(); // codé sur autant de bits qu'il le faut puisqu'il est dans les bits de poids forts
+			hash = (hash << 1) | (robotchrono.areTapisPoses()?1:0); // information sur les tapis
+			hash = (hash << 3) | ((robotchrono.getPosition().x >> 2)&7); // petit hash sur 3 bits
+			hash = (hash << 3) | ((robotchrono.getPosition().y >> 2)&7); // petit hash sur 3 bits
+			hash = (hash << (2*GameElementNames.values().length)) | gridspace.getHashTable(); // codé sur 2 bits par élément de jeux (2 bit par Tribool)
+			hash = (hash << 9) | robot.getPointsObtenus(); // d'ici provient le &511 de StrategyArcManager (511 = 2^9 - 1)
 		}
 		return hash;
 	}

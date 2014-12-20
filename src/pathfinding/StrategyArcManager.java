@@ -119,6 +119,7 @@ public class StrategyArcManager implements Service, ArcManager {
 		state.robot.suit_chemin(d.chemin, hooks_table);
 		try {
 			s.agit(d.version, state);
+			state.robot.setPositionPathfinding(s.point_sortie(d.version));
 		} catch (ScriptHookException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
