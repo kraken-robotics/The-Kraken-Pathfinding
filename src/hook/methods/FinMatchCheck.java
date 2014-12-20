@@ -1,6 +1,7 @@
 package hook.methods;
 
 import exceptions.FinMatchException;
+import exceptions.FinMatchFuturException;
 import hook.Executable;
 
 /**
@@ -10,11 +11,21 @@ import hook.Executable;
  */
 
 public class FinMatchCheck implements Executable {
+	
+	private boolean chrono = false;
+	
+	public FinMatchCheck(boolean chrono)
+	{
+		 this.chrono = chrono;
+	}
 
 	@Override
 	public void execute() throws FinMatchException
 	{
-		throw new FinMatchException();
+		if(chrono)
+			throw new FinMatchException();
+		else
+			throw new FinMatchFuturException();
 	}
 
 }

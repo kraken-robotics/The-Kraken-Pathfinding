@@ -35,5 +35,7 @@ public class JUnit_Thread extends JUnit_Test {
     	Sleep.sleep(5000);
     	container.stopAllThreads();
     }
+    
+    // TODO: test thread de stratégie
 
 }

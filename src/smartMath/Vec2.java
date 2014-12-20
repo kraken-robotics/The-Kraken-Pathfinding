@@ -103,6 +103,7 @@ public class Vec2
 	{
 		return x == other.x && y == other.y;
 	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -112,9 +113,7 @@ public class Vec2
 		else if (!(obj instanceof Vec2))
 			return false;
 		Vec2 other = (Vec2) obj;
-		if (x != other.x)
-			return false;
-		else if (y != other.y)
+		if (x != other.x || (y != other.y))
 			return false;
 		return true;
 	}

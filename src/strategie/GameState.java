@@ -31,7 +31,6 @@ public class GameState<R extends Robot> implements Service
     
     private Log log;
     private Config config;
-    private long dateDebutRacine;
 
     /**
      * De manière publique, on ne peut créer qu'un GameState<RobotReal>, et pas de GameState<RobotChrono>
@@ -86,7 +85,6 @@ public class GameState<R extends Robot> implements Service
     	// la copie de la table est faite dans gridspace
         // mise à jour des obstacles et du cache incluse dans la copie
         gridspace.copy(other.gridspace, robot.getTempsDepuisDebutMatch());
-        other.dateDebutRacine = dateDebutRacine;
     }
 
     @Override
@@ -99,16 +97,6 @@ public class GameState<R extends Robot> implements Service
     public long getTempsDepuisDebut()
     {
     	return robot.getTempsDepuisDebutMatch();
-    }
-
-    public long getTempsDepuisRacine()
-    {
-    	return robot.getTempsDepuisDebutMatch() + Config.getDateDebutMatch() - dateDebutRacine;
-    }
-    
-    public void commenceRacine()
-    {
-    	dateDebutRacine = System.currentTimeMillis();
     }
     
     public int getIndiceMemoryManager()

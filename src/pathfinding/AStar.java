@@ -71,23 +71,24 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 	 * @param state
 	 * @return
 	 * @throws FinMatchException
+	 * @throws PathfindingException 
 	 */
 	
-	public synchronized ArrayList<A> computeStrategyEmergency(GameState<RobotChrono> state) throws FinMatchException
+	public synchronized ArrayList<A> computeStrategyEmergency(GameState<RobotChrono> state) throws FinMatchException, PathfindingException
 	{
 		if(!(arcmanager instanceof StrategyArcManager))
 		{
 			new Exception().printStackTrace();
 			return null;
 		}
-		int distance_ennemie = 500;
+		int distance_ennemie = 700; // il faut que cette distance soit au moins supérieure à la somme de notre rayon, du rayon de l'adversaire et d'une marge
 		double orientation_actuelle = state.robot.getOrientation();
 		Vec2 positionEnnemie = state.robot.getPosition().plusNewVector(new Vec2((int)(distance_ennemie*Math.cos(orientation_actuelle)), (int)(distance_ennemie*Math.sin(orientation_actuelle))));
 		state.gridspace.creer_obstacle(positionEnnemie);
 		return computeStrategy(state);
 	}
 
-	public synchronized ArrayList<A> computeStrategyAfter(GameState<RobotChrono> state, A decision) throws FinMatchException
+	public synchronized ArrayList<A> computeStrategyAfter(GameState<RobotChrono> state, A decision) throws FinMatchException, PathfindingException
 	{
 		if(!(arcmanager instanceof StrategyArcManager))
 		{
@@ -98,7 +99,7 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 		return computeStrategy(state);
 	}
 
-	private ArrayList<A> computeStrategy(GameState<?> state) throws FinMatchException
+	private ArrayList<A> computeStrategy(GameState<?> state) throws FinMatchException, PathfindingException
 	{
 		GameState<RobotChrono> depart = memorymanager.getNewGameState();
 		state.copy(depart);
@@ -106,14 +107,10 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 		// pour le calcul de trajectoire de secours		
 		((StrategyArcManager)arcmanager).reinitHashes();
 		ArrayList<A> cheminArc;
-		try {
-			cheminArc = process(depart, arcmanager, true);
-			return cheminArc;
-		} catch (PathfindingException e) {
-			// impossible car on a appelé process avec shouldReconstruct = true;
-			e.printStackTrace();
-		}
-		return null;
+		cheminArc = process(depart, arcmanager, true);
+		if(cheminArc.size() == 0)
+			throw pathfindingexception;
+		return cheminArc;
 	}
 	
 	@SuppressWarnings("unchecked")

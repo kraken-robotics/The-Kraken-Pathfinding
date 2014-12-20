@@ -23,14 +23,13 @@ public abstract class Obstacle
 	public abstract boolean isProcheObstacle(Vec2 point, int distance);
 	public abstract boolean isInObstacle(Vec2 point);
 	
+	/**
+	 * Utilisé pour l'affichage
+	 * @return
+	 */
 	public Vec2 getPosition()
 	{
 		return this.position;
-	}
-	
-	public boolean isDestructionNecessary(long date)
-	{
-		return false;
 	}
 	
 	public String toString()

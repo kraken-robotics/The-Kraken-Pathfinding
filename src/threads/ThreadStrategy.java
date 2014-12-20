@@ -6,6 +6,7 @@ import pathfinding.AStar;
 import pathfinding.StrategyArcManager;
 import container.Service;
 import exceptions.FinMatchException;
+import exceptions.PathfindingException;
 import robot.RobotChrono;
 import robot.RobotReal;
 import scripts.Decision;
@@ -68,6 +69,9 @@ public class ThreadStrategy extends AbstractThread implements Service
 				decisionsSecours = strategie.computeStrategyEmergency(chronostate);
 			} catch (FinMatchException e) {
 				break;
+			} catch (PathfindingException e) {
+				log.critical("Départ dans un obstacle de proximité!", this);
+				e.printStackTrace();
 			}
 		}
 	}
@@ -78,6 +82,9 @@ public class ThreadStrategy extends AbstractThread implements Service
 			realstate.copy(chronostate);
 			decisions = strategie.computeStrategyAfter(chronostate, d);
 		} catch (FinMatchException e) {
+			e.printStackTrace();
+		} catch (PathfindingException e) {
+			log.critical("Départ dans un obstacle de proximité!", this);
 			e.printStackTrace();
 		}
 	}

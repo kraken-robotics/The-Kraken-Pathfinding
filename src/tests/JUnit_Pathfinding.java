@@ -129,6 +129,18 @@ public class JUnit_Pathfinding extends JUnit_Test {
     }
 
 	@Test
+    public void test_pathfinding() throws Exception
+    {
+		Random randomgenerator = new Random();
+		PathfindingNodes i = PathfindingNodes.values()[randomgenerator.nextInt(PathfindingNodes.values().length)];
+		PathfindingNodes j = PathfindingNodes.values()[randomgenerator.nextInt(PathfindingNodes.values().length)];
+		state_chrono.robot.setPositionPathfinding(i);
+		ArrayList<PathfindingNodes> chemin = pathfinding.computePath(state_chrono, j, true);
+		for(PathfindingNodes n: chemin)
+			log.debug(n, this);
+    }
+
+	@Test
     public void test_memorymanager_vide() throws Exception
     {
 		Random randomgenerator = new Random();

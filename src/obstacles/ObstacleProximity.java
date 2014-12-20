@@ -24,7 +24,6 @@ public class ObstacleProximity extends ObstacleCircular
 		return super.toString()+", meurt à "+death_date+" ms";
 	}
 	
-	@Override
 	public boolean isDestructionNecessary(long date)
 	{
 		return death_date < date;

@@ -67,7 +67,7 @@ public enum PathfindingNodes implements Arc {
 
 	public void setCoordonnees(Vec2 coordonnees)
 	{
-		coordonnees = coordonnees.clone();
+		coordonnees.copy(this.coordonnees);
 	}
 
 	public Vec2 getCoordonnees()

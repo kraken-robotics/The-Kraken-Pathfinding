@@ -38,7 +38,7 @@ public class RobotChrono extends Robot
 	
 	@Override
 	public void setPosition(Vec2 position) {
-		this.position = position.clone();
+		position.copy(this.position);
 		isPositionPathfindingActive = false;
 		this.date += approximateSerialLatency;
 	}
@@ -133,7 +133,7 @@ public class RobotChrono extends Robot
 		tourner(orientation_finale);
 		checkHooks(position, point, hooks);
 		date += position.distance(point)*vitesse.invertedTranslationnalSpeed;
-		position = point.clone();
+		point.copy(position);
 		isPositionPathfindingActive = false;
 		date += approximateSerialLatency;
 		date += Speed.translationStopDuration;
@@ -152,22 +152,6 @@ public class RobotChrono extends Robot
 			date += Speed.translationStopDuration;			
 		}
 		setPositionPathfinding(n);
-	}
-
-	/**
-	 * Utilisé par les tests
-	 * @param other
-	 * @return
-	 */
-	// TODO à compléter au fur et à mesure
-	public boolean equals(RobotChrono other)
-	{
-		return 	position.equals(other.position)
-				&& orientation == other.orientation
-				&& positionPathfinding == other.positionPathfinding
-				&& isPositionPathfindingActive == other.isPositionPathfindingActive
-				&& date == other.date;
-
 	}
 
 	@Override
@@ -244,7 +228,7 @@ public class RobotChrono extends Robot
 
 	public void setPositionPathfinding(PathfindingNodes n)
 	{
-		position = n.getCoordonnees().clone();
+		n.getCoordonnees().copy(position);
 		positionPathfinding = n;
 		isPositionPathfindingActive = true;
 	}

@@ -6,7 +6,7 @@ package exceptions;
  *
  */
 
-public class UnknownScriptException  extends Exception
+public class UnknownScriptException  extends ContainerException
 {
 	private static final long serialVersionUID = -3039558414266587469L;
 

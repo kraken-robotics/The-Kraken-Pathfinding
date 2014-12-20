@@ -65,7 +65,7 @@ public class Table implements Service
 	 */
 	public void copy(Table ct)
 	{
-		if(hash != ct.hash)
+		if(!equals(ct))
 			for(int i = 0; i < 20; i++)
 				total[i].fastClone(ct.total[i]);
 		ct.hash = hash;

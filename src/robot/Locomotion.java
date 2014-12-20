@@ -204,7 +204,7 @@ public class Locomotion implements Service
 			angle = Math.PI-angle;
 		
 		// on souhaite rester ou l'on est : la position d'arrivée est le position courrante
-		aim = position.clone();
+		position.copy(aim);
 
 		// Tourne-t-on dans le sens trigonométrique?
 		// C'est important de savoir pour se dégager.
@@ -383,7 +383,7 @@ public class Locomotion implements Service
 		else
 			for(Vec2 point: path)
 			{
-				aim = point.clone();
+				point.copy(aim);
 				moveInDirectionExceptionHandler(hooksToConsider, false, false, false);
 			}
 	}
@@ -938,7 +938,7 @@ public class Locomotion implements Service
 	 */
 	public void setAim(Vec2 newAim)
 	{
-		aim = newAim.clone();
+		newAim.copy(aim);
 	}
 
 	/**
@@ -950,7 +950,7 @@ public class Locomotion implements Service
 	 */
 	public void setPosition(Vec2 position) throws FinMatchException
 	{
-		this.position = position.clone();
+		position.copy(this.position);
 		try
 		{
 			mLocomotionCardWrapper.setX(position.x);

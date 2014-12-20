@@ -31,7 +31,7 @@ import exceptions.strategie.ScriptException;
 
 public class StrategyArcManager implements Service, ArcManager {
 
-	private Log log;
+//	private Log log;
 	private ScriptManager scriptmanager;
 	private AStar<PathfindingArcManager, PathfindingNodes> astar;
 	private HookFactory hookfactory;
@@ -42,7 +42,7 @@ public class StrategyArcManager implements Service, ArcManager {
 	
 	public StrategyArcManager(Log log, Config config, ScriptManager scriptmanager, GameState<RobotReal> real_gamestate, HookFactory hookfactory, AStar<PathfindingArcManager, PathfindingNodes> astar)
 	{
-		this.log = log;
+//		this.log = log;
 		this.scriptmanager = scriptmanager;
 		this.hookfactory = hookfactory;
 		this.astar = astar;
@@ -61,32 +61,26 @@ public class StrategyArcManager implements Service, ArcManager {
 		{
 			if(s.canIDoIt())
 			{
-				try {
-					Script script = scriptmanager.getScript(s);
-					for(Integer v: script.meta_version(gamestate))
-					{
-						// On n'ajoute que les versions qui sont accessibles
+				Script script = scriptmanager.getScript(s);
+				for(Integer v: script.meta_version(gamestate))
+				{
+					// On n'ajoute que les versions qui sont accessibles
+					try {
+						ArrayList<PathfindingNodes> chemin = astar.computePath(gamestate, script.point_entree(v), true);
+						listeDecisions.add(new Decision(chemin, s, v, true));
 						try {
-							ArrayList<PathfindingNodes> chemin = astar.computePath(gamestate, script.point_entree(v), true);
-							listeDecisions.add(new Decision(chemin, s, v, true));
-							try {
-								// On ne rajoute la version où on ne shoot pas seulement si le chemin proposé est différent
-								ArrayList<PathfindingNodes> chemin2 = astar.computePath(gamestate, script.point_entree(v), false);
-								if(!chemin2.equals(chemin))
-									listeDecisions.add(new Decision(chemin2, s, v, true));
-							} catch (PathfindingException
-									| PathfindingRobotInObstacleException
-									| FinMatchException e) {
-							}
+							// On ne rajoute la version où on ne shoot pas seulement si le chemin proposé est différent
+							ArrayList<PathfindingNodes> chemin2 = astar.computePath(gamestate, script.point_entree(v), false);
+							if(!chemin2.equals(chemin))
+								listeDecisions.add(new Decision(chemin2, s, v, true));
 						} catch (PathfindingException
 								| PathfindingRobotInObstacleException
 								| FinMatchException e) {
 						}
+					} catch (PathfindingException
+							| PathfindingRobotInObstacleException
+							| FinMatchException e) {
 					}
-				} catch (UnknownScriptException e) {
-					log.warning("Script inconnu: "+s, this);
-					// Ne devrait jamais arriver
-					e.printStackTrace();
 				}
 			}
 		}
@@ -175,21 +169,16 @@ public class StrategyArcManager implements Service, ArcManager {
 		{
 			if(s.canIDoIt())
 			{
-				try {
-					Script script = scriptmanager.getScript(s);
-					for(Integer v: script.meta_version(gamestate))
-					{
-						gamestate.robot.setPositionPathfinding(script.point_entree(v));
-						try {
-							script.agit(v, gamestate);
-						} catch (FinMatchException | ScriptException | ScriptHookException e) {
-							e.printStackTrace();
-						}
-						script.setPointSortie(v, gamestate.robot.getPosition());
+				Script script = scriptmanager.getScript(s);
+				for(Integer v: script.meta_version(gamestate))
+				{
+					gamestate.robot.setPositionPathfinding(script.point_entree(v));
+					try {
+						script.agit(v, gamestate);
+					} catch (FinMatchException | ScriptException | ScriptHookException e) {
+						e.printStackTrace();
 					}
-				} catch (UnknownScriptException e) {
-					log.warning("Script inconnu: "+s, this);
-					e.printStackTrace();
+					script.setPointSortie(v, gamestate.robot.getPosition());
 				}
 			}
 		}		
@@ -199,12 +188,11 @@ public class StrategyArcManager implements Service, ArcManager {
 	{
 		Script s;
 		try {
+			// Normalement, quand executeDecision est appelé, on est déjà au point d'entrée
 			s = scriptmanager.getScript(decision.script_name);
 			state.robot.setPositionPathfinding(s.point_entree(decision.version));
 			s.agit(decision.version, state);
 			state.robot.setPositionPathfinding(s.point_sortie(decision.version));
-		} catch (UnknownScriptException e) { // Ne devraient jamais arriver
-			e.printStackTrace();
 		} catch (ScriptException e) {
 			e.printStackTrace();
 		} catch (FinMatchException e) {

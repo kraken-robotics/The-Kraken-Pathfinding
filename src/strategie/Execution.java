@@ -134,9 +134,6 @@ public class Execution implements Service {
 		} catch (ScriptHookException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (UnknownScriptException e) {
-			// Ne devrait jamais arriver
-			e.printStackTrace();
 		}
 	}
 

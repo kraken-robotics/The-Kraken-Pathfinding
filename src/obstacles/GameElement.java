@@ -40,14 +40,4 @@ public class GameElement extends ObstacleCircular
 		other.done = done;
 	}
 
-	/**
-	 * Normalement inutilisé, mais bon.
-	 * @param other
-	 */
-	public void clone(GameElement other)
-	{
-		other.position = position.clone();
-		other.done = done;
-	}
-
 }

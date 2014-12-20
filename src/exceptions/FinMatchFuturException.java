@@ -6,7 +6,7 @@ package exceptions;
  *
  */
 
-public class FinMatchFuturException extends Exception
+public class FinMatchFuturException extends FinMatchException
 {
 
 	private static final long serialVersionUID = -960091158805232282L;
