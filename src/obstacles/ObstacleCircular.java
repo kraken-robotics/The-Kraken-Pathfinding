@@ -20,22 +20,10 @@ public class ObstacleCircular extends Obstacle
 		super(log, position);
 		this.radius = rad;
 	}
-	
-	public ObstacleCircular clone()
-	{
-		return new ObstacleCircular(log, position.clone(), radius);
-	}
 
 	public int getRadius()
 	{
 		return radius;
-	}
-	
-	// Copie this dans oc, sans modifier this
-	public void clone(ObstacleCircular oc)
-	{
-		oc.position = position;
-		oc.radius = radius;
 	}
 
 	public String toString()

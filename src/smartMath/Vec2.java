@@ -33,13 +33,7 @@ public class Vec2
 		x = requestedX;
 		y = requestedY;
 	}
-	
-	public Vec2(Vec2 other)
-	{
-		x = other.x;
-		y = other.y;
-	}
-	
+
 	// Do not square a length, use squared length directly
 	// to increase performances
 	public int squaredLength()
@@ -109,31 +103,6 @@ public class Vec2
 	{
 		return x == other.x && y == other.y;
 	}
-	public Vec2 dotFloat(int a)
-	{
-		return new Vec2(x*a,y*a);
-	}
-	
-	public void set(Vec2 other)
-	{
-		x = other.x;
-		y = other.y;
-	}
-	
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + x;
-		result = prime * result + y;
-		return result;
-	}
-	
-	public Vec2 makeCopy()
-	{
-		return new Vec2(x, y);
-	}
-	
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -148,11 +117,6 @@ public class Vec2
 		else if (y != other.y)
 			return false;
 		return true;
-	}
-
-	public int manhattan_distance(Vec2 other)
-	{
-		return Math.abs(x - other.x) + Math.abs(y - other.y); 
 	}
 
 	/**

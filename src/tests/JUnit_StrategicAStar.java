@@ -1,5 +1,7 @@
 package tests;
 
+import java.util.ArrayList;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -38,6 +40,15 @@ public class JUnit_StrategicAStar extends JUnit_Test
     		//	log.debug(d, this);
     	}
 		log.debug("Durée moyenne en µs: "+1000*(System.currentTimeMillis()-date_avant)/nb_iter, this);
+    }
+
+    @Test
+    public void test_ennemi() throws Exception
+    {
+    	config.setDateDebutMatch();
+    	ArrayList<Decision> decisions = astar.computeStrategy(gamestate, true);
+    	for(Decision d: decisions)
+    		log.debug(d, this);
     }
 
 }

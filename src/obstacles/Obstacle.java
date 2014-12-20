@@ -20,8 +20,6 @@ public abstract class Obstacle
 		this.position = position;
 	}
 	
-	public abstract Obstacle clone();
-
 	public abstract boolean isProcheObstacle(Vec2 point, int distance);
 	public abstract boolean isInObstacle(Vec2 point);
 	

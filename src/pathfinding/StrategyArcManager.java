@@ -152,11 +152,6 @@ public class StrategyArcManager implements Service, ArcManager {
 		hashes.clear();
 	}
 	
-	public String toString()
-	{
-		return "Arbre des possibles";
-	}
-
 	@Override
 	public boolean isArrive(int hash) {
 		return false;

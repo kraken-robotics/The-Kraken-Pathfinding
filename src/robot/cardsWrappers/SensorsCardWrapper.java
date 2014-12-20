@@ -56,7 +56,7 @@ public class SensorsCardWrapper implements Service
 		try{
 
 			distances = new int[1];
-			distances_string = serie.communiquer("us", 1);
+			distances_string = serie.communiquer("us_av", 1);
 
 			distances[0] = Integer.parseInt(distances_string[0]);
     		

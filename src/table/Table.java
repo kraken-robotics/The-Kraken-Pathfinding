@@ -30,6 +30,8 @@ public class Table implements Service
 		
 		for(GameElementNames n: GameElementNames.values())
 			total[n.ordinal()] = new GameElement(log, n);
+		
+		updateConfig();
 	}
 	
 	/**

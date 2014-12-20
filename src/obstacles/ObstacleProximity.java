@@ -18,12 +18,6 @@ public class ObstacleProximity extends ObstacleCircular
 	}
 	
 	@Override
-	public ObstacleProximity clone()
-	{
-		return new ObstacleProximity(log, position.clone(), radius, death_date);
-	}
-	
-	@Override
 	public String toString()
 	{
 		return super.toString()+", meurt à "+death_date+" ms";

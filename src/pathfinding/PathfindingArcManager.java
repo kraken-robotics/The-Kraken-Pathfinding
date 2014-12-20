@@ -85,11 +85,6 @@ import exceptions.FinMatchException;
 	public void updateConfig() {
 	}
 
-	public String toString()
-	{
-		return "Recherche de chemin";
-	}
-	
 	public void chargePointArrivee(PathfindingNodes n)
 	{
 		arrivee = n;

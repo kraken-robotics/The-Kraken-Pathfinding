@@ -110,7 +110,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
     public void test_benchmark_pathfinding() throws Exception
     {
 		Random randomgenerator = new Random();
-		int nb_iter = 500000;
+		int nb_iter = 100000;
 		long date_avant = System.currentTimeMillis();
 		for(int k = 0; k < nb_iter; k++)
 		{

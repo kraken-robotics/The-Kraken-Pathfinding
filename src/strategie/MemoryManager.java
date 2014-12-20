@@ -49,6 +49,7 @@ public class MemoryManager implements Service {
 			e.printStackTrace();
 		}
 		log.debug("Instanciation finie", this);
+		updateConfig();
 	}
 	
 	public GameState<RobotChrono> getNewGameState() throws FinMatchException

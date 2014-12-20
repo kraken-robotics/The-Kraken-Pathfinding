@@ -35,12 +35,6 @@ public class ObstacleRectangular extends Obstacle
 		return sizeY;
 	}
 
-	// A priori non utilisé
-	public ObstacleRectangular clone()
-	{
-		return new ObstacleRectangular(log, position.clone(), sizeX, sizeY);
-	}
-	
 	public String toString()
 	{
 		return "ObstacleRectangulaire";

@@ -55,6 +55,7 @@ public class GameState<R extends Robot> implements Service
         this.gridspace = gridspace;
         this.robot = robot;
         this.hookfactory = hookfactory;        
+        updateConfig();
     }
     
 	public GameState<RobotChrono> cloneGameState() throws FinMatchException
