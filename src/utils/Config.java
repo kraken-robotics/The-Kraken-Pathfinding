@@ -9,6 +9,7 @@ import java.util.Enumeration;
 import java.util.Properties;
 
 import enums.ConfigInfo;
+import enums.RobotColor;
 
 
 /**
@@ -66,12 +67,42 @@ public class Config implements Service
 	}
 	
 	/**
+	 * Récupère un entier de la config
+	 * @param nom
+	 * @return
+	 */
+	public int getInt(ConfigInfo nom)
+	{
+		return Integer.parseInt(getString(nom));
+	}
+	
+	/**
+	 * Récupère un booléen de la config
+	 * @param nom
+	 * @return
+	 */
+	public boolean getBoolean(ConfigInfo nom)
+	{
+		return Boolean.parseBoolean(getString(nom));
+	}
+	
+	/**
+	 * Récupère un double de la config
+	 * @param nom
+	 * @return
+	 */	
+	public double getDouble(ConfigInfo nom)
+	{
+		return Double.parseDouble(getString(nom));
+	}
+	
+	/**
 	 * Méthode de récupération des paramètres de configuration
 	 * @param nom
 	 * @return
 	 * @throws ConfigException
 	 */
-	public String get(ConfigInfo nom)
+	public String getString(ConfigInfo nom)
 	{
 		String out = null;
 		out = config.getProperty(nom.toString());
@@ -128,6 +159,15 @@ public class Config implements Service
 		if(dateDebutMatch == 0)
 			return System.currentTimeMillis();
 		return dateDebutMatch;
+	}
+
+	/**
+	 * Récupère la couleur du robot
+	 * @return
+	 */
+	public RobotColor getColor()
+	{
+		return RobotColor.parse(getString(ConfigInfo.COULEUR));
 	}
 	
 }

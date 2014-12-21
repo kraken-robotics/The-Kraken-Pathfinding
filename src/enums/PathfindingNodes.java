@@ -18,9 +18,9 @@ public enum PathfindingNodes implements Arc {
 	HAUT_GAUCHE(new Vec2(-1000, 1600)),
 	BAS_GAUCHE(new Vec2(-800, 450)),
 	COTE_MARCHE_GAUCHE(new Vec2(-830, 1600)),
-	NODE_TAPIS(new Vec2(250, 1100)),
-	CLAP_GAUCHE(new Vec2(-1050, 300)), // les claps ne sont pas symétriques, c'est normal
-	CLAP_DROIT(new Vec2(1150, 300)),
+	NODE_TAPIS(new Vec2(250, 1100)), // TODO
+	CLAP_GAUCHE(new Vec2(-1050, 300)), // TODO . les claps ne sont pas symétriques, c'est normal
+	CLAP_DROIT(new Vec2(1150, 300)), // TODO
 	BAS(new Vec2(0, 500)),
 
 	POINT_DEPART(new Vec2(1300, 1000)), // TODO: mesurer
@@ -29,6 +29,9 @@ public enum PathfindingNodes implements Arc {
 	SORTIE_CLAP_GAUCHE(new Vec2(-750,500)),
 	SORTIE_CLAP_DROIT(new Vec2(350,500)),
 	SORTIE_TAPIS(new Vec2(250,900)),
+	
+	SECOURS_0(new Vec2(800, 600)),
+
 	
 	SECOURS_1(new Vec2(800, 1300)),
 	SECOURS_2(new Vec2(-800, 1300)),

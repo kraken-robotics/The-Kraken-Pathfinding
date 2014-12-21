@@ -7,8 +7,15 @@ package enums;
  */
 
 public enum RobotColor {
-	GREEN,
-	YELLOW;
+	GREEN(false),
+	YELLOW(true);
+	
+	private boolean symmetry;
+	
+	private RobotColor(boolean symmetry)
+	{
+		this.symmetry = symmetry;
+	}
 	
 	public static RobotColor parse(String chaine)
 	{
@@ -16,6 +23,10 @@ public enum RobotColor {
 				|| chaine == "green" || chaine == "Green" || chaine == "GREEN")
 			return GREEN;
 		return YELLOW;
+	}
+
+	public boolean isSymmetry() {
+		return symmetry;
 	}
 	
 }

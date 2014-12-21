@@ -17,7 +17,7 @@ public class JUnit_Config extends JUnit_Test {
 	public void test_get() throws Exception
 	{
 		log.debug("JUnit_ReadIniTest.test_get()", this);
-		Assert.assertTrue(config.get(ConfigInfo.TEST1).equals("test2"));
+		Assert.assertTrue(config.getString(ConfigInfo.TEST1).equals("test2"));
 	}
 
 	@Test
@@ -25,7 +25,7 @@ public class JUnit_Config extends JUnit_Test {
 	{
 		log.debug("JUnit_ReadIniTest.test_set1()", this);
 		config.set(ConfigInfo.TEST1, "test3");
-		Assert.assertTrue(config.get(ConfigInfo.TEST1).equals("test3"));
+		Assert.assertTrue(config.getString(ConfigInfo.TEST1).equals("test3"));
 	}
 	@Test
 
@@ -33,7 +33,7 @@ public class JUnit_Config extends JUnit_Test {
 	{
 		log.debug("JUnit_ReadIniTest.test_set2()", this);
 		config.set(ConfigInfo.TEST1, 3);
-		Assert.assertTrue(config.get(ConfigInfo.TEST1).equals("3"));
+		Assert.assertTrue(config.getString(ConfigInfo.TEST1).equals("3"));
 	}
 
 }

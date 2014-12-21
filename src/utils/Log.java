@@ -183,14 +183,14 @@ public class Log implements Service
 	public void updateConfig()
 	{
 		try {
-			affiche_debug = Boolean.parseBoolean(this.config.get(ConfigInfo.AFFICHE_DEBUG));
+			affiche_debug = config.getBoolean(ConfigInfo.AFFICHE_DEBUG);
 		}
 		catch(Exception e)
 		{
 			critical(e, this);
 		}
 		try {
-			sauvegarde_fichier = Boolean.parseBoolean(this.config.get(ConfigInfo.SAUVEGARDE_FICHIER));
+			sauvegarde_fichier = config.getBoolean(ConfigInfo.SAUVEGARDE_FICHIER);
 		}
 		catch(Exception e)
 		{

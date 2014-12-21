@@ -6,10 +6,8 @@ import hook.Hook;
 import smartMath.Vec2;
 import container.Service;
 import enums.ActuatorOrder;
-import enums.ConfigInfo;
 import enums.HauteurBrasClap;
 import enums.PathfindingNodes;
-import enums.RobotColor;
 import enums.Side;
 import enums.Speed;
 import exceptions.FinMatchException;
@@ -88,7 +86,7 @@ public abstract class Robot implements Service
 
 	public void updateConfig()
 	{
-		symetrie = (RobotColor.parse(config.get(ConfigInfo.COULEUR)) == RobotColor.YELLOW);
+		symetrie = config.getColor().isSymmetry();
 	}
 	
 	public Speed get_vitesse_() {

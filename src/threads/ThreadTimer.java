@@ -129,7 +129,7 @@ public class ThreadTimer extends AbstractThread implements Service
 	{
 		// facteur 1000 car temps_match est en secondes et duree_match en ms
 		try {
-			dureeMatch = 1000*Long.parseLong(config.get(ConfigInfo.DUREE_MATCH_EN_S));
+			dureeMatch = 1000*config.getInt(ConfigInfo.DUREE_MATCH_EN_S);
 		}
 		catch(Exception e)
 		{

@@ -37,7 +37,7 @@ public class ObstacleManager implements Service
   
     private int firstNotDead = 0;
 
-    private int dilatation_obstacle = 30;
+    private int dilatation_obstacle = 300;
     private int rayon_robot_adverse = 200;
     private int distanceApproximation = 50;
     private int dureeAvantPeremption = 0;
@@ -47,7 +47,7 @@ public class ObstacleManager implements Service
     {
         listObstaclesFixes = new ArrayList<Obstacle>();
 
-        listObstaclesFixes.add(new ObstacleRectangular(log, new Vec2(0,100),800,200)); // plaque rouge        
+        listObstaclesFixes.add(new ObstacleRectangular(log, new Vec2(0,100),800,200)); // plaque rouge
         listObstaclesFixes.add(new ObstacleRectangular(log, new Vec2(0,2000-580/2),1066,580)); // escalier
         listObstaclesFixes.add(new ObstacleRectangular(log, new Vec2(-1500+400/2,1200),400,22)); // bandes de bois zone de départ
         listObstaclesFixes.add(new ObstacleRectangular(log, new Vec2(1500-400/2,1200),400,22));
@@ -85,6 +85,7 @@ public class ObstacleManager implements Service
     	isThereHypotheticalEnemy = true;
     	hypotheticalEnemy.setPosition(position);
     	hypotheticalEnemy.setDeathDate(date_actuelle+dureeAvantPeremption);
+        check_game_element(position);
     }
     
     /**
@@ -172,7 +173,7 @@ public class ObstacleManager implements Service
      */
     public int getHashObstaclesMobiles()
     {
-        return firstNotDead*2 + (isThereHypotheticalEnemy?1:0);
+        return (firstNotDead << 1) | (isThereHypotheticalEnemy?1:0);
     }
 
     
@@ -192,11 +193,13 @@ public class ObstacleManager implements Service
 		supprimerObstaclesPerimes(date);
     	table.copy(other.table);
     	other.isThereHypotheticalEnemy = isThereHypotheticalEnemy;
+    	other.firstNotDead = firstNotDead;
     }
  
     /**
      * Cette méthode vérifie les obstacles fixes uniquement.
-     * Elle est *bien* plus lente que obstacle_proximite_dans_segment et ne doit être utilisé qu'une seule fois
+     * Elle est *bien* plus lente que obstacle_proximite_dans_segment et doit être évitée autant que possible
+     * Elle est utilisée dans le lissage.
      * @param A
      * @param B
      * @return
@@ -364,10 +367,11 @@ public class ObstacleManager implements Service
 
 	@Override
 	public void updateConfig() {
-		rayon_robot_adverse = Integer.parseInt(config.get(ConfigInfo.RAYON_ROBOT_ADVERSE));
-		dureeAvantPeremption = Integer.parseInt(config.get(ConfigInfo.DUREE_PEREMPTION_OBSTACLES));		
-		dilatation_obstacle = Integer.parseInt(config.get(ConfigInfo.MARGE))+Integer.parseInt(config.get(ConfigInfo.RAYON_ROBOT));
-		distanceApproximation = Integer.parseInt(config.get(ConfigInfo.DISTANCE_MAX_ENTRE_MESURE_ET_OBJET));
+		rayon_robot_adverse = config.getInt(ConfigInfo.RAYON_ROBOT_ADVERSE);
+		dureeAvantPeremption = config.getInt(ConfigInfo.DUREE_PEREMPTION_OBSTACLES);
+		dilatation_obstacle = config.getInt(ConfigInfo.MARGE)
+				+ config.getInt(ConfigInfo.RAYON_ROBOT);
+		distanceApproximation = config.getInt(ConfigInfo.DISTANCE_MAX_ENTRE_MESURE_ET_OBJET);
 	}
 	
 	/**

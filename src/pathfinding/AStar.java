@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 
 import container.Service;
+import enums.ConfigInfo;
 import enums.PathfindingNodes;
 import exceptions.FinMatchException;
 import exceptions.GridSpaceException;
@@ -50,8 +51,11 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 	private PathfindingException pathfindingexception;
 	
 //	private Log log;
+	private Config config;
 	private AM arcmanager;
 	private MemoryManager memorymanager;
+	
+	private int distanceEnnemiUrgence = 700;
 	
 	/**
 	 * Constructeur du AStar de pathfinding ou de stratégie, selon AM
@@ -59,6 +63,7 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 	public AStar(Log log, Config config, AM arcmanager, MemoryManager memorymanager)
 	{
 //		this.log = log;
+		this.config = config;
 		this.arcmanager = arcmanager;
 		this.memorymanager = memorymanager;
 		updateConfig();
@@ -79,10 +84,11 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 	{
 		if(!(arcmanager instanceof StrategyArcManager))
 		{
+			// Ne devrait jamais arriver.
 			new Exception().printStackTrace();
 			return null;
 		}
-		int distance_ennemie = 700; // il faut que cette distance soit au moins supérieure à la somme de notre rayon, du rayon de l'adversaire et d'une marge
+		int distance_ennemie = distanceEnnemiUrgence; // il faut que cette distance soit au moins supérieure à la somme de notre rayon, du rayon de l'adversaire et d'une marge
 		double orientation_actuelle = state.robot.getOrientation();
 		Vec2 positionEnnemie = state.robot.getPosition().plusNewVector(new Vec2((int)(distance_ennemie*Math.cos(orientation_actuelle)), (int)(distance_ennemie*Math.sin(orientation_actuelle))));
 		state.gridspace.creer_obstacle(positionEnnemie);
@@ -160,7 +166,9 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 	}
 	
 	@Override
-	public void updateConfig() {
+	public void updateConfig()
+	{
+		distanceEnnemiUrgence = config.getInt(ConfigInfo.DISTANCE_ENNEMI_URGENCE);
 	}
 	
 	// Si le point de départ est dans un obstacle fixe, le lissage ne changera rien.

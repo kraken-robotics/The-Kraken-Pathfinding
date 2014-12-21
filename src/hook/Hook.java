@@ -47,7 +47,7 @@ abstract public class Hook
 		// Cette optimisation est nécessaire car une lecture
 		// en config est très lente et on crée beaucoup de hook.
 		if(rayon_robot == null)
-			rayon_robot = Integer.parseInt(config.get(ConfigInfo.RAYON_ROBOT));
+			rayon_robot = config.getInt(ConfigInfo.RAYON_ROBOT);
 	}
 	
 	/**

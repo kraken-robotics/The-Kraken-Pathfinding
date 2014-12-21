@@ -60,8 +60,8 @@ public class HookFactory implements Service
 	public void updateConfig()
 	{
 		// demande avec quelle tolérance sur la précision on déclenche les hooks
-		positionTolerancy = Integer.parseInt(config.get(ConfigInfo.HOOKS_TOLERANCE_MM));		
-		dureeMatch = Integer.parseInt(config.get(ConfigInfo.DUREE_MATCH_EN_S)) * 1000;
+		positionTolerancy = config.getInt(ConfigInfo.HOOKS_TOLERANCE_MM);		
+		dureeMatch = config.getInt(ConfigInfo.DUREE_MATCH_EN_S) * 1000;
 	}
 	
 	/* ======================================================================

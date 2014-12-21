@@ -118,13 +118,13 @@ public class ThreadSensor extends AbstractThread implements Service
 	
 	public void updateConfig()
 	{
-			tempo = Double.parseDouble(config.get(ConfigInfo.CAPTEURS_TEMPORISATION_OBSTACLES));
-			horizon_capteurs = Integer.parseInt(config.get(ConfigInfo.HORIZON_CAPTEURS));
-			rayon_robot_adverse = Integer.parseInt(config.get(ConfigInfo.RAYON_ROBOT_ADVERSE));
-			largeur_robot = Integer.parseInt(config.get(ConfigInfo.LARGEUR_ROBOT));
-			table_x = Integer.parseInt(config.get(ConfigInfo.TABLE_X));
-			table_y = Integer.parseInt(config.get(ConfigInfo.TABLE_Y));
-			capteurs_frequence = Integer.parseInt(config.get(ConfigInfo.CAPTEURS_FREQUENCE));
+			tempo = config.getDouble(ConfigInfo.CAPTEURS_TEMPORISATION_OBSTACLES);
+			horizon_capteurs = config.getInt(ConfigInfo.HORIZON_CAPTEURS);
+			rayon_robot_adverse = config.getInt(ConfigInfo.RAYON_ROBOT_ADVERSE);
+			largeur_robot = config.getInt(ConfigInfo.LARGEUR_ROBOT);
+			table_x = config.getInt(ConfigInfo.TABLE_X);
+			table_y = config.getInt(ConfigInfo.TABLE_Y);
+			capteurs_frequence = config.getInt(ConfigInfo.CAPTEURS_FREQUENCE);
 	}
 
 }

@@ -33,7 +33,7 @@ public class SensorsCardWrapper implements Service
 	
 	public void updateConfig()
 	{
-		capteurs_on = Boolean.parseBoolean(config.get(ConfigInfo.CAPTEURS_ON));
+		capteurs_on = config.getBoolean(ConfigInfo.CAPTEURS_ON);
 	}
 
 	/**
