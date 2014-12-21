@@ -4,13 +4,14 @@ import java.util.ArrayList;
 
 import hook.Callback;
 import hook.Hook;
+import hook.methods.FinMatchCheck;
 import hook.methods.GameElementDone;
 import container.Service;
 import enums.ConfigInfo;
 import enums.GameElementNames;
-import enums.GameElementType;
 import enums.Tribool;
 import robot.RobotChrono;
+import robot.RobotReal;
 import smartMath.Vec2;
 import strategie.GameState;
 import utils.Log;
@@ -32,9 +33,11 @@ public class HookFactory implements Service
 	
 	// la valeur de 20 est en mm, elle est remplcée par la valeur spécifié dans le fichier de config s'il y en a une
 	private int positionTolerancy = 20;	
+	private int dureeMatch = 90000;
 	
 	private ArrayList<Hook> hooks_table_chrono = null;
-	
+	private ArrayList<Hook> hooks_fin_match_chrono = null;
+		
 	/**
 	 *  appellé uniquement par Container.
 	 *  Initialise la factory
@@ -57,7 +60,8 @@ public class HookFactory implements Service
 	public void updateConfig()
 	{
 		// demande avec quelle tolérance sur la précision on déclenche les hooks
-		positionTolerancy = Integer.parseInt(this.config.get(ConfigInfo.HOOKS_TOLERANCE_MM));		
+		positionTolerancy = Integer.parseInt(config.get(ConfigInfo.HOOKS_TOLERANCE_MM));		
+		dureeMatch = Integer.parseInt(config.get(ConfigInfo.DUREE_MATCH_EN_S)) * 1000;
 	}
 	
 	/* ======================================================================
@@ -203,45 +207,104 @@ public class HookFactory implements Service
     {
         return new HookYisGreater(config, log, state, yValue);
     }
+    
+    /**
+     * Fournit le hook de fin de match à un chrono gamestate.
+     * @param state
+     * @param date_limite
+     * @return
+     */
+    public ArrayList<Hook> getHooksFinMatchChrono(GameState<RobotChrono> state, int date_limite)
+    {
+    	if(hooks_fin_match_chrono == null)
+    		hooks_fin_match_chrono = getHooksFinMatch(state, true);
+    	
+    	/**
+    	 * Mise à jour de la date limite
+    	 * Pas besoin de mettre à jour les références, car la méthode
+    	 * FinMatchCheck n'en utilise pas.
+    	 */
+		for(Hook hook: hooks_fin_match_chrono)
+			if(hook instanceof HookDate)
+				((HookDate)hook).updateDate(date_limite);
+		
+    	return hooks_fin_match_chrono;
+    }
 
+    /**
+     * Fournit le hook de fin de match au gamestate
+     * @param state
+     * @return
+     */
+    public ArrayList<Hook> getHooksFinMatchReal(GameState<RobotReal> state)
+    {
+    	return getHooksFinMatch(state, false);
+    }
+
+    /**
+     * Création du hook qui vérifie la fin du match
+     * Sa création est séparée des hooks d'éléments de jeux car ces derniers sont utilisés uniquement entre les scripts,
+     * alors que le hook de fin de match est utilisé tout le temps.
+     * @param state
+     * @param isChrono
+     * @return
+     */
+    private ArrayList<Hook> getHooksFinMatch(GameState<?> state, boolean isChrono)
+    {
+    	ArrayList<Hook> hooks_fin_match = new ArrayList<Hook>();
+        FinMatchCheck actionFinMatch;
+        Hook hook;
+
+    	hook = newHookDate(dureeMatch, state);
+    	actionFinMatch = new FinMatchCheck(isChrono);
+    	hook.ajouter_callback(new Callback(actionFinMatch));
+    	hooks_fin_match.add(hook);
+
+    	return hooks_fin_match;
+    }
+
+    /**
+     * Donne les hooks des éléments de jeux à un chrono gamestate
+     * @param state
+     * @return
+     */
     public ArrayList<Hook> getHooksEntreScriptsChrono(GameState<RobotChrono> state)
     {
     	if(hooks_table_chrono == null)
     		hooks_table_chrono = getHooksEntreScriptsReal(state);
-    	else
-    		// on met à jour dans les hooks les références (gridspace, robot, ...)
-    		// C'est bien plus rapide que de créer de nouveaux hooks
-    		for(Hook hook: hooks_table_chrono)
-    			hook.updateGameState(state);
+
+    	// on met à jour dans les hooks les références (gridspace, robot, ...)
+		// C'est bien plus rapide que de créer de nouveaux hooks
+		for(Hook hook: hooks_table_chrono)
+			hook.updateGameState(state);
 
     	return hooks_table_chrono;
     }
     
+    /**
+     * Donne les hooks des éléments de jeux à un real gamestate
+     * @param state
+     * @return
+     */
     public ArrayList<Hook> getHooksEntreScriptsReal(GameState<?> state)
     {
     	ArrayList<Hook> hooks_entre_scripts = new ArrayList<Hook>();
 		Hook hook;
 		GameElementDone action;
+	
 		for(GameElementNames n: GameElementNames.values())
 		{
-			// L'ennemi peut prendre les distributeurs
-			if(/*state.gridspace.isDone(n) == Tribool.FALSE && */n.getType() == GameElementType.DISTRIBUTEUR)
+			// Ce que l'ennemi peut prendre
+			if(n.getType().isInCommon())
 			{
-				hook = newHookDate(20000, state);
+				hook = newHookDate(20000, state); // TODO: mettre dans la config
 				action = new GameElementDone(state.gridspace, n, Tribool.MAYBE);
 				hook.ajouter_callback(new Callback(action));
 				hooks_entre_scripts.add(hook);
 			}
-			else if(/*state.gridspace.isDone(n) == Tribool.FALSE && */n.getType() == GameElementType.VERRE)
-			{
-				hook = newHookDate(20000, state);
-				action = new GameElementDone(state.gridspace, n, Tribool.MAYBE);
-				hook.ajouter_callback(new Callback(action));
-				hooks_entre_scripts.add(hook);
-			}
-			// Les éléments de jeu avec un rayon négatif sont ceux qu'on ne peut pas percuter.
-			// Exemple: clap, distributeur. 
-			if(/*state.gridspace.isDone(n) != Tribool.TRUE &&*/ n.getRadius() > 0)
+
+			// Ce qu'on peut shooter
+			if(n.getType().canBeShot()) // on ne met un hook de position que sur ceux qui ont susceptible de disparaître quand on passe dessus
 			{
 				hook = newHookPosition(n.getPosition(), n.getRadius(), state);
 				action = new GameElementDone(state.gridspace, n, Tribool.TRUE);

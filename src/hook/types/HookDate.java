@@ -36,4 +36,13 @@ public class HookDate extends Hook {
 		return date_appel > this.date_hook;
 	}
 
+	/**
+	 * Mise à jour des callback de date 
+	 * @param date_limite
+	 */
+	public void updateDate(int date_limite)
+	{
+		date_hook = date_limite;
+	}
+
 }

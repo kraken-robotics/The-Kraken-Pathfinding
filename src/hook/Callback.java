@@ -18,7 +18,7 @@ public class Callback
 	private boolean isUnique;
 	
 	// le code à éxecuter lors de l'évènement
-	public Executable method;
+	private Executable method;
 	
 	/**
 	 * Constructeur d'un callback avec 2 paramètres: la méthode et si elle doit être exécutée une seule fois
@@ -64,5 +64,4 @@ public class Callback
 	{
 	    return isUnique && isDone;
 	}
-	
 }
