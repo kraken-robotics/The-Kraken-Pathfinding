@@ -40,6 +40,8 @@ public class StrategyArcManager implements Service, ArcManager {
 	private int iterator;
 	private Vector<Long> hashes = new Vector<Long>();
 	
+	private int dateLimite = 90000;
+	
 	public StrategyArcManager(Log log, Config config, ScriptManager scriptmanager, GameState<RobotReal> real_gamestate, HookFactory hookfactory, AStar<PathfindingArcManager, PathfindingNodes> astar)
 	{
 //		this.log = log;
@@ -109,7 +111,7 @@ public class StrategyArcManager implements Service, ArcManager {
 		Decision d = (Decision)arc;
 		Script s = scriptmanager.getScript(d.script_name);
 		int old_temps = (int)state.robot.getTempsDepuisDebutMatch();
-		ArrayList<Hook> hooks_table = hookfactory.getHooksEntreScriptsChrono(state);
+		ArrayList<Hook> hooks_table = hookfactory.getHooksEntreScriptsChrono(state, dateLimite);
 		state.robot.suit_chemin(d.chemin, hooks_table);
 		try {
 			s.agit(d.version, state);
@@ -200,6 +202,11 @@ public class StrategyArcManager implements Service, ArcManager {
 		} catch (ScriptHookException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public void setDateLimite(int dateLimite)
+	{
+		this.dateLimite = dateLimite;
 	}
 	
 }

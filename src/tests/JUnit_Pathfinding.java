@@ -160,7 +160,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
 	public void test_hook_chrono_suit_chemin() throws Exception
 	{
 		state_chrono = state.cloneGameState();
-		ArrayList<Hook> hooks_table = hookfactory.getHooksEntreScriptsReal(state_chrono);
+		ArrayList<Hook> hooks_table = hookfactory.getHooksEntreScriptsChrono(state_chrono, 90000);
 		state_chrono.robot.setPosition(PathfindingNodes.BAS.getCoordonnees().plusNewVector(new Vec2(10, 10)));
     	ArrayList<PathfindingNodes> chemin = pathfinding.computePath(state_chrono, PathfindingNodes.COTE_MARCHE_DROITE, true);
 

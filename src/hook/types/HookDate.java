@@ -16,7 +16,7 @@ import hook.Hook;
 
 public class HookDate extends Hook {
 
-	private long date_hook;
+	protected long date_hook;
 	
 	public HookDate(Config config, Log log, GameState<?> state, long date)
 	{
@@ -34,15 +34,6 @@ public class HookDate extends Hook {
 	public boolean simulated_evaluate(Vec2 pointA, Vec2 pointB, long date_appel) {
 //		log.debug("Hook date: appel="+date_appel+", date_hook="+this.date_hook, this);
 		return date_appel > this.date_hook;
-	}
-
-	/**
-	 * Mise à jour des callback de date 
-	 * @param date_limite
-	 */
-	public void updateDate(int date_limite)
-	{
-		date_hook = date_limite;
 	}
 
 }

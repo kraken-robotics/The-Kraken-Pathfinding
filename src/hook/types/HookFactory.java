@@ -36,7 +36,7 @@ public class HookFactory implements Service
 	private int dureeMatch = 90000;
 	
 	private ArrayList<Hook> hooks_table_chrono = null;
-	private ArrayList<Hook> hooks_fin_match_chrono = null;
+	private Hook hook_fin_match_chrono = null;
 		
 	/**
 	 *  appellé uniquement par Container.
@@ -106,6 +106,11 @@ public class HookFactory implements Service
 	public Hook newHookDate(long date, GameState<?> state)
 	{
 		return new HookDate(config, log, state, date);
+	}
+
+	public Hook newHookDateFinMatch(long date, GameState<?> state)
+	{
+		return new HookDateFinMatch(config, log, state, date);
 	}
 
 	
@@ -214,21 +219,19 @@ public class HookFactory implements Service
      * @param date_limite
      * @return
      */
-    public ArrayList<Hook> getHooksFinMatchChrono(GameState<RobotChrono> state, int date_limite)
+    public Hook getHooksFinMatchChrono(GameState<RobotChrono> state, int date_limite)
     {
-    	if(hooks_fin_match_chrono == null)
-    		hooks_fin_match_chrono = getHooksFinMatch(state, true);
+    	if(hook_fin_match_chrono == null)
+    		hook_fin_match_chrono = getHooksFinMatch(state, true);
     	
     	/**
     	 * Mise à jour de la date limite
     	 * Pas besoin de mettre à jour les références, car la méthode
     	 * FinMatchCheck n'en utilise pas.
     	 */
-		for(Hook hook: hooks_fin_match_chrono)
-			if(hook instanceof HookDate)
-				((HookDate)hook).updateDate(date_limite);
+		((HookDateFinMatch)hook_fin_match_chrono).updateDate(date_limite);
 		
-    	return hooks_fin_match_chrono;
+    	return hook_fin_match_chrono;
     }
 
     /**
@@ -236,31 +239,26 @@ public class HookFactory implements Service
      * @param state
      * @return
      */
-    public ArrayList<Hook> getHooksFinMatchReal(GameState<RobotReal> state)
+    public Hook getHooksFinMatchReal(GameState<RobotReal> state)
     {
     	return getHooksFinMatch(state, false);
     }
 
     /**
      * Création du hook qui vérifie la fin du match
-     * Sa création est séparée des hooks d'éléments de jeux car ces derniers sont utilisés uniquement entre les scripts,
-     * alors que le hook de fin de match est utilisé tout le temps.
+     * Ce hook est destiné à être utilisé pendant le script
      * @param state
      * @param isChrono
      * @return
      */
-    private ArrayList<Hook> getHooksFinMatch(GameState<?> state, boolean isChrono)
+    private Hook getHooksFinMatch(GameState<?> state, boolean isChrono)
     {
-    	ArrayList<Hook> hooks_fin_match = new ArrayList<Hook>();
-        FinMatchCheck actionFinMatch;
-        Hook hook;
+        // Cette date est celle demandée à la real gamestate
+        // Les chrono gamestate la modifieront si besoin est
+        Hook hook_fin_match = newHookDateFinMatch(dureeMatch, state);
+    	hook_fin_match.ajouter_callback(new Callback(new FinMatchCheck(isChrono)));
 
-    	hook = newHookDate(dureeMatch, state);
-    	actionFinMatch = new FinMatchCheck(isChrono);
-    	hook.ajouter_callback(new Callback(actionFinMatch));
-    	hooks_fin_match.add(hook);
-
-    	return hooks_fin_match;
+    	return hook_fin_match;
     }
 
     /**
@@ -268,15 +266,19 @@ public class HookFactory implements Service
      * @param state
      * @return
      */
-    public ArrayList<Hook> getHooksEntreScriptsChrono(GameState<RobotChrono> state)
+    public ArrayList<Hook> getHooksEntreScriptsChrono(GameState<RobotChrono> state, int date_limite)
     {
     	if(hooks_table_chrono == null)
-    		hooks_table_chrono = getHooksEntreScriptsReal(state);
+    		hooks_table_chrono = getHooksEntreScriptsReal(state, true);
 
     	// on met à jour dans les hooks les références (gridspace, robot, ...)
 		// C'est bien plus rapide que de créer de nouveaux hooks
 		for(Hook hook: hooks_table_chrono)
+		{
 			hook.updateGameState(state);
+			if(hook instanceof HookDateFinMatch)
+				((HookDateFinMatch)hook_fin_match_chrono).updateDate(date_limite);
+		}
 
     	return hooks_table_chrono;
     }
@@ -286,12 +288,22 @@ public class HookFactory implements Service
      * @param state
      * @return
      */
-    public ArrayList<Hook> getHooksEntreScriptsReal(GameState<?> state)
+    public ArrayList<Hook> getHooksEntreScriptsReal(GameState<RobotReal> state)
+    {
+    	return getHooksEntreScriptsReal(state, false);
+    }
+
+    
+    private ArrayList<Hook> getHooksEntreScriptsReal(GameState<?> state, boolean isChrono)
     {
     	ArrayList<Hook> hooks_entre_scripts = new ArrayList<Hook>();
 		Hook hook;
 		GameElementDone action;
-	
+
+		Hook hook_fin_match = newHookDateFinMatch(dureeMatch, state);
+    	hook_fin_match.ajouter_callback(new Callback(new FinMatchCheck(isChrono)));	
+    	hooks_entre_scripts.add(hook_fin_match);
+    	
 		for(GameElementNames n: GameElementNames.values())
 		{
 			// Ce que l'ennemi peut prendre

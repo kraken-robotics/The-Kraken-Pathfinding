@@ -63,7 +63,7 @@ public class JUnit_Hook extends JUnit_Test {
 	@Test
 	public void test_hook_chrono_avancer() throws Exception
 	{
-		ArrayList<Hook> hooks_table = hookfactory.getHooksEntreScriptsReal(chrono_gamestate);
+		ArrayList<Hook> hooks_table = hookfactory.getHooksEntreScriptsChrono(chrono_gamestate, 90000);
 		chrono_gamestate.robot.setPosition(new Vec2(600, 350));
 		chrono_gamestate.robot.setOrientation(Math.PI);
 		Assert.assertTrue(chrono_gamestate.gridspace.isDone(GameElementNames.VERRE_5) == Tribool.FALSE);
