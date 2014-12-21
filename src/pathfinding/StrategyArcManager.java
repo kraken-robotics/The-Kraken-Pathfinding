@@ -54,6 +54,7 @@ public class StrategyArcManager implements Service, ArcManager {
 		} catch (FinMatchException e) {
 			e.printStackTrace();
 		}
+		updateConfig();
 	}
 
 	@Override

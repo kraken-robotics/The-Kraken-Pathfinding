@@ -23,9 +23,9 @@ public enum PathfindingNodes implements Arc {
 	CLAP_DROIT(new Vec2(1150, 300)),
 	BAS(new Vec2(0, 500)),
 
-	POINT_DEPART(new Vec2(1300, 600)), // TODO: mesurer
+	POINT_DEPART(new Vec2(1300, 1000)), // TODO: mesurer
 	
-	SORTIE_ZONE_DEPART(new Vec2(1300,100)),
+	SORTIE_ZONE_DEPART(new Vec2(800,1000)),
 	SORTIE_CLAP_GAUCHE(new Vec2(-750,500)),
 	SORTIE_CLAP_DROIT(new Vec2(350,500)),
 	SORTIE_TAPIS(new Vec2(250,900)),

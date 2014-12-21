@@ -1,10 +1,9 @@
 package robot.cardsWrappers;
 
-import java.util.Hashtable;
-
 import robot.serial.SerialConnexion;
 import utils.*;
 import container.Service;
+import enums.FeedbackLoopStatisticsElement;
 import exceptions.FinMatchException;
 import exceptions.Locomotion.BlockedException;
 import exceptions.serial.SerialConnexionException;
@@ -38,7 +37,7 @@ public class LocomotionCardWrapper implements Service
 	 *  - derivee_erreur_rotation
 	 *  - derivee_erreur_translation
 	 */
-	private Hashtable<String, Integer> feedbackLoopStatistics;
+	private int[] feedbackLoopStatistics = new int[FeedbackLoopStatisticsElement.values().length];
 		
 	/**
 	 *  en cas de bloquage, date a laquelle le blocage a commencé
@@ -66,15 +65,14 @@ public class LocomotionCardWrapper implements Service
 		this.log = log;
 		this.locomotionCardSerial = serial;
 		
-		feedbackLoopStatistics = new Hashtable<String, Integer>();
-		feedbackLoopStatistics.put("PWMmoteurGauche", 0);
-		feedbackLoopStatistics.put("PWMmoteurDroit", 0);
-		feedbackLoopStatistics.put("erreur_rotation", 0);
-		feedbackLoopStatistics.put("erreur_translation", 0);
-		feedbackLoopStatistics.put("derivee_erreur_rotation", 0);
-		feedbackLoopStatistics.put("derivee_erreur_translation", 0);
-		feedbackLoopStatistics.put("inverse_erreur_translation_integrale", 100);
-		
+		feedbackLoopStatistics[FeedbackLoopStatisticsElement.PWMmoteurGauche.ordinal()] = 0;
+		feedbackLoopStatistics[FeedbackLoopStatisticsElement.PWMmoteurDroit.ordinal()] = 0;
+		feedbackLoopStatistics[FeedbackLoopStatisticsElement.erreur_rotation.ordinal()] = 0;
+		feedbackLoopStatistics[FeedbackLoopStatisticsElement.erreur_translation.ordinal()] = 0;
+		feedbackLoopStatistics[FeedbackLoopStatisticsElement.derivee_erreur_rotation.ordinal()] = 0;
+		feedbackLoopStatistics[FeedbackLoopStatisticsElement.derivee_erreur_translation.ordinal()] = 0;
+		feedbackLoopStatistics[FeedbackLoopStatisticsElement.inverse_erreur_translation_integrale.ordinal()] = 100; // TODO useless?
+		updateConfig();
 	}
 	
 	public void updateConfig()
@@ -90,10 +88,10 @@ public class LocomotionCardWrapper implements Service
 	{
 		
 		// demande des information sur l'asservissement du robot
-		int pwmLeftMotor = feedbackLoopStatistics.get("PWMmoteurGauche");
-		int pwmRightMotor = feedbackLoopStatistics.get("PWMmoteurDroit");
-		int derivatedRotationnalError = feedbackLoopStatistics.get("derivee_erreur_rotation");
-		int derivatedTranslationnalError = feedbackLoopStatistics.get("derivee_erreur_translation");
+		int pwmLeftMotor = feedbackLoopStatistics[FeedbackLoopStatisticsElement.PWMmoteurGauche.ordinal()];
+		int pwmRightMotor = feedbackLoopStatistics[FeedbackLoopStatisticsElement.PWMmoteurDroit.ordinal()];
+		int derivatedRotationnalError = feedbackLoopStatistics[FeedbackLoopStatisticsElement.derivee_erreur_rotation.ordinal()];
+		int derivatedTranslationnalError = feedbackLoopStatistics[FeedbackLoopStatisticsElement.derivee_erreur_translation.ordinal()];
 		
 		// on décrète que les moteurs forcent si la puissance qu'ils demandent est trop grande
 		boolean areMotorsActive = Math.abs(pwmLeftMotor) > 40 || Math.abs(pwmRightMotor) > 40;
@@ -156,10 +154,10 @@ public class LocomotionCardWrapper implements Service
 		refreshFeedbackLoopStatistics();
 		
 		// petits alias sur les infos de l'asservissement
-		int rotationnalError = feedbackLoopStatistics.get("erreur_rotation");
-		int translationnalError = feedbackLoopStatistics.get("erreur_translation");
-		int derivedRotationnalError = feedbackLoopStatistics.get("derivee_erreur_rotation");
-		int derivedTranslationnalError = feedbackLoopStatistics.get("derivee_erreur_translation");
+		int rotationnalError = feedbackLoopStatistics[FeedbackLoopStatisticsElement.erreur_rotation.ordinal()];
+		int translationnalError = feedbackLoopStatistics[FeedbackLoopStatisticsElement.erreur_translation.ordinal()];
+		int derivedRotationnalError = feedbackLoopStatistics[FeedbackLoopStatisticsElement.derivee_erreur_rotation.ordinal()];
+		int derivedTranslationnalError = feedbackLoopStatistics[FeedbackLoopStatisticsElement.derivee_erreur_translation.ordinal()];
 		
 		// TODO:VALEURS A REVOIR
 		// Décide si on considère le robot immobile ou non.
@@ -424,21 +422,21 @@ public class LocomotionCardWrapper implements Service
 		// calcul des dérivées des erreurs en translation et en rotation :
 		// on fait la différence entre la valeur actuelle de l'erreur et le valeur précédemment mesurée.
 		// on divise par un dt unitaire (non mentionné dans l'expression)
-		int derivedRotationnalError = parsedInfos[2] - feedbackLoopStatistics.get("erreur_rotation");
-		int derivedTranslationnalError = parsedInfos[3] - feedbackLoopStatistics.get("erreur_translation");
+		int derivedRotationnalError = parsedInfos[2] - feedbackLoopStatistics[FeedbackLoopStatisticsElement.erreur_rotation.ordinal()];
+		int derivedTranslationnalError = parsedInfos[3] - feedbackLoopStatistics[FeedbackLoopStatisticsElement.erreur_translation.ordinal()];
 		
 		
 		// on stocke la puissance consommée par les moteurs
-        feedbackLoopStatistics.put("PWMmoteurGauche", parsedInfos[0]);
-        feedbackLoopStatistics.put("PWMmoteurDroit", parsedInfos[1]);
+        feedbackLoopStatistics[FeedbackLoopStatisticsElement.PWMmoteurGauche.ordinal()] = parsedInfos[0];
+        feedbackLoopStatistics[FeedbackLoopStatisticsElement.PWMmoteurDroit.ordinal()] = parsedInfos[1];
         
         // l'erreur de translation mesurée par les codeuses
-        feedbackLoopStatistics.put("erreur_rotation", parsedInfos[2]);
-        feedbackLoopStatistics.put("erreur_translation", parsedInfos[3]);
+        feedbackLoopStatistics[FeedbackLoopStatisticsElement.erreur_rotation.ordinal()] = parsedInfos[2];
+        feedbackLoopStatistics[FeedbackLoopStatisticsElement.erreur_translation.ordinal()] = parsedInfos[3];
         
         // stocke les dérivées des erreurs, calculés 10 lignes plus haut
-        feedbackLoopStatistics.put("derivee_erreur_rotation", derivedRotationnalError);
-        feedbackLoopStatistics.put("derivee_erreur_translation", derivedTranslationnalError);
+        feedbackLoopStatistics[FeedbackLoopStatisticsElement.derivee_erreur_rotation.ordinal()] = derivedRotationnalError;
+        feedbackLoopStatistics[FeedbackLoopStatisticsElement.derivee_erreur_translation.ordinal()] = derivedTranslationnalError;
 
         
 	}

@@ -52,6 +52,7 @@ public class GridSpace implements Service {
 		}
 
 		reinitConnections();
+		updateConfig();
 	}
 	
     public void check_pathfinding_nodes()

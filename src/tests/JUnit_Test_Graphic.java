@@ -1,5 +1,6 @@
 package tests;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -17,6 +18,7 @@ import enums.ServiceNames;
 import robot.RobotChrono;
 import robot.RobotReal;
 import scripts.Decision;
+import scripts.ScriptManager;
 import smartMath.Vec2;
 import strategie.GameState;
 import tests.graphicLib.Fenetre;
@@ -37,6 +39,7 @@ public class JUnit_Test_Graphic extends JUnit_Test {
 	private GameState<RobotChrono> state_chrono;
 	private GameState<RobotReal> state;
 	private AStar<StrategyArcManager, Decision> strategic_astar;
+	private ScriptManager scriptmanager;
 	
 	@SuppressWarnings("unchecked")
 	@Before
@@ -47,7 +50,7 @@ public class JUnit_Test_Graphic extends JUnit_Test {
 		obstaclemanager = (ObstacleManager) container.getService(ServiceNames.OBSTACLE_MANAGER);
 		state = (GameState<RobotReal>)container.getService(ServiceNames.REAL_GAME_STATE);
 		strategic_astar = (AStar<StrategyArcManager, Decision>)container.getService(ServiceNames.A_STAR_STRATEGY);
-
+		scriptmanager = (ScriptManager) container.getService(ServiceNames.SCRIPT_MANAGER);
 		fenetre = new Fenetre();
 		fenetre.setDilatationObstacle(obstaclemanager.getDilatationObstacle());
 		for(PathfindingNodes n : PathfindingNodes.values())
@@ -77,6 +80,8 @@ public class JUnit_Test_Graphic extends JUnit_Test {
 		{
 			PathfindingNodes i = PathfindingNodes.values()[randomgenerator.nextInt(PathfindingNodes.values().length)];
 			PathfindingNodes j = PathfindingNodes.values()[randomgenerator.nextInt(PathfindingNodes.values().length)];
+			if(i == PathfindingNodes.POINT_DEPART || j == PathfindingNodes.POINT_DEPART)
+				continue;
 			log.debug("Recherche chemin entre "+i+" et "+j, this);
 			Vec2 entree = i.getCoordonnees().plusNewVector(new Vec2(randomgenerator.nextInt(100)-50, randomgenerator.nextInt(100)-50));
 			config.setDateDebutMatch(); // afin d'avoir toujours une haute précision
@@ -91,9 +96,14 @@ public class JUnit_Test_Graphic extends JUnit_Test {
     			log.debug(n, this);
     			cheminVec2.add(n.getCoordonnees());
     		}
-    		fenetre.setPath(orientation_initiale, cheminVec2);
+    		fenetre.setPath(orientation_initiale, cheminVec2, Color.BLUE);
+    		ArrayList<Vec2> direct = new ArrayList<Vec2>();
+    		direct.add(entree);
+    		direct.add(j.getCoordonnees());
+    		fenetre.setPath(orientation_initiale, direct, Color.ORANGE);
     		fenetre.repaint();
-    		Sleep.sleep(1000);
+    		Sleep.sleep(5000);
+    		fenetre.resetPath();
 		}
     }
 
@@ -113,7 +123,11 @@ public class JUnit_Test_Graphic extends JUnit_Test {
     			log.debug(n, this);
     			cheminVec2.add(n.getCoordonnees());
     		}
-			fenetre.setPath(null, cheminVec2);
+			fenetre.setPath(null, cheminVec2, Color.GRAY);
+			ArrayList<Vec2> cheminVersSortie = new ArrayList<Vec2>();
+			cheminVersSortie.add(scriptmanager.getScript(d.script_name).point_entree(d.version).getCoordonnees());
+			cheminVersSortie.add(scriptmanager.getScript(d.script_name).point_sortie(d.version).getCoordonnees());
+			fenetre.setPath(null, cheminVersSortie, Color.RED);
 			fenetre.repaint();
 			Sleep.sleep(1000);
 			log.debug(d, this);

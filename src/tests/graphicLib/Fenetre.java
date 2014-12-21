@@ -36,7 +36,8 @@ public class Fenetre extends JPanel {
 	private int dilatationObstacle;
 	private AttributedString affichage = new AttributedString("");
 	private ArrayList<ArrayList<Vec2>> paths = new ArrayList<ArrayList<Vec2>>();
-	private ArrayList<Double> orientations;
+	private ArrayList<Double> orientations = new ArrayList<Double>();
+	private ArrayList<Color> couleurs = new ArrayList<Color>();
     
 	public Fenetre()
 	{
@@ -94,13 +95,11 @@ public class Fenetre extends JPanel {
 	{
 		g.drawImage(image, 0, 0, this);
 
-		// rouge transparent
-		g.setColor(new Color(255, 0, 0, 40));
-		g.setColor(Color.RED);
+		g.setColor(Color.RED.darker().darker().darker());
 		for(Obstacle o : listObstaclesFixes)
 			paintObstacle(o,g,dilatationObstacle);
 
-		g.setColor(Color.RED);
+		g.setColor(Color.RED.darker().darker());
 		for(Obstacle o : listObstaclesFixes)
 			paintObstacle(o, g,0);
 
@@ -109,15 +108,15 @@ public class Fenetre extends JPanel {
 			g.fillOval(XtoWindow(pos.x)-5, YtoWindow(pos.y)-5, 10, 10);
 
 		// vert transparent
-		g.setColor(new Color(0, 255, 0, 40));
+		g.setColor(new Color(0, 130, 0, 40));
 		for(GameElement o : listGameElement)
 			paintObstacle(o,g,dilatationObstacle);
 
-		g.setColor(Color.GREEN);
+		g.setColor(new Color(0, 130, 0, 255));
 		for(GameElement o : listGameElement)
 			paintObstacle(o,g,0);
 		
-		g.setColor(Color.BLUE);
+		g.setColor(new Color(0, 0, 130, 40));
 		for(ObstacleCircular o : listObstaclesMobiles)
 			paintObstacle(o, g, 0);
 		
@@ -127,8 +126,8 @@ public class Fenetre extends JPanel {
 		g.setColor(Color.BLACK);
 	    g.drawString(affichage.getIterator(), sizeX+50, 30);
 
-	    g.setColor(Color.PINK);
-	    paintSegments(g);
+//	    g.setColor(Color.PINK);
+//	    paintSegments(g);
 
 	    g.setColor(Color.BLUE);
 	    for(int j = 0; j < paths.size(); j++)
@@ -142,7 +141,7 @@ public class Fenetre extends JPanel {
 		    		g.setColor(Color.RED);
 			    	g.fillOval(XtoWindow(path.get(0).x)-3+(int)(30*Math.cos(orientation)), YtoWindow(path.get(0).y)-3-(int)(30*Math.sin(orientation)), 6, 6);
 		    	}
-			    g.setColor(Color.BLUE);
+			    g.setColor(couleurs.get(j));
 		    	g.fillOval(XtoWindow(path.get(0).x)-5, YtoWindow(path.get(0).y)-5, 10, 10);
 		    	g.fillOval(XtoWindow(path.get(path.size()-1).x)-5, YtoWindow(path.get(path.size()-1).y)-5, 10, 10);
 			    for(int i = 0; i < path.size()-1; i++)
@@ -234,12 +233,15 @@ public class Fenetre extends JPanel {
 	public void resetPath()
 	{
 		paths.clear();
+		orientations.clear();
+		couleurs.clear();
 	}
 	
-	public void setPath(Double orientation, ArrayList<Vec2> chemin)
+	public void setPath(Double orientation, ArrayList<Vec2> chemin, Color couleur)
 	{
-		this.orientations.add(orientation);
-		this.paths.add(chemin);
+		orientations.add(orientation);
+		paths.add(chemin);
+		couleurs.add(couleur);
 	}
 	
 }

@@ -277,7 +277,7 @@ public class HookFactory implements Service
 		{
 			hook.updateGameState(state);
 			if(hook instanceof HookDateFinMatch)
-				((HookDateFinMatch)hook_fin_match_chrono).updateDate(date_limite);
+				((HookDateFinMatch)hook).updateDate(date_limite);
 		}
 
     	return hooks_table_chrono;

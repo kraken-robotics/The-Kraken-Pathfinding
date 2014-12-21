@@ -35,9 +35,10 @@ public class ActuatorCardWrapper implements Service
 	{
 		this.log = log;
 		this.actuatorCardSerial = serial;
-		
+		updateConfig();
 	}
 
+	@Override
 	public void updateConfig()
 	{
 	}

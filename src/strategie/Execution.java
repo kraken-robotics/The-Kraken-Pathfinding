@@ -42,6 +42,7 @@ public class Execution implements Service {
 	
 	public Execution(Log log, Config config, GameState<RobotReal> gamestate, ScriptManager scriptmanager, HookFactory hookfactory, ThreadStrategy threadstrategy)
 	{
+		updateConfig();
 		this.log = log;
 //		this.config = config;
 		this.gamestate = gamestate;

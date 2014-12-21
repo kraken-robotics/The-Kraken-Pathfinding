@@ -61,6 +61,7 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 //		this.log = log;
 		this.arcmanager = arcmanager;
 		this.memorymanager = memorymanager;
+		updateConfig();
 	}
 
 	/**
