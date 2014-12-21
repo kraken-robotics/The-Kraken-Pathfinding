@@ -8,6 +8,7 @@ package enums;
  */
 
 public enum ScriptNames {
+	SortieZoneDepart(false), // false = pas pris en compte dans la stratégie (de toute façon, il a pas de version...)
 	ScriptClap(true),
 	ScriptTapis(true);
 	

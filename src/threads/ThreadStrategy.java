@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import pathfinding.AStar;
 import pathfinding.StrategyArcManager;
 import container.Service;
+import enums.ScriptNames;
+import enums.PathfindingNodes;
 import exceptions.FinMatchException;
 import exceptions.PathfindingException;
 import robot.RobotChrono;
@@ -29,8 +31,9 @@ public class ThreadStrategy extends AbstractThread implements Service
 	private GameState<RobotReal> realstate;
 	private GameState<RobotChrono> chronostate;
 	
-	private ArrayList<Decision> decisions = null;
-	private ArrayList<Decision> decisionsSecours = null;
+	private Decision decision = new Decision(new ArrayList<PathfindingNodes>(), ScriptNames.SortieZoneDepart, 0, false);
+	private Decision decisionSecours = null;
+	private Decision needNewBestAfterThis = null;
 	
 	public ThreadStrategy(Log log, Config config, AStar<StrategyArcManager, Decision> strategie, GameState<RobotReal> realstate)
 	{
@@ -65,8 +68,14 @@ public class ThreadStrategy extends AbstractThread implements Service
 		while(!finMatch && !stopThreads)
 		{
 			try {
+				if(needNewBestAfterThis != null)
+				{
+					realstate.copy(chronostate);
+					decision = strategie.computeStrategyAfter(chronostate, needNewBestAfterThis).get(0);
+					needNewBestAfterThis = null; // en cas d'erreur, ce n'est pas mis à null
+				}
 				realstate.copy(chronostate);
-				decisionsSecours = strategie.computeStrategyEmergency(chronostate);
+				decisionSecours = strategie.computeStrategyEmergency(chronostate).get(0);
 			} catch (FinMatchException e) {
 				break;
 			} catch (PathfindingException e) {
@@ -78,32 +87,21 @@ public class ThreadStrategy extends AbstractThread implements Service
 
 	public void computeBestDecisionAfter(Decision d)
 	{
-		try {
-			realstate.copy(chronostate);
-			decisions = strategie.computeStrategyAfter(chronostate, d);
-		} catch (FinMatchException e) {
-			e.printStackTrace();
-		} catch (PathfindingException e) {
-			log.critical("Départ dans un obstacle de proximité!", this);
-			e.printStackTrace();
-		}
+		needNewBestAfterThis = d;
 	}
 	
 	public Decision getBestDecision()
 	{
-		Decision out = decisions.get(0);
-		return out;
+		return decision;
 	}
 
 	public Decision getEmergencyDecision()
 	{
-		// Il y a un problème; il faut renouveler également bestDecision
-		Decision out = decisionsSecours.get(0);
-		return out;
+		return decisionSecours;
 	}
 
 	
 	@Override
-	public void updateConfig() {
-	}
+	public void updateConfig()
+	{}
 }

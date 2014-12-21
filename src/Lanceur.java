@@ -10,7 +10,8 @@ import enums.ServiceNames;
 
 /* TODO LIST
  * se renseigner sur la compilation sans bytecode (GCJ)
- *
+ * pouvoir arrêter une recherche avant la fin (hook de fin de match)
+ * affichage graphique stratégie
  */
 
 public class Lanceur {
