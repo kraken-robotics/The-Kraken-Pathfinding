@@ -146,8 +146,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
 		Random randomgenerator = new Random();
 		for(int k = 0; k < 100; k++)
 		{
-			// TODO: pourquoi y a-t-il besoin de cette ligne?
-			state_chrono.robot.reinitDate(); // afin d'avoir toujours une haute précision
+//			state_chrono.robot.reinitDate();
 			PathfindingNodes i = PathfindingNodes.values()[randomgenerator.nextInt(PathfindingNodes.values().length)];
 			PathfindingNodes j = PathfindingNodes.values()[randomgenerator.nextInt(PathfindingNodes.values().length)];
 			state_chrono.robot.setPositionPathfinding(i);

@@ -18,6 +18,7 @@ public class Log implements Service
 {
 	// Dépendances
 	private Config config;
+	private boolean logClosed = false;
 
 	FileWriter writer = null;
 
@@ -133,6 +134,11 @@ public class Log implements Service
 
 	private void ecrire(String message, String couleur, PrintStream ou)
 	{
+		if(logClosed)
+		{
+			System.out.println("WARNING * Log fermé! Message: "+message);
+			return;
+		}
 		java.util.GregorianCalendar calendar = new GregorianCalendar();
 		String heure = calendar.get(Calendar.HOUR)+":"+calendar.get(Calendar.MINUTE)+":"+calendar.get(Calendar.SECOND)+","+calendar.get(Calendar.MILLISECOND);
 		if(couleur != couleurDebug || affiche_debug)
@@ -155,10 +161,10 @@ public class Log implements Service
 
 	/**
 	 * Sorte de destructeur, dans lequel le fichier est sauvegardé.
-	 * // TODO: refuser les demande d'écriture sur le log si l'initialisation n'a pas été faite, ou si le destructeur a été appellé 
 	 */
 	public void close()
 	{
+		logClosed = true;
 		warning("Fin du log",this);
 		
 		if(sauvegarde_fichier)

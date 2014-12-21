@@ -6,6 +6,8 @@ import org.junit.Test;
 import org.junit.Before;
 import org.junit.Assert;
 
+import pathfinding.AStar;
+import pathfinding.PathfindingArcManager;
 import robot.RobotChrono;
 import robot.RobotReal;
 import scripts.Script;
@@ -30,12 +32,14 @@ public class JUnit_Scripts extends JUnit_Test {
 	private ScriptManager scriptmanager;
 	private GameState<RobotReal> gamestate;
 	private GameState<RobotChrono> state_chrono;
+	private AStar<PathfindingArcManager, PathfindingNodes> pathfinding;
 		
     @SuppressWarnings("unchecked")
 	@Before
     public void setUp() throws Exception {
         super.setUp();
         gamestate = (GameState<RobotReal>) container.getService(ServiceNames.REAL_GAME_STATE);
+        pathfinding = (AStar<PathfindingArcManager, PathfindingNodes>) container.getService(ServiceNames.A_STAR_PATHFINDING);
         scriptmanager = (ScriptManager) container.getService(ServiceNames.SCRIPT_MANAGER);
         gamestate.robot.setPosition(new Vec2(1100, 1000));
         state_chrono = gamestate.cloneGameState();
@@ -106,22 +110,21 @@ public class JUnit_Scripts extends JUnit_Test {
     @Test
     public void test_script_tapis() throws Exception
     {
-    	// TODO: utiliser le pathfinding
+    	int version = 0;
     	Script s = scriptmanager.getScript(ScriptNames.ScriptTapis);
-    	ArrayList<PathfindingNodes> chemin = new ArrayList<PathfindingNodes>(); 
-    	chemin.add(s.point_entree(0));
+    	ArrayList<PathfindingNodes> chemin = pathfinding.computePath(gamestate.cloneGameState(), s.point_entree(version), true);
     	gamestate.robot.suit_chemin(chemin, null);
-    	s.agit(0, gamestate);
+    	s.agit(version, gamestate);
     }
 
     @Test
     public void test_script_clap() throws Exception
     {
+    	int version = 0;
     	Script s = scriptmanager.getScript(ScriptNames.ScriptClap);
-    	ArrayList<PathfindingNodes> chemin = new ArrayList<PathfindingNodes>(); 
-    	chemin.add(s.point_entree(0));
+    	ArrayList<PathfindingNodes> chemin = pathfinding.computePath(gamestate.cloneGameState(), s.point_entree(version), true);
     	gamestate.robot.suit_chemin(chemin, null);
-    	s.agit(0, gamestate);
+    	s.agit(1, gamestate);
     }
 
 }

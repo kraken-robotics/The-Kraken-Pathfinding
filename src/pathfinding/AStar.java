@@ -200,7 +200,6 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 
 		while (openset.size() != 0)
 		{
-			// TODO: openset trié automatiquement à l'insertion
 			// current is affected by the node in openset having the lowest f_score[] value
 			nodeIterator = openset.iterator();
 			current = nodeIterator.next();

@@ -309,7 +309,7 @@ public class HookFactory implements Service
 			// Ce que l'ennemi peut prendre
 			if(n.getType().isInCommon())
 			{
-				hook = newHookDate(20000, state); // TODO: mettre dans la config
+				hook = newHookDate(n.getType().getDateEnemyTakesIt(), state);
 				action = new GameElementDone(state.gridspace, n, Tribool.MAYBE);
 				hook.ajouter_callback(new Callback(action));
 				hooks_entre_scripts.add(hook);

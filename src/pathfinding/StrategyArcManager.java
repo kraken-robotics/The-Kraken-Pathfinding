@@ -69,12 +69,12 @@ public class StrategyArcManager implements Service, ArcManager {
 					// On n'ajoute que les versions qui sont accessibles
 					try {
 						ArrayList<PathfindingNodes> chemin = astar.computePath(gamestate, script.point_entree(v), true);
-						listeDecisions.add(new Decision(chemin, s, v, true));
+						listeDecisions.add(new Decision(chemin, s, v));
 						try {
 							// On ne rajoute la version où on ne shoot pas seulement si le chemin proposé est différent
 							ArrayList<PathfindingNodes> chemin2 = astar.computePath(gamestate, script.point_entree(v), false);
 							if(!chemin2.equals(chemin))
-								listeDecisions.add(new Decision(chemin2, s, v, true));
+								listeDecisions.add(new Decision(chemin2, s, v));
 						} catch (PathfindingException
 								| PathfindingRobotInObstacleException
 								| FinMatchException e) {
