@@ -10,10 +10,13 @@ import org.junit.Test;
 
 import pathfinding.AStar;
 import pathfinding.PathfindingArcManager;
+import pathfinding.StrategyArcManager;
 import enums.PathfindingNodes;
+import enums.ScriptNames;
 import enums.ServiceNames;
 import robot.RobotChrono;
 import robot.RobotReal;
+import scripts.Decision;
 import smartMath.Vec2;
 import strategie.GameState;
 import tests.graphicLib.Fenetre;
@@ -33,6 +36,7 @@ public class JUnit_Test_Graphic extends JUnit_Test {
 	private AStar<PathfindingArcManager, PathfindingNodes> pathfinding;
 	private GameState<RobotChrono> state_chrono;
 	private GameState<RobotReal> state;
+	private AStar<StrategyArcManager, Decision> strategic_astar;
 	
 	@SuppressWarnings("unchecked")
 	@Before
@@ -42,6 +46,7 @@ public class JUnit_Test_Graphic extends JUnit_Test {
         pathfinding = (AStar<PathfindingArcManager, PathfindingNodes>) container.getService(ServiceNames.A_STAR_PATHFINDING);
 		obstaclemanager = (ObstacleManager) container.getService(ServiceNames.OBSTACLE_MANAGER);
 		state = (GameState<RobotReal>)container.getService(ServiceNames.REAL_GAME_STATE);
+		strategic_astar = (AStar<StrategyArcManager, Decision>)container.getService(ServiceNames.A_STAR_STRATEGY);
 
 		fenetre = new Fenetre();
 		fenetre.setDilatationObstacle(obstaclemanager.getDilatationObstacle());
@@ -89,6 +94,29 @@ public class JUnit_Test_Graphic extends JUnit_Test {
     		fenetre.setPath(orientation_initiale, cheminVec2);
     		fenetre.repaint();
     		Sleep.sleep(1000);
+		}
+    }
+
+
+    @Test
+    public void test_strategy_verification_humaine() throws Exception
+    {
+    	Decision decision = new Decision(null, ScriptNames.SortieZoneDepart, 0);
+    	config.setDateDebutMatch();
+    	GameState<RobotChrono> chronostate = state.cloneGameState();
+		ArrayList<Decision> decisions = strategic_astar.computeStrategyAfter(chronostate, decision);
+		for(Decision d: decisions)
+		{
+    		ArrayList<Vec2> cheminVec2 = new ArrayList<Vec2>();
+    		for(PathfindingNodes n: d.chemin)
+    		{
+    			log.debug(n, this);
+    			cheminVec2.add(n.getCoordonnees());
+    		}
+			fenetre.setPath(null, cheminVec2);
+			fenetre.repaint();
+			Sleep.sleep(1000);
+			log.debug(d, this);
 		}
     }
 

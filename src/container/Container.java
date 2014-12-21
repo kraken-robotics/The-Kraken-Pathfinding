@@ -8,6 +8,7 @@ import enums.ServiceNames;
 import enums.ServiceNames.TypeService;
 import exceptions.ContainerException;
 import exceptions.FinMatchException;
+import exceptions.PointSortieException;
 import exceptions.ThreadException;
 import exceptions.serial.SerialManagerException;
 import utils.*;
@@ -50,6 +51,8 @@ public class Container
 	//gestion de la configuration du robot
 	private Config config;
 
+	private static int nbInstances = 0;
+	
 	/**
 	 * Fonction à appeler à la fin du programme.
 	 * ferme la connexion serie, termine les différents threads, et ferme le log.
@@ -83,6 +86,12 @@ public class Container
 	 */
 	public Container() throws ContainerException
 	{
+		if(nbInstances != 0)
+		{
+			System.out.println("Un autre container existe déjà! Annulation du constructeur.");
+			throw new ContainerException();
+		}
+		nbInstances++;		
 		try
 		{
 			// affiche la configuration avant toute autre chose
@@ -104,7 +113,7 @@ public class Container
 	}
 
 	@SuppressWarnings("unchecked")
-	public Service getService(ServiceNames serviceRequested) throws ContainerException, ThreadException, SerialManagerException, FinMatchException
+	public Service getService(ServiceNames serviceRequested) throws ContainerException, ThreadException, SerialManagerException, FinMatchException, PointSortieException
 	{
     	// instancie le service demandé lors de son premier appel 
     	

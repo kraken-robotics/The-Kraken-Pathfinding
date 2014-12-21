@@ -140,7 +140,7 @@ public class Log implements Service
 			return;
 		}
 		java.util.GregorianCalendar calendar = new GregorianCalendar();
-		String heure = calendar.get(Calendar.HOUR)+":"+calendar.get(Calendar.MINUTE)+":"+calendar.get(Calendar.SECOND)+","+calendar.get(Calendar.MILLISECOND);
+		String heure = calendar.get(Calendar.HOUR_OF_DAY)+":"+calendar.get(Calendar.MINUTE)+":"+calendar.get(Calendar.SECOND)+","+calendar.get(Calendar.MILLISECOND);
 		if(couleur != couleurDebug || affiche_debug)
 			ou.println(couleur+heure+" "+message+"\u001B[0m");
 		if(sauvegarde_fichier)
@@ -164,7 +164,6 @@ public class Log implements Service
 	 */
 	public void close()
 	{
-		logClosed = true;
 		warning("Fin du log",this);
 		
 		if(sauvegarde_fichier)
@@ -177,6 +176,7 @@ public class Log implements Service
 			{
 				System.out.println(e);
 			}
+		logClosed = true;
 	}
 	
 	@Override

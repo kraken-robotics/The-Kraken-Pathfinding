@@ -35,8 +35,8 @@ public class Fenetre extends JPanel {
 	private Image image;
 	private int dilatationObstacle;
 	private AttributedString affichage = new AttributedString("");
-	private ArrayList<Vec2> path = new ArrayList<Vec2>();
-	private double orientation = 0;
+	private ArrayList<ArrayList<Vec2>> paths = new ArrayList<ArrayList<Vec2>>();
+	private ArrayList<Double> orientations;
     
 	public Fenetre()
 	{
@@ -131,16 +131,24 @@ public class Fenetre extends JPanel {
 	    paintSegments(g);
 
 	    g.setColor(Color.BLUE);
-	    if(path.size() >= 1)
+	    for(int j = 0; j < paths.size(); j++)
 	    {
-		    g.setColor(Color.RED);
-	    	g.fillOval(XtoWindow(path.get(0).x)-3+(int)(30*Math.cos(orientation)), YtoWindow(path.get(0).y)-3-(int)(30*Math.sin(orientation)), 6, 6);
-		    g.setColor(Color.BLUE);
-	    	g.fillOval(XtoWindow(path.get(0).x)-5, YtoWindow(path.get(0).y)-5, 10, 10);
-	    	g.fillOval(XtoWindow(path.get(path.size()-1).x)-5, YtoWindow(path.get(path.size()-1).y)-5, 10, 10);
-		    for(int i = 0; i < path.size()-1; i++)
+	    	ArrayList<Vec2> path = paths.get(j);
+	    	Double orientation = orientations.get(j);
+		    if(path.size() >= 1)
 		    {
-		    	g.drawLine(XtoWindow(path.get(i).x), YtoWindow(path.get(i).y), XtoWindow(path.get(i+1).x), YtoWindow(path.get(i+1).y));
+		    	if(orientation != null)
+		    	{
+		    		g.setColor(Color.RED);
+			    	g.fillOval(XtoWindow(path.get(0).x)-3+(int)(30*Math.cos(orientation)), YtoWindow(path.get(0).y)-3-(int)(30*Math.sin(orientation)), 6, 6);
+		    	}
+			    g.setColor(Color.BLUE);
+		    	g.fillOval(XtoWindow(path.get(0).x)-5, YtoWindow(path.get(0).y)-5, 10, 10);
+		    	g.fillOval(XtoWindow(path.get(path.size()-1).x)-5, YtoWindow(path.get(path.size()-1).y)-5, 10, 10);
+			    for(int i = 0; i < path.size()-1; i++)
+			    {
+			    	g.drawLine(XtoWindow(path.get(i).x), YtoWindow(path.get(i).y), XtoWindow(path.get(i+1).x), YtoWindow(path.get(i+1).y));
+			    }
 		    }
 	    }
 	}
@@ -223,10 +231,15 @@ public class Fenetre extends JPanel {
 			g.drawLine(XtoWindow(v[0].x), YtoWindow(v[0].y), XtoWindow(v[1].x), YtoWindow(v[1].y));
 	}
 	
-	public void setPath(double orientation, ArrayList<Vec2> cheminVec2)
+	public void resetPath()
 	{
-		this.orientation = orientation;
-		this.path = cheminVec2;
+		paths.clear();
+	}
+	
+	public void setPath(Double orientation, ArrayList<Vec2> chemin)
+	{
+		this.orientations.add(orientation);
+		this.paths.add(chemin);
 	}
 	
 }

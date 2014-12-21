@@ -23,10 +23,12 @@ public enum PathfindingNodes implements Arc {
 	CLAP_DROIT(new Vec2(1150, 300)),
 	BAS(new Vec2(0, 500)),
 
-	SORTIE_ZONE_DEPART(DEVANT_DEPART_DROITE),
-	SORTIE_CLAP_GAUCHE(CLAP_GAUCHE),
-	SORTIE_CLAP_DROIT(CLAP_DROIT),
-	SORTIE_TAPIS(NODE_TAPIS),
+	POINT_DEPART(new Vec2(1300, 600)), // TODO: mesurer
+	
+	SORTIE_ZONE_DEPART(new Vec2(1300,100)),
+	SORTIE_CLAP_GAUCHE(new Vec2(-750,500)),
+	SORTIE_CLAP_DROIT(new Vec2(350,500)),
+	SORTIE_TAPIS(new Vec2(250,900)),
 	
 	SECOURS_1(new Vec2(800, 1300)),
 	SECOURS_2(new Vec2(-800, 1300)),
@@ -51,7 +53,6 @@ public enum PathfindingNodes implements Arc {
 				distances[i.ordinal()][j.ordinal()] = i.getCoordonnees().distance(j.getCoordonnees());
 				orientations[i.ordinal()][j.ordinal()] = Math.atan2(i.getCoordonnees().y - j.getCoordonnees().y, i.getCoordonnees().x - j.getCoordonnees().y);
 			}
-		
 	}
 	
 	private Vec2 coordonnees;
@@ -59,16 +60,6 @@ public enum PathfindingNodes implements Arc {
 	private PathfindingNodes(Vec2 coordonnees)
 	{
 		this.coordonnees = coordonnees;
-	}
-
-	private PathfindingNodes(PathfindingNodes n)
-	{
-		this.coordonnees = n.getCoordonnees();
-	}
-
-	public void setCoordonnees(Vec2 coordonnees)
-	{
-		coordonnees.copy(this.coordonnees);
 	}
 
 	public Vec2 getCoordonnees()

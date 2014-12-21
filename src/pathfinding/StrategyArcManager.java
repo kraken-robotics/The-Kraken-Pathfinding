@@ -19,6 +19,7 @@ import enums.ScriptNames;
 import exceptions.FinMatchException;
 import exceptions.PathfindingException;
 import exceptions.PathfindingRobotInObstacleException;
+import exceptions.PointSortieException;
 import exceptions.ScriptHookException;
 import exceptions.UnknownScriptException;
 import exceptions.strategie.ScriptException;
@@ -42,14 +43,14 @@ public class StrategyArcManager implements Service, ArcManager {
 	
 	private int dateLimite = 90000;
 	
-	public StrategyArcManager(Log log, Config config, ScriptManager scriptmanager, GameState<RobotReal> real_gamestate, HookFactory hookfactory, AStar<PathfindingArcManager, PathfindingNodes> astar)
+	public StrategyArcManager(Log log, Config config, ScriptManager scriptmanager, GameState<RobotReal> real_gamestate, HookFactory hookfactory, AStar<PathfindingArcManager, PathfindingNodes> astar) throws PointSortieException
 	{
 //		this.log = log;
 		this.scriptmanager = scriptmanager;
 		this.hookfactory = hookfactory;
 		this.astar = astar;
 		try {
-			initPointSortie(real_gamestate.cloneGameState());
+			checkPointSortie(real_gamestate.cloneGameState());
 		} catch (FinMatchException e) {
 			e.printStackTrace();
 		}
@@ -165,25 +166,31 @@ public class StrategyArcManager implements Service, ArcManager {
 		return (int)(hashes.get(hash)&511); // la composante "note" du hash (cf gamestate.getHash())
 	}
 	
-	public void initPointSortie(GameState<RobotChrono> gamestate)
+	public void checkPointSortie(GameState<RobotChrono> gamestate) throws PointSortieException
 	{
+		boolean throw_exception = false;
 		for(ScriptNames s: ScriptNames.values())
 		{
-			if(s.canIDoIt())
+			Script script = scriptmanager.getScript(s);
+			for(Integer v: script.meta_version(gamestate))
 			{
-				Script script = scriptmanager.getScript(s);
-				for(Integer v: script.meta_version(gamestate))
+				gamestate.robot.setPositionPathfinding(script.point_entree(v));
+				try {
+					script.agit(v, gamestate);
+				} catch (FinMatchException | ScriptException | ScriptHookException e) {
+					e.printStackTrace();
+				}
+				try {
+				script.checkPointSortie(v, gamestate.robot.getPosition());
+				}
+				catch(PointSortieException e)
 				{
-					gamestate.robot.setPositionPathfinding(script.point_entree(v));
-					try {
-						script.agit(v, gamestate);
-					} catch (FinMatchException | ScriptException | ScriptHookException e) {
-						e.printStackTrace();
-					}
-					script.setPointSortie(v, gamestate.robot.getPosition());
+					throw_exception = true;
 				}
 			}
 		}		
+		if(throw_exception)
+			throw new PointSortieException();
 	}
 
 	public void executeDecision(GameState<RobotChrono> state, Decision decision)

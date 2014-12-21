@@ -47,7 +47,7 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 	private int[] g_score = new int[nb_max_element];
 	private int[] f_score = new int[nb_max_element];
 	
-	private PathfindingException pathfindingexception = new PathfindingException();
+	private PathfindingException pathfindingexception;
 	
 //	private Log log;
 	private AM arcmanager;
@@ -109,7 +109,11 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 		ArrayList<A> cheminArc;
 		cheminArc = process(depart, arcmanager, true);
 		if(cheminArc.size() == 0)
+		{
+			if(pathfindingexception == null)
+				pathfindingexception = new PathfindingException();
 			throw pathfindingexception;
+		}
 		return cheminArc;
 	}
 	
@@ -282,7 +286,11 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 		
 		// La stratégie renvoie un chemin partiel, pas le pathfinding qui lève une exception
 		if(!shouldReconstruct)
+		{
+			if(pathfindingexception == null)
+				pathfindingexception = new PathfindingException();
 			throw pathfindingexception;
+		}
 
 		/**
 		 * Même si on n'a pas atteint l'objectif, on reconstruit un chemin partiel
