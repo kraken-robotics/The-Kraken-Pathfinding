@@ -1,13 +1,13 @@
 package exceptions.strategie;
 
 /**
- * Exception levée par un script
+ * Exception levée par les scripts
  * @author pf
  *
  */
-public class ScriptException extends Exception {
-
-	private static final long serialVersionUID = 4219866343407002284L;
+public class ScriptException extends Exception
+{
+	private static final long serialVersionUID = 1826278884421114631L;
 
 	public ScriptException()
 	{
@@ -18,5 +18,4 @@ public class ScriptException extends Exception {
 	{
 		super(m);
 	}
-
 }
