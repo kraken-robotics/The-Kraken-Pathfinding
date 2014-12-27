@@ -81,7 +81,7 @@ public class JUnit_Hook extends JUnit_Test {
 		Assert.assertTrue(real_gamestate.gridspace.isDone(GameElementNames.VERRE_5) == Tribool.FALSE);
 		chrono_gamestate.robot.sleep(5000, hooks_table);
 		Assert.assertTrue(real_gamestate.gridspace.isDone(GameElementNames.VERRE_5) == Tribool.FALSE);
-		chrono_gamestate.robot.sleep(90000, hooks_table);
+		chrono_gamestate.robot.sleep(60000, hooks_table);
 		Assert.assertTrue(real_gamestate.gridspace.isDone(GameElementNames.VERRE_5) == Tribool.MAYBE);
 	}
 

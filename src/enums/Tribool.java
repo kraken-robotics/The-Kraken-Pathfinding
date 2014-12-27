@@ -9,14 +9,19 @@ package enums;
 
 public enum Tribool {
 	FALSE(0), // ces hashs sont utilisés dans la génération du hash de la table
-	MAYBE(1),
-	TRUE(3);
+	MAYBE(1), // ces valeurs ne sont pas choisies au hasard mais sont des masques logiques
+	TRUE(3); // en effet, on modifie la valeur du hash par un OU logique
 	
-	public final int hash;
+	private int hash;
 	
 	private Tribool(int hash)
 	{
 		this.hash = hash;
+	}
+	
+	public int getHash()
+	{
+		return hash;
 	}
 	
 }

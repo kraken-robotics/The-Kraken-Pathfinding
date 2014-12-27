@@ -74,6 +74,7 @@ public class Container
 
 		// ferme le log
 		log.close();
+		nbInstances--;
 	}
 	
 	

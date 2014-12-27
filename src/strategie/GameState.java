@@ -3,7 +3,6 @@ package strategie;
 import hook.types.HookFactory;
 import pathfinding.GridSpace;
 import container.Service;
-import enums.GameElementNames;
 import exceptions.FinMatchException;
 import robot.Robot;
 import robot.RobotChrono;
@@ -27,6 +26,7 @@ public class GameState<R extends Robot> implements Service
     
     // La hook factory est privée. Elle n'est pas copiée d'un gamestate à l'autre.
     private HookFactory hookfactory;
+    
     private int indice_memory_manager;
     
     private Log log;
@@ -52,7 +52,11 @@ public class GameState<R extends Robot> implements Service
         this.log = log;
         this.gridspace = gridspace;
         this.robot = robot;
-        this.hookfactory = hookfactory;        
+        this.hookfactory = hookfactory;
+        if(robot instanceof RobotReal)
+        	robot.setHookFinMatch(hookfactory.getHooksFinMatchReal(this));
+        else
+            robot.setHookFinMatch(hookfactory.getHooksFinMatchChrono(this));
         updateConfig();
     }
     
@@ -110,33 +114,33 @@ public class GameState<R extends Robot> implements Service
      */
 	public long getHash()
 	{
-		// un long est codé sur 64 bits.
-		long hash = 0;
-		RobotChrono robotchrono = (RobotChrono) robot;
-		if(robotchrono.isAtPathfindingNodes())
-		{
-			hash = gridspace.getHashObstaclesMobiles(); // codé sur autant de bits qu'il le faut puisqu'il est dans les bits de poids forts
-			hash = (hash << 1) | (robotchrono.areTapisPoses()?1:0); // information sur les tapis
-			hash = (hash << 6) | robotchrono.getPositionPathfinding().ordinal(); // codé sur 6 bits (ce qui laisse de la marge)
-			hash = (hash << (2*GameElementNames.values().length)) | gridspace.getHashTable(); // codé sur 2 bits par élément de jeux (2 bit par Tribool)
-			hash = (hash << 9) | robot.getPointsObtenus(); // d'ici provient le &511 de StrategyArcManager (511 = 2^9 - 1)
-		}
-		else
-		{
-			// Pour la position, on ne prend pas les bits de poids trop faibles dont le risque de collision est trop grand
-			hash = gridspace.getHashObstaclesMobiles(); // codé sur autant de bits qu'il le faut puisqu'il est dans les bits de poids forts
-			hash = (hash << 1) | (robotchrono.areTapisPoses()?1:0); // information sur les tapis
-			hash = (hash << 3) | ((robotchrono.getPosition().x >> 2)&7); // petit hash sur 3 bits
-			hash = (hash << 3) | ((robotchrono.getPosition().y >> 2)&7); // petit hash sur 3 bits
-			hash = (hash << (2*GameElementNames.values().length)) | gridspace.getHashTable(); // codé sur 2 bits par élément de jeux (2 bit par Tribool)
-			hash = (hash << 9) | robot.getPointsObtenus(); // d'ici provient le &511 de StrategyArcManager (511 = 2^9 - 1)
-		}
+		/**
+		 * Un long est codé sur 64 bits.
+		 * T'es content Martial, y'a assez de commentaires?
+		 * Je peux en rajouter si tu veux.
+		 * La vitesse de pointe d'une autruche est de 70km/h (dans le référentiel de Piccadilly Circus)
+		 * C'est plus rapide que RCVA. Du coup, on sait comment faire pour les battre.
+		 */		
+		long hash;
+		hash = gridspace.getHash(); // codé sur le reste
+		hash = (hash << 16) | ((RobotChrono) robot).getHash(); // codé sur 16 bits (cf getHash() de RobotChrono)
 		return hash;
+	}
+	
+	public void printHash()
+	{
+		gridspace.printHash();
+		((RobotChrono)robot).printHash();
 	}
 
 	public void setIndiceMemoryManager(int indice)
 	{
 		indice_memory_manager = indice;
+	}
+	
+	public void updateHookFinMatch(int dateLimite)
+	{
+		robot.updateHookFinMatch(dateLimite);
 	}
 
 }

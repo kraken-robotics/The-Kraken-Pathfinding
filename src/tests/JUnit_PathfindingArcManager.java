@@ -50,9 +50,13 @@ public class JUnit_PathfindingArcManager extends JUnit_Test {
 		Assert.assertTrue(pathfindingarcmanager.hasNext(state_chrono));
 		Assert.assertEquals(PathfindingNodes.BAS, pathfindingarcmanager.next());
 		Assert.assertTrue(pathfindingarcmanager.hasNext(state_chrono));
+		Assert.assertEquals(PathfindingNodes.SORTIE_ZONE_DEPART, pathfindingarcmanager.next());
+		Assert.assertTrue(pathfindingarcmanager.hasNext(state_chrono));
 		Assert.assertEquals(PathfindingNodes.SORTIE_CLAP_DROIT, pathfindingarcmanager.next());
 		Assert.assertTrue(pathfindingarcmanager.hasNext(state_chrono));
 		Assert.assertEquals(PathfindingNodes.SORTIE_TAPIS, pathfindingarcmanager.next());
+		Assert.assertTrue(pathfindingarcmanager.hasNext(state_chrono));
+		Assert.assertEquals(PathfindingNodes.SECOURS_0, pathfindingarcmanager.next());
 		Assert.assertTrue(pathfindingarcmanager.hasNext(state_chrono));
 		Assert.assertEquals(PathfindingNodes.SECOURS_1, pathfindingarcmanager.next());
 		Assert.assertTrue(pathfindingarcmanager.hasNext(state_chrono));

@@ -72,11 +72,11 @@ public class JUnit_Pathfinding extends JUnit_Test {
     {
     	for(PathfindingNodes i: PathfindingNodes.values())
         	for(PathfindingNodes j: PathfindingNodes.values())
-    		{
-        		state_chrono.robot.reinitDate();
+        	{
+    			state_chrono.robot.reinitDate();
     			state_chrono.robot.setPosition(i.getCoordonnees());
     			pathfinding.computePath(state_chrono, j, true);
-    		}
+        	}
     }
 	
 	@Test
@@ -113,21 +113,16 @@ public class JUnit_Pathfinding extends JUnit_Test {
     }
 
 	@Test
-    public void test_benchmark_pathfinding() throws Exception
-    {
-		Random randomgenerator = new Random();
-		int nb_iter = 50000;
-		long date_avant = System.currentTimeMillis();
-		for(int k = 0; k < nb_iter; k++)
-		{
-			PathfindingNodes i = PathfindingNodes.values()[randomgenerator.nextInt(PathfindingNodes.values().length)];
-			PathfindingNodes j = PathfindingNodes.values()[randomgenerator.nextInt(PathfindingNodes.values().length)];
-			state_chrono.robot.setPositionPathfinding(i);
-			pathfinding.computePath(state_chrono, j, true);
-		}
-		log.debug("Durée moyenne en µs: "+1000*(System.currentTimeMillis()-date_avant)/nb_iter, this);
-    }
-
+	public void test_pathfinding2() throws Exception
+	{
+		PathfindingNodes i = PathfindingNodes.SORTIE_ZONE_DEPART;
+		PathfindingNodes j = PathfindingNodes.CLAP_GAUCHE;
+		state_chrono.robot.setPositionPathfinding(i);
+		ArrayList<PathfindingNodes> chemin = pathfinding.computePath(state_chrono, j, true);
+		for(PathfindingNodes n: chemin)
+			log.debug(n, this);
+	}
+	
 	@Test
     public void test_pathfinding() throws Exception
     {
@@ -150,7 +145,9 @@ public class JUnit_Pathfinding extends JUnit_Test {
 			PathfindingNodes i = PathfindingNodes.values()[randomgenerator.nextInt(PathfindingNodes.values().length)];
 			PathfindingNodes j = PathfindingNodes.values()[randomgenerator.nextInt(PathfindingNodes.values().length)];
 			state_chrono.robot.setPositionPathfinding(i);
+			long old_hash = state_chrono.getHash();
 			pathfinding.computePath(state_chrono, j, true);
+			Assert.assertEquals(old_hash, state_chrono.getHash());
 			Assert.assertTrue(memorymanager.isMemoryManagerEmpty());
 		}
     }

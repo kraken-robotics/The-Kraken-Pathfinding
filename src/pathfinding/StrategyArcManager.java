@@ -21,7 +21,6 @@ import exceptions.PathfindingException;
 import exceptions.PathfindingRobotInObstacleException;
 import exceptions.PointSortieException;
 import exceptions.ScriptHookException;
-import exceptions.UnknownScriptException;
 import exceptions.strategie.ScriptException;
 
 /**
@@ -32,7 +31,7 @@ import exceptions.strategie.ScriptException;
 
 public class StrategyArcManager implements Service, ArcManager {
 
-//	private Log log;
+	private Log log;
 	private ScriptManager scriptmanager;
 	private AStar<PathfindingArcManager, PathfindingNodes> astar;
 	private HookFactory hookfactory;
@@ -45,13 +44,14 @@ public class StrategyArcManager implements Service, ArcManager {
 	
 	public StrategyArcManager(Log log, Config config, ScriptManager scriptmanager, GameState<RobotReal> real_gamestate, HookFactory hookfactory, AStar<PathfindingArcManager, PathfindingNodes> astar) throws PointSortieException
 	{
-//		this.log = log;
+		this.log = log;
 		this.scriptmanager = scriptmanager;
 		this.hookfactory = hookfactory;
 		this.astar = astar;
 		try {
 			checkPointSortie(real_gamestate.cloneGameState());
 		} catch (FinMatchException e) {
+			// Impossible
 			e.printStackTrace();
 		}
 		updateConfig();
@@ -66,30 +66,40 @@ public class StrategyArcManager implements Service, ArcManager {
 			if(s.canIDoIt())
 			{
 				Script script = scriptmanager.getScript(s);
-				for(Integer v: script.meta_version(gamestate))
+				if(script.getVersions(gamestate).size() == 0)
+					log.debug("Aucune version pour "+s, this);
+				for(Integer v: script.getVersions(gamestate))
 				{
 					// On n'ajoute que les versions qui sont accessibles
 					try {
 						ArrayList<PathfindingNodes> chemin = astar.computePath(gamestate, script.point_entree(v), true);
+						log.debug("Chemin trouvé", this);
 						listeDecisions.add(new Decision(chemin, s, v));
 						try {
 							// On ne rajoute la version où on ne shoot pas seulement si le chemin proposé est différent
 							ArrayList<PathfindingNodes> chemin2 = astar.computePath(gamestate, script.point_entree(v), false);
+							log.debug("Chemin trouvé", this);
 							if(!chemin2.equals(chemin))
 								listeDecisions.add(new Decision(chemin2, s, v));
 						} catch (PathfindingException
 								| PathfindingRobotInObstacleException
 								| FinMatchException e) {
+							log.debug("Pas de chemin pour "+s+" "+v+" ("+gamestate.robot.getPositionPathfinding()+" et "+script.point_entree(v)+")", this);
 						}
 					} catch (PathfindingException
 							| PathfindingRobotInObstacleException
 							| FinMatchException e) {
+						log.debug("Pas de chemin pour "+s+" "+v+" ("+gamestate.robot.getPositionPathfinding()+" et "+script.point_entree(v)+") en dégommant", this);
 					}
 				}
 			}
+			else
+				log.warning("Je ne peux pas faire "+s+"...", this);
 		}
 		
 		iterator = -1;
+		for(Decision d: listeDecisions)
+			log.debug(d, this);
 	}
 
 	@Override
@@ -103,12 +113,11 @@ public class StrategyArcManager implements Service, ArcManager {
 	@Override
 	public Decision next()
 	{
-//		log.debug("Prochain voisin: "+listeDecisions.get(iterator).script_name, this);
 		return listeDecisions.get(iterator);
 	}
 
 	@Override
-	public int distanceTo(GameState<RobotChrono> state, Arc arc) throws FinMatchException, UnknownScriptException, ScriptException
+	public int distanceTo(GameState<RobotChrono> state, Arc arc) throws FinMatchException, ScriptException
 	{
 		Decision d = (Decision)arc;
 		Script s = scriptmanager.getScript(d.script_name);
@@ -117,9 +126,8 @@ public class StrategyArcManager implements Service, ArcManager {
 		state.robot.suit_chemin(d.chemin, hooks_table);
 		try {
 			s.agit(d.version, state);
-			state.robot.setPositionPathfinding(s.point_sortie(d.version));
 		} catch (ScriptHookException e) {
-			// TODO Auto-generated catch block
+			// Impossible avec un robotchrono.
 			e.printStackTrace();
 		}
 		state.robot.setPositionPathfinding(s.point_sortie(d.version));
@@ -140,6 +148,7 @@ public class StrategyArcManager implements Service, ArcManager {
 		int indice = hashes.indexOf(hash);
 		if(indice == -1)
 		{
+			log.debug("Size: "+hashes.size(), this);
 			hashes.add(hash);
 			return hashes.size()-1;
 		}
@@ -173,7 +182,7 @@ public class StrategyArcManager implements Service, ArcManager {
 		for(ScriptNames s: ScriptNames.values())
 		{
 			Script script = scriptmanager.getScript(s);
-			for(Integer v: script.meta_version(gamestate))
+			for(Integer v: script.getVersions(gamestate))
 			{
 				gamestate.robot.setPositionPathfinding(script.point_entree(v));
 				try {
@@ -194,24 +203,6 @@ public class StrategyArcManager implements Service, ArcManager {
 			throw new PointSortieException();
 	}
 
-	public void executeDecision(GameState<RobotChrono> state, Decision decision)
-	{
-		Script s;
-		try {
-			// Normalement, quand executeDecision est appelé, on est déjà au point d'entrée
-			s = scriptmanager.getScript(decision.script_name);
-			state.robot.setPositionPathfinding(s.point_entree(decision.version));
-			s.agit(decision.version, state);
-			state.robot.setPositionPathfinding(s.point_sortie(decision.version));
-		} catch (ScriptException e) {
-			e.printStackTrace();
-		} catch (FinMatchException e) {
-			e.printStackTrace();
-		} catch (ScriptHookException e) {
-			e.printStackTrace();
-		}
-	}
-	
 	public void setDateLimite(int dateLimite)
 	{
 		this.dateLimite = dateLimite;

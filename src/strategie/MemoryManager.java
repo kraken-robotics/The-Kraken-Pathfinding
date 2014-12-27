@@ -46,6 +46,7 @@ public class MemoryManager implements Service {
 				gamestate.add(model.cloneGameState(gamestate.size()));
 			}
 		} catch (FinMatchException e) {
+			// Impossible
 			e.printStackTrace();
 		}
 		log.debug("Instanciation finie", this);
@@ -56,13 +57,15 @@ public class MemoryManager implements Service {
 	{
 		GameState<RobotChrono> out;
 		try {
+			out = gamestate.get(firstAvailable);
 			firstAvailable++;
-			return out = gamestate.get(firstAvailable-1);
+			return out;
 		}
 		catch(ArrayIndexOutOfBoundsException e)
 		{
 			out = model.cloneGameState(firstAvailable);
 			gamestate.add(out);
+			firstAvailable++;
 			return out;
 		}
 	}

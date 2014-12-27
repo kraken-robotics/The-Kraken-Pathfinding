@@ -30,7 +30,8 @@ public class GridSpace implements Service {
 	private static NodesConnection[][] isConnectedModel = null;
 
 	// Rempli de ALWAYS_IMPOSSIBLE, TMP_IMPOSSIBLE, POSSIBLE et null
-	private NodesConnection[][] isConnectedModelCache = new NodesConnection[PathfindingNodes.values().length][PathfindingNodes.values().length];
+	// Le hash dépend de avoidGameElement
+	private NodesConnection[][][] isConnectedModelCache = new NodesConnection[PathfindingNodes.length][PathfindingNodes.length][2];
 
 	// Doit-on éviter les éléments de jeux? Ou peut-on foncer dedans?
 	private boolean avoidGameElement = true;
@@ -57,7 +58,7 @@ public class GridSpace implements Service {
 	
     public void check_pathfinding_nodes()
     {
-    	for(PathfindingNodes i: PathfindingNodes.values())
+    	for(PathfindingNodes i: PathfindingNodes.values)
     		if(obstaclemanager.is_obstacle_fixe_present_pathfinding(i.getCoordonnees()))
     			log.warning("Node "+i+" dans obstacle fixe!", this);
     }
@@ -66,16 +67,20 @@ public class GridSpace implements Service {
 	private void initStatic()
 	{
 		log.debug("Calcul de isConnectedModel", this);
-		isConnectedModel = new NodesConnection[PathfindingNodes.values().length][PathfindingNodes.values().length];
+		isConnectedModel = new NodesConnection[PathfindingNodes.length][PathfindingNodes.length];
 
-		for(PathfindingNodes i : PathfindingNodes.values())			
-			for(PathfindingNodes j : PathfindingNodes.values())
+		for(PathfindingNodes i : PathfindingNodes.values)			
+			for(PathfindingNodes j : PathfindingNodes.values)
 			{
 				if(obstaclemanager.obstacle_fixe_dans_segment_pathfinding(i.getCoordonnees(), j.getCoordonnees()))
 					isConnectedModel[i.ordinal()][j.ordinal()] = NodesConnection.ALWAYS_IMPOSSIBLE;
 				else
 					isConnectedModel[i.ordinal()][j.ordinal()] = null;
 			}
+		
+		// by pass manuel: on peut sortir de la zone de départ
+		isConnectedModel[PathfindingNodes.POINT_DEPART.ordinal()][PathfindingNodes.SORTIE_ZONE_DEPART.ordinal()] = null;
+		isConnectedModel[PathfindingNodes.SORTIE_ZONE_DEPART.ordinal()][PathfindingNodes.POINT_DEPART.ordinal()] = null;
 	}
 	
 	/**
@@ -84,9 +89,12 @@ public class GridSpace implements Service {
 	 */
 	public void reinitConnections()
 	{
-		for(PathfindingNodes i : PathfindingNodes.values())			
-			for(PathfindingNodes j : PathfindingNodes.values())
-				isConnectedModelCache[i.ordinal()][j.ordinal()] = isConnectedModel[i.ordinal()][j.ordinal()];
+		for(PathfindingNodes i : PathfindingNodes.values)			
+			for(PathfindingNodes j : PathfindingNodes.values)
+			{
+				isConnectedModelCache[i.ordinal()][j.ordinal()][0] = isConnectedModel[i.ordinal()][j.ordinal()];
+				isConnectedModelCache[i.ordinal()][j.ordinal()][1] = isConnectedModel[i.ordinal()][j.ordinal()];
+			}
 	}
 
 	/**
@@ -95,30 +103,33 @@ public class GridSpace implements Service {
 	 */
 	public boolean isTraversable(PathfindingNodes i, PathfindingNodes j, int date)
 	{
-		if(isConnectedModelCache[i.ordinal()][j.ordinal()] != null)
+//		log.debug("avoidGameElement: "+avoidGameElement, this);
+		if(isConnectedModelCache[i.ordinal()][j.ordinal()][getHashBool()] != null)
 		{
-//			log.debug("Trajet entre "+i+" et "+j+": utilisation du cache", this);			
-			return isConnectedModelCache[i.ordinal()][j.ordinal()].isTraversable();
+//			log.debug("Trajet entre "+i+" et "+j+": utilisation du cache. Traversable: "+isConnectedModelCache[i.ordinal()][j.ordinal()][getHashBool()].isTraversable(), this);
+			return isConnectedModelCache[i.ordinal()][j.ordinal()][getHashBool()].isTraversable();
 		}
 		else if(obstaclemanager.obstacle_proximite_dans_segment(i.getCoordonnees(), j.getCoordonnees(), date))
 		{
 //			log.debug("Trajet entre "+i+" et "+j+" impossible à cause d'un obstacle de proximité", this);
-			isConnectedModelCache[i.ordinal()][j.ordinal()] = NodesConnection.TMP_IMPOSSIBLE;
+			isConnectedModelCache[i.ordinal()][j.ordinal()][0] = NodesConnection.TMP_IMPOSSIBLE;
+			isConnectedModelCache[i.ordinal()][j.ordinal()][1] = NodesConnection.TMP_IMPOSSIBLE;
 		}
 		else if(avoidGameElement && obstaclemanager.obstacle_table_dans_segment(i.getCoordonnees(), j.getCoordonnees()))
 		{
 //			log.debug("Trajet entre "+i+" et "+j+" impossible à cause d'un élément de jeu", this);
-			isConnectedModelCache[i.ordinal()][j.ordinal()] = NodesConnection.TMP_IMPOSSIBLE;
+			isConnectedModelCache[i.ordinal()][j.ordinal()][getHashBool()] = NodesConnection.TMP_IMPOSSIBLE;
 		}
 		else
 		{
 //			log.debug("Pas de problème entre "+i+" et "+j, this);
-			isConnectedModelCache[i.ordinal()][j.ordinal()] = NodesConnection.POSSIBLE;
+			isConnectedModelCache[i.ordinal()][j.ordinal()][getHashBool()] = NodesConnection.POSSIBLE;
 		}
 
 		// symétrie!
-		isConnectedModelCache[j.ordinal()][i.ordinal()] = isConnectedModelCache[i.ordinal()][j.ordinal()];
-		return isConnectedModelCache[i.ordinal()][j.ordinal()].isTraversable();
+		isConnectedModelCache[j.ordinal()][i.ordinal()][0] = isConnectedModelCache[i.ordinal()][j.ordinal()][0];
+		isConnectedModelCache[j.ordinal()][i.ordinal()][1] = isConnectedModelCache[i.ordinal()][j.ordinal()][1];
+		return isConnectedModelCache[i.ordinal()][j.ordinal()][getHashBool()].isTraversable();
 	}
 	
 	/**
@@ -134,7 +145,7 @@ public class GridSpace implements Service {
 	{
 		PathfindingNodes indice_point_depart = null;
 		float distance_min = Float.MAX_VALUE;
-		for(PathfindingNodes i : PathfindingNodes.values())
+		for(PathfindingNodes i : PathfindingNodes.values)
 		{
 			float tmp = point.squaredDistance(i.getCoordonnees());
 			if(tmp < distance_min && !obstaclemanager.obstacle_proximite_dans_segment(point, i.getCoordonnees(), date))
@@ -235,6 +246,10 @@ public class GridSpace implements Service {
 		return obstaclemanager.isDone(element);
 	}
 
+	/**
+	 * Utilisé pour les tests uniquement
+	 * @return
+	 */
 	public int getHashTable()
 	{
 		return obstaclemanager.getHashTable();
@@ -244,4 +259,23 @@ public class GridSpace implements Service {
 	{
 		return obstaclemanager.getHashObstaclesMobiles();
 	}
+
+	public long getHash()
+	{
+		long hash = getHashObstaclesMobiles(); // codé sur autant de bits qu'il le faut puisqu'il est dans les bits de poids forts
+		hash = (hash << (2*GameElementNames.values().length)) | obstaclemanager.getHashTable(); // codé sur 2 bits par élément de jeux (2 bit par Tribool)
+		return hash;
+	}
+
+	public void printHash()
+	{
+		log.debug("Nb obstacles: "+getHashObstaclesMobiles(), this);
+		obstaclemanager.printHash();
+	}
+	
+	private int getHashBool()
+	{
+		return avoidGameElement?1:0;
+	}
+	
 }

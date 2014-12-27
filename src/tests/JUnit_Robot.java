@@ -10,6 +10,7 @@ import robot.Robot;
 import robot.RobotChrono;
 import robot.RobotReal;
 import smartMath.Vec2;
+import strategie.GameState;
 import enums.ConfigInfo;
 import enums.PathfindingNodes;
 import enums.ServiceNames;
@@ -22,14 +23,15 @@ import enums.ServiceNames;
 
 public class JUnit_Robot extends JUnit_Test
 {
-	private RobotReal robotreal;
-	private RobotChrono robotchrono;
+	private GameState<RobotReal> state;
+	private GameState<RobotChrono> chronostate;
 	
-    @Before
+    @SuppressWarnings("unchecked")
+	@Before
     public void setUp() throws Exception {
         super.setUp();
-        robotreal = (RobotReal) container.getService(ServiceNames.ROBOT_REAL);
-        robotchrono = robotreal.cloneIntoRobotChrono();
+        state = (GameState<RobotReal>) container.getService(ServiceNames.REAL_GAME_STATE);
+        chronostate = state.cloneGameState();
     }
 
     @Test
@@ -40,7 +42,7 @@ public class JUnit_Robot extends JUnit_Test
     		// TODO: debugger locomotion pour passer ce test
     		Robot robot;
 //    		if(j == 0)
-    			robot = robotchrono;
+    			robot = chronostate.robot;
 //    		else
 //            	robot = robotreal;
 	    	for(int i = 0; i < 2; i++)

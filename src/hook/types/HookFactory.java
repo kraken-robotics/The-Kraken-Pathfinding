@@ -36,7 +36,7 @@ public class HookFactory implements Service
 	private int dureeMatch = 90000;
 	
 	private ArrayList<Hook> hooks_table_chrono = null;
-	private Hook hook_fin_match_chrono = null;
+	private HookDateFinMatch hook_fin_match_chrono = null;
 		
 	/**
 	 *  appellé uniquement par Container.
@@ -76,7 +76,7 @@ public class HookFactory implements Service
 	 * @param tolerancy le hook sera déclenché si la distance entre le point de déclenchement et la position du robot est inférieure a cette valeur
 	 * @return le hook créé
 	 */
-	public Hook newHookPosition(Vec2 position, int tolerancy, GameState<?> state)
+	public HookPosition newHookPosition(Vec2 position, int tolerancy, GameState<?> state)
 	{
 		return new HookPosition(config, log, state, position, tolerancy);
 	}
@@ -87,7 +87,7 @@ public class HookFactory implements Service
 	 * @param position de déclenchement du hook
 	 * @return le hook créé
 	 */
-	public Hook newHookPosition(Vec2 position, GameState<?> state)
+	public HookPosition newHookPosition(Vec2 position, GameState<?> state)
 	{
 		return newHookPosition(position, positionTolerancy, state);
 	}
@@ -103,12 +103,12 @@ public class HookFactory implements Service
 	 * @param state
 	 * @return
 	 */
-	public Hook newHookDate(long date, GameState<?> state)
+	public HookDate newHookDate(long date, GameState<?> state)
 	{
 		return new HookDate(config, log, state, date);
 	}
 
-	public Hook newHookDateFinMatch(long date, GameState<?> state)
+	public HookDateFinMatch newHookDateFinMatch(long date, GameState<?> state)
 	{
 		return new HookDateFinMatch(config, log, state, date);
 	}
@@ -127,7 +127,7 @@ public class HookFactory implements Service
 	 * @param tolerancy le hook sera déclenché si l'écart entre l'abscisse de déclenchement et la position du robot est inférieur a cette valeur
 	 * @return le hook créé
 	 */
-	public Hook newHookX(float xValue, int tolerancy, GameState<?> state)
+	public HookX newHookX(float xValue, int tolerancy, GameState<?> state)
 	{
 		return new HookX(config, log, state, xValue, tolerancy);
 	}
@@ -139,7 +139,7 @@ public class HookFactory implements Service
 	 * @param xValue de déclenchement du hook
 	 * @return le hook créé
 	 */
-	public Hook newHookX(float xValue, GameState<?> state)
+	public HookX newHookX(float xValue, GameState<?> state)
 	{
 		return newHookX(xValue, positionTolerancy, state);
 	}
@@ -153,7 +153,7 @@ public class HookFactory implements Service
 	 * @param tolerancy le hook sera déclenché si l'écart entre l'abscisse de déclenchement et la position du robot est inférieur a cette valeur
 	 * @return le hook créé
 	 */
-    public Hook newHookXisGreater(float xValue, float tolerancy, GameState<?> state)
+    public HookXisGreater newHookXisGreater(float xValue, float tolerancy, GameState<?> state)
     {
         return new HookXisGreater(config, log, state, xValue, tolerancy);
     }
@@ -166,7 +166,7 @@ public class HookFactory implements Service
 	 * @param tolerancy le hook sera déclenché si l'écart entre l'abscisse de déclenchement et la position du robot est inférieur a cette valeur
 	 * @return le hook créé
 	 */
-    public Hook newHookXisLesser(float xValue, float tolerancy, GameState<?> state)
+    public HookXisLesser newHookXisLesser(float xValue, float tolerancy, GameState<?> state)
     {
         return new HookXisLesser(config, log, state, xValue, tolerancy);
     }
@@ -185,7 +185,7 @@ public class HookFactory implements Service
 	 * @param tolerancy le hook sera déclenché si l'écart entre l'ordonnée de déclenchement et la position du robot est inférieur a cette valeur
 	 * @return le hook créé
 	 */
-    public Hook newHookY(float yValue, int tolerancy, GameState<?> state)
+    public HookY newHookY(float yValue, int tolerancy, GameState<?> state)
     {
         return new HookY(config, log, state, yValue, tolerancy);
     }
@@ -198,7 +198,7 @@ public class HookFactory implements Service
 	 * @param tolerancy le hook sera déclenché si l'écart entre l'ordonnée de déclenchement et la position du robot est inférieur a cette valeur
 	 * @return le hook créé
 	 */
-    public Hook newHookY(float yValue, GameState<?> state)
+    public HookY newHookY(float yValue, GameState<?> state)
     {
         return newHookY(yValue, positionTolerancy, state);
     }
@@ -208,7 +208,7 @@ public class HookFactory implements Service
 	 * @param yValue de déclenchement du hook
 	 * @return le hook créé
 	 */
-    public Hook newHookYisGreater(float yValue, GameState<?> state)
+    public HookYisGreater newHookYisGreater(float yValue, GameState<?> state)
     {
         return new HookYisGreater(config, log, state, yValue);
     }
@@ -219,7 +219,20 @@ public class HookFactory implements Service
      * @param date_limite
      * @return
      */
-    public Hook getHooksFinMatchChrono(GameState<RobotChrono> state, int date_limite)
+    public HookDateFinMatch getHooksFinMatchChrono(GameState<?> state)
+    {
+    	if(hook_fin_match_chrono == null)
+    		hook_fin_match_chrono = getHooksFinMatch(state, true);
+    	return hook_fin_match_chrono;
+    }
+
+    /**
+     * Met à jour le hook de fin de match d'un chrono gamestate.
+     * @param state
+     * @param date_limite
+     * @return
+     */
+    public HookDateFinMatch updateHooksFinMatch(GameState<RobotChrono> state, int date_limite)
     {
     	if(hook_fin_match_chrono == null)
     		hook_fin_match_chrono = getHooksFinMatch(state, true);
@@ -230,8 +243,7 @@ public class HookFactory implements Service
     	 * FinMatchCheck n'en utilise pas.
     	 */
 		((HookDateFinMatch)hook_fin_match_chrono).updateDate(date_limite);
-		
-    	return hook_fin_match_chrono;
+	    	return hook_fin_match_chrono;
     }
 
     /**
@@ -239,7 +251,7 @@ public class HookFactory implements Service
      * @param state
      * @return
      */
-    public Hook getHooksFinMatchReal(GameState<RobotReal> state)
+    public HookDateFinMatch getHooksFinMatchReal(GameState<?> state)
     {
     	return getHooksFinMatch(state, false);
     }
@@ -251,11 +263,11 @@ public class HookFactory implements Service
      * @param isChrono
      * @return
      */
-    private Hook getHooksFinMatch(GameState<?> state, boolean isChrono)
+    private HookDateFinMatch getHooksFinMatch(GameState<?> state, boolean isChrono)
     {
         // Cette date est celle demandée à la real gamestate
         // Les chrono gamestate la modifieront si besoin est
-        Hook hook_fin_match = newHookDateFinMatch(dureeMatch, state);
+    	HookDateFinMatch hook_fin_match = newHookDateFinMatch(dureeMatch, state);
     	hook_fin_match.ajouter_callback(new Callback(new FinMatchCheck(isChrono)));
 
     	return hook_fin_match;
@@ -274,11 +286,10 @@ public class HookFactory implements Service
     	// on met à jour dans les hooks les références (gridspace, robot, ...)
 		// C'est bien plus rapide que de créer de nouveaux hooks
 		for(Hook hook: hooks_table_chrono)
-		{
 			hook.updateGameState(state);
-			if(hook instanceof HookDateFinMatch)
-				((HookDateFinMatch)hook).updateDate(date_limite);
-		}
+
+		// Le hook de fin de match est toujours en première position
+		((HookDateFinMatch)hooks_table_chrono.get(0)).updateDate(date_limite);
 
     	return hooks_table_chrono;
     }
@@ -299,10 +310,9 @@ public class HookFactory implements Service
     	ArrayList<Hook> hooks_entre_scripts = new ArrayList<Hook>();
 		Hook hook;
 		GameElementDone action;
-
-		Hook hook_fin_match = newHookDateFinMatch(dureeMatch, state);
-    	hook_fin_match.ajouter_callback(new Callback(new FinMatchCheck(isChrono)));	
-    	hooks_entre_scripts.add(hook_fin_match);
+		
+		// Il faut s'assurer que le hook de fin de match est toujours en première position
+		hooks_entre_scripts.add(getHooksFinMatch(state, isChrono));
     	
 		for(GameElementNames n: GameElementNames.values())
 		{

@@ -3,6 +3,7 @@ package robot;
 import java.util.ArrayList;
 
 import hook.Hook;
+import hook.types.HookDateFinMatch;
 import smartMath.Vec2;
 import container.Service;
 import enums.ActuatorOrder;
@@ -49,6 +50,8 @@ public abstract class Robot implements Service
     public abstract int getTempsDepuisDebutMatch();
     public abstract RobotChrono cloneIntoRobotChrono() throws FinMatchException;
 
+    protected HookDateFinMatch hookFinMatch;
+    
     /*
      * Actionneurs
      */
@@ -82,6 +85,16 @@ public abstract class Robot implements Service
 		this.log = log;
 		vitesse = Speed.BETWEEN_SCRIPTS;		
 		updateConfig();
+	}
+	
+	public void setHookFinMatch(HookDateFinMatch hookFinMatch)
+	{
+		this.hookFinMatch = hookFinMatch;
+	}
+	
+	public void updateHookFinMatch(int dateLimite)
+	{
+		hookFinMatch.updateDate(dateLimite);
 	}
 
 	public void updateConfig()

@@ -425,4 +425,9 @@ public class ObstacleManager implements Service
 		return table.getHash();
 	}
 
+	public void printHash()
+	{
+		table.printHash();
+	}
+
 }

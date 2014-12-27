@@ -1,8 +1,8 @@
 package pathfinding;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.ListIterator;
 
 import container.Service;
 import enums.ConfigInfo;
@@ -11,10 +11,8 @@ import exceptions.FinMatchException;
 import exceptions.GridSpaceException;
 import exceptions.PathfindingException;
 import exceptions.PathfindingRobotInObstacleException;
-import exceptions.UnknownScriptException;
 import exceptions.strategie.ScriptException;
 import robot.RobotChrono;
-import scripts.Decision;
 import smartMath.Vec2;
 import strategie.GameState;
 import strategie.MemoryManager;
@@ -50,7 +48,7 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 	
 	private PathfindingException pathfindingexception;
 	
-//	private Log log;
+	private Log log;
 	private Config config;
 	private AM arcmanager;
 	private MemoryManager memorymanager;
@@ -62,7 +60,7 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 	 */
 	public AStar(Log log, Config config, AM arcmanager, MemoryManager memorymanager)
 	{
-//		this.log = log;
+		this.log = log;
 		this.config = config;
 		this.arcmanager = arcmanager;
 		this.memorymanager = memorymanager;
@@ -102,7 +100,11 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 			new Exception().printStackTrace();
 			return null;
 		}
-		((StrategyArcManager)arcmanager).executeDecision(state, (Decision)decision);
+		try {
+			arcmanager.distanceTo(state, decision);
+		} catch (ScriptException e) {
+			return new ArrayList<A>();
+		}
 		return computeStrategy(state);
 	}
 
@@ -114,6 +116,7 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 		// pour le calcul de trajectoire de secours		
 		((StrategyArcManager)arcmanager).reinitHashes();
 		ArrayList<A> cheminArc;
+		
 		cheminArc = process(depart, arcmanager, true);
 		if(cheminArc.size() == 0)
 		{
@@ -208,24 +211,28 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 		// Estimated total cost from start to goal through y.
 		f_score[hash_depart] = g_score[hash_depart] + arcmanager.heuristicCost(depart);
 		
-		GameState<RobotChrono> current;
-		Iterator<GameState<RobotChrono>> nodeIterator;
+		GameState<RobotChrono> current = null;
 
-		while (openset.size() != 0)
+		while (!openset.isEmpty())
 		{
-			// current is affected by the node in openset having the lowest f_score[] value
-			nodeIterator = openset.iterator();
-			current = nodeIterator.next();
-			
-			// La liste est triée, on a donc directement l'élément minimisant f
-/*			
-			while(nodeIterator.hasNext())
+			ListIterator<GameState<RobotChrono>> iterator = openset.listIterator();
+			int min_score = Integer.MAX_VALUE;
+			int potential_min, index_min = 0, index = -1;
+			GameState<RobotChrono> tmp;
+			while(iterator.hasNext())
 			{
-				GameState<RobotChrono> tmp = nodeIterator.next();
-				if(f_score[arcmanager.getHash(tmp)] < f_score[arcmanager.getHash((current))])
+				index++;
+				tmp = iterator.next();
+				potential_min = f_score[arcmanager.getHash(tmp)];
+				if(min_score > potential_min)
+				{
+					min_score = potential_min;
 					current = tmp;
+					index_min = index;
+				}
 			}
-*/
+			openset.remove(index_min);
+			
 			int hash_current = arcmanager.getHash(current);
 
 			// élément déjà fait
@@ -233,21 +240,27 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 			if(closedset[hash_current])
 			{
 				current = memorymanager.destroyGameState(current);
-				openset.removeFirst();
 				continue;
 			}
 			
+			// Si on est arrivé, on reconstruit le chemin
 			if(arcmanager.isArrive(hash_current))
 			{
+				current = memorymanager.destroyGameState(current);
 				freeGameStateOpenSet(openset);
 				return reconstruct(hash_current);
 			}
 
-			openset.removeFirst();
-			
 			closedset[hash_current] = true;
-			arcmanager.reinitIterator(current);
 		    
+/*			if(arcmanager instanceof StrategyArcManager)
+			{
+				log.debug("Actuel: ", this);
+				current.printHash();
+			}*/
+
+			arcmanager.reinitIterator(current);
+
 			while(arcmanager.hasNext(current))
 			{
 				A voisin = arcmanager.next();
@@ -260,15 +273,12 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 				int tentative_g_score;
 					try {
 						tentative_g_score = g_score[hash_current] + arcmanager.distanceTo(successeur, voisin);
-					} catch (UnknownScriptException | ScriptException e) {
+					} catch (ScriptException | FinMatchException e) {
 						continue;
 					}
-				
 
-//				if(arcmanager instanceof StrategyArcManager)
-//					log.debug(voisin+" "+successeur.robot.areTapisPoses(), this);
 				int hash_successeur = arcmanager.getHash(successeur);
-				
+
 				if(closedset[hash_successeur]) // si closedset contient ce hash
 				{
 					successeur = memorymanager.destroyGameState(successeur);
@@ -281,7 +291,8 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 					came_from_arc[hash_successeur] = voisin;
 					g_score[hash_successeur] = tentative_g_score;
 					f_score[hash_successeur] = tentative_g_score + arcmanager.heuristicCost(successeur);
-					add_to_openset(successeur, f_score[hash_successeur], arcmanager);
+					openset.add(successeur);
+///					add_to_openset(successeur, f_score[hash_successeur], arcmanager);
 				}
 				else
 					successeur = memorymanager.destroyGameState(successeur);
@@ -301,19 +312,28 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 			throw pathfindingexception;
 		}
 
+		log.debug("Reconstruction!", this);
+		
 		/**
 		 * Même si on n'a pas atteint l'objectif, on reconstruit un chemin partiel
 		 */
 		int note_best = Integer.MIN_VALUE;
+		int note_f_best = Integer.MAX_VALUE;
 		int best = -1;
+		// On maximise le nombre de points qu'on fait.
+		// En cas d'égalité, on prend le chemin le plus rapide.
+		
 		for(int h = 0; h < nb_max_element; h++)
 			if(closedset[h]) // si ce noeud a été parcouru (sinon getNoteReconstruct va paniquer)
 			{
 				int potentiel_note_best = arcmanager.getNoteReconstruct(h);
-				if(potentiel_note_best > note_best)
+				int potentiel_note_f_best = f_score[h];
+//				log.debug(potentiel_note_best+" en "+potentiel_note_f_best, this);
+				if(potentiel_note_best > note_best || potentiel_note_best == note_best && potentiel_note_f_best < note_f_best)
 				{
 					best = h;
 					note_best = potentiel_note_best;
+					note_f_best = potentiel_note_f_best;
 				}
 			}
 		
@@ -321,8 +341,7 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 		return reconstruct(best);
 		
 	}
-	
-	
+
 	private ArrayList<A> reconstruct(int hash) {
 		ArrayList<A> chemin = new ArrayList<A>();
 		int noeud_parent = came_from[hash];
@@ -339,20 +358,7 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 	public void freeGameStateOpenSet(LinkedList<GameState<RobotChrono>> openset2)
 	{
 		for(GameState<RobotChrono> state: openset2)
-			state = memorymanager.destroyGameState(state);
-	}
-	
-	public void add_to_openset(GameState<RobotChrono> state, int score, ArcManager arcmanager)
-	{
-		int i = 0;
-		Iterator<GameState<RobotChrono>> iterator = openset.iterator();
-		while(iterator.hasNext())
-		{
-			if(score < f_score[arcmanager.getHash(iterator.next())])
-				break;
-			i++;
-		}
-		openset.add(i, state);
+			memorymanager.destroyGameState(state);
 	}
 	
 }

@@ -54,6 +54,7 @@ public class JUnit_StrategicAStar extends JUnit_Test
     @Test
     public void test_strategy_after_decision() throws Exception
     {
+    	// TODO: mettre un chemin valide
     	Decision decision = new Decision(null, ScriptNames.ScriptClap, 0);
     	config.setDateDebutMatch();
     	GameState<RobotChrono> chronostate = gamestate.cloneGameState();

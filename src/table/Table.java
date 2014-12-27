@@ -46,7 +46,7 @@ public class Table implements Service
 	 */
 	public void setDone(GameElementNames id, Tribool done)
 	{
-		hash |= (done.hash << (2*id.ordinal()));
+		hash |= (done.getHash() << (2*id.ordinal()));
 		total[id.ordinal()].setDone(done);
 	}
 
@@ -115,6 +115,17 @@ public class Table implements Service
 	public GameElement[] getObstacles()
 	{
 		return total;
+	}
+
+	public void printHash()
+	{
+		for(GameElementNames g: GameElementNames.values())
+		{
+			int etat = (hash >> 2*g.ordinal()) % 4;
+			for(Tribool t: Tribool.values())
+				if(etat == t.getHash())
+					log.debug(g+": "+t, this);
+		}
 	}
 
 }

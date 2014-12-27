@@ -37,6 +37,7 @@ public class PathfindingArcManager implements Service, ArcManager {
 		 * En effet, les obstacles temporaires sont vérifiés à chaque copie (=chaque segment)
 		 * Et la disparition éléments de jeu n'influence pas la recherche de chemin
 		 * Par contre, à l'"exécution" par robotchrono du chemin entre deux scripts, là ils seront exécutés.
+		 * Rappel: même quand on fait un appel à RobotChrono sans hook, le hook de fin de match est exécuté
 		 */
 		int temps_debut = state.robot.getTempsDepuisDebutMatch();
 		state.robot.va_au_point_pathfinding((PathfindingNodes)arc, null);
@@ -44,6 +45,7 @@ public class PathfindingArcManager implements Service, ArcManager {
 	}
 
 	@Override
+	//12.9%
 	public int heuristicCost(GameState<RobotChrono> state1)
 	{
 		// durée de rotation minimale
@@ -62,27 +64,28 @@ public class PathfindingArcManager implements Service, ArcManager {
 	@Override
     public PathfindingNodes next()
     {
-    	return PathfindingNodes.values()[iterator];
+    	return PathfindingNodes.values[iterator];
     }
     
     @Override
     public boolean hasNext(GameState<RobotChrono> state)
     {
-    	do {
-    		iterator++;
-    		// Ce point n'est pas bon si:
-    		// c'est le noeud appelant (un noeud n'est pas son propre voisin)
-    		// le noeud appelant et ce noeud ne peuvent être joints par une ligne droite
-
-    	} while(iterator < PathfindingNodes.values().length
-    			&& (iterator == id_node_iterator
-    			|| !state.gridspace.isTraversable(PathfindingNodes.values()[id_node_iterator], PathfindingNodes.values()[iterator], state.robot.getTempsDepuisDebutMatch())));
-    	return iterator != PathfindingNodes.values().length;
+    	int max_value = PathfindingNodes.length, i;
+    	for(i = iterator+1; i < max_value; i++)
+    	{
+    		if(i == id_node_iterator)
+    			continue;
+    		if(state.gridspace.isTraversable(PathfindingNodes.values[id_node_iterator], PathfindingNodes.values[i], state.robot.getTempsDepuisDebutMatch()))
+    			break;
+    	}
+    	iterator = i;
+    	return iterator != PathfindingNodes.length;
     }
     
     @Override
     public void reinitIterator(GameState<RobotChrono> gamestate)
     {
+//    	log.debug("Réinit pathfinding iterator!", this);
     	id_node_iterator = gamestate.robot.getPositionPathfinding().ordinal();
     	iterator = -1;
     }
@@ -109,6 +112,6 @@ public class PathfindingArcManager implements Service, ArcManager {
 	 */
 	public int getNoteReconstruct(int h)
 	{
-		return (int)PathfindingNodes.values()[h].distanceTo(arrivee);
+		return (int)PathfindingNodes.values[h].distanceTo(arrivee);
 	}
 }

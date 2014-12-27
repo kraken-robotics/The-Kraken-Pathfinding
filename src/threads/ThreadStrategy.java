@@ -71,7 +71,9 @@ public class ThreadStrategy extends AbstractThread implements Service
 				if(needNewBestAfterThis != null)
 				{
 					realstate.copy(chronostate);
-					decision = strategie.computeStrategyAfter(chronostate, needNewBestAfterThis).get(0);
+					ArrayList<Decision> decisions = strategie.computeStrategyAfter(chronostate, needNewBestAfterThis);
+					printCurrentStrategy(decisions);
+					decision = decisions.get(0);
 					needNewBestAfterThis = null; // en cas d'erreur, ce n'est pas mis à null
 				}
 				realstate.copy(chronostate);
@@ -97,9 +99,17 @@ public class ThreadStrategy extends AbstractThread implements Service
 
 	public Decision getEmergencyDecision()
 	{
+		log.warning("Stratégie de secours demandée! "+decisionSecours, this);
 		return decisionSecours;
 	}
 
+	private void printCurrentStrategy(ArrayList<Decision> decisions)
+	{
+		String s = new String();
+		for(Decision d: decisions)
+			s += ", "+d.toString();
+		log.debug(s, this);
+	}
 	
 	@Override
 	public void updateConfig()

@@ -31,7 +31,7 @@ public class GameElementDone implements Executable {
 		// c'est-à-dire qu'on peut passer de FALSE à MAYBE et TRUE
 		// et de MAYBE à TRUE.
 		// Les autres transitions sont interdites (en particulier passer de TRUE à MAYBE...)
-		if(gridspace.isDone(element).hash < done.hash)
+		if(gridspace.isDone(element).getHash() < done.getHash())
 			gridspace.setDone(element, done);
 	}
 

@@ -1,7 +1,6 @@
 package pathfinding;
 
 import exceptions.FinMatchException;
-import exceptions.UnknownScriptException;
 import exceptions.strategie.ScriptException;
 import robot.RobotChrono;
 import strategie.GameState;
@@ -31,7 +30,7 @@ public interface ArcManager {
 	 * @return
 	 * @throws ScriptException 
 	 */
-	public int distanceTo(GameState<RobotChrono> state, Arc arc) throws FinMatchException, UnknownScriptException, ScriptException;
+	public int distanceTo(GameState<RobotChrono> state, Arc arc) throws FinMatchException, ScriptException;
 	
 	/**
 	 * Evalue la distance entre deux sommets.

@@ -76,12 +76,10 @@ public class JUnit_Test_Graphic extends JUnit_Test {
     public void test_verification_humaine() throws Exception
     {
 		Random randomgenerator = new Random();
-		for(int k = 0; k < 20; k++)
+		for(int k = 0; k < 10; k++)
 		{
 			PathfindingNodes i = PathfindingNodes.values()[randomgenerator.nextInt(PathfindingNodes.values().length)];
 			PathfindingNodes j = PathfindingNodes.values()[randomgenerator.nextInt(PathfindingNodes.values().length)];
-			if(i == PathfindingNodes.POINT_DEPART || j == PathfindingNodes.POINT_DEPART)
-				continue;
 			log.debug("Recherche chemin entre "+i+" et "+j, this);
 			Vec2 entree = i.getCoordonnees().plusNewVector(new Vec2(randomgenerator.nextInt(100)-50, randomgenerator.nextInt(100)-50));
 			config.setDateDebutMatch(); // afin d'avoir toujours une haute précision
@@ -102,41 +100,42 @@ public class JUnit_Test_Graphic extends JUnit_Test {
     		direct.add(j.getCoordonnees());
     		fenetre.setPath(orientation_initiale, direct, Color.ORANGE);
     		fenetre.repaint();
-    		Sleep.sleep(5000);
+    		Sleep.sleep(2000);
     		fenetre.resetPath();
 		}
     }
 
-
     @Test
     public void test_strategy_verification_humaine() throws Exception
     {
-    	Decision decision = new Decision(null, ScriptNames.SortieZoneDepart, 0);
+		ArrayList<PathfindingNodes> cheminDepart = new ArrayList<PathfindingNodes>();
+		cheminDepart.add(PathfindingNodes.POINT_DEPART);
+    	Decision decision = new Decision(cheminDepart, ScriptNames.SortieZoneDepart, 0);
     	config.setDateDebutMatch();
     	GameState<RobotChrono> chronostate = state.cloneGameState();
 		ArrayList<Decision> decisions = strategic_astar.computeStrategyAfter(chronostate, decision);
 		Vec2 position_precedente = PathfindingNodes.SORTIE_ZONE_DEPART.getCoordonnees();
 		for(Decision d: decisions)
 		{
-			log.debug(d, this);
+//			log.debug(d, this);
     		ArrayList<Vec2> cheminVec2 = new ArrayList<Vec2>();
     		cheminVec2.add(position_precedente);
     		for(PathfindingNodes n: d.chemin)
     		{
-    			log.debug(n, this);
+//    			log.debug(n, this);
     			cheminVec2.add(n.getCoordonnees());
     		}
 			fenetre.setPath(null, cheminVec2, Color.GRAY);
 			fenetre.repaint();
-			Sleep.sleep(3000);
+			Sleep.sleep(100);
 			ArrayList<Vec2> cheminVersSortie = new ArrayList<Vec2>();
 			cheminVersSortie.add(scriptmanager.getScript(d.script_name).point_entree(d.version).getCoordonnees());
 			cheminVersSortie.add(scriptmanager.getScript(d.script_name).point_sortie(d.version).getCoordonnees());
 			position_precedente = scriptmanager.getScript(d.script_name).point_sortie(d.version).getCoordonnees();
 			fenetre.setPath(null, cheminVersSortie, Color.RED);
 			fenetre.repaint();
-			Sleep.sleep(3000);
-			log.debug(d, this);
+			Sleep.sleep(100);
+	//		log.debug(d, this);
 		}
     }
 
