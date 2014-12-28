@@ -10,8 +10,11 @@ import pathfinding.StrategyArcManager;
 import robot.RobotChrono;
 import robot.RobotReal;
 import scripts.Decision;
+import scripts.Script;
+import scripts.ScriptManager;
 import smartMath.Vec2;
 import strategie.GameState;
+import enums.PathfindingNodes;
 import enums.ScriptNames;
 import enums.ServiceNames;
 
@@ -25,6 +28,7 @@ public class JUnit_StrategicAStar extends JUnit_Test
 {
 	private GameState<RobotReal> gamestate;
 	private AStar<StrategyArcManager, Decision> astar;
+	private ScriptManager scriptmanager;
 	
     @SuppressWarnings("unchecked")
 	@Before
@@ -33,6 +37,7 @@ public class JUnit_StrategicAStar extends JUnit_Test
         gamestate = (GameState<RobotReal>) container.getService(ServiceNames.REAL_GAME_STATE);
         astar = (AStar<StrategyArcManager, Decision>) container.getService(ServiceNames.A_STAR_STRATEGY);
         gamestate.robot.setPosition(new Vec2(1100, 1000));
+        scriptmanager = (ScriptManager) container.getService(ServiceNames.SCRIPT_MANAGER);
     }
     
     @Test
@@ -54,11 +59,16 @@ public class JUnit_StrategicAStar extends JUnit_Test
     @Test
     public void test_strategy_after_decision() throws Exception
     {
-    	// TODO: mettre un chemin valide
-    	Decision decision = new Decision(null, ScriptNames.ScriptClap, 0);
-    	config.setDateDebutMatch();
+    	Script s = scriptmanager.getScript(ScriptNames.ScriptClap);
+    	ArrayList<PathfindingNodes> chemin = new ArrayList<PathfindingNodes>();
+    	chemin.add(s.point_entree(0));
+    	Decision decision = new Decision(chemin, ScriptNames.ScriptClap, 0);
     	GameState<RobotChrono> chronostate = gamestate.cloneGameState();
-		ArrayList<Decision> decisions = astar.computeStrategyAfter(chronostate, decision);
+    	chronostate.robot.setPositionPathfinding(s.point_entree(0));
+
+    	config.setDateDebutMatch();
+
+    	ArrayList<Decision> decisions = astar.computeStrategyAfter(chronostate, decision);
 		for(Decision d: decisions)
 			log.debug(d, this);
     }

@@ -31,7 +31,7 @@ import exceptions.strategie.ScriptException;
 
 public class StrategyArcManager implements Service, ArcManager {
 
-	private Log log;
+//	private Log log;
 	private ScriptManager scriptmanager;
 	private AStar<PathfindingArcManager, PathfindingNodes> astar;
 	private HookFactory hookfactory;
@@ -44,7 +44,7 @@ public class StrategyArcManager implements Service, ArcManager {
 	
 	public StrategyArcManager(Log log, Config config, ScriptManager scriptmanager, GameState<RobotReal> real_gamestate, HookFactory hookfactory, AStar<PathfindingArcManager, PathfindingNodes> astar) throws PointSortieException
 	{
-		this.log = log;
+//		this.log = log;
 		this.scriptmanager = scriptmanager;
 		this.hookfactory = hookfactory;
 		this.astar = astar;
@@ -66,40 +66,39 @@ public class StrategyArcManager implements Service, ArcManager {
 			if(s.canIDoIt())
 			{
 				Script script = scriptmanager.getScript(s);
-				if(script.getVersions(gamestate).size() == 0)
-					log.debug("Aucune version pour "+s, this);
+//				if(script.getVersions(gamestate).size() == 0)
+//					log.debug("Aucune version pour "+s, this);
 				for(Integer v: script.getVersions(gamestate))
 				{
+//					log.debug("Recherche de chemins pour "+s+" "+v, this);
 					// On n'ajoute que les versions qui sont accessibles
 					try {
 						ArrayList<PathfindingNodes> chemin = astar.computePath(gamestate, script.point_entree(v), true);
-						log.debug("Chemin trouvé", this);
+//						log.debug("Chemin trouvé en défonçant les éléments de jeux", this);
 						listeDecisions.add(new Decision(chemin, s, v));
 						try {
 							// On ne rajoute la version où on ne shoot pas seulement si le chemin proposé est différent
 							ArrayList<PathfindingNodes> chemin2 = astar.computePath(gamestate, script.point_entree(v), false);
-							log.debug("Chemin trouvé", this);
+//							log.debug("Chemin trouvé sans défoncer les éléments de jeux", this);
 							if(!chemin2.equals(chemin))
 								listeDecisions.add(new Decision(chemin2, s, v));
 						} catch (PathfindingException
 								| PathfindingRobotInObstacleException
 								| FinMatchException e) {
-							log.debug("Pas de chemin pour "+s+" "+v+" ("+gamestate.robot.getPositionPathfinding()+" et "+script.point_entree(v)+")", this);
 						}
 					} catch (PathfindingException
 							| PathfindingRobotInObstacleException
 							| FinMatchException e) {
-						log.debug("Pas de chemin pour "+s+" "+v+" ("+gamestate.robot.getPositionPathfinding()+" et "+script.point_entree(v)+") en dégommant", this);
 					}
 				}
 			}
-			else
-				log.warning("Je ne peux pas faire "+s+"...", this);
+//			else
+//				log.warning("Je ne peux pas faire "+s+"...", this);
 		}
 		
 		iterator = -1;
-		for(Decision d: listeDecisions)
-			log.debug(d, this);
+//		for(Decision d: listeDecisions)
+//			log.debug(d, this);
 	}
 
 	@Override
@@ -148,7 +147,7 @@ public class StrategyArcManager implements Service, ArcManager {
 		int indice = hashes.indexOf(hash);
 		if(indice == -1)
 		{
-			log.debug("Size: "+hashes.size(), this);
+//			log.debug("Size: "+hashes.size(), this);
 			hashes.add(hash);
 			return hashes.size()-1;
 		}
@@ -176,6 +175,12 @@ public class StrategyArcManager implements Service, ArcManager {
 		return (int)(hashes.get(hash)&511); // la composante "note" du hash (cf gamestate.getHash())
 	}
 	
+	/**
+	 * Vérifie que les points de sortie (notés dans l'enum PathfindingNodes) sont bien là où on arrive après l'exécution du script.
+	 * Exécuté une fois pour toute à l'instanciation.
+	 * @param gamestate
+	 * @throws PointSortieException
+	 */
 	public void checkPointSortie(GameState<RobotChrono> gamestate) throws PointSortieException
 	{
 		boolean throw_exception = false;

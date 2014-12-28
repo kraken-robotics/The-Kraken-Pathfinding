@@ -48,7 +48,7 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 	
 	private PathfindingException pathfindingexception;
 	
-	private Log log;
+//	private Log log;
 	private Config config;
 	private AM arcmanager;
 	private MemoryManager memorymanager;
@@ -60,7 +60,7 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 	 */
 	public AStar(Log log, Config config, AM arcmanager, MemoryManager memorymanager)
 	{
-		this.log = log;
+//		this.log = log;
 		this.config = config;
 		this.arcmanager = arcmanager;
 		this.memorymanager = memorymanager;
@@ -101,10 +101,12 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 			return null;
 		}
 		try {
+			// Exécution de la décision donnée, ce qui est fait par "distanceTo".
 			arcmanager.distanceTo(state, decision);
 		} catch (ScriptException e) {
 			return new ArrayList<A>();
 		}
+//		log.debug("Après exécution, on est en "+state.robot.getPositionPathfinding(), this);
 		return computeStrategy(state);
 	}
 
@@ -113,7 +115,8 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 		GameState<RobotChrono> depart = memorymanager.getNewGameState();
 		state.copy(depart);
 
-		// pour le calcul de trajectoire de secours		
+		// à chaque nouveau calcul de stratégie, il faut réinitialiser les hash de gamestate
+		// si on ne le fait pas, on consommera trop de mémoire.
 		((StrategyArcManager)arcmanager).reinitHashes();
 		ArrayList<A> cheminArc;
 		
@@ -185,7 +188,7 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 		return chemin;
 	}
 	
-	private ArrayList<A> process(GameState<RobotChrono> depart, ArcManager arcmanager, boolean shouldReconstruct) throws PathfindingException, FinMatchException
+	private ArrayList<A> process(GameState<RobotChrono> depart, ArcManager arcmanager, boolean shouldReconstruct) throws PathfindingException
 	{
 		int hash_depart = arcmanager.getHash(depart);
 		// optimisation si depart == arrivee
@@ -235,6 +238,9 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 			
 			int hash_current = arcmanager.getHash(current);
 
+//			if(arcmanager instanceof StrategyArcManager)
+//				log.debug("Noeud actuel "+hash_current, this);
+
 			// élément déjà fait
 			// cela parce qu'il y a des doublons dans openset
 			if(closedset[hash_current])
@@ -265,20 +271,29 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 			{
 				A voisin = arcmanager.next();
 
-				GameState<RobotChrono> successeur = memorymanager.getNewGameState();
-				current.copy(successeur);
+				GameState<RobotChrono> successeur;
+				try {
+					successeur = memorymanager.getNewGameState();
+					current.copy(successeur);
+				} catch (FinMatchException e1) {
+					// ne devrait pas arriver!
+					throw new PathfindingException();
+				}
 				
 				// successeur est modifié lors du "distanceTo"
 				// si ce successeur dépasse la date limite, on l'annule
 				int tentative_g_score;
-					try {
-						tentative_g_score = g_score[hash_current] + arcmanager.distanceTo(successeur, voisin);
-					} catch (ScriptException | FinMatchException e) {
-						continue;
-					}
+				try {
+					tentative_g_score = g_score[hash_current] + arcmanager.distanceTo(successeur, voisin);
+				} catch (ScriptException | FinMatchException e) {
+					continue;
+				}
 
 				int hash_successeur = arcmanager.getHash(successeur);
 
+//				if(arcmanager instanceof StrategyArcManager)
+//					log.debug(voisin+" donne "+hash_successeur, this);
+				
 				if(closedset[hash_successeur]) // si closedset contient ce hash
 				{
 					successeur = memorymanager.destroyGameState(successeur);
@@ -312,7 +327,7 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 			throw pathfindingexception;
 		}
 
-		log.debug("Reconstruction!", this);
+//		log.debug("Reconstruction!", this);
 		
 		/**
 		 * Même si on n'a pas atteint l'objectif, on reconstruit un chemin partiel

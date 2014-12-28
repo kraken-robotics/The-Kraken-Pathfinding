@@ -33,7 +33,7 @@ public class JUnit_Scripts extends JUnit_Test {
 	private GameState<RobotReal> gamestate;
 	private GameState<RobotChrono> state_chrono;
 	private AStar<PathfindingArcManager, PathfindingNodes> pathfinding;
-		
+
     @SuppressWarnings("unchecked")
 	@Before
     public void setUp() throws Exception {

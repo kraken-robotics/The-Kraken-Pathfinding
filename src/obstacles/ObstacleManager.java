@@ -430,4 +430,21 @@ public class ObstacleManager implements Service
 		table.printHash();
 	}
 
+	// Quelque chose change = un obstacle disparaît
+	public int getDateSomethingChange()
+	{
+	    int date1, date2;
+	    
+	    if(firstNotDead < listObstaclesMobiles.size())
+	    	date1 = listObstaclesMobiles.get(firstNotDead).getDeathDate();
+	    else
+	    	date1 = Integer.MAX_VALUE;
+	    if(isThereHypotheticalEnemy)
+	    	date2 = hypotheticalEnemy.getDeathDate();
+	    else
+	    	date2 = Integer.MAX_VALUE;
+	    
+	    return Math.min(date1, date2);
+	}
+
 }

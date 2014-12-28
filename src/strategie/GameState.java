@@ -20,7 +20,7 @@ import utils.Config;
  */
 
 public class GameState<R extends Robot> implements Service
-{    
+{
     public final R robot;
     public final GridSpace gridspace;
     
@@ -103,6 +103,10 @@ public class GameState<R extends Robot> implements Service
     	return robot.getTempsDepuisDebutMatch();
     }
     
+    /**
+     * Utilisé par le memory manager
+     * @return
+     */
     public int getIndiceMemoryManager()
     {
     	return indice_memory_manager;
@@ -133,6 +137,10 @@ public class GameState<R extends Robot> implements Service
 		((RobotChrono)robot).printHash();
 	}
 
+	/**
+	 * Utilisé par le memory manager
+	 * @param indice
+	 */
 	public void setIndiceMemoryManager(int indice)
 	{
 		indice_memory_manager = indice;
@@ -141,6 +149,19 @@ public class GameState<R extends Robot> implements Service
 	public void updateHookFinMatch(int dateLimite)
 	{
 		robot.updateHookFinMatch(dateLimite);
+	}
+
+	public boolean canSleepUntilSomethingChange()
+	{
+		return gridspace.getDateSomethingChange() != Integer.MAX_VALUE;
+	}
+	
+	public void sleepUntilSomethingChange() throws FinMatchException
+	{
+		// on ajoute quelques microsecondes afin d'être bien
+		// sûr qu'après cette date l'obstacle soit parti
+		int date = gridspace.getDateSomethingChange() + 5;
+		robot.sleepUntil(date);
 	}
 
 }

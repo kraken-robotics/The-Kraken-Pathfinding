@@ -81,5 +81,10 @@ public class ObstacleProximity extends ObstacleCircular
 	{
 		this.death_date = death_date;
 	}
+	
+	public int getDeathDate()
+	{
+		return death_date;
+	}
 
 }

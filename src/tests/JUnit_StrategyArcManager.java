@@ -1,5 +1,7 @@
 package tests;
 
+import java.util.ArrayList;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,6 +13,7 @@ import scripts.Decision;
 import scripts.Script;
 import scripts.ScriptManager;
 import strategie.GameState;
+import enums.PathfindingNodes;
 import enums.ScriptNames;
 import enums.ServiceNames;
 
@@ -39,26 +42,26 @@ public class JUnit_StrategyArcManager extends JUnit_Test {
 	@Test
 	public void test_iterator1() throws Exception
 	{
-    	Script s2 = scriptmanager.getScript(ScriptNames.ScriptAttente);
-    	for(int i = 0; i < 5; i++)
-    	{
-    		s2.agit(0, state);
-			strategyarcmanager.reinitHashes();
-			strategyarcmanager.reinitIterator(state);
-			Assert.assertTrue(strategyarcmanager.hasNext(state));
-			Decision d = strategyarcmanager.next();
-			Assert.assertEquals(ScriptNames.ScriptClap, d.script_name);
-			Assert.assertEquals(0, d.version);
-			Assert.assertTrue(strategyarcmanager.hasNext(state));
-			d = strategyarcmanager.next();
-			Assert.assertEquals(ScriptNames.ScriptClap, d.script_name);
-			Assert.assertEquals(1, d.version);
-			Assert.assertTrue(strategyarcmanager.hasNext(state));
-			d = strategyarcmanager.next();
-			Assert.assertEquals(ScriptNames.ScriptTapis, d.script_name);
-			Assert.assertEquals(0, d.version);
-			Assert.assertTrue(!strategyarcmanager.hasNext(state));
-    	}
+    	state.robot.va_au_point_pathfinding(PathfindingNodes.BAS_DROITE, null);
+		strategyarcmanager.reinitHashes();
+		strategyarcmanager.reinitIterator(state);
+		Assert.assertTrue(strategyarcmanager.hasNext(state));
+		Decision d = strategyarcmanager.next();
+		Assert.assertEquals(ScriptNames.ScriptClap, d.script_name);
+		Assert.assertEquals(0, d.version);
+		Assert.assertTrue(strategyarcmanager.hasNext(state));
+		d = strategyarcmanager.next();
+		Assert.assertEquals(ScriptNames.ScriptClap, d.script_name);
+		Assert.assertEquals(1, d.version);
+		Assert.assertTrue(strategyarcmanager.hasNext(state));
+		d = strategyarcmanager.next();
+		Assert.assertEquals(ScriptNames.ScriptTapis, d.script_name);
+		Assert.assertEquals(0, d.version);
+		Assert.assertTrue(strategyarcmanager.hasNext(state));
+		d = strategyarcmanager.next();
+		Assert.assertEquals(ScriptNames.ScriptAttente, d.script_name);
+		Assert.assertEquals(0, d.version);
+		Assert.assertTrue(!strategyarcmanager.hasNext(state));
 	}
 
 	@Test
@@ -67,6 +70,7 @@ public class JUnit_StrategyArcManager extends JUnit_Test {
     	Script s = scriptmanager.getScript(ScriptNames.ScriptTapis);
     	state.robot.va_au_point_pathfinding(s.point_entree(0), null);
     	s.agit(0, state);
+    	state.robot.va_au_point_pathfinding(s.point_sortie(0), null);
     	Script s2 = scriptmanager.getScript(ScriptNames.ScriptAttente);
     	for(int i = 0; i < 5; i++)
     	{
@@ -81,6 +85,10 @@ public class JUnit_StrategyArcManager extends JUnit_Test {
 			d = strategyarcmanager.next();
 			Assert.assertEquals(ScriptNames.ScriptClap, d.script_name);
 			Assert.assertEquals(1, d.version);
+			Assert.assertTrue(strategyarcmanager.hasNext(state));
+			d = strategyarcmanager.next();
+			Assert.assertEquals(ScriptNames.ScriptAttente, d.script_name);
+			Assert.assertEquals(0, d.version);
 			Assert.assertTrue(!strategyarcmanager.hasNext(state));
     	}
 	}
@@ -91,6 +99,7 @@ public class JUnit_StrategyArcManager extends JUnit_Test {
     	Script s = scriptmanager.getScript(ScriptNames.ScriptClap);
     	state.robot.va_au_point_pathfinding(s.point_entree(0), null);
     	s.agit(0, state);
+    	state.robot.va_au_point_pathfinding(s.point_sortie(0), null);
     	Script s2 = scriptmanager.getScript(ScriptNames.ScriptAttente);
     	for(int i = 0; i < 5; i++)
     	{
@@ -104,6 +113,10 @@ public class JUnit_StrategyArcManager extends JUnit_Test {
 			Assert.assertTrue(strategyarcmanager.hasNext(state));
 			d = strategyarcmanager.next();
 			Assert.assertEquals(ScriptNames.ScriptTapis, d.script_name);
+			Assert.assertEquals(0, d.version);
+			Assert.assertTrue(strategyarcmanager.hasNext(state));
+			d = strategyarcmanager.next();
+			Assert.assertEquals(ScriptNames.ScriptAttente, d.script_name);
 			Assert.assertEquals(0, d.version);
 			Assert.assertTrue(!strategyarcmanager.hasNext(state));
     	}
@@ -115,6 +128,7 @@ public class JUnit_StrategyArcManager extends JUnit_Test {
     	Script s = scriptmanager.getScript(ScriptNames.ScriptClap);
     	state.robot.va_au_point_pathfinding(s.point_entree(1), null);
     	s.agit(1, state);
+    	state.robot.va_au_point_pathfinding(s.point_sortie(1), null);
     	Script s2 = scriptmanager.getScript(ScriptNames.ScriptAttente);
     	for(int i = 0; i < 5; i++)
     	{
@@ -128,6 +142,10 @@ public class JUnit_StrategyArcManager extends JUnit_Test {
 			Assert.assertTrue(strategyarcmanager.hasNext(state));
 			d = strategyarcmanager.next();
 			Assert.assertEquals(ScriptNames.ScriptTapis, d.script_name);
+			Assert.assertEquals(0, d.version);
+			Assert.assertTrue(strategyarcmanager.hasNext(state));
+			d = strategyarcmanager.next();
+			Assert.assertEquals(ScriptNames.ScriptAttente, d.script_name);
 			Assert.assertEquals(0, d.version);
 			Assert.assertTrue(!strategyarcmanager.hasNext(state));
     	}
@@ -141,6 +159,7 @@ public class JUnit_StrategyArcManager extends JUnit_Test {
     	s.agit(0, state);
     	state.robot.va_au_point_pathfinding(s.point_entree(1), null);
     	s.agit(1, state);
+    	state.robot.va_au_point_pathfinding(s.point_sortie(1), null);
     	Script s2 = scriptmanager.getScript(ScriptNames.ScriptAttente);
     	for(int i = 0; i < 5; i++)
     	{
@@ -150,6 +169,10 @@ public class JUnit_StrategyArcManager extends JUnit_Test {
 			Assert.assertTrue(strategyarcmanager.hasNext(state));
 			Decision d = strategyarcmanager.next();
 			Assert.assertEquals(ScriptNames.ScriptTapis, d.script_name);
+			Assert.assertEquals(0, d.version);
+			Assert.assertTrue(strategyarcmanager.hasNext(state));
+			d = strategyarcmanager.next();
+			Assert.assertEquals(ScriptNames.ScriptAttente, d.script_name);
 			Assert.assertEquals(0, d.version);
 			Assert.assertTrue(!strategyarcmanager.hasNext(state));
     	}
@@ -164,6 +187,7 @@ public class JUnit_StrategyArcManager extends JUnit_Test {
     	s.agit(0, state);
     	state.robot.va_au_point_pathfinding(s1.point_entree(0), null);
     	s1.agit(0, state);
+    	state.robot.va_au_point_pathfinding(s1.point_sortie(0), null);
     	Script s2 = scriptmanager.getScript(ScriptNames.ScriptAttente);
     	for(int i = 0; i < 5; i++)
     	{
@@ -174,8 +198,63 @@ public class JUnit_StrategyArcManager extends JUnit_Test {
 			Decision d = strategyarcmanager.next();
 			Assert.assertEquals(ScriptNames.ScriptClap, d.script_name);
 			Assert.assertEquals(1, d.version);
+			Assert.assertTrue(strategyarcmanager.hasNext(state));
+			d = strategyarcmanager.next();
+			Assert.assertEquals(ScriptNames.ScriptAttente, d.script_name);
+			Assert.assertEquals(0, d.version);
 			Assert.assertTrue(!strategyarcmanager.hasNext(state));
     	}
 	}
 
+	@Test
+	public void test_distanceTo() throws Exception
+	{
+    	Script s = scriptmanager.getScript(ScriptNames.ScriptClap);
+    	state.robot.va_au_point_pathfinding(s.point_entree(0), null);
+    	ArrayList<PathfindingNodes> chemin = new ArrayList<PathfindingNodes>();
+    	chemin.add(s.point_entree(0));
+
+    	GameState<RobotChrono> state2 = state.cloneGameState();
+		Decision d = new Decision(chemin, ScriptNames.ScriptClap, 0);
+		strategyarcmanager.distanceTo(state2, d);
+		
+		s.agit(0, state);
+		state.robot.setPositionPathfinding(s.point_sortie(0));
+		
+		Assert.assertEquals(state.robot.getHash(), state2.robot.getHash());
+
+		strategyarcmanager.reinitHashes();
+		strategyarcmanager.reinitIterator(state);
+		Assert.assertTrue(strategyarcmanager.hasNext(state));
+		d = strategyarcmanager.next();
+		Assert.assertEquals(ScriptNames.ScriptClap, d.script_name);
+		Assert.assertEquals(1, d.version);
+		Assert.assertTrue(strategyarcmanager.hasNext(state));
+		d = strategyarcmanager.next();
+		Assert.assertEquals(ScriptNames.ScriptTapis, d.script_name);
+		Assert.assertEquals(0, d.version);
+		Assert.assertTrue(strategyarcmanager.hasNext(state));
+		d = strategyarcmanager.next();
+		Assert.assertEquals(ScriptNames.ScriptAttente, d.script_name);
+		Assert.assertEquals(0, d.version);
+		Assert.assertTrue(!strategyarcmanager.hasNext(state));
+
+		strategyarcmanager.reinitHashes();
+		strategyarcmanager.reinitIterator(state2);
+		Assert.assertTrue(strategyarcmanager.hasNext(state2));
+		d = strategyarcmanager.next();
+		Assert.assertEquals(ScriptNames.ScriptClap, d.script_name);
+		Assert.assertEquals(1, d.version);
+		Assert.assertTrue(strategyarcmanager.hasNext(state2));
+		d = strategyarcmanager.next();
+		Assert.assertEquals(ScriptNames.ScriptTapis, d.script_name);
+		Assert.assertEquals(0, d.version);
+		Assert.assertTrue(strategyarcmanager.hasNext(state2));
+		d = strategyarcmanager.next();
+		Assert.assertEquals(ScriptNames.ScriptAttente, d.script_name);
+		Assert.assertEquals(0, d.version);
+		Assert.assertTrue(!strategyarcmanager.hasNext(state2));
+
+	}
+	
 }

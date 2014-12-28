@@ -277,5 +277,10 @@ public class GridSpace implements Service {
 	{
 		return avoidGameElement?1:0;
 	}
+
+	public int getDateSomethingChange()
+	{
+		return obstaclemanager.getDateSomethingChange();
+	}
 	
 }

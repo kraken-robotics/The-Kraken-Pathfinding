@@ -68,6 +68,7 @@ public abstract class Robot implements Service
     	rc.vitesse = vitesse;
     	rc.pointsObtenus = pointsObtenus;
     	rc.date = getTempsDepuisDebutMatch();
+    	rc.tapisPoses = tapisPoses;
     }
 
 	// Dépendances
@@ -154,6 +155,11 @@ public abstract class Robot implements Service
         }
     }
 
+    public void sleepUntil(int date) throws FinMatchException
+    {
+    	sleep(date - getTempsDepuisDebutMatch());
+    }
+    
     public void sleep(long duree) throws FinMatchException
     {
     	sleep(duree, null);
