@@ -69,5 +69,15 @@ public class JUnit_GameState extends JUnit_Test {
 			gamestate2.copy(gamestate);
 		}
 	}
-	
+
+	@Test
+	public void test_copy() throws Exception
+	{
+		gamestate.robot.poserDeuxTapis();
+		gamestate.robot.avancer(200);
+		gamestate.gridspace.creer_obstacle(new Vec2(156, 282));
+		gamestate.gridspace.setDone(GameElementNames.CLAP_3, Tribool.TRUE);
+		gamestate.gridspace.setDone(GameElementNames.PLOT_4, Tribool.TRUE);
+		Assert.assertEquals(gamestate.getHash(), gamestate.cloneGameState().getHash());
+	}
 }

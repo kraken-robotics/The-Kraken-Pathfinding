@@ -1,6 +1,8 @@
 package hook.methods;
 
 import pathfinding.GridSpace;
+import robot.RobotChrono;
+import strategie.GameState;
 import enums.GameElementNames;
 import enums.Tribool;
 import hook.Executable;
@@ -11,7 +13,8 @@ import hook.Executable;
  *
  */
 
-public class GameElementDone implements Executable {
+public class GameElementDone implements Executable
+{
 
 	private GridSpace gridspace;
 	private Tribool done;
@@ -33,6 +36,12 @@ public class GameElementDone implements Executable {
 		// Les autres transitions sont interdites (en particulier passer de TRUE à MAYBE...)
 		if(gridspace.isDone(element).getHash() < done.getHash())
 			gridspace.setDone(element, done);
+	}
+
+	@Override
+	public void updateGameState(GameState<RobotChrono> state)
+	{
+		gridspace = state.gridspace;
 	}
 
 }

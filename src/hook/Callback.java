@@ -1,5 +1,7 @@
 package hook;
 
+import robot.RobotChrono;
+import strategie.GameState;
 import exceptions.FinMatchException;
 import exceptions.ScriptHookException;
 
@@ -63,5 +65,10 @@ public class Callback
 	public boolean shouldBeDeleted()
 	{
 	    return isUnique && isDone;
+	}
+
+	public void updateGameState(GameState<RobotChrono> state)
+	{
+		method.updateGameState(state);
 	}
 }

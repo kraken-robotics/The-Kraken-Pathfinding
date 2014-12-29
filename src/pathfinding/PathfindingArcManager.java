@@ -7,6 +7,7 @@ import utils.Log;
 import utils.Config;
 import enums.PathfindingNodes;
 import enums.Speed;
+import exceptions.ArcManagerException;
 import exceptions.FinMatchException;
 
 /**
@@ -56,7 +57,14 @@ public class PathfindingArcManager implements Service, ArcManager {
 	}
 
 	@Override
-	public int getHash(GameState<RobotChrono> state) {
+	public int getHash(GameState<RobotChrono> state) throws ArcManagerException
+	{
+		return state.robot.getPositionPathfinding().ordinal();
+	}
+
+	@Override
+	public int getHashAndCreateIfNecessary(GameState<RobotChrono> state)
+	{
 		return state.robot.getPositionPathfinding().ordinal();
 	}
 

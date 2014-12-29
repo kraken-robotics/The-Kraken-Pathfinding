@@ -27,7 +27,7 @@ public class Table implements Service
 	
 	// Le hash est exact; pas de collisions possibles.
 	// La valeur initiale 0 provient des hash des Tribool.
-	private int hash = 0;
+	private long hash = 0;
 	
 	public Table(Log log, Config config)
 	{
@@ -57,7 +57,7 @@ public class Table implements Service
 	public Tribool isDone(GameElementNames id)
 	{
 		return total[id.ordinal()].isDone();
-	}	
+	}
 
 	/**
 	 * La table en argument deviendra la copie de this (this reste inchangé)
@@ -66,7 +66,7 @@ public class Table implements Service
 	public void copy(Table ct)
 	{
 		if(!equals(ct))
-			for(int i = 0; i < 20; i++)
+			for(int i = 0; i < total.length; i++)
 				total[i].fastClone(ct.total[i]);
 		ct.hash = hash;
 	}
@@ -88,7 +88,7 @@ public class Table implements Service
 		return other.hash == hash;
  	}
 	
-	public int getHash()
+	public long getHash()
 	{
 		return hash;
 	}
@@ -121,7 +121,7 @@ public class Table implements Service
 	{
 		for(GameElementNames g: GameElementNames.values())
 		{
-			int etat = (hash >> 2*g.ordinal()) % 4;
+			long etat = (hash >> 2*g.ordinal()) % 4;
 			for(Tribool t: Tribool.values())
 				if(etat == t.getHash())
 					log.debug(g+": "+t, this);

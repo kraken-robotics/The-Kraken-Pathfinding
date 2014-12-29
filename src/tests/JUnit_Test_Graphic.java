@@ -154,10 +154,7 @@ public class JUnit_Test_Graphic extends JUnit_Test {
     		ArrayList<Vec2> cheminVec2 = new ArrayList<Vec2>();
     		cheminVec2.add(position_precedente);
     		for(PathfindingNodes n: d.chemin)
-    		{
-    			log.debug(n, this);
     			cheminVec2.add(n.getCoordonnees());
-    		}
 			fenetre.setPath(null, cheminVec2, Color.GRAY);
 			fenetre.repaint();
 			Sleep.sleep(3000);
@@ -168,7 +165,6 @@ public class JUnit_Test_Graphic extends JUnit_Test {
 			fenetre.setPath(null, cheminVersSortie, Color.RED);
 			fenetre.repaint();
 			Sleep.sleep(3000);
-			log.debug(d, this);
 		}
     }
 

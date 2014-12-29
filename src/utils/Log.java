@@ -135,16 +135,16 @@ public class Log implements Service
 	private void ecrire(String message, String couleur, PrintStream ou)
 	{
 		if(logClosed)
-		{
 			System.out.println("WARNING * Log fermé! Message: "+message);
-			return;
+		else
+		{
+			java.util.GregorianCalendar calendar = new GregorianCalendar();
+			String heure = calendar.get(Calendar.HOUR_OF_DAY)+":"+calendar.get(Calendar.MINUTE)+":"+calendar.get(Calendar.SECOND)+","+calendar.get(Calendar.MILLISECOND);
+			if(couleur != couleurDebug || affiche_debug)
+				ou.println(couleur+heure+" "+message+"\u001B[0m");
+			if(sauvegarde_fichier)
+				ecrireFichier(couleur+heure+" "+message+"\u001B[0m");
 		}
-		java.util.GregorianCalendar calendar = new GregorianCalendar();
-		String heure = calendar.get(Calendar.HOUR_OF_DAY)+":"+calendar.get(Calendar.MINUTE)+":"+calendar.get(Calendar.SECOND)+","+calendar.get(Calendar.MILLISECOND);
-		if(couleur != couleurDebug || affiche_debug)
-			ou.println(couleur+heure+" "+message+"\u001B[0m");
-		if(sauvegarde_fichier)
-			ecrireFichier(couleur+heure+" "+message+"\u001B[0m");
 	}
 	
 	private void ecrireFichier(String message)

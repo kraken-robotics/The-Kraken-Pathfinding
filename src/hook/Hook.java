@@ -108,6 +108,8 @@ abstract public class Hook
 	public void updateGameState(GameState<RobotChrono> state)
 	{
 		this.state = state;
+		for(Callback callback : callbacks)
+			callback.updateGameState(state);
 	}
 
 }

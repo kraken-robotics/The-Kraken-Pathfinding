@@ -1,5 +1,7 @@
 package hook;
 
+import robot.RobotChrono;
+import strategie.GameState;
 import exceptions.FinMatchException;
 import exceptions.ScriptHookException;
 
@@ -19,5 +21,7 @@ public interface Executable
 	 * @throws ScriptHookException 
 	 */
 	public void execute() throws FinMatchException, ScriptHookException;
+
+	public void updateGameState(GameState<RobotChrono> state);
 	
 }

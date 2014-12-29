@@ -76,7 +76,7 @@ public class ObstacleManager implements Service
 
         // On n'instancie hypotheticalEnnemy qu'un seul fois
         if(hypotheticalEnemy == null)
-        	new ObstacleProximity(log, new Vec2(), rayon_robot_adverse, -1000);
+        	hypotheticalEnemy = new ObstacleProximity(log, new Vec2(), rayon_robot_adverse, -1000);
         updateConfig();
     }
 
@@ -420,7 +420,7 @@ public class ObstacleManager implements Service
 		return table.isDone(element);
 	}
 
-	public int getHashTable()
+	public long getHashTable()
 	{
 		return table.getHash();
 	}

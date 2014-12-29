@@ -7,6 +7,7 @@ import java.util.ListIterator;
 import container.Service;
 import enums.ConfigInfo;
 import enums.PathfindingNodes;
+import exceptions.ArcManagerException;
 import exceptions.FinMatchException;
 import exceptions.GridSpaceException;
 import exceptions.PathfindingException;
@@ -48,7 +49,7 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 	
 	private PathfindingException pathfindingexception;
 	
-//	private Log log;
+	protected Log log;
 	private Config config;
 	private AM arcmanager;
 	private MemoryManager memorymanager;
@@ -60,7 +61,7 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 	 */
 	public AStar(Log log, Config config, AM arcmanager, MemoryManager memorymanager)
 	{
-//		this.log = log;
+		this.log = log;
 		this.config = config;
 		this.arcmanager = arcmanager;
 		this.memorymanager = memorymanager;
@@ -71,7 +72,7 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 	 * Les méthodes publiques sont "synchronized".
 	 * Cela signifique que si un AStar calcule une recherche de chemin pour un thread, l'autre thread devra attendre.
 	 * Par contre, on peut faire un AStar stratégique et un AStar de pathfinding simultanément.
-	 * Normalement, ce n'est pas utile car tous appels à AStar devrait être fait par le StrategyThread
+	 * Normalement, ce n'est pas utile car tous appels à AStar devraient être fait par le StrategyThread
 	 * @param state
 	 * @return
 	 * @throws FinMatchException
@@ -89,7 +90,7 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 		int distance_ennemie = distanceEnnemiUrgence; // il faut que cette distance soit au moins supérieure à la somme de notre rayon, du rayon de l'adversaire et d'une marge
 		double orientation_actuelle = state.robot.getOrientation();
 		Vec2 positionEnnemie = state.robot.getPosition().plusNewVector(new Vec2((int)(distance_ennemie*Math.cos(orientation_actuelle)), (int)(distance_ennemie*Math.sin(orientation_actuelle))));
-		state.gridspace.creer_obstacle(positionEnnemie);
+		state.gridspace.createHypotheticalEnnemy(positionEnnemie, state.robot.getTempsDepuisDebutMatch());
 		return computeStrategy(state);
 	}
 
@@ -190,7 +191,7 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 	
 	private ArrayList<A> process(GameState<RobotChrono> depart, ArcManager arcmanager, boolean shouldReconstruct) throws PathfindingException
 	{
-		int hash_depart = arcmanager.getHash(depart);
+		int hash_depart = arcmanager.getHashAndCreateIfNecessary(depart);
 		// optimisation si depart == arrivee
 		if(arcmanager.isArrive(hash_depart))
 		{
@@ -204,7 +205,7 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 			closedset[i] = false;
 			came_from_arc[i] = null;
 			came_from[i] = -1;
-			g_score[i] = Integer.MAX_VALUE;
+			g_score[i] = 133700000;//= Integer.MAX_VALUE;
 			f_score[i] = Integer.MAX_VALUE;
 		}
 		
@@ -221,30 +222,34 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 			ListIterator<GameState<RobotChrono>> iterator = openset.listIterator();
 			int min_score = Integer.MAX_VALUE;
 			int potential_min, index_min = 0, index = -1;
+			int hash_current = -1;
 			GameState<RobotChrono> tmp;
 			while(iterator.hasNext())
 			{
 				index++;
 				tmp = iterator.next();
-				potential_min = f_score[arcmanager.getHash(tmp)];
-				if(min_score > potential_min)
-				{
-					min_score = potential_min;
-					current = tmp;
-					index_min = index;
+				try {
+					int tmp_hash = arcmanager.getHash(tmp);
+					potential_min = f_score[tmp_hash];
+					if(min_score >= potential_min)
+					{
+						min_score = potential_min;
+						current = tmp;
+						index_min = index;
+						hash_current = tmp_hash;
+					}
+				} catch (ArcManagerException e) {
+					e.printStackTrace();
 				}
 			}
 			openset.remove(index_min);
 			
-			int hash_current = arcmanager.getHash(current);
-
-//			if(arcmanager instanceof StrategyArcManager)
-//				log.debug("Noeud actuel "+hash_current, this);
-
 			// élément déjà fait
 			// cela parce qu'il y a des doublons dans openset
 			if(closedset[hash_current])
 			{
+//				if(arcmanager instanceof StrategyArcManager)
+//					log.debug("Destruction de: "+current.getIndiceMemoryManager(), this);
 				current = memorymanager.destroyGameState(current);
 				continue;
 			}
@@ -252,6 +257,8 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 			// Si on est arrivé, on reconstruit le chemin
 			if(arcmanager.isArrive(hash_current))
 			{
+//				if(arcmanager instanceof StrategyArcManager)
+//					log.debug("Destruction de: "+current.getIndiceMemoryManager(), this);
 				current = memorymanager.destroyGameState(current);
 				freeGameStateOpenSet(openset);
 				return reconstruct(hash_current);
@@ -259,12 +266,6 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 
 			closedset[hash_current] = true;
 		    
-/*			if(arcmanager instanceof StrategyArcManager)
-			{
-				log.debug("Actuel: ", this);
-				current.printHash();
-			}*/
-
 			arcmanager.reinitIterator(current);
 
 			while(arcmanager.hasNext(current))
@@ -289,17 +290,19 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 					continue;
 				}
 
-				int hash_successeur = arcmanager.getHash(successeur);
+				int hash_successeur = arcmanager.getHashAndCreateIfNecessary(successeur);
 
 //				if(arcmanager instanceof StrategyArcManager)
 //					log.debug(voisin+" donne "+hash_successeur, this);
 				
 				if(closedset[hash_successeur]) // si closedset contient ce hash
 				{
+//					if(arcmanager instanceof StrategyArcManager)
+//						log.debug("Destruction de: "+successeur.getIndiceMemoryManager(), this);
 					successeur = memorymanager.destroyGameState(successeur);
 					continue;
 				}
-
+				
 				if(tentative_g_score < g_score[hash_successeur])
 				{
 					came_from[hash_successeur] = hash_current;
@@ -307,12 +310,13 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 					g_score[hash_successeur] = tentative_g_score;
 					f_score[hash_successeur] = tentative_g_score + arcmanager.heuristicCost(successeur);
 					openset.add(successeur);
-///					add_to_openset(successeur, f_score[hash_successeur], arcmanager);
 				}
 				else
 					successeur = memorymanager.destroyGameState(successeur);
 			}
 			
+//			if(arcmanager instanceof StrategyArcManager)
+//				log.debug("Destruction de: "+current.getIndiceMemoryManager(), this);
 			current = memorymanager.destroyGameState(current);	
 		}
 		

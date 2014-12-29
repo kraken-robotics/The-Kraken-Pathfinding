@@ -2,7 +2,9 @@ package hook.methods;
 
 import hook.Executable;
 import robot.Locomotion;
+import robot.RobotChrono;
 import smartMath.Vec2;
+import strategie.GameState;
 
 /**
  * Classe implémentant la méthode changement de consigne, utilisée pour avoir une trajectoire courbe.
@@ -28,4 +30,8 @@ public class ChangeConsigne implements Executable
 		robot.setAim(newConsigne);
 	}
         
+	@Override
+	public void updateGameState(GameState<RobotChrono> state)
+	{}
+
 }

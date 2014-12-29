@@ -16,6 +16,7 @@ import utils.Config;
 import container.Service;
 import enums.PathfindingNodes;
 import enums.ScriptNames;
+import exceptions.ArcManagerException;
 import exceptions.FinMatchException;
 import exceptions.PathfindingException;
 import exceptions.PathfindingRobotInObstacleException;
@@ -31,7 +32,7 @@ import exceptions.strategie.ScriptException;
 
 public class StrategyArcManager implements Service, ArcManager {
 
-//	private Log log;
+	protected Log log;
 	private ScriptManager scriptmanager;
 	private AStar<PathfindingArcManager, PathfindingNodes> astar;
 	private HookFactory hookfactory;
@@ -44,7 +45,7 @@ public class StrategyArcManager implements Service, ArcManager {
 	
 	public StrategyArcManager(Log log, Config config, ScriptManager scriptmanager, GameState<RobotReal> real_gamestate, HookFactory hookfactory, AStar<PathfindingArcManager, PathfindingNodes> astar) throws PointSortieException
 	{
-//		this.log = log;
+		this.log = log;
 		this.scriptmanager = scriptmanager;
 		this.hookfactory = hookfactory;
 		this.astar = astar;
@@ -141,7 +142,7 @@ public class StrategyArcManager implements Service, ArcManager {
 	}
 
 	@Override
-	public int getHash(GameState<RobotChrono> state)
+	public int getHashAndCreateIfNecessary(GameState<RobotChrono> state)
 	{
 		long hash = state.getHash();
 		int indice = hashes.indexOf(hash);
@@ -151,6 +152,17 @@ public class StrategyArcManager implements Service, ArcManager {
 			hashes.add(hash);
 			return hashes.size()-1;
 		}
+		else
+			return indice;
+	}
+
+	@Override
+	public int getHash(GameState<RobotChrono> state) throws ArcManagerException
+	{
+		long hash = state.getHash();
+		int indice = hashes.indexOf(hash);
+		if(indice == -1)
+			throw new ArcManagerException();
 		else
 			return indice;
 	}

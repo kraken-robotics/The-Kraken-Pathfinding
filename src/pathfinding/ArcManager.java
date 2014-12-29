@@ -1,5 +1,6 @@
 package pathfinding;
 
+import exceptions.ArcManagerException;
 import exceptions.FinMatchException;
 import exceptions.strategie.ScriptException;
 import robot.RobotChrono;
@@ -40,7 +41,9 @@ public interface ArcManager {
 	 */
 	public int heuristicCost(GameState<RobotChrono> state);
 
-	public int getHash(GameState<RobotChrono> state);	
+	public int getHashAndCreateIfNecessary(GameState<RobotChrono> state);
+	
+	public int getHash(GameState<RobotChrono> state) throws ArcManagerException;
 	
 	public boolean isArrive(int hash);
 	

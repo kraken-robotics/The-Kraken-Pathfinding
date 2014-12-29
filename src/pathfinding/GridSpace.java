@@ -36,7 +36,7 @@ public class GridSpace implements Service {
 	// Doit-on éviter les éléments de jeux? Ou peut-on foncer dedans?
 	private boolean avoidGameElement = true;
 	
-	private int hashTable;
+	private long hashTable;
 	
 	public GridSpace(Log log, Config config, ObstacleManager obstaclemanager)
 	{
@@ -167,7 +167,7 @@ public class GridSpace implements Service {
 
 	public void copy(GridSpace other, long date)
 	{
-		int oldHashTable = hashTable;
+		long oldHashTable = hashTable;
 		boolean hasChanged = obstaclemanager.supprimerObstaclesPerimes(date);
 		hashTable = obstaclemanager.getHashTable();
 		hasChanged |= oldHashTable != hashTable;
@@ -220,6 +220,11 @@ public class GridSpace implements Service {
     	obstaclemanager.creer_obstacle(position, date);
     	reinitConnections();
     }
+
+    public void createHypotheticalEnnemy(Vec2 position, int date_actuelle)
+    {
+    	obstaclemanager.createHypotheticalEnnemy(position, date_actuelle);
+    }
     
     /**
      * Créer un obstacle maintenant.
@@ -250,7 +255,7 @@ public class GridSpace implements Service {
 	 * Utilisé pour les tests uniquement
 	 * @return
 	 */
-	public int getHashTable()
+	public long getHashTable()
 	{
 		return obstaclemanager.getHashTable();
 	}
@@ -269,7 +274,12 @@ public class GridSpace implements Service {
 
 	public void printHash()
 	{
-		log.debug("Nb obstacles: "+getHashObstaclesMobiles(), this);
+		int hash = getHashObstaclesMobiles();
+		log.debug("Numéro d'obstacle: "+hash/2, this);
+		if(hash%2 == 0)
+			log.debug("Pas d'ennemi d'urgence", this);
+		else
+			log.debug("Ennemi d'urgence présent", this);
 		obstaclemanager.printHash();
 	}
 	

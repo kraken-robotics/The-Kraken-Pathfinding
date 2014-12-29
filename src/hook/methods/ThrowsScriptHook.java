@@ -1,5 +1,7 @@
 package hook.methods;
 
+import robot.RobotChrono;
+import strategie.GameState;
 import hook.Executable;
 import enums.ScriptHookNames;
 import exceptions.ScriptHookException;
@@ -25,4 +27,8 @@ public class ThrowsScriptHook implements Executable {
 		throw new ScriptHookException(script);
 	}
 	
+	@Override
+	public void updateGameState(GameState<RobotChrono> state)
+	{}
+
 }

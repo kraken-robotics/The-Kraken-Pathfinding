@@ -1,5 +1,7 @@
 package hook.methods;
 
+import robot.RobotChrono;
+import strategie.GameState;
 import exceptions.FinMatchException;
 import hook.Executable;
 
@@ -16,5 +18,9 @@ public class FinMatchCheck implements Executable {
 	{
 		throw new FinMatchException();
 	}
+
+	@Override
+	public void updateGameState(GameState<RobotChrono> state)
+	{}
 
 }

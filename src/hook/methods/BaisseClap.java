@@ -1,6 +1,8 @@
 package hook.methods;
 
 import robot.Robot;
+import robot.RobotChrono;
+import strategie.GameState;
 import exceptions.FinMatchException;
 import exceptions.serial.SerialConnexionException;
 import hook.Executable;
@@ -32,5 +34,9 @@ public class BaisseClap implements Executable
 			e.printStackTrace();
 		}
 	}
+
+	@Override
+	public void updateGameState(GameState<RobotChrono> state)
+	{}
 
 }
