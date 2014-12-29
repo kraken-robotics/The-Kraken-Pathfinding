@@ -57,10 +57,6 @@ public class JUnit_StrategyArcManager extends JUnit_Test {
 		d = strategyarcmanager.next();
 		Assert.assertEquals(ScriptNames.ScriptTapis, d.script_name);
 		Assert.assertEquals(0, d.version);
-		Assert.assertTrue(strategyarcmanager.hasNext(state));
-		d = strategyarcmanager.next();
-		Assert.assertEquals(ScriptNames.ScriptAttente, d.script_name);
-		Assert.assertEquals(0, d.version);
 		Assert.assertTrue(!strategyarcmanager.hasNext(state));
 	}
 
@@ -85,10 +81,6 @@ public class JUnit_StrategyArcManager extends JUnit_Test {
 			d = strategyarcmanager.next();
 			Assert.assertEquals(ScriptNames.ScriptClap, d.script_name);
 			Assert.assertEquals(1, d.version);
-			Assert.assertTrue(strategyarcmanager.hasNext(state));
-			d = strategyarcmanager.next();
-			Assert.assertEquals(ScriptNames.ScriptAttente, d.script_name);
-			Assert.assertEquals(0, d.version);
 			Assert.assertTrue(!strategyarcmanager.hasNext(state));
     	}
 	}
@@ -113,10 +105,6 @@ public class JUnit_StrategyArcManager extends JUnit_Test {
 			Assert.assertTrue(strategyarcmanager.hasNext(state));
 			d = strategyarcmanager.next();
 			Assert.assertEquals(ScriptNames.ScriptTapis, d.script_name);
-			Assert.assertEquals(0, d.version);
-			Assert.assertTrue(strategyarcmanager.hasNext(state));
-			d = strategyarcmanager.next();
-			Assert.assertEquals(ScriptNames.ScriptAttente, d.script_name);
 			Assert.assertEquals(0, d.version);
 			Assert.assertTrue(!strategyarcmanager.hasNext(state));
     	}
@@ -143,10 +131,6 @@ public class JUnit_StrategyArcManager extends JUnit_Test {
 			d = strategyarcmanager.next();
 			Assert.assertEquals(ScriptNames.ScriptTapis, d.script_name);
 			Assert.assertEquals(0, d.version);
-			Assert.assertTrue(strategyarcmanager.hasNext(state));
-			d = strategyarcmanager.next();
-			Assert.assertEquals(ScriptNames.ScriptAttente, d.script_name);
-			Assert.assertEquals(0, d.version);
 			Assert.assertTrue(!strategyarcmanager.hasNext(state));
     	}
 	}
@@ -169,10 +153,6 @@ public class JUnit_StrategyArcManager extends JUnit_Test {
 			Assert.assertTrue(strategyarcmanager.hasNext(state));
 			Decision d = strategyarcmanager.next();
 			Assert.assertEquals(ScriptNames.ScriptTapis, d.script_name);
-			Assert.assertEquals(0, d.version);
-			Assert.assertTrue(strategyarcmanager.hasNext(state));
-			d = strategyarcmanager.next();
-			Assert.assertEquals(ScriptNames.ScriptAttente, d.script_name);
 			Assert.assertEquals(0, d.version);
 			Assert.assertTrue(!strategyarcmanager.hasNext(state));
     	}
@@ -198,10 +178,6 @@ public class JUnit_StrategyArcManager extends JUnit_Test {
 			Decision d = strategyarcmanager.next();
 			Assert.assertEquals(ScriptNames.ScriptClap, d.script_name);
 			Assert.assertEquals(1, d.version);
-			Assert.assertTrue(strategyarcmanager.hasNext(state));
-			d = strategyarcmanager.next();
-			Assert.assertEquals(ScriptNames.ScriptAttente, d.script_name);
-			Assert.assertEquals(0, d.version);
 			Assert.assertTrue(!strategyarcmanager.hasNext(state));
     	}
 	}
@@ -233,10 +209,6 @@ public class JUnit_StrategyArcManager extends JUnit_Test {
 		d = strategyarcmanager.next();
 		Assert.assertEquals(ScriptNames.ScriptTapis, d.script_name);
 		Assert.assertEquals(0, d.version);
-		Assert.assertTrue(strategyarcmanager.hasNext(state));
-		d = strategyarcmanager.next();
-		Assert.assertEquals(ScriptNames.ScriptAttente, d.script_name);
-		Assert.assertEquals(0, d.version);
 		Assert.assertTrue(!strategyarcmanager.hasNext(state));
 
 		strategyarcmanager.reinitHashes();
@@ -248,10 +220,6 @@ public class JUnit_StrategyArcManager extends JUnit_Test {
 		Assert.assertTrue(strategyarcmanager.hasNext(state2));
 		d = strategyarcmanager.next();
 		Assert.assertEquals(ScriptNames.ScriptTapis, d.script_name);
-		Assert.assertEquals(0, d.version);
-		Assert.assertTrue(strategyarcmanager.hasNext(state2));
-		d = strategyarcmanager.next();
-		Assert.assertEquals(ScriptNames.ScriptAttente, d.script_name);
 		Assert.assertEquals(0, d.version);
 		Assert.assertTrue(!strategyarcmanager.hasNext(state2));
 
