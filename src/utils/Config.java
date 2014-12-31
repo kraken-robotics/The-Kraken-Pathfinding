@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.util.Enumeration;
 import java.util.Properties;
 
-import enums.ConfigInfo;
 import enums.RobotColor;
 
 

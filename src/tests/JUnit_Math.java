@@ -3,7 +3,7 @@ package tests;
 import org.junit.Test;
 import org.junit.Assert;
 
-import smartMath.Vec2;
+import utils.Vec2;
 
 /**
  * Tests unitaires pour le package smartMath

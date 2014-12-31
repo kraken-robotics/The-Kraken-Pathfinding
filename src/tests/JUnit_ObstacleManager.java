@@ -1,17 +1,15 @@
 package tests;
 
 import org.junit.Assert;
-
-import obstacles.ObstacleManager;
-
 import org.junit.Before;
 import org.junit.Test;
 
-import smartMath.Vec2;
+import astar.arc.PathfindingNodes;
+import container.ServiceNames;
+import table.ObstacleManager;
 import table.Table;
-import enums.ConfigInfo;
-import enums.PathfindingNodes;
-import enums.ServiceNames;
+import utils.ConfigInfo;
+import utils.Vec2;
 import enums.Tribool;
 
 /**

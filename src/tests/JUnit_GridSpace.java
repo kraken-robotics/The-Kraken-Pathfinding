@@ -4,10 +4,10 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import pathfinding.GridSpace;
-import smartMath.Vec2;
-import enums.PathfindingNodes;
-import enums.ServiceNames;
+import astar.arc.PathfindingNodes;
+import container.ServiceNames;
+import table.GridSpace;
+import utils.Vec2;
 
 /**
  * Tests unitaires de GridSpace

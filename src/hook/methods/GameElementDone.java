@@ -1,9 +1,9 @@
 package hook.methods;
 
-import pathfinding.GridSpace;
+import obstacles.gameElement.GameElementNames;
 import robot.RobotChrono;
 import strategie.GameState;
-import enums.GameElementNames;
+import table.GridSpace;
 import enums.Tribool;
 import hook.Executable;
 

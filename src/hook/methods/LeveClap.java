@@ -2,11 +2,11 @@ package hook.methods;
 
 import robot.Robot;
 import robot.RobotChrono;
+import robot.cardsWrappers.enums.HauteurBrasClap;
 import strategie.GameState;
 import exceptions.FinMatchException;
 import exceptions.serial.SerialConnexionException;
 import hook.Executable;
-import enums.HauteurBrasClap;
 import enums.Side;
 
 /**

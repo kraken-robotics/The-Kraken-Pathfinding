@@ -5,18 +5,18 @@ import java.util.ArrayList;
 import org.junit.Before;
 import org.junit.Test;
 
-import pathfinding.AStar;
-import pathfinding.StrategyArcManager;
+import container.ServiceNames;
+import astar.AStar;
+import astar.arc.Decision;
+import astar.arc.PathfindingNodes;
+import astar.arcmanager.StrategyArcManager;
 import robot.RobotChrono;
 import robot.RobotReal;
-import scripts.Decision;
 import scripts.Script;
 import scripts.ScriptManager;
-import smartMath.Vec2;
+import scripts.ScriptNames;
 import strategie.GameState;
-import enums.PathfindingNodes;
-import enums.ScriptNames;
-import enums.ServiceNames;
+import utils.Vec2;
 
 /**
  * Tests unitaires du planificateur de scripts

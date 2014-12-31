@@ -6,17 +6,17 @@ import org.junit.Test;
 import org.junit.Before;
 import org.junit.Assert;
 
-import pathfinding.AStar;
-import pathfinding.PathfindingArcManager;
+import container.ServiceNames;
+import astar.AStar;
+import astar.arc.PathfindingNodes;
+import astar.arcmanager.PathfindingArcManager;
 import robot.RobotChrono;
 import robot.RobotReal;
 import scripts.Script;
 import scripts.ScriptManager;
-import smartMath.Vec2;
+import scripts.ScriptNames;
 import strategie.GameState;
-import enums.PathfindingNodes;
-import enums.ScriptNames;
-import enums.ServiceNames;
+import utils.Vec2;
 
 /**
  * Tests unitaires des scripts.

@@ -1,10 +1,9 @@
 package table;
 
-import obstacles.GameElement;
+import obstacles.gameElement.GameElement;
+import obstacles.gameElement.GameElementNames;
 import container.Service;
-import enums.GameElementNames;
 import enums.Tribool;
-import smartMath.Vec2;
 import utils.*;
 
 /**

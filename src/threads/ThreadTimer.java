@@ -1,14 +1,14 @@
 package threads;
 
 import container.Service;
-import obstacles.ObstacleManager;
-import enums.ConfigInfo;
 import exceptions.FinMatchException;
 import exceptions.serial.SerialConnexionException;
 import robot.cardsWrappers.LocomotionCardWrapper;
 import robot.cardsWrappers.SensorsCardWrapper;
 import robot.serial.SerialManager;
+import table.ObstacleManager;
 import utils.Config;
+import utils.ConfigInfo;
 import utils.Log;
 import utils.Sleep;
 

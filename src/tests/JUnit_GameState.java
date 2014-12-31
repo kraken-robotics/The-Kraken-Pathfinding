@@ -1,16 +1,17 @@
 package tests;
 
+import obstacles.gameElement.GameElementNames;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import astar.arc.PathfindingNodes;
+import container.ServiceNames;
 import robot.RobotChrono;
 import robot.RobotReal;
-import smartMath.Vec2;
 import strategie.GameState;
-import enums.GameElementNames;
-import enums.PathfindingNodes;
-import enums.ServiceNames;
+import utils.Vec2;
 import enums.Tribool;
 
 public class JUnit_GameState extends JUnit_Test {

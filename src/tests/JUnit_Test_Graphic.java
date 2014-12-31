@@ -4,25 +4,24 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Random;
 
-import obstacles.ObstacleManager;
-
 import org.junit.Before;
 import org.junit.Test;
 
-import pathfinding.AStar;
-import pathfinding.PathfindingArcManager;
-import pathfinding.StrategyArcManager;
-import enums.PathfindingNodes;
-import enums.ScriptNames;
-import enums.ServiceNames;
+import container.ServiceNames;
+import astar.AStar;
+import astar.arc.Decision;
+import astar.arc.PathfindingNodes;
+import astar.arcmanager.PathfindingArcManager;
+import astar.arcmanager.StrategyArcManager;
 import robot.RobotChrono;
 import robot.RobotReal;
-import scripts.Decision;
 import scripts.ScriptManager;
-import smartMath.Vec2;
+import scripts.ScriptNames;
 import strategie.GameState;
+import table.ObstacleManager;
 import tests.graphicLib.Fenetre;
 import utils.Sleep;
+import utils.Vec2;
 
 /**
  * Tests unitaires disposant d'une interface graphique.

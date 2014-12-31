@@ -6,7 +6,6 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 import container.Service;
-import enums.ConfigInfo;
 
 /**
  * Service de log, affiche à l'écran des informations avec différents niveaux de couleurs

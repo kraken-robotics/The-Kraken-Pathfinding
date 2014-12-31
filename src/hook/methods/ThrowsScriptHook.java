@@ -1,9 +1,9 @@
 package hook.methods;
 
 import robot.RobotChrono;
+import scripts.hooks.ScriptHookNames;
 import strategie.GameState;
 import hook.Executable;
-import enums.ScriptHookNames;
 import exceptions.ScriptHookException;
 
 /**

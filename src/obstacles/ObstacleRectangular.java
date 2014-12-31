@@ -1,7 +1,7 @@
 package obstacles;
 
-import smartMath.Vec2;
 import utils.Log;
+import utils.Vec2;
 
 /**
  * Obstacle rectangulaire dont les bords sont alignés avec les axes X et Y (pas de possibilité de faire un rectangle en biais)

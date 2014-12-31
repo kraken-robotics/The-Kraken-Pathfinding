@@ -3,12 +3,12 @@ package tests.graphicLib;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
-import obstacles.GameElement;
 import obstacles.Obstacle;
 import obstacles.ObstacleCircular;
 import obstacles.ObstacleProximity;
 import obstacles.ObstacleRectangular;
-import smartMath.Vec2;
+import obstacles.gameElement.GameElement;
+import utils.Vec2;
 
 import java.awt.*;
 import java.io.File;

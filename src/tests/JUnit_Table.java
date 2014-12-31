@@ -1,12 +1,13 @@
 package tests;
 
+import obstacles.gameElement.GameElementNames;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import container.ServiceNames;
 import table.Table;
-import enums.GameElementNames;
-import enums.ServiceNames;
 import enums.Tribool;
 
 /**

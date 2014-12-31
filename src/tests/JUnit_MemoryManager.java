@@ -4,12 +4,12 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import container.ServiceNames;
+import astar.MemoryManager;
+import astar.arc.PathfindingNodes;
 import robot.RobotChrono;
 import strategie.GameState;
-import strategie.MemoryManager;
-import enums.ConfigInfo;
-import enums.PathfindingNodes;
-import enums.ServiceNames;
+import utils.ConfigInfo;
 
 /**
  * Tests unitaires du memorymanager

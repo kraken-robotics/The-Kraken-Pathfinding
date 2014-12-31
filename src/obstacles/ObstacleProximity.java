@@ -1,8 +1,8 @@
 package obstacles;
 
-import enums.Speed;
-import smartMath.Vec2;
+import robot.Speed;
 import utils.Log;
+import utils.Vec2;
 
 /**
  * Obstacles détectés par capteurs de proximité (ultrasons et infrarouges)

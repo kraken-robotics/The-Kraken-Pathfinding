@@ -3,8 +3,8 @@ package hook.methods;
 import hook.Executable;
 import robot.Locomotion;
 import robot.RobotChrono;
-import smartMath.Vec2;
 import strategie.GameState;
+import utils.Vec2;
 
 /**
  * Classe implémentant la méthode changement de consigne, utilisée pour avoir une trajectoire courbe.

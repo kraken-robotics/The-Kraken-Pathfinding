@@ -4,12 +4,12 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import pathfinding.PathfindingArcManager;
+import container.ServiceNames;
+import astar.arc.PathfindingNodes;
+import astar.arcmanager.PathfindingArcManager;
 import robot.RobotChrono;
 import robot.RobotReal;
 import strategie.GameState;
-import enums.PathfindingNodes;
-import enums.ServiceNames;
 
 /**
  * Tests unitaires des calculs sur les PathfindingNodes

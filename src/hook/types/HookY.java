@@ -3,10 +3,10 @@ package hook.types;
 import exceptions.FinMatchException;
 import exceptions.ScriptHookException;
 import hook.Hook;
-import smartMath.Vec2;
 import strategie.GameState;
 import utils.Log;
 import utils.Config;
+import utils.Vec2;
 
 /**
  * Déclenchement sur la coordonnée Y du robot sur la table

@@ -3,7 +3,7 @@ package tests;
 import org.junit.Assert;
 import org.junit.Test;
 
-import smartMath.Vec2;
+import utils.Vec2;
 import obstacles.ObstacleCircular;
 import obstacles.ObstacleRectangular;
 

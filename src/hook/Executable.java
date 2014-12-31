@@ -22,6 +22,14 @@ public interface Executable
 	 */
 	public void execute() throws FinMatchException, ScriptHookException;
 
+	/**
+	 * Cette mise à jour conserve surtout les Executables susceptibles d'être utilisés
+	 * sur un GameState<RobotChrono>. Les hooks ne sont pas recréés pour chaque gamestate,
+	 * mais recyclés, ce qui impose de pouvoir mettre à jour le gamestate afin de mettre
+	 * à jour la référence du gamestate. Sinon, c'est un autre gamestate, celui d'avant
+	 * le recyclage, qui est utilisé.
+	 * @param state
+	 */
 	public void updateGameState(GameState<RobotChrono> state);
 	
 }

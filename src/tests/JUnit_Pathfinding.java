@@ -6,21 +6,22 @@ import hook.types.HookFactory;
 import java.util.ArrayList;
 import java.util.Random;
 
+import obstacles.gameElement.GameElementNames;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import pathfinding.AStar;
-import pathfinding.PathfindingArcManager;
+import container.ServiceNames;
+import astar.AStar;
+import astar.MemoryManager;
+import astar.arc.PathfindingNodes;
+import astar.arcmanager.PathfindingArcManager;
 import robot.RobotChrono;
 import robot.RobotReal;
-import smartMath.Vec2;
 import strategie.GameState;
-import strategie.MemoryManager;
-import enums.ConfigInfo;
-import enums.GameElementNames;
-import enums.PathfindingNodes;
-import enums.ServiceNames;
+import utils.ConfigInfo;
+import utils.Vec2;
 import enums.Tribool;
 import exceptions.PathfindingException;
 import exceptions.PathfindingRobotInObstacleException;

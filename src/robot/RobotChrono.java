@@ -2,14 +2,13 @@ package robot;
 
 import java.util.ArrayList;
 
+import astar.arc.PathfindingNodes;
 import hook.Hook;
-import smartMath.Vec2;
+import robot.cardsWrappers.enums.HauteurBrasClap;
 import utils.Log;
 import utils.Config;
-import enums.HauteurBrasClap;
-import enums.PathfindingNodes;
+import utils.Vec2;
 import enums.Side;
-import enums.Speed;
 import exceptions.FinMatchException;
 import exceptions.ScriptHookException;
 

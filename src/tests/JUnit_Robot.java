@@ -6,14 +6,14 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import astar.arc.PathfindingNodes;
+import container.ServiceNames;
 import robot.Robot;
 import robot.RobotChrono;
 import robot.RobotReal;
-import smartMath.Vec2;
 import strategie.GameState;
-import enums.ConfigInfo;
-import enums.PathfindingNodes;
-import enums.ServiceNames;
+import utils.ConfigInfo;
+import utils.Vec2;
 
 /**
  * Tests unitaires sur Robot, RobotReal et RobotChrono

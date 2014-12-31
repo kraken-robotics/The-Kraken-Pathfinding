@@ -3,10 +3,10 @@ package tests;
 import org.junit.Before;
 import org.junit.Test;
 
+import container.ServiceNames;
 import threads.ThreadStrategy;
 import utils.Config;
 import utils.Sleep;
-import enums.ServiceNames;
 
 /**
  * Tests unitaires des threads.

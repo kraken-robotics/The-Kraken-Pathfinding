@@ -2,21 +2,20 @@ package robot;
 
 import java.util.ArrayList;
 
+import astar.arc.PathfindingNodes;
 import hook.Hook;
 import hook.types.HookDateFinMatch;
-import smartMath.Vec2;
+import robot.cardsWrappers.enums.ActuatorOrder;
+import robot.cardsWrappers.enums.HauteurBrasClap;
 import container.Service;
-import enums.ActuatorOrder;
-import enums.HauteurBrasClap;
-import enums.PathfindingNodes;
 import enums.Side;
-import enums.Speed;
 import exceptions.FinMatchException;
 import exceptions.ScriptHookException;
 import exceptions.Locomotion.UnableToMoveException;
 import exceptions.serial.SerialConnexionException;
 import utils.Log;
 import utils.Config;
+import utils.Vec2;
 
 /**
  *  Classe abstraite du robot, dont héritent RobotVrai et RobotChrono

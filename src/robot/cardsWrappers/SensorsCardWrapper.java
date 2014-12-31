@@ -1,10 +1,10 @@
 package robot.cardsWrappers;
 
 import robot.serial.SerialConnexion;
+import utils.ConfigInfo;
 import utils.Log;
 import utils.Config;
 import container.Service;
-import enums.ConfigInfo;
 import exceptions.FinMatchException;
 import exceptions.serial.SerialConnexionException;
 

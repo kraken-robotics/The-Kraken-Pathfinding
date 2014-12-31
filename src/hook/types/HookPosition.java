@@ -4,10 +4,10 @@ import obstacles.ObstacleCircular;
 import exceptions.FinMatchException;
 import exceptions.ScriptHookException;
 import hook.Hook;
-import smartMath.Vec2;
 import strategie.GameState;
 import utils.Log;
 import utils.Config;
+import utils.Vec2;
 
 /**
  * Hook se déclenchant si le robot est a une distance a un point de la table inférieure a un certain seuil

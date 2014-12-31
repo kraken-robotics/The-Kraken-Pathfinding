@@ -2,6 +2,8 @@ package tests;
 
 import java.util.ArrayList;
 
+import obstacles.gameElement.GameElementNames;
+
 import org.junit.Assert;
 
 import hook.Hook;
@@ -10,15 +12,14 @@ import hook.types.HookFactory;
 import org.junit.Before;
 import org.junit.Test;
 
-import pathfinding.AStar;
-import pathfinding.PathfindingArcManager;
+import container.ServiceNames;
+import astar.AStar;
+import astar.arc.PathfindingNodes;
+import astar.arcmanager.PathfindingArcManager;
 import robot.RobotChrono;
 import robot.RobotReal;
-import smartMath.Vec2;
 import strategie.GameState;
-import enums.GameElementNames;
-import enums.PathfindingNodes;
-import enums.ServiceNames;
+import utils.Vec2;
 import enums.Tribool;
 import exceptions.PathfindingException;
 

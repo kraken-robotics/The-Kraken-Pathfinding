@@ -1,14 +1,13 @@
 package tests;
 
-import obstacles.ObstacleManager;
-
 import org.junit.Before;
 import org.junit.After;
 
+import table.ObstacleManager;
 import utils.Log;
 import utils.Config;
 import container.Container;
-import enums.ServiceNames;
+import container.ServiceNames;
 
 /**
  * Classe mère de tous les tests.

@@ -1,7 +1,6 @@
 package robot.serial;
 import utils.Config;
 import utils.Log;
-import enums.ServiceNames;
 import gnu.io.CommPortIdentifier;
 
 import java.util.ArrayList;
@@ -9,6 +8,7 @@ import java.util.Enumeration;
 import java.util.Iterator;
 
 import container.Service;
+import container.ServiceNames;
 import exceptions.serial.SerialManagerException;
 
 /**

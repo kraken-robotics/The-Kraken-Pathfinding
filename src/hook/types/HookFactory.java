@@ -2,20 +2,20 @@ package hook.types;
 
 import java.util.ArrayList;
 
+import obstacles.gameElement.GameElementNames;
 import hook.Callback;
 import hook.Hook;
 import hook.methods.FinMatchCheck;
 import hook.methods.GameElementDone;
 import container.Service;
-import enums.ConfigInfo;
-import enums.GameElementNames;
 import enums.Tribool;
 import robot.RobotChrono;
 import robot.RobotReal;
-import smartMath.Vec2;
 import strategie.GameState;
+import utils.ConfigInfo;
 import utils.Log;
 import utils.Config;
+import utils.Vec2;
 
 /**
  * Service fabriquant des hooks à la demande.

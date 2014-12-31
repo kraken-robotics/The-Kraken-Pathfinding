@@ -1,6 +1,6 @@
 package exceptions;
 
-import enums.ScriptHookNames;
+import scripts.hooks.ScriptHookNames;
 
 /**
  * Exception levée par un hook

@@ -1,6 +1,5 @@
 package robot.serial;
 
-import enums.ServiceNames;
 import exceptions.FinMatchException;
 import exceptions.serial.SerialConnexionException;
 import gnu.io.CommPortIdentifier;
@@ -17,6 +16,7 @@ import java.io.OutputStream;
 
 import utils.Log;
 import container.Service;
+import container.ServiceNames;
 
 public class SerialConnexion implements SerialPortEventListener, Service
 {

@@ -6,16 +6,16 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import pathfinding.StrategyArcManager;
+import container.ServiceNames;
+import astar.arc.Decision;
+import astar.arc.PathfindingNodes;
+import astar.arcmanager.StrategyArcManager;
 import robot.RobotChrono;
 import robot.RobotReal;
-import scripts.Decision;
 import scripts.Script;
 import scripts.ScriptManager;
+import scripts.ScriptNames;
 import strategie.GameState;
-import enums.PathfindingNodes;
-import enums.ScriptNames;
-import enums.ServiceNames;
 
 /**
  * Tests unitaires du StrategyArcManager
@@ -224,5 +224,7 @@ public class JUnit_StrategyArcManager extends JUnit_Test {
 		Assert.assertTrue(!strategyarcmanager.hasNext(state2));
 
 	}
+
+	// TODO: test où le robot est obligé d'attendre que le robot adverse parte
 	
 }

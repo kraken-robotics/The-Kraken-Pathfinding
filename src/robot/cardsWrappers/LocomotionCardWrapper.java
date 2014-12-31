@@ -1,9 +1,9 @@
 package robot.cardsWrappers;
 
+import robot.FeedbackLoopStatisticsElement;
 import robot.serial.SerialConnexion;
 import utils.*;
 import container.Service;
-import enums.FeedbackLoopStatisticsElement;
 import exceptions.FinMatchException;
 import exceptions.Locomotion.BlockedException;
 import exceptions.serial.SerialConnexionException;

@@ -3,10 +3,10 @@ package hook.types;
 import exceptions.FinMatchException;
 import exceptions.ScriptHookException;
 import hook.types.HookX;
-import smartMath.Vec2;
 import strategie.GameState;
 import utils.Log;
 import utils.Config;
+import utils.Vec2;
 
 /**
  * Déclenche un évènement dès que le robot a une coordonnée X (sur la table) inférieure a celle fournie

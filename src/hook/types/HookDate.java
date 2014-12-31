@@ -2,10 +2,10 @@ package hook.types;
 
 import exceptions.FinMatchException;
 import exceptions.ScriptHookException;
-import smartMath.Vec2;
 import strategie.GameState;
 import utils.Config;
 import utils.Log;
+import utils.Vec2;
 import hook.Hook;
 
 /**

@@ -1,12 +1,12 @@
 package strategie;
 
 import hook.types.HookFactory;
-import pathfinding.GridSpace;
 import container.Service;
 import exceptions.FinMatchException;
 import robot.Robot;
 import robot.RobotChrono;
 import robot.RobotReal;
+import table.GridSpace;
 import utils.Log;
 import utils.Config;
 

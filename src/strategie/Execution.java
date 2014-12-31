@@ -5,8 +5,8 @@ import hook.types.HookFactory;
 
 import java.util.ArrayList;
 
+import astar.arc.Decision;
 import container.Service;
-import enums.Speed;
 import exceptions.FinMatchException;
 import exceptions.PathfindingException;
 import exceptions.PathfindingRobotInObstacleException;
@@ -15,7 +15,7 @@ import exceptions.UnknownScriptException;
 import exceptions.Locomotion.UnableToMoveException;
 import exceptions.strategie.ScriptException;
 import robot.RobotReal;
-import scripts.Decision;
+import robot.Speed;
 import scripts.ScriptManager;
 import threads.ThreadStrategy;
 import utils.Config;

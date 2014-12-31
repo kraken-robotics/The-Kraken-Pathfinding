@@ -1,16 +1,16 @@
 package threads;
 
 import container.Service;
-import enums.ConfigInfo;
 import exceptions.FinMatchException;
-import obstacles.ObstacleManager;
-import pathfinding.GridSpace;
 import robot.RobotReal;
 import robot.cardsWrappers.SensorsCardWrapper;
-import smartMath.Vec2;
+import table.GridSpace;
+import table.ObstacleManager;
 import utils.Config;
+import utils.ConfigInfo;
 import utils.Log;
 import utils.Sleep;
+import utils.Vec2;
 
 /**
  * Thread qui ajoute en continu les obstacles détectés par les capteurs

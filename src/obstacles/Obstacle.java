@@ -1,6 +1,6 @@
 package obstacles;
-import smartMath.Vec2;
 import utils.Log;
+import utils.Vec2;
 
 /**
  * Superclasse abstraite des obstacles.

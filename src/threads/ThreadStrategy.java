@@ -2,16 +2,16 @@ package threads;
 
 import java.util.ArrayList;
 
-import pathfinding.AStar;
-import pathfinding.StrategyArcManager;
+import astar.AStar;
+import astar.arc.Decision;
+import astar.arc.PathfindingNodes;
+import astar.arcmanager.StrategyArcManager;
 import container.Service;
-import enums.ScriptNames;
-import enums.PathfindingNodes;
 import exceptions.FinMatchException;
 import exceptions.PathfindingException;
 import robot.RobotChrono;
 import robot.RobotReal;
-import scripts.Decision;
+import scripts.ScriptNames;
 import strategie.GameState;
 import utils.Config;
 import utils.Log;

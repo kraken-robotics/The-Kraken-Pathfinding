@@ -2,14 +2,11 @@ package robot;
 
 import java.util.ArrayList;
 
-import obstacles.ObstacleManager;
+import astar.arc.PathfindingNodes;
 import container.Service;
 //import hook.Callback;
 //import hook.Executable;
 import hook.Hook;
-import enums.ConfigInfo;
-import enums.PathfindingNodes;
-import enums.Speed;
 import exceptions.FinMatchException;
 import exceptions.ScriptHookException;
 //import hook.methodes.ChangeConsigne;
@@ -19,10 +16,12 @@ import exceptions.Locomotion.UnexpectedObstacleOnPathException;
 import exceptions.Locomotion.UnableToMoveException;
 import exceptions.serial.SerialConnexionException;
 import robot.cardsWrappers.LocomotionCardWrapper;
-import smartMath.Vec2;
+import table.ObstacleManager;
+import utils.ConfigInfo;
 import utils.Log;
 import utils.Config;
 import utils.Sleep;
+import utils.Vec2;
 
 /**
  * Entre LocomtionCardWrapper (appels à la série) et RobotReal (Interface avec les utilisateurs de haut niveau), Locomotion

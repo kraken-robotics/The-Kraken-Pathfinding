@@ -2,14 +2,14 @@ package hook;
 
 import java.util.ArrayList;
 
-import enums.ConfigInfo;
 import exceptions.FinMatchException;
 import exceptions.ScriptHookException;
 import robot.RobotChrono;
-import smartMath.Vec2;
 import strategie.GameState;
+import utils.ConfigInfo;
 import utils.Log;
 import utils.Config;
+import utils.Vec2;
 
 /**
  * Classe-mère abstraite des hooks, utilisés pour la programmation évènementielle

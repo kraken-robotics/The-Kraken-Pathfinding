@@ -4,7 +4,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import container.Service;
-import enums.ServiceNames;
+import container.ServiceNames;
 
 /**
  * Tests unitaires pour le container
