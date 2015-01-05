@@ -2,7 +2,7 @@ package threads;
 
 import container.Service;
 import exceptions.FinMatchException;
-import exceptions.serial.SerialConnexionException;
+import exceptions.SerialConnexionException;
 import robot.cardsWrappers.LocomotionCardWrapper;
 import robot.cardsWrappers.SensorsCardWrapper;
 import robot.serial.SerialManager;

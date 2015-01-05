@@ -16,7 +16,7 @@ import exceptions.GridSpaceException;
 import exceptions.MemoryManagerException;
 import exceptions.PathfindingException;
 import exceptions.PathfindingRobotInObstacleException;
-import exceptions.strategie.ScriptException;
+import exceptions.ScriptException;
 import robot.RobotChrono;
 import strategie.GameState;
 import utils.Config;

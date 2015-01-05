@@ -77,7 +77,7 @@ public class ObstacleManager implements Service
         if(listObstaclesFixes == null)
         	createListObstaclesFixes();
 
-        // On n'instancie hypotheticalEnnemy qu'un seul fois
+        // On n'instancie hypotheticalEnnemy qu'une seule fois
         if(hypotheticalEnemy == null)
         	hypotheticalEnemy = new ObstacleProximity(log, new Vec2(), rayon_robot_adverse, -1000);
         updateConfig();
@@ -105,7 +105,7 @@ public class ObstacleManager implements Service
     }
     
     /**
-     * Supprime les éléments de jeux qui sont près de cette position.
+     * Supprime les éléments de jeux qui sont proches de cette position.
      * @param position
      */
     private void check_game_element(Vec2 position)
@@ -363,6 +363,11 @@ public class ObstacleManager implements Service
         return firstNotDead;
     }
 
+    /**
+     * Utilisé afin de calculer la péremption du cache du gridspace
+     * @param other
+     * @return
+     */
     public boolean equals(ObstacleManager other)
     {
         return firstNotDead == other.firstNotDead;
@@ -428,12 +433,19 @@ public class ObstacleManager implements Service
 		return table.getHash();
 	}
 
+	/**
+	 * Debug
+	 */
 	public void printHash()
 	{
 		table.printHash();
 	}
 
-	// Quelque chose change = un obstacle disparaît
+	/**
+	 * Quelque chose change = un obstacle disparaît
+	 * Si jamais rien ne change, renvoie Integer.MAX_VALUE
+	 * @return
+	 */
 	public int getDateSomethingChange()
 	{
 	    int date1, date2;

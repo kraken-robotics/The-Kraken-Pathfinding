@@ -1,4 +1,4 @@
-package exceptions.Locomotion;
+package exceptions;
 
 /**
  * Exception lancée en cas de blocage mécanique du robot (les moteurs forcent sans que les codeuses ne tournent pas)

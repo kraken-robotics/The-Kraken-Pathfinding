@@ -9,7 +9,7 @@ import java.util.Iterator;
 
 import container.Service;
 import container.ServiceNames;
-import exceptions.serial.SerialManagerException;
+import exceptions.SerialManagerException;
 
 /**
  * Instancie toutes les s�ries, si on lui demande gentillement!

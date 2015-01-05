@@ -16,7 +16,7 @@ import utils.Vec2;
  */
 
 
-class HookYisGreater extends HookY
+public class HookYisGreater extends HookY
 {
     /**
      * Instancie le hook sur coordonnée Y. Valeur en Y et tolérance paramétrable.

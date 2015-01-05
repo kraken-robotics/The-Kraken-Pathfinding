@@ -1,4 +1,4 @@
-package exceptions.serial;
+package exceptions;
 
 /**
  * Exception levée par les connexions séries

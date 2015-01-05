@@ -1,4 +1,4 @@
-package exceptions.Locomotion;
+package exceptions;
 
 /**
  * Exception levée en cas de détection d'un ennemi proche (par les capteurs, ultrason, infrarouge, etc.)

@@ -4,8 +4,8 @@ import container.ServiceNames;
 import exceptions.ContainerException;
 import exceptions.FinMatchException;
 import exceptions.PointSortieException;
+import exceptions.SerialManagerException;
 import exceptions.ThreadException;
-import exceptions.serial.SerialManagerException;
 
 public class PrintPointsSortie {
 

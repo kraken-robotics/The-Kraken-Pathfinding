@@ -54,6 +54,9 @@ public class GridSpace implements Service {
 		updateConfig();
 	}
 	
+	/**
+	 * Vérifie que les noeuds du pathfinding ne sont pas dans un obstacle fixe.
+	 */
     public void check_pathfinding_nodes()
     {
     	for(PathfindingNodes i: PathfindingNodes.values)
@@ -62,6 +65,10 @@ public class GridSpace implements Service {
     }
     
 
+    /**
+     * Initialisé static de isConnectedModel.
+     * En effet, il y a beaucoup d'instanciations de GridSpace... (il fait parti du gamestate)
+     */
 	private void initStatic()
 	{
 		log.debug("Calcul de isConnectedModel", this);
@@ -163,6 +170,11 @@ public class GridSpace implements Service {
 		obstaclemanager.updateConfig();
 	}
 
+	/**
+	 * other devient la copie conforme de this.
+	 * @param other
+	 * @param date
+	 */
 	public void copy(GridSpace other, long date)
 	{
 		long oldHashTable = hashTable;
@@ -179,6 +191,11 @@ public class GridSpace implements Service {
 		other.hashTable = hashTable;
 	}
 	
+	/**
+	 * Récupère un clone de ce gridspace.
+	 * @param date
+	 * @return
+	 */
 	public GridSpace clone(long date)
 	{
 		GridSpace cloned_gridspace = new GridSpace(log, config, obstaclemanager.clone(date));
@@ -219,6 +236,11 @@ public class GridSpace implements Service {
     	reinitConnections();
     }
 
+    /**
+     * Utilisé pour le calcul stratégique de secours uniquement.
+     * @param position
+     * @param date_actuelle
+     */
     public void createHypotheticalEnnemy(Vec2 position, int date_actuelle)
     {
     	obstaclemanager.createHypotheticalEnnemy(position, date_actuelle);
@@ -234,16 +256,30 @@ public class GridSpace implements Service {
     	creer_obstacle(position, (int)(System.currentTimeMillis() - Config.getDateDebutMatch()));
     }
 
+    /**
+     * Doit-on shooter les éléments de jeux? Cela modifie les chemins disponibles.
+     * @param avoidGameElement
+     */
     public void setAvoidGameElement(boolean avoidGameElement)
     {
     	this.avoidGameElement = avoidGameElement;
     }
 
+    /**
+     * Modification de la table.
+     * @param element
+     * @param done
+     */
 	public void setDone(GameElementNames element, Tribool done)
 	{
 		obstaclemanager.setDone(element, done);
 	}
 
+	/**
+	 * Récupération d'une info de la table.
+	 * @param element
+	 * @return
+	 */
 	public Tribool isDone(GameElementNames element)
 	{
 		return obstaclemanager.isDone(element);
@@ -258,6 +294,10 @@ public class GridSpace implements Service {
 		return obstaclemanager.getHashTable();
 	}
 
+	/**
+	 * Utilisé par les tests
+	 * @return
+	 */
 	public int getHashObstaclesMobiles()
 	{
 		return obstaclemanager.getHashObstaclesMobiles();
@@ -265,14 +305,17 @@ public class GridSpace implements Service {
 
 	public long getHash()
 	{
-		long hash = getHashObstaclesMobiles(); // codé sur autant de bits qu'il le faut puisqu'il est dans les bits de poids forts
+		long hash = obstaclemanager.getHashObstaclesMobiles(); // codé sur autant de bits qu'il le faut puisqu'il est dans les bits de poids forts
 		hash = (hash << (2*GameElementNames.values().length)) | obstaclemanager.getHashTable(); // codé sur 2 bits par élément de jeux (2 bit par Tribool)
 		return hash;
 	}
 
+	/**
+	 * Debug
+	 */
 	public void printHash()
 	{
-		int hash = getHashObstaclesMobiles();
+		int hash = obstaclemanager.getHashObstaclesMobiles();
 		log.debug("Numéro d'obstacle: "+hash/2, this);
 		if(hash%2 == 0)
 			log.debug("Pas d'ennemi d'urgence", this);
@@ -286,6 +329,10 @@ public class GridSpace implements Service {
 		return avoidGameElement?1:0;
 	}
 
+	/**
+	 * Utilisé par le script d'attente
+	 * @return
+	 */
 	public int getDateSomethingChange()
 	{
 		return obstaclemanager.getDateSomethingChange();

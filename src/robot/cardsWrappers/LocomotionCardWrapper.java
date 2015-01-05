@@ -4,9 +4,9 @@ import robot.FeedbackLoopStatisticsElement;
 import robot.serial.SerialConnexion;
 import utils.*;
 import container.Service;
+import exceptions.BlockedException;
 import exceptions.FinMatchException;
-import exceptions.Locomotion.BlockedException;
-import exceptions.serial.SerialConnexionException;
+import exceptions.SerialConnexionException;
 
 /**
  *  Dialogue avec la carte d'asservissement en position du robot.

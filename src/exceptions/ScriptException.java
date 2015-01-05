@@ -1,4 +1,4 @@
-package exceptions.strategie;
+package exceptions;
 
 /**
  * Exception levée par les scripts

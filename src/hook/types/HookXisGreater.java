@@ -14,7 +14,7 @@ import utils.Vec2;
  *
  */
 
-class HookXisGreater extends HookX
+public class HookXisGreater extends HookX
 {
 
     /**

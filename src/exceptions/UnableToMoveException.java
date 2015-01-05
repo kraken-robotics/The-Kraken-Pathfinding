@@ -1,4 +1,4 @@
-package exceptions.Locomotion;
+package exceptions;
 
 /**
  * Problème générique de déplacement du robot, que ce soit a cause d'un robot ennemi

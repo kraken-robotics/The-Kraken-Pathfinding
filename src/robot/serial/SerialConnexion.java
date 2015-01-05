@@ -1,7 +1,7 @@
 package robot.serial;
 
 import exceptions.FinMatchException;
-import exceptions.serial.SerialConnexionException;
+import exceptions.SerialConnexionException;
 import gnu.io.CommPortIdentifier;
 import gnu.io.NoSuchPortException;
 import gnu.io.PortInUseException;

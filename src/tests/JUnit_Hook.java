@@ -7,7 +7,7 @@ import obstacles.gameElement.GameElementNames;
 import org.junit.Assert;
 
 import hook.Hook;
-import hook.types.HookFactory;
+import hook.HookFactory;
 
 import org.junit.Before;
 import org.junit.Test;

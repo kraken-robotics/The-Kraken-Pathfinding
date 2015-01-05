@@ -1,7 +1,7 @@
 package strategie;
 
 import hook.Hook;
-import hook.types.HookFactory;
+import hook.HookFactory;
 
 import java.util.ArrayList;
 
@@ -10,10 +10,10 @@ import container.Service;
 import exceptions.FinMatchException;
 import exceptions.PathfindingException;
 import exceptions.PathfindingRobotInObstacleException;
+import exceptions.ScriptException;
 import exceptions.ScriptHookException;
+import exceptions.UnableToMoveException;
 import exceptions.UnknownScriptException;
-import exceptions.Locomotion.UnableToMoveException;
-import exceptions.strategie.ScriptException;
 import robot.RobotReal;
 import robot.Speed;
 import scripts.ScriptManager;
@@ -33,7 +33,7 @@ public class Execution implements Service {
 
 	private GameState<RobotReal> gamestate;
 	private Log log;
-//	private Config config;
+	protected Config config;
 	private ScriptManager scriptmanager;
 	private ThreadStrategy threadstrategy;
 //	private RobotColor color;

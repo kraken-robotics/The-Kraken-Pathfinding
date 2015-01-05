@@ -6,7 +6,7 @@ import utils.Log;
 import utils.Config;
 import container.Service;
 import exceptions.FinMatchException;
-import exceptions.serial.SerialConnexionException;
+import exceptions.SerialConnexionException;
 
 
 /**

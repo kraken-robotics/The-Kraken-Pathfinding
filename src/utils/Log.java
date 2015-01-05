@@ -40,7 +40,7 @@ public class Log implements Service
 		if(sauvegarde_fichier)
 			try {
 				java.util.GregorianCalendar calendar = new GregorianCalendar();
-				String heure = calendar.get(Calendar.HOUR)+":"+calendar.get(Calendar.MINUTE)+":"+calendar.get(Calendar.SECOND);
+				String heure = calendar.get(Calendar.HOUR_OF_DAY)+":"+calendar.get(Calendar.MINUTE)+":"+calendar.get(Calendar.SECOND);
 				writer = new FileWriter("logs/LOG-"+heure+".txt", true); 
 			}
 			catch(Exception e)
@@ -148,9 +148,8 @@ public class Log implements Service
 	
 	private void ecrireFichier(String message)
 	{
-		message += "\n";
 		try{
-		     writer.write(message,0,message.length());
+		     writer.write(message+"\n");
 		}
 		catch(Exception e)
 		{

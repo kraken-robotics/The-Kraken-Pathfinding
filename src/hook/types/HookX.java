@@ -13,7 +13,7 @@ import utils.Vec2;
  * @author pf, marsu
  */
 
-class HookX extends Hook
+public class HookX extends Hook
 {
 	// l'endroit ou est déclenché le hook
 	protected float xValue;

@@ -1,12 +1,18 @@
-package hook.types;
+package hook;
 
 import java.util.ArrayList;
 
 import obstacles.gameElement.GameElementNames;
-import hook.Callback;
-import hook.Hook;
 import hook.methods.FinMatchCheck;
 import hook.methods.GameElementDone;
+import hook.types.HookDate;
+import hook.types.HookDateFinMatch;
+import hook.types.HookPosition;
+import hook.types.HookX;
+import hook.types.HookXisGreater;
+import hook.types.HookXisLesser;
+import hook.types.HookY;
+import hook.types.HookYisGreater;
 import container.Service;
 import enums.Tribool;
 import robot.RobotChrono;

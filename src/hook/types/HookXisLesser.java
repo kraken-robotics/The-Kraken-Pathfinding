@@ -14,7 +14,7 @@ import utils.Vec2;
  *
  */
 
-class HookXisLesser extends HookX
+public class HookXisLesser extends HookX
 {
     /**
      * Instancie le hook sur coordonnée X. Valeur en X et tolérance paramétrable.

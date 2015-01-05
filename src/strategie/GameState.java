@@ -1,6 +1,6 @@
 package strategie;
 
-import hook.types.HookFactory;
+import hook.HookFactory;
 import container.Service;
 import exceptions.FinMatchException;
 import robot.Robot;
@@ -131,6 +131,9 @@ public class GameState<R extends Robot> implements Service
 		return hash;
 	}
 	
+	/**
+	 * Debug
+	 */
 	public void printHash()
 	{
 		gridspace.printHash();
@@ -146,6 +149,10 @@ public class GameState<R extends Robot> implements Service
 		indice_memory_manager = indice;
 	}
 	
+	/**
+	 * Permet de décider de la durée de l'anticipation
+	 * @param dateLimite
+	 */
 	public void updateHookFinMatch(int dateLimite)
 	{
 		robot.updateHookFinMatch(dateLimite);

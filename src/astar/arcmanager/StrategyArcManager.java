@@ -8,7 +8,7 @@ import astar.arc.Arc;
 import astar.arc.Decision;
 import astar.arc.PathfindingNodes;
 import hook.Hook;
-import hook.types.HookFactory;
+import hook.HookFactory;
 import robot.RobotChrono;
 import robot.RobotReal;
 import scripts.Script;
@@ -24,8 +24,8 @@ import exceptions.MemoryManagerException;
 import exceptions.PathfindingException;
 import exceptions.PathfindingRobotInObstacleException;
 import exceptions.PointSortieException;
+import exceptions.ScriptException;
 import exceptions.ScriptHookException;
-import exceptions.strategie.ScriptException;
 
 /**
  * Réalise les calculs sur les scripts et les gamestate pour l'AStar.

@@ -16,7 +16,7 @@ import utils.Vec2;
  *
  */
 
-class HookPosition extends Hook
+public class HookPosition extends Hook
 {
 	// position sur la table de déclenchement du hook: le hook est déclenché si le robot est a une distance de ce point de moins de tolerancy
 	private Vec2 position;

@@ -1,7 +1,7 @@
 package tests;
 
 import hook.Hook;
-import hook.types.HookFactory;
+import hook.HookFactory;
 
 import java.util.ArrayList;
 import java.util.Random;

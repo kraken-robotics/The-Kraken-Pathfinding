@@ -5,7 +5,7 @@ import robot.RobotChrono;
 import robot.cardsWrappers.enums.HauteurBrasClap;
 import strategie.GameState;
 import exceptions.FinMatchException;
-import exceptions.serial.SerialConnexionException;
+import exceptions.SerialConnexionException;
 import hook.Executable;
 import enums.Side;
 

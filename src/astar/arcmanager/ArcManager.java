@@ -4,7 +4,7 @@ import astar.arc.Arc;
 import exceptions.ArcManagerException;
 import exceptions.FinMatchException;
 import exceptions.MemoryManagerException;
-import exceptions.strategie.ScriptException;
+import exceptions.ScriptException;
 import robot.RobotChrono;
 import strategie.GameState;
 

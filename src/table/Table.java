@@ -18,10 +18,8 @@ public class Table implements Service
 	private Log log;
 	private Config config;
 	
-	// DEPENDS ON RULES
-	
 	// Les éléments de jeu de notre couleur.
-	private GameElement[] total = new GameElement[20];
+	private GameElement[] total = new GameElement[GameElementNames.values().length];
 	// Et potentiellement les balles de tennis
 	
 	// Le hash est exact; pas de collisions possibles.
@@ -94,8 +92,7 @@ public class Table implements Service
 
 	@Override
 	public void updateConfig()
-	{
-	}
+	{}
 
 	public boolean isProcheObstacle(GameElementNames g, Vec2 position, int rayon_robot_adverse)
 	{
