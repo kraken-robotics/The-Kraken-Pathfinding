@@ -13,6 +13,7 @@ import container.Service;
 import exceptions.ArcManagerException;
 import exceptions.FinMatchException;
 import exceptions.GridSpaceException;
+import exceptions.MemoryManagerException;
 import exceptions.PathfindingException;
 import exceptions.PathfindingRobotInObstacleException;
 import exceptions.strategie.ScriptException;
@@ -80,9 +81,10 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 	 * @return
 	 * @throws FinMatchException
 	 * @throws PathfindingException 
+	 * @throws MemoryManagerException 
 	 */
 	
-	public synchronized ArrayList<A> computeStrategyEmergency(GameState<RobotChrono> state) throws FinMatchException, PathfindingException
+	public synchronized ArrayList<A> computeStrategyEmergency(GameState<RobotChrono> state) throws FinMatchException, PathfindingException, MemoryManagerException
 	{
 		if(!(arcmanager instanceof StrategyArcManager))
 		{
@@ -97,7 +99,7 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 		return computeStrategy(state);
 	}
 
-	public synchronized ArrayList<A> computeStrategyAfter(GameState<RobotChrono> state, A decision) throws FinMatchException, PathfindingException
+	public synchronized ArrayList<A> computeStrategyAfter(GameState<RobotChrono> state, A decision) throws FinMatchException, PathfindingException, MemoryManagerException
 	{
 		if(!(arcmanager instanceof StrategyArcManager))
 		{
@@ -114,7 +116,7 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 		return computeStrategy(state);
 	}
 
-	private ArrayList<A> computeStrategy(GameState<?> state) throws FinMatchException, PathfindingException
+	private ArrayList<A> computeStrategy(GameState<?> state) throws FinMatchException, PathfindingException, MemoryManagerException
 	{
 		GameState<RobotChrono> depart = memorymanager.getNewGameState();
 		state.copy(depart);
@@ -135,7 +137,7 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 	}
 	
 	@SuppressWarnings("unchecked")
-	public synchronized ArrayList<A> computePath(GameState<RobotChrono> state, PathfindingNodes indice_point_arrivee, boolean shoot_game_element) throws PathfindingException, PathfindingRobotInObstacleException, FinMatchException
+	public synchronized ArrayList<A> computePath(GameState<RobotChrono> state, PathfindingNodes indice_point_arrivee, boolean shoot_game_element) throws PathfindingException, PathfindingRobotInObstacleException, FinMatchException, MemoryManagerException
 	{
 		if(!(arcmanager instanceof PathfindingArcManager))
 		{
@@ -192,7 +194,7 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 		return chemin;
 	}
 	
-	private ArrayList<A> process(GameState<RobotChrono> depart, ArcManager arcmanager, boolean shouldReconstruct) throws PathfindingException
+	private ArrayList<A> process(GameState<RobotChrono> depart, ArcManager arcmanager, boolean shouldReconstruct) throws PathfindingException, MemoryManagerException
 	{
 		int hash_depart = arcmanager.getHashAndCreateIfNecessary(depart);
 		// optimisation si depart == arrivee
@@ -377,7 +379,7 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 		return chemin;	//  reconstructed path
 	}
 
-	public void freeGameStateOpenSet(LinkedList<GameState<RobotChrono>> openset2)
+	public void freeGameStateOpenSet(LinkedList<GameState<RobotChrono>> openset2) throws MemoryManagerException
 	{
 		for(GameState<RobotChrono> state: openset2)
 			memorymanager.destroyGameState(state);

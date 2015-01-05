@@ -20,6 +20,7 @@ import utils.Config;
 import container.Service;
 import exceptions.ArcManagerException;
 import exceptions.FinMatchException;
+import exceptions.MemoryManagerException;
 import exceptions.PathfindingException;
 import exceptions.PathfindingRobotInObstacleException;
 import exceptions.PointSortieException;
@@ -61,7 +62,7 @@ public class StrategyArcManager implements Service, ArcManager {
 	}
 
 	@Override
-	public void reinitIterator(GameState<RobotChrono> gamestate)
+	public void reinitIterator(GameState<RobotChrono> gamestate) throws MemoryManagerException
 	{
 		listeDecisions.clear();
 		for(ScriptNames s: ScriptNames.values())

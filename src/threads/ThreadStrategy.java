@@ -8,6 +8,7 @@ import astar.arc.PathfindingNodes;
 import astar.arcmanager.StrategyArcManager;
 import container.Service;
 import exceptions.FinMatchException;
+import exceptions.MemoryManagerException;
 import exceptions.PathfindingException;
 import robot.RobotChrono;
 import robot.RobotReal;
@@ -82,6 +83,9 @@ public class ThreadStrategy extends AbstractThread implements Service
 				break;
 			} catch (PathfindingException e) {
 				log.critical("Départ dans un obstacle de proximité!", this);
+				e.printStackTrace();
+			} catch (MemoryManagerException e) {
+				// Imposible
 				e.printStackTrace();
 			}
 		}

@@ -4,6 +4,7 @@ import java.util.Vector;
 
 import container.Service;
 import exceptions.FinMatchException;
+import exceptions.MemoryManagerException;
 import robot.RobotChrono;
 import robot.RobotReal;
 import strategie.GameState;
@@ -23,7 +24,7 @@ public class MemoryManager implements Service {
 	private static final int nb_instances = 100;
 
 	private Vector<GameState<RobotChrono>> gamestate = new Vector<GameState<RobotChrono>>();
-	private Log log;
+	protected Log log;
 	private GameState<RobotChrono> model;
 	
 	// gamestate est triés: avant firstAvailable, les gamestate sont indisponibles, après, ils sont disponibles
@@ -39,7 +40,7 @@ public class MemoryManager implements Service {
 
 		try {
 			this.model = realstate.cloneGameState();
-			// on prépare déjà des gamestate
+			// on prépare déjà des gamestates
 			log.debug("Instanciation de "+nb_instances+" GameState<RobotChrono>", this);
 		
 			for(int i = 0; i < nb_instances; i++)
@@ -71,11 +72,11 @@ public class MemoryManager implements Service {
 		}
 	}
 	
-	public GameState<RobotChrono> destroyGameState(GameState<RobotChrono> state)
+	public GameState<RobotChrono> destroyGameState(GameState<RobotChrono> state) throws MemoryManagerException
 	{
 		int indice_state = state.getIndiceMemoryManager();
 		if(indice_state >= firstAvailable)
-			log.warning("Objet déjà détruit!", this);
+			throw new MemoryManagerException();
 //		else
 //		{
 			// On inverse dans le Vector les deux gamestates,

@@ -3,6 +3,7 @@ package astar.arcmanager;
 import astar.arc.Arc;
 import exceptions.ArcManagerException;
 import exceptions.FinMatchException;
+import exceptions.MemoryManagerException;
 import exceptions.strategie.ScriptException;
 import robot.RobotChrono;
 import strategie.GameState;
@@ -15,7 +16,7 @@ import strategie.GameState;
 
 public interface ArcManager {
 
-	public void reinitIterator(GameState<RobotChrono> gamestate);
+	public void reinitIterator(GameState<RobotChrono> gamestate) throws MemoryManagerException;
 
 	public boolean hasNext(GameState<RobotChrono> state);
 	
