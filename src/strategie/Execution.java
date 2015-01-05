@@ -13,7 +13,6 @@ import exceptions.PathfindingRobotInObstacleException;
 import exceptions.ScriptException;
 import exceptions.ScriptHookException;
 import exceptions.UnableToMoveException;
-import exceptions.UnknownScriptException;
 import robot.RobotReal;
 import robot.Speed;
 import scripts.ScriptManager;
@@ -36,7 +35,6 @@ public class Execution implements Service {
 	protected Config config;
 	private ScriptManager scriptmanager;
 	private ThreadStrategy threadstrategy;
-//	private RobotColor color;
 	
 	private ArrayList<Hook> hooks_entre_scripts;
 	
@@ -44,22 +42,28 @@ public class Execution implements Service {
 	{
 		updateConfig();
 		this.log = log;
-//		this.config = config;
+		this.config = config;
 		this.gamestate = gamestate;
 		this.scriptmanager = scriptmanager;
 		this.threadstrategy = threadstrategy;
 
-	    // DEPENDS_ON_RULES
 		hooks_entre_scripts = hookfactory.getHooksEntreScriptsReal(gamestate);
 	}
 
-	// Appelé par le lanceur
+	/**
+	 * Appelé par le lanceur. C'est la boucle exécutée par le robot pendant tout le match
+	 */
 	public void boucleExecution()
 	{
+		/**
+		 * Attente du début du match
+		 */
 		while(!Config.matchDemarre)
 			Sleep.sleep(20);
 		
-		// boucle exécution
+		/**
+		 * Boucle d'exécution
+		 */
 		while(true)
 		{
 			try {
@@ -68,9 +72,6 @@ public class Execution implements Service {
 					Sleep.sleep(50);
 				else
 					executerScript(bestDecision);
-			} catch (UnknownScriptException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
 			} catch (FinMatchException e) {
 				// la sortie se fait par l'exception FinMatchException
 				break;
@@ -82,7 +83,7 @@ public class Execution implements Service {
 		
 	}
 	
-	public void executerScript(Decision decision_actuelle) throws UnknownScriptException, FinMatchException
+	public void executerScript(Decision decision_actuelle) throws FinMatchException
 	{
 		for(int essai = 0; essai < 2; essai++)
 		{
@@ -125,7 +126,7 @@ public class Execution implements Service {
 		}
 	}
 	
-	public void tryOnce(Decision d) throws PathfindingException, UnableToMoveException, ScriptException, PathfindingRobotInObstacleException, FinMatchException
+	private void tryOnce(Decision d) throws PathfindingException, UnableToMoveException, ScriptException, PathfindingRobotInObstacleException, FinMatchException
 	{
 		gamestate.robot.set_vitesse(Speed.BETWEEN_SCRIPTS);
 		try {
@@ -133,14 +134,17 @@ public class Execution implements Service {
 			threadstrategy.computeBestDecisionAfter(d);
 			scriptmanager.getScript(d.script_name).agit(d.version, gamestate);
 		} catch (ScriptHookException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			try {
+				scriptmanager.getScript(e.getNomScript()).agit(0, gamestate);
+			} catch (ScriptHookException e1) {
+				// Impossible...?
+				e1.printStackTrace();
+			}
 		}
 	}
 
 	@Override
-	public void updateConfig() {
-//		color = RobotColor.parse(config.get("couleur"));
-	}
+	public void updateConfig()
+	{}
 	
 }

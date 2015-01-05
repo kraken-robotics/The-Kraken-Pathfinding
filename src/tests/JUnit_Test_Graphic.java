@@ -16,7 +16,7 @@ import astar.arcmanager.StrategyArcManager;
 import robot.RobotChrono;
 import robot.RobotReal;
 import scripts.ScriptManager;
-import scripts.ScriptNames;
+import scripts.ScriptAnticipableNames;
 import strategie.GameState;
 import table.ObstacleManager;
 import tests.graphicLib.Fenetre;
@@ -109,7 +109,7 @@ public class JUnit_Test_Graphic extends JUnit_Test {
     {
 		ArrayList<PathfindingNodes> cheminDepart = new ArrayList<PathfindingNodes>();
 		cheminDepart.add(PathfindingNodes.POINT_DEPART);
-    	Decision decision = new Decision(cheminDepart, ScriptNames.SortieZoneDepart, 0);
+    	Decision decision = new Decision(cheminDepart, ScriptAnticipableNames.SortieZoneDepart, 0);
     	config.setDateDebutMatch();
     	GameState<RobotChrono> chronostate = state.cloneGameState();
 		ArrayList<Decision> decisions = strategic_astar.computeStrategyAfter(chronostate, decision, 10000);

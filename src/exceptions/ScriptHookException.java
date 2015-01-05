@@ -1,6 +1,6 @@
 package exceptions;
 
-import scripts.hooks.ScriptHookNames;
+import scripts.ScriptHookNames;
 
 /**
  * Exception levée par un hook
@@ -19,7 +19,7 @@ public class ScriptHookException extends Exception
 		this.script = script;
 	}
 	
-	public ScriptHookNames getScript()
+	public ScriptHookNames getNomScript()
 	{
 		return script;
 	}

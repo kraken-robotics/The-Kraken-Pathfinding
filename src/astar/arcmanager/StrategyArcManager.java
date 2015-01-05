@@ -13,7 +13,7 @@ import robot.RobotChrono;
 import robot.RobotReal;
 import scripts.Script;
 import scripts.ScriptManager;
-import scripts.ScriptNames;
+import scripts.ScriptAnticipableNames;
 import strategie.GameState;
 import utils.Log;
 import utils.Config;
@@ -61,11 +61,14 @@ public class StrategyArcManager implements Service, ArcManager {
 		updateConfig();
 	}
 
+	/**
+	 * On calcule ici la liste des voisins, c'est-à-dire de tous les scripts qu'on peut effectuer depuis la position actuelle.
+	 */
 	@Override
 	public void reinitIterator(GameState<RobotChrono> gamestate) throws MemoryManagerException
 	{
 		listeDecisions.clear();
-		for(ScriptNames s: ScriptNames.values())
+		for(ScriptAnticipableNames s: ScriptAnticipableNames.values())
 		{
 			if(s.canIDoIt())
 			{
@@ -119,6 +122,10 @@ public class StrategyArcManager implements Service, ArcManager {
 		return listeDecisions.get(iterator);
 	}
 
+	/**
+	 * Renvoie le temps. Cela signifie que pour deux situations identiques (position, points, ...),
+	 * on préférera celle qui a minimisé le temps pour arriver à cet état de jeu.
+	 */
 	@Override
 	public int distanceTo(GameState<RobotChrono> state, Arc arc) throws FinMatchException, ScriptException
 	{
@@ -138,12 +145,18 @@ public class StrategyArcManager implements Service, ArcManager {
 		return new_temps - old_temps;
 	}
 
+	/**
+	 * On utilise en fait un Dijsktra pour la stratégie
+	 */
 	@Override
 	public int heuristicCost(GameState<RobotChrono> state)
 	{
 		return 0;
 	}
 
+	/**
+	 * Les hash sont créés à la demande et sont contigus (0, 1, 2, 3, ...)
+	 */
 	@Override
 	public int getHashAndCreateIfNecessary(GameState<RobotChrono> state)
 	{
@@ -172,19 +185,25 @@ public class StrategyArcManager implements Service, ArcManager {
 
 	@Override
 	public void updateConfig()
-	{
-	}
+	{}
 
 	public void reinitHashes()
 	{
 		hashes.clear();
 	}
 	
+	/**
+	 * On est jamais arrivé. Cela signifie simplement que le calcul de stratégie
+	 * ne s'arrêtera que par une exception de fin de jeu.
+	 */
 	@Override
 	public boolean isArrive(int hash) {
 		return false;
 	}
 
+	/**
+	 * On renvoie le nombre de points. Ce qui signifie simplement qu'on prend la stratégie qui maximise le nombre de points.
+	 */
 	@Override
 	public int getNoteReconstruct(int hash) {
 		return (int)(hashes.get(hash)&511); // la composante "note" du hash (cf gamestate.getHash())
@@ -192,14 +211,14 @@ public class StrategyArcManager implements Service, ArcManager {
 	
 	/**
 	 * Vérifie que les points de sortie (notés dans l'enum PathfindingNodes) sont bien là où on arrive après l'exécution du script.
-	 * Exécuté une fois pour toute à l'instanciation.
+	 * Exécuté une fois pour toute à l'instanciation. En cas de problème, on lève une exception.
 	 * @param gamestate
 	 * @throws PointSortieException
 	 */
 	public void checkPointSortie(GameState<RobotChrono> gamestate) throws PointSortieException
 	{
 		boolean throw_exception = false;
-		for(ScriptNames s: ScriptNames.values())
+		for(ScriptAnticipableNames s: ScriptAnticipableNames.values())
 		{
 			Script script = scriptmanager.getScript(s);
 			for(Integer v: script.getVersions(gamestate))

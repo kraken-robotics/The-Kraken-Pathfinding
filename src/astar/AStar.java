@@ -150,6 +150,7 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 		GameState<RobotChrono> depart = memorymanager.getNewGameState();
 		state.copy(depart);
 
+		((StrategyArcManager)arcmanager).setDateLimite(dureeAnticipation + depart.robot.getTempsDepuisDebutMatch());
 		depart.updateHookFinMatch(dureeAnticipation + depart.robot.getTempsDepuisDebutMatch());
 		
 		// à chaque nouveau calcul de stratégie, il faut réinitialiser les hash de gamestate

@@ -2,7 +2,7 @@ package astar.arc;
 
 import java.util.ArrayList;
 
-import scripts.ScriptNames;
+import scripts.ScriptAnticipableNames;
 
 /**
  * Classe qui caractérise une décision.
@@ -14,11 +14,11 @@ import scripts.ScriptNames;
 
 public class Decision implements Arc {
 
-	public final ScriptNames script_name;
+	public final ScriptAnticipableNames script_name;
 	public final int version;
 	public final ArrayList<PathfindingNodes> chemin;
 	
-	public Decision(ArrayList<PathfindingNodes> chemin, ScriptNames s, int version)
+	public Decision(ArrayList<PathfindingNodes> chemin, ScriptAnticipableNames s, int version)
 	{
 		this.chemin = chemin;
 		this.script_name = s;

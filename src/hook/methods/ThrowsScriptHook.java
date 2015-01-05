@@ -1,7 +1,7 @@
 package hook.methods;
 
 import robot.RobotChrono;
-import scripts.hooks.ScriptHookNames;
+import scripts.ScriptHookNames;
 import strategie.GameState;
 import hook.Executable;
 import exceptions.ScriptHookException;
@@ -24,7 +24,12 @@ public class ThrowsScriptHook implements Executable {
 	@Override
 	public void execute() throws ScriptHookException
 	{
-		throw new ScriptHookException(script);
+		/**
+		 * Si le robot n'est pas capable d'effectuer cette action,
+		 * pas besoin de lui demander de le faire.
+		 */
+		if(script.canIDoIt())
+			throw new ScriptHookException(script);
 	}
 	
 	@Override

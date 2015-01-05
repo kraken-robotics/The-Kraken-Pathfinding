@@ -12,7 +12,7 @@ import exceptions.MemoryManagerException;
 import exceptions.PathfindingException;
 import robot.RobotChrono;
 import robot.RobotReal;
-import scripts.ScriptNames;
+import scripts.ScriptAnticipableNames;
 import strategie.GameState;
 import utils.Config;
 import utils.Log;
@@ -32,7 +32,7 @@ public class ThreadStrategy extends AbstractThread implements Service
 	private GameState<RobotReal> realstate;
 	private GameState<RobotChrono> chronostate;
 	
-	private Decision decision = new Decision(new ArrayList<PathfindingNodes>(), ScriptNames.SortieZoneDepart, 0);
+	private Decision decision = new Decision(new ArrayList<PathfindingNodes>(), ScriptAnticipableNames.SortieZoneDepart, 0);
 	private Decision decisionSecours = null;
 	private Decision needNewBestAfterThis = null;
 	

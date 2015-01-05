@@ -31,6 +31,9 @@ public class PathfindingArcManager implements Service, ArcManager {
 		updateConfig();
 	}
 	
+	/**
+	 * Renvoie la distance entre deux points.
+	 */
 	@Override
 	public int distanceTo(GameState<RobotChrono> state, Arc arc) throws FinMatchException
 	{
@@ -46,8 +49,10 @@ public class PathfindingArcManager implements Service, ArcManager {
 		return state.robot.getTempsDepuisDebutMatch() - temps_debut;
 	}
 
+	/**
+	 * Renvoie la distance à vol d'oiseau
+	 */
 	@Override
-	//12.9%
 	public int heuristicCost(GameState<RobotChrono> state1)
 	{
 		// durée de rotation minimale
@@ -57,12 +62,18 @@ public class PathfindingArcManager implements Service, ArcManager {
 		return duree;
 	}
 
+	/**
+	 * Le hash d'un PathfindingNodes est son ordinal dans l'enum des PathfindingNodes.
+	 */
 	@Override
 	public int getHash(GameState<RobotChrono> state) throws ArcManagerException
 	{
 		return state.robot.getPositionPathfinding().ordinal();
 	}
 
+	/**
+	 * Aucune différence parce qu'il n'y a pas de création.
+	 */
 	@Override
 	public int getHashAndCreateIfNecessary(GameState<RobotChrono> state)
 	{
@@ -100,9 +111,13 @@ public class PathfindingArcManager implements Service, ArcManager {
     }
 
 	@Override
-	public void updateConfig() {
-	}
+	public void updateConfig()
+	{}
 
+	/**
+	 * Utilisé avant process, afin de pouvoir utiliser ensuite isArrivee
+	 * @param n
+	 */
 	public void chargePointArrivee(PathfindingNodes n)
 	{
 		arrivee = n;
@@ -116,11 +131,12 @@ public class PathfindingArcManager implements Service, ArcManager {
 	
 	/**
 	 * Non utilisé car on ne reconstruit normalement jamais un chemin partiel avec la recherche de chemin
+	 * Sinon, on prendrait simplement le point le plus proche (le "-" vient du fait que l'AStar cherche à minimiser cette note)
 	 * @param h
 	 * @return
 	 */
 	public int getNoteReconstruct(int h)
 	{
-		return (int)PathfindingNodes.values[h].distanceTo(arrivee);
+		return -(int)PathfindingNodes.values[h].distanceTo(arrivee);
 	}
 }

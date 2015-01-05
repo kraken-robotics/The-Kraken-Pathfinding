@@ -14,7 +14,7 @@ import robot.RobotChrono;
 import robot.RobotReal;
 import scripts.Script;
 import scripts.ScriptManager;
-import scripts.ScriptNames;
+import scripts.ScriptAnticipableNames;
 import strategie.GameState;
 import utils.Vec2;
 
@@ -43,10 +43,10 @@ public class JUnit_StrategicAStar extends JUnit_Test
     @Test
     public void test_strategy_after_decision() throws Exception
     {
-    	Script s = scriptmanager.getScript(ScriptNames.ScriptClap);
+    	Script s = scriptmanager.getScript(ScriptAnticipableNames.ScriptClap);
     	ArrayList<PathfindingNodes> chemin = new ArrayList<PathfindingNodes>();
     	chemin.add(s.point_entree(0));
-    	Decision decision = new Decision(chemin, ScriptNames.ScriptClap, 0);
+    	Decision decision = new Decision(chemin, ScriptAnticipableNames.ScriptClap, 0);
     	GameState<RobotChrono> chronostate = gamestate.cloneGameState();
     	chronostate.robot.setPositionPathfinding(s.point_entree(0));
 
