@@ -5,10 +5,10 @@ import container.Service;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Enumeration;
 import java.util.Properties;
 
 import enums.RobotColor;
+import exceptions.ConfigException;
 
 
 /**
@@ -28,9 +28,7 @@ public class Config implements Service
 	private Properties config = new Properties();
 	private Properties local = new Properties();
 	
-    Enumeration<?> e = local.propertyNames();
-	
-	public Config(String path) throws Exception
+	public Config(String path) throws ConfigException
 	{
 		this.path = path;
 	//	log.debug("Loading config from current directory : " +  System.getProperty("user.dir"), this)
@@ -41,7 +39,7 @@ public class Config implements Service
 		catch  (IOException e)
 		{
 			e.printStackTrace();
-			throw new Exception("Erreur ouverture de config.ini");
+			throw new ConfigException("Erreur ouverture de config.ini");
 		}
 		
 		try
@@ -58,9 +56,9 @@ public class Config implements Service
 			catch (IOException e2)
 			{
 				e2.printStackTrace();
-				throw new Exception("Erreur création de local.ini");
+				throw new ConfigException("Erreur création de local.ini");
 			}	
-			throw new Exception("Erreur ouverture de local.ini");
+			throw new ConfigException("Erreur ouverture de local.ini");
 		}	
 		affiche_tout();
 	}
@@ -69,8 +67,9 @@ public class Config implements Service
 	 * Récupère un entier de la config
 	 * @param nom
 	 * @return
+	 * @throws NumberFormatException 
 	 */
-	public int getInt(ConfigInfo nom)
+	public int getInt(ConfigInfo nom) throws NumberFormatException
 	{
 		return Integer.parseInt(getString(nom));
 	}
@@ -89,8 +88,9 @@ public class Config implements Service
 	 * Récupère un double de la config
 	 * @param nom
 	 * @return
+	 * @throws NumberFormatException 
 	 */	
-	public double getDouble(ConfigInfo nom)
+	public double getDouble(ConfigInfo nom) throws NumberFormatException
 	{
 		return Double.parseDouble(getString(nom));
 	}
@@ -99,7 +99,6 @@ public class Config implements Service
 	 * Méthode de récupération des paramètres de configuration
 	 * @param nom
 	 * @return
-	 * @throws ConfigException
 	 */
 	public String getString(ConfigInfo nom)
 	{
@@ -108,6 +107,7 @@ public class Config implements Service
 		if(out == null)
 		{
 			System.out.println("Erreur config: "+nom+" introuvable.");
+			return nom.getDefaultValue();
 		}
 		return out;
 	}
@@ -146,7 +146,7 @@ public class Config implements Service
 	public void updateConfig()
 	{
 	}
-	
+		
 	public void setDateDebutMatch()
 	{
 		dateDebutMatch = System.currentTimeMillis();

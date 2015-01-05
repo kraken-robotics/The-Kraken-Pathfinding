@@ -41,22 +41,6 @@ public class JUnit_StrategicAStar extends JUnit_Test
     }
     
     @Test
-    public void test_benchmark_strategie() throws Exception
-    {
-    	config.setDateDebutMatch();
-    	GameState<RobotChrono> chronostate = gamestate.cloneGameState();
-   		int nb_iter = 1;
-		long date_avant = System.currentTimeMillis();
-    	for(int k = 0; k < nb_iter; k++)
-    	{
-    		ArrayList<Decision> decisions = astar.computeStrategyEmergency(chronostate);
-    		for(Decision d: decisions)
-    			log.debug(d, this);
-    	}
-		log.debug("Durée moyenne en µs: "+1000*(System.currentTimeMillis()-date_avant)/nb_iter, this);
-    }
-
-    @Test
     public void test_strategy_after_decision() throws Exception
     {
     	Script s = scriptmanager.getScript(ScriptNames.ScriptClap);
@@ -68,7 +52,7 @@ public class JUnit_StrategicAStar extends JUnit_Test
 
     	config.setDateDebutMatch();
 
-    	ArrayList<Decision> decisions = astar.computeStrategyAfter(chronostate, decision);
+    	ArrayList<Decision> decisions = astar.computeStrategyAfter(chronostate, decision, 10000);
 		for(Decision d: decisions)
 			log.debug(d, this);
     }

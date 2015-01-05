@@ -28,6 +28,7 @@ import utils.Vec2;
  * AStar, fonctionnant avec un certain ArcManager
  * Le AStar avec le PathfindingArcManager donne une recherche de chemin
  * Le AStar avec le StrategyArcManager donne un planificateur de scripts
+ * Il y a donc deux instances AStar, un stratégique, l'autre de recherche de chemin.
  * @author pf, Martial
  *
  */
@@ -35,13 +36,20 @@ import utils.Vec2;
 public class AStar<AM extends ArcManager, A extends Arc> implements Service
 {
 	/**
-	 * Les analogies sont:
+	 * Les méthodes publiques sont "synchronized".
+	 * Cela signifique que si un AStar calcule une recherche de chemin pour un thread, l'autre thread devra attendre.
+	 * Par contre, on peut faire un AStar stratégique et un AStar de pathfinding simultanément.
+	 * Normalement, ce n'est pas utile car tous appels à AStar devraient être fait par le StrategyThread
+	 */
+	
+	/**
+	 * Les analogies pathfinding/stratégie sont:
 	 * un noeud est un GameState<RobotChrono> dans les deux cas
 	 * un arc est un script pour l'arbre des possibles,
 	 *   un pathfindingnode pour le pathfinding
 	 */
 	
-	private static final int nb_max_element = 100;
+	private static final int nb_max_element = 100; // le nombre d'élément différent de l'arbre qu'on parcourt. A priori, 100 paraît suffisant.
 	
 	private LinkedList<GameState<RobotChrono>> openset = new LinkedList<GameState<RobotChrono>>();	 // The set of tentative nodes to be evaluated
 	private boolean[] closedset = new boolean[nb_max_element];
@@ -73,18 +81,15 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 	}
 
 	/**
-	 * Les méthodes publiques sont "synchronized".
-	 * Cela signifique que si un AStar calcule une recherche de chemin pour un thread, l'autre thread devra attendre.
-	 * Par contre, on peut faire un AStar stratégique et un AStar de pathfinding simultanément.
-	 * Normalement, ce n'est pas utile car tous appels à AStar devraient être fait par le StrategyThread
+	 * State n'est pas modifié.
 	 * @param state
+	 * @param dureeAnticipation
 	 * @return
 	 * @throws FinMatchException
 	 * @throws PathfindingException 
 	 * @throws MemoryManagerException 
-	 */
-	
-	public synchronized ArrayList<A> computeStrategyEmergency(GameState<RobotChrono> state) throws FinMatchException, PathfindingException, MemoryManagerException
+	 */	
+	public synchronized ArrayList<A> computeStrategyEmergency(GameState<RobotChrono> state, int dureeAnticipation) throws FinMatchException, PathfindingException, MemoryManagerException
 	{
 		if(!(arcmanager instanceof StrategyArcManager))
 		{
@@ -96,10 +101,25 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 		double orientation_actuelle = state.robot.getOrientation();
 		Vec2 positionEnnemie = state.robot.getPosition().plusNewVector(new Vec2((int)(distance_ennemie*Math.cos(orientation_actuelle)), (int)(distance_ennemie*Math.sin(orientation_actuelle))));
 		state.gridspace.createHypotheticalEnnemy(positionEnnemie, state.robot.getTempsDepuisDebutMatch());
-		return computeStrategy(state);
+		return computeStrategy(state, dureeAnticipation);
 	}
 
-	public synchronized ArrayList<A> computeStrategyAfter(GameState<RobotChrono> state, A decision) throws FinMatchException, PathfindingException, MemoryManagerException
+	/**
+	 * Calcul une stratégie après avoir effectué la décision passée en paramètre.
+	 * Utilisé la stratégie au début d'un script pour savoir quoi faire après.
+	 * State n'est pas modifié.
+	 * dureeAnticipation est la durée pendant laquelle le système anticipera.
+	 * Plus cette durée est courte, plus la stratégie sera à court terme (et plus mauvaise),
+	 * mais plus le calcul sera rapide.
+	 * @param state
+	 * @param decision
+	 * @param dureeAnticipation
+	 * @return
+	 * @throws FinMatchException
+	 * @throws PathfindingException
+	 * @throws MemoryManagerException
+	 */
+	public synchronized ArrayList<A> computeStrategyAfter(GameState<RobotChrono> state, A decision, int dureeAnticipation) throws FinMatchException, PathfindingException, MemoryManagerException
 	{
 		if(!(arcmanager instanceof StrategyArcManager))
 		{
@@ -113,22 +133,37 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 			return new ArrayList<A>();
 		}
 //		log.debug("Après exécution, on est en "+state.robot.getPositionPathfinding(), this);
-		return computeStrategy(state);
+		return computeStrategy(state, dureeAnticipation);
 	}
 
-	private ArrayList<A> computeStrategy(GameState<?> state) throws FinMatchException, PathfindingException, MemoryManagerException
+	/**
+	 * Calcul de stratégie. Privé, car l'extérieur ne peut qu'appeler computeStrategyAfter et computeStrategyEmergency
+	 * @param state
+	 * param dureeAnticipation
+	 * @return
+	 * @throws FinMatchException
+	 * @throws PathfindingException
+	 * @throws MemoryManagerException
+	 */
+	private ArrayList<A> computeStrategy(GameState<?> state, int dureeAnticipation) throws FinMatchException, PathfindingException, MemoryManagerException
 	{
 		GameState<RobotChrono> depart = memorymanager.getNewGameState();
 		state.copy(depart);
 
+		depart.updateHookFinMatch(dureeAnticipation + depart.robot.getTempsDepuisDebutMatch());
+		
 		// à chaque nouveau calcul de stratégie, il faut réinitialiser les hash de gamestate
-		// si on ne le fait pas, on consommera trop de mémoire.
+		// si on ne le fait pas, on consommera trop de mémoire (mais le résultat restera juste)
 		((StrategyArcManager)arcmanager).reinitHashes();
 		ArrayList<A> cheminArc;
 		
 		cheminArc = process(depart, arcmanager, true);
+		
+		// Si on ne fournit aucune décision (taille du chemin nul),
+		// on préfère lever une exception
 		if(cheminArc.size() == 0)
 		{
+			// Optimisation de vitesse (une instanciation c'est long)
 			if(pathfindingexception == null)
 				pathfindingexception = new PathfindingException();
 			throw pathfindingexception;
@@ -136,8 +171,21 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 		return cheminArc;
 	}
 	
+	/**
+	 * Calcul d'un chemin à partir d'un certain état (state) et d'un point d'arrivée (endNode).
+	 * Le boolean permet de signaler au pathfinding si on autorise ou non le shootage d'élément de jeu pas déjà pris.
+	 * State n'est pas modifié.
+	 * @param state
+	 * @param endNode
+	 * @param shoot_game_element
+	 * @return
+	 * @throws PathfindingException
+	 * @throws PathfindingRobotInObstacleException
+	 * @throws FinMatchException
+	 * @throws MemoryManagerException
+	 */
 	@SuppressWarnings("unchecked")
-	public synchronized ArrayList<A> computePath(GameState<RobotChrono> state, PathfindingNodes indice_point_arrivee, boolean shoot_game_element) throws PathfindingException, PathfindingRobotInObstacleException, FinMatchException, MemoryManagerException
+	public synchronized ArrayList<A> computePath(GameState<RobotChrono> state, PathfindingNodes endNode, boolean shoot_game_element) throws PathfindingException, PathfindingRobotInObstacleException, FinMatchException, MemoryManagerException
 	{
 		if(!(arcmanager instanceof PathfindingArcManager))
 		{
@@ -157,7 +205,7 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 			state.copy(depart);
 			depart.robot.setPositionPathfinding(pointDepart);
 			
-			((PathfindingArcManager)arcmanager).chargePointArrivee(indice_point_arrivee);
+			((PathfindingArcManager)arcmanager).chargePointArrivee(endNode);
 			
 //			log.debug("Recherche de chemin entre "+pointDepart+" et "+indice_point_arrivee, this);
 			ArrayList<A> cheminArc = process(depart, arcmanager, false);
@@ -183,10 +231,19 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 		distanceEnnemiUrgence = config.getInt(ConfigInfo.DISTANCE_ENNEMI_URGENCE);
 	}
 	
-	// Si le point de départ est dans un obstacle fixe, le lissage ne changera rien.
+	/**
+	 * Lissage d'un parcours de pathfinding.
+	 * Si le point de départ est dans un obstacle fixe, le lissage ne changera rien.
+	 * Attention! Le lissage est coûteux.
+	 * A besoin du point de départ (non inclus dans le chemin), du gamestate (non modifié)
+	 * et bien sûr du chemin à lisser.
+	 * @param depart
+	 * @param state
+	 * @param chemin
+	 * @return
+	 */
 	private ArrayList<A> lissage(Vec2 depart, GameState<RobotChrono> state, ArrayList<A> chemin)
 	{
-		// ATTENTION! LE LISSAGE COÛTE TRÈS CHER!
 		// si on peut sauter le premier point, on le fait
 		while(chemin.size() >= 2 && state.gridspace.isTraversable(depart, ((PathfindingNodes)chemin.get(1)).getCoordonnees(), state.robot.getTempsDepuisDebutMatch()))
 			chemin.remove(0);
@@ -194,12 +251,26 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 		return chemin;
 	}
 	
+	/**
+	 * Le calcul d'AStar à proprement parlé.
+	 * A besoin de l'état de départ, de l'arcmanager.
+	 * Si shouldReconstruct est vrai, alors on reconstruit le chemin même si on n'est pas arrivé
+	 * à bon port. C'est le cas de la stratégie; par contre, un chemin incomplet n'est pas
+	 * retourné avec le pathfinding.
+	 * @param depart
+	 * @param arcmanager
+	 * @param shouldReconstruct
+	 * @return
+	 * @throws PathfindingException
+	 * @throws MemoryManagerException
+	 */
 	private ArrayList<A> process(GameState<RobotChrono> depart, ArcManager arcmanager, boolean shouldReconstruct) throws PathfindingException, MemoryManagerException
 	{
 		int hash_depart = arcmanager.getHashAndCreateIfNecessary(depart);
 		// optimisation si depart == arrivee
 		if(arcmanager.isArrive(hash_depart))
 		{
+			// Le memory manager impose de détruire les gamestates non utilisés.
 			depart = memorymanager.destroyGameState(depart);
 			return new ArrayList<A>();
 		}
@@ -210,7 +281,7 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 			closedset[i] = false;
 			came_from_arc[i] = null;
 			came_from[i] = -1;
-			g_score[i] = 133700000;//= Integer.MAX_VALUE;
+			g_score[i] = Integer.MAX_VALUE;
 			f_score[i] = Integer.MAX_VALUE;
 		}
 		
@@ -229,6 +300,8 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 			int potential_min, index_min = 0, index = -1;
 			int hash_current = -1;
 			GameState<RobotChrono> tmp;
+			
+			// On recherche le l'élément d'openset qui minimise f_score
 			while(iterator.hasNext())
 			{
 				index++;
@@ -271,6 +344,7 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 
 			closedset[hash_current] = true;
 		    
+			// On parcourt les voisins de current.
 			arcmanager.reinitIterator(current);
 
 			while(arcmanager.hasNext(current))

@@ -112,7 +112,7 @@ public class JUnit_Test_Graphic extends JUnit_Test {
     	Decision decision = new Decision(cheminDepart, ScriptNames.SortieZoneDepart, 0);
     	config.setDateDebutMatch();
     	GameState<RobotChrono> chronostate = state.cloneGameState();
-		ArrayList<Decision> decisions = strategic_astar.computeStrategyAfter(chronostate, decision);
+		ArrayList<Decision> decisions = strategic_astar.computeStrategyAfter(chronostate, decision, 10000);
 		Vec2 position_precedente = PathfindingNodes.SORTIE_ZONE_DEPART.getCoordonnees();
 		for(Decision d: decisions)
 		{
@@ -145,7 +145,7 @@ public class JUnit_Test_Graphic extends JUnit_Test {
     	GameState<RobotChrono> chronostate = state.cloneGameState();
     	chronostate.robot.setPosition(new Vec2(800, 1000));
     	chronostate.robot.setOrientation(-Math.PI/2);
-		ArrayList<Decision> decisions = strategic_astar.computeStrategyEmergency(chronostate);
+		ArrayList<Decision> decisions = strategic_astar.computeStrategyEmergency(chronostate, 10000);
 		Vec2 position_precedente = chronostate.robot.getPosition();
 		for(Decision d: decisions)
 		{
