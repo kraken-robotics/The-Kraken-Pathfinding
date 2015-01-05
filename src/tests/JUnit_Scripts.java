@@ -25,8 +25,6 @@ import utils.Vec2;
  *
  */
 
-// TODO: vérifier que les points d'entrée sont de basse précision
-
 public class JUnit_Scripts extends JUnit_Test {
 
 	private ScriptManager scriptmanager;

@@ -38,6 +38,8 @@ public class Fenetre extends JPanel {
 	private ArrayList<ArrayList<Vec2>> paths = new ArrayList<ArrayList<Vec2>>();
 	private ArrayList<Double> orientations = new ArrayList<Double>();
 	private ArrayList<Color> couleurs = new ArrayList<Color>();
+
+	private int firstNotDead = 0;
     
 	public Fenetre()
 	{
@@ -117,8 +119,8 @@ public class Fenetre extends JPanel {
 			paintObstacle(o,g,0);
 		
 		g.setColor(new Color(0, 0, 130, 40));
-		for(ObstacleCircular o : listObstaclesMobiles)
-			paintObstacle(o, g, 0);
+		for(int i = firstNotDead; i < listObstaclesMobiles.size(); i++)
+			paintObstacle(listObstaclesMobiles.get(i), g, 0);
 		
 		g.setColor(Color.WHITE);
 		g.fillRect(sizeX, 0, 200, sizeY);		
@@ -171,8 +173,9 @@ public class Fenetre extends JPanel {
 		this.listObstaclesFixes = listObstaclesFixes;
 	}
 
-	public void setObstaclesMobiles(ArrayList<ObstacleProximity> listObstaclesMobiles)
+	public void setObstaclesMobiles(ArrayList<ObstacleProximity> listObstaclesMobiles, int firstNotDead)
 	{
+		this.firstNotDead  = firstNotDead;
 		this.listObstaclesMobiles = listObstaclesMobiles;
 	}
 

@@ -402,6 +402,15 @@ public class ObstacleManager implements Service
 	
 	/**
 	 * Utilisé pour l'affichage
+	 * @return
+	 */
+	public int getFirstNotDead()
+	{
+		return firstNotDead;
+	}
+	
+	/**
+	 * Utilisé pour l'affichage
 	 * @return 
 	 */
 	public GameElement[] getListGameElement()
