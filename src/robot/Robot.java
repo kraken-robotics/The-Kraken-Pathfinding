@@ -73,7 +73,7 @@ public abstract class Robot implements Service
 	// Dépendances
 	protected Config config;
 	protected Log log;
-	private boolean symetrie; // normalement, RobotReal et RobotChrono n'ont pas à connaître notre couleur.
+	protected boolean symetrie;
 	protected Speed vitesse;
 	protected int pointsObtenus = 0;
 	
