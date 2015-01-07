@@ -178,12 +178,11 @@ public class GridSpace implements Service {
 	public void copy(GridSpace other, long date)
 	{
 		long oldHashTable = hashTable;
-		boolean hasChanged = obstaclemanager.supprimerObstaclesPerimes(date);
+		obstaclemanager.supprimerObstaclesPerimes(date);
 		hashTable = obstaclemanager.getHashTable();
-		hasChanged |= oldHashTable != hashTable;
 
 		// On détruit le cache si les obstacles de proximité ou les éléments de jeux ont changé
-		if(hasChanged)
+		if(oldHashTable != hashTable || obstaclemanager.getFirstNotDead() != other.obstaclemanager.getFirstNotDead())
 			reinitConnections();
 
 		obstaclemanager.copy(other.obstaclemanager, date);

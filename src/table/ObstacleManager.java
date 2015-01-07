@@ -2,6 +2,7 @@ package table;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.ListIterator;
 
 import obstacles.Obstacle;
 import obstacles.ObstacleProximity;
@@ -120,9 +121,9 @@ public class ObstacleManager implements Service
      * Supprime les obstacles périmés (maintenant)
      * @param date
      */
-    public boolean supprimerObstaclesPerimes()
+    public void supprimerObstaclesPerimes()
     {
-    	return supprimerObstaclesPerimes(System.currentTimeMillis() - Config.getDateDebutMatch());
+    	supprimerObstaclesPerimes(System.currentTimeMillis() - Config.getDateDebutMatch());
     }
 
     /**
@@ -132,23 +133,18 @@ public class ObstacleManager implements Service
      * Renvoie vrai s'il y a eu une suppression, faux sinon.
      * @param date
      */
-    public boolean supprimerObstaclesPerimes(long date)
+    public void supprimerObstaclesPerimes(long date)
     {
-        boolean out = false;
         if(isThereHypotheticalEnemy && hypotheticalEnemy.isDestructionNecessary(date))
         	isThereHypotheticalEnemy = false;
-        for(int i = firstNotDead; i < listObstaclesMobiles.size(); i++)
+        ListIterator<ObstacleProximity> iterator = listObstaclesMobiles.listIterator(firstNotDead);
+        while(iterator.hasNext())
         {
-            ObstacleProximity obstacle = listObstaclesMobiles.get(i);
-            if (obstacle.isDestructionNecessary(date))
-            {
+            if (iterator.next().isDestructionNecessary(date))
             	firstNotDead++;
-                out = true;
-            }
             else
             	break;
-        }   
-        return out;
+        }
     }  
     
     /**
@@ -404,10 +400,6 @@ public class ObstacleManager implements Service
 		return listObstaclesMobiles;
 	}
 	
-	/**
-	 * Utilisé pour l'affichage
-	 * @return
-	 */
 	public int getFirstNotDead()
 	{
 		return firstNotDead;
