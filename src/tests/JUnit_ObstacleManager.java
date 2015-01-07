@@ -1,5 +1,7 @@
 package tests;
 
+import obstacles.gameElement.GameElementNames;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -112,9 +114,9 @@ public class JUnit_ObstacleManager extends JUnit_Test {
     @Test
     public void test_ennemi_dans_element_jeu() throws Exception
     {
-    	Assert.assertTrue(table.getObstacles()[0].isDone() == Tribool.FALSE);
+    	Assert.assertTrue(table.isDone(GameElementNames.PLOT_1) == Tribool.FALSE);
     	obstaclemanager.creer_obstacle(new Vec2(1500, 150), 0);
-    	Assert.assertTrue(table.getObstacles()[0].isDone() == Tribool.MAYBE);
+    	Assert.assertTrue(table.isDone(GameElementNames.PLOT_1) == Tribool.MAYBE);
     }
 
 }

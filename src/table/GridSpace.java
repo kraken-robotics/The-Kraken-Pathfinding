@@ -29,7 +29,7 @@ public class GridSpace implements Service {
 
 	// Rempli de ALWAYS_IMPOSSIBLE, TMP_IMPOSSIBLE, POSSIBLE et null
 	// Le hash dépend de avoidGameElement
-	private NodesConnection[][][] isConnectedModelCache = new NodesConnection[PathfindingNodes.length][PathfindingNodes.length][2];
+	private NodesConnection[][][] isConnectedModelCache = new NodesConnection[2][PathfindingNodes.length][PathfindingNodes.length];
 
 	// Doit-on éviter les éléments de jeux? Ou peut-on foncer dedans?
 	private boolean avoidGameElement = true;
@@ -94,12 +94,12 @@ public class GridSpace implements Service {
 	 */
 	public void reinitConnections()
 	{
-		for(PathfindingNodes i : PathfindingNodes.values)			
-			for(PathfindingNodes j : PathfindingNodes.values)
-			{
-				isConnectedModelCache[i.ordinal()][j.ordinal()][0] = isConnectedModel[i.ordinal()][j.ordinal()];
-				isConnectedModelCache[i.ordinal()][j.ordinal()][1] = isConnectedModel[i.ordinal()][j.ordinal()];
-			}
+		int max_value = PathfindingNodes.length;
+		for(int i = 0; i < max_value; i++)
+		{
+			System.arraycopy(isConnectedModel[i], 0, isConnectedModelCache[0][i], 0, max_value);
+			System.arraycopy(isConnectedModel[i], 0, isConnectedModelCache[1][i], 0, max_value);
+		}
 	}
 
 	/**
@@ -109,32 +109,32 @@ public class GridSpace implements Service {
 	public boolean isTraversable(PathfindingNodes i, PathfindingNodes j, int date)
 	{
 //		log.debug("avoidGameElement: "+avoidGameElement, this);
-		if(isConnectedModelCache[i.ordinal()][j.ordinal()][getHashBool()] != null)
+		if(isConnectedModelCache[getHashBool()][i.ordinal()][j.ordinal()] != null)
 		{
 //			log.debug("Trajet entre "+i+" et "+j+": utilisation du cache. Traversable: "+isConnectedModelCache[i.ordinal()][j.ordinal()][getHashBool()].isTraversable(), this);
-			return isConnectedModelCache[i.ordinal()][j.ordinal()][getHashBool()].isTraversable();
+			return isConnectedModelCache[getHashBool()][i.ordinal()][j.ordinal()].isTraversable();
 		}
 		else if(obstaclemanager.obstacle_proximite_dans_segment(i.getCoordonnees(), j.getCoordonnees(), date))
 		{
 //			log.debug("Trajet entre "+i+" et "+j+" impossible à cause d'un obstacle de proximité", this);
-			isConnectedModelCache[i.ordinal()][j.ordinal()][0] = NodesConnection.TMP_IMPOSSIBLE;
-			isConnectedModelCache[i.ordinal()][j.ordinal()][1] = NodesConnection.TMP_IMPOSSIBLE;
+			isConnectedModelCache[0][i.ordinal()][j.ordinal()] = NodesConnection.TMP_IMPOSSIBLE;
+			isConnectedModelCache[1][i.ordinal()][j.ordinal()] = NodesConnection.TMP_IMPOSSIBLE;
 		}
 		else if(avoidGameElement && obstaclemanager.obstacle_table_dans_segment(i.getCoordonnees(), j.getCoordonnees()))
 		{
 //			log.debug("Trajet entre "+i+" et "+j+" impossible à cause d'un élément de jeu", this);
-			isConnectedModelCache[i.ordinal()][j.ordinal()][getHashBool()] = NodesConnection.TMP_IMPOSSIBLE;
+			isConnectedModelCache[getHashBool()][i.ordinal()][j.ordinal()] = NodesConnection.TMP_IMPOSSIBLE;
 		}
 		else
 		{
 //			log.debug("Pas de problème entre "+i+" et "+j, this);
-			isConnectedModelCache[i.ordinal()][j.ordinal()][getHashBool()] = NodesConnection.POSSIBLE;
+			isConnectedModelCache[getHashBool()][i.ordinal()][j.ordinal()] = NodesConnection.POSSIBLE;
 		}
 
 		// symétrie!
-		isConnectedModelCache[j.ordinal()][i.ordinal()][0] = isConnectedModelCache[i.ordinal()][j.ordinal()][0];
-		isConnectedModelCache[j.ordinal()][i.ordinal()][1] = isConnectedModelCache[i.ordinal()][j.ordinal()][1];
-		return isConnectedModelCache[i.ordinal()][j.ordinal()][getHashBool()].isTraversable();
+		isConnectedModelCache[0][j.ordinal()][i.ordinal()] = isConnectedModelCache[0][i.ordinal()][j.ordinal()];
+		isConnectedModelCache[1][j.ordinal()][i.ordinal()] = isConnectedModelCache[1][i.ordinal()][j.ordinal()];
+		return isConnectedModelCache[getHashBool()][i.ordinal()][j.ordinal()].isTraversable();
 	}
 	
 	/**

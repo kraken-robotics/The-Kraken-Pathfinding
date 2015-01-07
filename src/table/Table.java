@@ -19,7 +19,7 @@ public class Table implements Service
 	private Config config;
 	
 	// Les éléments de jeu de notre couleur.
-	private GameElement[] total = new GameElement[GameElementNames.values().length];
+	private static GameElement[] total = new GameElement[GameElementNames.values().length];
 	// Et potentiellement les balles de tennis
 	
 	// Le hash est exact; pas de collisions possibles.
@@ -44,7 +44,6 @@ public class Table implements Service
 	public void setDone(GameElementNames id, Tribool done)
 	{
 		hash |= (done.getHash() << (2*id.ordinal()));
-		total[id.ordinal()].setDone(done);
 	}
 
 	/**
@@ -53,7 +52,7 @@ public class Table implements Service
 	 */
 	public Tribool isDone(GameElementNames id)
 	{
-		return total[id.ordinal()].isDone();
+		return Tribool.parse((int)((hash >> (2*id.ordinal()))&3));
 	}
 
 	/**
@@ -62,9 +61,6 @@ public class Table implements Service
 	 */
 	public void copy(Table ct)
 	{
-		if(!equals(ct))
-			for(int i = 0; i < total.length; i++)
-				total[i].fastClone(ct.total[i]);
 		ct.hash = hash;
 	}
 	

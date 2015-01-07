@@ -193,7 +193,7 @@ public class ObstacleManager implements Service
      */
     public void copy(ObstacleManager other, long date)
     {
-		supprimerObstaclesPerimes(date);
+    	// La suppression des obstacles est déjà fait pendant la copy du gridspace
     	table.copy(other.table);
     	other.isThereHypotheticalEnemy = isThereHypotheticalEnemy;
     	other.firstNotDead = firstNotDead;

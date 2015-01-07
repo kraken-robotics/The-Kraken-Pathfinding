@@ -73,7 +73,7 @@ public class ObstacleRectangular extends Obstacle
 	{
 
 		/*		
-		 *  Shéma de la situation :
+		 *  Schéma de la situation :
 		 *
 		 * 		 												  y
 		 * 			4	|		3		|		2					    ^
@@ -89,7 +89,7 @@ public class ObstacleRectangular extends Obstacle
 		 * 				|				|
 		 */		
 		
-		// si le point fourni est dans lesquarts-de-plans n°2,4,6 ou 8
+		// si le point fourni est dans les quarts de plan n°2,4,6 ou 8
 		if(in.x < coinBasGauche.x && in.y < coinBasGauche.y)
 			return in.squaredDistance(coinBasGauche);
 		
