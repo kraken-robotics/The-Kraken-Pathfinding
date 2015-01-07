@@ -209,6 +209,7 @@ public class ObstacleManager implements Service
      */
 	public boolean obstacle_fixe_dans_segment_pathfinding(Vec2 A, Vec2 B)
 	{
+		// TODO: optimiser
 		int x0 = A.x, y0 = A.y;
 		int x1 = B.x, y1 = B.y;
 

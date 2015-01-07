@@ -1,5 +1,7 @@
 package tests;
 
+import hook.Hook;
+
 import java.util.ArrayList;
 
 import org.junit.Assert;
@@ -54,21 +56,21 @@ public class JUnit_Robot extends JUnit_Test
 	    		robot.updateConfig();
 	    		robot.setPosition(new Vec2(200, 600));
 	    		robot.setOrientation(0);
-	    		robot.avancer(100, null);
+	    		robot.avancer(100);
 	    		Assert.assertTrue(robot.getPosition().equals(new Vec2(300, 600)));
 	    		robot.tourner(Math.PI/2);
-	    		robot.avancer(100, null);
+	    		robot.avancer(100);
 	    		Assert.assertTrue(robot.getPosition().equals(new Vec2(300, 700)));
 	    		robot.tourner(Math.PI);
-	    		robot.avancer(100, null);
+	    		robot.avancer(100);
 	    		Assert.assertTrue(robot.getPosition().equals(new Vec2(200, 700)));
 	    		robot.tourner(-Math.PI/2);
-	    		robot.avancer(100, null);
+	    		robot.avancer(100);
 	    		Assert.assertTrue(robot.getPosition().equals(new Vec2(200, 600)));
 	    		ArrayList<PathfindingNodes> chemin = new ArrayList<PathfindingNodes>();
 	    		chemin.add(PathfindingNodes.BAS);
 	    		chemin.add(PathfindingNodes.DEVANT_DEPART_DROITE);
-	    		robot.suit_chemin(chemin, null);
+	    		robot.suit_chemin(chemin, new ArrayList<Hook>());
 	    		Assert.assertTrue(robot.getPosition().equals(PathfindingNodes.DEVANT_DEPART_DROITE.getCoordonnees()));
 	    	}
     	}

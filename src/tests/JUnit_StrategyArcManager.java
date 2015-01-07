@@ -1,5 +1,7 @@
 package tests;
 
+import hook.Hook;
+
 import java.util.ArrayList;
 
 import org.junit.Assert;
@@ -42,7 +44,7 @@ public class JUnit_StrategyArcManager extends JUnit_Test {
 	@Test
 	public void test_iterator1() throws Exception
 	{
-    	state.robot.va_au_point_pathfinding(PathfindingNodes.BAS_DROITE, null);
+    	state.robot.va_au_point_pathfinding(PathfindingNodes.BAS_DROITE, new ArrayList<Hook>());
 		strategyarcmanager.reinitHashes();
 		strategyarcmanager.reinitIterator(state);
 		Assert.assertTrue(strategyarcmanager.hasNext(state));
@@ -64,9 +66,9 @@ public class JUnit_StrategyArcManager extends JUnit_Test {
 	public void test_iterator2() throws Exception
 	{
     	Script s = scriptmanager.getScript(ScriptAnticipableNames.ScriptTapis);
-    	state.robot.va_au_point_pathfinding(s.point_entree(0), null);
+    	state.robot.va_au_point_pathfinding(s.point_entree(0), new ArrayList<Hook>());
     	s.agit(0, state);
-    	state.robot.va_au_point_pathfinding(s.point_sortie(0), null);
+    	state.robot.va_au_point_pathfinding(s.point_sortie(0), new ArrayList<Hook>());
     	Script s2 = scriptmanager.getScript(ScriptAnticipableNames.ScriptAttente);
     	for(int i = 0; i < 5; i++)
     	{
@@ -89,9 +91,9 @@ public class JUnit_StrategyArcManager extends JUnit_Test {
 	public void test_iterator3() throws Exception
 	{
     	Script s = scriptmanager.getScript(ScriptAnticipableNames.ScriptClap);
-    	state.robot.va_au_point_pathfinding(s.point_entree(0), null);
+    	state.robot.va_au_point_pathfinding(s.point_entree(0), new ArrayList<Hook>());
     	s.agit(0, state);
-    	state.robot.va_au_point_pathfinding(s.point_sortie(0), null);
+    	state.robot.va_au_point_pathfinding(s.point_sortie(0), new ArrayList<Hook>());
     	Script s2 = scriptmanager.getScript(ScriptAnticipableNames.ScriptAttente);
     	for(int i = 0; i < 5; i++)
     	{
@@ -114,9 +116,9 @@ public class JUnit_StrategyArcManager extends JUnit_Test {
 	public void test_iterator4() throws Exception
 	{
     	Script s = scriptmanager.getScript(ScriptAnticipableNames.ScriptClap);
-    	state.robot.va_au_point_pathfinding(s.point_entree(1), null);
+    	state.robot.va_au_point_pathfinding(s.point_entree(1), new ArrayList<Hook>());
     	s.agit(1, state);
-    	state.robot.va_au_point_pathfinding(s.point_sortie(1), null);
+    	state.robot.va_au_point_pathfinding(s.point_sortie(1), new ArrayList<Hook>());
     	Script s2 = scriptmanager.getScript(ScriptAnticipableNames.ScriptAttente);
     	for(int i = 0; i < 5; i++)
     	{
@@ -139,11 +141,11 @@ public class JUnit_StrategyArcManager extends JUnit_Test {
 	public void test_iterator5() throws Exception
 	{
     	Script s = scriptmanager.getScript(ScriptAnticipableNames.ScriptClap);
-    	state.robot.va_au_point_pathfinding(s.point_entree(0), null);
+    	state.robot.va_au_point_pathfinding(s.point_entree(0), new ArrayList<Hook>());
     	s.agit(0, state);
-    	state.robot.va_au_point_pathfinding(s.point_entree(1), null);
+    	state.robot.va_au_point_pathfinding(s.point_entree(1), new ArrayList<Hook>());
     	s.agit(1, state);
-    	state.robot.va_au_point_pathfinding(s.point_sortie(1), null);
+    	state.robot.va_au_point_pathfinding(s.point_sortie(1), new ArrayList<Hook>());
     	Script s2 = scriptmanager.getScript(ScriptAnticipableNames.ScriptAttente);
     	for(int i = 0; i < 5; i++)
     	{
@@ -163,11 +165,11 @@ public class JUnit_StrategyArcManager extends JUnit_Test {
 	{
     	Script s = scriptmanager.getScript(ScriptAnticipableNames.ScriptClap);
     	Script s1 = scriptmanager.getScript(ScriptAnticipableNames.ScriptTapis);
-    	state.robot.va_au_point_pathfinding(s.point_entree(0), null);
+    	state.robot.va_au_point_pathfinding(s.point_entree(0), new ArrayList<Hook>());
     	s.agit(0, state);
-    	state.robot.va_au_point_pathfinding(s1.point_entree(0), null);
+    	state.robot.va_au_point_pathfinding(s1.point_entree(0), new ArrayList<Hook>());
     	s1.agit(0, state);
-    	state.robot.va_au_point_pathfinding(s1.point_sortie(0), null);
+    	state.robot.va_au_point_pathfinding(s1.point_sortie(0), new ArrayList<Hook>());
     	Script s2 = scriptmanager.getScript(ScriptAnticipableNames.ScriptAttente);
     	for(int i = 0; i < 5; i++)
     	{
@@ -186,7 +188,7 @@ public class JUnit_StrategyArcManager extends JUnit_Test {
 	public void test_distanceTo() throws Exception
 	{
     	Script s = scriptmanager.getScript(ScriptAnticipableNames.ScriptClap);
-    	state.robot.va_au_point_pathfinding(s.point_entree(0), null);
+    	state.robot.va_au_point_pathfinding(s.point_entree(0), new ArrayList<Hook>());
     	ArrayList<PathfindingNodes> chemin = new ArrayList<PathfindingNodes>();
     	chemin.add(s.point_entree(0));
 
