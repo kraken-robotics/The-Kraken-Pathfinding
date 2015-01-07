@@ -17,12 +17,23 @@ public class ObstacleRectangular extends Obstacle
 	
 	// taille selon l'axe Y
 	protected int sizeY;
+
 	
+	// calcul des positions des coins
+	private Vec2 coinBasGauche;
+	private Vec2 coinHautGauche;
+	private Vec2 coinBasDroite;
+	private Vec2 coinHautDroite;
+
 	public ObstacleRectangular(Log log, Vec2 position, int sizeX, int sizeY)
 	{
 		super(log, position);
 		this.sizeY = sizeY;
 		this.sizeX = sizeX;
+		coinBasGauche = position.plusNewVector((new Vec2(-sizeX/2,-sizeY/2)));
+		coinHautGauche = position.plusNewVector((new Vec2(-sizeX/2,sizeY/2)));
+		coinBasDroite = position.plusNewVector((new Vec2(sizeX/2,-sizeY/2)));
+		coinHautDroite = position.plusNewVector((new Vec2(sizeX/2,sizeY/2)));
 	}
 
 	public int getSizeX()
@@ -77,12 +88,6 @@ public class ObstacleRectangular extends Obstacle
 		 * 			6	|		7		|		8
 		 * 				|				|
 		 */		
-		
-		// calcul des positions des coins
-		Vec2 coinBasGauche = position.plusNewVector((new Vec2(-sizeX/2,-sizeY/2)));
-		Vec2 coinHautGauche = position.plusNewVector((new Vec2(-sizeX/2,sizeY/2)));
-		Vec2 coinBasDroite = position.plusNewVector((new Vec2(sizeX/2,-sizeY/2)));
-		Vec2 coinHautDroite = position.plusNewVector((new Vec2(sizeX/2,sizeY/2)));
 		
 		// si le point fourni est dans lesquarts-de-plans n°2,4,6 ou 8
 		if(in.x < coinBasGauche.x && in.y < coinBasGauche.y)
