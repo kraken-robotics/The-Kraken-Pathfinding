@@ -140,6 +140,11 @@ public class RobotChrono extends Robot
 		positionPathfinding = null;
 	}
 	
+	/**
+	 * @param n
+	 * @param hooks
+	 * @throws FinMatchException
+	 */
 	public void va_au_point_pathfinding(PathfindingNodes n, ArrayList<Hook> hooks) throws FinMatchException
 	{
 		if(!isPositionPathfindingActive)
@@ -147,8 +152,14 @@ public class RobotChrono extends Robot
 		else if(positionPathfindingAnterieure != null && vitesse == Speed.BETWEEN_SCRIPTS)
 		{
 			date += positionPathfinding.angleWith(positionPathfindingAnterieure, n)
-					+ positionPathfinding.distanceTo(n)
+					+ positionPathfinding.timeTo(n)
 					+ sleepTourneAndAvanceDuration;
+			checkHooks(position, n.getCoordonnees(), hooks);
+		}
+		else if(vitesse == Speed.BETWEEN_SCRIPTS)
+		{
+			tourner(positionPathfinding.getOrientationFinale(n));
+			date += positionPathfinding.timeTo(n) + sleepAvanceDuration;
 			checkHooks(position, n.getCoordonnees(), hooks);
 		}
 		else
@@ -156,6 +167,34 @@ public class RobotChrono extends Robot
 			tourner(positionPathfinding.getOrientationFinale(n));
 			date += positionPathfinding.distanceTo(n)*vitesse.invertedTranslationnalSpeed + sleepAvanceDuration;
 			checkHooks(position, n.getCoordonnees(), hooks);
+		}
+		setPositionPathfinding(n);
+	}
+
+	/**
+	 * Optimisation incroyable, même si on ne dirait pas comme ça.
+	 * @param n
+	 * @throws FinMatchException
+	 */
+	public void va_au_point_pathfinding_no_hook(PathfindingNodes n) throws FinMatchException
+	{
+		if(!isPositionPathfindingActive)
+			va_au_point(n.getCoordonnees(), new ArrayList<Hook>());
+		else if(positionPathfindingAnterieure != null && vitesse == Speed.BETWEEN_SCRIPTS)
+		{
+			date += positionPathfinding.angleWith(positionPathfindingAnterieure, n)
+					+ positionPathfinding.timeTo(n)
+					+ sleepTourneAndAvanceDuration;
+		}
+		else if(vitesse == Speed.BETWEEN_SCRIPTS)
+		{
+			tourner(positionPathfinding.getOrientationFinale(n));
+			date += positionPathfinding.timeTo(n) + sleepAvanceDuration;
+		}
+		else
+		{
+			tourner(positionPathfinding.getOrientationFinale(n));
+			date += positionPathfinding.distanceTo(n)*vitesse.invertedTranslationnalSpeed + sleepAvanceDuration;
 		}
 		setPositionPathfinding(n);
 	}
