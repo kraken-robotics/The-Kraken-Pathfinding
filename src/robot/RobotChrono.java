@@ -222,15 +222,14 @@ public class RobotChrono extends Robot
 	 */
 	private void checkHooks(Vec2 pointA, Vec2 pointB, ArrayList<Hook> hooks) throws FinMatchException
 	{
-		if(hooks != null)
-			for(Hook hook: hooks)
-				if(hook.simulated_evaluate(pointA, pointB, date))
-					try {
-						hook.trigger();
-					} catch (ScriptHookException e) {
-						// Impossible qu'en simulation on ait des scripts de hooks
-						e.printStackTrace();
-					}
+		for(Hook hook: hooks)
+			if(hook.simulated_evaluate(pointA, pointB, date))
+				try {
+					hook.trigger();
+				} catch (ScriptHookException e) {
+					// Impossible qu'en simulation on ait des scripts de hooks
+					e.printStackTrace();
+				}
 		
 		// le hook de fin de match est particulier, car il est toujours appelé, qu'il soit dans la liste ou non
 		if(hookFinMatch.simulated_evaluate(pointA, pointB, date))

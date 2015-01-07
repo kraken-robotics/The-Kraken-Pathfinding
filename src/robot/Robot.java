@@ -132,7 +132,7 @@ public abstract class Robot implements Service
 
     public void avancer(int distance) throws UnableToMoveException, FinMatchException, ScriptHookException
     {
-        avancer(distance, null, false);
+        avancer(distance, new ArrayList<Hook>(), false);
     }
 
     public void avancer(int distance, ArrayList<Hook> hooks) throws UnableToMoveException, FinMatchException, ScriptHookException
@@ -145,7 +145,7 @@ public abstract class Robot implements Service
         Speed sauv_vitesse = vitesse; 
         set_vitesse(Speed.INTO_WALL);
         try {
-        	avancer(distance, null, true);
+        	avancer(distance, new ArrayList<Hook>(), true);
         }
         finally
         {
@@ -161,7 +161,7 @@ public abstract class Robot implements Service
     
     public void sleep(long duree) throws FinMatchException
     {
-    	sleep(duree, null);
+    	sleep(duree, new ArrayList<Hook>());
     }
 
     
@@ -195,9 +195,8 @@ public abstract class Robot implements Service
 			return ActuatorOrder.LEVE_CLAP_DROIT;
 		else if(cote == Side.RIGHT && hauteur == HauteurBrasClap.FRAPPE_CLAP)
 			return ActuatorOrder.POSITION_TAPE_CLAP_DROIT;
-		else if(cote == Side.RIGHT && hauteur == HauteurBrasClap.RENTRE)
+		else// if(cote == Side.RIGHT && hauteur == HauteurBrasClap.RENTRE)
 			return ActuatorOrder.BAISSE_CLAP_DROIT;
-		return null;
 	}
 
 	public abstract void bougeBrasClap(Side cote, HauteurBrasClap hauteur, boolean needToSleep) throws SerialConnexionException, FinMatchException;

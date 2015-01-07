@@ -1,5 +1,9 @@
 package astar.arcmanager;
 
+import hook.Hook;
+
+import java.util.ArrayList;
+
 import astar.arc.Arc;
 import astar.arc.PathfindingNodes;
 import container.Service;
@@ -45,7 +49,7 @@ public class PathfindingArcManager implements Service, ArcManager {
 		 * Rappel: même quand on fait un appel à RobotChrono sans hook, le hook de fin de match est exécuté
 		 */
 		int temps_debut = state.robot.getTempsDepuisDebutMatch();
-		state.robot.va_au_point_pathfinding((PathfindingNodes)arc, null);
+		state.robot.va_au_point_pathfinding((PathfindingNodes)arc, new ArrayList<Hook>());
 		return state.robot.getTempsDepuisDebutMatch() - temps_debut;
 	}
 

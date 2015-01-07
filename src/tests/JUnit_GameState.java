@@ -57,19 +57,6 @@ public class JUnit_GameState extends JUnit_Test {
 		Assert.assertEquals(gamestate.robot.getPointsObtenus(), hash % (1 << 9));
 
 	}
-	
-	@Test
-	public void test_benchmark_copy() throws Exception
-	{
-		GameState<RobotChrono> gamestate2 = gamestate.cloneGameState();
-		for(int i = 0; i < 100000; i++)
-		{
-			gamestate.robot.avancer(200);
-			gamestate.gridspace.creer_obstacle(new Vec2(156, 282));
-			gamestate.gridspace.setDone(GameElementNames.CLAP_3, Tribool.TRUE);
-			gamestate2.copy(gamestate);
-		}
-	}
 
 	@Test
 	public void test_copy() throws Exception
