@@ -209,36 +209,39 @@ public class ObstacleManager implements Service
      */
 	public boolean obstacle_fixe_dans_segment_pathfinding(Vec2 A, Vec2 B)
 	{
-		// TODO: optimiser
-		int x0 = A.x, y0 = A.y;
-		int x1 = B.x, y1 = B.y;
-
-		// Bresenham's line algorithm
 		
-		int dx = Math.abs(x1-x0), sx = x0<x1 ? 1 : -1;
-		int dy = Math.abs(y1-y0), sy = y0<y1 ? 1 : -1; 
-		int err = (dx>dy ? dx : -dy)/2;
-		int e2;
-		 
-		while(x0!=x1 || y0!=y1)
-		{
-			// il y a un obstacle: pas besoin de vérifier le reste du segment
-			if(is_obstacle_fixe_present(new Vec2(x0, y0), dilatation_obstacle))
-				return true;
-			
-			e2 = err;
-			if (e2 >-dx)
-			{
-				err -= dy;
-				x0 += sx;
-			}
-			if (e2 < dy)
-			{
-				err += dx;
-				y0 += sy;
-			}
-		}
-		return false;
+	// ce code provient de http://tech-algorithm.com/articles/drawing-line-using-bresenham-algorithm/
+	    int w = B.x - A.x ;
+	    int h = B.y - A.y ;
+	    int modulo = 0;
+	    int x = A.x, y = A.y, dx1 = 0, dy1 = 0, dx2 = 0, dy2 = 0 ;
+	    if (w<0) dx1 = -1 ; else if (w>0) dx1 = 1 ;
+	    if (h<0) dy1 = -1 ; else if (h>0) dy1 = 1 ;
+	    if (w<0) dx2 = -1 ; else if (w>0) dx2 = 1 ;
+	    int longest = Math.abs(w) ;
+	    int shortest = Math.abs(h) ;
+	    if (!(longest>shortest)) {
+	        longest = Math.abs(h) ;
+	        shortest = Math.abs(w) ;
+	        if (h<0) dy2 = -1 ; else if (h>0) dy2 = 1 ;
+	        dx2 = 0 ;            
+	    }
+	    int numerator = longest >> 1 ;
+	    for (int i=0;i<=longest;i++) {
+
+	    	if((modulo++ & 7) == 0 && is_obstacle_fixe_present(new Vec2(x, y), dilatation_obstacle))
+	    		return true;
+	    	numerator += shortest ;
+	        if (!(numerator<longest)) {
+	            numerator -= longest ;
+	            x += dx1 ;
+	            y += dy1 ;
+	        } else {
+	            x += dx2 ;
+	            y += dy2 ;
+	        }
+	    }
+	    return false;
 	}
 
 	/**

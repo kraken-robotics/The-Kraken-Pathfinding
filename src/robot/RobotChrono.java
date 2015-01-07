@@ -125,7 +125,7 @@ public class RobotChrono extends Robot
     public void suit_chemin(ArrayList<PathfindingNodes> chemin, ArrayList<Hook> hooks) throws FinMatchException
 	{
 		for(PathfindingNodes point: chemin)
-			va_au_point(point.getCoordonnees(), hooks);
+			va_au_point_pathfinding(point, hooks);
 	}
 	
 	public void va_au_point(Vec2 point, ArrayList<Hook> hooks) throws FinMatchException
