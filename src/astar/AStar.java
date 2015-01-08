@@ -272,7 +272,7 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 		if(arcmanager.isArrive(hash_depart))
 		{
 			// Le memory manager impose de détruire les gamestates non utilisés.
-			depart = memorymanager.destroyGameState(depart);
+			memorymanager.destroyGameState(depart);
 			return new ArrayList<A>();
 		}
 
@@ -329,7 +329,7 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 			{
 //				if(arcmanager instanceof StrategyArcManager)
 //					log.debug("Destruction de: "+current.getIndiceMemoryManager(), this);
-				current = memorymanager.destroyGameState(current);
+				memorymanager.destroyGameState(current);
 				continue;
 			}
 			
@@ -338,7 +338,7 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 			{
 //				if(arcmanager instanceof StrategyArcManager)
 //					log.debug("Destruction de: "+current.getIndiceMemoryManager(), this);
-				current = memorymanager.destroyGameState(current);
+				memorymanager.destroyGameState(current);
 				freeGameStateOpenSet(openset);
 				return reconstruct(hash_current);
 			}
@@ -379,7 +379,7 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 				{
 //					if(arcmanager instanceof StrategyArcManager)
 //						log.debug("Destruction de: "+successeur.getIndiceMemoryManager(), this);
-					successeur = memorymanager.destroyGameState(successeur);
+					memorymanager.destroyGameState(successeur);
 					continue;
 				}
 				
@@ -392,12 +392,12 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 					openset.add(successeur);
 				}
 				else
-					successeur = memorymanager.destroyGameState(successeur);
+					memorymanager.destroyGameState(successeur);
 			}
 			
 //			if(arcmanager instanceof StrategyArcManager)
 //				log.debug("Destruction de: "+current.getIndiceMemoryManager(), this);
-			current = memorymanager.destroyGameState(current);	
+			memorymanager.destroyGameState(current);
 		}
 		
 		// Pathfinding terminé sans avoir atteint l'arrivée

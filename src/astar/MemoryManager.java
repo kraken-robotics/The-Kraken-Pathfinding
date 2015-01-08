@@ -23,7 +23,7 @@ public class MemoryManager implements Service {
 
 	private static final int nb_instances = 100;
 
-	private Vector<GameState<RobotChrono>> gamestate = new Vector<GameState<RobotChrono>>();
+	private Vector<GameState<RobotChrono>> gamestates_list = new Vector<GameState<RobotChrono>>();
 	protected Log log;
 	private GameState<RobotChrono> model;
 	
@@ -45,7 +45,7 @@ public class MemoryManager implements Service {
 		
 			for(int i = 0; i < nb_instances; i++)
 			{
-				gamestate.add(model.cloneGameState(gamestate.size()));
+				gamestates_list.add(model.cloneGameState(gamestates_list.size()));
 			}
 		} catch (FinMatchException e) {
 			// Impossible
@@ -59,39 +59,36 @@ public class MemoryManager implements Service {
 	{
 		GameState<RobotChrono> out;
 		try {
-			out = gamestate.get(firstAvailable);
+			out = gamestates_list.get(firstAvailable);
 			firstAvailable++;
 			return out;
 		}
 		catch(ArrayIndexOutOfBoundsException e)
 		{
 			out = model.cloneGameState(firstAvailable);
-			gamestate.add(out);
+			gamestates_list.add(out);
 			firstAvailable++;
 			return out;
 		}
 	}
 	
-	public GameState<RobotChrono> destroyGameState(GameState<RobotChrono> state) throws MemoryManagerException
+	public void destroyGameState(GameState<RobotChrono> state) throws MemoryManagerException
 	{
 		int indice_state = state.getIndiceMemoryManager();
 		if(indice_state >= firstAvailable)
 			throw new MemoryManagerException();
-//		else
-//		{
-			// On inverse dans le Vector les deux gamestates,
-			// de manière à avoir toujours un Vector trié.
-			firstAvailable--;
-			GameState<RobotChrono> tmp1 = gamestate.get(indice_state);
-			GameState<RobotChrono> tmp2 = gamestate.get(firstAvailable);
 
-			tmp1.setIndiceMemoryManager(firstAvailable);
-			tmp2.setIndiceMemoryManager(indice_state);
+		// On inverse dans le Vector les deux gamestates,
+		// de manière à avoir toujours un Vector trié.
+		firstAvailable--;
+		GameState<RobotChrono> tmp1 = gamestates_list.get(indice_state);
+		GameState<RobotChrono> tmp2 = gamestates_list.get(firstAvailable);
 
-			gamestate.setElementAt(tmp1, firstAvailable);
-			gamestate.setElementAt(tmp2, indice_state);
-//		}
-		return null;
+		tmp1.setIndiceMemoryManager(firstAvailable);
+		tmp2.setIndiceMemoryManager(indice_state);
+
+		gamestates_list.setElementAt(tmp1, firstAvailable);
+		gamestates_list.setElementAt(tmp2, indice_state);
 	}
 	
 	/**
