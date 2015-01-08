@@ -2,7 +2,6 @@ package astar;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.ListIterator;
 
 import astar.arc.Arc;
 import astar.arc.PathfindingNodes;
@@ -294,17 +293,16 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 
 		while (!openset.isEmpty())
 		{
-			ListIterator<GameState<RobotChrono>> iterator = openset.listIterator();
 			int min_score = Integer.MAX_VALUE;
-			int potential_min, index_min = 0, index = -1;
+			int potential_min, index_min = 0;
 			int hash_current = -1;
 			GameState<RobotChrono> tmp;
 			
 			// On recherche le l'élément d'openset qui minimise f_score
-			while(iterator.hasNext())
+			int max_value = openset.size();
+			for(int i = 0; i < max_value; i++)
 			{
-				index++;
-				tmp = iterator.next();
+				tmp = openset.get(i);
 				try {
 					int tmp_hash = arcmanager.getHash(tmp);
 					potential_min = f_score[tmp_hash];
@@ -312,7 +310,7 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 					{
 						min_score = potential_min;
 						current = tmp;
-						index_min = index;
+						index_min = i;
 						hash_current = tmp_hash;
 					}
 				} catch (ArcManagerException e) {
@@ -336,7 +334,6 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 			{
 //				if(arcmanager instanceof StrategyArcManager)
 //					log.debug("Destruction de: "+current.getIndiceMemoryManager(), this);
-				arcmanager.destroyGameState(current);
 				arcmanager.empty();
 				return reconstruct(hash_current);
 			}
@@ -379,7 +376,7 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 					// ne devrait pas arriver!
 					throw new PathfindingException();
 				}
-				reuseOldSuccesseur = false;				
+				reuseOldSuccesseur = false;
 				
 				// successeur est modifié lors du "distanceTo"
 				// si ce successeur dépasse la date limite, on l'annule
