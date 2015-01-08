@@ -1,6 +1,7 @@
 package obstacles.gameElement;
 
 import obstacles.ObstacleCircular;
+import utils.Config;
 import utils.Log;
 
 /**
@@ -12,8 +13,8 @@ import utils.Log;
 
 public class GameElement extends ObstacleCircular
 {
-	public GameElement(Log log, GameElementNames nom)
+	public GameElement(Log log, Config config, GameElementNames nom)
 	{
-		super(log, nom.getPosition(), nom.getRadius());
+		super(log, config, nom.getPosition(), nom.getRadius());
 	}
 }

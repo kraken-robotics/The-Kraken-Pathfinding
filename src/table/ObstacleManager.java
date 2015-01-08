@@ -45,28 +45,30 @@ public class ObstacleManager implements Service
     private int rayon_robot_adverse = 200;
     private int distanceApproximation = 50;
     private int dureeAvantPeremption = 0;
+    
+    private ListIterator<ObstacleProximity> iterator;
 
     // L'initialisation a lieu une seule fois pour tous les objets.
     private void createListObstaclesFixes()
     {
         listObstaclesFixes = new ArrayList<Obstacle>();
 
-        listObstaclesFixes.add(new ObstacleRectangular(log, new Vec2(0,100),800,200)); // plaque rouge
-        listObstaclesFixes.add(new ObstacleRectangular(log, new Vec2(0,2000-580/2),1066,580)); // escalier
-        listObstaclesFixes.add(new ObstacleRectangular(log, new Vec2(-1500+400/2,1200),400,22)); // bandes de bois zone de départ
-        listObstaclesFixes.add(new ObstacleRectangular(log, new Vec2(1500-400/2,1200),400,22));
-        listObstaclesFixes.add(new ObstacleRectangular(log, new Vec2(-1500+400/2,800),400,22));
-        listObstaclesFixes.add(new ObstacleRectangular(log, new Vec2(1500-400/2,800),400,22));
-        listObstaclesFixes.add(new ObstacleRectangular(log, new Vec2(-1200+50/2,2000-50/2),50,50)); // distributeurs
-        listObstaclesFixes.add(new ObstacleRectangular(log, new Vec2(-900+50/2,2000-50/2),50,50));
-        listObstaclesFixes.add(new ObstacleRectangular(log, new Vec2(900-50/2,2000-50/2),50,50));
-        listObstaclesFixes.add(new ObstacleRectangular(log, new Vec2(1200-50/2,2000-50/2),50,50));
+        listObstaclesFixes.add(new ObstacleRectangular(log, config, new Vec2(0,100),800,200)); // plaque rouge
+        listObstaclesFixes.add(new ObstacleRectangular(log, config, new Vec2(0,2000-580/2),1066,580)); // escalier
+        listObstaclesFixes.add(new ObstacleRectangular(log, config, new Vec2(-1500+400/2,1200),400,22)); // bandes de bois zone de départ
+        listObstaclesFixes.add(new ObstacleRectangular(log, config, new Vec2(1500-400/2,1200),400,22));
+        listObstaclesFixes.add(new ObstacleRectangular(log, config, new Vec2(-1500+400/2,800),400,22));
+        listObstaclesFixes.add(new ObstacleRectangular(log, config, new Vec2(1500-400/2,800),400,22));
+        listObstaclesFixes.add(new ObstacleRectangular(log, config, new Vec2(-1200+50/2,2000-50/2),50,50)); // distributeurs
+        listObstaclesFixes.add(new ObstacleRectangular(log, config, new Vec2(-900+50/2,2000-50/2),50,50));
+        listObstaclesFixes.add(new ObstacleRectangular(log, config, new Vec2(900-50/2,2000-50/2),50,50));
+        listObstaclesFixes.add(new ObstacleRectangular(log, config, new Vec2(1200-50/2,2000-50/2),50,50));
 
         // bords
-        listObstaclesFixes.add(new ObstacleRectangular(log, new Vec2(0,0),3000,1));
-        listObstaclesFixes.add(new ObstacleRectangular(log, new Vec2(-1500,1000),1,2000));
-        listObstaclesFixes.add(new ObstacleRectangular(log, new Vec2(1500,1000),1,2000));
-        listObstaclesFixes.add(new ObstacleRectangular(log, new Vec2(0,2000),3000,1));
+        listObstaclesFixes.add(new ObstacleRectangular(log, config, new Vec2(0,0),3000,1));
+        listObstaclesFixes.add(new ObstacleRectangular(log, config, new Vec2(-1500,1000),1,2000));
+        listObstaclesFixes.add(new ObstacleRectangular(log, config, new Vec2(1500,1000),1,2000));
+        listObstaclesFixes.add(new ObstacleRectangular(log, config, new Vec2(0,2000),3000,1));
     }
     
     public ObstacleManager(Log log, Config config, Table table)
@@ -80,7 +82,7 @@ public class ObstacleManager implements Service
 
         // On n'instancie hypotheticalEnnemy qu'une seule fois
         if(hypotheticalEnemy == null)
-        	hypotheticalEnemy = new ObstacleProximity(log, new Vec2(), rayon_robot_adverse, -1000);
+        	hypotheticalEnemy = new ObstacleProximity(log, config,  new Vec2(), rayon_robot_adverse, -1000);
         updateConfig();
     }
 
@@ -99,7 +101,7 @@ public class ObstacleManager implements Service
     public void creer_obstacle(final Vec2 position, int date_actuelle)
     {
         Vec2 position_sauv = position.clone();
-        ObstacleProximity obstacle = new ObstacleProximity(log, position_sauv, rayon_robot_adverse, date_actuelle+dureeAvantPeremption);
+        ObstacleProximity obstacle = new ObstacleProximity(log, config, position_sauv, rayon_robot_adverse, date_actuelle+dureeAvantPeremption);
 //        log.warning("Obstacle créé, rayon = "+rayon_robot_adverse+", centre = "+position+", meurt à "+(date_actuelle+dureeAvantPeremption), this);
         listObstaclesMobiles.add(obstacle);
         check_game_element(position);
@@ -137,7 +139,7 @@ public class ObstacleManager implements Service
     {
         if(isThereHypotheticalEnemy && hypotheticalEnemy.isDestructionNecessary(date))
         	isThereHypotheticalEnemy = false;
-        ListIterator<ObstacleProximity> iterator = listObstaclesMobiles.listIterator(firstNotDead);
+        iterator = listObstaclesMobiles.listIterator(firstNotDead);
         while(iterator.hasNext())
         {
             if (iterator.next().isDestructionNecessary(date))
@@ -251,7 +253,7 @@ public class ObstacleManager implements Service
         for(GameElementNames g: GameElementNames.values())
         	// Si on a interprété que l'ennemi est passé sur un obstacle,
         	// on peut passer dessus par la suite.
-            if(table.isDone(g) == Tribool.FALSE && table.obstacle_proximite_dans_segment(g, A, B, dilatation_obstacle))
+            if(table.isDone(g) == Tribool.FALSE && table.obstacle_proximite_dans_segment(g, A, B))
             {
 //            	log.debug(o.getName()+" est dans le chemin.", this);
                 return true;
@@ -282,12 +284,11 @@ public class ObstacleManager implements Service
     {
         if(isThereHypotheticalEnemy && hypotheticalEnemy.obstacle_proximite_dans_segment(A, B, distance, date))
         	return true;
-        for(int i = firstNotDead; i < listObstaclesMobiles.size(); i++)
-        {
-        	ObstacleProximity o = listObstaclesMobiles.get(i);
-            if(o.obstacle_proximite_dans_segment(A, B, distance, date))
+        
+        iterator = listObstaclesMobiles.listIterator(firstNotDead);
+        while(iterator.hasNext())
+            if(iterator.next().obstacle_proximite_dans_segment(A, B, distance, date))
                 return true;
-        }
         return false;
     }
     
@@ -319,12 +320,10 @@ public class ObstacleManager implements Service
     {
         if(isThereHypotheticalEnemy && is_obstacle_present(position, hypotheticalEnemy, distance))
         	return true;
-        for(int i = firstNotDead; i < listObstaclesMobiles.size(); i++)
-        {
-        	ObstacleProximity o = listObstaclesMobiles.get(i);
-            if(is_obstacle_present(position, o, distance))
+        iterator = listObstaclesMobiles.listIterator(firstNotDead);
+        while(iterator.hasNext())
+            if(is_obstacle_present(position, iterator.next(), distance))
                 return true;
-        }
         return false;
     }
 

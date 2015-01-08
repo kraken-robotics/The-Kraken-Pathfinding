@@ -1,4 +1,5 @@
 package obstacles;
+import utils.Config;
 import utils.Log;
 import utils.Vec2;
 
@@ -13,10 +14,12 @@ public abstract class Obstacle
 	protected Vec2 position;
 	protected int distance_dilatation;
 	protected Log log;
+	protected Config config;
 	
-	public Obstacle (Log log, Vec2 position)
+	public Obstacle (Log log, Config config, Vec2 position)
 	{
 		this.log = log;
+		this.config = config;
 		this.position = position;
 	}
 	

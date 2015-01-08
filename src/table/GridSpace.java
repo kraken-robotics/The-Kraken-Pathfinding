@@ -114,16 +114,16 @@ public class GridSpace implements Service {
 //			log.debug("Trajet entre "+i+" et "+j+": utilisation du cache. Traversable: "+isConnectedModelCache[i.ordinal()][j.ordinal()][getHashBool()].isTraversable(), this);
 			return isConnectedModelCache[getHashBool()][i.ordinal()][j.ordinal()].isTraversable();
 		}
+		else if(avoidGameElement && obstaclemanager.obstacle_table_dans_segment(i.getCoordonnees(), j.getCoordonnees()))
+		{
+//			log.debug("Trajet entre "+i+" et "+j+" impossible à cause d'un élément de jeu", this);
+			isConnectedModelCache[getHashBool()][i.ordinal()][j.ordinal()] = NodesConnection.TMP_IMPOSSIBLE;
+		}
 		else if(obstaclemanager.obstacle_proximite_dans_segment(i.getCoordonnees(), j.getCoordonnees(), date))
 		{
 //			log.debug("Trajet entre "+i+" et "+j+" impossible à cause d'un obstacle de proximité", this);
 			isConnectedModelCache[0][i.ordinal()][j.ordinal()] = NodesConnection.TMP_IMPOSSIBLE;
 			isConnectedModelCache[1][i.ordinal()][j.ordinal()] = NodesConnection.TMP_IMPOSSIBLE;
-		}
-		else if(avoidGameElement && obstaclemanager.obstacle_table_dans_segment(i.getCoordonnees(), j.getCoordonnees()))
-		{
-//			log.debug("Trajet entre "+i+" et "+j+" impossible à cause d'un élément de jeu", this);
-			isConnectedModelCache[getHashBool()][i.ordinal()][j.ordinal()] = NodesConnection.TMP_IMPOSSIBLE;
 		}
 		else
 		{

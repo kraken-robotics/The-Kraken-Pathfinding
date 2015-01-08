@@ -32,7 +32,7 @@ public class Table implements Service
 		this.config = config;	
 		
 		for(GameElementNames n: GameElementNames.values())
-			total[n.ordinal()] = new GameElement(log, n);
+			total[n.ordinal()] = new GameElement(log, config, n);
 		
 		updateConfig();
 	}
@@ -95,9 +95,9 @@ public class Table implements Service
 		return total[g.ordinal()].isProcheObstacle(position, rayon_robot_adverse);
 	}
 
-	public boolean obstacle_proximite_dans_segment(GameElementNames g, Vec2 a, Vec2 b, int dilatation_obstacle)
+	public boolean obstacle_proximite_dans_segment(GameElementNames g, Vec2 a, Vec2 b)
 	{
-		return total[g.ordinal()].obstacle_proximite_dans_segment(a, b, dilatation_obstacle);
+		return total[g.ordinal()].obstacle_proximite_dans_segment_dilatation(a, b);
 	}
 
 	/**

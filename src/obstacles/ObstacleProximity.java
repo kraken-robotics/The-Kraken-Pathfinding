@@ -1,6 +1,7 @@
 package obstacles;
 
 import robot.Speed;
+import utils.Config;
 import utils.Log;
 import utils.Vec2;
 
@@ -12,9 +13,9 @@ public class ObstacleProximity extends ObstacleCircular
 {
 	private int death_date;
 
-	public ObstacleProximity(Log log, Vec2 position, int rad, int death_date)
+	public ObstacleProximity(Log log, Config config, Vec2 position, int rad, int death_date)
 	{
-		super(log, position,rad);
+		super(log, config, position,rad);
 		this.death_date = death_date;
 	}
 	

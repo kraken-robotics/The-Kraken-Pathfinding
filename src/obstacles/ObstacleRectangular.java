@@ -1,5 +1,6 @@
 package obstacles;
 
+import utils.Config;
 import utils.Log;
 import utils.Vec2;
 
@@ -25,9 +26,9 @@ public class ObstacleRectangular extends Obstacle
 	private Vec2 coinBasDroite;
 	private Vec2 coinHautDroite;
 
-	public ObstacleRectangular(Log log, Vec2 position, int sizeX, int sizeY)
+	public ObstacleRectangular(Log log, Config config, Vec2 position, int sizeX, int sizeY)
 	{
-		super(log, position);
+		super(log, config, position);
 		this.sizeY = sizeY;
 		this.sizeX = sizeX;
 		coinBasGauche = position.plusNewVector((new Vec2(-sizeX/2,-sizeY/2)));
