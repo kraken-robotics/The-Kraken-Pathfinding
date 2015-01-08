@@ -149,7 +149,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
 			long old_hash = state_chrono.getHash();
 			pathfinding.computePath(state_chrono, j, true);
 			Assert.assertEquals(old_hash, state_chrono.getHash());
-			Assert.assertTrue(memorymanager.isMemoryManagerEmpty());
+			Assert.assertTrue(memorymanager.isMemoryManagerEmpty(0));
 		}
     }
 

@@ -28,7 +28,7 @@ public interface ArcManager {
 	 * @param state
 	 * @return
 	 */
-	public boolean hasNext(GameState<RobotChrono> state);
+	public boolean hasNext();
 	
 	/**
 	 * Donne le prochain voisin
@@ -84,5 +84,11 @@ public interface ArcManager {
 	 * @return
 	 */
 	public int getNoteReconstruct(int hash);
+
+	public void destroyGameState(GameState<RobotChrono> state) throws MemoryManagerException;
+
+	public GameState<RobotChrono> getNewGameState() throws FinMatchException;
+
+	public void empty();
 	
 }

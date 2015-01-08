@@ -12,8 +12,6 @@ import astar.AStar;
 import astar.arc.Decision;
 import astar.arcmanager.StrategyArcManager;
 
-// TODO: tester
-
 public class BenchmarkStrategy {
 
 	@SuppressWarnings("unchecked")
@@ -30,7 +28,7 @@ public class BenchmarkStrategy {
 	    	gamestate.robot.setPosition(new Vec2(600, 1000));
 	    	GameState<RobotChrono> chronostate = gamestate.cloneGameState();
 	    	
-	   		int nb_iter = 1000000;
+	   		int nb_iter = 10000;
 			long date_avant = System.currentTimeMillis();
 	    	for(int k = 0; k < nb_iter; k++)
 	    		astar.computeStrategyEmergency(chronostate, 90000);

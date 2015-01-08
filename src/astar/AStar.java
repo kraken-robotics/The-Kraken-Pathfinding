@@ -64,19 +64,17 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 	protected Log log;
 	private Config config;
 	private AM arcmanager;
-	private MemoryManager memorymanager;
 	
 	private int distanceEnnemiUrgence = 700;
 	
 	/**
 	 * Constructeur du AStar de pathfinding ou de stratégie, selon AM
 	 */
-	public AStar(Log log, Config config, AM arcmanager, MemoryManager memorymanager)
+	public AStar(Log log, Config config, AM arcmanager)
 	{
 		this.log = log;
 		this.config = config;
 		this.arcmanager = arcmanager;
-		this.memorymanager = memorymanager;
 		updateConfig();
 	}
 
@@ -147,7 +145,7 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 	 */
 	private ArrayList<A> computeStrategy(GameState<?> state, int dureeAnticipation) throws FinMatchException, PathfindingException, MemoryManagerException
 	{
-		GameState<RobotChrono> depart = memorymanager.getNewGameState();
+		GameState<RobotChrono> depart = arcmanager.getNewGameState();
 		state.copy(depart);
 
 		((StrategyArcManager)arcmanager).setDateLimite(dureeAnticipation + depart.robot.getTempsDepuisDebutMatch());
@@ -202,7 +200,7 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 			else
 				pointDepart = state.gridspace.nearestReachableNode(state.robot.getPosition(), state.robot.getTempsDepuisDebutMatch());
 
-			GameState<RobotChrono> depart = memorymanager.getNewGameState();
+			GameState<RobotChrono> depart = arcmanager.getNewGameState();
 			state.copy(depart);
 			depart.robot.setPositionPathfinding(pointDepart);
 			
@@ -272,7 +270,7 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 		if(arcmanager.isArrive(hash_depart))
 		{
 			// Le memory manager impose de détruire les gamestates non utilisés.
-			memorymanager.destroyGameState(depart);
+			arcmanager.destroyGameState(depart);
 			return new ArrayList<A>();
 		}
 
@@ -329,7 +327,7 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 			{
 //				if(arcmanager instanceof StrategyArcManager)
 //					log.debug("Destruction de: "+current.getIndiceMemoryManager(), this);
-				memorymanager.destroyGameState(current);
+				arcmanager.destroyGameState(current);
 				continue;
 			}
 			
@@ -338,8 +336,8 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 			{
 //				if(arcmanager instanceof StrategyArcManager)
 //					log.debug("Destruction de: "+current.getIndiceMemoryManager(), this);
-				memorymanager.destroyGameState(current);
-				freeGameStateOpenSet(openset);
+				arcmanager.destroyGameState(current);
+				arcmanager.empty();
 				return reconstruct(hash_current);
 			}
 
@@ -348,18 +346,40 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 			// On parcourt les voisins de current.
 			arcmanager.reinitIterator(current);
 
-			while(arcmanager.hasNext(current))
+			boolean encoreUnSuccesseur = arcmanager.hasNext();
+			
+			/** Puisque current ne pourra pas être réutilisé,
+			 * il faut le détruire
+			 */
+			if(!encoreUnSuccesseur)
+				arcmanager.destroyGameState(current);
+			
+			boolean reuseOldSuccesseur = false;
+			GameState<RobotChrono> successeur = null;
+			
+			while(encoreUnSuccesseur)
 			{
 				A voisin = arcmanager.next();
-
-				GameState<RobotChrono> successeur;
+				encoreUnSuccesseur = arcmanager.hasNext();
+				
 				try {
-					successeur = memorymanager.getNewGameState();
-					current.copy(successeur);
+					if(!encoreUnSuccesseur) // le dernier successeur
+					{
+						if(reuseOldSuccesseur)
+							arcmanager.destroyGameState(successeur);
+						successeur = current;
+					}
+					else
+					{
+						if(!reuseOldSuccesseur)
+							successeur = arcmanager.getNewGameState();
+						current.copy(successeur);
+					}
 				} catch (FinMatchException e1) {
 					// ne devrait pas arriver!
 					throw new PathfindingException();
 				}
+				reuseOldSuccesseur = false;				
 				
 				// successeur est modifié lors du "distanceTo"
 				// si ce successeur dépasse la date limite, on l'annule
@@ -367,6 +387,10 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 				try {
 					tentative_g_score = g_score[hash_current] + arcmanager.distanceTo(successeur, voisin);
 				} catch (ScriptException | FinMatchException e) {
+					if(encoreUnSuccesseur)
+						reuseOldSuccesseur = true;
+					else
+						arcmanager.destroyGameState(successeur);
 					continue;
 				}
 
@@ -379,7 +403,10 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 				{
 //					if(arcmanager instanceof StrategyArcManager)
 //						log.debug("Destruction de: "+successeur.getIndiceMemoryManager(), this);
-					memorymanager.destroyGameState(successeur);
+					if(encoreUnSuccesseur)
+						reuseOldSuccesseur = true;
+					else
+						arcmanager.destroyGameState(successeur);
 					continue;
 				}
 				
@@ -390,18 +417,24 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 					g_score[hash_successeur] = tentative_g_score;
 					f_score[hash_successeur] = tentative_g_score + arcmanager.heuristicCost(successeur);
 					openset.add(successeur);
+					// reuseOldSuccesseur reste à false
 				}
 				else
-					memorymanager.destroyGameState(successeur);
+				{
+					if(encoreUnSuccesseur)
+						reuseOldSuccesseur = true;
+					else
+						arcmanager.destroyGameState(successeur);
+				}
 			}
 			
 //			if(arcmanager instanceof StrategyArcManager)
 //				log.debug("Destruction de: "+current.getIndiceMemoryManager(), this);
-			memorymanager.destroyGameState(current);
+//			memorymanager.destroyGameState(current);
 		}
 		
 		// Pathfinding terminé sans avoir atteint l'arrivée
-		freeGameStateOpenSet(openset);
+		arcmanager.empty();
 		
 		// La stratégie renvoie un chemin partiel, pas le pathfinding qui lève une exception
 		if(!shouldReconstruct)
@@ -452,12 +485,6 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 			noeud_parent = came_from[noeud_parent];
 		}
 		return chemin;	//  reconstructed path
-	}
-
-	public void freeGameStateOpenSet(LinkedList<GameState<RobotChrono>> openset2) throws MemoryManagerException
-	{
-		for(GameState<RobotChrono> state: openset2)
-			memorymanager.destroyGameState(state);
 	}
 	
 }

@@ -31,26 +31,19 @@ public class JUnit_MemoryManager extends JUnit_Test {
 	@Test
     public void test_echange() throws Exception
     {
-		Assert.assertTrue(memorymanager.isMemoryManagerEmpty());
-		GameState<RobotChrono> state_chrono1 = memorymanager.getNewGameState();
+		Assert.assertTrue(memorymanager.isMemoryManagerEmpty(0));
+		GameState<RobotChrono> state_chrono1 = memorymanager.getNewGameState(0);
 		state_chrono1.robot.setPositionPathfinding(PathfindingNodes.BAS);
-		Assert.assertTrue(!memorymanager.isMemoryManagerEmpty());
-		GameState<RobotChrono> state_chrono2 = memorymanager.getNewGameState();
+		Assert.assertTrue(!memorymanager.isMemoryManagerEmpty(0));
+		GameState<RobotChrono> state_chrono2 = memorymanager.getNewGameState(0);
 		state_chrono2.robot.setPositionPathfinding(PathfindingNodes.BAS_DROITE);
-		memorymanager.destroyGameState(state_chrono1);
+		memorymanager.destroyGameState(state_chrono1, 0);
 		state_chrono1 = null;
 		// on vérifie que l'échange est bien fait
 		Assert.assertEquals(state_chrono2.robot.getPositionPathfinding(), PathfindingNodes.BAS_DROITE);
-		Assert.assertTrue(!memorymanager.isMemoryManagerEmpty());
-		memorymanager.destroyGameState(state_chrono2);
+		Assert.assertTrue(!memorymanager.isMemoryManagerEmpty(0));
+		memorymanager.destroyGameState(state_chrono2, 0);
 		state_chrono2 = null;
-		Assert.assertTrue(memorymanager.isMemoryManagerEmpty());
-    }
-
-	@Test
-    public void test_stress() throws Exception
-    {
-		for(int i = 0; i < 1000; i++)
-			memorymanager.getNewGameState();
+		Assert.assertTrue(memorymanager.isMemoryManagerEmpty(0));
     }
 }

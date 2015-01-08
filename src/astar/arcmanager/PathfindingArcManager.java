@@ -1,5 +1,6 @@
 package astar.arcmanager;
 
+import astar.MemoryManager;
 import astar.arc.Arc;
 import astar.arc.PathfindingNodes;
 import container.Service;
@@ -10,6 +11,7 @@ import utils.Log;
 import utils.Config;
 import exceptions.ArcManagerException;
 import exceptions.FinMatchException;
+import exceptions.MemoryManagerException;
 
 /**
  * Réalise les calculs entre PathfindingNodes pour l'AStar.
@@ -21,13 +23,16 @@ public class PathfindingArcManager implements Service, ArcManager {
 
 	private int iterator, id_node_iterator;
 	private PathfindingNodes arrivee;
-//	private Config config;
-//	private Log log;
+	protected Config config;
+	protected Log log;
+	private MemoryManager memorymanager;
+	private GameState<RobotChrono> state_iterator;
 
-	public PathfindingArcManager(Log log, Config config)
+	public PathfindingArcManager(Log log, Config config, MemoryManager memorymanager)
 	{
-//		this.log = log;
-//		this.config = config;
+		this.log = log;
+		this.config = config;
+		this.memorymanager = memorymanager;
 		updateConfig();
 	}
 	
@@ -88,14 +93,14 @@ public class PathfindingArcManager implements Service, ArcManager {
     }
     
     @Override
-    public boolean hasNext(GameState<RobotChrono> state)
+    public boolean hasNext()
     {
     	int max_value = PathfindingNodes.length, i;
     	for(i = iterator+1; i < max_value; i++)
     	{
     		if(i == id_node_iterator)
     			continue;
-    		if(state.gridspace.isTraversable(PathfindingNodes.values[id_node_iterator], PathfindingNodes.values[i], state.robot.getTempsDepuisDebutMatch()))
+    		if(state_iterator.gridspace.isTraversable(PathfindingNodes.values[id_node_iterator], PathfindingNodes.values[i], state_iterator.robot.getTempsDepuisDebutMatch()))
     			break;
     	}
     	iterator = i;
@@ -108,6 +113,7 @@ public class PathfindingArcManager implements Service, ArcManager {
 //    	log.debug("Réinit pathfinding iterator!", this);
     	id_node_iterator = gamestate.robot.getPositionPathfinding().ordinal();
     	iterator = -1;
+    	state_iterator = gamestate;
     }
 
 	@Override
@@ -139,4 +145,20 @@ public class PathfindingArcManager implements Service, ArcManager {
 	{
 		return -(int)PathfindingNodes.values[h].distanceTo(arrivee);
 	}
+	
+	public void destroyGameState(GameState<RobotChrono> state) throws MemoryManagerException
+	{
+		memorymanager.destroyGameState(state, 0);
+	}
+
+	public GameState<RobotChrono> getNewGameState() throws FinMatchException
+	{
+		return memorymanager.getNewGameState(0);
+	}
+	
+	public void empty()
+	{
+		memorymanager.empty(0);
+	}
+
 }

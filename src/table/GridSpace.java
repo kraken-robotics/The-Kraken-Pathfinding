@@ -178,14 +178,16 @@ public class GridSpace implements Service {
 	public void copy(GridSpace other, long date)
 	{
 		long oldHashTable = hashTable;
+// 300
 		obstaclemanager.supprimerObstaclesPerimes(date);
 		hashTable = obstaclemanager.getHashTable();
 
 		// On détruit le cache si les obstacles de proximité ou les éléments de jeux ont changé
+// 300
 		if(oldHashTable != hashTable || obstaclemanager.getFirstNotDead() != other.obstaclemanager.getFirstNotDead())
 			reinitConnections();
-
-		obstaclemanager.copy(other.obstaclemanager, date);
+// 300
+		obstaclemanager.copy(other.obstaclemanager);
 		other.avoidGameElement = avoidGameElement;
 		other.hashTable = hashTable;
 	}
@@ -197,7 +199,7 @@ public class GridSpace implements Service {
 	 */
 	public GridSpace clone(long date)
 	{
-		GridSpace cloned_gridspace = new GridSpace(log, config, obstaclemanager.clone(date));
+		GridSpace cloned_gridspace = new GridSpace(log, config, obstaclemanager.clone());
 		copy(cloned_gridspace, date);
 		return cloned_gridspace;
 	}

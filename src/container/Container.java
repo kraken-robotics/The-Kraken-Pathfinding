@@ -134,13 +134,11 @@ public class Container
 		else if(serviceRequested == ServiceNames.A_STAR_PATHFINDING)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new AStar<PathfindingArcManager, PathfindingNodes>((Log)getService(ServiceNames.LOG),
 																				(Config)getService(ServiceNames.CONFIG),
-																				(PathfindingArcManager)getService(ServiceNames.PATHFINDING_ARC_MANAGER),
-																				(MemoryManager)getService(ServiceNames.MEMORY_MANAGER));
+																				(PathfindingArcManager)getService(ServiceNames.PATHFINDING_ARC_MANAGER));
 		else if(serviceRequested == ServiceNames.A_STAR_STRATEGY)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new AStar<StrategyArcManager, Decision>((Log)getService(ServiceNames.LOG),
 																				(Config)getService(ServiceNames.CONFIG),
-																				(StrategyArcManager)getService(ServiceNames.STRATEGY_ARC_MANAGER),
-																				(MemoryManager)getService(ServiceNames.MEMORY_MANAGER));
+																				(StrategyArcManager)getService(ServiceNames.STRATEGY_ARC_MANAGER));
 		else if(serviceRequested == ServiceNames.GRID_SPACE)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new GridSpace((Log)getService(ServiceNames.LOG),
 																				(Config)getService(ServiceNames.CONFIG),
@@ -229,14 +227,16 @@ public class Container
 																		(GameState<RobotReal>)getService(ServiceNames.REAL_GAME_STATE));
 		else if(serviceRequested == ServiceNames.PATHFINDING_ARC_MANAGER)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new PathfindingArcManager((Log)getService(ServiceNames.LOG),
-																		(Config)getService(ServiceNames.CONFIG));
+																		(Config)getService(ServiceNames.CONFIG),
+																		(MemoryManager)getService(ServiceNames.MEMORY_MANAGER));
 		else if(serviceRequested == ServiceNames.STRATEGY_ARC_MANAGER)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new StrategyArcManager((Log)getService(ServiceNames.LOG),
 																		(Config)getService(ServiceNames.CONFIG),
 																		(ScriptManager)getService(ServiceNames.SCRIPT_MANAGER),
 																		(GameState<RobotReal>)getService(ServiceNames.REAL_GAME_STATE),
 																		(HookFactory)getService(ServiceNames.HOOK_FACTORY),
-																		(AStar<PathfindingArcManager, PathfindingNodes>)getService(ServiceNames.A_STAR_PATHFINDING));
+																		(AStar<PathfindingArcManager, PathfindingNodes>)getService(ServiceNames.A_STAR_PATHFINDING),
+																		(MemoryManager)getService(ServiceNames.MEMORY_MANAGER));
 		
 		// si le service demandé n'est pas connu, alors on log une erreur.
 		else

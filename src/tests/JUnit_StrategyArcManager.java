@@ -47,19 +47,19 @@ public class JUnit_StrategyArcManager extends JUnit_Test {
     	state.robot.va_au_point_pathfinding(PathfindingNodes.BAS_DROITE, new ArrayList<Hook>());
 		strategyarcmanager.reinitHashes();
 		strategyarcmanager.reinitIterator(state);
-		Assert.assertTrue(strategyarcmanager.hasNext(state));
+		Assert.assertTrue(strategyarcmanager.hasNext());
 		Decision d = strategyarcmanager.next();
 		Assert.assertEquals(ScriptAnticipableNames.ScriptClap, d.script_name);
 		Assert.assertEquals(0, d.version);
-		Assert.assertTrue(strategyarcmanager.hasNext(state));
+		Assert.assertTrue(strategyarcmanager.hasNext());
 		d = strategyarcmanager.next();
 		Assert.assertEquals(ScriptAnticipableNames.ScriptClap, d.script_name);
 		Assert.assertEquals(1, d.version);
-		Assert.assertTrue(strategyarcmanager.hasNext(state));
+		Assert.assertTrue(strategyarcmanager.hasNext());
 		d = strategyarcmanager.next();
 		Assert.assertEquals(ScriptAnticipableNames.ScriptTapis, d.script_name);
 		Assert.assertEquals(0, d.version);
-		Assert.assertTrue(!strategyarcmanager.hasNext(state));
+		Assert.assertTrue(!strategyarcmanager.hasNext());
 	}
 
 	@Test
@@ -75,15 +75,15 @@ public class JUnit_StrategyArcManager extends JUnit_Test {
     		s2.agit(0, state);
 			strategyarcmanager.reinitHashes();
 			strategyarcmanager.reinitIterator(state);
-			Assert.assertTrue(strategyarcmanager.hasNext(state));
+			Assert.assertTrue(strategyarcmanager.hasNext());
 			Decision d = strategyarcmanager.next();
 			Assert.assertEquals(ScriptAnticipableNames.ScriptClap, d.script_name);
 			Assert.assertEquals(0, d.version);
-			Assert.assertTrue(strategyarcmanager.hasNext(state));
+			Assert.assertTrue(strategyarcmanager.hasNext());
 			d = strategyarcmanager.next();
 			Assert.assertEquals(ScriptAnticipableNames.ScriptClap, d.script_name);
 			Assert.assertEquals(1, d.version);
-			Assert.assertTrue(!strategyarcmanager.hasNext(state));
+			Assert.assertTrue(!strategyarcmanager.hasNext());
     	}
 	}
 
@@ -100,15 +100,15 @@ public class JUnit_StrategyArcManager extends JUnit_Test {
     		s2.agit(0, state);
 			strategyarcmanager.reinitHashes();
 			strategyarcmanager.reinitIterator(state);
-			Assert.assertTrue(strategyarcmanager.hasNext(state));
+			Assert.assertTrue(strategyarcmanager.hasNext());
 			Decision d = strategyarcmanager.next();
 			Assert.assertEquals(ScriptAnticipableNames.ScriptClap, d.script_name);
 			Assert.assertEquals(1, d.version);
-			Assert.assertTrue(strategyarcmanager.hasNext(state));
+			Assert.assertTrue(strategyarcmanager.hasNext());
 			d = strategyarcmanager.next();
 			Assert.assertEquals(ScriptAnticipableNames.ScriptTapis, d.script_name);
 			Assert.assertEquals(0, d.version);
-			Assert.assertTrue(!strategyarcmanager.hasNext(state));
+			Assert.assertTrue(!strategyarcmanager.hasNext());
     	}
 	}
 
@@ -125,15 +125,15 @@ public class JUnit_StrategyArcManager extends JUnit_Test {
     		s2.agit(0, state);
 			strategyarcmanager.reinitHashes();
 			strategyarcmanager.reinitIterator(state);
-			Assert.assertTrue(strategyarcmanager.hasNext(state));
+			Assert.assertTrue(strategyarcmanager.hasNext());
 			Decision d = strategyarcmanager.next();
 			Assert.assertEquals(ScriptAnticipableNames.ScriptClap, d.script_name);
 			Assert.assertEquals(0, d.version);
-			Assert.assertTrue(strategyarcmanager.hasNext(state));
+			Assert.assertTrue(strategyarcmanager.hasNext());
 			d = strategyarcmanager.next();
 			Assert.assertEquals(ScriptAnticipableNames.ScriptTapis, d.script_name);
 			Assert.assertEquals(0, d.version);
-			Assert.assertTrue(!strategyarcmanager.hasNext(state));
+			Assert.assertTrue(!strategyarcmanager.hasNext());
     	}
 	}
 
@@ -152,11 +152,11 @@ public class JUnit_StrategyArcManager extends JUnit_Test {
     		s2.agit(0, state);
 			strategyarcmanager.reinitHashes();
 			strategyarcmanager.reinitIterator(state);
-			Assert.assertTrue(strategyarcmanager.hasNext(state));
+			Assert.assertTrue(strategyarcmanager.hasNext());
 			Decision d = strategyarcmanager.next();
 			Assert.assertEquals(ScriptAnticipableNames.ScriptTapis, d.script_name);
 			Assert.assertEquals(0, d.version);
-			Assert.assertTrue(!strategyarcmanager.hasNext(state));
+			Assert.assertTrue(!strategyarcmanager.hasNext());
     	}
 	}
 
@@ -176,11 +176,11 @@ public class JUnit_StrategyArcManager extends JUnit_Test {
     		s2.agit(0, state);
 			strategyarcmanager.reinitHashes();
 			strategyarcmanager.reinitIterator(state);
-			Assert.assertTrue(strategyarcmanager.hasNext(state));
+			Assert.assertTrue(strategyarcmanager.hasNext());
 			Decision d = strategyarcmanager.next();
 			Assert.assertEquals(ScriptAnticipableNames.ScriptClap, d.script_name);
 			Assert.assertEquals(1, d.version);
-			Assert.assertTrue(!strategyarcmanager.hasNext(state));
+			Assert.assertTrue(!strategyarcmanager.hasNext());
     	}
 	}
 
@@ -203,27 +203,27 @@ public class JUnit_StrategyArcManager extends JUnit_Test {
 
 		strategyarcmanager.reinitHashes();
 		strategyarcmanager.reinitIterator(state);
-		Assert.assertTrue(strategyarcmanager.hasNext(state));
+		Assert.assertTrue(strategyarcmanager.hasNext());
 		d = strategyarcmanager.next();
 		Assert.assertEquals(ScriptAnticipableNames.ScriptClap, d.script_name);
 		Assert.assertEquals(1, d.version);
-		Assert.assertTrue(strategyarcmanager.hasNext(state));
+		Assert.assertTrue(strategyarcmanager.hasNext());
 		d = strategyarcmanager.next();
 		Assert.assertEquals(ScriptAnticipableNames.ScriptTapis, d.script_name);
 		Assert.assertEquals(0, d.version);
-		Assert.assertTrue(!strategyarcmanager.hasNext(state));
+		Assert.assertTrue(!strategyarcmanager.hasNext());
 
 		strategyarcmanager.reinitHashes();
 		strategyarcmanager.reinitIterator(state2);
-		Assert.assertTrue(strategyarcmanager.hasNext(state2));
+		Assert.assertTrue(strategyarcmanager.hasNext());
 		d = strategyarcmanager.next();
 		Assert.assertEquals(ScriptAnticipableNames.ScriptClap, d.script_name);
 		Assert.assertEquals(1, d.version);
-		Assert.assertTrue(strategyarcmanager.hasNext(state2));
+		Assert.assertTrue(strategyarcmanager.hasNext());
 		d = strategyarcmanager.next();
 		Assert.assertEquals(ScriptAnticipableNames.ScriptTapis, d.script_name);
 		Assert.assertEquals(0, d.version);
-		Assert.assertTrue(!strategyarcmanager.hasNext(state2));
+		Assert.assertTrue(!strategyarcmanager.hasNext());
 
 	}
 

@@ -2,7 +2,6 @@ package table;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.ListIterator;
 
 import obstacles.Obstacle;
 import obstacles.ObstacleProximity;
@@ -46,8 +45,6 @@ public class ObstacleManager implements Service
     private int distanceApproximation = 50;
     private int dureeAvantPeremption = 0;
     
-    private ListIterator<ObstacleProximity> iterator;
-
     // L'initialisation a lieu une seule fois pour tous les objets.
     private void createListObstaclesFixes()
     {
@@ -139,13 +136,11 @@ public class ObstacleManager implements Service
     {
         if(isThereHypotheticalEnemy && hypotheticalEnemy.isDestructionNecessary(date))
         	isThereHypotheticalEnemy = false;
-        iterator = listObstaclesMobiles.listIterator(firstNotDead);
-        while(iterator.hasNext())
+        int size = listObstaclesMobiles.size();
+        for(; firstNotDead < size; firstNotDead++)
         {
-            if (iterator.next().isDestructionNecessary(date))
-            	firstNotDead++;
-            else
-            	break;
+        	if(!listObstaclesMobiles.get(firstNotDead).isDestructionNecessary(date))
+        		break;
         }
     }  
     
@@ -178,10 +173,10 @@ public class ObstacleManager implements Service
     }
 
     
-    public ObstacleManager clone(long date)
+    public ObstacleManager clone()
     {
     	ObstacleManager cloned_manager = new ObstacleManager(log, config, table.clone());
-		copy(cloned_manager, date);
+		copy(cloned_manager);
 		return cloned_manager;
     }
     
@@ -189,7 +184,7 @@ public class ObstacleManager implements Service
      * Nécessaire au fonctionnement du memory manager
      * @param other
      */
-    public void copy(ObstacleManager other, long date)
+    public void copy(ObstacleManager other)
     {
     	// La suppression des obstacles est déjà fait pendant la copy du gridspace
     	table.copy(other.table);
@@ -285,11 +280,17 @@ public class ObstacleManager implements Service
         if(isThereHypotheticalEnemy && hypotheticalEnemy.obstacle_proximite_dans_segment(A, B, distance, date))
         	return true;
         
-        iterator = listObstaclesMobiles.listIterator(firstNotDead);
+        int size = listObstaclesMobiles.size();
+        for(; firstNotDead < size; firstNotDead++)
+        	if(listObstaclesMobiles.get(firstNotDead).obstacle_proximite_dans_segment(A, B, distance, date))
+        		return true;
+
+        return false;
+/*        iterator = listObstaclesMobiles.listIterator(firstNotDead);
         while(iterator.hasNext())
             if(iterator.next().obstacle_proximite_dans_segment(A, B, distance, date))
                 return true;
-        return false;
+        return false;*/
     }
     
     /**
@@ -320,11 +321,18 @@ public class ObstacleManager implements Service
     {
         if(isThereHypotheticalEnemy && is_obstacle_present(position, hypotheticalEnemy, distance))
         	return true;
-        iterator = listObstaclesMobiles.listIterator(firstNotDead);
+        int size = listObstaclesMobiles.size();
+        for(; firstNotDead < size; firstNotDead++)
+        {
+        	if(is_obstacle_present(position, listObstaclesMobiles.get(firstNotDead), distance))
+        		return true;
+        }
+        return false;
+/*        iterator = listObstaclesMobiles.listIterator(firstNotDead);
         while(iterator.hasNext())
             if(is_obstacle_present(position, iterator.next(), distance))
                 return true;
-        return false;
+        return false;*/
     }
 
     /**

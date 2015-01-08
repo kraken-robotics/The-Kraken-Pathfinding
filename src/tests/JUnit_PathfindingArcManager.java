@@ -37,43 +37,43 @@ public class JUnit_PathfindingArcManager extends JUnit_Test {
 		state_chrono.gridspace.setAvoidGameElement(false);
 		state_chrono.robot.setPositionPathfinding(PathfindingNodes.BAS_DROITE);
 		pathfindingarcmanager.reinitIterator(state_chrono);
-		Assert.assertTrue(pathfindingarcmanager.hasNext(state_chrono));
+		Assert.assertTrue(pathfindingarcmanager.hasNext());
 		Assert.assertEquals(PathfindingNodes.DEVANT_DEPART_DROITE, pathfindingarcmanager.next());
-		Assert.assertTrue(pathfindingarcmanager.hasNext(state_chrono));
+		Assert.assertTrue(pathfindingarcmanager.hasNext());
 		Assert.assertEquals(PathfindingNodes.COTE_MARCHE_DROITE, pathfindingarcmanager.next());
-		Assert.assertTrue(pathfindingarcmanager.hasNext(state_chrono));
+		Assert.assertTrue(pathfindingarcmanager.hasNext());
 		Assert.assertEquals(PathfindingNodes.DEVANT_DEPART_GAUCHE, pathfindingarcmanager.next());
-		Assert.assertTrue(pathfindingarcmanager.hasNext(state_chrono));
+		Assert.assertTrue(pathfindingarcmanager.hasNext());
 		Assert.assertEquals(PathfindingNodes.NODE_TAPIS, pathfindingarcmanager.next());
-		Assert.assertTrue(pathfindingarcmanager.hasNext(state_chrono));
+		Assert.assertTrue(pathfindingarcmanager.hasNext());
 		Assert.assertEquals(PathfindingNodes.CLAP_DROIT, pathfindingarcmanager.next());
-		Assert.assertTrue(pathfindingarcmanager.hasNext(state_chrono));
+		Assert.assertTrue(pathfindingarcmanager.hasNext());
 		Assert.assertEquals(PathfindingNodes.BAS, pathfindingarcmanager.next());
-		Assert.assertTrue(pathfindingarcmanager.hasNext(state_chrono));
+		Assert.assertTrue(pathfindingarcmanager.hasNext());
 		Assert.assertEquals(PathfindingNodes.SORTIE_ZONE_DEPART, pathfindingarcmanager.next());
-		Assert.assertTrue(pathfindingarcmanager.hasNext(state_chrono));
+		Assert.assertTrue(pathfindingarcmanager.hasNext());
 		Assert.assertEquals(PathfindingNodes.SORTIE_CLAP_DROIT, pathfindingarcmanager.next());
-		Assert.assertTrue(pathfindingarcmanager.hasNext(state_chrono));
+		Assert.assertTrue(pathfindingarcmanager.hasNext());
 		Assert.assertEquals(PathfindingNodes.SORTIE_TAPIS, pathfindingarcmanager.next());
-		Assert.assertTrue(pathfindingarcmanager.hasNext(state_chrono));
+		Assert.assertTrue(pathfindingarcmanager.hasNext());
 		Assert.assertEquals(PathfindingNodes.SECOURS_0, pathfindingarcmanager.next());
-		Assert.assertTrue(pathfindingarcmanager.hasNext(state_chrono));
+		Assert.assertTrue(pathfindingarcmanager.hasNext());
 		Assert.assertEquals(PathfindingNodes.SECOURS_1, pathfindingarcmanager.next());
-		Assert.assertTrue(pathfindingarcmanager.hasNext(state_chrono));
+		Assert.assertTrue(pathfindingarcmanager.hasNext());
 		Assert.assertEquals(PathfindingNodes.SECOURS_3, pathfindingarcmanager.next());
-		Assert.assertTrue(pathfindingarcmanager.hasNext(state_chrono));
+		Assert.assertTrue(pathfindingarcmanager.hasNext());
 		Assert.assertEquals(PathfindingNodes.SECOURS_4, pathfindingarcmanager.next());
-		Assert.assertTrue(pathfindingarcmanager.hasNext(state_chrono));
+		Assert.assertTrue(pathfindingarcmanager.hasNext());
 		Assert.assertEquals(PathfindingNodes.SECOURS_5, pathfindingarcmanager.next());
-		Assert.assertTrue(pathfindingarcmanager.hasNext(state_chrono));
+		Assert.assertTrue(pathfindingarcmanager.hasNext());
 		Assert.assertEquals(PathfindingNodes.SECOURS_6, pathfindingarcmanager.next());
-		Assert.assertTrue(pathfindingarcmanager.hasNext(state_chrono));
+		Assert.assertTrue(pathfindingarcmanager.hasNext());
 		Assert.assertEquals(PathfindingNodes.SECOURS_7, pathfindingarcmanager.next());
-		Assert.assertTrue(pathfindingarcmanager.hasNext(state_chrono));
+		Assert.assertTrue(pathfindingarcmanager.hasNext());
 		Assert.assertEquals(PathfindingNodes.SECOURS_8, pathfindingarcmanager.next());
-		Assert.assertTrue(pathfindingarcmanager.hasNext(state_chrono));
+		Assert.assertTrue(pathfindingarcmanager.hasNext());
 		Assert.assertEquals(PathfindingNodes.SECOURS_9, pathfindingarcmanager.next());
-		Assert.assertTrue(!pathfindingarcmanager.hasNext(state_chrono));
+		Assert.assertTrue(!pathfindingarcmanager.hasNext());
 	}
 	
 	@Test
@@ -87,7 +87,7 @@ public class JUnit_PathfindingArcManager extends JUnit_Test {
 			pathfindingarcmanager.reinitIterator(state_chrono);
 			for(PathfindingNodes i : PathfindingNodes.values())
 				verification[i.ordinal()] = false;
-			while(pathfindingarcmanager.hasNext(state_chrono))
+			while(pathfindingarcmanager.hasNext())
 			{
 				Assert.assertTrue(verification[pathfindingarcmanager.next().ordinal()] == false);
 				verification[pathfindingarcmanager.next().ordinal()] = true;
