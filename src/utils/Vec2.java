@@ -86,7 +86,8 @@ public class Vec2
 	
 	public int squaredDistance(Vec2 other)
 	{
-		return (x-other.x)*(x-other.x) + (y-other.y)*(y-other.y);
+		int tmp_x = x-other.x, tmp_y = y-other.y;
+		return tmp_x*tmp_x + tmp_y*tmp_y;
 	}
 
 	public float distance(Vec2 other)

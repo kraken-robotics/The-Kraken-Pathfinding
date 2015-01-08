@@ -37,11 +37,13 @@ public class JUnit_MemoryManager extends JUnit_Test {
 		Assert.assertTrue(!memorymanager.isMemoryManagerEmpty());
 		GameState<RobotChrono> state_chrono2 = memorymanager.getNewGameState();
 		state_chrono2.robot.setPositionPathfinding(PathfindingNodes.BAS_DROITE);
-		state_chrono1 = memorymanager.destroyGameState(state_chrono1);
+		memorymanager.destroyGameState(state_chrono1);
+		state_chrono1 = null;
 		// on vérifie que l'échange est bien fait
 		Assert.assertEquals(state_chrono2.robot.getPositionPathfinding(), PathfindingNodes.BAS_DROITE);
 		Assert.assertTrue(!memorymanager.isMemoryManagerEmpty());
-		state_chrono2 = memorymanager.destroyGameState(state_chrono2);
+		memorymanager.destroyGameState(state_chrono2);
+		state_chrono2 = null;
 		Assert.assertTrue(memorymanager.isMemoryManagerEmpty());
     }
 
