@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Vector;
 
 import astar.AStar;
+import astar.AStarId;
 import astar.MemoryManager;
 import astar.arc.Arc;
 import astar.arc.Decision;
@@ -34,13 +35,12 @@ import exceptions.ScriptHookException;
  *
  */
 
-public class StrategyArcManager implements Service, ArcManager {
+public class StrategyArcManager extends ArcManager implements Service {
 
 	protected Log log;
 	private ScriptManager scriptmanager;
 	private AStar<PathfindingArcManager, PathfindingNodes> astar;
 	private HookFactory hookfactory;
-	private MemoryManager memorymanager;
 	
 	private ArrayList<Decision> listeDecisions = new ArrayList<Decision>();
 	private int iterator;
@@ -50,11 +50,11 @@ public class StrategyArcManager implements Service, ArcManager {
 	
 	public StrategyArcManager(Log log, Config config, ScriptManager scriptmanager, GameState<RobotReal> real_gamestate, HookFactory hookfactory, AStar<PathfindingArcManager, PathfindingNodes> astar, MemoryManager memorymanager) throws PointSortieException
 	{
+		super(AStarId.STRATEGY_ASTAR, memorymanager);
 		this.log = log;
 		this.scriptmanager = scriptmanager;
 		this.hookfactory = hookfactory;
 		this.astar = astar;
-		this.memorymanager = memorymanager;
 		try {
 			checkPointSortie(real_gamestate.cloneGameState());
 		} catch (FinMatchException e) {
@@ -248,21 +248,6 @@ public class StrategyArcManager implements Service, ArcManager {
 	public void setDateLimite(int dateLimite)
 	{
 		this.dateLimite = dateLimite;
-	}
-	
-	public void destroyGameState(GameState<RobotChrono> state) throws MemoryManagerException
-	{
-		memorymanager.destroyGameState(state, 1);
-	}
-
-	public GameState<RobotChrono> getNewGameState() throws FinMatchException
-	{
-		return memorymanager.getNewGameState(1);
-	}
-
-	public void empty()
-	{
-		memorymanager.empty(1);
 	}
 
 }

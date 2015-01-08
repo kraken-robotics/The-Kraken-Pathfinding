@@ -1,5 +1,6 @@
 package astar.arcmanager;
 
+import astar.AStarId;
 import astar.MemoryManager;
 import astar.arc.Arc;
 import astar.arc.PathfindingNodes;
@@ -11,7 +12,6 @@ import utils.Log;
 import utils.Config;
 import exceptions.ArcManagerException;
 import exceptions.FinMatchException;
-import exceptions.MemoryManagerException;
 
 /**
  * Réalise les calculs entre PathfindingNodes pour l'AStar.
@@ -19,20 +19,19 @@ import exceptions.MemoryManagerException;
  *
  */
 
-public class PathfindingArcManager implements Service, ArcManager {
+public class PathfindingArcManager extends ArcManager implements Service {
 
 	private int iterator, id_node_iterator;
 	private PathfindingNodes arrivee;
 	protected Config config;
 	protected Log log;
-	private MemoryManager memorymanager;
 	private GameState<RobotChrono> state_iterator;
 
 	public PathfindingArcManager(Log log, Config config, MemoryManager memorymanager)
 	{
+		super(AStarId.PATHFINDING_ASTAR, memorymanager);
 		this.log = log;
 		this.config = config;
-		this.memorymanager = memorymanager;
 		updateConfig();
 	}
 	
@@ -63,7 +62,7 @@ public class PathfindingArcManager implements Service, ArcManager {
 		// durée de rotation minimale
 		int duree = (int)state1.robot.calculateDelta(state1.robot.getPositionPathfinding().getOrientationFinale(arrivee)) * Speed.BETWEEN_SCRIPTS.invertedRotationnalSpeed;
 		// durée de translation minimale
-		duree += (int)state1.robot.getPositionPathfinding().distanceTo(arrivee)*Speed.BETWEEN_SCRIPTS.invertedTranslationnalSpeed;
+		duree += (int)state1.robot.getPositionPathfinding().timeTo(arrivee);
 		return duree;
 	}
 
@@ -144,21 +143,6 @@ public class PathfindingArcManager implements Service, ArcManager {
 	public int getNoteReconstruct(int h)
 	{
 		return -(int)PathfindingNodes.values[h].distanceTo(arrivee);
-	}
-	
-	public void destroyGameState(GameState<RobotChrono> state) throws MemoryManagerException
-	{
-		memorymanager.destroyGameState(state, 0);
-	}
-
-	public GameState<RobotChrono> getNewGameState() throws FinMatchException
-	{
-		return memorymanager.getNewGameState(0);
-	}
-	
-	public void empty()
-	{
-		memorymanager.empty(0);
 	}
 
 }

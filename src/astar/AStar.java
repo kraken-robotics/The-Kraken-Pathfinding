@@ -298,7 +298,7 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 			int hash_current = -1;
 			GameState<RobotChrono> tmp;
 			
-			// On recherche le l'élément d'openset qui minimise f_score
+			// On recherche l'élément d'openset qui minimise f_score
 			int max_value = openset.size();
 			for(int i = 0; i < max_value; i++)
 			{
