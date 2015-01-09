@@ -91,12 +91,6 @@ public class RobotChrono extends Robot
 		return cloned_robotchrono;
 	}
 
-	@Override
-    public void tourner(double angle)
-    {
-        tourner(angle, false);
-    }
-	
 	/**
 	 * Donne l'angle entre l'orientation actuelle et l'angle donné en argument
 	 * @param angle
@@ -112,7 +106,7 @@ public class RobotChrono extends Robot
 	}
 	
 	@Override
-    public void tourner(double angle, boolean mur)
+    public void tourner(double angle)
 	{
 		// TODO: avec les trajectoires courbes, les durées changent
 		// et la marche arrière automatique?

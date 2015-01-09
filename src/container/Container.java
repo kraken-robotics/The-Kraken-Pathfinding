@@ -183,7 +183,7 @@ public class Container
 															 (Table)getService(ServiceNames.TABLE),
 															 (Config)getService(ServiceNames.CONFIG),
 															 (Log)getService(ServiceNames.LOG));
-        else if(serviceRequested == ServiceNames.LOCOMOTION)
+		else if(serviceRequested == ServiceNames.LOCOMOTION)
             instanciedServices[serviceRequested.ordinal()] = (Service)new Locomotion((Log)getService(ServiceNames.LOG),
                                                              (Config)getService(ServiceNames.CONFIG),
                                                              (LocomotionCardWrapper)getService(ServiceNames.LOCOMOTION_CARD_WRAPPER),

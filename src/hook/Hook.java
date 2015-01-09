@@ -77,7 +77,6 @@ abstract public class Hook
 	 * Elle contient la condition d'appel du hook
 	 * Elle est appelée par RobotVrai.
 	 * @param robot
-	 * @return true si ce hook modifie les déplacements du robot, false sinon
 	 * @throws ScriptHookException 
 	 */
 	public abstract void evaluate() throws FinMatchException, ScriptHookException;
