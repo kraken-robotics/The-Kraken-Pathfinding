@@ -31,7 +31,10 @@ public class JUnit_Locomotion extends JUnit_Test
 	public void test_avancer() throws Exception
 	{
 		locomotion.moveLengthwise(150, new ArrayList<Hook>(), false);
+		locomotion.moveLengthwise(-150, new ArrayList<Hook>(), false);
 		config.set(ConfigInfo.COULEUR, "jaune");
+		locomotion.updateConfig();
+		locomotion.moveLengthwise(150, new ArrayList<Hook>(), false);
 		locomotion.moveLengthwise(-150, new ArrayList<Hook>(), false);
 	}
 
@@ -39,6 +42,13 @@ public class JUnit_Locomotion extends JUnit_Test
 	public void test_tourner() throws Exception
 	{
 		config.set(ConfigInfo.COULEUR, "vert");
+		locomotion.updateConfig();
+		locomotion.turn(Math.PI/2, new ArrayList<Hook>());
+		locomotion.turn(Math.PI, new ArrayList<Hook>());
+		locomotion.turn(3*Math.PI/2, new ArrayList<Hook>());
+		locomotion.turn(0, new ArrayList<Hook>());
+		config.set(ConfigInfo.COULEUR, "jaune");
+		locomotion.updateConfig();
 		locomotion.turn(Math.PI/2, new ArrayList<Hook>());
 		locomotion.turn(Math.PI, new ArrayList<Hook>());
 		locomotion.turn(3*Math.PI/2, new ArrayList<Hook>());
@@ -48,6 +58,8 @@ public class JUnit_Locomotion extends JUnit_Test
 	@Test
 	public void test_suit_chemin() throws Exception
 	{
+		config.set(ConfigInfo.COULEUR, "jaune");
+		locomotion.updateConfig();
 		ArrayList<PathfindingNodes> chemin = new ArrayList<PathfindingNodes>();
 		chemin.add(PathfindingNodes.BAS);
 		chemin.add(PathfindingNodes.DEVANT_DEPART_GAUCHE);

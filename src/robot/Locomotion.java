@@ -151,8 +151,17 @@ public class Locomotion implements Service
     {
         log.debug("Avancer de "+Integer.toString(distance), this);
 
-        consigne.x = (int) (position.x + distance*Math.cos(orientation));
-        consigne.y = (int) (position.y + distance*Math.sin(orientation));
+        // En fait, ici on prend en compte que la symétrie va inverser la consigne...
+        if(symetrie)
+        {
+        	consigne.x = (int) (-position.x + distance*Math.cos(Math.PI-orientation));
+            consigne.y = (int) (position.y + distance*Math.sin(Math.PI-orientation));
+        }
+        else
+        {
+        	consigne.x = (int) (position.x + distance*Math.cos(orientation));
+            consigne.y = (int) (position.y + distance*Math.sin(orientation));
+        }
 
         // l'appel à cette méthode sous-entend que le robot ne tourne pas
         // il va donc en avant si la distance est positive, en arrière si elle est négative
