@@ -10,12 +10,13 @@ import utils.Log;
 import container.Service;
 import enums.PathfindingNodes;
 import enums.RobotColor;
+import enums.Speed;
 import exceptions.FinMatchException;
 import exceptions.serial.SerialConnexionException;
 
 public class STMcardWrapper implements Service {
 
-	private Log log;
+	protected Log log;
 	private SerialConnexion serie;
 
 	public STMcardWrapper(Config config, Log log, SerialConnexion serie)
@@ -42,7 +43,20 @@ public class STMcardWrapper implements Service {
 		}
 		serie.communiquer(message, 0);
 	}
-	
+
+	public void sendSpeed() throws SerialConnexionException, FinMatchException
+	{
+		String[] message = new String[2+2*Speed.values().length];
+		message[0] = "spd";
+		message[1] = Integer.toString(Speed.values().length);
+		for(Speed s: Speed.values())
+		{
+			message[2+2*s.ordinal()] = Integer.toString(s.PWMTotation);
+			message[2+2*s.ordinal()+1] = Integer.toString(s.PWMTranslation);
+		}
+		serie.communiquer(message, 0);
+	}
+
 	/**
 	 * Autorise les trajectoires courbes
 	 * @throws SerialConnexionException
