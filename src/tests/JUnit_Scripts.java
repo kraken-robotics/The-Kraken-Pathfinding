@@ -1,5 +1,7 @@
 package tests;
 
+import hook.Hook;
+
 import java.util.ArrayList;
 
 import org.junit.Test;
@@ -110,21 +112,25 @@ public class JUnit_Scripts extends JUnit_Test {
     @Test
     public void test_script_tapis() throws Exception
     {
+    	gamestate.robot.setPosition(new Vec2(0, 500));
+    	gamestate.robot.setOrientation(0);
     	int version = 0;
     	Script s = scriptmanager.getScript(ScriptAnticipableNames.ScriptTapis);
     	ArrayList<PathfindingNodes> chemin = pathfinding.computePath(gamestate.cloneGameState(), s.point_entree(version), true);
-    	gamestate.robot.suit_chemin(chemin, null);
+    	gamestate.robot.suit_chemin(chemin, new ArrayList<Hook>());
     	s.agit(version, gamestate);
     }
 
     @Test
     public void test_script_clap() throws Exception
     {
+    	gamestate.robot.setPosition(new Vec2(0, 500));
+    	gamestate.robot.setOrientation(0);
     	int version = 0;
     	Script s = scriptmanager.getScript(ScriptAnticipableNames.ScriptClap);
     	ArrayList<PathfindingNodes> chemin = pathfinding.computePath(gamestate.cloneGameState(), s.point_entree(version), true);
-    	gamestate.robot.suit_chemin(chemin, null);
-    	s.agit(1, gamestate);
+    	gamestate.robot.suit_chemin(chemin, new ArrayList<Hook>());
+    	s.agit(version, gamestate);
     }
 
 }

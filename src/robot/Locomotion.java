@@ -40,7 +40,6 @@ public class Locomotion implements Service
     private int distance_detection;
     private Vec2 position = new Vec2();  // la position tient compte de la symétrie
     private Vec2 consigne = new Vec2(); // La consigne est un attribut car elle peut être modifiée au sein d'un même mouvement.
-    private boolean trajectoire_courbe = false;
     
     private double orientation; // l'orientation tient compte de la symétrie
     private LocomotionCardWrapper deplacements;
@@ -122,7 +121,7 @@ public class Locomotion implements Service
 
     
     /**
-     * A tester!
+     * Fait tourner le robot (méthode bloquante)
      * Une manière de tourner qui réutilise le reste du code, car tourner
      * n'en devient plus qu'un cas particulier (celui où... on n'avance pas)
      * @param angle
@@ -131,56 +130,16 @@ public class Locomotion implements Service
      * @throws FinMatchException
      * @throws ScriptHookException
      */
-    public void turn2(double angle, ArrayList<Hook> hooks) throws UnableToMoveException, FinMatchException, ScriptHookException
+    public void turn(double angle, ArrayList<Hook> hooks) throws UnableToMoveException, FinMatchException, ScriptHookException
     {
-        consigne.x = (int) (position.x + 1000*Math.cos(orientation));
-        consigne.y = (int) (position.y + 1000*Math.sin(orientation));
+        consigne.x = (int) (position.x + 1000*Math.cos(angle));
+        consigne.y = (int) (position.y + 1000*Math.sin(angle));
 
         // l'appel à cette méthode sous-entend que le robot ne tourne pas
         // il va donc en avant si la distance est positive, en arrière si elle est négative
         vaAuPointGestionExceptions(hooks, false, true, false, true);
     }
     
-    /**
-     * Fait tourner le robot (méthode bloquante)
-     * @throws UnableToMoveException 
-     * @throws FinMatchException 
-     */
-    public void turn(double angle, ArrayList<Hook> hooks) throws UnableToMoveException, FinMatchException
-    {
-        log.debug("Symétrie: "+symetrie, this);
-
-        if(symetrie)
-            angle = Math.PI-angle;
-
-        // Tourne-t-on dans le sens trigonométrique?
-        // C'est important de savoir pour se dégager.
-        boolean trigo = angle > orientation;
-
-        try {
-            deplacements.turn(angle);
-            while(!isMotionEnded()) // on attend la fin du mouvement
-                Sleep.sleep(sleep_boucle_acquittement);
-        } catch(BlockedException e)
-        {
-            try
-            {
-                updateCurrentPositionAndOrientation();
-                if(trigo ^ symetrie) // OUAIS, JE CODE AVEC DES XOR, ET ALORS??
-                    deplacements.turn(orientation+angle_degagement_robot);
-                else
-                    deplacements.turn(orientation-angle_degagement_robot);
-            } catch (SerialConnexionException e1)
-            {
-                e1.printStackTrace();
-            }
-            throw new UnableToMoveException();
-        } catch (SerialConnexionException e)
-        {
-            e.printStackTrace();
-        }
-    }
-   
     /**
      * Fait avancer le robot de "distance" (en mm).
      * @param distance
@@ -199,7 +158,8 @@ public class Locomotion implements Service
 
         // l'appel à cette méthode sous-entend que le robot ne tourne pas
         // il va donc en avant si la distance est positive, en arrière si elle est négative
-        vaAuPointGestionExceptions(hooks, false, distance > 0, mur, false);
+        // si on est à 90°, on privilégie la marche avant
+        vaAuPointGestionExceptions(hooks, false, distance >= 0, mur, false);
     }
         
     /**
@@ -213,44 +173,12 @@ public class Locomotion implements Service
      */
     public void followPath(ArrayList<PathfindingNodes> chemin, ArrayList<Hook> hooks, DirectionStrategy directionstrategy) throws UnableToMoveException, FinMatchException, ScriptHookException
     {
-        if(trajectoire_courbe)
+    	// TODO: trajectoire courbe
+        for(PathfindingNodes point: chemin)
         {
-        	log.critical("Désactive la trajectoire courbe, pauvre fou!", this);
-/*            consigne = chemin.get(0).clone();
-            ArrayList<Hook> hooks_trajectoire = new ArrayList<Hook>();
-            for(int i = 0; i < chemin.size()-2; i++)
-            {
-                Hook hook_trajectoire_courbe = hookgenerator.hook_position(chemin.get(i), anticipation_trajectoire_courbe);
-                Executable change_consigne = new ChangeConsigne(chemin.get(i+1), this);
-                hook_trajectoire_courbe.ajouter_callback(new Callback(change_consigne, true));
-                hooks_trajectoire.add(hook_trajectoire_courbe);
-            }
-
-            // TODO: en cas de choc avec un bord, recommencer sans trajectoire courbe?
-            
-            // Cette boucle est utile si on a "raté" des hooks.
-            boolean nouvel_essai = false;
-            do {
-                if(nouvel_essai)
-                    va_au_point_marche_arriere(hooks, hooks_trajectoire, false, false);
-                va_au_point_marche_arriere(hooks, hooks_trajectoire, true, false);
-                nouvel_essai = false;
-                if(hooks_trajectoire.size() != 0)
-                    nouvel_essai = true;
-            } while(nouvel_essai);
-
-            log.debug("Fin en: "+position, this);
-            // Le dernier trajet est exact (sans trajectoire courbe)
-            // afin d'arriver exactement au bon endroit.
-            consigne = chemin.get(chemin.size()-1).clone();
-            va_au_point_marche_arriere(hooks, null, false, false);         */   
+            consigne = point.getCoordonnees().clone();
+            vaAuPointGestionMarcheArriere(hooks, false, false, directionstrategy, false);
         }
-        else
-            for(PathfindingNodes point: chemin)
-            {
-                consigne = point.getCoordonnees().clone();
-                vaAuPointGestionMarcheArriere(hooks, false, false, directionstrategy, false);
-            }
     }
 
     /**
@@ -319,7 +247,10 @@ public class Locomotion implements Service
                     try
                     {
                         log.warning("On n'arrive plus à avancer. On se dégage", this);
-                        if(marcheAvant)
+                        // TODO: doit dépendre du sens
+                        if(seulementAngle)
+                        	deplacements.turn(angle_degagement_robot);
+                        else if(marcheAvant)
                             deplacements.moveLengthwise(distance_degagement_robot);
                         else
                             deplacements.moveLengthwise(-distance_degagement_robot);
@@ -384,7 +315,7 @@ public class Locomotion implements Service
     private void vaAuPointGestionHookCorrectionEtDetection(ArrayList<Hook> hooks, boolean trajectoire_courbe, boolean marcheAvant, boolean seulementAngle) throws BlockedException, UnexpectedObstacleOnPathException, FinMatchException, ScriptHookException
     {
         // le fait de faire de nombreux appels permet de corriger la trajectoire
-        vaAuPointGestionSymetrie(trajectoire_courbe, marcheAvant, seulementAngle);
+        vaAuPointGestionSymetrie(trajectoire_courbe, marcheAvant, seulementAngle, false);
         do
         {
             updateCurrentPositionAndOrientation();
@@ -405,7 +336,7 @@ public class Locomotion implements Service
 
     private void corrigeAngle(boolean trajectoire_courbe, boolean marcheAvant) throws BlockedException, FinMatchException
     {
-    	vaAuPointGestionSymetrie(trajectoire_courbe, marcheAvant, true);
+    	vaAuPointGestionSymetrie(trajectoire_courbe, marcheAvant, true, true);
     }
 
     /**
@@ -417,7 +348,7 @@ public class Locomotion implements Service
      * @throws BlockedException 
      * @throws FinMatchException 
      */
-    private void vaAuPointGestionSymetrie(boolean trajectoire_courbe, boolean marcheAvant, boolean seulementAngle) throws BlockedException, FinMatchException
+    private void vaAuPointGestionSymetrie(boolean trajectoire_courbe, boolean marcheAvant, boolean seulementAngle, boolean correction) throws BlockedException, FinMatchException
     {
         Vec2 delta = consigne.clone();
         if(symetrie)
@@ -436,7 +367,7 @@ public class Locomotion implements Service
             angle += Math.PI;
         }
         
-        vaAuPointGestionCourbe(angle, distance, trajectoire_courbe, seulementAngle);
+        vaAuPointGestionCourbe(angle, distance, trajectoire_courbe, seulementAngle, correction);
     }
     
     /**
@@ -447,7 +378,7 @@ public class Locomotion implements Service
      * @throws BlockedException 
      * @throws FinMatchException 
      */
-    private void vaAuPointGestionCourbe(double angle, double distance, boolean trajectoire_courbe, boolean seulementAngle) throws BlockedException, FinMatchException
+    private void vaAuPointGestionCourbe(double angle, double distance, boolean trajectoire_courbe, boolean seulementAngle, boolean correction) throws BlockedException, FinMatchException
     {
 		double delta = orientation-angle % (2*Math.PI);
 		delta = Math.abs(delta);
@@ -457,8 +388,20 @@ public class Locomotion implements Service
         // On interdit la trajectoire courbe si on doit faire un virage trop grand.
 		if(delta > Math.PI/2)
 			trajectoire_courbe = false;
-		else if(delta < 3*Math.PI/180) // moins de 3°: trajectoire courbe (c'est une correction)
-			trajectoire_courbe = true;
+
+		/**
+		 * Si on fait une correction, il faut vérifier l'angle de correction.
+		 * S'il est petit, alors on fait la correction en angle sans s'arrêter
+		 * S'il n'est pas petit, on annule la correction (par exemple, si le robot
+		 * dépasse la consigne, la correction va le faire se retourner ce qui
+		 * n'est pas le résultat demandé)
+		 */
+		if(correction)
+		{
+			if(delta < 3*Math.PI/180)
+				trajectoire_courbe = true;
+			return;
+		}
         try
         {
             deplacements.turn(angle);
@@ -562,7 +505,6 @@ public class Locomotion implements Service
         distance_degagement_robot = config.getInt(ConfigInfo.DISTANCE_DEGAGEMENT_ROBOT);
         sleep_boucle_acquittement = config.getInt(ConfigInfo.SLEEP_BOUCLE_ACQUITTEMENT);
         angle_degagement_robot = config.getDouble(ConfigInfo.ANGLE_DEGAGEMENT_ROBOT);
-        trajectoire_courbe = config.getBoolean(ConfigInfo.TRAJECTOIRE_COURBE);
         symetrie = config.getColor().isSymmetry();
     }
 
@@ -613,7 +555,10 @@ public class Locomotion implements Service
     public Vec2 getPosition() throws FinMatchException
     {
         updateCurrentPositionAndOrientation();
-        return position.clone();
+        Vec2 out = position.clone();
+        if(symetrie)
+        	out.x = -out.x;
+        return out;
     }
 
     public Vec2 getPositionFast()
