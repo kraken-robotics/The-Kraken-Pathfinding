@@ -142,7 +142,7 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 	 * @throws PathfindingException
 	 * @throws MemoryManagerException
 	 */
-	private ArrayList<A> computeStrategy(GameState<?> state, int dureeAnticipation) throws FinMatchException, PathfindingException, MemoryManagerException
+	public synchronized ArrayList<A> computeStrategy(GameState<?> state, int dureeAnticipation) throws FinMatchException, PathfindingException, MemoryManagerException
 	{
 		GameState<RobotChrono> depart = arcmanager.getNewGameState();
 		state.copy(depart);

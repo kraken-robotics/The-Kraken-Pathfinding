@@ -34,6 +34,7 @@ public class ThreadStrategy extends AbstractThread implements Service
 	
 	private Decision decision = new Decision(new ArrayList<PathfindingNodes>(), ScriptAnticipableNames.SortieZoneDepart, 0);
 	private Decision decisionSecours = null;
+	private Decision decisionNormale = null;
 	private Decision needNewBestAfterThis = null;
 	
 	public ThreadStrategy(Log log, Config config, AStar<StrategyArcManager, Decision> strategie, GameState<RobotReal> realstate)
@@ -69,16 +70,16 @@ public class ThreadStrategy extends AbstractThread implements Service
 		while(!finMatch && !stopThreads)
 		{
 			try {
+				realstate.copy(chronostate);
 				if(needNewBestAfterThis != null)
 				{
-					realstate.copy(chronostate);
 					ArrayList<Decision> decisions = strategie.computeStrategyAfter(chronostate, needNewBestAfterThis, 10000);
 					printCurrentStrategy(decisions);
 					decision = decisions.get(0);
 					needNewBestAfterThis = null; // en cas d'erreur, ce n'est pas mis à null
 				}
-				realstate.copy(chronostate);
 				decisionSecours = strategie.computeStrategyEmergency(chronostate, 10000).get(0);
+				decisionNormale = strategie.computeStrategy(chronostate, 10000).get(0);
 			} catch (FinMatchException e) {
 				break;
 			} catch (PathfindingException e) {
@@ -98,20 +99,35 @@ public class ThreadStrategy extends AbstractThread implements Service
 	
 	public Decision getBestDecision()
 	{
+		do {
+			Sleep.sleep(5);
+		} while(decision == null);
 		return decision;
 	}
 
 	public Decision getEmergencyDecision()
 	{
+		do {
+			Sleep.sleep(5);
+		} while(decisionSecours == null);
 		log.warning("Stratégie de secours demandée! "+decisionSecours, this);
 		return decisionSecours;
+	}
+
+	public Decision getNormalDecision()
+	{
+		do {
+			Sleep.sleep(5);
+		} while(decisionNormale  == null);
+		log.warning("Stratégie demandée! "+decisionNormale, this);
+		return decisionNormale;
 	}
 
 	private void printCurrentStrategy(ArrayList<Decision> decisions)
 	{
 		String s = new String();
 		for(Decision d: decisions)
-			s += ", "+d.toString();
+			s += d.toString()+" ";
 		log.debug(s, this);
 	}
 	

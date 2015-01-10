@@ -38,10 +38,10 @@ public class Locomotion implements Service
     private ObstacleManager obstaclemanager;
     private int largeur_robot;
     private int distance_detection;
-    private Vec2 position = new Vec2();  // la position tient compte de la symétrie
+    private Vec2 position = new Vec2();  // la position réelle du robot, pas la version qu'ont les robots
     private Vec2 consigne = new Vec2(); // La consigne est un attribut car elle peut être modifiée au sein d'un même mouvement.
     
-    private double orientation; // l'orientation tient compte de la symétrie
+    private double orientation; // l'orientation réelle du robot, pas la version qu'ont les robots
     private LocomotionCardWrapper deplacements;
     private boolean symetrie;
     private int sleep_boucle_acquittement = 10;
@@ -452,6 +452,16 @@ public class Locomotion implements Service
         }
     }
     
+    public boolean isEnemyHere()
+    {
+		try {
+			detectEnemy(true);
+			return false;
+		} catch (UnexpectedObstacleOnPathException e) {
+			return true;
+		}
+    }
+    
     /**
      * fonction vérifiant que l'on ne va pas taper dans le robot adverse. 
      * @param devant: fait la détection derrière le robot si l'on avance à reculons 
@@ -524,9 +534,11 @@ public class Locomotion implements Service
      */
     public void setPosition(Vec2 position) throws FinMatchException {
         this.position = position.clone();
+        if(symetrie)
+        	this.position.x = -this.position.x;
         try {
-            deplacements.setX(position.x);
-            deplacements.setY(position.y);
+    		deplacements.setX(this.position.x);
+            deplacements.setY(this.position.y);
         } catch (SerialConnexionException e) {
             e.printStackTrace();
         }
@@ -540,8 +552,10 @@ public class Locomotion implements Service
      */
     public void setOrientation(double orientation) throws FinMatchException {
         this.orientation = orientation;
+        if(symetrie)
+        	this.orientation = Math.PI-this.orientation;
         try {
-            deplacements.setOrientation(orientation);
+    		deplacements.setOrientation(orientation);
         } catch (SerialConnexionException e) {
             e.printStackTrace();
         }
@@ -556,20 +570,13 @@ public class Locomotion implements Service
         return out;
     }
 
-    public Vec2 getPositionFast()
-    {
-        return position.clone();
-    }
-
     public double getOrientation() throws FinMatchException
     {
         updateCurrentPositionAndOrientation();
-        return orientation;
-    }
-
-    public double getOrientationFast()
-    {
-        return orientation;
+        if(symetrie)
+        	return Math.PI-orientation;
+        else
+        	return orientation;
     }
 
     public void desasservit() throws FinMatchException

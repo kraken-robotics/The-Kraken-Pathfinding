@@ -8,8 +8,6 @@ import java.util.ArrayList;
 import astar.arc.Decision;
 import container.Service;
 import exceptions.FinMatchException;
-import exceptions.PathfindingException;
-import exceptions.PathfindingRobotInObstacleException;
 import exceptions.ScriptException;
 import exceptions.ScriptHookException;
 import exceptions.UnableToMoveException;
@@ -68,10 +66,7 @@ public class Execution implements Service {
 		{
 			try {
 				Decision bestDecision = threadstrategy.getBestDecision();
-				if(bestDecision == null)
-					Sleep.sleep(50);
-				else
-					executerScript(bestDecision);
+				executerScript(bestDecision);
 			} catch (FinMatchException e) {
 				// la sortie se fait par l'exception FinMatchException
 				break;
@@ -85,48 +80,32 @@ public class Execution implements Service {
 	
 	public void executerScript(Decision decision_actuelle) throws FinMatchException
 	{
-		for(int essai = 0; essai < 2; essai++)
-		{
-			if(essai == 1)
+		log.debug("On tente d'exécuter "+decision_actuelle.script_name, this);
+		try {
+			tryOnce(decision_actuelle);
+		} catch (UnableToMoveException | ScriptException e) {
+			// On a rencontré l'ennemi en chemin. On applique la stratégie d'urgence.
+			boolean recommence = true;
 			do {
-				// Normalement, cette décision n'est jamais vide (sauf au tout tout début du match)
-				decision_actuelle = threadstrategy.getEmergencyDecision();
-				if(decision_actuelle == null)
-					Sleep.sleep(10);
-			} while(decision_actuelle == null);
-			log.debug("On tente d'exécuter "+decision_actuelle.script_name, this);
-			try {
-				tryOnce(decision_actuelle);
-			} catch (PathfindingException e) {
-// TODO				tryOnce(s, decision_actuelle.id_version, true, false);
-				// Problème de pathfinding: pas de chemin. On rajoute des points
-			} catch (ScriptException e) {
-				log.critical("Abandon: erreur de script", this);
-				// On a eu un problème au milieu du script. On change de script.
-				// Note: le script lui-même possède des procédures de relance.
-				continue;
-			} catch (UnableToMoveException e) {
-				// On a rencontré l'ennemi en chemin. On retente avec un autre chemin.
-				try {
-					log.debug("On réessaye d'exécuter "+decision_actuelle.script_name, this);
-					tryOnce(decision_actuelle);
-				} catch (Exception e1) {
-					log.critical("Abandon: erreur pendant l'itinéraire de secours.", this);
-					continue;
+				if(gamestate.robot.isEnemyHere())
+				{
+					decision_actuelle = threadstrategy.getEmergencyDecision();
+					log.debug("Stratégie d'urgence avec ennemi: "+decision_actuelle.script_name, this);
 				}
-			} catch (PathfindingRobotInObstacleException e) {
-				log.critical("Abandon: on est dans un obstacle. Attente.", this);
-				// On est dans un obstacle. Le mieux est encore d'attendre un peu.
-				Sleep.sleep(1000);
-				break; // on annule l'exécution.
-			}
-			// Tout s'est bien passé? On s'arrête là.
-			break;
-			
+				else
+				{
+					log.debug("Stratégie d'urgence sans ennemi: "+decision_actuelle.script_name, this);
+					decision_actuelle = threadstrategy.getNormalDecision();
+				}
+				try {
+					tryOnce(decision_actuelle);
+					recommence = false;
+				} catch (UnableToMoveException | ScriptException e1) {}
+			} while(recommence);
 		}
 	}
 	
-	private void tryOnce(Decision d) throws PathfindingException, UnableToMoveException, ScriptException, PathfindingRobotInObstacleException, FinMatchException
+	private void tryOnce(Decision d) throws UnableToMoveException, ScriptException, FinMatchException
 	{
 		gamestate.robot.set_vitesse(Speed.BETWEEN_SCRIPTS);
 		try {
