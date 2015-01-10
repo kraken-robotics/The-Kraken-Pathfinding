@@ -45,10 +45,8 @@ public class Locomotion implements Service
     private LocomotionCardWrapper deplacements;
     private boolean symetrie;
     private int sleep_boucle_acquittement = 10;
-    private int nb_iterations_max = 30;
     private int distance_degagement_robot = 50;
     private double angle_degagement_robot;
-    private boolean insiste = false;
     
     public Locomotion(Log log, Config config, LocomotionCardWrapper deplacements, ObstacleManager obstaclemanager)
     {
@@ -222,12 +220,8 @@ public class Locomotion implements Service
      */
     private void vaAuPointGestionExceptions(ArrayList<Hook> hooks, boolean trajectoire_courbe, boolean marcheAvant, boolean mur, boolean seulementAngle) throws UnableToMoveException, FinMatchException, ScriptHookException
     {
-        int nb_iterations_ennemi;
-        int nb_iterations_deblocage = 2;
-        if(insiste)
-            nb_iterations_ennemi = nb_iterations_max;
-        else
-            nb_iterations_ennemi = 6; // 600 ms
+        int attente_ennemi_max = 600; // combien de temps attendre que l'ennemi parte avant d'abandonner
+        int nb_iterations_deblocage = 2; // combien de fois on réessayer si on se prend un mur
         boolean recommence;
         do {
             recommence = false;
@@ -241,63 +235,56 @@ public class Locomotion implements Service
                 /*
                  * En cas de blocage, on recule (si on allait tout droit) ou on avance.
                  */
-                // Si on insiste, on se dégage. Sinon, c'est juste normal de prendre le mur.
+                // Si on s'attendait à un mur, c'est juste normal de se le prendre.
                 if(!mur)
                 {
                     try
                     {
                         log.warning("On n'arrive plus à avancer. On se dégage", this);
-                        // TODO: doit dépendre du sens
                         if(seulementAngle)
-                        	deplacements.turn(angle_degagement_robot);
+                        {
+                        	// on alterne rotation à gauche et à droite
+                        	if((nb_iterations_deblocage & 1) == 0)
+                        		deplacements.turn(angle_degagement_robot);
+                        	else
+                        		deplacements.turn(-angle_degagement_robot);
+                        }
                         else if(marcheAvant)
                             deplacements.moveLengthwise(distance_degagement_robot);
                         else
                             deplacements.moveLengthwise(-distance_degagement_robot);
-                        recommence = true;
+                        while(!isMotionEnded());
+                    	recommence = true; // si on est arrivé ici c'est qu'aucune exception n'a été levée
                     } catch (SerialConnexionException e1)
                     {
                         e1.printStackTrace();
-                    }
-                    try
-                    {
-                        while(!isMotionEnded());
-                    } catch (BlockedException e1)
-                    {
+                    } catch (BlockedException e1) {
                     	immobilise();
                         log.critical("On n'arrive pas à se dégager.", this);
-                        throw new UnableToMoveException();
-                    }
-                    if(nb_iterations_deblocage <= 0)
+					}
+                    if(!recommence)
                         throw new UnableToMoveException();
                 }
             } catch (UnexpectedObstacleOnPathException e)
             {
-                nb_iterations_ennemi--;
-                /*
-                 * En cas d'ennemi, on attend (si on demande d'insiste) ou on abandonne.
-                 */
-                if(nb_iterations_ennemi <= 0)
-                {
-                    /* TODO: si on veut pouvoir enchaîner avec un autre chemin, il
-                     * ne faut pas arrêter le robot.
-                     * ATTENTION! ceci peut être dangereux, car si aucun autre chemin
-                     * ne lui est donné, le robot va continuer sa course et percuter
-                     * l'obstacle!
-                     */
-                	immobilise();
-                    log.critical("Détection d'un ennemi! Abandon du mouvement.", this);
+            	immobilise();
+            	long dateAvant = System.currentTimeMillis();
+                log.critical("Détection d'un ennemi! Abandon du mouvement.", this);
+            	while(System.currentTimeMillis() - dateAvant < attente_ennemi_max)
+            	{
+            		try {
+            			detectEnemy(marcheAvant);
+            			recommence = true; // si aucune détection
+            			break;
+            		}
+            		catch(UnexpectedObstacleOnPathException e2)
+            		{}
+            	}
+                if(!recommence)
                     throw new UnableToMoveException();
-                } //TODO: vérifier fréquemment, puis attendre
-                else
-                {
-                    log.warning("Détection d'un ennemi! Attente.", this);
-                    immobilise();
-                    Sleep.sleep(100);
-                    recommence = true;
-                }
             }
-        } while(recommence); // on recommence tant qu'on n'a pas fait trop d'itérations.
+
+        } while(recommence); // on recommence tant qu'il le faut
 
     // Tout s'est bien passé
     }
@@ -500,7 +487,6 @@ public class Locomotion implements Service
     @Override
     public void updateConfig()
     {
-        nb_iterations_max = config.getInt(ConfigInfo.NB_TENTATIVES);
         distance_detection = config.getInt(ConfigInfo.DISTANCE_DETECTION);
         distance_degagement_robot = config.getInt(ConfigInfo.DISTANCE_DEGAGEMENT_ROBOT);
         sleep_boucle_acquittement = config.getInt(ConfigInfo.SLEEP_BOUCLE_ACQUITTEMENT);
@@ -589,22 +575,22 @@ public class Locomotion implements Service
         }
     }
 
-    public void setRotationnalSpeed(int pwm_max) throws FinMatchException
+    public void setRotationnalSpeed(Speed speed) throws FinMatchException
     {
         try
         {
-            deplacements.setRotationnalSpeed(pwm_max);
+            deplacements.setRotationnalSpeed(speed.PWMRotation);
         } catch (SerialConnexionException e)
         {
             e.printStackTrace();
         }
     }
 
-    public void setTranslationnalSpeed(int pwm_max) throws FinMatchException
+    public void setTranslationnalSpeed(Speed speed) throws FinMatchException
     {
         try
         {
-            deplacements.setTranslationnalSpeed(pwm_max);
+            deplacements.setTranslationnalSpeed(speed.PWMTranslation);
         } catch (SerialConnexionException e)
         {
             e.printStackTrace();
@@ -627,11 +613,6 @@ public class Locomotion implements Service
     public void initialiser_deplacements()
     {}
     
-    public void setInsiste(boolean insiste)
-    {
-        this.insiste = insiste;
-    }
-
     public void disableRotationnalFeedbackLoop() throws FinMatchException
     {
     	try

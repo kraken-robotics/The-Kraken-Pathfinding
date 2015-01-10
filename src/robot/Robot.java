@@ -43,7 +43,6 @@ public abstract class Robot implements Service
     public abstract Vec2 getPosition() throws FinMatchException;
     public abstract double getOrientation() throws FinMatchException;
     public abstract void sleep(long duree, ArrayList<Hook> hooks) throws FinMatchException;
-    public abstract void setInsiste(boolean insiste);
     public abstract void desactiver_asservissement_rotation() throws FinMatchException;
     public abstract void activer_asservissement_rotation() throws FinMatchException;
     public abstract int getTempsDepuisDebutMatch();

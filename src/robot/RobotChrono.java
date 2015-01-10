@@ -239,12 +239,6 @@ public class RobotChrono extends Robot
     	date += approximateSerialLatency;
     }
 
-	@Override
-	public void setInsiste(boolean insiste) {
-		// TODO Auto-generated method stub
-		
-	}
-
 	/**
 	 * On déclenche tous les hooks entre le point A et le point B.
 	 * Il faut appeler checkHooks APRÈS avoir mis à jour date!
