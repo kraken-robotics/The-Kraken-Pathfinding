@@ -13,6 +13,7 @@ import robot.Locomotion;
 import utils.ConfigInfo;
 import utils.Vec2;
 import container.ServiceNames;
+import exceptions.UnableToMoveException;
 
 public class JUnit_Locomotion extends JUnit_Test
 {
@@ -60,6 +61,17 @@ public class JUnit_Locomotion extends JUnit_Test
 	@Test
 	public void test_mur() throws Exception
 	{
-		// TODO
+        locomotion.setPosition(new Vec2(-1200, 1000));
+        locomotion.setOrientation(0);
+		locomotion.moveLengthwise(-300, new ArrayList<Hook>(), true);
 	}
+
+	@Test(expected=UnableToMoveException.class)
+	public void test_mur_exception() throws Exception
+	{
+        locomotion.setPosition(new Vec2(-1200, 1000));
+        locomotion.setOrientation(0);
+		locomotion.moveLengthwise(-300, new ArrayList<Hook>(), false);
+	}
+
 }
