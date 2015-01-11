@@ -7,7 +7,6 @@ import java.util.ArrayList;
 
 import astar.arc.Decision;
 import container.Service;
-import exceptions.FinMatchException;
 import exceptions.ScriptException;
 import exceptions.ScriptHookException;
 import exceptions.UnableToMoveException;
@@ -64,18 +63,13 @@ public class Execution implements Service {
 		 */
 		while(true)
 		{
-			try {
-				Decision bestDecision = threadstrategy.getBestDecision();
-				executerScript(bestDecision);
-			} catch (FinMatchException e) {
-				// la sortie se fait par l'exception FinMatchException
-				break;
-			}
+			Decision bestDecision = threadstrategy.getBestDecision();
+			executerScript(bestDecision);
 		}
 		
 	}
 	
-	public void executerScript(Decision decision_actuelle) throws FinMatchException
+	public void executerScript(Decision decision_actuelle)
 	{
 		log.debug("On tente d'exécuter "+decision_actuelle.script_name, this);
 		try {
@@ -102,10 +96,10 @@ public class Execution implements Service {
 		}
 	}
 	
-	private void tryOnce(Decision d) throws UnableToMoveException, ScriptException, FinMatchException
+	private void tryOnce(Decision d) throws UnableToMoveException, ScriptException
 	{
-		gamestate.robot.set_vitesse(Speed.BETWEEN_SCRIPTS);
 		try {
+			gamestate.robot.set_vitesse(Speed.BETWEEN_SCRIPTS);
 			gamestate.robot.suit_chemin(d.chemin, hooks_entre_scripts);
 			threadstrategy.computeBestDecisionAfter(d);
 			scriptmanager.getScript(d.script_name).agit(d.version, gamestate);
