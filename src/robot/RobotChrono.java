@@ -234,6 +234,11 @@ public class RobotChrono extends Robot
 		date += approximateSerialLatency;
     }
 
+    public void desactiver_asservissement_translation()
+    {
+		date += approximateSerialLatency;
+    }
+
     public void activer_asservissement_rotation()
     {
     	date += approximateSerialLatency;

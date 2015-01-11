@@ -653,4 +653,15 @@ public class Locomotion implements Service
 		}
     }
 
+	public void disableTranslationalFeedbackLoop() throws FinMatchException {
+    	try
+		{
+			deplacements.disableTranslationnalFeedbackLoop();
+		}
+		catch (SerialConnexionException e)
+		{
+			e.printStackTrace();
+		}
+	}
+
 }

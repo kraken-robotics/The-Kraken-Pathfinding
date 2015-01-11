@@ -44,6 +44,7 @@ public abstract class Robot implements Service
     public abstract double getOrientation() throws FinMatchException;
     public abstract void sleep(long duree, ArrayList<Hook> hooks) throws FinMatchException;
     public abstract void desactiver_asservissement_rotation() throws FinMatchException;
+    public abstract void desactiver_asservissement_translation() throws FinMatchException;
     public abstract void activer_asservissement_rotation() throws FinMatchException;
     public abstract int getTempsDepuisDebutMatch();
     public abstract RobotChrono cloneIntoRobotChrono() throws FinMatchException;
