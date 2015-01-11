@@ -60,8 +60,7 @@ public class RobotChrono extends Robot
 	{
 		date += Math.abs(distance)*vitesse.invertedTranslationnalSpeed + sleepAvanceDuration;
 	
-		Vec2 ecart;
-        ecart = new Vec2((int)(distance*Math.cos(orientation)), (int)(distance*Math.sin(orientation)));
+        Vec2 ecart = new Vec2((int)(distance*Math.cos(orientation)), (int)(distance*Math.sin(orientation)));
 
 		checkHooks(position, position.plusNewVector(ecart), hooks);
 		position.plus(ecart);
@@ -122,6 +121,7 @@ public class RobotChrono extends Robot
 			va_au_point_pathfinding(point, hooks);
 	}
 	
+	// TODO: ne plus proposer qu'une version de va_au_point vers un pathfindingnodes
 	public void va_au_point(Vec2 point, ArrayList<Hook> hooks) throws FinMatchException
 	{
 		double orientation_finale = Math.atan2(point.y - position.y, point.x - position.x);

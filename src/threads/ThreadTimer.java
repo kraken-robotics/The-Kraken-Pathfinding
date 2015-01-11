@@ -60,7 +60,7 @@ public class ThreadTimer extends AbstractThread implements Service
 		{
 			// Permet de signaler que le match a démarré
 			try {
-				Config.matchDemarre = capteur.demarrage_match();
+				Config.matchDemarre |= capteur.demarrage_match();
 			} catch (SerialConnexionException e) {
 				e.printStackTrace();
 			} catch (FinMatchException e) {

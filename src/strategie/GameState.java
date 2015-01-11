@@ -163,6 +163,7 @@ public class GameState<R extends Robot> implements Service
 		return gridspace.getDateSomethingChange() != Integer.MAX_VALUE;
 	}
 	
+	// TODO: vérifier aussi les capteurs du robot vrai
 	public void sleepUntilSomethingChange() throws FinMatchException
 	{
 		// on ajoute quelques microsecondes afin d'être bien

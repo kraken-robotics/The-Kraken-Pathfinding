@@ -73,9 +73,6 @@ public class Execution implements Service {
 			}
 		}
 		
-		// DEPENDS_ON_RULES
-		// funny action (aucune cette année)
-		
 	}
 	
 	public void executerScript(Decision decision_actuelle) throws FinMatchException
