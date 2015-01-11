@@ -7,6 +7,12 @@ import exceptions.PointSortieException;
 import exceptions.SerialManagerException;
 import exceptions.ThreadException;
 
+/**
+ * Affiche les points de sorties après modification des scripts
+ * @author pf
+ *
+ */
+
 public class PrintPointsSortie {
 
 	public static void main(String[] args)

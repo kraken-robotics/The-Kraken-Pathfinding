@@ -1,5 +1,11 @@
 package robot;
 
+/**
+ * Utilisé par LocomotionCardWrapper
+ * @author pf
+ *
+ */
+
 public enum FeedbackLoopStatisticsElement {
 	PWMmoteurGauche,
 	PWMmoteurDroit,

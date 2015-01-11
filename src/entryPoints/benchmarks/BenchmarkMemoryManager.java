@@ -7,6 +7,12 @@ import robot.RobotReal;
 import strategie.GameState;
 import utils.Log;
 
+/**
+ * Benchmark sur memory manager. Utilisé pour l'optimisation.
+ * @author pf
+ *
+ */
+
 public class BenchmarkMemoryManager
 {
 

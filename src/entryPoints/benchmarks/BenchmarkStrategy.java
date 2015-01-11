@@ -12,6 +12,12 @@ import astar.AStar;
 import astar.arc.Decision;
 import astar.arcmanager.StrategyArcManager;
 
+/**
+ * Benchmark de la stratégie. Utilisé pour l'optimisation.
+ * @author pf
+ *
+ */
+
 public class BenchmarkStrategy {
 
 	@SuppressWarnings("unchecked")

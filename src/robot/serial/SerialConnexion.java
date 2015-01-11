@@ -18,6 +18,12 @@ import utils.Log;
 import container.Service;
 import container.ServiceNames;
 
+/**
+ * Une connexion série
+ * @author kayou
+ *
+ */
+
 public class SerialConnexion implements SerialPortEventListener, Service
 {
 	private SerialPort serialPort;

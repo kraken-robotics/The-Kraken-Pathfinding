@@ -15,6 +15,12 @@ import utils.Vec2;
 import container.ServiceNames;
 import exceptions.UnableToMoveException;
 
+/**
+ * Tests unitaires des déplacements haut niveau
+ * @author pf
+ *
+ */
+
 public class JUnit_Locomotion extends JUnit_Test
 {
 	Locomotion locomotion;

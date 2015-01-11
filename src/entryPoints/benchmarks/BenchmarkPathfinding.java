@@ -11,6 +11,12 @@ import robot.RobotReal;
 import strategie.GameState;
 import utils.Log;
 
+/**
+ * Benchmark de la recherche de chemin. Utilisé pour l'optimisation.
+ * @author pf
+ *
+ */
+
 public class BenchmarkPathfinding {
 
 	@SuppressWarnings("unchecked")

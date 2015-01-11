@@ -14,6 +14,12 @@ import strategie.GameState;
 import utils.Vec2;
 import enums.Tribool;
 
+/**
+ * Tests unitaires pour le gamestate
+ * @author pf
+ *
+ */
+
 public class JUnit_GameState extends JUnit_Test {
 
 	private GameState<RobotChrono> gamestate;

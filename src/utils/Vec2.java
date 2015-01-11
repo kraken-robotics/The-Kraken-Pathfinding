@@ -1,12 +1,3 @@
-/* ============================================================================
- * 				Vec2 class
- * ============================================================================
- * 
- * Bi-dimentionnal vector 2 class. Simple-precision members.
- * Author : Dede
- * Refactoring : Martial
- */
-
 package utils;
 
 /**

@@ -6,7 +6,7 @@ import org.junit.Assert;
 import utils.Vec2;
 
 /**
- * Tests unitaires pour le package smartMath
+ * Tests unitaires pour Vec2
  * @author pf
  *
  */
