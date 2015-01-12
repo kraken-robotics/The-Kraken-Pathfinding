@@ -17,7 +17,6 @@ import scripts.ScriptManager;
 import threads.ThreadStrategy;
 import utils.Config;
 import utils.Log;
-import utils.Sleep;
 
 /**
  * Exécute ce qu'a décidé la stratégie.
@@ -52,13 +51,7 @@ public class Execution implements Service {
 	 * Appelé par le lanceur. C'est la boucle exécutée par le robot pendant tout le match
 	 */
 	public void boucleExecution()
-	{
-		/**
-		 * Attente du début du match
-		 */
-		while(!Config.matchDemarre)
-			Sleep.sleep(20);
-		
+	{		
 		/**
 		 * Boucle d'exécution
 		 */
