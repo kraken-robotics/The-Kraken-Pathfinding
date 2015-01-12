@@ -133,6 +133,10 @@ public class Config implements Service
 		set(nom, value.toString());
 	}
 
+	/**
+	 * Affiche toute la config.
+	 * Appelé au début du match.
+	 */
 	private void affiche_tout()
 	{
 		if(Boolean.parseBoolean(config.getProperty("affiche_debug")))
@@ -143,15 +147,22 @@ public class Config implements Service
 		}
 	}
 	
+	@Override
 	public void updateConfig()
-	{
-	}
+	{}
 		
+	/**
+	 * Etablit la date de début du match
+	 */
 	public void setDateDebutMatch()
 	{
 		dateDebutMatch = System.currentTimeMillis();
 	}
 	
+	/**
+	 * Récupère la date de début du match
+	 * @return
+	 */
 	public static long getDateDebutMatch()
 	{
 		// Si le match n'a pas encore commencé, on dit qu'il vient de commencer (sinon les calculs bug)
@@ -161,7 +172,7 @@ public class Config implements Service
 	}
 
 	/**
-	 * Récupère la couleur du robot
+	 * Récupère la symétrie
 	 * @return
 	 */
 	public boolean getSymmetry()

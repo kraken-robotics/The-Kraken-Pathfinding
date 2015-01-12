@@ -146,6 +146,10 @@ public class Log implements Service
 		}
 	}
 	
+	/**
+	 * Ecrit dans un fichier. Utilisé pendant la coupe.
+	 * @param message
+	 */
 	private void ecrireFichier(String message)
 	{
 		try{
