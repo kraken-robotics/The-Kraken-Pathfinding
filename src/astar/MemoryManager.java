@@ -57,6 +57,12 @@ public class MemoryManager implements Service {
 		updateConfig();
 	}
 	
+	/**
+	 * Donne un gamestate disponible
+	 * @param id_astar
+	 * @return
+	 * @throws FinMatchException
+	 */
 	public GameState<RobotChrono> getNewGameState(int id_astar) throws FinMatchException
 	{
 		// lève une exception s'il n'y a plus de place
@@ -66,6 +72,12 @@ public class MemoryManager implements Service {
 		return out;
 	}
 	
+	/**
+	 * Signale qu'un gamestate est de nouveau disponible
+	 * @param state
+	 * @param id_astar
+	 * @throws MemoryManagerException
+	 */
 	public void destroyGameState(GameState<RobotChrono> state, int id_astar) throws MemoryManagerException
 	{
 		int indice_state = state.getIndiceMemoryManager();
@@ -89,6 +101,10 @@ public class MemoryManager implements Service {
 		gamestates_list[id_astar][indice_state] = tmp2;
 	}
 	
+	/**
+	 * Signale que tous les gamestates sont disponibles. Très rapide.
+	 * @param id_astar
+	 */
 	public void empty(int id_astar)
 	{
 		firstAvailable[id_astar] = 0;

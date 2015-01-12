@@ -254,9 +254,9 @@ public class Locomotion implements Service
                         {
                         	// on alterne rotation à gauche et à droite
                         	if((nb_iterations_deblocage & 1) == 0)
-                        		deplacements.turn(angle_degagement_robot);
+                        		deplacements.turn(orientation+angle_degagement_robot);
                         	else
-                        		deplacements.turn(-angle_degagement_robot);
+                        		deplacements.turn(orientation-angle_degagement_robot);
                         }
                         else if(marcheAvant)
                             deplacements.moveLengthwise(distance_degagement_robot);

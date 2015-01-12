@@ -87,11 +87,19 @@ public abstract class Robot implements Service
 		updateConfig();
 	}
 	
+	/**
+	 * Appelé une seule fois
+	 * @param hookFinMatch
+	 */
 	public void setHookFinMatch(HookDateFinMatch hookFinMatch)
 	{
 		this.hookFinMatch = hookFinMatch;
 	}
 	
+	/**
+	 * Mise à jour permettant de modifier, pour RobotChrono, la date limite de la recherche stratégique
+	 * @param dateLimite
+	 */
 	public void updateHookFinMatch(int dateLimite)
 	{
 		hookFinMatch.updateDate(dateLimite);
@@ -106,6 +114,13 @@ public abstract class Robot implements Service
 		return vitesse;
 	}
 
+	/**
+	 * Tourne par rapport à l'angle actuel.
+	 * @param angle
+	 * @throws UnableToMoveException
+	 * @throws FinMatchException
+	 * @throws ScriptHookException
+	 */
 	public void tourner_relatif(double angle) throws UnableToMoveException, FinMatchException, ScriptHookException
 	{
 		tourner(getOrientation() + angle);
@@ -125,16 +140,38 @@ public abstract class Robot implements Service
             tourner(angle);
     }
 
+    /**
+     * Avancer sans hook, et pas dans un mur
+     * @param distance
+     * @throws UnableToMoveException
+     * @throws FinMatchException
+     * @throws ScriptHookException
+     */
     public void avancer(int distance) throws UnableToMoveException, FinMatchException, ScriptHookException
     {
         avancer(distance, new ArrayList<Hook>(), false);
     }
 
+    /**
+     * Avancer, mais pas dans un mur
+     * @param distance
+     * @param hooks
+     * @throws UnableToMoveException
+     * @throws FinMatchException
+     * @throws ScriptHookException
+     */
     public void avancer(int distance, ArrayList<Hook> hooks) throws UnableToMoveException, FinMatchException, ScriptHookException
     {
         avancer(distance, hooks, false);
     }
 
+    /**
+     * Avance dans un mur sans hook
+     * @param distance
+     * @throws UnableToMoveException
+     * @throws FinMatchException
+     * @throws ScriptHookException
+     */
     public void avancer_dans_mur(int distance) throws UnableToMoveException, FinMatchException, ScriptHookException
     {
         Speed sauv_vitesse = vitesse; 
@@ -149,20 +186,35 @@ public abstract class Robot implements Service
         }
     }
 
+    /**
+     * Dort jusqu'à une certaine date.
+     * Utilisé le sleep du robot, donc réel ou simulé.
+     * @param date
+     * @throws FinMatchException
+     */
     public void sleepUntil(int date) throws FinMatchException
     {
     	sleep(date - getTempsDepuisDebutMatch());
     }
     
+    /**
+     * Dort une certaine durée.
+     * Utilisé le sleep du robot, donc réel ou simulé.
+     * @param duree
+     * @throws FinMatchException
+     */
     public void sleep(long duree) throws FinMatchException
     {
     	sleep(duree, new ArrayList<Hook>());
     }
 
     
-    // DEPENDS ON RULES
+    // DEPENDS_ON_RULES
 
-    // Point obtenus depuis le dernier clone! Et pas depuis le début du match.
+    /**
+     * Points obtenus depuis le début du match
+     * @return
+     */
     public int getPointsObtenus()
     {
     	return pointsObtenus;
