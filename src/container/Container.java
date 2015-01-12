@@ -156,7 +156,7 @@ public class Container
 			catch(Exception e)
 			{
 				log.critical("Série introuvable!", this);
-				e.printStackTrace();
+				throw new ContainerException();
 			}
 		}
 		else if(serviceRequested == ServiceNames.LOCOMOTION_CARD_WRAPPER)

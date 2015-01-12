@@ -57,7 +57,7 @@ public class Locomotion implements Service
         updateConfig();
     }
     
-    public void readjust()
+    public void readjust() // TODO
     {
         try {
             if(symetrie)
@@ -68,12 +68,12 @@ public class Locomotion implements Service
             log.debug("recale X",this);
             Sleep.sleep(2000);
             moveLengthwise(-200, null, true);
-            deplacements.setTranslationnalSpeed(200);
+//            deplacements.setTranslationnalSpeed(200);
             deplacements.disableRotationnalFeedbackLoop();
             Sleep.sleep(1000);
             moveLengthwise(-200, null, true);
             deplacements.enableRotationnalFeedbackLoop();
-            deplacements.setTranslationnalSpeed(Speed.READJUSTMENT.PWMTranslation);
+//            deplacements.setTranslationnalSpeed(Speed.READJUSTMENT.PWMTranslation);
 
             position.x = 1500 - 165;
             if(symetrie)
@@ -95,12 +95,12 @@ public class Locomotion implements Service
             
         	log.debug("recale Y",this);
             moveLengthwise(-600, null, true);
-            deplacements.setTranslationnalSpeed(200);
+//            deplacements.setTranslationnalSpeed(200);
             deplacements.disableRotationnalFeedbackLoop();
             Sleep.sleep(1000);
             moveLengthwise(-200, null, true);
             deplacements.enableRotationnalFeedbackLoop();
-            deplacements.setTranslationnalSpeed(Speed.READJUSTMENT.PWMTranslation);
+//            deplacements.setTranslationnalSpeed(Speed.READJUSTMENT.PWMTranslation);
             position.y = 2000 - 165;
             deplacements.setY(2000 - 165);
             
@@ -595,7 +595,7 @@ public class Locomotion implements Service
     {
         try
         {
-            deplacements.setRotationnalSpeed(speed.PWMRotation);
+            deplacements.setRotationnalSpeed(speed);
         } catch (SerialConnexionException e)
         {
             e.printStackTrace();
@@ -606,7 +606,7 @@ public class Locomotion implements Service
     {
         try
         {
-            deplacements.setTranslationnalSpeed(speed.PWMTranslation);
+            deplacements.setTranslationnalSpeed(speed);
         } catch (SerialConnexionException e)
         {
             e.printStackTrace();

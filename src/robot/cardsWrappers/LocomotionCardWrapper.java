@@ -1,6 +1,7 @@
 package robot.cardsWrappers;
 
 import robot.FeedbackLoopStatisticsElement;
+import robot.Speed;
 import robot.serial.SerialConnexion;
 import utils.*;
 import container.Service;
@@ -291,50 +292,10 @@ public class LocomotionCardWrapper implements Service
 	 * @throws SerialConnexionException en cas de problème de communication avec la carte d'asservissement
 	 * @throws FinMatchException 
 	 */
-	public void setTranslationnalSpeed(int pwmMax) throws SerialConnexionException, FinMatchException
+	public void setTranslationnalSpeed(Speed speed) throws SerialConnexionException, FinMatchException
 	{
-		double 	kp,	// valeur du correcteur proportionnel
-				kd; // valeur du correcteur dérivé
-		
-		// échelonne les valeurs des correcteurs en fonction de la nouvelle valeur maximum que peut prenvent prendre les pwm des moteurs
-		if(pwmMax >= 195)
-		{
-			kp = 0.55;
-			kd = 27.0;
-		}
-		else if(pwmMax >= 165)
-		{
-			kp = 0.52;
-			kd = 17.0;
-		}
-		else if(pwmMax >= 145)
-		{
-			kp = 0.52;
-			kd = 17.0;
-		}
-		else if(pwmMax >= 115)
-		{
-			kp = 0.45;
-			kd = 12.0;
-		}
-		else if(pwmMax >= 85)
-		{
-			kp = 0.45;
-			kd = 12.5;
-		}
-		else if(pwmMax >= 55)
-		{
-			kp = 0.5;
-			kd = 4.0;
-		}
-		else
-		{
-			kp = 1.15;
-			kd = 3.0;
-		}
-		
 		// envois a la carte d'asservissement les nouvelles valeurs des correcteurs et le nouveau maximum des pwm
-		String chaines[] = {"ctv", Double.toString(kp), Double.toString(kd), Integer.toString(pwmMax)};
+		String chaines[] = {"ctv", Double.toString(speed.kp_trans), Double.toString(speed.kd_trans), Integer.toString(speed.PWMTranslation)};
 		locomotionCardSerial.communiquer(chaines, 0);			
 	}
 
@@ -344,35 +305,10 @@ public class LocomotionCardWrapper implements Service
 	 * @throws SerialConnexionException en cas de problème de communication avec la carte d'asservissement
 	 * @throws FinMatchException 
 	 */
-	public void setRotationnalSpeed(int pwm_max) throws SerialConnexionException, FinMatchException
+	public void setRotationnalSpeed(Speed speed) throws SerialConnexionException, FinMatchException
 	{
-		double 	kp, // valeur du correcteur proportionnel
-				kd; // valeur du correcteur dérivé
-	
-		// échelonne les valeurs des correcteurs en fonction de la nouvelle valeur maximum que peut prenvent prendre les pwm des moteurs
-		if(pwm_max > 155)
-		{
-			kp = 2.0;
-			kd = 50.0;
-		}
-		else if(pwm_max > 115)
-		{
-			kp = 0.85;
-			kd = 25.0;
-		}
-		else if(pwm_max > 85)
-		{
-			kp = 1.0;
-			kd = 15.0;
-		}
-		else
-		{
-			kp = 2.0;
-			kd = 14.0;
-		}
-
 		// envois a la carte d'asservissement les nouvelles valeurs des correcteurs et le nouveau maximum des pwm
-		String chaines[] = {"crv", Double.toString(kp), Double.toString(kd), Integer.toString(pwm_max)};
+		String chaines[] = {"crv", Double.toString(speed.kp_rot), Double.toString(speed.kd_rot), Integer.toString(speed.PWMRotation)};
 		locomotionCardSerial.communiquer(chaines, 0);
 	}
 	

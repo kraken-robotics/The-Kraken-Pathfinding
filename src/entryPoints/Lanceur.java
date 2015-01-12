@@ -9,11 +9,6 @@ import container.ServiceNames;
  *
  */
 
-/* TODO LIST
- * se renseigner sur la compilation sans bytecode (GCJ)
- * passer les méthodes utilisées uniquement par les tests en deprecated
- */
-
 public class Lanceur {
 
 	public static void main(String[] args) {
