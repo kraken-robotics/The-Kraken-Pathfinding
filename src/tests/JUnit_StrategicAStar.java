@@ -43,10 +43,10 @@ public class JUnit_StrategicAStar extends JUnit_Test
     @Test
     public void test_strategy_after_decision() throws Exception
     {
-    	Script s = scriptmanager.getScript(ScriptAnticipableNames.ScriptClap);
+    	Script s = scriptmanager.getScript(ScriptAnticipableNames.CLAP);
     	ArrayList<PathfindingNodes> chemin = new ArrayList<PathfindingNodes>();
     	chemin.add(s.point_entree(0));
-    	Decision decision = new Decision(chemin, ScriptAnticipableNames.ScriptClap, 0);
+    	Decision decision = new Decision(chemin, ScriptAnticipableNames.CLAP, 0);
     	GameState<RobotChrono> chronostate = gamestate.cloneGameState();
     	chronostate.robot.setPositionPathfinding(s.point_entree(0));
 

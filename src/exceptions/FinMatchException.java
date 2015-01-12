@@ -1,21 +1,24 @@
 package exceptions;
 
-import scripts.ScriptHookNames;
-
 /**
  * Exception levée lorsque le match est terminé.
  * @author pf
  *
  */
 
-public class FinMatchException extends ScriptHookException
+public class FinMatchException extends Exception
 {
 
 	private static final long serialVersionUID = -960091158805232282L;
 
 	public FinMatchException()
 	{
-		super(ScriptHookNames.FUNNY_ACTION);
+		super();
 	}
-	
+
+	public FinMatchException(String m)
+	{
+		super(m);
+	}
+
 }

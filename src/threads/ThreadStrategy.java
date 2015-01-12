@@ -32,7 +32,7 @@ public class ThreadStrategy extends AbstractThread implements Service
 	private GameState<RobotReal> realstate;
 	private GameState<RobotChrono> chronostate;
 	
-	private Decision decision = new Decision(new ArrayList<PathfindingNodes>(), ScriptAnticipableNames.SortieZoneDepart, 0);
+	private Decision decision = new Decision(new ArrayList<PathfindingNodes>(), ScriptAnticipableNames.SORTIE_ZONE_DEPART, 0);
 	private Decision decisionSecours = null;
 	private Decision decisionNormale = null;
 	private Decision needNewBestAfterThis = null;

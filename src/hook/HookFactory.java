@@ -3,8 +3,8 @@ package hook;
 import java.util.ArrayList;
 
 import obstacles.gameElement.GameElementNames;
-import hook.methods.FinMatchCheck;
 import hook.methods.GameElementDone;
+import hook.methods.ThrowsScriptHook;
 import hook.types.HookDate;
 import hook.types.HookDateFinMatch;
 import hook.types.HookPosition;
@@ -17,6 +17,7 @@ import container.Service;
 import enums.Tribool;
 import robot.RobotChrono;
 import robot.RobotReal;
+import scripts.ScriptHookNames;
 import strategie.GameState;
 import utils.ConfigInfo;
 import utils.Log;
@@ -59,10 +60,6 @@ public class HookFactory implements Service
 		updateConfig();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see container.Service#updateConfig()
-	 */
 	public void updateConfig()
 	{
 		// demande avec quelle tolérance sur la précision on déclenche les hooks
@@ -274,7 +271,7 @@ public class HookFactory implements Service
         // Cette date est celle demandée à la real gamestate
         // Les chrono gamestate la modifieront si besoin est
     	HookDateFinMatch hook_fin_match = newHookDateFinMatch(dureeMatch, state);
-    	hook_fin_match.ajouter_callback(new Callback(new FinMatchCheck()));
+    	hook_fin_match.ajouter_callback(new Callback(new ThrowsScriptHook(ScriptHookNames.FUNNY_ACTION)));
 
     	return hook_fin_match;
     }

@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 import astar.arc.Decision;
 import container.Service;
+import exceptions.FinMatchException;
 import exceptions.ScriptException;
 import exceptions.ScriptHookException;
 import exceptions.UnableToMoveException;
@@ -64,12 +65,16 @@ public class Execution implements Service {
 		while(true)
 		{
 			Decision bestDecision = threadstrategy.getBestDecision();
-			executerScript(bestDecision);
+			try {
+				executerScript(bestDecision);
+			} catch (FinMatchException e) {
+				break;
+			}
 		}
-		
+		log.debug("Match terminé!", this);
 	}
 	
-	public void executerScript(Decision decision_actuelle)
+	public void executerScript(Decision decision_actuelle) throws FinMatchException
 	{
 		log.debug("On tente d'exécuter "+decision_actuelle.script_name, this);
 		try {
@@ -80,8 +85,8 @@ public class Execution implements Service {
 			do {
 				if(gamestate.robot.isEnemyHere())
 				{
-					decision_actuelle = threadstrategy.getEmergencyDecision();
 					log.debug("Stratégie d'urgence avec ennemi: "+decision_actuelle.script_name, this);
+					decision_actuelle = threadstrategy.getEmergencyDecision();
 				}
 				else
 				{
@@ -96,7 +101,7 @@ public class Execution implements Service {
 		}
 	}
 	
-	private void tryOnce(Decision d) throws UnableToMoveException, ScriptException
+	private void tryOnce(Decision d) throws UnableToMoveException, ScriptException, FinMatchException
 	{
 		try {
 			gamestate.robot.set_vitesse(Speed.BETWEEN_SCRIPTS);

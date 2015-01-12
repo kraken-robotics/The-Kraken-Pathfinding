@@ -49,7 +49,7 @@ public class JUnit_Scripts extends JUnit_Test {
     public void test_script_tapis_chrono() throws Exception
     {
     	long hash_avant = state_chrono.getHash();
-    	Script s = scriptmanager.getScript(ScriptAnticipableNames.ScriptTapis);
+    	Script s = scriptmanager.getScript(ScriptAnticipableNames.TAPIS);
     	Assert.assertTrue(s.getVersions(state_chrono).size() == 1);
 		Assert.assertEquals(state_chrono.robot.areTapisPoses()?1:0, (hash_avant >> 15) % (1 << 1));
     	state_chrono.robot.setPositionPathfinding(s.point_entree(0));
@@ -63,8 +63,8 @@ public class JUnit_Scripts extends JUnit_Test {
     public void test_script_hash() throws Exception
     {
     	GameState<RobotChrono> state_chrono2 = state_chrono.cloneGameState();
-    	Script tapis = scriptmanager.getScript(ScriptAnticipableNames.ScriptTapis);
-    	Script clap = scriptmanager.getScript(ScriptAnticipableNames.ScriptClap);
+    	Script tapis = scriptmanager.getScript(ScriptAnticipableNames.TAPIS);
+    	Script clap = scriptmanager.getScript(ScriptAnticipableNames.CLAP);
 
     	log.debug(state_chrono.robot.getPosition(), this);
     	log.debug(state_chrono2.robot.getPosition(), this);
@@ -96,7 +96,7 @@ public class JUnit_Scripts extends JUnit_Test {
     public void test_script_clap_chrono() throws Exception
     {
     	long hash_avant = state_chrono.gridspace.getHashTable();
-    	Script s = scriptmanager.getScript(ScriptAnticipableNames.ScriptClap);
+    	Script s = scriptmanager.getScript(ScriptAnticipableNames.CLAP);
     	Assert.assertTrue(s.getVersions(state_chrono).size() == 2);
     	state_chrono.robot.setPositionPathfinding(s.point_entree(0));
     	s.agit(0, state_chrono);
@@ -115,7 +115,7 @@ public class JUnit_Scripts extends JUnit_Test {
     	gamestate.robot.setPosition(new Vec2(0, 500));
     	gamestate.robot.setOrientation(0);
     	int version = 0;
-    	Script s = scriptmanager.getScript(ScriptAnticipableNames.ScriptTapis);
+    	Script s = scriptmanager.getScript(ScriptAnticipableNames.TAPIS);
     	ArrayList<PathfindingNodes> chemin = pathfinding.computePath(gamestate.cloneGameState(), s.point_entree(version), true);
     	gamestate.robot.suit_chemin(chemin, new ArrayList<Hook>());
     	s.agit(version, gamestate);
@@ -127,7 +127,7 @@ public class JUnit_Scripts extends JUnit_Test {
     	gamestate.robot.setPosition(new Vec2(0, 500));
     	gamestate.robot.setOrientation(0);
     	int version = 0;
-    	Script s = scriptmanager.getScript(ScriptAnticipableNames.ScriptClap);
+    	Script s = scriptmanager.getScript(ScriptAnticipableNames.CLAP);
     	ArrayList<PathfindingNodes> chemin = pathfinding.computePath(gamestate.cloneGameState(), s.point_entree(version), true);
     	gamestate.robot.suit_chemin(chemin, new ArrayList<Hook>());
     	s.agit(version, gamestate);
