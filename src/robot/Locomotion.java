@@ -664,4 +664,9 @@ public class Locomotion implements Service
 		}
 	}
 
+	public void close()
+	{
+		deplacements.closeLocomotion();
+	}
+
 }

@@ -240,7 +240,7 @@ public class StrategyArcManager extends ArcManager implements Service {
 					throw_exception = true;
 				}
 			}
-		}		
+		}
 		if(throw_exception)
 			throw new PointSortieException();
 	}

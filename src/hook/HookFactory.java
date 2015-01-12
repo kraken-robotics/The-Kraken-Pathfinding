@@ -271,7 +271,7 @@ public class HookFactory implements Service
         // Cette date est celle demandée à la real gamestate
         // Les chrono gamestate la modifieront si besoin est
     	HookDateFinMatch hook_fin_match = newHookDateFinMatch(dureeMatch, state);
-    	hook_fin_match.ajouter_callback(new Callback(new ThrowsScriptHook(ScriptHookNames.FUNNY_ACTION)));
+    	hook_fin_match.ajouter_callback(new Callback(new ThrowsScriptHook(ScriptHookNames.FUNNY_ACTION, 0)));
 
     	return hook_fin_match;
     }

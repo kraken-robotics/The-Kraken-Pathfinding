@@ -54,4 +54,9 @@ public class ActuatorCardWrapper implements Service
 		actuatorCardSerial.communiquer(order.getSerialOrder(), 0);
 	}
 
+	public void close()
+	{
+		actuatorCardSerial.close();
+	}
+
 }

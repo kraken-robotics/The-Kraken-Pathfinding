@@ -15,10 +15,12 @@ import exceptions.ScriptHookException;
 public class ThrowsScriptHook implements Executable {
 
 	private ScriptHookNames script;
+	private int version;
 	
-	public ThrowsScriptHook(ScriptHookNames script)
+	public ThrowsScriptHook(ScriptHookNames script, int version)
 	{
 		this.script = script;
+		this.version = version;
 	}
 	
 	@Override
@@ -29,7 +31,7 @@ public class ThrowsScriptHook implements Executable {
 		 * pas besoin de lui demander de le faire.
 		 */
 		if(script.canIDoIt())
-			throw new ScriptHookException(script);
+			throw new ScriptHookException(script, version);
 	}
 	
 	@Override
