@@ -229,7 +229,7 @@ public class StrategyArcManager extends ArcManager implements Service {
 				gamestate.robot.setPositionPathfinding(script.point_entree(v));
 				try {
 					script.agit(v, gamestate);
-				} catch (ScriptException | ScriptHookException e) {
+				} catch (ScriptException | ScriptHookException | FinMatchException e) {
 					e.printStackTrace();
 				}
 				try {
