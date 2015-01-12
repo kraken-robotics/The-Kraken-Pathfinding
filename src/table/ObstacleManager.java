@@ -45,7 +45,9 @@ public class ObstacleManager implements Service
     private int distanceApproximation = 50;
     private int dureeAvantPeremption = 0;
     
-    // L'initialisation a lieu une seule fois pour tous les objets.
+    /**
+     * L'initialisation a lieu une seule fois pour tous les objets.
+     */
     private void createListObstaclesFixes()
     {
         listObstaclesFixes = new ArrayList<Obstacle>();
@@ -83,6 +85,9 @@ public class ObstacleManager implements Service
         updateConfig();
     }
 
+    /**
+     * Création d'un ennemi hypothétique. Utilisé pour les stratégies d'urgence uniquement
+     */
     public void createHypotheticalEnnemy(Vec2 position, int date_actuelle)
     {
     	isThereHypotheticalEnemy = true;
@@ -430,16 +435,30 @@ public class ObstacleManager implements Service
 		return dilatation_obstacle;
 	}
 
+	/**
+	 * Surcouche de la table
+	 * @param element
+	 * @param done
+	 */
 	public void setDone(GameElementNames element, Tribool done)
 	{
 		table.setDone(element, done);
 	}
 
+	/**
+	 * Surcouche de la table
+	 * @param element
+	 * @return
+	 */
 	public Tribool isDone(GameElementNames element)
 	{
 		return table.isDone(element);
 	}
 
+	/**
+	 * Surcouche de la table
+	 * @return
+	 */
 	public long getHashTable()
 	{
 		return table.getHash();

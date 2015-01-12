@@ -67,6 +67,11 @@ public class Execution implements Service {
 		log.debug("Match terminé!", this);
 	}
 	
+	/**
+	 * Exécute un script et passe sur la stratégie de secours si besoin est
+	 * @param decision_actuelle
+	 * @throws FinMatchException
+	 */
 	public void executerScript(Decision decision_actuelle) throws FinMatchException
 	{
 		log.debug("On tente d'exécuter "+decision_actuelle.script_name, this);
@@ -94,6 +99,13 @@ public class Execution implements Service {
 		}
 	}
 	
+	/**
+	 * Exécute un script. Si celui-ci demande à exécuter un script de hook, l'exécuter
+	 * @param d
+	 * @throws UnableToMoveException
+	 * @throws ScriptException
+	 * @throws FinMatchException
+	 */
 	private void tryOnce(Decision d) throws UnableToMoveException, ScriptException, FinMatchException
 	{
 		try {

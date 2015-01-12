@@ -115,6 +115,17 @@ public class Container
 	}
 
 	@SuppressWarnings("unchecked")
+	/**
+	 * Fournit un service. Deux possibilités: soit il n'est pas encore instancié et on l'instancie.
+	 * Soit il est déjà instancié et on le renvoit.
+	 * @param serviceRequested
+	 * @return
+	 * @throws ContainerException
+	 * @throws ThreadException
+	 * @throws SerialManagerException
+	 * @throws FinMatchException
+	 * @throws PointSortieException
+	 */
 	public Service getService(ServiceNames serviceRequested) throws ContainerException, ThreadException, SerialManagerException, FinMatchException, PointSortieException
 	{
     	// instancie le service demandé lors de son premier appel 

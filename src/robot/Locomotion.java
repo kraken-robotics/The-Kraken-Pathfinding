@@ -510,7 +510,7 @@ public class Locomotion implements Service
         distance_degagement_robot = config.getInt(ConfigInfo.DISTANCE_DEGAGEMENT_ROBOT);
         sleep_boucle_acquittement = config.getInt(ConfigInfo.SLEEP_BOUCLE_ACQUITTEMENT);
         angle_degagement_robot = config.getDouble(ConfigInfo.ANGLE_DEGAGEMENT_ROBOT);
-        symetrie = config.getColor().isSymmetry();
+        symetrie = config.getSymmetry();
     }
 
     /**

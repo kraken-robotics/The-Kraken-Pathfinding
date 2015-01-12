@@ -164,9 +164,9 @@ public class Config implements Service
 	 * Récupère la couleur du robot
 	 * @return
 	 */
-	public RobotColor getColor()
+	public boolean getSymmetry()
 	{
-		return RobotColor.parse(getString(ConfigInfo.COULEUR));
+		return RobotColor.parse(getString(ConfigInfo.COULEUR)).isSymmetry();
 	}
 	
 }

@@ -34,6 +34,7 @@ public class GridSpace implements Service {
 	// Doit-on éviter les éléments de jeux? Ou peut-on foncer dedans?
 	private boolean avoidGameElement = true;
 	
+	/** Ce hash est utilisé afin de vérifier la péremption du cache */
 	private long hashTable;
 	
 	public GridSpace(Log log, Config config, ObstacleManager obstaclemanager)
@@ -325,6 +326,10 @@ public class GridSpace implements Service {
 		obstaclemanager.printHash();
 	}
 	
+	/**
+	 * Petite méthode qui permet de fournir un indice pour isConnectedModelCache
+	 * @return
+	 */
 	private int getHashBool()
 	{
 		return avoidGameElement?1:0;

@@ -190,6 +190,9 @@ public class StrategyArcManager extends ArcManager implements Service {
 	public void updateConfig()
 	{}
 
+	/**
+	 * Doit être appelé à chaque début de calcul de stratégie afin d'éviter une fuite de mémoire.
+	 */
 	public void reinitHashes()
 	{
 		hashes.clear();

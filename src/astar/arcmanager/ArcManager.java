@@ -96,16 +96,29 @@ public abstract class ArcManager {
 	 */
 	public abstract int getNoteReconstruct(int hash);
 
+	/**
+	 * Surcouche du memory manager. Signale qu'un état est de nouveau disponible.
+	 * @param state
+	 * @throws MemoryManagerException
+	 */
 	public void destroyGameState(GameState<RobotChrono> state) throws MemoryManagerException
 	{
 		memorymanager.destroyGameState(state, id);
 	}
 
+	/**
+	 * Surcouche du memory manager. Réutilise un état.
+	 * @return
+	 * @throws FinMatchException
+	 */
 	public GameState<RobotChrono> getNewGameState() throws FinMatchException
 	{
 		return memorymanager.getNewGameState(id);
 	}
 	
+	/**
+	 * Vide le memory manager. Beaucoup plus rapide que plein d'appels à destroyGameState!
+	 */
 	public void empty()
 	{
 		memorymanager.empty(id);

@@ -60,6 +60,11 @@ public class GameState<R extends Robot> implements Service
         updateConfig();
     }
     
+    /**
+     * Clone en dehors du memory manager.
+     * @return
+     * @throws FinMatchException
+     */
 	public GameState<RobotChrono> cloneGameState() throws FinMatchException
 	{
 		return cloneGameState(-1);
@@ -98,6 +103,10 @@ public class GameState<R extends Robot> implements Service
         gridspace.updateConfig();
     }
    
+    /**
+     * Petite surcouche
+     * @return
+     */
     public long getTempsDepuisDebut()
     {
     	return robot.getTempsDepuisDebutMatch();
@@ -158,12 +167,20 @@ public class GameState<R extends Robot> implements Service
 		robot.updateHookFinMatch(dateLimite);
 	}
 
+	/**
+	 * Utilisé par le script d'attente
+	 * @return
+	 */
 	public boolean canSleepUntilSomethingChange()
 	{
 		return gridspace.getDateSomethingChange() != Integer.MAX_VALUE;
 	}
 	
 	// TODO: vérifier aussi les capteurs du robot vrai
+	/**
+	 * Utilisé par le script d'attente
+	 * @throws FinMatchException
+	 */
 	public void sleepUntilSomethingChange() throws FinMatchException
 	{
 		// on ajoute quelques microsecondes afin d'être bien

@@ -22,8 +22,7 @@ public class Table implements Service
 	private static GameElement[] total = new GameElement[GameElementNames.values().length];
 	// Et potentiellement les balles de tennis
 	
-	// Le hash est exact; pas de collisions possibles.
-	// La valeur initiale 0 provient des hash des Tribool.
+	/** Contient toutes les informations sur les éléments de jeux sans perte d'information. */
 	private long hash = 0;
 	
 	public Table(Log log, Config config)
@@ -38,7 +37,8 @@ public class Table implements Service
 	}
 	
 	/**
-	 * On a pris l'objet ou on est passé dessus.
+	 * On a pris l'objet, on est passé dessus, le robot ennemi est passé dessus...
+	 * Attention, on ne peut qu'augmenter cette valeur.
 	 * @param id
 	 */
 	public void setDone(GameElementNames id, Tribool done)
@@ -64,6 +64,9 @@ public class Table implements Service
 		ct.hash = hash;
 	}
 	
+	/**
+	 * Fournit un clone.
+	 */
 	public Table clone()
 	{
 		Table cloned_table = new Table(log, config);
@@ -81,6 +84,10 @@ public class Table implements Service
 		return other.hash == hash;
  	}
 	
+	/**
+	 * Récupération du hash utilisé par l'AStar stratégique
+	 * @return
+	 */
 	public long getHash()
 	{
 		return hash;
@@ -90,11 +97,25 @@ public class Table implements Service
 	public void updateConfig()
 	{}
 
+	/**
+	 * g est-il proche de position? (utilisé pour vérifier si on shoot dans un élément de jeu)
+	 * @param g
+	 * @param position
+	 * @param rayon_robot_adverse
+	 * @return
+	 */
 	public boolean isProcheObstacle(GameElementNames g, Vec2 position, int rayon_robot_adverse)
 	{
 		return total[g.ordinal()].isProcheObstacle(position, rayon_robot_adverse);
 	}
 
+	/**
+	 * g est-il dans le segment[a, b]?
+	 * @param g
+	 * @param a
+	 * @param b
+	 * @return
+	 */
 	public boolean obstacle_proximite_dans_segment(GameElementNames g, Vec2 a, Vec2 b)
 	{
 		return total[g.ordinal()].obstacle_proximite_dans_segment_dilatation(a, b);
@@ -109,6 +130,9 @@ public class Table implements Service
 		return total;
 	}
 
+	/**
+	 * Utilisé pour le debug
+	 */
 	public void printHash()
 	{
 		for(GameElementNames g: GameElementNames.values())
