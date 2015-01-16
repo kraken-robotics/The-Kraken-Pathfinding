@@ -195,19 +195,28 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 
 			PathfindingNodes pointDepart;
 			if(state.robot.isAtPathfindingNodes())
+			{
+//				log.debug("Départ en PathfindingNodes", this);
 				pointDepart = state.robot.getPositionPathfinding();
+			}
 			else
+			{
+//				log.debug("Départ pas en PathfindingNodes", this);
 				pointDepart = state.gridspace.nearestReachableNode(state.robot.getPosition(), state.robot.getTempsDepuisDebutMatch());
+//				log.debug("Point départ: "+pointDepart, this);
+			}
 
 			GameState<RobotChrono> depart = arcmanager.getNewGameState();
 			state.copy(depart);
 			depart.robot.setPositionPathfinding(pointDepart);
 			
+//			log.debug("Cherche un chemin entre "+pointDepart+" et "+endNode, this);
+			
 			((PathfindingArcManager)arcmanager).chargePointArrivee(endNode);
 			
 //			log.debug("Recherche de chemin entre "+pointDepart+" et "+indice_point_arrivee, this);
 			ArrayList<A> cheminArc = process(depart, arcmanager, false);
-			
+
 			// on n'a besoin de lisser que si on ne partait pas d'un pathfindingnode
 			if(!state.robot.isAtPathfindingNodes())
 			{

@@ -153,6 +153,8 @@ public class GridSpace implements Service {
 		float distance_min = Float.MAX_VALUE;
 		for(PathfindingNodes i : PathfindingNodes.values)
 		{
+			if(i == PathfindingNodes.POINT_DEPART) // TODO cas particulier un peu moche...
+				continue;
 			float tmp = point.squaredDistance(i.getCoordonnees());
 			if(tmp < distance_min && !obstaclemanager.obstacle_proximite_dans_segment(point, i.getCoordonnees(), date))
 			{
