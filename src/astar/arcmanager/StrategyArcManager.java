@@ -226,21 +226,24 @@ public class StrategyArcManager extends ArcManager implements Service {
 		boolean throw_exception = false;
 		for(ScriptAnticipableNames s: ScriptAnticipableNames.values())
 		{
-			Script script = scriptmanager.getScript(s);
-			for(Integer v: script.getVersions(gamestate))
+			if(s.canIDoIt())
 			{
-				gamestate.robot.setPositionPathfinding(script.point_entree(v));
-				try {
-					script.agit(v, gamestate);
-				} catch (ScriptException | ScriptHookException | FinMatchException e) {
-					e.printStackTrace();
-				}
-				try {
-				script.checkPointSortie(v, gamestate.robot.getPosition());
-				}
-				catch(PointSortieException e)
+				Script script = scriptmanager.getScript(s);
+				for(Integer v: script.getVersions(gamestate))
 				{
-					throw_exception = true;
+					gamestate.robot.setPositionPathfinding(script.point_entree(v));
+					try {
+						script.agit(v, gamestate);
+					} catch (ScriptException | ScriptHookException | FinMatchException e) {
+						e.printStackTrace();
+					}
+					try {
+					script.checkPointSortie(v, gamestate.robot.getPosition());
+					}
+					catch(PointSortieException e)
+					{
+						throw_exception = true;
+					}
 				}
 			}
 		}

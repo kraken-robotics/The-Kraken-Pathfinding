@@ -112,8 +112,9 @@ public class JUnit_Scripts extends JUnit_Test {
     @Test
     public void test_script_tapis() throws Exception
     {
-    	gamestate.robot.setPosition(new Vec2(0, 500));
+    	gamestate.robot.setPosition(PathfindingNodes.POINT_DEPART.getCoordonnees());
     	gamestate.robot.setOrientation(0);
+    	gamestate.robot.avancer(400);
     	int version = 0;
     	Script s = scriptmanager.getScript(ScriptAnticipableNames.TAPIS);
     	ArrayList<PathfindingNodes> chemin = pathfinding.computePath(gamestate.cloneGameState(), s.point_entree(version), true);

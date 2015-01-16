@@ -19,17 +19,18 @@ public enum PathfindingNodes implements Arc {
 	BAS_GAUCHE(new Vec2(-800, 450)),
 	COTE_MARCHE_GAUCHE(new Vec2(-830, 1600)),
 	NODE_TAPIS(new Vec2(290, 1030)), // TODO
-	CLAP_GAUCHE(new Vec2(-1050, 300)), // TODO . les claps ne sont pas symétriques, c'est normal
-	CLAP_DROIT(new Vec2(1150, 300)), // TODO
-	CLAP_DROIT_SECOND(new Vec2(950, 300)),
+	CLAP_GAUCHE(new Vec2(-1070, 280)), // TODO . les claps ne sont pas symétriques, c'est normal
+	CLAP_DROIT(new Vec2(1250, 280)), // TODO
+	CLAP_DROIT_SECOND(new Vec2(770, 280)),
 	BAS(new Vec2(0, 500)),
 
-	POINT_DEPART(new Vec2(1300, 1000)), // TODO: mesurer. Problème: dégomme le plot 3...
+	POINT_DEPART(new Vec2(1483, 1000)), // TODO: mesurer. Problème: dégomme le plot 3...
 	
-	SORTIE_ZONE_DEPART(new Vec2(800,1000)),
-	SORTIE_CLAP_GAUCHE(new Vec2(-750,500)),
-	SORTIE_CLAP_DROIT(new Vec2(350,500)),
-	SORTIE_TAPIS(new Vec2(250,1000)),
+	SORTIE_ZONE_DEPART(new Vec2(983,1000)),
+	SORTIE_CLAP_GAUCHE(new Vec2(-770,480)),
+	SORTIE_CLAP_DROIT(new Vec2(450,480)),
+	SORTIE_CLAP_DROIT_SECOND(new Vec2(170,480)),
+	SORTIE_TAPIS(new Vec2(290,1030)),
 	
 	SECOURS_0(new Vec2(800, 600)),
 

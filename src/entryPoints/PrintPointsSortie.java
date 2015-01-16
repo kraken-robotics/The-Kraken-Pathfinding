@@ -17,13 +17,21 @@ public class PrintPointsSortie {
 
 	public static void main(String[] args)
 	{
-			try {
-				(new Container()).getService(ServiceNames.A_STAR_STRATEGY);
-			} catch (ContainerException | ThreadException
-					| SerialManagerException | FinMatchException
-					| PointSortieException e) {
-				e.printStackTrace();
-			}
+		Container container;
+		try {
+			container = new Container();
+		} catch (ContainerException e1) {
+			e1.printStackTrace();
+			return;
+		}
+		try {
+			container.getService(ServiceNames.A_STAR_STRATEGY);
+		} catch (ContainerException | ThreadException
+				| SerialManagerException | FinMatchException
+				| PointSortieException e) {
+			e.printStackTrace();
+		}
+		container.destructor();
 	}
 
 }
