@@ -70,9 +70,10 @@ public class JUnit_StrategyArcManager extends JUnit_Test {
     	s.agit(0, state);
     	state.robot.va_au_point_pathfinding(s.point_sortie(0), new ArrayList<Hook>());
     	Script s2 = scriptmanager.getScript(ScriptAnticipableNames.ATTENTE);
-    	for(int i = 0; i < 5; i++)
-    	{
-    		s2.agit(0, state);
+//    	for(int i = 0; i < 5; i++)
+//    	{
+    		int version = s2.getVersions(state).get(0);
+    		s2.agit(version, state);
 			strategyarcmanager.reinitHashes();
 			strategyarcmanager.reinitIterator(state);
 			Assert.assertTrue(strategyarcmanager.hasNext());
@@ -84,7 +85,7 @@ public class JUnit_StrategyArcManager extends JUnit_Test {
 			Assert.assertEquals(ScriptAnticipableNames.CLAP, d.script_name);
 			Assert.assertEquals(1, d.version);
 			Assert.assertTrue(!strategyarcmanager.hasNext());
-    	}
+//    	}
 	}
 
 	@Test
@@ -97,7 +98,8 @@ public class JUnit_StrategyArcManager extends JUnit_Test {
     	Script s2 = scriptmanager.getScript(ScriptAnticipableNames.ATTENTE);
     	for(int i = 0; i < 5; i++)
     	{
-    		s2.agit(0, state);
+    		int version = s2.getVersions(state).get(0);
+    		s2.agit(version, state);
 			strategyarcmanager.reinitHashes();
 			strategyarcmanager.reinitIterator(state);
 			Assert.assertTrue(strategyarcmanager.hasNext());
@@ -122,7 +124,8 @@ public class JUnit_StrategyArcManager extends JUnit_Test {
     	Script s2 = scriptmanager.getScript(ScriptAnticipableNames.ATTENTE);
     	for(int i = 0; i < 5; i++)
     	{
-    		s2.agit(0, state);
+    		int version = s2.getVersions(state).get(0);
+    		s2.agit(version, state);
 			strategyarcmanager.reinitHashes();
 			strategyarcmanager.reinitIterator(state);
 			Assert.assertTrue(strategyarcmanager.hasNext());
@@ -149,7 +152,8 @@ public class JUnit_StrategyArcManager extends JUnit_Test {
     	Script s2 = scriptmanager.getScript(ScriptAnticipableNames.ATTENTE);
     	for(int i = 0; i < 5; i++)
     	{
-    		s2.agit(0, state);
+    		int version = s2.getVersions(state).get(0);
+    		s2.agit(version, state);
 			strategyarcmanager.reinitHashes();
 			strategyarcmanager.reinitIterator(state);
 			Assert.assertTrue(strategyarcmanager.hasNext());
@@ -173,7 +177,8 @@ public class JUnit_StrategyArcManager extends JUnit_Test {
     	Script s2 = scriptmanager.getScript(ScriptAnticipableNames.ATTENTE);
     	for(int i = 0; i < 5; i++)
     	{
-    		s2.agit(0, state);
+    		int version = s2.getVersions(state).get(0);
+    		s2.agit(version, state);
 			strategyarcmanager.reinitHashes();
 			strategyarcmanager.reinitIterator(state);
 			Assert.assertTrue(strategyarcmanager.hasNext());

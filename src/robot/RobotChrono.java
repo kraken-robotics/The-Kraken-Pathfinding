@@ -311,14 +311,20 @@ public class RobotChrono extends Robot
     	// TODO points
 		pointsObtenus = pointsObtenus + 24;
 		if(needToSleep)
-			poserDeuxTapisSleep();
+		{
+			poserTapisSleep();
+			poserTapisSleep();
+		}
 	}
 
 	@Override
 	public void leverDeuxTapis(boolean needToSleep) throws FinMatchException
 	{
 		if(needToSleep)
-			leverDeuxTapisSleep();
+		{
+			leverTapisSleep();
+			leverTapisSleep();
+		}
 	}
 
 	// Permet de commander le lissage en vérifiant si on part d'un point qui n'est pas un node

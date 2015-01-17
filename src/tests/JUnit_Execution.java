@@ -31,7 +31,7 @@ public class JUnit_Execution extends JUnit_Test {
 	public void test_boucle_execution() throws Exception
 	{
 		Config.matchDemarre = true;
-		execution.boucleExecution();
+//		execution.boucleExecution();
 	}
 	
 }

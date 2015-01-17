@@ -173,10 +173,14 @@ public class GameState<R extends Robot> implements Service
 	 */
 	public boolean canSleepUntilSomethingChange()
 	{
+		// si on utilise le vrai robot, alors les valeurs des capteurs peuvent changer
+		// (ce qui n'est pas anticipable par robotchrono)
+		if(robot instanceof RobotReal)
+			return true;
 		return gridspace.getDateSomethingChange() != Integer.MAX_VALUE;
 	}
 	
-	// TODO: vérifier aussi les capteurs du robot vrai
+	// FIXME: vérifier aussi les capteurs du robot vrai
 	/**
 	 * Utilisé par le script d'attente
 	 * @throws FinMatchException
@@ -185,8 +189,16 @@ public class GameState<R extends Robot> implements Service
 	{
 		// on ajoute quelques microsecondes afin d'être bien
 		// sûr qu'après cette date l'obstacle soit parti
-		int date = gridspace.getDateSomethingChange() + 5;
-		robot.sleepUntil(date);
+		int date_fin = gridspace.getDateSomethingChange() + 5;
+/*		if(robot instanceof RobotReal)
+		{
+			while(robot.getTempsDepuisDebutMatch() < date_fin)
+			{
+				
+			}
+		}
+		else*/
+			robot.sleepUntil(date_fin);
 	}
 
 }

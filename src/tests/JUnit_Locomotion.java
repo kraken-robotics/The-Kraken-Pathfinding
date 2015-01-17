@@ -36,6 +36,7 @@ public class JUnit_Locomotion extends JUnit_Test
 	@Test
 	public void test_avancer() throws Exception
 	{
+		config.set(ConfigInfo.COULEUR, "vert");
 		locomotion.moveLengthwise(150, new ArrayList<Hook>(), false);
 		locomotion.moveLengthwise(-150, new ArrayList<Hook>(), false);
 		config.set(ConfigInfo.COULEUR, "jaune");

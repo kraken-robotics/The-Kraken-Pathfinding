@@ -235,13 +235,13 @@ public abstract class Robot implements Service
 		if(cote == Side.LEFT && hauteur == HauteurBrasClap.TOUT_EN_HAUT)
 			return ActuatorOrder.LEVE_CLAP_GAUCHE;
 		else if(cote == Side.LEFT && hauteur == HauteurBrasClap.FRAPPE_CLAP)
-			return ActuatorOrder.POSITION_TAPE_CLAP_GAUCHE;
+			return ActuatorOrder.POSITIONNE_TAPE_CLAP_GAUCHE;
 		else if(cote == Side.LEFT && hauteur == HauteurBrasClap.RENTRE)
 			return ActuatorOrder.BAISSE_CLAP_GAUCHE;
 		else if(cote == Side.RIGHT && hauteur == HauteurBrasClap.TOUT_EN_HAUT)
 			return ActuatorOrder.LEVE_CLAP_DROIT;
 		else if(cote == Side.RIGHT && hauteur == HauteurBrasClap.FRAPPE_CLAP)
-			return ActuatorOrder.POSITION_TAPE_CLAP_DROIT;
+			return ActuatorOrder.POSITIONNE_TAPE_CLAP_DROIT;
 		else// if(cote == Side.RIGHT && hauteur == HauteurBrasClap.RENTRE)
 			return ActuatorOrder.BAISSE_CLAP_DROIT;
 	}
@@ -271,15 +271,13 @@ public abstract class Robot implements Service
 		sleep(order.getSleepValue());
 	}
 
-	protected void poserDeuxTapisSleep() throws FinMatchException
+	protected void poserTapisSleep() throws FinMatchException
 	{
-		sleep(ActuatorOrder.BAISSE_TAPIS_DROIT.getSleepValue());
 		sleep(ActuatorOrder.BAISSE_TAPIS_GAUCHE.getSleepValue());
 	}
 
-	protected void leverDeuxTapisSleep() throws FinMatchException
+	protected void leverTapisSleep() throws FinMatchException
 	{
-		sleep(ActuatorOrder.LEVE_TAPIS_DROIT.getSleepValue());
 		sleep(ActuatorOrder.LEVE_TAPIS_GAUCHE.getSleepValue());
 	}
 	
