@@ -17,6 +17,7 @@ import scripts.Script;
 import scripts.ScriptManager;
 import scripts.ScriptAnticipableNames;
 import strategie.GameState;
+import utils.ConfigInfo;
 import utils.Log;
 import utils.Config;
 import container.Service;
@@ -38,6 +39,7 @@ import exceptions.ScriptHookException;
 public class StrategyArcManager extends ArcManager implements Service {
 
 	protected Log log;
+	protected Config config;
 	private ScriptManager scriptmanager;
 	private AStar<PathfindingArcManager, PathfindingNodes> astar;
 	private HookFactory hookfactory;
@@ -52,6 +54,7 @@ public class StrategyArcManager extends ArcManager implements Service {
 	{
 		super(AStarId.STRATEGY_ASTAR, memorymanager);
 		this.log = log;
+		this.config = config;
 		this.scriptmanager = scriptmanager;
 		this.hookfactory = hookfactory;
 		this.astar = astar;
@@ -242,7 +245,8 @@ public class StrategyArcManager extends ArcManager implements Service {
 					}
 					catch(PointSortieException e)
 					{
-						throw_exception = true;
+						if(config.getBoolean(ConfigInfo.CHECK_POINTS_SORTIE))
+							throw_exception = true;
 					}
 				}
 			}

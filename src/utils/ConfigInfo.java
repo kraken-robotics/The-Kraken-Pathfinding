@@ -42,7 +42,8 @@ public enum ConfigInfo {
 	TEMPS_MAX_ANTICIPATION_EN_S("30"),
 	TEST1("test2"),
 	TOLERANCE_DEPART_SCRIPT("20"),
-	DISTANCE_ENNEMI_URGENCE("550");
+	DISTANCE_ENNEMI_URGENCE("550"),
+	CHECK_POINTS_SORTIE("false");
 
 	private String defaultValue;
 	
