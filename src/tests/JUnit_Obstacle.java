@@ -6,6 +6,7 @@ import org.junit.Test;
 import utils.Vec2;
 import obstacles.ObstacleCircular;
 import obstacles.ObstacleRectangular;
+import obstacles.ObstacleRectangularAligned;
 
 /**
  * Test unitaire des obstacles
@@ -26,7 +27,7 @@ public class JUnit_Obstacle extends JUnit_Test {
     @Test
     public void test_collision_rectangle() throws Exception
     {
-    	ObstacleRectangular o = new ObstacleRectangular(log, config, new Vec2(0, 0), 30, 10);
+    	ObstacleRectangularAligned o = new ObstacleRectangular(log, config, new Vec2(0, 0), 30, 10);
     	Assert.assertTrue(o.isInObstacle(new Vec2(13,-3)));
     	Assert.assertTrue(!o.isInObstacle(new Vec2(16,0)));
     	Assert.assertTrue(!o.isInObstacle(new Vec2(-16,0)));
@@ -45,7 +46,7 @@ public class JUnit_Obstacle extends JUnit_Test {
     @Test
     public void test_collision_rectangle_distance() throws Exception
     {
-    	ObstacleRectangular o = new ObstacleRectangular(log, config, new Vec2(0, 0), 25, 5);
+    	ObstacleRectangularAligned o = new ObstacleRectangular(log, config, new Vec2(0, 0), 25, 5);
     	Assert.assertTrue(o.isProcheObstacle(new Vec2(13,-3),5));
     	Assert.assertTrue(!o.isProcheObstacle(new Vec2(20,0),5));
     	Assert.assertTrue(!o.isProcheObstacle(new Vec2(20,0),5));
@@ -61,6 +62,34 @@ public class JUnit_Obstacle extends JUnit_Test {
     	Assert.assertTrue(o.obstacle_proximite_dans_segment(new Vec2(-100,30), new Vec2(100,30), 0));
     	Assert.assertTrue(!o.obstacle_proximite_dans_segment(new Vec2(-500,30), new Vec2(-400,30), 0));
     	Assert.assertTrue(o.obstacle_proximite_dans_segment(new Vec2(-100,30), new Vec2(-20,30), 0));
+    }
+    
+    @Test
+    public void test_is_dans_obstacle_rectangle() throws Exception
+    {
+    	ObstacleRectangular o = new ObstacleRectangular(log, config, new Vec2(0,0), 200, 200, Math.PI/8);
+    	Assert.assertTrue(o.isInObstacle(new Vec2(0,0)));
+    	Assert.assertTrue(o.isInObstacle(new Vec2(100,0)));
+    	Assert.assertTrue(o.isInObstacle(new Vec2(0,-100)));
+    	Assert.assertTrue(!o.isInObstacle(new Vec2(90,90)));
+    	Assert.assertTrue(!o.isInObstacle(new Vec2(-90,-90)));
+    	Assert.assertTrue(o.isInObstacle(new Vec2(54,130)));
+    	Assert.assertTrue(o.isInObstacle(new Vec2(-54,-130)));
+    	Assert.assertTrue(!o.isInObstacle(new Vec2(-54,130)));
+    	Assert.assertTrue(!o.isInObstacle(new Vec2(54,-130)));
+    	Assert.assertTrue(!o.isInObstacle(new Vec2(-100,100)));
+    }
+    
+    @Test
+    public void test_collision_rectangles() throws Exception
+    {
+    	ObstacleRectangular o = new ObstacleRectangular(log, config, new Vec2(0,0), 200, 200, Math.PI/8);
+    	Assert.assertTrue(!o.isColliding(new ObstacleRectangular(log, config, new Vec2(200, 0), 10, 10, 0)));
+    	Assert.assertTrue(!o.isColliding(new ObstacleRectangular(log, config, new Vec2(-200, 0), 10, 10, 0)));
+    	Assert.assertTrue(!o.isColliding(new ObstacleRectangular(log, config, new Vec2(0, 200), 10, 10, 0)));
+    	Assert.assertTrue(!o.isColliding(new ObstacleRectangular(log, config, new Vec2(0, -200), 10, 10, 0)));
+    	Assert.assertTrue(!o.isColliding(new ObstacleRectangular(log, config, new Vec2(-100, 100), 20, 20, 0)));
+    	Assert.assertTrue(o.isColliding(new ObstacleRectangular(log, config, new Vec2(-100, 100), 50, 50, 0)));
     }
 
 }

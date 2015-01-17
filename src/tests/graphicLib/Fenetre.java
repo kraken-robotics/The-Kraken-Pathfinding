@@ -6,7 +6,7 @@ import javax.swing.*;
 import obstacles.Obstacle;
 import obstacles.ObstacleCircular;
 import obstacles.ObstacleProximity;
-import obstacles.ObstacleRectangular;
+import obstacles.ObstacleRectangularAligned;
 import obstacles.gameElement.GameElement;
 import utils.Vec2;
 
@@ -187,7 +187,7 @@ public class Fenetre extends JPanel {
 			g.fillOval(XtoWindow(o.getPosition().x-o.getRadius()-dilatationObstacle), YtoWindow(o.getPosition().y+o.getRadius()+dilatationObstacle), distanceXtoWindow((o.getRadius()+dilatationObstacle)*2), distanceYtoWindow((o.getRadius()+dilatationObstacle)*2));		
 	}
 	
-	public void paintObstacle(ObstacleRectangular o, Graphics g, int dilatationObstacle)
+	public void paintObstacle(ObstacleRectangularAligned o, Graphics g, int dilatationObstacle)
 	{
 		if(dilatationObstacle != 0)
 		{
@@ -208,8 +208,8 @@ public class Fenetre extends JPanel {
 	// Impossible
 	public void paintObstacle(Obstacle o, Graphics g, int dilatationObstacle)
 	{
-		if(o instanceof ObstacleRectangular)
-			paintObstacle((ObstacleRectangular)o, g, dilatationObstacle);
+		if(o instanceof ObstacleRectangularAligned)
+			paintObstacle((ObstacleRectangularAligned)o, g, dilatationObstacle);
 		else if(o instanceof ObstacleCircular)
 			paintObstacle((ObstacleCircular)o, g, dilatationObstacle);
 	}

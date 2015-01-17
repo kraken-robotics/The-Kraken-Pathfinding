@@ -50,6 +50,7 @@ public class ObstacleManager implements Service
      */
     private void createListObstaclesFixes()
     {
+    	// DEPENDS_ON_RULES
         listObstaclesFixes = new ArrayList<Obstacle>();
 
         listObstaclesFixes.add(new ObstacleRectangular(log, config, new Vec2(0,100),800,200)); // plaque rouge
@@ -296,6 +297,12 @@ public class ObstacleManager implements Service
             if(iterator.next().obstacle_proximite_dans_segment(A, B, distance, date))
                 return true;
         return false;*/
+    }
+    
+    public boolean isObstacleFixePresentPourCeTrajet(Vec2 positionA, Vec2 positionB)
+    {
+//    	new ObstacleRectangular(log, config, )
+    	return false;
     }
     
     /**

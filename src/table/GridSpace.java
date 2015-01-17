@@ -149,6 +149,9 @@ public class GridSpace implements Service {
 	 */
 	public PathfindingNodes nearestReachableNode(Vec2 point, int date) throws GridSpaceException
 	{
+		// TODO: vérifier qu'on ne passe pas par un obstacle. C'est important!
+		// si on ne peut pas atteindre un noeud sans passer dans un obstacle, on renvoie quand même le plus proche
+		// ceci afin de ne pas rester bloquer dans un obstacle (en y étant trop proche)
 		PathfindingNodes indice_point_depart = null;
 		float distance_min = Float.MAX_VALUE;
 		for(PathfindingNodes i : PathfindingNodes.values)
