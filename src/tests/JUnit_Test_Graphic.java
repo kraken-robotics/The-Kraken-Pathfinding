@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Random;
 
+import obstacles.ObstacleRectangular;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -20,6 +22,7 @@ import scripts.ScriptAnticipableNames;
 import strategie.GameState;
 import table.ObstacleManager;
 import tests.graphicLib.Fenetre;
+import utils.ConfigInfo;
 import utils.Sleep;
 import utils.Vec2;
 
@@ -164,6 +167,20 @@ public class JUnit_Test_Graphic extends JUnit_Test {
 			fenetre.repaint();
 			Sleep.sleep(3000);
 		}
+    }
+
+	@Test
+    public void test_obstacle_rectangulaire() throws Exception
+    {
+		int largeur_robot = config.getInt(ConfigInfo.LARGEUR_ROBOT);
+		int longueur_robot = config.getInt(ConfigInfo.LONGUEUR_ROBOT);
+		int marge = 10;
+		Vec2 A = PathfindingNodes.BAS_DROITE.getCoordonnees();
+		Vec2 B = PathfindingNodes.BAS_GAUCHE.getCoordonnees();
+		log.debug(A+" "+B+" "+A.middleNewVector(B), this);
+		fenetre.setObstacleEnBiais(new ObstacleRectangular(log, config, A.middleNewVector(B), (int)A.distance(B)+longueur_robot+2*marge, largeur_robot+2*marge, Math.atan2(B.y-A.y, B.x-A.x)));
+		fenetre.repaint();
+		Sleep.sleep(8000);
     }
 
 }

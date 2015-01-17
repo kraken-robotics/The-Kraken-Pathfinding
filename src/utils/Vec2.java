@@ -119,6 +119,11 @@ public class Vec2
 	    other.x = x;
 	    other.y = y;
 	}
+
+	public Vec2 middleNewVector(Vec2 b)
+	{
+		return new Vec2((x+b.x)/2, (y+b.y)/2);
+	}
 	
 }
 

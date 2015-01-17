@@ -29,9 +29,7 @@ public class ObstacleRectangular extends ObstacleRectangularAligned
 	 */
 	public ObstacleRectangular(Log log, Config config, Vec2 position, int sizeX, int sizeY)
 	{
-		super(log, config, position, sizeX, sizeY);
-		cos = 1;
-		sin = 0;
+		this(log, config, position, sizeX, sizeY, 0);
 	}
 
 	/**
@@ -121,6 +119,21 @@ public class ObstacleRectangular extends ObstacleRectangularAligned
 				&& !testeSeparation(r.coinBasGauche.y, r.coinHautGauche.y, r.coinBasDroite.y, r.coinHautDroite.y, r.getYRotatePlusAngle(coinBasGauche), r.getYRotatePlusAngle(coinHautGauche), r.getYRotatePlusAngle(coinBasDroite), r.getYRotatePlusAngle(coinHautDroite));
 	}
 	
+	/**
+	 * Teste la séparation à partir des projections.
+	 * Vérifie simplement si a, b, c, d sont bien séparés de a2, b2, c2 et d2,
+	 * c'est-à-dire s'il existe x tel que a < x, b < x, c < x, d < x et que
+	 * a2 > x, b2 > x, c2 > x, d2 > x
+	 * @param a
+	 * @param b
+	 * @param c
+	 * @param d
+	 * @param a2
+	 * @param b2
+	 * @param c2
+	 * @param d2
+	 * @return
+	 */
 	private boolean testeSeparation(int a, int b, int c, int d, int a2, int b2, int c2, int d2)
 	{
 		int min1 = Math.min(Math.min(a, b), Math.min(c, d));
@@ -132,4 +145,32 @@ public class ObstacleRectangular extends ObstacleRectangularAligned
 		return min1 > max2 || min2 > max1; // vrai s'il y a une séparation
 	}
 	
+	/**
+	 * Utilisé pour l'affichage
+	 * @return
+	 */
+	public int[] getXPositions()
+	{
+		int[] X = new int[4];
+		X[0] = getXRotatePlusAngle(coinBasDroite);
+		X[1] = getXRotatePlusAngle(coinHautDroite);
+		X[2] = getXRotatePlusAngle(coinHautGauche);
+		X[3] = getXRotatePlusAngle(coinBasGauche);
+		return X;
+	}
+
+	/**
+	 * Utilisé pour l'affichage
+	 * @return
+	 */
+	public int[] getYPositions()
+	{
+		int[] Y = new int[4];
+		Y[0] = getYRotatePlusAngle(coinBasDroite);
+		Y[1] = getYRotatePlusAngle(coinHautDroite);
+		Y[2] = getYRotatePlusAngle(coinHautGauche);
+		Y[3] = getYRotatePlusAngle(coinBasGauche);
+		return Y;
+	}
+
 }

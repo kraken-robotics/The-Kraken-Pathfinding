@@ -6,6 +6,7 @@ import javax.swing.*;
 import obstacles.Obstacle;
 import obstacles.ObstacleCircular;
 import obstacles.ObstacleProximity;
+import obstacles.ObstacleRectangular;
 import obstacles.ObstacleRectangularAligned;
 import obstacles.gameElement.GameElement;
 import utils.Vec2;
@@ -29,7 +30,7 @@ public class Fenetre extends JPanel {
 	private int sizeX = 450, sizeY = 300;
 	private ArrayList<Vec2> pointsADessiner = new ArrayList<Vec2>();
 	private GameElement[] listGameElement;
-	private ArrayList<Obstacle> listObstaclesFixes;
+	private ArrayList<ObstacleRectangular> listObstaclesFixes;
 	private ArrayList<ObstacleProximity> listObstaclesMobiles;
 	private ArrayList<Vec2[]> segments = new ArrayList<Vec2[]>();
 	private Image image;
@@ -38,6 +39,8 @@ public class Fenetre extends JPanel {
 	private ArrayList<ArrayList<Vec2>> paths = new ArrayList<ArrayList<Vec2>>();
 	private ArrayList<Double> orientations = new ArrayList<Double>();
 	private ArrayList<Color> couleurs = new ArrayList<Color>();
+	
+	private ObstacleRectangular obstacleEnBiais;
 
 	private int firstNotDead = 0;
     
@@ -128,8 +131,10 @@ public class Fenetre extends JPanel {
 		g.setColor(Color.BLACK);
 	    g.drawString(affichage.getIterator(), sizeX+50, 30);
 
-//	    g.setColor(Color.PINK);
+	    g.setColor(Color.PINK);
 //	    paintSegments(g);
+	    paintObstacleEnBiais(g);
+		
 
 	    g.setColor(Color.BLUE);
 	    for(int j = 0; j < paths.size(); j++)
@@ -168,7 +173,7 @@ public class Fenetre extends JPanel {
 		this.listGameElement = listGameElement;
 	}
 
-	public void setObstaclesFixes(ArrayList<Obstacle> listObstaclesFixes)
+	public void setObstaclesFixes(ArrayList<ObstacleRectangular> listObstaclesFixes)
 	{
 		this.listObstaclesFixes = listObstaclesFixes;
 	}
@@ -233,6 +238,11 @@ public class Fenetre extends JPanel {
 			g.drawLine(XtoWindow(v[0].x), YtoWindow(v[0].y), XtoWindow(v[1].x), YtoWindow(v[1].y));
 	}
 	
+	public void paintObstacleEnBiais(Graphics g)
+	{
+		g.fillPolygon(obstacleEnBiais.getXPositions(), obstacleEnBiais.getYPositions(), 4);
+	}
+	
 	public void resetPath()
 	{
 		paths.clear();
@@ -245,6 +255,11 @@ public class Fenetre extends JPanel {
 		orientations.add(orientation);
 		paths.add(chemin);
 		couleurs.add(couleur);
+	}
+	
+	public void setObstacleEnBiais(ObstacleRectangular obstacleEnBiais)
+	{
+		this.obstacleEnBiais = obstacleEnBiais;
 	}
 	
 }
