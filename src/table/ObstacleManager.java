@@ -36,12 +36,16 @@ public class ObstacleManager implements Service
     
     // Les obstacles fixes sont surtout utilisés pour savoir si un capteur détecte un ennemi ou un obstacle fixe
     // Commun à toutes les instances
-    private static ArrayList<Obstacle> listObstaclesFixes = null;
+    // TODO: passer en obstacle et pas en obstacle rectangulaire
+    private static ArrayList<ObstacleRectangular> listObstaclesFixes = null;
   
     private int firstNotDead = 0;
 
     private int dilatation_obstacle = 300;
     private int rayon_robot_adverse = 200;
+    private int largeur_robot;
+    private int longueur_robot;
+    private int marge;
     private int distanceApproximation = 50;
     private int dureeAvantPeremption = 0;
     
@@ -51,7 +55,7 @@ public class ObstacleManager implements Service
     private void createListObstaclesFixes()
     {
     	// DEPENDS_ON_RULES
-        listObstaclesFixes = new ArrayList<Obstacle>();
+        listObstaclesFixes = new ArrayList<ObstacleRectangular>();
 
         listObstaclesFixes.add(new ObstacleRectangular(log, config, new Vec2(0,100),800,200)); // plaque rouge
         listObstaclesFixes.add(new ObstacleRectangular(log, config, new Vec2(0,2000-580/2),1066,580)); // escalier
@@ -197,52 +201,25 @@ public class ObstacleManager implements Service
     	other.isThereHypotheticalEnemy = isThereHypotheticalEnemy;
     	other.firstNotDead = firstNotDead;
     }
- 
+    
     /**
      * Cette méthode vérifie les obstacles fixes uniquement.
-     * Elle est *bien* plus lente que obstacle_proximite_dans_segment et doit être évitée autant que possible
      * Elle est utilisée dans le lissage.
      * @param A
      * @param B
      * @return
      */
-	public boolean obstacle_fixe_dans_segment_pathfinding(Vec2 A, Vec2 B)
-	{
-		
-	// ce code provient de http://tech-algorithm.com/articles/drawing-line-using-bresenham-algorithm/
-	    int w = B.x - A.x ;
-	    int h = B.y - A.y ;
-	    int modulo = 0;
-	    int x = A.x, y = A.y, dx1 = 0, dy1 = 0, dx2 = 0, dy2 = 0 ;
-	    if (w<0) dx1 = -1 ; else if (w>0) dx1 = 1 ;
-	    if (h<0) dy1 = -1 ; else if (h>0) dy1 = 1 ;
-	    if (w<0) dx2 = -1 ; else if (w>0) dx2 = 1 ;
-	    int longest = Math.abs(w) ;
-	    int shortest = Math.abs(h) ;
-	    if (!(longest>shortest)) {
-	        longest = Math.abs(h) ;
-	        shortest = Math.abs(w) ;
-	        if (h<0) dy2 = -1 ; else if (h>0) dy2 = 1 ;
-	        dx2 = 0 ;            
-	    }
-	    int numerator = longest >> 1 ;
-	    for (int i=0;i<=longest;i++) {
-
-	    	if((modulo++ & 7) == 0 && is_obstacle_fixe_present(new Vec2(x, y), dilatation_obstacle))
-	    		return true;
-	    	numerator += shortest ;
-	        if (!(numerator<longest)) {
-	            numerator -= longest ;
-	            x += dx1 ;
-	            y += dy1 ;
-	        } else {
-	            x += dx2 ;
-	            y += dy2 ;
-	        }
-	    }
-	    return false;
-	}
-
+    public boolean obstacle_fixe_dans_segment_pathfinding(Vec2 A, Vec2 B)
+    {
+    	ObstacleRectangular chemin = new ObstacleRectangular(log, config, A.middleNewVector(B), (int)A.distance(B)+longueur_robot+2*marge, largeur_robot+2*marge, Math.atan2(B.y-A.y, B.x-A.x));
+    	for(ObstacleRectangular o: listObstaclesFixes)
+    	{
+    		if(chemin.isColliding(o))
+    			return true;
+    	}
+    	return false;
+    }
+ 
 	/**
 	 * Y a-t-il un obstacle de table dans ce segment?
 	 * @param A
@@ -354,7 +331,7 @@ public class ObstacleManager implements Service
      * @return
      */
     private boolean is_obstacle_fixe_present(Vec2 position, int distance) {
-        Iterator<Obstacle> iterator2 = listObstaclesFixes.iterator();
+        Iterator<ObstacleRectangular> iterator2 = listObstaclesFixes.iterator();
         while(iterator2.hasNext())
         {
             Obstacle o = iterator2.next();
@@ -399,13 +376,15 @@ public class ObstacleManager implements Service
 		dilatation_obstacle = config.getInt(ConfigInfo.MARGE)
 				+ config.getInt(ConfigInfo.RAYON_ROBOT);
 		distanceApproximation = config.getInt(ConfigInfo.DISTANCE_MAX_ENTRE_MESURE_ET_OBJET);
+		largeur_robot = config.getInt(ConfigInfo.LARGEUR_ROBOT);
+		longueur_robot = config.getInt(ConfigInfo.LONGUEUR_ROBOT);
+		marge = config.getInt(ConfigInfo.MARGE);
 	}
-	
 	/**
 	 * Utilisé pour l'affichage
 	 * @return 
 	 */
-	public ArrayList<Obstacle> getListObstaclesFixes()
+	public ArrayList<ObstacleRectangular> getListObstaclesFixes()
 	{
 		return listObstaclesFixes;
 	}
