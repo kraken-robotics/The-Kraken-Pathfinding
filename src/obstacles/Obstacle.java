@@ -17,17 +17,19 @@ public abstract class Obstacle
 	protected static Log log;
 	protected static Config config;
 	
-    protected static int largeur_robot;
-    protected static int longueur_robot;
+    protected static int largeurRobot; // le sens gauche-droite du robot
+    protected static int longueurRobot; // le sens avant-arrière du robot
     protected static int marge;
+	protected static double anglePas; // utilisé pour les calculs de collision pendant les rotations
 	
 	public static void setLogConfig(Log log, Config config)
 	{
 		Obstacle.log = log;
 		Obstacle.config = config;
-		largeur_robot = config.getInt(ConfigInfo.LARGEUR_ROBOT);
-		longueur_robot = config.getInt(ConfigInfo.LONGUEUR_ROBOT);
+		largeurRobot = config.getInt(ConfigInfo.LARGEUR_ROBOT);
+		longueurRobot = config.getInt(ConfigInfo.LONGUEUR_ROBOT);
 		marge = config.getInt(ConfigInfo.MARGE);
+		anglePas = Math.atan2(longueurRobot, largeurRobot/2);
 	}
 	
 	public Obstacle (Vec2 position)

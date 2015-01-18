@@ -54,7 +54,7 @@ public class ObstacleRectangular extends Obstacle
 	 */
 	public ObstacleRectangular(Vec2 depart, Vec2 arrivee)
 	{
-		this(depart.middleNewVector(arrivee), (int)depart.distance(arrivee)+longueur_robot+2*marge, largeur_robot+2*marge, Math.atan2(arrivee.y-depart.y, arrivee.x-depart.x));
+		this(depart.middleNewVector(arrivee), (int)depart.distance(arrivee)+longueurRobot+2*marge, largeurRobot+2*marge, Math.atan2(arrivee.y-depart.y, arrivee.x-depart.x));
 	}
 	
 	/**
@@ -83,7 +83,7 @@ public class ObstacleRectangular extends Obstacle
 	 */
 	public ObstacleRectangular(GameState<?> state) throws FinMatchException
 	{
-		this(state.robot.getPosition(), longueur_robot, largeur_robot, state.robot.getOrientation());
+		this(state.robot.getPosition(), longueurRobot, largeurRobot, state.robot.getOrientation());
 	}
 
 	private void updateVariables(Vec2 position, double angle)
