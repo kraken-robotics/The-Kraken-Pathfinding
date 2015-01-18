@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Random;
 
+import obstacles.Obstacle;
 import obstacles.ObstacleRectangular;
 
 import org.junit.Before;
@@ -187,12 +188,12 @@ public class JUnit_Test_Graphic extends JUnit_Test {
 		int longueur_robot = config.getInt(ConfigInfo.LONGUEUR_ROBOT);
 		int marge = 10;
 		Vec2 A = PathfindingNodes.CLAP_GAUCHE.getCoordonnees();
-		Vec2 B = PathfindingNodes.HAUT_DROITE.getCoordonnees();
+		Vec2 B = PathfindingNodes.HAUT_GAUCHE.getCoordonnees();
 		ObstacleRectangular rectangle = new ObstacleRectangular(log, config, A.middleNewVector(B), (int)A.distance(B)+longueur_robot+2*marge, largeur_robot+2*marge, Math.atan2(B.y-A.y, B.x-A.x));
 		fenetre.addObstacleEnBiais(rectangle);
 		fenetre.repaint();
-		ArrayList<ObstacleRectangular> obstaclesFixes = obstaclemanager.getListObstaclesFixes();
-		ObstacleRectangular o = obstaclesFixes.get(1);
+		ArrayList<Obstacle> obstaclesFixes = obstaclemanager.getListObstaclesFixes();
+		ObstacleRectangular o = (ObstacleRectangular) obstaclesFixes.get(1);
 		log.debug("Collision avec "+o.getPosition()+"? "+rectangle.isColliding(o), this);
 		Sleep.sleep(3000);
     }

@@ -37,8 +37,7 @@ public class ObstacleManager implements Service
     
     // Les obstacles fixes sont surtout utilisés pour savoir si un capteur détecte un ennemi ou un obstacle fixe
     // Commun à toutes les instances
-    // TODO: passer en obstacle et pas en obstacle rectangulaire
-    private static ArrayList<ObstacleRectangular> listObstaclesFixes = null;
+    private static ArrayList<Obstacle> listObstaclesFixes = null;
   
     private int firstNotDead = 0;
 
@@ -55,7 +54,7 @@ public class ObstacleManager implements Service
      */
     private void createListObstaclesFixes()
     {
-        listObstaclesFixes = new ArrayList<ObstacleRectangular>();
+        listObstaclesFixes = new ArrayList<Obstacle>();
 
         for(ObstaclesFixes o: ObstaclesFixes.values())
         	listObstaclesFixes.add(new ObstacleRectangular(log, config, o.position, o.sizeX, o.sizeY)); // plaque rouge
@@ -198,7 +197,7 @@ public class ObstacleManager implements Service
     public boolean obstacle_fixe_dans_segment_pathfinding(Vec2 A, Vec2 B)
     {
     	ObstacleRectangular chemin = new ObstacleRectangular(log, config, A.middleNewVector(B), (int)A.distance(B)+longueur_robot+2*marge, largeur_robot+2*marge, Math.atan2(B.y-A.y, B.x-A.x));
-    	for(ObstacleRectangular o: listObstaclesFixes)
+    	for(Obstacle o: listObstaclesFixes)
     	{
     		if(chemin.isColliding(o))
     			return true;
@@ -317,7 +316,7 @@ public class ObstacleManager implements Service
      * @return
      */
     private boolean is_obstacle_fixe_present(Vec2 position, int distance) {
-        Iterator<ObstacleRectangular> iterator2 = listObstaclesFixes.iterator();
+        Iterator<Obstacle> iterator2 = listObstaclesFixes.iterator();
         while(iterator2.hasNext())
         {
             Obstacle o = iterator2.next();
@@ -370,7 +369,7 @@ public class ObstacleManager implements Service
 	 * Utilisé pour l'affichage
 	 * @return 
 	 */
-	public ArrayList<ObstacleRectangular> getListObstaclesFixes()
+	public ArrayList<Obstacle> getListObstaclesFixes()
 	{
 		return listObstaclesFixes;
 	}

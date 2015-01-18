@@ -221,4 +221,15 @@ public class ObstacleRectangular extends ObstacleRectangularAligned
 		return Y;
 	}
 
+	public boolean isColliding(ObstacleCircular o)
+	{
+		return squaredDistance(o.position) < o.radius*o.radius;
+	}
+	
+	public boolean isColliding(Obstacle o)
+	{
+		log.critical("Appel de isColliding avec un type d'obstacle inconnu!", this);
+		return false;
+	}
+
 }
