@@ -61,8 +61,18 @@ public class GridSpace implements Service {
     public void check_pathfinding_nodes()
     {
     	for(PathfindingNodes i: PathfindingNodes.values)
-    		if(obstaclemanager.is_obstacle_fixe_present_pathfinding(i.getCoordonnees()))
-    			log.warning("Node "+i+" dans obstacle fixe!", this);
+    	{
+    		boolean accessible = false;
+        	for(PathfindingNodes j: PathfindingNodes.values)
+        		if(!obstaclemanager.obstacle_fixe_dans_segment_pathfinding(i.getCoordonnees(), j.getCoordonnees()))
+        		{
+        			accessible = true;
+        			break;
+        		}
+        	if(!accessible)
+        		log.critical("Le noeud "+i+" n'est pas accessible!", this);
+    	}
+        		
     }
     
 

@@ -6,6 +6,7 @@ import java.util.Random;
 
 import obstacles.Obstacle;
 import obstacles.ObstacleRectangular;
+import obstacles.ObstaclesFixes;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -173,8 +174,16 @@ public class JUnit_Test_Graphic extends JUnit_Test {
 	@Test
     public void test_obstacle_rectangulaire() throws Exception
     {
-		ObstacleRectangular o1 = new ObstacleRectangular(log, config, new Vec2(1000,1000), 200, 200, Math.PI/8);
-		ObstacleRectangular o2 = new ObstacleRectangular(log, config, new Vec2(900, 1100), 70, 70, 0);
+		int largeur_robot = config.getInt(ConfigInfo.LARGEUR_ROBOT);
+		int longueur_robot = config.getInt(ConfigInfo.LONGUEUR_ROBOT);
+		int marge = 10;
+		Vec2 A = PathfindingNodes.CLAP_GAUCHE.getCoordonnees();
+		Vec2 B = PathfindingNodes.HAUT_GAUCHE.getCoordonnees();
+		ObstacleRectangular o1 = new ObstacleRectangular(log, config, A.middleNewVector(B), (int)A.distance(B)+longueur_robot+2*marge, largeur_robot+2*marge, Math.atan2(B.y-A.y, B.x-A.x));
+		ObstaclesFixes o = ObstaclesFixes.BANDE_1;
+		ObstacleRectangular o2 = new ObstacleRectangular(log, config, o.position, o.sizeX, o.sizeY, 0);
+		log.debug("Collision ? "+o1.isColliding(o2), this);
+		log.debug("Collision ? "+o2.isColliding(o1), this);
 		fenetre.addObstacleEnBiais(o1);
 		fenetre.addObstacleEnBiais(o2);
 		fenetre.repaint();
@@ -193,7 +202,7 @@ public class JUnit_Test_Graphic extends JUnit_Test {
 		fenetre.addObstacleEnBiais(rectangle);
 		fenetre.repaint();
 		ArrayList<Obstacle> obstaclesFixes = obstaclemanager.getListObstaclesFixes();
-		ObstacleRectangular o = (ObstacleRectangular) obstaclesFixes.get(1);
+		ObstacleRectangular o = (ObstacleRectangular) obstaclesFixes.get(ObstaclesFixes.BANDE_1.ordinal());
 		log.debug("Collision avec "+o.getPosition()+"? "+rectangle.isColliding(o), this);
 		Sleep.sleep(3000);
     }

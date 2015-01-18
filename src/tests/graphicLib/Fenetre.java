@@ -100,10 +100,12 @@ public class Fenetre extends JPanel {
 	{
 		g.drawImage(image, 0, 0, this);
 
+//	    g.setColor(Color.PINK.darker().darker());
+//	    paintObstacleEnBiais(g);
+		
 	    g.setColor(Color.PINK);
 	    paintSegments(g);
-	    paintObstacleEnBiais(g);
-		
+
 		g.setColor(Color.RED.darker().darker().darker());
 		for(Obstacle o : listObstaclesFixes)
 			paintObstacle(o,g,dilatationObstacle);

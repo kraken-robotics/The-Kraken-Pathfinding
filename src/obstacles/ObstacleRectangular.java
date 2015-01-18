@@ -76,8 +76,8 @@ public class ObstacleRectangular extends ObstacleRectangularAligned
 	private Vec2 rotateMoinsAngle(Vec2 point)
 	{
 		Vec2 out = new Vec2();
-		out.x = (int)(cos*point.x+sin*point.y);
-		out.y = (int)(-sin*point.x+cos*point.y);
+		out.x = (int)(cos*(point.x-position.x)+sin*(point.y-position.y))+position.x;
+		out.y = (int)(-sin*(point.x-position.x)+cos*(point.y-position.y))+position.y;
 		return out;
 	}
 
@@ -89,8 +89,8 @@ public class ObstacleRectangular extends ObstacleRectangularAligned
 	private Vec2 rotatePlusAngle(Vec2 point)
 	{
 		Vec2 out = new Vec2();
-		out.x = (int)(cos*point.x-sin*point.y);
-		out.y = (int)(sin*point.x+cos*point.y);
+		out.x = (int)(cos*(point.x-position.x)-sin*(point.y-position.y))+position.x;
+		out.y = (int)(sin*(point.x-position.x)+cos*(point.y-position.y))+position.y;
 		return out;
 	}
 
@@ -160,35 +160,45 @@ public class ObstacleRectangular extends ObstacleRectangularAligned
 	 */
 	public boolean isColliding(ObstacleRectangular r)
 	{
+/*		log.debug("coinBasGaucheRotate = "+coinBasGaucheRotate, this);
+		log.debug("coinHautGaucheRotate = "+coinHautGaucheRotate, this);
+		log.debug("coinHautDroiteRotate = "+coinHautDroiteRotate, this);
+		log.debug("coinBasDroiteRotate = "+coinBasDroiteRotate, this);*/
+		
 		// Il faut tester les quatres axes
-		return !testeSeparation(coinBasGauche.x, coinHautGauche.x, coinBasDroite.x, coinHautDroite.x, getXRotateMoinsAngle(r.coinBasGaucheRotate), getXRotateMoinsAngle(r.coinHautGaucheRotate), getXRotateMoinsAngle(r.coinBasDroiteRotate), getXRotateMoinsAngle(r.coinHautDroiteRotate))
-				&& !testeSeparation(coinBasGauche.y, coinHautGauche.y, coinBasDroite.y, coinHautDroite.y, getYRotateMoinsAngle(r.coinBasGaucheRotate), getYRotateMoinsAngle(r.coinHautGaucheRotate), getYRotateMoinsAngle(r.coinBasDroiteRotate), getYRotateMoinsAngle(r.coinHautDroiteRotate))
-				&& !testeSeparation(r.coinBasGauche.x, r.coinHautGauche.x, r.coinBasDroite.x, r.coinHautDroite.x, r.getXRotateMoinsAngle(coinBasGaucheRotate), r.getXRotateMoinsAngle(coinHautGaucheRotate), r.getXRotateMoinsAngle(coinBasDroiteRotate), r.getXRotateMoinsAngle(coinHautDroiteRotate))
-				&& !testeSeparation(r.coinBasGauche.y, r.coinHautGauche.y, r.coinBasDroite.y, r.coinHautDroite.y, r.getYRotateMoinsAngle(coinBasGaucheRotate), r.getYRotateMoinsAngle(coinHautGaucheRotate), r.getYRotateMoinsAngle(coinBasDroiteRotate), r.getYRotateMoinsAngle(coinHautDroiteRotate));
+		return !testeSeparation(coinBasGauche.x, coinBasDroite.x, getXRotateMoinsAngle(r.coinBasGaucheRotate), getXRotateMoinsAngle(r.coinHautGaucheRotate), getXRotateMoinsAngle(r.coinBasDroiteRotate), getXRotateMoinsAngle(r.coinHautDroiteRotate))
+				&& !testeSeparation(coinBasGauche.y, coinHautGauche.y, getYRotateMoinsAngle(r.coinBasGaucheRotate), getYRotateMoinsAngle(r.coinHautGaucheRotate), getYRotateMoinsAngle(r.coinBasDroiteRotate), getYRotateMoinsAngle(r.coinHautDroiteRotate))
+				&& !testeSeparation(r.coinBasGauche.x, r.coinBasDroite.x, r.getXRotateMoinsAngle(coinBasGaucheRotate), r.getXRotateMoinsAngle(coinHautGaucheRotate), r.getXRotateMoinsAngle(coinBasDroiteRotate), r.getXRotateMoinsAngle(coinHautDroiteRotate))
+				&& !testeSeparation(r.coinBasGauche.y, r.coinHautGauche.y, r.getYRotateMoinsAngle(coinBasGaucheRotate), r.getYRotateMoinsAngle(coinHautGaucheRotate), r.getYRotateMoinsAngle(coinBasDroiteRotate), r.getYRotateMoinsAngle(coinHautDroiteRotate));
 	}
 	
 	/**
 	 * Teste la séparation à partir des projections.
-	 * Vérifie simplement si a, b, c, d sont bien séparés de a2, b2, c2 et d2,
-	 * c'est-à-dire s'il existe x tel que a < x, b < x, c < x, d < x et que
+	 * Vérifie simplement si a et b sont bien séparés de a2, b2, c2 et d2,
+	 * c'est-à-dire s'il existe x tel que a < x, b < x et
 	 * a2 > x, b2 > x, c2 > x, d2 > x
 	 * @param a
 	 * @param b
-	 * @param c
-	 * @param d
 	 * @param a2
 	 * @param b2
 	 * @param c2
 	 * @param d2
 	 * @return
 	 */
-	private boolean testeSeparation(int a, int b, int c, int d, int a2, int b2, int c2, int d2)
+	private boolean testeSeparation(int a, int b, int a2, int b2, int c2, int d2)
 	{
-		int min1 = Math.min(Math.min(a, b), Math.min(c, d));
-		int max1 = Math.max(Math.max(a, b), Math.max(c, d));
+		int min1 = Math.min(a,b);
+		int max1 = Math.max(a,b);
 
 		int min2 = Math.min(Math.min(a2, b2), Math.min(c2, d2));
 		int max2 = Math.max(Math.max(a2, b2), Math.max(c2, d2));
+
+/*		log.debug("a = "+a+", b = "+b+", a2 = "+a2+", b2 = "+b2+", c2 = "+c2+", d2 = "+d2, this);
+		
+		if(min1 > max2 || min2 > max1)
+			log.debug("Séparation!", this);
+		else
+			log.debug("Pas séparation", this);*/
 		
 		return min1 > max2 || min2 > max1; // vrai s'il y a une séparation
 	}
@@ -228,6 +238,11 @@ public class ObstacleRectangular extends ObstacleRectangularAligned
 	
 	public boolean isColliding(Obstacle o)
 	{
+		if(o instanceof ObstacleRectangular)
+			return isColliding((ObstacleRectangular)o);
+		else if(o instanceof ObstacleCircular)
+			return isColliding((ObstacleCircular)o);
+
 		log.critical("Appel de isColliding avec un type d'obstacle inconnu!", this);
 		return false;
 	}
