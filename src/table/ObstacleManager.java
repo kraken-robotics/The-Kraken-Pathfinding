@@ -6,6 +6,7 @@ import java.util.Iterator;
 import obstacles.Obstacle;
 import obstacles.ObstacleProximity;
 import obstacles.ObstacleRectangular;
+import obstacles.ObstaclesFixes;
 import obstacles.gameElement.GameElement;
 import obstacles.gameElement.GameElementNames;
 import container.Service;
@@ -54,25 +55,10 @@ public class ObstacleManager implements Service
      */
     private void createListObstaclesFixes()
     {
-    	// DEPENDS_ON_RULES
         listObstaclesFixes = new ArrayList<ObstacleRectangular>();
 
-        listObstaclesFixes.add(new ObstacleRectangular(log, config, new Vec2(0,100),800,200)); // plaque rouge
-        listObstaclesFixes.add(new ObstacleRectangular(log, config, new Vec2(0,2000-580/2),1066,580)); // escalier
-        listObstaclesFixes.add(new ObstacleRectangular(log, config, new Vec2(-1500+400/2,1200),400,22)); // bandes de bois zone de départ
-        listObstaclesFixes.add(new ObstacleRectangular(log, config, new Vec2(1500-400/2,1200),400,22));
-        listObstaclesFixes.add(new ObstacleRectangular(log, config, new Vec2(-1500+400/2,800),400,22));
-        listObstaclesFixes.add(new ObstacleRectangular(log, config, new Vec2(1500-400/2,800),400,22));
-        listObstaclesFixes.add(new ObstacleRectangular(log, config, new Vec2(-1200+50/2,2000-50/2),50,50)); // distributeurs
-        listObstaclesFixes.add(new ObstacleRectangular(log, config, new Vec2(-900+50/2,2000-50/2),50,50));
-        listObstaclesFixes.add(new ObstacleRectangular(log, config, new Vec2(900-50/2,2000-50/2),50,50));
-        listObstaclesFixes.add(new ObstacleRectangular(log, config, new Vec2(1200-50/2,2000-50/2),50,50));
-
-        // bords
-        listObstaclesFixes.add(new ObstacleRectangular(log, config, new Vec2(0,0),3000,1));
-        listObstaclesFixes.add(new ObstacleRectangular(log, config, new Vec2(-1500,1000),1,2000));
-        listObstaclesFixes.add(new ObstacleRectangular(log, config, new Vec2(1500,1000),1,2000));
-        listObstaclesFixes.add(new ObstacleRectangular(log, config, new Vec2(0,2000),3000,1));
+        for(ObstaclesFixes o: ObstaclesFixes.values())
+        	listObstaclesFixes.add(new ObstacleRectangular(log, config, o.position, o.sizeX, o.sizeY)); // plaque rouge
     }
     
     public ObstacleManager(Log log, Config config, Table table)
