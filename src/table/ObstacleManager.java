@@ -41,7 +41,6 @@ public class ObstacleManager implements Service
   
     private int firstNotDead = 0;
 
-    private int dilatation_obstacle = 300;
     private int rayon_robot_adverse = 200;
     private int distanceApproximation = 50;
     private int dureeAvantPeremption = 0;
@@ -80,27 +79,27 @@ public class ObstacleManager implements Service
     	isThereHypotheticalEnemy = true;
     	hypotheticalEnemy.setPosition(position);
     	hypotheticalEnemy.setDeathDate(date_actuelle+dureeAvantPeremption);
-        check_game_element(position);
+        checkGameElements(position);
     }
     
     /**
      * Créer un obstacle de proximité
      * @param position
      */
-    public void creer_obstacle(final Vec2 position, int date_actuelle)
+    public void creerObstacle(final Vec2 position, int date_actuelle)
     {
         Vec2 position_sauv = position.clone();
         ObstacleProximity obstacle = new ObstacleProximity(position_sauv, rayon_robot_adverse, date_actuelle+dureeAvantPeremption);
 //        log.warning("Obstacle créé, rayon = "+rayon_robot_adverse+", centre = "+position+", meurt à "+(date_actuelle+dureeAvantPeremption), this);
         listObstaclesMobiles.add(obstacle);
-        check_game_element(position);
+        checkGameElements(position);
     }
     
     /**
      * Supprime les éléments de jeux qui sont proches de cette position.
      * @param position
      */
-    private void check_game_element(Vec2 position)
+    private void checkGameElements(Vec2 position)
     {
         // On vérifie aussi ceux qui ont un rayon nul (distributeur, clap, ..)
         for(GameElementNames g: GameElementNames.values())
@@ -139,7 +138,7 @@ public class ObstacleManager implements Service
     /**
      * Utilisé UNIQUEMENT pour les tests!
      */
-    public void clear_obstacles_mobiles()
+    public void clearObstaclesMobiles()
     {
     	isThereHypotheticalEnemy = false;
     	listObstaclesMobiles.clear();
@@ -191,7 +190,7 @@ public class ObstacleManager implements Service
      * @param B
      * @return
      */
-    public boolean obstacle_fixe_dans_segment_pathfinding(Vec2 A, Vec2 B)
+    public boolean obstacleFixeDansSegmentPathfinding(Vec2 A, Vec2 B)
     {
     	ObstacleRectangular chemin = new ObstacleRectangular(A, B);
     	for(Obstacle o: listObstaclesFixes)
@@ -208,7 +207,7 @@ public class ObstacleManager implements Service
 	 * @param B
 	 * @return
 	 */
-    public boolean obstacle_table_dans_segment(Vec2 A, Vec2 B)
+    public boolean obstacleTableDansSegment(Vec2 A, Vec2 B)
     {
     	ObstacleRectangular chemin = new ObstacleRectangular(A, B);
         for(GameElementNames g: GameElementNames.values())
@@ -230,15 +229,14 @@ public class ObstacleManager implements Service
      * @param sommet2
      * @return
      */
-    public boolean obstacle_proximite_dans_segment(Vec2 A, Vec2 B, int date)
+    public boolean obstacleProximiteDansSegment(Vec2 A, Vec2 B, int date)
     {
-//    	ObstacleRectangular chemin = new ObstacleRectangular(A, B);
-        if(isThereHypotheticalEnemy && hypotheticalEnemy.obstacle_proximite_dans_segment(A, B, dilatation_obstacle, date))
+        if(isThereHypotheticalEnemy && hypotheticalEnemy.obstacle_proximite_dans_segment(A, B, date))
         	return true;
         
         int size = listObstaclesMobiles.size();
         for(; firstNotDead < size; firstNotDead++)
-        	if(listObstaclesMobiles.get(firstNotDead).obstacle_proximite_dans_segment(A, B, dilatation_obstacle, date))
+        	if(listObstaclesMobiles.get(firstNotDead).obstacle_proximite_dans_segment(A, B, date))
         		return true;
 
         return false;
@@ -249,13 +247,13 @@ public class ObstacleManager implements Service
      * @param position
      * @return
      */
-    public boolean is_obstacle_fixe_present_capteurs(Vec2 position)
+    public boolean isObstacleFixePresentCapteurs(Vec2 position)
     {
         Iterator<Obstacle> iterator2 = listObstaclesFixes.iterator();
         while(iterator2.hasNext())
         {
             Obstacle o = iterator2.next();
-            if(is_obstacle_present(position, o, distanceApproximation))
+            if(isObstaclePresent(position, o, distanceApproximation))
                 return true;
         }
         return false;
@@ -269,14 +267,14 @@ public class ObstacleManager implements Service
      * @param position
      * @return
      */
-    public boolean is_obstacle_mobile_present(Vec2 position, int distance) 
+    public boolean isObstacleMobilePresent(Vec2 position, int distance) 
     {
-        if(isThereHypotheticalEnemy && is_obstacle_present(position, hypotheticalEnemy, distance))
+        if(isThereHypotheticalEnemy && isObstaclePresent(position, hypotheticalEnemy, distance))
         	return true;
         int size = listObstaclesMobiles.size();
         for(; firstNotDead < size; firstNotDead++)
         {
-        	if(is_obstacle_present(position, listObstaclesMobiles.get(firstNotDead), distance))
+        	if(isObstaclePresent(position, listObstaclesMobiles.get(firstNotDead), distance))
         		return true;
         }
         return false;
@@ -290,7 +288,7 @@ public class ObstacleManager implements Service
      * @param distance
      * @return
      */
-    private boolean is_obstacle_present(Vec2 position, Obstacle o, int distance)
+    private boolean isObstaclePresent(Vec2 position, Obstacle o, int distance)
     {
     	return o.isProcheObstacle(position, distance);
     }
@@ -309,8 +307,6 @@ public class ObstacleManager implements Service
 	public void updateConfig() {
 		rayon_robot_adverse = config.getInt(ConfigInfo.RAYON_ROBOT_ADVERSE);
 		dureeAvantPeremption = config.getInt(ConfigInfo.DUREE_PEREMPTION_OBSTACLES);
-		dilatation_obstacle = config.getInt(ConfigInfo.MARGE)
-				+ config.getInt(ConfigInfo.RAYON_ROBOT);
 		distanceApproximation = config.getInt(ConfigInfo.DISTANCE_MAX_ENTRE_MESURE_ET_OBJET);
 	}
 	/**
@@ -347,15 +343,6 @@ public class ObstacleManager implements Service
 	public GameElement[] getListGameElement()
 	{
 		return table.getObstacles();
-	}
-
-	/**
-	 * Utilisé pour l'affichage
-	 * @return 
-	 */
-	public int getDilatationObstacle()
-	{
-		return dilatation_obstacle;
 	}
 
 	/**

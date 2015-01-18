@@ -54,7 +54,8 @@ public class JUnit_Obstacle extends JUnit_Test {
     	Assert.assertTrue(!o.isProcheObstacle(new Vec2(0,-8),5));
     }
 
-    @Test
+    // Obsolète
+/*    @Test
     public void test_collision_segment_cercle() throws Exception
     {
     	ObstacleCircular o = new ObstacleCircular(new Vec2(0, 50), 30);
@@ -62,7 +63,7 @@ public class JUnit_Obstacle extends JUnit_Test {
     	Assert.assertTrue(o.obstacle_proximite_dans_segment(new Vec2(-100,30), new Vec2(100,30), 0));
     	Assert.assertTrue(!o.obstacle_proximite_dans_segment(new Vec2(-500,30), new Vec2(-400,30), 0));
     	Assert.assertTrue(o.obstacle_proximite_dans_segment(new Vec2(-100,30), new Vec2(-20,30), 0));
-    }
+    }*/
     
     @Test
     public void test_is_dans_obstacle_rectangle() throws Exception

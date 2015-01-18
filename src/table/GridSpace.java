@@ -64,7 +64,7 @@ public class GridSpace implements Service {
     	{
     		boolean accessible = false;
         	for(PathfindingNodes j: PathfindingNodes.values)
-        		if(!obstaclemanager.obstacle_fixe_dans_segment_pathfinding(i.getCoordonnees(), j.getCoordonnees()))
+        		if(!obstaclemanager.obstacleFixeDansSegmentPathfinding(i.getCoordonnees(), j.getCoordonnees()))
         		{
         			accessible = true;
         			break;
@@ -88,7 +88,7 @@ public class GridSpace implements Service {
 		for(PathfindingNodes i : PathfindingNodes.values)			
 			for(PathfindingNodes j : PathfindingNodes.values)
 			{
-				if(obstaclemanager.obstacle_fixe_dans_segment_pathfinding(i.getCoordonnees(), j.getCoordonnees()))
+				if(obstaclemanager.obstacleFixeDansSegmentPathfinding(i.getCoordonnees(), j.getCoordonnees()))
 					isConnectedModel[i.ordinal()][j.ordinal()] = NodesConnection.ALWAYS_IMPOSSIBLE;
 				else
 					isConnectedModel[i.ordinal()][j.ordinal()] = null;
@@ -121,12 +121,12 @@ public class GridSpace implements Service {
 //			log.debug("Trajet entre "+i+" et "+j+": utilisation du cache. Traversable: "+isConnectedModelCache[i.ordinal()][j.ordinal()][getHashBool()].isTraversable(), this);
 			return isConnectedModelCache[getHashBool()][i.ordinal()][j.ordinal()].isTraversable();
 		}
-		else if(avoidGameElement && obstaclemanager.obstacle_table_dans_segment(i.getCoordonnees(), j.getCoordonnees()))
+		else if(avoidGameElement && obstaclemanager.obstacleTableDansSegment(i.getCoordonnees(), j.getCoordonnees()))
 		{
 //			log.debug("Trajet entre "+i+" et "+j+" impossible à cause d'un élément de jeu", this);
 			isConnectedModelCache[getHashBool()][i.ordinal()][j.ordinal()] = NodesConnection.TMP_IMPOSSIBLE;
 		}
-		else if(obstaclemanager.obstacle_proximite_dans_segment(i.getCoordonnees(), j.getCoordonnees(), date))
+		else if(obstaclemanager.obstacleProximiteDansSegment(i.getCoordonnees(), j.getCoordonnees(), date))
 		{
 //			log.debug("Trajet entre "+i+" et "+j+" impossible à cause d'un obstacle de proximité", this);
 			isConnectedModelCache[0][i.ordinal()][j.ordinal()] = NodesConnection.TMP_IMPOSSIBLE;
@@ -164,11 +164,11 @@ public class GridSpace implements Service {
 		{
 			boolean pasObstacleCetteFois = false;
 			float tmp = point.squaredDistance(i.getCoordonnees());
-			pasObstacleCetteFois = !obstaclemanager.obstacle_fixe_dans_segment_pathfinding(point, i.getCoordonnees());
+			pasObstacleCetteFois = !obstaclemanager.obstacleFixeDansSegmentPathfinding(point, i.getCoordonnees());
 			robotHorsObstacle |= pasObstacleCetteFois;
 			
 			// si le point est trop loin ou s'il y a un obstacle de proximité entre nous et lui: on passe au point suivant
-			if((tmp >= distanceMinSansObstaclesFixes && tmp >= distanceMinAvecObstaclesFixes) || obstaclemanager.obstacle_proximite_dans_segment(point, i.getCoordonnees(), date))
+			if((tmp >= distanceMinSansObstaclesFixes && tmp >= distanceMinAvecObstaclesFixes) || obstaclemanager.obstacleProximiteDansSegment(point, i.getCoordonnees(), date))
 				continue;
 			
 			if(tmp < distanceMinSansObstaclesFixes)
@@ -251,7 +251,7 @@ public class GridSpace implements Service {
     public boolean isTraversable(Vec2 pointA, Vec2 pointB, int date)
     {
     	// Evaluation paresseuse importante, car obstacle_proximite_dans_segment est bien plus rapide que obstacle_fixe_dans_segment
-    	return !obstaclemanager.obstacle_proximite_dans_segment(pointA, pointB, date) && !obstaclemanager.obstacle_fixe_dans_segment_pathfinding(pointA, pointB);
+    	return !obstaclemanager.obstacleProximiteDansSegment(pointA, pointB, date) && !obstaclemanager.obstacleFixeDansSegmentPathfinding(pointA, pointB);
     }
         
     /**
@@ -262,7 +262,7 @@ public class GridSpace implements Service {
      */
     public void creer_obstacle(Vec2 position, int date)
     {
-    	obstaclemanager.creer_obstacle(position, date);
+    	obstaclemanager.creerObstacle(position, date);
     	reinitConnections();
     }
 

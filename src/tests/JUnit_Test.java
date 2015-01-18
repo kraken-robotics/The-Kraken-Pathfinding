@@ -33,7 +33,7 @@ public abstract class JUnit_Test
 		config.setDateDebutMatch();
         obstaclemanager = (ObstacleManager) container.getService(ServiceNames.OBSTACLE_MANAGER);
         // afin d'assurer l'indépendance entre tests
-        obstaclemanager.clear_obstacles_mobiles();
+        obstaclemanager.clearObstaclesMobiles();
 	}
 
 	@After

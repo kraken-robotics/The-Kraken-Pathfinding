@@ -476,7 +476,7 @@ public class Locomotion implements Service
         int rayon_detection = largeur_robot/2 + distance_detection;
         Vec2 centre_detection = new Vec2((int)(signe * rayon_detection * Math.cos(orientation)), (int)(signe * rayon_detection * Math.sin(orientation)));
         centre_detection.plus(position);
-        if(obstaclemanager.is_obstacle_mobile_present(centre_detection, distance_detection))
+        if(obstaclemanager.isObstacleMobilePresent(centre_detection, distance_detection))
         {
             log.warning("Ennemi détecté en : " + centre_detection, this);
             throw new UnexpectedObstacleOnPathException();

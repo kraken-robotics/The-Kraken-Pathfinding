@@ -32,14 +32,14 @@ public class ObstacleProximity extends ObstacleCircular
 	 * Peut-on aller de A à B sans 
 	 * @param A
 	 * @param B
-	 * @param distance
 	 * @param date
 	 * @return
 	 */
-    public boolean obstacle_proximite_dans_segment(Vec2 A, Vec2 B, int distance, int date)
+    public boolean obstacle_proximite_dans_segment(Vec2 A, Vec2 B, int date)
     {
     	// si l'obstacle est présent dans le segment...
-    	if(death_date > date && obstacle_proximite_dans_segment(A, B, distance))
+    	ObstacleRectangular r = new ObstacleRectangular(A,B);
+    	if(death_date > date && r.isColliding(this))
     	{
     		// on vérifie si par hasard il ne disparaîtrait pas avant qu'on y arrive
     		int tempsRestant = death_date - date;
@@ -58,7 +58,8 @@ public class ObstacleProximity extends ObstacleCircular
     		C.x = (int)(C.x * facteurMultiplicatif);
     		C.y = (int)(C.y * facteurMultiplicatif);
     		C.plus(A);
-    		return obstacle_proximite_dans_segment(A, C, distance);
+        	ObstacleRectangular r2 = new ObstacleRectangular(A,C);
+        	return r2.isColliding(this);
     	}
     	return false;
     }

@@ -56,12 +56,12 @@ public class JUnit_Test_Graphic extends JUnit_Test {
 		strategic_astar = (AStar<StrategyArcManager, Decision>)container.getService(ServiceNames.A_STAR_STRATEGY);
 		scriptmanager = (ScriptManager) container.getService(ServiceNames.SCRIPT_MANAGER);
 		fenetre = new Fenetre();
-		fenetre.setDilatationObstacle(obstaclemanager.getDilatationObstacle());
+		fenetre.setDilatationObstacle(0);// TODO: refaire ça
 		for(PathfindingNodes n : PathfindingNodes.values())
 		{
 			fenetre.addPoint(n.getCoordonnees());
 			for(PathfindingNodes m : PathfindingNodes.values())
-				if(!obstaclemanager.obstacle_fixe_dans_segment_pathfinding(n.getCoordonnees(), m.getCoordonnees()))
+				if(!obstaclemanager.obstacleFixeDansSegmentPathfinding(n.getCoordonnees(), m.getCoordonnees()))
 						fenetre.addSegment(m.getCoordonnees(), n.getCoordonnees());
 		}
 		updateAffichage();

@@ -1,6 +1,7 @@
 package hook.types;
 
 import obstacles.ObstacleCircular;
+import obstacles.ObstacleRectangular;
 import exceptions.FinMatchException;
 import exceptions.ScriptHookException;
 import hook.Hook;
@@ -63,7 +64,8 @@ public class HookPosition extends Hook
 	{
 		ObstacleCircular o = new ObstacleCircular(position, tolerancy);
 //		log.debug("Hook position: "+o.obstacle_proximite_dans_segment(pointA, pointB, rayon_robot), this);
-		return o.obstacle_proximite_dans_segment(pointA, pointB, rayon_robot);
+		ObstacleRectangular r = new ObstacleRectangular(pointA, pointB);
+		return r.isColliding(o);
 	}
 	
 }
