@@ -17,6 +17,11 @@ public class ObstacleRectangular extends ObstacleRectangularAligned
 {
 	private double cos;
 	private double sin;
+
+	protected Vec2 coinBasGaucheRotate;
+	protected Vec2 coinHautGaucheRotate;
+	protected Vec2 coinBasDroiteRotate;
+	protected Vec2 coinHautDroiteRotate;
 	
 	/**
 	 * Cas où l'angle est nul
@@ -30,6 +35,12 @@ public class ObstacleRectangular extends ObstacleRectangularAligned
 	public ObstacleRectangular(Log log, Config config, Vec2 position, int sizeX, int sizeY)
 	{
 		this(log, config, position, sizeX, sizeY, 0);
+		cos = 1;
+		sin = 0;
+		coinBasGaucheRotate = coinBasGauche;
+		coinHautGaucheRotate = coinHautGauche;
+		coinBasDroiteRotate = coinBasDroite;
+		coinHautDroiteRotate = coinHautDroite;
 	}
 
 	/**
@@ -48,6 +59,10 @@ public class ObstacleRectangular extends ObstacleRectangularAligned
 		super(log, config, position, sizeX, sizeY);
 		cos = Math.cos(angle);
 		sin = Math.sin(angle);
+		coinBasGaucheRotate = rotatePlusAngle(coinBasGauche);
+		coinHautGaucheRotate = rotatePlusAngle(coinHautGauche);
+		coinBasDroiteRotate = rotatePlusAngle(coinBasDroite);
+		coinHautDroiteRotate = rotatePlusAngle(coinHautDroite);
 	}
 	
 	/**
@@ -65,7 +80,20 @@ public class ObstacleRectangular extends ObstacleRectangularAligned
 		out.y = (int)(-sin*point.x+cos*point.y);
 		return out;
 	}
-	
+
+	/**
+	 * Rotation dans le sens +angle
+	 * @param point
+	 * @return
+	 */
+	private Vec2 rotatePlusAngle(Vec2 point)
+	{
+		Vec2 out = new Vec2();
+		out.x = (int)(cos*point.x-sin*point.y);
+		out.y = (int)(sin*point.x+cos*point.y);
+		return out;
+	}
+
 	/**
 	 * Donne l'abscisse du point après rotation de +angle
 	 * @param point
@@ -73,7 +101,7 @@ public class ObstacleRectangular extends ObstacleRectangularAligned
 	 */
 	private int getXRotatePlusAngle(Vec2 point)
 	{
-		return (int)(cos*point.x-sin*point.y);
+		return (int)(cos*(point.x-position.x)-sin*(point.y-position.y))+position.x;
 	}
 
 	/**
@@ -83,7 +111,27 @@ public class ObstacleRectangular extends ObstacleRectangularAligned
 	 */
 	private int getYRotatePlusAngle(Vec2 point)
 	{
-		return (int)(sin*point.x+cos*point.y);
+		return (int)(sin*(point.x-position.x)+cos*(point.y-position.y))+position.y;
+	}
+
+	/**
+	 * Donne l'abscisse du point après rotation de +angle
+	 * @param point
+	 * @return
+	 */
+	private int getXRotateMoinsAngle(Vec2 point)
+	{
+		return (int)(cos*(point.x-position.x)+sin*(point.y-position.y))+position.x;
+	}
+
+	/**
+	 * Donne l'abscisse du point après rotation de +angle
+	 * @param point
+	 * @return
+	 */
+	private int getYRotateMoinsAngle(Vec2 point)
+	{
+		return (int)(-sin*(point.x-position.x)+cos*(point.y-position.y))+position.y;
 	}
 
 	
@@ -113,10 +161,10 @@ public class ObstacleRectangular extends ObstacleRectangularAligned
 	public boolean isColliding(ObstacleRectangular r)
 	{
 		// Il faut tester les quatres axes
-		return !testeSeparation(coinBasGauche.x, coinHautGauche.x, coinBasDroite.x, coinHautDroite.x, getXRotatePlusAngle(r.coinBasGauche), getXRotatePlusAngle(r.coinHautGauche), getXRotatePlusAngle(r.coinBasDroite), getXRotatePlusAngle(r.coinHautDroite))
-				&& !testeSeparation(coinBasGauche.y, coinHautGauche.y, coinBasDroite.y, coinHautDroite.y, getYRotatePlusAngle(r.coinBasGauche), getYRotatePlusAngle(r.coinHautGauche), getYRotatePlusAngle(r.coinBasDroite), getYRotatePlusAngle(r.coinHautDroite))
-				&& !testeSeparation(r.coinBasGauche.x, r.coinHautGauche.x, r.coinBasDroite.x, r.coinHautDroite.x, r.getXRotatePlusAngle(coinBasGauche), r.getXRotatePlusAngle(coinHautGauche), r.getXRotatePlusAngle(coinBasDroite), r.getXRotatePlusAngle(coinHautDroite))
-				&& !testeSeparation(r.coinBasGauche.y, r.coinHautGauche.y, r.coinBasDroite.y, r.coinHautDroite.y, r.getYRotatePlusAngle(coinBasGauche), r.getYRotatePlusAngle(coinHautGauche), r.getYRotatePlusAngle(coinBasDroite), r.getYRotatePlusAngle(coinHautDroite));
+		return !testeSeparation(coinBasGauche.x, coinHautGauche.x, coinBasDroite.x, coinHautDroite.x, getXRotateMoinsAngle(r.coinBasGaucheRotate), getXRotateMoinsAngle(r.coinHautGaucheRotate), getXRotateMoinsAngle(r.coinBasDroiteRotate), getXRotateMoinsAngle(r.coinHautDroiteRotate))
+				&& !testeSeparation(coinBasGauche.y, coinHautGauche.y, coinBasDroite.y, coinHautDroite.y, getYRotateMoinsAngle(r.coinBasGaucheRotate), getYRotateMoinsAngle(r.coinHautGaucheRotate), getYRotateMoinsAngle(r.coinBasDroiteRotate), getYRotateMoinsAngle(r.coinHautDroiteRotate))
+				&& !testeSeparation(r.coinBasGauche.x, r.coinHautGauche.x, r.coinBasDroite.x, r.coinHautDroite.x, r.getXRotateMoinsAngle(coinBasGaucheRotate), r.getXRotateMoinsAngle(coinHautGaucheRotate), r.getXRotateMoinsAngle(coinBasDroiteRotate), r.getXRotateMoinsAngle(coinHautDroiteRotate))
+				&& !testeSeparation(r.coinBasGauche.y, r.coinHautGauche.y, r.coinBasDroite.y, r.coinHautDroite.y, r.getYRotateMoinsAngle(coinBasGaucheRotate), r.getYRotateMoinsAngle(coinHautGaucheRotate), r.getYRotateMoinsAngle(coinBasDroiteRotate), r.getYRotateMoinsAngle(coinHautDroiteRotate));
 	}
 	
 	/**

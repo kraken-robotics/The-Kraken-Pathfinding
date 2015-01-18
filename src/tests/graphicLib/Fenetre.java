@@ -40,7 +40,7 @@ public class Fenetre extends JPanel {
 	private ArrayList<Double> orientations = new ArrayList<Double>();
 	private ArrayList<Color> couleurs = new ArrayList<Color>();
 	
-	private ObstacleRectangular obstacleEnBiais;
+	private ArrayList<ObstacleRectangular> obstaclesEnBiais = new ArrayList<ObstacleRectangular>();
 
 	private int firstNotDead = 0;
     
@@ -108,6 +108,10 @@ public class Fenetre extends JPanel {
 		for(Obstacle o : listObstaclesFixes)
 			paintObstacle(o, g,0);
 
+	    g.setColor(Color.PINK);
+	    paintSegments(g);
+//	    paintObstacleEnBiais(g);
+		
 		g.setColor(Color.YELLOW);
 		for(Vec2 pos : pointsADessiner)
 			g.fillOval(XtoWindow(pos.x)-5, YtoWindow(pos.y)-5, 10, 10);
@@ -130,11 +134,6 @@ public class Fenetre extends JPanel {
 
 		g.setColor(Color.BLACK);
 	    g.drawString(affichage.getIterator(), sizeX+50, 30);
-
-	    g.setColor(Color.PINK);
-//	    paintSegments(g);
-	    paintObstacleEnBiais(g);
-		
 
 	    g.setColor(Color.BLUE);
 	    for(int j = 0; j < paths.size(); j++)
@@ -240,7 +239,18 @@ public class Fenetre extends JPanel {
 	
 	public void paintObstacleEnBiais(Graphics g)
 	{
-		g.fillPolygon(obstacleEnBiais.getXPositions(), obstacleEnBiais.getYPositions(), 4);
+		int[] X, Y;
+		for(ObstacleRectangular o: obstaclesEnBiais)
+		{
+			X = o.getXPositions();
+			Y = o.getYPositions();
+			for(int i = 0; i < 4; i++)
+			{
+				X[i] = XtoWindow(X[i]);
+				Y[i] = YtoWindow(Y[i]);
+			}
+			g.fillPolygon(X, Y, 4);
+		}
 	}
 	
 	public void resetPath()
@@ -257,9 +267,9 @@ public class Fenetre extends JPanel {
 		couleurs.add(couleur);
 	}
 	
-	public void setObstacleEnBiais(ObstacleRectangular obstacleEnBiais)
+	public void addObstacleEnBiais(ObstacleRectangular obstacleEnBiais)
 	{
-		this.obstacleEnBiais = obstacleEnBiais;
+		obstaclesEnBiais.add(obstacleEnBiais);
 	}
 	
 }

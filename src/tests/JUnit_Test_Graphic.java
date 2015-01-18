@@ -172,15 +172,29 @@ public class JUnit_Test_Graphic extends JUnit_Test {
 	@Test
     public void test_obstacle_rectangulaire() throws Exception
     {
+		ObstacleRectangular o1 = new ObstacleRectangular(log, config, new Vec2(1000,1000), 200, 200, Math.PI/8);
+		ObstacleRectangular o2 = new ObstacleRectangular(log, config, new Vec2(900, 1100), 70, 70, 0);
+		fenetre.addObstacleEnBiais(o1);
+		fenetre.addObstacleEnBiais(o2);
+		fenetre.repaint();
+		Sleep.sleep(5000);
+    }
+	
+	@Test
+    public void test_obstacle_pathfinding() throws Exception
+    {
 		int largeur_robot = config.getInt(ConfigInfo.LARGEUR_ROBOT);
 		int longueur_robot = config.getInt(ConfigInfo.LONGUEUR_ROBOT);
 		int marge = 10;
-		Vec2 A = PathfindingNodes.BAS_DROITE.getCoordonnees();
-		Vec2 B = PathfindingNodes.BAS_GAUCHE.getCoordonnees();
-		log.debug(A+" "+B+" "+A.middleNewVector(B), this);
-		fenetre.setObstacleEnBiais(new ObstacleRectangular(log, config, A.middleNewVector(B), (int)A.distance(B)+longueur_robot+2*marge, largeur_robot+2*marge, Math.atan2(B.y-A.y, B.x-A.x)));
+		Vec2 A = PathfindingNodes.CLAP_GAUCHE.getCoordonnees();
+		Vec2 B = PathfindingNodes.HAUT_DROITE.getCoordonnees();
+		ObstacleRectangular rectangle = new ObstacleRectangular(log, config, A.middleNewVector(B), (int)A.distance(B)+longueur_robot+2*marge, largeur_robot+2*marge, Math.atan2(B.y-A.y, B.x-A.x));
+		fenetre.addObstacleEnBiais(rectangle);
 		fenetre.repaint();
-		Sleep.sleep(8000);
+		ArrayList<ObstacleRectangular> obstaclesFixes = obstaclemanager.getListObstaclesFixes();
+		ObstacleRectangular o = obstaclesFixes.get(1);
+		log.debug("Collision avec "+o.getPosition()+"? "+rectangle.isColliding(o), this);
+		Sleep.sleep(3000);
     }
 
 }
