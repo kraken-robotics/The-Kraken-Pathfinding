@@ -60,6 +60,7 @@ public class GridSpace implements Service {
 	 */
     public void check_pathfinding_nodes()
     {
+    	log.debug("Vérification de l'accessibilité des PathfindingNodes", this);
     	for(PathfindingNodes i: PathfindingNodes.values)
     	{
     		boolean accessible = false;
@@ -72,7 +73,6 @@ public class GridSpace implements Service {
         	if(!accessible)
         		log.critical("Le noeud "+i+" n'est pas accessible!", this);
     	}
-        		
     }
     
 

@@ -7,7 +7,6 @@ import obstacles.Obstacle;
 import obstacles.ObstacleProximity;
 import obstacles.ObstacleRectangular;
 import obstacles.ObstaclesFixes;
-import obstacles.gameElement.GameElement;
 import obstacles.gameElement.GameElementNames;
 import container.Service;
 import enums.Tribool;
@@ -334,15 +333,6 @@ public class ObstacleManager implements Service
 	public int getFirstNotDead()
 	{
 		return firstNotDead;
-	}
-	
-	/**
-	 * Utilisé pour l'affichage
-	 * @return 
-	 */
-	public GameElement[] getListGameElement()
-	{
-		return table.getObstacles();
 	}
 
 	/**

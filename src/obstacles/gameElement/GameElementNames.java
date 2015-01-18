@@ -1,5 +1,6 @@
 package obstacles.gameElement;
 
+import obstacles.ObstacleCircular;
 import utils.Vec2;
 
 /**
@@ -31,23 +32,16 @@ public enum GameElementNames {
 	DISTRIB_4(GameElementType.DISTRIBUTEUR, new Vec2(-1200, 1950), 25);
 	
 	private GameElementType type;
-	private int radius;
-	private Vec2 position;
+	private ObstacleCircular obstacle;
 
-	public Vec2 getPosition()
+	public ObstacleCircular getObstacle()
 	{
-		return position;
-	}
-	
-	public int getRadius()
-	{
-		return radius;
+		return obstacle;
 	}
 	
 	private GameElementNames(GameElementType type, Vec2 position, int radius)
 	{
-		this.position = position;
-		this.radius = radius;
+		obstacle = new ObstacleCircular(position, radius);
 		this.type = type;
 	}
 	

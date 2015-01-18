@@ -1,7 +1,6 @@
 package hook.types;
 
 import obstacles.ObstacleCircular;
-import obstacles.ObstacleRectangular;
 import exceptions.FinMatchException;
 import exceptions.ScriptHookException;
 import hook.Hook;
@@ -20,12 +19,12 @@ import utils.Vec2;
 public class HookPosition extends Hook
 {
 	// position sur la table de déclenchement du hook: le hook est déclenché si le robot est a une distance de ce point de moins de tolerancy
-	private Vec2 position;
+	protected Vec2 position;
 	
 	// tolérance sur la position de déclenchement du hook. On mémorise le carré pour ne pas avoir a calculer des racines a chaque vérifications
-	private int squaredTolerancy;
+	protected int squaredTolerancy;
 	
-	private int tolerancy;
+	protected int tolerancy;
 	
 
     /**
@@ -64,8 +63,7 @@ public class HookPosition extends Hook
 	{
 		ObstacleCircular o = new ObstacleCircular(position, tolerancy);
 //		log.debug("Hook position: "+o.obstacle_proximite_dans_segment(pointA, pointB, rayon_robot), this);
-		ObstacleRectangular r = new ObstacleRectangular(pointA, pointB);
-		return r.isColliding(o);
+		return o.obstacle_proximite_dans_segment(pointA, pointB, rayon_robot);
 	}
 	
 }

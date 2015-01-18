@@ -1,7 +1,6 @@
 package table;
 
 import obstacles.ObstacleRectangular;
-import obstacles.gameElement.GameElement;
 import obstacles.gameElement.GameElementNames;
 import container.Service;
 import enums.Tribool;
@@ -19,10 +18,6 @@ public class Table implements Service
 	private Log log;
 	private Config config;
 	
-	// Les éléments de jeu de notre couleur.
-	private static GameElement[] total = new GameElement[GameElementNames.values().length];
-	// Et potentiellement les balles de tennis
-	
 	/** Contient toutes les informations sur les éléments de jeux sans perte d'information. */
 	private long hash = 0;
 	
@@ -30,9 +25,6 @@ public class Table implements Service
 	{
 		this.log = log;
 		this.config = config;	
-		
-		for(GameElementNames n: GameElementNames.values())
-			total[n.ordinal()] = new GameElement(log, config, n);
 		
 		updateConfig();
 	}
@@ -107,7 +99,7 @@ public class Table implements Service
 	 */
 	public boolean isProcheObstacle(GameElementNames g, Vec2 position, int rayon_robot_adverse)
 	{
-		return total[g.ordinal()].isProcheObstacle(position, rayon_robot_adverse);
+		return g.getObstacle().isProcheObstacle(position, rayon_robot_adverse);
 	}
 
 	/**
@@ -119,18 +111,8 @@ public class Table implements Service
 	 */
 	public boolean obstacle_proximite_dans_segment(GameElementNames g, ObstacleRectangular o)
 	{
-		return o.isColliding(total[g.ordinal()]);
+		return o.isColliding(g.getObstacle());
 	}
-
-	/**
-	 * Utilisé pour l'affichage uniquement.
-	 * @return
-	 */
-	public GameElement[] getObstacles()
-	{
-		return total;
-	}
-
 	/**
 	 * Utilisé pour le debug
 	 */

@@ -2,9 +2,11 @@ package hook;
 
 import java.util.ArrayList;
 
+import obstacles.ObstacleCircular;
 import obstacles.gameElement.GameElementNames;
 import hook.methods.GameElementDone;
 import hook.methods.ThrowsScriptHook;
+import hook.types.HookCollision;
 import hook.types.HookDate;
 import hook.types.HookDateFinMatch;
 import hook.types.HookPosition;
@@ -94,7 +96,24 @@ public class HookFactory implements Service
 	{
 		return newHookPosition(position, positionTolerancy, state);
 	}
+	
+	/* ======================================================================
+	 * 							Hooks de collision
+	 * ======================================================================
+	 */
 
+	/**
+	 * demande l'instanciation d'un hook se déclenchant si le robot
+	 * percute un objet
+	 * @param position de déclenchement du hook
+	 * @return le hook créé
+	 */
+	public HookCollision newHookCollision(ObstacleCircular o, GameState<?> state)
+	{
+		return new HookCollision(config, log, state, o);
+	}
+
+	
 	/* ======================================================================
 	 * 							Hooks de date
 	 * ======================================================================
@@ -331,7 +350,7 @@ public class HookFactory implements Service
 			// Ce qu'on peut shooter
 			if(n.getType().canBeShot()) // on ne met un hook de position que sur ceux qui ont susceptible de disparaître quand on passe dessus
 			{
-				hook = newHookPosition(n.getPosition(), n.getRadius(), state);
+				hook = newHookCollision(n.getObstacle(), state);
 				action = new GameElementDone(state.gridspace, n, Tribool.TRUE);
 				hook.ajouter_callback(new Callback(action));
 				hooks_entre_scripts.add(hook);
