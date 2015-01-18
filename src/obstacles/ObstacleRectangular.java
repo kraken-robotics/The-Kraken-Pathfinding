@@ -1,20 +1,32 @@
 package obstacles;
 
+import exceptions.FinMatchException;
+import strategie.GameState;
 import utils.Vec2;
 
 /**
- * Pourquoi un obstacle rectangulaire serait un cas particulier d'un obstacle rectangulaire
- * aligné, alors qu'en fait la logique veut que ce soit le contraire? C'est simplement
- * une astuce; ici, un obstacle rectangulaire est seulement un obstacle rectangulaire aligné
- * qui a subi une rotation.
+ * Rectangle ayant subi une rotation.
+ * Ce rectangle peut être le robot, ou bien l'espace que parcourera le robot pendant un segment
  * @author pf
  *
  */
 
-public class ObstacleRectangular extends ObstacleRectangularAligned
+public class ObstacleRectangular extends Obstacle
 {
 	private double cos;
 	private double sin;
+
+	// taille selon l'axe X
+	protected int sizeX;
+	
+	// taille selon l'axe Y
+	protected int sizeY;
+
+	// calcul des positions des coins
+	protected Vec2 coinBasGauche;
+	protected Vec2 coinHautGauche;
+	protected Vec2 coinBasDroite;
+	protected Vec2 coinHautDroite;
 
 	protected Vec2 coinBasGaucheRotate;
 	protected Vec2 coinHautGaucheRotate;
@@ -33,12 +45,6 @@ public class ObstacleRectangular extends ObstacleRectangularAligned
 	public ObstacleRectangular(Vec2 position, int sizeX, int sizeY)
 	{
 		this(position, sizeX, sizeY, 0);
-		cos = 1;
-		sin = 0;
-		coinBasGaucheRotate = coinBasGauche;
-		coinHautGaucheRotate = coinHautGauche;
-		coinBasDroiteRotate = coinBasDroite;
-		coinHautDroiteRotate = coinHautDroite;
 	}
 
 	/**
@@ -64,7 +70,28 @@ public class ObstacleRectangular extends ObstacleRectangularAligned
 	 */
 	public ObstacleRectangular(Vec2 position, int sizeX, int sizeY, double angle)
 	{
-		super(position, sizeX, sizeY);
+		super(position);
+		this.sizeY = sizeY;
+		this.sizeX = sizeX;
+		updateVariables(position, angle);
+	}
+	
+	/**
+	 * Crée l'obstacle du robot
+	 * @param state
+	 * @throws FinMatchException 
+	 */
+	public ObstacleRectangular(GameState<?> state) throws FinMatchException
+	{
+		this(state.robot.getPosition(), longueur_robot, largeur_robot, state.robot.getOrientation());
+	}
+
+	private void updateVariables(Vec2 position, double angle)
+	{
+		coinBasGauche = position.plusNewVector((new Vec2(-sizeX/2,-sizeY/2)));
+		coinHautGauche = position.plusNewVector((new Vec2(-sizeX/2,sizeY/2)));
+		coinBasDroite = position.plusNewVector((new Vec2(sizeX/2,-sizeY/2)));
+		coinHautDroite = position.plusNewVector((new Vec2(sizeX/2,sizeY/2)));
 		cos = Math.cos(angle);
 		sin = Math.sin(angle);
 		coinBasGaucheRotate = rotatePlusAngle(coinBasGauche);
@@ -142,23 +169,6 @@ public class ObstacleRectangular extends ObstacleRectangularAligned
 		return (int)(-sin*(point.x-position.x)+cos*(point.y-position.y))+position.y;
 	}
 
-	
-	/**
-	 * Ce point est-il dans l'obstacle?
-	 */
-	public boolean isInObstacle(Vec2 point)
-	{
-		return super.isInObstacle(rotateMoinsAngle(point));
-	}
-
-	/**
-	 * Retourne la distance au carré du point à cet obstacle
-	 */
-	public float squaredDistance(Vec2 in)
-	{
-		return super.squaredDistance(rotateMoinsAngle(in));
-	}
-	
 	/**
 	 * Calcul s'il y a collision avec un ObstacleRectangularAligned.
 	 * Attention! Ne pas utiliser un ObstacleRectangular au lieu de l'ObstacleRectangularAligned!
@@ -168,11 +178,6 @@ public class ObstacleRectangular extends ObstacleRectangularAligned
 	 */
 	public boolean isColliding(ObstacleRectangular r)
 	{
-/*		log.debug("coinBasGaucheRotate = "+coinBasGaucheRotate, this);
-		log.debug("coinHautGaucheRotate = "+coinHautGaucheRotate, this);
-		log.debug("coinHautDroiteRotate = "+coinHautDroiteRotate, this);
-		log.debug("coinBasDroiteRotate = "+coinBasDroiteRotate, this);*/
-		
 		// Il faut tester les quatres axes
 		return !testeSeparation(coinBasGauche.x, coinBasDroite.x, getXRotateMoinsAngle(r.coinBasGaucheRotate), getXRotateMoinsAngle(r.coinHautGaucheRotate), getXRotateMoinsAngle(r.coinBasDroiteRotate), getXRotateMoinsAngle(r.coinHautDroiteRotate))
 				&& !testeSeparation(coinBasGauche.y, coinHautGauche.y, getYRotateMoinsAngle(r.coinBasGaucheRotate), getYRotateMoinsAngle(r.coinHautGaucheRotate), getYRotateMoinsAngle(r.coinBasDroiteRotate), getYRotateMoinsAngle(r.coinHautDroiteRotate))
@@ -200,13 +205,6 @@ public class ObstacleRectangular extends ObstacleRectangularAligned
 
 		int min2 = Math.min(Math.min(a2, b2), Math.min(c2, d2));
 		int max2 = Math.max(Math.max(a2, b2), Math.max(c2, d2));
-
-/*		log.debug("a = "+a+", b = "+b+", a2 = "+a2+", b2 = "+b2+", c2 = "+c2+", d2 = "+d2, this);
-		
-		if(min1 > max2 || min2 > max1)
-			log.debug("Séparation!", this);
-		else
-			log.debug("Pas séparation", this);*/
 		
 		return min1 > max2 || min2 > max1; // vrai s'il y a une séparation
 	}
@@ -254,6 +252,109 @@ public class ObstacleRectangular extends ObstacleRectangularAligned
 		log.critical("Appel de isColliding avec un type d'obstacle inconnu!", this);
 		return false;
 	}
+
+	public void update(Vec2 position, double orientation)
+	{		
+		updateVariables(position, orientation);	
+	}
 	
+
+	/**
+	 * Utilisé pour l'affichage uniquement
+	 * @return
+	 */
+	public int getSizeX()
+	{
+		return sizeX;
+	}
+
+	/**
+	 * Utilisé pour l'affichage uniquement
+	 * @return
+	 */
+	public int getSizeY()
+	{
+		return sizeY;
+	}
+
+	public String toString()
+	{
+		return "ObstacleRectangulaire";
+	}
+	
+	public float distance(Vec2 point)
+	{
+		return (float) Math.sqrt(squaredDistance(point));
+	}
+	
+	public boolean isInObstacle(Vec2 point)
+	{
+		point = rotateMoinsAngle(point);
+		return (point.x < position.x + sizeX/2) &&
+				(point.x > position.x - sizeX/2) &&
+				(point.y < position.y + sizeY/2) &&
+				(point.y > position.y - sizeY/2);
+	}
+	
+	/**
+	 * Fourni la plus petite distance au carré entre le point fourni et l'obstacle
+	 * @param in
+	 * @return la plus petite distance au carré entre le point fourni et l'obstacle
+	 */
+	public float squaredDistance(Vec2 in)
+	{
+		in = rotateMoinsAngle(in);
+		/*		
+		 *  Schéma de la situation :
+		 *
+		 * 		 												  y
+		 * 			4	|		3		|		2					    ^
+		 * 				|				|								|
+		 * 		____________________________________				    |
+		 * 				|				|								-----> x
+		 * 				|				|
+		 * 			5	|	obstacle	|		1
+		 * 		
+		 * 		____________________________________
+		 * 		
+		 * 			6	|		7		|		8
+		 * 				|				|
+		 */		
+		
+		// si le point fourni est dans les quarts de plan n°2,4,6 ou 8
+		if(in.x < coinBasGauche.x && in.y < coinBasGauche.y)
+			return in.squaredDistance(coinBasGauche);
+		
+		else if(in.x < coinHautGauche.x && in.y > coinHautGauche.y)
+			return in.squaredDistance(coinHautGauche);
+		
+		else if(in.x > coinBasDroite.x && in.y < coinBasDroite.y)
+			return in.squaredDistance(coinBasDroite);
+
+		else if(in.x > coinHautDroite.x && in.y > coinHautDroite.y)
+			return in.squaredDistance(coinHautDroite);
+
+		// Si le point fourni est dans les demi-bandes n°1,3,5,ou 7
+		if(in.x > coinHautDroite.x)
+			return (in.x - coinHautDroite.x)*(in.x - coinHautDroite.x);
+		
+		else if(in.x < coinBasGauche.x)
+			return (in.x - coinBasGauche.x)*(in.x - coinBasGauche.x);
+
+		else if(in.y > coinHautDroite.y)
+			return (in.y - coinHautDroite.y)*(in.y - coinHautDroite.y);
+		
+		else if(in.y < coinBasGauche.y)
+			return (in.y - coinBasGauche.y)*(in.y - coinBasGauche.y);
+
+		// Sinon, on est dans l'obstacle
+		return 0f;
+	}
+
+	public boolean isProcheObstacle(Vec2 point, int distance)
+	{
+		// Attention! squaredDistance effectue déjà la rotation du point
+		return squaredDistance(point) < (distance+0.01f) * (distance+0.01f); // vu qu'on a une précision limitée, mieux vaut prendre un peu de marge
+	}
 
 }

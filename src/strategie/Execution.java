@@ -44,7 +44,12 @@ public class Execution implements Service {
 		this.scriptmanager = scriptmanager;
 		this.threadstrategy = threadstrategy;
 
-		hooks_entre_scripts = hookfactory.getHooksEntreScriptsReal(gamestate);
+		try {
+			hooks_entre_scripts = hookfactory.getHooksEntreScriptsReal(gamestate);
+		} catch (FinMatchException e) {
+			// Impossible
+			e.printStackTrace();
+		}
 	}
 
 	/**

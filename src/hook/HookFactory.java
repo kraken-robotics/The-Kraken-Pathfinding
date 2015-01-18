@@ -17,6 +17,7 @@ import hook.types.HookY;
 import hook.types.HookYisGreater;
 import container.Service;
 import enums.Tribool;
+import exceptions.FinMatchException;
 import robot.RobotChrono;
 import robot.RobotReal;
 import scripts.ScriptHookNames;
@@ -107,8 +108,9 @@ public class HookFactory implements Service
 	 * percute un objet
 	 * @param position de déclenchement du hook
 	 * @return le hook créé
+	 * @throws FinMatchException 
 	 */
-	public HookCollision newHookCollision(ObstacleCircular o, GameState<?> state)
+	public HookCollision newHookCollision(ObstacleCircular o, GameState<?> state) throws FinMatchException
 	{
 		return new HookCollision(config, log, state, o);
 	}
@@ -299,8 +301,9 @@ public class HookFactory implements Service
      * Donne les hooks des éléments de jeux à un chrono gamestate
      * @param state
      * @return
+     * @throws FinMatchException 
      */
-    public ArrayList<Hook> getHooksEntreScriptsChrono(GameState<RobotChrono> state, int date_limite)
+    public ArrayList<Hook> getHooksEntreScriptsChrono(GameState<RobotChrono> state, int date_limite) throws FinMatchException
     {
     	if(hooks_table_chrono == null)
     		hooks_table_chrono = getHooksEntreScriptsReal(state, true);
@@ -320,14 +323,15 @@ public class HookFactory implements Service
      * Donne les hooks des éléments de jeux à un real gamestate
      * @param state
      * @return
+     * @throws FinMatchException 
      */
-    public ArrayList<Hook> getHooksEntreScriptsReal(GameState<RobotReal> state)
+    public ArrayList<Hook> getHooksEntreScriptsReal(GameState<RobotReal> state) throws FinMatchException
     {
     	return getHooksEntreScriptsReal(state, false);
     }
 
     
-    private ArrayList<Hook> getHooksEntreScriptsReal(GameState<?> state, boolean isChrono)
+    private ArrayList<Hook> getHooksEntreScriptsReal(GameState<?> state, boolean isChrono) throws FinMatchException
     {
     	ArrayList<Hook> hooks_entre_scripts = new ArrayList<Hook>();
 		Hook hook;

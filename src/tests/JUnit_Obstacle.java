@@ -6,7 +6,6 @@ import org.junit.Test;
 import utils.Vec2;
 import obstacles.ObstacleCircular;
 import obstacles.ObstacleRectangular;
-import obstacles.ObstacleRectangularAligned;
 
 /**
  * Test unitaire des obstacles
@@ -46,7 +45,7 @@ public class JUnit_Obstacle extends JUnit_Test {
     @Test
     public void test_collision_rectangle_distance() throws Exception
     {
-    	ObstacleRectangularAligned o = new ObstacleRectangular(new Vec2(0, 0), 25, 5);
+    	ObstacleRectangular o = new ObstacleRectangular(new Vec2(0, 0), 25, 5);
     	Assert.assertTrue(o.isProcheObstacle(new Vec2(13,-3),5));
     	Assert.assertTrue(!o.isProcheObstacle(new Vec2(20,0),5));
     	Assert.assertTrue(!o.isProcheObstacle(new Vec2(20,0),5));
