@@ -76,7 +76,7 @@ public class JUnit_Test_Graphic extends JUnit_Test {
 	}
 
 	@Test
-    public void test_verification_humaine() throws Exception
+    public void test_pathfinding_verification_humaine() throws Exception
     {
 		Random randomgenerator = new Random();
 		for(int k = 0; k < 10; k++)

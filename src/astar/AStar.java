@@ -28,7 +28,7 @@ import utils.Vec2;
  * Le AStar avec le PathfindingArcManager donne une recherche de chemin
  * Le AStar avec le StrategyArcManager donne un planificateur de scripts
  * Il y a donc deux instances AStar, un stratégique, l'autre de recherche de chemin.
- * @author pf, Martial
+ * @author pf
  *
  */
 
@@ -241,7 +241,6 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 	/**
 	 * Lissage d'un parcours de pathfinding.
 	 * Si le point de départ est dans un obstacle fixe, le lissage ne changera rien.
-	 * Attention! Le lissage est coûteux.
 	 * A besoin du point de départ (non inclus dans le chemin), du gamestate (non modifié)
 	 * et bien sûr du chemin à lisser.
 	 * @param depart

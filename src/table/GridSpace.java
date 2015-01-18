@@ -93,10 +93,6 @@ public class GridSpace implements Service {
 				else
 					isConnectedModel[i.ordinal()][j.ordinal()] = null;
 			}
-		
-		// by pass manuel: on peut sortir de la zone de départ
-		isConnectedModel[PathfindingNodes.POINT_DEPART.ordinal()][PathfindingNodes.SORTIE_ZONE_DEPART.ordinal()] = null;
-		isConnectedModel[PathfindingNodes.SORTIE_ZONE_DEPART.ordinal()][PathfindingNodes.POINT_DEPART.ordinal()] = null;
 	}
 	
 	/**
@@ -149,36 +145,53 @@ public class GridSpace implements Service {
 	}
 	
 	/**
-	 * Retourne le point de passage le plus proche et accessible en ligne droite
-	 * Attention, peut renvoyer "null" si aucun point de passage n'est atteignable en ligne droite.
-	 * Cette méthode ne prend en compte que les obstacles de proximité, et pas les obstacles fixes.
-	 * Donc elle ne peut pas planter parce qu'on est trop près d'un mur, par exemple.
+	 * Si le robot est dans un obstacle, cette méthode renverra le PathfindingNode le plus proche
+	 * sans qu'il y ait un obstacle de proximité sur le chemin
+	 * Si le robot n'est pas dans un obstacle, alors il renverra le PathfindingNode le plus proche
+	 * sans qu'il y ait un obstacle de proximité ou un obstacle fixe sur le chemin.
 	 * @param point
 	 * @return
 	 * @throws GridSpaceException 
 	 */
 	public PathfindingNodes nearestReachableNode(Vec2 point, int date) throws GridSpaceException
 	{
-		// TODO: vérifier qu'on ne passe pas par un obstacle. C'est important!
-		// si on ne peut pas atteindre un noeud sans passer dans un obstacle, on renvoie quand même le plus proche
-		// ceci afin de ne pas rester bloquer dans un obstacle (en y étant trop proche)
-		PathfindingNodes indice_point_depart = null;
-		float distance_min = Float.MAX_VALUE;
+		PathfindingNodes pointPlusProcheAvecObstaclesFixes = null;
+		PathfindingNodes pointPlusProcheSansObstaclesFixes = null;
+		float distanceMinSansObstaclesFixes = Float.MAX_VALUE;
+		float distanceMinAvecObstaclesFixes = Float.MAX_VALUE;
+		boolean robotHorsObstacle = false;
 		for(PathfindingNodes i : PathfindingNodes.values)
 		{
-			if(i == PathfindingNodes.POINT_DEPART) // TODO cas particulier un peu moche...
-				continue;
+			boolean pasObstacleCetteFois = false;
 			float tmp = point.squaredDistance(i.getCoordonnees());
-			if(tmp < distance_min && !obstaclemanager.obstacle_proximite_dans_segment(point, i.getCoordonnees(), date))
+			pasObstacleCetteFois = !obstaclemanager.obstacle_fixe_dans_segment_pathfinding(point, i.getCoordonnees());
+			robotHorsObstacle |= pasObstacleCetteFois;
+			
+			// si le point est trop loin ou s'il y a un obstacle de proximité entre nous et lui: on passe au point suivant
+			if((tmp >= distanceMinSansObstaclesFixes && tmp >= distanceMinAvecObstaclesFixes) || obstaclemanager.obstacle_proximite_dans_segment(point, i.getCoordonnees(), date))
+				continue;
+			
+			if(tmp < distanceMinSansObstaclesFixes)
 			{
-				distance_min = tmp;
-				indice_point_depart = i;
+				distanceMinSansObstaclesFixes = tmp;
+				pointPlusProcheSansObstaclesFixes = i;
+			}
+			if(pasObstacleCetteFois && tmp < distanceMinAvecObstaclesFixes)
+			{
+				distanceMinAvecObstaclesFixes = tmp;
+				pointPlusProcheAvecObstaclesFixes = i;			
 			}
 		}
-		if(indice_point_depart == null)
-			throw new GridSpaceException();
-
-		return indice_point_depart;
+		if(pointPlusProcheAvecObstaclesFixes == null)
+		{
+			if(robotHorsObstacle || pointPlusProcheSansObstaclesFixes == null)
+				throw new GridSpaceException();
+			else
+				// On ne renvoie ce point que si le robot est dans un obstacle et
+				// qu'il existe un plus proche point sans obstacle de proximité
+				return pointPlusProcheSansObstaclesFixes;
+		}
+		return pointPlusProcheAvecObstaclesFixes;
 	}
 	
 	@Override
