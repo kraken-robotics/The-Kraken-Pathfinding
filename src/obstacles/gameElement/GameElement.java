@@ -15,6 +15,6 @@ public class GameElement extends ObstacleCircular
 {
 	public GameElement(Log log, Config config, GameElementNames nom)
 	{
-		super(log, config, nom.getPosition(), nom.getRadius());
+		super(nom.getPosition(), nom.getRadius());
 	}
 }

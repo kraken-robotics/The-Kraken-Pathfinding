@@ -1,5 +1,6 @@
 package table;
 
+import obstacles.ObstacleRectangular;
 import obstacles.gameElement.GameElement;
 import obstacles.gameElement.GameElementNames;
 import container.Service;
@@ -116,9 +117,9 @@ public class Table implements Service
 	 * @param b
 	 * @return
 	 */
-	public boolean obstacle_proximite_dans_segment(GameElementNames g, Vec2 a, Vec2 b)
+	public boolean obstacle_proximite_dans_segment(GameElementNames g, ObstacleRectangular o)
 	{
-		return total[g.ordinal()].obstacle_proximite_dans_segment_dilatation(a, b);
+		return o.isColliding(total[g.ordinal()]);
 	}
 
 	/**

@@ -1,5 +1,6 @@
 package container;
 
+import obstacles.Obstacle;
 import container.ServiceNames.TypeService;
 import astar.*;
 import astar.arc.Decision;
@@ -107,6 +108,8 @@ public class Container
 			// démarre le système de log
 			instanciedServices[ServiceNames.LOG.ordinal()] = (Service)new Log(config);
 			log = (Log)instanciedServices[ServiceNames.LOG.ordinal()];
+			
+			Obstacle.setLogConfig(log, config);
 		}
 		catch(Exception e)
 		{

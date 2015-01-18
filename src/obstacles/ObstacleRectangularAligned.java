@@ -1,7 +1,5 @@
 package obstacles;
 
-import utils.Config;
-import utils.Log;
 import utils.Vec2;
 
 /**
@@ -24,9 +22,9 @@ public abstract class ObstacleRectangularAligned extends Obstacle
 	protected Vec2 coinBasDroite;
 	protected Vec2 coinHautDroite;
 
-	public ObstacleRectangularAligned(Log log, Config config, Vec2 position, int sizeX, int sizeY)
+	public ObstacleRectangularAligned(Vec2 position, int sizeX, int sizeY)
 	{
-		super(log, config, position);
+		super(position);
 		this.sizeY = sizeY;
 		this.sizeX = sizeX;
 		coinBasGauche = position.plusNewVector((new Vec2(-sizeX/2,-sizeY/2)));

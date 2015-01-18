@@ -179,9 +179,9 @@ public class JUnit_Test_Graphic extends JUnit_Test {
 		int marge = 10;
 		Vec2 A = PathfindingNodes.CLAP_GAUCHE.getCoordonnees();
 		Vec2 B = PathfindingNodes.HAUT_GAUCHE.getCoordonnees();
-		ObstacleRectangular o1 = new ObstacleRectangular(log, config, A.middleNewVector(B), (int)A.distance(B)+longueur_robot+2*marge, largeur_robot+2*marge, Math.atan2(B.y-A.y, B.x-A.x));
+		ObstacleRectangular o1 = new ObstacleRectangular(A.middleNewVector(B), (int)A.distance(B)+longueur_robot+2*marge, largeur_robot+2*marge, Math.atan2(B.y-A.y, B.x-A.x));
 		ObstaclesFixes o = ObstaclesFixes.BANDE_1;
-		ObstacleRectangular o2 = new ObstacleRectangular(log, config, o.position, o.sizeX, o.sizeY, 0);
+		ObstacleRectangular o2 = new ObstacleRectangular(o.position, o.sizeX, o.sizeY, 0);
 		log.debug("Collision ? "+o1.isColliding(o2), this);
 		log.debug("Collision ? "+o2.isColliding(o1), this);
 		fenetre.addObstacleEnBiais(o1);
@@ -198,7 +198,7 @@ public class JUnit_Test_Graphic extends JUnit_Test {
 		int marge = 10;
 		Vec2 A = PathfindingNodes.CLAP_GAUCHE.getCoordonnees();
 		Vec2 B = PathfindingNodes.HAUT_GAUCHE.getCoordonnees();
-		ObstacleRectangular rectangle = new ObstacleRectangular(log, config, A.middleNewVector(B), (int)A.distance(B)+longueur_robot+2*marge, largeur_robot+2*marge, Math.atan2(B.y-A.y, B.x-A.x));
+		ObstacleRectangular rectangle = new ObstacleRectangular(A.middleNewVector(B), (int)A.distance(B)+longueur_robot+2*marge, largeur_robot+2*marge, Math.atan2(B.y-A.y, B.x-A.x));
 		fenetre.addObstacleEnBiais(rectangle);
 		fenetre.repaint();
 		ArrayList<Obstacle> obstaclesFixes = obstaclemanager.getListObstaclesFixes();

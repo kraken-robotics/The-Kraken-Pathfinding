@@ -1,8 +1,6 @@
 package obstacles;
 
-import utils.Config;
 import utils.ConfigInfo;
-import utils.Log;
 import utils.Vec2;
 
 /**
@@ -19,9 +17,9 @@ public class ObstacleCircular extends Obstacle
 	protected int squared_radius;
 	protected static int squared_radius_with_dilatation_obstacle = -1;
 	
-	public ObstacleCircular(Log log, Config config, Vec2 position, int rad)
+	public ObstacleCircular(Vec2 position, int rad)
 	{
-		super(log, config, position);
+		super(position);
 		this.radius = rad;
 		squared_radius = rad * rad;
 		if(squared_radius_with_dilatation_obstacle == -1)

@@ -1,7 +1,5 @@
 package obstacles;
 
-import utils.Config;
-import utils.Log;
 import utils.Vec2;
 
 /**
@@ -32,9 +30,9 @@ public class ObstacleRectangular extends ObstacleRectangularAligned
 	 * @param sizeY
 	 * @param angle
 	 */
-	public ObstacleRectangular(Log log, Config config, Vec2 position, int sizeX, int sizeY)
+	public ObstacleRectangular(Vec2 position, int sizeX, int sizeY)
 	{
-		this(log, config, position, sizeX, sizeY, 0);
+		this(position, sizeX, sizeY, 0);
 		cos = 1;
 		sin = 0;
 		coinBasGaucheRotate = coinBasGauche;
@@ -43,6 +41,16 @@ public class ObstacleRectangular extends ObstacleRectangularAligned
 		coinHautDroiteRotate = coinHautDroite;
 	}
 
+	/**
+	 * Constructeur user-friendly pour le pathfinding
+	 * @param depart
+	 * @param arrivee
+	 */
+	public ObstacleRectangular(Vec2 depart, Vec2 arrivee)
+	{
+		this(depart.middleNewVector(arrivee), (int)depart.distance(arrivee)+longueur_robot+2*marge, largeur_robot+2*marge, Math.atan2(arrivee.y-depart.y, arrivee.x-depart.x));
+	}
+	
 	/**
 	 * Cet angle est celui par lequel le rectangle a été tourné.
 	 * C'est donc l'opposé de l'angle par lequel on va tourner les points afin de considérer
@@ -54,9 +62,9 @@ public class ObstacleRectangular extends ObstacleRectangularAligned
 	 * @param sizeY
 	 * @param angle
 	 */
-	public ObstacleRectangular(Log log, Config config, Vec2 position, int sizeX, int sizeY, double angle)
+	public ObstacleRectangular(Vec2 position, int sizeX, int sizeY, double angle)
 	{
-		super(log, config, position, sizeX, sizeY);
+		super(position, sizeX, sizeY);
 		cos = Math.cos(angle);
 		sin = Math.sin(angle);
 		coinBasGaucheRotate = rotatePlusAngle(coinBasGauche);
@@ -246,5 +254,6 @@ public class ObstacleRectangular extends ObstacleRectangularAligned
 		log.critical("Appel de isColliding avec un type d'obstacle inconnu!", this);
 		return false;
 	}
+	
 
 }

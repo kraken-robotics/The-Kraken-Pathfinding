@@ -43,9 +43,6 @@ public class ObstacleManager implements Service
 
     private int dilatation_obstacle = 300;
     private int rayon_robot_adverse = 200;
-    private int largeur_robot;
-    private int longueur_robot;
-    private int marge;
     private int distanceApproximation = 50;
     private int dureeAvantPeremption = 0;
     
@@ -57,7 +54,7 @@ public class ObstacleManager implements Service
         listObstaclesFixes = new ArrayList<Obstacle>();
 
         for(ObstaclesFixes o: ObstaclesFixes.values())
-        	listObstaclesFixes.add(new ObstacleRectangular(log, config, o.position, o.sizeX, o.sizeY)); // plaque rouge
+        	listObstaclesFixes.add(new ObstacleRectangular(o.position, o.sizeX, o.sizeY)); // plaque rouge
     }
     
     public ObstacleManager(Log log, Config config, Table table)
@@ -71,7 +68,7 @@ public class ObstacleManager implements Service
 
         // On n'instancie hypotheticalEnnemy qu'une seule fois
         if(hypotheticalEnemy == null)
-        	hypotheticalEnemy = new ObstacleProximity(log, config,  new Vec2(), rayon_robot_adverse, -1000);
+        	hypotheticalEnemy = new ObstacleProximity(new Vec2(), rayon_robot_adverse, -1000);
         updateConfig();
     }
 
@@ -93,7 +90,7 @@ public class ObstacleManager implements Service
     public void creer_obstacle(final Vec2 position, int date_actuelle)
     {
         Vec2 position_sauv = position.clone();
-        ObstacleProximity obstacle = new ObstacleProximity(log, config, position_sauv, rayon_robot_adverse, date_actuelle+dureeAvantPeremption);
+        ObstacleProximity obstacle = new ObstacleProximity(position_sauv, rayon_robot_adverse, date_actuelle+dureeAvantPeremption);
 //        log.warning("Obstacle créé, rayon = "+rayon_robot_adverse+", centre = "+position+", meurt à "+(date_actuelle+dureeAvantPeremption), this);
         listObstaclesMobiles.add(obstacle);
         check_game_element(position);
@@ -196,7 +193,7 @@ public class ObstacleManager implements Service
      */
     public boolean obstacle_fixe_dans_segment_pathfinding(Vec2 A, Vec2 B)
     {
-    	ObstacleRectangular chemin = new ObstacleRectangular(log, config, A.middleNewVector(B), (int)A.distance(B)+longueur_robot+2*marge, largeur_robot+2*marge, Math.atan2(B.y-A.y, B.x-A.x));
+    	ObstacleRectangular chemin = new ObstacleRectangular(A, B);
     	for(Obstacle o: listObstaclesFixes)
     	{
     		if(chemin.isColliding(o))
@@ -213,10 +210,11 @@ public class ObstacleManager implements Service
 	 */
     public boolean obstacle_table_dans_segment(Vec2 A, Vec2 B)
     {
+    	ObstacleRectangular chemin = new ObstacleRectangular(A, B);
         for(GameElementNames g: GameElementNames.values())
         	// Si on a interprété que l'ennemi est passé sur un obstacle,
         	// on peut passer dessus par la suite.
-            if(table.isDone(g) == Tribool.FALSE && table.obstacle_proximite_dans_segment(g, A, B))
+            if(table.isDone(g) == Tribool.FALSE && table.obstacle_proximite_dans_segment(g, chemin))
             {
 //            	log.debug(o.getName()+" est dans le chemin.", this);
                 return true;
@@ -227,60 +225,40 @@ public class ObstacleManager implements Service
 
     /**
      * Y a-t-il un obstacle de proximité dans ce segment?
+     * Va-t-il disparaître pendant le temps de parcours?
      * @param sommet1
      * @param sommet2
      * @return
      */
     public boolean obstacle_proximite_dans_segment(Vec2 A, Vec2 B, int date)
     {
-    	return obstacle_proximite_dans_segment(A,B,dilatation_obstacle,date);
-    }
-
-    /**
-     * Y a-t-il un obstacle de proximité dans ce segment?
-     * Va-t-il disparaître pendant le temps de parcours?
-     * @param sommet1
-     * @param sommet2
-     * @return
-     */
-    public boolean obstacle_proximite_dans_segment(Vec2 A, Vec2 B, int distance, int date)
-    {
-        if(isThereHypotheticalEnemy && hypotheticalEnemy.obstacle_proximite_dans_segment(A, B, distance, date))
+//    	ObstacleRectangular chemin = new ObstacleRectangular(A, B);
+        if(isThereHypotheticalEnemy && hypotheticalEnemy.obstacle_proximite_dans_segment(A, B, dilatation_obstacle, date))
         	return true;
         
         int size = listObstaclesMobiles.size();
         for(; firstNotDead < size; firstNotDead++)
-        	if(listObstaclesMobiles.get(firstNotDead).obstacle_proximite_dans_segment(A, B, distance, date))
+        	if(listObstaclesMobiles.get(firstNotDead).obstacle_proximite_dans_segment(A, B, dilatation_obstacle, date))
         		return true;
 
         return false;
-/*        iterator = listObstaclesMobiles.listIterator(firstNotDead);
-        while(iterator.hasNext())
-            if(iterator.next().obstacle_proximite_dans_segment(A, B, distance, date))
-                return true;
-        return false;*/
     }
-    
-    public boolean isObstacleFixePresentPourCeTrajet(Vec2 positionA, Vec2 positionB)
-    {
-//    	new ObstacleRectangular(log, config, )
-    	return false;
-    }
-    
+
     /**
-     * Surcouche de obstacle_existe en utilisant la distance de la config.
-     * Utilisé pour savoir si ce qu'on voit est un obstacle déjà connu.
+     * Utilisé pour savoir si ce qu'on voit est un obstacle fixe.
      * @param position
      * @return
      */
     public boolean is_obstacle_fixe_present_capteurs(Vec2 position)
     {
-    	return is_obstacle_fixe_present(position, distanceApproximation);
-    }
-
-    public boolean is_obstacle_fixe_present_pathfinding(Vec2 position)
-    {
-    	return is_obstacle_fixe_present(position, dilatation_obstacle);
+        Iterator<Obstacle> iterator2 = listObstaclesFixes.iterator();
+        while(iterator2.hasNext())
+        {
+            Obstacle o = iterator2.next();
+            if(is_obstacle_present(position, o, distanceApproximation))
+                return true;
+        }
+        return false;
     }
     
     /**
@@ -302,28 +280,6 @@ public class ObstacleManager implements Service
         		return true;
         }
         return false;
-/*        iterator = listObstaclesMobiles.listIterator(firstNotDead);
-        while(iterator.hasNext())
-            if(is_obstacle_present(position, iterator.next(), distance))
-                return true;
-        return false;*/
-    }
-
-    /**
-     * Y a-t-il un obstacle fixe près de ce point?
-     * @param position
-     * @param distance
-     * @return
-     */
-    private boolean is_obstacle_fixe_present(Vec2 position, int distance) {
-        Iterator<Obstacle> iterator2 = listObstaclesFixes.iterator();
-        while(iterator2.hasNext())
-        {
-            Obstacle o = iterator2.next();
-            if(is_obstacle_present(position, o, distance))
-                return true;
-        }
-        return false;
     }
 
     /**
@@ -339,11 +295,6 @@ public class ObstacleManager implements Service
     	return o.isProcheObstacle(position, distance);
     }
     
-    public int hash()
-    {
-        return firstNotDead;
-    }
-
     /**
      * Utilisé afin de calculer la péremption du cache du gridspace
      * @param other
@@ -361,9 +312,6 @@ public class ObstacleManager implements Service
 		dilatation_obstacle = config.getInt(ConfigInfo.MARGE)
 				+ config.getInt(ConfigInfo.RAYON_ROBOT);
 		distanceApproximation = config.getInt(ConfigInfo.DISTANCE_MAX_ENTRE_MESURE_ET_OBJET);
-		largeur_robot = config.getInt(ConfigInfo.LARGEUR_ROBOT);
-		longueur_robot = config.getInt(ConfigInfo.LONGUEUR_ROBOT);
-		marge = config.getInt(ConfigInfo.MARGE);
 	}
 	/**
 	 * Utilisé pour l'affichage
@@ -383,6 +331,10 @@ public class ObstacleManager implements Service
 		return listObstaclesMobiles;
 	}
 	
+	/**
+	 * Utilisé pour la copie
+	 * @return
+	 */
 	public int getFirstNotDead()
 	{
 		return firstNotDead;
@@ -463,5 +415,5 @@ public class ObstacleManager implements Service
 	    
 	    return Math.min(date1, date2);
 	}
-
+	
 }
