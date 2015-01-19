@@ -10,6 +10,13 @@ import utils.Vec2;
  */
 
 public enum PathfindingNodes implements Arc {
+	SORTIE_ZONE_DEPART(new Vec2(860,1000)),
+	SORTIE_CLAP_GAUCHE(new Vec2(-770,250)),
+	SORTIE_CLAP_DROIT(new Vec2(820,250)),
+	SORTIE_CLAP_DROIT_SECOND(new Vec2(660,220)),
+	SORTIE_TAPIS(new Vec2(266,1110)),
+
+	
 	DEVANT_DEPART_DROITE(new Vec2(700, 1100)),
 	HAUT_DROITE(new Vec2(1000, 1600)),
 	BAS_DROITE(new Vec2(800, 450)),
@@ -18,20 +25,14 @@ public enum PathfindingNodes implements Arc {
 	HAUT_GAUCHE(new Vec2(-1000, 1600)),
 	BAS_GAUCHE(new Vec2(-800, 450)),
 	COTE_MARCHE_GAUCHE(new Vec2(-830, 1600)),
-	NODE_TAPIS(new Vec2(266, 1110)),
-	CLAP_GAUCHE(new Vec2(-1070, 250)), // les claps ne sont pas symétriques, c'est normal
-	CLAP_DROIT(new Vec2(1320, 250)), 
-	CLAP_DROIT_SECOND(new Vec2(660, 220)),
+	NODE_TAPIS(new Vec2(266, 1110), SORTIE_TAPIS),
+	CLAP_GAUCHE(new Vec2(-1070, 250), SORTIE_CLAP_GAUCHE), // les claps ne sont pas symétriques, c'est normal
+	CLAP_DROIT(new Vec2(1320, 250), SORTIE_CLAP_DROIT), 
+	CLAP_DROIT_SECOND(new Vec2(660, 220), SORTIE_CLAP_GAUCHE),
 	BAS(new Vec2(0, 500)),
 
-	POINT_DEPART(new Vec2(1350, 1000)),
-	
-	SORTIE_ZONE_DEPART(new Vec2(860,1000)),
-	SORTIE_CLAP_GAUCHE(new Vec2(-770,250)),
-	SORTIE_CLAP_DROIT(new Vec2(820,250)),
-	SORTIE_CLAP_DROIT_SECOND(new Vec2(660,220)),
-	SORTIE_TAPIS(new Vec2(266,1110)),
-	
+	POINT_DEPART(new Vec2(1350, 1000), SORTIE_ZONE_DEPART),
+		
 	SECOURS_0(new Vec2(800, 600)),
 
 	
@@ -83,15 +84,28 @@ public enum PathfindingNodes implements Arc {
 	}
 	
 	private Vec2 coordonnees;
+	private PathfindingNodes sortie;
 	
 	private PathfindingNodes(Vec2 coordonnees)
 	{
 		this.coordonnees = coordonnees;
+		this.sortie = null;
 	}
+	
+	private PathfindingNodes(Vec2 coordonnees, PathfindingNodes sortie)
+	{
+		this.coordonnees = coordonnees;
+		this.sortie = sortie;
+	}	
 
 	public Vec2 getCoordonnees()
 	{
 		return coordonnees;
+	}
+	
+	public PathfindingNodes getSortie()
+	{
+		return sortie;
 	}
 
 	public double distanceTo(PathfindingNodes n)

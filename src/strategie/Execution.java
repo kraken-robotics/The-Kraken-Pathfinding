@@ -120,7 +120,7 @@ public class Execution implements Service {
 			scriptmanager.getScript(d.script_name).agit(d.version, gamestate);
 		} catch (ScriptHookException e) {
 			try {
-				scriptmanager.getScript(e.getNomScript()).agit(0, gamestate);
+				scriptmanager.getScript(e.getNomScript()).agit(null, gamestate);
 			} catch (ScriptHookException e1) {
 				// Impossible...?
 				e1.printStackTrace();

@@ -112,7 +112,7 @@ public class JUnit_Test_Graphic extends JUnit_Test {
     {
 		ArrayList<PathfindingNodes> cheminDepart = new ArrayList<PathfindingNodes>();
 		cheminDepart.add(PathfindingNodes.POINT_DEPART);
-    	Decision decision = new Decision(cheminDepart, ScriptAnticipableNames.SORTIE_ZONE_DEPART, 0);
+    	Decision decision = new Decision(cheminDepart, ScriptAnticipableNames.SORTIE_ZONE_DEPART, PathfindingNodes.POINT_DEPART);
     	config.setDateDebutMatch();
     	GameState<RobotChrono> chronostate = state.cloneGameState();
 		ArrayList<Decision> decisions = strategic_astar.computeStrategyAfter(chronostate, decision, 10000);
@@ -131,8 +131,8 @@ public class JUnit_Test_Graphic extends JUnit_Test {
 			fenetre.repaint();
 			Sleep.sleep(100);
 			ArrayList<Vec2> cheminVersSortie = new ArrayList<Vec2>();
-			cheminVersSortie.add(scriptmanager.getScript(d.script_name).point_entree(d.version).getCoordonnees());
-			cheminVersSortie.add(scriptmanager.getScript(d.script_name).point_sortie(d.version).getCoordonnees());
+			cheminVersSortie.add(d.version.getCoordonnees());
+			cheminVersSortie.add(d.version.getCoordonnees());
 			position_precedente = scriptmanager.getScript(d.script_name).point_sortie(d.version).getCoordonnees();
 			fenetre.setPath(null, cheminVersSortie, Color.RED);
 			fenetre.repaint();
@@ -161,8 +161,8 @@ public class JUnit_Test_Graphic extends JUnit_Test {
 			fenetre.repaint();
 			Sleep.sleep(3000);
 			ArrayList<Vec2> cheminVersSortie = new ArrayList<Vec2>();
-			cheminVersSortie.add(scriptmanager.getScript(d.script_name).point_entree(d.version).getCoordonnees());
-			cheminVersSortie.add(scriptmanager.getScript(d.script_name).point_sortie(d.version).getCoordonnees());
+			cheminVersSortie.add(d.version.getCoordonnees());
+			cheminVersSortie.add(d.version.getCoordonnees());
 			position_precedente = scriptmanager.getScript(d.script_name).point_sortie(d.version).getCoordonnees();
 			fenetre.setPath(null, cheminVersSortie, Color.RED);
 			fenetre.repaint();

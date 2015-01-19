@@ -49,9 +49,9 @@ public class JUnit_Script_Symetrie extends JUnit_Test {
     	gamestate.robot.setOrientation(Math.PI);
     	gamestate.robot.setPosition(PathfindingNodes.POINT_DEPART.getCoordonnees());
     	gamestate.robot.avancer(500);
-    	int version = 0;
+    	PathfindingNodes version = PathfindingNodes.NODE_TAPIS;
     	Script s = scriptmanager.getScript(ScriptAnticipableNames.TAPIS);
-    	ArrayList<PathfindingNodes> chemin = pathfinding.computePath(gamestate.cloneGameState(), s.point_entree(version), true);
+    	ArrayList<PathfindingNodes> chemin = pathfinding.computePath(gamestate.cloneGameState(), version, true);
     	gamestate.robot.suit_chemin(chemin, new ArrayList<Hook>());
     	s.agit(version, gamestate);
     }
@@ -63,9 +63,9 @@ public class JUnit_Script_Symetrie extends JUnit_Test {
     	gamestate.robot.setPosition(PathfindingNodes.POINT_DEPART.getCoordonnees());
     	gamestate.robot.avancer(500);
     	config.set(ConfigInfo.COULEUR, "jaune");
-    	int version = 0;
+    	PathfindingNodes version = PathfindingNodes.NODE_TAPIS;
     	Script s = scriptmanager.getScript(ScriptAnticipableNames.TAPIS);
-    	ArrayList<PathfindingNodes> chemin = pathfinding.computePath(gamestate.cloneGameState(), s.point_entree(version), true);
+    	ArrayList<PathfindingNodes> chemin = pathfinding.computePath(gamestate.cloneGameState(), version, true);
     	gamestate.robot.suit_chemin(chemin, new ArrayList<Hook>());
     	s.agit(version, gamestate);
     }
@@ -76,9 +76,9 @@ public class JUnit_Script_Symetrie extends JUnit_Test {
     	gamestate.robot.setOrientation(Math.PI);
     	gamestate.robot.setPosition(PathfindingNodes.POINT_DEPART.getCoordonnees());
     	gamestate.robot.avancer(500);
-    	int version = 0;
+    	PathfindingNodes version = PathfindingNodes.CLAP_DROIT;
     	Script s = scriptmanager.getScript(ScriptAnticipableNames.CLAP);
-    	ArrayList<PathfindingNodes> chemin = pathfinding.computePath(gamestate.cloneGameState(), s.point_entree(version), true);
+    	ArrayList<PathfindingNodes> chemin = pathfinding.computePath(gamestate.cloneGameState(), version, true);
     	gamestate.robot.suit_chemin(chemin, new ArrayList<Hook>());
     	s.agit(version, gamestate);
     }
@@ -89,9 +89,9 @@ public class JUnit_Script_Symetrie extends JUnit_Test {
     	gamestate.robot.setOrientation(Math.PI);
     	gamestate.robot.setPosition(PathfindingNodes.POINT_DEPART.getCoordonnees());
     	gamestate.robot.avancer(500);
-    	int version = 1;
+    	PathfindingNodes version = PathfindingNodes.CLAP_DROIT_SECOND;
     	Script s = scriptmanager.getScript(ScriptAnticipableNames.CLAP);
-    	ArrayList<PathfindingNodes> chemin = pathfinding.computePath(gamestate.cloneGameState(), s.point_entree(version), true);
+    	ArrayList<PathfindingNodes> chemin = pathfinding.computePath(gamestate.cloneGameState(), version, true);
     	gamestate.robot.suit_chemin(chemin, new ArrayList<Hook>());
     	s.agit(version, gamestate);
     }
@@ -102,9 +102,9 @@ public class JUnit_Script_Symetrie extends JUnit_Test {
     	gamestate.robot.setOrientation(Math.PI);
     	gamestate.robot.setPosition(PathfindingNodes.POINT_DEPART.getCoordonnees());
     	gamestate.robot.avancer(500);
-    	int version = 2;
+    	PathfindingNodes version = PathfindingNodes.CLAP_GAUCHE;
     	Script s = scriptmanager.getScript(ScriptAnticipableNames.CLAP);
-    	ArrayList<PathfindingNodes> chemin = pathfinding.computePath(gamestate.cloneGameState(), s.point_entree(version), true);
+    	ArrayList<PathfindingNodes> chemin = pathfinding.computePath(gamestate.cloneGameState(), version, true);
     	gamestate.robot.suit_chemin(chemin, new ArrayList<Hook>());
     	s.agit(version, gamestate);
     }

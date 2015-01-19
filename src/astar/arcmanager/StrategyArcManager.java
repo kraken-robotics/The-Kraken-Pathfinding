@@ -81,17 +81,17 @@ public class StrategyArcManager extends ArcManager implements Service {
 				Script script = scriptmanager.getScript(s);
 //				if(script.getVersions(gamestate).size() == 0)
 //					log.debug("Aucune version pour "+s, this);
-				for(Integer v: script.getVersions(gamestate))
+				for(PathfindingNodes v: script.getVersions(gamestate))
 				{
 //					log.debug("Recherche de chemins pour "+s+" "+v, this);
 					// On n'ajoute que les versions qui sont accessibles
 					try {
-						ArrayList<PathfindingNodes> chemin = astar.computePath(gamestate, script.point_entree(v), true);
+						ArrayList<PathfindingNodes> chemin = astar.computePath(gamestate, v, true);
 //						log.debug("Chemin trouvé en défonçant les éléments de jeux", this);
 						listeDecisions.add(new Decision(chemin, s, v));
 						try {
 							// On ne rajoute la version où on ne shoot pas seulement si le chemin proposé est différent
-							ArrayList<PathfindingNodes> chemin2 = astar.computePath(gamestate, script.point_entree(v), false);
+							ArrayList<PathfindingNodes> chemin2 = astar.computePath(gamestate, v, false);
 //							log.debug("Chemin trouvé sans défoncer les éléments de jeux", this);
 							if(!chemin2.equals(chemin))
 								listeDecisions.add(new Decision(chemin2, s, v));
@@ -232,9 +232,9 @@ public class StrategyArcManager extends ArcManager implements Service {
 			if(s.canIDoIt())
 			{
 				Script script = scriptmanager.getScript(s);
-				for(Integer v: script.getVersions(gamestate))
+				for(PathfindingNodes v: script.getVersions(gamestate))
 				{
-					gamestate.robot.setPositionPathfinding(script.point_entree(v));
+					gamestate.robot.setPositionPathfinding(v);
 					try {
 						script.agit(v, gamestate);
 					} catch (ScriptException | ScriptHookException | FinMatchException e) {
