@@ -1,12 +1,12 @@
 package tests;
 
-import hook.Hook;
+//import hook.Hook;
 
-import java.util.ArrayList;
+//import java.util.ArrayList;
 
-import org.junit.Assert;
+//import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Test;
+/*import org.junit.Test;
 
 import container.ServiceNames;
 import astar.arc.Decision;
@@ -17,7 +17,9 @@ import robot.RobotReal;
 import scripts.Script;
 import scripts.ScriptManager;
 import scripts.ScriptAnticipableNames;
-import strategie.GameState;
+import strategie.GameState;*/
+
+// TODO: refaire
 
 /**
  * Tests unitaires du StrategyArcManager
@@ -27,20 +29,20 @@ import strategie.GameState;
 
 public class JUnit_StrategyArcManager extends JUnit_Test {
 
-	private StrategyArcManager strategyarcmanager;
+/*	private StrategyArcManager strategyarcmanager;
 	private GameState<RobotChrono> state;
-	private ScriptManager scriptmanager;
+	private ScriptManager scriptmanager;*/
 
 	@Before
     public void setUp() throws Exception {
         super.setUp();
-        strategyarcmanager = (StrategyArcManager) container.getService(ServiceNames.STRATEGY_ARC_MANAGER);
+/*        strategyarcmanager = (StrategyArcManager) container.getService(ServiceNames.STRATEGY_ARC_MANAGER);
 		@SuppressWarnings("unchecked")
 		GameState<RobotReal> realstate = (GameState<RobotReal>)container.getService(ServiceNames.REAL_GAME_STATE);
 		state = realstate.cloneGameState();
-        scriptmanager = (ScriptManager) container.getService(ServiceNames.SCRIPT_MANAGER);
+        scriptmanager = (ScriptManager) container.getService(ServiceNames.SCRIPT_MANAGER);*/
 	}
-	
+	/*
 	@Test
 	public void test_iterator1() throws Exception
 	{
@@ -66,6 +68,7 @@ public class JUnit_StrategyArcManager extends JUnit_Test {
 	public void test_iterator2() throws Exception
 	{
     	Script s = scriptmanager.getScript(ScriptAnticipableNames.TAPIS);
+    	
     	state.robot.va_au_point_pathfinding(s.point_entree(0), new ArrayList<Hook>());
     	s.agit(0, state);
     	state.robot.va_au_point_pathfinding(s.point_sortie(0), new ArrayList<Hook>());
@@ -231,7 +234,7 @@ public class JUnit_StrategyArcManager extends JUnit_Test {
 		Assert.assertTrue(!strategyarcmanager.hasNext());
 
 	}
-
+*/
 	// TODO: test où le robot est obligé d'attendre que le robot adverse parte
 	
 }

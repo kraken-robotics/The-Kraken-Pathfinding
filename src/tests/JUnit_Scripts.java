@@ -50,11 +50,12 @@ public class JUnit_Scripts extends JUnit_Test {
     public void test_script_tapis_chrono() throws Exception
     {
     	long hash_avant = state_chrono.getHash();
+    	PathfindingNodes version = PathfindingNodes.NODE_TAPIS;
     	Script s = scriptmanager.getScript(ScriptAnticipableNames.TAPIS);
     	Assert.assertTrue(s.getVersions(state_chrono).size() == 1);
 		Assert.assertEquals(state_chrono.robot.areTapisPoses()?1:0, (hash_avant >> 15) % (1 << 1));
-    	state_chrono.robot.setPositionPathfinding(s.point_entree(0));
-    	s.agit(0, state_chrono);
+    	state_chrono.robot.setPositionPathfinding(version);
+    	s.agit(version, state_chrono);
     	Assert.assertTrue(s.getVersions(state_chrono).size() == 0);
     	Assert.assertNotEquals(hash_avant, state_chrono.getHash());
 		Assert.assertEquals(state_chrono.robot.areTapisPoses()?1:0, (state_chrono.getHash() >> 15) % (1 << 1));
@@ -71,25 +72,25 @@ public class JUnit_Scripts extends JUnit_Test {
     	log.debug(state_chrono2.robot.getPosition(), this);
     	Assert.assertEquals(state_chrono.getHash(), state_chrono2.getHash());
 
-    	state_chrono.robot.setPositionPathfinding(tapis.point_entree(0));
-    	state_chrono2.robot.setPositionPathfinding(clap.point_entree(1));
-    	tapis.agit(0, state_chrono);
-    	clap.agit(1, state_chrono2);
+    	state_chrono.robot.setPositionPathfinding(PathfindingNodes.NODE_TAPIS);
+    	state_chrono2.robot.setPositionPathfinding(PathfindingNodes.CLAP_DROIT);
+    	tapis.agit(PathfindingNodes.NODE_TAPIS, state_chrono);
+    	clap.agit(PathfindingNodes.CLAP_DROIT, state_chrono2);
     	log.debug(state_chrono.robot.getPosition(), this);
     	log.debug(state_chrono2.robot.getPosition(), this);
     	Assert.assertNotEquals(state_chrono.getHash(), state_chrono2.getHash());
 
-    	state_chrono.robot.setPositionPathfinding(clap.point_entree(1));
-    	state_chrono2.robot.setPositionPathfinding(tapis.point_entree(0));
-    	clap.agit(1, state_chrono);
-    	tapis.agit(0, state_chrono2);
+    	state_chrono.robot.setPositionPathfinding(PathfindingNodes.CLAP_DROIT);
+    	state_chrono2.robot.setPositionPathfinding(PathfindingNodes.NODE_TAPIS);
+    	clap.agit(PathfindingNodes.CLAP_DROIT, state_chrono);
+    	tapis.agit(PathfindingNodes.NODE_TAPIS, state_chrono2);
 
     	Assert.assertNotEquals(state_chrono.getHash(), state_chrono2.getHash());
 
-    	state_chrono.robot.setPositionPathfinding(clap.point_entree(0));
-    	state_chrono2.robot.setPositionPathfinding(clap.point_entree(0));
-    	clap.agit(0, state_chrono);
-    	clap.agit(0, state_chrono2);
+    	state_chrono.robot.setPositionPathfinding(PathfindingNodes.CLAP_DROIT_SECOND);
+    	state_chrono2.robot.setPositionPathfinding(PathfindingNodes.CLAP_DROIT_SECOND);
+    	clap.agit(PathfindingNodes.CLAP_DROIT_SECOND, state_chrono);
+    	clap.agit(PathfindingNodes.CLAP_DROIT_SECOND, state_chrono2);
     	Assert.assertEquals(state_chrono.getHash(), state_chrono2.getHash());
     }
 
@@ -99,13 +100,14 @@ public class JUnit_Scripts extends JUnit_Test {
     	long hash_avant = state_chrono.gridspace.getHashTable();
     	Script s = scriptmanager.getScript(ScriptAnticipableNames.CLAP);
     	Assert.assertTrue(s.getVersions(state_chrono).size() == 2);
-    	state_chrono.robot.setPositionPathfinding(s.point_entree(0));
-    	s.agit(0, state_chrono);
+    	PathfindingNodes version = PathfindingNodes.NODE_TAPIS;
+    	state_chrono.robot.setPositionPathfinding(version);
+    	s.agit(version, state_chrono);
     	Assert.assertNotEquals(hash_avant, state_chrono.gridspace.getHashTable());
     	long hash_apres = state_chrono.gridspace.getHashTable();
     	Assert.assertTrue(s.getVersions(state_chrono).size() == 1);
-    	state_chrono.robot.setPositionPathfinding(s.point_entree(1));
-    	s.agit(1, state_chrono);
+    	state_chrono.robot.setPositionPathfinding(version);
+    	s.agit(version, state_chrono);
     	Assert.assertTrue(s.getVersions(state_chrono).size() == 0);
     	Assert.assertNotEquals(hash_apres, state_chrono.gridspace.getHashTable());
     }
@@ -116,9 +118,9 @@ public class JUnit_Scripts extends JUnit_Test {
     	gamestate.robot.setOrientation(Math.PI);
     	gamestate.robot.setPosition(PathfindingNodes.POINT_DEPART.getCoordonnees());
     	gamestate.robot.avancer(500);
-    	int version = 0;
+    	PathfindingNodes version = PathfindingNodes.NODE_TAPIS;
     	Script s = scriptmanager.getScript(ScriptAnticipableNames.TAPIS);
-    	ArrayList<PathfindingNodes> chemin = pathfinding.computePath(gamestate.cloneGameState(), s.point_entree(version), true);
+    	ArrayList<PathfindingNodes> chemin = pathfinding.computePath(gamestate.cloneGameState(), version, true);
     	gamestate.robot.suit_chemin(chemin, new ArrayList<Hook>());
     	s.agit(version, gamestate);
     }
@@ -130,9 +132,9 @@ public class JUnit_Scripts extends JUnit_Test {
     	gamestate.robot.setPosition(PathfindingNodes.POINT_DEPART.getCoordonnees());
     	gamestate.robot.avancer(500);
     	config.set(ConfigInfo.COULEUR, "jaune");
-    	int version = 0;
+    	PathfindingNodes version = PathfindingNodes.NODE_TAPIS;
     	Script s = scriptmanager.getScript(ScriptAnticipableNames.TAPIS);
-    	ArrayList<PathfindingNodes> chemin = pathfinding.computePath(gamestate.cloneGameState(), s.point_entree(version), true);
+    	ArrayList<PathfindingNodes> chemin = pathfinding.computePath(gamestate.cloneGameState(), version, true);
     	gamestate.robot.suit_chemin(chemin, new ArrayList<Hook>());
     	s.agit(version, gamestate);
     }
@@ -143,9 +145,9 @@ public class JUnit_Scripts extends JUnit_Test {
     	gamestate.robot.setOrientation(Math.PI);
     	gamestate.robot.setPosition(PathfindingNodes.POINT_DEPART.getCoordonnees());
     	gamestate.robot.avancer(500);
-    	int version = 0;
+    	PathfindingNodes version = PathfindingNodes.CLAP_DROIT;
     	Script s = scriptmanager.getScript(ScriptAnticipableNames.CLAP);
-    	ArrayList<PathfindingNodes> chemin = pathfinding.computePath(gamestate.cloneGameState(), s.point_entree(version), true);
+    	ArrayList<PathfindingNodes> chemin = pathfinding.computePath(gamestate.cloneGameState(), version, true);
     	gamestate.robot.suit_chemin(chemin, new ArrayList<Hook>());
     	s.agit(version, gamestate);
     }
@@ -156,9 +158,9 @@ public class JUnit_Scripts extends JUnit_Test {
     	gamestate.robot.setOrientation(Math.PI);
     	gamestate.robot.setPosition(PathfindingNodes.POINT_DEPART.getCoordonnees());
     	gamestate.robot.avancer(1500);
-    	int version = 1;
+    	PathfindingNodes version = PathfindingNodes.CLAP_DROIT_SECOND;
     	Script s = scriptmanager.getScript(ScriptAnticipableNames.CLAP);
-    	ArrayList<PathfindingNodes> chemin = pathfinding.computePath(gamestate.cloneGameState(), s.point_entree(version), true);
+    	ArrayList<PathfindingNodes> chemin = pathfinding.computePath(gamestate.cloneGameState(), version, true);
     	gamestate.robot.suit_chemin(chemin, new ArrayList<Hook>());
     	s.agit(version, gamestate);
     }
@@ -169,9 +171,9 @@ public class JUnit_Scripts extends JUnit_Test {
     	gamestate.robot.setOrientation(Math.PI);
     	gamestate.robot.setPosition(PathfindingNodes.POINT_DEPART.getCoordonnees());
     	gamestate.robot.avancer(500);
-    	int version = 2;
+    	PathfindingNodes version = PathfindingNodes.CLAP_GAUCHE;
     	Script s = scriptmanager.getScript(ScriptAnticipableNames.CLAP);
-    	ArrayList<PathfindingNodes> chemin = pathfinding.computePath(gamestate.cloneGameState(), s.point_entree(version), true);
+    	ArrayList<PathfindingNodes> chemin = pathfinding.computePath(gamestate.cloneGameState(), version, true);
     	gamestate.robot.suit_chemin(chemin, new ArrayList<Hook>());
     	s.agit(version, gamestate);
     }
