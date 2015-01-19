@@ -22,6 +22,7 @@ public class LocomotionCardWrapper implements Service
 	 *  pour écrire dans le log en cas de problème
 	 */
 	private Log log;
+	protected Config config;
 
 	/**
 	 * connexion série avec la carte d'asservissement
@@ -54,16 +55,17 @@ public class LocomotionCardWrapper implements Service
 	/**
 	 *  nombre de miliseconde de tolérance entre la détection d'un patinage et la levée de l'exception. Trop basse il y aura des faux positifs, trop haute on va forcer dans les murs pendant longtemps
 	 */
-	int blockedTolerancy = 200;//TODO: mettre dans le fichier de config
+	int blockedTolerancy;
 
 	/**
 	 * Construit la surchouche de la carte d'asservissement
 	 * @param log le système de log ou écrire  
 	 * @param serial la connexion série avec la carte d'asservissement
 	 */
-	public LocomotionCardWrapper(Log log, SerialConnexion serial)
+	public LocomotionCardWrapper(Log log, Config config, SerialConnexion serial)
 	{
 		this.log = log;
+		this.config = config;
 		this.locomotionCardSerial = serial;
 		
 		feedbackLoopStatistics[FeedbackLoopStatisticsElement.PWMmoteurGauche.ordinal()] = 0;
@@ -72,12 +74,14 @@ public class LocomotionCardWrapper implements Service
 		feedbackLoopStatistics[FeedbackLoopStatisticsElement.erreur_translation.ordinal()] = 0;
 		feedbackLoopStatistics[FeedbackLoopStatisticsElement.derivee_erreur_rotation.ordinal()] = 0;
 		feedbackLoopStatistics[FeedbackLoopStatisticsElement.derivee_erreur_translation.ordinal()] = 0;
-		feedbackLoopStatistics[FeedbackLoopStatisticsElement.inverse_erreur_translation_integrale.ordinal()] = 100; // TODO useless?
+//		feedbackLoopStatistics[FeedbackLoopStatisticsElement.inverse_erreur_translation_integrale.ordinal()] = 100;
 		updateConfig();
 	}
 	
+	@Override
 	public void updateConfig()
 	{
+		blockedTolerancy = config.getInt(ConfigInfo.TEMPS_AVANT_BLOCAGE);
 	}	
 	
 	/**
@@ -98,7 +102,6 @@ public class LocomotionCardWrapper implements Service
 		boolean areMotorsActive = Math.abs(pwmLeftMotor) > 40 || Math.abs(pwmRightMotor) > 40;
 		
 		// on décrète que le robot est immobile si l'écart entre la position demandée et la position actuelle est (casi) constant
-		//TODO: pourquoi ne pas utiliser isRobotMoving() ?
 		boolean isRobotImmobile = Math.abs(derivatedRotationnalError) <= 10 && Math.abs(derivatedTranslationnalError) <= 10;
 
 		// si on patine
@@ -144,8 +147,8 @@ public class LocomotionCardWrapper implements Service
 	}
 
 	/** 
-	 * Regarde si le robot bouge effectivement.
-	 * Provoque un appel série pour avoir des information a jour. Cette méthode est demande donc un peu de temps. 
+	 * Renvoie "faux" si le robot est arrivé et s'il est à la bonne position, vrai sinon.
+	 * Provoque un appel série pour avoir des information a jour. Cette méthode demande donc un peu de temps. 
 	 * @return vrai si le robot bouge, faux si le robot est immobile
 	 * @throws SerialConnexionException en cas de problème de communication avec la carte d'asservissement
 	 * @throws FinMatchException 
