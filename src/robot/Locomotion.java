@@ -57,61 +57,11 @@ public class Locomotion implements Service
         updateConfig();
     }
     
-    public void readjust() // TODO
+    public void readjust()
     {
         try {
-            if(symetrie)
-                setOrientation(0f);
-            else
-                setOrientation(Math.PI);
-
-            log.debug("recale X",this);
-            Sleep.sleep(2000);
-            moveLengthwise(-200, null, true);
-//            deplacements.setTranslationnalSpeed(200);
-            deplacements.disableRotationnalFeedbackLoop();
-            Sleep.sleep(1000);
-            moveLengthwise(-200, null, true);
-            deplacements.enableRotationnalFeedbackLoop();
-//            deplacements.setTranslationnalSpeed(Speed.READJUSTMENT.PWMTranslation);
-
-            position.x = 1500 - 165;
-            if(symetrie)
-            {
-                setOrientation(0f);
-                deplacements.setX(-1500+165);
-            }
-            else
-            {
-                deplacements.setX(1500-165);
-                setOrientation(Math.PI);
-            }
-
-
-            Sleep.sleep(500);
-            moveLengthwise(40, null, true);
-            turn(-Math.PI/2, null);
-
-            
-        	log.debug("recale Y",this);
-            moveLengthwise(-600, null, true);
-//            deplacements.setTranslationnalSpeed(200);
-            deplacements.disableRotationnalFeedbackLoop();
-            Sleep.sleep(1000);
-            moveLengthwise(-200, null, true);
-            deplacements.enableRotationnalFeedbackLoop();
-//            deplacements.setTranslationnalSpeed(Speed.READJUSTMENT.PWMTranslation);
-            position.y = 2000 - 165;
-            deplacements.setY(2000 - 165);
-            
-
-        	log.debug("Done !",this);
-            Sleep.sleep(500);
-            moveLengthwise(100, null, false);
-            orientation = -Math.PI/2;
-            setOrientation(-Math.PI/2);
-            //Normalement on se trouve à (1500 - 165 - 100 = 1225 ; 2000 - 165 - 100 = 1725)
-            deplacements.enableRotationnalFeedbackLoop();
+            setOrientation(0f);
+            setPosition(PathfindingNodes.POINT_DEPART.getCoordonnees());
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -292,7 +292,7 @@ public class HookFactory implements Service
         // Cette date est celle demandée à la real gamestate
         // Les chrono gamestate la modifieront si besoin est
     	HookDateFinMatch hook_fin_match = newHookDateFinMatch(dureeMatch, state);
-    	hook_fin_match.ajouter_callback(new Callback(new ThrowsScriptHook(ScriptHookNames.FUNNY_ACTION, 0)));
+    	hook_fin_match.ajouter_callback(new Callback(new ThrowsScriptHook(ScriptHookNames.FUNNY_ACTION, null)));
 
     	return hook_fin_match;
     }
@@ -359,6 +359,15 @@ public class HookFactory implements Service
 				hook.ajouter_callback(new Callback(action));
 				hooks_entre_scripts.add(hook);
 			}
+			
+			if(n.getType().scriptHookThrown() != null)
+			{
+				hook = newHookCollision(n.getObstacleDilate(), state);
+				ThrowsScriptHook action2 = new ThrowsScriptHook(n.getType().scriptHookThrown(), n);
+				hook.ajouter_callback(new Callback(action2));
+				hooks_entre_scripts.add(hook);				
+			}
+
 		}
 		return hooks_entre_scripts;
     }

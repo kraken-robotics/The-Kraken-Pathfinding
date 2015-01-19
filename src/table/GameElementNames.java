@@ -33,15 +33,24 @@ public enum GameElementNames {
 	
 	private GameElementType type;
 	private ObstacleCircular obstacle;
+	private ObstacleCircular obstacleDilate;
 
+	private int dilatationHookScript = 50;
+	
 	public ObstacleCircular getObstacle()
 	{
 		return obstacle;
 	}
-	
+
+	public ObstacleCircular getObstacleDilate()
+	{
+		return obstacleDilate;
+	}
+
 	private GameElementNames(GameElementType type, Vec2 position, int radius)
 	{
 		obstacle = new ObstacleCircular(position, radius);
+		obstacleDilate = new ObstacleCircular(position, radius+dilatationHookScript);
 		this.type = type;
 	}
 	

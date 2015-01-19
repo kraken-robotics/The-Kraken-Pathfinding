@@ -3,6 +3,7 @@ package hook.methods;
 import robot.RobotChrono;
 import scripts.ScriptHookNames;
 import strategie.GameState;
+import table.GameElementNames;
 import hook.Executable;
 import exceptions.ScriptHookException;
 
@@ -15,9 +16,9 @@ import exceptions.ScriptHookException;
 public class ThrowsScriptHook implements Executable {
 
 	private ScriptHookNames script;
-	private int version;
+	private GameElementNames version;
 	
-	public ThrowsScriptHook(ScriptHookNames script, int version)
+	public ThrowsScriptHook(ScriptHookNames script, GameElementNames version)
 	{
 		this.script = script;
 		this.version = version;

@@ -119,12 +119,7 @@ public class Execution implements Service {
 			threadstrategy.computeBestDecisionAfter(d);
 			scriptmanager.getScript(d.script_name).agit(d.version, gamestate);
 		} catch (ScriptHookException e) {
-			try {
-				scriptmanager.getScript(e.getNomScript()).agit(null, gamestate);
-			} catch (ScriptHookException e1) {
-				// Impossible...?
-				e1.printStackTrace();
-			}
+			scriptmanager.getScript(e.getNomScript()).agit(null, gamestate);
 		}
 	}
 
