@@ -555,7 +555,7 @@ public class Locomotion implements Service
         if(symetrie)
         	this.orientation = Math.PI-this.orientation;
         try {
-    		deplacements.setOrientation(orientation);
+    		deplacements.setOrientation(this.orientation);
         } catch (SerialConnexionException e) {
             e.printStackTrace();
         }
