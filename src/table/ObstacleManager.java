@@ -1,7 +1,6 @@
 package table;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import obstacles.Obstacle;
 import obstacles.ObstacleProximity;
@@ -33,35 +32,17 @@ public class ObstacleManager implements Service
     private static ObstacleProximity hypotheticalEnemy = null;
     private boolean isThereHypotheticalEnemy = false;
     
-    // Les obstacles fixes sont surtout utilisés pour savoir si un capteur détecte un ennemi ou un obstacle fixe
-    // Commun à toutes les instances
-    private static ArrayList<Obstacle> listObstaclesFixes = null;
-  
     private int firstNotDead = 0;
 
     private int rayon_robot_adverse = 200;
     private int distanceApproximation = 50;
     private int dureeAvantPeremption = 0;
-    
-    /**
-     * L'initialisation a lieu une seule fois pour tous les objets.
-     */
-    private void createListObstaclesFixes()
-    {
-        listObstaclesFixes = new ArrayList<Obstacle>();
-
-        for(ObstaclesFixes o: ObstaclesFixes.values())
-        	listObstaclesFixes.add(new ObstacleRectangular(o.position, o.sizeX, o.sizeY)); // plaque rouge
-    }
-    
+        
     public ObstacleManager(Log log, Config config, Table table)
     {
         this.log = log;
         this.config = config;
         this.table = table;
-
-        if(listObstaclesFixes == null)
-        	createListObstaclesFixes();
 
         // On n'instancie hypotheticalEnnemy qu'une seule fois
         if(hypotheticalEnemy == null)
@@ -191,9 +172,9 @@ public class ObstacleManager implements Service
     public boolean obstacleFixeDansSegmentPathfinding(Vec2 A, Vec2 B)
     {
     	ObstacleRectangular chemin = new ObstacleRectangular(A, B);
-    	for(Obstacle o: listObstaclesFixes)
+    	for(ObstaclesFixes o: ObstaclesFixes.values())
     	{
-    		if(chemin.isColliding(o))
+    		if(chemin.isColliding(o.getObstacle()))
     			return true;
     	}
     	return false;
@@ -247,13 +228,9 @@ public class ObstacleManager implements Service
      */
     public boolean isObstacleFixePresentCapteurs(Vec2 position)
     {
-        Iterator<Obstacle> iterator2 = listObstaclesFixes.iterator();
-        while(iterator2.hasNext())
-        {
-            Obstacle o = iterator2.next();
-            if(isObstaclePresent(position, o, distanceApproximation))
+    	for(ObstaclesFixes o: ObstaclesFixes.values())
+            if(isObstaclePresent(position, o.getObstacle(), distanceApproximation))
                 return true;
-        }
         return false;
     }
     
@@ -306,14 +283,6 @@ public class ObstacleManager implements Service
 		rayon_robot_adverse = config.getInt(ConfigInfo.RAYON_ROBOT_ADVERSE);
 		dureeAvantPeremption = config.getInt(ConfigInfo.DUREE_PEREMPTION_OBSTACLES);
 		distanceApproximation = config.getInt(ConfigInfo.DISTANCE_MAX_ENTRE_MESURE_ET_OBJET);
-	}
-	/**
-	 * Utilisé pour l'affichage
-	 * @return 
-	 */
-	public ArrayList<Obstacle> getListObstaclesFixes()
-	{
-		return listObstaclesFixes;
 	}
 
 	/**

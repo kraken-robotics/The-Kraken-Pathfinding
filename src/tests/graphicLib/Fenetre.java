@@ -7,6 +7,7 @@ import obstacles.Obstacle;
 import obstacles.ObstacleCircular;
 import obstacles.ObstacleProximity;
 import obstacles.ObstacleRectangular;
+import obstacles.ObstaclesFixes;
 import table.GameElementNames;
 import utils.Vec2;
 
@@ -28,7 +29,6 @@ public class Fenetre extends JPanel {
 
 	private int sizeX = 450, sizeY = 300;
 	private ArrayList<Vec2> pointsADessiner = new ArrayList<Vec2>();
-	private ArrayList<Obstacle> listObstaclesFixes;
 	private ArrayList<ObstacleProximity> listObstaclesMobiles;
 	private ArrayList<Vec2[]> segments = new ArrayList<Vec2[]>();
 	private Image image;
@@ -109,8 +109,8 @@ public class Fenetre extends JPanel {
 			paintObstacle(o,g,dilatationObstacle);*/
 
 		g.setColor(Color.RED.darker().darker());
-		for(Obstacle o : listObstaclesFixes)
-			paintObstacle(o, g,0);
+		for(ObstaclesFixes o : ObstaclesFixes.values())
+			paintObstacle(o.getObstacle(), g,0);
 
 		g.setColor(Color.YELLOW);
 		for(Vec2 pos : pointsADessiner)
@@ -165,11 +165,6 @@ public class Fenetre extends JPanel {
 		frame.getContentPane().add(this);
 		frame.pack();
 		frame.setVisible(true);
-	}
-
-	public void setObstaclesFixes(ArrayList<Obstacle> listObstaclesFixes)
-	{
-		this.listObstaclesFixes = listObstaclesFixes;
 	}
 
 	public void setObstaclesMobiles(ArrayList<ObstacleProximity> listObstaclesMobiles, int firstNotDead)

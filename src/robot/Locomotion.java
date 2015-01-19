@@ -19,8 +19,11 @@ import utils.Log;
 import utils.Sleep;
 import utils.Vec2;
 
+// TODO: ScriptHookException ne peut être lancé que sur un chemin, donc
+// que par un suit_chemin
+
 /**
- * Entre Deplacement (appels à la série) et RobotVrai (déplacements haut niveau), RobotBasNiveau
+ * Entre Deplacement (appels à la série) et RobotVrai (déplacements haut niveau), Locomotion
  * s'occupe de la position, de la symétrie, des hooks, des trajectoires courbes et des blocages.
  * Structure, du bas au haut niveau: symétrie, hook, trajectoire courbe et blocage.
  * Les méthodes "non-bloquantes" se finissent alors que le robot roule encore.

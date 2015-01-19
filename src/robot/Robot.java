@@ -31,9 +31,9 @@ public abstract class Robot implements Service
 	
 	public abstract void stopper() throws FinMatchException;
     public abstract void tourner(double angle)
-            throws UnableToMoveException, FinMatchException, ScriptHookException;
+            throws UnableToMoveException, FinMatchException;
     public abstract void avancer(int distance, ArrayList<Hook> hooks, boolean mur)
-            throws UnableToMoveException, FinMatchException, ScriptHookException;
+            throws UnableToMoveException, FinMatchException;
     public abstract void suit_chemin(ArrayList<PathfindingNodes> chemin, ArrayList<Hook> hooks)
             throws UnableToMoveException, FinMatchException, ScriptHookException;
 	public abstract void set_vitesse(Speed vitesse) throws FinMatchException;
@@ -121,7 +121,7 @@ public abstract class Robot implements Service
 	 * @throws FinMatchException
 	 * @throws ScriptHookException
 	 */
-	public void tourner_relatif(double angle) throws UnableToMoveException, FinMatchException, ScriptHookException
+	public void tourner_relatif(double angle) throws UnableToMoveException, FinMatchException
 	{
 		tourner(getOrientation() + angle);
 	}
@@ -132,7 +132,7 @@ public abstract class Robot implements Service
      * @throws UnableToMoveException
      * @throws ScriptHookException 
      */
-    public void tourner_sans_symetrie(double angle) throws UnableToMoveException, FinMatchException, ScriptHookException
+    public void tourner_sans_symetrie(double angle) throws UnableToMoveException, FinMatchException
     {
         if(symetrie)
             tourner(Math.PI-angle);
@@ -147,7 +147,7 @@ public abstract class Robot implements Service
      * @throws FinMatchException
      * @throws ScriptHookException
      */
-    public void avancer(int distance) throws UnableToMoveException, FinMatchException, ScriptHookException
+    public void avancer(int distance) throws UnableToMoveException, FinMatchException
     {
         avancer(distance, new ArrayList<Hook>(), false);
     }
@@ -160,7 +160,7 @@ public abstract class Robot implements Service
      * @throws FinMatchException
      * @throws ScriptHookException
      */
-    public void avancer(int distance, ArrayList<Hook> hooks) throws UnableToMoveException, FinMatchException, ScriptHookException
+    public void avancer(int distance, ArrayList<Hook> hooks) throws UnableToMoveException, FinMatchException
     {
         avancer(distance, hooks, false);
     }
@@ -172,7 +172,7 @@ public abstract class Robot implements Service
      * @throws FinMatchException
      * @throws ScriptHookException
      */
-    public void avancer_dans_mur(int distance) throws UnableToMoveException, FinMatchException, ScriptHookException
+    public void avancer_dans_mur(int distance) throws UnableToMoveException, FinMatchException
     {
         Speed sauv_vitesse = vitesse; 
         set_vitesse(Speed.INTO_WALL);

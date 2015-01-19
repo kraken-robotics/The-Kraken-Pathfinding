@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Random;
 
-import obstacles.Obstacle;
 import obstacles.ObstacleRectangular;
 import obstacles.ObstaclesFixes;
 
@@ -70,7 +69,6 @@ public class JUnit_Test_Graphic extends JUnit_Test {
 	
 	public void updateAffichage()
 	{
-		fenetre.setObstaclesFixes(obstaclemanager.getListObstaclesFixes());
 		fenetre.setObstaclesMobiles(obstaclemanager.getListObstaclesMobiles(), obstaclemanager.getFirstNotDead());
 	}
 
@@ -183,7 +181,7 @@ public class JUnit_Test_Graphic extends JUnit_Test {
 		Vec2 B = PathfindingNodes.HAUT_GAUCHE.getCoordonnees();
 		ObstacleRectangular o1 = new ObstacleRectangular(A.middleNewVector(B), (int)A.distance(B)+longueur_robot+2*marge, largeur_robot+2*marge, Math.atan2(B.y-A.y, B.x-A.x));
 		ObstaclesFixes o = ObstaclesFixes.BANDE_1;
-		ObstacleRectangular o2 = new ObstacleRectangular(o.position, o.sizeX, o.sizeY, 0);
+		ObstacleRectangular o2 = o.getObstacle();
     	ObstacleRectangular o3 = new ObstacleRectangular(new Vec2(1000,1000), 200, 200, Math.PI/8);
     	ObstacleRectangular o4 = new ObstacleRectangular(new Vec2(900, 1100), 50, 50, 0);
 		log.debug("Collision ? "+o1.isColliding(o2), this);
@@ -205,8 +203,7 @@ public class JUnit_Test_Graphic extends JUnit_Test {
 		ObstacleRectangular rectangle = new ObstacleRectangular(A.middleNewVector(B), (int)A.distance(B)+longueur_robot+2*marge, largeur_robot+2*marge, Math.atan2(B.y-A.y, B.x-A.x));
 		fenetre.addObstacleEnBiais(rectangle);
 		fenetre.repaint();
-		ArrayList<Obstacle> obstaclesFixes = obstaclemanager.getListObstaclesFixes();
-		ObstacleRectangular o = (ObstacleRectangular) obstaclesFixes.get(ObstaclesFixes.BANDE_1.ordinal());
+		ObstacleRectangular o = ObstaclesFixes.BANDE_1.getObstacle();
 		log.debug("Collision avec "+o.getPosition()+"? "+rectangle.isColliding(o), this);
 		Sleep.sleep(3000);
     }
