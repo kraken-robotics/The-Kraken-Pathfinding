@@ -89,8 +89,8 @@ public class JUnit_Obstacle extends JUnit_Test {
     	Assert.assertTrue(!o.isColliding(new ObstacleRectangular(new Vec2(0, 1200), 10, 10, 0)));
     	Assert.assertTrue(!o.isColliding(new ObstacleRectangular(new Vec2(0, 800), 10, 10, 0)));
     	Assert.assertTrue(!o.isColliding(new ObstacleRectangular(new Vec2(900, 1100), 20, 20, 0)));
-    	Assert.assertTrue(!o.isColliding(new ObstacleRectangular(new Vec2(900, 1100), 50, 50, 0)));
-    	Assert.assertTrue(!o.isColliding(new ObstacleRectangular(new Vec2(900, 1100), 60, 60, 0)));
+    	Assert.assertTrue(!o.isColliding(new ObstacleRectangular(new Vec2(900, 1100), 40, 40, 0)));
+    	Assert.assertTrue(o.isColliding(new ObstacleRectangular(new Vec2(900, 1100), 60, 60, 0)));
     }
 
 }

@@ -1,4 +1,4 @@
-package obstacles.gameElement;
+package table;
 
 import obstacles.ObstacleCircular;
 import utils.Vec2;

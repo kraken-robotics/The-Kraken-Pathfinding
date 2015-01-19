@@ -37,7 +37,7 @@ public class Vec2
 	// Returns this vec2's magnitude
 	public float length()
 	{
-		return (float) Math.hypot(x*x, y*y);
+		return (float) Math.hypot(x, y);
 	}
 	
 	// dot product

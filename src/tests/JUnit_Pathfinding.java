@@ -6,8 +6,6 @@ import hook.HookFactory;
 import java.util.ArrayList;
 import java.util.Random;
 
-import obstacles.gameElement.GameElementNames;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,6 +18,7 @@ import astar.arcmanager.PathfindingArcManager;
 import robot.RobotChrono;
 import robot.RobotReal;
 import strategie.GameState;
+import table.GameElementNames;
 import utils.ConfigInfo;
 import utils.Vec2;
 import enums.Tribool;
@@ -83,26 +82,28 @@ public class JUnit_Pathfinding extends JUnit_Test {
 	@Test
     public void test_element_jeu_disparu() throws Exception
     {
-    	// une fois ce verre pris, le chemin est libre
-    	state_chrono.gridspace.setDone(GameElementNames.VERRE_3, Tribool.TRUE);
-    	state_chrono.robot.setPositionPathfinding(PathfindingNodes.BAS_GAUCHE);
-    	pathfinding.computePath(state_chrono, PathfindingNodes.COTE_MARCHE_GAUCHE, false);
+    	// une fois ces éléments pris, le chemin est libre
+    	state_chrono.gridspace.setDone(GameElementNames.PLOT_1, Tribool.TRUE);
+    	state_chrono.gridspace.setDone(GameElementNames.PLOT_2, Tribool.TRUE);
+    	state_chrono.gridspace.setDone(GameElementNames.VERRE_2, Tribool.TRUE);
+    	state_chrono.robot.setPositionPathfinding(PathfindingNodes.CLAP_DROIT_SECOND);
+    	pathfinding.computePath(state_chrono, PathfindingNodes.CLAP_DROIT, false);
     }
 
 	@Test(expected=PathfindingException.class)
     public void test_element_jeu_disparu_2() throws Exception
     {
 		// Exception car il y a un verre sur le passage
-		state_chrono.robot.setPositionPathfinding(PathfindingNodes.BAS_GAUCHE);
-    	pathfinding.computePath(state_chrono, PathfindingNodes.COTE_MARCHE_GAUCHE, false);
+		state_chrono.robot.setPositionPathfinding(PathfindingNodes.CLAP_DROIT_SECOND);
+    	pathfinding.computePath(state_chrono, PathfindingNodes.CLAP_DROIT, false);
     }
 	
 	@Test
     public void test_element_jeu_disparu_3() throws Exception
     {
 		// Pas d'exception car on demande au pathfinding de passer sur les éléments de jeux.
-		state_chrono.robot.setPositionPathfinding(PathfindingNodes.BAS_GAUCHE);
-    	pathfinding.computePath(state_chrono, PathfindingNodes.COTE_MARCHE_GAUCHE, true);
+		state_chrono.robot.setPositionPathfinding(PathfindingNodes.CLAP_DROIT_SECOND);
+    	pathfinding.computePath(state_chrono, PathfindingNodes.CLAP_DROIT, true);
     }
 
 	@Test

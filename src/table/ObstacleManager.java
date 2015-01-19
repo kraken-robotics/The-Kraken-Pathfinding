@@ -7,7 +7,6 @@ import obstacles.Obstacle;
 import obstacles.ObstacleProximity;
 import obstacles.ObstacleRectangular;
 import obstacles.ObstaclesFixes;
-import obstacles.gameElement.GameElementNames;
 import container.Service;
 import enums.Tribool;
 import utils.Config;

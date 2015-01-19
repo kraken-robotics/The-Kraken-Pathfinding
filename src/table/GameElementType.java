@@ -1,4 +1,4 @@
-package obstacles.gameElement;
+package table;
 
 /**
  * Type d'élément de jeux.

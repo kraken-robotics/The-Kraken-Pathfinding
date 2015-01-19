@@ -1,13 +1,12 @@
 package tests;
 
-import obstacles.gameElement.GameElementNames;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import astar.arc.PathfindingNodes;
 import container.ServiceNames;
+import table.GameElementNames;
 import table.ObstacleManager;
 import table.Table;
 import utils.ConfigInfo;

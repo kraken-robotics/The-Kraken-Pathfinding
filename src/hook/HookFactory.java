@@ -3,7 +3,6 @@ package hook;
 import java.util.ArrayList;
 
 import obstacles.ObstacleCircular;
-import obstacles.gameElement.GameElementNames;
 import hook.methods.GameElementDone;
 import hook.methods.ThrowsScriptHook;
 import hook.types.HookCollision;
@@ -22,6 +21,7 @@ import robot.RobotChrono;
 import robot.RobotReal;
 import scripts.ScriptHookNames;
 import strategie.GameState;
+import table.GameElementNames;
 import utils.ConfigInfo;
 import utils.Log;
 import utils.Config;
@@ -352,7 +352,7 @@ public class HookFactory implements Service
 			}
 
 			// Ce qu'on peut shooter
-			if(n.getType().canBeShot()) // on ne met un hook de position que sur ceux qui ont susceptible de disparaître quand on passe dessus
+			if(n.getType().canBeShot()) // on ne met un hook de collision que sur ceux qui ont susceptible de disparaître quand on passe dessus
 			{
 				hook = newHookCollision(n.getObstacle(), state);
 				action = new GameElementDone(state.gridspace, n, Tribool.TRUE);

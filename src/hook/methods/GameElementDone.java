@@ -1,8 +1,8 @@
 package hook.methods;
 
-import obstacles.gameElement.GameElementNames;
 import robot.RobotChrono;
 import strategie.GameState;
+import table.GameElementNames;
 import table.GridSpace;
 import enums.Tribool;
 import hook.Executable;

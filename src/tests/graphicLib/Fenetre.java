@@ -7,7 +7,7 @@ import obstacles.Obstacle;
 import obstacles.ObstacleCircular;
 import obstacles.ObstacleProximity;
 import obstacles.ObstacleRectangular;
-import obstacles.gameElement.GameElementNames;
+import table.GameElementNames;
 import utils.Vec2;
 
 import java.awt.*;
@@ -98,11 +98,11 @@ public class Fenetre extends JPanel {
 	{
 		g.drawImage(image, 0, 0, this);
 
-//	    g.setColor(Color.PINK.darker().darker());
-//	    paintObstacleEnBiais(g);
+	    g.setColor(Color.PINK.darker().darker());
+	    paintObstacleEnBiais(g);
 		
-//	    g.setColor(Color.PINK);
-//	    paintSegments(g);
+	    g.setColor(Color.PINK);
+	    paintSegments(g);
 
 /*		g.setColor(Color.RED.darker().darker().darker());
 		for(Obstacle o : listObstaclesFixes)

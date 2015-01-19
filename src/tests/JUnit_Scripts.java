@@ -99,13 +99,20 @@ public class JUnit_Scripts extends JUnit_Test {
     {
     	long hash_avant = state_chrono.gridspace.getHashTable();
     	Script s = scriptmanager.getScript(ScriptAnticipableNames.CLAP);
-    	Assert.assertTrue(s.getVersions(state_chrono).size() == 2);
-    	PathfindingNodes version = PathfindingNodes.NODE_TAPIS;
+    	Assert.assertTrue(s.getVersions(state_chrono).size() == 3);
+    	PathfindingNodes version = PathfindingNodes.CLAP_DROIT_SECOND;
     	state_chrono.robot.setPositionPathfinding(version);
     	s.agit(version, state_chrono);
     	Assert.assertNotEquals(hash_avant, state_chrono.gridspace.getHashTable());
     	long hash_apres = state_chrono.gridspace.getHashTable();
+    	Assert.assertTrue(s.getVersions(state_chrono).size() == 2);
+    	version = PathfindingNodes.CLAP_DROIT;
+    	state_chrono.robot.setPositionPathfinding(version);
+    	s.agit(version, state_chrono);
     	Assert.assertTrue(s.getVersions(state_chrono).size() == 1);
+    	Assert.assertNotEquals(hash_apres, state_chrono.gridspace.getHashTable());
+    	hash_apres = state_chrono.gridspace.getHashTable();
+    	version = PathfindingNodes.CLAP_GAUCHE;
     	state_chrono.robot.setPositionPathfinding(version);
     	s.agit(version, state_chrono);
     	Assert.assertTrue(s.getVersions(state_chrono).size() == 0);

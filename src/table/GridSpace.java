@@ -1,7 +1,6 @@
 package table;
 
 import astar.arc.PathfindingNodes;
-import obstacles.gameElement.GameElementNames;
 import container.Service;
 import utils.Config;
 import utils.Log;

@@ -2,8 +2,6 @@ package tests;
 
 import java.util.ArrayList;
 
-import obstacles.gameElement.GameElementNames;
-
 import org.junit.Assert;
 
 import hook.Hook;
@@ -19,6 +17,7 @@ import astar.arcmanager.PathfindingArcManager;
 import robot.RobotChrono;
 import robot.RobotReal;
 import strategie.GameState;
+import table.GameElementNames;
 import utils.Vec2;
 import enums.Tribool;
 import exceptions.PathfindingException;
@@ -54,11 +53,11 @@ public class JUnit_Hook extends JUnit_Test {
 		ArrayList<Hook> hooks_table = hookfactory.getHooksEntreScriptsReal(real_gamestate);
 		real_gamestate.robot.setPosition(new Vec2(600, 350));
 		real_gamestate.robot.setOrientation(Math.PI);
-		Assert.assertTrue(real_gamestate.gridspace.isDone(GameElementNames.VERRE_5) == Tribool.FALSE);
+		Assert.assertEquals(real_gamestate.gridspace.isDone(GameElementNames.VERRE_5), Tribool.FALSE);
 		real_gamestate.robot.avancer(100, hooks_table);
-		Assert.assertTrue(real_gamestate.gridspace.isDone(GameElementNames.VERRE_5) == Tribool.FALSE);
+		Assert.assertEquals(real_gamestate.gridspace.isDone(GameElementNames.VERRE_5), Tribool.FALSE);
 		real_gamestate.robot.avancer(500, hooks_table);
-		Assert.assertTrue(real_gamestate.gridspace.isDone(GameElementNames.VERRE_5) == Tribool.TRUE);
+		Assert.assertEquals(real_gamestate.gridspace.isDone(GameElementNames.VERRE_5), Tribool.TRUE);
 	}
 
 	@Test
@@ -67,23 +66,24 @@ public class JUnit_Hook extends JUnit_Test {
 		ArrayList<Hook> hooks_table = hookfactory.getHooksEntreScriptsChrono(chrono_gamestate, 90000);
 		chrono_gamestate.robot.setPosition(new Vec2(600, 350));
 		chrono_gamestate.robot.setOrientation(Math.PI);
-		Assert.assertTrue(chrono_gamestate.gridspace.isDone(GameElementNames.VERRE_5) == Tribool.FALSE);
+		Assert.assertEquals(chrono_gamestate.gridspace.isDone(GameElementNames.VERRE_5), Tribool.FALSE);
 		chrono_gamestate.robot.avancer(100, hooks_table);
-		Assert.assertTrue(chrono_gamestate.gridspace.isDone(GameElementNames.VERRE_5) == Tribool.FALSE);
+		Assert.assertEquals(chrono_gamestate.gridspace.isDone(GameElementNames.VERRE_5), Tribool.FALSE);
 		chrono_gamestate.robot.avancer(500, hooks_table);
-		Assert.assertTrue(chrono_gamestate.gridspace.isDone(GameElementNames.VERRE_5) == Tribool.TRUE);
+		Assert.assertEquals(chrono_gamestate.gridspace.isDone(GameElementNames.VERRE_5), Tribool.TRUE);
 	}
 
 	@Test
 	public void test_hook_chrono_sleep() throws Exception
 	{
 		config.setDateDebutMatch();
+		chrono_gamestate.robot.setPosition(new Vec2(1300, 500));
 		ArrayList<Hook> hooks_table = hookfactory.getHooksEntreScriptsReal(real_gamestate);
-		Assert.assertTrue(real_gamestate.gridspace.isDone(GameElementNames.VERRE_5) == Tribool.FALSE);
+		Assert.assertEquals(real_gamestate.gridspace.isDone(GameElementNames.VERRE_5), Tribool.FALSE);
 		chrono_gamestate.robot.sleep(5000, hooks_table);
-		Assert.assertTrue(real_gamestate.gridspace.isDone(GameElementNames.VERRE_5) == Tribool.FALSE);
+		Assert.assertEquals(real_gamestate.gridspace.isDone(GameElementNames.VERRE_5), Tribool.FALSE);
 		chrono_gamestate.robot.sleep(60000, hooks_table);
-		Assert.assertTrue(real_gamestate.gridspace.isDone(GameElementNames.VERRE_5) == Tribool.MAYBE);
+		Assert.assertEquals(real_gamestate.gridspace.isDone(GameElementNames.VERRE_5), Tribool.MAYBE);
 	}
 
 	@Test(expected=PathfindingException.class)

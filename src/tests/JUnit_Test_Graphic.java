@@ -82,6 +82,9 @@ public class JUnit_Test_Graphic extends JUnit_Test {
 		{
 			PathfindingNodes i = PathfindingNodes.values()[randomgenerator.nextInt(PathfindingNodes.values().length)];
 			PathfindingNodes j = PathfindingNodes.values()[randomgenerator.nextInt(PathfindingNodes.values().length)];
+//			i = PathfindingNodes.BAS_GAUCHE;
+//			j = PathfindingNodes.COTE_MARCHE_GAUCHE;
+
 			log.debug("Recherche chemin entre "+i+" et "+j, this);
 			Vec2 entree = i.getCoordonnees().plusNewVector(new Vec2(randomgenerator.nextInt(100)-50, randomgenerator.nextInt(100)-50));
 			config.setDateDebutMatch(); // afin d'avoir toujours une haute précision
@@ -181,10 +184,12 @@ public class JUnit_Test_Graphic extends JUnit_Test {
 		ObstacleRectangular o1 = new ObstacleRectangular(A.middleNewVector(B), (int)A.distance(B)+longueur_robot+2*marge, largeur_robot+2*marge, Math.atan2(B.y-A.y, B.x-A.x));
 		ObstaclesFixes o = ObstaclesFixes.BANDE_1;
 		ObstacleRectangular o2 = new ObstacleRectangular(o.position, o.sizeX, o.sizeY, 0);
+    	ObstacleRectangular o3 = new ObstacleRectangular(new Vec2(1000,1000), 200, 200, Math.PI/8);
+    	ObstacleRectangular o4 = new ObstacleRectangular(new Vec2(900, 1100), 50, 50, 0);
 		log.debug("Collision ? "+o1.isColliding(o2), this);
 		log.debug("Collision ? "+o2.isColliding(o1), this);
-		fenetre.addObstacleEnBiais(o1);
-		fenetre.addObstacleEnBiais(o2);
+		fenetre.addObstacleEnBiais(o3);
+		fenetre.addObstacleEnBiais(o4);
 		fenetre.repaint();
 		Sleep.sleep(5000);
     }

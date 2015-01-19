@@ -1,7 +1,6 @@
 package table;
 
 import obstacles.ObstacleRectangular;
-import obstacles.gameElement.GameElementNames;
 import container.Service;
 import enums.Tribool;
 import utils.*;

@@ -1,7 +1,5 @@
 package tests;
 
-import obstacles.gameElement.GameElementNames;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,6 +9,7 @@ import container.ServiceNames;
 import robot.RobotChrono;
 import robot.RobotReal;
 import strategie.GameState;
+import table.GameElementNames;
 import utils.Vec2;
 import enums.Tribool;
 
