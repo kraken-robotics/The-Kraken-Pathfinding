@@ -4,6 +4,10 @@ import hook.Hook;
 
 import java.util.ArrayList;
 
+import obstacles.ObstacleRotationRobot;
+import obstacles.ObstaclesFixes;
+
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -93,4 +97,20 @@ public class JUnit_Locomotion extends JUnit_Test
 		locomotion.moveLengthwise(-300, new ArrayList<Hook>(), false);
 	}
 
+	@Test
+	public void test_rotation_obstacle() throws Exception
+	{
+        locomotion.setOrientation(0);
+        locomotion.setPosition(new Vec2(1320, 250));
+        ObstacleRotationRobot r;
+        r = new ObstacleRotationRobot(locomotion.getPosition(), locomotion.getOrientation(), 0);
+        Assert.assertTrue(!r.isColliding(ObstaclesFixes.BORD_DROITE.getObstacle()));
+        r = new ObstacleRotationRobot(locomotion.getPosition(), locomotion.getOrientation(), Math.PI/9);
+        Assert.assertTrue(!r.isColliding(ObstaclesFixes.BORD_DROITE.getObstacle()));
+        r = new ObstacleRotationRobot(locomotion.getPosition(), locomotion.getOrientation(), Math.PI/6);
+        Assert.assertTrue(r.isColliding(ObstaclesFixes.BORD_DROITE.getObstacle()));
+        r = new ObstacleRotationRobot(locomotion.getPosition(), locomotion.getOrientation(), Math.PI/2);
+        Assert.assertTrue(r.isColliding(ObstaclesFixes.BORD_DROITE.getObstacle()));
+	}
+	
 }

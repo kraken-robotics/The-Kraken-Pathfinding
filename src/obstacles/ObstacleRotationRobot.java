@@ -13,23 +13,27 @@ import utils.Vec2;
 
 public class ObstacleRotationRobot extends Obstacle
 {
-	private ObstacleRectangular[] robot;
+	private ObstacleRectangular[] ombresRobot;
 	private int nb_rectangles;
 	
-	public ObstacleRotationRobot(Vec2 position, double angleDepart, double angleRelatifRotation)
+	public ObstacleRotationRobot(Vec2 position, double angleDepart, double angleArrivee)
 	{
 		super(position);
-		nb_rectangles = (int)Math.floor(Math.abs(angleRelatifRotation)/anglePas);
-		robot = new ObstacleRectangular[nb_rectangles];
-		for(int i = 0; i < nb_rectangles; i++)
-			robot[i] = new ObstacleRectangular(position, longueurRobot, largeurRobot, angleDepart-i*anglePas*Math.signum(angleRelatifRotation));
+		double angleRelatif = (angleArrivee-angleDepart) % (2*Math.PI);
+		log.debug("Math.abs(angleRelatif)/anglePas = "+Math.abs(angleRelatif)/anglePas, this);
+		nb_rectangles = (int)Math.ceil(Math.abs(angleRelatif)/anglePas)+1;
+		ombresRobot = new ObstacleRectangular[nb_rectangles+1]; // le dernier est à part
+		for(int i = 0; i < nb_rectangles-1; i++)
+			ombresRobot[i] = new ObstacleRectangular(position, longueurRobot, largeurRobot, angleDepart-i*anglePas*Math.signum(angleRelatif));
+
+		ombresRobot[nb_rectangles-1] = new ObstacleRectangular(position, longueurRobot, largeurRobot, angleArrivee);
 	}
 
 	@Override
 	public boolean isProcheObstacle(Vec2 point, int distance)
 	{
 		for(int i = 0; i < nb_rectangles; i++)
-			if(robot[i].isProcheObstacle(point, distance))
+			if(ombresRobot[i].isProcheObstacle(point, distance))
 				return true;
 		return false;
 	}
@@ -38,7 +42,7 @@ public class ObstacleRotationRobot extends Obstacle
 	public boolean isInObstacle(Vec2 point)
 	{
 		for(int i = 0; i < nb_rectangles; i++)
-			if(robot[i].isInObstacle(point))
+			if(ombresRobot[i].isInObstacle(point))
 				return true;
 		return false;
 	}	
@@ -52,9 +56,18 @@ public class ObstacleRotationRobot extends Obstacle
 	public boolean isColliding(ObstacleRectangular o)
 	{
 		for(int i = 0; i < nb_rectangles; i++)
-			if(robot[i].isColliding(o))
+			if(ombresRobot[i].isColliding(o))
 				return true;
 		return false;
+	}
+	
+	/**
+	 * Utilisé pour l'affichage
+	 * @return
+	 */
+	public ObstacleRectangular[] getOmbresRobot()
+	{
+		return ombresRobot;
 	}
 	
 }

@@ -24,10 +24,10 @@ public enum ObstaclesFixes {
     DISTRIBUTEUR_4(new ObstacleRectangular(new Vec2(1200-50/2,2000-50/2),50,50)),
 
     // bords
-    BORD_BAS(new ObstacleRectangular(new Vec2(0,0),3000,1)),
-    BORD_GAUCHE(new ObstacleRectangular(new Vec2(-1500,1000),1,2000)),
-    BORD_DROITE(new ObstacleRectangular(new Vec2(1500,1000),1,2000)),
-    BORD_HAUT(new ObstacleRectangular(new Vec2(0,2000),3000,1));
+    BORD_BAS(new ObstacleRectangular(new Vec2(0,0),3000,0)),
+    BORD_GAUCHE(new ObstacleRectangular(new Vec2(-1500,1000),0,2000)),
+    BORD_DROITE(new ObstacleRectangular(new Vec2(1500,1000),0,2000)),
+    BORD_HAUT(new ObstacleRectangular(new Vec2(0,2000),3000,0));
 
     private ObstacleRectangular obstacle;
     

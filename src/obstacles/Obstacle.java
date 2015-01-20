@@ -29,7 +29,7 @@ public abstract class Obstacle
 		largeurRobot = config.getInt(ConfigInfo.LARGEUR_ROBOT);
 		longueurRobot = config.getInt(ConfigInfo.LONGUEUR_ROBOT);
 		marge = config.getInt(ConfigInfo.MARGE);
-		anglePas = Math.atan2(longueurRobot, largeurRobot/2);
+		anglePas = Math.PI-2*Math.atan2(largeurRobot, longueurRobot);
 	}
 	
 	public Obstacle (Vec2 position)

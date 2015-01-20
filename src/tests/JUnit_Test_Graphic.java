@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import obstacles.ObstacleRectangular;
+import obstacles.ObstacleRotationRobot;
 import obstacles.ObstaclesFixes;
 
 import org.junit.Before;
@@ -184,8 +185,10 @@ public class JUnit_Test_Graphic extends JUnit_Test {
 		ObstacleRectangular o2 = o.getObstacle();
     	ObstacleRectangular o3 = new ObstacleRectangular(new Vec2(1000,1000), 200, 200, Math.PI/8);
     	ObstacleRectangular o4 = new ObstacleRectangular(new Vec2(900, 1100), 50, 50, 0);
+//    	ObstacleRectangular o3 = new ObstacleRectangular(new Vec2(1320, 250), longueur_robot, largeur_robot, Math.PI/6);
+//    	ObstacleRectangular o4 = ObstaclesFixes.BORD_DROITE.getObstacle();
+		log.debug("Collision ? "+o3.isColliding(o4), this);
 		log.debug("Collision ? "+o1.isColliding(o2), this);
-		log.debug("Collision ? "+o2.isColliding(o1), this);
 		fenetre.addObstacleEnBiais(o3);
 		fenetre.addObstacleEnBiais(o4);
 		fenetre.repaint();
@@ -207,5 +210,20 @@ public class JUnit_Test_Graphic extends JUnit_Test {
 		log.debug("Collision avec "+o.getPosition()+"? "+rectangle.isColliding(o), this);
 		Sleep.sleep(3000);
     }
+	
+	@Test
+    public void test_obstacle_rotation() throws Exception
+    {
+    	state.robot.setPosition(new Vec2(1320, 250));
+    	state.robot.setOrientation(0);
+    	double angleFinal = Math.PI/6;
+		ObstacleRectangular[] ombresRobot = new ObstacleRotationRobot(state.robot.getPosition(), state.robot.getOrientation(), angleFinal).getOmbresRobot();
+		log.debug("Nb ombres: "+ombresRobot.length, this);
+		for(ObstacleRectangular o: ombresRobot)
+			fenetre.addObstacleEnBiais(o);
+		fenetre.repaint();
+		Sleep.sleep(3000);
+    }
+	
 
 }

@@ -6,6 +6,7 @@ import org.junit.Test;
 import utils.Vec2;
 import obstacles.ObstacleCircular;
 import obstacles.ObstacleRectangular;
+import obstacles.ObstaclesFixes;
 
 /**
  * Test unitaire des obstacles
@@ -91,6 +92,13 @@ public class JUnit_Obstacle extends JUnit_Test {
     	Assert.assertTrue(!o.isColliding(new ObstacleRectangular(new Vec2(900, 1100), 20, 20, 0)));
     	Assert.assertTrue(!o.isColliding(new ObstacleRectangular(new Vec2(900, 1100), 40, 40, 0)));
     	Assert.assertTrue(o.isColliding(new ObstacleRectangular(new Vec2(900, 1100), 60, 60, 0)));
+    }
+
+    @Test
+    public void test_collision_robot_bord() throws Exception
+    {
+    	ObstacleRectangular o = new ObstacleRectangular(new Vec2(1320, 250), 250, 360, Math.PI/6);
+    	Assert.assertTrue(o.isColliding(ObstaclesFixes.BORD_DROITE.getObstacle()));
     }
 
 }
