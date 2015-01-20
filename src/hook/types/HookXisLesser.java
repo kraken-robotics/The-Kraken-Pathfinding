@@ -2,6 +2,7 @@ package hook.types;
 
 import exceptions.FinMatchException;
 import exceptions.ScriptHookException;
+import exceptions.WallCollisionDetectedException;
 import hook.types.HookX;
 import strategie.GameState;
 import utils.Log;
@@ -35,9 +36,10 @@ public class HookXisLesser extends HookX
      * Déclenche le hook si la coordonnée x du robot est plus petite que xValue
      * @return true si la position/orientation du robot a été modifiée par cette méthode.
      * @throws ScriptHookException 
+     * @throws WallCollisionDetectedException 
      */
     @Override
-    public void evaluate() throws FinMatchException, ScriptHookException
+    public void evaluate() throws FinMatchException, ScriptHookException, WallCollisionDetectedException
     {
         if(state.robot.getPosition().x < xValue)
             trigger();

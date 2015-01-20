@@ -65,6 +65,22 @@ public class JUnit_Locomotion extends JUnit_Test
 		locomotion.turn(3*Math.PI/2, new ArrayList<Hook>());
 		locomotion.turn(0, new ArrayList<Hook>());
 	}
+	
+	@Test(expected=UnableToMoveException.class)
+	public void test_tourner_mur() throws Exception
+	{
+        locomotion.setOrientation(0);
+        locomotion.setPosition(new Vec2(1320, 250));
+        locomotion.turn(Math.PI/6, new ArrayList<Hook>());
+	}
+
+	@Test(expected=UnableToMoveException.class)
+	public void test_avancer_mur() throws Exception
+	{
+        locomotion.setOrientation(0);
+        locomotion.setPosition(new Vec2(1320, 250));
+        locomotion.moveLengthwise(200, new ArrayList<Hook>(), false);
+	}
 
 	@Test
 	public void test_suit_chemin() throws Exception
@@ -110,6 +126,12 @@ public class JUnit_Locomotion extends JUnit_Test
         r = new ObstacleRotationRobot(locomotion.getPosition(), locomotion.getOrientation(), Math.PI/6);
         Assert.assertTrue(r.isColliding(ObstaclesFixes.BORD_DROITE.getObstacle()));
         r = new ObstacleRotationRobot(locomotion.getPosition(), locomotion.getOrientation(), Math.PI/2);
+        Assert.assertTrue(r.isColliding(ObstaclesFixes.BORD_DROITE.getObstacle()));
+        r = new ObstacleRotationRobot(locomotion.getPosition(), locomotion.getOrientation(), -Math.PI/9);
+        Assert.assertTrue(!r.isColliding(ObstaclesFixes.BORD_DROITE.getObstacle()));
+        r = new ObstacleRotationRobot(locomotion.getPosition(), locomotion.getOrientation(), -Math.PI/6);
+        Assert.assertTrue(r.isColliding(ObstaclesFixes.BORD_DROITE.getObstacle()));
+        r = new ObstacleRotationRobot(locomotion.getPosition(), locomotion.getOrientation(), -Math.PI/2);
         Assert.assertTrue(r.isColliding(ObstaclesFixes.BORD_DROITE.getObstacle()));
 	}
 	

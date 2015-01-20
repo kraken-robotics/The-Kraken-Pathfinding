@@ -22,7 +22,7 @@ public class ObstacleRotationRobot extends Obstacle
 		double angleRelatif = (angleArrivee-angleDepart) % (2*Math.PI);
 		log.debug("Math.abs(angleRelatif)/anglePas = "+Math.abs(angleRelatif)/anglePas, this);
 		nb_rectangles = (int)Math.ceil(Math.abs(angleRelatif)/anglePas)+1;
-		ombresRobot = new ObstacleRectangular[nb_rectangles+1]; // le dernier est à part
+		ombresRobot = new ObstacleRectangular[nb_rectangles]; // le dernier est à part
 		for(int i = 0; i < nb_rectangles-1; i++)
 			ombresRobot[i] = new ObstacleRectangular(position, longueurRobot, largeurRobot, angleDepart-i*anglePas*Math.signum(angleRelatif));
 
@@ -68,6 +68,18 @@ public class ObstacleRotationRobot extends Obstacle
 	public ObstacleRectangular[] getOmbresRobot()
 	{
 		return ombresRobot;
+	}
+
+	/**
+	 * Y a-t-il collision avec un obstacle fixe?
+	 * @return
+	 */
+	public boolean isCollidingObstacleFixe()
+	{
+		for(ObstaclesFixes o: ObstaclesFixes.values())
+			if(isColliding(o.getObstacle()))
+				return true;
+		return false;
 	}
 	
 }

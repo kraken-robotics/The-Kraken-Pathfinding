@@ -3,6 +3,7 @@ package hook.types;
 import hook.Hook;
 import exceptions.FinMatchException;
 import exceptions.ScriptHookException;
+import exceptions.WallCollisionDetectedException;
 import obstacles.ObstacleCircular;
 import obstacles.ObstacleRectangular;
 import strategie.GameState;
@@ -16,12 +17,12 @@ import utils.Vec2;
  *
  */
 
-public class HookCollision extends Hook
+public class HookCollisionElementJeu extends Hook
 {
 	ObstacleCircular obstacle;
 	ObstacleRectangular obstacleRobot;
 	
-	public HookCollision(Config config, Log log, GameState<?> state, ObstacleCircular o) throws FinMatchException
+	public HookCollisionElementJeu(Config config, Log log, GameState<?> state, ObstacleCircular o) throws FinMatchException
 	{
 		super(config, log, state);
 		obstacle = o;
@@ -39,8 +40,9 @@ public class HookCollision extends Hook
      * Déclenche le hook si la distance entre la position du robot et la position de de déclenchement du hook est inférieure a tolerancy
      * @return true si la position/oriantation du robot a été modifiée.
      * @throws ScriptHookException 
+     * @throws WallCollisionDetectedException 
      */
-	public void evaluate() throws FinMatchException, ScriptHookException
+	public void evaluate() throws FinMatchException, ScriptHookException, WallCollisionDetectedException
 	{
 		obstacleRobot.update(state.robot.getPosition(), state.robot.getOrientation());
 		if(obstacleRobot.isColliding(obstacle))

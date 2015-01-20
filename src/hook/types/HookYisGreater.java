@@ -2,6 +2,7 @@ package hook.types;
 
 import exceptions.FinMatchException;
 import exceptions.ScriptHookException;
+import exceptions.WallCollisionDetectedException;
 import hook.types.HookY;
 import strategie.GameState;
 import utils.Log;
@@ -35,9 +36,10 @@ public class HookYisGreater extends HookY
      * Déclenche le hook si la coordonnée y du robot est plus grande ou égale que yValue
      * @return true si les déplacements du robot ont étés modifiés par cette méthode.
      * @throws ScriptHookException 
+     * @throws WallCollisionDetectedException 
      */
     @Override
-    public void evaluate() throws FinMatchException, ScriptHookException
+    public void evaluate() throws FinMatchException, ScriptHookException, WallCollisionDetectedException
     {
     	if(state.robot.getPosition().y >= yValue)
             trigger();

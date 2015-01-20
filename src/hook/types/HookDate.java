@@ -2,6 +2,7 @@ package hook.types;
 
 import exceptions.FinMatchException;
 import exceptions.ScriptHookException;
+import exceptions.WallCollisionDetectedException;
 import strategie.GameState;
 import utils.Config;
 import utils.Log;
@@ -25,7 +26,7 @@ public class HookDate extends Hook {
 	}
 
 	@Override
-	public void evaluate() throws FinMatchException, ScriptHookException {
+	public void evaluate() throws FinMatchException, ScriptHookException, WallCollisionDetectedException {
 		if(System.currentTimeMillis() - Config.getDateDebutMatch() > date_hook)
 			trigger();
 	}

@@ -214,9 +214,9 @@ public class JUnit_Test_Graphic extends JUnit_Test {
 	@Test
     public void test_obstacle_rotation() throws Exception
     {
-    	state.robot.setPosition(new Vec2(1320, 250));
-    	state.robot.setOrientation(0);
-    	double angleFinal = Math.PI/6;
+    	state.robot.setPosition(new Vec2(0, 1000));
+    	state.robot.setOrientation(Math.PI/2);
+    	double angleFinal = 0;
 		ObstacleRectangular[] ombresRobot = new ObstacleRotationRobot(state.robot.getPosition(), state.robot.getOrientation(), angleFinal).getOmbresRobot();
 		log.debug("Nb ombres: "+ombresRobot.length, this);
 		for(ObstacleRectangular o: ombresRobot)

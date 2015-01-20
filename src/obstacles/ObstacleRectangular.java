@@ -357,4 +357,16 @@ public class ObstacleRectangular extends Obstacle
 		return squaredDistance(point) < (distance+0.01f) * (distance+0.01f); // vu qu'on a une précision limitée, mieux vaut prendre un peu de marge
 	}
 
+	/**
+	 * Y a-t-il collision avec un obstacle fixe?
+	 * @return
+	 */
+	public boolean isCollidingObstacleFixe()
+	{
+		for(ObstaclesFixes o: ObstaclesFixes.values())
+			if(isColliding(o.getObstacle()))
+				return true;
+		return false;
+	}
+
 }

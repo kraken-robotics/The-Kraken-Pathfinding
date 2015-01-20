@@ -2,6 +2,7 @@ package hook.types;
 
 import exceptions.FinMatchException;
 import exceptions.ScriptHookException;
+import exceptions.WallCollisionDetectedException;
 import hook.Hook;
 import strategie.GameState;
 import utils.Log;
@@ -41,8 +42,9 @@ public class HookX extends Hook
      * Déclenche le hook si la coordonnée x du robot est dans [xValue - tolerance, xValue + tolerance]
      * @return true si les déplacements du robot ont étés modifiés.
      * @throws ScriptHookException 
+     * @throws WallCollisionDetectedException 
      */
-	public void evaluate() throws FinMatchException, ScriptHookException
+	public void evaluate() throws FinMatchException, ScriptHookException, WallCollisionDetectedException
 	{
 		if(Math.abs(state.robot.getPosition().x-xValue) < tolerancy)
 			trigger();

@@ -4,6 +4,7 @@ import robot.RobotChrono;
 import strategie.GameState;
 import exceptions.FinMatchException;
 import exceptions.ScriptHookException;
+import exceptions.WallCollisionDetectedException;
 
 /**
  * Classe de callback. Contient la fonction et ses arguments à appeler.
@@ -48,8 +49,9 @@ public class Callback
 	 * @return vrai si le robot a été déplacé/ tourné, faux sinon
 	 * @throws FinMatchException 
 	 * @throws ScriptHookException 
+	 * @throws WallCollisionDetectedException 
 	 */
-	public void call() throws FinMatchException, ScriptHookException
+	public void call() throws FinMatchException, ScriptHookException, WallCollisionDetectedException
 	{
 		if(!(shouldBeDeleted()))
 		{

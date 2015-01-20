@@ -11,6 +11,7 @@ import utils.Vec2;
 import enums.Side;
 import exceptions.FinMatchException;
 import exceptions.ScriptHookException;
+import exceptions.WallCollisionDetectedException;
 
 /**
  * Robot particulier qui fait pas bouger le robot réel, mais détermine la durée des actions
@@ -261,6 +262,9 @@ public class RobotChrono extends Robot
 				} catch (ScriptHookException e) {
 					// Impossible qu'en simulation on ait des scripts de hooks
 					e.printStackTrace();
+				} catch (WallCollisionDetectedException e) {
+					// Impossible
+					e.printStackTrace();
 				}
 		
 		// le hook de fin de match est particulier, car il est toujours appelé, qu'il soit dans la liste ou non
@@ -268,6 +272,9 @@ public class RobotChrono extends Robot
 			try {
 				hookFinMatch.trigger();
 			} catch (ScriptHookException e) {
+				// Impossible
+				e.printStackTrace();
+			} catch (WallCollisionDetectedException e) {
 				// Impossible
 				e.printStackTrace();
 			}

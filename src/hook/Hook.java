@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import exceptions.FinMatchException;
 import exceptions.ScriptHookException;
+import exceptions.WallCollisionDetectedException;
 import robot.RobotChrono;
 import strategie.GameState;
 import utils.ConfigInfo;
@@ -65,8 +66,9 @@ abstract public class Hook
 	 * Tous ses callbacks sont exécutés
 	 * @throws FinMatchException 
 	 * @throws ScriptHookException 
+	 * @throws WallCollisionDetectedException 
 	 */
-	public void trigger() throws FinMatchException, ScriptHookException
+	public void trigger() throws FinMatchException, ScriptHookException, WallCollisionDetectedException
 	{
 		for(Callback callback : callbacks)
 			callback.call();
@@ -78,8 +80,9 @@ abstract public class Hook
 	 * Elle est appelée par RobotVrai.
 	 * @param robot
 	 * @throws ScriptHookException 
+	 * @throws WallCollisionDetectedException 
 	 */
-	public abstract void evaluate() throws FinMatchException, ScriptHookException;
+	public abstract void evaluate() throws FinMatchException, ScriptHookException, WallCollisionDetectedException;
 	
 	/**
 	 * Méthode appelée par RobotChrono. Elle doit dire si, sur un trajet entre A et B et

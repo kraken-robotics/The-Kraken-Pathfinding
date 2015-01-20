@@ -2,6 +2,8 @@ package robot;
 
 import java.util.ArrayList;
 
+import obstacles.ObstacleRectangular;
+import obstacles.ObstacleRotationRobot;
 import astar.arc.PathfindingNodes;
 import container.Service;
 import exceptions.BlockedException;
@@ -10,6 +12,7 @@ import exceptions.ScriptHookException;
 import exceptions.SerialConnexionException;
 import exceptions.UnableToMoveException;
 import exceptions.UnexpectedObstacleOnPathException;
+import exceptions.WallCollisionDetectedException;
 import hook.Hook;
 import robot.cardsWrappers.LocomotionCardWrapper;
 import table.ObstacleManager;
@@ -103,17 +106,21 @@ public class Locomotion implements Service
     public void moveLengthwise(int distance, ArrayList<Hook> hooks, boolean mur) throws UnableToMoveException, FinMatchException, ScriptHookException
     {
         log.debug("Avancer de "+Integer.toString(distance), this);
+        
+        Vec2 consigneNonInversee = new Vec2(); 
+        consigneNonInversee.x = (int) (position.x + distance*Math.cos(orientation));
+        consigneNonInversee.y = (int) (position.y + distance*Math.sin(orientation));        
 
         // En fait, ici on prend en compte que la symétrie va inverser la consigne...
         if(symetrie)
         {
-        	consigne.x = (int) (-position.x + distance*Math.cos(Math.PI-orientation));
-            consigne.y = (int) (position.y + distance*Math.sin(Math.PI-orientation));
+        	consigne.x = -consigneNonInversee.x;
+            consigne.y = consigneNonInversee.y;
         }
         else
         {
-        	consigne.x = (int) (position.x + distance*Math.cos(orientation));
-            consigne.y = (int) (position.y + distance*Math.sin(orientation));
+        	consigne.x = consigneNonInversee.x;
+            consigne.y = consigneNonInversee.y;
         }
 
         // l'appel à cette méthode sous-entend que le robot ne tourne pas
@@ -205,6 +212,7 @@ public class Locomotion implements Service
                         log.warning("On n'arrive plus à avancer. On se dégage", this);
                         if(seulementAngle)
                         {
+                        	// TODO: les appels à déplacements sont non bloquants, il faut rajouter des sleeps
                         	// on alterne rotation à gauche et à droite
                         	if((nb_iterations_deblocage & 1) == 0)
                         		deplacements.turn(orientation+angle_degagement_robot);
@@ -244,7 +252,11 @@ public class Locomotion implements Service
             	}
                 if(!recommence)
                     throw new UnableToMoveException();
-            }
+            } catch (WallCollisionDetectedException e) {
+            	immobilise();
+            	throw new UnableToMoveException();
+            	// TODO: et ensuite?
+			}
 
         } while(recommence); // on recommence tant qu'il le faut
 
@@ -260,8 +272,9 @@ public class Locomotion implements Service
      * @throws UnexpectedObstacleOnPathException 
      * @throws FinMatchException 
      * @throws ScriptHookException 
+     * @throws WallCollisionDetectedException 
      */
-    private void vaAuPointGestionHookCorrectionEtDetection(ArrayList<Hook> hooks, boolean trajectoire_courbe, boolean marcheAvant, boolean seulementAngle) throws BlockedException, UnexpectedObstacleOnPathException, FinMatchException, ScriptHookException
+    private void vaAuPointGestionHookCorrectionEtDetection(ArrayList<Hook> hooks, boolean trajectoire_courbe, boolean marcheAvant, boolean seulementAngle) throws BlockedException, UnexpectedObstacleOnPathException, FinMatchException, ScriptHookException, WallCollisionDetectedException
     {
         // le fait de faire de nombreux appels permet de corriger la trajectoire
         vaAuPointGestionSymetrie(trajectoire_courbe, marcheAvant, seulementAngle, false);
@@ -283,7 +296,7 @@ public class Locomotion implements Service
         
     }
 
-    private void corrigeAngle(boolean trajectoire_courbe, boolean marcheAvant) throws BlockedException, FinMatchException
+    private void corrigeAngle(boolean trajectoire_courbe, boolean marcheAvant) throws BlockedException, FinMatchException, WallCollisionDetectedException
     {
     	vaAuPointGestionSymetrie(trajectoire_courbe, marcheAvant, true, true);
     }
@@ -296,8 +309,9 @@ public class Locomotion implements Service
      * @param marche_arriere
      * @throws BlockedException 
      * @throws FinMatchException 
+     * @throws WallCollisionDetectedException 
      */
-    private void vaAuPointGestionSymetrie(boolean trajectoire_courbe, boolean marcheAvant, boolean seulementAngle, boolean correction) throws BlockedException, FinMatchException
+    private void vaAuPointGestionSymetrie(boolean trajectoire_courbe, boolean marcheAvant, boolean seulementAngle, boolean correction) throws BlockedException, FinMatchException, WallCollisionDetectedException
     {
         Vec2 delta = consigne.clone();
         if(symetrie)
@@ -326,8 +340,9 @@ public class Locomotion implements Service
      * @param trajectoire_courbe
      * @throws BlockedException 
      * @throws FinMatchException 
+     * @throws WallCollisionDetectedException 
      */
-    private void vaAuPointGestionCourbe(double angle, double distance, boolean trajectoire_courbe, boolean seulementAngle, boolean correction) throws BlockedException, FinMatchException
+    private void vaAuPointGestionCourbe(double angle, double distance, boolean trajectoire_courbe, boolean seulementAngle, boolean correction) throws BlockedException, FinMatchException, WallCollisionDetectedException
     {
 		double delta = orientation-angle % (2*Math.PI);
 		delta = Math.abs(delta);
@@ -354,10 +369,27 @@ public class Locomotion implements Service
         try
         {
             deplacements.turn(angle);
+            if(!correction && !trajectoire_courbe)
+            {
+            	ObstacleRotationRobot obstacle = new ObstacleRotationRobot(position, orientation, angle);
+	        	if(obstacle.isCollidingObstacleFixe())
+	        	{
+	        		log.debug("Le robot a demandé à tourner dans un obstacle. Ordre annulé.", this);
+	        		throw new WallCollisionDetectedException();
+	        	}
+            }
             if(!trajectoire_courbe) // sans virage : la première rotation est bloquante
                 while(!isMotionEnded()) // on attend la fin du mouvement
                     Sleep.sleep(sleep_boucle_acquittement);
             
+            // TODO: passer en hook
+            ObstacleRectangular obstacle = new ObstacleRectangular(position, consigne);
+        	if(obstacle.isCollidingObstacleFixe())
+        	{
+        		log.debug("Le robot a demandé à avancer dans un obstacle. Ordre annulé.", this);
+        		throw new WallCollisionDetectedException();
+        	}
+
             if(!seulementAngle)
             	deplacements.moveLengthwise(distance);
         } catch (SerialConnexionException e) {

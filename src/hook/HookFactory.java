@@ -5,7 +5,8 @@ import java.util.ArrayList;
 import obstacles.ObstacleCircular;
 import hook.methods.GameElementDone;
 import hook.methods.ThrowsScriptHook;
-import hook.types.HookCollision;
+import hook.types.HookCollisionElementJeu;
+import hook.types.HookCollisionObstaclesFixes;
 import hook.types.HookDate;
 import hook.types.HookDateFinMatch;
 import hook.types.HookPosition;
@@ -110,9 +111,14 @@ public class HookFactory implements Service
 	 * @return le hook créé
 	 * @throws FinMatchException 
 	 */
-	public HookCollision newHookCollision(ObstacleCircular o, GameState<?> state) throws FinMatchException
+	public HookCollisionElementJeu newHookCollisionElementJeu(ObstacleCircular o, GameState<?> state) throws FinMatchException
 	{
-		return new HookCollision(config, log, state, o);
+		return new HookCollisionElementJeu(config, log, state, o);
+	}
+
+	public HookCollisionObstaclesFixes newHookCollisionObstaclesFixes(ObstacleCircular o, GameState<?> state) throws FinMatchException
+	{
+		return new HookCollisionObstaclesFixes(config, log, state);
 	}
 
 	
@@ -354,7 +360,7 @@ public class HookFactory implements Service
 			// Ce qu'on peut shooter
 			if(n.getType().canBeShot()) // on ne met un hook de collision que sur ceux qui ont susceptible de disparaître quand on passe dessus
 			{
-				hook = newHookCollision(n.getObstacle(), state);
+				hook = newHookCollisionElementJeu(n.getObstacle(), state);
 				action = new GameElementDone(state.gridspace, n, Tribool.TRUE);
 				hook.ajouter_callback(new Callback(action));
 				hooks_entre_scripts.add(hook);
@@ -362,7 +368,7 @@ public class HookFactory implements Service
 			
 			if(n.getType().scriptHookThrown() != null)
 			{
-				hook = newHookCollision(n.getObstacleDilate(), state);
+				hook = newHookCollisionElementJeu(n.getObstacleDilate(), state);
 				ThrowsScriptHook action2 = new ThrowsScriptHook(n.getType().scriptHookThrown(), n);
 				hook.ajouter_callback(new Callback(action2));
 				hooks_entre_scripts.add(hook);				
