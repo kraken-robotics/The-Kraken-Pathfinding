@@ -9,12 +9,8 @@ import hook.types.HookCollisionElementJeu;
 import hook.types.HookCollisionObstaclesFixes;
 import hook.types.HookDate;
 import hook.types.HookDateFinMatch;
+import hook.types.HookDemiPlan;
 import hook.types.HookPosition;
-import hook.types.HookX;
-import hook.types.HookXisGreater;
-import hook.types.HookXisLesser;
-import hook.types.HookY;
-import hook.types.HookYisGreater;
 import container.Service;
 import enums.Tribool;
 import exceptions.FinMatchException;
@@ -151,57 +147,22 @@ public class HookFactory implements Service
 	
 
 	/**
-	 * demande l'instanciation d'un hook se déclenchant si le robot atteint une certaine abscisse sur la table
-	 * la tolérance sur cette absisse est ici explicitement demandée et supplante celle du fichier de config
-	 * @param xValue de déclenchement du hook
-	 * @param tolerancy le hook sera déclenché si l'écart entre l'abscisse de déclenchement et la position du robot est inférieur a cette valeur
-	 * @return le hook créé
-	 */
-	public HookX newHookX(float xValue, int tolerancy, GameState<?> state)
-	{
-		return new HookX(config, log, state, xValue, tolerancy);
-	}
-	
-
-	/**
-	 * demande l'instanciation d'un hook se déclenchant si le robot atteint une certaine abscisse sur la table
-	 * la tolérance sur cette absisse est ici celle du fichier de config
-	 * @param xValue de déclenchement du hook
-	 * @return le hook créé
-	 */
-	public HookX newHookX(float xValue, GameState<?> state)
-	{
-		return newHookX(xValue, positionTolerancy, state);
-	}
-	
-
-	/**
 	 * demande l'instanciation d'un hook se déclenchant si le robot a une abscisse sur la table supérieure à une certaine valeur
 	 * la tolérance sur cette absisse est ici explicitement demandée et supplante celle du fichier de config
 	 * L'instanciation prends en compte la couleur du robot. La condition sera "X inférieure a" si la couleur et jaune, et "X supérieur a" dans le cas cntraire.
 	 * @param xValue de déclenchement du hook
-	 * @param tolerancy le hook sera déclenché si l'écart entre l'abscisse de déclenchement et la position du robot est inférieur a cette valeur
 	 * @return le hook créé
 	 */
-    public HookXisGreater newHookXisGreater(float xValue, float tolerancy, GameState<?> state)
+    public HookDemiPlan newHookXisGreater(int xValue, GameState<?> state)
     {
-        return new HookXisGreater(config, log, state, xValue, tolerancy);
-    }
+    	return new HookDemiPlan(config, log, state, new Vec2(xValue, 0), new Vec2(1,0));
+    }    
 
-	/**
-	 * demande l'instanciation d'un hook se déclenchant si le robot a une abscisse sur la table inférieur à une certaine valeur
-	 * la tolérance sur cette absisse est ici explicitement demandée et supplante celle du fichier de config
-	 * L'instanciation prends en compte la couleur du robot. La condition sera "X supérieur a" si la couleur et jaune, et "X inférieur a" dans le cas cntraire.
-	 * @param xValue de déclenchement du hook
-	 * @param tolerancy le hook sera déclenché si l'écart entre l'abscisse de déclenchement et la position du robot est inférieur a cette valeur
-	 * @return le hook créé
-	 */
-    public HookXisLesser newHookXisLesser(float xValue, float tolerancy, GameState<?> state)
+    public HookDemiPlan newHookXisLess(int xValue, GameState<?> state)
     {
-        return new HookXisLesser(config, log, state, xValue, tolerancy);
-    }
-    
-    
+    	return new HookDemiPlan(config, log, state, new Vec2(xValue, 0), new Vec2(-1,0));
+    }    
+
 
 	/* ======================================================================
 	 * 							Hook d'ordonnée (sur Y)
@@ -209,28 +170,13 @@ public class HookFactory implements Service
 	 */
     
 	/**
-	 * demande l'instanciation d'un hook se déclenchant si le robot atteint une certaine ordonnée sur la table
-	 * la tolérance sur cette ordonnée est ici explicitement demandée et supplante celle du fichier de config
+	 * demande l'instanciation d'un hook se déclenchant si le robot a une ordonnée sur la table supérieure à une certaine valeur
 	 * @param yValue de déclenchement du hook
-	 * @param tolerancy le hook sera déclenché si l'écart entre l'ordonnée de déclenchement et la position du robot est inférieur a cette valeur
 	 * @return le hook créé
 	 */
-    public HookY newHookY(float yValue, int tolerancy, GameState<?> state)
+    public HookDemiPlan newHookYisGreater(int yValue, GameState<?> state)
     {
-        return new HookY(config, log, state, yValue, tolerancy);
-    }
-    
-
-	/**
-	 * demande l'instanciation d'un hook se déclenchant si le robot atteint une certaine ordonnée sur la table
-	 * la tolérance sur cette ordonnée est ici celle du fichier de config
-	 * @param yValue de déclenchement du hook
-	 * @param tolerancy le hook sera déclenché si l'écart entre l'ordonnée de déclenchement et la position du robot est inférieur a cette valeur
-	 * @return le hook créé
-	 */
-    public HookY newHookY(float yValue, GameState<?> state)
-    {
-        return newHookY(yValue, positionTolerancy, state);
+    	return new HookDemiPlan(config, log, state, new Vec2(0, yValue), new Vec2(0,1));
     }
 
 	/**
@@ -238,10 +184,11 @@ public class HookFactory implements Service
 	 * @param yValue de déclenchement du hook
 	 * @return le hook créé
 	 */
-    public HookYisGreater newHookYisGreater(float yValue, GameState<?> state)
+    public HookDemiPlan newHookYisLess(int yValue, GameState<?> state)
     {
-        return new HookYisGreater(config, log, state, yValue);
+    	return new HookDemiPlan(config, log, state, new Vec2(0, yValue), new Vec2(0,-1));
     }
+
     
     /**
      * Fournit le hook de fin de match à un chrono gamestate.
