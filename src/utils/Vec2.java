@@ -126,6 +126,11 @@ public class Vec2
 	{
 		return new Vec2((x+b.x)/2, (y+b.y)/2);
 	}
-	
+
+	public Vec2 scalarNewVector(float f)
+	{
+		return new Vec2((int)(f*x), y = (int)(f*y));
+	}
+
 }
 
