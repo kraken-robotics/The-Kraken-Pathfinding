@@ -11,7 +11,7 @@ import utils.Vec2;
  *
  */
 
-public class ObstacleRotationRobot extends Obstacle
+public class ObstacleRotationRobot extends Obstacle implements ObstacleCollision
 {
 	private ObstacleRectangular[] ombresRobot;
 	private int nb_rectangles;
@@ -79,6 +79,13 @@ public class ObstacleRotationRobot extends Obstacle
 		for(ObstaclesFixes o: ObstaclesFixes.values())
 			if(isColliding(o.getObstacle()))
 				return true;
+		return false;
+	}
+
+	@Override
+	// TODO
+	public boolean isColliding(Obstacle o) {
+		// TODO Auto-generated method stub
 		return false;
 	}
 	

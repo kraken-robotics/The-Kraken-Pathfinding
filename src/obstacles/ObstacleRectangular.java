@@ -11,7 +11,7 @@ import utils.Vec2;
  *
  */
 
-public class ObstacleRectangular extends Obstacle
+public class ObstacleRectangular extends Obstacle implements ObstacleCollision
 {
 	private double cos;
 	private double sin;
@@ -22,6 +22,9 @@ public class ObstacleRectangular extends Obstacle
 	// taille selon l'axe Y
 	protected int sizeY;
 
+	// Longueur entre le centre et un des coins
+	protected float demieDiagonale;
+	
 	// calcul des positions des coins
 	protected Vec2 coinBasGauche;
 	protected Vec2 coinHautGauche;
@@ -73,6 +76,7 @@ public class ObstacleRectangular extends Obstacle
 		super(position);
 		this.sizeY = sizeY;
 		this.sizeX = sizeX;
+		demieDiagonale = (float) Math.sqrt(sizeY*sizeY/4+sizeX*sizeX/4);
 		updateVariables(position, angle);
 	}
 	
@@ -178,6 +182,9 @@ public class ObstacleRectangular extends Obstacle
 	 */
 	public boolean isColliding(ObstacleRectangular r)
 	{
+		// Calcul simple permettant de vérifier les cas absurdes où les obstacles sont loin l'un de l'autre
+		if(position.squaredDistance(r.position) >= (demieDiagonale+r.demieDiagonale)*(demieDiagonale+r.demieDiagonale))
+			return false;
 		// Il faut tester les quatres axes
 		return !testeSeparation(coinBasGauche.x, coinBasDroite.x, getXRotateMoinsAngle(r.coinBasGaucheRotate), getXRotateMoinsAngle(r.coinHautGaucheRotate), getXRotateMoinsAngle(r.coinBasDroiteRotate), getXRotateMoinsAngle(r.coinHautDroiteRotate))
 				&& !testeSeparation(coinBasGauche.y, coinHautGauche.y, getYRotateMoinsAngle(r.coinBasGaucheRotate), getYRotateMoinsAngle(r.coinHautGaucheRotate), getYRotateMoinsAngle(r.coinBasDroiteRotate), getYRotateMoinsAngle(r.coinHautDroiteRotate))
@@ -242,6 +249,7 @@ public class ObstacleRectangular extends Obstacle
 		return squaredDistance(o.position) < o.radius*o.radius;
 	}
 	
+	@Override
 	public boolean isColliding(Obstacle o)
 	{
 		if(o instanceof ObstacleRectangular)
@@ -254,7 +262,7 @@ public class ObstacleRectangular extends Obstacle
 	}
 
 	public void update(Vec2 position, double orientation)
-	{		
+	{
 		updateVariables(position, orientation);	
 	}
 	
@@ -361,6 +369,7 @@ public class ObstacleRectangular extends Obstacle
 	 * Y a-t-il collision avec un obstacle fixe?
 	 * @return
 	 */
+	@Override
 	public boolean isCollidingObstacleFixe()
 	{
 		for(ObstaclesFixes o: ObstaclesFixes.values())
