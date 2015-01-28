@@ -12,6 +12,13 @@ import container.ServiceNames;
  *
  */
 
+/**
+ * TODO LIST
+ * Avoir un asservissement en vitesse lorsqu'on est loin de la consigne en position (nécessaire à la trajectoire courbe)
+ * Obtenir la vitesse instantanée par une commande série
+ *
+ */
+
 public class Lanceur {
 
 	public static void main(String[] args) {

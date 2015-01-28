@@ -189,12 +189,9 @@ public class HookFactory implements Service
     	return new HookDemiPlan(config, log, state, new Vec2(0, yValue), new Vec2(0,-1));
     }
 
-    public HookDemiPlan newHookTrajectoireCourbe(Vec2 A, Vec2 B, GameState<?> state)
+    public HookDemiPlan newHookTrajectoireCourbe(ArrayList<Vec2> itineraire, GameState<?> state)
     {
-    	float normeAB = A.distance(B);
-    	float longueur_anticipation = 200; // TODO: à calculer en fonction de A et B
-    	Vec2 C = B.plusNewVector(A.minusNewVector(B).scalarNewVector(Math.min(longueur_anticipation, normeAB)/normeAB));
-    	return new HookDemiPlan(config, log, state, C, B.minusNewVector(C));
+    	return new HookDemiPlan(config, log, state, itineraire);
     }
 
     
