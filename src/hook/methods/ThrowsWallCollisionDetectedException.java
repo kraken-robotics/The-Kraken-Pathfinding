@@ -9,7 +9,8 @@ import hook.Executable;
 
 public class ThrowsWallCollisionDetectedException implements Executable
 {
-	WallCollisionDetectedException exception;
+	private WallCollisionDetectedException exception;
+	
 	@Override
 	public void execute() throws FinMatchException, ScriptHookException, WallCollisionDetectedException
 	{

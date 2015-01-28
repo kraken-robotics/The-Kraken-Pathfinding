@@ -19,8 +19,8 @@ import utils.Vec2;
 
 public class HookCollisionElementJeu extends Hook
 {
-	ObstacleCircular obstacle;
-	ObstacleRectangular obstacleRobot;
+	private ObstacleCircular obstacle;
+	private ObstacleRectangular obstacleRobot;
 	
 	public HookCollisionElementJeu(Config config, Log log, GameState<?> state, ObstacleCircular o) throws FinMatchException
 	{
