@@ -27,10 +27,20 @@ public class Config implements Service
 	private String path;
 	private Properties config = new Properties();
 	private Properties local = new Properties();
+	private Log log;
 	
-	public Config(String path) throws ConfigException
+	public Config(String path)
 	{
 		this.path = path;
+	}
+	
+	public void setLog(Log log)
+	{
+		this.log = log;
+	}
+	
+	public void init() throws ConfigException
+	{
 	//	log.debug("Loading config from current directory : " +  System.getProperty("user.dir"), this)
 		try
 		{
@@ -106,7 +116,7 @@ public class Config implements Service
 		out = config.getProperty(nom.toString());
 		if(out == null)
 		{
-			System.out.println("Erreur config: "+nom+" introuvable.");
+			log.debug("Erreur config: "+nom+" introuvable.", this);
 			return nom.getDefaultValue();
 		}
 		return out;
@@ -119,7 +129,7 @@ public class Config implements Service
 	 */
 	private void set(ConfigInfo nom, String value)
 	{
-		System.out.println(nom+" = "+value+" (ancienne valeur: "+config.getProperty(nom.toString())+")");
+		log.debug(nom+" = "+value+" (ancienne valeur: "+config.getProperty(nom.toString())+")", this);
 		config.setProperty(nom.toString(), value);
 	}
 	
@@ -141,9 +151,9 @@ public class Config implements Service
 	{
 		if(Boolean.parseBoolean(config.getProperty("affiche_debug")))
 		{
-			System.out.println("Configuration initiale");
+			log.debug("Configuration initiale", this);
 			for(Object o: config.keySet())
-				System.out.println(o+": "+config.get(o));
+				log.debug(o+": "+config.get(o), this);
 		}
 	}
 	

@@ -94,7 +94,7 @@ public class Container
 			System.out.println("Un autre container existe déjà! Annulation du constructeur.");
 			throw new ContainerException();
 		}
-		nbInstances++;		
+		nbInstances++;
 		try
 		{
 			// affiche la configuration avant toute autre chose
@@ -108,6 +108,11 @@ public class Container
 			// démarre le système de log
 			instanciedServices[ServiceNames.LOG.ordinal()] = (Service)new Log(config);
 			log = (Log)instanciedServices[ServiceNames.LOG.ordinal()];
+			
+			// Cas particulier d'interdépendance
+			config.setLog(log);
+			config.init();
+			log.init();
 			
 			Obstacle.setLogConfig(log, config);
 		}

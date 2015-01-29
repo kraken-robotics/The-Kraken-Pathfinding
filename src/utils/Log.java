@@ -34,9 +34,11 @@ public class Log implements Service
 	public Log(Config config)
 	{
 		this.config = config;
-		
+	}
+	
+	public void init()
+	{
 		updateConfig();
-		
 		if(sauvegarde_fichier)
 			try {
 				java.util.GregorianCalendar calendar = new GregorianCalendar();
@@ -48,7 +50,6 @@ public class Log implements Service
 				critical(e, this);
 			}
 		warning("Service de log démarré", this);
-	
 	}
 	
 	/**
@@ -184,20 +185,8 @@ public class Log implements Service
 	@Override
 	public void updateConfig()
 	{
-		try {
-			affiche_debug = config.getBoolean(ConfigInfo.AFFICHE_DEBUG);
-		}
-		catch(Exception e)
-		{
-			critical(e, this);
-		}
-		try {
-			sauvegarde_fichier = config.getBoolean(ConfigInfo.SAUVEGARDE_FICHIER);
-		}
-		catch(Exception e)
-		{
-			critical(e, this);
-		}
+		affiche_debug = config.getBoolean(ConfigInfo.AFFICHE_DEBUG);
+		sauvegarde_fichier = config.getBoolean(ConfigInfo.SAUVEGARDE_FICHIER);
 	}
 
 }
