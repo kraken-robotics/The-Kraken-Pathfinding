@@ -229,9 +229,7 @@ public class JUnit_Test_Graphic extends JUnit_Test {
 	@Test
     public void test_obstacle_trajectoire_courbe() throws Exception
     {
-		int largeur_robot = config.getInt(ConfigInfo.LARGEUR_ROBOT);
-		int longueur_robot = config.getInt(ConfigInfo.LONGUEUR_ROBOT);
-		ObstacleRectangular[] ombresRobot = new ObstacleCouronnePartielle(new Vec2(0, 1500), Math.PI/2, new Vec2(0, 1000), largeur_robot, longueur_robot, 0).getOmbresRobot();
+		ObstacleRectangular[] ombresRobot = new ObstacleCouronnePartielle(new Vec2(0, 1500), Math.PI/2, new Vec2(0, 1000), 0).getOmbresRobot();
 		log.debug("Nb ombres: "+ombresRobot.length, this);
 		for(ObstacleRectangular o: ombresRobot)
 			fenetre.addObstacleEnBiais(o);

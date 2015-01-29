@@ -37,13 +37,13 @@ public class Execution implements Service {
 	
 	public Execution(Log log, Config config, GameState<RobotReal> gamestate, ScriptManager scriptmanager, HookFactory hookfactory, ThreadStrategy threadstrategy)
 	{
-		updateConfig();
 		this.log = log;
 		this.config = config;
 		this.gamestate = gamestate;
 		this.scriptmanager = scriptmanager;
 		this.threadstrategy = threadstrategy;
 
+		updateConfig();
 		try {
 			hooks_entre_scripts = hookfactory.getHooksEntreScriptsReal(gamestate);
 		} catch (FinMatchException e) {

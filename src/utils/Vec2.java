@@ -140,5 +140,16 @@ public class Vec2
 		(int)(sin*(x-centreRotation.x)+cos*(y-centreRotation.y))+centreRotation.y);
 	}
 
+	/**
+	 * Rotation avec pour centre de rotation (0,0)
+	 * @param d
+	 * @return
+	 */
+	public Vec2 rotateNewVector(double angle) {
+		double cos = Math.cos(angle);
+		double sin = Math.sin(angle);
+		return new Vec2((int)(cos*x-sin*y),	(int)(sin*x+cos*y));
+	}
+
 }
 
