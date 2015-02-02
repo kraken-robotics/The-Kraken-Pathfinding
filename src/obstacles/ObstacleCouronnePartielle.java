@@ -1,5 +1,6 @@
 package obstacles;
 
+import robot.Speed;
 import utils.ConfigInfo;
 import utils.Vec2;
 
@@ -12,38 +13,44 @@ import utils.Vec2;
 public class ObstacleCouronnePartielle extends ObstacleRectanglesCollection
 {
 	/**
-	 * Appel simplifié
-	 * @param positionDebutRotation
-	 * @param directionRobot
-	 * @param angleRotation
-	 * @param distanceAnticipation
+	 * 
+	 * @param intersection
+	 * @param directionAvant Vec2 pointant dans une direction, de norme 1000
+	 * @param directionApres Vec2 pointant dans une direction, de norme 1000
+	 * @param vitesse
 	 */
-	public ObstacleCouronnePartielle(Vec2 positionDebutRotation, Vec2 directionRobot, double angleRotation, double distanceAnticipation)
+	public ObstacleCouronnePartielle(Vec2 intersection, Vec2 directionAvant, Vec2 directionApres, Speed vitesse)
 	{
-		this(directionRobot.rotateNewVector(-Math.PI/2).scalarNewVector((float) (distanceAnticipation*Math.tan(Math.PI/2-angleRotation/2))), angleRotation, positionDebutRotation, Math.atan2(directionRobot.y, directionRobot.x));
-	}
-	
-	/**
-	 * angleRotation dit de combien on tourne; c'est donc un angle relatif. Il suit
-	 * la convention trigonométrique (angle positif: on tourne à gauche)
-	 * @param centreCercle
-	 * @param angleRotation
-	 * @param pointDepart
-	 * @param largeurRobot
-	 * @param longueurRobot
-	 * @param angleDepart
-	 */
-	public ObstacleCouronnePartielle(Vec2 centreCercle, double angleRotation, Vec2 pointDepart, double angleDepart)
-	{
-		super(centreCercle);
+		// La position de cet obstacle est assez arbitraire...
+		super(intersection);
+		int rayonCourbure = vitesse.rayonCourbure();
+
+		double angleDepart = directionAvant.getArgument();
+		double angleRotation = (directionApres.getArgument() - angleDepart) % (2*Math.PI);
+
+		if(angleRotation > Math.PI)
+			angleRotation -= 2*Math.PI;
+
+		int distanceAnticipation = (int) (rayonCourbure / Math.abs(Math.tan((Math.PI-angleRotation)/2)));
+
+		Vec2 pointDepart = intersection.minusNewVector(directionAvant.scalarNewVector(distanceAnticipation/1000.));
+		Vec2 orthogonalDirectionAvant = directionAvant.rotateNewVector(Math.PI/2);
+
+		// Afin de placer le centre du cercle entre les deux directions
+		if(orthogonalDirectionAvant.dot(directionApres) < 0)
+			orthogonalDirectionAvant.scalar(-1);
+
+		Vec2 centreCercle = pointDepart.plusNewVector(orthogonalDirectionAvant.scalarNewVector(rayonCourbure/1000.));
+
 		int largeurRobot = config.getInt(ConfigInfo.LARGEUR_ROBOT);
 		int longueurRobot = config.getInt(ConfigInfo.LONGUEUR_ROBOT);
-		float R = centreCercle.distance(pointDepart);
-		nb_rectangles = (int)(2*Math.abs(angleRotation)*R/longueurRobot)+1;
+//		double angleEntreOmbre = Math.atan2(longueurRobot/2, rayonCourbure+largeurRobot/2);
+//		nb_rectangles = (int)(Math.abs(angleRotation/angleEntreOmbre))+1;
+		nb_rectangles = 10;
 		ombresRobot = new ObstacleRectangular[nb_rectangles];
 		for(int i = 0; i < nb_rectangles-1; i++)
 			ombresRobot[i] = new ObstacleRectangular(pointDepart.rotateNewVector(i*angleRotation/(nb_rectangles-1), centreCercle), longueurRobot, largeurRobot, angleDepart+i*angleRotation/(nb_rectangles-1));
 		ombresRobot[nb_rectangles-1] = new ObstacleRectangular(pointDepart.rotateNewVector(angleRotation, centreCercle), longueurRobot, largeurRobot, angleDepart+angleRotation);
 	}
-
+	
 }

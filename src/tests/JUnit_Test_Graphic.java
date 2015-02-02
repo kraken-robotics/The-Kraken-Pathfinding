@@ -20,6 +20,7 @@ import astar.arcmanager.PathfindingArcManager;
 import astar.arcmanager.StrategyArcManager;
 import robot.RobotChrono;
 import robot.RobotReal;
+import robot.Speed;
 import scripts.ScriptManager;
 import scripts.ScriptAnticipableNames;
 import strategie.GameState;
@@ -229,7 +230,7 @@ public class JUnit_Test_Graphic extends JUnit_Test {
 	@Test
     public void test_obstacle_trajectoire_courbe() throws Exception
     {
-		ObstacleRectangular[] ombresRobot = new ObstacleCouronnePartielle(new Vec2(0, 1500), Math.PI/2, new Vec2(0, 1000), 0).getOmbresRobot();
+		ObstacleRectangular[] ombresRobot = new ObstacleCouronnePartielle(new Vec2(0, 1000), new Vec2(-Math.PI/2), new Vec2(Math.PI/4), Speed.BETWEEN_SCRIPTS).getOmbresRobot();
 		log.debug("Nb ombres: "+ombresRobot.length, this);
 		for(ObstacleRectangular o: ombresRobot)
 			fenetre.addObstacleEnBiais(o);

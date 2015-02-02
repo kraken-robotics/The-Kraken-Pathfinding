@@ -70,4 +70,13 @@ public enum Speed
         rotationnalSpeed = 1./((double)invertedRotationnalSpeed);
     }
     
+    /**
+     * Renvoie le rayon courbure en trajectoire courbe en mm.
+     * @return
+     */
+    public int rayonCourbure()
+    {
+    	return (int)(translationnalSpeed/rotationnalSpeed);
+    }
+    
 }

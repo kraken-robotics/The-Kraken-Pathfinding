@@ -20,6 +20,18 @@ public class Vec2
 		x = 0;
 		y = 0;
 	}
+	
+	public Vec2(double angle)
+	{
+		x = (int) (Math.cos(angle)*1000);
+		y = (int) (Math.sin(angle)*1000);
+	}
+
+	public Vec2(Vec2 model)
+	{
+		x = model.x;
+		y = model.y;
+	}
 
 	public Vec2(int requestedX, int requestedY)
 	{
@@ -127,9 +139,17 @@ public class Vec2
 		return new Vec2((x+b.x)/2, (y+b.y)/2);
 	}
 
-	public Vec2 scalarNewVector(float f)
+	public void scalar(double d)
 	{
-		return new Vec2((int)(f*x), y = (int)(f*y));
+		x = (int)(d*x);
+		y = (int)(d*y);
+	}
+	
+	public Vec2 scalarNewVector(double d)
+	{
+		Vec2 out = new Vec2(this);
+		out.scalar(d);
+		return out;
 	}
 	
 	public Vec2 rotateNewVector(double angle, Vec2 centreRotation)
@@ -145,10 +165,50 @@ public class Vec2
 	 * @param d
 	 * @return
 	 */
-	public Vec2 rotateNewVector(double angle) {
+	public Vec2 rotateNewVector(double angle)
+	{
 		double cos = Math.cos(angle);
 		double sin = Math.sin(angle);
 		return new Vec2((int)(cos*x-sin*y),	(int)(sin*x+cos*y));
+	}
+
+	/**
+	 * Normalise le vecteur
+	 */
+	public void normalize()
+	{
+		double longueur = length();
+		if(longueur != 0)
+		{
+			x /= longueur;
+			y /= longueur;
+		}
+	}
+
+	/**
+	 * Renvoie le vecteur normalisé
+	 * @return
+	 */
+	public Vec2 normalizeNewVector()
+	{
+		Vec2 out = new Vec2(this);
+		out.normalize();
+		return out;
+	}
+	
+	public double getArgument()
+	{
+		return Math.atan2(y, x);
+	}
+	
+	/**
+	 * Fait le projeté de this sur other, puis renvoie le résultat dans un nouveau Vec2
+	 * @param other
+	 * @return
+	 */
+	public Vec2 projectOnNewVector(Vec2 other)
+	{
+		return scalarNewVector(dot(other));
 	}
 
 }
