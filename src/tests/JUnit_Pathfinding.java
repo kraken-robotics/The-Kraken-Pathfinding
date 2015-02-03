@@ -14,6 +14,7 @@ import container.ServiceNames;
 import astar.AStar;
 import astar.MemoryManager;
 import astar.arc.PathfindingNodes;
+import astar.arc.SegmentTrajectoireCourbe;
 import astar.arcmanager.PathfindingArcManager;
 import robot.RobotChrono;
 import robot.RobotReal;
@@ -33,7 +34,7 @@ import exceptions.PathfindingRobotInObstacleException;
 
 public class JUnit_Pathfinding extends JUnit_Test {
 
-	private AStar<PathfindingArcManager, PathfindingNodes> pathfinding;
+	private AStar<PathfindingArcManager, SegmentTrajectoireCourbe> pathfinding;
 	private GameState<RobotChrono> state_chrono;
 	private GameState<RobotReal> state;
 	private MemoryManager memorymanager;
@@ -44,7 +45,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
     public void setUp() throws Exception {
         super.setUp();
     	config.set(ConfigInfo.DUREE_PEREMPTION_OBSTACLES, 100);
-        pathfinding = (AStar<PathfindingArcManager, PathfindingNodes>) container.getService(ServiceNames.A_STAR_PATHFINDING);
+        pathfinding = (AStar<PathfindingArcManager, SegmentTrajectoireCourbe>) container.getService(ServiceNames.A_STAR_PATHFINDING);
 		state = (GameState<RobotReal>)container.getService(ServiceNames.REAL_GAME_STATE);
 		state_chrono = state.cloneGameState();
 		memorymanager = (MemoryManager) container.getService(ServiceNames.MEMORY_MANAGER);
@@ -120,8 +121,8 @@ public class JUnit_Pathfinding extends JUnit_Test {
 		PathfindingNodes i = PathfindingNodes.SORTIE_ZONE_DEPART;
 		PathfindingNodes j = PathfindingNodes.CLAP_GAUCHE;
 		state_chrono.robot.setPositionPathfinding(i);
-		ArrayList<PathfindingNodes> chemin = pathfinding.computePath(state_chrono, j, true);
-		for(PathfindingNodes n: chemin)
+		ArrayList<SegmentTrajectoireCourbe> chemin = pathfinding.computePath(state_chrono, j, true);
+		for(SegmentTrajectoireCourbe n: chemin)
 			log.debug(n, this);
 	}
 	
@@ -132,8 +133,8 @@ public class JUnit_Pathfinding extends JUnit_Test {
 		PathfindingNodes i = PathfindingNodes.values()[randomgenerator.nextInt(PathfindingNodes.values().length)];
 		PathfindingNodes j = PathfindingNodes.values()[randomgenerator.nextInt(PathfindingNodes.values().length)];
 		state_chrono.robot.setPositionPathfinding(i);
-		ArrayList<PathfindingNodes> chemin = pathfinding.computePath(state_chrono, j, true);
-		for(PathfindingNodes n: chemin)
+		ArrayList<SegmentTrajectoireCourbe> chemin = pathfinding.computePath(state_chrono, j, true);
+		for(SegmentTrajectoireCourbe n: chemin)
 			log.debug(n, this);
     }
 
@@ -160,14 +161,14 @@ public class JUnit_Pathfinding extends JUnit_Test {
 		state_chrono = state.cloneGameState();
 		ArrayList<Hook> hooks_table = hookfactory.getHooksEntreScriptsChrono(state_chrono, 90000);
 		state_chrono.robot.setPosition(PathfindingNodes.BAS.getCoordonnees().plusNewVector(new Vec2(10, 10)));
-    	ArrayList<PathfindingNodes> chemin = pathfinding.computePath(state_chrono, PathfindingNodes.COTE_MARCHE_DROITE, true);
+    	ArrayList<SegmentTrajectoireCourbe> chemin = pathfinding.computePath(state_chrono, PathfindingNodes.COTE_MARCHE_DROITE, true);
 
 		ArrayList<Vec2> cheminVec2 = new ArrayList<Vec2>();
 		cheminVec2.add(PathfindingNodes.BAS.getCoordonnees().plusNewVector(new Vec2(10, 10)));
-		for(PathfindingNodes n: chemin)
+		for(SegmentTrajectoireCourbe n: chemin)
 		{
 			log.debug(n, this);
-			cheminVec2.add(n.getCoordonnees());
+			cheminVec2.add(n.n.getCoordonnees());
 		}
     	
 		Assert.assertEquals(PathfindingNodes.BAS.getCoordonnees().plusNewVector(new Vec2(10, 10)), state_chrono.robot.getPosition());

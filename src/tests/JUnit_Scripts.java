@@ -11,6 +11,7 @@ import org.junit.Assert;
 import container.ServiceNames;
 import astar.AStar;
 import astar.arc.PathfindingNodes;
+import astar.arc.SegmentTrajectoireCourbe;
 import astar.arcmanager.PathfindingArcManager;
 import robot.RobotChrono;
 import robot.RobotReal;
@@ -33,14 +34,14 @@ public class JUnit_Scripts extends JUnit_Test {
 	private ScriptManager scriptmanager;
 	private GameState<RobotReal> gamestate;
 	private GameState<RobotChrono> state_chrono;
-	private AStar<PathfindingArcManager, PathfindingNodes> pathfinding;
+	private AStar<PathfindingArcManager, SegmentTrajectoireCourbe> pathfinding;
 
     @SuppressWarnings("unchecked")
 	@Before
     public void setUp() throws Exception {
         super.setUp();
         gamestate = (GameState<RobotReal>) container.getService(ServiceNames.REAL_GAME_STATE);
-        pathfinding = (AStar<PathfindingArcManager, PathfindingNodes>) container.getService(ServiceNames.A_STAR_PATHFINDING);
+        pathfinding = (AStar<PathfindingArcManager, SegmentTrajectoireCourbe>) container.getService(ServiceNames.A_STAR_PATHFINDING);
         scriptmanager = (ScriptManager) container.getService(ServiceNames.SCRIPT_MANAGER);
         gamestate.robot.setPosition(new Vec2(1100, 1000));
         state_chrono = gamestate.cloneGameState();
@@ -127,7 +128,7 @@ public class JUnit_Scripts extends JUnit_Test {
     	gamestate.robot.avancer(500);
     	PathfindingNodes version = PathfindingNodes.NODE_TAPIS;
     	Script s = scriptmanager.getScript(ScriptAnticipableNames.TAPIS);
-    	ArrayList<PathfindingNodes> chemin = pathfinding.computePath(gamestate.cloneGameState(), version, true);
+    	ArrayList<SegmentTrajectoireCourbe> chemin = pathfinding.computePath(gamestate.cloneGameState(), version, true);
     	gamestate.robot.suit_chemin(chemin, new ArrayList<Hook>());
     	s.agit(version, gamestate);
     }
@@ -141,7 +142,7 @@ public class JUnit_Scripts extends JUnit_Test {
     	config.set(ConfigInfo.COULEUR, "jaune");
     	PathfindingNodes version = PathfindingNodes.NODE_TAPIS;
     	Script s = scriptmanager.getScript(ScriptAnticipableNames.TAPIS);
-    	ArrayList<PathfindingNodes> chemin = pathfinding.computePath(gamestate.cloneGameState(), version, true);
+    	ArrayList<SegmentTrajectoireCourbe> chemin = pathfinding.computePath(gamestate.cloneGameState(), version, true);
     	gamestate.robot.suit_chemin(chemin, new ArrayList<Hook>());
     	s.agit(version, gamestate);
     }
@@ -154,7 +155,7 @@ public class JUnit_Scripts extends JUnit_Test {
     	gamestate.robot.avancer(500);
     	PathfindingNodes version = PathfindingNodes.CLAP_DROIT;
     	Script s = scriptmanager.getScript(ScriptAnticipableNames.CLAP);
-    	ArrayList<PathfindingNodes> chemin = pathfinding.computePath(gamestate.cloneGameState(), version, true);
+    	ArrayList<SegmentTrajectoireCourbe> chemin = pathfinding.computePath(gamestate.cloneGameState(), version, true);
     	gamestate.robot.suit_chemin(chemin, new ArrayList<Hook>());
     	s.agit(version, gamestate);
     }
@@ -167,7 +168,7 @@ public class JUnit_Scripts extends JUnit_Test {
     	gamestate.robot.avancer(1500);
     	PathfindingNodes version = PathfindingNodes.CLAP_DROIT_SECOND;
     	Script s = scriptmanager.getScript(ScriptAnticipableNames.CLAP);
-    	ArrayList<PathfindingNodes> chemin = pathfinding.computePath(gamestate.cloneGameState(), version, true);
+    	ArrayList<SegmentTrajectoireCourbe> chemin = pathfinding.computePath(gamestate.cloneGameState(), version, true);
     	gamestate.robot.suit_chemin(chemin, new ArrayList<Hook>());
     	s.agit(version, gamestate);
     }
@@ -180,7 +181,7 @@ public class JUnit_Scripts extends JUnit_Test {
     	gamestate.robot.avancer(500);
     	PathfindingNodes version = PathfindingNodes.CLAP_GAUCHE;
     	Script s = scriptmanager.getScript(ScriptAnticipableNames.CLAP);
-    	ArrayList<PathfindingNodes> chemin = pathfinding.computePath(gamestate.cloneGameState(), version, true);
+    	ArrayList<SegmentTrajectoireCourbe> chemin = pathfinding.computePath(gamestate.cloneGameState(), version, true);
     	gamestate.robot.suit_chemin(chemin, new ArrayList<Hook>());
     	s.agit(version, gamestate);
     }

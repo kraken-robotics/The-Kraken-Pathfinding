@@ -12,6 +12,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import astar.arc.PathfindingNodes;
+import astar.arc.SegmentTrajectoireCourbe;
 import robot.DirectionStrategy;
 import robot.Locomotion;
 import utils.ConfigInfo;
@@ -87,11 +88,11 @@ public class JUnit_Locomotion extends JUnit_Test
 	{
 		config.set(ConfigInfo.COULEUR, "jaune");
 		locomotion.updateConfig();
-		ArrayList<PathfindingNodes> chemin = new ArrayList<PathfindingNodes>();
-		chemin.add(PathfindingNodes.BAS);
-		chemin.add(PathfindingNodes.DEVANT_DEPART_GAUCHE);
-		chemin.add(PathfindingNodes.COTE_MARCHE_GAUCHE);
-		chemin.add(PathfindingNodes.DEVANT_DEPART_GAUCHE);
+		ArrayList<SegmentTrajectoireCourbe> chemin = new ArrayList<SegmentTrajectoireCourbe>();
+		chemin.add(new SegmentTrajectoireCourbe(PathfindingNodes.BAS, false));
+		chemin.add(new SegmentTrajectoireCourbe(PathfindingNodes.DEVANT_DEPART_GAUCHE, false));
+		chemin.add(new SegmentTrajectoireCourbe(PathfindingNodes.COTE_MARCHE_GAUCHE, false));
+		chemin.add(new SegmentTrajectoireCourbe(PathfindingNodes.DEVANT_DEPART_GAUCHE, false));
 		
 		locomotion.followPath(chemin, new ArrayList<Hook>(), DirectionStrategy.FASTEST);
 		locomotion.followPath(chemin, new ArrayList<Hook>(), DirectionStrategy.FORCE_FORWARD_MOTION);

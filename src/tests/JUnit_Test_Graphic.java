@@ -16,6 +16,7 @@ import container.ServiceNames;
 import astar.AStar;
 import astar.arc.Decision;
 import astar.arc.PathfindingNodes;
+import astar.arc.SegmentTrajectoireCourbe;
 import astar.arcmanager.PathfindingArcManager;
 import astar.arcmanager.StrategyArcManager;
 import robot.RobotChrono;
@@ -41,7 +42,7 @@ public class JUnit_Test_Graphic extends JUnit_Test {
 
 	private Fenetre fenetre;
 	private ObstacleManager obstaclemanager;
-	private AStar<PathfindingArcManager, PathfindingNodes> pathfinding;
+	private AStar<PathfindingArcManager, SegmentTrajectoireCourbe> pathfinding;
 	private GameState<RobotChrono> state_chrono;
 	private GameState<RobotReal> state;
 	private AStar<StrategyArcManager, Decision> strategic_astar;
@@ -52,7 +53,7 @@ public class JUnit_Test_Graphic extends JUnit_Test {
 	public void setUp() throws Exception
 	{
 		super.setUp();
-        pathfinding = (AStar<PathfindingArcManager, PathfindingNodes>) container.getService(ServiceNames.A_STAR_PATHFINDING);
+        pathfinding = (AStar<PathfindingArcManager, SegmentTrajectoireCourbe>) container.getService(ServiceNames.A_STAR_PATHFINDING);
 		obstaclemanager = (ObstacleManager) container.getService(ServiceNames.OBSTACLE_MANAGER);
 		state = (GameState<RobotReal>)container.getService(ServiceNames.REAL_GAME_STATE);
 		strategic_astar = (AStar<StrategyArcManager, Decision>)container.getService(ServiceNames.A_STAR_STRATEGY);
@@ -92,13 +93,13 @@ public class JUnit_Test_Graphic extends JUnit_Test {
 			state_chrono = state.cloneGameState();
 			double orientation_initiale = state_chrono.robot.getOrientation();
 			state_chrono.robot.setPosition(entree);
-			ArrayList<PathfindingNodes> chemin = pathfinding.computePath(state_chrono, j, true);
+			ArrayList<SegmentTrajectoireCourbe> chemin = pathfinding.computePath(state_chrono, j, true);
     		ArrayList<Vec2> cheminVec2 = new ArrayList<Vec2>();
     		cheminVec2.add(entree);
-    		for(PathfindingNodes n: chemin)
+    		for(SegmentTrajectoireCourbe n: chemin)
     		{
     			log.debug(n, this);
-    			cheminVec2.add(n.getCoordonnees());
+    			cheminVec2.add(n.n.getCoordonnees());
     		}
     		fenetre.setPath(orientation_initiale, cheminVec2, Color.BLUE);
     		ArrayList<Vec2> direct = new ArrayList<Vec2>();
@@ -114,8 +115,8 @@ public class JUnit_Test_Graphic extends JUnit_Test {
     @Test
     public void test_strategy_verification_humaine() throws Exception
     {
-		ArrayList<PathfindingNodes> cheminDepart = new ArrayList<PathfindingNodes>();
-		cheminDepart.add(PathfindingNodes.POINT_DEPART);
+		ArrayList<SegmentTrajectoireCourbe> cheminDepart = new ArrayList<SegmentTrajectoireCourbe>();
+		cheminDepart.add(new SegmentTrajectoireCourbe(PathfindingNodes.POINT_DEPART, false));
     	Decision decision = new Decision(cheminDepart, ScriptAnticipableNames.SORTIE_ZONE_DEPART, PathfindingNodes.POINT_DEPART);
     	config.setDateDebutMatch();
     	GameState<RobotChrono> chronostate = state.cloneGameState();
@@ -126,10 +127,10 @@ public class JUnit_Test_Graphic extends JUnit_Test {
 //			log.debug(d, this);
     		ArrayList<Vec2> cheminVec2 = new ArrayList<Vec2>();
     		cheminVec2.add(position_precedente);
-    		for(PathfindingNodes n: d.chemin)
+    		for(SegmentTrajectoireCourbe n: d.chemin)
     		{
 //    			log.debug(n, this);
-    			cheminVec2.add(n.getCoordonnees());
+    			cheminVec2.add(n.n.getCoordonnees());
     		}
 			fenetre.setPath(null, cheminVec2, Color.GRAY);
 			fenetre.repaint();
@@ -159,8 +160,8 @@ public class JUnit_Test_Graphic extends JUnit_Test {
 			log.debug(d, this);
     		ArrayList<Vec2> cheminVec2 = new ArrayList<Vec2>();
     		cheminVec2.add(position_precedente);
-    		for(PathfindingNodes n: d.chemin)
-    			cheminVec2.add(n.getCoordonnees());
+    		for(SegmentTrajectoireCourbe n: d.chemin)
+    			cheminVec2.add(n.n.getCoordonnees());
 			fenetre.setPath(null, cheminVec2, Color.GRAY);
 			fenetre.repaint();
 			Sleep.sleep(3000);

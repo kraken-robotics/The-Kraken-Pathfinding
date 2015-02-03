@@ -9,6 +9,7 @@ import container.ServiceNames;
 import astar.AStar;
 import astar.arc.Decision;
 import astar.arc.PathfindingNodes;
+import astar.arc.SegmentTrajectoireCourbe;
 import astar.arcmanager.StrategyArcManager;
 import robot.RobotChrono;
 import robot.RobotReal;
@@ -40,8 +41,8 @@ public class JUnit_StrategicAStar extends JUnit_Test
     public void test_strategy_after_decision() throws Exception
     {
     	PathfindingNodes version = PathfindingNodes.CLAP_DROIT;
-    	ArrayList<PathfindingNodes> chemin = new ArrayList<PathfindingNodes>();
-    	chemin.add(version);
+    	ArrayList<SegmentTrajectoireCourbe> chemin = new ArrayList<SegmentTrajectoireCourbe>();
+    	chemin.add(new SegmentTrajectoireCourbe(version, false));
     	Decision decision = new Decision(chemin, ScriptAnticipableNames.CLAP, version);
     	GameState<RobotChrono> chronostate = gamestate.cloneGameState();
     	chronostate.robot.setPositionPathfinding(version);

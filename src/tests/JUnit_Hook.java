@@ -13,6 +13,7 @@ import org.junit.Test;
 import container.ServiceNames;
 import astar.AStar;
 import astar.arc.PathfindingNodes;
+import astar.arc.SegmentTrajectoireCourbe;
 import astar.arcmanager.PathfindingArcManager;
 import robot.RobotChrono;
 import robot.RobotReal;
@@ -33,7 +34,7 @@ public class JUnit_Hook extends JUnit_Test {
 	private HookFactory hookfactory;
 	private GameState<RobotReal> real_gamestate;
 	private GameState<RobotChrono> chrono_gamestate;
-	private AStar<PathfindingArcManager, PathfindingNodes> pathfinding;
+	private AStar<PathfindingArcManager, SegmentTrajectoireCourbe> pathfinding;
 
 	@SuppressWarnings("unchecked")
 	@Before
@@ -43,7 +44,7 @@ public class JUnit_Hook extends JUnit_Test {
         hookfactory = (HookFactory) container.getService(ServiceNames.HOOK_FACTORY);
         real_gamestate = (GameState<RobotReal>) container.getService(ServiceNames.REAL_GAME_STATE);
         chrono_gamestate = real_gamestate.cloneGameState();
-        pathfinding = (AStar<PathfindingArcManager, PathfindingNodes>)container.getService(ServiceNames.A_STAR_PATHFINDING);
+        pathfinding = (AStar<PathfindingArcManager, SegmentTrajectoireCourbe>)container.getService(ServiceNames.A_STAR_PATHFINDING);
     }
    
 	@Test

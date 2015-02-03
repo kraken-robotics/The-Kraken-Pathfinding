@@ -374,7 +374,7 @@ public class ObstacleManager implements Service
     		if(obstacle.isColliding(o.getObstacle()))
     			return false;
 
-    	// Collision avec un ennemu hypothétique?
+    	// Collision avec un ennemi hypothétique?
         if(isThereHypotheticalEnemy && obstacle.isColliding(hypotheticalEnemy))
         	return false;
 
