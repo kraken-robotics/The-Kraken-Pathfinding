@@ -64,10 +64,10 @@ public enum Speed
         
         // TODO: faire des MESURES
         
-        invertedTranslationnalSpeed = (int) (1./(((float)2500)/((float)613.52 * (float)(Math.pow((double)PWM_translation,(double)(-1.034))))/1000));
-        invertedRotationnalSpeed = (int) (1./(((float)Math.PI)/((float)277.85 * (float)Math.pow(PWM_rotation,(-1.222)))/1000));
-        translationnalSpeed = 1./((double)invertedTranslationnalSpeed);
-        rotationnalSpeed = 1./((double)invertedRotationnalSpeed);
+        invertedTranslationnalSpeed = (int) (1./((2500.)/(613.52 * (Math.pow(PWM_translation,(-1.034))))/1000));
+        invertedRotationnalSpeed = (int) (1./((Math.PI)/(277.85 * Math.pow(PWM_rotation,(-1.222)))/1000));
+        translationnalSpeed = 1./(invertedTranslationnalSpeed);
+        rotationnalSpeed = 1./(invertedRotationnalSpeed);
     }
     
     /**

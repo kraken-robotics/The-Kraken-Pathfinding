@@ -74,8 +74,8 @@ public class HookDemiPlan extends Hook
 			{
 				Vec2 A = itineraire.get(0);
 				Vec2 B = itineraire.get(1);
-				float normeAB = A.distance(B);
-				float longueur_anticipation = 200; // TODO: à calculer en fonction de A et B
+				double normeAB = A.distance(B);
+				double longueur_anticipation = 200; // TODO: à calculer en fonction de A et B
 				Vec2 C = B.plusNewVector(A.minusNewVector(B).scalarNewVector(Math.min(longueur_anticipation, normeAB)/normeAB));
 				this.point = C;
 				this.direction = B.minusNewVector(C);

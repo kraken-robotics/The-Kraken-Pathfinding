@@ -23,7 +23,7 @@ public class ObstacleRectangular extends Obstacle implements ObstacleCollision
 	protected int sizeY;
 
 	// Longueur entre le centre et un des coins
-	protected float demieDiagonale;
+	protected double demieDiagonale;
 	
 	// calcul des positions des coins
 	protected Vec2 coinBasGauche;
@@ -76,7 +76,7 @@ public class ObstacleRectangular extends Obstacle implements ObstacleCollision
 		super(position);
 		this.sizeY = sizeY;
 		this.sizeX = sizeX;
-		demieDiagonale = (float) Math.sqrt(sizeY*sizeY/4+sizeX*sizeX/4);
+		demieDiagonale = Math.sqrt(sizeY*sizeY/4+sizeX*sizeX/4);
 		updateVariables(position, angle);
 	}
 	
@@ -290,9 +290,9 @@ public class ObstacleRectangular extends Obstacle implements ObstacleCollision
 		return "ObstacleRectangulaire";
 	}
 	
-	public float distance(Vec2 point)
+	public double distance(Vec2 point)
 	{
-		return (float) Math.sqrt(squaredDistance(point));
+		return Math.sqrt(squaredDistance(point));
 	}
 	
 	public boolean isInObstacle(Vec2 point)
@@ -309,7 +309,7 @@ public class ObstacleRectangular extends Obstacle implements ObstacleCollision
 	 * @param in
 	 * @return la plus petite distance au carré entre le point fourni et l'obstacle
 	 */
-	public float squaredDistance(Vec2 in)
+	public double squaredDistance(Vec2 in)
 	{
 		in = rotateMoinsAngle(in);
 		/*		

@@ -7,8 +7,6 @@ package utils;
  *
  */
 
-// TODO s'occuper des double et float
-
 public class Vec2
 {
 
@@ -47,9 +45,9 @@ public class Vec2
 	}
 
 	// Returns this vec2's magnitude
-	public float length()
+	public double length()
 	{
-		return (float) Math.hypot(x, y);
+		return Math.hypot(x, y);
 	}
 	
 	// dot product
@@ -95,9 +93,9 @@ public class Vec2
 		return tmp_x*tmp_x + tmp_y*tmp_y;
 	}
 
-	public float distance(Vec2 other)
+	public double distance(Vec2 other)
 	{
-		return (float) Math.sqrt(squaredDistance(other));
+		return Math.sqrt(squaredDistance(other));
 	}
 	
 	public String toString()

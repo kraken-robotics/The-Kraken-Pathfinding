@@ -64,9 +64,9 @@ public class ObstacleCircular extends Obstacle
 		Vec2 C = position;
 		Vec2 AB = B.minusNewVector(A);
 		Vec2 AC = C.minusNewVector(A);
-	    float numerateur = Math.abs(AB.x*AC.y - AB.y*AC.x);
-	    float denominateur = AB.squaredLength();
-	    float CI = numerateur*numerateur / denominateur;
+	    double numerateur = Math.abs(AB.x*AC.y - AB.y*AC.x);
+	    double denominateur = AB.squaredLength();
+	    double CI = numerateur*numerateur / denominateur;
 	    return CI < (radius+distance)*(radius+distance);
 	}
 
@@ -75,9 +75,9 @@ public class ObstacleCircular extends Obstacle
 		Vec2 C = position;
 		Vec2 AB = B.minusNewVector(A);
 		Vec2 AC = C.minusNewVector(A);
-	    float numerateur = Math.abs(AB.x*AC.y - AB.y*AC.x);
-	    float denominateur = AB.squaredLength();
-	    float CI = numerateur*numerateur / denominateur;
+	    double numerateur = Math.abs(AB.x*AC.y - AB.y*AC.x);
+	    double denominateur = AB.squaredLength();
+	    double CI = numerateur*numerateur / denominateur;
 	    return CI < squared_radius_with_dilatation_obstacle;
 	}
 
@@ -100,8 +100,8 @@ public class ObstacleCircular extends Obstacle
     	if (!collisionDroite(A, B, distance))
 	        return false;  // si on ne touche pas la droite, on ne touchera jamais le segment
     	
-    	float pscal1 = B.minusNewVector(A).dot(position.minusNewVector(A));
-    	float pscal2 = A.minusNewVector(B).dot(position.minusNewVector(B));
+    	double pscal1 = B.minusNewVector(A).dot(position.minusNewVector(A));
+    	double pscal2 = A.minusNewVector(B).dot(position.minusNewVector(B));
 	    if (pscal1>=0 && pscal2>=0)
 	       return true;
 	    // dernière possibilité, A ou B dans le cercle
@@ -120,8 +120,8 @@ public class ObstacleCircular extends Obstacle
     	if (!collisionDroiteDilatation(A, B))
 	        return false;  // si on ne touche pas la droite, on ne touchera jamais le segment
     	
-    	float pscal1 = B.minusNewVector(A).dot(position.minusNewVector(A));
-    	float pscal2 = A.minusNewVector(B).dot(position.minusNewVector(B));
+    	double pscal1 = B.minusNewVector(A).dot(position.minusNewVector(A));
+    	double pscal2 = A.minusNewVector(B).dot(position.minusNewVector(B));
 	    if (pscal1>=0 && pscal2>=0)
 	       return true;
 	    // dernière possibilité, A ou B dans le cercle

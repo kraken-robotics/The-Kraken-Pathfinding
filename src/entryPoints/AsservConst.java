@@ -19,7 +19,7 @@ import robot.cardsWrappers.LocomotionCardWrapper;
  */
 public class AsservConst
 {
-    private static float kp = 0, kd = 0;
+    private static double kp = 0, kd = 0;
     private static int pwm_max = 0;
     private static BufferedReader bufferRead = new BufferedReader( new InputStreamReader(System.in) );
 
@@ -39,8 +39,8 @@ public class AsservConst
 
             System.out.println("r ou t?");
             char asserv = (char) System.in.read();
-            float distance = -1000;
-            float angle = -(float) Math.PI;
+            double distance = -1000;
+            double angle = -Math.PI;
 
             while (true)
             {
@@ -61,7 +61,7 @@ public class AsservConst
                 else if (asserv == 'r')
                 {
                     signe *= -1;
-                    angle = (float) (Math.PI / 2 + signe * Math.PI / 2);
+                    angle = (Math.PI / 2 + signe * Math.PI / 2);
                     if (bufferRead.ready())
                         bufferRead.readLine();
 
@@ -88,12 +88,12 @@ public class AsservConst
         String s;
         System.out.println("kp ?");
         s = bufferRead.readLine();
-        kp = Float.parseFloat(s);
+        kp = Double.parseDouble(s);
         System.out.println(kp);
 
         System.out.println("kd ?");
         s = bufferRead.readLine();
-        kd = Float.parseFloat(s);
+        kd = Double.parseDouble(s);
         System.out.println(kd);
 
         System.out.println("pwm_max ?");

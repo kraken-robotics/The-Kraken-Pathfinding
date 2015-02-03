@@ -76,7 +76,7 @@ public enum PathfindingNodes implements Arc {
 					double delta = orientations[i.ordinal()][j.ordinal()]-orientations[j.ordinal()][k.ordinal()] % (2*Math.PI);
 					delta = Math.abs(delta);
 					if(delta > Math.PI)
-						delta = 2*(float)Math.PI - delta;
+						delta = 2*Math.PI - delta;
 					angleWith[i.ordinal()][j.ordinal()][k.ordinal()] = delta*Speed.BETWEEN_SCRIPTS.invertedRotationnalSpeed;
 				}
 		values = values();

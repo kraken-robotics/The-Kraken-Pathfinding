@@ -156,13 +156,13 @@ public class GridSpace implements Service {
 	{
 		PathfindingNodes pointPlusProcheAvecObstaclesFixes = null;
 		PathfindingNodes pointPlusProcheSansObstaclesFixes = null;
-		float distanceMinSansObstaclesFixes = Float.MAX_VALUE;
-		float distanceMinAvecObstaclesFixes = Float.MAX_VALUE;
+		double distanceMinSansObstaclesFixes = Double.MAX_VALUE;
+		double distanceMinAvecObstaclesFixes = Double.MAX_VALUE;
 		boolean robotHorsObstacle = false;
 		for(PathfindingNodes i : PathfindingNodes.values)
 		{
 			boolean pasObstacleCetteFois = false;
-			float tmp = point.squaredDistance(i.getCoordonnees());
+			double tmp = point.squaredDistance(i.getCoordonnees());
 			pasObstacleCetteFois = !obstaclemanager.obstacleFixeDansSegmentPathfinding(point, i.getCoordonnees());
 			robotHorsObstacle |= pasObstacleCetteFois;
 			

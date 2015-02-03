@@ -86,8 +86,8 @@ public class ThreadSensor extends AbstractThread implements Service
 	
 					// On ne prend pas en compte le rayon du robot adverse dans la position brute. Il s'agit en fait du point effectivement vu
 					// Utilisé pour voir si l'obstacle n'est justement pas un robot adverse.
-					Vec2 position_brute = robotreal.getPosition().plusNewVector(new Vec2((int)((float)distance_brute * (float)Math.cos(theta)), (int)((float)distance_brute * (float)Math.sin(theta)))); // position du point détecté
-					Vec2 position = robotreal.getPosition().plusNewVector(new Vec2((int)(distance_inter_robots * Math.cos(theta)), (int)((float)distance_inter_robots * (float)Math.sin(theta)))); // centre supposé de l'obstacle détecté
+					Vec2 position_brute = robotreal.getPosition().plusNewVector(new Vec2((int)(distance_brute * Math.cos(theta)), (int)(distance_brute * Math.sin(theta)))); // position du point détecté
+					Vec2 position = robotreal.getPosition().plusNewVector(new Vec2((int)(distance_inter_robots * Math.cos(theta)), (int)(distance_inter_robots * Math.sin(theta)))); // centre supposé de l'obstacle détecté
 	
 					// si la position est bien sur la table (histoire de pas détecter un arbitre)
 					if(position.x-200 > -table_x/2 && position.y > 200 && position.x+200 < table_x/2 && position.y+200 < table_y)
