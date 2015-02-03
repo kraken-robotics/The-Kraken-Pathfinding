@@ -3,6 +3,7 @@ import java.util.Random;
 
 import astar.AStar;
 import astar.arc.PathfindingNodes;
+import astar.arc.SegmentTrajectoireCourbe;
 import astar.arcmanager.PathfindingArcManager;
 import container.Container;
 import container.ServiceNames;
@@ -25,7 +26,7 @@ public class BenchmarkPathfinding {
 			Container container = new Container();
 			
 			Log log = (Log)container.getService(ServiceNames.LOG);
-			AStar<PathfindingArcManager, PathfindingNodes> pathfinding = (AStar<PathfindingArcManager, PathfindingNodes>) container.getService(ServiceNames.A_STAR_PATHFINDING);
+			AStar<PathfindingArcManager, SegmentTrajectoireCourbe> pathfinding = (AStar<PathfindingArcManager, SegmentTrajectoireCourbe>) container.getService(ServiceNames.A_STAR_PATHFINDING);
 			GameState<RobotReal> state = (GameState<RobotReal>)container.getService(ServiceNames.REAL_GAME_STATE);
 			GameState<RobotChrono> state_chrono = state.cloneGameState();
 			

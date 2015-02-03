@@ -4,7 +4,7 @@ import obstacles.Obstacle;
 import container.ServiceNames.TypeService;
 import astar.*;
 import astar.arc.Decision;
-import astar.arc.PathfindingNodes;
+import astar.arc.SegmentTrajectoireCourbe;
 import astar.arcmanager.PathfindingArcManager;
 import astar.arcmanager.StrategyArcManager;
 import hook.HookFactory;
@@ -151,7 +151,7 @@ public class Container
 																				(Config)getService(ServiceNames.CONFIG),
 																				(Table)getService(ServiceNames.TABLE));
 		else if(serviceRequested == ServiceNames.A_STAR_PATHFINDING)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new AStar<PathfindingArcManager, PathfindingNodes>((Log)getService(ServiceNames.LOG),
+			instanciedServices[serviceRequested.ordinal()] = (Service)new AStar<PathfindingArcManager, SegmentTrajectoireCourbe>((Log)getService(ServiceNames.LOG),
 																				(Config)getService(ServiceNames.CONFIG),
 																				(PathfindingArcManager)getService(ServiceNames.PATHFINDING_ARC_MANAGER));
 		else if(serviceRequested == ServiceNames.A_STAR_STRATEGY)
@@ -255,7 +255,7 @@ public class Container
 																		(ScriptManager)getService(ServiceNames.SCRIPT_MANAGER),
 																		(GameState<RobotReal>)getService(ServiceNames.REAL_GAME_STATE),
 																		(HookFactory)getService(ServiceNames.HOOK_FACTORY),
-																		(AStar<PathfindingArcManager, PathfindingNodes>)getService(ServiceNames.A_STAR_PATHFINDING),
+																		(AStar<PathfindingArcManager, SegmentTrajectoireCourbe>)getService(ServiceNames.A_STAR_PATHFINDING),
 																		(MemoryManager)getService(ServiceNames.MEMORY_MANAGER));
 		
 		// si le service demandé n'est pas connu, alors on log une erreur.

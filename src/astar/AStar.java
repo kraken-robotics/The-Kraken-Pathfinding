@@ -5,6 +5,7 @@ import java.util.LinkedList;
 
 import astar.arc.Arc;
 import astar.arc.PathfindingNodes;
+import astar.arc.SegmentTrajectoireCourbe;
 import astar.arcmanager.ArcManager;
 import astar.arcmanager.PathfindingArcManager;
 import astar.arcmanager.StrategyArcManager;
@@ -221,7 +222,7 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 			if(!state.robot.isAtPathfindingNodes())
 			{
 				// parce qu'on ne part pas du point de départ directement...
-				cheminArc.add(0, (A)pointDepart);
+				cheminArc.add(0, (A)new SegmentTrajectoireCourbe(pointDepart, false));
 				cheminArc = lissage(state.robot.getPosition(), state, cheminArc);
 			}
 			
@@ -251,7 +252,7 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 	private ArrayList<A> lissage(Vec2 depart, GameState<RobotChrono> state, ArrayList<A> chemin)
 	{
 		// si on peut sauter le premier point, on le fait
-		while(chemin.size() >= 2 && state.gridspace.isTraversable(depart, ((PathfindingNodes)chemin.get(1)).getCoordonnees(), state.robot.getTempsDepuisDebutMatch()))
+		while(chemin.size() >= 2 && state.gridspace.isTraversable(depart, ((SegmentTrajectoireCourbe)chemin.get(1)).n.getCoordonnees(), state.robot.getTempsDepuisDebutMatch()))
 			chemin.remove(0);
 
 		return chemin;

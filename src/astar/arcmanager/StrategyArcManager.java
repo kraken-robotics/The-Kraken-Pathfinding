@@ -9,6 +9,7 @@ import astar.MemoryManager;
 import astar.arc.Arc;
 import astar.arc.Decision;
 import astar.arc.PathfindingNodes;
+import astar.arc.SegmentTrajectoireCourbe;
 import hook.Hook;
 import hook.HookFactory;
 import robot.RobotChrono;
@@ -41,7 +42,7 @@ public class StrategyArcManager extends ArcManager implements Service {
 	protected Log log;
 	protected Config config;
 	private ScriptManager scriptmanager;
-	private AStar<PathfindingArcManager, PathfindingNodes> astar;
+	private AStar<PathfindingArcManager, SegmentTrajectoireCourbe> astar;
 	private HookFactory hookfactory;
 	
 	private ArrayList<Decision> listeDecisions = new ArrayList<Decision>();
@@ -50,7 +51,7 @@ public class StrategyArcManager extends ArcManager implements Service {
 	
 	private int dateLimite = 90000;
 	
-	public StrategyArcManager(Log log, Config config, ScriptManager scriptmanager, GameState<RobotReal> real_gamestate, HookFactory hookfactory, AStar<PathfindingArcManager, PathfindingNodes> astar, MemoryManager memorymanager) throws PointSortieException
+	public StrategyArcManager(Log log, Config config, ScriptManager scriptmanager, GameState<RobotReal> real_gamestate, HookFactory hookfactory, AStar<PathfindingArcManager, SegmentTrajectoireCourbe> astar, MemoryManager memorymanager) throws PointSortieException
 	{
 		super(AStarId.STRATEGY_ASTAR, memorymanager);
 		this.log = log;
@@ -86,12 +87,12 @@ public class StrategyArcManager extends ArcManager implements Service {
 //					log.debug("Recherche de chemins pour "+s+" "+v, this);
 					// On n'ajoute que les versions qui sont accessibles
 					try {
-						ArrayList<PathfindingNodes> chemin = astar.computePath(gamestate, v, true);
+						ArrayList<SegmentTrajectoireCourbe> chemin = astar.computePath(gamestate, v, true);
 //						log.debug("Chemin trouvé en défonçant les éléments de jeux", this);
 						listeDecisions.add(new Decision(chemin, s, v));
 						try {
 							// On ne rajoute la version où on ne shoot pas seulement si le chemin proposé est différent
-							ArrayList<PathfindingNodes> chemin2 = astar.computePath(gamestate, v, false);
+							ArrayList<SegmentTrajectoireCourbe> chemin2 = astar.computePath(gamestate, v, false);
 //							log.debug("Chemin trouvé sans défoncer les éléments de jeux", this);
 							if(!chemin2.equals(chemin))
 								listeDecisions.add(new Decision(chemin2, s, v));

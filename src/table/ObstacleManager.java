@@ -2,10 +2,13 @@ package table;
 
 import java.util.ArrayList;
 
+import astar.arc.PathfindingNodes;
 import obstacles.Obstacle;
 import obstacles.ObstacleProximity;
 import obstacles.ObstacleRectangular;
+import obstacles.ObstacleTrajectoireCourbe;
 import obstacles.ObstaclesFixes;
+import robot.Speed;
 import container.Service;
 import enums.Tribool;
 import utils.Config;
@@ -359,6 +362,13 @@ public class ObstacleManager implements Service
 	    	date2 = Integer.MAX_VALUE;
 	    
 	    return Math.min(date1, date2);
+	}
+
+	public boolean isTraversableCourbe(PathfindingNodes intersection, Vec2 directionAvant, Vec2 directionApres, int tempsDepuisDebutMatch, Speed vitesse)
+	{
+		ObstacleTrajectoireCourbe obstacle = new ObstacleTrajectoireCourbe(intersection.getCoordonnees(), directionAvant, directionApres, vitesse);
+		
+		return false;
 	}
 	
 }

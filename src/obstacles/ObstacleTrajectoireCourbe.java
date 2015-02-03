@@ -10,7 +10,7 @@ import utils.Vec2;
  *
  */
 
-public class ObstacleCouronnePartielle extends ObstacleRectanglesCollection
+public class ObstacleTrajectoireCourbe extends ObstacleRectanglesCollection
 {
 	/**
 	 * 
@@ -19,7 +19,7 @@ public class ObstacleCouronnePartielle extends ObstacleRectanglesCollection
 	 * @param directionApres Vec2 pointant dans une direction, de norme 1000
 	 * @param vitesse
 	 */
-	public ObstacleCouronnePartielle(Vec2 intersection, Vec2 directionAvant, Vec2 directionApres, Speed vitesse)
+	public ObstacleTrajectoireCourbe(Vec2 intersection, Vec2 directionAvant, Vec2 directionApres, Speed vitesse)
 	{
 		// La position de cet obstacle est assez arbitraire...
 		super(intersection);

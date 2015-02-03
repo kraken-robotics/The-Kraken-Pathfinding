@@ -9,7 +9,7 @@ import utils.Vec2;
  *
  */
 
-public enum PathfindingNodes implements Arc {
+public enum PathfindingNodes {
 	SORTIE_ZONE_DEPART(new Vec2(860,1000)),
 	SORTIE_CLAP_GAUCHE(new Vec2(-770,250)),
 	SORTIE_CLAP_DROIT(new Vec2(820,250)),

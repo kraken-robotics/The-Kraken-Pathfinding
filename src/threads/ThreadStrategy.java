@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import astar.AStar;
 import astar.arc.Decision;
 import astar.arc.PathfindingNodes;
+import astar.arc.SegmentTrajectoireCourbe;
 import astar.arcmanager.StrategyArcManager;
 import container.Service;
 import exceptions.FinMatchException;
@@ -32,7 +33,7 @@ public class ThreadStrategy extends AbstractThread implements Service
 	private GameState<RobotReal> realstate;
 	private GameState<RobotChrono> chronostate;
 	
-	private Decision decision = new Decision(new ArrayList<PathfindingNodes>(), ScriptAnticipableNames.SORTIE_ZONE_DEPART, PathfindingNodes.POINT_DEPART);
+	private Decision decision = new Decision(new ArrayList<SegmentTrajectoireCourbe>(), ScriptAnticipableNames.SORTIE_ZONE_DEPART, PathfindingNodes.POINT_DEPART);
 	private Decision decisionSecours = null;
 	private Decision decisionNormale = null;
 	private Decision needNewBestAfterThis = null;

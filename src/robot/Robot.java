@@ -2,7 +2,7 @@ package robot;
 
 import java.util.ArrayList;
 
-import astar.arc.PathfindingNodes;
+import astar.arc.SegmentTrajectoireCourbe;
 import hook.Hook;
 import hook.types.HookDateFinMatch;
 import robot.cardsWrappers.enums.ActuatorOrder;
@@ -34,7 +34,7 @@ public abstract class Robot implements Service
             throws UnableToMoveException, FinMatchException;
     public abstract void avancer(int distance, ArrayList<Hook> hooks, boolean mur)
             throws UnableToMoveException, FinMatchException;
-    public abstract void suit_chemin(ArrayList<PathfindingNodes> chemin, ArrayList<Hook> hooks)
+    public abstract void suit_chemin(ArrayList<SegmentTrajectoireCourbe> chemin, ArrayList<Hook> hooks)
             throws UnableToMoveException, FinMatchException, ScriptHookException;
 	public abstract void set_vitesse(Speed vitesse) throws FinMatchException;
 	
@@ -110,7 +110,7 @@ public abstract class Robot implements Service
 		symetrie = config.getSymmetry();
 	}
 	
-	public Speed get_vitesse_() {
+	public Speed getVitesse() {
 		return vitesse;
 	}
 

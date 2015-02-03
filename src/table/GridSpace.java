@@ -1,5 +1,6 @@
 package table;
 
+import robot.Speed;
 import astar.arc.PathfindingNodes;
 import container.Service;
 import utils.Config;
@@ -369,6 +370,21 @@ public class GridSpace implements Service {
 	public int getDateSomethingChange()
 	{
 		return obstaclemanager.getDateSomethingChange();
+	}
+
+	/**
+	 * Pas de cache ici, gridspace fait juste un appel à obstaclemanager.
+	 * En effet, ici on traite non pas des segments mais des triplets; les chances de
+	 * réutilisations sont nulles
+	 * @param intersection
+	 * @param directionAvant
+	 * @param directionApres
+	 * @param tempsDepuisDebutMatch
+	 * @return
+	 */
+	public boolean isTraversableCourbe(PathfindingNodes intersection, Vec2 directionAvant, Vec2 directionApres, int tempsDepuisDebutMatch, Speed vitesse)
+	{
+		return obstaclemanager.isTraversableCourbe(intersection, directionAvant, directionApres, tempsDepuisDebutMatch, vitesse);
 	}
 	
 }

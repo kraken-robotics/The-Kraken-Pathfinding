@@ -2,6 +2,7 @@ package robot;
 
 import java.util.ArrayList;
 
+import astar.arc.SegmentTrajectoireCourbe;
 import astar.arc.PathfindingNodes;
 import hook.Hook;
 import robot.cardsWrappers.enums.HauteurBrasClap;
@@ -116,10 +117,11 @@ public class RobotChrono extends Robot
 	}
 
 	@Override
-    public void suit_chemin(ArrayList<PathfindingNodes> chemin, ArrayList<Hook> hooks) throws FinMatchException
+    public void suit_chemin(ArrayList<SegmentTrajectoireCourbe> chemin, ArrayList<Hook> hooks) throws FinMatchException
 	{
-		for(PathfindingNodes point: chemin)
-			va_au_point_pathfinding(point, hooks);
+		// TODO
+		for(SegmentTrajectoireCourbe point: chemin)
+			va_au_point_pathfinding(point.n, hooks);
 	}
 	
 	// TODO: ne plus proposer qu'une version de va_au_point vers un pathfindingnodes

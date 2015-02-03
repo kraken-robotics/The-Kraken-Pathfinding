@@ -4,12 +4,14 @@ import astar.AStarId;
 import astar.MemoryManager;
 import astar.arc.Arc;
 import astar.arc.PathfindingNodes;
+import astar.arc.SegmentTrajectoireCourbe;
 import container.Service;
 import robot.RobotChrono;
 import robot.Speed;
 import strategie.GameState;
 import utils.Log;
 import utils.Config;
+import utils.Vec2;
 import exceptions.ArcManagerException;
 import exceptions.FinMatchException;
 
@@ -26,6 +28,7 @@ public class PathfindingArcManager extends ArcManager implements Service {
 	protected Config config;
 	protected Log log;
 	private GameState<RobotChrono> state_iterator;
+	private boolean prochainDebutCourbe;
 
 	public PathfindingArcManager(Log log, Config config, MemoryManager memorymanager)
 	{
@@ -49,7 +52,7 @@ public class PathfindingArcManager extends ArcManager implements Service {
 		 * Rappel: même quand on fait un appel à RobotChrono sans hook, le hook de fin de match est exécuté
 		 */
 		int temps_debut = state.robot.getTempsDepuisDebutMatch();
-		state.robot.va_au_point_pathfinding_no_hook((PathfindingNodes)arc);
+		state.robot.va_au_point_pathfinding_no_hook(((SegmentTrajectoireCourbe)arc).n);
 		return state.robot.getTempsDepuisDebutMatch() - temps_debut;
 	}
 
@@ -86,23 +89,33 @@ public class PathfindingArcManager extends ArcManager implements Service {
 
     @SuppressWarnings("unchecked")
 	@Override
-    public PathfindingNodes next()
+    public Arc next()
     {
-    	return PathfindingNodes.values[iterator];
+    	return new SegmentTrajectoireCourbe(PathfindingNodes.values[iterator], prochainDebutCourbe);
     }
     
     @Override
     public boolean hasNext()
     {
-    	int max_value = PathfindingNodes.length, i;
-    	for(i = iterator+1; i < max_value; i++)
+    	/**
+    	 * On alterne: nouvel iterator avec false, puis avec true, puis nouvel
+    	 * iterator avec false, puis avec true, etc.
+    	 */
+    	PathfindingNodes pn_id_node_iterator = PathfindingNodes.values[id_node_iterator];
+    	prochainDebutCourbe = prochainDebutCourbe && state_iterator.gridspace.isTraversableCourbe(pn_id_node_iterator, new Vec2(state_iterator.robot.getOrientation()), new Vec2(pn_id_node_iterator.getOrientationFinale(PathfindingNodes.values[iterator])), state_iterator.robot.getTempsDepuisDebutMatch(), state_iterator.robot.getVitesse());
+    	if(!prochainDebutCourbe)
     	{
-    		if(i == id_node_iterator)
-    			continue;
-    		if(state_iterator.gridspace.isTraversable(PathfindingNodes.values[id_node_iterator], PathfindingNodes.values[i], state_iterator.robot.getTempsDepuisDebutMatch()))
-    			break;
+	    	int max_value = PathfindingNodes.length, i;
+	    	for(i = iterator+1; i < max_value; i++)
+	    	{
+	    		if(i == id_node_iterator)
+	    			continue;
+	    		if(state_iterator.gridspace.isTraversable(pn_id_node_iterator, PathfindingNodes.values[i], state_iterator.robot.getTempsDepuisDebutMatch()))
+	    			break;
+	    	}
+	    	iterator = i;
     	}
-    	iterator = i;
+    	prochainDebutCourbe = !prochainDebutCourbe; // OH LA JOLIE BASCULE
     	return iterator != PathfindingNodes.length;
     }
     
@@ -113,6 +126,7 @@ public class PathfindingArcManager extends ArcManager implements Service {
     	id_node_iterator = gamestate.robot.getPositionPathfinding().ordinal();
     	iterator = -1;
     	state_iterator = gamestate;
+    	prochainDebutCourbe = false;
     }
 
 	@Override

@@ -4,7 +4,7 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Random;
 
-import obstacles.ObstacleCouronnePartielle;
+import obstacles.ObstacleTrajectoireCourbe;
 import obstacles.ObstacleRectangular;
 import obstacles.ObstacleRotationRobot;
 import obstacles.ObstaclesFixes;
@@ -230,7 +230,7 @@ public class JUnit_Test_Graphic extends JUnit_Test {
 	@Test
     public void test_obstacle_trajectoire_courbe() throws Exception
     {
-		ObstacleRectangular[] ombresRobot = new ObstacleCouronnePartielle(new Vec2(0, 1000), new Vec2(-Math.PI/2), new Vec2(Math.PI/4), Speed.BETWEEN_SCRIPTS).getOmbresRobot();
+		ObstacleRectangular[] ombresRobot = new ObstacleTrajectoireCourbe(new Vec2(0, 1000), new Vec2(-Math.PI/2), new Vec2(Math.PI/4), Speed.BETWEEN_SCRIPTS).getOmbresRobot();
 		log.debug("Nb ombres: "+ombresRobot.length, this);
 		for(ObstacleRectangular o: ombresRobot)
 			fenetre.addObstacleEnBiais(o);

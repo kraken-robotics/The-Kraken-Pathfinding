@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import obstacles.ObstacleRectangular;
 import obstacles.ObstacleRotationRobot;
 import astar.arc.PathfindingNodes;
+import astar.arc.SegmentTrajectoireCourbe;
 import container.Service;
 import exceptions.BlockedException;
 import exceptions.FinMatchException;
@@ -138,12 +139,12 @@ public class Locomotion implements Service
      * @throws FinMatchException 
      * @throws ScriptHookException 
      */
-    public void followPath(ArrayList<PathfindingNodes> chemin, ArrayList<Hook> hooks, DirectionStrategy directionstrategy) throws UnableToMoveException, FinMatchException, ScriptHookException
+    public void followPath(ArrayList<SegmentTrajectoireCourbe> chemin, ArrayList<Hook> hooks, DirectionStrategy directionstrategy) throws UnableToMoveException, FinMatchException, ScriptHookException
     {
     	// TODO: trajectoire courbe
-        for(PathfindingNodes point: chemin)
+        for(SegmentTrajectoireCourbe point: chemin)
         {
-            consigne = point.getCoordonnees().clone();
+            consigne = point.n.getCoordonnees().clone();
             vaAuPointGestionMarcheArriere(hooks, false, false, directionstrategy, false);
         }
     }

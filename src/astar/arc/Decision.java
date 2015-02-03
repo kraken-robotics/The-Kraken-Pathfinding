@@ -16,9 +16,9 @@ public class Decision implements Arc {
 
 	public final ScriptAnticipableNames script_name;
 	public final PathfindingNodes version;
-	public final ArrayList<PathfindingNodes> chemin;
+	public final ArrayList<SegmentTrajectoireCourbe> chemin;
 	
-	public Decision(ArrayList<PathfindingNodes> chemin, ScriptAnticipableNames s, PathfindingNodes version)
+	public Decision(ArrayList<SegmentTrajectoireCourbe> chemin, ScriptAnticipableNames s, PathfindingNodes version)
 	{
 		this.chemin = chemin;
 		this.script_name = s;
