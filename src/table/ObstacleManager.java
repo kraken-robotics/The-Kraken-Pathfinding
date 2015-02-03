@@ -110,6 +110,7 @@ public class ObstacleManager implements Service
         if(isThereHypotheticalEnemy && hypotheticalEnemy.isDestructionNecessary(date))
         	isThereHypotheticalEnemy = false;
         int size = listObstaclesMobiles.size();
+        
         for(; firstNotDead < size; firstNotDead++)
         {
         	if(!listObstaclesMobiles.get(firstNotDead).isDestructionNecessary(date))
@@ -217,8 +218,8 @@ public class ObstacleManager implements Service
         	return true;
         
         int size = listObstaclesMobiles.size();
-        for(; firstNotDead < size; firstNotDead++)
-        	if(listObstaclesMobiles.get(firstNotDead).obstacle_proximite_dans_segment(A, B, date))
+        for(int tmpFirstNotDead = firstNotDead; tmpFirstNotDead < size; tmpFirstNotDead++)
+        	if(listObstaclesMobiles.get(tmpFirstNotDead).obstacle_proximite_dans_segment(A, B, date))
         		return true;
 
         return false;
@@ -250,9 +251,9 @@ public class ObstacleManager implements Service
         if(isThereHypotheticalEnemy && isObstaclePresent(position, hypotheticalEnemy, distance))
         	return true;
         int size = listObstaclesMobiles.size();
-        for(; firstNotDead < size; firstNotDead++)
+        for(int tmpFirstNotDead = firstNotDead; tmpFirstNotDead < size; tmpFirstNotDead++)
         {
-        	if(isObstaclePresent(position, listObstaclesMobiles.get(firstNotDead), distance))
+        	if(isObstaclePresent(position, listObstaclesMobiles.get(tmpFirstNotDead), distance))
         		return true;
         }
         return false;
@@ -367,8 +368,23 @@ public class ObstacleManager implements Service
 	public boolean isTraversableCourbe(PathfindingNodes intersection, Vec2 directionAvant, Vec2 directionApres, int tempsDepuisDebutMatch, Speed vitesse)
 	{
 		ObstacleTrajectoireCourbe obstacle = new ObstacleTrajectoireCourbe(intersection.getCoordonnees(), directionAvant, directionApres, vitesse);
-		
-		return false;
+
+		// Collision avec un obstacle fixe?
+    	for(ObstaclesFixes o: ObstaclesFixes.values())
+    		if(obstacle.isColliding(o.getObstacle()))
+    			return false;
+
+    	// Collision avec un ennemu hypothétique?
+        if(isThereHypotheticalEnemy && obstacle.isColliding(hypotheticalEnemy))
+        	return false;
+
+        // Collision avec un obtacle mobile?
+        int size = listObstaclesMobiles.size();
+        for(int tmpFirstNotDead = firstNotDead; tmpFirstNotDead < size; tmpFirstNotDead++)
+        	if(obstacle.isColliding(listObstaclesMobiles.get(tmpFirstNotDead)))
+        		return false;
+
+        return true;
 	}
 	
 }
