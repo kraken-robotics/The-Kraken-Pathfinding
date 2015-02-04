@@ -6,6 +6,7 @@ import hook.types.HookDemiPlan;
 import java.util.ArrayList;
 
 import obstacles.ObstacleRotationRobot;
+import obstacles.ObstacleTrajectoireCourbe;
 import obstacles.ObstaclesFixes;
 
 import org.junit.Assert;
@@ -16,6 +17,9 @@ import astar.arc.PathfindingNodes;
 import astar.arc.SegmentTrajectoireCourbe;
 import robot.DirectionStrategy;
 import robot.Locomotion;
+import robot.RobotReal;
+import robot.Speed;
+import strategie.GameState;
 import utils.ConfigInfo;
 import utils.Vec2;
 import container.ServiceNames;
@@ -30,11 +34,14 @@ import exceptions.UnableToMoveException;
 public class JUnit_Locomotion extends JUnit_Test
 {
 	Locomotion locomotion;
+	GameState<RobotReal> realstate;
 	
+	@SuppressWarnings("unchecked")
 	@Before
     public void setUp() throws Exception {
         super.setUp();
         locomotion = (Locomotion) container.getService(ServiceNames.LOCOMOTION);
+        realstate = (GameState<RobotReal>) container.getService(ServiceNames.REAL_GAME_STATE);
         locomotion.setPosition(new Vec2(0, 1000));
         locomotion.setOrientation(0);
     }
@@ -95,9 +102,29 @@ public class JUnit_Locomotion extends JUnit_Test
 		chemin.add(new SegmentTrajectoireCourbe(PathfindingNodes.COTE_MARCHE_GAUCHE));
 		chemin.add(new SegmentTrajectoireCourbe(PathfindingNodes.DEVANT_DEPART_GAUCHE));
 		
-		locomotion.followPath(chemin, new HookDemiPlan(config, log, null), new ArrayList<Hook>(), DirectionStrategy.FASTEST);
-		locomotion.followPath(chemin, new HookDemiPlan(config, log, null), new ArrayList<Hook>(), DirectionStrategy.FORCE_FORWARD_MOTION);
+		locomotion.followPath(chemin, new HookDemiPlan(config, log, realstate), new ArrayList<Hook>(), DirectionStrategy.FASTEST);
+		locomotion.followPath(chemin, new HookDemiPlan(config, log, realstate), new ArrayList<Hook>(), DirectionStrategy.FORCE_FORWARD_MOTION);
 	}
+	
+	@Test
+	public void test_suit_chemin_courbe() throws Exception
+	{
+		config.set(ConfigInfo.COULEUR, "jaune");
+		locomotion.updateConfig();
+		ArrayList<SegmentTrajectoireCourbe> chemin = new ArrayList<SegmentTrajectoireCourbe>();
+
+		locomotion.setRotationnalSpeed(Speed.BETWEEN_SCRIPTS);
+		locomotion.setTranslationnalSpeed(Speed.BETWEEN_SCRIPTS);
+		PathfindingNodes fin = PathfindingNodes.COTE_MARCHE_DROITE;
+		Vec2 position = locomotion.getPosition();
+		ObstacleTrajectoireCourbe obs = new ObstacleTrajectoireCourbe(fin, PathfindingNodes.BAS, new Vec2(Math.atan2(PathfindingNodes.BAS.getCoordonnees().y-position.y,PathfindingNodes.BAS.getCoordonnees().x-position.x)), Speed.BETWEEN_SCRIPTS);
+		chemin.add(new SegmentTrajectoireCourbe(PathfindingNodes.BAS));
+		chemin.add(obs.getSegment());
+		
+//		locomotion.followPath(chemin, new HookDemiPlan(config, log, realstate), new ArrayList<Hook>(), DirectionStrategy.FASTEST);
+		locomotion.followPath(chemin, new HookDemiPlan(config, log, realstate), new ArrayList<Hook>(), DirectionStrategy.FORCE_FORWARD_MOTION);
+	}
+
 	
 	@Test
 	public void test_mur() throws Exception

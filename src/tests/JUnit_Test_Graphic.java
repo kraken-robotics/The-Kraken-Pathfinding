@@ -99,7 +99,7 @@ public class JUnit_Test_Graphic extends JUnit_Test {
     		for(SegmentTrajectoireCourbe n: chemin)
     		{
     			log.debug(n, this);
-    			cheminVec2.add(n.n.getCoordonnees());
+    			cheminVec2.add(n.objectifFinal.getCoordonnees());
     		}
     		fenetre.setPath(orientation_initiale, cheminVec2, Color.BLUE);
     		ArrayList<Vec2> direct = new ArrayList<Vec2>();
@@ -130,7 +130,7 @@ public class JUnit_Test_Graphic extends JUnit_Test {
     		for(SegmentTrajectoireCourbe n: d.chemin)
     		{
 //    			log.debug(n, this);
-    			cheminVec2.add(n.n.getCoordonnees());
+    			cheminVec2.add(n.objectifFinal.getCoordonnees());
     		}
 			fenetre.setPath(null, cheminVec2, Color.GRAY);
 			fenetre.repaint();
@@ -161,7 +161,7 @@ public class JUnit_Test_Graphic extends JUnit_Test {
     		ArrayList<Vec2> cheminVec2 = new ArrayList<Vec2>();
     		cheminVec2.add(position_precedente);
     		for(SegmentTrajectoireCourbe n: d.chemin)
-    			cheminVec2.add(n.n.getCoordonnees());
+    			cheminVec2.add(n.objectifFinal.getCoordonnees());
 			fenetre.setPath(null, cheminVec2, Color.GRAY);
 			fenetre.repaint();
 			Sleep.sleep(3000);
@@ -231,7 +231,7 @@ public class JUnit_Test_Graphic extends JUnit_Test {
 	@Test
     public void test_obstacle_trajectoire_courbe() throws Exception
     {
-		ObstacleRectangular[] ombresRobot = new ObstacleTrajectoireCourbe(new Vec2(0, 1000), new Vec2(-Math.PI/2), new Vec2(Math.PI/4), Speed.BETWEEN_SCRIPTS).getOmbresRobot();
+		ObstacleRectangular[] ombresRobot = new ObstacleTrajectoireCourbe(PathfindingNodes.DEVANT_DEPART_DROITE, PathfindingNodes.BAS, new Vec2(-Math.PI/2), Speed.BETWEEN_SCRIPTS).getOmbresRobot();
 		log.debug("Nb ombres: "+ombresRobot.length, this);
 		for(ObstacleRectangular o: ombresRobot)
 			fenetre.addObstacleEnBiais(o);

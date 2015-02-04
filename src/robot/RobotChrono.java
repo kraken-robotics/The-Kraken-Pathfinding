@@ -121,7 +121,7 @@ public class RobotChrono extends Robot
     public void suit_chemin(ArrayList<SegmentTrajectoireCourbe> chemin, ArrayList<Hook> hooks) throws FinMatchException
 	{
 		for(SegmentTrajectoireCourbe point: chemin)
-			va_au_point_pathfinding(point.n, point.differenceDistance, hooks);
+			va_au_point_pathfinding(point.objectifFinal, point.differenceDistance, hooks);
 	}
 	
 	// TODO: ne plus proposer qu'une version de va_au_point vers un pathfindingnodes

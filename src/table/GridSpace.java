@@ -383,9 +383,9 @@ public class GridSpace implements Service {
 	 * @param tempsDepuisDebutMatch
 	 * @return
 	 */
-	public boolean isTraversableCourbe(PathfindingNodes intersection, Vec2 directionAvant, Vec2 directionApres, int tempsDepuisDebutMatch, Speed vitesse)
+	public boolean isTraversableCourbe(PathfindingNodes objectifFinal, PathfindingNodes intersection, Vec2 directionAvant, int tempsDepuisDebutMatch, Speed vitesse)
 	{
-		return obstaclemanager.isTraversableCourbe(intersection, directionAvant, directionApres, tempsDepuisDebutMatch, vitesse);
+		return obstaclemanager.isTraversableCourbe(objectifFinal, intersection, directionAvant, tempsDepuisDebutMatch, vitesse);
 	}
 
 	public SegmentTrajectoireCourbe getSegment()

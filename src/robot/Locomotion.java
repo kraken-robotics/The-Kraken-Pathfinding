@@ -2,7 +2,6 @@ package robot;
 
 import java.util.ArrayList;
 
-import obstacles.ObstacleRectangular;
 import obstacles.ObstacleRotationRobot;
 import astar.arc.PathfindingNodes;
 import astar.arc.SegmentTrajectoireCourbe;
@@ -98,7 +97,7 @@ public class Locomotion implements Service
         // l'appel à cette méthode sous-entend que le robot ne tourne pas
         // il va donc en avant si la distance est positive, en arrière si elle est négative
         try {
-			vaAuPointGestionExceptions(consigne, position, hooks, false, true, false, true);
+			vaAuPointGestionExceptions(consigne, position, 0, hooks, false, true, false, true);
 		} catch (ChangeDirectionException e) {
 			// Normalement impossible
 			e.printStackTrace();
@@ -138,7 +137,7 @@ public class Locomotion implements Service
         // il va donc en avant si la distance est positive, en arrière si elle est négative
         // si on est à 90°, on privilégie la marche avant
         try {
-			vaAuPointGestionExceptions(consigne, position, hooks, false, distance >= 0, mur, false);
+			vaAuPointGestionExceptions(consigne, position, 0, hooks, false, distance >= 0, mur, false);
 		} catch (ChangeDirectionException e) {
 			// Normalement impossible
 			e.printStackTrace();
@@ -157,22 +156,29 @@ public class Locomotion implements Service
     public void followPath(ArrayList<SegmentTrajectoireCourbe> chemin, HookDemiPlan hookTrajectoireCourbe, ArrayList<Hook> hooks, DirectionStrategy directionstrategy) throws UnableToMoveException, FinMatchException, ScriptHookException
     {
     	hooks.add(hookTrajectoireCourbe);
-    	SegmentTrajectoireCourbe actuel;
     	SegmentTrajectoireCourbe prochain;
     	int size = chemin.size();
     	for(int i = 0; i < size; i++)
         {
     		boolean trajectoire_courbe;
+    		Vec2 intermediaire;
+    		int differenceDistance;
     		if(i > 0)
     		{
-    			actuel = chemin.get(i-1);
-    			trajectoire_courbe = actuel.differenceDistance != 0;
+    			intermediaire = chemin.get(i-1).objectifFinal.getCoordonnees().clone();
+    			trajectoire_courbe = chemin.get(i-1).differenceDistance != 0;
+    			differenceDistance = chemin.get(i-1).differenceDistance;
     		}
     		else
     		{
-    			actuel = null;
+    			intermediaire = position.clone();
+    	        if(symetrie)
+    	        {
+    	        	intermediaire.x = -intermediaire.x;
+    	        }
     			// Cas particulier du premier départ: pas de trajectoire courbe
     			trajectoire_courbe = false;
+    			differenceDistance = 0;
     		}
     		
     		prochain = chemin.get(i);
@@ -183,12 +189,13 @@ public class Locomotion implements Service
     		else
     			hookTrajectoireCourbe.update(prochain.directionHook, prochain.pointDepart);
     		
-            Vec2 consigne = prochain.n.getCoordonnees().clone();
+            Vec2 consigne = prochain.objectifFinal.getCoordonnees().clone();
             
             try {
-				vaAuPointGestionMarcheArriere(consigne, actuel.n.getCoordonnees().clone(), hooks, trajectoire_courbe, false, directionstrategy, false);
+				vaAuPointGestionMarcheArriere(consigne, intermediaire, differenceDistance, hooks, trajectoire_courbe, false, directionstrategy, false);
 			} catch (ChangeDirectionException e) {
 				// On change de direction!
+				log.debug("Changement de direction!", this);
 			}
         }
     }
@@ -202,20 +209,20 @@ public class Locomotion implements Service
      * @throws ScriptHookException 
      * @throws ChangeDirectionException 
      */
-    private void vaAuPointGestionMarcheArriere(Vec2 consigne, Vec2 intermediaire, ArrayList<Hook> hooks, boolean trajectoire_courbe, boolean mur, DirectionStrategy strategy, boolean seulementAngle) throws UnableToMoveException, FinMatchException, ScriptHookException, ChangeDirectionException
+    private void vaAuPointGestionMarcheArriere(Vec2 consigne, Vec2 intermediaire, int differenceDistance, ArrayList<Hook> hooks, boolean trajectoire_courbe, boolean mur, DirectionStrategy strategy, boolean seulementAngle) throws UnableToMoveException, FinMatchException, ScriptHookException, ChangeDirectionException
     {
     	// Si on est en trajectoire courbe, on continue comme la fois précédente
     	if(trajectoire_courbe)
-            vaAuPointGestionExceptions(consigne, intermediaire, hooks, trajectoire_courbe, directionPrecedente, mur, seulementAngle);
+            vaAuPointGestionExceptions(consigne, intermediaire, differenceDistance, hooks, trajectoire_courbe, directionPrecedente, mur, seulementAngle);
     	else if(strategy == DirectionStrategy.FORCE_BACK_MOTION)
     	{
     		directionPrecedente = false;
-            vaAuPointGestionExceptions(consigne, intermediaire, hooks, trajectoire_courbe, false, mur, seulementAngle);
+            vaAuPointGestionExceptions(consigne, intermediaire, differenceDistance, hooks, trajectoire_courbe, false, mur, seulementAngle);
     	}
     	else if(strategy == DirectionStrategy.FORCE_FORWARD_MOTION)
     	{
     		directionPrecedente = true;
-            vaAuPointGestionExceptions(consigne, intermediaire, hooks, trajectoire_courbe, true, mur, seulementAngle);
+            vaAuPointGestionExceptions(consigne, intermediaire, differenceDistance, hooks, trajectoire_courbe, true, mur, seulementAngle);
     	}
     	else //if(strategy == DirectionStrategy.FASTEST)
     	{
@@ -229,7 +236,7 @@ public class Locomotion implements Service
 	
 	        directionPrecedente = delta.dot(orientationVec) > 0;
 	        // On regarde le produit scalaire; si c'est positif, alors on est dans le bon sens, et inversement
-	        vaAuPointGestionExceptions(consigne, intermediaire, hooks, trajectoire_courbe, directionPrecedente, mur, seulementAngle);
+	        vaAuPointGestionExceptions(consigne, intermediaire, differenceDistance, hooks, trajectoire_courbe, directionPrecedente, mur, seulementAngle);
     	}
     }
     
@@ -244,7 +251,7 @@ public class Locomotion implements Service
      * @throws ScriptHookException 
      * @throws ChangeDirectionException 
      */
-    private void vaAuPointGestionExceptions(Vec2 consigne, Vec2 intermediaire, ArrayList<Hook> hooks, boolean trajectoire_courbe, boolean marcheAvant, boolean mur, boolean seulementAngle) throws UnableToMoveException, FinMatchException, ScriptHookException, ChangeDirectionException
+    private void vaAuPointGestionExceptions(Vec2 consigne, Vec2 intermediaire, int differenceDistance, ArrayList<Hook> hooks, boolean trajectoire_courbe, boolean marcheAvant, boolean mur, boolean seulementAngle) throws UnableToMoveException, FinMatchException, ScriptHookException, ChangeDirectionException
     {
         int attente_ennemi_max = 600; // combien de temps attendre que l'ennemi parte avant d'abandonner
         int nb_iterations_deblocage = 2; // combien de fois on réessayer si on se prend un mur
@@ -253,7 +260,7 @@ public class Locomotion implements Service
             recommence = false;
             try
             {
-                vaAuPointGestionHookCorrectionEtDetection(consigne, intermediaire, hooks, trajectoire_courbe, marcheAvant, seulementAngle);
+                vaAuPointGestionHookCorrectionEtDetection(consigne, intermediaire, differenceDistance, hooks, trajectoire_courbe, marcheAvant, seulementAngle);
             } catch (BlockedException e)
             {
                 nb_iterations_deblocage--;
@@ -311,6 +318,7 @@ public class Locomotion implements Service
                     throw new UnableToMoveException();
             } catch (WallCollisionDetectedException e) {
             	immobilise();
+            	e.printStackTrace();
             	throw new UnableToMoveException();
             	// TODO: et ensuite?
 			}
@@ -332,10 +340,10 @@ public class Locomotion implements Service
      * @throws WallCollisionDetectedException 
      * @throws ChangeDirectionException 
      */
-    private void vaAuPointGestionHookCorrectionEtDetection(Vec2 consigne, Vec2 intermediaire, ArrayList<Hook> hooks, boolean trajectoire_courbe, boolean marcheAvant, boolean seulementAngle) throws BlockedException, UnexpectedObstacleOnPathException, FinMatchException, ScriptHookException, WallCollisionDetectedException, ChangeDirectionException
+    private void vaAuPointGestionHookCorrectionEtDetection(Vec2 consigne, Vec2 intermediaire, int differenceDistance, ArrayList<Hook> hooks, boolean trajectoire_courbe, boolean marcheAvant, boolean seulementAngle) throws BlockedException, UnexpectedObstacleOnPathException, FinMatchException, ScriptHookException, WallCollisionDetectedException, ChangeDirectionException
     {
         // le fait de faire de nombreux appels permet de corriger la trajectoire
-        vaAuPointGestionSymetrie(consigne, intermediaire, trajectoire_courbe, marcheAvant, seulementAngle, false);
+        vaAuPointGestionSymetrie(consigne, intermediaire, differenceDistance, trajectoire_courbe, marcheAvant, seulementAngle, false);
         do
         {
             updateCurrentPositionAndOrientation();
@@ -346,7 +354,7 @@ public class Locomotion implements Service
             for(Hook hook : hooks)
                 hook.evaluate();
 
-            corrigeAngle(consigne, intermediaire, trajectoire_courbe, marcheAvant);
+            corrigeAngle(consigne, intermediaire, differenceDistance, trajectoire_courbe, marcheAvant);
 
 
             Sleep.sleep(sleep_boucle_acquittement);
@@ -354,9 +362,9 @@ public class Locomotion implements Service
         
     }
 
-    private void corrigeAngle(Vec2 consigne, Vec2 intermediaire, boolean trajectoire_courbe, boolean marcheAvant) throws BlockedException, FinMatchException, WallCollisionDetectedException
+    private void corrigeAngle(Vec2 consigne, Vec2 intermediaire, int differenceDistance, boolean trajectoire_courbe, boolean marcheAvant) throws BlockedException, FinMatchException, WallCollisionDetectedException
     {
-    	vaAuPointGestionSymetrie(consigne, intermediaire, trajectoire_courbe, marcheAvant, true, true);
+    	vaAuPointGestionSymetrie(consigne, intermediaire, differenceDistance, trajectoire_courbe, marcheAvant, true, true);
     }
 
     /**
@@ -369,16 +377,19 @@ public class Locomotion implements Service
      * @throws FinMatchException 
      * @throws WallCollisionDetectedException 
      */
-    private void vaAuPointGestionSymetrie(Vec2 consigne, Vec2 intermediaire, boolean trajectoire_courbe, boolean marcheAvant, boolean seulementAngle, boolean correction) throws BlockedException, FinMatchException, WallCollisionDetectedException
+    private void vaAuPointGestionSymetrie(Vec2 consigne, Vec2 intermediaire, int differenceDistance, boolean trajectoire_courbe, boolean marcheAvant, boolean seulementAngle, boolean correction) throws BlockedException, FinMatchException, WallCollisionDetectedException
     {
         Vec2 delta = consigne.clone();
         if(symetrie)
+        {
             delta.x = -delta.x;
+            intermediaire.x = -intermediaire.x;
+        }
         
         updateCurrentPositionAndOrientation();
 
-        delta.minus(position);
-        double distance = delta.length();
+        delta.minus(intermediaire);
+        double distance = delta.length() - differenceDistance;
         
         double angle =  Math.atan2(delta.y, delta.x);
         // on suit ce que demande le boolean marcheAvant, en se retournant si besoin
@@ -409,8 +420,8 @@ public class Locomotion implements Service
 		
         // On interdit la trajectoire courbe si on doit faire un virage trop grand.
 		// TODO: cette protection devrait pouvoir être supprimée
-		if(delta > Math.PI/2)
-			trajectoire_courbe = false;
+//		if(delta > Math.PI/2)
+//			trajectoire_courbe = false;
 
 		/**
 		 * Si on fait une correction, il faut vérifier l'angle de correction.
@@ -441,14 +452,14 @@ public class Locomotion implements Service
                 while(!isMotionEnded()) // on attend la fin du mouvement
                     Sleep.sleep(sleep_boucle_acquittement);
             
-            // TODO: passer en hook
+/*            // TODO: passer en hook
             ObstacleRectangular obstacle = new ObstacleRectangular(position, consigne);
         	if(obstacle.isCollidingObstacleFixe())
         	{
         		log.debug("Le robot a demandé à avancer dans un obstacle. Ordre annulé.", this);
         		throw new WallCollisionDetectedException();
         	}
-
+*/
             if(!seulementAngle)
             	deplacements.moveLengthwise(distance);
         } catch (SerialConnexionException e) {

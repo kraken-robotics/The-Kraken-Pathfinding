@@ -1,5 +1,6 @@
 package obstacles;
 
+import astar.arc.PathfindingNodes;
 import astar.arc.SegmentTrajectoireCourbe;
 import robot.Speed;
 import utils.ConfigInfo;
@@ -22,10 +23,11 @@ public class ObstacleTrajectoireCourbe extends ObstacleRectanglesCollection
 	 * @param directionApres Vec2 pointant dans une direction, de norme 1000
 	 * @param vitesse
 	 */
-	public ObstacleTrajectoireCourbe(Vec2 intersection, Vec2 directionAvant, Vec2 directionApres, Speed vitesse)
+	public ObstacleTrajectoireCourbe(PathfindingNodes objectifFinal, PathfindingNodes intersection, Vec2 directionAvant, Speed vitesse)
 	{
 		// La position de cet obstacle est assez arbitraire...
-		super(intersection);
+		super(intersection.getCoordonnees());
+		Vec2 directionApres = new Vec2(intersection.getOrientationFinale(objectifFinal));
 		int rayonCourbure = vitesse.rayonCourbure();
 
 		double angleDepart = directionAvant.getArgument();
@@ -36,7 +38,7 @@ public class ObstacleTrajectoireCourbe extends ObstacleRectanglesCollection
 
 		int distanceAnticipation = (int) (rayonCourbure / Math.abs(Math.tan((Math.PI-angleRotation)/2)));
 
-		Vec2 pointDepart = intersection.minusNewVector(directionAvant.scalarNewVector(distanceAnticipation/1000.));
+		Vec2 pointDepart = position.minusNewVector(directionAvant.scalarNewVector(distanceAnticipation/1000.));
 		Vec2 orthogonalDirectionAvant = directionAvant.rotateNewVector(Math.PI/2);
 
 		// Afin de placer le centre du cercle entre les deux directions
@@ -55,7 +57,7 @@ public class ObstacleTrajectoireCourbe extends ObstacleRectanglesCollection
 			ombresRobot[i] = new ObstacleRectangular(pointDepart.rotateNewVector(i*angleRotation/(nb_rectangles-1), centreCercle), longueurRobot, largeurRobot, angleDepart+i*angleRotation/(nb_rectangles-1));
 		ombresRobot[nb_rectangles-1] = new ObstacleRectangular(pointDepart.rotateNewVector(angleRotation, centreCercle), longueurRobot, largeurRobot, angleDepart+angleRotation);
 
-		segment = new SegmentTrajectoireCourbe((int)(2 * distanceAnticipation - rayonCourbure * angleRotation), distanceAnticipation, pointDepart.clone(), directionAvant.clone());
+		segment = new SegmentTrajectoireCourbe(objectifFinal, (int)(2 * distanceAnticipation - rayonCourbure * angleRotation), distanceAnticipation, pointDepart.clone(), directionAvant.clone());
 	}
 
 	/**

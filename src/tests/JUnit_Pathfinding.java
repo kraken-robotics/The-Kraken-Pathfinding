@@ -168,7 +168,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
 		for(SegmentTrajectoireCourbe n: chemin)
 		{
 			log.debug(n, this);
-			cheminVec2.add(n.n.getCoordonnees());
+			cheminVec2.add(n.objectifFinal.getCoordonnees());
 		}
     	
 		Assert.assertEquals(PathfindingNodes.BAS.getCoordonnees().plusNewVector(new Vec2(10, 10)), state_chrono.robot.getPosition());

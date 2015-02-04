@@ -252,7 +252,7 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 	private ArrayList<A> lissage(Vec2 depart, GameState<RobotChrono> state, ArrayList<A> chemin)
 	{
 		// si on peut sauter le premier point, on le fait
-		while(chemin.size() >= 2 && state.gridspace.isTraversable(depart, ((SegmentTrajectoireCourbe)chemin.get(1)).n.getCoordonnees(), state.robot.getTempsDepuisDebutMatch()))
+		while(chemin.size() >= 2 && state.gridspace.isTraversable(depart, ((SegmentTrajectoireCourbe)chemin.get(1)).objectifFinal.getCoordonnees(), state.robot.getTempsDepuisDebutMatch()))
 			chemin.remove(0);
 
 		return chemin;

@@ -52,7 +52,7 @@ public class PathfindingArcManager extends ArcManager implements Service {
 		 * Rappel: même quand on fait un appel à RobotChrono sans hook, le hook de fin de match est exécuté
 		 */
 		int temps_debut = state.robot.getTempsDepuisDebutMatch();
-		state.robot.va_au_point_pathfinding_no_hook(((SegmentTrajectoireCourbe)arc).n);
+		state.robot.va_au_point_pathfinding_no_hook(((SegmentTrajectoireCourbe)arc).objectifFinal);
 		return state.robot.getTempsDepuisDebutMatch() - temps_debut;
 	}
 
@@ -94,11 +94,7 @@ public class PathfindingArcManager extends ArcManager implements Service {
     	if(!debutCourbe)
     		return new SegmentTrajectoireCourbe(PathfindingNodes.values[iterator]);
     	else
-    	{
-    		SegmentTrajectoireCourbe segment = state_iterator.gridspace.getSegment();
-    		segment.n = PathfindingNodes.values[iterator];
-    		return segment;
-    	}
+    		return state_iterator.gridspace.getSegment();
     }
     
     @Override
@@ -110,11 +106,12 @@ public class PathfindingArcManager extends ArcManager implements Service {
     	 */
     	debutCourbe = !debutCourbe; // OH LA JOLIE BASCULE
     	PathfindingNodes pn_id_node_iterator = PathfindingNodes.values[id_node_iterator];
-    	debutCourbe = debutCourbe && state_iterator.gridspace.isTraversableCourbe(pn_id_node_iterator, new Vec2(state_iterator.robot.getOrientation()), new Vec2(pn_id_node_iterator.getOrientationFinale(PathfindingNodes.values[iterator])), state_iterator.robot.getTempsDepuisDebutMatch(), state_iterator.robot.getVitesse());
+    	debutCourbe = debutCourbe && state_iterator.gridspace.isTraversableCourbe(PathfindingNodes.values[iterator], pn_id_node_iterator, new Vec2(state_iterator.robot.getOrientation()), state_iterator.robot.getTempsDepuisDebutMatch(), state_iterator.robot.getVitesse());
 
     	if(!debutCourbe)
     	{
 	    	int max_value = PathfindingNodes.length, i;
+	    	// TODO: remplacer i directement par iterator
 	    	for(i = iterator+1; i < max_value; i++)
 	    	{
 	    		if(i == id_node_iterator)

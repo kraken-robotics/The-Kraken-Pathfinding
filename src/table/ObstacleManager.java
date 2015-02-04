@@ -368,9 +368,9 @@ public class ObstacleManager implements Service
 	    return Math.min(date1, date2);
 	}
 
-	public boolean isTraversableCourbe(PathfindingNodes intersection, Vec2 directionAvant, Vec2 directionApres, int tempsDepuisDebutMatch, Speed vitesse)
+	public boolean isTraversableCourbe(PathfindingNodes objectifFinal, PathfindingNodes intersection, Vec2 directionAvant, int tempsDepuisDebutMatch, Speed vitesse)
 	{
-		obstacleTrajectoireCourbe = new ObstacleTrajectoireCourbe(intersection.getCoordonnees(), directionAvant, directionApres, vitesse);
+		obstacleTrajectoireCourbe = new ObstacleTrajectoireCourbe(objectifFinal, intersection, directionAvant, vitesse);
 
 		// Collision avec un obstacle fixe?
     	for(ObstaclesFixes o: ObstaclesFixes.values())

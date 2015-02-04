@@ -96,8 +96,8 @@ public class JUnit_PathfindingArcManager extends JUnit_Test {
 				verification[i.ordinal()] = false;
 			while(pathfindingarcmanager.hasNext())
 			{
-				Assert.assertTrue(verification[((SegmentTrajectoireCourbe)pathfindingarcmanager.next()).n.ordinal()] == false);
-				verification[((SegmentTrajectoireCourbe)pathfindingarcmanager.next()).n.ordinal()] = true;
+				Assert.assertTrue(verification[((SegmentTrajectoireCourbe)pathfindingarcmanager.next()).objectifFinal.ordinal()] == false);
+				verification[((SegmentTrajectoireCourbe)pathfindingarcmanager.next()).objectifFinal.ordinal()] = true;
 			}
 			for(PathfindingNodes i : PathfindingNodes.values())
 				Assert.assertEquals((state_chrono.gridspace.isTraversable(i, j, 0) && i != j), verification[i.ordinal()]);

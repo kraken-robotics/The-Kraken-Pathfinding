@@ -11,7 +11,10 @@ import utils.Vec2;
 
 public class SegmentTrajectoireCourbe implements Arc
 {
-	public PathfindingNodes n;
+	/**
+	 * La fin du segment
+	 */
+	public PathfindingNodes objectifFinal;
 
 	/**
 	 * Différence de distance entre la trajectoire en ligne brisée et la trajectoire courbe
@@ -19,6 +22,10 @@ public class SegmentTrajectoireCourbe implements Arc
  	 */
 	public final int differenceDistance;
 	public final int distanceAnticipation;
+	
+	/**
+	 * Le point où on commence à tourner
+	 */
 	public final Vec2 pointDepart;
 	public final Vec2 directionHook;
 	
@@ -29,8 +36,9 @@ public class SegmentTrajectoireCourbe implements Arc
 	 * @param distanceAnticipation
 	 * @param pointDepart
 	 */
-	public SegmentTrajectoireCourbe(int differenceDistance, int distanceAnticipation, Vec2 pointDepart, Vec2 directionHook)
+	public SegmentTrajectoireCourbe(PathfindingNodes objectifFinal, int differenceDistance, int distanceAnticipation, Vec2 pointDepart, Vec2 directionHook)
 	{
+		this.objectifFinal = objectifFinal;
 		this.differenceDistance = differenceDistance;
 		this.distanceAnticipation = distanceAnticipation;
 		this.pointDepart = pointDepart;
@@ -41,9 +49,9 @@ public class SegmentTrajectoireCourbe implements Arc
 	 * Constructeur sans trajectoire courbe
 	 * @param n
 	 */
-	public SegmentTrajectoireCourbe(PathfindingNodes n)
+	public SegmentTrajectoireCourbe(PathfindingNodes objectifFinal)
 	{
-		this.n = n;
+		this.objectifFinal = objectifFinal;
 		this.differenceDistance = 0;
 		this.distanceAnticipation = 0;
 		this.pointDepart = null;
