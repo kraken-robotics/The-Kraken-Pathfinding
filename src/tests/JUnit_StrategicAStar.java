@@ -42,7 +42,7 @@ public class JUnit_StrategicAStar extends JUnit_Test
     {
     	PathfindingNodes version = PathfindingNodes.CLAP_DROIT;
     	ArrayList<SegmentTrajectoireCourbe> chemin = new ArrayList<SegmentTrajectoireCourbe>();
-    	chemin.add(new SegmentTrajectoireCourbe(version, false));
+    	chemin.add(new SegmentTrajectoireCourbe(version, 0));
     	Decision decision = new Decision(chemin, ScriptAnticipableNames.CLAP, version);
     	GameState<RobotChrono> chronostate = gamestate.cloneGameState();
     	chronostate.robot.setPositionPathfinding(version);

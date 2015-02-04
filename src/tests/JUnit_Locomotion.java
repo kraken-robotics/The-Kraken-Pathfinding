@@ -89,10 +89,10 @@ public class JUnit_Locomotion extends JUnit_Test
 		config.set(ConfigInfo.COULEUR, "jaune");
 		locomotion.updateConfig();
 		ArrayList<SegmentTrajectoireCourbe> chemin = new ArrayList<SegmentTrajectoireCourbe>();
-		chemin.add(new SegmentTrajectoireCourbe(PathfindingNodes.BAS, false));
-		chemin.add(new SegmentTrajectoireCourbe(PathfindingNodes.DEVANT_DEPART_GAUCHE, false));
-		chemin.add(new SegmentTrajectoireCourbe(PathfindingNodes.COTE_MARCHE_GAUCHE, false));
-		chemin.add(new SegmentTrajectoireCourbe(PathfindingNodes.DEVANT_DEPART_GAUCHE, false));
+		chemin.add(new SegmentTrajectoireCourbe(PathfindingNodes.BAS, 0));
+		chemin.add(new SegmentTrajectoireCourbe(PathfindingNodes.DEVANT_DEPART_GAUCHE, 0));
+		chemin.add(new SegmentTrajectoireCourbe(PathfindingNodes.COTE_MARCHE_GAUCHE, 0));
+		chemin.add(new SegmentTrajectoireCourbe(PathfindingNodes.DEVANT_DEPART_GAUCHE, 0));
 		
 		locomotion.followPath(chemin, new ArrayList<Hook>(), DirectionStrategy.FASTEST);
 		locomotion.followPath(chemin, new ArrayList<Hook>(), DirectionStrategy.FORCE_FORWARD_MOTION);

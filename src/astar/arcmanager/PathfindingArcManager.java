@@ -28,7 +28,7 @@ public class PathfindingArcManager extends ArcManager implements Service {
 	protected Config config;
 	protected Log log;
 	private GameState<RobotChrono> state_iterator;
-	private boolean prochainDebutCourbe;
+	private boolean debutCourbe;
 
 	public PathfindingArcManager(Log log, Config config, MemoryManager memorymanager)
 	{
@@ -91,7 +91,10 @@ public class PathfindingArcManager extends ArcManager implements Service {
 	@Override
     public Arc next()
     {
-    	return new SegmentTrajectoireCourbe(PathfindingNodes.values[iterator], prochainDebutCourbe);
+    	if(!debutCourbe)
+    		return new SegmentTrajectoireCourbe(PathfindingNodes.values[iterator], 0);
+    	else
+    		return new SegmentTrajectoireCourbe(PathfindingNodes.values[iterator], state_iterator.gridspace.getDifferenceDistance());
     }
     
     @Override
@@ -101,9 +104,11 @@ public class PathfindingArcManager extends ArcManager implements Service {
     	 * On alterne: nouvel iterator avec false, puis avec true, puis nouvel
     	 * iterator avec false, puis avec true, etc.
     	 */
+    	debutCourbe = !debutCourbe; // OH LA JOLIE BASCULE
     	PathfindingNodes pn_id_node_iterator = PathfindingNodes.values[id_node_iterator];
-    	prochainDebutCourbe = prochainDebutCourbe && state_iterator.gridspace.isTraversableCourbe(pn_id_node_iterator, new Vec2(state_iterator.robot.getOrientation()), new Vec2(pn_id_node_iterator.getOrientationFinale(PathfindingNodes.values[iterator])), state_iterator.robot.getTempsDepuisDebutMatch(), state_iterator.robot.getVitesse());
-    	if(!prochainDebutCourbe)
+    	debutCourbe = debutCourbe && state_iterator.gridspace.isTraversableCourbe(pn_id_node_iterator, new Vec2(state_iterator.robot.getOrientation()), new Vec2(pn_id_node_iterator.getOrientationFinale(PathfindingNodes.values[iterator])), state_iterator.robot.getTempsDepuisDebutMatch(), state_iterator.robot.getVitesse());
+
+    	if(!debutCourbe)
     	{
 	    	int max_value = PathfindingNodes.length, i;
 	    	for(i = iterator+1; i < max_value; i++)
@@ -115,7 +120,6 @@ public class PathfindingArcManager extends ArcManager implements Service {
 	    	}
 	    	iterator = i;
     	}
-    	prochainDebutCourbe = !prochainDebutCourbe; // OH LA JOLIE BASCULE
     	return iterator != PathfindingNodes.length;
     }
     
@@ -126,7 +130,7 @@ public class PathfindingArcManager extends ArcManager implements Service {
     	id_node_iterator = gamestate.robot.getPositionPathfinding().ordinal();
     	iterator = -1;
     	state_iterator = gamestate;
-    	prochainDebutCourbe = false;
+    	debutCourbe = true;
     }
 
 	@Override

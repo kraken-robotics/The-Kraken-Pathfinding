@@ -386,5 +386,15 @@ public class GridSpace implements Service {
 	{
 		return obstaclemanager.isTraversableCourbe(intersection, directionAvant, directionApres, tempsDepuisDebutMatch, vitesse);
 	}
+
+	/**
+	 * Donne la différence de distance entre la trajectoire en ligne brisée et la trajectoire courbe
+	 * Cette distance est positive car la trajectoire courbe réduit la distance parcourue
+	 * @return
+	 */
+	public int getDifferenceDistance()
+	{
+		return obstaclemanager.getDifferenceDistance();
+	}
 	
 }

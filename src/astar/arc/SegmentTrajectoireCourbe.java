@@ -3,12 +3,12 @@ package astar.arc;
 public class SegmentTrajectoireCourbe implements Arc
 {
 	public final PathfindingNodes n;
-	public final boolean debuteAvecTrajectoireCourbe;
+	public final int differenceDistance;
 
-	public SegmentTrajectoireCourbe(PathfindingNodes n, boolean debuteAvecTrajectoireCourbe)
+	public SegmentTrajectoireCourbe(PathfindingNodes n, int differenceDistance)
 	{
 		this.n = n;
-		this.debuteAvecTrajectoireCourbe = debuteAvecTrajectoireCourbe;
+		this.differenceDistance = differenceDistance;
 	}
 	
 }

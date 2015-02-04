@@ -12,6 +12,10 @@ import utils.Vec2;
 
 public class ObstacleTrajectoireCourbe extends ObstacleRectanglesCollection
 {
+	private double angleRotation;
+	private int distanceAnticipation;
+	private int rayonCourbure;
+	
 	/**
 	 * 
 	 * @param intersection
@@ -23,15 +27,15 @@ public class ObstacleTrajectoireCourbe extends ObstacleRectanglesCollection
 	{
 		// La position de cet obstacle est assez arbitraire...
 		super(intersection);
-		int rayonCourbure = vitesse.rayonCourbure();
+		rayonCourbure = vitesse.rayonCourbure();
 
 		double angleDepart = directionAvant.getArgument();
-		double angleRotation = (directionApres.getArgument() - angleDepart) % (2*Math.PI);
+		angleRotation = (directionApres.getArgument() - angleDepart) % (2*Math.PI);
 
 		if(angleRotation > Math.PI)
 			angleRotation -= 2*Math.PI;
 
-		int distanceAnticipation = (int) (rayonCourbure / Math.abs(Math.tan((Math.PI-angleRotation)/2)));
+		distanceAnticipation = (int) (rayonCourbure / Math.abs(Math.tan((Math.PI-angleRotation)/2)));
 
 		Vec2 pointDepart = intersection.minusNewVector(directionAvant.scalarNewVector(distanceAnticipation/1000.));
 		Vec2 orthogonalDirectionAvant = directionAvant.rotateNewVector(Math.PI/2);
@@ -51,6 +55,16 @@ public class ObstacleTrajectoireCourbe extends ObstacleRectanglesCollection
 		for(int i = 0; i < nb_rectangles-1; i++)
 			ombresRobot[i] = new ObstacleRectangular(pointDepart.rotateNewVector(i*angleRotation/(nb_rectangles-1), centreCercle), longueurRobot, largeurRobot, angleDepart+i*angleRotation/(nb_rectangles-1));
 		ombresRobot[nb_rectangles-1] = new ObstacleRectangular(pointDepart.rotateNewVector(angleRotation, centreCercle), longueurRobot, largeurRobot, angleDepart+angleRotation);
+	}
+
+	/**
+	 * Donne la différence de distance entre la trajectoire en ligne brisée et la trajectoire courbe
+	 * Cette distance est positive car la trajectoire courbe réduit la distance parcourue
+	 * @return
+	 */
+	public int getDifferenceDistance()
+	{
+		return (int)(2 * distanceAnticipation - rayonCourbure * angleRotation);
 	}
 	
 }

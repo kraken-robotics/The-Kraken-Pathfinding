@@ -119,9 +119,8 @@ public class RobotChrono extends Robot
 	@Override
     public void suit_chemin(ArrayList<SegmentTrajectoireCourbe> chemin, ArrayList<Hook> hooks) throws FinMatchException
 	{
-		// TODO
 		for(SegmentTrajectoireCourbe point: chemin)
-			va_au_point_pathfinding(point.n, hooks);
+			va_au_point_pathfinding(point.n, point.differenceDistance, hooks);
 	}
 	
 	// TODO: ne plus proposer qu'une version de va_au_point vers un pathfindingnodes
@@ -142,8 +141,12 @@ public class RobotChrono extends Robot
 	 * @param hooks
 	 * @throws FinMatchException
 	 */
-	public void va_au_point_pathfinding(PathfindingNodes n, ArrayList<Hook> hooks) throws FinMatchException
+	public void va_au_point_pathfinding(PathfindingNodes n, int differenceDistance, ArrayList<Hook> hooks) throws FinMatchException
 	{
+		// Compensation de la trajectoire courbe
+		if(differenceDistance != 0)
+			date -= differenceDistance*vitesse.invertedTranslationnalSpeed - sleepTourneAndAvanceDuration;
+
 		if(!isPositionPathfindingActive)
 			va_au_point(n.getCoordonnees(), hooks);
 		else if(positionPathfindingAnterieure != null && vitesse == Speed.BETWEEN_SCRIPTS)

@@ -222,7 +222,7 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 			if(!state.robot.isAtPathfindingNodes())
 			{
 				// parce qu'on ne part pas du point de départ directement...
-				cheminArc.add(0, (A)new SegmentTrajectoireCourbe(pointDepart, false));
+				cheminArc.add(0, (A)new SegmentTrajectoireCourbe(pointDepart, 0));
 				cheminArc = lissage(state.robot.getPosition(), state, cheminArc);
 			}
 			

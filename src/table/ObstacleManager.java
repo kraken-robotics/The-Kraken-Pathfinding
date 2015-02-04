@@ -35,6 +35,8 @@ public class ObstacleManager implements Service
     private static ObstacleProximity hypotheticalEnemy = null;
     private boolean isThereHypotheticalEnemy = false;
     
+    private ObstacleTrajectoireCourbe obstacleTrajectoireCourbe;
+    
     private int firstNotDead = 0;
 
     private int rayon_robot_adverse = 200;
@@ -367,24 +369,34 @@ public class ObstacleManager implements Service
 
 	public boolean isTraversableCourbe(PathfindingNodes intersection, Vec2 directionAvant, Vec2 directionApres, int tempsDepuisDebutMatch, Speed vitesse)
 	{
-		ObstacleTrajectoireCourbe obstacle = new ObstacleTrajectoireCourbe(intersection.getCoordonnees(), directionAvant, directionApres, vitesse);
+		obstacleTrajectoireCourbe = new ObstacleTrajectoireCourbe(intersection.getCoordonnees(), directionAvant, directionApres, vitesse);
 
 		// Collision avec un obstacle fixe?
     	for(ObstaclesFixes o: ObstaclesFixes.values())
-    		if(obstacle.isColliding(o.getObstacle()))
+    		if(obstacleTrajectoireCourbe.isColliding(o.getObstacle()))
     			return false;
 
     	// Collision avec un ennemi hypothétique?
-        if(isThereHypotheticalEnemy && obstacle.isColliding(hypotheticalEnemy))
+        if(isThereHypotheticalEnemy && obstacleTrajectoireCourbe.isColliding(hypotheticalEnemy))
         	return false;
 
         // Collision avec un obtacle mobile?
         int size = listObstaclesMobiles.size();
         for(int tmpFirstNotDead = firstNotDead; tmpFirstNotDead < size; tmpFirstNotDead++)
-        	if(obstacle.isColliding(listObstaclesMobiles.get(tmpFirstNotDead)))
+        	if(obstacleTrajectoireCourbe.isColliding(listObstaclesMobiles.get(tmpFirstNotDead)))
         		return false;
 
         return true;
+	}
+
+	/**
+	 * Donne la différence de distance entre la trajectoire en ligne brisée et la trajectoire courbe
+	 * Cette distance est positive car la trajectoire courbe réduit la distance parcourue
+	 * @return
+	 */
+	public int getDifferenceDistance()
+	{
+		return obstacleTrajectoireCourbe.getDifferenceDistance();
 	}
 	
 }
