@@ -67,7 +67,7 @@ public enum PathfindingNodes {
 			{
 				distances[i.ordinal()][j.ordinal()] = i.getCoordonnees().distance(j.getCoordonnees());
 				durations[i.ordinal()][j.ordinal()] = i.getCoordonnees().distance(j.getCoordonnees())*Speed.BETWEEN_SCRIPTS.invertedTranslationnalSpeed;
-				orientations[i.ordinal()][j.ordinal()] = Math.atan2(i.getCoordonnees().y - j.getCoordonnees().y, i.getCoordonnees().x - j.getCoordonnees().y);
+				orientations[i.ordinal()][j.ordinal()] = Math.atan2(j.getCoordonnees().y - i.getCoordonnees().y, j.getCoordonnees().x - i.getCoordonnees().y);
 			}
 		for(PathfindingNodes i : PathfindingNodes.values())
 			for(PathfindingNodes j : PathfindingNodes.values())
