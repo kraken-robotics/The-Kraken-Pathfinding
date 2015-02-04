@@ -1,6 +1,7 @@
 package strategie;
 
 import hook.HookFactory;
+import hook.types.HookDemiPlan;
 import container.Service;
 import exceptions.FinMatchException;
 import robot.Robot;
@@ -54,7 +55,10 @@ public class GameState<R extends Robot> implements Service
         this.robot = robot;
         this.hookfactory = hookfactory;
         if(robot instanceof RobotReal)
+        {
         	robot.setHookFinMatch(hookfactory.getHooksFinMatchReal(this));
+        	((RobotReal)robot).setHookTrajectoireCourbe(new HookDemiPlan(config, log, this));
+        }
         else
             robot.setHookFinMatch(hookfactory.getHooksFinMatchChrono(this));
         updateConfig();

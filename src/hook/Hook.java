@@ -2,6 +2,7 @@ package hook;
 
 import java.util.ArrayList;
 
+import exceptions.ChangeDirectionException;
 import exceptions.FinMatchException;
 import exceptions.ScriptHookException;
 import exceptions.WallCollisionDetectedException;
@@ -67,8 +68,9 @@ abstract public class Hook
 	 * @throws FinMatchException 
 	 * @throws ScriptHookException 
 	 * @throws WallCollisionDetectedException 
+	 * @throws ChangeDirectionException 
 	 */
-	public void trigger() throws FinMatchException, ScriptHookException, WallCollisionDetectedException
+	public void trigger() throws FinMatchException, ScriptHookException, WallCollisionDetectedException, ChangeDirectionException
 	{
 		for(Callback callback : callbacks)
 			callback.call();
@@ -81,8 +83,9 @@ abstract public class Hook
 	 * @param robot
 	 * @throws ScriptHookException 
 	 * @throws WallCollisionDetectedException 
+	 * @throws ChangeDirectionException 
 	 */
-	public abstract void evaluate() throws FinMatchException, ScriptHookException, WallCollisionDetectedException;
+	public abstract void evaluate() throws FinMatchException, ScriptHookException, WallCollisionDetectedException, ChangeDirectionException;
 	
 	/**
 	 * Méthode appelée par RobotChrono. Elle doit dire si, sur un trajet entre A et B et

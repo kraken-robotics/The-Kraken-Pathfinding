@@ -1,6 +1,7 @@
 package hook.types;
 
 import hook.Hook;
+import exceptions.ChangeDirectionException;
 import exceptions.FinMatchException;
 import exceptions.ScriptHookException;
 import exceptions.WallCollisionDetectedException;
@@ -41,8 +42,9 @@ public class HookCollisionElementJeu extends Hook
      * @return true si la position/oriantation du robot a été modifiée.
      * @throws ScriptHookException 
      * @throws WallCollisionDetectedException 
+     * @throws ChangeDirectionException 
      */
-	public void evaluate() throws FinMatchException, ScriptHookException, WallCollisionDetectedException
+	public void evaluate() throws FinMatchException, ScriptHookException, WallCollisionDetectedException, ChangeDirectionException
 	{
 		obstacleRobot.update(state.robot.getPosition(), state.robot.getOrientation());
 		if(obstacleRobot.isColliding(obstacle))

@@ -1,6 +1,7 @@
 package tests;
 
 import hook.Hook;
+import hook.types.HookDemiPlan;
 
 import java.util.ArrayList;
 
@@ -89,13 +90,13 @@ public class JUnit_Locomotion extends JUnit_Test
 		config.set(ConfigInfo.COULEUR, "jaune");
 		locomotion.updateConfig();
 		ArrayList<SegmentTrajectoireCourbe> chemin = new ArrayList<SegmentTrajectoireCourbe>();
-		chemin.add(new SegmentTrajectoireCourbe(PathfindingNodes.BAS, 0));
-		chemin.add(new SegmentTrajectoireCourbe(PathfindingNodes.DEVANT_DEPART_GAUCHE, 0));
-		chemin.add(new SegmentTrajectoireCourbe(PathfindingNodes.COTE_MARCHE_GAUCHE, 0));
-		chemin.add(new SegmentTrajectoireCourbe(PathfindingNodes.DEVANT_DEPART_GAUCHE, 0));
+		chemin.add(new SegmentTrajectoireCourbe(PathfindingNodes.BAS));
+		chemin.add(new SegmentTrajectoireCourbe(PathfindingNodes.DEVANT_DEPART_GAUCHE));
+		chemin.add(new SegmentTrajectoireCourbe(PathfindingNodes.COTE_MARCHE_GAUCHE));
+		chemin.add(new SegmentTrajectoireCourbe(PathfindingNodes.DEVANT_DEPART_GAUCHE));
 		
-		locomotion.followPath(chemin, new ArrayList<Hook>(), DirectionStrategy.FASTEST);
-		locomotion.followPath(chemin, new ArrayList<Hook>(), DirectionStrategy.FORCE_FORWARD_MOTION);
+		locomotion.followPath(chemin, new HookDemiPlan(config, log, null), new ArrayList<Hook>(), DirectionStrategy.FASTEST);
+		locomotion.followPath(chemin, new HookDemiPlan(config, log, null), new ArrayList<Hook>(), DirectionStrategy.FORCE_FORWARD_MOTION);
 	}
 	
 	@Test

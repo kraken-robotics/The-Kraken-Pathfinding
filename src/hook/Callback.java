@@ -2,6 +2,7 @@ package hook;
 
 import robot.RobotChrono;
 import strategie.GameState;
+import exceptions.ChangeDirectionException;
 import exceptions.FinMatchException;
 import exceptions.ScriptHookException;
 import exceptions.WallCollisionDetectedException;
@@ -50,8 +51,9 @@ public class Callback
 	 * @throws FinMatchException 
 	 * @throws ScriptHookException 
 	 * @throws WallCollisionDetectedException 
+	 * @throws ChangeDirectionException 
 	 */
-	public void call() throws FinMatchException, ScriptHookException, WallCollisionDetectedException
+	public void call() throws FinMatchException, ScriptHookException, WallCollisionDetectedException, ChangeDirectionException
 	{
 		if(!(shouldBeDeleted()))
 		{

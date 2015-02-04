@@ -92,9 +92,13 @@ public class PathfindingArcManager extends ArcManager implements Service {
     public Arc next()
     {
     	if(!debutCourbe)
-    		return new SegmentTrajectoireCourbe(PathfindingNodes.values[iterator], 0);
+    		return new SegmentTrajectoireCourbe(PathfindingNodes.values[iterator]);
     	else
-    		return new SegmentTrajectoireCourbe(PathfindingNodes.values[iterator], state_iterator.gridspace.getDifferenceDistance());
+    	{
+    		SegmentTrajectoireCourbe segment = state_iterator.gridspace.getSegment();
+    		segment.n = PathfindingNodes.values[iterator];
+    		return segment;
+    	}
     }
     
     @Override

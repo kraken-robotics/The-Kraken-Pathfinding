@@ -1,5 +1,6 @@
 package hook.types;
 
+import exceptions.ChangeDirectionException;
 import exceptions.FinMatchException;
 import exceptions.ScriptHookException;
 import exceptions.WallCollisionDetectedException;
@@ -26,7 +27,7 @@ public class HookDate extends Hook {
 	}
 
 	@Override
-	public void evaluate() throws FinMatchException, ScriptHookException, WallCollisionDetectedException {
+	public void evaluate() throws FinMatchException, ScriptHookException, WallCollisionDetectedException, ChangeDirectionException {
 		if(System.currentTimeMillis() - Config.getDateDebutMatch() > date_hook)
 			trigger();
 	}

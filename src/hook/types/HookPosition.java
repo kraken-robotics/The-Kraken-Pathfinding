@@ -1,6 +1,7 @@
 package hook.types;
 
 import obstacles.ObstacleCircular;
+import exceptions.ChangeDirectionException;
 import exceptions.FinMatchException;
 import exceptions.ScriptHookException;
 import exceptions.WallCollisionDetectedException;
@@ -51,8 +52,9 @@ public class HookPosition extends Hook
      * @return true si la position/oriantation du robot a été modifiée.
      * @throws ScriptHookException 
      * @throws WallCollisionDetectedException 
+     * @throws ChangeDirectionException 
      */
-	public void evaluate() throws FinMatchException, ScriptHookException, WallCollisionDetectedException
+	public void evaluate() throws FinMatchException, ScriptHookException, WallCollisionDetectedException, ChangeDirectionException
 	{
 		Vec2 positionRobot = state.robot.getPosition();
 		if(position.squaredDistance(positionRobot) <= squaredTolerancy)

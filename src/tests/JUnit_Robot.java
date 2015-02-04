@@ -69,8 +69,8 @@ public class JUnit_Robot extends JUnit_Test
 	    		robot.avancer(100);
 	    		Assert.assertTrue(robot.getPosition().equals(new Vec2(200, 600)));
 	    		ArrayList<SegmentTrajectoireCourbe> chemin = new ArrayList<SegmentTrajectoireCourbe>();
-	    		chemin.add(new SegmentTrajectoireCourbe(PathfindingNodes.BAS, 0));
-	    		chemin.add(new SegmentTrajectoireCourbe(PathfindingNodes.DEVANT_DEPART_DROITE, 0));
+	    		chemin.add(new SegmentTrajectoireCourbe(PathfindingNodes.BAS));
+	    		chemin.add(new SegmentTrajectoireCourbe(PathfindingNodes.DEVANT_DEPART_DROITE));
 	    		robot.suit_chemin(chemin, new ArrayList<Hook>());
 	    		Assert.assertTrue(robot.getPosition().equals(PathfindingNodes.DEVANT_DEPART_DROITE.getCoordonnees()));
 	    	}

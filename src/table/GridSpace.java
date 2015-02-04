@@ -2,6 +2,7 @@ package table;
 
 import robot.Speed;
 import astar.arc.PathfindingNodes;
+import astar.arc.SegmentTrajectoireCourbe;
 import container.Service;
 import utils.Config;
 import utils.Log;
@@ -387,14 +388,9 @@ public class GridSpace implements Service {
 		return obstaclemanager.isTraversableCourbe(intersection, directionAvant, directionApres, tempsDepuisDebutMatch, vitesse);
 	}
 
-	/**
-	 * Donne la différence de distance entre la trajectoire en ligne brisée et la trajectoire courbe
-	 * Cette distance est positive car la trajectoire courbe réduit la distance parcourue
-	 * @return
-	 */
-	public int getDifferenceDistance()
+	public SegmentTrajectoireCourbe getSegment()
 	{
-		return obstaclemanager.getDifferenceDistance();
+		return obstaclemanager.getSegment();
 	}
 	
 }

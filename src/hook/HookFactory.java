@@ -29,6 +29,9 @@ import utils.Vec2;
  * @author pf, marsu
  *
  */
+
+// TODO: virer tous les new*
+
 public class HookFactory implements Service
 {
 	
@@ -188,12 +191,6 @@ public class HookFactory implements Service
     {
     	return new HookDemiPlan(config, log, state, new Vec2(0, yValue), new Vec2(0,-1));
     }
-
-    public HookDemiPlan newHookTrajectoireCourbe(ArrayList<Vec2> itineraire, GameState<?> state)
-    {
-    	return new HookDemiPlan(config, log, state, itineraire);
-    }
-
     
     /**
      * Fournit le hook de fin de match à un chrono gamestate.

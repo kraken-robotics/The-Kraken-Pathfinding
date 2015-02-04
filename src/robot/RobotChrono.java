@@ -10,6 +10,7 @@ import utils.Log;
 import utils.Config;
 import utils.Vec2;
 import enums.Side;
+import exceptions.ChangeDirectionException;
 import exceptions.FinMatchException;
 import exceptions.ScriptHookException;
 import exceptions.WallCollisionDetectedException;
@@ -270,6 +271,9 @@ public class RobotChrono extends Robot
 				} catch (WallCollisionDetectedException e) {
 					// Impossible
 					e.printStackTrace();
+				} catch (ChangeDirectionException e) {
+					// Impossible
+					e.printStackTrace();
 				}
 		
 		// le hook de fin de match est particulier, car il est toujours appelé, qu'il soit dans la liste ou non
@@ -280,6 +284,9 @@ public class RobotChrono extends Robot
 				// Impossible
 				e.printStackTrace();
 			} catch (WallCollisionDetectedException e) {
+				// Impossible
+				e.printStackTrace();
+			} catch (ChangeDirectionException e) {
 				// Impossible
 				e.printStackTrace();
 			}

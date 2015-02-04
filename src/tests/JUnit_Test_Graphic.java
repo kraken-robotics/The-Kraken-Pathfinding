@@ -116,7 +116,7 @@ public class JUnit_Test_Graphic extends JUnit_Test {
     public void test_strategy_verification_humaine() throws Exception
     {
 		ArrayList<SegmentTrajectoireCourbe> cheminDepart = new ArrayList<SegmentTrajectoireCourbe>();
-		cheminDepart.add(new SegmentTrajectoireCourbe(PathfindingNodes.POINT_DEPART, 0));
+		cheminDepart.add(new SegmentTrajectoireCourbe(PathfindingNodes.POINT_DEPART));
     	Decision decision = new Decision(cheminDepart, ScriptAnticipableNames.SORTIE_ZONE_DEPART, PathfindingNodes.POINT_DEPART);
     	config.setDateDebutMatch();
     	GameState<RobotChrono> chronostate = state.cloneGameState();

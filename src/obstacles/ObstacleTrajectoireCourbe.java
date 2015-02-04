@@ -1,5 +1,6 @@
 package obstacles;
 
+import astar.arc.SegmentTrajectoireCourbe;
 import robot.Speed;
 import utils.ConfigInfo;
 import utils.Vec2;
@@ -12,9 +13,7 @@ import utils.Vec2;
 
 public class ObstacleTrajectoireCourbe extends ObstacleRectanglesCollection
 {
-	private double angleRotation;
-	private int distanceAnticipation;
-	private int rayonCourbure;
+	private SegmentTrajectoireCourbe segment;
 	
 	/**
 	 * 
@@ -27,15 +26,15 @@ public class ObstacleTrajectoireCourbe extends ObstacleRectanglesCollection
 	{
 		// La position de cet obstacle est assez arbitraire...
 		super(intersection);
-		rayonCourbure = vitesse.rayonCourbure();
+		int rayonCourbure = vitesse.rayonCourbure();
 
 		double angleDepart = directionAvant.getArgument();
-		angleRotation = (directionApres.getArgument() - angleDepart) % (2*Math.PI);
+		double angleRotation = (directionApres.getArgument() - angleDepart) % (2*Math.PI);
 
 		if(angleRotation > Math.PI)
 			angleRotation -= 2*Math.PI;
 
-		distanceAnticipation = (int) (rayonCourbure / Math.abs(Math.tan((Math.PI-angleRotation)/2)));
+		int distanceAnticipation = (int) (rayonCourbure / Math.abs(Math.tan((Math.PI-angleRotation)/2)));
 
 		Vec2 pointDepart = intersection.minusNewVector(directionAvant.scalarNewVector(distanceAnticipation/1000.));
 		Vec2 orthogonalDirectionAvant = directionAvant.rotateNewVector(Math.PI/2);
@@ -55,16 +54,17 @@ public class ObstacleTrajectoireCourbe extends ObstacleRectanglesCollection
 		for(int i = 0; i < nb_rectangles-1; i++)
 			ombresRobot[i] = new ObstacleRectangular(pointDepart.rotateNewVector(i*angleRotation/(nb_rectangles-1), centreCercle), longueurRobot, largeurRobot, angleDepart+i*angleRotation/(nb_rectangles-1));
 		ombresRobot[nb_rectangles-1] = new ObstacleRectangular(pointDepart.rotateNewVector(angleRotation, centreCercle), longueurRobot, largeurRobot, angleDepart+angleRotation);
+
+		segment = new SegmentTrajectoireCourbe((int)(2 * distanceAnticipation - rayonCourbure * angleRotation), distanceAnticipation, pointDepart.clone(), directionAvant.clone());
 	}
 
 	/**
-	 * Donne la différence de distance entre la trajectoire en ligne brisée et la trajectoire courbe
-	 * Cette distance est positive car la trajectoire courbe réduit la distance parcourue
+	 * Renvoie le segment SANS le PathfindingNodes
 	 * @return
 	 */
-	public int getDifferenceDistance()
+	public SegmentTrajectoireCourbe getSegment()
 	{
-		return (int)(2 * distanceAnticipation - rayonCourbure * angleRotation);
+		return segment;
 	}
-	
+
 }

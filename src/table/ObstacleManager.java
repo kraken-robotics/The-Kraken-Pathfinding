@@ -3,6 +3,7 @@ package table;
 import java.util.ArrayList;
 
 import astar.arc.PathfindingNodes;
+import astar.arc.SegmentTrajectoireCourbe;
 import obstacles.Obstacle;
 import obstacles.ObstacleProximity;
 import obstacles.ObstacleRectangular;
@@ -389,14 +390,9 @@ public class ObstacleManager implements Service
         return true;
 	}
 
-	/**
-	 * Donne la différence de distance entre la trajectoire en ligne brisée et la trajectoire courbe
-	 * Cette distance est positive car la trajectoire courbe réduit la distance parcourue
-	 * @return
-	 */
-	public int getDifferenceDistance()
+	public SegmentTrajectoireCourbe getSegment()
 	{
-		return obstacleTrajectoireCourbe.getDifferenceDistance();
+		return obstacleTrajectoireCourbe.getSegment();
 	}
 	
 }
