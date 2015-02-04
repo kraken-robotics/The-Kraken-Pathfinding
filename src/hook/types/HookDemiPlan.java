@@ -55,8 +55,10 @@ public class HookDemiPlan extends Hook
 			WallCollisionDetectedException, ChangeDirectionException
 	{
 		Vec2 positionRobot = state.robot.getPosition();
+//		log.debug("Evaluation en "+positionRobot+", point: "+point, this);
 		if(!disabled && positionRobot.minusNewVector(point).dot(direction) > 0)
 		{
+//			log.debug("Exécution du hook!", this);
 			trigger();
 			disabled = true;
 		}

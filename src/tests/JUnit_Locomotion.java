@@ -1,6 +1,9 @@
 package tests;
 
+import hook.Callback;
+import hook.Executable;
 import hook.Hook;
+import hook.methods.ThrowsChangeDirection;
 import hook.types.HookDemiPlan;
 
 import java.util.ArrayList;
@@ -109,9 +112,12 @@ public class JUnit_Locomotion extends JUnit_Test
 	@Test
 	public void test_suit_chemin_courbe() throws Exception
 	{
-		config.set(ConfigInfo.COULEUR, "jaune");
 		locomotion.updateConfig();
 		ArrayList<SegmentTrajectoireCourbe> chemin = new ArrayList<SegmentTrajectoireCourbe>();
+
+		HookDemiPlan hookTrajectoireCourbe = new HookDemiPlan(config, log, realstate);
+		Executable action = new ThrowsChangeDirection();
+		hookTrajectoireCourbe.ajouter_callback(new Callback(action));
 
 		locomotion.setRotationnalSpeed(Speed.BETWEEN_SCRIPTS);
 		locomotion.setTranslationnalSpeed(Speed.BETWEEN_SCRIPTS);
@@ -122,7 +128,7 @@ public class JUnit_Locomotion extends JUnit_Test
 		chemin.add(obs.getSegment());
 		
 //		locomotion.followPath(chemin, new HookDemiPlan(config, log, realstate), new ArrayList<Hook>(), DirectionStrategy.FASTEST);
-		locomotion.followPath(chemin, new HookDemiPlan(config, log, realstate), new ArrayList<Hook>(), DirectionStrategy.FORCE_FORWARD_MOTION);
+		locomotion.followPath(chemin, hookTrajectoireCourbe, new ArrayList<Hook>(), DirectionStrategy.FORCE_FORWARD_MOTION);
 	}
 
 	

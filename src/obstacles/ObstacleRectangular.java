@@ -356,7 +356,7 @@ public class ObstacleRectangular extends Obstacle implements ObstacleCollision
 			return (in.y - coinBasGauche.y)*(in.y - coinBasGauche.y);
 
 		// Sinon, on est dans l'obstacle
-		return 0f;
+		return 0;
 	}
 
 	public boolean isProcheObstacle(Vec2 point, int distance)
