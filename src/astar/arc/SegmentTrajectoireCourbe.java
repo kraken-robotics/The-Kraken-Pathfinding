@@ -20,8 +20,8 @@ public class SegmentTrajectoireCourbe implements Arc
 	 * Différence de distance entre la trajectoire en ligne brisée et la trajectoire courbe
 	 * Cette distance est positive car la trajectoire courbe réduit la distance parcourue
  	 */
-	public final int differenceDistance;
-	public final int distanceAnticipation;
+	public int differenceDistance;
+	public int distanceAnticipation;
 	
 	/**
 	 * Le point où on commence à tourner

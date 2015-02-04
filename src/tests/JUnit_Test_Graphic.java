@@ -231,7 +231,10 @@ public class JUnit_Test_Graphic extends JUnit_Test {
 	@Test
     public void test_obstacle_trajectoire_courbe() throws Exception
     {
-		ObstacleRectangular[] ombresRobot = new ObstacleTrajectoireCourbe(PathfindingNodes.DEVANT_DEPART_DROITE, PathfindingNodes.BAS, new Vec2(-Math.PI/2), Speed.BETWEEN_SCRIPTS).getOmbresRobot();
+		Vec2 position = new Vec2(0, 1000);
+		PathfindingNodes fin = PathfindingNodes.COTE_MARCHE_DROITE;
+		ObstacleTrajectoireCourbe obs = new ObstacleTrajectoireCourbe(fin, PathfindingNodes.BAS, new Vec2(Math.atan2(PathfindingNodes.BAS.getCoordonnees().y-position.y,PathfindingNodes.BAS.getCoordonnees().x-position.x)), Speed.BETWEEN_SCRIPTS);
+		ObstacleRectangular[] ombresRobot = obs.getOmbresRobot();//new ObstacleTrajectoireCourbe(PathfindingNodes.DEVANT_DEPART_DROITE, PathfindingNodes.BAS, new Vec2(-Math.PI/2), Speed.BETWEEN_SCRIPTS).getOmbresRobot();
 		log.debug("Nb ombres: "+ombresRobot.length, this);
 		for(ObstacleRectangular o: ombresRobot)
 			fenetre.addObstacleEnBiais(o);

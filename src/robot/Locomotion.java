@@ -179,16 +179,26 @@ public class Locomotion implements Service
     		}
     		
     		// On annule tout hook sur l'ultime point d'arrivée.
-    		if(i == size-1 || chemin.get(i+1).differenceDistance == 0)
+    		if(i == size-1 || chemin.get(i+1).differenceDistance == 0 )
     		{
     			hookTrajectoireCourbe.setDisabled();
     		}
     		else
     		{
     			SegmentTrajectoireCourbe prochain = chemin.get(i+1);
-    			log.debug("Création d'un hook pour la trajectoire courbe en "+chemin.get(i).objectifFinal, this);
-    			hookTrajectoireCourbe.update(prochain.directionHook, prochain.pointDepart);
-//    			log.debug("Bas: "+PathfindingNodes.BAS.getCoordonnees()+", hook = "+prochain.directionHook, this);
+    			// On annule le prochain hook si on a déjà dépassé le hook
+    			if(prochain.differenceDistance == 0 || position.minusNewVector(prochain.pointDepart).dot(prochain.directionHook) > 0)
+    			{
+    				prochain.differenceDistance = 0;
+    				prochain.distanceAnticipation = 0;
+        			hookTrajectoireCourbe.setDisabled();
+    			}
+	    		else
+	    		{
+//	    			log.debug("Création d'un hook pour la trajectoire courbe en "+chemin.get(i).objectifFinal, this);
+	    			hookTrajectoireCourbe.update(prochain.directionHook, prochain.pointDepart);
+	//    			log.debug("Bas: "+PathfindingNodes.BAS.getCoordonnees()+", hook = "+prochain.directionHook, this);
+	    		}
     		}
     		
             Vec2 consigne = chemin.get(i).objectifFinal.getCoordonnees().clone();
@@ -198,7 +208,7 @@ public class Locomotion implements Service
 				vaAuPointGestionMarcheArriere(consigne, intermediaire, differenceDistance, hooks, false, directionstrategy, false);
 			} catch (ChangeDirectionException e) {
 				// On change de direction!
-				log.debug("Changement de direction!", this);
+//				log.debug("Changement de direction!", this);
 			}
         }
     }
@@ -393,7 +403,7 @@ public class Locomotion implements Service
         updateCurrentPositionAndOrientation();
 
         delta.minus(intermediaire);
-        log.debug("Distance directe: "+delta.length()+", differenceDistance: "+differenceDistance, this);
+//        log.debug("Distance directe: "+delta.length()+", differenceDistance: "+differenceDistance, this);
         double distance = delta.length() - differenceDistance;
         
         double angle =  Math.atan2(delta.y, delta.x);
@@ -441,7 +451,6 @@ public class Locomotion implements Service
 		}
         try
         {
-            deplacements.turn(angle);
             if(!correction && !trajectoire_courbe)
             {
             	ObstacleRotationRobot obstacle = new ObstacleRotationRobot(position, orientation, angle);
@@ -451,6 +460,7 @@ public class Locomotion implements Service
 	        		throw new WallCollisionDetectedException();
 	        	}
             }
+            deplacements.turn(angle);
             if(!trajectoire_courbe) // sans virage : la première rotation est bloquante
                 while(!isMotionEnded()) // on attend la fin du mouvement
                     Sleep.sleep(sleep_boucle_acquittement);
