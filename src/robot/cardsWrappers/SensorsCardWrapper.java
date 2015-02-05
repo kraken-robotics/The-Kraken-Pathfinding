@@ -1,5 +1,7 @@
 package robot.cardsWrappers;
 
+import java.io.IOException;
+
 import robot.serial.SerialConnexion;
 import utils.ConfigInfo;
 import utils.Log;
@@ -15,6 +17,7 @@ import exceptions.SerialConnexionException;
 
 public class SensorsCardWrapper implements Service
 {
+	// TODO: faire en sortes que les capteurs renvoie toutes les valeurs, avant et arrière
 
 	// Dépendances
 	private Log log;
@@ -49,31 +52,26 @@ public class SensorsCardWrapper implements Service
 	{
 		if(!capteurs_on)
     		return 3000;
-		
 		String[] distances_string;
-		int[] distances;
-		
-		try{
-
-			distances = new int[1];
-			distances_string = serie.communiquer("us_av", 1);
-
-			distances[0] = Integer.parseInt(distances_string[0]);
-    		
-		    return distances[0];
-    		
-/*		    	Arrays.sort(distances); // le dernier élément d'un tableau trié par ordre croissant est le plus grand
-		    	int distance = distances[distances.length-1];
-		    	
-		    	if(distance < 0)
-		    		return 3000;
-		    	return distance;*/
-		}
-		catch(SerialConnexionException e)
+		synchronized(serie)
 		{
-			log.critical(e.toString(), this);
-			return 3000; // valeur considérée comme infinie
+			try {
+				serie.wait();
+			} catch (InterruptedException e1) {
+				e1.printStackTrace();
+			}
+			try {
+				distances_string = serie.read(1);
+			} catch (IOException e) {
+				e.printStackTrace();
+				return 3000;
+			}
 		}
+		
+		int[] distances = new int[1];
+		distances[0] = Integer.parseInt(distances_string[0]);
+		
+	    return distances[0];
 	}
 	
     public boolean demarrage_match() throws SerialConnexionException, FinMatchException
