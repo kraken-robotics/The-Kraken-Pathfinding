@@ -193,8 +193,6 @@ public class Locomotion implements Service
             try {
 				vaAuPointGestionMarcheArriere(consigne, intermediaire, differenceDistance, hooks, false, directionstrategy, false);
 			} catch (ChangeDirectionException e) {
-				// On change de direction!
-//				log.debug("Changement de direction!", this);
 			}
         }
     }
@@ -359,7 +357,15 @@ public class Locomotion implements Service
     	vaAuPointGestionDirection(consigne, intermediaire, differenceDistance, marcheAvant, seulementAngle, false);
         do
         {
-            updateCurrentPositionAndOrientation();
+        	// On attend la prochaine mise à jour de position
+        	synchronized(this)
+        	{
+        		try {
+					wait();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+        	}
             
             // en cas de détection d'ennemi, une exception est levée
             detectEnemy(!marcheAvant);

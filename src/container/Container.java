@@ -23,6 +23,7 @@ import table.GridSpace;
 import table.ObstacleManager;
 import table.Table;
 import threads.AbstractThread;
+import threads.ThreadPosition;
 import threads.ThreadSensor;
 import threads.ThreadStrategy;
 import threads.ThreadTimer;
@@ -245,6 +246,11 @@ public class Container
 																		(Config)getService(ServiceNames.CONFIG),
 																		(AStar<StrategyArcManager, Decision>)getService(ServiceNames.A_STAR_STRATEGY),
 																		(GameState<RobotReal,ReadOnly>)getService(ServiceNames.REAL_GAME_STATE));
+		else if(serviceRequested == ServiceNames.THREAD_POSITION)
+			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadPosition((Log)getService(ServiceNames.LOG),
+																		(Config)getService(ServiceNames.CONFIG),
+																		(SerialConnexion)getService(ServiceNames.SERIE_POSITION),
+																		(Locomotion)getService(ServiceNames.LOCOMOTION));
 		else if(serviceRequested == ServiceNames.PATHFINDING_ARC_MANAGER)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new PathfindingArcManager((Log)getService(ServiceNames.LOG),
 																		(Config)getService(ServiceNames.CONFIG),
@@ -278,6 +284,9 @@ public class Container
 		try {
 			getService(ServiceNames.THREAD_SENSOR);
 			((Thread)instanciedServices[ServiceNames.THREAD_SENSOR.ordinal()]).start();
+
+			getService(ServiceNames.THREAD_POSITION);
+			((Thread)instanciedServices[ServiceNames.THREAD_POSITION.ordinal()]).start();
 
 			getService(ServiceNames.THREAD_TIMER);
 			((Thread)instanciedServices[ServiceNames.THREAD_TIMER.ordinal()]).start();
