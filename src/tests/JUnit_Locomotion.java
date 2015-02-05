@@ -113,6 +113,7 @@ public class JUnit_Locomotion extends JUnit_Test
 	public void test_suit_chemin_courbe() throws Exception
 	{
         locomotion.setPosition(new Vec2(0, 1200));
+        locomotion.setOrientation(Math.PI/2);
 		locomotion.updateConfig();
 		ArrayList<SegmentTrajectoireCourbe> chemin = new ArrayList<SegmentTrajectoireCourbe>();
 
@@ -123,14 +124,15 @@ public class JUnit_Locomotion extends JUnit_Test
 		locomotion.setRotationnalSpeed(Speed.BETWEEN_SCRIPTS);
 		locomotion.setTranslationnalSpeed(Speed.BETWEEN_SCRIPTS);
 //		PathfindingNodes fin = PathfindingNodes.COTE_MARCHE_GAUCHE;
-		PathfindingNodes fin = PathfindingNodes.COTE_MARCHE_DROITE;
+		PathfindingNodes fin = PathfindingNodes.DEVANT_DEPART_DROITE;
 		Vec2 position = locomotion.getPosition();
 		ObstacleTrajectoireCourbe obs = new ObstacleTrajectoireCourbe(fin, PathfindingNodes.BAS, new Vec2(Math.atan2(PathfindingNodes.BAS.getCoordonnees().y-position.y,PathfindingNodes.BAS.getCoordonnees().x-position.x)), Speed.BETWEEN_SCRIPTS);
 		chemin.add(new SegmentTrajectoireCourbe(PathfindingNodes.BAS));
 		chemin.add(obs.getSegment());
+		chemin.add(new SegmentTrajectoireCourbe(PathfindingNodes.DEVANT_DEPART_GAUCHE));
 		
 //		locomotion.followPath(chemin, new HookDemiPlan(config, log, realstate), new ArrayList<Hook>(), DirectionStrategy.FASTEST);
-		locomotion.followPath(chemin, hookTrajectoireCourbe, new ArrayList<Hook>(), DirectionStrategy.FORCE_FORWARD_MOTION);
+		locomotion.followPath(chemin, hookTrajectoireCourbe, new ArrayList<Hook>(), DirectionStrategy.FASTEST);
 	}
 
 	

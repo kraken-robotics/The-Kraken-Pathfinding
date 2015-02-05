@@ -434,16 +434,16 @@ public class Locomotion implements Service
 			delta = 2*Math.PI - delta;
 		
 		/**
-		 * Si on fait une correction, il faut vérifier la distance à la consigne
-		 * Si elle est grande, alors on fait la correction en angle sans s'arrêter
-		 * Si elle est petite, on annule la correction (par exemple, si le robot
+		 * Si on fait une correction, il faut vérifier la distance à la consigne et la correction
+		 * Si elles sont grandes, alors on fait la correction en angle sans s'arrêter
+		 * Si une au moins est petite, on annule la correction (par exemple, si le robot
 		 * dépasse un peu la consigne, la correction le ferait se retourner ce qui
 		 * n'est pas le résultat demandé)
 		 */
 		if(correction)
 		{
 			// 5 cm
-			if(intermediaire.squaredDistance(consigne) > 2500)
+			if(intermediaire.squaredDistance(consigne) > 2500 && Math.abs((orientation-angle) % (2*Math.PI)) < Math.PI/2)
 //			if(delta < 3*Math.PI/180)
 				trajectoire_courbe = true;
 			else
