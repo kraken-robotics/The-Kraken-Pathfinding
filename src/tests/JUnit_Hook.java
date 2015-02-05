@@ -52,13 +52,13 @@ public class JUnit_Hook extends JUnit_Test {
 	{
 		config.setDateDebutMatch();
 		ArrayList<Hook> hooks_table = hookfactory.getHooksEntreScriptsReal(real_gamestate);
-		real_gamestate.robot.setPosition(new Vec2(600, 350));
+		real_gamestate.robot.setPosition(new Vec2(950, 650));
 		real_gamestate.robot.setOrientation(Math.PI);
-		Assert.assertEquals(real_gamestate.gridspace.isDone(GameElementNames.VERRE_5), Tribool.FALSE);
+		Assert.assertEquals(real_gamestate.gridspace.isDone(GameElementNames.PLOT_7), Tribool.FALSE);
 		real_gamestate.robot.avancer(100, hooks_table);
-		Assert.assertEquals(real_gamestate.gridspace.isDone(GameElementNames.VERRE_5), Tribool.FALSE);
+		Assert.assertEquals(real_gamestate.gridspace.isDone(GameElementNames.PLOT_7), Tribool.FALSE);
 		real_gamestate.robot.avancer(500, hooks_table);
-		Assert.assertEquals(real_gamestate.gridspace.isDone(GameElementNames.VERRE_5), Tribool.TRUE);
+		Assert.assertEquals(real_gamestate.gridspace.isDone(GameElementNames.PLOT_7), Tribool.TRUE);
 	}
 
 	@Test
