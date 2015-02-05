@@ -8,11 +8,11 @@ import robot.serial.SerialConnexion;
 import utils.Config;
 import utils.Log;
 import container.Service;
-import enums.PathfindingNodes;
+import astar.arc.PathfindingNodes;
 import enums.RobotColor;
-import enums.Speed;
+import robot.Speed;
 import exceptions.FinMatchException;
-import exceptions.serial.SerialConnexionException;
+import exceptions.SerialConnexionException;
 
 public class STMcardWrapper implements Service {
 
@@ -51,7 +51,7 @@ public class STMcardWrapper implements Service {
 		message[1] = Integer.toString(Speed.values().length);
 		for(Speed s: Speed.values())
 		{
-			message[2+2*s.ordinal()] = Integer.toString(s.PWMTotation);
+			message[2+2*s.ordinal()] = Integer.toString(s.PWMRotation);
 			message[2+2*s.ordinal()+1] = Integer.toString(s.PWMTranslation);
 		}
 		serie.communiquer(message, 0);
