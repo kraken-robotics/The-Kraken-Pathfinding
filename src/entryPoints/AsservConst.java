@@ -1,12 +1,15 @@
 package entryPoints;
 
+import hook.Hook;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 
 import container.Container;
 import container.ServiceNames;
-import robot.cardsWrappers.LocomotionCardWrapper;
+import robot.cardsWrappers.STMcardWrapper;
 
 /**
  * Application permettant de trouver les constantes d'asservissement en rotation
@@ -30,16 +33,16 @@ public class AsservConst
     public static void main(String[] args)
     {
         Container container;
-        LocomotionCardWrapper deplacements = null;
+        STMcardWrapper deplacements = null;
         int signe = 1;
         try
         {
             container = new Container();
-            deplacements = (LocomotionCardWrapper) container.getService(ServiceNames.LOCOMOTION_CARD_WRAPPER);
+            deplacements = (STMcardWrapper) container.getService(ServiceNames.STM_CARD_WRAPPER);
 
             System.out.println("r ou t?");
             char asserv = (char) System.in.read();
-            double distance = -1000;
+            int distance = -1000;
             double angle = -Math.PI;
 
             while (true)
@@ -53,9 +56,9 @@ public class AsservConst
 
                     set_kp_kd_pwm();
 
-                    deplacements.changeTranslationnalFeedbackParameters(kp, kd, pwm_max);
+                    deplacements.changeTranslationalFeedbackParameters(kp, kd, pwm_max);
                     System.out.println(distance);
-                    deplacements.moveLengthwise(distance);
+                    deplacements.moveLengthwise(distance, new ArrayList<Hook>(), false);
 
                 }
                 else if (asserv == 'r')
@@ -67,9 +70,9 @@ public class AsservConst
 
                     set_kp_kd_pwm();
 
-                    deplacements.changeRotationnalFeedbackParameters(kp, kd, pwm_max);
+                    deplacements.changeRotationalFeedbackParameters(kp, kd, pwm_max);
                     System.out.println(angle);
-                    deplacements.turn(angle);
+                    deplacements.turn(angle, new ArrayList<Hook>());
 
                 }
             }

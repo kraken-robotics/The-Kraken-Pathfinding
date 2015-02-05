@@ -23,14 +23,12 @@ import table.GridSpace;
 import table.ObstacleManager;
 import table.Table;
 import threads.AbstractThread;
-import threads.ThreadPosition;
 import threads.ThreadSensor;
 import threads.ThreadStrategy;
 import threads.ThreadTimer;
-import robot.Locomotion;
 import robot.RobotReal;
 import robot.cardsWrappers.ActuatorCardWrapper;
-import robot.cardsWrappers.LocomotionCardWrapper;
+import robot.cardsWrappers.STMcardWrapper;
 import robot.cardsWrappers.SensorsCardWrapper;
 import robot.serial.SerialManager;
 import robot.serial.SerialConnexion;
@@ -181,14 +179,14 @@ public class Container
 				throw new ContainerException();
 			}
 		}
-		else if(serviceRequested == ServiceNames.LOCOMOTION_CARD_WRAPPER)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new LocomotionCardWrapper((Log)getService(ServiceNames.LOG),
-															 (Config)getService(ServiceNames.CONFIG),
-															 (SerialConnexion)getService(ServiceNames.SERIE_ASSERVISSEMENT));
 		else if(serviceRequested == ServiceNames.SENSORS_CARD_WRAPPER)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new SensorsCardWrapper((Config)getService(ServiceNames.CONFIG),
 			                                                 (Log)getService(ServiceNames.LOG),
 			                                                 (SerialConnexion)getService(ServiceNames.SERIE_CAPTEURS_ACTIONNEURS));
+		else if(serviceRequested == ServiceNames.STM_CARD_WRAPPER)
+			instanciedServices[serviceRequested.ordinal()] = (Service)new SensorsCardWrapper((Config)getService(ServiceNames.CONFIG),
+			                                                 (Log)getService(ServiceNames.LOG),
+			                                                 (SerialConnexion)getService(ServiceNames.SERIE_LOCOMOTION));
 		else if(serviceRequested == ServiceNames.ACTUATOR_CARD_WRAPPER)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ActuatorCardWrapper((Config)getService(ServiceNames.CONFIG),
 															 (Log)getService(ServiceNames.LOG),
@@ -202,14 +200,9 @@ public class Container
 															 (Log)getService(ServiceNames.LOG));
 		else if(serviceRequested == ServiceNames.ROBOT_REAL)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new RobotReal((ActuatorCardWrapper)getService(ServiceNames.ACTUATOR_CARD_WRAPPER),
-															 (Locomotion)getService(ServiceNames.LOCOMOTION),
+															 (STMcardWrapper)getService(ServiceNames.STM_CARD_WRAPPER),
 															 (Config)getService(ServiceNames.CONFIG),
 															 (Log)getService(ServiceNames.LOG));
-		else if(serviceRequested == ServiceNames.LOCOMOTION)
-            instanciedServices[serviceRequested.ordinal()] = (Service)new Locomotion((Log)getService(ServiceNames.LOG),
-                                                             (Config)getService(ServiceNames.CONFIG),
-                                                             (LocomotionCardWrapper)getService(ServiceNames.LOCOMOTION_CARD_WRAPPER),
-															 (ObstacleManager)getService(ServiceNames.OBSTACLE_MANAGER));
         else if(serviceRequested == ServiceNames.REAL_GAME_STATE)
         	// ici la construction est un petit peu différente car on interdit l'instanciation publique d'un GameSTate<RobotChrono>
             instanciedServices[serviceRequested.ordinal()] = (Service) GameState.constructRealGameState(  (Config)getService(ServiceNames.CONFIG),
@@ -233,7 +226,7 @@ public class Container
 																		(Config)getService(ServiceNames.CONFIG),
 																		(ObstacleManager)getService(ServiceNames.OBSTACLE_MANAGER),
 																		(SensorsCardWrapper)getService(ServiceNames.SENSORS_CARD_WRAPPER),
-																		(LocomotionCardWrapper)getService(ServiceNames.LOCOMOTION_CARD_WRAPPER),
+																		(STMcardWrapper)getService(ServiceNames.STM_CARD_WRAPPER),
 																		(SerialManager)getService(ServiceNames.SERIAL_MANAGER));
 		else if(serviceRequested == ServiceNames.THREAD_SENSOR)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadSensor((Log)getService(ServiceNames.LOG),
@@ -246,11 +239,6 @@ public class Container
 																		(Config)getService(ServiceNames.CONFIG),
 																		(AStar<StrategyArcManager, Decision>)getService(ServiceNames.A_STAR_STRATEGY),
 																		(GameState<RobotReal,ReadOnly>)getService(ServiceNames.REAL_GAME_STATE));
-		else if(serviceRequested == ServiceNames.THREAD_POSITION)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadPosition((Log)getService(ServiceNames.LOG),
-																		(Config)getService(ServiceNames.CONFIG),
-																		(SerialConnexion)getService(ServiceNames.SERIE_POSITION),
-																		(Locomotion)getService(ServiceNames.LOCOMOTION));
 		else if(serviceRequested == ServiceNames.PATHFINDING_ARC_MANAGER)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new PathfindingArcManager((Log)getService(ServiceNames.LOG),
 																		(Config)getService(ServiceNames.CONFIG),

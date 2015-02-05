@@ -3,7 +3,7 @@ package threads;
 import container.Service;
 import exceptions.FinMatchException;
 import exceptions.SerialConnexionException;
-import robot.cardsWrappers.LocomotionCardWrapper;
+import robot.cardsWrappers.STMcardWrapper;
 import robot.cardsWrappers.SensorsCardWrapper;
 import robot.serial.SerialManager;
 import table.ObstacleManager;
@@ -27,14 +27,14 @@ public class ThreadTimer extends AbstractThread implements Service
 	private Config config;
 	private ObstacleManager obstaclemanager;
 	private SensorsCardWrapper capteur;
-	private LocomotionCardWrapper deplacements;
 	private SerialManager serialmanager;
+	private STMcardWrapper deplacements;
 	
 	private long dureeMatch = 90000;
 	private long dateFin;
 	public static int obstacleRefreshInterval = 500; // temps en ms entre deux appels par le thread timer du rafraichissement des obstacles de la table
 		
-	public ThreadTimer(Log log, Config config, ObstacleManager obstaclemanager, SensorsCardWrapper capteur, LocomotionCardWrapper deplacements, SerialManager serialmanager)
+	public ThreadTimer(Log log, Config config, ObstacleManager obstaclemanager, SensorsCardWrapper capteur, STMcardWrapper deplacements, SerialManager serialmanager)
 	{
 		this.log = log;
 		this.config = config;
@@ -114,8 +114,8 @@ public class ThreadTimer extends AbstractThread implements Service
 
 		// fin du match : désasser final
 		try {
-				deplacements.disableRotationnalFeedbackLoop();
-			deplacements.disableTranslationnalFeedbackLoop();
+				deplacements.disableRotationalFeedbackLoop();
+			deplacements.disableTranslationalFeedbackLoop();
 		} catch (SerialConnexionException e) {
 			e.printStackTrace();
 		} catch (FinMatchException e) {
