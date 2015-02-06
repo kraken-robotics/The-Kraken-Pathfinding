@@ -125,13 +125,11 @@ public class RobotChrono extends Robot
 			va_au_point_pathfinding(point.objectifFinal, point.differenceDistance, hooks);
 	}
 	
-	// TODO: ne plus proposer qu'une version de va_au_point vers un pathfindingnodes
-	public void va_au_point(Vec2 point, ArrayList<Hook> hooks) throws FinMatchException
+	private void va_au_point_no_hook(Vec2 point) throws FinMatchException
 	{
 		double orientation_finale = Math.atan2(point.y - position.y, point.x - position.x);
 		tourner(orientation_finale);
 		date += position.distance(point)*vitesse.invertedTranslationnalSpeed + sleepAvanceDuration;
-		checkHooks(position, point, hooks);
 		point.copy(position);
 		isPositionPathfindingActive = false;
 		positionPathfindingAnterieure = null;
@@ -150,7 +148,10 @@ public class RobotChrono extends Robot
 			date -= differenceDistance*vitesse.invertedTranslationnalSpeed;// + sleepTourneAndAvanceDuration;
 
 		if(!isPositionPathfindingActive)
-			va_au_point(n.getCoordonnees(), hooks);
+		{
+			checkHooks(position, n.getCoordonnees(), hooks);
+			va_au_point_no_hook(n.getCoordonnees());
+		}
 		else if(positionPathfindingAnterieure != null && vitesse == Speed.BETWEEN_SCRIPTS)
 		{
 			date += positionPathfinding.angleWith(positionPathfindingAnterieure, n)
@@ -186,7 +187,7 @@ public class RobotChrono extends Robot
 			date -= segment.differenceDistance*vitesse.invertedTranslationnalSpeed;// + sleepTourneAndAvanceDuration;
 		
 		if(!isPositionPathfindingActive)
-			va_au_point(n.getCoordonnees(), new ArrayList<Hook>());
+			va_au_point_no_hook(n.getCoordonnees());
 		else if(positionPathfindingAnterieure != null && vitesse == Speed.BETWEEN_SCRIPTS)
 		{
 			date += positionPathfinding.angleWith(positionPathfindingAnterieure, n)
