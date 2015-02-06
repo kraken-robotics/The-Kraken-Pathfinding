@@ -428,7 +428,11 @@ public class Locomotion implements Service
      */
     private void vaAuPointGestionCourbe(Vec2 consigne, Vec2 intermediaire, double angle, double distance, boolean trajectoire_courbe, boolean seulementAngle, boolean correction) throws BlockedException, FinMatchException, WallCollisionDetectedException
     {
-		double delta = orientation-angle % (2*Math.PI);
+		double delta = (orientation-angle) % (2*Math.PI);
+		if(delta > Math.PI)
+			delta -= 2*Math.PI;
+		else if(delta < -Math.PI)
+			delta += 2*Math.PI;
 		delta = Math.abs(delta);
 		if(delta > Math.PI)
 			delta = 2*Math.PI - delta;
@@ -443,7 +447,12 @@ public class Locomotion implements Service
 		if(correction)
 		{
 			// 5 cm
-			if(intermediaire.squaredDistance(consigne) > 2500 && Math.abs((orientation-angle) % (2*Math.PI)) < Math.PI/2)
+			double deltaAngle = Math.abs((orientation-angle) % (2*Math.PI));
+			if(deltaAngle > Math.PI)
+				deltaAngle -= 2*Math.PI;
+			else if(deltaAngle < -Math.PI)
+				deltaAngle += 2*Math.PI;
+			if(intermediaire.squaredDistance(consigne) > 2500 && Math.abs(deltaAngle) < Math.PI/2)
 //			if(delta < 3*Math.PI/180)
 				trajectoire_courbe = true;
 			else

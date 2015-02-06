@@ -73,10 +73,14 @@ public enum PathfindingNodes {
 			for(PathfindingNodes j : PathfindingNodes.values())
 				for(PathfindingNodes k : PathfindingNodes.values())
 				{
-					double delta = orientations[i.ordinal()][j.ordinal()]-orientations[j.ordinal()][k.ordinal()] % (2*Math.PI);
+					double delta = (orientations[i.ordinal()][j.ordinal()]-orientations[j.ordinal()][k.ordinal()]) % (2*Math.PI);
+					if(delta > Math.PI)
+						delta -= 2*Math.PI;
+					else if(delta < Math.PI)
+						delta +=2*Math.PI;
 					delta = Math.abs(delta);
 					if(delta > Math.PI)
-						delta = 2*Math.PI - delta;
+						delta = Math.PI - delta;
 					angleWith[i.ordinal()][j.ordinal()][k.ordinal()] = delta*Speed.BETWEEN_SCRIPTS.invertedRotationnalSpeed;
 				}
 		values = values();

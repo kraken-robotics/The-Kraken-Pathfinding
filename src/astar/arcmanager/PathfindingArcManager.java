@@ -52,7 +52,7 @@ public class PathfindingArcManager extends ArcManager implements Service {
 		 * Rappel: même quand on fait un appel à RobotChrono sans hook, le hook de fin de match est exécuté
 		 */
 		int temps_debut = state.robot.getTempsDepuisDebutMatch();
-		state.robot.va_au_point_pathfinding_no_hook(((SegmentTrajectoireCourbe)arc).objectifFinal);
+		state.robot.va_au_point_pathfinding_no_hook((SegmentTrajectoireCourbe)arc);
 		return state.robot.getTempsDepuisDebutMatch() - temps_debut;
 	}
 

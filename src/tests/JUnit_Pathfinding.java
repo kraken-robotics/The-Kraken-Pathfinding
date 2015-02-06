@@ -141,12 +141,13 @@ public class JUnit_Pathfinding extends JUnit_Test {
 	@Test
     public void test_parcours() throws Exception
     {
-		Random randomgenerator = new Random();
-		PathfindingNodes i = PathfindingNodes.values()[randomgenerator.nextInt(PathfindingNodes.values().length)];
-		PathfindingNodes j = PathfindingNodes.values()[randomgenerator.nextInt(PathfindingNodes.values().length)];
+		PathfindingNodes i = PathfindingNodes.COTE_MARCHE_DROITE;
+		PathfindingNodes j = PathfindingNodes.COTE_MARCHE_GAUCHE;
 		state_chrono.robot.setPositionPathfinding(i);
 		state.robot.setPosition(i.getCoordonnees());
 		ArrayList<SegmentTrajectoireCourbe> chemin = pathfinding.computePath(state_chrono, j, true);
+		for(SegmentTrajectoireCourbe n: chemin)
+			log.debug(n.objectifFinal+" courbe? "+(n.differenceDistance!=0), this);
 		state.robot.suit_chemin(chemin, new ArrayList<Hook>());
     }
 

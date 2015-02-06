@@ -32,13 +32,28 @@ public class JUnit_PathfindingArcManager extends JUnit_Test {
 		state_chrono = state.cloneGameState();
 	}
 
-	@Test
+/*	@Test
 	public void test_iterator() throws Exception
 	{
 		state_chrono.gridspace.setAvoidGameElement(false);
 		state_chrono.robot.setPositionPathfinding(PathfindingNodes.BAS_DROITE);
 		pathfindingarcmanager.reinitIterator(state_chrono);
 		Assert.assertTrue(pathfindingarcmanager.hasNext());
+		log.debug(pathfindingarcmanager.next(), this);
+		Assert.assertTrue(pathfindingarcmanager.hasNext());
+		log.debug(pathfindingarcmanager.next(), this);
+		Assert.assertTrue(pathfindingarcmanager.hasNext());
+		log.debug(pathfindingarcmanager.next(), this);
+		Assert.assertTrue(pathfindingarcmanager.hasNext());
+		log.debug(pathfindingarcmanager.next(), this);
+		Assert.assertTrue(pathfindingarcmanager.hasNext());
+		log.debug(pathfindingarcmanager.next(), this);
+		Assert.assertTrue(pathfindingarcmanager.hasNext());
+		log.debug(pathfindingarcmanager.next(), this);
+		Assert.assertTrue(pathfindingarcmanager.hasNext());
+		log.debug(pathfindingarcmanager.next(), this);
+		Assert.assertTrue(pathfindingarcmanager.hasNext());
+		log.debug(pathfindingarcmanager.next(), this);
 		Assert.assertEquals(PathfindingNodes.SORTIE_ZONE_DEPART, pathfindingarcmanager.next());
 		Assert.assertTrue(pathfindingarcmanager.hasNext());
 		Assert.assertEquals(PathfindingNodes.SORTIE_CLAP_DROIT, pathfindingarcmanager.next());
@@ -82,7 +97,7 @@ public class JUnit_PathfindingArcManager extends JUnit_Test {
 		Assert.assertEquals(PathfindingNodes.SECOURS_9, pathfindingarcmanager.next());
 		Assert.assertTrue(!pathfindingarcmanager.hasNext());
 	}
-	
+	*/
 	@Test
 	public void test_iterator2() throws Exception
 	{

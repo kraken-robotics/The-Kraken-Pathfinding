@@ -94,7 +94,8 @@ public class RobotChrono extends Robot
 	}
 
 	/**
-	 * Donne l'angle entre l'orientation actuelle et l'angle donné en argument
+	 * Donne l'angle (non orienté, en valeur absolue) entre
+	 * l'orientation actuelle et l'angle donné en argument
 	 * @param angle
 	 * @return
 	 */
@@ -146,7 +147,7 @@ public class RobotChrono extends Robot
 	{
 		// Compensation de la trajectoire courbe
 		if(differenceDistance != 0)
-			date -= differenceDistance*vitesse.invertedTranslationnalSpeed - sleepTourneAndAvanceDuration;
+			date -= differenceDistance*vitesse.invertedTranslationnalSpeed;// + sleepTourneAndAvanceDuration;
 
 		if(!isPositionPathfindingActive)
 			va_au_point(n.getCoordonnees(), hooks);
@@ -177,8 +178,13 @@ public class RobotChrono extends Robot
 	 * @param n
 	 * @throws FinMatchException
 	 */
-	public void va_au_point_pathfinding_no_hook(PathfindingNodes n) throws FinMatchException
+	public void va_au_point_pathfinding_no_hook(SegmentTrajectoireCourbe segment) throws FinMatchException
 	{
+		PathfindingNodes n = segment.objectifFinal;
+		// Compensation de la trajectoire courbe
+		if(segment.differenceDistance != 0)
+			date -= segment.differenceDistance*vitesse.invertedTranslationnalSpeed;// + sleepTourneAndAvanceDuration;
+		
 		if(!isPositionPathfindingActive)
 			va_au_point(n.getCoordonnees(), new ArrayList<Hook>());
 		else if(positionPathfindingAnterieure != null && vitesse == Speed.BETWEEN_SCRIPTS)

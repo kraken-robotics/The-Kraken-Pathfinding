@@ -392,6 +392,7 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 				int tentative_g_score;
 				try {
 					tentative_g_score = g_score[hash_current] + arcmanager.distanceTo(successeur, voisin);
+//					log.debug("Tentative pour "+voisin+": "+tentative_g_score, this);
 				} catch (ScriptException | FinMatchException e) {
 					if(encoreUnSuccesseur)
 						reuseOldSuccesseur = true;

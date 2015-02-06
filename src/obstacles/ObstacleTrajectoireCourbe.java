@@ -35,8 +35,12 @@ public class ObstacleTrajectoireCourbe extends ObstacleRectanglesCollection
 		double angleDepart = directionAvant.getArgument();
 		double angleRotation = (directionApres.getArgument() - angleDepart) % (2*Math.PI);
 
-		if(angleRotation > Math.PI)
+		log.debug("angleRotation avant: "+angleRotation, this);
+		if(angleRotation < -Math.PI)
+			angleRotation += 2*Math.PI;
+		else if(angleRotation > Math.PI)
 			angleRotation -= 2*Math.PI;
+		log.debug("angleRotation après: "+angleRotation, this);
 
 		int distanceAnticipation = (int) (rayonCourbure / Math.abs(Math.tan((Math.PI-Math.abs(angleRotation))/2)));
 
@@ -59,11 +63,16 @@ public class ObstacleTrajectoireCourbe extends ObstacleRectanglesCollection
 			ombresRobot[i] = new ObstacleRectangular(pointDepart.rotateNewVector(i*angleRotation/(nb_rectangles-1), centreCercle), longueurRobot, largeurRobot, angleDepart+i*angleRotation/(nb_rectangles-1));
 		ombresRobot[nb_rectangles-1] = new ObstacleRectangular(pointDepart.rotateNewVector(angleRotation, centreCercle), longueurRobot, largeurRobot, angleDepart+angleRotation);
 
-		segment = new SegmentTrajectoireCourbe(objectifFinal, (int)(distanceAnticipation - rayonCourbure * Math.abs(angleRotation)), distanceAnticipation, pointDepart.clone(), directionAvant.clone());
+		if((int)(2*distanceAnticipation - rayonCourbure * Math.abs(angleRotation)) < 0)
+		{
+			log.debug("Erreur! distanceAnticipation = "+distanceAnticipation+", rayonCourbure = "+rayonCourbure+", angleRotation = "+angleRotation, this);
+		}
+		
+		segment = new SegmentTrajectoireCourbe(objectifFinal, (int)(2*distanceAnticipation - rayonCourbure * Math.abs(angleRotation)), distanceAnticipation, pointDepart.clone(), directionAvant.clone());
 	}
 
 	/**
-	 * Renvoie le segment SANS le PathfindingNodes
+	 * Renvoie le segment associé
 	 * @return
 	 */
 	public SegmentTrajectoireCourbe getSegment()
