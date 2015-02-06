@@ -58,4 +58,15 @@ public class SegmentTrajectoireCourbe implements Arc
 		this.directionHook = null;
 	}
 	
+	/**
+	 * Affichage user-friendly
+	 */
+	public String toString()
+	{
+		if(differenceDistance == 0)
+			return objectifFinal.toString()+" sans trajectoire courbe";
+		else
+			return objectifFinal.toString()+" avec trajectoire courbe";
+	}
+	
 }

@@ -35,12 +35,10 @@ public class ObstacleTrajectoireCourbe extends ObstacleRectanglesCollection
 		double angleDepart = directionAvant.getArgument();
 		double angleRotation = (directionApres.getArgument() - angleDepart) % (2*Math.PI);
 
-		log.debug("angleRotation avant: "+angleRotation, this);
 		if(angleRotation < -Math.PI)
 			angleRotation += 2*Math.PI;
 		else if(angleRotation > Math.PI)
 			angleRotation -= 2*Math.PI;
-		log.debug("angleRotation après: "+angleRotation, this);
 
 		int distanceAnticipation = (int)(rayonCourbure * Math.tan(Math.abs(angleRotation/2)));
 		
