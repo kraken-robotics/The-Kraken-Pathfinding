@@ -19,7 +19,7 @@ import utils.Log;
 
 public class MemoryManager implements Service {
 
-	private static final int nb_instances = 100;
+	private static final int nb_instances = 500;
 
 	@SuppressWarnings("unchecked")
 	private GameState<RobotChrono>[][] gamestates_list = new GameState[2][nb_instances];
