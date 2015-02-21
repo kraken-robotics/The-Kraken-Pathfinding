@@ -546,7 +546,7 @@ public class Locomotion implements Service
 	            position.x = (int)infos[0];
 	            position.y = (int)infos[1];
             }
-            orientation = infos[2]/1000; // car getCurrentPositionAndOrientation renvoie des milliradians
+            orientation = infos[2];
         }
         catch(SerialConnexionException e)
         {

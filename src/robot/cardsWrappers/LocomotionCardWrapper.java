@@ -413,7 +413,7 @@ public class LocomotionCardWrapper implements Service
         if(symetrie)
         {
         	parsedInfos[INFO_X] = -parsedInfos[INFO_X];
-        	parsedInfos[INFO_O] = Math.PI*1000-parsedInfos[INFO_O];
+        	parsedInfos[INFO_O] = Math.PI-parsedInfos[INFO_O];
         }
 
 		return parsedInfos;
