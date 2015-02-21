@@ -43,8 +43,7 @@ public enum ConfigInfo {
 	TEST1("test2"),
 	TOLERANCE_DEPART_SCRIPT("20"),
 	DISTANCE_ENNEMI_URGENCE("550"),
-	CHECK_POINTS_SORTIE("false"),
-	TEMPS_AVANT_BLOCAGE("200");
+	CHECK_POINTS_SORTIE("false");
 
 	private String defaultValue;
 	

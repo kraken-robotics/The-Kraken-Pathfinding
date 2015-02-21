@@ -287,7 +287,7 @@ public class Locomotion implements Service
                             deplacements.moveLengthwise(distance_degagement_robot);
                         else
                             deplacements.moveLengthwise(-distance_degagement_robot);
-                        while(!isMotionEnded());
+                        while(!deplacements.isMouvementFini());
                     	recommence = true; // si on est arrivé ici c'est qu'aucune exception n'a été levée
                     } catch (SerialConnexionException e1)
                     {
@@ -358,7 +358,7 @@ public class Locomotion implements Service
 
 
 //            Sleep.sleep(sleep_boucle_acquittement);
-        } while(!isMotionEnded());
+        } while(!deplacements.isMouvementFini());
         
     }
 
@@ -442,7 +442,7 @@ public class Locomotion implements Service
             }
             deplacements.tourneRelatif(delta);
             if(!trajectoire_courbe) // sans virage : la première rotation est bloquante
-                while(!isMotionEnded()) // on attend la fin du mouvement
+                while(!deplacements.isMouvementFini()) // on attend la fin du mouvement
                     Sleep.sleep(sleep_boucle_acquittement);
             
 /*            // TODO: passer en hook
@@ -457,46 +457,6 @@ public class Locomotion implements Service
             	deplacements.moveLengthwise(distance);
         } catch (SerialConnexionException e) {
             e.printStackTrace();
-        }
-    }
-
-    /**
-     * Boucle d'acquittement générique. Retourne des valeurs spécifiques en cas d'arrêt anormal (blocage, capteur)
-     *  	
-     *  	false : si on roule
-     *  	true : si on est arrivé à destination
-     *  	exception : si patinage
-     * 
-     * 
-     * @param detection_collision
-     * @param sans_lever_exception
-     * @return oui si le robot est arrivé à destination, non si encore en mouvement
-     * @throws BlockedException
-     * @throws FinMatchException 
-     * @throws UnexpectedObstacleOnPathException
-     */
-    private boolean isMotionEnded() throws BlockedException, FinMatchException
-    {
-    	// TODO: débugger!
-        // récupérations des informations d'acquittement
-        try {
-        	
-        	// met a jour: 	l'écart entre la position actuelle et la position sur laquelle on est asservi
-        	//				la variation de l'écart a la position sur laquelle on est asservi
-        	//				la puissance demandée par les moteurs 	
-            deplacements.refreshFeedbackLoopStatistics();
-            
-            // lève une exeption de blocage si le robot patine (ie force sur ses moteurs sans bouger) 
-            deplacements.raiseExceptionIfBlocked();
-            
-            // robot arrivé?
-            return !deplacements.isRobotMoving();
-
-        } 
-        catch (SerialConnexionException e) 
-        {
-            e.printStackTrace();
-            return false;
         }
     }
     

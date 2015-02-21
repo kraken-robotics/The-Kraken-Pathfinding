@@ -1,6 +1,5 @@
 package robot.cardsWrappers;
 
-import robot.FeedbackLoopStatisticsElement;
 import robot.Speed;
 import robot.serial.SerialConnexion;
 import utils.*;
@@ -25,41 +24,13 @@ public class LocomotionCardWrapper implements Service
 	/**
 	 *  pour écrire dans le log en cas de problème
 	 */
-	private Log log;
+	protected Log log;
 	protected Config config;
 
 	/**
 	 * connexion série avec la carte d'asservissement
 	 */
 	private SerialConnexion locomotionCardSerial;
-
-	/**
-	 * Stockage des informations courrantes de l'asservissement. 
-	 * Dès la fin du constructeur, les clefs sont: 
-	 *  - PWMmoteurGauche
-	 *  - PWMmoteurDroit
-	 *  - erreur_rotation
-	 *  - erreur_translation
-	 *  - derivee_erreur_rotation
-	 *  - derivee_erreur_translation
-	 */
-	private int[] feedbackLoopStatistics = new int[FeedbackLoopStatisticsElement.values().length];
-		
-	/**
-	 *  en cas de bloquage, date a laquelle le blocage a commencé
-	 */
-	private long blockageStartTimestamp;
-	
-	/**
-	 *  utilisé par raiseExceptionIfBlocked, pour savoir si lors du dernier appel de raiseExceptionIfBlocked, la robot était déja bloqué (auquel cas il ne faut plus considérer que c'est le début du bloquage)
-	 */
-    private boolean wasBlockedAtPreviousCall = false;
-    
-
-	/**
-	 *  nombre de miliseconde de tolérance entre la détection d'un patinage et la levée de l'exception. Trop basse il y aura des faux positifs, trop haute on va forcer dans les murs pendant longtemps
-	 */
-	private int blockedTolerancy;
 
 	private boolean symetrie;
 	
@@ -73,114 +44,15 @@ public class LocomotionCardWrapper implements Service
 		this.log = log;
 		this.config = config;
 		this.locomotionCardSerial = serial;
-		
-		feedbackLoopStatistics[FeedbackLoopStatisticsElement.PWMmoteurGauche.ordinal()] = 0;
-		feedbackLoopStatistics[FeedbackLoopStatisticsElement.PWMmoteurDroit.ordinal()] = 0;
-		feedbackLoopStatistics[FeedbackLoopStatisticsElement.erreur_rotation.ordinal()] = 0;
-		feedbackLoopStatistics[FeedbackLoopStatisticsElement.erreur_translation.ordinal()] = 0;
-		feedbackLoopStatistics[FeedbackLoopStatisticsElement.derivee_erreur_rotation.ordinal()] = 0;
-		feedbackLoopStatistics[FeedbackLoopStatisticsElement.derivee_erreur_translation.ordinal()] = 0;
-//		feedbackLoopStatistics[FeedbackLoopStatisticsElement.inverse_erreur_translation_integrale.ordinal()] = 100;
 		updateConfig();
 	}
 	
 	@Override
 	public void updateConfig()
 	{
-		blockedTolerancy = config.getInt(ConfigInfo.TEMPS_AVANT_BLOCAGE);
         symetrie = config.getSymmetry();
-	}	
-	
-	/**
-	 * lève BlockedException si le robot bloque (c'est-à-dire que les moteurs forcent mais que le robot ne bouge pas).
-	 * @throws BlockedException si le robot est mécaniquement bloqué contre un obstacle qui l'empèche d'avancer plus loin
-	 * @throws FinMatchException 
-	 */
-	public void raiseExceptionIfBlocked() throws BlockedException, FinMatchException
-	{
-		
-		// demande des information sur l'asservissement du robot
-		int pwmLeftMotor = feedbackLoopStatistics[FeedbackLoopStatisticsElement.PWMmoteurGauche.ordinal()];
-		int pwmRightMotor = feedbackLoopStatistics[FeedbackLoopStatisticsElement.PWMmoteurDroit.ordinal()];
-		int derivatedRotationnalError = feedbackLoopStatistics[FeedbackLoopStatisticsElement.derivee_erreur_rotation.ordinal()];
-		int derivatedTranslationnalError = feedbackLoopStatistics[FeedbackLoopStatisticsElement.derivee_erreur_translation.ordinal()];
-		
-		// on décrète que les moteurs forcent si la puissance qu'ils demandent est trop grande
-		boolean areMotorsActive = Math.abs(pwmLeftMotor) > 40 || Math.abs(pwmRightMotor) > 40;
-		
-		// on décrète que le robot est immobile si l'écart entre la position demandée et la position actuelle est (casi) constant
-		boolean isRobotImmobile = Math.abs(derivatedRotationnalError) <= 10 && Math.abs(derivatedTranslationnalError) <= 10;
-
-		// si on patine
-		if(isRobotImmobile && areMotorsActive)
-		{
-			// si on patinais déja auparavant, on fait remonter le patinage au code de haut niveau (via BlocageException)
-			if(wasBlockedAtPreviousCall)
-			{
-                // la durée de tolérance au patinage est fixée ici (200ms)
-				// mais cette fonction n'étant appellée qu'a une fréquance de l'ordre du Hertz ( la faute a une saturation de la série)
-				// le robot mettera plus de temps a réagir ( le temps de réaction est égal au temps qui sépare 2 appels successifs de cette fonction)
-				if((System.currentTimeMillis() - blockageStartTimestamp) > blockedTolerancy)
-				{
-					log.warning("raiseExceptionIfBlocked : le robot a dû s'arrêter suite à un patinage. (levage de BlockedException)", this);
-					try
-					{
-						immobilise();
-					} 
-					catch (SerialConnexionException e)
-					{
-						log.critical("raiseExceptionIfBlocked : Impossible d'immobiliser le robot: la carte d'asser ne répond plus.", this);
-						e.printStackTrace();
-					}
-					
-					throw new BlockedException("l'écart a la consigne ne bouge pas alors que les moteurs sont en marche");
-				}
-			}
-
-			// si on détecte pour la première fois le patinage, on continue de forcer
-			else
-			{
-				blockageStartTimestamp = System.currentTimeMillis();
-				wasBlockedAtPreviousCall  = true;
-			}
-		}
-		// si tout va bien
-		else
-		{
-			wasBlockedAtPreviousCall = false;
-			blockageStartTimestamp = System.currentTimeMillis();
-		}
-
 	}
 
-	/** 
-	 * Renvoie "faux" si le robot est arrivé et s'il est à la bonne position, vrai sinon.
-	 * Provoque un appel série pour avoir des information a jour. Cette méthode demande donc un peu de temps. 
-	 * @return vrai si le robot bouge, faux si le robot est immobile
-	 * @throws SerialConnexionException en cas de problème de communication avec la carte d'asservissement
-	 * @throws FinMatchException 
-	 */
-	public boolean isRobotMoving() throws SerialConnexionException, FinMatchException
-	{
-		refreshFeedbackLoopStatistics();
-		
-		// petits alias sur les infos de l'asservissement
-		int rotationnalError = feedbackLoopStatistics[FeedbackLoopStatisticsElement.erreur_rotation.ordinal()];
-		int translationnalError = feedbackLoopStatistics[FeedbackLoopStatisticsElement.erreur_translation.ordinal()];
-		int derivedRotationnalError = feedbackLoopStatistics[FeedbackLoopStatisticsElement.derivee_erreur_rotation.ordinal()];
-		int derivedTranslationnalError = feedbackLoopStatistics[FeedbackLoopStatisticsElement.derivee_erreur_translation.ordinal()];
-		
-		// TODO:VALEURS A REVOIR
-		// Décide si on considère le robot immobile ou non.
-		boolean rotationStopped = Math.abs(rotationnalError) <= 60;
-		boolean translationStopped = Math.abs(translationnalError) <= 60;
-		boolean isImmobile = Math.abs(derivedRotationnalError) <= 20 && Math.abs(derivedTranslationnalError) <= 20;
-		
-		
-		
-		return !(rotationStopped && translationStopped && isImmobile);
-	}
-	
 	/** 
 	 * Fait avancer le robot. Méthode non bloquante
 	 * @param distance distance a parcourir par le robot. Une valeur négative fera reculer le robot, une valeur positive le fera avancer.
@@ -208,14 +80,22 @@ public class LocomotionCardWrapper implements Service
 		locomotionCardSerial.communiquer(chaines, 0);		
 	}
 	
-	public boolean mouvementFini() throws BlockedException, FinMatchException, SerialConnexionException
+	public boolean isMouvementFini() throws BlockedException, FinMatchException
 	{
-		String[] infosBuffer = locomotionCardSerial.communiquer("f", 2);
-		// 0: le robot est-il en train de bouger?
-		// 1: état de mouvement anormal?
-		if(Boolean.parseBoolean(infosBuffer[1]))
-			throw new BlockedException();
-		return !Boolean.parseBoolean(infosBuffer[0]);
+		String[] infosBuffer;
+		try {
+			infosBuffer = locomotionCardSerial.communiquer("f", 2);
+			// 0: le robot est-il en train de bouger?
+			// 1: le robot est-il bloqué?
+			log.debug(Boolean.parseBoolean(infosBuffer[0])+", "+Boolean.parseBoolean(infosBuffer[1]), this);
+			if(Boolean.parseBoolean(infosBuffer[1]))
+				throw new BlockedException();
+			return !Boolean.parseBoolean(infosBuffer[0]);
+		} catch (SerialConnexionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
 	}
 
 	public void turn(double angle) throws SerialConnexionException, FinMatchException
@@ -366,43 +246,6 @@ public class LocomotionCardWrapper implements Service
 	{
 		String chaines[] = {"crv", Double.toString(kp), Double.toString(kd), Integer.toString(pwm_max)};
 		locomotionCardSerial.communiquer(chaines, 0);
-	}
-
-	/**
-	 * Met à jour PWMmoteurGauche, PWMmoteurDroit, erreur_rotation, erreur_translation, derivee_erreur_rotation, derivee_erreur_translation
-	 * les nouvelles valeurs sont stokées dans feedbackLoopStatistics (feedbackLoopStatistics est une map privée de la classe)
-	 * @throws SerialConnexionException en cas de problème de communication avec la carte d'asservissement
-	 * @throws FinMatchException 
-	 */
-	public void refreshFeedbackLoopStatistics() throws SerialConnexionException, FinMatchException
-	{
-		// on demande à la carte des informations a jour
-		// on envoit "?infos" et on lit 4 int (dans l'ordre : PWM droit, PWM gauche, erreurRotation, erreurTranslation)
-		String[] infosBuffer = locomotionCardSerial.communiquer("?infos", 4);
-		int[] parsedInfos = new int[4];
-		for(int i = 0; i < 4; i++)
-			parsedInfos[i] = Integer.parseInt(infosBuffer[i]);
-		
-		// calcul des dérivées des erreurs en translation et en rotation :
-		// on fait la différence entre la valeur actuelle de l'erreur et le valeur précédemment mesurée.
-		// on divise par un dt unitaire (non mentionné dans l'expression)
-		int derivedRotationnalError = parsedInfos[2] - feedbackLoopStatistics[FeedbackLoopStatisticsElement.erreur_rotation.ordinal()];
-		int derivedTranslationnalError = parsedInfos[3] - feedbackLoopStatistics[FeedbackLoopStatisticsElement.erreur_translation.ordinal()];
-		
-		
-		// on stocke la puissance consommée par les moteurs
-        feedbackLoopStatistics[FeedbackLoopStatisticsElement.PWMmoteurGauche.ordinal()] = parsedInfos[0];
-        feedbackLoopStatistics[FeedbackLoopStatisticsElement.PWMmoteurDroit.ordinal()] = parsedInfos[1];
-        
-        // l'erreur de translation mesurée par les codeuses
-        feedbackLoopStatistics[FeedbackLoopStatisticsElement.erreur_rotation.ordinal()] = parsedInfos[2];
-        feedbackLoopStatistics[FeedbackLoopStatisticsElement.erreur_translation.ordinal()] = parsedInfos[3];
-        
-        // stocke les dérivées des erreurs, calculés 10 lignes plus haut
-        feedbackLoopStatistics[FeedbackLoopStatisticsElement.derivee_erreur_rotation.ordinal()] = derivedRotationnalError;
-        feedbackLoopStatistics[FeedbackLoopStatisticsElement.derivee_erreur_translation.ordinal()] = derivedTranslationnalError;
-
-        
 	}
 
 	/**
