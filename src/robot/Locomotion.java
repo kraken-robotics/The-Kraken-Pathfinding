@@ -50,7 +50,6 @@ public class Locomotion implements Service
     
     private double orientation; // l'orientation réelle du robot, pas la version qu'ont les robots
     private LocomotionCardWrapper deplacements;
-    private boolean symetrie;
     private int sleep_boucle_acquittement = 10;
     private int distance_degagement_robot = 50;
     private double angle_degagement_robot;
@@ -75,7 +74,6 @@ public class Locomotion implements Service
             e.printStackTrace();
         }
     }
-
     
     /**
      * Fait tourner le robot (méthode bloquante)
@@ -87,7 +85,7 @@ public class Locomotion implements Service
      * @throws FinMatchException
      * @throws ScriptHookException
      */
-    public void turn(double angle, ArrayList<Hook> hooks) throws UnableToMoveException, FinMatchException, ScriptHookException
+    public void turn(double angle, ArrayList<Hook> hooks) throws UnableToMoveException, FinMatchException
     {
     	Vec2 consigne = new Vec2(
         (int) (position.x + 1000*Math.cos(angle)),
@@ -99,6 +97,9 @@ public class Locomotion implements Service
         try {
 			vaAuPointGestionExceptions(consigne, position, 0, hooks, true, false, true);
 		} catch (ChangeDirectionException e) {
+			// Normalement impossible
+			e.printStackTrace();
+		} catch (ScriptHookException e) {
 			// Normalement impossible
 			e.printStackTrace();
 		}
@@ -113,25 +114,13 @@ public class Locomotion implements Service
      * @throws FinMatchException 
      * @throws ScriptHookException 
      */
-    public void moveLengthwise(int distance, ArrayList<Hook> hooks, boolean mur) throws UnableToMoveException, FinMatchException, ScriptHookException
+    public void moveLengthwise(int distance, ArrayList<Hook> hooks, boolean mur) throws UnableToMoveException, FinMatchException
     {
         log.debug("Avancer de "+Integer.toString(distance), this);
         
-        Vec2 consigne = new Vec2(), consigneNonInversee = new Vec2(); 
-        consigneNonInversee.x = (int) (position.x + distance*Math.cos(orientation));
-        consigneNonInversee.y = (int) (position.y + distance*Math.sin(orientation));        
-
-        // En fait, ici on prend en compte que la symétrie va inverser la consigne...
-        if(symetrie)
-        {
-        	consigne.x = -consigneNonInversee.x;
-            consigne.y = consigneNonInversee.y;
-        }
-        else
-        {
-        	consigne.x = consigneNonInversee.x;
-            consigne.y = consigneNonInversee.y;
-        }
+        Vec2 consigne = new Vec2(); 
+        consigne.x = (int) (position.x + distance*Math.cos(orientation));
+        consigne.y = (int) (position.y + distance*Math.sin(orientation));        
 
         // l'appel à cette méthode sous-entend que le robot ne tourne pas
         // il va donc en avant si la distance est positive, en arrière si elle est négative
@@ -139,6 +128,9 @@ public class Locomotion implements Service
         try {
 			vaAuPointGestionExceptions(consigne, position, 0, hooks, distance >= 0, mur, false);
 		} catch (ChangeDirectionException e) {
+			// Normalement impossible
+			e.printStackTrace();
+		} catch (ScriptHookException e) {
 			// Normalement impossible
 			e.printStackTrace();
 		}
@@ -170,10 +162,6 @@ public class Locomotion implements Service
     		else
     		{
     			intermediaire = position.clone();
-    	        if(symetrie)
-    	        {
-    	        	intermediaire.x = -intermediaire.x;
-    	        }
     			// Cas particulier du premier départ: pas de trajectoire courbe
     			differenceDistance = 0;
     		}
@@ -242,8 +230,6 @@ public class Locomotion implements Service
     	{
     		// Calcul du moyen le plus rapide
 	        Vec2 delta = consigne.clone();
-	        if(symetrie)
-	            delta.x *= -1;
 	        delta.minus(position);
 	        // Le coeff 1000 vient du fait que Vec2 est constitué d'entiers
 	        Vec2 orientationVec = new Vec2((int)(1000*Math.cos(orientation)), (int)(1000*Math.sin(orientation)));
@@ -293,9 +279,9 @@ public class Locomotion implements Service
                         	// TODO: les appels à déplacements sont non bloquants, il faut rajouter des sleeps
                         	// on alterne rotation à gauche et à droite
                         	if((nb_iterations_deblocage & 1) == 0)
-                        		deplacements.turn(orientation+angle_degagement_robot);
+                        		deplacements.tourneRelatif(angle_degagement_robot);
                         	else
-                        		deplacements.turn(orientation-angle_degagement_robot);
+                        		deplacements.tourneRelatif(-angle_degagement_robot);
                         }
                         else if(marcheAvant)
                             deplacements.moveLengthwise(distance_degagement_robot);
@@ -357,7 +343,7 @@ public class Locomotion implements Service
     private void vaAuPointGestionHookCorrectionEtDetection(Vec2 consigne, Vec2 intermediaire, int differenceDistance, ArrayList<Hook> hooks, boolean marcheAvant, boolean seulementAngle) throws BlockedException, UnexpectedObstacleOnPathException, FinMatchException, ScriptHookException, WallCollisionDetectedException, ChangeDirectionException
     {
         // le fait de faire de nombreux appels permet de corriger la trajectoire
-        vaAuPointGestionSymetrie(consigne, intermediaire, differenceDistance, marcheAvant, seulementAngle, false);
+    	vaAuPointGestionDirection(consigne, intermediaire, differenceDistance, marcheAvant, seulementAngle, false);
         do
         {
             updateCurrentPositionAndOrientation();
@@ -378,11 +364,11 @@ public class Locomotion implements Service
 
     private void corrigeAngle(Vec2 consigne, boolean marcheAvant) throws BlockedException, FinMatchException, WallCollisionDetectedException
     {
-    	vaAuPointGestionSymetrie(consigne, position, 0, marcheAvant, true, true);
+    	vaAuPointGestionDirection(consigne, position, 0, marcheAvant, true, true);
     }
 
     /**
-     * Non bloquant. Gère la symétrie et la marche arrière.
+     * Non bloquant. Gère l'utilisation marche arrière.
      * @param point
      * @param sans_lever_exception
      * @param trajectoire_courbe
@@ -391,15 +377,9 @@ public class Locomotion implements Service
      * @throws FinMatchException 
      * @throws WallCollisionDetectedException 
      */
-    private void vaAuPointGestionSymetrie(Vec2 consigne, Vec2 intermediaire, int differenceDistance, boolean marcheAvant, boolean seulementAngle, boolean correction) throws BlockedException, FinMatchException, WallCollisionDetectedException
+    private void vaAuPointGestionDirection(Vec2 consigne, Vec2 intermediaire, int differenceDistance, boolean marcheAvant, boolean seulementAngle, boolean correction) throws BlockedException, FinMatchException, WallCollisionDetectedException
     {
         Vec2 delta = consigne.clone();
-        if(symetrie)
-        {
-            delta.x = -delta.x;
-            intermediaire.x = -intermediaire.x;
-        }
-        
         updateCurrentPositionAndOrientation();
 
         delta.minus(intermediaire);
@@ -428,14 +408,11 @@ public class Locomotion implements Service
      */
     private void vaAuPointGestionCourbe(Vec2 consigne, Vec2 intermediaire, double angle, double distance, boolean trajectoire_courbe, boolean seulementAngle, boolean correction) throws BlockedException, FinMatchException, WallCollisionDetectedException
     {
-		double delta = (orientation-angle) % (2*Math.PI);
+		double delta = (angle-orientation) % (2*Math.PI);
 		if(delta > Math.PI)
 			delta -= 2*Math.PI;
 		else if(delta < -Math.PI)
 			delta += 2*Math.PI;
-		delta = Math.abs(delta);
-		if(delta > Math.PI)
-			delta = 2*Math.PI - delta;
 		
 		/**
 		 * Si on fait une correction, il faut vérifier la distance à la consigne et la correction
@@ -447,13 +424,7 @@ public class Locomotion implements Service
 		if(correction)
 		{
 			// 5 cm
-			double deltaAngle = Math.abs((orientation-angle) % (2*Math.PI));
-			if(deltaAngle > Math.PI)
-				deltaAngle -= 2*Math.PI;
-			else if(deltaAngle < -Math.PI)
-				deltaAngle += 2*Math.PI;
-			if(intermediaire.squaredDistance(consigne) > 2500 && Math.abs(deltaAngle) < Math.PI/2)
-//			if(delta < 3*Math.PI/180)
+			if(intermediaire.squaredDistance(consigne) > 2500 && Math.abs(delta) < Math.PI/2)
 				trajectoire_courbe = true;
 			else
 				return;
@@ -469,7 +440,7 @@ public class Locomotion implements Service
 	        		throw new WallCollisionDetectedException();
 	        	}
             }
-            deplacements.turn(angle);
+            deplacements.tourneRelatif(delta);
             if(!trajectoire_courbe) // sans virage : la première rotation est bloquante
                 while(!isMotionEnded()) // on attend la fin du mouvement
                     Sleep.sleep(sleep_boucle_acquittement);
@@ -570,8 +541,11 @@ public class Locomotion implements Service
     {
         try {
             double[] infos = deplacements.getCurrentPositionAndOrientation();
-            position.x = (int)infos[0];
-            position.y = (int)infos[1];
+            synchronized(position)
+            {
+	            position.x = (int)infos[0];
+	            position.y = (int)infos[1];
+            }
             orientation = infos[2]/1000; // car getCurrentPositionAndOrientation renvoie des milliradians
         }
         catch(SerialConnexionException e)
@@ -583,11 +557,11 @@ public class Locomotion implements Service
     @Override
     public void updateConfig()
     {
+    	deplacements.updateConfig();
         distance_detection = config.getInt(ConfigInfo.DISTANCE_DETECTION);
         distance_degagement_robot = config.getInt(ConfigInfo.DISTANCE_DEGAGEMENT_ROBOT);
         sleep_boucle_acquittement = config.getInt(ConfigInfo.SLEEP_BOUCLE_ACQUITTEMENT);
         angle_degagement_robot = config.getDouble(ConfigInfo.ANGLE_DEGAGEMENT_ROBOT);
-        symetrie = config.getSymmetry();
     }
 
     /**
@@ -611,8 +585,6 @@ public class Locomotion implements Service
      */
     public void setPosition(Vec2 position) throws FinMatchException {
         this.position = position.clone();
-        if(symetrie)
-        	this.position.x = -this.position.x;
         try {
     		deplacements.setX(this.position.x);
             deplacements.setY(this.position.y);
@@ -629,8 +601,6 @@ public class Locomotion implements Service
      */
     public void setOrientation(double orientation) throws FinMatchException {
         this.orientation = orientation;
-        if(symetrie)
-        	this.orientation = Math.PI-this.orientation;
         try {
     		deplacements.setOrientation(this.orientation);
         } catch (SerialConnexionException e) {
@@ -642,17 +612,12 @@ public class Locomotion implements Service
     {
         updateCurrentPositionAndOrientation();
         Vec2 out = position.clone();
-        if(symetrie)
-        	out.x = -out.x;
         return out;
     }
 
     public double getOrientation() throws FinMatchException
     {
         updateCurrentPositionAndOrientation();
-        if(symetrie)
-        	return Math.PI-orientation;
-        else
         	return orientation;
     }
 

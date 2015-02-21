@@ -46,7 +46,7 @@ public class JUnit_Locomotion extends JUnit_Test
         locomotion = (Locomotion) container.getService(ServiceNames.LOCOMOTION);
         realstate = (GameState<RobotReal>) container.getService(ServiceNames.REAL_GAME_STATE);
         locomotion.setPosition(new Vec2(0, 1000));
-        locomotion.setOrientation(0);
+        locomotion.setOrientation(Math.PI/4);
     }
 	
 	@Test

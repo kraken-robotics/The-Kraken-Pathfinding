@@ -18,6 +18,10 @@ import exceptions.SerialConnexionException;
 public class LocomotionCardWrapper implements Service
 {
 
+	protected static final int INFO_X = 0;
+	protected static final int INFO_Y = 1;
+	protected static final int INFO_O = 2;
+	
 	/**
 	 *  pour écrire dans le log en cas de problème
 	 */
@@ -55,8 +59,10 @@ public class LocomotionCardWrapper implements Service
 	/**
 	 *  nombre de miliseconde de tolérance entre la détection d'un patinage et la levée de l'exception. Trop basse il y aura des faux positifs, trop haute on va forcer dans les murs pendant longtemps
 	 */
-	int blockedTolerancy;
+	private int blockedTolerancy;
 
+	private boolean symetrie;
+	
 	/**
 	 * Construit la surchouche de la carte d'asservissement
 	 * @param log le système de log ou écrire  
@@ -82,6 +88,7 @@ public class LocomotionCardWrapper implements Service
 	public void updateConfig()
 	{
 		blockedTolerancy = config.getInt(ConfigInfo.TEMPS_AVANT_BLOCAGE);
+        symetrie = config.getSymmetry();
 	}	
 	
 	/**
@@ -187,17 +194,26 @@ public class LocomotionCardWrapper implements Service
 	}
 
 	/** 
-	 * Fait tourner le robot. Méthode non bloquante
+	 * Fait tourner le robot d'un certain angle. Méthode non bloquante
 	 * @param angle
 	 * @throws SerialConnexionException en cas de problème de communication avec la carte d'asservissement
 	 * @throws FinMatchException 
 	 */
+	public void tourneRelatif(double angle) throws SerialConnexionException, FinMatchException
+	{
+		// Gestion de la symétrie
+		if(symetrie)
+			angle = -angle;
+		String chaines[] = {"t3", Double.toString(angle)};
+		locomotionCardSerial.communiquer(chaines, 0);		
+	}
+
 	public void turn(double angle) throws SerialConnexionException, FinMatchException
 	{
 		String chaines[] = {"t", Double.toString(angle)};
 		locomotionCardSerial.communiquer(chaines, 0);		
 	}
-	
+
 	/**
 	 * Arrête le robot
 	 * @throws SerialConnexionException en cas de problème de communication avec la carte d'asservissement
@@ -205,12 +221,7 @@ public class LocomotionCardWrapper implements Service
 	 */
 	public void immobilise() throws SerialConnexionException, FinMatchException
 	{
-		// Je bourrine, tu bourrines, il bourrine, ...
-        disableTranslationnalFeedbackLoop();
-        disableRotationnalFeedbackLoop();
 		locomotionCardSerial.communiquer("stop", 0);
-        enableTranslationnalFeedbackLoop();
-        enableRotationnalFeedbackLoop();
 	}
 	
 	/**
@@ -221,6 +232,8 @@ public class LocomotionCardWrapper implements Service
 	 */
 	public void setX(int x) throws SerialConnexionException, FinMatchException
 	{
+		if(symetrie)
+			x = -x;
 		String chaines[] = {"cx", Integer.toString(x)};
 		locomotionCardSerial.communiquer(chaines, 0);
 	}
@@ -245,6 +258,8 @@ public class LocomotionCardWrapper implements Service
 	 */
 	public void setOrientation(double orientation) throws SerialConnexionException, FinMatchException
 	{
+        if(symetrie)
+        	orientation = Math.PI-orientation;
 		String chaines[] = {"co", Double.toString(orientation)};
 		locomotionCardSerial.communiquer(chaines, 0);
 	}
@@ -351,8 +366,8 @@ public class LocomotionCardWrapper implements Service
 	 */
 	public void refreshFeedbackLoopStatistics() throws SerialConnexionException, FinMatchException
 	{
-		// on demande a la carte des information a jour
-		// on envois "?infos" et on lis 4 int (dans l'ordre : PWM droit, PWM gauche, erreurRotation, erreurTranslation)
+		// on demande à la carte des informations a jour
+		// on envoit "?infos" et on lit 4 int (dans l'ordre : PWM droit, PWM gauche, erreurRotation, erreurTranslation)
 		String[] infosBuffer = locomotionCardSerial.communiquer("?infos", 4);
 		int[] parsedInfos = new int[4];
 		for(int i = 0; i < 4; i++)
@@ -395,6 +410,11 @@ public class LocomotionCardWrapper implements Service
 		double[] parsedInfos = new double[3];
 		for(int i = 0; i < 3; i++)
 		    parsedInfos[i] = Double.parseDouble(infosBuffer[i]);
+        if(symetrie)
+        {
+        	parsedInfos[INFO_X] = -parsedInfos[INFO_X];
+        	parsedInfos[INFO_O] = Math.PI*1000-parsedInfos[INFO_O];
+        }
 
 		return parsedInfos;
 	}
