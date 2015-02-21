@@ -26,6 +26,7 @@ import strategie.GameState;
 import utils.ConfigInfo;
 import utils.Vec2;
 import container.ServiceNames;
+import enums.RobotColor;
 import exceptions.UnableToMoveException;
 
 /**
@@ -112,9 +113,10 @@ public class JUnit_Locomotion extends JUnit_Test
 	@Test
 	public void test_suit_chemin_courbe() throws Exception
 	{
-        locomotion.setPosition(new Vec2(0, 1200));
-        locomotion.setOrientation(Math.PI/2);
+		config.set(ConfigInfo.COULEUR, RobotColor.GREEN);
 		locomotion.updateConfig();
+        locomotion.setPosition(new Vec2(-200, 1200));
+        locomotion.setOrientation(0);
 		ArrayList<SegmentTrajectoireCourbe> chemin = new ArrayList<SegmentTrajectoireCourbe>();
 
 		HookDemiPlan hookTrajectoireCourbe = new HookDemiPlan(config, log, realstate);
