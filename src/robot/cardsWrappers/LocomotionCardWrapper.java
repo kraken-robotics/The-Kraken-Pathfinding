@@ -207,6 +207,16 @@ public class LocomotionCardWrapper implements Service
 		String chaines[] = {"t3", Double.toString(angle)};
 		locomotionCardSerial.communiquer(chaines, 0);		
 	}
+	
+	public boolean mouvementFini() throws BlockedException, FinMatchException, SerialConnexionException
+	{
+		String[] infosBuffer = locomotionCardSerial.communiquer("f", 2);
+		// 0: le robot est-il en train de bouger?
+		// 1: état de mouvement anormal?
+		if(Boolean.parseBoolean(infosBuffer[1]))
+			throw new BlockedException();
+		return !Boolean.parseBoolean(infosBuffer[0]);
+	}
 
 	public void turn(double angle) throws SerialConnexionException, FinMatchException
 	{
