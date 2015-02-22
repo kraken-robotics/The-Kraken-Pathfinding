@@ -1,5 +1,6 @@
 package astar.arc;
 
+import robot.Speed;
 import utils.Vec2;
 
 /**
@@ -29,6 +30,8 @@ public class SegmentTrajectoireCourbe implements Arc
 	public final Vec2 pointDepart;
 	public final Vec2 directionHook;
 	
+	public final Speed vitesse;
+	
 	/**
 	 * Constructeur pour trajectoire courbe
 	 * @param n
@@ -36,13 +39,14 @@ public class SegmentTrajectoireCourbe implements Arc
 	 * @param distanceAnticipation
 	 * @param pointDepart
 	 */
-	public SegmentTrajectoireCourbe(PathfindingNodes objectifFinal, int differenceDistance, int distanceAnticipation, Vec2 pointDepart, Vec2 directionHook)
+	public SegmentTrajectoireCourbe(PathfindingNodes objectifFinal, int differenceDistance, int distanceAnticipation, Vec2 pointDepart, Vec2 directionHook, Speed vitesse)
 	{
 		this.objectifFinal = objectifFinal;
 		this.differenceDistance = differenceDistance;
 		this.distanceAnticipation = distanceAnticipation;
 		this.pointDepart = pointDepart;
 		this.directionHook = directionHook;
+		this.vitesse = vitesse;
 	}
 	
 	/**
@@ -56,6 +60,7 @@ public class SegmentTrajectoireCourbe implements Arc
 		this.distanceAnticipation = 0;
 		this.pointDepart = null;
 		this.directionHook = null;
+		this.vitesse = Speed.BETWEEN_SCRIPTS;
 	}
 	
 	/**

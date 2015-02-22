@@ -25,8 +25,6 @@ import utils.Config;
  *
  */
 
-// TODO: virer tous les new*
-
 public class HookFactory implements Service
 {
 	
@@ -36,7 +34,6 @@ public class HookFactory implements Service
 	//gestion des log
 	private Log log;
 	
-	// la valeur de 20 est en mm, elle est remplcée par la valeur spécifié dans le fichier de config s'il y en a une
 	private int dureeMatch = 90000;
 	
 	private ArrayList<Hook> hooks_table_chrono = null;

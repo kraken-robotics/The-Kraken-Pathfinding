@@ -9,7 +9,8 @@ package robot;
 public enum Speed
 {
 	// vitesse en temps normal
-    BETWEEN_SCRIPTS(170, 0.52, 17.0, 160, 2.0, 50.0),
+//    BETWEEN_SCRIPTS(170, 0.52, 17.0, 160, 2.0, 50.0),
+    BETWEEN_SCRIPTS(17, 0.52, 17.0, 16, 2.0, 50.0),
     
     // On avance moins vite si l'on veut percuter un mur.
     INTO_WALL(90, 0.45, 12.5, 160, 2.0, 50.0),

@@ -63,7 +63,7 @@ public class ObstacleTrajectoireCourbe extends ObstacleRectanglesCollection
 
 //		log.debug("Erreur! diff = "+(2*distanceAnticipation - rayonCourbure * Math.abs(angleRotation)), this);
 		
-		segment = new SegmentTrajectoireCourbe(objectifFinal, (int)(2*distanceAnticipation - rayonCourbure * Math.abs(angleRotation)), distanceAnticipation, pointDepart.clone(), directionAvant.clone());
+		segment = new SegmentTrajectoireCourbe(objectifFinal, (int)(2*distanceAnticipation - rayonCourbure * Math.abs(angleRotation)), distanceAnticipation, pointDepart.clone(), directionAvant.clone(), vitesse);
 	}
 
 	/**

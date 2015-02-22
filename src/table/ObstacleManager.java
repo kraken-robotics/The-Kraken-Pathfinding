@@ -368,8 +368,11 @@ public class ObstacleManager implements Service
 	    return Math.min(date1, date2);
 	}
 
-	public boolean isTraversableCourbe(PathfindingNodes objectifFinal, PathfindingNodes intersection, Vec2 directionAvant, int tempsDepuisDebutMatch, Speed vitesse)
+	public boolean isTraversableCourbe(PathfindingNodes objectifFinal, PathfindingNodes intersection, Vec2 directionAvant, int tempsDepuisDebutMatch)
 	{
+		// TODO: calculer la vitesse qui permet exactement de passer?
+		Speed vitesse = Speed.BETWEEN_SCRIPTS;
+		
 		obstacleTrajectoireCourbe = new ObstacleTrajectoireCourbe(objectifFinal, intersection, directionAvant, vitesse);
 
 		// Collision avec un obstacle fixe?

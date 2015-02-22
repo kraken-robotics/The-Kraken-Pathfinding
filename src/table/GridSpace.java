@@ -1,6 +1,5 @@
 package table;
 
-import robot.Speed;
 import astar.arc.PathfindingNodes;
 import astar.arc.SegmentTrajectoireCourbe;
 import container.Service;
@@ -29,9 +28,10 @@ public class GridSpace implements Service {
 	private static NodesConnection[][] isConnectedModel = null;
 
 	// Rempli de ALWAYS_IMPOSSIBLE, TMP_IMPOSSIBLE, POSSIBLE et null
-	// Le hash dépend de avoidGameElement
-	private NodesConnection[][][] isConnectedModelCache = new NodesConnection[2][PathfindingNodes.length][PathfindingNodes.length];
+	// TODO
+	private static NodesConnection[][][] isConnectedModelCache = new NodesConnection[2][PathfindingNodes.length][PathfindingNodes.length];
 
+	// Le hash dépend de avoidGameElement
 	// Doit-on éviter les éléments de jeux? Ou peut-on foncer dedans?
 	private boolean avoidGameElement = true;
 	
@@ -383,9 +383,9 @@ public class GridSpace implements Service {
 	 * @param tempsDepuisDebutMatch
 	 * @return
 	 */
-	public boolean isTraversableCourbe(PathfindingNodes objectifFinal, PathfindingNodes intersection, Vec2 directionAvant, int tempsDepuisDebutMatch, Speed vitesse)
+	public boolean isTraversableCourbe(PathfindingNodes objectifFinal, PathfindingNodes intersection, Vec2 directionAvant, int tempsDepuisDebutMatch)
 	{
-		return obstaclemanager.isTraversableCourbe(objectifFinal, intersection, directionAvant, tempsDepuisDebutMatch, vitesse);
+		return obstaclemanager.isTraversableCourbe(objectifFinal, intersection, directionAvant, tempsDepuisDebutMatch);
 	}
 
 	public SegmentTrajectoireCourbe getSegment()

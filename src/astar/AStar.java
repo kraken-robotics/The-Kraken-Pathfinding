@@ -45,8 +45,8 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 	/**
 	 * Les analogies pathfinding/stratégie sont:
 	 * un noeud est un GameState<RobotChrono> dans les deux cas
-	 * un arc est un script pour l'arbre des possibles,
-	 *   un pathfindingnode pour le pathfinding
+	 * un arc est un Script pour l'arbre des possibles,
+	 *   un SegmentTrajectoireCourbe pour le pathfinding
 	 */
 	
 	private static final int nb_max_element = 100; // le nombre d'élément différent de l'arbre qu'on parcourt. A priori, 100 paraît suffisant.
@@ -392,6 +392,8 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 				int tentative_g_score;
 				try {
 					tentative_g_score = g_score[hash_current] + arcmanager.distanceTo(successeur, voisin);
+					if(tentative_g_score - g_score[hash_current] < 0)
+						log.critical("Distance négative! "+(tentative_g_score - g_score[hash_current]), this);
 //					log.debug("Tentative pour "+voisin+": "+tentative_g_score, this);
 				} catch (ScriptException | FinMatchException e) {
 					if(encoreUnSuccesseur)

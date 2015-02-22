@@ -54,10 +54,20 @@ public class JUnit_Locomotion extends JUnit_Test
 	public void test_avancer() throws Exception
 	{
 		config.set(ConfigInfo.COULEUR, "vert");
+		locomotion.updateConfig();
+        locomotion.setPosition(new Vec2(0, 1000));
+        locomotion.setOrientation(Math.PI/4);
 		locomotion.moveLengthwise(150, new ArrayList<Hook>(), false);
 		locomotion.moveLengthwise(-150, new ArrayList<Hook>(), false);
+	}
+
+	@Test
+	public void test_avancer2() throws Exception
+	{
 		config.set(ConfigInfo.COULEUR, "jaune");
 		locomotion.updateConfig();
+        locomotion.setPosition(new Vec2(0, 1000));
+        locomotion.setOrientation(Math.PI/4);
 		locomotion.moveLengthwise(150, new ArrayList<Hook>(), false);
 		locomotion.moveLengthwise(-150, new ArrayList<Hook>(), false);
 	}
@@ -67,12 +77,16 @@ public class JUnit_Locomotion extends JUnit_Test
 	{
 		config.set(ConfigInfo.COULEUR, "vert");
 		locomotion.updateConfig();
+        locomotion.setPosition(new Vec2(0, 1000));
+        locomotion.setOrientation(Math.PI/4);
 		locomotion.turn(Math.PI/2, new ArrayList<Hook>());
 		locomotion.turn(Math.PI, new ArrayList<Hook>());
 		locomotion.turn(3*Math.PI/2, new ArrayList<Hook>());
 		locomotion.turn(0, new ArrayList<Hook>());
 		config.set(ConfigInfo.COULEUR, "jaune");
 		locomotion.updateConfig();
+        locomotion.setPosition(new Vec2(0, 1000));
+        locomotion.setOrientation(Math.PI/4);
 		locomotion.turn(Math.PI/2, new ArrayList<Hook>());
 		locomotion.turn(Math.PI, new ArrayList<Hook>());
 		locomotion.turn(3*Math.PI/2, new ArrayList<Hook>());
@@ -100,6 +114,8 @@ public class JUnit_Locomotion extends JUnit_Test
 	{
 		config.set(ConfigInfo.COULEUR, "jaune");
 		locomotion.updateConfig();
+        locomotion.setPosition(new Vec2(0, 1000));
+        locomotion.setOrientation(Math.PI/4);
 		ArrayList<SegmentTrajectoireCourbe> chemin = new ArrayList<SegmentTrajectoireCourbe>();
 		chemin.add(new SegmentTrajectoireCourbe(PathfindingNodes.BAS));
 		chemin.add(new SegmentTrajectoireCourbe(PathfindingNodes.DEVANT_DEPART_GAUCHE));
