@@ -9,6 +9,8 @@ import utils.Vec2;
  *
  */
 
+// DEPENDS_ON_RULES
+
 public enum GameElementNames {
 	PLOT_1(GameElementType.PLOT, new Vec2(1410, 150), 30),
 	PLOT_2(GameElementType.PLOT, new Vec2(1410, 250), 30),
