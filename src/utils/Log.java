@@ -89,7 +89,7 @@ public class Log implements Service
 	public void debug(String message, Object objet)
 	{
 		if(affiche_debug)
-			ecrire(objet.getClass().getName()+": "+message, couleurDebug, System.out);
+			ecrire("DEBUG "+objet.getClass().getName()+": "+message, couleurDebug, System.out);
 	}
 
 	/**
@@ -109,7 +109,7 @@ public class Log implements Service
 	 */
 	public void warning(String message, Object objet)
 	{
-		ecrire(objet.getClass().getName()+": "+message, couleurWarning, System.out);
+		ecrire("WARNING "+objet.getClass().getName()+": "+message, couleurWarning, System.out);
 	}
 
 	/**
@@ -129,7 +129,7 @@ public class Log implements Service
 	 */
 	public void critical(String message, Object objet)
 	{
-		ecrire(objet.getClass().getName()+": "+message, couleurCritical, System.err);
+		ecrire("CRITICAL "+objet.getClass().getName()+": "+message, couleurCritical, System.err);
 	}
 
 	private void ecrire(String message, String couleur, PrintStream ou)
