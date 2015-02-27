@@ -59,7 +59,7 @@ public class JUnit_Test_Graphic extends JUnit_Test {
 		strategic_astar = (AStar<StrategyArcManager, Decision>)container.getService(ServiceNames.A_STAR_STRATEGY);
 		scriptmanager = (ScriptManager) container.getService(ServiceNames.SCRIPT_MANAGER);
 		fenetre = new Fenetre();
-		fenetre.setDilatationObstacle(0);// TODO: refaire ça
+		fenetre.setDilatationObstacle(0);// TODO: test graphique
 		for(PathfindingNodes n : PathfindingNodes.values())
 		{
 			fenetre.addPoint(n.getCoordonnees());

@@ -6,13 +6,14 @@ import robot.serial.SerialConnexion;
 import utils.ConfigInfo;
 import utils.Log;
 import utils.Config;
+import utils.Vec2;
 import container.Service;
 import exceptions.FinMatchException;
 import exceptions.SerialConnexionException;
 
 /**
  * Classe simplifiant le dialogue avec les capteurs
- * @author PF, marsu
+ * @author PF
  */
 
 public class SensorsCardWrapper implements Service
@@ -24,7 +25,8 @@ public class SensorsCardWrapper implements Service
 	private SerialConnexion serie;
 	private Config config;
 
-	private boolean capteurs_on = true;
+	private boolean capteursOn = true;
+	private int nbCapteurs;
 
 	public SensorsCardWrapper(Config config, Log log, SerialConnexion serie)
 	{
@@ -36,23 +38,21 @@ public class SensorsCardWrapper implements Service
 	
 	public void updateConfig()
 	{
-		capteurs_on = config.getBoolean(ConfigInfo.CAPTEURS_ON);
+		capteursOn = config.getBoolean(ConfigInfo.CAPTEURS_ON);
+		nbCapteurs = config.getInt(ConfigInfo.NB_CAPTEURS_PROXIMITE);
 	}
 
 	/**
-	-	 * Retourne la valeur la plus optimiste des capteurs de type capteur dans 
-	-	 * la direction voulue
-	-	 * Par rapport à la fonction suivante, c'est mieux de renvoyer séparément 
-	-	 * les données des capteurs qund c'est pas du même type.
-	-	 * @param capteur (soit "ir", soit "us")
-	-	 * @return la valeur la plus optimiste des capteurs
-	-	 
+	 * Méthode bloquante
+	 * Renvoie la liste des positions des obstacles vus par les capteurs
+	 * @return renvoie la position brute puis position de l'ennemi, pour chaque capteur
 	 * @throws FinMatchException */
-	public int mesurer() throws FinMatchException
+	public Vec2[] mesurer() throws FinMatchException
 	{
-		if(!capteurs_on)
-    		return 3000;
-		String[] distances_string;
+		Vec2[] positions = new Vec2[2*nbCapteurs];
+		if(!capteursOn)
+    		return positions;
+		String[] positionsString = new String[4*nbCapteurs];
 		synchronized(serie)
 		{
 			try {
@@ -61,34 +61,42 @@ public class SensorsCardWrapper implements Service
 				e1.printStackTrace();
 			}
 			try {
-				distances_string = serie.read(1);
+				positionsString = serie.read(4*nbCapteurs);
+				for(int i = 0; i < 2*nbCapteurs; i++)
+					positions[i] = new Vec2(Integer.parseInt(positionsString[2*i]), Integer.parseInt(positionsString[2*i+1]));
+				return positions;
 			} catch (IOException e) {
 				e.printStackTrace();
-				return 3000;
+				return positions;
 			}
 		}
-		
-		int[] distances = new int[1];
-		distances[0] = Integer.parseInt(distances_string[0]);
-		
-	    return distances[0];
 	}
 	
-    public boolean demarrage_match() throws SerialConnexionException, FinMatchException
+	/**
+	 * Le match a-t-il démarré? Demande à la STM l'état du jumper.
+	 * @return
+	 * @throws SerialConnexionException
+	 * @throws FinMatchException
+	 */
+    public boolean demarrageMatch() throws SerialConnexionException, FinMatchException
     {
     	try {
     		return Integer.parseInt(serie.communiquer("j", 1)[0]) != 0;
     	}
-    	catch(Exception e)
+    	catch(NumberFormatException e)
     	{
-    		log.critical("Aucune réponse du jumper", this);
+    		log.critical("Réponse du jumper non comprise", this);
     		return false;
     	}
     }
     
-    public void setCapteursOn(boolean capteurs_on)
+    /**
+     * Active ou désactive les capteurs. Les capteurs sont désactivés avant le début du match.
+     * @param capteurs_on
+     */
+    public void setCapteursOn(boolean capteursOn)
     {
-    	this.capteurs_on = capteurs_on;
+    	this.capteursOn = capteursOn;
     }
      
 }

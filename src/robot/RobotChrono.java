@@ -334,7 +334,7 @@ public class RobotChrono extends Robot
 	public void poserDeuxTapis(boolean needToSleep) throws FinMatchException
 	{
     	tapisPoses = true;
-    	// TODO points
+    	// TODO (avec règlement)
 		pointsObtenus = pointsObtenus + 24;
 		if(needToSleep)
 		{
@@ -362,7 +362,7 @@ public class RobotChrono extends Robot
 	@Override
 	public void clapTombe()
 	{
-		// TODO points
+		// TODO (avec règlement)
 		pointsObtenus = pointsObtenus + 5;				
 	}
 	

@@ -24,9 +24,6 @@ import utils.Log;
 import utils.Sleep;
 import utils.Vec2;
 
-// TODO: ScriptHookException ne peut être lancé que sur un chemin, donc
-// que par un suit_chemin
-
 /**
  * Entre Deplacement (appels à la série) et RobotVrai (déplacements haut niveau), Locomotion
  * s'occupe de la position, de la symétrie, des hooks, des trajectoires courbes et des blocages.
@@ -192,7 +189,6 @@ public class Locomotion implements Service
             Vec2 consigne = chemin.get(i).objectifFinal.getCoordonnees().clone();
             
             try {
-            	// TODO: retirer trajectoire_courbe qui n'apporte aucune information
 				vaAuPointGestionMarcheArriere(consigne, intermediaire, differenceDistance, hooks, false, directionstrategy, false);
 			} catch (ChangeDirectionException e) {
 				// On change de direction!
@@ -320,7 +316,7 @@ public class Locomotion implements Service
             	immobilise();
             	e.printStackTrace();
             	throw new UnableToMoveException();
-            	// TODO: et ensuite?
+            	// TODO: traitement exception dans Locomotion
 			}
 
         } while(recommence); // on recommence tant qu'il le faut
@@ -433,6 +429,7 @@ public class Locomotion implements Service
         {
             if(!correction && !trajectoire_courbe)
             {
+            	// TODO: éviter le "new"
             	ObstacleRotationRobot obstacle = new ObstacleRotationRobot(position, orientation, angle);
 	        	if(obstacle.isCollidingObstacleFixe())
 	        	{

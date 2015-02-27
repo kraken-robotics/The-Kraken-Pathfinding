@@ -87,12 +87,12 @@ public class LocomotionCardWrapper implements Service
 			infosBuffer = locomotionCardSerial.communiquer("f", 2);
 			// 0: le robot est-il en train de bouger?
 			// 1: le robot est-il bloqué?
-			log.debug(Boolean.parseBoolean(infosBuffer[0])+", "+Boolean.parseBoolean(infosBuffer[1]), this);
+//			log.debug(Boolean.parseBoolean(infosBuffer[0])+", "+Boolean.parseBoolean(infosBuffer[1]), this);
 			if(Boolean.parseBoolean(infosBuffer[1]))
 				throw new BlockedException();
 			return !Boolean.parseBoolean(infosBuffer[0]);
 		} catch (SerialConnexionException e) {
-			// TODO Auto-generated catch block
+			// TODO gérer coupure série
 			e.printStackTrace();
 		}
 		return false;

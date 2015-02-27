@@ -205,6 +205,7 @@ public class SerialConnexion implements SerialPortEventListener, Service
 	
 	/**
 	 * Lit sur la série. Cet appel doit être fait après la notification de données disponibles
+	 * @param n: le nombre de lignes à lire
 	 * @throws IOException
 	 */
 	public synchronized String[] read(int n) throws IOException
@@ -214,7 +215,7 @@ public class SerialConnexion implements SerialPortEventListener, Service
 		while(!input.ready());
 		
 		for(int i = 0; i < n; i++)
-			output[i] =input.readLine();
+			output[i] = input.readLine();
 
 		return output;
 	}

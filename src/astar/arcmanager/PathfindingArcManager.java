@@ -110,16 +110,14 @@ public class PathfindingArcManager extends ArcManager implements Service {
 
     	if(!debutCourbe)
     	{
-	    	int max_value = PathfindingNodes.length, i;
-	    	// TODO: remplacer i directement par iterator
-	    	for(i = iterator+1; i < max_value; i++)
+	    	int max_value = PathfindingNodes.length;
+	    	for(iterator++; iterator < max_value; iterator++)
 	    	{
-	    		if(i == id_node_iterator)
+	    		if(iterator == id_node_iterator)
 	    			continue;
-	    		if(state_iterator.gridspace.isTraversable(pn_id_node_iterator, PathfindingNodes.values[i], state_iterator.robot.getTempsDepuisDebutMatch()))
+	    		if(state_iterator.gridspace.isTraversable(pn_id_node_iterator, PathfindingNodes.values[iterator], state_iterator.robot.getTempsDepuisDebutMatch()))
 	    			break;
 	    	}
-	    	iterator = i;
     	}
     	return iterator != PathfindingNodes.length;
     }

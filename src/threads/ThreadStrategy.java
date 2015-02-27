@@ -50,7 +50,7 @@ public class ThreadStrategy extends AbstractThread implements Service
 			e.printStackTrace();
 		}
 		
-		Thread.currentThread().setPriority(4); // TODO
+		Thread.currentThread().setPriority(4); // TODO priorité thread
 		updateConfig();
 	}
 	

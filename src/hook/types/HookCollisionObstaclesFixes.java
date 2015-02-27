@@ -25,7 +25,7 @@ public class HookCollisionObstaclesFixes extends Hook
 	@Override
 	public void evaluate() throws FinMatchException, ScriptHookException
 	{
-		// TODO
+		// TODO prévision collision
 	}
 
 	// Il n'y a pas de simulation pour ce hook

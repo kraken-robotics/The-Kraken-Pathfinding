@@ -47,6 +47,8 @@ public class JUnit_Hook extends JUnit_Test {
         pathfinding = (AStar<PathfindingArcManager, SegmentTrajectoireCourbe>)container.getService(ServiceNames.A_STAR_PATHFINDING);
     }
    
+	// TODO: ne passe pas le test
+	
 	@Test
 	public void test_hook_vrai_avancer() throws Exception
 	{

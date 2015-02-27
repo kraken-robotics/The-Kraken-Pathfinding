@@ -98,6 +98,9 @@ public class JUnit_PathfindingArcManager extends JUnit_Test {
 		Assert.assertTrue(!pathfindingarcmanager.hasNext());
 	}
 	*/
+
+	// TODO: ne passe pas le test
+	
 	@Test
 	public void test_iterator2() throws Exception
 	{

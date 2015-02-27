@@ -8,28 +8,22 @@ import container.Service;
 import exceptions.FinMatchException;
 import exceptions.SerialConnexionException;
 
-
 /**
  * Surcouche user-friendly pour parler a la carte actionneurs.
  * Utilisée par le package robot pour bouger les actionneurs.
- * @author pf, marsu
+ * @author pf
  */
 public class ActuatorCardWrapper implements Service
 {
 
-
-	@SuppressWarnings("unused")
-	/** service de log a utiliser en cas de soucis */
-	private Log log;
-	
-	/** connexion série avec la carte actionneurs */
+	protected Log log;
 	private SerialConnexion actuatorCardSerial;
 
 	/**
 	 * Construit la surchouche de la carte actionneurs
-	 * @param config le fichoer ou lire la configuration du robot
-	 * @param log le système de log ou écrire  
-	 * @param serial la connexion série avec la carte actionneurs
+	 * @param config
+	 * @param log  
+	 * @param serial la connexion série avec la STM
 	 */
 	public ActuatorCardWrapper(Config config, Log log, SerialConnexion serial)
 	{
@@ -45,7 +39,7 @@ public class ActuatorCardWrapper implements Service
 	
 	/**
 	 * Envoie un ordre à la série. Le protocole est défini dans l'enum ActuatorOrder
-	 * @param order l'ordre a envoyer
+	 * @param order l'ordre à envoyer
 	 * @throws SerialConnexionException en cas de problème de communication avec la carte actionneurs
 	 * @throws FinMatchException 
 	 */

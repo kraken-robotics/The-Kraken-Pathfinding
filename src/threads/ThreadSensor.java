@@ -2,7 +2,6 @@ package threads;
 
 import container.Service;
 import exceptions.FinMatchException;
-import robot.RobotReal;
 import robot.cardsWrappers.SensorsCardWrapper;
 import table.GridSpace;
 import table.ObstacleManager;
@@ -23,24 +22,19 @@ public class ThreadSensor extends AbstractThread implements Service
 	private Log log;
 	private Config config;
 	private SensorsCardWrapper capteur;
-	private RobotReal robotreal;
 	private GridSpace gridspace;
 	private ObstacleManager obstaclemanager;
 	
 	private double tempo = 0;
-	private int horizon_capteurs = 700;
-	private int rayon_robot_adverse = 230;
-	private int largeur_robot = 300;
+	private int nbCapteurs;
 	private int table_x = 3000;
 	private int table_y = 2000;
-	private int capteurs_frequence = 5;
 	
-	public ThreadSensor(Log log, Config config, RobotReal robotreal, GridSpace gridspace, ObstacleManager obstaclemanager, SensorsCardWrapper capteur)
+	public ThreadSensor(Log log, Config config, GridSpace gridspace, ObstacleManager obstaclemanager, SensorsCardWrapper capteur)
 	{
 		this.log = log;
 		this.config = config;
 		this.capteur = capteur;
-		this.robotreal = robotreal;
 		this.gridspace = gridspace;
 		this.obstaclemanager = obstaclemanager;
 		
@@ -74,39 +68,35 @@ public class ThreadSensor extends AbstractThread implements Service
 					return;
 				}
 
-				int distance = capteur.mesurer();
-				if (distance > 0 && distance < 70)
-					log.critical("Câlin !", this);
-				
-				if(distance >= 40 && distance < horizon_capteurs)
-				{
-					int distance_inter_robots = distance + rayon_robot_adverse + largeur_robot/2;
-					int distance_brute = distance + largeur_robot/2;
-					double theta = robotreal.getOrientation();
+				Vec2[] positions = capteur.mesurer();
+
+//				if(distance >= 40 && distance < horizon_capteurs)
+//				{
+//					int distance_inter_robots = distance + rayon_robot_adverse + largeur_robot/2;
+//					int distance_brute = distance + largeur_robot/2;
+//					double theta = robotreal.getOrientation();
 	
+				for(int i = 0; i < nbCapteurs; i++)
+				{
 					// On ne prend pas en compte le rayon du robot adverse dans la position brute. Il s'agit en fait du point effectivement vu
 					// Utilisé pour voir si l'obstacle n'est justement pas un robot adverse.
-					Vec2 position_brute = robotreal.getPosition().plusNewVector(new Vec2((int)(distance_brute * Math.cos(theta)), (int)(distance_brute * Math.sin(theta)))); // position du point détecté
-					Vec2 position = robotreal.getPosition().plusNewVector(new Vec2((int)(distance_inter_robots * Math.cos(theta)), (int)(distance_inter_robots * Math.sin(theta)))); // centre supposé de l'obstacle détecté
+					Vec2 positionBrute = positions[2*i];
+					Vec2 position = positions[2*i+1];
 	
 					// si la position est bien sur la table (histoire de pas détecter un arbitre)
-					if(position.x-200 > -table_x/2 && position.y > 200 && position.x+200 < table_x/2 && position.y+200 < table_y)
-						// on vérifie qu'un obstacle n'a pas été ajouté récemment
-						if(System.currentTimeMillis() - date_dernier_ajout > tempo)
+					// on vérifie qu'un obstacle n'a pas été ajouté récemment
+					// TODO: proprifier la valeur hardcodée 200
+					if(System.currentTimeMillis() - date_dernier_ajout > tempo &&
+							position.x-200 > -table_x/2 && position.y > 200 && position.x+200 < table_x/2 && position.y+200 < table_y)
+						if(!obstaclemanager.isObstacleFixePresentCapteurs(positionBrute))
 						{
-							if(!obstaclemanager.isObstacleFixePresentCapteurs(position_brute))
-							{
-								gridspace.creer_obstacle(position);
-								date_dernier_ajout = (int)System.currentTimeMillis();
-								log.debug("Nouvel obstacle en "+position, this);
-							}
-							else	
-							    log.debug("L'objet vu en "+position_brute+" est un obstacle fixe.", this);
+							gridspace.creer_obstacle(position);
+							date_dernier_ajout = (int)System.currentTimeMillis();
+							log.debug("Nouvel obstacle en "+position, this);
 						}
-	
+						else
+						    log.debug("L'objet vu en "+positionBrute+" est un obstacle fixe.", this);
 				}
-				
-				Sleep.sleep((long)(1000./capteurs_frequence));
 			}
 			catch(FinMatchException e)
 			{
@@ -118,13 +108,10 @@ public class ThreadSensor extends AbstractThread implements Service
 	
 	public void updateConfig()
 	{
+			nbCapteurs = config.getInt(ConfigInfo.NB_CAPTEURS_PROXIMITE);
 			tempo = config.getDouble(ConfigInfo.CAPTEURS_TEMPORISATION_OBSTACLES);
-			horizon_capteurs = config.getInt(ConfigInfo.HORIZON_CAPTEURS);
-			rayon_robot_adverse = config.getInt(ConfigInfo.RAYON_ROBOT_ADVERSE);
-			largeur_robot = config.getInt(ConfigInfo.LARGEUR_ROBOT);
 			table_x = config.getInt(ConfigInfo.TABLE_X);
 			table_y = config.getInt(ConfigInfo.TABLE_Y);
-			capteurs_frequence = config.getInt(ConfigInfo.CAPTEURS_FREQUENCE);
 	}
 
 }

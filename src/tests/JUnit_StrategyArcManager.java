@@ -19,7 +19,7 @@ import scripts.ScriptManager;
 import scripts.ScriptAnticipableNames;
 import strategie.GameState;*/
 
-// TODO: refaire
+// TODO: refaire tests StrategyArcManager
 
 /**
  * Tests unitaires du StrategyArcManager

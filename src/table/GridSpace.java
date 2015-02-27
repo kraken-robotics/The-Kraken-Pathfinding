@@ -28,7 +28,7 @@ public class GridSpace implements Service {
 	private static NodesConnection[][] isConnectedModel = null;
 
 	// Rempli de ALWAYS_IMPOSSIBLE, TMP_IMPOSSIBLE, POSSIBLE et null
-	// TODO
+	// TODO cache gridspace
 	private static NodesConnection[][][] isConnectedModelCache = new NodesConnection[2][PathfindingNodes.length][PathfindingNodes.length];
 
 	// Le hash dépend de avoidGameElement

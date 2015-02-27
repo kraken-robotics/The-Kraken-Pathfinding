@@ -8,11 +8,13 @@ import scripts.ScriptHookNames;
  *
  */
 
+// DEPENDS_ON_RULES
+
 public enum GameElementType {
 	DISTRIBUTEUR(false, 15000, null),
 	VERRE(true, 15000, ScriptHookNames.PREND_VERRE),
 	CLAP(false, 0, null),
-	PLOT(true, 0, ScriptHookNames.PREND_PLOT); // TODO: considérer les plots comme étant en commun? (vu que l'ennemi peut les shooter aussi...)
+	PLOT(true, 0, ScriptHookNames.PREND_PLOT);
 
 	private boolean canBeShot;
 	private boolean isInCommon;
