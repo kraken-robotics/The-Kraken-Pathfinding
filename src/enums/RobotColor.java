@@ -29,4 +29,30 @@ public enum RobotColor {
 		return symmetry;
 	}
 	
+	/**
+	 * Récupère la couleur pour laquelle il n'y a pas de symétrie.
+	 * Utilisé pour les tests sans avoir à hardcoder la couleur.
+	 * @return
+	 */
+	public static String getCouleurSansSymetrie()
+	{
+		for(RobotColor r: RobotColor.values())
+			if(!r.symmetry)
+				return r.toString();
+		return null;
+	}
+	
+	/**
+	 * Récupère la couleur pour laquelle il y a symétrie.
+	 * Utilisé pour les tests sans avoir à hardcoder la couleur.
+	 * @return
+	 */
+	public static String getCouleurAvecSymetrie()
+	{
+		for(RobotColor r: RobotColor.values())
+			if(r.symmetry)
+				return r.toString();
+		return null;
+	}
+	
 }

@@ -9,6 +9,7 @@ import org.junit.Before;
 import org.junit.Assert;
 
 import container.ServiceNames;
+import enums.RobotColor;
 import astar.AStar;
 import astar.arc.PathfindingNodes;
 import astar.arc.SegmentTrajectoireCourbe;
@@ -139,7 +140,7 @@ public class JUnit_Scripts extends JUnit_Test {
     	gamestate.robot.setOrientation(Math.PI);
     	gamestate.robot.setPosition(PathfindingNodes.POINT_DEPART.getCoordonnees());
     	gamestate.robot.avancer(500);
-    	config.set(ConfigInfo.COULEUR, "jaune");
+    	config.set(ConfigInfo.COULEUR, RobotColor.getCouleurAvecSymetrie());
     	PathfindingNodes version = PathfindingNodes.NODE_TAPIS;
     	Script s = scriptmanager.getScript(ScriptAnticipableNames.TAPIS);
     	ArrayList<SegmentTrajectoireCourbe> chemin = pathfinding.computePath(gamestate.cloneGameState(), version, true);

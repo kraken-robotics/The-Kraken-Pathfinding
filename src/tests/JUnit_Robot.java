@@ -11,6 +11,7 @@ import org.junit.Test;
 import astar.arc.PathfindingNodes;
 import astar.arc.SegmentTrajectoireCourbe;
 import container.ServiceNames;
+import enums.RobotColor;
 import robot.Robot;
 import robot.RobotChrono;
 import robot.RobotReal;
@@ -51,9 +52,9 @@ public class JUnit_Robot extends JUnit_Test
 	    	for(int i = 0; i < 2; i++)
 	    	{
 	    		if(i == 0)
-	    			config.set(ConfigInfo.COULEUR, "vert");
+	    			config.set(ConfigInfo.COULEUR, RobotColor.getCouleurSansSymetrie());
 	    		else
-	    			config.set(ConfigInfo.COULEUR, "jaune");
+	    			config.set(ConfigInfo.COULEUR, RobotColor.getCouleurAvecSymetrie());
 	    		robot.updateConfig();
 	    		robot.setPosition(new Vec2(200, 600));
 	    		robot.setOrientation(0);

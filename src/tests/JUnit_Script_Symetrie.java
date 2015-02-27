@@ -8,6 +8,7 @@ import org.junit.Test;
 import org.junit.Before;
 
 import container.ServiceNames;
+import enums.RobotColor;
 import astar.AStar;
 import astar.arc.PathfindingNodes;
 import astar.arc.SegmentTrajectoireCourbe;
@@ -37,7 +38,7 @@ public class JUnit_Script_Symetrie extends JUnit_Test {
 	@Before
     public void setUp() throws Exception {
         super.setUp();
-        config.set(ConfigInfo.COULEUR, "jaune");
+        config.set(ConfigInfo.COULEUR, RobotColor.getCouleurAvecSymetrie());
         gamestate = (GameState<RobotReal>) container.getService(ServiceNames.REAL_GAME_STATE);
         pathfinding = (AStar<PathfindingArcManager, SegmentTrajectoireCourbe>) container.getService(ServiceNames.A_STAR_PATHFINDING);
         scriptmanager = (ScriptManager) container.getService(ServiceNames.SCRIPT_MANAGER);
@@ -63,7 +64,7 @@ public class JUnit_Script_Symetrie extends JUnit_Test {
     	gamestate.robot.setOrientation(Math.PI);
     	gamestate.robot.setPosition(PathfindingNodes.POINT_DEPART.getCoordonnees());
     	gamestate.robot.avancer(500);
-    	config.set(ConfigInfo.COULEUR, "jaune");
+    	config.set(ConfigInfo.COULEUR, RobotColor.getCouleurAvecSymetrie());
     	PathfindingNodes version = PathfindingNodes.NODE_TAPIS;
     	Script s = scriptmanager.getScript(ScriptAnticipableNames.TAPIS);
     	ArrayList<SegmentTrajectoireCourbe> chemin = pathfinding.computePath(gamestate.cloneGameState(), version, true);

@@ -1,5 +1,7 @@
 package utils;
 
+import enums.RobotColor;
+
 /**
  * Informations accessibles par la config
  * En cas de problème de config, on duplique les valeurs ici.
@@ -19,7 +21,7 @@ public enum ConfigInfo {
 	RAYON_ROBOT("250"),
 	RAYON_ROBOT_ADVERSE("230"),
 	SLEEP_BOUCLE_ACQUITTEMENT("50"),
-	COULEUR("vert"),
+	COULEUR(RobotColor.getCouleurSansSymetrie()),
 	DUREE_PEREMPTION_OBSTACLES("5000"),
 	CAPTEURS_TEMPORISATION_OBSTACLES("100"),
 	DISTANCE_DETECTION("300"),
