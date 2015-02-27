@@ -119,12 +119,12 @@ public class STMcardWrapper implements Service {
 		
 	}
 	
-    public void turn(double angle, ArrayList<Hook> hooks) throws UnableToMoveException, FinMatchException, ScriptHookException
+    public void turn(double angle, ArrayList<Hook> hooks) throws UnableToMoveException, FinMatchException
     {
     	// TODO
     }
     
-    public void moveLengthwise(int distance, ArrayList<Hook> hooks, boolean mur) throws UnableToMoveException, FinMatchException, ScriptHookException
+    public void moveLengthwise(int distance, ArrayList<Hook> hooks, boolean mur) throws UnableToMoveException, FinMatchException
     {
     	// TODO
     }

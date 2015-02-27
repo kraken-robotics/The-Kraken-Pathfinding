@@ -273,9 +273,6 @@ public class Container
 			getService(ServiceNames.THREAD_SENSOR);
 			((Thread)instanciedServices[ServiceNames.THREAD_SENSOR.ordinal()]).start();
 
-			getService(ServiceNames.THREAD_POSITION);
-			((Thread)instanciedServices[ServiceNames.THREAD_POSITION.ordinal()]).start();
-
 			getService(ServiceNames.THREAD_TIMER);
 			((Thread)instanciedServices[ServiceNames.THREAD_TIMER.ordinal()]).start();
 
