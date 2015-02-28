@@ -50,7 +50,7 @@ public class Locomotion implements Service
     private int sleep_boucle_acquittement = 10;
     private int distance_degagement_robot = 50;
     private double angle_degagement_robot;
-    
+    private ObstacleRotationRobot obstacleRotation;
     private boolean directionPrecedente;
     
     public Locomotion(Log log, Config config, LocomotionCardWrapper deplacements, ObstacleManager obstaclemanager)
@@ -444,9 +444,11 @@ public class Locomotion implements Service
         {
             if(!correction && !trajectoire_courbe)
             {
-            	// TODO: éviter le "new"
-            	ObstacleRotationRobot obstacle = new ObstacleRotationRobot(position, orientation, angle);
-	        	if(obstacle.isCollidingObstacleFixe())
+            	if(obstacleRotation == null)
+            		obstacleRotation = new ObstacleRotationRobot(position, orientation, angle);
+            	else
+            		obstacleRotation.update(position, orientation, angle);
+            	if(obstacleRotation.isCollidingObstacleFixe())
 	        	{
 	        		log.debug("Le robot a demandé à tourner dans un obstacle. Ordre annulé.", this);
 	        		throw new WallCollisionDetectedException();

@@ -17,6 +17,17 @@ public class ObstacleRotationRobot extends ObstacleRectanglesCollection
 	public ObstacleRotationRobot(Vec2 position, double angleDepart, double angleArrivee)
 	{
 		super(position);
+		calculeOmbres(angleDepart, angleArrivee);
+	}
+	
+	public void update(Vec2 position, double angleDepart, double angleArrivee)
+	{
+		this.position = position.clone();
+		calculeOmbres(angleDepart, angleArrivee);
+	}
+
+	private void calculeOmbres(double angleDepart, double angleArrivee)
+	{
 		double angleRelatif = (angleArrivee-angleDepart) % (2*Math.PI);
 		if(angleRelatif > Math.PI)
 			angleRelatif -= 2*Math.PI;
@@ -30,6 +41,5 @@ public class ObstacleRotationRobot extends ObstacleRectanglesCollection
 
 		ombresRobot[nb_rectangles-1] = new ObstacleRectangular(position, longueurRobot, largeurRobot, angleArrivee);
 	}
-
 	
 }
