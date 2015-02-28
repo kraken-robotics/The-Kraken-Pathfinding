@@ -29,6 +29,7 @@ public class ThreadSensor extends AbstractThread implements Service
 	private int nbCapteurs;
 	private int table_x = 3000;
 	private int table_y = 2000;
+	private int diametreEnnemi;
 	
 	public ThreadSensor(Log log, Config config, GridSpace gridspace, ObstacleManager obstaclemanager, SensorsCardWrapper capteur)
 	{
@@ -79,9 +80,8 @@ public class ThreadSensor extends AbstractThread implements Service
 	
 					// si la position est bien sur la table (histoire de pas détecter un arbitre)
 					// on vérifie qu'un obstacle n'a pas été ajouté récemment
-					// TODO: proprifier la valeur hardcodée 200
 					if(System.currentTimeMillis() - date_dernier_ajout > tempo &&
-							position.x-200 > -table_x/2 && position.y > 200 && position.x+200 < table_x/2 && position.y+200 < table_y)
+							position.x - diametreEnnemi > -table_x / 2 && position.y > diametreEnnemi && position.x + diametreEnnemi < table_x / 2 && position.y + diametreEnnemi < table_y)
 						if(!obstaclemanager.isObstacleFixePresentCapteurs(positionBrute))
 						{
 							gridspace.creer_obstacle(position);
@@ -106,6 +106,7 @@ public class ThreadSensor extends AbstractThread implements Service
 		tempo = config.getDouble(ConfigInfo.CAPTEURS_TEMPORISATION_OBSTACLES);
 		table_x = config.getInt(ConfigInfo.TABLE_X);
 		table_y = config.getInt(ConfigInfo.TABLE_Y);
+		diametreEnnemi = 2*config.getInt(ConfigInfo.RAYON_ROBOT_ADVERSE);
 		log.updateConfig();
 		capteur.updateConfig();
 		gridspace.updateConfig();
