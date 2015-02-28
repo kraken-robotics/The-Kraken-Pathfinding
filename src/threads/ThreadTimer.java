@@ -129,6 +129,11 @@ public class ThreadTimer extends AbstractThread implements Service
 	{
 		// facteur 1000 car temps_match est en secondes et duree_match en ms
 		dureeMatch = 1000*config.getInt(ConfigInfo.DUREE_MATCH_EN_S);
+		log.updateConfig();
+		obstaclemanager.updateConfig();
+		capteur.updateConfig();
+		deplacements.updateConfig();
+		serialmanager.updateConfig();
 	}
 	
 }

@@ -58,6 +58,7 @@ public class HookFactory implements Service
 	{
 		// demande avec quelle tolérance sur la précision on déclenche les hooks
 		dureeMatch = config.getInt(ConfigInfo.DUREE_MATCH_EN_S) * 1000;
+		log.updateConfig();
 	}
 
 	/**

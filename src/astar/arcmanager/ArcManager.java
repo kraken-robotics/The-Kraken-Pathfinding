@@ -1,5 +1,6 @@
 package astar.arcmanager;
 
+import container.Service;
 import astar.AStarId;
 import astar.MemoryManager;
 import astar.arc.Arc;
@@ -16,7 +17,7 @@ import strategie.GameState;
  *
  */
 
-public abstract class ArcManager {
+public abstract class ArcManager implements Service {
 
 	private int id;
 	private MemoryManager memorymanager;
@@ -25,6 +26,12 @@ public abstract class ArcManager {
 	{
 		this.id = id.ordinal();
 		this.memorymanager = memorymanager;
+	}
+	
+	@Override
+	public void updateConfig()
+	{
+		memorymanager.updateConfig();
 	}
 	
 	/**

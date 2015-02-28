@@ -51,6 +51,8 @@ public class LocomotionCardWrapper implements Service
 	public void updateConfig()
 	{
         symetrie = config.getSymmetry();
+        log.updateConfig();
+        locomotionCardSerial.updateConfig();
 	}
 
 	/** 

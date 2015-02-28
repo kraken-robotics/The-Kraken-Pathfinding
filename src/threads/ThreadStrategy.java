@@ -134,5 +134,9 @@ public class ThreadStrategy extends AbstractThread implements Service
 	
 	@Override
 	public void updateConfig()
-	{}
+	{
+		log.updateConfig();
+		strategie.updateConfig();
+		realstate.updateConfig();
+	}
 }

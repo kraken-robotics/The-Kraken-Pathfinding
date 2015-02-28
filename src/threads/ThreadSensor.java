@@ -69,12 +69,6 @@ public class ThreadSensor extends AbstractThread implements Service
 				}
 
 				Vec2[] positions = capteur.mesurer();
-
-//				if(distance >= 40 && distance < horizon_capteurs)
-//				{
-//					int distance_inter_robots = distance + rayon_robot_adverse + largeur_robot/2;
-//					int distance_brute = distance + largeur_robot/2;
-//					double theta = robotreal.getOrientation();
 	
 				for(int i = 0; i < nbCapteurs; i++)
 				{
@@ -108,10 +102,14 @@ public class ThreadSensor extends AbstractThread implements Service
 	
 	public void updateConfig()
 	{
-			nbCapteurs = config.getInt(ConfigInfo.NB_CAPTEURS_PROXIMITE);
-			tempo = config.getDouble(ConfigInfo.CAPTEURS_TEMPORISATION_OBSTACLES);
-			table_x = config.getInt(ConfigInfo.TABLE_X);
-			table_y = config.getInt(ConfigInfo.TABLE_Y);
+		nbCapteurs = config.getInt(ConfigInfo.NB_CAPTEURS_PROXIMITE);
+		tempo = config.getDouble(ConfigInfo.CAPTEURS_TEMPORISATION_OBSTACLES);
+		table_x = config.getInt(ConfigInfo.TABLE_X);
+		table_y = config.getInt(ConfigInfo.TABLE_Y);
+		log.updateConfig();
+		capteur.updateConfig();
+		gridspace.updateConfig();
+		obstaclemanager.updateConfig();;
 	}
 
 }

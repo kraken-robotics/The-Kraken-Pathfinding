@@ -125,6 +125,11 @@ public class Execution implements Service {
 
 	@Override
 	public void updateConfig()
-	{}
+	{
+		gamestate.updateConfig();
+		log.updateConfig();
+		scriptmanager.updateConfig();
+		threadstrategy.updateConfig();
+	}
 	
 }

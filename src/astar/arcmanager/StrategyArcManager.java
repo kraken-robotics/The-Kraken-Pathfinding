@@ -21,7 +21,6 @@ import strategie.GameState;
 import utils.ConfigInfo;
 import utils.Log;
 import utils.Config;
-import container.Service;
 import exceptions.ArcManagerException;
 import exceptions.FinMatchException;
 import exceptions.MemoryManagerException;
@@ -37,7 +36,7 @@ import exceptions.ScriptHookException;
  *
  */
 
-public class StrategyArcManager extends ArcManager implements Service {
+public class StrategyArcManager extends ArcManager {
 
 	protected Log log;
 	protected Config config;
@@ -192,7 +191,12 @@ public class StrategyArcManager extends ArcManager implements Service {
 
 	@Override
 	public void updateConfig()
-	{}
+	{
+		log.updateConfig();
+		scriptmanager.updateConfig();
+		astar.updateConfig();
+		hookfactory.updateConfig();
+	}
 
 	/**
 	 * Doit être appelé à chaque début de calcul de stratégie afin d'éviter une fuite de mémoire.

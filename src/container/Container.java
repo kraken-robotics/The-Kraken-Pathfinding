@@ -200,7 +200,6 @@ public class Container
 		else if(serviceRequested == ServiceNames.ROBOT_REAL)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new RobotReal((ActuatorCardWrapper)getService(ServiceNames.ACTUATOR_CARD_WRAPPER),
 															 (Locomotion)getService(ServiceNames.LOCOMOTION),
-															 (Table)getService(ServiceNames.TABLE),
 															 (Config)getService(ServiceNames.CONFIG),
 															 (Log)getService(ServiceNames.LOG));
 		else if(serviceRequested == ServiceNames.LOCOMOTION)

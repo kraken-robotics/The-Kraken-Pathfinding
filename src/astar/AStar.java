@@ -237,6 +237,8 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 	public void updateConfig()
 	{
 		distanceEnnemiUrgence = config.getInt(ConfigInfo.DISTANCE_ENNEMI_URGENCE);
+		log.updateConfig();
+		arcmanager.updateConfig();
 	}
 	
 	/**

@@ -198,6 +198,7 @@ public class GridSpace implements Service {
 	@Override
 	public void updateConfig() {
 		obstaclemanager.updateConfig();
+		log.updateConfig();
 	}
 
 	/**

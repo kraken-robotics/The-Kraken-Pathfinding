@@ -18,8 +18,6 @@ import exceptions.SerialConnexionException;
 
 public class SensorsCardWrapper implements Service
 {
-	// TODO: faire en sortes que les capteurs renvoie toutes les valeurs, avant et arrière
-
 	// Dépendances
 	private Log log;
 	private SerialConnexion serie;
@@ -40,6 +38,8 @@ public class SensorsCardWrapper implements Service
 	{
 		capteursOn = config.getBoolean(ConfigInfo.CAPTEURS_ON);
 		nbCapteurs = config.getInt(ConfigInfo.NB_CAPTEURS_PROXIMITE);
+		log.updateConfig();
+		serie.updateConfig();
 	}
 
 	/**

@@ -87,7 +87,9 @@ public class Table implements Service
 
 	@Override
 	public void updateConfig()
-	{}
+	{
+		log.updateConfig();
+	}
 
 	/**
 	 * g est-il proche de position? (utilisé pour vérifier si on shoot dans un élément de jeu)

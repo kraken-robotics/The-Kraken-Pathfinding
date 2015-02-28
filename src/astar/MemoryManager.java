@@ -30,7 +30,10 @@ public class MemoryManager implements Service {
 	private int firstAvailable[] = new int[2];
 	
 	@Override
-	public void updateConfig() {
+	public void updateConfig()
+	{
+		log.updateConfig();
+		model.updateConfig();
 	}
 
 	public MemoryManager(Log log, Config config, GameState<RobotReal> realstate)

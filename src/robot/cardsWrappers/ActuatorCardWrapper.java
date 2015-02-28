@@ -39,6 +39,8 @@ public class ActuatorCardWrapper implements Service
 	public void updateConfig()
 	{
         symetrie = config.getSymmetry();
+        log.updateConfig();
+        actuatorCardSerial.updateConfig();
 	}
 	
 	/**

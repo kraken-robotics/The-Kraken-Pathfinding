@@ -532,6 +532,8 @@ public class Locomotion implements Service
     public void updateConfig()
     {
     	deplacements.updateConfig();
+    	obstaclemanager.updateConfig();
+    	log.updateConfig();
         distance_detection = config.getInt(ConfigInfo.DISTANCE_DETECTION);
         distance_degagement_robot = config.getInt(ConfigInfo.DISTANCE_DEGAGEMENT_ROBOT);
         sleep_boucle_acquittement = config.getInt(ConfigInfo.SLEEP_BOUCLE_ACQUITTEMENT);

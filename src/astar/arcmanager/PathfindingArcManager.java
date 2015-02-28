@@ -5,7 +5,6 @@ import astar.MemoryManager;
 import astar.arc.Arc;
 import astar.arc.PathfindingNodes;
 import astar.arc.SegmentTrajectoireCourbe;
-import container.Service;
 import robot.RobotChrono;
 import robot.Speed;
 import strategie.GameState;
@@ -21,7 +20,7 @@ import exceptions.FinMatchException;
  *
  */
 
-public class PathfindingArcManager extends ArcManager implements Service {
+public class PathfindingArcManager extends ArcManager {
 
 	private int iterator, id_node_iterator;
 	private PathfindingNodes arrivee;
@@ -35,7 +34,6 @@ public class PathfindingArcManager extends ArcManager implements Service {
 		super(AStarId.PATHFINDING_ASTAR, memorymanager);
 		this.log = log;
 		this.config = config;
-		updateConfig();
 	}
 	
 	/**
@@ -132,11 +130,7 @@ public class PathfindingArcManager extends ArcManager implements Service {
     	debutCourbe = true;
     }
 
-	@Override
-	public void updateConfig()
-	{}
-
-	/**
+    /**
 	 * Utilisé avant process, afin de pouvoir utiliser ensuite isArrivee
 	 * @param n
 	 */

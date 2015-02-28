@@ -290,6 +290,8 @@ public class ObstacleManager implements Service
 		rayon_robot_adverse = config.getInt(ConfigInfo.RAYON_ROBOT_ADVERSE);
 		dureeAvantPeremption = config.getInt(ConfigInfo.DUREE_PEREMPTION_OBSTACLES);
 		distanceApproximation = config.getInt(ConfigInfo.DISTANCE_MAX_ENTRE_MESURE_ET_OBJET);
+		log.updateConfig();
+		table.updateConfig();
 	}
 
 	/**

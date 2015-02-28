@@ -103,8 +103,10 @@ public class GameState<R extends Robot> implements Service
     @Override
     public void updateConfig()
     {
+    	log.updateConfig();
         robot.updateConfig();
         gridspace.updateConfig();
+        hookfactory.updateConfig();
     }
    
     /**
