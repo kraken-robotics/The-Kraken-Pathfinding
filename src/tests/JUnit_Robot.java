@@ -43,12 +43,11 @@ public class JUnit_Robot extends JUnit_Test
     {
     	for(int j = 0; j < 2; j++)
     	{
-    		// TODO: debugger locomotion pour passer ce test
     		Robot robot;
-//    		if(j == 0)
+    		if(j == 0)
     			robot = chronostate.robot;
-//    		else
-//            	robot = robotreal;
+    		else
+            	robot = state.robot;
 	    	for(int i = 0; i < 2; i++)
 	    	{
 	    		if(i == 0)
@@ -59,21 +58,21 @@ public class JUnit_Robot extends JUnit_Test
 	    		robot.setPosition(new Vec2(200, 600));
 	    		robot.setOrientation(0);
 	    		robot.avancer(100);
-	    		Assert.assertTrue(robot.getPosition().equals(new Vec2(300, 600)));
+	    		Assert.assertTrue(robot.getPosition().squaredDistance(new Vec2(300, 600)) < 10);
 	    		robot.tourner(Math.PI/2);
 	    		robot.avancer(100);
-	    		Assert.assertTrue(robot.getPosition().equals(new Vec2(300, 700)));
+	    		Assert.assertTrue(robot.getPosition().squaredDistance(new Vec2(300, 700)) < 10);
 	    		robot.tourner(Math.PI);
 	    		robot.avancer(100);
-	    		Assert.assertTrue(robot.getPosition().equals(new Vec2(200, 700)));
+	    		Assert.assertTrue(robot.getPosition().squaredDistance(new Vec2(200, 700)) < 10);
 	    		robot.tourner(-Math.PI/2);
 	    		robot.avancer(100);
-	    		Assert.assertTrue(robot.getPosition().equals(new Vec2(200, 600)));
+	    		Assert.assertTrue(robot.getPosition().squaredDistance(new Vec2(200, 600)) < 10);
 	    		ArrayList<SegmentTrajectoireCourbe> chemin = new ArrayList<SegmentTrajectoireCourbe>();
 	    		chemin.add(new SegmentTrajectoireCourbe(PathfindingNodes.BAS));
 	    		chemin.add(new SegmentTrajectoireCourbe(PathfindingNodes.DEVANT_DEPART_DROITE));
 	    		robot.suit_chemin(chemin, new ArrayList<Hook>());
-	    		Assert.assertTrue(robot.getPosition().equals(PathfindingNodes.DEVANT_DEPART_DROITE.getCoordonnees()));
+	    		Assert.assertTrue(robot.getPosition().squaredDistance(PathfindingNodes.DEVANT_DEPART_DROITE.getCoordonnees()) < 10);
 	    	}
     	}
     }

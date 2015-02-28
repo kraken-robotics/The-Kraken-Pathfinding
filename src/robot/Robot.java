@@ -83,8 +83,7 @@ public abstract class Robot implements Service
 	{
 		this.config = config;
 		this.log = log;
-		vitesse = Speed.BETWEEN_SCRIPTS;		
-		updateConfig();
+		vitesse = Speed.BETWEEN_SCRIPTS;
 	}
 	
 	/**
