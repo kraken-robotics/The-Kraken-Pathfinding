@@ -250,7 +250,7 @@ public class Locomotion implements Service
     private void vaAuPointGestionExceptions(Vec2 consigne, Vec2 intermediaire, int differenceDistance, ArrayList<Hook> hooks, boolean marcheAvant, boolean mur, boolean seulementAngle) throws UnableToMoveException, FinMatchException, ScriptHookException, ChangeDirectionException
     {
         int attente_ennemi_max = 600; // combien de temps attendre que l'ennemi parte avant d'abandonner
-        int nb_iterations_deblocage = 2; // combien de fois on réessayer si on se prend un mur
+        int nb_iterations_deblocage = 2; // combien de fois on réessaye si on se prend un mur
         boolean recommence;
         do {
             recommence = false;
@@ -272,7 +272,6 @@ public class Locomotion implements Service
                         log.warning("On n'arrive plus à avancer. On se dégage", this);
                         if(seulementAngle)
                         {
-                        	// TODO: les appels à déplacements sont non bloquants, il faut rajouter des sleeps
                         	// on alterne rotation à gauche et à droite
                         	if((nb_iterations_deblocage & 1) == 0)
                         		deplacements.tourneRelatif(angle_degagement_robot);
@@ -280,11 +279,12 @@ public class Locomotion implements Service
                         		deplacements.tourneRelatif(-angle_degagement_robot);
                         }
                         else if(marcheAvant)
-                            deplacements.moveLengthwise(distance_degagement_robot);
-                        else
                             deplacements.moveLengthwise(-distance_degagement_robot);
+                        else
+                            deplacements.moveLengthwise(distance_degagement_robot);
                         while(!deplacements.isMouvementFini());
                     	recommence = true; // si on est arrivé ici c'est qu'aucune exception n'a été levée
+                    	// on peut donc relancer le mouvement
                     } catch (SerialConnexionException e1)
                     {
                         e1.printStackTrace();
@@ -292,7 +292,7 @@ public class Locomotion implements Service
                     	immobilise();
                         log.critical("On n'arrive pas à se dégager.", this);
 					}
-                    if(!recommence)
+                    if(!recommence && nb_iterations_deblocage == 0)
                         throw new UnableToMoveException();
                 }
             } catch (UnexpectedObstacleOnPathException e)
@@ -314,9 +314,24 @@ public class Locomotion implements Service
                     throw new UnableToMoveException();
             } catch (WallCollisionDetectedException e) {
             	immobilise();
-            	e.printStackTrace();
-            	throw new UnableToMoveException();
-            	// TODO: traitement exception dans Locomotion
+                if(seulementAngle)
+                	throw new UnableToMoveException();
+                else
+				try {
+                	if(marcheAvant)
+						deplacements.moveLengthwise(-distance_degagement_robot);
+					else
+	                    deplacements.moveLengthwise(distance_degagement_robot);
+                    try {
+						while(!deplacements.isMouvementFini());
+					} catch (BlockedException e1) {
+						throw new UnableToMoveException();
+					}
+                	recommence = true;
+				} catch (SerialConnexionException e1) {
+					e1.printStackTrace();
+				}
+                	
 			}
 
         } while(recommence); // on recommence tant qu'il le faut

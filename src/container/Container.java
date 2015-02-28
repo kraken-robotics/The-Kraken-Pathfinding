@@ -125,7 +125,7 @@ public class Container
 	@SuppressWarnings("unchecked")
 	/**
 	 * Fournit un service. Deux possibilités: soit il n'est pas encore instancié et on l'instancie.
-	 * Soit il est déjà instancié et on le renvoit.
+	 * Soit il est déjà instancié et on le renvoie.
 	 * @param serviceRequested
 	 * @return
 	 * @throws ContainerException
@@ -306,7 +306,7 @@ public class Container
 
 	/**
 	 * Arrête tous les threads
-	 * Le thread principal (appellant cette méthode) continue son exécution
+	 * Le thread principal (appelant cette méthode) continue son exécution
 	 */
 	public void stopAllThreads()
 	{

@@ -33,7 +33,7 @@ public class Execution implements Service {
 	private ScriptManager scriptmanager;
 	private ThreadStrategy threadstrategy;
 	
-	private ArrayList<Hook> hooks_entre_scripts;
+	private ArrayList<Hook> hooksEntreScripts;
 	
 	public Execution(Log log, Config config, GameState<RobotReal> gamestate, ScriptManager scriptmanager, HookFactory hookfactory, ThreadStrategy threadstrategy)
 	{
@@ -45,7 +45,7 @@ public class Execution implements Service {
 
 		updateConfig();
 		try {
-			hooks_entre_scripts = hookfactory.getHooksEntreScriptsReal(gamestate);
+			hooksEntreScripts = hookfactory.getHooksEntreScriptsReal(gamestate);
 		} catch (FinMatchException e) {
 			// Impossible
 			e.printStackTrace();
@@ -115,7 +115,7 @@ public class Execution implements Service {
 	{
 		try {
 			gamestate.robot.set_vitesse(Speed.BETWEEN_SCRIPTS);
-			gamestate.robot.suit_chemin(d.chemin, hooks_entre_scripts);
+			gamestate.robot.suit_chemin(d.chemin, hooksEntreScripts);
 			threadstrategy.computeBestDecisionAfter(d);
 			scriptmanager.getScript(d.script_name).agit(d.version, gamestate);
 		} catch (ScriptHookException e) {
