@@ -17,7 +17,9 @@ public class ActuatorCardWrapper implements Service
 {
 
 	protected Log log;
+	private Config config;
 	private SerialConnexion actuatorCardSerial;
+	private boolean symetrie;
 
 	/**
 	 * Construit la surchouche de la carte actionneurs
@@ -27,6 +29,7 @@ public class ActuatorCardWrapper implements Service
 	 */
 	public ActuatorCardWrapper(Config config, Log log, SerialConnexion serial)
 	{
+		this.config = config;
 		this.log = log;
 		this.actuatorCardSerial = serial;
 		updateConfig();
@@ -35,6 +38,7 @@ public class ActuatorCardWrapper implements Service
 	@Override
 	public void updateConfig()
 	{
+        symetrie = config.getSymmetry();
 	}
 	
 	/**
@@ -45,6 +49,8 @@ public class ActuatorCardWrapper implements Service
 	 */
 	public void useActuator(ActuatorOrder order) throws SerialConnexionException, FinMatchException
 	{
+		if(symetrie)
+			order = order.getSymmetry();
 		actuatorCardSerial.communiquer(order.getSerialOrder(), 0);
 	}
 

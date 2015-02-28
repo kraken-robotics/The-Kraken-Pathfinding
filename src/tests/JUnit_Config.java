@@ -18,23 +18,23 @@ public class JUnit_Config extends JUnit_Test {
 	{
 		for(ConfigInfo c: ConfigInfo.values())
 			config.getString(c);
-		Assert.assertTrue(config.getString(ConfigInfo.TEST1).equals("test2"));
+		Assert.assertTrue(config.getString(ConfigInfo.TABLE_X).equals("3000"));
 	}
 
 	@Test
 	public void test_set1() throws Exception
 	{
 		log.debug("JUnit_ReadIniTest.test_set1()", this);
-		config.set(ConfigInfo.TEST1, "test3");
-		Assert.assertTrue(config.getString(ConfigInfo.TEST1).equals("test3"));
+		config.set(ConfigInfo.TABLE_X, "test");
+		Assert.assertTrue(config.getString(ConfigInfo.TABLE_X).equals("test"));
 	}
 	
 	@Test
 	public void test_set2() throws Exception
 	{
 		log.debug("JUnit_ReadIniTest.test_set2()", this);
-		config.set(ConfigInfo.TEST1, 3);
-		Assert.assertTrue(config.getString(ConfigInfo.TEST1).equals("3"));
+		config.set(ConfigInfo.TABLE_X, 1000);
+		Assert.assertTrue(config.getInt(ConfigInfo.TABLE_X) == 1000);
 	}
 
 }

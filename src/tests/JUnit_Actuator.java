@@ -25,17 +25,15 @@ public class JUnit_Actuator extends JUnit_Test {
 	}
 	
 	@Test
-	public void test_tapis() throws Exception
+	public void test_tous() throws Exception
 	{
-		actionneurs.useActuator(ActuatorOrder.BAISSE_TAPIS_DROIT);
-		Sleep.sleep(150);
-		actionneurs.useActuator(ActuatorOrder.BAISSE_TAPIS_GAUCHE);
-		Sleep.sleep(150);
-		actionneurs.useActuator(ActuatorOrder.LEVE_TAPIS_DROIT);
-		Sleep.sleep(150);
-		actionneurs.useActuator(ActuatorOrder.LEVE_TAPIS_GAUCHE);
-		Sleep.sleep(150);
+		for(ActuatorOrder o: ActuatorOrder.values())
+		{
+			actionneurs.useActuator(o);
+			if(o.hasSymmetry())
+				actionneurs.useActuator(o.getSymmetry());
+			Sleep.sleep(o.getSleepValue());
+		}
 	}
-
-
+	
 }

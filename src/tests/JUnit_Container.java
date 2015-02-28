@@ -42,8 +42,8 @@ public class JUnit_Container extends JUnit_Test {
 	@Test
 	public void test_doublon() throws Exception
 	{
-		Service s1 = container.getService(ServiceNames.LOCOMOTION);
-		Service s2 = container.getService(ServiceNames.LOCOMOTION);
+		Service s1 = container.getService(ServiceNames.A_STAR_PATHFINDING);
+		Service s2 = container.getService(ServiceNames.A_STAR_PATHFINDING);
 		Assert.assertTrue(s1 == s2); // comparaison physique entre les deux objets
 	}
 
