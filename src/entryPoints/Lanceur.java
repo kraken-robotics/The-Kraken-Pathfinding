@@ -16,6 +16,8 @@ import container.ServiceNames;
  * TODO LIST
  * Avoir un asservissement en vitesse lorsqu'on est loin de la consigne en position (nécessaire à la trajectoire courbe)
  * Obtenir la vitesse instantanée par une commande série
+ * Avoir les capteurs par paire et faire de la trigonalisation
+ * 
  *
  */
 
