@@ -15,7 +15,7 @@ import exceptions.SerialConnexionException;
 import exceptions.UnableToMoveException;
 import utils.Log;
 import utils.Config;
-import utils.Vec2;
+import vec2.Vec2;
 
 /**
  *  Classe abstraite du robot, dont héritent RobotVrai et RobotChrono

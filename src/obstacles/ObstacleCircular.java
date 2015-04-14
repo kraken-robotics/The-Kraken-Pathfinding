@@ -1,7 +1,7 @@
 package obstacles;
 
 import utils.ConfigInfo;
-import utils.Vec2;
+import vec2.Vec2;
 
 /**
  * Obstacle circulaire

@@ -1,7 +1,7 @@
 package obstacles;
 
 import robot.Speed;
-import utils.Vec2;
+import vec2.Vec2;
 
 /**
  * Obstacles détectés par capteurs de proximité (ultrasons et infrarouges)

@@ -22,7 +22,7 @@ import utils.Config;
 import utils.ConfigInfo;
 import utils.Log;
 import utils.Sleep;
-import utils.Vec2;
+import vec2.Vec2;
 
 /**
  * Entre Deplacement (appels à la série) et RobotVrai (déplacements haut niveau), Locomotion

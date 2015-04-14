@@ -1,6 +1,6 @@
 package obstacles;
 
-import utils.Vec2;
+import vec2.Vec2;
 
 /**
  * Cet obstacle a une forme étrange, car c'est la forme du robot quand il tourne.

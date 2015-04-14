@@ -3,7 +3,7 @@ package tests;
 import org.junit.Test;
 import org.junit.Assert;
 
-import utils.Vec2;
+import vec2.Vec2;
 
 /**
  * Tests unitaires pour Vec2

@@ -10,7 +10,7 @@ import robot.RobotChrono;
 import robot.RobotReal;
 import strategie.GameState;
 import table.GameElementNames;
-import utils.Vec2;
+import vec2.Vec2;
 import enums.Tribool;
 
 /**

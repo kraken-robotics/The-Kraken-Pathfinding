@@ -9,7 +9,7 @@ import obstacles.ObstacleProximity;
 import obstacles.ObstacleRectangular;
 import obstacles.ObstaclesFixes;
 import table.GameElementNames;
-import utils.Vec2;
+import vec2.Vec2;
 
 import java.awt.*;
 import java.io.File;

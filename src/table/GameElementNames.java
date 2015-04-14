@@ -1,7 +1,7 @@
 package table;
 
 import obstacles.ObstacleCircular;
-import utils.Vec2;
+import vec2.Vec2;
 
 /**
  * Enumérations contenant tous les éléments de jeux

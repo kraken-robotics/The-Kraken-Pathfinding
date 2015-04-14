@@ -1,6 +1,6 @@
 package obstacles;
 
-import utils.Vec2;
+import vec2.Vec2;
 
 /**
  * Enumération des obstacles fixes.

@@ -4,6 +4,7 @@ import obstacles.ObstacleRectangular;
 import container.Service;
 import enums.Tribool;
 import utils.*;
+import vec2.Vec2;
 
 /**
  * Gère les éléments de jeux

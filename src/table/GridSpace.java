@@ -5,7 +5,7 @@ import astar.arc.SegmentTrajectoireCourbe;
 import container.Service;
 import utils.Config;
 import utils.Log;
-import utils.Vec2;
+import vec2.Vec2;
 import enums.Tribool;
 import exceptions.GridSpaceException;
 

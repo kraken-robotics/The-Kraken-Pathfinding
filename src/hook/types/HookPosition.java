@@ -9,7 +9,7 @@ import hook.Hook;
 import strategie.GameState;
 import utils.Log;
 import utils.Config;
-import utils.Vec2;
+import vec2.Vec2;
 
 /**
  * Hook se déclenchant si le robot est a une distance a un point de la table inférieure a un certain seuil

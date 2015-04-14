@@ -15,7 +15,7 @@ import robot.RobotChrono;
 import robot.RobotReal;
 import scripts.ScriptAnticipableNames;
 import strategie.GameState;
-import utils.Vec2;
+import vec2.Vec2;
 
 /**
  * Tests unitaires du planificateur de scripts

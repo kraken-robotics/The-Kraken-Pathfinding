@@ -29,7 +29,7 @@ import table.ObstacleManager;
 import tests.graphicLib.Fenetre;
 import utils.ConfigInfo;
 import utils.Sleep;
-import utils.Vec2;
+import vec2.Vec2;
 
 /**
  * Tests unitaires disposant d'une interface graphique.

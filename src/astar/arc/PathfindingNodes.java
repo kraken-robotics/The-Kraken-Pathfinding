@@ -1,7 +1,7 @@
 package astar.arc;
 
 import robot.Speed;
-import utils.Vec2;
+import vec2.Vec2;
 
 /**
  * Les noeuds utilisés par la recherche de chemin

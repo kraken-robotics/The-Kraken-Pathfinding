@@ -19,7 +19,7 @@ import scripts.ScriptManager;
 import scripts.ScriptAnticipableNames;
 import strategie.GameState;
 import utils.ConfigInfo;
-import utils.Vec2;
+import vec2.Vec2;
 
 /**
  * Tests unitaires des scripts.

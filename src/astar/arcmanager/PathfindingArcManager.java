@@ -10,7 +10,7 @@ import robot.Speed;
 import strategie.GameState;
 import utils.Log;
 import utils.Config;
-import utils.Vec2;
+import vec2.Vec2;
 import exceptions.ArcManagerException;
 import exceptions.FinMatchException;
 

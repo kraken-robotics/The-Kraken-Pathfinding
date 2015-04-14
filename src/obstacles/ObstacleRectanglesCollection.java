@@ -1,6 +1,6 @@
 package obstacles;
 
-import utils.Vec2;
+import vec2.Vec2;
 
 /**
  * Classe abstraite regroupant les obstacles de collision formés d'une collection

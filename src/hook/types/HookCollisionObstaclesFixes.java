@@ -8,7 +8,7 @@ import strategie.GameState;
 import utils.Config;
 import utils.ConfigInfo;
 import utils.Log;
-import utils.Vec2;
+import vec2.Vec2;
 import hook.Hook;
 
 /**

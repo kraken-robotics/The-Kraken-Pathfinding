@@ -24,7 +24,7 @@ import robot.RobotReal;
 import robot.Speed;
 import strategie.GameState;
 import utils.ConfigInfo;
-import utils.Vec2;
+import vec2.Vec2;
 import container.ServiceNames;
 import enums.RobotColor;
 import exceptions.UnableToMoveException;

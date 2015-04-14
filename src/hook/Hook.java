@@ -11,7 +11,7 @@ import strategie.GameState;
 import utils.ConfigInfo;
 import utils.Log;
 import utils.Config;
-import utils.Vec2;
+import vec2.Vec2;
 
 /**
  * Classe-mère abstraite des hooks, utilisés pour la programmation évènementielle

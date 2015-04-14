@@ -2,7 +2,7 @@ package obstacles;
 
 import exceptions.FinMatchException;
 import strategie.GameState;
-import utils.Vec2;
+import vec2.Vec2;
 
 /**
  * Rectangle ayant subi une rotation.

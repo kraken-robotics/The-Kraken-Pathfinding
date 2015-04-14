@@ -4,7 +4,7 @@ import astar.arc.PathfindingNodes;
 import astar.arc.SegmentTrajectoireCourbe;
 import robot.Speed;
 import utils.ConfigInfo;
-import utils.Vec2;
+import vec2.Vec2;
 
 /**
  * Obstacle formé par le robot lorsqu'il effectue une trajectoire courbe

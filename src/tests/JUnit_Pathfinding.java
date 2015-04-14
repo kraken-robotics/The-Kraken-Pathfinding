@@ -21,7 +21,7 @@ import robot.RobotReal;
 import strategie.GameState;
 import table.GameElementNames;
 import utils.ConfigInfo;
-import utils.Vec2;
+import vec2.Vec2;
 import enums.Tribool;
 import exceptions.PathfindingException;
 import exceptions.PathfindingRobotInObstacleException;

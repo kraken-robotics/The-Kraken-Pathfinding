@@ -10,7 +10,7 @@ import obstacles.ObstacleRectangular;
 import strategie.GameState;
 import utils.Config;
 import utils.Log;
-import utils.Vec2;
+import vec2.Vec2;
 
 /**
  * Hook pour gérer la collision avec les éléments de jeux

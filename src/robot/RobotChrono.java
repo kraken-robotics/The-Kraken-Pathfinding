@@ -8,7 +8,7 @@ import hook.Hook;
 import robot.cardsWrappers.enums.HauteurBrasClap;
 import utils.Log;
 import utils.Config;
-import utils.Vec2;
+import vec2.Vec2;
 import enums.Side;
 import exceptions.ChangeDirectionException;
 import exceptions.FinMatchException;

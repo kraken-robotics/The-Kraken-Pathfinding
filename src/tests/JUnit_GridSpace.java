@@ -7,7 +7,7 @@ import org.junit.Test;
 import astar.arc.PathfindingNodes;
 import container.ServiceNames;
 import table.GridSpace;
-import utils.Vec2;
+import vec2.Vec2;
 
 /**
  * Tests unitaires de GridSpace

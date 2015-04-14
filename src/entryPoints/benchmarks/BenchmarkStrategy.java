@@ -7,7 +7,7 @@ import robot.RobotReal;
 import strategie.GameState;
 import utils.Config;
 import utils.Log;
-import utils.Vec2;
+import vec2.Vec2;
 import astar.AStar;
 import astar.arc.Decision;
 import astar.arcmanager.StrategyArcManager;

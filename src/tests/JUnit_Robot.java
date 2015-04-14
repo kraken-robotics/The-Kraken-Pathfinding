@@ -17,7 +17,7 @@ import robot.RobotChrono;
 import robot.RobotReal;
 import strategie.GameState;
 import utils.ConfigInfo;
-import utils.Vec2;
+import vec2.Vec2;
 
 /**
  * Tests unitaires sur Robot, RobotReal et RobotChrono

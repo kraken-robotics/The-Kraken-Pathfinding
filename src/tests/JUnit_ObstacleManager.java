@@ -10,7 +10,7 @@ import table.GameElementNames;
 import table.ObstacleManager;
 import table.Table;
 import utils.ConfigInfo;
-import utils.Vec2;
+import vec2.Vec2;
 import enums.Tribool;
 
 /**
