@@ -9,6 +9,7 @@ import utils.Config;
 import utils.ConfigInfo;
 import utils.Log;
 import utils.Sleep;
+import vec2.ReadOnly;
 import vec2.Vec2;
 
 /**
@@ -69,14 +70,14 @@ public class ThreadSensor extends AbstractThread implements Service
 					return;
 				}
 
-				Vec2[] positions = capteur.mesurer();
+				Vec2<ReadOnly>[] positions = capteur.mesurer();
 	
 				for(int i = 0; i < nbCapteurs; i++)
 				{
 					// On ne prend pas en compte le rayon du robot adverse dans la position brute. Il s'agit en fait du point effectivement vu
 					// Utilisé pour voir si l'obstacle n'est justement pas un robot adverse.
-					Vec2 positionBrute = positions[2*i];
-					Vec2 position = positions[2*i+1];
+					Vec2<ReadOnly> positionBrute = positions[2*i];
+					Vec2<ReadOnly> position = positions[2*i+1];
 	
 					// si la position est bien sur la table (histoire de pas détecter un arbitre)
 					// on vérifie qu'un obstacle n'a pas été ajouté récemment

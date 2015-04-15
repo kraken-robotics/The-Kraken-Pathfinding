@@ -6,6 +6,7 @@ import robot.serial.SerialConnexion;
 import utils.ConfigInfo;
 import utils.Log;
 import utils.Config;
+import vec2.ReadOnly;
 import vec2.Vec2;
 import container.Service;
 import exceptions.FinMatchException;
@@ -47,9 +48,10 @@ public class SensorsCardWrapper implements Service
 	 * Renvoie la liste des positions des obstacles vus par les capteurs
 	 * @return renvoie la position brute puis position de l'ennemi, pour chaque capteur
 	 * @throws FinMatchException */
-	public Vec2[] mesurer() throws FinMatchException
+	public Vec2<ReadOnly>[] mesurer() throws FinMatchException
 	{
-		Vec2[] positions = new Vec2[2*nbCapteurs];
+		@SuppressWarnings("unchecked")
+		Vec2<ReadOnly>[] positions = (Vec2<ReadOnly>[]) new Vec2[2*nbCapteurs];
 		if(!capteursOn)
     		return positions;
 		String[] positionsString = new String[4*nbCapteurs];
@@ -63,7 +65,7 @@ public class SensorsCardWrapper implements Service
 			try {
 				positionsString = serie.read(4*nbCapteurs);
 				for(int i = 0; i < 2*nbCapteurs; i++)
-					positions[i] = new Vec2(Integer.parseInt(positionsString[2*i]), Integer.parseInt(positionsString[2*i+1]));
+					positions[i] = new Vec2<ReadOnly>(Integer.parseInt(positionsString[2*i]), Integer.parseInt(positionsString[2*i+1]));
 				return positions;
 			} catch (IOException e) {
 				e.printStackTrace();

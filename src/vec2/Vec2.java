@@ -82,11 +82,17 @@ public class Vec2<T extends ReadOnly>
 		return modified;
 	}
 
-	public Vec2<T> clone()
+	public Vec2<ReadWrite> clone()
 	{
-		return new Vec2<T>(this.x, this.y);
+		return new Vec2<ReadWrite>(this.x, this.y);
 	}
-	
+
+	@SuppressWarnings("unchecked")
+	public Vec2<ReadOnly> getReadOnly()
+	{
+		return (Vec2<ReadOnly>) this;
+	}
+
 	public int squaredDistance(Vec2<? extends ReadOnly> other)
 	{
 		int tmp_x = x-other.x, tmp_y = y-other.y;
@@ -127,7 +133,7 @@ public class Vec2<T extends ReadOnly>
 	 * Copie this dans other.
 	 * @param other
 	 */
-	public void copy(Vec2<? extends ReadOnly> other)
+	public void copy(Vec2<ReadWrite> other)
 	{
 	    other.x = x;
 	    other.y = y;
@@ -152,11 +158,11 @@ public class Vec2<T extends ReadOnly>
 		return out;
 	}
 	
-	@SuppressWarnings("unchecked")
+/*	@SuppressWarnings("unchecked")
 	public static Vec2<ReadOnly> lectureSeule(Vec2<? extends ReadOnly> v)
 	{
 		return (Vec2<ReadOnly>) v;
-	}
+	}*/
 	
 	public Vec2<ReadWrite> rotateNewVector(double angle, Vec2<? extends ReadOnly> centreRotation)
 	{

@@ -10,6 +10,7 @@ import robot.RobotChrono;
 import robot.RobotReal;
 import strategie.GameState;
 import table.GameElementNames;
+import vec2.ReadOnly;
 import vec2.Vec2;
 import enums.Tribool;
 
@@ -28,7 +29,7 @@ public class JUnit_GameState extends JUnit_Test {
     public void setUp() throws Exception {
         super.setUp();
         gamestate = ((GameState<RobotReal>) container.getService(ServiceNames.REAL_GAME_STATE)).cloneGameState();
-        gamestate.robot.setPosition(new Vec2(1100, 1000));
+        gamestate.robot.setPosition(new Vec2<ReadOnly>(1100, 1000));
     }
 
 	@Test
@@ -68,7 +69,7 @@ public class JUnit_GameState extends JUnit_Test {
 	{
 		gamestate.robot.poserDeuxTapis();
 		gamestate.robot.avancer(200);
-		gamestate.gridspace.creer_obstacle(new Vec2(156, 282));
+		gamestate.gridspace.creer_obstacle(new Vec2<ReadOnly>(156, 282));
 		gamestate.gridspace.setDone(GameElementNames.CLAP_3, Tribool.TRUE);
 		gamestate.gridspace.setDone(GameElementNames.PLOT_4, Tribool.TRUE);
 		Assert.assertEquals(gamestate.getHash(), gamestate.cloneGameState().getHash());

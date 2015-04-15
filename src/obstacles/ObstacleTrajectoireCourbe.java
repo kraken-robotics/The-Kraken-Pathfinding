@@ -4,6 +4,8 @@ import astar.arc.PathfindingNodes;
 import astar.arc.SegmentTrajectoireCourbe;
 import robot.Speed;
 import utils.ConfigInfo;
+import vec2.ReadOnly;
+import vec2.ReadWrite;
 import vec2.Vec2;
 
 /**
@@ -23,12 +25,12 @@ public class ObstacleTrajectoireCourbe extends ObstacleRectanglesCollection
 	 * @param directionAvant de norme 1000
 	 * @param vitesse
 	 */
-	public ObstacleTrajectoireCourbe(PathfindingNodes objectifFinal, PathfindingNodes intersection, Vec2 directionAvant, Speed vitesse)
+	public ObstacleTrajectoireCourbe(PathfindingNodes objectifFinal, PathfindingNodes intersection, Vec2<? extends ReadOnly> directionAvant, Speed vitesse)
 	{
 		// La position de cet obstacle est assez arbitraire...
-		super(intersection.getCoordonnees());
+		super(intersection.getCoordonnees().clone());
 		
-		Vec2 directionApres = new Vec2(intersection.getOrientationFinale(objectifFinal));
+		Vec2<ReadWrite> directionApres = new Vec2<ReadWrite>(intersection.getOrientationFinale(objectifFinal));
 
 		int rayonCourbure = vitesse.rayonCourbure();
 
@@ -42,14 +44,14 @@ public class ObstacleTrajectoireCourbe extends ObstacleRectanglesCollection
 
 		int distanceAnticipation = (int)(rayonCourbure * Math.tan(Math.abs(angleRotation/2)));
 		
-		Vec2 pointDepart = position.minusNewVector(directionAvant.scalarNewVector(distanceAnticipation/1000.));
-		Vec2 orthogonalDirectionAvant = directionAvant.rotateNewVector(Math.PI/2);
+		Vec2<ReadWrite> pointDepart = position.minusNewVector(directionAvant.scalarNewVector(distanceAnticipation/1000.));
+		Vec2<ReadWrite> orthogonalDirectionAvant = directionAvant.rotateNewVector(Math.PI/2);
 
 		// Afin de placer le centre du cercle entre les deux directions
 		if(orthogonalDirectionAvant.dot(directionApres) < 0)
-			orthogonalDirectionAvant.scalar(-1);
+			Vec2.scalar(orthogonalDirectionAvant, -1);
 
-		Vec2 centreCercle = pointDepart.plusNewVector(orthogonalDirectionAvant.scalarNewVector(rayonCourbure/1000.));
+		Vec2<ReadWrite> centreCercle = pointDepart.plusNewVector(orthogonalDirectionAvant.scalarNewVector(rayonCourbure/1000.));
 
 		int largeurRobot = config.getInt(ConfigInfo.LARGEUR_ROBOT);
 		int longueurRobot = config.getInt(ConfigInfo.LONGUEUR_ROBOT);
@@ -63,7 +65,7 @@ public class ObstacleTrajectoireCourbe extends ObstacleRectanglesCollection
 
 //		log.debug("Erreur! diff = "+(2*distanceAnticipation - rayonCourbure * Math.abs(angleRotation)), this);
 		
-		segment = new SegmentTrajectoireCourbe(objectifFinal, (int)(2*distanceAnticipation - rayonCourbure * Math.abs(angleRotation)), distanceAnticipation, pointDepart.clone(), directionAvant.clone(), vitesse);
+		segment = new SegmentTrajectoireCourbe(objectifFinal, (int)(2*distanceAnticipation - rayonCourbure * Math.abs(angleRotation)), distanceAnticipation, pointDepart.getReadOnly(), directionAvant.getReadOnly(), vitesse);
 	}
 
 	/**

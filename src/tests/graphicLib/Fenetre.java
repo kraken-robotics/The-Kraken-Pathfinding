@@ -9,6 +9,7 @@ import obstacles.ObstacleProximity;
 import obstacles.ObstacleRectangular;
 import obstacles.ObstaclesFixes;
 import table.GameElementNames;
+import vec2.ReadOnly;
 import vec2.Vec2;
 
 import java.awt.*;
@@ -28,13 +29,13 @@ public class Fenetre extends JPanel {
 	private static final long serialVersionUID = 1L;
 
 	private int sizeX = 450, sizeY = 300;
-	private ArrayList<Vec2> pointsADessiner = new ArrayList<Vec2>();
+	private ArrayList<Vec2<ReadOnly>> pointsADessiner = new ArrayList<Vec2<ReadOnly>>();
 	private ArrayList<ObstacleProximity> listObstaclesMobiles;
-	private ArrayList<Vec2[]> segments = new ArrayList<Vec2[]>();
+	private ArrayList<Vec2<ReadOnly>[]> segments = new ArrayList<Vec2<ReadOnly>[]>();
 	private Image image;
 	private int dilatationObstacle;
 	private AttributedString affichage = new AttributedString("");
-	private ArrayList<ArrayList<Vec2>> paths = new ArrayList<ArrayList<Vec2>>();
+	private ArrayList<ArrayList<Vec2<ReadOnly>>> paths = new ArrayList<ArrayList<Vec2<ReadOnly>>>();
 	private ArrayList<Double> orientations = new ArrayList<Double>();
 	private ArrayList<Color> couleurs = new ArrayList<Color>();
 	
@@ -59,9 +60,9 @@ public class Fenetre extends JPanel {
 		this.dilatationObstacle = dilatationObstacle;
 	}
 	
-	public void addPoint(Vec2 point)
+	public void addPoint(Vec2<? extends ReadOnly> point)
 	{
-		pointsADessiner.add(point);
+		pointsADessiner.add(point.getReadOnly());
 	}
 	
 	private int distanceXtoWindow(int dist)
@@ -113,7 +114,7 @@ public class Fenetre extends JPanel {
 			paintObstacle(o.getObstacle(), g,0);
 
 		g.setColor(Color.YELLOW);
-		for(Vec2 pos : pointsADessiner)
+		for(Vec2<ReadOnly> pos : pointsADessiner)
 			g.fillOval(XtoWindow(pos.x)-5, YtoWindow(pos.y)-5, 10, 10);
 
 		// vert transparent
@@ -138,7 +139,7 @@ public class Fenetre extends JPanel {
 	    g.setColor(Color.BLUE);
 	    for(int j = 0; j < paths.size(); j++)
 	    {
-	    	ArrayList<Vec2> path = paths.get(j);
+	    	ArrayList<Vec2<ReadOnly>> path = paths.get(j);
 	    	Double orientation = orientations.get(j);
 		    if(path.size() >= 1)
 		    {
@@ -213,17 +214,18 @@ public class Fenetre extends JPanel {
 		affichage = new AttributedString("("+WindowToX((int)point.getX())+", "+WindowToY((int)point.getY())+")");
 	}
 	
-	public void addSegment(Vec2 a, Vec2 b)
+	public void addSegment(Vec2<ReadOnly> a, Vec2<ReadOnly> b)
 	{
-		Vec2[] v = new Vec2[2];
-		v[0] = a.clone();
-		v[1] = b.clone();
+		@SuppressWarnings("unchecked")
+		Vec2<ReadOnly>[] v = (Vec2<ReadOnly>[]) new Vec2[2];
+		v[0] = a.clone().getReadOnly();
+		v[1] = b.clone().getReadOnly();
 		segments.add(v);
 	}
 	
 	public void paintSegments(Graphics g)
 	{
-		for(Vec2[] v : segments)
+		for(Vec2<ReadOnly>[] v : segments)
 			g.drawLine(XtoWindow(v[0].x), YtoWindow(v[0].y), XtoWindow(v[1].x), YtoWindow(v[1].y));
 	}
 	
@@ -250,7 +252,7 @@ public class Fenetre extends JPanel {
 		couleurs.clear();
 	}
 	
-	public void setPath(Double orientation, ArrayList<Vec2> chemin, Color couleur)
+	public void setPath(Double orientation, ArrayList<Vec2<ReadOnly>> chemin, Color couleur)
 	{
 		orientations.add(orientation);
 		paths.add(chemin);

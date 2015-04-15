@@ -5,6 +5,7 @@ import astar.arc.SegmentTrajectoireCourbe;
 import container.Service;
 import utils.Config;
 import utils.Log;
+import vec2.ReadOnly;
 import vec2.Vec2;
 import enums.Tribool;
 import exceptions.GridSpaceException;
@@ -154,7 +155,7 @@ public class GridSpace implements Service {
 	 * @return
 	 * @throws GridSpaceException 
 	 */
-	public PathfindingNodes nearestReachableNode(Vec2 point, int date) throws GridSpaceException
+	public PathfindingNodes nearestReachableNode(Vec2<? extends ReadOnly> point, int date) throws GridSpaceException
 	{
 		PathfindingNodes pointPlusProcheAvecObstaclesFixes = null;
 		PathfindingNodes pointPlusProcheSansObstaclesFixes = null;
@@ -250,7 +251,7 @@ public class GridSpace implements Service {
      * @param pointB
      * @return
      */
-    public boolean isTraversable(Vec2 pointA, Vec2 pointB, int date)
+    public boolean isTraversable(Vec2<? extends ReadOnly> pointA, Vec2<? extends ReadOnly> pointB, int date)
     {
     	// Evaluation paresseuse importante, car obstacle_proximite_dans_segment est bien plus rapide que obstacle_fixe_dans_segment
     	return !obstaclemanager.obstacleProximiteDansSegment(pointA, pointB, date) && !obstaclemanager.obstacleFixeDansSegmentPathfinding(pointA, pointB);
@@ -262,7 +263,7 @@ public class GridSpace implements Service {
      * @param position
      * @param date
      */
-    public void creer_obstacle(Vec2 position, int date)
+    public void creer_obstacle(Vec2<? extends ReadOnly> position, int date)
     {
     	obstaclemanager.creerObstacle(position, date);
     	reinitConnections();
@@ -273,7 +274,7 @@ public class GridSpace implements Service {
      * @param position
      * @param date_actuelle
      */
-    public void createHypotheticalEnnemy(Vec2 position, int date_actuelle)
+    public void createHypotheticalEnnemy(Vec2<? extends ReadOnly> position, int date_actuelle)
     {
     	obstaclemanager.createHypotheticalEnnemy(position, date_actuelle);
     }
@@ -283,7 +284,7 @@ public class GridSpace implements Service {
      * Utilisé par le thread de capteurs.
      * @param position
      */
-    public void creer_obstacle(Vec2 position)
+    public void creer_obstacle(Vec2<? extends ReadOnly> position)
     {
     	creer_obstacle(position, (int)(System.currentTimeMillis() - Config.getDateDebutMatch()));
     }
@@ -384,7 +385,7 @@ public class GridSpace implements Service {
 	 * @param tempsDepuisDebutMatch
 	 * @return
 	 */
-	public boolean isTraversableCourbe(PathfindingNodes objectifFinal, PathfindingNodes intersection, Vec2 directionAvant, int tempsDepuisDebutMatch)
+	public boolean isTraversableCourbe(PathfindingNodes objectifFinal, PathfindingNodes intersection, Vec2<? extends ReadOnly> directionAvant, int tempsDepuisDebutMatch)
 	{
 		return obstaclemanager.isTraversableCourbe(objectifFinal, intersection, directionAvant, tempsDepuisDebutMatch);
 	}

@@ -1,6 +1,7 @@
 package astar.arc;
 
 import robot.Speed;
+import vec2.ReadOnly;
 import vec2.Vec2;
 
 /**
@@ -27,8 +28,8 @@ public class SegmentTrajectoireCourbe implements Arc
 	/**
 	 * Le point où on commence à tourner
 	 */
-	public final Vec2 pointDepart;
-	public final Vec2 directionHook;
+	public final Vec2<ReadOnly> pointDepart;
+	public final Vec2<ReadOnly> directionHook;
 	
 	public final Speed vitesse;
 	
@@ -39,7 +40,7 @@ public class SegmentTrajectoireCourbe implements Arc
 	 * @param distanceAnticipation
 	 * @param pointDepart
 	 */
-	public SegmentTrajectoireCourbe(PathfindingNodes objectifFinal, int differenceDistance, int distanceAnticipation, Vec2 pointDepart, Vec2 directionHook, Speed vitesse)
+	public SegmentTrajectoireCourbe(PathfindingNodes objectifFinal, int differenceDistance, int distanceAnticipation, Vec2<ReadOnly> pointDepart, Vec2<ReadOnly> directionHook, Speed vitesse)
 	{
 		this.objectifFinal = objectifFinal;
 		this.differenceDistance = differenceDistance;

@@ -7,13 +7,14 @@ import exceptions.WallCollisionDetectedException;
 import strategie.GameState;
 import utils.Config;
 import utils.Log;
+import vec2.ReadOnly;
 import vec2.Vec2;
 import hook.Hook;
 
 public class HookDemiPlan extends Hook
 {
 
-	private Vec2 point, direction;
+	private Vec2<ReadOnly> point, direction;
 	private boolean disabled = false;
 	
 	/**
@@ -34,11 +35,11 @@ public class HookDemiPlan extends Hook
 	 * @param log
 	 * @param state
 	 */
-	public HookDemiPlan(Config config, Log log, GameState<?> state, Vec2 point, Vec2 direction)
+	public HookDemiPlan(Config config, Log log, GameState<?> state, Vec2<? extends ReadOnly> point, Vec2<? extends ReadOnly> direction)
 	{
 		super(config, log, state);
-		this.point = point;
-		this.direction = direction;
+		this.point = point.getReadOnly();
+		this.direction = direction.getReadOnly();
 	}
 
 	
@@ -54,7 +55,7 @@ public class HookDemiPlan extends Hook
 	public void evaluate() throws FinMatchException, ScriptHookException,
 			WallCollisionDetectedException, ChangeDirectionException
 	{
-		Vec2 positionRobot = state.robot.getPosition();
+		Vec2<ReadOnly> positionRobot = state.robot.getPosition();
 //		log.debug("Evaluation en "+positionRobot+", point: "+point, this);
 		if(!disabled && positionRobot.minusNewVector(point).dot(direction) > 0)
 		{
@@ -67,7 +68,7 @@ public class HookDemiPlan extends Hook
 	/**
 	 * Mise à jour des paramètres du hooks
 	 */
-	public void update(Vec2 direction, Vec2 point)
+	public void update(Vec2<ReadOnly> direction, Vec2<ReadOnly> point)
 	{
 		disabled = false;
 		this.direction = direction;
@@ -79,7 +80,7 @@ public class HookDemiPlan extends Hook
 	 * faut juste vérifier s'il peut l'être en A ou en B.
 	 */
 	@Override
-	public boolean simulated_evaluate(Vec2 pointA, Vec2 pointB, long date)
+	public boolean simulated_evaluate(Vec2<? extends ReadOnly> pointA, Vec2<? extends ReadOnly> pointB, long date)
 	{
 		return pointA.minusNewVector(point).dot(direction) > 0 ||
 				pointB.minusNewVector(point).dot(direction) > 0;

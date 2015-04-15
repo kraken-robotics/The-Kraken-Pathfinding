@@ -10,6 +10,7 @@ import robot.Speed;
 import strategie.GameState;
 import utils.Log;
 import utils.Config;
+import vec2.ReadOnly;
 import vec2.Vec2;
 import exceptions.ArcManagerException;
 import exceptions.FinMatchException;
@@ -104,7 +105,7 @@ public class PathfindingArcManager extends ArcManager {
     	 */
     	debutCourbe = !debutCourbe; // OH LA JOLIE BASCULE
     	PathfindingNodes pn_id_node_iterator = PathfindingNodes.values[id_node_iterator];
-    	debutCourbe = debutCourbe && state_iterator.gridspace.isTraversableCourbe(PathfindingNodes.values[iterator], pn_id_node_iterator, new Vec2(state_iterator.robot.getOrientation()), state_iterator.robot.getTempsDepuisDebutMatch());
+    	debutCourbe = debutCourbe && state_iterator.gridspace.isTraversableCourbe(PathfindingNodes.values[iterator], pn_id_node_iterator, new Vec2<ReadOnly>(state_iterator.robot.getOrientation()), state_iterator.robot.getTempsDepuisDebutMatch());
 
     	if(!debutCourbe)
     	{

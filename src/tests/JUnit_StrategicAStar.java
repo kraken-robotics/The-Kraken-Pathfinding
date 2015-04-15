@@ -15,6 +15,7 @@ import robot.RobotChrono;
 import robot.RobotReal;
 import scripts.ScriptAnticipableNames;
 import strategie.GameState;
+import vec2.ReadWrite;
 import vec2.Vec2;
 
 /**
@@ -34,7 +35,7 @@ public class JUnit_StrategicAStar extends JUnit_Test
         super.setUp();
         gamestate = (GameState<RobotReal>) container.getService(ServiceNames.REAL_GAME_STATE);
         astar = (AStar<StrategyArcManager, Decision>) container.getService(ServiceNames.A_STAR_STRATEGY);
-        gamestate.robot.setPosition(new Vec2(1100, 1000));
+        gamestate.robot.setPosition(new Vec2<ReadWrite>(1100, 1000));
     }
     
     @Test

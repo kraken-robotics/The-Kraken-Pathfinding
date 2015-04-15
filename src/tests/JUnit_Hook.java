@@ -19,6 +19,7 @@ import robot.RobotChrono;
 import robot.RobotReal;
 import strategie.GameState;
 import table.GameElementNames;
+import vec2.ReadOnly;
 import vec2.Vec2;
 import enums.Tribool;
 import exceptions.PathfindingException;
@@ -54,7 +55,7 @@ public class JUnit_Hook extends JUnit_Test {
 	{
 		config.setDateDebutMatch();
 		ArrayList<Hook> hooks_table = hookfactory.getHooksEntreScriptsReal(real_gamestate);
-		real_gamestate.robot.setPosition(new Vec2(950, 650));
+		real_gamestate.robot.setPosition(new Vec2<ReadOnly>(950, 650));
 		real_gamestate.robot.setOrientation(Math.PI);
 		Assert.assertEquals(real_gamestate.gridspace.isDone(GameElementNames.PLOT_7), Tribool.FALSE);
 		real_gamestate.robot.avancer(100, hooks_table);
@@ -67,7 +68,7 @@ public class JUnit_Hook extends JUnit_Test {
 	public void test_hook_chrono_avancer() throws Exception
 	{
 		ArrayList<Hook> hooks_table = hookfactory.getHooksEntreScriptsChrono(chrono_gamestate, 90000);
-		chrono_gamestate.robot.setPosition(new Vec2(600, 350));
+		chrono_gamestate.robot.setPosition(new Vec2<ReadOnly>(600, 350));
 		chrono_gamestate.robot.setOrientation(Math.PI);
 		Assert.assertEquals(chrono_gamestate.gridspace.isDone(GameElementNames.VERRE_5), Tribool.FALSE);
 		chrono_gamestate.robot.avancer(100, hooks_table);
@@ -80,7 +81,7 @@ public class JUnit_Hook extends JUnit_Test {
 	public void test_hook_chrono_sleep() throws Exception
 	{
 		config.setDateDebutMatch();
-		chrono_gamestate.robot.setPosition(new Vec2(1300, 500));
+		chrono_gamestate.robot.setPosition(new Vec2<ReadOnly>(1300, 500));
 		ArrayList<Hook> hooks_table = hookfactory.getHooksEntreScriptsReal(real_gamestate);
 		Assert.assertEquals(real_gamestate.gridspace.isDone(GameElementNames.VERRE_5), Tribool.FALSE);
 		chrono_gamestate.robot.sleep(5000, hooks_table);

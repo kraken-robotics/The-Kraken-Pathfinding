@@ -7,6 +7,7 @@ import exceptions.WallCollisionDetectedException;
 import strategie.GameState;
 import utils.Config;
 import utils.Log;
+import vec2.ReadOnly;
 import vec2.Vec2;
 import hook.Hook;
 
@@ -33,7 +34,7 @@ public class HookDate extends Hook {
 	}
 
 	@Override
-	public boolean simulated_evaluate(Vec2 pointA, Vec2 pointB, long date_appel) {
+	public boolean simulated_evaluate(Vec2<? extends ReadOnly> pointA, Vec2<? extends ReadOnly> pointB, long date_appel) {
 //		log.debug("Hook date: appel="+date_appel+", date_hook="+this.date_hook, this);
 		return date_appel > this.date_hook;
 	}

@@ -1,6 +1,8 @@
 package obstacles;
 
 import robot.Speed;
+import vec2.ReadOnly;
+import vec2.ReadWrite;
 import vec2.Vec2;
 
 /**
@@ -11,7 +13,7 @@ public class ObstacleProximity extends ObstacleCircular
 {
 	private int death_date;
 
-	public ObstacleProximity(Vec2 position, int rad, int death_date)
+	public ObstacleProximity(Vec2<ReadWrite> position, int rad, int death_date)
 	{
 		super(position,rad);
 		this.death_date = death_date;
@@ -35,7 +37,7 @@ public class ObstacleProximity extends ObstacleCircular
 	 * @param date
 	 * @return
 	 */
-    public boolean obstacle_proximite_dans_segment(Vec2 A, Vec2 B, int date)
+    public boolean obstacle_proximite_dans_segment(Vec2<? extends ReadOnly> A, Vec2<? extends ReadOnly> B, int date)
     {
     	// si l'obstacle est présent dans le segment...
     	ObstacleRectangular r = new ObstacleRectangular(A,B);
@@ -47,7 +49,7 @@ public class ObstacleProximity extends ObstacleCircular
     		// distance maximale à parcourir alors que l'obstacle est encore là
     		double distanceMax = tempsRestant*Speed.BETWEEN_SCRIPTS.translationnalSpeed;
     		// C est le point auquel l'obstacle disparaît
-    		Vec2 C = B.minusNewVector(A);
+    		Vec2<ReadWrite> C = B.minusNewVector(A);
     		double distanceBetweenAandB = (long)A.distance(B);
 
     		// si C est au-delà de B, ce n'est même pas la peine d'essayer
@@ -57,7 +59,7 @@ public class ObstacleProximity extends ObstacleCircular
     		double facteurMultiplicatif = distanceMax / distanceBetweenAandB;
     		C.x = (int)(C.x * facteurMultiplicatif);
     		C.y = (int)(C.y * facteurMultiplicatif);
-    		C.plus(A);
+    		Vec2.plus(C, A);
         	ObstacleRectangular r2 = new ObstacleRectangular(A,C);
         	return r2.isColliding(this);
     	}
@@ -68,11 +70,11 @@ public class ObstacleProximity extends ObstacleCircular
      * Utilisé pour mettre à jour l'ennemi hypothétique
      * @param clone
      */
-	public void setPosition(Vec2 position)
+	public void setPosition(Vec2<? extends ReadOnly> position)
 	{
 		position.copy(this.position);
 	}
-
+	
     /**
      * Utilisé pour mettre à jour l'ennemi hypothétique
      * @param clone

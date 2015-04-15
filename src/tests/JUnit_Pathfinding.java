@@ -21,6 +21,7 @@ import robot.RobotReal;
 import strategie.GameState;
 import table.GameElementNames;
 import utils.ConfigInfo;
+import vec2.ReadWrite;
 import vec2.Vec2;
 import enums.Tribool;
 import exceptions.PathfindingException;
@@ -55,15 +56,15 @@ public class JUnit_Pathfinding extends JUnit_Test {
 	@Test(expected=PathfindingRobotInObstacleException.class)
     public void test_robot_dans_obstacle() throws Exception
     {
-		state_chrono.robot.setPosition(new Vec2(80, 80));
-    	state_chrono.gridspace.creer_obstacle(new Vec2(80, 80));
+		state_chrono.robot.setPosition(new Vec2<ReadWrite>(80, 80));
+    	state_chrono.gridspace.creer_obstacle(new Vec2<ReadWrite>(80, 80));
     	pathfinding.computePath(state_chrono, PathfindingNodes.values()[0], false);
     }
 
 	@Test(expected=PathfindingException.class)
     public void test_obstacle() throws Exception
     {
-		state_chrono.robot.setPosition(new Vec2(80, 80));
+		state_chrono.robot.setPosition(new Vec2<ReadWrite>(80, 80));
 		state_chrono.gridspace.creer_obstacle(PathfindingNodes.values()[0].getCoordonnees());
     	pathfinding.computePath(state_chrono, PathfindingNodes.values()[0], false);
     }
@@ -110,7 +111,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
 	@Test
     public void test_peremption_pendant_trajet() throws Exception
     {
-    	state_chrono.robot.setPosition(new Vec2(80, 80));
+    	state_chrono.robot.setPosition(new Vec2<ReadWrite>(80, 80));
 		state_chrono.gridspace.creer_obstacle(PathfindingNodes.values()[0].getCoordonnees());
     	pathfinding.computePath(state_chrono, PathfindingNodes.values()[0], true);
     }
@@ -174,18 +175,18 @@ public class JUnit_Pathfinding extends JUnit_Test {
 	{
 		state_chrono = state.cloneGameState();
 		ArrayList<Hook> hooks_table = hookfactory.getHooksEntreScriptsChrono(state_chrono, 90000);
-		state_chrono.robot.setPosition(PathfindingNodes.BAS.getCoordonnees().plusNewVector(new Vec2(10, 10)));
+		state_chrono.robot.setPosition(PathfindingNodes.BAS.getCoordonnees().plusNewVector(new Vec2<ReadWrite>(10, 10)));
     	ArrayList<SegmentTrajectoireCourbe> chemin = pathfinding.computePath(state_chrono, PathfindingNodes.COTE_MARCHE_DROITE, true);
 
-		ArrayList<Vec2> cheminVec2 = new ArrayList<Vec2>();
-		cheminVec2.add(PathfindingNodes.BAS.getCoordonnees().plusNewVector(new Vec2(10, 10)));
+		ArrayList<Vec2<ReadWrite>> cheminVec2 = new ArrayList<Vec2<ReadWrite>>();
+		cheminVec2.add(PathfindingNodes.BAS.getCoordonnees().plusNewVector(new Vec2<ReadWrite>(10, 10)));
 		for(SegmentTrajectoireCourbe n: chemin)
 		{
 			log.debug(n, this);
-			cheminVec2.add(n.objectifFinal.getCoordonnees());
+			cheminVec2.add(n.objectifFinal.getCoordonnees().clone());
 		}
     	
-		Assert.assertEquals(PathfindingNodes.BAS.getCoordonnees().plusNewVector(new Vec2(10, 10)), state_chrono.robot.getPosition());
+		Assert.assertEquals(PathfindingNodes.BAS.getCoordonnees().plusNewVector(new Vec2<ReadWrite>(10, 10)), state_chrono.robot.getPosition());
 		Assert.assertTrue(state_chrono.gridspace.isDone(GameElementNames.PLOT_6) == Tribool.FALSE);
 		state_chrono.robot.suit_chemin(chemin, hooks_table);
 		Assert.assertTrue(state_chrono.gridspace.isDone(GameElementNames.PLOT_6) == Tribool.TRUE);

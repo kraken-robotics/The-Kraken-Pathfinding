@@ -1,6 +1,7 @@
 package astar.arc;
 
 import robot.Speed;
+import vec2.ReadOnly;
 import vec2.Vec2;
 
 /**
@@ -10,41 +11,41 @@ import vec2.Vec2;
  */
 
 public enum PathfindingNodes {
-	SORTIE_ZONE_DEPART(new Vec2(860,1000)),
-	SORTIE_CLAP_GAUCHE(new Vec2(-770,250)),
-	SORTIE_CLAP_DROIT(new Vec2(820,250)),
-	SORTIE_CLAP_DROIT_SECOND(new Vec2(660,220)),
-	SORTIE_TAPIS(new Vec2(266,1110)),
+	SORTIE_ZONE_DEPART(new Vec2<ReadOnly>(860,1000)),
+	SORTIE_CLAP_GAUCHE(new Vec2<ReadOnly>(-770,250)),
+	SORTIE_CLAP_DROIT(new Vec2<ReadOnly>(820,250)),
+	SORTIE_CLAP_DROIT_SECOND(new Vec2<ReadOnly>(660,220)),
+	SORTIE_TAPIS(new Vec2<ReadOnly>(266,1110)),
 
 	
-	DEVANT_DEPART_DROITE(new Vec2(700, 1100)),
-	HAUT_DROITE(new Vec2(1000, 1600)),
-	BAS_DROITE(new Vec2(800, 450)),
-	COTE_MARCHE_DROITE(new Vec2(830, 1600)),
-	DEVANT_DEPART_GAUCHE(new Vec2(-700, 1100)),
-	HAUT_GAUCHE(new Vec2(-1000, 1600)),
-	BAS_GAUCHE(new Vec2(-800, 450)),
-	COTE_MARCHE_GAUCHE(new Vec2(-830, 1600)),
-	NODE_TAPIS(new Vec2(266, 1110), SORTIE_TAPIS),
-	CLAP_GAUCHE(new Vec2(-1070, 250), SORTIE_CLAP_GAUCHE), // les claps ne sont pas symétriques, c'est normal
-	CLAP_DROIT(new Vec2(1320, 250), SORTIE_CLAP_DROIT), 
-	CLAP_DROIT_SECOND(new Vec2(660, 220), SORTIE_CLAP_GAUCHE),
-	BAS(new Vec2(0, 500)),
+	DEVANT_DEPART_DROITE(new Vec2<ReadOnly>(700, 1100)),
+	HAUT_DROITE(new Vec2<ReadOnly>(1000, 1600)),
+	BAS_DROITE(new Vec2<ReadOnly>(800, 450)),
+	COTE_MARCHE_DROITE(new Vec2<ReadOnly>(830, 1600)),
+	DEVANT_DEPART_GAUCHE(new Vec2<ReadOnly>(-700, 1100)),
+	HAUT_GAUCHE(new Vec2<ReadOnly>(-1000, 1600)),
+	BAS_GAUCHE(new Vec2<ReadOnly>(-800, 450)),
+	COTE_MARCHE_GAUCHE(new Vec2<ReadOnly>(-830, 1600)),
+	NODE_TAPIS(new Vec2<ReadOnly>(266, 1110), SORTIE_TAPIS),
+	CLAP_GAUCHE(new Vec2<ReadOnly>(-1070, 250), SORTIE_CLAP_GAUCHE), // les claps ne sont pas symétriques, c'est normal
+	CLAP_DROIT(new Vec2<ReadOnly>(1320, 250), SORTIE_CLAP_DROIT), 
+	CLAP_DROIT_SECOND(new Vec2<ReadOnly>(660, 220), SORTIE_CLAP_GAUCHE),
+	BAS(new Vec2<ReadOnly>(0, 500)),
 
-	POINT_DEPART(new Vec2(1350, 1000), SORTIE_ZONE_DEPART),
+	POINT_DEPART(new Vec2<ReadOnly>(1350, 1000), SORTIE_ZONE_DEPART),
 		
-	SECOURS_0(new Vec2(800, 600)),
+	SECOURS_0(new Vec2<ReadOnly>(800, 600)),
 
 	
-	SECOURS_1(new Vec2(800, 1300)),
-	SECOURS_2(new Vec2(-800, 1300)),
-	SECOURS_3(new Vec2(0, 800)),
-	SECOURS_4(new Vec2(820, 880)),
-	SECOURS_5(new Vec2(-820, 880)),
-	SECOURS_6(new Vec2(425, 520)),
-	SECOURS_7(new Vec2(-425, 520)),
-	SECOURS_8(new Vec2(575, 800)),
-	SECOURS_9(new Vec2(-575, 800));
+	SECOURS_1(new Vec2<ReadOnly>(800, 1300)),
+	SECOURS_2(new Vec2<ReadOnly>(-800, 1300)),
+	SECOURS_3(new Vec2<ReadOnly>(0, 800)),
+	SECOURS_4(new Vec2<ReadOnly>(820, 880)),
+	SECOURS_5(new Vec2<ReadOnly>(-820, 880)),
+	SECOURS_6(new Vec2<ReadOnly>(425, 520)),
+	SECOURS_7(new Vec2<ReadOnly>(-425, 520)),
+	SECOURS_8(new Vec2<ReadOnly>(575, 800)),
+	SECOURS_9(new Vec2<ReadOnly>(-575, 800));
 	
 	public static final PathfindingNodes[] values;
 	public static final int length;
@@ -87,22 +88,22 @@ public enum PathfindingNodes {
 		length = values.length;
 	}
 	
-	private Vec2 coordonnees;
+	private Vec2<ReadOnly> coordonnees;
 	private PathfindingNodes sortie;
 	
-	private PathfindingNodes(Vec2 coordonnees)
+	private PathfindingNodes(Vec2<ReadOnly> coordonnees)
 	{
 		this.coordonnees = coordonnees;
 		this.sortie = null;
 	}
 	
-	private PathfindingNodes(Vec2 coordonnees, PathfindingNodes sortie)
+	private PathfindingNodes(Vec2<ReadOnly> coordonnees, PathfindingNodes sortie)
 	{
 		this.coordonnees = coordonnees;
 		this.sortie = sortie;
 	}	
 
-	public Vec2 getCoordonnees()
+	public Vec2<ReadOnly> getCoordonnees()
 	{
 		return coordonnees;
 	}

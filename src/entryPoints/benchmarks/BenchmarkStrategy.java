@@ -7,6 +7,7 @@ import robot.RobotReal;
 import strategie.GameState;
 import utils.Config;
 import utils.Log;
+import vec2.ReadWrite;
 import vec2.Vec2;
 import astar.AStar;
 import astar.arc.Decision;
@@ -31,7 +32,7 @@ public class BenchmarkStrategy {
 			AStar<StrategyArcManager, Decision> astar = (AStar<StrategyArcManager, Decision>) container.getService(ServiceNames.A_STAR_STRATEGY);
 			GameState<RobotReal> gamestate = (GameState<RobotReal>)container.getService(ServiceNames.REAL_GAME_STATE);
 	    	config.setDateDebutMatch();
-	    	gamestate.robot.setPosition(new Vec2(600, 1000));
+	    	gamestate.robot.setPosition(new Vec2<ReadWrite>(600, 1000));
 	    	GameState<RobotChrono> chronostate = gamestate.cloneGameState();
 	    	
 	   		int nb_iter = 100000;

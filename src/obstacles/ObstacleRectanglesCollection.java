@@ -1,5 +1,7 @@
 package obstacles;
 
+import vec2.ReadWrite;
+import vec2.ReadOnly;
 import vec2.Vec2;
 
 /**
@@ -11,7 +13,7 @@ import vec2.Vec2;
 
 public abstract class ObstacleRectanglesCollection extends Obstacle implements ObstacleCollision
 {
-	public ObstacleRectanglesCollection(Vec2 position)
+	public ObstacleRectanglesCollection(Vec2<ReadWrite> position)
 	{
 		super(position);
 	}
@@ -20,7 +22,7 @@ public abstract class ObstacleRectanglesCollection extends Obstacle implements O
 	protected int nb_rectangles;
 
 	@Override
-	public boolean isProcheObstacle(Vec2 point, int distance)
+	public boolean isProcheObstacle(Vec2<? extends ReadOnly> point, int distance)
 	{
 		for(int i = 0; i < nb_rectangles; i++)
 			if(ombresRobot[i].isProcheObstacle(point, distance))
@@ -29,7 +31,7 @@ public abstract class ObstacleRectanglesCollection extends Obstacle implements O
 	}
 
 	@Override
-	public boolean isInObstacle(Vec2 point)
+	public boolean isInObstacle(Vec2<? extends ReadOnly> point)
 	{
 		for(int i = 0; i < nb_rectangles; i++)
 			if(ombresRobot[i].isInObstacle(point))

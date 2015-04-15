@@ -17,6 +17,7 @@ import robot.RobotChrono;
 import robot.RobotReal;
 import strategie.GameState;
 import utils.ConfigInfo;
+import vec2.ReadWrite;
 import vec2.Vec2;
 
 /**
@@ -55,19 +56,19 @@ public class JUnit_Robot extends JUnit_Test
 	    		else
 	    			config.set(ConfigInfo.COULEUR, RobotColor.getCouleurAvecSymetrie());
 	    		robot.updateConfig();
-	    		robot.setPosition(new Vec2(200, 600));
+	    		robot.setPosition(new Vec2<ReadWrite>(200, 600));
 	    		robot.setOrientation(0);
 	    		robot.avancer(100);
-	    		Assert.assertTrue(robot.getPosition().squaredDistance(new Vec2(300, 600)) < 10);
+	    		Assert.assertTrue(robot.getPosition().squaredDistance(new Vec2<ReadWrite>(300, 600)) < 10);
 	    		robot.tourner(Math.PI/2);
 	    		robot.avancer(100);
-	    		Assert.assertTrue(robot.getPosition().squaredDistance(new Vec2(300, 700)) < 10);
+	    		Assert.assertTrue(robot.getPosition().squaredDistance(new Vec2<ReadWrite>(300, 700)) < 10);
 	    		robot.tourner(Math.PI);
 	    		robot.avancer(100);
-	    		Assert.assertTrue(robot.getPosition().squaredDistance(new Vec2(200, 700)) < 10);
+	    		Assert.assertTrue(robot.getPosition().squaredDistance(new Vec2<ReadWrite>(200, 700)) < 10);
 	    		robot.tourner(-Math.PI/2);
 	    		robot.avancer(100);
-	    		Assert.assertTrue(robot.getPosition().squaredDistance(new Vec2(200, 600)) < 10);
+	    		Assert.assertTrue(robot.getPosition().squaredDistance(new Vec2<ReadWrite>(200, 600)) < 10);
 	    		ArrayList<SegmentTrajectoireCourbe> chemin = new ArrayList<SegmentTrajectoireCourbe>();
 	    		chemin.add(new SegmentTrajectoireCourbe(PathfindingNodes.BAS));
 	    		chemin.add(new SegmentTrajectoireCourbe(PathfindingNodes.DEVANT_DEPART_DROITE));

@@ -9,6 +9,7 @@ import hook.Hook;
 import strategie.GameState;
 import utils.Log;
 import utils.Config;
+import vec2.ReadOnly;
 import vec2.Vec2;
 
 /**
@@ -21,7 +22,7 @@ import vec2.Vec2;
 public class HookPosition extends Hook
 {
 	// position sur la table de déclenchement du hook: le hook est déclenché si le robot est a une distance de ce point de moins de tolerancy
-	protected Vec2 position;
+	protected Vec2<ReadOnly> position;
 	
 	// tolérance sur la position de déclenchement du hook. On mémorise le carré pour ne pas avoir a calculer des racines a chaque vérifications
 	protected int squaredTolerancy;
@@ -38,7 +39,7 @@ public class HookPosition extends Hook
      * @param tolerance : imprécision admise sur la position qui déclenche le hook
      * @param isYellowTeam : la couleur du robot: vert ou jaune 
      */
-	public HookPosition(Config config, Log log, GameState<?> state, Vec2 position, int tolerancy)
+	public HookPosition(Config config, Log log, GameState<?> state, Vec2<ReadOnly> position, int tolerancy)
 	{
 		super(config, log, state);
 		this.position = position;
@@ -56,16 +57,16 @@ public class HookPosition extends Hook
      */
 	public void evaluate() throws FinMatchException, ScriptHookException, WallCollisionDetectedException, ChangeDirectionException
 	{
-		Vec2 positionRobot = state.robot.getPosition();
+		Vec2<ReadOnly> positionRobot = state.robot.getPosition();
 		if(position.squaredDistance(positionRobot) <= squaredTolerancy)
 			trigger();
 	}
 
 
 	@Override
-	public boolean simulated_evaluate(Vec2 pointA, Vec2 pointB, long date)
+	public boolean simulated_evaluate(Vec2<? extends ReadOnly> pointA, Vec2<? extends ReadOnly> pointB, long date)
 	{
-		ObstacleCircular o = new ObstacleCircular(position, tolerancy);
+		ObstacleCircular o = new ObstacleCircular(position.clone(), tolerancy);
 //		log.debug("Hook position: "+o.obstacle_proximite_dans_segment(pointA, pointB, rayon_robot), this);
 		return o.obstacle_proximite_dans_segment(pointA, pointB, rayon_robot);
 	}

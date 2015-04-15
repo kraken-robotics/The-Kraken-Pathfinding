@@ -1,5 +1,7 @@
 package obstacles;
 
+import vec2.ReadOnly;
+import vec2.ReadWrite;
 import vec2.Vec2;
 
 /**
@@ -14,15 +16,15 @@ import vec2.Vec2;
 public class ObstacleRotationRobot extends ObstacleRectanglesCollection
 {
 	
-	public ObstacleRotationRobot(Vec2 position, double angleDepart, double angleArrivee)
+	public ObstacleRotationRobot(Vec2<ReadWrite> position, double angleDepart, double angleArrivee)
 	{
 		super(position);
 		calculeOmbres(angleDepart, angleArrivee);
 	}
 	
-	public void update(Vec2 position, double angleDepart, double angleArrivee)
+	public void update(Vec2<? extends ReadOnly> position, double angleDepart, double angleArrivee)
 	{
-		this.position = position.clone();
+		position.copy(this.position);
 		calculeOmbres(angleDepart, angleArrivee);
 	}
 

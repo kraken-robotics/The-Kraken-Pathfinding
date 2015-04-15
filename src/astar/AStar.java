@@ -22,6 +22,8 @@ import strategie.GameState;
 import utils.Config;
 import utils.ConfigInfo;
 import utils.Log;
+import vec2.ReadOnly;
+import vec2.ReadWrite;
 import vec2.Vec2;
 
 /**
@@ -97,7 +99,7 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 		}
 		int distance_ennemie = distanceEnnemiUrgence; // il faut que cette distance soit au moins supérieure à la somme de notre rayon, du rayon de l'adversaire et d'une marge
 		double orientation_actuelle = state.robot.getOrientation();
-		Vec2 positionEnnemie = state.robot.getPosition().plusNewVector(new Vec2((int)(distance_ennemie*Math.cos(orientation_actuelle)), (int)(distance_ennemie*Math.sin(orientation_actuelle))));
+		Vec2<ReadWrite> positionEnnemie = state.robot.getPosition().plusNewVector(new Vec2<ReadWrite>((int)(distance_ennemie*Math.cos(orientation_actuelle)), (int)(distance_ennemie*Math.sin(orientation_actuelle))));
 		state.gridspace.createHypotheticalEnnemy(positionEnnemie, state.robot.getTempsDepuisDebutMatch());
 		return computeStrategy(state, dureeAnticipation);
 	}
@@ -251,7 +253,7 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 	 * @param chemin
 	 * @return
 	 */
-	private ArrayList<A> lissage(Vec2 depart, GameState<RobotChrono> state, ArrayList<A> chemin)
+	private ArrayList<A> lissage(Vec2<ReadOnly> depart, GameState<RobotChrono> state, ArrayList<A> chemin)
 	{
 		// si on peut sauter le premier point, on le fait
 		while(chemin.size() >= 2 && state.gridspace.isTraversable(depart, ((SegmentTrajectoireCourbe)chemin.get(1)).objectifFinal.getCoordonnees(), state.robot.getTempsDepuisDebutMatch()))

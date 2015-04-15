@@ -11,6 +11,7 @@ import strategie.GameState;
 import utils.ConfigInfo;
 import utils.Log;
 import utils.Config;
+import vec2.ReadOnly;
 import vec2.Vec2;
 
 /**
@@ -95,7 +96,7 @@ abstract public class Hook
 	 * @param date
 	 * @return
 	 */
-	public abstract boolean simulated_evaluate(Vec2 pointA, Vec2 pointB, long date);
+	public abstract boolean simulated_evaluate(Vec2<? extends ReadOnly> pointA, Vec2<? extends ReadOnly> pointB, long date);
 	
 	/**
 	 * On peut supprimer le hook s'il n'y a plus aucun callback déclenchable.

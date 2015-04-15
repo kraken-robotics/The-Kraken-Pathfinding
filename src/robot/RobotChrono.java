@@ -8,6 +8,8 @@ import hook.Hook;
 import robot.cardsWrappers.enums.HauteurBrasClap;
 import utils.Log;
 import utils.Config;
+import vec2.ReadOnly;
+import vec2.ReadWrite;
 import vec2.Vec2;
 import enums.Side;
 import exceptions.ChangeDirectionException;
@@ -22,7 +24,7 @@ import exceptions.WallCollisionDetectedException;
 
 public class RobotChrono extends Robot
 {
-	protected Vec2 position = new Vec2();
+	protected Vec2<ReadWrite> position = new Vec2<ReadWrite>();
 	protected PathfindingNodes positionPathfinding;
 	protected PathfindingNodes positionPathfindingAnterieure;
 	protected boolean isPositionPathfindingActive = false;
@@ -44,7 +46,7 @@ public class RobotChrono extends Robot
 	}
 	
 	@Override
-	public void setPosition(Vec2 position) {
+	public void setPosition(Vec2<? extends ReadOnly> position) {
 		position.copy(this.position);
 		isPositionPathfindingActive = false;
 		positionPathfindingAnterieure = null;
@@ -63,10 +65,10 @@ public class RobotChrono extends Robot
 	{
 		date += Math.abs(distance)*vitesse.invertedTranslationnalSpeed + sleepAvanceDuration;
 	
-        Vec2 ecart = new Vec2((int)(distance*Math.cos(orientation)), (int)(distance*Math.sin(orientation)));
+        Vec2<ReadWrite> ecart = new Vec2<ReadWrite>((int)(distance*Math.cos(orientation)), (int)(distance*Math.sin(orientation)));
 
 		checkHooks(position, position.plusNewVector(ecart), hooks);
-		position.plus(ecart);
+		Vec2.plus(position, ecart);
 		isPositionPathfindingActive = false;
 		positionPathfindingAnterieure = null;
 		positionPathfinding = null;
@@ -125,7 +127,7 @@ public class RobotChrono extends Robot
 			va_au_point_pathfinding(point.objectifFinal, point.differenceDistance, hooks);
 	}
 	
-	private void va_au_point_no_hook(Vec2 point) throws FinMatchException
+	private void va_au_point_no_hook(Vec2<? extends ReadOnly> point) throws FinMatchException
 	{
 		double orientation_finale = Math.atan2(point.y - position.y, point.x - position.x);
 		tourner(orientation_finale);
@@ -221,9 +223,9 @@ public class RobotChrono extends Robot
     }
 
     @Override
-    public Vec2 getPosition()
+    public Vec2<ReadOnly> getPosition()
     {
-        return position.clone();
+        return position.getReadOnly();
     }
 
     @Override
@@ -266,7 +268,7 @@ public class RobotChrono extends Robot
 	 * @param hooks
 	 * @throws FinMatchException 
 	 */
-	private void checkHooks(Vec2 pointA, Vec2 pointB, ArrayList<Hook> hooks) throws FinMatchException
+	private void checkHooks(Vec2<? extends ReadOnly> pointA, Vec2<? extends ReadOnly> pointB, ArrayList<Hook> hooks) throws FinMatchException
 	{
 		for(Hook hook: hooks)
 			if(hook.simulated_evaluate(pointA, pointB, date))

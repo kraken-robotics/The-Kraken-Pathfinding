@@ -24,6 +24,7 @@ import robot.RobotReal;
 import robot.Speed;
 import strategie.GameState;
 import utils.ConfigInfo;
+import vec2.ReadOnly;
 import vec2.Vec2;
 import container.ServiceNames;
 import enums.RobotColor;
@@ -46,7 +47,7 @@ public class JUnit_Locomotion extends JUnit_Test
         super.setUp();
         locomotion = (Locomotion) container.getService(ServiceNames.LOCOMOTION);
         realstate = (GameState<RobotReal>) container.getService(ServiceNames.REAL_GAME_STATE);
-        locomotion.setPosition(new Vec2(0, 1000));
+        locomotion.setPosition(new Vec2<ReadOnly>(0, 1000));
         locomotion.setOrientation(Math.PI/4);
     }
 	
@@ -55,7 +56,7 @@ public class JUnit_Locomotion extends JUnit_Test
 	{
 		config.set(ConfigInfo.COULEUR, RobotColor.getCouleurSansSymetrie());
 		locomotion.updateConfig();
-        locomotion.setPosition(new Vec2(0, 1000));
+        locomotion.setPosition(new Vec2<ReadOnly>(0, 1000));
         locomotion.setOrientation(Math.PI/4);
 		locomotion.moveLengthwise(150, new ArrayList<Hook>(), false);
 		locomotion.moveLengthwise(-150, new ArrayList<Hook>(), false);
@@ -66,7 +67,7 @@ public class JUnit_Locomotion extends JUnit_Test
 	{
 		config.set(ConfigInfo.COULEUR, RobotColor.getCouleurAvecSymetrie());
 		locomotion.updateConfig();
-        locomotion.setPosition(new Vec2(0, 1000));
+        locomotion.setPosition(new Vec2<ReadOnly>(0, 1000));
         locomotion.setOrientation(Math.PI/4);
 		locomotion.moveLengthwise(150, new ArrayList<Hook>(), false);
 		locomotion.moveLengthwise(-150, new ArrayList<Hook>(), false);
@@ -77,7 +78,7 @@ public class JUnit_Locomotion extends JUnit_Test
 	{
 		config.set(ConfigInfo.COULEUR, RobotColor.getCouleurSansSymetrie());
 		locomotion.updateConfig();
-        locomotion.setPosition(new Vec2(0, 1000));
+        locomotion.setPosition(new Vec2<ReadOnly>(0, 1000));
         locomotion.setOrientation(Math.PI/4);
 		locomotion.turn(Math.PI/2, new ArrayList<Hook>());
 		locomotion.turn(Math.PI, new ArrayList<Hook>());
@@ -85,7 +86,7 @@ public class JUnit_Locomotion extends JUnit_Test
 		locomotion.turn(0, new ArrayList<Hook>());
 		config.set(ConfigInfo.COULEUR, RobotColor.getCouleurAvecSymetrie());
 		locomotion.updateConfig();
-        locomotion.setPosition(new Vec2(0, 1000));
+        locomotion.setPosition(new Vec2<ReadOnly>(0, 1000));
         locomotion.setOrientation(Math.PI/4);
 		locomotion.turn(Math.PI/2, new ArrayList<Hook>());
 		locomotion.turn(Math.PI, new ArrayList<Hook>());
@@ -97,7 +98,7 @@ public class JUnit_Locomotion extends JUnit_Test
 	public void test_tourner_mur() throws Exception
 	{
         locomotion.setOrientation(0);
-        locomotion.setPosition(new Vec2(1320, 250));
+        locomotion.setPosition(new Vec2<ReadOnly>(1320, 250));
         locomotion.turn(Math.PI/6, new ArrayList<Hook>());
 	}
 
@@ -105,7 +106,7 @@ public class JUnit_Locomotion extends JUnit_Test
 	public void test_avancer_mur() throws Exception
 	{
         locomotion.setOrientation(0);
-        locomotion.setPosition(new Vec2(1320, 250));
+        locomotion.setPosition(new Vec2<ReadOnly>(1320, 250));
         locomotion.moveLengthwise(200, new ArrayList<Hook>(), false);
 	}
 
@@ -114,7 +115,7 @@ public class JUnit_Locomotion extends JUnit_Test
 	{
 		config.set(ConfigInfo.COULEUR, RobotColor.getCouleurAvecSymetrie());
 		locomotion.updateConfig();
-        locomotion.setPosition(new Vec2(0, 1000));
+        locomotion.setPosition(new Vec2<ReadOnly>(0, 1000));
         locomotion.setOrientation(Math.PI/4);
 		ArrayList<SegmentTrajectoireCourbe> chemin = new ArrayList<SegmentTrajectoireCourbe>();
 		chemin.add(new SegmentTrajectoireCourbe(PathfindingNodes.BAS));
@@ -131,7 +132,7 @@ public class JUnit_Locomotion extends JUnit_Test
 	{
 		config.set(ConfigInfo.COULEUR, RobotColor.getCouleurSansSymetrie());
 		locomotion.updateConfig();
-        locomotion.setPosition(new Vec2(-200, 1200));
+        locomotion.setPosition(new Vec2<ReadOnly>(-200, 1200));
         locomotion.setOrientation(0);
 		ArrayList<SegmentTrajectoireCourbe> chemin = new ArrayList<SegmentTrajectoireCourbe>();
 
@@ -143,8 +144,8 @@ public class JUnit_Locomotion extends JUnit_Test
 		locomotion.setTranslationnalSpeed(Speed.BETWEEN_SCRIPTS);
 //		PathfindingNodes fin = PathfindingNodes.COTE_MARCHE_GAUCHE;
 		PathfindingNodes fin = PathfindingNodes.DEVANT_DEPART_DROITE;
-		Vec2 position = locomotion.getPosition();
-		ObstacleTrajectoireCourbe obs = new ObstacleTrajectoireCourbe(fin, PathfindingNodes.BAS, new Vec2(Math.atan2(PathfindingNodes.BAS.getCoordonnees().y-position.y,PathfindingNodes.BAS.getCoordonnees().x-position.x)), Speed.BETWEEN_SCRIPTS);
+		Vec2<ReadOnly> position = locomotion.getPosition();
+		ObstacleTrajectoireCourbe obs = new ObstacleTrajectoireCourbe(fin, PathfindingNodes.BAS, new Vec2<ReadOnly>(Math.atan2(PathfindingNodes.BAS.getCoordonnees().y-position.y,PathfindingNodes.BAS.getCoordonnees().x-position.x)), Speed.BETWEEN_SCRIPTS);
 		chemin.add(new SegmentTrajectoireCourbe(PathfindingNodes.BAS));
 		chemin.add(obs.getSegment());
 		chemin.add(new SegmentTrajectoireCourbe(PathfindingNodes.DEVANT_DEPART_GAUCHE));
@@ -157,7 +158,7 @@ public class JUnit_Locomotion extends JUnit_Test
 	@Test
 	public void test_mur() throws Exception
 	{
-        locomotion.setPosition(new Vec2(-1200, 1000));
+        locomotion.setPosition(new Vec2<ReadOnly>(-1200, 1000));
         locomotion.setOrientation(0);
 		locomotion.moveLengthwise(-300, new ArrayList<Hook>(), true);
 	}
@@ -165,7 +166,7 @@ public class JUnit_Locomotion extends JUnit_Test
 	@Test(expected=UnableToMoveException.class)
 	public void test_mur_exception() throws Exception
 	{
-        locomotion.setPosition(new Vec2(-1200, 1000));
+        locomotion.setPosition(new Vec2<ReadOnly>(-1200, 1000));
         locomotion.setOrientation(0);
 		locomotion.moveLengthwise(-300, new ArrayList<Hook>(), false);
 	}
@@ -174,21 +175,21 @@ public class JUnit_Locomotion extends JUnit_Test
 	public void test_rotation_obstacle() throws Exception
 	{
         locomotion.setOrientation(0);
-        locomotion.setPosition(new Vec2(1320, 250));
+        locomotion.setPosition(new Vec2<ReadOnly>(1320, 250));
         ObstacleRotationRobot r;
-        r = new ObstacleRotationRobot(locomotion.getPosition(), locomotion.getOrientation(), 0);
+        r = new ObstacleRotationRobot(locomotion.getPosition().clone(), locomotion.getOrientation(), 0);
         Assert.assertTrue(!r.isColliding(ObstaclesFixes.BORD_DROITE.getObstacle()));
-        r = new ObstacleRotationRobot(locomotion.getPosition(), locomotion.getOrientation(), Math.PI/9);
+        r = new ObstacleRotationRobot(locomotion.getPosition().clone(), locomotion.getOrientation(), Math.PI/9);
         Assert.assertTrue(!r.isColliding(ObstaclesFixes.BORD_DROITE.getObstacle()));
-        r = new ObstacleRotationRobot(locomotion.getPosition(), locomotion.getOrientation(), Math.PI/6);
+        r = new ObstacleRotationRobot(locomotion.getPosition().clone(), locomotion.getOrientation(), Math.PI/6);
         Assert.assertTrue(r.isColliding(ObstaclesFixes.BORD_DROITE.getObstacle()));
-        r = new ObstacleRotationRobot(locomotion.getPosition(), locomotion.getOrientation(), Math.PI/2);
+        r = new ObstacleRotationRobot(locomotion.getPosition().clone(), locomotion.getOrientation(), Math.PI/2);
         Assert.assertTrue(r.isColliding(ObstaclesFixes.BORD_DROITE.getObstacle()));
-        r = new ObstacleRotationRobot(locomotion.getPosition(), locomotion.getOrientation(), -Math.PI/9);
+        r = new ObstacleRotationRobot(locomotion.getPosition().clone(), locomotion.getOrientation(), -Math.PI/9);
         Assert.assertTrue(!r.isColliding(ObstaclesFixes.BORD_DROITE.getObstacle()));
-        r = new ObstacleRotationRobot(locomotion.getPosition(), locomotion.getOrientation(), -Math.PI/6);
+        r = new ObstacleRotationRobot(locomotion.getPosition().clone(), locomotion.getOrientation(), -Math.PI/6);
         Assert.assertTrue(r.isColliding(ObstaclesFixes.BORD_DROITE.getObstacle()));
-        r = new ObstacleRotationRobot(locomotion.getPosition(), locomotion.getOrientation(), -Math.PI/2);
+        r = new ObstacleRotationRobot(locomotion.getPosition().clone(), locomotion.getOrientation(), -Math.PI/2);
         Assert.assertTrue(r.isColliding(ObstaclesFixes.BORD_DROITE.getObstacle()));
 	}
 	

@@ -15,6 +15,7 @@ import exceptions.SerialConnexionException;
 import exceptions.UnableToMoveException;
 import utils.Log;
 import utils.Config;
+import vec2.ReadOnly;
 import vec2.Vec2;
 
 /**
@@ -38,9 +39,9 @@ public abstract class Robot implements Service
             throws UnableToMoveException, FinMatchException, ScriptHookException;
 	public abstract void set_vitesse(Speed vitesse) throws FinMatchException;
 	
-	public abstract void setPosition(Vec2 position) throws FinMatchException;
+	public abstract void setPosition(Vec2<? extends ReadOnly> position) throws FinMatchException;
 	public abstract void setOrientation(double orientation) throws FinMatchException;
-    public abstract Vec2 getPosition() throws FinMatchException;
+    public abstract Vec2<ReadOnly> getPosition() throws FinMatchException;
     public abstract double getOrientation() throws FinMatchException;
     public abstract void sleep(long duree, ArrayList<Hook> hooks) throws FinMatchException;
     public abstract void desactiver_asservissement_rotation() throws FinMatchException;

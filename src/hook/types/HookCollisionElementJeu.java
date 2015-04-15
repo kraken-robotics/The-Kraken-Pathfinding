@@ -10,6 +10,7 @@ import obstacles.ObstacleRectangular;
 import strategie.GameState;
 import utils.Config;
 import utils.Log;
+import vec2.ReadOnly;
 import vec2.Vec2;
 
 /**
@@ -31,7 +32,7 @@ public class HookCollisionElementJeu extends Hook
 	}
 
 	@Override
-	public boolean simulated_evaluate(Vec2 pointA, Vec2 pointB, long date)
+	public boolean simulated_evaluate(Vec2<? extends ReadOnly> pointA, Vec2<? extends ReadOnly> pointB, long date)
 	{
 		ObstacleRectangular r = new ObstacleRectangular(pointA, pointB);
 		return r.isColliding(obstacle);

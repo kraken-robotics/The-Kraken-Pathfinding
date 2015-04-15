@@ -4,6 +4,7 @@ import obstacles.ObstacleRectangular;
 import container.Service;
 import enums.Tribool;
 import utils.*;
+import vec2.ReadOnly;
 import vec2.Vec2;
 
 /**
@@ -99,7 +100,7 @@ public class Table implements Service
 	 * @param rayon_robot_adverse
 	 * @return
 	 */
-	public boolean isProcheObstacle(GameElementNames g, Vec2 position, int rayon_robot_adverse)
+	public boolean isProcheObstacle(GameElementNames g, Vec2<? extends ReadOnly> position, int rayon_robot_adverse)
 	{
 		return g.getObstacle().isProcheObstacle(position, rayon_robot_adverse);
 	}

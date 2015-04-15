@@ -7,6 +7,7 @@ import org.junit.Test;
 import astar.arc.PathfindingNodes;
 import container.ServiceNames;
 import table.GridSpace;
+import vec2.ReadOnly;
 import vec2.Vec2;
 
 /**
@@ -28,7 +29,7 @@ public class JUnit_GridSpace extends JUnit_Test {
 	@Test
 	public void test_nearestReachableNode() throws Exception
 	{
-		Assert.assertEquals(PathfindingNodes.BAS_DROITE, gridspace.nearestReachableNode(PathfindingNodes.BAS_DROITE.getCoordonnees().plusNewVector(new Vec2(10, -40)), 0));
+		Assert.assertEquals(PathfindingNodes.BAS_DROITE, gridspace.nearestReachableNode(PathfindingNodes.BAS_DROITE.getCoordonnees().plusNewVector(new Vec2<ReadOnly>(10, -40)), 0));
 	}
 
 	@Test
@@ -43,7 +44,7 @@ public class JUnit_GridSpace extends JUnit_Test {
 		Assert.assertTrue(gridspace.isTraversable(PathfindingNodes.BAS_DROITE, PathfindingNodes.DEVANT_DEPART_GAUCHE, 0));
 
 		Assert.assertTrue(gridspace.isTraversable(PathfindingNodes.NODE_TAPIS, PathfindingNodes.BAS_GAUCHE, 0));
-		gridspace.creer_obstacle(new Vec2(-220, 830));
+		gridspace.creer_obstacle(new Vec2<ReadOnly>(-220, 830));
 		// mise à jour du gridspace
 		gridspace.reinitConnections();
 		Assert.assertTrue(!gridspace.isTraversable(PathfindingNodes.NODE_TAPIS, PathfindingNodes.BAS_GAUCHE, 0));
