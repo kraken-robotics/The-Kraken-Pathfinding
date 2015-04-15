@@ -24,6 +24,7 @@ import utils.Config;
 import vec2.Permission;
 import vec2.ReadOnly;
 import vec2.ReadWrite;
+import vec2.TestOnly;
 import vec2.Vec2;
 
 /**
@@ -377,10 +378,69 @@ public class GameState<R extends Robot, T extends Permission> implements Service
 		return state.gridspace.isDone(element);
 	}
 
+	public static void tourner_relatif(GameState<?, ReadWrite> state, double angle) throws UnableToMoveException, FinMatchException
+	{
+		state.robot.tourner(GameState.getOrientation(state.getReadOnly()) + angle);
+	}
+
+    public static void tourner_sans_symetrie(GameState<?, ReadWrite> state, double angle) throws UnableToMoveException, FinMatchException
+    {
+    	state.robot.tourner_sans_symetrie(angle);
+    }
+
+    public static void avancer(GameState<?, ReadWrite> state, int distance) throws UnableToMoveException, FinMatchException
+    {
+        state.robot.avancer(distance, new ArrayList<Hook>(), false);
+    }
+
+    public static void avancer(GameState<?, ReadWrite> state, int distance, ArrayList<Hook> hooks) throws UnableToMoveException, FinMatchException
+    {    	
+        GameState.avancer(state, distance, hooks, false);
+    }
+
+    public static void avancer_dans_mur(GameState<?, ReadWrite> state, int distance) throws UnableToMoveException, FinMatchException
+    {
+    	state.robot.avancer_dans_mur(distance);
+    }
+
+    public static void sleepUntil(GameState<?, ReadWrite> state, int date) throws FinMatchException
+    {
+    	GameState.sleep(state, date - GameState.getTempsDepuisDebutMatch(state.getReadOnly()));
+    }
+    
+    public static void creer_obstacle(GameState<RobotReal, ReadWrite> state, Vec2<ReadOnly> position, int date)
+    {
+    	state.gridspace.creer_obstacle(position, date);
+    }
+
+	public static void reinitConnections(GameState<RobotReal, TestOnly> state)
+	{
+		state.gridspace.reinitConnections();
+	}
+	
+	public static void reinitDate(GameState<RobotChrono, TestOnly> state)
+	{
+		state.robot.reinitDate();
+	}
+	
+    /**
+     * Créer un obstacle maintenant.
+     * Utilisé par le thread de capteurs.
+     * @param position
+     */
+    public static void creer_obstacle(GameState<RobotReal, ReadWrite> state, Vec2<ReadOnly> position)
+    {
+    	creer_obstacle(state, position, (int)(System.currentTimeMillis() - Config.getDateDebutMatch()));
+    }
 
 	@SuppressWarnings("unchecked")
 	public final GameState<R, ReadOnly> getReadOnly() {
 		return (GameState<R, ReadOnly>) this;
+	}
+
+	@SuppressWarnings("unchecked")
+	public final GameState<R, TestOnly> getTestOnly() {
+		return (GameState<R, TestOnly>) this;
 	}
 
 	public static boolean isAtPathfindingNodes(GameState<RobotChrono, ReadOnly> state) {

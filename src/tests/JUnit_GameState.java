@@ -30,7 +30,7 @@ public class JUnit_GameState extends JUnit_Test {
     public void setUp() throws Exception {
         super.setUp();
         gamestate = ((GameState<RobotReal,ReadWrite>) container.getService(ServiceNames.REAL_GAME_STATE)).cloneGameState();
-        gamestate.robot.setPosition(new Vec2<ReadOnly>(1100, 1000));
+        GameState.setPosition(gamestate, new Vec2<ReadOnly>(1100, 1000));
     }
 
 	@Test
@@ -39,7 +39,7 @@ public class JUnit_GameState extends JUnit_Test {
 		// Sert à vérifier que les valeurs ne débordent pas les unes sur les autres
 		// (si on alloue pas assez de bits par exemple)
 		long hash = gamestate.getHash();
-		Assert.assertEquals(gamestate.gridspace.getHashObstaclesMobiles(), (hash >> (16+(2*GameElementNames.values().length))));
+		Assert.assertEquals(GameState.getHashObstaclesMobiles(gamestate), (hash >> (16+(2*GameElementNames.values().length))));
 		Assert.assertEquals(gamestate.gridspace.getHashTable(), (hash >> 16) % (1 << (2*GameElementNames.values().length)));
 		Assert.assertEquals(gamestate.robot.areTapisPoses()?1:0, (hash >> 15) % (1 << 1));
 		Assert.assertEquals((gamestate.robot.getPosition().x >> 2) % (1 << 3), (hash >> 12) % (1 << 3));

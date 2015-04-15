@@ -237,7 +237,7 @@ public class Container
 		else if(serviceRequested == ServiceNames.THREAD_SENSOR)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadSensor((Log)getService(ServiceNames.LOG),
 																		(Config)getService(ServiceNames.CONFIG),
-																		(GridSpace)getService(ServiceNames.GRID_SPACE),
+																		(GameState<RobotReal,ReadWrite>)getService(ServiceNames.REAL_GAME_STATE),
 																		(ObstacleManager)getService(ServiceNames.OBSTACLE_MANAGER),
 																		(SensorsCardWrapper)getService(ServiceNames.SENSORS_CARD_WRAPPER));
 		else if(serviceRequested == ServiceNames.THREAD_STRATEGY)

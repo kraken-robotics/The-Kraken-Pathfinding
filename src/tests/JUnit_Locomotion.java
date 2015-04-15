@@ -25,6 +25,7 @@ import robot.Speed;
 import strategie.GameState;
 import utils.ConfigInfo;
 import vec2.ReadOnly;
+import vec2.ReadWrite;
 import vec2.Vec2;
 import container.ServiceNames;
 import enums.RobotColor;
@@ -39,14 +40,14 @@ import exceptions.UnableToMoveException;
 public class JUnit_Locomotion extends JUnit_Test
 {
 	Locomotion locomotion;
-	GameState<RobotReal> realstate;
+	GameState<RobotReal,ReadWrite> realstate;
 	
 	@SuppressWarnings("unchecked")
 	@Before
     public void setUp() throws Exception {
         super.setUp();
         locomotion = (Locomotion) container.getService(ServiceNames.LOCOMOTION);
-        realstate = (GameState<RobotReal>) container.getService(ServiceNames.REAL_GAME_STATE);
+        realstate = (GameState<RobotReal,ReadWrite>) container.getService(ServiceNames.REAL_GAME_STATE);
         locomotion.setPosition(new Vec2<ReadOnly>(0, 1000));
         locomotion.setOrientation(Math.PI/4);
     }
@@ -123,8 +124,8 @@ public class JUnit_Locomotion extends JUnit_Test
 		chemin.add(new SegmentTrajectoireCourbe(PathfindingNodes.COTE_MARCHE_GAUCHE));
 		chemin.add(new SegmentTrajectoireCourbe(PathfindingNodes.DEVANT_DEPART_GAUCHE));
 		
-		locomotion.followPath(chemin, new HookDemiPlan(config, log, realstate), new ArrayList<Hook>(), DirectionStrategy.FASTEST);
-		locomotion.followPath(chemin, new HookDemiPlan(config, log, realstate), new ArrayList<Hook>(), DirectionStrategy.FORCE_FORWARD_MOTION);
+		locomotion.followPath(chemin, new HookDemiPlan(config, log, realstate.getReadOnly()), new ArrayList<Hook>(), DirectionStrategy.FASTEST);
+		locomotion.followPath(chemin, new HookDemiPlan(config, log, realstate.getReadOnly()), new ArrayList<Hook>(), DirectionStrategy.FORCE_FORWARD_MOTION);
 	}
 	
 	@Test
@@ -136,7 +137,7 @@ public class JUnit_Locomotion extends JUnit_Test
         locomotion.setOrientation(0);
 		ArrayList<SegmentTrajectoireCourbe> chemin = new ArrayList<SegmentTrajectoireCourbe>();
 
-		HookDemiPlan hookTrajectoireCourbe = new HookDemiPlan(config, log, realstate);
+		HookDemiPlan hookTrajectoireCourbe = new HookDemiPlan(config, log, realstate.getReadOnly());
 		Executable action = new ThrowsChangeDirection();
 		hookTrajectoireCourbe.ajouter_callback(new Callback(action));
 

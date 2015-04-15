@@ -7,6 +7,7 @@ import org.junit.Test;
 import astar.arc.PathfindingNodes;
 import container.ServiceNames;
 import table.GridSpace;
+import utils.Config;
 import vec2.ReadOnly;
 import vec2.Vec2;
 
@@ -44,7 +45,7 @@ public class JUnit_GridSpace extends JUnit_Test {
 		Assert.assertTrue(gridspace.isTraversable(PathfindingNodes.BAS_DROITE, PathfindingNodes.DEVANT_DEPART_GAUCHE, 0));
 
 		Assert.assertTrue(gridspace.isTraversable(PathfindingNodes.NODE_TAPIS, PathfindingNodes.BAS_GAUCHE, 0));
-		gridspace.creer_obstacle(new Vec2<ReadOnly>(-220, 830));
+		gridspace.creer_obstacle(new Vec2<ReadOnly>(-220, 830), (int)(System.currentTimeMillis() - Config.getDateDebutMatch()));
 		// mise à jour du gridspace
 		gridspace.reinitConnections();
 		Assert.assertTrue(!gridspace.isTraversable(PathfindingNodes.NODE_TAPIS, PathfindingNodes.BAS_GAUCHE, 0));

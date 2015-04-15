@@ -2,19 +2,21 @@ package threads;
 
 import container.Service;
 import exceptions.FinMatchException;
+import robot.RobotReal;
 import robot.cardsWrappers.SensorsCardWrapper;
-import table.GridSpace;
+import strategie.GameState;
 import table.ObstacleManager;
 import utils.Config;
 import utils.ConfigInfo;
 import utils.Log;
 import utils.Sleep;
 import vec2.ReadOnly;
+import vec2.ReadWrite;
 import vec2.Vec2;
 
 /**
  * Thread qui ajoute en continu les obstacles détectés par les capteurs
- * @author pf, Krissprolls
+ * @author pf
  *
  */
 
@@ -23,7 +25,7 @@ public class ThreadSensor extends AbstractThread implements Service
 	private Log log;
 	private Config config;
 	private SensorsCardWrapper capteur;
-	private GridSpace gridspace;
+	private GameState<RobotReal,ReadWrite> state;
 	private ObstacleManager obstaclemanager;
 	
 	private double tempo = 0;
@@ -32,12 +34,12 @@ public class ThreadSensor extends AbstractThread implements Service
 	private int table_y = 2000;
 	private int diametreEnnemi;
 	
-	public ThreadSensor(Log log, Config config, GridSpace gridspace, ObstacleManager obstaclemanager, SensorsCardWrapper capteur)
+	public ThreadSensor(Log log, Config config, GameState<RobotReal,ReadWrite> state, ObstacleManager obstaclemanager, SensorsCardWrapper capteur)
 	{
 		this.log = log;
 		this.config = config;
 		this.capteur = capteur;
-		this.gridspace = gridspace;
+		this.state = state;
 		this.obstaclemanager = obstaclemanager;
 		
 		Thread.currentThread().setPriority(2);
@@ -85,7 +87,7 @@ public class ThreadSensor extends AbstractThread implements Service
 							position.x - diametreEnnemi > -table_x / 2 && position.y > diametreEnnemi && position.x + diametreEnnemi < table_x / 2 && position.y + diametreEnnemi < table_y)
 						if(!obstaclemanager.isObstacleFixePresentCapteurs(positionBrute))
 						{
-							gridspace.creer_obstacle(position);
+							GameState.creer_obstacle(state, position);
 							date_dernier_ajout = (int)System.currentTimeMillis();
 							log.debug("Nouvel obstacle en "+position);
 						}
@@ -110,7 +112,7 @@ public class ThreadSensor extends AbstractThread implements Service
 		diametreEnnemi = 2*config.getInt(ConfigInfo.RAYON_ROBOT_ADVERSE);
 		log.updateConfig();
 		capteur.updateConfig();
-		gridspace.updateConfig();
+		state.updateConfig();
 		obstaclemanager.updateConfig();;
 	}
 

@@ -11,6 +11,7 @@ import astar.arcmanager.PathfindingArcManager;
 import robot.RobotChrono;
 import robot.RobotReal;
 import strategie.GameState;
+import vec2.ReadWrite;
 
 /**
  * Tests unitaires des calculs sur les PathfindingNodes
@@ -21,15 +22,15 @@ import strategie.GameState;
 public class JUnit_PathfindingArcManager extends JUnit_Test {
 	
 	private PathfindingArcManager pathfindingarcmanager;
-	private GameState<RobotChrono> state_chrono;
+	private GameState<RobotChrono,ReadWrite> state_chrono;
 
 	@Before
     public void setUp() throws Exception {
         super.setUp();
         pathfindingarcmanager = (PathfindingArcManager) container.getService(ServiceNames.PATHFINDING_ARC_MANAGER);
 		@SuppressWarnings("unchecked")
-		GameState<RobotReal> state = (GameState<RobotReal>)container.getService(ServiceNames.REAL_GAME_STATE);
-		state_chrono = state.cloneGameState();
+		GameState<RobotReal,ReadWrite> state = (GameState<RobotReal,ReadWrite>)container.getService(ServiceNames.REAL_GAME_STATE);
+		state_chrono = GameState.cloneGameState(state.getReadOnly());
 	}
 
 /*	@Test
@@ -108,8 +109,8 @@ public class JUnit_PathfindingArcManager extends JUnit_Test {
 		boolean[] verification = new boolean[PathfindingNodes.values().length];
 		for(PathfindingNodes j : PathfindingNodes.values())
 		{
-			state_chrono.robot.setPositionPathfinding(j);
-			pathfindingarcmanager.reinitIterator(state_chrono);
+			GameState.setPositionPathfinding(state_chrono, j);
+			pathfindingarcmanager.reinitIterator(state_chrono.getReadOnly());
 			for(PathfindingNodes i : PathfindingNodes.values())
 				verification[i.ordinal()] = false;
 			while(pathfindingarcmanager.hasNext())
@@ -118,7 +119,7 @@ public class JUnit_PathfindingArcManager extends JUnit_Test {
 				verification[((SegmentTrajectoireCourbe)pathfindingarcmanager.next()).objectifFinal.ordinal()] = true;
 			}
 			for(PathfindingNodes i : PathfindingNodes.values())
-				Assert.assertEquals((state_chrono.gridspace.isTraversable(i, j, 0) && i != j), verification[i.ordinal()]);
+				Assert.assertEquals((GameState.isTraversable(state_chrono.getReadOnly(), i, j, 0) && i != j), verification[i.ordinal()]);
 		}
 	}
 	

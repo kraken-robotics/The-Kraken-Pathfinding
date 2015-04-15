@@ -10,6 +10,7 @@ import astar.arc.PathfindingNodes;
 import robot.RobotChrono;
 import strategie.GameState;
 import utils.ConfigInfo;
+import vec2.ReadWrite;
 
 /**
  * Tests unitaires du memorymanager
@@ -32,15 +33,15 @@ public class JUnit_MemoryManager extends JUnit_Test {
     public void test_echange() throws Exception
     {
 		Assert.assertTrue(memorymanager.isMemoryManagerEmpty(0));
-		GameState<RobotChrono> state_chrono1 = memorymanager.getNewGameState(0);
-		state_chrono1.robot.setPositionPathfinding(PathfindingNodes.BAS);
+		GameState<RobotChrono,ReadWrite> state_chrono1 = memorymanager.getNewGameState(0);
+		GameState.setPositionPathfinding(state_chrono1, PathfindingNodes.BAS);
 		Assert.assertTrue(!memorymanager.isMemoryManagerEmpty(0));
-		GameState<RobotChrono> state_chrono2 = memorymanager.getNewGameState(0);
-		state_chrono2.robot.setPositionPathfinding(PathfindingNodes.BAS_DROITE);
+		GameState<RobotChrono,ReadWrite> state_chrono2 = memorymanager.getNewGameState(0);
+		GameState.setPositionPathfinding(state_chrono2, PathfindingNodes.BAS_DROITE);
 		memorymanager.destroyGameState(state_chrono1, 0);
 		state_chrono1 = null;
 		// on vérifie que l'échange est bien fait
-		Assert.assertEquals(state_chrono2.robot.getPositionPathfinding(), PathfindingNodes.BAS_DROITE);
+		Assert.assertEquals(GameState.getPositionPathfinding(state_chrono2.getReadOnly()), PathfindingNodes.BAS_DROITE);
 		Assert.assertTrue(!memorymanager.isMemoryManagerEmpty(0));
 		memorymanager.destroyGameState(state_chrono2, 0);
 		state_chrono2 = null;

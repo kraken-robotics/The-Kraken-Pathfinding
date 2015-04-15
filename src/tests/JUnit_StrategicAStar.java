@@ -45,13 +45,13 @@ public class JUnit_StrategicAStar extends JUnit_Test
     	PathfindingNodes version = PathfindingNodes.CLAP_DROIT;
     	ArrayList<SegmentTrajectoireCourbe> chemin = new ArrayList<SegmentTrajectoireCourbe>();
     	chemin.add(new SegmentTrajectoireCourbe(version));
-    	Decision decision = new Decision(chemin, ScriptAnticipableNames.CLAP, version);
-    	GameState<RobotChrono> chronostate = gamestate.cloneGameState();
-    	chronostate.robot.setPositionPathfinding(version);
+    	Decision decision = new Decision(chemin, ScriptAnticipableNames.SORTIE_ZONE_DEPART, version);
+    	GameState<RobotChrono,ReadWrite> chronostate = GameState.cloneGameState(gamestate.getReadOnly());
+    	GameState.setPositionPathfinding(chronostate, version);
 
     	config.setDateDebutMatch();
 
-    	ArrayList<Decision> decisions = astar.computeStrategyAfter(chronostate, decision, 10000);
+    	ArrayList<Decision> decisions = astar.computeStrategyAfter(chronostate.getReadOnly(), decision, 10000);
 		for(Decision d: decisions)
 			log.debug(d);
     }

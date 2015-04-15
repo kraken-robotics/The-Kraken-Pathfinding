@@ -278,16 +278,6 @@ public class GridSpace implements Service {
     {
     	obstaclemanager.createHypotheticalEnnemy(position, date_actuelle);
     }
-    
-    /**
-     * Créer un obstacle maintenant.
-     * Utilisé par le thread de capteurs.
-     * @param position
-     */
-    public void creer_obstacle(Vec2<ReadOnly> position)
-    {
-    	creer_obstacle(position, (int)(System.currentTimeMillis() - Config.getDateDebutMatch()));
-    }
 
     /**
      * Doit-on shooter les éléments de jeux? Cela modifie les chemins disponibles.
