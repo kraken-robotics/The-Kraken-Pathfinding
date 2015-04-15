@@ -4,6 +4,7 @@ import strategie.GameState;
 import utils.Config;
 import utils.ConfigInfo;
 import utils.Log;
+import vec2.ReadOnly;
 
 /**
  * Un hook date reconnu facilement avec instanceof
@@ -16,7 +17,7 @@ public class HookDateFinMatch extends HookDate
 	
 	private int dureeMatch = 90000;
 
-	public HookDateFinMatch(Config config, Log log, GameState<?> state, long date)
+	public HookDateFinMatch(Config config, Log log, GameState<?,ReadOnly> state, long date)
 	{
 		super(config, log, state, date);
 		dureeMatch = config.getInt(ConfigInfo.DUREE_MATCH_EN_S)*1000;

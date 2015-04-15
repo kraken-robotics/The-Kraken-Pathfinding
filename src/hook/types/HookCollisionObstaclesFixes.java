@@ -23,14 +23,14 @@ public class HookCollisionObstaclesFixes extends Hook
 {
 	private ObstacleRectangular obstacle;
 	
-	public HookCollisionObstaclesFixes(Config config, Log log, GameState<?> state)
+	public HookCollisionObstaclesFixes(Config config, Log log, GameState<?,ReadOnly> state)
 	{
 		super(config, log, state);
 		// Le coefficient 2 vient du fait qu'on aura en fait un rectangle centré sur le robot,
 		// et qu'on regardera aussi les obstacles derrière le robot
 		int previsionCollision = config.getInt(ConfigInfo.PREVISION_COLLISION)*2;
 		try {
-			obstacle = new ObstacleRectangular(state.robot.getPosition(), state.robot.getPosition().plusNewVector(new Vec2<ReadWrite>((int)(Math.cos(state.robot.getOrientation())*previsionCollision), (int)(Math.sin(state.robot.getOrientation())*previsionCollision))).getReadOnly());
+			obstacle = new ObstacleRectangular(GameState.getPosition(state), GameState.getPosition(state).plusNewVector(new Vec2<ReadWrite>((int)(Math.cos(GameState.getOrientation(state))*previsionCollision), (int)(Math.sin(GameState.getOrientation(state))*previsionCollision))).getReadOnly());
 		} catch (FinMatchException e) {
 			// Normalement impossible
 			e.printStackTrace();
@@ -40,7 +40,7 @@ public class HookCollisionObstaclesFixes extends Hook
 	@Override
 	public void evaluate() throws FinMatchException, ScriptHookException, WallCollisionDetectedException
 	{
-		obstacle.update(state.robot.getPosition(), state.robot.getOrientation());
+		obstacle.update(GameState.getPosition(state), GameState.getOrientation(state));
 		if(obstacle.isCollidingObstacleFixe())
 			throw new WallCollisionDetectedException();
 	}

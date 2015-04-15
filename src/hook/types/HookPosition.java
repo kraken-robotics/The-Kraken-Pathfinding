@@ -39,7 +39,7 @@ public class HookPosition extends Hook
      * @param tolerance : imprécision admise sur la position qui déclenche le hook
      * @param isYellowTeam : la couleur du robot: vert ou jaune 
      */
-	public HookPosition(Config config, Log log, GameState<?> state, Vec2<ReadOnly> position, int tolerancy)
+	public HookPosition(Config config, Log log, GameState<?,ReadOnly> state, Vec2<ReadOnly> position, int tolerancy)
 	{
 		super(config, log, state);
 		this.position = position;
@@ -57,7 +57,7 @@ public class HookPosition extends Hook
      */
 	public void evaluate() throws FinMatchException, ScriptHookException, WallCollisionDetectedException, ChangeDirectionException
 	{
-		Vec2<ReadOnly> positionRobot = state.robot.getPosition();
+		Vec2<ReadOnly> positionRobot = GameState.getPosition(state);
 		if(position.squaredDistance(positionRobot) <= squaredTolerancy)
 			trigger();
 	}

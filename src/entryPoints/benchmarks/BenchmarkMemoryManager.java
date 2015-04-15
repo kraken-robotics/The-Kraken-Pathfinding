@@ -6,6 +6,7 @@ import robot.RobotChrono;
 import robot.RobotReal;
 import strategie.GameState;
 import utils.Log;
+import vec2.ReadWrite;
 
 /**
  * Benchmark sur memory manager. Utilisé pour l'optimisation.
@@ -23,13 +24,13 @@ public class BenchmarkMemoryManager
 			Container container = new Container();
 			
 			Log log = (Log)container.getService(ServiceNames.LOG);
-			GameState<RobotReal> state = (GameState<RobotReal>)container.getService(ServiceNames.REAL_GAME_STATE);
-			GameState<RobotChrono> gamestate = state.cloneGameState();
-			GameState<RobotChrono> gamestate2 = state.cloneGameState();
+			GameState<RobotReal,ReadWrite> state = (GameState<RobotReal,ReadWrite>)container.getService(ServiceNames.REAL_GAME_STATE);
+			GameState<RobotChrono,ReadWrite> gamestate = GameState.cloneGameState(state.getReadOnly());
+			GameState<RobotChrono,ReadWrite> gamestate2 = GameState.cloneGameState(state.getReadOnly());
 			long date_avant = System.currentTimeMillis();
 			long nb_iter = 20000000l;
 			for(long i = 0; i < nb_iter; i++)
-				gamestate2.copy(gamestate);
+				GameState.copy(gamestate2.getReadOnly(), gamestate);
 
 			log.debug("Durée totale en ms: "+(System.currentTimeMillis()-date_avant));
 			container.destructor();

@@ -3,7 +3,7 @@ package hook.methods;
 import robot.RobotChrono;
 import strategie.GameState;
 import table.GameElementNames;
-import table.GridSpace;
+import vec2.ReadWrite;
 import enums.Tribool;
 import hook.Executable;
 
@@ -16,13 +16,13 @@ import hook.Executable;
 public class GameElementDone implements Executable
 {
 
-	private GridSpace gridspace;
+	private GameState<?, ReadWrite> state;
 	private Tribool done;
 	private GameElementNames element;
 	
-	public GameElementDone(GridSpace gridspace, GameElementNames element, Tribool done)
+	public GameElementDone(GameState<?, ReadWrite> state, GameElementNames element, Tribool done)
 	{
-		this.gridspace = gridspace;
+		this.state = state;
 		this.done = done;
 		this.element = element;
 	}
@@ -34,14 +34,14 @@ public class GameElementDone implements Executable
 		// c'est-à-dire qu'on peut passer de FALSE à MAYBE et TRUE
 		// et de MAYBE à TRUE.
 		// Les autres transitions sont interdites (en particulier passer de TRUE à MAYBE...)
-		if(gridspace.isDone(element).getHash() < done.getHash())
-			gridspace.setDone(element, done);
+		if(GameState.isDone(state.getReadOnly(), element).getHash() < done.getHash())
+			GameState.setDone(state, element, done);
 	}
 
 	@Override
-	public void updateGameState(GameState<RobotChrono> state)
+	public void updateGameState(GameState<RobotChrono,ReadWrite> state)
 	{
-		gridspace = state.gridspace;
+		this.state = state;
 	}
 
 }

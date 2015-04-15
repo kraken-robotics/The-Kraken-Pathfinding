@@ -19,7 +19,6 @@ import exceptions.PathfindingException;
 import exceptions.PathfindingRobotInObstacleException;
 import exceptions.ScriptException;
 import robot.RobotChrono;
-import robot.RobotReal;
 import strategie.GameState;
 import utils.Config;
 import utils.ConfigInfo;
@@ -91,7 +90,7 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 	 * @throws PathfindingException 
 	 * @throws MemoryManagerException 
 	 */	
-	public synchronized ArrayList<A> computeStrategyEmergency(GameState<RobotReal,ReadOnly> state, int dureeAnticipation) throws FinMatchException, PathfindingException, MemoryManagerException
+	public synchronized ArrayList<A> computeStrategyEmergency(GameState<RobotChrono,ReadOnly> state, int dureeAnticipation) throws FinMatchException, PathfindingException, MemoryManagerException
 	{
 		if(!(arcmanager instanceof StrategyArcManager))
 		{
@@ -179,7 +178,6 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 	/**
 	 * Calcul d'un chemin à partir d'un certain état (state) et d'un point d'arrivée (endNode).
 	 * Le boolean permet de signaler au pathfinding si on autorise ou non le shootage d'élément de jeu pas déjà pris.
-	 * State n'est pas modifié.
 	 * @param state
 	 * @param endNode
 	 * @param shoot_game_element
@@ -190,7 +188,7 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 	 * @throws MemoryManagerException
 	 */
 	@SuppressWarnings("unchecked")
-	public synchronized ArrayList<A> computePath(GameState<RobotChrono,ReadOnly> state, PathfindingNodes endNode, boolean shoot_game_element) throws PathfindingException, PathfindingRobotInObstacleException, FinMatchException, MemoryManagerException
+	public synchronized ArrayList<A> computePath(GameState<RobotChrono,ReadWrite> depart, PathfindingNodes endNode, boolean shoot_game_element) throws PathfindingException, PathfindingRobotInObstacleException, FinMatchException, MemoryManagerException
 	{
 		if(!(arcmanager instanceof PathfindingArcManager))
 		{
@@ -198,23 +196,21 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 			return null;
 		}
 		try {
-			state.gridspace.setAvoidGameElement(!shoot_game_element);
+			GameState.setAvoidGameElement(depart, !shoot_game_element);
 
 			PathfindingNodes pointDepart;
-			if(GameState.isAtPathfindingNodes(state))
+			if(GameState.isAtPathfindingNodes(depart.getReadOnly()))
 			{
 //				log.debug("Départ en PathfindingNodes", this);
-				pointDepart = GameState.getPositionPathfinding(state);
+				pointDepart = GameState.getPositionPathfinding(depart.getReadOnly());
 			}
 			else
 			{
 //				log.debug("Départ pas en PathfindingNodes", this);
-				pointDepart = state.gridspace.nearestReachableNode(GameState.getPosition(state), GameState.getTempsDepuisDebutMatch(state));
+				pointDepart = GameState.nearestReachableNode(depart.getReadOnly(), GameState.getPosition(depart.getReadOnly()), GameState.getTempsDepuisDebutMatch(depart.getReadOnly()));
 //				log.debug("Point départ: "+pointDepart, this);
 			}
 
-			GameState<RobotChrono,ReadWrite> depart = arcmanager.getNewGameState();
-			GameState.copy(state, depart);
 			GameState.setPositionPathfinding(depart, pointDepart);
 			
 //			log.debug("Cherche un chemin entre "+pointDepart+" et "+endNode, this);
@@ -225,11 +221,11 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 			ArrayList<A> cheminArc = process(depart, arcmanager, false);
 
 			// on n'a besoin de lisser que si on ne partait pas d'un pathfindingnode
-			if(!GameState.isAtPathfindingNodes(state))
+			if(!GameState.isAtPathfindingNodes(depart.getReadOnly()))
 			{
 				// parce qu'on ne part pas du point de départ directement...
 				cheminArc.add(0, (A)new SegmentTrajectoireCourbe(pointDepart));
-				cheminArc = lissage(GameState.getPosition(state.getReadOnly()), state, cheminArc);
+				cheminArc = lissage(GameState.getPosition(depart.getReadOnly()), depart.getReadOnly(), cheminArc);
 			}
 			
 //			log.debug("Recherche de chemin terminée", this);
@@ -260,7 +256,7 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 	private ArrayList<A> lissage(Vec2<ReadOnly> depart, GameState<RobotChrono,ReadOnly> state, ArrayList<A> chemin)
 	{
 		// si on peut sauter le premier point, on le fait
-		while(chemin.size() >= 2 && state.gridspace.isTraversable(depart, ((SegmentTrajectoireCourbe)chemin.get(1)).objectifFinal.getCoordonnees(), GameState.getTempsDepuisDebutMatch(state)))
+		while(chemin.size() >= 2 && GameState.isTraversable(state, depart, ((SegmentTrajectoireCourbe)chemin.get(1)).objectifFinal.getCoordonnees(), GameState.getTempsDepuisDebutMatch(state)))
 			chemin.remove(0);
 
 		return chemin;

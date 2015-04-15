@@ -87,7 +87,7 @@ public class Execution implements Service {
 			// On a rencontré l'ennemi en chemin. On applique la stratégie d'urgence.
 			boolean recommence = true;
 			do {
-				if(gamestate.robot.isEnemyHere())
+				if(GameState.isEnemyHere(gamestate.getReadOnly()))
 				{
 					log.debug("Stratégie d'urgence avec ennemi: "+decision_actuelle.script_name);
 					decision_actuelle = threadstrategy.getEmergencyDecision();
@@ -115,8 +115,8 @@ public class Execution implements Service {
 	private void tryOnce(Decision d) throws UnableToMoveException, ScriptException, FinMatchException
 	{
 		try {
-			gamestate.robot.set_vitesse(Speed.BETWEEN_SCRIPTS);
-			gamestate.robot.suit_chemin(d.chemin, hooksEntreScripts);
+			GameState.set_vitesse(gamestate, Speed.BETWEEN_SCRIPTS);
+			GameState.suit_chemin(gamestate, d.chemin, hooksEntreScripts);
 			threadstrategy.computeBestDecisionAfter(d);
 			scriptmanager.getScript(d.script_name).agit(d.version, gamestate);
 		} catch (ScriptHookException e) {

@@ -18,6 +18,8 @@ import table.GameElementNames;
 import utils.ConfigInfo;
 import utils.Log;
 import utils.Config;
+import vec2.ReadOnly;
+import vec2.ReadWrite;
 
 /**
  * Service fabriquant des hooks à la demande.
@@ -67,7 +69,7 @@ public class HookFactory implements Service
      * @param date_limite
      * @return
      */
-    public HookDateFinMatch getHooksFinMatchChrono(GameState<?> state)
+    public HookDateFinMatch getHooksFinMatchChrono(GameState<?,ReadOnly> state)
     {
     	if(hook_fin_match_chrono == null)
     		hook_fin_match_chrono = getHooksFinMatch(state, true);
@@ -80,10 +82,10 @@ public class HookFactory implements Service
      * @param date_limite
      * @return
      */
-    public HookDateFinMatch updateHooksFinMatch(GameState<RobotChrono> state, int date_limite)
+    public HookDateFinMatch updateHooksFinMatch(GameState<RobotChrono,ReadWrite> state, int date_limite)
     {
     	if(hook_fin_match_chrono == null)
-    		hook_fin_match_chrono = getHooksFinMatch(state, true);
+    		hook_fin_match_chrono = getHooksFinMatch(state.getReadOnly(), true);
     	
     	/**
     	 * Mise à jour de la date limite
@@ -99,7 +101,7 @@ public class HookFactory implements Service
      * @param state
      * @return
      */
-    public HookDateFinMatch getHooksFinMatchReal(GameState<?> state)
+    public HookDateFinMatch getHooksFinMatchReal(GameState<?,ReadOnly> state)
     {
     	return getHooksFinMatch(state, false);
     }
@@ -111,7 +113,7 @@ public class HookFactory implements Service
      * @param isChrono
      * @return
      */
-    private HookDateFinMatch getHooksFinMatch(GameState<?> state, boolean isChrono)
+    private HookDateFinMatch getHooksFinMatch(GameState<?,ReadOnly> state, boolean isChrono)
     {
     	HookDateFinMatch hook_fin_match = new HookDateFinMatch(config, log, state, dureeMatch);
     	hook_fin_match.ajouter_callback(new Callback(new ThrowsScriptHook(ScriptHookNames.FUNNY_ACTION, null)));
@@ -125,7 +127,7 @@ public class HookFactory implements Service
      * @return
      * @throws FinMatchException 
      */
-    public ArrayList<Hook> getHooksEntreScriptsChrono(GameState<RobotChrono> state, int date_limite) throws FinMatchException
+    public ArrayList<Hook> getHooksEntreScriptsChrono(GameState<RobotChrono,ReadWrite> state, int date_limite) throws FinMatchException
     {
     	if(hooks_table_chrono == null)
     		hooks_table_chrono = getHooksEntreScriptsReal(state, true);
@@ -147,28 +149,28 @@ public class HookFactory implements Service
      * @return
      * @throws FinMatchException 
      */
-    public ArrayList<Hook> getHooksEntreScriptsReal(GameState<RobotReal> state) throws FinMatchException
+    public ArrayList<Hook> getHooksEntreScriptsReal(GameState<RobotReal,ReadWrite> state) throws FinMatchException
     {
     	return getHooksEntreScriptsReal(state, false);
     }
 
     
-    private ArrayList<Hook> getHooksEntreScriptsReal(GameState<?> state, boolean isChrono) throws FinMatchException
+    private ArrayList<Hook> getHooksEntreScriptsReal(GameState<?,ReadWrite> state, boolean isChrono) throws FinMatchException
     {
     	ArrayList<Hook> hooks_entre_scripts = new ArrayList<Hook>();
 		Hook hook;
 		GameElementDone action;
 		
 		// Il faut s'assurer que le hook de fin de match est toujours en première position
-		hooks_entre_scripts.add(getHooksFinMatch(state, isChrono));
+		hooks_entre_scripts.add(getHooksFinMatch(state.getReadOnly(), isChrono));
     	
 		for(GameElementNames n: GameElementNames.values())
 		{
 			// Ce que l'ennemi peut prendre
 			if(n.getType().isInCommon())
 			{
-				hook = new HookDate(config, log, state, n.getType().getDateEnemyTakesIt());
-				action = new GameElementDone(state.gridspace, n, Tribool.MAYBE);
+				hook = new HookDate(config, log, state.getReadOnly(), n.getType().getDateEnemyTakesIt());
+				action = new GameElementDone(state, n, Tribool.MAYBE);
 				hook.ajouter_callback(new Callback(action));
 				hooks_entre_scripts.add(hook);
 			}
@@ -176,15 +178,15 @@ public class HookFactory implements Service
 			// Ce qu'on peut shooter
 			if(n.getType().canBeShot()) // on ne met un hook de collision que sur ceux qui ont susceptible de disparaître quand on passe dessus
 			{
-				hook = new HookCollisionElementJeu(config, log, state, n.getObstacle());
-				action = new GameElementDone(state.gridspace, n, Tribool.TRUE);
+				hook = new HookCollisionElementJeu(config, log, state.getReadOnly(), n.getObstacle());
+				action = new GameElementDone(state, n, Tribool.TRUE);
 				hook.ajouter_callback(new Callback(action));
 				hooks_entre_scripts.add(hook);
 			}
 			
 			if(n.getType().scriptHookThrown() != null)
 			{
-				hook = new HookCollisionElementJeu(config, log, state, n.getObstacleDilate());
+				hook = new HookCollisionElementJeu(config, log, state.getReadOnly(), n.getObstacleDilate());
 				ThrowsScriptHook action2 = new ThrowsScriptHook(n.getType().scriptHookThrown(), n);
 				hook.ajouter_callback(new Callback(action2));
 				hooks_entre_scripts.add(hook);				

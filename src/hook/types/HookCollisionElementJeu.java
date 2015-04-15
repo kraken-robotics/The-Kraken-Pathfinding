@@ -24,7 +24,7 @@ public class HookCollisionElementJeu extends Hook
 	private ObstacleCircular obstacle;
 	private ObstacleRectangular obstacleRobot;
 	
-	public HookCollisionElementJeu(Config config, Log log, GameState<?> state, ObstacleCircular o) throws FinMatchException
+	public HookCollisionElementJeu(Config config, Log log, GameState<?, ReadOnly> state, ObstacleCircular o) throws FinMatchException
 	{
 		super(config, log, state);
 		obstacle = o;
@@ -47,7 +47,7 @@ public class HookCollisionElementJeu extends Hook
      */
 	public void evaluate() throws FinMatchException, ScriptHookException, WallCollisionDetectedException, ChangeDirectionException
 	{
-		obstacleRobot.update(state.robot.getPosition(), state.robot.getOrientation());
+		obstacleRobot.update(GameState.getPosition(state), GameState.getOrientation(state));
 		if(obstacleRobot.isColliding(obstacle))
 			trigger();
 	}

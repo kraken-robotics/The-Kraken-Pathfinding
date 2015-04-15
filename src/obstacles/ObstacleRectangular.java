@@ -87,9 +87,9 @@ public class ObstacleRectangular extends Obstacle implements ObstacleCollision
 	 * @param state
 	 * @throws FinMatchException 
 	 */
-	public ObstacleRectangular(GameState<?> state) throws FinMatchException
+	public ObstacleRectangular(GameState<?,ReadOnly> state) throws FinMatchException
 	{
-		this(state.robot.getPosition(), longueurRobot, largeurRobot, state.robot.getOrientation());
+		this(GameState.getPosition(state), longueurRobot, largeurRobot, GameState.getOrientation(state));
 	}
 
 	private void updateVariables(Vec2<ReadOnly> position, double angle)

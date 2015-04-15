@@ -4,6 +4,7 @@ import robot.RobotChrono;
 import scripts.ScriptHookNames;
 import strategie.GameState;
 import table.GameElementNames;
+import vec2.ReadWrite;
 import hook.Executable;
 import exceptions.ScriptHookException;
 
@@ -36,7 +37,7 @@ public class ThrowsScriptHook implements Executable {
 	}
 	
 	@Override
-	public void updateGameState(GameState<RobotChrono> state)
+	public void updateGameState(GameState<RobotChrono,ReadWrite> state)
 	{}
 
 }

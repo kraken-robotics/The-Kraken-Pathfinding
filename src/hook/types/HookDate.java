@@ -21,7 +21,7 @@ public class HookDate extends Hook {
 
 	protected long date_hook;
 	
-	public HookDate(Config config, Log log, GameState<?> state, long date)
+	public HookDate(Config config, Log log, GameState<?,ReadOnly> state, long date)
 	{
 		super(config, log, state);
 		this.date_hook = date;

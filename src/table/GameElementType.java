@@ -12,9 +12,9 @@ import scripts.ScriptHookNames;
 
 public enum GameElementType {
 	DISTRIBUTEUR(false, 15000, null),
-	VERRE(true, 15000, ScriptHookNames.PREND_VERRE),
+	VERRE(true, 15000, null),
 	CLAP(false, 0, null),
-	PLOT(true, 0, ScriptHookNames.PREND_PLOT);
+	PLOT(true, 0, ScriptHookNames.EXEMPLE);
 
 	private boolean canBeShot;
 	private boolean isInCommon;

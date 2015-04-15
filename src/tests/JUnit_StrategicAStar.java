@@ -16,6 +16,7 @@ import robot.RobotReal;
 import scripts.ScriptAnticipableNames;
 import strategie.GameState;
 import vec2.ReadOnly;
+import vec2.ReadWrite;
 import vec2.Vec2;
 
 /**
@@ -26,16 +27,16 @@ import vec2.Vec2;
 
 public class JUnit_StrategicAStar extends JUnit_Test
 {
-	private GameState<RobotReal> gamestate;
+	private GameState<RobotReal,ReadWrite> gamestate;
 	private AStar<StrategyArcManager, Decision> astar;
 	
     @SuppressWarnings("unchecked")
 	@Before
     public void setUp() throws Exception {
         super.setUp();
-        gamestate = (GameState<RobotReal>) container.getService(ServiceNames.REAL_GAME_STATE);
+        gamestate = (GameState<RobotReal,ReadWrite>) container.getService(ServiceNames.REAL_GAME_STATE);
         astar = (AStar<StrategyArcManager, Decision>) container.getService(ServiceNames.A_STAR_STRATEGY);
-        gamestate.robot.setPosition(new Vec2<ReadOnly>(1100, 1000));
+        GameState.setPosition(gamestate,new Vec2<ReadOnly>(1100, 1000));
     }
     
     @Test

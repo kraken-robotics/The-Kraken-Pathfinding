@@ -3,6 +3,7 @@ package hook.methods;
 import hook.Executable;
 import robot.RobotChrono;
 import strategie.GameState;
+import vec2.ReadWrite;
 import exceptions.ChangeDirectionException;
 
 /**
@@ -25,7 +26,7 @@ public class ThrowsChangeDirection implements Executable
 	}
 
 	@Override
-	public void updateGameState(GameState<RobotChrono> state)
+	public void updateGameState(GameState<RobotChrono,ReadWrite> state)
 	{}
 
 }

@@ -2,6 +2,7 @@ package hook.methods;
 
 import robot.RobotChrono;
 import strategie.GameState;
+import vec2.ReadWrite;
 import exceptions.WallCollisionDetectedException;
 import hook.Executable;
 
@@ -24,7 +25,7 @@ public class ThrowsWallCollisionDetectedException implements Executable
 	}
 
 	@Override
-	public void updateGameState(GameState<RobotChrono> state)
+	public void updateGameState(GameState<RobotChrono,ReadWrite> state)
 	{}
 
 }

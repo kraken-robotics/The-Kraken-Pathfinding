@@ -24,7 +24,7 @@ public class HookDemiPlan extends Hook
 	 * @param log
 	 * @param state
 	 */
-	public HookDemiPlan(Config config, Log log, GameState<? extends Robot, > state)
+	public HookDemiPlan(Config config, Log log, GameState<?, ReadOnly> state)
 	{
 		super(config, log, state);
 	}
@@ -35,7 +35,7 @@ public class HookDemiPlan extends Hook
 	 * @param log
 	 * @param state
 	 */
-	public HookDemiPlan(Config config, Log log, GameState<?> state, Vec2<ReadOnly> point, Vec2<ReadOnly> direction)
+	public HookDemiPlan(Config config, Log log, GameState<?,ReadOnly> state, Vec2<ReadOnly> point, Vec2<ReadOnly> direction)
 	{
 		super(config, log, state);
 		this.point = point.getReadOnly();
@@ -55,7 +55,7 @@ public class HookDemiPlan extends Hook
 	public void evaluate() throws FinMatchException, ScriptHookException,
 			WallCollisionDetectedException, ChangeDirectionException
 	{
-		Vec2<ReadOnly> positionRobot = state.robot.getPosition();
+		Vec2<ReadOnly> positionRobot = GameState.getPosition(state);
 //		log.debug("Evaluation en "+positionRobot+", point: "+point, this);
 		if(!disabled && positionRobot.minusNewVector(point).dot(direction) > 0)
 		{

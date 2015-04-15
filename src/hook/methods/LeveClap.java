@@ -4,6 +4,7 @@ import robot.Robot;
 import robot.RobotChrono;
 import robot.cardsWrappers.enums.HauteurBrasClap;
 import strategie.GameState;
+import vec2.ReadWrite;
 import exceptions.FinMatchException;
 import exceptions.SerialConnexionException;
 import hook.Executable;
@@ -36,7 +37,7 @@ public class LeveClap implements Executable
 	}
 
 	@Override
-	public void updateGameState(GameState<RobotChrono> state)
+	public void updateGameState(GameState<RobotChrono,ReadWrite> state)
 	{}
 
 }

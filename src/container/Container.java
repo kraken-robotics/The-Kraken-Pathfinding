@@ -253,7 +253,7 @@ public class Container
 			instanciedServices[serviceRequested.ordinal()] = (Service)new StrategyArcManager((Log)getService(ServiceNames.LOG),
 																		(Config)getService(ServiceNames.CONFIG),
 																		(ScriptManager)getService(ServiceNames.SCRIPT_MANAGER),
-																		(GameState<RobotReal>)getService(ServiceNames.REAL_GAME_STATE),
+																		(GameState<RobotReal,ReadOnly>)getService(ServiceNames.REAL_GAME_STATE),
 																		(HookFactory)getService(ServiceNames.HOOK_FACTORY),
 																		(AStar<PathfindingArcManager, SegmentTrajectoireCourbe>)getService(ServiceNames.A_STAR_PATHFINDING),
 																		(MemoryManager)getService(ServiceNames.MEMORY_MANAGER));

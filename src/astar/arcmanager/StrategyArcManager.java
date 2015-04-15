@@ -31,6 +31,7 @@ import exceptions.PathfindingRobotInObstacleException;
 import exceptions.PointSortieException;
 import exceptions.ScriptException;
 import exceptions.ScriptHookException;
+import exceptions.UnableToMoveException;
 
 /**
  * Réalise les calculs sur les scripts et les gamestate pour l'AStar.
@@ -88,12 +89,12 @@ public class StrategyArcManager extends ArcManager {
 //					log.debug("Recherche de chemins pour "+s+" "+v, this);
 					// On n'ajoute que les versions qui sont accessibles
 					try {
-						ArrayList<SegmentTrajectoireCourbe> chemin = astar.computePath(gamestate, v, true);
+						ArrayList<SegmentTrajectoireCourbe> chemin = astar.computePath(GameState.cloneGameState(gamestate), v, true);
 //						log.debug("Chemin trouvé en défonçant les éléments de jeux", this);
 						listeDecisions.add(new Decision(chemin, s, v));
 						try {
 							// On ne rajoute la version où on ne shoot pas seulement si le chemin proposé est différent
-							ArrayList<SegmentTrajectoireCourbe> chemin2 = astar.computePath(gamestate, v, false);
+							ArrayList<SegmentTrajectoireCourbe> chemin2 = astar.computePath(GameState.cloneGameState(gamestate), v, false);
 //							log.debug("Chemin trouvé sans défoncer les éléments de jeux", this);
 							if(!chemin2.equals(chemin))
 								listeDecisions.add(new Decision(chemin2, s, v));
@@ -141,7 +142,15 @@ public class StrategyArcManager extends ArcManager {
 		Script s = scriptmanager.getScript(d.script_name);
 		int old_temps = (int)GameState.getTempsDepuisDebutMatch(state.getReadOnly());
 		ArrayList<Hook> hooks_table = hookfactory.getHooksEntreScriptsChrono(state, dateLimite);
-		GameState.suit_chemin(state, d.chemin, hooks_table);
+		try {
+			GameState.suit_chemin(state, d.chemin, hooks_table);
+		} catch (UnableToMoveException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (ScriptHookException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		try {
 			s.agit(d.version, state);
 		} catch (ScriptHookException e) {

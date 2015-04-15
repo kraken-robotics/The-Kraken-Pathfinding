@@ -81,7 +81,7 @@ public class ThreadStrategy extends AbstractThread implements Service
 					decision = decisions.get(0);
 					needNewBestAfterThis = null; // en cas d'erreur, ce n'est pas mis à null
 				}
-				decisionSecours = strategie.computeStrategyEmergency(chronostate.gridspace, 10000).get(0);
+				decisionSecours = strategie.computeStrategyEmergency(chronostate.getReadOnly(), 10000).get(0);
 				decisionNormale = strategie.computeStrategy(chronostate, 10000).get(0);
 			} catch (FinMatchException e) {
 				break;

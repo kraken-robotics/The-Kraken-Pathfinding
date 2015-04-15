@@ -8,13 +8,16 @@ import hook.Hook;
 import hook.HookFactory;
 import hook.types.HookDemiPlan;
 import container.Service;
+import enums.Tribool;
 import exceptions.FinMatchException;
+import exceptions.GridSpaceException;
 import exceptions.ScriptHookException;
 import exceptions.UnableToMoveException;
 import robot.Robot;
 import robot.RobotChrono;
 import robot.RobotReal;
 import robot.Speed;
+import table.GameElementNames;
 import table.GridSpace;
 import utils.Log;
 import utils.Config;
@@ -68,11 +71,11 @@ public class GameState<R extends Robot, T extends Permission> implements Service
         this.hookfactory = hookfactory;
         if(robot instanceof RobotReal)
         {
-        	robot.setHookFinMatch(hookfactory.getHooksFinMatchReal(this));
-        	((RobotReal)robot).setHookTrajectoireCourbe(new HookDemiPlan(config, log, this));
+        	robot.setHookFinMatch(hookfactory.getHooksFinMatchReal(getReadOnly()));
+        	((RobotReal)robot).setHookTrajectoireCourbe(new HookDemiPlan(config, log, getReadOnly()));
         }
         else
-            robot.setHookFinMatch(hookfactory.getHooksFinMatchChrono(this));
+            robot.setHookFinMatch(hookfactory.getHooksFinMatchChrono(getReadOnly()));
         updateConfig();
     }
     
@@ -106,10 +109,10 @@ public class GameState<R extends Robot, T extends Permission> implements Service
      */
     public static void copy(GameState<?,ReadOnly> state, GameState<RobotChrono,ReadWrite> modified) throws FinMatchException
     {
-        state.robot.copy(other.robot);
+        state.robot.copy(modified.robot);
     	// la copie de la table est faite dans gridspace
         // mise à jour des obstacles et du cache incluse dans la copie
-        state.gridspace.copy(other.gridspace, state.robot.getTempsDepuisDebutMatch());
+        state.gridspace.copy(modified.gridspace, state.robot.getTempsDepuisDebutMatch());
     }
 
     @Override
@@ -125,7 +128,7 @@ public class GameState<R extends Robot, T extends Permission> implements Service
      * Petite surcouche
      * @return
      */
-    public static long getTempsDepuisDebut(GameState<RobotChrono,ReadOnly> state)
+    public static long getTempsDepuisDebut(GameState<?,ReadOnly> state)
     {
     	return state.robot.getTempsDepuisDebutMatch();
     }
@@ -298,7 +301,7 @@ public class GameState<R extends Robot, T extends Permission> implements Service
     {
     	return state.robot.cloneIntoRobotChrono();
     }
-
+    
 	public static void va_au_point_pathfinding_no_hook(GameState<RobotChrono, ReadWrite> state, SegmentTrajectoireCourbe segment) throws FinMatchException
 	{
 		state.robot.va_au_point_pathfinding_no_hook(segment);
@@ -324,10 +327,56 @@ public class GameState<R extends Robot, T extends Permission> implements Service
 		return state.robot.getPositionPathfinding();
 	}
     
+	public static boolean isEnemyHere(GameState<RobotReal, ReadOnly> state)
+	{
+		return state.robot.isEnemyHere();
+	}
+	
     public static void createHypotheticalEnnemy(GameState<RobotChrono, ReadWrite> state, Vec2<ReadOnly> position, int date_actuelle)
     {
     	state.gridspace.createHypotheticalEnnemy(position, date_actuelle);
     }
+    
+    public static void setAvoidGameElement(GameState<RobotChrono, ReadWrite> state, boolean avoidGameElement)
+    {
+    	state.gridspace.setAvoidGameElement(avoidGameElement);
+    }
+
+	public static PathfindingNodes nearestReachableNode(GameState<?, ReadOnly> state, Vec2<ReadOnly> point, int date) throws GridSpaceException
+	{
+		return state.gridspace.nearestReachableNode(point, date);
+	}
+	
+    public static boolean isTraversable(GameState<?, ReadOnly> state, Vec2<ReadOnly> pointA, Vec2<ReadOnly> pointB, int date)
+    {
+    	return state.gridspace.isTraversable(pointA, pointB, date);
+    }
+
+	public static boolean isTraversable(GameState<?, ReadOnly> state, PathfindingNodes i, PathfindingNodes j, int date)
+    {
+    	return state.gridspace.isTraversable(i, j, date);
+    }
+
+	public static boolean isTraversableCourbe(GameState<?, ReadOnly> state, PathfindingNodes objectifFinal, PathfindingNodes intersection, Vec2<ReadOnly> directionAvant, int tempsDepuisDebutMatch)
+	{
+		return state.gridspace.isTraversableCourbe(objectifFinal, intersection, directionAvant, tempsDepuisDebutMatch);
+	}
+
+	public static SegmentTrajectoireCourbe getSegment(GameState<?, ReadOnly> state)
+	{
+		return state.gridspace.getSegment();
+	}
+	
+	public static void setDone(GameState<?, ReadWrite> state, GameElementNames element, Tribool done)
+	{
+		state.gridspace.setDone(element, done);
+	}
+
+	public static Tribool isDone(GameState<?, ReadOnly> state, GameElementNames element)
+	{
+		return state.gridspace.isDone(element);
+	}
+
 
 	@SuppressWarnings("unchecked")
 	public final GameState<R, ReadOnly> getReadOnly() {

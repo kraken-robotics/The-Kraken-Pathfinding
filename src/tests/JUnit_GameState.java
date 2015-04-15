@@ -11,6 +11,7 @@ import robot.RobotReal;
 import strategie.GameState;
 import table.GameElementNames;
 import vec2.ReadOnly;
+import vec2.ReadWrite;
 import vec2.Vec2;
 import enums.Tribool;
 
@@ -22,13 +23,13 @@ import enums.Tribool;
 
 public class JUnit_GameState extends JUnit_Test {
 
-	private GameState<RobotChrono> gamestate;
+	private GameState<RobotChrono,ReadWrite> gamestate;
 	
     @SuppressWarnings("unchecked")
 	@Before
     public void setUp() throws Exception {
         super.setUp();
-        gamestate = ((GameState<RobotReal>) container.getService(ServiceNames.REAL_GAME_STATE)).cloneGameState();
+        gamestate = ((GameState<RobotReal,ReadWrite>) container.getService(ServiceNames.REAL_GAME_STATE)).cloneGameState();
         gamestate.robot.setPosition(new Vec2<ReadOnly>(1100, 1000));
     }
 
