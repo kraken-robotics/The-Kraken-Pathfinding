@@ -2,6 +2,7 @@ package astar;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.BitSet;
 
 import astar.arc.Arc;
 import astar.arc.PathfindingNodes;
@@ -54,7 +55,7 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 	private static final int nb_max_element = 100; // le nombre d'élément différent de l'arbre qu'on parcourt. A priori, 100 paraît suffisant.
 	
 	private LinkedList<GameState<RobotChrono>> openset = new LinkedList<GameState<RobotChrono>>();	 // The set of tentative nodes to be evaluated
-	private boolean[] closedset = new boolean[nb_max_element];
+	private BitSet closedset = new BitSet(nb_max_element);
 	private int[] came_from = new int[nb_max_element];
 	@SuppressWarnings("unchecked")
 	private A[] came_from_arc = (A[]) new Arc[nb_max_element];
@@ -286,10 +287,10 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 			return new ArrayList<A>();
 		}
 
+		closedset.clear();
 		// plus rapide que des arraycopy
 		for(int i = 0; i < nb_max_element; i++)
 		{
-			closedset[i] = false;
 			came_from_arc[i] = null;
 			came_from[i] = -1;
 			g_score[i] = Integer.MAX_VALUE;
@@ -336,7 +337,7 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 			
 			// élément déjà fait
 			// cela parce qu'il y a des doublons dans openset
-			if(closedset[hash_current])
+			if(closedset.get(hash_current))
 			{
 //				if(arcmanager instanceof StrategyArcManager)
 //					log.debug("Destruction de: "+current.getIndiceMemoryManager(), this);
@@ -353,7 +354,7 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 				return reconstruct(hash_current);
 			}
 
-			closedset[hash_current] = true;
+			closedset.set(hash_current);
 		    
 			// On parcourt les voisins de current.
 			arcmanager.reinitIterator(current);
@@ -414,7 +415,7 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 //				if(arcmanager instanceof StrategyArcManager)
 //					log.debug(voisin+" donne "+hash_successeur, this);
 				
-				if(closedset[hash_successeur]) // si closedset contient ce hash
+				if(closedset.get(hash_successeur)) // si closedset contient ce hash
 				{
 //					if(arcmanager instanceof StrategyArcManager)
 //						log.debug("Destruction de: "+successeur.getIndiceMemoryManager(), this);
@@ -471,7 +472,7 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 		// En cas d'égalité, on prend le chemin le plus rapide.
 		
 		for(int h = 0; h < nb_max_element; h++)
-			if(closedset[h]) // si ce noeud a été parcouru (sinon getNoteReconstruct va paniquer)
+			if(closedset.get(h)) // si ce noeud a été parcouru (sinon getNoteReconstruct va paniquer)
 			{
 				int potentiel_note_best = arcmanager.getNoteReconstruct(h);
 				int potentiel_note_f_best = f_score[h];
