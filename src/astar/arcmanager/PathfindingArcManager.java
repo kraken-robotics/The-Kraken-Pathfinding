@@ -11,6 +11,7 @@ import strategie.GameState;
 import utils.Log;
 import utils.Config;
 import vec2.ReadOnly;
+import vec2.ReadWrite;
 import vec2.Vec2;
 import exceptions.ArcManagerException;
 import exceptions.FinMatchException;
@@ -27,7 +28,7 @@ public class PathfindingArcManager extends ArcManager {
 	private PathfindingNodes arrivee;
 	protected Config config;
 	protected Log log;
-	private GameState<RobotChrono> state_iterator;
+	private GameState<RobotChrono,ReadOnly> state_iterator;
 	private boolean debutCourbe;
 
 	public PathfindingArcManager(Log log, Config config, MemoryManager memorymanager)
@@ -41,7 +42,7 @@ public class PathfindingArcManager extends ArcManager {
 	 * Renvoie la distance entre deux points.
 	 */
 	@Override
-	public int distanceTo(GameState<RobotChrono> state, Arc arc) throws FinMatchException
+	public int distanceTo(GameState<RobotChrono,ReadWrite> state, Arc arc) throws FinMatchException
 	{
 		/*
 		 * Il n'y a pas d'utilisation de hook.
@@ -50,21 +51,21 @@ public class PathfindingArcManager extends ArcManager {
 		 * Par contre, à l'"exécution" par robotchrono du chemin entre deux scripts, là ils seront exécutés.
 		 * Rappel: même quand on fait un appel à RobotChrono sans hook, le hook de fin de match est exécuté
 		 */
-		int temps_debut = state.robot.getTempsDepuisDebutMatch();
-		state.robot.va_au_point_pathfinding_no_hook((SegmentTrajectoireCourbe)arc);
-		return state.robot.getTempsDepuisDebutMatch() - temps_debut;
+		int temps_debut = GameState.getTempsDepuisDebutMatch(state.getReadOnly());
+		GameState.va_au_point_pathfinding_no_hook(state, (SegmentTrajectoireCourbe)arc);
+		return GameState.getTempsDepuisDebutMatch(state.getReadOnly()) - temps_debut;
 	}
 
 	/**
 	 * Renvoie la distance à vol d'oiseau
 	 */
 	@Override
-	public int heuristicCost(GameState<RobotChrono> state1)
+	public int heuristicCost(GameState<RobotChrono,ReadOnly> state1)
 	{
 		// durée de rotation minimale
-		int duree = (int)state1.robot.calculateDelta(state1.robot.getPositionPathfinding().getOrientationFinale(arrivee)) * Speed.BETWEEN_SCRIPTS.invertedRotationnalSpeed;
+		int duree = (int)GameState.calculateDelta(state1, GameState.getPositionPathfinding(state1).getOrientationFinale(arrivee)) * Speed.BETWEEN_SCRIPTS.invertedRotationnalSpeed;
 		// durée de translation minimale
-		duree += (int)state1.robot.getPositionPathfinding().timeTo(arrivee);
+		duree += (int)GameState.getPositionPathfinding(state1).timeTo(arrivee);
 		return duree;
 	}
 
@@ -72,18 +73,18 @@ public class PathfindingArcManager extends ArcManager {
 	 * Le hash d'un PathfindingNodes est son ordinal dans l'enum des PathfindingNodes.
 	 */
 	@Override
-	public int getHash(GameState<RobotChrono> state) throws ArcManagerException
+	public int getHash(GameState<RobotChrono,ReadOnly> state) throws ArcManagerException
 	{
-		return state.robot.getPositionPathfinding().ordinal();
+		return GameState.getPositionPathfinding(state).ordinal();
 	}
 
 	/**
 	 * Aucune différence parce qu'il n'y a pas de création.
 	 */
 	@Override
-	public int getHashAndCreateIfNecessary(GameState<RobotChrono> state)
+	public int getHashAndCreateIfNecessary(GameState<RobotChrono,ReadOnly> state)
 	{
-		return state.robot.getPositionPathfinding().ordinal();
+		return GameState.getPositionPathfinding(state).ordinal();
 	}
 
     @SuppressWarnings("unchecked")
@@ -97,7 +98,7 @@ public class PathfindingArcManager extends ArcManager {
     }
     
     @Override
-    public boolean hasNext()
+    public boolean hasNext() throws FinMatchException
     {
     	/**
     	 * On alterne: nouvel iterator avec false, puis avec true, puis nouvel
@@ -105,7 +106,7 @@ public class PathfindingArcManager extends ArcManager {
     	 */
     	debutCourbe = !debutCourbe; // OH LA JOLIE BASCULE
     	PathfindingNodes pn_id_node_iterator = PathfindingNodes.values[id_node_iterator];
-    	debutCourbe = debutCourbe && state_iterator.gridspace.isTraversableCourbe(PathfindingNodes.values[iterator], pn_id_node_iterator, new Vec2<ReadOnly>(state_iterator.robot.getOrientation()), state_iterator.robot.getTempsDepuisDebutMatch());
+    	debutCourbe = debutCourbe && state_iterator.gridspace.isTraversableCourbe(PathfindingNodes.values[iterator], pn_id_node_iterator, new Vec2<ReadOnly>(GameState.getOrientation(state_iterator)), GameState.getTempsDepuisDebutMatch(state_iterator));
 
     	if(!debutCourbe)
     	{
@@ -114,7 +115,7 @@ public class PathfindingArcManager extends ArcManager {
 	    	{
 	    		if(iterator == id_node_iterator)
 	    			continue;
-	    		if(state_iterator.gridspace.isTraversable(pn_id_node_iterator, PathfindingNodes.values[iterator], state_iterator.robot.getTempsDepuisDebutMatch()))
+	    		if(state_iterator.gridspace.isTraversable(pn_id_node_iterator, PathfindingNodes.values[iterator], GameState.getTempsDepuisDebutMatch(state_iterator)))
 	    			break;
 	    	}
     	}
@@ -122,12 +123,12 @@ public class PathfindingArcManager extends ArcManager {
     }
     
     @Override
-    public void reinitIterator(GameState<RobotChrono> gamestate)
+    public void reinitIterator(GameState<RobotChrono,ReadOnly> state)
     {
 //    	log.debug("Réinit pathfinding iterator!", this);
-    	id_node_iterator = gamestate.robot.getPositionPathfinding().ordinal();
+    	id_node_iterator = GameState.getPositionPathfinding(state).ordinal();
     	iterator = -1;
-    	state_iterator = gamestate;
+    	state_iterator = state;
     	debutCourbe = true;
     }
 

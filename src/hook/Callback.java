@@ -2,6 +2,7 @@ package hook;
 
 import robot.RobotChrono;
 import strategie.GameState;
+import vec2.ReadWrite;
 import exceptions.ChangeDirectionException;
 import exceptions.FinMatchException;
 import exceptions.ScriptHookException;
@@ -71,7 +72,7 @@ public class Callback
 	    return isUnique && isDone;
 	}
 
-	public void updateGameState(GameState<RobotChrono> state)
+	public void updateGameState(GameState<RobotChrono,ReadWrite> state)
 	{
 		method.updateGameState(state);
 	}

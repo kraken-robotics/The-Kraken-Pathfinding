@@ -21,6 +21,8 @@ import strategie.GameState;
 import utils.ConfigInfo;
 import utils.Log;
 import utils.Config;
+import vec2.ReadOnly;
+import vec2.ReadWrite;
 import exceptions.ArcManagerException;
 import exceptions.FinMatchException;
 import exceptions.MemoryManagerException;
@@ -48,9 +50,9 @@ public class StrategyArcManager extends ArcManager {
 	private int iterator;
 	private Vector<Long> hashes = new Vector<Long>();
 	
-	private int dateLimite = 90000;
+	private int dateLimite;
 	
-	public StrategyArcManager(Log log, Config config, ScriptManager scriptmanager, GameState<RobotReal> real_gamestate, HookFactory hookfactory, AStar<PathfindingArcManager, SegmentTrajectoireCourbe> astar, MemoryManager memorymanager) throws PointSortieException
+	public StrategyArcManager(Log log, Config config, ScriptManager scriptmanager, GameState<RobotReal,ReadOnly> real_gamestate, HookFactory hookfactory, AStar<PathfindingArcManager, SegmentTrajectoireCourbe> astar, MemoryManager memorymanager) throws PointSortieException
 	{
 		super(AStarId.STRATEGY_ASTAR, memorymanager);
 		this.log = log;
@@ -59,7 +61,7 @@ public class StrategyArcManager extends ArcManager {
 		this.hookfactory = hookfactory;
 		this.astar = astar;
 		try {
-			checkPointSortie(real_gamestate.cloneGameState());
+			checkPointSortie(GameState.cloneGameState(real_gamestate));
 		} catch (FinMatchException e) {
 			// Impossible
 			e.printStackTrace();
@@ -71,7 +73,7 @@ public class StrategyArcManager extends ArcManager {
 	 * On calcule ici la liste des voisins, c'est-à-dire de tous les scripts qu'on peut effectuer depuis la position actuelle.
 	 */
 	@Override
-	public void reinitIterator(GameState<RobotChrono> gamestate) throws MemoryManagerException
+	public void reinitIterator(GameState<RobotChrono,ReadOnly> gamestate) throws MemoryManagerException
 	{
 		listeDecisions.clear();
 		for(ScriptAnticipableNames s: ScriptAnticipableNames.values())
@@ -133,21 +135,21 @@ public class StrategyArcManager extends ArcManager {
 	 * on préférera celle qui a minimisé le temps pour arriver à cet état de jeu.
 	 */
 	@Override
-	public int distanceTo(GameState<RobotChrono> state, Arc arc) throws FinMatchException, ScriptException
+	public int distanceTo(GameState<RobotChrono,ReadWrite> state, Arc arc) throws FinMatchException, ScriptException
 	{
 		Decision d = (Decision)arc;
 		Script s = scriptmanager.getScript(d.script_name);
-		int old_temps = (int)state.robot.getTempsDepuisDebutMatch();
+		int old_temps = (int)GameState.getTempsDepuisDebutMatch(state.getReadOnly());
 		ArrayList<Hook> hooks_table = hookfactory.getHooksEntreScriptsChrono(state, dateLimite);
-		state.robot.suit_chemin(d.chemin, hooks_table);
+		GameState.suit_chemin(state, d.chemin, hooks_table);
 		try {
 			s.agit(d.version, state);
 		} catch (ScriptHookException e) {
 			// Impossible avec un robotchrono.
 			e.printStackTrace();
 		}
-		state.robot.setPositionPathfinding(s.point_sortie(d.version));
-		int new_temps = (int)state.robot.getTempsDepuisDebutMatch();
+		GameState.setPositionPathfinding(state, s.point_sortie(d.version));
+		int new_temps = (int)GameState.getTempsDepuisDebutMatch(state.getReadOnly());
 		return new_temps - old_temps;
 	}
 
@@ -155,7 +157,7 @@ public class StrategyArcManager extends ArcManager {
 	 * On utilise en fait un Dijsktra pour la stratégie
 	 */
 	@Override
-	public int heuristicCost(GameState<RobotChrono> state)
+	public int heuristicCost(GameState<RobotChrono,ReadOnly> state)
 	{
 		return 0;
 	}
@@ -164,7 +166,7 @@ public class StrategyArcManager extends ArcManager {
 	 * Les hash sont créés à la demande et sont contigus (0, 1, 2, 3, ...)
 	 */
 	@Override
-	public int getHashAndCreateIfNecessary(GameState<RobotChrono> state)
+	public int getHashAndCreateIfNecessary(GameState<RobotChrono,ReadOnly> state)
 	{
 		long hash = state.getHash();
 		int indice = hashes.indexOf(hash);
@@ -179,7 +181,7 @@ public class StrategyArcManager extends ArcManager {
 	}
 
 	@Override
-	public int getHash(GameState<RobotChrono> state) throws ArcManagerException
+	public int getHash(GameState<RobotChrono,ReadOnly> state) throws ArcManagerException
 	{
 		long hash = state.getHash();
 		int indice = hashes.indexOf(hash);
@@ -229,7 +231,7 @@ public class StrategyArcManager extends ArcManager {
 	 * @param gamestate
 	 * @throws PointSortieException
 	 */
-	public void checkPointSortie(GameState<RobotChrono> gamestate) throws PointSortieException
+	public void checkPointSortie(GameState<RobotChrono,ReadWrite> gamestate) throws PointSortieException
 	{
 		boolean throw_exception = false;
 		for(ScriptAnticipableNames s: ScriptAnticipableNames.values())
@@ -237,21 +239,24 @@ public class StrategyArcManager extends ArcManager {
 			if(s.canIDoIt())
 			{
 				Script script = scriptmanager.getScript(s);
-				for(PathfindingNodes v: script.getVersions(gamestate))
+				for(PathfindingNodes v: script.getVersions(gamestate.getReadOnly()))
 				{
-					gamestate.robot.setPositionPathfinding(v);
+					GameState.setPositionPathfinding(gamestate, v);
 					try {
 						script.agit(v, gamestate);
 					} catch (ScriptException | ScriptHookException | FinMatchException e) {
 						e.printStackTrace();
 					}
 					try {
-					script.checkPointSortie(v, gamestate.robot.getPosition());
+					script.checkPointSortie(v, GameState.getPosition(gamestate.getReadOnly()));
 					}
 					catch(PointSortieException e)
 					{
 						if(config.getBoolean(ConfigInfo.CHECK_POINTS_SORTIE))
 							throw_exception = true;
+					} catch (FinMatchException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
 					}
 				}
 			}

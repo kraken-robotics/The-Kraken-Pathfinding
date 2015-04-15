@@ -17,6 +17,7 @@ import scripts.ScriptManager;
 import threads.ThreadStrategy;
 import utils.Config;
 import utils.Log;
+import vec2.ReadWrite;
 
 /**
  * Exécute ce qu'a décidé la stratégie.
@@ -27,7 +28,7 @@ import utils.Log;
 
 public class Execution implements Service {
 
-	private GameState<RobotReal> gamestate;
+	private GameState<RobotReal,ReadWrite> gamestate;
 	private Log log;
 	protected Config config;
 	private ScriptManager scriptmanager;
@@ -35,7 +36,7 @@ public class Execution implements Service {
 	
 	private ArrayList<Hook> hooksEntreScripts;
 	
-	public Execution(Log log, Config config, GameState<RobotReal> gamestate, ScriptManager scriptmanager, HookFactory hookfactory, ThreadStrategy threadstrategy)
+	public Execution(Log log, Config config, GameState<RobotReal,ReadWrite> gamestate, ScriptManager scriptmanager, HookFactory hookfactory, ThreadStrategy threadstrategy)
 	{
 		this.log = log;
 		this.config = config;

@@ -8,6 +8,8 @@ import robot.RobotReal;
 import strategie.GameState;
 import utils.Config;
 import utils.Log;
+import vec2.ReadOnly;
+import vec2.ReadWrite;
 
 /**
  * Classe qui fournit des objets GameState à AStar.
@@ -22,9 +24,8 @@ public class MemoryManager implements Service {
 	private static final int nb_instances = 500;
 
 	@SuppressWarnings("unchecked")
-	private GameState<RobotChrono>[][] gamestates_list = new GameState[2][nb_instances];
+	private GameState<RobotChrono,ReadWrite>[][] gamestates_list = (GameState<RobotChrono,ReadWrite>[][]) new GameState[2][nb_instances];
 	protected Log log;
-	private GameState<RobotChrono> model;
 	
 	// gamestates_list est triés: avant firstAvailable, les gamestate sont indisponibles, après, ils sont disponibles
 	private int firstAvailable[] = new int[2];
@@ -33,24 +34,22 @@ public class MemoryManager implements Service {
 	public void updateConfig()
 	{
 		log.updateConfig();
-		model.updateConfig();
 	}
 
-	public MemoryManager(Log log, Config config, GameState<RobotReal> realstate)
+	public MemoryManager(Log log, Config config, GameState<RobotReal,ReadOnly> realstate)
 	{	
 		this.log = log;
 
 		firstAvailable[0] = 0;
 		firstAvailable[1] = 0;
 		try {
-			this.model = realstate.cloneGameState();
 			// on prépare déjà des gamestates
 			log.debug("Instanciation de "+2*nb_instances+" GameState<RobotChrono>");
 		
 			for(int j = 0; j < 2; j++)
 				for(int i = 0; i < nb_instances; i++)
 				{
-					gamestates_list[j][i] = model.cloneGameState(i);
+					gamestates_list[j][i] = GameState.cloneGameState(realstate, i);
 				}
 		} catch (FinMatchException e) {
 			// Impossible
@@ -66,10 +65,10 @@ public class MemoryManager implements Service {
 	 * @return
 	 * @throws FinMatchException
 	 */
-	public GameState<RobotChrono> getNewGameState(int id_astar) throws FinMatchException
+	public GameState<RobotChrono,ReadWrite> getNewGameState(int id_astar) throws FinMatchException
 	{
 		// lève une exception s'il n'y a plus de place
-		GameState<RobotChrono> out;
+		GameState<RobotChrono,ReadWrite> out;
 		out = gamestates_list[id_astar][firstAvailable[id_astar]];
 		firstAvailable[id_astar]++;
 		return out;
@@ -81,7 +80,7 @@ public class MemoryManager implements Service {
 	 * @param id_astar
 	 * @throws MemoryManagerException
 	 */
-	public void destroyGameState(GameState<RobotChrono> state, int id_astar) throws MemoryManagerException
+	public void destroyGameState(GameState<RobotChrono,ReadWrite> state, int id_astar) throws MemoryManagerException
 	{
 		int indice_state = state.getIndiceMemoryManager();
 		/**
@@ -94,8 +93,8 @@ public class MemoryManager implements Service {
 		// de manière à avoir toujours un Vector trié.
 		firstAvailable[id_astar]--;
 		
-		GameState<RobotChrono> tmp1 = gamestates_list[id_astar][indice_state];
-		GameState<RobotChrono> tmp2 = gamestates_list[id_astar][firstAvailable[id_astar]];
+		GameState<RobotChrono,ReadWrite> tmp1 = gamestates_list[id_astar][indice_state];
+		GameState<RobotChrono,ReadWrite> tmp2 = gamestates_list[id_astar][firstAvailable[id_astar]];
 
 		tmp1.setIndiceMemoryManager(firstAvailable[id_astar]);
 		tmp2.setIndiceMemoryManager(indice_state);

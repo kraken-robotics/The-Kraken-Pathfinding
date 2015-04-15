@@ -7,4 +7,4 @@ package vec2;
  *
  */
 
-public interface ReadWrite extends ReadOnly {}
+public interface ReadWrite extends Permission {}

@@ -6,4 +6,4 @@ package vec2;
  *
  */
 
-public interface ReadOnly {}
+public interface ReadOnly extends Permission {}

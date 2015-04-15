@@ -12,6 +12,7 @@ import utils.ConfigInfo;
 import utils.Log;
 import utils.Config;
 import vec2.ReadOnly;
+import vec2.ReadWrite;
 import vec2.Vec2;
 
 /**
@@ -31,7 +32,7 @@ abstract public class Hook
 	//endroit ou lire la configuration du robot
 	protected Config config;
 	
-	protected GameState<?> state;
+	protected GameState<?,ReadOnly> state;
 
 	protected static Integer rayon_robot = null;
 	
@@ -41,7 +42,7 @@ abstract public class Hook
 	 * @param log
 	 * @param real_state
 	 */
-	public Hook(Config config, Log log, GameState<?> state)
+	public Hook(Config config, Log log, GameState<?,ReadOnly> state)
 	{
 		this.config = config;
 		this.log = log;
@@ -110,9 +111,9 @@ abstract public class Hook
 	    return true;
 	}
 
-	public void updateGameState(GameState<RobotChrono> state)
+	public void updateGameState(GameState<RobotChrono,ReadWrite> state)
 	{
-		this.state = state;
+		this.state = state.getReadOnly();
 		for(Callback callback : callbacks)
 			callback.updateGameState(state);
 	}

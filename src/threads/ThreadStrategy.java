@@ -18,6 +18,8 @@ import strategie.GameState;
 import utils.Config;
 import utils.Log;
 import utils.Sleep;
+import vec2.ReadOnly;
+import vec2.ReadWrite;
 
 /**
  * Effectue les calculs de stratégie
@@ -30,21 +32,21 @@ public class ThreadStrategy extends AbstractThread implements Service
 
 	private Log log;
 	private AStar<StrategyArcManager, Decision> strategie;
-	private GameState<RobotReal> realstate;
-	private GameState<RobotChrono> chronostate;
+	private GameState<RobotReal,ReadOnly> realstate;
+	private GameState<RobotChrono,ReadWrite> chronostate;
 	
 	private Decision decision = new Decision(new ArrayList<SegmentTrajectoireCourbe>(), ScriptAnticipableNames.SORTIE_ZONE_DEPART, PathfindingNodes.POINT_DEPART);
 	private Decision decisionSecours = null;
 	private Decision decisionNormale = null;
 	private Decision needNewBestAfterThis = null;
 	
-	public ThreadStrategy(Log log, Config config, AStar<StrategyArcManager, Decision> strategie, GameState<RobotReal> realstate)
+	public ThreadStrategy(Log log, Config config, AStar<StrategyArcManager, Decision> strategie, GameState<RobotReal,ReadOnly> realstate)
 	{
 		this.log = log;
 		this.strategie = strategie;
 		this.realstate = realstate;
 		try {
-			chronostate = realstate.cloneGameState();
+			chronostate = GameState.cloneGameState(realstate);
 		} catch (FinMatchException e) {
 			// Impossible
 			e.printStackTrace();
@@ -71,15 +73,15 @@ public class ThreadStrategy extends AbstractThread implements Service
 		while(!finMatch && !stopThreads)
 		{
 			try {
-				realstate.copy(chronostate);
+				GameState.copy(realstate, chronostate);
 				if(needNewBestAfterThis != null)
 				{
-					ArrayList<Decision> decisions = strategie.computeStrategyAfter(chronostate, needNewBestAfterThis, 10000);
+					ArrayList<Decision> decisions = strategie.computeStrategyAfter(chronostate.getReadOnly(), needNewBestAfterThis, 10000);
 					printCurrentStrategy(decisions);
 					decision = decisions.get(0);
 					needNewBestAfterThis = null; // en cas d'erreur, ce n'est pas mis à null
 				}
-				decisionSecours = strategie.computeStrategyEmergency(chronostate, 10000).get(0);
+				decisionSecours = strategie.computeStrategyEmergency(chronostate.gridspace, 10000).get(0);
 				decisionNormale = strategie.computeStrategy(chronostate, 10000).get(0);
 			} catch (FinMatchException e) {
 				break;

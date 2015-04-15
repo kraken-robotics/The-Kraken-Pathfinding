@@ -14,6 +14,8 @@ import exceptions.PointSortieException;
 import exceptions.SerialManagerException;
 import exceptions.ThreadException;
 import utils.*;
+import vec2.ReadOnly;
+import vec2.ReadWrite;
 import scripts.ScriptManager;
 import strategie.Execution;
 import strategie.GameState;
@@ -193,7 +195,7 @@ public class Container
 		else if(serviceRequested == ServiceNames.MEMORY_MANAGER)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new MemoryManager((Log)getService(ServiceNames.LOG),
 															 (Config)getService(ServiceNames.CONFIG),
-        													 (GameState<RobotReal>)getService(ServiceNames.REAL_GAME_STATE));
+        													 (GameState<RobotReal,ReadOnly>)getService(ServiceNames.REAL_GAME_STATE));
 		else if(serviceRequested == ServiceNames.HOOK_FACTORY)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new HookFactory((Config)getService(ServiceNames.CONFIG),
 															 (Log)getService(ServiceNames.LOG));
@@ -217,7 +219,7 @@ public class Container
 		else if(serviceRequested == ServiceNames.EXECUTION)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new Execution((Log)getService(ServiceNames.LOG),
 			                                                 (Config)getService(ServiceNames.CONFIG),
-			                                                 (GameState<RobotReal>)getService(ServiceNames.REAL_GAME_STATE),
+			                                                 (GameState<RobotReal,ReadWrite>)getService(ServiceNames.REAL_GAME_STATE),
 			                                                 (ScriptManager)getService(ServiceNames.SCRIPT_MANAGER),
 			                                                 (HookFactory)getService(ServiceNames.HOOK_FACTORY),
         													 (ThreadStrategy)getService(ServiceNames.THREAD_STRATEGY));
@@ -242,7 +244,7 @@ public class Container
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadStrategy((Log)getService(ServiceNames.LOG),
 																		(Config)getService(ServiceNames.CONFIG),
 																		(AStar<StrategyArcManager, Decision>)getService(ServiceNames.A_STAR_STRATEGY),
-																		(GameState<RobotReal>)getService(ServiceNames.REAL_GAME_STATE));
+																		(GameState<RobotReal,ReadOnly>)getService(ServiceNames.REAL_GAME_STATE));
 		else if(serviceRequested == ServiceNames.PATHFINDING_ARC_MANAGER)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new PathfindingArcManager((Log)getService(ServiceNames.LOG),
 																		(Config)getService(ServiceNames.CONFIG),

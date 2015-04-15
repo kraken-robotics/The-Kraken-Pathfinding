@@ -10,6 +10,8 @@ import exceptions.MemoryManagerException;
 import exceptions.ScriptException;
 import robot.RobotChrono;
 import strategie.GameState;
+import vec2.ReadOnly;
+import vec2.ReadWrite;
 
 /**
  * Réalise les calculs entre différents Arc
@@ -39,14 +41,15 @@ public abstract class ArcManager implements Service {
 	 * @param gamestate
 	 * @throws MemoryManagerException
 	 */
-	public abstract void reinitIterator(GameState<RobotChrono> gamestate) throws MemoryManagerException;
+	public abstract void reinitIterator(GameState<RobotChrono,ReadOnly> gamestate) throws MemoryManagerException;
 
 	/**
 	 * Renvoie true s'il y a un autre voisin
 	 * @param state
 	 * @return
+	 * @throws FinMatchException 
 	 */
-	public abstract boolean hasNext();
+	public abstract boolean hasNext() throws FinMatchException;
 	
 	/**
 	 * Donne le prochain voisin
@@ -62,7 +65,7 @@ public abstract class ArcManager implements Service {
 	 * @return
 	 * @throws ScriptException 
 	 */
-	public abstract int distanceTo(GameState<RobotChrono> state, Arc arc) throws FinMatchException, ScriptException;
+	public abstract int distanceTo(GameState<RobotChrono,ReadWrite> state, Arc arc) throws FinMatchException, ScriptException;
 	
 	/**
 	 * Evalue la distance entre deux sommets.
@@ -71,14 +74,14 @@ public abstract class ArcManager implements Service {
 	 * @param other
 	 * @return
 	 */
-	public abstract int heuristicCost(GameState<RobotChrono> state);
+	public abstract int heuristicCost(GameState<RobotChrono,ReadOnly> state);
 
 	/**
 	 * Enregistre un nouveau hash.
 	 * @param state
 	 * @return
 	 */
-	public abstract int getHashAndCreateIfNecessary(GameState<RobotChrono> state);
+	public abstract int getHashAndCreateIfNecessary(GameState<RobotChrono,ReadOnly> state);
 	
 	/**
 	 * Récupère un hash existant.
@@ -86,7 +89,7 @@ public abstract class ArcManager implements Service {
 	 * @return
 	 * @throws ArcManagerException
 	 */
-	public abstract int getHash(GameState<RobotChrono> state) throws ArcManagerException;
+	public abstract int getHash(GameState<RobotChrono,ReadOnly> state) throws ArcManagerException;
 	
 	/**
 	 * Sommes-nous arrivés?
@@ -108,7 +111,7 @@ public abstract class ArcManager implements Service {
 	 * @param state
 	 * @throws MemoryManagerException
 	 */
-	public void destroyGameState(GameState<RobotChrono> state) throws MemoryManagerException
+	public void destroyGameState(GameState<RobotChrono,ReadWrite> state) throws MemoryManagerException
 	{
 		memorymanager.destroyGameState(state, id);
 	}
@@ -118,7 +121,7 @@ public abstract class ArcManager implements Service {
 	 * @return
 	 * @throws FinMatchException
 	 */
-	public GameState<RobotChrono> getNewGameState() throws FinMatchException
+	public GameState<RobotChrono,ReadWrite> getNewGameState() throws FinMatchException
 	{
 		return memorymanager.getNewGameState(id);
 	}

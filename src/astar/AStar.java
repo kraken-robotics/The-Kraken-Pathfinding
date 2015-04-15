@@ -19,6 +19,7 @@ import exceptions.PathfindingException;
 import exceptions.PathfindingRobotInObstacleException;
 import exceptions.ScriptException;
 import robot.RobotChrono;
+import robot.RobotReal;
 import strategie.GameState;
 import utils.Config;
 import utils.ConfigInfo;
@@ -54,7 +55,7 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 	
 	private static final int nb_max_element = 100; // le nombre d'élément différent de l'arbre qu'on parcourt. A priori, 100 paraît suffisant.
 	
-	private LinkedList<GameState<RobotChrono>> openset = new LinkedList<GameState<RobotChrono>>();	 // The set of tentative nodes to be evaluated
+	private LinkedList<GameState<RobotChrono,ReadWrite>> openset = new LinkedList<GameState<RobotChrono,ReadWrite>>();	 // The set of tentative nodes to be evaluated
 	private BitSet closedset = new BitSet(nb_max_element);
 	private int[] came_from = new int[nb_max_element];
 	@SuppressWarnings("unchecked")
@@ -90,7 +91,7 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 	 * @throws PathfindingException 
 	 * @throws MemoryManagerException 
 	 */	
-	public synchronized ArrayList<A> computeStrategyEmergency(GameState<RobotChrono> state, int dureeAnticipation) throws FinMatchException, PathfindingException, MemoryManagerException
+	public synchronized ArrayList<A> computeStrategyEmergency(GameState<RobotReal,ReadOnly> state, int dureeAnticipation) throws FinMatchException, PathfindingException, MemoryManagerException
 	{
 		if(!(arcmanager instanceof StrategyArcManager))
 		{
@@ -99,10 +100,12 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 			return null;
 		}
 		int distance_ennemie = distanceEnnemiUrgence; // il faut que cette distance soit au moins supérieure à la somme de notre rayon, du rayon de l'adversaire et d'une marge
-		double orientation_actuelle = state.robot.getOrientation();
-		Vec2<ReadOnly> positionEnnemie = state.robot.getPosition().plusNewVector(new Vec2<ReadWrite>((int)(distance_ennemie*Math.cos(orientation_actuelle)), (int)(distance_ennemie*Math.sin(orientation_actuelle)))).getReadOnly();
-		state.gridspace.createHypotheticalEnnemy(positionEnnemie, state.robot.getTempsDepuisDebutMatch());
-		return computeStrategy(state, dureeAnticipation);
+		double orientation_actuelle = GameState.getOrientation(state);
+		Vec2<ReadOnly> positionEnnemie = GameState.getPosition(state).plusNewVector(new Vec2<ReadWrite>((int)(distance_ennemie*Math.cos(orientation_actuelle)), (int)(distance_ennemie*Math.sin(orientation_actuelle)))).getReadOnly();
+		GameState<RobotChrono,ReadWrite> depart = arcmanager.getNewGameState();
+		GameState.copy(state, depart);
+		GameState.createHypotheticalEnnemy(depart, positionEnnemie, GameState.getTempsDepuisDebutMatch(state));
+		return computeStrategy(depart, dureeAnticipation);
 	}
 
 	/**
@@ -120,7 +123,7 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 	 * @throws PathfindingException
 	 * @throws MemoryManagerException
 	 */
-	public synchronized ArrayList<A> computeStrategyAfter(GameState<RobotChrono> state, A decision, int dureeAnticipation) throws FinMatchException, PathfindingException, MemoryManagerException
+	public synchronized ArrayList<A> computeStrategyAfter(GameState<RobotChrono,ReadOnly> state, A decision, int dureeAnticipation) throws FinMatchException, PathfindingException, MemoryManagerException
 	{
 		if(!(arcmanager instanceof StrategyArcManager))
 		{
@@ -128,13 +131,15 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 			return null;
 		}
 		try {
+			GameState<RobotChrono,ReadWrite> depart = arcmanager.getNewGameState();
+			GameState.copy(state, depart);
 			// Exécution de la décision donnée, ce qui est fait par "distanceTo".
-			arcmanager.distanceTo(state, decision);
+			arcmanager.distanceTo(depart, decision);
+//			log.debug("Après exécution, on est en "+state.robot.getPositionPathfinding(), this);
+			return computeStrategy(depart, dureeAnticipation);
 		} catch (ScriptException e) {
 			return new ArrayList<A>();
 		}
-//		log.debug("Après exécution, on est en "+state.robot.getPositionPathfinding(), this);
-		return computeStrategy(state, dureeAnticipation);
 	}
 
 	/**
@@ -146,13 +151,11 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 	 * @throws PathfindingException
 	 * @throws MemoryManagerException
 	 */
-	public synchronized ArrayList<A> computeStrategy(GameState<?> state, int dureeAnticipation) throws FinMatchException, PathfindingException, MemoryManagerException
+	public synchronized ArrayList<A> computeStrategy(GameState<RobotChrono,ReadWrite> depart, int dureeAnticipation) throws FinMatchException, PathfindingException, MemoryManagerException
 	{
-		GameState<RobotChrono> depart = arcmanager.getNewGameState();
-		state.copy(depart);
 
-		((StrategyArcManager)arcmanager).setDateLimite(dureeAnticipation + depart.robot.getTempsDepuisDebutMatch());
-		depart.updateHookFinMatch(dureeAnticipation + depart.robot.getTempsDepuisDebutMatch());
+		((StrategyArcManager)arcmanager).setDateLimite(dureeAnticipation + GameState.getTempsDepuisDebutMatch(depart.getReadOnly()));
+		GameState.updateHookFinMatch(depart, dureeAnticipation + GameState.getTempsDepuisDebutMatch(depart.getReadOnly()));
 		
 		// à chaque nouveau calcul de stratégie, il faut réinitialiser les hash de gamestate
 		// si on ne le fait pas, on consommera trop de mémoire (mais le résultat restera juste)
@@ -187,7 +190,7 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 	 * @throws MemoryManagerException
 	 */
 	@SuppressWarnings("unchecked")
-	public synchronized ArrayList<A> computePath(GameState<RobotChrono> state, PathfindingNodes endNode, boolean shoot_game_element) throws PathfindingException, PathfindingRobotInObstacleException, FinMatchException, MemoryManagerException
+	public synchronized ArrayList<A> computePath(GameState<RobotChrono,ReadOnly> state, PathfindingNodes endNode, boolean shoot_game_element) throws PathfindingException, PathfindingRobotInObstacleException, FinMatchException, MemoryManagerException
 	{
 		if(!(arcmanager instanceof PathfindingArcManager))
 		{
@@ -198,21 +201,21 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 			state.gridspace.setAvoidGameElement(!shoot_game_element);
 
 			PathfindingNodes pointDepart;
-			if(state.robot.isAtPathfindingNodes())
+			if(GameState.isAtPathfindingNodes(state))
 			{
 //				log.debug("Départ en PathfindingNodes", this);
-				pointDepart = state.robot.getPositionPathfinding();
+				pointDepart = GameState.getPositionPathfinding(state);
 			}
 			else
 			{
 //				log.debug("Départ pas en PathfindingNodes", this);
-				pointDepart = state.gridspace.nearestReachableNode(state.robot.getPosition(), state.robot.getTempsDepuisDebutMatch());
+				pointDepart = state.gridspace.nearestReachableNode(GameState.getPosition(state), GameState.getTempsDepuisDebutMatch(state));
 //				log.debug("Point départ: "+pointDepart, this);
 			}
 
-			GameState<RobotChrono> depart = arcmanager.getNewGameState();
-			state.copy(depart);
-			depart.robot.setPositionPathfinding(pointDepart);
+			GameState<RobotChrono,ReadWrite> depart = arcmanager.getNewGameState();
+			GameState.copy(state, depart);
+			GameState.setPositionPathfinding(depart, pointDepart);
 			
 //			log.debug("Cherche un chemin entre "+pointDepart+" et "+endNode, this);
 			
@@ -222,11 +225,11 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 			ArrayList<A> cheminArc = process(depart, arcmanager, false);
 
 			// on n'a besoin de lisser que si on ne partait pas d'un pathfindingnode
-			if(!state.robot.isAtPathfindingNodes())
+			if(!GameState.isAtPathfindingNodes(state))
 			{
 				// parce qu'on ne part pas du point de départ directement...
 				cheminArc.add(0, (A)new SegmentTrajectoireCourbe(pointDepart));
-				cheminArc = lissage(state.robot.getPosition(), state, cheminArc);
+				cheminArc = lissage(GameState.getPosition(state.getReadOnly()), state, cheminArc);
 			}
 			
 //			log.debug("Recherche de chemin terminée", this);
@@ -254,10 +257,10 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 	 * @param chemin
 	 * @return
 	 */
-	private ArrayList<A> lissage(Vec2<ReadOnly> depart, GameState<RobotChrono> state, ArrayList<A> chemin)
+	private ArrayList<A> lissage(Vec2<ReadOnly> depart, GameState<RobotChrono,ReadOnly> state, ArrayList<A> chemin)
 	{
 		// si on peut sauter le premier point, on le fait
-		while(chemin.size() >= 2 && state.gridspace.isTraversable(depart, ((SegmentTrajectoireCourbe)chemin.get(1)).objectifFinal.getCoordonnees(), state.robot.getTempsDepuisDebutMatch()))
+		while(chemin.size() >= 2 && state.gridspace.isTraversable(depart, ((SegmentTrajectoireCourbe)chemin.get(1)).objectifFinal.getCoordonnees(), GameState.getTempsDepuisDebutMatch(state)))
 			chemin.remove(0);
 
 		return chemin;
@@ -276,9 +279,9 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 	 * @throws PathfindingException
 	 * @throws MemoryManagerException
 	 */
-	private ArrayList<A> process(GameState<RobotChrono> depart, ArcManager arcmanager, boolean shouldReconstruct) throws PathfindingException, MemoryManagerException
+	private ArrayList<A> process(GameState<RobotChrono,ReadWrite> depart, ArcManager arcmanager, boolean shouldReconstruct) throws PathfindingException, MemoryManagerException
 	{
-		int hash_depart = arcmanager.getHashAndCreateIfNecessary(depart);
+		int hash_depart = arcmanager.getHashAndCreateIfNecessary(depart.getReadOnly());
 		// optimisation si depart == arrivee
 		if(arcmanager.isArrive(hash_depart))
 		{
@@ -301,9 +304,9 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 		openset.add(depart);	// The set of tentative nodes to be evaluated, initially containing the start node
 		g_score[hash_depart] = 0;	// Cost from start along best known path.
 		// Estimated total cost from start to goal through y.
-		f_score[hash_depart] = g_score[hash_depart] + arcmanager.heuristicCost(depart);
+		f_score[hash_depart] = g_score[hash_depart] + arcmanager.heuristicCost(depart.getReadOnly());
 		
-		GameState<RobotChrono> current = null;
+		GameState<RobotChrono,ReadWrite> current = null;
 
 		// iterator?
 		
@@ -312,7 +315,7 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 			int min_score = Integer.MAX_VALUE;
 			int potential_min, index_min = 0;
 			int hash_current = -1;
-			GameState<RobotChrono> tmp;
+			GameState<RobotChrono,ReadWrite> tmp;
 			
 			// On recherche l'élément d'openset qui minimise f_score
 			int max_value = openset.size();
@@ -320,7 +323,7 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 			{
 				tmp = openset.get(i);
 				try {
-					int tmp_hash = arcmanager.getHash(tmp);
+					int tmp_hash = arcmanager.getHash(tmp.getReadOnly());
 					potential_min = f_score[tmp_hash];
 					if(min_score >= potential_min)
 					{
@@ -357,9 +360,15 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 			closedset.set(hash_current);
 		    
 			// On parcourt les voisins de current.
-			arcmanager.reinitIterator(current);
+			arcmanager.reinitIterator(current.getReadOnly());
 
-			boolean encoreUnSuccesseur = arcmanager.hasNext();
+			boolean encoreUnSuccesseur = false;
+			try {
+				encoreUnSuccesseur = arcmanager.hasNext();
+			} catch (FinMatchException e2) {
+				// TODO Auto-generated catch block
+				e2.printStackTrace();
+			}
 			
 			/** Puisque current ne pourra pas être réutilisé,
 			 * il faut le détruire
@@ -368,12 +377,17 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 				arcmanager.destroyGameState(current);
 			
 			boolean reuseOldSuccesseur = false;
-			GameState<RobotChrono> successeur = null;
+			GameState<RobotChrono,ReadWrite> successeur = null;
 			
 			while(encoreUnSuccesseur)
 			{
 				A voisin = arcmanager.next();
-				encoreUnSuccesseur = arcmanager.hasNext();
+				try {
+					encoreUnSuccesseur = arcmanager.hasNext();
+				} catch (FinMatchException e2) {
+					// TODO Auto-generated catch block
+					e2.printStackTrace();
+				}
 				
 				try {
 					if(!encoreUnSuccesseur) // le dernier successeur
@@ -386,7 +400,7 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 					{
 						if(!reuseOldSuccesseur)
 							successeur = arcmanager.getNewGameState();
-						current.copy(successeur);
+						GameState.copy(current.getReadOnly(), successeur);
 					}
 				} catch (FinMatchException e1) {
 					// ne devrait pas arriver!
@@ -410,7 +424,7 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 					continue;
 				}
 
-				int hash_successeur = arcmanager.getHashAndCreateIfNecessary(successeur);
+				int hash_successeur = arcmanager.getHashAndCreateIfNecessary(successeur.getReadOnly());
 
 //				if(arcmanager instanceof StrategyArcManager)
 //					log.debug(voisin+" donne "+hash_successeur, this);
@@ -431,7 +445,7 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 					came_from[hash_successeur] = hash_current;
 					came_from_arc[hash_successeur] = voisin;
 					g_score[hash_successeur] = tentative_g_score;
-					f_score[hash_successeur] = tentative_g_score + arcmanager.heuristicCost(successeur);
+					f_score[hash_successeur] = tentative_g_score + arcmanager.heuristicCost(successeur.getReadOnly());
 					openset.add(successeur);
 					// reuseOldSuccesseur reste à false
 				}
@@ -490,7 +504,7 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 		
 	}
 
-	private ArrayList<A> reconstruct(int hash) {
+	private final ArrayList<A> reconstruct(int hash) {
 		ArrayList<A> chemin = new ArrayList<A>();
 		int noeud_parent = came_from[hash];
 		A arc_parent = came_from_arc[hash];

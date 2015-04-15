@@ -24,7 +24,7 @@ public class HookDemiPlan extends Hook
 	 * @param log
 	 * @param state
 	 */
-	public HookDemiPlan(Config config, Log log, GameState<?> state)
+	public HookDemiPlan(Config config, Log log, GameState<? extends Robot, > state)
 	{
 		super(config, log, state);
 	}

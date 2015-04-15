@@ -2,6 +2,7 @@ package hook;
 
 import robot.RobotChrono;
 import strategie.GameState;
+import vec2.ReadWrite;
 import exceptions.ChangeDirectionException;
 import exceptions.FinMatchException;
 import exceptions.ScriptHookException;
@@ -34,6 +35,6 @@ public interface Executable
 	 * le recyclage, qui est utilisé.
 	 * @param state
 	 */
-	public void updateGameState(GameState<RobotChrono> state);
+	public void updateGameState(GameState<RobotChrono,ReadWrite> state);
 	
 }

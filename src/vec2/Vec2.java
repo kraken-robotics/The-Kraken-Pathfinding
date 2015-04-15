@@ -7,7 +7,7 @@ package vec2;
  *
  */
 
-public class Vec2<T extends ReadOnly>
+public class Vec2<T extends Permission>
 {
 	public int x;
 	public int y;
@@ -24,7 +24,7 @@ public class Vec2<T extends ReadOnly>
 		y = (int) (Math.sin(angle)*1000);
 	}
 
-	public Vec2(Vec2<? extends ReadOnly> model)
+	public Vec2(Vec2<? extends Permission> model)
 	{
 		x = model.x;
 		y = model.y;
@@ -50,32 +50,32 @@ public class Vec2<T extends ReadOnly>
 	}
 	
 	// dot product
-	public int dot(Vec2<? extends ReadOnly> other)
+	public int dot(Vec2<? extends Permission> other)
 	{
 		return x*other.x + y*other.y;
 	}
 
 	// build a new Vec2 by summing the calling Vec2 and the one in args
-	public Vec2<ReadWrite> plusNewVector(Vec2<? extends ReadOnly> other)
+	public Vec2<ReadWrite> plusNewVector(Vec2<? extends Permission> other)
 	{
 		return new Vec2<ReadWrite>(x + other.x, y + other.y);
 	}
 	
 	// build a new Vec2 with the value obtained by decrementing the
 	// calling Vec2 by the provided Vec2 in args
-	public Vec2<ReadWrite> minusNewVector(Vec2<? extends ReadOnly> other)
+	public Vec2<ReadWrite> minusNewVector(Vec2<? extends Permission> other)
 	{
 		return new Vec2<ReadWrite>(x - other.x, y - other.y);
 	}
 
-	public static Vec2<ReadWrite> plus(Vec2<ReadWrite> modified, Vec2<? extends ReadOnly> other)
+	public static Vec2<ReadWrite> plus(Vec2<ReadWrite> modified, Vec2<? extends Permission> other)
 	{
 		modified.x += other.x;
 		modified.y += other.y;
 		return modified;
 	}
 	
-	public static Vec2<ReadWrite> minus(Vec2<ReadWrite> modified, Vec2<? extends ReadOnly> other)
+	public static Vec2<ReadWrite> minus(Vec2<ReadWrite> modified, Vec2<? extends Permission> other)
 	{
 		modified.x -= other.x;
 		modified.y -= other.y;
@@ -88,24 +88,24 @@ public class Vec2<T extends ReadOnly>
 	}
 
 	@SuppressWarnings("unchecked")
-	public Vec2<ReadOnly> getReadOnly()
+	public final Vec2<ReadOnly> getReadOnly()
 	{
 		return (Vec2<ReadOnly>) this;
 	}
 	
 	@SuppressWarnings("unchecked")
-	public Vec2<ReadWrite> getReadWrite()
+	public final Vec2<ReadWrite> getReadWrite()
 	{
 		return (Vec2<ReadWrite>) this;
 	}
 
-	public int squaredDistance(Vec2<? extends ReadOnly> other)
+	public int squaredDistance(Vec2<? extends Permission> other)
 	{
 		int tmp_x = x-other.x, tmp_y = y-other.y;
 		return tmp_x*tmp_x + tmp_y*tmp_y;
 	}
 
-	public double distance(Vec2<? extends ReadOnly> other)
+	public double distance(Vec2<? extends Permission> other)
 	{
 		return Math.sqrt(squaredDistance(other));
 	}
@@ -115,7 +115,7 @@ public class Vec2<T extends ReadOnly>
 		return "("+x+","+y+")";
 	}
 	
-	public boolean equals(Vec2<? extends ReadOnly> other)
+	public boolean equals(Vec2<? extends Permission> other)
 	{
 		return x == other.x && y == other.y;
 	}
@@ -145,7 +145,7 @@ public class Vec2<T extends ReadOnly>
 	    other.y = y;
 	}
 
-	public Vec2<ReadWrite> middleNewVector(Vec2<? extends ReadOnly> b)
+	public Vec2<ReadWrite> middleNewVector(Vec2<? extends Permission> b)
 	{
 		return new Vec2<ReadWrite>((x+b.x)/2, (y+b.y)/2);
 	}
@@ -164,13 +164,7 @@ public class Vec2<T extends ReadOnly>
 		return out;
 	}
 	
-/*	@SuppressWarnings("unchecked")
-	public static Vec2<ReadOnly> lectureSeule(Vec2<? extends ReadOnly> v)
-	{
-		return (Vec2<ReadOnly>) v;
-	}*/
-	
-	public Vec2<ReadWrite> rotateNewVector(double angle, Vec2<? extends ReadOnly> centreRotation)
+	public Vec2<ReadWrite> rotateNewVector(double angle, Vec2<? extends Permission> centreRotation)
 	{
 		double cos = Math.cos(angle);
 		double sin = Math.sin(angle);
@@ -225,7 +219,7 @@ public class Vec2<T extends ReadOnly>
 	 * @param other
 	 * @return
 	 */
-	public Vec2<ReadWrite> projectOnNewVector(Vec2<? extends ReadOnly> other)
+	public Vec2<ReadWrite> projectOnNewVector(Vec2<? extends Permission> other)
 	{
 		return scalarNewVector(dot(other));
 	}
