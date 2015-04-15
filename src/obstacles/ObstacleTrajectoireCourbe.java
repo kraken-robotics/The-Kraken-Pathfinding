@@ -25,10 +25,10 @@ public class ObstacleTrajectoireCourbe extends ObstacleRectanglesCollection
 	 * @param directionAvant de norme 1000
 	 * @param vitesse
 	 */
-	public ObstacleTrajectoireCourbe(PathfindingNodes objectifFinal, PathfindingNodes intersection, Vec2<? extends ReadOnly> directionAvant, Speed vitesse)
+	public ObstacleTrajectoireCourbe(PathfindingNodes objectifFinal, PathfindingNodes intersection, Vec2<ReadOnly> directionAvant, Speed vitesse)
 	{
 		// La position de cet obstacle est assez arbitraire...
-		super(intersection.getCoordonnees().clone());
+		super(intersection.getCoordonnees());
 		
 		Vec2<ReadWrite> directionApres = new Vec2<ReadWrite>(intersection.getOrientationFinale(objectifFinal));
 
@@ -60,8 +60,8 @@ public class ObstacleTrajectoireCourbe extends ObstacleRectanglesCollection
 		nb_rectangles = 10;
 		ombresRobot = new ObstacleRectangular[nb_rectangles];
 		for(int i = 0; i < nb_rectangles-1; i++)
-			ombresRobot[i] = new ObstacleRectangular(pointDepart.rotateNewVector(i*angleRotation/(nb_rectangles-1), centreCercle), longueurRobot, largeurRobot, angleDepart+i*angleRotation/(nb_rectangles-1));
-		ombresRobot[nb_rectangles-1] = new ObstacleRectangular(pointDepart.rotateNewVector(angleRotation, centreCercle), longueurRobot, largeurRobot, angleDepart+angleRotation);
+			ombresRobot[i] = new ObstacleRectangular(pointDepart.rotateNewVector(i*angleRotation/(nb_rectangles-1), centreCercle).getReadOnly(), longueurRobot, largeurRobot, angleDepart+i*angleRotation/(nb_rectangles-1));
+		ombresRobot[nb_rectangles-1] = new ObstacleRectangular(pointDepart.rotateNewVector(angleRotation, centreCercle).getReadOnly(), longueurRobot, largeurRobot, angleDepart+angleRotation);
 
 //		log.debug("Erreur! diff = "+(2*distanceAnticipation - rayonCourbure * Math.abs(angleRotation)), this);
 		

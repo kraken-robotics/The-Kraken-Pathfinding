@@ -17,6 +17,7 @@ import robot.RobotChrono;
 import robot.RobotReal;
 import strategie.GameState;
 import utils.ConfigInfo;
+import vec2.ReadOnly;
 import vec2.ReadWrite;
 import vec2.Vec2;
 
@@ -56,7 +57,7 @@ public class JUnit_Robot extends JUnit_Test
 	    		else
 	    			config.set(ConfigInfo.COULEUR, RobotColor.getCouleurAvecSymetrie());
 	    		robot.updateConfig();
-	    		robot.setPosition(new Vec2<ReadWrite>(200, 600));
+	    		robot.setPosition(new Vec2<ReadOnly>(200, 600));
 	    		robot.setOrientation(0);
 	    		robot.avancer(100);
 	    		Assert.assertTrue(robot.getPosition().squaredDistance(new Vec2<ReadWrite>(300, 600)) < 10);

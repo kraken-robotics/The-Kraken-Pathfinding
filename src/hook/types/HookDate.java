@@ -34,9 +34,10 @@ public class HookDate extends Hook {
 	}
 
 	@Override
-	public boolean simulated_evaluate(Vec2<? extends ReadOnly> pointA, Vec2<? extends ReadOnly> pointB, long date_appel) {
+	public boolean simulated_evaluate(Vec2<ReadOnly> pointA, Vec2<ReadOnly> pointB, long date)
+	{
 //		log.debug("Hook date: appel="+date_appel+", date_hook="+this.date_hook, this);
-		return date_appel > this.date_hook;
+		return date > this.date_hook;
 	}
 
 }

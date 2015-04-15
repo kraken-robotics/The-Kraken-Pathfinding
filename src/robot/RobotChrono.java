@@ -46,7 +46,7 @@ public class RobotChrono extends Robot
 	}
 	
 	@Override
-	public void setPosition(Vec2<? extends ReadOnly> position) {
+	public void setPosition(Vec2<ReadOnly> position) {
 		position.copy(this.position);
 		isPositionPathfindingActive = false;
 		positionPathfindingAnterieure = null;
@@ -67,7 +67,7 @@ public class RobotChrono extends Robot
 	
         Vec2<ReadWrite> ecart = new Vec2<ReadWrite>((int)(distance*Math.cos(orientation)), (int)(distance*Math.sin(orientation)));
 
-		checkHooks(position, position.plusNewVector(ecart), hooks);
+		checkHooks(position.getReadOnly(), position.plusNewVector(ecart).getReadOnly(), hooks);
 		Vec2.plus(position, ecart);
 		isPositionPathfindingActive = false;
 		positionPathfindingAnterieure = null;
@@ -127,7 +127,7 @@ public class RobotChrono extends Robot
 			va_au_point_pathfinding(point.objectifFinal, point.differenceDistance, hooks);
 	}
 	
-	private void va_au_point_no_hook(Vec2<? extends ReadOnly> point) throws FinMatchException
+	private void va_au_point_no_hook(Vec2<ReadOnly> point) throws FinMatchException
 	{
 		double orientation_finale = Math.atan2(point.y - position.y, point.x - position.x);
 		tourner(orientation_finale);
@@ -151,7 +151,7 @@ public class RobotChrono extends Robot
 
 		if(!isPositionPathfindingActive)
 		{
-			checkHooks(position, n.getCoordonnees(), hooks);
+			checkHooks(position.getReadOnly(), n.getCoordonnees(), hooks);
 			va_au_point_no_hook(n.getCoordonnees());
 		}
 		else if(positionPathfindingAnterieure != null && vitesse == Speed.BETWEEN_SCRIPTS)
@@ -159,19 +159,19 @@ public class RobotChrono extends Robot
 			date += positionPathfinding.angleWith(positionPathfindingAnterieure, n)
 					+ positionPathfinding.timeTo(n)
 					+ sleepTourneAndAvanceDuration;
-			checkHooks(position, n.getCoordonnees(), hooks);
+			checkHooks(position.getReadOnly(), n.getCoordonnees(), hooks);
 		}
 		else if(vitesse == Speed.BETWEEN_SCRIPTS)
 		{
 			tourner(positionPathfinding.getOrientationFinale(n));
 			date += positionPathfinding.timeTo(n) + sleepAvanceDuration;
-			checkHooks(position, n.getCoordonnees(), hooks);
+			checkHooks(position.getReadOnly(), n.getCoordonnees(), hooks);
 		}
 		else
 		{
 			tourner(positionPathfinding.getOrientationFinale(n));
 			date += positionPathfinding.distanceTo(n)*vitesse.invertedTranslationnalSpeed + sleepAvanceDuration;
-			checkHooks(position, n.getCoordonnees(), hooks);
+			checkHooks(position.getReadOnly(), n.getCoordonnees(), hooks);
 		}
 		setPositionPathfinding(n);
 	}
@@ -213,7 +213,7 @@ public class RobotChrono extends Robot
 	public void sleep(long duree, ArrayList<Hook> hooks) throws FinMatchException 
 	{
 		this.date += duree;
-		checkHooks(position, position, hooks);
+		checkHooks(position.getReadOnly(), position.getReadOnly(), hooks);
 	}
 	
 	@Override
@@ -268,7 +268,7 @@ public class RobotChrono extends Robot
 	 * @param hooks
 	 * @throws FinMatchException 
 	 */
-	private void checkHooks(Vec2<? extends ReadOnly> pointA, Vec2<? extends ReadOnly> pointB, ArrayList<Hook> hooks) throws FinMatchException
+	private void checkHooks(Vec2<ReadOnly> pointA, Vec2<ReadOnly> pointB, ArrayList<Hook> hooks) throws FinMatchException
 	{
 		for(Hook hook: hooks)
 			if(hook.simulated_evaluate(pointA, pointB, date))

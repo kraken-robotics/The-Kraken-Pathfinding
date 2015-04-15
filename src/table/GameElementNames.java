@@ -52,8 +52,8 @@ public enum GameElementNames {
 
 	private GameElementNames(GameElementType type, Vec2<ReadOnly> position, int radius)
 	{
-		obstacle = new ObstacleCircular(position.clone(), radius);
-		obstacleDilate = new ObstacleCircular(position.clone(), radius+dilatationHookScript);
+		obstacle = new ObstacleCircular(position, radius);
+		obstacleDilate = new ObstacleCircular(position, radius+dilatationHookScript);
 		this.type = type;
 	}
 	

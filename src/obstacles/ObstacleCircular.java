@@ -19,7 +19,7 @@ public class ObstacleCircular extends Obstacle
 	protected int squared_radius;
 	protected static int squared_radius_with_dilatation_obstacle = -1;
 	
-	public ObstacleCircular(Vec2<ReadWrite> position, int rad)
+	public ObstacleCircular(Vec2<ReadOnly> position, int rad)
 	{
 		super(position);
 		this.radius = rad;
@@ -41,27 +41,27 @@ public class ObstacleCircular extends Obstacle
 		return super.toString()+", rayon: "+radius;
 	}
 
-	private boolean isInObstacle(Vec2<? extends ReadOnly> point, int distance)
+	private boolean isInObstacle(Vec2<ReadOnly> point, int distance)
 	{
 		return point.squaredDistance(position) <= (radius+distance)*(radius+distance);
 	}
 
-	public boolean isInObstacleDilatation(Vec2<? extends ReadOnly> point)
+	public boolean isInObstacleDilatation(Vec2<ReadOnly> point)
 	{
 		return point.squaredDistance(position) <= squared_radius_with_dilatation_obstacle;
 	}
 
-	public boolean isInObstacle(Vec2<? extends ReadOnly> point)
+	public boolean isInObstacle(Vec2<ReadOnly> point)
 	{
 		return point.squaredDistance(position) <= squared_radius;
 	}
 
-	public boolean isProcheObstacle(Vec2<? extends ReadOnly> point, int distance)
+	public boolean isProcheObstacle(Vec2<ReadOnly> point, int distance)
 	{
 		return point.squaredDistance(position) <= (radius+distance)*(radius+distance);
 	}
 
-	private boolean collisionDroite(Vec2<? extends ReadOnly> A, Vec2<? extends ReadOnly> B, int distance)
+	private boolean collisionDroite(Vec2<ReadOnly> A, Vec2<ReadOnly> B, int distance)
 	{
 		Vec2<ReadOnly> C = position.getReadOnly();
 		Vec2<ReadWrite> AB = B.minusNewVector(A);
@@ -72,7 +72,7 @@ public class ObstacleCircular extends Obstacle
 	    return CI < (radius+distance)*(radius+distance);
 	}
 
-	private boolean collisionDroiteDilatation(Vec2<? extends ReadOnly> A, Vec2<? extends ReadOnly> B)
+	private boolean collisionDroiteDilatation(Vec2<ReadOnly> A, Vec2<ReadOnly> B)
 	{
 		Vec2<ReadOnly> C = position.getReadOnly();
 		Vec2<ReadWrite> AB = B.minusNewVector(A);
@@ -90,7 +90,7 @@ public class ObstacleCircular extends Obstacle
      * @param distance: dilatation. 0 pour les obstacles de proximité, non nul pour les éléments de jeux circulaires.
      * @return
      */
-    public boolean obstacle_proximite_dans_segment(Vec2<? extends ReadOnly> A, Vec2<? extends ReadOnly> B, int distance)
+    public boolean obstacle_proximite_dans_segment(Vec2<ReadOnly> A, Vec2<ReadOnly> B, int distance)
     {
     	// Ceci peut être le cas pour certain élément de jeu dont il ne faut pas vérifier les collisions
     	if(radius < 0)
@@ -110,7 +110,7 @@ public class ObstacleCircular extends Obstacle
 	    return isInObstacle(A, distance) || isInObstacle(B, distance);
     }
 
-    public boolean obstacle_proximite_dans_segment_dilatation(Vec2<? extends ReadOnly> A, Vec2<? extends ReadOnly> B)
+    public boolean obstacle_proximite_dans_segment_dilatation(Vec2<ReadOnly> A, Vec2<ReadOnly> B)
     {
     	// Ceci peut être le cas pour certain élément de jeu dont il ne faut pas vérifier les collisions
     	if(radius < 0)

@@ -35,7 +35,7 @@ public class HookDemiPlan extends Hook
 	 * @param log
 	 * @param state
 	 */
-	public HookDemiPlan(Config config, Log log, GameState<?> state, Vec2<? extends ReadOnly> point, Vec2<? extends ReadOnly> direction)
+	public HookDemiPlan(Config config, Log log, GameState<?> state, Vec2<ReadOnly> point, Vec2<ReadOnly> direction)
 	{
 		super(config, log, state);
 		this.point = point.getReadOnly();
@@ -80,7 +80,7 @@ public class HookDemiPlan extends Hook
 	 * faut juste vérifier s'il peut l'être en A ou en B.
 	 */
 	@Override
-	public boolean simulated_evaluate(Vec2<? extends ReadOnly> pointA, Vec2<? extends ReadOnly> pointB, long date)
+	public boolean simulated_evaluate(Vec2<ReadOnly> pointA, Vec2<ReadOnly> pointB, long date)
 	{
 		return pointA.minusNewVector(point).dot(direction) > 0 ||
 				pointB.minusNewVector(point).dot(direction) > 0;

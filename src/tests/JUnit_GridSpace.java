@@ -29,7 +29,7 @@ public class JUnit_GridSpace extends JUnit_Test {
 	@Test
 	public void test_nearestReachableNode() throws Exception
 	{
-		Assert.assertEquals(PathfindingNodes.BAS_DROITE, gridspace.nearestReachableNode(PathfindingNodes.BAS_DROITE.getCoordonnees().plusNewVector(new Vec2<ReadOnly>(10, -40)), 0));
+		Assert.assertEquals(PathfindingNodes.BAS_DROITE, gridspace.nearestReachableNode(PathfindingNodes.BAS_DROITE.getCoordonnees().plusNewVector(new Vec2<ReadOnly>(10, -40)).getReadOnly(), 0));
 	}
 
 	@Test

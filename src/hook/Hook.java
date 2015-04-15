@@ -96,7 +96,7 @@ abstract public class Hook
 	 * @param date
 	 * @return
 	 */
-	public abstract boolean simulated_evaluate(Vec2<? extends ReadOnly> pointA, Vec2<? extends ReadOnly> pointB, long date);
+	public abstract boolean simulated_evaluate(Vec2<ReadOnly> pointA, Vec2<ReadOnly> pointB, long date);
 	
 	/**
 	 * On peut supprimer le hook s'il n'y a plus aucun callback déclenchable.

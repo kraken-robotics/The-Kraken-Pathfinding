@@ -3,7 +3,6 @@ import utils.Config;
 import utils.ConfigInfo;
 import utils.Log;
 import vec2.ReadOnly;
-import vec2.ReadWrite;
 import vec2.Vec2;
 
 /**
@@ -14,7 +13,7 @@ import vec2.Vec2;
 
 public abstract class Obstacle
 {
-	protected Vec2<ReadWrite> position;
+	protected Vec2<ReadOnly> position;
 	protected int distance_dilatation;
 	protected static Log log;
 	protected static Config config;
@@ -34,13 +33,13 @@ public abstract class Obstacle
 		anglePas = Math.PI-2*Math.atan2(largeurRobot, longueurRobot);
 	}
 	
-	public Obstacle (Vec2<ReadWrite> position)
+	public Obstacle (Vec2<ReadOnly> position)
 	{
 		this.position = position;
 	}
 	
-	public abstract boolean isProcheObstacle(Vec2<? extends ReadOnly> point, int distance);
-	public abstract boolean isInObstacle(Vec2<? extends ReadOnly> point);
+	public abstract boolean isProcheObstacle(Vec2<ReadOnly> point, int distance);
+	public abstract boolean isInObstacle(Vec2<ReadOnly> point);
 	
 	/**
 	 * Utilisé pour l'affichage

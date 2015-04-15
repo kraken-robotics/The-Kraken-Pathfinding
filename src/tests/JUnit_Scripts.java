@@ -21,7 +21,7 @@ import scripts.ScriptManager;
 import scripts.ScriptAnticipableNames;
 import strategie.GameState;
 import utils.ConfigInfo;
-import vec2.ReadWrite;
+import vec2.ReadOnly;
 import vec2.Vec2;
 
 /**
@@ -45,7 +45,7 @@ public class JUnit_Scripts extends JUnit_Test {
         gamestate = (GameState<RobotReal>) container.getService(ServiceNames.REAL_GAME_STATE);
         pathfinding = (AStar<PathfindingArcManager, SegmentTrajectoireCourbe>) container.getService(ServiceNames.A_STAR_PATHFINDING);
         scriptmanager = (ScriptManager) container.getService(ServiceNames.SCRIPT_MANAGER);
-        gamestate.robot.setPosition(new Vec2<ReadWrite>(1100, 1000));
+        gamestate.robot.setPosition(new Vec2<ReadOnly>(1100, 1000));
         state_chrono = gamestate.cloneGameState();
     }
 

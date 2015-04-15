@@ -92,6 +92,12 @@ public class Vec2<T extends ReadOnly>
 	{
 		return (Vec2<ReadOnly>) this;
 	}
+	
+	@SuppressWarnings("unchecked")
+	public Vec2<ReadWrite> getReadWrite()
+	{
+		return (Vec2<ReadWrite>) this;
+	}
 
 	public int squaredDistance(Vec2<? extends ReadOnly> other)
 	{

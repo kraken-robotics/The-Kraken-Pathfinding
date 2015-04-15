@@ -60,9 +60,9 @@ public class Fenetre extends JPanel {
 		this.dilatationObstacle = dilatationObstacle;
 	}
 	
-	public void addPoint(Vec2<? extends ReadOnly> point)
+	public void addPoint(Vec2<ReadOnly> point)
 	{
-		pointsADessiner.add(point.getReadOnly());
+		pointsADessiner.add(point);
 	}
 	
 	private int distanceXtoWindow(int dist)
@@ -218,8 +218,8 @@ public class Fenetre extends JPanel {
 	{
 		@SuppressWarnings("unchecked")
 		Vec2<ReadOnly>[] v = (Vec2<ReadOnly>[]) new Vec2[2];
-		v[0] = a.clone().getReadOnly();
-		v[1] = b.clone().getReadOnly();
+		v[0] = a;
+		v[1] = b;
 		segments.add(v);
 	}
 	

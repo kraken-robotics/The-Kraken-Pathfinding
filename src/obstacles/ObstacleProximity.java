@@ -13,7 +13,7 @@ public class ObstacleProximity extends ObstacleCircular
 {
 	private int death_date;
 
-	public ObstacleProximity(Vec2<ReadWrite> position, int rad, int death_date)
+	public ObstacleProximity(Vec2<ReadOnly> position, int rad, int death_date)
 	{
 		super(position,rad);
 		this.death_date = death_date;
@@ -37,7 +37,7 @@ public class ObstacleProximity extends ObstacleCircular
 	 * @param date
 	 * @return
 	 */
-    public boolean obstacle_proximite_dans_segment(Vec2<? extends ReadOnly> A, Vec2<? extends ReadOnly> B, int date)
+    public boolean obstacle_proximite_dans_segment(Vec2<ReadOnly> A, Vec2<ReadOnly> B, int date)
     {
     	// si l'obstacle est présent dans le segment...
     	ObstacleRectangular r = new ObstacleRectangular(A,B);
@@ -60,7 +60,7 @@ public class ObstacleProximity extends ObstacleCircular
     		C.x = (int)(C.x * facteurMultiplicatif);
     		C.y = (int)(C.y * facteurMultiplicatif);
     		Vec2.plus(C, A);
-        	ObstacleRectangular r2 = new ObstacleRectangular(A,C);
+        	ObstacleRectangular r2 = new ObstacleRectangular(A,C.getReadOnly());
         	return r2.isColliding(this);
     	}
     	return false;
@@ -70,9 +70,10 @@ public class ObstacleProximity extends ObstacleCircular
      * Utilisé pour mettre à jour l'ennemi hypothétique
      * @param clone
      */
-	public void setPosition(Vec2<? extends ReadOnly> position)
+	public void setPosition(Vec2<ReadWrite> position)
 	{
-		position.copy(this.position);
+		this.position = position.getReadOnly();
+//		position.copy(this.position.getReadWrite());
 	}
 	
     /**

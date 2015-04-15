@@ -86,7 +86,7 @@ public class Locomotion implements Service
      */
     public void turn(double angle, ArrayList<Hook> hooks) throws UnableToMoveException, FinMatchException
     {
-    	Vec2<ReadWrite> consigne = new Vec2<ReadWrite>(
+    	Vec2<ReadOnly> consigne = new Vec2<ReadOnly>(
         (int) (position.x + 1000*Math.cos(angle)),
         (int) (position.y + 1000*Math.sin(angle))
         );
@@ -94,7 +94,7 @@ public class Locomotion implements Service
         // l'appel à cette méthode sous-entend que le robot ne tourne pas
         // il va donc en avant si la distance est positive, en arrière si elle est négative
         try {
-			vaAuPointGestionExceptions(consigne, position, 0, hooks, true, false, true);
+			vaAuPointGestionExceptions(consigne, position.getReadOnly(), 0, hooks, true, false, true);
 		} catch (ChangeDirectionException e) {
 			// Normalement impossible
 			e.printStackTrace();
@@ -117,15 +117,15 @@ public class Locomotion implements Service
     {
         log.debug("Avancer de "+Integer.toString(distance), this);
         
-        Vec2<ReadWrite> consigne = new Vec2<ReadWrite>(); 
-        consigne.x = (int) (position.x + distance*Math.cos(orientation));
-        consigne.y = (int) (position.y + distance*Math.sin(orientation));        
+        Vec2<ReadOnly> consigne = new Vec2<ReadOnly>( 
+        (int) (position.x + distance*Math.cos(orientation)),
+        (int) (position.y + distance*Math.sin(orientation)));        
 
         // l'appel à cette méthode sous-entend que le robot ne tourne pas
         // il va donc en avant si la distance est positive, en arrière si elle est négative
         // si on est à 90°, on privilégie la marche avant
         try {
-			vaAuPointGestionExceptions(consigne, position, 0, hooks, distance >= 0, mur, false);
+			vaAuPointGestionExceptions(consigne, position.getReadOnly(), 0, hooks, distance >= 0, mur, false);
 		} catch (ChangeDirectionException e) {
 			// Normalement impossible
 			e.printStackTrace();
@@ -151,16 +151,16 @@ public class Locomotion implements Service
     	for(int i = 0; i < size; i++)
         {
     		SegmentTrajectoireCourbe actuel = chemin.get(i);
-    		Vec2<ReadWrite> intermediaire;
+    		Vec2<ReadOnly> intermediaire;
     		int differenceDistance;
     		if(i > 0)
     		{
-    			intermediaire = chemin.get(i-1).objectifFinal.getCoordonnees().clone();
+    			intermediaire = chemin.get(i-1).objectifFinal.getCoordonnees();
     			differenceDistance = actuel.differenceDistance;
     		}
     		else
     		{
-    			intermediaire = position.clone();
+    			intermediaire = position.getReadOnly();
     			// Cas particulier du premier départ: pas de trajectoire courbe
     			differenceDistance = 0;
     		}
@@ -188,7 +188,7 @@ public class Locomotion implements Service
 	    		}
     		}
     		
-            Vec2<ReadWrite> consigne = chemin.get(i).objectifFinal.getCoordonnees().clone();
+            Vec2<ReadOnly> consigne = chemin.get(i).objectifFinal.getCoordonnees();
             
             try {
 				vaAuPointGestionMarcheArriere(consigne, intermediaire, differenceDistance, hooks, false, directionstrategy, false);
@@ -208,7 +208,7 @@ public class Locomotion implements Service
      * @throws ScriptHookException 
      * @throws ChangeDirectionException 
      */
-    private void vaAuPointGestionMarcheArriere(Vec2<? extends ReadOnly> consigne, Vec2<? extends ReadOnly> intermediaire, int differenceDistance, ArrayList<Hook> hooks, boolean mur, DirectionStrategy strategy, boolean seulementAngle) throws UnableToMoveException, FinMatchException, ScriptHookException, ChangeDirectionException
+    private void vaAuPointGestionMarcheArriere(Vec2<ReadOnly> consigne, Vec2<ReadOnly> intermediaire, int differenceDistance, ArrayList<Hook> hooks, boolean mur, DirectionStrategy strategy, boolean seulementAngle) throws UnableToMoveException, FinMatchException, ScriptHookException, ChangeDirectionException
     {
     	// Si on est en trajectoire courbe, on continue comme la fois précédente
     	boolean trajectoire_courbe = differenceDistance != 0;
@@ -249,7 +249,7 @@ public class Locomotion implements Service
      * @throws ScriptHookException 
      * @throws ChangeDirectionException 
      */
-    private void vaAuPointGestionExceptions(Vec2<? extends ReadOnly> consigne, Vec2<? extends ReadOnly> intermediaire, int differenceDistance, ArrayList<Hook> hooks, boolean marcheAvant, boolean mur, boolean seulementAngle) throws UnableToMoveException, FinMatchException, ScriptHookException, ChangeDirectionException
+    private void vaAuPointGestionExceptions(Vec2<ReadOnly> consigne, Vec2<ReadOnly> intermediaire, int differenceDistance, ArrayList<Hook> hooks, boolean marcheAvant, boolean mur, boolean seulementAngle) throws UnableToMoveException, FinMatchException, ScriptHookException, ChangeDirectionException
     {
         int attente_ennemi_max = 600; // combien de temps attendre que l'ennemi parte avant d'abandonner
         int nb_iterations_deblocage = 2; // combien de fois on réessaye si on se prend un mur
@@ -353,7 +353,7 @@ public class Locomotion implements Service
      * @throws WallCollisionDetectedException 
      * @throws ChangeDirectionException 
      */
-    private void vaAuPointGestionHookCorrectionEtDetection(Vec2<? extends ReadOnly> consigne, Vec2<? extends ReadOnly> intermediaire, int differenceDistance, ArrayList<Hook> hooks, boolean marcheAvant, boolean seulementAngle) throws BlockedException, UnexpectedObstacleOnPathException, FinMatchException, ScriptHookException, WallCollisionDetectedException, ChangeDirectionException
+    private void vaAuPointGestionHookCorrectionEtDetection(Vec2<ReadOnly> consigne, Vec2<ReadOnly> intermediaire, int differenceDistance, ArrayList<Hook> hooks, boolean marcheAvant, boolean seulementAngle) throws BlockedException, UnexpectedObstacleOnPathException, FinMatchException, ScriptHookException, WallCollisionDetectedException, ChangeDirectionException
     {
         // le fait de faire de nombreux appels permet de corriger la trajectoire
     	vaAuPointGestionDirection(consigne, intermediaire, differenceDistance, marcheAvant, seulementAngle, false);
@@ -375,9 +375,9 @@ public class Locomotion implements Service
         
     }
 
-    private void corrigeAngle(Vec2<? extends ReadOnly> consigne, boolean marcheAvant) throws BlockedException, FinMatchException, WallCollisionDetectedException
+    private void corrigeAngle(Vec2<ReadOnly> consigne, boolean marcheAvant) throws BlockedException, FinMatchException, WallCollisionDetectedException
     {
-    	vaAuPointGestionDirection(consigne, position, 0, marcheAvant, true, true);
+    	vaAuPointGestionDirection(consigne, position.getReadOnly(), 0, marcheAvant, true, true);
     }
 
     /**
@@ -390,7 +390,7 @@ public class Locomotion implements Service
      * @throws FinMatchException 
      * @throws WallCollisionDetectedException 
      */
-    private void vaAuPointGestionDirection(Vec2<? extends ReadOnly> consigne, Vec2<? extends ReadOnly> intermediaire, int differenceDistance, boolean marcheAvant, boolean seulementAngle, boolean correction) throws BlockedException, FinMatchException, WallCollisionDetectedException
+    private void vaAuPointGestionDirection(Vec2<ReadOnly> consigne, Vec2<ReadOnly> intermediaire, int differenceDistance, boolean marcheAvant, boolean seulementAngle, boolean correction) throws BlockedException, FinMatchException, WallCollisionDetectedException
     {
         Vec2<ReadWrite> delta = consigne.clone();
         updateCurrentPositionAndOrientation();
@@ -419,7 +419,7 @@ public class Locomotion implements Service
      * @throws FinMatchException 
      * @throws WallCollisionDetectedException 
      */
-    private void vaAuPointGestionCourbe(Vec2<? extends ReadOnly> consigne, Vec2<? extends ReadOnly> intermediaire, double angle, double distance, boolean trajectoire_courbe, boolean seulementAngle, boolean correction) throws BlockedException, FinMatchException, WallCollisionDetectedException
+    private void vaAuPointGestionCourbe(Vec2<ReadOnly> consigne, Vec2<ReadOnly> intermediaire, double angle, double distance, boolean trajectoire_courbe, boolean seulementAngle, boolean correction) throws BlockedException, FinMatchException, WallCollisionDetectedException
     {
 		double delta = (angle-orientation) % (2*Math.PI);
 		if(delta > Math.PI)
@@ -447,9 +447,9 @@ public class Locomotion implements Service
             if(!correction && !trajectoire_courbe)
             {
             	if(obstacleRotation == null)
-            		obstacleRotation = new ObstacleRotationRobot(position, orientation, angle);
+            		obstacleRotation = new ObstacleRotationRobot(position.getReadOnly(), orientation, angle);
             	else
-            		obstacleRotation.update(position, orientation, angle);
+            		obstacleRotation.update(position.clone(), orientation, angle);
             	if(obstacleRotation.isCollidingObstacleFixe())
 	        	{
 	        		log.debug("Le robot a demandé à tourner dans un obstacle. Ordre annulé.", this);
@@ -500,7 +500,7 @@ public class Locomotion implements Service
         int rayon_detection = largeur_robot/2 + distance_detection;
         Vec2<ReadWrite> centre_detection = new Vec2<ReadWrite>((int)(signe * rayon_detection * Math.cos(orientation)), (int)(signe * rayon_detection * Math.sin(orientation)));
         Vec2.plus(centre_detection, position);
-        if(obstaclemanager.isObstacleMobilePresent(centre_detection, distance_detection))
+        if(obstaclemanager.isObstacleMobilePresent(centre_detection.getReadOnly(), distance_detection))
         {
             log.warning("Ennemi détecté en : " + centre_detection, this);
             throw new UnexpectedObstacleOnPathException();
@@ -561,7 +561,7 @@ public class Locomotion implements Service
      * @param position
      * @throws FinMatchException 
      */
-    public void setPosition(Vec2<? extends ReadOnly> position) throws FinMatchException {
+    public void setPosition(Vec2<ReadOnly> position) throws FinMatchException {
         position.copy(this.position);
         try {
     		deplacements.setX(this.position.x);

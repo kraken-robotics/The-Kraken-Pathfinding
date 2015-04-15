@@ -30,7 +30,7 @@ public class HookCollisionObstaclesFixes extends Hook
 		// et qu'on regardera aussi les obstacles derrière le robot
 		int previsionCollision = config.getInt(ConfigInfo.PREVISION_COLLISION)*2;
 		try {
-			obstacle = new ObstacleRectangular(state.robot.getPosition(), state.robot.getPosition().plusNewVector(new Vec2<ReadWrite>((int)(Math.cos(state.robot.getOrientation())*previsionCollision), (int)(Math.sin(state.robot.getOrientation())*previsionCollision))));
+			obstacle = new ObstacleRectangular(state.robot.getPosition(), state.robot.getPosition().plusNewVector(new Vec2<ReadWrite>((int)(Math.cos(state.robot.getOrientation())*previsionCollision), (int)(Math.sin(state.robot.getOrientation())*previsionCollision))).getReadOnly());
 		} catch (FinMatchException e) {
 			// Normalement impossible
 			e.printStackTrace();
@@ -47,7 +47,7 @@ public class HookCollisionObstaclesFixes extends Hook
 
 	// Il n'y a pas de simulation pour ce hook
 	@Override
-	public boolean simulated_evaluate(Vec2<? extends ReadOnly> pointA, Vec2<? extends ReadOnly> pointB, long date)
+	public boolean simulated_evaluate(Vec2<ReadOnly> pointA, Vec2<ReadOnly> pointB, long date)
 	{
 		return false;
 	}

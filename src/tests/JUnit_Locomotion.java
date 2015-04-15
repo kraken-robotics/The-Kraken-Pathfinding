@@ -177,19 +177,19 @@ public class JUnit_Locomotion extends JUnit_Test
         locomotion.setOrientation(0);
         locomotion.setPosition(new Vec2<ReadOnly>(1320, 250));
         ObstacleRotationRobot r;
-        r = new ObstacleRotationRobot(locomotion.getPosition().clone(), locomotion.getOrientation(), 0);
+        r = new ObstacleRotationRobot(locomotion.getPosition(), locomotion.getOrientation(), 0);
         Assert.assertTrue(!r.isColliding(ObstaclesFixes.BORD_DROITE.getObstacle()));
-        r = new ObstacleRotationRobot(locomotion.getPosition().clone(), locomotion.getOrientation(), Math.PI/9);
+        r = new ObstacleRotationRobot(locomotion.getPosition(), locomotion.getOrientation(), Math.PI/9);
         Assert.assertTrue(!r.isColliding(ObstaclesFixes.BORD_DROITE.getObstacle()));
-        r = new ObstacleRotationRobot(locomotion.getPosition().clone(), locomotion.getOrientation(), Math.PI/6);
+        r = new ObstacleRotationRobot(locomotion.getPosition(), locomotion.getOrientation(), Math.PI/6);
         Assert.assertTrue(r.isColliding(ObstaclesFixes.BORD_DROITE.getObstacle()));
-        r = new ObstacleRotationRobot(locomotion.getPosition().clone(), locomotion.getOrientation(), Math.PI/2);
+        r = new ObstacleRotationRobot(locomotion.getPosition(), locomotion.getOrientation(), Math.PI/2);
         Assert.assertTrue(r.isColliding(ObstaclesFixes.BORD_DROITE.getObstacle()));
-        r = new ObstacleRotationRobot(locomotion.getPosition().clone(), locomotion.getOrientation(), -Math.PI/9);
+        r = new ObstacleRotationRobot(locomotion.getPosition(), locomotion.getOrientation(), -Math.PI/9);
         Assert.assertTrue(!r.isColliding(ObstaclesFixes.BORD_DROITE.getObstacle()));
-        r = new ObstacleRotationRobot(locomotion.getPosition().clone(), locomotion.getOrientation(), -Math.PI/6);
+        r = new ObstacleRotationRobot(locomotion.getPosition(), locomotion.getOrientation(), -Math.PI/6);
         Assert.assertTrue(r.isColliding(ObstaclesFixes.BORD_DROITE.getObstacle()));
-        r = new ObstacleRotationRobot(locomotion.getPosition().clone(), locomotion.getOrientation(), -Math.PI/2);
+        r = new ObstacleRotationRobot(locomotion.getPosition(), locomotion.getOrientation(), -Math.PI/2);
         Assert.assertTrue(r.isColliding(ObstaclesFixes.BORD_DROITE.getObstacle()));
 	}
 	

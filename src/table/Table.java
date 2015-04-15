@@ -100,7 +100,7 @@ public class Table implements Service
 	 * @param rayon_robot_adverse
 	 * @return
 	 */
-	public boolean isProcheObstacle(GameElementNames g, Vec2<? extends ReadOnly> position, int rayon_robot_adverse)
+	public boolean isProcheObstacle(GameElementNames g, Vec2<ReadOnly> position, int rayon_robot_adverse)
 	{
 		return g.getObstacle().isProcheObstacle(position, rayon_robot_adverse);
 	}

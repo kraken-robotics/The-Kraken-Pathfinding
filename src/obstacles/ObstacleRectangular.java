@@ -47,7 +47,7 @@ public class ObstacleRectangular extends Obstacle implements ObstacleCollision
 	 * @param sizeY
 	 * @param angle
 	 */
-	public ObstacleRectangular(Vec2<ReadWrite> position, int sizeX, int sizeY)
+	public ObstacleRectangular(Vec2<ReadOnly> position, int sizeX, int sizeY)
 	{
 		this(position, sizeX, sizeY, 0);
 	}
@@ -57,9 +57,9 @@ public class ObstacleRectangular extends Obstacle implements ObstacleCollision
 	 * @param depart
 	 * @param arrivee
 	 */
-	public ObstacleRectangular(Vec2<? extends ReadOnly> depart, Vec2<? extends ReadOnly> arrivee)
+	public ObstacleRectangular(Vec2<ReadOnly> depart, Vec2<ReadOnly> arrivee)
 	{
-		this(depart.middleNewVector(arrivee), (int)depart.distance(arrivee)+longueurRobot+2*marge, largeurRobot+2*marge, Math.atan2(arrivee.y-depart.y, arrivee.x-depart.x));
+		this(depart.middleNewVector(arrivee).getReadOnly(), (int)depart.distance(arrivee)+longueurRobot+2*marge, largeurRobot+2*marge, Math.atan2(arrivee.y-depart.y, arrivee.x-depart.x));
 	}
 	
 	/**
@@ -73,7 +73,7 @@ public class ObstacleRectangular extends Obstacle implements ObstacleCollision
 	 * @param sizeY
 	 * @param angle
 	 */
-	public ObstacleRectangular(Vec2<ReadWrite> position, int sizeX, int sizeY, double angle)
+	public ObstacleRectangular(Vec2<ReadOnly> position, int sizeX, int sizeY, double angle)
 	{
 		super(position);
 		this.sizeY = sizeY;
@@ -89,10 +89,10 @@ public class ObstacleRectangular extends Obstacle implements ObstacleCollision
 	 */
 	public ObstacleRectangular(GameState<?> state) throws FinMatchException
 	{
-		this(state.robot.getPosition().clone(), longueurRobot, largeurRobot, state.robot.getOrientation());
+		this(state.robot.getPosition(), longueurRobot, largeurRobot, state.robot.getOrientation());
 	}
 
-	private void updateVariables(Vec2<? extends ReadOnly> position, double angle)
+	private void updateVariables(Vec2<ReadOnly> position, double angle)
 	{
 		coinBasGauche = position.plusNewVector((new Vec2<ReadWrite>(-sizeX/2,-sizeY/2))).getReadOnly();
 		coinHautGauche = position.plusNewVector((new Vec2<ReadWrite>(-sizeX/2,sizeY/2))).getReadOnly();
@@ -114,7 +114,7 @@ public class ObstacleRectangular extends Obstacle implements ObstacleCollision
 	 * @param point
 	 * @return
 	 */
-	private Vec2<ReadWrite> rotateMoinsAngle(Vec2<? extends ReadOnly> point)
+	private Vec2<ReadWrite> rotateMoinsAngle(Vec2<ReadOnly> point)
 	{
 		Vec2<ReadWrite> out = new Vec2<ReadWrite>();
 		out.x = (int)(cos*(point.x-position.x)+sin*(point.y-position.y))+position.x;
@@ -127,7 +127,7 @@ public class ObstacleRectangular extends Obstacle implements ObstacleCollision
 	 * @param point
 	 * @return
 	 */
-	private Vec2<ReadWrite> rotatePlusAngle(Vec2<? extends ReadOnly> point)
+	private Vec2<ReadWrite> rotatePlusAngle(Vec2<ReadOnly> point)
 	{
 		Vec2<ReadWrite> out = new Vec2<ReadWrite>();
 		out.x = (int)(cos*(point.x-position.x)-sin*(point.y-position.y))+position.x;
@@ -140,7 +140,7 @@ public class ObstacleRectangular extends Obstacle implements ObstacleCollision
 	 * @param point
 	 * @return
 	 */
-	private int getXRotatePlusAngle(Vec2<? extends ReadOnly> point)
+	private int getXRotatePlusAngle(Vec2<ReadOnly> point)
 	{
 		return (int)(cos*(point.x-position.x)-sin*(point.y-position.y))+position.x;
 	}
@@ -150,7 +150,7 @@ public class ObstacleRectangular extends Obstacle implements ObstacleCollision
 	 * @param point
 	 * @return
 	 */
-	private int getYRotatePlusAngle(Vec2<? extends ReadOnly> point)
+	private int getYRotatePlusAngle(Vec2<ReadOnly> point)
 	{
 		return (int)(sin*(point.x-position.x)+cos*(point.y-position.y))+position.y;
 	}
@@ -160,7 +160,7 @@ public class ObstacleRectangular extends Obstacle implements ObstacleCollision
 	 * @param point
 	 * @return
 	 */
-	private int getXRotateMoinsAngle(Vec2<? extends ReadOnly> point)
+	private int getXRotateMoinsAngle(Vec2<ReadOnly> point)
 	{
 		return (int)(cos*(point.x-position.x)+sin*(point.y-position.y))+position.x;
 	}
@@ -170,7 +170,7 @@ public class ObstacleRectangular extends Obstacle implements ObstacleCollision
 	 * @param point
 	 * @return
 	 */
-	private int getYRotateMoinsAngle(Vec2<? extends ReadOnly> point)
+	private int getYRotateMoinsAngle(Vec2<ReadOnly> point)
 	{
 		return (int)(-sin*(point.x-position.x)+cos*(point.y-position.y))+position.y;
 	}
@@ -263,7 +263,7 @@ public class ObstacleRectangular extends Obstacle implements ObstacleCollision
 		return false;
 	}
 
-	public void update(Vec2<? extends ReadOnly> position, double orientation)
+	public void update(Vec2<ReadOnly> position, double orientation)
 	{
 		updateVariables(position, orientation);	
 	}
@@ -292,18 +292,18 @@ public class ObstacleRectangular extends Obstacle implements ObstacleCollision
 		return "ObstacleRectangulaire";
 	}
 	
-	public double distance(Vec2<? extends ReadOnly> point)
+	public double distance(Vec2<ReadOnly> point)
 	{
 		return Math.sqrt(squaredDistance(point));
 	}
 	
-	public boolean isInObstacle(Vec2<? extends ReadOnly> point)
+	public boolean isInObstacle(Vec2<ReadOnly> point)
 	{
-		point = rotateMoinsAngle(point);
-		return (point.x < position.x + sizeX/2) &&
-				(point.x > position.x - sizeX/2) &&
-				(point.y < position.y + sizeY/2) &&
-				(point.y > position.y - sizeY/2);
+		Vec2<ReadWrite> pointWrite = rotateMoinsAngle(point);
+		return (pointWrite.x < position.x + sizeX/2) &&
+				(pointWrite.x > position.x - sizeX/2) &&
+				(pointWrite.y < position.y + sizeY/2) &&
+				(pointWrite.y > position.y - sizeY/2);
 	}
 	
 	/**
@@ -311,9 +311,9 @@ public class ObstacleRectangular extends Obstacle implements ObstacleCollision
 	 * @param in
 	 * @return la plus petite distance au carré entre le point fourni et l'obstacle
 	 */
-	public double squaredDistance(Vec2<? extends ReadOnly> in)
+	public double squaredDistance(Vec2<ReadOnly> v)
 	{
-		in = rotateMoinsAngle(in);
+		Vec2<ReadWrite> in = rotateMoinsAngle(v);
 		/*		
 		 *  Schéma de la situation :
 		 *
@@ -361,7 +361,7 @@ public class ObstacleRectangular extends Obstacle implements ObstacleCollision
 		return 0;
 	}
 
-	public boolean isProcheObstacle(Vec2<? extends ReadOnly> point, int distance)
+	public boolean isProcheObstacle(Vec2<ReadOnly> point, int distance)
 	{
 		// Attention! squaredDistance effectue déjà la rotation du point
 		return squaredDistance(point) < (distance+0.01f) * (distance+0.01f); // vu qu'on a une précision limitée, mieux vaut prendre un peu de marge

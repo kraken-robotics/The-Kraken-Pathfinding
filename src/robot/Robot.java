@@ -39,7 +39,7 @@ public abstract class Robot implements Service
             throws UnableToMoveException, FinMatchException, ScriptHookException;
 	public abstract void set_vitesse(Speed vitesse) throws FinMatchException;
 	
-	public abstract void setPosition(Vec2<? extends ReadOnly> position) throws FinMatchException;
+	public abstract void setPosition(Vec2<ReadOnly> position) throws FinMatchException;
 	public abstract void setOrientation(double orientation) throws FinMatchException;
     public abstract Vec2<ReadOnly> getPosition() throws FinMatchException;
     public abstract double getOrientation() throws FinMatchException;

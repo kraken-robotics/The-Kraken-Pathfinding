@@ -90,7 +90,7 @@ public class JUnit_Test_Graphic extends JUnit_Test {
 //			j = PathfindingNodes.COTE_MARCHE_GAUCHE;
 
 			log.debug("Recherche chemin entre "+i+" et "+j, this);
-			Vec2<ReadWrite> entree = i.getCoordonnees().plusNewVector(new Vec2<ReadWrite>(randomgenerator.nextInt(100)-50, randomgenerator.nextInt(100)-50));
+			Vec2<ReadOnly> entree = i.getCoordonnees().plusNewVector(new Vec2<ReadWrite>(randomgenerator.nextInt(100)-50, randomgenerator.nextInt(100)-50)).getReadOnly();
 			config.setDateDebutMatch(); // afin d'avoir toujours une haute précision
 			state_chrono = state.cloneGameState();
 			double orientation_initiale = state_chrono.robot.getOrientation();
@@ -185,11 +185,11 @@ public class JUnit_Test_Graphic extends JUnit_Test {
 		int marge = 10;
 		Vec2<ReadOnly> A = PathfindingNodes.CLAP_GAUCHE.getCoordonnees();
 		Vec2<ReadOnly> B = PathfindingNodes.HAUT_GAUCHE.getCoordonnees();
-		ObstacleRectangular o1 = new ObstacleRectangular(A.middleNewVector(B), (int)A.distance(B)+longueur_robot+2*marge, largeur_robot+2*marge, Math.atan2(B.y-A.y, B.x-A.x));
+		ObstacleRectangular o1 = new ObstacleRectangular(A.middleNewVector(B).getReadOnly(), (int)A.distance(B)+longueur_robot+2*marge, largeur_robot+2*marge, Math.atan2(B.y-A.y, B.x-A.x));
 		ObstaclesFixes o = ObstaclesFixes.BANDE_1;
 		ObstacleRectangular o2 = o.getObstacle();
-    	ObstacleRectangular o3 = new ObstacleRectangular(new Vec2<ReadWrite>(1000,1000), 200, 200, Math.PI/8);
-    	ObstacleRectangular o4 = new ObstacleRectangular(new Vec2<ReadWrite>(900, 1100), 50, 50, 0);
+    	ObstacleRectangular o3 = new ObstacleRectangular(new Vec2<ReadOnly>(1000,1000), 200, 200, Math.PI/8);
+    	ObstacleRectangular o4 = new ObstacleRectangular(new Vec2<ReadOnly>(900, 1100), 50, 50, 0);
 //    	ObstacleRectangular o3 = new ObstacleRectangular(new Vec2(1320, 250), longueur_robot, largeur_robot, Math.PI/6);
 //    	ObstacleRectangular o4 = ObstaclesFixes.BORD_DROITE.getObstacle();
 		log.debug("Collision ? "+o3.isColliding(o4), this);
@@ -208,7 +208,7 @@ public class JUnit_Test_Graphic extends JUnit_Test {
 		int marge = 10;
 		Vec2<ReadOnly> A = PathfindingNodes.CLAP_GAUCHE.getCoordonnees();
 		Vec2<ReadOnly> B = PathfindingNodes.HAUT_GAUCHE.getCoordonnees();
-		ObstacleRectangular rectangle = new ObstacleRectangular(A.middleNewVector(B), (int)A.distance(B)+longueur_robot+2*marge, largeur_robot+2*marge, Math.atan2(B.y-A.y, B.x-A.x));
+		ObstacleRectangular rectangle = new ObstacleRectangular(A.middleNewVector(B).getReadOnly(), (int)A.distance(B)+longueur_robot+2*marge, largeur_robot+2*marge, Math.atan2(B.y-A.y, B.x-A.x));
 		fenetre.addObstacleEnBiais(rectangle);
 		fenetre.repaint();
 		ObstacleRectangular o = ObstaclesFixes.BANDE_1.getObstacle();
@@ -222,7 +222,7 @@ public class JUnit_Test_Graphic extends JUnit_Test {
     	state.robot.setPosition(new Vec2<ReadOnly>(0, 1000));
     	state.robot.setOrientation(Math.PI/2);
     	double angleFinal = 0;
-		ObstacleRectangular[] ombresRobot = new ObstacleRotationRobot(state.robot.getPosition().clone(), state.robot.getOrientation(), angleFinal).getOmbresRobot();
+		ObstacleRectangular[] ombresRobot = new ObstacleRotationRobot(state.robot.getPosition(), state.robot.getOrientation(), angleFinal).getOmbresRobot();
 		log.debug("Nb ombres: "+ombresRobot.length, this);
 		for(ObstacleRectangular o: ombresRobot)
 			fenetre.addObstacleEnBiais(o);

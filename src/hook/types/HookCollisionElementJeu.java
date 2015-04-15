@@ -32,7 +32,7 @@ public class HookCollisionElementJeu extends Hook
 	}
 
 	@Override
-	public boolean simulated_evaluate(Vec2<? extends ReadOnly> pointA, Vec2<? extends ReadOnly> pointB, long date)
+	public boolean simulated_evaluate(Vec2<ReadOnly> pointA, Vec2<ReadOnly> pointB, long date)
 	{
 		ObstacleRectangular r = new ObstacleRectangular(pointA, pointB);
 		return r.isColliding(obstacle);
