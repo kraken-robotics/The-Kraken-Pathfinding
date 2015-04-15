@@ -50,7 +50,7 @@ public class ThreadTimer extends AbstractThread implements Service
 	@Override
 	public void run()
 	{
-		log.debug("Lancement du thread timer", this);
+		log.debug("Lancement du thread timer");
 
 		// les capteurs sont initialement éteints
 		capteur.setCapteursOn(false);
@@ -70,7 +70,7 @@ public class ThreadTimer extends AbstractThread implements Service
 			}
 			if(stopThreads)
 			{
-				log.debug("Arrêt du thread timer avant le début du match", this);
+				log.debug("Arrêt du thread timer avant le début du match");
 				return;
 			}
 			Sleep.sleep(50);
@@ -81,7 +81,7 @@ public class ThreadTimer extends AbstractThread implements Service
 		// On démarre les capteurs
 		capteur.setCapteursOn(true);
 
-		log.debug("LE MATCH COMMENCE !", this);
+		log.debug("LE MATCH COMMENCE !");
 
 		dateFin = dureeMatch + Config.getDateDebutMatch();
 
@@ -90,7 +90,7 @@ public class ThreadTimer extends AbstractThread implements Service
 		{
 			if(stopThreads)
 			{
-				log.debug("Arrêt du thread timer", this);
+				log.debug("Arrêt du thread timer");
 				return;
 			}
 			obstaclemanager.supprimerObstaclesPerimes();
@@ -99,13 +99,13 @@ public class ThreadTimer extends AbstractThread implements Service
 
 		onMatchEnded();
 		
-		log.debug("Fin du thread timer", this);
+		log.debug("Fin du thread timer");
 		
 	}
 	
 	private void onMatchEnded()
 	{
-		log.debug("Fin du Match !", this);
+		log.debug("Fin du Match !");
 		
 		finMatch = true;
 

@@ -88,8 +88,8 @@ public enum PathfindingNodes {
 		length = values.length;
 	}
 	
-	private Vec2<ReadOnly> coordonnees;
-	private PathfindingNodes sortie;
+	private final Vec2<ReadOnly> coordonnees;
+	private final PathfindingNodes sortie;
 	
 	private PathfindingNodes(Vec2<ReadOnly> coordonnees)
 	{

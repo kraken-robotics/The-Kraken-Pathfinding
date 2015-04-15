@@ -57,12 +57,12 @@ public class ThreadStrategy extends AbstractThread implements Service
 	@Override
 	public void run()
 	{
-		log.debug("Lancement du thread de stratégie", this);
+		log.debug("Lancement du thread de stratégie");
 		while(!Config.matchDemarre)
 		{
 			if(stopThreads)
 			{
-				log.debug("Stoppage du thread de stratégie", this);
+				log.debug("Stoppage du thread de stratégie");
 				return;
 			}
 			Sleep.sleep(50);
@@ -84,7 +84,7 @@ public class ThreadStrategy extends AbstractThread implements Service
 			} catch (FinMatchException e) {
 				break;
 			} catch (PathfindingException e) {
-				log.critical("Départ dans un obstacle de proximité!", this);
+				log.critical("Départ dans un obstacle de proximité!");
 				e.printStackTrace();
 			} catch (MemoryManagerException e) {
 				// Imposible
@@ -111,7 +111,7 @@ public class ThreadStrategy extends AbstractThread implements Service
 		do {
 			Sleep.sleep(5);
 		} while(decisionSecours == null);
-		log.warning("Stratégie de secours demandée! "+decisionSecours, this);
+		log.warning("Stratégie de secours demandée! "+decisionSecours);
 		return decisionSecours;
 	}
 
@@ -120,7 +120,7 @@ public class ThreadStrategy extends AbstractThread implements Service
 		do {
 			Sleep.sleep(5);
 		} while(decisionNormale  == null);
-		log.warning("Stratégie demandée! "+decisionNormale, this);
+		log.warning("Stratégie demandée! "+decisionNormale);
 		return decisionNormale;
 	}
 
@@ -129,7 +129,7 @@ public class ThreadStrategy extends AbstractThread implements Service
 		String s = new String();
 		for(Decision d: decisions)
 			s += d.toString()+" ";
-		log.debug(s, this);
+		log.debug(s);
 	}
 	
 	@Override

@@ -39,7 +39,7 @@ public class BenchmarkStrategy {
 			long date_avant = System.currentTimeMillis();
 	    	for(int k = 0; k < nb_iter; k++)
 	    		astar.computeStrategyEmergency(chronostate, 90000);
-			log.appel_static("Durée moyenne en µs: "+1000*(System.currentTimeMillis()-date_avant)/nb_iter);
+			log.debug("Durée moyenne en µs: "+1000*(System.currentTimeMillis()-date_avant)/nb_iter);
 			container.destructor();
 		}
 		catch(Exception e)

@@ -28,12 +28,13 @@ public class ObstacleManager implements Service
 {
     private Log log;
     private Config config;
-    private Table table;
+    private final Table table;
     
     // Les obstacles mobiles, c'est-à-dire des obstacles de proximité et de balise
     // Comme ces obstacles ne peuvent que disparaître, on les retient tous et chaque instance aura un indice vers sur le premier obstacle non mort
     private static ArrayList<ObstacleProximity> listObstaclesMobiles = new ArrayList<ObstacleProximity>();
 
+    // TODO: vérifier ce static
     private static ObstacleProximity hypotheticalEnemy = null;
     private boolean isThereHypotheticalEnemy = false;
     
@@ -41,9 +42,9 @@ public class ObstacleManager implements Service
     
     private int firstNotDead = 0;
 
-    private int rayon_robot_adverse = 200;
-    private int distanceApproximation = 50;
-    private int dureeAvantPeremption = 0;
+    private int rayon_robot_adverse;
+    private int distanceApproximation;
+    private int dureeAvantPeremption;
         
     public ObstacleManager(Log log, Config config, Table table)
     {
@@ -63,7 +64,7 @@ public class ObstacleManager implements Service
     public void createHypotheticalEnnemy(Vec2<ReadOnly> position, int date_actuelle)
     {
     	isThereHypotheticalEnemy = true;
-    	hypotheticalEnemy.setPosition(position.clone());
+    	hypotheticalEnemy.setPosition(position);
     	hypotheticalEnemy.setDeathDate(date_actuelle+dureeAvantPeremption);
         checkGameElements(position);
     }
@@ -87,7 +88,7 @@ public class ObstacleManager implements Service
     private void checkGameElements(Vec2<ReadOnly> position)
     {
         // On vérifie aussi ceux qui ont un rayon nul (distributeur, clap, ..)
-        for(GameElementNames g: GameElementNames.values())
+        for(GameElementNames g: GameElementNames.values)
             if(table.isDone(g) == Tribool.FALSE && table.isProcheObstacle(g, position, rayon_robot_adverse))
             	table.setDone(g, Tribool.MAYBE);
     }
@@ -179,7 +180,7 @@ public class ObstacleManager implements Service
     public boolean obstacleFixeDansSegmentPathfinding(Vec2<ReadOnly> A, Vec2<ReadOnly> B)
     {
     	ObstacleRectangular chemin = new ObstacleRectangular(A, B);
-    	for(ObstaclesFixes o: ObstaclesFixes.values())
+    	for(ObstaclesFixes o: ObstaclesFixes.values)
     	{
     		if(chemin.isColliding(o.getObstacle()))
     			return true;
@@ -235,7 +236,7 @@ public class ObstacleManager implements Service
      */
     public boolean isObstacleFixePresentCapteurs(Vec2<ReadOnly> position)
     {
-    	for(ObstaclesFixes o: ObstaclesFixes.values())
+    	for(ObstaclesFixes o: ObstaclesFixes.values)
             if(isObstaclePresent(position, o.getObstacle(), distanceApproximation))
                 return true;
         return false;
@@ -378,7 +379,7 @@ public class ObstacleManager implements Service
 		obstacleTrajectoireCourbe = new ObstacleTrajectoireCourbe(objectifFinal, intersection, directionAvant, vitesse);
 
 		// Collision avec un obstacle fixe?
-    	for(ObstaclesFixes o: ObstaclesFixes.values())
+    	for(ObstaclesFixes o: ObstaclesFixes.values)
     		if(obstacleTrajectoireCourbe.isColliding(o.getObstacle()))
     			return false;
 

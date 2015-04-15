@@ -67,7 +67,7 @@ public abstract class ObstacleRectanglesCollection extends Obstacle implements O
 	 */
 	public boolean isCollidingObstacleFixe()
 	{
-		for(ObstaclesFixes o: ObstaclesFixes.values())
+		for(ObstaclesFixes o: ObstaclesFixes.values)
 			if(isColliding(o.getObstacle()))
 				return true;
 		return false;

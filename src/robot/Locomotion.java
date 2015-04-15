@@ -45,7 +45,7 @@ public class Locomotion implements Service
     private ObstacleManager obstaclemanager;
     private int largeur_robot;
     private int distance_detection;
-    private Vec2<ReadWrite> position = new Vec2<ReadWrite>();  // la position réelle du robot, pas la version qu'ont les robots
+    private final Vec2<ReadWrite> position = new Vec2<ReadWrite>();  // la position réelle du robot, pas la version qu'ont les robots
     
     private double orientation; // l'orientation réelle du robot, pas la version qu'ont les robots
     private LocomotionCardWrapper deplacements;
@@ -115,7 +115,7 @@ public class Locomotion implements Service
      */
     public void moveLengthwise(int distance, ArrayList<Hook> hooks, boolean mur) throws UnableToMoveException, FinMatchException
     {
-        log.debug("Avancer de "+Integer.toString(distance), this);
+        log.debug("Avancer de "+Integer.toString(distance));
         
         Vec2<ReadOnly> consigne = new Vec2<ReadOnly>( 
         (int) (position.x + distance*Math.cos(orientation)),
@@ -271,7 +271,7 @@ public class Locomotion implements Service
                 {
                     try
                     {
-                        log.warning("On n'arrive plus à avancer. On se dégage", this);
+                        log.warning("On n'arrive plus à avancer. On se dégage");
                         if(seulementAngle)
                         {
                         	// on alterne rotation à gauche et à droite
@@ -292,7 +292,7 @@ public class Locomotion implements Service
                         e1.printStackTrace();
                     } catch (BlockedException e1) {
                     	immobilise();
-                        log.critical("On n'arrive pas à se dégager.", this);
+                        log.critical("On n'arrive pas à se dégager.");
 					}
                     if(!recommence && nb_iterations_deblocage == 0)
                         throw new UnableToMoveException();
@@ -301,7 +301,7 @@ public class Locomotion implements Service
             {
             	immobilise();
             	long dateAvant = System.currentTimeMillis();
-                log.critical("Détection d'un ennemi! Abandon du mouvement.", this);
+                log.critical("Détection d'un ennemi! Abandon du mouvement.");
             	while(System.currentTimeMillis() - dateAvant < attente_ennemi_max)
             	{
             		try {
@@ -449,10 +449,10 @@ public class Locomotion implements Service
             	if(obstacleRotation == null)
             		obstacleRotation = new ObstacleRotationRobot(position.getReadOnly(), orientation, angle);
             	else
-            		obstacleRotation.update(position.clone(), orientation, angle);
+            		obstacleRotation.update(position.getReadOnly(), orientation, angle);
             	if(obstacleRotation.isCollidingObstacleFixe())
 	        	{
-	        		log.debug("Le robot a demandé à tourner dans un obstacle. Ordre annulé.", this);
+	        		log.debug("Le robot a demandé à tourner dans un obstacle. Ordre annulé.");
 	        		throw new WallCollisionDetectedException();
 	        	}
             }
@@ -502,7 +502,7 @@ public class Locomotion implements Service
         Vec2.plus(centre_detection, position);
         if(obstaclemanager.isObstacleMobilePresent(centre_detection.getReadOnly(), distance_detection))
         {
-            log.warning("Ennemi détecté en : " + centre_detection, this);
+            log.warning("Ennemi détecté en : " + centre_detection);
             throw new UnexpectedObstacleOnPathException();
         }
 
@@ -548,7 +548,7 @@ public class Locomotion implements Service
      */
     public void immobilise() throws FinMatchException
     {
-        log.debug("Arrêt du robot en "+position, this);
+        log.debug("Arrêt du robot en "+position);
         try {
             deplacements.immobilise();
         } catch (SerialConnexionException e) {

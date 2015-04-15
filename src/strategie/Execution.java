@@ -69,7 +69,7 @@ public class Execution implements Service {
 				break;
 			}
 		}
-		log.debug("Match terminé!", this);
+		log.debug("Match terminé!");
 	}
 	
 	/**
@@ -79,7 +79,7 @@ public class Execution implements Service {
 	 */
 	public void executerScript(Decision decision_actuelle) throws FinMatchException
 	{
-		log.debug("On tente d'exécuter "+decision_actuelle.script_name, this);
+		log.debug("On tente d'exécuter "+decision_actuelle.script_name);
 		try {
 			tryOnce(decision_actuelle);
 		} catch (UnableToMoveException | ScriptException e) {
@@ -88,12 +88,12 @@ public class Execution implements Service {
 			do {
 				if(gamestate.robot.isEnemyHere())
 				{
-					log.debug("Stratégie d'urgence avec ennemi: "+decision_actuelle.script_name, this);
+					log.debug("Stratégie d'urgence avec ennemi: "+decision_actuelle.script_name);
 					decision_actuelle = threadstrategy.getEmergencyDecision();
 				}
 				else
 				{
-					log.debug("Stratégie d'urgence sans ennemi: "+decision_actuelle.script_name, this);
+					log.debug("Stratégie d'urgence sans ennemi: "+decision_actuelle.script_name);
 					decision_actuelle = threadstrategy.getNormalDecision();
 				}
 				try {

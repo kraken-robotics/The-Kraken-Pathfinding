@@ -116,7 +116,7 @@ public class Config implements Service
 		out = config.getProperty(nom.toString());
 		if(out == null)
 		{
-			log.debug("Erreur config: "+nom+" introuvable.", this);
+			log.debug("Erreur config: "+nom+" introuvable.");
 			return nom.getDefaultValue();
 		}
 		return out;
@@ -129,7 +129,7 @@ public class Config implements Service
 	 */
 	private void set(ConfigInfo nom, String value)
 	{
-		log.debug(nom+" = "+value+" (ancienne valeur: "+config.getProperty(nom.toString())+")", this);
+		log.debug(nom+" = "+value+" (ancienne valeur: "+config.getProperty(nom.toString())+")");
 		config.setProperty(nom.toString(), value);
 	}
 	
@@ -151,9 +151,9 @@ public class Config implements Service
 	{
 		if(Boolean.parseBoolean(config.getProperty("affiche_debug")))
 		{
-			log.debug("Configuration initiale", this);
+			log.debug("Configuration initiale");
 			for(Object o: config.keySet())
-				log.debug(o+": "+config.get(o), this);
+				log.debug(o+": "+config.get(o));
 		}
 	}
 	

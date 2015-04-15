@@ -121,12 +121,12 @@ public class Table implements Service
 	 */
 	public void printHash()
 	{
-		for(GameElementNames g: GameElementNames.values())
+		for(GameElementNames g: GameElementNames.values)
 		{
 			long etat = (hash >> 2*g.ordinal()) % 4;
 			for(Tribool t: Tribool.values())
 				if(etat == t.getHash())
-					log.debug(g+": "+t, this);
+					log.debug(g+": "+t);
 		}
 	}
 

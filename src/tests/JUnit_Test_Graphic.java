@@ -89,7 +89,7 @@ public class JUnit_Test_Graphic extends JUnit_Test {
 //			i = PathfindingNodes.BAS_GAUCHE;
 //			j = PathfindingNodes.COTE_MARCHE_GAUCHE;
 
-			log.debug("Recherche chemin entre "+i+" et "+j, this);
+			log.debug("Recherche chemin entre "+i+" et "+j);
 			Vec2<ReadOnly> entree = i.getCoordonnees().plusNewVector(new Vec2<ReadWrite>(randomgenerator.nextInt(100)-50, randomgenerator.nextInt(100)-50)).getReadOnly();
 			config.setDateDebutMatch(); // afin d'avoir toujours une haute précision
 			state_chrono = state.cloneGameState();
@@ -100,7 +100,7 @@ public class JUnit_Test_Graphic extends JUnit_Test {
     		cheminVec2.add(entree.getReadOnly());
     		for(SegmentTrajectoireCourbe n: chemin)
     		{
-    			log.debug(n, this);
+    			log.debug(n);
     			cheminVec2.add(n.objectifFinal.getCoordonnees());
     		}
     		fenetre.setPath(orientation_initiale, cheminVec2, Color.BLUE);
@@ -159,7 +159,7 @@ public class JUnit_Test_Graphic extends JUnit_Test {
 		Vec2<ReadOnly> position_precedente = chronostate.robot.getPosition();
 		for(Decision d: decisions)
 		{
-			log.debug(d, this);
+			log.debug(d);
     		ArrayList<Vec2<ReadOnly>> cheminVec2 = new ArrayList<Vec2<ReadOnly>>();
     		cheminVec2.add(position_precedente);
     		for(SegmentTrajectoireCourbe n: d.chemin)
@@ -192,8 +192,8 @@ public class JUnit_Test_Graphic extends JUnit_Test {
     	ObstacleRectangular o4 = new ObstacleRectangular(new Vec2<ReadOnly>(900, 1100), 50, 50, 0);
 //    	ObstacleRectangular o3 = new ObstacleRectangular(new Vec2(1320, 250), longueur_robot, largeur_robot, Math.PI/6);
 //    	ObstacleRectangular o4 = ObstaclesFixes.BORD_DROITE.getObstacle();
-		log.debug("Collision ? "+o3.isColliding(o4), this);
-		log.debug("Collision ? "+o1.isColliding(o2), this);
+		log.debug("Collision ? "+o3.isColliding(o4));
+		log.debug("Collision ? "+o1.isColliding(o2));
 		fenetre.addObstacleEnBiais(o3);
 		fenetre.addObstacleEnBiais(o4);
 		fenetre.repaint();
@@ -212,7 +212,7 @@ public class JUnit_Test_Graphic extends JUnit_Test {
 		fenetre.addObstacleEnBiais(rectangle);
 		fenetre.repaint();
 		ObstacleRectangular o = ObstaclesFixes.BANDE_1.getObstacle();
-		log.debug("Collision avec "+o.getPosition()+"? "+rectangle.isColliding(o), this);
+		log.debug("Collision avec "+o.getPosition()+"? "+rectangle.isColliding(o));
 		Sleep.sleep(3000);
     }
 	
@@ -223,7 +223,7 @@ public class JUnit_Test_Graphic extends JUnit_Test {
     	state.robot.setOrientation(Math.PI/2);
     	double angleFinal = 0;
 		ObstacleRectangular[] ombresRobot = new ObstacleRotationRobot(state.robot.getPosition(), state.robot.getOrientation(), angleFinal).getOmbresRobot();
-		log.debug("Nb ombres: "+ombresRobot.length, this);
+		log.debug("Nb ombres: "+ombresRobot.length);
 		for(ObstacleRectangular o: ombresRobot)
 			fenetre.addObstacleEnBiais(o);
 		fenetre.repaint();
@@ -237,7 +237,7 @@ public class JUnit_Test_Graphic extends JUnit_Test {
 		PathfindingNodes fin = PathfindingNodes.COTE_MARCHE_DROITE;
 		ObstacleTrajectoireCourbe obs = new ObstacleTrajectoireCourbe(fin, PathfindingNodes.BAS, new Vec2<ReadOnly>(Math.atan2(PathfindingNodes.BAS.getCoordonnees().y-position.y,PathfindingNodes.BAS.getCoordonnees().x-position.x)), Speed.BETWEEN_SCRIPTS);
 		ObstacleRectangular[] ombresRobot = obs.getOmbresRobot();//new ObstacleTrajectoireCourbe(PathfindingNodes.DEVANT_DEPART_DROITE, PathfindingNodes.BAS, new Vec2(-Math.PI/2), Speed.BETWEEN_SCRIPTS).getOmbresRobot();
-		log.debug("Nb ombres: "+ombresRobot.length, this);
+		log.debug("Nb ombres: "+ombresRobot.length);
 		for(ObstacleRectangular o: ombresRobot)
 			fenetre.addObstacleEnBiais(o);
 		fenetre.repaint();

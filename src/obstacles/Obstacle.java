@@ -13,7 +13,7 @@ import vec2.Vec2;
 
 public abstract class Obstacle
 {
-	protected Vec2<ReadOnly> position;
+	protected final Vec2<ReadOnly> position;
 	protected int distance_dilatation;
 	protected static Log log;
 	protected static Config config;

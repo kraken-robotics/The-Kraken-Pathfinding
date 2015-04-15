@@ -70,10 +70,9 @@ public class ObstacleProximity extends ObstacleCircular
      * Utilisé pour mettre à jour l'ennemi hypothétique
      * @param clone
      */
-	public void setPosition(Vec2<ReadWrite> position)
+	public void setPosition(Vec2<ReadOnly> position)
 	{
-		this.position = position.getReadOnly();
-//		position.copy(this.position.getReadWrite());
+		position.copy(this.position.getReadWrite());
 	}
 	
     /**

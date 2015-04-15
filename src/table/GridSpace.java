@@ -23,7 +23,7 @@ public class GridSpace implements Service {
 	private Config config;
 	
 	// afin d'éviter les obstacles fixes et mobiles
-	private ObstacleManager obstaclemanager;
+	private final ObstacleManager obstaclemanager;
 		
 	// Rempli de ALWAYS_IMPOSSIBLE et null. Ne change pas.
 	private static NodesConnection[][] isConnectedModel = null;
@@ -62,7 +62,7 @@ public class GridSpace implements Service {
 	 */
     public void check_pathfinding_nodes()
     {
-    	log.debug("Vérification de l'accessibilité des PathfindingNodes", this);
+    	log.debug("Vérification de l'accessibilité des PathfindingNodes");
     	for(PathfindingNodes i: PathfindingNodes.values)
     	{
     		boolean accessible = false;
@@ -73,7 +73,7 @@ public class GridSpace implements Service {
         			break;
         		}
         	if(!accessible)
-        		log.critical("Le noeud "+i+" n'est pas accessible!", this);
+        		log.critical("Le noeud "+i+" n'est pas accessible!");
     	}
     }
     
@@ -84,7 +84,7 @@ public class GridSpace implements Service {
      */
 	private void initStatic()
 	{
-		log.debug("Calcul de isConnectedModel", this);
+		log.debug("Calcul de isConnectedModel");
 		isConnectedModel = new NodesConnection[PathfindingNodes.length][PathfindingNodes.length];
 
 		for(PathfindingNodes i : PathfindingNodes.values)			
@@ -339,7 +339,7 @@ public class GridSpace implements Service {
 	public long getHash()
 	{
 		long hash = obstaclemanager.getHashObstaclesMobiles(); // codé sur autant de bits qu'il le faut puisqu'il est dans les bits de poids forts
-		hash = (hash << (2*GameElementNames.values().length)) | obstaclemanager.getHashTable(); // codé sur 2 bits par élément de jeux (2 bit par Tribool)
+		hash = (hash << (2*GameElementNames.valuesLength)) | obstaclemanager.getHashTable(); // codé sur 2 bits par élément de jeux (2 bit par Tribool)
 		return hash;
 	}
 
@@ -349,11 +349,11 @@ public class GridSpace implements Service {
 	public void printHash()
 	{
 		int hash = obstaclemanager.getHashObstaclesMobiles();
-		log.debug("Numéro d'obstacle: "+hash/2, this);
+		log.debug("Numéro d'obstacle: "+hash/2);
 		if(hash%2 == 0)
-			log.debug("Pas d'ennemi d'urgence", this);
+			log.debug("Pas d'ennemi d'urgence");
 		else
-			log.debug("Ennemi d'urgence présent", this);
+			log.debug("Ennemi d'urgence présent");
 		obstaclemanager.printHash();
 	}
 	

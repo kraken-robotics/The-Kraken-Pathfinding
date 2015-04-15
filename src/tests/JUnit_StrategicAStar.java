@@ -52,7 +52,7 @@ public class JUnit_StrategicAStar extends JUnit_Test
 
     	ArrayList<Decision> decisions = astar.computeStrategyAfter(chronostate, decision, 10000);
 		for(Decision d: decisions)
-			log.debug(d, this);
+			log.debug(d);
     }
 
 }

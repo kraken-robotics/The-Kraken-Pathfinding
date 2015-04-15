@@ -45,7 +45,7 @@ public class MemoryManager implements Service {
 		try {
 			this.model = realstate.cloneGameState();
 			// on prépare déjà des gamestates
-			log.debug("Instanciation de "+2*nb_instances+" GameState<RobotChrono>", this);
+			log.debug("Instanciation de "+2*nb_instances+" GameState<RobotChrono>");
 		
 			for(int j = 0; j < 2; j++)
 				for(int i = 0; i < nb_instances; i++)
@@ -56,7 +56,7 @@ public class MemoryManager implements Service {
 			// Impossible
 			e.printStackTrace();
 		}
-		log.debug("Instanciation finie", this);
+		log.debug("Instanciation finie");
 		updateConfig();
 	}
 	

@@ -24,7 +24,7 @@ import exceptions.WallCollisionDetectedException;
 
 public class RobotChrono extends Robot
 {
-	protected Vec2<ReadWrite> position = new Vec2<ReadWrite>();
+	protected final Vec2<ReadWrite> position = new Vec2<ReadWrite>();
 	protected PathfindingNodes positionPathfinding;
 	protected PathfindingNodes positionPathfindingAnterieure;
 	protected boolean isPositionPathfindingActive = false;
@@ -390,12 +390,12 @@ public class RobotChrono extends Robot
 
 	public void printHash()
 	{
-		log.debug("Tapis posés: "+tapisPoses, this);
+		log.debug("Tapis posés: "+tapisPoses);
 		if(isPositionPathfindingActive)
-			log.debug("Position pathfinding: "+positionPathfinding, this);
+			log.debug("Position pathfinding: "+positionPathfinding);
 		else
-			log.debug("Hash position: "+((position.x >> 2)&7)+" et "+((position.y >> 2)&7), this);
-		log.debug("Points obtenus: "+pointsObtenus, this);
+			log.debug("Hash position: "+((position.x >> 2)&7)+" et "+((position.y >> 2)&7));
+		log.debug("Points obtenus: "+pointsObtenus);
 	}
 	
 }

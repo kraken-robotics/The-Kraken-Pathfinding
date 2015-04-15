@@ -80,7 +80,7 @@ public class SerialManager implements Service
 		int pings[] = new int[20];
 		for(int baudrate : baudrates)
 		{
-			log.debug("Liste des pings pour le baudrate " + baudrate, this);
+			log.debug("Liste des pings pour le baudrate " + baudrate);
 
 			for(int k = 0; k < connectedSerial.size(); k++)
 			{
@@ -101,7 +101,7 @@ public class SerialManager implements Service
 						{
 							pings[id] = k;
 							deja_attribues.add(k);
-							log.debug(id + " sur: " + connectedSerial.get(k),this);
+							log.debug(id + " sur: " + connectedSerial.get(k));
 						}
 					}
 						
@@ -120,7 +120,7 @@ public class SerialManager implements Service
 	
 				if(port == null)
 				{
-					log.critical("La carte " + serial.name + " n'est pas détectée", this);
+					log.critical("La carte " + serial.name + " n'est pas détectée");
 					throw new SerialManagerException();
 				}
 	

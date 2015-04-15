@@ -30,7 +30,13 @@ public enum ObstaclesFixes {
     BORD_DROITE(new ObstacleRectangular(new Vec2<ReadOnly>(1500,1000),0,2000)),
     BORD_HAUT(new ObstacleRectangular(new Vec2<ReadOnly>(0,2000),3000,0));
 
-    private ObstacleRectangular obstacle;
+    private final ObstacleRectangular obstacle;
+    public static final ObstaclesFixes[] values;
+    
+    static
+    {
+    	values = values();
+    }
     
     private ObstaclesFixes(ObstacleRectangular obstacle)
     {

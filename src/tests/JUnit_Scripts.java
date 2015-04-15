@@ -71,16 +71,16 @@ public class JUnit_Scripts extends JUnit_Test {
     	Script tapis = scriptmanager.getScript(ScriptAnticipableNames.TAPIS);
     	Script clap = scriptmanager.getScript(ScriptAnticipableNames.CLAP);
 
-    	log.debug(state_chrono.robot.getPosition(), this);
-    	log.debug(state_chrono2.robot.getPosition(), this);
+    	log.debug(state_chrono.robot.getPosition());
+    	log.debug(state_chrono2.robot.getPosition());
     	Assert.assertEquals(state_chrono.getHash(), state_chrono2.getHash());
 
     	state_chrono.robot.setPositionPathfinding(PathfindingNodes.NODE_TAPIS);
     	state_chrono2.robot.setPositionPathfinding(PathfindingNodes.CLAP_DROIT);
     	tapis.agit(PathfindingNodes.NODE_TAPIS, state_chrono);
     	clap.agit(PathfindingNodes.CLAP_DROIT, state_chrono2);
-    	log.debug(state_chrono.robot.getPosition(), this);
-    	log.debug(state_chrono2.robot.getPosition(), this);
+    	log.debug(state_chrono.robot.getPosition());
+    	log.debug(state_chrono2.robot.getPosition());
     	Assert.assertNotEquals(state_chrono.getHash(), state_chrono2.getHash());
 
     	state_chrono.robot.setPositionPathfinding(PathfindingNodes.CLAP_DROIT);

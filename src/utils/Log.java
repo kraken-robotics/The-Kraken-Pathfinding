@@ -18,7 +18,7 @@ public class Log implements Service
 	// Dépendances
 	private Config config;
 	private boolean logClosed = false;
-
+	private GregorianCalendar calendar = new GregorianCalendar();
 	FileWriter writer = null;
 
 	private String 	couleurDebug 	= "\u001B[32m",
@@ -41,44 +41,14 @@ public class Log implements Service
 		updateConfig();
 		if(sauvegarde_fichier)
 			try {
-				java.util.GregorianCalendar calendar = new GregorianCalendar();
 				String heure = calendar.get(Calendar.HOUR_OF_DAY)+":"+calendar.get(Calendar.MINUTE)+":"+calendar.get(Calendar.SECOND);
 				writer = new FileWriter("logs/LOG-"+heure+".txt", true); 
 			}
 			catch(Exception e)
 			{
-				critical(e, this);
+				critical(e);
 			}
-		warning("Service de log démarré", this);
-	}
-	
-	/**
-	 * Méthode à appeler uniquement depuis une méthode statique. User-friendly
-	 * @param message
-	 */
-	public void appel_static(Object message)
-	{
-		appel_static(message.toString());
-	}
-		
-	/**
-	 * Méthode à appeler uniquement depuis une méthode statique
-	 * @param message
-	 */
-	public void appel_static(String message)
-	{
-		ecrire("Lanceur: "+message, couleurDebug, System.out);
-	}
-	
-	
-	/**
-	 * Affichage de debug, en vert. User-friendly
-	 * @param message
-	 * @param objet
-	 */
-	public void debug(Object message, Object objet)
-	{
-		debug(message.toString(), objet);
+		warning("Service de log démarré");
 	}
 	
 	/**
@@ -86,20 +56,10 @@ public class Log implements Service
 	 * @param message
 	 * @param objet
 	 */
-	public void debug(String message, Object objet)
+	public void debug(Object message)
 	{
 		if(affiche_debug)
-			ecrire("DEBUG "+objet.getClass().getName()+": "+message, couleurDebug, System.out);
-	}
-
-	/**
-	 * Affichage de warnings, en orange. User-friendly
-	 * @param message
-	 * @param objet
-	 */
-	public void warning(Object message, Object objet)
-	{
-		warning(message.toString(), objet);
+			ecrire(" DEBUG ", message, couleurDebug, System.out);
 	}
 
 	/**
@@ -107,19 +67,9 @@ public class Log implements Service
 	 * @param message
 	 * @param objet
 	 */
-	public void warning(String message, Object objet)
+	public void warning(Object message)
 	{
-		ecrire("WARNING "+objet.getClass().getName()+": "+message, couleurWarning, System.out);
-	}
-
-	/**
-	 * Affichage d'erreurs critiques, en rouge. User-friendly
-	 * @param message
-	 * @param objet
-	 */
-	public void critical(Object message, Object objet)
-	{
-		critical(message.toString(), objet);
+		ecrire(" WARNING ", message, couleurWarning, System.out);
 	}
 	
 	/**
@@ -127,23 +77,24 @@ public class Log implements Service
 	 * @param message
 	 * @param objet
 	 */
-	public void critical(String message, Object objet)
+	public void critical(Object message)
 	{
-		ecrire("CRITICAL "+objet.getClass().getName()+": "+message, couleurCritical, System.err);
+		ecrire(" CRITICAL ", message, couleurCritical, System.err);
 	}
 
-	private void ecrire(String message, String couleur, PrintStream ou)
+	private void ecrire(String niveau, Object message, String couleur, PrintStream ou)
 	{
 		if(logClosed)
 			System.out.println("WARNING * Log fermé! Message: "+message);
 		else
 		{
-			java.util.GregorianCalendar calendar = new GregorianCalendar();
+			StackTraceElement elem = Thread.currentThread().getStackTrace()[3];
 			String heure = calendar.get(Calendar.HOUR_OF_DAY)+":"+calendar.get(Calendar.MINUTE)+":"+calendar.get(Calendar.SECOND)+","+calendar.get(Calendar.MILLISECOND);
+			String affichage = heure+niveau+elem.getClassName()+"."+elem.getMethodName()+":"+elem.getLineNumber()+" "+message;//+"\u001B[0m";
 			if(couleur != couleurDebug || affiche_debug)
-				ou.println(couleur+heure+" "+message+"\u001B[0m");
+				ou.println(affichage);
 			if(sauvegarde_fichier)
-				ecrireFichier(couleur+heure+" "+message+"\u001B[0m");
+				ecrireFichier(affichage);
 		}
 	}
 	
@@ -167,11 +118,11 @@ public class Log implements Service
 	 */
 	public void close()
 	{
-		warning("Fin du log",this);
+		warning("Fin du log");
 		
 		if(sauvegarde_fichier)
 			try {
-				debug("Sauvegarde du fichier de logs", this);
+				debug("Sauvegarde du fichier de logs");
 				if(writer != null)
 					writer.close();
 			}

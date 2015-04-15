@@ -87,7 +87,7 @@ public class SensorsCardWrapper implements Service
     	}
     	catch(NumberFormatException e)
     	{
-    		log.critical("Réponse du jumper non comprise", this);
+    		log.critical("Réponse du jumper non comprise");
     		return false;
     	}
     }

@@ -42,7 +42,7 @@ public class BenchmarkPathfinding {
 				state_chrono.robot.setPositionPathfinding(i);
 				pathfinding.computePath(state_chrono, j, true);
 			}
-			log.appel_static("Durée moyenne en µs: "+2*1000*(System.currentTimeMillis()-date_avant)/nb_iter);
+			log.debug("Durée moyenne en µs: "+2*1000*(System.currentTimeMillis()-date_avant)/nb_iter);
 			container.destructor();
 		}
 		catch(Exception e)

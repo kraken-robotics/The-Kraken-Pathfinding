@@ -259,7 +259,7 @@ public class ObstacleRectangular extends Obstacle implements ObstacleCollision
 		else if(o instanceof ObstacleCircular)
 			return isColliding((ObstacleCircular)o);
 
-		log.critical("Appel de isColliding avec un type d'obstacle inconnu!", this);
+		log.critical("Appel de isColliding avec un type d'obstacle inconnu!");
 		return false;
 	}
 
@@ -374,7 +374,7 @@ public class ObstacleRectangular extends Obstacle implements ObstacleCollision
 	@Override
 	public boolean isCollidingObstacleFixe()
 	{
-		for(ObstaclesFixes o: ObstaclesFixes.values())
+		for(ObstaclesFixes o: ObstaclesFixes.values)
 			if(isColliding(o.getObstacle()))
 				return true;
 		return false;

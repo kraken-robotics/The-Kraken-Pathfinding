@@ -47,26 +47,26 @@ public class ThreadSensor extends AbstractThread implements Service
 	@Override
 	public void run()
 	{
-		log.debug("Lancement du thread de capteurs", this);
+		log.debug("Lancement du thread de capteurs");
 		int date_dernier_ajout = 0;
 		
 		while(!Config.matchDemarre)
 		{
 			if(stopThreads)
 			{
-				log.debug("Stoppage du thread capteurs", this);
+				log.debug("Stoppage du thread capteurs");
 				return;
 			}
 			Sleep.sleep(50);
 		}
 		
-		log.debug("Activation des capteurs", this);
+		log.debug("Activation des capteurs");
 		while(!finMatch)
 		{
 			try {
 				if(stopThreads)
 				{
-					log.debug("Stoppage du thread capteurs", this);
+					log.debug("Stoppage du thread capteurs");
 					return;
 				}
 
@@ -87,10 +87,10 @@ public class ThreadSensor extends AbstractThread implements Service
 						{
 							gridspace.creer_obstacle(position);
 							date_dernier_ajout = (int)System.currentTimeMillis();
-							log.debug("Nouvel obstacle en "+position, this);
+							log.debug("Nouvel obstacle en "+position);
 						}
 						else
-						    log.debug("L'objet vu en "+positionBrute+" est un obstacle fixe.", this);
+						    log.debug("L'objet vu en "+positionBrute+" est un obstacle fixe.");
 				}
 			}
 			catch(FinMatchException e)
@@ -98,7 +98,7 @@ public class ThreadSensor extends AbstractThread implements Service
 				break;
 			}
 		}
-        log.debug("Fin du thread de capteurs", this);
+        log.debug("Fin du thread de capteurs");
 	}
 	
 	public void updateConfig()

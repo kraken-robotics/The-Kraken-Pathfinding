@@ -17,7 +17,6 @@ public class JUnit_Math extends JUnit_Test {
 	@Test
 	public void test_Vec2() throws Exception
 	{
-		log.debug("JUnit_MathTest.test_Vec2<ReadWrite>()", this);
 		Vec2<ReadWrite> a = new Vec2<ReadWrite>(10, 500);
 		Vec2<ReadWrite> b = new Vec2<ReadWrite>(20, -20);
 		Vec2<ReadWrite> c = new Vec2<ReadWrite>();

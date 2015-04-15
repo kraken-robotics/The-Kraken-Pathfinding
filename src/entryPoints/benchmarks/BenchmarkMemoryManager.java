@@ -31,7 +31,7 @@ public class BenchmarkMemoryManager
 			for(long i = 0; i < nb_iter; i++)
 				gamestate2.copy(gamestate);
 
-			log.appel_static("Durée totale en ms: "+(System.currentTimeMillis()-date_avant));
+			log.debug("Durée totale en ms: "+(System.currentTimeMillis()-date_avant));
 			container.destructor();
 		} catch(Exception e)
 		{

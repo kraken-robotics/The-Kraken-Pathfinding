@@ -163,13 +163,13 @@ public class SerialConnexion implements SerialPortEventListener, Service
 						break;
 				}
 				if(nb_tests == 10)
-					log.critical("La série" + this.name + " ne répond plus", this);
+					log.critical("La série" + this.name + " ne répond plus");
 			}
 		}
 		catch (Exception e)
 		{
 			e.printStackTrace();
-			log.critical("Ne peut pas parler à la carte " + this.name, this);
+			log.critical("Ne peut pas parler à la carte " + this.name);
 			throw new SerialConnexionException();
 		}
 
@@ -183,7 +183,7 @@ public class SerialConnexion implements SerialPortEventListener, Service
 		}
 		catch (Exception e)
 		{
-			log.critical("Ne peut pas parler à la carte " + this.name, this);
+			log.critical("Ne peut pas parler à la carte " + this.name);
 			throw new SerialConnexionException();
 		}
 
@@ -197,7 +197,7 @@ public class SerialConnexion implements SerialPortEventListener, Service
 	{
 		if (!isClosed && serialPort != null)
 		{
-			log.debug("Fermeture de "+name, this);
+			log.debug("Fermeture de "+name);
 			serialPort.close();
 			isClosed = true;
 		}

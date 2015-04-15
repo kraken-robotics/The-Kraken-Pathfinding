@@ -174,7 +174,7 @@ public class Container
 			}
 			catch(Exception e)
 			{
-				log.critical("Série introuvable!", this);
+				log.critical("Série introuvable!");
 				throw new ContainerException();
 			}
 		}
@@ -259,7 +259,7 @@ public class Container
 		// si le service demandé n'est pas connu, alors on log une erreur.
 		else
 		{
-			log.critical("Erreur de getService pour le service (service inconnu): "+serviceRequested, this);
+			log.critical("Erreur de getService pour le service (service inconnu): "+serviceRequested);
 			throw new ContainerException();
 		}
 		
@@ -298,7 +298,7 @@ public class Container
 			if(instanciedServices[s.ordinal()] == null)
 			{
 				out = false;
-				log.critical(s, this);
+				log.critical(s);
 			}
 		return out;
 	}

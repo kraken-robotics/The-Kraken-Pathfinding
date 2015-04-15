@@ -67,7 +67,7 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 	private Config config;
 	private AM arcmanager;
 	
-	private int distanceEnnemiUrgence = 700;
+	private int distanceEnnemiUrgence;
 	
 	/**
 	 * Constructeur du AStar de pathfinding ou de stratégie, selon AM
@@ -304,6 +304,8 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 		
 		GameState<RobotChrono> current = null;
 
+		// iterator?
+		
 		while (!openset.isEmpty())
 		{
 			int min_score = Integer.MAX_VALUE;
@@ -397,7 +399,7 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 				try {
 					tentative_g_score = g_score[hash_current] + arcmanager.distanceTo(successeur, voisin);
 					if(tentative_g_score - g_score[hash_current] < 0)
-						log.critical("Distance négative! "+(tentative_g_score - g_score[hash_current]), this);
+						log.critical("Distance négative! "+(tentative_g_score - g_score[hash_current]));
 //					log.debug("Tentative pour "+voisin+": "+tentative_g_score, this);
 				} catch (ScriptException | FinMatchException e) {
 					if(encoreUnSuccesseur)
