@@ -21,20 +21,20 @@ import utils.Vec2;
 
 public class HookCollisionElementJeu extends Hook
 {
-	private ObstacleCircular obstacle;
-	private ObstacleRectangular obstacleRobot;
+	private ObstacleCircular<ReadOnly> obstacle;
+	private ObstacleRectangular<ReadOnly> obstacleRobot;
 	
-	public HookCollisionElementJeu(Config config, Log log, GameState<?, ReadOnly> state, ObstacleCircular o) throws FinMatchException
+	public HookCollisionElementJeu(Config config, Log log, GameState<?, ReadOnly> state, ObstacleCircular<ReadOnly> o) throws FinMatchException
 	{
 		super(config, log, state);
 		obstacle = o;
-		obstacleRobot = new ObstacleRectangular(state);
+		obstacleRobot = new ObstacleRectangular<ReadOnly>(state, new Vec2<ReadOnly>());
 	}
 
 	@Override
 	public boolean simulated_evaluate(Vec2<ReadOnly> pointA, Vec2<ReadOnly> pointB, long date)
 	{
-		ObstacleRectangular r = new ObstacleRectangular(pointA, pointB);
+		ObstacleRectangular<ReadOnly> r = new ObstacleRectangular<ReadOnly>(pointA, pointB);
 		return r.isColliding(obstacle);
 	}
 	

@@ -1,5 +1,6 @@
 package obstacles;
 
+import permissions.Permission;
 import permissions.ReadOnly;
 import utils.Vec2;
 
@@ -10,14 +11,14 @@ import utils.Vec2;
  *
  */
 
-public abstract class ObstacleRectanglesCollection extends Obstacle implements ObstacleCollision
+public abstract class ObstacleRectanglesCollection<T extends Permission> extends Obstacle<T>
 {
-	public ObstacleRectanglesCollection(Vec2<ReadOnly> position)
+	public ObstacleRectanglesCollection(Vec2<T> position)
 	{
 		super(position);
 	}
 
-	protected ObstacleRectangular[] ombresRobot;
+	protected ObstacleRectangular<ReadOnly>[] ombresRobot;
 	protected int nb_rectangles;
 
 	@Override
@@ -44,7 +45,7 @@ public abstract class ObstacleRectanglesCollection extends Obstacle implements O
 	 * @param o
 	 * @return
 	 */
-	public boolean isColliding(Obstacle o)
+	public boolean isColliding(Obstacle<ReadOnly> o)
 	{
 		for(int i = 0; i < nb_rectangles; i++)
 			if(ombresRobot[i].isColliding(o))
@@ -56,7 +57,7 @@ public abstract class ObstacleRectanglesCollection extends Obstacle implements O
 	 * Utilisé pour l'affichage
 	 * @return
 	 */
-	public ObstacleRectangular[] getOmbresRobot()
+	public ObstacleRectangular<ReadOnly>[] getOmbresRobot()
 	{
 		return ombresRobot;
 	}

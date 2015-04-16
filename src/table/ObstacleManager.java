@@ -10,6 +10,7 @@ import obstacles.ObstacleRectangular;
 import obstacles.ObstacleTrajectoireCourbe;
 import obstacles.ObstaclesFixes;
 import permissions.ReadOnly;
+import permissions.ReadWrite;
 import robot.Speed;
 import container.Service;
 import enums.Tribool;
@@ -32,13 +33,13 @@ public class ObstacleManager implements Service
     
     // Les obstacles mobiles, c'est-à-dire des obstacles de proximité et de balise
     // Comme ces obstacles ne peuvent que disparaître, on les retient tous et chaque instance aura un indice vers sur le premier obstacle non mort
-    private static ArrayList<ObstacleProximity> listObstaclesMobiles = new ArrayList<ObstacleProximity>();
+    private static ArrayList<ObstacleProximity<ReadOnly>> listObstaclesMobiles = new ArrayList<ObstacleProximity<ReadOnly>>();
 
     // TODO: vérifier ce static
-    private static ObstacleProximity hypotheticalEnemy = null;
+    private static ObstacleProximity<ReadWrite> hypotheticalEnemy = null;
     private boolean isThereHypotheticalEnemy = false;
     
-    private ObstacleTrajectoireCourbe obstacleTrajectoireCourbe;
+    private ObstacleTrajectoireCourbe<ReadOnly> obstacleTrajectoireCourbe;
     
     private int firstNotDead = 0;
 
@@ -54,7 +55,7 @@ public class ObstacleManager implements Service
 
         // On n'instancie hypotheticalEnnemy qu'une seule fois
         if(hypotheticalEnemy == null)
-        	hypotheticalEnemy = new ObstacleProximity(new Vec2<ReadOnly>(), rayon_robot_adverse, -1000);
+        	hypotheticalEnemy = new ObstacleProximity<ReadWrite>(new Vec2<ReadWrite>(), rayon_robot_adverse, -1000);
         updateConfig();
     }
 
@@ -64,7 +65,7 @@ public class ObstacleManager implements Service
     public void createHypotheticalEnnemy(Vec2<ReadOnly> position, int date_actuelle)
     {
     	isThereHypotheticalEnemy = true;
-    	hypotheticalEnemy.setPosition(position);
+    	Obstacle.setPosition(hypotheticalEnemy, position);
     	hypotheticalEnemy.setDeathDate(date_actuelle+dureeAvantPeremption);
         checkGameElements(position);
     }
@@ -75,7 +76,7 @@ public class ObstacleManager implements Service
      */
     public void creerObstacle(final Vec2<ReadOnly> position, int date_actuelle)
     {
-        ObstacleProximity obstacle = new ObstacleProximity(position, rayon_robot_adverse, date_actuelle+dureeAvantPeremption);
+        ObstacleProximity<ReadOnly> obstacle = new ObstacleProximity<ReadOnly>(position, rayon_robot_adverse, date_actuelle+dureeAvantPeremption);
 //        log.warning("Obstacle créé, rayon = "+rayon_robot_adverse+", centre = "+position+", meurt à "+(date_actuelle+dureeAvantPeremption), this);
         listObstaclesMobiles.add(obstacle);
         checkGameElements(position);
@@ -179,7 +180,7 @@ public class ObstacleManager implements Service
      */
     public boolean obstacleFixeDansSegmentPathfinding(Vec2<ReadOnly> A, Vec2<ReadOnly> B)
     {
-    	ObstacleRectangular chemin = new ObstacleRectangular(A, B);
+    	ObstacleRectangular<ReadOnly> chemin = new ObstacleRectangular<ReadOnly>(A, B);
     	for(ObstaclesFixes o: ObstaclesFixes.values)
     	{
     		if(chemin.isColliding(o.getObstacle()))
@@ -196,7 +197,7 @@ public class ObstacleManager implements Service
 	 */
     public boolean obstacleTableDansSegment(Vec2<ReadOnly> A, Vec2<ReadOnly> B)
     {
-    	ObstacleRectangular chemin = new ObstacleRectangular(A, B);
+    	ObstacleRectangular<ReadOnly> chemin = new ObstacleRectangular<ReadOnly>(A, B);
         for(GameElementNames g: GameElementNames.values())
         	// Si on a interprété que l'ennemi est passé sur un obstacle,
         	// on peut passer dessus par la suite.
@@ -252,7 +253,7 @@ public class ObstacleManager implements Service
      */
     public boolean isObstacleMobilePresent(Vec2<ReadOnly> position, int distance) 
     {
-        if(isThereHypotheticalEnemy && isObstaclePresent(position, hypotheticalEnemy, distance))
+        if(isThereHypotheticalEnemy && isObstaclePresent(position, hypotheticalEnemy.getReadOnly(), distance))
         	return true;
         int size = listObstaclesMobiles.size();
         for(int tmpFirstNotDead = firstNotDead; tmpFirstNotDead < size; tmpFirstNotDead++)
@@ -271,7 +272,7 @@ public class ObstacleManager implements Service
      * @param distance
      * @return
      */
-    private boolean isObstaclePresent(Vec2<ReadOnly> position, Obstacle o, int distance)
+    private boolean isObstaclePresent(Vec2<ReadOnly> position, Obstacle<ReadOnly> o, int distance)
     {
     	return o.isProcheObstacle(position, distance);
     }
@@ -299,7 +300,7 @@ public class ObstacleManager implements Service
 	 * Utilisé pour l'affichage
 	 * @return 
 	 */
-	public ArrayList<ObstacleProximity> getListObstaclesMobiles()
+	public ArrayList<ObstacleProximity<ReadOnly>> getListObstaclesMobiles()
 	{
 		return listObstaclesMobiles;
 	}
@@ -376,7 +377,7 @@ public class ObstacleManager implements Service
 		// TODO: calculer la vitesse qui permet exactement de passer?
 		Speed vitesse = Speed.BETWEEN_SCRIPTS;
 		
-		obstacleTrajectoireCourbe = new ObstacleTrajectoireCourbe(objectifFinal, intersection, directionAvant, vitesse);
+		obstacleTrajectoireCourbe = new ObstacleTrajectoireCourbe<ReadOnly>(objectifFinal, intersection, directionAvant, vitesse);
 
 		// Collision avec un obstacle fixe?
     	for(ObstaclesFixes o: ObstaclesFixes.values)
@@ -384,7 +385,7 @@ public class ObstacleManager implements Service
     			return false;
 
     	// Collision avec un ennemi hypothétique?
-        if(isThereHypotheticalEnemy && obstacleTrajectoireCourbe.isColliding(hypotheticalEnemy))
+        if(isThereHypotheticalEnemy && obstacleTrajectoireCourbe.isColliding(hypotheticalEnemy.getReadOnly()))
         	return false;
 
         // Collision avec un obtacle mobile?

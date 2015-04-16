@@ -146,7 +146,7 @@ public class JUnit_Locomotion extends JUnit_Test
 //		PathfindingNodes fin = PathfindingNodes.COTE_MARCHE_GAUCHE;
 		PathfindingNodes fin = PathfindingNodes.DEVANT_DEPART_DROITE;
 		Vec2<ReadOnly> position = locomotion.getPosition();
-		ObstacleTrajectoireCourbe obs = new ObstacleTrajectoireCourbe(fin, PathfindingNodes.BAS, new Vec2<ReadOnly>(Math.atan2(PathfindingNodes.BAS.getCoordonnees().y-position.y,PathfindingNodes.BAS.getCoordonnees().x-position.x)), Speed.BETWEEN_SCRIPTS);
+		ObstacleTrajectoireCourbe<ReadOnly> obs = new ObstacleTrajectoireCourbe<ReadOnly>(fin, PathfindingNodes.BAS, new Vec2<ReadOnly>(Math.atan2(PathfindingNodes.BAS.getCoordonnees().y-position.y,PathfindingNodes.BAS.getCoordonnees().x-position.x)), Speed.BETWEEN_SCRIPTS);
 		chemin.add(new SegmentTrajectoireCourbe(PathfindingNodes.BAS));
 		chemin.add(obs.getSegment());
 		chemin.add(new SegmentTrajectoireCourbe(PathfindingNodes.DEVANT_DEPART_GAUCHE));
@@ -177,20 +177,20 @@ public class JUnit_Locomotion extends JUnit_Test
 	{
         locomotion.setOrientation(0);
         locomotion.setPosition(new Vec2<ReadOnly>(1320, 250));
-        ObstacleRotationRobot r;
-        r = new ObstacleRotationRobot(locomotion.getPosition(), locomotion.getOrientation(), 0);
+        ObstacleRotationRobot<ReadOnly> r;
+        r = new ObstacleRotationRobot<ReadOnly>(locomotion.getPosition(), locomotion.getOrientation(), 0);
         Assert.assertTrue(!r.isColliding(ObstaclesFixes.BORD_DROITE.getObstacle()));
-        r = new ObstacleRotationRobot(locomotion.getPosition(), locomotion.getOrientation(), Math.PI/9);
+        r = new ObstacleRotationRobot<ReadOnly>(locomotion.getPosition(), locomotion.getOrientation(), Math.PI/9);
         Assert.assertTrue(!r.isColliding(ObstaclesFixes.BORD_DROITE.getObstacle()));
-        r = new ObstacleRotationRobot(locomotion.getPosition(), locomotion.getOrientation(), Math.PI/6);
+        r = new ObstacleRotationRobot<ReadOnly>(locomotion.getPosition(), locomotion.getOrientation(), Math.PI/6);
         Assert.assertTrue(r.isColliding(ObstaclesFixes.BORD_DROITE.getObstacle()));
-        r = new ObstacleRotationRobot(locomotion.getPosition(), locomotion.getOrientation(), Math.PI/2);
+        r = new ObstacleRotationRobot<ReadOnly>(locomotion.getPosition(), locomotion.getOrientation(), Math.PI/2);
         Assert.assertTrue(r.isColliding(ObstaclesFixes.BORD_DROITE.getObstacle()));
-        r = new ObstacleRotationRobot(locomotion.getPosition(), locomotion.getOrientation(), -Math.PI/9);
+        r = new ObstacleRotationRobot<ReadOnly>(locomotion.getPosition(), locomotion.getOrientation(), -Math.PI/9);
         Assert.assertTrue(!r.isColliding(ObstaclesFixes.BORD_DROITE.getObstacle()));
-        r = new ObstacleRotationRobot(locomotion.getPosition(), locomotion.getOrientation(), -Math.PI/6);
+        r = new ObstacleRotationRobot<ReadOnly>(locomotion.getPosition(), locomotion.getOrientation(), -Math.PI/6);
         Assert.assertTrue(r.isColliding(ObstaclesFixes.BORD_DROITE.getObstacle()));
-        r = new ObstacleRotationRobot(locomotion.getPosition(), locomotion.getOrientation(), -Math.PI/2);
+        r = new ObstacleRotationRobot<ReadOnly>(locomotion.getPosition(), locomotion.getOrientation(), -Math.PI/2);
         Assert.assertTrue(r.isColliding(ObstaclesFixes.BORD_DROITE.getObstacle()));
 	}
 	

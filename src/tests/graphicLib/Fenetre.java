@@ -9,6 +9,7 @@ import obstacles.ObstacleProximity;
 import obstacles.ObstacleRectangular;
 import obstacles.ObstaclesFixes;
 import permissions.ReadOnly;
+import permissions.TestOnly;
 import table.GameElementNames;
 import utils.Vec2;
 
@@ -30,7 +31,7 @@ public class Fenetre extends JPanel {
 
 	private int sizeX = 450, sizeY = 300;
 	private ArrayList<Vec2<ReadOnly>> pointsADessiner = new ArrayList<Vec2<ReadOnly>>();
-	private ArrayList<ObstacleProximity> listObstaclesMobiles;
+	private ArrayList<ObstacleProximity<ReadOnly>> listObstaclesMobiles;
 	private ArrayList<Vec2<ReadOnly>[]> segments = new ArrayList<Vec2<ReadOnly>[]>();
 	private Image image;
 	private int dilatationObstacle;
@@ -39,7 +40,7 @@ public class Fenetre extends JPanel {
 	private ArrayList<Double> orientations = new ArrayList<Double>();
 	private ArrayList<Color> couleurs = new ArrayList<Color>();
 	
-	private ArrayList<ObstacleRectangular> obstaclesEnBiais = new ArrayList<ObstacleRectangular>();
+	private ArrayList<ObstacleRectangular<ReadOnly>> obstaclesEnBiais = new ArrayList<ObstacleRectangular<ReadOnly>>();
 
 	private int firstNotDead = 0;
     
@@ -168,45 +169,45 @@ public class Fenetre extends JPanel {
 		frame.setVisible(true);
 	}
 
-	public void setObstaclesMobiles(ArrayList<ObstacleProximity> listObstaclesMobiles, int firstNotDead)
+	public void setObstaclesMobiles(ArrayList<ObstacleProximity<ReadOnly>> listObstaclesMobiles, int firstNotDead)
 	{
 		this.firstNotDead  = firstNotDead;
 		this.listObstaclesMobiles = listObstaclesMobiles;
 	}
 
-	public void paintObstacle(ObstacleCircular o, Graphics g, int dilatationObstacle)
+	public void paintObstacle(ObstacleCircular<TestOnly> o, Graphics g, int dilatationObstacle)
 	{
 		if(o.getRadius() <= 0)
-			g.fillOval(XtoWindow(o.getPosition().x)-5, YtoWindow(o.getPosition().y)-5, 10, 10);
+			g.fillOval(XtoWindow(Obstacle.getPosition(o).x)-5, YtoWindow(Obstacle.getPosition(o).y)-5, 10, 10);
 		else
-			g.fillOval(XtoWindow(o.getPosition().x-o.getRadius()-dilatationObstacle), YtoWindow(o.getPosition().y+o.getRadius()+dilatationObstacle), distanceXtoWindow((o.getRadius()+dilatationObstacle)*2), distanceYtoWindow((o.getRadius()+dilatationObstacle)*2));		
+			g.fillOval(XtoWindow(Obstacle.getPosition(o).x-o.getRadius()-dilatationObstacle), YtoWindow(Obstacle.getPosition(o).y+o.getRadius()+dilatationObstacle), distanceXtoWindow((o.getRadius()+dilatationObstacle)*2), distanceYtoWindow((o.getRadius()+dilatationObstacle)*2));		
 	}
 	
-	public void paintObstacle(ObstacleRectangular o, Graphics g, int dilatationObstacle)
+	public void paintObstacle(ObstacleRectangular<TestOnly> o, Graphics g, int dilatationObstacle)
 	{
 		if(dilatationObstacle != 0)
 		{
 			// les quatre coins
-			g.fillOval(XtoWindow(o.getPosition().x-o.getSizeX()/2-dilatationObstacle), YtoWindow(o.getPosition().y+o.getSizeY()/2+dilatationObstacle), distanceXtoWindow(dilatationObstacle*2), distanceYtoWindow(dilatationObstacle*2));
-			g.fillOval(XtoWindow(o.getPosition().x-o.getSizeX()/2-dilatationObstacle), YtoWindow(o.getPosition().y-o.getSizeY()/2+dilatationObstacle), distanceXtoWindow(dilatationObstacle*2), distanceYtoWindow(dilatationObstacle*2));		
-			g.fillOval(XtoWindow(o.getPosition().x+o.getSizeX()/2-dilatationObstacle), YtoWindow(o.getPosition().y+o.getSizeY()/2+dilatationObstacle), distanceXtoWindow(dilatationObstacle*2), distanceYtoWindow(dilatationObstacle*2));		
-			g.fillOval(XtoWindow(o.getPosition().x+o.getSizeX()/2-dilatationObstacle), YtoWindow(o.getPosition().y-o.getSizeY()/2+dilatationObstacle), distanceXtoWindow(dilatationObstacle*2), distanceYtoWindow(dilatationObstacle*2));		
+			g.fillOval(XtoWindow(Obstacle.getPosition(o).x-o.getSizeX()/2-dilatationObstacle), YtoWindow(Obstacle.getPosition(o).y+o.getSizeY()/2+dilatationObstacle), distanceXtoWindow(dilatationObstacle*2), distanceYtoWindow(dilatationObstacle*2));
+			g.fillOval(XtoWindow(Obstacle.getPosition(o).x-o.getSizeX()/2-dilatationObstacle), YtoWindow(Obstacle.getPosition(o).y-o.getSizeY()/2+dilatationObstacle), distanceXtoWindow(dilatationObstacle*2), distanceYtoWindow(dilatationObstacle*2));		
+			g.fillOval(XtoWindow(Obstacle.getPosition(o).x+o.getSizeX()/2-dilatationObstacle), YtoWindow(Obstacle.getPosition(o).y+o.getSizeY()/2+dilatationObstacle), distanceXtoWindow(dilatationObstacle*2), distanceYtoWindow(dilatationObstacle*2));		
+			g.fillOval(XtoWindow(Obstacle.getPosition(o).x+o.getSizeX()/2-dilatationObstacle), YtoWindow(Obstacle.getPosition(o).y-o.getSizeY()/2+dilatationObstacle), distanceXtoWindow(dilatationObstacle*2), distanceYtoWindow(dilatationObstacle*2));		
 
-			g.fillRect(XtoWindow(o.getPosition().x-o.getSizeX()/2-dilatationObstacle), YtoWindow(o.getPosition().y+o.getSizeY()/2), distanceXtoWindow(dilatationObstacle), distanceYtoWindow(o.getSizeY()));
-			g.fillRect(XtoWindow(o.getPosition().x+o.getSizeX()/2), YtoWindow(o.getPosition().y+o.getSizeY()/2), distanceXtoWindow(dilatationObstacle), distanceYtoWindow(o.getSizeY()));
-			g.fillRect(XtoWindow(o.getPosition().x-o.getSizeX()/2), YtoWindow(o.getPosition().y+o.getSizeY()/2+dilatationObstacle), distanceXtoWindow(o.getSizeX()), distanceYtoWindow(dilatationObstacle));
-			g.fillRect(XtoWindow(o.getPosition().x-o.getSizeX()/2), YtoWindow(o.getPosition().y-o.getSizeY()/2), distanceXtoWindow(o.getSizeX()), distanceYtoWindow(dilatationObstacle));
+			g.fillRect(XtoWindow(Obstacle.getPosition(o).x-o.getSizeX()/2-dilatationObstacle), YtoWindow(Obstacle.getPosition(o).y+o.getSizeY()/2), distanceXtoWindow(dilatationObstacle), distanceYtoWindow(o.getSizeY()));
+			g.fillRect(XtoWindow(Obstacle.getPosition(o).x+o.getSizeX()/2), YtoWindow(Obstacle.getPosition(o).y+o.getSizeY()/2), distanceXtoWindow(dilatationObstacle), distanceYtoWindow(o.getSizeY()));
+			g.fillRect(XtoWindow(Obstacle.getPosition(o).x-o.getSizeX()/2), YtoWindow(Obstacle.getPosition(o).y+o.getSizeY()/2+dilatationObstacle), distanceXtoWindow(o.getSizeX()), distanceYtoWindow(dilatationObstacle));
+			g.fillRect(XtoWindow(Obstacle.getPosition(o).x-o.getSizeX()/2), YtoWindow(Obstacle.getPosition(o).y-o.getSizeY()/2), distanceXtoWindow(o.getSizeX()), distanceYtoWindow(dilatationObstacle));
 		}
-		g.fillRect(XtoWindow(o.getPosition().x-o.getSizeX()/2), YtoWindow(o.getPosition().y+o.getSizeY()/2), distanceXtoWindow(o.getSizeX()), distanceYtoWindow(o.getSizeY()));
+		g.fillRect(XtoWindow(Obstacle.getPosition(o).x-o.getSizeX()/2), YtoWindow(Obstacle.getPosition(o).y+o.getSizeY()/2), distanceXtoWindow(o.getSizeX()), distanceYtoWindow(o.getSizeY()));
 	}
 	
 	// Impossible
-	public void paintObstacle(Obstacle o, Graphics g, int dilatationObstacle)
+	public void paintObstacle(Obstacle<ReadOnly> o, Graphics g, int dilatationObstacle)
 	{
 		if(o instanceof ObstacleRectangular)
-			paintObstacle((ObstacleRectangular)o, g, dilatationObstacle);
+			paintObstacle((ObstacleRectangular<ReadOnly>)o, g, dilatationObstacle);
 		else if(o instanceof ObstacleCircular)
-			paintObstacle((ObstacleCircular)o, g, dilatationObstacle);
+			paintObstacle((ObstacleCircular<ReadOnly>)o, g, dilatationObstacle);
 	}
 
 	public void afficheCoordonnees(Point point)
@@ -232,7 +233,7 @@ public class Fenetre extends JPanel {
 	public void paintObstacleEnBiais(Graphics g)
 	{
 		int[] X, Y;
-		for(ObstacleRectangular o: obstaclesEnBiais)
+		for(ObstacleRectangular<ReadOnly> o: obstaclesEnBiais)
 		{
 			X = o.getXPositions();
 			Y = o.getYPositions();
@@ -259,7 +260,7 @@ public class Fenetre extends JPanel {
 		couleurs.add(couleur);
 	}
 	
-	public void addObstacleEnBiais(ObstacleRectangular obstacleEnBiais)
+	public void addObstacleEnBiais(ObstacleRectangular<ReadOnly> obstacleEnBiais)
 	{
 		obstaclesEnBiais.add(obstacleEnBiais);
 	}

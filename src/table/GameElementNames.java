@@ -35,8 +35,8 @@ public enum GameElementNames {
 	DISTRIB_4(GameElementType.DISTRIBUTEUR, new Vec2<ReadOnly>(-1200, 1950), 25);
 	
 	private GameElementType type;
-	private ObstacleCircular obstacle;
-	private ObstacleCircular obstacleDilate;
+	private ObstacleCircular<ReadOnly> obstacle;
+	private ObstacleCircular<ReadOnly> obstacleDilate;
 
 	private int dilatationHookScript = 50;
 	
@@ -49,20 +49,20 @@ public enum GameElementNames {
 		valuesLength = values.length;
 	}
 	
-	public ObstacleCircular getObstacle()
+	public ObstacleCircular<ReadOnly> getObstacle()
 	{
 		return obstacle;
 	}
 
-	public ObstacleCircular getObstacleDilate()
+	public ObstacleCircular<ReadOnly> getObstacleDilate()
 	{
 		return obstacleDilate;
 	}
 
 	private GameElementNames(GameElementType type, Vec2<ReadOnly> position, int radius)
 	{
-		obstacle = new ObstacleCircular(position, radius);
-		obstacleDilate = new ObstacleCircular(position, radius+dilatationHookScript);
+		obstacle = new ObstacleCircular<ReadOnly>(position, radius);
+		obstacleDilate = new ObstacleCircular<ReadOnly>(position, radius+dilatationHookScript);
 		this.type = type;
 	}
 	

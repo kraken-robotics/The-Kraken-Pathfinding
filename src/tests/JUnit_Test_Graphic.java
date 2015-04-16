@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Random;
 
+import obstacles.Obstacle;
 import obstacles.ObstacleTrajectoireCourbe;
 import obstacles.ObstacleRectangular;
 import obstacles.ObstacleRotationRobot;
@@ -185,11 +186,11 @@ public class JUnit_Test_Graphic extends JUnit_Test {
 		int marge = 10;
 		Vec2<ReadOnly> A = PathfindingNodes.CLAP_GAUCHE.getCoordonnees();
 		Vec2<ReadOnly> B = PathfindingNodes.HAUT_GAUCHE.getCoordonnees();
-		ObstacleRectangular o1 = new ObstacleRectangular(A.middleNewVector(B).getReadOnly(), (int)A.distance(B)+longueur_robot+2*marge, largeur_robot+2*marge, Math.atan2(B.y-A.y, B.x-A.x));
+		ObstacleRectangular<ReadOnly> o1 = new ObstacleRectangular<ReadOnly>(A.middleNewVector(B).getReadOnly(), (int)A.distance(B)+longueur_robot+2*marge, largeur_robot+2*marge, Math.atan2(B.y-A.y, B.x-A.x));
 		ObstaclesFixes o = ObstaclesFixes.BANDE_1;
-		ObstacleRectangular o2 = o.getObstacle();
-    	ObstacleRectangular o3 = new ObstacleRectangular(new Vec2<ReadOnly>(1000,1000), 200, 200, Math.PI/8);
-    	ObstacleRectangular o4 = new ObstacleRectangular(new Vec2<ReadOnly>(900, 1100), 50, 50, 0);
+		ObstacleRectangular<ReadOnly> o2 = o.getObstacle();
+    	ObstacleRectangular<ReadOnly> o3 = new ObstacleRectangular<ReadOnly>(new Vec2<ReadOnly>(1000,1000), 200, 200, Math.PI/8);
+    	ObstacleRectangular<ReadOnly> o4 = new ObstacleRectangular<ReadOnly>(new Vec2<ReadOnly>(900, 1100), 50, 50, 0);
 //    	ObstacleRectangular o3 = new ObstacleRectangular(new Vec2(1320, 250), longueur_robot, largeur_robot, Math.PI/6);
 //    	ObstacleRectangular o4 = ObstaclesFixes.BORD_DROITE.getObstacle();
 		log.debug("Collision ? "+o3.isColliding(o4));
@@ -208,11 +209,11 @@ public class JUnit_Test_Graphic extends JUnit_Test {
 		int marge = 10;
 		Vec2<ReadOnly> A = PathfindingNodes.CLAP_GAUCHE.getCoordonnees();
 		Vec2<ReadOnly> B = PathfindingNodes.HAUT_GAUCHE.getCoordonnees();
-		ObstacleRectangular rectangle = new ObstacleRectangular(A.middleNewVector(B).getReadOnly(), (int)A.distance(B)+longueur_robot+2*marge, largeur_robot+2*marge, Math.atan2(B.y-A.y, B.x-A.x));
+		ObstacleRectangular<ReadOnly> rectangle = new ObstacleRectangular<ReadOnly>(A.middleNewVector(B).getReadOnly(), (int)A.distance(B)+longueur_robot+2*marge, largeur_robot+2*marge, Math.atan2(B.y-A.y, B.x-A.x));
 		fenetre.addObstacleEnBiais(rectangle);
 		fenetre.repaint();
-		ObstacleRectangular o = ObstaclesFixes.BANDE_1.getObstacle();
-		log.debug("Collision avec "+o.getPosition()+"? "+rectangle.isColliding(o));
+		ObstacleRectangular<ReadOnly> o = ObstaclesFixes.BANDE_1.getObstacle();
+		log.debug("Collision avec "+Obstacle.getPosition(o.getTestOnly())+"? "+rectangle.isColliding(o));
 		Sleep.sleep(3000);
     }
 	
@@ -222,9 +223,9 @@ public class JUnit_Test_Graphic extends JUnit_Test {
 		GameState.setPosition(state, new Vec2<ReadOnly>(0, 1000));
 		GameState.setOrientation(state, Math.PI/2);
     	double angleFinal = 0;
-		ObstacleRectangular[] ombresRobot = new ObstacleRotationRobot(GameState.getPosition(state.getReadOnly()), GameState.getOrientation(state.getReadOnly()), angleFinal).getOmbresRobot();
+		ObstacleRectangular<ReadOnly>[] ombresRobot = new ObstacleRotationRobot<ReadOnly>(GameState.getPosition(state.getReadOnly()), GameState.getOrientation(state.getReadOnly()), angleFinal).getOmbresRobot();
 		log.debug("Nb ombres: "+ombresRobot.length);
-		for(ObstacleRectangular o: ombresRobot)
+		for(ObstacleRectangular<ReadOnly> o: ombresRobot)
 			fenetre.addObstacleEnBiais(o);
 		fenetre.repaint();
 		Sleep.sleep(3000);
@@ -235,10 +236,10 @@ public class JUnit_Test_Graphic extends JUnit_Test {
     {
 		Vec2<ReadOnly> position = new Vec2<ReadOnly>(0, 1000);
 		PathfindingNodes fin = PathfindingNodes.COTE_MARCHE_DROITE;
-		ObstacleTrajectoireCourbe obs = new ObstacleTrajectoireCourbe(fin, PathfindingNodes.BAS, new Vec2<ReadOnly>(Math.atan2(PathfindingNodes.BAS.getCoordonnees().y-position.y,PathfindingNodes.BAS.getCoordonnees().x-position.x)), Speed.BETWEEN_SCRIPTS);
-		ObstacleRectangular[] ombresRobot = obs.getOmbresRobot();//new ObstacleTrajectoireCourbe(PathfindingNodes.DEVANT_DEPART_DROITE, PathfindingNodes.BAS, new Vec2(-Math.PI/2), Speed.BETWEEN_SCRIPTS).getOmbresRobot();
+		ObstacleTrajectoireCourbe<ReadOnly> obs = new ObstacleTrajectoireCourbe<ReadOnly>(fin, PathfindingNodes.BAS, new Vec2<ReadOnly>(Math.atan2(PathfindingNodes.BAS.getCoordonnees().y-position.y,PathfindingNodes.BAS.getCoordonnees().x-position.x)), Speed.BETWEEN_SCRIPTS);
+		ObstacleRectangular<ReadOnly>[] ombresRobot = obs.getOmbresRobot();//new ObstacleTrajectoireCourbe(PathfindingNodes.DEVANT_DEPART_DROITE, PathfindingNodes.BAS, new Vec2(-Math.PI/2), Speed.BETWEEN_SCRIPTS).getOmbresRobot();
 		log.debug("Nb ombres: "+ombresRobot.length);
-		for(ObstacleRectangular o: ombresRobot)
+		for(ObstacleRectangular<ReadOnly> o: ombresRobot)
 			fenetre.addObstacleEnBiais(o);
 		fenetre.repaint();
 		Sleep.sleep(3000);

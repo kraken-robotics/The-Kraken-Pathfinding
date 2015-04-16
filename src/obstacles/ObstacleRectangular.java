@@ -1,5 +1,6 @@
 package obstacles;
 
+import permissions.Permission;
 import permissions.ReadOnly;
 import permissions.ReadWrite;
 import exceptions.FinMatchException;
@@ -13,7 +14,7 @@ import utils.Vec2;
  *
  */
 
-public class ObstacleRectangular extends Obstacle implements ObstacleCollision
+public class ObstacleRectangular<T extends Permission> extends Obstacle<T>
 {
 	private double cos;
 	private double sin;
@@ -47,7 +48,7 @@ public class ObstacleRectangular extends Obstacle implements ObstacleCollision
 	 * @param sizeY
 	 * @param angle
 	 */
-	public ObstacleRectangular(Vec2<ReadOnly> position, int sizeX, int sizeY)
+	public ObstacleRectangular(Vec2<T> position, int sizeX, int sizeY)
 	{
 		this(position, sizeX, sizeY, 0);
 	}
@@ -57,9 +58,9 @@ public class ObstacleRectangular extends Obstacle implements ObstacleCollision
 	 * @param depart
 	 * @param arrivee
 	 */
-	public ObstacleRectangular(Vec2<ReadOnly> depart, Vec2<ReadOnly> arrivee)
+	public ObstacleRectangular(Vec2<T> depart, Vec2<T> arrivee)
 	{
-		this(depart.middleNewVector(arrivee).getReadOnly(), (int)depart.distance(arrivee)+longueurRobot+2*marge, largeurRobot+2*marge, Math.atan2(arrivee.y-depart.y, arrivee.x-depart.x));
+		this(Vec2.getT(depart.middleNewVector(arrivee), depart), (int)depart.distance(arrivee)+longueurRobot+2*marge, largeurRobot+2*marge, Math.atan2(arrivee.y-depart.y, arrivee.x-depart.x));
 	}
 	
 	/**
@@ -73,13 +74,13 @@ public class ObstacleRectangular extends Obstacle implements ObstacleCollision
 	 * @param sizeY
 	 * @param angle
 	 */
-	public ObstacleRectangular(Vec2<ReadOnly> position, int sizeX, int sizeY, double angle)
+	public ObstacleRectangular(Vec2<T> position, int sizeX, int sizeY, double angle)
 	{
 		super(position);
 		this.sizeY = sizeY;
 		this.sizeX = sizeX;
 		demieDiagonale = Math.sqrt(sizeY*sizeY/4+sizeX*sizeX/4);
-		updateVariables(position, angle);
+		updateVariables(position.getReadOnly(), angle);
 	}
 	
 	/**
@@ -87,9 +88,9 @@ public class ObstacleRectangular extends Obstacle implements ObstacleCollision
 	 * @param state
 	 * @throws FinMatchException 
 	 */
-	public ObstacleRectangular(GameState<?,ReadOnly> state) throws FinMatchException
+	public ObstacleRectangular(GameState<?,ReadOnly> state, Vec2<T> useless) throws FinMatchException
 	{
-		this(GameState.getPosition(state), longueurRobot, largeurRobot, GameState.getOrientation(state));
+		this(Vec2.getT(GameState.getPosition(state).clone(), useless), longueurRobot, largeurRobot, GameState.getOrientation(state));
 	}
 
 	private void updateVariables(Vec2<ReadOnly> position, double angle)
@@ -182,7 +183,7 @@ public class ObstacleRectangular extends Obstacle implements ObstacleCollision
 	 * @param r
 	 * @return
 	 */
-	public boolean isColliding(ObstacleRectangular r)
+	public boolean isColliding(ObstacleRectangular<ReadOnly> r)
 	{
 		// Calcul simple permettant de vérifier les cas absurdes où les obstacles sont loin l'un de l'autre
 		if(position.squaredDistance(r.position) >= (demieDiagonale+r.demieDiagonale)*(demieDiagonale+r.demieDiagonale))
@@ -246,18 +247,17 @@ public class ObstacleRectangular extends Obstacle implements ObstacleCollision
 		return Y;
 	}
 
-	public boolean isColliding(ObstacleCircular o)
+	public boolean isColliding(ObstacleCircular<ReadOnly> o)
 	{
 		return squaredDistance(o.position) < o.radius*o.radius;
 	}
 	
-	@Override
-	public boolean isColliding(Obstacle o)
+	public boolean isColliding(Obstacle<ReadOnly> o)
 	{
 		if(o instanceof ObstacleRectangular)
-			return isColliding((ObstacleRectangular)o);
+			return isColliding((ObstacleRectangular<ReadOnly>)o);
 		else if(o instanceof ObstacleCircular)
-			return isColliding((ObstacleCircular)o);
+			return isColliding((ObstacleCircular<ReadOnly>)o);
 
 		log.critical("Appel de isColliding avec un type d'obstacle inconnu!");
 		return false;
@@ -371,7 +371,6 @@ public class ObstacleRectangular extends Obstacle implements ObstacleCollision
 	 * Y a-t-il collision avec un obstacle fixe?
 	 * @return
 	 */
-	@Override
 	public boolean isCollidingObstacleFixe()
 	{
 		for(ObstaclesFixes o: ObstaclesFixes.values)

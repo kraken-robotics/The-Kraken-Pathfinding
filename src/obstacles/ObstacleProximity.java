@@ -1,5 +1,6 @@
 package obstacles;
 
+import permissions.Permission;
 import permissions.ReadOnly;
 import permissions.ReadWrite;
 import robot.Speed;
@@ -9,11 +10,11 @@ import utils.Vec2;
  * Obstacles détectés par capteurs de proximité (ultrasons et infrarouges)
  * @author pf, marsu
  */
-public class ObstacleProximity extends ObstacleCircular
+public class ObstacleProximity<T extends Permission> extends ObstacleCircular<T>
 {
 	private int death_date;
 
-	public ObstacleProximity(Vec2<ReadOnly> position, int rad, int death_date)
+	public ObstacleProximity(Vec2<T> position, int rad, int death_date)
 	{
 		super(position,rad);
 		this.death_date = death_date;
@@ -40,8 +41,8 @@ public class ObstacleProximity extends ObstacleCircular
     public boolean obstacle_proximite_dans_segment(Vec2<ReadOnly> A, Vec2<ReadOnly> B, int date)
     {
     	// si l'obstacle est présent dans le segment...
-    	ObstacleRectangular r = new ObstacleRectangular(A,B);
-    	if(death_date > date && r.isColliding(this))
+    	ObstacleRectangular<ReadOnly> r = new ObstacleRectangular<ReadOnly>(A,B);
+    	if(death_date > date && r.isColliding(getReadOnly()))
     	{
     		// on vérifie si par hasard il ne disparaîtrait pas avant qu'on y arrive
     		int tempsRestant = death_date - date;
@@ -60,20 +61,11 @@ public class ObstacleProximity extends ObstacleCircular
     		C.x = (int)(C.x * facteurMultiplicatif);
     		C.y = (int)(C.y * facteurMultiplicatif);
     		Vec2.plus(C, A);
-        	ObstacleRectangular r2 = new ObstacleRectangular(A,C.getReadOnly());
-        	return r2.isColliding(this);
+        	ObstacleRectangular<ReadOnly> r2 = new ObstacleRectangular<ReadOnly>(A,C.getReadOnly());
+        	return r2.isColliding(getReadOnly());
     	}
     	return false;
     }
-
-    /**
-     * Utilisé pour mettre à jour l'ennemi hypothétique
-     * @param clone
-     */
-	public void setPosition(Vec2<ReadOnly> position)
-	{
-		position.copy(this.position.getReadWrite());
-	}
 	
     /**
      * Utilisé pour mettre à jour l'ennemi hypothétique

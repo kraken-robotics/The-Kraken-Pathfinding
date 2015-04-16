@@ -21,7 +21,7 @@ import hook.Hook;
 
 public class HookCollisionObstaclesFixes extends Hook
 {
-	private ObstacleRectangular obstacle;
+	private ObstacleRectangular<ReadOnly> obstacle;
 	
 	public HookCollisionObstaclesFixes(Config config, Log log, GameState<?,ReadOnly> state)
 	{
@@ -30,7 +30,7 @@ public class HookCollisionObstaclesFixes extends Hook
 		// et qu'on regardera aussi les obstacles derrière le robot
 		int previsionCollision = config.getInt(ConfigInfo.PREVISION_COLLISION)*2;
 		try {
-			obstacle = new ObstacleRectangular(GameState.getPosition(state), GameState.getPosition(state).plusNewVector(new Vec2<ReadWrite>((int)(Math.cos(GameState.getOrientation(state))*previsionCollision), (int)(Math.sin(GameState.getOrientation(state))*previsionCollision))).getReadOnly());
+			obstacle = new ObstacleRectangular<ReadOnly>(GameState.getPosition(state), GameState.getPosition(state).plusNewVector(new Vec2<ReadWrite>((int)(Math.cos(GameState.getOrientation(state))*previsionCollision), (int)(Math.sin(GameState.getOrientation(state))*previsionCollision))).getReadOnly());
 		} catch (FinMatchException e) {
 			// Normalement impossible
 			e.printStackTrace();

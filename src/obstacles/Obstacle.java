@@ -1,5 +1,8 @@
 package obstacles;
+import permissions.Permission;
 import permissions.ReadOnly;
+import permissions.ReadWrite;
+import permissions.TestOnly;
 import utils.Config;
 import utils.ConfigInfo;
 import utils.Log;
@@ -11,9 +14,9 @@ import utils.Vec2;
  *
  */
 
-public abstract class Obstacle
+public abstract class Obstacle<T extends Permission>
 {
-	protected final Vec2<ReadOnly> position;
+	protected final Vec2<T> position;
 	protected int distance_dilatation;
 	protected static Log log;
 	protected static Config config;
@@ -33,7 +36,7 @@ public abstract class Obstacle
 		anglePas = Math.PI-2*Math.atan2(largeurRobot, longueurRobot);
 	}
 	
-	public Obstacle (Vec2<ReadOnly> position)
+	public Obstacle (Vec2<T> position)
 	{
 		this.position = position;
 	}
@@ -45,14 +48,31 @@ public abstract class Obstacle
 	 * Utilisé pour l'affichage
 	 * @return
 	 */
-	public Vec2<ReadOnly> getPosition()
+	public static final Vec2<ReadOnly> getPosition(Obstacle<TestOnly> o)
 	{
-		return position.getReadOnly();
+		return o.position.getReadOnly();
 	}
-	
+
+	public static final void setPosition(Obstacle<ReadWrite> o, Vec2<ReadOnly> v)
+	{
+		v.copy(o.position);
+	}
+
 	public String toString()
 	{
 		return "Obstacle en "+position;
 	}
 	
+	@SuppressWarnings("unchecked")
+	public final Obstacle<ReadOnly> getReadOnly()
+	{
+		return (Obstacle<ReadOnly>) this;
+	}
+
+	@SuppressWarnings("unchecked")
+	public final Obstacle<TestOnly> getTestOnly()
+	{
+		return (Obstacle<TestOnly>) this;
+	}
+
 }
