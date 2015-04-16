@@ -1,25 +1,14 @@
 package tests;
 
-import hook.Hook;
-
-import java.util.ArrayList;
-
-import org.junit.Test;
 import org.junit.Before;
 
 import container.ServiceNames;
 import enums.RobotColor;
-import astar.AStar;
-import astar.arc.PathfindingNodes;
-import astar.arc.SegmentTrajectoireCourbe;
-import astar.arcmanager.PathfindingArcManager;
 import robot.RobotReal;
-import scripts.Script;
-import scripts.ScriptManager;
-import scripts.ScriptAnticipableNames;
 import strategie.GameState;
 import utils.ConfigInfo;
 import vec2.ReadOnly;
+import vec2.ReadWrite;
 import vec2.Vec2;
 
 /**
@@ -31,85 +20,15 @@ import vec2.Vec2;
 
 public class JUnit_Script_Symetrie extends JUnit_Test {
 
-	private ScriptManager scriptmanager;
-	private GameState<RobotReal> gamestate;
-	private AStar<PathfindingArcManager, SegmentTrajectoireCourbe> pathfinding;
+	private GameState<RobotReal,ReadWrite> gamestate;
 
     @SuppressWarnings("unchecked")
 	@Before
     public void setUp() throws Exception {
         super.setUp();
         config.set(ConfigInfo.COULEUR, RobotColor.getCouleurAvecSymetrie());
-        gamestate = (GameState<RobotReal>) container.getService(ServiceNames.REAL_GAME_STATE);
-        pathfinding = (AStar<PathfindingArcManager, SegmentTrajectoireCourbe>) container.getService(ServiceNames.A_STAR_PATHFINDING);
-        scriptmanager = (ScriptManager) container.getService(ServiceNames.SCRIPT_MANAGER);
-        gamestate.robot.setPosition(new Vec2<ReadOnly>(1100, 1000));
-    }
-
-    @Test
-    public void test_script_tapis() throws Exception
-    {
-    	gamestate.robot.setOrientation(Math.PI);
-    	gamestate.robot.setPosition(PathfindingNodes.POINT_DEPART.getCoordonnees());
-    	gamestate.robot.avancer(500);
-    	PathfindingNodes version = PathfindingNodes.NODE_TAPIS;
-    	Script s = scriptmanager.getScript(ScriptAnticipableNames.TAPIS);
-    	ArrayList<SegmentTrajectoireCourbe> chemin = pathfinding.computePath(gamestate.cloneGameState(), version, true);
-    	gamestate.robot.suit_chemin(chemin, new ArrayList<Hook>());
-    	s.agit(version, gamestate);
-    }
-
-    @Test
-    public void test_script_tapis_symetrie() throws Exception
-    {
-    	gamestate.robot.setOrientation(Math.PI);
-    	gamestate.robot.setPosition(PathfindingNodes.POINT_DEPART.getCoordonnees());
-    	gamestate.robot.avancer(500);
-    	config.set(ConfigInfo.COULEUR, RobotColor.getCouleurAvecSymetrie());
-    	PathfindingNodes version = PathfindingNodes.NODE_TAPIS;
-    	Script s = scriptmanager.getScript(ScriptAnticipableNames.TAPIS);
-    	ArrayList<SegmentTrajectoireCourbe> chemin = pathfinding.computePath(gamestate.cloneGameState(), version, true);
-    	gamestate.robot.suit_chemin(chemin, new ArrayList<Hook>());
-    	s.agit(version, gamestate);
-    }
-
-    @Test
-    public void test_script_clap_droit() throws Exception
-    {
-    	gamestate.robot.setOrientation(Math.PI);
-    	gamestate.robot.setPosition(PathfindingNodes.POINT_DEPART.getCoordonnees());
-    	gamestate.robot.avancer(500);
-    	PathfindingNodes version = PathfindingNodes.CLAP_DROIT;
-    	Script s = scriptmanager.getScript(ScriptAnticipableNames.CLAP);
-    	ArrayList<SegmentTrajectoireCourbe> chemin = pathfinding.computePath(gamestate.cloneGameState(), version, true);
-    	gamestate.robot.suit_chemin(chemin, new ArrayList<Hook>());
-    	s.agit(version, gamestate);
-    }
-
-    @Test
-    public void test_script_clap_droit_second() throws Exception
-    {
-    	gamestate.robot.setOrientation(Math.PI);
-    	gamestate.robot.setPosition(PathfindingNodes.POINT_DEPART.getCoordonnees());
-    	gamestate.robot.avancer(500);
-    	PathfindingNodes version = PathfindingNodes.CLAP_DROIT_SECOND;
-    	Script s = scriptmanager.getScript(ScriptAnticipableNames.CLAP);
-    	ArrayList<SegmentTrajectoireCourbe> chemin = pathfinding.computePath(gamestate.cloneGameState(), version, true);
-    	gamestate.robot.suit_chemin(chemin, new ArrayList<Hook>());
-    	s.agit(version, gamestate);
-    }
-
-    @Test
-    public void test_script_clap_gauche() throws Exception
-    {
-    	gamestate.robot.setOrientation(Math.PI);
-    	gamestate.robot.setPosition(PathfindingNodes.POINT_DEPART.getCoordonnees());
-    	gamestate.robot.avancer(500);
-    	PathfindingNodes version = PathfindingNodes.CLAP_GAUCHE;
-    	Script s = scriptmanager.getScript(ScriptAnticipableNames.CLAP);
-    	ArrayList<SegmentTrajectoireCourbe> chemin = pathfinding.computePath(gamestate.cloneGameState(), version, true);
-    	gamestate.robot.suit_chemin(chemin, new ArrayList<Hook>());
-    	s.agit(version, gamestate);
+        gamestate = (GameState<RobotReal,ReadWrite>) container.getService(ServiceNames.REAL_GAME_STATE);
+        GameState.setPosition(gamestate, new Vec2<ReadOnly>(1100, 1000));
     }
 
 }

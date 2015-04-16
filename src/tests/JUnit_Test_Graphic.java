@@ -45,8 +45,8 @@ public class JUnit_Test_Graphic extends JUnit_Test {
 	private Fenetre fenetre;
 	private ObstacleManager obstaclemanager;
 	private AStar<PathfindingArcManager, SegmentTrajectoireCourbe> pathfinding;
-	private GameState<RobotChrono> state_chrono;
-	private GameState<RobotReal> state;
+	private GameState<RobotChrono,ReadWrite> state_chrono;
+	private GameState<RobotReal,ReadWrite> state;
 	private AStar<StrategyArcManager, Decision> strategic_astar;
 	private ScriptManager scriptmanager;
 	
@@ -57,7 +57,7 @@ public class JUnit_Test_Graphic extends JUnit_Test {
 		super.setUp();
         pathfinding = (AStar<PathfindingArcManager, SegmentTrajectoireCourbe>) container.getService(ServiceNames.A_STAR_PATHFINDING);
 		obstaclemanager = (ObstacleManager) container.getService(ServiceNames.OBSTACLE_MANAGER);
-		state = (GameState<RobotReal>)container.getService(ServiceNames.REAL_GAME_STATE);
+		state = (GameState<RobotReal,ReadWrite>)container.getService(ServiceNames.REAL_GAME_STATE);
 		strategic_astar = (AStar<StrategyArcManager, Decision>)container.getService(ServiceNames.A_STAR_STRATEGY);
 		scriptmanager = (ScriptManager) container.getService(ServiceNames.SCRIPT_MANAGER);
 		fenetre = new Fenetre();
@@ -92,9 +92,9 @@ public class JUnit_Test_Graphic extends JUnit_Test {
 			log.debug("Recherche chemin entre "+i+" et "+j);
 			Vec2<ReadOnly> entree = i.getCoordonnees().plusNewVector(new Vec2<ReadWrite>(randomgenerator.nextInt(100)-50, randomgenerator.nextInt(100)-50)).getReadOnly();
 			config.setDateDebutMatch(); // afin d'avoir toujours une haute précision
-			state_chrono = state.cloneGameState();
-			double orientation_initiale = state_chrono.robot.getOrientation();
-			state_chrono.robot.setPosition(entree);
+			state_chrono = GameState.cloneGameState(state.getReadOnly());
+			double orientation_initiale = GameState.getOrientation(state_chrono.getReadOnly());
+			GameState.setPosition(state_chrono, entree);
 			ArrayList<SegmentTrajectoireCourbe> chemin = pathfinding.computePath(state_chrono, j, true);
     		ArrayList<Vec2<ReadOnly>> cheminVec2 = new ArrayList<Vec2<ReadOnly>>();
     		cheminVec2.add(entree.getReadOnly());
@@ -121,7 +121,7 @@ public class JUnit_Test_Graphic extends JUnit_Test {
 		cheminDepart.add(new SegmentTrajectoireCourbe(PathfindingNodes.POINT_DEPART));
     	Decision decision = new Decision(cheminDepart, ScriptAnticipableNames.SORTIE_ZONE_DEPART, PathfindingNodes.POINT_DEPART);
     	config.setDateDebutMatch();
-    	GameState<RobotChrono> chronostate = state.cloneGameState();
+    	GameState<RobotChrono,ReadOnly> chronostate = GameState.cloneGameState(state.getReadOnly()).getReadOnly();
 		ArrayList<Decision> decisions = strategic_astar.computeStrategyAfter(chronostate, decision, 10000);
 		Vec2<ReadOnly> position_precedente = PathfindingNodes.SORTIE_ZONE_DEPART.getCoordonnees();
 		for(Decision d: decisions)
@@ -152,11 +152,11 @@ public class JUnit_Test_Graphic extends JUnit_Test {
     public void test_strategy_emergency_verification_humaine() throws Exception
     {
     	config.setDateDebutMatch();
-    	GameState<RobotChrono> chronostate = state.cloneGameState();
-    	chronostate.robot.setPosition(new Vec2<ReadOnly>(800, 1000));
-    	chronostate.robot.setOrientation(-Math.PI/2);
-		ArrayList<Decision> decisions = strategic_astar.computeStrategyEmergency(chronostate, 10000);
-		Vec2<ReadOnly> position_precedente = chronostate.robot.getPosition();
+    	GameState<RobotChrono,ReadWrite> chronostate = GameState.cloneGameState(state.getReadOnly());
+    	GameState.setPosition(chronostate, new Vec2<ReadOnly>(800, 1000));
+    	GameState.setOrientation(chronostate, -Math.PI/2);
+		ArrayList<Decision> decisions = strategic_astar.computeStrategyEmergency(chronostate.getReadOnly(), 10000);
+		Vec2<ReadOnly> position_precedente = GameState.getPosition(chronostate.getReadOnly());
 		for(Decision d: decisions)
 		{
 			log.debug(d);
@@ -219,10 +219,10 @@ public class JUnit_Test_Graphic extends JUnit_Test {
 	@Test
     public void test_obstacle_rotation() throws Exception
     {
-    	state.robot.setPosition(new Vec2<ReadOnly>(0, 1000));
-    	state.robot.setOrientation(Math.PI/2);
+		GameState.setPosition(state, new Vec2<ReadOnly>(0, 1000));
+		GameState.setOrientation(state, Math.PI/2);
     	double angleFinal = 0;
-		ObstacleRectangular[] ombresRobot = new ObstacleRotationRobot(state.robot.getPosition(), state.robot.getOrientation(), angleFinal).getOmbresRobot();
+		ObstacleRectangular[] ombresRobot = new ObstacleRotationRobot(GameState.getPosition(state.getReadOnly()), GameState.getOrientation(state.getReadOnly()), angleFinal).getOmbresRobot();
 		log.debug("Nb ombres: "+ombresRobot.length);
 		for(ObstacleRectangular o: ombresRobot)
 			fenetre.addObstacleEnBiais(o);

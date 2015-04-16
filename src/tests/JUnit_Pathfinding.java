@@ -58,7 +58,8 @@ public class JUnit_Pathfinding extends JUnit_Test {
     public void test_robot_dans_obstacle() throws Exception
     {
 		GameState.setPosition(state_chrono, new Vec2<ReadOnly>(80, 80));
-		GameState.creer_obstacle(state_chrono.getTestOnly(),new Vec2<ReadOnly>(80, 80));
+		// TODO: utiliser obstacle ennemi
+//		GameState.creer_obstacle(state_chrono.getTestOnly(),new Vec2<ReadOnly>(80, 80));
     	pathfinding.computePath(state_chrono, PathfindingNodes.values()[0], false);
     }
 
@@ -66,7 +67,8 @@ public class JUnit_Pathfinding extends JUnit_Test {
     public void test_obstacle() throws Exception
     {
 		GameState.setPosition(state_chrono, new Vec2<ReadOnly>(80, 80));
-		GameState.creer_obstacle(state_chrono, PathfindingNodes.values()[0].getCoordonnees());
+		// TODO: utiliser obstacle ennemi
+//		GameState.creer_obstacle(state_chrono, PathfindingNodes.values()[0].getCoordonnees());
     	pathfinding.computePath(state_chrono, PathfindingNodes.values()[0], false);
     }
 
@@ -113,7 +115,8 @@ public class JUnit_Pathfinding extends JUnit_Test {
     public void test_peremption_pendant_trajet() throws Exception
     {
 		GameState.setPosition(state_chrono, new Vec2<ReadOnly>(80, 80));
-		GameState.creer_obstacle(state_chrono, PathfindingNodes.values()[0].getCoordonnees());
+		// TODO: utiliser obstacle ennemi
+//		GameState.creer_obstacle(state_chrono, PathfindingNodes.values()[0].getCoordonnees());
     	pathfinding.computePath(state_chrono, PathfindingNodes.values()[0], true);
     }
 
