@@ -74,6 +74,6 @@ public class JUnit_GameState extends JUnit_Test {
 //		GameState.creer_obstacle(gamestate, new Vec2<ReadOnly>(156, 282));
 		GameState.setDone(gamestate, GameElementNames.CLAP_3, Tribool.TRUE);
 		GameState.setDone(gamestate, GameElementNames.PLOT_4, Tribool.TRUE);
-		Assert.assertEquals(gamestate.getHash(), GameState.cloneGameState(gamestate.getReadOnly()).getHash());
+		Assert.assertEquals(GameState.getHash(gamestate.getReadOnly()), GameState.getHash(GameState.cloneGameState(gamestate.getReadOnly()).getReadOnly()));
 	}
 }

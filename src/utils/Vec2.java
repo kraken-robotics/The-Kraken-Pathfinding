@@ -154,7 +154,7 @@ public class Vec2<T extends Permission>
 		return new Vec2<ReadWrite>((x+b.x)/2, (y+b.y)/2);
 	}
 
-	public static Vec2<ReadWrite> scalar(Vec2<ReadWrite> v, double d)
+	public static final Vec2<ReadWrite> scalar(Vec2<ReadWrite> v, double d)
 	{
 		v.x = (int)(d*v.x);
 		v.y = (int)(d*v.y);
@@ -191,7 +191,7 @@ public class Vec2<T extends Permission>
 	/**
 	 * Normalise le vecteur
 	 */
-	public static Vec2<ReadWrite> normalize(Vec2<ReadWrite> v)
+	public static final Vec2<ReadWrite> normalize(Vec2<ReadWrite> v)
 	{
 		double longueur = v.length();
 		if(longueur != 0)

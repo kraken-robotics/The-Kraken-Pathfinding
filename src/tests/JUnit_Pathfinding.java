@@ -167,9 +167,9 @@ public class JUnit_Pathfinding extends JUnit_Test {
 			PathfindingNodes i = PathfindingNodes.values()[randomgenerator.nextInt(PathfindingNodes.values().length)];
 			PathfindingNodes j = PathfindingNodes.values()[randomgenerator.nextInt(PathfindingNodes.values().length)];
 			GameState.setPositionPathfinding(state_chrono, i);
-			long old_hash = state_chrono.getHash();
+			long old_hash = GameState.getHash(state_chrono.getReadOnly());
 			pathfinding.computePath(state_chrono, j, true);
-			Assert.assertEquals(old_hash, state_chrono.getHash());
+			Assert.assertEquals(old_hash, GameState.getHash(state_chrono.getReadOnly()));
 			Assert.assertTrue(memorymanager.isMemoryManagerEmpty(0));
 		}
     }

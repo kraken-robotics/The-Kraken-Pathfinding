@@ -172,7 +172,7 @@ public class StrategyArcManager extends ArcManager {
 	@Override
 	public int getHashAndCreateIfNecessary(GameState<RobotChrono,ReadOnly> state)
 	{
-		long hash = state.getHash();
+		long hash = GameState.getHash(state);
 		int indice = hashes.indexOf(hash);
 		if(indice == -1)
 		{
@@ -187,7 +187,7 @@ public class StrategyArcManager extends ArcManager {
 	@Override
 	public int getHash(GameState<RobotChrono,ReadOnly> state) throws ArcManagerException
 	{
-		long hash = state.getHash();
+		long hash = GameState.getHash(state);
 		int indice = hashes.indexOf(hash);
 		if(indice == -1)
 			throw new ArcManagerException();

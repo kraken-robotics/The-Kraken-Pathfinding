@@ -138,16 +138,16 @@ public class GameState<R extends Robot, T extends Permission> implements Service
      * Utilisé par le memory manager
      * @return
      */
-    public int getIndiceMemoryManager()
+    public static final int getIndiceMemoryManager(GameState<?,ReadOnly> state)
     {
-    	return indice_memory_manager;
+    	return state.indice_memory_manager;
     }
 
     /**
      * Disponible uniquement pour GameState<RobotChrono>
      * @return
      */
-	public long getHash()
+	public static final long getHash(GameState<RobotChrono,ReadOnly> state)
 	{
 		/**
 		 * Un long est codé sur 64 bits.
@@ -157,27 +157,24 @@ public class GameState<R extends Robot, T extends Permission> implements Service
 		 * C'est plus rapide que RCVA. Du coup, on sait comment faire pour les battre.
 		 */		
 		long hash;
-		hash = gridspace.getHash(); // codé sur le reste
-		hash = (hash << 16) | ((RobotChrono) robot).getHash(); // codé sur 16 bits (cf getHash() de RobotChrono)
+		hash = state.gridspace.getHash(); // codé sur le reste
+		hash = (hash << 16) | state.robot.getHash(); // codé sur 16 bits (cf getHash() de RobotChrono)
 		return hash;
 	}
 	
-	/**
-	 * Debug
-	 */
-	public void printHash()
+	public static final void printHash(GameState<RobotChrono,TestOnly> state)
 	{
-		gridspace.printHash();
-		((RobotChrono)robot).printHash();
+		state.gridspace.printHash();
+		state.robot.printHash();
 	}
 
 	/**
 	 * Utilisé par le memory manager
 	 * @param indice
 	 */
-	public void setIndiceMemoryManager(int indice)
+	public static final void setIndiceMemoryManager(GameState<?,ReadWrite> state, int indice)
 	{
-		indice_memory_manager = indice;
+		state.indice_memory_manager = indice;
 	}
 	
 	/**
@@ -193,13 +190,13 @@ public class GameState<R extends Robot, T extends Permission> implements Service
 	 * Utilisé par le script d'attente
 	 * @return
 	 */
-	public boolean canSleepUntilSomethingChange()
+	public static final boolean canSleepUntilSomethingChange(GameState<?,ReadOnly> state)
 	{
 		// si on utilise le vrai robot, alors les valeurs des capteurs peuvent changer
 		// (ce qui n'est pas anticipable par robotchrono)
-		if(robot instanceof RobotReal)
+		if(state.robot instanceof RobotReal)
 			return true;
-		return gridspace.getDateSomethingChange() != Integer.MAX_VALUE;
+		return state.gridspace.getDateSomethingChange() != Integer.MAX_VALUE;
 	}
 	
 	// FIXME: vérifier aussi les capteurs du robot vrai
@@ -220,7 +217,7 @@ public class GameState<R extends Robot, T extends Permission> implements Service
 			}
 		}
 		else*/
-		state.robot.sleepUntil(date_fin);
+		sleepUntil(state, date_fin);
 	}
 
 	public static final void stopper(GameState<? extends Robot, ReadWrite> state) throws FinMatchException
@@ -275,9 +272,9 @@ public class GameState<R extends Robot, T extends Permission> implements Service
 
     public static final void sleep(GameState<? extends Robot, ReadWrite> state, long duree) throws FinMatchException
     {
-    	state.robot.sleep(duree);
+    	state.robot.sleep(duree, new ArrayList<Hook>());
     }
-
+    
     public static final void desactiver_asservissement_rotation(GameState<? extends Robot, ReadWrite> state) throws FinMatchException
     {
     	state.robot.desactiver_asservissement_rotation();
@@ -405,7 +402,7 @@ public class GameState<R extends Robot, T extends Permission> implements Service
 
     public static final void sleepUntil(GameState<?, ReadWrite> state, int date) throws FinMatchException
     {
-    	GameState.sleep(state, date - GameState.getTempsDepuisDebutMatch(state.getReadOnly()));
+    	state.robot.sleepUntil(date);
     }
     
     public static final void creer_obstacle(GameState<RobotReal, ReadWrite> state, Vec2<ReadOnly> position, int date)

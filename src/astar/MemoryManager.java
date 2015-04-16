@@ -77,7 +77,7 @@ public class MemoryManager implements Service {
 	 */
 	public void destroyGameState(GameState<RobotChrono,ReadWrite> state, int id_astar) throws MemoryManagerException
 	{
-		int indice_state = state.getIndiceMemoryManager();
+		int indice_state = GameState.getIndiceMemoryManager(state.getReadOnly());
 		/**
 		 * S'il est déjà détruit, on lève une exception
 		 */
@@ -91,8 +91,8 @@ public class MemoryManager implements Service {
 		GameState<RobotChrono,ReadWrite> tmp1 = gamestates_list[id_astar][indice_state];
 		GameState<RobotChrono,ReadWrite> tmp2 = gamestates_list[id_astar][firstAvailable[id_astar]];
 
-		tmp1.setIndiceMemoryManager(firstAvailable[id_astar]);
-		tmp2.setIndiceMemoryManager(indice_state);
+		GameState.setIndiceMemoryManager(tmp1, firstAvailable[id_astar]);
+		GameState.setIndiceMemoryManager(tmp2, indice_state);
 
 		gamestates_list[id_astar][firstAvailable[id_astar]] = tmp1;
 		gamestates_list[id_astar][indice_state] = tmp2;
