@@ -55,7 +55,7 @@ public abstract class Obstacle<T extends Permission>
 
 	public static final void setPosition(Obstacle<ReadWrite> o, Vec2<ReadOnly> v)
 	{
-		v.copy(o.position);
+		Vec2.copy(v, o.position);
 	}
 
 	public String toString()
@@ -70,7 +70,7 @@ public abstract class Obstacle<T extends Permission>
 	}
 
 	@SuppressWarnings("unchecked")
-	public final Obstacle<TestOnly> getTestOnly()
+	public Obstacle<TestOnly> getTestOnly()
 	{
 		return (Obstacle<TestOnly>) this;
 	}

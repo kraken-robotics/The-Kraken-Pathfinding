@@ -48,7 +48,7 @@ public abstract class Robot implements Service
     public abstract void desactiver_asservissement_translation() throws FinMatchException;
     public abstract void activer_asservissement_rotation() throws FinMatchException;
     public abstract int getTempsDepuisDebutMatch();
-    public abstract RobotChrono cloneIntoRobotChrono() throws FinMatchException;
+    public abstract RobotChrono cloneIntoRobotChrono();
 
     protected HookDateFinMatch hookFinMatch;
     
@@ -62,7 +62,7 @@ public abstract class Robot implements Service
 	 * 
 	 * @param rc
 	 */
-    public void copy(RobotChrono rc) throws FinMatchException
+    public void copy(RobotChrono rc)
     {
     	// pas besoin de copier symétrie car elle ne change pas en cours de match
     	rc.vitesse = vitesse;

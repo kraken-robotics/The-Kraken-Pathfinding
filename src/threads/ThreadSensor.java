@@ -25,7 +25,7 @@ public class ThreadSensor extends AbstractThread implements Service
 	private Log log;
 	private Config config;
 	private SensorsCardWrapper capteur;
-	private GameState<RobotReal,ReadWrite> state;
+	private final GameState<RobotReal,ReadWrite> state;
 	private ObstacleManager obstaclemanager;
 	
 	private double tempo = 0;

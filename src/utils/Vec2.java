@@ -143,10 +143,10 @@ public class Vec2<T extends Permission>
 	 * Copie this dans other.
 	 * @param other
 	 */
-	public void copy(Vec2<ReadWrite> other)
+	public static final void copy(Vec2<ReadOnly> v, Vec2<ReadWrite> other)
 	{
-	    other.x = x;
-	    other.y = y;
+	    other.x = v.x;
+	    other.y = v.y;
 	}
 
 	public Vec2<ReadWrite> middleNewVector(Vec2<? extends Permission> b)

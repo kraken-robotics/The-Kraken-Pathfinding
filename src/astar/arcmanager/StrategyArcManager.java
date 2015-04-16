@@ -61,12 +61,7 @@ public class StrategyArcManager extends ArcManager {
 		this.scriptmanager = scriptmanager;
 		this.hookfactory = hookfactory;
 		this.astar = astar;
-		try {
-			checkPointSortie(GameState.cloneGameState(real_gamestate));
-		} catch (FinMatchException e) {
-			// Impossible
-			e.printStackTrace();
-		}
+		checkPointSortie(GameState.cloneGameState(real_gamestate));
 		updateConfig();
 	}
 

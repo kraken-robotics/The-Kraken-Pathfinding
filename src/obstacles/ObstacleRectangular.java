@@ -3,6 +3,7 @@ package obstacles;
 import permissions.Permission;
 import permissions.ReadOnly;
 import permissions.ReadWrite;
+import permissions.TestOnly;
 import exceptions.FinMatchException;
 import strategie.GameState;
 import utils.Vec2;
@@ -14,30 +15,30 @@ import utils.Vec2;
  *
  */
 
-public class ObstacleRectangular<T extends Permission> extends Obstacle<T>
+public class ObstacleRectangular<T extends Permission> extends ObstacleAvecAngle<T>
 {
-	private double cos;
-	private double sin;
+	private double cos = Math.cos(angle);
+	private double sin = Math.sin(angle);
 
 	// taille selon l'axe X
 	protected int sizeX;
 	
 	// taille selon l'axe Y
 	protected int sizeY;
-
+	
 	// Longueur entre le centre et un des coins
 	protected double demieDiagonale;
 	
 	// calcul des positions des coins
-	protected Vec2<ReadOnly> coinBasGauche;
-	protected Vec2<ReadOnly> coinHautGauche;
-	protected Vec2<ReadOnly> coinBasDroite;
-	protected Vec2<ReadOnly> coinHautDroite;
+	protected final Vec2<T> coinBasGauche = Vec2.getT(position.plusNewVector((new Vec2<ReadWrite>(-sizeX/2,-sizeY/2))), position);
+	protected final Vec2<T> coinHautGauche = Vec2.getT(position.plusNewVector((new Vec2<ReadWrite>(-sizeX/2,sizeY/2))), position);
+	protected final Vec2<T> coinBasDroite = Vec2.getT(position.plusNewVector((new Vec2<ReadWrite>(sizeX/2,-sizeY/2))), position);
+	protected final Vec2<T> coinHautDroite = Vec2.getT(position.plusNewVector((new Vec2<ReadWrite>(sizeX/2,sizeY/2))), position);
 
-	protected Vec2<ReadOnly> coinBasGaucheRotate;
-	protected Vec2<ReadOnly> coinHautGaucheRotate;
-	protected Vec2<ReadOnly> coinBasDroiteRotate;
-	protected Vec2<ReadOnly> coinHautDroiteRotate;
+	protected final Vec2<T> coinBasGaucheRotate = Vec2.getT(rotatePlusAngle(coinBasGauche.getReadOnly()), position);
+	protected final Vec2<T> coinHautGaucheRotate = Vec2.getT(rotatePlusAngle(coinHautGauche.getReadOnly()), position);
+	protected final Vec2<T> coinBasDroiteRotate = Vec2.getT(rotatePlusAngle(coinBasDroite.getReadOnly()), position);
+	protected final Vec2<T> coinHautDroiteRotate = Vec2.getT(rotatePlusAngle(coinHautDroite.getReadOnly()), position);
 	
 	/**
 	 * Cas où l'angle est nul
@@ -76,11 +77,11 @@ public class ObstacleRectangular<T extends Permission> extends Obstacle<T>
 	 */
 	public ObstacleRectangular(Vec2<T> position, int sizeX, int sizeY, double angle)
 	{
-		super(position);
+		super(position,angle);
 		this.sizeY = sizeY;
 		this.sizeX = sizeX;
+		this.angle = angle;
 		demieDiagonale = Math.sqrt(sizeY*sizeY/4+sizeX*sizeX/4);
-		updateVariables(position.getReadOnly(), angle);
 	}
 	
 	/**
@@ -93,18 +94,18 @@ public class ObstacleRectangular<T extends Permission> extends Obstacle<T>
 		this(Vec2.getT(GameState.getPosition(state).clone(), useless), longueurRobot, largeurRobot, GameState.getOrientation(state));
 	}
 
-	private void updateVariables(Vec2<ReadOnly> position, double angle)
+	public static void update(ObstacleRectangular<ReadWrite> o, Vec2<ReadOnly> position, double angle)
 	{
-		coinBasGauche = position.plusNewVector((new Vec2<ReadWrite>(-sizeX/2,-sizeY/2))).getReadOnly();
-		coinHautGauche = position.plusNewVector((new Vec2<ReadWrite>(-sizeX/2,sizeY/2))).getReadOnly();
-		coinBasDroite = position.plusNewVector((new Vec2<ReadWrite>(sizeX/2,-sizeY/2))).getReadOnly();
-		coinHautDroite = position.plusNewVector((new Vec2<ReadWrite>(sizeX/2,sizeY/2))).getReadOnly();
-		cos = Math.cos(angle);
-		sin = Math.sin(angle);
-		coinBasGaucheRotate = rotatePlusAngle(coinBasGauche).getReadOnly();
-		coinHautGaucheRotate = rotatePlusAngle(coinHautGauche).getReadOnly();
-		coinBasDroiteRotate = rotatePlusAngle(coinBasDroite).getReadOnly();
-		coinHautDroiteRotate = rotatePlusAngle(coinHautDroite).getReadOnly();
+		int sizeX = o.sizeX, sizeY = o.sizeY;
+		Vec2.copy(position.plusNewVector((new Vec2<ReadWrite>(-sizeX/2,-sizeY/2))).getReadOnly(), o.coinBasGauche);
+		Vec2.copy(position.plusNewVector((new Vec2<ReadWrite>(-sizeX/2,sizeY/2))).getReadOnly(), o.coinHautGauche);
+		Vec2.copy(position.plusNewVector((new Vec2<ReadWrite>(sizeX/2,-sizeY/2))).getReadOnly(), o.coinBasDroite);
+		Vec2.copy(position.plusNewVector((new Vec2<ReadWrite>(sizeX/2,sizeY/2))).getReadOnly(), o.coinHautDroite);
+		setAngle(o, angle);
+		Vec2.copy(o.rotatePlusAngle(o.coinBasGauche.getReadOnly()).getReadOnly(), o.coinBasGaucheRotate);
+		Vec2.copy(o.rotatePlusAngle(o.coinHautGauche.getReadOnly()).getReadOnly(), o.coinHautGaucheRotate);
+		Vec2.copy(o.rotatePlusAngle(o.coinBasDroite.getReadOnly()).getReadOnly(), o.coinBasDroiteRotate);
+		Vec2.copy(o.rotatePlusAngle(o.coinHautDroite.getReadOnly()).getReadOnly(), o.coinHautDroiteRotate);
 	}
 	
 	/**
@@ -183,16 +184,16 @@ public class ObstacleRectangular<T extends Permission> extends Obstacle<T>
 	 * @param r
 	 * @return
 	 */
-	public boolean isColliding(ObstacleRectangular<ReadOnly> r)
+	public static final boolean isColliding(ObstacleRectangular<ReadOnly> t, ObstacleRectangular<ReadOnly> r)
 	{
 		// Calcul simple permettant de vérifier les cas absurdes où les obstacles sont loin l'un de l'autre
-		if(position.squaredDistance(r.position) >= (demieDiagonale+r.demieDiagonale)*(demieDiagonale+r.demieDiagonale))
+		if(t.position.squaredDistance(r.position) >= (t.demieDiagonale+r.demieDiagonale)*(t.demieDiagonale+r.demieDiagonale))
 			return false;
 		// Il faut tester les quatres axes
-		return !testeSeparation(coinBasGauche.x, coinBasDroite.x, getXRotateMoinsAngle(r.coinBasGaucheRotate), getXRotateMoinsAngle(r.coinHautGaucheRotate), getXRotateMoinsAngle(r.coinBasDroiteRotate), getXRotateMoinsAngle(r.coinHautDroiteRotate))
-				&& !testeSeparation(coinBasGauche.y, coinHautGauche.y, getYRotateMoinsAngle(r.coinBasGaucheRotate), getYRotateMoinsAngle(r.coinHautGaucheRotate), getYRotateMoinsAngle(r.coinBasDroiteRotate), getYRotateMoinsAngle(r.coinHautDroiteRotate))
-				&& !testeSeparation(r.coinBasGauche.x, r.coinBasDroite.x, r.getXRotateMoinsAngle(coinBasGaucheRotate), r.getXRotateMoinsAngle(coinHautGaucheRotate), r.getXRotateMoinsAngle(coinBasDroiteRotate), r.getXRotateMoinsAngle(coinHautDroiteRotate))
-				&& !testeSeparation(r.coinBasGauche.y, r.coinHautGauche.y, r.getYRotateMoinsAngle(coinBasGaucheRotate), r.getYRotateMoinsAngle(coinHautGaucheRotate), r.getYRotateMoinsAngle(coinBasDroiteRotate), r.getYRotateMoinsAngle(coinHautDroiteRotate));
+		return !testeSeparation(t.coinBasGauche.x, t.coinBasDroite.x, t.getXRotateMoinsAngle(r.coinBasGaucheRotate), t.getXRotateMoinsAngle(r.coinHautGaucheRotate), t.getXRotateMoinsAngle(r.coinBasDroiteRotate), t.getXRotateMoinsAngle(r.coinHautDroiteRotate))
+				&& !testeSeparation(t.coinBasGauche.y, t.coinHautGauche.y, t.getYRotateMoinsAngle(r.coinBasGaucheRotate), t.getYRotateMoinsAngle(r.coinHautGaucheRotate), t.getYRotateMoinsAngle(r.coinBasDroiteRotate), t.getYRotateMoinsAngle(r.coinHautDroiteRotate))
+				&& !testeSeparation(r.coinBasGauche.x, r.coinBasDroite.x, r.getXRotateMoinsAngle(t.coinBasGaucheRotate), r.getXRotateMoinsAngle(t.coinHautGaucheRotate), r.getXRotateMoinsAngle(t.coinBasDroiteRotate), r.getXRotateMoinsAngle(t.coinHautDroiteRotate))
+				&& !testeSeparation(r.coinBasGauche.y, r.coinHautGauche.y, r.getYRotateMoinsAngle(t.coinBasGaucheRotate), r.getYRotateMoinsAngle(t.coinHautGaucheRotate), r.getYRotateMoinsAngle(t.coinBasDroiteRotate), r.getYRotateMoinsAngle(t.coinHautDroiteRotate));
 	}
 	
 	/**
@@ -208,7 +209,7 @@ public class ObstacleRectangular<T extends Permission> extends Obstacle<T>
 	 * @param d2
 	 * @return
 	 */
-	private boolean testeSeparation(int a, int b, int a2, int b2, int c2, int d2)
+	private static final boolean testeSeparation(int a, int b, int a2, int b2, int c2, int d2)
 	{
 		int min1 = Math.min(a,b);
 		int max1 = Math.max(a,b);
@@ -223,13 +224,13 @@ public class ObstacleRectangular<T extends Permission> extends Obstacle<T>
 	 * Utilisé pour l'affichage
 	 * @return
 	 */
-	public int[] getXPositions()
+	public static int[] getXPositions(ObstacleRectangular<TestOnly> t)
 	{
 		int[] X = new int[4];
-		X[0] = getXRotatePlusAngle(coinBasDroite);
-		X[1] = getXRotatePlusAngle(coinHautDroite);
-		X[2] = getXRotatePlusAngle(coinHautGauche);
-		X[3] = getXRotatePlusAngle(coinBasGauche);
+		X[0] = t.getXRotatePlusAngle(t.coinBasDroite.getReadOnly());
+		X[1] = t.getXRotatePlusAngle(t.coinHautDroite.getReadOnly());
+		X[2] = t.getXRotatePlusAngle(t.coinHautGauche.getReadOnly());
+		X[3] = t.getXRotatePlusAngle(t.coinBasGauche.getReadOnly());
 		return X;
 	}
 
@@ -237,13 +238,13 @@ public class ObstacleRectangular<T extends Permission> extends Obstacle<T>
 	 * Utilisé pour l'affichage
 	 * @return
 	 */
-	public int[] getYPositions()
+	public static int[] getYPositions(ObstacleRectangular<TestOnly> t)
 	{
 		int[] Y = new int[4];
-		Y[0] = getYRotatePlusAngle(coinBasDroite);
-		Y[1] = getYRotatePlusAngle(coinHautDroite);
-		Y[2] = getYRotatePlusAngle(coinHautGauche);
-		Y[3] = getYRotatePlusAngle(coinBasGauche);
+		Y[0] = t.getYRotatePlusAngle(t.coinBasDroite.getReadOnly());
+		Y[1] = t.getYRotatePlusAngle(t.coinHautDroite.getReadOnly());
+		Y[2] = t.getYRotatePlusAngle(t.coinHautGauche.getReadOnly());
+		Y[3] = t.getYRotatePlusAngle(t.coinBasGauche.getReadOnly());
 		return Y;
 	}
 
@@ -262,12 +263,6 @@ public class ObstacleRectangular<T extends Permission> extends Obstacle<T>
 		log.critical("Appel de isColliding avec un type d'obstacle inconnu!");
 		return false;
 	}
-
-	public void update(Vec2<ReadOnly> position, double orientation)
-	{
-		updateVariables(position, orientation);	
-	}
-	
 
 	/**
 	 * Utilisé pour l'affichage uniquement
@@ -377,6 +372,12 @@ public class ObstacleRectangular<T extends Permission> extends Obstacle<T>
 			if(isColliding(o.getObstacle()))
 				return true;
 		return false;
+	}
+
+	@SuppressWarnings("unchecked")
+	public final ObstacleRectangular<TestOnly> getTestOnly()
+	{
+		return (ObstacleRectangular<TestOnly>) this;
 	}
 
 }

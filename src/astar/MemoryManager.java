@@ -24,7 +24,7 @@ public class MemoryManager implements Service {
 	private static final int nb_instances = 500;
 
 	@SuppressWarnings("unchecked")
-	private GameState<RobotChrono,ReadWrite>[][] gamestates_list = (GameState<RobotChrono,ReadWrite>[][]) new GameState[2][nb_instances];
+	private final GameState<RobotChrono,ReadWrite>[][] gamestates_list = (GameState<RobotChrono,ReadWrite>[][]) new GameState[2][nb_instances];
 	protected Log log;
 	
 	// gamestates_list est triés: avant firstAvailable, les gamestate sont indisponibles, après, ils sont disponibles
@@ -42,19 +42,14 @@ public class MemoryManager implements Service {
 
 		firstAvailable[0] = 0;
 		firstAvailable[1] = 0;
-		try {
-			// on prépare déjà des gamestates
-			log.debug("Instanciation de "+2*nb_instances+" GameState<RobotChrono>");
-		
-			for(int j = 0; j < 2; j++)
-				for(int i = 0; i < nb_instances; i++)
-				{
-					gamestates_list[j][i] = GameState.cloneGameState(realstate, i);
-				}
-		} catch (FinMatchException e) {
-			// Impossible
-			e.printStackTrace();
-		}
+		// on prépare déjà des gamestates
+		log.debug("Instanciation de "+2*nb_instances+" GameState<RobotChrono>");
+	
+		for(int j = 0; j < 2; j++)
+			for(int i = 0; i < nb_instances; i++)
+			{
+				gamestates_list[j][i] = GameState.cloneGameState(realstate, i);
+			}
 		log.debug("Instanciation finie");
 		updateConfig();
 	}

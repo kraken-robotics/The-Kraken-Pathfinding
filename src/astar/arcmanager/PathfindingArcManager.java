@@ -8,6 +8,7 @@ import astar.arc.Arc;
 import astar.arc.PathfindingNodes;
 import astar.arc.SegmentTrajectoireCourbe;
 import robot.RobotChrono;
+import robot.RobotReal;
 import robot.Speed;
 import strategie.GameState;
 import utils.Log;
@@ -28,14 +29,15 @@ public class PathfindingArcManager extends ArcManager {
 	private PathfindingNodes arrivee;
 	protected Config config;
 	protected Log log;
-	private GameState<RobotChrono,ReadOnly> state_iterator;
+	private final GameState<RobotChrono,ReadWrite> state_iterator;
 	private boolean debutCourbe;
 
-	public PathfindingArcManager(Log log, Config config, MemoryManager memorymanager)
+	public PathfindingArcManager(Log log, Config config, MemoryManager memorymanager, GameState<RobotReal,ReadOnly> state)
 	{
 		super(AStarId.PATHFINDING_ASTAR, memorymanager);
 		this.log = log;
 		this.config = config;
+		this.state_iterator = GameState.cloneGameState(state);
 	}
 	
 	/**
@@ -94,7 +96,7 @@ public class PathfindingArcManager extends ArcManager {
     	if(!debutCourbe)
     		return new SegmentTrajectoireCourbe(PathfindingNodes.values[iterator]);
     	else
-    		return GameState.getSegment(state_iterator);
+    		return GameState.getSegment(state_iterator.getReadOnly());
     }
     
     @Override
@@ -106,7 +108,7 @@ public class PathfindingArcManager extends ArcManager {
     	 */
     	debutCourbe = !debutCourbe; // OH LA JOLIE BASCULE
     	PathfindingNodes pn_id_node_iterator = PathfindingNodes.values[id_node_iterator];
-    	debutCourbe = debutCourbe && GameState.isTraversableCourbe(state_iterator, PathfindingNodes.values[iterator], pn_id_node_iterator, new Vec2<ReadOnly>(GameState.getOrientation(state_iterator)), GameState.getTempsDepuisDebutMatch(state_iterator));
+    	debutCourbe = debutCourbe && GameState.isTraversableCourbe(state_iterator.getReadOnly(), PathfindingNodes.values[iterator], pn_id_node_iterator, new Vec2<ReadOnly>(GameState.getOrientation(state_iterator.getReadOnly())), GameState.getTempsDepuisDebutMatch(state_iterator.getReadOnly()));
 
     	if(!debutCourbe)
     	{
@@ -115,7 +117,7 @@ public class PathfindingArcManager extends ArcManager {
 	    	{
 	    		if(iterator == id_node_iterator)
 	    			continue;
-	    		if(GameState.isTraversable(state_iterator, pn_id_node_iterator, PathfindingNodes.values[iterator], GameState.getTempsDepuisDebutMatch(state_iterator)))
+	    		if(GameState.isTraversable(state_iterator.getReadOnly(), pn_id_node_iterator, PathfindingNodes.values[iterator], GameState.getTempsDepuisDebutMatch(state_iterator.getReadOnly())))
 	    			break;
 	    	}
     	}
@@ -128,7 +130,7 @@ public class PathfindingArcManager extends ArcManager {
 //    	log.debug("Réinit pathfinding iterator!", this);
     	id_node_iterator = GameState.getPositionPathfinding(state).ordinal();
     	iterator = -1;
-    	state_iterator = state;
+		GameState.copy(state, state_iterator);
     	debutCourbe = true;
     }
 

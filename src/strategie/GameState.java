@@ -6,6 +6,10 @@ import permissions.Permission;
 import permissions.ReadOnly;
 import permissions.ReadWrite;
 import permissions.TestOnly;
+import robot.Robot;
+import robot.RobotChrono;
+import robot.RobotReal;
+import robot.Speed;
 import astar.arc.PathfindingNodes;
 import astar.arc.SegmentTrajectoireCourbe;
 import hook.Hook;
@@ -17,10 +21,6 @@ import exceptions.FinMatchException;
 import exceptions.GridSpaceException;
 import exceptions.ScriptHookException;
 import exceptions.UnableToMoveException;
-import robot.Robot;
-import robot.RobotChrono;
-import robot.RobotReal;
-import robot.Speed;
 import table.GameElementNames;
 import table.GridSpace;
 import utils.Log;
@@ -85,7 +85,7 @@ public class GameState<R extends Robot, T extends Permission> implements Service
      * @return
      * @throws FinMatchException
      */
-	public static final GameState<RobotChrono,ReadWrite> cloneGameState(GameState<? extends Robot,ReadOnly> state) throws FinMatchException
+	public static final GameState<RobotChrono,ReadWrite> cloneGameState(GameState<? extends Robot,ReadOnly> state)
 	{
 		return GameState.cloneGameState(state, -1);
 	}
@@ -93,7 +93,7 @@ public class GameState<R extends Robot, T extends Permission> implements Service
 	/**
      * Fournit un clone de this. Le clone sera un GameState<RobotChrono>, peu importe si this est un GameState<RobotVrai> ou un GameState<RobotChrono>
      */
-	public static final GameState<RobotChrono,ReadWrite> cloneGameState(GameState<? extends Robot,ReadOnly> state, int indice_memory_manager) throws FinMatchException
+	public static final GameState<RobotChrono,ReadWrite> cloneGameState(GameState<? extends Robot,ReadOnly> state, int indice_memory_manager)
 	{
 		// On instancie la table avant car il faut donner le même objet deux fois en paramètres
 		GameState<RobotChrono,ReadWrite> cloned = new GameState<RobotChrono,ReadWrite>(state.config, state.log, state.gridspace.clone(GameState.getTempsDepuisDebut(state)), state.robot.cloneIntoRobotChrono(), state.hookfactory);
@@ -108,7 +108,7 @@ public class GameState<R extends Robot, T extends Permission> implements Service
      * @param other
      * @throws FinMatchException 
      */
-    public static final void copy(GameState<?,ReadOnly> state, GameState<RobotChrono,ReadWrite> modified) throws FinMatchException
+    public static final void copy(GameState<?,ReadOnly> state, GameState<RobotChrono,ReadWrite> modified)
     {
         state.robot.copy(modified.robot);
     	// la copie de la table est faite dans gridspace

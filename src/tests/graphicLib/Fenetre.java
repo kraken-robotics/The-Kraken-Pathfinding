@@ -235,8 +235,8 @@ public class Fenetre extends JPanel {
 		int[] X, Y;
 		for(ObstacleRectangular<ReadOnly> o: obstaclesEnBiais)
 		{
-			X = o.getXPositions();
-			Y = o.getYPositions();
+			X = ObstacleRectangular.getXPositions(o.getTestOnly());
+			Y = ObstacleRectangular.getYPositions(o.getTestOnly());
 			for(int i = 0; i < 4; i++)
 			{
 				X[i] = XtoWindow(X[i]);

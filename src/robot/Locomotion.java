@@ -562,7 +562,7 @@ public class Locomotion implements Service
      * @throws FinMatchException 
      */
     public void setPosition(Vec2<ReadOnly> position) throws FinMatchException {
-        position.copy(this.position);
+        Vec2.copy(position, this.position);
         try {
     		deplacements.setX(this.position.x);
             deplacements.setY(this.position.y);

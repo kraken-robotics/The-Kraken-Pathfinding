@@ -1,6 +1,7 @@
 package hook.types;
 
 import permissions.ReadOnly;
+import permissions.ReadWrite;
 import exceptions.ChangeDirectionException;
 import exceptions.FinMatchException;
 import exceptions.ScriptHookException;
@@ -14,7 +15,7 @@ import hook.Hook;
 public class HookDemiPlan extends Hook
 {
 
-	private Vec2<ReadOnly> point, direction;
+	private final Vec2<ReadWrite> point, direction;
 	private boolean disabled = false;
 	
 	/**
@@ -27,6 +28,8 @@ public class HookDemiPlan extends Hook
 	public HookDemiPlan(Config config, Log log, GameState<?, ReadOnly> state)
 	{
 		super(config, log, state);
+		point = new Vec2<ReadWrite>();
+		direction = new Vec2<ReadWrite>();
 	}
 	
 	/**
@@ -38,8 +41,8 @@ public class HookDemiPlan extends Hook
 	public HookDemiPlan(Config config, Log log, GameState<?,ReadOnly> state, Vec2<ReadOnly> point, Vec2<ReadOnly> direction)
 	{
 		super(config, log, state);
-		this.point = point.getReadOnly();
-		this.direction = direction.getReadOnly();
+		this.point = point.clone();
+		this.direction = direction.clone();
 	}
 
 	
@@ -71,8 +74,8 @@ public class HookDemiPlan extends Hook
 	public void update(Vec2<ReadOnly> direction, Vec2<ReadOnly> point)
 	{
 		disabled = false;
-		this.direction = direction;
-		this.point = point;
+		Vec2.copy(direction, this.direction);
+		Vec2.copy(point, this.point);
 	}
 
 	/**

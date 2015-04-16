@@ -47,7 +47,7 @@ public class RobotChrono extends Robot
 	
 	@Override
 	public void setPosition(Vec2<ReadOnly> position) {
-		position.copy(this.position);
+		Vec2.copy(position, this.position);
 		isPositionPathfindingActive = false;
 		positionPathfindingAnterieure = null;
 		positionPathfinding = null;
@@ -88,7 +88,7 @@ public class RobotChrono extends Robot
 	}
 
 	@Override
-	public RobotChrono cloneIntoRobotChrono() throws FinMatchException
+	public RobotChrono cloneIntoRobotChrono()
 	{
 		RobotChrono cloned_robotchrono = new RobotChrono(config, log);
 		copy(cloned_robotchrono);
@@ -132,7 +132,7 @@ public class RobotChrono extends Robot
 		double orientation_finale = Math.atan2(point.y - position.y, point.x - position.x);
 		tourner(orientation_finale);
 		date += position.distance(point)*vitesse.invertedTranslationnalSpeed + sleepAvanceDuration;
-		point.copy(position);
+		Vec2.copy(point, position);
 		isPositionPathfindingActive = false;
 		positionPathfindingAnterieure = null;
 		positionPathfinding = null;
@@ -235,10 +235,10 @@ public class RobotChrono extends Robot
     }
     
     @Override
-    public void copy(RobotChrono rc) throws FinMatchException
+    public void copy(RobotChrono rc)
     {
         super.copy(rc);
-        position.copy(rc.position);
+        Vec2.copy(position.getReadOnly(), rc.position);
         rc.orientation = orientation;
     	rc.positionPathfinding = positionPathfinding;
     	rc.positionPathfindingAnterieure = positionPathfindingAnterieure;
@@ -303,7 +303,7 @@ public class RobotChrono extends Robot
 
 	public void setPositionPathfinding(PathfindingNodes n)
 	{
-		n.getCoordonnees().copy(position);
+		Vec2.copy(n.getCoordonnees(), position);
 		positionPathfindingAnterieure = positionPathfinding;
 		positionPathfinding = n;
 		isPositionPathfindingActive = true;

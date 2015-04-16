@@ -28,7 +28,7 @@ import utils.Log;
 
 public class Execution implements Service {
 
-	private GameState<RobotReal,ReadWrite> gamestate;
+	private final GameState<RobotReal,ReadWrite> gamestate;
 	private Log log;
 	protected Config config;
 	private ScriptManager scriptmanager;

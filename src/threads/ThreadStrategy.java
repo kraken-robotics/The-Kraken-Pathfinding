@@ -32,8 +32,8 @@ public class ThreadStrategy extends AbstractThread implements Service
 
 	private Log log;
 	private AStar<StrategyArcManager, Decision> strategie;
-	private GameState<RobotReal,ReadOnly> realstate;
-	private GameState<RobotChrono,ReadWrite> chronostate;
+	private final GameState<RobotReal,ReadOnly> realstate;
+	private final GameState<RobotChrono,ReadWrite> chronostate;
 	
 	private Decision decision = new Decision(new ArrayList<SegmentTrajectoireCourbe>(), ScriptAnticipableNames.SORTIE_ZONE_DEPART, PathfindingNodes.POINT_DEPART);
 	private Decision decisionSecours = null;
@@ -45,12 +45,7 @@ public class ThreadStrategy extends AbstractThread implements Service
 		this.log = log;
 		this.strategie = strategie;
 		this.realstate = realstate;
-		try {
-			chronostate = GameState.cloneGameState(realstate);
-		} catch (FinMatchException e) {
-			// Impossible
-			e.printStackTrace();
-		}
+		chronostate = GameState.cloneGameState(realstate);
 		
 		Thread.currentThread().setPriority(4); // TODO priorité thread
 		updateConfig();

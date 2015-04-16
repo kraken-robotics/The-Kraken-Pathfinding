@@ -8,6 +8,7 @@ import exceptions.WallCollisionDetectedException;
 import obstacles.ObstacleCircular;
 import obstacles.ObstacleRectangular;
 import permissions.ReadOnly;
+import permissions.ReadWrite;
 import strategie.GameState;
 import utils.Config;
 import utils.Log;
@@ -22,13 +23,13 @@ import utils.Vec2;
 public class HookCollisionElementJeu extends Hook
 {
 	private ObstacleCircular<ReadOnly> obstacle;
-	private ObstacleRectangular<ReadOnly> obstacleRobot;
+	private ObstacleRectangular<ReadWrite> obstacleRobot;
 	
 	public HookCollisionElementJeu(Config config, Log log, GameState<?, ReadOnly> state, ObstacleCircular<ReadOnly> o) throws FinMatchException
 	{
 		super(config, log, state);
 		obstacle = o;
-		obstacleRobot = new ObstacleRectangular<ReadOnly>(state, new Vec2<ReadOnly>());
+		obstacleRobot = new ObstacleRectangular<ReadWrite>(state, new Vec2<ReadWrite>());
 	}
 
 	@Override
@@ -47,7 +48,7 @@ public class HookCollisionElementJeu extends Hook
      */
 	public void evaluate() throws FinMatchException, ScriptHookException, WallCollisionDetectedException, ChangeDirectionException
 	{
-		obstacleRobot.update(GameState.getPosition(state), GameState.getOrientation(state));
+		ObstacleRectangular.update(obstacleRobot, GameState.getPosition(state), GameState.getOrientation(state));
 		if(obstacleRobot.isColliding(obstacle))
 			trigger();
 	}

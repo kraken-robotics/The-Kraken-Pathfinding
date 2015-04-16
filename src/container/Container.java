@@ -248,7 +248,8 @@ public class Container
 		else if(serviceRequested == ServiceNames.PATHFINDING_ARC_MANAGER)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new PathfindingArcManager((Log)getService(ServiceNames.LOG),
 																		(Config)getService(ServiceNames.CONFIG),
-																		(MemoryManager)getService(ServiceNames.MEMORY_MANAGER));
+																		(MemoryManager)getService(ServiceNames.MEMORY_MANAGER),
+																		(GameState<RobotReal,ReadOnly>)getService(ServiceNames.REAL_GAME_STATE));
 		else if(serviceRequested == ServiceNames.STRATEGY_ARC_MANAGER)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new StrategyArcManager((Log)getService(ServiceNames.LOG),
 																		(Config)getService(ServiceNames.CONFIG),
