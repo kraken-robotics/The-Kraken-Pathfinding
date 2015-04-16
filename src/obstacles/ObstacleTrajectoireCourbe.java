@@ -1,12 +1,12 @@
 package obstacles;
 
+import permissions.ReadOnly;
+import permissions.ReadWrite;
 import astar.arc.PathfindingNodes;
 import astar.arc.SegmentTrajectoireCourbe;
 import robot.Speed;
 import utils.ConfigInfo;
-import vec2.ReadOnly;
-import vec2.ReadWrite;
-import vec2.Vec2;
+import utils.Vec2;
 
 /**
  * Obstacle formé par le robot lorsqu'il effectue une trajectoire courbe

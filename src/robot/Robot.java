@@ -2,6 +2,7 @@ package robot;
 
 import java.util.ArrayList;
 
+import permissions.ReadOnly;
 import astar.arc.SegmentTrajectoireCourbe;
 import hook.Hook;
 import hook.types.HookDateFinMatch;
@@ -15,8 +16,7 @@ import exceptions.SerialConnexionException;
 import exceptions.UnableToMoveException;
 import utils.Log;
 import utils.Config;
-import vec2.ReadOnly;
-import vec2.Vec2;
+import utils.Vec2;
 
 /**
  *  Classe abstraite du robot, dont héritent RobotVrai et RobotChrono

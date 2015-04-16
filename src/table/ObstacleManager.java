@@ -9,14 +9,14 @@ import obstacles.ObstacleProximity;
 import obstacles.ObstacleRectangular;
 import obstacles.ObstacleTrajectoireCourbe;
 import obstacles.ObstaclesFixes;
+import permissions.ReadOnly;
 import robot.Speed;
 import container.Service;
 import enums.Tribool;
 import utils.Config;
 import utils.ConfigInfo;
 import utils.Log;
-import vec2.ReadOnly;
-import vec2.Vec2;
+import utils.Vec2;
 
 /**
  * Service qui traite tout ce qui concerne la gestion des obstacles.

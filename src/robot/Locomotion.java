@@ -3,6 +3,8 @@ package robot;
 import java.util.ArrayList;
 
 import obstacles.ObstacleRotationRobot;
+import permissions.ReadOnly;
+import permissions.ReadWrite;
 import astar.arc.PathfindingNodes;
 import astar.arc.SegmentTrajectoireCourbe;
 import container.Service;
@@ -22,9 +24,7 @@ import utils.Config;
 import utils.ConfigInfo;
 import utils.Log;
 import utils.Sleep;
-import vec2.ReadOnly;
-import vec2.ReadWrite;
-import vec2.Vec2;
+import utils.Vec2;
 
 /**
  * Entre Deplacement (appels à la série) et RobotVrai (déplacements haut niveau), Locomotion

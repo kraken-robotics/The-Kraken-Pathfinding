@@ -1,5 +1,7 @@
 package astar.arcmanager;
 
+import permissions.ReadOnly;
+import permissions.ReadWrite;
 import container.Service;
 import astar.AStarId;
 import astar.MemoryManager;
@@ -10,8 +12,6 @@ import exceptions.MemoryManagerException;
 import exceptions.ScriptException;
 import robot.RobotChrono;
 import strategie.GameState;
-import vec2.ReadOnly;
-import vec2.ReadWrite;
 
 /**
  * Réalise les calculs entre différents Arc

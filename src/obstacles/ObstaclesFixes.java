@@ -1,7 +1,7 @@
 package obstacles;
 
-import vec2.Vec2;
-import vec2.ReadOnly;
+import permissions.ReadOnly;
+import utils.Vec2;
 
 /**
  * Enumération des obstacles fixes.

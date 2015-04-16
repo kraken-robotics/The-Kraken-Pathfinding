@@ -1,4 +1,4 @@
-package vec2;
+package permissions;
 
 /**
  * Permission spéciale, utilisé uniquement pour les tests

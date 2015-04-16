@@ -2,6 +2,8 @@ package hook;
 
 import java.util.ArrayList;
 
+import permissions.ReadOnly;
+import permissions.ReadWrite;
 import hook.methods.GameElementDone;
 import hook.methods.ThrowsScriptHook;
 import hook.types.HookCollisionElementJeu;
@@ -18,8 +20,6 @@ import table.GameElementNames;
 import utils.ConfigInfo;
 import utils.Log;
 import utils.Config;
-import vec2.ReadOnly;
-import vec2.ReadWrite;
 
 /**
  * Service fabriquant des hooks à la demande.

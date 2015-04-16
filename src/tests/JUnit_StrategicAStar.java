@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import org.junit.Before;
 import org.junit.Test;
 
+import permissions.ReadOnly;
+import permissions.ReadWrite;
 import container.ServiceNames;
 import astar.AStar;
 import astar.arc.Decision;
@@ -15,9 +17,7 @@ import robot.RobotChrono;
 import robot.RobotReal;
 import scripts.ScriptAnticipableNames;
 import strategie.GameState;
-import vec2.ReadOnly;
-import vec2.ReadWrite;
-import vec2.Vec2;
+import utils.Vec2;
 
 /**
  * Tests unitaires du planificateur de scripts

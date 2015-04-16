@@ -4,14 +4,14 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import permissions.ReadOnly;
 import astar.arc.PathfindingNodes;
 import container.ServiceNames;
 import table.GameElementNames;
 import table.ObstacleManager;
 import table.Table;
 import utils.ConfigInfo;
-import vec2.ReadOnly;
-import vec2.Vec2;
+import utils.Vec2;
 import enums.Tribool;
 
 /**

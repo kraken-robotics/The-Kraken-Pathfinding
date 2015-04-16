@@ -1,11 +1,10 @@
 package table;
 
 import obstacles.ObstacleRectangular;
+import permissions.ReadOnly;
 import container.Service;
 import enums.Tribool;
 import utils.*;
-import vec2.ReadOnly;
-import vec2.Vec2;
 
 /**
  * Gère les éléments de jeux

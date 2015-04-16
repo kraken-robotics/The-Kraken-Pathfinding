@@ -3,11 +3,11 @@ package tests;
 import org.junit.Assert;
 import org.junit.Test;
 
-import vec2.Vec2;
-import vec2.ReadOnly;
+import utils.Vec2;
 import obstacles.ObstacleCircular;
 import obstacles.ObstacleRectangular;
 import obstacles.ObstaclesFixes;
+import permissions.ReadOnly;
 
 /**
  * Test unitaire des obstacles

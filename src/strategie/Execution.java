@@ -5,6 +5,7 @@ import hook.HookFactory;
 
 import java.util.ArrayList;
 
+import permissions.ReadWrite;
 import astar.arc.Decision;
 import container.Service;
 import exceptions.FinMatchException;
@@ -17,7 +18,6 @@ import scripts.ScriptManager;
 import threads.ThreadStrategy;
 import utils.Config;
 import utils.Log;
-import vec2.ReadWrite;
 
 /**
  * Exécute ce qu'a décidé la stratégie.

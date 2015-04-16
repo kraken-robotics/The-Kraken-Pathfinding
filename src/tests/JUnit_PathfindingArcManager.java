@@ -4,6 +4,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import permissions.ReadWrite;
 import container.ServiceNames;
 import astar.arc.PathfindingNodes;
 import astar.arc.SegmentTrajectoireCourbe;
@@ -11,7 +12,6 @@ import astar.arcmanager.PathfindingArcManager;
 import robot.RobotChrono;
 import robot.RobotReal;
 import strategie.GameState;
-import vec2.ReadWrite;
 
 /**
  * Tests unitaires des calculs sur les PathfindingNodes

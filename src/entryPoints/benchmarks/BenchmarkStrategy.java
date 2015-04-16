@@ -1,5 +1,7 @@
 package entryPoints.benchmarks;
 
+import permissions.ReadOnly;
+import permissions.ReadWrite;
 import container.Container;
 import container.ServiceNames;
 import robot.RobotChrono;
@@ -7,9 +9,7 @@ import robot.RobotReal;
 import strategie.GameState;
 import utils.Config;
 import utils.Log;
-import vec2.ReadOnly;
-import vec2.ReadWrite;
-import vec2.Vec2;
+import utils.Vec2;
 import astar.AStar;
 import astar.arc.Decision;
 import astar.arcmanager.StrategyArcManager;

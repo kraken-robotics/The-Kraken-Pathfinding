@@ -1,9 +1,9 @@
 package hook.methods;
 
+import permissions.ReadWrite;
 import robot.RobotChrono;
 import strategie.GameState;
 import table.GameElementNames;
-import vec2.ReadWrite;
 import enums.Tribool;
 import hook.Executable;
 

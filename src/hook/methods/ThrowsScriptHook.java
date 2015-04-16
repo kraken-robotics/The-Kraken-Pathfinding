@@ -1,10 +1,10 @@
 package hook.methods;
 
+import permissions.ReadWrite;
 import robot.RobotChrono;
 import scripts.ScriptHookNames;
 import strategie.GameState;
 import table.GameElementNames;
-import vec2.ReadWrite;
 import hook.Executable;
 import exceptions.ScriptHookException;
 

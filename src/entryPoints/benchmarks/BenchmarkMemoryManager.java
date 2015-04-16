@@ -1,12 +1,12 @@
 package entryPoints.benchmarks;
 
+import permissions.ReadWrite;
 import container.Container;
 import container.ServiceNames;
 import robot.RobotChrono;
 import robot.RobotReal;
 import strategie.GameState;
 import utils.Log;
-import vec2.ReadWrite;
 
 /**
  * Benchmark sur memory manager. Utilisé pour l'optimisation.

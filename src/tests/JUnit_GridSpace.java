@@ -4,12 +4,12 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import permissions.ReadOnly;
 import astar.arc.PathfindingNodes;
 import container.ServiceNames;
 import table.GridSpace;
 import utils.Config;
-import vec2.ReadOnly;
-import vec2.Vec2;
+import utils.Vec2;
 
 /**
  * Tests unitaires de GridSpace

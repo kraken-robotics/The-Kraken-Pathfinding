@@ -1,10 +1,10 @@
 package hook.types;
 
+import permissions.ReadOnly;
 import strategie.GameState;
 import utils.Config;
 import utils.ConfigInfo;
 import utils.Log;
-import vec2.ReadOnly;
 
 /**
  * Un hook date reconnu facilement avec instanceof

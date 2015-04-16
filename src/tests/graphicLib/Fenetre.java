@@ -8,9 +8,9 @@ import obstacles.ObstacleCircular;
 import obstacles.ObstacleProximity;
 import obstacles.ObstacleRectangular;
 import obstacles.ObstaclesFixes;
+import permissions.ReadOnly;
 import table.GameElementNames;
-import vec2.ReadOnly;
-import vec2.Vec2;
+import utils.Vec2;
 
 import java.awt.*;
 import java.io.File;

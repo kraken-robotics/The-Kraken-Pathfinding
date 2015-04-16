@@ -1,6 +1,8 @@
 package container;
 
 import obstacles.Obstacle;
+import permissions.ReadOnly;
+import permissions.ReadWrite;
 import container.ServiceNames.TypeService;
 import astar.*;
 import astar.arc.Decision;
@@ -14,8 +16,6 @@ import exceptions.PointSortieException;
 import exceptions.SerialManagerException;
 import exceptions.ThreadException;
 import utils.*;
-import vec2.ReadOnly;
-import vec2.ReadWrite;
 import scripts.ScriptManager;
 import strategie.Execution;
 import strategie.GameState;

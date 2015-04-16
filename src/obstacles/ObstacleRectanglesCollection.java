@@ -1,7 +1,7 @@
 package obstacles;
 
-import vec2.ReadOnly;
-import vec2.Vec2;
+import permissions.ReadOnly;
+import utils.Vec2;
 
 /**
  * Classe abstraite regroupant les obstacles de collision formés d'une collection

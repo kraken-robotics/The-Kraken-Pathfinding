@@ -1,9 +1,9 @@
 package hook.methods;
 
+import permissions.ReadWrite;
 import hook.Executable;
 import robot.RobotChrono;
 import strategie.GameState;
-import vec2.ReadWrite;
 import exceptions.ChangeDirectionException;
 
 /**

@@ -4,13 +4,13 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import permissions.ReadWrite;
 import container.ServiceNames;
 import astar.MemoryManager;
 import astar.arc.PathfindingNodes;
 import robot.RobotChrono;
 import strategie.GameState;
 import utils.ConfigInfo;
-import vec2.ReadWrite;
 
 /**
  * Tests unitaires du memorymanager

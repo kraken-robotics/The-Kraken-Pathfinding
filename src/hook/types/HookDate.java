@@ -1,5 +1,6 @@
 package hook.types;
 
+import permissions.ReadOnly;
 import exceptions.ChangeDirectionException;
 import exceptions.FinMatchException;
 import exceptions.ScriptHookException;
@@ -7,8 +8,7 @@ import exceptions.WallCollisionDetectedException;
 import strategie.GameState;
 import utils.Config;
 import utils.Log;
-import vec2.ReadOnly;
-import vec2.Vec2;
+import utils.Vec2;
 import hook.Hook;
 
 /**

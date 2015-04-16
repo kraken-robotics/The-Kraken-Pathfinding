@@ -2,12 +2,12 @@ package tests;
 
 import org.junit.Before;
 
+import permissions.ReadOnly;
+import permissions.ReadWrite;
 import container.ServiceNames;
 import robot.RobotReal;
 import strategie.GameState;
-import vec2.ReadOnly;
-import vec2.ReadWrite;
-import vec2.Vec2;
+import utils.Vec2;
 
 /**
  * Tests unitaires des scripts.

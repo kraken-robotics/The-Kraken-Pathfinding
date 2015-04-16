@@ -1,5 +1,7 @@
 package astar;
 
+import permissions.ReadOnly;
+import permissions.ReadWrite;
 import container.Service;
 import exceptions.FinMatchException;
 import exceptions.MemoryManagerException;
@@ -8,8 +10,6 @@ import robot.RobotReal;
 import strategie.GameState;
 import utils.Config;
 import utils.Log;
-import vec2.ReadOnly;
-import vec2.ReadWrite;
 
 /**
  * Classe qui fournit des objets GameState à AStar.

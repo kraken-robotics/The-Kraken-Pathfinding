@@ -8,6 +8,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import permissions.ReadOnly;
+import permissions.ReadWrite;
 import astar.arc.PathfindingNodes;
 import astar.arc.SegmentTrajectoireCourbe;
 import container.ServiceNames;
@@ -16,9 +18,7 @@ import robot.RobotChrono;
 import robot.RobotReal;
 import strategie.GameState;
 import utils.ConfigInfo;
-import vec2.ReadOnly;
-import vec2.ReadWrite;
-import vec2.Vec2;
+import utils.Vec2;
 
 /**
  * Tests unitaires sur Robot, RobotReal et RobotChrono

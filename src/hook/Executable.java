@@ -1,8 +1,8 @@
 package hook;
 
+import permissions.ReadWrite;
 import robot.RobotChrono;
 import strategie.GameState;
-import vec2.ReadWrite;
 import exceptions.ChangeDirectionException;
 import exceptions.FinMatchException;
 import exceptions.ScriptHookException;

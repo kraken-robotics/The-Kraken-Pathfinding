@@ -2,12 +2,12 @@ package robot.cardsWrappers;
 
 import java.io.IOException;
 
+import permissions.ReadOnly;
 import robot.serial.SerialConnexion;
 import utils.ConfigInfo;
 import utils.Log;
 import utils.Config;
-import vec2.ReadOnly;
-import vec2.Vec2;
+import utils.Vec2;
 import container.Service;
 import exceptions.FinMatchException;
 import exceptions.SerialConnexionException;

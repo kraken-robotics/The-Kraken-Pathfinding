@@ -1,10 +1,10 @@
 package obstacles;
 
+import permissions.ReadOnly;
+import permissions.ReadWrite;
 import exceptions.FinMatchException;
 import strategie.GameState;
-import vec2.ReadOnly;
-import vec2.ReadWrite;
-import vec2.Vec2;
+import utils.Vec2;
 
 /**
  * Rectangle ayant subi une rotation.

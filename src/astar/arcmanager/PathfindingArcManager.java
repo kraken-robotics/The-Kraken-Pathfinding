@@ -1,5 +1,7 @@
 package astar.arcmanager;
 
+import permissions.ReadOnly;
+import permissions.ReadWrite;
 import astar.AStarId;
 import astar.MemoryManager;
 import astar.arc.Arc;
@@ -10,9 +12,7 @@ import robot.Speed;
 import strategie.GameState;
 import utils.Log;
 import utils.Config;
-import vec2.ReadOnly;
-import vec2.ReadWrite;
-import vec2.Vec2;
+import utils.Vec2;
 import exceptions.ArcManagerException;
 import exceptions.FinMatchException;
 

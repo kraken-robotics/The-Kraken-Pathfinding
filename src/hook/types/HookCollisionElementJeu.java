@@ -7,11 +7,11 @@ import exceptions.ScriptHookException;
 import exceptions.WallCollisionDetectedException;
 import obstacles.ObstacleCircular;
 import obstacles.ObstacleRectangular;
+import permissions.ReadOnly;
 import strategie.GameState;
 import utils.Config;
 import utils.Log;
-import vec2.ReadOnly;
-import vec2.Vec2;
+import utils.Vec2;
 
 /**
  * Hook pour gérer la collision avec les éléments de jeux

@@ -1,4 +1,4 @@
-package vec2;
+package permissions;
 
 /**
  * Permission de lecture seule pour les Vec2

@@ -2,15 +2,15 @@ package robot;
 
 import java.util.ArrayList;
 
+import permissions.ReadOnly;
+import permissions.ReadWrite;
 import astar.arc.SegmentTrajectoireCourbe;
 import astar.arc.PathfindingNodes;
 import hook.Hook;
 import robot.cardsWrappers.enums.HauteurBrasClap;
 import utils.Log;
 import utils.Config;
-import vec2.ReadOnly;
-import vec2.ReadWrite;
-import vec2.Vec2;
+import utils.Vec2;
 import enums.Side;
 import exceptions.ChangeDirectionException;
 import exceptions.FinMatchException;

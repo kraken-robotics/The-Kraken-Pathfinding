@@ -12,6 +12,8 @@ import obstacles.ObstaclesFixes;
 import org.junit.Before;
 import org.junit.Test;
 
+import permissions.ReadOnly;
+import permissions.ReadWrite;
 import container.ServiceNames;
 import astar.AStar;
 import astar.arc.Decision;
@@ -29,9 +31,7 @@ import table.ObstacleManager;
 import tests.graphicLib.Fenetre;
 import utils.ConfigInfo;
 import utils.Sleep;
-import vec2.ReadOnly;
-import vec2.ReadWrite;
-import vec2.Vec2;
+import utils.Vec2;
 
 /**
  * Tests unitaires disposant d'une interface graphique.

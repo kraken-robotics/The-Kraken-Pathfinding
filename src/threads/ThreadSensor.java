@@ -1,5 +1,7 @@
 package threads;
 
+import permissions.ReadOnly;
+import permissions.ReadWrite;
 import container.Service;
 import exceptions.FinMatchException;
 import robot.RobotReal;
@@ -10,9 +12,7 @@ import utils.Config;
 import utils.ConfigInfo;
 import utils.Log;
 import utils.Sleep;
-import vec2.ReadOnly;
-import vec2.ReadWrite;
-import vec2.Vec2;
+import utils.Vec2;
 
 /**
  * Thread qui ajoute en continu les obstacles détectés par les capteurs

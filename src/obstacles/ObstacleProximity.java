@@ -1,9 +1,9 @@
 package obstacles;
 
+import permissions.ReadOnly;
+import permissions.ReadWrite;
 import robot.Speed;
-import vec2.ReadOnly;
-import vec2.ReadWrite;
-import vec2.Vec2;
+import utils.Vec2;
 
 /**
  * Obstacles détectés par capteurs de proximité (ultrasons et infrarouges)

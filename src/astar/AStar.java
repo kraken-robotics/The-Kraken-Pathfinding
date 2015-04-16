@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.BitSet;
 
+import permissions.ReadOnly;
+import permissions.ReadWrite;
 import astar.arc.Arc;
 import astar.arc.PathfindingNodes;
 import astar.arc.SegmentTrajectoireCourbe;
@@ -23,9 +25,7 @@ import strategie.GameState;
 import utils.Config;
 import utils.ConfigInfo;
 import utils.Log;
-import vec2.ReadOnly;
-import vec2.ReadWrite;
-import vec2.Vec2;
+import utils.Vec2;
 
 /**
  * AStar, fonctionnant avec un certain ArcManager

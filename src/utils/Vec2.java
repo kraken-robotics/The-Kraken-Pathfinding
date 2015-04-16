@@ -1,4 +1,8 @@
-package vec2;
+package utils;
+
+import permissions.Permission;
+import permissions.ReadOnly;
+import permissions.ReadWrite;
 
 
 /**

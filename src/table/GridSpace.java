@@ -1,12 +1,12 @@
 package table;
 
+import permissions.ReadOnly;
 import astar.arc.PathfindingNodes;
 import astar.arc.SegmentTrajectoireCourbe;
 import container.Service;
 import utils.Config;
 import utils.Log;
-import vec2.ReadOnly;
-import vec2.Vec2;
+import utils.Vec2;
 import enums.Tribool;
 import exceptions.GridSpaceException;
 

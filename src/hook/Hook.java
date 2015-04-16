@@ -2,6 +2,8 @@ package hook;
 
 import java.util.ArrayList;
 
+import permissions.ReadOnly;
+import permissions.ReadWrite;
 import exceptions.ChangeDirectionException;
 import exceptions.FinMatchException;
 import exceptions.ScriptHookException;
@@ -11,9 +13,7 @@ import strategie.GameState;
 import utils.ConfigInfo;
 import utils.Log;
 import utils.Config;
-import vec2.ReadOnly;
-import vec2.ReadWrite;
-import vec2.Vec2;
+import utils.Vec2;
 
 /**
  * Classe-mère abstraite des hooks, utilisés pour la programmation évènementielle

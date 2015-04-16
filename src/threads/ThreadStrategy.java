@@ -2,6 +2,8 @@ package threads;
 
 import java.util.ArrayList;
 
+import permissions.ReadOnly;
+import permissions.ReadWrite;
 import astar.AStar;
 import astar.arc.Decision;
 import astar.arc.PathfindingNodes;
@@ -18,8 +20,6 @@ import strategie.GameState;
 import utils.Config;
 import utils.Log;
 import utils.Sleep;
-import vec2.ReadOnly;
-import vec2.ReadWrite;
 
 /**
  * Effectue les calculs de stratégie

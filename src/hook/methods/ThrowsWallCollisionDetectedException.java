@@ -1,8 +1,8 @@
 package hook.methods;
 
+import permissions.ReadWrite;
 import robot.RobotChrono;
 import strategie.GameState;
-import vec2.ReadWrite;
 import exceptions.WallCollisionDetectedException;
 import hook.Executable;
 

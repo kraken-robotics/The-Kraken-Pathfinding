@@ -10,6 +10,8 @@ import hook.HookFactory;
 import org.junit.Before;
 import org.junit.Test;
 
+import permissions.ReadOnly;
+import permissions.ReadWrite;
 import container.ServiceNames;
 import astar.AStar;
 import astar.arc.PathfindingNodes;
@@ -19,9 +21,7 @@ import robot.RobotChrono;
 import robot.RobotReal;
 import strategie.GameState;
 import table.GameElementNames;
-import vec2.ReadOnly;
-import vec2.ReadWrite;
-import vec2.Vec2;
+import utils.Vec2;
 import enums.Tribool;
 import exceptions.PathfindingException;
 

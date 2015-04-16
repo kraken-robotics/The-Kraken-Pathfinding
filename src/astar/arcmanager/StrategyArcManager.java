@@ -3,6 +3,8 @@ package astar.arcmanager;
 import java.util.ArrayList;
 import java.util.Vector;
 
+import permissions.ReadOnly;
+import permissions.ReadWrite;
 import astar.AStar;
 import astar.AStarId;
 import astar.MemoryManager;
@@ -21,8 +23,6 @@ import strategie.GameState;
 import utils.ConfigInfo;
 import utils.Log;
 import utils.Config;
-import vec2.ReadOnly;
-import vec2.ReadWrite;
 import exceptions.ArcManagerException;
 import exceptions.FinMatchException;
 import exceptions.MemoryManagerException;

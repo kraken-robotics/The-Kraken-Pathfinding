@@ -2,6 +2,10 @@ package strategie;
 
 import java.util.ArrayList;
 
+import permissions.Permission;
+import permissions.ReadOnly;
+import permissions.ReadWrite;
+import permissions.TestOnly;
 import astar.arc.PathfindingNodes;
 import astar.arc.SegmentTrajectoireCourbe;
 import hook.Hook;
@@ -21,11 +25,7 @@ import table.GameElementNames;
 import table.GridSpace;
 import utils.Log;
 import utils.Config;
-import vec2.Permission;
-import vec2.ReadOnly;
-import vec2.ReadWrite;
-import vec2.TestOnly;
-import vec2.Vec2;
+import utils.Vec2;
 
 /**
  * Le game state rassemble toutes les informations disponibles à un instant
@@ -85,7 +85,7 @@ public class GameState<R extends Robot, T extends Permission> implements Service
      * @return
      * @throws FinMatchException
      */
-	public static GameState<RobotChrono,ReadWrite> cloneGameState(GameState<? extends Robot,ReadOnly> state) throws FinMatchException
+	public static final GameState<RobotChrono,ReadWrite> cloneGameState(GameState<? extends Robot,ReadOnly> state) throws FinMatchException
 	{
 		return GameState.cloneGameState(state, -1);
 	}
@@ -93,7 +93,7 @@ public class GameState<R extends Robot, T extends Permission> implements Service
 	/**
      * Fournit un clone de this. Le clone sera un GameState<RobotChrono>, peu importe si this est un GameState<RobotVrai> ou un GameState<RobotChrono>
      */
-	public static GameState<RobotChrono,ReadWrite> cloneGameState(GameState<? extends Robot,ReadOnly> state, int indice_memory_manager) throws FinMatchException
+	public static final GameState<RobotChrono,ReadWrite> cloneGameState(GameState<? extends Robot,ReadOnly> state, int indice_memory_manager) throws FinMatchException
 	{
 		// On instancie la table avant car il faut donner le même objet deux fois en paramètres
 		GameState<RobotChrono,ReadWrite> cloned = new GameState<RobotChrono,ReadWrite>(state.config, state.log, state.gridspace.clone(GameState.getTempsDepuisDebut(state)), state.robot.cloneIntoRobotChrono(), state.hookfactory);
@@ -108,7 +108,7 @@ public class GameState<R extends Robot, T extends Permission> implements Service
      * @param other
      * @throws FinMatchException 
      */
-    public static void copy(GameState<?,ReadOnly> state, GameState<RobotChrono,ReadWrite> modified) throws FinMatchException
+    public static final void copy(GameState<?,ReadOnly> state, GameState<RobotChrono,ReadWrite> modified) throws FinMatchException
     {
         state.robot.copy(modified.robot);
     	// la copie de la table est faite dans gridspace
@@ -129,7 +129,7 @@ public class GameState<R extends Robot, T extends Permission> implements Service
      * Petite surcouche
      * @return
      */
-    public static long getTempsDepuisDebut(GameState<?,ReadOnly> state)
+    public static final long getTempsDepuisDebut(GameState<?,ReadOnly> state)
     {
     	return state.robot.getTempsDepuisDebutMatch();
     }
@@ -184,7 +184,7 @@ public class GameState<R extends Robot, T extends Permission> implements Service
 	 * Permet de décider de la durée de l'anticipation
 	 * @param dateLimite
 	 */
-	public static void updateHookFinMatch(GameState<?,ReadWrite> state, int dateLimite)
+	public static final void updateHookFinMatch(GameState<?,ReadWrite> state, int dateLimite)
 	{
 		state.robot.updateHookFinMatch(dateLimite);
 	}
@@ -207,7 +207,7 @@ public class GameState<R extends Robot, T extends Permission> implements Service
 	 * Utilisé par le script d'attente
 	 * @throws FinMatchException
 	 */
-	public static void sleepUntilSomethingChange(GameState<?,ReadWrite> state) throws FinMatchException
+	public static final void sleepUntilSomethingChange(GameState<?,ReadWrite> state) throws FinMatchException
 	{
 		// on ajoute quelques microsecondes afin d'être bien
 		// sûr qu'après cette date l'obstacle soit parti
@@ -223,202 +223,202 @@ public class GameState<R extends Robot, T extends Permission> implements Service
 		state.robot.sleepUntil(date_fin);
 	}
 
-	public static void stopper(GameState<? extends Robot, ReadWrite> state) throws FinMatchException
+	public static final void stopper(GameState<? extends Robot, ReadWrite> state) throws FinMatchException
 	{
 		state.robot.stopper();
 	}
 	
-    public static void tourner(GameState<? extends Robot, ReadWrite> state, double angle) throws UnableToMoveException, FinMatchException
+    public static final void tourner(GameState<? extends Robot, ReadWrite> state, double angle) throws UnableToMoveException, FinMatchException
     {
     	state.robot.tourner(angle);
     }
     
-    public static void avancer(GameState<? extends Robot, ReadWrite> state, int distance, ArrayList<Hook> hooks, boolean mur) throws UnableToMoveException, FinMatchException
+    public static final void avancer(GameState<? extends Robot, ReadWrite> state, int distance, ArrayList<Hook> hooks, boolean mur) throws UnableToMoveException, FinMatchException
     {
     	state.robot.avancer(distance, hooks, mur);
     }
     
-    public static void suit_chemin(GameState<? extends Robot, ReadWrite> state, ArrayList<SegmentTrajectoireCourbe> chemin, ArrayList<Hook> hooks) throws UnableToMoveException, FinMatchException, ScriptHookException
+    public static final void suit_chemin(GameState<? extends Robot, ReadWrite> state, ArrayList<SegmentTrajectoireCourbe> chemin, ArrayList<Hook> hooks) throws UnableToMoveException, FinMatchException, ScriptHookException
     {
     	state.robot.suit_chemin(chemin, hooks);
     }
     
-	public static void set_vitesse(GameState<? extends Robot, ReadWrite> state, Speed vitesse) throws FinMatchException
+	public static final void set_vitesse(GameState<? extends Robot, ReadWrite> state, Speed vitesse) throws FinMatchException
 	{
 		state.robot.set_vitesse(vitesse);
 	}
 	
-	public static void setPosition(GameState<? extends Robot, ReadWrite> state, Vec2<ReadOnly> position) throws FinMatchException
+	public static final void setPosition(GameState<? extends Robot, ReadWrite> state, Vec2<ReadOnly> position) throws FinMatchException
 	{
 		state.robot.setPosition(position);
 	}
 	
-	public static void setOrientation(GameState<? extends Robot, ReadWrite> state, double orientation) throws FinMatchException
+	public static final void setOrientation(GameState<? extends Robot, ReadWrite> state, double orientation) throws FinMatchException
 	{
 		state.robot.setOrientation(orientation);
 	}
 	
-    public static Vec2<ReadOnly> getPosition(GameState<? extends Robot, ReadOnly> state) throws FinMatchException
+    public static final Vec2<ReadOnly> getPosition(GameState<? extends Robot, ReadOnly> state) throws FinMatchException
     {
     	return state.robot.getPosition();
     }
     
-    public static double getOrientation(GameState<? extends Robot, ReadOnly> state) throws FinMatchException
+    public static final double getOrientation(GameState<? extends Robot, ReadOnly> state) throws FinMatchException
     {
     	return state.robot.getOrientation();
     }
     
-    public static void sleep(GameState<? extends Robot, ReadWrite> state, long duree, ArrayList<Hook> hooks) throws FinMatchException
+    public static final void sleep(GameState<? extends Robot, ReadWrite> state, long duree, ArrayList<Hook> hooks) throws FinMatchException
     {
     	state.robot.sleep(duree, hooks);
     }
 
-    public static void sleep(GameState<? extends Robot, ReadWrite> state, long duree) throws FinMatchException
+    public static final void sleep(GameState<? extends Robot, ReadWrite> state, long duree) throws FinMatchException
     {
     	state.robot.sleep(duree);
     }
 
-    public static void desactiver_asservissement_rotation(GameState<? extends Robot, ReadWrite> state) throws FinMatchException
+    public static final void desactiver_asservissement_rotation(GameState<? extends Robot, ReadWrite> state) throws FinMatchException
     {
     	state.robot.desactiver_asservissement_rotation();
     }
     
-    public static void desactiver_asservissement_translation(GameState<? extends Robot, ReadWrite> state) throws FinMatchException
+    public static final void desactiver_asservissement_translation(GameState<? extends Robot, ReadWrite> state) throws FinMatchException
     {
     	state.robot.desactiver_asservissement_translation();
     }
     
-    public static void activer_asservissement_rotation(GameState<? extends Robot, ReadWrite> state) throws FinMatchException
+    public static final void activer_asservissement_rotation(GameState<? extends Robot, ReadWrite> state) throws FinMatchException
     {
     	state.robot.activer_asservissement_rotation();
     }
     
-    public static int getTempsDepuisDebutMatch(GameState<? extends Robot, ReadOnly> state)
+    public static final int getTempsDepuisDebutMatch(GameState<? extends Robot, ReadOnly> state)
     {
     	return state.robot.getTempsDepuisDebutMatch();
     }
     
-    public static RobotChrono cloneIntoRobotChrono(GameState<? extends Robot, ReadOnly> state) throws FinMatchException
+    public static final RobotChrono cloneIntoRobotChrono(GameState<? extends Robot, ReadOnly> state) throws FinMatchException
     {
     	return state.robot.cloneIntoRobotChrono();
     }
     
-	public static void va_au_point_pathfinding_no_hook(GameState<RobotChrono, ReadWrite> state, SegmentTrajectoireCourbe segment) throws FinMatchException
+	public static final void va_au_point_pathfinding_no_hook(GameState<RobotChrono, ReadWrite> state, SegmentTrajectoireCourbe segment) throws FinMatchException
 	{
 		state.robot.va_au_point_pathfinding_no_hook(segment);
 	}
 	
-	public static void va_au_point_pathfinding(GameState<RobotChrono, ReadWrite> state, PathfindingNodes n, int differenceDistance, ArrayList<Hook> hooks) throws FinMatchException
+	public static final void va_au_point_pathfinding(GameState<RobotChrono, ReadWrite> state, PathfindingNodes n, int differenceDistance, ArrayList<Hook> hooks) throws FinMatchException
 	{
 		state.robot.va_au_point_pathfinding(n, differenceDistance, hooks);
 	}
 
-	public static double calculateDelta(GameState<RobotChrono, ReadOnly> state, double angle)
+	public static final double calculateDelta(GameState<RobotChrono, ReadOnly> state, double angle)
 	{
 		return state.robot.calculateDelta(angle);
 	}
 	
-	public static void setPositionPathfinding(GameState<RobotChrono, ReadWrite> state, PathfindingNodes n)
+	public static final void setPositionPathfinding(GameState<RobotChrono, ReadWrite> state, PathfindingNodes n)
 	{
 		state.robot.setPositionPathfinding(n);
 	}
 
-	public static PathfindingNodes getPositionPathfinding(GameState<RobotChrono, ReadOnly> state)
+	public static final PathfindingNodes getPositionPathfinding(GameState<RobotChrono, ReadOnly> state)
 	{
 		return state.robot.getPositionPathfinding();
 	}
     
-	public static boolean isEnemyHere(GameState<RobotReal, ReadOnly> state)
+	public static final boolean isEnemyHere(GameState<RobotReal, ReadOnly> state)
 	{
 		return state.robot.isEnemyHere();
 	}
 	
-    public static void createHypotheticalEnnemy(GameState<RobotChrono, ReadWrite> state, Vec2<ReadOnly> position, int date_actuelle)
+    public static final void createHypotheticalEnnemy(GameState<RobotChrono, ReadWrite> state, Vec2<ReadOnly> position, int date_actuelle)
     {
     	state.gridspace.createHypotheticalEnnemy(position, date_actuelle);
     }
     
-    public static void setAvoidGameElement(GameState<RobotChrono, ReadWrite> state, boolean avoidGameElement)
+    public static final void setAvoidGameElement(GameState<RobotChrono, ReadWrite> state, boolean avoidGameElement)
     {
     	state.gridspace.setAvoidGameElement(avoidGameElement);
     }
 
-	public static PathfindingNodes nearestReachableNode(GameState<?, ReadOnly> state, Vec2<ReadOnly> point, int date) throws GridSpaceException
+	public static final PathfindingNodes nearestReachableNode(GameState<?, ReadOnly> state, Vec2<ReadOnly> point, int date) throws GridSpaceException
 	{
 		return state.gridspace.nearestReachableNode(point, date);
 	}
 	
-    public static boolean isTraversable(GameState<?, ReadOnly> state, Vec2<ReadOnly> pointA, Vec2<ReadOnly> pointB, int date)
+    public static final boolean isTraversable(GameState<?, ReadOnly> state, Vec2<ReadOnly> pointA, Vec2<ReadOnly> pointB, int date)
     {
     	return state.gridspace.isTraversable(pointA, pointB, date);
     }
 
-	public static boolean isTraversable(GameState<?, ReadOnly> state, PathfindingNodes i, PathfindingNodes j, int date)
+	public static final boolean isTraversable(GameState<?, ReadOnly> state, PathfindingNodes i, PathfindingNodes j, int date)
     {
     	return state.gridspace.isTraversable(i, j, date);
     }
 
-	public static boolean isTraversableCourbe(GameState<?, ReadOnly> state, PathfindingNodes objectifFinal, PathfindingNodes intersection, Vec2<ReadOnly> directionAvant, int tempsDepuisDebutMatch)
+	public static final boolean isTraversableCourbe(GameState<?, ReadOnly> state, PathfindingNodes objectifFinal, PathfindingNodes intersection, Vec2<ReadOnly> directionAvant, int tempsDepuisDebutMatch)
 	{
 		return state.gridspace.isTraversableCourbe(objectifFinal, intersection, directionAvant, tempsDepuisDebutMatch);
 	}
 
-	public static SegmentTrajectoireCourbe getSegment(GameState<?, ReadOnly> state)
+	public static final SegmentTrajectoireCourbe getSegment(GameState<?, ReadOnly> state)
 	{
 		return state.gridspace.getSegment();
 	}
 	
-	public static void setDone(GameState<?, ReadWrite> state, GameElementNames element, Tribool done)
+	public static final void setDone(GameState<?, ReadWrite> state, GameElementNames element, Tribool done)
 	{
 		state.gridspace.setDone(element, done);
 	}
 
-	public static Tribool isDone(GameState<?, ReadOnly> state, GameElementNames element)
+	public static final Tribool isDone(GameState<?, ReadOnly> state, GameElementNames element)
 	{
 		return state.gridspace.isDone(element);
 	}
 
-	public static void tourner_relatif(GameState<?, ReadWrite> state, double angle) throws UnableToMoveException, FinMatchException
+	public static final void tourner_relatif(GameState<?, ReadWrite> state, double angle) throws UnableToMoveException, FinMatchException
 	{
 		state.robot.tourner(GameState.getOrientation(state.getReadOnly()) + angle);
 	}
 
-    public static void tourner_sans_symetrie(GameState<?, ReadWrite> state, double angle) throws UnableToMoveException, FinMatchException
+    public static final void tourner_sans_symetrie(GameState<?, ReadWrite> state, double angle) throws UnableToMoveException, FinMatchException
     {
     	state.robot.tourner_sans_symetrie(angle);
     }
 
-    public static void avancer(GameState<?, ReadWrite> state, int distance) throws UnableToMoveException, FinMatchException
+    public static final void avancer(GameState<?, ReadWrite> state, int distance) throws UnableToMoveException, FinMatchException
     {
         state.robot.avancer(distance, new ArrayList<Hook>(), false);
     }
 
-    public static void avancer(GameState<?, ReadWrite> state, int distance, ArrayList<Hook> hooks) throws UnableToMoveException, FinMatchException
+    public static final void avancer(GameState<?, ReadWrite> state, int distance, ArrayList<Hook> hooks) throws UnableToMoveException, FinMatchException
     {    	
         GameState.avancer(state, distance, hooks, false);
     }
 
-    public static void avancer_dans_mur(GameState<?, ReadWrite> state, int distance) throws UnableToMoveException, FinMatchException
+    public static final void avancer_dans_mur(GameState<?, ReadWrite> state, int distance) throws UnableToMoveException, FinMatchException
     {
     	state.robot.avancer_dans_mur(distance);
     }
 
-    public static void sleepUntil(GameState<?, ReadWrite> state, int date) throws FinMatchException
+    public static final void sleepUntil(GameState<?, ReadWrite> state, int date) throws FinMatchException
     {
     	GameState.sleep(state, date - GameState.getTempsDepuisDebutMatch(state.getReadOnly()));
     }
     
-    public static void creer_obstacle(GameState<RobotReal, ReadWrite> state, Vec2<ReadOnly> position, int date)
+    public static final void creer_obstacle(GameState<RobotReal, ReadWrite> state, Vec2<ReadOnly> position, int date)
     {
     	state.gridspace.creer_obstacle(position, date);
     }
 
-	public static void reinitConnections(GameState<RobotReal, TestOnly> state)
+	public static final void reinitConnections(GameState<RobotReal, TestOnly> state)
 	{
 		state.gridspace.reinitConnections();
 	}
 	
-	public static void reinitDate(GameState<RobotChrono, TestOnly> state)
+	public static final void reinitDate(GameState<RobotChrono, TestOnly> state)
 	{
 		state.robot.reinitDate();
 	}
@@ -428,7 +428,7 @@ public class GameState<R extends Robot, T extends Permission> implements Service
      * Utilisé par le thread de capteurs.
      * @param position
      */
-    public static void creer_obstacle(GameState<RobotReal, ReadWrite> state, Vec2<ReadOnly> position)
+    public static final void creer_obstacle(GameState<RobotReal, ReadWrite> state, Vec2<ReadOnly> position)
     {
     	creer_obstacle(state, position, (int)(System.currentTimeMillis() - Config.getDateDebutMatch()));
     }
@@ -443,7 +443,7 @@ public class GameState<R extends Robot, T extends Permission> implements Service
 		return (GameState<R, TestOnly>) this;
 	}
 
-	public static boolean isAtPathfindingNodes(GameState<RobotChrono, ReadOnly> state) {
+	public static final boolean isAtPathfindingNodes(GameState<RobotChrono, ReadOnly> state) {
 		return state.robot.isAtPathfindingNodes();
 	}
 	

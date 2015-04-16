@@ -1,9 +1,9 @@
 package obstacles;
+import permissions.ReadOnly;
 import utils.Config;
 import utils.ConfigInfo;
 import utils.Log;
-import vec2.ReadOnly;
-import vec2.Vec2;
+import utils.Vec2;
 
 /**
  * Superclasse abstraite des obstacles.
