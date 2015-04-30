@@ -36,7 +36,7 @@ import utils.Vec2;
  *
  */
 
-public class AStar<AM extends ArcManager, A extends Arc> implements Service
+public class AStar<AM extends ArcManager<A>, A extends Arc> implements Service
 {
 	/**
 	 * Les méthodes publiques sont "synchronized".
@@ -275,7 +275,7 @@ public class AStar<AM extends ArcManager, A extends Arc> implements Service
 	 * @throws PathfindingException
 	 * @throws MemoryManagerException
 	 */
-	private ArrayList<A> process(GameState<RobotChrono,ReadWrite> depart, ArcManager arcmanager, boolean shouldReconstruct) throws PathfindingException, MemoryManagerException
+	private ArrayList<A> process(GameState<RobotChrono,ReadWrite> depart, ArcManager<A> arcmanager, boolean shouldReconstruct) throws PathfindingException, MemoryManagerException
 	{
 		int hash_depart = arcmanager.getHashAndCreateIfNecessary(depart.getReadOnly());
 		// optimisation si depart == arrivee

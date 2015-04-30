@@ -19,7 +19,7 @@ import strategie.GameState;
  *
  */
 
-public abstract class ArcManager implements Service {
+public abstract class ArcManager<A extends Arc> implements Service {
 
 	private int id;
 	private MemoryManager memorymanager;
@@ -55,7 +55,7 @@ public abstract class ArcManager implements Service {
 	 * Donne le prochain voisin
 	 * @return
 	 */
-	public abstract <A> A next();
+	public abstract A next();
 	
 	/** 
 	 * Donne la distance exacte entre les deux points.
@@ -65,7 +65,7 @@ public abstract class ArcManager implements Service {
 	 * @return
 	 * @throws ScriptException 
 	 */
-	public abstract int distanceTo(GameState<RobotChrono,ReadWrite> state, Arc arc) throws FinMatchException, ScriptException;
+	public abstract int distanceTo(GameState<RobotChrono,ReadWrite> state, A arc) throws FinMatchException, ScriptException;
 	
 	/**
 	 * Evalue la distance entre deux sommets.

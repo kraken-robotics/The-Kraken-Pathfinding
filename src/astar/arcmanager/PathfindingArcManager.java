@@ -4,7 +4,6 @@ import permissions.ReadOnly;
 import permissions.ReadWrite;
 import astar.AStarId;
 import astar.MemoryManager;
-import astar.arc.Arc;
 import astar.arc.PathfindingNodes;
 import astar.arc.SegmentTrajectoireCourbe;
 import robot.RobotChrono;
@@ -23,7 +22,7 @@ import exceptions.FinMatchException;
  *
  */
 
-public class PathfindingArcManager extends ArcManager {
+public class PathfindingArcManager extends ArcManager<SegmentTrajectoireCourbe> {
 
 	private int iterator, id_node_iterator;
 	private PathfindingNodes arrivee;
@@ -44,7 +43,7 @@ public class PathfindingArcManager extends ArcManager {
 	 * Renvoie la distance entre deux points.
 	 */
 	@Override
-	public int distanceTo(GameState<RobotChrono,ReadWrite> state, Arc arc) throws FinMatchException
+	public int distanceTo(GameState<RobotChrono,ReadWrite> state, SegmentTrajectoireCourbe arc) throws FinMatchException
 	{
 		/*
 		 * Il n'y a pas d'utilisation de hook.
@@ -54,7 +53,7 @@ public class PathfindingArcManager extends ArcManager {
 		 * Rappel: même quand on fait un appel à RobotChrono sans hook, le hook de fin de match est exécuté
 		 */
 		int temps_debut = GameState.getTempsDepuisDebutMatch(state.getReadOnly());
-		GameState.va_au_point_pathfinding_no_hook(state, (SegmentTrajectoireCourbe)arc);
+		GameState.va_au_point_pathfinding_no_hook(state, arc);
 		return GameState.getTempsDepuisDebutMatch(state.getReadOnly()) - temps_debut;
 	}
 
@@ -89,9 +88,8 @@ public class PathfindingArcManager extends ArcManager {
 		return GameState.getPositionPathfinding(state).ordinal();
 	}
 
-    @SuppressWarnings("unchecked")
 	@Override
-    public Arc next()
+    public SegmentTrajectoireCourbe next()
     {
     	if(!debutCourbe)
     		return new SegmentTrajectoireCourbe(PathfindingNodes.values[iterator]);

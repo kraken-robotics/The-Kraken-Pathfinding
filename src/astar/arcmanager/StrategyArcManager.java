@@ -8,7 +8,6 @@ import permissions.ReadWrite;
 import astar.AStar;
 import astar.AStarId;
 import astar.MemoryManager;
-import astar.arc.Arc;
 import astar.arc.Decision;
 import astar.arc.PathfindingNodes;
 import astar.arc.SegmentTrajectoireCourbe;
@@ -39,7 +38,7 @@ import exceptions.UnableToMoveException;
  *
  */
 
-public class StrategyArcManager extends ArcManager {
+public class StrategyArcManager extends ArcManager<Decision> {
 
 	protected Log log;
 	protected Config config;
@@ -119,7 +118,6 @@ public class StrategyArcManager extends ArcManager {
 		return iterator < listeDecisions.size();
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public Decision next()
 	{
@@ -131,7 +129,7 @@ public class StrategyArcManager extends ArcManager {
 	 * on préférera celle qui a minimisé le temps pour arriver à cet état de jeu.
 	 */
 	@Override
-	public int distanceTo(GameState<RobotChrono,ReadWrite> state, Arc arc) throws FinMatchException, ScriptException
+	public int distanceTo(GameState<RobotChrono,ReadWrite> state, Decision arc) throws FinMatchException, ScriptException
 	{
 		Decision d = (Decision)arc;
 		Script s = scriptmanager.getScript(d.script_name);
