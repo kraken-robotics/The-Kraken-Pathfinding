@@ -4,11 +4,11 @@ import java.util.ArrayList;
 
 import permissions.ReadOnly;
 import permissions.ReadWrite;
-import astar.AStar;
-import astar.arc.Decision;
-import astar.arc.PathfindingNodes;
-import astar.arc.SegmentTrajectoireCourbe;
-import astar.arcmanager.StrategyArcManager;
+import planification.astar.AStar;
+import planification.astar.arc.Decision;
+import planification.astar.arc.PathfindingNodes;
+import planification.astar.arc.SegmentTrajectoireCourbe;
+import planification.astar.arcmanager.StrategyArcManager;
 import container.Service;
 import exceptions.FinMatchException;
 import exceptions.MemoryManagerException;

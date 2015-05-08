@@ -1,8 +1,8 @@
 package table;
 
 import permissions.ReadOnly;
-import astar.arc.PathfindingNodes;
-import astar.arc.SegmentTrajectoireCourbe;
+import planification.astar.arc.PathfindingNodes;
+import planification.astar.arc.SegmentTrajectoireCourbe;
 import container.Service;
 import utils.Config;
 import utils.Log;

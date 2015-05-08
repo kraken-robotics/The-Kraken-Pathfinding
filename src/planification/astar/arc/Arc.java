@@ -1,4 +1,4 @@
-package astar.arc;
+package planification.astar.arc;
 
 /**
  * Un arc pour l'A*. Une décision pour la stratégie

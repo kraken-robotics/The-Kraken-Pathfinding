@@ -2,8 +2,6 @@ package table;
 
 import java.util.ArrayList;
 
-import astar.arc.PathfindingNodes;
-import astar.arc.SegmentTrajectoireCourbe;
 import obstacles.Obstacle;
 import obstacles.ObstacleProximity;
 import obstacles.ObstacleRectangular;
@@ -11,6 +9,8 @@ import obstacles.ObstacleTrajectoireCourbe;
 import obstacles.ObstaclesFixes;
 import permissions.ReadOnly;
 import permissions.ReadWrite;
+import planification.astar.arc.PathfindingNodes;
+import planification.astar.arc.SegmentTrajectoireCourbe;
 import robot.Speed;
 import container.Service;
 import enums.Tribool;

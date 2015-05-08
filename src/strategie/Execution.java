@@ -6,7 +6,7 @@ import hook.HookFactory;
 import java.util.ArrayList;
 
 import permissions.ReadWrite;
-import astar.arc.Decision;
+import planification.astar.arc.Decision;
 import container.Service;
 import exceptions.FinMatchException;
 import exceptions.ScriptException;

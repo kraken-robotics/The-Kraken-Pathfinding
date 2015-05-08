@@ -1,11 +1,11 @@
-package astar.arcmanager;
+package planification.astar.arcmanager;
 
 import permissions.ReadOnly;
 import permissions.ReadWrite;
-import astar.AStarId;
-import astar.MemoryManager;
-import astar.arc.PathfindingNodes;
-import astar.arc.SegmentTrajectoireCourbe;
+import planification.PlanificateurId;
+import planification.MemoryManager;
+import planification.astar.arc.PathfindingNodes;
+import planification.astar.arc.SegmentTrajectoireCourbe;
 import robot.RobotChrono;
 import robot.RobotReal;
 import robot.Speed;
@@ -33,7 +33,7 @@ public class PathfindingArcManager extends ArcManager<SegmentTrajectoireCourbe> 
 
 	public PathfindingArcManager(Log log, Config config, MemoryManager memorymanager, GameState<RobotReal,ReadOnly> state)
 	{
-		super(AStarId.PATHFINDING_ASTAR, memorymanager);
+		super(PlanificateurId.PATHFINDING_ASTAR, memorymanager);
 		this.log = log;
 		this.config = config;
 		this.state_iterator = GameState.cloneGameState(state);

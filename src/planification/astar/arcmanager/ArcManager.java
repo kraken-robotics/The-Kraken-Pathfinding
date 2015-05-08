@@ -1,11 +1,11 @@
-package astar.arcmanager;
+package planification.astar.arcmanager;
 
 import permissions.ReadOnly;
 import permissions.ReadWrite;
+import planification.PlanificateurId;
+import planification.MemoryManager;
+import planification.astar.arc.Arc;
 import container.Service;
-import astar.AStarId;
-import astar.MemoryManager;
-import astar.arc.Arc;
 import exceptions.ArcManagerException;
 import exceptions.FinMatchException;
 import exceptions.MemoryManagerException;
@@ -24,7 +24,7 @@ public abstract class ArcManager<A extends Arc> implements Service {
 	private int id;
 	private MemoryManager memorymanager;
 
-	public ArcManager(AStarId id, MemoryManager memorymanager)
+	public ArcManager(PlanificateurId id, MemoryManager memorymanager)
 	{
 		this.id = id.ordinal();
 		this.memorymanager = memorymanager;

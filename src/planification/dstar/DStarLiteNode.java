@@ -1,6 +1,6 @@
-package astar;
+package planification.dstar;
 
-import astar.arc.GridPoint;
+import planification.astar.arc.GridPoint;
 import robot.RobotChrono;
 import strategie.GameState;
 

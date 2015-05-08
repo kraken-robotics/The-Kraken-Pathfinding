@@ -5,10 +5,10 @@ import org.junit.Before;
 import org.junit.Test;
 
 import permissions.ReadWrite;
+import planification.astar.arc.PathfindingNodes;
+import planification.astar.arc.SegmentTrajectoireCourbe;
+import planification.astar.arcmanager.PathfindingArcManager;
 import container.ServiceNames;
-import astar.arc.PathfindingNodes;
-import astar.arc.SegmentTrajectoireCourbe;
-import astar.arcmanager.PathfindingArcManager;
 import robot.RobotChrono;
 import robot.RobotReal;
 import strategie.GameState;

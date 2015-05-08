@@ -1,4 +1,4 @@
-package astar;
+package planification;
 
 import permissions.ReadOnly;
 import permissions.ReadWrite;
@@ -23,12 +23,13 @@ public class MemoryManager implements Service {
 
 	private static final int nb_instances = 500;
 
+	int nb_planif = PlanificateurId.values().length;
 	@SuppressWarnings("unchecked")
-	private final GameState<RobotChrono,ReadWrite>[][] gamestates_list = (GameState<RobotChrono,ReadWrite>[][]) new GameState[2][nb_instances];
+	private final GameState<RobotChrono,ReadWrite>[][] gamestates_list = (GameState<RobotChrono,ReadWrite>[][]) new GameState[nb_planif][nb_instances];
 	protected Log log;
 	
 	// gamestates_list est triés: avant firstAvailable, les gamestate sont indisponibles, après, ils sont disponibles
-	private int firstAvailable[] = new int[2];
+	private int firstAvailable[] = new int[nb_planif];
 	
 	@Override
 	public void updateConfig()
@@ -43,9 +44,9 @@ public class MemoryManager implements Service {
 		firstAvailable[0] = 0;
 		firstAvailable[1] = 0;
 		// on prépare déjà des gamestates
-		log.debug("Instanciation de "+2*nb_instances+" GameState<RobotChrono>");
-	
-		for(int j = 0; j < 2; j++)
+		log.debug("Instanciation de "+nb_planif*nb_instances+" GameState<RobotChrono>");
+
+		for(int j = 0; j < nb_planif; j++)
 			for(int i = 0; i < nb_instances; i++)
 			{
 				gamestates_list[j][i] = GameState.cloneGameState(realstate, i);

@@ -1,4 +1,4 @@
-package astar;
+package planification.dstar;
 
 /**
  * Clé utilisé par le D* lite.

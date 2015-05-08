@@ -5,9 +5,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 import permissions.ReadWrite;
+import planification.MemoryManager;
+import planification.astar.arc.PathfindingNodes;
 import container.ServiceNames;
-import astar.MemoryManager;
-import astar.arc.PathfindingNodes;
 import robot.RobotChrono;
 import strategie.GameState;
 import utils.ConfigInfo;

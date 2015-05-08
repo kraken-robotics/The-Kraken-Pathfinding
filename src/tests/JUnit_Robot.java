@@ -10,8 +10,8 @@ import org.junit.Test;
 
 import permissions.ReadOnly;
 import permissions.ReadWrite;
-import astar.arc.PathfindingNodes;
-import astar.arc.SegmentTrajectoireCourbe;
+import planification.astar.arc.PathfindingNodes;
+import planification.astar.arc.SegmentTrajectoireCourbe;
 import container.ServiceNames;
 import enums.RobotColor;
 import robot.RobotChrono;

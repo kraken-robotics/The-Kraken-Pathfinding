@@ -1,16 +1,16 @@
-package astar.arcmanager;
+package planification.astar.arcmanager;
 
 import java.util.ArrayList;
 import java.util.Vector;
 
 import permissions.ReadOnly;
 import permissions.ReadWrite;
-import astar.AStar;
-import astar.AStarId;
-import astar.MemoryManager;
-import astar.arc.Decision;
-import astar.arc.PathfindingNodes;
-import astar.arc.SegmentTrajectoireCourbe;
+import planification.PlanificateurId;
+import planification.MemoryManager;
+import planification.astar.AStar;
+import planification.astar.arc.Decision;
+import planification.astar.arc.PathfindingNodes;
+import planification.astar.arc.SegmentTrajectoireCourbe;
 import hook.Hook;
 import hook.HookFactory;
 import robot.RobotChrono;
@@ -54,7 +54,7 @@ public class StrategyArcManager extends ArcManager<Decision> {
 	
 	public StrategyArcManager(Log log, Config config, ScriptManager scriptmanager, GameState<RobotReal,ReadOnly> real_gamestate, HookFactory hookfactory, AStar<PathfindingArcManager, SegmentTrajectoireCourbe> astar, MemoryManager memorymanager) throws PointSortieException
 	{
-		super(AStarId.STRATEGY_ASTAR, memorymanager);
+		super(PlanificateurId.STRATEGY_ASTAR, memorymanager);
 		this.log = log;
 		this.config = config;
 		this.scriptmanager = scriptmanager;

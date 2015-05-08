@@ -5,7 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import permissions.ReadOnly;
-import astar.arc.PathfindingNodes;
+import planification.astar.arc.PathfindingNodes;
 import container.ServiceNames;
 import table.GridSpace;
 import utils.Config;

@@ -3,7 +3,7 @@ package robot;
 import java.util.ArrayList;
 
 import permissions.ReadOnly;
-import astar.arc.SegmentTrajectoireCourbe;
+import planification.astar.arc.SegmentTrajectoireCourbe;
 import hook.Hook;
 import hook.types.HookDateFinMatch;
 import robot.cardsWrappers.enums.ActuatorOrder;

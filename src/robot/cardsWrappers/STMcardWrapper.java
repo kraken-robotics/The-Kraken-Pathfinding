@@ -5,13 +5,14 @@ import hook.types.HookDemiPlan;
 
 import java.util.ArrayList;
 
+import permissions.ReadOnly;
+import planification.astar.arc.PathfindingNodes;
+import planification.astar.arc.SegmentTrajectoireCourbe;
 import robot.serial.SerialConnexion;
 import utils.Config;
 import utils.Log;
 import utils.Vec2;
 import container.Service;
-import astar.arc.PathfindingNodes;
-import astar.arc.SegmentTrajectoireCourbe;
 import enums.RobotColor;
 import robot.DirectionStrategy;
 import robot.Speed;
@@ -144,7 +145,7 @@ public class STMcardWrapper implements Service {
      * @param position
      * @throws FinMatchException 
      */
-    public void setPosition(Vec2 position) throws FinMatchException {
+    public void setPosition(Vec2<ReadOnly> position) throws FinMatchException {
     	// TODO
     }
     
@@ -152,7 +153,7 @@ public class STMcardWrapper implements Service {
     	// TODO
     }
     
-    public Vec2 getPosition() throws FinMatchException
+    public Vec2<ReadOnly> getPosition() throws FinMatchException
     {
 		return null;
     	// TODO

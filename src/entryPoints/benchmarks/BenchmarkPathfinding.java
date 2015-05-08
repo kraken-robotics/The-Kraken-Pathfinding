@@ -2,10 +2,10 @@ package entryPoints.benchmarks;
 import java.util.Random;
 
 import permissions.ReadWrite;
-import astar.AStar;
-import astar.arc.PathfindingNodes;
-import astar.arc.SegmentTrajectoireCourbe;
-import astar.arcmanager.PathfindingArcManager;
+import planification.astar.arc.PathfindingNodes;
+import planification.astar.AStar;
+import planification.astar.arc.SegmentTrajectoireCourbe;
+import planification.astar.arcmanager.PathfindingArcManager;
 import container.Container;
 import container.ServiceNames;
 import robot.RobotChrono;

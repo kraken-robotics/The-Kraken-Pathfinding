@@ -2,6 +2,9 @@ package entryPoints.benchmarks;
 
 import permissions.ReadOnly;
 import permissions.ReadWrite;
+import planification.astar.AStar;
+import planification.astar.arc.Decision;
+import planification.astar.arcmanager.StrategyArcManager;
 import container.Container;
 import container.ServiceNames;
 import robot.RobotChrono;
@@ -10,9 +13,6 @@ import strategie.GameState;
 import utils.Config;
 import utils.Log;
 import utils.Vec2;
-import astar.AStar;
-import astar.arc.Decision;
-import astar.arcmanager.StrategyArcManager;
 
 /**
  * Benchmark de la stratégie. Utilisé pour l'optimisation.

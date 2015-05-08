@@ -4,8 +4,8 @@ import java.util.ArrayList;
 
 import permissions.ReadOnly;
 import permissions.ReadWrite;
-import astar.arc.SegmentTrajectoireCourbe;
-import astar.arc.PathfindingNodes;
+import planification.astar.arc.PathfindingNodes;
+import planification.astar.arc.SegmentTrajectoireCourbe;
 import hook.Hook;
 import robot.cardsWrappers.enums.HauteurBrasClap;
 import utils.Log;

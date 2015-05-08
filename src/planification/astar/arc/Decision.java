@@ -1,4 +1,4 @@
-package astar.arc;
+package planification.astar.arc;
 
 import java.util.ArrayList;
 

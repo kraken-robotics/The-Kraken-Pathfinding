@@ -1,4 +1,4 @@
-package astar;
+package planification;
 
 /**
  * Utilisé par les arc managers pour le memory manager
@@ -6,7 +6,7 @@ package astar;
  *
  */
 
-public enum AStarId
+public enum PlanificateurId
 {
 	PATHFINDING_ASTAR,
 	STRATEGY_ASTAR;	

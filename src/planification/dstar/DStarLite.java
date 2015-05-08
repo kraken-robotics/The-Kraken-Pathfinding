@@ -1,9 +1,9 @@
-package astar;
+package planification.dstar;
 
 import java.util.LinkedList;
 
-import astar.arc.GridPoint;
-import astar.arcmanager.ArcManager;
+import planification.astar.arc.GridPoint;
+import planification.astar.arcmanager.ArcManager;
 import robot.RobotChrono;
 import strategie.GameState;
 import container.Service;

@@ -1,4 +1,4 @@
-package astar;
+package planification.astar;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -6,12 +6,12 @@ import java.util.BitSet;
 
 import permissions.ReadOnly;
 import permissions.ReadWrite;
-import astar.arc.Arc;
-import astar.arc.PathfindingNodes;
-import astar.arc.SegmentTrajectoireCourbe;
-import astar.arcmanager.ArcManager;
-import astar.arcmanager.PathfindingArcManager;
-import astar.arcmanager.StrategyArcManager;
+import planification.astar.arc.Arc;
+import planification.astar.arc.PathfindingNodes;
+import planification.astar.arc.SegmentTrajectoireCourbe;
+import planification.astar.arcmanager.ArcManager;
+import planification.astar.arcmanager.PathfindingArcManager;
+import planification.astar.arcmanager.StrategyArcManager;
 import container.Service;
 import exceptions.ArcManagerException;
 import exceptions.FinMatchException;
