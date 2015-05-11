@@ -2,12 +2,9 @@ package planification.dstar;
 
 import java.util.LinkedList;
 
-import planification.astar.arc.GridPoint;
-import planification.astar.arcmanager.ArcManager;
-import robot.RobotChrono;
-import strategie.GameState;
+import utils.Config;
+import utils.Log;
 import container.Service;
-import exceptions.ArcManagerException;
 import exceptions.MemoryManagerException;
 
 /**
@@ -27,7 +24,16 @@ public class DStarLite implements Service {
 	private DStarLiteNode arrivee;
 	private DStarLiteNode depart;
 	
-	private ArcManager<GridPoint> dstararcmanager;
+	private DStarArcManager dstararcmanager;
+	protected Log log;
+	protected Config config;
+	
+	public DStarLite(Log log, Config config, DStarArcManager dstararcmanager)
+	{
+		this.log = log;
+		this.config = config;
+		this.dstararcmanager = dstararcmanager;
+	}
 	
 	@Override
 	public void updateConfig()
@@ -40,7 +46,7 @@ public class DStarLite implements Service {
 	{
 		return new Cle(Math.min(s.g,s.rhs)+dstararcmanager.heuristicCost(depart, s),Math.min(s.g,s.rhs)); // TODO
 	}
-
+	
 	private void initialize()
 	{
 		openset.clear();

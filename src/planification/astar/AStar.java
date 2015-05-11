@@ -28,6 +28,12 @@ import utils.Log;
 import utils.Vec2;
 
 /**
+ * Optimisation:
+ * - ne pas utiliser tous les noeuds au début, le faire quand on en a besoin
+ * - super-structure qui convient le hash et le gamestate?
+ */
+
+/**
  * AStar, fonctionnant avec un certain ArcManager
  * Le AStar avec le PathfindingArcManager donne une recherche de chemin
  * Le AStar avec le StrategyArcManager donne un planificateur de scripts

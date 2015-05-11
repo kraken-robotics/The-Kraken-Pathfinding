@@ -1,4 +1,6 @@
-package planification.astar.arc;
+package planification.dstar;
+
+import planification.astar.arc.Arc;
 
 /**
  * Un arc pour le D* lite
