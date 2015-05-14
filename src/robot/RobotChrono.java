@@ -7,11 +7,9 @@ import permissions.ReadWrite;
 import planification.astar.arc.PathfindingNodes;
 import planification.astar.arc.SegmentTrajectoireCourbe;
 import hook.Hook;
-import robot.stm.HauteurBrasClap;
 import utils.Log;
 import utils.Config;
 import utils.Vec2;
-import enums.Side;
 import exceptions.ChangeDirectionException;
 import exceptions.FinMatchException;
 import exceptions.ScriptHookException;
@@ -324,48 +322,10 @@ public class RobotChrono extends Robot
 		date = 0;
 	}
 
-	@Override
-	public void bougeBrasClap(Side cote, HauteurBrasClap hauteur,
-			boolean needToSleep) throws FinMatchException
-	{
-		if(needToSleep)
-			bougeBrasClapSleep(bougeBrasClapOrder(cote, hauteur));
-	}
-
-	@Override
-	public void poserDeuxTapis(boolean needToSleep) throws FinMatchException
-	{
-    	tapisPoses = true;
-    	// TODO (avec règlement)
-		pointsObtenus = pointsObtenus + 24;
-		if(needToSleep)
-		{
-			poserTapisSleep();
-			poserTapisSleep();
-		}
-	}
-
-	@Override
-	public void leverDeuxTapis(boolean needToSleep) throws FinMatchException
-	{
-		if(needToSleep)
-		{
-			leverTapisSleep();
-			leverTapisSleep();
-		}
-	}
-
 	// Permet de commander le lissage en vérifiant si on part d'un point qui n'est pas un node
 	public boolean isAtPathfindingNodes()
 	{
 		return isPositionPathfindingActive;
-	}
-
-	@Override
-	public void clapTombe()
-	{
-		// TODO (avec règlement)
-		pointsObtenus = pointsObtenus + 5;				
 	}
 	
 	public int getHash()

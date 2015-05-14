@@ -6,13 +6,9 @@ import permissions.ReadOnly;
 import planification.astar.arc.SegmentTrajectoireCourbe;
 import hook.Hook;
 import hook.types.HookDateFinMatch;
-import robot.stm.ActuatorOrder;
-import robot.stm.HauteurBrasClap;
 import container.Service;
-import enums.Side;
 import exceptions.FinMatchException;
 import exceptions.ScriptHookException;
-import exceptions.SerialConnexionException;
 import exceptions.UnableToMoveException;
 import utils.Log;
 import utils.Config;
@@ -220,66 +216,4 @@ public abstract class Robot implements Service
     {
     	return pointsObtenus;
     }    
-    
-    public boolean areTapisPoses()
-    {
-    	return tapisPoses;
-    }
-    
-    /**
-     * A appeler quand un clap est tombé
-     */
-    public abstract void clapTombe();
-    
-	protected ActuatorOrder bougeBrasClapOrder(Side cote, HauteurBrasClap hauteur)
-	{
-		if(cote == Side.LEFT && hauteur == HauteurBrasClap.TOUT_EN_HAUT)
-			return ActuatorOrder.LEVE_CLAP_GAUCHE;
-		else if(cote == Side.LEFT && hauteur == HauteurBrasClap.FRAPPE_CLAP)
-			return ActuatorOrder.POSITIONNE_TAPE_CLAP_GAUCHE;
-		else if(cote == Side.LEFT && hauteur == HauteurBrasClap.RENTRE)
-			return ActuatorOrder.BAISSE_CLAP_GAUCHE;
-		else if(cote == Side.RIGHT && hauteur == HauteurBrasClap.TOUT_EN_HAUT)
-			return ActuatorOrder.LEVE_CLAP_DROIT;
-		else if(cote == Side.RIGHT && hauteur == HauteurBrasClap.FRAPPE_CLAP)
-			return ActuatorOrder.POSITIONNE_TAPE_CLAP_DROIT;
-		else// if(cote == Side.RIGHT && hauteur == HauteurBrasClap.RENTRE)
-			return ActuatorOrder.BAISSE_CLAP_DROIT;
-	}
-
-	public abstract void bougeBrasClap(Side cote, HauteurBrasClap hauteur, boolean needToSleep) throws SerialConnexionException, FinMatchException;
-	public abstract void poserDeuxTapis(boolean needToSleep) throws FinMatchException;
-	public abstract void leverDeuxTapis(boolean needToSleep) throws FinMatchException;
-
-	// Utilisé par les scripts
-	public void bougeBrasClap(Side cote, HauteurBrasClap hauteur) throws SerialConnexionException, FinMatchException
-	{
-		bougeBrasClap(cote, hauteur, true);
-	}
-
-	public void poserDeuxTapis() throws FinMatchException
-	{
-		poserDeuxTapis(true);
-	}
-
-	public void leverDeuxTapis() throws FinMatchException
-	{
-		leverDeuxTapis(true);
-	}
-
-	protected void bougeBrasClapSleep(ActuatorOrder order) throws FinMatchException
-	{
-		sleep(order.getSleepValue());
-	}
-
-	protected void poserTapisSleep() throws FinMatchException
-	{
-		sleep(ActuatorOrder.BAISSE_TAPIS_GAUCHE.getSleepValue());
-	}
-
-	protected void leverTapisSleep() throws FinMatchException
-	{
-		sleep(ActuatorOrder.LEVE_TAPIS_GAUCHE.getSleepValue());
-	}
-	
 }
