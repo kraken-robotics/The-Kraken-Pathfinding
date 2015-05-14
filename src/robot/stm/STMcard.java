@@ -1,8 +1,9 @@
-package robot.cardsWrappers;
+package robot.stm;
 
 import hook.Hook;
 import hook.types.HookDemiPlan;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import permissions.ReadOnly;
@@ -10,6 +11,7 @@ import planification.astar.arc.PathfindingNodes;
 import planification.astar.arc.SegmentTrajectoireCourbe;
 import robot.serial.SerialConnexion;
 import utils.Config;
+import utils.ConfigInfo;
 import utils.Log;
 import utils.Vec2;
 import container.Service;
@@ -21,14 +23,19 @@ import exceptions.ScriptHookException;
 import exceptions.SerialConnexionException;
 import exceptions.UnableToMoveException;
 
-public class STMcardWrapper implements Service {
+public class STMcard implements Service {
 
 	protected Log log;
+	protected Config config;
 	private SerialConnexion serie;
+	private boolean symetrie;
+	private boolean capteursOn = true;
+	private int nbCapteurs;
 
-	public STMcardWrapper(Config config, Log log, SerialConnexion serie)
+	public STMcard(Config config, Log log, SerialConnexion serie)
 	{
 		this.log = log;
+		this.config = config;
 		this.serie = serie;		
 	}
 
@@ -112,12 +119,6 @@ public class STMcardWrapper implements Service {
 		message[0] = "rh";
 		// TODO
 		serie.communiquer(message, 0);		
-	}
-	
-	@Override
-	public void updateConfig() {
-		// TODO Auto-generated method stub
-		
 	}
 	
     public void turn(double angle, ArrayList<Hook> hooks) throws UnableToMoveException, FinMatchException
@@ -318,17 +319,96 @@ public class STMcardWrapper implements Service {
 		return parsedInfos;
 	}
 
+	public boolean isEnemyHere() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void updateConfig()
+	{
+		capteursOn = config.getBoolean(ConfigInfo.CAPTEURS_ON);
+		nbCapteurs = config.getInt(ConfigInfo.NB_CAPTEURS_PROXIMITE);
+        symetrie = config.getSymmetry();
+        log.updateConfig();
+        serie.updateConfig();
+	}
+	
 	/**
-	 * Ferme la connexion série avec la carte d'asservissements
+	 * Envoie un ordre à la série. Le protocole est défini dans l'enum ActuatorOrder
+	 * @param order l'ordre à envoyer
+	 * @throws SerialConnexionException en cas de problème de communication avec la carte actionneurs
+	 * @throws FinMatchException 
 	 */
+	public void useActuator(ActuatorOrder order) throws SerialConnexionException, FinMatchException
+	{
+		if(symetrie)
+			order = order.getSymmetry();
+		serie.communiquer(order.getSerialOrder(), 0);
+	}
+
 	public void close()
 	{
 		serie.close();
 	}
 
-	public boolean isEnemyHere() {
-		// TODO Auto-generated method stub
-		return false;
+	/**
+	 * Méthode bloquante
+	 * Renvoie la liste des positions des obstacles vus par les capteurs
+	 * @return renvoie la position brute puis position de l'ennemi, pour chaque capteur
+	 * @throws FinMatchException */
+	public Vec2<ReadOnly>[] mesurer() throws FinMatchException
+	{
+		@SuppressWarnings("unchecked")
+		Vec2<ReadOnly>[] positions = (Vec2<ReadOnly>[]) new Vec2[2*nbCapteurs];
+		if(!capteursOn)
+    		return positions;
+		String[] positionsString = new String[4*nbCapteurs];
+		synchronized(serie)
+		{
+			try {
+				serie.wait();
+			} catch (InterruptedException e1) {
+				e1.printStackTrace();
+			}
+			try {
+				positionsString = serie.read(4*nbCapteurs);
+				for(int i = 0; i < 2*nbCapteurs; i++)
+					positions[i] = new Vec2<ReadOnly>(Integer.parseInt(positionsString[2*i]), Integer.parseInt(positionsString[2*i+1]));
+				return positions;
+			} catch (IOException e) {
+				e.printStackTrace();
+				return positions;
+			}
+		}
 	}
 	
+	/**
+	 * Le match a-t-il démarré? Demande à la STM l'état du jumper.
+	 * @return
+	 * @throws SerialConnexionException
+	 * @throws FinMatchException
+	 */
+    public boolean demarrageMatch() throws SerialConnexionException, FinMatchException
+    {
+    	try {
+    		return Integer.parseInt(serie.communiquer("j", 1)[0]) != 0;
+    	}
+    	catch(NumberFormatException e)
+    	{
+    		log.critical("Réponse du jumper non comprise");
+    		return false;
+    	}
+    }
+    
+    /**
+     * Active ou désactive les capteurs. Les capteurs sont désactivés avant le début du match.
+     * @param capteurs_on
+     */
+    public void setCapteursOn(boolean capteursOn)
+    {
+    	this.capteursOn = capteursOn;
+    }
+     
+
 }

@@ -3,9 +3,8 @@ package threads;
 import container.Service;
 import exceptions.FinMatchException;
 import exceptions.SerialConnexionException;
-import robot.cardsWrappers.STMcardWrapper;
-import robot.cardsWrappers.SensorsCardWrapper;
 import robot.serial.SerialManager;
+import robot.stm.STMcard;
 import table.ObstacleManager;
 import utils.Config;
 import utils.ConfigInfo;
@@ -14,7 +13,7 @@ import utils.Sleep;
 
 /**
  * Thread qui s'occupe de la gestion du temps: début du match, péremption des obstacles
- * C'est lui qui active les capteurs en début de match.
+ * C'est lui qui active les stms en début de match.
  * @author pf
  *
  */
@@ -26,21 +25,19 @@ public class ThreadTimer extends AbstractThread implements Service
 	private Log log;
 	private Config config;
 	private ObstacleManager obstaclemanager;
-	private SensorsCardWrapper capteur;
 	private SerialManager serialmanager;
-	private STMcardWrapper deplacements;
+	private STMcard stm;
 	
 	private long dureeMatch = 90000;
 	private long dateFin;
 	public static int obstacleRefreshInterval = 500; // temps en ms entre deux appels par le thread timer du rafraichissement des obstacles de la table
 		
-	public ThreadTimer(Log log, Config config, ObstacleManager obstaclemanager, SensorsCardWrapper capteur, STMcardWrapper deplacements, SerialManager serialmanager)
+	public ThreadTimer(Log log, Config config, ObstacleManager obstaclemanager, STMcard stm, SerialManager serialmanager)
 	{
 		this.log = log;
 		this.config = config;
 		this.obstaclemanager = obstaclemanager;
-		this.capteur = capteur;
-		this.deplacements = deplacements;
+		this.stm = stm;
 		this.serialmanager = serialmanager;
 		
 		updateConfig();
@@ -52,15 +49,15 @@ public class ThreadTimer extends AbstractThread implements Service
 	{
 		log.debug("Lancement du thread timer");
 
-		// les capteurs sont initialement éteints
-		capteur.setCapteursOn(false);
+		// les stms sont initialement éteints
+		stm.setCapteursOn(false);
 		
 		// Attente du démarrage du match
 		while(!Config.matchDemarre)
 		{
 			// Permet de signaler que le match a démarré
 			try {
-				Config.matchDemarre |= capteur.demarrageMatch();
+				Config.matchDemarre |= stm.demarrageMatch();
 			} catch (SerialConnexionException e) {
 				e.printStackTrace();
 			} catch (FinMatchException e) {
@@ -78,8 +75,8 @@ public class ThreadTimer extends AbstractThread implements Service
 
 		config.setDateDebutMatch();
 
-		// On démarre les capteurs
-		capteur.setCapteursOn(true);
+		// On démarre les stms
+		stm.setCapteursOn(true);
 
 		log.debug("LE MATCH COMMENCE !");
 
@@ -114,8 +111,8 @@ public class ThreadTimer extends AbstractThread implements Service
 
 		// fin du match : désasser final
 		try {
-				deplacements.disableRotationalFeedbackLoop();
-			deplacements.disableTranslationalFeedbackLoop();
+				stm.disableRotationalFeedbackLoop();
+			stm.disableTranslationalFeedbackLoop();
 		} catch (SerialConnexionException e) {
 			e.printStackTrace();
 		} catch (FinMatchException e) {
@@ -131,8 +128,7 @@ public class ThreadTimer extends AbstractThread implements Service
 		dureeMatch = 1000*config.getInt(ConfigInfo.DUREE_MATCH_EN_S);
 		log.updateConfig();
 		obstaclemanager.updateConfig();
-		capteur.updateConfig();
-		deplacements.updateConfig();
+		stm.updateConfig();
 		serialmanager.updateConfig();
 	}
 	

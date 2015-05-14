@@ -28,11 +28,9 @@ import threads.ThreadSensor;
 import threads.ThreadStrategy;
 import threads.ThreadTimer;
 import robot.RobotReal;
-import robot.cardsWrappers.ActuatorCardWrapper;
-import robot.cardsWrappers.STMcardWrapper;
-import robot.cardsWrappers.SensorsCardWrapper;
 import robot.serial.SerialManager;
 import robot.serial.SerialConnexion;
+import robot.stm.STMcard;
 
 
 /**
@@ -180,18 +178,10 @@ public class Container
 				throw new ContainerException();
 			}
 		}
-		else if(serviceRequested == ServiceNames.SENSORS_CARD_WRAPPER)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new SensorsCardWrapper((Config)getService(ServiceNames.CONFIG),
-			                                                 (Log)getService(ServiceNames.LOG),
-			                                                 (SerialConnexion)getService(ServiceNames.SERIE_CAPTEURS_ACTIONNEURS));
-		else if(serviceRequested == ServiceNames.STM_CARD_WRAPPER)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new SensorsCardWrapper((Config)getService(ServiceNames.CONFIG),
+		else if(serviceRequested == ServiceNames.STM_CARD)
+			instanciedServices[serviceRequested.ordinal()] = (Service)new STMcard((Config)getService(ServiceNames.CONFIG),
 			                                                 (Log)getService(ServiceNames.LOG),
 			                                                 (SerialConnexion)getService(ServiceNames.SERIE_LOCOMOTION));
-		else if(serviceRequested == ServiceNames.ACTUATOR_CARD_WRAPPER)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new ActuatorCardWrapper((Config)getService(ServiceNames.CONFIG),
-															 (Log)getService(ServiceNames.LOG),
-															 (SerialConnexion)getService(ServiceNames.SERIE_CAPTEURS_ACTIONNEURS));
 		else if(serviceRequested == ServiceNames.MEMORY_MANAGER)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new MemoryManager((Log)getService(ServiceNames.LOG),
 															 (Config)getService(ServiceNames.CONFIG),
@@ -200,8 +190,7 @@ public class Container
 			instanciedServices[serviceRequested.ordinal()] = (Service)new HookFactory((Config)getService(ServiceNames.CONFIG),
 															 (Log)getService(ServiceNames.LOG));
 		else if(serviceRequested == ServiceNames.ROBOT_REAL)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new RobotReal((ActuatorCardWrapper)getService(ServiceNames.ACTUATOR_CARD_WRAPPER),
-															 (STMcardWrapper)getService(ServiceNames.STM_CARD_WRAPPER),
+			instanciedServices[serviceRequested.ordinal()] = (Service)new RobotReal((STMcard)getService(ServiceNames.STM_CARD),
 															 (Config)getService(ServiceNames.CONFIG),
 															 (Log)getService(ServiceNames.LOG));
         else if(serviceRequested == ServiceNames.REAL_GAME_STATE)
@@ -226,15 +215,14 @@ public class Container
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadTimer((Log)getService(ServiceNames.LOG),
 																		(Config)getService(ServiceNames.CONFIG),
 																		(ObstacleManager)getService(ServiceNames.OBSTACLE_MANAGER),
-																		(SensorsCardWrapper)getService(ServiceNames.SENSORS_CARD_WRAPPER),
-																		(STMcardWrapper)getService(ServiceNames.STM_CARD_WRAPPER),
+																		(STMcard)getService(ServiceNames.STM_CARD),
 																		(SerialManager)getService(ServiceNames.SERIAL_MANAGER));
 		else if(serviceRequested == ServiceNames.THREAD_SENSOR)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadSensor((Log)getService(ServiceNames.LOG),
 																		(Config)getService(ServiceNames.CONFIG),
 																		(GameState<RobotReal,ReadWrite>)getService(ServiceNames.REAL_GAME_STATE),
 																		(ObstacleManager)getService(ServiceNames.OBSTACLE_MANAGER),
-																		(SensorsCardWrapper)getService(ServiceNames.SENSORS_CARD_WRAPPER));
+																		(STMcard)getService(ServiceNames.STM_CARD));
 		else if(serviceRequested == ServiceNames.THREAD_STRATEGY)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadStrategy((Log)getService(ServiceNames.LOG),
 																		(Config)getService(ServiceNames.CONFIG),

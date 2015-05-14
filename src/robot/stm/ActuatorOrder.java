@@ -1,4 +1,4 @@
-package robot.cardsWrappers.enums;
+package robot.stm;
 
 /**
  * Protocole des actionneurs

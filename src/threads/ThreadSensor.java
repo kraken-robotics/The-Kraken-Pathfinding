@@ -5,7 +5,7 @@ import permissions.ReadWrite;
 import container.Service;
 import exceptions.FinMatchException;
 import robot.RobotReal;
-import robot.cardsWrappers.SensorsCardWrapper;
+import robot.stm.STMcard;
 import strategie.GameState;
 import table.ObstacleManager;
 import utils.Config;
@@ -24,7 +24,7 @@ public class ThreadSensor extends AbstractThread implements Service
 {
 	private Log log;
 	private Config config;
-	private SensorsCardWrapper capteur;
+	private STMcard stm;
 	private final GameState<RobotReal,ReadWrite> state;
 	private ObstacleManager obstaclemanager;
 	
@@ -34,11 +34,11 @@ public class ThreadSensor extends AbstractThread implements Service
 	private int table_y = 2000;
 	private int diametreEnnemi;
 	
-	public ThreadSensor(Log log, Config config, GameState<RobotReal,ReadWrite> state, ObstacleManager obstaclemanager, SensorsCardWrapper capteur)
+	public ThreadSensor(Log log, Config config, GameState<RobotReal,ReadWrite> state, ObstacleManager obstaclemanager, STMcard stm)
 	{
 		this.log = log;
 		this.config = config;
-		this.capteur = capteur;
+		this.stm = stm;
 		this.state = state;
 		this.obstaclemanager = obstaclemanager;
 		
@@ -49,30 +49,30 @@ public class ThreadSensor extends AbstractThread implements Service
 	@Override
 	public void run()
 	{
-		log.debug("Lancement du thread de capteurs");
+		log.debug("Lancement du thread de stms");
 		int date_dernier_ajout = 0;
 		
 		while(!Config.matchDemarre)
 		{
 			if(stopThreads)
 			{
-				log.debug("Stoppage du thread capteurs");
+				log.debug("Stoppage du thread stms");
 				return;
 			}
 			Sleep.sleep(50);
 		}
 		
-		log.debug("Activation des capteurs");
+		log.debug("Activation des stms");
 		while(!finMatch)
 		{
 			try {
 				if(stopThreads)
 				{
-					log.debug("Stoppage du thread capteurs");
+					log.debug("Stoppage du thread stms");
 					return;
 				}
 
-				Vec2<ReadOnly>[] positions = capteur.mesurer();
+				Vec2<ReadOnly>[] positions = stm.mesurer();
 	
 				for(int i = 0; i < nbCapteurs; i++)
 				{
@@ -100,7 +100,7 @@ public class ThreadSensor extends AbstractThread implements Service
 				break;
 			}
 		}
-        log.debug("Fin du thread de capteurs");
+        log.debug("Fin du thread de stms");
 	}
 	
 	public void updateConfig()
@@ -111,7 +111,7 @@ public class ThreadSensor extends AbstractThread implements Service
 		table_y = config.getInt(ConfigInfo.TABLE_Y);
 		diametreEnnemi = 2*config.getInt(ConfigInfo.RAYON_ROBOT_ADVERSE);
 		log.updateConfig();
-		capteur.updateConfig();
+		stm.updateConfig();
 		state.updateConfig();
 		obstaclemanager.updateConfig();;
 	}

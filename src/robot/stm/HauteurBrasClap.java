@@ -1,4 +1,4 @@
-package robot.cardsWrappers.enums;
+package robot.stm;
 
 /**
  * Les hauteurs des bras à clap.

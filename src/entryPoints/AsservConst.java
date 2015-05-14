@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 import container.Container;
 import container.ServiceNames;
-import robot.cardsWrappers.STMcardWrapper;
+import robot.stm.STMcard;
 
 /**
  * Application permettant de trouver les constantes d'asservissement en rotation
@@ -33,12 +33,12 @@ public class AsservConst
     public static void main(String[] args)
     {
         Container container;
-        STMcardWrapper deplacements = null;
+        STMcard deplacements = null;
         int signe = 1;
         try
         {
             container = new Container();
-            deplacements = (STMcardWrapper) container.getService(ServiceNames.STM_CARD_WRAPPER);
+            deplacements = (STMcard) container.getService(ServiceNames.STM_CARD);
 
             System.out.println("r ou t?");
             char asserv = (char) System.in.read();

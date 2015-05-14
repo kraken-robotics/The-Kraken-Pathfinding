@@ -3,7 +3,7 @@ package hook.methods;
 import permissions.ReadWrite;
 import robot.Robot;
 import robot.RobotChrono;
-import robot.cardsWrappers.enums.HauteurBrasClap;
+import robot.stm.HauteurBrasClap;
 import strategie.GameState;
 import exceptions.FinMatchException;
 import exceptions.SerialConnexionException;

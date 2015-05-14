@@ -3,8 +3,8 @@ package tests;
 import org.junit.Before;
 import org.junit.Test;
 
-import robot.cardsWrappers.ActuatorCardWrapper;
-import robot.cardsWrappers.enums.ActuatorOrder;
+import robot.stm.ActuatorOrder;
+import robot.stm.STMcard;
 import utils.Sleep;
 import container.ServiceNames;
 
@@ -16,12 +16,12 @@ import container.ServiceNames;
 
 public class JUnit_Actuator extends JUnit_Test {
 
-	ActuatorCardWrapper actionneurs;
+	private STMcard actionneurs;
 	
 	@Before
     public void setUp() throws Exception {
         super.setUp();
-        actionneurs = (ActuatorCardWrapper) container.getService(ServiceNames.ACTUATOR_CARD_WRAPPER);
+        actionneurs = (STMcard) container.getService(ServiceNames.STM_CARD);
 	}
 	
 	@Test
