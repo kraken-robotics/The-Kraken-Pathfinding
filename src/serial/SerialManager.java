@@ -11,8 +11,7 @@ import exceptions.SerialConnexionException;
 import exceptions.SerialManagerException;
 
 /**
- * Instancie toutes les s�ries, si on lui demande gentillement!
- * @author pierre
+ * Instancie la série STM
  * @author pf
  *
  */
@@ -40,20 +39,19 @@ public class SerialManager implements Service
 	public void createSerial() throws SerialManagerException
 	{
 		Enumeration<?> ports = CommPortIdentifier.getPortIdentifiers();
-		while (ports.hasMoreElements())
+		while(ports.hasMoreElements())
 		{
 			CommPortIdentifier port = (CommPortIdentifier) ports.nextElement();
 
 			//Creation d'une serie de test
-			serie = new SerialConnexion(log, "STM32");
+			serie = new SerialConnexion(log);
 			try {
-				serie.initialize(port.getName(), baudrate);
+				serie.initialize(port, baudrate);
 			} catch (SerialConnexionException e) {
 				throw new SerialManagerException();
 			}
 			
-			String ping = serie.ping();
-			if(ping == "T3")
+			if(serie.ping())
 			{
 				log.debug("STM sur: " + port.getName());
 				break;

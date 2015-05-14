@@ -357,6 +357,7 @@ public class STMcard implements Service {
 	 * Renvoie la liste des positions des obstacles vus par les capteurs
 	 * @return renvoie la position brute puis position de l'ennemi, pour chaque capteur
 	 * @throws FinMatchException */
+/*
 	public Vec2<ReadOnly>[] mesurer() throws FinMatchException
 	{
 		@SuppressWarnings("unchecked")
@@ -382,7 +383,8 @@ public class STMcard implements Service {
 			}
 		}
 	}
-	
+	*/
+
 	/**
 	 * Le match a-t-il démarré? Demande à la STM l'état du jumper.
 	 * @return

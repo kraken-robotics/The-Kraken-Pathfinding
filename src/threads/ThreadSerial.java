@@ -93,6 +93,10 @@ public class ThreadSerial extends RobotThread implements Service
 					strategie.updatePath();
 					strategie.recomputePath(null);
 					break;
+
+				case "go":
+					Config.matchDemarre = true;
+					break;
 			}
 		}
 	}

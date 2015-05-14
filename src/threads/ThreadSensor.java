@@ -65,13 +65,13 @@ public class ThreadSensor extends RobotThread implements Service
 		log.debug("Activation des capteurs");
 		while(!finMatch)
 		{
+			/*
 			try {
 				if(stopThreads)
 				{
 					log.debug("Stoppage du thread capteurs");
 					return;
 				}
-
 				Vec2<ReadOnly>[] positions = stm.mesurer();
 	
 				for(int i = 0; i < nbCapteurs; i++)
@@ -98,7 +98,7 @@ public class ThreadSensor extends RobotThread implements Service
 			catch(FinMatchException e)
 			{
 				break;
-			}
+			}*/
 		}
         log.debug("Fin du thread de capteurs");
 	}

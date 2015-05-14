@@ -4,7 +4,6 @@ import exceptions.FinMatchException;
 import exceptions.SerialConnexionException;
 import exceptions.SerialManagerException;
 import gnu.io.CommPortIdentifier;
-import gnu.io.NoSuchPortException;
 import gnu.io.PortInUseException;
 import gnu.io.SerialPort;
 import gnu.io.SerialPortEvent;
@@ -21,7 +20,6 @@ import java.util.TooManyListenersException;
 import planification.dstar.LocomotionNode;
 import utils.Log;
 import container.Service;
-import container.ServiceNames;
 
 /**
  * Une connexion série
@@ -34,28 +32,16 @@ public class SerialConnexion implements SerialPortEventListener, Service
 {
 	private SerialPort serialPort;
 	protected Log log;
-	protected String name;
 	private boolean isClosed = false;
-
-	/**
-	 * Construction pour les séries trouvées
-	 * @param log
-	 * @param name
-	 */
-	public SerialConnexion (Log log, ServiceNames name)
-	{
-		this(log, name.toString());
-	}
 
 	/**
 	 * Constructeur pour la série de test
 	 * @param log
 	 * @param name
 	 */
-	SerialConnexion (Log log, String name)
+	SerialConnexion (Log log)
 	{
 		this.log = log;
-		this.name = name;
 	}
 
 	/**
@@ -80,12 +66,10 @@ public class SerialConnexion implements SerialPortEventListener, Service
 	 * @throws SerialManagerException 
 	 * @throws SerialConnexionException 
 	 */
-	void initialize(String port_name, int baudrate) throws SerialConnexionException
+	void initialize(CommPortIdentifier portId, int baudrate) throws SerialConnexionException
 	{
-		CommPortIdentifier portId = null;
 		try
 		{
-			portId = CommPortIdentifier.getPortIdentifier(port_name);
 			serialPort = (SerialPort) portId.open("TechTheTroll", TIME_OUT);
 			// set port parameters
 			serialPort.setSerialPortParams(baudrate,
@@ -110,7 +94,7 @@ public class SerialConnexion implements SerialPortEventListener, Service
 			 */
 			serialPort.enableReceiveTimeout(1000);
 		}
-		catch (NoSuchPortException | PortInUseException | UnsupportedCommOperationException | IOException e2)
+		catch (PortInUseException | UnsupportedCommOperationException | IOException e2)
 		{
 			throw new SerialConnexionException();
 		}
@@ -161,13 +145,13 @@ public class SerialConnexion implements SerialPortEventListener, Service
 						break;
 				}
 				if(nb_tests == 10)
-					log.critical("La série" + this.name + " ne répond plus");
+					log.critical("La série ne répond plus");
 			}
 		}
 		catch (Exception e)
 		{
 			e.printStackTrace();
-			log.critical("Ne peut pas parler à la carte " + this.name);
+			log.critical("Ne peut pas parler à la carte");
 			throw new SerialConnexionException();
 		}
 	}
@@ -222,13 +206,13 @@ public class SerialConnexion implements SerialPortEventListener, Service
 						break;
 				}
 				if(nb_tests == 10)
-					log.critical("La série" + this.name + " ne répond plus");
+					log.critical("La série ne répond plus");
 			}
 		}
 		catch (Exception e)
 		{
 			e.printStackTrace();
-			log.critical("Ne peut pas parler à la carte " + this.name);
+			log.critical("Ne peut pas parler à la carte");
 			throw new SerialConnexionException();
 		}
 
@@ -242,7 +226,7 @@ public class SerialConnexion implements SerialPortEventListener, Service
 		}
 		catch (Exception e)
 		{
-			log.critical("Ne peut pas parler à la carte " + this.name);
+			log.critical("Ne peut pas parler à la carte");
 			throw new SerialConnexionException();
 		}
 
@@ -256,27 +240,10 @@ public class SerialConnexion implements SerialPortEventListener, Service
 	{
 		if (!isClosed && serialPort != null)
 		{
-			log.debug("Fermeture de "+name);
+			log.debug("Fermeture de la carte");
 			serialPort.close();
 			isClosed = true;
 		}
-	}
-	
-	/**
-	 * Lit sur la série. Cet appel doit être fait après la notification de données disponibles
-	 * @param n: le nombre de lignes à lire
-	 * @throws IOException
-	 */
-	public synchronized String[] read(int n) throws IOException
-	{
-		String[] output = new String[n];
-
-		while(!input.ready());
-		
-		for(int i = 0; i < n; i++)
-			output[i] = input.readLine();
-
-		return output;
 	}
 
 	/**
@@ -308,12 +275,10 @@ public class SerialConnexion implements SerialPortEventListener, Service
 	 * Utilisé que par createSerial de SerialManager
 	 * @return l'id de la carte
 	 */
-	public synchronized String ping()
+	public synchronized boolean ping()
 	{
-		String ping = null;
 		try
-		{
-		
+		{		
 			//Evacuation de l'eventuel buffer indésirable
 			output.write("$0P@L1Z7\r".getBytes());
 			//Evacuation de l'acquittement
@@ -328,18 +293,17 @@ public class SerialConnexion implements SerialPortEventListener, Service
 
 			//recuperation de l'id de la carte
 			while(!input.ready());
-			ping = input.readLine();
-
+			return input.readLine().trim() == "T3";
 		}
 		catch (Exception e)
 		{
 			e.printStackTrace();
+			return false;
 		}
-		return ping;
 	}
 	
+	@Override
 	public void updateConfig()
-	{
-	}
+	{}
 
 }
