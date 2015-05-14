@@ -3,14 +3,12 @@ package robot.stm;
 import hook.Hook;
 import hook.types.HookDemiPlan;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 import permissions.ReadOnly;
 import planification.astar.arc.PathfindingNodes;
 import planification.astar.arc.SegmentTrajectoireCourbe;
 import utils.Config;
-import utils.ConfigInfo;
 import utils.Log;
 import utils.Vec2;
 import container.Service;
@@ -29,8 +27,6 @@ public class STMcard implements Service {
 	protected Config config;
 	private SerialConnexion serie;
 	private boolean symetrie;
-	private boolean capteursOn = true;
-	private int nbCapteurs;
 
 	public STMcard(Config config, Log log, SerialConnexion serie)
 	{
@@ -327,8 +323,6 @@ public class STMcard implements Service {
 	@Override
 	public void updateConfig()
 	{
-		capteursOn = config.getBoolean(ConfigInfo.CAPTEURS_ON);
-		nbCapteurs = config.getInt(ConfigInfo.NB_CAPTEURS_PROXIMITE);
         symetrie = config.getSymmetry();
         log.updateConfig();
         serie.updateConfig();
@@ -403,14 +397,4 @@ public class STMcard implements Service {
     	}
     }
     
-    /**
-     * Active ou désactive les capteurs. Les capteurs sont désactivés avant le début du match.
-     * @param capteurs_on
-     */
-    public void setCapteursOn(boolean capteursOn)
-    {
-    	this.capteursOn = capteursOn;
-    }
-     
-
 }

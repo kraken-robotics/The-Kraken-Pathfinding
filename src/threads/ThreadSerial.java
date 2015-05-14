@@ -51,6 +51,7 @@ public class ThreadSerial extends RobotThread implements Service
 	@Override
 	public void run()
 	{
+		ThreadLock lock = ThreadLock.getInstance();
 		ArrayList<String> data = null;
 		while(!stopThreads && !finMatch)
 		{
@@ -70,9 +71,12 @@ public class ThreadSerial extends RobotThread implements Service
 			switch(first)
 			{
 				case "obs":
-					// TODO: vérifier avant la position brute
-					obstaclemanager.creerObstacle(new Vec2<ReadOnly>(Integer.parseInt(data.get(1)), Integer.parseInt(data.get(2))), (int)(System.currentTimeMillis() - Config.getDateDebutMatch()));
-					pathfinding.updatePath();
+					if(Config.capteursOn)
+					{
+						// TODO: vérifier avant la position brute
+						obstaclemanager.creerObstacle(new Vec2<ReadOnly>(Integer.parseInt(data.get(1)), Integer.parseInt(data.get(2))), (int)(System.currentTimeMillis() - Config.getDateDebutMatch()));
+						pathfinding.updatePath();
+					}
 					break;
 					
 				case "nxt":
@@ -96,7 +100,9 @@ public class ThreadSerial extends RobotThread implements Service
 
 				case "go":
 					Config.matchDemarre = true;
+					lock.notifyAll();
 					break;
+					
 			}
 		}
 	}

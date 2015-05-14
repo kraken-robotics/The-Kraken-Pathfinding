@@ -2,7 +2,6 @@ package container;
 
 import obstacles.Obstacle;
 import permissions.ReadOnly;
-import permissions.ReadWrite;
 import planification.MemoryManager;
 import planification.astar.*;
 import planification.astar.arc.Decision;
@@ -19,14 +18,11 @@ import utils.*;
 import scripts.ScriptManager;
 import serial.SerialConnexion;
 import serial.SerialManager;
-import strategie.Execution;
 import strategie.GameState;
 import table.GridSpace;
 import table.ObstacleManager;
 import table.Table;
 import threads.RobotThread;
-import threads.ThreadSensor;
-import threads.ThreadStrategy;
 import threads.ThreadTimer;
 import robot.RobotReal;
 import robot.stm.STMcard;
@@ -199,13 +195,6 @@ public class Container
                                                              (GridSpace)getService(ServiceNames.GRID_SPACE),                                                             
                                                              (RobotReal)getService(ServiceNames.ROBOT_REAL),
         													 (HookFactory)getService(ServiceNames.HOOK_FACTORY));
-		else if(serviceRequested == ServiceNames.EXECUTION)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new Execution((Log)getService(ServiceNames.LOG),
-			                                                 (Config)getService(ServiceNames.CONFIG),
-			                                                 (GameState<RobotReal,ReadWrite>)getService(ServiceNames.REAL_GAME_STATE),
-			                                                 (ScriptManager)getService(ServiceNames.SCRIPT_MANAGER),
-			                                                 (HookFactory)getService(ServiceNames.HOOK_FACTORY),
-        													 (ThreadStrategy)getService(ServiceNames.THREAD_STRATEGY));
 		else if(serviceRequested == ServiceNames.SCRIPT_MANAGER)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ScriptManager(	(HookFactory)getService(ServiceNames.HOOK_FACTORY),
 																					(Config)getService(ServiceNames.CONFIG),
@@ -216,17 +205,6 @@ public class Container
 																		(ObstacleManager)getService(ServiceNames.OBSTACLE_MANAGER),
 																		(STMcard)getService(ServiceNames.STM_CARD),
 																		(SerialManager)getService(ServiceNames.SERIAL_MANAGER));
-		else if(serviceRequested == ServiceNames.THREAD_SENSOR)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadSensor((Log)getService(ServiceNames.LOG),
-																		(Config)getService(ServiceNames.CONFIG),
-																		(GameState<RobotReal,ReadWrite>)getService(ServiceNames.REAL_GAME_STATE),
-																		(ObstacleManager)getService(ServiceNames.OBSTACLE_MANAGER),
-																		(STMcard)getService(ServiceNames.STM_CARD));
-		else if(serviceRequested == ServiceNames.THREAD_STRATEGY)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadStrategy((Log)getService(ServiceNames.LOG),
-																		(Config)getService(ServiceNames.CONFIG),
-																		(AStar<StrategyArcManager, Decision>)getService(ServiceNames.A_STAR_STRATEGY),
-																		(GameState<RobotReal,ReadOnly>)getService(ServiceNames.REAL_GAME_STATE));
 		else if(serviceRequested == ServiceNames.PATHFINDING_ARC_MANAGER)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new PathfindingArcManager((Log)getService(ServiceNames.LOG),
 																		(Config)getService(ServiceNames.CONFIG),
@@ -258,14 +236,11 @@ public class Container
 	public void startAllThreads()
 	{
 		try {
-			getService(ServiceNames.THREAD_SENSOR);
-			((Thread)instanciedServices[ServiceNames.THREAD_SENSOR.ordinal()]).start();
-
 			getService(ServiceNames.THREAD_TIMER);
 			((Thread)instanciedServices[ServiceNames.THREAD_TIMER.ordinal()]).start();
 
-			getService(ServiceNames.THREAD_STRATEGY);
-			((Thread)instanciedServices[ServiceNames.THREAD_STRATEGY.ordinal()]).start();
+			getService(ServiceNames.THREAD_SERIE);
+			((Thread)instanciedServices[ServiceNames.THREAD_SERIE.ordinal()]).start();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

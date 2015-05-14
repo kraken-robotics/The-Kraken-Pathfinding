@@ -21,6 +21,7 @@ public class Config implements Service
 	// Permet de savoir si le match a démarré et quand
 	private static long dateDebutMatch = 0;	
 	public static boolean matchDemarre = false;	
+	public static boolean capteursOn = false;
 
 	private String name_local_file = "local.ini";
 	private String name_config_file = "config.ini";

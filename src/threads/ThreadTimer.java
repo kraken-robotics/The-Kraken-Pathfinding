@@ -30,8 +30,8 @@ public class ThreadTimer extends RobotThread implements Service
 	
 	private long dureeMatch = 90000;
 	private long dateFin;
-	public static int obstacleRefreshInterval = 500; // temps en ms entre deux appels par le thread timer du rafraichissement des obstacles de la table
-		
+	private int obstacleRefreshInterval = 500; // temps en ms entre deux appels par le thread timer du rafraichissement des obstacles de la table
+
 	public ThreadTimer(Log log, Config config, ObstacleManager obstaclemanager, STMcard stm, SerialManager serialmanager)
 	{
 		this.log = log;
@@ -50,39 +50,23 @@ public class ThreadTimer extends RobotThread implements Service
 		log.debug("Lancement du thread timer");
 
 		// les capteurs sont initialement éteints
-		stm.setCapteursOn(false);
+		Config.capteursOn = false;
 		
-		// Attente du démarrage du match
-		while(!Config.matchDemarre)
-		{
-			// Permet de signaler que le match a démarré
-			try {
-				Config.matchDemarre |= stm.demarrageMatch();
-			} catch (SerialConnexionException e) {
-				e.printStackTrace();
-			} catch (FinMatchException e) {
-				// Normalement impossible...
-				stopThreads = true;
-				e.printStackTrace();
-			}
-			if(stopThreads)
-			{
-				log.debug("Arrêt du thread timer avant le début du match");
-				return;
-			}
-			Sleep.sleep(50);
+		try {
+			ThreadLock.getInstance().wait();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 
 		config.setDateDebutMatch();
-
-		// On démarre les capteurs
-		stm.setCapteursOn(true);
+		Config.capteursOn = true;
 
 		log.debug("LE MATCH COMMENCE !");
 
 		dateFin = dureeMatch + Config.getDateDebutMatch();
 
-		// Le match à démarré. On retire périodiquement les obstacles périmés
+		// Le match a démarré. On retire périodiquement les obstacles périmés
 		while(System.currentTimeMillis() < dateFin)
 		{
 			if(stopThreads)
@@ -111,7 +95,7 @@ public class ThreadTimer extends RobotThread implements Service
 
 		// fin du match : désasser final
 		try {
-				stm.disableRotationalFeedbackLoop();
+			stm.disableRotationalFeedbackLoop();
 			stm.disableTranslationalFeedbackLoop();
 		} catch (SerialConnexionException e) {
 			e.printStackTrace();
@@ -130,6 +114,7 @@ public class ThreadTimer extends RobotThread implements Service
 		obstaclemanager.updateConfig();
 		stm.updateConfig();
 		serialmanager.updateConfig();
+		obstacleRefreshInterval = config.getInt(ConfigInfo.OBSTACLE_REFRESH_INTERVAL);
 	}
 	
 }

@@ -45,7 +45,8 @@ public enum ConfigInfo {
 	DISTANCE_ENNEMI_URGENCE("550"),
 	CHECK_POINTS_SORTIE("false"),
 	PREVISION_COLLISION("50"),
-	BAUDRATE("9600");
+	BAUDRATE("9600"),
+	OBSTACLE_REFRESH_INTERVAL("500");
 
 	private String defaultValue;
 	
