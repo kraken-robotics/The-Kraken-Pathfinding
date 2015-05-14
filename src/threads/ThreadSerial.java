@@ -33,13 +33,16 @@ public class ThreadSerial extends RobotThread implements Service
 	private ObstacleManager obstaclemanager;
 	private SerialConnexion serie;
 	private Pathfinding pathfinding;
+	private Pathfinding strategie;
 	
-	public ThreadSerial(Log log, Config config, Pathfinding pathfinding, ObstacleManager obstaclemanager, SerialConnexion serie)
+	public ThreadSerial(Log log, Config config, Pathfinding pathfinding, Pathfinding strategie, ObstacleManager obstaclemanager, SerialConnexion serie)
 	{
 		this.log = log;
 		this.config = config;
 		this.obstaclemanager = obstaclemanager;
 		this.serie = serie;
+		this.pathfinding = pathfinding;
+		this.strategie = strategie;
 		
 		Thread.currentThread().setPriority(2);
 		updateConfig();
@@ -67,20 +70,29 @@ public class ThreadSerial extends RobotThread implements Service
 			switch(first)
 			{
 				case "obs":
+					// TODO: vérifier avant la position brute
 					obstaclemanager.creerObstacle(new Vec2<ReadOnly>(Integer.parseInt(data.get(1)), Integer.parseInt(data.get(2))), (int)(System.currentTimeMillis() - Config.getDateDebutMatch()));
 					pathfinding.updatePath();
 					break;
+					
 				case "nxt":
 					ArrayList<LocomotionNode> itineraire = pathfinding.recomputePath(new GridPoint(Integer.parseInt(data.get(1)), Integer.parseInt(data.get(2))));
-				try {
-					serie.communiquer(itineraire);
-				} catch (SerialConnexionException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (FinMatchException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+					try {
+						serie.communiquer(itineraire);
+					} catch (SerialConnexionException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (FinMatchException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					break;
+				
+				case "ftl":
+					// TODO noter quelque part l'erreur (Table pour strat?)
+					strategie.updatePath();
+					strategie.recomputePath(null);
+					break;
 			}
 		}
 	}

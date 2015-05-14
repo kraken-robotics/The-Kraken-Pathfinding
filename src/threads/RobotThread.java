@@ -2,7 +2,7 @@ package threads;
 
 /**
  * Classe abstraite des threads
- * @author pf,marsu
+ * @author pf
  *
  */
 

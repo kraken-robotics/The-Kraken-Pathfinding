@@ -1,7 +1,5 @@
 package threads;
 
-import table.ObstacleManager;
-import table.Table;
 import utils.Config;
 import utils.Log;
 import container.Service;
@@ -15,20 +13,10 @@ import container.Service;
 
 public class ThreadAnalyseEnnemi extends RobotThread implements Service {
 
-	// TODO quand on aura une balise 
+	// TODO quand/si on a une balise 
 	
-/*	private Log log;
-	private Config config;
-	private ObstacleManager obstaclemanager;
-	private Table table;*/
-
-	public ThreadAnalyseEnnemi(Log log, Config config, ObstacleManager obstaclemanager, Table table)
+	public ThreadAnalyseEnnemi(Log log, Config config)
 	{
-/*		this.log = log;
-		this.config = config;
-		this.obstaclemanager = obstaclemanager;
-		this.table = table;*/
-
 		Thread.currentThread().setPriority(2);
 		updateConfig();
 	}
