@@ -7,7 +7,7 @@ import permissions.ReadOnly;
 import planification.Pathfinding;
 import planification.dstar.GridPoint;
 import planification.dstar.LocomotionNode;
-import robot.serial.SerialConnexion;
+import serial.SerialConnexion;
 import table.ObstacleManager;
 import utils.Config;
 import utils.Log;

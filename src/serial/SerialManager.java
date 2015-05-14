@@ -1,4 +1,4 @@
-package robot.serial;
+package serial;
 import utils.Config;
 import utils.ConfigInfo;
 import utils.Log;

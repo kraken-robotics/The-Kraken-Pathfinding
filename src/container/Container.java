@@ -17,6 +17,8 @@ import exceptions.SerialManagerException;
 import exceptions.ThreadException;
 import utils.*;
 import scripts.ScriptManager;
+import serial.SerialConnexion;
+import serial.SerialManager;
 import strategie.Execution;
 import strategie.GameState;
 import table.GridSpace;
@@ -27,8 +29,6 @@ import threads.ThreadSensor;
 import threads.ThreadStrategy;
 import threads.ThreadTimer;
 import robot.RobotReal;
-import robot.serial.SerialManager;
-import robot.serial.SerialConnexion;
 import robot.stm.STMcard;
 
 

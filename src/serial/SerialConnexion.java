@@ -1,4 +1,4 @@
-package robot.serial;
+package serial;
 
 import exceptions.FinMatchException;
 import exceptions.SerialConnexionException;
