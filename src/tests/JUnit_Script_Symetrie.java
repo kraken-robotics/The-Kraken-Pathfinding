@@ -4,10 +4,6 @@ import org.junit.Before;
 
 import permissions.ReadOnly;
 import permissions.ReadWrite;
-import planification.astar.AStar;
-import planification.astar.arc.PathfindingNodes;
-import planification.astar.arc.SegmentTrajectoireCourbe;
-import planification.astar.arcmanager.PathfindingArcManager;
 import container.ServiceNames;
 import enums.RobotColor;
 import robot.RobotReal;
