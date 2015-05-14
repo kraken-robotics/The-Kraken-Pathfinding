@@ -49,26 +49,26 @@ public class ThreadSensor extends AbstractThread implements Service
 	@Override
 	public void run()
 	{
-		log.debug("Lancement du thread de stms");
+		log.debug("Lancement du thread de capteurs");
 		int date_dernier_ajout = 0;
 		
 		while(!Config.matchDemarre)
 		{
 			if(stopThreads)
 			{
-				log.debug("Stoppage du thread stms");
+				log.debug("Stoppage du thread capteurs");
 				return;
 			}
 			Sleep.sleep(50);
 		}
 		
-		log.debug("Activation des stms");
+		log.debug("Activation des capteurs");
 		while(!finMatch)
 		{
 			try {
 				if(stopThreads)
 				{
-					log.debug("Stoppage du thread stms");
+					log.debug("Stoppage du thread capteurs");
 					return;
 				}
 
@@ -100,7 +100,7 @@ public class ThreadSensor extends AbstractThread implements Service
 				break;
 			}
 		}
-        log.debug("Fin du thread de stms");
+        log.debug("Fin du thread de capteurs");
 	}
 	
 	public void updateConfig()

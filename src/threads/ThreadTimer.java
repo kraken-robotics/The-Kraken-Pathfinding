@@ -13,7 +13,7 @@ import utils.Sleep;
 
 /**
  * Thread qui s'occupe de la gestion du temps: début du match, péremption des obstacles
- * C'est lui qui active les stms en début de match.
+ * C'est lui qui active les capteurs en début de match.
  * @author pf
  *
  */
@@ -49,7 +49,7 @@ public class ThreadTimer extends AbstractThread implements Service
 	{
 		log.debug("Lancement du thread timer");
 
-		// les stms sont initialement éteints
+		// les capteurs sont initialement éteints
 		stm.setCapteursOn(false);
 		
 		// Attente du démarrage du match
@@ -75,7 +75,7 @@ public class ThreadTimer extends AbstractThread implements Service
 
 		config.setDateDebutMatch();
 
-		// On démarre les stms
+		// On démarre les capteurs
 		stm.setCapteursOn(true);
 
 		log.debug("LE MATCH COMMENCE !");
