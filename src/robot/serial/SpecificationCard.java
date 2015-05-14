@@ -10,10 +10,10 @@ import container.ServiceNames;
 class SpecificationCard 
 {
 	ServiceNames name;
-	int id;
+	String id;
 	int baudrate;
 
-	SpecificationCard(ServiceNames name, int id, int baudrate)
+	SpecificationCard(ServiceNames name, String id, int baudrate)
 	{
 		this.name = name;
 		this.id = id;

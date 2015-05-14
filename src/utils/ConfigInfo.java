@@ -44,7 +44,8 @@ public enum ConfigInfo {
 	TOLERANCE_DEPART_SCRIPT("20"),
 	DISTANCE_ENNEMI_URGENCE("550"),
 	CHECK_POINTS_SORTIE("false"),
-	PREVISION_COLLISION("50");
+	PREVISION_COLLISION("50"),
+	BAUDRATE("9600");
 
 	private String defaultValue;
 	

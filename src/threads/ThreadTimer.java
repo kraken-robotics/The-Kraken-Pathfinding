@@ -119,7 +119,7 @@ public class ThreadTimer extends RobotThread implements Service
 			e.printStackTrace();
 		}
 		
-		serialmanager.closeAll();
+		serialmanager.close();
 	}
 	
 	public void updateConfig()

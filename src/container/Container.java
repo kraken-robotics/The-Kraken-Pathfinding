@@ -9,7 +9,6 @@ import planification.astar.arc.Decision;
 import planification.astar.arc.SegmentTrajectoireCourbe;
 import planification.astar.arcmanager.PathfindingArcManager;
 import planification.astar.arcmanager.StrategyArcManager;
-import container.ServiceNames.TypeService;
 import hook.HookFactory;
 import exceptions.ContainerException;
 import exceptions.FinMatchException;
@@ -69,7 +68,7 @@ public class Container
 		SerialManager serialmanager;
 		try {
 			serialmanager = (SerialManager)getService(ServiceNames.SERIAL_MANAGER);
-			serialmanager.closeAll();
+			serialmanager.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -166,11 +165,11 @@ public class Container
 			instanciedServices[serviceRequested.ordinal()] = (Service)new SerialManager((Log)getService(ServiceNames.LOG),
 																				(Config)getService(ServiceNames.CONFIG));
 		
-		else if(serviceRequested.getType() == TypeService.SERIE) // les séries
+		else if(serviceRequested == ServiceNames.SERIE_STM) // les séries
 		{
 			try {
 				SerialManager serialmanager = (SerialManager)getService(ServiceNames.SERIAL_MANAGER);
-				instanciedServices[serviceRequested.ordinal()] = (Service)serialmanager.getSerial(serviceRequested);
+				instanciedServices[serviceRequested.ordinal()] = (Service)serialmanager.getSerial();
 			}
 			catch(Exception e)
 			{
@@ -181,7 +180,7 @@ public class Container
 		else if(serviceRequested == ServiceNames.STM_CARD)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new STMcard((Config)getService(ServiceNames.CONFIG),
 			                                                 (Log)getService(ServiceNames.LOG),
-			                                                 (SerialConnexion)getService(ServiceNames.SERIE_LOCOMOTION));
+			                                                 (SerialConnexion)getService(ServiceNames.SERIE_STM));
 		else if(serviceRequested == ServiceNames.MEMORY_MANAGER)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new MemoryManager((Log)getService(ServiceNames.LOG),
 															 (Config)getService(ServiceNames.CONFIG),
