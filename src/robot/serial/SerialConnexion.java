@@ -15,8 +15,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.TooManyListenersException;
 
+import planification.dstar.LocomotionNode;
 import utils.Log;
 import container.Service;
 import container.ServiceNames;
@@ -24,6 +26,7 @@ import container.ServiceNames;
 /**
  * Une connexion série
  * @author kayou
+ * @author pf
  *
  */
 
@@ -39,7 +42,7 @@ public class SerialConnexion implements SerialPortEventListener, Service
 	 * @param log
 	 * @param name
 	 */
-	SerialConnexion (Log log, ServiceNames name)
+	public SerialConnexion (Log log, ServiceNames name)
 	{
 		this(log, name.toString());
 	}
@@ -109,6 +112,62 @@ public class SerialConnexion implements SerialPortEventListener, Service
 		}
 		catch (NoSuchPortException | PortInUseException | UnsupportedCommOperationException | IOException e2)
 		{
+			throw new SerialConnexionException();
+		}
+	}
+
+	/**
+	 * Envoie d'un itinéraire
+	 * @param messages
+	 * @throws SerialConnexionException
+	 * @throws FinMatchException
+	 */
+	public synchronized void communiquer(ArrayList<LocomotionNode> messages) throws SerialConnexionException, FinMatchException
+	{
+		// TODO
+	}
+
+	/**
+	 * Méthode pour envoyer un message à la carte
+	 * @param messages
+	 * @return
+	 * @throws SerialConnexionException
+	 * @throws FinMatchException
+	 */
+	public synchronized void communiquer(String[] messages) throws SerialConnexionException, FinMatchException
+	{
+		if(isClosed)
+			throw new FinMatchException();
+		
+		try
+		{
+			for (String m : messages)
+			{
+				m += "\r";
+				output.write(m.getBytes());
+				int nb_tests = 0;
+				char acquittement;
+
+				while(nb_tests < 10)
+				{
+					nb_tests++;
+
+					while(!input.ready());
+					acquittement = input.readLine().charAt(0);
+
+					if (acquittement != '_')
+						output.write(m.getBytes());
+					else
+						break;
+				}
+				if(nb_tests == 10)
+					log.critical("La série" + this.name + " ne répond plus");
+			}
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			log.critical("Ne peut pas parler à la carte " + this.name);
 			throw new SerialConnexionException();
 		}
 	}
@@ -221,7 +280,23 @@ public class SerialConnexion implements SerialPortEventListener, Service
 	}
 
 	/**
-	 * Handle an event on the serial port.
+	 * Lit sur la série. Cet appel doit être fait après la notification de données disponibles
+	 * @throws IOException
+	 */
+	public synchronized ArrayList<String> read() throws IOException
+	{
+		ArrayList<String> output = new ArrayList<String>();
+
+		while(!input.ready());
+		int n = Integer.parseInt(input.readLine());
+		for(int i = 0; i < n; i++)
+			output.add(input.readLine());
+
+		return output;
+	}
+
+	/**
+	 * Gestion d'un évènement sur la série.
 	 */
 	public synchronized void serialEvent(SerialPortEvent oEvent)
 	{

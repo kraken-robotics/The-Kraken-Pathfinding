@@ -20,7 +20,7 @@ import utils.Vec2;
  *
  */
 
-public class ThreadSensor extends AbstractThread implements Service
+public class ThreadSensor extends RobotThread implements Service
 {
 	private Log log;
 	private Config config;

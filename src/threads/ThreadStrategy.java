@@ -27,7 +27,7 @@ import utils.Sleep;
  *
  */
 
-public class ThreadStrategy extends AbstractThread implements Service
+public class ThreadStrategy extends RobotThread implements Service
 {
 
 	private Log log;

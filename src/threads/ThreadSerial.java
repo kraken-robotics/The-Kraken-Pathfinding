@@ -1,0 +1,92 @@
+package threads;
+
+import java.io.IOException;
+import java.util.ArrayList;
+
+import permissions.ReadOnly;
+import planification.Pathfinding;
+import planification.dstar.GridPoint;
+import planification.dstar.LocomotionNode;
+import robot.serial.SerialConnexion;
+import table.ObstacleManager;
+import utils.Config;
+import utils.Log;
+import utils.Vec2;
+import container.Service;
+import exceptions.FinMatchException;
+import exceptions.SerialConnexionException;
+
+/**
+ * Thread qui écoute la série et y répond si besoin.
+ * Il peut:
+ * - prévenir la table si un obstacle arrive
+ * - demander au pathfinding le chemin à suivre
+ * @author pf
+ *
+ */
+
+public class ThreadSerial extends RobotThread implements Service
+{
+
+	protected Log log;
+	protected Config config;
+	private ObstacleManager obstaclemanager;
+	private SerialConnexion serie;
+	private Pathfinding pathfinding;
+	
+	public ThreadSerial(Log log, Config config, Pathfinding pathfinding, ObstacleManager obstaclemanager, SerialConnexion serie)
+	{
+		this.log = log;
+		this.config = config;
+		this.obstaclemanager = obstaclemanager;
+		this.serie = serie;
+		
+		Thread.currentThread().setPriority(2);
+		updateConfig();
+	}
+
+	@Override
+	public void run()
+	{
+		ArrayList<String> data = null;
+		while(!stopThreads && !finMatch)
+		{
+			try {
+				serie.wait();
+			} catch (InterruptedException e) {
+				// TODO
+				e.printStackTrace();
+			}
+			try {
+				data = serie.read();
+			} catch (IOException e) {
+				// TODO
+				e.printStackTrace();
+			}
+			String first = data.get(0);
+			switch(first)
+			{
+				case "obs":
+					obstaclemanager.creerObstacle(new Vec2<ReadOnly>(Integer.parseInt(data.get(1)), Integer.parseInt(data.get(2))), (int)(System.currentTimeMillis() - Config.getDateDebutMatch()));
+					pathfinding.updatePath();
+					break;
+				case "nxt":
+					ArrayList<LocomotionNode> itineraire = pathfinding.recomputePath(new GridPoint(Integer.parseInt(data.get(1)), Integer.parseInt(data.get(2))));
+				try {
+					serie.communiquer(itineraire);
+				} catch (SerialConnexionException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (FinMatchException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+	
+	@Override
+	public void updateConfig() {
+	}
+
+}

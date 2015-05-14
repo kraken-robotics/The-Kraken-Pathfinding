@@ -23,7 +23,7 @@ import strategie.GameState;
 import table.GridSpace;
 import table.ObstacleManager;
 import table.Table;
-import threads.AbstractThread;
+import threads.RobotThread;
 import threads.ThreadSensor;
 import threads.ThreadStrategy;
 import threads.ThreadTimer;
@@ -295,7 +295,7 @@ public class Container
 	 */
 	public void stopAllThreads()
 	{
-		AbstractThread.stopAllThread();
+		RobotThread.stopAllThread();
 	}
 	
 }

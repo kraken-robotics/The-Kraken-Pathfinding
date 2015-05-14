@@ -6,7 +6,7 @@ package threads;
  *
  */
 
-public abstract class AbstractThread extends Thread {
+public abstract class RobotThread extends Thread {
 
 	// Permet d'arrêter tous les threads d'un coup
 	protected static boolean stopThreads = false;

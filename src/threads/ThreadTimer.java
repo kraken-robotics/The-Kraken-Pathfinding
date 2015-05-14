@@ -18,7 +18,7 @@ import utils.Sleep;
  *
  */
 
-public class ThreadTimer extends AbstractThread implements Service
+public class ThreadTimer extends RobotThread implements Service
 {
 
 	// Dépendance

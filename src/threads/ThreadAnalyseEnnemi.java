@@ -13,7 +13,7 @@ import container.Service;
  *
  */
 
-public class ThreadAnalyseEnnemi extends AbstractThread implements Service {
+public class ThreadAnalyseEnnemi extends RobotThread implements Service {
 
 	// TODO quand on aura une balise 
 	

@@ -11,4 +11,6 @@ import planification.astar.arc.Arc;
 public class GridPoint implements Arc
 {
 	// TODO
+	public GridPoint(int x, int y)
+	{}
 }
