@@ -1,7 +1,7 @@
 package threads;
 
 import planification.Pathfinding;
-import table.ObstacleStrategieManager;
+import table.StrategieInfo;
 import utils.Config;
 import utils.Log;
 
@@ -15,10 +15,10 @@ public class ThreadStrategie extends Thread
 {
 	protected Log log;
 	protected Config config;
-	private ObstacleStrategieManager obstaclestrategiemanager;
+	private StrategieInfo obstaclestrategiemanager;
 	private Pathfinding strategie;
 	
-	public ThreadStrategie(Log log, Config config, ObstacleStrategieManager obstaclestrategiemanager, Pathfinding strategie)
+	public ThreadStrategie(Log log, Config config, StrategieInfo obstaclestrategiemanager, Pathfinding strategie)
 	{
 		this.log = log;
 		this.config = config;

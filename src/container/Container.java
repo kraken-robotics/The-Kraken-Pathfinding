@@ -23,8 +23,11 @@ import strategie.Execution;
 import strategie.GameState;
 import table.GridSpace;
 import table.ObstacleManager;
+import table.StrategieInfo;
 import table.Table;
 import threads.IncomingDataBuffer;
+import threads.ThreadObstacleManager;
+import threads.ThreadPathfinding;
 import threads.ThreadSerial;
 import threads.ThreadTimer;
 import robot.RobotReal;
@@ -60,10 +63,12 @@ public class Container
 	public void destructor()
 	{
 		// coupe les connexions séries
-		SerialManager serialmanager;
 		try {
-			serialmanager = (SerialManager)getService(ServiceNames.SERIAL_MANAGER);
-			serialmanager.close();
+			if(instanciedServices[ServiceNames.SERIAL_MANAGER.ordinal()] != null)
+			{
+				SerialManager serialmanager = (SerialManager)getService(ServiceNames.SERIAL_MANAGER);
+				serialmanager.close();
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -208,6 +213,25 @@ public class Container
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadTimer((Log)getService(ServiceNames.LOG),
 																		(Config)getService(ServiceNames.CONFIG),
 																		(ObstacleManager)getService(ServiceNames.OBSTACLE_MANAGER));
+		else if(serviceRequested == ServiceNames.THREAD_STRATEGIE)
+			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadTimer((Log)getService(ServiceNames.LOG),
+																		(Config)getService(ServiceNames.CONFIG),
+																		(ObstacleManager)getService(ServiceNames.OBSTACLE_MANAGER));
+		else if(serviceRequested == ServiceNames.THREAD_PATHFINDING)
+			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadPathfinding((Log)getService(ServiceNames.LOG),
+																		(Config)getService(ServiceNames.CONFIG),
+																		(ObstacleManager)getService(ServiceNames.OBSTACLE_MANAGER),
+																		(Pathfinding) null);
+		else if(serviceRequested == ServiceNames.THREAD_OBSTACLE_MANAGER)
+			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadObstacleManager((Log)getService(ServiceNames.LOG),
+																		(Config)getService(ServiceNames.CONFIG),
+																		(IncomingDataBuffer)getService(ServiceNames.INCOMING_DATA_BUFFER),
+																		(ObstacleManager)getService(ServiceNames.OBSTACLE_MANAGER));
+		else if(serviceRequested == ServiceNames.THREAD_STRATEGIE_INFO)
+			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadObstacleManager((Log)getService(ServiceNames.LOG),
+																		(Config)getService(ServiceNames.CONFIG),
+																		(IncomingDataBuffer)getService(ServiceNames.INCOMING_DATA_BUFFER),
+																		(ObstacleManager)getService(ServiceNames.OBSTACLE_MANAGER));
 		else if(serviceRequested == ServiceNames.THREAD_SERIE)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadSerial((Log)getService(ServiceNames.LOG),
 																		(Config)getService(ServiceNames.CONFIG),
@@ -216,6 +240,10 @@ public class Container
 																		(ObstacleManager)getService(ServiceNames.OBSTACLE_MANAGER),
 																		(SerialConnexion)getService(ServiceNames.SERIE_STM),
 																		(IncomingDataBuffer)getService(ServiceNames.INCOMING_DATA_BUFFER));
+
+		else if(serviceRequested == ServiceNames.STRATEGIE_INFO)
+			instanciedServices[serviceRequested.ordinal()] = (Service)new StrategieInfo((Log)getService(ServiceNames.LOG), 
+																		(Config)getService(ServiceNames.CONFIG));
 		else if(serviceRequested == ServiceNames.PATHFINDING_ARC_MANAGER)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new PathfindingArcManager((Log)getService(ServiceNames.LOG),
 																		(Config)getService(ServiceNames.CONFIG),

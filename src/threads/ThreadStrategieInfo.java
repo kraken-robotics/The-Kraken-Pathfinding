@@ -1,7 +1,7 @@
 package threads;
 
 import table.ObstacleManager;
-import table.ObstacleStrategieManager;
+import table.StrategieInfo;
 import utils.Config;
 import utils.Log;
 import container.Service;
@@ -12,14 +12,14 @@ import container.Service;
  *
  */
 
-public class ThreadObstacleStrategie extends Thread implements Service
+public class ThreadStrategieInfo extends Thread implements Service
 {
 	private ObstacleManager obstaclemanager;
-	private ObstacleStrategieManager obstaclestrategiemanager;
+	private StrategieInfo obstaclestrategiemanager;
 	protected Config config;
 	protected Log log;
 	
-	public ThreadObstacleStrategie(Log log, Config config, ObstacleStrategieManager obstaclestrategiemanager, ObstacleManager obstaclemanager)
+	public ThreadStrategieInfo(Log log, Config config, StrategieInfo obstaclestrategiemanager, ObstacleManager obstaclemanager)
 	{
 		this.log = log;
 		this.config = config;

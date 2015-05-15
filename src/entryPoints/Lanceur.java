@@ -1,8 +1,7 @@
 package entryPoints;
 import robot.RobotReal;
 import strategie.Execution;
-import utils.Config;
-import utils.Sleep;
+import threads.StartMatchLock;
 import container.Container;
 import container.ServiceNames;
 
@@ -41,9 +40,16 @@ public class Lanceur {
 			/**
 			 * Attente du début du match
 			 */
-			while(!Config.matchDemarre)
-				Sleep.sleep(20);
-			
+			StartMatchLock lock = StartMatchLock.getInstance();
+			synchronized(lock)
+			{
+				try {
+					lock.wait();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+
 			execution.boucleExecution();
 			container.destructor();
 		} catch (Exception e) {

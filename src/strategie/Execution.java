@@ -5,6 +5,7 @@ import hook.Hook;
 import java.util.ArrayList;
 
 import permissions.ReadWrite;
+import planification.Pathfinding;
 import planification.astar.arc.Decision;
 import container.Service;
 import exceptions.FinMatchException;
@@ -14,6 +15,7 @@ import exceptions.UnableToMoveException;
 import robot.RobotReal;
 import robot.Speed;
 import scripts.ScriptManager;
+import threads.StartMatchLock;
 import threads.ThreadStrategy;
 import utils.Config;
 import utils.Log;
@@ -31,7 +33,7 @@ public class Execution implements Service {
 	private Log log;
 	protected Config config;
 	private ScriptManager scriptmanager;
-	private ThreadStrategy threadstrategy;
+	private Pathfinding strategie;
 	
 	private ArrayList<Hook> hooksEntreScripts;
 	
