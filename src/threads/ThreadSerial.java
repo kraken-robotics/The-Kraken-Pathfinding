@@ -6,13 +6,13 @@ import permissions.ReadOnly;
 import planification.Pathfinding;
 import planification.dstar.GridPoint;
 import planification.dstar.LocomotionNode;
+import requete.RequeteSTM;
 import serial.SerialConnexion;
 import table.ObstacleManager;
 import utils.Config;
 import utils.Log;
 import utils.Vec2;
 import container.Service;
-import error.STMError;
 import exceptions.FinMatchException;
 import exceptions.SerialConnexionException;
 
@@ -33,7 +33,7 @@ public class ThreadSerial extends Thread implements Service
 	private SerialConnexion serie;
 	private Pathfinding pathfinding;
 	private IncomingDataBuffer buffer;
-	private STMError error;
+	private RequeteSTM error;
 	
 	public ThreadSerial(Log log, Config config, Pathfinding pathfinding, Pathfinding strategie, ObstacleManager obstaclemanager, SerialConnexion serie, IncomingDataBuffer buffer)
 	{
@@ -42,7 +42,7 @@ public class ThreadSerial extends Thread implements Service
 		this.serie = serie;
 		this.pathfinding = pathfinding;
 		this.buffer = buffer;
-		error = STMError.getInstance();
+		error = RequeteSTM.getInstance();
 		
 		Thread.currentThread().setPriority(2);
 		updateConfig();

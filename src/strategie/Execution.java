@@ -8,11 +8,12 @@ import permissions.ReadWrite;
 import planification.Pathfinding;
 import planification.astar.arc.Decision;
 import container.Service;
-import error.STMError;
 import exceptions.FinMatchException;
 import exceptions.ScriptException;
 import exceptions.ScriptHookException;
 import exceptions.UnableToMoveException;
+import requete.RequeteSTM;
+import requete.RequeteType;
 import robot.RobotReal;
 import robot.Speed;
 import scripts.ScriptManager;
@@ -34,7 +35,7 @@ public class Execution implements Service {
 	protected Config config;
 	private ScriptManager scriptmanager;
 	private Pathfinding strategie;
-	private STMError error;
+	private RequeteSTM requete;
 	
 	private ArrayList<Hook> hooksEntreScripts;
 	
@@ -45,7 +46,7 @@ public class Execution implements Service {
 		this.gamestate = gamestate;
 		this.scriptmanager = scriptmanager;
 		this.strategie = strategie;
-		error = STMError.getInstance();
+		requete = RequeteSTM.getInstance();
 		
 		updateConfig();
 /*		try {
@@ -66,12 +67,24 @@ public class Execution implements Service {
 		 */
 		while(true)
 		{
-			synchronized(error)
+			synchronized(requete)
 			{
 				try {
-					error.wait();
+					requete.wait();
 				} catch (InterruptedException e) {
 					e.printStackTrace();
+				}
+				if(requete.type == RequeteType.BLOCAGE_MECANIQUE)
+				{
+					// TODO
+				}
+				else if(requete.type == RequeteType.OBSTACLE_DROIT_DEVANT)
+				{
+					// TODO
+				}
+				else if(requete.type == RequeteType.REQUETE_HOOK_SCRIPT)
+				{
+					// TODO
 				}
 			}
 		}
