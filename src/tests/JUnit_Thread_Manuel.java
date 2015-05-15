@@ -3,18 +3,19 @@ package tests;
 import org.junit.Before;
 import org.junit.Test;
 
-import threads.ThreadSerial;
 import utils.Sleep;
-import container.ServiceNames;
 
-public class JUnit_Thread_Serie extends JUnit_Test {
+/**
+ * Tests unitaires pour tester manuellement l'appel aux différents threads
+ * @author pf
+ *
+ */
 
-	private ThreadSerial thread;
+public class JUnit_Thread_Manuel extends JUnit_Test {
 	
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        thread = (ThreadSerial) container.getService(ServiceNames.THREAD_SERIE);
         container.startAllThreads();
     }
 
@@ -23,6 +24,5 @@ public class JUnit_Thread_Serie extends JUnit_Test {
     {
     	Sleep.sleep(20000);
     }
-
 	
 }

@@ -1,7 +1,7 @@
 package threads;
 
 /**
- * Juste un singleton qui sert à démarrer les threads
+ * Juste un singleton qui sert au démarrage du match
  * @author pf
  *
  */

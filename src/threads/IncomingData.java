@@ -5,6 +5,9 @@ import utils.Vec2;
 
 /**
  * Une donnée qui provient des capteurs
+ * Il s'agit d'un couple de position:
+ * - pointBrut est l'endroit où le capteur a vu quelque chose
+ * - centreEnnemi est l'estimation du centre de l'ennemi
  * @author pf
  *
  */

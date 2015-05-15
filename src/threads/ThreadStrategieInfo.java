@@ -7,7 +7,7 @@ import utils.Log;
 import container.Service;
 
 /**
- * Thread de table. Surveille ObstacleManager
+ * Thread d'informations stratégiques. Surveille ObstacleManager
  * @author pf
  *
  */

@@ -7,7 +7,7 @@ import utils.Config;
 import utils.Log;
 
 /**
- * Thread qui recalcule l'itinéraire à emprunter
+ * Thread qui recalcule l'itinéraire à emprunter. Surveille ObstacleManager.
  * @author pf
  *
  */

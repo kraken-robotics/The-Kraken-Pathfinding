@@ -7,6 +7,7 @@ import planification.Pathfinding;
 import planification.dstar.GridPoint;
 import planification.dstar.LocomotionNode;
 import requete.RequeteSTM;
+import requete.RequeteType;
 import serial.SerialConnexion;
 import table.ObstacleManager;
 import utils.Config;
@@ -17,10 +18,7 @@ import exceptions.FinMatchException;
 import exceptions.SerialConnexionException;
 
 /**
- * Thread qui écoute la série et y répond si besoin.
- * Il peut:
- * - prévenir la table si un obstacle arrive
- * - demander au pathfinding le chemin à suivre
+ * Thread qui écoute la série et appelle qui il faut.
  * @author pf
  *
  */
@@ -33,7 +31,7 @@ public class ThreadSerial extends Thread implements Service
 	private SerialConnexion serie;
 	private Pathfinding pathfinding;
 	private IncomingDataBuffer buffer;
-	private RequeteSTM error;
+	private RequeteSTM requete;
 	
 	public ThreadSerial(Log log, Config config, Pathfinding pathfinding, Pathfinding strategie, ObstacleManager obstaclemanager, SerialConnexion serie, IncomingDataBuffer buffer)
 	{
@@ -42,7 +40,7 @@ public class ThreadSerial extends Thread implements Service
 		this.serie = serie;
 		this.pathfinding = pathfinding;
 		this.buffer = buffer;
-		error = RequeteSTM.getInstance();
+		requete = RequeteSTM.getInstance();
 		
 		Thread.currentThread().setPriority(2);
 		updateConfig();
@@ -98,17 +96,21 @@ public class ThreadSerial extends Thread implements Service
 					}
 					break;
 				
-				case "err":
+				case "enm":
 					/**
 					 * On signale au thread principal qu'il y a un problème.
 					 * C'est lui qui répondre à la STM.
 					 */
-					synchronized(error)
+					synchronized(requete)
 					{
-						error.notifyAll();
+						requete.type = RequeteType.OBSTACLE_DROIT_DEVANT;
+						requete.notifyAll();
 					}
 					
 				case "go":
+					/**
+					 * Démarrage du match
+					 */
 					synchronized(lock)
 					{
 						lock.notifyAll();
@@ -116,9 +118,19 @@ public class ThreadSerial extends Thread implements Service
 					break;
 					
 				case "end":
-					// Fin du match, on coupe la série et on arrête ce thread
+					/**
+					 * Fin du match, on coupe la série et on arrête ce thread
+					 */
 					serie.close();
 					return;
+					
+				case "arv":
+					synchronized(requete)
+					{
+						requete.type = RequeteType.TRAJET_FINI;
+						requete.notifyAll();
+					}
+					
 			}
 		}
 	}

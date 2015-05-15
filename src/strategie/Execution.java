@@ -86,6 +86,10 @@ public class Execution implements Service {
 				{
 					// TODO
 				}
+				else if(requete.type == RequeteType.TRAJET_FINI)
+				{
+					// TODO
+				}
 			}
 		}
 	}

@@ -8,7 +8,8 @@ import utils.Sleep;
 import container.Service;
 
 /**
- * Thread appelé périodiquement. Gère la péremption des obstacles
+ * Thread appelé périodiquement. Gère la péremption des obstacles ainsi que
+ * la date de démarrage
  * @author pf
  *
  */
