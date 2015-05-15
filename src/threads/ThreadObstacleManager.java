@@ -1,8 +1,6 @@
 package threads;
 
 import table.ObstacleManager;
-import table.Table;
-import threads.IncomingDataBuffer.Elem;
 import utils.Config;
 import utils.Log;
 import container.Service;
@@ -34,21 +32,21 @@ public class ThreadObstacleManager extends Thread implements Service
 	{
 		while(!Config.stopThreads)
 		{
-			Elem e;
+			IncomingData e = null;
 			synchronized(buffer)
 			{
 				try {
 					buffer.wait();
 					e = buffer.poll();					
 				} catch (InterruptedException e2) {
-					// TODO Auto-generated catch block
 					e2.printStackTrace();
 				}
 			}
 			
 			// Cet appel peut lancer un obstaclemanager.notifyAll()
 			// Il n'est pas synchronized car il ne modifie pas le buffer
-			obstaclemanager.addIfUseful(e);
+			if(e != null)
+				obstaclemanager.addIfUseful(e);
 		}
 	}
 	

@@ -15,8 +15,6 @@ import container.Service;
 
 public class IncomingDataBuffer implements Service
 {
-	public class Elem{}
-	
 	protected Config config;
 	protected Log log;
 	
@@ -26,15 +24,15 @@ public class IncomingDataBuffer implements Service
 		this.config = config;
 	}
 	
-	private Queue<Elem> buffer = new LinkedList<Elem>();
+	private Queue<IncomingData> buffer = new LinkedList<IncomingData>();
 	
-	public void add(Elem elem)
+	public void add(IncomingData elem)
 	{
 		buffer.add(elem);
 		buffer.notifyAll();
 	}
 
-	public Elem poll()
+	public IncomingData poll()
 	{
 		return buffer.poll();
 	}

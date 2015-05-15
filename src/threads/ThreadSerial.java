@@ -48,7 +48,11 @@ public class ThreadSerial extends Thread implements Service
 	@Override
 	public void run()
 	{
-		ThreadLock lock = ThreadLock.getInstance();
+		/**
+		 * StartMatchLock permet de signaler le départ du match aux autres threads
+		 * Il est utilisé par ThreadTimer
+		 */
+		StartMatchLock lock = StartMatchLock.getInstance();
 		ArrayList<String> data = new ArrayList<String>();
 		while(!Config.stopThreads && !Config.finMatch)
 		{
@@ -67,9 +71,14 @@ public class ThreadSerial extends Thread implements Service
 			switch(first)
 			{
 				case "obs":
-					buffer.add(elem); // TODO
+					int xBrut = Integer.parseInt(serie.read());
+					int yBrut = Integer.parseInt(serie.read());
+					int xEnnemi = Integer.parseInt(serie.read());
+					int yEnnemi = Integer.parseInt(serie.read());
+
+					buffer.add(new IncomingData(new Vec2<ReadOnly>(xBrut, yBrut), new Vec2<ReadOnly>(xEnnemi, yEnnemi)));
 					break;
-					
+
 				case "nxt":
 					int x = Integer.parseInt(serie.read());
 					int y = Integer.parseInt(serie.read());
@@ -87,21 +96,25 @@ public class ThreadSerial extends Thread implements Service
 					break;
 				
 				case "go":
-					Config.matchDemarre = true;
-					
 					synchronized(lock)
 					{
 						lock.notifyAll();
 					}
 					break;
 					
+				case "end":
+					// Fin du match, on coupe la série et on arrête ce thread
+					serie.close();
+					return;
 			}
 		}
 	}
 	
 	@Override
 	public void updateConfig() {
-		// TODO
+		serie.updateConfig();
+		pathfinding.updateCost();
+		buffer.updateConfig();
 	}
 
 }

@@ -14,6 +14,7 @@ import planification.astar.arc.SegmentTrajectoireCourbe;
 import robot.Speed;
 import container.Service;
 import enums.Tribool;
+import threads.IncomingData;
 import utils.Config;
 import utils.ConfigInfo;
 import utils.Log;
@@ -116,11 +117,14 @@ public class ObstacleManager implements Service
         	isThereHypotheticalEnemy = false;
         int size = listObstaclesMobiles.size();
         
+        int firstNotDeadOld = firstNotDead;
         for(; firstNotDead < size; firstNotDead++)
         {
         	if(!listObstaclesMobiles.get(firstNotDead).isDestructionNecessary(date))
         		break;
         }
+        if(firstNotDeadOld != firstNotDead)
+        	notifyAll();
     }  
     
     /**
@@ -400,6 +404,11 @@ public class ObstacleManager implements Service
 	public SegmentTrajectoireCourbe getSegment()
 	{
 		return obstacleTrajectoireCourbe.getSegment();
+	}
+
+	public void addIfUseful(IncomingData e) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }

@@ -24,7 +24,7 @@ import strategie.GameState;
 import table.GridSpace;
 import table.ObstacleManager;
 import table.Table;
-import threads.RobotThread;
+import threads.IncomingDataBuffer;
 import threads.ThreadSerial;
 import threads.ThreadTimer;
 import robot.RobotReal;
@@ -59,10 +59,6 @@ public class Container
 	 */
 	public void destructor()
 	{
-		// stoppe les différents threads
-		stopAllThreads();
-		Sleep.sleep(700); // attends qu'ils soient bien tous arrètés
-		
 		// coupe les connexions séries
 		SerialManager serialmanager;
 		try {
@@ -163,7 +159,10 @@ public class Container
 		else if(serviceRequested == ServiceNames.SERIAL_MANAGER)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new SerialManager((Log)getService(ServiceNames.LOG),
 																				(Config)getService(ServiceNames.CONFIG));
-		
+		else if(serviceRequested == ServiceNames.INCOMING_DATA_BUFFER)
+			instanciedServices[serviceRequested.ordinal()] = (Service)new IncomingDataBuffer((Log)getService(ServiceNames.LOG),
+																				(Config)getService(ServiceNames.CONFIG));
+				
 		else if(serviceRequested == ServiceNames.SERIE_STM) // les séries
 		{
 			try {
@@ -208,16 +207,15 @@ public class Container
 		else if(serviceRequested == ServiceNames.THREAD_TIMER)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadTimer((Log)getService(ServiceNames.LOG),
 																		(Config)getService(ServiceNames.CONFIG),
-																		(ObstacleManager)getService(ServiceNames.OBSTACLE_MANAGER),
-																		(STMcard)getService(ServiceNames.STM_CARD),
-																		(SerialManager)getService(ServiceNames.SERIAL_MANAGER));
+																		(ObstacleManager)getService(ServiceNames.OBSTACLE_MANAGER));
 		else if(serviceRequested == ServiceNames.THREAD_SERIE)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadSerial((Log)getService(ServiceNames.LOG),
 																		(Config)getService(ServiceNames.CONFIG),
 																		(Pathfinding) null,
 																		(Pathfinding) null,
 																		(ObstacleManager)getService(ServiceNames.OBSTACLE_MANAGER),
-																		(SerialConnexion)getService(ServiceNames.SERIE_STM));
+																		(SerialConnexion)getService(ServiceNames.SERIE_STM),
+																		(IncomingDataBuffer)getService(ServiceNames.INCOMING_DATA_BUFFER));
 		else if(serviceRequested == ServiceNames.PATHFINDING_ARC_MANAGER)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new PathfindingArcManager((Log)getService(ServiceNames.LOG),
 																		(Config)getService(ServiceNames.CONFIG),
@@ -274,15 +272,6 @@ public class Container
 				log.critical(s);
 			}
 		return out;
-	}
-
-	/**
-	 * Arrête tous les threads
-	 * Le thread principal (appelant cette méthode) continue son exécution
-	 */
-	public void stopAllThreads()
-	{
-		RobotThread.stopAllThread();
 	}
 	
 }

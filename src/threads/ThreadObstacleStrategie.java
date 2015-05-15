@@ -2,14 +2,12 @@ package threads;
 
 import table.ObstacleManager;
 import table.ObstacleStrategieManager;
-import table.Table;
-import threads.IncomingDataBuffer.Elem;
 import utils.Config;
 import utils.Log;
 import container.Service;
 
 /**
- * Thread de table. Surveille IncomingDataBuffer
+ * Thread de table. Surveille ObstacleManager
  * @author pf
  *
  */
@@ -48,7 +46,7 @@ public class ThreadObstacleStrategie extends Thread implements Service
 			
 			// Cet appel peut lancer un obstaclestrategiemanager.notifyAll()
 			// Il n'est pas synchronized car il ne modifie pas le buffer
-			obstaclestrategiemanager.addIfUseful(e);
+			// TODO
 		}
 	}
 	
