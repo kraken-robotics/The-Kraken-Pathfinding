@@ -87,7 +87,8 @@ abstract public class Hook
 	 * @throws WallCollisionDetectedException 
 	 * @throws ChangeDirectionException 
 	 */
-	public abstract void evaluate() throws FinMatchException, ScriptHookException, WallCollisionDetectedException, ChangeDirectionException;
+	// Cette méthode a été transférée au bas niveau
+//	public abstract void evaluate() throws FinMatchException, ScriptHookException, WallCollisionDetectedException, ChangeDirectionException;
 	
 	/**
 	 * Méthode appelée par RobotChrono. Elle doit dire si, sur un trajet entre A et B et

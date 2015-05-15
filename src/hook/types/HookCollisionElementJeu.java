@@ -1,10 +1,7 @@
 package hook.types;
 
 import hook.Hook;
-import exceptions.ChangeDirectionException;
 import exceptions.FinMatchException;
-import exceptions.ScriptHookException;
-import exceptions.WallCollisionDetectedException;
 import obstacles.ObstacleCircular;
 import obstacles.ObstacleRectangular;
 import permissions.ReadOnly;
@@ -35,6 +32,12 @@ public class HookCollisionElementJeu extends Hook
 	@Override
 	public boolean simulated_evaluate(Vec2<ReadOnly> pointA, Vec2<ReadOnly> pointB, long date)
 	{
+		try {
+			ObstacleRectangular.update(obstacleRobot, GameState.getPosition(state), GameState.getOrientation(state));
+		} catch (FinMatchException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		ObstacleRectangular<ReadOnly> r = new ObstacleRectangular<ReadOnly>(pointA, pointB);
 		return r.isColliding(obstacle);
 	}
@@ -46,11 +49,12 @@ public class HookCollisionElementJeu extends Hook
      * @throws WallCollisionDetectedException 
      * @throws ChangeDirectionException 
      */
+/*	@Override
 	public void evaluate() throws FinMatchException, ScriptHookException, WallCollisionDetectedException, ChangeDirectionException
 	{
 		ObstacleRectangular.update(obstacleRobot, GameState.getPosition(state), GameState.getOrientation(state));
 		if(obstacleRobot.isColliding(obstacle))
 			trigger();
-	}
+	}*/
 
 }

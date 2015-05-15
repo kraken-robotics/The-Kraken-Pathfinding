@@ -2,10 +2,6 @@ package hook.types;
 
 import permissions.ReadOnly;
 import permissions.ReadWrite;
-import exceptions.ChangeDirectionException;
-import exceptions.FinMatchException;
-import exceptions.ScriptHookException;
-import exceptions.WallCollisionDetectedException;
 import strategie.GameState;
 import utils.Config;
 import utils.Log;
@@ -16,7 +12,7 @@ public class HookDemiPlan extends Hook
 {
 
 	private final Vec2<ReadWrite> point, direction;
-	private boolean disabled = false;
+//	private boolean disabled = false;
 	
 	/**
 	 * Constructeur sans paramètre, qui crée un hook qui n'est jamais appelable.
@@ -49,12 +45,12 @@ public class HookDemiPlan extends Hook
 	/**
 	 * Désactive le hook
 	 */
-	public void setDisabled()
+/*	public void setDisabled()
 	{
 		disabled = true;
-	}
+	}*/
 	
-	@Override
+/*	@Override
 	public void evaluate() throws FinMatchException, ScriptHookException,
 			WallCollisionDetectedException, ChangeDirectionException
 	{
@@ -66,14 +62,14 @@ public class HookDemiPlan extends Hook
 			trigger();
 			disabled = true;
 		}
-	}
+	}*/
 	
 	/**
 	 * Mise à jour des paramètres du hooks
 	 */
 	public void update(Vec2<ReadOnly> direction, Vec2<ReadOnly> point)
 	{
-		disabled = false;
+//		disabled = false;
 		Vec2.copy(direction, this.direction);
 		Vec2.copy(point, this.point);
 	}

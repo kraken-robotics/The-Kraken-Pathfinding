@@ -3,7 +3,6 @@ package hook.types;
 import obstacles.ObstacleCircular;
 import permissions.ReadOnly;
 import exceptions.ChangeDirectionException;
-import exceptions.FinMatchException;
 import exceptions.ScriptHookException;
 import exceptions.WallCollisionDetectedException;
 import hook.Hook;
@@ -55,12 +54,12 @@ public class HookPosition extends Hook
      * @throws WallCollisionDetectedException 
      * @throws ChangeDirectionException 
      */
-	public void evaluate() throws FinMatchException, ScriptHookException, WallCollisionDetectedException, ChangeDirectionException
+/*	public void evaluate() throws FinMatchException, ScriptHookException, WallCollisionDetectedException, ChangeDirectionException
 	{
 		Vec2<ReadOnly> positionRobot = GameState.getPosition(state);
 		if(position.squaredDistance(positionRobot) <= squaredTolerancy)
 			trigger();
-	}
+	}*/
 
 
 	@Override

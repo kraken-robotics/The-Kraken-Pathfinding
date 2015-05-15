@@ -1,10 +1,6 @@
 package hook.types;
 
 import permissions.ReadOnly;
-import exceptions.ChangeDirectionException;
-import exceptions.FinMatchException;
-import exceptions.ScriptHookException;
-import exceptions.WallCollisionDetectedException;
 import strategie.GameState;
 import utils.Config;
 import utils.Log;
@@ -27,11 +23,11 @@ public class HookDate extends Hook {
 		this.date_hook = date;
 	}
 
-	@Override
+/*	@Override
 	public void evaluate() throws FinMatchException, ScriptHookException, WallCollisionDetectedException, ChangeDirectionException {
 		if(System.currentTimeMillis() - Config.getDateDebutMatch() > date_hook)
 			trigger();
-	}
+	}*/
 
 	@Override
 	public boolean simulated_evaluate(Vec2<ReadOnly> pointA, Vec2<ReadOnly> pointB, long date)
