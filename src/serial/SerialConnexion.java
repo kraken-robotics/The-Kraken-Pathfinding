@@ -147,7 +147,7 @@ public class SerialConnexion implements SerialPortEventListener, Service
 	 * @throws SerialConnexionException 
 	 * @throws FinMatchException 
 	 */
-	public String[] communiquer(String message, int nb_lignes_reponse) throws SerialConnexionException, FinMatchException
+	public synchronized String[] communiquer(String message, int nb_lignes_reponse) throws SerialConnexionException, FinMatchException
 	{
 		String[] messages = {message};
 		return communiquer(messages, nb_lignes_reponse);
@@ -202,7 +202,7 @@ public class SerialConnexion implements SerialPortEventListener, Service
 	/**
 	 * Doit être appelé quand on arrête de se servir de la série
 	 */
-	public void close()
+	public synchronized void close()
 	{
 		if (!isClosed && serialPort != null)
 		{
@@ -212,11 +212,24 @@ public class SerialConnexion implements SerialPortEventListener, Service
 		}
 	}
 
+	public synchronized String read()
+	{
+		try {
+			while(!input.ready());
+			return input.readLine();
+		} catch (IOException e) {
+			// Impossible car on sait qu'il y a des données
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	
 	/**
 	 * Lit sur la série. Cet appel doit être fait après la notification de données disponibles
 	 * @throws IOException
 	 */
-	public synchronized ArrayList<String> read() throws IOException
+	public synchronized ArrayList<String> readMore() throws IOException
 	{
 		ArrayList<String> output = new ArrayList<String>();
 
@@ -233,7 +246,7 @@ public class SerialConnexion implements SerialPortEventListener, Service
 	 */
 	public synchronized void serialEvent(SerialPortEvent oEvent)
 	{
-		notify();
+		notifyAll();
 	}
 
 	/**

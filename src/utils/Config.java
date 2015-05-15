@@ -22,6 +22,8 @@ public class Config implements Service
 	private static long dateDebutMatch = 0;	
 	public static boolean matchDemarre = false;	
 	public static boolean capteursOn = false;
+	public static boolean stopThreads;
+	public static boolean finMatch;
 
 	private String name_local_file = "local.ini";
 	private String name_config_file = "config.ini";

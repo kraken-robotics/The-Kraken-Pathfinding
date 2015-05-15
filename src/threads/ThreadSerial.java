@@ -1,6 +1,5 @@
 package threads;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 import permissions.ReadOnly;
@@ -25,24 +24,22 @@ import exceptions.SerialConnexionException;
  *
  */
 
-public class ThreadSerial extends RobotThread implements Service
+public class ThreadSerial extends Thread implements Service
 {
 
 	protected Log log;
 	protected Config config;
-	private ObstacleManager obstaclemanager;
 	private SerialConnexion serie;
 	private Pathfinding pathfinding;
-	private Pathfinding strategie;
+	private IncomingDataBuffer buffer;
 	
-	public ThreadSerial(Log log, Config config, Pathfinding pathfinding, Pathfinding strategie, ObstacleManager obstaclemanager, SerialConnexion serie)
+	public ThreadSerial(Log log, Config config, Pathfinding pathfinding, Pathfinding strategie, ObstacleManager obstaclemanager, SerialConnexion serie, IncomingDataBuffer buffer)
 	{
 		this.log = log;
 		this.config = config;
-		this.obstaclemanager = obstaclemanager;
 		this.serie = serie;
 		this.pathfinding = pathfinding;
-		this.strategie = strategie;
+		this.buffer = buffer;
 		
 		Thread.currentThread().setPriority(2);
 		updateConfig();
@@ -52,8 +49,8 @@ public class ThreadSerial extends RobotThread implements Service
 	public void run()
 	{
 		ThreadLock lock = ThreadLock.getInstance();
-		ArrayList<String> data = null;
-		while(!stopThreads && !finMatch)
+		ArrayList<String> data = new ArrayList<String>();
+		while(!Config.stopThreads && !Config.finMatch)
 		{
 			try {
 				synchronized(serie)
@@ -64,27 +61,20 @@ public class ThreadSerial extends RobotThread implements Service
 				// TODO
 				e.printStackTrace();
 			}
-			try {
-				data = serie.read();
-			} catch (IOException e) {
-				// TODO
-				e.printStackTrace();
-			}
-			String first = data.get(0);
+			String first = serie.read();
 			log.debug(first);
+			data.clear();
 			switch(first)
 			{
 				case "obs":
-					if(Config.capteursOn)
-					{
-						// TODO: vérifier avant la position brute
-						obstaclemanager.creerObstacle(new Vec2<ReadOnly>(Integer.parseInt(data.get(1)), Integer.parseInt(data.get(2))), (int)(System.currentTimeMillis() - Config.getDateDebutMatch()));
-						pathfinding.updatePath();
-					}
+					buffer.add(elem); // TODO
 					break;
 					
 				case "nxt":
-					ArrayList<LocomotionNode> itineraire = pathfinding.recomputePath(new GridPoint(Integer.parseInt(data.get(1)), Integer.parseInt(data.get(2))));
+					int x = Integer.parseInt(serie.read());
+					int y = Integer.parseInt(serie.read());
+					// Réécrire avec x, y
+					ArrayList<LocomotionNode> itineraire = pathfinding.getPath(new GridPoint(x,y));
 					try {
 						serie.communiquer(itineraire);
 					} catch (SerialConnexionException e) {
@@ -96,12 +86,6 @@ public class ThreadSerial extends RobotThread implements Service
 					}
 					break;
 				
-				case "ftl":
-					// TODO noter quelque part l'erreur (Table pour strat?)
-					strategie.updatePath();
-					strategie.recomputePath(null);
-					break;
-
 				case "go":
 					Config.matchDemarre = true;
 					
@@ -117,6 +101,7 @@ public class ThreadSerial extends RobotThread implements Service
 	
 	@Override
 	public void updateConfig() {
+		// TODO
 	}
 
 }
