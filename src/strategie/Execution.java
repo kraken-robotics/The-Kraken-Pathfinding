@@ -1,7 +1,6 @@
 package strategie;
 
 import hook.Hook;
-import hook.HookFactory;
 
 import java.util.ArrayList;
 
@@ -28,7 +27,7 @@ import utils.Log;
 
 public class Execution implements Service {
 
-	private final GameState<RobotReal,ReadWrite> gamestate;
+	private GameState<RobotReal,ReadWrite> gamestate;
 	private Log log;
 	protected Config config;
 	private ScriptManager scriptmanager;
@@ -36,21 +35,21 @@ public class Execution implements Service {
 	
 	private ArrayList<Hook> hooksEntreScripts;
 	
-	public Execution(Log log, Config config, GameState<RobotReal,ReadWrite> gamestate, ScriptManager scriptmanager, HookFactory hookfactory, ThreadStrategy threadstrategy)
+	public Execution(Log log, Config config)
 	{
 		this.log = log;
 		this.config = config;
-		this.gamestate = gamestate;
-		this.scriptmanager = scriptmanager;
-		this.threadstrategy = threadstrategy;
+//		this.gamestate = gamestate;
+//		this.scriptmanager = scriptmanager;
+//		this.threadstrategy = threadstrategy;
 
-		updateConfig();
-		try {
+//		updateConfig();
+/*		try {
 			hooksEntreScripts = hookfactory.getHooksEntreScriptsReal(gamestate);
 		} catch (FinMatchException e) {
 			// Impossible
 			e.printStackTrace();
-		}
+		}*/
 	}
 
 	/**

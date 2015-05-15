@@ -3,6 +3,7 @@ package container;
 import obstacles.Obstacle;
 import permissions.ReadOnly;
 import planification.MemoryManager;
+import planification.Pathfinding;
 import planification.astar.*;
 import planification.astar.arc.Decision;
 import planification.astar.arc.SegmentTrajectoireCourbe;
@@ -18,11 +19,13 @@ import utils.*;
 import scripts.ScriptManager;
 import serial.SerialConnexion;
 import serial.SerialManager;
+import strategie.Execution;
 import strategie.GameState;
 import table.GridSpace;
 import table.ObstacleManager;
 import table.Table;
 import threads.RobotThread;
+import threads.ThreadSerial;
 import threads.ThreadTimer;
 import robot.RobotReal;
 import robot.stm.STMcard;
@@ -173,6 +176,9 @@ public class Container
 				throw new ContainerException();
 			}
 		}
+		else if(serviceRequested == ServiceNames.EXECUTION)
+			instanciedServices[serviceRequested.ordinal()] = (Service)new Execution((Log)getService(ServiceNames.LOG),
+			                                                 (Config)getService(ServiceNames.CONFIG));
 		else if(serviceRequested == ServiceNames.STM_CARD)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new STMcard((Config)getService(ServiceNames.CONFIG),
 			                                                 (Log)getService(ServiceNames.LOG),
@@ -205,6 +211,13 @@ public class Container
 																		(ObstacleManager)getService(ServiceNames.OBSTACLE_MANAGER),
 																		(STMcard)getService(ServiceNames.STM_CARD),
 																		(SerialManager)getService(ServiceNames.SERIAL_MANAGER));
+		else if(serviceRequested == ServiceNames.THREAD_SERIE)
+			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadSerial((Log)getService(ServiceNames.LOG),
+																		(Config)getService(ServiceNames.CONFIG),
+																		(Pathfinding) null,
+																		(Pathfinding) null,
+																		(ObstacleManager)getService(ServiceNames.OBSTACLE_MANAGER),
+																		(SerialConnexion)getService(ServiceNames.SERIE_STM));
 		else if(serviceRequested == ServiceNames.PATHFINDING_ARC_MANAGER)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new PathfindingArcManager((Log)getService(ServiceNames.LOG),
 																		(Config)getService(ServiceNames.CONFIG),

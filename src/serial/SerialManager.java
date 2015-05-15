@@ -38,6 +38,7 @@ public class SerialManager implements Service
 	 */
 	public void createSerial() throws SerialManagerException
 	{
+		log.debug("Recherche de la série à "+baudrate+" baud");
 		Enumeration<?> ports = CommPortIdentifier.getPortIdentifiers();
 		while(ports.hasMoreElements())
 		{
@@ -53,13 +54,17 @@ public class SerialManager implements Service
 			
 			if(serie.ping())
 			{
-				log.debug("STM sur: " + port.getName());
-				break;
+				log.debug("STM sur " + port.getName());
+				return;
 			}
+			else
+				log.debug(port.getName()+": non");
 				
 			// Ce n'est pas cette série, on la ferme donc
 			serie.close();
 		}
+		// La série n'a pas été trouvée
+		throw new SerialManagerException();
 	}
 
 	/**
