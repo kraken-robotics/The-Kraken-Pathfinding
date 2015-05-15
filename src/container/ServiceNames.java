@@ -20,12 +20,12 @@ public enum ServiceNames {
 	 STRATEGIE_INFO,
 	 SERIE_STM,
 	
-	 THREAD_TIMER,
-	 THREAD_SERIE,
-	 THREAD_OBSTACLE_MANAGER,
-	 THREAD_STRATEGIE_INFO,
-	 THREAD_PATHFINDING,
-	 THREAD_STRATEGIE,
+	 THREAD_TIMER(true),
+	 THREAD_SERIE(true),
+	 THREAD_OBSTACLE_MANAGER(true),
+	 THREAD_STRATEGIE_INFO(true),
+	 THREAD_PATHFINDING(true),
+	 THREAD_STRATEGIE(true),
 	 
 	 SERIAL_MANAGER,
 	 OBSTACLE_MANAGER,
@@ -35,4 +35,19 @@ public enum ServiceNames {
 	 INCOMING_DATA_BUFFER,
 	 MEMORY_MANAGER;
 
+	 private boolean isThread = false;
+	 
+	 private ServiceNames()
+	 {}
+	 
+	 private ServiceNames(boolean isThread)
+	 {
+		 this.isThread = isThread;
+	 }
+	 
+	 public boolean isThread()
+	 {
+		 return isThread;
+	 }
+	 
 }

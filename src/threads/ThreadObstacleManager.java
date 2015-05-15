@@ -37,12 +37,14 @@ public class ThreadObstacleManager extends Thread implements Service
 			{
 				try {
 					buffer.wait();
-					e = buffer.poll();					
+					log.debug("Réveil de ThreadObstacleManager");
+					e = buffer.poll();
+					log.debug(e.pointBrut);
 				} catch (InterruptedException e2) {
 					e2.printStackTrace();
 				}
 			}
-			
+			log.debug("Sortie synchronized");
 			// Cet appel peut lancer un obstaclemanager.notifyAll()
 			// Il n'est pas synchronized car il ne modifie pas le buffer
 			if(e != null)

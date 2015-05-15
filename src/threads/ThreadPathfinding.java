@@ -1,5 +1,6 @@
 package threads;
 
+import container.Service;
 import planification.Pathfinding;
 import table.ObstacleManager;
 import utils.Config;
@@ -11,7 +12,7 @@ import utils.Log;
  *
  */
 
-public class ThreadPathfinding extends Thread
+public class ThreadPathfinding extends Thread implements Service
 {
 	protected Log log;
 	protected Config config;
@@ -40,12 +41,19 @@ public class ThreadPathfinding extends Thread
 					e.printStackTrace();
 				}
 			}
+			log.debug("Réveil de ThreadPathfinding");	
 			
 			// Cet appel peut lancer un pathfinding.notifyAll()
 			// Il n'est pas synchronized car il ne modifie pas obstaclemanager
 			pathfinding.updateCost();
 		}
 
+	}
+
+	@Override
+	public void updateConfig() {
+		obstaclemanager.updateConfig();
+//		pathfinding.updateConfig();
 	}
 
 }

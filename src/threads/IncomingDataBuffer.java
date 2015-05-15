@@ -29,7 +29,10 @@ public class IncomingDataBuffer implements Service
 	public void add(IncomingData elem)
 	{
 		buffer.add(elem);
-		buffer.notifyAll();
+		synchronized(this)
+		{
+			notifyAll();
+		}
 	}
 
 	public IncomingData poll()

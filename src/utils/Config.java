@@ -22,7 +22,7 @@ public class Config implements Service
 	private static long dateDebutMatch = 0;	
 	public static boolean matchDemarre = false;	
 	public static boolean capteursOn = false;
-	public static boolean stopThreads;
+	public static boolean stopThreads = false;
 	public static boolean finMatch;
 
 	private String name_local_file = "local.ini";

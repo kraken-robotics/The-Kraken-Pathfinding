@@ -30,6 +30,8 @@ import threads.IncomingDataBuffer;
 import threads.ThreadObstacleManager;
 import threads.ThreadPathfinding;
 import threads.ThreadSerial;
+import threads.ThreadStrategie;
+import threads.ThreadStrategieInfo;
 import threads.ThreadTimer;
 import robot.RobotReal;
 import robot.stm.STMcard;
@@ -56,6 +58,7 @@ public class Container
 	private Config config;
 
 	private static int nbInstances = 0;
+	private boolean threadsStarted = false;
 	
 	/**
 	 * Fonction à appeler à la fin du programme.
@@ -218,9 +221,10 @@ public class Container
 																		(Config)getService(ServiceNames.CONFIG),
 																		(ObstacleManager)getService(ServiceNames.OBSTACLE_MANAGER));
 		else if(serviceRequested == ServiceNames.THREAD_STRATEGIE)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadTimer((Log)getService(ServiceNames.LOG),
+			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadStrategie((Log)getService(ServiceNames.LOG),
 																		(Config)getService(ServiceNames.CONFIG),
-																		(ObstacleManager)getService(ServiceNames.OBSTACLE_MANAGER));
+																		(StrategieInfo)getService(ServiceNames.STRATEGIE_INFO),
+																		(Pathfinding)null);
 		else if(serviceRequested == ServiceNames.THREAD_PATHFINDING)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadPathfinding((Log)getService(ServiceNames.LOG),
 																		(Config)getService(ServiceNames.CONFIG),
@@ -232,9 +236,9 @@ public class Container
 																		(IncomingDataBuffer)getService(ServiceNames.INCOMING_DATA_BUFFER),
 																		(ObstacleManager)getService(ServiceNames.OBSTACLE_MANAGER));
 		else if(serviceRequested == ServiceNames.THREAD_STRATEGIE_INFO)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadObstacleManager((Log)getService(ServiceNames.LOG),
+			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadStrategieInfo((Log)getService(ServiceNames.LOG),
 																		(Config)getService(ServiceNames.CONFIG),
-																		(IncomingDataBuffer)getService(ServiceNames.INCOMING_DATA_BUFFER),
+																		(StrategieInfo)getService(ServiceNames.STRATEGIE_INFO),
 																		(ObstacleManager)getService(ServiceNames.OBSTACLE_MANAGER));
 		else if(serviceRequested == ServiceNames.THREAD_SERIE)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadSerial((Log)getService(ServiceNames.LOG),
@@ -278,13 +282,18 @@ public class Container
 	 */
 	public void startAllThreads()
 	{
+		if(threadsStarted)
+			return;
 		try {
-			((Thread)getService(ServiceNames.THREAD_TIMER)).start();
-			((Thread)getService(ServiceNames.THREAD_OBSTACLE_MANAGER)).start();
-			((Thread)getService(ServiceNames.THREAD_PATHFINDING)).start();
-			((Thread)getService(ServiceNames.THREAD_STRATEGIE)).start();
-			((Thread)getService(ServiceNames.THREAD_STRATEGIE_INFO)).start();
-			((Thread)getService(ServiceNames.THREAD_SERIE)).start();
+			for(ServiceNames s: ServiceNames.values())
+			{
+				if(s.isThread())
+				{
+					log.debug("Démarrage de "+s);
+					((Thread)getService(s)).start();
+				}
+			}
+			threadsStarted = true;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

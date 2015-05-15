@@ -103,7 +103,10 @@ public class ThreadSerial extends Thread implements Service
 					 * On signale au thread principal qu'il y a un problème.
 					 * C'est lui qui répondre à la STM.
 					 */
-					error.notifyAll();
+					synchronized(error)
+					{
+						error.notifyAll();
+					}
 					
 				case "go":
 					synchronized(lock)
@@ -123,7 +126,7 @@ public class ThreadSerial extends Thread implements Service
 	@Override
 	public void updateConfig() {
 		serie.updateConfig();
-		pathfinding.updateCost();
+//		pathfinding.updateCost();
 		buffer.updateConfig();
 	}
 

@@ -1,5 +1,6 @@
 package threads;
 
+import container.Service;
 import planification.Pathfinding;
 import table.StrategieInfo;
 import utils.Config;
@@ -11,7 +12,7 @@ import utils.Log;
  *
  */
 
-public class ThreadStrategie extends Thread
+public class ThreadStrategie extends Thread implements Service
 {
 	protected Log log;
 	protected Config config;
@@ -46,6 +47,12 @@ public class ThreadStrategie extends Thread
 			strategie.updateCost();
 		}
 
+	}
+
+	@Override
+	public void updateConfig() {
+		obstaclestrategiemanager.updateConfig();
+//		strategie.updateConfig();
 	}
 
 }

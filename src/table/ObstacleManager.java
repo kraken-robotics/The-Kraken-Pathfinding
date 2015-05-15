@@ -47,7 +47,13 @@ public class ObstacleManager implements Service
     private int rayon_robot_adverse;
     private int distanceApproximation;
     private int dureeAvantPeremption;
-        
+    private int date_dernier_ajout = 0;
+	private double tempo = 0;
+	private int table_x = 3000;
+	private int table_y = 2000;
+	private int diametreEnnemi;
+
+    
     public ObstacleManager(Log log, Config config, Table table)
     {
         this.log = log;
@@ -124,7 +130,10 @@ public class ObstacleManager implements Service
         		break;
         }
         if(firstNotDeadOld != firstNotDead)
-        	notifyAll();
+        	synchronized(this)
+        	{
+        		notifyAll();
+        	}
     }  
     
     /**
@@ -293,6 +302,10 @@ public class ObstacleManager implements Service
 
 	@Override
 	public void updateConfig() {
+		tempo = config.getDouble(ConfigInfo.CAPTEURS_TEMPORISATION_OBSTACLES);
+		table_x = config.getInt(ConfigInfo.TABLE_X);
+		table_y = config.getInt(ConfigInfo.TABLE_Y);
+		diametreEnnemi = 2*config.getInt(ConfigInfo.RAYON_ROBOT_ADVERSE);
 		rayon_robot_adverse = config.getInt(ConfigInfo.RAYON_ROBOT_ADVERSE);
 		dureeAvantPeremption = config.getInt(ConfigInfo.DUREE_PEREMPTION_OBSTACLES);
 		distanceApproximation = config.getInt(ConfigInfo.DISTANCE_MAX_ENTRE_MESURE_ET_OBJET);
@@ -406,9 +419,27 @@ public class ObstacleManager implements Service
 		return obstacleTrajectoireCourbe.getSegment();
 	}
 
-	public void addIfUseful(IncomingData e) {
-		// TODO Auto-generated method stub
-		
+	public void addIfUseful(IncomingData data)
+	{
+		if(System.currentTimeMillis() - date_dernier_ajout > tempo &&
+				data.pointBrut.x - diametreEnnemi > -table_x / 2 &&
+				data.pointBrut.y > diametreEnnemi &&
+				data.pointBrut.x + diametreEnnemi < table_x / 2 &&
+				data.pointBrut.y + diametreEnnemi < table_y)
+			if(!isObstacleFixePresentCapteurs(data.pointBrut))
+			{
+				date_dernier_ajout = (int)System.currentTimeMillis();
+				creerObstacle(data.centreEnnemi, date_dernier_ajout);
+				log.debug("Nouvel obstacle en "+data.centreEnnemi);
+				synchronized(this)
+				{
+					notifyAll();
+				}
+			}
+			else
+			    log.debug("L'objet vu en "+data.pointBrut+" est un obstacle fixe.");
+		else
+			log.debug("Hors table ou trop récent");
 	}
 	
 }
