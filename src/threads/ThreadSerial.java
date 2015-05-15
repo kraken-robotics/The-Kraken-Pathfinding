@@ -56,7 +56,10 @@ public class ThreadSerial extends RobotThread implements Service
 		while(!stopThreads && !finMatch)
 		{
 			try {
-				serie.wait();
+				synchronized(serie)
+				{
+					serie.wait();
+				}
 			} catch (InterruptedException e) {
 				// TODO
 				e.printStackTrace();
@@ -68,6 +71,7 @@ public class ThreadSerial extends RobotThread implements Service
 				e.printStackTrace();
 			}
 			String first = data.get(0);
+			log.debug(first);
 			switch(first)
 			{
 				case "obs":
@@ -100,7 +104,11 @@ public class ThreadSerial extends RobotThread implements Service
 
 				case "go":
 					Config.matchDemarre = true;
-					lock.notifyAll();
+					
+					synchronized(lock)
+					{
+						lock.notifyAll();
+					}
 					break;
 					
 			}

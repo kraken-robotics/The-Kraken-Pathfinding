@@ -184,7 +184,7 @@ public class ObstacleRectangular<T extends Permission> extends ObstacleAvecAngle
 	 * @param r
 	 * @return
 	 */
-	public static final boolean isColliding(ObstacleRectangular<ReadOnly> t, ObstacleRectangular<ReadOnly> r)
+	public static final boolean isCollidingRectangular(ObstacleRectangular<ReadOnly> t, ObstacleRectangular<ReadOnly> r)
 	{
 		// Calcul simple permettant de vérifier les cas absurdes où les obstacles sont loin l'un de l'autre
 		if(t.position.squaredDistance(r.position) >= (t.demieDiagonale+r.demieDiagonale)*(t.demieDiagonale+r.demieDiagonale))
@@ -248,7 +248,7 @@ public class ObstacleRectangular<T extends Permission> extends ObstacleAvecAngle
 		return Y;
 	}
 
-	public boolean isColliding(ObstacleCircular<ReadOnly> o)
+	public boolean isCollidingCircular(ObstacleCircular<ReadOnly> o)
 	{
 		return squaredDistance(o.position) < o.radius*o.radius;
 	}
@@ -256,9 +256,9 @@ public class ObstacleRectangular<T extends Permission> extends ObstacleAvecAngle
 	public boolean isColliding(Obstacle<ReadOnly> o)
 	{
 		if(o instanceof ObstacleRectangular)
-			return isColliding((ObstacleRectangular<ReadOnly>)o);
+			return isCollidingRectangular(getReadOnly(), (ObstacleRectangular<ReadOnly>)o);
 		else if(o instanceof ObstacleCircular)
-			return isColliding((ObstacleCircular<ReadOnly>)o);
+			return isCollidingCircular((ObstacleCircular<ReadOnly>)o);
 
 		log.critical("Appel de isColliding avec un type d'obstacle inconnu!");
 		return false;
@@ -380,4 +380,9 @@ public class ObstacleRectangular<T extends Permission> extends ObstacleAvecAngle
 		return (ObstacleRectangular<TestOnly>) this;
 	}
 
+	@SuppressWarnings("unchecked")
+	public final ObstacleRectangular<ReadOnly> getReadOnly()
+	{
+		return (ObstacleRectangular<ReadOnly>) this;
+	}
 }

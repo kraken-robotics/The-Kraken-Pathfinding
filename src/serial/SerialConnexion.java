@@ -129,23 +129,6 @@ public class SerialConnexion implements SerialPortEventListener, Service
 			{
 				m += "\r";
 				output.write(m.getBytes());
-				int nb_tests = 0;
-				char acquittement;
-
-				while(nb_tests < 10)
-				{
-					nb_tests++;
-
-					while(!input.ready());
-					acquittement = input.readLine().charAt(0);
-
-					if (acquittement != '_')
-						output.write(m.getBytes());
-					else
-						break;
-				}
-				if(nb_tests == 10)
-					log.critical("La série ne répond plus");
 			}
 		}
 		catch (Exception e)
@@ -190,23 +173,6 @@ public class SerialConnexion implements SerialPortEventListener, Service
 			{
 				m += "\r";
 				output.write(m.getBytes());
-				int nb_tests = 0;
-				char acquittement;
-
-				while(nb_tests < 10)
-				{
-					nb_tests++;
-
-					while(!input.ready());
-					acquittement = input.readLine().charAt(0);
-
-					if (acquittement != '_')
-						output.write(m.getBytes());
-					else
-						break;
-				}
-				if(nb_tests == 10)
-					log.critical("La série ne répond plus");
 			}
 		}
 		catch (Exception e)
@@ -281,15 +247,8 @@ public class SerialConnexion implements SerialPortEventListener, Service
 		{		
 			//Evacuation de l'eventuel buffer indésirable
 			output.write("$0P@L1Z7\r".getBytes());
-			//Evacuation de l'acquittement
-			while(!input.ready());
-			input.readLine();
-		
 			//ping
 			output.write("?\r".getBytes());
-			//evacuation de l'acquittement
-			while(!input.ready());
-			input.readLine();
 
 			//recuperation de l'id de la carte
 			while(!input.ready());

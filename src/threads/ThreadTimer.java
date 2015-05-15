@@ -53,7 +53,11 @@ public class ThreadTimer extends RobotThread implements Service
 		Config.capteursOn = false;
 		
 		try {
-			ThreadLock.getInstance().wait();
+			ThreadLock lock = ThreadLock.getInstance();
+			synchronized(lock)
+			{
+				lock.wait();
+			}
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

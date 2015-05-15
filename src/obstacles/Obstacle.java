@@ -64,7 +64,7 @@ public abstract class Obstacle<T extends Permission>
 	}
 	
 	@SuppressWarnings("unchecked")
-	public final Obstacle<ReadOnly> getReadOnly()
+	public Obstacle<ReadOnly> getReadOnly()
 	{
 		return (Obstacle<ReadOnly>) this;
 	}
