@@ -12,6 +12,7 @@ import utils.Config;
 import utils.Log;
 import utils.Vec2;
 import container.Service;
+import error.STMError;
 import exceptions.FinMatchException;
 import exceptions.SerialConnexionException;
 
@@ -32,6 +33,7 @@ public class ThreadSerial extends Thread implements Service
 	private SerialConnexion serie;
 	private Pathfinding pathfinding;
 	private IncomingDataBuffer buffer;
+	private STMError error;
 	
 	public ThreadSerial(Log log, Config config, Pathfinding pathfinding, Pathfinding strategie, ObstacleManager obstaclemanager, SerialConnexion serie, IncomingDataBuffer buffer)
 	{
@@ -40,6 +42,7 @@ public class ThreadSerial extends Thread implements Service
 		this.serie = serie;
 		this.pathfinding = pathfinding;
 		this.buffer = buffer;
+		error = STMError.getInstance();
 		
 		Thread.currentThread().setPriority(2);
 		updateConfig();
@@ -62,8 +65,8 @@ public class ThreadSerial extends Thread implements Service
 					serie.wait();
 				}
 			} catch (InterruptedException e) {
-				// TODO
 				e.printStackTrace();
+				continue;
 			}
 			String first = serie.read();
 			log.debug(first);
@@ -95,6 +98,13 @@ public class ThreadSerial extends Thread implements Service
 					}
 					break;
 				
+				case "err":
+					/**
+					 * On signale au thread principal qu'il y a un problème.
+					 * C'est lui qui répondre à la STM.
+					 */
+					error.notifyAll();
+					
 				case "go":
 					synchronized(lock)
 					{

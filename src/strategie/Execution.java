@@ -8,6 +8,7 @@ import permissions.ReadWrite;
 import planification.Pathfinding;
 import planification.astar.arc.Decision;
 import container.Service;
+import error.STMError;
 import exceptions.FinMatchException;
 import exceptions.ScriptException;
 import exceptions.ScriptHookException;
@@ -16,7 +17,6 @@ import robot.RobotReal;
 import robot.Speed;
 import scripts.ScriptManager;
 import threads.StartMatchLock;
-import threads.ThreadStrategy;
 import utils.Config;
 import utils.Log;
 
@@ -34,18 +34,20 @@ public class Execution implements Service {
 	protected Config config;
 	private ScriptManager scriptmanager;
 	private Pathfinding strategie;
+	private STMError error;
 	
 	private ArrayList<Hook> hooksEntreScripts;
 	
-	public Execution(Log log, Config config)
+	public Execution(Log log, Config config, Pathfinding strategie, ScriptManager scriptmanager, GameState<RobotReal,ReadWrite> gamestate)
 	{
 		this.log = log;
 		this.config = config;
-//		this.gamestate = gamestate;
-//		this.scriptmanager = scriptmanager;
-//		this.threadstrategy = threadstrategy;
-
-//		updateConfig();
+		this.gamestate = gamestate;
+		this.scriptmanager = scriptmanager;
+		this.strategie = strategie;
+		error = STMError.getInstance();
+		
+		updateConfig();
 /*		try {
 			hooksEntreScripts = hookfactory.getHooksEntreScriptsReal(gamestate);
 		} catch (FinMatchException e) {
@@ -64,14 +66,15 @@ public class Execution implements Service {
 		 */
 		while(true)
 		{
-			Decision bestDecision = threadstrategy.getBestDecision();
-			try {
-				executerScript(bestDecision);
-			} catch (FinMatchException e) {
-				break;
+			synchronized(error)
+			{
+				try {
+					error.wait();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 			}
 		}
-		log.debug("Match terminé!");
 	}
 	
 	/**
@@ -131,7 +134,7 @@ public class Execution implements Service {
 		gamestate.updateConfig();
 		log.updateConfig();
 		scriptmanager.updateConfig();
-		threadstrategy.updateConfig();
+		strategie.updateConfig();
 	}
 	
 }

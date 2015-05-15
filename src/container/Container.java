@@ -2,6 +2,7 @@ package container;
 
 import obstacles.Obstacle;
 import permissions.ReadOnly;
+import permissions.ReadWrite;
 import planification.MemoryManager;
 import planification.Pathfinding;
 import planification.astar.*;
@@ -182,7 +183,10 @@ public class Container
 		}
 		else if(serviceRequested == ServiceNames.EXECUTION)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new Execution((Log)getService(ServiceNames.LOG),
-			                                                 (Config)getService(ServiceNames.CONFIG));
+			                                                 (Config)getService(ServiceNames.CONFIG),
+			                                                 (Pathfinding) null,
+  															 (ScriptManager)getService(ServiceNames.SCRIPT_MANAGER),
+        													 (GameState<RobotReal,ReadWrite>)getService(ServiceNames.REAL_GAME_STATE));
 		else if(serviceRequested == ServiceNames.STM_CARD)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new STMcard((Config)getService(ServiceNames.CONFIG),
 			                                                 (Log)getService(ServiceNames.LOG),
@@ -275,11 +279,12 @@ public class Container
 	public void startAllThreads()
 	{
 		try {
-			getService(ServiceNames.THREAD_TIMER);
-			((Thread)instanciedServices[ServiceNames.THREAD_TIMER.ordinal()]).start();
-
-			getService(ServiceNames.THREAD_SERIE);
-			((Thread)instanciedServices[ServiceNames.THREAD_SERIE.ordinal()]).start();
+			((Thread)getService(ServiceNames.THREAD_TIMER)).start();
+			((Thread)getService(ServiceNames.THREAD_OBSTACLE_MANAGER)).start();
+			((Thread)getService(ServiceNames.THREAD_PATHFINDING)).start();
+			((Thread)getService(ServiceNames.THREAD_STRATEGIE)).start();
+			((Thread)getService(ServiceNames.THREAD_STRATEGIE_INFO)).start();
+			((Thread)getService(ServiceNames.THREAD_SERIE)).start();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -2,10 +2,11 @@ package planification;
 
 import java.util.ArrayList;
 
+import container.Service;
 import planification.dstar.GridPoint;
 import planification.dstar.LocomotionNode;
 
-public interface Pathfinding {
+public interface Pathfinding extends Service {
 
 	/**
 	 * Calcule un chemin
