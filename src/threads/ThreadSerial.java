@@ -56,7 +56,6 @@ public class ThreadSerial extends Thread implements Service
 		 * Il est utilisé par ThreadTimer
 		 */
 		StartMatchLock lock = StartMatchLock.getInstance();
-		ArrayList<String> data = new ArrayList<String>();
 		while(!Config.stopThreads && !Config.finMatch)
 		{
 			try {
@@ -69,8 +68,6 @@ public class ThreadSerial extends Thread implements Service
 				continue;
 			}
 			String first = serie.read();
-			log.debug(first);
-			data.clear();
 			switch(first)
 			{
 				case "obs":
@@ -127,6 +124,11 @@ public class ThreadSerial extends Thread implements Service
 					/**
 					 * Fin du match, on coupe la série et on arrête ce thread
 					 */
+					synchronized(requete)
+					{
+						requete.type = RequeteType.MATCH_FINI;
+						requete.notifyAll();
+					}
 					serie.close();
 					return;
 
@@ -137,6 +139,9 @@ public class ThreadSerial extends Thread implements Service
 						requete.notifyAll();
 					}
 					break;
+					
+				default:
+					log.critical("Commande série inconnue: "+first);
 					
 			}
 		}
