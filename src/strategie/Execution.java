@@ -6,18 +6,14 @@ import java.util.ArrayList;
 
 import permissions.ReadWrite;
 import planification.Pathfinding;
-import planification.astar.arc.Decision;
 import container.Service;
 import exceptions.FinMatchException;
 import exceptions.ScriptException;
-import exceptions.ScriptHookException;
 import exceptions.UnableToMoveException;
 import requete.RequeteSTM;
 import requete.RequeteType;
 import robot.RobotReal;
-import robot.Speed;
 import scripts.ScriptManager;
-import threads.StartMatchLock;
 import utils.Config;
 import utils.Log;
 
@@ -67,6 +63,8 @@ public class Execution implements Service {
 		 */
 		while(true)
 		{
+			RequeteType type = null;
+			
 			synchronized(requete)
 			{
 				try {
@@ -74,22 +72,29 @@ public class Execution implements Service {
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
-				if(requete.type == RequeteType.BLOCAGE_MECANIQUE)
-				{
-					// TODO
-				}
-				else if(requete.type == RequeteType.OBSTACLE_DROIT_DEVANT)
-				{
-					// TODO
-				}
-				else if(requete.type == RequeteType.REQUETE_HOOK_SCRIPT)
-				{
-					// TODO
-				}
-				else if(requete.type == RequeteType.TRAJET_FINI)
-				{
-					// TODO
-				}
+				type = requete.type;
+			}
+			
+			if(type == RequeteType.BLOCAGE_MECANIQUE)
+			{
+				// TODO
+			}
+			else if(type == RequeteType.OBSTACLE_DROIT_DEVANT)
+			{
+				// TODO
+			}
+			else if(type == RequeteType.REQUETE_HOOK_SCRIPT)
+			{
+				// TODO
+			}
+			else if(type == RequeteType.TRAJET_FINI)
+			{
+				// TODO
+			}
+			else if(type == RequeteType.MATCH_FINI)
+			{
+				log.debug("Fin du match: arrêt du thread principal");
+				break;
 			}
 		}
 	}
@@ -99,7 +104,7 @@ public class Execution implements Service {
 	 * @param decision_actuelle
 	 * @throws FinMatchException
 	 */
-	public void executerScript(Decision decision_actuelle) throws FinMatchException
+/*	public void executerScript(Decision decision_actuelle) throws FinMatchException
 	{
 		log.debug("On tente d'exécuter "+decision_actuelle.script_name);
 		try {
@@ -125,7 +130,7 @@ public class Execution implements Service {
 			} while(recommence);
 		}
 	}
-	
+	*/
 	/**
 	 * Exécute un script. Si celui-ci demande à exécuter un script de hook, l'exécuter
 	 * @param d
@@ -133,7 +138,7 @@ public class Execution implements Service {
 	 * @throws ScriptException
 	 * @throws FinMatchException
 	 */
-	private void tryOnce(Decision d) throws UnableToMoveException, ScriptException, FinMatchException
+/*	private void tryOnce(Decision d) throws UnableToMoveException, ScriptException, FinMatchException
 	{
 		try {
 			GameState.set_vitesse(gamestate, Speed.BETWEEN_SCRIPTS);
@@ -143,15 +148,10 @@ public class Execution implements Service {
 		} catch (ScriptHookException e) {
 			scriptmanager.getScript(e.getNomScript()).agit(null, gamestate);
 		}
-	}
+	}*/
 
 	@Override
 	public void updateConfig()
-	{
-		gamestate.updateConfig();
-		log.updateConfig();
-		scriptmanager.updateConfig();
-		strategie.updateConfig();
-	}
+	{}
 	
 }
