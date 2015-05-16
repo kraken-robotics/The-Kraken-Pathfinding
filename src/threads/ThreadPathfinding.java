@@ -2,7 +2,7 @@ package threads;
 
 import container.Service;
 import planification.Pathfinding;
-import table.ObstacleManager;
+import table.GridSpace;
 import utils.Config;
 import utils.Log;
 
@@ -16,14 +16,14 @@ public class ThreadPathfinding extends Thread implements Service
 {
 	protected Log log;
 	protected Config config;
-	private ObstacleManager obstaclemanager;
+	private GridSpace gridspace;
 	private Pathfinding pathfinding;
 	
-	public ThreadPathfinding(Log log, Config config, ObstacleManager obstaclemanager, Pathfinding pathfinding)
+	public ThreadPathfinding(Log log, Config config, GridSpace gridspace, Pathfinding pathfinding)
 	{
 		this.log = log;
 		this.config = config;
-		this.obstaclemanager = obstaclemanager;
+		this.gridspace = gridspace;
 		this.pathfinding = pathfinding;
 	}
 
@@ -32,10 +32,10 @@ public class ThreadPathfinding extends Thread implements Service
 	{
 		while(!Config.stopThreads)
 		{
-			synchronized(obstaclemanager)
+			synchronized(gridspace)
 			{
 				try {
-					obstaclemanager.wait();
+					gridspace.wait();
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

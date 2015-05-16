@@ -67,6 +67,9 @@ public class Container
 	 */
 	public void destructor()
 	{
+		// arrête les threads
+		// TODO
+		
 		// coupe les connexions séries
 		try {
 			if(instanciedServices[ServiceNames.SERIAL_MANAGER.ordinal()] != null)
@@ -220,7 +223,8 @@ public class Container
 		else if(serviceRequested == ServiceNames.THREAD_TIMER)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadTimer((Log)getService(ServiceNames.LOG),
 																		(Config)getService(ServiceNames.CONFIG),
-																		(ObstacleManager)getService(ServiceNames.OBSTACLE_MANAGER));
+																		(ObstacleManager)getService(ServiceNames.OBSTACLE_MANAGER),
+																		(IncomingDataBuffer)getService(ServiceNames.INCOMING_DATA_BUFFER));
 		else if(serviceRequested == ServiceNames.THREAD_STRATEGIE)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadStrategie((Log)getService(ServiceNames.LOG),
 																		(Config)getService(ServiceNames.CONFIG),
@@ -229,7 +233,7 @@ public class Container
 		else if(serviceRequested == ServiceNames.THREAD_PATHFINDING)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadPathfinding((Log)getService(ServiceNames.LOG),
 																		(Config)getService(ServiceNames.CONFIG),
-																		(ObstacleManager)getService(ServiceNames.OBSTACLE_MANAGER),
+																		(GridSpace)getService(ServiceNames.GRID_SPACE),
 																		(Pathfinding) null);
 		else if(serviceRequested == ServiceNames.THREAD_GRID_SPACE)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadGridSpace((Log)getService(ServiceNames.LOG),

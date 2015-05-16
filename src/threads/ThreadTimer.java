@@ -20,16 +20,18 @@ public class ThreadTimer extends Thread implements Service
 	private ObstacleManager obstaclemanager;
 	protected Config config;
 	protected Log log;
+	private IncomingDataBuffer buffer;
 
 	private long dureeMatch = 90000;
 	private long dateFin;
 	private int obstacleRefreshInterval = 500;
 
-	public ThreadTimer(Log log, Config config, ObstacleManager obstaclemanager)
+	public ThreadTimer(Log log, Config config, ObstacleManager obstaclemanager, IncomingDataBuffer buffer)
 	{
 		this.log = log;
 		this.config = config;
 		this.obstaclemanager = obstaclemanager;
+		this.buffer = buffer;
 		updateConfig();
 	}
 	
@@ -57,6 +59,7 @@ public class ThreadTimer extends Thread implements Service
 		while(System.currentTimeMillis() < dateFin)
 		{
 			obstaclemanager.supprimerObstaclesPerimes();
+			buffer.notifyIfNecessary();
 			Sleep.sleep(obstacleRefreshInterval);
 		}
 

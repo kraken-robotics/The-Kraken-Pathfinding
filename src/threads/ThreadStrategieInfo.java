@@ -15,7 +15,7 @@ import container.Service;
 public class ThreadStrategieInfo extends Thread implements Service
 {
 	private ObstacleManager obstaclemanager;
-	private StrategieInfo obstaclestrategiemanager;
+	protected StrategieInfo obstaclestrategiemanager;
 	protected Config config;
 	protected Log log;
 	
@@ -54,6 +54,4 @@ public class ThreadStrategieInfo extends Thread implements Service
 	public void updateConfig()
 	{}
 
-	
-	
 }

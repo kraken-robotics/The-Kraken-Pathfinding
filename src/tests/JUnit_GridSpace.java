@@ -8,6 +8,7 @@ import permissions.ReadOnly;
 import planification.astar.arc.PathfindingNodes;
 import container.ServiceNames;
 import table.GridSpace;
+import table.ObstacleManager;
 import utils.Config;
 import utils.Vec2;
 
@@ -20,11 +21,13 @@ import utils.Vec2;
 public class JUnit_GridSpace extends JUnit_Test {
 
 	private GridSpace gridspace;
+	private ObstacleManager obstaclemanager;
 	
 	@Before
     public void setUp() throws Exception {
         super.setUp();
         gridspace = (GridSpace) container.getService(ServiceNames.GRID_SPACE);
+        obstaclemanager = (ObstacleManager) container.getService(ServiceNames.OBSTACLE_MANAGER);
     }
    
 	@Test
@@ -45,7 +48,7 @@ public class JUnit_GridSpace extends JUnit_Test {
 		Assert.assertTrue(gridspace.isTraversable(PathfindingNodes.BAS_DROITE, PathfindingNodes.DEVANT_DEPART_GAUCHE, 0));
 
 		Assert.assertTrue(gridspace.isTraversable(PathfindingNodes.NODE_TAPIS, PathfindingNodes.BAS_GAUCHE, 0));
-		gridspace.creer_obstacle(new Vec2<ReadOnly>(-220, 830), (int)(System.currentTimeMillis() - Config.getDateDebutMatch()));
+		obstaclemanager.creerObstacle(new Vec2<ReadOnly>(-220, 830), (int)(System.currentTimeMillis() - Config.getDateDebutMatch()));
 		// mise à jour du gridspace
 		gridspace.reinitConnections();
 		Assert.assertTrue(!gridspace.isTraversable(PathfindingNodes.NODE_TAPIS, PathfindingNodes.BAS_GAUCHE, 0));

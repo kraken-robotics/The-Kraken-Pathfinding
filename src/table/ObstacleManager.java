@@ -81,7 +81,7 @@ public class ObstacleManager implements Service
      * Créer un obstacle de proximité
      * @param position
      */
-    private synchronized void creerObstacle(final Vec2<ReadOnly> position, int date_actuelle)
+    public synchronized void creerObstacle(final Vec2<ReadOnly> position, int date_actuelle)
     {
         ObstacleProximity<ReadOnly> obstacle = new ObstacleProximity<ReadOnly>(position, rayon_robot_adverse, date_actuelle+dureeAvantPeremption);
 //        log.warning("Obstacle créé, rayon = "+rayon_robot_adverse+", centre = "+position+", meurt à "+(date_actuelle+dureeAvantPeremption), this);

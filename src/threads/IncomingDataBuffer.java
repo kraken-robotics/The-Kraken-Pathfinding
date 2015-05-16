@@ -39,6 +39,15 @@ public class IncomingDataBuffer implements Service
 			notifyAll();
 		}
 	}
+	
+	public void notifyIfNecessary()
+	{
+		if(buffer.size() > 0)
+			synchronized(this)
+			{
+				notifyAll();
+			}
+	}
 
 	/**
 	 * Retire un élément du buffer

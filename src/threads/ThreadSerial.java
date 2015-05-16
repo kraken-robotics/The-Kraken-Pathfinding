@@ -85,7 +85,6 @@ public class ThreadSerial extends Thread implements Service
 				case "nxt":
 					int x = Integer.parseInt(serie.read());
 					int y = Integer.parseInt(serie.read());
-					// Réécrire avec x, y
 					ArrayList<LocomotionNode> itineraire = pathfinding.getPath(new GridPoint(x,y));
 					try {
 						serie.communiquer(itineraire);

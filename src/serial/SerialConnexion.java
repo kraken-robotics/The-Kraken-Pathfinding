@@ -259,7 +259,9 @@ public class SerialConnexion implements SerialPortEventListener, Service
 		try
 		{		
 			//Evacuation de l'eventuel buffer indésirable
-			output.write("$0P@L1Z7\r".getBytes());
+			output.flush();
+//			output.write("$0P@L1Z7\r".getBytes());
+
 			//ping
 			output.write("?\r".getBytes());
 

@@ -109,6 +109,10 @@ public class GridSpace implements Service {
 			System.arraycopy(isConnectedModel[i], 0, isConnectedModelCache[0][i], 0, max_value);
 			System.arraycopy(isConnectedModel[i], 0, isConnectedModelCache[1][i], 0, max_value);
 		}
+		synchronized(this)
+		{
+			notifyAll();
+		}
 	}
 
 	/**
