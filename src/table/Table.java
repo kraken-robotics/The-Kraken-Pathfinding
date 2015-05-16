@@ -34,7 +34,7 @@ public class Table implements Service
 	 * Attention, on ne peut qu'augmenter cette valeur.
 	 * @param id
 	 */
-	public void setDone(GameElementNames id, Tribool done)
+	public synchronized void setDone(GameElementNames id, Tribool done)
 	{
 		hash |= (done.getHash() << (2*id.ordinal()));
 	}
@@ -88,9 +88,7 @@ public class Table implements Service
 
 	@Override
 	public void updateConfig()
-	{
-		log.updateConfig();
-	}
+	{}
 
 	/**
 	 * g est-il proche de position? (utilisé pour vérifier si on shoot dans un élément de jeu)

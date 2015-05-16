@@ -20,7 +20,8 @@ public enum RobotColor {
 	public static RobotColor parse(String chaine)
 	{
 		if(chaine.toLowerCase().contains("vert") ||
-				chaine.toLowerCase().contains("green"))
+				chaine.toLowerCase().contains("green") ||
+				chaine.toLowerCase().contains("nosym"))
 			return GREEN;
 		return YELLOW;
 	}

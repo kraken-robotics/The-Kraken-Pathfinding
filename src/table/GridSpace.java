@@ -197,10 +197,8 @@ public class GridSpace implements Service {
 	}
 	
 	@Override
-	public void updateConfig() {
-		obstaclemanager.updateConfig();
-		log.updateConfig();
-	}
+	public void updateConfig()
+	{}
 
 	/**
 	 * other devient la copie conforme de this.
@@ -263,11 +261,11 @@ public class GridSpace implements Service {
      * @param position
      * @param date
      */
-    public void creer_obstacle(Vec2<ReadOnly> position, int date)
+/*    public void creer_obstacle(Vec2<ReadOnly> position, int date)
     {
     	obstaclemanager.creerObstacle(position, date);
     	reinitConnections();
-    }
+    }*/
 
     /**
      * Utilisé pour le calcul stratégique de secours uniquement.

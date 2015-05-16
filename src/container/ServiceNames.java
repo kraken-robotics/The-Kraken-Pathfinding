@@ -26,6 +26,7 @@ public enum ServiceNames {
 	 THREAD_STRATEGIE_INFO(true),
 	 THREAD_PATHFINDING(true),
 	 THREAD_STRATEGIE(true),
+	 THREAD_GRID_SPACE(true),
 	 
 	 SERIAL_MANAGER,
 	 OBSTACLE_MANAGER,

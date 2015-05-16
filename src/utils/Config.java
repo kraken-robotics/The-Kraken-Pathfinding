@@ -132,8 +132,14 @@ public class Config implements Service
 	 */
 	private void set(ConfigInfo nom, String value)
 	{
+		boolean change = value.compareTo(config.getProperty(nom.toString())) != 0;
 		log.debug(nom+" = "+value+" (ancienne valeur: "+config.getProperty(nom.toString())+")");
 		config.setProperty(nom.toString(), value);
+		if(change)
+			synchronized(this)
+			{
+				notifyAll();
+			}
 	}
 	
 	/**

@@ -50,9 +50,7 @@ public class ThreadStrategie extends Thread implements Service
 	}
 
 	@Override
-	public void updateConfig() {
-		obstaclestrategiemanager.updateConfig();
-//		strategie.updateConfig();
-	}
+	public void updateConfig()
+	{}
 
 }

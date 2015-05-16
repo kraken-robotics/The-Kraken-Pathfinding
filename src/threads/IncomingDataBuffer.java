@@ -26,16 +26,25 @@ public class IncomingDataBuffer implements Service
 	
 	private Queue<IncomingData> buffer = new LinkedList<IncomingData>();
 	
-	public void add(IncomingData elem)
+	/**
+	 * Ajout d'un élément dans le buffer et provoque un "notifyAll"
+	 * @param elem
+	 */
+	public synchronized void add(IncomingData elem)
 	{
 		buffer.add(elem);
+		log.debug("Taille buffer: "+buffer.size());
 		synchronized(this)
 		{
 			notifyAll();
 		}
 	}
 
-	public IncomingData poll()
+	/**
+	 * Retire un élément du buffer
+	 * @return
+	 */
+	public synchronized IncomingData poll()
 	{
 		return buffer.poll();
 	}

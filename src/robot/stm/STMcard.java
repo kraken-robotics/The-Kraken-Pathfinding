@@ -324,8 +324,6 @@ public class STMcard implements Service {
 	public void updateConfig()
 	{
         symetrie = config.getSymmetry();
-        log.updateConfig();
-        serie.updateConfig();
 	}
 	
 	/**

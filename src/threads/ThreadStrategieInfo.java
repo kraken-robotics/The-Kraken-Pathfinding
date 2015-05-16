@@ -52,10 +52,7 @@ public class ThreadStrategieInfo extends Thread implements Service
 	
 	@Override
 	public void updateConfig()
-	{
-		obstaclestrategiemanager.updateConfig();
-		obstaclemanager.updateConfig();
-	}
+	{}
 
 	
 	

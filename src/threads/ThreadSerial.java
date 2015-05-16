@@ -11,9 +11,11 @@ import requete.RequeteType;
 import serial.SerialConnexion;
 import table.ObstacleManager;
 import utils.Config;
+import utils.ConfigInfo;
 import utils.Log;
 import utils.Vec2;
 import container.Service;
+import enums.RobotColor;
 import exceptions.FinMatchException;
 import exceptions.SerialConnexionException;
 
@@ -106,6 +108,11 @@ public class ThreadSerial extends Thread implements Service
 						requete.type = RequeteType.OBSTACLE_DROIT_DEVANT;
 						requete.notifyAll();
 					}
+					break;
+					
+				case "clr":
+					config.set(ConfigInfo.COULEUR, RobotColor.parse(serie.read()));
+					break;
 					
 				case "go":
 					/**
@@ -123,23 +130,21 @@ public class ThreadSerial extends Thread implements Service
 					 */
 					serie.close();
 					return;
-					
+
 				case "arv":
 					synchronized(requete)
 					{
 						requete.type = RequeteType.TRAJET_FINI;
 						requete.notifyAll();
 					}
+					break;
 					
 			}
 		}
 	}
 	
 	@Override
-	public void updateConfig() {
-		serie.updateConfig();
-//		pathfinding.updateCost();
-		buffer.updateConfig();
-	}
+	public void updateConfig()
+	{}
 
 }

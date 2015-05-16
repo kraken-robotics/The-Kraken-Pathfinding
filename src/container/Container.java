@@ -27,6 +27,7 @@ import table.ObstacleManager;
 import table.StrategieInfo;
 import table.Table;
 import threads.IncomingDataBuffer;
+import threads.ThreadGridSpace;
 import threads.ThreadObstacleManager;
 import threads.ThreadPathfinding;
 import threads.ThreadSerial;
@@ -230,6 +231,11 @@ public class Container
 																		(Config)getService(ServiceNames.CONFIG),
 																		(ObstacleManager)getService(ServiceNames.OBSTACLE_MANAGER),
 																		(Pathfinding) null);
+		else if(serviceRequested == ServiceNames.THREAD_GRID_SPACE)
+			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadGridSpace((Log)getService(ServiceNames.LOG),
+																		(Config)getService(ServiceNames.CONFIG),
+																		(ObstacleManager)getService(ServiceNames.OBSTACLE_MANAGER),
+																		(GridSpace)getService(ServiceNames.GRID_SPACE));
 		else if(serviceRequested == ServiceNames.THREAD_OBSTACLE_MANAGER)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadObstacleManager((Log)getService(ServiceNames.LOG),
 																		(Config)getService(ServiceNames.CONFIG),
@@ -314,6 +320,16 @@ public class Container
 				log.critical(s);
 			}
 		return out;
+	}
+
+
+	/**
+	 * Renvoie le service demandé s'il est déjà instancié, null sinon.
+	 * @param s
+	 * @return
+	 */
+	public Service getInstanciedService(ServiceNames serviceRequested) {
+		return instanciedServices[serviceRequested.ordinal()];
 	}
 	
 }

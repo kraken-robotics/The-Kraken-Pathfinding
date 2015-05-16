@@ -104,7 +104,6 @@ public abstract class Robot implements Service
 	public void updateConfig()
 	{
 		symetrie = config.getSymmetry();
-		log.updateConfig();
 	}
 	
 	public Speed getVitesse() {

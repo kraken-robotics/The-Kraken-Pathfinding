@@ -405,10 +405,10 @@ public class GameState<R extends Robot, T extends Permission> implements Service
     	state.robot.sleepUntil(date);
     }
     
-    public static final void creer_obstacle(GameState<RobotReal, ReadWrite> state, Vec2<ReadOnly> position, int date)
+/*    public static final void creer_obstacle(GameState<RobotReal, ReadWrite> state, Vec2<ReadOnly> position, int date)
     {
     	state.gridspace.creer_obstacle(position, date);
-    }
+    }*/
 
 	public static final void reinitConnections(GameState<RobotReal, TestOnly> state)
 	{
@@ -425,10 +425,10 @@ public class GameState<R extends Robot, T extends Permission> implements Service
      * Utilisé par le thread de capteurs.
      * @param position
      */
-    public static final void creer_obstacle(GameState<RobotReal, ReadWrite> state, Vec2<ReadOnly> position)
+/*    public static final void creer_obstacle(GameState<RobotReal, ReadWrite> state, Vec2<ReadOnly> position)
     {
     	creer_obstacle(state, position, (int)(System.currentTimeMillis() - Config.getDateDebutMatch()));
-    }
+    }*/
 
 	@SuppressWarnings("unchecked")
 	public final GameState<R, ReadOnly> getReadOnly() {

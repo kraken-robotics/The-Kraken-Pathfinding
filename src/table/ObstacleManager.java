@@ -81,7 +81,7 @@ public class ObstacleManager implements Service
      * Créer un obstacle de proximité
      * @param position
      */
-    public void creerObstacle(final Vec2<ReadOnly> position, int date_actuelle)
+    private synchronized void creerObstacle(final Vec2<ReadOnly> position, int date_actuelle)
     {
         ObstacleProximity<ReadOnly> obstacle = new ObstacleProximity<ReadOnly>(position, rayon_robot_adverse, date_actuelle+dureeAvantPeremption);
 //        log.warning("Obstacle créé, rayon = "+rayon_robot_adverse+", centre = "+position+", meurt à "+(date_actuelle+dureeAvantPeremption), this);
@@ -117,7 +117,7 @@ public class ObstacleManager implements Service
      * Renvoie vrai s'il y a eu une suppression, faux sinon.
      * @param date
      */
-    public void supprimerObstaclesPerimes(long date)
+    public synchronized void supprimerObstaclesPerimes(long date)
     {
         if(isThereHypotheticalEnemy && hypotheticalEnemy.isDestructionNecessary(date))
         	isThereHypotheticalEnemy = false;
@@ -309,8 +309,6 @@ public class ObstacleManager implements Service
 		rayon_robot_adverse = config.getInt(ConfigInfo.RAYON_ROBOT_ADVERSE);
 		dureeAvantPeremption = config.getInt(ConfigInfo.DUREE_PEREMPTION_OBSTACLES);
 		distanceApproximation = config.getInt(ConfigInfo.DISTANCE_MAX_ENTRE_MESURE_ET_OBJET);
-		log.updateConfig();
-		table.updateConfig();
 	}
 
 	/**

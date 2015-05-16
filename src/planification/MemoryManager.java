@@ -33,9 +33,7 @@ public class MemoryManager implements Service {
 	
 	@Override
 	public void updateConfig()
-	{
-		log.updateConfig();
-	}
+	{}
 
 	public MemoryManager(Log log, Config config, GameState<RobotReal,ReadOnly> realstate)
 	{	

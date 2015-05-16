@@ -1,30 +1,30 @@
 package threads;
 
 import container.Service;
-import planification.Pathfinding;
+import table.GridSpace;
 import table.ObstacleManager;
 import utils.Config;
 import utils.Log;
 
 /**
- * Thread qui recalcule l'itinéraire à emprunter. Surveille ObstacleManager.
+ * S'occupe de la mise à jour du cache. Surveille obstaclemanager
  * @author pf
  *
  */
 
-public class ThreadPathfinding extends Thread implements Service
-{
+public class ThreadGridSpace extends Thread implements Service {
+
 	protected Log log;
 	protected Config config;
 	private ObstacleManager obstaclemanager;
-	private Pathfinding pathfinding;
+	private GridSpace gridspace;
 	
-	public ThreadPathfinding(Log log, Config config, ObstacleManager obstaclemanager, Pathfinding pathfinding)
+	public ThreadGridSpace(Log log, Config config, ObstacleManager obstaclemanager, GridSpace gridspace)
 	{
 		this.log = log;
 		this.config = config;
 		this.obstaclemanager = obstaclemanager;
-		this.pathfinding = pathfinding;
+		this.gridspace = gridspace;
 	}
 
 	@Override
@@ -41,11 +41,9 @@ public class ThreadPathfinding extends Thread implements Service
 					e.printStackTrace();
 				}
 			}
-			log.debug("Réveil de ThreadPathfinding");	
+			log.debug("Réveil de ThreadGridSpace");	
 			
-			// Cet appel peut lancer un pathfinding.notifyAll()
-			// Il n'est pas synchronized car il ne modifie pas obstaclemanager
-			pathfinding.updateCost();
+			gridspace.reinitConnections();
 		}
 
 	}
@@ -53,5 +51,6 @@ public class ThreadPathfinding extends Thread implements Service
 	@Override
 	public void updateConfig()
 	{}
+
 
 }

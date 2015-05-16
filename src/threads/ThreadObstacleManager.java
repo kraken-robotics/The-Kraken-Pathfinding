@@ -54,10 +54,7 @@ public class ThreadObstacleManager extends Thread implements Service
 	
 	@Override
 	public void updateConfig()
-	{
-		buffer.updateConfig();
-		obstaclemanager.updateConfig();
-	}
+	{}
 
 	
 	
