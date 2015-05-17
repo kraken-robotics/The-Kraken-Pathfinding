@@ -19,11 +19,11 @@ import exceptions.ConfigException;
 public class Config implements Service
 {
 	// Permet de savoir si le match a démarré et quand
-	private static long dateDebutMatch = 0;	
-	public static boolean matchDemarre = false;	
-	public static boolean capteursOn = false;
-	public static boolean stopThreads = false;
-	public static boolean finMatch;
+	private volatile static long dateDebutMatch = 0;	
+	public volatile static boolean matchDemarre = false;	
+	public volatile static boolean capteursOn = false;
+	public volatile static boolean stopThreads = false;
+	public volatile static boolean finMatch;
 
 	private String name_local_file = "local.ini";
 	private String name_config_file = "config.ini";
