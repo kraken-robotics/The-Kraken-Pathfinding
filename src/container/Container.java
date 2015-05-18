@@ -3,8 +3,11 @@ package container;
 import obstacles.Obstacle;
 import permissions.ReadOnly;
 import permissions.ReadWrite;
+import planification.LocomotionArc;
 import planification.MemoryManager;
+import planification.Path;
 import planification.Pathfinding;
+import planification.StrategieArc;
 import planification.astar.*;
 import planification.astar.arc.Decision;
 import planification.astar.arc.SegmentTrajectoireCourbe;
@@ -191,7 +194,7 @@ public class Container
 		else if(serviceRequested == ServiceNames.EXECUTION)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new Execution((Log)getService(ServiceNames.LOG),
 			                                                 (Config)getService(ServiceNames.CONFIG),
-			                                                 (Pathfinding) null,
+			                                                 (Path<StrategieArc>)getService(ServiceNames.STRATEGIE_ACTUELLE),
   															 (ScriptManager)getService(ServiceNames.SCRIPT_MANAGER),
         													 (GameState<RobotReal,ReadWrite>)getService(ServiceNames.REAL_GAME_STATE));
 		else if(serviceRequested == ServiceNames.STM_CARD)
@@ -229,12 +232,13 @@ public class Container
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadStrategie((Log)getService(ServiceNames.LOG),
 																		(Config)getService(ServiceNames.CONFIG),
 																		(StrategieInfo)getService(ServiceNames.STRATEGIE_INFO),
-																		(Pathfinding)null);
+																		(Path<StrategieArc>)getService(ServiceNames.STRATEGIE_ACTUELLE),
+																		(Pathfinding<LocomotionArc>)getService(ServiceNames.TABLE_PATHFINDING));
 		else if(serviceRequested == ServiceNames.THREAD_PATHFINDING)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadPathfinding((Log)getService(ServiceNames.LOG),
 																		(Config)getService(ServiceNames.CONFIG),
 																		(GridSpace)getService(ServiceNames.GRID_SPACE),
-																		(Pathfinding) null);
+																		(Path<LocomotionArc>)getService(ServiceNames.CHEMIN_ACTUEL));
 		else if(serviceRequested == ServiceNames.THREAD_GRID_SPACE)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadGridSpace((Log)getService(ServiceNames.LOG),
 																		(Config)getService(ServiceNames.CONFIG),
@@ -253,9 +257,7 @@ public class Container
 		else if(serviceRequested == ServiceNames.THREAD_SERIE)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadSerial((Log)getService(ServiceNames.LOG),
 																		(Config)getService(ServiceNames.CONFIG),
-																		(Pathfinding) null,
-																		(Pathfinding) null,
-																		(ObstacleManager)getService(ServiceNames.OBSTACLE_MANAGER),
+																		(Path<LocomotionArc>)getService(ServiceNames.CHEMIN_ACTUEL),																		(ObstacleManager)getService(ServiceNames.OBSTACLE_MANAGER),
 																		(SerialConnexion)getService(ServiceNames.SERIE_STM),
 																		(IncomingDataBuffer)getService(ServiceNames.INCOMING_DATA_BUFFER),
 																		(RobotReal)getService(ServiceNames.ROBOT_REAL));

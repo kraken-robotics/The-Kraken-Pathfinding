@@ -1,7 +1,8 @@
 package threads;
 
 import container.Service;
-import planification.Pathfinding;
+import planification.LocomotionArc;
+import planification.Path;
 import table.GridSpace;
 import utils.Config;
 import utils.Log;
@@ -17,14 +18,14 @@ public class ThreadPathfinding extends Thread implements Service
 	protected Log log;
 	protected Config config;
 	private GridSpace gridspace;
-	private Pathfinding pathfinding;
+	private Path<LocomotionArc> path;
 	
-	public ThreadPathfinding(Log log, Config config, GridSpace gridspace, Pathfinding pathfinding)
+	public ThreadPathfinding(Log log, Config config, GridSpace gridspace, Path<LocomotionArc> path)
 	{
 		this.log = log;
 		this.config = config;
 		this.gridspace = gridspace;
-		this.pathfinding = pathfinding;
+		this.path = path;
 	}
 
 	@Override
@@ -45,7 +46,7 @@ public class ThreadPathfinding extends Thread implements Service
 			
 			// Cet appel peut lancer un pathfinding.notifyAll()
 			// Il n'est pas synchronized car il ne modifie pas obstaclemanager
-			pathfinding.updateCost();
+			path.updateCost();
 		}
 
 	}

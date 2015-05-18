@@ -1,31 +1,31 @@
 package planification;
 
-import java.util.ArrayList;
-
 import container.Service;
-import planification.dstar.GridPoint;
-import planification.dstar.LocomotionNode;
+import permissions.ReadOnly;
+import planification.astar.arc.Arc;
+import strategie.GameState;
 
-public interface Pathfinding extends Service {
+public class Pathfinding<A extends Arc> implements Service {
 
+	public Pathfinding()
+	{
+	}
+	
 	/**
 	 * Calcule un chemin
 	 * @param depart
 	 * @param arrivee
 	 * @return
 	 */
-	public void computePath(GridPoint depart, GridPoint arrivee);
-	
-	/**
-	 * Mise à jour des coûts après une modification des obstacles
-	 */
-	public void updateCost();
-	
-	/**
-	 * Recalcule un chemin à partir de la position actuelle. A faire après mise à jour.
-	 * @param positionActuelle
-	 * @return
-	 */
-	public ArrayList<LocomotionNode> getPath(GridPoint positionActuelle);
+	public void computePath(Path<A> cheminAModifier, GameState<?,ReadOnly> depart, GameState<?,ReadOnly> arrivee)
+	{
+		
+	}
+
+	@Override
+	public void updateConfig()
+	{
+		// TODO
+	}
 	
 }

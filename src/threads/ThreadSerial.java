@@ -3,6 +3,8 @@ package threads;
 import java.util.ArrayList;
 
 import permissions.ReadOnly;
+import planification.LocomotionArc;
+import planification.Path;
 import planification.Pathfinding;
 import planification.dstar.GridPoint;
 import planification.dstar.LocomotionNode;
@@ -32,19 +34,19 @@ public class ThreadSerial extends Thread implements Service
 	protected Log log;
 	protected Config config;
 	private SerialConnexion serie;
-	private Pathfinding pathfinding;
+	private Path<LocomotionArc> path;
 	private IncomingDataBuffer buffer;
 	private RequeteSTM requete;
 	private RobotReal robot;
 	
-	public ThreadSerial(Log log, Config config, Pathfinding pathfinding, Pathfinding strategie, ObstacleManager obstaclemanager, SerialConnexion serie, IncomingDataBuffer buffer, RobotReal robot)
+	public ThreadSerial(Log log, Config config, Path<LocomotionArc> path, ObstacleManager obstaclemanager, SerialConnexion serie, IncomingDataBuffer buffer, RobotReal robot)
 	{
 		this.log = log;
 		this.config = config;
 		this.serie = serie;
-		this.pathfinding = pathfinding;
 		this.buffer = buffer;
 		this.robot = robot;
+		this.path = path;
 		requete = RequeteSTM.getInstance();
 		
 		Thread.currentThread().setPriority(2);
@@ -86,7 +88,7 @@ public class ThreadSerial extends Thread implements Service
 				case "nxt":
 					x = Integer.parseInt(serie.read());
 					y = Integer.parseInt(serie.read());
-					ArrayList<LocomotionNode> itineraire = pathfinding.getPath(new GridPoint(x,y));
+					ArrayList<LocomotionNode> itineraire = path.getPath(new GridPoint(x,y));
 					try {
 						serie.communiquer(itineraire);
 					} catch (SerialConnexionException e) {
