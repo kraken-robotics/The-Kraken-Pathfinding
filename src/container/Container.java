@@ -257,7 +257,8 @@ public class Container
 																		(Pathfinding) null,
 																		(ObstacleManager)getService(ServiceNames.OBSTACLE_MANAGER),
 																		(SerialConnexion)getService(ServiceNames.SERIE_STM),
-																		(IncomingDataBuffer)getService(ServiceNames.INCOMING_DATA_BUFFER));
+																		(IncomingDataBuffer)getService(ServiceNames.INCOMING_DATA_BUFFER),
+																		(RobotReal)getService(ServiceNames.ROBOT_REAL));
 
 		else if(serviceRequested == ServiceNames.STRATEGIE_INFO)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new StrategieInfo((Log)getService(ServiceNames.LOG), 

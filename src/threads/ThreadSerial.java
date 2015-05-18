@@ -8,6 +8,7 @@ import planification.dstar.GridPoint;
 import planification.dstar.LocomotionNode;
 import requete.RequeteSTM;
 import requete.RequeteType;
+import robot.RobotReal;
 import serial.SerialConnexion;
 import table.ObstacleManager;
 import utils.Config;
@@ -34,14 +35,16 @@ public class ThreadSerial extends Thread implements Service
 	private Pathfinding pathfinding;
 	private IncomingDataBuffer buffer;
 	private RequeteSTM requete;
+	private RobotReal robot;
 	
-	public ThreadSerial(Log log, Config config, Pathfinding pathfinding, Pathfinding strategie, ObstacleManager obstaclemanager, SerialConnexion serie, IncomingDataBuffer buffer)
+	public ThreadSerial(Log log, Config config, Pathfinding pathfinding, Pathfinding strategie, ObstacleManager obstaclemanager, SerialConnexion serie, IncomingDataBuffer buffer, RobotReal robot)
 	{
 		this.log = log;
 		this.config = config;
 		this.serie = serie;
 		this.pathfinding = pathfinding;
 		this.buffer = buffer;
+		this.robot = robot;
 		requete = RequeteSTM.getInstance();
 		
 		Thread.currentThread().setPriority(2);
@@ -68,6 +71,7 @@ public class ThreadSerial extends Thread implements Service
 				continue;
 			}
 			String first = serie.read();
+			int x,y;
 			switch(first)
 			{
 				case "obs":
@@ -80,8 +84,8 @@ public class ThreadSerial extends Thread implements Service
 					break;
 
 				case "nxt":
-					int x = Integer.parseInt(serie.read());
-					int y = Integer.parseInt(serie.read());
+					x = Integer.parseInt(serie.read());
+					y = Integer.parseInt(serie.read());
 					ArrayList<LocomotionNode> itineraire = pathfinding.getPath(new GridPoint(x,y));
 					try {
 						serie.communiquer(itineraire);
@@ -139,6 +143,21 @@ public class ThreadSerial extends Thread implements Service
 						requete.notifyAll();
 					}
 					break;
+					
+				case "xyo":
+					x = Integer.parseInt(serie.read());
+					y = Integer.parseInt(serie.read());
+					double o = Double.parseDouble(serie.read());
+					
+					synchronized(robot)
+					{
+						try {
+							robot.setPosition(new Vec2<ReadOnly>(x,y));
+							robot.setOrientation(o);
+						} catch (FinMatchException e) {
+							e.printStackTrace();
+						}
+					}
 					
 				default:
 					log.critical("Commande série inconnue: "+first);
