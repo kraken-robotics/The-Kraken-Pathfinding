@@ -16,11 +16,15 @@ public class IncomingData
 
 	/** centreEnnemi est l'estimation du centre de l'ennemi */
 	public Vec2<ReadOnly> centreEnnemi;
+	
+	/** Portion parcouru par le robot lors de la détection de cet obstacle */
+	public int portion;
 
-	public IncomingData(Vec2<ReadOnly> pointBrut, Vec2<ReadOnly> centreEnnemi)
+	public IncomingData(Vec2<ReadOnly> pointBrut, Vec2<ReadOnly> centreEnnemi, int portion)
 	{
 		this.pointBrut = pointBrut;
 		this.centreEnnemi = centreEnnemi;
+		this.portion = portion;
 	}
 	
 }

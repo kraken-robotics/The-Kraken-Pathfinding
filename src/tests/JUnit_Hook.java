@@ -12,9 +12,9 @@ import org.junit.Test;
 
 import permissions.ReadOnly;
 import permissions.ReadWrite;
+import planification.Pathfinding;
 import planification.astar.AStar;
 import planification.astar.arc.PathfindingNodes;
-import planification.astar.arc.SegmentTrajectoireCourbe;
 import planification.astar.arcmanager.PathfindingArcManager;
 import container.ServiceNames;
 import robot.RobotChrono;
@@ -36,7 +36,7 @@ public class JUnit_Hook extends JUnit_Test {
 	private HookFactory hookfactory;
 	private GameState<RobotReal,ReadWrite> real_gamestate;
 	private GameState<RobotChrono,ReadWrite> chrono_gamestate;
-	private AStar<PathfindingArcManager, SegmentTrajectoireCourbe> pathfinding;
+	private Pathfinding pathfinding;
 
 	@SuppressWarnings("unchecked")
 	@Before
@@ -46,7 +46,7 @@ public class JUnit_Hook extends JUnit_Test {
         hookfactory = (HookFactory) container.getService(ServiceNames.HOOK_FACTORY);
         real_gamestate = (GameState<RobotReal,ReadWrite>) container.getService(ServiceNames.REAL_GAME_STATE);
         chrono_gamestate = GameState.cloneGameState(real_gamestate.getReadOnly());
-        pathfinding = (AStar<PathfindingArcManager, SegmentTrajectoireCourbe>)container.getService(ServiceNames.A_STAR_PATHFINDING);
+        pathfinding = (Pathfinding)container.getService(ServiceNames.PATHFINDING);
     }
    
 	// TODO: ne passe pas le test

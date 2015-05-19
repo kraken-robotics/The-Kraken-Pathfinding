@@ -9,6 +9,7 @@ package requete;
 public class RequeteSTM {
 
 	public RequeteType type;
+	public int param;
 	
 	private static final RequeteSTM instance = new RequeteSTM();
 	

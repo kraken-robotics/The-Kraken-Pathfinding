@@ -1,5 +1,6 @@
 package table;
 
+import strategie.StrategieNotifieur;
 import utils.Config;
 import utils.Log;
 import container.Service;
@@ -15,11 +16,13 @@ public class StrategieInfo implements Service
 {
 	protected Log log;
 	protected Config config;
+	private StrategieNotifieur notifieur;
 	
-    public StrategieInfo(Log log, Config config)
+    public StrategieInfo(Log log, Config config, StrategieNotifieur notifieur)
     {
     	this.log = log;
     	this.config = config;
+    	this.notifieur = notifieur;
     }
     
 	@Override

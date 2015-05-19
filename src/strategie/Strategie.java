@@ -1,8 +1,16 @@
 package strategie;
 
+import hook.HookFactory;
+
 import java.util.ArrayList;
 
 import permissions.ReadOnly;
+import planification.MemoryManager;
+import planification.Pathfinding;
+import robot.RobotReal;
+import scripts.ScriptManager;
+import utils.Config;
+import utils.Log;
 import container.Service;
 
 /**
@@ -14,6 +22,19 @@ import container.Service;
 
 public class Strategie implements Service {
 
+	protected Log log;
+	protected Config config;
+	private ScriptManager scriptmanager;
+	private GameState<RobotReal,ReadOnly> real_gamestate;
+	private HookFactory hookfactory;
+	private Pathfinding pathfinding;
+	private MemoryManager memorymanager;
+	
+	public Strategie(Log log, Config config, ScriptManager scriptmanager, GameState<RobotReal,ReadOnly> real_gamestate, HookFactory hookfactory, Pathfinding pathfinding, MemoryManager memorymanager)
+	{
+		
+	}
+	
 	/**
 	 * Mise à jour des coûts après une modification des obstacles
 	 */

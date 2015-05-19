@@ -4,6 +4,7 @@ import obstacles.ObstacleRectangular;
 import permissions.ReadOnly;
 import container.Service;
 import enums.Tribool;
+import strategie.StrategieNotifieur;
 import utils.*;
 
 /**
@@ -17,14 +18,16 @@ public class Table implements Service
 	// Dépendances
 	private Log log;
 	private Config config;
+	private StrategieNotifieur notifieur;
 	
 	/** Contient toutes les informations sur les éléments de jeux sans perte d'information. */
 	private long hash = 0;
 	
-	public Table(Log log, Config config)
+	public Table(Log log, Config config, StrategieNotifieur notifieur)
 	{
 		this.log = log;
-		this.config = config;	
+		this.config = config;
+		this.notifieur = notifieur;
 		
 		updateConfig();
 	}
@@ -37,6 +40,10 @@ public class Table implements Service
 	public synchronized void setDone(GameElementNames id, Tribool done)
 	{
 		hash |= (done.getHash() << (2*id.ordinal()));
+		synchronized(notifieur)
+		{
+			notifieur.notifyAll();
+		}
 	}
 
 	/**
@@ -62,7 +69,7 @@ public class Table implements Service
 	 */
 	public Table clone()
 	{
-		Table cloned_table = new Table(log, config);
+		Table cloned_table = new Table(log, config, notifieur);
 		copy(cloned_table);
 		return cloned_table;
 	}

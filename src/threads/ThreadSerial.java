@@ -1,26 +1,15 @@
 package threads;
 
-import java.util.ArrayList;
-
 import permissions.ReadOnly;
-import planification.LocomotionArc;
-import planification.Chemin;
-import planification.Pathfinding;
-import planification.dstar.GridPoint;
-import planification.dstar.LocomotionNode;
 import requete.RequeteSTM;
 import requete.RequeteType;
-import robot.RobotReal;
 import serial.SerialConnexion;
-import table.ObstacleManager;
 import utils.Config;
 import utils.ConfigInfo;
 import utils.Log;
 import utils.Vec2;
 import container.Service;
 import enums.RobotColor;
-import exceptions.FinMatchException;
-import exceptions.SerialConnexionException;
 
 /**
  * Thread qui écoute la série et appelle qui il faut.
@@ -34,19 +23,15 @@ public class ThreadSerial extends Thread implements Service
 	protected Log log;
 	protected Config config;
 	private SerialConnexion serie;
-	private Chemin path;
 	private IncomingDataBuffer buffer;
 	private RequeteSTM requete;
-	private RobotReal robot;
 	
-	public ThreadSerial(Log log, Config config, Chemin path, ObstacleManager obstaclemanager, SerialConnexion serie, IncomingDataBuffer buffer, RobotReal robot)
+	public ThreadSerial(Log log, Config config, SerialConnexion serie, IncomingDataBuffer buffer)
 	{
 		this.log = log;
 		this.config = config;
 		this.serie = serie;
 		this.buffer = buffer;
-		this.robot = robot;
-		this.path = path;
 		requete = RequeteSTM.getInstance();
 		
 		Thread.currentThread().setPriority(2);
@@ -64,106 +49,85 @@ public class ThreadSerial extends Thread implements Service
 		while(!Config.stopThreads && !Config.finMatch)
 		{
 			try {
+				/**
+				 * La série est monopolisée pendant la lecture du message.
+				 * Ainsi, on est assuré qu'un autre thread ne parlera pas pendant qu'on écoute...
+				 */
 				synchronized(serie)
 				{
 					serie.wait();
+					String first = serie.read();
+					switch(first)
+					{
+							/**
+							 * Un obstacle est vu. Il y a deux positions:
+							 * - la position brute, ce que voit vraiment le capteur
+							 * - la position supposée de l'obstacle
+						 	 */
+						case "obs":
+							int xBrut = Integer.parseInt(serie.read());
+							int yBrut = Integer.parseInt(serie.read());
+							int xEnnemi = Integer.parseInt(serie.read());
+							int yEnnemi = Integer.parseInt(serie.read());
+							int portion = Integer.parseInt(serie.read());
+		
+							buffer.add(new IncomingData(new Vec2<ReadOnly>(xBrut, yBrut), new Vec2<ReadOnly>(xEnnemi, yEnnemi), portion));
+							break;
+							
+							/**
+							 * Récupère la couleur du robot.
+							 */
+						case "color":
+							config.set(ConfigInfo.COULEUR, RobotColor.parse(serie.read()));
+							break;
+							
+						case "go":
+							/**
+							 * Démarrage du match
+							 */
+							synchronized(lock)
+							{
+								lock.notifyAll();
+							}
+							break;
+							
+							/**
+							 * Fin du match, on coupe la série et on arrête ce thread
+							 */
+						case "end":
+							synchronized(requete)
+							{
+								requete.type = RequeteType.MATCH_FINI;
+								requete.notifyAll();
+							}
+							serie.close();
+							return;
+		
+							/**
+							 * Un hook a été appelé
+							 */
+						case "hk":
+							// TODO: l'exécuter aussi (mise à jour table, robot, etc).
+							break;
+							
+							/**
+							 * On est arrivé à destination.
+							 */
+						case "arv":
+							synchronized(requete)
+							{
+								requete.type = RequeteType.TRAJET_FINI;
+								requete.notifyAll();
+							}
+							break;
+		
+						default:
+							log.critical("Commande série inconnue: "+first);
+					}
 				}
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 				continue;
-			}
-			String first = serie.read();
-			int x,y;
-			switch(first)
-			{
-				case "obs":
-					int xBrut = Integer.parseInt(serie.read());
-					int yBrut = Integer.parseInt(serie.read());
-					int xEnnemi = Integer.parseInt(serie.read());
-					int yEnnemi = Integer.parseInt(serie.read());
-
-					buffer.add(new IncomingData(new Vec2<ReadOnly>(xBrut, yBrut), new Vec2<ReadOnly>(xEnnemi, yEnnemi)));
-					break;
-
-				case "nxt":
-					x = Integer.parseInt(serie.read());
-					y = Integer.parseInt(serie.read());
-					ArrayList<LocomotionArc> itineraire = path.getPath(new GridPoint(x,y));
-					try {
-						serie.communiquer(itineraire);
-					} catch (SerialConnexionException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (FinMatchException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					break;
-				
-				case "enm":
-					/**
-					 * On signale au thread principal qu'il y a un problème.
-					 * C'est lui qui répondre à la STM.
-					 */
-					synchronized(requete)
-					{
-						requete.type = RequeteType.OBSTACLE_DROIT_DEVANT;
-						requete.notifyAll();
-					}
-					break;
-					
-				case "clr":
-					config.set(ConfigInfo.COULEUR, RobotColor.parse(serie.read()));
-					break;
-					
-				case "go":
-					/**
-					 * Démarrage du match
-					 */
-					synchronized(lock)
-					{
-						lock.notifyAll();
-					}
-					break;
-					
-				case "end":
-					/**
-					 * Fin du match, on coupe la série et on arrête ce thread
-					 */
-					synchronized(requete)
-					{
-						requete.type = RequeteType.MATCH_FINI;
-						requete.notifyAll();
-					}
-					serie.close();
-					return;
-
-				case "arv":
-					synchronized(requete)
-					{
-						requete.type = RequeteType.TRAJET_FINI;
-						requete.notifyAll();
-					}
-					break;
-					
-				case "xyo":
-					x = Integer.parseInt(serie.read());
-					y = Integer.parseInt(serie.read());
-					double o = Double.parseDouble(serie.read());
-					
-					synchronized(robot)
-					{
-						try {
-							robot.setPosition(new Vec2<ReadOnly>(x,y));
-							robot.setOrientation(o);
-						} catch (FinMatchException e) {
-							e.printStackTrace();
-						}
-					}
-					
-				default:
-					log.critical("Commande série inconnue: "+first);
-					
 			}
 		}
 	}

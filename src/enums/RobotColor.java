@@ -7,6 +7,9 @@ package enums;
  */
 
 public enum RobotColor {
+	/**
+	 * Ces noms sont utilisés pour les tests uniquement. Sinon, on utilise le boolean symmetry
+	 */
 	GREEN(false),
 	YELLOW(true);
 	
@@ -21,7 +24,8 @@ public enum RobotColor {
 	{
 		if(chaine.toLowerCase().contains("vert") ||
 				chaine.toLowerCase().contains("green") ||
-				chaine.toLowerCase().contains("nosym"))
+				chaine.toLowerCase().contains("nosym") ||
+				chaine.toLowerCase().contains("false"))
 			return GREEN;
 		return YELLOW;
 	}

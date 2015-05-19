@@ -9,17 +9,27 @@ import utils.Config;
 import utils.Log;
 
 /**
- * Un chemin issu de la recherche de chemin
+ * Un chemin issu de la recherche de chemin.
+ * Une instance spéciale de chemin est présente dans le container: le chemin actuel.
+ * Le chemin actuel est utilisé pour se déplacer, les autres chemins sont uniquement générés par la
+ * recherche stratégique.
  * @author pf
  *
  */
 
 public class Chemin implements Service
 {
-	Pathfinding pathfinding;
+	protected Log log;
+	protected Config config;
+	private Pathfinding pathfinding;
+	
+	private boolean eviteElementsJeu;
 	
 	public Chemin(Log log, Config config, Pathfinding pathfinding)
 	{
+		this.log = log;
+		this.config = config;
+		this.pathfinding = pathfinding;
 	}
 	
 	/**
@@ -27,9 +37,10 @@ public class Chemin implements Service
 	 * @param depart
 	 * @param arrivee
 	 */
-	public void compute(GameState<?,ReadOnly> depart, GameState<?,ReadOnly> arrivee)
+	public void compute(GameState<?,ReadOnly> depart, GameState<?,ReadOnly> arrivee, boolean eviteElementsJeu)
 	{
-		pathfinding.computePath(this, depart, arrivee);
+		this.eviteElementsJeu = eviteElementsJeu;
+		pathfinding.computePath(this, depart, arrivee, eviteElementsJeu);
 	}
 	
 	/**
@@ -52,9 +63,7 @@ public class Chemin implements Service
 	}
 
 	@Override
-	public void updateConfig() {
-		// TODO Auto-generated method stub
-		
-	}
+	public void updateConfig()
+	{}
 
 }

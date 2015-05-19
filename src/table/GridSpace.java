@@ -2,8 +2,8 @@ package table;
 
 import permissions.ReadOnly;
 import planification.astar.arc.PathfindingNodes;
-import planification.astar.arc.SegmentTrajectoireCourbe;
 import container.Service;
+import strategie.StrategieNotifieur;
 import utils.Config;
 import utils.Log;
 import utils.Vec2;
@@ -21,6 +21,7 @@ public class GridSpace implements Service {
 	
 	private Log log;
 	private Config config;
+	private StrategieNotifieur notifieur;
 	
 	// afin d'éviter les obstacles fixes et mobiles
 	private final ObstacleManager obstaclemanager;
@@ -39,11 +40,12 @@ public class GridSpace implements Service {
 	/** Ce hash est utilisé afin de vérifier la péremption du cache */
 	private long hashTable;
 	
-	public GridSpace(Log log, Config config, ObstacleManager obstaclemanager)
+	public GridSpace(Log log, Config config, ObstacleManager obstaclemanager, StrategieNotifieur notifieur)
 	{
 		this.log = log;
 		this.config = config;
 		this.obstaclemanager = obstaclemanager;
+		this.notifieur = notifieur;
 		hashTable = obstaclemanager.getHashTable();
 		// Il est très important de ne faire ce long calcul qu'une seule fois,
 		// à la première initialisation
@@ -109,9 +111,9 @@ public class GridSpace implements Service {
 			System.arraycopy(isConnectedModel[i], 0, isConnectedModelCache[0][i], 0, max_value);
 			System.arraycopy(isConnectedModel[i], 0, isConnectedModelCache[1][i], 0, max_value);
 		}
-		synchronized(this)
+		synchronized(notifieur)
 		{
-			notifyAll();
+			notifieur.notifyAll();
 		}
 	}
 
@@ -233,7 +235,7 @@ public class GridSpace implements Service {
 	 */
 	public GridSpace clone(long date)
 	{
-		GridSpace cloned_gridspace = new GridSpace(log, config, obstaclemanager.clone());
+		GridSpace cloned_gridspace = new GridSpace(log, config, obstaclemanager.clone(), notifieur);
 		copy(cloned_gridspace, date);
 		return cloned_gridspace;
 	}
@@ -380,11 +382,6 @@ public class GridSpace implements Service {
 	public boolean isTraversableCourbe(PathfindingNodes objectifFinal, PathfindingNodes intersection, Vec2<ReadOnly> directionAvant, int tempsDepuisDebutMatch)
 	{
 		return obstaclemanager.isTraversableCourbe(objectifFinal, intersection, directionAvant, tempsDepuisDebutMatch);
-	}
-
-	public SegmentTrajectoireCourbe getSegment()
-	{
-		return obstaclemanager.getSegment();
 	}
 	
 }

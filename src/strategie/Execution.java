@@ -80,14 +80,6 @@ public class Execution implements Service {
 			{
 				// TODO
 			}
-			else if(type == RequeteType.OBSTACLE_DROIT_DEVANT)
-			{
-				// TODO
-			}
-			else if(type == RequeteType.REQUETE_HOOK_SCRIPT)
-			{
-				// TODO
-			}
 			else if(type == RequeteType.TRAJET_FINI)
 			{
 				// TODO

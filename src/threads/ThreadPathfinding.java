@@ -1,7 +1,6 @@
 package threads;
 
 import container.Service;
-import planification.LocomotionArc;
 import planification.Chemin;
 import table.GridSpace;
 import utils.Config;

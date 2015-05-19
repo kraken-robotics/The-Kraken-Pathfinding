@@ -2,7 +2,10 @@ package planification;
 
 import container.Service;
 import permissions.ReadOnly;
+import robot.RobotReal;
 import strategie.GameState;
+import utils.Config;
+import utils.Log;
 
 /**
  * Recherche de chemin, avec un algorithme D*
@@ -12,8 +15,28 @@ import strategie.GameState;
 
 public class Pathfinding implements Service {
 
-	public Pathfinding()
+	protected Log log;
+	protected Config config;
+	private MemoryManager memorymanager;
+	private GameState<RobotReal,ReadOnly> state;
+	
+	public Pathfinding(Log log, Config config, MemoryManager memorymanager, GameState<RobotReal,ReadOnly> state)
 	{
+		this.log = log;
+		this.config = config;
+		this.memorymanager = memorymanager;
+		this.state = state;
+	}
+	
+	/**
+	 * Met à jour un chemin
+	 * @param depart
+	 * @param arrivee
+	 * @return
+	 */
+	public void computePath(Chemin cheminAModifier, GameState<?,ReadOnly> depart, GameState<?,ReadOnly> arrivee, boolean eviteElementsJeu)
+	{
+		
 	}
 	
 	/**
@@ -22,9 +45,9 @@ public class Pathfinding implements Service {
 	 * @param arrivee
 	 * @return
 	 */
-	public void computePath(Chemin cheminAModifier, GameState<?,ReadOnly> depart, GameState<?,ReadOnly> arrivee)
+	public Chemin computePath(GameState<?,ReadOnly> depart, GameState<?,ReadOnly> arrivee, boolean eviteElementsJeu)
 	{
-		
+		return null;
 	}
 
 	@Override
