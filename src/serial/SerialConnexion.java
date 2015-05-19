@@ -15,15 +15,17 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.TooManyListenersException;
 
 import planification.dstar.LocomotionNode;
+import utils.Config;
+import utils.ConfigInfo;
 import utils.Log;
 import container.Service;
 
 /**
- * Une connexion série
- * @author kayou
+ * La connexion série vers la STM
  * @author pf
  *
  */
@@ -32,17 +34,10 @@ public class SerialConnexion implements SerialPortEventListener, Service
 {
 	private SerialPort serialPort;
 	protected Log log;
-	private boolean isClosed = false;
-
-	/**
-	 * Constructeur pour la série de test
-	 * @param log
-	 * @param name
-	 */
-	SerialConnexion (Log log)
-	{
-		this.log = log;
-	}
+	protected Config config;
+	
+	private boolean isClosed;
+	private int baudrate;
 
 	/**
 	 * A BufferedReader which will be fed by a InputStreamReader 
@@ -58,7 +53,49 @@ public class SerialConnexion implements SerialPortEventListener, Service
 	private static final int TIME_OUT = 2000;
 
 	/**
-	 * Appelé par le SerialManager, il donne à la série tout ce qu'il faut pour fonctionner
+	 * Constructeur pour la série de test
+	 * @param log
+	 * @param name
+	 * @throws SerialManagerException
+	 */
+	public SerialConnexion(Log log, Config config) throws SerialManagerException
+	{
+		this.log = log;
+		this.config = config;
+		
+		boolean serieOk = false;
+		
+		log.debug("Recherche de la série à "+baudrate+" baud");
+		Enumeration<?> ports = CommPortIdentifier.getPortIdentifiers();
+
+		while(ports.hasMoreElements())
+		{
+			CommPortIdentifier port = (CommPortIdentifier) ports.nextElement();
+
+			// Test du port
+			if(!initialize(port, baudrate))
+				continue;
+			
+			if(ping())
+			{
+				log.debug("STM sur " + port.getName());
+				serieOk = true;
+				break;
+			}
+			else
+				log.debug(port.getName()+": non");
+				
+			// Ce n'est pas cette série, on la ferme donc
+			serialPort.close();
+		}
+		
+		// La série n'a pas été trouvée
+		if(!serieOk)
+			throw new SerialManagerException();
+	}
+
+	/**
+	 * Il donne à la série tout ce qu'il faut pour fonctionner
 	 * @param port_name
 	 * 					Le port où est connecté la carte
 	 * @param baudrate
@@ -66,7 +103,7 @@ public class SerialConnexion implements SerialPortEventListener, Service
 	 * @throws SerialManagerException 
 	 * @throws SerialConnexionException 
 	 */
-	void initialize(CommPortIdentifier portId, int baudrate) throws SerialConnexionException
+	public boolean initialize(CommPortIdentifier portId, int baudrate)
 	{
 		try
 		{
@@ -89,14 +126,15 @@ public class SerialConnexion implements SerialPortEventListener, Service
 			input = new BufferedReader(new InputStreamReader(serialPort.getInputStream()));
 			output = serialPort.getOutputStream();
 
-			/*
-			 * A tester, permet d'avoir un readLine non bloquant! (valeur à rentrée en ms)
-			 */
 			serialPort.enableReceiveTimeout(1000);
+			
+			isClosed = false;
+			return true;
 		}
 		catch (PortInUseException | UnsupportedCommOperationException | IOException e2)
 		{
-			throw new SerialConnexionException();
+			log.critical(e2);
+			return false;
 		}
 	}
 
@@ -147,7 +185,7 @@ public class SerialConnexion implements SerialPortEventListener, Service
 	 * @throws SerialConnexionException 
 	 * @throws FinMatchException 
 	 */
-	public synchronized String[] communiquer(String message, int nb_lignes_reponse) throws SerialConnexionException, FinMatchException
+	public synchronized String[] communiquer(String message, int nb_lignes_reponse) throws SerialConnexionException
 	{
 		String[] messages = {message};
 		return communiquer(messages, nb_lignes_reponse);
@@ -161,10 +199,11 @@ public class SerialConnexion implements SerialPortEventListener, Service
 	 * @throws SerialConnexionException 
 	 * @throws FinMatchException 
 	 */
-	public synchronized String[] communiquer(String[] messages, int nb_lignes_reponse) throws SerialConnexionException, FinMatchException
+	public synchronized String[] communiquer(String[] messages, int nb_lignes_reponse) throws SerialConnexionException
 	{
 		if(isClosed)
-			throw new FinMatchException();
+			return null; // TODO
+//			throw new FinMatchException();
 		
 		String inputLines[] = new String[nb_lignes_reponse];
 		try
@@ -278,6 +317,8 @@ public class SerialConnexion implements SerialPortEventListener, Service
 	
 	@Override
 	public void updateConfig()
-	{}
+	{
+		baudrate = config.getInt(ConfigInfo.BAUDRATE);
+	}
 
 }

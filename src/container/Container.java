@@ -22,7 +22,6 @@ import exceptions.ThreadException;
 import utils.*;
 import scripts.ScriptManager;
 import serial.SerialConnexion;
-import serial.SerialManager;
 import strategie.Execution;
 import strategie.GameState;
 import table.GridSpace;
@@ -74,15 +73,9 @@ public class Container
 		// TODO
 		
 		// coupe les connexions séries
-		try {
-			if(instanciedServices[ServiceNames.SERIAL_MANAGER.ordinal()] != null)
-			{
-				SerialManager serialmanager = (SerialManager)getService(ServiceNames.SERIAL_MANAGER);
-				serialmanager.close();
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		SerialConnexion stm = (SerialConnexion)getInstanciedService(ServiceNames.SERIE_STM);
+		if(stm != null)
+			stm.close();
 
 		// ferme le log
 		log.close();
@@ -172,25 +165,13 @@ public class Container
 			instanciedServices[serviceRequested.ordinal()] = (Service)new GridSpace((Log)getService(ServiceNames.LOG),
 																				(Config)getService(ServiceNames.CONFIG),
 																				(ObstacleManager)getService(ServiceNames.OBSTACLE_MANAGER));
-		else if(serviceRequested == ServiceNames.SERIAL_MANAGER)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new SerialManager((Log)getService(ServiceNames.LOG),
-																				(Config)getService(ServiceNames.CONFIG));
 		else if(serviceRequested == ServiceNames.INCOMING_DATA_BUFFER)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new IncomingDataBuffer((Log)getService(ServiceNames.LOG),
-																				(Config)getService(ServiceNames.CONFIG));
+															 (Config)getService(ServiceNames.CONFIG));
 				
-		else if(serviceRequested == ServiceNames.SERIE_STM) // les séries
-		{
-			try {
-				SerialManager serialmanager = (SerialManager)getService(ServiceNames.SERIAL_MANAGER);
-				instanciedServices[serviceRequested.ordinal()] = (Service)serialmanager.getSerial();
-			}
-			catch(Exception e)
-			{
-				log.critical("Série introuvable!");
-				throw new ContainerException();
-			}
-		}
+		else if(serviceRequested == ServiceNames.SERIE_STM)
+			instanciedServices[serviceRequested.ordinal()] = (Service)new SerialConnexion((Log)getService(ServiceNames.LOG),
+															 (Config)getService(ServiceNames.CONFIG));
 		else if(serviceRequested == ServiceNames.EXECUTION)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new Execution((Log)getService(ServiceNames.LOG),
 			                                                 (Config)getService(ServiceNames.CONFIG),
