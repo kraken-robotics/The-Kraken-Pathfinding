@@ -333,14 +333,16 @@ public class RobotChrono extends Robot
 		int hash;
 		if(isPositionPathfindingActive)
 		{
-			hash = tapisPoses?1:0; // information sur les tapis
+			hash = 0;
+//			hash = tapisPoses?1:0; // information sur les tapis
 			hash = (hash << 6) | positionPathfinding.ordinal(); // codé sur 6 bits (ce qui laisse de la marge)
 			hash = (hash << 9) | pointsObtenus; // d'ici provient le &511 de StrategyArcManager (511 = 2^9 - 1)
 		}
 		else
 		{
+			hash = 0;
 			// Pour la position, on ne prend pas les bits de poids trop faibles dont le risque de collision est trop grand
-			hash = tapisPoses?1:0; // information sur les tapis
+//			hash = tapisPoses?1:0; // information sur les tapis
 			hash = (hash << 3) | ((position.x >> 2)&7); // petit hash sur 3 bits
 			hash = (hash << 3) | ((position.y >> 2)&7); // petit hash sur 3 bits
 			hash = (hash << 9) | pointsObtenus; // d'ici provient le &511 de StrategyArcManager (511 = 2^9 - 1)
@@ -350,7 +352,7 @@ public class RobotChrono extends Robot
 
 	public void printHash()
 	{
-		log.debug("Tapis posés: "+tapisPoses);
+//		log.debug("Tapis posés: "+tapisPoses);
 		if(isPositionPathfindingActive)
 			log.debug("Position pathfinding: "+positionPathfinding);
 		else

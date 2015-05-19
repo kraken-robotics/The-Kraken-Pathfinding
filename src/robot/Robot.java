@@ -64,7 +64,6 @@ public abstract class Robot implements Service
     	rc.vitesse = vitesse;
     	rc.pointsObtenus = pointsObtenus;
     	rc.date = getTempsDepuisDebutMatch();
-    	rc.tapisPoses = tapisPoses;
     }
 
 	// Dépendances
@@ -73,8 +72,6 @@ public abstract class Robot implements Service
 	protected boolean symetrie;
 	protected Speed vitesse;
 	protected int pointsObtenus = 0;
-	
-	protected boolean tapisPoses = false;
 	
 	public Robot(Config config, Log log)
 	{
