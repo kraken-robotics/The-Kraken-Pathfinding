@@ -29,23 +29,19 @@ public class Execution implements Service {
 
 	private GameState<RobotReal,ReadWrite> gamestate;
 	private Log log;
-	protected Config config;
 	private ScriptManager scriptmanager;
 	private Strategie strategie;
 	private RequeteSTM requete;
 	
 	private ArrayList<Hook> hooksEntreScripts;
 	
-	public Execution(Log log, Config config, Strategie strategie, ScriptManager scriptmanager, GameState<RobotReal,ReadWrite> gamestate)
+	public Execution(Log log, Strategie strategie, ScriptManager scriptmanager, GameState<RobotReal,ReadWrite> gamestate)
 	{
 		this.log = log;
-		this.config = config;
 		this.gamestate = gamestate;
 		this.scriptmanager = scriptmanager;
 		this.strategie = strategie;
 		requete = RequeteSTM.getInstance();
-		
-		updateConfig();
 /*		try {
 			hooksEntreScripts = hookfactory.getHooksEntreScriptsReal(gamestate);
 		} catch (FinMatchException e) {
@@ -144,7 +140,7 @@ public class Execution implements Service {
 	}*/
 
 	@Override
-	public void updateConfig()
+	public void updateConfig(Config config)
 	{}
 	
 }

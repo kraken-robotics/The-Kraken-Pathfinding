@@ -34,7 +34,6 @@ public class SerialConnexion implements SerialPortEventListener, Service
 {
 	private SerialPort serialPort;
 	protected Log log;
-	protected Config config;
 	
 	private boolean isClosed;
 	private int baudrate;
@@ -58,10 +57,9 @@ public class SerialConnexion implements SerialPortEventListener, Service
 	 * @param name
 	 * @throws SerialManagerException
 	 */
-	public SerialConnexion(Log log, Config config) throws SerialConnexionException
+	public SerialConnexion(Log log) throws SerialConnexionException
 	{
 		this.log = log;
-		this.config = config;
 		
 		if(!searchPort())
 			throw new SerialConnexionException();
@@ -319,7 +317,7 @@ public class SerialConnexion implements SerialPortEventListener, Service
 	}
 	
 	@Override
-	public void updateConfig()
+	public void updateConfig(Config config)
 	{
 		baudrate = config.getInt(ConfigInfo.BAUDRATE);
 	}

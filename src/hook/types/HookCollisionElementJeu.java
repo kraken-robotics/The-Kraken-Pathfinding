@@ -22,9 +22,9 @@ public class HookCollisionElementJeu extends Hook
 	private ObstacleCircular<ReadOnly> obstacle;
 	private ObstacleRectangular<ReadWrite> obstacleRobot;
 	
-	public HookCollisionElementJeu(Config config, Log log, GameState<?, ReadOnly> state, ObstacleCircular<ReadOnly> o) throws FinMatchException
+	public HookCollisionElementJeu(Log log, GameState<?, ReadOnly> state, ObstacleCircular<ReadOnly> o) throws FinMatchException
 	{
-		super(config, log, state);
+		super(log, state);
 		obstacle = o;
 		obstacleRobot = new ObstacleRectangular<ReadWrite>(state, new Vec2<ReadWrite>());
 	}

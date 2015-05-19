@@ -16,14 +16,12 @@ import utils.Log;
 public class Pathfinding implements Service {
 
 	protected Log log;
-	protected Config config;
 	private MemoryManager memorymanager;
 	private GameState<RobotReal,ReadOnly> state;
 	
-	public Pathfinding(Log log, Config config, MemoryManager memorymanager, GameState<RobotReal,ReadOnly> state)
+	public Pathfinding(Log log, MemoryManager memorymanager, GameState<RobotReal,ReadOnly> state)
 	{
 		this.log = log;
-		this.config = config;
 		this.memorymanager = memorymanager;
 		this.state = state;
 	}
@@ -51,7 +49,7 @@ public class Pathfinding implements Service {
 	}
 
 	@Override
-	public void updateConfig()
+	public void updateConfig(Config config)
 	{
 		// TODO
 	}

@@ -1,12 +1,11 @@
 package utils;
 
-import container.Service;
-
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
 
+import container.Service;
 import enums.RobotColor;
 import exceptions.ConfigException;
 
@@ -24,6 +23,7 @@ public class Config implements Service
 	public volatile static boolean capteursOn = false;
 	public volatile static boolean stopThreads = false;
 	public volatile static boolean finMatch;
+	public static final String dossierconfig = "./config/";
 
 	private String name_local_file = "local.ini";
 	private String name_config_file = "config.ini";
@@ -32,14 +32,10 @@ public class Config implements Service
 	private Properties local = new Properties();
 	private Log log;
 	
-	public Config(String path)
-	{
-		this.path = path;
-	}
-	
-	public void setLog(Log log)
+	public Config(Log log, String path)
 	{
 		this.log = log;
+		this.path = path;
 	}
 	
 	public void init() throws ConfigException
@@ -165,10 +161,6 @@ public class Config implements Service
 				log.debug(o+": "+config.get(o));
 		}
 	}
-	
-	@Override
-	public void updateConfig()
-	{}
 		
 	/**
 	 * Etablit la date de début du match
@@ -197,6 +189,18 @@ public class Config implements Service
 	public boolean getSymmetry()
 	{
 		return RobotColor.parse(getString(ConfigInfo.COULEUR)).isSymmetry();
+	}
+
+	/**
+	 * Met à jour les config de tous les services
+	 */
+	@Override
+	public void updateConfig(Config config)
+	{
+		synchronized(this)
+		{
+			notifyAll();
+		}
 	}
 	
 }

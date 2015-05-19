@@ -3,7 +3,7 @@ package robot;
 import java.util.ArrayList;
 
 import permissions.ReadOnly;
-import planification.astar.arc.SegmentTrajectoireCourbe;
+import planification.LocomotionArc;
 import hook.Hook;
 import hook.types.HookDateFinMatch;
 import container.Service;
@@ -31,7 +31,7 @@ public abstract class Robot implements Service
             throws UnableToMoveException, FinMatchException;
     public abstract void avancer(int distance, ArrayList<Hook> hooks, boolean mur)
             throws UnableToMoveException, FinMatchException;
-    public abstract void suit_chemin(ArrayList<SegmentTrajectoireCourbe> chemin, ArrayList<Hook> hooks)
+    public abstract void suit_chemin(ArrayList<LocomotionArc> chemin, ArrayList<Hook> hooks)
             throws UnableToMoveException, FinMatchException, ScriptHookException;
 	public abstract void set_vitesse(Speed vitesse) throws FinMatchException;
 	
@@ -67,15 +67,13 @@ public abstract class Robot implements Service
     }
 
 	// Dépendances
-	protected Config config;
 	protected Log log;
 	protected boolean symetrie;
 	protected Speed vitesse;
 	protected int pointsObtenus = 0;
 	
-	public Robot(Config config, Log log)
+	public Robot(Log log)
 	{
-		this.config = config;
 		this.log = log;
 		vitesse = Speed.BETWEEN_SCRIPTS;
 	}
@@ -98,7 +96,7 @@ public abstract class Robot implements Service
 		hookFinMatch.updateDate(dateLimite);
 	}
 
-	public void updateConfig()
+	public void updateConfig(Config config)
 	{
 		symetrie = config.getSymmetry();
 	}

@@ -23,14 +23,13 @@ import container.Service;
 public class Strategie implements Service {
 
 	protected Log log;
-	protected Config config;
 	private ScriptManager scriptmanager;
 	private GameState<RobotReal,ReadOnly> real_gamestate;
 	private HookFactory hookfactory;
 	private Pathfinding pathfinding;
 	private MemoryManager memorymanager;
 	
-	public Strategie(Log log, Config config, ScriptManager scriptmanager, GameState<RobotReal,ReadOnly> real_gamestate, HookFactory hookfactory, Pathfinding pathfinding, MemoryManager memorymanager)
+	public Strategie(Log log, ScriptManager scriptmanager, GameState<RobotReal,ReadOnly> real_gamestate, HookFactory hookfactory, Pathfinding pathfinding, MemoryManager memorymanager)
 	{
 		
 	}
@@ -55,7 +54,7 @@ public class Strategie implements Service {
 	}
 	
 	@Override
-	public void updateConfig() {
+	public void updateConfig(Config config) {
 		// TODO Auto-generated method stub
 		
 	}

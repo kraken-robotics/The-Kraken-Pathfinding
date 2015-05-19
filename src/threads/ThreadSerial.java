@@ -36,9 +36,6 @@ public class ThreadSerial extends Thread implements Service
 		this.buffer = buffer;
 		this.lock = lock;
 		requete = RequeteSTM.getInstance();
-		
-		Thread.currentThread().setPriority(2);
-		updateConfig();
 	}
 
 	@Override
@@ -135,7 +132,7 @@ public class ThreadSerial extends Thread implements Service
 	}
 	
 	@Override
-	public void updateConfig()
+	public void updateConfig(Config config)
 	{}
 
 }

@@ -23,7 +23,7 @@ public class HookDemiPlan extends Hook
 	 */
 	public HookDemiPlan(Config config, Log log, GameState<?, ReadOnly> state)
 	{
-		super(config, log, state);
+		super(log, state);
 		point = new Vec2<ReadWrite>();
 		direction = new Vec2<ReadWrite>();
 	}
@@ -36,7 +36,7 @@ public class HookDemiPlan extends Hook
 	 */
 	public HookDemiPlan(Config config, Log log, GameState<?,ReadOnly> state, Vec2<ReadOnly> point, Vec2<ReadOnly> direction)
 	{
-		super(config, log, state);
+		super(log, state);
 		this.point = point.clone();
 		this.direction = direction.clone();
 	}

@@ -15,14 +15,12 @@ import utils.Log;
 public class ThreadGridSpace extends Thread implements Service {
 
 	protected Log log;
-	protected Config config;
 	private ObstacleManager obstaclemanager;
 	private GridSpace gridspace;
 	
-	public ThreadGridSpace(Log log, Config config, ObstacleManager obstaclemanager, GridSpace gridspace)
+	public ThreadGridSpace(Log log, ObstacleManager obstaclemanager, GridSpace gridspace)
 	{
 		this.log = log;
-		this.config = config;
 		this.obstaclemanager = obstaclemanager;
 		this.gridspace = gridspace;
 	}
@@ -49,7 +47,7 @@ public class ThreadGridSpace extends Thread implements Service {
 	}
 
 	@Override
-	public void updateConfig()
+	public void updateConfig(Config config)
 	{}
 
 

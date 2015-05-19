@@ -17,16 +17,14 @@ import container.Service;
 public class StrategieInfo implements Service
 {
 	protected Log log;
-	protected Config config;
 	private StrategieNotifieur notifieur;
 	
 	private int[] echecsScripts = new int[ScriptAnticipableNames.values().length];
 	private int[] echecsHooks = new int[ScriptHookNames.values().length];
 	
-    public StrategieInfo(Log log, Config config, StrategieNotifieur notifieur)
+    public StrategieInfo(Log log, StrategieNotifieur notifieur)
     {
     	this.log = log;
-    	this.config = config;
     	this.notifieur = notifieur;
     }
     
@@ -57,7 +55,7 @@ public class StrategieInfo implements Service
     }
 
 	@Override
-	public void updateConfig()
+	public void updateConfig(Config config)
 	{}
 
 }

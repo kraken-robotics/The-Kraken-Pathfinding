@@ -6,6 +6,7 @@ import hook.types.HookDemiPlan;
 import java.util.ArrayList;
 
 import permissions.ReadOnly;
+import planification.LocomotionArc;
 import planification.astar.arc.PathfindingNodes;
 import planification.astar.arc.SegmentTrajectoireCourbe;
 import utils.Config;
@@ -24,14 +25,12 @@ import exceptions.UnableToMoveException;
 public class STMcard implements Service {
 
 	protected Log log;
-	protected Config config;
 	private SerialConnexion serie;
 	private boolean symetrie;
 
-	public STMcard(Config config, Log log, SerialConnexion serie)
+	public STMcard(Log log, SerialConnexion serie)
 	{
 		this.log = log;
-		this.config = config;
 		this.serie = serie;		
 	}
 
@@ -127,7 +126,7 @@ public class STMcard implements Service {
     	// TODO
     }
 
-    public void followPath(ArrayList<SegmentTrajectoireCourbe> chemin, HookDemiPlan hookTrajectoireCourbe, ArrayList<Hook> hooks, DirectionStrategy directionstrategy) throws UnableToMoveException, ScriptHookException
+    public void followPath(ArrayList<LocomotionArc> chemin, HookDemiPlan hookTrajectoireCourbe, ArrayList<Hook> hooks, DirectionStrategy directionstrategy) throws UnableToMoveException, ScriptHookException
     {
     	// TODO
     }
@@ -321,7 +320,7 @@ public class STMcard implements Service {
 	}
 
 	@Override
-	public void updateConfig()
+	public void updateConfig(Config config)
 	{
         symetrie = config.getSymmetry();
 	}

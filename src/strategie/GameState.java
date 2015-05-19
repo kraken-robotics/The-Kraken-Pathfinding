@@ -47,7 +47,6 @@ public class GameState<R extends Robot, T extends Permission> implements Service
     private int indice_memory_manager;
     
     private Log log;
-    private Config config;
 
     /**
      * De manière publique, on ne peut créer qu'un GameState<RobotReal>, et pas de GameState<RobotChrono>
@@ -58,14 +57,13 @@ public class GameState<R extends Robot, T extends Permission> implements Service
      * @param robot
      * @return
      */
-    public static GameState<RobotReal,ReadWrite> constructRealGameState(Config config, Log log, GridSpace gridspace, RobotReal robot, HookFactory hookfactory)
+    public static GameState<RobotReal,ReadWrite> constructRealGameState(Log log, GridSpace gridspace, RobotReal robot, HookFactory hookfactory)
     {
-    	return new GameState<RobotReal,ReadWrite>(config, log, gridspace, robot, hookfactory);
+    	return new GameState<RobotReal,ReadWrite>(log, gridspace, robot, hookfactory);
     }
     
-    private GameState(Config config, Log log, GridSpace gridspace, R robot, HookFactory hookfactory)
+    private GameState(Log log, GridSpace gridspace, R robot, HookFactory hookfactory)
     {
-        this.config = config;
         this.log = log;
         this.gridspace = gridspace;
         this.robot = robot;
@@ -73,11 +71,10 @@ public class GameState<R extends Robot, T extends Permission> implements Service
         if(robot instanceof RobotReal)
         {
         	robot.setHookFinMatch(hookfactory.getHooksFinMatchReal(getReadOnly()));
-        	((RobotReal)robot).setHookTrajectoireCourbe(new HookDemiPlan(config, log, getReadOnly()));
+        	((RobotReal)robot).setHookTrajectoireCourbe(new HookDemiPlan(log, getReadOnly()));
         }
         else
             robot.setHookFinMatch(hookfactory.getHooksFinMatchChrono(getReadOnly()));
-        updateConfig();
     }
     
     /**
@@ -96,7 +93,7 @@ public class GameState<R extends Robot, T extends Permission> implements Service
 	public static final GameState<RobotChrono,ReadWrite> cloneGameState(GameState<? extends Robot,ReadOnly> state, int indice_memory_manager)
 	{
 		// On instancie la table avant car il faut donner le même objet deux fois en paramètres
-		GameState<RobotChrono,ReadWrite> cloned = new GameState<RobotChrono,ReadWrite>(state.config, state.log, state.gridspace.clone(GameState.getTempsDepuisDebut(state)), state.robot.cloneIntoRobotChrono(), state.hookfactory);
+		GameState<RobotChrono,ReadWrite> cloned = new GameState<RobotChrono,ReadWrite>(state.log, state.gridspace.clone(GameState.getTempsDepuisDebut(state)), state.robot.cloneIntoRobotChrono(), state.hookfactory);
 		GameState.copy(state, cloned);
 		cloned.indice_memory_manager = indice_memory_manager;
 		return cloned;
@@ -117,13 +114,8 @@ public class GameState<R extends Robot, T extends Permission> implements Service
     }
 
     @Override
-    public void updateConfig()
-    {
-    	log.updateConfig();
-        robot.updateConfig();
-        gridspace.updateConfig();
-        hookfactory.updateConfig();
-    }
+    public void updateConfig(Config config)
+    {}
    
     /**
      * Petite surcouche

@@ -15,16 +15,13 @@ public class ThreadObstacleManager extends Thread implements Service
 {
 	private IncomingDataBuffer buffer;
 	private ObstacleManager obstaclemanager;
-	protected Config config;
 	protected Log log;
 	
-	public ThreadObstacleManager(Log log, Config config, IncomingDataBuffer buffer, ObstacleManager obstaclemanager)
+	public ThreadObstacleManager(Log log, IncomingDataBuffer buffer, ObstacleManager obstaclemanager)
 	{
 		this.log = log;
-		this.config = config;
 		this.buffer = buffer;
 		this.obstaclemanager = obstaclemanager;
-		updateConfig();
 	}
 	
 	@Override
@@ -51,7 +48,7 @@ public class ThreadObstacleManager extends Thread implements Service
 	}
 	
 	@Override
-	public void updateConfig()
+	public void updateConfig(Config config)
 	{}
 
 }

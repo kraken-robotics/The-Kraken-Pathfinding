@@ -15,14 +15,12 @@ import utils.Log;
 public class ThreadPathfinding extends Thread implements Service
 {
 	protected Log log;
-	protected Config config;
 	private GridSpace gridspace;
 	private Chemin path;
 	
-	public ThreadPathfinding(Log log, Config config, GridSpace gridspace, Chemin path)
+	public ThreadPathfinding(Log log, GridSpace gridspace, Chemin path)
 	{
 		this.log = log;
-		this.config = config;
 		this.gridspace = gridspace;
 		this.path = path;
 	}
@@ -51,7 +49,7 @@ public class ThreadPathfinding extends Thread implements Service
 	}
 
 	@Override
-	public void updateConfig()
+	public void updateConfig(Config config)
 	{}
 
 }

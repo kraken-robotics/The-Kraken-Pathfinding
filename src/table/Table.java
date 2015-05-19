@@ -17,19 +17,15 @@ public class Table implements Service
 {
 	// Dépendances
 	private Log log;
-	private Config config;
 	private StrategieNotifieur notifieur;
 	
 	/** Contient toutes les informations sur les éléments de jeux sans perte d'information. */
 	private long hash = 0;
 	
-	public Table(Log log, Config config, StrategieNotifieur notifieur)
+	public Table(Log log, StrategieNotifieur notifieur)
 	{
 		this.log = log;
-		this.config = config;
 		this.notifieur = notifieur;
-		
-		updateConfig();
 	}
 	
 	/**
@@ -69,7 +65,7 @@ public class Table implements Service
 	 */
 	public Table clone()
 	{
-		Table cloned_table = new Table(log, config, notifieur);
+		Table cloned_table = new Table(log, notifieur);
 		copy(cloned_table);
 		return cloned_table;
 	}
@@ -94,7 +90,7 @@ public class Table implements Service
 	}
 
 	@Override
-	public void updateConfig()
+	public void updateConfig(Config config)
 	{}
 
 	/**

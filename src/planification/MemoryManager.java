@@ -32,10 +32,10 @@ public class MemoryManager implements Service {
 	private int firstAvailable[] = new int[nb_planif];
 	
 	@Override
-	public void updateConfig()
+	public void updateConfig(Config config)
 	{}
 
-	public MemoryManager(Log log, Config config, GameState<RobotReal,ReadOnly> realstate)
+	public MemoryManager(Log log, GameState<RobotReal,ReadOnly> realstate)
 	{	
 		this.log = log;
 
@@ -50,7 +50,6 @@ public class MemoryManager implements Service {
 				gamestates_list[j][i] = GameState.cloneGameState(realstate, i);
 			}
 		log.debug("Instanciation finie");
-		updateConfig();
 	}
 	
 	/**

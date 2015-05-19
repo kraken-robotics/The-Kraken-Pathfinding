@@ -28,7 +28,7 @@ public abstract class Obstacle<T extends Permission>
 	
 	public static void setLogConfig(Log log, Config config)
 	{
-		Obstacle.log = log;
+		Obstacle.log = log; // TODO: config
 		Obstacle.config = config;
 		largeurRobot = config.getInt(ConfigInfo.LARGEUR_ROBOT);
 		longueurRobot = config.getInt(ConfigInfo.LONGUEUR_ROBOT);

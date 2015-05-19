@@ -1,5 +1,7 @@
 package container;
 
+import utils.Config;
+
 /**
  * Interface commune à toutes les classes obtenables par container.getService
  * @author pf
@@ -9,8 +11,8 @@ package container;
 public interface Service {
 
 	/**
-	 * Cette méthode sert surtout aux tests, afin de rendre propre les modifications de config en plein match.
+	 * Accès au fichier de configuration
 	 */
-	public void updateConfig();
+	public void updateConfig(Config config);
 	
 }

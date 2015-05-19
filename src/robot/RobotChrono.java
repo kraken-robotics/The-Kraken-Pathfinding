@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import permissions.ReadOnly;
 import permissions.ReadWrite;
 import planification.astar.arc.PathfindingNodes;
-import planification.astar.arc.SegmentTrajectoireCourbe;
 import hook.Hook;
 import utils.Log;
 import utils.Config;
@@ -38,9 +37,9 @@ public class RobotChrono extends Robot
 	private final static int sleepTourneDuration = approximateSerialLatency+Speed.rotationStopDuration;
 	private final static int sleepTourneAndAvanceDuration = sleepTourneDuration + sleepAvanceDuration;
 	
-	public RobotChrono(Config config, Log log)
+	public RobotChrono(Log log)
 	{
-		super(config, log);
+		super(log);
 	}
 	
 	@Override
@@ -88,7 +87,7 @@ public class RobotChrono extends Robot
 	@Override
 	public RobotChrono cloneIntoRobotChrono()
 	{
-		RobotChrono cloned_robotchrono = new RobotChrono(config, log);
+		RobotChrono cloned_robotchrono = new RobotChrono(log);
 		copy(cloned_robotchrono);
 		return cloned_robotchrono;
 	}

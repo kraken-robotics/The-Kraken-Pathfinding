@@ -28,11 +28,7 @@ import utils.Config;
  */
 
 public class HookFactory implements Service
-{
-	
-	//endroit ou lire la configuration du robot
-	private Config config;
-
+{	
 	//gestion des log
 	private Log log;
 	
@@ -49,18 +45,15 @@ public class HookFactory implements Service
 	 * @param log système de d log
 	 * @param realState état du jeu
 	 */
-	public HookFactory(Config config, Log log)
+	public HookFactory(Log log)
 	{
-		this.config = config;
 		this.log = log;
-		updateConfig();
 	}
 
-	public void updateConfig()
+	public void updateConfig(Config config)
 	{
 		// demande avec quelle tolérance sur la précision on déclenche les hooks
 		dureeMatch = config.getInt(ConfigInfo.DUREE_MATCH_EN_S) * 1000;
-		log.updateConfig();
 	}
 
 	/**
@@ -115,7 +108,7 @@ public class HookFactory implements Service
      */
     private HookDateFinMatch getHooksFinMatch(GameState<?,ReadOnly> state, boolean isChrono)
     {
-    	HookDateFinMatch hook_fin_match = new HookDateFinMatch(config, log, state, dureeMatch);
+    	HookDateFinMatch hook_fin_match = new HookDateFinMatch(log, state, dureeMatch);
     	hook_fin_match.ajouter_callback(new Callback(new ThrowsScriptHook(ScriptHookNames.FUNNY_ACTION, null)));
 
     	return hook_fin_match;
@@ -169,7 +162,7 @@ public class HookFactory implements Service
 			// Ce que l'ennemi peut prendre
 			if(n.getType().isInCommon())
 			{
-				hook = new HookDate(config, log, state.getReadOnly(), n.getType().getDateEnemyTakesIt());
+				hook = new HookDate(log, state.getReadOnly(), n.getType().getDateEnemyTakesIt());
 				action = new GameElementDone(state, n, Tribool.MAYBE);
 				hook.ajouter_callback(new Callback(action));
 				hooks_entre_scripts.add(hook);
@@ -178,7 +171,7 @@ public class HookFactory implements Service
 			// Ce qu'on peut shooter
 			if(n.getType().canBeShot()) // on ne met un hook de collision que sur ceux qui ont susceptible de disparaître quand on passe dessus
 			{
-				hook = new HookCollisionElementJeu(config, log, state.getReadOnly(), n.getObstacle());
+				hook = new HookCollisionElementJeu(log, state.getReadOnly(), n.getObstacle());
 				action = new GameElementDone(state, n, Tribool.TRUE);
 				hook.ajouter_callback(new Callback(action));
 				hooks_entre_scripts.add(hook);
@@ -186,7 +179,7 @@ public class HookFactory implements Service
 			
 			if(n.getType().scriptHookThrown() != null)
 			{
-				hook = new HookCollisionElementJeu(config, log, state.getReadOnly(), n.getObstacleDilate());
+				hook = new HookCollisionElementJeu(log, state.getReadOnly(), n.getObstacleDilate());
 				ThrowsScriptHook action2 = new ThrowsScriptHook(n.getType().scriptHookThrown(), n);
 				hook.ajouter_callback(new Callback(action2));
 				hooks_entre_scripts.add(hook);				

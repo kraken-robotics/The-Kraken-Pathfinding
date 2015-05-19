@@ -1,9 +1,10 @@
 package threads;
 
+import utils.Config;
 import container.Service;
 
 /**
- * Juste un singleton qui sert au démarrage du match
+ * Juste un service surveillé qui sert au démarrage du match
  * @author pf
  *
  */
@@ -11,6 +12,6 @@ import container.Service;
 public class StartMatchLock implements Service
 {
 	@Override
-	public void updateConfig() {}
-	
+	public void updateConfig(Config config)
+	{}
 }

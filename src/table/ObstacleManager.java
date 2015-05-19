@@ -10,7 +10,6 @@ import obstacles.ObstaclesFixes;
 import permissions.ReadOnly;
 import permissions.ReadWrite;
 import planification.astar.arc.PathfindingNodes;
-import planification.astar.arc.SegmentTrajectoireCourbe;
 import robot.Speed;
 import container.Service;
 import enums.Tribool;
@@ -29,7 +28,6 @@ import utils.Vec2;
 public class ObstacleManager implements Service
 {
     private Log log;
-    private Config config;
     private final Table table;
     
     // Les obstacles mobiles, c'est-à-dire des obstacles de proximité et de balise
@@ -54,16 +52,14 @@ public class ObstacleManager implements Service
 	private int diametreEnnemi;
 
     
-    public ObstacleManager(Log log, Config config, Table table)
+    public ObstacleManager(Log log, Table table)
     {
         this.log = log;
-        this.config = config;
         this.table = table;
 
         // On n'instancie hypotheticalEnnemy qu'une seule fois
         if(hypotheticalEnemy == null)
         	hypotheticalEnemy = new ObstacleProximity<ReadWrite>(new Vec2<ReadWrite>(), rayon_robot_adverse, -1000);
-        updateConfig();
     }
 
     /**
@@ -167,7 +163,7 @@ public class ObstacleManager implements Service
     
     public ObstacleManager clone()
     {
-    	ObstacleManager cloned_manager = new ObstacleManager(log, config, table.clone());
+    	ObstacleManager cloned_manager = new ObstacleManager(log, table.clone());
 		copy(cloned_manager);
 		return cloned_manager;
     }
@@ -301,7 +297,7 @@ public class ObstacleManager implements Service
     }
 
 	@Override
-	public void updateConfig() {
+	public void updateConfig(Config config) {
 		tempo = config.getDouble(ConfigInfo.CAPTEURS_TEMPORISATION_OBSTACLES);
 		table_x = config.getInt(ConfigInfo.TABLE_X);
 		table_y = config.getInt(ConfigInfo.TABLE_Y);
@@ -410,11 +406,6 @@ public class ObstacleManager implements Service
         		return false;
 
         return true;
-	}
-
-	public SegmentTrajectoireCourbe getSegment()
-	{
-		return obstacleTrajectoireCourbe.getSegment();
 	}
 
 	public void addIfUseful(IncomingData data)

@@ -20,7 +20,6 @@ import exceptions.GridSpaceException;
 public class GridSpace implements Service {
 	
 	private Log log;
-	private Config config;
 	private StrategieNotifieur notifieur;
 	
 	// afin d'éviter les obstacles fixes et mobiles
@@ -40,10 +39,9 @@ public class GridSpace implements Service {
 	/** Ce hash est utilisé afin de vérifier la péremption du cache */
 	private long hashTable;
 	
-	public GridSpace(Log log, Config config, ObstacleManager obstaclemanager, StrategieNotifieur notifieur)
+	public GridSpace(Log log, ObstacleManager obstaclemanager, StrategieNotifieur notifieur)
 	{
 		this.log = log;
-		this.config = config;
 		this.obstaclemanager = obstaclemanager;
 		this.notifieur = notifieur;
 		hashTable = obstaclemanager.getHashTable();
@@ -56,7 +54,6 @@ public class GridSpace implements Service {
 		}
 
 		reinitConnections();
-		updateConfig();
 	}
 	
 	/**
@@ -203,7 +200,7 @@ public class GridSpace implements Service {
 	}
 	
 	@Override
-	public void updateConfig()
+	public void updateConfig(Config config)
 	{}
 
 	/**
@@ -235,7 +232,7 @@ public class GridSpace implements Service {
 	 */
 	public GridSpace clone(long date)
 	{
-		GridSpace cloned_gridspace = new GridSpace(log, config, obstaclemanager.clone(), notifieur);
+		GridSpace cloned_gridspace = new GridSpace(log, obstaclemanager.clone(), notifieur);
 		copy(cloned_gridspace, date);
 		return cloned_gridspace;
 	}

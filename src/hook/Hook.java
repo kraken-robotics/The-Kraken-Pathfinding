@@ -29,12 +29,10 @@ abstract public class Hook
 	//gestion des log
 	protected Log log;
 	
-	//endroit ou lire la configuration du robot
-	protected Config config;
-	
 	protected GameState<?,ReadOnly> state;
 
 	protected static Integer rayon_robot = null;
+	protected static Integer dureeMatch;
 	
 	/**
 	 *  ce constructeur ne sera appellé que par les constructeurs des classes filles (des hooks bien précis)  
@@ -42,16 +40,19 @@ abstract public class Hook
 	 * @param log
 	 * @param real_state
 	 */
-	public Hook(Config config, Log log, GameState<?,ReadOnly> state)
+	public Hook(Log log, GameState<?,ReadOnly> state)
 	{
-		this.config = config;
 		this.log = log;
 		this.state = state;
 		
 		// Cette optimisation est nécessaire car une lecture
 		// en config est très lente et on crée beaucoup de hook.
-		if(rayon_robot == null)
-			rayon_robot = config.getInt(ConfigInfo.RAYON_ROBOT);
+	}
+	
+	void updateConfig(Config config)
+	{
+		rayon_robot = config.getInt(ConfigInfo.RAYON_ROBOT);
+		dureeMatch = config.getInt(ConfigInfo.DUREE_MATCH_EN_S)*1000;
 	}
 	
 	/**

@@ -20,15 +20,13 @@ import utils.Log;
 public class Chemin implements Service
 {
 	protected Log log;
-	protected Config config;
 	private Pathfinding pathfinding;
 	
 	private boolean eviteElementsJeu;
 	
-	public Chemin(Log log, Config config, Pathfinding pathfinding)
+	public Chemin(Log log, Pathfinding pathfinding)
 	{
 		this.log = log;
-		this.config = config;
 		this.pathfinding = pathfinding;
 	}
 	
@@ -63,7 +61,7 @@ public class Chemin implements Service
 	}
 
 	@Override
-	public void updateConfig()
+	public void updateConfig(Config config)
 	{}
 
 }

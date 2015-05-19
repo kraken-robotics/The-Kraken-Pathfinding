@@ -15,14 +15,12 @@ import utils.Log;
 public class ThreadStrategie extends Thread implements Service
 {
 	protected Log log;
-	protected Config config;
 	private StrategieNotifieur notifieur;
 	private Strategie strategie;
 	
-	public ThreadStrategie(Log log, Config config, StrategieNotifieur notifieur, Strategie strategie)
+	public ThreadStrategie(Log log, StrategieNotifieur notifieur, Strategie strategie)
 	{
 		this.log = log;
-		this.config = config;
 		this.notifieur = notifieur;
 		this.strategie = strategie;
 	}
@@ -50,7 +48,7 @@ public class ThreadStrategie extends Thread implements Service
 	}
 
 	@Override
-	public void updateConfig()
+	public void updateConfig(Config config)
 	{}
 
 }

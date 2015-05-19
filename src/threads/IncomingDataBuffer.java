@@ -15,13 +15,11 @@ import container.Service;
 
 public class IncomingDataBuffer implements Service
 {
-	protected Config config;
 	protected Log log;
 	
-	public IncomingDataBuffer(Log log, Config config)
+	public IncomingDataBuffer(Log log)
 	{
 		this.log = log;
-		this.config = config;
 	}
 	
 	private Queue<IncomingData> buffer = new LinkedList<IncomingData>();
@@ -59,7 +57,7 @@ public class IncomingDataBuffer implements Service
 	}
 	
 	@Override
-	public void updateConfig()
+	public void updateConfig(Config config)
 	{}
 	
 }

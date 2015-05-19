@@ -16,17 +16,13 @@ public class ThreadStrategieInfo extends Thread implements Service
 {
 	private ObstacleManager obstaclemanager;
 	protected StrategieInfo obstaclestrategiemanager;
-	protected Config config;
 	protected Log log;
 	
-	public ThreadStrategieInfo(Log log, Config config, StrategieInfo obstaclestrategiemanager, ObstacleManager obstaclemanager)
+	public ThreadStrategieInfo(Log log, StrategieInfo obstaclestrategiemanager, ObstacleManager obstaclemanager)
 	{
 		this.log = log;
-		this.config = config;
 		this.obstaclestrategiemanager = obstaclestrategiemanager;
 		this.obstaclemanager = obstaclemanager;
-		
-		updateConfig();
 	}
 	
 	@Override
@@ -51,7 +47,7 @@ public class ThreadStrategieInfo extends Thread implements Service
 	}
 	
 	@Override
-	public void updateConfig()
+	public void updateConfig(Config config)
 	{}
 
 }

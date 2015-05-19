@@ -18,7 +18,6 @@ public class ThreadTimer extends Thread implements Service
 {
 
 	private ObstacleManager obstaclemanager;
-	protected Config config;
 	protected Log log;
 	private IncomingDataBuffer buffer;
 	private StartMatchLock lock;
@@ -27,14 +26,12 @@ public class ThreadTimer extends Thread implements Service
 	private long dateFin;
 	private int obstacleRefreshInterval = 500;
 
-	public ThreadTimer(Log log, Config config, ObstacleManager obstaclemanager, IncomingDataBuffer buffer, StartMatchLock lock)
+	public ThreadTimer(Log log, ObstacleManager obstaclemanager, IncomingDataBuffer buffer, StartMatchLock lock)
 	{
 		this.log = log;
-		this.config = config;
 		this.obstaclemanager = obstaclemanager;
 		this.buffer = buffer;
 		this.lock = lock;
-		updateConfig();
 	}
 	
 	@Override
@@ -52,7 +49,7 @@ public class ThreadTimer extends Thread implements Service
 		// Démarrage du match!
 		
 		Config.matchDemarre = true;
-		config.setDateDebutMatch();
+		Config.setDateDebutMatch();
 		Config.capteursOn = true;
 		log.debug("LE MATCH COMMENCE !");					
 		dateFin = dureeMatch + Config.getDateDebutMatch();
@@ -68,7 +65,7 @@ public class ThreadTimer extends Thread implements Service
 	}
 
 	@Override
-	public void updateConfig()
+	public void updateConfig(Config config)
 	{
 		// facteur 1000 car temps_match est en secondes et duree_match en ms
 		dureeMatch = 1000*config.getInt(ConfigInfo.DUREE_MATCH_EN_S);

@@ -21,8 +21,8 @@ public class ThreadConfig extends Thread implements Service {
 	public ThreadConfig(Log log, Config config, Container container)
 	{
 		this.log = log;
-		this.config = config;
 		this.container = container;
+		this.config = config;
 	}
 
 	@Override
@@ -45,14 +45,14 @@ public class ThreadConfig extends Thread implements Service {
 			{
 				Service service = container.getInstanciedService(name);
 				if(service != null)
-					service.updateConfig();
+					service.updateConfig(config);
 			}
 		}
 
 	}
 
 	@Override
-	public void updateConfig()
+	public void updateConfig(Config config)
 	{}
 
 }

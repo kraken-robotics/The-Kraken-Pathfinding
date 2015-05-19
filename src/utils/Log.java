@@ -1,6 +1,7 @@
 package utils;
 
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -16,7 +17,6 @@ import container.Service;
 public class Log implements Service
 {
 	// Dépendances
-	private Config config;
 	private boolean logClosed = false;
 	private GregorianCalendar calendar = new GregorianCalendar();
 	FileWriter writer = null;
@@ -30,26 +30,6 @@ public class Log implements Service
 	
 	// Sauvegarder les logs dans un fichier
 	private boolean sauvegarde_fichier = false;
-	
-	public Log(Config config)
-	{
-		this.config = config;
-	}
-	
-	public void init()
-	{
-		updateConfig();
-		if(sauvegarde_fichier)
-			try {
-				String heure = calendar.get(Calendar.HOUR_OF_DAY)+":"+calendar.get(Calendar.MINUTE)+":"+calendar.get(Calendar.SECOND);
-				writer = new FileWriter("logs/LOG-"+heure+".txt", true); 
-			}
-			catch(Exception e)
-			{
-				critical(e);
-			}
-		warning("Service de log démarré");
-	}
 	
 	/**
 	 * Affichage de debug, en vert
@@ -134,10 +114,27 @@ public class Log implements Service
 	}
 	
 	@Override
-	public void updateConfig()
+	public void updateConfig(Config config)
 	{
 		affiche_debug = config.getBoolean(ConfigInfo.AFFICHE_DEBUG);
 		sauvegarde_fichier = config.getBoolean(ConfigInfo.SAUVEGARDE_FICHIER);
+		if(!sauvegarde_fichier && writer != null)
+			try {
+				writer.close();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+
+		if(sauvegarde_fichier)
+			try {
+				String heure = calendar.get(Calendar.HOUR_OF_DAY)+":"+calendar.get(Calendar.MINUTE)+":"+calendar.get(Calendar.SECOND);
+				writer = new FileWriter("logs/LOG-"+heure+".txt", true); 
+			}
+			catch(Exception e)
+			{
+				critical(e);
+			}
+		warning("Service de log démarré");
 	}
 
 }
