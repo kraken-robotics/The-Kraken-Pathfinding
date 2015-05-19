@@ -41,7 +41,7 @@ public class STMcard implements Service {
 	 * @throws SerialConnexionException
 	 * @throws FinMatchException
 	 */
-	public void sendPathfindingNodes() throws SerialConnexionException
+	public void sendPathfindingNodes()
 	{
 		String[] message = new String[2+2*PathfindingNodes.values().length];
 		message[0] = "nds";
@@ -51,10 +51,10 @@ public class STMcard implements Service {
 			message[2+2*n.ordinal()] = Integer.toString(n.getCoordonnees().x);
 			message[2+2*n.ordinal()+1] = Integer.toString(n.getCoordonnees().y);
 		}
-		serie.communiquer(message, 0);
+		serie.communiquer(message);
 	}
 
-	public void sendSpeed() throws SerialConnexionException
+	public void sendSpeed()
 	{
 		String[] message = new String[2+2*Speed.values().length];
 		message[0] = "spd";
@@ -64,7 +64,7 @@ public class STMcard implements Service {
 			message[2+2*s.ordinal()] = Integer.toString(s.PWMRotation);
 			message[2+2*s.ordinal()+1] = Integer.toString(s.PWMTranslation);
 		}
-		serie.communiquer(message, 0);
+		serie.communiquer(message);
 	}
 
 	/**
@@ -72,9 +72,9 @@ public class STMcard implements Service {
 	 * @throws SerialConnexionException
 	 * @throws FinMatchException
 	 */
-	public void trajectoire_courbe_on() throws SerialConnexionException
+	public void trajectoire_courbe_on()
 	{
-		serie.communiquer("tct", 0);		
+		serie.communiquer("tct");		
 	}
 
 	/**
@@ -82,12 +82,12 @@ public class STMcard implements Service {
 	 * @throws SerialConnexionException
 	 * @throws FinMatchException
 	 */
-	public void trajectoire_courbe_off() throws SerialConnexionException
+	public void trajectoire_courbe_off()
 	{
-		serie.communiquer("tcf", 0);		
+		serie.communiquer("tcf");		
 	}
 
-	public void suit_chemin(ArrayList<PathfindingNodes> chemin) throws SerialConnexionException
+	public void suit_chemin(ArrayList<PathfindingNodes> chemin)
 	{
 		String[] message = new String[2+chemin.size()];
 		message[0] = "sch";
@@ -98,31 +98,31 @@ public class STMcard implements Service {
 			message[i] = Integer.toString(n.ordinal());
 			i++;
 		}
-		serie.communiquer(message, 0);
+		serie.communiquer(message);
 		// TODO: gérer réponse de la STM
 	}
 	
-	public RobotColor getRobotColor() throws SerialConnexionException
+	public RobotColor getRobotColor()
 	{
 		String[] color = serie.communiquer("clr", 1);
 		return RobotColor.parse(color[0]);
 	}
 	
 	// TODO: modifier le code des hooks afin de faciliter cette communication
-	public void register_hook(Hook hook) throws SerialConnexionException
+	public void register_hook(Hook hook)
 	{
 		String[] message = new String[1];
 		message[0] = "rh";
 		// TODO
-		serie.communiquer(message, 0);		
+		serie.communiquer(message);		
 	}
 	
-    public void turn(double angle, ArrayList<Hook> hooks) throws UnableToMoveException
+    public void turn(double angle, ArrayList<Hook> hooks)
     {
     	// TODO
     }
     
-    public void moveLengthwise(int distance, ArrayList<Hook> hooks, boolean mur) throws UnableToMoveException
+    public void moveLengthwise(int distance, ArrayList<Hook> hooks, boolean mur)
     {
     	// TODO
     }
@@ -168,12 +168,12 @@ public class STMcard implements Service {
 	 * @throws SerialConnexionException en cas de problème de communication avec la carte d'asservissement
 	 * @throws FinMatchException 
 	 */
-	public void immobilise() throws SerialConnexionException
+	public void immobilise()
 	{
 		// Je bourrine, tu bourrines, il bourrine, ...
         disableTranslationalFeedbackLoop();
         disableRotationalFeedbackLoop();
-		serie.communiquer("stop", 0);
+		serie.communiquer("stop");
         enableTranslationalFeedbackLoop();
         enableRotationalFeedbackLoop();
 	}
@@ -184,10 +184,10 @@ public class STMcard implements Service {
 	 * @throws SerialConnexionException en cas de problème de communication avec la carte d'asservissement
 	 * @throws FinMatchException 
 	 */
-	public void setX(int x) throws SerialConnexionException
+	public void setX(int x)
 	{
 		String chaines[] = {"cx", Integer.toString(x)};
-		serie.communiquer(chaines, 0);
+		serie.communiquer(chaines);
 	}
 
 	/**
@@ -196,10 +196,10 @@ public class STMcard implements Service {
 	 * @throws SerialConnexionException en cas de problème de communication avec la carte d'asservissement
 	 * @throws FinMatchException 
 	 */
-	public void setY(int y) throws SerialConnexionException
+	public void setY(int y)
 	{
 		String chaines[] = {"cy", Integer.toString(y)};
-		serie.communiquer(chaines, 0);	
+		serie.communiquer(chaines);	
 	}
 	
 	/**
@@ -207,9 +207,9 @@ public class STMcard implements Service {
 	 * @throws SerialConnexionException en cas de problème de communication avec la carte d'asservissement
 	 * @throws FinMatchException 
 	 */
-	public void enableTranslationalFeedbackLoop() throws SerialConnexionException
+	public void enableTranslationalFeedbackLoop()
 	{
-		serie.communiquer("ct1", 0);
+		serie.communiquer("ct1");
 	}
 
 	/**
@@ -217,9 +217,9 @@ public class STMcard implements Service {
 	 * @throws SerialConnexionException en cas de problème de communication avec la carte d'asservissement
 	 * @throws FinMatchException 
 	 */
-	public void enableRotationalFeedbackLoop() throws SerialConnexionException
+	public void enableRotationalFeedbackLoop()
 	{
-		serie.communiquer("cr1", 0);
+		serie.communiquer("cr1");
 	}
 
 	/**
@@ -227,9 +227,9 @@ public class STMcard implements Service {
 	 * @throws SerialConnexionException en cas de problème de communication avec la carte d'asservissement
 	 * @throws FinMatchException 
 	 */
-	public void disableTranslationalFeedbackLoop() throws SerialConnexionException
+	public void disableTranslationalFeedbackLoop()
 	{
-		serie.communiquer("ct0", 0);
+		serie.communiquer("ct0");
 	}
 
 	/**
@@ -237,9 +237,9 @@ public class STMcard implements Service {
 	 * @throws SerialConnexionException en cas de problème de communication avec la carte d'asservissement
 	 * @throws FinMatchException 
 	 */
-	public void disableRotationalFeedbackLoop() throws SerialConnexionException
+	public void disableRotationalFeedbackLoop()
 	{
-		serie.communiquer("cr0", 0);
+		serie.communiquer("cr0");
 	}
 
 	/**
@@ -248,11 +248,11 @@ public class STMcard implements Service {
 	 * @throws SerialConnexionException en cas de problème de communication avec la carte d'asservissement
 	 * @throws FinMatchException 
 	 */
-	public void setTranslationalSpeed(Speed speed) throws SerialConnexionException
+	public void setTranslationalSpeed(Speed speed)
 	{
 		// envois a la carte d'asservissement les nouvelles valeurs des correcteurs et le nouveau maximum des pwm
 		String chaines[] = {"ctv", Double.toString(speed.kp_trans), Double.toString(speed.kd_trans), Integer.toString(speed.PWMTranslation)};
-		serie.communiquer(chaines, 0);			
+		serie.communiquer(chaines);			
 	}
 
 	/**
@@ -261,11 +261,11 @@ public class STMcard implements Service {
 	 * @throws SerialConnexionException en cas de problème de communication avec la carte d'asservissement
 	 * @throws FinMatchException 
 	 */
-	public void setRotationalSpeed(Speed speed) throws SerialConnexionException
+	public void setRotationalSpeed(Speed speed)
 	{
 		// envois a la carte d'asservissement les nouvelles valeurs des correcteurs et le nouveau maximum des pwm
 		String chaines[] = {"crv", Double.toString(speed.kp_rot), Double.toString(speed.kd_rot), Integer.toString(speed.PWMRotation)};
-		serie.communiquer(chaines, 0);
+		serie.communiquer(chaines);
 	}
 	
 	/**
@@ -276,10 +276,10 @@ public class STMcard implements Service {
 	 * @throws SerialConnexionException en cas de problème de communication avec la carte d'asservissement
 	 * @throws FinMatchException 
 	 */
-	public void changeTranslationalFeedbackParameters(double kp, double kd, int pwm_max) throws SerialConnexionException
+	public void changeTranslationalFeedbackParameters(double kp, double kd, int pwm_max)
 	{
 		String chaines[] = {"ctv", Double.toString(kp), Double.toString(kd), Integer.toString(pwm_max)};
-		serie.communiquer(chaines, 0);
+		serie.communiquer(chaines);
 	}
 
 	/**
@@ -290,10 +290,10 @@ public class STMcard implements Service {
 	 * @throws SerialConnexionException en cas de problème de communication avec la carte d'asservissement
 	 * @throws FinMatchException 
 	 */
-	public void changeRotationalFeedbackParameters(double kp, double kd, int pwm_max) throws SerialConnexionException
+	public void changeRotationalFeedbackParameters(double kp, double kd, int pwm_max)
 	{
 		String chaines[] = {"crv", Double.toString(kp), Double.toString(kd), Integer.toString(pwm_max)};
-		serie.communiquer(chaines, 0);
+		serie.communiquer(chaines);
 	}
 
 	/**
@@ -303,7 +303,7 @@ public class STMcard implements Service {
 	 * @throws SerialConnexionException en cas de problème de communication avec la carte d'asservissement
 	 * @throws FinMatchException 
 	 */
-	public double[] getCurrentPositionAndOrientation() throws SerialConnexionException
+	public double[] getCurrentPositionAndOrientation()
 	{
 		// on demande a la carte des information a jour
 		// on envois "?infos" et on lis double (dans l'ordre : abscisse, ordonnée, orientation)
@@ -332,11 +332,11 @@ public class STMcard implements Service {
 	 * @throws SerialConnexionException en cas de problème de communication avec la carte actionneurs
 	 * @throws FinMatchException 
 	 */
-	public void useActuator(ActuatorOrder order) throws SerialConnexionException
+	public void useActuator(ActuatorOrder order)
 	{
 		if(symetrie)
 			order = order.getSymmetry();
-		serie.communiquer(order.getSerialOrder(), 0);
+		serie.communiquer(order.getSerialOrder());
 	}
 
 	public void close()
@@ -383,7 +383,7 @@ public class STMcard implements Service {
 	 * @throws SerialConnexionException
 	 * @throws FinMatchException
 	 */
-    public boolean demarrageMatch() throws SerialConnexionException
+    public boolean demarrageMatch()
     {
     	try {
     		return Integer.parseInt(serie.communiquer("j", 1)[0]) != 0;

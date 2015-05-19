@@ -21,6 +21,7 @@ import planification.dstar.LocomotionNode;
 import utils.Config;
 import utils.ConfigInfo;
 import utils.Log;
+import utils.Sleep;
 import container.Service;
 
 /**
@@ -62,8 +63,12 @@ public class SerialConnexion implements SerialPortEventListener, Service
 		this.log = log;
 		this.config = config;
 		
-		boolean serieOk = false;
-		
+		if(!searchPort())
+			throw new SerialConnexionException();
+	}
+
+	private boolean searchPort()
+	{
 		log.debug("Recherche de la série à "+baudrate+" baud");
 		Enumeration<?> ports = CommPortIdentifier.getPortIdentifiers();
 
@@ -78,8 +83,7 @@ public class SerialConnexion implements SerialPortEventListener, Service
 			if(ping())
 			{
 				log.debug("STM sur " + port.getName());
-				serieOk = true;
-				break;
+				return true;
 			}
 			else
 				log.debug(port.getName()+": non");
@@ -87,12 +91,10 @@ public class SerialConnexion implements SerialPortEventListener, Service
 			// Ce n'est pas cette série, on la ferme donc
 			serialPort.close();
 		}
-		
 		// La série n'a pas été trouvée
-		if(!serieOk)
-			throw new SerialConnexionException();
+		return false;
 	}
-
+	
 	/**
 	 * Il donne à la série tout ce qu'il faut pour fonctionner
 	 * @param port_name
@@ -102,7 +104,7 @@ public class SerialConnexion implements SerialPortEventListener, Service
 	 * @throws SerialManagerException 
 	 * @throws SerialConnexionException 
 	 */
-	public boolean initialize(CommPortIdentifier portId, int baudrate)
+	private boolean initialize(CommPortIdentifier portId, int baudrate)
 	{
 		try
 		{
@@ -143,7 +145,7 @@ public class SerialConnexion implements SerialPortEventListener, Service
 	 * @throws SerialConnexionException
 	 * @throws FinMatchException
 	 */
-	public synchronized void communiquer(ArrayList<LocomotionNode> messages) throws SerialConnexionException, FinMatchException
+	public synchronized void communiquer(ArrayList<LocomotionNode> messages)
 	{
 		// TODO
 	}
@@ -155,25 +157,9 @@ public class SerialConnexion implements SerialPortEventListener, Service
 	 * @throws SerialConnexionException
 	 * @throws FinMatchException
 	 */
-	public synchronized void communiquer(String[] messages) throws SerialConnexionException, FinMatchException
+	public synchronized void communiquer(String[] messages)
 	{
-		if(isClosed)
-			throw new FinMatchException();
-		
-		try
-		{
-			for (String m : messages)
-			{
-				m += "\r";
-				output.write(m.getBytes());
-			}
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-			log.critical("Ne peut pas parler à la carte");
-			throw new SerialConnexionException();
-		}
+		communiquer(messages, 0);
 	}
 
 	/**
@@ -184,7 +170,7 @@ public class SerialConnexion implements SerialPortEventListener, Service
 	 * @throws SerialConnexionException 
 	 * @throws FinMatchException 
 	 */
-	public synchronized String[] communiquer(String message, int nb_lignes_reponse) throws SerialConnexionException
+	public synchronized String[] communiquer(String message, int nb_lignes_reponse)
 	{
 		String[] messages = {message};
 		return communiquer(messages, nb_lignes_reponse);
@@ -198,8 +184,23 @@ public class SerialConnexion implements SerialPortEventListener, Service
 	 * @throws SerialConnexionException 
 	 * @throws FinMatchException 
 	 */
-	public synchronized String[] communiquer(String[] messages, int nb_lignes_reponse) throws SerialConnexionException
+	public synchronized String[] communiquer(String message)
 	{
+		String[] messages = {message};
+		return communiquer(messages, 0);
+	}
+	
+	/**
+	 * Méthode pour parler à l'avr
+	 * @param messages Messages à envoyer
+	 * @param nb_lignes_reponse Nombre de lignes que l'avr va répondre (sans compter les acquittements)
+	 * @return Un tableau contenant le message
+	 */
+	public synchronized String[] communiquer(String[] messages, int nb_lignes_reponse)
+	{
+		/**
+		 * Un appel à une série fermée ne devrait jamais être effectué.
+		 */
 		if(isClosed)
 			return null; // TODO
 //			throw new FinMatchException();
@@ -212,16 +213,6 @@ public class SerialConnexion implements SerialPortEventListener, Service
 				m += "\r";
 				output.write(m.getBytes());
 			}
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-			log.critical("Ne peut pas parler à la carte");
-			throw new SerialConnexionException();
-		}
-
-		try
-		{
 			for (int i = 0 ; i < nb_lignes_reponse; i++)
 			{
 				while(!input.ready());
@@ -230,8 +221,17 @@ public class SerialConnexion implements SerialPortEventListener, Service
 		}
 		catch (Exception e)
 		{
-			log.critical("Ne peut pas parler à la carte");
-			throw new SerialConnexionException();
+			/**
+			 * Si la STM ne répond vraiment pas, on recommence de manière infinie.
+			 * De toute façon, on n'a pas d'autre choix...
+			 */
+			log.critical("Ne peut pas parler à la STM. Tentative de reconnexion.");
+			while(!searchPort())
+			{
+				log.critical("Pas trouvé... On recommence");
+				// On laisse la série respirer un peu
+				Sleep.sleep(1000);
+			}
 		}
 
 		return inputLines;
