@@ -3,7 +3,6 @@ package threads;
 import container.Service;
 import strategie.Strategie;
 import strategie.StrategieNotifieur;
-import table.StrategieInfo;
 import utils.Config;
 import utils.Log;
 
