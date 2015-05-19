@@ -328,6 +328,8 @@ public class RobotChrono extends Robot
 		return isPositionPathfindingActive;
 	}
 	
+	// TODO: passer en hashCode et equals()
+	
 	public int getHash()
 	{
 		int hash;
