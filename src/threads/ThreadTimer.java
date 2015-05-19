@@ -21,24 +21,25 @@ public class ThreadTimer extends Thread implements Service
 	protected Config config;
 	protected Log log;
 	private IncomingDataBuffer buffer;
+	private StartMatchLock lock;
 
 	private long dureeMatch = 90000;
 	private long dateFin;
 	private int obstacleRefreshInterval = 500;
 
-	public ThreadTimer(Log log, Config config, ObstacleManager obstaclemanager, IncomingDataBuffer buffer)
+	public ThreadTimer(Log log, Config config, ObstacleManager obstaclemanager, IncomingDataBuffer buffer, StartMatchLock lock)
 	{
 		this.log = log;
 		this.config = config;
 		this.obstaclemanager = obstaclemanager;
 		this.buffer = buffer;
+		this.lock = lock;
 		updateConfig();
 	}
 	
 	@Override
 	public void run()
 	{
-		StartMatchLock lock = StartMatchLock.getInstance();
 		synchronized(lock)
 		{
 			try {

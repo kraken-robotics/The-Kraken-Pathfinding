@@ -40,7 +40,7 @@ public class Lanceur {
 			/**
 			 * Attente du début du match
 			 */
-			StartMatchLock lock = StartMatchLock.getInstance();
+			StartMatchLock lock = (StartMatchLock)container.getService(ServiceNames.START_MATCH_LOCK);
 			synchronized(lock)
 			{
 				try {

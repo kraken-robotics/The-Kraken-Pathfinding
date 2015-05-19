@@ -24,14 +24,17 @@ public class ThreadSerial extends Thread implements Service
 	protected Config config;
 	private SerialConnexion serie;
 	private IncomingDataBuffer buffer;
+	private StartMatchLock lock;
+	
 	private RequeteSTM requete;
 	
-	public ThreadSerial(Log log, Config config, SerialConnexion serie, IncomingDataBuffer buffer)
+	public ThreadSerial(Log log, Config config, SerialConnexion serie, IncomingDataBuffer buffer, StartMatchLock lock)
 	{
 		this.log = log;
 		this.config = config;
 		this.serie = serie;
 		this.buffer = buffer;
+		this.lock = lock;
 		requete = RequeteSTM.getInstance();
 		
 		Thread.currentThread().setPriority(2);
@@ -45,7 +48,6 @@ public class ThreadSerial extends Thread implements Service
 		 * StartMatchLock permet de signaler le départ du match aux autres threads
 		 * Il est utilisé par ThreadTimer
 		 */
-		StartMatchLock lock = StartMatchLock.getInstance();
 		while(!Config.stopThreads && !Config.finMatch)
 		{
 			try {
