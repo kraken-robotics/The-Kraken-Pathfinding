@@ -4,6 +4,13 @@ import permissions.Permission;
 import permissions.ReadWrite;
 import utils.Vec2;
 
+/**
+ * Classe abstraite d'obstacles qui possèdent une orientation
+ * @author pf
+ *
+ * @param <T>
+ */
+
 public abstract class ObstacleAvecAngle<T extends Permission> extends Obstacle<T>
 {
 

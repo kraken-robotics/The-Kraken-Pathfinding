@@ -2,9 +2,10 @@ package threads;
 
 import container.Service;
 import planification.LocomotionArc;
-import planification.Path;
+import planification.Chemin;
 import planification.Pathfinding;
-import planification.StrategieArc;
+import strategie.Strategie;
+import strategie.StrategieArc;
 import table.StrategieInfo;
 import utils.Config;
 import utils.Log;
@@ -20,16 +21,14 @@ public class ThreadStrategie extends Thread implements Service
 	protected Log log;
 	protected Config config;
 	private StrategieInfo obstaclestrategiemanager;
-	private Path<StrategieArc> strategie;
-	private Pathfinding<LocomotionArc> pathfinding;
+	private Strategie strategie;
 	
-	public ThreadStrategie(Log log, Config config, StrategieInfo obstaclestrategiemanager, Path<StrategieArc> strategie, Pathfinding<LocomotionArc> pathfinding)
+	public ThreadStrategie(Log log, Config config, StrategieInfo obstaclestrategiemanager, Strategie strategie)
 	{
 		this.log = log;
 		this.config = config;
 		this.obstaclestrategiemanager = obstaclestrategiemanager;
 		this.strategie = strategie;
-		this.pathfinding = pathfinding;
 	}
 
 	@Override

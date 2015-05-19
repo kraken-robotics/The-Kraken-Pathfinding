@@ -3,16 +3,8 @@ package container;
 import obstacles.Obstacle;
 import permissions.ReadOnly;
 import permissions.ReadWrite;
-import planification.LocomotionArc;
 import planification.MemoryManager;
-import planification.Path;
-import planification.Pathfinding;
-import planification.StrategieArc;
-import planification.astar.*;
-import planification.astar.arc.Decision;
-import planification.astar.arc.SegmentTrajectoireCourbe;
-import planification.astar.arcmanager.PathfindingArcManager;
-import planification.astar.arcmanager.StrategyArcManager;
+import planification.Chemin;
 import hook.HookFactory;
 import exceptions.ContainerException;
 import exceptions.FinMatchException;
@@ -24,6 +16,7 @@ import scripts.ScriptManager;
 import serial.SerialConnexion;
 import strategie.Execution;
 import strategie.GameState;
+import strategie.Strategie;
 import table.GridSpace;
 import table.ObstacleManager;
 import table.StrategieInfo;
@@ -153,7 +146,7 @@ public class Container
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ObstacleManager((Log)getService(ServiceNames.LOG),
 																				(Config)getService(ServiceNames.CONFIG),
 																				(Table)getService(ServiceNames.TABLE));
-		else if(serviceRequested == ServiceNames.A_STAR_PATHFINDING)
+/*		else if(serviceRequested == ServiceNames.A_STAR_PATHFINDING)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new AStar<PathfindingArcManager, SegmentTrajectoireCourbe>((Log)getService(ServiceNames.LOG),
 																				(Config)getService(ServiceNames.CONFIG),
 																				(PathfindingArcManager)getService(ServiceNames.PATHFINDING_ARC_MANAGER));
@@ -161,7 +154,7 @@ public class Container
 			instanciedServices[serviceRequested.ordinal()] = (Service)new AStar<StrategyArcManager, Decision>((Log)getService(ServiceNames.LOG),
 																				(Config)getService(ServiceNames.CONFIG),
 																				(StrategyArcManager)getService(ServiceNames.STRATEGY_ARC_MANAGER));
-		else if(serviceRequested == ServiceNames.GRID_SPACE)
+*/		else if(serviceRequested == ServiceNames.GRID_SPACE)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new GridSpace((Log)getService(ServiceNames.LOG),
 																				(Config)getService(ServiceNames.CONFIG),
 																				(ObstacleManager)getService(ServiceNames.OBSTACLE_MANAGER));
@@ -175,7 +168,7 @@ public class Container
 		else if(serviceRequested == ServiceNames.EXECUTION)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new Execution((Log)getService(ServiceNames.LOG),
 			                                                 (Config)getService(ServiceNames.CONFIG),
-			                                                 (Path<StrategieArc>)getService(ServiceNames.STRATEGIE_ACTUELLE),
+			                                                 (Strategie)getService(ServiceNames.STRATEGIE),
   															 (ScriptManager)getService(ServiceNames.SCRIPT_MANAGER),
         													 (GameState<RobotReal,ReadWrite>)getService(ServiceNames.REAL_GAME_STATE));
 		else if(serviceRequested == ServiceNames.STM_CARD)
@@ -213,13 +206,12 @@ public class Container
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadStrategie((Log)getService(ServiceNames.LOG),
 																		(Config)getService(ServiceNames.CONFIG),
 																		(StrategieInfo)getService(ServiceNames.STRATEGIE_INFO),
-																		(Path<StrategieArc>)getService(ServiceNames.STRATEGIE_ACTUELLE),
-																		(Pathfinding<LocomotionArc>)getService(ServiceNames.TABLE_PATHFINDING));
+																		(Strategie)getService(ServiceNames.STRATEGIE));
 		else if(serviceRequested == ServiceNames.THREAD_PATHFINDING)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadPathfinding((Log)getService(ServiceNames.LOG),
 																		(Config)getService(ServiceNames.CONFIG),
 																		(GridSpace)getService(ServiceNames.GRID_SPACE),
-																		(Path<LocomotionArc>)getService(ServiceNames.CHEMIN_ACTUEL));
+																		(Chemin)getService(ServiceNames.CHEMIN_ACTUEL));
 		else if(serviceRequested == ServiceNames.THREAD_GRID_SPACE)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadGridSpace((Log)getService(ServiceNames.LOG),
 																		(Config)getService(ServiceNames.CONFIG),
@@ -238,7 +230,7 @@ public class Container
 		else if(serviceRequested == ServiceNames.THREAD_SERIE)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadSerial((Log)getService(ServiceNames.LOG),
 																		(Config)getService(ServiceNames.CONFIG),
-																		(Path<LocomotionArc>)getService(ServiceNames.CHEMIN_ACTUEL),																		(ObstacleManager)getService(ServiceNames.OBSTACLE_MANAGER),
+																		(Chemin)getService(ServiceNames.CHEMIN_ACTUEL),																		(ObstacleManager)getService(ServiceNames.OBSTACLE_MANAGER),
 																		(SerialConnexion)getService(ServiceNames.SERIE_STM),
 																		(IncomingDataBuffer)getService(ServiceNames.INCOMING_DATA_BUFFER),
 																		(RobotReal)getService(ServiceNames.ROBOT_REAL));
@@ -246,19 +238,6 @@ public class Container
 		else if(serviceRequested == ServiceNames.STRATEGIE_INFO)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new StrategieInfo((Log)getService(ServiceNames.LOG), 
 																		(Config)getService(ServiceNames.CONFIG));
-		else if(serviceRequested == ServiceNames.PATHFINDING_ARC_MANAGER)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new PathfindingArcManager((Log)getService(ServiceNames.LOG),
-																		(Config)getService(ServiceNames.CONFIG),
-																		(MemoryManager)getService(ServiceNames.MEMORY_MANAGER),
-																		(GameState<RobotReal,ReadOnly>)getService(ServiceNames.REAL_GAME_STATE));
-		else if(serviceRequested == ServiceNames.STRATEGY_ARC_MANAGER)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new StrategyArcManager((Log)getService(ServiceNames.LOG),
-																		(Config)getService(ServiceNames.CONFIG),
-																		(ScriptManager)getService(ServiceNames.SCRIPT_MANAGER),
-																		(GameState<RobotReal,ReadOnly>)getService(ServiceNames.REAL_GAME_STATE),
-																		(HookFactory)getService(ServiceNames.HOOK_FACTORY),
-																		(AStar<PathfindingArcManager, SegmentTrajectoireCourbe>)getService(ServiceNames.A_STAR_PATHFINDING),
-																		(MemoryManager)getService(ServiceNames.MEMORY_MANAGER));
 		
 		// si le service demandé n'est pas connu, alors on log une erreur.
 		else

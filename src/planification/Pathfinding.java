@@ -22,7 +22,7 @@ public class Pathfinding implements Service {
 	 * @param arrivee
 	 * @return
 	 */
-	public void computePath(Path<LocomotionArc> cheminAModifier, GameState<?,ReadOnly> depart, GameState<?,ReadOnly> arrivee)
+	public void computePath(Chemin cheminAModifier, GameState<?,ReadOnly> depart, GameState<?,ReadOnly> arrivee)
 	{
 		
 	}

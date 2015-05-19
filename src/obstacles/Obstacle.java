@@ -10,7 +10,7 @@ import utils.Vec2;
 
 /**
  * Superclasse abstraite des obstacles.
- * @author pf, marsu
+ * @author pf
  *
  */
 

@@ -5,9 +5,8 @@ import hook.Hook;
 import java.util.ArrayList;
 
 import permissions.ReadWrite;
-import planification.Path;
+import planification.Chemin;
 import planification.Pathfinding;
-import planification.StrategieArc;
 import container.Service;
 import exceptions.FinMatchException;
 import exceptions.ScriptException;
@@ -32,12 +31,12 @@ public class Execution implements Service {
 	private Log log;
 	protected Config config;
 	private ScriptManager scriptmanager;
-	private Path<StrategieArc> strategie;
+	private Strategie strategie;
 	private RequeteSTM requete;
 	
 	private ArrayList<Hook> hooksEntreScripts;
 	
-	public Execution(Log log, Config config, Path<StrategieArc> strategie, ScriptManager scriptmanager, GameState<RobotReal,ReadWrite> gamestate)
+	public Execution(Log log, Config config, Strategie strategie, ScriptManager scriptmanager, GameState<RobotReal,ReadWrite> gamestate)
 	{
 		this.log = log;
 		this.config = config;

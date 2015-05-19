@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.TooManyListenersException;
 
-import planification.dstar.LocomotionNode;
+import planification.LocomotionArc;
 import utils.Config;
 import utils.ConfigInfo;
 import utils.Log;
@@ -140,14 +140,18 @@ public class SerialConnexion implements SerialPortEventListener, Service
 	}
 
 	/**
-	 * Envoie d'un itinéraire
+	 * Envoi d'un itinéraire
 	 * @param messages
 	 * @throws SerialConnexionException
 	 * @throws FinMatchException
 	 */
-	public synchronized void communiquer(ArrayList<LocomotionNode> messages)
+	public synchronized void communiquer(ArrayList<LocomotionArc> chemin)
 	{
-		// TODO
+		String[] messages = new String[chemin.size()+1];
+		messages[0] = String.valueOf(chemin.size());
+		for(int i = 0; i < chemin.size(); i++)
+			messages[i+1] = chemin.toString();
+		communiquer(messages);
 	}
 
 	/**

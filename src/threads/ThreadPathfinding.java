@@ -2,7 +2,7 @@ package threads;
 
 import container.Service;
 import planification.LocomotionArc;
-import planification.Path;
+import planification.Chemin;
 import table.GridSpace;
 import utils.Config;
 import utils.Log;
@@ -18,9 +18,9 @@ public class ThreadPathfinding extends Thread implements Service
 	protected Log log;
 	protected Config config;
 	private GridSpace gridspace;
-	private Path<LocomotionArc> path;
+	private Chemin path;
 	
-	public ThreadPathfinding(Log log, Config config, GridSpace gridspace, Path<LocomotionArc> path)
+	public ThreadPathfinding(Log log, Config config, GridSpace gridspace, Chemin path)
 	{
 		this.log = log;
 		this.config = config;
