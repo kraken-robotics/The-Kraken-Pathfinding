@@ -4,7 +4,7 @@ import container.ServiceNames;
 import exceptions.ContainerException;
 import exceptions.FinMatchException;
 import exceptions.PointSortieException;
-import exceptions.SerialManagerException;
+import exceptions.SerialConnexionException;
 import exceptions.ThreadException;
 import utils.Config;
 import utils.ConfigInfo;
@@ -31,7 +31,7 @@ public class PrintPointsSortie {
 			config.set(ConfigInfo.CHECK_POINTS_SORTIE, "true");
 			container.getService(ServiceNames.A_STAR_STRATEGY);
 		} catch (ContainerException | ThreadException
-				| SerialManagerException | FinMatchException
+				| SerialConnexionException | FinMatchException
 				| PointSortieException e) {
 			e.printStackTrace();
 		}

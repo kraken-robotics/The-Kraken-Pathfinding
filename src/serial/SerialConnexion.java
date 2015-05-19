@@ -2,7 +2,6 @@ package serial;
 
 import exceptions.FinMatchException;
 import exceptions.SerialConnexionException;
-import exceptions.SerialManagerException;
 import gnu.io.CommPortIdentifier;
 import gnu.io.PortInUseException;
 import gnu.io.SerialPort;
@@ -58,7 +57,7 @@ public class SerialConnexion implements SerialPortEventListener, Service
 	 * @param name
 	 * @throws SerialManagerException
 	 */
-	public SerialConnexion(Log log, Config config) throws SerialManagerException
+	public SerialConnexion(Log log, Config config) throws SerialConnexionException
 	{
 		this.log = log;
 		this.config = config;
@@ -91,7 +90,7 @@ public class SerialConnexion implements SerialPortEventListener, Service
 		
 		// La série n'a pas été trouvée
 		if(!serieOk)
-			throw new SerialManagerException();
+			throw new SerialConnexionException();
 	}
 
 	/**

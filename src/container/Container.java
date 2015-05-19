@@ -17,7 +17,7 @@ import hook.HookFactory;
 import exceptions.ContainerException;
 import exceptions.FinMatchException;
 import exceptions.PointSortieException;
-import exceptions.SerialManagerException;
+import exceptions.SerialConnexionException;
 import exceptions.ThreadException;
 import utils.*;
 import scripts.ScriptManager;
@@ -137,7 +137,7 @@ public class Container
 	 * @throws FinMatchException
 	 * @throws PointSortieException
 	 */
-	public Service getService(ServiceNames serviceRequested) throws ContainerException, ThreadException, SerialManagerException, FinMatchException, PointSortieException
+	public Service getService(ServiceNames serviceRequested) throws ContainerException, ThreadException, SerialConnexionException, FinMatchException, PointSortieException
 	{
     	// instancie le service demandé lors de son premier appel 
     	
