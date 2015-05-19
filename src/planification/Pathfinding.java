@@ -2,10 +2,15 @@ package planification;
 
 import container.Service;
 import permissions.ReadOnly;
-import planification.astar.arc.Arc;
 import strategie.GameState;
 
-public class Pathfinding<A extends Arc> implements Service {
+/**
+ * Recherche de chemin, avec un algorithme D*
+ * @author pf
+ * 
+ */
+
+public class Pathfinding implements Service {
 
 	public Pathfinding()
 	{
@@ -17,7 +22,7 @@ public class Pathfinding<A extends Arc> implements Service {
 	 * @param arrivee
 	 * @return
 	 */
-	public void computePath(Path<A> cheminAModifier, GameState<?,ReadOnly> depart, GameState<?,ReadOnly> arrivee)
+	public void computePath(Path<LocomotionArc> cheminAModifier, GameState<?,ReadOnly> depart, GameState<?,ReadOnly> arrivee)
 	{
 		
 	}
