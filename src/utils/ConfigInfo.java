@@ -12,6 +12,9 @@ import enums.RobotColor;
  */
 
 public enum ConfigInfo {
+	/**
+	 * Config statique, présente dans config.ini
+	 */
 	TABLE_X("3000"),
 	TABLE_Y("2000"),
 	DUREE_MATCH_EN_S("90"),
@@ -25,7 +28,6 @@ public enum ConfigInfo {
 	DUREE_PEREMPTION_OBSTACLES("5000"),
 	CAPTEURS_TEMPORISATION_OBSTACLES("100"),
 	DISTANCE_DETECTION("300"),
-	CAPTEURS_ON("true"),
 	NB_CAPTEURS_PROXIMITE("4"),
 	AFFICHE_DEBUG("false"),
 	SAUVEGARDE_FICHIER("true"),
@@ -46,7 +48,15 @@ public enum ConfigInfo {
 	CHECK_POINTS_SORTIE("false"),
 	PREVISION_COLLISION("50"),
 	BAUDRATE("9600"),
-	OBSTACLE_REFRESH_INTERVAL("500");
+	OBSTACLE_REFRESH_INTERVAL("500"),
+	
+	/**
+	 * Config dynamique
+	 */
+	MATCH_DEMARRE("false"),
+	DATE_DEBUT_MATCH("0"),
+	CAPTEURS_ON("false"),
+	FIN_MATCH("false");
 
 	private String defaultValue;
 	

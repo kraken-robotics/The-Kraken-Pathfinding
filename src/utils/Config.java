@@ -1,13 +1,11 @@
 package utils;
 
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
 
 import container.Service;
 import enums.RobotColor;
-import exceptions.ConfigException;
 
 
 /**
@@ -18,58 +16,28 @@ import exceptions.ConfigException;
 public class Config implements Service
 {
 	// Permet de savoir si le match a démarré et quand
-	private volatile static long dateDebutMatch = 0;	
-	public volatile static boolean matchDemarre = false;	
-	public volatile static boolean capteursOn = false;
-	public volatile static boolean stopThreads = false;
-	public volatile static boolean finMatch;
 	public static final String dossierconfig = "./config/";
 
-	private String name_local_file = "local.ini";
 	private String name_config_file = "config.ini";
 	private String path;
 	private Properties config = new Properties();
-	private Properties local = new Properties();
 	private Log log;
 	
 	public Config(Log log, String path)
 	{
 		this.log = log;
 		this.path = path;
-	}
-	
-	public void init() throws ConfigException
-	{
-	//	log.debug("Loading config from current directory : " +  System.getProperty("user.dir"), this)
+
+		//	log.debug("Loading config from current directory : " +  System.getProperty("user.dir"), this)
 		try
 		{
 			this.config.load(new FileInputStream(this.path+this.name_config_file));
 		}
 		catch  (IOException e)
 		{
-			e.printStackTrace();
-			throw new ConfigException("Erreur ouverture de config.ini");
-		}
-		
-		try
-		{
-			this.config.load(new FileInputStream(this.path+this.name_local_file));
-		}
-		catch  (IOException e)
-		{
-			try
-			{
-				FileOutputStream fileOut = new FileOutputStream(this.path+this.name_local_file);
-				this.local.store(fileOut, "Ce fichier est un fichier généré par le programme.\nVous pouvez redéfinir les variables de config.ini dans ce fichier dans un mode de votre choix.\nPS : SopalINT RULEZ !!!\n");
-			}
-			catch (IOException e2)
-			{
-				e2.printStackTrace();
-				throw new ConfigException("Erreur création de local.ini");
-			}	
-			throw new ConfigException("Erreur ouverture de local.ini");
+			log.critical("Erreur lors de l'ouverture de config.ini. Utilisation des valeurs par défaut.");
 		}	
-		affiche_tout();
+		afficheTout();
 	}
 	
 	/**
@@ -111,14 +79,12 @@ public class Config implements Service
 	 */
 	public String getString(ConfigInfo nom)
 	{
-		String out = null;
-		out = config.getProperty(nom.toString());
-		if(out == null)
+		if(!config.containsKey(nom.toString()))
 		{
-			log.debug("Erreur config: "+nom+" introuvable.");
-			return nom.getDefaultValue();
+//			log.debug("Erreur config: "+nom+" introuvable. Utilisation de la valeur par défaut.");
+			config.setProperty(nom.toString(), nom.getDefaultValue());			
 		}
-		return out;
+		return config.getProperty(nom.toString());
 	}
 
 	/**
@@ -152,9 +118,9 @@ public class Config implements Service
 	 * Affiche toute la config.
 	 * Appelé au début du match.
 	 */
-	private void affiche_tout()
+	private void afficheTout()
 	{
-		if(Boolean.parseBoolean(config.getProperty("affiche_debug")))
+		if(Boolean.parseBoolean(config.getProperty(ConfigInfo.AFFICHE_DEBUG.toString())))
 		{
 			log.debug("Configuration initiale");
 			for(Object o: config.keySet())
@@ -162,26 +128,6 @@ public class Config implements Service
 		}
 	}
 		
-	/**
-	 * Etablit la date de début du match
-	 */
-	public void setDateDebutMatch()
-	{
-		dateDebutMatch = System.currentTimeMillis();
-	}
-	
-	/**
-	 * Récupère la date de début du match
-	 * @return
-	 */
-	public static long getDateDebutMatch()
-	{
-		// Si le match n'a pas encore commencé, on dit qu'il vient de commencer (sinon les calculs bug)
-		if(dateDebutMatch == 0)
-			return System.currentTimeMillis();
-		return dateDebutMatch;
-	}
-
 	/**
 	 * Récupère la symétrie
 	 * @return

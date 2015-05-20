@@ -28,7 +28,7 @@ public class ThreadGridSpace extends Thread implements Service {
 	@Override
 	public void run()
 	{
-		while(!Config.stopThreads)
+		while(true)
 		{
 			synchronized(obstaclemanager)
 			{

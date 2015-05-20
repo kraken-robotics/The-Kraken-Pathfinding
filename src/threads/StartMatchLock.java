@@ -12,6 +12,6 @@ import container.Service;
 public class StartMatchLock implements Service
 {
 	@Override
-	public void updateConfig(Config config)
+	public void updateConfig(Config config) // TODO: virer
 	{}
 }

@@ -27,7 +27,7 @@ public class ThreadObstacleManager extends Thread implements Service
 	@Override
 	public void run()
 	{
-		while(!Config.stopThreads)
+		while(true)
 		{
 			IncomingData e = null;
 			synchronized(buffer)

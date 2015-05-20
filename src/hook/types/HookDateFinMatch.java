@@ -20,7 +20,6 @@ public class HookDateFinMatch extends HookDate
 	public HookDateFinMatch(Log log, GameState<?,ReadOnly> state, long date)
 	{
 		super(log, state, date);
-		dureeMatch = config.getInt(ConfigInfo.DUREE_MATCH_EN_S)*1000;
 	}
 
 	/**

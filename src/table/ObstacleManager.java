@@ -42,6 +42,7 @@ public class ObstacleManager implements Service
     
     private int firstNotDead = 0;
 
+    private volatile int dateDebutMatch;
     private int rayon_robot_adverse;
     private int distanceApproximation;
     private int dureeAvantPeremption;
@@ -103,7 +104,7 @@ public class ObstacleManager implements Service
      */
     public void supprimerObstaclesPerimes()
     {
-    	supprimerObstaclesPerimes(System.currentTimeMillis() - Config.getDateDebutMatch());
+    	supprimerObstaclesPerimes(System.currentTimeMillis() - dateDebutMatch);
     }
 
     /**
@@ -298,6 +299,7 @@ public class ObstacleManager implements Service
 
 	@Override
 	public void updateConfig(Config config) {
+		dateDebutMatch = config.getInt(ConfigInfo.DATE_DEBUT_MATCH);
 		tempo = config.getDouble(ConfigInfo.CAPTEURS_TEMPORISATION_OBSTACLES);
 		table_x = config.getInt(ConfigInfo.TABLE_X);
 		table_y = config.getInt(ConfigInfo.TABLE_Y);

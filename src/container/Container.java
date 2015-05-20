@@ -1,6 +1,5 @@
 package container;
 
-import obstacles.Obstacle;
 import permissions.ReadOnly;
 import permissions.ReadWrite;
 import planification.MemoryManager;
@@ -53,9 +52,6 @@ public class Container
 	//gestion des log
 	private Log log;
 	
-	//gestion de la configuration du robot
-	private Config config;
-
 	private static int nbInstances = 0;
 	private boolean threadsStarted = false;
 	
@@ -100,7 +96,6 @@ public class Container
 			System.out.println("== Container bootstrap ==");
 			System.out.println("Loading config from current directory : " +  System.getProperty("user.dir"));
 
-			config = (Config)getService(ServiceNames.CONFIG);
 			log = (Log)getService(ServiceNames.LOG);
 		}
 		catch(Exception e)
@@ -189,6 +184,7 @@ public class Container
 																					(Log)getService(ServiceNames.LOG));
 		else if(serviceRequested == ServiceNames.THREAD_TIMER)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadTimer((Log)getService(ServiceNames.LOG),
+																		(Config)getService(ServiceNames.CONFIG),
 																		(ObstacleManager)getService(ServiceNames.OBSTACLE_MANAGER),
 																		(IncomingDataBuffer)getService(ServiceNames.INCOMING_DATA_BUFFER),
 																		(StartMatchLock)getService(ServiceNames.START_MATCH_LOCK));
@@ -214,6 +210,7 @@ public class Container
 																		(ObstacleManager)getService(ServiceNames.OBSTACLE_MANAGER));
 		else if(serviceRequested == ServiceNames.THREAD_SERIE)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadSerial((Log)getService(ServiceNames.LOG),
+																		(Config)getService(ServiceNames.CONFIG),
 																		(SerialConnexion)getService(ServiceNames.SERIE_STM),
 																		(IncomingDataBuffer)getService(ServiceNames.INCOMING_DATA_BUFFER),
 																		(StartMatchLock)getService(ServiceNames.START_MATCH_LOCK));

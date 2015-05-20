@@ -28,7 +28,7 @@ public class ThreadStrategieInfo extends Thread implements Service
 	@Override
 	public void run()
 	{
-		while(!Config.stopThreads)
+		while(true)
 		{
 			synchronized(obstaclemanager)
 			{

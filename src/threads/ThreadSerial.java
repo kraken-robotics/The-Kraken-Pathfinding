@@ -45,7 +45,7 @@ public class ThreadSerial extends Thread implements Service
 		 * StartMatchLock permet de signaler le départ du match aux autres threads
 		 * Il est utilisé par ThreadTimer
 		 */
-		while(!Config.stopThreads && !Config.finMatch)
+		while(true)
 		{
 			try {
 				/**

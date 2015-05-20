@@ -10,6 +10,7 @@ import container.Service;
 import exceptions.FinMatchException;
 import exceptions.ScriptHookException;
 import exceptions.UnableToMoveException;
+import utils.ConfigInfo;
 import utils.Log;
 import utils.Config;
 import utils.Vec2;
@@ -48,6 +49,7 @@ public abstract class Robot implements Service
 
     protected HookDateFinMatch hookFinMatch;
     
+    protected volatile int dateDebutMatch;
     /*
      * Actionneurs
      */
@@ -98,6 +100,7 @@ public abstract class Robot implements Service
 
 	public void updateConfig(Config config)
 	{
+		dateDebutMatch = config.getInt(ConfigInfo.DATE_DEBUT_MATCH);
 		symetrie = config.getSymmetry();
 	}
 	
