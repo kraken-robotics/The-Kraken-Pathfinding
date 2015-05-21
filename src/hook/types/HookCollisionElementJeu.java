@@ -7,7 +7,6 @@ import obstacles.ObstacleRectangular;
 import permissions.ReadOnly;
 import permissions.ReadWrite;
 import strategie.GameState;
-import utils.Config;
 import utils.Log;
 import utils.Vec2;
 

@@ -2,8 +2,6 @@ package hook.types;
 
 import permissions.ReadOnly;
 import strategie.GameState;
-import utils.Config;
-import utils.ConfigInfo;
 import utils.Log;
 
 /**
@@ -15,7 +13,7 @@ import utils.Log;
 public class HookDateFinMatch extends HookDate
 {
 	
-	private int dureeMatch = 90000;
+	private int dureeMatch = 90000; // TODO: utiliser la config
 
 	public HookDateFinMatch(Log log, GameState<?,ReadOnly> state, long date)
 	{

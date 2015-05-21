@@ -23,7 +23,6 @@ import table.ObstacleManager;
 import table.StrategieInfo;
 import table.Table;
 import threads.IncomingDataBuffer;
-import threads.StartMatchLock;
 import threads.ThreadGridSpace;
 import threads.ThreadObstacleManager;
 import threads.ThreadPathfinding;
@@ -186,8 +185,7 @@ public class Container
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadTimer((Log)getService(ServiceNames.LOG),
 																		(Config)getService(ServiceNames.CONFIG),
 																		(ObstacleManager)getService(ServiceNames.OBSTACLE_MANAGER),
-																		(IncomingDataBuffer)getService(ServiceNames.INCOMING_DATA_BUFFER),
-																		(StartMatchLock)getService(ServiceNames.START_MATCH_LOCK));
+																		(IncomingDataBuffer)getService(ServiceNames.INCOMING_DATA_BUFFER));
 		else if(serviceRequested == ServiceNames.THREAD_STRATEGIE)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadStrategie((Log)getService(ServiceNames.LOG),
 																		(StrategieNotifieur)getService(ServiceNames.STRATEGIE_NOTIFIEUR),
@@ -212,16 +210,13 @@ public class Container
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadSerial((Log)getService(ServiceNames.LOG),
 																		(Config)getService(ServiceNames.CONFIG),
 																		(SerialConnexion)getService(ServiceNames.SERIE_STM),
-																		(IncomingDataBuffer)getService(ServiceNames.INCOMING_DATA_BUFFER),
-																		(StartMatchLock)getService(ServiceNames.START_MATCH_LOCK));
+																		(IncomingDataBuffer)getService(ServiceNames.INCOMING_DATA_BUFFER));
 		else if(serviceRequested == ServiceNames.STRATEGIE_INFO)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new StrategieInfo((Log)getService(ServiceNames.LOG), 
 																		(StrategieNotifieur)getService(ServiceNames.STRATEGIE_NOTIFIEUR));
 		
 		else if(serviceRequested == ServiceNames.STRATEGIE_NOTIFIEUR)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new StrategieNotifieur();		
-		else if(serviceRequested == ServiceNames.START_MATCH_LOCK)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new StartMatchLock();		
 		// si le service demandé n'est pas connu, alors on log une erreur.
 		else
 		{

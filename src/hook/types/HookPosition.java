@@ -8,7 +8,6 @@ import exceptions.WallCollisionDetectedException;
 import hook.Hook;
 import strategie.GameState;
 import utils.Log;
-import utils.Config;
 import utils.Vec2;
 
 /**

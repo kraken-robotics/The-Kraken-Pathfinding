@@ -2,7 +2,6 @@ package hook.types;
 
 import permissions.ReadOnly;
 import strategie.GameState;
-import utils.Config;
 import utils.Log;
 import utils.Vec2;
 import hook.Hook;

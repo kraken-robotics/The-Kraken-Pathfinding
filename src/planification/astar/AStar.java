@@ -6,9 +6,7 @@ import java.util.BitSet;
 
 import permissions.ReadOnly;
 import permissions.ReadWrite;
-import planification.astar.arc.Arc;
 import planification.astar.arc.PathfindingNodes;
-import planification.astar.arc.SegmentTrajectoireCourbe;
 import planification.astar.arcmanager.ArcManager;
 import planification.astar.arcmanager.PathfindingArcManager;
 import planification.astar.arcmanager.StrategyArcManager;
@@ -42,7 +40,7 @@ import utils.Vec2;
  *
  */
 
-public class AStar<AM extends ArcManager<A>, A extends Arc> implements Service
+public class AStar implements Service
 {
 	/**
 	 * Les méthodes publiques sont "synchronized".

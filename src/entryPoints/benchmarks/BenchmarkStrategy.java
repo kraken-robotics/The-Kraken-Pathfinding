@@ -1,28 +1,16 @@
 package entryPoints.benchmarks;
 
-import permissions.ReadOnly;
-import permissions.ReadWrite;
-import planification.astar.AStar;
-import planification.astar.arc.Decision;
-import planification.astar.arcmanager.StrategyArcManager;
-import container.Container;
-import container.ServiceNames;
-import robot.RobotChrono;
-import robot.RobotReal;
-import strategie.GameState;
-import utils.Config;
-import utils.Log;
-import utils.Vec2;
-
 /**
  * Benchmark de la stratégie. Utilisé pour l'optimisation.
  * @author pf
  *
  */
 
+// TODO: refaire
+
 public class BenchmarkStrategy {
 
-	@SuppressWarnings("unchecked")
+/*	@SuppressWarnings("unchecked")
 	public static void main(String[] args)
     {
 		try {
@@ -48,5 +36,5 @@ public class BenchmarkStrategy {
 			e.printStackTrace();
 		}
     }
-	
+	*/
 }

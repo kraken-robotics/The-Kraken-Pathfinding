@@ -1,17 +1,5 @@
 package entryPoints.benchmarks;
-import java.util.Random;
 
-import permissions.ReadWrite;
-import planification.astar.arc.PathfindingNodes;
-import planification.astar.AStar;
-import planification.astar.arc.SegmentTrajectoireCourbe;
-import planification.astar.arcmanager.PathfindingArcManager;
-import container.Container;
-import container.ServiceNames;
-import robot.RobotChrono;
-import robot.RobotReal;
-import strategie.GameState;
-import utils.Log;
 
 /**
  * Benchmark de la recherche de chemin. Utilisé pour l'optimisation.
@@ -19,8 +7,10 @@ import utils.Log;
  *
  */
 
-public class BenchmarkPathfinding {
+// TODO: refaire
 
+public class BenchmarkPathfinding {
+/*
 	@SuppressWarnings("unchecked")
 	public static void main(String[] args) {
 		try {
@@ -51,5 +41,5 @@ public class BenchmarkPathfinding {
 			e.printStackTrace();
 		}
 	}
-
+*/
 }

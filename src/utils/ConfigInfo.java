@@ -56,7 +56,8 @@ public enum ConfigInfo {
 	MATCH_DEMARRE("false"),
 	DATE_DEBUT_MATCH("0"),
 	CAPTEURS_ON("false"),
-	FIN_MATCH("false");
+	FIN_MATCH("false"),
+	REQUETE_BAS_NIVEAU("");
 
 	private String defaultValue;
 	

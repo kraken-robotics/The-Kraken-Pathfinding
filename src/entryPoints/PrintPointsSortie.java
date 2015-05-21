@@ -15,6 +15,8 @@ import utils.ConfigInfo;
  *
  */
 
+// TODO: virer si inutile
+
 public class PrintPointsSortie {
 
 	public static void main(String[] args)
@@ -29,7 +31,7 @@ public class PrintPointsSortie {
 		try {
 			Config config = (Config) container.getService(ServiceNames.CONFIG);
 			config.set(ConfigInfo.CHECK_POINTS_SORTIE, "true");
-			container.getService(ServiceNames.A_STAR_STRATEGY);
+			container.getService(ServiceNames.PATHFINDING);
 		} catch (ContainerException | ThreadException
 				| SerialConnexionException | FinMatchException
 				| PointSortieException e) {

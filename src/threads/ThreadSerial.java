@@ -24,17 +24,15 @@ public class ThreadSerial extends Thread implements Service
 	protected Config config;
 	private SerialConnexion serie;
 	private IncomingDataBuffer buffer;
-	private StartMatchLock lock;
 	
 	private RequeteSTM requete;
 	
-	public ThreadSerial(Log log, Config config, SerialConnexion serie, IncomingDataBuffer buffer, StartMatchLock lock)
+	public ThreadSerial(Log log, Config config, SerialConnexion serie, IncomingDataBuffer buffer)
 	{
 		this.log = log;
 		this.config = config;
 		this.serie = serie;
 		this.buffer = buffer;
-		this.lock = lock;
 		requete = RequeteSTM.getInstance();
 	}
 
@@ -84,10 +82,7 @@ public class ThreadSerial extends Thread implements Service
 							/**
 							 * Démarrage du match
 							 */
-							synchronized(lock)
-							{
-								lock.notifyAll();
-							}
+							config.set(ConfigInfo.MATCH_DEMARRE, true);
 							break;
 							
 							/**
