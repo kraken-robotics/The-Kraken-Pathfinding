@@ -4,10 +4,10 @@ import java.util.ArrayList;
 
 import permissions.ReadOnly;
 import permissions.ReadWrite;
+import planification.LocomotionArc;
 import planification.astar.arc.PathfindingNodes;
 import hook.Hook;
 import utils.Log;
-import utils.Config;
 import utils.Vec2;
 import exceptions.ChangeDirectionException;
 import exceptions.FinMatchException;
@@ -118,10 +118,10 @@ public class RobotChrono extends Robot
 	}
 
 	@Override
-    public void suit_chemin(ArrayList<SegmentTrajectoireCourbe> chemin, ArrayList<Hook> hooks) throws FinMatchException
+    public void suit_chemin(ArrayList<LocomotionArc> chemin, ArrayList<Hook> hooks) throws FinMatchException
 	{
-		for(SegmentTrajectoireCourbe point: chemin)
-			va_au_point_pathfinding(point.objectifFinal, point.differenceDistance, hooks);
+//		for(LocomotionArc point: chemin)
+//			va_au_point_pathfinding(point.objectifFinal, point.differenceDistance, hooks);
 	}
 	
 	private void va_au_point_no_hook(Vec2<ReadOnly> point) throws FinMatchException
@@ -178,9 +178,9 @@ public class RobotChrono extends Robot
 	 * @param n
 	 * @throws FinMatchException
 	 */
-	public void va_au_point_pathfinding_no_hook(SegmentTrajectoireCourbe segment) throws FinMatchException
+	public void va_au_point_pathfinding_no_hook(LocomotionArc segment) throws FinMatchException
 	{
-		PathfindingNodes n = segment.objectifFinal;
+/*		PathfindingNodes n = segment.objectifFinal;
 		// Compensation de la trajectoire courbe
 		if(segment.differenceDistance != 0)
 			date -= segment.differenceDistance*vitesse.invertedTranslationnalSpeed;// + sleepTourneAndAvanceDuration;
@@ -203,7 +203,7 @@ public class RobotChrono extends Robot
 			tourner(positionPathfinding.getOrientationFinale(n));
 			date += positionPathfinding.distanceTo(n)*vitesse.invertedTranslationnalSpeed + sleepAvanceDuration;
 		}
-		setPositionPathfinding(n);
+		setPositionPathfinding(n);*/
 	}
 
 	@Override

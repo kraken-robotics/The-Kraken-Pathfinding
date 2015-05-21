@@ -14,4 +14,8 @@ public class StartMatchLock implements Service
 	@Override
 	public void updateConfig(Config config) // TODO: virer
 	{}
+
+	@Override
+	public void useConfig(Config config) // TODO: virer
+	{}
 }

@@ -103,7 +103,10 @@ public abstract class Robot implements Service
 		dateDebutMatch = config.getInt(ConfigInfo.DATE_DEBUT_MATCH);
 		symetrie = config.getSymmetry();
 	}
-	
+
+	public void useConfig(Config config)
+	{}
+
 	public Speed getVitesse() {
 		return vitesse;
 	}

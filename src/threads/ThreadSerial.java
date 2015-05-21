@@ -135,4 +135,8 @@ public class ThreadSerial extends Thread implements Service
 	public void updateConfig(Config config)
 	{}
 
+	@Override
+	public void useConfig(Config config)
+	{}
+
 }

@@ -68,10 +68,14 @@ public class ThreadTimer extends Thread implements Service
 
 	@Override
 	public void updateConfig(Config config)
+	{}
+
+	@Override
+	public void useConfig(Config config)
 	{
 		// facteur 1000 car temps_match est en secondes et duree_match en ms
 		dureeMatch = 1000*config.getInt(ConfigInfo.DUREE_MATCH_EN_S);
 		obstacleRefreshInterval = config.getInt(ConfigInfo.OBSTACLE_REFRESH_INTERVAL);
 	}
-	
+
 }

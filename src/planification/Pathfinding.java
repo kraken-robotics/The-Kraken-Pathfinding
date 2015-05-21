@@ -53,5 +53,11 @@ public class Pathfinding implements Service {
 	{
 		// TODO
 	}
-	
+
+	@Override
+	public void useConfig(Config config)
+	{
+		// TODO
+	}
+
 }

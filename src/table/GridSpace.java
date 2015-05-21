@@ -203,6 +203,10 @@ public class GridSpace implements Service {
 	public void updateConfig(Config config)
 	{}
 
+	@Override
+	public void useConfig(Config config)
+	{}
+
 	/**
 	 * other devient la copie conforme de this.
 	 * @param other

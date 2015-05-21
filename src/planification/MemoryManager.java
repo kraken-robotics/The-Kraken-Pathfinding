@@ -33,6 +33,14 @@ public class MemoryManager implements Service {
 	
 	@Override
 	public void updateConfig(Config config)
+	{
+		for(int i = 0; i < nb_planif; i++)
+			for(int j = 0; j < nb_instances; j++)
+				gamestates_list[i][j].updateConfig(config);
+	}
+
+	@Override
+	public void useConfig(Config config)
 	{}
 
 	public MemoryManager(Log log, GameState<RobotReal,ReadOnly> realstate)

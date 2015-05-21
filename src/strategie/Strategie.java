@@ -59,4 +59,10 @@ public class Strategie implements Service {
 		
 	}
 
+	@Override
+	public void useConfig(Config config) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

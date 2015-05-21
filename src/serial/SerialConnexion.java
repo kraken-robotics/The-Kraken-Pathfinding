@@ -317,9 +317,12 @@ public class SerialConnexion implements SerialPortEventListener, Service
 	}
 	
 	@Override
-	public void updateConfig(Config config)
+	public void useConfig(Config config)
 	{
 		baudrate = config.getInt(ConfigInfo.BAUDRATE);
 	}
 
+	@Override
+	public void updateConfig(Config config)
+	{}
 }

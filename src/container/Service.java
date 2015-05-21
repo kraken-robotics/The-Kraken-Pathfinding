@@ -11,8 +11,14 @@ import utils.Config;
 public interface Service {
 
 	/**
-	 * Accès au fichier de configuration
+	 * Met à jour les variables de config qui doivent l'être
 	 */
 	public void updateConfig(Config config);
+
+	/**
+	 * Affecte les valeurs de config
+	 * @param config
+	 */
+	public void useConfig(Config config);
 	
 }

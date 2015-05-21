@@ -6,8 +6,8 @@ import permissions.Permission;
 import permissions.ReadOnly;
 import permissions.ReadWrite;
 import permissions.TestOnly;
+import planification.LocomotionArc;
 import planification.astar.arc.PathfindingNodes;
-import planification.astar.arc.SegmentTrajectoireCourbe;
 import robot.Robot;
 import robot.RobotChrono;
 import robot.RobotReal;
@@ -115,8 +115,15 @@ public class GameState<R extends Robot, T extends Permission> implements Service
 
     @Override
     public void updateConfig(Config config)
+    {
+    	robot.updateConfig(config);
+    	gridspace.updateConfig(config);
+    }
+
+    @Override
+    public void useConfig(Config config)
     {}
-   
+
     /**
      * Petite surcouche
      * @return
@@ -227,7 +234,7 @@ public class GameState<R extends Robot, T extends Permission> implements Service
     	state.robot.avancer(distance, hooks, mur);
     }
     
-    public static final void suit_chemin(GameState<? extends Robot, ReadWrite> state, ArrayList<SegmentTrajectoireCourbe> chemin, ArrayList<Hook> hooks) throws UnableToMoveException, FinMatchException, ScriptHookException
+    public static final void suit_chemin(GameState<? extends Robot, ReadWrite> state, ArrayList<LocomotionArc> chemin, ArrayList<Hook> hooks) throws UnableToMoveException, FinMatchException, ScriptHookException
     {
     	state.robot.suit_chemin(chemin, hooks);
     }
@@ -292,7 +299,7 @@ public class GameState<R extends Robot, T extends Permission> implements Service
     	return state.robot.cloneIntoRobotChrono();
     }
     
-	public static final void va_au_point_pathfinding_no_hook(GameState<RobotChrono, ReadWrite> state, SegmentTrajectoireCourbe segment) throws FinMatchException
+	public static final void va_au_point_pathfinding_no_hook(GameState<RobotChrono, ReadWrite> state, LocomotionArc segment) throws FinMatchException
 	{
 		state.robot.va_au_point_pathfinding_no_hook(segment);
 	}
@@ -352,11 +359,6 @@ public class GameState<R extends Robot, T extends Permission> implements Service
 		return state.gridspace.isTraversableCourbe(objectifFinal, intersection, directionAvant, tempsDepuisDebutMatch);
 	}
 
-	public static final SegmentTrajectoireCourbe getSegment(GameState<?, ReadOnly> state)
-	{
-		return state.gridspace.getSegment();
-	}
-	
 	public static final void setDone(GameState<?, ReadWrite> state, GameElementNames element, Tribool done)
 	{
 		state.gridspace.setDone(element, done);

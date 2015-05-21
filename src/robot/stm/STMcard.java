@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import permissions.ReadOnly;
 import planification.LocomotionArc;
 import planification.astar.arc.PathfindingNodes;
-import planification.astar.arc.SegmentTrajectoireCourbe;
 import utils.Config;
 import utils.Log;
 import utils.Vec2;
@@ -325,6 +324,10 @@ public class STMcard implements Service {
         symetrie = config.getSymmetry();
 	}
 	
+	@Override
+	public void useConfig(Config config)
+	{}
+
 	/**
 	 * Envoie un ordre à la série. Le protocole est défini dans l'enum ActuatorOrder
 	 * @param order l'ordre à envoyer

@@ -21,7 +21,7 @@ public class HookDemiPlan extends Hook
 	 * @param log
 	 * @param state
 	 */
-	public HookDemiPlan(Config config, Log log, GameState<?, ReadOnly> state)
+	public HookDemiPlan(Log log, GameState<?, ReadOnly> state)
 	{
 		super(log, state);
 		point = new Vec2<ReadWrite>();
@@ -34,7 +34,7 @@ public class HookDemiPlan extends Hook
 	 * @param log
 	 * @param state
 	 */
-	public HookDemiPlan(Config config, Log log, GameState<?,ReadOnly> state, Vec2<ReadOnly> point, Vec2<ReadOnly> direction)
+	public HookDemiPlan(Log log, GameState<?,ReadOnly> state, Vec2<ReadOnly> point, Vec2<ReadOnly> direction)
 	{
 		super(log, state);
 		this.point = point.clone();

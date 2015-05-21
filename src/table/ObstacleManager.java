@@ -300,6 +300,10 @@ public class ObstacleManager implements Service
 	@Override
 	public void updateConfig(Config config) {
 		dateDebutMatch = config.getInt(ConfigInfo.DATE_DEBUT_MATCH);
+	}
+    
+	@Override
+	public void useConfig(Config config) {
 		tempo = config.getDouble(ConfigInfo.CAPTEURS_TEMPORISATION_OBSTACLES);
 		table_x = config.getInt(ConfigInfo.TABLE_X);
 		table_y = config.getInt(ConfigInfo.TABLE_Y);

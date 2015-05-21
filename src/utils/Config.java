@@ -149,4 +149,8 @@ public class Config implements Service
 		}
 	}
 	
+	@Override
+	public void useConfig(Config config)
+	{}
+	
 }

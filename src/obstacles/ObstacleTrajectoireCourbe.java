@@ -4,7 +4,6 @@ import permissions.Permission;
 import permissions.ReadOnly;
 import permissions.ReadWrite;
 import planification.astar.arc.PathfindingNodes;
-import planification.astar.arc.SegmentTrajectoireCourbe;
 import robot.Speed;
 import utils.ConfigInfo;
 import utils.Vec2;
@@ -17,7 +16,7 @@ import utils.Vec2;
 
 public class ObstacleTrajectoireCourbe<T extends Permission> extends ObstacleRectanglesCollection<T>
 {
-	private SegmentTrajectoireCourbe segment;
+//	private SegmentTrajectoireCourbe segment;
 	
 	/**
 	 * 
@@ -67,16 +66,16 @@ public class ObstacleTrajectoireCourbe<T extends Permission> extends ObstacleRec
 
 //		log.debug("Erreur! diff = "+(2*distanceAnticipation - rayonCourbure * Math.abs(angleRotation)), this);
 		
-		segment = new SegmentTrajectoireCourbe(objectifFinal, (int)(2*distanceAnticipation - rayonCourbure * Math.abs(angleRotation)), distanceAnticipation, pointDepart.getReadOnly(), directionAvant.getReadOnly(), vitesse);
+//		segment = new SegmentTrajectoireCourbe(objectifFinal, (int)(2*distanceAnticipation - rayonCourbure * Math.abs(angleRotation)), distanceAnticipation, pointDepart.getReadOnly(), directionAvant.getReadOnly(), vitesse);
 	}
 
 	/**
 	 * Renvoie le segment associé
 	 * @return
 	 */
-	public SegmentTrajectoireCourbe getSegment()
+/*	public SegmentTrajectoireCourbe getSegment()
 	{
 		return segment;
 	}
-
+*/
 }

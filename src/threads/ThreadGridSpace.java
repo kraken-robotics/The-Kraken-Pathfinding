@@ -50,5 +50,8 @@ public class ThreadGridSpace extends Thread implements Service {
 	public void updateConfig(Config config)
 	{}
 
+	@Override
+	public void useConfig(Config config)
+	{}
 
 }

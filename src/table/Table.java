@@ -92,6 +92,10 @@ public class Table implements Service
 	@Override
 	public void updateConfig(Config config)
 	{}
+	
+	@Override
+	public void useConfig(Config config)
+	{}
 
 	/**
 	 * g est-il proche de position? (utilisé pour vérifier si on shoot dans un élément de jeu)

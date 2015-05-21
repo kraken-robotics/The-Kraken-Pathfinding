@@ -115,6 +115,10 @@ public class Log implements Service
 	
 	@Override
 	public void updateConfig(Config config)
+	{}
+	
+	@Override
+	public void useConfig(Config config)
 	{
 		affiche_debug = config.getBoolean(ConfigInfo.AFFICHE_DEBUG);
 		sauvegarde_fichier = config.getBoolean(ConfigInfo.SAUVEGARDE_FICHIER);
