@@ -16,7 +16,7 @@ public class ThreadFinMatch extends ThreadAvecStop implements Service {
 
 	protected Log log;
 	protected Config config;
-	private volatile Boolean matchDemarre;
+	private volatile Boolean matchDemarre = Boolean.FALSE;
 	private int dureeMatch;
 
 	public ThreadFinMatch(Log log, Config config)

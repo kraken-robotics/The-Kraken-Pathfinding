@@ -1,5 +1,6 @@
 package container;
 
+import obstacles.Obstacle;
 import buffer.IncomingDataBuffer;
 import buffer.IncomingHookBuffer;
 import permissions.ReadOnly;
@@ -118,6 +119,9 @@ public class Container
 			config = (Config)getService(ServiceNames.CONFIG);
 			log.updateConfig(config);
 			log.useConfig(config);
+			
+			Obstacle.setLog(log);
+			Obstacle.useConfig(config);
 		}
 		catch(Exception e)
 		{

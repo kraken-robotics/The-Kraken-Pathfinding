@@ -16,7 +16,6 @@ public class JUnit_Thread_Manuel extends JUnit_Test {
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        container.startAllThreads();
     }
 
     @Test

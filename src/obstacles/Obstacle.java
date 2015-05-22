@@ -19,19 +19,23 @@ public abstract class Obstacle<T extends Permission>
 	protected final Vec2<T> position;
 	protected int distance_dilatation;
 	protected static Log log;
-	protected static Config config;
 	
     protected static int largeurRobot; // le sens gauche-droite du robot
     protected static int longueurRobot; // le sens avant-arrière du robot
+    protected static int rayonRobot;
     protected static int marge;
 	protected static double anglePas; // utilisé pour les calculs de collision pendant les rotations
 	
-	public static void setLogConfig(Log log, Config config)
+	public static void setLog(Log log)
 	{
-		Obstacle.log = log; // TODO: config
-		Obstacle.config = config;
+		Obstacle.log = log;
+	}
+	
+	public static void useConfig(Config config)
+	{
 		largeurRobot = config.getInt(ConfigInfo.LARGEUR_ROBOT);
 		longueurRobot = config.getInt(ConfigInfo.LONGUEUR_ROBOT);
+		rayonRobot = config.getInt(ConfigInfo.RAYON_ROBOT);
 		marge = config.getInt(ConfigInfo.MARGE);
 		anglePas = Math.PI-2*Math.atan2(largeurRobot, longueurRobot);
 	}

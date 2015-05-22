@@ -54,8 +54,6 @@ public class ObstacleTrajectoireCourbe<T extends Permission> extends ObstacleRec
 
 		Vec2<ReadWrite> centreCercle = pointDepart.plusNewVector(orthogonalDirectionAvant.scalarNewVector(rayonCourbure/1000.));
 
-		int largeurRobot = config.getInt(ConfigInfo.LARGEUR_ROBOT);
-		int longueurRobot = config.getInt(ConfigInfo.LONGUEUR_ROBOT);
 //		double angleEntreOmbre = Math.atan2(longueurRobot/2, rayonCourbure+largeurRobot/2);
 //		nb_rectangles = (int)(Math.abs(angleRotation/angleEntreOmbre))+1;
 		nb_rectangles = 10;

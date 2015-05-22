@@ -3,7 +3,6 @@ package obstacles;
 import permissions.Permission;
 import permissions.ReadOnly;
 import permissions.ReadWrite;
-import utils.ConfigInfo;
 import utils.Vec2;
 
 /**
@@ -27,7 +26,7 @@ public class ObstacleCircular<T extends Permission> extends Obstacle<T>
 		squared_radius = rad * rad;
 		if(squared_radius_with_dilatation_obstacle == -1)
 		{
-			squared_radius_with_dilatation_obstacle = radius + config.getInt(ConfigInfo.MARGE) + config.getInt(ConfigInfo.RAYON_ROBOT);
+			squared_radius_with_dilatation_obstacle = radius + marge + rayonRobot;
 			squared_radius_with_dilatation_obstacle *= squared_radius_with_dilatation_obstacle;
 		}
 	}

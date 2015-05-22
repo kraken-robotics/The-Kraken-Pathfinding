@@ -35,7 +35,7 @@ public class Execution implements Service {
 	private RequeteSTM requete;
 	
 	private ArrayList<Hook> hooksEntreScripts;
-	private volatile Boolean matchDemarre;
+	private volatile Boolean matchDemarre = Boolean.FALSE;
 	
 	public Execution(Log log, Strategie strategie, ScriptManager scriptmanager, GameState<RobotReal,ReadWrite> gamestate)
 	{
