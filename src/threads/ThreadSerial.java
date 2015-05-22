@@ -26,6 +26,7 @@ public class ThreadSerial extends ThreadAvecStop implements Service
 	private IncomingDataBuffer buffer;
 	
 	private RequeteSTM requete;
+	private volatile boolean capteursOn;
 	
 	public ThreadSerial(Log log, Config config, SerialConnexion serie, IncomingDataBuffer buffer)
 	{
@@ -68,8 +69,9 @@ public class ThreadSerial extends ThreadAvecStop implements Service
 							int xEnnemi = Integer.parseInt(serie.read());
 							int yEnnemi = Integer.parseInt(serie.read());
 							int portion = Integer.parseInt(serie.read());
-		
-							buffer.add(new IncomingData(new Vec2<ReadOnly>(xBrut, yBrut), new Vec2<ReadOnly>(xEnnemi, yEnnemi), portion));
+
+							if(capteursOn)
+								buffer.add(new IncomingData(new Vec2<ReadOnly>(xBrut, yBrut), new Vec2<ReadOnly>(xEnnemi, yEnnemi), portion));
 							break;
 							
 							/**
@@ -135,7 +137,9 @@ public class ThreadSerial extends ThreadAvecStop implements Service
 	
 	@Override
 	public void updateConfig(Config config)
-	{}
+	{
+		capteursOn = config.getBoolean(ConfigInfo.CAPTEURS_ON);
+	}
 
 	@Override
 	public void useConfig(Config config)

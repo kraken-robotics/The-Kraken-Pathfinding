@@ -131,6 +131,18 @@ public class Config implements Service
 				config.setProperty(info.toString(), info.getDefaultValue());
 			}
 		}
+		for(String cle: config.stringPropertyNames())
+		{
+			boolean found = false;
+			for(ConfigInfo info: ConfigInfo.values())
+				if(info.toString().compareTo(cle) == 0)
+				{
+					found = true;
+					break;
+				}
+			if(!found)
+				log.warning("Config "+cle+" inutilisée. Veuillez le retirer de config.ini");
+		}
 	}
 		
 	/**
