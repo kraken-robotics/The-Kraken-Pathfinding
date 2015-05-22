@@ -119,6 +119,7 @@ public class Container
 			config = (Config)getService(ServiceNames.CONFIG);
 			log.updateConfig(config);
 			log.useConfig(config);
+			config.init();
 			
 			Obstacle.setLog(log);
 			Obstacle.useConfig(config);

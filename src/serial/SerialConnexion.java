@@ -54,15 +54,10 @@ public class SerialConnexion implements SerialPortEventListener, Service
 	/**
 	 * Constructeur pour la série de test
 	 * @param log
-	 * @param name
-	 * @throws SerialManagerException
 	 */
-	public SerialConnexion(Log log) throws SerialConnexionException
+	public SerialConnexion(Log log)
 	{
 		this.log = log;
-		
-		if(!searchPort())
-			throw new SerialConnexionException();
 	}
 
 	private boolean searchPort()
@@ -305,13 +300,14 @@ public class SerialConnexion implements SerialPortEventListener, Service
 			return false;
 		}
 	}
-	
+
 	@Override
 	public void useConfig(Config config)
 	{
 		baudrate = config.getInt(ConfigInfo.BAUDRATE);
+		searchPort();
 	}
-
+	
 	@Override
 	public void updateConfig(Config config)
 	{}

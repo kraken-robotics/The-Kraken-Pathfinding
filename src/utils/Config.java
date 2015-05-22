@@ -37,6 +37,13 @@ public class Config implements Service
 			log.critical("Erreur lors de l'ouverture de config.ini. Utilisation des valeurs par défaut.");
 		}
 		
+	}
+
+	/**
+	 * A appeler après l'ouverture du log.
+	 */
+	public void init()
+	{
 		completeConfig();
 		if(getBoolean(ConfigInfo.AFFICHE_DEBUG))
 			afficheTout();
@@ -130,10 +137,15 @@ public class Config implements Service
 			if(!properties.containsKey(info.toString()))
 				properties.setProperty(info.toString(), info.getDefaultValue());
 			else
-				log.warning(info+" surchargé par config.ini");
+				log.debug(info+" surchargé par config.ini");
 		}
 		for(String cle: properties.stringPropertyNames())
 		{
+			if(cle.contains("#"))
+			{
+				properties.remove(cle);
+				continue;
+			}
 			boolean found = false;
 			for(ConfigInfo info: ConfigInfo.values())
 				if(info.toString().compareTo(cle) == 0)
