@@ -252,9 +252,16 @@ public class SerialConnexion implements SerialPortEventListener, Service
 		}
 	}
 
+	/**
+	 * Lit une ligne.
+	 * @return
+	 */
 	public synchronized String read()
 	{
 		try {
+			/**
+			 * On sait qu'une donnée arrive, donc l'attente est très faible.
+			 */
 			while(!input.ready());
 			return input.readLine();
 		} catch (IOException e) {
@@ -262,23 +269,6 @@ public class SerialConnexion implements SerialPortEventListener, Service
 			e.printStackTrace();
 			return null;
 		}
-	}
-
-	
-	/**
-	 * Lit sur la série. Cet appel doit être fait après la notification de données disponibles
-	 * @throws IOException
-	 */
-	public synchronized ArrayList<String> readMore() throws IOException
-	{
-		ArrayList<String> output = new ArrayList<String>();
-
-		while(!input.ready());
-		int n = Integer.parseInt(input.readLine());
-		for(int i = 0; i < n; i++)
-			output.add(input.readLine());
-
-		return output;
 	}
 
 	/**

@@ -42,6 +42,7 @@ public class ThreadSerial extends ThreadAvecStop implements Service
 		/**
 		 * Initialisation des valeurs de la STM
 		 */
+		// TODO: envoyer hook, etc.
 		
 		while(!finThread)
 		{
@@ -56,12 +57,12 @@ public class ThreadSerial extends ThreadAvecStop implements Service
 					String first = serie.read();
 					switch(first)
 					{
+						case "obs":
 							/**
 							 * Un obstacle est vu. Il y a deux positions:
 							 * - la position brute, ce que voit vraiment le capteur
 							 * - la position supposée de l'obstacle
 						 	 */
-						case "obs":
 							int xBrut = Integer.parseInt(serie.read());
 							int yBrut = Integer.parseInt(serie.read());
 							int xEnnemi = Integer.parseInt(serie.read());

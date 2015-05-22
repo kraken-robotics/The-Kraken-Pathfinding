@@ -46,6 +46,9 @@ public abstract class Robot implements Service
 
     protected HookDateFinMatch hookFinMatch;
     
+	protected volatile boolean symetrie;
+	protected Speed vitesse;
+	protected int pointsObtenus = 0;
     protected volatile int dateDebutMatch;
     /*
      * Actionneurs
@@ -67,9 +70,6 @@ public abstract class Robot implements Service
 
 	// Dépendances
 	protected Log log;
-	protected boolean symetrie;
-	protected Speed vitesse;
-	protected int pointsObtenus = 0;
 	
 	public Robot(Log log)
 	{
@@ -95,7 +95,7 @@ public abstract class Robot implements Service
 		hookFinMatch.updateDate(dateLimite);
 	}
 
-	public void updateConfig(Config config)
+	public synchronized void updateConfig(Config config)
 	{
 		dateDebutMatch = config.getInt(ConfigInfo.DATE_DEBUT_MATCH);
 		symetrie = config.getSymmetry();

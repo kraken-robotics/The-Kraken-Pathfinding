@@ -36,7 +36,9 @@ public class HookFactory implements Service
 	
 	private ArrayList<Hook> hooks_table_chrono = null;
 	private HookDateFinMatch hook_fin_match_chrono = null;
-		
+	
+	// TODO: créer hooks_table_chrono dès la construction, et maintenir un numéro pour chaque hook
+	
 	/**
 	 *  appellé uniquement par Container.
 	 *  Initialise la factory
