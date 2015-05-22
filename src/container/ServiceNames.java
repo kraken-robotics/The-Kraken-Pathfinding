@@ -23,6 +23,7 @@ public enum ServiceNames {
 	 OBSTACLE_MANAGER,
 	 GRID_SPACE,
 	 INCOMING_DATA_BUFFER,
+	 INCOMING_HOOK_BUFFER,
 	 MEMORY_MANAGER,
 	
 	 // Les threads
@@ -33,7 +34,8 @@ public enum ServiceNames {
 	 THREAD_STRATEGIE_INFO(true),
 	 THREAD_PATHFINDING(true),
 	 THREAD_STRATEGIE(true),
-	 THREAD_GRID_SPACE(true);
+	 THREAD_GRID_SPACE(true),
+	 THREAD_TABLE(true);
 
 	 private boolean isThread = false;
 	 

@@ -1,4 +1,4 @@
-package threads;
+package buffer;
 
 import java.util.LinkedList;
 import java.util.Queue;

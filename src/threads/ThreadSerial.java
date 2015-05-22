@@ -2,6 +2,9 @@ package threads;
 
 import java.util.ArrayList;
 
+import buffer.IncomingData;
+import buffer.IncomingDataBuffer;
+import buffer.IncomingHookBuffer;
 import hook.Hook;
 import hook.HookFactory;
 import permissions.ReadOnly;
@@ -28,17 +31,19 @@ public class ThreadSerial extends ThreadAvecStop implements Service
 	protected Config config;
 	private SerialConnexion serie;
 	private IncomingDataBuffer buffer;
+	private IncomingHookBuffer hookbuffer;
 	private HookFactory hookfactory;
 	
 	private RequeteSTM requete;
 	private volatile boolean capteursOn;
 	
-	public ThreadSerial(Log log, Config config, SerialConnexion serie, IncomingDataBuffer buffer, HookFactory hookfactory)
+	public ThreadSerial(Log log, Config config, SerialConnexion serie, IncomingDataBuffer buffer, IncomingHookBuffer hookbuffer, HookFactory hookfactory)
 	{
 		this.log = log;
 		this.config = config;
 		this.serie = serie;
 		this.buffer = buffer;
+		this.hookbuffer = hookbuffer;
 		this.hookfactory = hookfactory;
 		requete = RequeteSTM.getInstance();
 	}
@@ -124,6 +129,7 @@ public class ThreadSerial extends ThreadAvecStop implements Service
 							 */
 						case "hk":
 							// TODO: l'exécuter aussi (mise à jour table, robot, etc).
+							hookbuffer.add(null);
 							break;
 							
 							/**

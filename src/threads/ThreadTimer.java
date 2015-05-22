@@ -1,5 +1,6 @@
 package threads;
 
+import buffer.IncomingDataBuffer;
 import table.ObstacleManager;
 import utils.Config;
 import utils.ConfigInfo;

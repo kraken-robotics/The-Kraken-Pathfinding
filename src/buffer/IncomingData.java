@@ -1,4 +1,4 @@
-package threads;
+package buffer;
 
 import permissions.ReadOnly;
 import utils.Vec2;

@@ -1,29 +1,29 @@
 package threads;
 
-import buffer.IncomingData;
-import buffer.IncomingDataBuffer;
-import table.ObstacleManager;
+import buffer.IncomingHook;
+import buffer.IncomingHookBuffer;
+import table.Table;
 import utils.Config;
 import utils.Log;
 import container.Service;
 
 /**
- * Thread du manager d'obstacle. Surveille IncomingDataBuffer
+ * Thread de la table. Surveille IncomingHookBuffer
  * @author pf
  *
  */
 
-public class ThreadObstacleManager extends ThreadAvecStop implements Service
+public class ThreadTable extends ThreadAvecStop implements Service
 {
-	private IncomingDataBuffer buffer;
-	private ObstacleManager obstaclemanager;
+	private IncomingHookBuffer buffer;
+	private Table table;
 	protected Log log;
 	
-	public ThreadObstacleManager(Log log, IncomingDataBuffer buffer, ObstacleManager obstaclemanager)
+	public ThreadTable(Log log, IncomingHookBuffer buffer, Table table)
 	{
 		this.log = log;
 		this.buffer = buffer;
-		this.obstaclemanager = obstaclemanager;
+		this.table = table;
 	}
 	
 	@Override
@@ -31,12 +31,12 @@ public class ThreadObstacleManager extends ThreadAvecStop implements Service
 	{
 		while(!finThread)
 		{
-			IncomingData e = null;
+			IncomingHook e = null;
 			synchronized(buffer)
 			{
 				try {
 					buffer.wait();
-					log.debug("Réveil de ThreadObstacleManager");
+					log.debug("Réveil de ThreadTable");
 					e = buffer.poll();
 				} catch (InterruptedException e2) {
 					e2.printStackTrace();
@@ -44,8 +44,8 @@ public class ThreadObstacleManager extends ThreadAvecStop implements Service
 			}
 			// Cet appel peut lancer un obstaclemanager.notifyAll()
 			// Il n'est pas synchronized car il ne modifie pas le buffer
-			if(e != null)
-				obstaclemanager.addIfUseful(e);
+//			if(e != null)
+//				table.apply(e); // TODO
 		}
 	}
 	

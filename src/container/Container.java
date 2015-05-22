@@ -1,5 +1,7 @@
 package container;
 
+import buffer.IncomingDataBuffer;
+import buffer.IncomingHookBuffer;
 import permissions.ReadOnly;
 import permissions.ReadWrite;
 import planification.MemoryManager;
@@ -22,7 +24,6 @@ import table.GridSpace;
 import table.ObstacleManager;
 import table.StrategieInfo;
 import table.Table;
-import threads.IncomingDataBuffer;
 import threads.ThreadAvecStop;
 import threads.ThreadFinMatch;
 import threads.ThreadGridSpace;
@@ -31,6 +32,7 @@ import threads.ThreadPathfinding;
 import threads.ThreadSerial;
 import threads.ThreadStrategie;
 import threads.ThreadStrategieInfo;
+import threads.ThreadTable;
 import threads.ThreadTimer;
 import robot.RobotReal;
 
@@ -176,6 +178,8 @@ public class Container
 																				(MemoryManager)getService(ServiceNames.MEMORY_MANAGER));		
 		else if(serviceRequested == ServiceNames.INCOMING_DATA_BUFFER)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new IncomingDataBuffer((Log)getService(ServiceNames.LOG));
+		else if(serviceRequested == ServiceNames.INCOMING_HOOK_BUFFER)
+			instanciedServices[serviceRequested.ordinal()] = (Service)new IncomingHookBuffer((Log)getService(ServiceNames.LOG));
 				
 		else if(serviceRequested == ServiceNames.SERIE_STM)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new SerialConnexion((Log)getService(ServiceNames.LOG));
@@ -224,6 +228,10 @@ public class Container
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadObstacleManager((Log)getService(ServiceNames.LOG),
 																		(IncomingDataBuffer)getService(ServiceNames.INCOMING_DATA_BUFFER),
 																		(ObstacleManager)getService(ServiceNames.OBSTACLE_MANAGER));
+		else if(serviceRequested == ServiceNames.THREAD_TABLE)
+			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadTable((Log)getService(ServiceNames.LOG),
+																		(IncomingHookBuffer)getService(ServiceNames.INCOMING_HOOK_BUFFER),
+																		(Table)getService(ServiceNames.TABLE));
 		else if(serviceRequested == ServiceNames.THREAD_STRATEGIE_INFO)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadStrategieInfo((Log)getService(ServiceNames.LOG),
 																		(StrategieInfo)getService(ServiceNames.STRATEGIE_INFO),
@@ -232,7 +240,9 @@ public class Container
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadSerial((Log)getService(ServiceNames.LOG),
 																		(Config)getService(ServiceNames.CONFIG),
 																		(SerialConnexion)getService(ServiceNames.SERIE_STM),
-																		(IncomingDataBuffer)getService(ServiceNames.INCOMING_DATA_BUFFER));
+																		(IncomingDataBuffer)getService(ServiceNames.INCOMING_DATA_BUFFER),
+																		(IncomingHookBuffer)getService(ServiceNames.INCOMING_HOOK_BUFFER),
+																		(HookFactory)getService(ServiceNames.HOOK_FACTORY));
 		else if(serviceRequested == ServiceNames.STRATEGIE_INFO)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new StrategieInfo((Log)getService(ServiceNames.LOG), 
 																		(StrategieNotifieur)getService(ServiceNames.STRATEGIE_NOTIFIEUR));

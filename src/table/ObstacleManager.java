@@ -2,6 +2,7 @@ package table;
 
 import java.util.ArrayList;
 
+import buffer.IncomingData;
 import obstacles.Obstacle;
 import obstacles.ObstacleProximity;
 import obstacles.ObstacleRectangular;
@@ -13,7 +14,6 @@ import planification.astar.arc.PathfindingNodes;
 import robot.Speed;
 import container.Service;
 import enums.Tribool;
-import threads.IncomingData;
 import utils.Config;
 import utils.ConfigInfo;
 import utils.Log;
