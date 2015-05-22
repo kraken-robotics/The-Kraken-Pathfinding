@@ -12,9 +12,9 @@ import utils.Vec2;
  */
 public class ObstacleProximity<T extends Permission> extends ObstacleCircular<T>
 {
-	private int death_date;
+	private long death_date;
 
-	public ObstacleProximity(Vec2<T> position, int rad, int death_date)
+	public ObstacleProximity(Vec2<T> position, int rad, long death_date)
 	{
 		super(position,rad);
 		this.death_date = death_date;
@@ -38,14 +38,14 @@ public class ObstacleProximity<T extends Permission> extends ObstacleCircular<T>
 	 * @param date
 	 * @return
 	 */
-    public boolean obstacle_proximite_dans_segment(Vec2<ReadOnly> A, Vec2<ReadOnly> B, int date)
+    public boolean obstacle_proximite_dans_segment(Vec2<ReadOnly> A, Vec2<ReadOnly> B, long date)
     {
     	// si l'obstacle est présent dans le segment...
     	ObstacleRectangular<ReadOnly> r = new ObstacleRectangular<ReadOnly>(A,B);
     	if(death_date > date && r.isColliding(getReadOnly()))
     	{
     		// on vérifie si par hasard il ne disparaîtrait pas avant qu'on y arrive
-    		int tempsRestant = death_date - date;
+    		int tempsRestant = (int)(death_date - date);
     		
     		// distance maximale à parcourir alors que l'obstacle est encore là
     		double distanceMax = tempsRestant*Speed.BETWEEN_SCRIPTS.translationnalSpeed;
@@ -71,12 +71,12 @@ public class ObstacleProximity<T extends Permission> extends ObstacleCircular<T>
      * Utilisé pour mettre à jour l'ennemi hypothétique
      * @param clone
      */
-	public void setDeathDate(int death_date)
+	public void setDeathDate(long death_date)
 	{
 		this.death_date = death_date;
 	}
 	
-	public int getDeathDate()
+	public long getDeathDate()
 	{
 		return death_date;
 	}

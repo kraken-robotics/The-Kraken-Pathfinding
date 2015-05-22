@@ -1,6 +1,5 @@
 package threads;
 
-import buffer.IncomingDataBuffer;
 import table.ObstacleManager;
 import utils.Config;
 import utils.ConfigInfo;
@@ -20,15 +19,13 @@ public class ThreadPeremption extends ThreadAvecStop implements Service
 
 	private ObstacleManager obstaclemanager;
 	protected Log log;
-	private IncomingDataBuffer buffer;
 
 	private int dureePeremption;
 
-	public ThreadPeremption(Log log, ObstacleManager obstaclemanager, IncomingDataBuffer buffer)
+	public ThreadPeremption(Log log, ObstacleManager obstaclemanager)
 	{
 		this.log = log;
 		this.obstaclemanager = obstaclemanager;
-		this.buffer = buffer;
 	}
 	
 	@Override
@@ -37,17 +34,15 @@ public class ThreadPeremption extends ThreadAvecStop implements Service
 		while(!finThread)
 		{
 			obstaclemanager.supprimerObstaclesPerimes();
-			buffer.notifyIfNecessary();
-			// TODO: faire un sleep exact
-			int prochain = obstaclemanager.getDateSomethingChange();
+			long prochain = obstaclemanager.getDateSomethingChange();
 			
 			/**
 			 * S'il n'y a pas d'obstacles, on dort de dureePeremption, qui est la durée minimale avant la prochaine péremption.
 			 */
-			if(prochain == Integer.MAX_VALUE)
+			if(prochain == Long.MAX_VALUE)
 				Sleep.sleep(dureePeremption);
 			else
-				Sleep.sleep(Math.min(dureePeremption, prochain - System.currentTimeMillis()));
+				Sleep.sleep(Math.min(dureePeremption, Math.max(prochain - System.currentTimeMillis(), 0)));
 		}
 	}
 

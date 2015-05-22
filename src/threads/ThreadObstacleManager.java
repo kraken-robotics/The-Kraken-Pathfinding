@@ -35,7 +35,8 @@ public class ThreadObstacleManager extends ThreadAvecStop implements Service
 			synchronized(buffer)
 			{
 				try {
-					buffer.wait();
+					while(buffer.isEmpty())
+						buffer.wait(100);
 					log.debug("Réveil de ThreadObstacleManager");
 					e = buffer.poll();
 				} catch (InterruptedException e2) {

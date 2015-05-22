@@ -22,6 +22,15 @@ public class IncomingDataBuffer implements Service
 		this.log = log;
 	}
 	
+	/**
+	 * Le buffer est-il vide?
+	 * @return
+	 */
+	public synchronized boolean isEmpty()
+	{
+		return buffer.isEmpty();
+	}
+	
 	private volatile Queue<IncomingData> buffer = new LinkedList<IncomingData>();
 	
 	/**
@@ -38,15 +47,6 @@ public class IncomingDataBuffer implements Service
 		}
 	}
 	
-	public void notifyIfNecessary()
-	{
-		if(buffer.size() > 0)
-			synchronized(this)
-			{
-				notifyAll();
-			}
-	}
-
 	/**
 	 * Retire un élément du buffer
 	 * @return

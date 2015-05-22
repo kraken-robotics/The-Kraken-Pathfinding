@@ -42,11 +42,10 @@ public class ObstacleManager implements Service
     
     private int firstNotDead = 0;
 
-    private volatile long dateDebutMatch;
     private int rayon_robot_adverse;
     private int distanceApproximation;
     private int dureeAvantPeremption;
-    private int date_dernier_ajout = 0;
+    private long date_dernier_ajout = 0;
 	private double tempo = 0;
 	private int table_x = 3000;
 	private int table_y = 2000;
@@ -78,7 +77,7 @@ public class ObstacleManager implements Service
      * Créer un obstacle de proximité
      * @param position
      */
-    public synchronized void creerObstacle(final Vec2<ReadOnly> position, int date_actuelle)
+    public synchronized void creerObstacle(final Vec2<ReadOnly> position, long date_actuelle)
     {
         ObstacleProximity<ReadOnly> obstacle = new ObstacleProximity<ReadOnly>(position, rayon_robot_adverse, date_actuelle+dureeAvantPeremption);
 //        log.warning("Obstacle créé, rayon = "+rayon_robot_adverse+", centre = "+position+", meurt à "+(date_actuelle+dureeAvantPeremption), this);
@@ -104,7 +103,7 @@ public class ObstacleManager implements Service
      */
     public void supprimerObstaclesPerimes()
     {
-    	supprimerObstaclesPerimes(System.currentTimeMillis() - dateDebutMatch);
+    	supprimerObstaclesPerimes(System.currentTimeMillis());
     }
 
     /**
@@ -125,6 +124,8 @@ public class ObstacleManager implements Service
         {
         	if(!listObstaclesMobiles.get(firstNotDead).isDestructionNecessary(date))
         		break;
+//        	else
+//        		log.debug("Destruction avec un retard de "+(System.currentTimeMillis()-listObstaclesMobiles.get(firstNotDead).getDeathDate()));
         }
         if(firstNotDeadOld != firstNotDead)
         	synchronized(this)
@@ -298,9 +299,8 @@ public class ObstacleManager implements Service
     }
 
 	@Override
-	public void updateConfig(Config config) {
-		dateDebutMatch = config.getLong(ConfigInfo.DATE_DEBUT_MATCH);
-	}
+	public void updateConfig(Config config)
+	{}
     
 	@Override
 	public void useConfig(Config config) {
@@ -370,17 +370,17 @@ public class ObstacleManager implements Service
 
 	/**
 	 * Quelque chose change = un obstacle disparaît
-	 * Si jamais rien ne change, renvoie Integer.MAX_VALUE
+	 * Si jamais rien ne change, renvoie Long.MAX_VALUE
 	 * @return
 	 */
-	public int getDateSomethingChange()
+	public long getDateSomethingChange()
 	{
-	    int date1, date2;
+	    long date1, date2;
 	    
 	    if(firstNotDead < listObstaclesMobiles.size())
 	    	date1 = listObstaclesMobiles.get(firstNotDead).getDeathDate();
 	    else
-	    	date1 = Integer.MAX_VALUE;
+	    	date1 = Long.MAX_VALUE;
 	    if(isThereHypotheticalEnemy)
 	    	date2 = hypotheticalEnemy.getDeathDate();
 	    else
@@ -423,7 +423,7 @@ public class ObstacleManager implements Service
 				data.pointBrut.y + diametreEnnemi < table_y)
 			if(!isObstacleFixePresentCapteurs(data.pointBrut))
 			{
-				date_dernier_ajout = (int)System.currentTimeMillis();
+				date_dernier_ajout = System.currentTimeMillis();
 				creerObstacle(data.centreEnnemi, date_dernier_ajout);
 				log.debug("Nouvel obstacle en "+data.centreEnnemi);
 				synchronized(this)

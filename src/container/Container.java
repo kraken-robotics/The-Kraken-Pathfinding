@@ -214,8 +214,7 @@ public class Container
 																					(Log)getService(ServiceNames.LOG));
 		else if(serviceRequested == ServiceNames.THREAD_PEREMPTION)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadPeremption((Log)getService(ServiceNames.LOG),
-																		(ObstacleManager)getService(ServiceNames.OBSTACLE_MANAGER),
-																		(IncomingDataBuffer)getService(ServiceNames.INCOMING_DATA_BUFFER));
+																		(ObstacleManager)getService(ServiceNames.OBSTACLE_MANAGER));
 		else if(serviceRequested == ServiceNames.THREAD_FIN_MATCH)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadFinMatch((Log)getService(ServiceNames.LOG),
 																		(Config)getService(ServiceNames.CONFIG));
