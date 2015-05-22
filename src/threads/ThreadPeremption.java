@@ -8,8 +8,8 @@ import utils.Sleep;
 import container.Service;
 
 /**
- * Thread appelé périodiquement. Gère la péremption des obstacles ainsi que
- * la date de démarrage
+ * Thread qui gère la péremption des obstacles en dormant
+ * le temps exact entre deux péremptions.
  * @author pf
  *
  */
@@ -42,6 +42,7 @@ public class ThreadPeremption extends ThreadAvecStop implements Service
 			if(prochain == Long.MAX_VALUE)
 				Sleep.sleep(dureePeremption);
 			else
+				// Il faut toujours s'assurer qu'on dorme un temps positif.
 				Sleep.sleep(Math.min(dureePeremption, Math.max(prochain - System.currentTimeMillis(), 0)));
 		}
 	}

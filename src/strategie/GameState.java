@@ -207,7 +207,7 @@ public class GameState<R extends Robot, T extends Permission> implements Service
 	{
 		// on ajoute quelques microsecondes afin d'être bien
 		// sûr qu'après cette date l'obstacle soit parti
-		int date_fin = state.gridspace.getDateSomethingChange() + 5;
+		long date_fin = state.gridspace.getDateSomethingChange() + 5;
 /*		if(robot instanceof RobotReal)
 		{
 			while(robot.getTempsDepuisDebutMatch() < date_fin)
@@ -289,7 +289,7 @@ public class GameState<R extends Robot, T extends Permission> implements Service
     	state.robot.activer_asservissement_rotation();
     }
     
-    public static final int getTempsDepuisDebutMatch(GameState<? extends Robot, ReadOnly> state)
+    public static final long getTempsDepuisDebutMatch(GameState<? extends Robot, ReadOnly> state)
     {
     	return state.robot.getTempsDepuisDebutMatch();
     }
@@ -394,7 +394,7 @@ public class GameState<R extends Robot, T extends Permission> implements Service
     	state.robot.avancer_dans_mur(distance);
     }
 
-    public static final void sleepUntil(GameState<?, ReadWrite> state, int date) throws FinMatchException
+    public static final void sleepUntil(GameState<?, ReadWrite> state, long date) throws FinMatchException
     {
     	state.robot.sleepUntil(date);
     }

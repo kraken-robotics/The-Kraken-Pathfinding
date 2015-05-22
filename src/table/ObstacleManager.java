@@ -9,7 +9,6 @@ import obstacles.ObstacleRectangular;
 import obstacles.ObstacleTrajectoireCourbe;
 import obstacles.ObstaclesFixes;
 import permissions.ReadOnly;
-import permissions.ReadWrite;
 import planification.astar.arc.PathfindingNodes;
 import robot.Speed;
 import container.Service;
@@ -34,9 +33,9 @@ public class ObstacleManager implements Service
     // Comme ces obstacles ne peuvent que disparaître, on les retient tous et chaque instance aura un indice vers sur le premier obstacle non mort
     private static ArrayList<ObstacleProximity<ReadOnly>> listObstaclesMobiles = new ArrayList<ObstacleProximity<ReadOnly>>();
 
-    // TODO: vérifier ce static
-    private static ObstacleProximity<ReadWrite> hypotheticalEnemy = null;
-    private boolean isThereHypotheticalEnemy = false;
+    // TODO: à virer? (static bon?)
+//    private static ObstacleProximity<ReadWrite> hypotheticalEnemy = null;
+//    private boolean isThereHypotheticalEnemy = false;
     
     private ObstacleTrajectoireCourbe<ReadOnly> obstacleTrajectoireCourbe;
     
@@ -58,21 +57,21 @@ public class ObstacleManager implements Service
         this.table = table;
 
         // On n'instancie hypotheticalEnnemy qu'une seule fois
-        if(hypotheticalEnemy == null)
-        	hypotheticalEnemy = new ObstacleProximity<ReadWrite>(new Vec2<ReadWrite>(), rayon_robot_adverse, -1000);
+//        if(hypotheticalEnemy == null)
+//        	hypotheticalEnemy = new ObstacleProximity<ReadWrite>(new Vec2<ReadWrite>(), rayon_robot_adverse, -1000);
     }
 
     /**
      * Création d'un ennemi hypothétique. Utilisé pour les stratégies d'urgence uniquement
      */
-    public void createHypotheticalEnnemy(Vec2<ReadOnly> position, int date_actuelle)
+/*    public void createHypotheticalEnnemy(Vec2<ReadOnly> position, int date_actuelle)
     {
     	isThereHypotheticalEnemy = true;
     	Obstacle.setPosition(hypotheticalEnemy, position);
     	hypotheticalEnemy.setDeathDate(date_actuelle+dureeAvantPeremption);
         checkGameElements(position);
     }
-    
+  */  
     /**
      * Créer un obstacle de proximité
      * @param position
@@ -115,8 +114,8 @@ public class ObstacleManager implements Service
      */
     public synchronized void supprimerObstaclesPerimes(long date)
     {
-        if(isThereHypotheticalEnemy && hypotheticalEnemy.isDestructionNecessary(date))
-        	isThereHypotheticalEnemy = false;
+//        if(isThereHypotheticalEnemy && hypotheticalEnemy.isDestructionNecessary(date))
+//        	isThereHypotheticalEnemy = false;
         int size = listObstaclesMobiles.size();
         
         int firstNotDeadOld = firstNotDead;
@@ -139,7 +138,7 @@ public class ObstacleManager implements Service
      */
     public void clearObstaclesMobiles()
     {
-    	isThereHypotheticalEnemy = false;
+//    	isThereHypotheticalEnemy = false;
     	listObstaclesMobiles.clear();
     	firstNotDead = 0;
     }
@@ -150,7 +149,7 @@ public class ObstacleManager implements Service
      */
     public int nbObstaclesMobiles()
     {
-        return listObstaclesMobiles.size() - firstNotDead + (isThereHypotheticalEnemy?1:0);
+        return listObstaclesMobiles.size() - firstNotDead;// + (isThereHypotheticalEnemy?1:0);
     }
 
     /**
@@ -159,7 +158,7 @@ public class ObstacleManager implements Service
      */
     public int getHashObstaclesMobiles()
     {
-        return (firstNotDead << 1) | (isThereHypotheticalEnemy?1:0);
+        return (firstNotDead << 1);// | (isThereHypotheticalEnemy?1:0);
     }
 
     
@@ -178,7 +177,7 @@ public class ObstacleManager implements Service
     {
     	// La suppression des obstacles est déjà fait pendant la copy du gridspace
     	table.copy(other.table);
-    	other.isThereHypotheticalEnemy = isThereHypotheticalEnemy;
+//    	other.isThereHypotheticalEnemy = isThereHypotheticalEnemy;
     	other.firstNotDead = firstNotDead;
     }
     
@@ -230,8 +229,8 @@ public class ObstacleManager implements Service
      */
     public boolean obstacleProximiteDansSegment(Vec2<ReadOnly> A, Vec2<ReadOnly> B, int date)
     {
-        if(isThereHypotheticalEnemy && hypotheticalEnemy.obstacle_proximite_dans_segment(A, B, date))
-        	return true;
+  //      if(isThereHypotheticalEnemy && hypotheticalEnemy.obstacle_proximite_dans_segment(A, B, date))
+  //      	return true;
         
         int size = listObstaclesMobiles.size();
         for(int tmpFirstNotDead = firstNotDead; tmpFirstNotDead < size; tmpFirstNotDead++)
@@ -264,8 +263,8 @@ public class ObstacleManager implements Service
      */
     public boolean isObstacleMobilePresent(Vec2<ReadOnly> position, int distance) 
     {
-        if(isThereHypotheticalEnemy && isObstaclePresent(position, hypotheticalEnemy.getReadOnly(), distance))
-        	return true;
+    //    if(isThereHypotheticalEnemy && isObstaclePresent(position, hypotheticalEnemy.getReadOnly(), distance))
+    //    	return true;
         int size = listObstaclesMobiles.size();
         for(int tmpFirstNotDead = firstNotDead; tmpFirstNotDead < size; tmpFirstNotDead++)
         {
@@ -369,24 +368,24 @@ public class ObstacleManager implements Service
 	}
 
 	/**
-	 * Quelque chose change = un obstacle disparaît
+	 * Quelque chose change si un obstacle disparaît
 	 * Si jamais rien ne change, renvoie Long.MAX_VALUE
 	 * @return
 	 */
 	public long getDateSomethingChange()
 	{
-	    long date1, date2;
+//	    long date1, date2;
 	    
 	    if(firstNotDead < listObstaclesMobiles.size())
-	    	date1 = listObstaclesMobiles.get(firstNotDead).getDeathDate();
+	    	return listObstaclesMobiles.get(firstNotDead).getDeathDate();
 	    else
-	    	date1 = Long.MAX_VALUE;
-	    if(isThereHypotheticalEnemy)
-	    	date2 = hypotheticalEnemy.getDeathDate();
-	    else
-	    	return date1;
+	    	return Long.MAX_VALUE;
+	//    if(isThereHypotheticalEnemy)
+	//    	date2 = hypotheticalEnemy.getDeathDate();
+	//    else
+	//    	return date1;
 	    
-	    return Math.min(date1, date2);
+//	    return Math.min(date1, date2);
 	}
 
 	public boolean isTraversableCourbe(PathfindingNodes objectifFinal, PathfindingNodes intersection, Vec2<ReadOnly> directionAvant, int tempsDepuisDebutMatch)
@@ -402,8 +401,8 @@ public class ObstacleManager implements Service
     			return false;
 
     	// Collision avec un ennemi hypothétique?
-        if(isThereHypotheticalEnemy && obstacleTrajectoireCourbe.isColliding(hypotheticalEnemy.getReadOnly()))
-        	return false;
+  //      if(isThereHypotheticalEnemy && obstacleTrajectoireCourbe.isColliding(hypotheticalEnemy.getReadOnly()))
+  //      	return false;
 
         // Collision avec un obtacle mobile?
         int size = listObstaclesMobiles.size();
@@ -414,6 +413,9 @@ public class ObstacleManager implements Service
         return true;
 	}
 
+	/**
+	 * Ajoute un obstacle si celui-ci est cohérent
+	 */
 	public void addIfUseful(IncomingData data)
 	{
 		if(System.currentTimeMillis() - date_dernier_ajout > tempo &&

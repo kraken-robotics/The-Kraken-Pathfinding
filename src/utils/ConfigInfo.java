@@ -53,7 +53,6 @@ public enum ConfigInfo {
 	COULEUR(RobotColor.getCouleurSansSymetrie(), false),
 	MATCH_DEMARRE("false", false),
 	DATE_DEBUT_MATCH("0", false),
-	CAPTEURS_ON("false", false),
 	FIN_MATCH("false", false);
 
 	private String defaultValue;

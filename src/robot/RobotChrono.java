@@ -28,7 +28,7 @@ public class RobotChrono extends Robot
 	protected double orientation;
 	
 	// Date en millisecondes depuis le début du match.
-	protected int date;
+	protected long date;
 	
 	/** valeur approchée du temps (en milisecondes) nécéssaire pour qu'une information que l'on envois a la série soit aquité */
 	private final static int approximateSerialLatency = 50;
@@ -79,7 +79,7 @@ public class RobotChrono extends Robot
 	}
 	
 	@Override
-	public int getTempsDepuisDebutMatch()
+	public long getTempsDepuisDebutMatch()
 	{
 		return date;
 	}

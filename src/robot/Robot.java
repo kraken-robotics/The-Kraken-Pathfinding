@@ -41,7 +41,7 @@ public abstract class Robot implements Service
     public abstract void desactiver_asservissement_rotation() throws FinMatchException;
     public abstract void desactiver_asservissement_translation() throws FinMatchException;
     public abstract void activer_asservissement_rotation() throws FinMatchException;
-    public abstract int getTempsDepuisDebutMatch();
+    public abstract long getTempsDepuisDebutMatch();
     public abstract RobotChrono cloneIntoRobotChrono();
 
     protected HookDateFinMatch hookFinMatch;
@@ -186,7 +186,7 @@ public abstract class Robot implements Service
      * @param date
      * @throws FinMatchException
      */
-    public void sleepUntil(int date) throws FinMatchException
+    public void sleepUntil(long date) throws FinMatchException
     {
     	sleep(date - getTempsDepuisDebutMatch());
     }

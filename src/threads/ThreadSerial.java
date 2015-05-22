@@ -26,7 +26,6 @@ import enums.RobotColor;
 
 public class ThreadSerial extends ThreadAvecStop implements Service
 {
-
 	protected Log log;
 	protected Config config;
 	private SerialConnexion serie;
@@ -35,7 +34,7 @@ public class ThreadSerial extends ThreadAvecStop implements Service
 	private HookFactory hookfactory;
 	
 	private RequeteSTM requete;
-	private volatile boolean capteursOn;
+	private boolean capteursOn = false;
 	
 	public ThreadSerial(Log log, Config config, SerialConnexion serie, IncomingDataBuffer buffer, IncomingHookBuffer hookbuffer, HookFactory hookfactory)
 	{
@@ -107,10 +106,10 @@ public class ThreadSerial extends ThreadAvecStop implements Service
 							/**
 							 * Démarrage du match
 							 */
+							capteursOn = true;
 							synchronized(config)
 							{
 								config.set(ConfigInfo.DATE_DEBUT_MATCH, System.currentTimeMillis());
-								config.set(ConfigInfo.CAPTEURS_ON, true);
 								config.set(ConfigInfo.MATCH_DEMARRE, true);
 							}
 							config.updateConfigServices();
@@ -161,7 +160,6 @@ public class ThreadSerial extends ThreadAvecStop implements Service
 	@Override
 	public void updateConfig(Config config)
 	{
-		capteursOn = config.getBoolean(ConfigInfo.CAPTEURS_ON);
 	}
 
 	@Override

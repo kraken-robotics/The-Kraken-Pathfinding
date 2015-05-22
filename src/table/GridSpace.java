@@ -365,7 +365,7 @@ public class GridSpace implements Service {
 	 * Utilisé par le script d'attente
 	 * @return
 	 */
-	public int getDateSomethingChange()
+	public long getDateSomethingChange()
 	{
 		return obstaclemanager.getDateSomethingChange();
 	}
