@@ -329,10 +329,10 @@ public class GameState<R extends Robot, T extends Permission> implements Service
 		return state.robot.isEnemyHere();
 	}
 	
-    public static final void createHypotheticalEnnemy(GameState<RobotChrono, ReadWrite> state, Vec2<ReadOnly> position, int date_actuelle)
+/*    public static final void createHypotheticalEnnemy(GameState<RobotChrono, ReadWrite> state, Vec2<ReadOnly> position, int date_actuelle)
     {
     	state.gridspace.createHypotheticalEnnemy(position, date_actuelle);
-    }
+    }*/
     
     public static final void setAvoidGameElement(GameState<RobotChrono, ReadWrite> state, boolean avoidGameElement)
     {

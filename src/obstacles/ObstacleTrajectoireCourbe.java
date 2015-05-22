@@ -5,7 +5,6 @@ import permissions.ReadOnly;
 import permissions.ReadWrite;
 import planification.astar.arc.PathfindingNodes;
 import robot.Speed;
-import utils.ConfigInfo;
 import utils.Vec2;
 
 /**

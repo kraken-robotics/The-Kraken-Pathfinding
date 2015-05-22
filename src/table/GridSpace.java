@@ -100,7 +100,7 @@ public class GridSpace implements Service {
 	 * Réinitialise l'état des liaisons.
 	 * A faire quand les obstacles mobiles ont changé.
 	 */
-	public void reinitConnections()
+	public synchronized void reinitConnections()
 	{
 		int max_value = PathfindingNodes.length;
 		for(int i = 0; i < max_value; i++)
@@ -279,10 +279,10 @@ public class GridSpace implements Service {
      * @param position
      * @param date_actuelle
      */
-    public void createHypotheticalEnnemy(Vec2<ReadOnly> position, int date_actuelle)
+/*    public void createHypotheticalEnnemy(Vec2<ReadOnly> position, int date_actuelle)
     {
     	obstaclemanager.createHypotheticalEnnemy(position, date_actuelle);
-    }
+    }*/
 
     /**
      * Doit-on shooter les éléments de jeux? Cela modifie les chemins disponibles.

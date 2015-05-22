@@ -7,7 +7,7 @@ import utils.Config;
 import utils.Log;
 
 /**
- * S'occupe de la mise à jour du cache. Surveille table
+ * S'occupe de la mise à jour du cache. Surveille la table
  * @author pf
  *
  */

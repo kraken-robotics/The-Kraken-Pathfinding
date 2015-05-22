@@ -13,8 +13,6 @@ import container.Service;
  *
  */
 
-// TODO: la table doit être surveillée
-
 public class ThreadTable extends ThreadAvecStop implements Service
 {
 	private IncomingHookBuffer buffer;
