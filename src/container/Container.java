@@ -147,7 +147,7 @@ public class Container
 		else if(serviceRequested == ServiceNames.LOG)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new Log();
 		else if(serviceRequested == ServiceNames.CONFIG)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new Config((Log)getService(ServiceNames.LOG),Config.dossierconfig);
+			instanciedServices[serviceRequested.ordinal()] = (Service)new Config((Log)getService(ServiceNames.LOG));
 		else if(serviceRequested == ServiceNames.TABLE)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new Table((Log)getService(ServiceNames.LOG),
 																				(StrategieNotifieur)getService(ServiceNames.STRATEGIE_NOTIFIEUR));

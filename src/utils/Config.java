@@ -19,7 +19,7 @@ public class Config implements Service
 	public static final String path = "./config/";
 
 	private String name_config_file = "config.ini";
-	private Properties config = new Properties();
+	private Properties properties = new Properties();
 	private Log log;
 	
 	private boolean needUpdate = false;
@@ -31,7 +31,7 @@ public class Config implements Service
 		//	log.debug("Loading config from current directory : " +  System.getProperty("user.dir"), this)
 		try
 		{
-			this.config.load(new FileInputStream(path+name_config_file));
+			properties.load(new FileInputStream(path+name_config_file));
 		}
 		catch  (IOException e)
 		{
@@ -82,7 +82,7 @@ public class Config implements Service
 	 */
 	public String getString(ConfigInfo nom)
 	{
-		return config.getProperty(nom.toString());
+		return properties.getProperty(nom.toString());
 	}
 
 	/**
@@ -92,9 +92,9 @@ public class Config implements Service
 	 */
 	private void set(ConfigInfo nom, String value)
 	{
-		needUpdate |= value.compareTo(config.getProperty(nom.toString())) != 0;
-		log.debug(nom+" = "+value+" (ancienne valeur: "+config.getProperty(nom.toString())+")");
-		config.setProperty(nom.toString(), value);
+		needUpdate |= value.compareTo(properties.getProperty(nom.toString())) != 0;
+		log.debug(nom+" = "+value+" (ancienne valeur: "+properties.getProperty(nom.toString())+")");
+		properties.setProperty(nom.toString(), value);
 	}
 	
 	/**
@@ -125,13 +125,11 @@ public class Config implements Service
 	{
 		for(ConfigInfo info: ConfigInfo.values())
 		{
-			if(!config.containsKey(info.toString()))
-			{
-				log.warning(info+" non trouvé dans le fichier de config.");
-				config.setProperty(info.toString(), info.getDefaultValue());
-			}
+			if(!properties.containsKey(info.toString()))
+				properties.setProperty(info.toString(), info.getDefaultValue());
+			log.warning(info+" surchargé par config.ini");
 		}
-		for(String cle: config.stringPropertyNames())
+		for(String cle: properties.stringPropertyNames())
 		{
 			boolean found = false;
 			for(ConfigInfo info: ConfigInfo.values())
