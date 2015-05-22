@@ -35,4 +35,13 @@ public class HookDate extends Hook {
 		return date > this.date_hook;
 	}
 
+	@Override
+	public String[] toSerial()
+	{
+		String[] out = new String[2];
+		out[0] = "da";
+		out[1] = String.valueOf(date_hook);
+		return out;
+	}
+	
 }

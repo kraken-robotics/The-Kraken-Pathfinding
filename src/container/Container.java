@@ -120,6 +120,7 @@ public class Container
 		{
 			throw new ContainerException();
 		}
+		startAllThreads();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -256,9 +257,9 @@ public class Container
 	}	
 
 	/**
-	 * Demande au thread manager de démarrer tous les threads
+	 * Démarrage de tous les threads
 	 */
-	public void startAllThreads()
+	private void startAllThreads()
 	{
 		if(threadsStarted)
 			return;

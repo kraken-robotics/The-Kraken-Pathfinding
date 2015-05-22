@@ -195,4 +195,9 @@ public class HookFactory implements Service
 		return hooks_entre_scripts;
     }
 
+	public ArrayList<Hook> getHooksTable() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

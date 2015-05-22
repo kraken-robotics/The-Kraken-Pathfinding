@@ -69,4 +69,13 @@ public class HookPosition extends Hook
 		return o.obstacle_proximite_dans_segment(pointA, pointB, rayon_robot);
 	}
 	
+	@Override
+	public String[] toSerial()
+	{
+		String[] out = new String[3];
+		out[0] = "po";
+		out[1] = String.valueOf(position.x);
+		out[2] = String.valueOf(position.y);
+		return out;
+	}
 }

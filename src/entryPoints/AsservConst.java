@@ -22,6 +22,8 @@ import container.ServiceNames;
  */
 public class AsservConst
 {
+	// TODO: passer ce code sur ARM
+	
     private static double kp = 0, kd = 0;
     private static int pwm_max = 0;
     private static BufferedReader bufferRead = new BufferedReader( new InputStreamReader(System.in) );

@@ -1,5 +1,9 @@
 package threads;
 
+import java.util.ArrayList;
+
+import hook.Hook;
+import hook.HookFactory;
 import permissions.ReadOnly;
 import requete.RequeteSTM;
 import requete.RequeteType;
@@ -24,16 +28,18 @@ public class ThreadSerial extends ThreadAvecStop implements Service
 	protected Config config;
 	private SerialConnexion serie;
 	private IncomingDataBuffer buffer;
+	private HookFactory hookfactory;
 	
 	private RequeteSTM requete;
 	private volatile boolean capteursOn;
 	
-	public ThreadSerial(Log log, Config config, SerialConnexion serie, IncomingDataBuffer buffer)
+	public ThreadSerial(Log log, Config config, SerialConnexion serie, IncomingDataBuffer buffer, HookFactory hookfactory)
 	{
 		this.log = log;
 		this.config = config;
 		this.serie = serie;
 		this.buffer = buffer;
+		this.hookfactory = hookfactory;
 		requete = RequeteSTM.getInstance();
 	}
 
@@ -44,6 +50,13 @@ public class ThreadSerial extends ThreadAvecStop implements Service
 		 * Initialisation des valeurs de la STM
 		 */
 		// TODO: envoyer hook, etc.
+		ArrayList<Hook> hooks = hookfactory.getHooksTable();
+		for(Hook hook: hooks)
+		{
+			serie.communiquer("hk");
+			serie.communiquer(hook.toSerial());
+		}
+		serie.communiquer("hkFin");
 		
 		while(!finThread)
 		{

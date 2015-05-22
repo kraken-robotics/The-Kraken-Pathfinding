@@ -119,6 +119,12 @@ abstract public class Hook
 		for(Callback callback : callbacks)
 			callback.updateGameState(state);
 	}
+	
+	/**
+	 * Contient la commande à envoyer par série
+	 * @return
+	 */
+	public abstract String[] toSerial();
 
 }
 

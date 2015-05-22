@@ -31,7 +31,6 @@ public class JUnit_Container extends JUnit_Test {
 	public void test_instanciation_par_lanceur() throws Exception
 	{
 		container.getService(ServiceNames.EXECUTION);
-		container.startAllThreads();
 		Assert.assertTrue(container.afficheNonInstancies());
 	}
 

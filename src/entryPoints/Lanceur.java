@@ -26,7 +26,6 @@ public class Lanceur {
 
 		try {
 			Container container = new Container();
-			container.startAllThreads();
 			RobotReal robot = (RobotReal)container.getService(ServiceNames.ROBOT_REAL);
 			Execution execution = (Execution)container.getService(ServiceNames.EXECUTION);
 

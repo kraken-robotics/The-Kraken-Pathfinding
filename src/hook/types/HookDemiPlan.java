@@ -84,4 +84,16 @@ public class HookDemiPlan extends Hook
 				pointB.minusNewVector(point).dot(direction) > 0;
 	}
 
+	@Override
+	public String[] toSerial()
+	{
+		String[] out = new String[5];
+		out[0] = "dp";
+		out[1] = String.valueOf(point.x);
+		out[2] = String.valueOf(point.y);
+		out[3] = String.valueOf(direction.x);
+		out[4] = String.valueOf(direction.y);
+		return out;
+	}
+	
 }

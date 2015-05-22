@@ -56,4 +56,12 @@ public class HookCollisionElementJeu extends Hook
 			trigger();
 	}*/
 
+	@Override
+	public String[] toSerial()
+	{
+		String[] out = new String[1];
+		out[0] = "co";
+		// TODO: ajouter numéro de l'élément de jeu
+		return out;
+	}	
 }
