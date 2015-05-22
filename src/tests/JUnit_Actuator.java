@@ -3,7 +3,7 @@ package tests;
 import org.junit.Before;
 import org.junit.Test;
 
-import robot.stm.ActuatorOrder;
+import robot.ActuatorOrder;
 import robot.stm.STMcard;
 import utils.Sleep;
 import container.ServiceNames;

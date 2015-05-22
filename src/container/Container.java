@@ -33,7 +33,6 @@ import threads.ThreadStrategie;
 import threads.ThreadStrategieInfo;
 import threads.ThreadTimer;
 import robot.RobotReal;
-import robot.stm.STMcard;
 
 
 /**
@@ -184,16 +183,13 @@ public class Container
 			                                                 (Strategie)getService(ServiceNames.STRATEGIE),
   															 (ScriptManager)getService(ServiceNames.SCRIPT_MANAGER),
         													 (GameState<RobotReal,ReadWrite>)getService(ServiceNames.REAL_GAME_STATE));
-		else if(serviceRequested == ServiceNames.STM_CARD)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new STMcard((Log)getService(ServiceNames.LOG),
-			                                                 (SerialConnexion)getService(ServiceNames.SERIE_STM));
 		else if(serviceRequested == ServiceNames.MEMORY_MANAGER)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new MemoryManager((Log)getService(ServiceNames.LOG),
         													 (GameState<RobotReal,ReadOnly>)getService(ServiceNames.REAL_GAME_STATE));
 		else if(serviceRequested == ServiceNames.HOOK_FACTORY)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new HookFactory((Log)getService(ServiceNames.LOG));
 		else if(serviceRequested == ServiceNames.ROBOT_REAL)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new RobotReal((STMcard)getService(ServiceNames.STM_CARD),
+			instanciedServices[serviceRequested.ordinal()] = (Service)new RobotReal((SerialConnexion)getService(ServiceNames.SERIE_STM),
 															 (Log)getService(ServiceNames.LOG));
         else if(serviceRequested == ServiceNames.REAL_GAME_STATE)
         	// ici la construction est un petit peu différente car on interdit l'instanciation publique d'un GameSTate<RobotChrono>

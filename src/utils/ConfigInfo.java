@@ -48,7 +48,6 @@ public enum ConfigInfo {
 	CHECK_POINTS_SORTIE("false"),
 	PREVISION_COLLISION("50"),
 	BAUDRATE("9600"),
-//	OBSTACLE_REFRESH_INTERVAL("500"),
 	
 	/**
 	 * Config dynamique

@@ -384,7 +384,7 @@ public class ObstacleManager implements Service
 	    if(isThereHypotheticalEnemy)
 	    	date2 = hypotheticalEnemy.getDeathDate();
 	    else
-	    	date2 = Integer.MAX_VALUE;
+	    	return date1;
 	    
 	    return Math.min(date1, date2);
 	}

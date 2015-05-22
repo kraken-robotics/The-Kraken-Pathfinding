@@ -1,4 +1,4 @@
-package robot.stm;
+package robot;
 
 /**
  * Protocole des actionneurs

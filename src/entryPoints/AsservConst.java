@@ -7,9 +7,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 
+import serial.SerialConnexion;
 import container.Container;
 import container.ServiceNames;
-import robot.stm.STMcard;
 
 /**
  * Application permettant de trouver les constantes d'asservissement en rotation
@@ -33,12 +33,12 @@ public class AsservConst
     public static void main(String[] args)
     {
         Container container;
-        STMcard deplacements = null;
+        SerialConnexion deplacements = null;
         int signe = 1;
         try
         {
             container = new Container();
-            deplacements = (STMcard) container.getService(ServiceNames.STM_CARD);
+            deplacements = (SerialConnexion) container.getService(ServiceNames.SERIE_STM);
 
             System.out.println("r ou t?");
             char asserv = (char) System.in.read();
