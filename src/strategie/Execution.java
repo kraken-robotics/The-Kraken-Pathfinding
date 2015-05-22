@@ -16,6 +16,7 @@ import requete.RequeteType;
 import robot.RobotReal;
 import scripts.ScriptManager;
 import utils.Config;
+import utils.ConfigInfo;
 import utils.Log;
 
 /**
@@ -34,6 +35,7 @@ public class Execution implements Service {
 	private RequeteSTM requete;
 	
 	private ArrayList<Hook> hooksEntreScripts;
+	private volatile Boolean matchDemarre;
 	
 	public Execution(Log log, Strategie strategie, ScriptManager scriptmanager, GameState<RobotReal,ReadWrite> gamestate)
 	{
@@ -141,10 +143,34 @@ public class Execution implements Service {
 
 	@Override
 	public void updateConfig(Config config)
-	{}
+	{
+		synchronized(matchDemarre)
+		{
+			matchDemarre = config.getBoolean(ConfigInfo.MATCH_DEMARRE);
+			matchDemarre.notifyAll();
+		}
+	}
 	
 	@Override
 	public void useConfig(Config config)
 	{}
+
+	/**
+	 * Attend le début du match
+	 */
+	public void waitDebutMatch()
+	{
+		while(!matchDemarre)
+		{
+			synchronized(matchDemarre)
+			{
+				try {
+					matchDemarre.wait();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}		
+		}
+	}
 	
 }

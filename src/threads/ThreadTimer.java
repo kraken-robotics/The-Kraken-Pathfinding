@@ -19,18 +19,13 @@ public class ThreadTimer extends Thread implements Service
 
 	private ObstacleManager obstaclemanager;
 	protected Log log;
-	private Config config;
 	private IncomingDataBuffer buffer;
-	private volatile Boolean matchDemarre;
 
-	private long dureeMatch = 90000;
-	private long dateFin;
 	private int dureePeremption;
 
-	public ThreadTimer(Log log, Config config, ObstacleManager obstaclemanager, IncomingDataBuffer buffer)
+	public ThreadTimer(Log log, ObstacleManager obstaclemanager, IncomingDataBuffer buffer)
 	{
 		this.log = log;
-		this.config = config;
 		this.obstaclemanager = obstaclemanager;
 		this.buffer = buffer;
 	}
@@ -38,17 +33,7 @@ public class ThreadTimer extends Thread implements Service
 	@Override
 	public void run()
 	{
-		synchronized(matchDemarre)
-		{
-			try {
-				matchDemarre.wait();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
-		log.debug("LE MATCH COMMENCE !");					
-
-		while(System.currentTimeMillis() < dateFin)
+		while(true)
 		{
 			obstaclemanager.supprimerObstaclesPerimes();
 			buffer.notifyIfNecessary();
@@ -63,29 +48,16 @@ public class ThreadTimer extends Thread implements Service
 			else
 				Sleep.sleep(prochain - System.currentTimeMillis());
 		}
-		config.set(ConfigInfo.FIN_MATCH, true);
-		config.updateConfigServices();
-		log.debug("Fin du Match !");
 	}
 
 	@Override
 	public void updateConfig(Config config)
-	{
-		synchronized(matchDemarre)
-		{
-			dateFin = dureeMatch + config.getInt(ConfigInfo.DATE_DEBUT_MATCH);
-			matchDemarre = config.getBoolean(ConfigInfo.MATCH_DEMARRE);
-			matchDemarre.notifyAll();
-		}
-	}
+	{}
 
 	@Override
 	public void useConfig(Config config)
 	{
-		// facteur 1000 car temps_match est en secondes et duree_match en ms
-		dureeMatch = 1000*config.getInt(ConfigInfo.DUREE_MATCH_EN_S);
-		dureePeremption = 1000*config.getInt(ConfigInfo.DUREE_PEREMPTION_OBSTACLES);
-//		obstacleRefreshInterval = config.getInt(ConfigInfo.OBSTACLE_REFRESH_INTERVAL);
+		dureePeremption = config.getInt(ConfigInfo.DUREE_PEREMPTION_OBSTACLES);
 	}
 
 }

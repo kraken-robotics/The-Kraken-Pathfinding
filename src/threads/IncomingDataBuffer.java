@@ -22,7 +22,7 @@ public class IncomingDataBuffer implements Service
 		this.log = log;
 	}
 	
-	private Queue<IncomingData> buffer = new LinkedList<IncomingData>();
+	private volatile Queue<IncomingData> buffer = new LinkedList<IncomingData>();
 	
 	/**
 	 * Ajout d'un élément dans le buffer et provoque un "notifyAll"

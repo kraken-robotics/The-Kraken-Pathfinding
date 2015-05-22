@@ -82,10 +82,8 @@ public class Config implements Service
 	public String getString(ConfigInfo nom)
 	{
 		if(!config.containsKey(nom.toString()))
-		{
-//			log.debug("Erreur config: "+nom+" introuvable. Utilisation de la valeur par défaut.");
 			config.setProperty(nom.toString(), nom.getDefaultValue());			
-		}
+
 		return config.getProperty(nom.toString());
 	}
 

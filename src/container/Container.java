@@ -23,6 +23,7 @@ import table.ObstacleManager;
 import table.StrategieInfo;
 import table.Table;
 import threads.IncomingDataBuffer;
+import threads.ThreadFinMatch;
 import threads.ThreadGridSpace;
 import threads.ThreadObstacleManager;
 import threads.ThreadPathfinding;
@@ -190,9 +191,11 @@ public class Container
 																					(Log)getService(ServiceNames.LOG));
 		else if(serviceRequested == ServiceNames.THREAD_TIMER)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadTimer((Log)getService(ServiceNames.LOG),
-																		(Config)getService(ServiceNames.CONFIG),
 																		(ObstacleManager)getService(ServiceNames.OBSTACLE_MANAGER),
 																		(IncomingDataBuffer)getService(ServiceNames.INCOMING_DATA_BUFFER));
+		else if(serviceRequested == ServiceNames.THREAD_FIN_MATCH)
+			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadFinMatch((Log)getService(ServiceNames.LOG),
+																		(Config)getService(ServiceNames.CONFIG));
 		else if(serviceRequested == ServiceNames.THREAD_STRATEGIE)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadStrategie((Log)getService(ServiceNames.LOG),
 																		(StrategieNotifieur)getService(ServiceNames.STRATEGIE_NOTIFIEUR),

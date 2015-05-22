@@ -20,6 +20,7 @@ public enum ServiceNames {
 	 STRATEGIE_INFO,
 	 SERIE_STM,
 	
+	 THREAD_FIN_MATCH(true),
 	 THREAD_TIMER(true),
 	 THREAD_SERIE(true),
 	 THREAD_OBSTACLE_MANAGER(true),
