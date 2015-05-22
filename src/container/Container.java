@@ -27,6 +27,7 @@ import table.Table;
 import threads.ThreadAvecStop;
 import threads.ThreadFinMatch;
 import threads.ThreadGridSpace;
+import threads.ThreadGridSpace2;
 import threads.ThreadObstacleManager;
 import threads.ThreadPathfinding;
 import threads.ThreadSerial;
@@ -205,7 +206,7 @@ public class Container
 		else if(serviceRequested == ServiceNames.SCRIPT_MANAGER)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ScriptManager(	(HookFactory)getService(ServiceNames.HOOK_FACTORY),
 																					(Log)getService(ServiceNames.LOG));
-		else if(serviceRequested == ServiceNames.THREAD_TIMER)
+		else if(serviceRequested == ServiceNames.THREAD_PEREMPTION)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadPeremption((Log)getService(ServiceNames.LOG),
 																		(ObstacleManager)getService(ServiceNames.OBSTACLE_MANAGER),
 																		(IncomingDataBuffer)getService(ServiceNames.INCOMING_DATA_BUFFER));
@@ -223,6 +224,10 @@ public class Container
 		else if(serviceRequested == ServiceNames.THREAD_GRID_SPACE)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadGridSpace((Log)getService(ServiceNames.LOG),
 																		(ObstacleManager)getService(ServiceNames.OBSTACLE_MANAGER),
+																		(GridSpace)getService(ServiceNames.GRID_SPACE));
+		else if(serviceRequested == ServiceNames.THREAD_GRID_SPACE2)
+			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadGridSpace2((Log)getService(ServiceNames.LOG),
+																		(Table)getService(ServiceNames.TABLE),
 																		(GridSpace)getService(ServiceNames.GRID_SPACE));
 		else if(serviceRequested == ServiceNames.THREAD_OBSTACLE_MANAGER)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadObstacleManager((Log)getService(ServiceNames.LOG),

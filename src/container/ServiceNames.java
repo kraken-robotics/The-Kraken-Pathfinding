@@ -28,13 +28,14 @@ public enum ServiceNames {
 	
 	 // Les threads
 	 THREAD_FIN_MATCH(true),
-	 THREAD_TIMER(true),
+	 THREAD_PEREMPTION(true),
 	 THREAD_SERIE(true),
 	 THREAD_OBSTACLE_MANAGER(true),
 	 THREAD_STRATEGIE_INFO(true),
 	 THREAD_PATHFINDING(true),
 	 THREAD_STRATEGIE(true),
 	 THREAD_GRID_SPACE(true),
+	 THREAD_GRID_SPACE2(true),
 	 THREAD_TABLE(true);
 
 	 private boolean isThread = false;
