@@ -117,7 +117,6 @@ public class RobotChrono extends Robot
 		date += delta*vitesse.invertedRotationnalSpeed + sleepTourneDuration;
 	}
 
-	@Override
     public void suit_chemin(ArrayList<LocomotionArc> chemin, ArrayList<Hook> hooks) throws FinMatchException
 	{
 //		for(LocomotionArc point: chemin)

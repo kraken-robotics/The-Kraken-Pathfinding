@@ -4,7 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import robot.ActuatorOrder;
-import robot.stm.STMcard;
+import serial.SerialConnexion;
 import utils.Sleep;
 import container.ServiceNames;
 
@@ -16,12 +16,12 @@ import container.ServiceNames;
 
 public class JUnit_Actuator extends JUnit_Test {
 
-	private STMcard actionneurs;
+	private SerialConnexion actionneurs;
 	
 	@Before
     public void setUp() throws Exception {
         super.setUp();
-        actionneurs = (STMcard) container.getService(ServiceNames.STM_CARD);
+        actionneurs = (SerialConnexion) container.getService(ServiceNames.SERIE_STM);
 	}
 	
 	@Test
@@ -29,9 +29,7 @@ public class JUnit_Actuator extends JUnit_Test {
 	{
 		for(ActuatorOrder o: ActuatorOrder.values())
 		{
-			actionneurs.useActuator(o);
-			if(o.hasSymmetry())
-				actionneurs.useActuator(o.getSymmetry());
+			actionneurs.communiquer(o.getSerialOrder());
 			Sleep.sleep(o.getSleepValue());
 		}
 	}

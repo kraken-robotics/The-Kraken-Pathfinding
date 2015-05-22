@@ -9,7 +9,7 @@ import planification.astar.arc.PathfindingNodes;
 import container.ServiceNames;
 import table.GridSpace;
 import table.ObstacleManager;
-import utils.Config;
+import utils.ConfigInfo;
 import utils.Vec2;
 
 /**
@@ -39,7 +39,7 @@ public class JUnit_GridSpace extends JUnit_Test {
 	@Test
 	public void test_traversable() throws Exception
 	{
-		config.setDateDebutMatch();
+		config.set(ConfigInfo.DATE_DEBUT_MATCH, System.currentTimeMillis());
 		Assert.assertTrue(!gridspace.isTraversable(PathfindingNodes.BAS_DROITE, PathfindingNodes.BAS_GAUCHE, 0));
 		gridspace.setAvoidGameElement(true);
 		Assert.assertTrue(!gridspace.isTraversable(PathfindingNodes.BAS_DROITE, PathfindingNodes.DEVANT_DEPART_GAUCHE, 0));
@@ -48,7 +48,7 @@ public class JUnit_GridSpace extends JUnit_Test {
 		Assert.assertTrue(gridspace.isTraversable(PathfindingNodes.BAS_DROITE, PathfindingNodes.DEVANT_DEPART_GAUCHE, 0));
 
 		Assert.assertTrue(gridspace.isTraversable(PathfindingNodes.NODE_TAPIS, PathfindingNodes.BAS_GAUCHE, 0));
-		obstaclemanager.creerObstacle(new Vec2<ReadOnly>(-220, 830), (int)(System.currentTimeMillis() - Config.getDateDebutMatch()));
+		obstaclemanager.creerObstacle(new Vec2<ReadOnly>(-220, 830), (int)(System.currentTimeMillis() - config.getInt(ConfigInfo.DATE_DEBUT_MATCH)));
 		// mise à jour du gridspace
 		gridspace.reinitConnections();
 		Assert.assertTrue(!gridspace.isTraversable(PathfindingNodes.NODE_TAPIS, PathfindingNodes.BAS_GAUCHE, 0));

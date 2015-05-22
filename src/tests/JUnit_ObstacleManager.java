@@ -64,7 +64,6 @@ public class JUnit_ObstacleManager extends JUnit_Test {
     public void test_peremption() throws Exception
     {
     	config.set(ConfigInfo.DUREE_PEREMPTION_OBSTACLES, 200); // 200 ms de péremption
-    	obstaclemanager.updateConfig();
     	
     	obstaclemanager.creerObstacle(new Vec2<ReadOnly>(0, 0), 0);
     	obstaclemanager.creerObstacle(new Vec2<ReadOnly>(500, 500), 0);
@@ -87,7 +86,7 @@ public class JUnit_ObstacleManager extends JUnit_Test {
     @Test
     public void test_collision_obstacle_mobile() throws Exception
     {
-    	config.setDateDebutMatch();
+		config.set(ConfigInfo.DATE_DEBUT_MATCH, System.currentTimeMillis());
     	Assert.assertTrue(!obstaclemanager.obstacleProximiteDansSegment(new Vec2<ReadOnly>(100, 100), new Vec2<ReadOnly>(900, 900), 0));
     	obstaclemanager.creerObstacle(new Vec2<ReadOnly>(-300, 500), 0);
     	Assert.assertTrue(!obstaclemanager.obstacleProximiteDansSegment(new Vec2<ReadOnly>(100, 100), new Vec2<ReadOnly>(900, 900), 0));
@@ -99,7 +98,6 @@ public class JUnit_ObstacleManager extends JUnit_Test {
     public void test_peremption_en_mouvement() throws Exception
     {
     	config.set(ConfigInfo.DUREE_PEREMPTION_OBSTACLES, 500); // 200 ms de péremption
-    	obstaclemanager.updateConfig();
     	obstaclemanager.creerObstacle(new Vec2<ReadOnly>(1200, 900), 0);
     	// Le temps qu'on y arrive, il devrait être périmé
     	Assert.assertTrue(!obstaclemanager.obstacleProximiteDansSegment(new Vec2<ReadOnly>(-1200, 100), new Vec2<ReadOnly>(1200, 900), 0));

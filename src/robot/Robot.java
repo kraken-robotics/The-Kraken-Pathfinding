@@ -3,7 +3,6 @@ package robot;
 import java.util.ArrayList;
 
 import permissions.ReadOnly;
-import planification.LocomotionArc;
 import hook.Hook;
 import hook.types.HookDateFinMatch;
 import container.Service;
@@ -32,8 +31,6 @@ public abstract class Robot implements Service
             throws UnableToMoveException, FinMatchException;
     public abstract void avancer(int distance, ArrayList<Hook> hooks, boolean mur)
             throws UnableToMoveException, FinMatchException;
-    public abstract void suit_chemin(ArrayList<LocomotionArc> chemin, ArrayList<Hook> hooks)
-            throws UnableToMoveException, FinMatchException, ScriptHookException;
 	public abstract void set_vitesse(Speed vitesse) throws FinMatchException;
 	
 	public abstract void setPosition(Vec2<ReadOnly> position) throws FinMatchException;

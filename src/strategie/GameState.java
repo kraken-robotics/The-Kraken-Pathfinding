@@ -234,7 +234,7 @@ public class GameState<R extends Robot, T extends Permission> implements Service
     	state.robot.avancer(distance, hooks, mur);
     }
     
-    public static final void suit_chemin(GameState<? extends Robot, ReadWrite> state, ArrayList<LocomotionArc> chemin, ArrayList<Hook> hooks) throws UnableToMoveException, FinMatchException, ScriptHookException
+    public static final void suit_chemin(GameState<RobotChrono, ReadWrite> state, ArrayList<LocomotionArc> chemin, ArrayList<Hook> hooks) throws UnableToMoveException, FinMatchException, ScriptHookException
     {
     	state.robot.suit_chemin(chemin, hooks);
     }

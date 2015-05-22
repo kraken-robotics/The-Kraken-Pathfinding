@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.After;
 
 import table.ObstacleManager;
+import utils.ConfigInfo;
 import utils.Log;
 import utils.Config;
 import container.Container;
@@ -30,7 +31,7 @@ public abstract class JUnit_Test
 		container = new Container();
 		config = (Config) container.getService(ServiceNames.CONFIG);
 		log = (Log) container.getService(ServiceNames.LOG);
-		config.setDateDebutMatch();
+		config.set(ConfigInfo.DATE_DEBUT_MATCH, System.currentTimeMillis());
         obstaclemanager = (ObstacleManager) container.getService(ServiceNames.OBSTACLE_MANAGER);
         // afin d'assurer l'indépendance entre tests
         obstaclemanager.clearObstaclesMobiles();

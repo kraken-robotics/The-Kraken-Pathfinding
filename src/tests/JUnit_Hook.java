@@ -21,6 +21,7 @@ import robot.RobotChrono;
 import robot.RobotReal;
 import strategie.GameState;
 import table.GameElementNames;
+import utils.ConfigInfo;
 import utils.Vec2;
 import enums.Tribool;
 import exceptions.PathfindingException;
@@ -42,7 +43,6 @@ public class JUnit_Hook extends JUnit_Test {
 	@Before
     public void setUp() throws Exception {
         super.setUp();
-		config.setDateDebutMatch();
         hookfactory = (HookFactory) container.getService(ServiceNames.HOOK_FACTORY);
         real_gamestate = (GameState<RobotReal,ReadWrite>) container.getService(ServiceNames.REAL_GAME_STATE);
         chrono_gamestate = GameState.cloneGameState(real_gamestate.getReadOnly());
@@ -54,7 +54,7 @@ public class JUnit_Hook extends JUnit_Test {
 	@Test
 	public void test_hook_vrai_avancer() throws Exception
 	{
-		config.setDateDebutMatch();
+		config.set(ConfigInfo.DATE_DEBUT_MATCH, System.currentTimeMillis());
 		ArrayList<Hook> hooks_table = hookfactory.getHooksEntreScriptsReal(real_gamestate);
 		GameState.setPosition(real_gamestate, new Vec2<ReadOnly>(950, 650));
 		GameState.setOrientation(real_gamestate, Math.PI);
@@ -68,6 +68,7 @@ public class JUnit_Hook extends JUnit_Test {
 	@Test
 	public void test_hook_chrono_avancer() throws Exception
 	{
+		config.set(ConfigInfo.DATE_DEBUT_MATCH, System.currentTimeMillis());
 		ArrayList<Hook> hooks_table = hookfactory.getHooksEntreScriptsChrono(chrono_gamestate, 90000);
 		GameState.setPosition(chrono_gamestate, new Vec2<ReadOnly>(600, 350));
 		GameState.setOrientation(chrono_gamestate, Math.PI);
@@ -82,7 +83,7 @@ public class JUnit_Hook extends JUnit_Test {
 	public void test_hook_chrono_sleep() throws Exception
 	{
 		// TODO: vérifier par rapport à l'ancienne version
-		config.setDateDebutMatch();
+		config.set(ConfigInfo.DATE_DEBUT_MATCH, System.currentTimeMillis());
 		GameState.setPosition(chrono_gamestate, new Vec2<ReadOnly>(1300, 500));
 		ArrayList<Hook> hooks_table = hookfactory.getHooksEntreScriptsReal(real_gamestate);
 		Assert.assertEquals(GameState.isDone(real_gamestate.getReadOnly(), GameElementNames.VERRE_5), Tribool.FALSE);

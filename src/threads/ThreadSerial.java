@@ -40,9 +40,9 @@ public class ThreadSerial extends ThreadAvecStop implements Service
 	public void run()
 	{
 		/**
-		 * StartMatchLock permet de signaler le départ du match aux autres threads
-		 * Il est utilisé par ThreadTimer
+		 * Initialisation des valeurs de la STM
 		 */
+		
 		while(!finThread)
 		{
 			try {
