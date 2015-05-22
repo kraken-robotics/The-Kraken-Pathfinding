@@ -33,7 +33,7 @@ import threads.ThreadSerial;
 import threads.ThreadStrategie;
 import threads.ThreadStrategieInfo;
 import threads.ThreadTable;
-import threads.ThreadTimer;
+import threads.ThreadPeremption;
 import robot.RobotReal;
 
 
@@ -206,7 +206,7 @@ public class Container
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ScriptManager(	(HookFactory)getService(ServiceNames.HOOK_FACTORY),
 																					(Log)getService(ServiceNames.LOG));
 		else if(serviceRequested == ServiceNames.THREAD_TIMER)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadTimer((Log)getService(ServiceNames.LOG),
+			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadPeremption((Log)getService(ServiceNames.LOG),
 																		(ObstacleManager)getService(ServiceNames.OBSTACLE_MANAGER),
 																		(IncomingDataBuffer)getService(ServiceNames.INCOMING_DATA_BUFFER));
 		else if(serviceRequested == ServiceNames.THREAD_FIN_MATCH)

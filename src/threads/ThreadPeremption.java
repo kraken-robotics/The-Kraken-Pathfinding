@@ -15,7 +15,7 @@ import container.Service;
  *
  */
 
-public class ThreadTimer extends ThreadAvecStop implements Service
+public class ThreadPeremption extends ThreadAvecStop implements Service
 {
 
 	private ObstacleManager obstaclemanager;
@@ -24,7 +24,7 @@ public class ThreadTimer extends ThreadAvecStop implements Service
 
 	private int dureePeremption;
 
-	public ThreadTimer(Log log, ObstacleManager obstaclemanager, IncomingDataBuffer buffer)
+	public ThreadPeremption(Log log, ObstacleManager obstaclemanager, IncomingDataBuffer buffer)
 	{
 		this.log = log;
 		this.obstaclemanager = obstaclemanager;
@@ -47,7 +47,7 @@ public class ThreadTimer extends ThreadAvecStop implements Service
 			if(prochain == Integer.MAX_VALUE)
 				Sleep.sleep(dureePeremption);
 			else
-				Sleep.sleep(prochain - System.currentTimeMillis());
+				Sleep.sleep(Math.min(dureePeremption, prochain - System.currentTimeMillis()));
 		}
 	}
 
