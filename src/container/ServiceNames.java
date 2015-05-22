@@ -30,6 +30,7 @@ public enum ServiceNames {
 	 THREAD_FIN_MATCH(true),
 	 THREAD_PEREMPTION(true),
 	 THREAD_SERIE(true),
+	 THREAD_CONFIG(true),
 	 THREAD_OBSTACLE_MANAGER(true),
 	 THREAD_STRATEGIE_INFO(true),
 	 THREAD_PATHFINDING(true),

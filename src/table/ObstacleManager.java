@@ -42,7 +42,7 @@ public class ObstacleManager implements Service
     
     private int firstNotDead = 0;
 
-    private volatile int dateDebutMatch;
+    private volatile long dateDebutMatch;
     private int rayon_robot_adverse;
     private int distanceApproximation;
     private int dureeAvantPeremption;
@@ -299,7 +299,7 @@ public class ObstacleManager implements Service
 
 	@Override
 	public void updateConfig(Config config) {
-		dateDebutMatch = config.getInt(ConfigInfo.DATE_DEBUT_MATCH);
+		dateDebutMatch = config.getLong(ConfigInfo.DATE_DEBUT_MATCH);
 	}
     
 	@Override

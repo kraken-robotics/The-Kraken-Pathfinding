@@ -49,7 +49,7 @@ public abstract class Robot implements Service
 	protected volatile boolean symetrie;
 	protected Speed vitesse;
 	protected int pointsObtenus = 0;
-    protected volatile int dateDebutMatch;
+    protected volatile long dateDebutMatch;
     /*
      * Actionneurs
      */
@@ -97,7 +97,7 @@ public abstract class Robot implements Service
 
 	public synchronized void updateConfig(Config config)
 	{
-		dateDebutMatch = config.getInt(ConfigInfo.DATE_DEBUT_MATCH);
+		dateDebutMatch = config.getLong(ConfigInfo.DATE_DEBUT_MATCH);
 		symetrie = config.getSymmetry();
 	}
 

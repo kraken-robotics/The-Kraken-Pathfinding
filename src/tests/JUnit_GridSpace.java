@@ -48,7 +48,7 @@ public class JUnit_GridSpace extends JUnit_Test {
 		Assert.assertTrue(gridspace.isTraversable(PathfindingNodes.BAS_DROITE, PathfindingNodes.DEVANT_DEPART_GAUCHE, 0));
 
 		Assert.assertTrue(gridspace.isTraversable(PathfindingNodes.NODE_TAPIS, PathfindingNodes.BAS_GAUCHE, 0));
-		obstaclemanager.creerObstacle(new Vec2<ReadOnly>(-220, 830), (int)(System.currentTimeMillis() - config.getInt(ConfigInfo.DATE_DEBUT_MATCH)));
+		obstaclemanager.creerObstacle(new Vec2<ReadOnly>(-220, 830), (int)(System.currentTimeMillis() - config.getLong(ConfigInfo.DATE_DEBUT_MATCH)));
 		// mise à jour du gridspace
 		gridspace.reinitConnections();
 		Assert.assertTrue(!gridspace.isTraversable(PathfindingNodes.NODE_TAPIS, PathfindingNodes.BAS_GAUCHE, 0));

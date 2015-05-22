@@ -16,7 +16,7 @@ public class ThreadFinMatch extends ThreadAvecStop implements Service {
 
 	protected Log log;
 	protected Config config;
-	private volatile Boolean matchDemarre = Boolean.FALSE;
+	private volatile boolean matchDemarre = false;
 	private int dureeMatch;
 
 	public ThreadFinMatch(Log log, Config config)
@@ -28,12 +28,12 @@ public class ThreadFinMatch extends ThreadAvecStop implements Service {
 	@Override
 	public void run()
 	{
-		synchronized(matchDemarre)
+		synchronized(this)
 		{
 			while(!matchDemarre)
 			{
 				try {
-					matchDemarre.wait();
+					wait();
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
@@ -47,13 +47,10 @@ public class ThreadFinMatch extends ThreadAvecStop implements Service {
 	}
 
 	@Override
-	public void updateConfig(Config config)
+	public synchronized void updateConfig(Config config)
 	{
-		synchronized(matchDemarre)
-		{
-			matchDemarre = config.getBoolean(ConfigInfo.MATCH_DEMARRE);
-			matchDemarre.notifyAll();
-		}
+		matchDemarre = config.getBoolean(ConfigInfo.MATCH_DEMARRE);
+		notifyAll();
 	}
 
 	@Override

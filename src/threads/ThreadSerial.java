@@ -55,14 +55,14 @@ public class ThreadSerial extends ThreadAvecStop implements Service
 		 * Initialisation des valeurs de la STM
 		 */
 		// TODO: envoyer hook, etc.
-		ArrayList<Hook> hooks = hookfactory.getHooksTable();
+/*		ArrayList<Hook> hooks = hookfactory.getHooksTable();
 		for(Hook hook: hooks)
 		{
 			serie.communiquer("hk");
 			serie.communiquer(hook.toSerial());
 		}
 		serie.communiquer("hkFin");
-		
+	*/	
 		while(!finThread)
 		{
 			try {
@@ -72,8 +72,12 @@ public class ThreadSerial extends ThreadAvecStop implements Service
 				 */
 				synchronized(serie)
 				{
-					serie.wait();
+					while(!serie.canBeRead())
+					{
+						serie.wait();
+					}
 					String first = serie.read();
+					log.debug(first);
 					switch(first)
 					{
 						case "obs":

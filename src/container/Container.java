@@ -26,6 +26,7 @@ import table.ObstacleManager;
 import table.StrategieInfo;
 import table.Table;
 import threads.ThreadAvecStop;
+import threads.ThreadConfig;
 import threads.ThreadFinMatch;
 import threads.ThreadGridSpace;
 import threads.ThreadGridSpace2;
@@ -253,6 +254,10 @@ public class Container
 																		(IncomingDataBuffer)getService(ServiceNames.INCOMING_DATA_BUFFER),
 																		(IncomingHookBuffer)getService(ServiceNames.INCOMING_HOOK_BUFFER),
 																		(HookFactory)getService(ServiceNames.HOOK_FACTORY));
+		else if(serviceRequested == ServiceNames.THREAD_CONFIG)
+			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadConfig((Log)getService(ServiceNames.LOG),
+																		(Config)getService(ServiceNames.CONFIG),
+																		this);
 		else if(serviceRequested == ServiceNames.STRATEGIE_INFO)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new StrategieInfo((Log)getService(ServiceNames.LOG), 
 																		(StrategieNotifieur)getService(ServiceNames.STRATEGIE_NOTIFIEUR));

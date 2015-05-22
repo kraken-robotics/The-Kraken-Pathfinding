@@ -38,7 +38,8 @@ public class SerialConnexion implements SerialPortEventListener, Service
 	private Boolean ready = false;
 	private boolean isClosed;
 	private int baudrate;
-
+	private int canBeRead = 0;
+	
 	/**
 	 * A BufferedReader which will be fed by a InputStreamReader 
 	 * converting the bytes into characters 
@@ -269,6 +270,7 @@ public class SerialConnexion implements SerialPortEventListener, Service
 			 * On sait qu'une donnée arrive, donc l'attente est très faible.
 			 */
 			while(!input.ready());
+			canBeRead--;
 			return input.readLine();
 		} catch (IOException e) {
 			// Impossible car on sait qu'il y a des données
@@ -282,7 +284,13 @@ public class SerialConnexion implements SerialPortEventListener, Service
 	 */
 	public synchronized void serialEvent(SerialPortEvent oEvent)
 	{
+		canBeRead++;
 		notifyAll();
+	}
+	
+	public boolean canBeRead()
+	{
+		return canBeRead > 0;
 	}
 
 	/**

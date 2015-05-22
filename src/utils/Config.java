@@ -59,7 +59,18 @@ public class Config implements Service
 	{
 		return Integer.parseInt(getString(nom));
 	}
-	
+
+	/**
+	 * Récupère un entier long de la config
+	 * @param nom
+	 * @return
+	 * @throws NumberFormatException 
+	 */
+	public long getLong(ConfigInfo nom) throws NumberFormatException
+	{
+		return Long.parseLong(getString(nom));
+	}
+
 	/**
 	 * Récupère un booléen de la config
 	 * @param nom
