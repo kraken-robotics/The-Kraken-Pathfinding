@@ -82,7 +82,13 @@ public class ThreadSerial extends Thread implements Service
 							/**
 							 * Démarrage du match
 							 */
-							config.set(ConfigInfo.MATCH_DEMARRE, true);
+							synchronized(config)
+							{
+								config.set(ConfigInfo.DATE_DEBUT_MATCH, System.currentTimeMillis());
+								config.set(ConfigInfo.CAPTEURS_ON, true);
+								config.set(ConfigInfo.MATCH_DEMARRE, true);
+							}
+							config.updateConfigServices();
 							break;
 							
 							/**

@@ -23,6 +23,8 @@ public class Config implements Service
 	private Properties config = new Properties();
 	private Log log;
 	
+	private boolean needUpdate = false;
+	
 	public Config(Log log, String path)
 	{
 		this.log = log;
@@ -94,14 +96,9 @@ public class Config implements Service
 	 */
 	private void set(ConfigInfo nom, String value)
 	{
-		boolean change = value.compareTo(config.getProperty(nom.toString())) != 0;
+		needUpdate |= value.compareTo(config.getProperty(nom.toString())) != 0;
 		log.debug(nom+" = "+value+" (ancienne valeur: "+config.getProperty(nom.toString())+")");
 		config.setProperty(nom.toString(), value);
-		if(change)
-			synchronized(this)
-			{
-				notifyAll();
-			}
 	}
 	
 	/**
@@ -140,15 +137,20 @@ public class Config implements Service
 	/**
 	 * Met à jour les config de tous les services
 	 */
-	@Override
-	public void updateConfig(Config config)
+	public void updateConfigServices()
 	{
 		synchronized(this)
 		{
-			notifyAll();
+			if(needUpdate)
+				notifyAll();
+			needUpdate = false;
 		}
 	}
 	
+	@Override
+	public void updateConfig(Config config)
+	{}
+
 	@Override
 	public void useConfig(Config config)
 	{}

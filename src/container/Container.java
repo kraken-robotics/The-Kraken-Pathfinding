@@ -50,6 +50,7 @@ public class Container
 	
 	//gestion des log
 	private Log log;
+	private Config config;
 	
 	private static int nbInstances = 0;
 	private boolean threadsStarted = false;
@@ -96,6 +97,9 @@ public class Container
 			System.out.println("Loading config from current directory : " +  System.getProperty("user.dir"));
 
 			log = (Log)getService(ServiceNames.LOG);
+			config = (Config)getService(ServiceNames.CONFIG);
+			log.updateConfig(config);
+			log.useConfig(config);
 		}
 		catch(Exception e)
 		{
@@ -118,12 +122,15 @@ public class Container
 	public Service getService(ServiceNames serviceRequested) throws ContainerException, ThreadException, SerialConnexionException, FinMatchException, PointSortieException
 	{
     	// instancie le service demandé lors de son premier appel 
-    	
+    	boolean updateConfig = true;
+		
     	// si le service est déja instancié, on ne le réinstancie pas
 		if(instanciedServices[serviceRequested.ordinal()] != null)
-			;
+			updateConfig = false;
 
 		// Si le service n'est pas encore instancié, on l'instancie avant de le retourner à l'utilisateur
+		else if(serviceRequested == ServiceNames.LOG)
+			instanciedServices[serviceRequested.ordinal()] = (Service)new Log();
 		else if(serviceRequested == ServiceNames.CONFIG)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new Config((Log)getService(ServiceNames.LOG),Config.dossierconfig);
 		else if(serviceRequested == ServiceNames.TABLE)
@@ -224,6 +231,12 @@ public class Container
 			throw new ContainerException();
 		}
 		
+		if(updateConfig && config != null)
+		{
+			instanciedServices[serviceRequested.ordinal()].useConfig(config);
+			instanciedServices[serviceRequested.ordinal()].updateConfig(config);
+		}
+		
 		// retourne le service en mémoire à l'utilisateur
 		return instanciedServices[serviceRequested.ordinal()];
 	}	
@@ -270,6 +283,7 @@ public class Container
 
 	/**
 	 * Renvoie le service demandé s'il est déjà instancié, null sinon.
+	 * Utilisé pour la mise à jour de la config.
 	 * @param s
 	 * @return
 	 */

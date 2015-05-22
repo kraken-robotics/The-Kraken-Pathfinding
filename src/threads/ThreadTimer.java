@@ -21,11 +21,11 @@ public class ThreadTimer extends Thread implements Service
 	protected Log log;
 	private Config config;
 	private IncomingDataBuffer buffer;
-	private Boolean matchDemarre;
+	private volatile Boolean matchDemarre;
 
 	private long dureeMatch = 90000;
 	private long dateFin;
-	private int obstacleRefreshInterval = 500;
+	private int dureePeremption;
 
 	public ThreadTimer(Log log, Config config, ObstacleManager obstaclemanager, IncomingDataBuffer buffer)
 	{
@@ -46,22 +46,25 @@ public class ThreadTimer extends Thread implements Service
 				e.printStackTrace();
 			}
 		}
-		
-		// Démarrage du match!
-		
-		config.set(ConfigInfo.MATCH_DEMARRE, true);
-		config.set(ConfigInfo.DATE_DEBUT_MATCH, System.currentTimeMillis());
-		config.set(ConfigInfo.CAPTEURS_ON, true);
 		log.debug("LE MATCH COMMENCE !");					
-		dateFin = dureeMatch + config.getInt(ConfigInfo.DATE_DEBUT_MATCH);
 
 		while(System.currentTimeMillis() < dateFin)
 		{
 			obstaclemanager.supprimerObstaclesPerimes();
 			buffer.notifyIfNecessary();
-			Sleep.sleep(obstacleRefreshInterval);
+			// TODO: faire un sleep exact
+			int prochain = obstaclemanager.getDateSomethingChange();
+			
+			/**
+			 * S'il n'y a pas d'obstacles, on dort de dureePeremption, qui est la durée minimale avant la prochaine péremption.
+			 */
+			if(prochain == Integer.MAX_VALUE)
+				Sleep.sleep(dureePeremption);
+			else
+				Sleep.sleep(prochain - System.currentTimeMillis());
 		}
-
+		config.set(ConfigInfo.FIN_MATCH, true);
+		config.updateConfigServices();
 		log.debug("Fin du Match !");
 	}
 
@@ -70,6 +73,7 @@ public class ThreadTimer extends Thread implements Service
 	{
 		synchronized(matchDemarre)
 		{
+			dateFin = dureeMatch + config.getInt(ConfigInfo.DATE_DEBUT_MATCH);
 			matchDemarre = config.getBoolean(ConfigInfo.MATCH_DEMARRE);
 			matchDemarre.notifyAll();
 		}
@@ -80,7 +84,8 @@ public class ThreadTimer extends Thread implements Service
 	{
 		// facteur 1000 car temps_match est en secondes et duree_match en ms
 		dureeMatch = 1000*config.getInt(ConfigInfo.DUREE_MATCH_EN_S);
-		obstacleRefreshInterval = config.getInt(ConfigInfo.OBSTACLE_REFRESH_INTERVAL);
+		dureePeremption = 1000*config.getInt(ConfigInfo.DUREE_PEREMPTION_OBSTACLES);
+//		obstacleRefreshInterval = config.getInt(ConfigInfo.OBSTACLE_REFRESH_INTERVAL);
 	}
 
 }

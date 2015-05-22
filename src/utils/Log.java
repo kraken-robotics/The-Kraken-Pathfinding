@@ -1,7 +1,6 @@
 package utils;
 
 import java.io.FileWriter;
-import java.io.IOException;
 import java.io.PrintStream;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -122,21 +121,18 @@ public class Log implements Service
 	{
 		affiche_debug = config.getBoolean(ConfigInfo.AFFICHE_DEBUG);
 		sauvegarde_fichier = config.getBoolean(ConfigInfo.SAUVEGARDE_FICHIER);
-		if(!sauvegarde_fichier && writer != null)
-			try {
-				writer.close();
-			} catch (IOException e1) {
-				e1.printStackTrace();
-			}
-
 		if(sauvegarde_fichier)
 			try {
 				String heure = calendar.get(Calendar.HOUR_OF_DAY)+":"+calendar.get(Calendar.MINUTE)+":"+calendar.get(Calendar.SECOND);
-				writer = new FileWriter("logs/LOG-"+heure+".txt", true); 
+				String file = "logs/LOG-"+heure+".txt";
+				writer = new FileWriter(file); 
+				debug("Un fichier de sauvegarde est utilisé: "+file);
 			}
 			catch(Exception e)
 			{
-				critical(e);
+				e.printStackTrace();
+				critical("Erreur lors de la création du fichier. Sauvegarde annulée.");
+				sauvegarde_fichier = false;
 			}
 		warning("Service de log démarré");
 	}
