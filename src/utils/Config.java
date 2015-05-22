@@ -28,7 +28,6 @@ public class Config implements Service
 	{
 		this.log = log;
 
-		//	log.debug("Loading config from current directory : " +  System.getProperty("user.dir"), this)
 		try
 		{
 			properties.load(new FileInputStream(path+name_config_file));
@@ -86,7 +85,7 @@ public class Config implements Service
 	}
 
 	/**
-	 * Méthode utilisée seulement par les tests
+	 * Méthode set privée
 	 * @param nom
 	 * @return
 	 */
@@ -98,13 +97,16 @@ public class Config implements Service
 	}
 	
 	/**
-	 * Set en version user-friendly
+	 * Méthode set publique avec protection
 	 * @param nom
 	 * @param value
 	 */
 	public void set(ConfigInfo nom, Object value)
 	{
-		set(nom, value.toString());
+		if(nom.isConstant())
+			log.critical("Demande d'affectation à une config constante: "+nom);
+		else
+			set(nom, value.toString());
 	}
 
 	/**
@@ -127,7 +129,8 @@ public class Config implements Service
 		{
 			if(!properties.containsKey(info.toString()))
 				properties.setProperty(info.toString(), info.getDefaultValue());
-			log.warning(info+" surchargé par config.ini");
+			else
+				log.warning(info+" surchargé par config.ini");
 		}
 		for(String cle: properties.stringPropertyNames())
 		{

@@ -15,51 +15,58 @@ public enum ConfigInfo {
 	/**
 	 * Config statique, présente dans config.ini
 	 */
-	TABLE_X("3000"),
-	TABLE_Y("2000"),
-	DUREE_MATCH_EN_S("90"),
+	TABLE_X("3000", true),
+	TABLE_Y("2000", true),
+	DUREE_MATCH_EN_S("90", true),
 //	TEMPS_FUNNY_ACTION("0"),
-	LARGEUR_ROBOT("245"),
-	LONGUEUR_ROBOT("300"),
-	RAYON_ROBOT("250"),
-	RAYON_ROBOT_ADVERSE("230"),
-	COULEUR(RobotColor.getCouleurSansSymetrie()),
-	DUREE_PEREMPTION_OBSTACLES("5000"),
-	CAPTEURS_TEMPORISATION_OBSTACLES("100"),
+	LARGEUR_ROBOT("245", true),
+	LONGUEUR_ROBOT("300", true),
+	RAYON_ROBOT("250", true),
+	RAYON_ROBOT_ADVERSE("230", true),
+	DUREE_PEREMPTION_OBSTACLES("5000", true),
+	CAPTEURS_TEMPORISATION_OBSTACLES("100", true),
 //	DISTANCE_DETECTION("300"),
 //	NB_CAPTEURS_PROXIMITE("4"),
-	AFFICHE_DEBUG("false"),
-	SAUVEGARDE_FICHIER("true"),
-	DISTANCE_MAX_ENTRE_MESURE_ET_OBJET("50"),
-	HOOKS_TOLERANCE_MM("20"),
-	DISQUE_TOLERANCE_MAJ("100"),
-	DISQUE_TOLERANCE_CONSIGNE("40"),
+	AFFICHE_DEBUG("false", true),
+	SAUVEGARDE_FICHIER("true", true),
+	DISTANCE_MAX_ENTRE_MESURE_ET_OBJET("50", true),
+	HOOKS_TOLERANCE_MM("20", true),
+	DISQUE_TOLERANCE_MAJ("100", true),
+	DISQUE_TOLERANCE_CONSIGNE("40", true),
 //	TRAJECTOIRE_COURBE("false"),
 //	NB_TENTATIVES("30"),
 //	ANTICIPATION_TRAJECTOIRE_COURBE("200"),
 //	ANGLE_DEGAGEMENT_ROBOT("0.2"),
 //	DISTANCE_DEGAGEMENT_ROBOT("30"),
-	MARGE("20"),
-	TEMPS_MAX_ANTICIPATION_EN_S("30"),
-	TOLERANCE_DEPART_SCRIPT("20"),
-	DISTANCE_ENNEMI_URGENCE("550"),
-	CHECK_POINTS_SORTIE("false"),
-	PREVISION_COLLISION("50"),
-	BAUDRATE("57600"),
+	MARGE("20", true),
+	TEMPS_MAX_ANTICIPATION_EN_S("30", true),
+	TOLERANCE_DEPART_SCRIPT("20", true),
+	DISTANCE_ENNEMI_URGENCE("550", true),
+	CHECK_POINTS_SORTIE("false", true),
+	PREVISION_COLLISION("50", true),
+	BAUDRATE("57600", true),
 	
 	/**
 	 * Config dynamique
 	 */
-	MATCH_DEMARRE("false"),
-	DATE_DEBUT_MATCH("0"),
-	CAPTEURS_ON("false"),
-	FIN_MATCH("false");
+	COULEUR(RobotColor.getCouleurSansSymetrie(), false),
+	MATCH_DEMARRE("false", false),
+	DATE_DEBUT_MATCH("0", false),
+	CAPTEURS_ON("false", false),
+	FIN_MATCH("false", false);
 
 	private String defaultValue;
+	private boolean constant;
 	
-	private ConfigInfo(String defaultValue)
+	private ConfigInfo(String defaultValue, boolean constant)
 	{
 		this.defaultValue = defaultValue;
+		this.constant = constant;
+	}
+	
+	public boolean isConstant()
+	{
+		return constant;
 	}
 	
 	public String getDefaultValue()
