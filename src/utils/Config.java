@@ -154,7 +154,7 @@ public class Config implements Service
 					break;
 				}
 			if(!found)
-				log.warning("Config "+cle+" inutilisée. Veuillez le retirer de config.ini");
+				log.warning(cle+" inutilisé. Veuillez le retirer de config.ini");
 		}
 	}
 		

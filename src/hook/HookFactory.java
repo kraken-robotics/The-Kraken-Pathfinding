@@ -197,7 +197,7 @@ public class HookFactory implements Service
 
 	public ArrayList<Hook> getHooksTable() {
 		// TODO Auto-generated method stub
-		return null;
+		return new ArrayList<Hook>();
 	}
 
 }

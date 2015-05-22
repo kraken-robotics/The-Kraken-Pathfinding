@@ -35,6 +35,7 @@ public class SerialConnexion implements SerialPortEventListener, Service
 	private SerialPort serialPort;
 	protected Log log;
 	
+	private Boolean ready = false;
 	private boolean isClosed;
 	private int baudrate;
 
@@ -60,7 +61,7 @@ public class SerialConnexion implements SerialPortEventListener, Service
 		this.log = log;
 	}
 
-	private boolean searchPort()
+	private synchronized boolean searchPort()
 	{
 		log.debug("Recherche de la série à "+baudrate+" baud");
 		Enumeration<?> ports = CommPortIdentifier.getPortIdentifiers();
@@ -76,6 +77,7 @@ public class SerialConnexion implements SerialPortEventListener, Service
 			if(ping())
 			{
 				log.debug("STM sur " + port.getName());
+				notifyAll();
 				return true;
 			}
 			else
@@ -138,7 +140,7 @@ public class SerialConnexion implements SerialPortEventListener, Service
 	 * @throws SerialConnexionException
 	 * @throws FinMatchException
 	 */
-	public synchronized void communiquer(ArrayList<LocomotionArc> chemin)
+	public void communiquer(ArrayList<LocomotionArc> chemin)
 	{
 		String[] messages = new String[chemin.size()+1];
 		messages[0] = String.valueOf(chemin.size());
@@ -154,7 +156,7 @@ public class SerialConnexion implements SerialPortEventListener, Service
 	 * @throws SerialConnexionException
 	 * @throws FinMatchException
 	 */
-	public synchronized void communiquer(String[] messages)
+	public void communiquer(String[] messages)
 	{
 		communiquer(messages, 0);
 	}
@@ -167,7 +169,7 @@ public class SerialConnexion implements SerialPortEventListener, Service
 	 * @throws SerialConnexionException 
 	 * @throws FinMatchException 
 	 */
-	public synchronized String[] communiquer(String message, int nb_lignes_reponse)
+	public String[] communiquer(String message, int nb_lignes_reponse)
 	{
 		String[] messages = {message};
 		return communiquer(messages, nb_lignes_reponse);
@@ -181,7 +183,7 @@ public class SerialConnexion implements SerialPortEventListener, Service
 	 * @throws SerialConnexionException 
 	 * @throws FinMatchException 
 	 */
-	public synchronized String[] communiquer(String message)
+	public String[] communiquer(String message)
 	{
 		String[] messages = {message};
 		return communiquer(messages, 0);
@@ -198,6 +200,15 @@ public class SerialConnexion implements SerialPortEventListener, Service
 		/**
 		 * Un appel à une série fermée ne devrait jamais être effectué.
 		 */
+		while(!ready)
+		{
+			try {
+				wait();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+
 		if(isClosed)
 			return null; // TODO
 //			throw new FinMatchException();
@@ -305,7 +316,18 @@ public class SerialConnexion implements SerialPortEventListener, Service
 	public void useConfig(Config config)
 	{
 		baudrate = config.getInt(ConfigInfo.BAUDRATE);
-		searchPort();
+		if(!searchPort())
+		{
+			/**
+			 * Suppression des verrous qui empêchent parfois la connexion
+			 */
+			try {
+				Runtime.getRuntime().exec("sudo rm -f /var/lock/LCK..tty*");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			searchPort();
+		}
 	}
 	
 	@Override

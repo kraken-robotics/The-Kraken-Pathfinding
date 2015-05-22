@@ -18,6 +18,7 @@ public enum ConfigInfo {
 	TABLE_X("3000", true),
 	TABLE_Y("2000", true),
 	DUREE_MATCH_EN_S("90", true),
+	FAST_LOG("false", true),
 //	TEMPS_FUNNY_ACTION("0"),
 	LARGEUR_ROBOT("245", true),
 	LONGUEUR_ROBOT("300", true),

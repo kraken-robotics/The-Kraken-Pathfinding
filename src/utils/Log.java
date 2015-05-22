@@ -30,6 +30,9 @@ public class Log implements Service
 	// Sauvegarder les logs dans un fichier
 	private boolean sauvegarde_fichier = false;
 	
+	// Ecriture plus rapide sans appel à la pile d'exécution
+	private boolean fastLog = false;
+	
 	/**
 	 * Affichage de debug, en vert
 	 * @param message
@@ -60,15 +63,28 @@ public class Log implements Service
 		ecrire(" CRITICAL ", message, couleurCritical, System.err);
 	}
 
-	private void ecrire(String niveau, Object message, String couleur, PrintStream ou)
+	/**
+	 * Ce synchronized peut ralentir le programme, mais s'assure que les logs ne se chevauchent pas.
+	 * @param niveau
+	 * @param message
+	 * @param couleur
+	 * @param ou
+	 */
+	private synchronized void ecrire(String niveau, Object message, String couleur, PrintStream ou)
 	{
 		if(logClosed)
 			System.out.println("WARNING * Log fermé! Message: "+message);
 		else if(couleur != couleurDebug || affiche_debug || sauvegarde_fichier)
 		{
-			StackTraceElement elem = Thread.currentThread().getStackTrace()[3];
+			String affichage;
 			String heure = calendar.get(Calendar.HOUR_OF_DAY)+":"+calendar.get(Calendar.MINUTE)+":"+calendar.get(Calendar.SECOND)+","+calendar.get(Calendar.MILLISECOND);
-			String affichage = heure+niveau+elem.getClassName()+"."+elem.getMethodName()+":"+elem.getLineNumber()+" "+message;//+"\u001B[0m";
+			if(fastLog)
+				affichage = heure+": "+message;
+			else
+			{
+				StackTraceElement elem = Thread.currentThread().getStackTrace()[3];
+				affichage = heure+niveau+elem.getClassName()+"."+elem.getMethodName()+":"+elem.getLineNumber()+" "+message;//+"\u001B[0m";
+			}
 			if(couleur != couleurDebug || affiche_debug)
 				ou.println(affichage);
 			if(sauvegarde_fichier)
@@ -120,6 +136,7 @@ public class Log implements Service
 	{
 		affiche_debug = config.getBoolean(ConfigInfo.AFFICHE_DEBUG);
 		sauvegarde_fichier = config.getBoolean(ConfigInfo.SAUVEGARDE_FICHIER);
+		fastLog = config.getBoolean(ConfigInfo.FAST_LOG);
 		if(sauvegarde_fichier)
 			try {
 				String heure = calendar.get(Calendar.HOUR_OF_DAY)+":"+calendar.get(Calendar.MINUTE)+":"+calendar.get(Calendar.SECOND);
