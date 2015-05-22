@@ -16,30 +16,31 @@ import enums.RobotColor;
 public class Config implements Service
 {
 	// Permet de savoir si le match a démarré et quand
-	public static final String dossierconfig = "./config/";
+	public static final String path = "./config/";
 
 	private String name_config_file = "config.ini";
-	private String path;
 	private Properties config = new Properties();
 	private Log log;
 	
 	private boolean needUpdate = false;
 	
-	public Config(Log log, String path)
+	public Config(Log log)
 	{
 		this.log = log;
-		this.path = path;
 
 		//	log.debug("Loading config from current directory : " +  System.getProperty("user.dir"), this)
 		try
 		{
-			this.config.load(new FileInputStream(this.path+this.name_config_file));
+			this.config.load(new FileInputStream(path+name_config_file));
 		}
 		catch  (IOException e)
 		{
 			log.critical("Erreur lors de l'ouverture de config.ini. Utilisation des valeurs par défaut.");
-		}	
-		afficheTout();
+		}
+		
+		completeConfig();
+		if(getBoolean(ConfigInfo.AFFICHE_DEBUG))
+			afficheTout();
 	}
 	
 	/**
@@ -81,9 +82,6 @@ public class Config implements Service
 	 */
 	public String getString(ConfigInfo nom)
 	{
-		if(!config.containsKey(nom.toString()))
-			config.setProperty(nom.toString(), nom.getDefaultValue());			
-
 		return config.getProperty(nom.toString());
 	}
 
@@ -115,11 +113,23 @@ public class Config implements Service
 	 */
 	private void afficheTout()
 	{
-		if(Boolean.parseBoolean(config.getProperty(ConfigInfo.AFFICHE_DEBUG.toString())))
+		log.debug("Configuration initiale");
+		for(ConfigInfo info: ConfigInfo.values())
+			log.debug(info+": "+getString(info));
+	}
+	
+	/**
+	 * Complète avec les valeurs par défaut le fichier de configuration
+	 */
+	private void completeConfig()
+	{
+		for(ConfigInfo info: ConfigInfo.values())
 		{
-			log.debug("Configuration initiale");
-			for(Object o: config.keySet())
-				log.debug(o+": "+config.get(o));
+			if(!config.containsKey(info.toString()))
+			{
+				log.warning(info+" non trouvé dans le fichier de config.");
+				config.setProperty(info.toString(), info.getDefaultValue());
+			}
 		}
 	}
 		
