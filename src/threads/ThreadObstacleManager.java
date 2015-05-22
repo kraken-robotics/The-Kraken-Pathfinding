@@ -11,7 +11,7 @@ import container.Service;
  *
  */
 
-public class ThreadObstacleManager extends Thread implements Service
+public class ThreadObstacleManager extends ThreadAvecStop implements Service
 {
 	private IncomingDataBuffer buffer;
 	private ObstacleManager obstaclemanager;
@@ -27,7 +27,7 @@ public class ThreadObstacleManager extends Thread implements Service
 	@Override
 	public void run()
 	{
-		while(true)
+		while(!finThread)
 		{
 			IncomingData e = null;
 			synchronized(buffer)

@@ -18,7 +18,7 @@ public class Log implements Service
 	// Dépendances
 	private boolean logClosed = false;
 	private GregorianCalendar calendar = new GregorianCalendar();
-	FileWriter writer = null;
+	private FileWriter writer = null;
 
 	private String 	couleurDebug 	= "\u001B[32m",
 					couleurWarning 	= "\u001B[33m",
@@ -37,8 +37,7 @@ public class Log implements Service
 	 */
 	public void debug(Object message)
 	{
-		if(affiche_debug)
-			ecrire(" DEBUG ", message, couleurDebug, System.out);
+		ecrire(" DEBUG ", message, couleurDebug, System.out);
 	}
 
 	/**
@@ -65,7 +64,7 @@ public class Log implements Service
 	{
 		if(logClosed)
 			System.out.println("WARNING * Log fermé! Message: "+message);
-		else
+		else if(couleur != couleurDebug || affiche_debug || sauvegarde_fichier)
 		{
 			StackTraceElement elem = Thread.currentThread().getStackTrace()[3];
 			String heure = calendar.get(Calendar.HOUR_OF_DAY)+":"+calendar.get(Calendar.MINUTE)+":"+calendar.get(Calendar.SECOND)+","+calendar.get(Calendar.MILLISECOND);
@@ -88,7 +87,7 @@ public class Log implements Service
 		}
 		catch(Exception e)
 		{
-			System.out.println(e);
+			e.printStackTrace();
 		}
 	}
 
@@ -107,7 +106,7 @@ public class Log implements Service
 			}
 			catch(Exception e)
 			{
-				System.out.println(e);
+				e.printStackTrace();
 			}
 		logClosed = true;
 	}

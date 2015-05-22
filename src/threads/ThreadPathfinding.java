@@ -12,7 +12,7 @@ import utils.Log;
  *
  */
 
-public class ThreadPathfinding extends Thread implements Service
+public class ThreadPathfinding extends ThreadAvecStop implements Service
 {
 	protected Log log;
 	private GridSpace gridspace;
@@ -28,7 +28,7 @@ public class ThreadPathfinding extends Thread implements Service
 	@Override
 	public void run()
 	{
-		while(true)
+		while(!finThread)
 		{
 			synchronized(gridspace)
 			{

@@ -12,7 +12,7 @@ import utils.Log;
  *
  */
 
-public class ThreadStrategie extends Thread implements Service
+public class ThreadStrategie extends ThreadAvecStop implements Service
 {
 	protected Log log;
 	private StrategieNotifieur notifieur;
@@ -28,7 +28,7 @@ public class ThreadStrategie extends Thread implements Service
 	@Override
 	public void run()
 	{
-		while(true)
+		while(!finThread)
 		{
 			synchronized(notifieur)
 			{

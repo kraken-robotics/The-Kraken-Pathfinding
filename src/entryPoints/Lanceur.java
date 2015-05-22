@@ -36,8 +36,19 @@ public class Lanceur {
 			robot.initActuatorLocomotion();
 			robot.recaler();
 			
+			/**
+			 * Attente du début du match
+			 */
 			execution.waitDebutMatch();
+			
+			/**
+			 * Exécution du match
+			 */
 			execution.boucleExecution();
+			
+			/**
+			 * Finalisation
+			 */
 			container.destructor();
 		} catch (Exception e) {
 			System.out.println("Abandon du lanceur.");

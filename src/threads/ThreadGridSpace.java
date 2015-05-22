@@ -12,7 +12,7 @@ import utils.Log;
  *
  */
 
-public class ThreadGridSpace extends Thread implements Service {
+public class ThreadGridSpace extends ThreadAvecStop implements Service {
 
 	protected Log log;
 	private ObstacleManager obstaclemanager;
@@ -28,7 +28,7 @@ public class ThreadGridSpace extends Thread implements Service {
 	@Override
 	public void run()
 	{
-		while(true)
+		while(!finThread)
 		{
 			synchronized(obstaclemanager)
 			{

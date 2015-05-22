@@ -12,7 +12,7 @@ import container.Service;
  *
  */
 
-public class ThreadFinMatch extends Thread implements Service {
+public class ThreadFinMatch extends ThreadAvecStop implements Service {
 
 	protected Log log;
 	protected Config config;

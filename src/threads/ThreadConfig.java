@@ -12,7 +12,7 @@ import utils.Log;
  *
  */
 
-public class ThreadConfig extends Thread implements Service {
+public class ThreadConfig extends ThreadAvecStop implements Service {
 
 	protected Log log;
 	protected Config config;
@@ -28,7 +28,7 @@ public class ThreadConfig extends Thread implements Service {
 	@Override
 	public void run()
 	{
-		while(true)
+		while(!finThread)
 		{
 			synchronized(config)
 			{

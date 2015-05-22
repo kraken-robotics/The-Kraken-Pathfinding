@@ -23,6 +23,7 @@ import table.ObstacleManager;
 import table.StrategieInfo;
 import table.Table;
 import threads.IncomingDataBuffer;
+import threads.ThreadAvecStop;
 import threads.ThreadFinMatch;
 import threads.ThreadGridSpace;
 import threads.ThreadObstacleManager;
@@ -62,15 +63,29 @@ public class Container
 	 */
 	public void destructor()
 	{
-		// arrête les threads
-		// TODO
+		// arrêt des threads
+		if(threadsStarted)
+			try {
+				for(ServiceNames s: ServiceNames.values())
+				{
+					if(s.isThread())
+					{
+						log.debug("Arrêt de "+s);
+						((ThreadAvecStop)getService(s)).setFinThread();
+					}
+				}
+				threadsStarted = false;
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
 		
-		// coupe les connexions séries
+		// fermeture de la connexion série
 		SerialConnexion stm = (SerialConnexion)getInstanciedService(ServiceNames.SERIE_STM);
 		if(stm != null)
 			stm.close();
 
-		// ferme le log
+		// fermeture du log
 		log.close();
 		nbInstances--;
 	}

@@ -14,7 +14,7 @@ import container.Service;
  *
  */
 
-public class ThreadTimer extends Thread implements Service
+public class ThreadTimer extends ThreadAvecStop implements Service
 {
 
 	private ObstacleManager obstaclemanager;
@@ -33,7 +33,7 @@ public class ThreadTimer extends Thread implements Service
 	@Override
 	public void run()
 	{
-		while(true)
+		while(!finThread)
 		{
 			obstaclemanager.supprimerObstaclesPerimes();
 			buffer.notifyIfNecessary();
