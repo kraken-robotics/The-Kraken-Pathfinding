@@ -37,7 +37,7 @@ public class ThreadObstacleManager extends ThreadAvecStop implements Service
 				try {
 					while(buffer.isEmpty())
 						buffer.wait(100);
-					log.debug("Réveil de ThreadObstacleManager");
+//					log.debug("Réveil de ThreadObstacleManager");
 					e = buffer.poll();
 				} catch (InterruptedException e2) {
 					e2.printStackTrace();

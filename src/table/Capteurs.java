@@ -47,8 +47,8 @@ public class Capteurs {
 	static
 	{
 		positionsRelatives = new Vec2[nbCapteurs];
-		positionsRelatives[0] = new Vec2<ReadOnly>(100, 100);
-		positionsRelatives[1] = new Vec2<ReadOnly>(100, -100);
+		positionsRelatives[0] = new Vec2<ReadOnly>(50, 100);
+		positionsRelatives[1] = new Vec2<ReadOnly>(50, -100);
 		
 		orientationsRelatives = new double[nbCapteurs];
 		orientationsRelatives[0] = 0.;
@@ -58,14 +58,15 @@ public class Capteurs {
 		for(int i = 0; i < nbCapteurs; i++)
 		{
 			cones[i][0] = new Vec2<ReadOnly>(orientationsRelatives[i]);
-			cones[i][1] = cones[i][0].rotateNewVector(Math.PI/2-angleCone).getReadOnly();
-			cones[i][2] = cones[i][0].rotateNewVector(-Math.PI/2+angleCone).getReadOnly();
+			cones[i][1] = new Vec2<ReadOnly>(orientationsRelatives[i]+Math.PI/2-angleCone);
+			cones[i][2] = new Vec2<ReadOnly>(orientationsRelatives[i]-Math.PI/2+angleCone);
 		}
 		
 		coupleCapteurs = new int[nbCouples][3];
 		coupleCapteurs[0][0] = 0;
-		coupleCapteurs[0][1] = 0;
+		coupleCapteurs[0][1] = 1;
 		coupleCapteurs[0][2] = (int)positionsRelatives[coupleCapteurs[0][0]].distance(positionsRelatives[coupleCapteurs[0][1]]);
+		System.out.println("distance: "+coupleCapteurs[0][2]);
 	}
 	
 	/**

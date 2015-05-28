@@ -24,7 +24,7 @@ public class MouseListener extends MouseAdapter {
 	public void mouseClicked(MouseEvent e)
 	{
 		Point point = e.getPoint();
-		fenetre.afficheCoordonnees(point);
+//		fenetre.afficheCoordonnees(point);
 		fenetre.repaint();
 	}
 }

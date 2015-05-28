@@ -255,6 +255,18 @@ public class Vec2<T extends Permission>
 		v.y = tmp;
 		return v;
 	}
+
+	/**
+	 * v devient -v
+	 * @param v
+	 * @return
+	 */
+	public static Vec2<ReadWrite> oppose(Vec2<ReadWrite> v)
+	{
+		v.x = -v.x;
+		v.y = -v.y;
+		return v;
+	}
 	
 }
 

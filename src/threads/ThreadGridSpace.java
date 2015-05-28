@@ -39,7 +39,7 @@ public class ThreadGridSpace extends ThreadAvecStop implements Service {
 					e.printStackTrace();
 				}
 			}
-			log.debug("Réveil de ThreadGridSpace");	
+//			log.debug("Réveil de ThreadGridSpace");	
 			
 			gridspace.reinitConnections();
 		}

@@ -40,7 +40,7 @@ public class IncomingDataBuffer implements Service
 	public synchronized void add(IncomingData elem)
 	{
 		buffer.add(elem);
-		log.debug("Taille buffer: "+buffer.size());
+//		log.debug("Taille buffer: "+buffer.size());
 		synchronized(this)
 		{
 			notifyAll();

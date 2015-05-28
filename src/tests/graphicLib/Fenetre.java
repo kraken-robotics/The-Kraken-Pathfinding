@@ -34,8 +34,7 @@ public class Fenetre extends JPanel {
 	private ArrayList<ObstacleProximity<ReadOnly>> listObstaclesMobiles;
 	private ArrayList<Vec2<ReadOnly>[]> segments = new ArrayList<Vec2<ReadOnly>[]>();
 	private Image image;
-	private int dilatationObstacle;
-	private AttributedString affichage = new AttributedString("");
+//	private AttributedString affichage = new AttributedString("");
 	private ArrayList<ArrayList<Vec2<ReadOnly>>> paths = new ArrayList<ArrayList<Vec2<ReadOnly>>>();
 	private ArrayList<Double> orientations = new ArrayList<Double>();
 	private ArrayList<Color> couleurs = new ArrayList<Color>();
@@ -56,16 +55,6 @@ public class Fenetre extends JPanel {
 		new MouseListener(this);
 	}
 	
-	public void setDilatationObstacle(int dilatationObstacle)
-	{
-		this.dilatationObstacle = dilatationObstacle;
-	}
-	
-	public void addPoint(Vec2<ReadOnly> point)
-	{
-		pointsADessiner.add(point);
-	}
-	
 	private int distanceXtoWindow(int dist)
 	{
 		return dist*sizeX/3000;
@@ -75,7 +64,7 @@ public class Fenetre extends JPanel {
 	{
 		return dist*sizeY/2000;
 	}
-
+/*
 	private int WindowToX(int x)
 	{
 		return x*3000/sizeX-1500;
@@ -85,7 +74,7 @@ public class Fenetre extends JPanel {
 	{
 		return 2000-y*2000/sizeY;
 	}
-
+*/
 	private int XtoWindow(int x)
 	{
 		return (x+1500)*sizeX/3000;
@@ -99,65 +88,10 @@ public class Fenetre extends JPanel {
 	public void paint(Graphics g)
 	{
 		g.drawImage(image, 0, 0, this);
-
-	    g.setColor(Color.PINK.darker().darker());
-	    paintObstacleEnBiais(g);
-		
-	    g.setColor(Color.PINK);
-	    paintSegments(g);
-
-/*		g.setColor(Color.RED.darker().darker().darker());
-		for(Obstacle o : listObstaclesFixes)
-			paintObstacle(o,g,dilatationObstacle);*/
-
-		g.setColor(Color.RED.darker().darker());
-		for(ObstaclesFixes o : ObstaclesFixes.values())
-			paintObstacle(o.getObstacle(), g,0);
-
-		g.setColor(Color.YELLOW);
-		for(Vec2<ReadOnly> pos : pointsADessiner)
-			g.fillOval(XtoWindow(pos.x)-5, YtoWindow(pos.y)-5, 10, 10);
-
-		// vert transparent
-		g.setColor(new Color(0, 130, 0, 40));
-		for(GameElementNames o : GameElementNames.values())
-			paintObstacle(o.getObstacle(),g,dilatationObstacle);
-
-		g.setColor(new Color(0, 130, 0, 255));
-		for(GameElementNames o : GameElementNames.values())
-			paintObstacle(o.getObstacle(),g,0);
-		
 		g.setColor(new Color(0, 0, 130, 40));
+
 		for(int i = firstNotDead; i < listObstaclesMobiles.size(); i++)
-			paintObstacle(listObstaclesMobiles.get(i), g, 0);
-		
-		g.setColor(Color.WHITE);
-		g.fillRect(sizeX, 0, 200, sizeY);		
-
-		g.setColor(Color.BLACK);
-	    g.drawString(affichage.getIterator(), sizeX+50, 30);
-
-	    g.setColor(Color.BLUE);
-	    for(int j = 0; j < paths.size(); j++)
-	    {
-	    	ArrayList<Vec2<ReadOnly>> path = paths.get(j);
-	    	Double orientation = orientations.get(j);
-		    if(path.size() >= 1)
-		    {
-		    	if(orientation != null)
-		    	{
-		    		g.setColor(Color.RED);
-			    	g.fillOval(XtoWindow(path.get(0).x)-3+(int)(30*Math.cos(orientation)), YtoWindow(path.get(0).y)-3-(int)(30*Math.sin(orientation)), 6, 6);
-		    	}
-			    g.setColor(couleurs.get(j));
-		    	g.fillOval(XtoWindow(path.get(0).x)-5, YtoWindow(path.get(0).y)-5, 10, 10);
-		    	g.fillOval(XtoWindow(path.get(path.size()-1).x)-5, YtoWindow(path.get(path.size()-1).y)-5, 10, 10);
-			    for(int i = 0; i < path.size()-1; i++)
-			    {
-			    	g.drawLine(XtoWindow(path.get(i).x), YtoWindow(path.get(i).y), XtoWindow(path.get(i+1).x), YtoWindow(path.get(i+1).y));
-			    }
-		    }
-	    }
+			paintObstacle(listObstaclesMobiles.get(i).getTestOnly(), g, 0);
 	}
 
 	public void showOnFrame() {
@@ -169,9 +103,14 @@ public class Fenetre extends JPanel {
 		frame.setVisible(true);
 	}
 
-	public void setObstaclesMobiles(ArrayList<ObstacleProximity<ReadOnly>> listObstaclesMobiles, int firstNotDead)
+	public void updateFirstNotDead(int firstNotDead)
 	{
-		this.firstNotDead  = firstNotDead;
+		this.firstNotDead = firstNotDead;
+	}
+	
+	public void setObstaclesMobiles(ArrayList<ObstacleProximity<ReadOnly>> listObstaclesMobiles)
+	{
+		this.firstNotDead  = 0;
 		this.listObstaclesMobiles = listObstaclesMobiles;
 	}
 
@@ -182,7 +121,7 @@ public class Fenetre extends JPanel {
 		else
 			g.fillOval(XtoWindow(Obstacle.getPosition(o).x-o.getRadius()-dilatationObstacle), YtoWindow(Obstacle.getPosition(o).y+o.getRadius()+dilatationObstacle), distanceXtoWindow((o.getRadius()+dilatationObstacle)*2), distanceYtoWindow((o.getRadius()+dilatationObstacle)*2));		
 	}
-	
+/*	
 	public void paintObstacle(ObstacleRectangular<TestOnly> o, Graphics g, int dilatationObstacle)
 	{
 		if(dilatationObstacle != 0)
@@ -209,12 +148,12 @@ public class Fenetre extends JPanel {
 		else if(o instanceof ObstacleCircular)
 			paintObstacle((ObstacleCircular<ReadOnly>)o, g, dilatationObstacle);
 	}
-
-	public void afficheCoordonnees(Point point)
+*/
+/*	public void afficheCoordonnees(Point point)
 	{
 		affichage = new AttributedString("("+WindowToX((int)point.getX())+", "+WindowToY((int)point.getY())+")");
 	}
-	
+	*/
 	public void addSegment(Vec2<ReadOnly> a, Vec2<ReadOnly> b)
 	{
 		@SuppressWarnings("unchecked")

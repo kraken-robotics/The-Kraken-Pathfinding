@@ -42,7 +42,6 @@ public class ObstacleManager implements Service
     
     private int firstNotDead = 0;
 
-    private int rayon_robot_adverse;
     private int distanceApproximation;
     private int dureeAvantPeremption;
 	private int table_x = 3000;
@@ -78,7 +77,7 @@ public class ObstacleManager implements Service
      */
     public synchronized void creerObstacle(final Vec2<ReadOnly> position, long date_actuelle)
     {
-        ObstacleProximity<ReadOnly> obstacle = new ObstacleProximity<ReadOnly>(position, rayon_robot_adverse, date_actuelle+dureeAvantPeremption);
+        ObstacleProximity<ReadOnly> obstacle = new ObstacleProximity<ReadOnly>(position, rayonEnnemi, date_actuelle+dureeAvantPeremption);
 //        log.warning("Obstacle créé, rayon = "+rayon_robot_adverse+", centre = "+position+", meurt à "+(date_actuelle+dureeAvantPeremption), this);
         listObstaclesMobiles.add(obstacle);
         checkGameElements(position);
@@ -92,7 +91,7 @@ public class ObstacleManager implements Service
     {
         // On vérifie aussi ceux qui ont un rayon nul (distributeur, clap, ..)
         for(GameElementNames g: GameElementNames.values)
-            if(table.isDone(g) == Tribool.FALSE && table.isProcheObstacle(g, position, rayon_robot_adverse))
+            if(table.isDone(g) == Tribool.FALSE && table.isProcheObstacle(g, position, rayonEnnemi))
             	table.setDone(g, Tribool.MAYBE);
     }
 
@@ -306,8 +305,7 @@ public class ObstacleManager implements Service
 		table_x = config.getInt(ConfigInfo.TABLE_X);
 		table_y = config.getInt(ConfigInfo.TABLE_Y);
 		nbCapteurs = config.getInt(ConfigInfo.NB_CAPTEURS_PROXIMITE);
-		rayonEnnemi = 2*config.getInt(ConfigInfo.RAYON_ROBOT_ADVERSE);
-		rayon_robot_adverse = config.getInt(ConfigInfo.RAYON_ROBOT_ADVERSE);
+		rayonEnnemi = config.getInt(ConfigInfo.RAYON_ROBOT_ADVERSE);
 		dureeAvantPeremption = config.getInt(ConfigInfo.DUREE_PEREMPTION_OBSTACLES);
 		distanceApproximation = config.getInt(ConfigInfo.DISTANCE_MAX_ENTRE_MESURE_ET_OBJET);
 	}
@@ -425,10 +423,18 @@ public class ObstacleManager implements Service
 		 */
 		for(int i = 0; i < nbCapteurs; i++)
 		{
+			if(data.mesures[i] < 40 || data.mesures[i] > 800)
+			{
+				done[i] = true;
+				log.debug("Capteur "+i+" trop proche ou trop loin.");
+				continue;
+			}
 			Vec2<ReadWrite> positionBrute = new Vec2<ReadWrite>(data.mesures[i], Capteurs.orientationsRelatives[i]);
 			Vec2.plus(positionBrute, Capteurs.positionsRelatives[i]);
 			Vec2.rotate(positionBrute, data.orientationRobot);
 			Vec2.plus(positionBrute, data.positionRobot);
+			log.debug("Position brute: "+positionBrute);
+			
 			if(positionBrute.x > table_x / 2 - distanceApproximation ||
 					positionBrute.x < -table_x / 2 + distanceApproximation ||
 					positionBrute.y < distanceApproximation ||
@@ -440,7 +446,6 @@ public class ObstacleManager implements Service
 			}
 			else
 				done[i] = false;
-			
 		}
 		
 		/**
@@ -452,11 +457,22 @@ public class ObstacleManager implements Service
 			int nbCapteur2 = Capteurs.coupleCapteurs[i][1];
 
 			if(done[nbCapteur1] || done[nbCapteur2])
+			{
+				if(done[nbCapteur1])
+					log.debug("Capteur "+nbCapteur1+" déjà fait, couple "+i+" annulé");
+				else
+					log.debug("Capteur "+nbCapteur2+" déjà fait, couple "+i+" annulé");
 				continue;
+			}
 
 			int distanceEntreCapteurs = Capteurs.coupleCapteurs[i][2];
 			int mesure1 = data.mesures[nbCapteur1];
 			int mesure2 = data.mesures[nbCapteur2];
+			
+			// Si l'inégalité triangulaire n'est pas respectée
+			if(mesure1 + mesure2 <= distanceEntreCapteurs)
+				continue;
+			
 			double posX = ((double)(distanceEntreCapteurs*distanceEntreCapteurs + mesure1*mesure1 - mesure2*mesure2))/(2*distanceEntreCapteurs);
 			double posY = Math.sqrt(mesure1*mesure1 - posX*posX);
 			
@@ -465,29 +481,40 @@ public class ObstacleManager implements Service
 			Vec2<ReadWrite> BC = pointVu1.clone();
 			Vec2.rotateAngleDroit(BC);
 			Vec2.scalar(BC, posY/distanceEntreCapteurs);
+			log.debug("Longueur BC: "+BC.length()+", posY: "+posY);
 			Vec2.scalar(pointVu1, (double)(posX)/distanceEntreCapteurs);
 			Vec2.plus(pointVu1, Capteurs.positionsRelatives[nbCapteur1]);
 			Vec2<ReadWrite> pointVu2 = pointVu1.clone();
 			Vec2.plus(pointVu1, BC);
 			Vec2.minus(pointVu2, BC);
 			
-			if(Capteurs.canBeSeen(pointVu1.getReadOnly(), nbCapteur1) && Capteurs.canBeSeen(pointVu1.getReadOnly(), nbCapteur2))
+			log.debug("Point vu 1: "+pointVu1);
+			log.debug("Point vu 2: "+pointVu2);
+			
+			boolean vu = Capteurs.canBeSeen(pointVu1.getReadOnly(), nbCapteur1) && Capteurs.canBeSeen(pointVu1.getReadOnly(), nbCapteur2);
+			if(vu)
+				log.debug("pointVu1 est visible!");
+
+			if(!vu)
+			{
+				vu = Capteurs.canBeSeen(pointVu2.getReadOnly(), nbCapteur1) && Capteurs.canBeSeen(pointVu2.getReadOnly(), nbCapteur2);
+				pointVu1 = pointVu2;
+				Vec2.oppose(BC);
+				if(vu)
+					log.debug("pointVu2 est visible!");
+			}
+			if(vu)			
 			{
 				done[nbCapteur1] = true;
 				done[nbCapteur2] = true;
-				Vec2.scalar(BC, (posY+rayonEnnemi)/posY);
+				log.debug("Scalaire: "+(rayonEnnemi)/posY);
+				Vec2.scalar(BC, ((double)rayonEnnemi)/posY);
 				Vec2.plus(pointVu1, BC);
+				Vec2.rotate(pointVu1, data.orientationRobot);
+				Vec2.plus(pointVu1, data.positionRobot);
+				log.debug("Longueur BC: "+BC.length());
 				// TODO: supprimer tous les autres obstacles près de pointVu1
 				creerObstacle(pointVu1.getReadOnly(), System.currentTimeMillis());
-			}
-			else if(Capteurs.canBeSeen(pointVu2.getReadOnly(), nbCapteur1) && Capteurs.canBeSeen(pointVu2.getReadOnly(), nbCapteur2))
-			{
-				done[nbCapteur1] = true;
-				done[nbCapteur2] = true;				
-				Vec2.scalar(BC, (posY+rayonEnnemi)/posY);
-				Vec2.minus(pointVu2, BC);
-				// TODO idem
-				creerObstacle(pointVu2.getReadOnly(), System.currentTimeMillis());
 			}
 		}
 		
@@ -501,29 +528,10 @@ public class ObstacleManager implements Service
 				Vec2.plus(positionEnnemi, Capteurs.positionsRelatives[i]);
 				Vec2.rotate(positionEnnemi, data.orientationRobot);
 				Vec2.plus(positionEnnemi, data.positionRobot);
+				log.debug("Obstacle vu par un seul capteur: "+positionEnnemi);
 				creerObstacle(positionEnnemi.getReadOnly(), System.currentTimeMillis());
+
 			}
-		
-		
-/*		if(System.currentTimeMillis() - date_dernier_ajout > tempo &&
-				data.pointBrut.x - diametreEnnemi > -table_x / 2 &&
-				data.pointBrut.y > diametreEnnemi &&
-				data.pointBrut.x + diametreEnnemi < table_x / 2 &&
-				data.pointBrut.y + diametreEnnemi < table_y)
-			if(!isObstacleFixePresentCapteurs(data.pointBrut))
-			{
-				date_dernier_ajout = System.currentTimeMillis();
-				creerObstacle(data.centreEnnemi, date_dernier_ajout);
-				log.debug("Nouvel obstacle en "+data.centreEnnemi);
-				synchronized(this)
-				{
-					notifyAll();
-				}
-			}
-			else
-			    log.debug("L'objet vu en "+data.pointBrut+" est un obstacle fixe.");
-		else
-			log.debug("Hors table ou trop récent");*/
 	}
 	
 }

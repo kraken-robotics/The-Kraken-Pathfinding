@@ -3,6 +3,7 @@ package obstacles;
 import permissions.Permission;
 import permissions.ReadOnly;
 import permissions.ReadWrite;
+import permissions.TestOnly;
 import robot.Speed;
 import utils.Vec2;
 
@@ -80,5 +81,12 @@ public class ObstacleProximity<T extends Permission> extends ObstacleCircular<T>
 	{
 		return death_date;
 	}
+	
+	@SuppressWarnings("unchecked")
+	public ObstacleProximity<TestOnly> getTestOnly()
+	{
+		return (ObstacleProximity<TestOnly>) this;
+	}
+
 
 }

@@ -86,8 +86,8 @@ public class ThreadSerial extends ThreadAvecStop implements Service
 						 	 */
 							int xRobot = Integer.parseInt(serie.read());
 							int yRobot = Integer.parseInt(serie.read());
-							int portion = Integer.parseInt(serie.read());
 							double orientationRobot = Double.parseDouble(serie.read());
+							int portion = Integer.parseInt(serie.read());
 							int[] mesures = new int[nbCapteurs];
 							for(int i = 0; i < nbCapteurs; i++)
 								mesures[i] = Integer.parseInt(serie.read());
