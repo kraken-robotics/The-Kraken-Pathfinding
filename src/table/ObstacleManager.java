@@ -9,6 +9,7 @@ import obstacles.ObstacleRectangular;
 import obstacles.ObstacleTrajectoireCourbe;
 import obstacles.ObstaclesFixes;
 import permissions.ReadOnly;
+import permissions.ReadWrite;
 import planification.astar.arc.PathfindingNodes;
 import robot.Speed;
 import container.Service;
@@ -44,11 +45,10 @@ public class ObstacleManager implements Service
     private int rayon_robot_adverse;
     private int distanceApproximation;
     private int dureeAvantPeremption;
-    private long date_dernier_ajout = 0;
-	private double tempo = 0;
 	private int table_x = 3000;
 	private int table_y = 2000;
-	private int diametreEnnemi;
+	private int rayonEnnemi;
+	private int nbCapteurs;
 
     
     public ObstacleManager(Log log, Table table)
@@ -303,10 +303,10 @@ public class ObstacleManager implements Service
     
 	@Override
 	public void useConfig(Config config) {
-		tempo = config.getDouble(ConfigInfo.CAPTEURS_TEMPORISATION_OBSTACLES);
 		table_x = config.getInt(ConfigInfo.TABLE_X);
 		table_y = config.getInt(ConfigInfo.TABLE_Y);
-		diametreEnnemi = 2*config.getInt(ConfigInfo.RAYON_ROBOT_ADVERSE);
+		nbCapteurs = config.getInt(ConfigInfo.NB_CAPTEURS_PROXIMITE);
+		rayonEnnemi = 2*config.getInt(ConfigInfo.RAYON_ROBOT_ADVERSE);
 		rayon_robot_adverse = config.getInt(ConfigInfo.RAYON_ROBOT_ADVERSE);
 		dureeAvantPeremption = config.getInt(ConfigInfo.DUREE_PEREMPTION_OBSTACLES);
 		distanceApproximation = config.getInt(ConfigInfo.DISTANCE_MAX_ENTRE_MESURE_ET_OBJET);
@@ -414,11 +414,98 @@ public class ObstacleManager implements Service
 	}
 
 	/**
-	 * Ajoute un obstacle si celui-ci est cohérent
+	 * Met à jour les obstacles mobiles
 	 */
-	public void addIfUseful(IncomingData data)
+	public void updateObstaclesMobiles(IncomingData data)
 	{
-		if(System.currentTimeMillis() - date_dernier_ajout > tempo &&
+		boolean[] done = new boolean[nbCapteurs];
+			
+		/**
+		 * Suppression des mesures qui sont hors-table ou qui voit un obstacle de table
+		 */
+		for(int i = 0; i < nbCapteurs; i++)
+		{
+			Vec2<ReadWrite> positionBrute = new Vec2<ReadWrite>(data.mesures[i], Capteurs.orientationsRelatives[i]);
+			Vec2.plus(positionBrute, Capteurs.positionsRelatives[i]);
+			Vec2.rotate(positionBrute, data.orientationRobot);
+			Vec2.plus(positionBrute, data.positionRobot);
+			if(positionBrute.x > table_x / 2 - distanceApproximation ||
+					positionBrute.x < -table_x / 2 + distanceApproximation ||
+					positionBrute.y < distanceApproximation ||
+					positionBrute.y > table_y - distanceApproximation ||
+					isObstacleFixePresentCapteurs(positionBrute.getReadOnly()))
+			{
+				log.debug("Capteur "+i+" ignoré.");
+				done[i] = true; // le capteur voit un obstacle fixe: on ignore sa valeur
+			}
+			else
+				done[i] = false;
+			
+		}
+		
+		/**
+		 * On cherche les détections couplées en priorité
+		 */
+		for(int i = 0; i < Capteurs.nbCouples; i++)
+		{
+			int nbCapteur1 = Capteurs.coupleCapteurs[i][0];
+			int nbCapteur2 = Capteurs.coupleCapteurs[i][1];
+
+			if(done[nbCapteur1] || done[nbCapteur2])
+				continue;
+
+			int distanceEntreCapteurs = Capteurs.coupleCapteurs[i][2];
+			int mesure1 = data.mesures[nbCapteur1];
+			int mesure2 = data.mesures[nbCapteur2];
+			double posX = ((double)(distanceEntreCapteurs*distanceEntreCapteurs + mesure1*mesure1 - mesure2*mesure2))/(2*distanceEntreCapteurs);
+			double posY = Math.sqrt(mesure1*mesure1 - posX*posX);
+			
+			Vec2<ReadWrite> pointVu1 = Capteurs.positionsRelatives[nbCapteur2].clone();
+			Vec2.minus(pointVu1, Capteurs.positionsRelatives[nbCapteur1]);
+			Vec2<ReadWrite> BC = pointVu1.clone();
+			Vec2.rotateAngleDroit(BC);
+			Vec2.scalar(BC, posY/distanceEntreCapteurs);
+			Vec2.scalar(pointVu1, (double)(posX)/distanceEntreCapteurs);
+			Vec2.plus(pointVu1, Capteurs.positionsRelatives[nbCapteur1]);
+			Vec2<ReadWrite> pointVu2 = pointVu1.clone();
+			Vec2.plus(pointVu1, BC);
+			Vec2.minus(pointVu2, BC);
+			
+			if(Capteurs.canBeSeen(pointVu1.getReadOnly(), nbCapteur1) && Capteurs.canBeSeen(pointVu1.getReadOnly(), nbCapteur2))
+			{
+				done[nbCapteur1] = true;
+				done[nbCapteur2] = true;
+				Vec2.scalar(BC, (posY+rayonEnnemi)/posY);
+				Vec2.plus(pointVu1, BC);
+				// TODO: supprimer tous les autres obstacles près de pointVu1
+				creerObstacle(pointVu1.getReadOnly(), System.currentTimeMillis());
+			}
+			else if(Capteurs.canBeSeen(pointVu2.getReadOnly(), nbCapteur1) && Capteurs.canBeSeen(pointVu2.getReadOnly(), nbCapteur2))
+			{
+				done[nbCapteur1] = true;
+				done[nbCapteur2] = true;				
+				Vec2.scalar(BC, (posY+rayonEnnemi)/posY);
+				Vec2.minus(pointVu2, BC);
+				// TODO idem
+				creerObstacle(pointVu2.getReadOnly(), System.currentTimeMillis());
+			}
+		}
+		
+		/**
+		 * Maintenant, on récupère tous les capteurs qui n'ont pas participé à une détection couplée
+		 */
+		for(int i = 0; i < nbCapteurs; i++)
+			if(!done[i])
+			{
+				Vec2<ReadWrite> positionEnnemi = new Vec2<ReadWrite>(data.mesures[i]+rayonEnnemi, Capteurs.orientationsRelatives[i]);
+				Vec2.plus(positionEnnemi, Capteurs.positionsRelatives[i]);
+				Vec2.rotate(positionEnnemi, data.orientationRobot);
+				Vec2.plus(positionEnnemi, data.positionRobot);
+				creerObstacle(positionEnnemi.getReadOnly(), System.currentTimeMillis());
+			}
+		
+		
+/*		if(System.currentTimeMillis() - date_dernier_ajout > tempo &&
 				data.pointBrut.x - diametreEnnemi > -table_x / 2 &&
 				data.pointBrut.y > diametreEnnemi &&
 				data.pointBrut.x + diametreEnnemi < table_x / 2 &&
@@ -436,7 +523,7 @@ public class ObstacleManager implements Service
 			else
 			    log.debug("L'objet vu en "+data.pointBrut+" est un obstacle fixe.");
 		else
-			log.debug("Hors table ou trop récent");
+			log.debug("Hors table ou trop récent");*/
 	}
 	
 }

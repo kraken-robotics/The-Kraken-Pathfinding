@@ -46,7 +46,7 @@ public class ThreadObstacleManager extends ThreadAvecStop implements Service
 			// Cet appel peut lancer un obstaclemanager.notifyAll()
 			// Il n'est pas synchronized car il ne modifie pas le buffer
 			if(e != null)
-				obstaclemanager.addIfUseful(e);
+				obstaclemanager.updateObstaclesMobiles(e);
 		}
 	}
 	

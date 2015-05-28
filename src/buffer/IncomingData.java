@@ -4,27 +4,31 @@ import permissions.ReadOnly;
 import utils.Vec2;
 
 /**
- * Une donnée qui provient des capteurs
+ * Un groupe de mesures qui proviennent des capteurs
  * @author pf
  *
  */
 
 public class IncomingData
 {
-	/** pointBrut est l'endroit où le capteur a vu quelque chose */
-	public Vec2<ReadOnly> pointBrut;
+	/** position du robot lors de la mesure */
+	public Vec2<ReadOnly> positionRobot;
 
-	/** centreEnnemi est l'estimation du centre de l'ennemi */
-	public Vec2<ReadOnly> centreEnnemi;
+	/** orientation du robot lors de la mesure */
+	public double orientationRobot;
 	
 	/** Portion parcouru par le robot lors de la détection de cet obstacle */
 	public int portion;
+	
+	/** Ce que voit chacun des capteurs */
+	public int[] mesures;
 
-	public IncomingData(Vec2<ReadOnly> pointBrut, Vec2<ReadOnly> centreEnnemi, int portion)
+	public IncomingData(Vec2<ReadOnly> positionRobot, double orientationRobot, int portion, int[] mesures)
 	{
-		this.pointBrut = pointBrut;
-		this.centreEnnemi = centreEnnemi;
+		this.positionRobot = positionRobot;
+		this.orientationRobot = orientationRobot;
 		this.portion = portion;
+		this.mesures = mesures;
 	}
 	
 }

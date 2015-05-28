@@ -35,6 +35,7 @@ public class ThreadSerial extends ThreadAvecStop implements Service
 	
 	private RequeteSTM requete;
 	private boolean capteursOn = false;
+	private int nbCapteurs;
 	
 	public ThreadSerial(Log log, Config config, SerialConnexion serie, IncomingDataBuffer buffer, IncomingHookBuffer hookbuffer, HookFactory hookfactory)
 	{
@@ -79,20 +80,20 @@ public class ThreadSerial extends ThreadAvecStop implements Service
 					log.debug(first);
 					switch(first)
 					{
-						case "obs":
+						case "cpt":
 							/**
-							 * Un obstacle est vu. Il y a deux positions:
-							 * - la position brute, ce que voit vraiment le capteur
-							 * - la position supposée de l'obstacle
+							 * Acquiert ce que voit les capteurs
 						 	 */
-							int xBrut = Integer.parseInt(serie.read());
-							int yBrut = Integer.parseInt(serie.read());
-							int xEnnemi = Integer.parseInt(serie.read());
-							int yEnnemi = Integer.parseInt(serie.read());
+							int xRobot = Integer.parseInt(serie.read());
+							int yRobot = Integer.parseInt(serie.read());
 							int portion = Integer.parseInt(serie.read());
+							double orientationRobot = Double.parseDouble(serie.read());
+							int[] mesures = new int[nbCapteurs];
+							for(int i = 0; i < nbCapteurs; i++)
+								mesures[i] = Integer.parseInt(serie.read());
 
 							if(capteursOn)
-								buffer.add(new IncomingData(new Vec2<ReadOnly>(xBrut, yBrut), new Vec2<ReadOnly>(xEnnemi, yEnnemi), portion));
+								buffer.add(new IncomingData(new Vec2<ReadOnly>(xRobot, yRobot), orientationRobot, portion, mesures));
 							break;
 							
 							/**
@@ -164,6 +165,8 @@ public class ThreadSerial extends ThreadAvecStop implements Service
 
 	@Override
 	public void useConfig(Config config)
-	{}
+	{
+		nbCapteurs = config.getInt(ConfigInfo.NB_CAPTEURS_PROXIMITE);
+	}
 
 }

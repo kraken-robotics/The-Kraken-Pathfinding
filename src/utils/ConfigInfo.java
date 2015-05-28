@@ -27,7 +27,7 @@ public enum ConfigInfo {
 	DUREE_PEREMPTION_OBSTACLES("5000", true),
 	CAPTEURS_TEMPORISATION_OBSTACLES("100", true),
 //	DISTANCE_DETECTION("300"),
-//	NB_CAPTEURS_PROXIMITE("4"),
+	NB_CAPTEURS_PROXIMITE("2", true),
 	AFFICHE_DEBUG("false", true),
 	SAUVEGARDE_FICHIER("true", true),
 	DISTANCE_MAX_ENTRE_MESURE_ET_OBJET("50", true),
@@ -46,6 +46,7 @@ public enum ConfigInfo {
 	CHECK_POINTS_SORTIE("false", true),
 	PREVISION_COLLISION("50", true),
 	BAUDRATE("57600", true),
+	
 	
 	/**
 	 * Config dynamique

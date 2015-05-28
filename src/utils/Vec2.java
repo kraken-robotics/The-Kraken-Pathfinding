@@ -28,6 +28,12 @@ public class Vec2<T extends Permission>
 		y = (int) (Math.sin(angle)*1000);
 	}
 
+	public Vec2(int longueur, double angle)
+	{
+		x = (int) (Math.cos(angle)*longueur);
+		y = (int) (Math.sin(angle)*longueur);
+	}
+
 	public Vec2(Vec2<? extends Permission> model)
 	{
 		x = model.x;
@@ -188,6 +194,16 @@ public class Vec2<T extends Permission>
 		return new Vec2<ReadWrite>((int)(cos*x-sin*y), (int)(sin*x+cos*y));
 	}
 
+	public static Vec2<ReadWrite> rotate(Vec2<ReadWrite> v, double angle)
+	{
+		double cos = Math.cos(angle);
+		double sin = Math.sin(angle);
+		int old_x = v.x;
+		v.x = (int)(cos*v.x-sin*v.y);
+		v.y = (int)(sin*old_x+cos*v.y);
+		return v;
+	}
+
 	/**
 	 * Normalise le vecteur
 	 */
@@ -226,6 +242,18 @@ public class Vec2<T extends Permission>
 	public Vec2<ReadWrite> projectOnNewVector(Vec2<? extends Permission> other)
 	{
 		return scalarNewVector(dot(other));
+	}
+
+	/**
+	 * Tourne le vecteur de PI/2
+	 * @return
+	 */
+	public static Vec2<ReadWrite> rotateAngleDroit(Vec2<ReadWrite> v)
+	{
+		int tmp = v.x;
+		v.x = -v.y;
+		v.y = tmp;
+		return v;
 	}
 	
 }
