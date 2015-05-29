@@ -426,14 +426,14 @@ public class ObstacleManager implements Service
 			if(data.mesures[i] < 40 || data.mesures[i] > 800)
 			{
 				done[i] = true;
-				log.debug("Capteur "+i+" trop proche ou trop loin.");
+//				log.debug("Capteur "+i+" trop proche ou trop loin.");
 				continue;
 			}
 			Vec2<ReadWrite> positionBrute = new Vec2<ReadWrite>(data.mesures[i], Capteurs.orientationsRelatives[i]);
 			Vec2.plus(positionBrute, Capteurs.positionsRelatives[i]);
 			Vec2.rotate(positionBrute, data.orientationRobot);
 			Vec2.plus(positionBrute, data.positionRobot);
-			log.debug("Position brute: "+positionBrute);
+//			log.debug("Position brute: "+positionBrute);
 			
 			if(positionBrute.x > table_x / 2 - distanceApproximation ||
 					positionBrute.x < -table_x / 2 + distanceApproximation ||
@@ -441,7 +441,7 @@ public class ObstacleManager implements Service
 					positionBrute.y > table_y - distanceApproximation ||
 					isObstacleFixePresentCapteurs(positionBrute.getReadOnly()))
 			{
-				log.debug("Capteur "+i+" ignoré.");
+//				log.debug("Capteur "+i+" ignoré.");
 				done[i] = true; // le capteur voit un obstacle fixe: on ignore sa valeur
 			}
 			else
@@ -456,65 +456,76 @@ public class ObstacleManager implements Service
 			int nbCapteur1 = Capteurs.coupleCapteurs[i][0];
 			int nbCapteur2 = Capteurs.coupleCapteurs[i][1];
 
-			if(done[nbCapteur1] || done[nbCapteur2])
+			if(done[nbCapteur1] && done[nbCapteur2])
 			{
-				if(done[nbCapteur1])
-					log.debug("Capteur "+nbCapteur1+" déjà fait, couple "+i+" annulé");
-				else
-					log.debug("Capteur "+nbCapteur2+" déjà fait, couple "+i+" annulé");
 				continue;
 			}
-
-			int distanceEntreCapteurs = Capteurs.coupleCapteurs[i][2];
-			int mesure1 = data.mesures[nbCapteur1];
-			int mesure2 = data.mesures[nbCapteur2];
-			
-			// Si l'inégalité triangulaire n'est pas respectée
-			if(mesure1 + mesure2 <= distanceEntreCapteurs)
-				continue;
-			
-			double posX = ((double)(distanceEntreCapteurs*distanceEntreCapteurs + mesure1*mesure1 - mesure2*mesure2))/(2*distanceEntreCapteurs);
-			double posY = Math.sqrt(mesure1*mesure1 - posX*posX);
-			
-			Vec2<ReadWrite> pointVu1 = Capteurs.positionsRelatives[nbCapteur2].clone();
-			Vec2.minus(pointVu1, Capteurs.positionsRelatives[nbCapteur1]);
-			Vec2<ReadWrite> BC = pointVu1.clone();
-			Vec2.rotateAngleDroit(BC);
-			Vec2.scalar(BC, posY/distanceEntreCapteurs);
-			log.debug("Longueur BC: "+BC.length()+", posY: "+posY);
-			Vec2.scalar(pointVu1, (double)(posX)/distanceEntreCapteurs);
-			Vec2.plus(pointVu1, Capteurs.positionsRelatives[nbCapteur1]);
-			Vec2<ReadWrite> pointVu2 = pointVu1.clone();
-			Vec2.plus(pointVu1, BC);
-			Vec2.minus(pointVu2, BC);
-			
-			log.debug("Point vu 1: "+pointVu1);
-			log.debug("Point vu 2: "+pointVu2);
-			
-			boolean vu = Capteurs.canBeSeen(pointVu1.getReadOnly(), nbCapteur1) && Capteurs.canBeSeen(pointVu1.getReadOnly(), nbCapteur2);
-			if(vu)
-				log.debug("pointVu1 est visible!");
-
-			if(!vu)
+			else if(done[nbCapteur1] || done[nbCapteur2])
 			{
-				vu = Capteurs.canBeSeen(pointVu2.getReadOnly(), nbCapteur1) && Capteurs.canBeSeen(pointVu2.getReadOnly(), nbCapteur2);
-				pointVu1 = pointVu2;
-				Vec2.oppose(BC);
-				if(vu)
-					log.debug("pointVu2 est visible!");
+				int nbCapteurQuiVoit = done[nbCapteur2]?nbCapteur1:nbCapteur2;
+				Vec2<ReadWrite> pointVu = Capteurs.getPositionAjustee(i, rayonEnnemi, done[nbCapteur2], data.mesures[nbCapteurQuiVoit]);
+//				Vec2<ReadWrite> pointVu = Capteurs.getPositionAjustee(i, 0, done[nbCapteur2], data.mesures[nbCapteurQuiVoit]);
+				if(pointVu == null)
+					continue;
+				Vec2.plus(pointVu, Capteurs.positionsRelatives[nbCapteurQuiVoit]);
+				Vec2.rotate(pointVu, data.orientationRobot);
+				Vec2.plus(pointVu, data.positionRobot);
+				creerObstacle(pointVu.getReadOnly(), System.currentTimeMillis());
+				done[nbCapteurQuiVoit] = true;
 			}
-			if(vu)			
-			{
-				done[nbCapteur1] = true;
-				done[nbCapteur2] = true;
-				log.debug("Scalaire: "+(rayonEnnemi)/posY);
-				Vec2.scalar(BC, ((double)rayonEnnemi)/posY);
+			else
+			{	
+				int distanceEntreCapteurs = Capteurs.coupleCapteurs[i][2];
+				int mesure1 = data.mesures[nbCapteur1];
+				int mesure2 = data.mesures[nbCapteur2];
+				
+				// Si l'inégalité triangulaire n'est pas respectée
+				if(mesure1 + mesure2 <= distanceEntreCapteurs)
+					continue;
+				
+				double posX = ((double)(distanceEntreCapteurs*distanceEntreCapteurs + mesure1*mesure1 - mesure2*mesure2))/(2*distanceEntreCapteurs);
+				double posY = Math.sqrt(mesure1*mesure1 - posX*posX);
+				
+				Vec2<ReadWrite> pointVu1 = Capteurs.positionsRelatives[nbCapteur2].clone();
+				Vec2.minus(pointVu1, Capteurs.positionsRelatives[nbCapteur1]);
+				Vec2<ReadWrite> BC = pointVu1.clone();
+				Vec2.rotateAngleDroit(BC);
+				Vec2.scalar(BC, posY/distanceEntreCapteurs);
+//				log.debug("Longueur BC: "+BC.length()+", posY: "+posY);
+				Vec2.scalar(pointVu1, (double)(posX)/distanceEntreCapteurs);
+				Vec2.plus(pointVu1, Capteurs.positionsRelatives[nbCapteur1]);
+				Vec2<ReadWrite> pointVu2 = pointVu1.clone();
 				Vec2.plus(pointVu1, BC);
-				Vec2.rotate(pointVu1, data.orientationRobot);
-				Vec2.plus(pointVu1, data.positionRobot);
-				log.debug("Longueur BC: "+BC.length());
-				// TODO: supprimer tous les autres obstacles près de pointVu1
-				creerObstacle(pointVu1.getReadOnly(), System.currentTimeMillis());
+				Vec2.minus(pointVu2, BC);
+				
+//				log.debug("Point vu 1: "+pointVu1);
+//				log.debug("Point vu 2: "+pointVu2);
+				
+				boolean vu = Capteurs.canBeSeen(pointVu1.getReadOnly(), nbCapteur1) && Capteurs.canBeSeen(pointVu1.getReadOnly(), nbCapteur2);
+	//			if(vu)
+	//				log.debug("pointVu1 est visible!");
+	
+				if(!vu)
+				{
+					vu = Capteurs.canBeSeen(pointVu2.getReadOnly(), nbCapteur1) && Capteurs.canBeSeen(pointVu2.getReadOnly(), nbCapteur2);
+					pointVu1 = pointVu2;
+					Vec2.oppose(BC);
+	//				if(vu)
+	//					log.debug("pointVu2 est visible!");
+				}
+				if(vu)			
+				{
+					done[nbCapteur1] = true;
+					done[nbCapteur2] = true;
+	//				log.debug("Scalaire: "+(rayonEnnemi)/posY);
+					Vec2.scalar(BC, ((double)rayonEnnemi)/posY);
+					Vec2.plus(pointVu1, BC);
+					Vec2.rotate(pointVu1, data.orientationRobot);
+					Vec2.plus(pointVu1, data.positionRobot);
+	//				log.debug("Longueur BC: "+BC.length());
+					// TODO: supprimer tous les autres obstacles près de pointVu1
+					creerObstacle(pointVu1.getReadOnly(), System.currentTimeMillis());
+				}
 			}
 		}
 		
@@ -528,7 +539,7 @@ public class ObstacleManager implements Service
 				Vec2.plus(positionEnnemi, Capteurs.positionsRelatives[i]);
 				Vec2.rotate(positionEnnemi, data.orientationRobot);
 				Vec2.plus(positionEnnemi, data.positionRobot);
-				log.debug("Obstacle vu par un seul capteur: "+positionEnnemi);
+		//		log.debug("Obstacle vu par un seul capteur: "+positionEnnemi);
 				creerObstacle(positionEnnemi.getReadOnly(), System.currentTimeMillis());
 
 			}

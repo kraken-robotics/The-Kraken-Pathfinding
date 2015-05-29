@@ -29,8 +29,6 @@ public class IncomingData
 		this.orientationRobot = orientationRobot;
 		this.portion = portion;
 		this.mesures = mesures;
-		System.out.println("positionRobot: "+positionRobot);
-		System.out.println("orientationRobot: "+orientationRobot);
 	}
 	
 }

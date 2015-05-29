@@ -24,7 +24,7 @@ public class Capteurs {
 	/**
 	 * Les ultrasons ont un cône de 35°
 	 */
-	private static final double angleCone = 35.*Math.PI/180.;
+	public static final double angleCone = 35.*Math.PI/180.;
 	
 	private static final double cos = Math.cos(Math.PI/2-angleCone);
 	
@@ -74,13 +74,14 @@ public class Capteurs {
 	
 	/**
 	 * Ce point peut-il être vu par ce capteur?
+	 * Le point est dans le référentiel du robot
 	 * @param point
 	 * @param nbCapteur
 	 * @return
 	 */
 	public static boolean canBeSeen(Vec2<ReadOnly> point, int nbCapteur)
 	{
-		Vec2<ReadOnly> tmp = point.plusNewVector(positionsRelatives[nbCapteur]).getReadOnly();
+		Vec2<ReadOnly> tmp = point.minusNewVector(positionsRelatives[nbCapteur]).getReadOnly();
 		return tmp.dot(cones[nbCapteur][0]) > 0 && tmp.dot(cones[nbCapteur][1]) > 0 && tmp.dot(cones[nbCapteur][2]) > 0;
 	}
 	
@@ -92,45 +93,63 @@ public class Capteurs {
 	 * @param mesure
 	 * @return
 	 */
-	public static Vec2<ReadWrite> getPositionAjustee(int nbCouple, boolean gauche, int mesure)
+	public static Vec2<ReadWrite> getPositionAjustee(int nbCouple, int distanceAjustement, boolean gauche, int mesure)
 	{
 		int capteurQuiVoit = coupleCapteurs[nbCouple][gauche?0:1];
 		int capteurQuiNeVoitPas = coupleCapteurs[nbCouple][gauche?1:0];
 		Vec2<ReadWrite> intersectionPoint;
 		int distance = coupleCapteurs[nbCouple][2];
-		double b = 2.*distance*cos;
+		double b = -2.*distance*cos;
 		double c = distance*distance - mesure*mesure;
 		double delta = b*b-4*c;
+		
+/*		System.out.println("gauche: "+gauche);
+		System.out.println("distance entre capteurs: "+distance);
+		System.out.println("mesure: "+mesure);
+		System.out.println("cos: "+cos);
+	*/	
 		if(delta < 0)
 		{
-			System.out.println("Pas d'intersection");
+			System.out.println("Pas d'intersection: delta négatif");
 			return null;
 		}
-		
+
 		// On prend la plus grande solution
 		double s = (-b+Math.sqrt(delta))/2;
 		if(s <= 0)
 		{
-			System.out.println("Pas d'intersection");
+			System.out.println("Pas d'intersection: distance négative");
 			return null;
 		}
 			
+/*		System.out.println("Distance 1: "+s);
+		System.out.println("Distance 2: "+(-b-Math.sqrt(delta))/2);
+*/
 		if(gauche)
-			intersectionPoint = new Vec2<ReadWrite>((int)s, Math.PI/2+angleCone);
+			intersectionPoint = new Vec2<ReadWrite>((int)s, angleCone);
 		else
-			intersectionPoint = new Vec2<ReadWrite>((int)s, Math.PI/2-angleCone);
+			intersectionPoint = new Vec2<ReadWrite>((int)s, -angleCone);
 
-		// changement de repère
-		Vec2.plus(intersectionPoint, positionsRelatives[capteurQuiVoit]);
-		Vec2.minus(intersectionPoint, positionsRelatives[capteurQuiNeVoitPas]);		
-
-		if(!canBeSeen(intersectionPoint.getReadOnly(), capteurQuiVoit))
-			return null; // le point d'intersection n'est pas vu par le capteur qui voit l'obstacle
+//		System.out.println("Point avant repère: "+intersectionPoint);
 		
-		Vec2.plus(intersectionPoint, new Vec2<ReadWrite>(mesure, gauche?Math.PI/2+angleCone:Math.PI/2-angleCone));
-		Vec2.scalar(intersectionPoint, 0.5);
+		// changement de repère
+		Vec2.plus(intersectionPoint, positionsRelatives[capteurQuiNeVoitPas]);
+
+//		System.out.println("Point après repère: "+intersectionPoint);
+		
+//		System.out.println("Distance: "+intersectionPoint.distance(positionsRelatives[capteurQuiVoit]));
+		
+		if(!canBeSeen(intersectionPoint.getReadOnly(), capteurQuiVoit))
+		{
+			System.out.println("Ce point n'est pas visible");
+			return null; // le point d'intersection n'est pas vu par le capteur qui voit l'obstacle
+		}
+		
+//		System.out.println("Autre point: "+new Vec2<ReadWrite>(mesure, gauche?angleCone:-angleCone));
+		
+		Vec2.plus(intersectionPoint, Vec2.plus(new Vec2<ReadWrite>(mesure, gauche?angleCone:-angleCone), positionsRelatives[capteurQuiVoit]));
 		double longueur = intersectionPoint.length();
-		Vec2.scalar(intersectionPoint, mesure/longueur);
+		Vec2.scalar(intersectionPoint, (mesure+distanceAjustement)/longueur);
 		
 		return intersectionPoint;
 	}

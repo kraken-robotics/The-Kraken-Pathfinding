@@ -7,16 +7,18 @@ import obstacles.Obstacle;
 import obstacles.ObstacleCircular;
 import obstacles.ObstacleProximity;
 import obstacles.ObstacleRectangular;
-import obstacles.ObstaclesFixes;
+//import obstacles.ObstaclesFixes;
 import permissions.ReadOnly;
+import permissions.ReadWrite;
 import permissions.TestOnly;
-import table.GameElementNames;
+import table.Capteurs;
+//import table.GameElementNames;
 import utils.Vec2;
 
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
-import java.text.AttributedString;
+//import java.text.AttributedString;
 import java.util.ArrayList;
 
 /**
@@ -30,10 +32,11 @@ public class Fenetre extends JPanel {
 	private static final long serialVersionUID = 1L;
 
 	private int sizeX = 450, sizeY = 300;
-	private ArrayList<Vec2<ReadOnly>> pointsADessiner = new ArrayList<Vec2<ReadOnly>>();
+//	private ArrayList<Vec2<ReadOnly>> pointsADessiner = new ArrayList<Vec2<ReadOnly>>();
 	private ArrayList<ObstacleProximity<ReadOnly>> listObstaclesMobiles;
 	private ArrayList<Vec2<ReadOnly>[]> segments = new ArrayList<Vec2<ReadOnly>[]>();
 	private Image image;
+	private Vec2<ReadOnly> point;
 //	private AttributedString affichage = new AttributedString("");
 	private ArrayList<ArrayList<Vec2<ReadOnly>>> paths = new ArrayList<ArrayList<Vec2<ReadOnly>>>();
 	private ArrayList<Double> orientations = new ArrayList<Double>();
@@ -90,8 +93,34 @@ public class Fenetre extends JPanel {
 		g.drawImage(image, 0, 0, this);
 		g.setColor(new Color(0, 0, 130, 40));
 
-		for(int i = firstNotDead; i < listObstaclesMobiles.size(); i++)
-			paintObstacle(listObstaclesMobiles.get(i).getTestOnly(), g, 0);
+//		for(int i = firstNotDead; i < listObstaclesMobiles.size(); i++)
+//			paintObstacle(listObstaclesMobiles.get(i).getTestOnly(), g, 0);
+		if(listObstaclesMobiles.size() > 0)
+		paintObstacle(listObstaclesMobiles.get(listObstaclesMobiles.size()-1).getTestOnly(), g, 0);
+		
+		g.setColor(new Color(0, 0, 130, 255));
+		int nbCapteurs = Capteurs.nbCapteurs;
+		for(int i = 0; i < nbCapteurs; i++)
+		{
+			Vec2<ReadWrite> p1 = Capteurs.positionsRelatives[i].plusNewVector(new Vec2<ReadOnly>(0, 1000));
+			Vec2<ReadWrite> p2 = p1.plusNewVector(new Vec2<ReadOnly>(1000, Capteurs.angleCone + Capteurs.orientationsRelatives[i]));
+			Vec2<ReadWrite> p3 = p1.plusNewVector(new Vec2<ReadOnly>(1000, - Capteurs.angleCone + Capteurs.orientationsRelatives[i]));
+			int[] x = new int[3];
+			x[0] = XtoWindow(p1.x);
+			x[1] = XtoWindow(p2.x);
+			x[2] = XtoWindow(p3.x);
+			int[] y = new int[3];
+			y[0] = YtoWindow(p1.y);
+			y[1] = YtoWindow(p2.y);
+			y[2] = YtoWindow(p3.y);
+			g.drawPolygon(x, y, 3);
+		}
+
+		g.setColor(new Color(255, 0, 0, 255));
+
+		if(point != null)
+			g.fillOval(XtoWindow(point.x-20), YtoWindow(point.y+20), distanceXtoWindow(40), distanceYtoWindow(40));
+
 	}
 
 	public void showOnFrame() {
@@ -103,6 +132,11 @@ public class Fenetre extends JPanel {
 		frame.setVisible(true);
 	}
 
+	public void setPoint(Vec2<ReadOnly> point)
+	{
+		this.point = point;
+	}
+	
 	public void updateFirstNotDead(int firstNotDead)
 	{
 		this.firstNotDead = firstNotDead;
@@ -110,7 +144,7 @@ public class Fenetre extends JPanel {
 	
 	public void setObstaclesMobiles(ArrayList<ObstacleProximity<ReadOnly>> listObstaclesMobiles)
 	{
-		this.firstNotDead  = 0;
+		this.firstNotDead = 0;
 		this.listObstaclesMobiles = listObstaclesMobiles;
 	}
 

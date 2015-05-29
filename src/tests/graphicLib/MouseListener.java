@@ -1,6 +1,6 @@
 package tests.graphicLib;
 
-import java.awt.Point;
+//import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -23,7 +23,7 @@ public class MouseListener extends MouseAdapter {
 	
 	public void mouseClicked(MouseEvent e)
 	{
-		Point point = e.getPoint();
+//		Point point = e.getPoint();
 //		fenetre.afficheCoordonnees(point);
 		fenetre.repaint();
 	}
