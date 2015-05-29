@@ -1,6 +1,7 @@
 package table;
 
 import permissions.ReadOnly;
+import permissions.ReadWrite;
 import utils.Vec2;
 
 /**
@@ -24,6 +25,8 @@ public class Capteurs {
 	 * Les ultrasons ont un cône de 35°
 	 */
 	private static final double angleCone = 35.*Math.PI/180.;
+	
+	private static final double cos = Math.cos(Math.PI/2-angleCone);
 	
 	/**
 	 * Les positions relatives des capteurs par rapport au centre du
@@ -79,6 +82,57 @@ public class Capteurs {
 	{
 		Vec2<ReadOnly> tmp = point.plusNewVector(positionsRelatives[nbCapteur]).getReadOnly();
 		return tmp.dot(cones[nbCapteur][0]) > 0 && tmp.dot(cones[nbCapteur][1]) > 0 && tmp.dot(cones[nbCapteur][2]) > 0;
+	}
+	
+	/**
+	 * Retourne la position ajustée de l'obstacle vu.
+	 * Cette position est donnée dans le référentiel du capteur qui voit
+	 * @param nbCouple
+	 * @param gauche: est-ce le capteur gauche qui voit l'obstacle?
+	 * @param mesure
+	 * @return
+	 */
+	public static Vec2<ReadWrite> getPositionAjustee(int nbCouple, boolean gauche, int mesure)
+	{
+		int capteurQuiVoit = coupleCapteurs[nbCouple][gauche?0:1];
+		int capteurQuiNeVoitPas = coupleCapteurs[nbCouple][gauche?1:0];
+		Vec2<ReadWrite> intersectionPoint;
+		int distance = coupleCapteurs[nbCouple][2];
+		double b = 2.*distance*cos;
+		double c = distance*distance - mesure*mesure;
+		double delta = b*b-4*c;
+		if(delta < 0)
+		{
+			System.out.println("Pas d'intersection");
+			return null;
+		}
+		
+		// On prend la plus grande solution
+		double s = (-b+Math.sqrt(delta))/2;
+		if(s <= 0)
+		{
+			System.out.println("Pas d'intersection");
+			return null;
+		}
+			
+		if(gauche)
+			intersectionPoint = new Vec2<ReadWrite>((int)s, Math.PI/2+angleCone);
+		else
+			intersectionPoint = new Vec2<ReadWrite>((int)s, Math.PI/2-angleCone);
+
+		// changement de repère
+		Vec2.plus(intersectionPoint, positionsRelatives[capteurQuiVoit]);
+		Vec2.minus(intersectionPoint, positionsRelatives[capteurQuiNeVoitPas]);		
+
+		if(!canBeSeen(intersectionPoint.getReadOnly(), capteurQuiVoit))
+			return null; // le point d'intersection n'est pas vu par le capteur qui voit l'obstacle
+		
+		Vec2.plus(intersectionPoint, new Vec2<ReadWrite>(mesure, gauche?Math.PI/2+angleCone:Math.PI/2-angleCone));
+		Vec2.scalar(intersectionPoint, 0.5);
+		double longueur = intersectionPoint.length();
+		Vec2.scalar(intersectionPoint, mesure/longueur);
+		
+		return intersectionPoint;
 	}
 	
 }
