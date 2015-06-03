@@ -27,7 +27,6 @@ public enum ConfigInfo {
 	DUREE_PEREMPTION_OBSTACLES("5000", true),
 	CAPTEURS_TEMPORISATION_OBSTACLES("100", true),
 //	DISTANCE_DETECTION("300"),
-	NB_CAPTEURS_PROXIMITE("2", true),
 	AFFICHE_DEBUG("false", true),
 	SAUVEGARDE_FICHIER("true", true),
 	DISTANCE_MAX_ENTRE_MESURE_ET_OBJET("50", true),
@@ -51,6 +50,8 @@ public enum ConfigInfo {
 	/**
 	 * Config dynamique
 	 */
+	NB_CAPTEURS_PROXIMITE("8", false),
+	NB_COUPLES_CAPTEURS_PROXIMITE("4", false),
 	COULEUR(RobotColor.getCouleurSansSymetrie(), false),
 	MATCH_DEMARRE("false", false),
 	DATE_DEBUT_MATCH("0", false),

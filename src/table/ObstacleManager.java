@@ -49,7 +49,7 @@ public class ObstacleManager implements Service
 	private int table_y = 2000;
 	private int rayonEnnemi;
 	private int nbCapteurs;
-
+	private int nbCouples;
     
     public ObstacleManager(Log log, Table table, Capteurs capteurs)
     {
@@ -300,13 +300,15 @@ public class ObstacleManager implements Service
 
 	@Override
 	public void updateConfig(Config config)
-	{}
+	{
+		nbCapteurs = config.getInt(ConfigInfo.NB_CAPTEURS_PROXIMITE);
+		nbCouples = config.getInt(ConfigInfo.NB_COUPLES_CAPTEURS_PROXIMITE);
+	}
     
 	@Override
 	public void useConfig(Config config) {
 		table_x = config.getInt(ConfigInfo.TABLE_X);
 		table_y = config.getInt(ConfigInfo.TABLE_Y);
-		nbCapteurs = config.getInt(ConfigInfo.NB_CAPTEURS_PROXIMITE);
 		rayonEnnemi = config.getInt(ConfigInfo.RAYON_ROBOT_ADVERSE);
 		dureeAvantPeremption = config.getInt(ConfigInfo.DUREE_PEREMPTION_OBSTACLES);
 		distanceApproximation = config.getInt(ConfigInfo.DISTANCE_MAX_ENTRE_MESURE_ET_OBJET);
@@ -456,7 +458,7 @@ public class ObstacleManager implements Service
 		/**
 		 * On cherche les détections couplées en priorité
 		 */
-		for(int i = 0; i < capteurs.nbCouples; i++)
+		for(int i = 0; i < nbCouples; i++)
 		{
 			int nbCapteur1 = Capteurs.coupleCapteurs[i][0];
 			int nbCapteur2 = Capteurs.coupleCapteurs[i][1];
@@ -467,6 +469,9 @@ public class ObstacleManager implements Service
 			}
 			else if(done[nbCapteur1] || done[nbCapteur2])
 			{
+				/**
+				 * Cas où un capteur voit et pas l'autre
+				 */
 				int nbCapteurQuiVoit = done[nbCapteur2]?nbCapteur1:nbCapteur2;
 				Vec2<ReadWrite> pointVu = capteurs.getPositionAjustee(i, done[nbCapteur2], data.mesures[nbCapteurQuiVoit]);
 				if(pointVu == null)
@@ -482,6 +487,9 @@ public class ObstacleManager implements Service
 			}
 			else
 			{	
+				/**
+				 * Cas où les deux capteurs voient
+				 */
 				int distanceEntreCapteurs = Capteurs.coupleCapteurs[i][2];
 				int mesure1 = data.mesures[nbCapteur1];
 				int mesure2 = data.mesures[nbCapteur2];

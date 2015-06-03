@@ -160,7 +160,8 @@ public class Container
 		else if(serviceRequested == ServiceNames.CONFIG)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new Config((Log)getService(ServiceNames.LOG));
 		else if(serviceRequested == ServiceNames.CAPTEURS)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new Capteurs((Log)getService(ServiceNames.LOG));
+			instanciedServices[serviceRequested.ordinal()] = (Service)new Capteurs((Log)getService(ServiceNames.LOG),
+																					(Config) getService(ServiceNames.CONFIG));
 		else if(serviceRequested == ServiceNames.TABLE)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new Table((Log)getService(ServiceNames.LOG),
 																				(StrategieNotifieur)getService(ServiceNames.STRATEGIE_NOTIFIEUR));

@@ -161,12 +161,11 @@ public class ThreadSerial extends ThreadAvecStop implements Service
 	@Override
 	public void updateConfig(Config config)
 	{
+		nbCapteurs = config.getInt(ConfigInfo.NB_CAPTEURS_PROXIMITE);
 	}
 
 	@Override
 	public void useConfig(Config config)
-	{
-		nbCapteurs = config.getInt(ConfigInfo.NB_CAPTEURS_PROXIMITE);
-	}
+	{}
 
 }

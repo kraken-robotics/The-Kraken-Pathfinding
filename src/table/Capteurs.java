@@ -5,6 +5,7 @@ import container.Service;
 import permissions.ReadOnly;
 import permissions.ReadWrite;
 import utils.Config;
+import utils.ConfigInfo;
 import utils.Log;
 import utils.Vec2;
 
@@ -23,7 +24,7 @@ public class Capteurs implements Service {
 	
 	private final int nbCapteurs = 2;
 	
-	public final int nbCouples = 1;
+	private final int nbCouples = 1;
 	
 	/**
 	 * Les ultrasons ont un cône de 35°
@@ -51,17 +52,39 @@ public class Capteurs implements Service {
 	 */
 	public static double[] orientationsRelatives;
 
-	public Capteurs(Log log)
+	public Capteurs(Log log, Config config)
 	{
 		this.log = log;
 		positionsRelatives = new Vec2[nbCapteurs];
-		positionsRelatives[0] = new Vec2<ReadOnly>(50, 100);
-		positionsRelatives[1] = new Vec2<ReadOnly>(50, -100);
+		positionsRelatives[0] = new Vec2<ReadOnly>(100, 100);
+		positionsRelatives[1] = new Vec2<ReadOnly>(100, -100);
+/*
+		positionsRelatives[2] = new Vec2<ReadOnly>(-100, 100);
+		positionsRelatives[3] = new Vec2<ReadOnly>(100, 100);
+
+		positionsRelatives[4] = new Vec2<ReadOnly>(-100, -100);
+		positionsRelatives[5] = new Vec2<ReadOnly>(-100, 100);
+
+		positionsRelatives[6] = new Vec2<ReadOnly>(100, -100);
+		positionsRelatives[7] = new Vec2<ReadOnly>(-100, -100);
+*/
+		double angleDeBase;
+		angleDeBase = angleCone/2;
+//		angleDeBase = - Math.PI/4 + angleCone;
 		
 		orientationsRelatives = new double[nbCapteurs];
-		orientationsRelatives[0] = 0.;
-		orientationsRelatives[1] = 0.;
-		
+		orientationsRelatives[0] = -angleDeBase;
+		orientationsRelatives[1] = angleDeBase;
+
+/*		orientationsRelatives[2] = -angleDeBase + Math.PI/2;
+		orientationsRelatives[3] = angleDeBase + Math.PI/2;
+
+		orientationsRelatives[4] = -angleDeBase + Math.PI;
+		orientationsRelatives[5] = angleDeBase + Math.PI;
+
+		orientationsRelatives[6] = -angleDeBase + 3*Math.PI/2;
+		orientationsRelatives[7] = angleDeBase + 3*Math.PI/2;
+*/
 		cones = new Vec2[nbCapteurs][3];
 		for(int i = 0; i < nbCapteurs; i++)
 		{
@@ -73,8 +96,22 @@ public class Capteurs implements Service {
 		coupleCapteurs = new int[nbCouples][3];
 		coupleCapteurs[0][0] = 0;
 		coupleCapteurs[0][1] = 1;
-		coupleCapteurs[0][2] = (int)positionsRelatives[coupleCapteurs[0][0]].distance(positionsRelatives[coupleCapteurs[0][1]]);
-		log.debug("distance: "+coupleCapteurs[0][2]);
+
+/*		coupleCapteurs[1][0] = 2;
+		coupleCapteurs[1][1] = 3;
+
+		coupleCapteurs[2][0] = 4;
+		coupleCapteurs[2][1] = 5;
+
+		coupleCapteurs[3][0] = 6;
+		coupleCapteurs[3][1] = 7;
+	*/	
+		for(int i = 0; i < nbCouples; i++)
+			coupleCapteurs[i][2] = (int)positionsRelatives[coupleCapteurs[i][0]].distance(positionsRelatives[coupleCapteurs[i][1]]);
+//		log.debug("distance: "+coupleCapteurs[0][2]);
+
+		config.set(ConfigInfo.NB_CAPTEURS_PROXIMITE, nbCapteurs);
+		config.set(ConfigInfo.NB_COUPLES_CAPTEURS_PROXIMITE, nbCouples);
 	}
 	
 	/**

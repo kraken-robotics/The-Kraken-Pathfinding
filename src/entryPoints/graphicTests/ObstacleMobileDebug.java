@@ -39,39 +39,30 @@ public class ObstacleMobileDebug  {
 			fenetre.showOnFrame();
 			Vec2<ReadWrite> point = new Vec2<ReadWrite>(500, 0);
 			Vec2<ReadOnly> positionRobot = new Vec2<ReadOnly>(0,1000);
-			int[] mesures = new int[2];
-			/*mesures[0] = 253;
-			mesures[1] = 319;
+			int nbCapteurs = 2;
+			int[] mesures = new int[nbCapteurs];
+			mesures[0] = 400;
+			mesures[1] = 300;
 			
 			buffer.add(new IncomingData(positionRobot, 0, 0, mesures));
 			Sleep.sleep(100);
 			fenetre.repaint();
 			if(true)
-				return;*/
-				
+				return;
+						
 			for(int i = 500; i < 1500; i+=10)
 			{
 				point.y = i;
 				fenetre.setPoint(point.getReadOnly());
-				if(capteurs.canBeSeen(point.minusNewVector(positionRobot).getReadOnly(), 0))
+				for(int j = 0; j < nbCapteurs; j++)
 				{
-					mesures[0] = (int)(rand.nextGaussian()*bruit) + (int)point.distance(positionRobot.plusNewVector(capteurs.positionsRelatives[0]))-200;
-//					log.debug("Capteur du haut voit: "+mesures[0]);
+					if(capteurs.canBeSeen(point.minusNewVector(positionRobot).getReadOnly(), 0))
+						mesures[j] = (int)(rand.nextGaussian()*bruit) + (int)point.distance(positionRobot.plusNewVector(capteurs.positionsRelatives[j]))-200;
+					else
+						mesures[j] = 0;
+					log.debug("Capteur "+j+": "+mesures[j]);
 				}
-				else
-				{
-					mesures[0] = 0;
-				}
-				
-				if(capteurs.canBeSeen(point.minusNewVector(positionRobot).getReadOnly(), 1))
-				{
-					mesures[1] = (int)(rand.nextGaussian()*bruit) + (int)point.distance(positionRobot.plusNewVector(capteurs.positionsRelatives[1]))-200;
-//					log.debug("Capteur du bas voit: "+mesures[1]);
-				}
-				else
-				{
-					mesures[1] = 0;
-				}
+
 				buffer.add(new IncomingData(positionRobot, 0, 0, mesures));
 				fenetre.repaint();
 				Sleep.sleep(200);
