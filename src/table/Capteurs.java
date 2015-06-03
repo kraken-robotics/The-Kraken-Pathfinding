@@ -14,8 +14,6 @@ import utils.Vec2;
  *
  */
 
-// TODO: faire ça proprement
-
 @SuppressWarnings("unchecked")
 public class Capteurs implements Service {
 	// DEPENDS ON ROBOT

@@ -116,7 +116,7 @@ public class Table implements Service
 	 * @param b
 	 * @return
 	 */
-	public boolean obstacle_proximite_dans_segment(GameElementNames g, ObstacleRectangular<ReadOnly> o)
+	public boolean obstacle_proximite_dans_segment(GameElementNames g, ObstacleRectangular o)
 	{
 		return o.isColliding(g.getObstacle());
 	}

@@ -18,26 +18,27 @@ import utils.Vec2;
 
 public class HookCollisionElementJeu extends Hook
 {
-	private ObstacleCircular<ReadOnly> obstacle;
-	private ObstacleRectangular<ReadWrite> obstacleRobot;
+	private ObstacleCircular obstacle;
+	private ObstacleRectangular obstacleRobot;
 	
-	public HookCollisionElementJeu(Log log, GameState<?, ReadOnly> state, ObstacleCircular<ReadOnly> o) throws FinMatchException
+	public HookCollisionElementJeu(Log log, GameState<?, ReadOnly> state, ObstacleCircular o) throws FinMatchException
 	{
 		super(log, state);
 		obstacle = o;
-		obstacleRobot = new ObstacleRectangular<ReadWrite>(state, new Vec2<ReadWrite>());
+		obstacleRobot = new ObstacleRectangular(state);
 	}
 
 	@Override
 	public boolean simulated_evaluate(Vec2<ReadOnly> pointA, Vec2<ReadOnly> pointB, long date)
 	{
 		try {
+			// TODO
 			ObstacleRectangular.update(obstacleRobot, GameState.getPosition(state), GameState.getOrientation(state));
 		} catch (FinMatchException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		ObstacleRectangular<ReadOnly> r = new ObstacleRectangular<ReadOnly>(pointA, pointB);
+		ObstacleRectangular r = new ObstacleRectangular(pointA, pointB);
 		return r.isColliding(obstacle);
 	}
 	

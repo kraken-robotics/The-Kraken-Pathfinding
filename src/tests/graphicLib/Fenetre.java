@@ -10,7 +10,6 @@ import obstacles.ObstacleRectangular;
 //import obstacles.ObstaclesFixes;
 import permissions.ReadOnly;
 import permissions.ReadWrite;
-import permissions.TestOnly;
 import table.Capteurs;
 //import table.GameElementNames;
 import utils.Vec2;
@@ -33,7 +32,7 @@ public class Fenetre extends JPanel {
 
 	private int sizeX = 450, sizeY = 300;
 //	private ArrayList<Vec2<ReadOnly>> pointsADessiner = new ArrayList<Vec2<ReadOnly>>();
-	private ArrayList<ObstacleProximity<ReadOnly>> listObstaclesMobiles;
+	private ArrayList<ObstacleProximity> listObstaclesMobiles;
 	private ArrayList<Vec2<ReadOnly>[]> segments = new ArrayList<Vec2<ReadOnly>[]>();
 	private Image image;
 	private Vec2<ReadOnly> point;
@@ -42,8 +41,10 @@ public class Fenetre extends JPanel {
 	private ArrayList<Double> orientations = new ArrayList<Double>();
 	private ArrayList<Color> couleurs = new ArrayList<Color>();
 	
-	private ArrayList<ObstacleRectangular<ReadOnly>> obstaclesEnBiais = new ArrayList<ObstacleRectangular<ReadOnly>>();
+	private ArrayList<ObstacleRectangular> obstaclesEnBiais = new ArrayList<ObstacleRectangular>();
 
+	private Capteurs capteurs;
+	
 	private int firstNotDead = 0;
     
 	public Fenetre()
@@ -88,6 +89,11 @@ public class Fenetre extends JPanel {
 		return (2000-y)*sizeY/2000;
 	}
 
+	public void setCapteurs(Capteurs capteurs)
+	{
+		this.capteurs = capteurs;
+	}
+	
 	public void paint(Graphics g)
 	{
 		g.drawImage(image, 0, 0, this);
@@ -96,24 +102,28 @@ public class Fenetre extends JPanel {
 //		for(int i = firstNotDead; i < listObstaclesMobiles.size(); i++)
 //			paintObstacle(listObstaclesMobiles.get(i).getTestOnly(), g, 0);
 		if(listObstaclesMobiles.size() > 0)
-		paintObstacle(listObstaclesMobiles.get(listObstaclesMobiles.size()-1).getTestOnly(), g, 0);
+		paintObstacle(listObstaclesMobiles.get(listObstaclesMobiles.size()-1), g, 0);
 		
 		g.setColor(new Color(0, 0, 130, 255));
-		int nbCapteurs = Capteurs.nbCapteurs;
-		for(int i = 0; i < nbCapteurs; i++)
+		if(capteurs != null)
 		{
-			Vec2<ReadWrite> p1 = Capteurs.positionsRelatives[i].plusNewVector(new Vec2<ReadOnly>(0, 1000));
-			Vec2<ReadWrite> p2 = p1.plusNewVector(new Vec2<ReadOnly>(1000, Capteurs.angleCone + Capteurs.orientationsRelatives[i]));
-			Vec2<ReadWrite> p3 = p1.plusNewVector(new Vec2<ReadOnly>(1000, - Capteurs.angleCone + Capteurs.orientationsRelatives[i]));
-			int[] x = new int[3];
-			x[0] = XtoWindow(p1.x);
-			x[1] = XtoWindow(p2.x);
-			x[2] = XtoWindow(p3.x);
-			int[] y = new int[3];
-			y[0] = YtoWindow(p1.y);
-			y[1] = YtoWindow(p2.y);
-			y[2] = YtoWindow(p3.y);
-			g.drawPolygon(x, y, 3);
+			int nbCapteurs = 2;
+			for(int i = 0; i < nbCapteurs; i++)
+			{
+				double angleCone = 35.*Math.PI/180;
+				Vec2<ReadWrite> p1 = capteurs.positionsRelatives[i].plusNewVector(new Vec2<ReadOnly>(0, 1000));
+				Vec2<ReadWrite> p2 = p1.plusNewVector(new Vec2<ReadOnly>(1000, angleCone + Capteurs.orientationsRelatives[i]));
+				Vec2<ReadWrite> p3 = p1.plusNewVector(new Vec2<ReadOnly>(1000, - angleCone + Capteurs.orientationsRelatives[i]));
+				int[] x = new int[3];
+				x[0] = XtoWindow(p1.x);
+				x[1] = XtoWindow(p2.x);
+				x[2] = XtoWindow(p3.x);
+				int[] y = new int[3];
+				y[0] = YtoWindow(p1.y);
+				y[1] = YtoWindow(p2.y);
+				y[2] = YtoWindow(p3.y);
+				g.drawPolygon(x, y, 3);
+			}
 		}
 
 		g.setColor(new Color(255, 0, 0, 255));
@@ -142,13 +152,13 @@ public class Fenetre extends JPanel {
 		this.firstNotDead = firstNotDead;
 	}
 	
-	public void setObstaclesMobiles(ArrayList<ObstacleProximity<ReadOnly>> listObstaclesMobiles)
+	public void setObstaclesMobiles(ArrayList<ObstacleProximity> listObstaclesMobiles)
 	{
 		this.firstNotDead = 0;
 		this.listObstaclesMobiles = listObstaclesMobiles;
 	}
 
-	public void paintObstacle(ObstacleCircular<TestOnly> o, Graphics g, int dilatationObstacle)
+	public void paintObstacle(ObstacleCircular o, Graphics g, int dilatationObstacle)
 	{
 		if(o.getRadius() <= 0)
 			g.fillOval(XtoWindow(Obstacle.getPosition(o).x)-5, YtoWindow(Obstacle.getPosition(o).y)-5, 10, 10);
@@ -206,10 +216,10 @@ public class Fenetre extends JPanel {
 	public void paintObstacleEnBiais(Graphics g)
 	{
 		int[] X, Y;
-		for(ObstacleRectangular<ReadOnly> o: obstaclesEnBiais)
+		for(ObstacleRectangular o: obstaclesEnBiais)
 		{
-			X = ObstacleRectangular.getXPositions(o.getTestOnly());
-			Y = ObstacleRectangular.getYPositions(o.getTestOnly());
+			X = ObstacleRectangular.getXPositions(o);
+			Y = ObstacleRectangular.getYPositions(o);
 			for(int i = 0; i < 4; i++)
 			{
 				X[i] = XtoWindow(X[i]);
@@ -233,7 +243,7 @@ public class Fenetre extends JPanel {
 		couleurs.add(couleur);
 	}
 	
-	public void addObstacleEnBiais(ObstacleRectangular<ReadOnly> obstacleEnBiais)
+	public void addObstacleEnBiais(ObstacleRectangular obstacleEnBiais)
 	{
 		obstaclesEnBiais.add(obstacleEnBiais);
 	}

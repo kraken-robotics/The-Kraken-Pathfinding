@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import permissions.Permission;
 import permissions.ReadOnly;
 import permissions.ReadWrite;
-import permissions.TestOnly;
 import planification.LocomotionArc;
 import planification.astar.arc.PathfindingNodes;
 import robot.Robot;
@@ -161,7 +160,7 @@ public class GameState<R extends Robot, T extends Permission> implements Service
 		return hash;
 	}
 	
-	public static final void printHash(GameState<RobotChrono,TestOnly> state)
+	public static final void printHash(GameState<RobotChrono,?> state)
 	{
 		state.gridspace.printHash();
 		state.robot.printHash();
@@ -404,12 +403,12 @@ public class GameState<R extends Robot, T extends Permission> implements Service
     	state.gridspace.creer_obstacle(position, date);
     }*/
 
-	public static final void reinitConnections(GameState<RobotReal, TestOnly> state)
+	public static final void reinitConnections(GameState<RobotReal, ?> state)
 	{
 		state.gridspace.reinitConnections();
 	}
 	
-	public static final void reinitDate(GameState<RobotChrono, TestOnly> state)
+	public static final void reinitDate(GameState<RobotChrono, ?> state)
 	{
 		state.robot.reinitDate();
 	}
@@ -427,11 +426,6 @@ public class GameState<R extends Robot, T extends Permission> implements Service
 	@SuppressWarnings("unchecked")
 	public final GameState<R, ReadOnly> getReadOnly() {
 		return (GameState<R, ReadOnly>) this;
-	}
-
-	@SuppressWarnings("unchecked")
-	public final GameState<R, TestOnly> getTestOnly() {
-		return (GameState<R, TestOnly>) this;
 	}
 
 	public static final boolean isAtPathfindingNodes(GameState<RobotChrono, ReadOnly> state) {

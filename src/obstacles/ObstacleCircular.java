@@ -1,6 +1,5 @@
 package obstacles;
 
-import permissions.Permission;
 import permissions.ReadOnly;
 import permissions.ReadWrite;
 import utils.Vec2;
@@ -10,7 +9,7 @@ import utils.Vec2;
  * @author pf
  *
  */
-public class ObstacleCircular<T extends Permission> extends Obstacle<T>
+public class ObstacleCircular extends Obstacle
 {
 	// le Vec2 "position" indique le centre de l'obstacle
 	
@@ -19,7 +18,7 @@ public class ObstacleCircular<T extends Permission> extends Obstacle<T>
 	protected int squared_radius;
 	protected static int squared_radius_with_dilatation_obstacle = -1;
 	
-	public ObstacleCircular(Vec2<T> position, int rad)
+	public ObstacleCircular(Vec2<ReadOnly> position, int rad)
 	{
 		super(position);
 		this.radius = rad;

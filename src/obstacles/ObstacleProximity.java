@@ -1,9 +1,7 @@
 package obstacles;
 
-import permissions.Permission;
 import permissions.ReadOnly;
 import permissions.ReadWrite;
-import permissions.TestOnly;
 import robot.Speed;
 import utils.Vec2;
 
@@ -11,11 +9,11 @@ import utils.Vec2;
  * Obstacles détectés par capteurs de proximité (ultrasons et infrarouges)
  * @author pf, marsu
  */
-public class ObstacleProximity<T extends Permission> extends ObstacleCircular<T>
+public class ObstacleProximity extends ObstacleCircular
 {
 	private long death_date;
 
-	public ObstacleProximity(Vec2<T> position, int rad, long death_date)
+	public ObstacleProximity(Vec2<ReadOnly> position, int rad, long death_date)
 	{
 		super(position,rad);
 		this.death_date = death_date;
@@ -42,8 +40,8 @@ public class ObstacleProximity<T extends Permission> extends ObstacleCircular<T>
     public boolean obstacle_proximite_dans_segment(Vec2<ReadOnly> A, Vec2<ReadOnly> B, long date)
     {
     	// si l'obstacle est présent dans le segment...
-    	ObstacleRectangular<ReadOnly> r = new ObstacleRectangular<ReadOnly>(A,B);
-    	if(death_date > date && r.isColliding(getReadOnly()))
+    	ObstacleRectangular r = new ObstacleRectangular(A,B);
+    	if(death_date > date && r.isColliding(this))
     	{
     		// on vérifie si par hasard il ne disparaîtrait pas avant qu'on y arrive
     		int tempsRestant = (int)(death_date - date);
@@ -62,8 +60,8 @@ public class ObstacleProximity<T extends Permission> extends ObstacleCircular<T>
     		C.x = (int)(C.x * facteurMultiplicatif);
     		C.y = (int)(C.y * facteurMultiplicatif);
     		Vec2.plus(C, A);
-        	ObstacleRectangular<ReadOnly> r2 = new ObstacleRectangular<ReadOnly>(A,C.getReadOnly());
-        	return r2.isColliding(getReadOnly());
+        	ObstacleRectangular r2 = new ObstacleRectangular(A,C.getReadOnly());
+        	return r2.isColliding(this);
     	}
     	return false;
     }
@@ -82,11 +80,4 @@ public class ObstacleProximity<T extends Permission> extends ObstacleCircular<T>
 		return death_date;
 	}
 	
-	@SuppressWarnings("unchecked")
-	public ObstacleProximity<TestOnly> getTestOnly()
-	{
-		return (ObstacleProximity<TestOnly>) this;
-	}
-
-
 }

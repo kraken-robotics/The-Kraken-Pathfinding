@@ -1,7 +1,6 @@
 package obstacles;
 
-import permissions.Permission;
-import permissions.ReadWrite;
+import permissions.ReadOnly;
 import utils.Vec2;
 
 /**
@@ -11,12 +10,12 @@ import utils.Vec2;
  * @param <T>
  */
 
-public abstract class ObstacleAvecAngle<T extends Permission> extends Obstacle<T>
+public abstract class ObstacleAvecAngle extends Obstacle
 {
 
 	protected double angle, cos, sin;
 
-	public ObstacleAvecAngle(Vec2<T> position, double angle) {
+	public ObstacleAvecAngle(Vec2<ReadOnly> position, double angle) {
 		super(position);
 		this.angle = angle;
 		cos = Math.cos(angle);
@@ -24,7 +23,7 @@ public abstract class ObstacleAvecAngle<T extends Permission> extends Obstacle<T
 
 	}
 	
-	protected static void setAngle(ObstacleAvecAngle<ReadWrite> o, double angle)
+	protected static void setAngle(ObstacleAvecAngle o, double angle)
 	{
 		o.angle = angle;
 		o.cos = Math.cos(angle);

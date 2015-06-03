@@ -33,13 +33,13 @@ public class ObstacleManager implements Service
     
     // Les obstacles mobiles, c'est-à-dire des obstacles de proximité et de balise
     // Comme ces obstacles ne peuvent que disparaître, on les retient tous et chaque instance aura un indice vers sur le premier obstacle non mort
-    private static ArrayList<ObstacleProximity<ReadOnly>> listObstaclesMobiles = new ArrayList<ObstacleProximity<ReadOnly>>();
+    private static ArrayList<ObstacleProximity> listObstaclesMobiles = new ArrayList<ObstacleProximity>();
 
     // TODO: à virer? (static bon?)
 //    private static ObstacleProximity<ReadWrite> hypotheticalEnemy = null;
 //    private boolean isThereHypotheticalEnemy = false;
     
-    private ObstacleTrajectoireCourbe<ReadOnly> obstacleTrajectoireCourbe;
+    private ObstacleTrajectoireCourbe obstacleTrajectoireCourbe;
     
     private int firstNotDead = 0;
 
@@ -79,7 +79,7 @@ public class ObstacleManager implements Service
      */
     public synchronized void creerObstacle(final Vec2<ReadOnly> position, long date_actuelle)
     {
-        ObstacleProximity<ReadOnly> obstacle = new ObstacleProximity<ReadOnly>(position, rayonEnnemi, date_actuelle+dureeAvantPeremption);
+        ObstacleProximity obstacle = new ObstacleProximity(position, rayonEnnemi, date_actuelle+dureeAvantPeremption);
 //        log.warning("Obstacle créé, rayon = "+rayon_robot_adverse+", centre = "+position+", meurt à "+(date_actuelle+dureeAvantPeremption), this);
         listObstaclesMobiles.add(obstacle);
         checkGameElements(position);
@@ -191,7 +191,7 @@ public class ObstacleManager implements Service
      */
     public boolean obstacleFixeDansSegmentPathfinding(Vec2<ReadOnly> A, Vec2<ReadOnly> B)
     {
-    	ObstacleRectangular<ReadOnly> chemin = new ObstacleRectangular<ReadOnly>(A, B);
+    	ObstacleRectangular chemin = new ObstacleRectangular(A, B);
     	for(ObstaclesFixes o: ObstaclesFixes.values)
     	{
     		if(chemin.isColliding(o.getObstacle()))
@@ -208,7 +208,7 @@ public class ObstacleManager implements Service
 	 */
     public boolean obstacleTableDansSegment(Vec2<ReadOnly> A, Vec2<ReadOnly> B)
     {
-    	ObstacleRectangular<ReadOnly> chemin = new ObstacleRectangular<ReadOnly>(A, B);
+    	ObstacleRectangular chemin = new ObstacleRectangular(A, B);
         for(GameElementNames g: GameElementNames.values())
         	// Si on a interprété que l'ennemi est passé sur un obstacle,
         	// on peut passer dessus par la suite.
@@ -283,7 +283,7 @@ public class ObstacleManager implements Service
      * @param distance
      * @return
      */
-    private boolean isObstaclePresent(Vec2<ReadOnly> position, Obstacle<ReadOnly> o, int distance)
+    private boolean isObstaclePresent(Vec2<ReadOnly> position, Obstacle o, int distance)
     {
     	return o.isProcheObstacle(position, distance);
     }
@@ -316,7 +316,7 @@ public class ObstacleManager implements Service
 	 * Utilisé pour l'affichage
 	 * @return 
 	 */
-	public ArrayList<ObstacleProximity<ReadOnly>> getListObstaclesMobiles()
+	public ArrayList<ObstacleProximity> getListObstaclesMobiles()
 	{
 		return listObstaclesMobiles;
 	}
@@ -393,7 +393,7 @@ public class ObstacleManager implements Service
 		// TODO: calculer la vitesse qui permet exactement de passer?
 		Speed vitesse = Speed.BETWEEN_SCRIPTS;
 		
-		obstacleTrajectoireCourbe = new ObstacleTrajectoireCourbe<ReadOnly>(objectifFinal, intersection, directionAvant, vitesse);
+		obstacleTrajectoireCourbe = new ObstacleTrajectoireCourbe(objectifFinal, intersection, directionAvant, vitesse);
 
 		// Collision avec un obstacle fixe?
     	for(ObstaclesFixes o: ObstaclesFixes.values)

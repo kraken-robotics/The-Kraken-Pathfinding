@@ -103,12 +103,6 @@ public class Vec2<T extends Permission>
 		return (Vec2<ReadOnly>) this;
 	}
 
-	@SuppressWarnings("unchecked")
-	public final static <P extends Permission> Vec2<P> getT(Vec2<ReadWrite> v, Vec2<P> useless)
-	{
-		return (Vec2<P>) v;
-	}
-
 	public int squaredDistance(Vec2<? extends Permission> other)
 	{
 		int tmp_x = x-other.x, tmp_y = y-other.y;
