@@ -26,6 +26,7 @@ public class ObstacleMobileDebug  {
 		try {
 			Container container = new Container();
 			Log log = (Log) container.getService(ServiceNames.LOG);
+			Capteurs capteurs = (Capteurs) container.getService(ServiceNames.CAPTEURS);
 			ObstacleManager obstaclemanager = (ObstacleManager) container.getService(ServiceNames.OBSTACLE_MANAGER);
 			IncomingDataBuffer buffer = (IncomingDataBuffer) container.getService(ServiceNames.INCOMING_DATA_BUFFER);
 			Fenetre fenetre = new Fenetre();
@@ -38,16 +39,16 @@ public class ObstacleMobileDebug  {
 			{
 				point.y = i;
 				fenetre.setPoint(point.getReadOnly());
-				if(Capteurs.canBeSeen(point.minusNewVector(positionRobot).getReadOnly(), 0))
-					mesures[0] = (int)point.distance(positionRobot.plusNewVector(Capteurs.positionsRelatives[0]))-200;
+				if(capteurs.canBeSeen(point.minusNewVector(positionRobot).getReadOnly(), 0))
+					mesures[0] = (int)point.distance(positionRobot.plusNewVector(capteurs.positionsRelatives[0]))-200;
 				else
 				{
 					log.debug("Capteur du haut ne voit rien");
 					mesures[0] = 0;
 				}
 				
-				if(Capteurs.canBeSeen(point.minusNewVector(positionRobot).getReadOnly(), 1))
-					mesures[1] = (int)point.distance(positionRobot.plusNewVector(Capteurs.positionsRelatives[1]))-200;
+				if(capteurs.canBeSeen(point.minusNewVector(positionRobot).getReadOnly(), 1))
+					mesures[1] = (int)point.distance(positionRobot.plusNewVector(capteurs.positionsRelatives[1]))-200;
 				else
 				{
 					log.debug("Capteur du bas ne voit rien");

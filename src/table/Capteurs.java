@@ -1,7 +1,10 @@
 package table;
 
+import container.Service;
 import permissions.ReadOnly;
 import permissions.ReadWrite;
+import utils.Config;
+import utils.Log;
 import utils.Vec2;
 
 /**
@@ -14,27 +17,27 @@ import utils.Vec2;
 // TODO: faire ça proprement
 
 @SuppressWarnings("unchecked")
-public class Capteurs {
+public class Capteurs implements Service {
 	// DEPENDS ON ROBOT
 	
-	public static final int nbCapteurs = 2;
+	private final int nbCapteurs = 2;
 	
-	public static final int nbCouples = 1;
+	public final int nbCouples = 1;
 	
 	/**
 	 * Les ultrasons ont un cône de 35°
 	 */
-	public static final double angleCone = 35.*Math.PI/180.;
+	private final double angleCone = 35.*Math.PI/180.;
 	
-	private static final double cos = Math.cos(Math.PI/2-angleCone);
+	private final double cos = Math.cos(Math.PI/2-angleCone);
 	
 	/**
 	 * Les positions relatives des capteurs par rapport au centre du
 	 * robot lorsque celui-ci a une orientation nulle.
 	 */
-	public static final Vec2<ReadOnly>[] positionsRelatives;
+	public final Vec2<ReadOnly>[] positionsRelatives;
 	
-	public static final Vec2<ReadOnly>[][] cones;
+	public final Vec2<ReadOnly>[][] cones;
 	
 	/**
 	 * coupleCapteurs[i] est un tableau qui contient les numéros des
@@ -47,7 +50,7 @@ public class Capteurs {
 	 */
 	public static double[] orientationsRelatives;
 
-	static
+	public Capteurs(Log log)
 	{
 		positionsRelatives = new Vec2[nbCapteurs];
 		positionsRelatives[0] = new Vec2<ReadOnly>(50, 100);
@@ -79,7 +82,7 @@ public class Capteurs {
 	 * @param nbCapteur
 	 * @return
 	 */
-	public static boolean canBeSeen(Vec2<ReadOnly> point, int nbCapteur)
+	public boolean canBeSeen(Vec2<ReadOnly> point, int nbCapteur)
 	{
 		Vec2<ReadOnly> tmp = point.minusNewVector(positionsRelatives[nbCapteur]).getReadOnly();
 		return tmp.dot(cones[nbCapteur][0]) > 0 && tmp.dot(cones[nbCapteur][1]) > 0 && tmp.dot(cones[nbCapteur][2]) > 0;
@@ -93,7 +96,7 @@ public class Capteurs {
 	 * @param mesure
 	 * @return
 	 */
-	public static Vec2<ReadWrite> getPositionAjustee(int nbCouple, int distanceAjustement, boolean gauche, int mesure)
+	public Vec2<ReadWrite> getPositionAjustee(int nbCouple, int distanceAjustement, boolean gauche, int mesure)
 	{
 		int capteurQuiVoit = coupleCapteurs[nbCouple][gauche?0:1];
 		int capteurQuiNeVoitPas = coupleCapteurs[nbCouple][gauche?1:0];
@@ -153,5 +156,13 @@ public class Capteurs {
 		
 		return intersectionPoint;
 	}
+
+	@Override
+	public void updateConfig(Config config)
+	{}
+
+	@Override
+	public void useConfig(Config config)
+	{}
 	
 }

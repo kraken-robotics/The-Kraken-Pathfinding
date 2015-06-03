@@ -21,6 +21,7 @@ import strategie.Execution;
 import strategie.GameState;
 import strategie.Strategie;
 import strategie.StrategieNotifieur;
+import table.Capteurs;
 import table.GridSpace;
 import table.ObstacleManager;
 import table.StrategieInfo;
@@ -158,12 +159,15 @@ public class Container
 			instanciedServices[serviceRequested.ordinal()] = (Service)new Log();
 		else if(serviceRequested == ServiceNames.CONFIG)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new Config((Log)getService(ServiceNames.LOG));
+		else if(serviceRequested == ServiceNames.CAPTEURS)
+			instanciedServices[serviceRequested.ordinal()] = (Service)new Capteurs((Log)getService(ServiceNames.LOG));
 		else if(serviceRequested == ServiceNames.TABLE)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new Table((Log)getService(ServiceNames.LOG),
 																				(StrategieNotifieur)getService(ServiceNames.STRATEGIE_NOTIFIEUR));
 		else if(serviceRequested == ServiceNames.OBSTACLE_MANAGER)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ObstacleManager((Log)getService(ServiceNames.LOG),
-																				(Table)getService(ServiceNames.TABLE));
+																				(Table)getService(ServiceNames.TABLE),
+																				(Capteurs)getService(ServiceNames.CAPTEURS));
 		else if(serviceRequested == ServiceNames.PATHFINDING)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new Pathfinding((Log)getService(ServiceNames.LOG),
 																				(MemoryManager)getService(ServiceNames.MEMORY_MANAGER),

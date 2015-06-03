@@ -9,6 +9,7 @@ public enum ServiceNames {
 	 LOG,
 	 CONFIG,
 	 TABLE,
+	 CAPTEURS,
 	 ROBOT_REAL,
 	 EXECUTION,
 	 HOOK_FACTORY,

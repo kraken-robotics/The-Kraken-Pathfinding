@@ -29,6 +29,7 @@ public class ObstacleManager implements Service
 {
     private Log log;
     private final Table table;
+    private Capteurs capteurs;
     
     // Les obstacles mobiles, c'est-à-dire des obstacles de proximité et de balise
     // Comme ces obstacles ne peuvent que disparaître, on les retient tous et chaque instance aura un indice vers sur le premier obstacle non mort
@@ -50,10 +51,11 @@ public class ObstacleManager implements Service
 	private int nbCapteurs;
 
     
-    public ObstacleManager(Log log, Table table)
+    public ObstacleManager(Log log, Table table, Capteurs capteurs)
     {
         this.log = log;
         this.table = table;
+        this.capteurs = capteurs;
 
         // On n'instancie hypotheticalEnnemy qu'une seule fois
 //        if(hypotheticalEnemy == null)
@@ -163,7 +165,7 @@ public class ObstacleManager implements Service
     
     public ObstacleManager clone()
     {
-    	ObstacleManager cloned_manager = new ObstacleManager(log, table.clone());
+    	ObstacleManager cloned_manager = new ObstacleManager(log, table.clone(), capteurs);
 		copy(cloned_manager);
 		return cloned_manager;
     }
@@ -430,7 +432,7 @@ public class ObstacleManager implements Service
 				continue;
 			}
 			Vec2<ReadWrite> positionBrute = new Vec2<ReadWrite>(data.mesures[i], Capteurs.orientationsRelatives[i]);
-			Vec2.plus(positionBrute, Capteurs.positionsRelatives[i]);
+			Vec2.plus(positionBrute, capteurs.positionsRelatives[i]);
 			Vec2.rotate(positionBrute, data.orientationRobot);
 			Vec2.plus(positionBrute, data.positionRobot);
 //			log.debug("Position brute: "+positionBrute);
@@ -451,7 +453,7 @@ public class ObstacleManager implements Service
 		/**
 		 * On cherche les détections couplées en priorité
 		 */
-		for(int i = 0; i < Capteurs.nbCouples; i++)
+		for(int i = 0; i < capteurs.nbCouples; i++)
 		{
 			int nbCapteur1 = Capteurs.coupleCapteurs[i][0];
 			int nbCapteur2 = Capteurs.coupleCapteurs[i][1];
@@ -463,11 +465,11 @@ public class ObstacleManager implements Service
 			else if(done[nbCapteur1] || done[nbCapteur2])
 			{
 				int nbCapteurQuiVoit = done[nbCapteur2]?nbCapteur1:nbCapteur2;
-				Vec2<ReadWrite> pointVu = Capteurs.getPositionAjustee(i, rayonEnnemi, done[nbCapteur2], data.mesures[nbCapteurQuiVoit]);
+				Vec2<ReadWrite> pointVu = capteurs.getPositionAjustee(i, rayonEnnemi, done[nbCapteur2], data.mesures[nbCapteurQuiVoit]);
 //				Vec2<ReadWrite> pointVu = Capteurs.getPositionAjustee(i, 0, done[nbCapteur2], data.mesures[nbCapteurQuiVoit]);
 				if(pointVu == null)
 					continue;
-				Vec2.plus(pointVu, Capteurs.positionsRelatives[nbCapteurQuiVoit]);
+				Vec2.plus(pointVu, capteurs.positionsRelatives[nbCapteurQuiVoit]);
 				Vec2.rotate(pointVu, data.orientationRobot);
 				Vec2.plus(pointVu, data.positionRobot);
 				creerObstacle(pointVu.getReadOnly(), System.currentTimeMillis());
@@ -486,14 +488,14 @@ public class ObstacleManager implements Service
 				double posX = ((double)(distanceEntreCapteurs*distanceEntreCapteurs + mesure1*mesure1 - mesure2*mesure2))/(2*distanceEntreCapteurs);
 				double posY = Math.sqrt(mesure1*mesure1 - posX*posX);
 				
-				Vec2<ReadWrite> pointVu1 = Capteurs.positionsRelatives[nbCapteur2].clone();
-				Vec2.minus(pointVu1, Capteurs.positionsRelatives[nbCapteur1]);
+				Vec2<ReadWrite> pointVu1 = capteurs.positionsRelatives[nbCapteur2].clone();
+				Vec2.minus(pointVu1, capteurs.positionsRelatives[nbCapteur1]);
 				Vec2<ReadWrite> BC = pointVu1.clone();
 				Vec2.rotateAngleDroit(BC);
 				Vec2.scalar(BC, posY/distanceEntreCapteurs);
 //				log.debug("Longueur BC: "+BC.length()+", posY: "+posY);
 				Vec2.scalar(pointVu1, (double)(posX)/distanceEntreCapteurs);
-				Vec2.plus(pointVu1, Capteurs.positionsRelatives[nbCapteur1]);
+				Vec2.plus(pointVu1, capteurs.positionsRelatives[nbCapteur1]);
 				Vec2<ReadWrite> pointVu2 = pointVu1.clone();
 				Vec2.plus(pointVu1, BC);
 				Vec2.minus(pointVu2, BC);
@@ -501,13 +503,13 @@ public class ObstacleManager implements Service
 //				log.debug("Point vu 1: "+pointVu1);
 //				log.debug("Point vu 2: "+pointVu2);
 				
-				boolean vu = Capteurs.canBeSeen(pointVu1.getReadOnly(), nbCapteur1) && Capteurs.canBeSeen(pointVu1.getReadOnly(), nbCapteur2);
+				boolean vu = capteurs.canBeSeen(pointVu1.getReadOnly(), nbCapteur1) && capteurs.canBeSeen(pointVu1.getReadOnly(), nbCapteur2);
 	//			if(vu)
 	//				log.debug("pointVu1 est visible!");
 	
 				if(!vu)
 				{
-					vu = Capteurs.canBeSeen(pointVu2.getReadOnly(), nbCapteur1) && Capteurs.canBeSeen(pointVu2.getReadOnly(), nbCapteur2);
+					vu = capteurs.canBeSeen(pointVu2.getReadOnly(), nbCapteur1) && capteurs.canBeSeen(pointVu2.getReadOnly(), nbCapteur2);
 					pointVu1 = pointVu2;
 					Vec2.oppose(BC);
 	//				if(vu)
@@ -536,7 +538,7 @@ public class ObstacleManager implements Service
 			if(!done[i])
 			{
 				Vec2<ReadWrite> positionEnnemi = new Vec2<ReadWrite>(data.mesures[i]+rayonEnnemi, Capteurs.orientationsRelatives[i]);
-				Vec2.plus(positionEnnemi, Capteurs.positionsRelatives[i]);
+				Vec2.plus(positionEnnemi, capteurs.positionsRelatives[i]);
 				Vec2.rotate(positionEnnemi, data.orientationRobot);
 				Vec2.plus(positionEnnemi, data.positionRobot);
 		//		log.debug("Obstacle vu par un seul capteur: "+positionEnnemi);
