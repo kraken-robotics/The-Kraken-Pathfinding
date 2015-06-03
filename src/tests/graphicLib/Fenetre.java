@@ -102,7 +102,7 @@ public class Fenetre extends JPanel {
 //		for(int i = firstNotDead; i < listObstaclesMobiles.size(); i++)
 //			paintObstacle(listObstaclesMobiles.get(i).getTestOnly(), g, 0);
 		if(listObstaclesMobiles.size() > 0)
-		paintObstacle(listObstaclesMobiles.get(listObstaclesMobiles.size()-1), g, 0);
+			paintObstacle(listObstaclesMobiles.get(listObstaclesMobiles.size()-1), g, 0);
 		
 		g.setColor(new Color(0, 0, 130, 255));
 		if(capteurs != null)
@@ -126,10 +126,10 @@ public class Fenetre extends JPanel {
 			}
 		}
 
-		g.setColor(new Color(255, 0, 0, 255));
+		g.setColor(new Color(255, 0, 0, 30));
 
 		if(point != null)
-			g.fillOval(XtoWindow(point.x-20), YtoWindow(point.y+20), distanceXtoWindow(40), distanceYtoWindow(40));
+			g.fillOval(XtoWindow(point.x-200), YtoWindow(point.y+200), distanceXtoWindow(400), distanceYtoWindow(400));
 
 	}
 

@@ -1,5 +1,6 @@
 package table;
 
+import obstacles.ObstacleCircular;
 import container.Service;
 import permissions.ReadOnly;
 import permissions.ReadWrite;
@@ -17,6 +18,8 @@ import utils.Vec2;
 @SuppressWarnings("unchecked")
 public class Capteurs implements Service {
 	// DEPENDS ON ROBOT
+	
+	protected Log log;
 	
 	private final int nbCapteurs = 2;
 	
@@ -50,6 +53,7 @@ public class Capteurs implements Service {
 
 	public Capteurs(Log log)
 	{
+		this.log = log;
 		positionsRelatives = new Vec2[nbCapteurs];
 		positionsRelatives[0] = new Vec2<ReadOnly>(50, 100);
 		positionsRelatives[1] = new Vec2<ReadOnly>(50, -100);
@@ -70,7 +74,7 @@ public class Capteurs implements Service {
 		coupleCapteurs[0][0] = 0;
 		coupleCapteurs[0][1] = 1;
 		coupleCapteurs[0][2] = (int)positionsRelatives[coupleCapteurs[0][0]].distance(positionsRelatives[coupleCapteurs[0][1]]);
-		System.out.println("distance: "+coupleCapteurs[0][2]);
+		log.debug("distance: "+coupleCapteurs[0][2]);
 	}
 	
 	/**
@@ -94,7 +98,7 @@ public class Capteurs implements Service {
 	 * @param mesure
 	 * @return
 	 */
-	public Vec2<ReadWrite> getPositionAjustee(int nbCouple, int distanceAjustement, boolean gauche, int mesure)
+	public Vec2<ReadWrite> getPositionAjustee(int nbCouple, boolean gauche, int mesure)
 	{
 		int capteurQuiVoit = coupleCapteurs[nbCouple][gauche?0:1];
 		int capteurQuiNeVoitPas = coupleCapteurs[nbCouple][gauche?1:0];
@@ -104,14 +108,14 @@ public class Capteurs implements Service {
 		double c = distance*distance - mesure*mesure;
 		double delta = b*b-4*c;
 		
-/*		System.out.println("gauche: "+gauche);
-		System.out.println("distance entre capteurs: "+distance);
-		System.out.println("mesure: "+mesure);
-		System.out.println("cos: "+cos);
+/*		log.debug("gauche: "+gauche);
+		log.debug("distance entre capteurs: "+distance);
+		log.debug("mesure: "+mesure);
+		log.debug("cos: "+cos);
 	*/	
 		if(delta < 0)
 		{
-			System.out.println("Pas d'intersection: delta négatif");
+//			log.debug("Pas d'intersection: delta négatif");
 			return null;
 		}
 
@@ -119,40 +123,51 @@ public class Capteurs implements Service {
 		double s = (-b+Math.sqrt(delta))/2;
 		if(s <= 0)
 		{
-			System.out.println("Pas d'intersection: distance négative");
+//			log.debug("Pas d'intersection: distance négative");
 			return null;
 		}
 			
-/*		System.out.println("Distance 1: "+s);
-		System.out.println("Distance 2: "+(-b-Math.sqrt(delta))/2);
+/*		log.debug("Distance 1: "+s);
+		log.debug("Distance 2: "+(-b-Math.sqrt(delta))/2);
 */
 		if(gauche)
 			intersectionPoint = new Vec2<ReadWrite>((int)s, angleCone);
 		else
 			intersectionPoint = new Vec2<ReadWrite>((int)s, -angleCone);
 
-//		System.out.println("Point avant repère: "+intersectionPoint);
+//		log.debug("Point avant repère: "+intersectionPoint);
 		
 		// changement de repère
 		Vec2.plus(intersectionPoint, positionsRelatives[capteurQuiNeVoitPas]);
 
-//		System.out.println("Point après repère: "+intersectionPoint);
+//		log.debug("Point après repère: "+intersectionPoint);
 		
-//		System.out.println("Distance: "+intersectionPoint.distance(positionsRelatives[capteurQuiVoit]));
+//		log.debug("Distance: "+intersectionPoint.distance(positionsRelatives[capteurQuiVoit]));
 		
 		if(!canBeSeen(intersectionPoint.getReadOnly(), capteurQuiVoit))
 		{
-			System.out.println("Ce point n'est pas visible");
+//			log.debug("Ce point n'est pas visible");
 			return null; // le point d'intersection n'est pas vu par le capteur qui voit l'obstacle
 		}
 		
-//		System.out.println("Autre point: "+new Vec2<ReadWrite>(mesure, gauche?angleCone:-angleCone));
+//		log.debug("Autre point: "+new Vec2<ReadWrite>(mesure, gauche?angleCone:-angleCone));
 		
 		Vec2.plus(intersectionPoint, Vec2.plus(new Vec2<ReadWrite>(mesure, gauche?angleCone:-angleCone), positionsRelatives[capteurQuiVoit]));
 		double longueur = intersectionPoint.length();
-		Vec2.scalar(intersectionPoint, (mesure+distanceAjustement)/longueur);
+		Vec2.scalar(intersectionPoint, mesure/longueur);
 		
 		return intersectionPoint;
+	}
+	
+	/**
+	 * A quelle distance le capteur voit-il cet obstacle?
+	 * @param nbCapteur
+	 * @param o
+	 * @return
+	 */
+	public int distanceSeen(int nbCapteur, ObstacleCircular o)
+	{
+		return 0;
 	}
 
 	@Override

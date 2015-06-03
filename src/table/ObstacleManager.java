@@ -447,7 +447,10 @@ public class ObstacleManager implements Service
 				done[i] = true; // le capteur voit un obstacle fixe: on ignore sa valeur
 			}
 			else
+			{
 				done[i] = false;
+				data.mesures[i] += rayonEnnemi;
+			}
 		}
 		
 		/**
@@ -465,10 +468,12 @@ public class ObstacleManager implements Service
 			else if(done[nbCapteur1] || done[nbCapteur2])
 			{
 				int nbCapteurQuiVoit = done[nbCapteur2]?nbCapteur1:nbCapteur2;
-				Vec2<ReadWrite> pointVu = capteurs.getPositionAjustee(i, rayonEnnemi, done[nbCapteur2], data.mesures[nbCapteurQuiVoit]);
-//				Vec2<ReadWrite> pointVu = Capteurs.getPositionAjustee(i, 0, done[nbCapteur2], data.mesures[nbCapteurQuiVoit]);
+				Vec2<ReadWrite> pointVu = capteurs.getPositionAjustee(i, done[nbCapteur2], data.mesures[nbCapteurQuiVoit]);
 				if(pointVu == null)
+				{
+//					log.debug("Point vu: null");
 					continue;
+				}
 				Vec2.plus(pointVu, capteurs.positionsRelatives[nbCapteurQuiVoit]);
 				Vec2.rotate(pointVu, data.orientationRobot);
 				Vec2.plus(pointVu, data.positionRobot);
@@ -483,7 +488,10 @@ public class ObstacleManager implements Service
 				
 				// Si l'inégalité triangulaire n'est pas respectée
 				if(mesure1 + mesure2 <= distanceEntreCapteurs)
+				{
+//					log.debug("Inégalité triangulaire non respectée");
 					continue;
+				}
 				
 				double posX = ((double)(distanceEntreCapteurs*distanceEntreCapteurs + mesure1*mesure1 - mesure2*mesure2))/(2*distanceEntreCapteurs);
 				double posY = Math.sqrt(mesure1*mesure1 - posX*posX);
@@ -504,24 +512,24 @@ public class ObstacleManager implements Service
 //				log.debug("Point vu 2: "+pointVu2);
 				
 				boolean vu = capteurs.canBeSeen(pointVu1.getReadOnly(), nbCapteur1) && capteurs.canBeSeen(pointVu1.getReadOnly(), nbCapteur2);
-	//			if(vu)
-	//				log.debug("pointVu1 est visible!");
+//				if(vu)
+//					log.debug("pointVu1 est visible!");
 	
 				if(!vu)
 				{
 					vu = capteurs.canBeSeen(pointVu2.getReadOnly(), nbCapteur1) && capteurs.canBeSeen(pointVu2.getReadOnly(), nbCapteur2);
 					pointVu1 = pointVu2;
 					Vec2.oppose(BC);
-	//				if(vu)
-	//					log.debug("pointVu2 est visible!");
+//					if(vu)
+//						log.debug("pointVu2 est visible!");
 				}
 				if(vu)			
 				{
 					done[nbCapteur1] = true;
 					done[nbCapteur2] = true;
-	//				log.debug("Scalaire: "+(rayonEnnemi)/posY);
-					Vec2.scalar(BC, ((double)rayonEnnemi)/posY);
-					Vec2.plus(pointVu1, BC);
+//					log.debug("Scalaire: "+(rayonEnnemi)/posY);
+//					Vec2.scalar(BC, ((double)rayonEnnemi)/posY);
+//					Vec2.plus(pointVu1, BC);
 					Vec2.rotate(pointVu1, data.orientationRobot);
 					Vec2.plus(pointVu1, data.positionRobot);
 	//				log.debug("Longueur BC: "+BC.length());
