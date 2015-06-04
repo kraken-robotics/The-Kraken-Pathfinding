@@ -50,7 +50,8 @@ public class ObstacleManager implements Service
 	private int rayonEnnemi;
 	private int nbCapteurs;
 	private int nbCouples;
-    
+    private int horizonCapteurs;
+	
     public ObstacleManager(Log log, Table table, Capteurs capteurs)
     {
         this.log = log;
@@ -312,6 +313,7 @@ public class ObstacleManager implements Service
 		rayonEnnemi = config.getInt(ConfigInfo.RAYON_ROBOT_ADVERSE);
 		dureeAvantPeremption = config.getInt(ConfigInfo.DUREE_PEREMPTION_OBSTACLES);
 		distanceApproximation = config.getInt(ConfigInfo.DISTANCE_MAX_ENTRE_MESURE_ET_OBJET);
+		horizonCapteurs = config.getInt(ConfigInfo.HORIZON_CAPTEURS);
 	}
 
 	/**
@@ -427,7 +429,7 @@ public class ObstacleManager implements Service
 		 */
 		for(int i = 0; i < nbCapteurs; i++)
 		{
-			if(data.mesures[i] < 40 || data.mesures[i] > 800)
+			if(data.mesures[i] < 40 || data.mesures[i] > horizonCapteurs)
 			{
 				done[i] = true;
 //				log.debug("Capteur "+i+" trop proche ou trop loin.");
@@ -476,7 +478,7 @@ public class ObstacleManager implements Service
 				Vec2<ReadWrite> pointVu = capteurs.getPositionAjustee(i, done[nbCapteur2], data.mesures[nbCapteurQuiVoit]);
 				if(pointVu == null)
 				{
-//					log.debug("Point vu: null");
+					log.debug("Point vu: null");
 					continue;
 				}
 				Vec2.plus(pointVu, capteurs.positionsRelatives[nbCapteurQuiVoit]);

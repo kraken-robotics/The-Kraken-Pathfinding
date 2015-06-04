@@ -42,7 +42,7 @@ public class ObstacleMobileDebug  {
 			int nbCapteurs = 2;
 			int[] mesures = new int[nbCapteurs];
 			mesures[0] = 400;
-			mesures[1] = 300;
+			mesures[1] = 0;
 			
 			buffer.add(new IncomingData(positionRobot, 0, 0, mesures));
 			Sleep.sleep(100);

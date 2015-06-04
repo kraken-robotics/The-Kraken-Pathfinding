@@ -104,16 +104,20 @@ public class Fenetre extends JPanel {
 		if(listObstaclesMobiles.size() > 0)
 			paintObstacle(listObstaclesMobiles.get(listObstaclesMobiles.size()-1), g, 0);
 		
-		g.setColor(new Color(0, 0, 130, 255));
 		if(capteurs != null)
 		{
+//			int nbCapteurs = 12;
 			int nbCapteurs = 2;
+			double angleCone;
 			for(int i = 0; i < nbCapteurs; i++)
 			{
-				double angleCone = 35.*Math.PI/180;
+//				if(i < 8)
+					angleCone = 35.*Math.PI/180;
+//				else
+//					angleCone = 5.*Math.PI/180;
 				Vec2<ReadWrite> p1 = capteurs.positionsRelatives[i].plusNewVector(new Vec2<ReadOnly>(0, 1000));
-				Vec2<ReadWrite> p2 = p1.plusNewVector(new Vec2<ReadOnly>(1000, angleCone + Capteurs.orientationsRelatives[i]));
-				Vec2<ReadWrite> p3 = p1.plusNewVector(new Vec2<ReadOnly>(1000, - angleCone + Capteurs.orientationsRelatives[i]));
+				Vec2<ReadWrite> p2 = p1.plusNewVector(new Vec2<ReadOnly>(800, angleCone + Capteurs.orientationsRelatives[i]));
+				Vec2<ReadWrite> p3 = p1.plusNewVector(new Vec2<ReadOnly>(800, - angleCone + Capteurs.orientationsRelatives[i]));
 				int[] x = new int[3];
 				x[0] = XtoWindow(p1.x);
 				x[1] = XtoWindow(p2.x);
@@ -122,6 +126,10 @@ public class Fenetre extends JPanel {
 				y[0] = YtoWindow(p1.y);
 				y[1] = YtoWindow(p2.y);
 				y[2] = YtoWindow(p3.y);
+				g.setColor(new Color(0, 130, 0, 50));
+				g.fillArc(XtoWindow(p1.x-800), YtoWindow(p1.y+800), distanceXtoWindow(2*800), distanceYtoWindow(2*800), (int)(Capteurs.orientationsRelatives[i]*180/Math.PI-35.), 70);
+//				g.fillPolygon(x, y, 3);
+				g.setColor(new Color(0, 130, 0, 255));
 				g.drawPolygon(x, y, 3);
 			}
 		}

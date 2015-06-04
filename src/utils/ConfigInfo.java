@@ -13,7 +13,7 @@ import enums.RobotColor;
 
 public enum ConfigInfo {
 	/**
-	 * Config statique, présente dans config.ini
+	 * Config statique, surchargeable avec config.ini
 	 */
 	TABLE_X("3000", true),
 	TABLE_Y("2000", true),
@@ -25,6 +25,7 @@ public enum ConfigInfo {
 	RAYON_ROBOT("250", true),
 	RAYON_ROBOT_ADVERSE("200", true),
 	DUREE_PEREMPTION_OBSTACLES("5000", true),
+	HORIZON_CAPTEURS("800", true),
 	CAPTEURS_TEMPORISATION_OBSTACLES("100", true),
 //	DISTANCE_DETECTION("300"),
 	AFFICHE_DEBUG("false", true),
