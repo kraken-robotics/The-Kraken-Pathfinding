@@ -37,36 +37,64 @@ public class ObstacleMobileDebug  {
 			fenetre.setCapteurs(capteurs);
 			fenetre.setObstaclesMobiles(obstaclemanager.getListObstaclesMobiles());
 			fenetre.showOnFrame();
-			Vec2<ReadWrite> point = new Vec2<ReadWrite>(500, 0);
+			int nbPoints = 4;
+			@SuppressWarnings("unchecked")
+			Vec2<ReadWrite>[] point = new Vec2[nbPoints];
 			Vec2<ReadOnly> positionRobot = new Vec2<ReadOnly>(0,1000);
-			int nbCapteurs = 2;
+			int nbCapteurs = 8;
 			int[] mesures = new int[nbCapteurs];
-			mesures[0] = 400;
+/*			mesures[0] = 0;
 			mesures[1] = 0;
+			mesures[2] = 0;
+			mesures[3] = 0;
+			mesures[4] = 0;
+			mesures[5] = 0;
+			mesures[6] = 0;
+			mesures[7] = 50;
 			
 			buffer.add(new IncomingData(positionRobot, 0, 0, mesures));
 			Sleep.sleep(100);
 			fenetre.repaint();
 			if(true)
-				return;
+				return;*/
 						
-			for(int i = 500; i < 1500; i+=10)
+			
+			int dureeSleep = 150;
+			for(int k = 0; k < nbPoints; k++)
 			{
-				point.y = i;
-				fenetre.setPoint(point.getReadOnly());
+				point[k] = new Vec2<ReadWrite>(600, 2*Math.PI*k/nbPoints);
+				Vec2.plus(point[k], positionRobot);
+			}
+			
+			long dateDebut = System.currentTimeMillis();
+			for(int i = 0; i < 1000; i++)
+			{
+//				point.y = i;
+				
+				for(int k = 0; k < nbPoints; k++)
+				{
+					point[k].y += (int)(rand.nextGaussian()*10);
+					point[k].x += (int)(rand.nextGaussian()*10);
+				}
+				fenetre.setPoint(point);
+
 				for(int j = 0; j < nbCapteurs; j++)
 				{
-					if(capteurs.canBeSeen(point.minusNewVector(positionRobot).getReadOnly(), 0))
-						mesures[j] = (int)(rand.nextGaussian()*bruit) + (int)point.distance(positionRobot.plusNewVector(capteurs.positionsRelatives[j]))-200;
-					else
-						mesures[j] = 0;
-					log.debug("Capteur "+j+": "+mesures[j]);
+					mesures[j] = 3000;
+					for(int k = 0; k < nbPoints; k++)
+					{
+						if(capteurs.canBeSeen(point[k].minusNewVector(positionRobot).getReadOnly(), j))
+							mesures[j] = Math.min(mesures[j], Math.max((int)(rand.nextGaussian()*bruit) + (int)point[k].distance(positionRobot.plusNewVector(capteurs.positionsRelatives[j]))-200,0));
+					}
+//					log.debug("Capteur "+j+": "+mesures[j]);
 				}
 
 				buffer.add(new IncomingData(positionRobot, 0, 0, mesures));
 				fenetre.repaint();
-				Sleep.sleep(200);
+				Sleep.sleep(dureeSleep);
 			}
+//			log.debug("Durée total: "+(System.currentTimeMillis()-dateDebut));
+//			log.debug("Fréquence: "+(10000000./(System.currentTimeMillis()-dateDebut)));
 		}
 		catch(Exception e)
 		{

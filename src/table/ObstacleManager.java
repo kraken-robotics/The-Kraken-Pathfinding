@@ -429,6 +429,7 @@ public class ObstacleManager implements Service
 		 */
 		for(int i = 0; i < nbCapteurs; i++)
 		{
+//			log.debug("Capteur "+i);
 			if(data.mesures[i] < 40 || data.mesures[i] > horizonCapteurs)
 			{
 				done[i] = true;
@@ -452,6 +453,7 @@ public class ObstacleManager implements Service
 			}
 			else
 			{
+//				log.debug("Ok");
 				done[i] = false;
 				data.mesures[i] += rayonEnnemi;
 			}
@@ -464,13 +466,18 @@ public class ObstacleManager implements Service
 		{
 			int nbCapteur1 = Capteurs.coupleCapteurs[i][0];
 			int nbCapteur2 = Capteurs.coupleCapteurs[i][1];
+			
+//			log.debug("nbCapteur1: "+nbCapteur1);
+//			log.debug("nbCapteur2: "+nbCapteur2);
 
 			if(done[nbCapteur1] && done[nbCapteur2])
 			{
+//				log.debug("Couple "+i+": déjà fait");
 				continue;
 			}
 			else if(done[nbCapteur1] || done[nbCapteur2])
 			{
+//				log.debug("Un capteur voit et pas l'autre");
 				/**
 				 * Cas où un capteur voit et pas l'autre
 				 */
@@ -478,7 +485,7 @@ public class ObstacleManager implements Service
 				Vec2<ReadWrite> pointVu = capteurs.getPositionAjustee(i, done[nbCapteur2], data.mesures[nbCapteurQuiVoit]);
 				if(pointVu == null)
 				{
-					log.debug("Point vu: null");
+//					log.debug("Point vu: null");
 					continue;
 				}
 				Vec2.plus(pointVu, capteurs.positionsRelatives[nbCapteurQuiVoit]);
@@ -489,6 +496,7 @@ public class ObstacleManager implements Service
 			}
 			else
 			{	
+//				log.debug("Deux capteurs voient");
 				/**
 				 * Cas où les deux capteurs voient
 				 */
@@ -559,7 +567,7 @@ public class ObstacleManager implements Service
 				Vec2.plus(positionEnnemi, capteurs.positionsRelatives[i]);
 				Vec2.rotate(positionEnnemi, data.orientationRobot);
 				Vec2.plus(positionEnnemi, data.positionRobot);
-		//		log.debug("Obstacle vu par un seul capteur: "+positionEnnemi);
+//				log.debug("Obstacle vu par un seul capteur: "+positionEnnemi);
 				creerObstacle(positionEnnemi.getReadOnly(), System.currentTimeMillis());
 
 			}

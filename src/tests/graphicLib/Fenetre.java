@@ -35,7 +35,7 @@ public class Fenetre extends JPanel {
 	private ArrayList<ObstacleProximity> listObstaclesMobiles;
 	private ArrayList<Vec2<ReadOnly>[]> segments = new ArrayList<Vec2<ReadOnly>[]>();
 	private Image image;
-	private Vec2<ReadOnly> point;
+	private Vec2<ReadWrite>[] point;
 //	private AttributedString affichage = new AttributedString("");
 	private ArrayList<ArrayList<Vec2<ReadOnly>>> paths = new ArrayList<ArrayList<Vec2<ReadOnly>>>();
 	private ArrayList<Double> orientations = new ArrayList<Double>();
@@ -101,13 +101,15 @@ public class Fenetre extends JPanel {
 
 //		for(int i = firstNotDead; i < listObstaclesMobiles.size(); i++)
 //			paintObstacle(listObstaclesMobiles.get(i).getTestOnly(), g, 0);
-		if(listObstaclesMobiles.size() > 0)
-			paintObstacle(listObstaclesMobiles.get(listObstaclesMobiles.size()-1), g, 0);
+		int nbPoints = 4;
+		for(int k = 0; k < nbPoints; k++)
+			if(listObstaclesMobiles.size() > k)
+				paintObstacle(listObstaclesMobiles.get(listObstaclesMobiles.size()-1-k), g, 0);
 		
 		if(capteurs != null)
 		{
 //			int nbCapteurs = 12;
-			int nbCapteurs = 2;
+			int nbCapteurs = 8;
 			double angleCone;
 			for(int i = 0; i < nbCapteurs; i++)
 			{
@@ -137,7 +139,8 @@ public class Fenetre extends JPanel {
 		g.setColor(new Color(255, 0, 0, 30));
 
 		if(point != null)
-			g.fillOval(XtoWindow(point.x-200), YtoWindow(point.y+200), distanceXtoWindow(400), distanceYtoWindow(400));
+			for(Vec2<ReadWrite> v: point)
+				g.fillOval(XtoWindow(v.x-200), YtoWindow(v.y+200), distanceXtoWindow(400), distanceYtoWindow(400));
 
 	}
 
@@ -150,7 +153,7 @@ public class Fenetre extends JPanel {
 		frame.setVisible(true);
 	}
 
-	public void setPoint(Vec2<ReadOnly> point)
+	public void setPoint(Vec2<ReadWrite>[] point)
 	{
 		this.point = point;
 	}

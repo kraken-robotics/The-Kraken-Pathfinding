@@ -22,9 +22,9 @@ public class Capteurs implements Service {
 	
 	protected Log log;
 	
-	private final int nbCapteurs = 12;
+	private static final int nbCapteurs = 12;
 	
-	private final int nbCouples = 4;
+	private static final int nbCouples = 4;
 	
 	/**
 	 * Les ultrasons ont un cône de 35°
@@ -35,10 +35,8 @@ public class Capteurs implements Service {
 	private static final int ultrason = 0;
 	private static final int infrarouge = 1;
 	
-	private int nbUltrasons = 12;
+	private final int nbUltrasons = 12;
 	private int horizonCapteursSquared;
-	
-	private final double[] cos = {Math.cos(Math.PI/2-angleCone[0]), Math.cos(Math.PI/2-angleCone[1])};
 	
 	/**
 	 * Les positions relatives des capteurs par rapport au centre du
@@ -97,7 +95,7 @@ public class Capteurs implements Service {
 
 		double angleDeBase;
 		angleDeBase = angleCone[0]/2;
-		angleDeBase = - Math.PI/4 + 2*angleCone[0];
+//		angleDeBase = - Math.PI/4 + 2*angleCone[0];
 		
 		orientationsRelatives[0] = -angleDeBase;
 		orientationsRelatives[1] = angleDeBase;
@@ -123,7 +121,7 @@ public class Capteurs implements Service {
 		coupleCapteurs[0][0] = 0;
 		coupleCapteurs[0][1] = 1;
 
-/*		coupleCapteurs[1][0] = 2;
+		coupleCapteurs[1][0] = 2;
 		coupleCapteurs[1][1] = 3;
 
 		coupleCapteurs[2][0] = 4;
@@ -131,7 +129,7 @@ public class Capteurs implements Service {
 
 		coupleCapteurs[3][0] = 6;
 		coupleCapteurs[3][1] = 7;
-	*/	
+
 		for(int i = 0; i < nbCouples; i++)
 			coupleCapteurs[i][2] = (int)positionsRelatives[coupleCapteurs[i][0]].distance(positionsRelatives[coupleCapteurs[i][1]]);
 //		log.debug("distance: "+coupleCapteurs[0][2]);
@@ -140,8 +138,8 @@ public class Capteurs implements Service {
 		config.set(ConfigInfo.NB_COUPLES_CAPTEURS_PROXIMITE, nbCouples);
 
 		// Pour test
-		config.set(ConfigInfo.NB_CAPTEURS_PROXIMITE, 2);
-		config.set(ConfigInfo.NB_COUPLES_CAPTEURS_PROXIMITE, 1);
+		config.set(ConfigInfo.NB_CAPTEURS_PROXIMITE, 8);
+		config.set(ConfigInfo.NB_COUPLES_CAPTEURS_PROXIMITE, 4);
 
 	}
 	
@@ -166,24 +164,36 @@ public class Capteurs implements Service {
 	 * @param mesure
 	 * @return
 	 */
+	
 	public Vec2<ReadWrite> getPositionAjustee(int nbCouple, boolean gauche, int mesure)
 	{
 		int capteurQuiVoit = coupleCapteurs[nbCouple][gauche?0:1];
 		int capteurQuiNeVoitPas = coupleCapteurs[nbCouple][gauche?1:0];
 		Vec2<ReadWrite> intersectionPoint;
 		int distance = coupleCapteurs[nbCouple][2];
-		double b = -2.*distance*cos[capteurQuiVoit<nbUltrasons?ultrason:infrarouge];
+		Vec2<ReadWrite> cote;
+		if(gauche)
+			cote = new Vec2<ReadWrite>(distance, orientationsRelatives[capteurQuiNeVoitPas]-angleCone[capteurQuiNeVoitPas<nbUltrasons?ultrason:infrarouge]);
+		else
+			cote = new Vec2<ReadWrite>(distance, orientationsRelatives[capteurQuiNeVoitPas]+angleCone[capteurQuiNeVoitPas<nbUltrasons?ultrason:infrarouge]);
+		
+//		log.debug("cote: "+cote);
+		
+		Vec2.plus(cote, positionsRelatives[capteurQuiNeVoitPas]);
+		Vec2.minus(cote, positionsRelatives[capteurQuiVoit]);
+		double cos = 1-cote.squaredLength()/(2.*distance*distance);
+		double b = -2.*distance*cos;
 		double c = distance*distance - mesure*mesure;
 		double delta = b*b-4*c;
 		
-		log.debug("gauche: "+gauche);
-		log.debug("distance entre capteurs: "+distance);
-		log.debug("mesure: "+mesure);
-		log.debug("cos: "+cos);
+//		log.debug("gauche: "+gauche);
+//		log.debug("cos: "+cos);
+//		log.debug("distance entre capteurs: "+distance);
+//		log.debug("mesure: "+mesure);
 
 		if(delta < 0)
 		{
-			log.debug("Pas d'intersection: delta négatif");
+//			log.debug("Pas d'intersection: delta négatif");
 			return null;
 		}
 
@@ -191,7 +201,7 @@ public class Capteurs implements Service {
 		double s = (-b+Math.sqrt(delta))/2;
 		if(s <= 0)
 		{
-			log.debug("Pas d'intersection: distance négative");
+//			log.debug("Pas d'intersection: distance négative");
 			return null;
 		}
 			
@@ -199,9 +209,9 @@ public class Capteurs implements Service {
 		log.debug("Distance 2: "+(-b-Math.sqrt(delta))/2);
 */
 		if(gauche)
-			intersectionPoint = new Vec2<ReadWrite>((int)s, orientationsRelatives[capteurQuiNeVoitPas]+angleCone[capteurQuiVoit<nbUltrasons?ultrason:infrarouge]);
-		else
 			intersectionPoint = new Vec2<ReadWrite>((int)s, orientationsRelatives[capteurQuiNeVoitPas]-angleCone[capteurQuiVoit<nbUltrasons?ultrason:infrarouge]);
+		else
+			intersectionPoint = new Vec2<ReadWrite>((int)s, orientationsRelatives[capteurQuiNeVoitPas]+angleCone[capteurQuiVoit<nbUltrasons?ultrason:infrarouge]);
 
 //		log.debug("Point avant repère: "+intersectionPoint);
 		
@@ -214,16 +224,19 @@ public class Capteurs implements Service {
 		
 		if(!canBeSeen(intersectionPoint.getReadOnly(), capteurQuiVoit))
 		{
-			log.debug("Ce point n'est pas visible");
+//			log.debug("Ce point n'est pas visible");
 			return null; // le point d'intersection n'est pas vu par le capteur qui voit l'obstacle
 		}
 		
 //		log.debug("Autre point: "+new Vec2<ReadWrite>(mesure, gauche?angleCone:-angleCone));
 		
-		Vec2.plus(intersectionPoint, Vec2.plus(new Vec2<ReadWrite>(mesure, gauche?angleCone[capteurQuiVoit<nbUltrasons?ultrason:infrarouge]:-angleCone[capteurQuiVoit<nbUltrasons?ultrason:infrarouge]), positionsRelatives[capteurQuiVoit]));
-		double longueur = intersectionPoint.length();
-		Vec2.scalar(intersectionPoint, mesure/longueur);
-		
+		Vec2.minus(intersectionPoint, positionsRelatives[capteurQuiVoit]);
+		if(gauche)
+			Vec2.plus(intersectionPoint, new Vec2<ReadWrite>(mesure, orientationsRelatives[capteurQuiVoit]-angleCone[capteurQuiVoit<nbUltrasons?ultrason:infrarouge]));
+		else
+			Vec2.plus(intersectionPoint, new Vec2<ReadWrite>(mesure, orientationsRelatives[capteurQuiVoit]+angleCone[capteurQuiVoit<nbUltrasons?ultrason:infrarouge]));
+		Vec2.scalar(intersectionPoint, 0.5);
+
 		return intersectionPoint;
 	}
 	
@@ -235,6 +248,7 @@ public class Capteurs implements Service {
 	 */
 	public int distanceSeen(int nbCapteur, ObstacleCircular o)
 	{
+		// TODO
 		return 0;
 	}
 
