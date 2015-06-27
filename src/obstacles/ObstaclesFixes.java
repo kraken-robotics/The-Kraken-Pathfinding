@@ -12,7 +12,7 @@ import utils.Vec2;
 
 public enum ObstaclesFixes {
 
-    TEST(new ObstacleCircular(new Vec2<ReadOnly>(200,1200),200)), // plaque rouge
+    TEST(new ObstacleCircular(new Vec2<ReadOnly>(300,1400),200)), // plaque rouge
 
     // DEPENDS_ON_RULES
     PLASQUE_ROUGE(new ObstacleRectangular(new Vec2<ReadOnly>(0,100),800,200)), // plaque rouge

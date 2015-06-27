@@ -43,8 +43,8 @@ public class ObstacleMobileDebug  {
 			Vec2<ReadOnly> positionRobot = new Vec2<ReadOnly>(0,1000);
 			int nbCapteurs = 8;
 			int[] mesures = new int[nbCapteurs];
-/*			mesures[0] = 350;
-			mesures[1] = 250;
+			mesures[0] = 247;
+			mesures[1] = 365;
 			mesures[2] = 3000;
 			mesures[3] = 3000;
 			mesures[4] = 3000;
@@ -56,7 +56,7 @@ public class ObstacleMobileDebug  {
 			Sleep.sleep(100);
 			fenetre.repaint();
 			if(true)
-				return;*/
+				return;
 								
 			int dureeSleep = 150;
 			for(int k = 0; k < nbPoints; k++)

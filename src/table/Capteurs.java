@@ -174,6 +174,8 @@ public class Capteurs implements Service {
 	/**
 	 * Si un obstacle est vu, par quelle côté?
 	 * ATTENTION: on suppose que l'obstacle est vu
+	 * 1: celui de droite
+	 * 2: celui de gauche
 	 * @return
 	 */
 	public int whichSee(Vec2<ReadOnly> point, int nbCapteur)
@@ -193,8 +195,13 @@ public class Capteurs implements Service {
 	 */
 	public boolean canBeSeenArriere(Vec2<ReadOnly> point, int nbCapteur, int radius)
 	{
-		Vec2<ReadOnly> tmp = Vec2.minus(Vec2.minus(new Vec2<ReadWrite>(-(int)(radius/sin[nbCapteur<nbUltrasons?ultrason:infrarouge]), orientationsRelatives[nbCapteur]), positionsRelatives[nbCapteur]), point).getReadOnly();
-		return tmp.dot(cones[nbCapteur][0]) > 0 && tmp.dot(cones[nbCapteur][1]) > 0 && tmp.dot(cones[nbCapteur][2]) > 0 && tmp.squaredLength() < horizonCapteursSquared;
+//		log.debug("Position cone: "+positionsRelatives[nbCapteur]);
+//		log.debug("Diff position cone arrière: "+new Vec2<ReadWrite>(-(int)(radius/sin[nbCapteur<nbUltrasons?ultrason:infrarouge]), orientationsRelatives[nbCapteur]));
+//		log.debug("Position cone arrière: "+Vec2.plus(new Vec2<ReadWrite>(-(int)(radius/sin[nbCapteur<nbUltrasons?ultrason:infrarouge]), orientationsRelatives[nbCapteur]), positionsRelatives[nbCapteur]));
+		log.debug("Point avant: "+point);
+		Vec2<ReadOnly> tmp = Vec2.plus(Vec2.minus(new Vec2<ReadWrite>((int)(radius/sin[nbCapteur<nbUltrasons?ultrason:infrarouge]), orientationsRelatives[nbCapteur]), positionsRelatives[nbCapteur]), point).getReadOnly();
+		log.debug("Point après: "+tmp);
+		return tmp.dot(cones[nbCapteur][0]) > 0 && tmp.dot(cones[nbCapteur][1]) > 0 && tmp.dot(cones[nbCapteur][2]) > 0;
 	}
 
 	/**

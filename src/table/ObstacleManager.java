@@ -425,18 +425,20 @@ public class ObstacleManager implements Service
 	 */
 	public void updateObstaclesMobiles(IncomingData data)
 	{
-		boolean[] done = new boolean[nbCapteurs];
+		boolean[] neVoitRien = new boolean[nbCapteurs];
+		boolean[] dejaTraite = new boolean[nbCapteurs];
 			
 		/**
 		 * Suppression des mesures qui sont hors-table ou qui voient un obstacle de table
 		 */
 		for(int i = 0; i < nbCapteurs; i++)
 		{
+			dejaTraite[i] = false;
 			if(debug)
 				log.debug("Capteur "+i);
 			if(data.mesures[i] < 40 || data.mesures[i] > horizonCapteurs)
 			{
-				done[i] = true;
+				neVoitRien[i] = true;
 				if(debug)
 					log.debug("Capteur "+i+" trop proche ou trop loin.");
 				continue;
@@ -451,12 +453,12 @@ public class ObstacleManager implements Service
 			if(positionBrute.x > table_x / 2 - distanceApproximation ||
 					positionBrute.x < -table_x / 2 + distanceApproximation ||
 					positionBrute.y < distanceApproximation ||
-					positionBrute.y > table_y - distanceApproximation ||
-					isObstacleFixePresentCapteurs(positionBrute.getReadOnly()))
+					positionBrute.y > table_y - distanceApproximation/* ||
+					isObstacleFixePresentCapteurs(positionBrute.getReadOnly())*/)
 			{
 				if(debug)
-					log.debug("Capteur "+i+" ignoré.");
-				done[i] = true; // le capteur voit un obstacle fixe: on ignore sa valeur
+					log.debug("Capteur "+i+" ignoré car hors-table.");
+				neVoitRien[i] = true; // le capteur voit un obstacle fixe: on ignore sa valeur
 			}
 			else
 			{
@@ -469,8 +471,19 @@ public class ObstacleManager implements Service
 					if(obs instanceof ObstacleCircular)
 					{
 						ObstacleCircular obsc = (ObstacleCircular) obs;
-						// Cet obstacle peut-être vu
-						if(capteurs.canBeSeenArriere(obsc.position, i, ((ObstacleCircular) obs).getRadius()))
+
+						if(debug)
+							log.debug("Vérification obstacle en "+obsc.position);
+
+						/**
+						 * positionObstacle est la position de l'obstacle dans le repère du robot
+						 */
+						Vec2<ReadOnly> positionObstacle = Vec2.rotate(obsc.position.minusNewVector(data.positionRobot), -data.orientationRobot).getReadOnly();
+						
+						if(debug)
+							log.debug("Position obstacle dans le repère du robot: "+positionObstacle);
+
+						if(capteurs.canBeSeenArriere(positionObstacle, i, ((ObstacleCircular) obs).getRadius()))
 						{
 							/**
 							 * On voit l'obstacle circulaire de table. Reste maintenant
@@ -478,39 +491,46 @@ public class ObstacleManager implements Service
 							 * si c'est vraiment lui qu'on voit
 							 */
 							int distance;
-							if(capteurs.canBeSeen(obsc.position, i))
+							if(capteurs.canBeSeen(positionObstacle, i))
 							{
 								/**
 								 * Cas simple: on voit le centre du cercle
 								 */
-								Vec2<ReadWrite> positionCapteur = capteurs.positionsRelatives[i].clone();
-								Vec2.rotate(positionCapteur, data.orientationRobot);
-								Vec2.plus(positionCapteur, data.positionRobot);
-
-								distance = obsc.position.squaredDistance(positionCapteur) - obsc.getRadius();
+								if(debug)
+									log.debug("Cas simple");
+								distance = (int) (positionObstacle.distance(capteurs.positionsRelatives[i]) - obsc.getRadius());
 							}
 							else
 							{
 								/**
 								 * Cas plus complexe: on voit seulement un bout du cercle
 								 */
-								int cote = capteurs.whichSee(obsc.position, i);
-								Vec2<ReadWrite> norm = capteurs.cones[i][cote].clone();
-								norm.x = - norm.x;
-								distance = (int)obsc.getDistance(capteurs.positionsRelatives[i], norm.getReadOnly());
+								if(debug)
+									log.debug("Cas complexe");
+								int cote = capteurs.whichSee(positionObstacle, i);
+								if(debug)
+									log.debug("Côté qui voit: "+cote);
+								distance = (int)ObstacleCircular.getDistance(positionObstacle, obsc.getRadius(), capteurs.positionsRelatives[i], capteurs.cones[3-i][cote]);
 							}
+							
+							if(debug)
+								log.debug("Distance prédite pour "+i+": "+distance);
 							
 							if(Math.abs(distance - data.mesures[i]) < distanceApproximation)
 							{
-								done[i] = true;
+								if(debug)
+									log.debug("Le capteur "+i+" voit un obstacle fixe circulaire");
+								dejaTraite[i] = true;
 								continue;
 							}
 							
 						}
+						else if(debug)
+							log.debug("Obstacle pas visible avec cone arrière");
 					}
 				}
 //				log.debug("Ok");
-				done[i] = false;
+				neVoitRien[i] = false;
 				data.mesures[i] += rayonEnnemi;
 			}
 		}
@@ -528,21 +548,21 @@ public class ObstacleManager implements Service
 			if(debug)
 				log.debug("nbCapteur2: "+nbCapteur2);
 
-			if(done[nbCapteur1] && done[nbCapteur2])
+			if((neVoitRien[nbCapteur1] || dejaTraite[nbCapteur1]) && (neVoitRien[nbCapteur2] || dejaTraite[nbCapteur2]))
 			{
 				if(debug)
 					log.debug("Couple "+i+": déjà fait");
 				continue;
 			}
-			else if(done[nbCapteur1] || done[nbCapteur2])
+			else if((neVoitRien[nbCapteur1] ^ neVoitRien[nbCapteur2]) && (!dejaTraite[nbCapteur1] && !dejaTraite[nbCapteur2]))
 			{
 				if(debug)
 					log.debug("Un capteur voit et pas l'autre");
 				/**
 				 * Cas où un capteur voit et pas l'autre
 				 */
-				int nbCapteurQuiVoit = done[nbCapteur2]?nbCapteur1:nbCapteur2;
-				Vec2<ReadWrite> pointVu = capteurs.getPositionAjustee(i, done[nbCapteur2], data.mesures[nbCapteurQuiVoit]);
+				int nbCapteurQuiVoit = neVoitRien[nbCapteur2]?nbCapteur1:nbCapteur2;
+				Vec2<ReadWrite> pointVu = capteurs.getPositionAjustee(i, neVoitRien[nbCapteur2], data.mesures[nbCapteurQuiVoit]);
 				if(pointVu == null)
 				{
 					if(debug)
@@ -553,9 +573,9 @@ public class ObstacleManager implements Service
 				Vec2.rotate(pointVu, data.orientationRobot);
 				Vec2.plus(pointVu, data.positionRobot);
 				creerObstacle(pointVu.getReadOnly(), System.currentTimeMillis());
-				done[nbCapteurQuiVoit] = true;
+				neVoitRien[nbCapteurQuiVoit] = true;
 			}
-			else
+			else if(!dejaTraite[nbCapteur1] && !dejaTraite[nbCapteur2] && !neVoitRien[nbCapteur1] && !neVoitRien[nbCapteur2])
 			{	
 				if(debug)
 					log.debug("Deux capteurs voient");
@@ -631,8 +651,8 @@ public class ObstacleManager implements Service
 				
 				if(vu)			
 				{
-					done[nbCapteur1] = true;
-					done[nbCapteur2] = true;
+					neVoitRien[nbCapteur1] = true;
+					neVoitRien[nbCapteur2] = true;
 					if(debug)
 						log.debug("Scalaire: "+(rayonEnnemi)/posY);
 //					Vec2.scalar(BC, ((double)rayonEnnemi)/posY);
@@ -651,7 +671,7 @@ public class ObstacleManager implements Service
 		 * Maintenant, on récupère tous les capteurs qui n'ont pas participé à une détection couplée
 		 */
 		for(int i = 0; i < nbCapteurs; i++)
-			if(!done[i])
+			if(!neVoitRien[i] && !dejaTraite[i])
 			{
 				Vec2<ReadWrite> positionEnnemi = new Vec2<ReadWrite>(data.mesures[i]+rayonEnnemi, Capteurs.orientationsRelatives[i]);
 				Vec2.plus(positionEnnemi, capteurs.positionsRelatives[i]);

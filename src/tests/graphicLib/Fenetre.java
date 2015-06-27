@@ -6,6 +6,7 @@ import javax.swing.*;
 import obstacles.ObstacleCircular;
 import obstacles.ObstacleProximity;
 import obstacles.ObstacleRectangular;
+import obstacles.ObstaclesFixes;
 //import obstacles.ObstaclesFixes;
 import permissions.ReadOnly;
 import permissions.ReadWrite;
@@ -140,6 +141,10 @@ public class Fenetre extends JPanel {
 		if(point != null)
 			for(Vec2<ReadWrite> v: point)
 				g.fillOval(XtoWindow(v.x-200), YtoWindow(v.y+200), distanceXtoWindow(400), distanceYtoWindow(400));
+
+		Vec2<ReadOnly> v = ObstaclesFixes.TEST.getObstacle().position;
+		int r = ((ObstacleCircular)ObstaclesFixes.TEST.getObstacle()).getRadius();
+		g.fillOval(XtoWindow(v.x-r), YtoWindow(v.y+r), distanceXtoWindow(r*2), distanceYtoWindow(r*2));
 
 	}
 
