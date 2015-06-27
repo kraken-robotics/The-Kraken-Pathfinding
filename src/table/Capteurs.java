@@ -44,7 +44,13 @@ public class Capteurs implements Service {
 	 */
 	public final Vec2<ReadOnly>[] positionsRelatives;
 	
+	/**
+	 * Premier indice: numéro d'un capteur
+	 * Deuxième indice: numéro d'une droite qui définit le cone
+	 */
 	public final Vec2<ReadOnly>[][] cones;
+
+	private final double[] sin;
 	
 	/**
 	 * coupleCapteurs[i] est un tableau qui contient les numéros des
@@ -94,8 +100,8 @@ public class Capteurs implements Service {
 		positionsRelatives[7] = new Vec2<ReadOnly>(-100, -100);
 
 		double angleDeBase;
-		angleDeBase = angleCone[0]/2;
-//		angleDeBase = - Math.PI/4 + 2*angleCone[0];
+//		angleDeBase = angleCone[0]/2;
+		angleDeBase = - Math.PI/4 + 2*angleCone[0];
 		
 		orientationsRelatives[0] = -angleDeBase;
 		orientationsRelatives[1] = angleDeBase;
@@ -116,6 +122,10 @@ public class Capteurs implements Service {
 			cones[i][1] = new Vec2<ReadOnly>(orientationsRelatives[i]+Math.PI/2-angleCone[i<nbUltrasons?ultrason:infrarouge]);
 			cones[i][2] = new Vec2<ReadOnly>(orientationsRelatives[i]-Math.PI/2+angleCone[i<nbUltrasons?ultrason:infrarouge]);
 		}
+		
+		sin = new double[2];
+		sin[ultrason] = Math.sin(angleCone[ultrason]);
+		sin[infrarouge] = Math.sin(angleCone[infrarouge]);		
 		
 		coupleCapteurs = new int[nbCouples][3];
 		coupleCapteurs[0][0] = 0;
@@ -156,6 +166,37 @@ public class Capteurs implements Service {
 		return tmp.dot(cones[nbCapteur][0]) > 0 && tmp.dot(cones[nbCapteur][1]) > 0 && tmp.dot(cones[nbCapteur][2]) > 0 && tmp.squaredLength() < horizonCapteursSquared;
 	}
 	
+	public boolean canBeSeenLight(Vec2<ReadOnly> point, int nbCapteur) {
+		Vec2<ReadOnly> tmp = point.minusNewVector(positionsRelatives[nbCapteur]).getReadOnly();
+		return tmp.dot(cones[nbCapteur][0]) > 0 && tmp.squaredLength() < horizonCapteursSquared;
+	}
+	
+	/**
+	 * Si un obstacle est vu, par quelle côté?
+	 * ATTENTION: on suppose que l'obstacle est vu
+	 * @return
+	 */
+	public int whichSee(Vec2<ReadOnly> point, int nbCapteur)
+	{
+		Vec2<ReadOnly> tmp = point.minusNewVector(positionsRelatives[nbCapteur]).getReadOnly();
+		if(tmp.dot(cones[nbCapteur][1]) > 0)
+			return 1;
+		return 2;
+	}
+
+	/**
+	 * Ce point peut-il être vu par le cone arrière?
+	 * Le point est dans le référentiel du robot
+	 * @param point
+	 * @param nbCapteur
+	 * @return
+	 */
+	public boolean canBeSeenArriere(Vec2<ReadOnly> point, int nbCapteur, int radius)
+	{
+		Vec2<ReadOnly> tmp = Vec2.minus(Vec2.minus(new Vec2<ReadWrite>(-(int)(radius/sin[nbCapteur<nbUltrasons?ultrason:infrarouge]), orientationsRelatives[nbCapteur]), positionsRelatives[nbCapteur]), point).getReadOnly();
+		return tmp.dot(cones[nbCapteur][0]) > 0 && tmp.dot(cones[nbCapteur][1]) > 0 && tmp.dot(cones[nbCapteur][2]) > 0 && tmp.squaredLength() < horizonCapteursSquared;
+	}
+
 	/**
 	 * Retourne la position ajustée de l'obstacle vu.
 	 * Cette position est donnée dans le référentiel du capteur qui voit
@@ -248,6 +289,7 @@ public class Capteurs implements Service {
 	 */
 	public int distanceSeen(int nbCapteur, ObstacleCircular o)
 	{
+//		Vec2<ReadWrite> cone1 = cone[nbCapteur];
 		// TODO
 		return 0;
 	}

@@ -12,7 +12,9 @@ import utils.Vec2;
 
 public enum ObstaclesFixes {
 
-	// DEPENDS_ON_RULES
+    TEST(new ObstacleCircular(new Vec2<ReadOnly>(200,1200),200)), // plaque rouge
+
+    // DEPENDS_ON_RULES
     PLASQUE_ROUGE(new ObstacleRectangular(new Vec2<ReadOnly>(0,100),800,200)), // plaque rouge
     ESCALIER(new ObstacleRectangular(new Vec2<ReadOnly>(0,2000-580/2),1066,580)), // escalier
     BANDE_1(new ObstacleRectangular(new Vec2<ReadOnly>(-1500+400/2,1200),400,22)), // bandes de bois zone de départ
@@ -30,7 +32,7 @@ public enum ObstaclesFixes {
     BORD_DROITE(new ObstacleRectangular(new Vec2<ReadOnly>(1500,1000),0,2000)),
     BORD_HAUT(new ObstacleRectangular(new Vec2<ReadOnly>(0,2000),3000,0));
 
-    private final ObstacleRectangular obstacle;
+    private final Obstacle obstacle;
     public static final ObstaclesFixes[] values;
     
     static
@@ -43,7 +45,12 @@ public enum ObstaclesFixes {
     	this.obstacle = obstacle;
     }
 
-    public ObstacleRectangular getObstacle()
+    private ObstaclesFixes(ObstacleCircular obstacle)
+    {
+    	this.obstacle = obstacle;
+    }
+
+    public Obstacle getObstacle()
     {
     	return obstacle;
     }

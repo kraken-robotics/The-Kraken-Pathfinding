@@ -13,7 +13,7 @@ import utils.Vec2;
 
 public abstract class Obstacle
 {
-	protected final Vec2<ReadOnly> position;
+	public final Vec2<ReadOnly> position;
 	protected int distance_dilatation;
 	protected static Log log;
 	
@@ -45,14 +45,6 @@ public abstract class Obstacle
 	public abstract boolean isProcheObstacle(Vec2<ReadOnly> point, int distance);
 	public abstract boolean isInObstacle(Vec2<ReadOnly> point);
 	
-	/**
-	 * Utilisé pour l'affichage
-	 * @return
-	 */
-	public static final Vec2<ReadOnly> getPosition(Obstacle o)
-	{
-		return o.position.getReadOnly();
-	}
 /*
 	public static final void setPosition(Obstacle o, Vec2<ReadOnly> v)
 	{

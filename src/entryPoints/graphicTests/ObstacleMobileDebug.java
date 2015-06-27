@@ -37,28 +37,27 @@ public class ObstacleMobileDebug  {
 			fenetre.setCapteurs(capteurs);
 			fenetre.setObstaclesMobiles(obstaclemanager.getListObstaclesMobiles());
 			fenetre.showOnFrame();
-			int nbPoints = 4;
+			int nbPoints = 1;
 			@SuppressWarnings("unchecked")
 			Vec2<ReadWrite>[] point = new Vec2[nbPoints];
 			Vec2<ReadOnly> positionRobot = new Vec2<ReadOnly>(0,1000);
 			int nbCapteurs = 8;
 			int[] mesures = new int[nbCapteurs];
-/*			mesures[0] = 0;
-			mesures[1] = 0;
-			mesures[2] = 0;
-			mesures[3] = 0;
-			mesures[4] = 0;
-			mesures[5] = 0;
-			mesures[6] = 0;
-			mesures[7] = 50;
+/*			mesures[0] = 350;
+			mesures[1] = 250;
+			mesures[2] = 3000;
+			mesures[3] = 3000;
+			mesures[4] = 3000;
+			mesures[5] = 3000;
+			mesures[6] = 3000;
+			mesures[7] = 3000;
 			
 			buffer.add(new IncomingData(positionRobot, 0, 0, mesures));
 			Sleep.sleep(100);
 			fenetre.repaint();
 			if(true)
 				return;*/
-						
-			
+								
 			int dureeSleep = 150;
 			for(int k = 0; k < nbPoints; k++)
 			{
@@ -66,7 +65,7 @@ public class ObstacleMobileDebug  {
 				Vec2.plus(point[k], positionRobot);
 			}
 			
-			long dateDebut = System.currentTimeMillis();
+// 			long dateDebut = System.currentTimeMillis();
 			for(int i = 0; i < 1000; i++)
 			{
 //				point.y = i;
@@ -86,7 +85,7 @@ public class ObstacleMobileDebug  {
 						if(capteurs.canBeSeen(point[k].minusNewVector(positionRobot).getReadOnly(), j))
 							mesures[j] = Math.min(mesures[j], Math.max((int)(rand.nextGaussian()*bruit) + (int)point[k].distance(positionRobot.plusNewVector(capteurs.positionsRelatives[j]))-200,0));
 					}
-//					log.debug("Capteur "+j+": "+mesures[j]);
+					log.debug("Capteur "+j+": "+mesures[j]);
 				}
 
 				buffer.add(new IncomingData(positionRobot, 0, 0, mesures));

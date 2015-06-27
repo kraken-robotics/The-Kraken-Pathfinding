@@ -70,6 +70,15 @@ public class ObstacleCircular extends Obstacle
 	    double CI = numerateur*numerateur / denominateur;
 	    return CI < (radius+distance)*(radius+distance);
 	}
+	
+	public double getDistance(Vec2<ReadOnly> origineCapteur, Vec2<ReadOnly> vecteurNormal)
+	{
+		Vec2<ReadOnly> positionRepereCapteur = position.minusNewVector(origineCapteur).getReadOnly();
+
+		double a = Math.abs(positionRepereCapteur.x * vecteurNormal.x - positionRepereCapteur.y * vecteurNormal.y);
+		double norm = vecteurNormal.squaredLength();
+		return Math.sqrt(positionRepereCapteur.squaredLength() - a * a / norm) - Math.sqrt(squared_radius - a * a / norm);
+	}
 
 	private boolean collisionDroiteDilatation(Vec2<ReadOnly> A, Vec2<ReadOnly> B)
 	{

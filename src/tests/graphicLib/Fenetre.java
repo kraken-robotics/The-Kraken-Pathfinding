@@ -3,7 +3,6 @@ package tests.graphicLib;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
-import obstacles.Obstacle;
 import obstacles.ObstacleCircular;
 import obstacles.ObstacleProximity;
 import obstacles.ObstacleRectangular;
@@ -172,9 +171,9 @@ public class Fenetre extends JPanel {
 	public void paintObstacle(ObstacleCircular o, Graphics g, int dilatationObstacle)
 	{
 		if(o.getRadius() <= 0)
-			g.fillOval(XtoWindow(Obstacle.getPosition(o).x)-5, YtoWindow(Obstacle.getPosition(o).y)-5, 10, 10);
+			g.fillOval(XtoWindow(o.position.x)-5, YtoWindow(o.position.y)-5, 10, 10);
 		else
-			g.fillOval(XtoWindow(Obstacle.getPosition(o).x-o.getRadius()-dilatationObstacle), YtoWindow(Obstacle.getPosition(o).y+o.getRadius()+dilatationObstacle), distanceXtoWindow((o.getRadius()+dilatationObstacle)*2), distanceYtoWindow((o.getRadius()+dilatationObstacle)*2));		
+			g.fillOval(XtoWindow(o.position.x-o.getRadius()-dilatationObstacle), YtoWindow(o.position.y+o.getRadius()+dilatationObstacle), distanceXtoWindow((o.getRadius()+dilatationObstacle)*2), distanceYtoWindow((o.getRadius()+dilatationObstacle)*2));		
 	}
 /*	
 	public void paintObstacle(ObstacleRectangular<TestOnly> o, Graphics g, int dilatationObstacle)
