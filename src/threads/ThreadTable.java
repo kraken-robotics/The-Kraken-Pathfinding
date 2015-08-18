@@ -6,6 +6,7 @@ import table.Table;
 import utils.Config;
 import utils.Log;
 import container.Service;
+import enums.Tribool;
 
 /**
  * Thread de la table. Surveille IncomingHookBuffer
@@ -45,7 +46,7 @@ public class ThreadTable extends Thread implements Service
 			// Cet appel peut lancer un obstaclemanager.notifyAll()
 			// Il n'est pas synchronized car il ne modifie pas le buffer
 //			if(e != null)
-//				table.apply(e); // TODO
+			table.setDone(e.element, Tribool.TRUE); // TODO
 		}
 //		log.debug("Fermeture de ThreadTable");
 	}

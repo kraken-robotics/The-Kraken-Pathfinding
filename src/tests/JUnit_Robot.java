@@ -14,6 +14,7 @@ import planification.LocomotionArc;
 import planification.astar.arc.PathfindingNodes;
 import container.ServiceNames;
 import enums.RobotColor;
+import robot.ActuatorOrder;
 import robot.RobotChrono;
 import robot.RobotReal;
 import robot.Speed;
@@ -31,6 +32,7 @@ public class JUnit_Robot extends JUnit_Test
 {
 	private GameState<RobotReal,ReadWrite> state;
 	private GameState<RobotChrono,ReadWrite> chronostate;
+	private RobotReal robot;
 	
     @SuppressWarnings("unchecked")
 	@Before
@@ -38,37 +40,45 @@ public class JUnit_Robot extends JUnit_Test
         super.setUp();
         state = (GameState<RobotReal,ReadWrite>) container.getService(ServiceNames.REAL_GAME_STATE);
         chronostate = GameState.cloneGameState(state.getReadOnly());
+        robot = (RobotReal) container.getService(ServiceNames.ROBOT_REAL);
     }
 
     @Test
     public void test_stop() throws Exception
     {
-    	GameState.stopper(state);
+    	robot.stopper();
     }
+
+	@Test
+	public void test_actionneurs() throws Exception
+	{
+		for(ActuatorOrder o: ActuatorOrder.values())
+			robot.useActuator(o);
+	}
 
     @Test
     public void test_avance() throws Exception
     {
-    	GameState.avancer(state, 100);
+    	robot.avancer(100);
     	log.debug("On est arrivé");
     }
 
     @Test
     public void test_tourne() throws Exception
     {
-    	GameState.tourner(state, Math.PI);
+    	robot.tourner(Math.PI);
     }
 
     @Test
     public void test_set_pos_orientation() throws Exception
     {
-    	GameState.tourner(state, Math.PI);
+    	robot.tourner(Math.PI);
     }
 
     @Test
     public void test_speed() throws Exception
     {
-    	GameState.set_vitesse(state, Speed.BETWEEN_SCRIPTS);
+    	robot.set_vitesse(Speed.BETWEEN_SCRIPTS);
     }
 
     @Test

@@ -43,10 +43,7 @@ public class IncomingDataBuffer implements Service
 		if(buffer.size() > 50)
 			log.debug("Capteurs traités trop lentement");
 //		log.debug("Taille buffer: "+buffer.size());
-		synchronized(this)
-		{
-			notifyAll();
-		}
+		notify();
 	}
 	
 	/**

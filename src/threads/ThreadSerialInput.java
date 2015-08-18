@@ -77,8 +77,7 @@ public class ThreadSerialInput extends Thread implements Service
 							for(int i = 0; i < nbCapteurs; i++)
 								mesures[i] = Integer.parseInt(serie.read());
 
-							if(capteursOn)
-								buffer.add(new IncomingData(new Vec2<ReadOnly>(xRobot, yRobot), orientationRobot, portion, mesures));
+							buffer.add(new IncomingData(new Vec2<ReadOnly>(xRobot, yRobot), orientationRobot, portion, mesures, capteursOn));
 							break;
 							
 							/**
@@ -112,7 +111,29 @@ public class ThreadSerialInput extends Thread implements Service
 							}
 							serie.close();
 							return;
-		
+
+							/**
+							 * Un actionneur est en difficulté
+							 */
+						case "acpb":
+							synchronized(requete)
+							{
+								requete.type = RequeteType.PROBLEME_ACTIONNEURS;
+								requete.notifyAll();
+							}
+							return;
+
+							/**
+							 * Un actionneur a fini son mouvement
+							 */
+						case "acok":
+							synchronized(requete)
+							{
+								requete.type = RequeteType.ACTIONNEURS_FINI;
+								requete.notifyAll();
+							}
+							return;
+
 							/**
 							 * Un hook a été appelé
 							 */

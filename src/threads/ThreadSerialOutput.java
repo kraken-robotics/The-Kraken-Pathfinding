@@ -40,7 +40,6 @@ public class ThreadSerialOutput extends Thread implements Service
 				{
 					while(data.isEmpty())
 					{
-//						log.debug("abwabwa");
 						data.wait(500);
 					}
 					message = data.poll();

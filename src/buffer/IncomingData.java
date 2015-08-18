@@ -22,13 +22,17 @@ public class IncomingData
 	
 	/** Ce que voit chacun des capteurs */
 	public int[] mesures;
+	
+	/** Faut-il ignorer les capteurs ? */
+	public boolean capteursOn;
 
-	public IncomingData(Vec2<ReadOnly> positionRobot, double orientationRobot, int portion, int[] mesures)
+	public IncomingData(Vec2<ReadOnly> positionRobot, double orientationRobot, int portion, int[] mesures, boolean capteursOn)
 	{
 		this.positionRobot = positionRobot;
 		this.orientationRobot = orientationRobot;
 		this.portion = portion;
 		this.mesures = mesures;
+		this.capteursOn = capteursOn;
 	}
 	
 }

@@ -1,5 +1,7 @@
 package buffer;
 
+import table.GameElementNames;
+
 /**
  * Une information sur un hook qui vient d'être exécuté par la STM
  * @author pf
@@ -8,7 +10,6 @@ package buffer;
 
 public class IncomingHook {
 
-	// TODO
-	public String id;
+	public GameElementNames element;
 	
 }

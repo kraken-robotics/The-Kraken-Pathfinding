@@ -51,7 +51,8 @@ public class ThreadObstacleManager extends Thread implements Service
 			// Il n'est pas synchronized car il ne modifie pas le buffer
 //			if(e != null)
 			robot.setPositionOrientationJava(e.positionRobot, e.orientationRobot);
-			obstaclemanager.updateObstaclesMobiles(e);
+			if(e.capteursOn)
+				obstaclemanager.updateObstaclesMobiles(e);
 			
 		}
 //		log.debug("Fermeture de ThreadObstacleManager");
