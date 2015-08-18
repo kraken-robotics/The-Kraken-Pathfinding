@@ -104,11 +104,7 @@ public class ThreadSerialInput extends Thread implements Service
 							 * Fin du match, on coupe la série et on arrête ce thread
 							 */
 						case "end":
-							synchronized(requete)
-							{
-								requete.type = RequeteType.MATCH_FINI;
-								requete.notifyAll();
-							}
+							requete.set(RequeteType.MATCH_FINI);
 							serie.close();
 							return;
 
@@ -116,23 +112,15 @@ public class ThreadSerialInput extends Thread implements Service
 							 * Un actionneur est en difficulté
 							 */
 						case "acpb":
-							synchronized(requete)
-							{
-								requete.type = RequeteType.PROBLEME_ACTIONNEURS;
-								requete.notifyAll();
-							}
-							return;
+								requete.set(RequeteType.PROBLEME_ACTIONNEURS);
+							break;
 
 							/**
 							 * Un actionneur a fini son mouvement
 							 */
 						case "acok":
-							synchronized(requete)
-							{
-								requete.type = RequeteType.ACTIONNEURS_FINI;
-								requete.notifyAll();
-							}
-							return;
+							requete.set(RequeteType.ACTIONNEURS_FINI);
+							break;
 
 							/**
 							 * Un hook a été appelé
@@ -146,13 +134,17 @@ public class ThreadSerialInput extends Thread implements Service
 							 * On est arrivé à destination.
 							 */
 						case "arv":
-							synchronized(requete)
-							{
-								requete.type = RequeteType.TRAJET_FINI;
-								requete.notifyAll();
-							}
+							requete.set(RequeteType.TRAJET_FINI);
 							break;
 		
+							/**
+							 * Il y a un blocage mécanique
+							 */
+						case "meca":
+							requete.set(RequeteType.BLOCAGE_MECANIQUE);
+							break;
+
+							
 						default:
 							log.critical("Commande série inconnue: "+first);
 					}

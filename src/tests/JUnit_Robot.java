@@ -72,7 +72,7 @@ public class JUnit_Robot extends JUnit_Test
     @Test
     public void test_set_pos_orientation() throws Exception
     {
-    	robot.tourner(Math.PI);
+    	robot.setPositionOrientationSTM(new Vec2<ReadOnly>(134,854), Math.PI);
     }
 
     @Test

@@ -71,7 +71,7 @@ public class Execution implements Service {
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
-				type = requete.type;
+				type = requete.get();
 			}
 			
 			if(type == RequeteType.BLOCAGE_MECANIQUE)

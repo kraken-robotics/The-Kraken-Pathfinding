@@ -12,9 +12,19 @@ import container.Service;
 
 public class RequeteSTM implements Service {
 
-	public RequeteType type;
-	public int param;
+	private RequeteType type;
 	protected Log log;
+	
+	public synchronized RequeteType get()
+	{
+		return type;
+	}
+	
+	public synchronized void set(RequeteType type)
+	{
+		this.type = type;
+		notifyAll();
+	}
 	
 	public RequeteSTM(Log log)
 	{

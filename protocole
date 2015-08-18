@@ -26,6 +26,8 @@ activer asservissement (rotation et translation)
 STM vers Java
 le robot est arrivé à destination
     arv
+blocage mécanique
+    meca
 un hook a été appelé
     hk id [param]
 le match est fini
