@@ -1,24 +1,17 @@
 package tests;
 
-import hook.Hook;
-
-import java.util.ArrayList;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import permissions.ReadOnly;
 import permissions.ReadWrite;
-import planification.LocomotionArc;
-import planification.astar.arc.PathfindingNodes;
 import container.ServiceNames;
 import enums.RobotColor;
 import robot.ActuatorOrder;
 import robot.RobotChrono;
 import robot.RobotReal;
 import robot.Speed;
-import strategie.GameState;
 import utils.ConfigInfo;
 import utils.Vec2;
 
@@ -30,17 +23,14 @@ import utils.Vec2;
 
 public class JUnit_Robot extends JUnit_Test
 {
-	private GameState<RobotReal,ReadWrite> state;
-	private GameState<RobotChrono,ReadWrite> chronostate;
 	private RobotReal robot;
+	private RobotChrono robotchrono;
 	
-    @SuppressWarnings("unchecked")
 	@Before
     public void setUp() throws Exception {
         super.setUp();
-        state = (GameState<RobotReal,ReadWrite>) container.getService(ServiceNames.REAL_GAME_STATE);
-        chronostate = GameState.cloneGameState(state.getReadOnly());
         robot = (RobotReal) container.getService(ServiceNames.ROBOT_REAL);
+        robotchrono = robot.cloneIntoRobotChrono();
     }
 
     @Test
@@ -82,32 +72,31 @@ public class JUnit_Robot extends JUnit_Test
     }
 
     @Test
-    public void test_symetrie() throws Exception
+    public void test_symetrie_robot_chrono() throws Exception
     {
-		GameState<RobotChrono, ReadWrite> gamestate = chronostate;
     	for(int i = 0; i < 2; i++)
     	{
     		if(i == 0)
     			config.set(ConfigInfo.COULEUR, RobotColor.getCouleurSansSymetrie());
     		else
     			config.set(ConfigInfo.COULEUR, RobotColor.getCouleurAvecSymetrie());
-    		GameState.setPositionOrientationSTM(gamestate, new Vec2<ReadOnly>(200, 600), 0);
-    		GameState.avancer(gamestate, 100);
-    		Assert.assertTrue(GameState.getPosition(gamestate.getReadOnly()).squaredDistance(new Vec2<ReadWrite>(300, 600)) < 10);
-    		GameState.tourner(gamestate, Math.PI/2);
-    		GameState.avancer(gamestate, 100);
-    		Assert.assertTrue(GameState.getPosition(gamestate.getReadOnly()).squaredDistance(new Vec2<ReadWrite>(300, 700)) < 10);
-    		GameState.tourner(gamestate, Math.PI);
-    		GameState.avancer(gamestate, 100);
-    		Assert.assertTrue(GameState.getPosition(gamestate.getReadOnly()).squaredDistance(new Vec2<ReadWrite>(200, 700)) < 10);
-    		GameState.tourner(gamestate, -Math.PI/2);
-    		GameState.avancer(gamestate, 100);
-    		Assert.assertTrue(GameState.getPosition(gamestate.getReadOnly()).squaredDistance(new Vec2<ReadWrite>(200, 600)) < 10);
-    		ArrayList<LocomotionArc> chemin = new ArrayList<LocomotionArc>();
+    		robotchrono.setPositionOrientationSTM(new Vec2<ReadOnly>(200, 600), 0);
+    		robotchrono.avancer(100);
+    		Assert.assertTrue(robotchrono.getPosition().squaredDistance(new Vec2<ReadWrite>(300, 600)) < 10);
+    		robotchrono.tourner(Math.PI/2);
+    		robotchrono.avancer(100);
+    		Assert.assertTrue(robotchrono.getPosition().squaredDistance(new Vec2<ReadWrite>(300, 700)) < 10);
+    		robotchrono.tourner(Math.PI);
+    		robotchrono.avancer(100);
+    		Assert.assertTrue(robotchrono.getPosition().squaredDistance(new Vec2<ReadWrite>(200, 700)) < 10);
+    		robotchrono.tourner(-Math.PI/2);
+    		robotchrono.avancer(100);
+    		Assert.assertTrue(robotchrono.getPosition().squaredDistance(new Vec2<ReadWrite>(200, 600)) < 10);
+//    		ArrayList<LocomotionArc> chemin = new ArrayList<LocomotionArc>();
 //	    		chemin.add(new SegmentTrajectoireCourbe(PathfindingNodes.BAS));
 //	    		chemin.add(new SegmentTrajectoireCourbe(PathfindingNodes.DEVANT_DEPART_DROITE));
-    		GameState.suit_chemin(gamestate, chemin, new ArrayList<Hook>());
-    		Assert.assertTrue(GameState.getPosition(gamestate.getReadOnly()).squaredDistance(PathfindingNodes.DEVANT_DEPART_DROITE.getCoordonnees()) < 10);
+//    		robotchrono.suit_chemin(chemin, new ArrayList<Hook>());
+//    		Assert.assertTrue(robotchrono.getPosition(robotchrono.getReadOnly()).squaredDistance(PathfindingNodes.DEVANT_DEPART_DROITE.getCoordonnees()) < 10);
     	}
     }
 

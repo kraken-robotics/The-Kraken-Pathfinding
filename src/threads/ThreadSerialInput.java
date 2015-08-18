@@ -58,11 +58,10 @@ public class ThreadSerialInput extends Thread implements Service
 				synchronized(serie)
 				{
 					while(!serie.canBeRead())
-					{
 						serie.wait();
-					}
+
 					String first = serie.read();
-//					log.debug(first);
+
 					switch(first)
 					{
 						case "cpt":
@@ -144,7 +143,6 @@ public class ThreadSerialInput extends Thread implements Service
 							requete.set(RequeteType.BLOCAGE_MECANIQUE);
 							break;
 
-							
 						default:
 							log.critical("Commande série inconnue: "+first);
 					}

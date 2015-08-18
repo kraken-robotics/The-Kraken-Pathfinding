@@ -38,6 +38,8 @@ public class SerialConnexion implements SerialPortEventListener, Service
 	private int baudrate;
 	private int canBeRead = 0;
 	
+	byte[] retourLigne = new String("\r").getBytes();
+	
 	/**
 	 * A BufferedReader which will be fed by a InputStreamReader 
 	 * converting the bytes into characters 
@@ -136,22 +138,7 @@ public class SerialConnexion implements SerialPortEventListener, Service
 			return false;
 		}
 	}
-
-	/**
-	 * Envoi d'un itinéraire
-	 * @param messages
-	 * @throws SerialConnexionException
-	 * @throws FinMatchException
-	 */
-//	public void communiquer(ArrayList<LocomotionArc> chemin)
-//	{
-//		String[] messages = new String[chemin.size()+1];
-//		messages[0] = String.valueOf(chemin.size());
-//		for(int i = 0; i < chemin.size(); i++)
-//			messages[i+1] = chemin.toString();
-//		communiquer(messages);
-//	}
-
+	
 	/**
 	 * Méthode pour envoyer un message à la carte
 	 * @param messages
@@ -164,29 +151,20 @@ public class SerialConnexion implements SerialPortEventListener, Service
 		/**
 		 * Un appel à une série fermée ne devrait jamais être effectué.
 		 */
-/*		while(!ready)
-		{
-			log.debug("Avant envoi");
-			try {
-				wait();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}*/
-
 		if(isClosed)
-			return; // TODO
-//			throw new FinMatchException();
-		
+		{
+			log.debug("La série est fermée et ne peut envoyer "+messages.get(0));
+			return;
+		}
+
 		try
 		{
 			for (String m : messages)
 			{
 				if(Config.debugSerie)
 					log.debug("OUT: "+m);
-					// TODO : ajouter un output.write("\r" en byte) à la place ?
-				m += "\r";
 				output.write(m.getBytes());
+				output.write(retourLigne);
 			}
 		}
 		catch (Exception e)
@@ -200,27 +178,25 @@ public class SerialConnexion implements SerialPortEventListener, Service
 			{
 				log.critical("Pas trouvé... On recommence");
 				// On laisse la série respirer un peu
-				Sleep.sleep(1000);
+				Sleep.sleep(500);
+			}
+			// On a retrouvé la série, on renvoie le message
+			try {
+				for (String m : messages)
+				{
+					if(Config.debugSerie)
+						log.debug("OUT: "+m);
+					output.write(m.getBytes());
+					output.write(retourLigne);
+				}
+			} catch (IOException e1) {
+				e1.printStackTrace();
 			}
 		}
 	}
 
 	/**
-	 * Méthode pour parler à l'avr
-	 * @param messages Messages à envoyer
-	 * @param nb_lignes_reponse Nombre de lignes que l'avr va répondre (sans compter les acquittements)
-	 * @return Un tableau contenant le message
-	 * @throws SerialConnexionException 
-	 * @throws FinMatchException 
-	 */
-//	public String[] communiquer(String message, int nb_lignes_reponse)
-//	{
-//		String[] messages = {message};
-//		return communiquer(messages, nb_lignes_reponse);
-//	}
-	
-	/**
-	 * Méthode pour parler à l'avr
+	 * Méthode pour parler à la STM
 	 * @param messages Messages à envoyer
 	 * @param nb_lignes_reponse Nombre de lignes que l'avr va répondre (sans compter les acquittements)
 	 * @return Un tableau contenant le message
@@ -233,62 +209,6 @@ public class SerialConnexion implements SerialPortEventListener, Service
 		messages.add(message);
 		communiquer(messages);
 	}
-	
-	/**
-	 * Méthode pour parler à l'avr
-	 * @param messages Messages à envoyer
-	 * @param nb_lignes_reponse Nombre de lignes que l'avr va répondre (sans compter les acquittements)
-	 * @return Un tableau contenant le message
-	 */
-//	public synchronized String[] communiquer(String[] messages, int nb_lignes_reponse)
-//	{
-//		/**
-//		 * Un appel à une série fermée ne devrait jamais être effectué.
-//		 */
-//		while(!ready)
-//		{
-//			try {
-//				wait();
-//			} catch (InterruptedException e) {
-//				e.printStackTrace();
-//			}
-//		}
-//
-//		if(isClosed)
-//			return null; // TODO
-////			throw new FinMatchException();
-//		
-//		String inputLines[] = new String[nb_lignes_reponse];
-//		try
-//		{
-//			for (String m : messages)
-//			{
-//				m += "\r";
-//				output.write(m.getBytes());
-//			}
-//			for (int i = 0 ; i < nb_lignes_reponse; i++)
-//			{
-//				while(!input.ready());
-//				inputLines[i] = input.readLine();
-//			}
-//		}
-//		catch (Exception e)
-//		{
-//			/**
-//			 * Si la STM ne répond vraiment pas, on recommence de manière infinie.
-//			 * De toute façon, on n'a pas d'autre choix...
-//			 */
-//			log.critical("Ne peut pas parler à la STM. Tentative de reconnexion.");
-//			while(!searchPort())
-//			{
-//				log.critical("Pas trouvé... On recommence");
-//				// On laisse la série respirer un peu
-//				Sleep.sleep(1000);
-//			}
-//		}
-//
-//		return inputLines;
-//	}
 
 	/**
 	 * Doit être appelé quand on arrête de se servir de la série
@@ -302,9 +222,9 @@ public class SerialConnexion implements SerialPortEventListener, Service
 			isClosed = true;
 		}
 		else if(isClosed)
-			log.debug("Carte déjà fermée");
+			log.warning("Carte déjà fermée");
 		else
-			log.debug("Carte jamais ouverte");
+			log.warning("Carte jamais ouverte");
 	}
 
 	/**
@@ -336,7 +256,7 @@ public class SerialConnexion implements SerialPortEventListener, Service
 	public synchronized void serialEvent(SerialPortEvent oEvent)
 	{
 		canBeRead++;
-		notifyAll();
+		notify();
 	}
 	
 	public boolean canBeRead()
@@ -355,7 +275,6 @@ public class SerialConnexion implements SerialPortEventListener, Service
 		{		
 			//Evacuation de l'eventuel buffer indésirable
 			output.flush();
-//			output.write("$0P@L1Z7\r".getBytes());
 
 			//ping
 			output.write("?\r".getBytes());

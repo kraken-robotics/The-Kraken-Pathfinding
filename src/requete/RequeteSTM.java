@@ -12,7 +12,7 @@ import container.Service;
 
 public class RequeteSTM implements Service {
 
-	private RequeteType type;
+	private volatile RequeteType type;
 	protected Log log;
 	
 	public synchronized RequeteType get()

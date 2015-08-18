@@ -23,6 +23,7 @@ import utils.Config;
 
 /**
  * Service fabriquant des hooks à la demande.
+ * Les hooks sont soit simulés dans RobotChrono, soit envoyés à la STM
  * @author pf, marsu
  *
  */

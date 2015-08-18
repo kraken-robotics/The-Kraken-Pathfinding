@@ -39,9 +39,8 @@ public class ThreadSerialOutput extends Thread implements Service
 				synchronized(data)
 				{
 					while(data.isEmpty())
-					{
-						data.wait(500);
-					}
+						data.wait();
+
 					message = data.poll();
 				}
 				// communiquer est synchronized
