@@ -33,7 +33,6 @@ public class SerialConnexion implements SerialPortEventListener, Service
 	private SerialPort serialPort;
 	protected Log log;
 	
-	private Boolean ready = false;
 	private boolean isClosed;
 	private int baudrate;
 	private int canBeRead = 0;
@@ -78,6 +77,9 @@ public class SerialConnexion implements SerialPortEventListener, Service
 			if(ping())
 			{
 				log.debug("STM sur " + port.getName());
+				// Il ne faut activer le listener que maintenant, sinon
+				// ça pose des problèmes avec le ping
+				serialPort.notifyOnDataAvailable(true);
 				notifyAll();
 				return true;
 			}
@@ -117,7 +119,6 @@ public class SerialConnexion implements SerialPortEventListener, Service
 			} catch (TooManyListenersException e) {
 				e.printStackTrace();
 			}
-			serialPort.notifyOnDataAvailable(true);
 
 			// open the streams
 			input = new BufferedReader(new InputStreamReader(serialPort.getInputStream()));
@@ -162,14 +163,15 @@ public class SerialConnexion implements SerialPortEventListener, Service
 		/**
 		 * Un appel à une série fermée ne devrait jamais être effectué.
 		 */
-		while(!ready)
+/*		while(!ready)
 		{
+			log.debug("Avant envoi");
 			try {
 				wait();
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-		}
+		}*/
 
 		if(isClosed)
 			return; // TODO
@@ -180,7 +182,7 @@ public class SerialConnexion implements SerialPortEventListener, Service
 			for (String m : messages)
 			{
 				if(Config.debugSerie)
-					log.debug("OUT"+m);
+					log.debug("OUT: "+m);
 					// TODO : ajouter un output.write("\r" en byte) à la place ?
 				m += "\r";
 				output.write(m.getBytes());
@@ -317,7 +319,7 @@ public class SerialConnexion implements SerialPortEventListener, Service
 			canBeRead--;
 			String m = input.readLine();
 			if(Config.debugSerie)
-				log.debug("IN"+m);
+				log.debug("IN: "+m);
 			return m;
 		} catch (IOException e) {
 			// Impossible car on sait qu'il y a des données

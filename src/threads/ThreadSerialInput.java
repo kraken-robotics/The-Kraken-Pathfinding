@@ -74,8 +74,9 @@ public class ThreadSerialInput extends Thread implements Service
 				{
 					while(!serie.canBeRead())
 					{
-						serie.wait(500);
+						serie.wait();
 					}
+					log.debug("lecture");
 					String first = serie.read();
 					log.debug(first);
 					switch(first)

@@ -4,9 +4,9 @@ import org.junit.Before;
 import org.junit.After;
 
 import table.ObstacleManager;
-import utils.ConfigInfo;
 import utils.Log;
 import utils.Config;
+import utils.Sleep;
 import container.Container;
 import container.ServiceNames;
 
@@ -39,12 +39,8 @@ public abstract class JUnit_Test
 
 	@After
 	public void tearDown() throws Exception {
+		Sleep.sleep(1000);
 		container.destructor();
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
 	}
 
 	

@@ -300,6 +300,16 @@ public class Container
 		return instanciedServices[serviceRequested.ordinal()];
 	}	
 
+	//TODO voir doc
+	public void printLock()
+	{
+		for(ServiceNames s: ServiceNames.values())
+		{
+			if(instanciedServices[s.ordinal()] != null && Thread.holdsLock(instanciedServices[s.ordinal()]))
+				log.debug("Lock sur "+s);
+		}
+	}
+	
 	/**
 	 * Démarrage de tous les threads
 	 */

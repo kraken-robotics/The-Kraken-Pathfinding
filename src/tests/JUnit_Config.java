@@ -25,16 +25,16 @@ public class JUnit_Config extends JUnit_Test {
 	public void test_set1() throws Exception
 	{
 		log.debug("JUnit_ReadIniTest.test_set1()");
-		config.set(ConfigInfo.TABLE_X, "test");
-		Assert.assertTrue(config.getString(ConfigInfo.TABLE_X).equals("test"));
+		config.set(ConfigInfo.COULEUR, "fushia");
+		Assert.assertTrue(config.getString(ConfigInfo.COULEUR).equals("fushia"));
 	}
 	
 	@Test
 	public void test_set2() throws Exception
 	{
 		log.debug("JUnit_ReadIniTest.test_set2()");
-		config.set(ConfigInfo.TABLE_X, 1000);
-		Assert.assertTrue(config.getInt(ConfigInfo.TABLE_X) == 1000);
+		config.set(ConfigInfo.NB_CAPTEURS_PROXIMITE, 1000);
+		Assert.assertTrue(config.getInt(ConfigInfo.NB_CAPTEURS_PROXIMITE) == 1000);
 	}
 
 }

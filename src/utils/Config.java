@@ -15,7 +15,7 @@ import enums.RobotColor;
  */
 public class Config implements Service
 {
-	public static final boolean debugSerie = true;
+	public static final boolean debugSerie = false;
 	// Permet de savoir si le match a démarré et quand
 	public static final String path = "./config/";
 
@@ -136,7 +136,7 @@ public class Config implements Service
 	{
 		log.debug("Configuration initiale");
 		for(ConfigInfo info: ConfigInfo.values())
-			log.debug(info+": "+getString(info));
+			log.debug(info+" = "+getString(info));
 	}
 	
 	/**

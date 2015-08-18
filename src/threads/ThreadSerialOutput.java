@@ -44,10 +44,7 @@ public class ThreadSerialOutput extends Thread implements Service
 					message = data.poll();
 				}
 				// communiquer est synchronized
-//				log.debug("avant");
-
 				serie.communiquer(message);
-//				log.debug("après");
 
 			} catch (InterruptedException e) {
 				e.printStackTrace();

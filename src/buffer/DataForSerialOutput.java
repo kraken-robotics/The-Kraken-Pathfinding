@@ -71,7 +71,7 @@ public class DataForSerialOutput implements Service
 		String[] elems = new String[1];
 		elems[0] = elem.getSerialOrder();
 		buffer.add(elems);
-		log.debug("Taille buffer: "+buffer.size());
+//		log.debug("Taille buffer: "+buffer.size());
 		notify();
 	}
 	
@@ -90,7 +90,7 @@ public class DataForSerialOutput implements Service
 	 */
 	public synchronized String[] poll()
 	{
-		log.debug("poll");
+//		log.debug("poll");
 		return buffer.poll();
 	}
 	
