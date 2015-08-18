@@ -39,6 +39,7 @@ import threads.ThreadStrategie;
 import threads.ThreadStrategieInfo;
 import threads.ThreadTable;
 import threads.ThreadPeremption;
+import requete.RequeteSTM;
 import robot.RobotReal;
 
 
@@ -92,7 +93,7 @@ public class Container
 		log.debug("Fermeture de la série");
 		// fermeture de la connexion série
 		
-		SerialConnexion stm = (SerialConnexion)getInstanciedService(ServiceNames.SERIE_STM);
+		SerialConnexion stm = (SerialConnexion)instanciedServices[ServiceNames.SERIE_STM.ordinal()];
 		if(stm != null)
 			stm.close();
 
@@ -209,7 +210,8 @@ public class Container
 			instanciedServices[serviceRequested.ordinal()] = (Service)new Execution((Log)getService(ServiceNames.LOG),
 			                                                 (Strategie)getService(ServiceNames.STRATEGIE),
   															 (ScriptManager)getService(ServiceNames.SCRIPT_MANAGER),
-        													 (GameState<RobotReal,ReadWrite>)getService(ServiceNames.REAL_GAME_STATE));
+        													 (GameState<RobotReal,ReadWrite>)getService(ServiceNames.REAL_GAME_STATE),
+        													 (RequeteSTM)getService(ServiceNames.REQUETE_STM));
 		else if(serviceRequested == ServiceNames.MEMORY_MANAGER)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new MemoryManager((Log)getService(ServiceNames.LOG),
         													 (GameState<RobotReal,ReadOnly>)getService(ServiceNames.REAL_GAME_STATE));
@@ -217,7 +219,8 @@ public class Container
 			instanciedServices[serviceRequested.ordinal()] = (Service)new HookFactory((Log)getService(ServiceNames.LOG));
 		else if(serviceRequested == ServiceNames.ROBOT_REAL)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new RobotReal((DataForSerialOutput)getService(ServiceNames.SERIAL_OUTPUT_BUFFER),
-															 (Log)getService(ServiceNames.LOG));
+															 (Log)getService(ServiceNames.LOG),
+															 (RequeteSTM)getService(ServiceNames.REQUETE_STM));
         else if(serviceRequested == ServiceNames.REAL_GAME_STATE)
         	// ici la construction est un petit peu différente car on interdit l'instanciation publique d'un GameSTate<RobotChrono>
             instanciedServices[serviceRequested.ordinal()] = (Service) GameState.constructRealGameState((Log)getService(ServiceNames.LOG),
@@ -252,7 +255,8 @@ public class Container
 		else if(serviceRequested == ServiceNames.THREAD_OBSTACLE_MANAGER)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadObstacleManager((Log)getService(ServiceNames.LOG),
 																		(IncomingDataBuffer)getService(ServiceNames.INCOMING_DATA_BUFFER),
-																		(ObstacleManager)getService(ServiceNames.OBSTACLE_MANAGER));
+																		(ObstacleManager)getService(ServiceNames.OBSTACLE_MANAGER),
+																		(RobotReal)getService(ServiceNames.ROBOT_REAL));
 		else if(serviceRequested == ServiceNames.THREAD_TABLE)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadTable((Log)getService(ServiceNames.LOG),
 																		(IncomingHookBuffer)getService(ServiceNames.INCOMING_HOOK_BUFFER),
@@ -267,7 +271,9 @@ public class Container
 																		(SerialConnexion)getService(ServiceNames.SERIE_STM),
 																		(IncomingDataBuffer)getService(ServiceNames.INCOMING_DATA_BUFFER),
 																		(IncomingHookBuffer)getService(ServiceNames.INCOMING_HOOK_BUFFER),
-																		(HookFactory)getService(ServiceNames.HOOK_FACTORY));
+																		(RequeteSTM)getService(ServiceNames.REQUETE_STM));
+		else if(serviceRequested == ServiceNames.REQUETE_STM)
+			instanciedServices[serviceRequested.ordinal()] = (Service)new RequeteSTM((Log)getService(ServiceNames.LOG));
 		else if(serviceRequested == ServiceNames.THREAD_SERIAL_OUTPUT)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadSerialOutput((Log)getService(ServiceNames.LOG),
 																		(Config)getService(ServiceNames.CONFIG),

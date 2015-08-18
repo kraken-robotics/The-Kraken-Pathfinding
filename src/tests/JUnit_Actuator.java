@@ -35,13 +35,13 @@ public class JUnit_Actuator extends JUnit_Test {
 			Sleep.sleep(o.getSleepValue());
 		}
 	}
-
+	
 	@Test
 	public void test_tous_thread() throws Exception
 	{
 		for(ActuatorOrder o: ActuatorOrder.values())
 		{
-			data.add(o);
+			data.utiliseActionneurs(o);
 			Sleep.sleep(o.getSleepValue());
 		}
 	}

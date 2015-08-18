@@ -16,6 +16,7 @@ import container.ServiceNames;
 import enums.RobotColor;
 import robot.RobotChrono;
 import robot.RobotReal;
+import robot.Speed;
 import strategie.GameState;
 import utils.ConfigInfo;
 import utils.Vec2;
@@ -40,6 +41,37 @@ public class JUnit_Robot extends JUnit_Test
     }
 
     @Test
+    public void test_stop() throws Exception
+    {
+    	GameState.stopper(state);
+    }
+
+    @Test
+    public void test_avance() throws Exception
+    {
+    	GameState.avancer(state, 100);
+    	log.debug("On est arrivé");
+    }
+
+    @Test
+    public void test_tourne() throws Exception
+    {
+    	GameState.tourner(state, Math.PI);
+    }
+
+    @Test
+    public void test_set_pos_orientation() throws Exception
+    {
+    	GameState.tourner(state, Math.PI);
+    }
+
+    @Test
+    public void test_speed() throws Exception
+    {
+    	GameState.set_vitesse(state, Speed.BETWEEN_SCRIPTS);
+    }
+
+    @Test
     public void test_symetrie() throws Exception
     {
 		GameState<RobotChrono, ReadWrite> gamestate = chronostate;
@@ -49,8 +81,7 @@ public class JUnit_Robot extends JUnit_Test
     			config.set(ConfigInfo.COULEUR, RobotColor.getCouleurSansSymetrie());
     		else
     			config.set(ConfigInfo.COULEUR, RobotColor.getCouleurAvecSymetrie());
-    		GameState.setPosition(gamestate, new Vec2<ReadOnly>(200, 600));
-    		GameState.setOrientation(gamestate, 0);
+    		GameState.setPositionOrientationSTM(gamestate, new Vec2<ReadOnly>(200, 600), 0);
     		GameState.avancer(gamestate, 100);
     		Assert.assertTrue(GameState.getPosition(gamestate.getReadOnly()).squaredDistance(new Vec2<ReadWrite>(300, 600)) < 10);
     		GameState.tourner(gamestate, Math.PI/2);

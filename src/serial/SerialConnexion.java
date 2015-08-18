@@ -13,6 +13,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.TooManyListenersException;
 
@@ -158,7 +159,7 @@ public class SerialConnexion implements SerialPortEventListener, Service
 	 * @throws SerialConnexionException
 	 * @throws FinMatchException
 	 */
-	public synchronized void communiquer(String[] messages)
+	public synchronized void communiquer(ArrayList<String> messages)
 	{
 		/**
 		 * Un appel à une série fermée ne devrait jamais être effectué.
@@ -228,7 +229,8 @@ public class SerialConnexion implements SerialPortEventListener, Service
 	 */
 	public void communiquer(String message)
 	{
-		String[] messages = {message};
+		ArrayList<String> messages = new ArrayList<String>();
+		messages.add(message);
 		communiquer(messages);
 	}
 	

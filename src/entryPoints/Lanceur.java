@@ -1,5 +1,4 @@
 package entryPoints;
-import robot.RobotReal;
 import strategie.Execution;
 import container.Container;
 import container.ServiceNames;
@@ -26,14 +25,12 @@ public class Lanceur {
 
 		try {
 			Container container = new Container();
-			RobotReal robot = (RobotReal)container.getService(ServiceNames.ROBOT_REAL);
 			Execution execution = (Execution)container.getService(ServiceNames.EXECUTION);
 
 			/**
 			 * Initialisation du robot
 			 */
-			robot.initActuatorLocomotion();
-			robot.recaler();
+			// maintenant faite directement par la STM
 			
 			/**
 			 * Attente du début du match

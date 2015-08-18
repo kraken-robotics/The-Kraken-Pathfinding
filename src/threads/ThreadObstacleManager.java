@@ -2,6 +2,7 @@ package threads;
 
 import buffer.IncomingData;
 import buffer.IncomingDataBuffer;
+import robot.RobotReal;
 import table.ObstacleManager;
 import utils.Config;
 import utils.Log;
@@ -17,13 +18,16 @@ public class ThreadObstacleManager extends Thread implements Service
 {
 	private IncomingDataBuffer buffer;
 	private ObstacleManager obstaclemanager;
+	private RobotReal robot;
+	
 	protected Log log;
 	
-	public ThreadObstacleManager(Log log, IncomingDataBuffer buffer, ObstacleManager obstaclemanager)
+	public ThreadObstacleManager(Log log, IncomingDataBuffer buffer, ObstacleManager obstaclemanager, RobotReal robot)
 	{
 		this.log = log;
 		this.buffer = buffer;
 		this.obstaclemanager = obstaclemanager;
+		this.robot = robot;
 	}
 	
 	@Override
@@ -45,8 +49,10 @@ public class ThreadObstacleManager extends Thread implements Service
 			}
 			// Cet appel peut lancer un obstaclemanager.notifyAll()
 			// Il n'est pas synchronized car il ne modifie pas le buffer
-			if(e != null)
-				obstaclemanager.updateObstaclesMobiles(e);
+//			if(e != null)
+			robot.setPositionOrientationJava(e.positionRobot, e.orientationRobot);
+			obstaclemanager.updateObstaclesMobiles(e);
+			
 		}
 //		log.debug("Fermeture de ThreadObstacleManager");
 	}

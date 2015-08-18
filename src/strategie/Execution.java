@@ -37,13 +37,13 @@ public class Execution implements Service {
 	private ArrayList<Hook> hooksEntreScripts;
 	private volatile Boolean matchDemarre = Boolean.FALSE;
 	
-	public Execution(Log log, Strategie strategie, ScriptManager scriptmanager, GameState<RobotReal,ReadWrite> gamestate)
+	public Execution(Log log, Strategie strategie, ScriptManager scriptmanager, GameState<RobotReal,ReadWrite> gamestate, RequeteSTM requete)
 	{
 		this.log = log;
 		this.gamestate = gamestate;
 		this.scriptmanager = scriptmanager;
 		this.strategie = strategie;
-		requete = RequeteSTM.getInstance();
+		this.requete = requete;
 /*		try {
 			hooksEntreScripts = hookfactory.getHooksEntreScriptsReal(gamestate);
 		} catch (FinMatchException e) {

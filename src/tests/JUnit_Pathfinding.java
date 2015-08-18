@@ -187,7 +187,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
 		for(SegmentTrajectoireCourbe n: chemin)
 		{
 			log.debug(n);
-			cheminVec2.add(n.objectifFinal.getCoordonnees());
+			cheminVec2.utiliseActionneurs(n.objectifFinal.getCoordonnees());
 		}
     	
 		Assert.assertEquals(PathfindingNodes.BAS.getCoordonnees().plusNewVector(new Vec2<ReadWrite>(10, 10)), GameState.getPosition(state_chrono.getReadOnly()));

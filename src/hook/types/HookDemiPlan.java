@@ -1,5 +1,7 @@
 package hook.types;
 
+import java.util.ArrayList;
+
 import permissions.ReadOnly;
 import permissions.ReadWrite;
 import strategie.GameState;
@@ -85,14 +87,14 @@ public class HookDemiPlan extends Hook
 	}
 
 	@Override
-	public String[] toSerial()
+	public ArrayList<String> toSerial()
 	{
-		String[] out = new String[5];
-		out[0] = "dp";
-		out[1] = String.valueOf(point.x);
-		out[2] = String.valueOf(point.y);
-		out[3] = String.valueOf(direction.x);
-		out[4] = String.valueOf(direction.y);
+		ArrayList<String> out = new ArrayList<String>();
+		out.add("dp");
+		out.add(String.valueOf(point.x));
+		out.add(String.valueOf(point.y));
+		out.add(String.valueOf(direction.x));
+		out.add(String.valueOf(direction.y));
 		return out;
 	}
 	

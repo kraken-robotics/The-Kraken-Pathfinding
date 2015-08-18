@@ -102,7 +102,7 @@ public class JUnit_Test_Graphic extends JUnit_Test {
     		for(SegmentTrajectoireCourbe n: chemin)
     		{
     			log.debug(n);
-    			cheminVec2.add(n.objectifFinal.getCoordonnees());
+    			cheminVec2.utiliseActionneurs(n.objectifFinal.getCoordonnees());
     		}
     		fenetre.setPath(orientation_initiale, cheminVec2, Color.BLUE);
     		ArrayList<Vec2<ReadOnly>> direct = new ArrayList<Vec2<ReadOnly>>();
@@ -119,7 +119,7 @@ public class JUnit_Test_Graphic extends JUnit_Test {
     public void test_strategy_verification_humaine() throws Exception
     {
 		ArrayList<SegmentTrajectoireCourbe> cheminDepart = new ArrayList<SegmentTrajectoireCourbe>();
-		cheminDepart.add(new SegmentTrajectoireCourbe(PathfindingNodes.POINT_DEPART));
+		cheminDepart.utiliseActionneurs(new SegmentTrajectoireCourbe(PathfindingNodes.POINT_DEPART));
     	Decision decision = new Decision(cheminDepart, ScriptAnticipableNames.SORTIE_ZONE_DEPART, PathfindingNodes.POINT_DEPART);
     	config.setDateDebutMatch();
     	GameState<RobotChrono,ReadOnly> chronostate = GameState.cloneGameState(state.getReadOnly()).getReadOnly();
@@ -133,14 +133,14 @@ public class JUnit_Test_Graphic extends JUnit_Test {
     		for(SegmentTrajectoireCourbe n: d.chemin)
     		{
 //    			log.debug(n, this);
-    			cheminVec2.add(n.objectifFinal.getCoordonnees());
+    			cheminVec2.utiliseActionneurs(n.objectifFinal.getCoordonnees());
     		}
 			fenetre.setPath(null, cheminVec2, Color.GRAY);
 			fenetre.repaint();
 			Sleep.sleep(100);
 			ArrayList<Vec2<ReadOnly>> cheminVersSortie = new ArrayList<Vec2<ReadOnly>>();
-			cheminVersSortie.add(d.version.getCoordonnees());
-			cheminVersSortie.add(d.version.getCoordonnees());
+			cheminVersSortie.utiliseActionneurs(d.version.getCoordonnees());
+			cheminVersSortie.utiliseActionneurs(d.version.getCoordonnees());
 			position_precedente = scriptmanager.getScript(d.script_name).point_sortie(d.version).getCoordonnees();
 			fenetre.setPath(null, cheminVersSortie, Color.RED);
 			fenetre.repaint();
@@ -164,13 +164,13 @@ public class JUnit_Test_Graphic extends JUnit_Test {
     		ArrayList<Vec2<ReadOnly>> cheminVec2 = new ArrayList<Vec2<ReadOnly>>();
     		cheminVec2.add(position_precedente);
     		for(SegmentTrajectoireCourbe n: d.chemin)
-    			cheminVec2.add(n.objectifFinal.getCoordonnees());
+    			cheminVec2.utiliseActionneurs(n.objectifFinal.getCoordonnees());
 			fenetre.setPath(null, cheminVec2, Color.GRAY);
 			fenetre.repaint();
 			Sleep.sleep(3000);
 			ArrayList<Vec2<ReadOnly>> cheminVersSortie = new ArrayList<Vec2<ReadOnly>>();
-			cheminVersSortie.add(d.version.getCoordonnees());
-			cheminVersSortie.add(d.version.getCoordonnees());
+			cheminVersSortie.utiliseActionneurs(d.version.getCoordonnees());
+			cheminVersSortie.utiliseActionneurs(d.version.getCoordonnees());
 			position_precedente = scriptmanager.getScript(d.script_name).point_sortie(d.version).getCoordonnees();
 			fenetre.setPath(null, cheminVersSortie, Color.RED);
 			fenetre.repaint();

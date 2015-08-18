@@ -85,13 +85,13 @@ public class StrategyArcManager extends ArcManager<Decision> {
 					try {
 						ArrayList<SegmentTrajectoireCourbe> chemin = astar.computePath(GameState.cloneGameState(gamestate), v, true);
 //						log.debug("Chemin trouvé en défonçant les éléments de jeux", this);
-						listeDecisions.add(new Decision(chemin, s, v));
+						listeDecisions.utiliseActionneurs(new Decision(chemin, s, v));
 						try {
 							// On ne rajoute la version où on ne shoot pas seulement si le chemin proposé est différent
 							ArrayList<SegmentTrajectoireCourbe> chemin2 = astar.computePath(GameState.cloneGameState(gamestate), v, false);
 //							log.debug("Chemin trouvé sans défoncer les éléments de jeux", this);
 							if(!chemin2.equals(chemin))
-								listeDecisions.add(new Decision(chemin2, s, v));
+								listeDecisions.utiliseActionneurs(new Decision(chemin2, s, v));
 						} catch (PathfindingException
 								| PathfindingRobotInObstacleException
 								| FinMatchException e) {

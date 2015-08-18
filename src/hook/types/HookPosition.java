@@ -1,5 +1,7 @@
 package hook.types;
 
+import java.util.ArrayList;
+
 import obstacles.ObstacleCircular;
 import permissions.ReadOnly;
 import exceptions.ChangeDirectionException;
@@ -70,12 +72,12 @@ public class HookPosition extends Hook
 	}
 	
 	@Override
-	public String[] toSerial()
+	public ArrayList<String> toSerial()
 	{
-		String[] out = new String[3];
-		out[0] = "po";
-		out[1] = String.valueOf(position.x);
-		out[2] = String.valueOf(position.y);
+		ArrayList<String> out = new ArrayList<String>();
+		out.add("po");
+		out.add(String.valueOf(position.x));
+		out.add(String.valueOf(position.y));
 		return out;
 	}
 }

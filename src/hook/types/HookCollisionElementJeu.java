@@ -1,5 +1,7 @@
 package hook.types;
 
+import java.util.ArrayList;
+
 import hook.Hook;
 import exceptions.FinMatchException;
 import obstacles.ObstacleCircular;
@@ -58,10 +60,10 @@ public class HookCollisionElementJeu extends Hook
 	}*/
 
 	@Override
-	public String[] toSerial()
+	public ArrayList<String> toSerial()
 	{
-		String[] out = new String[1];
-		out[0] = "co";
+		ArrayList<String> out = new ArrayList<String>();
+		out.add("co");
 		// TODO: ajouter numéro de l'élément de jeu
 		return out;
 	}	

@@ -1,5 +1,7 @@
 package hook.types;
 
+import java.util.ArrayList;
+
 import permissions.ReadOnly;
 import strategie.GameState;
 import utils.Log;
@@ -36,11 +38,11 @@ public class HookDate extends Hook {
 	}
 
 	@Override
-	public String[] toSerial()
+	public ArrayList<String> toSerial()
 	{
-		String[] out = new String[2];
-		out[0] = "da";
-		out[1] = String.valueOf(date_hook);
+		ArrayList<String> out = new ArrayList<String>();
+		out.add("da");
+		out.add(String.valueOf(date_hook));
 		return out;
 	}
 	

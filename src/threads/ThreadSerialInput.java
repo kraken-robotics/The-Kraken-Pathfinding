@@ -1,12 +1,8 @@
 package threads;
 
-import java.util.ArrayList;
-
 import buffer.IncomingData;
 import buffer.IncomingDataBuffer;
 import buffer.IncomingHookBuffer;
-import hook.Hook;
-import hook.HookFactory;
 import permissions.ReadOnly;
 import requete.RequeteSTM;
 import requete.RequeteType;
@@ -31,21 +27,19 @@ public class ThreadSerialInput extends Thread implements Service
 	private SerialConnexion serie;
 	private IncomingDataBuffer buffer;
 	private IncomingHookBuffer hookbuffer;
-	private HookFactory hookfactory;
 	
 	private RequeteSTM requete;
 	private boolean capteursOn = false;
 	private int nbCapteurs;
 	
-	public ThreadSerialInput(Log log, Config config, SerialConnexion serie, IncomingDataBuffer buffer, IncomingHookBuffer hookbuffer, HookFactory hookfactory)
+	public ThreadSerialInput(Log log, Config config, SerialConnexion serie, IncomingDataBuffer buffer, IncomingHookBuffer hookbuffer, RequeteSTM requete)
 	{
 		this.log = log;
 		this.config = config;
 		this.serie = serie;
 		this.buffer = buffer;
 		this.hookbuffer = hookbuffer;
-		this.hookfactory = hookfactory;
-		requete = RequeteSTM.getInstance();
+		this.requete = requete;
 	}
 
 	@Override
@@ -54,15 +48,6 @@ public class ThreadSerialInput extends Thread implements Service
 		/**
 		 * Initialisation des valeurs de la STM
 		 */
-		// TODO: envoyer hook, etc.
-/*		ArrayList<Hook> hooks = hookfactory.getHooksTable();
-		for(Hook hook: hooks)
-		{
-			serie.communiquer("hk");
-			serie.communiquer(hook.toSerial());
-		}
-		serie.communiquer("hkFin");
-	*/	
 		while(true)
 		{
 			try {
@@ -76,9 +61,8 @@ public class ThreadSerialInput extends Thread implements Service
 					{
 						serie.wait();
 					}
-					log.debug("lecture");
 					String first = serie.read();
-					log.debug(first);
+//					log.debug(first);
 					switch(first)
 					{
 						case "cpt":

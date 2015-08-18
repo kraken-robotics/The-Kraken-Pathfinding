@@ -1,5 +1,7 @@
 package threads;
 
+import java.util.ArrayList;
+
 import buffer.DataForSerialOutput;
 import serial.SerialConnexion;
 import utils.Config;
@@ -30,7 +32,7 @@ public class ThreadSerialOutput extends Thread implements Service
 	@Override
 	public void run()
 	{
-		String[] message;
+		ArrayList<String> message;
 		while(true)
 		{
 			try {

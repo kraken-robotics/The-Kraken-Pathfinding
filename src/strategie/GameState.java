@@ -243,14 +243,9 @@ public class GameState<R extends Robot, T extends Permission> implements Service
 		state.robot.set_vitesse(vitesse);
 	}
 	
-	public static final void setPosition(GameState<? extends Robot, ReadWrite> state, Vec2<ReadOnly> position) throws FinMatchException
+	public static final void setPositionOrientationSTM(GameState<? extends Robot, ReadWrite> state, Vec2<ReadOnly> position, double orientation) throws FinMatchException
 	{
-		state.robot.setPosition(position);
-	}
-	
-	public static final void setOrientation(GameState<? extends Robot, ReadWrite> state, double orientation) throws FinMatchException
-	{
-		state.robot.setOrientation(orientation);
+		state.robot.setPositionOrientationSTM(position, orientation);
 	}
 	
     public static final Vec2<ReadOnly> getPosition(GameState<? extends Robot, ReadOnly> state) throws FinMatchException
@@ -273,20 +268,15 @@ public class GameState<R extends Robot, T extends Permission> implements Service
     	state.robot.sleep(duree, new ArrayList<Hook>());
     }
     
-    public static final void desactiver_asservissement_rotation(GameState<? extends Robot, ReadWrite> state) throws FinMatchException
+/*    public static final void desactiveAsservissement(GameState<? extends Robot, ReadWrite> state) throws FinMatchException
     {
-    	state.robot.desactiver_asservissement_rotation();
+    	state.robot.desactiveAsservissement();
     }
     
-    public static final void desactiver_asservissement_translation(GameState<? extends Robot, ReadWrite> state) throws FinMatchException
+    public static final void activeAsservissement(GameState<? extends Robot, ReadWrite> state) throws FinMatchException
     {
-    	state.robot.desactiver_asservissement_translation();
-    }
-    
-    public static final void activer_asservissement_rotation(GameState<? extends Robot, ReadWrite> state) throws FinMatchException
-    {
-    	state.robot.activer_asservissement_rotation();
-    }
+    	state.robot.activeAsservissement();
+    }*/
     
     public static final long getTempsDepuisDebutMatch(GameState<? extends Robot, ReadOnly> state)
     {

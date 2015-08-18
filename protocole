@@ -1,0 +1,23 @@
+Java vers STM
+
+set position et orientation TEST UNIQUEMENT
+    sxyo x y angle_en_milliradians
+get position et orientation TEST UNIQUEMENT
+    gxyo
+
+set vitesse
+    sspd pwm_rotation pwm_translation
+avancer
+    d distance dans_mur nb_hook [hook]
+tourner avec symétrie
+    t angle_en_milliradians nb_hook [hook]
+actionneurs (protocole complet dans src/robot/ActuatorOrder.java)
+    ordre_actionneur
+stopper le robot (procédure d'urgence)
+    stop
+
+Inutilisés :
+désactiver asservissement (rotation et translation)
+    nas
+activer asservissement (rotation et translation)
+    oas

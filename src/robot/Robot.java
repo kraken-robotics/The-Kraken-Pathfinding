@@ -3,6 +3,7 @@ package robot;
 import java.util.ArrayList;
 
 import permissions.ReadOnly;
+import permissions.ReadWrite;
 import hook.Hook;
 import hook.types.HookDateFinMatch;
 import container.Service;
@@ -33,19 +34,19 @@ public abstract class Robot implements Service
             throws UnableToMoveException, FinMatchException;
 	public abstract void set_vitesse(Speed vitesse) throws FinMatchException;
 	
-	public abstract void setPosition(Vec2<ReadOnly> position) throws FinMatchException;
-	public abstract void setOrientation(double orientation) throws FinMatchException;
+	public abstract void setPositionOrientationSTM(Vec2<ReadOnly> position, double orientation) throws FinMatchException;
     public abstract Vec2<ReadOnly> getPosition() throws FinMatchException;
     public abstract double getOrientation() throws FinMatchException;
     public abstract void sleep(long duree, ArrayList<Hook> hooks) throws FinMatchException;
-    public abstract void desactiver_asservissement_rotation() throws FinMatchException;
-    public abstract void desactiver_asservissement_translation() throws FinMatchException;
-    public abstract void activer_asservissement_rotation() throws FinMatchException;
+//    public abstract void desactiveAsservissement() throws FinMatchException;
+//    public abstract void activeAsservissement() throws FinMatchException;
     public abstract long getTempsDepuisDebutMatch();
     public abstract RobotChrono cloneIntoRobotChrono();
 
     protected HookDateFinMatch hookFinMatch;
     
+    protected volatile Vec2<ReadWrite> position = new Vec2<ReadWrite>();
+    protected volatile double orientation;
 	protected volatile boolean symetrie;
 	protected Speed vitesse;
 	protected int pointsObtenus = 0;

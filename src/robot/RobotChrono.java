@@ -30,7 +30,7 @@ public class RobotChrono extends Robot
 	// Date en millisecondes depuis le début du match.
 	protected long date;
 	
-	/** valeur approchée du temps (en milisecondes) nécéssaire pour qu'une information que l'on envois a la série soit aquité */
+	/** valeur approchée du temps (en millisecondes) nécessaire pour qu'une information que l'on envoie à la série soit acquittée */
 	private final static int approximateSerialLatency = 50;
 
 	private final static int sleepAvanceDuration = approximateSerialLatency+Speed.translationStopDuration;
@@ -43,17 +43,12 @@ public class RobotChrono extends Robot
 	}
 	
 	@Override
-	public void setPosition(Vec2<ReadOnly> position) {
+	public void setPositionOrientationSTM(Vec2<ReadOnly> position, double orientation) {
 		Vec2.copy(position, this.position);
+		this.orientation = orientation;
 		isPositionPathfindingActive = false;
 		positionPathfindingAnterieure = null;
 		positionPathfinding = null;
-		date += approximateSerialLatency;
-	}
-	
-	@Override
-	public void setOrientation(double orientation) {
-		this.orientation = orientation;
 		date += approximateSerialLatency;
 	}
 
@@ -240,21 +235,18 @@ public class RobotChrono extends Robot
     	rc.positionPathfindingAnterieure = positionPathfindingAnterieure;
     	rc.isPositionPathfindingActive = isPositionPathfindingActive;
     }
-
-    public void desactiver_asservissement_rotation()
+    
+/*    @Override
+    public void desactiveAsservissement()
     {
 		date += approximateSerialLatency;
     }
 
-    public void desactiver_asservissement_translation()
+    @Override
+    public void activeAsservissement()
     {
 		date += approximateSerialLatency;
-    }
-
-    public void activer_asservissement_rotation()
-    {
-    	date += approximateSerialLatency;
-    }
+    }*/
 
 	/**
 	 * On déclenche tous les hooks entre le point A et le point B.

@@ -27,7 +27,8 @@ public enum ServiceNames {
 	 INCOMING_HOOK_BUFFER,
 	 MEMORY_MANAGER,
 	 SERIAL_OUTPUT_BUFFER,
-	
+	 REQUETE_STM,
+	 
 	 // Les threads
 	 THREAD_FIN_MATCH(true),
 	 THREAD_PEREMPTION(true),
