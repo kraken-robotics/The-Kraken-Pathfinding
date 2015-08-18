@@ -14,7 +14,7 @@ import container.Service;
  *
  */
 
-public class ThreadPeremption extends ThreadAvecStop implements Service
+public class ThreadPeremption extends Thread implements Service
 {
 
 	private ObstacleManager obstaclemanager;
@@ -31,7 +31,7 @@ public class ThreadPeremption extends ThreadAvecStop implements Service
 	@Override
 	public void run()
 	{
-		while(!finThread)
+		while(true)
 		{
 			obstaclemanager.supprimerObstaclesPerimes();
 			long prochain = obstaclemanager.getDateSomethingChange();
@@ -45,6 +45,7 @@ public class ThreadPeremption extends ThreadAvecStop implements Service
 				// Il faut toujours s'assurer qu'on dorme un temps positif.
 				Sleep.sleep(Math.min(dureePeremption, Math.max(prochain - System.currentTimeMillis(), 0)));
 		}
+//		log.debug("Fermeture de ThreadPeremption");
 	}
 
 	@Override

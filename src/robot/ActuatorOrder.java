@@ -14,7 +14,7 @@ public enum ActuatorOrder {
 	 * ordres sans symétrie, et que les ordres avec symétrie soient suivis (ou précédés)
 	 * de leur symétrique.
 	 * D'une manière générale, un ordre en position n a son ordre symétrique en n+1 si n est pair, et en
-	 * n-1 si n est impair.
+	 * n-1 si n est impair (il faut inverser le bit de poids faible)
 	 */
 	
 	// Ordres avec symétrie

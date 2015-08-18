@@ -13,7 +13,7 @@ import container.Service;
  *
  */
 
-public class ThreadTable extends ThreadAvecStop implements Service
+public class ThreadTable extends Thread implements Service
 {
 	private IncomingHookBuffer buffer;
 	private Table table;
@@ -29,7 +29,7 @@ public class ThreadTable extends ThreadAvecStop implements Service
 	@Override
 	public void run()
 	{
-		while(!finThread)
+		while(true)
 		{
 			IncomingHook e = null;
 			synchronized(buffer)
@@ -47,6 +47,7 @@ public class ThreadTable extends ThreadAvecStop implements Service
 //			if(e != null)
 //				table.apply(e); // TODO
 		}
+//		log.debug("Fermeture de ThreadTable");
 	}
 	
 	@Override

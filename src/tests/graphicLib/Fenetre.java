@@ -142,9 +142,19 @@ public class Fenetre extends JPanel {
 			for(Vec2<ReadWrite> v: point)
 				g.fillOval(XtoWindow(v.x-200), YtoWindow(v.y+200), distanceXtoWindow(400), distanceYtoWindow(400));
 
-		Vec2<ReadOnly> v = ObstaclesFixes.TEST.getObstacle().position;
-		int r = ((ObstacleCircular)ObstaclesFixes.TEST.getObstacle()).getRadius();
-		g.fillOval(XtoWindow(v.x-r), YtoWindow(v.y+r), distanceXtoWindow(r*2), distanceYtoWindow(r*2));
+		ObstacleRectangular o = (ObstacleRectangular)ObstaclesFixes.TEST_RECT.getObstacle();
+		int[] X = ObstacleRectangular.getXPositions(o);
+		int[] Y = ObstacleRectangular.getYPositions(o);
+		for(int i = 0; i < 4; i++)
+		{
+			X[i] = XtoWindow(X[i]);
+			Y[i] = YtoWindow(Y[i]);
+		}
+		g.fillPolygon(X, Y, 4);
+
+//		Vec2<ReadOnly> v = ObstaclesFixes.TEST.getObstacle().position;
+//		int r = ((ObstacleCircular)ObstaclesFixes.TEST.getObstacle()).getRadius();
+//		g.fillOval(XtoWindow(v.x-r), YtoWindow(v.y+r), distanceXtoWindow(r*2), distanceYtoWindow(r*2));
 
 	}
 

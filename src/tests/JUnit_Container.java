@@ -3,7 +3,6 @@ package tests;
 import org.junit.Assert;
 import org.junit.Test;
 
-import container.Service;
 import container.ServiceNames;
 
 /**
@@ -41,9 +40,10 @@ public class JUnit_Container extends JUnit_Test {
 	@Test
 	public void test_doublon() throws Exception
 	{
-		Service s1 = container.getService(ServiceNames.EXECUTION);
-		Service s2 = container.getService(ServiceNames.EXECUTION);
-		Assert.assertTrue(s1 == s2); // comparaison physique entre les deux objets
+		for(ServiceNames s : ServiceNames.values())
+			Assert.assertTrue(container.getService(s)
+					== container.getService(s));
+		// comparaison physique entre les deux objets
 	}
 
 }

@@ -12,8 +12,9 @@ import utils.Vec2;
 
 public enum ObstaclesFixes {
 
-    TEST(new ObstacleCircular(new Vec2<ReadOnly>(300,1400),200)), // plaque rouge
-
+//    TEST(new ObstacleCircular(new Vec2<ReadOnly>(300,1400),200)),
+    TEST_RECT(new ObstacleRectangular(new Vec2<ReadOnly>(100,1200),600,300));
+/*
     // DEPENDS_ON_RULES
     PLASQUE_ROUGE(new ObstacleRectangular(new Vec2<ReadOnly>(0,100),800,200)), // plaque rouge
     ESCALIER(new ObstacleRectangular(new Vec2<ReadOnly>(0,2000-580/2),1066,580)), // escalier
@@ -31,7 +32,7 @@ public enum ObstaclesFixes {
     BORD_GAUCHE(new ObstacleRectangular(new Vec2<ReadOnly>(-1500,1000),0,2000)),
     BORD_DROITE(new ObstacleRectangular(new Vec2<ReadOnly>(1500,1000),0,2000)),
     BORD_HAUT(new ObstacleRectangular(new Vec2<ReadOnly>(0,2000),3000,0));
-
+*/
     private final Obstacle obstacle;
     public static final ObstaclesFixes[] values;
     

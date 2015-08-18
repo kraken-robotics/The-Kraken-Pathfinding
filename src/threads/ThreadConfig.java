@@ -12,7 +12,7 @@ import utils.Log;
  *
  */
 
-public class ThreadConfig extends ThreadAvecStop implements Service {
+public class ThreadConfig extends Thread implements Service {
 
 	protected Log log;
 	protected Config config;
@@ -28,10 +28,14 @@ public class ThreadConfig extends ThreadAvecStop implements Service {
 	@Override
 	public void run()
 	{
-		while(!finThread)
+		while(true)
 		{
+ //			if(Config.debugMutex)
+//				log.debug("Tentative de récupération du mutex de config");
 			synchronized(config)
 			{
+//				if(Config.debugMutex)
+//					log.debug("Mutex de config récupéré");
 				try {
 					config.wait();
 				} catch (InterruptedException e) {
@@ -39,6 +43,9 @@ public class ThreadConfig extends ThreadAvecStop implements Service {
 					e.printStackTrace();
 				}
 			}
+//			if(Config.debugMutex)
+//				log.debug("Mutex de config libéré");
+
 			log.debug("Réveil de ThreadConfig");	
 			
 			for(ServiceNames name: ServiceNames.values())
@@ -48,7 +55,7 @@ public class ThreadConfig extends ThreadAvecStop implements Service {
 					service.updateConfig(config);
 			}
 		}
-
+//		log.debug("Fermeture de ThreadConfig");
 	}
 
 	@Override

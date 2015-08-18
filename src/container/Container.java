@@ -1,6 +1,7 @@
 package container;
 
 import obstacles.Obstacle;
+import buffer.DataForSerialOutput;
 import buffer.IncomingDataBuffer;
 import buffer.IncomingHookBuffer;
 import permissions.ReadOnly;
@@ -26,14 +27,14 @@ import table.GridSpace;
 import table.ObstacleManager;
 import table.StrategieInfo;
 import table.Table;
-import threads.ThreadAvecStop;
 import threads.ThreadConfig;
 import threads.ThreadFinMatch;
 import threads.ThreadGridSpace;
 import threads.ThreadGridSpace2;
 import threads.ThreadObstacleManager;
 import threads.ThreadPathfinding;
-import threads.ThreadSerial;
+import threads.ThreadSerialInput;
+import threads.ThreadSerialOutput;
 import threads.ThreadStrategie;
 import threads.ThreadStrategieInfo;
 import threads.ThreadTable;
@@ -66,6 +67,7 @@ public class Container
 	 * Fonction à appeler à la fin du programme.
 	 * ferme la connexion serie, termine les différents threads, et ferme le log.
 	 */
+	@SuppressWarnings("deprecation")
 	public void destructor()
 	{
 		// arrêt des threads
@@ -76,7 +78,10 @@ public class Container
 					if(s.isThread())
 					{
 						log.debug("Arrêt de "+s);
-						((ThreadAvecStop)getService(s)).setFinThread();
+//						((ThreadAvecStop)getService(s)).setFinThread();
+						// C'est déprécié. Mais ce n'est utilisé qu'en fin de match ;
+						// en fait, ce n'est utile que pour les tests
+						((Thread)getService(s)).stop();
 					}
 				}
 				threadsStarted = false;
@@ -84,15 +89,18 @@ public class Container
 				e.printStackTrace();
 			}
 			
-		
+		log.debug("Fermeture de la série");
 		// fermeture de la connexion série
+		
 		SerialConnexion stm = (SerialConnexion)getInstanciedService(ServiceNames.SERIE_STM);
 		if(stm != null)
 			stm.close();
 
 		// fermeture du log
+		log.debug("Fermeture du log");
 		log.close();
 		nbInstances--;
+		System.out.println("Container détruit");
 	}
 	
 	
@@ -192,6 +200,8 @@ public class Container
 			instanciedServices[serviceRequested.ordinal()] = (Service)new IncomingDataBuffer((Log)getService(ServiceNames.LOG));
 		else if(serviceRequested == ServiceNames.INCOMING_HOOK_BUFFER)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new IncomingHookBuffer((Log)getService(ServiceNames.LOG));
+		else if(serviceRequested == ServiceNames.SERIAL_OUTPUT_BUFFER)
+			instanciedServices[serviceRequested.ordinal()] = (Service)new DataForSerialOutput((Log)getService(ServiceNames.LOG));
 				
 		else if(serviceRequested == ServiceNames.SERIE_STM)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new SerialConnexion((Log)getService(ServiceNames.LOG));
@@ -206,7 +216,7 @@ public class Container
 		else if(serviceRequested == ServiceNames.HOOK_FACTORY)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new HookFactory((Log)getService(ServiceNames.LOG));
 		else if(serviceRequested == ServiceNames.ROBOT_REAL)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new RobotReal((SerialConnexion)getService(ServiceNames.SERIE_STM),
+			instanciedServices[serviceRequested.ordinal()] = (Service)new RobotReal((DataForSerialOutput)getService(ServiceNames.SERIAL_OUTPUT_BUFFER),
 															 (Log)getService(ServiceNames.LOG));
         else if(serviceRequested == ServiceNames.REAL_GAME_STATE)
         	// ici la construction est un petit peu différente car on interdit l'instanciation publique d'un GameSTate<RobotChrono>
@@ -251,13 +261,18 @@ public class Container
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadStrategieInfo((Log)getService(ServiceNames.LOG),
 																		(StrategieInfo)getService(ServiceNames.STRATEGIE_INFO),
 																		(ObstacleManager)getService(ServiceNames.OBSTACLE_MANAGER));
-		else if(serviceRequested == ServiceNames.THREAD_SERIE)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadSerial((Log)getService(ServiceNames.LOG),
+		else if(serviceRequested == ServiceNames.THREAD_SERIAL_INPUT)
+			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadSerialInput((Log)getService(ServiceNames.LOG),
 																		(Config)getService(ServiceNames.CONFIG),
 																		(SerialConnexion)getService(ServiceNames.SERIE_STM),
 																		(IncomingDataBuffer)getService(ServiceNames.INCOMING_DATA_BUFFER),
 																		(IncomingHookBuffer)getService(ServiceNames.INCOMING_HOOK_BUFFER),
 																		(HookFactory)getService(ServiceNames.HOOK_FACTORY));
+		else if(serviceRequested == ServiceNames.THREAD_SERIAL_OUTPUT)
+			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadSerialOutput((Log)getService(ServiceNames.LOG),
+																		(Config)getService(ServiceNames.CONFIG),
+																		(SerialConnexion)getService(ServiceNames.SERIE_STM),
+																		(DataForSerialOutput)getService(ServiceNames.SERIAL_OUTPUT_BUFFER));
 		else if(serviceRequested == ServiceNames.THREAD_CONFIG)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadConfig((Log)getService(ServiceNames.LOG),
 																		(Config)getService(ServiceNames.CONFIG),
@@ -305,6 +320,7 @@ public class Container
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		log.debug("Démarrage des threads fini");
 	}
 	
 	/**

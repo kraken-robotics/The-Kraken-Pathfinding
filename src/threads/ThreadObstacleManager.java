@@ -13,7 +13,7 @@ import container.Service;
  *
  */
 
-public class ThreadObstacleManager extends ThreadAvecStop implements Service
+public class ThreadObstacleManager extends Thread implements Service
 {
 	private IncomingDataBuffer buffer;
 	private ObstacleManager obstaclemanager;
@@ -29,7 +29,7 @@ public class ThreadObstacleManager extends ThreadAvecStop implements Service
 	@Override
 	public void run()
 	{
-		while(!finThread)
+		while(true)
 		{
 			IncomingData e = null;
 			synchronized(buffer)
@@ -48,6 +48,7 @@ public class ThreadObstacleManager extends ThreadAvecStop implements Service
 			if(e != null)
 				obstaclemanager.updateObstaclesMobiles(e);
 		}
+//		log.debug("Fermeture de ThreadObstacleManager");
 	}
 	
 	@Override

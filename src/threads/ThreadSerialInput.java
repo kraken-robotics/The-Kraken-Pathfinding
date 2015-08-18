@@ -24,7 +24,7 @@ import enums.RobotColor;
  *
  */
 
-public class ThreadSerial extends ThreadAvecStop implements Service
+public class ThreadSerialInput extends Thread implements Service
 {
 	protected Log log;
 	protected Config config;
@@ -37,7 +37,7 @@ public class ThreadSerial extends ThreadAvecStop implements Service
 	private boolean capteursOn = false;
 	private int nbCapteurs;
 	
-	public ThreadSerial(Log log, Config config, SerialConnexion serie, IncomingDataBuffer buffer, IncomingHookBuffer hookbuffer, HookFactory hookfactory)
+	public ThreadSerialInput(Log log, Config config, SerialConnexion serie, IncomingDataBuffer buffer, IncomingHookBuffer hookbuffer, HookFactory hookfactory)
 	{
 		this.log = log;
 		this.config = config;
@@ -63,7 +63,7 @@ public class ThreadSerial extends ThreadAvecStop implements Service
 		}
 		serie.communiquer("hkFin");
 	*/	
-		while(!finThread)
+		while(true)
 		{
 			try {
 				/**
@@ -74,7 +74,7 @@ public class ThreadSerial extends ThreadAvecStop implements Service
 				{
 					while(!serie.canBeRead())
 					{
-						serie.wait();
+						serie.wait(500);
 					}
 					String first = serie.read();
 					log.debug(first);
@@ -156,6 +156,7 @@ public class ThreadSerial extends ThreadAvecStop implements Service
 				continue;
 			}
 		}
+//		log.debug("Fermeture de ThreadSerialInput");
 	}
 	
 	@Override

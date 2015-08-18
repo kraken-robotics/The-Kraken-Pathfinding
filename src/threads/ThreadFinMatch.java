@@ -12,7 +12,7 @@ import container.Service;
  *
  */
 
-public class ThreadFinMatch extends ThreadAvecStop implements Service {
+public class ThreadFinMatch extends Thread implements Service {
 
 	protected Log log;
 	protected Config config;
@@ -28,22 +28,33 @@ public class ThreadFinMatch extends ThreadAvecStop implements Service {
 	@Override
 	public void run()
 	{
+//		if(Config.debugMutex)
+//			log.debug("Tentative de récupération du mutex de ThreadFinMatch");
 		synchronized(this)
 		{
+//			if(Config.debugMutex)
+//				log.debug("Mutex de ThreadFinMatch récupéré");
 			while(!matchDemarre)
 			{
 				try {
+//					if(Config.debugMutex)
+//						log.debug("Mutex de ThreadFinMatch libéré");
 					wait();
+//					if(Config.debugMutex)
+//						log.debug("Mutex de ThreadFinMatch récupéré");
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
 			}
 		}
+//		if(Config.debugMutex)
+//			log.debug("Mutex de ThreadFinMatch libéré");
 		log.debug("DEBUT DU MATCH!");
 		Sleep.sleep(dureeMatch);
 		config.set(ConfigInfo.FIN_MATCH, true);
 		config.updateConfigServices();
 		log.debug("Fin du Match !");
+//		log.debug("Fermeture de ThreadFinMatch");
 	}
 
 	@Override

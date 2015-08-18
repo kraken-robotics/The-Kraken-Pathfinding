@@ -311,5 +311,10 @@ public class Capteurs implements Service {
 		horizonCapteursSquared = config.getInt(ConfigInfo.HORIZON_CAPTEURS);
 		horizonCapteursSquared *= horizonCapteursSquared;
 	}
+
+	public double getAngleCone(int nbCapteur)
+	{
+		return angleCone[nbCapteur < nbUltrasons ? ultrason : infrarouge];
+	}
 	
 }

@@ -28,10 +28,10 @@ public class ObstacleRectangular extends ObstacleAvecAngle
 	protected double demieDiagonale;
 	
 	// calcul des positions des coins
-	protected final Vec2<ReadOnly> coinBasGauche = new Vec2<ReadOnly>(-sizeX/2,-sizeY/2);
-	protected final Vec2<ReadOnly> coinHautGauche = new Vec2<ReadOnly>(-sizeX/2,sizeY/2);
-	protected final Vec2<ReadOnly> coinBasDroite = new Vec2<ReadOnly>(sizeX/2,-sizeY/2);
-	protected final Vec2<ReadOnly> coinHautDroite = new Vec2<ReadOnly>(sizeX/2,sizeY/2);
+	public final Vec2<ReadOnly> coinBasGauche = new Vec2<ReadOnly>(-sizeX/2,-sizeY/2);
+	public final Vec2<ReadOnly> coinHautGauche = new Vec2<ReadOnly>(-sizeX/2,sizeY/2);
+	public final Vec2<ReadOnly> coinBasDroite = new Vec2<ReadOnly>(sizeX/2,-sizeY/2);
+	public final Vec2<ReadOnly> coinHautDroite = new Vec2<ReadOnly>(sizeX/2,sizeY/2);
 
 	protected final Vec2<ReadOnly> coinBasGaucheRotate = rotatePlusAngle(coinBasGauche).getReadOnly();
 	protected final Vec2<ReadOnly> coinHautGaucheRotate = rotatePlusAngle(coinHautGauche).getReadOnly();
@@ -225,10 +225,10 @@ public class ObstacleRectangular extends ObstacleAvecAngle
 	public static int[] getXPositions(ObstacleRectangular t)
 	{
 		int[] X = new int[4];
-		X[0] = t.getXRotatePlusAngle(t.coinBasDroite.getReadOnly());
-		X[1] = t.getXRotatePlusAngle(t.coinHautDroite.getReadOnly());
-		X[2] = t.getXRotatePlusAngle(t.coinHautGauche.getReadOnly());
-		X[3] = t.getXRotatePlusAngle(t.coinBasGauche.getReadOnly());
+		X[0] = t.getXRotatePlusAngle(t.coinBasDroite);
+		X[1] = t.getXRotatePlusAngle(t.coinHautDroite);
+		X[2] = t.getXRotatePlusAngle(t.coinHautGauche);
+		X[3] = t.getXRotatePlusAngle(t.coinBasGauche);
 		return X;
 	}
 
@@ -239,10 +239,10 @@ public class ObstacleRectangular extends ObstacleAvecAngle
 	public static int[] getYPositions(ObstacleRectangular t)
 	{
 		int[] Y = new int[4];
-		Y[0] = t.getYRotatePlusAngle(t.coinBasDroite.getReadOnly());
-		Y[1] = t.getYRotatePlusAngle(t.coinHautDroite.getReadOnly());
-		Y[2] = t.getYRotatePlusAngle(t.coinHautGauche.getReadOnly());
-		Y[3] = t.getYRotatePlusAngle(t.coinBasGauche.getReadOnly());
+		Y[0] = t.getYRotatePlusAngle(t.coinBasDroite);
+		Y[1] = t.getYRotatePlusAngle(t.coinHautDroite);
+		Y[2] = t.getYRotatePlusAngle(t.coinHautGauche);
+		Y[3] = t.getYRotatePlusAngle(t.coinBasGauche);
 		return Y;
 	}
 
@@ -262,6 +262,50 @@ public class ObstacleRectangular extends ObstacleAvecAngle
 		return false;
 	}
 
+	/**
+	 * Retourne le coin le plus proche de la position donnée.
+	 * @param pos
+	 * @return
+	 */
+	public Vec2<ReadOnly> getPlusProcheCoinVisible(Vec2<ReadOnly> pos, boolean coinBasDroiteVisible, boolean coinBasGaucheVisible, boolean coinHautDroiteVisible, boolean coinHautGaucheVisible)
+	{
+		Vec2<ReadOnly> out = null;
+		double min = Integer.MAX_VALUE, tmp;
+		if(coinBasGaucheVisible)
+		{
+			out = coinBasGauche;
+			min = pos.squaredDistance(coinBasGauche);
+		}
+		if(coinHautGaucheVisible)
+		{
+			tmp = pos.squaredDistance(coinHautGauche);
+			if(tmp < min)
+			{
+				out = coinHautGauche;
+				min = tmp;
+			}
+		}
+		if(coinBasDroiteVisible)
+		{
+			tmp = pos.squaredDistance(coinBasDroite);
+			if(tmp < min)
+			{
+				out = coinBasDroite;
+				min = tmp;
+			}
+		}
+		if(coinHautDroiteVisible)
+		{
+			tmp = pos.squaredDistance(coinHautDroite);
+			if(tmp < min)
+			{
+				out = coinHautDroite;
+				min = tmp;
+			}
+		}
+		return out;
+	}
+	
 	/**
 	 * Utilisé pour l'affichage uniquement
 	 * @return

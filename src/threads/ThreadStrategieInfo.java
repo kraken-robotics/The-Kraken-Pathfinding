@@ -12,7 +12,7 @@ import container.Service;
  *
  */
 
-public class ThreadStrategieInfo extends ThreadAvecStop implements Service
+public class ThreadStrategieInfo extends Thread implements Service
 {
 	private ObstacleManager obstaclemanager;
 	protected StrategieInfo obstaclestrategiemanager;
@@ -28,7 +28,7 @@ public class ThreadStrategieInfo extends ThreadAvecStop implements Service
 	@Override
 	public void run()
 	{
-		while(!finThread)
+		while(true)
 		{
 			synchronized(obstaclemanager)
 			{
@@ -44,6 +44,7 @@ public class ThreadStrategieInfo extends ThreadAvecStop implements Service
 			// Il n'est pas synchronized car il ne modifie pas le buffer
 			// TODO
 		}
+//		log.debug("Fermeture de ThreadStrategieInfo");
 	}
 	
 	@Override
