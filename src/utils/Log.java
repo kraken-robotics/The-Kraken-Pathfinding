@@ -77,13 +77,13 @@ public class Log implements Service
 		else if(couleur != couleurDebug || affiche_debug || sauvegarde_fichier)
 		{
 			String affichage;
-			String heure = calendar.get(Calendar.HOUR_OF_DAY)+":"+calendar.get(Calendar.MINUTE)+":"+calendar.get(Calendar.SECOND)+","+calendar.get(Calendar.MILLISECOND);
+//			String heure = calendar.get(Calendar.HOUR_OF_DAY)+":"+calendar.get(Calendar.MINUTE)+":"+calendar.get(Calendar.SECOND)+","+calendar.get(Calendar.MILLISECOND);
 			if(fastLog)
-				affichage = heure+": "+message;
+				affichage = System.currentTimeMillis()+": "+message;
 			else
 			{
 				StackTraceElement elem = Thread.currentThread().getStackTrace()[3];
-				affichage = heure+niveau+elem.getClassName()+"."+elem.getMethodName()+":"+elem.getLineNumber()+" "+message;//+"\u001B[0m";
+				affichage = System.currentTimeMillis()+niveau+elem.getClassName()+"."+elem.getMethodName()+":"+elem.getLineNumber()+" "+message;//+"\u001B[0m";
 			}
 			if(couleur != couleurDebug || affiche_debug)
 				ou.println(affichage);
