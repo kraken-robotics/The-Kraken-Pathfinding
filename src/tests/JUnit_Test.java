@@ -42,6 +42,7 @@ public abstract class JUnit_Test
 	public void tearDown() throws Exception {
 		Sleep.sleep(1000);
 		container.destructor();
+		Sleep.sleep(500);
 	}
 
 	

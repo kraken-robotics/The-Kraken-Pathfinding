@@ -33,8 +33,8 @@ public class JUnit_Config extends JUnit_Test {
 	public void test_set2() throws Exception
 	{
 		log.debug("JUnit_ReadIniTest.test_set2()");
-		config.set(ConfigInfo.NB_CAPTEURS_PROXIMITE, 1000);
-		Assert.assertTrue(config.getInt(ConfigInfo.NB_CAPTEURS_PROXIMITE) == 1000);
+		config.set(ConfigInfo.DATE_DEBUT_MATCH, 42);
+		Assert.assertTrue(config.getInt(ConfigInfo.DATE_DEBUT_MATCH) == 42);
 	}
 
 }

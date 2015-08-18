@@ -28,40 +28,32 @@ public class ThreadFinMatch extends Thread implements Service {
 	@Override
 	public void run()
 	{
-//		if(Config.debugMutex)
-//			log.debug("Tentative de récupération du mutex de ThreadFinMatch");
 		synchronized(this)
 		{
-//			if(Config.debugMutex)
-//				log.debug("Mutex de ThreadFinMatch récupéré");
 			while(!matchDemarre)
 			{
 				try {
-//					if(Config.debugMutex)
-//						log.debug("Mutex de ThreadFinMatch libéré");
 					wait();
-//					if(Config.debugMutex)
-//						log.debug("Mutex de ThreadFinMatch récupéré");
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
 			}
 		}
-//		if(Config.debugMutex)
-//			log.debug("Mutex de ThreadFinMatch libéré");
 		log.debug("DEBUT DU MATCH!");
+		
+		/* Le thread flemmard par excellence */
 		Sleep.sleep(dureeMatch);
+		
 		config.set(ConfigInfo.FIN_MATCH, true);
 		config.updateConfigServices();
 		log.debug("Fin du Match !");
-//		log.debug("Fermeture de ThreadFinMatch");
 	}
 
 	@Override
 	public synchronized void updateConfig(Config config)
 	{
 		matchDemarre = config.getBoolean(ConfigInfo.MATCH_DEMARRE);
-		notifyAll();
+		notify();
 	}
 
 	@Override

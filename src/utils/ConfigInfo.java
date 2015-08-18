@@ -4,9 +4,7 @@ import enums.RobotColor;
 
 /**
  * Informations accessibles par la config
- * En cas de problème de config, on duplique les valeurs ici.
- * De préférence, ce sont celles de config.ini qui sont utilisées.
- * Mais en cas de problème de config, on utilise celle-là.
+ * Les informations de config.ini surchargent celles-ci
  * @author pf
  *
  */
@@ -20,15 +18,15 @@ public enum ConfigInfo {
 	DUREE_MATCH_EN_S("90", true),
 	FAST_LOG("false", true),
 //	TEMPS_FUNNY_ACTION("0"),
-	LARGEUR_ROBOT("245", true),
-	LONGUEUR_ROBOT("300", true),
+	LARGEUR_ROBOT_AXE_GAUCHE_DROITE("245", true),
+	LONGUEUR_ROBOT_AXE_AVANT_ARRIERE("300", true),
 	RAYON_ROBOT("250", true),
 	RAYON_ROBOT_ADVERSE("200", true),
 	DUREE_PEREMPTION_OBSTACLES("5000", true),
 	HORIZON_CAPTEURS("800", true),
 	CAPTEURS_TEMPORISATION_OBSTACLES("100", true),
 //	DISTANCE_DETECTION("300"),
-	AFFICHE_DEBUG("false", true),
+	AFFICHE_DEBUG("true", true),
 	SAUVEGARDE_FICHIER("true", true),
 	DISTANCE_MAX_ENTRE_MESURE_ET_OBJET("50", true),
 	HOOKS_TOLERANCE_MM("20", true),
@@ -46,13 +44,12 @@ public enum ConfigInfo {
 	CHECK_POINTS_SORTIE("false", true),
 	PREVISION_COLLISION("50", true),
 	BAUDRATE("57600", true),
-	
+	NB_CAPTEURS_PROXIMITE("8", true),
+	NB_COUPLES_CAPTEURS_PROXIMITE("4", true),
 	
 	/**
 	 * Config dynamique
 	 */
-	NB_CAPTEURS_PROXIMITE("8", false),
-	NB_COUPLES_CAPTEURS_PROXIMITE("4", false),
 	COULEUR(RobotColor.getCouleurSansSymetrie(), false),
 	MATCH_DEMARRE("false", false),
 	DATE_DEBUT_MATCH("0", false),

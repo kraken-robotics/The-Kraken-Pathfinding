@@ -130,13 +130,14 @@ public class Container
 			config = (Config)getService(ServiceNames.CONFIG);
 			log.updateConfig(config);
 			log.useConfig(config);
-			config.init();
+			config.init(log);
 			
 			Obstacle.setLog(log);
 			Obstacle.useConfig(config);
 		}
 		catch(Exception e)
 		{
+			e.printStackTrace();
 			throw new ContainerException();
 		}
 		startAllThreads();
@@ -167,7 +168,7 @@ public class Container
 		else if(serviceRequested == ServiceNames.LOG)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new Log();
 		else if(serviceRequested == ServiceNames.CONFIG)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new Config((Log)getService(ServiceNames.LOG));
+			instanciedServices[serviceRequested.ordinal()] = (Service)new Config();
 		else if(serviceRequested == ServiceNames.CAPTEURS)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new Capteurs((Log)getService(ServiceNames.LOG),
 																					(Config) getService(ServiceNames.CONFIG));

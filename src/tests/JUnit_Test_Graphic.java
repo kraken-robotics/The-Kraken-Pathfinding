@@ -181,8 +181,8 @@ public class JUnit_Test_Graphic extends JUnit_Test {
 	@Test
     public void test_obstacle_rectangulaire() throws Exception
     {
-		int largeur_robot = config.getInt(ConfigInfo.LARGEUR_ROBOT);
-		int longueur_robot = config.getInt(ConfigInfo.LONGUEUR_ROBOT);
+		int largeur_robot = config.getInt(ConfigInfo.LARGEUR_ROBOT_AXE_GAUCHE_DROITE);
+		int longueur_robot = config.getInt(ConfigInfo.LONGUEUR_ROBOT_AXE_AVANT_ARRIERE);
 		int marge = 10;
 		Vec2<ReadOnly> A = PathfindingNodes.CLAP_GAUCHE.getCoordonnees();
 		Vec2<ReadOnly> B = PathfindingNodes.HAUT_GAUCHE.getCoordonnees();
@@ -204,8 +204,8 @@ public class JUnit_Test_Graphic extends JUnit_Test {
 	@Test
     public void test_obstacle_pathfinding() throws Exception
     {
-		int largeur_robot = config.getInt(ConfigInfo.LARGEUR_ROBOT);
-		int longueur_robot = config.getInt(ConfigInfo.LONGUEUR_ROBOT);
+		int largeur_robot = config.getInt(ConfigInfo.LARGEUR_ROBOT_AXE_GAUCHE_DROITE);
+		int longueur_robot = config.getInt(ConfigInfo.LONGUEUR_ROBOT_AXE_AVANT_ARRIERE);
 		int marge = 10;
 		Vec2<ReadOnly> A = PathfindingNodes.CLAP_GAUCHE.getCoordonnees();
 		Vec2<ReadOnly> B = PathfindingNodes.HAUT_GAUCHE.getCoordonnees();

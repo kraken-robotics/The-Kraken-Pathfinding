@@ -1,6 +1,8 @@
 package utils;
 
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -138,18 +140,31 @@ public class Log implements Service
 		sauvegarde_fichier = config.getBoolean(ConfigInfo.SAUVEGARDE_FICHIER);
 		fastLog = config.getBoolean(ConfigInfo.FAST_LOG);
 		if(sauvegarde_fichier)
+		{
+			String heure = calendar.get(Calendar.HOUR_OF_DAY)+":"+calendar.get(Calendar.MINUTE)+":"+calendar.get(Calendar.SECOND);
+			String file = "logs/LOG-"+heure+".txt";
 			try {
-				String heure = calendar.get(Calendar.HOUR_OF_DAY)+":"+calendar.get(Calendar.MINUTE)+":"+calendar.get(Calendar.SECOND);
-				String file = "logs/LOG-"+heure+".txt";
 				writer = new FileWriter(file); 
 				debug("Un fichier de sauvegarde est utilisé: "+file);
 			}
-			catch(Exception e)
+			catch(FileNotFoundException e)
 			{
+				try {
+					Runtime.getRuntime().exec("mkdir logs");
+					Sleep.sleep(500);
+					writer = new FileWriter(file); 
+					debug("Un fichier de sauvegarde est utilisé: "+file);
+				} catch (IOException e1) {
+					e.printStackTrace();
+					critical("Erreur (1) lors de la création du fichier. Sauvegarde annulée.");
+					sauvegarde_fichier = false;
+				}
+			} catch (IOException e) {
 				e.printStackTrace();
-				critical("Erreur lors de la création du fichier. Sauvegarde annulée.");
+				critical("Erreur (2) lors de la création du fichier. Sauvegarde annulée.");
 				sauvegarde_fichier = false;
 			}
+		}
 		warning("Service de log démarré");
 	}
 

@@ -30,7 +30,7 @@ public class ObstacleManager implements Service
 {
     private Log log;
     private final Table table;
-    private Capteurs capteurs;
+    private final Capteurs capteurs;
     
     // Les obstacles mobiles, c'est-à-dire des obstacles de proximité et de balise
     // Comme ces obstacles ne peuvent que disparaître, on les retient tous et chaque instance aura un indice vers sur le premier obstacle non mort
@@ -130,10 +130,7 @@ public class ObstacleManager implements Service
 //        		log.debug("Destruction avec un retard de "+(System.currentTimeMillis()-listObstaclesMobiles.get(firstNotDead).getDeathDate()));
         }
         if(firstNotDeadOld != firstNotDead)
-        	synchronized(this)
-        	{
-        		notifyAll();
-        	}
+    		notifyAll();
     }  
     
     /**

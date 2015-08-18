@@ -8,6 +8,7 @@ import container.Service;
 
 /**
  * Thread d'informations stratégiques. Surveille ObstacleManager
+ * TODO : à virer ?
  * @author pf
  *
  */

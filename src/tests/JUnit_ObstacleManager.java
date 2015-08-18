@@ -63,15 +63,15 @@ public class JUnit_ObstacleManager extends JUnit_Test {
     @Test
     public void test_peremption() throws Exception
     {
-    	config.set(ConfigInfo.DUREE_PEREMPTION_OBSTACLES, 200); // 200 ms de péremption
+    	int peremption = config.getInt(ConfigInfo.DUREE_PEREMPTION_OBSTACLES);
     	
     	obstaclemanager.creerObstacle(new Vec2<ReadOnly>(0, 0), 0);
     	obstaclemanager.creerObstacle(new Vec2<ReadOnly>(500, 500), 0);
     	obstaclemanager.creerObstacle(new Vec2<ReadOnly>(0, 0), 0);
     	Assert.assertTrue(obstaclemanager.isObstacleMobilePresent(new Vec2<ReadOnly>(500, 500), 1));
-    	obstaclemanager.supprimerObstaclesPerimes(100); // pas encore périmé
+    	obstaclemanager.supprimerObstaclesPerimes(peremption-100); // pas encore périmé
     	Assert.assertTrue(obstaclemanager.isObstacleMobilePresent(new Vec2<ReadOnly>(500, 500), 1));
-    	obstaclemanager.supprimerObstaclesPerimes(300); // ce sera périmé à cette date 
+    	obstaclemanager.supprimerObstaclesPerimes(peremption+100); // ce sera périmé à cette date 
     	Assert.assertTrue(!obstaclemanager.isObstacleMobilePresent(new Vec2<ReadOnly>(500, 500), 1));
     }
     
@@ -97,8 +97,8 @@ public class JUnit_ObstacleManager extends JUnit_Test {
     @Test
     public void test_peremption_en_mouvement() throws Exception
     {
-    	config.set(ConfigInfo.DUREE_PEREMPTION_OBSTACLES, 500); // 200 ms de péremption
-    	obstaclemanager.creerObstacle(new Vec2<ReadOnly>(1200, 900), 0);
+    	int peremption = config.getInt(ConfigInfo.DUREE_PEREMPTION_OBSTACLES);
+    	obstaclemanager.creerObstacle(new Vec2<ReadOnly>(1200, 900), -peremption+200);
     	// Le temps qu'on y arrive, il devrait être périmé
     	Assert.assertTrue(!obstaclemanager.obstacleProximiteDansSegment(new Vec2<ReadOnly>(-1200, 100), new Vec2<ReadOnly>(1200, 900), 0));
     }

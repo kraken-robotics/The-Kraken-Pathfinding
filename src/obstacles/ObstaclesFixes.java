@@ -13,7 +13,7 @@ import utils.Vec2;
 public enum ObstaclesFixes {
 
 //    TEST(new ObstacleCircular(new Vec2<ReadOnly>(300,1400),200)),
-    TEST_RECT(new ObstacleRectangular(new Vec2<ReadOnly>(100,1200),600,300));
+    TEST_RECT(new ObstacleRectangular(new Vec2<ReadOnly>(100,1200),600,300)),
 /*
     // DEPENDS_ON_RULES
     PLASQUE_ROUGE(new ObstacleRectangular(new Vec2<ReadOnly>(0,100),800,200)), // plaque rouge
@@ -26,13 +26,13 @@ public enum ObstaclesFixes {
     DISTRIBUTEUR_2(new ObstacleRectangular(new Vec2<ReadOnly>(-900+50/2,2000-50/2),50,50)),
     DISTRIBUTEUR_3(new ObstacleRectangular(new Vec2<ReadOnly>(900-50/2,2000-50/2),50,50)),
     DISTRIBUTEUR_4(new ObstacleRectangular(new Vec2<ReadOnly>(1200-50/2,2000-50/2),50,50)),
-
+*/
     // bords
     BORD_BAS(new ObstacleRectangular(new Vec2<ReadOnly>(0,0),3000,0)),
     BORD_GAUCHE(new ObstacleRectangular(new Vec2<ReadOnly>(-1500,1000),0,2000)),
     BORD_DROITE(new ObstacleRectangular(new Vec2<ReadOnly>(1500,1000),0,2000)),
     BORD_HAUT(new ObstacleRectangular(new Vec2<ReadOnly>(0,2000),3000,0));
-*/
+
     private final Obstacle obstacle;
     public static final ObstaclesFixes[] values;
     

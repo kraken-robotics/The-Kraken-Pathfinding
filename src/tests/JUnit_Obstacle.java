@@ -20,7 +20,7 @@ public class JUnit_Obstacle extends JUnit_Test {
     @Test
     public void test_collision_cercle() throws Exception
     {
-    	ObstacleCircular<ReadOnly> o = new ObstacleCircular<ReadOnly>(new Vec2<ReadOnly>(0, 0), 30);
+    	ObstacleCircular o = new ObstacleCircular(new Vec2<ReadOnly>(0, 0), 30);
     	Assert.assertTrue(o.isInObstacle(new Vec2<ReadOnly>(10,10)));
     	Assert.assertTrue(!o.isInObstacle(new Vec2<ReadOnly>(22,22)));
     }
@@ -28,7 +28,7 @@ public class JUnit_Obstacle extends JUnit_Test {
     @Test
     public void test_collision_rectangle() throws Exception
     {
-    	ObstacleRectangular<ReadOnly> o = new ObstacleRectangular<ReadOnly>(new Vec2<ReadOnly>(0, 0), 30, 10, 0);
+    	ObstacleRectangular o = new ObstacleRectangular(new Vec2<ReadOnly>(0, 0), 30, 10, 0);
     	Assert.assertTrue(o.isInObstacle(new Vec2<ReadOnly>(13,-3)));
     	Assert.assertTrue(!o.isInObstacle(new Vec2<ReadOnly>(16,0)));
     	Assert.assertTrue(!o.isInObstacle(new Vec2<ReadOnly>(-16,0)));
@@ -39,7 +39,7 @@ public class JUnit_Obstacle extends JUnit_Test {
     @Test
     public void test_collision_cercle_distance() throws Exception
     {
-    	ObstacleCircular<ReadOnly> o = new ObstacleCircular<ReadOnly>(new Vec2<ReadOnly>(0, 0), 10);
+    	ObstacleCircular o = new ObstacleCircular(new Vec2<ReadOnly>(0, 0), 10);
     	Assert.assertTrue(o.isProcheObstacle(new Vec2<ReadOnly>(10,10), 20));
     	Assert.assertTrue(!o.isProcheObstacle(new Vec2<ReadOnly>(22,22), 20));
     }
@@ -47,7 +47,7 @@ public class JUnit_Obstacle extends JUnit_Test {
     @Test
     public void test_collision_rectangle_distance() throws Exception
     {
-    	ObstacleRectangular<ReadOnly> o = new ObstacleRectangular<ReadOnly>(new Vec2<ReadOnly>(0, 0), 25, 5);
+    	ObstacleRectangular o = new ObstacleRectangular(new Vec2<ReadOnly>(0, 0), 25, 5);
     	Assert.assertTrue(o.isProcheObstacle(new Vec2<ReadOnly>(13,-3),5));
     	Assert.assertTrue(!o.isProcheObstacle(new Vec2<ReadOnly>(20,0),5));
     	Assert.assertTrue(!o.isProcheObstacle(new Vec2<ReadOnly>(20,0),5));
@@ -69,7 +69,7 @@ public class JUnit_Obstacle extends JUnit_Test {
     @Test
     public void test_is_dans_obstacle_rectangle() throws Exception
     {
-    	ObstacleRectangular<ReadOnly> o = new ObstacleRectangular<ReadOnly>(new Vec2<ReadOnly>(0,0), 200, 200, Math.PI/8);
+    	ObstacleRectangular o = new ObstacleRectangular(new Vec2<ReadOnly>(0,0), 200, 200, Math.PI/8);
     	Assert.assertTrue(o.isInObstacle(new Vec2<ReadOnly>(0,0)));
     	Assert.assertTrue(o.isInObstacle(new Vec2<ReadOnly>(100,0)));
     	Assert.assertTrue(o.isInObstacle(new Vec2<ReadOnly>(0,-100)));
@@ -85,20 +85,20 @@ public class JUnit_Obstacle extends JUnit_Test {
     @Test
     public void test_collision_rectangles() throws Exception
     {
-    	ObstacleRectangular<ReadOnly> o = new ObstacleRectangular<ReadOnly>(new Vec2<ReadOnly>(1000,1000), 200, 200, Math.PI/8);
-    	Assert.assertTrue(!o.isColliding(new ObstacleRectangular<ReadOnly>(new Vec2<ReadOnly>(1200,1000), 10, 10, 0)));
-    	Assert.assertTrue(!o.isColliding(new ObstacleRectangular<ReadOnly>(new Vec2<ReadOnly>(800, 1000), 10, 10, 0)));
-    	Assert.assertTrue(!o.isColliding(new ObstacleRectangular<ReadOnly>(new Vec2<ReadOnly>(0, 1200), 10, 10, 0)));
-    	Assert.assertTrue(!o.isColliding(new ObstacleRectangular<ReadOnly>(new Vec2<ReadOnly>(0, 800), 10, 10, 0)));
-    	Assert.assertTrue(!o.isColliding(new ObstacleRectangular<ReadOnly>(new Vec2<ReadOnly>(900, 1100), 20, 20, 0)));
-    	Assert.assertTrue(!o.isColliding(new ObstacleRectangular<ReadOnly>(new Vec2<ReadOnly>(900, 1100), 40, 40, 0)));
-    	Assert.assertTrue(o.isColliding(new ObstacleRectangular<ReadOnly>(new Vec2<ReadOnly>(900, 1100), 60, 60, 0)));
+    	ObstacleRectangular o = new ObstacleRectangular(new Vec2<ReadOnly>(1000,1000), 200, 200, Math.PI/8);
+    	Assert.assertTrue(!o.isColliding(new ObstacleRectangular(new Vec2<ReadOnly>(1200,1000), 10, 10, 0)));
+    	Assert.assertTrue(!o.isColliding(new ObstacleRectangular(new Vec2<ReadOnly>(800, 1000), 10, 10, 0)));
+    	Assert.assertTrue(!o.isColliding(new ObstacleRectangular(new Vec2<ReadOnly>(0, 1200), 10, 10, 0)));
+    	Assert.assertTrue(!o.isColliding(new ObstacleRectangular(new Vec2<ReadOnly>(0, 800), 10, 10, 0)));
+    	Assert.assertTrue(!o.isColliding(new ObstacleRectangular(new Vec2<ReadOnly>(900, 1100), 20, 20, 0)));
+    	Assert.assertTrue(!o.isColliding(new ObstacleRectangular(new Vec2<ReadOnly>(900, 1100), 40, 40, 0)));
+    	Assert.assertTrue(o.isColliding(new ObstacleRectangular(new Vec2<ReadOnly>(900, 1100), 60, 60, 0)));
     }
 
     @Test
     public void test_collision_robot_bord() throws Exception
     {
-    	ObstacleRectangular<ReadOnly> o = new ObstacleRectangular<ReadOnly>(new Vec2<ReadOnly>(1320, 250), 250, 360, Math.PI/6);
+    	ObstacleRectangular o = new ObstacleRectangular(new Vec2<ReadOnly>(1320, 250), 250, 360, Math.PI/6);
     	Assert.assertTrue(o.isColliding(ObstaclesFixes.BORD_DROITE.getObstacle()));
     }
 

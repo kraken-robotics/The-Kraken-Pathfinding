@@ -30,8 +30,8 @@ public abstract class Obstacle
 	
 	public static void useConfig(Config config)
 	{
-		largeurRobot = config.getInt(ConfigInfo.LARGEUR_ROBOT);
-		longueurRobot = config.getInt(ConfigInfo.LONGUEUR_ROBOT);
+		largeurRobot = config.getInt(ConfigInfo.LARGEUR_ROBOT_AXE_GAUCHE_DROITE);
+		longueurRobot = config.getInt(ConfigInfo.LONGUEUR_ROBOT_AXE_AVANT_ARRIERE);
 		rayonRobot = config.getInt(ConfigInfo.RAYON_ROBOT);
 		marge = config.getInt(ConfigInfo.MARGE);
 		anglePas = Math.PI-2*Math.atan2(largeurRobot, longueurRobot);

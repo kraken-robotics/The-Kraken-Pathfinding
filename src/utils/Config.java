@@ -24,30 +24,29 @@ public class Config implements Service
 	private Log log;
 	
 	private boolean needUpdate = false;
+	private boolean configIniCharge = false;
 	
-	public Config(Log log)
+	public Config()
 	{
-		this.log = log;
-
 		try
 		{
 			properties.load(new FileInputStream(path+name_config_file));
+			configIniCharge = true;
 		}
 		catch  (IOException e)
 		{
-			log.critical("Erreur lors de l'ouverture de config.ini. Utilisation des valeurs par défaut.");
+			System.out.println("Erreur lors de l'ouverture de config.ini. Utilisation des valeurs par défaut.");
 		}
-		
+		completeConfig();
 	}
 
 	/**
 	 * A appeler après l'ouverture du log.
 	 */
-	public void init()
+	public void init(Log log)
 	{
-		completeConfig();
-		if(getBoolean(ConfigInfo.AFFICHE_DEBUG))
-			afficheTout();
+		this.log = log;
+		afficheTout();
 	}
 	
 	/**
@@ -136,7 +135,7 @@ public class Config implements Service
 	{
 		log.debug("Configuration initiale");
 		for(ConfigInfo info: ConfigInfo.values())
-			log.debug(info+" = "+getString(info));
+			log.warning(info+" = "+getString(info));
 	}
 	
 	/**
@@ -144,29 +143,37 @@ public class Config implements Service
 	 */
 	private void completeConfig()
 	{
-		for(ConfigInfo info: ConfigInfo.values())
+		if(configIniCharge)
 		{
-			if(!properties.containsKey(info.toString()))
-				properties.setProperty(info.toString(), info.getDefaultValue());
-			else
-				log.debug(info+" surchargé par config.ini");
-		}
-		for(String cle: properties.stringPropertyNames())
-		{
-			if(cle.contains("#"))
-			{
-				properties.remove(cle);
-				continue;
-			}
-			boolean found = false;
 			for(ConfigInfo info: ConfigInfo.values())
-				if(info.toString().compareTo(cle) == 0)
+			{
+				if(!properties.containsKey(info.toString()))
+					properties.setProperty(info.toString(), info.getDefaultValue());
+				else
+					System.out.println(info+" surchargé par config.ini");
+			}
+			for(String cle: properties.stringPropertyNames())
+			{
+				if(cle.contains("#"))
 				{
-					found = true;
-					break;
+					properties.remove(cle);
+					continue;
 				}
-			if(!found)
-				log.warning(cle+" inutilisé. Veuillez le retirer de config.ini");
+				boolean found = false;
+				for(ConfigInfo info: ConfigInfo.values())
+					if(info.toString().compareTo(cle) == 0)
+					{
+						found = true;
+						break;
+					}
+				if(!found)
+					System.out.println(cle+" inutilisé. Veuillez le retirer de config.ini");
+			}
+		}
+		else
+		{
+			for(ConfigInfo info: ConfigInfo.values())
+				properties.setProperty(info.toString(), info.getDefaultValue());
 		}
 	}
 		

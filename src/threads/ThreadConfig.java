@@ -30,12 +30,8 @@ public class ThreadConfig extends Thread implements Service {
 	{
 		while(true)
 		{
- //			if(Config.debugMutex)
-//				log.debug("Tentative de récupération du mutex de config");
 			synchronized(config)
 			{
-//				if(Config.debugMutex)
-//					log.debug("Mutex de config récupéré");
 				try {
 					config.wait();
 				} catch (InterruptedException e) {
@@ -43,10 +39,8 @@ public class ThreadConfig extends Thread implements Service {
 					e.printStackTrace();
 				}
 			}
-//			if(Config.debugMutex)
-//				log.debug("Mutex de config libéré");
 
-			log.debug("Réveil de ThreadConfig");	
+//			log.debug("Réveil de ThreadConfig");	
 			
 			for(ServiceNames name: ServiceNames.values())
 			{

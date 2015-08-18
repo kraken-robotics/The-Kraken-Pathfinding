@@ -35,11 +35,15 @@ public class Table implements Service
 	 */
 	public synchronized void setDone(GameElementNames id, Tribool done)
 	{
+		long old_hash = hash;
 		hash |= (done.getHash() << (2*id.ordinal()));
-		synchronized(notifieur)
-		{
-			notifieur.notifyAll();
-		}
+		
+		// Si besoin est, on dit à la stratégie que la table a été modifiée
+		if(old_hash != hash)
+			synchronized(notifieur)
+			{
+				notifieur.notify();
+			}
 	}
 
 	/**
@@ -128,9 +132,11 @@ public class Table implements Service
 		for(GameElementNames g: GameElementNames.values)
 		{
 			long etat = (hash >> 2*g.ordinal()) % 4;
-			for(Tribool t: Tribool.values())
-				if(etat == t.getHash())
-					log.debug(g+": "+t);
+			log.debug(g+" : "+Tribool.parse((int)etat));
+			
+//			for(Tribool t: Tribool.values())
+//				if(etat == t.getHash())
+//					log.debug(g+": "+t);
 		}
 	}
 

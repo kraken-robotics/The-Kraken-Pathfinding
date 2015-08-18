@@ -35,5 +35,5 @@ public enum Tribool {
 	{
 		return reversed[hash];
 	}
-	
+
 }

@@ -144,12 +144,12 @@ public class Capteurs implements Service {
 			coupleCapteurs[i][2] = (int)positionsRelatives[coupleCapteurs[i][0]].distance(positionsRelatives[coupleCapteurs[i][1]]);
 //		log.debug("distance: "+coupleCapteurs[0][2]);
 
-		config.set(ConfigInfo.NB_CAPTEURS_PROXIMITE, nbCapteurs);
-		config.set(ConfigInfo.NB_COUPLES_CAPTEURS_PROXIMITE, nbCouples);
+ //		config.set(ConfigInfo.NB_CAPTEURS_PROXIMITE, nbCapteurs);
+//		config.set(ConfigInfo.NB_COUPLES_CAPTEURS_PROXIMITE, nbCouples);
 
 		// Pour test
-		config.set(ConfigInfo.NB_CAPTEURS_PROXIMITE, 8);
-		config.set(ConfigInfo.NB_COUPLES_CAPTEURS_PROXIMITE, 4);
+//		config.set(ConfigInfo.NB_CAPTEURS_PROXIMITE, 8);
+//		config.set(ConfigInfo.NB_COUPLES_CAPTEURS_PROXIMITE, 4);
 
 	}
 	

@@ -21,3 +21,22 @@ désactiver asservissement (rotation et translation)
     nas
 activer asservissement (rotation et translation)
     oas
+
+
+STM vers Java
+le robot est arrivé à destination
+    arv
+un hook a été appelé
+    hk id [param]
+le match est fini
+    end
+le match commence
+    go
+la couleur du robot
+    color couleur
+infos des capteurs
+    cpt x_robot y_robot orientation_robot portion_du_chemin mesure1 [mesure2 …]
+un actionneur a un problème
+    acpb
+un actionneur a fini son mouvement
+    acok
