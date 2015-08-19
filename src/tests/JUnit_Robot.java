@@ -72,6 +72,13 @@ public class JUnit_Robot extends JUnit_Test
     }
 
     @Test
+    public void test_chrono() throws Exception
+    {
+    	robotchrono.avancer(100);
+    }
+    
+    
+    @Test
     public void test_symetrie_robot_chrono() throws Exception
     {
     	for(int i = 0; i < 2; i++)

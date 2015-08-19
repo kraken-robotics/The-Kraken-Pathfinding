@@ -1,7 +1,6 @@
 package serial;
 
 import exceptions.FinMatchException;
-import exceptions.SerialConnexionException;
 import gnu.io.CommPortIdentifier;
 import gnu.io.PortInUseException;
 import gnu.io.SerialPort;

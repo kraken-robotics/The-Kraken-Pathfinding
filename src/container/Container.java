@@ -13,8 +13,6 @@ import hook.HookFactory;
 import exceptions.ContainerException;
 import exceptions.FinMatchException;
 import exceptions.PointSortieException;
-import exceptions.SerialConnexionException;
-import exceptions.ThreadException;
 import utils.*;
 import scripts.ScriptManager;
 import serial.SerialConnexion;
@@ -154,7 +152,7 @@ public class Container
 	 * @throws FinMatchException
 	 * @throws PointSortieException
 	 */
-	public Service getService(ServiceNames serviceRequested) throws ContainerException, ThreadException, SerialConnexionException, FinMatchException, PointSortieException
+	public Service getService(ServiceNames serviceRequested) throws ContainerException, FinMatchException, PointSortieException
 	{
     	// instancie le service demandé lors de son premier appel 
     	boolean updateConfig = true;

@@ -9,14 +9,11 @@ import planification.astar.arc.PathfindingNodes;
 import hook.Hook;
 import utils.Log;
 import utils.Vec2;
-import exceptions.ChangeDirectionException;
 import exceptions.FinMatchException;
-import exceptions.ScriptHookException;
-import exceptions.WallCollisionDetectedException;
 
 /**
  * Robot particulier qui fait pas bouger le robot réel, mais détermine la durée des actions
- * @author pf et marsu !
+ * @author pf
  */
 
 public class RobotChrono extends Robot
@@ -270,18 +267,7 @@ public class RobotChrono extends Robot
 	{
 		for(Hook hook: hooks)
 			if(hook.simulated_evaluate(pointA, pointB, date))
-				try {
-					hook.trigger();
-				} catch (ScriptHookException e) {
-					// Impossible qu'en simulation on ait des scripts de hooks
-					e.printStackTrace();
-				} catch (WallCollisionDetectedException e) {
-					// Impossible
-					e.printStackTrace();
-				} catch (ChangeDirectionException e) {
-					// Impossible
-					e.printStackTrace();
-				}
+				hook.trigger();
 		
 		// vérification de la fin de la recherche
 		if(tempsMax < date)

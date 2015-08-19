@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import permissions.ReadOnly;
 import permissions.ReadWrite;
-import exceptions.ChangeDirectionException;
 import exceptions.FinMatchException;
 import exceptions.ScriptHookException;
 import exceptions.WallCollisionDetectedException;
@@ -70,7 +69,7 @@ abstract public class Hook
 	 * @throws WallCollisionDetectedException 
 	 * @throws ChangeDirectionException 
 	 */
-	public void trigger() throws FinMatchException, ScriptHookException, WallCollisionDetectedException, ChangeDirectionException
+	public void trigger()
 	{
 		for(Callback callback : callbacks)
 			callback.call();

@@ -5,10 +5,6 @@ import java.util.ArrayList;
 import permissions.ReadWrite;
 import robot.RobotChrono;
 import strategie.GameState;
-import exceptions.ChangeDirectionException;
-import exceptions.FinMatchException;
-import exceptions.ScriptHookException;
-import exceptions.WallCollisionDetectedException;
 
 /**
  * Interface utilisée pour passer des méthodes à Callback.
@@ -23,11 +19,8 @@ public interface Executable
 
 	/**
 	 * La méthode qui sera exécutée par le hook
-	 * @throws ScriptHookException 
-	 * @throws WallCollisionDetectedException 
-	 * @throws ChangeDirectionException 
 	 */
-	public void execute() throws FinMatchException, ScriptHookException, WallCollisionDetectedException, ChangeDirectionException;
+	public void execute();
 
 	/**
 	 * Cette mise à jour conserve surtout les Executables susceptibles d'être utilisés

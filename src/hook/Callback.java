@@ -5,10 +5,6 @@ import java.util.ArrayList;
 import permissions.ReadWrite;
 import robot.RobotChrono;
 import strategie.GameState;
-import exceptions.ChangeDirectionException;
-import exceptions.FinMatchException;
-import exceptions.ScriptHookException;
-import exceptions.WallCollisionDetectedException;
 
 /**
  * Classe de callback. Contient la fonction et ses arguments à appeler.
@@ -51,12 +47,8 @@ public class Callback
 	/**
 	 * Le callback appelle la méthode, si elle n'est pas unique ou si elle n'est pas déjà faite
 	 * @return vrai si le robot a été déplacé/ tourné, faux sinon
-	 * @throws FinMatchException 
-	 * @throws ScriptHookException 
-	 * @throws WallCollisionDetectedException 
-	 * @throws ChangeDirectionException 
 	 */
-	public void call() throws FinMatchException, ScriptHookException, WallCollisionDetectedException, ChangeDirectionException
+	public void call()
 	{
 		if(!isDone)
 //		if(!(shouldBeDeleted()))

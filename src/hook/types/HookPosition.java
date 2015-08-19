@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import obstacles.ObstacleCircular;
 import permissions.ReadOnly;
-import exceptions.ChangeDirectionException;
 import exceptions.ScriptHookException;
 import exceptions.WallCollisionDetectedException;
 import hook.Hook;
