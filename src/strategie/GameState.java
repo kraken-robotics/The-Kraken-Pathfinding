@@ -208,7 +208,7 @@ public class GameState<R extends Robot, T extends Permission> implements Service
 		sleepUntil(state, date_fin);
 	}
 
-	public static final void stopper(GameState<? extends Robot, ReadWrite> state) throws FinMatchException
+	public static final void stopper(GameState<? extends Robot, ReadWrite> state)
 	{
 		state.robot.stopper();
 	}
@@ -228,22 +228,22 @@ public class GameState<R extends Robot, T extends Permission> implements Service
     	state.robot.suit_chemin(chemin, hooks);
     }
     
-	public static final void set_vitesse(GameState<? extends Robot, ReadWrite> state, Speed vitesse) throws FinMatchException
+	public static final void setVitesse(GameState<? extends Robot, ReadWrite> state, Speed vitesse)
 	{
 		state.robot.setVitesse(vitesse);
 	}
 	
-	public static final void setPositionOrientationSTM(GameState<? extends Robot, ReadWrite> state, Vec2<ReadOnly> position, double orientation) throws FinMatchException
+	public static final void setPositionOrientationSTM(GameState<? extends Robot, ReadWrite> state, Vec2<ReadOnly> position, double orientation)
 	{
 		state.robot.setPositionOrientationSTM(position, orientation);
 	}
 	
-    public static final Vec2<ReadOnly> getPosition(GameState<? extends Robot, ReadOnly> state) throws FinMatchException
+    public static final Vec2<ReadOnly> getPosition(GameState<? extends Robot, ReadOnly> state)
     {
     	return state.robot.getPosition();
     }
     
-    public static final double getOrientation(GameState<? extends Robot, ReadOnly> state) throws FinMatchException
+    public static final double getOrientation(GameState<? extends Robot, ReadOnly> state)
     {
     	return state.robot.getOrientation();
     }
@@ -273,7 +273,7 @@ public class GameState<R extends Robot, T extends Permission> implements Service
     	return state.robot.getTempsDepuisDebutMatch();
     }
     
-    public static final RobotChrono cloneIntoRobotChrono(GameState<? extends Robot, ReadOnly> state) throws FinMatchException
+    public static final RobotChrono cloneIntoRobotChrono(GameState<? extends Robot, ReadOnly> state)
     {
     	return state.robot.cloneIntoRobotChrono();
     }

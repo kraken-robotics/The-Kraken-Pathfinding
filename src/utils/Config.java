@@ -20,7 +20,7 @@ public class Config implements Service
 	public static final String path = "./config/";
 
 	private String name_config_file = "config.ini";
-	private Properties properties = new Properties();
+	private volatile Properties properties = new Properties();
 	private Log log;
 	
 	private boolean needUpdate = false;
