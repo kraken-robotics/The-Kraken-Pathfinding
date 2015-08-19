@@ -7,12 +7,15 @@ import permissions.ReadOnly;
 import requete.RequeteSTM;
 import requete.RequeteType;
 import serial.SerialConnexion;
+import table.GameElementNames;
+import table.Table;
 import utils.Config;
 import utils.ConfigInfo;
 import utils.Log;
 import utils.Vec2;
 import container.Service;
 import enums.RobotColor;
+import enums.Tribool;
 
 /**
  * Thread qui écoute la série et appelle qui il faut.
@@ -27,12 +30,13 @@ public class ThreadSerialInput extends Thread implements Service
 	private SerialConnexion serie;
 	private IncomingDataBuffer buffer;
 	private IncomingHookBuffer hookbuffer;
+	private Table table;
 	
 	private RequeteSTM requete;
 	private boolean capteursOn = false;
 	private int nbCapteurs;
 	
-	public ThreadSerialInput(Log log, Config config, SerialConnexion serie, IncomingDataBuffer buffer, IncomingHookBuffer hookbuffer, RequeteSTM requete)
+	public ThreadSerialInput(Log log, Config config, SerialConnexion serie, IncomingDataBuffer buffer, IncomingHookBuffer hookbuffer, RequeteSTM requete, Table table)
 	{
 		this.log = log;
 		this.config = config;
@@ -40,6 +44,7 @@ public class ThreadSerialInput extends Thread implements Service
 		this.buffer = buffer;
 		this.hookbuffer = hookbuffer;
 		this.requete = requete;
+		this.table = table;
 	}
 
 	@Override
@@ -122,11 +127,11 @@ public class ThreadSerialInput extends Thread implements Service
 							break;
 
 							/**
-							 * Un hook a été appelé
+							 * Un élément a été shooté
 							 */
-						case "hk":
-							// TODO: l'exécuter aussi (mise à jour table, robot, etc).
-							hookbuffer.add(null);
+						case "tbl":
+							int nbElement = Integer.parseInt(serie.read());
+							table.setDone(GameElementNames.values()[nbElement], Tribool.TRUE);
 							break;
 							
 							/**

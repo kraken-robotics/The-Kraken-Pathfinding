@@ -9,19 +9,19 @@ import utils.Vec2;
 import hook.Hook;
 
 /**
- * Hook déclenché sur une date
+ * Hook déclenché par un capteur de contact
  * @author pf
  *
  */
 
-public class HookDate extends Hook {
+public class HookContact extends Hook {
 
-	protected long date_hook;
+	private int nbCapteur;
 	
-	public HookDate(Log log, GameState<?,ReadOnly> state, long date)
+	public HookContact(Log log, GameState<?, ReadOnly> state, int nbCapteur)
 	{
 		super(log, state);
-		this.date_hook = date;
+		this.nbCapteur = nbCapteur;
 	}
 
 /*	@Override
@@ -30,11 +30,13 @@ public class HookDate extends Hook {
 			trigger();
 	}*/
 
+	/**
+	 * Ce hook n'est pas simulable
+	 */
 	@Override
 	public boolean simulated_evaluate(Vec2<ReadOnly> pointA, Vec2<ReadOnly> pointB, long date)
 	{
-//		log.debug("Hook date: appel="+date_appel+", date_hook="+this.date_hook, this);
-		return date > this.date_hook;
+		return false;
 	}
 
 	@Override
@@ -42,7 +44,7 @@ public class HookDate extends Hook {
 	{
 		ArrayList<String> out = new ArrayList<String>();
 		out.add("hda");
-		out.add(String.valueOf(date_hook));
+		out.add(String.valueOf(nbCapteur));
 		out.addAll(super.toSerial());
 		return out;
 	}

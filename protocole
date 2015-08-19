@@ -46,3 +46,30 @@ un actionneur a fini son mouvement
     tbl nb_elem
 demande d'exécution de hook de script
     dhk nb_hook
+
+
+Envoi de hook du Java à la STM
+
+Hook de date
+    hda date
+Hook de position
+    hpo x y tolerance
+Hook de demi-plan
+    hdp x_point y_point x_direction y_direction
+Hook de contact
+    hct nb_capteur
+
+Puis le nombre de callback, puis ses callbacks
+Un callback
+    est_unique methode
+
+Une méthode
+    tbl nb_element
+ou
+    scr nb_script
+ou
+    act ordre_act
+
+Exemple complet: un hook de position qui dit qu'un élément a été shooté
+    hpo 20 1300 5 1 true tbl 18
+

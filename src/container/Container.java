@@ -272,7 +272,8 @@ public class Container
 																		(SerialConnexion)getService(ServiceNames.SERIE_STM),
 																		(IncomingDataBuffer)getService(ServiceNames.INCOMING_DATA_BUFFER),
 																		(IncomingHookBuffer)getService(ServiceNames.INCOMING_HOOK_BUFFER),
-																		(RequeteSTM)getService(ServiceNames.REQUETE_STM));
+																		(RequeteSTM)getService(ServiceNames.REQUETE_STM),
+																		(Table)getService(ServiceNames.TABLE));
 		else if(serviceRequested == ServiceNames.REQUETE_STM)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new RequeteSTM((Log)getService(ServiceNames.LOG));
 		else if(serviceRequested == ServiceNames.THREAD_SERIAL_OUTPUT)

@@ -124,7 +124,14 @@ abstract public class Hook
 	 * Contient la commande à envoyer par série
 	 * @return
 	 */
-	public abstract ArrayList<String> toSerial();
+	public ArrayList<String> toSerial()
+	{
+		ArrayList<String> out = new ArrayList<String>();
+		out.add(String.valueOf(callbacks.size()));
+		for(Callback c : callbacks)
+			out.addAll(c.toSerial());
+		return out;
+	}
 
 }
 

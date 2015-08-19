@@ -59,12 +59,19 @@ public class HookCollisionElementJeu extends Hook
 			trigger();
 	}*/
 
+	/**
+	 * Dans la STM, c'est géré comme un hook de position
+	 */
 	@Override
 	public ArrayList<String> toSerial()
 	{
+		// TODO: ajuster le dernier argument
 		ArrayList<String> out = new ArrayList<String>();
-		out.add("co");
-		// TODO: ajouter numéro de l'élément de jeu
+		out.add("hpo");
+		out.add(String.valueOf(obstacle.position.x));
+		out.add(String.valueOf(obstacle.position.y));
+		out.add(String.valueOf(obstacle.getRadius()));
+		out.addAll(super.toSerial());
 		return out;
 	}	
 }

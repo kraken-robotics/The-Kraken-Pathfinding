@@ -75,9 +75,11 @@ public class HookPosition extends Hook
 	public ArrayList<String> toSerial()
 	{
 		ArrayList<String> out = new ArrayList<String>();
-		out.add("po");
+		out.add("hpo");
 		out.add(String.valueOf(position.x));
 		out.add(String.valueOf(position.y));
+		out.add(String.valueOf(tolerancy));
+		out.addAll(super.toSerial());
 		return out;
 	}
 }

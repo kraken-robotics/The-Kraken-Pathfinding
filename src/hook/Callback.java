@@ -1,5 +1,7 @@
 package hook;
 
+import java.util.ArrayList;
+
 import permissions.ReadWrite;
 import robot.RobotChrono;
 import strategie.GameState;
@@ -75,5 +77,13 @@ public class Callback
 	public void updateGameState(GameState<RobotChrono,ReadWrite> state)
 	{
 		method.updateGameState(state);
+	}
+
+	public ArrayList<String> toSerial()
+	{
+		ArrayList<String> out = new ArrayList<String>();
+		out.add(String.valueOf(isUnique));
+		out.addAll(method.toSerial());
+		return out;
 	}
 }

@@ -1,5 +1,7 @@
 package hook;
 
+import java.util.ArrayList;
+
 import permissions.ReadWrite;
 import robot.RobotChrono;
 import strategie.GameState;
@@ -37,4 +39,10 @@ public interface Executable
 	 */
 	public void updateGameState(GameState<RobotChrono,ReadWrite> state);
 	
+	/**
+	 * Afin de l'envoyer par série
+	 * @return
+	 */
+	public ArrayList<String> toSerial();
+
 }

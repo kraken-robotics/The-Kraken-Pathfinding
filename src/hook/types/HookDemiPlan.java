@@ -90,11 +90,12 @@ public class HookDemiPlan extends Hook
 	public ArrayList<String> toSerial()
 	{
 		ArrayList<String> out = new ArrayList<String>();
-		out.add("dp");
+		out.add("hdp");
 		out.add(String.valueOf(point.x));
 		out.add(String.valueOf(point.y));
 		out.add(String.valueOf(direction.x));
 		out.add(String.valueOf(direction.y));
+		out.addAll(super.toSerial());
 		return out;
 	}
 	

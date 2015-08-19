@@ -1,5 +1,7 @@
 package hook.methods;
 
+import java.util.ArrayList;
+
 import permissions.ReadWrite;
 import robot.RobotChrono;
 import strategie.GameState;
@@ -15,12 +17,11 @@ import hook.Executable;
 
 public class GameElementDone implements Executable
 {
-
-	private GameState<?, ReadWrite> state;
+	private GameState<RobotChrono, ReadWrite> state;
 	private Tribool done;
 	private GameElementNames element;
 	
-	public GameElementDone(GameState<?, ReadWrite> state, GameElementNames element, Tribool done)
+	public GameElementDone(GameState<RobotChrono, ReadWrite> state, GameElementNames element, Tribool done)
 	{
 		this.state = state;
 		this.done = done;
@@ -43,5 +44,15 @@ public class GameElementDone implements Executable
 	{
 		this.state = state;
 	}
+	
+	@Override
+	public ArrayList<String> toSerial()
+	{
+		ArrayList<String> out = new ArrayList<String>();
+		out.add("tbl");
+		out.add(String.valueOf(element.ordinal()));
+		return out;
+	}
+
 
 }

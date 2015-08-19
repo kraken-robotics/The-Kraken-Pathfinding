@@ -12,7 +12,6 @@ import utils.Log;
 
 public class HookDateFinMatch extends HookDate
 {
-	
 	private int dureeMatch = 90000; // TODO: utiliser la config
 
 	public HookDateFinMatch(Log log, GameState<?,ReadOnly> state, long date)
