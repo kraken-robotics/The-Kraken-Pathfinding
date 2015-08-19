@@ -2,6 +2,7 @@ package strategie;
 
 import java.util.ArrayList;
 
+import buffer.DataForSerialOutput;
 import permissions.Permission;
 import permissions.ReadOnly;
 import permissions.ReadWrite;
@@ -13,7 +14,6 @@ import robot.RobotReal;
 import robot.Speed;
 import hook.Hook;
 import hook.HookFactory;
-import hook.types.HookDemiPlan;
 import container.Service;
 import enums.Tribool;
 import exceptions.FinMatchException;
@@ -40,9 +40,6 @@ public class GameState<R extends Robot, T extends Permission> implements Service
     private final R robot;
     private final GridSpace gridspace;
     
-    // La hook factory est privée. Elle n'est pas copiée d'un gamestate à l'autre.
-    private HookFactory hookfactory;
-    
     private int indice_memory_manager;
     
     private Log log;
@@ -56,17 +53,19 @@ public class GameState<R extends Robot, T extends Permission> implements Service
      * @param robot
      * @return
      */
-    public static GameState<RobotReal,ReadWrite> constructRealGameState(Log log, GridSpace gridspace, RobotReal robot, HookFactory hookfactory)
+    public static GameState<RobotReal,ReadWrite> constructRealGameState(Log log, GridSpace gridspace, RobotReal robot, HookFactory hookfactory, DataForSerialOutput serie)
     {
-    	return new GameState<RobotReal,ReadWrite>(log, gridspace, robot, hookfactory);
+		GameState<RobotReal,ReadWrite> out = new GameState<RobotReal,ReadWrite>(log, gridspace, robot);
+		serie.envoieHooks(hookfactory.getHooksPermanents(out));
+		return out;
     }
     
-    private GameState(Log log, GridSpace gridspace, R robot, HookFactory hookfactory)
+    private GameState(Log log, GridSpace gridspace, R robot)
     {
         this.log = log;
         this.gridspace = gridspace;
         this.robot = robot;
-        this.hookfactory = hookfactory;
+
 /*        if(robot instanceof RobotReal)
         {
         	robot.setHookFinMatch(hookfactory.getHooksFinMatchReal(getReadOnly()));
@@ -92,7 +91,7 @@ public class GameState<R extends Robot, T extends Permission> implements Service
 	public static final GameState<RobotChrono,ReadWrite> cloneGameState(GameState<? extends Robot,ReadOnly> state, int indice_memory_manager)
 	{
 		// On instancie la table avant car il faut donner le même objet deux fois en paramètres
-		GameState<RobotChrono,ReadWrite> cloned = new GameState<RobotChrono,ReadWrite>(state.log, state.gridspace.clone(GameState.getTempsDepuisDebut(state)), state.robot.cloneIntoRobotChrono(), state.hookfactory);
+		GameState<RobotChrono,ReadWrite> cloned = new GameState<RobotChrono,ReadWrite>(state.log, state.gridspace.clone(GameState.getTempsDepuisDebut(state)), state.robot.cloneIntoRobotChrono());
 		GameState.copy(state, cloned);
 		cloned.indice_memory_manager = indice_memory_manager;
 		return cloned;

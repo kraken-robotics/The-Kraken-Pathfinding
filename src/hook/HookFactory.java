@@ -6,14 +6,13 @@ import permissions.ReadOnly;
 import permissions.ReadWrite;
 import hook.methods.GameElementDone;
 import hook.methods.ThrowScriptRequest;
-import hook.types.HookCollisionElementJeu;
 import hook.types.HookDate;
 import hook.types.HookDateFinMatch;
+import hook.types.HookPosition;
 import container.Service;
 import enums.Tribool;
 import exceptions.FinMatchException;
 import robot.RobotChrono;
-import robot.RobotReal;
 import scripts.ScriptHookNames;
 import strategie.GameState;
 import table.GameElementNames;
@@ -24,7 +23,7 @@ import utils.Config;
 /**
  * Service fabriquant des hooks à la demande.
  * Les hooks sont soit simulés dans RobotChrono, soit envoyés à la STM
- * @author pf, marsu
+ * @author pf
  *
  */
 
@@ -41,12 +40,10 @@ public class HookFactory implements Service
 	// TODO: créer hooks_table_chrono dès la construction, et maintenir un numéro pour chaque hook
 	
 	/**
-	 *  appellé uniquement par Container.
+	 *  appelé uniquement par Container.
 	 *  Initialise la factory
 	 * 
-	 * @param config fichier de config du match
-	 * @param log système de d log
-	 * @param realState état du jeu
+	 * @param log système de log
 	 */
 	public HookFactory(Log log)
 	{
@@ -71,10 +68,13 @@ public class HookFactory implements Service
      * @param date_limite
      * @return
      */
-    public HookDateFinMatch getHooksFinMatchChrono(GameState<?,ReadOnly> state)
+    private HookDateFinMatch getHooksFinMatchChrono(GameState<RobotChrono,ReadOnly> state)
     {
     	if(hook_fin_match_chrono == null)
-    		hook_fin_match_chrono = getHooksFinMatch(state, true);
+    	{
+        	hook_fin_match_chrono = new HookDateFinMatch(log, state, dureeMatch);
+        	hook_fin_match_chrono.ajouter_callback(new Callback(new ThrowScriptRequest(ScriptHookNames.FUNNY_ACTION, 0)));
+    	}
     	return hook_fin_match_chrono;
     }
 
@@ -86,8 +86,8 @@ public class HookFactory implements Service
      */
     public HookDateFinMatch updateHooksFinMatch(GameState<RobotChrono,ReadWrite> state, int date_limite)
     {
-    	if(hook_fin_match_chrono == null)
-    		hook_fin_match_chrono = getHooksFinMatch(state.getReadOnly(), true);
+    	// On construit le hook s'il n'existe pas déjà
+    	getHooksFinMatchChrono(state.getReadOnly());
     	
     	/**
     	 * Mise à jour de la date limite
@@ -95,32 +95,7 @@ public class HookFactory implements Service
     	 * FinMatchCheck n'en utilise pas.
     	 */
 		((HookDateFinMatch)hook_fin_match_chrono).updateDate(date_limite);
-	    	return hook_fin_match_chrono;
-    }
-
-    /**
-     * Fournit le hook de fin de match au gamestate
-     * @param state
-     * @return
-     */
-    public HookDateFinMatch getHooksFinMatchReal(GameState<?,ReadOnly> state)
-    {
-    	return getHooksFinMatch(state, false);
-    }
-
-    /**
-     * Création du hook qui vérifie la fin du match
-     * Ce hook est destiné à être utilisé pendant le script
-     * @param state
-     * @param isChrono
-     * @return
-     */
-    private HookDateFinMatch getHooksFinMatch(GameState<?,ReadOnly> state, boolean isChrono)
-    {
-    	HookDateFinMatch hook_fin_match = new HookDateFinMatch(log, state, dureeMatch);
-    	hook_fin_match.ajouter_callback(new Callback(new ThrowScriptRequest(ScriptHookNames.FUNNY_ACTION, 0)));
-
-    	return hook_fin_match;
+	    return hook_fin_match_chrono;
     }
 
     /**
@@ -132,7 +107,7 @@ public class HookFactory implements Service
     public ArrayList<Hook> getHooksEntreScriptsChrono(GameState<RobotChrono,ReadWrite> state, int date_limite) throws FinMatchException
     {
     	if(hooks_table_chrono == null)
-    		hooks_table_chrono = getHooksEntreScriptsReal(state, true);
+    		hooks_table_chrono = getHooksPermanents(state);
 
     	// on met à jour dans les hooks les références (gridspace, robot, ...)
 		// C'est bien plus rapide que de créer de nouveaux hooks
@@ -146,24 +121,19 @@ public class HookFactory implements Service
     }
     
     /**
-     * Donne les hooks des éléments de jeux à un real gamestate
+     * Donne les hooks valables pendant tout le match à un gamestate
      * @param state
      * @return
      * @throws FinMatchException 
      */
-    public ArrayList<Hook> getHooksEntreScriptsReal(GameState<RobotReal,ReadWrite> state) throws FinMatchException
+    public ArrayList<Hook> getHooksPermanents(GameState<?,ReadWrite> state)
     {
-    	return getHooksEntreScriptsReal(state, false);
-    }
-    
-    private ArrayList<Hook> getHooksEntreScriptsReal(GameState<?,ReadWrite> state, boolean isChrono) throws FinMatchException
-    {
-    	ArrayList<Hook> hooks_entre_scripts = new ArrayList<Hook>();
+    	ArrayList<Hook> hooksPermanents = new ArrayList<Hook>();
 		Hook hook;
 		GameElementDone action;
 		
-		// Il faut s'assurer que le hook de fin de match est toujours en première position
-		hooks_entre_scripts.add(getHooksFinMatch(state.getReadOnly(), isChrono));
+//		// Il faut s'assurer que le hook de fin de match est toujours en première position
+//		hooksPermanents.add(getHooksFinMatch(state.getReadOnly()));
     	
 		for(GameElementNames n: GameElementNames.values())
 		{
@@ -173,33 +143,30 @@ public class HookFactory implements Service
 				hook = new HookDate(log, state.getReadOnly(), n.getType().getDateEnemyTakesIt());
 				action = new GameElementDone(state, n, Tribool.MAYBE);
 				hook.ajouter_callback(new Callback(action));
-				hooks_entre_scripts.add(hook);
+				hooksPermanents.add(hook);
 			}
 
 			// Ce qu'on peut shooter
 			if(n.getType().canBeShot()) // on ne met un hook de collision que sur ceux qui ont susceptible de disparaître quand on passe dessus
 			{
-				hook = new HookCollisionElementJeu(log, state.getReadOnly(), n.getObstacle());
+//				hook = new HookCollisionElementJeu(log, state.getReadOnly(), n.getObstacle());
+				hook = new HookPosition(log, state.getReadOnly(), n.getObstacle().position, n.getObstacleDilate().getRadius());
 				action = new GameElementDone(state, n, Tribool.TRUE);
 				hook.ajouter_callback(new Callback(action));
-				hooks_entre_scripts.add(hook);
+				hooksPermanents.add(hook);
 			}
 			
 			if(n.getType().scriptHookThrown() != null)
 			{
-				hook = new HookCollisionElementJeu(log, state.getReadOnly(), n.getObstacleDilate());
+//				hook = new HookCollisionElementJeu(log, state.getReadOnly(), n.getObstacleDilate());
+				hook = new HookPosition(log, state.getReadOnly(), n.getObstacle().position, n.getObstacleDilate().getRadius());
 				ThrowScriptRequest action2 = new ThrowScriptRequest(n.getType().scriptHookThrown(), n.ordinal());
 				hook.ajouter_callback(new Callback(action2));
-				hooks_entre_scripts.add(hook);				
+				hooksPermanents.add(hook);				
 			}
 
 		}
-		return hooks_entre_scripts;
+		return hooksPermanents;
     } 
-
-	public ArrayList<Hook> getHooksTable() {
-		// TODO Auto-generated method stub
-		return new ArrayList<Hook>();
-	}
 
 }
