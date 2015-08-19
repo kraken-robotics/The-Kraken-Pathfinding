@@ -1,6 +1,6 @@
 package buffer;
 
-import table.GameElementNames;
+import scripts.ScriptHookNames;
 
 /**
  * Une information sur un hook qui vient d'être exécuté par la STM
@@ -10,6 +10,13 @@ import table.GameElementNames;
 
 public class IncomingHook {
 
-	public GameElementNames element;
+	public ScriptHookNames script;
+	public int param;
+
+	public IncomingHook(ScriptHookNames script, int param)
+	{
+		this.script = script;
+		this.param = param;
+	}
 	
 }

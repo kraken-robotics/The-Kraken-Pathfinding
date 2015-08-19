@@ -107,7 +107,6 @@ public class DataForSerialOutput implements Service
 
 	/**
 	 * Ajout d'une demande d'ordre d'avancer pour la série
-	 * TODO à compléter
 	 * @param elem
 	 */
 	public synchronized void avancer(int distance, ArrayList<Hook> hooks, boolean mur)
@@ -115,8 +114,11 @@ public class DataForSerialOutput implements Service
 		ArrayList<String> elems = new ArrayList<String>();
 		elems.add(new String("d"));
 		elems.add(new String(Integer.toString(distance)));
-		elems.add(new String(Boolean.toString(mur)));
-		addHook(elems, hooks);
+		if(mur)
+			elems.add("T");
+		else
+			elems.add("F");
+		addHooks(elems, hooks);
 		buffer.add(elems);
 //		log.debug("Taille buffer: "+buffer.size());
 		notify();
@@ -124,24 +126,31 @@ public class DataForSerialOutput implements Service
 
 	/**
 	 * Ajout d'une demande d'ordre de tourner pour la série
-	 * TODO à compléter
 	 * @param elem
 	 */
-	public synchronized void turn(double angle, ArrayList<Hook> hooks)
+	public synchronized void turn(double angle)
 	{
 		ArrayList<String> elems = new ArrayList<String>();
 		elems.add(new String("t"));
 		elems.add(new String(Long.toString(Math.round(angle*1000))));
-		addHook(elems, hooks);
+//		addHook(elems, hooks);
 		buffer.add(elems);
 //		log.debug("Taille buffer: "+buffer.size());
 		notify();
 	}
 
+	public synchronized void envoieHooks(ArrayList<Hook> hooks)
+	{
+		ArrayList<String> elems = new ArrayList<String>();
+		elems.add(new String("hlst"));
+		addHooks(elems, hooks);
+		buffer.add(elems);
+		notify();
+	}
+
+	
 	/**
 	 * Ajout d'une demande d'ordre de s'arrêter
-	 * TODO à compléter
-	 * @param elem
 	 */
 	public synchronized void immobilise()
 	{
@@ -166,7 +175,7 @@ public class DataForSerialOutput implements Service
 //		log.debug("Taille buffer: "+buffer.size());
 		notify();
 	}
-	
+/*	
 	public void notifyIfNecessary()
 	{
 		if(buffer.size() > 0)
@@ -174,7 +183,7 @@ public class DataForSerialOutput implements Service
 			{
 				notifyAll();
 			}
-	}
+	}*/
 
 	/**
 	 * Retire un élément du buffer
@@ -194,7 +203,7 @@ public class DataForSerialOutput implements Service
 	public void useConfig(Config config)
 	{}
 	
-	private void addHook(ArrayList<String> elems, ArrayList<Hook> hooks)
+	private void addHooks(ArrayList<String> elems, ArrayList<Hook> hooks)
 	{
 		elems.add(new String(Integer.toString(hooks.size())));
 		for(Hook h : hooks)

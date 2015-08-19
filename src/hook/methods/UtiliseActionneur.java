@@ -40,5 +40,4 @@ public class UtiliseActionneur implements Executable
 		return out;
 	}
 
-
 }

@@ -82,7 +82,10 @@ public class Callback
 	public ArrayList<String> toSerial()
 	{
 		ArrayList<String> out = new ArrayList<String>();
-		out.add(String.valueOf(isUnique));
+		if(isUnique)
+			out.add("T");
+		else
+			out.add("F");
 		out.addAll(method.toSerial());
 		return out;
 	}

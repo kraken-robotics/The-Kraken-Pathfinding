@@ -15,7 +15,7 @@ import utils.Vec2;
 /**
  * Hook se déclenchant si le robot est a une distance a un point de la table inférieure a un certain seuil
  * La zone d'activation est un disque.
- * @author pf, marsu
+ * @author pf
  *
  */
 
@@ -29,7 +29,6 @@ public class HookPosition extends Hook
 	
 	protected int tolerancy;
 	
-
     /**
      * Instancie le hook sur position du robot. Position et tolérance paramétrable.
      * @param config : sur quel objet lire la configuration du match
@@ -47,7 +46,6 @@ public class HookPosition extends Hook
 		this.squaredTolerancy = tolerancy*tolerancy;
 	}
 	
-
     /**
      * Déclenche le hook si la distance entre la position du robot et la position de de déclenchement du hook est inférieure a tolerancy
      * @return true si la position/oriantation du robot a été modifiée.

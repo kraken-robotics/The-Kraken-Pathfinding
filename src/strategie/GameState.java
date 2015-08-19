@@ -67,13 +67,13 @@ public class GameState<R extends Robot, T extends Permission> implements Service
         this.gridspace = gridspace;
         this.robot = robot;
         this.hookfactory = hookfactory;
-        if(robot instanceof RobotReal)
+/*        if(robot instanceof RobotReal)
         {
         	robot.setHookFinMatch(hookfactory.getHooksFinMatchReal(getReadOnly()));
         	((RobotReal)robot).setHookTrajectoireCourbe(new HookDemiPlan(log, getReadOnly()));
         }
         else
-            robot.setHookFinMatch(hookfactory.getHooksFinMatchChrono(getReadOnly()));
+            robot.setHookFinMatch(hookfactory.getHooksFinMatchChrono(getReadOnly()));*/
     }
     
     /**

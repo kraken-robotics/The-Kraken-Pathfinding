@@ -17,11 +17,11 @@ import hook.Executable;
 
 public class GameElementDone implements Executable
 {
-	private GameState<RobotChrono, ReadWrite> state;
+	private GameState<?, ReadWrite> state;
 	private Tribool done;
 	private GameElementNames element;
 	
-	public GameElementDone(GameState<RobotChrono, ReadWrite> state, GameElementNames element, Tribool done)
+	public GameElementDone(GameState<?, ReadWrite> state, GameElementNames element, Tribool done)
 	{
 		this.state = state;
 		this.done = done;
@@ -51,6 +51,7 @@ public class GameElementDone implements Executable
 		ArrayList<String> out = new ArrayList<String>();
 		out.add("tbl");
 		out.add(String.valueOf(element.ordinal()));
+		out.add(String.valueOf(done.ordinal()));
 		return out;
 	}
 

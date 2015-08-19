@@ -10,11 +10,13 @@ set vitesse
 avancer
     d distance dans_mur nb_hook [hook]
 tourner avec symétrie
-    t angle_en_milliradians nb_hook [hook]
+    t angle_en_milliradians
 actionneurs (protocole complet dans src/robot/ActuatorOrder.java)
     ordre_actionneur
 stopper le robot (procédure d'urgence)
     stop
+envoie la liste des hooks valables pour tout le match. Chaque nouvel appel écrase ceux envoyés précédemment
+    hlst nb_hook [hooks]
 
 Inutilisés :
 désactiver asservissement (rotation et translation)
@@ -64,12 +66,12 @@ Un callback
     est_unique methode
 
 Une méthode
-    tbl nb_element
+    tbl nb_element done
 ou
-    scr nb_script
+    scr nb_script param
 ou
     act ordre_act
 
 Exemple complet: un hook de position qui dit qu'un élément a été shooté
-    hpo 20 1300 5 1 true tbl 18
+    hpo 20 1300 5 1 T tbl 18
 

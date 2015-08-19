@@ -2,10 +2,12 @@ package threads;
 
 import buffer.IncomingData;
 import buffer.IncomingDataBuffer;
+import buffer.IncomingHook;
 import buffer.IncomingHookBuffer;
 import permissions.ReadOnly;
 import requete.RequeteSTM;
 import requete.RequeteType;
+import scripts.ScriptHookNames;
 import serial.SerialConnexion;
 import table.GameElementNames;
 import table.Table;
@@ -131,9 +133,20 @@ public class ThreadSerialInput extends Thread implements Service
 							 */
 						case "tbl":
 							int nbElement = Integer.parseInt(serie.read());
-							table.setDone(GameElementNames.values()[nbElement], Tribool.TRUE);
+							int done = Integer.parseInt(serie.read());
+							table.setDone(GameElementNames.values()[nbElement], Tribool.parse(done));
 							break;
-							
+
+							/**
+							 * Demande de hook
+							 */
+						case "dhk":
+							int nbScript = Integer.parseInt(serie.read());
+							ScriptHookNames s = ScriptHookNames.values()[nbScript];
+							int param = Integer.parseInt(serie.read());
+							hookbuffer.add(new IncomingHook(s, param));
+							break;
+
 							/**
 							 * On est arrivé à destination.
 							 */

@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import permissions.ReadOnly;
 import permissions.ReadWrite;
 import hook.methods.GameElementDone;
-import hook.methods.ThrowsScriptHook;
+import hook.methods.ThrowScriptRequest;
 import hook.types.HookCollisionElementJeu;
 import hook.types.HookDate;
 import hook.types.HookDateFinMatch;
@@ -116,7 +116,7 @@ public class HookFactory implements Service
     private HookDateFinMatch getHooksFinMatch(GameState<?,ReadOnly> state, boolean isChrono)
     {
     	HookDateFinMatch hook_fin_match = new HookDateFinMatch(log, state, dureeMatch);
-    	hook_fin_match.ajouter_callback(new Callback(new ThrowsScriptHook(ScriptHookNames.FUNNY_ACTION, null)));
+    	hook_fin_match.ajouter_callback(new Callback(new ThrowScriptRequest(ScriptHookNames.FUNNY_ACTION, 0)));
 
     	return hook_fin_match;
     }
@@ -153,7 +153,6 @@ public class HookFactory implements Service
     {
     	return getHooksEntreScriptsReal(state, false);
     }
-
     
     private ArrayList<Hook> getHooksEntreScriptsReal(GameState<?,ReadWrite> state, boolean isChrono) throws FinMatchException
     {
@@ -187,7 +186,7 @@ public class HookFactory implements Service
 			if(n.getType().scriptHookThrown() != null)
 			{
 				hook = new HookCollisionElementJeu(log, state.getReadOnly(), n.getObstacleDilate());
-				ThrowsScriptHook action2 = new ThrowsScriptHook(n.getType().scriptHookThrown(), n);
+				ThrowScriptRequest action2 = new ThrowScriptRequest(n.getType().scriptHookThrown(), n.ordinal());
 				hook.ajouter_callback(new Callback(action2));
 				hooks_entre_scripts.add(hook);				
 			}

@@ -17,10 +17,12 @@ import hook.Executable;
 public class ThrowScriptRequest implements Executable
 {
 	private ScriptHookNames n;
+	private int param;
 	
-	public ThrowScriptRequest(ScriptHookNames n)
+	public ThrowScriptRequest(ScriptHookNames n, int param)
 	{
 		this.n = n;
+		this.param = param;
 	}
 	
 	@Override
@@ -37,6 +39,7 @@ public class ThrowScriptRequest implements Executable
 		ArrayList<String> out = new ArrayList<String>();
 		out.add("scr");
 		out.add(String.valueOf(n.ordinal()));
+		out.add(String.valueOf(param));
 		return out;
 	}
 

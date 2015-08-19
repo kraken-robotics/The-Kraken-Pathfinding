@@ -25,6 +25,15 @@ public class IncomingHookBuffer implements Service
 	private volatile Queue<IncomingHook> buffer = new LinkedList<IncomingHook>();
 	
 	/**
+	 * Le buffer est-il vide?
+	 * @return
+	 */
+	public synchronized boolean isEmpty()
+	{
+		return buffer.isEmpty();
+	}
+	
+	/**
 	 * Ajout d'un élément dans le buffer et provoque un "notifyAll"
 	 * @param elem
 	 */
@@ -32,19 +41,7 @@ public class IncomingHookBuffer implements Service
 	{
 		buffer.add(elem);
 		log.debug("Taille buffer: "+buffer.size());
-		synchronized(this)
-		{
-			notifyAll();
-		}
-	}
-	
-	public void notifyIfNecessary()
-	{
-		if(buffer.size() > 0)
-			synchronized(this)
-			{
-				notifyAll();
-			}
+		notify();
 	}
 
 	/**
