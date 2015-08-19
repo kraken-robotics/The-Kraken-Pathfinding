@@ -42,3 +42,7 @@ un actionneur a un problème
     acpb
 un actionneur a fini son mouvement
     acok
+élément shooté
+    tbl nb_elem
+demande d'exécution de hook de script
+    dhk nb_hook
