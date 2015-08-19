@@ -144,11 +144,7 @@ public class Execution implements Service {
 	@Override
 	public void updateConfig(Config config)
 	{
-		synchronized(matchDemarre)
-		{
-			matchDemarre = config.getBoolean(ConfigInfo.MATCH_DEMARRE);
-			matchDemarre.notifyAll();
-		}
+		matchDemarre = config.getBoolean(ConfigInfo.MATCH_DEMARRE);
 	}
 	
 	@Override

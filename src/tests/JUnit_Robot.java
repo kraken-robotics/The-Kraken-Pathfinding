@@ -8,6 +8,7 @@ import permissions.ReadOnly;
 import permissions.ReadWrite;
 import container.ServiceNames;
 import enums.RobotColor;
+import exceptions.FinMatchException;
 import robot.ActuatorOrder;
 import robot.RobotChrono;
 import robot.RobotReal;
@@ -76,7 +77,12 @@ public class JUnit_Robot extends JUnit_Test
     {
     	robotchrono.avancer(100);
     }
-    
+
+	@Test(expected=FinMatchException.class)
+    public void test_chrono_timeout() throws Exception
+    {
+    	robotchrono.avancer(100000000);
+    }
     
     @Test
     public void test_symetrie_robot_chrono() throws Exception

@@ -341,7 +341,7 @@ public class Container
 			if(instanciedServices[s.ordinal()] == null)
 			{
 				out = false;
-				log.critical(s);
+				log.critical("Non instancié : "+s);
 			}
 		return out;
 	}

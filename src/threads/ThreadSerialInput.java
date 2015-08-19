@@ -36,7 +36,7 @@ public class ThreadSerialInput extends Thread implements Service
 	
 	private RequeteSTM requete;
 	private boolean capteursOn = false;
-	private int nbCapteurs;
+	private volatile int nbCapteurs;
 	
 	public ThreadSerialInput(Log log, Config config, SerialConnexion serie, IncomingDataBuffer buffer, IncomingHookBuffer hookbuffer, RequeteSTM requete, Table table)
 	{
