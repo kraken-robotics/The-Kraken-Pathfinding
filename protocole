@@ -13,10 +13,16 @@ tourner avec symétrie
     t angle_en_milliradians
 actionneurs (protocole complet dans src/robot/ActuatorOrder.java)
     ordre_actionneur
-stopper le robot (procédure d'urgence)
+stopper le robot (procédure d'urgence) et annule l'itinéraire en cours
     stop
 envoie la liste des hooks valables pour tout le match. Chaque nouvel appel écrase ceux envoyés précédemment
     hlst nb_hook [hooks]
+ajoute point à l'itinéraire
+    add x_point y_point x_direction y_direction angle_en_milliradians rayon_courbure
+commence un nouvel itinéraire (tourne dès maintenant)
+    addf angle_en_milliradians rayon_courbure
+termine un itinéraire
+    addl x_point y_point
 
 Inutilisés :
 désactiver asservissement (rotation et translation)
