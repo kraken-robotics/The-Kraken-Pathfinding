@@ -145,10 +145,8 @@ public class Container
 	 * Fournit un service. Deux possibilités: soit il n'est pas encore instancié et on l'instancie.
 	 * Soit il est déjà instancié et on le renvoie.
 	 * @param serviceRequested
-	 * @return
+	 * @return l'instance du service demandé
 	 * @throws ContainerException
-	 * @throws ThreadException
-	 * @throws SerialManagerException
 	 * @throws FinMatchException
 	 * @throws PointSortieException
 	 */

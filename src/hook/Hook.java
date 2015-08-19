@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import permissions.ReadOnly;
 import permissions.ReadWrite;
 import exceptions.FinMatchException;
-import exceptions.ScriptHookException;
-import exceptions.WallCollisionDetectedException;
 import robot.RobotChrono;
 import strategie.GameState;
 import utils.ConfigInfo;

@@ -1,6 +1,5 @@
 package serial;
 
-import exceptions.FinMatchException;
 import gnu.io.CommPortIdentifier;
 import gnu.io.PortInUseException;
 import gnu.io.SerialPort;
@@ -101,8 +100,6 @@ public class SerialConnexion implements SerialPortEventListener, Service
 	 * 					Le port où est connecté la carte
 	 * @param baudrate
 	 * 					Le baudrate que la carte utilise
-	 * @throws SerialManagerException 
-	 * @throws SerialConnexionException 
 	 */
 	private boolean initialize(CommPortIdentifier portId, int baudrate)
 	{
@@ -141,9 +138,6 @@ public class SerialConnexion implements SerialPortEventListener, Service
 	/**
 	 * Méthode pour envoyer un message à la carte
 	 * @param messages
-	 * @return
-	 * @throws SerialConnexionException
-	 * @throws FinMatchException
 	 */
 	public synchronized void communiquer(ArrayList<String> messages)
 	{
@@ -197,10 +191,6 @@ public class SerialConnexion implements SerialPortEventListener, Service
 	/**
 	 * Méthode pour parler à la STM
 	 * @param messages Messages à envoyer
-	 * @param nb_lignes_reponse Nombre de lignes que l'avr va répondre (sans compter les acquittements)
-	 * @return Un tableau contenant le message
-	 * @throws SerialConnexionException 
-	 * @throws FinMatchException 
 	 */
 	public void communiquer(String message)
 	{

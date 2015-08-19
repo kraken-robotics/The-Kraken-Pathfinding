@@ -18,7 +18,6 @@ import container.Service;
 import enums.Tribool;
 import exceptions.FinMatchException;
 import exceptions.GridSpaceException;
-import exceptions.ScriptHookException;
 import exceptions.UnableToMoveException;
 import table.GameElementNames;
 import table.GridSpace;
@@ -224,7 +223,7 @@ public class GameState<R extends Robot, T extends Permission> implements Service
     	state.robot.avancer(distance, hooks, mur);
     }
     
-    public static final void suit_chemin(GameState<RobotChrono, ReadWrite> state, ArrayList<LocomotionArc> chemin, ArrayList<Hook> hooks) throws UnableToMoveException, FinMatchException, ScriptHookException
+    public static final void suit_chemin(GameState<RobotChrono, ReadWrite> state, ArrayList<LocomotionArc> chemin, ArrayList<Hook> hooks) throws UnableToMoveException, FinMatchException
     {
     	state.robot.suit_chemin(chemin, hooks);
     }

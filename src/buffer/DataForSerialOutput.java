@@ -40,20 +40,6 @@ public class DataForSerialOutput implements Service
 		return buffer.isEmpty();
 	}
 	
-	/**
-	 * Ajout d'un élément dans le buffer et provoque un "notifyAll"
-	 * @param elem
-	 */
-/*	public synchronized void add(String[] elem)
-	{
-		buffer.add(elem);
-		log.debug("Taille buffer: "+buffer.size());
-		synchronized(this)
-		{
-			notifyAll();
-		}
-	}*/
-	
 	/*
 	public synchronized void desactiveAsservissement()
 	{

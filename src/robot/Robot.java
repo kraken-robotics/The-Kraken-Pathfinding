@@ -7,7 +7,6 @@ import permissions.ReadWrite;
 import hook.Hook;
 import container.Service;
 import exceptions.FinMatchException;
-import exceptions.ScriptHookException;
 import exceptions.UnableToMoveException;
 import utils.ConfigInfo;
 import utils.Log;
@@ -93,7 +92,6 @@ public abstract class Robot implements Service
 	 * @param angle
 	 * @throws UnableToMoveException
 	 * @throws FinMatchException
-	 * @throws ScriptHookException
 	 */
 	public void tourner_relatif(double angle) throws UnableToMoveException, FinMatchException
 	{
@@ -104,7 +102,6 @@ public abstract class Robot implements Service
      * Utilisé lorsque le robot n'a pas de symétrie gauche/droite
      * @param angle
      * @throws UnableToMoveException
-     * @throws ScriptHookException 
      */
     public void tourner_sans_symetrie(double angle) throws UnableToMoveException, FinMatchException
     {
