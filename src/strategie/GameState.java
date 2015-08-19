@@ -65,14 +65,6 @@ public class GameState<R extends Robot, T extends Permission> implements Service
         this.log = log;
         this.gridspace = gridspace;
         this.robot = robot;
-
-/*        if(robot instanceof RobotReal)
-        {
-        	robot.setHookFinMatch(hookfactory.getHooksFinMatchReal(getReadOnly()));
-        	((RobotReal)robot).setHookTrajectoireCourbe(new HookDemiPlan(log, getReadOnly()));
-        }
-        else
-            robot.setHookFinMatch(hookfactory.getHooksFinMatchChrono(getReadOnly()));*/
     }
     
     /**
@@ -178,9 +170,9 @@ public class GameState<R extends Robot, T extends Permission> implements Service
 	 * Permet de décider de la durée de l'anticipation
 	 * @param dateLimite
 	 */
-	public static final void updateHookFinMatch(GameState<?,ReadWrite> state, int dateLimite)
+	public static final void updateHookFinMatch(GameState<RobotChrono,ReadWrite> state, int dateLimite)
 	{
-		state.robot.updateHookFinMatch(dateLimite);
+		RobotChrono.setTempsMax(dateLimite);
 	}
 
 	/**
@@ -239,7 +231,7 @@ public class GameState<R extends Robot, T extends Permission> implements Service
     
 	public static final void set_vitesse(GameState<? extends Robot, ReadWrite> state, Speed vitesse) throws FinMatchException
 	{
-		state.robot.set_vitesse(vitesse);
+		state.robot.setVitesse(vitesse);
 	}
 	
 	public static final void setPositionOrientationSTM(GameState<? extends Robot, ReadWrite> state, Vec2<ReadOnly> position, double orientation) throws FinMatchException
@@ -312,11 +304,6 @@ public class GameState<R extends Robot, T extends Permission> implements Service
 		return state.robot.getPositionPathfinding();
 	}
     
-	public static final boolean isEnemyHere(GameState<RobotReal, ReadOnly> state)
-	{
-		return state.robot.isEnemyHere();
-	}
-	
 /*    public static final void createHypotheticalEnnemy(GameState<RobotChrono, ReadWrite> state, Vec2<ReadOnly> position, int date_actuelle)
     {
     	state.gridspace.createHypotheticalEnnemy(position, date_actuelle);

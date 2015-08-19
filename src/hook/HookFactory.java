@@ -2,21 +2,17 @@ package hook;
 
 import java.util.ArrayList;
 
-import permissions.ReadOnly;
 import permissions.ReadWrite;
 import hook.methods.GameElementDone;
 import hook.methods.ThrowScriptRequest;
 import hook.types.HookDate;
-import hook.types.HookDateFinMatch;
 import hook.types.HookPosition;
 import container.Service;
 import enums.Tribool;
 import exceptions.FinMatchException;
 import robot.RobotChrono;
-import scripts.ScriptHookNames;
 import strategie.GameState;
 import table.GameElementNames;
-import utils.ConfigInfo;
 import utils.Log;
 import utils.Config;
 
@@ -32,10 +28,7 @@ public class HookFactory implements Service
 	//gestion des log
 	private Log log;
 	
-	private int dureeMatch = 90000;
-	
 	private ArrayList<Hook> hooks_table_chrono = null;
-	private HookDateFinMatch hook_fin_match_chrono = null;
 	
 	// TODO: créer hooks_table_chrono dès la construction, et maintenir un numéro pour chaque hook
 	
@@ -58,45 +51,8 @@ public class HookFactory implements Service
 	public void useConfig(Config config)
 	{
 		// demande avec quelle tolérance sur la précision on déclenche les hooks
-		dureeMatch = config.getInt(ConfigInfo.DUREE_MATCH_EN_S) * 1000;
 		Hook.useConfig(config);
 	}
-
-	/**
-     * Fournit le hook de fin de match à un chrono gamestate.
-     * @param state
-     * @param date_limite
-     * @return
-     */
-    private HookDateFinMatch getHooksFinMatchChrono(GameState<RobotChrono,ReadOnly> state)
-    {
-    	if(hook_fin_match_chrono == null)
-    	{
-        	hook_fin_match_chrono = new HookDateFinMatch(log, state, dureeMatch);
-        	hook_fin_match_chrono.ajouter_callback(new Callback(new ThrowScriptRequest(ScriptHookNames.FUNNY_ACTION, 0)));
-    	}
-    	return hook_fin_match_chrono;
-    }
-
-    /**
-     * Met à jour le hook de fin de match d'un chrono gamestate.
-     * @param state
-     * @param date_limite
-     * @return
-     */
-    public HookDateFinMatch updateHooksFinMatch(GameState<RobotChrono,ReadWrite> state, int date_limite)
-    {
-    	// On construit le hook s'il n'existe pas déjà
-    	getHooksFinMatchChrono(state.getReadOnly());
-    	
-    	/**
-    	 * Mise à jour de la date limite
-    	 * Pas besoin de mettre à jour les références, car la méthode
-    	 * FinMatchCheck n'en utilise pas.
-    	 */
-		((HookDateFinMatch)hook_fin_match_chrono).updateDate(date_limite);
-	    return hook_fin_match_chrono;
-    }
 
     /**
      * Donne les hooks des éléments de jeux à un chrono gamestate
@@ -113,9 +69,6 @@ public class HookFactory implements Service
 		// C'est bien plus rapide que de créer de nouveaux hooks
 		for(Hook hook: hooks_table_chrono)
 			hook.updateGameState(state);
-
-		// Le hook de fin de match est toujours en première position
-		((HookDateFinMatch)hooks_table_chrono.get(0)).updateDate(date_limite);
 
     	return hooks_table_chrono;
     }

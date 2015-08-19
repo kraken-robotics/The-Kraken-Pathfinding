@@ -26,7 +26,8 @@ public class RobotChrono extends Robot
 	protected PathfindingNodes positionPathfindingAnterieure;
 	protected boolean isPositionPathfindingActive = false;
 	protected double orientation;
-	
+	private static int tempsMax = 90000;
+   
 	// Date en millisecondes depuis le début du match.
 	protected long date;
 	
@@ -52,6 +53,15 @@ public class RobotChrono extends Robot
 		date += approximateSerialLatency;
 	}
 
+	/**
+	 * Mise à jour permettant de modifier, pour RobotChrono, la date limite de la recherche stratégique
+	 * @param dateLimite
+	 */
+	public static void setTempsMax(int tempsMax)
+	{
+		RobotChrono.tempsMax = tempsMax;
+	}
+	
 	@Override
     public void avancer(int distance, ArrayList<Hook> hooks, boolean mur) throws FinMatchException
 	{
@@ -67,7 +77,7 @@ public class RobotChrono extends Robot
 	}
 	
 	@Override
-	public void set_vitesse(Speed vitesse)
+	public void setVitesse(Speed vitesse)
 	{
 	    this.vitesse = vitesse;
 		date += approximateSerialLatency;
@@ -273,20 +283,9 @@ public class RobotChrono extends Robot
 					e.printStackTrace();
 				}
 		
-		// le hook de fin de match est particulier, car il est toujours appelé, qu'il soit dans la liste ou non
-		if(hookFinMatch.simulated_evaluate(pointA, pointB, date))
-			try {
-				hookFinMatch.trigger();
-			} catch (ScriptHookException e) {
-				// Impossible
-				e.printStackTrace();
-			} catch (WallCollisionDetectedException e) {
-				// Impossible
-				e.printStackTrace();
-			} catch (ChangeDirectionException e) {
-				// Impossible
-				e.printStackTrace();
-			}
+		// vérification de la fin de la recherche
+		if(tempsMax < date)
+			throw new FinMatchException();
 	}
 
 	public void setPositionPathfinding(PathfindingNodes n)

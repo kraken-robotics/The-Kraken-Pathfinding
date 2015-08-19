@@ -68,7 +68,7 @@ public class JUnit_Robot extends JUnit_Test
     @Test
     public void test_speed() throws Exception
     {
-    	robot.set_vitesse(Speed.BETWEEN_SCRIPTS);
+    	robot.setVitesse(Speed.BETWEEN_SCRIPTS);
     }
 
     @Test

@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import permissions.ReadOnly;
 import permissions.ReadWrite;
 import hook.Hook;
-import hook.types.HookDateFinMatch;
 import container.Service;
 import exceptions.FinMatchException;
 import exceptions.ScriptHookException;
@@ -16,7 +15,7 @@ import utils.Config;
 import utils.Vec2;
 
 /**
- *  Classe abstraite du robot, dont héritent RobotVrai et RobotChrono
+ * Classe abstraite du robot, dont héritent RobotVrai et RobotChrono
  * @author PF, marsu
  */
 
@@ -27,24 +26,22 @@ public abstract class Robot implements Service
 	 * DÉPLACEMENT HAUT NIVEAU
 	 */
 	
-	public abstract void stopper() throws FinMatchException;
+	public abstract void stopper();
     public abstract void tourner(double angle)
             throws UnableToMoveException, FinMatchException;
     public abstract void avancer(int distance, ArrayList<Hook> hooks, boolean mur)
             throws UnableToMoveException, FinMatchException;
-	public abstract void set_vitesse(Speed vitesse) throws FinMatchException;
+	public abstract void setVitesse(Speed vitesse);
 	
-	public abstract void setPositionOrientationSTM(Vec2<ReadOnly> position, double orientation) throws FinMatchException;
-    public abstract Vec2<ReadOnly> getPosition() throws FinMatchException;
-    public abstract double getOrientation() throws FinMatchException;
+	public abstract void setPositionOrientationSTM(Vec2<ReadOnly> position, double orientation);
+    public abstract Vec2<ReadOnly> getPosition();
+    public abstract double getOrientation();
     public abstract void sleep(long duree, ArrayList<Hook> hooks) throws FinMatchException;
 //    public abstract void desactiveAsservissement() throws FinMatchException;
 //    public abstract void activeAsservissement() throws FinMatchException;
     public abstract long getTempsDepuisDebutMatch();
     public abstract RobotChrono cloneIntoRobotChrono();
 
-    protected HookDateFinMatch hookFinMatch;
-    
     protected volatile Vec2<ReadWrite> position = new Vec2<ReadWrite>();
     protected volatile double orientation;
 	protected volatile boolean symetrie;
@@ -76,24 +73,6 @@ public abstract class Robot implements Service
 	{
 		this.log = log;
 		vitesse = Speed.BETWEEN_SCRIPTS;
-	}
-	
-	/**
-	 * Appelé une seule fois
-	 * @param hookFinMatch
-	 */
-	public void setHookFinMatch(HookDateFinMatch hookFinMatch)
-	{
-		this.hookFinMatch = hookFinMatch;
-	}
-	
-	/**
-	 * Mise à jour permettant de modifier, pour RobotChrono, la date limite de la recherche stratégique
-	 * @param dateLimite
-	 */
-	public void updateHookFinMatch(int dateLimite)
-	{
-		hookFinMatch.updateDate(dateLimite);
 	}
 
 	public synchronized void updateConfig(Config config)
@@ -170,14 +149,14 @@ public abstract class Robot implements Service
     public void avancer_dans_mur(int distance) throws UnableToMoveException, FinMatchException
     {
         Speed sauv_vitesse = vitesse; 
-        set_vitesse(Speed.INTO_WALL);
+        setVitesse(Speed.INTO_WALL);
         try {
         	avancer(distance, new ArrayList<Hook>(), true);
         }
         finally
         {
         	// Dans tous les cas, il faut restaurer l'ancienne vitesse
-        	set_vitesse(sauv_vitesse);
+        	setVitesse(sauv_vitesse);
         }
     }
 
