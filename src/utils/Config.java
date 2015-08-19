@@ -23,7 +23,6 @@ public class Config implements Service
 	private volatile Properties properties = new Properties();
 	private Log log;
 	
-	private boolean needUpdate = false;
 	private boolean configIniCharge = false;
 	
 	public Config()
@@ -97,7 +96,7 @@ public class Config implements Service
 	 * @param nom
 	 * @return
 	 */
-	public String getString(ConfigInfo nom)
+	public synchronized String getString(ConfigInfo nom)
 	{
 		return properties.getProperty(nom.toString());
 	}
@@ -107,9 +106,12 @@ public class Config implements Service
 	 * @param nom
 	 * @return
 	 */
-	private void set(ConfigInfo nom, String value)
+	private synchronized void set(ConfigInfo nom, String value)
 	{
-		needUpdate |= value.compareTo(properties.getProperty(nom.toString())) != 0;
+		// On notifie avant d'affecter la valeur.
+		// En fait, ça n'a pas d'importance car le mutex sur la config est activé…
+		if(value.compareTo(properties.getProperty(nom.toString())) != 0)
+			notify();
 		log.debug(nom+" = "+value+" (ancienne valeur: "+properties.getProperty(nom.toString())+")");
 		properties.setProperty(nom.toString(), value);
 	}
@@ -131,7 +133,7 @@ public class Config implements Service
 	 * Affiche toute la config.
 	 * Appelé au début du match.
 	 */
-	private void afficheTout()
+	private synchronized void afficheTout()
 	{
 		log.debug("Configuration initiale");
 		for(ConfigInfo info: ConfigInfo.values())
@@ -141,7 +143,7 @@ public class Config implements Service
 	/**
 	 * Complète avec les valeurs par défaut le fichier de configuration
 	 */
-	private void completeConfig()
+	private synchronized void completeConfig()
 	{
 		if(configIniCharge)
 		{
@@ -184,19 +186,6 @@ public class Config implements Service
 	public boolean getSymmetry()
 	{
 		return RobotColor.parse(getString(ConfigInfo.COULEUR)).isSymmetry();
-	}
-
-	/**
-	 * Met à jour les config de tous les services
-	 */
-	public void updateConfigServices()
-	{
-		synchronized(this)
-		{
-			if(needUpdate)
-				notifyAll();
-			needUpdate = false;
-		}
 	}
 	
 	@Override

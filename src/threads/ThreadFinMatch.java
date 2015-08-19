@@ -45,7 +45,6 @@ public class ThreadFinMatch extends Thread implements Service {
 		Sleep.sleep(dureeMatch);
 		
 		config.set(ConfigInfo.FIN_MATCH, true);
-		config.updateConfigServices();
 		log.debug("Fin du Match !");
 	}
 

@@ -32,8 +32,11 @@ public abstract class JUnit_Test
 		container = new Container();
 		config = (Config) container.getService(ServiceNames.CONFIG);
 		log = (Log) container.getService(ServiceNames.LOG);
-		config.set(ConfigInfo.MATCH_DEMARRE, true);
-		config.set(ConfigInfo.DATE_DEBUT_MATCH, System.currentTimeMillis());
+		synchronized(config)
+		{
+			config.set(ConfigInfo.MATCH_DEMARRE, true);
+			config.set(ConfigInfo.DATE_DEBUT_MATCH, System.currentTimeMillis());
+		}
         obstaclemanager = (ObstacleManager) container.getService(ServiceNames.OBSTACLE_MANAGER);
         // afin d'assurer l'indépendance entre tests
         obstaclemanager.clearObstaclesMobiles();

@@ -103,7 +103,6 @@ public class ThreadSerialInput extends Thread implements Service
 								config.set(ConfigInfo.DATE_DEBUT_MATCH, System.currentTimeMillis());
 								config.set(ConfigInfo.MATCH_DEMARRE, true);
 							}
-							config.updateConfigServices();
 							break;
 							
 							/**
