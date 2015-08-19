@@ -32,7 +32,7 @@ public class JUnit_Actuator extends JUnit_Test {
 		for(ActuatorOrder o: ActuatorOrder.values())
 		{
 			actionneurs.communiquer(o.getSerialOrder());
-			Sleep.sleep(o.getSleepValue());
+			Sleep.sleep(200);
 		}
 	}
 	
@@ -42,7 +42,7 @@ public class JUnit_Actuator extends JUnit_Test {
 		for(ActuatorOrder o: ActuatorOrder.values())
 		{
 			data.utiliseActionneurs(o);
-			Sleep.sleep(o.getSleepValue());
+			Sleep.sleep(200);
 		}
 	}
 

@@ -65,7 +65,7 @@ public class JUnit_Hook extends JUnit_Test {
 		ArrayList<Hook> hooks = new ArrayList<Hook>();
 		Hook h = new HookPosition(log, null, new Vec2<ReadOnly>(456,789), 20);
 		h.ajouter_callback(new Callback(new GameElementDone(null, GameElementNames.CLAP_3, Tribool.TRUE)));
-		h.ajouter_callback(new Callback(new UtiliseActionneur(ActuatorOrder.BAISSE_CLAP_DROIT)));
+		h.ajouter_callback(new Callback(new UtiliseActionneur(ActuatorOrder.BAISSE_TAPIS_DROIT)));
 		hooks.add(h);
 		Hook h2 = new HookDate(log, null, 5000);
 		h2.ajouter_callback(new Callback(new GameElementDone(null, GameElementNames.CLAP_3, Tribool.TRUE),true));
