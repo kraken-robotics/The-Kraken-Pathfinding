@@ -11,7 +11,6 @@ import planification.Chemin;
 import planification.Pathfinding;
 import hook.HookFactory;
 import exceptions.ContainerException;
-import exceptions.FinMatchException;
 import exceptions.PointSortieException;
 import utils.*;
 import scripts.ScriptManager;
@@ -107,7 +106,7 @@ public class Container
 	 * Services instanciés:
 	 * 		Config
 	 * 		Log
-	 * @throws ContainerException en cas de problème avec le fichier de configuration ou le système de log
+	 * @throws ContainerException si un autre container est déjà instancié
 	 */
 	public Container() throws ContainerException
 	{
@@ -117,26 +116,23 @@ public class Container
 			throw new ContainerException();
 		}
 		nbInstances++;
-		try
-		{
 			// affiche la configuration avant toute autre chose
 			System.out.println("== Container bootstrap ==");
 			System.out.println("Loading config from current directory : " +  System.getProperty("user.dir"));
 
-			log = (Log)getService(ServiceNames.LOG);
-			config = (Config)getService(ServiceNames.CONFIG);
+			try {
+				log = (Log)getService(ServiceNames.LOG);
+				config = (Config)getService(ServiceNames.CONFIG);
+			} catch (PointSortieException e) {
+				// Impossible
+				e.printStackTrace();
+			}
 			log.updateConfig(config);
 			log.useConfig(config);
 			config.init(log);
 			
 			Obstacle.setLog(log);
 			Obstacle.useConfig(config);
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-			throw new ContainerException();
-		}
 		startAllThreads();
 	}
 
@@ -150,7 +146,7 @@ public class Container
 	 * @throws FinMatchException
 	 * @throws PointSortieException
 	 */
-	public Service getService(ServiceNames serviceRequested) throws ContainerException, FinMatchException, PointSortieException
+	public Service getService(ServiceNames serviceRequested) throws ContainerException, PointSortieException
 	{
     	// instancie le service demandé lors de son premier appel 
     	boolean updateConfig = true;

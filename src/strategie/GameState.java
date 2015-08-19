@@ -277,7 +277,7 @@ public class GameState<R extends Robot, T extends Permission> implements Service
     {
     	return state.robot.cloneIntoRobotChrono();
     }
-    
+    /*
 	public static final void va_au_point_pathfinding_no_hook(GameState<RobotChrono, ReadWrite> state, LocomotionArc segment) throws FinMatchException
 	{
 		state.robot.va_au_point_pathfinding_no_hook(segment);
@@ -302,7 +302,7 @@ public class GameState<R extends Robot, T extends Permission> implements Service
 	{
 		return state.robot.getPositionPathfinding();
 	}
-    
+    */
 /*    public static final void createHypotheticalEnnemy(GameState<RobotChrono, ReadWrite> state, Vec2<ReadOnly> position, int date_actuelle)
     {
     	state.gridspace.createHypotheticalEnnemy(position, date_actuelle);
@@ -402,9 +402,9 @@ public class GameState<R extends Robot, T extends Permission> implements Service
 	public final GameState<R, ReadOnly> getReadOnly() {
 		return (GameState<R, ReadOnly>) this;
 	}
-
+/*
 	public static final boolean isAtPathfindingNodes(GameState<RobotChrono, ReadOnly> state) {
 		return state.robot.isAtPathfindingNodes();
 	}
-	
+	*/
 }

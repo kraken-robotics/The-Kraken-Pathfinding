@@ -33,7 +33,7 @@ public class RobotChrono extends Robot
 
 	private final static int sleepAvanceDuration = approximateSerialLatency+Speed.translationStopDuration;
 	private final static int sleepTourneDuration = approximateSerialLatency+Speed.rotationStopDuration;
-	private final static int sleepTourneAndAvanceDuration = sleepTourneDuration + sleepAvanceDuration;
+//	private final static int sleepTourneAndAvanceDuration = sleepTourneDuration + sleepAvanceDuration;
 	
 	public RobotChrono(Log log)
 	{
@@ -125,7 +125,7 @@ public class RobotChrono extends Robot
 //			va_au_point_pathfinding(point.objectifFinal, point.differenceDistance, hooks);
 	}
 	
-	private void va_au_point_no_hook(Vec2<ReadOnly> point) throws FinMatchException
+/*	private void va_au_point_no_hook(Vec2<ReadOnly> point) throws FinMatchException
 	{
 		double orientation_finale = Math.atan2(point.y - position.y, point.x - position.x);
 		tourner(orientation_finale);
@@ -134,14 +134,14 @@ public class RobotChrono extends Robot
 		isPositionPathfindingActive = false;
 		positionPathfindingAnterieure = null;
 		positionPathfinding = null;
-	}
+	}*/
 	
 	/**
 	 * @param n
 	 * @param hooks
 	 * @throws FinMatchException
 	 */
-	public void va_au_point_pathfinding(PathfindingNodes n, int differenceDistance, ArrayList<Hook> hooks) throws FinMatchException
+	/*	public void va_au_point_pathfinding(PathfindingNodes n, int differenceDistance, ArrayList<Hook> hooks) throws FinMatchException
 	{
 		// Compensation de la trajectoire courbe
 		if(differenceDistance != 0)
@@ -172,16 +172,16 @@ public class RobotChrono extends Robot
 			checkHooks(position.getReadOnly(), n.getCoordonnees(), hooks);
 		}
 		setPositionPathfinding(n);
-	}
+	}*/
 
 	/**
 	 * Optimisation incroyable, même si on ne dirait pas comme ça.
 	 * @param n
 	 * @throws FinMatchException
 	 */
-	public void va_au_point_pathfinding_no_hook(LocomotionArc segment) throws FinMatchException
+	/*	public void va_au_point_pathfinding_no_hook(LocomotionArc segment) throws FinMatchException
 	{
-/*		PathfindingNodes n = segment.objectifFinal;
+		PathfindingNodes n = segment.objectifFinal;
 		// Compensation de la trajectoire courbe
 		if(segment.differenceDistance != 0)
 			date -= segment.differenceDistance*vitesse.invertedTranslationnalSpeed;// + sleepTourneAndAvanceDuration;
@@ -204,8 +204,8 @@ public class RobotChrono extends Robot
 			tourner(positionPathfinding.getOrientationFinale(n));
 			date += positionPathfinding.distanceTo(n)*vitesse.invertedTranslationnalSpeed + sleepAvanceDuration;
 		}
-		setPositionPathfinding(n);*/
-	}
+		setPositionPathfinding(n);
+	}*/
 
 	@Override
 	public void sleep(long duree, ArrayList<Hook> hooks) throws FinMatchException 
@@ -274,7 +274,7 @@ public class RobotChrono extends Robot
 			throw new FinMatchException();
 	}
 
-	public void setPositionPathfinding(PathfindingNodes n)
+/*	public void setPositionPathfinding(PathfindingNodes n)
 	{
 		Vec2.copy(n.getCoordonnees(), position);
 		positionPathfindingAnterieure = positionPathfinding;
@@ -287,7 +287,7 @@ public class RobotChrono extends Robot
 		if(isPositionPathfindingActive)
 			return positionPathfinding;
 		return null;
-	}
+	}*/
 
 	/**
 	 * UTILISE UNIQUEMENT PAR LES TESTS
@@ -298,17 +298,17 @@ public class RobotChrono extends Robot
 	}
 
 	// Permet de commander le lissage en vérifiant si on part d'un point qui n'est pas un node
-	public boolean isAtPathfindingNodes()
+/*	public boolean isAtPathfindingNodes()
 	{
 		return isPositionPathfindingActive;
-	}
+	}*/
 	
 	// TODO: passer en hashCode et equals()
 	
 	public int getHash()
 	{
 		int hash;
-		if(isPositionPathfindingActive)
+/*		if(isPositionPathfindingActive)
 		{
 			hash = 0;
 //			hash = tapisPoses?1:0; // information sur les tapis
@@ -316,14 +316,14 @@ public class RobotChrono extends Robot
 			hash = (hash << 9) | pointsObtenus; // d'ici provient le &511 de StrategyArcManager (511 = 2^9 - 1)
 		}
 		else
-		{
+		{*/
 			hash = 0;
 			// Pour la position, on ne prend pas les bits de poids trop faibles dont le risque de collision est trop grand
 //			hash = tapisPoses?1:0; // information sur les tapis
 			hash = (hash << 3) | ((position.x >> 2)&7); // petit hash sur 3 bits
 			hash = (hash << 3) | ((position.y >> 2)&7); // petit hash sur 3 bits
 			hash = (hash << 9) | pointsObtenus; // d'ici provient le &511 de StrategyArcManager (511 = 2^9 - 1)
-		}
+//		}
 		return hash;
 	}
 
