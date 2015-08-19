@@ -24,12 +24,6 @@ public class HookContact extends Hook {
 		this.nbCapteur = nbCapteur;
 	}
 
-/*	@Override
-	public void evaluate() throws FinMatchException, ScriptHookException, WallCollisionDetectedException, ChangeDirectionException {
-		if(System.currentTimeMillis() - Config.getDateDebutMatch() > date_hook)
-			trigger();
-	}*/
-
 	/**
 	 * Ce hook n'est pas simulable
 	 */
@@ -43,7 +37,7 @@ public class HookContact extends Hook {
 	public ArrayList<String> toSerial()
 	{
 		ArrayList<String> out = new ArrayList<String>();
-		out.add("hda");
+		out.add("hct");
 		out.add(String.valueOf(nbCapteur));
 		out.addAll(super.toSerial());
 		return out;

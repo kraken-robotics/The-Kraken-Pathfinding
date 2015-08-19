@@ -18,6 +18,12 @@ public class HookDate extends Hook {
 
 	protected long date_hook;
 	
+	/**
+	 * La date est le nombre de ms depuis le début du match
+	 * @param log
+	 * @param state
+	 * @param date
+	 */
 	public HookDate(Log log, GameState<?,ReadOnly> state, long date)
 	{
 		super(log, state);

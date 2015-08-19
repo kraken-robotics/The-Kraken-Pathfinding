@@ -40,8 +40,7 @@ public enum ServiceNames {
 	 THREAD_PATHFINDING(true),
 	 THREAD_STRATEGIE(true),
 	 THREAD_GRID_SPACE(true),
-	 THREAD_GRID_SPACE2(true),
-	 THREAD_TABLE(true);
+	 THREAD_GRID_SPACE2(true);
 
 	 private boolean isThread = false;
 	 

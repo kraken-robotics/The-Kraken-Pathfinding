@@ -16,6 +16,7 @@ import hook.Executable;
 
 public class UtiliseActionneur implements Executable
 {
+	//TODO attention à la symétrie des actionneurs
 	private ActuatorOrder o;
 	
 	public UtiliseActionneur(ActuatorOrder o)

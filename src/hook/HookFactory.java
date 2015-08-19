@@ -53,6 +53,7 @@ public class HookFactory implements Service
 		this.log = log;
 	}
 
+	@Override
 	public void updateConfig(Config config)
 	{}
 	
@@ -61,6 +62,7 @@ public class HookFactory implements Service
 	{
 		// demande avec quelle tolérance sur la précision on déclenche les hooks
 		dureeMatch = config.getInt(ConfigInfo.DUREE_MATCH_EN_S) * 1000;
+		Hook.useConfig(config);
 	}
 
 	/**

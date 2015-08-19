@@ -37,7 +37,6 @@ import threads.ThreadSerialInput;
 import threads.ThreadSerialOutput;
 import threads.ThreadStrategie;
 import threads.ThreadStrategieInfo;
-import threads.ThreadTable;
 import threads.ThreadPeremption;
 import requete.RequeteSTM;
 import robot.RobotReal;
@@ -258,10 +257,6 @@ public class Container
 																		(IncomingDataBuffer)getService(ServiceNames.INCOMING_DATA_BUFFER),
 																		(ObstacleManager)getService(ServiceNames.OBSTACLE_MANAGER),
 																		(RobotReal)getService(ServiceNames.ROBOT_REAL));
-		else if(serviceRequested == ServiceNames.THREAD_TABLE)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadTable((Log)getService(ServiceNames.LOG),
-																		(IncomingHookBuffer)getService(ServiceNames.INCOMING_HOOK_BUFFER),
-																		(Table)getService(ServiceNames.TABLE));
 		else if(serviceRequested == ServiceNames.THREAD_STRATEGIE_INFO)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadStrategieInfo((Log)getService(ServiceNames.LOG),
 																		(StrategieInfo)getService(ServiceNames.STRATEGIE_INFO),

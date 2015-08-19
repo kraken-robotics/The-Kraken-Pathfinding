@@ -44,12 +44,9 @@ abstract public class Hook
 	{
 		this.log = log;
 		this.state = state;
-		
-		// Cette optimisation est nécessaire car une lecture
-		// en config est très lente et on crée beaucoup de hook.
 	}
 	
-	void updateConfig(Config config)
+	public static void useConfig(Config config)
 	{
 		rayon_robot = config.getInt(ConfigInfo.RAYON_ROBOT);
 		dureeMatch = config.getInt(ConfigInfo.DUREE_MATCH_EN_S)*1000;
@@ -105,13 +102,13 @@ abstract public class Hook
 	 * On peut supprimer le hook s'il n'y a plus aucun callback déclenchable.
 	 * @return
 	 */
-	public boolean supprimable()
+ /*	public boolean supprimable()
 	{
 	    for(Callback c: callbacks)
 	        if(!c.shouldBeDeleted())
 	            return false;
 	    return true;
-	}
+	}*/
 
 	public void updateGameState(GameState<RobotChrono,ReadWrite> state)
 	{

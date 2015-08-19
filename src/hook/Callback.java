@@ -58,7 +58,8 @@ public class Callback
 	 */
 	public void call() throws FinMatchException, ScriptHookException, WallCollisionDetectedException, ChangeDirectionException
 	{
-		if(!(shouldBeDeleted()))
+		if(!isDone)
+//		if(!(shouldBeDeleted()))
 		{
             isDone = true;
 			method.execute();
@@ -69,10 +70,10 @@ public class Callback
 	 * Explique si le Callback devrait être détruit
 	 * @return true si le Callback devrait être détruit
 	 */
-	public boolean shouldBeDeleted()
+/*	public boolean shouldBeDeleted()
 	{
 	    return isUnique && isDone;
-	}
+	}*/
 
 	public void updateGameState(GameState<RobotChrono,ReadWrite> state)
 	{
