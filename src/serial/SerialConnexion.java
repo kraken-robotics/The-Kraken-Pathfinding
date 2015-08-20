@@ -270,7 +270,20 @@ public class SerialConnexion implements SerialPortEventListener, Service
 
 			//recuperation de l'id de la carte
 			while(!input.ready());
-			return input.readLine().trim().compareTo("T3") == 0;
+			if(input.readLine().trim().compareTo("T3") == 0)
+			{
+				long avant = System.currentTimeMillis();
+				for(int i = 0; i < 1000; i++)
+				{
+					output.write("?\r".getBytes());
+					while(!input.ready());
+					input.readLine();
+				}
+				log.debug("Latence de la série : "+((System.currentTimeMillis() - avant)/2)+" ns.");
+				return true;
+			}
+			else
+				return false;
 		}
 		catch (Exception e)
 		{
