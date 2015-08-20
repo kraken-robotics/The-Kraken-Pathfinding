@@ -195,4 +195,22 @@ public class DataForSerialOutput implements Service
 		for(Hook h : hooks)
 			elems.addAll(h.toSerial());
 	}
+
+	/**
+	 * Informe la STM du protocole des actionneurs
+	 */
+	public synchronized void envoieActionneurs()
+	{
+		ArrayList<String> elems = new ArrayList<String>();
+		elems.add(new String("alst"));
+		elems.add(String.valueOf(ActuatorOrder.values().length));
+		for(ActuatorOrder a : ActuatorOrder.values())
+		{
+			elems.add(a.getSerialOrder());
+			elems.add(a.getOrdreSSC32());
+			elems.add(String.valueOf(a.hasSymmetry()));
+		}
+		buffer.add(elems);
+		notify();
+	}
 }

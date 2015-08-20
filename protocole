@@ -15,6 +15,8 @@ actionneurs (protocole complet dans src/robot/ActuatorOrder.java)
     ordre_actionneur
 stopper le robot (procédure d'urgence) et annule l'itinéraire en cours
     stop
+envoie le protocole des actionneurs
+    alst nb_act [protocole_RB protocole_SSC32 a_symetrie …]
 envoie la liste des hooks valables pour tout le match. Chaque nouvel appel écrase ceux envoyés précédemment
     hlst nb_hook [hooks]
 ajoute point à l'itinéraire

@@ -9,15 +9,19 @@ package robot;
 
 // DEPENDS_ON_RULES
 public enum ActuatorOrder {
-	BAISSE_TAPIS_GAUCHE("ptg"),
-	BAISSE_TAPIS_DROIT("ptd"),
-	LEVE_TAPIS_GAUCHE("rtg");
+	BAISSE_TAPIS_GAUCHE("ptg", true, "ssc32 abwa"),
+	BAISSE_TAPIS_DROIT("ptd", true, "ssc32 obwo"),
+	LEVE_TAPIS_GAUCHE("rtg", false, "ssc32 ABWA");
 
 	private String serialOrder;
+	private String ordreSSC32;
+	private boolean symetrie;
 	
-	private ActuatorOrder(String serialOrder)
+	private ActuatorOrder(String serialOrder, boolean symetrie, String ordreSSC32)
 	{
 		this.serialOrder = serialOrder;
+		this.ordreSSC32 = ordreSSC32;
+		this.symetrie = symetrie;
 	}
 	
 	/**
@@ -33,16 +37,14 @@ public enum ActuatorOrder {
 	 * On retourne l'ordre symétrique s'il existe
 	 * @return
 	 */
-/*	public ActuatorOrder getSymmetry()
+	public String getOrdreSSC32()
 	{
-		if(!symetrieExiste)
-			return this;
-		return ActuatorOrder.values()[ordinal()^1];
-	}*/
+		return ordreSSC32;
+	}
 	
-/*	public boolean hasSymmetry()
+	public boolean hasSymmetry()
 	{
-		return symetrieExiste;
-	}*/
+		return symetrie;
+	}
 	
 }
