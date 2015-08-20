@@ -2,6 +2,7 @@ package threads;
 
 import container.Service;
 import table.GridSpace;
+import table.GridSpaceWayPoints;
 import table.Table;
 import utils.Config;
 import utils.Log;
@@ -41,7 +42,7 @@ public class ThreadGridSpace2 extends Thread implements Service {
 			}
 			log.debug("Réveil de ThreadGridSpace");	
 			
-			gridspace.reinitConnections();
+//			gridspace.reinitConnections();
 		}
 //		log.debug("Fermeture de ThreadGridSpace2");
 

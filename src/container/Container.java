@@ -21,6 +21,7 @@ import strategie.Strategie;
 import strategie.StrategieNotifieur;
 import table.Capteurs;
 import table.GridSpace;
+import table.GridSpace;
 import table.ObstacleManager;
 import table.StrategieInfo;
 import table.Table;
@@ -180,7 +181,8 @@ public class Container
 		else if(serviceRequested == ServiceNames.GRID_SPACE)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new GridSpace((Log)getService(ServiceNames.LOG),
 																				(ObstacleManager)getService(ServiceNames.OBSTACLE_MANAGER),
-																				(StrategieNotifieur)getService(ServiceNames.STRATEGIE_NOTIFIEUR));
+																				(StrategieNotifieur)getService(ServiceNames.STRATEGIE_NOTIFIEUR),
+																				(DataForSerialOutput)getService(ServiceNames.SERIAL_OUTPUT_BUFFER));
 
 		else if(serviceRequested == ServiceNames.STRATEGIE)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new Strategie((Log)getService(ServiceNames.LOG),
