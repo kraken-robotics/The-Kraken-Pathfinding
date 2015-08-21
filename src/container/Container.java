@@ -8,6 +8,7 @@ import buffer.IncomingDataBuffer;
 import buffer.IncomingHookBuffer;
 import pathfinding.DStarLite;
 import pathfinding.GridSpace;
+import pathfinding.MoteurPhysique;
 import permissions.ReadOnly;
 import permissions.ReadWrite;
 import planification.MemoryManager;
@@ -26,6 +27,8 @@ import table.Table;
 import threads.ThreadCapteurs;
 import threads.ThreadConfig;
 import threads.ThreadFinMatch;
+import threads.ThreadGameElementDoneByEnemy;
+import threads.ThreadGridSpace;
 import threads.ThreadSerialInput;
 import threads.ThreadSerialOutput;
 import requete.RequeteSTM;
@@ -238,10 +241,14 @@ public class Container
 																		(SerialConnexion)getService(ServiceNames.SERIE_STM),
 																		(DataForSerialOutput)getService(ServiceNames.SERIAL_OUTPUT_BUFFER));
 		else if(serviceRequested == ServiceNames.THREAD_GRID_SPACE)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadSerialOutput((Log)getService(ServiceNames.LOG),
-																		(Config)getService(ServiceNames.CONFIG),
-																		(SerialConnexion)getService(ServiceNames.SERIE_STM),
-																		(DataForSerialOutput)getService(ServiceNames.SERIAL_OUTPUT_BUFFER));
+			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadGridSpace((Log)getService(ServiceNames.LOG),
+																		(ObstaclesMobilesMemory)getService(ServiceNames.OBSTACLES_MOBILES_MEMORY),
+																		(GridSpace)getService(ServiceNames.GRID_SPACE));
+		else if(serviceRequested == ServiceNames.THREAD_GAME_ELEMENT_DONE_BY_ENEMY)
+			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadGameElementDoneByEnemy((Log)getService(ServiceNames.LOG),
+																		(ObstaclesMobilesMemory)getService(ServiceNames.OBSTACLES_MOBILES_MEMORY),
+																		(Table)getService(ServiceNames.TABLE),
+																		(MoteurPhysique)getService(ServiceNames.MOTEUR_PHYSIQUE));
 		else if(serviceRequested == ServiceNames.THREAD_CONFIG)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadConfig((Log)getService(ServiceNames.LOG),
 																		(Config)getService(ServiceNames.CONFIG),
@@ -249,7 +256,8 @@ public class Container
 		else if(serviceRequested == ServiceNames.STRATEGIE_INFO)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new StrategieInfo((Log)getService(ServiceNames.LOG), 
 																		(StrategieNotifieur)getService(ServiceNames.STRATEGIE_NOTIFIEUR));
-		
+		else if(serviceRequested == ServiceNames.MOTEUR_PHYSIQUE)
+			instanciedServices[serviceRequested.ordinal()] = (Service)new MoteurPhysique((Log)getService(ServiceNames.LOG)); 		
 		else if(serviceRequested == ServiceNames.STRATEGIE_NOTIFIEUR)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new StrategieNotifieur();		
 		// si le service demandé n'est pas connu, alors on log une erreur.

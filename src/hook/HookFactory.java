@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import permissions.ReadWrite;
 import hook.methods.GameElementDone;
 import hook.methods.ThrowScriptRequest;
+import hook.types.HookContact;
 import hook.types.HookDate;
 import hook.types.HookPosition;
 import container.Service;
@@ -13,6 +14,7 @@ import exceptions.FinMatchException;
 import robot.RobotChrono;
 import strategie.GameState;
 import table.GameElementNames;
+import table.GameElementType;
 import utils.Log;
 import utils.Config;
 
@@ -88,17 +90,32 @@ public class HookFactory implements Service
 //		// Il faut s'assurer que le hook de fin de match est toujours en première position
 //		hooksPermanents.add(getHooksFinMatch(state.getReadOnly()));
     	
-		for(GameElementNames n: GameElementNames.values())
+		for(GameElementType t : GameElementType.values())
 		{
-			// Ce que l'ennemi peut prendre
-			if(n.getType().isInCommon())
+			// Ce que l'ennemi peut prendre. Un hook par type d'élément de jeux
+			if(t.isInCommon())
 			{
-				hook = new HookDate(log, state.getReadOnly(), n.getType().getDateEnemyTakesIt());
-				action = new GameElementDone(state, n, Tribool.MAYBE);
-				hook.ajouter_callback(new Callback(action));
+				hook = new HookDate(log, state.getReadOnly(), t.getDateEnemyTakesIt());
+				for(GameElementNames n: GameElementNames.values())
+					if(n.getType() == t)
+					{
+						action = new GameElementDone(state, n, Tribool.MAYBE);
+						hook.ajouter_callback(new Callback(new GameElementDone(state, n, Tribool.MAYBE)));
+					}
 				hooksPermanents.add(hook);
 			}
 
+			// Les hooks de contact
+			if(t.scriptHookThrown() != null)
+			{
+				hook = new HookContact(log, state.getReadOnly(), t.scriptHookThrown().getNbCapteur());
+				hook.ajouter_callback(new Callback(new ThrowScriptRequest(t.scriptHookThrown())));
+				hooksPermanents.add(hook);
+			}
+		}
+
+		for(GameElementNames n: GameElementNames.values())
+		{
 			// Ce qu'on peut shooter
 			if(n.getType().canBeShot()) // on ne met un hook de collision que sur ceux qui ont susceptible de disparaître quand on passe dessus
 			{
@@ -108,16 +125,6 @@ public class HookFactory implements Service
 				hook.ajouter_callback(new Callback(action));
 				hooksPermanents.add(hook);
 			}
-			
-			if(n.getType().scriptHookThrown() != null)
-			{
-//				hook = new HookCollisionElementJeu(log, state.getReadOnly(), n.getObstacleDilate());
-				hook = new HookPosition(log, state.getReadOnly(), n.getObstacle().position, n.getObstacleDilate().radius);
-				ThrowScriptRequest action2 = new ThrowScriptRequest(n.getType().scriptHookThrown(), n.ordinal());
-				hook.ajouter_callback(new Callback(action2));
-				hooksPermanents.add(hook);				
-			}
-
 		}
 		return hooksPermanents;
     } 

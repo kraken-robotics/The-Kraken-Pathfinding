@@ -9,6 +9,12 @@ import utils.Log;
 import utils.Vec2;
 import hook.Hook;
 
+/**
+ * Hook qui se déclenche lorsqu'on traverse un demi-plan
+ * @author pf
+ *
+ */
+
 public class HookDemiPlan extends Hook
 {
 

@@ -76,7 +76,7 @@ Un callback
 Une méthode
     tbl nb_element done
 ou
-    scr nb_script param
+    scr nb_script
 ou
     act ordre_act
 
