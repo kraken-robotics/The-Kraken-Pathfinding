@@ -1,6 +1,6 @@
 package threads;
 
-import table.ObstaclesMobilesIterator;
+import obstacles.ObstaclesMobilesIterator;
 import table.StrategieInfo;
 import utils.Config;
 import utils.Log;

@@ -1,4 +1,6 @@
-package obstacles;
+package obstacles.types;
+
+import java.util.ArrayList;
 
 import permissions.ReadOnly;
 import permissions.ReadWrite;
@@ -12,11 +14,18 @@ import utils.Vec2;
 public class ObstacleProximity extends ObstacleCircular
 {
 	private long death_date;
-
+	private ArrayList<Integer> pourtourGrille;
+	
 	public ObstacleProximity(Vec2<ReadOnly> position, int rad, long death_date)
 	{
 		super(position,rad);
 		this.death_date = death_date;
+		// TODO calculer pourtourGrille
+	}
+	
+	public ArrayList<Integer> getPourtourGrille()
+	{
+		return pourtourGrille;
 	}
 	
 	@Override

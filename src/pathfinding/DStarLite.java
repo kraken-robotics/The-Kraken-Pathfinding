@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import permissions.ReadOnly;
 import robot.RobotReal;
 import strategie.GameState;
-import table.GridSpace;
 import utils.Config;
 import utils.Log;
 import utils.Vec2;

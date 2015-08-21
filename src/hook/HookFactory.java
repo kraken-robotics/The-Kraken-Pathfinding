@@ -103,7 +103,7 @@ public class HookFactory implements Service
 			if(n.getType().canBeShot()) // on ne met un hook de collision que sur ceux qui ont susceptible de disparaître quand on passe dessus
 			{
 //				hook = new HookCollisionElementJeu(log, state.getReadOnly(), n.getObstacle());
-				hook = new HookPosition(log, state.getReadOnly(), n.getObstacle().position, n.getObstacleDilate().getRadius());
+				hook = new HookPosition(log, state.getReadOnly(), n.getObstacle().position, n.getObstacleDilate().radius);
 				action = new GameElementDone(state, n, Tribool.TRUE);
 				hook.ajouter_callback(new Callback(action));
 				hooksPermanents.add(hook);
@@ -112,7 +112,7 @@ public class HookFactory implements Service
 			if(n.getType().scriptHookThrown() != null)
 			{
 //				hook = new HookCollisionElementJeu(log, state.getReadOnly(), n.getObstacleDilate());
-				hook = new HookPosition(log, state.getReadOnly(), n.getObstacle().position, n.getObstacleDilate().getRadius());
+				hook = new HookPosition(log, state.getReadOnly(), n.getObstacle().position, n.getObstacleDilate().radius);
 				ThrowScriptRequest action2 = new ThrowScriptRequest(n.getType().scriptHookThrown(), n.ordinal());
 				hook.ajouter_callback(new Callback(action2));
 				hooksPermanents.add(hook);				

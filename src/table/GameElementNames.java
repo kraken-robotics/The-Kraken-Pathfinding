@@ -1,6 +1,6 @@
 package table;
 
-import obstacles.ObstacleCircular;
+import obstacles.types.ObstacleCircular;
 import permissions.ReadOnly;
 import utils.Vec2;
 

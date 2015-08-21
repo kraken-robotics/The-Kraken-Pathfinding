@@ -2,7 +2,7 @@ package hook.types;
 
 import java.util.ArrayList;
 
-import obstacles.ObstacleCircular;
+import obstacles.types.ObstacleCircular;
 import permissions.ReadOnly;
 import hook.Hook;
 import strategie.GameState;

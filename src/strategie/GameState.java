@@ -1,5 +1,7 @@
 package strategie;
 
+import obstacles.ObstaclesMobilesIterator;
+import obstacles.ObstaclesMobilesMemory;
 import buffer.DataForSerialOutput;
 import permissions.Permission;
 import permissions.ReadOnly;
@@ -10,8 +12,6 @@ import robot.RobotReal;
 import hook.HookFactory;
 import container.Service;
 import exceptions.FinMatchException;
-import table.ObstaclesMobilesIterator;
-import table.ObstaclesMobilesMemory;
 import table.Table;
 import utils.Log;
 import utils.Config;

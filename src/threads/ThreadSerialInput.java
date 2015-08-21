@@ -7,6 +7,7 @@ import buffer.IncomingHookBuffer;
 import permissions.ReadOnly;
 import requete.RequeteSTM;
 import requete.RequeteType;
+import robot.RobotReal;
 import scripts.ScriptHookNames;
 import serial.SerialConnexion;
 import table.GameElementNames;
@@ -33,12 +34,13 @@ public class ThreadSerialInput extends Thread implements Service
 	private IncomingDataBuffer buffer;
 	private IncomingHookBuffer hookbuffer;
 	private Table table;
+	private RobotReal robot;
 	
 	private RequeteSTM requete;
 	private boolean capteursOn = false;
 	private volatile int nbCapteurs;
 	
-	public ThreadSerialInput(Log log, Config config, SerialConnexion serie, IncomingDataBuffer buffer, IncomingHookBuffer hookbuffer, RequeteSTM requete, Table table)
+	public ThreadSerialInput(Log log, Config config, SerialConnexion serie, IncomingDataBuffer buffer, IncomingHookBuffer hookbuffer, RequeteSTM requete, Table table, RobotReal robot)
 	{
 		this.log = log;
 		this.config = config;
@@ -47,6 +49,7 @@ public class ThreadSerialInput extends Thread implements Service
 		this.hookbuffer = hookbuffer;
 		this.requete = requete;
 		this.table = table;
+		this.robot = robot;
 	}
 
 	@Override
@@ -77,13 +80,13 @@ public class ThreadSerialInput extends Thread implements Service
 						 	 */
 							int xRobot = Integer.parseInt(serie.read());
 							int yRobot = Integer.parseInt(serie.read());
+							Vec2<ReadOnly> positionRobot = new Vec2<ReadOnly>(xRobot, yRobot);
 							double orientationRobot = Double.parseDouble(serie.read());
-							int portion = Integer.parseInt(serie.read());
 							int[] mesures = new int[nbCapteurs];
 							for(int i = 0; i < nbCapteurs; i++)
 								mesures[i] = Integer.parseInt(serie.read());
-
-							buffer.add(new IncomingData(new Vec2<ReadOnly>(xRobot, yRobot), orientationRobot, portion, mesures, capteursOn));
+							robot.setPositionOrientationJava(positionRobot, orientationRobot);
+							buffer.add(new IncomingData(positionRobot, orientationRobot, mesures, capteursOn));
 							break;
 							
 							/**

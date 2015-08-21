@@ -1,8 +1,8 @@
-package table;
+package obstacles;
 
 import java.util.Iterator;
 
-import obstacles.ObstacleProximity;
+import obstacles.types.ObstacleProximity;
 import utils.Log;
 
 /**
@@ -73,6 +73,7 @@ public class ObstaclesMobilesIterator implements Iterator<ObstacleProximity>
 	{
 		nbTmp = firstNotDead;
 	}
+
 	
 	public int getFirstNotDead()
 	{
@@ -82,7 +83,7 @@ public class ObstaclesMobilesIterator implements Iterator<ObstacleProximity>
 	/**
 	 * Calcule l'entrée où commence les obstacles maintenant
 	 */
-	public void initNow()
+	public void reinitNow()
 	{
 		firstNotDead = memory.getFirstNotDeadNow();
 		nbTmp = firstNotDead;

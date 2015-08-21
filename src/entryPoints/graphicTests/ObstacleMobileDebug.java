@@ -2,12 +2,12 @@ package entryPoints.graphicTests;
 
 import java.util.Random;
 
+import obstacles.Capteurs;
+import obstacles.ObstaclesMobilesIterator;
 import buffer.IncomingData;
 import buffer.IncomingDataBuffer;
 import permissions.ReadOnly;
 import permissions.ReadWrite;
-import table.Capteurs;
-import table.ObstaclesMobilesIterator;
 import tests.graphicLib.Fenetre;
 import utils.Log;
 import utils.Sleep;

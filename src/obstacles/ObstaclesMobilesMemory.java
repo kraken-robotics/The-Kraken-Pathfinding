@@ -1,8 +1,8 @@
-package table;
+package obstacles;
 
 import java.util.ArrayList;
 
-import obstacles.ObstacleProximity;
+import obstacles.types.ObstacleProximity;
 import permissions.ReadOnly;
 import utils.Config;
 import utils.ConfigInfo;
@@ -40,6 +40,7 @@ public class ObstaclesMobilesMemory implements Service
 //      log.warning("Obstacle créé, rayon = "+rayon_robot_adverse+", centre = "+position+", meurt à "+(date_actuelle+dureeAvantPeremption), this);
         listObstaclesMobiles.add(obstacle);
         size++;
+		notify();
 	}
 	
 	public synchronized int nbMax()
@@ -63,7 +64,7 @@ public class ObstaclesMobilesMemory implements Service
 		return listObstaclesMobiles.get(nbTmp-firstNotDeadNow);
 	}
 
-	public synchronized boolean update()
+	public synchronized void deleteOldObstacles()
 	{
 		boolean shouldNotify = false;
 		while(!listObstaclesMobiles.isEmpty())
@@ -77,7 +78,8 @@ public class ObstaclesMobilesMemory implements Service
 			else
 				break;
 		}
-		return shouldNotify;
+		if(shouldNotify)
+			notify();
 	}
 	
 	public synchronized long getNextDeathDate()

@@ -1,5 +1,7 @@
 package tests;
 
+import obstacles.ObstaclesMobilesIterator;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -8,7 +10,6 @@ import permissions.ReadOnly;
 import planification.astar.arc.PathfindingNodes;
 import container.ServiceNames;
 import table.GameElementNames;
-import table.ObstaclesMobilesIterator;
 import table.Table;
 import utils.ConfigInfo;
 import utils.Vec2;

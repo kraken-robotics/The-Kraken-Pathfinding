@@ -1,4 +1,4 @@
-package obstacles;
+package obstacles.types;
 
 import permissions.ReadOnly;
 import permissions.ReadWrite;
@@ -14,8 +14,8 @@ public class ObstacleCircular extends Obstacle
 	// le Vec2 "position" indique le centre de l'obstacle
 	
 	// rayon de cet obstacle
-	protected int radius;
-	protected int squared_radius;
+	public final int radius;
+	public final int squared_radius;
 	protected static int squared_radius_with_dilatation_obstacle = -1;
 	
 	public ObstacleCircular(Vec2<ReadOnly> position, int rad)
@@ -28,11 +28,6 @@ public class ObstacleCircular extends Obstacle
 			squared_radius_with_dilatation_obstacle = radius + marge + rayonRobot;
 			squared_radius_with_dilatation_obstacle *= squared_radius_with_dilatation_obstacle;
 		}
-	}
-
-	public int getRadius()
-	{
-		return radius;
 	}
 
 	public String toString()

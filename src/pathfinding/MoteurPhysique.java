@@ -1,12 +1,14 @@
-package table;
+package pathfinding;
 
-import obstacles.Obstacle;
-import obstacles.ObstacleRectangular;
-import obstacles.ObstacleTrajectoireCourbe;
-import obstacles.ObstaclesFixes;
+import obstacles.types.Obstacle;
+import obstacles.types.ObstacleProximity;
+import obstacles.types.ObstacleRectangular;
+import obstacles.types.ObstacleTrajectoireCourbe;
+import obstacles.types.ObstaclesFixes;
 import permissions.ReadOnly;
 import planification.astar.arc.PathfindingNodes;
 import robot.Speed;
+import table.GameElementNames;
 import utils.Config;
 import utils.Log;
 import utils.Vec2;
@@ -21,7 +23,7 @@ import enums.Tribool;
 
 public class MoteurPhysique implements Service {
 	
-	private Log log;
+	protected Log log;
 	
 	public MoteurPhysique(Log log)
 	{
@@ -180,9 +182,9 @@ public class MoteurPhysique implements Service {
 	 * @param rayon_robot_adverse
 	 * @return
 	 */
-	public boolean isProcheObstacle(GameElementNames g, Vec2<ReadOnly> position, int rayon_robot_adverse)
+	public boolean didTheEnemyTakeIt(GameElementNames g, ObstacleProximity o)
 	{
-		return g.getObstacle().isProcheObstacle(position, rayon_robot_adverse);
+		return g.getObstacle().isProcheObstacle(o.position, o.radius);
 	}
 
 	/**

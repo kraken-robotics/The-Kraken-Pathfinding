@@ -4,11 +4,12 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Random;
 
-import obstacles.Obstacle;
-import obstacles.ObstacleTrajectoireCourbe;
-import obstacles.ObstacleRectangular;
-import obstacles.ObstacleRotationRobot;
-import obstacles.ObstaclesFixes;
+import obstacles.ObstaclesMobilesIterator;
+import obstacles.types.Obstacle;
+import obstacles.types.ObstacleRectangular;
+import obstacles.types.ObstacleRotationRobot;
+import obstacles.types.ObstacleTrajectoireCourbe;
+import obstacles.types.ObstaclesFixes;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -28,7 +29,6 @@ import robot.Speed;
 import scripts.ScriptManager;
 import scripts.ScriptAnticipableNames;
 import strategie.GameState;
-import table.ObstaclesMobilesIterator;
 import tests.graphicLib.Fenetre;
 import utils.ConfigInfo;
 import utils.Sleep;

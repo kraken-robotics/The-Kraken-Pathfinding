@@ -1,10 +1,13 @@
 package container;
 
-import obstacles.Obstacle;
+import obstacles.Capteurs;
+import obstacles.ObstaclesMobilesMemory;
+import obstacles.types.Obstacle;
 import buffer.DataForSerialOutput;
 import buffer.IncomingDataBuffer;
 import buffer.IncomingHookBuffer;
 import pathfinding.DStarLite;
+import pathfinding.GridSpace;
 import permissions.ReadOnly;
 import permissions.ReadWrite;
 import planification.MemoryManager;
@@ -18,22 +21,13 @@ import strategie.Execution;
 import strategie.GameState;
 import strategie.Strategie;
 import strategie.StrategieNotifieur;
-import table.Capteurs;
-import table.GridSpace;
-import table.ObstaclesMobilesIterator;
-import table.ObstaclesMobilesMemory;
 import table.StrategieInfo;
 import table.Table;
 import threads.ThreadCapteurs;
 import threads.ThreadConfig;
 import threads.ThreadFinMatch;
-import threads.ThreadGridSpace;
-import threads.ThreadGridSpace2;
-import threads.ThreadPathfinding;
 import threads.ThreadSerialInput;
 import threads.ThreadSerialOutput;
-import threads.ThreadStrategie;
-import threads.ThreadStrategieInfo;
 import requete.RequeteSTM;
 import robot.RobotReal;
 
@@ -174,9 +168,8 @@ public class Container
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ObstaclesMobilesMemory((Log)getService(ServiceNames.LOG));
 		else if(serviceRequested == ServiceNames.GRID_SPACE)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new GridSpace((Log)getService(ServiceNames.LOG),
-																				(MoteurPhysique)getService(ServiceNames.MOTEUR_PHYSIQUE),
-																				(StrategieNotifieur)getService(ServiceNames.STRATEGIE_NOTIFIEUR),
-																				(DataForSerialOutput)getService(ServiceNames.SERIAL_OUTPUT_BUFFER));
+																					(ObstaclesMobilesMemory)getService(ServiceNames.OBSTACLES_MOBILES_MEMORY),
+																					(Table)getService(ServiceNames.TABLE));
 
 		else if(serviceRequested == ServiceNames.STRATEGIE)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new Strategie(/*(Log)getService(ServiceNames.LOG),
@@ -235,10 +228,16 @@ public class Container
 																		(IncomingDataBuffer)getService(ServiceNames.INCOMING_DATA_BUFFER),
 																		(IncomingHookBuffer)getService(ServiceNames.INCOMING_HOOK_BUFFER),
 																		(RequeteSTM)getService(ServiceNames.REQUETE_STM),
-																		(Table)getService(ServiceNames.TABLE));
+																		(Table)getService(ServiceNames.TABLE),
+																		(RobotReal)getService(ServiceNames.ROBOT_REAL));
 		else if(serviceRequested == ServiceNames.REQUETE_STM)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new RequeteSTM((Log)getService(ServiceNames.LOG));
 		else if(serviceRequested == ServiceNames.THREAD_SERIAL_OUTPUT)
+			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadSerialOutput((Log)getService(ServiceNames.LOG),
+																		(Config)getService(ServiceNames.CONFIG),
+																		(SerialConnexion)getService(ServiceNames.SERIE_STM),
+																		(DataForSerialOutput)getService(ServiceNames.SERIAL_OUTPUT_BUFFER));
+		else if(serviceRequested == ServiceNames.THREAD_GRID_SPACE)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadSerialOutput((Log)getService(ServiceNames.LOG),
 																		(Config)getService(ServiceNames.CONFIG),
 																		(SerialConnexion)getService(ServiceNames.SERIE_STM),

@@ -1,4 +1,4 @@
-package table;
+package pathfinding;
 
 /**
  * Énumération des directions dans un gridspace à 8 voisins.

@@ -4,9 +4,9 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import utils.Vec2;
-import obstacles.ObstacleCircular;
-import obstacles.ObstacleRectangular;
-import obstacles.ObstaclesFixes;
+import obstacles.types.ObstacleCircular;
+import obstacles.types.ObstacleRectangular;
+import obstacles.types.ObstaclesFixes;
 import permissions.ReadOnly;
 
 /**

@@ -3,14 +3,14 @@ package tests.graphicLib;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
-import obstacles.ObstacleCircular;
-import obstacles.ObstacleProximity;
-import obstacles.ObstacleRectangular;
-import obstacles.ObstaclesFixes;
+import obstacles.Capteurs;
+import obstacles.types.ObstacleCircular;
+import obstacles.types.ObstacleProximity;
+import obstacles.types.ObstacleRectangular;
+import obstacles.types.ObstaclesFixes;
 //import obstacles.ObstaclesFixes;
 import permissions.ReadOnly;
 import permissions.ReadWrite;
-import table.Capteurs;
 //import table.GameElementNames;
 import utils.Vec2;
 

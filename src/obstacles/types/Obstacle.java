@@ -1,4 +1,4 @@
-package obstacles;
+package obstacles.types;
 import permissions.ReadOnly;
 import utils.Config;
 import utils.ConfigInfo;

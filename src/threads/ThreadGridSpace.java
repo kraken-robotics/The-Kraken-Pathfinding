@@ -1,9 +1,8 @@
 package threads;
 
+import obstacles.ObstaclesMobilesMemory;
+import pathfinding.GridSpace;
 import container.Service;
-import table.GridSpace;
-import table.GridSpaceWayPoints;
-import table.ObstaclesMobilesIterator;
 import utils.Config;
 import utils.Log;
 
@@ -16,13 +15,13 @@ import utils.Log;
 public class ThreadGridSpace extends Thread implements Service {
 
 	protected Log log;
-	private ObstaclesMobilesIterator obstaclemanager;
+	private ObstaclesMobilesMemory memory;
 	private GridSpace gridspace;
 	
-	public ThreadGridSpace(Log log, ObstaclesMobilesIterator obstaclemanager, GridSpace gridspace)
+	public ThreadGridSpace(Log log, ObstaclesMobilesMemory memory, GridSpace gridspace)
 	{
 		this.log = log;
-		this.obstaclemanager = obstaclemanager;
+		this.memory = memory;
 		this.gridspace = gridspace;
 	}
 
@@ -31,18 +30,17 @@ public class ThreadGridSpace extends Thread implements Service {
 	{
 		while(true)
 		{
-			synchronized(obstaclemanager)
+			synchronized(memory)
 			{
 				try {
-					obstaclemanager.wait();
+					memory.wait();
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
-//			log.debug("Réveil de ThreadGridSpace");	
 			
-//			gridspace.reinitConnections();
+			gridspace.updateObstaclesMobiles();
 		}
 //		log.debug("Fermeture de ThreadGridSpace");
 

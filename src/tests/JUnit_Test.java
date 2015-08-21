@@ -1,9 +1,10 @@
 package tests;
 
+import obstacles.ObstaclesMobilesIterator;
+
 import org.junit.Before;
 import org.junit.After;
 
-import table.ObstaclesMobilesIterator;
 import utils.ConfigInfo;
 import utils.Log;
 import utils.Config;

@@ -1,14 +1,15 @@
 package tests;
 
+import obstacles.ObstaclesMobilesIterator;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import pathfinding.GridSpace;
 import permissions.ReadOnly;
 import planification.astar.arc.PathfindingNodes;
 import container.ServiceNames;
-import table.GridSpace;
-import table.ObstaclesMobilesIterator;
 import utils.ConfigInfo;
 import utils.Vec2;
 

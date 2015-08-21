@@ -1,9 +1,6 @@
 package threads;
 
-import table.GridSpace;
-import table.ObstacleManager;
-import table.ObstaclesMobilesIterator;
-import table.ObstaclesMobilesMemory;
+import obstacles.ObstaclesMobilesMemory;
 import utils.Config;
 import utils.ConfigInfo;
 import utils.Log;
@@ -22,15 +19,13 @@ public class ThreadPeremption extends Thread implements Service
 
 	private ObstaclesMobilesMemory memory;
 	protected Log log;
-	private GridSpace gridspace;
 
 	private int dureePeremption;
 
-	public ThreadPeremption(Log log, ObstaclesMobilesMemory memory, GridSpace gridspace)
+	public ThreadPeremption(Log log, ObstaclesMobilesMemory memory)
 	{
 		this.log = log;
 		this.memory = memory;
-		this.gridspace = gridspace;
 	}
 	
 	@Override
@@ -38,10 +33,9 @@ public class ThreadPeremption extends Thread implements Service
 	{
 		while(true)
 		{
-			// petite marge
-			if(memory.update())
-				gridspace.update();
-			long prochain = memory.getNextDeathDate() + 5;
+			memory.deleteOldObstacles();
+
+			long prochain = memory.getNextDeathDate();
 			
 			/**
 			 * S'il n'y a pas d'obstacles, on dort de dureePeremption, qui est la durée minimale avant la prochaine péremption.
@@ -49,8 +43,8 @@ public class ThreadPeremption extends Thread implements Service
 			if(prochain == Long.MAX_VALUE)
 				Sleep.sleep(dureePeremption);
 			else
-				// Il faut toujours s'assurer qu'on dorme un temps positif.
-				Sleep.sleep(Math.min(dureePeremption, Math.max(prochain - System.currentTimeMillis(), 0)));
+				// Il faut toujours s'assurer qu'on dorme un temps positif. Il y a aussi une petite marge
+				Sleep.sleep(Math.min(dureePeremption, Math.max(prochain - System.currentTimeMillis() + 5, 0)));
 		}
 //		log.debug("Fermeture de ThreadPeremption");
 	}

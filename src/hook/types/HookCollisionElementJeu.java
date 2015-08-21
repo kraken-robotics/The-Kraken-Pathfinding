@@ -4,8 +4,8 @@ import java.util.ArrayList;
 
 import hook.Hook;
 import exceptions.FinMatchException;
-import obstacles.ObstacleCircular;
-import obstacles.ObstacleRectangular;
+import obstacles.types.ObstacleCircular;
+import obstacles.types.ObstacleRectangular;
 import permissions.ReadOnly;
 import permissions.ReadWrite;
 import strategie.GameState;

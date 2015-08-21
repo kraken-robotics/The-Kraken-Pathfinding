@@ -2,7 +2,7 @@ package threads;
 
 import container.Service;
 import pathfinding.DStarLite;
-import table.GridSpace;
+import pathfinding.GridSpace;
 import utils.Config;
 import utils.Log;
 
