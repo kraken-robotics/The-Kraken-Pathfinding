@@ -1,11 +1,14 @@
 package threads;
 
+import permissions.ReadOnly;
 import buffer.IncomingData;
 import buffer.IncomingDataBuffer;
 import robot.RobotReal;
+import table.GameElementNames;
 import table.ObstacleManager;
 import utils.Config;
 import utils.Log;
+import utils.Vec2;
 import container.Service;
 
 /**
@@ -51,8 +54,8 @@ public class ThreadObstacleManager extends Thread implements Service
 			// Il n'est pas synchronized car il ne modifie pas le buffer
 //			if(e != null)
 			robot.setPositionOrientationJava(e.positionRobot, e.orientationRobot);
-			if(e.capteursOn)
-				obstaclemanager.updateObstaclesMobiles(e);
+//			if(e.capteursOn)
+//				obstaclemanager.updateObstaclesMobiles(e);
 			
 		}
 //		log.debug("Fermeture de ThreadObstacleManager");
@@ -65,5 +68,21 @@ public class ThreadObstacleManager extends Thread implements Service
 	@Override
 	public void useConfig(Config config)
 	{}
+	
+	/**
+	 * Supprime les éléments de jeux qui sont proches de cette position.
+	 * @param position
+	 */
+	private void checkGameElements(Vec2<ReadOnly> position)
+	{
+	    // On vérifie aussi ceux qui ont un rayon nul (distributeur, clap, ..)
+	    for(GameElementNames g: GameElementNames.values)
+	        if(table.isDone(g) == Tribool.FALSE && table.isProcheObstacle(g, position, rayonEnnemi))
+	        	table.setDone(g, Tribool.MAYBE);
+	}
+
 
 }
+
+
+

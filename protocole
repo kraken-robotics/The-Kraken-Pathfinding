@@ -47,7 +47,7 @@ le match commence
 la couleur du robot
     color couleur
 infos des capteurs
-    cpt x_robot y_robot orientation_robot portion_du_chemin mesure1 [mesure2 …]
+    cpt x_robot y_robot orientation_robot mesure1 [mesure2 …]
 un actionneur a un problème
     acpb
 un actionneur a fini son mouvement

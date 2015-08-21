@@ -19,7 +19,7 @@ public enum ServiceNames {
 	 SERIE_STM,
 	 STRATEGIE,
 	 PATHFINDING,
-	 CHEMIN_ACTUEL,
+//	 CHEMIN_ACTUEL,
 	 STRATEGIE_NOTIFIEUR,
 	 OBSTACLE_MANAGER,
 	 GRID_SPACE,
@@ -28,28 +28,28 @@ public enum ServiceNames {
 	 MEMORY_MANAGER,
 	 SERIAL_OUTPUT_BUFFER,
 	 REQUETE_STM,
+	 MOTEUR_PHYSIQUE,
+	 OBSTACLES_MOBILES_MEMORY,
 	 
 	 // Les threads
-	 THREAD_FIN_MATCH(true),
-	 THREAD_PEREMPTION(true),
-	 THREAD_SERIAL_INPUT(true),
-	 THREAD_SERIAL_OUTPUT(true),
-	 THREAD_CONFIG(true),
-	 THREAD_OBSTACLE_MANAGER(true),
-	 THREAD_STRATEGIE_INFO(true),
-	 THREAD_PATHFINDING(true),
-	 THREAD_STRATEGIE(true),
-	 THREAD_GRID_SPACE(true),
-	 THREAD_GRID_SPACE2(true);
+	 THREAD_FIN_MATCH,
+	 THREAD_PEREMPTION,
+	 THREAD_SERIAL_INPUT,
+	 THREAD_SERIAL_OUTPUT,
+	 THREAD_CONFIG,
+	 THREAD_OBSTACLE_MANAGER,
+	 THREAD_STRATEGIE_INFO,
+	 THREAD_PATHFINDING,
+	 THREAD_STRATEGIE,
+	 THREAD_GRID_SPACE,
+	 THREAD_GRID_SPACE2,
+	 THREAD_CAPTEURS;
 
 	 private boolean isThread = false;
 	 
 	 private ServiceNames()
-	 {}
-	 
-	 private ServiceNames(boolean isThread)
 	 {
-		 this.isThread = isThread;
+		 isThread = name().startsWith("THREAD_");
 	 }
 	 
 	 public boolean isThread()

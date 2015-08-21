@@ -29,10 +29,10 @@ public class Strategie implements Service {
 	private Pathfinding pathfinding;
 	private MemoryManager memorymanager;
 	
-	public Strategie(Log log, ScriptManager scriptmanager, GameState<RobotReal,ReadOnly> real_gamestate, HookFactory hookfactory, Pathfinding pathfinding, MemoryManager memorymanager)
-	{
+//	public Strategie(Log log, ScriptManager scriptmanager, GameState<RobotReal,ReadOnly> real_gamestate, HookFactory hookfactory, Pathfinding pathfinding, MemoryManager memorymanager)
+//	{
 		
-	}
+//	}
 	
 	/**
 	 * Mise à jour des coûts après une modification des obstacles

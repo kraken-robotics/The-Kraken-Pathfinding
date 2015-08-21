@@ -1,7 +1,5 @@
 package table;
 
-import obstacles.ObstacleRectangular;
-import permissions.ReadOnly;
 import container.Service;
 import enums.Tribool;
 import strategie.StrategieNotifieur;
@@ -102,29 +100,6 @@ public class Table implements Service
 	{}
 
 	/**
-	 * g est-il proche de position? (utilisé pour vérifier si on shoot dans un élément de jeu)
-	 * @param g
-	 * @param position
-	 * @param rayon_robot_adverse
-	 * @return
-	 */
-	public boolean isProcheObstacle(GameElementNames g, Vec2<ReadOnly> position, int rayon_robot_adverse)
-	{
-		return g.getObstacle().isProcheObstacle(position, rayon_robot_adverse);
-	}
-
-	/**
-	 * g est-il dans le segment[a, b]?
-	 * @param g
-	 * @param a
-	 * @param b
-	 * @return
-	 */
-	public boolean obstacle_proximite_dans_segment(GameElementNames g, ObstacleRectangular o)
-	{
-		return o.isColliding(g.getObstacle());
-	}
-	/**
 	 * Utilisé pour le debug
 	 */
 	public void printHash()
@@ -133,10 +108,6 @@ public class Table implements Service
 		{
 			long etat = (hash >> 2*g.ordinal()) % 4;
 			log.debug(g+" : "+Tribool.parse((int)etat));
-			
-//			for(Tribool t: Tribool.values())
-//				if(etat == t.getHash())
-//					log.debug(g+": "+t);
 		}
 	}
 

@@ -1,6 +1,10 @@
 package table;
 
+import buffer.IncomingData;
+import obstacles.Obstacle;
 import obstacles.ObstacleCircular;
+import obstacles.ObstacleRectangular;
+import obstacles.ObstaclesFixes;
 import container.Service;
 import permissions.ReadOnly;
 import permissions.ReadWrite;
@@ -21,11 +25,20 @@ public class Capteurs implements Service {
 	// DEPENDS ON ROBOT
 	
 	protected Log log;
+	private ObstaclesMobilesMemory memory;
 	
 	private static final int nbCapteurs = 12;
 	
 	private static final int nbCouples = 4;
 	
+	private static final boolean debug = true;
+
+    private int distanceApproximation;
+	private int table_x = 3000;
+	private int table_y = 2000;
+	private int rayonEnnemi;
+    private int horizonCapteurs;
+
 	/**
 	 * Les ultrasons ont un cône de 35°
 	 * Les infrarouges, de 5°
@@ -35,7 +48,7 @@ public class Capteurs implements Service {
 	private static final int ultrason = 0;
 	private static final int infrarouge = 1;
 	
-	private final int nbUltrasons = 12;
+	private static final int nbUltrasons = 12;
 	private int horizonCapteursSquared;
 	
 	/**
@@ -61,11 +74,12 @@ public class Capteurs implements Service {
 	/**
 	 * L'orientation des capteurs lorsque le robot a une orientation nulle
 	 */
-	public static double[] orientationsRelatives;
+	public double[] orientationsRelatives;
 
-	public Capteurs(Log log, Config config)
+	public Capteurs(Log log, Config config, ObstaclesMobilesMemory memory)
 	{
 		this.log = log;
+		this.memory = memory;
 		positionsRelatives = new Vec2[nbCapteurs];
 		orientationsRelatives = new double[nbCapteurs];
 
@@ -303,11 +317,19 @@ public class Capteurs implements Service {
 
 	@Override
 	public void updateConfig(Config config)
-	{}
+	{
+//		nbCapteurs = config.getInt(ConfigInfo.NB_CAPTEURS_PROXIMITE);
+//		nbCouples = config.getInt(ConfigInfo.NB_COUPLES_CAPTEURS_PROXIMITE);
+	}
 
 	@Override
 	public void useConfig(Config config)
 	{
+		table_x = config.getInt(ConfigInfo.TABLE_X);
+		table_y = config.getInt(ConfigInfo.TABLE_Y);
+		rayonEnnemi = config.getInt(ConfigInfo.RAYON_ROBOT_ADVERSE);
+		distanceApproximation = config.getInt(ConfigInfo.DISTANCE_MAX_ENTRE_MESURE_ET_OBJET);
+		horizonCapteurs = config.getInt(ConfigInfo.HORIZON_CAPTEURS);
 		horizonCapteursSquared = config.getInt(ConfigInfo.HORIZON_CAPTEURS);
 		horizonCapteursSquared *= horizonCapteursSquared;
 	}
@@ -316,5 +338,452 @@ public class Capteurs implements Service {
 	{
 		return angleCone[nbCapteur < nbUltrasons ? ultrason : infrarouge];
 	}
+
+	/**
+	 * Met à jour les obstacles mobiles
+	 */
+	public void updateObstaclesMobiles(IncomingData data)
+	{
+		boolean[] neVoitRien = new boolean[nbCapteurs];
+		boolean[] dejaTraite = new boolean[nbCapteurs];
+			
+		/**
+		 * Suppression des mesures qui sont hors-table ou qui voient un obstacle de table
+		 */
+		for(int i = 0; i < nbCapteurs; i++)
+		{
+			dejaTraite[i] = false;
+			if(debug)
+				log.debug("Capteur "+i);
+			if(data.mesures[i] < 40 || data.mesures[i] > horizonCapteurs)
+			{
+				neVoitRien[i] = true;
+				if(debug)
+					log.debug("Capteur "+i+" trop proche ou trop loin.");
+				continue;
+			}
+			Vec2<ReadWrite> positionBrute = new Vec2<ReadWrite>(data.mesures[i], orientationsRelatives[i]);
+			Vec2.plus(positionBrute, positionsRelatives[i]);
+			Vec2.rotate(positionBrute, data.orientationRobot);
+			Vec2.plus(positionBrute, data.positionRobot);
+			if(debug)
+				log.debug("Position brute: "+positionBrute);
+			
+			if(positionBrute.x > table_x / 2 - distanceApproximation ||
+					positionBrute.x < -table_x / 2 + distanceApproximation ||
+					positionBrute.y < distanceApproximation ||
+					positionBrute.y > table_y - distanceApproximation/* ||
+					isObstacleFixePresentCapteurs(positionBrute.getReadOnly())*/)
+			{
+				if(debug)
+					log.debug("Capteur "+i+" ignoré car hors-table.");
+				neVoitRien[i] = true; // le capteur voit un obstacle fixe: on ignore sa valeur
+			}
+			else
+			{
+				/**
+				 * Si un capteur voit un obstacle de table, alors on l'ignore
+				 */
+				for(ObstaclesFixes o: ObstaclesFixes.values)
+				{
+					Obstacle obs = o.getObstacle();
+					if(debug)
+						log.debug("Vérification obstacle en "+obs.position);
+
+					if(obs instanceof ObstacleCircular)
+					{
+						if(debug)
+							log.debug("Obstacle circulaire");
+
+						ObstacleCircular obsc = (ObstacleCircular) obs;
+						
+						/**
+						 * positionObstacle est la position de l'obstacle dans le repère du robot
+						 */
+						Vec2<ReadOnly> positionObstacle = Vec2.rotate(obsc.position.minusNewVector(data.positionRobot), -data.orientationRobot).getReadOnly();
+						
+						if(debug)
+							log.debug("Position obstacle dans le repère du robot: "+positionObstacle);
+
+						if(canBeSeenArriere(positionObstacle, i, ((ObstacleCircular) obs).getRadius()))
+						{
+							/**
+							 * On voit l'obstacle circulaire de table. Reste maintenant
+							 * à savoir à quelle distance on devrait le voir afin de savoir
+							 * si c'est vraiment lui qu'on voit
+							 */
+							int distance;
+							if(canBeSeen(positionObstacle, i))
+							{
+								/**
+								 * Cas simple: on voit le centre du cercle
+								 */
+								if(debug)
+									log.debug("Cas simple");
+								distance = (int) (positionObstacle.distance(positionsRelatives[i]) - obsc.getRadius());
+							}
+							else
+							{
+								/**
+								 * Cas plus complexe: on voit seulement un bout du cercle
+								 */
+								if(debug)
+									log.debug("Cas complexe");
+								int cote = whichSee(positionObstacle, i);
+								if(debug)
+									log.debug("Côté qui voit: "+cote);
+								distance = (int)ObstacleCircular.getDistance(positionObstacle, obsc.getRadius(), positionsRelatives[i], cones[3-i][cote]);
+							}
+							
+							if(debug)
+								log.debug("Distance prédite pour "+i+": "+distance);
+							
+							if(Math.abs(distance - data.mesures[i]) < distanceApproximation)
+							{
+								if(debug)
+									log.debug("Le capteur "+i+" voit un obstacle fixe circulaire");
+								dejaTraite[i] = true;
+								// On a trouvé quel obstacle on voyait, pas besoin d'aller plus loin
+								break;
+							}
+							
+						}
+						else if(debug)
+							log.debug("Obstacle pas visible avec cone arrière");
+					}
+					else if(obs instanceof ObstacleRectangular)
+					{
+						if(debug)
+							log.debug("Obstacle rectangulaire");
+
+						ObstacleRectangular obsr = (ObstacleRectangular) obs;
+
+						if(debug)
+							log.debug("Vérification obstacle en "+obsr.position);
+
+						/**
+						 * On vérifie d'abord quel coin sont visibles ou non
+						 */
+						boolean coinBasDroiteVisible, coinBasGaucheVisible, coinHautDroiteVisible, coinHautGaucheVisible;
+						coinBasDroiteVisible = canBeSeen(Vec2.rotate(obsr.coinBasDroite.minusNewVector(data.positionRobot), -data.orientationRobot).getReadOnly(), i);
+						coinBasGaucheVisible = canBeSeen(Vec2.rotate(obsr.coinBasGauche.minusNewVector(data.positionRobot), -data.orientationRobot).getReadOnly(), i);
+						coinHautDroiteVisible = canBeSeen(Vec2.rotate(obsr.coinHautDroite.minusNewVector(data.positionRobot), -data.orientationRobot).getReadOnly(), i);
+						coinHautGaucheVisible = canBeSeen(Vec2.rotate(obsr.coinHautGauche.minusNewVector(data.positionRobot), -data.orientationRobot).getReadOnly(), i);
+						
+						int distance;
+						Vec2<ReadOnly> coinPlusProcheVisible = obsr.getPlusProcheCoinVisible(data.positionRobot, coinBasDroiteVisible, coinBasGaucheVisible, coinHautDroiteVisible, coinHautGaucheVisible);
+						if(coinPlusProcheVisible != null || coinPlusProcheVisible == obsr.getPlusProcheCoinVisible(data.positionRobot, true, true, true, true))
+						{
+							/**
+							 * Le coin le plus proche du robot est visible.
+							 * Alors c'est la partie du rectangle la plus proche du capteur.
+							 */
+							if(debug)
+								log.debug("Cas simple");
+							distance = (int) Vec2.rotate(coinPlusProcheVisible.minusNewVector(data.positionRobot), -data.orientationRobot).getReadOnly().distance(positionsRelatives[i]);
+						}
+						else
+						{
+							distance = Integer.MAX_VALUE;
+
+							/**
+							 * Le point le plus proche des capteurs est sur une arête du rectangle
+							 */
+							if(debug)
+								log.debug("Cas complexe");
+
+							/**
+							 * Cas où le plus proche point n'est pas dans un côté du cône
+							 */
+
+							Vec2<ReadWrite> coinBasDroiteRepereRobotSansRotation = obsr.coinBasDroite.minusNewVector(data.positionRobot);
+							
+							Vec2<ReadWrite> point;
+							
+							point = Vec2.rotate(new Vec2<ReadWrite>(0, coinBasDroiteRepereRobotSansRotation.y), -data.orientationRobot);
+							
+							if(canBeSeen(point.getReadOnly(), i))
+							{
+								distance = Math.min(distance, Math.abs(coinBasDroiteRepereRobotSansRotation.y));
+							}
+							
+							point = Vec2.rotate(new Vec2<ReadWrite>(coinBasDroiteRepereRobotSansRotation.x, 0), -data.orientationRobot);
+							
+							if(canBeSeen(point.getReadOnly(), i))
+							{
+								distance = Math.min(distance, Math.abs(coinBasDroiteRepereRobotSansRotation.x));
+							}
+
+							Vec2<ReadWrite> coinBasGaucheRepereRobotSansRotation = obsr.coinBasGauche.minusNewVector(data.positionRobot);
+							
+							point = Vec2.rotate(new Vec2<ReadWrite>(coinBasGaucheRepereRobotSansRotation.x, 0), -data.orientationRobot);
+							
+							if(canBeSeen(point.getReadOnly(), i))
+							{
+								distance = Math.min(distance, Math.abs(coinBasGaucheRepereRobotSansRotation.x));
+							}
+
+							Vec2<ReadWrite> coinHautDroiteRepereRobotSansRotation = obsr.coinHautDroite.minusNewVector(data.positionRobot);
+							
+							point = Vec2.rotate(new Vec2<ReadWrite>(0, coinHautDroiteRepereRobotSansRotation.y), -data.orientationRobot);
+							
+							if(canBeSeen(point.getReadOnly(), i))
+							{
+								distance = Math.min(distance, Math.abs(coinHautDroiteRepereRobotSansRotation.y));
+							}
+
+							/**
+							 * Cas où le plus proche point est sur une arête du cône
+							 */
+							
+							double tanAlpha1 = data.orientationRobot + orientationsRelatives[i];
+							double tanAlpha2 = tanAlpha1 - getAngleCone(i);
+							tanAlpha1 += getAngleCone(i);
+							
+							tanAlpha1 = Math.tan(tanAlpha1);
+							tanAlpha2 = Math.tan(tanAlpha2);
+							
+							int x, y;
+							Vec2<ReadWrite> p;
+
+							/**
+							 * Tangente positive pour le côté gauche du cône:
+							 * il faut vérifier qu'on ne croise pas un côté horizontal de l'obstacle
+							 */
+							
+							if(tanAlpha1 > 0)
+							{
+								y = obsr.coinBasDroite.y - data.positionRobot.y - positionsRelatives[i].y;
+								x = (int)(y/tanAlpha1);
+								p = new Vec2<ReadWrite>(x, y);
+								Vec2.plus(p, positionsRelatives[i]);
+								if(canBeSeen(p.getReadOnly(), i))
+									distance = Math.min(distance, Math.abs(coinBasGaucheRepereRobotSansRotation.x));
+
+								y = obsr.coinHautDroite.y - data.positionRobot.y - positionsRelatives[i].y;
+								x = (int)(y/tanAlpha1);
+								p = new Vec2<ReadWrite>(x, y);
+								Vec2.plus(p, positionsRelatives[i]);
+								if(canBeSeen(p.getReadOnly(), i))
+									distance = Math.min(distance, Math.abs(coinBasGaucheRepereRobotSansRotation.x));
+							}
+							else
+							{
+								x = obsr.coinBasDroite.x - data.positionRobot.x - positionsRelatives[i].x;
+								y = (int)(x*tanAlpha1);
+								p = new Vec2<ReadWrite>(x, y);
+								Vec2.plus(p, positionsRelatives[i]);
+								if(canBeSeen(p.getReadOnly(), i))
+									distance = Math.min(distance, Math.abs(coinBasGaucheRepereRobotSansRotation.x));
+
+								x = obsr.coinHautGauche.x - data.positionRobot.x - positionsRelatives[i].x;
+								y = (int)(x*tanAlpha1);
+								p = new Vec2<ReadWrite>(x, y);
+								Vec2.plus(p, positionsRelatives[i]);
+								if (canBeSeen(p.getReadOnly(), i))
+									distance = Math.min(distance, Math.abs(coinBasGaucheRepereRobotSansRotation.x));
+							}
+							
+							if(tanAlpha2 >= 0)
+							{
+								x = obsr.coinBasDroite.x - data.positionRobot.x - positionsRelatives[i].x;
+								y = (int)(x*tanAlpha1);
+								p = new Vec2<ReadWrite>(x, y);
+								Vec2.plus(p, positionsRelatives[i]);
+								if(canBeSeen(p.getReadOnly(), i))
+									distance = Math.min(distance, Math.abs(coinBasGaucheRepereRobotSansRotation.x));
+
+								x = obsr.coinHautGauche.x - data.positionRobot.x - positionsRelatives[i].x;
+								y = (int)(x*tanAlpha1);
+								p = new Vec2<ReadWrite>(x, y);
+								Vec2.plus(p, positionsRelatives[i]);
+								if(canBeSeen(p.getReadOnly(), i))
+									distance = Math.min(distance, Math.abs(coinBasGaucheRepereRobotSansRotation.x));
+							}
+							else
+							{
+								y = obsr.coinBasDroite.y - data.positionRobot.y - positionsRelatives[i].y;
+								x = (int)(y/tanAlpha2);
+								p = new Vec2<ReadWrite>(x, y);
+								Vec2.plus(p, positionsRelatives[i]);
+								if(canBeSeen(p.getReadOnly(), i))
+									distance = Math.min(distance, Math.abs(coinBasGaucheRepereRobotSansRotation.x));
+
+								y = obsr.coinHautDroite.y - data.positionRobot.y - positionsRelatives[i].y;
+								x = (int)(y/tanAlpha2);
+								p = new Vec2<ReadWrite>(x, y);
+								Vec2.plus(p, positionsRelatives[i]);
+								if(canBeSeen(p.getReadOnly(), i))
+									distance = Math.min(distance, Math.abs(coinBasGaucheRepereRobotSansRotation.x));
+							}
+							
+						}
+						
+						if(Math.abs(distance - data.mesures[i]) < distanceApproximation)
+						{
+							if(debug)
+								log.debug("Le capteur "+i+" voit un obstacle fixe rectangulaire");
+							dejaTraite[i] = true;
+							// On a trouvé quel obstacle on voyait, pas besoin d'aller plus loin
+							break;
+						}
+
+					}
+				}
+//				log.debug("Ok");
+				neVoitRien[i] = false;
+				data.mesures[i] += rayonEnnemi;
+			}
+		}
+		
+		/**
+		 * On cherche les détections couplées en priorité
+		 */
+		for(int i = 0; i < nbCouples; i++)
+		{
+			int nbCapteur1 = coupleCapteurs[i][0];
+			int nbCapteur2 = coupleCapteurs[i][1];
+			
+			if(debug)
+				log.debug("nbCapteur1: "+nbCapteur1);
+			if(debug)
+				log.debug("nbCapteur2: "+nbCapteur2);
+
+			if((neVoitRien[nbCapteur1] || dejaTraite[nbCapteur1]) && (neVoitRien[nbCapteur2] || dejaTraite[nbCapteur2]))
+			{
+				if(debug)
+					log.debug("Couple "+i+": déjà fait");
+				continue;
+			}
+			else if((neVoitRien[nbCapteur1] ^ neVoitRien[nbCapteur2]) && (!dejaTraite[nbCapteur1] && !dejaTraite[nbCapteur2]))
+			{
+				if(debug)
+					log.debug("Un capteur voit et pas l'autre");
+				/**
+				 * Cas où un capteur voit et pas l'autre
+				 */
+				int nbCapteurQuiVoit = neVoitRien[nbCapteur2]?nbCapteur1:nbCapteur2;
+				Vec2<ReadWrite> pointVu = getPositionAjustee(i, neVoitRien[nbCapteur2], data.mesures[nbCapteurQuiVoit]);
+				if(pointVu == null)
+				{
+					if(debug)
+						log.debug("Point vu: null");
+					continue;
+				}
+				Vec2.plus(pointVu, positionsRelatives[nbCapteurQuiVoit]);
+				Vec2.rotate(pointVu, data.orientationRobot);
+				Vec2.plus(pointVu, data.positionRobot);
+				memory.add(pointVu.getReadOnly(), System.currentTimeMillis());
+				neVoitRien[nbCapteurQuiVoit] = true;
+			}
+			else if(!dejaTraite[nbCapteur1] && !dejaTraite[nbCapteur2] && !neVoitRien[nbCapteur1] && !neVoitRien[nbCapteur2])
+			{	
+				if(debug)
+					log.debug("Deux capteurs voient");
+				/**
+				 * Cas où les deux capteurs voient
+				 */
+				int distanceEntreCapteurs = coupleCapteurs[i][2];
+				int mesure1 = data.mesures[nbCapteur1];
+				int mesure2 = data.mesures[nbCapteur2];
+				
+				// Si l'inégalité triangulaire n'est pas respectée
+				if(mesure1 + mesure2 <= distanceEntreCapteurs)
+				{
+					if(debug)
+						log.debug("Inégalité triangulaire non respectée");
+					continue;
+				}
+				
+				double posX = ((double)(distanceEntreCapteurs*distanceEntreCapteurs + mesure1*mesure1 - mesure2*mesure2))/(2*distanceEntreCapteurs);
+				double posY = Math.sqrt(mesure1*mesure1 - posX*posX);
+				
+				Vec2<ReadWrite> pointVu1 = positionsRelatives[nbCapteur2].clone();
+				Vec2.minus(pointVu1, positionsRelatives[nbCapteur1]);
+				Vec2<ReadWrite> BC = pointVu1.clone();
+				Vec2.rotateAngleDroit(BC);
+				Vec2.scalar(BC, posY/distanceEntreCapteurs);
+				if(debug)
+					log.debug("Longueur BC: "+BC.length()+", posY: "+posY);
+				Vec2.scalar(pointVu1, (double)(posX)/distanceEntreCapteurs);
+				Vec2.plus(pointVu1, positionsRelatives[nbCapteur1]);
+				Vec2<ReadWrite> pointVu2 = pointVu1.clone();
+				Vec2.plus(pointVu1, BC);
+				Vec2.minus(pointVu2, BC);
+				
+				/**
+				 * Il y a deux points, pointVu1 et pointVu2 car l'intersection
+				 * de deux cercles a deux solutions: une devant les capteurs, une derrière
+				 */
+				
+				if(debug)
+					log.debug("Point vu 1: "+pointVu1);
+				if(debug)
+					log.debug("Point vu 2: "+pointVu2);
+				
+				/**
+				 * Afin de départager ces deux points, on regarde lequel est visible par les 
+				 * Sauf qu'à cause du bruit, il est possible que le bon point ne soit pas visible mais légèrement en dehors...
+				 * Du coup, on utilise une version allégée de "canBeSeen", qui vérifie juste que le côté est bon.
+				 */
+				
+				boolean vu = canBeSeenLight(pointVu1.getReadOnly(), nbCapteur1) && canBeSeenLight(pointVu1.getReadOnly(), nbCapteur2);
+				if(debug)
+				{
+					if(vu)
+						log.debug("pointVu1 est visible");
+					else
+						log.debug("pointVu1 n'est pas visible!");
+				}
+	
+				if(!vu)
+				{
+					vu = canBeSeenLight(pointVu2.getReadOnly(), nbCapteur1) && canBeSeenLight(pointVu2.getReadOnly(), nbCapteur2);
+					pointVu1 = pointVu2;
+					Vec2.oppose(BC);
+					if(debug)
+					{
+						if(vu)
+							log.debug("pointVu2 est visible");
+						else
+							log.debug("pointVu2 n'est pas visible!");
+					}
+				}
+				
+				if(vu)			
+				{
+					neVoitRien[nbCapteur1] = true;
+					neVoitRien[nbCapteur2] = true;
+					if(debug)
+						log.debug("Scalaire: "+(rayonEnnemi)/posY);
+//					Vec2.scalar(BC, ((double)rayonEnnemi)/posY);
+//					Vec2.plus(pointVu1, BC);
+					Vec2.rotate(pointVu1, data.orientationRobot);
+					Vec2.plus(pointVu1, data.positionRobot);
+					if(debug)
+						log.debug("Longueur BC: "+BC.length());
+					// TODO: supprimer tous les autres obstacles près de pointVu1
+					memory.add(pointVu1.getReadOnly(), System.currentTimeMillis());
+				}
+			}
+		}
+		
+		/**
+		 * Maintenant, on récupère tous les capteurs qui n'ont pas participé à une détection couplée
+		 */
+		for(int i = 0; i < nbCapteurs; i++)
+			if(!neVoitRien[i] && !dejaTraite[i])
+			{
+				Vec2<ReadWrite> positionEnnemi = new Vec2<ReadWrite>(data.mesures[i]+rayonEnnemi, orientationsRelatives[i]);
+				Vec2.plus(positionEnnemi, positionsRelatives[i]);
+				Vec2.rotate(positionEnnemi, data.orientationRobot);
+				Vec2.plus(positionEnnemi, data.positionRobot);
+				if(debug)
+					log.debug("Obstacle vu par un seul capteur: "+positionEnnemi);
+				memory.add(positionEnnemi.getReadOnly(), System.currentTimeMillis());
+
+			}
+	}
+	
 	
 }

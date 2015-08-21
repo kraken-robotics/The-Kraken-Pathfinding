@@ -1,7 +1,7 @@
 package threads;
 
 import container.Service;
-import planification.Chemin;
+import pathfinding.DStarLite;
 import table.GridSpace;
 import utils.Config;
 import utils.Log;
@@ -15,14 +15,14 @@ import utils.Log;
 public class ThreadPathfinding extends Thread implements Service
 {
 	protected Log log;
+	private DStarLite pathfinding;
 	private GridSpace gridspace;
-	private Chemin path;
 	
-	public ThreadPathfinding(Log log, GridSpace gridspace, Chemin path)
+	public ThreadPathfinding(Log log, DStarLite pathfinding, GridSpace gridspace)
 	{
 		this.log = log;
+		this.pathfinding = pathfinding;
 		this.gridspace = gridspace;
-		this.path = path;
 	}
 
 	@Override
@@ -43,7 +43,7 @@ public class ThreadPathfinding extends Thread implements Service
 			
 			// Cet appel peut lancer un pathfinding.notifyAll()
 			// Il n'est pas synchronized car il ne modifie pas obstaclemanager
-			path.updateCost();
+			pathfinding.updatePath();
 		}
 
 //		log.debug("Fermeture de ThreadPathfinding");
