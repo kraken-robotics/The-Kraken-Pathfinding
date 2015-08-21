@@ -7,7 +7,7 @@ import buffer.IncomingDataBuffer;
 import permissions.ReadOnly;
 import permissions.ReadWrite;
 import table.Capteurs;
-import table.ObstacleManager;
+import table.ObstaclesMobilesIterator;
 import tests.graphicLib.Fenetre;
 import utils.Log;
 import utils.Sleep;
@@ -31,7 +31,7 @@ public class ObstacleMobileDebug  {
 			Container container = new Container();
 			Log log = (Log) container.getService(ServiceNames.LOG);
 			Capteurs capteurs = (Capteurs) container.getService(ServiceNames.CAPTEURS);
-			ObstacleManager obstaclemanager = (ObstacleManager) container.getService(ServiceNames.OBSTACLE_MANAGER);
+			ObstaclesMobilesIterator obstaclemanager = (ObstaclesMobilesIterator) container.getService(ServiceNames.OBSTACLE_MANAGER);
 			IncomingDataBuffer buffer = (IncomingDataBuffer) container.getService(ServiceNames.INCOMING_DATA_BUFFER);
 			Fenetre fenetre = new Fenetre();
 			fenetre.setCapteurs(capteurs);

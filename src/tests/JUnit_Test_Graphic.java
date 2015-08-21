@@ -28,7 +28,7 @@ import robot.Speed;
 import scripts.ScriptManager;
 import scripts.ScriptAnticipableNames;
 import strategie.GameState;
-import table.ObstacleManager;
+import table.ObstaclesMobilesIterator;
 import tests.graphicLib.Fenetre;
 import utils.ConfigInfo;
 import utils.Sleep;
@@ -44,7 +44,7 @@ import utils.Vec2;
 public class JUnit_Test_Graphic extends JUnit_Test {
 
 	private Fenetre fenetre;
-	private ObstacleManager obstaclemanager;
+	private ObstaclesMobilesIterator obstaclemanager;
 	private AStar<PathfindingArcManager, SegmentTrajectoireCourbe> pathfinding;
 	private GameState<RobotChrono,ReadWrite> state_chrono;
 	private GameState<RobotReal,ReadWrite> state;
@@ -57,7 +57,7 @@ public class JUnit_Test_Graphic extends JUnit_Test {
 	{
 		super.setUp();
         pathfinding = (AStar<PathfindingArcManager, SegmentTrajectoireCourbe>) container.getService(ServiceNames.A_STAR_PATHFINDING);
-		obstaclemanager = (ObstacleManager) container.getService(ServiceNames.OBSTACLE_MANAGER);
+		obstaclemanager = (ObstaclesMobilesIterator) container.getService(ServiceNames.OBSTACLE_MANAGER);
 		state = (GameState<RobotReal,ReadWrite>)container.getService(ServiceNames.REAL_GAME_STATE);
 		strategic_astar = (AStar<StrategyArcManager, Decision>)container.getService(ServiceNames.A_STAR_STRATEGY);
 		scriptmanager = (ScriptManager) container.getService(ServiceNames.SCRIPT_MANAGER);

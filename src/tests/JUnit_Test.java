@@ -3,7 +3,7 @@ package tests;
 import org.junit.Before;
 import org.junit.After;
 
-import table.ObstacleManager;
+import table.ObstaclesMobilesIterator;
 import utils.ConfigInfo;
 import utils.Log;
 import utils.Config;
@@ -24,7 +24,7 @@ public abstract class JUnit_Test
 	protected Container container;
 	protected Config config;
 	protected Log log;
-	private ObstacleManager obstaclemanager;
+	private ObstaclesMobilesIterator obstaclemanager;
 	
 	@Before
 	public void setUp() throws Exception
@@ -37,7 +37,7 @@ public abstract class JUnit_Test
 			config.set(ConfigInfo.MATCH_DEMARRE, true);
 			config.set(ConfigInfo.DATE_DEBUT_MATCH, System.currentTimeMillis());
 		}
-        obstaclemanager = (ObstacleManager) container.getService(ServiceNames.OBSTACLE_MANAGER);
+        obstaclemanager = (ObstaclesMobilesIterator) container.getService(ServiceNames.OBSTACLE_MANAGER);
         // afin d'assurer l'indépendance entre tests
         obstaclemanager.clearObstaclesMobiles();
 	}

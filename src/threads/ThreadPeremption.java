@@ -1,6 +1,9 @@
 package threads;
 
+import table.GridSpace;
 import table.ObstacleManager;
+import table.ObstaclesMobilesIterator;
+import table.ObstaclesMobilesMemory;
 import utils.Config;
 import utils.ConfigInfo;
 import utils.Log;
@@ -17,15 +20,17 @@ import container.Service;
 public class ThreadPeremption extends Thread implements Service
 {
 
-	private ObstacleManager obstaclemanager;
+	private ObstaclesMobilesMemory memory;
 	protected Log log;
+	private GridSpace gridspace;
 
 	private int dureePeremption;
 
-	public ThreadPeremption(Log log, ObstacleManager obstaclemanager)
+	public ThreadPeremption(Log log, ObstaclesMobilesMemory memory, GridSpace gridspace)
 	{
 		this.log = log;
-		this.obstaclemanager = obstaclemanager;
+		this.memory = memory;
+		this.gridspace = gridspace;
 	}
 	
 	@Override
@@ -33,8 +38,10 @@ public class ThreadPeremption extends Thread implements Service
 	{
 		while(true)
 		{
-			obstaclemanager.supprimerObstaclesPerimes();
-			long prochain = obstaclemanager.getDateSomethingChange();
+			// petite marge
+			if(memory.update())
+				gridspace.update();
+			long prochain = memory.getNextDeathDate() + 5;
 			
 			/**
 			 * S'il n'y a pas d'obstacles, on dort de dureePeremption, qui est la durée minimale avant la prochaine péremption.

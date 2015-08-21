@@ -8,7 +8,7 @@ import permissions.ReadOnly;
 import planification.astar.arc.PathfindingNodes;
 import container.ServiceNames;
 import table.GameElementNames;
-import table.ObstacleManager;
+import table.ObstaclesMobilesIterator;
 import table.Table;
 import utils.ConfigInfo;
 import utils.Vec2;
@@ -22,13 +22,13 @@ import enums.Tribool;
 
 public class JUnit_ObstacleManager extends JUnit_Test {
 
-	private ObstacleManager obstaclemanager;
+	private ObstaclesMobilesIterator obstaclemanager;
 	private Table table;
 	
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        obstaclemanager = (ObstacleManager) container.getService(ServiceNames.OBSTACLE_MANAGER);
+        obstaclemanager = (ObstaclesMobilesIterator) container.getService(ServiceNames.OBSTACLE_MANAGER);
         table = (Table) container.getService(ServiceNames.TABLE);
         obstaclemanager.clearObstaclesMobiles();
     }

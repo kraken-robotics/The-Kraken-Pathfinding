@@ -8,7 +8,7 @@ import permissions.ReadOnly;
 import planification.astar.arc.PathfindingNodes;
 import container.ServiceNames;
 import table.GridSpace;
-import table.ObstacleManager;
+import table.ObstaclesMobilesIterator;
 import utils.ConfigInfo;
 import utils.Vec2;
 
@@ -21,13 +21,13 @@ import utils.Vec2;
 public class JUnit_GridSpace extends JUnit_Test {
 
 	private GridSpace gridspace;
-	private ObstacleManager obstaclemanager;
+	private ObstaclesMobilesIterator obstaclemanager;
 	
 	@Before
     public void setUp() throws Exception {
         super.setUp();
         gridspace = (GridSpace) container.getService(ServiceNames.GRID_SPACE);
-        obstaclemanager = (ObstacleManager) container.getService(ServiceNames.OBSTACLE_MANAGER);
+        obstaclemanager = (ObstaclesMobilesIterator) container.getService(ServiceNames.OBSTACLE_MANAGER);
     }
    
 	@Test

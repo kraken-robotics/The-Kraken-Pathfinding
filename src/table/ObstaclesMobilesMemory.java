@@ -63,18 +63,33 @@ public class ObstaclesMobilesMemory implements Service
 		return listObstaclesMobiles.get(nbTmp-firstNotDeadNow);
 	}
 
-	public synchronized int getFirstNotDeadNow()
+	public synchronized boolean update()
 	{
+		boolean shouldNotify = false;
 		while(!listObstaclesMobiles.isEmpty())
 		{
 			if(listObstaclesMobiles.get(0).isDestructionNecessary(System.currentTimeMillis()))
 			{
 				firstNotDeadNow++;
 				listObstaclesMobiles.remove(0);
+				shouldNotify = true;
 			}
 			else
 				break;
 		}
+		return shouldNotify;
+	}
+	
+	public synchronized long getNextDeathDate()
+	{
+	    if(!listObstaclesMobiles.isEmpty())
+	    	return listObstaclesMobiles.get(0).getDeathDate();
+	    else
+	    	return Long.MAX_VALUE;
+	}
+	
+	public synchronized int getFirstNotDeadNow()
+	{
 		return firstNotDeadNow;
 	}
 

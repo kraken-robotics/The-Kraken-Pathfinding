@@ -20,7 +20,7 @@ import strategie.Strategie;
 import strategie.StrategieNotifieur;
 import table.Capteurs;
 import table.GridSpace;
-import table.ObstacleManager;
+import table.ObstaclesMobilesIterator;
 import table.ObstaclesMobilesMemory;
 import table.StrategieInfo;
 import table.Table;
@@ -34,7 +34,6 @@ import threads.ThreadSerialInput;
 import threads.ThreadSerialOutput;
 import threads.ThreadStrategie;
 import threads.ThreadStrategieInfo;
-import threads.ThreadPeremption;
 import requete.RequeteSTM;
 import robot.RobotReal;
 
@@ -167,9 +166,6 @@ public class Container
 		else if(serviceRequested == ServiceNames.TABLE)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new Table((Log)getService(ServiceNames.LOG),
 																				(StrategieNotifieur)getService(ServiceNames.STRATEGIE_NOTIFIEUR));
-		else if(serviceRequested == ServiceNames.OBSTACLE_MANAGER)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new ObstacleManager((Log)getService(ServiceNames.LOG),
-																						(ObstaclesMobilesMemory)getService(ServiceNames.OBSTACLES_MOBILES_MEMORY));
 		else if(serviceRequested == ServiceNames.PATHFINDING)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new DStarLite((Log)getService(ServiceNames.LOG),
 																				(GridSpace)getService(ServiceNames.GRID_SPACE));
@@ -178,7 +174,7 @@ public class Container
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ObstaclesMobilesMemory((Log)getService(ServiceNames.LOG));
 		else if(serviceRequested == ServiceNames.GRID_SPACE)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new GridSpace((Log)getService(ServiceNames.LOG),
-																				(ObstacleManager)getService(ServiceNames.OBSTACLE_MANAGER),
+																				(MoteurPhysique)getService(ServiceNames.MOTEUR_PHYSIQUE),
 																				(StrategieNotifieur)getService(ServiceNames.STRATEGIE_NOTIFIEUR),
 																				(DataForSerialOutput)getService(ServiceNames.SERIAL_OUTPUT_BUFFER));
 
@@ -216,44 +212,22 @@ public class Container
         else if(serviceRequested == ServiceNames.REAL_GAME_STATE)
         	// ici la construction est un petit peu différente car on interdit l'instanciation publique d'un GameSTate<RobotChrono>
             instanciedServices[serviceRequested.ordinal()] = (Service) GameState.constructRealGameState((Log)getService(ServiceNames.LOG),
-                                                             (GridSpace)getService(ServiceNames.GRID_SPACE),                                                             
+                                                             (Table)getService(ServiceNames.TABLE),                                                             
                                                              (RobotReal)getService(ServiceNames.ROBOT_REAL),
         													 (HookFactory)getService(ServiceNames.HOOK_FACTORY),
-		 													 (DataForSerialOutput)getService(ServiceNames.SERIAL_OUTPUT_BUFFER));
+		 													 (DataForSerialOutput)getService(ServiceNames.SERIAL_OUTPUT_BUFFER),
+															 (ObstaclesMobilesMemory)getService(ServiceNames.OBSTACLES_MOBILES_MEMORY));
 		else if(serviceRequested == ServiceNames.SCRIPT_MANAGER)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ScriptManager(	(HookFactory)getService(ServiceNames.HOOK_FACTORY),
 																					(Log)getService(ServiceNames.LOG));
-		else if(serviceRequested == ServiceNames.THREAD_PEREMPTION)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadPeremption((Log)getService(ServiceNames.LOG),
-																		(ObstacleManager)getService(ServiceNames.OBSTACLE_MANAGER));
 		else if(serviceRequested == ServiceNames.THREAD_FIN_MATCH)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadFinMatch((Log)getService(ServiceNames.LOG),
 																		(Config)getService(ServiceNames.CONFIG));
-		else if(serviceRequested == ServiceNames.THREAD_STRATEGIE)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadStrategie((Log)getService(ServiceNames.LOG),
-																		(StrategieNotifieur)getService(ServiceNames.STRATEGIE_NOTIFIEUR),
-																		(Strategie)getService(ServiceNames.STRATEGIE));
-		else if(serviceRequested == ServiceNames.THREAD_PATHFINDING)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadPathfinding((Log)getService(ServiceNames.LOG),
-																		(DStarLite)getService(ServiceNames.PATHFINDING),
-																		(GridSpace)getService(ServiceNames.GRID_SPACE));
-		else if(serviceRequested == ServiceNames.THREAD_GRID_SPACE)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadGridSpace((Log)getService(ServiceNames.LOG),
-																		(ObstacleManager)getService(ServiceNames.OBSTACLE_MANAGER),
-																		(GridSpace)getService(ServiceNames.GRID_SPACE));
-		else if(serviceRequested == ServiceNames.THREAD_GRID_SPACE2)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadGridSpace2((Log)getService(ServiceNames.LOG),
-																		(Table)getService(ServiceNames.TABLE),
-																		(GridSpace)getService(ServiceNames.GRID_SPACE));
 		else if(serviceRequested == ServiceNames.THREAD_CAPTEURS)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadCapteurs((Log)getService(ServiceNames.LOG),
 																		(IncomingDataBuffer)getService(ServiceNames.INCOMING_DATA_BUFFER),
 																		(Capteurs)getService(ServiceNames.CAPTEURS),
 																		(RobotReal)getService(ServiceNames.ROBOT_REAL));
-		else if(serviceRequested == ServiceNames.THREAD_STRATEGIE_INFO)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadStrategieInfo((Log)getService(ServiceNames.LOG),
-																		(StrategieInfo)getService(ServiceNames.STRATEGIE_INFO),
-																		(ObstacleManager)getService(ServiceNames.OBSTACLE_MANAGER));
 		else if(serviceRequested == ServiceNames.THREAD_SERIAL_INPUT)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadSerialInput((Log)getService(ServiceNames.LOG),
 																		(Config)getService(ServiceNames.CONFIG),

@@ -24,7 +24,7 @@ public class GridSpaceWayPoints implements Service {
 	private StrategieNotifieur notifieur;
 	
 	// afin d'éviter les obstacles fixes et mobiles
-	private final ObstacleManager obstaclemanager;
+	private final ObstaclesMobilesIterator obstaclemanager;
 		
 	// Rempli de ALWAYS_IMPOSSIBLE et null. Ne change pas.
 	private static NodesConnection[][] isConnectedModel = null;
@@ -40,7 +40,7 @@ public class GridSpaceWayPoints implements Service {
 	/** Ce hash est utilisé afin de vérifier la péremption du cache */
 	private long hashTable;
 	
-	public GridSpaceWayPoints(Log log, ObstacleManager obstaclemanager, StrategieNotifieur notifieur)
+	public GridSpaceWayPoints(Log log, ObstaclesMobilesIterator obstaclemanager, StrategieNotifieur notifieur)
 	{
 		this.log = log;
 		this.obstaclemanager = obstaclemanager;

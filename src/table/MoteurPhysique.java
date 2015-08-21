@@ -13,19 +13,20 @@ import utils.Vec2;
 import container.Service;
 import enums.Tribool;
 
+/**
+ * Service qui permet de calculer, pour un certain GameState, des collisions
+ * @author pf
+ *
+ */
+
 public class MoteurPhysique implements Service {
 	
 	private Log log;
-	private ObstacleManager obstaclemanager;
-	private Table table;
 	
-	public MoteurPhysique(Log log, ObstacleManager obstaclemanager, Table table)
+	public MoteurPhysique(Log log)
 	{
 		this.log = log;
-		this.obstaclemanager = obstaclemanager;
-		this.table = table;
 	}
-	
 
     /**
      * Cette méthode vérifie les obstacles fixes uniquement.

@@ -5,7 +5,7 @@ import buffer.IncomingData;
 import buffer.IncomingDataBuffer;
 import robot.RobotReal;
 import table.GameElementNames;
-import table.ObstacleManager;
+import table.ObstaclesMobilesIterator;
 import utils.Config;
 import utils.Log;
 import utils.Vec2;
@@ -20,12 +20,12 @@ import container.Service;
 public class ThreadObstacleManager extends Thread implements Service
 {
 	private IncomingDataBuffer buffer;
-	private ObstacleManager obstaclemanager;
+	private ObstaclesMobilesIterator obstaclemanager;
 	private RobotReal robot;
 	
 	protected Log log;
 	
-	public ThreadObstacleManager(Log log, IncomingDataBuffer buffer, ObstacleManager obstaclemanager, RobotReal robot)
+	public ThreadObstacleManager(Log log, IncomingDataBuffer buffer, ObstaclesMobilesIterator obstaclemanager, RobotReal robot)
 	{
 		this.log = log;
 		this.buffer = buffer;

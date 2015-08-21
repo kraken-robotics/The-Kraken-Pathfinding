@@ -3,7 +3,7 @@ package threads;
 import container.Service;
 import table.GridSpace;
 import table.GridSpaceWayPoints;
-import table.ObstacleManager;
+import table.ObstaclesMobilesIterator;
 import utils.Config;
 import utils.Log;
 
@@ -16,10 +16,10 @@ import utils.Log;
 public class ThreadGridSpace extends Thread implements Service {
 
 	protected Log log;
-	private ObstacleManager obstaclemanager;
+	private ObstaclesMobilesIterator obstaclemanager;
 	private GridSpace gridspace;
 	
-	public ThreadGridSpace(Log log, ObstacleManager obstaclemanager, GridSpace gridspace)
+	public ThreadGridSpace(Log log, ObstaclesMobilesIterator obstaclemanager, GridSpace gridspace)
 	{
 		this.log = log;
 		this.obstaclemanager = obstaclemanager;

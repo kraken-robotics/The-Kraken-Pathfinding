@@ -1,6 +1,6 @@
 package threads;
 
-import table.ObstacleManager;
+import table.ObstaclesMobilesIterator;
 import table.StrategieInfo;
 import utils.Config;
 import utils.Log;
@@ -15,11 +15,11 @@ import container.Service;
 
 public class ThreadStrategieInfo extends Thread implements Service
 {
-	private ObstacleManager obstaclemanager;
+	private ObstaclesMobilesIterator obstaclemanager;
 	protected StrategieInfo obstaclestrategiemanager;
 	protected Log log;
 	
-	public ThreadStrategieInfo(Log log, StrategieInfo obstaclestrategiemanager, ObstacleManager obstaclemanager)
+	public ThreadStrategieInfo(Log log, StrategieInfo obstaclestrategiemanager, ObstaclesMobilesIterator obstaclemanager)
 	{
 		this.log = log;
 		this.obstaclestrategiemanager = obstaclestrategiemanager;

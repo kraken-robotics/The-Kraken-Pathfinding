@@ -3,40 +3,33 @@ package table;
 import java.util.Iterator;
 
 import obstacles.ObstacleProximity;
-import container.Service;
-import utils.Config;
 import utils.Log;
 
 /**
- * Service qui traite tout ce qui concerne la gestion des obstacles.
+ * Itérator permettant de manipuler facilement les obstacles mobiles
  * @author pf
  *
  */
 
-public class ObstacleManager implements Service, Iterator<ObstacleProximity>
+public class ObstaclesMobilesIterator implements Iterator<ObstacleProximity>
 {
     private Log log;
     private ObstaclesMobilesMemory memory;
     
     private int firstNotDead = 0;
     private int nbTmp;
-    private int lastDate = -1;
+    private long lastDate = -1;
 	
-    public ObstacleManager(Log log, ObstaclesMobilesMemory memory)
+    public ObstaclesMobilesIterator(Log log, ObstaclesMobilesMemory memory)
     {
         this.log = log;
         this.memory = memory;
     }
     
-    public int getHash()
+    public ObstaclesMobilesIterator clone(long date)
     {
-    	return firstNotDead;
-    }
-    
-    public ObstacleManager clone()
-    {
-    	ObstacleManager cloned_manager = new ObstacleManager(log, memory);
-		copy(cloned_manager);
+    	ObstaclesMobilesIterator cloned_manager = new ObstaclesMobilesIterator(log, memory);
+		copy(cloned_manager, date);
 		return cloned_manager;
     }
     
@@ -44,9 +37,10 @@ public class ObstacleManager implements Service, Iterator<ObstacleProximity>
      * Nécessaire au fonctionnement du memory manager
      * @param other
      */
-    public void copy(ObstacleManager other)
+    public void copy(ObstaclesMobilesIterator other, long date)
     {
     	other.firstNotDead = firstNotDead;
+    	other.init(date);
     }
     
     /**
@@ -54,27 +48,10 @@ public class ObstacleManager implements Service, Iterator<ObstacleProximity>
      * @param other
      * @return
      */
-    public boolean equals(ObstacleManager other)
+    public boolean equals(ObstaclesMobilesIterator other)
     {
         return firstNotDead == other.firstNotDead;
     }
-
-	@Override
-	public void updateConfig(Config config)
-	{}
-    
-	@Override
-	public void useConfig(Config config)
-	{}
-	
-	/**
-	 * Utilisé pour la copie
-	 * @return
-	 */
-	public int getFirstNotDead()
-	{
-		return firstNotDead;
-	}
 
 	/**
 	 * Quelque chose change si un obstacle disparaît
@@ -97,6 +74,11 @@ public class ObstacleManager implements Service, Iterator<ObstacleProximity>
 		nbTmp = firstNotDead;
 	}
 	
+	public int getFirstNotDead()
+	{
+		return firstNotDead;
+	}
+	
 	/**
 	 * Calcule l'entrée où commence les obstacles maintenant
 	 */
@@ -107,10 +89,11 @@ public class ObstacleManager implements Service, Iterator<ObstacleProximity>
 	}
 	
 	/**
-	 * Calcule l'entrée où commence les obstacles à cette date
+	 * Calcule l'entrée où commence les obstacles à cette date.
+	 * Se fait à la copie.
 	 * @param date
 	 */
-	public void init(int date)
+	private void init(long date)
 	{
 		// Si on a avancé dans le futur, on sait que firstNotDead ne peut qu'être plus grand
 		if(date < lastDate)
@@ -142,8 +125,9 @@ public class ObstacleManager implements Service, Iterator<ObstacleProximity>
 	}
 
 	@Override
-	public void remove() {
-		// TODO Auto-generated method stub		
+	public void remove()
+	{
+		// TODO lancer exception
 	}
 
 	

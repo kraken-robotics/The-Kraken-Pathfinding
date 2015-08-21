@@ -16,9 +16,6 @@ import container.Service;
 public class GridSpace implements Service
 {
 	private Log log;
-	private ObstacleManager obstaclemanager;
-	private StrategieNotifieur notifieur;
-	private DataForSerialOutput serie;
 	
 	// 2^PRECISION points dans 1000 mm
 	private static final int PRECISION = 4;
@@ -28,12 +25,14 @@ public class GridSpace implements Service
 	// les nœuds ont 8 voisins, mais par symétrie on n'a besoin que de 4 nombres
 	private boolean[] grille = new boolean[4*nbPoints];
 	
-	public GridSpace(Log log, ObstacleManager obstaclemanager, StrategieNotifieur notifieur, DataForSerialOutput serie)
+	public GridSpace(Log log)
 	{
 		this.log = log;
-		this.obstaclemanager = obstaclemanager;
-		this.notifieur = notifieur;
-		this.serie = serie;
+	}
+	
+	public void updateGrid(ObstaclesMobilesIterator iterator)
+	{
+		
 	}
 	
 	@Override
@@ -73,12 +72,7 @@ public class GridSpace implements Service
 		
 	}
 
-	public GridSpace clone(long tempsDepuisDebut) {
-		// TODO Auto-generated method stub
-		return this;
-	}
-
-	public void copy(GridSpace gridspace, long tempsDepuisDebutMatch) {
+	public void update() {
 		// TODO Auto-generated method stub
 		
 	}
