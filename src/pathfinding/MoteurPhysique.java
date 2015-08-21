@@ -7,9 +7,12 @@ import obstacles.types.ObstacleTrajectoireCourbe;
 import obstacles.types.ObstaclesFixes;
 import permissions.ReadOnly;
 import planification.astar.arc.PathfindingNodes;
+import robot.RobotReal;
 import robot.Speed;
+import strategie.GameState;
 import table.GameElementNames;
 import utils.Config;
+import utils.ConfigInfo;
 import utils.Log;
 import utils.Vec2;
 import container.Service;
@@ -24,6 +27,8 @@ import enums.Tribool;
 public class MoteurPhysique implements Service {
 	
 	protected Log log;
+	
+	private int distanceApproximation;
 	
 	public MoteurPhysique(Log log)
 	{
@@ -54,13 +59,13 @@ public class MoteurPhysique implements Service {
 	 * @param B
 	 * @return
 	 */
-    public boolean obstacleTableDansSegment(Vec2<ReadOnly> A, Vec2<ReadOnly> B)
+    public boolean obstacleTableDansSegment(GameState<RobotReal,ReadOnly> state, Vec2<ReadOnly> A, Vec2<ReadOnly> B)
     {
     	ObstacleRectangular chemin = new ObstacleRectangular(A, B);
         for(GameElementNames g: GameElementNames.values())
         	// Si on a interprété que l'ennemi est passé sur un obstacle,
         	// on peut passer dessus par la suite.
-            if(table.isDone(g) == Tribool.FALSE && table.obstacle_proximite_dans_segment(g, chemin))
+            if(state.table.isDone(g) == Tribool.FALSE && obstacle_proximite_dans_segment(g, chemin))
             {
 //            	log.debug(o.getName()+" est dans le chemin.", this);
                 return true;
@@ -76,14 +81,14 @@ public class MoteurPhysique implements Service {
      * @param sommet2
      * @return
      */
-    public boolean obstacleProximiteDansSegment(Vec2<ReadOnly> A, Vec2<ReadOnly> B, int date)
+    public boolean obstacleProximiteDansSegment(GameState<RobotReal,ReadOnly> state, Vec2<ReadOnly> A, Vec2<ReadOnly> B, int date)
     {
   //      if(isThereHypotheticalEnemy && hypotheticalEnemy.obstacle_proximite_dans_segment(A, B, date))
   //      	return true;
         
-        int size = listObstaclesMobiles.size();
-        for(int tmpFirstNotDead = firstNotDead; tmpFirstNotDead < size; tmpFirstNotDead++)
-        	if(listObstaclesMobiles.get(tmpFirstNotDead).obstacle_proximite_dans_segment(A, B, date))
+    	state.iterator.reinit();
+    	while(state.iterator.hasNext())
+        	if(state.iterator.next().obstacle_proximite_dans_segment(A, B, date))
         		return true;
 
         return false;
@@ -110,16 +115,14 @@ public class MoteurPhysique implements Service {
      * @param position
      * @return
      */
-    public boolean isObstacleMobilePresent(Vec2<ReadOnly> position, int distance) 
+    public boolean isObstacleMobilePresent(GameState<RobotReal,ReadOnly> state, Vec2<ReadOnly> position, int distance) 
     {
     //    if(isThereHypotheticalEnemy && isObstaclePresent(position, hypotheticalEnemy.getReadOnly(), distance))
     //    	return true;
-        int size = listObstaclesMobiles.size();
-        for(int tmpFirstNotDead = firstNotDead; tmpFirstNotDead < size; tmpFirstNotDead++)
-        {
-        	if(isObstaclePresent(position, listObstaclesMobiles.get(tmpFirstNotDead), distance))
+    	state.iterator.reinit();
+    	while(state.iterator.hasNext())
+        	if(isObstaclePresent(position, state.iterator.next(), distance))
         		return true;
-        }
         return false;
     }
 
@@ -138,24 +141,22 @@ public class MoteurPhysique implements Service {
     
 	
 	@Override
-	public void updateConfig(Config config) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void updateConfig(Config config)
+	{}
 
 	@Override
-	public void useConfig(Config config) {
-		// TODO Auto-generated method stub
-		
+	public void useConfig(Config config)
+	{
+		distanceApproximation = config.getInt(ConfigInfo.DISTANCE_MAX_ENTRE_MESURE_ET_OBJET);		
 	}
 	
 
-	public boolean isTraversableCourbe(PathfindingNodes objectifFinal, PathfindingNodes intersection, Vec2<ReadOnly> directionAvant, int tempsDepuisDebutMatch)
+	public boolean isTraversableCourbe(GameState<RobotReal,ReadOnly> state, PathfindingNodes objectifFinal, PathfindingNodes intersection, Vec2<ReadOnly> directionAvant, int tempsDepuisDebutMatch)
 	{
 		// TODO: calculer la vitesse qui permet exactement de passer?
 		Speed vitesse = Speed.BETWEEN_SCRIPTS;
 		
-		obstacleTrajectoireCourbe = new ObstacleTrajectoireCourbe(objectifFinal, intersection, directionAvant, vitesse);
+		ObstacleTrajectoireCourbe obstacleTrajectoireCourbe = new ObstacleTrajectoireCourbe(objectifFinal, intersection, directionAvant, vitesse);
 
 		// Collision avec un obstacle fixe?
     	for(ObstaclesFixes o: ObstaclesFixes.values)
@@ -166,10 +167,9 @@ public class MoteurPhysique implements Service {
   //      if(isThereHypotheticalEnemy && obstacleTrajectoireCourbe.isColliding(hypotheticalEnemy.getReadOnly()))
   //      	return false;
 
-        // Collision avec un obtacle mobile?
-        int size = listObstaclesMobiles.size();
-        for(int tmpFirstNotDead = firstNotDead; tmpFirstNotDead < size; tmpFirstNotDead++)
-        	if(obstacleTrajectoireCourbe.isColliding(listObstaclesMobiles.get(tmpFirstNotDead)))
+    	state.iterator.reinit();
+    	while(state.iterator.hasNext())
+           	if(obstacleTrajectoireCourbe.isColliding(state.iterator.next()))
         		return false;
 
         return true;
