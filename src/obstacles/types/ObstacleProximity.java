@@ -2,6 +2,7 @@ package obstacles.types;
 
 import java.util.ArrayList;
 
+import pathfinding.GridSpace;
 import permissions.ReadOnly;
 import permissions.ReadWrite;
 import robot.Speed;
@@ -14,13 +15,18 @@ import utils.Vec2;
 public class ObstacleProximity extends ObstacleCircular
 {
 	private long death_date;
-	private int[] pourtourGrille;
+	private ArrayList<Integer> pourtourGrille;
 	
 	public ObstacleProximity(Vec2<ReadOnly> position, int rad, long death_date)
 	{
 		super(position,rad);
 		this.death_date = death_date;
-		// TODO calculer pourtourGrille
+		int centreX = (int) Math.round(position.x / 50. + GridSpace.NB_POINTS_PAR_METRE*1.5);
+		int centreY = (int) Math.round(position.y / 50.);
+		for(Vec2<ReadOnly> point : Obstacle.pourtourGrillePatron)
+			// On s'assure bien d'être dans la grille
+			if(centreX + point.x >= 0 && centreX + point.x < 3 * GridSpace.NB_POINTS_PAR_METRE && centreY + point.y >= 0 && centreY + point.y < 2 * GridSpace.NB_POINTS_PAR_METRE)
+				pourtourGrille.add(4 * (3 * GridSpace.NB_POINTS_PAR_METRE * (centreY+point.y) + (centreX+point.x)));
 	}
 	
 	public ArrayList<Integer> getPourtourGrille()

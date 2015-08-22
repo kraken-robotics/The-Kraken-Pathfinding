@@ -22,7 +22,8 @@ public class GridSpace implements Service
 	private boolean ignoreElementJeu;
 	
 	// soit 50 mm entre chaque point
-	private static final int NB_POINTS_PAR_METRE = 20;
+	public static final int NB_POINTS_PAR_METRE = 20;
+	public static final int DISTANCE_ENTRE_DEUX_POINTS = 1000/NB_POINTS_PAR_METRE;
 	private static final int nbPoints = 2*NB_POINTS_PAR_METRE * 3*NB_POINTS_PAR_METRE;
 	
 	// les nœuds ont 8 voisins, mais par symétrie on n'a besoin que de 4 nombres
@@ -52,21 +53,21 @@ public class GridSpace implements Service
 	{
 		switch(direction)
 		{
-		case NO:
+		case SO:
 			return 4*point;
-		case N:
+		case S:
 			return 4*point+1;
-		case NE:
+		case SE:
 			return 4*point+2;
 		case O:
 			return 4*point+3;
 		case E:
 			return 4*point+7;
-		case SO:
+		case NO:
 			return 4*point+4*3*NB_POINTS_PAR_METRE-2;
-		case S:
+		case N:
 			return 4*point+4*3*NB_POINTS_PAR_METRE+1;
-//		case SE:
+//		case NE:
 		default:
 			return 4*point+4*3*NB_POINTS_PAR_METRE+4;
 		}
