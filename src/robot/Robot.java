@@ -83,9 +83,9 @@ public abstract class Robot implements Service
 	public void useConfig(Config config)
 	{}
 
-	public Speed getVitesse() {
+/*	public Speed getVitesse() {
 		return vitesse;
-	}
+	}*/
 
 	/**
 	 * Tourne par rapport à l'angle actuel.
@@ -93,7 +93,7 @@ public abstract class Robot implements Service
 	 * @throws UnableToMoveException
 	 * @throws FinMatchException
 	 */
-	public void tourner_relatif(double angle) throws UnableToMoveException, FinMatchException
+	public void tournerRelatif(double angle) throws UnableToMoveException, FinMatchException
 	{
 		tourner(getOrientation() + angle);
 	}
@@ -103,7 +103,7 @@ public abstract class Robot implements Service
      * @param angle
      * @throws UnableToMoveException
      */
-    public void tourner_sans_symetrie(double angle) throws UnableToMoveException, FinMatchException
+    public void tournerSansSymetrie(double angle) throws UnableToMoveException, FinMatchException
     {
         if(symetrie)
             tourner(Math.PI-angle);
@@ -143,7 +143,7 @@ public abstract class Robot implements Service
      * @throws FinMatchException
      * @throws ScriptHookException
      */
-    public void avancer_dans_mur(int distance) throws UnableToMoveException, FinMatchException
+    public void avancerDansMur(int distance) throws UnableToMoveException, FinMatchException
     {
         Speed sauv_vitesse = vitesse; 
         setVitesse(Speed.INTO_WALL);
@@ -170,7 +170,7 @@ public abstract class Robot implements Service
     
     /**
      * Dort une certaine durée.
-     * Utilisé le sleep du robot, donc réel ou simulé.
+     * Utilise le sleep du robot, donc réel ou simulé.
      * @param duree
      * @throws FinMatchException
      */

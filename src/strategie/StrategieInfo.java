@@ -1,8 +1,7 @@
-package table;
+package strategie;
 
 import scripts.ScriptAnticipableNames;
 import scripts.ScriptHookNames;
-import strategie.StrategieNotifieur;
 import utils.Config;
 import utils.Log;
 import container.Service;

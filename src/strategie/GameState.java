@@ -136,7 +136,7 @@ public class GameState<R extends Robot, T extends Permission> implements Service
 	public static final void printHash(GameState<RobotChrono,?> state)
 	{
 //		state.gridspace.printHash();
-		state.robot.printHash();
+//		state.robot.printHash();
 	}
 
 	/**

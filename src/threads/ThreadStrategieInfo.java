@@ -1,7 +1,7 @@
 package threads;
 
 import obstacles.ObstaclesIterator;
-import table.StrategieInfo;
+import strategie.StrategieInfo;
 import utils.Config;
 import utils.Log;
 import container.Service;

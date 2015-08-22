@@ -32,7 +32,6 @@ public enum ConfigInfo {
 	HOOKS_TOLERANCE_MM("20", true),
 	DISQUE_TOLERANCE_MAJ("100", true),
 	DISQUE_TOLERANCE_CONSIGNE("40", true),
-//	TRAJECTOIRE_COURBE("false"),
 //	NB_TENTATIVES("30"),
 //	ANTICIPATION_TRAJECTOIRE_COURBE("200"),
 //	ANGLE_DEGAGEMENT_ROBOT("0.2"),
@@ -51,6 +50,7 @@ public enum ConfigInfo {
 	 * Config dynamique
 	 */
 	COULEUR(RobotColor.getCouleurSansSymetrie(), false),
+	TRAJECTOIRE_COURBE("true", false),
 	MATCH_DEMARRE("false", false),
 	DATE_DEBUT_MATCH("0", false),
 	FIN_MATCH("false", false);

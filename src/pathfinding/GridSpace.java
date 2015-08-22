@@ -21,9 +21,8 @@ public class GridSpace implements Service
 	private Table table;
 	private boolean ignoreElementJeu;
 	
-	// 2^PRECISION points dans 1000 mm
-	private static final int PRECISION = 4;
-	private static final int NB_POINTS_PAR_METRE = (1 << PRECISION);
+	// soit 50 mm entre chaque point
+	private static final int NB_POINTS_PAR_METRE = 20;
 	private static final int nbPoints = 2*NB_POINTS_PAR_METRE * 3*NB_POINTS_PAR_METRE;
 	
 	// les nœuds ont 8 voisins, mais par symétrie on n'a besoin que de 4 nombres

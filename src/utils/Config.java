@@ -151,6 +151,11 @@ public class Config implements Service
 			{
 				if(!properties.containsKey(info.toString()))
 					properties.setProperty(info.toString(), info.getDefaultValue());
+				else if(!info.isConstant())
+				{
+					System.out.println(info+" NE peut PAS être surchargé par config.ini");
+					properties.setProperty(info.toString(), info.getDefaultValue());
+				}
 				else
 					System.out.println(info+" surchargé par config.ini");
 			}

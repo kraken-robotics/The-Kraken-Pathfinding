@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import permissions.ReadOnly;
 import permissions.ReadWrite;
 import planification.LocomotionArc;
-import planification.astar.arc.PathfindingNodes;
 import hook.Hook;
 import utils.Log;
 import utils.Vec2;
@@ -19,9 +18,9 @@ import exceptions.FinMatchException;
 public class RobotChrono extends Robot
 {
 	protected final Vec2<ReadWrite> position = new Vec2<ReadWrite>();
-	protected PathfindingNodes positionPathfinding;
-	protected PathfindingNodes positionPathfindingAnterieure;
-	protected boolean isPositionPathfindingActive = false;
+//	protected PathfindingNodes positionPathfinding;
+//	protected PathfindingNodes positionPathfindingAnterieure;
+//	protected boolean isPositionPathfindingActive = false;
 	protected double orientation;
 	private static int tempsMax = 90000;
    
@@ -29,10 +28,10 @@ public class RobotChrono extends Robot
 	protected long date;
 	
 	/** valeur approchée du temps (en millisecondes) nécessaire pour qu'une information que l'on envoie à la série soit acquittée */
-	private final static int approximateSerialLatency = 50;
+//	private final static int approximateSerialLatency = 50;
 
-	private final static int sleepAvanceDuration = approximateSerialLatency+Speed.translationStopDuration;
-	private final static int sleepTourneDuration = approximateSerialLatency+Speed.rotationStopDuration;
+	private final static int sleepAvanceDuration = /*approximateSerialLatency+*/Speed.translationStopDuration;
+	private final static int sleepTourneDuration = /*approximateSerialLatency+*/Speed.rotationStopDuration;
 //	private final static int sleepTourneAndAvanceDuration = sleepTourneDuration + sleepAvanceDuration;
 	
 	public RobotChrono(Log log)
@@ -44,10 +43,10 @@ public class RobotChrono extends Robot
 	public void setPositionOrientationSTM(Vec2<ReadOnly> position, double orientation) {
 		Vec2.copy(position, this.position);
 		this.orientation = orientation;
-		isPositionPathfindingActive = false;
-		positionPathfindingAnterieure = null;
-		positionPathfinding = null;
-		date += approximateSerialLatency;
+//		isPositionPathfindingActive = false;
+//		positionPathfindingAnterieure = null;
+//		positionPathfinding = null;
+//		date += approximateSerialLatency;
 	}
 
 	/**
@@ -68,16 +67,16 @@ public class RobotChrono extends Robot
 
 		checkHooks(position.getReadOnly(), position.plusNewVector(ecart).getReadOnly(), hooks);
 		Vec2.plus(position, ecart);
-		isPositionPathfindingActive = false;
-		positionPathfindingAnterieure = null;
-		positionPathfinding = null;
+//		isPositionPathfindingActive = false;
+//		positionPathfindingAnterieure = null;
+//		positionPathfinding = null;
 	}
 	
 	@Override
 	public void setVitesse(Speed vitesse)
 	{
 	    this.vitesse = vitesse;
-		date += approximateSerialLatency;
+//		date += approximateSerialLatency;
 	}
 	
 	@Override
@@ -238,9 +237,9 @@ public class RobotChrono extends Robot
         super.copy(rc);
         Vec2.copy(position.getReadOnly(), rc.position);
         rc.orientation = orientation;
-    	rc.positionPathfinding = positionPathfinding;
-    	rc.positionPathfindingAnterieure = positionPathfindingAnterieure;
-    	rc.isPositionPathfindingActive = isPositionPathfindingActive;
+//    	rc.positionPathfinding = positionPathfinding;
+//    	rc.positionPathfindingAnterieure = positionPathfindingAnterieure;
+//    	rc.isPositionPathfindingActive = isPositionPathfindingActive;
     }
     
 /*    @Override
@@ -327,7 +326,7 @@ public class RobotChrono extends Robot
 		return hash;
 	}
 
-	public void printHash()
+/*	public void printHash()
 	{
 //		log.debug("Tapis posés: "+tapisPoses);
 		if(isPositionPathfindingActive)
@@ -335,6 +334,6 @@ public class RobotChrono extends Robot
 		else
 			log.debug("Hash position: "+((position.x >> 2)&7)+" et "+((position.y >> 2)&7));
 		log.debug("Points obtenus: "+pointsObtenus);
-	}
+	}*/
 	
 }
