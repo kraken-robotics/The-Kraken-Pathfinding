@@ -11,24 +11,24 @@ import utils.Log;
  *
  */
 
-public class ObstaclesMobilesIterator implements Iterator<ObstacleProximity>
+public class ObstaclesIterator implements Iterator<ObstacleProximity>
 {
     private Log log;
-    private ObstaclesMobilesMemory memory;
+    private ObstaclesMemory memory;
     
     private int firstNotDead = 0;
     private int nbTmp;
     private long lastDate = -1;
 	
-    public ObstaclesMobilesIterator(Log log, ObstaclesMobilesMemory memory)
+    public ObstaclesIterator(Log log, ObstaclesMemory memory)
     {
         this.log = log;
         this.memory = memory;
     }
     
-    public ObstaclesMobilesIterator clone(long date)
+    public ObstaclesIterator clone(long date)
     {
-    	ObstaclesMobilesIterator cloned_manager = new ObstaclesMobilesIterator(log, memory);
+    	ObstaclesIterator cloned_manager = new ObstaclesIterator(log, memory);
 		copy(cloned_manager, date);
 		return cloned_manager;
     }
@@ -37,7 +37,7 @@ public class ObstaclesMobilesIterator implements Iterator<ObstacleProximity>
      * Nécessaire au fonctionnement du memory manager
      * @param other
      */
-    public void copy(ObstaclesMobilesIterator other, long date)
+    public void copy(ObstaclesIterator other, long date)
     {
     	other.firstNotDead = firstNotDead;
     	other.init(date);
@@ -48,7 +48,7 @@ public class ObstaclesMobilesIterator implements Iterator<ObstacleProximity>
      * @param other
      * @return
      */
-    public boolean equals(ObstaclesMobilesIterator other)
+    public boolean equals(ObstaclesIterator other)
     {
         return firstNotDead == other.firstNotDead;
     }
@@ -60,7 +60,7 @@ public class ObstaclesMobilesIterator implements Iterator<ObstacleProximity>
 	 */
 	public long getDateSomethingChange()
 	{
-	    if(firstNotDead < memory.nbMax())
+	    if(firstNotDead < memory.size())
 	    	return memory.getObstacle(firstNotDead).getDeathDate();
 	    else
 	    	return Long.MAX_VALUE;
@@ -71,15 +71,12 @@ public class ObstaclesMobilesIterator implements Iterator<ObstacleProximity>
 	 */
 	public void reinit()
 	{
-		nbTmp = firstNotDead;
+		if(lastDate == -1)
+			reinitNow();
+		else
+			nbTmp = firstNotDead;
 	}
 
-	
-	public int getFirstNotDead()
-	{
-		return firstNotDead;
-	}
-	
 	/**
 	 * Calcule l'entrée où commence les obstacles maintenant
 	 */
@@ -101,7 +98,7 @@ public class ObstaclesMobilesIterator implements Iterator<ObstacleProximity>
 			firstNotDead = memory.getFirstNotDeadNow();
 		
 		ObstacleProximity next;
-		while(firstNotDead < memory.nbMax())
+		while(firstNotDead < memory.size())
 		{
 			next = memory.getObstacle(firstNotDead);
 			if(next.isDestructionNecessary(date))
@@ -116,13 +113,13 @@ public class ObstaclesMobilesIterator implements Iterator<ObstacleProximity>
 	@Override
 	public boolean hasNext()
 	{		
-		return nbTmp < memory.nbMax();
+		return nbTmp++ < memory.size();
 	}
 	
 	@Override
 	public ObstacleProximity next()
 	{
-		return memory.getObstacle(nbTmp++);
+		return memory.getObstacle(nbTmp-1);
 	}
 
 	@Override

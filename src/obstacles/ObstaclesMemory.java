@@ -18,7 +18,7 @@ import container.Service;
  *
  */
 
-public class ObstaclesMobilesMemory implements Service
+public class ObstaclesMemory implements Service
 {
     // Les obstacles mobiles, c'est-à-dire des obstacles de proximité
     private volatile ArrayList<ObstacleProximity> listObstaclesMobiles = new ArrayList<ObstacleProximity>();
@@ -29,7 +29,7 @@ public class ObstaclesMobilesMemory implements Service
 	
 	protected Log log;
 	
-	public ObstaclesMobilesMemory(Log log)
+	public ObstaclesMemory(Log log)
 	{
 		this.log = log;
 	}
@@ -43,7 +43,7 @@ public class ObstaclesMobilesMemory implements Service
 		notify();
 	}
 	
-	public synchronized int nbMax()
+	public synchronized int size()
 	{
 		return size;
 	}

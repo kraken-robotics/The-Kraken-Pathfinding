@@ -1,6 +1,6 @@
 package threads;
 
-import obstacles.ObstaclesMobilesMemory;
+import obstacles.ObstaclesMemory;
 import pathfinding.GridSpace;
 import container.Service;
 import utils.Config;
@@ -15,10 +15,10 @@ import utils.Log;
 public class ThreadGridSpace extends Thread implements Service {
 
 	protected Log log;
-	private ObstaclesMobilesMemory memory;
+	private ObstaclesMemory memory;
 	private GridSpace gridspace;
 	
-	public ThreadGridSpace(Log log, ObstaclesMobilesMemory memory, GridSpace gridspace)
+	public ThreadGridSpace(Log log, ObstaclesMemory memory, GridSpace gridspace)
 	{
 		this.log = log;
 		this.memory = memory;

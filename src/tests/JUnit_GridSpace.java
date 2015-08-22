@@ -1,6 +1,6 @@
 package tests;
 
-import obstacles.ObstaclesMobilesIterator;
+import obstacles.ObstaclesIterator;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -22,13 +22,13 @@ import utils.Vec2;
 public class JUnit_GridSpace extends JUnit_Test {
 
 	private GridSpace gridspace;
-	private ObstaclesMobilesIterator obstaclemanager;
+	private ObstaclesIterator obstaclemanager;
 	
 	@Before
     public void setUp() throws Exception {
         super.setUp();
         gridspace = (GridSpace) container.getService(ServiceNames.GRID_SPACE);
-        obstaclemanager = (ObstaclesMobilesIterator) container.getService(ServiceNames.OBSTACLE_MANAGER);
+        obstaclemanager = (ObstaclesIterator) container.getService(ServiceNames.OBSTACLE_MANAGER);
     }
    
 	@Test

@@ -26,7 +26,7 @@ public class JUnit_Table extends JUnit_Test {
     }
 
     @Test
-    public void test_clone() throws Exception
+    public void test_clone_copy() throws Exception
     {
     	Table cloned_table = table.clone();
     	Assert.assertTrue(table.equals(cloned_table));

@@ -4,7 +4,7 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Random;
 
-import obstacles.ObstaclesMobilesIterator;
+import obstacles.ObstaclesIterator;
 import obstacles.types.Obstacle;
 import obstacles.types.ObstacleRectangular;
 import obstacles.types.ObstacleRotationRobot;
@@ -44,7 +44,7 @@ import utils.Vec2;
 public class JUnit_Test_Graphic extends JUnit_Test {
 
 	private Fenetre fenetre;
-	private ObstaclesMobilesIterator obstaclemanager;
+	private ObstaclesIterator obstaclemanager;
 	private AStar<PathfindingArcManager, SegmentTrajectoireCourbe> pathfinding;
 	private GameState<RobotChrono,ReadWrite> state_chrono;
 	private GameState<RobotReal,ReadWrite> state;
@@ -57,7 +57,7 @@ public class JUnit_Test_Graphic extends JUnit_Test {
 	{
 		super.setUp();
         pathfinding = (AStar<PathfindingArcManager, SegmentTrajectoireCourbe>) container.getService(ServiceNames.A_STAR_PATHFINDING);
-		obstaclemanager = (ObstaclesMobilesIterator) container.getService(ServiceNames.OBSTACLE_MANAGER);
+		obstaclemanager = (ObstaclesIterator) container.getService(ServiceNames.OBSTACLE_MANAGER);
 		state = (GameState<RobotReal,ReadWrite>)container.getService(ServiceNames.REAL_GAME_STATE);
 		strategic_astar = (AStar<StrategyArcManager, Decision>)container.getService(ServiceNames.A_STAR_STRATEGY);
 		scriptmanager = (ScriptManager) container.getService(ServiceNames.SCRIPT_MANAGER);

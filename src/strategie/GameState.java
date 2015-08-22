@@ -1,7 +1,7 @@
 package strategie;
 
-import obstacles.ObstaclesMobilesIterator;
-import obstacles.ObstaclesMobilesMemory;
+import obstacles.ObstaclesIterator;
+import obstacles.ObstaclesMemory;
 import buffer.DataForSerialOutput;
 import permissions.Permission;
 import permissions.ReadOnly;
@@ -29,7 +29,7 @@ import utils.Config;
 public class GameState<R extends Robot, T extends Permission> implements Service
 {
     public final R robot;
-    public final ObstaclesMobilesIterator iterator;
+    public final ObstaclesIterator iterator;
     public final Table table;
     
     private int indice_memory_manager;
@@ -45,14 +45,14 @@ public class GameState<R extends Robot, T extends Permission> implements Service
      * @param robot
      * @return
      */
-    public static GameState<RobotReal,ReadWrite> constructRealGameState(Log log, Table table, RobotReal robot, HookFactory hookfactory, DataForSerialOutput serie, ObstaclesMobilesMemory memory)
+    public static GameState<RobotReal,ReadWrite> constructRealGameState(Log log, Table table, RobotReal robot, HookFactory hookfactory, DataForSerialOutput serie, ObstaclesMemory memory)
     {
-		GameState<RobotReal,ReadWrite> out = new GameState<RobotReal,ReadWrite>(log, new ObstaclesMobilesIterator(log, memory), robot, table);
+		GameState<RobotReal,ReadWrite> out = new GameState<RobotReal,ReadWrite>(log, new ObstaclesIterator(log, memory), robot, table);
 		serie.envoieHooks(hookfactory.getHooksPermanents(out));
 		return out;
     }
     
-    private GameState(Log log, ObstaclesMobilesIterator iterator, R robot, Table table)
+    private GameState(Log log, ObstaclesIterator iterator, R robot, Table table)
     {
     	this.iterator = iterator;
         this.log = log;

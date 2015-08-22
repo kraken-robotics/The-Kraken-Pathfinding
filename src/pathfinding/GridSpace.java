@@ -1,7 +1,7 @@
 package pathfinding;
 
-import obstacles.ObstaclesMobilesIterator;
-import obstacles.ObstaclesMobilesMemory;
+import obstacles.ObstaclesIterator;
+import obstacles.ObstaclesMemory;
 import table.Table;
 import utils.Config;
 import utils.Log;
@@ -17,7 +17,7 @@ import container.Service;
 public class GridSpace implements Service
 {
 	private Log log;
-	private ObstaclesMobilesIterator iterator;
+	private ObstaclesIterator iterator;
 	private Table table;
 	private boolean ignoreElementJeu;
 	
@@ -30,11 +30,11 @@ public class GridSpace implements Service
 	// cette grille est constante, c'est-à-dire qu'elle ne contient que les obstacles fixes
 	private boolean[] grille = new boolean[4*nbPoints];
 	
-	public GridSpace(Log log, ObstaclesMobilesMemory memory, Table table)
+	public GridSpace(Log log, ObstaclesMemory memory, Table table)
 	{
 		this.log = log;
 		this.table = table;
-		iterator = new ObstaclesMobilesIterator(log, memory);
+		iterator = new ObstaclesIterator(log, memory);
 	}
 	
 	public void updateObstaclesMobiles()

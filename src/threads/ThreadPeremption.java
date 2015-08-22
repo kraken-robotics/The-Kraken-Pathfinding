@@ -1,6 +1,6 @@
 package threads;
 
-import obstacles.ObstaclesMobilesMemory;
+import obstacles.ObstaclesMemory;
 import utils.Config;
 import utils.ConfigInfo;
 import utils.Log;
@@ -17,12 +17,12 @@ import container.Service;
 public class ThreadPeremption extends Thread implements Service
 {
 
-	private ObstaclesMobilesMemory memory;
+	private ObstaclesMemory memory;
 	protected Log log;
 
 	private int dureePeremption;
 
-	public ThreadPeremption(Log log, ObstaclesMobilesMemory memory)
+	public ThreadPeremption(Log log, ObstaclesMemory memory)
 	{
 		this.log = log;
 		this.memory = memory;

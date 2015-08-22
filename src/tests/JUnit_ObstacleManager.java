@@ -1,6 +1,6 @@
 package tests;
 
-import obstacles.ObstaclesMobilesIterator;
+import obstacles.ObstaclesIterator;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -23,13 +23,13 @@ import enums.Tribool;
 
 public class JUnit_ObstacleManager extends JUnit_Test {
 
-	private ObstaclesMobilesIterator obstaclemanager;
+	private ObstaclesIterator obstaclemanager;
 	private Table table;
 	
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        obstaclemanager = (ObstaclesMobilesIterator) container.getService(ServiceNames.OBSTACLE_MANAGER);
+        obstaclemanager = (ObstaclesIterator) container.getService(ServiceNames.OBSTACLE_MANAGER);
         table = (Table) container.getService(ServiceNames.TABLE);
         obstaclemanager.clearObstaclesMobiles();
     }

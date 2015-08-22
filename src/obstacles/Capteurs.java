@@ -25,7 +25,7 @@ public class Capteurs implements Service {
 	// DEPENDS ON ROBOT
 	
 	protected Log log;
-	private ObstaclesMobilesMemory memory;
+	private ObstaclesMemory memory;
 	
 	private static final int nbCapteurs = 12;
 	
@@ -76,7 +76,7 @@ public class Capteurs implements Service {
 	 */
 	public double[] orientationsRelatives;
 
-	public Capteurs(Log log, Config config, ObstaclesMobilesMemory memory)
+	public Capteurs(Log log, Config config, ObstaclesMemory memory)
 	{
 		this.log = log;
 		this.memory = memory;

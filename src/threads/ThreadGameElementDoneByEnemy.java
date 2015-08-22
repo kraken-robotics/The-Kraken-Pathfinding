@@ -1,7 +1,7 @@
 package threads;
 
-import obstacles.ObstaclesMobilesIterator;
-import obstacles.ObstaclesMobilesMemory;
+import obstacles.ObstaclesIterator;
+import obstacles.ObstaclesMemory;
 import obstacles.types.ObstacleProximity;
 import pathfinding.MoteurPhysique;
 import table.GameElementNames;
@@ -20,19 +20,19 @@ import enums.Tribool;
 public class ThreadGameElementDoneByEnemy extends Thread implements Service
 {
 	protected Log log;
-	private ObstaclesMobilesMemory memory;
+	private ObstaclesMemory memory;
 	private Table table;
 	private MoteurPhysique moteur;
-	private ObstaclesMobilesIterator iterator;
+	private ObstaclesIterator iterator;
 	
 	
-	public ThreadGameElementDoneByEnemy(Log log, ObstaclesMobilesMemory memory, Table table, MoteurPhysique moteur)
+	public ThreadGameElementDoneByEnemy(Log log, ObstaclesMemory memory, Table table, MoteurPhysique moteur)
 	{
 		this.log = log;
 		this.memory = memory;
 		this.table = table;
 		this.moteur = moteur;
-		iterator = new ObstaclesMobilesIterator(log, memory);
+		iterator = new ObstaclesIterator(log, memory);
 	}
 	
 	@Override

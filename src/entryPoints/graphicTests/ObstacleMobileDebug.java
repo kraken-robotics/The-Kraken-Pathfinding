@@ -3,7 +3,7 @@ package entryPoints.graphicTests;
 import java.util.Random;
 
 import obstacles.Capteurs;
-import obstacles.ObstaclesMobilesIterator;
+import obstacles.ObstaclesIterator;
 import buffer.IncomingData;
 import buffer.IncomingDataBuffer;
 import permissions.ReadOnly;
@@ -31,7 +31,7 @@ public class ObstacleMobileDebug  {
 			Container container = new Container();
 			Log log = (Log) container.getService(ServiceNames.LOG);
 			Capteurs capteurs = (Capteurs) container.getService(ServiceNames.CAPTEURS);
-			ObstaclesMobilesIterator obstaclemanager = (ObstaclesMobilesIterator) container.getService(ServiceNames.OBSTACLE_MANAGER);
+			ObstaclesIterator obstaclemanager = (ObstaclesIterator) container.getService(ServiceNames.OBSTACLE_MANAGER);
 			IncomingDataBuffer buffer = (IncomingDataBuffer) container.getService(ServiceNames.INCOMING_DATA_BUFFER);
 			Fenetre fenetre = new Fenetre();
 			fenetre.setCapteurs(capteurs);
