@@ -11,7 +11,9 @@ import container.Service;
 
 /**
  * La classe qui contient la grille utilisée par le pathfinding.
- * Utilisée uniquement pour le pathfinding de RobotReal
+ * Utilisée uniquement pour le pathfinding de RobotReal.
+ * Ordre des directions : NO, SE, NE, SO, N, S, O, E;
+ * Ordre dans la grille : NO, NO, N, O;
  * @author pf
  *
  */
@@ -28,17 +30,23 @@ public class GridSpace implements Service
 	public static final int NB_POINTS_POUR_TROIS_METRES = (1 << PRECISION);
 	public static final int NB_POINTS_POUR_DEUX_METRES = (1 << PRECISION)*2/3;
 	public static final double DISTANCE_ENTRE_DEUX_POINTS = 3000/NB_POINTS_POUR_TROIS_METRES;
-	private static final int nbPoints = NB_POINTS_POUR_DEUX_METRES * NB_POINTS_POUR_TROIS_METRES;
+	private static final int NB_POINTS = NB_POINTS_POUR_DEUX_METRES * NB_POINTS_POUR_TROIS_METRES;
+	private static final int X_MAX = NB_POINTS_POUR_TROIS_METRES-1;
+	private static final int Y_MAX = NB_POINTS_POUR_DEUX_METRES-1;
 	
 	// les nœuds ont 8 voisins, mais par symétrie on n'a besoin que de 4 nombres
 	// cette grille est constante, c'est-à-dire qu'elle ne contient que les obstacles fixes
-	private boolean[] grille = new boolean[4*nbPoints];
+	private boolean[] grille = new boolean[4*NB_POINTS];
 	
 	public GridSpace(Log log, ObstaclesMemory memory, Table table)
 	{
 		this.log = log;
 //		this.table = table;
 		iterator = new ObstaclesIterator(log, memory);
+
+		for(int i = 0; i < 4*NB_POINTS; i++)
+			grille[i] = true;
+
 	}
 	
 	public void updateObstaclesMobiles()
@@ -47,11 +55,17 @@ public class GridSpace implements Service
 		
 	}
 	
-	public double distanceHeuristique(int pointA, int pointB)
+	/**
+	 * On utilise la distance euclidienne pour l'heuristique
+	 * @param pointA
+	 * @param pointB
+	 * @return
+	 */
+	public int distanceHeuristique(int pointA, int pointB)
 	{
 		int dx = (pointA & (NB_POINTS_POUR_TROIS_METRES - 1)) - (pointB & (NB_POINTS_POUR_TROIS_METRES - 1)); // ceci est un modulo
 		int dy = (pointA >> PRECISION) - (pointB >> PRECISION); // ceci est une division
-		return COEFF_HEURISTIQUE * 1000 * Math.hypot(dx, dy);
+		return (int) Math.round(COEFF_HEURISTIQUE * 1000 * Math.hypot(dx, dy));
 	}
 
 	public void updateElementsJeu()
@@ -62,49 +76,107 @@ public class GridSpace implements Service
 
 	public int getGridPointVoisin(int point, int direction)
 	{
+		int x = point & (NB_POINTS_POUR_TROIS_METRES - 1);
+		int y = point >> PRECISION;
+
 		switch(direction)
 		{
 		case 0:
-			return 4*point;
+//			NO
+			if(x > 0 && y < Y_MAX)
+				return point+NB_POINTS_POUR_TROIS_METRES-1;
+			return -1; // hors table
+
 		case 4:
-			return 4*point+1;
+//			SE
+			if(x < X_MAX && y > 0)
+				return point-NB_POINTS_POUR_TROIS_METRES+1;
+			return -1; // hors table
+
 		case 2:
-			return 4*point+2;
+//			NE
+			if(x < X_MAX && y < Y_MAX)
+				return point+NB_POINTS_POUR_TROIS_METRES+1;
+			return -1; // hors table
+
 		case 6:
-			return 4*point+3;
+//			SO
+			if(x > 0 && y > 0)
+				return point-NB_POINTS_POUR_TROIS_METRES-1;
+			return -1; // hors table
+
 		case 7:
-			return 4*point+7;
+//			N
+			if(y < Y_MAX)
+				return point+NB_POINTS_POUR_TROIS_METRES;
+			return -1; // hors table
+
 		case 3:
-			return 4*point+4*NB_POINTS_POUR_TROIS_METRES-2;
+//			S
+			if(y > 0)
+				return point-NB_POINTS_POUR_TROIS_METRES;
+			return -1; // hors table
+
 		case 5:
-			return 4*point+4*NB_POINTS_POUR_TROIS_METRES+1;
+//			O
+			if(x > 0)
+				return point-1;
+			return -1; // hors table
+
 //		case 1:
 		default:
-			return 4*point+4*NB_POINTS_POUR_TROIS_METRES+4;
+//			E
+			if(x < X_MAX)
+				return point+1;
+			return -1; // hors table
 		}
 		
 	}
 
 	@Override
-	public void useConfig(Config config) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void useConfig(Config config)
+	{}
 
 	@Override
-	public void updateConfig(Config config) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void updateConfig(Config config)
+	{}
 
+	/**
+	 * Signale si on peut passer d'un point à un de ses voisins.
+	 * On suppose que ce voisin n'est pas hors table.
+	 * @param gridpoint
+	 * @param direction
+	 * @return
+	 */
 	public boolean isTraversable(int gridpoint, int direction)
 	{
-		return grille[getGridPointVoisin(gridpoint, direction)];
+		if((direction & 1) == 0)
+			return grille[4*gridpoint+direction/2];
+		else
+			return grille[4*getGridPointVoisin(gridpoint, direction)+direction/2];
 	}
 	
+	/**
+	 * Renvoie l'indice du gridpoint le plus proche de cette position
+	 * @param p
+	 * @return
+	 */
 	public int computeGridPoint(Vec2<ReadOnly> p)
 	{
-		return (int) (4*NB_POINTS_POUR_TROIS_METRES*(int) Math.round(p.y / GridSpace.DISTANCE_ENTRE_DEUX_POINTS) + Math.round(p.x / GridSpace.DISTANCE_ENTRE_DEUX_POINTS + GridSpace.NB_POINTS_POUR_TROIS_METRES / 2));
+		return (int) (NB_POINTS_POUR_TROIS_METRES*(int) Math.round(p.y / GridSpace.DISTANCE_ENTRE_DEUX_POINTS) + Math.round(p.x / GridSpace.DISTANCE_ENTRE_DEUX_POINTS + GridSpace.NB_POINTS_POUR_TROIS_METRES / 2));
 	}
 
+	/**
+	 * Renvoie la distance en fonction de la direction
+	 * @param i
+	 * @return
+	 */
+	public int distance(int i) {
+		if(i < 4)
+			return 1414;
+		else
+			return 1000;
+	}
+
+	
 }

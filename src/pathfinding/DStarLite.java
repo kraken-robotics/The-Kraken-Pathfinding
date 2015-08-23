@@ -26,14 +26,15 @@ public class DStarLite implements Service
 		this.gridspace = gridspace;
 	}
 	
-	private ArrayList<DStarLiteNode> openset = new ArrayList<DStarLiteNode>();	 // The set of tentative nodes to be evaluated
-	private double km;
+	private ArrayList<DStarLiteNode> openset = new ArrayList<DStarLiteNode>();
+	private int km;
 	private DStarLiteNode arrivee;
 	private DStarLiteNode depart;
+	private int last;
 	
 	private Cle calcKey(DStarLiteNode s)
 	{
-		s.cle.set(Math.min(s.g,s.rhs) + distanceHeuristique(s.gridpoint) + km,
+		s.cle.set(Math.min(s.g,s.rhs) + distanceHeuristique(s) + km,
 				Math.min(s.g, s.rhs));
 		return s.cle;
 	}
@@ -90,14 +91,12 @@ public class DStarLite implements Service
 		boolean contains = openset.contains(u);
 		if(u.g != u.rhs)
 		{
-			u.cle = calcKey(u);
+			calcKey(u);
 			if(!contains)
 				addToOpenset(u);
 		}
 		else if(contains)
-		{
 			openset.remove(u);
-		}
 	}
 	
 	private void computeShortestPath()
@@ -105,23 +104,24 @@ public class DStarLite implements Service
 		DStarLiteNode u;
 		while(!openset.isEmpty() && ((u = openset.get(0)).cle.isLesserThan(calcKey(depart)) || depart.rhs > depart.g))
 		{
-			Cle kold = u.cle;
+			Cle kold = u.cle.clone();
 			Cle knew = calcKey(u);
-			openset.remove(0);
 			if(kold.isLesserThan(knew))
 			{
-				u.cle = knew;
+				openset.remove(0);
 				addToOpenset(u);
 			}
 			else if(u.g > u.rhs)
 			{
 				u.g = u.rhs;
-//				openset.remove(u); // déjà removed
+				openset.remove(0);
 				for(int i = 0; i < 8; i++)
 				{
 					DStarLiteNode s = u.getVoisin(i, gridspace);
+					if(s == null)
+						continue;
 					if(gridspace.isTraversable(s.gridpoint, i))
-						s.rhs = Math.min(s.rhs, DirectionGridSpace.distance(i) + u.g);
+						s.rhs = Math.min(s.rhs, gridspace.distance(i) + u.g);
 					updateVertex(s);
 				}
 			}
@@ -133,21 +133,37 @@ public class DStarLite implements Service
 				{
 					boolean condition = false;
 					DStarLiteNode s = u.getVoisin(i, gridspace);
+					if(s == null)
+						continue;
 					if(!gridspace.isTraversable(s.gridpoint, i))
 						condition = s.rhs == Integer.MAX_VALUE;
-					else if(s.rhs == (DirectionGridSpace.distance(i) + gold) && s.gridpoint != arrivee.gridpoint)
+					else if(s.rhs == (gridspace.distance(i) + gold) && s.gridpoint != arrivee.gridpoint)
 						condition = true;
 					if(condition)
 					{
-						s.rhs = DirectionGridSpace.distance(0) + s.getVoisin(0, gridspace).g;
-						for(int j = 1; j < 8; j++)
+						s.rhs = Integer.MAX_VALUE;
+						for(int j = 0; j < 8; j++)
 						{
 							DStarLiteNode s2 = s.getVoisin(j, gridspace);
-							s.rhs = Math.min(s.rhs, DirectionGridSpace.distance(j) + s2.g);
+							if(s2 == null)
+								continue;
+							s.rhs = Math.min(s.rhs, gridspace.distance(j) + s2.g);
 						}
 					}
 					updateVertex(s);
 				}
+				if(u.rhs == gold && u.gridpoint != depart.gridpoint)
+				{
+					u.rhs = Integer.MAX_VALUE;
+					for(int i = 0; i < 8; i++)
+					{
+						DStarLiteNode s = u.getVoisin(i, gridspace);
+						if(s == null)
+							continue;
+						u.rhs = Math.min(u.rhs, gridspace.distance(i) + s.g);
+					}
+				}
+				updateVertex(u);
 			}
 
 		}
@@ -158,21 +174,29 @@ public class DStarLite implements Service
 	 * @param arrivee
 	 * @param depart
 	 */
-	public void computeNewPathfinding(Vec2<ReadOnly> arrivee, Vec2<ReadOnly> depart)
+	public void computeNewPath(Vec2<ReadOnly> arrivee, Vec2<ReadOnly> depart)
 	{
 		km = 0;
-		DStarLiteNode.reinitHash();
 		this.depart = new DStarLiteNode(gridspace.computeGridPoint(depart));
+		last = this.depart.gridpoint;
+
 		this.arrivee = new DStarLiteNode(gridspace.computeGridPoint(arrivee));
 		this.arrivee.rhs = 0;
-		this.arrivee.cle.set(distanceHeuristique(this.arrivee.gridpoint), 0);
+		this.arrivee.cle.set(distanceHeuristique(this.arrivee), 0);
+
 		openset.clear();
 		openset.add(this.arrivee);
+
 		computeShortestPath();
 	}
 	
-	private double distanceHeuristique(int gridpoint) {
-		return gridspace.distanceHeuristique(this.depart.gridpoint, gridpoint);
+	private int distanceHeuristique(DStarLiteNode noeud) {
+		return distanceHeuristique(noeud.gridpoint);
+	}
+
+	private int distanceHeuristique(int gridpoint)
+	{
+		return gridspace.distanceHeuristique(depart.gridpoint, gridpoint);
 	}
 
 	@Override
@@ -186,8 +210,13 @@ public class DStarLite implements Service
 	/**
 	 * Met à jour le pathfinding
 	 */
-	public void updatePath()
+	public void updatePath(Vec2<ReadOnly> positionRobot)
 	{
+		depart.gridpoint = gridspace.computeGridPoint(positionRobot);
+		km += distanceHeuristique(last);
+		last = depart.gridpoint;
+		
+		
 		
 		computeShortestPath();
 	}

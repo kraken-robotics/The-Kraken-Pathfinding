@@ -8,7 +8,7 @@ package pathfinding;
 
 public class Cle
 {
-	public double first, second;
+	public int first, second;
 
 	public Cle()
 	{}
@@ -23,10 +23,17 @@ public class Cle
 		return first < other.first || (first == other.first && second < other.second);
 	}
 
-	public void set(double first, int second)
+	public void set(int first, int second)
 	{
 		this.first = first;
 		this.second = second;
+	}
+	
+	public Cle clone()
+	{
+		Cle out = new Cle();
+		out.set(first, second);
+		return out;
 	}
 	
 }

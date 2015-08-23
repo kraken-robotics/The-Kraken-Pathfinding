@@ -15,7 +15,7 @@ import utils.Vec2;
 public class ObstacleProximity extends ObstacleCircular
 {
 	private long death_date;
-	private ArrayList<Integer> pourtourGrille;
+	private ArrayList<Integer> pourtourGrille = new ArrayList<Integer>();
 	
 	public ObstacleProximity(Vec2<ReadOnly> position, int rad, long death_date)
 	{
