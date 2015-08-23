@@ -8,10 +8,10 @@ import buffer.IncomingDataBuffer;
 import buffer.IncomingHookBuffer;
 import pathfinding.DStarLite;
 import pathfinding.GridSpace;
+import pathfinding.MemoryManager;
 import pathfinding.MoteurPhysique;
 import permissions.ReadOnly;
 import permissions.ReadWrite;
-import planification.MemoryManager;
 import hook.HookFactory;
 import exceptions.ContainerException;
 import exceptions.PointSortieException;
@@ -165,9 +165,7 @@ public class Container
 																				(StrategieNotifieur)getService(ServiceNames.STRATEGIE_NOTIFIEUR));
 		else if(serviceRequested == ServiceNames.PATHFINDING)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new DStarLite((Log)getService(ServiceNames.LOG),
-																				(GridSpace)getService(ServiceNames.GRID_SPACE),
-																				(MoteurPhysique)getService(ServiceNames.MOTEUR_PHYSIQUE),
-																				(DataForSerialOutput)getService(ServiceNames.SERIAL_OUTPUT_BUFFER));
+																				(GridSpace)getService(ServiceNames.GRID_SPACE));
 		else if(serviceRequested == ServiceNames.OBSTACLES_MOBILES_MEMORY)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ObstaclesMemory((Log)getService(ServiceNames.LOG));
 		else if(serviceRequested == ServiceNames.GRID_SPACE)

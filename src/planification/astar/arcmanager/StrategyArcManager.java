@@ -3,10 +3,10 @@ package planification.astar.arcmanager;
 import java.util.ArrayList;
 import java.util.Vector;
 
+import pathfinding.MemoryManager;
 import permissions.ReadOnly;
 import permissions.ReadWrite;
 import planification.PlanificateurId;
-import planification.MemoryManager;
 import planification.astar.AStar;
 import planification.astar.arc.Decision;
 import planification.astar.arc.PathfindingNodes;

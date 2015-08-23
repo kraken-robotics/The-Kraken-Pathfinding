@@ -47,7 +47,6 @@ public class ThreadPathfinding extends Thread implements Service
 			// Cet appel peut lancer un pathfinding.notifyAll()
 			// Il n'est pas synchronized car il ne modifie pas obstaclemanager
 			pathfinding.updatePath(robot.getPosition());
-			pathfinding.lisseEtEnvoieItineraire();
 		}
 
 //		log.debug("Fermeture de ThreadPathfinding");

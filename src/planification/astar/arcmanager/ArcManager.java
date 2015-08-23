@@ -1,9 +1,9 @@
 package planification.astar.arcmanager;
 
+import pathfinding.MemoryManager;
 import permissions.ReadOnly;
 import permissions.ReadWrite;
 import planification.PlanificateurId;
-import planification.MemoryManager;
 import planification.astar.arc.Arc;
 import container.Service;
 import exceptions.ArcManagerException;

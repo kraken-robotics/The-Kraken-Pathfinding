@@ -37,5 +37,4 @@ public class JUnit_Pathfinding extends JUnit_Test {
 		}
     }
 
-
 }

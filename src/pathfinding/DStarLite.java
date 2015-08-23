@@ -3,8 +3,9 @@ package pathfinding;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import buffer.DataForSerialOutput;
 import permissions.ReadOnly;
+import robot.RobotChrono;
+import strategie.GameState;
 import utils.Config;
 import utils.Log;
 import utils.Vec2;
@@ -20,15 +21,11 @@ public class DStarLite implements Service
 {
 	protected Log log;
 	private GridSpace gridspace;
-	private MoteurPhysique moteur;
-	private DataForSerialOutput serie;
 
-	public DStarLite(Log log, GridSpace gridspace, MoteurPhysique moteur, DataForSerialOutput serie)
+	public DStarLite(Log log, GridSpace gridspace)
 	{
 		this.log = log;
 		this.gridspace = gridspace;
-		this.moteur = moteur;
-		this.serie = serie;
 		for(int i = 0; i < GridSpace.NB_POINTS_POUR_DEUX_METRES * GridSpace.NB_POINTS_POUR_TROIS_METRES; i++)
 		{
 			memory[i] = new DStarLiteNode(i);
@@ -270,6 +267,10 @@ public class DStarLite implements Service
 		computeShortestPath();
 	}
 	
+	/**
+	 * Utilisé pour l'affichage et le debug
+	 * @return
+	 */
 	public ArrayList<Vec2<ReadOnly>> itineraireBrut()
 	{
 		ArrayList<Vec2<ReadOnly>> trajet = new ArrayList<Vec2<ReadOnly>>();
@@ -304,23 +305,46 @@ public class DStarLite implements Service
 		
 	}
 	
-	public void lisseEtEnvoieItineraire()
+	public int heuristicCostThetaStar(int gridpoint)
 	{
-		
+		return getFromMemory(gridpoint).g;
 	}
 	
-	public int add(int a, int b)
+	public int getHashDebut()
+	{
+		return depart.gridpoint;
+	}
+
+	public int getHashArrivee()
+	{
+		return arrivee.gridpoint;
+	}
+
+	/**
+	 * Somme en faisant attention aux valeurs infinies
+	 * @param a
+	 * @param b
+	 * @return
+	 */
+	private int add(int a, int b)
 	{
 		if(a == Integer.MAX_VALUE || b  == Integer.MAX_VALUE)
 			return Integer.MAX_VALUE;
 		return a + b;
 	}
 
-	public int add(int a, int b, int c)
+	/**
+	 * Somme en faisant attention aux valeurs infinies
+	 * @param a
+	 * @param b
+	 * @param c
+	 * @return
+	 */
+	private int add(int a, int b, int c)
 	{
 		if(a == Integer.MAX_VALUE || b  == Integer.MAX_VALUE || c  == Integer.MAX_VALUE)
 			return Integer.MAX_VALUE;
 		return a + b + c;
 	}
-	
+
 }

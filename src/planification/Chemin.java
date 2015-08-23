@@ -3,6 +3,7 @@ package planification;
 import java.util.ArrayList;
 
 import container.Service;
+import pathfinding.LocomotionArc;
 import permissions.ReadOnly;
 import strategie.GameState;
 import utils.Config;

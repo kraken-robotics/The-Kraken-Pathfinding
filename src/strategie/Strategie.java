@@ -4,8 +4,8 @@ import hook.HookFactory;
 
 import java.util.ArrayList;
 
+import pathfinding.MemoryManager;
 import permissions.ReadOnly;
-import planification.MemoryManager;
 import planification.Pathfinding;
 import robot.RobotReal;
 import scripts.ScriptManager;

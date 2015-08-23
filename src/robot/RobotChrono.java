@@ -2,9 +2,9 @@ package robot;
 
 import java.util.ArrayList;
 
+import pathfinding.LocomotionArc;
 import permissions.ReadOnly;
 import permissions.ReadWrite;
-import planification.LocomotionArc;
 import hook.Hook;
 import utils.Log;
 import utils.Vec2;
@@ -18,6 +18,7 @@ import exceptions.FinMatchException;
 public class RobotChrono extends Robot
 {
 	protected final Vec2<ReadWrite> position = new Vec2<ReadWrite>();
+	protected int positionGridSpace;
 //	protected PathfindingNodes positionPathfinding;
 //	protected PathfindingNodes positionPathfindingAnterieure;
 //	protected boolean isPositionPathfindingActive = false;
@@ -273,6 +274,16 @@ public class RobotChrono extends Robot
 			throw new FinMatchException();
 	}
 
+	public void setPositionGridSpace(int gridpoint)
+	{
+		positionGridSpace = gridpoint;
+	}
+
+	public int getPositionGridSpace()
+	{
+		return positionGridSpace;
+	}
+	
 /*	public void setPositionPathfinding(PathfindingNodes n)
 	{
 		Vec2.copy(n.getCoordonnees(), position);
