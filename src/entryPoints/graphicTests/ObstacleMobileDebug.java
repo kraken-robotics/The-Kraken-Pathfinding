@@ -61,7 +61,7 @@ public class ObstacleMobileDebug  {
 			int dureeSleep = 150;
 			for(int k = 0; k < nbPoints; k++)
 			{
-				point[k] = new Vec2<ReadWrite>(600, 2*Math.PI*k/nbPoints);
+				point[k] = new Vec2<ReadWrite>(600, 2*Math.PI*k/nbPoints, true);
 				Vec2.plus(point[k], positionRobot);
 			}
 			

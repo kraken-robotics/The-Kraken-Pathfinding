@@ -213,7 +213,7 @@ public class Capteurs implements Service {
 //		log.debug("Diff position cone arrière: "+new Vec2<ReadWrite>(-(int)(radius/sin[nbCapteur<nbUltrasons?ultrason:infrarouge]), orientationsRelatives[nbCapteur]));
 //		log.debug("Position cone arrière: "+Vec2.plus(new Vec2<ReadWrite>(-(int)(radius/sin[nbCapteur<nbUltrasons?ultrason:infrarouge]), orientationsRelatives[nbCapteur]), positionsRelatives[nbCapteur]));
 		log.debug("Point avant: "+point);
-		Vec2<ReadOnly> tmp = Vec2.plus(Vec2.minus(new Vec2<ReadWrite>((int)(radius/sin[nbCapteur<nbUltrasons?ultrason:infrarouge]), orientationsRelatives[nbCapteur]), positionsRelatives[nbCapteur]), point).getReadOnly();
+		Vec2<ReadOnly> tmp = Vec2.plus(Vec2.minus(new Vec2<ReadWrite>((int)(radius/sin[nbCapteur<nbUltrasons?ultrason:infrarouge]), orientationsRelatives[nbCapteur], true), positionsRelatives[nbCapteur]), point).getReadOnly();
 		log.debug("Point après: "+tmp);
 		return tmp.dot(cones[nbCapteur][0]) > 0 && tmp.dot(cones[nbCapteur][1]) > 0 && tmp.dot(cones[nbCapteur][2]) > 0;
 	}
@@ -235,9 +235,9 @@ public class Capteurs implements Service {
 		int distance = coupleCapteurs[nbCouple][2];
 		Vec2<ReadWrite> cote;
 		if(gauche)
-			cote = new Vec2<ReadWrite>(distance, orientationsRelatives[capteurQuiNeVoitPas]-angleCone[capteurQuiNeVoitPas<nbUltrasons?ultrason:infrarouge]);
+			cote = new Vec2<ReadWrite>(distance, orientationsRelatives[capteurQuiNeVoitPas]-angleCone[capteurQuiNeVoitPas<nbUltrasons?ultrason:infrarouge], true);
 		else
-			cote = new Vec2<ReadWrite>(distance, orientationsRelatives[capteurQuiNeVoitPas]+angleCone[capteurQuiNeVoitPas<nbUltrasons?ultrason:infrarouge]);
+			cote = new Vec2<ReadWrite>(distance, orientationsRelatives[capteurQuiNeVoitPas]+angleCone[capteurQuiNeVoitPas<nbUltrasons?ultrason:infrarouge], true);
 		
 //		log.debug("cote: "+cote);
 		
@@ -271,9 +271,9 @@ public class Capteurs implements Service {
 		log.debug("Distance 2: "+(-b-Math.sqrt(delta))/2);
 */
 		if(gauche)
-			intersectionPoint = new Vec2<ReadWrite>((int)s, orientationsRelatives[capteurQuiNeVoitPas]-angleCone[capteurQuiVoit<nbUltrasons?ultrason:infrarouge]);
+			intersectionPoint = new Vec2<ReadWrite>((int)s, orientationsRelatives[capteurQuiNeVoitPas]-angleCone[capteurQuiVoit<nbUltrasons?ultrason:infrarouge], true);
 		else
-			intersectionPoint = new Vec2<ReadWrite>((int)s, orientationsRelatives[capteurQuiNeVoitPas]+angleCone[capteurQuiVoit<nbUltrasons?ultrason:infrarouge]);
+			intersectionPoint = new Vec2<ReadWrite>((int)s, orientationsRelatives[capteurQuiNeVoitPas]+angleCone[capteurQuiVoit<nbUltrasons?ultrason:infrarouge], true);
 
 //		log.debug("Point avant repère: "+intersectionPoint);
 		
@@ -294,9 +294,9 @@ public class Capteurs implements Service {
 		
 		Vec2.minus(intersectionPoint, positionsRelatives[capteurQuiVoit]);
 		if(gauche)
-			Vec2.plus(intersectionPoint, new Vec2<ReadWrite>(mesure, orientationsRelatives[capteurQuiVoit]-angleCone[capteurQuiVoit<nbUltrasons?ultrason:infrarouge]));
+			Vec2.plus(intersectionPoint, new Vec2<ReadWrite>(mesure, orientationsRelatives[capteurQuiVoit]-angleCone[capteurQuiVoit<nbUltrasons?ultrason:infrarouge], true));
 		else
-			Vec2.plus(intersectionPoint, new Vec2<ReadWrite>(mesure, orientationsRelatives[capteurQuiVoit]+angleCone[capteurQuiVoit<nbUltrasons?ultrason:infrarouge]));
+			Vec2.plus(intersectionPoint, new Vec2<ReadWrite>(mesure, orientationsRelatives[capteurQuiVoit]+angleCone[capteurQuiVoit<nbUltrasons?ultrason:infrarouge], true));
 		Vec2.scalar(intersectionPoint, 0.5);
 
 		return intersectionPoint;
@@ -365,7 +365,7 @@ public class Capteurs implements Service {
 						log.debug("Capteur "+i+" trop proche ou trop loin.");
 					continue;
 				}
-				Vec2<ReadWrite> positionBrute = new Vec2<ReadWrite>(data.mesures[i], orientationsRelatives[i]);
+				Vec2<ReadWrite> positionBrute = new Vec2<ReadWrite>(data.mesures[i], orientationsRelatives[i], true);
 				Vec2.plus(positionBrute, positionsRelatives[i]);
 				Vec2.rotate(positionBrute, data.orientationRobot);
 				Vec2.plus(positionBrute, data.positionRobot);
@@ -777,7 +777,7 @@ public class Capteurs implements Service {
 			for(int i = 0; i < nbCapteurs; i++)
 				if(!neVoitRien[i] && !dejaTraite[i])
 				{
-					Vec2<ReadWrite> positionEnnemi = new Vec2<ReadWrite>(data.mesures[i]+rayonEnnemi, orientationsRelatives[i]);
+					Vec2<ReadWrite> positionEnnemi = new Vec2<ReadWrite>(data.mesures[i]+rayonEnnemi, orientationsRelatives[i], true);
 					Vec2.plus(positionEnnemi, positionsRelatives[i]);
 					Vec2.rotate(positionEnnemi, data.orientationRobot);
 					Vec2.plus(positionEnnemi, data.positionRobot);

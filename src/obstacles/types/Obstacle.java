@@ -56,14 +56,14 @@ public abstract class Obstacle
 						for(int y2 = -1 ; y2 <= 1 ; y2++)
 							if((new Vec2<ReadOnly>((int) Math.round(GridSpace.DISTANCE_ENTRE_DEUX_POINTS*(x2+x)), (int) Math.round(GridSpace.DISTANCE_ENTRE_DEUX_POINTS*(y2+y)))).squaredLength() >= squaredRayonObstacleDilate)
 							{
-								log.debug("Point du patron : "+point+" ie "+new Vec2<ReadOnly>(x, y));
+//								log.debug("Point du patron : "+point+" ie "+new Vec2<ReadOnly>(x, y));
 								pourtourGrillePatron.add(new Vec2<ReadOnly>(x, y));
 								x2 = 10;
 								y2 = 10;								
 							}
 				}
 			}
-		log.debug("Taille patron : "+pourtourGrillePatron.size());
+//		log.debug("Taille patron : "+pourtourGrillePatron.size());
 //		log.debug("Taille totale de l'obstacle : "+enTout);
 	}
 	

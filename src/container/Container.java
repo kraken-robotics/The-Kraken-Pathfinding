@@ -165,8 +165,9 @@ public class Container
 																				(StrategieNotifieur)getService(ServiceNames.STRATEGIE_NOTIFIEUR));
 		else if(serviceRequested == ServiceNames.PATHFINDING)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new DStarLite((Log)getService(ServiceNames.LOG),
-																				(GridSpace)getService(ServiceNames.GRID_SPACE));
-
+																				(GridSpace)getService(ServiceNames.GRID_SPACE),
+																				(MoteurPhysique)getService(ServiceNames.MOTEUR_PHYSIQUE),
+																				(DataForSerialOutput)getService(ServiceNames.SERIAL_OUTPUT_BUFFER));
 		else if(serviceRequested == ServiceNames.OBSTACLES_MOBILES_MEMORY)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ObstaclesMemory((Log)getService(ServiceNames.LOG));
 		else if(serviceRequested == ServiceNames.GRID_SPACE)
@@ -208,7 +209,7 @@ public class Container
         else if(serviceRequested == ServiceNames.REAL_GAME_STATE)
         	// ici la construction est un petit peu différente car on interdit l'instanciation publique d'un GameSTate<RobotChrono>
             instanciedServices[serviceRequested.ordinal()] = (Service) GameState.constructRealGameState((Log)getService(ServiceNames.LOG),
-                                                             (Table)getService(ServiceNames.TABLE),                                                             
+                                                             (Table)getService(ServiceNames.TABLE),
                                                              (RobotReal)getService(ServiceNames.ROBOT_REAL),
         													 (HookFactory)getService(ServiceNames.HOOK_FACTORY),
 		 													 (DataForSerialOutput)getService(ServiceNames.SERIAL_OUTPUT_BUFFER),

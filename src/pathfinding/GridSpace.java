@@ -13,7 +13,7 @@ import container.Service;
  * La classe qui contient la grille utilisée par le pathfinding.
  * Utilisée uniquement pour le pathfinding de RobotReal.
  * Ordre des directions : NO, SE, NE, SO, N, S, O, E;
- * Ordre dans la grille : NO, NO, N, O;
+ * Ordre dans la grille : NO, NE, N, O;
  * @author pf
  *
  */
@@ -25,12 +25,11 @@ public class GridSpace implements Service
 	private boolean ignoreElementJeu;
 	
 	private static final int COEFF_HEURISTIQUE = 1;
-	// soit 46.875 mm entre chaque point
-	private static final int PRECISION = 6;
+	public static final int PRECISION = 6;
 	public static final int NB_POINTS_POUR_TROIS_METRES = (1 << PRECISION);
-	public static final int NB_POINTS_POUR_DEUX_METRES = (1 << PRECISION)*2/3;
-	public static final double DISTANCE_ENTRE_DEUX_POINTS = 3000/NB_POINTS_POUR_TROIS_METRES;
-	private static final int NB_POINTS = NB_POINTS_POUR_DEUX_METRES * NB_POINTS_POUR_TROIS_METRES;
+	public static final int NB_POINTS_POUR_DEUX_METRES = (int) ((1 << PRECISION)*2./3.);
+	public static final double DISTANCE_ENTRE_DEUX_POINTS = 3000./NB_POINTS_POUR_TROIS_METRES;
+	public static final int NB_POINTS = NB_POINTS_POUR_DEUX_METRES * NB_POINTS_POUR_TROIS_METRES;
 	private static final int X_MAX = NB_POINTS_POUR_TROIS_METRES-1;
 	private static final int Y_MAX = NB_POINTS_POUR_DEUX_METRES-1;
 	
@@ -87,7 +86,7 @@ public class GridSpace implements Service
 				return point+NB_POINTS_POUR_TROIS_METRES-1;
 			return -1; // hors table
 
-		case 4:
+		case 1:
 //			SE
 			if(x < X_MAX && y > 0)
 				return point-NB_POINTS_POUR_TROIS_METRES+1;
@@ -99,31 +98,31 @@ public class GridSpace implements Service
 				return point+NB_POINTS_POUR_TROIS_METRES+1;
 			return -1; // hors table
 
-		case 6:
+		case 3:
 //			SO
 			if(x > 0 && y > 0)
 				return point-NB_POINTS_POUR_TROIS_METRES-1;
 			return -1; // hors table
 
-		case 7:
+		case 4:
 //			N
 			if(y < Y_MAX)
 				return point+NB_POINTS_POUR_TROIS_METRES;
 			return -1; // hors table
 
-		case 3:
+		case 5:
 //			S
 			if(y > 0)
 				return point-NB_POINTS_POUR_TROIS_METRES;
 			return -1; // hors table
 
-		case 5:
+		case 6:
 //			O
 			if(x > 0)
 				return point-1;
 			return -1; // hors table
 
-//		case 1:
+//		case 7:
 		default:
 //			E
 			if(x < X_MAX)
@@ -163,7 +162,7 @@ public class GridSpace implements Service
 	 */
 	public int computeGridPoint(Vec2<ReadOnly> p)
 	{
-		return (int) (NB_POINTS_POUR_TROIS_METRES*(int) Math.round(p.y / GridSpace.DISTANCE_ENTRE_DEUX_POINTS) + Math.round(p.x / GridSpace.DISTANCE_ENTRE_DEUX_POINTS + GridSpace.NB_POINTS_POUR_TROIS_METRES / 2));
+		return (int) (NB_POINTS_POUR_TROIS_METRES*(int) Math.round(p.y / GridSpace.DISTANCE_ENTRE_DEUX_POINTS) + Math.round((p.x+1500) / GridSpace.DISTANCE_ENTRE_DEUX_POINTS));
 	}
 
 	/**
@@ -178,6 +177,12 @@ public class GridSpace implements Service
 			return 1414;
 		else
 			return 1000;
+	}
+
+	public Vec2<ReadOnly> computeVec2(int gridpoint)
+	{
+		return new Vec2<ReadOnly>((int) Math.round((gridpoint & (NB_POINTS_POUR_TROIS_METRES - 1)) * GridSpace.DISTANCE_ENTRE_DEUX_POINTS - 1500),
+				(int) Math.round((gridpoint >> PRECISION) * GridSpace.DISTANCE_ENTRE_DEUX_POINTS));
 	}
 
 	

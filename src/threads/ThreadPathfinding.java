@@ -3,6 +3,7 @@ package threads;
 import container.Service;
 import pathfinding.DStarLite;
 import pathfinding.GridSpace;
+import robot.RobotReal;
 import utils.Config;
 import utils.Log;
 
@@ -17,12 +18,14 @@ public class ThreadPathfinding extends Thread implements Service
 	protected Log log;
 	private DStarLite pathfinding;
 	private GridSpace gridspace;
+	private RobotReal robot;
 	
-	public ThreadPathfinding(Log log, DStarLite pathfinding, GridSpace gridspace)
+	public ThreadPathfinding(Log log, DStarLite pathfinding, GridSpace gridspace, RobotReal robot)
 	{
 		this.log = log;
 		this.pathfinding = pathfinding;
 		this.gridspace = gridspace;
+		this.robot = robot;
 	}
 
 	@Override
@@ -43,7 +46,8 @@ public class ThreadPathfinding extends Thread implements Service
 			
 			// Cet appel peut lancer un pathfinding.notifyAll()
 			// Il n'est pas synchronized car il ne modifie pas obstaclemanager
-			pathfinding.updatePath();
+			pathfinding.updatePath(robot.getPosition());
+			pathfinding.lisseEtEnvoieItineraire();
 		}
 
 //		log.debug("Fermeture de ThreadPathfinding");

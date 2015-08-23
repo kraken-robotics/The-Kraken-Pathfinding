@@ -1,16 +1,12 @@
 package tests;
 
-import obstacles.ObstaclesIterator;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import pathfinding.GridSpace;
 import permissions.ReadOnly;
-import planification.astar.arc.PathfindingNodes;
 import container.ServiceNames;
-import utils.ConfigInfo;
 import utils.Vec2;
 
 /**
@@ -22,49 +18,63 @@ import utils.Vec2;
 public class JUnit_GridSpace extends JUnit_Test {
 
 	private GridSpace gridspace;
-	private ObstaclesIterator obstaclemanager;
 	
 	@Before
     public void setUp() throws Exception {
         super.setUp();
         gridspace = (GridSpace) container.getService(ServiceNames.GRID_SPACE);
-        obstaclemanager = (ObstaclesIterator) container.getService(ServiceNames.OBSTACLE_MANAGER);
     }
-   
+	
 	@Test
-	public void test_nearestReachableNode() throws Exception
+	public void test_computeVec2() throws Exception
 	{
-		Assert.assertEquals(PathfindingNodes.BAS_DROITE, gridspace.nearestReachableNode(PathfindingNodes.BAS_DROITE.getCoordonnees().plusNewVector(new Vec2<ReadOnly>(10, -40)).getReadOnly(), 0));
+		log.debug(gridspace.computeVec2(0));
+		log.debug(gridspace.computeVec2(64));
+		log.debug(gridspace.computeVec2(63));
+		Assert.assertTrue(gridspace.computeVec2(0).equals(new Vec2<ReadOnly>(-1500, 0)));
+		Assert.assertTrue(gridspace.computeVec2(0).equals(new Vec2<ReadOnly>(-1500, 0)));
 	}
 
 	@Test
-	public void test_traversable() throws Exception
+	public void test_distance() throws Exception
 	{
-		config.set(ConfigInfo.DATE_DEBUT_MATCH, System.currentTimeMillis());
-		Assert.assertTrue(!gridspace.isTraversable(PathfindingNodes.BAS_DROITE, PathfindingNodes.BAS_GAUCHE, 0));
-		gridspace.setAvoidGameElement(true);
-		Assert.assertTrue(!gridspace.isTraversable(PathfindingNodes.BAS_DROITE, PathfindingNodes.DEVANT_DEPART_GAUCHE, 0));
-		gridspace.setAvoidGameElement(false);
-		gridspace.reinitConnections();
-		Assert.assertTrue(gridspace.isTraversable(PathfindingNodes.BAS_DROITE, PathfindingNodes.DEVANT_DEPART_GAUCHE, 0));
-
-		Assert.assertTrue(gridspace.isTraversable(PathfindingNodes.NODE_TAPIS, PathfindingNodes.BAS_GAUCHE, 0));
-		obstaclemanager.creerObstacle(new Vec2<ReadOnly>(-220, 830), (int)(System.currentTimeMillis() - config.getLong(ConfigInfo.DATE_DEBUT_MATCH)));
-		// mise à jour du gridspace
-		gridspace.reinitConnections();
-		Assert.assertTrue(!gridspace.isTraversable(PathfindingNodes.NODE_TAPIS, PathfindingNodes.BAS_GAUCHE, 0));
+		Assert.assertTrue(gridspace.distance(1, 2) == 1414);
+		Assert.assertTrue(gridspace.distance(1, 4) == 1000);
 	}
-
-    @Test
-    public void test_symetrie() throws Exception
-    {
-		for(PathfindingNodes i : PathfindingNodes.values())
-			for(PathfindingNodes j : PathfindingNodes.values())
-				Assert.assertTrue(gridspace.isTraversable(i,j,0) == gridspace.isTraversable(j,i,0));
-		gridspace.reinitConnections();
-		for(PathfindingNodes i : PathfindingNodes.values())
-			for(PathfindingNodes j : PathfindingNodes.values())
-				Assert.assertTrue(gridspace.isTraversable(i,j,0) == gridspace.isTraversable(j,i,0));
-    }
+	
+	@Test
+	public void test_distanceHeuristique() throws Exception
+	{
+		Assert.assertTrue(gridspace.distanceHeuristique(1, 2) == 1000);
+		Assert.assertTrue(gridspace.distanceHeuristique(1, 65) == 1000);
+		Assert.assertTrue(gridspace.distanceHeuristique(1, 64) == 1414);
+		Assert.assertTrue(gridspace.distanceHeuristique(64, 1) == 1414);
+		Assert.assertTrue(gridspace.distanceHeuristique(1, 1+2*64) == 2000);
+		Assert.assertTrue(gridspace.distanceHeuristique(1+2*64, 1) == 2000);
+		Assert.assertTrue(gridspace.distanceHeuristique(64, 63) == 63008);
+		Assert.assertTrue(gridspace.distanceHeuristique(63, 64) == 63008);
+	}
+	
+	@Test
+	public void test_getGridPointVoisin() throws Exception
+	{
+		for(int i = 0; i < 8; i++)
+		{
+			log.debug(i);
+			Assert.assertEquals((i<4?1414:1000), gridspace.distanceHeuristique(gridspace.getGridPointVoisin(150, i), 150));
+		}
+		Assert.assertEquals(-1, gridspace.getGridPointVoisin(21, 5));
+		Assert.assertEquals(-1, gridspace.getGridPointVoisin(63, 1));
+		Assert.assertEquals(-1, gridspace.getGridPointVoisin(127, 7));
+		Assert.assertEquals(-1, gridspace.getGridPointVoisin(128, 6));
+		Assert.assertEquals(-1, gridspace.getGridPointVoisin(21, 1));
+	}
+	
+	@Test
+	public void test_computeGridPoint() throws Exception
+	{
+		for(int i = 0; i < GridSpace.NB_POINTS; i++)
+			Assert.assertTrue(gridspace.computeGridPoint(gridspace.computeVec2(i)) == i);
+	}
 
 }

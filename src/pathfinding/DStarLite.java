@@ -3,6 +3,7 @@ package pathfinding;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import buffer.DataForSerialOutput;
 import permissions.ReadOnly;
 import utils.Config;
 import utils.Log;
@@ -19,11 +20,15 @@ public class DStarLite implements Service
 {
 	protected Log log;
 	private GridSpace gridspace;
+	private MoteurPhysique moteur;
+	private DataForSerialOutput serie;
 
-	public DStarLite(Log log, GridSpace gridspace)
+	public DStarLite(Log log, GridSpace gridspace, MoteurPhysique moteur, DataForSerialOutput serie)
 	{
 		this.log = log;
 		this.gridspace = gridspace;
+		this.moteur = moteur;
+		this.serie = serie;
 		for(int i = 0; i < GridSpace.NB_POINTS_POUR_DEUX_METRES * GridSpace.NB_POINTS_POUR_TROIS_METRES; i++)
 		{
 			memory[i] = new DStarLiteNode(i);
@@ -71,13 +76,13 @@ public class DStarLite implements Service
 	 */
 	private void addToOpenset(DStarLiteNode u)
 	{
-		if(openset.contains(u))
-			log.critical("Déjà dans openset !");
+//		if(openset.contains(u))
+//			log.critical("Déjà dans openset !");
 		Iterator<DStarLiteNode> iterator = openset.listIterator();
 		int i = 0;
 		while(iterator.hasNext())
 		{
-			if(iterator.next().cle.isLesserThan(u.cle))
+			if(u.cle.isLesserThan(iterator.next().cle))
 			{
 				openset.add(i, u);
 				return;
@@ -131,25 +136,34 @@ public class DStarLite implements Service
 	
 	private void computeShortestPath()
 	{
+//		int k = 0;
 		DStarLiteNode u;
 		while(!openset.isEmpty() && ((u = openset.get(0)).cle.isLesserThan(calcKey(depart, inutile)) || depart.rhs > depart.g))
 		{
-//			Iterator<DStarLiteNode> iterator = openset.listIterator();
-//			while(iterator.hasNext())
-//				log.debug(iterator.next().cle);
-//			log.debug("Nouvelle itération, u = "+u.gridpoint);
-//			log.debug("Taille openset = "+openset.size());
+/*			log.debug("Taille openset = "+openset.size());
+			Iterator<DStarLiteNode> iterator = openset.listIterator();
+			while(iterator.hasNext())
+			{
+				log.debug("openset : "+iterator.next());
+			}
+			log.debug("Nouvelle itération, u = "+u);
 			
+			k++;
+			if(k == 5)
+				return;
+			*/
 			Cle kold = u.cle.clone();
 			calcKey(u, knew);
 			if(kold.isLesserThan(knew))
 			{
+//				log.debug("Cas 1");
 				knew.copy(u.cle);
 				openset.remove(0);
 				addToOpenset(u);
 			}
 			else if(u.g > u.rhs)
 			{
+//				log.debug("Cas 2");
 				u.g = u.rhs;
 				openset.remove(0);
 				for(int i = 0; i < 8; i++)
@@ -164,6 +178,7 @@ public class DStarLite implements Service
 			}
 			else
 			{
+//				log.debug("Cas 3");
 				int gold = u.g;
 				u.g = Integer.MAX_VALUE;
 				for(int i = 0; i < 8; i++)
@@ -211,7 +226,7 @@ public class DStarLite implements Service
 	 * @param arrivee
 	 * @param depart
 	 */
-	public void computeNewPath(Vec2<ReadOnly> arrivee, Vec2<ReadOnly> depart)
+	public void computeNewPath(Vec2<ReadOnly> depart, Vec2<ReadOnly> arrivee)
 	{
 		nbPF++;
 		km = 0;
@@ -221,7 +236,7 @@ public class DStarLite implements Service
 		this.arrivee = getFromMemory(gridspace.computeGridPoint(arrivee));
 		this.arrivee.rhs = 0;
 		this.arrivee.cle.set(distanceHeuristique(this.arrivee.gridpoint), 0);
-
+		
 		openset.clear();
 		openset.add(this.arrivee);
 
@@ -255,6 +270,45 @@ public class DStarLite implements Service
 		computeShortestPath();
 	}
 	
+	public ArrayList<Vec2<ReadOnly>> itineraireBrut()
+	{
+		ArrayList<Vec2<ReadOnly>> trajet = new ArrayList<Vec2<ReadOnly>>();
+
+		DStarLiteNode node = depart;
+		DStarLiteNode min = null;
+		int coutMin;
+		
+		while(!node.equals(arrivee))
+		{
+			trajet.add(gridspace.computeVec2(node.gridpoint));
+			log.debug(node);
+			coutMin = Integer.MAX_VALUE;
+			
+			for(int i = 0; i < 8; i++)
+			{
+				int voisin = gridspace.getGridPointVoisin(node.gridpoint, i);
+				if(voisin < 0)
+					continue;
+				DStarLiteNode s = getFromMemory(voisin);
+				int coutTmp = add(gridspace.distance(node.gridpoint, i), s.g);
+				if(coutTmp < coutMin)
+				{
+					coutMin = coutTmp;
+					min = s;
+				}
+			}
+			node = min;
+		}
+		trajet.add(gridspace.computeVec2(arrivee.gridpoint));
+		return trajet;
+		
+	}
+	
+	public void lisseEtEnvoieItineraire()
+	{
+		
+	}
+	
 	public int add(int a, int b)
 	{
 		if(a == Integer.MAX_VALUE || b  == Integer.MAX_VALUE)
@@ -268,5 +322,5 @@ public class DStarLite implements Service
 			return Integer.MAX_VALUE;
 		return a + b + c;
 	}
-
+	
 }

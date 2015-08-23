@@ -30,4 +30,12 @@ public class DStarLiteNode {
 		return hashCode() == o.hashCode();
 	}
 	
+	@Override
+	public String toString()
+	{
+		int x = gridpoint & (GridSpace.NB_POINTS_POUR_TROIS_METRES - 1);
+		int y = gridpoint >> GridSpace.PRECISION;
+		return x+" "+y+" ("+cle+")";
+	}
+	
 }

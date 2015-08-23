@@ -1,5 +1,7 @@
 package tests;
 
+import java.util.ArrayList;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -27,7 +29,12 @@ public class JUnit_Pathfinding extends JUnit_Test {
 	@Test
     public void test_chemin() throws Exception
     {
-		pathfinding.computeNewPath(new Vec2<ReadOnly>(1000, 1000), new Vec2<ReadOnly>(1500, 1500));
+		pathfinding.computeNewPath(new Vec2<ReadOnly>(1000, 1000), new Vec2<ReadOnly>(1100, 1500));
+		ArrayList<Vec2<ReadOnly>> trajet = pathfinding.itineraireBrut();
+		for(Vec2<ReadOnly> v : trajet)
+		{
+			log.debug(v);
+		}
     }
 
 

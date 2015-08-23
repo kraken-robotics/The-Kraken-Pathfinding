@@ -28,7 +28,7 @@ public class Vec2<T extends Permission>
 		y = (int) (Math.sin(angle)*1000);
 	}
 
-	public Vec2(int longueur, double angle)
+	public Vec2(int longueur, double angle, boolean useless)
 	{
 		x = (int) (Math.cos(angle)*longueur);
 		y = (int) (Math.sin(angle)*longueur);
