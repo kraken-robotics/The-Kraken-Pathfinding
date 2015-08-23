@@ -21,12 +21,12 @@ public class ObstacleProximity extends ObstacleCircular
 	{
 		super(position,rad);
 		this.death_date = death_date;
-		int centreX = (int) Math.round(position.x / 50. + GridSpace.NB_POINTS_PAR_METRE*1.5);
-		int centreY = (int) Math.round(position.y / 50.);
+		int centreX = (int) Math.round(position.x / GridSpace.DISTANCE_ENTRE_DEUX_POINTS + GridSpace.NB_POINTS_POUR_TROIS_METRES / 2);
+		int centreY = (int) Math.round(position.y / GridSpace.DISTANCE_ENTRE_DEUX_POINTS);
 		for(Vec2<ReadOnly> point : Obstacle.pourtourGrillePatron)
 			// On s'assure bien d'être dans la grille
-			if(centreX + point.x >= 0 && centreX + point.x < 3 * GridSpace.NB_POINTS_PAR_METRE && centreY + point.y >= 0 && centreY + point.y < 2 * GridSpace.NB_POINTS_PAR_METRE)
-				pourtourGrille.add(4 * (3 * GridSpace.NB_POINTS_PAR_METRE * (centreY+point.y) + (centreX+point.x)));
+			if(centreX + point.x >= 0 && centreX + point.x < GridSpace.NB_POINTS_POUR_TROIS_METRES && centreY + point.y >= 0 && centreY + point.y < GridSpace.NB_POINTS_POUR_DEUX_METRES)
+				pourtourGrille.add(4 * (GridSpace.NB_POINTS_POUR_TROIS_METRES * (centreY+point.y) + (centreX+point.x)));
 	}
 	
 	public ArrayList<Integer> getPourtourGrille()

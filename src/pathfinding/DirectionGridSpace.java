@@ -8,25 +8,20 @@ package pathfinding;
 
 public enum DirectionGridSpace {
 	
-	NO(1414),
-	N(1000),
-	NE(1414),
-	O(1000),
-	E(1000),
-	SO(1414),
-	S(1000),
-	SE(1414);
+	NO,
+	SE,
+	NE,
+	SO,
+	N,
+	S,
+	O,
+	E;
 	
-	private final int distance;
-	
-	private DirectionGridSpace(int distance)
-	{
-		this.distance = distance;
-	}
-
-	public int getDistance()
-	{
-		return distance;
+	public static int distance(int i) {
+		if(i < 4)
+			return 1414;
+		else
+			return 1000;
 	}
 	
 }

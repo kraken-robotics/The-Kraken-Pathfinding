@@ -45,16 +45,16 @@ public abstract class Obstacle
 		int rayonObstacleDilate = config.getInt(ConfigInfo.RAYON_ROBOT_ADVERSE) + rayonRobot;
 		int squaredRayonObstacleDilate = rayonObstacleDilate * rayonObstacleDilate;
 		;
-		for(int x = - rayonObstacleDilate/GridSpace.DISTANCE_ENTRE_DEUX_POINTS - 1 ; x <= rayonObstacleDilate/GridSpace.DISTANCE_ENTRE_DEUX_POINTS + 1 ; x++)
-			for(int y = - rayonObstacleDilate/GridSpace.DISTANCE_ENTRE_DEUX_POINTS - 1 ; y <= rayonObstacleDilate/GridSpace.DISTANCE_ENTRE_DEUX_POINTS + 1 ; y++)
+		for(int x = (int) Math.round(- rayonObstacleDilate/GridSpace.DISTANCE_ENTRE_DEUX_POINTS - 1) ; x <= (int) Math.round(rayonObstacleDilate/GridSpace.DISTANCE_ENTRE_DEUX_POINTS + 1) ; x++)
+			for(int y = (int) Math.round(- rayonObstacleDilate/GridSpace.DISTANCE_ENTRE_DEUX_POINTS - 1) ; y <= (int) Math.round(rayonObstacleDilate/GridSpace.DISTANCE_ENTRE_DEUX_POINTS + 1) ; y++)
 			{
-				Vec2<ReadOnly> point = new Vec2<ReadOnly>(GridSpace.DISTANCE_ENTRE_DEUX_POINTS*x, GridSpace.DISTANCE_ENTRE_DEUX_POINTS*y);
+				Vec2<ReadOnly> point = new Vec2<ReadOnly>((int) Math.round(GridSpace.DISTANCE_ENTRE_DEUX_POINTS*x), (int) Math.round(GridSpace.DISTANCE_ENTRE_DEUX_POINTS*y));
 				if(point.squaredLength() < squaredRayonObstacleDilate)
 				{
 //					enTout++;
 					for(int x2 = -1 ; x2 <= 1 ; x2++)
 						for(int y2 = -1 ; y2 <= 1 ; y2++)
-							if((new Vec2<ReadOnly>(GridSpace.DISTANCE_ENTRE_DEUX_POINTS*(x2+x), GridSpace.DISTANCE_ENTRE_DEUX_POINTS*(y2+y))).squaredLength() >= squaredRayonObstacleDilate)
+							if((new Vec2<ReadOnly>((int) Math.round(GridSpace.DISTANCE_ENTRE_DEUX_POINTS*(x2+x)), (int) Math.round(GridSpace.DISTANCE_ENTRE_DEUX_POINTS*(y2+y)))).squaredLength() >= squaredRayonObstacleDilate)
 							{
 								log.debug("Point du patron : "+point+" ie "+new Vec2<ReadOnly>(x, y));
 								pourtourGrillePatron.add(new Vec2<ReadOnly>(x, y));
