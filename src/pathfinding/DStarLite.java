@@ -6,7 +6,6 @@ import java.util.Iterator;
 import permissions.ReadOnly;
 import utils.Config;
 import utils.Log;
-import utils.Sleep;
 import utils.Vec2;
 import container.Service;
 
@@ -25,13 +24,20 @@ public class DStarLite implements Service
 	{
 		this.log = log;
 		this.gridspace = gridspace;
+		for(int i = 0; i < GridSpace.NB_POINTS_POUR_DEUX_METRES * GridSpace.NB_POINTS_POUR_TROIS_METRES; i++)
+		{
+			memory[i] = new DStarLiteNode(i);
+		}
 	}
 	
+	private DStarLiteNode[] memory = new DStarLiteNode[GridSpace.NB_POINTS_POUR_DEUX_METRES * GridSpace.NB_POINTS_POUR_TROIS_METRES];
+
 	private ArrayList<DStarLiteNode> openset = new ArrayList<DStarLiteNode>();
 	private int km;
 	private DStarLiteNode arrivee;
 	private DStarLiteNode depart;
 	private int last;
+	private long nbPF = 0;
 	
 	private Cle knew = new Cle();
 	private Cle inutile = new Cle();
@@ -43,6 +49,22 @@ public class DStarLite implements Service
 		return copy;
 	}
 
+	public DStarLiteNode getFromMemory(int gridpoint)
+	{
+		DStarLiteNode out = memory[gridpoint];
+		
+		/**
+		 * Si ce point n'a pas encore été utilisé pour ce pathfinding, on l'initialise
+		 */
+		if(out.nbPF != nbPF)
+		{
+			out.g = Integer.MAX_VALUE;
+			out.rhs = Integer.MAX_VALUE;
+			out.nbPF = nbPF;
+		}
+		return out;
+	}
+	
 	/**
 	 * Ajout dans une liste triée
 	 * @param u
@@ -115,41 +137,41 @@ public class DStarLite implements Service
 //			Iterator<DStarLiteNode> iterator = openset.listIterator();
 //			while(iterator.hasNext())
 //				log.debug(iterator.next().cle);
-			log.debug("Nouvelle itération, u = "+u.gridpoint);
-			log.debug("Taille openset = "+openset.size());
-			Sleep.sleep(1000);
+//			log.debug("Nouvelle itération, u = "+u.gridpoint);
+//			log.debug("Taille openset = "+openset.size());
 			
 			Cle kold = u.cle.clone();
 			calcKey(u, knew);
 			if(kold.isLesserThan(knew))
 			{
-				log.debug("Cas 1");	
 				knew.copy(u.cle);
 				openset.remove(0);
 				addToOpenset(u);
 			}
 			else if(u.g > u.rhs)
 			{
-				log.debug("Cas 2");	
 				u.g = u.rhs;
 				openset.remove(0);
 				for(int i = 0; i < 8; i++)
 				{
-					DStarLiteNode s = u.getVoisin(i, gridspace);
-					if(s == null)
+					int voisin = gridspace.getGridPointVoisin(u.gridpoint, i);
+					if(voisin < 0)
 						continue;
+					DStarLiteNode s = getFromMemory(voisin);
 					s.rhs = Math.min(s.rhs, add(gridspace.distance(u.gridpoint, i), u.g));
 					updateVertex(s);
 				}
 			}
 			else
 			{
-				log.debug("Cas 3");	
 				int gold = u.g;
 				u.g = Integer.MAX_VALUE;
 				for(int i = 0; i < 8; i++)
 				{
-					DStarLiteNode s = u.getVoisin(i, gridspace);
+					int voisin = gridspace.getGridPointVoisin(u.gridpoint, i);
+					if(voisin < 0)
+						continue;
+					DStarLiteNode s = getFromMemory(voisin);
 					if(s == null)
 						continue;
 					if(s.rhs == add(gridspace.distance(u.gridpoint, i), gold) && s.gridpoint != arrivee.gridpoint)
@@ -157,9 +179,10 @@ public class DStarLite implements Service
 						s.rhs = Integer.MAX_VALUE;
 						for(int j = 0; j < 8; j++)
 						{
-							DStarLiteNode s2 = s.getVoisin(j, gridspace);
-							if(s2 == null)
+							voisin = gridspace.getGridPointVoisin(s.gridpoint, j);
+							if(voisin < 0)
 								continue;
+							DStarLiteNode s2 = getFromMemory(voisin);
 							s.rhs = Math.min(s.rhs, add(gridspace.distance(s.gridpoint, j), s2.g));
 						}
 					}
@@ -170,13 +193,13 @@ public class DStarLite implements Service
 					u.rhs = Integer.MAX_VALUE;
 					for(int i = 0; i < 8; i++)
 					{
-						DStarLiteNode s = u.getVoisin(i, gridspace);
-						if(s == null)
+						int voisin = gridspace.getGridPointVoisin(u.gridpoint, i);
+						if(voisin < 0)
 							continue;
+						DStarLiteNode s = getFromMemory(voisin);
 						u.rhs = Math.min(u.rhs, add(gridspace.distance(u.gridpoint, i), s.g));
 					}
 				}
-				log.debug("Auto-ajout ?");
 				updateVertex(u);
 			}
 
@@ -190,11 +213,12 @@ public class DStarLite implements Service
 	 */
 	public void computeNewPath(Vec2<ReadOnly> arrivee, Vec2<ReadOnly> depart)
 	{
+		nbPF++;
 		km = 0;
-		this.depart = new DStarLiteNode(gridspace.computeGridPoint(depart));
+		this.depart = getFromMemory(gridspace.computeGridPoint(depart));
 		last = this.depart.gridpoint;
 
-		this.arrivee = new DStarLiteNode(gridspace.computeGridPoint(arrivee));
+		this.arrivee = getFromMemory(gridspace.computeGridPoint(arrivee));
 		this.arrivee.rhs = 0;
 		this.arrivee.cle.set(distanceHeuristique(this.arrivee.gridpoint), 0);
 
@@ -222,7 +246,7 @@ public class DStarLite implements Service
 	 */
 	public void updatePath(Vec2<ReadOnly> positionRobot)
 	{
-		depart.gridpoint = gridspace.computeGridPoint(positionRobot);
+		depart = getFromMemory(gridspace.computeGridPoint(positionRobot));
 		km += distanceHeuristique(last);
 		last = depart.gridpoint;
 		
