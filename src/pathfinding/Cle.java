@@ -8,7 +8,7 @@ package pathfinding;
 
 public class Cle
 {
-	public int first, second;
+	private int first, second;
 
 	public Cle()
 	{}
@@ -32,8 +32,24 @@ public class Cle
 	public Cle clone()
 	{
 		Cle out = new Cle();
-		out.set(first, second);
+		copy(out);
 		return out;
+	}
+
+	/**
+	 * modified devient une copie de this
+	 * @param modified
+	 * @return
+	 */
+	public void copy(Cle modified)
+	{
+		modified.set(first, second);
+	}
+
+	@Override
+	public String toString()
+	{
+		return "first = "+first+", second = "+second;
 	}
 	
 }

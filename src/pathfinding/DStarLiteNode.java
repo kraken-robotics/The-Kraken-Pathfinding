@@ -33,4 +33,16 @@ public class DStarLiteNode {
 		return voisins[direction];
 	}
 	
+	@Override
+	public int hashCode()
+	{
+		return gridpoint;
+	}
+	
+	@Override
+	public boolean equals(Object o)
+	{
+		return hashCode() == o.hashCode();
+	}
+	
 }

@@ -148,7 +148,7 @@ public class GridSpace implements Service
 	 * @param direction
 	 * @return
 	 */
-	public boolean isTraversable(int gridpoint, int direction)
+	private boolean isTraversable(int gridpoint, int direction)
 	{
 		if((direction & 1) == 0)
 			return grille[4*gridpoint+direction/2];
@@ -171,7 +171,9 @@ public class GridSpace implements Service
 	 * @param i
 	 * @return
 	 */
-	public int distance(int i) {
+	public int distance(int point, int i) {
+		if(!isTraversable(point, i))
+			return Integer.MAX_VALUE;
 		if(i < 4)
 			return 1414;
 		else
