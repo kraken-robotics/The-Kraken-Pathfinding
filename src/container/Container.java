@@ -163,7 +163,7 @@ public class Container
 		else if(serviceRequested == ServiceNames.TABLE)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new Table((Log)getService(ServiceNames.LOG),
 																				(StrategieNotifieur)getService(ServiceNames.STRATEGIE_NOTIFIEUR));
-		else if(serviceRequested == ServiceNames.PATHFINDING)
+		else if(serviceRequested == ServiceNames.D_STAR_LITE)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new DStarLite((Log)getService(ServiceNames.LOG),
 																				(GridSpace)getService(ServiceNames.GRID_SPACE));
 		else if(serviceRequested == ServiceNames.OBSTACLES_MOBILES_MEMORY)

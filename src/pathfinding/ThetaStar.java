@@ -4,18 +4,18 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.BitSet;
 
-import buffer.DataForSerialOutput;
+import permissions.ReadOnly;
 import permissions.ReadWrite;
-import planification.astar.arc.PathfindingNodes;
 import container.Service;
 import exceptions.FinMatchException;
-import exceptions.MemoryManagerException;
 import exceptions.PathfindingException;
 import exceptions.PathfindingRobotInObstacleException;
 import robot.RobotChrono;
+import robot.RobotReal;
 import strategie.GameState;
 import utils.Config;
 import utils.Log;
+import utils.Vec2;
 
 /**
  * TODO Optimisation:
@@ -39,23 +39,30 @@ public class ThetaStar implements Service
 	private LocomotionArc[] came_from_arc = new LocomotionArc[nb_max_element];
 	private int[] g_score = new int[nb_max_element];
 	private int[] f_score = new int[nb_max_element];
-	
+
+	private ArrayList<LocomotionArc> cheminTmp = new ArrayList<LocomotionArc>();
+
 	protected Log log;
 	private DStarLite dstarlite;
-	private DataForSerialOutput serie;
 	private MemoryManager memorymanager;
 	private ArcManager arcmanager;
+	private GameState<RobotReal,ReadOnly> state;
+	private CheminPathfinding chemin;
 	
+	private GameState<RobotChrono,ReadWrite> last;
+
 	/**
 	 * Constructeur du ThetaStar
 	 */
-	public ThetaStar(Log log, DStarLite dstarlite, ArcManager arcmanager, DataForSerialOutput serie, MemoryManager memorymanager)
+	public ThetaStar(Log log, DStarLite dstarlite, ArcManager arcmanager, MemoryManager memorymanager, GameState<RobotReal,ReadOnly> state, CheminPathfinding chemin)
 	{
 		this.log = log;
 		this.dstarlite = dstarlite;
-		this.serie = serie;
 		this.arcmanager = arcmanager;
 		this.memorymanager = memorymanager;
+		this.state = state;
+		this.chemin = chemin;
+		GameState.copy(state, last);
 	}
 
 	/**
@@ -70,13 +77,26 @@ public class ThetaStar implements Service
 	 * @throws FinMatchException
 	 * @throws MemoryManagerException
 	 */
-	public synchronized ArrayList<LocomotionArc> computePath(GameState<RobotChrono,ReadWrite> depart, PathfindingNodes endNode, boolean shoot_game_element) throws PathfindingException, PathfindingRobotInObstacleException, FinMatchException, MemoryManagerException
+	public void computeNewPath(Vec2<ReadOnly> arrivee, boolean shoot_game_element) throws PathfindingException
 	{
-//			log.debug("Recherche de chemin entre "+pointDepart+" et "+indice_point_arrivee, this);
-		ArrayList<LocomotionArc> cheminArc = process(depart);
-
-//			log.debug("Recherche de chemin terminée", this);
-		return cheminArc;
+		GameState<RobotChrono,ReadWrite> depart = memorymanager.getNewGameState();
+		GameState.copy(state, last);
+		dstarlite.computeNewPath(depart.robot.getPosition(), arrivee);
+		do {
+			GameState.copy(last.getReadOnly(), depart);
+		}
+		while(!process(depart));
+	}
+	
+	public void updatePath() throws PathfindingException
+	{
+		GameState<RobotChrono,ReadWrite> depart = memorymanager.getNewGameState();
+		GameState.copy(state, last);
+		dstarlite.updatePath(depart.robot.getPosition());
+		do {
+			GameState.copy(last.getReadOnly(), depart);
+		}
+		while(!process(depart));
 	}
 	
 	/**
@@ -84,11 +104,12 @@ public class ThetaStar implements Service
 	 * @param depart
 	 * @param arcmanager
 	 * @param shouldReconstruct
+	 * @return 
 	 * @return
 	 * @throws PathfindingException
 	 * @throws MemoryManagerException
 	 */
-	private ArrayList<LocomotionArc> process(GameState<RobotChrono,ReadWrite> depart) throws PathfindingException, MemoryManagerException
+	private synchronized boolean process(GameState<RobotChrono,ReadWrite> depart) throws PathfindingException
 	{
 		int hash_depart = dstarlite.getHashDebut();
 		int hash_arrivee = dstarlite.getHashArrivee();
@@ -98,11 +119,12 @@ public class ThetaStar implements Service
 		{
 			// Le memory manager impose de détruire les gamestates non utilisés.
 			memorymanager.destroyGameState(depart);
-			return new ArrayList<LocomotionArc>();
+			return true;
 		}
 
 		closedset.clear();
 		// plus rapide que des arraycopy
+		// TODO refaire
 		for(int i = 0; i < nb_max_element; i++)
 		{
 			came_from_arc[i] = null;
@@ -161,8 +183,16 @@ public class ThetaStar implements Service
 //				if(arcmanager instanceof StrategyArcManager)
 //					log.debug("Destruction de: "+current.getIndiceMemoryManager(), this);
 				memorymanager.empty();
-				return reconstruct(hash_current);
+				if(reconstruct(current.getReadOnly()))
+					return false;
+				return true;
 			}
+			else if(reconstruct(current.getReadOnly()))
+			{
+				memorymanager.empty();
+				return false;
+			}
+
 
 			closedset.set(hash_current);
 		    
@@ -187,22 +217,17 @@ public class ThetaStar implements Service
 				LocomotionArc voisin = arcmanager.next();
 				encoreUnSuccesseur = arcmanager.hasNext();
 				
-				try {
-					if(!encoreUnSuccesseur) // le dernier successeur
-					{
-						if(reuseOldSuccesseur)
-							memorymanager.destroyGameState(successeur);
-						successeur = current;
-					}
-					else
-					{
-						if(!reuseOldSuccesseur)
-							successeur = memorymanager.getNewGameState();
-						GameState.copy(current.getReadOnly(), successeur);
-					}
-				} catch (FinMatchException e1) {
-					// ne devrait pas arriver!
-					throw new PathfindingException();
+				if(!encoreUnSuccesseur) // le dernier successeur
+				{
+					if(reuseOldSuccesseur)
+						memorymanager.destroyGameState(successeur);
+					successeur = current;
+				}
+				else
+				{
+					if(!reuseOldSuccesseur)
+						successeur = memorymanager.getNewGameState();
+					GameState.copy(current.getReadOnly(), successeur);
 				}
 				reuseOldSuccesseur = false;
 				
@@ -263,49 +288,30 @@ public class ThetaStar implements Service
 		
 		// Pathfinding terminé sans avoir atteint l'arrivée
 		memorymanager.empty();
-		
-//		log.debug("Reconstruction!", this);
-		
-		/**
-		 * Même si on n'a pas atteint l'objectif, on reconstruit un chemin partiel
-		 */
-		int note_best = Integer.MIN_VALUE;
-		int note_f_best = Integer.MAX_VALUE;
-		int best = -1;
-		// On maximise le nombre de points qu'on fait.
-		// En cas d'égalité, on prend le chemin le plus rapide.
-		
-		for(int h = 0; h < nb_max_element; h++)
-			if(closedset.get(h)) // si ce noeud a été parcouru (sinon getNoteReconstruct va paniquer)
-			{
-				int potentiel_note_best = arcmanager.getNoteReconstruct(h);
-				int potentiel_note_f_best = f_score[h];
-//				log.debug(potentiel_note_best+" en "+potentiel_note_f_best, this);
-				if(potentiel_note_best > note_best || potentiel_note_best == note_best && potentiel_note_f_best < note_f_best)
-				{
-					best = h;
-					note_best = potentiel_note_best;
-					note_f_best = potentiel_note_f_best;
-				}
-			}
-		
-		// best est nécessairement non nul car closedset contient au moins le point de départ
-		return reconstruct(best);
+		return true;
 		
 	}
-
-	private final ArrayList<LocomotionArc> reconstruct(int hash)
+	
+	private boolean reconstruct(GameState<RobotChrono, ReadOnly> best)
 	{
-		ArrayList<LocomotionArc> chemin = new ArrayList<LocomotionArc>();
+		if(chemin.needToStartAgain())
+			return true;
+		int hash = best.robot.getPositionGridSpace();
+		cheminTmp.clear();
 		int noeud_parent = came_from[hash];
 		LocomotionArc arc_parent = came_from_arc[hash];
 		while (noeud_parent != -1)
 		{
-			chemin.add(0, arc_parent);
+			cheminTmp.add(0, arc_parent);
 			arc_parent = came_from_arc[noeud_parent];
 			noeud_parent = came_from[noeud_parent];
+		}			
+		synchronized(chemin)
+		{
+			chemin.set(cheminTmp);
 		}
-		return chemin;	//  reconstructed path
+		GameState.copy(best, last);
+		return false;
 	}
 
 	@Override

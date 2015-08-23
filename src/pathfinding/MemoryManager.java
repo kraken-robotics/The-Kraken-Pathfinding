@@ -4,7 +4,6 @@ import permissions.ReadOnly;
 import permissions.ReadWrite;
 import container.Service;
 import exceptions.FinMatchException;
-import exceptions.MemoryManagerException;
 import robot.RobotChrono;
 import robot.RobotReal;
 import strategie.GameState;
@@ -62,7 +61,7 @@ public class MemoryManager implements Service {
 	 * @return
 	 * @throws FinMatchException
 	 */
-	public GameState<RobotChrono,ReadWrite> getNewGameState() throws FinMatchException
+	public GameState<RobotChrono,ReadWrite> getNewGameState()
 	{
 		// lève une exception s'il n'y a plus de place
 		GameState<RobotChrono,ReadWrite> out;
@@ -75,16 +74,17 @@ public class MemoryManager implements Service {
 	 * Signale qu'un gamestate est de nouveau disponible
 	 * @param state
 	 * @param id_astar
-	 * @throws MemoryManagerException
 	 */
-	public void destroyGameState(GameState<RobotChrono,ReadWrite> state) throws MemoryManagerException
+	public void destroyGameState(GameState<RobotChrono,ReadWrite> state)
 	{
 		int indice_state = GameState.getIndiceMemoryManager(state.getReadOnly());
 		/**
 		 * S'il est déjà détruit, on lève une exception
 		 */
 		if(indice_state >= firstAvailable)
-			throw new MemoryManagerException();
+		{
+			log.critical("MemoryManager veut détruire un objet déjà détruit !");
+		}
 
 		// On inverse dans le Vector les deux gamestates,
 		// de manière à avoir toujours un Vector trié.

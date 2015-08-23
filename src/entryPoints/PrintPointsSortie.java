@@ -31,7 +31,7 @@ public class PrintPointsSortie {
 		try {
 			Config config = (Config) container.getService(ServiceNames.CONFIG);
 			config.set(ConfigInfo.CHECK_POINTS_SORTIE, "true");
-			container.getService(ServiceNames.PATHFINDING);
+			container.getService(ServiceNames.D_STAR_LITE);
 		} catch (ContainerException | ThreadException
 				| SerialConnexionException | FinMatchException
 				| PointSortieException e) {

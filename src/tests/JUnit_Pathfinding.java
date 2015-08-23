@@ -23,7 +23,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
 	@Before
     public void setUp() throws Exception {
         super.setUp();
-        pathfinding = (DStarLite) container.getService(ServiceNames.PATHFINDING);
+        pathfinding = (DStarLite) container.getService(ServiceNames.D_STAR_LITE);
 	}
 
 	@Test

@@ -6,7 +6,6 @@ import obstacles.types.ObstacleRectangular;
 import obstacles.types.ObstacleTrajectoireCourbe;
 import obstacles.types.ObstaclesFixes;
 import permissions.ReadOnly;
-import planification.astar.arc.PathfindingNodes;
 import robot.RobotReal;
 import robot.Speed;
 import strategie.GameState;

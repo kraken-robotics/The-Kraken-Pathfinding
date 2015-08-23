@@ -45,6 +45,8 @@ public enum ConfigInfo {
 	BAUDRATE("57600", true),
 	NB_CAPTEURS_PROXIMITE("8", true),
 	NB_COUPLES_CAPTEURS_PROXIMITE("4", true),
+	MS_MAX_AVANT_EVITEMENT("5", true),
+	DISTANCE_URGENCE("200", true),
 	
 	/**
 	 * Config dynamique

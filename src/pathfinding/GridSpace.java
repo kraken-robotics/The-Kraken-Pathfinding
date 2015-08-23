@@ -185,4 +185,9 @@ public class GridSpace implements Service
 				(int) Math.round((gridpoint >> PRECISION) * GridSpace.DISTANCE_ENTRE_DEUX_POINTS));
 	}
 
+	public boolean isUrgent() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }

@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import permissions.ReadOnly;
-import robot.RobotChrono;
-import strategie.GameState;
 import utils.Config;
 import utils.Log;
 import utils.Vec2;
@@ -51,7 +49,7 @@ public class DStarLite implements Service
 		return copy;
 	}
 
-	public DStarLiteNode getFromMemory(int gridpoint)
+	private DStarLiteNode getFromMemory(int gridpoint)
 	{
 		DStarLiteNode out = memory[gridpoint];
 		

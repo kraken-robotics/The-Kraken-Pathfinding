@@ -20,6 +20,8 @@ public class ThreadPathfinding extends Thread implements Service
 	private GridSpace gridspace;
 	private RobotReal robot;
 	
+	private boolean urgence = false;
+
 	public ThreadPathfinding(Log log, DStarLite pathfinding, GridSpace gridspace, RobotReal robot)
 	{
 		this.log = log;
@@ -37,6 +39,7 @@ public class ThreadPathfinding extends Thread implements Service
 			{
 				try {
 					gridspace.wait();
+					urgence = gridspace.isUrgent();
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -47,6 +50,7 @@ public class ThreadPathfinding extends Thread implements Service
 			// Cet appel peut lancer un pathfinding.notifyAll()
 			// Il n'est pas synchronized car il ne modifie pas obstaclemanager
 			pathfinding.updatePath(robot.getPosition());
+			urgence = false;
 		}
 
 //		log.debug("Fermeture de ThreadPathfinding");
@@ -59,5 +63,10 @@ public class ThreadPathfinding extends Thread implements Service
 	@Override
 	public void useConfig(Config config)
 	{}
+
+	public boolean isUrgence()
+	{
+		return urgence;
+	}
 	
 }
