@@ -1,7 +1,7 @@
 package threads;
 
 import obstacles.Capteurs;
-import pathfinding.ThetaStar;
+import pathfinding.thetastar.ThetaStar;
 import robot.RobotReal;
 import utils.Config;
 import utils.ConfigInfo;

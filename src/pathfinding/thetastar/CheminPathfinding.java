@@ -1,4 +1,4 @@
-package pathfinding;
+package pathfinding.thetastar;
 
 import java.util.ArrayList;
 

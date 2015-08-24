@@ -6,7 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import container.ServiceNames;
-import pathfinding.DStarLite;
+import pathfinding.dstarlite.DStarLite;
 import permissions.ReadOnly;
 import utils.Vec2;
 

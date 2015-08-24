@@ -1,4 +1,4 @@
-package pathfinding;
+package pathfinding.dstarlite;
 
 /**
  * Clé utilisé par le D* lite.

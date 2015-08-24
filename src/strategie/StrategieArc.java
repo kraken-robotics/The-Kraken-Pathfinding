@@ -2,7 +2,7 @@ package strategie;
 
 import java.util.ArrayList;
 
-import pathfinding.LocomotionArc;
+import pathfinding.thetastar.LocomotionArc;
 import planification.astar.arc.PathfindingNodes;
 import scripts.ScriptAnticipableNames;
 

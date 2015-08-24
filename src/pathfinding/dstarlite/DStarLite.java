@@ -1,8 +1,9 @@
-package pathfinding;
+package pathfinding.dstarlite;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import pathfinding.thetastar.ThetaStarNode;
 import permissions.ReadOnly;
 import utils.Config;
 import utils.Log;
@@ -24,13 +25,13 @@ public class DStarLite implements Service
 	{
 		this.log = log;
 		this.gridspace = gridspace;
-		for(int i = 0; i < GridSpace.NB_POINTS_POUR_DEUX_METRES * GridSpace.NB_POINTS_POUR_TROIS_METRES; i++)
+		for(int i = 0; i < GridSpace.NB_POINTS; i++)
 		{
 			memory[i] = new DStarLiteNode(i);
 		}
 	}
 	
-	private DStarLiteNode[] memory = new DStarLiteNode[GridSpace.NB_POINTS_POUR_DEUX_METRES * GridSpace.NB_POINTS_POUR_TROIS_METRES];
+	private DStarLiteNode[] memory = new DStarLiteNode[GridSpace.NB_POINTS];
 
 	private ArrayList<DStarLiteNode> openset = new ArrayList<DStarLiteNode>();
 	private int km;
@@ -85,34 +86,6 @@ public class DStarLite implements Service
 			i++;
 		}
 		openset.add(u);
-		
-/*		int borneInf = 0;
-		int borneSup = openset.size()-1;
-		int milieu = (borneInf + borneSup) / 2;
-		
-		if(!openset.get(borneInf).cle.isLesserThan(u.cle))
-			openset.add(0, u);
-		else if(!u.cle.isLesserThan(openset.get(borneSup).cle))
-			openset.add(u);
-		else
-		{
-			while(borneSup - borneInf > 1)
-			{
-				Cle c = openset.get(milieu).cle;
-				if(c.isLesserThan(u.cle))
-					borneInf = milieu;
-				else if(u.cle.isLesserThan(c))
-					borneSup = milieu;
-				else
-				{
-					// On a trouvé une clé égale
-					openset.add(milieu, u);
-					return;
-				}
-				milieu = (borneInf + borneSup) / 2;
-			}
-			openset.add(borneSup, u);
-		}*/
 	}
 	
 	private void updateVertex(DStarLiteNode u)
@@ -303,9 +276,9 @@ public class DStarLite implements Service
 		
 	}
 	
-	public int heuristicCostThetaStar(int gridpoint)
+	public int heuristicCostThetaStar(ThetaStarNode node)
 	{
-		return getFromMemory(gridpoint).g;
+		return getFromMemory(node.hashCode()).g;
 	}
 	
 	public int getHashDebut()

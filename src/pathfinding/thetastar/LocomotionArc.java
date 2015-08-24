@@ -1,4 +1,4 @@
-package pathfinding;
+package pathfinding.thetastar;
 
 import java.util.ArrayList;
 
@@ -18,15 +18,17 @@ public class LocomotionArc
 	private Vec2<ReadOnly> normaleAuDemiPlan;
 	private double angleConsigne;
 	private RayonCourbure rayonCourbure;
+	public final int gridpointArrivee;
 	
 	public LocomotionArc(Vec2<ReadOnly> pointDuDemiPlan,
 			Vec2<ReadOnly> normaleAuDemiPlan, double angleConsigne,
-			RayonCourbure rayonCourbure)
+			RayonCourbure rayonCourbure, int gridpointArrivee)
 	{
 		this.pointDuDemiPlan = pointDuDemiPlan;
 		this.normaleAuDemiPlan = normaleAuDemiPlan;
 		this.angleConsigne = angleConsigne;
 		this.rayonCourbure = rayonCourbure;
+		this.gridpointArrivee = gridpointArrivee;
 	}
 	
 	public ArrayList<String> toSerial()

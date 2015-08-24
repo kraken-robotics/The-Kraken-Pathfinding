@@ -1,4 +1,4 @@
-package pathfinding;
+package pathfinding.dstarlite;
 
 /**
  * Un nœud du pathfinding

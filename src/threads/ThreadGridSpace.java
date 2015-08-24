@@ -1,7 +1,7 @@
 package threads;
 
 import obstacles.ObstaclesMemory;
-import pathfinding.GridSpace;
+import pathfinding.dstarlite.GridSpace;
 import container.Service;
 import utils.Config;
 import utils.Log;

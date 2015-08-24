@@ -1,8 +1,8 @@
 package threads;
 
 import container.Service;
-import pathfinding.DStarLite;
-import pathfinding.GridSpace;
+import pathfinding.dstarlite.DStarLite;
+import pathfinding.dstarlite.GridSpace;
 import robot.RobotReal;
 import utils.Config;
 import utils.Log;

@@ -32,8 +32,6 @@ public class GameState<R extends Robot, T extends Permission> implements Service
     public final ObstaclesIterator iterator;
     public final Table table;
     
-    private int indice_memory_manager;
-    
     private Log log;
 
     /**
@@ -60,25 +58,14 @@ public class GameState<R extends Robot, T extends Permission> implements Service
         this.table = table;
     }
     
-    /**
-     * Clone en dehors du memory manager.
-     * @return
-     * @throws FinMatchException
-     */
-	public static final GameState<RobotChrono,ReadWrite> cloneGameState(GameState<? extends Robot,ReadOnly> state)
-	{
-		return GameState.cloneGameState(state, -1);
-	}
-
 	/**
      * Fournit un clone de this. Le clone sera un GameState<RobotChrono>, peu importe si this est un GameState<RobotVrai> ou un GameState<RobotChrono>
      */
-	public static final GameState<RobotChrono,ReadWrite> cloneGameState(GameState<? extends Robot,ReadOnly> state, int indice_memory_manager)
+	public static final GameState<RobotChrono,ReadWrite> cloneGameState(GameState<? extends Robot,ReadOnly> state)
 	{
 		GameState<RobotChrono,ReadWrite> cloned = new GameState<RobotChrono,ReadWrite>(state.log, state.iterator.clone(state.robot.getTempsDepuisDebutMatch()), state.robot.cloneIntoRobotChrono(), state.table.clone());
 		// la copie est déjà exacte
 		//		GameState.copy(state, cloned);
-		cloned.indice_memory_manager = indice_memory_manager;
 		return cloned;
 	}
 
@@ -106,15 +93,6 @@ public class GameState<R extends Robot, T extends Permission> implements Service
     {}
 
     /**
-     * Utilisé par le memory manager
-     * @return
-     */
-    public static final int getIndiceMemoryManager(GameState<?,ReadOnly> state)
-    {
-    	return state.indice_memory_manager;
-    }
-
-    /**
      * Disponible uniquement pour GameState<RobotChrono>
      * @return
      */
@@ -137,15 +115,6 @@ public class GameState<R extends Robot, T extends Permission> implements Service
 	{
 //		state.gridspace.printHash();
 //		state.robot.printHash();
-	}
-
-	/**
-	 * Utilisé par le memory manager
-	 * @param indice
-	 */
-	public static final void setIndiceMemoryManager(GameState<?,ReadWrite> state, int indice)
-	{
-		state.indice_memory_manager = indice;
 	}
 	
 	/**

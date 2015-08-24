@@ -47,7 +47,7 @@ public enum ConfigInfo {
 	NB_COUPLES_CAPTEURS_PROXIMITE("4", true),
 	MS_MAX_AVANT_EVITEMENT("5", true),
 	DISTANCE_URGENCE("200", true),
-	
+	NB_SUCCESSEUR_MAX("2", true),
 	/**
 	 * Config dynamique
 	 */

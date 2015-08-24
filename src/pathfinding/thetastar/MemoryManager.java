@@ -1,4 +1,4 @@
-package pathfinding;
+package pathfinding.thetastar;
 
 import permissions.ReadOnly;
 import permissions.ReadWrite;

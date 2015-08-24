@@ -1,4 +1,4 @@
-package pathfinding;
+package pathfinding.dstarlite;
 
 import obstacles.ObstaclesIterator;
 import obstacles.ObstaclesMemory;

@@ -4,7 +4,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import pathfinding.GridSpace;
+import pathfinding.dstarlite.GridSpace;
 import permissions.ReadOnly;
 import container.ServiceNames;
 import utils.Vec2;

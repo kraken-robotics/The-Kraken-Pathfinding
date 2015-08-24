@@ -2,7 +2,7 @@ package robot;
 
 import java.util.ArrayList;
 
-import pathfinding.LocomotionArc;
+import pathfinding.thetastar.LocomotionArc;
 import permissions.ReadOnly;
 import permissions.ReadWrite;
 import hook.Hook;

@@ -1,7 +1,7 @@
 package obstacles.types;
 import java.util.ArrayList;
 
-import pathfinding.GridSpace;
+import pathfinding.dstarlite.GridSpace;
 import permissions.ReadOnly;
 import utils.Config;
 import utils.ConfigInfo;
