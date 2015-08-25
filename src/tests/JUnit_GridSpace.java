@@ -38,21 +38,21 @@ public class JUnit_GridSpace extends JUnit_Test {
 	@Test
 	public void test_distance() throws Exception
 	{
-		Assert.assertTrue(gridspace.distance(1, 2) == 1414);
-		Assert.assertTrue(gridspace.distance(1, 4) == 1000);
+		Assert.assertTrue(gridspace.distanceDStarLite(1, 2) == 1414);
+		Assert.assertTrue(gridspace.distanceDStarLite(1, 4) == 1000);
 	}
 	
 	@Test
 	public void test_distanceHeuristique() throws Exception
 	{
-		Assert.assertTrue(gridspace.distanceHeuristique(1, 2) == 1000);
-		Assert.assertTrue(gridspace.distanceHeuristique(1, 65) == 1000);
-		Assert.assertTrue(gridspace.distanceHeuristique(1, 64) == 1414);
-		Assert.assertTrue(gridspace.distanceHeuristique(64, 1) == 1414);
-		Assert.assertTrue(gridspace.distanceHeuristique(1, 1+2*64) == 2000);
-		Assert.assertTrue(gridspace.distanceHeuristique(1+2*64, 1) == 2000);
-		Assert.assertTrue(gridspace.distanceHeuristique(64, 63) == 63008);
-		Assert.assertTrue(gridspace.distanceHeuristique(63, 64) == 63008);
+		Assert.assertTrue(gridspace.distanceHeuristiqueDStarLite(1, 2) == 1000);
+		Assert.assertTrue(gridspace.distanceHeuristiqueDStarLite(1, 65) == 1000);
+		Assert.assertTrue(gridspace.distanceHeuristiqueDStarLite(1, 64) == 1414);
+		Assert.assertTrue(gridspace.distanceHeuristiqueDStarLite(64, 1) == 1414);
+		Assert.assertTrue(gridspace.distanceHeuristiqueDStarLite(1, 1+2*64) == 2000);
+		Assert.assertTrue(gridspace.distanceHeuristiqueDStarLite(1+2*64, 1) == 2000);
+		Assert.assertTrue(gridspace.distanceHeuristiqueDStarLite(64, 63) == 63008);
+		Assert.assertTrue(gridspace.distanceHeuristiqueDStarLite(63, 64) == 63008);
 	}
 	
 	@Test
@@ -61,7 +61,7 @@ public class JUnit_GridSpace extends JUnit_Test {
 		for(int i = 0; i < 8; i++)
 		{
 			log.debug(i);
-			Assert.assertEquals((i<4?1414:1000), gridspace.distanceHeuristique(gridspace.getGridPointVoisin(150, i), 150));
+			Assert.assertEquals((i<4?1414:1000), gridspace.distanceHeuristiqueDStarLite(gridspace.getGridPointVoisin(150, i), 150));
 		}
 		Assert.assertEquals(-1, gridspace.getGridPointVoisin(21, 5));
 		Assert.assertEquals(-1, gridspace.getGridPointVoisin(63, 1));

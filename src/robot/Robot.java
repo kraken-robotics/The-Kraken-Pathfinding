@@ -26,45 +26,28 @@ public abstract class Robot implements Service
 	 */
 	
 	public abstract void stopper();
+	public abstract int getPositionGridSpace();
     public abstract void tourner(double angle)
             throws UnableToMoveException, FinMatchException;
     public abstract void avancer(int distance, ArrayList<Hook> hooks, boolean mur)
             throws UnableToMoveException, FinMatchException;
 	public abstract void setVitesse(Speed vitesse);
 	
-	public abstract void setPositionOrientationSTM(Vec2<ReadOnly> position, double orientation);
-    public abstract Vec2<ReadOnly> getPosition();
-    public abstract double getOrientation();
     public abstract void sleep(long duree, ArrayList<Hook> hooks) throws FinMatchException;
 //    public abstract void desactiveAsservissement() throws FinMatchException;
 //    public abstract void activeAsservissement() throws FinMatchException;
     public abstract long getTempsDepuisDebutMatch();
-    public abstract RobotChrono cloneIntoRobotChrono();
 
     protected volatile Vec2<ReadWrite> position = new Vec2<ReadWrite>();
     protected volatile double orientation;
+    protected volatile int accelerationLaterale;
 	protected volatile boolean symetrie;
+    protected volatile boolean enMarcheAvant;
+	protected volatile boolean matchDemarre = false;
 	protected Speed vitesse;
 	protected int pointsObtenus = 0;
     protected volatile long dateDebutMatch;
-    /*
-     * Actionneurs
-     */
     
-    
-	/**
-	 * Copy this dans rc. this reste inchangé.
-	 * 
-	 * @param rc
-	 */
-    public void copy(RobotChrono rc)
-    {
-    	// pas besoin de copier symétrie car elle ne change pas en cours de match
-    	rc.vitesse = vitesse;
-    	rc.pointsObtenus = pointsObtenus;
-    	rc.date = getTempsDepuisDebutMatch();
-    }
-
 	// Dépendances
 	protected Log log;
 	
@@ -74,9 +57,35 @@ public abstract class Robot implements Service
 		vitesse = Speed.BETWEEN_SCRIPTS;
 	}
 
+	public RobotChrono cloneIntoRobotChrono()
+	{
+		RobotChrono cloned_robotchrono = new RobotChrono(log);
+		copy(cloned_robotchrono);
+		return cloned_robotchrono;
+	}
+
+	/**
+	 * Copy this dans rc. this reste inchangé.
+	 * 
+	 * @param rc
+	 */
+    public void copy(RobotChrono rc)
+    {
+    	// pas besoin de copier symétrie car elle ne change pas en cours de match
+    	Vec2.copy(position.getReadOnly(), rc.position);
+    	rc.orientation = orientation;
+    	rc.enMarcheAvant = enMarcheAvant;
+    	rc.accelerationLaterale = accelerationLaterale;
+    	rc.vitesse = vitesse;
+    	rc.pointsObtenus = pointsObtenus;
+    	rc.date = getTempsDepuisDebutMatch();
+    	rc.positionGridSpace = getPositionGridSpace();
+    }
+	
 	public synchronized void updateConfig(Config config)
 	{
 		dateDebutMatch = config.getLong(ConfigInfo.DATE_DEBUT_MATCH);
+		matchDemarre = config.getBoolean(ConfigInfo.MATCH_DEMARRE);
 		symetrie = config.getSymmetry();
 	}
 
@@ -86,6 +95,34 @@ public abstract class Robot implements Service
 /*	public Speed getVitesse() {
 		return vitesse;
 	}*/
+
+	public int getAccelerationLaterale()
+	{
+		return accelerationLaterale;
+	}
+	
+	public double getOrientationAvance()
+	{
+		if(enMarcheAvant)
+			return orientation + Math.PI;
+		else
+			return orientation;
+	}
+	
+	public boolean getEnMarcheAvant()
+	{
+		return enMarcheAvant;
+	}
+	
+    public Vec2<ReadOnly> getPosition()
+    {
+        return position.getReadOnly();
+    }
+
+    public double getOrientation()
+    {
+        return orientation;
+    }
 
 	/**
 	 * Tourne par rapport à l'angle actuel.

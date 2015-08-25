@@ -7,16 +7,18 @@ get position et orientation TEST UNIQUEMENT
 
 set vitesse
     sspd pwm_rotation pwm_translation
+envoie les rayons de courbure
+    src nb_rayon [rayon_en_mm pwm_translation_max]
 avancer
     d distance dans_mur nb_hook [hook]
 tourner avec symétrie
     t angle_en_milliradians
-actionneurs (protocole complet dans src/robot/ActuatorOrder.java)
-    ordre_actionneur
+utiliser un actionneur (protocole complet dans src/robot/ActuatorOrder.java)
+    act nb_ordre
 stopper le robot (procédure d'urgence) et annule l'itinéraire en cours
     stop
 envoie le protocole des actionneurs
-    alst nb_act [protocole_RB protocole_SSC32 a_symetrie …]
+    alst nb_act [protocole_SSC32 a_symetrie …]
 envoie la liste des hooks valables pour tout le match. Chaque nouvel appel écrase ceux envoyés précédemment
     hlst nb_hook [hooks]
 ajoute point à l'itinéraire
@@ -46,8 +48,10 @@ le match commence
     go
 la couleur du robot
     color couleur
+le robot est-il en marche avant ?
+    avt en_marche_avant
 infos des capteurs
-    cpt x_robot y_robot orientation_robot mesure1 [mesure2 …]
+    cpt x_robot y_robot orientation_robot_en_milliradions acceleration_laterale mesure1 [mesure2 …]
 un actionneur a un problème
     acpb
 un actionneur a fini son mouvement

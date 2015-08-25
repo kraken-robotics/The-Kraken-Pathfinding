@@ -37,7 +37,7 @@ public class UtiliseActionneur implements Executable
 	{
 		ArrayList<String> out = new ArrayList<String>();
 		out.add("act");
-		out.add(o.getSerialOrder());
+		out.add(String.valueOf(o.ordinal()));
 		return out;
 	}
 

@@ -1,4 +1,4 @@
-package pathfinding.thetastar;
+package strategie;
 
 import permissions.ReadOnly;
 import permissions.ReadWrite;
@@ -6,7 +6,6 @@ import container.Service;
 import exceptions.FinMatchException;
 import robot.RobotChrono;
 import robot.RobotReal;
-import strategie.GameState;
 import utils.Config;
 import utils.Log;
 

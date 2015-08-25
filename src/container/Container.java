@@ -9,7 +9,6 @@ import buffer.IncomingHookBuffer;
 import pathfinding.MoteurPhysique;
 import pathfinding.dstarlite.DStarLite;
 import pathfinding.dstarlite.GridSpace;
-import pathfinding.thetastar.MemoryManager;
 import permissions.ReadOnly;
 import permissions.ReadWrite;
 import hook.HookFactory;
@@ -20,6 +19,7 @@ import scripts.ScriptManager;
 import serial.SerialConnexion;
 import strategie.Execution;
 import strategie.GameState;
+import strategie.MemoryManager;
 import strategie.Strategie;
 import strategie.StrategieInfo;
 import strategie.StrategieNotifieur;
@@ -203,7 +203,8 @@ public class Container
 		else if(serviceRequested == ServiceNames.ROBOT_REAL)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new RobotReal((DataForSerialOutput)getService(ServiceNames.SERIAL_OUTPUT_BUFFER),
 															 (Log)getService(ServiceNames.LOG),
-															 (RequeteSTM)getService(ServiceNames.REQUETE_STM));
+															 (RequeteSTM)getService(ServiceNames.REQUETE_STM),
+															 (GridSpace)getService(ServiceNames.GRID_SPACE));
         else if(serviceRequested == ServiceNames.REAL_GAME_STATE)
         	// ici la construction est un petit peu différente car on interdit l'instanciation publique d'un GameSTate<RobotChrono>
             instanciedServices[serviceRequested.ordinal()] = (Service) GameState.constructRealGameState((Log)getService(ServiceNames.LOG),
@@ -213,7 +214,7 @@ public class Container
 		 													 (DataForSerialOutput)getService(ServiceNames.SERIAL_OUTPUT_BUFFER),
 															 (ObstaclesMemory)getService(ServiceNames.OBSTACLES_MOBILES_MEMORY));
 		else if(serviceRequested == ServiceNames.SCRIPT_MANAGER)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new ScriptManager(	(HookFactory)getService(ServiceNames.HOOK_FACTORY),
+			instanciedServices[serviceRequested.ordinal()] = (Service)new ScriptManager((HookFactory)getService(ServiceNames.HOOK_FACTORY),
 																					(Log)getService(ServiceNames.LOG));
 		else if(serviceRequested == ServiceNames.THREAD_FIN_MATCH)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadFinMatch((Log)getService(ServiceNames.LOG),

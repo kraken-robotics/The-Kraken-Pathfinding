@@ -93,7 +93,8 @@ public class JUnit_Robot extends JUnit_Test
     			config.set(ConfigInfo.COULEUR, RobotColor.getCouleurSansSymetrie());
     		else
     			config.set(ConfigInfo.COULEUR, RobotColor.getCouleurAvecSymetrie());
-    		robotchrono.setPositionOrientationSTM(new Vec2<ReadOnly>(200, 600), 0);
+// TODO
+    		//    		robotchrono.setPositionOrientationSTM(new Vec2<ReadOnly>(200, 600), 0);
     		robotchrono.avancer(100);
     		Assert.assertTrue(robotchrono.getPosition().squaredDistance(new Vec2<ReadWrite>(300, 600)) < 10);
     		robotchrono.tourner(Math.PI/2);

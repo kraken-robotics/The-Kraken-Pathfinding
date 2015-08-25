@@ -81,11 +81,13 @@ public class ThreadSerialInput extends Thread implements Service
 							int xRobot = Integer.parseInt(serie.read());
 							int yRobot = Integer.parseInt(serie.read());
 							Vec2<ReadOnly> positionRobot = new Vec2<ReadOnly>(xRobot, yRobot);
-							double orientationRobot = Double.parseDouble(serie.read());
+							double orientationRobot = Integer.parseInt(serie.read()) / 1000.;
+							int accelerationLaterale = Integer.parseInt(serie.read());
 							int[] mesures = new int[nbCapteurs];
 							for(int i = 0; i < nbCapteurs; i++)
 								mesures[i] = Integer.parseInt(serie.read());
 							robot.setPositionOrientationJava(positionRobot, orientationRobot);
+							robot.setAccelerationLaterale(accelerationLaterale);
 							buffer.add(new IncomingData(positionRobot, orientationRobot, mesures, capteursOn));
 							break;
 							
@@ -95,7 +97,14 @@ public class ThreadSerialInput extends Thread implements Service
 						case "color":
 							config.set(ConfigInfo.COULEUR, RobotColor.parse(serie.read()));
 							break;
-							
+
+							/**
+							 * Récupère la marche avant
+							 */
+						case "avt":
+							robot.setEnMarcheAvance(Boolean.parseBoolean(serie.read()));
+							break;
+
 						case "go":
 							/**
 							 * Démarrage du match

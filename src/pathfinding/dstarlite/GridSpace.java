@@ -1,10 +1,13 @@
 package pathfinding.dstarlite;
 
+import java.util.BitSet;
+
 import obstacles.ObstaclesIterator;
 import obstacles.ObstaclesMemory;
 import permissions.ReadOnly;
 import table.Table;
 import utils.Config;
+import utils.ConfigInfo;
 import utils.Log;
 import utils.Vec2;
 import container.Service;
@@ -24,7 +27,11 @@ public class GridSpace implements Service
 	private ObstaclesIterator iterator;
 	private boolean ignoreElementJeu;
 	
-	private static final int COEFF_HEURISTIQUE = 1;
+	/**
+	 * Comme on veut que le DStarLite recherche plus de noeuds qu'il n'y en aurait besoin, ce coeff ne vaut pas 1
+	 */
+//	private static final int COEFF_HEURISTIQUE = 2;
+
 	public static final int PRECISION = 6;
 	public static final int NB_POINTS_POUR_TROIS_METRES = (1 << PRECISION);
 	public static final int NB_POINTS_POUR_DEUX_METRES = (int) ((1 << PRECISION)*2./3.);
@@ -33,9 +40,11 @@ public class GridSpace implements Service
 	private static final int X_MAX = NB_POINTS_POUR_TROIS_METRES-1;
 	private static final int Y_MAX = NB_POINTS_POUR_DEUX_METRES-1;
 	
+	private int distanceUrgence;
+	
 	// les nœuds ont 8 voisins, mais par symétrie on n'a besoin que de 4 nombres
 	// cette grille est constante, c'est-à-dire qu'elle ne contient que les obstacles fixes
-	private boolean[] grille = new boolean[4*NB_POINTS];
+	private BitSet grille = new BitSet(4*NB_POINTS);
 	
 	public GridSpace(Log log, ObstaclesMemory memory, Table table)
 	{
@@ -44,27 +53,29 @@ public class GridSpace implements Service
 		iterator = new ObstaclesIterator(log, memory);
 
 		for(int i = 0; i < 4*NB_POINTS; i++)
-			grille[i] = true;
+			grille.set(i);
 
 	}
 	
 	public void updateObstaclesMobiles()
 	{
+		// Il y a urgence s'il y a apparition d'un obstacle à moins de distanceUrgence devant le robot
 		iterator.reinitNow();
 		
 	}
 	
 	/**
-	 * On utilise la distance euclidienne pour l'heuristique
+	 * On utilise la distance octile pour l'heuristique
 	 * @param pointA
 	 * @param pointB
 	 * @return
 	 */
-	public int distanceHeuristique(int pointA, int pointB)
+	public int distanceHeuristiqueDStarLite(int pointA, int pointB)
 	{
-		int dx = (pointA & (NB_POINTS_POUR_TROIS_METRES - 1)) - (pointB & (NB_POINTS_POUR_TROIS_METRES - 1)); // ceci est un modulo
-		int dy = (pointA >> PRECISION) - (pointB >> PRECISION); // ceci est une division
-		return (int) Math.round(COEFF_HEURISTIQUE * 1000 * Math.hypot(dx, dy));
+		int dx = Math.abs((pointA & (NB_POINTS_POUR_TROIS_METRES - 1)) - (pointB & (NB_POINTS_POUR_TROIS_METRES - 1))); // ceci est un modulo
+		int dy = Math.abs((pointA >> PRECISION) - (pointB >> PRECISION)); // ceci est une division
+		return 1000 * Math.max(dx, dy) + 414 * Math.min(dx, dy);
+//		return (int) Math.round(COEFF_HEURISTIQUE * 1000 * Math.hypot(dx, dy));
 	}
 
 	public void updateElementsJeu()
@@ -134,7 +145,9 @@ public class GridSpace implements Service
 
 	@Override
 	public void useConfig(Config config)
-	{}
+	{
+		distanceUrgence = config.getInt(ConfigInfo.DISTANCE_URGENCE);
+	}
 
 	@Override
 	public void updateConfig(Config config)
@@ -150,9 +163,9 @@ public class GridSpace implements Service
 	private boolean isTraversable(int gridpoint, int direction)
 	{
 		if((direction & 1) == 0)
-			return grille[4*gridpoint+direction/2];
+			return grille.get(4*gridpoint+direction/2);
 		else
-			return grille[4*getGridPointVoisin(gridpoint, direction)+direction/2];
+			return grille.get(4*getGridPointVoisin(gridpoint, direction)+direction/2);
 	}
 	
 	/**
@@ -170,7 +183,7 @@ public class GridSpace implements Service
 	 * @param i
 	 * @return
 	 */
-	public int distance(int point, int i) {
+	public int distanceDStarLite(int point, int i) {
 		if(!isTraversable(point, i))
 			return Integer.MAX_VALUE;
 		if(i < 4)

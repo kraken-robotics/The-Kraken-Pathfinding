@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
 
+import pathfinding.thetastar.RayonCourbure;
 import permissions.ReadOnly;
 import robot.ActuatorOrder;
 import robot.Speed;
@@ -40,23 +41,6 @@ public class DataForSerialOutput implements Service
 		return buffer.isEmpty();
 	}
 	
-	/*
-	public synchronized void desactiveAsservissement()
-	{
-		ArrayList<String> elems = new ArrayList<String>();
-		elems.add(new String("nas"));
-		buffer.add(elems);
-		notify();
-	}
-
-	public synchronized void activeAsservissement()
-	{
-		ArrayList<String> elems = new ArrayList<String>();
-		elems.add(new String("oas"));
-		buffer.add(elems);
-		notify();
-	}*/
-
 	public synchronized void setSpeed(Speed speed)
 	{
 		ArrayList<String> elems = new ArrayList<String>();
@@ -156,9 +140,9 @@ public class DataForSerialOutput implements Service
 	public synchronized void utiliseActionneurs(ActuatorOrder elem)
 	{
 		ArrayList<String> elems = new ArrayList<String>();
-		elems.add(elem.getSerialOrder());
+		elems.add("act");
+		elems.add(String.valueOf(elem.ordinal()));
 		buffer.add(elems);
-//		log.debug("Taille buffer: "+buffer.size());
 		notify();
 	}
 /*	
@@ -206,11 +190,29 @@ public class DataForSerialOutput implements Service
 		elems.add(String.valueOf(ActuatorOrder.values().length));
 		for(ActuatorOrder a : ActuatorOrder.values())
 		{
-			elems.add(a.getSerialOrder());
 			elems.add(a.getOrdreSSC32());
 			elems.add(String.valueOf(a.hasSymmetry()));
 		}
 		buffer.add(elems);
 		notify();
+	}
+
+	/**
+	 * Informe la STM des rayons de courbure
+	 */
+	public void envoieRayonsCourbure()
+	{
+		ArrayList<String> elems = new ArrayList<String>();
+		elems.add(new String("src"));
+		elems.add(String.valueOf(RayonCourbure.values().length));
+
+		for(RayonCourbure r : RayonCourbure.values())
+		{
+			elems.add(String.valueOf(r.rayon));
+			elems.add(String.valueOf(r.PWMTranslation));
+		}
+			
+		buffer.add(elems);
+		notify();		
 	}
 }

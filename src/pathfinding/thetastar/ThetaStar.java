@@ -2,17 +2,13 @@ package pathfinding.thetastar;
 
 import java.util.ArrayList;
 import java.util.BitSet;
-import java.util.Iterator;
-import java.util.LinkedList;
+import java.util.PriorityQueue;
 
 import pathfinding.dstarlite.DStarLite;
 import pathfinding.dstarlite.GridSpace;
 import permissions.ReadOnly;
 import permissions.ReadWrite;
 import container.Service;
-import exceptions.FinMatchException;
-import exceptions.PathfindingException;
-import exceptions.PathfindingRobotInObstacleException;
 import robot.RobotChrono;
 import robot.RobotReal;
 import strategie.GameState;
@@ -34,7 +30,7 @@ import utils.Vec2;
 
 public class ThetaStar implements Service
 {
-	private LinkedList<ThetaStarNode> openset = new LinkedList<ThetaStarNode>();	 // The set of tentative nodes to be evaluated
+	private PriorityQueue<ThetaStarNode> openset = new PriorityQueue<ThetaStarNode>(GridSpace.NB_POINTS, new ThetaStarNodeComparator());	 // The set of tentative nodes to be evaluated
 	private BitSet closedset = new BitSet(GridSpace.NB_POINTS);
 	
 	private ArrayList<LocomotionArc> cheminTmp = new ArrayList<LocomotionArc>();
@@ -59,12 +55,12 @@ public class ThetaStar implements Service
 		this.arcmanager = arcmanager;
 		this.state = state;
 		this.chemin = chemin;
+
 		last = GameState.cloneGameState(state);
 		stateSuccesseur = GameState.cloneGameState(state);
+
 		for(int i = 0; i < GridSpace.NB_POINTS; i++)
-		{
 			memory[i] = new ThetaStarNode(GameState.cloneGameState(state), i);
-		}
 	}
 
 	/**
@@ -74,15 +70,12 @@ public class ThetaStar implements Service
 	 * @param endNode
 	 * @param shoot_game_element
 	 * @return
-	 * @throws PathfindingException
-	 * @throws PathfindingRobotInObstacleException
-	 * @throws FinMatchException
-	 * @throws MemoryManagerException
 	 */
-	public void computeNewPath(Vec2<ReadOnly> arrivee, boolean shoot_game_element) throws PathfindingException
+	public synchronized void computeNewPath(Vec2<ReadOnly> arrivee, boolean shootGameElement)
 	{
 		ThetaStarNode depart;
 		GameState.copy(state, last);
+		arcmanager.setShootGameElement(shootGameElement);
 		dstarlite.computeNewPath(last.robot.getPosition(), arrivee);
 		do {
 			depart = memory[last.robot.getPositionGridSpace()];
@@ -92,7 +85,7 @@ public class ThetaStar implements Service
 		while(!process(depart));
 	}
 	
-	public void updatePath() throws PathfindingException
+	public synchronized void updatePath()
 	{
 		ThetaStarNode depart;
 		GameState.copy(state, last);
@@ -111,27 +104,27 @@ public class ThetaStar implements Service
 	 * @param arcmanager
 	 * @param shouldReconstruct
 	 * @return 
-	 * @return
-	 * @throws PathfindingException
-	 * @throws MemoryManagerException
 	 */
-	private synchronized boolean process(ThetaStarNode depart) throws PathfindingException
+	private boolean process(ThetaStarNode depart)
 	{
 		nbPF++;
 		int hashArrivee = dstarlite.getHashArrivee();
 
 		openset.clear();
 		closedset.clear();
-		addToOpenset(depart);	// The set of tentative nodes to be evaluated, initially containing the start node
+
+		depart.nbPF = nbPF;
 		depart.g_score = 0;	// Cost from start along best known path.
 		// Estimated total cost from start to goal through y.
-		depart.f_score = arcmanager.heuristicCostThetaStar(depart);
-		
+		depart.f_score = arcmanager.heuristicCostThetaStar(depart.state.getReadOnly());
+
+		openset.add(depart);	// The set of tentative nodes to be evaluated, initially containing the start node
+
 		ThetaStarNode current;
 
 		while(!openset.isEmpty())
 		{
-			current = openset.pop();
+			current = openset.poll();
 
 			closedset.set(current.hash);
 						
@@ -161,35 +154,46 @@ public class ThetaStar implements Service
 
 				// stateSuccesseur est modifié lors du "distanceTo"
 				int tentative_g_score = current.g_score + arcmanager.distanceTo(stateSuccesseur, voisin);
-
+				int tentative_f_score = tentative_g_score + arcmanager.heuristicCostThetaStar(stateSuccesseur.getReadOnly());
+				
 				ThetaStarNode successeur = getFromMemory(stateSuccesseur.robot.getPositionGridSpace());
 				
-				if(tentative_g_score < successeur.g_score)
+				/**
+				 * Normalement, il suffit de comparer les g_scores.
+				 * En effet, l'heuristique d'un point est censé être unique, et alors comparer g1 + f à
+				 * g2 + f revient à comparer g1 à g2.
+				 * Or, c'est ici l'heuristique dépend de l'orientation du robot, et donc n'est pas unique pour un gridpoint.
+				 * Il est donc nécessaire de comparer les deux f_scores
+				 */
+				if(tentative_f_score < successeur.f_score)
 				{
 					GameState.copy(stateSuccesseur.getReadOnly(), successeur.state);
 					successeur.came_from = current;
 					successeur.came_from_arc = voisin;
 					successeur.g_score = tentative_g_score;
-					successeur.f_score = tentative_g_score + arcmanager.heuristicCostThetaStar(successeur);
-					openset.remove(successeur);
-					addToOpenset(successeur);
+					successeur.f_score = tentative_f_score;
+					if(openset.contains(successeur))
+						openset.remove(successeur);
+					openset.add(successeur);
 				}
 			}
 			
 		}
 		
-		// Pathfinding terminé sans avoir atteint l'arrivée
+		// Pathfinding terminé sans avoir atteint l'arrivée.
 		return true;
 		
 	}
 	
-	private void addToOpenset(ThetaStarNode node)
+/*	private void addToOpenset(ThetaStarNode node)
 	{
 		Iterator<ThetaStarNode> iterator = openset.listIterator();
 		int i = 0;
 		while(iterator.hasNext())
 		{
-			if(node.f_score < iterator.next().f_score)
+			ThetaStarNode nodeList = iterator.next();
+			// Contrairement à DStarLite qui explore près du point de départ, ThetaStar, en cas d'égalité, poursuit son chemin
+			if(node.f_score < nodeList.f_score || (node.f_score == nodeList.f_score && node.g_score > nodeList.g_score))
 			{
 				openset.add(i, node);
 				return;
@@ -198,7 +202,7 @@ public class ThetaStar implements Service
 		}
 		openset.add(node);
 	}
-
+*/
 	private boolean reconstruct(ThetaStarNode best)
 	{
 		if(chemin.needToStartAgain())

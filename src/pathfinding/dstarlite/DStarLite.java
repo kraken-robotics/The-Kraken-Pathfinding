@@ -2,8 +2,8 @@ package pathfinding.dstarlite;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.PriorityQueue;
 
-import pathfinding.thetastar.ThetaStarNode;
 import permissions.ReadOnly;
 import utils.Config;
 import utils.Log;
@@ -33,7 +33,7 @@ public class DStarLite implements Service
 	
 	private DStarLiteNode[] memory = new DStarLiteNode[GridSpace.NB_POINTS];
 
-	private ArrayList<DStarLiteNode> openset = new ArrayList<DStarLiteNode>();
+	private PriorityQueue<DStarLiteNode> openset = new PriorityQueue<DStarLiteNode>(GridSpace.NB_POINTS, new DStarLiteNodeComparator());
 	private int km;
 	private DStarLiteNode arrivee;
 	private DStarLiteNode depart;
@@ -70,7 +70,7 @@ public class DStarLite implements Service
 	 * Ajout dans une liste triée
 	 * @param u
 	 */
-	private void addToOpenset(DStarLiteNode u)
+/*	private void addToOpenset(DStarLiteNode u)
 	{
 //		if(openset.contains(u))
 //			log.critical("Déjà dans openset !");
@@ -86,7 +86,7 @@ public class DStarLite implements Service
 			i++;
 		}
 		openset.add(u);
-	}
+	}*/
 	
 	private void updateVertex(DStarLiteNode u)
 	{
@@ -95,52 +95,40 @@ public class DStarLite implements Service
 		{
 			calcKey(u, u.cle);
 			if(contains)
-				openset.remove(u);
-			addToOpenset(u);
+				openset.poll();
+			openset.add(u);
 		}
 		else if(contains)
-			openset.remove(u);
+			openset.poll();
 	}
 	
 	private void computeShortestPath()
 	{
-//		int k = 0;
 		DStarLiteNode u;
-		while(!openset.isEmpty() && ((u = openset.get(0)).cle.isLesserThan(calcKey(depart, inutile)) || depart.rhs > depart.g))
+		// TODO : continuer à étendre des noeuds même après la fin de l'algo
+		while(!openset.isEmpty() && ((u = openset.peek()).cle.isLesserThan(calcKey(depart, inutile)) || depart.rhs > depart.g))
 		{
-/*			log.debug("Taille openset = "+openset.size());
-			Iterator<DStarLiteNode> iterator = openset.listIterator();
-			while(iterator.hasNext())
-			{
-				log.debug("openset : "+iterator.next());
-			}
-			log.debug("Nouvelle itération, u = "+u);
-			
-			k++;
-			if(k == 5)
-				return;
-			*/
 			Cle kold = u.cle.clone();
 			calcKey(u, knew);
 			if(kold.isLesserThan(knew))
 			{
 //				log.debug("Cas 1");
 				knew.copy(u.cle);
-				openset.remove(0);
-				addToOpenset(u);
+				openset.poll();
+				openset.add(u);
 			}
 			else if(u.g > u.rhs)
 			{
 //				log.debug("Cas 2");
 				u.g = u.rhs;
-				openset.remove(0);
+				openset.poll();
 				for(int i = 0; i < 8; i++)
 				{
 					int voisin = gridspace.getGridPointVoisin(u.gridpoint, i);
 					if(voisin < 0)
 						continue;
 					DStarLiteNode s = getFromMemory(voisin);
-					s.rhs = Math.min(s.rhs, add(gridspace.distance(u.gridpoint, i), u.g));
+					s.rhs = Math.min(s.rhs, add(gridspace.distanceDStarLite(u.gridpoint, i), u.g));
 					updateVertex(s);
 				}
 			}
@@ -157,7 +145,7 @@ public class DStarLite implements Service
 					DStarLiteNode s = getFromMemory(voisin);
 					if(s == null)
 						continue;
-					if(s.rhs == add(gridspace.distance(u.gridpoint, i), gold) && s.gridpoint != arrivee.gridpoint)
+					if(s.rhs == add(gridspace.distanceDStarLite(u.gridpoint, i), gold) && s.gridpoint != arrivee.gridpoint)
 					{
 						s.rhs = Integer.MAX_VALUE;
 						for(int j = 0; j < 8; j++)
@@ -166,7 +154,7 @@ public class DStarLite implements Service
 							if(voisin < 0)
 								continue;
 							DStarLiteNode s2 = getFromMemory(voisin);
-							s.rhs = Math.min(s.rhs, add(gridspace.distance(s.gridpoint, j), s2.g));
+							s.rhs = Math.min(s.rhs, add(gridspace.distanceDStarLite(s.gridpoint, j), s2.g));
 						}
 					}
 					updateVertex(s);
@@ -180,7 +168,7 @@ public class DStarLite implements Service
 						if(voisin < 0)
 							continue;
 						DStarLiteNode s = getFromMemory(voisin);
-						u.rhs = Math.min(u.rhs, add(gridspace.distance(u.gridpoint, i), s.g));
+						u.rhs = Math.min(u.rhs, add(gridspace.distanceDStarLite(u.gridpoint, i), s.g));
 					}
 				}
 				updateVertex(u);
@@ -213,7 +201,7 @@ public class DStarLite implements Service
 	
 	private int distanceHeuristique(int gridpoint)
 	{
-		return gridspace.distanceHeuristique(depart.gridpoint, gridpoint);
+		return gridspace.distanceHeuristiqueDStarLite(depart.gridpoint, gridpoint);
 	}
 
 	@Override
@@ -262,7 +250,7 @@ public class DStarLite implements Service
 				if(voisin < 0)
 					continue;
 				DStarLiteNode s = getFromMemory(voisin);
-				int coutTmp = add(gridspace.distance(node.gridpoint, i), s.g);
+				int coutTmp = add(gridspace.distanceDStarLite(node.gridpoint, i), s.g);
 				if(coutTmp < coutMin)
 				{
 					coutMin = coutTmp;
@@ -276,9 +264,9 @@ public class DStarLite implements Service
 		
 	}
 	
-	public int heuristicCostThetaStar(ThetaStarNode node)
+	public int heuristicCostThetaStar(int gridpoint)
 	{
-		return getFromMemory(node.hashCode()).g;
+		return getFromMemory(gridpoint).g;
 	}
 	
 	public int getHashDebut()
@@ -318,4 +306,21 @@ public class DStarLite implements Service
 		return a + b + c;
 	}
 
+	private int gridpointIterator;
+	private int iterator;
+	private ArrayList<Integer> voisinsTries;
+	
+	/**
+	 * Renvoie l'itérateur des nodes du plus court au plus long
+	 * @param gridpoint
+	 * @return
+	 */
+	public Iterator<Integer> getIterator(int gridpoint)
+	{
+		gridpointIterator = gridpoint;
+		iterator = 0;
+		// TODO
+		return voisinsTries.iterator();
+	}
+		
 }

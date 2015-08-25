@@ -40,15 +40,15 @@ public class RobotChrono extends Robot
 		super(log);
 	}
 	
-	@Override
-	public void setPositionOrientationSTM(Vec2<ReadOnly> position, double orientation) {
-		Vec2.copy(position, this.position);
-		this.orientation = orientation;
+//	@Override
+//	public void setPositionOrientationSTM(Vec2<ReadOnly> position, double orientation) {
+//		Vec2.copy(position, this.position);
+//		this.orientation = orientation;
 //		isPositionPathfindingActive = false;
 //		positionPathfindingAnterieure = null;
 //		positionPathfinding = null;
 //		date += approximateSerialLatency;
-	}
+//	}
 
 	/**
 	 * Mise à jour permettant de modifier, pour RobotChrono, la date limite de la recherche stratégique
@@ -84,14 +84,6 @@ public class RobotChrono extends Robot
 	public long getTempsDepuisDebutMatch()
 	{
 		return date;
-	}
-
-	@Override
-	public RobotChrono cloneIntoRobotChrono()
-	{
-		RobotChrono cloned_robotchrono = new RobotChrono(log);
-		copy(cloned_robotchrono);
-		return cloned_robotchrono;
 	}
 
 	/**
@@ -219,29 +211,6 @@ public class RobotChrono extends Robot
     {
 		date += sleepAvanceDuration;
     }
-
-    @Override
-    public Vec2<ReadOnly> getPosition()
-    {
-        return position.getReadOnly();
-    }
-
-    @Override
-    public double getOrientation()
-    {
-        return orientation;
-    }
-    
-    @Override
-    public void copy(RobotChrono rc)
-    {
-        super.copy(rc);
-        Vec2.copy(position.getReadOnly(), rc.position);
-        rc.orientation = orientation;
-//    	rc.positionPathfinding = positionPathfinding;
-//    	rc.positionPathfindingAnterieure = positionPathfindingAnterieure;
-//    	rc.isPositionPathfindingActive = isPositionPathfindingActive;
-    }
     
 /*    @Override
     public void desactiveAsservissement()
@@ -278,7 +247,8 @@ public class RobotChrono extends Robot
 	{
 		positionGridSpace = gridpoint;
 	}
-
+	
+	@Override
 	public int getPositionGridSpace()
 	{
 		return positionGridSpace;

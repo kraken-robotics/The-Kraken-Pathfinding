@@ -3,6 +3,7 @@ package pathfinding.thetastar;
 import pathfinding.MoteurPhysique;
 import pathfinding.dstarlite.DStarLite;
 import pathfinding.dstarlite.GridSpace;
+import permissions.ReadOnly;
 import permissions.ReadWrite;
 import robot.RobotChrono;
 import strategie.GameState;
@@ -23,6 +24,14 @@ public class ArcManager implements Service
 	private DStarLite dstarlite;
 	
 	private int nbSuccesseurMax;
+	private int[] scenarios;
+	private int nbScenarios;
+	private int scenarioActuel;
+
+	private ThetaStarNode[] nodes = new ThetaStarNode[2];
+	
+	private final static int PREDECESSEUR = 0;
+	private final static int ACTUEL = 1;
 	
 	public ArcManager(MoteurPhysique moteur, GridSpace gridspace, DStarLite dstarlite)
 	{
@@ -42,14 +51,21 @@ public class ArcManager implements Service
 	public void useConfig(Config config)
 	{
 		nbSuccesseurMax = config.getInt(ConfigInfo.NB_SUCCESSEUR_MAX);
+		scenarios = new int[2*nbSuccesseurMax*RayonCourbure.length];
+		nbScenarios = 2*nbSuccesseurMax*RayonCourbure.length;
+		int k = 0;
+		for(int i = 0; i < 2; i++)
+			for(int r = 0; r < RayonCourbure.length; r++)
+				for(int s = 0; s < nbSuccesseurMax; s++)
+					scenarios[k++] = s+r*nbSuccesseurMax+i*RayonCourbure.length*nbSuccesseurMax;				
 	}
-
 
 	public void reinitIterator(ThetaStarNode predecesseur, ThetaStarNode actuel)
 	{
-		
+		nodes[PREDECESSEUR] = predecesseur;
+		nodes[ACTUEL] = actuel;
+		scenarioActuel = 0;
 	}
-
 
 	public boolean hasNext() {
 		// TODO Auto-generated method stub
@@ -63,7 +79,8 @@ public class ArcManager implements Service
 	}
 
 	public boolean nextAccepted() {
-		// TODO Auto-generated method stub
+		
+		// si c'est vrai, scenarioActuel++
 		return false;
 	}
 
@@ -74,21 +91,21 @@ public class ArcManager implements Service
 		return 0;
 	}
 
-
-	public int getNoteReconstruct(int h) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-
-	public int heuristicCostThetaStar(ThetaStarNode node) {
-		return dstarlite.heuristicCostThetaStar(node);
+	public int heuristicCostThetaStar(GameState<RobotChrono, ReadOnly> node) {
+		// TODO: ajouter un coût pour l'orientation + prendre en compte l'accélération latérale
+		return dstarlite.heuristicCostThetaStar(node.robot.getPositionGridSpace());
 	}
 
 
 	public boolean isFromPredecesseur() {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+
+	public void setShootGameElement(boolean shootGameElement) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	

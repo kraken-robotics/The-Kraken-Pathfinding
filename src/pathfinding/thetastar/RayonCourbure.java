@@ -1,7 +1,5 @@
 package pathfinding.thetastar;
 
-import robot.Speed;
-
 /**
  * Différents rayons de courbure utilisés dans le lissage
  * @author pf
@@ -10,17 +8,18 @@ import robot.Speed;
 
 public enum RayonCourbure {
 
-	EXEMPLE_1(100, Speed.BETWEEN_SCRIPTS),
-	EXEMPLE_2(300, Speed.BETWEEN_SCRIPTS),
-	LIGNE_DROITE(-1, Speed.INTO_WALL);
+	EXEMPLE_1(100, 10),
+	EXEMPLE_2(300, 20),
+	LIGNE_DROITE(-1, 2);
 	
 	public final int rayon;
-	public final Speed vitesseMax;
+	public final int PWMTranslation;
+	public static final int length = values().length;
 	
-	private RayonCourbure(int rayon, Speed vitesseMax)
+	private RayonCourbure(int rayon, int PWMTranslation)
 	{
 		this.rayon = rayon;
-		this.vitesseMax = vitesseMax;
+		this.PWMTranslation = PWMTranslation;
 	}
 	
 }
