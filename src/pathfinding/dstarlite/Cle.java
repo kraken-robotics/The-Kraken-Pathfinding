@@ -37,6 +37,11 @@ public class Cle
 		return out;
 	}
 
+	public int toInt()
+	{
+		return first << 8 + second >> 8;
+	}
+	
 	/**
 	 * modified devient une copie de this
 	 * @param modified

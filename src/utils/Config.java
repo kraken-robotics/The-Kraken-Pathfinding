@@ -18,6 +18,7 @@ public class Config implements Service
 	public static final boolean debugSerie = false;
 	// Permet de savoir si le match a démarré et quand
 	public static final String path = "./config/";
+	public static final boolean graphic = true;
 
 	private String name_config_file = "config.ini";
 	private volatile Properties properties = new Properties();

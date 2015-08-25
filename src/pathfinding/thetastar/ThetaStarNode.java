@@ -46,5 +46,10 @@ public class ThetaStarNode
 	{
 		return hashCode() == o.hashCode();
 	}
+	
+	public int toInt()
+	{
+		return (f_score << 16) - g_score;
+	}
 
 }

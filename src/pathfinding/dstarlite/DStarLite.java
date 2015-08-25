@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.PriorityQueue;
 
 import permissions.ReadOnly;
+import tests.graphicLib.Fenetre;
 import utils.Config;
 import utils.Log;
 import utils.Vec2;
@@ -20,7 +21,8 @@ public class DStarLite implements Service
 {
 	protected Log log;
 	private GridSpace gridspace;
-
+	private Fenetre fenetre;
+	
 	public DStarLite(Log log, GridSpace gridspace)
 	{
 		this.log = log;
@@ -29,6 +31,8 @@ public class DStarLite implements Service
 		{
 			memory[i] = new DStarLiteNode(i);
 		}
+		if(Config.graphic)
+			fenetre = Fenetre.getInstance();
 	}
 	
 	private DStarLiteNode[] memory = new DStarLiteNode[GridSpace.NB_POINTS];
@@ -95,11 +99,13 @@ public class DStarLite implements Service
 		{
 			calcKey(u, u.cle);
 			if(contains)
-				openset.poll();
+				openset.remove(u);
 			openset.add(u);
+			if(Config.graphic)
+				fenetre.setColor(u.gridpoint, Fenetre.Couleur.JAUNE);
 		}
 		else if(contains)
-			openset.poll();
+			openset.remove(u);
 	}
 	
 	private void computeShortestPath()
@@ -108,6 +114,9 @@ public class DStarLite implements Service
 		// TODO : continuer à étendre des noeuds même après la fin de l'algo
 		while(!openset.isEmpty() && ((u = openset.peek()).cle.isLesserThan(calcKey(depart, inutile)) || depart.rhs > depart.g))
 		{
+			if(Config.graphic)
+				fenetre.setColor(u.gridpoint, Fenetre.Couleur.BLEU);
+
 			Cle kold = u.cle.clone();
 			calcKey(u, knew);
 			if(kold.isLesserThan(knew))
@@ -116,12 +125,16 @@ public class DStarLite implements Service
 				knew.copy(u.cle);
 				openset.poll();
 				openset.add(u);
+				if(Config.graphic)
+					fenetre.setColor(u.gridpoint, Fenetre.Couleur.JAUNE);
 			}
 			else if(u.g > u.rhs)
 			{
 //				log.debug("Cas 2");
 				u.g = u.rhs;
 				openset.poll();
+				if(Config.graphic)
+					fenetre.setColor(u.gridpoint, Fenetre.Couleur.ROUGE);
 				for(int i = 0; i < 8; i++)
 				{
 					int voisin = gridspace.getGridPointVoisin(u.gridpoint, i);
@@ -195,6 +208,8 @@ public class DStarLite implements Service
 		
 		openset.clear();
 		openset.add(this.arrivee);
+		if(Config.graphic)
+			fenetre.setColor(this.arrivee.gridpoint, Fenetre.Couleur.JAUNE);
 
 		computeShortestPath();
 	}

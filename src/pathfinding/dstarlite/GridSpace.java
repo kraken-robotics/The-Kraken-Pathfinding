@@ -44,7 +44,7 @@ public class GridSpace implements Service
 	
 	// les nœuds ont 8 voisins, mais par symétrie on n'a besoin que de 4 nombres
 	// cette grille est constante, c'est-à-dire qu'elle ne contient que les obstacles fixes
-	private BitSet grille = new BitSet(4*NB_POINTS);
+	private BitSet grille = new BitSet(NB_POINTS);
 	
 	public GridSpace(Log log, ObstaclesMemory memory, Table table)
 	{
@@ -52,7 +52,7 @@ public class GridSpace implements Service
 //		this.table = table;
 		iterator = new ObstaclesIterator(log, memory);
 
-		for(int i = 0; i < 4*NB_POINTS; i++)
+		for(int i = 0; i < NB_POINTS; i++)
 			grille.set(i);
 
 	}
@@ -162,12 +162,20 @@ public class GridSpace implements Service
 	 */
 	private boolean isTraversable(int gridpoint, int direction)
 	{
-		if((direction & 1) == 0)
-			return grille.get(4*gridpoint+direction/2);
-		else
-			return grille.get(4*getGridPointVoisin(gridpoint, direction)+direction/2);
+		return grille.get(getGridPointVoisin(gridpoint, direction));
 	}
-	
+
+	/**
+	 * Utilisé pour l'affichage
+	 * @param gridpoint
+	 * @param direction
+	 * @return
+	 */
+	public boolean isTraversable(int gridpoint)
+	{
+		return grille.get(gridpoint);
+	}
+
 	/**
 	 * Renvoie l'indice du gridpoint le plus proche de cette position
 	 * @param p

@@ -200,7 +200,7 @@ public class DataForSerialOutput implements Service
 	/**
 	 * Informe la STM des rayons de courbure
 	 */
-	public void envoieRayonsCourbure()
+	public synchronized void envoieRayonsCourbure()
 	{
 		ArrayList<String> elems = new ArrayList<String>();
 		elems.add(new String("src"));

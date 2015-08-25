@@ -3,6 +3,7 @@ package tests;
 import org.junit.Before;
 import org.junit.After;
 
+import tests.graphicLib.Fenetre;
 import utils.ConfigInfo;
 import utils.Log;
 import utils.Config;
@@ -35,10 +36,14 @@ public abstract class JUnit_Test
 			config.set(ConfigInfo.MATCH_DEMARRE, true);
 			config.set(ConfigInfo.DATE_DEBUT_MATCH, System.currentTimeMillis());
 		}
+		if(Config.graphic)
+			Fenetre.setInstance(container);
 	}
 
 	@After
 	public void tearDown() throws Exception {
+		if(Config.graphic)
+			Sleep.sleep(100000);
 		container.destructor();
 		Sleep.sleep(500);
 	}

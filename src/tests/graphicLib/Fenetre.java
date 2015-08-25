@@ -3,14 +3,19 @@ package tests.graphicLib;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
+import container.Container;
+import container.ServiceNames;
+import exceptions.ContainerException;
+import exceptions.PointSortieException;
 import obstacles.Capteurs;
 import obstacles.types.ObstacleCircular;
 import obstacles.types.ObstacleProximity;
 import obstacles.types.ObstacleRectangular;
-import obstacles.types.ObstaclesFixes;
+import pathfinding.dstarlite.GridSpace;
 //import obstacles.ObstaclesFixes;
 import permissions.ReadOnly;
 import permissions.ReadWrite;
+import utils.Sleep;
 //import table.GameElementNames;
 import utils.Vec2;
 
@@ -29,9 +34,10 @@ import java.util.ArrayList;
 public class Fenetre extends JPanel {
 
 	private static final long serialVersionUID = 1L;
-
+	private static Fenetre instance;
+	
 	private int sizeX = 450, sizeY = 300;
-//	private ArrayList<Vec2<ReadOnly>> pointsADessiner = new ArrayList<Vec2<ReadOnly>>();
+	private ArrayList<Vec2<ReadOnly>> pointsADessiner = new ArrayList<Vec2<ReadOnly>>();
 	private ArrayList<ObstacleProximity> listObstaclesMobiles;
 	private ArrayList<Vec2<ReadOnly>[]> segments = new ArrayList<Vec2<ReadOnly>[]>();
 	private Image image;
@@ -47,18 +53,59 @@ public class Fenetre extends JPanel {
 	
 	private int firstNotDead = 0;
     
-	public Fenetre()
+	private Fenetre(Container container)
 	{
 		try {
+			GridSpace gs = (GridSpace)container.getService(ServiceNames.GRID_SPACE);
 			image = ImageIO.read(new File("table.png"));
 			sizeX = image.getWidth(this);
 			sizeY = image.getHeight(this);
-		} catch (IOException e) {
+			for(int i = 0; i < GridSpace.NB_POINTS; i++)
+				if(gs.isTraversable(i))
+					grid[i] = Couleur.BLANC;
+				else
+					grid[i] = Couleur.NOIR;
+		} catch (IOException | ContainerException | PointSortieException e) {
 			e.printStackTrace();
 		}
 		new MouseListener(this);
+		showOnFrame();
 	}
 	
+	public enum Couleur {
+		BLANC(new Color(255, 255, 255, 0)),
+		NOIR(new Color(0, 0, 0, 200)),
+		BLEU(new Color(0, 0, 200, 200)),
+		JAUNE(new Color(0, 200, 200, 200)),
+		ROUGE(new Color(200, 0, 0, 200));
+		
+		public final Color couleur;
+		
+		private Couleur(Color couleur)
+		{
+			this.couleur = couleur;
+		}
+	}
+	
+	private Couleur[] grid = new Couleur[GridSpace.NB_POINTS];
+	
+	public void setColor(int gridpoint, Couleur couleur)
+	{
+		grid[gridpoint] = couleur;
+		repaint();
+//		Sleep.sleep(200);
+	}
+	
+	public static Fenetre getInstance()
+	{
+		return instance;
+	}
+
+	public static void setInstance(Container container)
+	{
+		instance = new Fenetre(container);
+	}
+
 	private int distanceXtoWindow(int dist)
 	{
 		return dist*sizeX/3000;
@@ -79,6 +126,16 @@ public class Fenetre extends JPanel {
 		return 2000-y*2000/sizeY;
 	}
 */
+	private int XGridPointtoWindow(int g)
+	{
+		return (g & (GridSpace.NB_POINTS_POUR_TROIS_METRES-1))*sizeX/GridSpace.NB_POINTS_POUR_TROIS_METRES;
+	}
+
+	private int YGridPointtoWindow(int g)
+	{
+		return sizeY-(g >> (GridSpace.PRECISION))*sizeY/GridSpace.NB_POINTS_POUR_DEUX_METRES;
+	}
+
 	private int XtoWindow(int x)
 	{
 		return (x+1500)*sizeX/3000;
@@ -96,7 +153,16 @@ public class Fenetre extends JPanel {
 	
 	public void paint(Graphics g)
 	{
-		g.drawImage(image, 0, 0, this);
+//		g.drawImage(image, 0, 0, this);
+		for(int i = 0; i < GridSpace.NB_POINTS; i++)
+		{
+			g.setColor(grid[i].couleur);
+			g.fillOval(XGridPointtoWindow(i)-distanceXtoWindow((int) GridSpace.DISTANCE_ENTRE_DEUX_POINTS)/2,
+					YGridPointtoWindow(i)-distanceYtoWindow((int) GridSpace.DISTANCE_ENTRE_DEUX_POINTS)/2,
+					distanceXtoWindow((int) GridSpace.DISTANCE_ENTRE_DEUX_POINTS),
+					distanceYtoWindow((int) GridSpace.DISTANCE_ENTRE_DEUX_POINTS));
+		}
+/*
 		g.setColor(new Color(0, 0, 130, 40));
 
 //		for(int i = firstNotDead; i < listObstaclesMobiles.size(); i++)
@@ -155,7 +221,7 @@ public class Fenetre extends JPanel {
 //		Vec2<ReadOnly> v = ObstaclesFixes.TEST.getObstacle().position;
 //		int r = ((ObstacleCircular)ObstaclesFixes.TEST.getObstacle()).getRadius();
 //		g.fillOval(XtoWindow(v.x-r), YtoWindow(v.y+r), distanceXtoWindow(r*2), distanceYtoWindow(r*2));
-
+*/
 	}
 
 	public void showOnFrame() {
@@ -185,10 +251,10 @@ public class Fenetre extends JPanel {
 
 	public void paintObstacle(ObstacleCircular o, Graphics g, int dilatationObstacle)
 	{
-		if(o.getRadius() <= 0)
+		if(o.radius <= 0)
 			g.fillOval(XtoWindow(o.position.x)-5, YtoWindow(o.position.y)-5, 10, 10);
 		else
-			g.fillOval(XtoWindow(o.position.x-o.getRadius()-dilatationObstacle), YtoWindow(o.position.y+o.getRadius()+dilatationObstacle), distanceXtoWindow((o.getRadius()+dilatationObstacle)*2), distanceYtoWindow((o.getRadius()+dilatationObstacle)*2));		
+			g.fillOval(XtoWindow(o.position.x-o.radius-dilatationObstacle), YtoWindow(o.position.y+o.radius+dilatationObstacle), distanceXtoWindow((o.radius+dilatationObstacle)*2), distanceYtoWindow((o.radius+dilatationObstacle)*2));		
 	}
 /*	
 	public void paintObstacle(ObstacleRectangular<TestOnly> o, Graphics g, int dilatationObstacle)
