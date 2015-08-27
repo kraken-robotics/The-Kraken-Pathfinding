@@ -9,7 +9,7 @@ package pathfinding.dstarlite;
 public class Cle
 {
 	// En gros, first c'est f_score et second c'est g_score
-	private int first, second;
+	public int first, second;
 
 	public Cle()
 	{}
@@ -37,11 +37,6 @@ public class Cle
 		return out;
 	}
 
-	public int toInt()
-	{
-		return first << 8 + second >> 8;
-	}
-	
 	/**
 	 * modified devient une copie de this
 	 * @param modified

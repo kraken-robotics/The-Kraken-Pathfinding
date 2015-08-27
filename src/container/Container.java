@@ -9,6 +9,9 @@ import buffer.IncomingHookBuffer;
 import pathfinding.MoteurPhysique;
 import pathfinding.dstarlite.DStarLite;
 import pathfinding.dstarlite.GridSpace;
+import pathfinding.thetastar.ArcManager;
+import pathfinding.thetastar.CheminPathfinding;
+import pathfinding.thetastar.ThetaStar;
 import permissions.ReadOnly;
 import permissions.ReadWrite;
 import hook.HookFactory;
@@ -166,6 +169,21 @@ public class Container
 		else if(serviceRequested == ServiceNames.D_STAR_LITE)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new DStarLite((Log)getService(ServiceNames.LOG),
 																				(GridSpace)getService(ServiceNames.GRID_SPACE));
+		else if(serviceRequested == ServiceNames.THETA_STAR)
+			instanciedServices[serviceRequested.ordinal()] = (Service)new ThetaStar((Log)getService(ServiceNames.LOG),
+																				(DStarLite)getService(ServiceNames.D_STAR_LITE),
+																				(ArcManager)getService(ServiceNames.ARC_MANAGER),
+																				(GameState<RobotReal,ReadOnly>)getService(ServiceNames.REAL_GAME_STATE),
+																				(CheminPathfinding)getService(ServiceNames.CHEMIN_PATHFINDING));
+		else if(serviceRequested == ServiceNames.ARC_MANAGER)
+			instanciedServices[serviceRequested.ordinal()] = (Service)new ArcManager((Log)getService(ServiceNames.LOG),
+																				(MoteurPhysique)getService(ServiceNames.MOTEUR_PHYSIQUE),
+																				(GridSpace)getService(ServiceNames.GRID_SPACE),
+																				(DStarLite)getService(ServiceNames.D_STAR_LITE));
+		else if(serviceRequested == ServiceNames.CHEMIN_PATHFINDING)
+			instanciedServices[serviceRequested.ordinal()] = (Service)new CheminPathfinding((Log)getService(ServiceNames.LOG));
+		
+		
 		else if(serviceRequested == ServiceNames.OBSTACLES_MOBILES_MEMORY)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ObstaclesMemory((Log)getService(ServiceNames.LOG));
 		else if(serviceRequested == ServiceNames.GRID_SPACE)

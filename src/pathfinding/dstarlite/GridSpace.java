@@ -16,7 +16,6 @@ import container.Service;
  * La classe qui contient la grille utilisée par le pathfinding.
  * Utilisée uniquement pour le pathfinding de RobotReal.
  * Ordre des directions : NO, SE, NE, SO, N, S, O, E;
- * Ordre dans la grille : NO, NE, N, O;
  * @author pf
  *
  */

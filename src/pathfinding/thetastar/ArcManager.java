@@ -1,5 +1,7 @@
 package pathfinding.thetastar;
 
+import java.util.Iterator;
+
 import pathfinding.MoteurPhysique;
 import pathfinding.dstarlite.DStarLite;
 import pathfinding.dstarlite.GridSpace;
@@ -9,6 +11,7 @@ import robot.RobotChrono;
 import strategie.GameState;
 import utils.Config;
 import utils.ConfigInfo;
+import utils.Log;
 import container.Service;
 
 /**
@@ -19,6 +22,7 @@ import container.Service;
 
 public class ArcManager implements Service
 {
+	private Log log;
 	private MoteurPhysique moteur;
 	private GridSpace gridspace;
 	private DStarLite dstarlite;
@@ -26,15 +30,17 @@ public class ArcManager implements Service
 	private int nbSuccesseurMax;
 	private int[] scenarios;
 	private int nbScenarios;
-	private int scenarioActuel;
-
+	private int noeudEnCours;
+	private Iterator<Integer> voisins;
+	
 	private ThetaStarNode[] nodes = new ThetaStarNode[2];
 	
 	private final static int PREDECESSEUR = 0;
 	private final static int ACTUEL = 1;
 	
-	public ArcManager(MoteurPhysique moteur, GridSpace gridspace, DStarLite dstarlite)
+	public ArcManager(Log log, MoteurPhysique moteur, GridSpace gridspace, DStarLite dstarlite)
 	{
+		this.log = log;
 		this.moteur = moteur;
 		this.gridspace = gridspace;
 		this.dstarlite = dstarlite;
@@ -64,7 +70,8 @@ public class ArcManager implements Service
 	{
 		nodes[PREDECESSEUR] = predecesseur;
 		nodes[ACTUEL] = actuel;
-		scenarioActuel = 0;
+		noeudEnCours = PREDECESSEUR;
+		voisins = dstarlite.getIterator(predecesseur.hash);
 	}
 
 	public boolean hasNext() {

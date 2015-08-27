@@ -54,6 +54,11 @@ public class DStarLite implements Service
 		return copy;
 	}
 
+	private boolean isThisNodeUptodate(int gridpoint)
+	{
+		return memory[gridpoint].nbPF == nbPF;
+	}
+	
 	private DStarLiteNode getFromMemory(int gridpoint)
 	{
 		DStarLiteNode out = memory[gridpoint];
@@ -321,9 +326,8 @@ public class DStarLite implements Service
 		return a + b + c;
 	}
 
-	private int gridpointIterator;
-	private int iterator;
-	private ArrayList<Integer> voisinsTries;
+	private ArrayList<Integer> voisinsTries = new ArrayList<Integer>();
+	private ArrayList<Integer> notes = new ArrayList<Integer>();
 	
 	/**
 	 * Renvoie l'itérateur des nodes du plus court au plus long
@@ -332,10 +336,39 @@ public class DStarLite implements Service
 	 */
 	public Iterator<Integer> getIterator(int gridpoint)
 	{
-		gridpointIterator = gridpoint;
-		iterator = 0;
-		// TODO
+		voisinsTries.clear();
+		notes.clear();
+		for(int i = 0 ; i < 8 ; i++)
+		{
+			int voisin = gridspace.getGridPointVoisin(gridpoint, i);
+			if(voisin < 0 || !isThisNodeUptodate(voisin))
+				continue;
+
+			int c = gridspace.distanceDStarLite(gridpoint, i);
+			if(c == Integer.MAX_VALUE)
+				continue;
+			
+			int note = c + memory[voisin].g;
+			addInVoisinsTries(note, voisin);
+		}			
 		return voisinsTries.iterator();
 	}
-		
+
+	private void addInVoisinsTries(int note, int gridpoint)
+	{
+		Iterator<Integer> iterator = notes.listIterator();
+		int k = 0;
+		while(iterator.hasNext())
+		{
+			if(note < iterator.next())
+			{
+				notes.add(k, note);
+				voisinsTries.add(k, gridpoint);
+				return;
+			}
+			k++;
+		}
+		voisinsTries.add(gridpoint);
+	}
+	
 }
