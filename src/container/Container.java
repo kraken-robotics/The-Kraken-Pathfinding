@@ -162,7 +162,8 @@ public class Container
 		else if(serviceRequested == ServiceNames.CAPTEURS)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new Capteurs((Log)getService(ServiceNames.LOG),
 																					(Config) getService(ServiceNames.CONFIG),
-																					(ObstaclesMemory)getService(ServiceNames.OBSTACLES_MOBILES_MEMORY));
+																					(ObstaclesMemory)getService(ServiceNames.OBSTACLES_MOBILES_MEMORY),
+																					(RobotReal)getService(ServiceNames.ROBOT_REAL));
 		else if(serviceRequested == ServiceNames.TABLE)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new Table((Log)getService(ServiceNames.LOG),
 																				(StrategieNotifieur)getService(ServiceNames.STRATEGIE_NOTIFIEUR));

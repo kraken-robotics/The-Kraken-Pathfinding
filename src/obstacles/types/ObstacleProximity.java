@@ -1,8 +1,5 @@
 package obstacles.types;
 
-import java.util.ArrayList;
-
-import pathfinding.dstarlite.GridSpace;
 import permissions.ReadOnly;
 import permissions.ReadWrite;
 import robot.Speed;
@@ -15,24 +12,31 @@ import utils.Vec2;
 public class ObstacleProximity extends ObstacleCircular
 {
 	private long death_date;
-	private ArrayList<Integer> pourtourGrille = new ArrayList<Integer>();
+//	private ArrayList<Integer> pourtourGrille = new ArrayList<Integer>();
+	private boolean urgent;
 	
-	public ObstacleProximity(Vec2<ReadOnly> position, int rad, long death_date)
+	public ObstacleProximity(Vec2<ReadOnly> position, int rad, long death_date, boolean urgent)
 	{
 		super(position,rad);
+		this.urgent = urgent;
 		this.death_date = death_date;
-		int centreX = (int) Math.round(position.x / GridSpace.DISTANCE_ENTRE_DEUX_POINTS + GridSpace.NB_POINTS_POUR_TROIS_METRES / 2);
-		int centreY = (int) Math.round(position.y / GridSpace.DISTANCE_ENTRE_DEUX_POINTS);
-		for(Vec2<ReadOnly> point : Obstacle.pourtourGrillePatron)
+//		int centreX = (int) Math.round(position.x / GridSpace.DISTANCE_ENTRE_DEUX_POINTS + GridSpace.NB_POINTS_POUR_TROIS_METRES / 2);
+//		int centreY = (int) Math.round(position.y / GridSpace.DISTANCE_ENTRE_DEUX_POINTS);
+//		for(Vec2<ReadOnly> point : Obstacle.pourtourGrillePatron)
 			// On s'assure bien d'être dans la grille
-			if(centreX + point.x >= 0 && centreX + point.x < GridSpace.NB_POINTS_POUR_TROIS_METRES && centreY + point.y >= 0 && centreY + point.y < GridSpace.NB_POINTS_POUR_DEUX_METRES)
-				pourtourGrille.add(4 * (GridSpace.NB_POINTS_POUR_TROIS_METRES * (centreY+point.y) + (centreX+point.x)));
+//			if(centreX + point.x >= 0 && centreX + point.x < GridSpace.NB_POINTS_POUR_TROIS_METRES && centreY + point.y >= 0 && centreY + point.y < GridSpace.NB_POINTS_POUR_DEUX_METRES)
+//				pourtourGrille.add(4 * (GridSpace.NB_POINTS_POUR_TROIS_METRES * (centreY+point.y) + (centreX+point.x)));
 	}
 	
-	public ArrayList<Integer> getPourtourGrille()
+	public boolean isUrgent()
 	{
-		return pourtourGrille;
+		return urgent;
 	}
+	
+//	public ArrayList<Integer> getPourtourGrille()
+//	{
+//		return pourtourGrille;
+//	}
 	
 	@Override
 	public String toString()

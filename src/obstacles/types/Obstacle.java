@@ -1,7 +1,5 @@
 package obstacles.types;
-import java.util.ArrayList;
 
-import pathfinding.dstarlite.GridSpace;
 import permissions.ReadOnly;
 import utils.Config;
 import utils.ConfigInfo;
@@ -25,7 +23,7 @@ public abstract class Obstacle
     protected static int rayonRobot;
     protected static int marge;
 	protected static double anglePas; // utilisé pour les calculs de collision pendant les rotations	
-	protected static ArrayList<Vec2<ReadOnly>> pourtourGrillePatron; // utilisé pour les obstacles mobiles et le gridspace
+//	protected static ArrayList<Vec2<ReadOnly>> pourtourGrillePatron; // utilisé pour les obstacles mobiles et le gridspace
 	
 	public static void setLog(Log log)
 	{
@@ -40,11 +38,10 @@ public abstract class Obstacle
 		marge = config.getInt(ConfigInfo.MARGE);
 		anglePas = Math.PI-2*Math.atan2(largeurRobot, longueurRobot);
 
-		pourtourGrillePatron = new ArrayList<Vec2<ReadOnly>>();
+//		pourtourGrillePatron = new ArrayList<Vec2<ReadOnly>>();
 //		int enTout = 0;
-		int rayonObstacleDilate = config.getInt(ConfigInfo.RAYON_ROBOT_ADVERSE) + rayonRobot;
+		/*		int rayonObstacleDilate = config.getInt(ConfigInfo.RAYON_ROBOT_ADVERSE) + rayonRobot;
 		int squaredRayonObstacleDilate = rayonObstacleDilate * rayonObstacleDilate;
-		;
 		for(int x = (int) Math.round(- rayonObstacleDilate/GridSpace.DISTANCE_ENTRE_DEUX_POINTS - 1) ; x <= (int) Math.round(rayonObstacleDilate/GridSpace.DISTANCE_ENTRE_DEUX_POINTS + 1) ; x++)
 			for(int y = (int) Math.round(- rayonObstacleDilate/GridSpace.DISTANCE_ENTRE_DEUX_POINTS - 1) ; y <= (int) Math.round(rayonObstacleDilate/GridSpace.DISTANCE_ENTRE_DEUX_POINTS + 1) ; y++)
 			{
@@ -65,6 +62,7 @@ public abstract class Obstacle
 			}
 //		log.debug("Taille patron : "+pourtourGrillePatron.size());
 //		log.debug("Taille totale de l'obstacle : "+enTout);
+ */
 	}
 	
 	public Obstacle (Vec2<ReadOnly> position)

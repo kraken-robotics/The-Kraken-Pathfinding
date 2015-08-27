@@ -39,8 +39,6 @@ public class GridSpace implements Service
 	private static final int X_MAX = NB_POINTS_POUR_TROIS_METRES-1;
 	private static final int Y_MAX = NB_POINTS_POUR_DEUX_METRES-1;
 	
-	private int distanceUrgence;
-	
 	// les nœuds ont 8 voisins, mais par symétrie on n'a besoin que de 4 nombres
 	// cette grille est constante, c'est-à-dire qu'elle ne contient que les obstacles fixes
 	private BitSet grille = new BitSet(NB_POINTS);
@@ -144,9 +142,7 @@ public class GridSpace implements Service
 
 	@Override
 	public void useConfig(Config config)
-	{
-		distanceUrgence = config.getInt(ConfigInfo.DISTANCE_URGENCE);
-	}
+	{}
 
 	@Override
 	public void updateConfig(Config config)

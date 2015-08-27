@@ -8,6 +8,7 @@ import buffer.IncomingData;
 import container.Service;
 import permissions.ReadOnly;
 import permissions.ReadWrite;
+import robot.RobotReal;
 import utils.Config;
 import utils.ConfigInfo;
 import utils.Log;
@@ -26,13 +27,15 @@ public class Capteurs implements Service {
 	
 	protected Log log;
 	private ObstaclesMemory memory;
+	private RobotReal robot;
 	
 	private static final int nbCapteurs = 12;
 	
 	private static final int nbCouples = 4;
 	
 	private static final boolean debug = true;
-
+	
+	private int squaredDistanceUrgence;
     private int distanceApproximation;
 	private int table_x = 3000;
 	private int table_y = 2000;
@@ -69,17 +72,18 @@ public class Capteurs implements Service {
 	 * coupleCapteurs[i] est un tableau qui contient les numéros des
 	 * capteurs du couple i ainsi que la distance entre ces deux capteurs
 	 */
-	public static int[][] coupleCapteurs;
+	public int[][] coupleCapteurs;
 
 	/**
 	 * L'orientation des capteurs lorsque le robot a une orientation nulle
 	 */
 	public double[] orientationsRelatives;
 
-	public Capteurs(Log log, Config config, ObstaclesMemory memory)
+	public Capteurs(Log log, Config config, ObstaclesMemory memory, RobotReal robot)
 	{
 		this.log = log;
 		this.memory = memory;
+		this.robot = robot;
 		positionsRelatives = new Vec2[nbCapteurs];
 		orientationsRelatives = new double[nbCapteurs];
 
@@ -332,6 +336,8 @@ public class Capteurs implements Service {
 		horizonCapteurs = config.getInt(ConfigInfo.HORIZON_CAPTEURS);
 		horizonCapteursSquared = config.getInt(ConfigInfo.HORIZON_CAPTEURS);
 		horizonCapteursSquared *= horizonCapteursSquared;
+		squaredDistanceUrgence = config.getInt(ConfigInfo.DISTANCE_URGENCE);
+		squaredDistanceUrgence *= squaredDistanceUrgence;
 	}
 
 	public double getAngleCone(int nbCapteur)
@@ -346,7 +352,10 @@ public class Capteurs implements Service {
 	{
 		boolean[] neVoitRien = new boolean[nbCapteurs];
 		boolean[] dejaTraite = new boolean[nbCapteurs];
-			
+		double orientationRobot = robot.getOrientation();
+		Vec2<ReadOnly> orientationRobotAvance = new Vec2<ReadOnly>(robot.getOrientationAvance());
+		Vec2<ReadOnly> positionRobot = robot.getPosition();
+		
 		// Ce synchronized permet d'ajouter plusieurs obstacles avant de mettre à jour le gridspace
 		synchronized(memory)
 		{
@@ -367,8 +376,8 @@ public class Capteurs implements Service {
 				}
 				Vec2<ReadWrite> positionBrute = new Vec2<ReadWrite>(data.mesures[i], orientationsRelatives[i], true);
 				Vec2.plus(positionBrute, positionsRelatives[i]);
-				Vec2.rotate(positionBrute, data.orientationRobot);
-				Vec2.plus(positionBrute, data.positionRobot);
+				Vec2.rotate(positionBrute, orientationRobot);
+				Vec2.plus(positionBrute, positionRobot);
 				if(debug)
 					log.debug("Position brute: "+positionBrute);
 				
@@ -403,7 +412,7 @@ public class Capteurs implements Service {
 							/**
 							 * positionObstacle est la position de l'obstacle dans le repère du robot
 							 */
-							Vec2<ReadOnly> positionObstacle = Vec2.rotate(obsc.position.minusNewVector(data.positionRobot), -data.orientationRobot).getReadOnly();
+							Vec2<ReadOnly> positionObstacle = Vec2.rotate(obsc.position.minusNewVector(positionRobot), -orientationRobot).getReadOnly();
 							
 							if(debug)
 								log.debug("Position obstacle dans le repère du robot: "+positionObstacle);
@@ -468,14 +477,14 @@ public class Capteurs implements Service {
 							 * On vérifie d'abord quel coin sont visibles ou non
 							 */
 							boolean coinBasDroiteVisible, coinBasGaucheVisible, coinHautDroiteVisible, coinHautGaucheVisible;
-							coinBasDroiteVisible = canBeSeen(Vec2.rotate(obsr.coinBasDroite.minusNewVector(data.positionRobot), -data.orientationRobot).getReadOnly(), i);
-							coinBasGaucheVisible = canBeSeen(Vec2.rotate(obsr.coinBasGauche.minusNewVector(data.positionRobot), -data.orientationRobot).getReadOnly(), i);
-							coinHautDroiteVisible = canBeSeen(Vec2.rotate(obsr.coinHautDroite.minusNewVector(data.positionRobot), -data.orientationRobot).getReadOnly(), i);
-							coinHautGaucheVisible = canBeSeen(Vec2.rotate(obsr.coinHautGauche.minusNewVector(data.positionRobot), -data.orientationRobot).getReadOnly(), i);
+							coinBasDroiteVisible = canBeSeen(Vec2.rotate(obsr.coinBasDroite.minusNewVector(positionRobot), -orientationRobot).getReadOnly(), i);
+							coinBasGaucheVisible = canBeSeen(Vec2.rotate(obsr.coinBasGauche.minusNewVector(positionRobot), -orientationRobot).getReadOnly(), i);
+							coinHautDroiteVisible = canBeSeen(Vec2.rotate(obsr.coinHautDroite.minusNewVector(positionRobot), -orientationRobot).getReadOnly(), i);
+							coinHautGaucheVisible = canBeSeen(Vec2.rotate(obsr.coinHautGauche.minusNewVector(positionRobot), -orientationRobot).getReadOnly(), i);
 							
 							int distance;
-							Vec2<ReadOnly> coinPlusProcheVisible = obsr.getPlusProcheCoinVisible(data.positionRobot, coinBasDroiteVisible, coinBasGaucheVisible, coinHautDroiteVisible, coinHautGaucheVisible);
-							if(coinPlusProcheVisible != null || coinPlusProcheVisible == obsr.getPlusProcheCoinVisible(data.positionRobot, true, true, true, true))
+							Vec2<ReadOnly> coinPlusProcheVisible = obsr.getPlusProcheCoinVisible(positionRobot, coinBasDroiteVisible, coinBasGaucheVisible, coinHautDroiteVisible, coinHautGaucheVisible);
+							if(coinPlusProcheVisible != null || coinPlusProcheVisible == obsr.getPlusProcheCoinVisible(positionRobot, true, true, true, true))
 							{
 								/**
 								 * Le coin le plus proche du robot est visible.
@@ -483,7 +492,7 @@ public class Capteurs implements Service {
 								 */
 								if(debug)
 									log.debug("Cas simple");
-								distance = (int) Vec2.rotate(coinPlusProcheVisible.minusNewVector(data.positionRobot), -data.orientationRobot).getReadOnly().distance(positionsRelatives[i]);
+								distance = (int) Vec2.rotate(coinPlusProcheVisible.minusNewVector(positionRobot), -orientationRobot).getReadOnly().distance(positionsRelatives[i]);
 							}
 							else
 							{
@@ -499,36 +508,36 @@ public class Capteurs implements Service {
 								 * Cas où le plus proche point n'est pas dans un côté du cône
 								 */
 	
-								Vec2<ReadWrite> coinBasDroiteRepereRobotSansRotation = obsr.coinBasDroite.minusNewVector(data.positionRobot);
+								Vec2<ReadWrite> coinBasDroiteRepereRobotSansRotation = obsr.coinBasDroite.minusNewVector(positionRobot);
 								
 								Vec2<ReadWrite> point;
 								
-								point = Vec2.rotate(new Vec2<ReadWrite>(0, coinBasDroiteRepereRobotSansRotation.y), -data.orientationRobot);
+								point = Vec2.rotate(new Vec2<ReadWrite>(0, coinBasDroiteRepereRobotSansRotation.y), -orientationRobot);
 								
 								if(canBeSeen(point.getReadOnly(), i))
 								{
 									distance = Math.min(distance, Math.abs(coinBasDroiteRepereRobotSansRotation.y));
 								}
 								
-								point = Vec2.rotate(new Vec2<ReadWrite>(coinBasDroiteRepereRobotSansRotation.x, 0), -data.orientationRobot);
+								point = Vec2.rotate(new Vec2<ReadWrite>(coinBasDroiteRepereRobotSansRotation.x, 0), -orientationRobot);
 								
 								if(canBeSeen(point.getReadOnly(), i))
 								{
 									distance = Math.min(distance, Math.abs(coinBasDroiteRepereRobotSansRotation.x));
 								}
 	
-								Vec2<ReadWrite> coinBasGaucheRepereRobotSansRotation = obsr.coinBasGauche.minusNewVector(data.positionRobot);
+								Vec2<ReadWrite> coinBasGaucheRepereRobotSansRotation = obsr.coinBasGauche.minusNewVector(positionRobot);
 								
-								point = Vec2.rotate(new Vec2<ReadWrite>(coinBasGaucheRepereRobotSansRotation.x, 0), -data.orientationRobot);
+								point = Vec2.rotate(new Vec2<ReadWrite>(coinBasGaucheRepereRobotSansRotation.x, 0), -orientationRobot);
 								
 								if(canBeSeen(point.getReadOnly(), i))
 								{
 									distance = Math.min(distance, Math.abs(coinBasGaucheRepereRobotSansRotation.x));
 								}
 	
-								Vec2<ReadWrite> coinHautDroiteRepereRobotSansRotation = obsr.coinHautDroite.minusNewVector(data.positionRobot);
+								Vec2<ReadWrite> coinHautDroiteRepereRobotSansRotation = obsr.coinHautDroite.minusNewVector(positionRobot);
 								
-								point = Vec2.rotate(new Vec2<ReadWrite>(0, coinHautDroiteRepereRobotSansRotation.y), -data.orientationRobot);
+								point = Vec2.rotate(new Vec2<ReadWrite>(0, coinHautDroiteRepereRobotSansRotation.y), -orientationRobot);
 								
 								if(canBeSeen(point.getReadOnly(), i))
 								{
@@ -539,7 +548,7 @@ public class Capteurs implements Service {
 								 * Cas où le plus proche point est sur une arête du cône
 								 */
 								
-								double tanAlpha1 = data.orientationRobot + orientationsRelatives[i];
+								double tanAlpha1 = orientationRobot + orientationsRelatives[i];
 								double tanAlpha2 = tanAlpha1 - getAngleCone(i);
 								tanAlpha1 += getAngleCone(i);
 								
@@ -556,14 +565,14 @@ public class Capteurs implements Service {
 								
 								if(tanAlpha1 > 0)
 								{
-									y = obsr.coinBasDroite.y - data.positionRobot.y - positionsRelatives[i].y;
+									y = obsr.coinBasDroite.y - positionRobot.y - positionsRelatives[i].y;
 									x = (int)(y/tanAlpha1);
 									p = new Vec2<ReadWrite>(x, y);
 									Vec2.plus(p, positionsRelatives[i]);
 									if(canBeSeen(p.getReadOnly(), i))
 										distance = Math.min(distance, Math.abs(coinBasGaucheRepereRobotSansRotation.x));
 	
-									y = obsr.coinHautDroite.y - data.positionRobot.y - positionsRelatives[i].y;
+									y = obsr.coinHautDroite.y - positionRobot.y - positionsRelatives[i].y;
 									x = (int)(y/tanAlpha1);
 									p = new Vec2<ReadWrite>(x, y);
 									Vec2.plus(p, positionsRelatives[i]);
@@ -572,14 +581,14 @@ public class Capteurs implements Service {
 								}
 								else
 								{
-									x = obsr.coinBasDroite.x - data.positionRobot.x - positionsRelatives[i].x;
+									x = obsr.coinBasDroite.x - positionRobot.x - positionsRelatives[i].x;
 									y = (int)(x*tanAlpha1);
 									p = new Vec2<ReadWrite>(x, y);
 									Vec2.plus(p, positionsRelatives[i]);
 									if(canBeSeen(p.getReadOnly(), i))
 										distance = Math.min(distance, Math.abs(coinBasGaucheRepereRobotSansRotation.x));
 	
-									x = obsr.coinHautGauche.x - data.positionRobot.x - positionsRelatives[i].x;
+									x = obsr.coinHautGauche.x - positionRobot.x - positionsRelatives[i].x;
 									y = (int)(x*tanAlpha1);
 									p = new Vec2<ReadWrite>(x, y);
 									Vec2.plus(p, positionsRelatives[i]);
@@ -589,14 +598,14 @@ public class Capteurs implements Service {
 								
 								if(tanAlpha2 >= 0)
 								{
-									x = obsr.coinBasDroite.x - data.positionRobot.x - positionsRelatives[i].x;
+									x = obsr.coinBasDroite.x - positionRobot.x - positionsRelatives[i].x;
 									y = (int)(x*tanAlpha1);
 									p = new Vec2<ReadWrite>(x, y);
 									Vec2.plus(p, positionsRelatives[i]);
 									if(canBeSeen(p.getReadOnly(), i))
 										distance = Math.min(distance, Math.abs(coinBasGaucheRepereRobotSansRotation.x));
 	
-									x = obsr.coinHautGauche.x - data.positionRobot.x - positionsRelatives[i].x;
+									x = obsr.coinHautGauche.x - positionRobot.x - positionsRelatives[i].x;
 									y = (int)(x*tanAlpha1);
 									p = new Vec2<ReadWrite>(x, y);
 									Vec2.plus(p, positionsRelatives[i]);
@@ -605,14 +614,14 @@ public class Capteurs implements Service {
 								}
 								else
 								{
-									y = obsr.coinBasDroite.y - data.positionRobot.y - positionsRelatives[i].y;
+									y = obsr.coinBasDroite.y - positionRobot.y - positionsRelatives[i].y;
 									x = (int)(y/tanAlpha2);
 									p = new Vec2<ReadWrite>(x, y);
 									Vec2.plus(p, positionsRelatives[i]);
 									if(canBeSeen(p.getReadOnly(), i))
 										distance = Math.min(distance, Math.abs(coinBasGaucheRepereRobotSansRotation.x));
 	
-									y = obsr.coinHautDroite.y - data.positionRobot.y - positionsRelatives[i].y;
+									y = obsr.coinHautDroite.y - positionRobot.y - positionsRelatives[i].y;
 									x = (int)(y/tanAlpha2);
 									p = new Vec2<ReadWrite>(x, y);
 									Vec2.plus(p, positionsRelatives[i]);
@@ -674,9 +683,9 @@ public class Capteurs implements Service {
 						continue;
 					}
 					Vec2.plus(pointVu, positionsRelatives[nbCapteurQuiVoit]);
-					Vec2.rotate(pointVu, data.orientationRobot);
-					Vec2.plus(pointVu, data.positionRobot);
-					memory.add(pointVu.getReadOnly(), System.currentTimeMillis());
+					Vec2.rotate(pointVu, orientationRobot);
+					Vec2.plus(pointVu, positionRobot);
+					memory.add(pointVu.getReadOnly(), System.currentTimeMillis(), isUrgent(pointVu.getReadOnly(), positionRobot, orientationRobotAvance));
 					neVoitRien[nbCapteurQuiVoit] = true;
 				}
 				else if(!dejaTraite[nbCapteur1] && !dejaTraite[nbCapteur2] && !neVoitRien[nbCapteur1] && !neVoitRien[nbCapteur2])
@@ -761,12 +770,12 @@ public class Capteurs implements Service {
 							log.debug("Scalaire: "+(rayonEnnemi)/posY);
 	//					Vec2.scalar(BC, ((double)rayonEnnemi)/posY);
 	//					Vec2.plus(pointVu1, BC);
-						Vec2.rotate(pointVu1, data.orientationRobot);
-						Vec2.plus(pointVu1, data.positionRobot);
+						Vec2.rotate(pointVu1, orientationRobot);
+						Vec2.plus(pointVu1, positionRobot);
 						if(debug)
 							log.debug("Longueur BC: "+BC.length());
 						// TODO: supprimer tous les autres obstacles près de pointVu1
-						memory.add(pointVu1.getReadOnly(), System.currentTimeMillis());
+						memory.add(pointVu1.getReadOnly(), System.currentTimeMillis(), isUrgent(pointVu1.getReadOnly(), positionRobot, orientationRobotAvance));
 					}
 				}
 			}
@@ -779,15 +788,27 @@ public class Capteurs implements Service {
 				{
 					Vec2<ReadWrite> positionEnnemi = new Vec2<ReadWrite>(data.mesures[i]+rayonEnnemi, orientationsRelatives[i], true);
 					Vec2.plus(positionEnnemi, positionsRelatives[i]);
-					Vec2.rotate(positionEnnemi, data.orientationRobot);
-					Vec2.plus(positionEnnemi, data.positionRobot);
+					Vec2.rotate(positionEnnemi, orientationRobot);
+					Vec2.plus(positionEnnemi, positionRobot);
 					if(debug)
 						log.debug("Obstacle vu par un seul capteur: "+positionEnnemi);
-					memory.add(positionEnnemi.getReadOnly(), System.currentTimeMillis());
+					memory.add(positionEnnemi.getReadOnly(), System.currentTimeMillis(), isUrgent(positionEnnemi.getReadOnly(), positionRobot, orientationRobotAvance));
 	
 				}
 		}
 	}
 	
+	/**
+	 * Il y a urgence si l'ennemi est proche et dans le sens de la marche			
+	 * @param positionEnnemi
+	 * @param positionRobot
+	 * @param angleAvance
+	 * @return
+	 */
+	private final boolean isUrgent(Vec2<ReadOnly> positionEnnemi, Vec2<ReadOnly> positionRobot, Vec2<ReadOnly> angleAvance)
+	{
+		return positionEnnemi.squaredDistance(positionRobot) < squaredDistanceUrgence
+				&& positionEnnemi.minusNewVector(positionRobot).dot(angleAvance) > 0;
+	}
 	
 }

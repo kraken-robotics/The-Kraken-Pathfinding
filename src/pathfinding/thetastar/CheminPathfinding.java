@@ -8,7 +8,7 @@ import container.Service;
 
 public class CheminPathfinding implements Service
 {
-	private Log log;
+	protected Log log;
 	private volatile ArrayList<LocomotionArc> chemin = new ArrayList<LocomotionArc>();
 
 	public CheminPathfinding(Log log)
@@ -17,27 +17,21 @@ public class CheminPathfinding implements Service
 	}
 	
 	@Override
-	public void updateConfig(Config config) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void updateConfig(Config config)
+	{}
 
 	@Override
-	public void useConfig(Config config) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void useConfig(Config config)
+	{}
 
 	public synchronized void set(ArrayList<LocomotionArc> cheminTmp)
 	{
-		// TODO Auto-generated method stub
-		
+		chemin = cheminTmp;
 	}
 
-	public synchronized void get(ArrayList<LocomotionArc> cheminTmp)
+	public synchronized ArrayList<LocomotionArc> get()
 	{
-		// TODO Auto-generated method stub
-		
+		return chemin;
 	}
 	
 	/**
