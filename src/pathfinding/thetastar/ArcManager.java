@@ -24,7 +24,7 @@ import container.Service;
 
 public class ArcManager implements Service
 {
-	private Log log;
+	protected Log log;
 	private MoteurPhysique moteur;
 	private GridSpace gridspace;
 	private DStarLite dstarlite;
@@ -32,6 +32,7 @@ public class ArcManager implements Service
 	private int nbSuccesseurMax;
 	private int nbSuccesseur;
 	private ArrayList<ScenarioThetaStar> scenarios;
+	private ArrayList<ScenarioThetaStar> scenariosFirst;
 	private ArrayList<Integer> voisins;
 	private Iterator<Integer> voisinsIter;
 	private LocomotionArc next;
@@ -39,6 +40,7 @@ public class ArcManager implements Service
 	private boolean accepted = true;
 	private ScenarioThetaStar scenarioActuel;
 	private boolean shootGameElement;
+	private boolean pasDeVoisin;
 	
 	private ThetaStarNode[] nodes = new ThetaStarNode[2];
 	
@@ -62,24 +64,34 @@ public class ArcManager implements Service
 	{
 		nbSuccesseurMax = config.getInt(ConfigInfo.NB_SUCCESSEUR_MAX);
 		scenarios = new ArrayList<ScenarioThetaStar>();
+		scenariosFirst = new ArrayList<ScenarioThetaStar>();
 		for(int i = 0; i < 2; i++)
 			for(RayonCourbure r : RayonCourbure.values())
-//				for(int s = 0; s < nbSuccesseurMax; s++)
 				scenarios.add(new ScenarioThetaStar(i, r));	
+		for(RayonCourbure r : RayonCourbure.values())
+			scenariosFirst.add(new ScenarioThetaStar(ACTUEL, r));	
 	}
 
 	public void reinitIterator(ThetaStarNode predecesseur, ThetaStarNode actuel)
 	{
-		scenarioIterator = scenarios.listIterator();
+		if(predecesseur == null)
+			scenarioIterator = scenariosFirst.listIterator();
+		else
+			scenarioIterator = scenarios.listIterator();
 		nodes[PREDECESSEUR] = predecesseur;
 		nodes[ACTUEL] = actuel;
 		voisins = dstarlite.getListVoisins(actuel.hash);
 		voisinsIter = voisins.iterator();
 		nbSuccesseur = 0;
+		scenarioActuel = scenarioIterator.next();
+		pasDeVoisin = voisins.isEmpty();
+
 	}
 
 	public boolean hasNext()
 	{
+		if(pasDeVoisin)
+			return false;
 		if(accepted == true)
 			nbSuccesseur++;
 		
@@ -94,13 +106,16 @@ public class ArcManager implements Service
 
 		// Création du LocomotionArc
 		RobotChrono robot = nodes[scenarioActuel.noeudActuel].state.robot;
-		Vec2<ReadOnly> positionRobot = robot.getPosition();
+		Vec2<ReadOnly> positionRobot = gridspace.computeVec2(robot.getPositionGridSpace());
 		int gridpointArrivee = voisinsIter.next();
 		Vec2<ReadOnly> arrivee = gridspace.computeVec2(gridpointArrivee);
 		double angleConsigne = Math.atan2(arrivee.y - positionRobot.y, arrivee.x - positionRobot.x);
+
 		if(!robot.isEnMarcheAvant())
 			angleConsigne += Math.PI;
+
 		next = new LocomotionArc(positionRobot, new Vec2<ReadOnly>(robot.getOrientationAvance()), arrivee, angleConsigne, scenarioActuel.rayonCourbure, gridpointArrivee);
+
 		return true;
 	}
 
@@ -112,15 +127,16 @@ public class ArcManager implements Service
 	public boolean nextAccepted()
 	{
 		// TODO
-		accepted = true;
+		accepted = moteur.isAccessibleCourbe(next.pointDuDemiPlan, next.destination, next.normaleAuDemiPlan, next.rayonCourbure);
 		return accepted;
 	}
-
 
 	public int distanceTo(GameState<RobotChrono, ReadWrite> state,
 			LocomotionArc voisin) {
 		// TODO Auto-generated method stub
-		return (int) state.robot.getPosition().distance(voisin.destination);
+		int out = (int) gridspace.computeVec2(state.robot.getPositionGridSpace()).distance(voisin.destination);
+		state.robot.setPositionGridSpace(voisin.gridpointArrivee);
+		return out;
 	}
 
 	public int heuristicCostThetaStar(GameState<RobotChrono, ReadOnly> node) {

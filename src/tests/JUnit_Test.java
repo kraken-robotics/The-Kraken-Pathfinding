@@ -13,7 +13,7 @@ import container.ServiceNames;
 
 /**
  * Classe mère de tous les tests.
- * Prépare container, log et config. Détruit le tout à la fin.
+ * Prépare container, log et config. Crée l'interface graphique si besoin est. Détruit le tout à la fin.
  * @author pf
  *
  */
@@ -25,6 +25,7 @@ public abstract class JUnit_Test
 	protected Config config;
 	protected Log log;
 	
+	@SuppressWarnings("unused")
 	@Before
 	public void setUp() throws Exception
 	{
@@ -36,13 +37,14 @@ public abstract class JUnit_Test
 			config.set(ConfigInfo.MATCH_DEMARRE, true);
 			config.set(ConfigInfo.DATE_DEBUT_MATCH, System.currentTimeMillis());
 		}
-		if(Config.graphic)
+		if(Config.graphicDStarLite || Config.graphicThetaStar)
 			Fenetre.setInstance(container);
 	}
 
+	@SuppressWarnings("unused")
 	@After
 	public void tearDown() throws Exception {
-		if(Config.graphic)
+		if(Config.graphicDStarLite || Config.graphicThetaStar)
 			Sleep.sleep(100000);
 		container.destructor();
 		Sleep.sleep(500);

@@ -31,11 +31,12 @@ public class DStarLite implements Service
 		{
 			memory[i] = new DStarLiteNode(i);
 		}
-		if(Config.graphic)
+		if(Config.graphicDStarLite)
 			fenetre = Fenetre.getInstance();
 	}
 	
 	private DStarLiteNode[] memory = new DStarLiteNode[GridSpace.NB_POINTS];
+//	private BitSet contained = new BitSet(GridSpace.NB_POINTS);
 
 	private PriorityQueue<DStarLiteNode> openset = new PriorityQueue<DStarLiteNode>(GridSpace.NB_POINTS, new DStarLiteNodeComparator());
 	private int km;
@@ -70,47 +71,24 @@ public class DStarLite implements Service
 		{
 			out.g = Integer.MAX_VALUE;
 			out.rhs = Integer.MAX_VALUE;
+			out.done = false;
 			out.nbPF = nbPF;
 		}
 		return out;
 	}
-	
-	/**
-	 * Ajout dans une liste triée
-	 * @param u
-	 */
-/*	private void addToOpenset(DStarLiteNode u)
-	{
-//		if(openset.contains(u))
-//			log.critical("Déjà dans openset !");
-		Iterator<DStarLiteNode> iterator = openset.listIterator();
-		int i = 0;
-		while(iterator.hasNext())
-		{
-			if(u.cle.isLesserThan(iterator.next().cle))
-			{
-				openset.add(i, u);
-				return;
-			}
-			i++;
-		}
-		openset.add(u);
-	}*/
-	
+		
 	private void updateVertex(DStarLiteNode u)
 	{
-		boolean contains = openset.contains(u);
 		if(u.g != u.rhs)
 		{
 			calcKey(u, u.cle);
-			if(contains)
-				openset.remove(u);
+//			if(contained.get(u.gridpoint))
+//				openset.remove(u);
 			openset.add(u);
-			if(Config.graphic)
+//			contained.set(u.gridpoint);
+			if(Config.graphicDStarLite)
 				fenetre.setColor(u.gridpoint, Fenetre.Couleur.JAUNE);
 		}
-		else if(contains)
-			openset.remove(u);
 	}
 	
 	private void computeShortestPath()
@@ -119,9 +97,15 @@ public class DStarLite implements Service
 		// TODO : continuer à étendre des noeuds même après la fin de l'algo
 		while(!openset.isEmpty() && ((u = openset.peek()).cle.isLesserThan(calcKey(depart, inutile)) || depart.rhs > depart.g))
 		{
-			if(Config.graphic)
+			if(Config.graphicDStarLite)
 				fenetre.setColor(u.gridpoint, Fenetre.Couleur.BLEU);
-
+			if(u.done)
+			{
+				openset.poll();
+				continue;
+			}
+			u.done = true;
+			
 			Cle kold = u.cle.clone();
 			calcKey(u, knew);
 			if(kold.isLesserThan(knew))
@@ -130,7 +114,7 @@ public class DStarLite implements Service
 				knew.copy(u.cle);
 				openset.poll();
 				openset.add(u);
-				if(Config.graphic)
+				if(Config.graphicDStarLite)
 					fenetre.setColor(u.gridpoint, Fenetre.Couleur.JAUNE);
 			}
 			else if(u.g > u.rhs)
@@ -138,7 +122,7 @@ public class DStarLite implements Service
 //				log.debug("Cas 2");
 				u.g = u.rhs;
 				openset.poll();
-				if(Config.graphic)
+				if(Config.graphicDStarLite)
 					fenetre.setColor(u.gridpoint, Fenetre.Couleur.ROUGE);
 				for(int i = 0; i < 8; i++)
 				{
@@ -190,6 +174,7 @@ public class DStarLite implements Service
 					}
 				}
 				updateVertex(u);
+				u.done = false;
 			}
 
 		}
@@ -197,23 +182,23 @@ public class DStarLite implements Service
 
 	/**
 	 * Calcule un nouvel itinéraire.
-	 * @param arrivee
-	 * @param depart
+	 * @param arrivee (un Vec2)
+	 * @param depart (un gridpoint)
 	 */
-	public void computeNewPath(Vec2<ReadOnly> depart, Vec2<ReadOnly> arrivee)
+	public void computeNewPath(Vec2<ReadOnly> depart, int arrivee)
 	{
 		nbPF++;
 		km = 0;
 		this.depart = getFromMemory(gridspace.computeGridPoint(depart));
 		last = this.depart.gridpoint;
 
-		this.arrivee = getFromMemory(gridspace.computeGridPoint(arrivee));
+		this.arrivee = getFromMemory(arrivee);
 		this.arrivee.rhs = 0;
 		this.arrivee.cle.set(distanceHeuristique(this.arrivee.gridpoint), 0);
 		
 		openset.clear();
 		openset.add(this.arrivee);
-		if(Config.graphic)
+		if(Config.graphicDStarLite)
 			fenetre.setColor(this.arrivee.gridpoint, Fenetre.Couleur.JAUNE);
 
 		computeShortestPath();

@@ -1,5 +1,6 @@
 package pathfinding.thetastar;
 
+import pathfinding.dstarlite.GridSpace;
 import permissions.ReadWrite;
 import robot.RobotChrono;
 import strategie.GameState;
@@ -50,6 +51,14 @@ public class ThetaStarNode
 	public int toInt()
 	{
 		return (f_score << 16) - g_score;
+	}
+
+	@Override
+	public String toString()
+	{
+		int x = hash & (GridSpace.NB_POINTS_POUR_TROIS_METRES - 1);
+		int y = hash >> GridSpace.PRECISION;
+		return x+" "+y;
 	}
 
 }

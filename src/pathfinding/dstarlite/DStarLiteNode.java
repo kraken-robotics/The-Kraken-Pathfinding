@@ -11,6 +11,7 @@ public class DStarLiteNode {
 	public final int gridpoint;
 	public Cle cle = new Cle();
 	public int g = Integer.MAX_VALUE, rhs = Integer.MAX_VALUE;
+	public boolean done = false;
 	public long nbPF = 1;
 	
 	public DStarLiteNode(int gridpoint)
@@ -27,7 +28,7 @@ public class DStarLiteNode {
 	@Override
 	public boolean equals(Object o)
 	{
-		return hashCode() == o.hashCode();
+		return gridpoint == o.hashCode();
 	}
 	
 	@Override

@@ -69,7 +69,7 @@ public abstract class Robot implements Service
 	 * 
 	 * @param rc
 	 */
-    public void copy(RobotChrono rc)
+    public final void copy(RobotChrono rc)
     {
     	// pas besoin de copier symétrie car elle ne change pas en cours de match
     	Vec2.copy(position.getReadOnly(), rc.position);
@@ -82,6 +82,22 @@ public abstract class Robot implements Service
     	rc.positionGridSpace = getPositionGridSpace();
     }
 	
+	/**
+	 * Copie this dans rc. this reste inchangé.
+	 * Copie seulement ce qui importe pour le ThetaStar
+	 * 
+	 * @param rc
+	 */
+    public final void copyThetaStar(RobotChrono rc)
+    {
+    	rc.orientation = orientation;
+    	rc.enMarcheAvant = enMarcheAvant;
+    	rc.accelerationLaterale = accelerationLaterale;
+    	rc.vitesse = vitesse;
+    	rc.date = getTempsDepuisDebutMatch();
+    	rc.positionGridSpace = getPositionGridSpace();
+    }
+    
 	public synchronized void updateConfig(Config config)
 	{
 		dateDebutMatch = config.getLong(ConfigInfo.DATE_DEBUT_MATCH);

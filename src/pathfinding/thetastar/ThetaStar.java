@@ -12,9 +12,9 @@ import container.Service;
 import robot.RobotChrono;
 import robot.RobotReal;
 import strategie.GameState;
+import tests.graphicLib.Fenetre;
 import utils.Config;
 import utils.Log;
-import utils.Vec2;
 
 /**
  * TODO Optimisation:
@@ -44,6 +44,7 @@ public class ThetaStar implements Service
 	private GameState<RobotChrono,ReadWrite> stateSuccesseur;
 	private GameState<RobotChrono,ReadWrite> last;
 	private long nbPF = 0;
+	private Fenetre fenetre;
 
 	/**
 	 * Constructeur du ThetaStar
@@ -61,6 +62,9 @@ public class ThetaStar implements Service
 
 		for(int i = 0; i < GridSpace.NB_POINTS; i++)
 			memory[i] = new ThetaStarNode(GameState.cloneGameState(state), i);
+
+		if(Config.graphicThetaStar)
+			fenetre = Fenetre.getInstance();
 	}
 
 	/**
@@ -71,16 +75,16 @@ public class ThetaStar implements Service
 	 * @param shoot_game_element
 	 * @return
 	 */
-	public synchronized void computeNewPath(Vec2<ReadOnly> arrivee, boolean shootGameElement)
+	public synchronized void computeNewPath(int arrivee, boolean shootGameElement)
 	{
 		ThetaStarNode depart;
-		GameState.copy(state, last);
+		GameState.copyThetaStar(state, last);
 		arcmanager.setShootGameElement(shootGameElement);
 		dstarlite.computeNewPath(last.robot.getPosition(), arrivee);
 		do {
 			depart = memory[last.robot.getPositionGridSpace()];
 			depart.init();
-			GameState.copy(last.getReadOnly(), depart.state);
+			GameState.copyThetaStar(last.getReadOnly(), depart.state);
 		}
 		while(!process(depart));
 	}
@@ -88,12 +92,12 @@ public class ThetaStar implements Service
 	public synchronized void updatePath()
 	{
 		ThetaStarNode depart;
-		GameState.copy(state, last);
+		GameState.copyThetaStar(state, last);
 		dstarlite.updatePath(last.robot.getPosition());
 		do {
 			depart = memory[last.robot.getPositionGridSpace()];
 			depart.init();
-			GameState.copy(last.getReadOnly(), depart.state);
+			GameState.copyThetaStar(last.getReadOnly(), depart.state);
 		}
 		while(!process(depart));
 	}
@@ -117,7 +121,7 @@ public class ThetaStar implements Service
 		depart.g_score = 0;	// Cost from start along best known path.
 		// Estimated total cost from start to goal through y.
 		depart.f_score = arcmanager.heuristicCostThetaStar(depart.state.getReadOnly());
-
+		
 		openset.add(depart);	// The set of tentative nodes to be evaluated, initially containing the start node
 
 		ThetaStarNode current;
@@ -126,22 +130,33 @@ public class ThetaStar implements Service
 		{
 			current = openset.poll();
 
+			if(Config.graphicThetaStar)
+				fenetre.setColor(current.hash, Fenetre.Couleur.JAUNE);
+			
 			closedset.set(current.hash);
-						
+
+//			log.debug(current);
+			
 			if(reconstruct(current))
 				return false;
 
 			// Si on est arrivé, on reconstruit le chemin
 			if(current.hash == hashArrivee)
+			{
+//				log.debug("On est arrivé !");
 				return true;
+			}
 			
 			// On parcourt les voisins de current et de son prédecesseur.
+
 			arcmanager.reinitIterator(current.came_from, current);
 			ThetaStarNode current_sauv = current;
 			
 			while(arcmanager.hasNext())
 			{
+
 				LocomotionArc voisin = arcmanager.nextProposition();
+//				log.debug("Voisin : "+voisin);
 				if(closedset.get(voisin.gridpointArrivee) || !arcmanager.nextAccepted())
 					continue;
 				
@@ -150,7 +165,7 @@ public class ThetaStar implements Service
 				else
 					current = current_sauv;
 
-				GameState.copy(current.state.getReadOnly(), stateSuccesseur);
+				GameState.copyThetaStar(current.state.getReadOnly(), stateSuccesseur);
 
 				// stateSuccesseur est modifié lors du "distanceTo"
 				int tentative_g_score = current.g_score + arcmanager.distanceTo(stateSuccesseur, voisin);
@@ -167,7 +182,10 @@ public class ThetaStar implements Service
 				 */
 				if(tentative_f_score < successeur.f_score)
 				{
-					GameState.copy(stateSuccesseur.getReadOnly(), successeur.state);
+					if(Config.graphicThetaStar)
+						fenetre.setColor(successeur.hash, Fenetre.Couleur.BLEU);
+
+					GameState.copyThetaStar(stateSuccesseur.getReadOnly(), successeur.state);
 					successeur.came_from = current;
 					successeur.came_from_arc = voisin;
 					successeur.g_score = tentative_g_score;
@@ -176,6 +194,9 @@ public class ThetaStar implements Service
 						openset.remove(successeur);
 					openset.add(successeur);
 				}
+				if(Config.graphicThetaStar)
+					fenetre.setColor(current.hash, Fenetre.Couleur.ROUGE);
+
 			}
 			
 		}
@@ -210,14 +231,16 @@ public class ThetaStar implements Service
 		cheminTmp.clear();
 		ThetaStarNode noeud_parent = best;
 		LocomotionArc arc_parent = best.came_from_arc;
+//		log.debug("Chemin jusque là");
 		while(arc_parent != null)
 		{
+//			log.debug(arc_parent);
 			cheminTmp.add(0, arc_parent);
 			noeud_parent = noeud_parent.came_from;
 			arc_parent = noeud_parent.came_from_arc;
 		}			
 		chemin.set(cheminTmp);
-		GameState.copy(best.state.getReadOnly(), last);
+		GameState.copyThetaStar(best.state.getReadOnly(), last);
 		return false;
 	}
 

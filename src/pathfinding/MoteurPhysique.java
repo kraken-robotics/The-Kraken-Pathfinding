@@ -5,6 +5,7 @@ import obstacles.types.ObstacleProximity;
 import obstacles.types.ObstacleRectangular;
 import obstacles.types.ObstacleTrajectoireCourbe;
 import obstacles.types.ObstaclesFixes;
+import pathfinding.thetastar.RayonCourbure;
 import permissions.ReadOnly;
 import robot.RobotReal;
 import robot.Speed;
@@ -174,6 +175,20 @@ public class MoteurPhysique implements Service {
         return true;
 	}
 
+	/**
+	 * Vérifie que la destination ne se trouve pas « sur le côté », là où elle serait dans tous les cas inatteignable (obstacle ou non)
+	 * @param positionRobot
+	 * @param destination
+	 * @param orientationAvance
+	 * @param rayon
+	 * @return
+	 */
+	public boolean isAccessibleCourbe(Vec2<ReadOnly> positionRobot, Vec2<ReadOnly> destination, Vec2<ReadOnly> orientationAvance, RayonCourbure rayon)
+	{
+		// TODO
+		return true;
+	}
+	
 	/**
 	 * g est-il proche de position? (utilisé pour vérifier si on shoot dans un élément de jeu)
 	 * @param g

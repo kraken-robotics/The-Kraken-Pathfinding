@@ -74,10 +74,10 @@ public class Fenetre extends JPanel {
 	
 	public enum Couleur {
 		BLANC(new Color(255, 255, 255, 0)),
-		NOIR(new Color(0, 0, 0, 200)),
-		BLEU(new Color(0, 0, 200, 200)),
-		JAUNE(new Color(0, 200, 200, 200)),
-		ROUGE(new Color(200, 0, 0, 200));
+		NOIR(new Color(0, 0, 0, 255)),
+		BLEU(new Color(0, 0, 200, 255)),
+		JAUNE(new Color(200, 200, 0, 255)),
+		ROUGE(new Color(200, 0, 0, 255));
 		
 		public final Color couleur;
 		

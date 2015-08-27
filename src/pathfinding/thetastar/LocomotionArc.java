@@ -14,11 +14,11 @@ import utils.Vec2;
 
 public class LocomotionArc
 {
-	private Vec2<ReadOnly> pointDuDemiPlan;
-	private Vec2<ReadOnly> normaleAuDemiPlan;
-	public Vec2<ReadOnly> destination; // TODO remettre en private
-	private double angleConsigne;
-	private RayonCourbure rayonCourbure;
+	public final Vec2<ReadOnly> pointDuDemiPlan;
+	public final Vec2<ReadOnly> normaleAuDemiPlan;
+	public final Vec2<ReadOnly> destination;
+	public final double angleConsigne;
+	public final RayonCourbure rayonCourbure;
 	public final int gridpointArrivee;
 	
 	public LocomotionArc(Vec2<ReadOnly> pointDuDemiPlan,
@@ -55,5 +55,9 @@ public class LocomotionArc
 		return out;
 	}
 
+	public String toString()
+	{
+		return "Arc de "+pointDuDemiPlan+" à "+destination+" avec courbure "+rayonCourbure.rayon;
+	}
 	
 }

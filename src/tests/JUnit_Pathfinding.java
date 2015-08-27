@@ -7,10 +7,12 @@ import org.junit.Test;
 
 import container.ServiceNames;
 import pathfinding.dstarlite.DStarLite;
+import pathfinding.dstarlite.GridSpace;
 import pathfinding.thetastar.CheminPathfinding;
 import pathfinding.thetastar.LocomotionArc;
 import pathfinding.thetastar.ThetaStar;
 import permissions.ReadOnly;
+import robot.RobotReal;
 import utils.Vec2;
 
 /**
@@ -21,9 +23,11 @@ import utils.Vec2;
 
 public class JUnit_Pathfinding extends JUnit_Test {
 
-	DStarLite pathfinding;
-	ThetaStar pathfindingCourbe;
-	CheminPathfinding chemin;
+	private DStarLite pathfinding;
+	private ThetaStar pathfindingCourbe;
+	private CheminPathfinding chemin;
+	private GridSpace gridspace;
+	private RobotReal robot;
 	
 	@Before
     public void setUp() throws Exception {
@@ -31,12 +35,14 @@ public class JUnit_Pathfinding extends JUnit_Test {
         pathfinding = (DStarLite) container.getService(ServiceNames.D_STAR_LITE);
         pathfindingCourbe = (ThetaStar) container.getService(ServiceNames.THETA_STAR);
         chemin = (CheminPathfinding) container.getService(ServiceNames.CHEMIN_PATHFINDING);
+        robot = (RobotReal) container.getService(ServiceNames.ROBOT_REAL);
+        gridspace = (GridSpace) container.getService(ServiceNames.GRID_SPACE);
 	}
 
 	@Test
     public void test_chemin_dstarlite() throws Exception
     {
-		pathfinding.computeNewPath(new Vec2<ReadOnly>(-1000, 200), new Vec2<ReadOnly>(1200, 1500));
+		pathfinding.computeNewPath(new Vec2<ReadOnly>(-1000, 200), gridspace.computeGridPoint(new Vec2<ReadOnly>(1200, 1500)));
 		ArrayList<Vec2<ReadOnly>> trajet = pathfinding.itineraireBrut();
 		for(Vec2<ReadOnly> v : trajet)
 		{
@@ -47,7 +53,11 @@ public class JUnit_Pathfinding extends JUnit_Test {
 	@Test
     public void test_chemin_thetastar() throws Exception
     {
-		pathfindingCourbe.computeNewPath(new Vec2<ReadOnly>(-1000, 200), true);
+		robot.setPositionOrientationJava(new Vec2<ReadOnly>(-1000, 200), 0);
+		long avant = System.currentTimeMillis();
+		for(int i = 0; i < 100000; i++)
+			pathfindingCourbe.computeNewPath(gridspace.computeGridPoint(new Vec2<ReadOnly>(-1000, 400)), true);
+		log.debug("Durée d'une recherche : "+(System.currentTimeMillis() - avant)/100000.);
 		ArrayList<LocomotionArc> trajet = chemin.get();
 		for(LocomotionArc v : trajet)
 		{

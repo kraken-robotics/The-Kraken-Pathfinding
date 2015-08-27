@@ -75,10 +75,9 @@ public class GameState<R extends Robot, T extends Permission> implements Service
      * @param other
      * @throws FinMatchException 
      */
-    public static final void copy(GameState<?,ReadOnly> state, GameState<RobotChrono,ReadWrite> modified)
+    public static final void copyThetaStar(GameState<?,ReadOnly> state, GameState<RobotChrono,ReadWrite> modified)
     {
-        state.robot.copy(modified.robot);
-        state.table.copy(modified.table);
+        state.robot.copyThetaStar(modified.robot);
         state.iterator.copy(modified.iterator, state.robot.getTempsDepuisDebutMatch());
     }
 
