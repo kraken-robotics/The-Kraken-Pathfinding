@@ -39,7 +39,7 @@ public class ThreadPathfinding extends Thread implements Service
 			{
 				try {
 					gridspace.wait();
-					urgence = gridspace.isUrgent();
+//					urgence = gridspace.isUrgent();
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

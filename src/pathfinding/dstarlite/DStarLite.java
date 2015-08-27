@@ -330,11 +330,11 @@ public class DStarLite implements Service
 	private ArrayList<Integer> notes = new ArrayList<Integer>();
 	
 	/**
-	 * Renvoie l'itérateur des nodes du plus court au plus long
+	 * Renvoie la liste des nodes du plus court au plus long
 	 * @param gridpoint
 	 * @return
 	 */
-	public Iterator<Integer> getIterator(int gridpoint)
+	public ArrayList<Integer> getListVoisins(int gridpoint)
 	{
 		voisinsTries.clear();
 		notes.clear();
@@ -351,7 +351,7 @@ public class DStarLite implements Service
 			int note = c + memory[voisin].g;
 			addInVoisinsTries(note, voisin);
 		}			
-		return voisinsTries.iterator();
+		return voisinsTries;
 	}
 
 	private void addInVoisinsTries(int note, int gridpoint)

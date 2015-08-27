@@ -40,13 +40,10 @@ public class ThreadEvitement extends Thread implements Service
 	{
 		while(true)
 		{
+			try {
 			synchronized(threadpathfinding)
 			{
-				try {
 					threadpathfinding.wait();
-				} catch (InterruptedException e2) {
-					e2.printStackTrace();
-				}
 				synchronized(pathfinding)
 				{
 					if(threadpathfinding.isUrgence())
@@ -54,8 +51,10 @@ public class ThreadEvitement extends Thread implements Service
 					else
 						pathfinding.wait(100);
 				}
+			}			
+			} catch (InterruptedException e2) {
+				e2.printStackTrace();
 			}
-			
 		}
 	}
 	

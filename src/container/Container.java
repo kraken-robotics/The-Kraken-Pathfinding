@@ -241,8 +241,7 @@ public class Container
 		else if(serviceRequested == ServiceNames.THREAD_CAPTEURS)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadCapteurs((Log)getService(ServiceNames.LOG),
 																		(IncomingDataBuffer)getService(ServiceNames.INCOMING_DATA_BUFFER),
-																		(Capteurs)getService(ServiceNames.CAPTEURS),
-																		(RobotReal)getService(ServiceNames.ROBOT_REAL));
+																		(Capteurs)getService(ServiceNames.CAPTEURS));
 		else if(serviceRequested == ServiceNames.THREAD_SERIAL_INPUT)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadSerialInput((Log)getService(ServiceNames.LOG),
 																		(Config)getService(ServiceNames.CONFIG),

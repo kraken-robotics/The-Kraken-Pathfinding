@@ -7,7 +7,6 @@ import obstacles.ObstaclesMemory;
 import permissions.ReadOnly;
 import table.Table;
 import utils.Config;
-import utils.ConfigInfo;
 import utils.Log;
 import utils.Vec2;
 import container.Service;
@@ -200,10 +199,4 @@ public class GridSpace implements Service
 		return new Vec2<ReadOnly>((int) Math.round((gridpoint & (NB_POINTS_POUR_TROIS_METRES - 1)) * GridSpace.DISTANCE_ENTRE_DEUX_POINTS - 1500),
 				(int) Math.round((gridpoint >> PRECISION) * GridSpace.DISTANCE_ENTRE_DEUX_POINTS));
 	}
-
-	public boolean isUrgent() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
 }

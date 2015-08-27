@@ -18,15 +18,15 @@ public class DStarLiteNodeComparator implements Comparator<DStarLiteNode>
 		int out2 = arg0.cle.second - arg1.cle.second;
 		if(out2 == 0)
 			return out;
-		else if(out2 > 100000)
+		else if(out2 > 8000)
 			return out + 3;
-		else if(out2 > 10000)
+		else if(out2 > 8000)
 			return out + 2;
 		else if(out2 > 0)
 			return out + 1;
-		else if(out2 < -100000)
+		else if(out2 < -80000)
 			return out - 3;
-		else if(out2 < -10000)
+		else if(out2 < -8000)
 			return out - 2;
 		else// if(out2 < 0)
 			return out - 1;

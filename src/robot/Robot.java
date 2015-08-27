@@ -109,7 +109,7 @@ public abstract class Robot implements Service
 			return orientation;
 	}
 	
-	public boolean getEnMarcheAvant()
+	public boolean isEnMarcheAvant()
 	{
 		return enMarcheAvant;
 	}
