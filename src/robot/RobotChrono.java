@@ -254,6 +254,16 @@ public class RobotChrono extends Robot
 		return positionGridSpace;
 	}
 	
+	/** Inverse le sens actuel de la marche.
+	 * Utilisé lors d'un point de rebroussement
+	 */
+	public void inverseSensMarche()
+	{
+		enMarcheAvant = !enMarcheAvant;
+	}
+	
+
+	
 /*	public void setPositionPathfinding(PathfindingNodes n)
 	{
 		Vec2.copy(n.getCoordonnees(), position);

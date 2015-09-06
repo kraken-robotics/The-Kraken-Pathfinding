@@ -77,7 +77,8 @@ public class Fenetre extends JPanel {
 		NOIR(new Color(0, 0, 0, 255)),
 		BLEU(new Color(0, 0, 200, 255)),
 		JAUNE(new Color(200, 200, 0, 255)),
-		ROUGE(new Color(200, 0, 0, 255));
+		ROUGE(new Color(200, 0, 0, 255)),
+		VIOLET(new Color(200, 0, 200, 255));
 		
 		public final Color couleur;
 		
@@ -93,7 +94,7 @@ public class Fenetre extends JPanel {
 	{
 		grid[gridpoint] = couleur;
 		repaint();
-//		Sleep.sleep(200);
+		Sleep.sleep(200);
 	}
 	
 	public static Fenetre getInstance()

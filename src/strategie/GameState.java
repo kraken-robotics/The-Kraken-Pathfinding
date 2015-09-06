@@ -78,6 +78,7 @@ public class GameState<R extends Robot, T extends Permission> implements Service
     public static final void copyThetaStar(GameState<?,ReadOnly> state, GameState<RobotChrono,ReadWrite> modified)
     {
         state.robot.copyThetaStar(modified.robot);
+        state.table.copy(modified.table);
         state.iterator.copy(modified.iterator, state.robot.getTempsDepuisDebutMatch());
     }
 

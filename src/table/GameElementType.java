@@ -11,27 +11,31 @@ import scripts.ScriptHookNames;
 // DEPENDS_ON_RULES
 
 public enum GameElementType {
-	DISTRIBUTEUR(false, 15000, null),
-	VERRE(true, 15000, null),
-	CLAP(false, 0, null),
-	PLOT(true, 0, ScriptHookNames.EXEMPLE);
+	DISTRIBUTEUR(15000, false, null, true, false),
+	VERRE(15000, true, null, false, false),
+	CLAP(0, false, null, true, true),
+	PLOT(0, false, ScriptHookNames.EXEMPLE, true, false);
 
-	private boolean canBeShot;
 	private boolean isInCommon;
 	private int dateEnemyTakesIt;
 	private ScriptHookNames scriptHookThrown;
+	public final boolean prenableEnMarcheAvant;
+	public final boolean prenableEnMarcheArriere;
+	public final boolean ejectable;
 	
-	private GameElementType(boolean canBeShot, int dateEnemyTakesIt, ScriptHookNames scriptHookThrown)
+	private GameElementType(int dateEnemyTakesIt, boolean ejectable, ScriptHookNames scriptHookThrown, boolean prenableEnMarcheAvant, boolean prenableEnMarcheArriere)
 	{
-		this.canBeShot = canBeShot;
+		this.ejectable = ejectable;
+		this.prenableEnMarcheAvant = prenableEnMarcheAvant;
+		this.prenableEnMarcheArriere = prenableEnMarcheArriere;
 		this.dateEnemyTakesIt = dateEnemyTakesIt;
 		this.isInCommon = (dateEnemyTakesIt != 0);
 		this.scriptHookThrown = scriptHookThrown;
 	}
 	
-	public boolean canBeShot()
+	public boolean isPrenable(boolean enMarcheAvant)
 	{
-		return canBeShot;
+		return (!enMarcheAvant && prenableEnMarcheArriere) || (enMarcheAvant && prenableEnMarcheAvant);
 	}
 	
 	public boolean isInCommon()

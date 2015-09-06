@@ -12,6 +12,7 @@ import pathfinding.thetastar.CheminPathfinding;
 import pathfinding.thetastar.LocomotionArc;
 import pathfinding.thetastar.ThetaStar;
 import permissions.ReadOnly;
+import robot.DirectionStrategy;
 import robot.RobotReal;
 import utils.Vec2;
 
@@ -54,10 +55,10 @@ public class JUnit_Pathfinding extends JUnit_Test {
     public void test_chemin_thetastar() throws Exception
     {
 		robot.setPositionOrientationJava(new Vec2<ReadOnly>(-1000, 200), 0);
-		long avant = System.currentTimeMillis();
-		for(int i = 0; i < 100000; i++)
-			pathfindingCourbe.computeNewPath(gridspace.computeGridPoint(new Vec2<ReadOnly>(-1000, 400)), true);
-		log.debug("Durée d'une recherche : "+(System.currentTimeMillis() - avant)/100000.);
+//		long avant = System.currentTimeMillis();
+//		for(int i = 0; i < 100000; i++)
+			pathfindingCourbe.computeNewPath(gridspace.computeGridPoint(new Vec2<ReadOnly>(-1000, 400)), true, DirectionStrategy.FASTEST);
+//		log.debug("Durée d'une recherche : "+(System.currentTimeMillis() - avant)/100000.);
 		ArrayList<LocomotionArc> trajet = chemin.get();
 		for(LocomotionArc v : trajet)
 		{

@@ -108,7 +108,7 @@ public class HookFactory implements Service
 			// Les hooks de contact
 			if(t.scriptHookThrown() != null)
 			{
-				hook = new HookContact(log, state.getReadOnly(), t.scriptHookThrown().getNbCapteur());
+				hook = new HookContact(log, state.getReadOnly(), t.scriptHookThrown().nbCapteur);
 				hook.ajouter_callback(new Callback(new ThrowScriptRequest(t.scriptHookThrown())));
 				hooksPermanents.add(hook);
 			}
@@ -117,7 +117,7 @@ public class HookFactory implements Service
 		for(GameElementNames n: GameElementNames.values())
 		{
 			// Ce qu'on peut shooter
-			if(n.getType().canBeShot()) // on ne met un hook de collision que sur ceux qui ont susceptible de disparaître quand on passe dessus
+			if(n.getType().ejectable) // on ne met un hook de collision que sur ceux qui ont susceptible de disparaître quand on passe dessus
 			{
 //				hook = new HookCollisionElementJeu(log, state.getReadOnly(), n.getObstacle());
 				hook = new HookPosition(log, state.getReadOnly(), n.getObstacle().position, n.getObstacleDilate().radius);

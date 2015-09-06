@@ -87,7 +87,7 @@ public class DStarLite implements Service
 			openset.add(u);
 //			contained.set(u.gridpoint);
 			if(Config.graphicDStarLite)
-				fenetre.setColor(u.gridpoint, Fenetre.Couleur.JAUNE);
+				fenetre.setColor(u.gridpoint, Fenetre.Couleur.BLEU);
 		}
 	}
 	
@@ -97,14 +97,14 @@ public class DStarLite implements Service
 		// TODO : continuer à étendre des noeuds même après la fin de l'algo
 		while(!openset.isEmpty() && ((u = openset.peek()).cle.isLesserThan(calcKey(depart, inutile)) || depart.rhs > depart.g))
 		{
-			if(Config.graphicDStarLite)
-				fenetre.setColor(u.gridpoint, Fenetre.Couleur.BLEU);
 			if(u.done)
 			{
 				openset.poll();
 				continue;
 			}
 			u.done = true;
+			if(Config.graphicDStarLite)
+				fenetre.setColor(u.gridpoint, Fenetre.Couleur.ROUGE);
 			
 			Cle kold = u.cle.clone();
 			calcKey(u, knew);
@@ -115,7 +115,7 @@ public class DStarLite implements Service
 				openset.poll();
 				openset.add(u);
 				if(Config.graphicDStarLite)
-					fenetre.setColor(u.gridpoint, Fenetre.Couleur.JAUNE);
+					fenetre.setColor(u.gridpoint, Fenetre.Couleur.BLEU);
 			}
 			else if(u.g > u.rhs)
 			{
@@ -202,6 +202,9 @@ public class DStarLite implements Service
 			fenetre.setColor(this.arrivee.gridpoint, Fenetre.Couleur.JAUNE);
 
 		computeShortestPath();
+		
+		if(Config.graphicDStarLite)
+			itineraireBrut();
 	}
 	
 	private int distanceHeuristique(int gridpoint)
@@ -246,7 +249,8 @@ public class DStarLite implements Service
 		while(!node.equals(arrivee))
 		{
 			trajet.add(gridspace.computeVec2(node.gridpoint));
-			log.debug(node);
+			if(Config.graphicDStarLite)
+				fenetre.setColor(node.gridpoint, Fenetre.Couleur.VIOLET);
 			coutMin = Integer.MAX_VALUE;
 			
 			for(int i = 0; i < 8; i++)

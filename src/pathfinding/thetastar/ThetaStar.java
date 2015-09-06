@@ -9,18 +9,13 @@ import pathfinding.dstarlite.GridSpace;
 import permissions.ReadOnly;
 import permissions.ReadWrite;
 import container.Service;
+import robot.DirectionStrategy;
 import robot.RobotChrono;
 import robot.RobotReal;
 import strategie.GameState;
 import tests.graphicLib.Fenetre;
 import utils.Config;
 import utils.Log;
-
-/**
- * TODO Optimisation:
- * - ne pas utiliser tous les noeuds au début, le faire quand on en a besoin
- * - super-structure qui convient le hash et le gamestate?
- */
 
 /**
  * Theta*, qui lisse le résultat du D* Lite et fournit une trajectoire courbe
@@ -35,6 +30,7 @@ public class ThetaStar implements Service
 	
 	private ArrayList<LocomotionArc> cheminTmp = new ArrayList<LocomotionArc>();
 	private ThetaStarNode[] memory = new ThetaStarNode[GridSpace.NB_POINTS];
+	private DirectionStrategy directionstrategyactuelle;
 	
 	protected Log log;
 	private DStarLite dstarlite;
@@ -75,11 +71,12 @@ public class ThetaStar implements Service
 	 * @param shoot_game_element
 	 * @return
 	 */
-	public synchronized void computeNewPath(int arrivee, boolean shootGameElement)
+	public synchronized void computeNewPath(int arrivee, boolean ejecteGameElement, DirectionStrategy directionstrategy)
 	{
 		ThetaStarNode depart;
+		this.directionstrategyactuelle = directionstrategy;
 		GameState.copyThetaStar(state, last);
-		arcmanager.setShootGameElement(shootGameElement);
+		arcmanager.setEjecteGameElement(ejecteGameElement);
 		dstarlite.computeNewPath(last.robot.getPosition(), arrivee);
 		do {
 			depart = memory[last.robot.getPositionGridSpace()];
@@ -149,7 +146,7 @@ public class ThetaStar implements Service
 			
 			// On parcourt les voisins de current et de son prédecesseur.
 
-			arcmanager.reinitIterator(current.came_from, current);
+			arcmanager.reinitIterator(current.came_from, current, directionstrategyactuelle);
 			ThetaStarNode current_sauv = current;
 			
 			while(arcmanager.hasNext())

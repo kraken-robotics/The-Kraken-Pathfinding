@@ -234,7 +234,8 @@ public class Container
 															 (ObstaclesMemory)getService(ServiceNames.OBSTACLES_MOBILES_MEMORY));
 		else if(serviceRequested == ServiceNames.SCRIPT_MANAGER)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ScriptManager((HookFactory)getService(ServiceNames.HOOK_FACTORY),
-																					(Log)getService(ServiceNames.LOG));
+																					(Log)getService(ServiceNames.LOG),
+																					 (GridSpace)getService(ServiceNames.GRID_SPACE));
 		else if(serviceRequested == ServiceNames.THREAD_FIN_MATCH)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadFinMatch((Log)getService(ServiceNames.LOG),
 																		(Config)getService(ServiceNames.CONFIG));

@@ -15,12 +15,15 @@ import utils.ConfigInfo;
 import utils.Log;
 import utils.Vec2;
 import container.Service;
+import robot.DirectionStrategy;
 
 /**
  * S'occupe des arcs du ThetaStar
  * @author pf
  *
  */
+
+// TODO: si besoin, modifier le hash du thetastar (inclure la direction actuelle?)
 
 public class ArcManager implements Service
 {
@@ -31,15 +34,14 @@ public class ArcManager implements Service
 	
 	private int nbSuccesseurMax;
 	private int nbSuccesseur;
-	private ArrayList<ScenarioThetaStar> scenarios;
-	private ArrayList<ScenarioThetaStar> scenariosFirst;
+	private ArrayList<ScenarioThetaStar> scenarios, scenariosFirst, scenariosSansRebroussement, scenariosFirstSansRebroussement;
 	private ArrayList<Integer> voisins;
 	private Iterator<Integer> voisinsIter;
 	private LocomotionArc next;
 	private Iterator<ScenarioThetaStar> scenarioIterator;
 	private boolean accepted = true;
 	private ScenarioThetaStar scenarioActuel;
-	private boolean shootGameElement;
+	private boolean ejecteGameElement;
 	private boolean pasDeVoisin;
 	
 	private ThetaStarNode[] nodes = new ThetaStarNode[2];
@@ -53,6 +55,32 @@ public class ArcManager implements Service
 		this.moteur = moteur;
 		this.gridspace = gridspace;
 		this.dstarlite = dstarlite;
+		
+		// Scenario qui prend en compte le point actuel et son prédécesseur (selon le principe du Theta*)
+		scenarios = new ArrayList<ScenarioThetaStar>();
+		
+		// Scenario qui prend en compte uniquement le point actuel. Utilisé lorsqu'il n'y a pas de successeur
+		scenariosFirst = new ArrayList<ScenarioThetaStar>();
+
+		// Scenario qui prend en compte le point actuel et son prédécesseur (selon le principe du Theta*)
+		scenariosSansRebroussement = new ArrayList<ScenarioThetaStar>();
+		
+		// Scenario qui prend en compte uniquement le point actuel. Utilisé lorsqu'il n'y a pas de successeur
+		scenariosFirstSansRebroussement = new ArrayList<ScenarioThetaStar>();
+
+		for(int i = 0; i < 2; i++)
+			for(RayonCourbure r : RayonCourbure.values())
+				scenarios.add(new ScenarioThetaStar(i, r));	
+		for(RayonCourbure r : RayonCourbure.values())
+			scenariosFirst.add(new ScenarioThetaStar(ACTUEL, r));	
+
+		for(int i = 0; i < 2; i++)
+			for(RayonCourbure r : RayonCourbure.values())
+				if(r != RayonCourbure.REBROUSSEMENT)
+					scenariosSansRebroussement.add(new ScenarioThetaStar(i, r));	
+		for(RayonCourbure r : RayonCourbure.values())
+			if(r != RayonCourbure.REBROUSSEMENT)
+				scenariosFirstSansRebroussement.add(new ScenarioThetaStar(ACTUEL, r));
 	}
 	
 	@Override
@@ -63,21 +91,27 @@ public class ArcManager implements Service
 	public void useConfig(Config config)
 	{
 		nbSuccesseurMax = config.getInt(ConfigInfo.NB_SUCCESSEUR_MAX);
-		scenarios = new ArrayList<ScenarioThetaStar>();
-		scenariosFirst = new ArrayList<ScenarioThetaStar>();
-		for(int i = 0; i < 2; i++)
-			for(RayonCourbure r : RayonCourbure.values())
-				scenarios.add(new ScenarioThetaStar(i, r));	
-		for(RayonCourbure r : RayonCourbure.values())
-			scenariosFirst.add(new ScenarioThetaStar(ACTUEL, r));	
 	}
-
-	public void reinitIterator(ThetaStarNode predecesseur, ThetaStarNode actuel)
+	
+	public void reinitIterator(ThetaStarNode predecesseur, ThetaStarNode actuel,
+			DirectionStrategy directionstrategy)
 	{
-		if(predecesseur == null)
-			scenarioIterator = scenariosFirst.listIterator();
+		// Choix des scénarios à utiliser
+		if(directionstrategy.pointRebroussementPossible)
+		{
+			if(predecesseur == null)
+				scenarioIterator = scenariosFirst.listIterator();
+			else
+				scenarioIterator = scenarios.listIterator();
+		}
 		else
-			scenarioIterator = scenarios.listIterator();
+		{
+			if(predecesseur == null)
+				scenarioIterator = scenariosFirstSansRebroussement.listIterator();
+			else
+				scenarioIterator = scenariosSansRebroussement.listIterator();			
+		}
+		
 		nodes[PREDECESSEUR] = predecesseur;
 		nodes[ACTUEL] = actuel;
 		voisins = dstarlite.getListVoisins(actuel.hash);
@@ -127,6 +161,10 @@ public class ArcManager implements Service
 	public boolean nextAccepted()
 	{
 		// TODO
+		// il faut: vérifier s'il y a collision
+		// vérifier si la collision ne peut pas se transformer en prise d'objet (par script de hook). Attention à la direction actuelle !
+		// vérifier si le script de hook est faisable. Auquel cas, exécution du script si possible et il n'y a pas de collision
+		// on peut modifier l'ordre de ces vérifications afin d'accélérer le test (direction puis faisabilité script puis collision ?)
 		accepted = moteur.isAccessibleCourbe(next.pointDuDemiPlan, next.destination, next.normaleAuDemiPlan, next.rayonCourbure);
 		return accepted;
 	}
@@ -136,11 +174,16 @@ public class ArcManager implements Service
 		// TODO Auto-generated method stub
 		int out = (int) gridspace.computeVec2(state.robot.getPositionGridSpace()).distance(voisin.destination);
 		state.robot.setPositionGridSpace(voisin.gridpointArrivee);
+		if(voisin.rayonCourbure == RayonCourbure.REBROUSSEMENT)
+		{
+			state.robot.stopper();
+			state.robot.inverseSensMarche();
+		}
 		return out;
 	}
 
 	public int heuristicCostThetaStar(GameState<RobotChrono, ReadOnly> node) {
-		// TODO: ajouter un coût pour l'orientation + prendre en compte l'accélération latérale
+		// TODO: ajouter un coût pour l'orientation (si, selon dstarlite, on est bien orienté ou non) + prendre en compte l'accélération latérale
 		return dstarlite.heuristicCostThetaStar(node.robot.getPositionGridSpace());
 	}
 
@@ -151,9 +194,9 @@ public class ArcManager implements Service
 	}
 
 
-	public void setShootGameElement(boolean shootGameElement)
+	public void setEjecteGameElement(boolean ejecteGameElement)
 	{
-		this.shootGameElement = shootGameElement;
+		this.ejecteGameElement = ejecteGameElement;
 	}
 
 	

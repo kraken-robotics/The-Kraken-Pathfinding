@@ -85,6 +85,8 @@ public abstract class Robot implements Service
 	/**
 	 * Copie this dans rc. this reste inchangé.
 	 * Copie seulement ce qui importe pour le ThetaStar
+	 * En particulier, la position sous forme de Vec2 n'est pas copiée (elle y est
+	 * sous forme de gridpoint). Il n'y a pas non plus de copie du nombre de points obtenus.
 	 * 
 	 * @param rc
 	 */
@@ -125,6 +127,10 @@ public abstract class Robot implements Service
 			return orientation;
 	}
 	
+	/**
+	 * Permet de savoir si on peut prendre des scripts de hook
+	 * @return
+	 */
 	public boolean isEnMarcheAvant()
 	{
 		return enMarcheAvant;
