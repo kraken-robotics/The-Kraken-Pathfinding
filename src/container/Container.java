@@ -11,6 +11,7 @@ import pathfinding.dstarlite.DStarLite;
 import pathfinding.dstarlite.GridSpace;
 import pathfinding.thetastar.ArcManager;
 import pathfinding.thetastar.CheminPathfinding;
+import pathfinding.thetastar.MemoryManager;
 import pathfinding.thetastar.ThetaStar;
 import permissions.ReadOnly;
 import permissions.ReadWrite;
@@ -22,7 +23,6 @@ import scripts.ScriptManager;
 import serial.SerialConnexion;
 import strategie.Execution;
 import strategie.GameState;
-import strategie.MemoryManager;
 import strategie.Strategie;
 import strategie.StrategieInfo;
 import strategie.StrategieNotifieur;
@@ -180,7 +180,8 @@ public class Container
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ArcManager((Log)getService(ServiceNames.LOG),
 																				(MoteurPhysique)getService(ServiceNames.MOTEUR_PHYSIQUE),
 																				(GridSpace)getService(ServiceNames.GRID_SPACE),
-																				(DStarLite)getService(ServiceNames.D_STAR_LITE));
+																				(DStarLite)getService(ServiceNames.D_STAR_LITE),
+																				(MemoryManager)getService(ServiceNames.MEMORY_MANAGER));
 		else if(serviceRequested == ServiceNames.CHEMIN_PATHFINDING)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new CheminPathfinding((Log)getService(ServiceNames.LOG));
 		
@@ -215,8 +216,7 @@ public class Container
         													 (GameState<RobotReal,ReadWrite>)getService(ServiceNames.REAL_GAME_STATE),
         													 (RequeteSTM)getService(ServiceNames.REQUETE_STM));
 		else if(serviceRequested == ServiceNames.MEMORY_MANAGER)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new MemoryManager((Log)getService(ServiceNames.LOG),
-        													 (GameState<RobotReal,ReadOnly>)getService(ServiceNames.REAL_GAME_STATE));
+			instanciedServices[serviceRequested.ordinal()] = (Service)new MemoryManager((Log)getService(ServiceNames.LOG));
 		else if(serviceRequested == ServiceNames.HOOK_FACTORY)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new HookFactory((Log)getService(ServiceNames.LOG));
 		else if(serviceRequested == ServiceNames.ROBOT_REAL)

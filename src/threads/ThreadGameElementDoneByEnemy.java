@@ -38,6 +38,7 @@ public class ThreadGameElementDoneByEnemy extends Thread implements Service
 	@Override
 	public void run()
 	{
+		iterator.reinitNow();
 		while(true)
 		{
 			synchronized(memory)

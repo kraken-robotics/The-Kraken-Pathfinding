@@ -45,6 +45,13 @@ public class Vec2<T extends Permission>
 		x = requestedX;
 		y = requestedY;
 	}
+	
+	public static Vec2<ReadWrite> setAngle(Vec2<ReadWrite> out, double angle)
+	{
+		out.x = (int) (Math.cos(angle)*1000);
+		out.y = (int) (Math.sin(angle)*1000);
+		return out;
+	}
 
 	// Do not square a length, use squared length directly
 	// to increase performances

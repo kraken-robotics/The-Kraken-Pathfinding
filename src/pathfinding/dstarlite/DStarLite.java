@@ -48,7 +48,7 @@ public class DStarLite implements Service
 	private Cle knew = new Cle();
 	private Cle inutile = new Cle();
 
-	private Cle calcKey(DStarLiteNode s, Cle copy)
+	private final Cle calcKey(DStarLiteNode s, Cle copy)
 	{
 		copy.set(add(Math.min(s.g,s.rhs), distanceHeuristique(s.gridpoint), km),
 				Math.min(s.g, s.rhs));
@@ -79,7 +79,7 @@ public class DStarLite implements Service
 		
 	private void updateVertex(DStarLiteNode u)
 	{
-		if(u.g != u.rhs)
+		if(u.g != u.rhs && !u.done)
 		{
 			calcKey(u, u.cle);
 //			if(contained.get(u.gridpoint))
@@ -94,6 +94,7 @@ public class DStarLite implements Service
 	private void computeShortestPath()
 	{
 		DStarLiteNode u;
+		Cle kold = new Cle();
 		// TODO : continuer à étendre des noeuds même après la fin de l'algo
 		while(!openset.isEmpty() && ((u = openset.peek()).cle.isLesserThan(calcKey(depart, inutile)) || depart.rhs > depart.g))
 		{
@@ -102,11 +103,11 @@ public class DStarLite implements Service
 				openset.poll();
 				continue;
 			}
-			u.done = true;
 			if(Config.graphicDStarLite)
 				fenetre.setColor(u.gridpoint, Fenetre.Couleur.ROUGE);
 			
-			Cle kold = u.cle.clone();
+			u.cle.copy(kold);
+//			Cle kold = u.cle.clone();
 			calcKey(u, knew);
 			if(kold.isLesserThan(knew))
 			{
@@ -122,6 +123,7 @@ public class DStarLite implements Service
 //				log.debug("Cas 2");
 				u.g = u.rhs;
 				openset.poll();
+				u.done = true;
 				if(Config.graphicDStarLite)
 					fenetre.setColor(u.gridpoint, Fenetre.Couleur.ROUGE);
 				for(int i = 0; i < 8; i++)
@@ -145,8 +147,8 @@ public class DStarLite implements Service
 					if(voisin < 0)
 						continue;
 					DStarLiteNode s = getFromMemory(voisin);
-					if(s == null)
-						continue;
+//					if(s == null)
+//						continue;
 					if(s.rhs == add(gridspace.distanceDStarLite(u.gridpoint, i), gold) && s.gridpoint != arrivee.gridpoint)
 					{
 						s.rhs = Integer.MAX_VALUE;
@@ -161,7 +163,7 @@ public class DStarLite implements Service
 					}
 					updateVertex(s);
 				}
-				if(u.rhs == gold && u.gridpoint != depart.gridpoint)
+				if(u.rhs == gold && u.gridpoint != arrivee.gridpoint)
 				{
 					u.rhs = Integer.MAX_VALUE;
 					for(int i = 0; i < 8; i++)
@@ -174,9 +176,18 @@ public class DStarLite implements Service
 					}
 				}
 				updateVertex(u);
-				u.done = false;
 			}
 
+		}
+
+		// Il faut en plus calculer g pour le point de départ pour theta*
+		for(int i = 0; i < 8; i++)
+		{
+			int voisin = gridspace.getGridPointVoisin(depart.gridpoint, i);
+			if(voisin < 0)
+				continue;
+			DStarLiteNode s = getFromMemory(voisin);
+			depart.g = Math.min(depart.g, add(s.g, gridspace.distanceDStarLite(depart.gridpoint, i)));
 		}
 	}
 
@@ -187,9 +198,19 @@ public class DStarLite implements Service
 	 */
 	public void computeNewPath(Vec2<ReadOnly> depart, int arrivee)
 	{
+		computeNewPath(gridspace.computeGridPoint(depart), arrivee);
+	}
+	/**
+	 * Calcule un nouvel itinéraire.
+	 * @param arrivee (un Vec2)
+	 * @param depart (un gridpoint)
+	 */
+	public void computeNewPath(int depart, int arrivee)
+	{
+//		log.debug("Calcul chemin D* Lite entre "+depart+" et "+gridspace.computeVec2(arrivee));
 		nbPF++;
 		km = 0;
-		this.depart = getFromMemory(gridspace.computeGridPoint(depart));
+		this.depart = getFromMemory(depart);
 		last = this.depart.gridpoint;
 
 		this.arrivee = getFromMemory(arrivee);
@@ -199,7 +220,10 @@ public class DStarLite implements Service
 		openset.clear();
 		openset.add(this.arrivee);
 		if(Config.graphicDStarLite)
+		{
 			fenetre.setColor(this.arrivee.gridpoint, Fenetre.Couleur.JAUNE);
+			fenetre.setColor(this.depart.gridpoint, Fenetre.Couleur.VIOLET);
+		}
 
 		computeShortestPath();
 		
@@ -207,7 +231,7 @@ public class DStarLite implements Service
 			itineraireBrut();
 	}
 	
-	private int distanceHeuristique(int gridpoint)
+	private final int distanceHeuristique(int gridpoint)
 	{
 		return gridspace.distanceHeuristiqueDStarLite(depart.gridpoint, gridpoint);
 	}
@@ -248,6 +272,7 @@ public class DStarLite implements Service
 		
 		while(!node.equals(arrivee))
 		{
+			
 			trajet.add(gridspace.computeVec2(node.gridpoint));
 			if(Config.graphicDStarLite)
 				fenetre.setColor(node.gridpoint, Fenetre.Couleur.VIOLET);
@@ -294,7 +319,7 @@ public class DStarLite implements Service
 	 * @param b
 	 * @return
 	 */
-	private int add(int a, int b)
+	private final int add(int a, int b)
 	{
 		if(a == Integer.MAX_VALUE || b  == Integer.MAX_VALUE)
 			return Integer.MAX_VALUE;
@@ -308,7 +333,7 @@ public class DStarLite implements Service
 	 * @param c
 	 * @return
 	 */
-	private int add(int a, int b, int c)
+	private final int add(int a, int b, int c)
 	{
 		if(a == Integer.MAX_VALUE || b  == Integer.MAX_VALUE || c  == Integer.MAX_VALUE)
 			return Integer.MAX_VALUE;

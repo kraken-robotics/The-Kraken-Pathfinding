@@ -1,6 +1,7 @@
 package obstacles;
 
-import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
 
 import obstacles.types.ObstacleProximity;
 import permissions.ReadOnly;
@@ -21,7 +22,7 @@ import container.Service;
 public class ObstaclesMemory implements Service
 {
     // Les obstacles mobiles, c'est-à-dire des obstacles de proximité
-    private volatile ArrayList<ObstacleProximity> listObstaclesMobiles = new ArrayList<ObstacleProximity>();
+    private volatile LinkedList<ObstacleProximity> listObstaclesMobiles = new LinkedList<ObstacleProximity>();
     private int dureeAvantPeremption;
 	private int rayonEnnemi;
 	private volatile int size = 0;
@@ -59,9 +60,19 @@ public class ObstaclesMemory implements Service
 		dureeAvantPeremption = config.getInt(ConfigInfo.DUREE_PEREMPTION_OBSTACLES);
 	}
 
-	public synchronized ObstacleProximity getObstacle(int nbTmp)
+	public final synchronized ObstacleProximity getObstacle(int nbTmp)
 	{
 		return listObstaclesMobiles.get(nbTmp-firstNotDeadNow);
+	}
+
+	public Iterator<ObstacleProximity> getIterator(int index)
+	{
+		return listObstaclesMobiles.listIterator(index-firstNotDeadNow);
+	}
+
+	public Iterator<ObstacleProximity> getIteratorNow()
+	{
+		return listObstaclesMobiles.listIterator();
 	}
 
 	public synchronized void deleteOldObstacles()
@@ -69,10 +80,10 @@ public class ObstaclesMemory implements Service
 		boolean shouldNotify = false;
 		while(!listObstaclesMobiles.isEmpty())
 		{
-			if(listObstaclesMobiles.get(0).isDestructionNecessary(System.currentTimeMillis()))
+			if(listObstaclesMobiles.getFirst().isDestructionNecessary(System.currentTimeMillis()))
 			{
 				firstNotDeadNow++;
-				listObstaclesMobiles.remove(0);
+				listObstaclesMobiles.removeFirst();
 				shouldNotify = true;
 			}
 			else
@@ -82,15 +93,15 @@ public class ObstaclesMemory implements Service
 			notify();
 	}
 	
-	public synchronized long getNextDeathDate()
+	public final synchronized long getNextDeathDate()
 	{
 	    if(!listObstaclesMobiles.isEmpty())
-	    	return listObstaclesMobiles.get(0).getDeathDate();
+	    	return listObstaclesMobiles.getFirst().getDeathDate();
 	    else
 	    	return Long.MAX_VALUE;
 	}
 	
-	public synchronized int getFirstNotDeadNow()
+	public final synchronized int getFirstNotDeadNow()
 	{
 		return firstNotDeadNow;
 	}

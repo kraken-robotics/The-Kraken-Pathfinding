@@ -17,8 +17,10 @@ public class ObstaclesIterator implements Iterator<ObstacleProximity>
     private ObstaclesMemory memory;
     
     private int firstNotDead = 0;
-    private int nbTmp;
     private long lastDate = -1;
+    private long dateInit;
+    private Iterator<ObstacleProximity> iterator;
+    private boolean needInit = true;
 	
     public ObstaclesIterator(Log log, ObstaclesMemory memory)
     {
@@ -40,7 +42,8 @@ public class ObstaclesIterator implements Iterator<ObstacleProximity>
     public void copy(ObstaclesIterator other, long date)
     {
     	other.firstNotDead = firstNotDead;
-    	other.init(date);
+    	other.needInit = true;
+    	other.dateInit = date;
     }
     
     /**
@@ -71,10 +74,12 @@ public class ObstaclesIterator implements Iterator<ObstacleProximity>
 	 */
 	public void reinit()
 	{
+		if(needInit)
+			init(dateInit);
 		if(lastDate == -1)
 			reinitNow();
 		else
-			nbTmp = firstNotDead;
+			iterator = memory.getIterator(firstNotDead);
 	}
 
 	/**
@@ -83,11 +88,11 @@ public class ObstaclesIterator implements Iterator<ObstacleProximity>
 	public void reinitNow()
 	{
 		firstNotDead = memory.getFirstNotDeadNow();
-		nbTmp = firstNotDead;
+		iterator = memory.getIteratorNow();
 	}
 	
 	/**
-	 * Calcule l'entrée où commence les obstacles à cette date.
+	 * Calcule l'entrée où commencent les obstacles à cette date.
 	 * Se fait à la copie.
 	 * @param date
 	 */
@@ -97,29 +102,33 @@ public class ObstaclesIterator implements Iterator<ObstacleProximity>
 		if(date < lastDate)
 			firstNotDead = memory.getFirstNotDeadNow();
 		
+		iterator = memory.getIterator(firstNotDead);
+		
 		ObstacleProximity next;
-		while(firstNotDead < memory.size())
+		while(iterator.hasNext())
 		{
-			next = memory.getObstacle(firstNotDead);
+			next = iterator.next();
 			if(next.isDestructionNecessary(date))
 				firstNotDead++;
 			else
 				break;
 		}
-		nbTmp = firstNotDead;		
+//		nbTmp = firstNotDead;		
 		lastDate = date;
+		needInit = false;
 	}
 	
 	@Override
 	public boolean hasNext()
 	{		
-		return nbTmp++ < memory.size();
+		return iterator.hasNext();
 	}
 	
 	@Override
 	public ObstacleProximity next()
 	{
-		return memory.getObstacle(nbTmp-1);
+		return iterator.next();
+//		return memory.getObstacle(nbTmp-1);
 	}
 
 	@Override

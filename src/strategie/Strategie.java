@@ -4,6 +4,7 @@ import hook.HookFactory;
 
 import java.util.ArrayList;
 
+import pathfinding.thetastar.MemoryManager;
 import permissions.ReadOnly;
 import planification.Pathfinding;
 import robot.RobotReal;

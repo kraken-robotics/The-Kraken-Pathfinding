@@ -1,6 +1,6 @@
 package pathfinding.thetastar;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 
 import utils.Config;
 import utils.Log;
@@ -9,7 +9,7 @@ import container.Service;
 public class CheminPathfinding implements Service
 {
 	protected Log log;
-	private volatile ArrayList<LocomotionArc> chemin = new ArrayList<LocomotionArc>();
+	private volatile LinkedList<LocomotionArc> chemin = new LinkedList<LocomotionArc>();
 
 	public CheminPathfinding(Log log)
 	{
@@ -24,12 +24,12 @@ public class CheminPathfinding implements Service
 	public void useConfig(Config config)
 	{}
 
-	public synchronized void set(ArrayList<LocomotionArc> cheminTmp)
+	public synchronized void set(LinkedList<LocomotionArc> cheminTmp)
 	{
 		chemin = cheminTmp;
 	}
 
-	public synchronized ArrayList<LocomotionArc> get()
+	public synchronized LinkedList<LocomotionArc> get()
 	{
 		return chemin;
 	}

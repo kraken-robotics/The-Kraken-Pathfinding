@@ -4,12 +4,12 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import pathfinding.thetastar.MemoryManager;
 import permissions.ReadWrite;
 import planification.astar.arc.PathfindingNodes;
 import container.ServiceNames;
 import robot.RobotChrono;
 import strategie.GameState;
-import strategie.MemoryManager;
 import utils.ConfigInfo;
 
 /**

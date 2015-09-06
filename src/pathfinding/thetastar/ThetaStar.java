@@ -1,7 +1,7 @@
 package pathfinding.thetastar;
 
-import java.util.ArrayList;
 import java.util.BitSet;
+import java.util.LinkedList;
 import java.util.PriorityQueue;
 
 import pathfinding.dstarlite.DStarLite;
@@ -28,7 +28,7 @@ public class ThetaStar implements Service
 	private PriorityQueue<ThetaStarNode> openset = new PriorityQueue<ThetaStarNode>(GridSpace.NB_POINTS, new ThetaStarNodeComparator());	 // The set of tentative nodes to be evaluated
 	private BitSet closedset = new BitSet(GridSpace.NB_POINTS);
 	
-	private ArrayList<LocomotionArc> cheminTmp = new ArrayList<LocomotionArc>();
+	private LinkedList<LocomotionArc> cheminTmp = new LinkedList<LocomotionArc>();
 	private ThetaStarNode[] memory = new ThetaStarNode[GridSpace.NB_POINTS];
 	private DirectionStrategy directionstrategyactuelle;
 	
@@ -73,17 +73,29 @@ public class ThetaStar implements Service
 	 */
 	public synchronized void computeNewPath(int arrivee, boolean ejecteGameElement, DirectionStrategy directionstrategy)
 	{
+		if(Config.graphicThetaStar)
+			fenetre.setColor(arrivee, Fenetre.Couleur.VIOLET);
 		ThetaStarNode depart;
 		this.directionstrategyactuelle = directionstrategy;
 		GameState.copyThetaStar(state, last);
 		arcmanager.setEjecteGameElement(ejecteGameElement);
-		dstarlite.computeNewPath(last.robot.getPosition(), arrivee);
+		dstarlite.computeNewPath(last.robot.getPositionGridSpace(), arrivee);
 		do {
 			depart = memory[last.robot.getPositionGridSpace()];
 			depart.init();
 			GameState.copyThetaStar(last.getReadOnly(), depart.state);
 		}
 		while(!process(depart));
+		
+		if(Config.graphicThetaStar)
+			printChemin();
+	}
+	
+	private void printChemin()
+	{
+		LinkedList<LocomotionArc> cheminAff = chemin.get();	
+		for(LocomotionArc arc : cheminAff)
+			fenetre.setColor(arc.getGridpointArrivee(), Fenetre.Couleur.VIOLET);
 	}
 	
 	public synchronized void updatePath()
@@ -96,6 +108,8 @@ public class ThetaStar implements Service
 			depart.init();
 			GameState.copyThetaStar(last.getReadOnly(), depart.state);
 		}
+		// TODO : les process relancés parce que le chemin a été en partie fixé peut être amélioré
+		// Par exemple, garder le closedset
 		while(!process(depart));
 	}
 	
@@ -108,6 +122,7 @@ public class ThetaStar implements Service
 	 */
 	private boolean process(ThetaStarNode depart)
 	{
+		arcmanager.emptyMemoryManager();
 		nbPF++;
 		int hashArrivee = dstarlite.getHashArrivee();
 
@@ -126,6 +141,12 @@ public class ThetaStar implements Service
 		while(!openset.isEmpty())
 		{
 			current = openset.poll();
+			
+			if(closedset.get(current.hash))
+			{
+//				arcmanager.destroyArc(current.came_from_arc);
+				continue;
+			}
 
 			if(Config.graphicThetaStar)
 				fenetre.setColor(current.hash, Fenetre.Couleur.JAUNE);
@@ -147,33 +168,37 @@ public class ThetaStar implements Service
 			// On parcourt les voisins de current et de son prédecesseur.
 
 			arcmanager.reinitIterator(current.came_from, current, directionstrategyactuelle);
-			ThetaStarNode current_sauv = current;
 			
 			while(arcmanager.hasNext())
 			{
-
+ 
 				LocomotionArc voisin = arcmanager.nextProposition();
 //				log.debug("Voisin : "+voisin);
-				if(closedset.get(voisin.gridpointArrivee) || !arcmanager.nextAccepted())
+				if(closedset.get(voisin.getGridpointArrivee()) || !arcmanager.nextAccepted())
+				{
+//					arcmanager.destroyArc(voisin);
 					continue;
+				}
 				
-				if(arcmanager.isFromPredecesseur())
-					current = current_sauv.came_from;
-				else
-					current = current_sauv;
+				current = arcmanager.noeudPere();
+//				if(arcmanager.isFromPredecesseur())
+//					current = current_sauv.came_from;
+//				else
+//					current = current_sauv;
 
 				GameState.copyThetaStar(current.state.getReadOnly(), stateSuccesseur);
 
 				// stateSuccesseur est modifié lors du "distanceTo"
 				int tentative_g_score = current.g_score + arcmanager.distanceTo(stateSuccesseur, voisin);
-				int tentative_f_score = tentative_g_score + arcmanager.heuristicCostThetaStar(stateSuccesseur.getReadOnly());
+				int heuristique = arcmanager.heuristicCostThetaStar(stateSuccesseur.getReadOnly());
+				int tentative_f_score = tentative_g_score + heuristique;
 				
 				ThetaStarNode successeur = getFromMemory(stateSuccesseur.robot.getPositionGridSpace());
 				
 				/**
 				 * Normalement, il suffit de comparer les g_scores.
-				 * En effet, l'heuristique d'un point est censé être unique, et alors comparer g1 + f à
-				 * g2 + f revient à comparer g1 à g2.
+				 * En effet, l'heuristique d'un point est censé être unique, et alors comparer f1 à
+				 * f2 revient à comparer f1 - h = g1 à f2 - h = g2.
 				 * Or, c'est ici l'heuristique dépend de l'orientation du robot, et donc n'est pas unique pour un gridpoint.
 				 * Il est donc nécessaire de comparer les deux f_scores
 				 */
@@ -184,13 +209,19 @@ public class ThetaStar implements Service
 
 					GameState.copyThetaStar(stateSuccesseur.getReadOnly(), successeur.state);
 					successeur.came_from = current;
+//					if(successeur.came_from_arc != null)
+//						arcmanager.destroyArc(successeur.came_from_arc);
 					successeur.came_from_arc = voisin;
 					successeur.g_score = tentative_g_score;
 					successeur.f_score = tentative_f_score;
-					if(openset.contains(successeur))
-						openset.remove(successeur);
+//					log.debug(tentative_f_score+" "+tentative_g_score);
+//					if(openset.contains(successeur))
+//						openset.remove(successeur);
 					openset.add(successeur);
 				}
+//				else
+//					arcmanager.destroyArc(voisin);
+				
 				if(Config.graphicThetaStar)
 					fenetre.setColor(current.hash, Fenetre.Couleur.ROUGE);
 
@@ -221,8 +252,11 @@ public class ThetaStar implements Service
 		openset.add(node);
 	}
 */
+	// TODO : reconstruire à la demande et pas à chaque fois
 	private boolean reconstruct(ThetaStarNode best)
 	{
+		if(true)
+			return false;
 		if(chemin.needToStartAgain())
 			return true;
 		cheminTmp.clear();
@@ -232,7 +266,7 @@ public class ThetaStar implements Service
 		while(arc_parent != null)
 		{
 //			log.debug(arc_parent);
-			cheminTmp.add(0, arc_parent);
+			cheminTmp.addFirst(arc_parent);
 			noeud_parent = noeud_parent.came_from;
 			arc_parent = noeud_parent.came_from_arc;
 		}			

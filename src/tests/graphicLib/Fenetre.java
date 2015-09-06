@@ -92,9 +92,12 @@ public class Fenetre extends JPanel {
 	
 	public void setColor(int gridpoint, Couleur couleur)
 	{
-		grid[gridpoint] = couleur;
-		repaint();
-		Sleep.sleep(200);
+		if(grid[gridpoint] != couleur)
+		{
+			grid[gridpoint] = couleur;
+			repaint();
+//			Sleep.sleep(50);
+		}
 	}
 	
 	public static Fenetre getInstance()

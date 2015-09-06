@@ -5,6 +5,7 @@ import java.util.BitSet;
 import obstacles.ObstaclesIterator;
 import obstacles.ObstaclesMemory;
 import permissions.ReadOnly;
+import permissions.ReadWrite;
 import table.Table;
 import utils.Config;
 import utils.Log;
@@ -34,6 +35,7 @@ public class GridSpace implements Service
 	public static final int NB_POINTS_POUR_TROIS_METRES = (1 << PRECISION);
 	public static final int NB_POINTS_POUR_DEUX_METRES = (int) ((1 << PRECISION)*2./3.);
 	public static final double DISTANCE_ENTRE_DEUX_POINTS = 3000./NB_POINTS_POUR_TROIS_METRES;
+	public static final int DISTANCE_ENTRE_DEUX_POINTS_1024 = (1024*3000)/NB_POINTS_POUR_TROIS_METRES;
 	public static final int NB_POINTS = NB_POINTS_POUR_DEUX_METRES * NB_POINTS_POUR_TROIS_METRES;
 	private static final int X_MAX = NB_POINTS_POUR_TROIS_METRES-1;
 	private static final int Y_MAX = NB_POINTS_POUR_DEUX_METRES-1;
@@ -66,7 +68,7 @@ public class GridSpace implements Service
 	 * @param pointB
 	 * @return
 	 */
-	public int distanceHeuristiqueDStarLite(int pointA, int pointB)
+	public final int distanceHeuristiqueDStarLite(int pointA, int pointB)
 	{
 		int dx = Math.abs((pointA & (NB_POINTS_POUR_TROIS_METRES - 1)) - (pointB & (NB_POINTS_POUR_TROIS_METRES - 1))); // ceci est un modulo
 		int dy = Math.abs((pointA >> PRECISION) - (pointB >> PRECISION)); // ceci est une division
@@ -198,5 +200,11 @@ public class GridSpace implements Service
 	{
 		return new Vec2<ReadOnly>((int) Math.round((gridpoint & (NB_POINTS_POUR_TROIS_METRES - 1)) * GridSpace.DISTANCE_ENTRE_DEUX_POINTS - 1500),
 				(int) Math.round((gridpoint >> PRECISION) * GridSpace.DISTANCE_ENTRE_DEUX_POINTS));
+	}
+
+	public void computeVec2(Vec2<ReadWrite> v, int gridpoint)
+	{
+		v.x = (((gridpoint & (NB_POINTS_POUR_TROIS_METRES - 1)) * GridSpace.DISTANCE_ENTRE_DEUX_POINTS_1024) >> 10) - 1500;
+		v.y = ((gridpoint >> PRECISION) * GridSpace.DISTANCE_ENTRE_DEUX_POINTS_1024) >> 10;
 	}
 }
