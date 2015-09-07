@@ -66,7 +66,7 @@ public class MemoryManager implements Service {
 	 * @param state
 	 * @param id_astar
 	 */
-	private void destroyArc(LocomotionArc arc)
+	public void destroyArc(LocomotionArc arc)
 	{
 		int indice_state = arc.getIndiceMemoryManager();
 		/**

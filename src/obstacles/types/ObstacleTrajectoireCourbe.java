@@ -1,8 +1,9 @@
 package obstacles.types;
 
+import pathfinding.thetastar.LocomotionArc;
+import pathfinding.thetastar.RayonCourbure;
 import permissions.ReadOnly;
 import permissions.ReadWrite;
-import planification.astar.arc.PathfindingNodes;
 import robot.Speed;
 import utils.Vec2;
 
@@ -13,9 +14,7 @@ import utils.Vec2;
  */
 
 public class ObstacleTrajectoireCourbe extends ObstacleRectanglesCollection
-{
-//	private SegmentTrajectoireCourbe segment;
-	
+{	
 	/**
 	 * 
 	 * @param objectifFinal
@@ -23,16 +22,17 @@ public class ObstacleTrajectoireCourbe extends ObstacleRectanglesCollection
 	 * @param directionAvant de norme 1000
 	 * @param vitesse
 	 */
-	public ObstacleTrajectoireCourbe(PathfindingNodes objectifFinal, PathfindingNodes intersection, Vec2<ReadOnly> directionAvant, Speed vitesse)
+//	public ObstacleTrajectoireCourbe(int objectifFinal, int intersection, Vec2<ReadOnly> directionAvant, RayonCourbure rayon)
+	public ObstacleTrajectoireCourbe(LocomotionArc arc)
 	{
-		// La position de cet obstacle est assez arbitraire...
-		super(new Vec2<ReadOnly>());
+		// La position de cet obstacle est inutile...
+		super(null);
 		
 		Vec2<ReadWrite> directionApres = new Vec2<ReadWrite>(intersection.getOrientationFinale(objectifFinal));
 
-		int rayonCourbure = vitesse.rayonCourbure();
+		int rayonCourbure = arc.getRayonCourbure().rayon;
 
-		double angleDepart = directionAvant.getArgument();
+		double angleDepart = arc.getOrientationAuHook();
 		double angleRotation = (directionApres.getArgument() - angleDepart) % (2*Math.PI);
 
 		if(angleRotation < -Math.PI)
@@ -53,7 +53,7 @@ public class ObstacleTrajectoireCourbe extends ObstacleRectanglesCollection
 
 //		double angleEntreOmbre = Math.atan2(longueurRobot/2, rayonCourbure+largeurRobot/2);
 //		nb_rectangles = (int)(Math.abs(angleRotation/angleEntreOmbre))+1;
-		nb_rectangles = 10;
+		nb_rectangles = (int) Math.abs(nbOmbres * angleRotation/(2 * Math.PI));
 		ombresRobot = (ObstacleRectangular[]) new ObstacleRectangular[nb_rectangles];
 		for(int i = 0; i < nb_rectangles-1; i++)
 			ombresRobot[i] = new ObstacleRectangular(pointDepart.rotateNewVector(i*angleRotation/(nb_rectangles-1), centreCercle).getReadOnly(), longueurRobot, largeurRobot, angleDepart+i*angleRotation/(nb_rectangles-1));

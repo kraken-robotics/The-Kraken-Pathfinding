@@ -1,7 +1,6 @@
 package pathfinding.dstarlite;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.PriorityQueue;
 
 import permissions.ReadOnly;
@@ -55,7 +54,7 @@ public class DStarLite implements Service
 		return copy;
 	}
 
-	private boolean isThisNodeUptodate(int gridpoint)
+	public boolean isThisNodeUptodate(int gridpoint)
 	{
 		return memory[gridpoint].nbPF == nbPF;
 	}
@@ -298,6 +297,11 @@ public class DStarLite implements Service
 		
 	}
 	
+	/**
+	 * Renvoie l'heuristique au ThetaStar. Attention ! On suppose que le gridpoint est à jour.
+	 * @param gridpoint
+	 * @return
+	 */
 	public int heuristicCostThetaStar(int gridpoint)
 	{
 		return getFromMemory(gridpoint).g;
@@ -348,8 +352,10 @@ public class DStarLite implements Service
 	 * @param gridpoint
 	 * @return
 	 */
+	// TODO : passer en tableau
 	public ArrayList<Integer> getListVoisins(int gridpoint)
 	{
+		// TODO : plutôt un tableau
 		voisinsTries.clear();
 		notes.clear();
 		for(int i = 0 ; i < 8 ; i++)
@@ -370,17 +376,17 @@ public class DStarLite implements Service
 
 	private void addInVoisinsTries(int note, int gridpoint)
 	{
-		Iterator<Integer> iterator = notes.listIterator();
-		int k = 0;
-		while(iterator.hasNext())
+		int iterator = 0;
+//		Iterator<Integer> iterator = notes.listIterator();
+		while(iterator < notes.size())
 		{
-			if(note < iterator.next())
+			if(note < notes.get(iterator))
 			{
-				notes.add(k, note);
-				voisinsTries.add(k, gridpoint);
+				notes.add(iterator, note);
+				voisinsTries.add(iterator, gridpoint);
 				return;
 			}
-			k++;
+			iterator++;
 		}
 		voisinsTries.add(gridpoint);
 	}

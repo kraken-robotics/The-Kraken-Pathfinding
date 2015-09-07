@@ -57,9 +57,9 @@ public class JUnit_Pathfinding extends JUnit_Test {
     {
 		robot.setPositionOrientationJava(new Vec2<ReadOnly>(-1000, 200), 0);
 		long avant = System.currentTimeMillis();
-		for(int i = 0; i < 1000; i++)
+		for(int i = 0; i < 10000; i++)
 		pathfindingCourbe.computeNewPath(gridspace.computeGridPoint(new Vec2<ReadOnly>(1000, 400)), true, DirectionStrategy.FASTEST);
-		log.debug("Durée d'une recherche : "+(System.currentTimeMillis() - avant)/1000.+" ms");
+		log.debug("Durée d'une recherche : "+(System.currentTimeMillis() - avant)/10000.+" ms");
 		LinkedList<LocomotionArc> trajet = chemin.get();
 		for(LocomotionArc v : trajet)
 		{

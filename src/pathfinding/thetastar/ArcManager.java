@@ -1,7 +1,6 @@
 package pathfinding.thetastar;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import pathfinding.MoteurPhysique;
 import pathfinding.dstarlite.DStarLite;
@@ -35,17 +34,19 @@ public class ArcManager implements Service
 	
 	private int nbSuccesseurMax;
 	private int nbSuccesseur;
-	private ArrayList<ScenarioThetaStar> scenarios, scenariosFirst, scenariosSansRebroussement, scenariosFirstSansRebroussement;
-	private ArrayList<Integer> voisins;
-	private Iterator<Integer> voisinsIter;
+	private ScenarioThetaStar[] scenarios, scenariosFirst, scenariosSansRebroussement, scenariosFirstSansRebroussement;
+	private Integer[] voisins = new Integer[9];
+	private int voisinsIter;
 	private LocomotionArc next;
-	private Iterator<ScenarioThetaStar> scenarioIterator;
+	private int scenarioIterator;
+	private ScenarioThetaStar[] tableDesScenario;
 	private boolean accepted = true;
 	private ScenarioThetaStar scenarioActuel;
 	private boolean ejecteGameElement;
-	private boolean pasDeVoisin;
+//	private boolean pasDeVoisin;
 	private Vec2<ReadWrite> positionRobot = new Vec2<ReadWrite>();
 	private Vec2<ReadWrite> positionArrivee = new Vec2<ReadWrite>();
+	private int voisinsLength;
 	
 	private ThetaStarNode[] nodes = new ThetaStarNode[2];
 	
@@ -61,30 +62,34 @@ public class ArcManager implements Service
 		this.memorymanager = memorymanager; 
 		
 		// Scenario qui prend en compte le point actuel et son prédécesseur (selon le principe du Theta*)
-		scenarios = new ArrayList<ScenarioThetaStar>();
+		scenarios = new ScenarioThetaStar[RayonCourbure.values().length * 2];
 		
 		// Scenario qui prend en compte uniquement le point actuel. Utilisé lorsqu'il n'y a pas de successeur
-		scenariosFirst = new ArrayList<ScenarioThetaStar>();
+		scenariosFirst = new ScenarioThetaStar[RayonCourbure.values().length];
 
 		// Scenario qui prend en compte le point actuel et son prédécesseur (selon le principe du Theta*)
-		scenariosSansRebroussement = new ArrayList<ScenarioThetaStar>();
+		scenariosSansRebroussement = new ScenarioThetaStar[(RayonCourbure.values().length - 1) * 2];
 		
 		// Scenario qui prend en compte uniquement le point actuel. Utilisé lorsqu'il n'y a pas de successeur
-		scenariosFirstSansRebroussement = new ArrayList<ScenarioThetaStar>();
+		scenariosFirstSansRebroussement  = new ScenarioThetaStar[RayonCourbure.values().length - 1];
 
+		int k = 0;
 		for(int i = 0; i < 2; i++)
 			for(RayonCourbure r : RayonCourbure.values())
-				scenarios.add(new ScenarioThetaStar(i, r));	
+				scenarios[k++] = new ScenarioThetaStar(i, r);	
+		k = 0;
 		for(RayonCourbure r : RayonCourbure.values())
-			scenariosFirst.add(new ScenarioThetaStar(ACTUEL, r));	
+				scenariosFirst[k++] = new ScenarioThetaStar(ACTUEL, r);	
 
+		k = 0;
 		for(int i = 0; i < 2; i++)
 			for(RayonCourbure r : RayonCourbure.values())
 				if(r != RayonCourbure.REBROUSSEMENT)
-					scenariosSansRebroussement.add(new ScenarioThetaStar(i, r));	
+					scenariosSansRebroussement[k++] = new ScenarioThetaStar(i, r);	
+		k = 0;
 		for(RayonCourbure r : RayonCourbure.values())
 			if(r != RayonCourbure.REBROUSSEMENT)
-				scenariosFirstSansRebroussement.add(new ScenarioThetaStar(ACTUEL, r));
+				scenariosFirstSansRebroussement[k++] = new ScenarioThetaStar(ACTUEL, r);
 	}
 	
 	@Override
@@ -104,48 +109,67 @@ public class ArcManager implements Service
 		if(directionstrategy.pointRebroussementPossible)
 		{
 			if(predecesseur == null)
-				scenarioIterator = scenariosFirst.listIterator();
+			{
+				scenarioIterator = 0;
+				tableDesScenario = scenariosFirst;
+			}
 			else
-				scenarioIterator = scenarios.listIterator();
+			{
+				scenarioIterator = 0;
+				tableDesScenario = scenarios;
+			}
 		}
 		else
 		{
 			if(predecesseur == null)
-				scenarioIterator = scenariosFirstSansRebroussement.listIterator();
+			{
+				scenarioIterator = 0;
+				tableDesScenario = scenariosFirstSansRebroussement;
+			}
 			else
-				scenarioIterator = scenariosSansRebroussement.listIterator();			
+			{
+				scenarioIterator = 0;
+				tableDesScenario = scenariosSansRebroussement;
+			}
 		}
 		
 		nodes[PREDECESSEUR] = predecesseur;
 		nodes[ACTUEL] = actuel;
-		voisins = dstarlite.getListVoisins(actuel.hash);
-		voisinsIter = voisins.iterator();
+		ArrayList<Integer> liste = dstarlite.getListVoisins(actuel.hash);
+		int k = 0;
+		for(Integer v: liste)
+			voisins[k++] = v;
+		voisinsLength = k;
+//		voisins = dstarlite.getListVoisins(actuel.hash).toArray(exemple);
+		voisinsIter = 0;
 		nbSuccesseur = 0;
-		scenarioActuel = scenarioIterator.next();
-		pasDeVoisin = voisins.isEmpty();
+		scenarioActuel = tableDesScenario[0];
+//		pasDeVoisin = voisinsLength == 0;
 
 	}
 
 	public boolean hasNext()
 	{
-		if(pasDeVoisin)
-			return false;
+//		if(pasDeVoisin)
+//			return false;
 		if(accepted == true)
 			nbSuccesseur++;
 		
 		// Changement de scénario
-		if(nbSuccesseur == nbSuccesseurMax || !voisinsIter.hasNext())
+		if(nbSuccesseur == nbSuccesseurMax || voisinsIter == voisinsLength)
 		{
-			if(!scenarioIterator.hasNext())
+			if(scenarioIterator == tableDesScenario.length)
 				return false;
-			scenarioActuel = scenarioIterator.next();
-			voisinsIter = voisins.iterator();
+			scenarioActuel = tableDesScenario[scenarioIterator];
+			scenarioIterator++;
+			voisinsIter = 0;
 		}
 
 		// Création du LocomotionArc
 		RobotChrono robot = nodes[scenarioActuel.noeudActuel].state.robot;
 //		Vec2<ReadOnly> positionRobot = gridspace.computeVec2(robot.getPositionGridSpace());
-		int gridpointArrivee = voisinsIter.next();
+		int gridpointArrivee = voisins[voisinsIter];
+		voisinsIter++;
 //		Vec2<ReadOnly> arrivee = gridspace.computeVec2(gridpointArrivee);
 //		double angleConsigne = Math.atan2(arrivee.y - positionRobot.y, arrivee.x - positionRobot.x);
 
@@ -153,7 +177,7 @@ public class ArcManager implements Service
 //			angleConsigne += Math.PI;
 
 		next = memorymanager.getNewArc();
-		next.update(robot.getPositionGridSpace(), robot.getOrientationAvance(), robot.isEnMarcheAvant(), /*angleConsigne,*/ scenarioActuel.rayonCourbure, gridpointArrivee);
+		next.update(robot.getPositionGridSpace(), robot.getOrientationAvance(), scenarioActuel.rayonCourbure, gridpointArrivee);
 
 //		log.debug("next : "+next);
 		
@@ -173,7 +197,7 @@ public class ArcManager implements Service
 	public boolean nextAccepted()
 	{
 		// Si le dstarlite ne fournit pas d'heuristique… pour le moment on abandonne juste
-		if(dstarlite.heuristicCostThetaStar(next.getGridpointArrivee()) == Integer.MAX_VALUE)
+		if(!dstarlite.isThisNodeUptodate(next.getGridpointArrivee()))
 			return false;
 		// TODO
 		// il faut: vérifier s'il y a collision

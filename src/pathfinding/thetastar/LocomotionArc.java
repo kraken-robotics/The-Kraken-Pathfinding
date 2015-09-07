@@ -3,7 +3,7 @@ package pathfinding.thetastar;
 import java.util.ArrayList;
 
 import pathfinding.dstarlite.GridSpace;
-import permissions.ReadWrite;
+import permissions.ReadOnly;
 import utils.Vec2;
 
 /**
@@ -16,22 +16,25 @@ import utils.Vec2;
 public class LocomotionArc
 {
 	private int pointDuDemiPlanGridpoint;
-	private Vec2<ReadWrite> pointDuDemiPlan;
-	private Vec2<ReadWrite> normaleAuDemiPlan;
 	private double orientationAuHook;
-	private Vec2<ReadWrite> destination;
-	private double angleConsigne;
 	private RayonCourbure rayonCourbure;
 	private int gridpointArrivee;
-	private boolean enMarcheAvant;
 	private int indiceMemoryManager;
 	
 	public LocomotionArc()
 	{}
-	
+		
 	public void copy(LocomotionArc other)
 	{
-		// TODO
+		other.pointDuDemiPlanGridpoint= pointDuDemiPlanGridpoint;
+		other.orientationAuHook = orientationAuHook;
+		other.rayonCourbure = rayonCourbure;
+		other.gridpointArrivee = gridpointArrivee;
+	}
+	
+	public final double getOrientationAuHook()
+	{
+		return orientationAuHook;
 	}
 	
 	public final int getGridpointArrivee()
@@ -40,12 +43,11 @@ public class LocomotionArc
 	}
 	
 	public void update(int pointDuDemiPlanGridpoint,
-			double orientationAuHook, boolean enMarcheAvant,
+			double orientationAuHook,
 			RayonCourbure rayonCourbure, int gridpointArrivee)
 	{
 		this.pointDuDemiPlanGridpoint = pointDuDemiPlanGridpoint;
 		this.orientationAuHook = orientationAuHook;
-//		this.angleConsigne = angleConsigne;
 		this.rayonCourbure = rayonCourbure;
 		this.gridpointArrivee = gridpointArrivee;
 	}
@@ -62,16 +64,16 @@ public class LocomotionArc
 	
 	public void completeArc(GridSpace gridspace)
 	{
-		gridspace.computeVec2(destination, gridpointArrivee);
-		gridspace.computeVec2(pointDuDemiPlan, pointDuDemiPlanGridpoint);
-		Vec2.setAngle(normaleAuDemiPlan, orientationAuHook);
-		angleConsigne = Math.atan2(destination.y - pointDuDemiPlan.y, destination.x - pointDuDemiPlan.x);
-		if(enMarcheAvant)
-			angleConsigne += Math.PI;
 	}
 	
-	public ArrayList<String> toSerial()
+	public ArrayList<String> toSerial(GridSpace gridspace)
 	{
+		Vec2<ReadOnly> destination = gridspace.computeVec2(gridpointArrivee);
+		Vec2<ReadOnly> pointDuDemiPlan = gridspace.computeVec2(pointDuDemiPlanGridpoint);
+		Vec2<ReadOnly> normaleAuDemiPlan = new Vec2<ReadOnly>(orientationAuHook);
+//		angleConsigne = Math.atan2(destination.y - pointDuDemiPlan.y, destination.x - pointDuDemiPlan.x);
+//		if(enMarcheAvant)
+//			angleConsigne += Math.PI;
 		ArrayList<String> out = new ArrayList<String>();
 		out.add(String.valueOf(pointDuDemiPlan.x));
 		out.add(String.valueOf(pointDuDemiPlan.y));
@@ -79,24 +81,25 @@ public class LocomotionArc
 		out.add(String.valueOf(normaleAuDemiPlan.y));
 		out.add(String.valueOf(destination.x));
 		out.add(String.valueOf(destination.y));
-		out.add(String.valueOf(new String(Long.toString(Math.round(angleConsigne*1000)))));
+//		out.add(String.valueOf(new String(Long.toString(Math.round(angleConsigne*1000)))));
 		out.add(String.valueOf(rayonCourbure));
 		return out;
 	}
 
-	public ArrayList<String> toSerialFirst()
+	public ArrayList<String> toSerialFirst(GridSpace gridspace)
 	{
+		Vec2<ReadOnly> destination = gridspace.computeVec2(gridpointArrivee);
 		ArrayList<String> out = new ArrayList<String>();
-//		out.add(String.valueOf(destination.x));
-//		out.add(String.valueOf(destination.y));
-		out.add(String.valueOf(new String(Long.toString(Math.round(angleConsigne*1000)))));
+		out.add(String.valueOf(destination.x));
+		out.add(String.valueOf(destination.y));
+//		out.add(String.valueOf(new String(Long.toString(Math.round(angleConsigne*1000)))));
 		out.add(String.valueOf(rayonCourbure));
 		return out;
 	}
 
 	public String toString()
 	{
-		return "Arc de "+pointDuDemiPlan+" à "+destination+" avec courbure "+rayonCourbure.rayon;
+		return "Arc de "+pointDuDemiPlanGridpoint+" à "+gridpointArrivee+" avec courbure "+rayonCourbure.rayon;
 	}
 
 	public final RayonCourbure getRayonCourbure()

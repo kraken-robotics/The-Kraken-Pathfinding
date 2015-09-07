@@ -89,7 +89,7 @@ public class ObstacleRectangular extends ObstacleAvecAngle
 	 */
 	public ObstacleRectangular(GameState<?,ReadOnly> state) throws FinMatchException
 	{
-		this(GameState.getPosition(state), longueurRobot, largeurRobot, GameState.getOrientation(state));
+		this(state.robot.getPosition(), longueurRobot, largeurRobot, state.robot.getOrientation());
 	}
 /*
 	public void update(Vec2<ReadOnly> position, double angle)

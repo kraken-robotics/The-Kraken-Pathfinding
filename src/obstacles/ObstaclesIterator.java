@@ -17,9 +17,9 @@ public class ObstaclesIterator implements Iterator<ObstacleProximity>
     private ObstaclesMemory memory;
     
     private int firstNotDead = 0;
+    private int nbTmp;
     private long lastDate = -1;
     private long dateInit;
-    private Iterator<ObstacleProximity> iterator;
     private boolean needInit = true;
 	
     public ObstaclesIterator(Log log, ObstaclesMemory memory)
@@ -79,20 +79,20 @@ public class ObstaclesIterator implements Iterator<ObstacleProximity>
 		if(lastDate == -1)
 			reinitNow();
 		else
-			iterator = memory.getIterator(firstNotDead);
+			nbTmp = firstNotDead;
 	}
 
 	/**
-	 * Calcule l'entrée où commence les obstacles maintenant
+	 * Calcule l'entrée où commencent les obstacles maintenant
 	 */
 	public void reinitNow()
 	{
 		firstNotDead = memory.getFirstNotDeadNow();
-		iterator = memory.getIteratorNow();
+		nbTmp = firstNotDead;
 	}
 	
 	/**
-	 * Calcule l'entrée où commencent les obstacles à cette date.
+	 * Calcule l'entrée où commence les obstacles à cette date.
 	 * Se fait à la copie.
 	 * @param date
 	 */
@@ -102,18 +102,16 @@ public class ObstaclesIterator implements Iterator<ObstacleProximity>
 		if(date < lastDate)
 			firstNotDead = memory.getFirstNotDeadNow();
 		
-		iterator = memory.getIterator(firstNotDead);
-		
 		ObstacleProximity next;
-		while(iterator.hasNext())
+		while(firstNotDead < memory.size())
 		{
-			next = iterator.next();
+			next = memory.getObstacle(firstNotDead);
 			if(next.isDestructionNecessary(date))
 				firstNotDead++;
 			else
 				break;
 		}
-//		nbTmp = firstNotDead;		
+		nbTmp = firstNotDead;		
 		lastDate = date;
 		needInit = false;
 	}
@@ -121,14 +119,13 @@ public class ObstaclesIterator implements Iterator<ObstacleProximity>
 	@Override
 	public boolean hasNext()
 	{		
-		return iterator.hasNext();
+		return nbTmp++ < memory.size();
 	}
 	
 	@Override
 	public ObstacleProximity next()
 	{
-		return iterator.next();
-//		return memory.getObstacle(nbTmp-1);
+		return memory.getObstacle(nbTmp-1);
 	}
 
 	@Override

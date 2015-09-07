@@ -22,11 +22,9 @@ envoie le protocole des actionneurs
 envoie la liste des hooks valables pour tout le match. Chaque nouvel appel écrase ceux envoyés précédemment
     hlst nb_hook [hooks]
 ajoute point à l'itinéraire
-    add x_point y_point x_direction y_direction x_destination y_destination angle_en_milliradians rayon_courbure
+    add x_point y_point x_direction y_direction x_destination y_destination rayon_courbure
 commence un nouvel itinéraire (tourne dès maintenant)
-    addf angle_en_milliradians rayon_courbure
-termine un itinéraire
-    addl x_point y_point
+    addf x_destination y_destination rayon_courbure
 
 Inutilisés :
 désactiver asservissement (rotation et translation)
