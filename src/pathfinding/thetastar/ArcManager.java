@@ -135,7 +135,7 @@ public class ArcManager implements Service
 		
 		nodes[PREDECESSEUR] = predecesseur;
 		nodes[ACTUEL] = actuel;
-		ArrayList<Integer> liste = dstarlite.getListVoisins(actuel.hash);
+		ArrayList<Integer> liste = dstarlite.getListVoisins(actuel.gridpoint);
 		int k = 0;
 		for(Integer v: liste)
 			voisins[k++] = v;

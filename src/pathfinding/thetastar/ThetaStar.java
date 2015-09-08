@@ -8,6 +8,7 @@ import pathfinding.dstarlite.GridSpace;
 import permissions.ReadOnly;
 import permissions.ReadWrite;
 import container.Service;
+import exceptions.PathfindingException;
 import robot.DirectionStrategy;
 import robot.RobotChrono;
 import robot.RobotReal;
@@ -36,9 +37,9 @@ public class ThetaStar implements Service
 	private GameState<RobotReal,ReadOnly> state;
 	private CheminPathfinding cheminContainer;
 	private GameState<RobotChrono,ReadWrite> stateSuccesseur;
-	private GameState<RobotChrono,ReadWrite> last;
 	private long nbPF = 0;
 	private Fenetre fenetre;
+	private int hashArrivee;
 
 	/**
 	 * Constructeur du ThetaStar
@@ -51,7 +52,6 @@ public class ThetaStar implements Service
 		this.state = state;
 		this.cheminContainer = chemin;
 
-		last = GameState.cloneGameState(state);
 		stateSuccesseur = GameState.cloneGameState(state);
 
 		for(int i = 0; i < GridSpace.NB_POINTS; i++)
@@ -68,22 +68,25 @@ public class ThetaStar implements Service
 	 * @param endNode
 	 * @param shoot_game_element
 	 * @return
+	 * @throws PathfindingException 
 	 */
-	public synchronized void computeNewPath(int arrivee, boolean ejecteGameElement, DirectionStrategy directionstrategy)
+	public synchronized void computeNewPath(int arrivee, boolean ejecteGameElement, DirectionStrategy directionstrategy) throws PathfindingException
 	{
 		if(Config.graphicThetaStar)
 			fenetre.setColor(arrivee, Fenetre.Couleur.VIOLET);
-		ThetaStarNode depart;
+
 		this.directionstrategyactuelle = directionstrategy;
-		GameState.copyThetaStar(state, last);
 		arcmanager.setEjecteGameElement(ejecteGameElement);
-		dstarlite.computeNewPath(last.robot.getPositionGridSpace(), arrivee);
-		do {
-			depart = memory[last.robot.getPositionGridSpace()];
-			depart.init();
-			GameState.copyThetaStar(last.getReadOnly(), depart.state);
+		
+		ThetaStarNode depart;
+		synchronized(state)
+		{
+			depart = memory[state.robot.getPositionGridSpace()];
+			GameState.copyThetaStar(state, depart.state);
 		}
-		while(!process(depart));
+		
+		dstarlite.computeNewPath(depart.gridpoint, arrivee);
+		process(depart);
 		
 		if(Config.graphicThetaStar)
 			printChemin();
@@ -96,71 +99,70 @@ public class ThetaStar implements Service
 			fenetre.setColor(arc.getGridpointArrivee(), Fenetre.Couleur.VIOLET);
 	}
 	
-	public synchronized void updatePath()
+	public synchronized void updatePath() throws PathfindingException
 	{
+
 		ThetaStarNode depart;
-		GameState.copyThetaStar(state, last);
-		dstarlite.updatePath(last.robot.getPosition());
-		do {
-			depart = memory[last.robot.getPositionGridSpace()];
-			depart.init();
-			GameState.copyThetaStar(last.getReadOnly(), depart.state);
+		synchronized(state)
+		{
+			depart = memory[state.robot.getPositionGridSpace()];
+			GameState.copyThetaStar(state, depart.state);
 		}
-		// TODO : les process relancés parce que le chemin a été en partie fixé peut être amélioré
-		// Par exemple, garder le closedset
-		while(!process(depart));
+		
+		dstarlite.updatePath(depart.gridpoint);
+		process(depart);
+		
+		if(Config.graphicThetaStar)
+			printChemin();
 	}
-	
+		
 	/**
 	 * Le calcul du ThetaStar
 	 * @param depart
-	 * @param arcmanager
-	 * @param shouldReconstruct
-	 * @return 
+	 * @return
 	 */
-	private boolean process(ThetaStarNode depart)
+	private void process(ThetaStarNode depart)
 	{
-		arcmanager.emptyMemoryManager();
 		nbPF++;
-		int hashArrivee = dstarlite.getHashArrivee();
+		closedset.clear();
+		depart.came_from = null;
+		depart.came_from_arc = null;
+		depart.nbPF = nbPF;
+		depart.g_score = 0;
+		depart.f_score = arcmanager.heuristicCostThetaStar(depart.state.getReadOnly());
+		hashArrivee = dstarlite.getHashArrivee();
+
+		cheminContainer.notUptodate();
+		arcmanager.emptyMemoryManager();
 
 		openset.clear();
-		closedset.clear();
-
-		depart.nbPF = nbPF;
-		depart.g_score = 0;	// Cost from start along best known path.
-		// Estimated total cost from start to goal through y.
-		depart.f_score = arcmanager.heuristicCostThetaStar(depart.state.getReadOnly());
-		
 		openset.add(depart);	// The set of tentative nodes to be evaluated, initially containing the start node
 
-		ThetaStarNode current;
+		ThetaStarNode current, best;
 
-		while(!openset.isEmpty())
+		do
 		{
 			current = openset.poll();
+			best = current;
 			
-			if(closedset.get(current.hash))
+			if(closedset.get(current.gridpoint))
 			{
 //				arcmanager.destroyArc(current.came_from_arc);
 				continue;
 			}
 
 			if(Config.graphicThetaStar)
-				fenetre.setColor(current.hash, Fenetre.Couleur.JAUNE);
+				fenetre.setColor(current.gridpoint, Fenetre.Couleur.JAUNE);
 			
-			closedset.set(current.hash);
+			closedset.set(current.gridpoint);
 
 //			log.debug(current);
 			
-			if(reconstruct(current))
-				return false;
-
 			// Si on est arrivé, on reconstruit le chemin
-			if(current.hash == hashArrivee)
+			if(current.gridpoint == hashArrivee)
 			{
 //				log.debug("On est arrivé !");
-				return true;
+				partialReconstruct(best);
 			}
 			
 			// On parcourt les voisins de current et de son prédecesseur.
@@ -169,7 +171,14 @@ public class ThetaStar implements Service
 			
 			while(arcmanager.hasNext())
 			{
- 
+				if(cheminContainer.isNeededToStartAgain())
+				{
+					partialReconstruct(best);
+					openset.clear();
+					openset.add(best);
+					break;
+				}
+
 				LocomotionArc voisin = arcmanager.nextProposition();
 //				log.debug("Voisin : "+voisin);
 				if(closedset.get(voisin.getGridpointArrivee()) || !arcmanager.nextAccepted())
@@ -179,10 +188,6 @@ public class ThetaStar implements Service
 				}
 				
 				current = arcmanager.noeudPere();
-//				if(arcmanager.isFromPredecesseur())
-//					current = current_sauv.came_from;
-//				else
-//					current = current_sauv;
 
 				GameState.copyThetaStar(current.state.getReadOnly(), stateSuccesseur);
 
@@ -203,7 +208,7 @@ public class ThetaStar implements Service
 				if(tentative_f_score < successeur.f_score)
 				{
 					if(Config.graphicThetaStar)
-						fenetre.setColor(successeur.hash, Fenetre.Couleur.BLEU);
+						fenetre.setColor(successeur.gridpoint, Fenetre.Couleur.BLEU);
 
 					GameState.copyThetaStar(stateSuccesseur.getReadOnly(), successeur.state);
 					successeur.came_from = current;
@@ -221,40 +226,21 @@ public class ThetaStar implements Service
 //					arcmanager.destroyArc(voisin);
 				
 				if(Config.graphicThetaStar)
-					fenetre.setColor(current.hash, Fenetre.Couleur.ROUGE);
+					fenetre.setColor(current.gridpoint, Fenetre.Couleur.ROUGE);
 
 			}
 			
-		}
+		} while(!openset.isEmpty());
 		
-		// Pathfinding terminé sans avoir atteint l'arrivée.
-		return true;
-		
+		/**
+		 * Impossible car DStarLite a déjà trouvé un chemin.
+		 */
+		log.critical("ThetaStar n'a pas trouvé de chemin !");
+		return;
 	}
 	
-/*	private void addToOpenset(ThetaStarNode node)
+	private void partialReconstruct(ThetaStarNode best)
 	{
-		Iterator<ThetaStarNode> iterator = openset.listIterator();
-		int i = 0;
-		while(iterator.hasNext())
-		{
-			ThetaStarNode nodeList = iterator.next();
-			// Contrairement à DStarLite qui explore près du point de départ, ThetaStar, en cas d'égalité, poursuit son chemin
-			if(node.f_score < nodeList.f_score || (node.f_score == nodeList.f_score && node.g_score > nodeList.g_score))
-			{
-				openset.add(i, node);
-				return;
-			}
-			i++;
-		}
-		openset.add(node);
-	}
-*/
-	// TODO : reconstruire à la demande et pas à chaque fois
-	private boolean reconstruct(ThetaStarNode best)
-	{
-		if(cheminContainer.isNeedToStartAgain())
-			return true;
 		synchronized(cheminContainer)
 		{
 			int k = 0;
@@ -271,8 +257,8 @@ public class ThetaStar implements Service
 			}
 			cheminContainer.setDernierIndiceChemin(k-1);
 		}
-		GameState.copyThetaStar(best.state.getReadOnly(), last);
-		return false;
+		openset.clear();
+		openset.add(best);
 	}
 
 	@Override

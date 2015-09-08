@@ -3,6 +3,7 @@ package threads;
 import obstacles.ObstaclesIterator;
 import obstacles.ObstaclesMemory;
 import container.Service;
+import exceptions.PathfindingException;
 import pathfinding.thetastar.ThetaStar;
 import utils.Config;
 import utils.Log;
@@ -50,7 +51,12 @@ public class ThreadPathfinding extends Thread implements Service
 					urgence = true;
 					break;
 				}
-			pathfinding.updatePath();
+			try {
+				pathfinding.updatePath();
+			} catch (PathfindingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 
 //		log.debug("Fermeture de ThreadPathfinding");

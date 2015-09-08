@@ -9,6 +9,7 @@ import utils.Config;
 import utils.Log;
 import utils.Vec2;
 import container.Service;
+import exceptions.PathfindingException;
 
 /**
  * Recherche de chemin avec replanification rapide.
@@ -92,7 +93,7 @@ public class DStarLite implements Service
 		}
 	}
 	
-	private void computeShortestPath()
+	private void computeShortestPath() throws PathfindingException
 	{
 		DStarLiteNode u;
 		Cle kold = new Cle();
@@ -181,23 +182,17 @@ public class DStarLite implements Service
 
 		}
 
-		// Il faut en plus calculer g pour le point de départ pour theta*
-		for(int i = 0; i < 8; i++)
-		{
-			int voisin = gridspace.getGridPointVoisin(depart.gridpoint, i);
-			if(voisin < 0)
-				continue;
-			DStarLiteNode s = getFromMemory(voisin);
-			depart.g = Math.min(depart.g, add(s.g, gridspace.distanceDStarLite(depart.gridpoint, i)));
-		}
+		if(depart.rhs == Integer.MAX_VALUE)
+			throw new PathfindingException();
 	}
 
 	/**
 	 * Calcule un nouvel itinéraire.
 	 * @param arrivee (un Vec2)
 	 * @param depart (un gridpoint)
+	 * @throws PathfindingException 
 	 */
-	public void computeNewPath(Vec2<ReadOnly> depart, int arrivee)
+	public void computeNewPath(Vec2<ReadOnly> depart, int arrivee) throws PathfindingException
 	{
 		computeNewPath(gridspace.computeGridPoint(depart), arrivee);
 	}
@@ -205,8 +200,9 @@ public class DStarLite implements Service
 	 * Calcule un nouvel itinéraire.
 	 * @param arrivee (un Vec2)
 	 * @param depart (un gridpoint)
+	 * @throws PathfindingException 
 	 */
-	public void computeNewPath(int depart, int arrivee)
+	public void computeNewPath(int depart, int arrivee) throws PathfindingException
 	{
 //		log.debug("Calcul chemin D* Lite entre "+depart+" et "+gridspace.computeVec2(arrivee));
 		nbPF++;
@@ -247,10 +243,11 @@ public class DStarLite implements Service
 	
 	/**
 	 * Met à jour le pathfinding
+	 * @throws PathfindingException 
 	 */
-	public void updatePath(Vec2<ReadOnly> positionRobot)
+	public void updatePath(int positionRobot) throws PathfindingException
 	{
-		depart = getFromMemory(gridspace.computeGridPoint(positionRobot));
+		depart = getFromMemory(positionRobot);
 		km += distanceHeuristique(last);
 		last = depart.gridpoint;
 		
@@ -306,7 +303,7 @@ public class DStarLite implements Service
 	 */
 	public int heuristicCostThetaStar(int gridpoint)
 	{
-		return getFromMemory(gridpoint).g;
+		return getFromMemory(gridpoint).rhs;
 	}
 	
 	public int getHashDebut()

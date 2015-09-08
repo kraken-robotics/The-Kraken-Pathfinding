@@ -13,21 +13,20 @@ import strategie.GameState;
 
 public class ThetaStarNode
 {
-
 	public GameState<RobotChrono,ReadWrite> state;
 	public ThetaStarNode came_from;
 	public LocomotionArc came_from_arc;
 	public int g_score;
 	public int f_score;
-	public final int hash;
+	public final int gridpoint;
 	public long nbPF = 0;
 
 	public ThetaStarNode(GameState<RobotChrono, ReadWrite> state, int hash)
 	{
 		this.state = state;
-		this.hash = hash;
+		this.gridpoint = hash;
 	}
-	
+
 	public void init()
 	{
 		came_from = null;
@@ -35,11 +34,11 @@ public class ThetaStarNode
 		g_score = Integer.MAX_VALUE;
 		f_score = Integer.MAX_VALUE;		
 	}
-	
+
 	@Override
 	public int hashCode()
 	{
-		return hash;
+		return gridpoint;
 	}
 	
 	@Override
@@ -56,8 +55,8 @@ public class ThetaStarNode
 	@Override
 	public String toString()
 	{
-		int x = hash & (GridSpace.NB_POINTS_POUR_TROIS_METRES - 1);
-		int y = hash >> GridSpace.PRECISION;
+		int x = gridpoint & (GridSpace.NB_POINTS_POUR_TROIS_METRES - 1);
+		int y = gridpoint >> GridSpace.PRECISION;
 		return x+" "+y;
 	}
 
