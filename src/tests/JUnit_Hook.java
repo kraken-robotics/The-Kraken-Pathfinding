@@ -1,40 +1,14 @@
 package tests;
 
-import java.util.ArrayList;
-
-import org.junit.Assert;
-
-import hook.Callback;
-import hook.Hook;
 import hook.HookFactory;
-import hook.methods.GameElementDone;
-import hook.methods.ThrowScriptRequest;
-import hook.methods.UtiliseActionneur;
-import hook.types.HookContact;
-import hook.types.HookDate;
-import hook.types.HookDemiPlan;
-import hook.types.HookPosition;
 
 import org.junit.Before;
-import org.junit.Test;
 
-import permissions.ReadOnly;
 import permissions.ReadWrite;
-import planification.Pathfinding;
-import planification.astar.AStar;
-import planification.astar.arc.PathfindingNodes;
-import planification.astar.arcmanager.PathfindingArcManager;
 import container.ServiceNames;
-import robot.ActuatorOrder;
 import robot.RobotChrono;
 import robot.RobotReal;
-import scripts.ScriptHookNames;
 import strategie.GameState;
-import table.GameElementNames;
-import utils.ConfigInfo;
-import utils.Vec2;
-import enums.Tribool;
-import exceptions.PathfindingException;
 
 /**
  * Tests unitaires des hooks
@@ -47,7 +21,6 @@ public class JUnit_Hook extends JUnit_Test {
 	private HookFactory hookfactory;
 	private GameState<RobotReal,ReadWrite> real_gamestate;
 	private GameState<RobotChrono,ReadWrite> chrono_gamestate;
-	private Pathfinding pathfinding;
 
 	@SuppressWarnings("unchecked")
 	@Before
@@ -56,36 +29,7 @@ public class JUnit_Hook extends JUnit_Test {
         hookfactory = (HookFactory) container.getService(ServiceNames.HOOK_FACTORY);
         real_gamestate = (GameState<RobotReal,ReadWrite>) container.getService(ServiceNames.REAL_GAME_STATE);
         chrono_gamestate = GameState.cloneGameState(real_gamestate.getReadOnly());
-        pathfinding = (Pathfinding)container.getService(ServiceNames.D_STAR_LITE);
     }
-   
-	@Test
-	public void test_hook_vrai_avancer() throws Exception
-	{
-		ArrayList<Hook> hooks = new ArrayList<Hook>();
-		Hook h = new HookPosition(log, null, new Vec2<ReadOnly>(456,789), 20);
-		h.ajouter_callback(new Callback(new GameElementDone(null, GameElementNames.CLAP_3, Tribool.TRUE)));
-		h.ajouter_callback(new Callback(new UtiliseActionneur(ActuatorOrder.BAISSE_TAPIS_DROIT)));
-		hooks.add(h);
-		Hook h2 = new HookDate(log, null, 5000);
-		h2.ajouter_callback(new Callback(new GameElementDone(null, GameElementNames.CLAP_3, Tribool.TRUE),true));
-		hooks.add(h2);
-		Hook h3 = new HookDemiPlan(log, null, new Vec2<ReadOnly>(456,789), new Vec2<ReadOnly>(78974,012));
-		h3.ajouter_callback(new Callback(new ThrowScriptRequest(ScriptHookNames.EXEMPLE, 8)));
-		hooks.add(h3);
-		Hook h4 = new HookContact(log,null,10);
-		hooks.add(h4);
-		GameState.avancer(real_gamestate, 500, hooks);
-/*		config.set(ConfigInfo.DATE_DEBUT_MATCH, System.currentTimeMillis());
-		ArrayList<Hook> hooks_table = hookfactory.getHooksEntreScriptsReal(real_gamestate);
-		GameState.setPosition(real_gamestate, new Vec2<ReadOnly>(950, 650));
-		GameState.setOrientation(real_gamestate, Math.PI);
-		Assert.assertEquals(GameState.isDone(real_gamestate.getReadOnly(), GameElementNames.PLOT_7), Tribool.FALSE);
-		GameState.avancer(real_gamestate, 100, hooks_table);
-		Assert.assertEquals(GameState.isDone(real_gamestate.getReadOnly(), GameElementNames.PLOT_7), Tribool.FALSE);
-		GameState.avancer(real_gamestate, 500, hooks_table);
-		Assert.assertEquals(GameState.isDone(real_gamestate.getReadOnly(), GameElementNames.PLOT_7), Tribool.TRUE);*/
-	}
 /*
 	@Test
 	public void test_hook_chrono_avancer() throws Exception

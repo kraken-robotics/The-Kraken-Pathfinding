@@ -5,10 +5,10 @@ import obstacles.types.ObstacleProximity;
 import obstacles.types.ObstacleRectangular;
 import obstacles.types.ObstacleTrajectoireCourbe;
 import obstacles.types.ObstaclesFixes;
+import pathfinding.thetastar.LocomotionArc;
 import pathfinding.thetastar.RayonCourbure;
 import permissions.ReadOnly;
 import robot.RobotReal;
-import robot.Speed;
 import strategie.GameState;
 import table.GameElementNames;
 import utils.Config;
@@ -151,21 +151,14 @@ public class MoteurPhysique implements Service {
 	}
 	
 
-	public boolean isTraversableCourbe(GameState<RobotReal,ReadOnly> state, PathfindingNodes objectifFinal, PathfindingNodes intersection, Vec2<ReadOnly> directionAvant, int tempsDepuisDebutMatch)
+	public boolean isTraversableCourbe(GameState<RobotReal,ReadOnly> state, LocomotionArc arc)
 	{
-		// TODO: calculer la vitesse qui permet exactement de passer?
-		Speed vitesse = Speed.BETWEEN_SCRIPTS;
-		
-		ObstacleTrajectoireCourbe obstacleTrajectoireCourbe = new ObstacleTrajectoireCourbe(objectifFinal, intersection, directionAvant, vitesse);
+		ObstacleTrajectoireCourbe obstacleTrajectoireCourbe = new ObstacleTrajectoireCourbe(arc);
 
 		// Collision avec un obstacle fixe?
     	for(ObstaclesFixes o: ObstaclesFixes.values)
     		if(obstacleTrajectoireCourbe.isColliding(o.getObstacle()))
     			return false;
-
-    	// Collision avec un ennemi hypothétique?
-  //      if(isThereHypotheticalEnemy && obstacleTrajectoireCourbe.isColliding(hypotheticalEnemy.getReadOnly()))
-  //      	return false;
 
     	state.iterator.reinit();
     	while(state.iterator.hasNext())

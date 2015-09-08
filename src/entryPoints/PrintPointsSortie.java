@@ -2,10 +2,7 @@ package entryPoints;
 import container.Container;
 import container.ServiceNames;
 import exceptions.ContainerException;
-import exceptions.FinMatchException;
 import exceptions.PointSortieException;
-import exceptions.SerialConnexionException;
-import exceptions.ThreadException;
 import utils.Config;
 import utils.ConfigInfo;
 
@@ -28,16 +25,17 @@ public class PrintPointsSortie {
 			e1.printStackTrace();
 			return;
 		}
+		Config config;
 		try {
-			Config config = (Config) container.getService(ServiceNames.CONFIG);
+			config = (Config) container.getService(ServiceNames.CONFIG);
 			config.set(ConfigInfo.CHECK_POINTS_SORTIE, "true");
 			container.getService(ServiceNames.D_STAR_LITE);
-		} catch (ContainerException | ThreadException
-				| SerialConnexionException | FinMatchException
-				| PointSortieException e) {
+			container.destructor();
+		} catch (ContainerException e) {
+			e.printStackTrace();
+		} catch (PointSortieException e) {
 			e.printStackTrace();
 		}
-		container.destructor();
 	}
 
 }

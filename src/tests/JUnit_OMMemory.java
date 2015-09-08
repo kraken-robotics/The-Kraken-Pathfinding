@@ -22,7 +22,7 @@ public class JUnit_OMMemory extends JUnit_Test {
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        memory = (ObstaclesMemory) container.getService(ServiceNames.OBSTACLES_MOBILES_MEMORY);
+        memory = (ObstaclesMemory) container.getService(ServiceNames.OBSTACLES_MEMORY);
         iterator = new ObstaclesIterator(log, memory);
     }
 

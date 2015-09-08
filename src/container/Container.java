@@ -162,7 +162,7 @@ public class Container
 		else if(serviceRequested == ServiceNames.CAPTEURS)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new Capteurs((Log)getService(ServiceNames.LOG),
 																					(Config) getService(ServiceNames.CONFIG),
-																					(ObstaclesMemory)getService(ServiceNames.OBSTACLES_MOBILES_MEMORY),
+																					(ObstaclesMemory)getService(ServiceNames.OBSTACLES_MEMORY),
 																					(RobotReal)getService(ServiceNames.ROBOT_REAL));
 		else if(serviceRequested == ServiceNames.TABLE)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new Table((Log)getService(ServiceNames.LOG),
@@ -186,11 +186,11 @@ public class Container
 			instanciedServices[serviceRequested.ordinal()] = (Service)new CheminPathfinding((Log)getService(ServiceNames.LOG));
 		
 		
-		else if(serviceRequested == ServiceNames.OBSTACLES_MOBILES_MEMORY)
+		else if(serviceRequested == ServiceNames.OBSTACLES_MEMORY)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ObstaclesMemory((Log)getService(ServiceNames.LOG));
 		else if(serviceRequested == ServiceNames.GRID_SPACE)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new GridSpace((Log)getService(ServiceNames.LOG),
-																					(ObstaclesMemory)getService(ServiceNames.OBSTACLES_MOBILES_MEMORY),
+																					(ObstaclesMemory)getService(ServiceNames.OBSTACLES_MEMORY),
 																					(Table)getService(ServiceNames.TABLE));
 
 		else if(serviceRequested == ServiceNames.STRATEGIE)
@@ -231,7 +231,7 @@ public class Container
                                                              (RobotReal)getService(ServiceNames.ROBOT_REAL),
         													 (HookFactory)getService(ServiceNames.HOOK_FACTORY),
 		 													 (DataForSerialOutput)getService(ServiceNames.SERIAL_OUTPUT_BUFFER),
-															 (ObstaclesMemory)getService(ServiceNames.OBSTACLES_MOBILES_MEMORY));
+															 (ObstaclesMemory)getService(ServiceNames.OBSTACLES_MEMORY));
 		else if(serviceRequested == ServiceNames.SCRIPT_MANAGER)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ScriptManager((HookFactory)getService(ServiceNames.HOOK_FACTORY),
 																					(Log)getService(ServiceNames.LOG),
@@ -261,11 +261,11 @@ public class Container
 																		(DataForSerialOutput)getService(ServiceNames.SERIAL_OUTPUT_BUFFER));
 		else if(serviceRequested == ServiceNames.THREAD_GRID_SPACE)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadGridSpace((Log)getService(ServiceNames.LOG),
-																		(ObstaclesMemory)getService(ServiceNames.OBSTACLES_MOBILES_MEMORY),
+																		(ObstaclesMemory)getService(ServiceNames.OBSTACLES_MEMORY),
 																		(GridSpace)getService(ServiceNames.GRID_SPACE));
 		else if(serviceRequested == ServiceNames.THREAD_GAME_ELEMENT_DONE_BY_ENEMY)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadGameElementDoneByEnemy((Log)getService(ServiceNames.LOG),
-																		(ObstaclesMemory)getService(ServiceNames.OBSTACLES_MOBILES_MEMORY),
+																		(ObstaclesMemory)getService(ServiceNames.OBSTACLES_MEMORY),
 																		(Table)getService(ServiceNames.TABLE),
 																		(MoteurPhysique)getService(ServiceNames.MOTEUR_PHYSIQUE));
 		else if(serviceRequested == ServiceNames.THREAD_CONFIG)

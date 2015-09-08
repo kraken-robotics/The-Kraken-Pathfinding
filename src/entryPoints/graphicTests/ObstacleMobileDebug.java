@@ -3,7 +3,7 @@ package entryPoints.graphicTests;
 import java.util.Random;
 
 import obstacles.Capteurs;
-import obstacles.ObstaclesIterator;
+import obstacles.ObstaclesMemory;
 import buffer.IncomingData;
 import buffer.IncomingDataBuffer;
 import permissions.ReadOnly;
@@ -31,11 +31,12 @@ public class ObstacleMobileDebug  {
 			Container container = new Container();
 			Log log = (Log) container.getService(ServiceNames.LOG);
 			Capteurs capteurs = (Capteurs) container.getService(ServiceNames.CAPTEURS);
-			ObstaclesIterator obstaclemanager = (ObstaclesIterator) container.getService(ServiceNames.OBSTACLE_MANAGER);
+			ObstaclesMemory memory = (ObstaclesMemory) container.getService(ServiceNames.OBSTACLES_MEMORY);
 			IncomingDataBuffer buffer = (IncomingDataBuffer) container.getService(ServiceNames.INCOMING_DATA_BUFFER);
-			Fenetre fenetre = new Fenetre();
+			Fenetre.setInstance(container);
+			Fenetre fenetre = Fenetre.getInstance();
 			fenetre.setCapteurs(capteurs);
-			fenetre.setObstaclesMobiles(obstaclemanager.getListObstaclesMobiles());
+			fenetre.setObstaclesMobiles(memory.getListObstaclesMobiles());
 			fenetre.showOnFrame();
 			int nbPoints = 1;
 			@SuppressWarnings("unchecked")
@@ -52,7 +53,7 @@ public class ObstacleMobileDebug  {
 			mesures[6] = 3000;
 			mesures[7] = 3000;
 			
-			buffer.add(new IncomingData(positionRobot, 0, 0, mesures, true));
+			buffer.add(new IncomingData(mesures, true));
 			Sleep.sleep(100);
 			fenetre.repaint();
 			if(true)
@@ -88,7 +89,7 @@ public class ObstacleMobileDebug  {
 					log.debug("Capteur "+j+": "+mesures[j]);
 				}
 
-				buffer.add(new IncomingData(positionRobot, 0, 0, mesures, true));
+				buffer.add(new IncomingData(mesures, true));
 				fenetre.repaint();
 				Sleep.sleep(dureeSleep);
 			}

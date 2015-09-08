@@ -27,8 +27,8 @@ public class ObstacleTrajectoireCourbe extends ObstacleRectanglesCollection
 	{
 		// La position de cet obstacle est inutile...
 		super(null);
-		
-		Vec2<ReadWrite> directionApres = new Vec2<ReadWrite>(intersection.getOrientationFinale(objectifFinal));
+/*		
+//		Vec2<ReadWrite> directionApres = new Vec2<ReadWrite>(intersection.getOrientationFinale(objectifFinal));
 
 		int rayonCourbure = arc.getRayonCourbure().rayon;
 
@@ -61,7 +61,7 @@ public class ObstacleTrajectoireCourbe extends ObstacleRectanglesCollection
 
 //		log.debug("Erreur! diff = "+(2*distanceAnticipation - rayonCourbure * Math.abs(angleRotation)), this);
 		
-//		segment = new SegmentTrajectoireCourbe(objectifFinal, (int)(2*distanceAnticipation - rayonCourbure * Math.abs(angleRotation)), distanceAnticipation, pointDepart.getReadOnly(), directionAvant.getReadOnly(), vitesse);
+//		segment = new SegmentTrajectoireCourbe(objectifFinal, (int)(2*distanceAnticipation - rayonCourbure * Math.abs(angleRotation)), distanceAnticipation, pointDepart.getReadOnly(), directionAvant.getReadOnly(), vitesse);*/
 	}
 
 	/**

@@ -5,8 +5,6 @@ import hook.Hook;
 import java.util.ArrayList;
 
 import permissions.ReadWrite;
-import planification.Chemin;
-import planification.Pathfinding;
 import container.Service;
 import exceptions.FinMatchException;
 import exceptions.ScriptException;

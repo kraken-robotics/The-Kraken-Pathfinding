@@ -6,7 +6,6 @@ import java.util.ArrayList;
 
 import pathfinding.thetastar.MemoryManager;
 import permissions.ReadOnly;
-import planification.Pathfinding;
 import robot.RobotReal;
 import scripts.ScriptManager;
 import utils.Config;
@@ -26,7 +25,7 @@ public class Strategie implements Service {
 	private ScriptManager scriptmanager;
 	private GameState<RobotReal,ReadOnly> real_gamestate;
 	private HookFactory hookfactory;
-	private Pathfinding pathfinding;
+//	private Pathfinding pathfinding;
 	private MemoryManager memorymanager;
 	
 //	public Strategie(Log log, ScriptManager scriptmanager, GameState<RobotReal,ReadOnly> real_gamestate, HookFactory hookfactory, Pathfinding pathfinding, MemoryManager memorymanager)

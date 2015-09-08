@@ -95,4 +95,13 @@ public class ObstaclesMemory implements Service
 		return firstNotDeadNow;
 	}
 
+	/**
+	 * Utilisé à fin de test uniquement
+	 * @return
+	 */
+	public ArrayList<ObstacleProximity> getListObstaclesMobiles()
+	{
+		return listObstaclesMobiles;
+	}
+
 }
