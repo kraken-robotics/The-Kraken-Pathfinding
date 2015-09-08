@@ -51,8 +51,8 @@ public class JUnit_GridSpace extends JUnit_Test {
 		Assert.assertTrue(gridspace.distanceHeuristiqueDStarLite(64, 1) == 1414);
 		Assert.assertTrue(gridspace.distanceHeuristiqueDStarLite(1, 1+2*64) == 2000);
 		Assert.assertTrue(gridspace.distanceHeuristiqueDStarLite(1+2*64, 1) == 2000);
-		Assert.assertTrue(gridspace.distanceHeuristiqueDStarLite(64, 63) == 63008);
-		Assert.assertTrue(gridspace.distanceHeuristiqueDStarLite(63, 64) == 63008);
+		Assert.assertTrue(gridspace.distanceHeuristiqueDStarLite(64, 63) == 63414);
+		Assert.assertTrue(gridspace.distanceHeuristiqueDStarLite(63, 64) == 63414);
 	}
 	
 	@Test

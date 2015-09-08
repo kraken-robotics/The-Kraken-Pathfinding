@@ -1,6 +1,6 @@
 package obstacles;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 
 import obstacles.types.ObstacleProximity;
 import permissions.ReadOnly;
@@ -21,7 +21,7 @@ import container.Service;
 public class ObstaclesMemory implements Service
 {
     // Les obstacles mobiles, c'est-à-dire des obstacles de proximité
-    private volatile ArrayList<ObstacleProximity> listObstaclesMobiles = new ArrayList<ObstacleProximity>();
+    private volatile LinkedList<ObstacleProximity> listObstaclesMobiles = new LinkedList<ObstacleProximity>();
     private int dureeAvantPeremption;
 	private int rayonEnnemi;
 	private volatile int size = 0;
@@ -61,18 +61,21 @@ public class ObstaclesMemory implements Service
 
 	public synchronized ObstacleProximity getObstacle(int nbTmp)
 	{
+		if(nbTmp < firstNotDeadNow)
+			return null;
 		return listObstaclesMobiles.get(nbTmp-firstNotDeadNow);
 	}
 
 	public synchronized void deleteOldObstacles()
 	{
+		long dateActuelle = System.currentTimeMillis();
 		boolean shouldNotify = false;
 		while(!listObstaclesMobiles.isEmpty())
 		{
-			if(listObstaclesMobiles.get(0).isDestructionNecessary(System.currentTimeMillis()))
+			if(listObstaclesMobiles.getFirst().isDestructionNecessary(dateActuelle))
 			{
 				firstNotDeadNow++;
-				listObstaclesMobiles.remove(0);
+				listObstaclesMobiles.removeFirst();
 				shouldNotify = true;
 			}
 			else
@@ -85,7 +88,7 @@ public class ObstaclesMemory implements Service
 	public synchronized long getNextDeathDate()
 	{
 	    if(!listObstaclesMobiles.isEmpty())
-	    	return listObstaclesMobiles.get(0).getDeathDate();
+	    	return listObstaclesMobiles.getFirst().getDeathDate();
 	    else
 	    	return Long.MAX_VALUE;
 	}
@@ -99,7 +102,7 @@ public class ObstaclesMemory implements Service
 	 * Utilisé à fin de test uniquement
 	 * @return
 	 */
-	public ArrayList<ObstacleProximity> getListObstaclesMobiles()
+	public LinkedList<ObstacleProximity> getListObstaclesMobiles()
 	{
 		return listObstaclesMobiles;
 	}

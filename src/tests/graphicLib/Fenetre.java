@@ -24,6 +24,7 @@ import java.io.File;
 import java.io.IOException;
 //import java.text.AttributedString;
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 /**
  * Interface graphique écrite à l'arrache
@@ -38,7 +39,7 @@ public class Fenetre extends JPanel {
 	
 	private int sizeX = 450, sizeY = 300;
 	private ArrayList<Vec2<ReadOnly>> pointsADessiner = new ArrayList<Vec2<ReadOnly>>();
-	private ArrayList<ObstacleProximity> listObstaclesMobiles;
+	private LinkedList<ObstacleProximity> listObstaclesMobiles;
 	private ArrayList<Vec2<ReadOnly>[]> segments = new ArrayList<Vec2<ReadOnly>[]>();
 	private Image image;
 	private Vec2<ReadWrite>[] point;
@@ -247,7 +248,7 @@ public class Fenetre extends JPanel {
 		this.firstNotDead = firstNotDead;
 	}
 	
-	public void setObstaclesMobiles(ArrayList<ObstacleProximity> listObstaclesMobiles)
+	public void setObstaclesMobiles(LinkedList<ObstacleProximity> listObstaclesMobiles)
 	{
 		this.firstNotDead = 0;
 		this.listObstaclesMobiles = listObstaclesMobiles;

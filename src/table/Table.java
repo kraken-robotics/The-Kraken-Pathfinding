@@ -23,7 +23,7 @@ public class Table implements Service
 	/** Version compressée de l'état de la table. Mélange les Tribool FALSE et MAYBE car on ne peut pas passer
 	 * de FALSE à MAYBE pendant une recherche de stratégie, donc deux nœuds au hash identiques auront bien
 	 * deux etatTable identiques **/
-	private volatile int hash;
+	private volatile int hash = 0;
 	
 	public Table(Log log, StrategieNotifieur notifieur)
 	{
@@ -65,6 +65,7 @@ public class Table implements Service
 	public void copy(Table ct)
 	{
 		ct.etatTable = etatTable;
+		ct.hash = hash;
 	}
 	
 	/**

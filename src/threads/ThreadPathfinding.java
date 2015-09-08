@@ -44,6 +44,7 @@ public class ThreadPathfinding extends Thread implements Service
 					e.printStackTrace();
 				}
 			}
+			// TODO : il faut qu'il ne fasse rien si on n'est pas en déplacement entre scripts
 			iterator.reinitNow();
 			while(iterator.hasNext())
 				if(iterator.next().isUrgent())
@@ -51,12 +52,12 @@ public class ThreadPathfinding extends Thread implements Service
 					urgence = true;
 					break;
 				}
-			try {
-				pathfinding.updatePath();
-			} catch (PathfindingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+//			try {
+//				pathfinding.updatePath();
+//			} catch (PathfindingException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
 		}
 
 //		log.debug("Fermeture de ThreadPathfinding");

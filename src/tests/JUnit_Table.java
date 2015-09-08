@@ -28,11 +28,16 @@ public class JUnit_Table extends JUnit_Test {
     @Test
     public void test_clone_copy() throws Exception
     {
+    	int hash = table.getHashLPAStar();
     	Table cloned_table = table.clone();
     	Assert.assertTrue(table.equals(cloned_table));
+        Assert.assertTrue(hash == cloned_table.getHashLPAStar());
         cloned_table.setDone(GameElementNames.CLAP_1, Tribool.TRUE);
+        Assert.assertTrue(hash != cloned_table.getHashLPAStar());
     	Assert.assertTrue(!table.equals(cloned_table));
     	cloned_table.copy(table);
+    	hash = table.getHashLPAStar();
+        Assert.assertTrue(hash == cloned_table.getHashLPAStar());
 		Assert.assertTrue(table.isDone(GameElementNames.CLAP_1) == Tribool.TRUE);
 		Assert.assertTrue(cloned_table.isDone(GameElementNames.CLAP_1) == Tribool.TRUE);
     	Assert.assertTrue(table.equals(cloned_table));
