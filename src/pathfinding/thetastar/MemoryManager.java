@@ -66,13 +66,13 @@ public class MemoryManager implements Service {
 	 * @param state
 	 * @param id_astar
 	 */
-	public void destroyArc(LocomotionArc arc)
+/*	public void destroyArc(LocomotionArc arc)
 	{
-		int indice_state = arc.getIndiceMemoryManager();
+		int indice_state = arc.getIndiceMemoryManager();*/
 		/**
 		 * S'il est déjà détruit, on lève une exception
 		 */
-		if(indice_state >= firstAvailable)
+/*		if(indice_state >= firstAvailable)
 		{
 			log.critical("MemoryManager veut détruire un objet déjà détruit !");
 		}
@@ -89,7 +89,7 @@ public class MemoryManager implements Service {
 
 		arcArray[firstAvailable] = tmp1;
 		arcArray[indice_state] = tmp2;
-	}
+	}*/
 	
 	/**
 	 * Signale que tous les arcs sont disponibles. Très rapide.

@@ -1,7 +1,5 @@
 package pathfinding.thetastar;
 
-import java.util.LinkedList;
-
 import utils.Config;
 import utils.Log;
 import container.Service;
@@ -9,11 +7,17 @@ import container.Service;
 public class CheminPathfinding implements Service
 {
 	protected Log log;
-	private volatile LinkedList<LocomotionArc> chemin = new LinkedList<LocomotionArc>();
-
+	private static final int NB_ARCS_MAX = 100;
+	private volatile LocomotionArc[] chemin = new LocomotionArc[NB_ARCS_MAX];
+	private volatile int dernierIndiceChemin = -1;
+	private boolean uptodate;
+	private boolean needToStartAgain;
+	
 	public CheminPathfinding(Log log)
 	{
 		this.log = log;
+		for(int i = 0 ; i < NB_ARCS_MAX; i++)
+			chemin[i] = new LocomotionArc();
 	}
 	
 	@Override
@@ -24,23 +28,47 @@ public class CheminPathfinding implements Service
 	public void useConfig(Config config)
 	{}
 
-	public synchronized void set(LinkedList<LocomotionArc> cheminTmp)
-	{
-		chemin = cheminTmp;
-	}
-
-	public synchronized LinkedList<LocomotionArc> get()
+	public synchronized LocomotionArc[] get()
 	{
 		return chemin;
 	}
 	
+	public synchronized void needToStartAgain()
+	{
+		needToStartAgain = true;
+	}
+	
 	/**
-	 * Signale à ThetaStar s'il faut ou non relancer le pathfinding avec un nouveau départ
+	 * Demande à ThetaStar s'il faut ou non relancer le pathfinding avec un nouveau départ
 	 * @return
 	 */
-	public synchronized boolean needToStartAgain()
+	public synchronized boolean isNeedToStartAgain()
 	{
-		return false;
+		boolean out = needToStartAgain;
+		needToStartAgain = false;
+		return out;
+	}
+
+	public synchronized void setDernierIndiceChemin(int dernierIndiceChemin)
+	{
+		uptodate = true;
+		this.dernierIndiceChemin = dernierIndiceChemin;
+		notify();
+	}
+
+	public int getDernierIndiceChemin()
+	{
+		return dernierIndiceChemin;
+	}
+	
+	public boolean isUptodate()
+	{
+		return uptodate;
+	}
+	
+	public void notUptodate()
+	{
+		uptodate = false;
 	}
 
 }

@@ -12,6 +12,8 @@ import container.Service;
 
 /**
  * Recherche de chemin avec replanification rapide.
+ * Fournit un chemin non courbe sous forme d'une ligne brisée.
+ * En fait utilisé comme heuristique par ThetaStar.
  * @author pf
  *
  */

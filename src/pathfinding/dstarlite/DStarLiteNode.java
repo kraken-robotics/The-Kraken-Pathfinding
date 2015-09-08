@@ -1,7 +1,7 @@
 package pathfinding.dstarlite;
 
 /**
- * Un nœud du pathfinding
+ * Un nœud du D* Lite.
  * @author pf
  *
  */
@@ -20,13 +20,13 @@ public class DStarLiteNode {
 	}
 	
 	@Override
-	public int hashCode()
+	public final int hashCode()
 	{
 		return gridpoint;
 	}
 	
 	@Override
-	public boolean equals(Object o)
+	public final boolean equals(Object o)
 	{
 		return gridpoint == o.hashCode();
 	}

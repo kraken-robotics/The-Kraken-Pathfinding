@@ -1,7 +1,7 @@
 package pathfinding.dstarlite;
 
 /**
- * Clé utilisé par le D* lite.
+ * Clé utilisée dans le D* lite.
  * @author pf
  *
  */

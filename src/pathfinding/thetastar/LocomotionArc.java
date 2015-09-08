@@ -19,7 +19,6 @@ public class LocomotionArc
 	private double orientationAuHook;
 	private RayonCourbure rayonCourbure;
 	private int gridpointArrivee;
-	private int indiceMemoryManager;
 	
 	public LocomotionArc()
 	{}
@@ -50,20 +49,6 @@ public class LocomotionArc
 		this.orientationAuHook = orientationAuHook;
 		this.rayonCourbure = rayonCourbure;
 		this.gridpointArrivee = gridpointArrivee;
-	}
-
-	public final int getIndiceMemoryManager()
-	{
-		return indiceMemoryManager;
-	}
-	
-	public final void setIndiceMemoryManager(int indiceMemoryManager)
-	{
-		this.indiceMemoryManager = indiceMemoryManager;
-	}
-	
-	public void completeArc(GridSpace gridspace)
-	{
 	}
 	
 	public ArrayList<String> toSerial(GridSpace gridspace)

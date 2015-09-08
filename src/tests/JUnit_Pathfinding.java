@@ -1,7 +1,6 @@
 package tests;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -60,7 +59,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
 		for(int i = 0; i < 10000; i++)
 		pathfindingCourbe.computeNewPath(gridspace.computeGridPoint(new Vec2<ReadOnly>(1000, 400)), true, DirectionStrategy.FASTEST);
 		log.debug("Durée d'une recherche : "+(System.currentTimeMillis() - avant)/10000.+" ms");
-		LinkedList<LocomotionArc> trajet = chemin.get();
+		LocomotionArc[] trajet = chemin.get();
 		for(LocomotionArc v : trajet)
 		{
 			log.debug(v);

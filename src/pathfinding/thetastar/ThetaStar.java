@@ -1,7 +1,6 @@
 package pathfinding.thetastar;
 
 import java.util.BitSet;
-import java.util.LinkedList;
 import java.util.PriorityQueue;
 
 import pathfinding.dstarlite.DStarLite;
@@ -28,7 +27,6 @@ public class ThetaStar implements Service
 	private PriorityQueue<ThetaStarNode> openset = new PriorityQueue<ThetaStarNode>(GridSpace.NB_POINTS, new ThetaStarNodeComparator());	 // The set of tentative nodes to be evaluated
 	private BitSet closedset = new BitSet(GridSpace.NB_POINTS);
 	
-	private LinkedList<LocomotionArc> cheminTmp = new LinkedList<LocomotionArc>();
 	private ThetaStarNode[] memory = new ThetaStarNode[GridSpace.NB_POINTS];
 	private DirectionStrategy directionstrategyactuelle;
 	
@@ -36,7 +34,7 @@ public class ThetaStar implements Service
 	private DStarLite dstarlite;
 	private ArcManager arcmanager;
 	private GameState<RobotReal,ReadOnly> state;
-	private CheminPathfinding chemin;
+	private CheminPathfinding cheminContainer;
 	private GameState<RobotChrono,ReadWrite> stateSuccesseur;
 	private GameState<RobotChrono,ReadWrite> last;
 	private long nbPF = 0;
@@ -51,7 +49,7 @@ public class ThetaStar implements Service
 		this.dstarlite = dstarlite;
 		this.arcmanager = arcmanager;
 		this.state = state;
-		this.chemin = chemin;
+		this.cheminContainer = chemin;
 
 		last = GameState.cloneGameState(state);
 		stateSuccesseur = GameState.cloneGameState(state);
@@ -93,7 +91,7 @@ public class ThetaStar implements Service
 	
 	private void printChemin()
 	{
-		LinkedList<LocomotionArc> cheminAff = chemin.get();	
+		LocomotionArc[] cheminAff = cheminContainer.get();	
 		for(LocomotionArc arc : cheminAff)
 			fenetre.setColor(arc.getGridpointArrivee(), Fenetre.Couleur.VIOLET);
 	}
@@ -255,22 +253,24 @@ public class ThetaStar implements Service
 	// TODO : reconstruire à la demande et pas à chaque fois
 	private boolean reconstruct(ThetaStarNode best)
 	{
-		if(true)
-			return false;
-		if(chemin.needToStartAgain())
+		if(cheminContainer.isNeedToStartAgain())
 			return true;
-		cheminTmp.clear();
-		ThetaStarNode noeud_parent = best;
-		LocomotionArc arc_parent = best.came_from_arc;
-//		log.debug("Chemin jusque là");
-		while(arc_parent != null)
+		synchronized(cheminContainer)
 		{
-//			log.debug(arc_parent);
-			cheminTmp.addFirst(arc_parent);
-			noeud_parent = noeud_parent.came_from;
-			arc_parent = noeud_parent.came_from_arc;
-		}			
-		chemin.set(cheminTmp);
+			int k = 0;
+			LocomotionArc[] chemin = cheminContainer.get();
+			ThetaStarNode noeud_parent = best;
+			LocomotionArc arc_parent = best.came_from_arc;
+			while(arc_parent != null)
+			{
+	//			log.debug(arc_parent);
+				arc_parent.copy(chemin[k]);
+				k++;
+				noeud_parent = noeud_parent.came_from;
+				arc_parent = noeud_parent.came_from_arc;
+			}
+			cheminContainer.setDernierIndiceChemin(k-1);
+		}
 		GameState.copyThetaStar(best.state.getReadOnly(), last);
 		return false;
 	}

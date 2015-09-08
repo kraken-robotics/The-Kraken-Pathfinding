@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
 
+import pathfinding.dstarlite.GridSpace;
+import pathfinding.thetastar.LocomotionArc;
 import pathfinding.thetastar.RayonCourbure;
 import permissions.ReadOnly;
 import robot.ActuatorOrder;
@@ -24,10 +26,12 @@ import utils.Vec2;
 public class DataForSerialOutput implements Service
 {
 	protected Log log;
+	private GridSpace gridspace;
 	
-	public DataForSerialOutput(Log log)
+	public DataForSerialOutput(Log log, GridSpace gridspace)
 	{
 		this.log = log;
+		this.gridspace = gridspace;
 	}
 	
 	private volatile Queue<ArrayList<String>> buffer = new LinkedList<ArrayList<String>>();
@@ -212,6 +216,26 @@ public class DataForSerialOutput implements Service
 			elems.add(String.valueOf(r.PWMTranslation));
 		}
 			
+		buffer.add(elems);
+		notify();		
+	}
+	
+	public synchronized void envoieLocomotionArcFirst(LocomotionArc arc)
+	{
+		ArrayList<String> elems = new ArrayList<String>();
+		elems.add(new String("addf"));
+		elems.addAll(arc.toSerialFirst(gridspace));
+
+		buffer.add(elems);
+		notify();		
+	}
+
+	public synchronized void envoieLocomotionArc(LocomotionArc arc)
+	{
+		ArrayList<String> elems = new ArrayList<String>();
+		elems.add(new String("add"));
+		elems.addAll(arc.toSerial(gridspace));
+
 		buffer.add(elems);
 		notify();		
 	}
