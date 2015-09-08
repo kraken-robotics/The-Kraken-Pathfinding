@@ -45,8 +45,9 @@ public class AStarMemoryManager implements Service {
 		// on prépare déjà des gamestates
 		log.debug("Instanciation de "+nb_instances+" GameState<RobotChrono>");
 
-		for(int i = 1; i < nb_instances; i++)
+		for(int i = 0; i < nb_instances; i++)
 		{
+			nodes[i] = new AStarNode();
 			nodes[i].state = GameState.cloneGameState(realstate);
 		}
 		log.debug("Instanciation finie");

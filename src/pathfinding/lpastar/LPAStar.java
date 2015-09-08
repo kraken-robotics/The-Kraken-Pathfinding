@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import pathfinding.GameState;
 import pathfinding.astar.AStar;
+import permissions.ReadOnly;
 import permissions.ReadWrite;
 import robot.RobotReal;
 import utils.Config;
@@ -21,11 +22,11 @@ import container.Service;
 
 public class LPAStar implements Service
 {
-	private GameState<RobotReal,ReadWrite> state;
+	private GameState<RobotReal,ReadOnly> state;
 	private AStar pathfinding;
 	private Log log;
 	
-	public LPAStar(Log log, GameState<RobotReal,ReadWrite> state, AStar pathfinding)
+	public LPAStar(Log log, GameState<RobotReal,ReadOnly> state, AStar pathfinding)
 	{
 		this.log = log;
 		this.state = state;

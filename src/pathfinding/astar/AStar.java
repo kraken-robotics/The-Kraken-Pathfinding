@@ -48,15 +48,17 @@ public class AStar implements Service
 	private int arrivee;
 	private AStarArcManager arcmanager;
 	private AStarMemoryManager memorymanager;
+	private GridSpaceStrategie gridspace;
 	
 	/**
 	 * Constructeur du AStar de pathfinding ou de stratégie, selon AM
 	 */
-	public AStar(Log log, AStarArcManager arcmanager, AStarMemoryManager memorymanager)
+	public AStar(Log log, AStarArcManager arcmanager, AStarMemoryManager memorymanager, GridSpaceStrategie gridspace)
 	{
 		this.log = log;
 		this.arcmanager = arcmanager;
 		this.memorymanager = memorymanager;
+		this.gridspace = gridspace;
 	}
 
 	/**

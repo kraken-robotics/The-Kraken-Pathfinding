@@ -1,5 +1,7 @@
 package pathfinding.astar;
 
+import container.Service;
+import utils.Config;
 import utils.Log;
 import exceptions.FinMatchException;
 
@@ -9,7 +11,7 @@ import exceptions.FinMatchException;
  *
  */
 
-public class AStarArcManager
+public class AStarArcManager implements Service
 {
 	protected Log log;
 
@@ -64,5 +66,13 @@ public class AStarArcManager
     {
 
     }
+
+	@Override
+	public void updateConfig(Config config)
+	{}
+
+	@Override
+	public void useConfig(Config config)
+	{}
 
 }

@@ -1,10 +1,8 @@
 package pathfinding.astar;
 
-import obstacles.ObstaclesMemory;
 import pathfinding.dstarlite.GridSpace;
 import permissions.ReadOnly;
 import permissions.ReadWrite;
-import table.Table;
 import utils.Config;
 import utils.Log;
 import utils.Vec2;
@@ -34,7 +32,7 @@ public class GridSpaceStrategie implements Service
 	private static final int X_MAX = NB_POINTS_POUR_TROIS_METRES-1;
 	private static final int Y_MAX = NB_POINTS_POUR_DEUX_METRES-1;
 
-	public GridSpaceStrategie(Log log, ObstaclesMemory memory, Table table)
+	public GridSpaceStrategie(Log log)
 	{
 		this.log = log;
 	}

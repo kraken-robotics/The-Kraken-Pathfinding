@@ -25,7 +25,7 @@ public class JUnit_MemoryManager extends JUnit_Test {
     public void setUp() throws Exception {
         super.setUp();
     	config.set(ConfigInfo.DUREE_PEREMPTION_OBSTACLES, 100);
-		memorymanager = (ThetaStarMemoryManager) container.getService(ServiceNames.MEMORY_MANAGER);
+		memorymanager = (ThetaStarMemoryManager) container.getService(ServiceNames.THETA_STAR_MEMORY_MANAGER);
 	}
 
 	@Test

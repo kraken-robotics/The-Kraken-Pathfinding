@@ -8,6 +8,10 @@ import buffer.IncomingDataBuffer;
 import buffer.IncomingHookBuffer;
 import pathfinding.GameState;
 import pathfinding.MoteurPhysique;
+import pathfinding.astar.AStar;
+import pathfinding.astar.AStarArcManager;
+import pathfinding.astar.AStarMemoryManager;
+import pathfinding.astar.GridSpaceStrategie;
 import pathfinding.dstarlite.DStarLite;
 import pathfinding.dstarlite.GridSpace;
 import pathfinding.lpastar.LPAStar;
@@ -175,15 +179,15 @@ public class Container
 		else if(serviceRequested == ServiceNames.THETA_STAR)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThetaStar((Log)getService(ServiceNames.LOG),
 																				(DStarLite)getService(ServiceNames.D_STAR_LITE),
-																				(ThetaStarArcManager)getService(ServiceNames.ARC_MANAGER),
+																				(ThetaStarArcManager)getService(ServiceNames.THETA_STAR_ARC_MANAGER),
 																				(GameState<RobotReal,ReadOnly>)getService(ServiceNames.REAL_GAME_STATE),
 																				(CheminPathfinding)getService(ServiceNames.CHEMIN_PATHFINDING));
-		else if(serviceRequested == ServiceNames.ARC_MANAGER)
+		else if(serviceRequested == ServiceNames.THETA_STAR_ARC_MANAGER)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThetaStarArcManager((Log)getService(ServiceNames.LOG),
 																				(MoteurPhysique)getService(ServiceNames.MOTEUR_PHYSIQUE),
 																				(GridSpace)getService(ServiceNames.GRID_SPACE),
 																				(DStarLite)getService(ServiceNames.D_STAR_LITE),
-																				(ThetaStarMemoryManager)getService(ServiceNames.MEMORY_MANAGER));
+																				(ThetaStarMemoryManager)getService(ServiceNames.THETA_STAR_MEMORY_MANAGER));
 		else if(serviceRequested == ServiceNames.CHEMIN_PATHFINDING)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new CheminPathfinding((Log)getService(ServiceNames.LOG));
 		
@@ -194,6 +198,22 @@ public class Container
 			instanciedServices[serviceRequested.ordinal()] = (Service)new GridSpace((Log)getService(ServiceNames.LOG),
 																					(ObstaclesMemory)getService(ServiceNames.OBSTACLES_MEMORY),
 																					(Table)getService(ServiceNames.TABLE));
+		else if(serviceRequested == ServiceNames.LPA_STAR)
+			instanciedServices[serviceRequested.ordinal()] = (Service)new LPAStar((Log)getService(ServiceNames.LOG),
+																					(GameState<RobotReal,ReadOnly>)getService(ServiceNames.REAL_GAME_STATE),
+																					(AStar)getService(ServiceNames.A_STAR));
+		else if(serviceRequested == ServiceNames.A_STAR)
+			instanciedServices[serviceRequested.ordinal()] = (Service)new AStar((Log)getService(ServiceNames.LOG),
+																					(AStarArcManager)getService(ServiceNames.A_STAR_ARC_MANAGER),
+																					(AStarMemoryManager)getService(ServiceNames.A_STAR_MEMORY_MANAGER),
+																					(GridSpaceStrategie)getService(ServiceNames.GRID_SPACE_STRATEGIE));
+		else if(serviceRequested == ServiceNames.GRID_SPACE_STRATEGIE)
+			instanciedServices[serviceRequested.ordinal()] = (Service)new GridSpaceStrategie((Log)getService(ServiceNames.LOG));
+		else if(serviceRequested == ServiceNames.A_STAR_ARC_MANAGER)
+			instanciedServices[serviceRequested.ordinal()] = (Service)new AStarArcManager((Log)getService(ServiceNames.LOG));
+		else if(serviceRequested == ServiceNames.A_STAR_MEMORY_MANAGER)
+			instanciedServices[serviceRequested.ordinal()] = (Service)new AStarMemoryManager((Log)getService(ServiceNames.LOG),
+																							(GameState<RobotReal,ReadOnly>)getService(ServiceNames.REAL_GAME_STATE));
 		else if(serviceRequested == ServiceNames.INCOMING_DATA_BUFFER)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new IncomingDataBuffer((Log)getService(ServiceNames.LOG));
 		else if(serviceRequested == ServiceNames.INCOMING_HOOK_BUFFER)
@@ -210,7 +230,7 @@ public class Container
   															 (ScriptManager)getService(ServiceNames.SCRIPT_MANAGER),
         													 (GameState<RobotReal,ReadWrite>)getService(ServiceNames.REAL_GAME_STATE),
         													 (RequeteSTM)getService(ServiceNames.REQUETE_STM));
-		else if(serviceRequested == ServiceNames.MEMORY_MANAGER)
+		else if(serviceRequested == ServiceNames.THETA_STAR_MEMORY_MANAGER)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThetaStarMemoryManager((Log)getService(ServiceNames.LOG));
 		else if(serviceRequested == ServiceNames.HOOK_FACTORY)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new HookFactory((Log)getService(ServiceNames.LOG));

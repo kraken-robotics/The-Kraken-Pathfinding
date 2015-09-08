@@ -8,7 +8,7 @@ import container.Service;
 
 /**
  * StrategieInfo est à la planification de stratégie
- * ce que l'ObstacleManager est à la recherche de chemin
+ * ce que la table est à la recherche de chemin
  * @author pf
  *
  */
