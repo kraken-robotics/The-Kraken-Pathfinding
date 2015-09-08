@@ -1,14 +1,14 @@
 package threads;
 
+import obstacles.ObstaclesIterator;
+import obstacles.ObstaclesMemory;
 import container.Service;
-import pathfinding.dstarlite.DStarLite;
-import pathfinding.dstarlite.GridSpace;
-import robot.RobotReal;
+import pathfinding.thetastar.ThetaStar;
 import utils.Config;
 import utils.Log;
 
 /**
- * Thread qui recalcule l'itinéraire à emprunter. Surveille GridSpace.
+ * Thread qui recalcule l'itinéraire à emprunter. Surveille ObstaclesMemory.
  * @author pf
  *
  */
@@ -16,18 +16,18 @@ import utils.Log;
 public class ThreadPathfinding extends Thread implements Service
 {
 	protected Log log;
-	private DStarLite pathfinding;
-	private GridSpace gridspace;
-	private RobotReal robot;
+	private ThetaStar pathfinding;
+	private ObstaclesMemory obstacles;
+	private ObstaclesIterator iterator;
 	
 	private boolean urgence = false;
 
-	public ThreadPathfinding(Log log, DStarLite pathfinding, GridSpace gridspace, RobotReal robot)
+	public ThreadPathfinding(Log log, ThetaStar pathfinding, ObstaclesMemory obstacles)
 	{
 		this.log = log;
 		this.pathfinding = pathfinding;
-		this.gridspace = gridspace;
-		this.robot = robot;
+		this.obstacles = obstacles;
+		iterator = new ObstaclesIterator(log, obstacles);
 	}
 
 	@Override
@@ -35,22 +35,22 @@ public class ThreadPathfinding extends Thread implements Service
 	{
 		while(true)
 		{
-			synchronized(gridspace)
+			synchronized(obstacles)
 			{
 				try {
-					gridspace.wait();
-//					urgence = gridspace.isUrgent();
+					obstacles.wait();
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
-			log.debug("Réveil de ThreadPathfinding");	
-			
-			// Cet appel peut lancer un pathfinding.notifyAll()
-			// Il n'est pas synchronized car il ne modifie pas obstaclemanager
-			pathfinding.updatePath(robot.getPosition());
-			urgence = false;
+			iterator.reinitNow();
+			while(iterator.hasNext())
+				if(iterator.next().isUrgent())
+				{
+					urgence = true;
+					break;
+				}
+			pathfinding.updatePath();
 		}
 
 //		log.debug("Fermeture de ThreadPathfinding");
@@ -64,7 +64,7 @@ public class ThreadPathfinding extends Thread implements Service
 	public void useConfig(Config config)
 	{}
 
-	public boolean isUrgence()
+	public final boolean isUrgence()
 	{
 		return urgence;
 	}

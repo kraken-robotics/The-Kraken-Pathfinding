@@ -10,8 +10,8 @@ public class CheminPathfinding implements Service
 	private static final int NB_ARCS_MAX = 100;
 	private volatile LocomotionArc[] chemin = new LocomotionArc[NB_ARCS_MAX];
 	private volatile int dernierIndiceChemin = -1;
-	private boolean uptodate;
-	private boolean needToStartAgain;
+	private volatile boolean uptodate;
+	private volatile boolean needToStartAgain;
 	
 	public CheminPathfinding(Log log)
 	{
@@ -33,16 +33,11 @@ public class CheminPathfinding implements Service
 		return chemin;
 	}
 	
-	public synchronized void needToStartAgain()
-	{
-		needToStartAgain = true;
-	}
-	
 	/**
 	 * Demande à ThetaStar s'il faut ou non relancer le pathfinding avec un nouveau départ
 	 * @return
 	 */
-	public synchronized boolean isNeedToStartAgain()
+	public synchronized boolean isNeededToStartAgain()
 	{
 		boolean out = needToStartAgain;
 		needToStartAgain = false;
@@ -58,6 +53,7 @@ public class CheminPathfinding implements Service
 
 	public int getDernierIndiceChemin()
 	{
+		needToStartAgain = true;
 		return dernierIndiceChemin;
 	}
 	

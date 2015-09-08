@@ -62,12 +62,10 @@ public class ThreadEvitement extends Thread implements Service
 							chemin.wait();
 					LocomotionArc[] arcs = chemin.get();
 					int dernierIndice = chemin.getDernierIndiceChemin();
+
 					serie.envoieLocomotionArcFirst(arcs[dernierIndice]);
 					for(int i = dernierIndice - 1 ; i >= 0 ; i--)
-					{
 						serie.envoieLocomotionArc(arcs[i]);
-					}
-					chemin.isNeedToStartAgain();
 				}
 			} catch (InterruptedException e) {
 				e.printStackTrace();

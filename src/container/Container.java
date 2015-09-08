@@ -29,9 +29,11 @@ import strategie.StrategieNotifieur;
 import table.Table;
 import threads.ThreadCapteurs;
 import threads.ThreadConfig;
+import threads.ThreadEvitement;
 import threads.ThreadFinMatch;
 import threads.ThreadGameElementDoneByEnemy;
-import threads.ThreadGridSpace;
+import threads.ThreadPathfinding;
+import threads.ThreadPeremption;
 import threads.ThreadSerialInput;
 import threads.ThreadSerialOutput;
 import requete.RequeteSTM;
@@ -240,6 +242,15 @@ public class Container
 		else if(serviceRequested == ServiceNames.THREAD_FIN_MATCH)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadFinMatch((Log)getService(ServiceNames.LOG),
 																		(Config)getService(ServiceNames.CONFIG));
+		else if(serviceRequested == ServiceNames.THREAD_PEREMPTION)
+			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadPeremption((Log)getService(ServiceNames.LOG),
+																		(ObstaclesMemory)getService(ServiceNames.OBSTACLES_MEMORY));
+		else if(serviceRequested == ServiceNames.THREAD_EVITEMENT)
+			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadEvitement((Log)getService(ServiceNames.LOG),
+																		(ThreadPathfinding)getService(ServiceNames.THREAD_PATHFINDING),
+																		(DataForSerialOutput)getService(ServiceNames.SERIAL_OUTPUT_BUFFER),
+																		(ThetaStar)getService(ServiceNames.THETA_STAR),
+																		(CheminPathfinding)getService(ServiceNames.CHEMIN_PATHFINDING));
 		else if(serviceRequested == ServiceNames.THREAD_CAPTEURS)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadCapteurs((Log)getService(ServiceNames.LOG),
 																		(IncomingDataBuffer)getService(ServiceNames.INCOMING_DATA_BUFFER),
@@ -260,10 +271,6 @@ public class Container
 																		(Config)getService(ServiceNames.CONFIG),
 																		(SerialConnexion)getService(ServiceNames.SERIE_STM),
 																		(DataForSerialOutput)getService(ServiceNames.SERIAL_OUTPUT_BUFFER));
-		else if(serviceRequested == ServiceNames.THREAD_GRID_SPACE)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadGridSpace((Log)getService(ServiceNames.LOG),
-																		(ObstaclesMemory)getService(ServiceNames.OBSTACLES_MEMORY),
-																		(GridSpace)getService(ServiceNames.GRID_SPACE));
 		else if(serviceRequested == ServiceNames.THREAD_GAME_ELEMENT_DONE_BY_ENEMY)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadGameElementDoneByEnemy((Log)getService(ServiceNames.LOG),
 																		(ObstaclesMemory)getService(ServiceNames.OBSTACLES_MEMORY),
@@ -273,6 +280,10 @@ public class Container
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadConfig((Log)getService(ServiceNames.LOG),
 																		(Config)getService(ServiceNames.CONFIG),
 																		this);
+		else if(serviceRequested == ServiceNames.THREAD_PATHFINDING)
+			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadPathfinding((Log)getService(ServiceNames.LOG),
+																		(ThetaStar)getService(ServiceNames.THETA_STAR),
+																		(ObstaclesMemory)getService(ServiceNames.OBSTACLES_MEMORY));
 		else if(serviceRequested == ServiceNames.STRATEGIE_INFO)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new StrategieInfo((Log)getService(ServiceNames.LOG), 
 																		(StrategieNotifieur)getService(ServiceNames.STRATEGIE_NOTIFIEUR));
