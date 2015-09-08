@@ -4,11 +4,11 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import pathfinding.GameState;
 import pathfinding.thetastar.ThetaStarMemoryManager;
 import permissions.ReadWrite;
 import container.ServiceNames;
 import robot.RobotChrono;
-import strategie.GameState;
 import utils.ConfigInfo;
 
 /**

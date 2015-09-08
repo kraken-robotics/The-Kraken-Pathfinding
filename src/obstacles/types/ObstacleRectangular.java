@@ -1,9 +1,9 @@
 package obstacles.types;
 
+import pathfinding.GameState;
 import permissions.ReadOnly;
 import permissions.ReadWrite;
 import exceptions.FinMatchException;
-import strategie.GameState;
 import utils.Vec2;
 
 /**

@@ -2,9 +2,9 @@ package hook.types;
 
 import java.util.ArrayList;
 
+import pathfinding.GameState;
 import permissions.ReadOnly;
 import permissions.ReadWrite;
-import strategie.GameState;
 import utils.Log;
 import utils.Vec2;
 import hook.Hook;
@@ -19,8 +19,7 @@ public class HookDemiPlan extends Hook
 {
 
 	private final Vec2<ReadWrite> point, direction;
-//	private boolean disabled = false;
-	
+
 	/**
 	 * Constructeur sans paramètre, qui crée un hook qui n'est jamais appelable.
 	 * Les paramètres sont donnés dans update.
@@ -47,36 +46,12 @@ public class HookDemiPlan extends Hook
 		this.point = point.clone();
 		this.direction = direction.clone();
 	}
-
-	
-	/**
-	 * Désactive le hook
-	 */
-/*	public void setDisabled()
-	{
-		disabled = true;
-	}*/
-	
-/*	@Override
-	public void evaluate() throws FinMatchException, ScriptHookException,
-			WallCollisionDetectedException, ChangeDirectionException
-	{
-		Vec2<ReadOnly> positionRobot = GameState.getPosition(state);
-//		log.debug("Evaluation en "+positionRobot+", point: "+point, this);
-		if(!disabled && positionRobot.minusNewVector(point).dot(direction) > 0)
-		{
-//			log.debug("Exécution du hook!", this);
-			trigger();
-			disabled = true;
-		}
-	}*/
 	
 	/**
 	 * Mise à jour des paramètres du hooks
 	 */
 	public void update(Vec2<ReadOnly> direction, Vec2<ReadOnly> point)
 	{
-//		disabled = false;
 		Vec2.copy(direction, this.direction);
 		Vec2.copy(point, this.point);
 	}

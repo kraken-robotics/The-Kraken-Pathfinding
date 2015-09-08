@@ -4,6 +4,8 @@ import hook.Hook;
 
 import java.util.ArrayList;
 
+import pathfinding.GameState;
+import pathfinding.lpastar.LPAStar;
 import permissions.ReadWrite;
 import container.Service;
 import exceptions.FinMatchException;
@@ -29,13 +31,13 @@ public class Execution implements Service {
 	private GameState<RobotReal,ReadWrite> gamestate;
 	private Log log;
 	private ScriptManager scriptmanager;
-	private Strategie strategie;
+	private LPAStar strategie;
 	private RequeteSTM requete;
 	
 	private ArrayList<Hook> hooksEntreScripts;
 	private volatile Boolean matchDemarre = Boolean.FALSE;
 	
-	public Execution(Log log, Strategie strategie, ScriptManager scriptmanager, GameState<RobotReal,ReadWrite> gamestate, RequeteSTM requete)
+	public Execution(Log log, LPAStar strategie, ScriptManager scriptmanager, GameState<RobotReal,ReadWrite> gamestate, RequeteSTM requete)
 	{
 		this.log = log;
 		this.gamestate = gamestate;

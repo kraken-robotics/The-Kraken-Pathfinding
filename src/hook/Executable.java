@@ -2,9 +2,9 @@ package hook;
 
 import java.util.ArrayList;
 
+import pathfinding.GameState;
 import permissions.ReadWrite;
 import robot.RobotChrono;
-import strategie.GameState;
 
 /**
  * Interface utilisée pour passer des méthodes à Callback.

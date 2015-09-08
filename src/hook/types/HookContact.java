@@ -2,8 +2,8 @@ package hook.types;
 
 import java.util.ArrayList;
 
+import pathfinding.GameState;
 import permissions.ReadOnly;
-import strategie.GameState;
 import utils.Log;
 import utils.Vec2;
 import hook.Hook;

@@ -3,6 +3,7 @@ package pathfinding.astar;
 import java.util.BitSet;
 import java.util.PriorityQueue;
 
+import pathfinding.GameState;
 import pathfinding.dstarlite.GridSpace;
 import permissions.ReadWrite;
 import container.Service;
@@ -10,7 +11,6 @@ import exceptions.FinMatchException;
 import exceptions.PathfindingException;
 import exceptions.PathfindingRobotInObstacleException;
 import robot.RobotChrono;
-import strategie.GameState;
 import utils.Config;
 import utils.Log;
 

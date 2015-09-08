@@ -2,8 +2,8 @@ package hook.types;
 
 import java.util.ArrayList;
 
+import pathfinding.GameState;
 import permissions.ReadOnly;
-import strategie.GameState;
 import utils.Log;
 import utils.Vec2;
 import hook.Hook;
@@ -29,13 +29,7 @@ public class HookDate extends Hook {
 		super(log, state);
 		this.date_hook = date;
 	}
-
-/*	@Override
-	public void evaluate() throws FinMatchException, ScriptHookException, WallCollisionDetectedException, ChangeDirectionException {
-		if(System.currentTimeMillis() - Config.getDateDebutMatch() > date_hook)
-			trigger();
-	}*/
-
+	
 	@Override
 	public boolean simulated_evaluate(Vec2<ReadOnly> pointA, Vec2<ReadOnly> pointB, long date)
 	{

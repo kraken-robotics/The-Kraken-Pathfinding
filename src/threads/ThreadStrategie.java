@@ -1,7 +1,7 @@
 package threads;
 
+import pathfinding.lpastar.LPAStar;
 import container.Service;
-import strategie.Strategie;
 import strategie.StrategieNotifieur;
 import utils.Config;
 import utils.Log;
@@ -16,9 +16,9 @@ public class ThreadStrategie extends Thread implements Service
 {
 	protected Log log;
 	private StrategieNotifieur notifieur;
-	private Strategie strategie;
+	private LPAStar strategie;
 	
-	public ThreadStrategie(Log log, StrategieNotifieur notifieur, Strategie strategie)
+	public ThreadStrategie(Log log, StrategieNotifieur notifieur, LPAStar strategie)
 	{
 		this.log = log;
 		this.notifieur = notifieur;
@@ -42,7 +42,7 @@ public class ThreadStrategie extends Thread implements Service
 			
 			// Cet appel peut lancer un pathfinding.notifyAll()
 			// Il n'est pas synchronized car il ne modifie rien
-			strategie.updateCost();
+//			strategie.updateCost();
 		}
 //		log.debug("Fermeture de ThreadStrategie");
 

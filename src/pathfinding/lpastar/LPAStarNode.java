@@ -2,9 +2,9 @@ package pathfinding.lpastar;
 
 import java.util.ArrayList;
 
+import pathfinding.GameState;
 import permissions.ReadWrite;
 import robot.RobotChrono;
-import strategie.GameState;
 
 /**
  * Noeud de la recherche par LPA*

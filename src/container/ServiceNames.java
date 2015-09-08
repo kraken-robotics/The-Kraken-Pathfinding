@@ -31,6 +31,8 @@ public enum ServiceNames {
 	 REQUETE_STM,
 	 MOTEUR_PHYSIQUE,
 	 OBSTACLES_MEMORY,
+	 LPA_STAR,
+	 A_STAR,
 	 
 	 // Les threads
 	 THREAD_FIN_MATCH,

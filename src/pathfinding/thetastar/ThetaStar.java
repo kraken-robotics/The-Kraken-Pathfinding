@@ -3,6 +3,7 @@ package pathfinding.thetastar;
 import java.util.BitSet;
 import java.util.PriorityQueue;
 
+import pathfinding.GameState;
 import pathfinding.dstarlite.DStarLite;
 import pathfinding.dstarlite.GridSpace;
 import permissions.ReadOnly;
@@ -12,7 +13,6 @@ import exceptions.PathfindingException;
 import robot.DirectionStrategy;
 import robot.RobotChrono;
 import robot.RobotReal;
-import strategie.GameState;
 import tests.graphicLib.Fenetre;
 import utils.Config;
 import utils.Log;

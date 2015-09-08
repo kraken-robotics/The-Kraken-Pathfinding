@@ -9,7 +9,6 @@ import pathfinding.thetastar.LocomotionArc;
 import pathfinding.thetastar.RayonCourbure;
 import permissions.ReadOnly;
 import robot.RobotReal;
-import strategie.GameState;
 import table.GameElementNames;
 import utils.Config;
 import utils.ConfigInfo;

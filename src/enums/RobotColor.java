@@ -13,7 +13,7 @@ public enum RobotColor {
 	GREEN(false),
 	YELLOW(true);
 	
-	private boolean symmetry;
+	public final boolean symmetry;
 	
 	private RobotColor(boolean symmetry)
 	{
@@ -30,10 +30,6 @@ public enum RobotColor {
 		return YELLOW;
 	}
 
-	public boolean isSymmetry() {
-		return symmetry;
-	}
-	
 	/**
 	 * Récupère la couleur pour laquelle il n'y a pas de symétrie.
 	 * Utilisé pour les tests sans avoir à hardcoder la couleur.

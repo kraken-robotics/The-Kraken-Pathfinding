@@ -4,11 +4,11 @@ import hook.HookFactory;
 
 import org.junit.Before;
 
+import pathfinding.GameState;
 import permissions.ReadWrite;
 import container.ServiceNames;
 import robot.RobotChrono;
 import robot.RobotReal;
-import strategie.GameState;
 
 /**
  * Tests unitaires des hooks

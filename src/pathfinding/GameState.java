@@ -1,4 +1,4 @@
-package strategie;
+package pathfinding;
 
 import obstacles.ObstaclesIterator;
 import obstacles.ObstaclesMemory;

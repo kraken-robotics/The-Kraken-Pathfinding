@@ -1,10 +1,10 @@
 package pathfinding.astar;
 
+import pathfinding.GameState;
 import permissions.ReadOnly;
 import container.Service;
 import exceptions.FinMatchException;
 import robot.RobotReal;
-import strategie.GameState;
 import utils.Config;
 import utils.Log;
 

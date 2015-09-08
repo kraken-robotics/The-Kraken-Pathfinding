@@ -6,9 +6,11 @@ import obstacles.types.Obstacle;
 import buffer.DataForSerialOutput;
 import buffer.IncomingDataBuffer;
 import buffer.IncomingHookBuffer;
+import pathfinding.GameState;
 import pathfinding.MoteurPhysique;
 import pathfinding.dstarlite.DStarLite;
 import pathfinding.dstarlite.GridSpace;
+import pathfinding.lpastar.LPAStar;
 import pathfinding.thetastar.ThetaStarArcManager;
 import pathfinding.thetastar.CheminPathfinding;
 import pathfinding.thetastar.ThetaStarMemoryManager;
@@ -22,8 +24,6 @@ import utils.*;
 import scripts.ScriptManager;
 import serial.SerialConnexion;
 import strategie.Execution;
-import strategie.GameState;
-import strategie.Strategie;
 import strategie.StrategieInfo;
 import strategie.StrategieNotifieur;
 import table.Table;
@@ -194,14 +194,6 @@ public class Container
 			instanciedServices[serviceRequested.ordinal()] = (Service)new GridSpace((Log)getService(ServiceNames.LOG),
 																					(ObstaclesMemory)getService(ServiceNames.OBSTACLES_MEMORY),
 																					(Table)getService(ServiceNames.TABLE));
-
-		else if(serviceRequested == ServiceNames.STRATEGIE)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new Strategie(/*(Log)getService(ServiceNames.LOG),
-																				(ScriptManager)getService(ServiceNames.SCRIPT_MANAGER),
-																				(GameState<RobotReal,ReadOnly>)getService(ServiceNames.REAL_GAME_STATE),
-																				(HookFactory)getService(ServiceNames.HOOK_FACTORY),
-																				(Pathfinding)getService(ServiceNames.PATHFINDING),
-																				(MemoryManager)getService(ServiceNames.MEMORY_MANAGER)*/);		
 		else if(serviceRequested == ServiceNames.INCOMING_DATA_BUFFER)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new IncomingDataBuffer((Log)getService(ServiceNames.LOG));
 		else if(serviceRequested == ServiceNames.INCOMING_HOOK_BUFFER)
@@ -214,7 +206,7 @@ public class Container
 			instanciedServices[serviceRequested.ordinal()] = (Service)new SerialConnexion((Log)getService(ServiceNames.LOG));
 		else if(serviceRequested == ServiceNames.EXECUTION)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new Execution((Log)getService(ServiceNames.LOG),
-			                                                 (Strategie)getService(ServiceNames.STRATEGIE),
+			                                                 (LPAStar)getService(ServiceNames.LPA_STAR),
   															 (ScriptManager)getService(ServiceNames.SCRIPT_MANAGER),
         													 (GameState<RobotReal,ReadWrite>)getService(ServiceNames.REAL_GAME_STATE),
         													 (RequeteSTM)getService(ServiceNames.REQUETE_STM));

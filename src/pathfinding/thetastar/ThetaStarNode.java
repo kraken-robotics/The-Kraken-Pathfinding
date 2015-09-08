@@ -1,9 +1,9 @@
 package pathfinding.thetastar;
 
+import pathfinding.GameState;
 import pathfinding.dstarlite.GridSpace;
 import permissions.ReadWrite;
 import robot.RobotChrono;
-import strategie.GameState;
 
 /**
  * Un noeud de ThetaStar

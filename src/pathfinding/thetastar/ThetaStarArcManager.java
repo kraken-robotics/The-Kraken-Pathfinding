@@ -2,13 +2,13 @@ package pathfinding.thetastar;
 
 import java.util.ArrayList;
 
+import pathfinding.GameState;
 import pathfinding.MoteurPhysique;
 import pathfinding.dstarlite.DStarLite;
 import pathfinding.dstarlite.GridSpace;
 import permissions.ReadOnly;
 import permissions.ReadWrite;
 import robot.RobotChrono;
-import strategie.GameState;
 import utils.Config;
 import utils.ConfigInfo;
 import utils.Log;

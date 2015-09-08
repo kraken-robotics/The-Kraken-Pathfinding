@@ -2,10 +2,10 @@ package hook.methods;
 
 import java.util.ArrayList;
 
+import pathfinding.GameState;
 import permissions.ReadWrite;
 import robot.RobotChrono;
 import scripts.ScriptHookNames;
-import strategie.GameState;
 import hook.Executable;
 
 /**

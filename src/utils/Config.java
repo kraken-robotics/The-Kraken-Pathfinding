@@ -192,7 +192,7 @@ public class Config implements Service
 	 */
 	public boolean getSymmetry()
 	{
-		return RobotColor.parse(getString(ConfigInfo.COULEUR)).isSymmetry();
+		return RobotColor.parse(getString(ConfigInfo.COULEUR)).symmetry;
 	}
 	
 	@Override

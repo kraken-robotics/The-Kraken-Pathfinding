@@ -3,9 +3,9 @@ package hook.types;
 import java.util.ArrayList;
 
 import obstacles.types.ObstacleCircular;
+import pathfinding.GameState;
 import permissions.ReadOnly;
 import hook.Hook;
-import strategie.GameState;
 import utils.Log;
 import utils.Vec2;
 
@@ -42,21 +42,6 @@ public class HookPosition extends Hook
 		this.tolerancy = tolerancy;
 		this.squaredTolerancy = tolerancy*tolerancy;
 	}
-	
-    /**
-     * Déclenche le hook si la distance entre la position du robot et la position de de déclenchement du hook est inférieure a tolerancy
-     * @return true si la position/oriantation du robot a été modifiée.
-     * @throws ScriptHookException 
-     * @throws WallCollisionDetectedException 
-     * @throws ChangeDirectionException 
-     */
-/*	public void evaluate() throws FinMatchException, ScriptHookException, WallCollisionDetectedException, ChangeDirectionException
-	{
-		Vec2<ReadOnly> positionRobot = GameState.getPosition(state);
-		if(position.squaredDistance(positionRobot) <= squaredTolerancy)
-			trigger();
-	}*/
-
 
 	@Override
 	public boolean simulated_evaluate(Vec2<ReadOnly> pointA, Vec2<ReadOnly> pointB, long date)

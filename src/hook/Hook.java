@@ -2,11 +2,11 @@ package hook;
 
 import java.util.ArrayList;
 
+import pathfinding.GameState;
 import permissions.ReadOnly;
 import permissions.ReadWrite;
 import exceptions.FinMatchException;
 import robot.RobotChrono;
-import strategie.GameState;
 import utils.ConfigInfo;
 import utils.Log;
 import utils.Config;

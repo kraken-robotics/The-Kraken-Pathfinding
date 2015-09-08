@@ -2,10 +2,10 @@ package pathfinding.lpastar;
 
 import java.util.ArrayList;
 
+import pathfinding.GameState;
 import pathfinding.astar.AStar;
 import permissions.ReadWrite;
 import robot.RobotReal;
-import strategie.GameState;
 import utils.Config;
 import utils.Log;
 import container.Service;

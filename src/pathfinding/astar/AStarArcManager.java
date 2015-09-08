@@ -23,6 +23,7 @@ public class AStarArcManager
 	 */
 	public int distanceTo(AStarNode node, int arc) throws FinMatchException
 	{
+		// TODO : si, il faut les exécuter
 		/*
 		 * Il n'y a pas d'utilisation de hook.
 		 * En effet, les obstacles temporaires sont vérifiés à chaque copie (=chaque segment)
@@ -50,45 +51,18 @@ public class AStarArcManager
 
     public int next()
     {
-//    	if(!debutCourbe)
- //   		return new SegmentTrajectoireCourbe(PathfindingNodes.values[iterator]);
-  //  	else
-   // 		return GameState.getSegment(state_iterator.getReadOnly());
+
     	return 0;
     }
     
     public boolean hasNext() throws FinMatchException
     {
-    	/**
-    	 * On alterne: nouvel iterator avec false, puis avec true, puis nouvel
-    	 * iterator avec false, puis avec true, etc.
-    	 */
-/*    	debutCourbe = !debutCourbe; // OH LA JOLIE BASCULE
-    	PathfindingNodes pn_id_node_iterator = PathfindingNodes.values[id_node_iterator];
-    	debutCourbe = debutCourbe && GameState.isTraversableCourbe(state_iterator.getReadOnly(), PathfindingNodes.values[iterator], pn_id_node_iterator, new Vec2<ReadOnly>(GameState.getOrientation(state_iterator.getReadOnly())), GameState.getTempsDepuisDebutMatch(state_iterator.getReadOnly()));
-
-    	if(!debutCourbe)
-    	{
-	    	int max_value = PathfindingNodes.length;
-	    	for(iterator++; iterator < max_value; iterator++)
-	    	{
-	    		if(iterator == id_node_iterator)
-	    			continue;
-	    		if(GameState.isTraversable(state_iterator.getReadOnly(), pn_id_node_iterator, PathfindingNodes.values[iterator], GameState.getTempsDepuisDebutMatch(state_iterator.getReadOnly())))
-	    			break;
-	    	}
-    	}
-    	return iterator != PathfindingNodes.length;*/
     	return false;
     }
     
     public void reinitIterator(AStarNode state)
     {
-////    	log.debug("Réinit pathfinding iterator!", this);
- //   	id_node_iterator = GameState.getPositionPathfinding(state).ordinal();
-  //  	iterator = -1;
-//		GameState.copy(state, state_iterator);
- //   	debutCourbe = true;
+
     }
 
 }

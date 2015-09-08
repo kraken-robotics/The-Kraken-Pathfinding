@@ -2,6 +2,7 @@ package hook;
 
 import java.util.ArrayList;
 
+import pathfinding.GameState;
 import permissions.ReadWrite;
 import hook.methods.GameElementDone;
 import hook.methods.ThrowScriptRequest;
@@ -12,7 +13,6 @@ import container.Service;
 import enums.Tribool;
 import exceptions.FinMatchException;
 import robot.RobotChrono;
-import strategie.GameState;
 import table.GameElementNames;
 import table.GameElementType;
 import utils.Log;

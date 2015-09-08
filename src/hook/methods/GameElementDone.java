@@ -2,9 +2,9 @@ package hook.methods;
 
 import java.util.ArrayList;
 
+import pathfinding.GameState;
 import permissions.ReadWrite;
 import robot.RobotChrono;
-import strategie.GameState;
 import table.GameElementNames;
 import enums.Tribool;
 import hook.Executable;
