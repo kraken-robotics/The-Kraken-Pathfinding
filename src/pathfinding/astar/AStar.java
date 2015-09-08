@@ -15,7 +15,7 @@ import utils.Config;
 import utils.Log;
 
 /**
- * AStar, recherche de chemin utilisé dans la stratégie
+ * A*, recherche de chemin utilisée dans la stratégie
  * @author pf
  *
  */
