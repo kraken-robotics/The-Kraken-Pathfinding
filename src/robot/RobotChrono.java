@@ -317,6 +317,11 @@ public class RobotChrono extends Robot
 		return hash;
 	}
 
+	public void vaAuPointAStar() {
+		// TODO Auto-generated method stub
+		
+	}
+
 /*	public void printHash()
 	{
 //		log.debug("Tapis posés: "+tapisPoses);

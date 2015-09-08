@@ -33,7 +33,7 @@ public class ThetaStar implements Service
 	
 	protected Log log;
 	private DStarLite dstarlite;
-	private ArcManager arcmanager;
+	private ThetaStarArcManager arcmanager;
 	private GameState<RobotReal,ReadOnly> state;
 	private CheminPathfinding cheminContainer;
 	private GameState<RobotChrono,ReadWrite> stateSuccesseur;
@@ -44,7 +44,7 @@ public class ThetaStar implements Service
 	/**
 	 * Constructeur du ThetaStar
 	 */
-	public ThetaStar(Log log, DStarLite dstarlite, ArcManager arcmanager, GameState<RobotReal,ReadOnly> state, CheminPathfinding chemin)
+	public ThetaStar(Log log, DStarLite dstarlite, ThetaStarArcManager arcmanager, GameState<RobotReal,ReadOnly> state, CheminPathfinding chemin)
 	{
 		this.log = log;
 		this.dstarlite = dstarlite;

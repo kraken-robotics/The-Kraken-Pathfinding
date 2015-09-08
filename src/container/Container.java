@@ -9,9 +9,9 @@ import buffer.IncomingHookBuffer;
 import pathfinding.MoteurPhysique;
 import pathfinding.dstarlite.DStarLite;
 import pathfinding.dstarlite.GridSpace;
-import pathfinding.thetastar.ArcManager;
+import pathfinding.thetastar.ThetaStarArcManager;
 import pathfinding.thetastar.CheminPathfinding;
-import pathfinding.thetastar.MemoryManager;
+import pathfinding.thetastar.ThetaStarMemoryManager;
 import pathfinding.thetastar.ThetaStar;
 import permissions.ReadOnly;
 import permissions.ReadWrite;
@@ -175,15 +175,15 @@ public class Container
 		else if(serviceRequested == ServiceNames.THETA_STAR)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThetaStar((Log)getService(ServiceNames.LOG),
 																				(DStarLite)getService(ServiceNames.D_STAR_LITE),
-																				(ArcManager)getService(ServiceNames.ARC_MANAGER),
+																				(ThetaStarArcManager)getService(ServiceNames.ARC_MANAGER),
 																				(GameState<RobotReal,ReadOnly>)getService(ServiceNames.REAL_GAME_STATE),
 																				(CheminPathfinding)getService(ServiceNames.CHEMIN_PATHFINDING));
 		else if(serviceRequested == ServiceNames.ARC_MANAGER)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new ArcManager((Log)getService(ServiceNames.LOG),
+			instanciedServices[serviceRequested.ordinal()] = (Service)new ThetaStarArcManager((Log)getService(ServiceNames.LOG),
 																				(MoteurPhysique)getService(ServiceNames.MOTEUR_PHYSIQUE),
 																				(GridSpace)getService(ServiceNames.GRID_SPACE),
 																				(DStarLite)getService(ServiceNames.D_STAR_LITE),
-																				(MemoryManager)getService(ServiceNames.MEMORY_MANAGER));
+																				(ThetaStarMemoryManager)getService(ServiceNames.MEMORY_MANAGER));
 		else if(serviceRequested == ServiceNames.CHEMIN_PATHFINDING)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new CheminPathfinding((Log)getService(ServiceNames.LOG));
 		
@@ -219,7 +219,7 @@ public class Container
         													 (GameState<RobotReal,ReadWrite>)getService(ServiceNames.REAL_GAME_STATE),
         													 (RequeteSTM)getService(ServiceNames.REQUETE_STM));
 		else if(serviceRequested == ServiceNames.MEMORY_MANAGER)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new MemoryManager((Log)getService(ServiceNames.LOG));
+			instanciedServices[serviceRequested.ordinal()] = (Service)new ThetaStarMemoryManager((Log)getService(ServiceNames.LOG));
 		else if(serviceRequested == ServiceNames.HOOK_FACTORY)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new HookFactory((Log)getService(ServiceNames.LOG));
 		else if(serviceRequested == ServiceNames.ROBOT_REAL)

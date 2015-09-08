@@ -4,7 +4,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import pathfinding.thetastar.MemoryManager;
+import pathfinding.thetastar.ThetaStarMemoryManager;
 import permissions.ReadWrite;
 import container.ServiceNames;
 import robot.RobotChrono;
@@ -19,13 +19,13 @@ import utils.ConfigInfo;
 
 public class JUnit_MemoryManager extends JUnit_Test {
 
-	private MemoryManager memorymanager;
+	private ThetaStarMemoryManager memorymanager;
 	
 	@Before
     public void setUp() throws Exception {
         super.setUp();
     	config.set(ConfigInfo.DUREE_PEREMPTION_OBSTACLES, 100);
-		memorymanager = (MemoryManager) container.getService(ServiceNames.MEMORY_MANAGER);
+		memorymanager = (ThetaStarMemoryManager) container.getService(ServiceNames.MEMORY_MANAGER);
 	}
 
 	@Test

@@ -24,13 +24,13 @@ import robot.DirectionStrategy;
 
 // TODO: si besoin, modifier le hash du thetastar (inclure la direction actuelle?)
 
-public class ArcManager implements Service
+public class ThetaStarArcManager implements Service
 {
 	protected Log log;
 	private MoteurPhysique moteur;
 	private GridSpace gridspace;
 	private DStarLite dstarlite;
-	private MemoryManager memorymanager;
+	private ThetaStarMemoryManager memorymanager;
 	
 	private int nbSuccesseurMax;
 	private int nbSuccesseur;
@@ -53,7 +53,7 @@ public class ArcManager implements Service
 	private final static int PREDECESSEUR = 0;
 	private final static int ACTUEL = 1;
 	
-	public ArcManager(Log log, MoteurPhysique moteur, GridSpace gridspace, DStarLite dstarlite, MemoryManager memorymanager)
+	public ThetaStarArcManager(Log log, MoteurPhysique moteur, GridSpace gridspace, DStarLite dstarlite, ThetaStarMemoryManager memorymanager)
 	{
 		this.log = log;
 		this.moteur = moteur;

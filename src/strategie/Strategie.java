@@ -4,7 +4,7 @@ import hook.HookFactory;
 
 import java.util.ArrayList;
 
-import pathfinding.thetastar.MemoryManager;
+import pathfinding.thetastar.ThetaStarMemoryManager;
 import permissions.ReadOnly;
 import robot.RobotReal;
 import scripts.ScriptManager;
@@ -26,7 +26,7 @@ public class Strategie implements Service {
 	private GameState<RobotReal,ReadOnly> real_gamestate;
 	private HookFactory hookfactory;
 //	private Pathfinding pathfinding;
-	private MemoryManager memorymanager;
+	private ThetaStarMemoryManager memorymanager;
 	
 //	public Strategie(Log log, ScriptManager scriptmanager, GameState<RobotReal,ReadOnly> real_gamestate, HookFactory hookfactory, Pathfinding pathfinding, MemoryManager memorymanager)
 //	{
