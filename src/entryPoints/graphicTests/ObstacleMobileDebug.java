@@ -56,8 +56,8 @@ public class ObstacleMobileDebug  {
 			buffer.add(new IncomingData(mesures, true));
 			Sleep.sleep(100);
 			fenetre.repaint();
-			if(true)
-				return;
+//			if(true)
+//				return;
 								
 			int dureeSleep = 150;
 			for(int k = 0; k < nbPoints; k++)

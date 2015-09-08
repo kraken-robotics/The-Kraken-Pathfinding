@@ -2,6 +2,7 @@ package pathfinding.lpastar;
 
 import java.util.ArrayList;
 
+import pathfinding.astar.AStar;
 import permissions.ReadWrite;
 import robot.RobotReal;
 import strategie.GameState;
@@ -21,16 +22,19 @@ import container.Service;
 public class LPAStar implements Service
 {
 	private GameState<RobotReal,ReadWrite> state;
+	private AStar pathfinding;
 	private Log log;
 	
-	public LPAStar(Log log, GameState<RobotReal,ReadWrite> state)
+	public LPAStar(Log log, GameState<RobotReal,ReadWrite> state, AStar pathfinding)
 	{
 		this.log = log;
 		this.state = state;
+		this.pathfinding = pathfinding;
 	}
 	
 	/**
-	 * Calcule une stratégie initiale. Utilisé une seule fois pour tout le match.
+	 * Calcule une stratégie.
+	 * Peut être appelé plusieurs fois si on prend du retard.
 	 */
 	public ArrayList<StrategieArc> computeStrategy()
 	{

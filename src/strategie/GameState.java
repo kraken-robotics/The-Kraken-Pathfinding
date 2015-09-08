@@ -96,7 +96,7 @@ public class GameState<R extends Robot, T extends Permission> implements Service
      * Disponible uniquement pour GameState<RobotChrono>
      * @return
      */
-	public static final long getHash(GameState<RobotChrono,ReadOnly> state)
+	public static final int getHashLPAStar(GameState<RobotChrono,ReadOnly> state)
 	{
 		/**
 		 * Un long est codé sur 64 bits.
@@ -105,9 +105,9 @@ public class GameState<R extends Robot, T extends Permission> implements Service
 		 * La vitesse de pointe d'une autruche est de 70km/h (dans le référentiel de Piccadilly Circus)
 		 * C'est plus rapide que RCVA. Du coup, on sait comment faire pour les battre.
 		 */		
-		long hash = 0;
-//		hash = state.gridspace.getHash(); // codé sur le reste
-//		hash = (hash << 16) | state.robot.getHash(); // codé sur 16 bits (cf getHash() de RobotChrono)
+		int hash;
+		hash = state.table.getHashLPAStar(); // codé sur le reste
+		hash = (hash << 16) | state.robot.getHashLPAStar(); // codé sur 16 bits (cf getHash() de RobotChrono)
 		return hash;
 	}
 	

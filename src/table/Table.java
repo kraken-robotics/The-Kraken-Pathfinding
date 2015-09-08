@@ -18,14 +18,19 @@ public class Table implements Service
 	private StrategieNotifieur notifieur;
 	
 	/** Contient toutes les informations sur les éléments de jeux sans perte d'information. */
-	private long hash = 0;
+	private volatile long etatTable = 0;
+
+	/** Version compressée de l'état de la table. Mélange les Tribool FALSE et MAYBE car on ne peut pas passer
+	 * de FALSE à MAYBE pendant une recherche de stratégie, donc deux nœuds au hash identiques auront bien
+	 * deux etatTable identiques **/
+	private volatile int hash;
 	
 	public Table(Log log, StrategieNotifieur notifieur)
 	{
 		this.log = log;
 		this.notifieur = notifieur;
 	}
-	
+
 	/**
 	 * On a pris l'objet, on est passé dessus, le robot ennemi est passé dessus...
 	 * Attention, on ne peut qu'augmenter cette valeur.
@@ -33,11 +38,11 @@ public class Table implements Service
 	 */
 	public synchronized void setDone(GameElementNames id, Tribool done)
 	{
-		long old_hash = hash;
-		hash |= (done.getHash() << (2*id.ordinal()));
-		
+		long old_hash = etatTable;
+		etatTable |= (done.hash << (2*id.ordinal()));
+		hash |= (done.hashBool << (id.ordinal()));
 		// Si besoin est, on dit à la stratégie que la table a été modifiée
-		if(old_hash != hash)
+		if(old_hash != etatTable)
 			synchronized(notifieur)
 			{
 				notifieur.notify();
@@ -50,7 +55,7 @@ public class Table implements Service
 	 */
 	public Tribool isDone(GameElementNames id)
 	{
-		return Tribool.parse((int)((hash >> (2*id.ordinal()))&3));
+		return Tribool.parse((int)((etatTable >> (2*id.ordinal()))&3));
 	}
 
 	/**
@@ -59,7 +64,7 @@ public class Table implements Service
 	 */
 	public void copy(Table ct)
 	{
-		ct.hash = hash;
+		ct.etatTable = etatTable;
 	}
 	
 	/**
@@ -79,14 +84,14 @@ public class Table implements Service
 	 */
 	public boolean equals(Table other)
 	{
-		return other.hash == hash;
+		return other.etatTable == etatTable;
  	}
 	
 	/**
-	 * Récupération du hash utilisé par l'AStar stratégique
+	 * Récupération du hash utilisé par le LPA*
 	 * @return
 	 */
-	public long getHash()
+	public int getHashLPAStar()
 	{
 		return hash;
 	}
@@ -106,7 +111,7 @@ public class Table implements Service
 	{
 		for(GameElementNames g: GameElementNames.values)
 		{
-			long etat = (hash >> 2*g.ordinal()) % 4;
+			long etat = (etatTable >> 2*g.ordinal()) % 4;
 			log.debug(g+" : "+Tribool.parse((int)etat));
 		}
 	}

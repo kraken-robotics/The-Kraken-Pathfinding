@@ -17,6 +17,8 @@ import exceptions.FinMatchException;
 
 public class RobotChrono extends Robot
 {
+	private static final long[] paliers = new long[7];
+	
 	protected final Vec2<ReadWrite> position = new Vec2<ReadWrite>();
 	protected int positionGridSpace;
 //	protected PathfindingNodes positionPathfinding;
@@ -34,6 +36,17 @@ public class RobotChrono extends Robot
 	private final static int sleepAvanceDuration = /*approximateSerialLatency+*/Speed.translationStopDuration;
 	private final static int sleepTourneDuration = /*approximateSerialLatency+*/Speed.rotationStopDuration;
 //	private final static int sleepTourneAndAvanceDuration = sleepTourneDuration + sleepAvanceDuration;
+	
+	static
+	{
+		paliers[0] = 20000;
+		paliers[1] = 35000;
+		paliers[2] = 48000;
+		paliers[3] = 60000;
+		paliers[4] = 70000;
+		paliers[5] = 78000;
+		paliers[6] = 84000;
+	}
 	
 	public RobotChrono(Log log)
 	{
@@ -295,9 +308,18 @@ public class RobotChrono extends Robot
 	
 	// TODO: passer en hashCode et equals()
 	
-	public int getHash()
+	public int getHashLPAStar()
 	{
-		int hash;
+		int hash = 7;
+		// Calcul du palier
+		for(int i = 0; i < 7 ; i++)
+		{
+			if(date < paliers[i])
+			{
+				hash = i;
+				break;
+			}
+		}
 /*		if(isPositionPathfindingActive)
 		{
 			hash = 0;
@@ -307,7 +329,6 @@ public class RobotChrono extends Robot
 		}
 		else
 		{*/
-			hash = 0;
 			// Pour la position, on ne prend pas les bits de poids trop faibles dont le risque de collision est trop grand
 //			hash = tapisPoses?1:0; // information sur les tapis
 			hash = (hash << 3) | ((position.x >> 2)&7); // petit hash sur 3 bits
