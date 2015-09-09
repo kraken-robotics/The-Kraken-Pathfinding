@@ -17,7 +17,6 @@ public class Config implements Service
 {
 	public static final boolean debugSerie = false;
 	// Permet de savoir si le match a démarré et quand
-	public static final String path = "./config/";
 	public static final boolean graphicDStarLite = false;
 	public static final boolean graphicThetaStar = false;
 	public static final boolean graphicObstacles = true;
@@ -32,7 +31,7 @@ public class Config implements Service
 	{
 		try
 		{
-			properties.load(new FileInputStream(path+name_config_file));
+			properties.load(new FileInputStream(name_config_file));
 			configIniCharge = true;
 		}
 		catch  (IOException e)
