@@ -1,4 +1,4 @@
-package serial;
+package utils;
 
 import gnu.io.CommPortIdentifier;
 import gnu.io.PortInUseException;
@@ -15,10 +15,6 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.TooManyListenersException;
 
-import utils.Config;
-import utils.ConfigInfo;
-import utils.Log;
-import utils.Sleep;
 import container.Service;
 
 /**

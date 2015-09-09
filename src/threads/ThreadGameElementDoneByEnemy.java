@@ -1,9 +1,9 @@
 package threads;
 
+import obstacles.MoteurPhysique;
 import obstacles.ObstaclesIterator;
 import obstacles.ObstaclesMemory;
 import obstacles.types.ObstacleProximity;
-import pathfinding.MoteurPhysique;
 import table.GameElementNames;
 import table.Table;
 import utils.Config;

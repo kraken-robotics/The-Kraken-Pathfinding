@@ -3,9 +3,9 @@ package threads;
 import java.util.ArrayList;
 
 import buffer.DataForSerialOutput;
-import serial.SerialConnexion;
 import utils.Config;
 import utils.Log;
+import utils.SerialConnexion;
 import container.Service;
 
 /**

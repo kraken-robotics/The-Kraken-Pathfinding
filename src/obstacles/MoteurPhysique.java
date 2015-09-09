@@ -1,10 +1,11 @@
-package pathfinding;
+package obstacles;
 
 import obstacles.types.Obstacle;
 import obstacles.types.ObstacleProximity;
 import obstacles.types.ObstacleRectangular;
 import obstacles.types.ObstacleTrajectoireCourbe;
 import obstacles.types.ObstaclesFixes;
+import pathfinding.GameState;
 import pathfinding.thetastar.LocomotionArc;
 import pathfinding.thetastar.RayonCourbure;
 import permissions.ReadOnly;

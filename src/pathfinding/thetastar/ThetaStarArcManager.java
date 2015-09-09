@@ -2,8 +2,8 @@ package pathfinding.thetastar;
 
 import java.util.ArrayList;
 
+import obstacles.MoteurPhysique;
 import pathfinding.GameState;
-import pathfinding.MoteurPhysique;
 import pathfinding.dstarlite.DStarLite;
 import pathfinding.dstarlite.GridSpace;
 import permissions.ReadOnly;

@@ -184,7 +184,7 @@ public class Capteurs implements Service {
 		return tmp.dot(cones[nbCapteur][0]) > 0 && tmp.dot(cones[nbCapteur][1]) > 0 && tmp.dot(cones[nbCapteur][2]) > 0 && tmp.squaredLength() < horizonCapteursSquared;
 	}
 	
-	public boolean canBeSeenLight(Vec2<ReadOnly> point, int nbCapteur) {
+	private boolean canBeSeenLight(Vec2<ReadOnly> point, int nbCapteur) {
 		Vec2<ReadOnly> tmp = point.minusNewVector(positionsRelatives[nbCapteur]).getReadOnly();
 		return tmp.dot(cones[nbCapteur][0]) > 0 && tmp.squaredLength() < horizonCapteursSquared;
 	}
@@ -196,7 +196,7 @@ public class Capteurs implements Service {
 	 * 2: celui de gauche
 	 * @return
 	 */
-	public int whichSee(Vec2<ReadOnly> point, int nbCapteur)
+	private int whichSee(Vec2<ReadOnly> point, int nbCapteur)
 	{
 		Vec2<ReadOnly> tmp = point.minusNewVector(positionsRelatives[nbCapteur]).getReadOnly();
 		if(tmp.dot(cones[nbCapteur][1]) > 0)
@@ -211,7 +211,7 @@ public class Capteurs implements Service {
 	 * @param nbCapteur
 	 * @return
 	 */
-	public boolean canBeSeenArriere(Vec2<ReadOnly> point, int nbCapteur, int radius)
+	private boolean canBeSeenArriere(Vec2<ReadOnly> point, int nbCapteur, int radius)
 	{
 //		log.debug("Position cone: "+positionsRelatives[nbCapteur]);
 //		log.debug("Diff position cone arrière: "+new Vec2<ReadWrite>(-(int)(radius/sin[nbCapteur<nbUltrasons?ultrason:infrarouge]), orientationsRelatives[nbCapteur]));
@@ -231,7 +231,7 @@ public class Capteurs implements Service {
 	 * @return
 	 */
 	
-	public Vec2<ReadWrite> getPositionAjustee(int nbCouple, boolean gauche, int mesure)
+	private Vec2<ReadWrite> getPositionAjustee(int nbCouple, boolean gauche, int mesure)
 	{
 		int capteurQuiVoit = coupleCapteurs[nbCouple][gauche?0:1];
 		int capteurQuiNeVoitPas = coupleCapteurs[nbCouple][gauche?1:0];
@@ -312,12 +312,12 @@ public class Capteurs implements Service {
 	 * @param o
 	 * @return
 	 */
-	public int distanceSeen(int nbCapteur, ObstacleCircular o)
-	{
+//	private int distanceSeen(int nbCapteur, ObstacleCircular o)
+//	{
 //		Vec2<ReadWrite> cone1 = cone[nbCapteur];
-		// TODO
-		return 0;
-	}
+//		// TODO
+//		return 0;
+//	}
 
 	@Override
 	public void updateConfig(Config config)
@@ -340,7 +340,7 @@ public class Capteurs implements Service {
 		squaredDistanceUrgence *= squaredDistanceUrgence;
 	}
 
-	public double getAngleCone(int nbCapteur)
+	private double getAngleCone(int nbCapteur)
 	{
 		return angleCone[nbCapteur < nbUltrasons ? ultrason : infrarouge];
 	}

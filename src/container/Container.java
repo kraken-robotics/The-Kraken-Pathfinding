@@ -1,13 +1,13 @@
 package container;
 
 import obstacles.Capteurs;
+import obstacles.MoteurPhysique;
 import obstacles.ObstaclesMemory;
 import obstacles.types.Obstacle;
 import buffer.DataForSerialOutput;
 import buffer.IncomingDataBuffer;
 import buffer.IncomingHookBuffer;
 import pathfinding.GameState;
-import pathfinding.MoteurPhysique;
 import pathfinding.astar.AStar;
 import pathfinding.astar.AStarArcManager;
 import pathfinding.astar.AStarMemoryManager;
@@ -26,7 +26,6 @@ import exceptions.ContainerException;
 import exceptions.PointSortieException;
 import utils.*;
 import scripts.ScriptManager;
-import serial.SerialConnexion;
 import strategie.Execution;
 import strategie.StrategieInfo;
 import strategie.StrategieNotifieur;
