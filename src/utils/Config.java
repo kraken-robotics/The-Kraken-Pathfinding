@@ -20,6 +20,7 @@ public class Config implements Service
 	public static final String path = "./config/";
 	public static final boolean graphicDStarLite = false;
 	public static final boolean graphicThetaStar = false;
+	public static final boolean graphicObstacles = true;
 
 	private String name_config_file = "config.ini";
 	private volatile Properties properties = new Properties();

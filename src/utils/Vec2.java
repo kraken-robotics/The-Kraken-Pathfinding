@@ -183,6 +183,20 @@ public class Vec2<T extends Permission>
 		(int)(sin*(x-centreRotation.x)+cos*(y-centreRotation.y))+centreRotation.y);
 	}
 
+	public Vec2<ReadWrite> rotateNewVector(double cos, double sin, Vec2<? extends Permission> centreRotation)
+	{
+		return new Vec2<ReadWrite>((int)(cos*(x-centreRotation.x)-sin*(y-centreRotation.y))+centreRotation.x,
+		(int)(sin*(x-centreRotation.x)+cos*(y-centreRotation.y))+centreRotation.y);
+	}
+
+	public final static Vec2<ReadWrite> rotate(Vec2<ReadWrite> v, double cos, double sin, Vec2<? extends Permission> centreRotation)
+	{
+		int a = (int)(cos*(v.x-centreRotation.x)-sin*(v.y-centreRotation.y))+centreRotation.x;
+		v.y = (int)(sin*(v.x-centreRotation.x)+cos*(v.y-centreRotation.y))+centreRotation.y;
+		v.x = a;
+		return v;
+	}
+
 	/**
 	 * Rotation avec pour centre de rotation (0,0)
 	 * @param d
@@ -205,31 +219,14 @@ public class Vec2<T extends Permission>
 		return v;
 	}
 
-	/**
-	 * Normalise le vecteur
-	 */
-	public static final Vec2<ReadWrite> normalize(Vec2<ReadWrite> v)
+	public static Vec2<ReadWrite> rotate(Vec2<ReadWrite> v, double cos, double sin)
 	{
-		double longueur = v.length();
-		if(longueur != 0)
-		{
-			v.x /= longueur;
-			v.y /= longueur;
-		}
+		int old_x = v.x;
+		v.x = (int)(cos*v.x-sin*v.y);
+		v.y = (int)(sin*old_x+cos*v.y);
 		return v;
 	}
 
-	/**
-	 * Renvoie le vecteur normalisé
-	 * @return
-	 */
-	public Vec2<ReadWrite> normalizeNewVector()
-	{
-		Vec2<ReadWrite> out = new Vec2<ReadWrite>(this);
-		normalize(out);
-		return out;
-	}
-	
 	public double getArgument()
 	{
 		return Math.atan2(y, x);
@@ -242,6 +239,7 @@ public class Vec2<T extends Permission>
 	 */
 	public Vec2<ReadWrite> projectOnNewVector(Vec2<? extends Permission> other)
 	{
+		// TODO pas plutôt other.scalarNewVector(dot(other)) ?
 		return scalarNewVector(dot(other));
 	}
 

@@ -48,7 +48,6 @@ public enum ConfigInfo {
 	MS_MAX_AVANT_EVITEMENT("5", true),
 	DISTANCE_URGENCE("200", true),
 	NB_SUCCESSEUR_MAX("2", true),
-	NB_OMBRES_PAR_2PI("40", true),
 	/**
 	 * Config dynamique
 	 */

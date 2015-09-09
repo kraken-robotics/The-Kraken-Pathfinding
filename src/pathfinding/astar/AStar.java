@@ -117,8 +117,6 @@ public class AStar implements Service
 			// cela parce qu'il y a des doublons dans openset
 			if(closedset.get(current.hash))
 			{
-//				if(arcmanager instanceof StrategyArcManager)
-//					log.debug("Destruction de: "+current.getIndiceMemoryManager(), this);
 				memorymanager.destroyNode(current);
 				continue;
 			}
@@ -126,8 +124,6 @@ public class AStar implements Service
 			// Si on est arrivé, on reconstruit le chemin
 			if(current.hash == arrivee)
 			{
-//				if(arcmanager instanceof StrategyArcManager)
-//					log.debug("Destruction de: "+current.getIndiceMemoryManager(), this);
 				memorymanager.empty();
 				return current.state;
 			}
@@ -199,13 +195,8 @@ public class AStar implements Service
 					continue;
 				}
 
-//				if(arcmanager instanceof StrategyArcManager)
-//					log.debug(voisin+" donne "+hash_successeur, this);
-				
 				if(closedset.get(successeur.hash)) // si closedset contient ce hash
 				{
-//					if(arcmanager instanceof StrategyArcManager)
-//						log.debug("Destruction de: "+successeur.getIndiceMemoryManager(), this);
 					if(encoreUnSuccesseur)
 						reuseOldSuccesseur = true;
 					else
@@ -229,9 +220,6 @@ public class AStar implements Service
 				}
 			}
 			
-//			if(arcmanager instanceof StrategyArcManager)
-//				log.debug("Destruction de: "+current.getIndiceMemoryManager(), this);
-//			memorymanager.destroyGameState(current);
 		}
 		
 		// Pathfinding terminé sans avoir atteint l'arrivée

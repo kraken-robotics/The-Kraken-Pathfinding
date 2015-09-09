@@ -37,15 +37,15 @@ public abstract class JUnit_Test
 			config.set(ConfigInfo.MATCH_DEMARRE, true);
 			config.set(ConfigInfo.DATE_DEBUT_MATCH, System.currentTimeMillis());
 		}
-		if(Config.graphicDStarLite || Config.graphicThetaStar)
+		if(Config.graphicDStarLite || Config.graphicThetaStar || Config.graphicObstacles)
 			Fenetre.setInstance(container);
 	}
 
 	@SuppressWarnings("unused")
 	@After
 	public void tearDown() throws Exception {
-		if(Config.graphicDStarLite || Config.graphicThetaStar)
-			Sleep.sleep(100000);
+//		if(Config.graphicDStarLite || Config.graphicThetaStar || Config.graphicObstacles)
+//			Sleep.sleep(100000);
 		container.destructor();
 		Sleep.sleep(500);
 	}

@@ -175,9 +175,10 @@ public class ThetaStarArcManager implements Service
 
 //		if(!robot.isEnMarcheAvant())
 //			angleConsigne += Math.PI;
-
+		
 		next = memorymanager.getNewArc();
-		next.update(robot.getPositionGridSpace(), robot.getOrientationAvance(), scenarioActuel.rayonCourbure, gridpointArrivee);
+		int gridpoint = robot.getPositionGridSpace();
+		next.update(gridspace, gridpoint, scenarioActuel.rayonCourbure, gridpointArrivee, robot.getOrientationAvance());
 
 //		log.debug("next : "+next);
 		
