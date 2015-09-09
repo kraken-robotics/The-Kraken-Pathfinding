@@ -313,8 +313,6 @@ public class Fenetre extends JPanel {
 			Y = ObstacleRectangular.getYPositions(o);
 			for(int i = 0; i < 4; i++)
 			{
-				System.out.println("X = "+X[i]);
-				System.out.println("Y = "+Y[i]);
 				X[i] = XtoWindow(X[i]);
 				Y[i] = YtoWindow(Y[i]);
 			}

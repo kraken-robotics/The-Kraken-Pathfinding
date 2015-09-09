@@ -9,8 +9,8 @@ package pathfinding.thetastar;
 
 public enum RayonCourbure {
 
-	EXEMPLE_1(100, 10),
-	EXEMPLE_2(300, 20),
+	EXEMPLE_1(300, 10),
+	EXEMPLE_2(1000, 20),
 	LIGNE_DROITE(-1, 2),
 	REBROUSSEMENT(-1, 0);
 	
@@ -25,7 +25,7 @@ public enum RayonCourbure {
 	{
 		this.rayon = rayon;
 		rayonAuCarre = rayon * rayon;
-		angleEntreDeuxOmbres = 300. / rayon; // en considérant que le robot fasse à peu près 300 mm de long
+		angleEntreDeuxOmbres = 150. / rayon; // en considérant que le robot fasse à peu près 300 mm de long
 		this.PWMTranslation = PWMTranslation;
 		nbOmbresMax = (int) Math.round(Math.PI / angleEntreDeuxOmbres);
 	}

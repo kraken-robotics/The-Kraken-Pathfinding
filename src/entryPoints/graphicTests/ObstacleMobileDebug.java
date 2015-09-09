@@ -36,7 +36,7 @@ public class ObstacleMobileDebug  {
 			Fenetre.setInstance(container);
 			Fenetre fenetre = Fenetre.getInstance();
 			fenetre.setCapteurs(capteurs);
-			fenetre.setObstaclesMobiles(memory.getListObstaclesMobiles());
+//			fenetre.setObstaclesMobiles(memory.getListObstaclesMobiles());
 			fenetre.showOnFrame();
 			int nbPoints = 1;
 			@SuppressWarnings("unchecked")
@@ -76,7 +76,7 @@ public class ObstacleMobileDebug  {
 					point[k].y += (int)(rand.nextGaussian()*10);
 					point[k].x += (int)(rand.nextGaussian()*10);
 				}
-				fenetre.setPoint(point);
+//				fenetre.setPoint(point);
 
 				for(int j = 0; j < nbCapteurs; j++)
 				{

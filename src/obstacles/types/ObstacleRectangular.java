@@ -61,9 +61,9 @@ public class ObstacleRectangular extends ObstacleAvecAngle
 	 */
 	public ObstacleRectangular(Vec2<ReadOnly> depart, Vec2<ReadOnly> arrivee)
 	{
-		this(depart.middleNewVector(arrivee).getReadOnly(), (int)depart.distance(arrivee)+longueurRobot+2*marge, largeurRobot+2*marge, Math.atan2(arrivee.y-depart.y, arrivee.x-depart.x));
+		this(depart.middleNewVector(arrivee).getReadOnly(), (int)depart.distance(arrivee)/*+longueurRobot+2*marge*/, largeurRobot+2*marge, Math.atan2(arrivee.y-depart.y, arrivee.x-depart.x));
 	}
-	
+
 	/**
 	 * Cet angle est celui par lequel le rectangle a été tourné.
 	 * C'est donc l'opposé de l'angle par lequel on va tourner les points afin de considérer
@@ -90,10 +90,9 @@ public class ObstacleRectangular extends ObstacleAvecAngle
 		coinBasDroiteRotate = rotatePlusAngle(coinBasDroite).getReadOnly();
 		coinHautDroiteRotate = rotatePlusAngle(coinHautDroite).getReadOnly();
 		demieDiagonale = Math.sqrt(sizeY*sizeY/4+sizeX*sizeX/4);
+
 		if(Config.graphicObstacles)
-		{
 			Fenetre.getInstance().addObstacleEnBiais(this);
-		}
 	}
 	
 	/**
@@ -124,7 +123,7 @@ public class ObstacleRectangular extends ObstacleAvecAngle
 	 * Effectue la rotation d'un point, ce qui équivaut à la rotation de cet obstacle,
 	 * ce qui équivaut à le faire devenir un ObstacleRectagularAligned
 	 * On utilise ici -angle, ce qui explique que la formule n'est pas la
-	 * formule de rotationt traditionnelle.
+	 * formule de rotation traditionnelle.
 	 * @param point
 	 * @return
 	 */
@@ -144,8 +143,8 @@ public class ObstacleRectangular extends ObstacleAvecAngle
 	private Vec2<ReadWrite> rotatePlusAngle(Vec2<ReadOnly> point)
 	{
 		Vec2<ReadWrite> out = new Vec2<ReadWrite>();
-		out.x = (int)(cos*(point.x-position.x)-sin*(point.y-position.y))+position.x;
-		out.y = (int)(sin*(point.x-position.x)+cos*(point.y-position.y))+position.y;
+		out.x = (int)(cos*point.x-sin*point.y)+position.x;
+		out.y = (int)(sin*point.x+cos*point.y)+position.y;
 		return out;
 	}
 
@@ -239,10 +238,10 @@ public class ObstacleRectangular extends ObstacleAvecAngle
 	public static int[] getXPositions(ObstacleRectangular t)
 	{
 		int[] X = new int[4];
-		X[0] = t.getXRotatePlusAngle(t.coinBasDroite) + t.position.x;
-		X[1] = t.getXRotatePlusAngle(t.coinHautDroite) + t.position.x;
-		X[2] = t.getXRotatePlusAngle(t.coinHautGauche) + t.position.x;
-		X[3] = t.getXRotatePlusAngle(t.coinBasGauche) + t.position.x;
+		X[0] = t.coinBasDroiteRotate.x;
+		X[1] = t.coinHautDroiteRotate.x;
+		X[2] = t.coinHautGaucheRotate.x;
+		X[3] = t.coinBasGaucheRotate.x;
 		return X;
 	}
 
@@ -253,10 +252,10 @@ public class ObstacleRectangular extends ObstacleAvecAngle
 	public static int[] getYPositions(ObstacleRectangular t)
 	{
 		int[] Y = new int[4];
-		Y[0] = t.getYRotatePlusAngle(t.coinBasDroite) + t.position.y;
-		Y[1] = t.getYRotatePlusAngle(t.coinHautDroite) + t.position.y;
-		Y[2] = t.getYRotatePlusAngle(t.coinHautGauche) + t.position.y;
-		Y[3] = t.getYRotatePlusAngle(t.coinBasGauche) + t.position.y;
+		Y[0] = t.coinBasDroiteRotate.y;
+		Y[1] = t.coinHautDroiteRotate.y;
+		Y[2] = t.coinHautGaucheRotate.y;
+		Y[3] = t.coinBasGaucheRotate.y;
 		return Y;
 	}
 

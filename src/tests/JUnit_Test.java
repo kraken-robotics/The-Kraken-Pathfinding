@@ -44,8 +44,8 @@ public abstract class JUnit_Test
 	@SuppressWarnings("unused")
 	@After
 	public void tearDown() throws Exception {
-//		if(Config.graphicDStarLite || Config.graphicThetaStar || Config.graphicObstacles)
-//			Sleep.sleep(100000);
+		if(Config.graphicDStarLite || Config.graphicThetaStar || Config.graphicObstacles)
+			Sleep.sleep(100000);
 		container.destructor();
 		Sleep.sleep(500);
 	}

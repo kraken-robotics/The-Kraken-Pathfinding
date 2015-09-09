@@ -20,11 +20,12 @@ public class LocomotionArc
 	private RayonCourbure rayonCourbure;
 	private int gridpointArrivee;
 	private double angleDepart;
-	private Vec2<ReadWrite> pointDepart;
-	private Vec2<ReadWrite> centreCercleRotation;
-	private Vec2<ReadWrite> normaleAuDemiPlan;
-	private Vec2<ReadWrite> destination;
-	private Vec2<ReadWrite> tmp;
+	private Vec2<ReadWrite> pointDepart = new Vec2<ReadWrite>();
+	private Vec2<ReadWrite> centreCercleRotation = new Vec2<ReadWrite>();
+	private Vec2<ReadWrite> normaleAuDemiPlan = new Vec2<ReadWrite>();
+	private Vec2<ReadWrite> destination = new Vec2<ReadWrite>();
+	private Vec2<ReadWrite> tmp = new Vec2<ReadWrite>();
+	private boolean sensTrigo;
 	
 	public LocomotionArc()
 	{}
@@ -39,6 +40,11 @@ public class LocomotionArc
 		Vec2.copy(normaleAuDemiPlan.getReadOnly(), other.normaleAuDemiPlan);
 		other.rayonCourbure = rayonCourbure;
 		other.gridpointArrivee = gridpointArrivee;
+	}
+	
+	public final boolean getSensTrigo()
+	{
+		return sensTrigo;
 	}
 	
 	public final Vec2<ReadOnly> getCentreCercleRotation()
@@ -81,9 +87,15 @@ public class LocomotionArc
 		tmp.y = -normaleAuDemiPlan.x;
 		Vec2.scalar(tmp, rayonCourbure.rayon/1000.);
 		if(tmp.x * (destination.x - pointDepart.x) + tmp.y * (destination.y - pointDepart.y) > 0)
+		{
+			sensTrigo = false;
 			Vec2.plus(centreCercleRotation, tmp);
+		}
 		else
+		{
+			sensTrigo = true;
 			Vec2.minus(centreCercleRotation, tmp);
+		}
 	}
 	
 	public ArrayList<String> toSerial(GridSpace gridspace)
