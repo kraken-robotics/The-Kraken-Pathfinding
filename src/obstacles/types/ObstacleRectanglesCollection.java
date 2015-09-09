@@ -18,12 +18,12 @@ public abstract class ObstacleRectanglesCollection extends Obstacle
 	}
 
 	protected ObstacleRectangular[] ombresRobot;
-	protected int nb_rectangles;
+	protected int nbRectangles;
 
 	@Override
 	public boolean isProcheObstacle(Vec2<ReadOnly> point, int distance)
 	{
-		for(int i = 0; i < nb_rectangles; i++)
+		for(int i = 0; i < nbRectangles; i++)
 			if(ombresRobot[i].isProcheObstacle(point, distance))
 				return true;
 		return false;
@@ -32,7 +32,7 @@ public abstract class ObstacleRectanglesCollection extends Obstacle
 	@Override
 	public boolean isInObstacle(Vec2<ReadOnly> point)
 	{
-		for(int i = 0; i < nb_rectangles; i++)
+		for(int i = 0; i < nbRectangles; i++)
 			if(ombresRobot[i].isInObstacle(point))
 				return true;
 		return false;
@@ -46,19 +46,10 @@ public abstract class ObstacleRectanglesCollection extends Obstacle
 	 */
 	public boolean isColliding(Obstacle o)
 	{
-		for(int i = 0; i < nb_rectangles; i++)
+		for(int i = 0; i < nbRectangles; i++)
 			if(ombresRobot[i].isColliding(o))
 				return true;
 		return false;
-	}
-
-	/**
-	 * Utilisé pour l'affichage
-	 * @return
-	 */
-	public ObstacleRectangular[] getOmbresRobot()
-	{
-		return ombresRobot;
 	}
 
 	/**
