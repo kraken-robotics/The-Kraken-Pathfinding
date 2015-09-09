@@ -36,12 +36,12 @@ public class ObstacleRotationRobot extends ObstacleRectanglesCollection
 		else if(angleRelatif < -Math.PI)
 			angleRelatif += 2*Math.PI;
 //		log.debug("Math.abs(angleRelatif)/anglePas = "+Math.abs(angleRelatif)/anglePas, this);
-		nb_rectangles = (int)Math.ceil(Math.abs(angleRelatif)/anglePas)+1;
-		ombresRobot = (ObstacleRectangular[]) new ObstacleRectangular[nb_rectangles]; // le dernier est à part
-		for(int i = 0; i < nb_rectangles-1; i++)
+		nbRectangles = (int)Math.ceil(Math.abs(angleRelatif)/anglePas)+1;
+		ombresRobot = (ObstacleRectangular[]) new ObstacleRectangular[nbRectangles]; // le dernier est à part
+		for(int i = 0; i < nbRectangles-1; i++)
 			ombresRobot[i] = new ObstacleRectangular(position.getReadOnly(), longueurRobot, largeurRobot, angleDepart-i*anglePas*Math.signum(angleRelatif));
 
-		ombresRobot[nb_rectangles-1] = new ObstacleRectangular(position.getReadOnly(), longueurRobot, largeurRobot, angleArrivee);
+		ombresRobot[nbRectangles-1] = new ObstacleRectangular(position.getReadOnly(), longueurRobot, largeurRobot, angleArrivee);
 	}
 	
 }

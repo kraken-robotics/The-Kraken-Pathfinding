@@ -22,7 +22,6 @@ public abstract class Obstacle
     protected static int longueurRobot; // le sens avant-arrière du robot
     protected static int rayonRobot;
     protected static int marge;
-    protected static int nbOmbres;
 	protected static double anglePas; // utilisé pour les calculs de collision pendant les rotations	
 //	protected static ArrayList<Vec2<ReadOnly>> pourtourGrillePatron; // utilisé pour les obstacles mobiles et le gridspace
 	
@@ -37,7 +36,6 @@ public abstract class Obstacle
 		longueurRobot = config.getInt(ConfigInfo.LONGUEUR_ROBOT_AXE_AVANT_ARRIERE);
 		rayonRobot = config.getInt(ConfigInfo.RAYON_ROBOT);
 		marge = config.getInt(ConfigInfo.MARGE);
-		nbOmbres = config.getInt(ConfigInfo.NB_OMBRES_PAR_2PI);
 		anglePas = Math.PI-2*Math.atan2(largeurRobot, longueurRobot);
 
 //		pourtourGrillePatron = new ArrayList<Vec2<ReadOnly>>();

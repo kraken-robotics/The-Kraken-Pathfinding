@@ -4,6 +4,8 @@ import pathfinding.GameState;
 import permissions.ReadOnly;
 import permissions.ReadWrite;
 import exceptions.FinMatchException;
+import tests.graphicLib.Fenetre;
+import utils.Config;
 import utils.Vec2;
 
 /**
@@ -28,15 +30,15 @@ public class ObstacleRectangular extends ObstacleAvecAngle
 	protected double demieDiagonale;
 	
 	// calcul des positions des coins
-	public final Vec2<ReadOnly> coinBasGauche = new Vec2<ReadOnly>(-sizeX/2,-sizeY/2);
-	public final Vec2<ReadOnly> coinHautGauche = new Vec2<ReadOnly>(-sizeX/2,sizeY/2);
-	public final Vec2<ReadOnly> coinBasDroite = new Vec2<ReadOnly>(sizeX/2,-sizeY/2);
-	public final Vec2<ReadOnly> coinHautDroite = new Vec2<ReadOnly>(sizeX/2,sizeY/2);
+	public Vec2<ReadOnly> coinBasGauche;
+	public Vec2<ReadOnly> coinHautGauche;
+	public Vec2<ReadOnly> coinBasDroite;
+	public Vec2<ReadOnly> coinHautDroite;
 
-	protected final Vec2<ReadOnly> coinBasGaucheRotate = rotatePlusAngle(coinBasGauche).getReadOnly();
-	protected final Vec2<ReadOnly> coinHautGaucheRotate = rotatePlusAngle(coinHautGauche).getReadOnly();
-	protected final Vec2<ReadOnly> coinBasDroiteRotate = rotatePlusAngle(coinBasDroite).getReadOnly();
-	protected final Vec2<ReadOnly> coinHautDroiteRotate = rotatePlusAngle(coinHautDroite).getReadOnly();
+	protected Vec2<ReadOnly> coinBasGaucheRotate;
+	protected Vec2<ReadOnly> coinHautGaucheRotate;
+	protected Vec2<ReadOnly> coinBasDroiteRotate;
+	protected Vec2<ReadOnly> coinHautDroiteRotate;
 	
 	/**
 	 * Cas où l'angle est nul
@@ -79,7 +81,19 @@ public class ObstacleRectangular extends ObstacleAvecAngle
 		this.sizeY = sizeY;
 		this.sizeX = sizeX;
 		this.angle = angle;
+		coinBasGauche = new Vec2<ReadOnly>(-sizeX/2,-sizeY/2);
+		coinHautGauche = new Vec2<ReadOnly>(-sizeX/2,sizeY/2);
+		coinBasDroite = new Vec2<ReadOnly>(sizeX/2,-sizeY/2);
+		coinHautDroite = new Vec2<ReadOnly>(sizeX/2,sizeY/2);
+		coinBasGaucheRotate = rotatePlusAngle(coinBasGauche).getReadOnly();
+		coinHautGaucheRotate = rotatePlusAngle(coinHautGauche).getReadOnly();
+		coinBasDroiteRotate = rotatePlusAngle(coinBasDroite).getReadOnly();
+		coinHautDroiteRotate = rotatePlusAngle(coinHautDroite).getReadOnly();
 		demieDiagonale = Math.sqrt(sizeY*sizeY/4+sizeX*sizeX/4);
+		if(Config.graphicObstacles)
+		{
+			Fenetre.getInstance().addObstacleEnBiais(this);
+		}
 	}
 	
 	/**
@@ -225,10 +239,10 @@ public class ObstacleRectangular extends ObstacleAvecAngle
 	public static int[] getXPositions(ObstacleRectangular t)
 	{
 		int[] X = new int[4];
-		X[0] = t.getXRotatePlusAngle(t.coinBasDroite);
-		X[1] = t.getXRotatePlusAngle(t.coinHautDroite);
-		X[2] = t.getXRotatePlusAngle(t.coinHautGauche);
-		X[3] = t.getXRotatePlusAngle(t.coinBasGauche);
+		X[0] = t.getXRotatePlusAngle(t.coinBasDroite) + t.position.x;
+		X[1] = t.getXRotatePlusAngle(t.coinHautDroite) + t.position.x;
+		X[2] = t.getXRotatePlusAngle(t.coinHautGauche) + t.position.x;
+		X[3] = t.getXRotatePlusAngle(t.coinBasGauche) + t.position.x;
 		return X;
 	}
 
@@ -239,10 +253,10 @@ public class ObstacleRectangular extends ObstacleAvecAngle
 	public static int[] getYPositions(ObstacleRectangular t)
 	{
 		int[] Y = new int[4];
-		Y[0] = t.getYRotatePlusAngle(t.coinBasDroite);
-		Y[1] = t.getYRotatePlusAngle(t.coinHautDroite);
-		Y[2] = t.getYRotatePlusAngle(t.coinHautGauche);
-		Y[3] = t.getYRotatePlusAngle(t.coinBasGauche);
+		Y[0] = t.getYRotatePlusAngle(t.coinBasDroite) + t.position.y;
+		Y[1] = t.getYRotatePlusAngle(t.coinHautDroite) + t.position.y;
+		Y[2] = t.getYRotatePlusAngle(t.coinHautGauche) + t.position.y;
+		Y[3] = t.getYRotatePlusAngle(t.coinBasGauche) + t.position.y;
 		return Y;
 	}
 
