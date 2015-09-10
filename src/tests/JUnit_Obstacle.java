@@ -12,7 +12,7 @@ import obstacles.types.ObstacleTrajectoireCourbe;
 import obstacles.types.ObstaclesFixes;
 import pathfinding.dstarlite.GridSpace;
 import pathfinding.thetastar.LocomotionArc;
-import pathfinding.thetastar.RayonCourbure;
+import pathfinding.thetastar.VitesseCourbure;
 import permissions.ReadOnly;
 
 /**
@@ -105,9 +105,9 @@ public class JUnit_Obstacle extends JUnit_Test {
    // 	new ObstacleRectangular(new Vec2<ReadOnly>(-500, 500), 400, 400, Math.PI/4);
    // 	new ObstacleRectangular(new Vec2<ReadOnly>(-500, 500), 400, 400, Math.PI/2);
     	LocomotionArc arc = new LocomotionArc();
-    	arc.update(gridspace, gridspace.computeGridPoint(new Vec2<ReadOnly>(-500, 500)), RayonCourbure.EXEMPLE_1, gridspace.computeGridPoint(new Vec2<ReadOnly>(1000, 1300)), Math.PI/2);
+    	arc.update(gridspace, gridspace.computeGridPoint(new Vec2<ReadOnly>(-500, 500)), VitesseCourbure.EXEMPLE_1, gridspace.computeGridPoint(new Vec2<ReadOnly>(1000, 1300)), Math.PI/2);
     	new ObstacleTrajectoireCourbe(arc);
-    	arc.update(gridspace, gridspace.computeGridPoint(new Vec2<ReadOnly>(-500, 500)), RayonCourbure.EXEMPLE_2, gridspace.computeGridPoint(new Vec2<ReadOnly>(1000, 1300)), Math.PI/2);
+    	arc.update(gridspace, gridspace.computeGridPoint(new Vec2<ReadOnly>(-500, 500)), VitesseCourbure.EXEMPLE_2, gridspace.computeGridPoint(new Vec2<ReadOnly>(1000, 1300)), Math.PI/2);
     	new ObstacleTrajectoireCourbe(arc);
     }
     @Test

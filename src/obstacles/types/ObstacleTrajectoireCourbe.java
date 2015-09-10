@@ -1,7 +1,7 @@
 package obstacles.types;
 
 import pathfinding.thetastar.LocomotionArc;
-import pathfinding.thetastar.RayonCourbure;
+import pathfinding.thetastar.VitesseCourbure;
 import permissions.ReadOnly;
 import permissions.ReadWrite;
 import utils.Vec2;
@@ -20,6 +20,8 @@ public class ObstacleTrajectoireCourbe extends ObstacleRectanglesCollection
 	 */
 	public ObstacleTrajectoireCourbe(LocomotionArc arc)
 	{
+		// TODO refaire complètement avec une clothoïde (développement limité sur https://fr.wikipedia.org/wiki/Clotho%C3%AFde)
+
 		// La position de cet obstacle est inutile...
 		super(null);
 		
@@ -28,7 +30,7 @@ public class ObstacleTrajectoireCourbe extends ObstacleRectanglesCollection
 		Vec2<ReadOnly> destination = arc.getDestination();
 		Vec2<ReadWrite> pointDepart = arc.getPointDepart().clone();
 		Vec2<ReadWrite> normale = arc.getNormaleAuDemiPlan().clone();
-		RayonCourbure rayon = arc.getRayonCourbure();
+		VitesseCourbure rayon = arc.getRayonCourbure();
 //		log.debug("centreCercleRotation : "+centreCercleRotation);
 //		log.debug("pointDepart : "+pointDepart);
 		nbRectangles = 0;

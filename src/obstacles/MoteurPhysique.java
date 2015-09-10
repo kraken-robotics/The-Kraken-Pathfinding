@@ -7,7 +7,7 @@ import obstacles.types.ObstacleTrajectoireCourbe;
 import obstacles.types.ObstaclesFixes;
 import pathfinding.GameState;
 import pathfinding.thetastar.LocomotionArc;
-import pathfinding.thetastar.RayonCourbure;
+import pathfinding.thetastar.VitesseCourbure;
 import permissions.ReadOnly;
 import robot.RobotReal;
 import table.GameElementNames;
@@ -176,7 +176,7 @@ public class MoteurPhysique implements Service {
 	 * @param rayon
 	 * @return
 	 */
-	public boolean isAccessibleCourbe(Vec2<ReadOnly> positionRobot, Vec2<ReadOnly> destination, Vec2<ReadOnly> orientationAvance, RayonCourbure rayon)
+	public boolean isAccessibleCourbe(Vec2<ReadOnly> positionRobot, Vec2<ReadOnly> destination, Vec2<ReadOnly> orientationAvance, VitesseCourbure rayon)
 	{
 		// TODO
 		return true;

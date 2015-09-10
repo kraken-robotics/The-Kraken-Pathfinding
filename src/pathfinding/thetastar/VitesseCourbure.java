@@ -7,7 +7,14 @@ package pathfinding.thetastar;
  *
  */
 
-public enum RayonCourbure {
+
+/**
+ * TODO passer à une vitesse de courbure
+ * @author pf
+ *
+ */
+
+public enum VitesseCourbure {
 
 	EXEMPLE_1(300, 10),
 	EXEMPLE_2(1000, 20),
@@ -21,7 +28,7 @@ public enum RayonCourbure {
 	public final int nbOmbresMax;
 	public static final int length = values().length;
 	
-	private RayonCourbure(int rayon, int PWMTranslation)
+	private VitesseCourbure(int rayon, int PWMTranslation)
 	{
 		this.rayon = rayon;
 		rayonAuCarre = rayon * rayon;

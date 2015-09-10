@@ -62,33 +62,33 @@ public class ThetaStarArcManager implements Service
 		this.memorymanager = memorymanager; 
 		
 		// Scenario qui prend en compte le point actuel et son prédécesseur (selon le principe du Theta*)
-		scenarios = new ScenarioThetaStar[RayonCourbure.values().length * 2];
+		scenarios = new ScenarioThetaStar[VitesseCourbure.values().length * 2];
 		
 		// Scenario qui prend en compte uniquement le point actuel. Utilisé lorsqu'il n'y a pas de successeur
-		scenariosFirst = new ScenarioThetaStar[RayonCourbure.values().length];
+		scenariosFirst = new ScenarioThetaStar[VitesseCourbure.values().length];
 
 		// Scenario qui prend en compte le point actuel et son prédécesseur (selon le principe du Theta*)
-		scenariosSansRebroussement = new ScenarioThetaStar[(RayonCourbure.values().length - 1) * 2];
+		scenariosSansRebroussement = new ScenarioThetaStar[(VitesseCourbure.values().length - 1) * 2];
 		
 		// Scenario qui prend en compte uniquement le point actuel. Utilisé lorsqu'il n'y a pas de successeur
-		scenariosFirstSansRebroussement  = new ScenarioThetaStar[RayonCourbure.values().length - 1];
+		scenariosFirstSansRebroussement  = new ScenarioThetaStar[VitesseCourbure.values().length - 1];
 
 		int k = 0;
 		for(int i = 0; i < 2; i++)
-			for(RayonCourbure r : RayonCourbure.values())
+			for(VitesseCourbure r : VitesseCourbure.values())
 				scenarios[k++] = new ScenarioThetaStar(i, r);	
 		k = 0;
-		for(RayonCourbure r : RayonCourbure.values())
+		for(VitesseCourbure r : VitesseCourbure.values())
 				scenariosFirst[k++] = new ScenarioThetaStar(ACTUEL, r);	
 
 		k = 0;
 		for(int i = 0; i < 2; i++)
-			for(RayonCourbure r : RayonCourbure.values())
-				if(r != RayonCourbure.REBROUSSEMENT)
+			for(VitesseCourbure r : VitesseCourbure.values())
+				if(r != VitesseCourbure.REBROUSSEMENT)
 					scenariosSansRebroussement[k++] = new ScenarioThetaStar(i, r);	
 		k = 0;
-		for(RayonCourbure r : RayonCourbure.values())
-			if(r != RayonCourbure.REBROUSSEMENT)
+		for(VitesseCourbure r : VitesseCourbure.values())
+			if(r != VitesseCourbure.REBROUSSEMENT)
 				scenariosFirstSansRebroussement[k++] = new ScenarioThetaStar(ACTUEL, r);
 	}
 	
@@ -218,7 +218,7 @@ public class ThetaStarArcManager implements Service
 		
 		int out = (int) positionRobot.distance(positionArrivee);
 		state.robot.setPositionGridSpace(voisin.getGridpointArrivee());
-		if(voisin.getRayonCourbure() == RayonCourbure.REBROUSSEMENT)
+		if(voisin.getRayonCourbure() == VitesseCourbure.REBROUSSEMENT)
 		{
 			state.robot.stopper();
 			state.robot.inverseSensMarche();

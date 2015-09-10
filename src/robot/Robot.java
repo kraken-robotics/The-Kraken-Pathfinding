@@ -40,7 +40,7 @@ public abstract class Robot implements Service
 
     protected volatile Vec2<ReadWrite> position = new Vec2<ReadWrite>();
     protected volatile double orientation;
-    protected volatile int accelerationLaterale;
+    protected volatile int courbure;
 	protected volatile boolean symetrie;
     protected volatile boolean enMarcheAvant;
 	protected volatile boolean matchDemarre = false;
@@ -75,7 +75,7 @@ public abstract class Robot implements Service
     	Vec2.copy(position.getReadOnly(), rc.position);
     	rc.orientation = orientation;
     	rc.enMarcheAvant = enMarcheAvant;
-    	rc.accelerationLaterale = accelerationLaterale;
+    	rc.courbure = courbure;
     	rc.vitesse = vitesse;
     	rc.pointsObtenus = pointsObtenus;
     	rc.date = getTempsDepuisDebutMatch();
@@ -94,7 +94,7 @@ public abstract class Robot implements Service
     {
     	rc.orientation = orientation;
     	rc.enMarcheAvant = enMarcheAvant;
-    	rc.accelerationLaterale = accelerationLaterale;
+    	rc.courbure = courbure;
     	rc.vitesse = vitesse;
     	rc.date = getTempsDepuisDebutMatch();
     	rc.positionGridSpace = getPositionGridSpace();
@@ -114,9 +114,14 @@ public abstract class Robot implements Service
 		return vitesse;
 	}*/
 
-	public int getAccelerationLaterale()
+	public int getCourbure()
 	{
-		return accelerationLaterale;
+		return courbure;
+	}
+	
+	public void setCourbure(int courbure)
+	{
+		this.courbure = courbure;
 	}
 	
 	public double getOrientationAvance()

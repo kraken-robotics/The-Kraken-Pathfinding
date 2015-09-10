@@ -9,9 +9,9 @@ package pathfinding.thetastar;
 public class ScenarioThetaStar
 {
 	public final int noeudActuel;
-	public final RayonCourbure rayonCourbure;
+	public final VitesseCourbure rayonCourbure;
 	
-	public ScenarioThetaStar(int noeudActuel, RayonCourbure rayonCourbure)
+	public ScenarioThetaStar(int noeudActuel, VitesseCourbure rayonCourbure)
 	{
 		this.noeudActuel = noeudActuel;
 		this.rayonCourbure = rayonCourbure;

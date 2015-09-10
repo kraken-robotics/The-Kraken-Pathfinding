@@ -8,7 +8,7 @@ import java.util.Queue;
 
 import pathfinding.dstarlite.GridSpace;
 import pathfinding.thetastar.LocomotionArc;
-import pathfinding.thetastar.RayonCourbure;
+import pathfinding.thetastar.VitesseCourbure;
 import permissions.ReadOnly;
 import robot.ActuatorOrder;
 import robot.Speed;
@@ -208,9 +208,9 @@ public class DataForSerialOutput implements Service
 	{
 		ArrayList<String> elems = new ArrayList<String>();
 		elems.add(new String("src"));
-		elems.add(String.valueOf(RayonCourbure.values().length));
+		elems.add(String.valueOf(VitesseCourbure.values().length));
 
-		for(RayonCourbure r : RayonCourbure.values())
+		for(VitesseCourbure r : VitesseCourbure.values())
 		{
 			elems.add(String.valueOf(r.rayon));
 			elems.add(String.valueOf(r.PWMTranslation));

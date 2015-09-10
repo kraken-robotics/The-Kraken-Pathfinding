@@ -17,7 +17,7 @@ import utils.Vec2;
 public class LocomotionArc
 {
 	private int pointDepartGridpoint;
-	private RayonCourbure rayonCourbure;
+	private VitesseCourbure rayonCourbure;
 	private int gridpointArrivee;
 	private double angleDepart;
 	private Vec2<ReadWrite> pointDepart = new Vec2<ReadWrite>();
@@ -73,7 +73,7 @@ public class LocomotionArc
 	}
 	
 	public void update(GridSpace gridspace, int pointDepartGridpoint,
-			RayonCourbure rayonCourbure, int gridpointArrivee, double angleDepart)
+			VitesseCourbure rayonCourbure, int gridpointArrivee, double angleDepart)
 	{
 		this.angleDepart = angleDepart;
 		this.pointDepartGridpoint = pointDepartGridpoint;
@@ -131,7 +131,7 @@ public class LocomotionArc
 		return "Arc de "+pointDepartGridpoint+" à "+gridpointArrivee+" avec courbure "+rayonCourbure.rayon;
 	}
 
-	public final RayonCourbure getRayonCourbure()
+	public final VitesseCourbure getRayonCourbure()
 	{
 		return rayonCourbure;
 	}
