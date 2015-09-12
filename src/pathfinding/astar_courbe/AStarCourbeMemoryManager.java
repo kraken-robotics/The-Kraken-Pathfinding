@@ -68,37 +68,7 @@ public class AStarCourbeMemoryManager implements Service {
 		firstAvailable++;
 		return out;
 	}
-	
-	/**
-	 * Signale qu'un gamestate est de nouveau disponible
-	 * @param state
-	 * @param id_astar
-	 * @throws MemoryManagerException
-	 */
-	public void destroyNode(AStarCourbeNode state)
-	{
-		
-		int indice_state = state.getIndiceMemoryManager();
-		/**
-		 * S'il est déjà détruit, on lève une exception
-		 */
-//		if(indice_state >= firstAvailable)
-//			throw new MemoryManagerException();
 
-		// On inverse dans le Vector les deux gamestates,
-		// de manière à avoir toujours un Vector trié.
-		firstAvailable--;
-		
-		AStarCourbeNode tmp1 = nodes[indice_state];
-		AStarCourbeNode tmp2 = nodes[firstAvailable];
-
-		tmp1.setIndiceMemoryManager(firstAvailable);
-		tmp2.setIndiceMemoryManager(indice_state);
-
-		nodes[firstAvailable] = tmp1;
-		nodes[indice_state] = tmp2;
-	}
-	
 	/**
 	 * Signale que tous les gamestates sont disponibles. Très rapide.
 	 * @param id_astar

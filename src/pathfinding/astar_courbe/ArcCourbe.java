@@ -1,8 +1,7 @@
 package pathfinding.astar_courbe;
 
-import java.util.Collection;
-
-import pathfinding.dstarlite.GridSpace;
+import permissions.ReadWrite;
+import utils.Vec2;
 
 /**
  * Un arc de trajectoire courbe. Une clothoïde
@@ -12,6 +11,7 @@ import pathfinding.dstarlite.GridSpace;
 
 public class ArcCourbe {
 
+	public Vec2<ReadWrite> destination;
 	public int vitesseCourbure;
 	
 	public void copy(ArcCourbe arcCourbe)
@@ -19,14 +19,5 @@ public class ArcCourbe {
 		arcCourbe.vitesseCourbure = vitesseCourbure;
 	}
 
-	public Collection<? extends String> toSerialFirst(GridSpace gridspace) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public Collection<? extends String> toSerial(GridSpace gridspace) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 }

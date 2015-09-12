@@ -1,5 +1,6 @@
 package pathfinding.astar_courbe;
 
+import pathfinding.GameState;
 import robot.DirectionStrategy;
 import container.Service;
 import utils.Config;
@@ -15,16 +16,25 @@ import exceptions.FinMatchException;
 public class AStarCourbeArcManager implements Service
 {
 	protected Log log;
+	private AStarCourbeNode current;
 
 	public AStarCourbeArcManager(Log log)
 	{
 		this.log = log;
 	}
 	
+	public void execute(AStarCourbeNode node) throws FinMatchException
+	{
+		if(node.came_from == null)
+			return;
+		
+		// exécution
+	}
+	
 	/**
 	 * Renvoie la distance entre deux points.
 	 */
-	public int distanceTo(AStarCourbeNode node) throws FinMatchException
+	public int distanceTo(AStarCourbeNode node)
 	{
 		// TODO : si, il faut les exécuter
 		/*
@@ -40,10 +50,13 @@ public class AStarCourbeArcManager implements Service
 	}
 
 
-    public AStarCourbeNode next()
+    public void next(AStarCourbeNode successeur)
     {
+    	successeur.came_from = current;
+// prépare next : met son arccourbe, son père, copie le gamestate
+		GameState.copyAStarCourbe(current.state.getReadOnly(), successeur.state);
 
-    	return null;
+		// TODO calculer l'arc
     }
     
     public boolean hasNext()

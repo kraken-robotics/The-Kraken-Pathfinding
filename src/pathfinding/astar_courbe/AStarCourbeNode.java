@@ -9,14 +9,12 @@ public class AStarCourbeNode {
 	public GameState<RobotChrono,ReadWrite> state;
 	public int g_score;
 	public int f_score;
-	public boolean first;
 	public AStarCourbeNode came_from;
 	public ArcCourbe came_from_arc = new ArcCourbe();
 	private int indiceMemoryManager;
 	
 	public void init()
 	{
-		first = false;
 		g_score = Integer.MAX_VALUE;
 		f_score = Integer.MAX_VALUE;
 	}

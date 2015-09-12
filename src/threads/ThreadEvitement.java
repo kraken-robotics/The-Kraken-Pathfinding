@@ -2,7 +2,6 @@ package threads;
 
 import pathfinding.astar_courbe.ArcCourbe;
 import pathfinding.thetastar.CheminPathfinding;
-import pathfinding.thetastar.LocomotionArc;
 import pathfinding.thetastar.ThetaStar;
 import utils.Config;
 import utils.ConfigInfo;
@@ -64,9 +63,17 @@ public class ThreadEvitement extends Thread implements Service
 					ArcCourbe[] arcs = chemin.get();
 					int dernierIndice = chemin.getDernierIndiceChemin();
 
-					serie.envoieArcCourbeFirst(arcs[dernierIndice]);
-					for(int i = dernierIndice - 1 ; i >= 0 ; i--)
-						serie.envoieArcCourbe(arcs[i]);
+					if(chemin.isLast())
+					{
+						for(int i = dernierIndice ; i >= 1 ; i--)
+							serie.envoieArcCourbe(arcs[i]);
+						serie.envoieArcCourbeLast(arcs[0]);
+					}
+					else
+					{
+						for(int i = dernierIndice ; i >= 0 ; i--)
+							serie.envoieArcCourbe(arcs[i]);
+					}
 				}
 			} catch (InterruptedException e) {
 				e.printStackTrace();

@@ -13,6 +13,7 @@ public class CheminPathfinding implements Service
 	private volatile int dernierIndiceChemin = -1;
 	private volatile boolean uptodate;
 	private volatile boolean needToStartAgain;
+	private volatile boolean last;
 	
 	public CheminPathfinding(Log log)
 	{
@@ -66,6 +67,16 @@ public class CheminPathfinding implements Service
 	public void notUptodate()
 	{
 		uptodate = false;
+	}
+
+	public void setLast(boolean last)
+	{
+		this.last = last;
+	}
+	
+	public boolean isLast()
+	{
+		return last;
 	}
 
 }

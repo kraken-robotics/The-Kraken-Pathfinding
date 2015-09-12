@@ -218,9 +218,7 @@ public class Container
 		else if(serviceRequested == ServiceNames.INCOMING_HOOK_BUFFER)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new IncomingHookBuffer((Log)getService(ServiceNames.LOG));
 		else if(serviceRequested == ServiceNames.SERIAL_OUTPUT_BUFFER)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new DataForSerialOutput((Log)getService(ServiceNames.LOG),
-																							  (GridSpace)getService(ServiceNames.GRID_SPACE));
-				
+			instanciedServices[serviceRequested.ordinal()] = (Service)new DataForSerialOutput((Log)getService(ServiceNames.LOG));
 		else if(serviceRequested == ServiceNames.SERIE_STM)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new SerialConnexion((Log)getService(ServiceNames.LOG));
 		else if(serviceRequested == ServiceNames.EXECUTION)
