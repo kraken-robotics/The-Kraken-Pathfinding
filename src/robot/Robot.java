@@ -40,7 +40,7 @@ public abstract class Robot implements Service
 
     protected volatile Vec2<ReadWrite> position = new Vec2<ReadWrite>();
     protected volatile double orientation;
-    protected volatile int courbure;
+    protected volatile double courbure;
 	protected volatile boolean symetrie;
     protected volatile boolean enMarcheAvant;
 	protected volatile boolean matchDemarre = false;
@@ -114,12 +114,12 @@ public abstract class Robot implements Service
 		return vitesse;
 	}*/
 
-	public int getCourbure()
+	public double getCourbure()
 	{
 		return courbure;
 	}
 	
-	public void setCourbure(int courbure)
+	public void setCourbure(double courbure)
 	{
 		this.courbure = courbure;
 	}

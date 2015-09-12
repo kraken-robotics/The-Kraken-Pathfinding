@@ -27,6 +27,7 @@ public class MoteurPhysique implements Service {
 	protected Log log;
 	
 	private int distanceApproximation;
+	private int courbureMax;
 	
 	public MoteurPhysique(Log log)
 	{
@@ -145,6 +146,7 @@ public class MoteurPhysique implements Service {
 	@Override
 	public void useConfig(Config config)
 	{
+		courbureMax = config.getInt(ConfigInfo.COURBURE_MAX);
 		distanceApproximation = config.getInt(ConfigInfo.DISTANCE_MAX_ENTRE_MESURE_ET_OBJET);		
 	}
 	

@@ -49,7 +49,7 @@ la couleur du robot
 le robot est-il en marche avant ?
     avt en_marche_avant
 infos des capteurs
-    cpt x_robot y_robot orientation_robot_en_milliradions courbure mesure1 [mesure2 …]
+    cpt x_robot y_robot orientation_robot_en_milliradions courbure_en_millième mesure1 [mesure2 …]
 un actionneur a un problème
     acpb
 un actionneur a fini son mouvement

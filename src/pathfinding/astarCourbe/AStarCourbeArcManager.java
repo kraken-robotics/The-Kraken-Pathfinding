@@ -86,7 +86,7 @@ public class AStarCourbeArcManager implements Service
     	if((vitesseActuelle == VitesseCourbure.REBROUSSE_AVANT && directionstrategyactuelle == DirectionStrategy.FORCE_BACK_MOTION) ||
     			(vitesseActuelle == VitesseCourbure.REBROUSSE_ARRIERE && directionstrategyactuelle == DirectionStrategy.FORCE_FORWARD_MOTION))
     		return false;
-    	int courbureFuture = current.state.robot.getCourbure() + vitesseActuelle.vitesse;
+    	double courbureFuture = current.state.robot.getCourbure() + vitesseActuelle.vitesse;
     	return courbureFuture >= -courbureMax && courbureFuture <= courbureMax;
     }
     
