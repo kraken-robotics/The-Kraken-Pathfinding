@@ -6,6 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import container.ServiceNames;
+import pathfinding.astar_courbe.ArcCourbe;
 import pathfinding.dstarlite.DStarLite;
 import pathfinding.dstarlite.GridSpace;
 import pathfinding.thetastar.CheminPathfinding;
@@ -43,7 +44,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
 	@Test
     public void test_chemin_dstarlite() throws Exception
     {
-		pathfinding.computeNewPath(new Vec2<ReadOnly>(-1000, 200), gridspace.computeGridPoint(new Vec2<ReadOnly>(1200, 1500)));
+		pathfinding.computeNewPath(new Vec2<ReadOnly>(-1000, 200), new Vec2<ReadOnly>(1200, 1500));
 		ArrayList<Vec2<ReadOnly>> trajet = pathfinding.itineraireBrut();
 		for(Vec2<ReadOnly> v : trajet)
 		{
@@ -59,8 +60,8 @@ public class JUnit_Pathfinding extends JUnit_Test {
 		for(int i = 0; i < 10000; i++)
 		pathfindingCourbe.computeNewPath(gridspace.computeGridPoint(new Vec2<ReadOnly>(1000, 400)), true, DirectionStrategy.FASTEST);
 		log.debug("Durée d'une recherche : "+(System.currentTimeMillis() - avant)/10000.+" ms");
-		LocomotionArc[] trajet = chemin.get();
-		for(LocomotionArc v : trajet)
+		ArcCourbe[] trajet = chemin.get();
+		for(ArcCourbe v : trajet)
 		{
 			log.debug(v);
 		}

@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
 
+import pathfinding.astar_courbe.ArcCourbe;
 import pathfinding.dstarlite.GridSpace;
 import pathfinding.thetastar.LocomotionArc;
 import pathfinding.thetastar.VitesseCourbure;
@@ -34,6 +35,7 @@ public class DataForSerialOutput implements Service
 		this.gridspace = gridspace;
 	}
 	
+	// TODO : passer en priorityqueue
 	private volatile Queue<ArrayList<String>> buffer = new LinkedList<ArrayList<String>>();
 	
 	/**
@@ -220,7 +222,7 @@ public class DataForSerialOutput implements Service
 		notify();		
 	}
 	
-	public synchronized void envoieLocomotionArcFirst(LocomotionArc arc)
+	public synchronized void envoieArcCourbeFirst(ArcCourbe arc)
 	{
 		ArrayList<String> elems = new ArrayList<String>();
 		elems.add(new String("addf"));
@@ -230,7 +232,7 @@ public class DataForSerialOutput implements Service
 		notify();		
 	}
 
-	public synchronized void envoieLocomotionArc(LocomotionArc arc)
+	public synchronized void envoieArcCourbe(ArcCourbe arc)
 	{
 		ArrayList<String> elems = new ArrayList<String>();
 		elems.add(new String("add"));

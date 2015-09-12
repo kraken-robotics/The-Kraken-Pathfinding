@@ -1,5 +1,6 @@
 package pathfinding.thetastar;
 
+import pathfinding.astar_courbe.ArcCourbe;
 import utils.Config;
 import utils.Log;
 import container.Service;
@@ -8,7 +9,7 @@ public class CheminPathfinding implements Service
 {
 	protected Log log;
 	private static final int NB_ARCS_MAX = 100;
-	private volatile LocomotionArc[] chemin = new LocomotionArc[NB_ARCS_MAX];
+	private volatile ArcCourbe[] chemin = new ArcCourbe[NB_ARCS_MAX];
 	private volatile int dernierIndiceChemin = -1;
 	private volatile boolean uptodate;
 	private volatile boolean needToStartAgain;
@@ -17,7 +18,7 @@ public class CheminPathfinding implements Service
 	{
 		this.log = log;
 		for(int i = 0 ; i < NB_ARCS_MAX; i++)
-			chemin[i] = new LocomotionArc();
+			chemin[i] = new ArcCourbe();
 	}
 	
 	@Override
@@ -28,7 +29,7 @@ public class CheminPathfinding implements Service
 	public void useConfig(Config config)
 	{}
 
-	public synchronized LocomotionArc[] get()
+	public synchronized ArcCourbe[] get()
 	{
 		return chemin;
 	}

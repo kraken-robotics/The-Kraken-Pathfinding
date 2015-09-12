@@ -82,12 +82,12 @@ public class ThreadSerialInput extends Thread implements Service
 							int yRobot = Integer.parseInt(serie.read());
 							Vec2<ReadOnly> positionRobot = new Vec2<ReadOnly>(xRobot, yRobot);
 							double orientationRobot = Integer.parseInt(serie.read()) / 1000.;
-							int accelerationLaterale = Integer.parseInt(serie.read());
+							int courbure = Integer.parseInt(serie.read());
 							int[] mesures = new int[nbCapteurs];
 							for(int i = 0; i < nbCapteurs; i++)
 								mesures[i] = Integer.parseInt(serie.read());
 							robot.setPositionOrientationJava(positionRobot, orientationRobot);
-							robot.setAccelerationLaterale(accelerationLaterale);
+							robot.setCourbure(courbure);
 							buffer.add(new IncomingData(mesures, capteursOn));
 							break;
 							
@@ -186,12 +186,12 @@ public class ThreadSerialInput extends Thread implements Service
 	
 	@Override
 	public void updateConfig(Config config)
-	{
-		nbCapteurs = config.getInt(ConfigInfo.NB_CAPTEURS_PROXIMITE);
-	}
+	{}
 
 	@Override
 	public void useConfig(Config config)
-	{}
+	{
+		nbCapteurs = config.getInt(ConfigInfo.NB_CAPTEURS_PROXIMITE);
+	}
 
 }

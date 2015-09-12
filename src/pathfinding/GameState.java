@@ -157,4 +157,10 @@ public class GameState<R extends Robot, T extends Permission> implements Service
 		return (GameState<R, ReadOnly>) this;
 	}
 
+	public static void copyAStarCourbe(GameState<?, ReadOnly> state,
+			GameState<RobotChrono, ReadWrite> state2) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

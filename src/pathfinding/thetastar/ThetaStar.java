@@ -94,9 +94,9 @@ public class ThetaStar implements Service
 	
 	private void printChemin()
 	{
-		LocomotionArc[] cheminAff = cheminContainer.get();	
-		for(LocomotionArc arc : cheminAff)
-			fenetre.setColor(arc.getGridpointArrivee(), Fenetre.Couleur.VIOLET);
+//		LocomotionArc[] cheminAff = cheminContainer.get();	
+//		for(LocomotionArc arc : cheminAff)
+//			fenetre.setColor(arc.getGridpointArrivee(), Fenetre.Couleur.VIOLET);
 	}
 	
 	public synchronized void updatePath() throws PathfindingException
@@ -244,13 +244,13 @@ public class ThetaStar implements Service
 		synchronized(cheminContainer)
 		{
 			int k = 0;
-			LocomotionArc[] chemin = cheminContainer.get();
+//			LocomotionArc[] chemin = cheminContainer.get();
 			ThetaStarNode noeud_parent = best;
 			LocomotionArc arc_parent = best.came_from_arc;
 			while(arc_parent != null)
 			{
 	//			log.debug(arc_parent);
-				arc_parent.copy(chemin[k]);
+//				arc_parent.copy(chemin[k]);
 				k++;
 				noeud_parent = noeud_parent.came_from;
 				arc_parent = noeud_parent.came_from_arc;

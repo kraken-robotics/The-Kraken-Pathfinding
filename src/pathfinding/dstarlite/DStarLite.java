@@ -192,9 +192,9 @@ public class DStarLite implements Service
 	 * @param depart (un gridpoint)
 	 * @throws PathfindingException 
 	 */
-	public void computeNewPath(Vec2<ReadOnly> depart, int arrivee) throws PathfindingException
+	public void computeNewPath(Vec2<ReadOnly> depart, Vec2<ReadOnly> arrivee) throws PathfindingException
 	{
-		computeNewPath(gridspace.computeGridPoint(depart), arrivee);
+		computeNewPath(gridspace.computeGridPoint(depart), gridspace.computeGridPoint(arrivee));
 	}
 	/**
 	 * Calcule un nouvel itinéraire.
@@ -240,6 +240,11 @@ public class DStarLite implements Service
 	@Override
 	public void useConfig(Config config)
 	{}
+	
+	public void updatePath(Vec2<ReadOnly> positionRobot) throws PathfindingException
+	{
+		updatePath(gridspace.computeGridPoint(positionRobot));
+	}
 	
 	/**
 	 * Met à jour le pathfinding

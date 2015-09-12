@@ -4,7 +4,6 @@ import java.util.BitSet;
 import java.util.PriorityQueue;
 
 import pathfinding.GameState;
-import pathfinding.dstarlite.GridSpace;
 import permissions.ReadWrite;
 import container.Service;
 import exceptions.FinMatchException;
@@ -36,11 +35,9 @@ public class AStar implements Service
 	 *   un SegmentTrajectoireCourbe pour le pathfinding
 	 */
 	
-	private static final int nb_max_element = 100; // le nombre d'élément différent de l'arbre qu'on parcourt. A priori, 100 paraît suffisant.
-	
-	private PriorityQueue<AStarNode> openset = new PriorityQueue<AStarNode>(GridSpace.NB_POINTS, new AStarNodeComparator());	 // The set of tentative nodes to be evaluated
+	private PriorityQueue<AStarNode> openset = new PriorityQueue<AStarNode>(GridSpaceStrategie.NB_POINTS, new AStarNodeComparator());	 // The set of tentative nodes to be evaluated
 
-	private BitSet closedset = new BitSet(nb_max_element);
+	private BitSet closedset = new BitSet(GridSpaceStrategie.NB_POINTS);
 
 	private PathfindingException pathfindingexception;
 	
