@@ -3,12 +3,9 @@ package buffer;
 import hook.Hook;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.PriorityQueue;
 
 import pathfinding.astar_courbe.ArcCourbe;
-import pathfinding.dstarlite.GridSpace;
-import pathfinding.thetastar.LocomotionArc;
 import pathfinding.thetastar.VitesseCourbure;
 import permissions.ReadOnly;
 import robot.ActuatorOrder;
@@ -27,16 +24,16 @@ import utils.Vec2;
 public class DataForSerialOutput implements Service
 {
 	protected Log log;
-	private GridSpace gridspace;
+//	private GridSpace gridspace;
 	
-	public DataForSerialOutput(Log log, GridSpace gridspace)
+	public DataForSerialOutput(Log log)
 	{
 		this.log = log;
-		this.gridspace = gridspace;
+//		this.gridspace = gridspace;
 	}
 	
 	// TODO : passer en priorityqueue
-	private volatile Queue<ArrayList<String>> buffer = new LinkedList<ArrayList<String>>();
+	private volatile PriorityQueue<SerialOutput> buffer = new PriorityQueue<SerialOutput>();
 	
 	/**
 	 * Le buffer est-il vide?
@@ -53,7 +50,7 @@ public class DataForSerialOutput implements Service
 		elems.add(new String("sspd"));
 		elems.add(new String(Integer.toString(speed.PWMRotation)));
 		elems.add(new String(Integer.toString(speed.PWMTranslation)));
-		buffer.add(elems);
+		buffer.add(new SerialOutput(elems,0));
 //		log.debug("Taille buffer: "+buffer.size());
 		notify();
 
@@ -63,7 +60,7 @@ public class DataForSerialOutput implements Service
 	{
 		ArrayList<String> elems = new ArrayList<String>();
 		elems.add(new String("gxyo"));
-		buffer.add(elems);
+		buffer.add(new SerialOutput(elems,0));
 //		log.debug("Taille buffer: "+buffer.size());
 		notify();
 	}
@@ -76,7 +73,7 @@ public class DataForSerialOutput implements Service
 		elems.add(new String(Integer.toString(pos.x)));
 		elems.add(new String(Integer.toString(pos.y)));
 		elems.add(new String(Long.toString(Math.round(angle*1000))));
-		buffer.add(elems);
+		buffer.add(new SerialOutput(elems,0));
 //		log.debug("Taille buffer: "+buffer.size());
 		notify();
 	}
@@ -95,7 +92,7 @@ public class DataForSerialOutput implements Service
 		else
 			elems.add("F");
 		addHooks(elems, hooks);
-		buffer.add(elems);
+		buffer.add(new SerialOutput(elems,0));
 //		log.debug("Taille buffer: "+buffer.size());
 		notify();
 	}
@@ -110,7 +107,7 @@ public class DataForSerialOutput implements Service
 		elems.add(new String("t"));
 		elems.add(new String(Long.toString(Math.round(angle*1000))));
 //		addHook(elems, hooks);
-		buffer.add(elems);
+		buffer.add(new SerialOutput(elems,0));
 //		log.debug("Taille buffer: "+buffer.size());
 		notify();
 	}
@@ -120,7 +117,7 @@ public class DataForSerialOutput implements Service
 		ArrayList<String> elems = new ArrayList<String>();
 		elems.add(new String("hlst"));
 		addHooks(elems, hooks);
-		buffer.add(elems);
+		buffer.add(new SerialOutput(elems,0));
 		notify();
 	}
 
@@ -132,8 +129,7 @@ public class DataForSerialOutput implements Service
 	{
 		ArrayList<String> elems = new ArrayList<String>();
 		elems.add(new String("stop"));
-		// TODO : faire passer en urgence ?
-		buffer.add(elems);
+		buffer.add(new SerialOutput(elems,2));
 //		log.debug("Taille buffer: "+buffer.size());
 		notify();
 	}
@@ -148,7 +144,7 @@ public class DataForSerialOutput implements Service
 		ArrayList<String> elems = new ArrayList<String>();
 		elems.add("act");
 		elems.add(String.valueOf(elem.ordinal()));
-		buffer.add(elems);
+		buffer.add(new SerialOutput(elems,0));
 		notify();
 	}
 /*	
@@ -168,7 +164,7 @@ public class DataForSerialOutput implements Service
 	public synchronized ArrayList<String> poll()
 	{
 //		log.debug("poll");
-		return buffer.poll();
+		return buffer.poll().output;
 	}
 	
 	@Override
@@ -199,7 +195,7 @@ public class DataForSerialOutput implements Service
 			elems.add(a.getOrdreSSC32());
 			elems.add(String.valueOf(a.hasSymmetry()));
 		}
-		buffer.add(elems);
+		buffer.add(new SerialOutput(elems,0));
 		notify();
 	}
 
@@ -218,17 +214,18 @@ public class DataForSerialOutput implements Service
 			elems.add(String.valueOf(r.PWMTranslation));
 		}
 			
-		buffer.add(elems);
+		buffer.add(new SerialOutput(elems,0));
 		notify();		
 	}
 	
-	public synchronized void envoieArcCourbeFirst(ArcCourbe arc)
+	public synchronized void envoieArcCourbeLast(ArcCourbe arc)
 	{
 		ArrayList<String> elems = new ArrayList<String>();
-		elems.add(new String("addf"));
-		elems.addAll(arc.toSerialFirst(gridspace));
-
-		buffer.add(elems);
+		elems.add(new String("addl"));
+		elems.add(String.valueOf(arc.vitesseCourbure));
+		elems.add(String.valueOf(arc.destination.x));
+		elems.add(String.valueOf(arc.destination.y));
+		buffer.add(new SerialOutput(elems,1));
 		notify();		
 	}
 
@@ -236,9 +233,8 @@ public class DataForSerialOutput implements Service
 	{
 		ArrayList<String> elems = new ArrayList<String>();
 		elems.add(new String("add"));
-		elems.addAll(arc.toSerial(gridspace));
-
-		buffer.add(elems);
+		elems.add(String.valueOf(arc.vitesseCourbure));
+		buffer.add(new SerialOutput(elems,1));
 		notify();		
 	}
 }
