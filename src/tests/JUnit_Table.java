@@ -28,10 +28,6 @@ public class JUnit_Table extends JUnit_Test {
     @Test
     public void test_clone_copy() throws Exception
     {
-    	long avant = System.currentTimeMillis();
-    	for(long i = 0; i < 10000000l; i++)
-    		Math.acos(0.761475871);
-    	log.debug("Durée : "+(System.currentTimeMillis() - avant));
     	int hash = table.getHashLPAStar();
     	Table cloned_table = table.clone();
     	Assert.assertTrue(table.equals(cloned_table));

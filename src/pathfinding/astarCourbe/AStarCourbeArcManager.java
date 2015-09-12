@@ -47,7 +47,7 @@ public class AStarCourbeArcManager implements Service
 		 * Rappel: même quand on fait un appel à RobotChrono sans hook, le hook de fin de match est exécuté
 		 */
 		long temps_debut = node.state.robot.getTempsDepuisDebutMatch();
-		node.state.robot.vaAuPointAStar();
+		node.state.robot.suitArcCourbe(node.came_from_arc);
 		return (int)(node.state.robot.getTempsDepuisDebutMatch() - temps_debut);
 	}
 
@@ -68,7 +68,7 @@ public class AStarCourbeArcManager implements Service
     
     public void reinitIterator(AStarCourbeNode state, DirectionStrategy directionstrategyactuelle)
     {
-
+    	
     }
 
 	@Override

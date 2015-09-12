@@ -1,4 +1,4 @@
-package pathfinding.astar;
+package strategie.astar;
 
 import pathfinding.GameState;
 import permissions.ReadOnly;

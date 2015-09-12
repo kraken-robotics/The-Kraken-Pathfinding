@@ -7,18 +7,13 @@ import obstacles.types.Obstacle;
 import buffer.DataForSerialOutput;
 import buffer.IncomingDataBuffer;
 import buffer.IncomingHookBuffer;
+import pathfinding.CheminPathfinding;
 import pathfinding.GameState;
-import pathfinding.astar.AStar;
-import pathfinding.astar.AStarArcManager;
-import pathfinding.astar.AStarMemoryManager;
-import pathfinding.astar.GridSpaceStrategie;
+import pathfinding.astarCourbe.AStarCourbe;
+import pathfinding.astarCourbe.AStarCourbeArcManager;
+import pathfinding.astarCourbe.AStarCourbeMemoryManager;
 import pathfinding.dstarlite.DStarLite;
 import pathfinding.dstarlite.GridSpace;
-import pathfinding.lpastar.LPAStar;
-import pathfinding.thetastar.ThetaStarArcManager;
-import pathfinding.thetastar.CheminPathfinding;
-import pathfinding.thetastar.ThetaStarMemoryManager;
-import pathfinding.thetastar.ThetaStar;
 import permissions.ReadOnly;
 import permissions.ReadWrite;
 import hook.HookFactory;
@@ -29,6 +24,11 @@ import scripts.ScriptManager;
 import strategie.Execution;
 import strategie.StrategieInfo;
 import strategie.StrategieNotifieur;
+import strategie.astar.AStar;
+import strategie.astar.AStarArcManager;
+import strategie.astar.AStarMemoryManager;
+import strategie.astar.GridSpaceStrategie;
+import strategie.lpastar.LPAStar;
 import table.Table;
 import threads.ThreadCapteurs;
 import threads.ThreadConfig;
@@ -175,18 +175,6 @@ public class Container
 		else if(serviceRequested == ServiceNames.D_STAR_LITE)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new DStarLite((Log)getService(ServiceNames.LOG),
 																				(GridSpace)getService(ServiceNames.GRID_SPACE));
-		else if(serviceRequested == ServiceNames.THETA_STAR)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new ThetaStar((Log)getService(ServiceNames.LOG),
-																				(DStarLite)getService(ServiceNames.D_STAR_LITE),
-																				(ThetaStarArcManager)getService(ServiceNames.THETA_STAR_ARC_MANAGER),
-																				(GameState<RobotReal,ReadOnly>)getService(ServiceNames.REAL_GAME_STATE),
-																				(CheminPathfinding)getService(ServiceNames.CHEMIN_PATHFINDING));
-		else if(serviceRequested == ServiceNames.THETA_STAR_ARC_MANAGER)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new ThetaStarArcManager((Log)getService(ServiceNames.LOG),
-																				(MoteurPhysique)getService(ServiceNames.MOTEUR_PHYSIQUE),
-																				(GridSpace)getService(ServiceNames.GRID_SPACE),
-																				(DStarLite)getService(ServiceNames.D_STAR_LITE),
-																				(ThetaStarMemoryManager)getService(ServiceNames.THETA_STAR_MEMORY_MANAGER));
 		else if(serviceRequested == ServiceNames.CHEMIN_PATHFINDING)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new CheminPathfinding((Log)getService(ServiceNames.LOG));
 		
@@ -227,8 +215,6 @@ public class Container
   															 (ScriptManager)getService(ServiceNames.SCRIPT_MANAGER),
         													 (GameState<RobotReal,ReadWrite>)getService(ServiceNames.REAL_GAME_STATE),
         													 (RequeteSTM)getService(ServiceNames.REQUETE_STM));
-		else if(serviceRequested == ServiceNames.THETA_STAR_MEMORY_MANAGER)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new ThetaStarMemoryManager((Log)getService(ServiceNames.LOG));
 		else if(serviceRequested == ServiceNames.HOOK_FACTORY)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new HookFactory((Log)getService(ServiceNames.LOG));
 		else if(serviceRequested == ServiceNames.ROBOT_REAL)
@@ -258,7 +244,7 @@ public class Container
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadEvitement((Log)getService(ServiceNames.LOG),
 																		(ThreadPathfinding)getService(ServiceNames.THREAD_PATHFINDING),
 																		(DataForSerialOutput)getService(ServiceNames.SERIAL_OUTPUT_BUFFER),
-																		(ThetaStar)getService(ServiceNames.THETA_STAR),
+																		(AStarCourbe)getService(ServiceNames.A_STAR_COURBE),
 																		(CheminPathfinding)getService(ServiceNames.CHEMIN_PATHFINDING));
 		else if(serviceRequested == ServiceNames.THREAD_CAPTEURS)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadCapteurs((Log)getService(ServiceNames.LOG),
@@ -291,7 +277,7 @@ public class Container
 																		this);
 		else if(serviceRequested == ServiceNames.THREAD_PATHFINDING)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadPathfinding((Log)getService(ServiceNames.LOG),
-																		(ThetaStar)getService(ServiceNames.THETA_STAR),
+																		(AStarCourbe)getService(ServiceNames.A_STAR_COURBE),
 																		(ObstaclesMemory)getService(ServiceNames.OBSTACLES_MEMORY));
 		else if(serviceRequested == ServiceNames.STRATEGIE_INFO)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new StrategieInfo((Log)getService(ServiceNames.LOG), 
@@ -300,6 +286,19 @@ public class Container
 			instanciedServices[serviceRequested.ordinal()] = (Service)new MoteurPhysique((Log)getService(ServiceNames.LOG)); 		
 		else if(serviceRequested == ServiceNames.STRATEGIE_NOTIFIEUR)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new StrategieNotifieur();		
+		else if(serviceRequested == ServiceNames.A_STAR_COURBE)
+			instanciedServices[serviceRequested.ordinal()] = (Service)new AStarCourbe((Log)getService(ServiceNames.LOG),
+																					(DStarLite)getService(ServiceNames.D_STAR_LITE),
+																					(AStarCourbeArcManager)getService(ServiceNames.A_STAR_COURBE_ARC_MANAGER),
+																					(GameState<RobotReal,ReadOnly>)getService(ServiceNames.REAL_GAME_STATE),
+																					(CheminPathfinding)getService(ServiceNames.CHEMIN_PATHFINDING),
+																					(AStarCourbeMemoryManager)getService(ServiceNames.A_STAR_COURBE_MEMORY_MANAGER));
+		else if(serviceRequested == ServiceNames.A_STAR_COURBE_MEMORY_MANAGER)
+			instanciedServices[serviceRequested.ordinal()] = (Service)new AStarCourbeMemoryManager((Log)getService(ServiceNames.LOG),
+																								   (GameState<RobotReal,ReadOnly>)getService(ServiceNames.REAL_GAME_STATE));
+		else if(serviceRequested == ServiceNames.A_STAR_COURBE_ARC_MANAGER)
+			instanciedServices[serviceRequested.ordinal()] = (Service)new AStarCourbeArcManager((Log)getService(ServiceNames.LOG));
+		
 		// si le service demandé n'est pas connu, alors on log une erreur.
 		else
 		{

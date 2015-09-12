@@ -1,8 +1,8 @@
 package threads;
 
+import pathfinding.CheminPathfinding;
+import pathfinding.astarCourbe.AStarCourbe;
 import pathfinding.astarCourbe.ArcCourbe;
-import pathfinding.thetastar.CheminPathfinding;
-import pathfinding.thetastar.ThetaStar;
 import utils.Config;
 import utils.ConfigInfo;
 import utils.Log;
@@ -18,7 +18,7 @@ import container.Service;
 
 public class ThreadEvitement extends Thread implements Service
 {
-	private ThetaStar pathfinding;
+	private AStarCourbe pathfinding;
 	private DataForSerialOutput serie;
 	private ThreadPathfinding threadpathfinding;
 	private CheminPathfinding chemin;
@@ -26,7 +26,7 @@ public class ThreadEvitement extends Thread implements Service
 	
 	private int msMaxAvantEvitement;
 	
-	public ThreadEvitement(Log log, ThreadPathfinding threadpathfinding, DataForSerialOutput serie, ThetaStar pathfinding, CheminPathfinding chemin)
+	public ThreadEvitement(Log log, ThreadPathfinding threadpathfinding, DataForSerialOutput serie, AStarCourbe pathfinding, CheminPathfinding chemin)
 	{
 		this.log = log;
 		this.pathfinding = pathfinding;

@@ -1,4 +1,4 @@
-package pathfinding.thetastar;
+package pathfinding;
 
 import pathfinding.astarCourbe.ArcCourbe;
 import utils.Config;

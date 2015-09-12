@@ -2,7 +2,7 @@ package robot;
 
 import java.util.ArrayList;
 
-import pathfinding.thetastar.LocomotionArc;
+import pathfinding.astarCourbe.ArcCourbe;
 import permissions.ReadOnly;
 import permissions.ReadWrite;
 import hook.Hook;
@@ -124,12 +124,6 @@ public class RobotChrono extends Robot
 		date += delta*vitesse.invertedRotationnalSpeed + sleepTourneDuration;
 	}
 
-    public void suit_chemin(ArrayList<LocomotionArc> chemin, ArrayList<Hook> hooks) throws FinMatchException
-	{
-//		for(LocomotionArc point: chemin)
-//			va_au_point_pathfinding(point.objectifFinal, point.differenceDistance, hooks);
-	}
-	
 /*	private void va_au_point_no_hook(Vec2<ReadOnly> point) throws FinMatchException
 	{
 		double orientation_finale = Math.atan2(point.y - position.y, point.x - position.x);
@@ -339,6 +333,11 @@ public class RobotChrono extends Robot
 	}
 
 	public void vaAuPointAStar() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void suitArcCourbe(ArcCourbe came_from_arc) {
 		// TODO Auto-generated method stub
 		
 	}

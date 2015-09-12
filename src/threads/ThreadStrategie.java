@@ -1,8 +1,8 @@
 package threads;
 
-import pathfinding.lpastar.LPAStar;
 import container.Service;
 import strategie.StrategieNotifieur;
+import strategie.lpastar.LPAStar;
 import utils.Config;
 import utils.Log;
 

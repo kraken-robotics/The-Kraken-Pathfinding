@@ -3,11 +3,9 @@ package obstacles;
 import obstacles.types.Obstacle;
 import obstacles.types.ObstacleProximity;
 import obstacles.types.ObstacleRectangular;
-import obstacles.types.ObstacleTrajectoireCourbe;
 import obstacles.types.ObstaclesFixes;
 import pathfinding.GameState;
-import pathfinding.thetastar.LocomotionArc;
-import pathfinding.thetastar.VitesseCourbure;
+import pathfinding.astarCourbe.AStarCourbeNode;
 import permissions.ReadOnly;
 import robot.RobotReal;
 import table.GameElementNames;
@@ -151,9 +149,10 @@ public class MoteurPhysique implements Service {
 	}
 	
 
-	public boolean isTraversableCourbe(GameState<RobotReal,ReadOnly> state, LocomotionArc arc)
+	public boolean isTraversableCourbe(GameState<RobotReal,ReadOnly> state, AStarCourbeNode node)
 	{
-		ObstacleTrajectoireCourbe obstacleTrajectoireCourbe = new ObstacleTrajectoireCourbe(arc);
+		return true;
+/*		ObstacleTrajectoireCourbe obstacleTrajectoireCourbe = new ObstacleTrajectoireCourbe(arc);
 
 		// Collision avec un obstacle fixe?
     	for(ObstaclesFixes o: ObstaclesFixes.values)
@@ -165,21 +164,7 @@ public class MoteurPhysique implements Service {
            	if(obstacleTrajectoireCourbe.isColliding(state.iterator.next()))
         		return false;
 
-        return true;
-	}
-
-	/**
-	 * Vérifie que la destination ne se trouve pas « sur le côté », là où elle serait dans tous les cas inatteignable (obstacle ou non)
-	 * @param positionRobot
-	 * @param destination
-	 * @param orientationAvance
-	 * @param rayon
-	 * @return
-	 */
-	public boolean isAccessibleCourbe(Vec2<ReadOnly> positionRobot, Vec2<ReadOnly> destination, Vec2<ReadOnly> orientationAvance, VitesseCourbure rayon)
-	{
-		// TODO
-		return true;
+        return true;*/
 	}
 	
 	/**

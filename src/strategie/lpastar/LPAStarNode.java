@@ -1,4 +1,4 @@
-package pathfinding.lpastar;
+package strategie.lpastar;
 
 import java.util.ArrayList;
 

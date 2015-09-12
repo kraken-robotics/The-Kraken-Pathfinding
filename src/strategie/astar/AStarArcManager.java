@@ -1,4 +1,4 @@
-package pathfinding.astar;
+package strategie.astar;
 
 import container.Service;
 import utils.Config;

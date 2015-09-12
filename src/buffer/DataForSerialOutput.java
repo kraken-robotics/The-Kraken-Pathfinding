@@ -210,7 +210,7 @@ public class DataForSerialOutput implements Service
 	{
 		ArrayList<String> elems = new ArrayList<String>();
 		elems.add(new String("add"));
-		elems.add(String.valueOf(arc.vitesseCourbure));
+		elems.add(String.valueOf(arc.vitesseCourbure.vitesse));
 		bufferTrajectoireCourbe.add(elems);
 		notify();		
 	}

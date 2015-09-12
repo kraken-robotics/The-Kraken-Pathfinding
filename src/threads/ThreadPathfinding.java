@@ -3,8 +3,7 @@ package threads;
 import obstacles.ObstaclesIterator;
 import obstacles.ObstaclesMemory;
 import container.Service;
-import exceptions.PathfindingException;
-import pathfinding.thetastar.ThetaStar;
+import pathfinding.astarCourbe.AStarCourbe;
 import utils.Config;
 import utils.Log;
 
@@ -17,13 +16,13 @@ import utils.Log;
 public class ThreadPathfinding extends Thread implements Service
 {
 	protected Log log;
-	private ThetaStar pathfinding;
+	private AStarCourbe pathfinding;
 	private ObstaclesMemory obstacles;
 	private ObstaclesIterator iterator;
 	
 	private boolean urgence = false;
 
-	public ThreadPathfinding(Log log, ThetaStar pathfinding, ObstaclesMemory obstacles)
+	public ThreadPathfinding(Log log, AStarCourbe pathfinding, ObstaclesMemory obstacles)
 	{
 		this.log = log;
 		this.pathfinding = pathfinding;

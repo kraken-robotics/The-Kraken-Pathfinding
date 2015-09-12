@@ -1,10 +1,6 @@
 package obstacles.types;
 
-import pathfinding.thetastar.LocomotionArc;
-import pathfinding.thetastar.VitesseCourbure;
-import permissions.ReadOnly;
-import permissions.ReadWrite;
-import utils.Vec2;
+import pathfinding.astarCourbe.AStarCourbeNode;
 
 /**
  * Obstacle formé par le robot lorsqu'il effectue une trajectoire courbe
@@ -18,19 +14,19 @@ public class ObstacleTrajectoireCourbe extends ObstacleRectanglesCollection
 	 * Constructeur d'un obstacle à partir d'un arc
 	 * @param arc
 	 */
-	public ObstacleTrajectoireCourbe(LocomotionArc arc)
+	public ObstacleTrajectoireCourbe(AStarCourbeNode node)
 	{
 		// TODO refaire complètement avec une clothoïde (développement limité sur https://fr.wikipedia.org/wiki/Clotho%C3%AFde)
 
 		// La position de cet obstacle est inutile...
 		super(null);
-		
+		/*
 		double angleDepart = arc.getAngleDepart();
 		Vec2<ReadOnly> centreCercleRotation = arc.getCentreCercleRotation();
 		Vec2<ReadOnly> destination = arc.getDestination();
 		Vec2<ReadWrite> pointDepart = arc.getPointDepart().clone();
 		Vec2<ReadWrite> normale = arc.getNormaleAuDemiPlan().clone();
-		VitesseCourbure rayon = arc.getRayonCourbure();
+		RayonCourbure rayon = arc.getRayonCourbure();
 //		log.debug("centreCercleRotation : "+centreCercleRotation);
 //		log.debug("pointDepart : "+pointDepart);
 		nbRectangles = 0;
@@ -76,6 +72,6 @@ public class ObstacleTrajectoireCourbe extends ObstacleRectanglesCollection
 		ombresRobot[nbRectangles] = new ObstacleRectangular(pointDepart.clone().getReadOnly(), 10, 10, 0);		
 		ombresRobot[nbRectangles] = new ObstacleRectangular(destination.clone().getReadOnly(), 10, 10, 0);
 		ombresRobot[nbRectangles] = new ObstacleRectangular(pointDepart.getReadOnly(), destination);
-		nbRectangles++;
+		nbRectangles++;*/
 	}
 }

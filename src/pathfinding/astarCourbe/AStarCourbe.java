@@ -2,10 +2,10 @@ package pathfinding.astarCourbe;
 
 import java.util.PriorityQueue;
 
+import pathfinding.CheminPathfinding;
 import pathfinding.GameState;
 import pathfinding.dstarlite.DStarLite;
 import pathfinding.dstarlite.GridSpace;
-import pathfinding.thetastar.CheminPathfinding;
 import permissions.ReadOnly;
 import container.Service;
 import exceptions.FinMatchException;

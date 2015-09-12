@@ -1,4 +1,4 @@
-package pathfinding.astar;
+package strategie.astar;
 
 import pathfinding.dstarlite.GridSpace;
 import permissions.ReadOnly;

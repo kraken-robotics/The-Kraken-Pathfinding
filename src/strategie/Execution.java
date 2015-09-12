@@ -5,7 +5,6 @@ import hook.Hook;
 import java.util.ArrayList;
 
 import pathfinding.GameState;
-import pathfinding.lpastar.LPAStar;
 import permissions.ReadWrite;
 import container.Service;
 import exceptions.FinMatchException;
@@ -15,6 +14,7 @@ import requete.RequeteSTM;
 import requete.RequeteType;
 import robot.RobotReal;
 import scripts.ScriptManager;
+import strategie.lpastar.LPAStar;
 import utils.Config;
 import utils.ConfigInfo;
 import utils.Log;
