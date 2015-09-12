@@ -1,9 +1,10 @@
-package pathfinding.astar_courbe;
+package pathfinding.astarCourbe;
 
 import pathfinding.GameState;
 import robot.DirectionStrategy;
 import container.Service;
 import utils.Config;
+import utils.ConfigInfo;
 import utils.Log;
 import exceptions.FinMatchException;
 
@@ -17,6 +18,7 @@ public class AStarCourbeArcManager implements Service
 {
 	protected Log log;
 	private AStarCourbeNode current;
+	private int courbureMax;
 
 	public AStarCourbeArcManager(Log log)
 	{
@@ -75,7 +77,9 @@ public class AStarCourbeArcManager implements Service
 
 	@Override
 	public void useConfig(Config config)
-	{}
+	{
+		courbureMax = config.getInt(ConfigInfo.COURBURE_MAX);		
+	}
 
 	public void setEjecteGameElement(boolean ejecteGameElement) {
 		// TODO Auto-generated method stub

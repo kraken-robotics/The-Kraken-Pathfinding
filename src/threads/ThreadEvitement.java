@@ -1,6 +1,6 @@
 package threads;
 
-import pathfinding.astar_courbe.ArcCourbe;
+import pathfinding.astarCourbe.ArcCourbe;
 import pathfinding.thetastar.CheminPathfinding;
 import pathfinding.thetastar.ThetaStar;
 import utils.Config;

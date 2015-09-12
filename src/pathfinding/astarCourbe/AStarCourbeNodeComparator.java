@@ -1,4 +1,4 @@
-package pathfinding.astar_courbe;
+package pathfinding.astarCourbe;
 
 import java.util.Comparator;
 

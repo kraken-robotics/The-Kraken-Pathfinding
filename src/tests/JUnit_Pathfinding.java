@@ -6,7 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import container.ServiceNames;
-import pathfinding.astar_courbe.ArcCourbe;
+import pathfinding.astarCourbe.ArcCourbe;
 import pathfinding.dstarlite.DStarLite;
 import pathfinding.dstarlite.GridSpace;
 import pathfinding.thetastar.CheminPathfinding;

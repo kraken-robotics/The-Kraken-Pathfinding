@@ -1,6 +1,6 @@
 package pathfinding.thetastar;
 
-import pathfinding.astar_courbe.ArcCourbe;
+import pathfinding.astarCourbe.ArcCourbe;
 import utils.Config;
 import utils.Log;
 import container.Service;
