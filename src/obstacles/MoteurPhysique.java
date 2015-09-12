@@ -149,7 +149,7 @@ public class MoteurPhysique implements Service {
 	}
 	
 
-	public boolean isTraversableCourbe(GameState<RobotReal,ReadOnly> state, AStarCourbeNode node)
+	public boolean isTraversableCourbe(AStarCourbeNode node)
 	{
 		return true;
 /*		ObstacleTrajectoireCourbe obstacleTrajectoireCourbe = new ObstacleTrajectoireCourbe(arc);

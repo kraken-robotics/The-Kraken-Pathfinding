@@ -114,7 +114,7 @@ public class AStarCourbe implements Service
 	{
 		depart.came_from = null;
 		depart.g_score = 0;
-		depart.f_score = arcmanager.heuristicCostAStarCourbe(depart);
+		depart.f_score = arcmanager.heuristicCost(depart);
 
 		cheminContainer.notUptodate();
 		memorymanager.empty();
@@ -128,7 +128,8 @@ public class AStarCourbe implements Service
 		{
 			current = openset.poll();
 			try {
-				arcmanager.execute(current);
+				if(!arcmanager.execute(current))
+					continue; // collision attendue
 			} catch (FinMatchException e) {
 				continue;
 			}
@@ -162,7 +163,7 @@ public class AStarCourbe implements Service
 				arcmanager.next(successeur);
 				 
 				successeur.g_score = current.g_score + arcmanager.distanceTo(successeur);
-				successeur.f_score = successeur.g_score + arcmanager.heuristicCostAStarCourbe(successeur);
+				successeur.f_score = successeur.g_score + arcmanager.heuristicCost(successeur);
 
 				openset.add(successeur);
 				

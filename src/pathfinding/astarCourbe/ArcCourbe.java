@@ -1,7 +1,7 @@
 package pathfinding.astarCourbe;
 
+import pathfinding.VitesseCourbure;
 import permissions.ReadWrite;
-import robot.VitesseCourbure;
 import utils.Vec2;
 
 /**

@@ -306,9 +306,9 @@ public class DStarLite implements Service
 	 * @param gridpoint
 	 * @return
 	 */
-	public int heuristicCostThetaStar(int gridpoint)
+	public int heuristicCostCourbe(Vec2<ReadOnly> position)
 	{
-		return getFromMemory(gridpoint).rhs;
+		return getFromMemory(gridspace.computeGridPoint(position)).rhs;
 	}
 	
 	public int getHashDebut()

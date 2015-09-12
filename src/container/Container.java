@@ -297,7 +297,9 @@ public class Container
 			instanciedServices[serviceRequested.ordinal()] = (Service)new AStarCourbeMemoryManager((Log)getService(ServiceNames.LOG),
 																								   (GameState<RobotReal,ReadOnly>)getService(ServiceNames.REAL_GAME_STATE));
 		else if(serviceRequested == ServiceNames.A_STAR_COURBE_ARC_MANAGER)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new AStarCourbeArcManager((Log)getService(ServiceNames.LOG));
+			instanciedServices[serviceRequested.ordinal()] = (Service)new AStarCourbeArcManager((Log)getService(ServiceNames.LOG),
+																								(MoteurPhysique)getService(ServiceNames.MOTEUR_PHYSIQUE),
+																								(DStarLite)getService(ServiceNames.D_STAR_LITE));
 		
 		// si le service demandé n'est pas connu, alors on log une erreur.
 		else
