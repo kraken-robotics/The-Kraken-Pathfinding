@@ -39,12 +39,14 @@ public abstract class JUnit_Test
 		}
 		if(Config.graphicDStarLite || Config.graphicThetaStar || Config.graphicObstacles)
 			Fenetre.setInstance(container);
+		
+		container.startAllThreads();
 	}
 
 	@SuppressWarnings("unused")
 	@After
 	public void tearDown() throws Exception {
-		if(Config.graphicDStarLite || Config.graphicThetaStar || Config.graphicObstacles)
+		if((Config.graphicDStarLite || Config.graphicThetaStar || Config.graphicObstacles) && !Fenetre.needInit)
 			Sleep.sleep(100000);
 		container.destructor();
 		Sleep.sleep(500);

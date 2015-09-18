@@ -1,6 +1,13 @@
 package obstacles.types;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
+import obstacles.ClothoidesComputer;
+import pathfinding.VitesseCourbure;
 import pathfinding.astarCourbe.AStarCourbeNode;
+import permissions.ReadOnly;
+import utils.Vec2;
 
 /**
  * Obstacle formé par le robot lorsqu'il effectue une trajectoire courbe
@@ -14,12 +21,27 @@ public class ObstacleTrajectoireCourbe extends ObstacleRectanglesCollection
 	 * Constructeur d'un obstacle à partir d'un arc
 	 * @param arc
 	 */
-	public ObstacleTrajectoireCourbe(AStarCourbeNode node)
+	public ObstacleTrajectoireCourbe(AStarCourbeNode node, ClothoidesComputer courbe)
 	{
+		super(null);
+	/*		for(int s = -nbPoints/2; s < nbPoints/2; s++)
+		{
+			calculeXY(new BigDecimal(2.*s*sMax/nbPoints).setScale(15, RoundingMode.HALF_EVEN), VitesseCourbure.DROITE_LENTEMENT);
+			new ObstacleRectangular(new Vec2<ReadOnly>((int)(250*x.doubleValue()), (int)(1000+250*y.doubleValue())), 10, 10, 0);
+		}
+		for(int s = -nbPoints/2; s < nbPoints/2; s++)
+		{
+			calculeXY(new BigDecimal(2.*s*sMax/nbPoints).setScale(15, RoundingMode.HALF_EVEN), VitesseCourbure.DROITE_LENTEMENT);
+			new ObstacleRectangular(new Vec2<ReadOnly>((int)(500*x.doubleValue()), (int)(1000+500*y.doubleValue())), 10, 10, 0);
+		}
+		for(int s = -nbPoints/2; s < nbPoints/2; s++)
+		{
+			calculeXY(new BigDecimal(2.*s*sMax/nbPoints).setScale(15, RoundingMode.HALF_EVEN), VitesseCourbure.DROITE_LENTEMENT);
+			new ObstacleRectangular(new Vec2<ReadOnly>((int)(500*2*x.doubleValue()), (int)(1000+500*2*y.doubleValue())), 10, 10, 0);
+		}*/
 		// TODO refaire complètement avec une clothoïde (développement limité sur https://fr.wikipedia.org/wiki/Clotho%C3%AFde)
 
 		// La position de cet obstacle est inutile...
-		super(null);
 		/*
 		double angleDepart = arc.getAngleDepart();
 		Vec2<ReadOnly> centreCercleRotation = arc.getCentreCercleRotation();

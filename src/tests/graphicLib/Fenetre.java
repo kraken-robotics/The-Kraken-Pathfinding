@@ -45,8 +45,8 @@ public class Fenetre extends JPanel {
 	
 //	private int firstNotDead = 0;
     
-	GridSpace gs;
-	boolean needInit = true;
+	private GridSpace gs;
+	public static boolean needInit = true;
 	
 	private Fenetre(Container container)
 	{
@@ -163,6 +163,7 @@ public class Fenetre extends JPanel {
 		this.capteurs = capteurs;
 	}
 	
+	@SuppressWarnings("unused")
 	public void paint(Graphics g)
 	{
 //		g.drawImage(image, 0, 0, this);
@@ -241,7 +242,7 @@ public class Fenetre extends JPanel {
 
 	public void showOnFrame() {
 		setBackground(Color.WHITE);
-		setPreferredSize(new Dimension(sizeX+200,sizeY));
+		setPreferredSize(new Dimension(sizeX,sizeY));
 		JFrame frame = new JFrame("Test");
 		frame.getContentPane().add(this);
 		frame.pack();
@@ -307,23 +308,29 @@ public class Fenetre extends JPanel {
 	{
 		g.setColor(Couleur.NOIR.couleur);
 		int[] X, Y;
-		for(ObstacleRectangular o: obstaclesEnBiais)
+		synchronized(obstaclesEnBiais)
 		{
-			X = ObstacleRectangular.getXPositions(o);
-			Y = ObstacleRectangular.getYPositions(o);
-			for(int i = 0; i < 4; i++)
+			for(ObstacleRectangular o: obstaclesEnBiais)
 			{
-				X[i] = XtoWindow(X[i]);
-				Y[i] = YtoWindow(Y[i]);
+				X = ObstacleRectangular.getXPositions(o);
+				Y = ObstacleRectangular.getYPositions(o);
+				for(int i = 0; i < 4; i++)
+				{
+					X[i] = XtoWindow(X[i]);
+					Y[i] = YtoWindow(Y[i]);
+				}
+				g.fillPolygon(X, Y, 4);
 			}
-			g.fillPolygon(X, Y, 4);
 		}
 //		g.fillRect(100, 100, 100, 100);
 	}
 	
 	public void clearObstacleEnBiais()
 	{
-		obstaclesEnBiais.clear();
+		synchronized(obstaclesEnBiais)
+		{
+			obstaclesEnBiais.clear();
+		}
 		if(needInit)
 			init();
 		repaint();
@@ -331,7 +338,10 @@ public class Fenetre extends JPanel {
 	
 	public void addObstacleEnBiais(ObstacleRectangular obstacleEnBiais)
 	{
-		obstaclesEnBiais.add(obstacleEnBiais);
+		synchronized(obstaclesEnBiais)
+		{
+			obstaclesEnBiais.add(obstacleEnBiais);
+		}
 		if(needInit)
 			init();
 		repaint();

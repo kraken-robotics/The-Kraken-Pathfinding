@@ -6,6 +6,7 @@ import org.junit.Test;
 
 import container.ServiceNames;
 import utils.Vec2;
+import obstacles.ClothoidesComputer;
 import obstacles.types.ObstacleCircular;
 import obstacles.types.ObstacleRectangular;
 import obstacles.types.ObstacleTrajectoireCourbe;
@@ -22,11 +23,13 @@ import permissions.ReadOnly;
 public class JUnit_Obstacle extends JUnit_Test {
 
 	private GridSpace gridspace;
+	private ClothoidesComputer clothoides;
 	
 	@Before
     public void setUp() throws Exception {
         super.setUp();
         gridspace = (GridSpace) container.getService(ServiceNames.GRID_SPACE);
+        clothoides = (ClothoidesComputer) container.getService(ServiceNames.CLOTHOIDES_COMPUTER);
     }
 	
     @Test
@@ -97,6 +100,8 @@ public class JUnit_Obstacle extends JUnit_Test {
     @Test
     public void test_obstacle_trajectoire_courbe() throws Exception
     {
+    	new ObstacleTrajectoireCourbe(null, clothoides);
+    	log.debug("Fin");
 //    	new ObstacleRectangular(new Vec2<ReadOnly>(-500, 500), 400, 400, 0);
  //   	new ObstacleRectangular(new Vec2<ReadOnly>(-500, 500), 400, 400, Math.PI/12);
   //  	new ObstacleRectangular(new Vec2<ReadOnly>(-500, 500), 400, 400, Math.PI/6);

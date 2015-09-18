@@ -1,6 +1,7 @@
 package container;
 
 import obstacles.Capteurs;
+import obstacles.ClothoidesComputer;
 import obstacles.MoteurPhysique;
 import obstacles.ObstaclesMemory;
 import obstacles.types.Obstacle;
@@ -120,24 +121,23 @@ public class Container
 			throw new ContainerException();
 		}
 		nbInstances++;
-			// affiche la configuration avant toute autre chose
-			System.out.println("== Container bootstrap ==");
-			System.out.println("Loading config from current directory : " +  System.getProperty("user.dir"));
+		// affiche la configuration avant toute autre chose
+		System.out.println("== Container bootstrap ==");
+		System.out.println("Loading config from current directory : " +  System.getProperty("user.dir"));
 
-			try {
-				log = (Log)getService(ServiceNames.LOG);
-				config = (Config)getService(ServiceNames.CONFIG);
-			} catch (PointSortieException e) {
-				// Impossible
-				e.printStackTrace();
-			}
-			log.updateConfig(config);
-			log.useConfig(config);
-			config.init(log);
-			
-			Obstacle.setLog(log);
-			Obstacle.useConfig(config);
-		startAllThreads();
+		try {
+			log = (Log)getService(ServiceNames.LOG);
+			config = (Config)getService(ServiceNames.CONFIG);
+		} catch (PointSortieException e) {
+			// Impossible
+			e.printStackTrace();
+		}
+		log.updateConfig(config);
+		log.useConfig(config);
+		config.init(log);
+		
+		Obstacle.setLog(log);
+		Obstacle.useConfig(config);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -300,7 +300,8 @@ public class Container
 			instanciedServices[serviceRequested.ordinal()] = (Service)new AStarCourbeArcManager((Log)getService(ServiceNames.LOG),
 																								(MoteurPhysique)getService(ServiceNames.MOTEUR_PHYSIQUE),
 																								(DStarLite)getService(ServiceNames.D_STAR_LITE));
-		
+		else if(serviceRequested == ServiceNames.CLOTHOIDES_COMPUTER)
+			instanciedServices[serviceRequested.ordinal()] = (Service)new ClothoidesComputer((Log)getService(ServiceNames.LOG));
 		// si le service demandé n'est pas connu, alors on log une erreur.
 		else
 		{
@@ -331,7 +332,7 @@ public class Container
 	/**
 	 * Démarrage de tous les threads
 	 */
-	private void startAllThreads()
+	public void startAllThreads()
 	{
 		if(threadsStarted)
 			return;
