@@ -80,7 +80,7 @@ Une méthode
 ou
     scr nb_script
 ou
-    act ordre_act
+    act "ordre_act"
 
 Exemple complet: un hook de position qui dit qu'un élément a été shooté
     hpo 20 1300 5 1 T tbl 18
