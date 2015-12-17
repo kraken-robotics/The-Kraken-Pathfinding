@@ -26,7 +26,7 @@ public class HookDate extends Hook {
 	 */
 	public HookDate(Log log, GameState<?,ReadOnly> state, long date)
 	{
-		super(log, state);
+		super(log, state, true);
 		this.date_hook = date;
 	}
 	
@@ -41,7 +41,7 @@ public class HookDate extends Hook {
 	public ArrayList<String> toSerial()
 	{
 		ArrayList<String> out = new ArrayList<String>();
-		out.add("hda");
+		out.add("Hda");
 		out.add(String.valueOf(date_hook));
 		out.addAll(super.toSerial());
 		return out;

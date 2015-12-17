@@ -51,7 +51,7 @@ public class GameElementDone implements Executable
 		ArrayList<String> out = new ArrayList<String>();
 		out.add("tbl");
 		out.add(String.valueOf(element.ordinal()));
-		out.add(String.valueOf(done.ordinal()));
+//		out.add(String.valueOf(done.ordinal()));
 		return out;
 	}
 

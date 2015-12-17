@@ -29,7 +29,7 @@ public class HookDemiPlan extends Hook
 	 */
 	public HookDemiPlan(Log log, GameState<?, ReadOnly> state)
 	{
-		super(log, state);
+		super(log, state, true);
 		point = new Vec2<ReadWrite>();
 		direction = new Vec2<ReadWrite>();
 	}
@@ -42,7 +42,7 @@ public class HookDemiPlan extends Hook
 	 */
 	public HookDemiPlan(Log log, GameState<?,ReadOnly> state, Vec2<ReadOnly> point, Vec2<ReadOnly> direction)
 	{
-		super(log, state);
+		super(log, state, true);
 		this.point = point.clone();
 		this.direction = direction.clone();
 	}
@@ -71,7 +71,7 @@ public class HookDemiPlan extends Hook
 	public ArrayList<String> toSerial()
 	{
 		ArrayList<String> out = new ArrayList<String>();
-		out.add("hdp");
+		out.add("Hdp");
 		out.add(String.valueOf(point.x));
 		out.add(String.valueOf(point.y));
 		out.add(String.valueOf(direction.x));

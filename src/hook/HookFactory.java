@@ -100,7 +100,7 @@ public class HookFactory implements Service
 					if(n.getType() == t)
 					{
 						action = new GameElementDone(state, n, Tribool.MAYBE);
-						hook.ajouter_callback(new Callback(new GameElementDone(state, n, Tribool.MAYBE)));
+						hook.ajouter_callback(new GameElementDone(state, n, Tribool.MAYBE));
 					}
 				hooksPermanents.add(hook);
 			}
@@ -108,8 +108,8 @@ public class HookFactory implements Service
 			// Les hooks de contact
 			if(t.scriptHookThrown() != null)
 			{
-				hook = new HookContact(log, state.getReadOnly(), t.scriptHookThrown().nbCapteur);
-				hook.ajouter_callback(new Callback(new ThrowScriptRequest(t.scriptHookThrown())));
+				hook = new HookContact(log, state.getReadOnly(), t.scriptHookThrown().nbCapteur, true);
+				hook.ajouter_callback(new ThrowScriptRequest(t.scriptHookThrown()));
 				hooksPermanents.add(hook);
 			}
 		}
@@ -122,7 +122,7 @@ public class HookFactory implements Service
 //				hook = new HookCollisionElementJeu(log, state.getReadOnly(), n.getObstacle());
 				hook = new HookPosition(log, state.getReadOnly(), n.getObstacle().position, n.getObstacleDilate().radius);
 				action = new GameElementDone(state, n, Tribool.TRUE);
-				hook.ajouter_callback(new Callback(action));
+				hook.ajouter_callback(action);
 				hooksPermanents.add(hook);
 			}
 		}

@@ -37,7 +37,7 @@ public class HookPosition extends Hook
      */
 	public HookPosition(Log log, GameState<?,ReadOnly> state, Vec2<ReadOnly> position, int tolerancy)
 	{
-		super(log, state);
+		super(log, state, true);
 		this.position = position;
 		this.tolerancy = tolerancy;
 		this.squaredTolerancy = tolerancy*tolerancy;
@@ -55,10 +55,10 @@ public class HookPosition extends Hook
 	public ArrayList<String> toSerial()
 	{
 		ArrayList<String> out = new ArrayList<String>();
-		out.add("hpo");
+		out.add("Hpo");
 		out.add(String.valueOf(position.x));
 		out.add(String.valueOf(position.y));
-		out.add(String.valueOf(tolerancy));
+		out.add(String.valueOf(squaredTolerancy)); // on envoie bien la tolérance au carré directement
 		out.addAll(super.toSerial());
 		return out;
 	}

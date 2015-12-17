@@ -21,24 +21,30 @@ import utils.Vec2;
 abstract public class Hook
 {
 
-	protected ArrayList<Callback> callbacks = new ArrayList<Callback>();
+	protected ArrayList<Executable> callbacks = new ArrayList<Executable>();
 
-	//gestion des log
 	protected Log log;
 	
 	protected GameState<?,ReadOnly> state;
 
-	protected static Integer rayon_robot = null;
-	protected static Integer dureeMatch;
+	protected static int rayon_robot;
+	protected static int dureeMatch;
+	private static int numStatic = 0;
+	private int num;
+	protected boolean isDone = false;
+	protected boolean isUnique;
 	
 	/**
-	 *  ce constructeur ne sera appellé que par les constructeurs des classes filles (des hooks bien précis)  
+	 * Ce constructeur ne sera appelé que par les constructeurs des classes filles
 	 * @param config
 	 * @param log
 	 * @param real_state
 	 */
-	public Hook(Log log, GameState<?,ReadOnly> state)
+	public Hook(Log log, GameState<?,ReadOnly> state, boolean isUnique)
 	{
+		num = numStatic;
+		numStatic++;
+		this.isUnique = isUnique;
 		this.log = log;
 		this.state = state;
 	}
@@ -54,7 +60,7 @@ abstract public class Hook
 	 * Il n'y a pas de méthode pour en retirer, car il n'y en a a priori pas besoin
 	 * @param callback
 	 */
-	public void ajouter_callback(Callback callback)
+	public void ajouter_callback(Executable callback)
 	{
 		callbacks.add(callback);
 	}
@@ -69,8 +75,9 @@ abstract public class Hook
 	 */
 	public void trigger()
 	{
-		for(Callback callback : callbacks)
-			callback.call();
+		if(!isDone || !isUnique)
+			for(Executable callback : callbacks)
+				callback.execute();
 	}
 
 	/**
@@ -110,7 +117,7 @@ abstract public class Hook
 	public void updateGameState(GameState<RobotChrono,ReadWrite> state)
 	{
 		this.state = state.getReadOnly();
-		for(Callback callback : callbacks)
+		for(Executable callback : callbacks)
 			callback.updateGameState(state);
 	}
 	
@@ -121,8 +128,9 @@ abstract public class Hook
 	public ArrayList<String> toSerial()
 	{
 		ArrayList<String> out = new ArrayList<String>();
+		out.add(String.valueOf(num));
 		out.add(String.valueOf(callbacks.size()));
-		for(Callback c : callbacks)
+		for(Executable c : callbacks)
 			out.addAll(c.toSerial());
 		return out;
 	}

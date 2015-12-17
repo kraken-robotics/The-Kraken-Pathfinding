@@ -18,9 +18,9 @@ public class HookContact extends Hook {
 
 	private int nbCapteur;
 	
-	public HookContact(Log log, GameState<?, ReadOnly> state, int nbCapteur)
+	public HookContact(Log log, GameState<?, ReadOnly> state, int nbCapteur, boolean isUnique)
 	{
-		super(log, state);
+		super(log, state, isUnique);
 		this.nbCapteur = nbCapteur;
 	}
 
@@ -37,8 +37,12 @@ public class HookContact extends Hook {
 	public ArrayList<String> toSerial()
 	{
 		ArrayList<String> out = new ArrayList<String>();
-		out.add("hct");
+		out.add("Hct");
 		out.add(String.valueOf(nbCapteur));
+		if(isUnique)
+			out.add("T");
+		else
+			out.add("F");
 		out.addAll(super.toSerial());
 		return out;
 	}
