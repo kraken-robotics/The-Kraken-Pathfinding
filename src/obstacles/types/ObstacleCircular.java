@@ -70,7 +70,8 @@ public class ObstacleCircular extends Obstacle
 	{
 		Vec2<ReadOnly> positionRepereCapteur = position.minusNewVector(origineCapteur).getReadOnly();
 
-		double a = positionRepereCapteur.dot(vecteurNormal)/1000000;
+		// TODO : Vec2.coeffDirection au carré, vraiment ?
+		double a = positionRepereCapteur.dot(vecteurNormal)/(Vec2.coeffDirection * Vec2.coeffDirection);
 		a *= a;
 		return Math.sqrt(positionRepereCapteur.squaredLength() - a) - Math.sqrt(radius * radius - a);
 	}

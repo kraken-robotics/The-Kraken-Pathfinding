@@ -13,6 +13,7 @@ import permissions.ReadWrite;
 
 public class Vec2<T extends Permission>
 {
+	public static final int coeffDirection = 1024; // le coefficient 1024 est là pour éviter une division bas niveau
 	public int x;
 	public int y;
 	
@@ -24,8 +25,8 @@ public class Vec2<T extends Permission>
 	
 	public Vec2(double angle)
 	{
-		x = (int) (Math.cos(angle)*1000);
-		y = (int) (Math.sin(angle)*1000);
+		x = (int) (Math.cos(angle)*coeffDirection);	
+		y = (int) (Math.sin(angle)*coeffDirection);
 	}
 
 	public Vec2(int longueur, double angle, boolean useless)
@@ -48,8 +49,8 @@ public class Vec2<T extends Permission>
 	
 	public static Vec2<ReadWrite> setAngle(Vec2<ReadWrite> out, double angle)
 	{
-		out.x = (int) (Math.cos(angle)*1000);
-		out.y = (int) (Math.sin(angle)*1000);
+		out.x = (int) (Math.cos(angle)*coeffDirection);
+		out.y = (int) (Math.sin(angle)*coeffDirection);
 		return out;
 	}
 
