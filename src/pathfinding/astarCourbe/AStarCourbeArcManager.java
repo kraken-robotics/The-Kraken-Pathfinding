@@ -51,7 +51,9 @@ public class AStarCourbeArcManager implements Service
 	}
 	
 	/**
-	 * Renvoie la distance entre deux points.
+	 * Renvoie la distance entre deux points. Et par distance, j'entends "durée".
+	 * Heureusement, les longueurs des arcs de clothoïdes qu'on considère sont égales.
+	 * Ne reste plus qu'à prendre en compte la vitesse, qui dépend de la courbure.
 	 */
 	public int distanceTo(AStarCourbeNode node)
 	{

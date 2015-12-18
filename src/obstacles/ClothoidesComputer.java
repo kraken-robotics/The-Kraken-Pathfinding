@@ -32,7 +32,7 @@ public class ClothoidesComputer implements Service
 		init();
 	}
 	
-	
+	// Calcul grâce au développement limité d'Euler
 	private void calculeXY(BigDecimal s)
 	{
 		y = s;
@@ -84,6 +84,7 @@ public class ClothoidesComputer implements Service
 		for(int s = (int) (-sMax/pas); s < (int) (sMax/pas); s++)
 		{
 			calculeXY(new BigDecimal(s*pas).setScale(15, RoundingMode.HALF_EVEN));
+			// TODO : calculer trajectoire
 			new ObstacleRectangular(new Vec2<ReadOnly>((int)(500*x.doubleValue()-500), (int)(1000+500*y.doubleValue())), 10, 10, 0);
 		}
 		for(int vitesse = 1 ; vitesse <= 2 ; vitesse++)

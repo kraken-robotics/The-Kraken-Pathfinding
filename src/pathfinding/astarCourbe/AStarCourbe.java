@@ -20,13 +20,14 @@ import utils.Vec2;
 /**
  * AStar* simplifié, qui lisse le résultat du D* Lite et fournit une trajectoire courbe
  * On suppose qu'il n'y a jamais collision de noeuds
+ * (je parle de collision dans le sens "égalité", pas "robot qui fonce dans le mur"…)
  * @author pf
  *
  */
 
 public class AStarCourbe implements Service
 {
-	private PriorityQueue<AStarCourbeNode> openset = new PriorityQueue<AStarCourbeNode>(GridSpace.NB_POINTS, new AStarCourbeNodeComparator());	 // The set of tentative nodes to be evaluated
+	private PriorityQueue<AStarCourbeNode> openset = new PriorityQueue<AStarCourbeNode>(GridSpace.NB_POINTS, new AStarCourbeNodeComparator());
 	private DirectionStrategy directionstrategyactuelle;
 	
 	protected Log log;
@@ -120,7 +121,7 @@ public class AStarCourbe implements Service
 		memorymanager.empty();
 
 		openset.clear();
-		openset.add(depart);	// The set of tentative nodes to be evaluated, initially containing the start node
+		openset.add(depart);	// Les nœuds à évaluer
 
 		AStarCourbeNode current, successeur;
 
@@ -129,20 +130,20 @@ public class AStarCourbe implements Service
 			current = openset.poll();
 			try {
 				if(!arcmanager.execute(current))
-					continue; // collision attendue
+					continue; // collision mécanique attendue. On passe au suivant !
 			} catch (FinMatchException e) {
 				continue;
 			}
 			
 			// Si on est arrivé, on reconstruit le chemin
-			if(current.state.robot.getPosition().squaredDistance(arrivee) < 2500)
+			if(current.state.robot.getPosition().squaredDistance(arrivee) < 50*50)
 			{
 				partialReconstruct(current, true);
 				memorymanager.empty();
 				return;
 			}
 			
-			// On parcourt les voisins de current et de son prédecesseur.
+			// On parcourt les voisins de current
 
 			arcmanager.reinitIterator(current, directionstrategyactuelle);
 			
@@ -151,9 +152,10 @@ public class AStarCourbe implements Service
 				if(cheminContainer.isNeededToStartAgain())
 				{
 					partialReconstruct(current, false);
-					current.copy(depart);
+					// Il est nécessaire de copier current dans depart car current
+					// est effacé quand le memorymanager est vidé. Cette copie n'est effectuée qu'ici
+					current.copyReconstruct(depart);
 					memorymanager.empty();
-//					depart.came_from = null;
 					openset.clear();
 					openset.add(depart);
 					break;
@@ -181,6 +183,13 @@ public class AStarCourbe implements Service
 		return;
 	}
 	
+	/**
+	 * Reconstruit le chemin. Il peut reconstruire le chemin même si celui-ci n'est pas fini.
+	 * En effet, en faisant "openset.clear()", il force le pathfinding a continuer sur sa lancée sans
+	 * remettre en cause la trajectoire déjà calculée
+	 * @param best
+	 * @param last
+	 */
 	private void partialReconstruct(AStarCourbeNode best, boolean last)
 	{
 		synchronized(cheminContainer)
@@ -198,10 +207,9 @@ public class AStarCourbe implements Service
 			}
 			cheminContainer.setDernierIndiceChemin(k-1);
 			cheminContainer.setLast(last);
-				
 		}
-		openset.clear();
-		openset.add(best);
+//		openset.clear();
+//		openset.add(best);
 	}
 
 	@Override

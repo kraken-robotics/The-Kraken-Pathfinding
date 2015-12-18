@@ -5,6 +5,12 @@ import utils.Config;
 import utils.Log;
 import container.Service;
 
+/**
+ * S'occupe de la trajectoire actuelle
+ * @author pf
+ *
+ */
+
 public class CheminPathfinding implements Service
 {
 	protected Log log;

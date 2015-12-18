@@ -8,6 +8,8 @@ package pathfinding;
 
 public enum VitesseCourbure
 {
+	// TODO : faisableALArret est-il encore d'actualité ?
+	
 	GAUCHE_VITE(-2, false),
 	GAUCHE_LENTEMENT(-1, false),
 	COURBURE_IDENTIQUE(0, false),

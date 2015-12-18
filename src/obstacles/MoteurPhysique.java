@@ -138,7 +138,6 @@ public class MoteurPhysique implements Service {
     	return o.isProcheObstacle(position, distance);
     }
     
-	
 	@Override
 	public void updateConfig(Config config)
 	{}
