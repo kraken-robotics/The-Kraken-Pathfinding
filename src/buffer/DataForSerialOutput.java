@@ -70,7 +70,7 @@ public class DataForSerialOutput implements Service
 	public synchronized void setSpeed(Speed speed)
 	{
 		ArrayList<String> elems = new ArrayList<String>();
-		elems.add(new String("sspd"));
+		elems.add("sspd");
 		elems.add(new String(Integer.toString(speed.PWMRotation)));
 		elems.add(new String(Integer.toString(speed.PWMTranslation)));
 		bufferBassePriorite.add(elems);
@@ -81,7 +81,7 @@ public class DataForSerialOutput implements Service
 	public synchronized void getPositionOrientation()
 	{
 		ArrayList<String> elems = new ArrayList<String>();
-		elems.add(new String("gxyo"));
+		elems.add("gxyo");
 		bufferBassePriorite.add(elems);
 		notify();
 	}
@@ -90,7 +90,7 @@ public class DataForSerialOutput implements Service
 	public synchronized void setPositionOrientation(Vec2<ReadOnly> pos, double angle)
 	{
 		ArrayList<String> elems = new ArrayList<String>();
-		elems.add(new String("sxyo"));
+		elems.add("sxyo");
 		elems.add(new String(Integer.toString(pos.x)));
 		elems.add(new String(Integer.toString(pos.y)));
 		elems.add(new String(Long.toString(Math.round(angle*1000))));
@@ -105,7 +105,7 @@ public class DataForSerialOutput implements Service
 	public synchronized void avancer(int distance, ArrayList<Hook> hooks, boolean mur)
 	{
 		ArrayList<String> elems = new ArrayList<String>();
-		elems.add(new String("d"));
+		elems.add("d");
 		elems.add(new String(Integer.toString(distance)));
 		if(mur)
 			elems.add("T");
@@ -123,7 +123,7 @@ public class DataForSerialOutput implements Service
 	public synchronized void turn(double angle)
 	{
 		ArrayList<String> elems = new ArrayList<String>();
-		elems.add(new String("t"));
+		elems.add("t");
 		elems.add(new String(Long.toString(Math.round(angle*1000))));
 //		addHook(elems, hooks);
 		bufferBassePriorite.add(elems);
@@ -133,7 +133,7 @@ public class DataForSerialOutput implements Service
 	public synchronized void envoieHooks(ArrayList<Hook> hooks)
 	{
 		ArrayList<String> elems = new ArrayList<String>();
-		elems.add(new String("hlst"));
+		elems.add("hlst");
 		addHooks(elems, hooks);
 		bufferBassePriorite.add(elems);
 		notify();
@@ -184,7 +184,7 @@ public class DataForSerialOutput implements Service
 	public synchronized void envoieActionneurs()
 	{
 		ArrayList<String> elems = new ArrayList<String>();
-		elems.add(new String("alst"));
+		elems.add("alst");
 		elems.add(String.valueOf(ActuatorOrder.values().length));
 		for(ActuatorOrder a : ActuatorOrder.values())
 		{
@@ -198,10 +198,14 @@ public class DataForSerialOutput implements Service
 	public synchronized void envoieArcCourbeLast(ArcCourbe arc)
 	{
 		ArrayList<String> elems = new ArrayList<String>();
-		elems.add(new String("addl"));
-		elems.add(String.valueOf(arc.vitesseCourbure));
-		elems.add(String.valueOf(arc.destination.x));
-		elems.add(String.valueOf(arc.destination.y));
+		elems.add("addl");
+		elems.add(String.valueOf(arc.pointDepart.x));
+		elems.add(String.valueOf(arc.pointDepart.y));
+		Vec2<ReadOnly> direction = new Vec2<ReadOnly>(arc.theta);
+		elems.add(String.valueOf(direction.x));
+		elems.add(String.valueOf(direction.y));
+		elems.add(String.valueOf(arc.courbure));
+		elems.add(String.valueOf(arc.theta));
 		bufferTrajectoireCourbe.add(elems);
 		notify();		
 	}
@@ -209,9 +213,15 @@ public class DataForSerialOutput implements Service
 	public synchronized void envoieArcCourbe(ArcCourbe arc)
 	{
 		ArrayList<String> elems = new ArrayList<String>();
-		elems.add(new String("add"));
-		elems.add(String.valueOf(arc.vitesseCourbure.vitesse));
+		elems.add("add");
+		elems.add(String.valueOf(arc.pointDepart.x));
+		elems.add(String.valueOf(arc.pointDepart.y));
+		Vec2<ReadOnly> direction = new Vec2<ReadOnly>(arc.theta);
+		elems.add(String.valueOf(direction.x));
+		elems.add(String.valueOf(direction.y));
+		elems.add(String.valueOf(arc.courbure));
+		elems.add(String.valueOf(arc.theta));
 		bufferTrajectoireCourbe.add(elems);
-		notify();		
+		notify();			
 	}
 }

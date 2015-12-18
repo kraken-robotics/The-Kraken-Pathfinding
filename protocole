@@ -22,7 +22,7 @@ envoie le protocole des actionneurs
 envoie la liste des hooks valables pour tout le match. Chaque nouvel appel écrase ceux envoyés précédemment
     hlst nb_hook [hooks]
 ajoute point à l'itinéraire
-    add x_point y_point x_direction y_direction x_destination y_destination rayon_courbure
+    add x_point y_point x_direction y_direction courbure angle
 commence un nouvel itinéraire (tourne dès maintenant)
     addf x_destination y_destination rayon_courbure
 
