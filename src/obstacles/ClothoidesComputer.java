@@ -79,14 +79,17 @@ public class ClothoidesComputer implements Service
 	// Calcule, une fois pour toutes, les clothoïdes
 	private void init()
 	{
-		double pas = 0.1;
-		int sMax = 2;
-		for(int s = (int) (-sMax/pas); s < (int) (sMax/pas); s++)
+		double pas = 0.5;
+		int sMax = 1000;
+		double somme = 0;
+		for(int s = 1; s < (int) (sMax/pas); s++)
 		{
-			calculeXY(new BigDecimal(s*pas).setScale(15, RoundingMode.HALF_EVEN));
+			System.out.println(s+" "+somme);
+			calculeXY(new BigDecimal(somme).setScale(15, RoundingMode.HALF_EVEN));
 			// TODO : calculer trajectoire
 			new ObstacleRectangular(new Vec2<ReadOnly>((int)(500*x.doubleValue()-500), (int)(1000+500*y.doubleValue())), 10, 10, 0);
-		}
+			somme += Math.min(pas*1./(somme+1), pas);
+		}/*
 		for(int vitesse = 1 ; vitesse <= 2 ; vitesse++)
 		{
 			pas = pas * Math.abs(vitesse);
@@ -95,7 +98,7 @@ public class ClothoidesComputer implements Service
 				calculeXY(new BigDecimal(s*pas).setScale(15, RoundingMode.HALF_EVEN));
 				new ObstacleRectangular(new Vec2<ReadOnly>((int)(500*x.doubleValue()/vitesse+500), (int)(1000+500*y.doubleValue()/vitesse)), 10, 10, 0);
 			}
-		}
+		}*/
 	}
 
 	public ArrayList<Vec2<ReadOnly>> getTrajectoire(Vec2<ReadOnly> position, double orientation, double courbure, VitesseCourbure vitesse)
