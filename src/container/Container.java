@@ -208,7 +208,9 @@ public class Container
 		else if(serviceRequested == ServiceNames.SERIAL_OUTPUT_BUFFER)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new DataForSerialOutput((Log)getService(ServiceNames.LOG));
 		else if(serviceRequested == ServiceNames.SERIE_STM)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new SerialConnexion((Log)getService(ServiceNames.LOG));
+			instanciedServices[serviceRequested.ordinal()] = (Service)new SerialConnexion((Log)getService(ServiceNames.LOG), "?", "T3");
+		else if(serviceRequested == ServiceNames.SERIE_XBEE)
+			instanciedServices[serviceRequested.ordinal()] = (Service)new SerialConnexion((Log)getService(ServiceNames.LOG), "", "");
 		else if(serviceRequested == ServiceNames.EXECUTION)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new Execution((Log)getService(ServiceNames.LOG),
 			                                                 (LPAStar)getService(ServiceNames.LPA_STAR),

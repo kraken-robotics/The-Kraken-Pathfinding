@@ -18,7 +18,7 @@ import java.util.TooManyListenersException;
 import container.Service;
 
 /**
- * La connexion série vers la STM
+ * La connexion série vers la STM ou la XBEE
  * @author pf
  *
  */
@@ -31,6 +31,7 @@ public class SerialConnexion implements SerialPortEventListener, Service
 	private boolean isClosed;
 	private int baudrate;
 	private int canBeRead = 0;
+	private String question, reponse;
 	
 	byte[] retourLigne = new String("\r").getBytes();
 	
@@ -51,9 +52,11 @@ public class SerialConnexion implements SerialPortEventListener, Service
 	 * Constructeur pour la série de test
 	 * @param log
 	 */
-	public SerialConnexion(Log log)
+	public SerialConnexion(Log log, String question, String reponse)
 	{
 		this.log = log;
+		this.question = question;
+		this.reponse = reponse;
 	}
 
 	private synchronized boolean searchPort()
@@ -258,20 +261,22 @@ public class SerialConnexion implements SerialPortEventListener, Service
 	{
 		try
 		{		
-			//Evacuation de l'eventuel buffer indésirable
+			//Evacuation de l'éventuel buffer indésirable
 			output.flush();
 
 			//ping
-			output.write("?\r".getBytes());
+			output.write(question.getBytes());
+			output.write(retourLigne);
 
 			//recuperation de l'id de la carte
 			while(!input.ready());
-			if(input.readLine().trim().compareTo("T3") == 0)
+			if(input.readLine().trim().compareTo(reponse) == 0)
 			{
 				long avant = System.currentTimeMillis();
 				for(int i = 0; i < 1000; i++)
 				{
-					output.write("?\r".getBytes());
+					output.write(question.getBytes());
+					output.write(retourLigne);
 					while(!input.ready());
 					input.readLine();
 				}
