@@ -8,13 +8,12 @@ import scripts.ScriptHookNames;
  *
  */
 
-// DEPENDS_ON_RULES
-
 public enum GameElementType {
-	DISTRIBUTEUR(15000, false, null, true, false),
-	VERRE(15000, true, null, false, false),
-	CLAP(0, false, null, true, true),
-	PLOT(0, false, ScriptHookNames.EXEMPLE, true, false);
+	POISSONS(0, false, null, true, true),
+	DRAPEAU(0, false, null, true, true),
+	COQUILLAGE(15000, true, null, true, true),
+	COQUILLAGE_EN_HAUTEUR(15000, false, null, true, true),
+	SABLE(10000, true, null, true, true);
 
 	private boolean isInCommon;
 	private int dateEnemyTakesIt;

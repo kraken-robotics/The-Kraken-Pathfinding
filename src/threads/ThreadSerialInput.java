@@ -98,6 +98,10 @@ public class ThreadSerialInput extends Thread implements Service
 							config.set(ConfigInfo.COULEUR, RobotColor.parse(serie.read()));
 							break;
 
+						case "cdcoq":
+							config.set(ConfigInfo.CODE_COQUILLAGE, Integer.parseInt(serie.read()));
+							break;
+							
 							/**
 							 * Récupère la marche avant
 							 */

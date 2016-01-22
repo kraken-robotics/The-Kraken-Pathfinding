@@ -54,6 +54,7 @@ public enum ConfigInfo {
 	 * Config dynamique
 	 */
 	COULEUR(RobotColor.getCouleurSansSymetrie(), false),
+	CODE_COQUILLAGE("-1", false),
 	TRAJECTOIRE_COURBE("true", false),
 	MATCH_DEMARRE("false", false),
 	DATE_DEBUT_MATCH("0", false),

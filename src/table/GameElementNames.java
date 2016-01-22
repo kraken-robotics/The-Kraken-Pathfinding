@@ -13,7 +13,13 @@ import utils.Vec2;
 // DEPENDS_ON_RULES
 
 public enum GameElementNames {
-	PLOT_1(GameElementType.PLOT, new Vec2<ReadOnly>(1410, 150), 30),
+	POISSONS(GameElementType.POISSONS, new Vec2<ReadOnly>(1410, 150), -1), // TODO
+	TAS_SABLE_PROCHE(GameElementType.SABLE, new Vec2<ReadOnly>(850, 1100), 30),
+	TAS_SABLE_LOIN(GameElementType.SABLE, new Vec2<ReadOnly>(-850, 1100), 30),
+	DRAPEAU_1(GameElementType.DRAPEAU, new Vec2<ReadOnly>(900, 1950), -1),
+	DRAPEAU_2(GameElementType.DRAPEAU, new Vec2<ReadOnly>(1200, 1950), -1),
+	COQUILLAGE_1(GameElementType.COQUILLAGE, new Vec2<ReadOnly>(0, 300), 40);
+/*	PLOT_1(GameElementType.PLOT, new Vec2<ReadOnly>(1410, 150), 30),
 	PLOT_2(GameElementType.PLOT, new Vec2<ReadOnly>(1410, 250), 30),
 	PLOT_3(GameElementType.PLOT, new Vec2<ReadOnly>(1410, 1300), 30),
 	PLOT_4(GameElementType.PLOT, new Vec2<ReadOnly>(650, 1300), 30),
@@ -32,7 +38,7 @@ public enum GameElementNames {
 	DISTRIB_1(GameElementType.DISTRIBUTEUR, new Vec2<ReadOnly>(900, 1950), 25),
 	DISTRIB_2(GameElementType.DISTRIBUTEUR, new Vec2<ReadOnly>(1200, 1950), 25),
 	DISTRIB_3(GameElementType.DISTRIBUTEUR, new Vec2<ReadOnly>(-900, 1950), 25),
-	DISTRIB_4(GameElementType.DISTRIBUTEUR, new Vec2<ReadOnly>(-1200, 1950), 25);
+	DISTRIB_4(GameElementType.DISTRIBUTEUR, new Vec2<ReadOnly>(-1200, 1950), 25);*/
 	
 	private GameElementType type;
 	private ObstacleCircular obstacle;

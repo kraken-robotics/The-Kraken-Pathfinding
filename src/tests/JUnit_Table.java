@@ -32,16 +32,16 @@ public class JUnit_Table extends JUnit_Test {
     	Table cloned_table = table.clone();
     	Assert.assertTrue(table.equals(cloned_table));
         Assert.assertTrue(hash == cloned_table.getHashLPAStar());
-        cloned_table.setDone(GameElementNames.CLAP_1, Tribool.TRUE);
+        cloned_table.setDone(GameElementNames.POISSONS, Tribool.TRUE);
         Assert.assertTrue(hash != cloned_table.getHashLPAStar());
     	Assert.assertTrue(!table.equals(cloned_table));
     	cloned_table.copy(table);
     	hash = table.getHashLPAStar();
         Assert.assertTrue(hash == cloned_table.getHashLPAStar());
-		Assert.assertTrue(table.isDone(GameElementNames.CLAP_1) == Tribool.TRUE);
-		Assert.assertTrue(cloned_table.isDone(GameElementNames.CLAP_1) == Tribool.TRUE);
+		Assert.assertTrue(table.isDone(GameElementNames.POISSONS) == Tribool.TRUE);
+		Assert.assertTrue(cloned_table.isDone(GameElementNames.POISSONS) == Tribool.TRUE);
     	Assert.assertTrue(table.equals(cloned_table));
-    	table.setDone(GameElementNames.CLAP_2, Tribool.TRUE);
+    	table.setDone(GameElementNames.TAS_SABLE_PROCHE, Tribool.TRUE);
     	Assert.assertTrue(!table.equals(cloned_table));
     }
 
