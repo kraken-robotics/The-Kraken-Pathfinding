@@ -87,10 +87,10 @@ public class DataForSerialOutput implements Service
 	}
 
 	
-	public synchronized void setPositionOrientation(Vec2<ReadOnly> pos, double angle)
+	public synchronized void initOdoSTM(Vec2<ReadOnly> pos, double angle)
 	{
 		ArrayList<String> elems = new ArrayList<String>();
-		elems.add("sxyo");
+		elems.add("initodo");
 		elems.add(new String(Integer.toString(pos.x)));
 		elems.add(new String(Integer.toString(pos.y)));
 		elems.add(new String(Long.toString(Math.round(angle*1000))));

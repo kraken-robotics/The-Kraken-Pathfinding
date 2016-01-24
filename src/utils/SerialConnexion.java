@@ -34,6 +34,7 @@ public class SerialConnexion implements SerialPortEventListener, Service
 	private String question, reponse;
 	
 	byte[] retourLigne = new String("\r").getBytes();
+	byte[] espace = new String(" ").getBytes();
 	
 	/**
 	 * A BufferedReader which will be fed by a InputStreamReader 
@@ -151,13 +152,15 @@ public class SerialConnexion implements SerialPortEventListener, Service
 
 		try
 		{
+			String out = new String();
 			for (String m : messages)
-			{
-				if(Config.debugSerie)
-					log.debug("OUT: "+m);
-				output.write(m.getBytes());
-				output.write(retourLigne);
-			}
+				out = out + m + " ";
+
+			if(Config.debugSerie)
+				log.debug("OUT: "+out);
+
+			output.write(out.getBytes());
+			output.write(retourLigne);
 		}
 		catch (Exception e)
 		{
@@ -174,13 +177,15 @@ public class SerialConnexion implements SerialPortEventListener, Service
 			}
 			// On a retrouvé la série, on renvoie le message
 			try {
+				String out = new String();
 				for (String m : messages)
-				{
-					if(Config.debugSerie)
-						log.debug("OUT: "+m);
-					output.write(m.getBytes());
-					output.write(retourLigne);
-				}
+					out = out + m + " ";
+
+				if(Config.debugSerie)
+					log.debug("OUT: "+out);
+
+				output.write(out.getBytes());
+				output.write(retourLigne);
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
@@ -270,17 +275,20 @@ public class SerialConnexion implements SerialPortEventListener, Service
 
 			//recuperation de l'id de la carte
 			while(!input.ready());
-			if(input.readLine().trim().compareTo(reponse) == 0)
+			String lu = input.readLine().trim();
+//			log.debug("Lu : "+lu+", attendu : "+reponse);
+			if(lu.compareTo(reponse) == 0)
 			{
+				log.debug("Série trouvée. Estimation de la latence…");
 				long avant = System.currentTimeMillis();
-				for(int i = 0; i < 1000; i++)
+				for(int i = 0; i < 10; i++)
 				{
 					output.write(question.getBytes());
 					output.write(retourLigne);
 					while(!input.ready());
 					input.readLine();
 				}
-				log.debug("Latence de la série : "+((System.currentTimeMillis() - avant)/2)+" ns.");
+				log.debug("Latence de la série : "+((System.currentTimeMillis() - avant)*50)+" ns.");
 				return true;
 			}
 			else

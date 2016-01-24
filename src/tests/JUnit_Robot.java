@@ -61,12 +61,6 @@ public class JUnit_Robot extends JUnit_Test
     }
 
     @Test
-    public void test_set_pos_orientation() throws Exception
-    {
-    	robot.setPositionOrientationSTM(new Vec2<ReadOnly>(134,854), Math.PI);
-    }
-
-    @Test
     public void test_speed() throws Exception
     {
     	robot.setVitesse(Speed.BETWEEN_SCRIPTS);
