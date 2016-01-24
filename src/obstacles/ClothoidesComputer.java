@@ -82,6 +82,7 @@ public class ClothoidesComputer implements Service
 		double pas = 0.5;
 		int sMax = 1000;
 		double somme = 0;
+		/*
 		for(int s = 1; s < (int) (sMax/pas); s++)
 		{
 			System.out.println(s+" "+somme);

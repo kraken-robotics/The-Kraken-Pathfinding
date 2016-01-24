@@ -2,6 +2,8 @@ package obstacles.types;
 
 import permissions.ReadOnly;
 import permissions.ReadWrite;
+import tests.graphicLib.Fenetre;
+import utils.Config;
 import utils.Vec2;
 
 /**
@@ -28,6 +30,9 @@ public class ObstacleCircular extends Obstacle
 			squared_radius_with_dilatation_obstacle = radius + marge + rayonRobot;
 			squared_radius_with_dilatation_obstacle *= squared_radius_with_dilatation_obstacle;
 		}
+		
+		if(Config.graphicObstacles)
+			Fenetre.getInstance().addObstacleCirculaire(this);
 	}
 
 	public String toString()

@@ -33,8 +33,7 @@ public class SerialConnexion implements SerialPortEventListener, Service
 	private int canBeRead = 0;
 	private String question, reponse;
 	
-	byte[] retourLigne = new String("\r").getBytes();
-	byte[] espace = new String(" ").getBytes();
+	private byte[] retourLigne = new String("\r").getBytes();
 	
 	/**
 	 * A BufferedReader which will be fed by a InputStreamReader 

@@ -88,9 +88,12 @@ public class Log implements Service
 				affichage = System.currentTimeMillis()+niveau+elem.getClassName()+"."+elem.getMethodName()+":"+elem.getLineNumber()+" > "+message;//+"\u001B[0m";
 			}
 			if(couleur != couleurDebug || affiche_debug)
-				ou.println(affichage);
-			if(sauvegarde_fichier)
-				ecrireFichier(affichage);
+			{
+				if(sauvegarde_fichier)
+					ecrireFichier(affichage);
+				else
+					ou.println(affichage);
+			}
 		}
 	}
 	

@@ -42,6 +42,7 @@ public class Fenetre extends JPanel {
 //	private AttributedString affichage = new AttributedString("");
 	
 	private ArrayList<ObstacleRectangular> obstaclesEnBiais = new ArrayList<ObstacleRectangular>();
+	private ArrayList<ObstacleCircular> obstaclesCirulaires = new ArrayList<ObstacleCircular>();
 
 	protected Capteurs capteurs;
 	private boolean printObsFixes;
@@ -65,7 +66,7 @@ public class Fenetre extends JPanel {
 	{
 		needInit = false;
 		try {
-			image = ImageIO.read(new File("table.png"));
+			image = ImageIO.read(new File("table2016.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -168,7 +169,7 @@ public class Fenetre extends JPanel {
 	@SuppressWarnings("unused")
 	public void paint(Graphics g)
 	{
-//		g.drawImage(image, 0, 0, this);
+		g.drawImage(image, 0, 0, this);
 		if(Config.graphicDStarLite || Config.graphicThetaStar)
 			for(int i = 0; i < GridSpace.NB_POINTS; i++)
 			{
@@ -191,6 +192,7 @@ public class Fenetre extends JPanel {
 				}
 
 			paintObstacleEnBiais(g);
+			paintObstaclesCirculaires(g);
 		}
 /*
 		g.setColor(new Color(0, 0, 130, 40));
@@ -263,7 +265,7 @@ public class Fenetre extends JPanel {
 		frame.setVisible(true);
 	}
 
-	public void paintObstacle(ObstacleCircular o, Graphics g, int dilatationObstacle)
+	public void paintObstacleCirculaire(ObstacleCircular o, Graphics g, int dilatationObstacle)
 	{
 		if(o.radius <= 0)
 			g.fillOval(XtoWindow(o.position.x)-5, YtoWindow(o.position.y)-5, 10, 10);
@@ -317,7 +319,15 @@ public class Fenetre extends JPanel {
 		for(Vec2<ReadOnly>[] v : segments)
 			g.drawLine(XtoWindow(v[0].x), YtoWindow(v[0].y), XtoWindow(v[1].x), YtoWindow(v[1].y));
 	}
-	
+	public void paintObstaclesCirculaires(Graphics g)
+	{
+		g.setColor(Couleur.NOIR.couleur);		
+		synchronized(obstaclesCirulaires)
+		{
+			for(ObstacleCircular o: obstaclesCirulaires)
+				paintObstacleCirculaire(o, g, 0);
+		}
+	}
 	public void paintObstacleEnBiais(Graphics g)
 	{
 		g.setColor(Couleur.NOIR.couleur);
@@ -364,6 +374,14 @@ public class Fenetre extends JPanel {
 	public void printObsFixes()
 	{
 		printObsFixes = true;
+                if(needInit)
+                        init();
+                repaint();
+	}
+	
+	public void addObstacleCirculaire(ObstacleCircular o)
+	{
+		obstaclesCirulaires.add(o);
 		if(needInit)
 			init();
 		repaint();
