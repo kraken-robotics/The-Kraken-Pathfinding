@@ -8,8 +8,10 @@ import container.ServiceNames;
 import exceptions.ContainerException;
 import exceptions.PointSortieException;
 import obstacles.Capteurs;
+import obstacles.types.Obstacle;
 import obstacles.types.ObstacleCircular;
 import obstacles.types.ObstacleRectangular;
+import obstacles.types.ObstaclesFixes;
 import pathfinding.dstarlite.GridSpace;
 import permissions.ReadOnly;
 import utils.Config;
@@ -42,7 +44,7 @@ public class Fenetre extends JPanel {
 	private ArrayList<ObstacleRectangular> obstaclesEnBiais = new ArrayList<ObstacleRectangular>();
 
 	protected Capteurs capteurs;
-	
+	private boolean printObsFixes;
 //	private int firstNotDead = 0;
     
 	private GridSpace gs;
@@ -177,7 +179,19 @@ public class Fenetre extends JPanel {
 						distanceYtoWindow((int) GridSpace.DISTANCE_ENTRE_DEUX_POINTS));
 			}
 		if(Config.graphicObstacles)
+		{
+			if(printObsFixes)
+				for(ObstaclesFixes obs : ObstaclesFixes.values)
+				{
+					Obstacle o = obs.getObstacle();
+					if(o instanceof ObstacleRectangular)
+						paintObstacle((ObstacleRectangular)o, g, 0);
+					else if(o instanceof ObstacleCircular)
+						paintObstacle((ObstacleCircular)o, g, 0);
+				}
+
 			paintObstacleEnBiais(g);
+		}
 /*
 		g.setColor(new Color(0, 0, 130, 40));
 
@@ -342,6 +356,14 @@ public class Fenetre extends JPanel {
 		{
 			obstaclesEnBiais.add(obstacleEnBiais);
 		}
+		if(needInit)
+			init();
+		repaint();
+	}
+	
+	public void printObsFixes()
+	{
+		printObsFixes = true;
 		if(needInit)
 			init();
 		repaint();

@@ -12,22 +12,24 @@ import utils.Vec2;
 
 public enum ObstaclesFixes {
 
-//    TEST(new ObstacleCircular(new Vec2<ReadOnly>(300,1400),200)),
-    TEST_RECT(new ObstacleRectangular(new Vec2<ReadOnly>(100,1200),600,300)),
-/*
-    // DEPENDS_ON_RULES
-    PLASQUE_ROUGE(new ObstacleRectangular(new Vec2<ReadOnly>(0,100),800,200)), // plaque rouge
-    ESCALIER(new ObstacleRectangular(new Vec2<ReadOnly>(0,2000-580/2),1066,580)), // escalier
-    BANDE_1(new ObstacleRectangular(new Vec2<ReadOnly>(-1500+400/2,1200),400,22)), // bandes de bois zone de départ
-    BANDE_2(new ObstacleRectangular(new Vec2<ReadOnly>(1500-400/2,1200),400,22)),
-    BANDE_3(new ObstacleRectangular(new Vec2<ReadOnly>(-1500+400/2,800),400,22)),
-    BANDE_4(new ObstacleRectangular(new Vec2<ReadOnly>(1500-400/2,800),400,22)),
-    DISTRIBUTEUR_1(new ObstacleRectangular(new Vec2<ReadOnly>(-1200+50/2,2000-50/2),50,50)), // distributeurs
-    DISTRIBUTEUR_2(new ObstacleRectangular(new Vec2<ReadOnly>(-900+50/2,2000-50/2),50,50)),
-    DISTRIBUTEUR_3(new ObstacleRectangular(new Vec2<ReadOnly>(900-50/2,2000-50/2),50,50)),
-    DISTRIBUTEUR_4(new ObstacleRectangular(new Vec2<ReadOnly>(1200-50/2,2000-50/2),50,50)),
-*/
-    // bords
+	DEPOT_SABLE_1(new ObstacleRectangular(new Vec2<ReadOnly>(0,1250), 1200, 22)),
+	DEPOT_SABLE_2(new ObstacleRectangular(new Vec2<ReadOnly>(0,950), 48, 600)),
+
+	REGLETTE_DUNE_1(new ObstacleRectangular(new Vec2<ReadOnly>(-700,1900), 22, 200)),
+	REGLETTE_DUNE_2(new ObstacleRectangular(new Vec2<ReadOnly>(700,1900), 22, 200)),
+
+	ROCHER_1(new ObstacleCircular(new Vec2<ReadOnly>(-1500,0), 250)),
+	ROCHER_2(new ObstacleCircular(new Vec2<ReadOnly>(1500,0), 250)),
+
+	CABINE_1(new ObstacleRectangular(new Vec2<ReadOnly>(-1200,1950), 100, 100)),
+	CABINE_2(new ObstacleRectangular(new Vec2<ReadOnly>(-900,1950), 100, 100)),
+	CABINE_3(new ObstacleRectangular(new Vec2<ReadOnly>(1200,1950), 100, 100)),
+	CABINE_4(new ObstacleRectangular(new Vec2<ReadOnly>(900,1950), 100, 100)),
+
+	REPOSE_FILET_1(new ObstacleRectangular(new Vec2<ReadOnly>(-561,11), 22, 22)),
+	REPOSE_FILET_2(new ObstacleRectangular(new Vec2<ReadOnly>(561,11), 22, 22)),
+	
+	// bords
     BORD_BAS(new ObstacleRectangular(new Vec2<ReadOnly>(0,0),3000,0)),
     BORD_GAUCHE(new ObstacleRectangular(new Vec2<ReadOnly>(-1500,1000),0,2000)),
     BORD_DROITE(new ObstacleRectangular(new Vec2<ReadOnly>(1500,1000),0,2000)),
