@@ -12,12 +12,12 @@ public class IncomingData
 	public int[] mesures;
 	
 	/** Faut-il ignorer les capteurs ? */
-	public boolean capteursOn;
+//	public boolean capteursOn;
 
-	public IncomingData(int[] mesures, boolean capteursOn)
+	public IncomingData(int[] mesures/*, boolean capteursOn*/)
 	{
 		this.mesures = mesures;
-		this.capteursOn = capteursOn;
+//		this.capteursOn = capteursOn;
 	}
 	
 }

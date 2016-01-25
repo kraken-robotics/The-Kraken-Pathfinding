@@ -53,7 +53,7 @@ public class ObstacleMobileDebug  {
 			mesures[6] = 3000;
 			mesures[7] = 3000;
 			
-			buffer.add(new IncomingData(mesures, true));
+			buffer.add(new IncomingData(mesures));
 			Sleep.sleep(100);
 			fenetre.repaint();
 //			if(true)
@@ -89,7 +89,7 @@ public class ObstacleMobileDebug  {
 					log.debug("Capteur "+j+": "+mesures[j]);
 				}
 
-				buffer.add(new IncomingData(mesures, true));
+				buffer.add(new IncomingData(mesures));
 				fenetre.repaint();
 				Sleep.sleep(dureeSleep);
 			}

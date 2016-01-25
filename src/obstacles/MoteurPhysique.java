@@ -100,7 +100,7 @@ public class MoteurPhysique implements Service {
      */
     public boolean isObstacleFixePresentCapteurs(Vec2<ReadOnly> position)
     {
-    	for(ObstaclesFixes o: ObstaclesFixes.values)
+    	for(ObstaclesFixes o: ObstaclesFixes.obstaclesFixesVisibles)
             if(isObstaclePresent(position, o.getObstacle(), distanceApproximation))
                 return true;
         return false;

@@ -82,13 +82,14 @@ public class ThreadSerialInput extends Thread implements Service
 							int yRobot = Integer.parseInt(serie.read());
 							Vec2<ReadOnly> positionRobot = new Vec2<ReadOnly>(xRobot, yRobot);
 							double orientationRobot = Integer.parseInt(serie.read()) / 1000.;
-							int courbure = Integer.parseInt(serie.read());
+							double courbure = Integer.parseInt(serie.read()) / 1000.;
 							int[] mesures = new int[nbCapteurs];
 							for(int i = 0; i < nbCapteurs; i++)
 								mesures[i] = Integer.parseInt(serie.read());
 							robot.setPositionOrientationJava(positionRobot, orientationRobot);
-							robot.setCourbure(courbure/1000.);
-							buffer.add(new IncomingData(mesures, capteursOn));
+							robot.setCourbure(courbure);
+							if(capteursOn)
+								buffer.add(new IncomingData(mesures/*, capteursOn*/));
 							break;
 							
 							/**

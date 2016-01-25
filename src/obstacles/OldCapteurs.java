@@ -398,7 +398,7 @@ public class OldCapteurs implements Service {
 					/**
 					 * Si un capteur voit un obstacle de table, alors on l'ignore
 					 */
-					for(ObstaclesFixes o: ObstaclesFixes.values)
+					for(ObstaclesFixes o: ObstaclesFixes.obstaclesFixesVisibles)
 					{
 						Obstacle obs = o.getObstacle();
 						if(debug)
