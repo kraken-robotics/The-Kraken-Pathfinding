@@ -7,7 +7,7 @@ import container.Container;
 import container.ServiceNames;
 import exceptions.ContainerException;
 import exceptions.PointSortieException;
-import obstacles.Capteurs;
+import obstacles.OldCapteurs;
 import obstacles.types.Obstacle;
 import obstacles.types.ObstacleCircular;
 import obstacles.types.ObstacleRectangular;
@@ -44,7 +44,7 @@ public class Fenetre extends JPanel {
 	private ArrayList<ObstacleRectangular> obstaclesEnBiais = new ArrayList<ObstacleRectangular>();
 	private ArrayList<ObstacleCircular> obstaclesCirulaires = new ArrayList<ObstacleCircular>();
 
-	protected Capteurs capteurs;
+	protected OldCapteurs capteurs;
 	private boolean printObsFixes;
 //	private int firstNotDead = 0;
     
@@ -161,7 +161,7 @@ public class Fenetre extends JPanel {
 		return (2000-y)*sizeY/2000;
 	}
 
-	public void setCapteurs(Capteurs capteurs)
+	public void setCapteurs(OldCapteurs capteurs)
 	{
 		this.capteurs = capteurs;
 	}
@@ -186,9 +186,9 @@ public class Fenetre extends JPanel {
 				{
 					Obstacle o = obs.getObstacle();
 					if(o instanceof ObstacleRectangular)
-						paintObstacle((ObstacleRectangular)o, g, 0);
+						paintObstacleRectangulaire((ObstacleRectangular)o, g, 0);
 					else if(o instanceof ObstacleCircular)
-						paintObstacle((ObstacleCircular)o, g, 0);
+						paintObstacleCirculaire((ObstacleCircular)o, g, 0);
 				}
 
 			paintObstacleEnBiais(g);
@@ -273,7 +273,7 @@ public class Fenetre extends JPanel {
 			g.fillOval(XtoWindow(o.position.x-o.radius-dilatationObstacle), YtoWindow(o.position.y+o.radius+dilatationObstacle), distanceXtoWindow((o.radius+dilatationObstacle)*2), distanceYtoWindow((o.radius+dilatationObstacle)*2));		
 	}
 
-	public void paintObstacle(ObstacleRectangular o, Graphics g, int dilatationObstacle)
+	public void paintObstacleRectangulaire(ObstacleRectangular o, Graphics g, int dilatationObstacle)
 	{
 		if(dilatationObstacle != 0)
 		{

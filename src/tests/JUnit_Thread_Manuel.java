@@ -3,6 +3,7 @@ package tests;
 import org.junit.Before;
 import org.junit.Test;
 
+import tests.graphicLib.Fenetre;
 import utils.Sleep;
 
 /**
@@ -21,6 +22,8 @@ public class JUnit_Thread_Manuel extends JUnit_Test {
     @Test
     public void test_reveil() throws Exception
     {
+    	Fenetre.getInstance().printObsFixes();
+    	Fenetre.getInstance().repaint();
     	Sleep.sleep(20000);
     }
 	

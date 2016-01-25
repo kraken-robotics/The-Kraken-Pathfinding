@@ -17,9 +17,6 @@ import utils.Vec2;
 
 public class ObstacleRectangular extends ObstacleAvecAngle
 {
-	private double cos = Math.cos(angle);
-	private double sin = Math.sin(angle);
-
 	// taille selon l'axe X
 	protected int sizeX;
 	
