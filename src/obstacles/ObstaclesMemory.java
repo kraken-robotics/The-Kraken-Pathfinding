@@ -12,7 +12,6 @@ import container.Service;
 
 /**
  * Mémorise tous les obstacles mobiles qu'on a rencontré jusque là.
- * On peut ajouter mais pas retirer d'obstacles : les obstacles périmés sont conservés en mémoire.
  * Il y a un mécanisme de libération de mémoire transparent.
  * @author pf
  *

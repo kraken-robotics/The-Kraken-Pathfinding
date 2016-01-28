@@ -49,6 +49,9 @@ public enum ConfigInfo {
 	DISTANCE_URGENCE("200", true),
 	NB_SUCCESSEUR_MAX("2", true),
 	COURBURE_MAX("10", true), // TODO
+	X_DEPART("0", true),
+	Y_DEPART("1000", true),
+	O_DEPART("3.14", true),
 	
 	/**
 	 * Config dynamique

@@ -150,20 +150,20 @@ public class ObstacleRectangular extends ObstacleAvecAngle
 	 * @param point
 	 * @return
 	 */
-	private int getXRotatePlusAngle(Vec2<ReadOnly> point)
+/*	private int getXRotatePlusAngle(Vec2<ReadOnly> point)
 	{
 		return (int)(cos*(point.x-position.x)-sin*(point.y-position.y))+position.x;
-	}
+	}*/
 
 	/**
 	 * Donne l'abscisse du point après rotation de +angle
 	 * @param point
 	 * @return
 	 */
-	private int getYRotatePlusAngle(Vec2<ReadOnly> point)
+/*	private int getYRotatePlusAngle(Vec2<ReadOnly> point)
 	{
 		return (int)(sin*(point.x-position.x)+cos*(point.y-position.y))+position.y;
-	}
+	}*/
 
 	/**
 	 * Donne l'abscisse du point après rotation de +angle

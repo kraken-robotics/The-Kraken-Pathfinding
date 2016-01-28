@@ -74,9 +74,7 @@ public class ObstacleCircular extends Obstacle
 	public static double getDistance(Vec2<ReadOnly> position, int radius, Vec2<ReadOnly> origineCapteur, Vec2<ReadOnly> vecteurNormal)
 	{
 		Vec2<ReadOnly> positionRepereCapteur = position.minusNewVector(origineCapteur).getReadOnly();
-
-		// TODO : Vec2.coeffDirection au carré, vraiment ?
-		double a = positionRepereCapteur.dot(vecteurNormal)/(Vec2.coeffDirection * Vec2.coeffDirection);
+		double a = positionRepereCapteur.dot(vecteurNormal)/Vec2.coeffDirection;
 		a *= a;
 		return Math.sqrt(positionRepereCapteur.squaredLength() - a) - Math.sqrt(radius * radius - a);
 	}

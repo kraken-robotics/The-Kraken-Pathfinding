@@ -110,6 +110,7 @@ public class SerialConnexion implements SerialPortEventListener, Service
 					SerialPort.DATABITS_8,
 					SerialPort.STOPBITS_1,
 					SerialPort.PARITY_NONE);
+			serialPort.enableReceiveTimeout(1000);
 
 			// Configuration du Listener
 			try {
@@ -121,8 +122,6 @@ public class SerialConnexion implements SerialPortEventListener, Service
 			// open the streams
 			input = new BufferedReader(new InputStreamReader(serialPort.getInputStream()));
 			output = serialPort.getOutputStream();
-
-			serialPort.enableReceiveTimeout(1000);
 			
 			isClosed = false;
 			return true;

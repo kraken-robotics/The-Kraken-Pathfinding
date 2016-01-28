@@ -14,8 +14,6 @@ import utils.ConfigInfo;
 import utils.Log;
 import utils.Vec2;
 
-// N'EST PAS UTILISÉ !
-
 /**
  * Cette classe contient les informations sur la situation
  * spatiale des capteurs sur le robot.
@@ -244,20 +242,23 @@ public class Capteurs implements Service {
 						isObstacleFixePresentCapteurs(positionBrute.getReadOnly())*/)
 				{
 					if(debug)
-						log.debug("Capteur "+i+" ignoré car hors-table.");
-					neVoitRien[i] = true; // le capteur voit un obstacle fixe: on ignore sa valeur
+						log.debug("Capteur "+i+" ignoré car hors table.");
+					neVoitRien[i] = true; // le capteur quelque chose hors table: on ignore sa valeur
 				}
 				else
 				{
 					/**
 					 * Si un capteur voit un obstacle de table, alors on l'ignore
-					 */
+					 */					
 					for(ObstaclesFixes o: ObstaclesFixes.obstaclesFixesVisibles)
 					{
 						Obstacle obs = o.getObstacle();
 						if(debug)
 							log.debug("Vérification obstacle en "+obs.position);
 	
+						/**
+						 * CAS 1 : OBSTACLE CIRCULAIRE
+						 */
 						if(obs instanceof ObstacleCircular)
 						{
 							if(debug)
@@ -300,7 +301,7 @@ public class Capteurs implements Service {
 									int cote = whichSee(positionObstacle, i);
 									if(debug)
 										log.debug("Côté qui voit: "+cote);
-									distance = (int)ObstacleCircular.getDistance(positionObstacle, obsc.radius, positionsRelatives[i], cones[3-i][cote]);
+									distance = (int)ObstacleCircular.getDistance(positionObstacle, obsc.radius, positionsRelatives[i], cones[i][cote]);
 								}
 								
 								if(debug)
@@ -319,6 +320,10 @@ public class Capteurs implements Service {
 							else if(debug)
 								log.debug("Obstacle pas visible avec cone arrière");
 						}
+
+						/**
+						 * CAS 1 : OBSTACLE RECTANGULAIRE
+						 */
 						else if(obs instanceof ObstacleRectangular)
 						{
 							if(debug)
@@ -345,6 +350,7 @@ public class Capteurs implements Service {
 								/**
 								 * Le coin le plus proche du robot est visible.
 								 * Alors c'est la partie du rectangle la plus proche du capteur.
+								 * En fait, ce n'est pas forcément vrai. Mais bon, on va faire comme si…
 								 */
 								if(debug)
 									log.debug("Cas simple");
@@ -497,6 +503,10 @@ public class Capteurs implements Service {
 							}
 	
 						}
+						
+						// Si on a trouvé un obstacle de table qui correspond, pas besoin de vérifier les autres
+						if(dejaTraite[i])
+							break;
 					}
 	//				log.debug("Ok");
 					neVoitRien[i] = false;
@@ -505,7 +515,7 @@ public class Capteurs implements Service {
 			}
 			
 			/**
-			 * Maintenant, on récupère tous les capteurs qui n'ont pas participé à une détection couplée
+			 * Maintenant, on récupère tous les capteurs qui n'ont pas vu un obstacle
 			 */
 			for(int i = 0; i < nbCapteurs; i++)
 				if(!neVoitRien[i] && !dejaTraite[i])
@@ -515,7 +525,7 @@ public class Capteurs implements Service {
 					Vec2.rotate(positionEnnemi, orientationRobot);
 					Vec2.plus(positionEnnemi, positionRobot);
 					if(debug)
-						log.debug("Obstacle vu par un seul capteur: "+positionEnnemi);
+						log.debug("Obstacle vu par un capteur: "+positionEnnemi);
 					memory.add(positionEnnemi.getReadOnly(), System.currentTimeMillis(), isUrgent(positionEnnemi.getReadOnly(), positionRobot, orientationRobotAvance));
 	
 				}
