@@ -1,7 +1,5 @@
 package hook.types;
 
-import java.util.ArrayList;
-
 import obstacles.types.ObstacleCircular;
 import permissions.ReadOnly;
 import hook.Hook;
@@ -51,14 +49,8 @@ public class HookPosition extends Hook
 	}
 	
 	@Override
-	public ArrayList<String> toSerial()
+	public String toSerial()
 	{
-		ArrayList<String> out = new ArrayList<String>();
-		out.add("Hpo");
-		out.add(String.valueOf(position.x));
-		out.add(String.valueOf(position.y));
-		out.add(String.valueOf(squaredTolerancy)); // on envoie bien la tolérance au carré directement
-		out.addAll(super.toSerial());
-		return out;
+		return "Hpo "+position.x+" "+position.y+" "+squaredTolerancy+" "+super.toSerial();
 	}
 }

@@ -11,7 +11,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.TooManyListenersException;
 
@@ -154,23 +153,19 @@ public class SerialConnexion implements SerialPortEventListener, Service
 	 * Méthode pour envoyer un message à la carte
 	 * @param messages
 	 */
-	public synchronized void communiquer(ArrayList<String> messages)
+	public synchronized void communiquer(String out)
 	{
 		/**
 		 * Un appel à une série fermée ne devrait jamais être effectué.
 		 */
 		if(isClosed)
 		{
-			log.debug("La série est fermée et ne peut envoyer "+messages.get(0));
+			log.debug("La série est fermée et ne peut envoyer "+out);
 			return;
 		}
 
 		try
 		{
-			String out = new String();
-			for (String m : messages)
-				out = out + m + " ";
-
 			if(Config.debugSerie)
 				log.debug("OUT: "+out);
 
@@ -191,31 +186,8 @@ public class SerialConnexion implements SerialPortEventListener, Service
 				Sleep.sleep(500);
 			}
 			// On a retrouvé la série, on renvoie le message
-			try {
-				String out = new String();
-				for (String m : messages)
-					out = out + m + " ";
-
-				if(Config.debugSerie)
-					log.debug("OUT: "+out);
-
-				output.write(out.getBytes());
-				output.write(retourLigne);
-			} catch (IOException e1) {
-				e1.printStackTrace();
-			}
+			communiquer(out);
 		}
-	}
-
-	/**
-	 * Méthode pour parler à la STM
-	 * @param messages Messages à envoyer
-	 */
-	public void communiquer(String message)
-	{
-		ArrayList<String> messages = new ArrayList<String>();
-		messages.add(message);
-		communiquer(messages);
 	}
 
 	/**

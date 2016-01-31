@@ -1,7 +1,5 @@
 package hook.methods;
 
-import java.util.ArrayList;
-
 import pathfinding.GameState;
 import permissions.ReadWrite;
 import robot.RobotChrono;
@@ -46,13 +44,9 @@ public class GameElementDone implements Executable
 	}
 	
 	@Override
-	public ArrayList<String> toSerial()
+	public String toSerial()
 	{
-		ArrayList<String> out = new ArrayList<String>();
-		out.add("tbl");
-		out.add(String.valueOf(element.ordinal()));
-//		out.add(String.valueOf(done.ordinal()));
-		return out;
+		return "tbl "+element.ordinal();
 	}
 
 

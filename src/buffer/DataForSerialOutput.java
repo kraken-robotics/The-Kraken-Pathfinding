@@ -27,18 +27,15 @@ import utils.Vec2;
 public class DataForSerialOutput implements Service
 {
 	protected Log log;
-	private ArrayList<String> ordreStop;
 	
 	public DataForSerialOutput(Log log)
 	{
 		this.log = log;
-		ordreStop = new ArrayList<String>();
-		ordreStop.add(new String("stop"));
 	}
 		
 	// priorité 0 = priorité minimale
-	private volatile LinkedList<ArrayList<String>> bufferBassePriorite = new LinkedList<ArrayList<String>>();
-	private volatile LinkedList<ArrayList<String>> bufferTrajectoireCourbe = new LinkedList<ArrayList<String>>();
+	private volatile LinkedList<String> bufferBassePriorite = new LinkedList<String>();
+	private volatile LinkedList<String> bufferTrajectoireCourbe = new LinkedList<String>();
 	private volatile boolean stop = false;
 	
 	/**
@@ -54,13 +51,13 @@ public class DataForSerialOutput implements Service
 	 * Retire un élément du buffer
 	 * @return
 	 */
-	public synchronized ArrayList<String> poll()
+	public synchronized String poll()
 	{
 		if(stop)
 		{
 			stop = false;
 			bufferTrajectoireCourbe.clear(); // on annule tout mouvement
-			return ordreStop;
+			return "stop";
 		}
 		else if(!bufferTrajectoireCourbe.isEmpty())
 			return bufferTrajectoireCourbe.poll();
@@ -69,32 +66,20 @@ public class DataForSerialOutput implements Service
 	
 	public synchronized void setSpeed(Speed speed)
 	{
-		ArrayList<String> elems = new ArrayList<String>();
-		elems.add("sspd");
-		elems.add(new String(Integer.toString(speed.PWMRotation)));
-		elems.add(new String(Integer.toString(speed.PWMTranslation)));
-		bufferBassePriorite.add(elems);
+		bufferBassePriorite.add("sspd "+speed.PWMRotation+" "+speed.PWMTranslation);
 		notify();
 
 	}
 	
 	public synchronized void getPositionOrientation()
 	{
-		ArrayList<String> elems = new ArrayList<String>();
-		elems.add("gxyo");
-		bufferBassePriorite.add(elems);
+		bufferBassePriorite.add("gxyo");
 		notify();
 	}
-
 	
 	public synchronized void initOdoSTM(Vec2<ReadOnly> pos, double angle)
 	{
-		ArrayList<String> elems = new ArrayList<String>();
-		elems.add("initodo");
-		elems.add(new String(Integer.toString(pos.x)));
-		elems.add(new String(Integer.toString(pos.y)));
-		elems.add(new String(Long.toString(Math.round(angle*1000))));
-		bufferBassePriorite.add(elems);
+		bufferBassePriorite.add("initodo "+pos.x+" "+pos.y+" "+Math.round(angle*1000));
 		notify();
 	}
 
@@ -102,16 +87,13 @@ public class DataForSerialOutput implements Service
 	 * Ajout d'une demande d'ordre d'avancer pour la série
 	 * @param elem
 	 */
-	public synchronized void avancer(int distance, ArrayList<Hook> hooks, boolean mur)
+	public synchronized void avancer(int distance, boolean mur)
 	{
-		ArrayList<String> elems = new ArrayList<String>();
-		elems.add("d");
-		elems.add(new String(Integer.toString(distance)));
+		String elems = "d "+distance;
 		if(mur)
-			elems.add("T");
+			elems += " T";
 		else
-			elems.add("F");
-		addHooks(elems, hooks);
+			elems += " F";
 		bufferBassePriorite.add(elems);
 		notify();
 	}
@@ -122,20 +104,36 @@ public class DataForSerialOutput implements Service
 	 */
 	public synchronized void turn(double angle)
 	{
-		ArrayList<String> elems = new ArrayList<String>();
-		elems.add("t");
-		elems.add(new String(Long.toString(Math.round(angle*1000))));
-//		addHook(elems, hooks);
-		bufferBassePriorite.add(elems);
+		bufferBassePriorite.add("t "+Math.round(angle*1000));
 		notify();
 	}
 
 	public synchronized void envoieHooks(ArrayList<Hook> hooks)
 	{
-		ArrayList<String> elems = new ArrayList<String>();
-		elems.add("hlst");
-		addHooks(elems, hooks);
-		bufferBassePriorite.add(elems);
+		if(hooks.isEmpty())
+			return;
+
+		for(Hook h : hooks)
+			bufferBassePriorite.add(h.toSerial());
+		
+		notify();
+	}
+
+	public synchronized void deleteHooks(ArrayList<Hook> hooks)
+	{
+		if(hooks.isEmpty())
+			return;
+		String out = "hkclr "+hooks.size();
+		for(Hook h : hooks)
+			out += " "+h.getNum();
+		
+		bufferBassePriorite.add(out);
+		notify();
+	}
+	
+	public synchronized void deleteAllHooks()
+	{
+		bufferBassePriorite.add("hkclrall");
 		notify();
 	}
 
@@ -156,10 +154,7 @@ public class DataForSerialOutput implements Service
 	 */
 	public synchronized void utiliseActionneurs(ActuatorOrder elem)
 	{
-		ArrayList<String> elems = new ArrayList<String>();
-		elems.add("act");
-		elems.add(String.valueOf(elem.ordinal()));
-		bufferBassePriorite.add(elems);
+		bufferBassePriorite.add("act "+elem.ordinal());
 		notify();
 	}
 	
@@ -171,17 +166,10 @@ public class DataForSerialOutput implements Service
 	public void useConfig(Config config)
 	{}
 	
-	private void addHooks(ArrayList<String> elems, ArrayList<Hook> hooks)
-	{
-		elems.add(new String(Integer.toString(hooks.size())));
-		for(Hook h : hooks)
-			elems.addAll(h.toSerial());
-	}
-
 	/**
 	 * Informe la STM du protocole des actionneurs
 	 */
-	public synchronized void envoieActionneurs()
+/*	public synchronized void envoieActionneurs()
 	{
 		ArrayList<String> elems = new ArrayList<String>();
 		elems.add("alst");
@@ -193,11 +181,11 @@ public class DataForSerialOutput implements Service
 		}
 		bufferBassePriorite.add(elems);
 		notify();
-	}
+	}*/
 	
 	public synchronized void envoieArcCourbeLast(ArcCourbe arc)
 	{
-		ArrayList<String> elems = new ArrayList<String>();
+/*		ArrayList<String> elems = new ArrayList<String>();
 		elems.add("addl");
 		elems.add(String.valueOf(arc.pointDepart.x));
 		elems.add(String.valueOf(arc.pointDepart.y));
@@ -206,13 +194,13 @@ public class DataForSerialOutput implements Service
 		elems.add(String.valueOf(direction.y));
 		elems.add(String.valueOf(arc.courbure));
 		elems.add(String.valueOf(arc.theta));
-		bufferTrajectoireCourbe.add(elems);
+		bufferTrajectoireCourbe.add(elems);*/
 		notify();		
 	}
 
 	public synchronized void envoieArcCourbe(ArcCourbe arc)
 	{
-		ArrayList<String> elems = new ArrayList<String>();
+/*		ArrayList<String> elems = new ArrayList<String>();
 		elems.add("add");
 		elems.add(String.valueOf(arc.pointDepart.x));
 		elems.add(String.valueOf(arc.pointDepart.y));
@@ -221,7 +209,7 @@ public class DataForSerialOutput implements Service
 		elems.add(String.valueOf(direction.y));
 		elems.add(String.valueOf(arc.courbure));
 		elems.add(String.valueOf(arc.theta));
-		bufferTrajectoireCourbe.add(elems);
+		bufferTrajectoireCourbe.add(elems);*/
 		notify();			
 	}
 }

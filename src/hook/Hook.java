@@ -115,18 +115,26 @@ abstract public class Hook
 			callback.updateGameState(state);
 	}
 	*/
+	
 	/**
 	 * Contient la commande à envoyer par série
 	 * @return
 	 */
-	public ArrayList<String> toSerial()
+	public String toSerial()
 	{
-		ArrayList<String> out = new ArrayList<String>();
-		out.add(String.valueOf(num));
-		out.add(String.valueOf(callbacks.size()));
+		String out = num + " " + callbacks.size();
 		for(Executable c : callbacks)
-			out.addAll(c.toSerial());
+			out += " "+c.toSerial();
 		return out;
+	}
+	
+	/**
+	 * Renvoie le numéro du hook
+	 * @return
+	 */
+	public int getNum()
+	{
+		return num;
 	}
 
 }

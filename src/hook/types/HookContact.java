@@ -1,7 +1,5 @@
 package hook.types;
 
-import java.util.ArrayList;
-
 import permissions.ReadOnly;
 import utils.Log;
 import utils.Vec2;
@@ -33,16 +31,14 @@ public class HookContact extends Hook {
 	}
 
 	@Override
-	public ArrayList<String> toSerial()
+	public String toSerial()
 	{
-		ArrayList<String> out = new ArrayList<String>();
-		out.add("Hct");
-		out.add(String.valueOf(nbCapteur));
+		String out = "Hct "+nbCapteur;
 		if(isUnique)
-			out.add("T");
+			out += " T";
 		else
-			out.add("F");
-		out.addAll(super.toSerial());
+			out += " F";
+		out += " "+super.toSerial();
 		return out;
 	}
 	

@@ -22,8 +22,8 @@ public class JUnit_Thread_Manuel extends JUnit_Test {
     @Test
     public void test_reveil() throws Exception
     {
-    	Fenetre.getInstance().printObsFixes();
-    	Fenetre.getInstance().repaint();
+//    	Fenetre.getInstance().printObsFixes();
+ //   	Fenetre.getInstance().repaint();
     	Sleep.sleep(20000);
     }
 	

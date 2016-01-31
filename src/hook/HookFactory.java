@@ -66,7 +66,7 @@ public class HookFactory implements Service
     public ArrayList<Hook> getHooksEntreScriptsChrono(GameState<RobotChrono,ReadWrite> state, int date_limite) throws FinMatchException
     {
     	if(hooks_table_chrono == null)
-    		hooks_table_chrono = getHooksPermanents();
+    		hooks_table_chrono = getHooksPermanentsAEnvoyer();
 
     	// on met à jour dans les hooks les références (gridspace, robot, ...)
 		// C'est bien plus rapide que de créer de nouveaux hooks
@@ -76,7 +76,11 @@ public class HookFactory implements Service
     	return hooks_table_chrono;
     }
     
-    public ArrayList<Hook> getHooksPermanents()
+    /**
+     * Les hooks à envoyer. Ces hooks ne peuvent pas être utilisé haut niveau.
+     * @return
+     */
+    public ArrayList<Hook> getHooksPermanentsAEnvoyer()
     {
     	return getHooksPermanents(null);
     }

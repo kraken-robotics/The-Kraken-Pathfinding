@@ -1,7 +1,5 @@
 package hook.types;
 
-import java.util.ArrayList;
-
 import permissions.ReadOnly;
 import permissions.ReadWrite;
 import utils.Log;
@@ -67,16 +65,9 @@ public class HookDemiPlan extends Hook
 	}
 
 	@Override
-	public ArrayList<String> toSerial()
+	public String toSerial()
 	{
-		ArrayList<String> out = new ArrayList<String>();
-		out.add("Hdp");
-		out.add(String.valueOf(point.x));
-		out.add(String.valueOf(point.y));
-		out.add(String.valueOf(direction.x));
-		out.add(String.valueOf(direction.y));
-		out.addAll(super.toSerial());
-		return out;
+		return "Hdp "+point.x+" "+point.y+" "+direction.x+" "+direction.y+" "+super.toSerial();
 	}
 	
 }

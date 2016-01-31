@@ -1,7 +1,5 @@
 package hook.methods;
 
-import java.util.ArrayList;
-
 import pathfinding.GameState;
 import permissions.ReadWrite;
 import robot.ActuatorOrder;
@@ -33,12 +31,9 @@ public class UtiliseActionneur implements Executable
 	{}
 	
 	@Override
-	public ArrayList<String> toSerial()
+	public String toSerial()
 	{
-		ArrayList<String> out = new ArrayList<String>();
-		out.add("act");
-		out.add(String.valueOf(o.ordinal()));
-		return out;
+		return "act "+o.ordinal();
 	}
 
 }

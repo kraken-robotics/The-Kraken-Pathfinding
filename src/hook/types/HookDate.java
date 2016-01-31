@@ -1,7 +1,5 @@
 package hook.types;
 
-import java.util.ArrayList;
-
 import permissions.ReadOnly;
 import utils.Log;
 import utils.Vec2;
@@ -37,13 +35,9 @@ public class HookDate extends Hook {
 	}
 
 	@Override
-	public ArrayList<String> toSerial()
+	public String toSerial()
 	{
-		ArrayList<String> out = new ArrayList<String>();
-		out.add("Hda");
-		out.add(String.valueOf(date_hook));
-		out.addAll(super.toSerial());
-		return out;
+		return "Hda "+date_hook+" "+super.toSerial();
 	}
 	
 }

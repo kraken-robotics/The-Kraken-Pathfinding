@@ -1,7 +1,5 @@
 package hook.methods;
 
-import java.util.ArrayList;
-
 import pathfinding.GameState;
 import permissions.ReadWrite;
 import robot.RobotChrono;
@@ -32,12 +30,9 @@ public class ThrowScriptRequest implements Executable
 	{}
 	
 	@Override
-	public ArrayList<String> toSerial()
+	public String toSerial()
 	{
-		ArrayList<String> out = new ArrayList<String>();
-		out.add("scr");
-		out.add(String.valueOf(n.ordinal()));
-		return out;
+		return "scr "+n.ordinal();
 	}
 
 

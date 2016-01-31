@@ -19,8 +19,10 @@ stopper le robot (procédure d'urgence) et annule l'itinéraire en cours
     stop
 envoie le protocole des actionneurs
     alst nb_act [protocole_SSC32 a_symetrie …]
-envoie la liste des hooks valables pour tout le match. Chaque nouvel appel écrase ceux envoyés précédemment
-    hlst nb_hook [hooks]
+supprime tous les hook
+    hkclrall
+supprime des hooks
+    hkclr [nbHook] [id1] [id2] …
 ajoute point à l'itinéraire
     add x_point y_point x_direction y_direction courbure angle
 commence un nouvel itinéraire (tourne dès maintenant)
@@ -73,7 +75,7 @@ Hook de demi-plan
 Hook de contact
     Hct nb_capteur unique
 
-Puis le nombre de callback, puis ses callbacks
+Puis l'id du hook, puis nombre de callback, puis ses callbacks
 
 Une méthode
     tbl nb_element
@@ -82,6 +84,6 @@ ou
 ou
     act ordre_act
 
-Exemple complet: un hook de position qui dit qu'un élément a été shooté
-    hpo 20 1300 5 1 T tbl 18
+Exemple complet: un hook de position d'id 10 qui dit qu'un élément a été shooté
+    hpo 20 1300 5 10 1 T tbl 18
 

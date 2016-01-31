@@ -124,7 +124,6 @@ public class ThreadSerialInput extends Thread implements Service
 								codeCoquillage = Integer.parseInt(serie.read());
 								if(tmp != codeCoquillage)
 								{
-									codeCoquillage = tmp;
 									switch(codeCoquillage)
 									{
 										case 0:
@@ -177,7 +176,7 @@ public class ThreadSerialInput extends Thread implements Service
 											GameElementNames.COQUILLAGE_9.set(GameElementType.COQUILLAGE_ENNEMI, new ObstacleCircular(new Vec2<ReadOnly>(-1300,750), 38));
 											GameElementNames.COQUILLAGE_10.set(GameElementType.COQUILLAGE_NEUTRE, new ObstacleCircular(new Vec2<ReadOnly>(-1300,450), 38));
 
-											GameElementNames.COQUILLAGE_ROCHER_DROITE_SOMMET.set(GameElementType.COQUILLAGE_NEUTRE, null);
+											GameElementNames.COQUILLAGE_ROCHER_DROITE_SOMMET.set(GameElementType.COQUILLAGE_EN_HAUTEUR_NEUTRE, null);
 											GameElementNames.COQUILLAGE_ROCHER_DROITE_INTERIEUR.set(GameElementType.COQUILLAGE_EN_HAUTEUR_AMI, null);
 											GameElementNames.COQUILLAGE_ROCHER_DROITE_EXTERIEUR.set(GameElementType.COQUILLAGE_EN_HAUTEUR_AMI, null);
 											GameElementNames.COQUILLAGE_ROCHER_GAUCHE_SOMMET.set(GameElementType.COQUILLAGE_EN_HAUTEUR_NEUTRE, null);
@@ -226,7 +225,13 @@ public class ThreadSerialInput extends Thread implements Service
 											log.critical("Code coquillage inconnu ! "+codeCoquillage);
 											break;
 									}
-									output.envoieHooks(hookfactory.getHooksPermanents());
+									
+									// Evitons un nullpointer exception…
+									if(codeCoquillage >= 0 && codeCoquillage <= 4)
+									{
+										output.deleteAllHooks();
+										output.envoieHooks(hookfactory.getHooksPermanentsAEnvoyer());
+									}
 								}
 							}
 							break;
