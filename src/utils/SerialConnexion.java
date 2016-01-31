@@ -226,7 +226,7 @@ public class SerialConnexion implements SerialPortEventListener, Service
 		} catch (IOException e) {
 			// Impossible car on sait qu'il y a des données
 			e.printStackTrace();
-			return null;
+			return "";
 		}
 	}
 

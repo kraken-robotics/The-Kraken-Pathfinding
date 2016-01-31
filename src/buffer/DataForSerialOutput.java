@@ -89,7 +89,7 @@ public class DataForSerialOutput implements Service
 	 */
 	public synchronized void avancer(int distance, boolean mur)
 	{
-		String elems = "d "+distance;
+		String elems = "t "+distance;
 		if(mur)
 			elems += " T";
 		else
@@ -104,7 +104,7 @@ public class DataForSerialOutput implements Service
 	 */
 	public synchronized void turn(double angle)
 	{
-		bufferBassePriorite.add("t "+Math.round(angle*1000));
+		bufferBassePriorite.add("r "+Math.round(angle*1000));
 		notify();
 	}
 

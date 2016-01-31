@@ -4,6 +4,7 @@ import buffer.DataForSerialOutput;
 import utils.Config;
 import utils.Log;
 import utils.SerialConnexion;
+import utils.Sleep;
 import container.Service;
 
 /**
@@ -43,7 +44,7 @@ public class ThreadSerialOutput extends Thread implements Service
 				}
 				// communiquer est synchronized
 				serie.communiquer(message);
-
+				Sleep.sleep(5); // il faut un peu laisser la STM respirer…
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 				continue;

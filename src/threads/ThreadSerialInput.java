@@ -80,22 +80,27 @@ public class ThreadSerialInput extends Thread implements Service
 					while(!serie.canBeRead())
 						serie.wait();
 
-					String first = serie.read();
-
-					switch(first)
+					String[] messages = serie.read().split(" ");
+					if(messages.length == 0)
+					{
+						log.critical("Message de longueur 0 reçu !");
+						continue;
+					}
+					
+					switch(messages[0])
 					{
 						case "cpt":
 							/**
 							 * Acquiert ce que voit les capteurs
 						 	 */
-							int xRobot = Integer.parseInt(serie.read());
-							int yRobot = Integer.parseInt(serie.read());
+							int xRobot = Integer.parseInt(messages[1]);
+							int yRobot = Integer.parseInt(messages[2]);
 							Vec2<ReadOnly> positionRobot = new Vec2<ReadOnly>(xRobot, yRobot);
-							double orientationRobot = Integer.parseInt(serie.read()) / 1000.;
-							double courbure = Integer.parseInt(serie.read()) / 1000.;
+							double orientationRobot = Integer.parseInt(messages[3]) / 1000.;
+							double courbure = Integer.parseInt(messages[4]) / 1000.;
 							int[] mesures = new int[nbCapteurs];
 							for(int i = 0; i < nbCapteurs; i++)
-								mesures[i] = Integer.parseInt(serie.read());
+								mesures[i] = Integer.parseInt(messages[5+i]);
 							robot.setPositionOrientationJava(positionRobot, orientationRobot);
 							robot.setCourbure(courbure);
 							if(capteursOn)
@@ -107,7 +112,7 @@ public class ThreadSerialInput extends Thread implements Service
 							 */
 						case "color":
 							if(!matchDemarre)
-								config.set(ConfigInfo.COULEUR, RobotColor.parse(serie.read()));
+								config.set(ConfigInfo.COULEUR, RobotColor.parse(messages[1]));
 							break;
 
 							/**
@@ -121,7 +126,7 @@ public class ThreadSerialInput extends Thread implements Service
 								 * Du coup, on les renvoie quand le code change
 								 */
 								int tmp = codeCoquillage;
-								codeCoquillage = Integer.parseInt(serie.read());
+								codeCoquillage = Integer.parseInt(messages[1]);
 								if(tmp != codeCoquillage)
 								{
 									switch(codeCoquillage)
@@ -240,7 +245,7 @@ public class ThreadSerialInput extends Thread implements Service
 							 * Récupère la marche avant
 							 */
 						case "avt":
-							robot.setEnMarcheAvance(Boolean.parseBoolean(serie.read()));
+							robot.setEnMarcheAvance(Boolean.parseBoolean(messages[1]));
 							break;
 
 						case "go":
@@ -282,18 +287,17 @@ public class ThreadSerialInput extends Thread implements Service
 							 * Un élément a été shooté
 							 */
 						case "tbl":
-							int nbElement = Integer.parseInt(serie.read());
-							int done = Integer.parseInt(serie.read());
-							table.setDone(GameElementNames.values()[nbElement], Tribool.parse(done));
+							int nbElement = Integer.parseInt(messages[1]);
+							table.setDone(GameElementNames.values()[nbElement], Tribool.TRUE);
 							break;
 
 							/**
 							 * Demande de hook
 							 */
 						case "dhk":
-							int nbScript = Integer.parseInt(serie.read());
+							int nbScript = Integer.parseInt(messages[1]);
 							ScriptHookNames s = ScriptHookNames.values()[nbScript];
-							int param = Integer.parseInt(serie.read());
+							int param = Integer.parseInt(messages[2]);
 							hookbuffer.add(new IncomingHook(s, param));
 							break;
 
@@ -312,7 +316,7 @@ public class ThreadSerialInput extends Thread implements Service
 							break;
 
 						default:
-							log.critical("Commande série inconnue: "+first);
+							log.critical("Commande série inconnue: "+messages[0]);
 					}
 				}
 			} catch (InterruptedException e) {
