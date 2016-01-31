@@ -128,8 +128,7 @@ public class SerialConnexion implements SerialPortEventListener, Service
 					SerialPort.DATABITS_8,
 					SerialPort.STOPBITS_1,
 					SerialPort.PARITY_NONE);
-			serialPort.enableReceiveTimeout(1000);
-
+			serialPort.enableReceiveTimeout(100);
 			// Configuration du Listener
 			try {
 				serialPort.addEventListener(this);
@@ -289,8 +288,13 @@ public class SerialConnexion implements SerialPortEventListener, Service
 			output.write(question.getBytes());
 			output.write(retourLigne);
 
-			//recuperation de l'id de la carte
-			while(!input.ready());
+			//recuperation de l'id de la carte avec un timeout
+			long timeout = 500;
+			long debut = System.currentTimeMillis();
+			while(!input.ready())
+				if(System.currentTimeMillis() - debut > timeout)
+					return false;
+			
 			String lu = input.readLine().trim();
 //			log.debug("Lu : "+lu+", attendu : "+reponse);
 			if(lu.compareTo(reponse) == 0)
