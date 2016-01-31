@@ -4,6 +4,7 @@ import pathfinding.GameState;
 import permissions.ReadOnly;
 import permissions.ReadWrite;
 import exceptions.FinMatchException;
+import obstacles.ObstaclesFixes;
 import tests.graphicLib.Fenetre;
 import utils.Config;
 import utils.Vec2;

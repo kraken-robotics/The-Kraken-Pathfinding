@@ -1,5 +1,8 @@
-package obstacles.types;
+package obstacles;
 
+import obstacles.types.Obstacle;
+import obstacles.types.ObstacleCircular;
+import obstacles.types.ObstacleRectangular;
 import permissions.ReadOnly;
 import utils.Vec2;
 
@@ -53,7 +56,7 @@ public enum ObstaclesFixes {
     		if(o.visible)
     			obstaclesFixesVisibles[i++] = o;
     }
-    
+
     private ObstaclesFixes(ObstacleRectangular obstacle, boolean visible)
     {
     	this.obstacle = obstacle;

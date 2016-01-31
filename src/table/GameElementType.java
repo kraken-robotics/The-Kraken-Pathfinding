@@ -11,9 +11,13 @@ import scripts.ScriptHookNames;
 public enum GameElementType {
 	POISSONS(0, false, null, true, true),
 	DRAPEAU(0, false, null, true, true),
-	COQUILLAGE(15000, true, null, true, true),
-	COQUILLAGE_EN_HAUTEUR(15000, false, null, true, true),
-	SABLE(10000, true, null, true, true);
+	COQUILLAGE_NEUTRE(15000, true, null, true, true),
+	COQUILLAGE_AMI(0, true, null, true, true),
+	COQUILLAGE_ENNEMI(0, true, null, true, true),
+	COQUILLAGE_EN_HAUTEUR_NEUTRE(0, false, null, true, true),
+	COQUILLAGE_EN_HAUTEUR_AMI(0, false, null, true, true),
+	COQUILLAGE_EN_HAUTEUR_ENNEMI(0, false, null, true, true),
+	SABLE(5000, true, null, true, true);
 
 	private boolean isInCommon;
 	private int dateEnemyTakesIt;

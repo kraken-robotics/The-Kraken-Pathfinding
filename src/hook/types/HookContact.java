@@ -2,7 +2,6 @@ package hook.types;
 
 import java.util.ArrayList;
 
-import pathfinding.GameState;
 import permissions.ReadOnly;
 import utils.Log;
 import utils.Vec2;
@@ -18,9 +17,9 @@ public class HookContact extends Hook {
 
 	private int nbCapteur;
 	
-	public HookContact(Log log, GameState<?, ReadOnly> state, int nbCapteur, boolean isUnique)
+	public HookContact(Log log, int nbCapteur, boolean isUnique)
 	{
-		super(log, state, isUnique);
+		super(log, isUnique);
 		this.nbCapteur = nbCapteur;
 	}
 

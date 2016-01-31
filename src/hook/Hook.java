@@ -2,11 +2,8 @@ package hook;
 
 import java.util.ArrayList;
 
-import pathfinding.GameState;
 import permissions.ReadOnly;
-import permissions.ReadWrite;
 import exceptions.FinMatchException;
-import robot.RobotChrono;
 import utils.ConfigInfo;
 import utils.Log;
 import utils.Config;
@@ -25,8 +22,6 @@ abstract public class Hook
 
 	protected Log log;
 	
-	protected GameState<?,ReadOnly> state;
-
 	protected static int rayon_robot;
 	protected static int dureeMatch;
 	private static int numStatic = 0;
@@ -40,13 +35,12 @@ abstract public class Hook
 	 * @param log
 	 * @param real_state
 	 */
-	public Hook(Log log, GameState<?,ReadOnly> state, boolean isUnique)
+	public Hook(Log log, boolean isUnique)
 	{
 		num = numStatic;
 		numStatic++;
 		this.isUnique = isUnique;
 		this.log = log;
-		this.state = state;
 	}
 	
 	public static void useConfig(Config config)
@@ -114,13 +108,13 @@ abstract public class Hook
 	    return true;
 	}*/
 
-	public void updateGameState(GameState<RobotChrono,ReadWrite> state)
+/*	public void updateGameState(GameState<RobotChrono,ReadWrite> state)
 	{
 		this.state = state.getReadOnly();
 		for(Executable callback : callbacks)
 			callback.updateGameState(state);
 	}
-	
+	*/
 	/**
 	 * Contient la commande à envoyer par série
 	 * @return

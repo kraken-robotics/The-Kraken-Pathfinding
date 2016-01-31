@@ -1,5 +1,6 @@
 package obstacles.types;
 
+import obstacles.ObstaclesFixes;
 import permissions.ReadOnly;
 import utils.Vec2;
 

@@ -5,6 +5,12 @@ import obstacles.ClothoidesComputer;
 import obstacles.MoteurPhysique;
 import obstacles.ObstaclesMemory;
 import obstacles.types.Obstacle;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+
 import buffer.DataForSerialOutput;
 import buffer.IncomingDataBuffer;
 import buffer.IncomingHookBuffer;
@@ -65,6 +71,9 @@ public class Container
 	private static int nbInstances = 0;
 	private boolean threadsStarted = false;
 	
+	private static final boolean showGraph = true;
+	private FileWriter fw;
+
 	/**
 	 * Fonction à appeler à la fin du programme.
 	 * ferme la connexion serie, termine les différents threads, et ferme le log.
@@ -80,7 +89,7 @@ public class Container
 					if(s.isThread())
 					{
 						log.debug("Arrêt de "+s);
-//						((ThreadAvecStop)getService(s)).setFinThread();
+//						((ThreadAvecStop)getServicePrivate(s)).setFinThread();
 						// C'est déprécié. Mais ce n'est utilisé qu'en fin de match ;
 						// en fait, ce n'est utile que pour les tests
 						((Thread)getService(s)).stop();
@@ -98,6 +107,16 @@ public class Container
 		if(stm != null)
 			stm.close();
 
+		if(showGraph)
+		{
+			try {
+				fw.write("}\n");
+				fw.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		
 		// fermeture du log
 		log.debug("Fermeture du log");
 		log.close();
@@ -126,8 +145,8 @@ public class Container
 		System.out.println("Loading config from current directory : " +  System.getProperty("user.dir"));
 
 		try {
-			log = (Log)getService(ServiceNames.LOG);
-			config = (Config)getService(ServiceNames.CONFIG);
+			log = (Log)getServiceRecursif(ServiceNames.LOG);
+			config = (Config)getServiceRecursif(ServiceNames.CONFIG);
 		} catch (PointSortieException e) {
 			// Impossible
 			e.printStackTrace();
@@ -138,7 +157,61 @@ public class Container
 		
 		Obstacle.setLog(log);
 		Obstacle.useConfig(config);
+		
+		if(showGraph)
+		{
+			try {
+				fw = new FileWriter(new File("dependances.dot"));
+				fw.write("digraph dependancesJava {\n");
+				
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 	}
+	
+	public Service getService(ServiceNames serviceTo) throws ContainerException, PointSortieException
+	{
+		return getServicePrivate(null, serviceTo);
+	}
+	
+	@SuppressWarnings("unused")
+	public Service getServicePrivate(ServiceNames serviceFrom, ServiceNames serviceTo) throws ContainerException, PointSortieException
+	{
+		if(showGraph && !serviceTo.equals(ServiceNames.LOG))
+		{
+			ArrayList<ServiceNames> ok = new ArrayList<ServiceNames>();
+			ok.add(ServiceNames.CONFIG);
+			ok.add(ServiceNames.SERIE_STM);
+			ok.add(ServiceNames.SERIE_XBEE);
+			ok.add(ServiceNames.INCOMING_HOOK_BUFFER);
+			ok.add(ServiceNames.INCOMING_DATA_BUFFER);
+			ok.add(ServiceNames.SERIAL_OUTPUT_BUFFER);
+			ok.add(ServiceNames.REQUETE_STM);
+			ok.add(ServiceNames.OBSTACLES_MEMORY);
+			ok.add(ServiceNames.THREAD_SERIAL_INPUT);
+			ok.add(ServiceNames.THREAD_SERIAL_OUTPUT);
+			ok.add(ServiceNames.THREAD_FIN_MATCH);
+			ok.add(ServiceNames.THREAD_PEREMPTION);
+			ok.add(ServiceNames.THREAD_CAPTEURS);
+			ok.add(ServiceNames.THREAD_CONFIG);
+
+			try {
+				if(ok.contains(serviceTo))
+					fw.write(serviceTo+" [color=grey80, style=filled];\n");
+				else
+					fw.write(serviceTo+";\n");
+				if(serviceFrom != null)
+				{
+					fw.write(serviceFrom+" -> "+serviceTo+";\n");					
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return getServiceRecursif(serviceTo);
+	}
+
 
 	@SuppressWarnings("unchecked")
 	/**
@@ -150,7 +223,7 @@ public class Container
 	 * @throws FinMatchException
 	 * @throws PointSortieException
 	 */
-	public Service getService(ServiceNames serviceRequested) throws ContainerException, PointSortieException
+	public Service getServiceRecursif(ServiceNames serviceRequested) throws ContainerException, PointSortieException
 	{
     	// instancie le service demandé lors de son premier appel 
     	boolean updateConfig = true;
@@ -165,149 +238,151 @@ public class Container
 		else if(serviceRequested == ServiceNames.CONFIG)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new Config();
 		else if(serviceRequested == ServiceNames.CAPTEURS)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new Capteurs((Log)getService(ServiceNames.LOG),
-																					(Config) getService(ServiceNames.CONFIG),
-																					(ObstaclesMemory)getService(ServiceNames.OBSTACLES_MEMORY),
-																					(RobotReal)getService(ServiceNames.ROBOT_REAL));
+			instanciedServices[serviceRequested.ordinal()] = (Service)new Capteurs((Log)getServicePrivate(serviceRequested, ServiceNames.LOG),
+																					(Config) getServicePrivate(serviceRequested, ServiceNames.CONFIG),
+																					(ObstaclesMemory)getServicePrivate(serviceRequested, ServiceNames.OBSTACLES_MEMORY),
+																					(RobotReal)getServicePrivate(serviceRequested, ServiceNames.ROBOT_REAL));
 		else if(serviceRequested == ServiceNames.TABLE)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new Table((Log)getService(ServiceNames.LOG),
-																				(StrategieNotifieur)getService(ServiceNames.STRATEGIE_NOTIFIEUR));
+			instanciedServices[serviceRequested.ordinal()] = (Service)new Table((Log)getServicePrivate(serviceRequested, ServiceNames.LOG),
+																				(StrategieNotifieur)getServicePrivate(serviceRequested, ServiceNames.STRATEGIE_NOTIFIEUR));
 		else if(serviceRequested == ServiceNames.D_STAR_LITE)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new DStarLite((Log)getService(ServiceNames.LOG),
-																				(GridSpace)getService(ServiceNames.GRID_SPACE));
+			instanciedServices[serviceRequested.ordinal()] = (Service)new DStarLite((Log)getServicePrivate(serviceRequested, ServiceNames.LOG),
+																				(GridSpace)getServicePrivate(serviceRequested, ServiceNames.GRID_SPACE));
 		else if(serviceRequested == ServiceNames.CHEMIN_PATHFINDING)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new CheminPathfinding((Log)getService(ServiceNames.LOG));
+			instanciedServices[serviceRequested.ordinal()] = (Service)new CheminPathfinding((Log)getServicePrivate(serviceRequested, ServiceNames.LOG));
 		
 		
 		else if(serviceRequested == ServiceNames.OBSTACLES_MEMORY)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new ObstaclesMemory((Log)getService(ServiceNames.LOG));
+			instanciedServices[serviceRequested.ordinal()] = (Service)new ObstaclesMemory((Log)getServicePrivate(serviceRequested, ServiceNames.LOG));
 		else if(serviceRequested == ServiceNames.GRID_SPACE)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new GridSpace((Log)getService(ServiceNames.LOG),
-																					(ObstaclesMemory)getService(ServiceNames.OBSTACLES_MEMORY),
-																					(Table)getService(ServiceNames.TABLE));
+			instanciedServices[serviceRequested.ordinal()] = (Service)new GridSpace((Log)getServicePrivate(serviceRequested, ServiceNames.LOG),
+																					(ObstaclesMemory)getServicePrivate(serviceRequested, ServiceNames.OBSTACLES_MEMORY),
+																					(Table)getServicePrivate(serviceRequested, ServiceNames.TABLE));
 		else if(serviceRequested == ServiceNames.LPA_STAR)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new LPAStar((Log)getService(ServiceNames.LOG),
-																					(GameState<RobotReal,ReadOnly>)getService(ServiceNames.REAL_GAME_STATE),
-																					(AStar)getService(ServiceNames.A_STAR));
+			instanciedServices[serviceRequested.ordinal()] = (Service)new LPAStar((Log)getServicePrivate(serviceRequested, ServiceNames.LOG),
+																					(GameState<RobotReal,ReadOnly>)getServicePrivate(serviceRequested, ServiceNames.REAL_GAME_STATE),
+																					(AStar)getServicePrivate(serviceRequested, ServiceNames.A_STAR));
 		else if(serviceRequested == ServiceNames.A_STAR)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new AStar((Log)getService(ServiceNames.LOG),
-																					(AStarArcManager)getService(ServiceNames.A_STAR_ARC_MANAGER),
-																					(AStarMemoryManager)getService(ServiceNames.A_STAR_MEMORY_MANAGER),
-																					(GridSpaceStrategie)getService(ServiceNames.GRID_SPACE_STRATEGIE));
+			instanciedServices[serviceRequested.ordinal()] = (Service)new AStar((Log)getServicePrivate(serviceRequested, ServiceNames.LOG),
+																					(AStarArcManager)getServicePrivate(serviceRequested, ServiceNames.A_STAR_ARC_MANAGER),
+																					(AStarMemoryManager)getServicePrivate(serviceRequested, ServiceNames.A_STAR_MEMORY_MANAGER),
+																					(GridSpaceStrategie)getServicePrivate(serviceRequested, ServiceNames.GRID_SPACE_STRATEGIE));
 		else if(serviceRequested == ServiceNames.GRID_SPACE_STRATEGIE)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new GridSpaceStrategie((Log)getService(ServiceNames.LOG));
+			instanciedServices[serviceRequested.ordinal()] = (Service)new GridSpaceStrategie((Log)getServicePrivate(serviceRequested, ServiceNames.LOG));
 		else if(serviceRequested == ServiceNames.A_STAR_ARC_MANAGER)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new AStarArcManager((Log)getService(ServiceNames.LOG));
+			instanciedServices[serviceRequested.ordinal()] = (Service)new AStarArcManager((Log)getServicePrivate(serviceRequested, ServiceNames.LOG));
 		else if(serviceRequested == ServiceNames.A_STAR_MEMORY_MANAGER)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new AStarMemoryManager((Log)getService(ServiceNames.LOG),
-																							(GameState<RobotReal,ReadOnly>)getService(ServiceNames.REAL_GAME_STATE));
+			instanciedServices[serviceRequested.ordinal()] = (Service)new AStarMemoryManager((Log)getServicePrivate(serviceRequested, ServiceNames.LOG),
+																							(GameState<RobotReal,ReadOnly>)getServicePrivate(serviceRequested, ServiceNames.REAL_GAME_STATE));
 		else if(serviceRequested == ServiceNames.INCOMING_DATA_BUFFER)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new IncomingDataBuffer((Log)getService(ServiceNames.LOG));
+			instanciedServices[serviceRequested.ordinal()] = (Service)new IncomingDataBuffer((Log)getServicePrivate(serviceRequested, ServiceNames.LOG));
 		else if(serviceRequested == ServiceNames.INCOMING_HOOK_BUFFER)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new IncomingHookBuffer((Log)getService(ServiceNames.LOG));
+			instanciedServices[serviceRequested.ordinal()] = (Service)new IncomingHookBuffer((Log)getServicePrivate(serviceRequested, ServiceNames.LOG));
 		else if(serviceRequested == ServiceNames.SERIAL_OUTPUT_BUFFER)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new DataForSerialOutput((Log)getService(ServiceNames.LOG));
+			instanciedServices[serviceRequested.ordinal()] = (Service)new DataForSerialOutput((Log)getServicePrivate(serviceRequested, ServiceNames.LOG));
 		else if(serviceRequested == ServiceNames.SERIE_STM)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new SerialConnexion((Log)getService(ServiceNames.LOG), "?", "T3");
+			instanciedServices[serviceRequested.ordinal()] = (Service)new SerialConnexion((Log)getServicePrivate(serviceRequested, ServiceNames.LOG), "?", "T3", config.getInt(ConfigInfo.BAUDRATE_STM));
 		else if(serviceRequested == ServiceNames.SERIE_XBEE)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new SerialConnexion((Log)getService(ServiceNames.LOG), "", "");
+			instanciedServices[serviceRequested.ordinal()] = (Service)new SerialConnexion((Log)getServicePrivate(serviceRequested, ServiceNames.LOG), "", "", config.getInt(ConfigInfo.BAUDRATE_XBEE));
 		else if(serviceRequested == ServiceNames.EXECUTION)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new Execution((Log)getService(ServiceNames.LOG),
-			                                                 (LPAStar)getService(ServiceNames.LPA_STAR),
-  															 (ScriptManager)getService(ServiceNames.SCRIPT_MANAGER),
-        													 (GameState<RobotReal,ReadWrite>)getService(ServiceNames.REAL_GAME_STATE),
-        													 (RequeteSTM)getService(ServiceNames.REQUETE_STM));
+			instanciedServices[serviceRequested.ordinal()] = (Service)new Execution((Log)getServicePrivate(serviceRequested, ServiceNames.LOG),
+			                                                 (LPAStar)getServicePrivate(serviceRequested, ServiceNames.LPA_STAR),
+  															 (ScriptManager)getServicePrivate(serviceRequested, ServiceNames.SCRIPT_MANAGER),
+        													 (GameState<RobotReal,ReadWrite>)getServicePrivate(serviceRequested, ServiceNames.REAL_GAME_STATE),
+        													 (RequeteSTM)getServicePrivate(serviceRequested, ServiceNames.REQUETE_STM));
 		else if(serviceRequested == ServiceNames.HOOK_FACTORY)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new HookFactory((Log)getService(ServiceNames.LOG));
+			instanciedServices[serviceRequested.ordinal()] = (Service)new HookFactory((Log)getServicePrivate(serviceRequested, ServiceNames.LOG));
 		else if(serviceRequested == ServiceNames.ROBOT_REAL)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new RobotReal((DataForSerialOutput)getService(ServiceNames.SERIAL_OUTPUT_BUFFER),
-															 (Log)getService(ServiceNames.LOG),
-															 (RequeteSTM)getService(ServiceNames.REQUETE_STM),
-															 (GridSpace)getService(ServiceNames.GRID_SPACE));
+			instanciedServices[serviceRequested.ordinal()] = (Service)new RobotReal((DataForSerialOutput)getServicePrivate(serviceRequested, ServiceNames.SERIAL_OUTPUT_BUFFER),
+															 (Log)getServicePrivate(serviceRequested, ServiceNames.LOG),
+															 (RequeteSTM)getServicePrivate(serviceRequested, ServiceNames.REQUETE_STM),
+															 (GridSpace)getServicePrivate(serviceRequested, ServiceNames.GRID_SPACE));
         else if(serviceRequested == ServiceNames.REAL_GAME_STATE)
         	// ici la construction est un petit peu différente car on interdit l'instanciation publique d'un GameSTate<RobotChrono>
-            instanciedServices[serviceRequested.ordinal()] = (Service) GameState.constructRealGameState((Log)getService(ServiceNames.LOG),
-                                                             (Table)getService(ServiceNames.TABLE),
-                                                             (RobotReal)getService(ServiceNames.ROBOT_REAL),
-        													 (HookFactory)getService(ServiceNames.HOOK_FACTORY),
-		 													 (DataForSerialOutput)getService(ServiceNames.SERIAL_OUTPUT_BUFFER),
-															 (ObstaclesMemory)getService(ServiceNames.OBSTACLES_MEMORY));
+            instanciedServices[serviceRequested.ordinal()] = (Service) GameState.constructRealGameState((Log)getServicePrivate(serviceRequested, ServiceNames.LOG),
+                                                             (Table)getServicePrivate(serviceRequested, ServiceNames.TABLE),
+                                                             (RobotReal)getServicePrivate(serviceRequested, ServiceNames.ROBOT_REAL),
+        													 (HookFactory)getServicePrivate(serviceRequested, ServiceNames.HOOK_FACTORY),
+		 													 (DataForSerialOutput)getServicePrivate(serviceRequested, ServiceNames.SERIAL_OUTPUT_BUFFER),
+															 (ObstaclesMemory)getServicePrivate(serviceRequested, ServiceNames.OBSTACLES_MEMORY));
 		else if(serviceRequested == ServiceNames.SCRIPT_MANAGER)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new ScriptManager((HookFactory)getService(ServiceNames.HOOK_FACTORY),
-																					(Log)getService(ServiceNames.LOG),
-																					 (GridSpace)getService(ServiceNames.GRID_SPACE));
+			instanciedServices[serviceRequested.ordinal()] = (Service)new ScriptManager((HookFactory)getServicePrivate(serviceRequested, ServiceNames.HOOK_FACTORY),
+																					(Log)getServicePrivate(serviceRequested, ServiceNames.LOG),
+																					 (GridSpace)getServicePrivate(serviceRequested, ServiceNames.GRID_SPACE));
 		else if(serviceRequested == ServiceNames.THREAD_FIN_MATCH)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadFinMatch((Log)getService(ServiceNames.LOG),
-																		(Config)getService(ServiceNames.CONFIG));
+			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadFinMatch((Log)getServicePrivate(serviceRequested, ServiceNames.LOG),
+																		(Config)getServicePrivate(serviceRequested, ServiceNames.CONFIG));
 		else if(serviceRequested == ServiceNames.THREAD_PEREMPTION)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadPeremption((Log)getService(ServiceNames.LOG),
-																		(ObstaclesMemory)getService(ServiceNames.OBSTACLES_MEMORY));
+			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadPeremption((Log)getServicePrivate(serviceRequested, ServiceNames.LOG),
+																		(ObstaclesMemory)getServicePrivate(serviceRequested, ServiceNames.OBSTACLES_MEMORY));
 		else if(serviceRequested == ServiceNames.THREAD_EVITEMENT)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadEvitement((Log)getService(ServiceNames.LOG),
-																		(ThreadPathfinding)getService(ServiceNames.THREAD_PATHFINDING),
-																		(DataForSerialOutput)getService(ServiceNames.SERIAL_OUTPUT_BUFFER),
-																		(AStarCourbe)getService(ServiceNames.A_STAR_COURBE),
-																		(CheminPathfinding)getService(ServiceNames.CHEMIN_PATHFINDING));
+			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadEvitement((Log)getServicePrivate(serviceRequested, ServiceNames.LOG),
+																		(ThreadPathfinding)getServicePrivate(serviceRequested, ServiceNames.THREAD_PATHFINDING),
+																		(DataForSerialOutput)getServicePrivate(serviceRequested, ServiceNames.SERIAL_OUTPUT_BUFFER),
+																		(AStarCourbe)getServicePrivate(serviceRequested, ServiceNames.A_STAR_COURBE),
+																		(CheminPathfinding)getServicePrivate(serviceRequested, ServiceNames.CHEMIN_PATHFINDING));
 		else if(serviceRequested == ServiceNames.THREAD_CAPTEURS)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadCapteurs((Log)getService(ServiceNames.LOG),
-																		(IncomingDataBuffer)getService(ServiceNames.INCOMING_DATA_BUFFER),
-																		(Capteurs)getService(ServiceNames.CAPTEURS));
+			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadCapteurs((Log)getServicePrivate(serviceRequested, ServiceNames.LOG),
+																		(IncomingDataBuffer)getServicePrivate(serviceRequested, ServiceNames.INCOMING_DATA_BUFFER),
+																		(Capteurs)getServicePrivate(serviceRequested, ServiceNames.CAPTEURS));
 		else if(serviceRequested == ServiceNames.THREAD_SERIAL_INPUT)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadSerialInput((Log)getService(ServiceNames.LOG),
-																		(Config)getService(ServiceNames.CONFIG),
-																		(SerialConnexion)getService(ServiceNames.SERIE_STM),
-																		(IncomingDataBuffer)getService(ServiceNames.INCOMING_DATA_BUFFER),
-																		(IncomingHookBuffer)getService(ServiceNames.INCOMING_HOOK_BUFFER),
-																		(RequeteSTM)getService(ServiceNames.REQUETE_STM),
-																		(Table)getService(ServiceNames.TABLE),
-																		(RobotReal)getService(ServiceNames.ROBOT_REAL));
+			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadSerialInput((Log)getServicePrivate(serviceRequested, ServiceNames.LOG),
+																		(Config)getServicePrivate(serviceRequested, ServiceNames.CONFIG),
+																		(SerialConnexion)getServicePrivate(serviceRequested, ServiceNames.SERIE_STM),
+																		(IncomingDataBuffer)getServicePrivate(serviceRequested, ServiceNames.INCOMING_DATA_BUFFER),
+																		(IncomingHookBuffer)getServicePrivate(serviceRequested, ServiceNames.INCOMING_HOOK_BUFFER),
+																		(RequeteSTM)getServicePrivate(serviceRequested, ServiceNames.REQUETE_STM),
+																		(Table)getServicePrivate(serviceRequested, ServiceNames.TABLE),
+																		(RobotReal)getServicePrivate(serviceRequested, ServiceNames.ROBOT_REAL),
+																		(HookFactory)getServicePrivate(serviceRequested, ServiceNames.HOOK_FACTORY),
+					 													(DataForSerialOutput)getServicePrivate(serviceRequested, ServiceNames.SERIAL_OUTPUT_BUFFER));
 		else if(serviceRequested == ServiceNames.REQUETE_STM)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new RequeteSTM((Log)getService(ServiceNames.LOG));
+			instanciedServices[serviceRequested.ordinal()] = (Service)new RequeteSTM((Log)getServicePrivate(serviceRequested, ServiceNames.LOG));
 		else if(serviceRequested == ServiceNames.THREAD_SERIAL_OUTPUT)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadSerialOutput((Log)getService(ServiceNames.LOG),
-																		(Config)getService(ServiceNames.CONFIG),
-																		(SerialConnexion)getService(ServiceNames.SERIE_STM),
-																		(DataForSerialOutput)getService(ServiceNames.SERIAL_OUTPUT_BUFFER));
+			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadSerialOutput((Log)getServicePrivate(serviceRequested, ServiceNames.LOG),
+																		(Config)getServicePrivate(serviceRequested, ServiceNames.CONFIG),
+																		(SerialConnexion)getServicePrivate(serviceRequested, ServiceNames.SERIE_STM),
+																		(DataForSerialOutput)getServicePrivate(serviceRequested, ServiceNames.SERIAL_OUTPUT_BUFFER));
 		else if(serviceRequested == ServiceNames.THREAD_GAME_ELEMENT_DONE_BY_ENEMY)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadGameElementDoneByEnemy((Log)getService(ServiceNames.LOG),
-																		(ObstaclesMemory)getService(ServiceNames.OBSTACLES_MEMORY),
-																		(Table)getService(ServiceNames.TABLE),
-																		(MoteurPhysique)getService(ServiceNames.MOTEUR_PHYSIQUE));
+			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadGameElementDoneByEnemy((Log)getServicePrivate(serviceRequested, ServiceNames.LOG),
+																		(ObstaclesMemory)getServicePrivate(serviceRequested, ServiceNames.OBSTACLES_MEMORY),
+																		(Table)getServicePrivate(serviceRequested, ServiceNames.TABLE),
+																		(MoteurPhysique)getServicePrivate(serviceRequested, ServiceNames.MOTEUR_PHYSIQUE));
 		else if(serviceRequested == ServiceNames.THREAD_CONFIG)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadConfig((Log)getService(ServiceNames.LOG),
-																		(Config)getService(ServiceNames.CONFIG),
+			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadConfig((Log)getServicePrivate(serviceRequested, ServiceNames.LOG),
+																		(Config)getServicePrivate(serviceRequested, ServiceNames.CONFIG),
 																		this);
 		else if(serviceRequested == ServiceNames.THREAD_PATHFINDING)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadPathfinding((Log)getService(ServiceNames.LOG),
-																		(AStarCourbe)getService(ServiceNames.A_STAR_COURBE),
-																		(ObstaclesMemory)getService(ServiceNames.OBSTACLES_MEMORY));
+			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadPathfinding((Log)getServicePrivate(serviceRequested, ServiceNames.LOG),
+																		(AStarCourbe)getServicePrivate(serviceRequested, ServiceNames.A_STAR_COURBE),
+																		(ObstaclesMemory)getServicePrivate(serviceRequested, ServiceNames.OBSTACLES_MEMORY));
 		else if(serviceRequested == ServiceNames.STRATEGIE_INFO)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new StrategieInfo((Log)getService(ServiceNames.LOG), 
-																		(StrategieNotifieur)getService(ServiceNames.STRATEGIE_NOTIFIEUR));
+			instanciedServices[serviceRequested.ordinal()] = (Service)new StrategieInfo((Log)getServicePrivate(serviceRequested, ServiceNames.LOG), 
+																		(StrategieNotifieur)getServicePrivate(serviceRequested, ServiceNames.STRATEGIE_NOTIFIEUR));
 		else if(serviceRequested == ServiceNames.MOTEUR_PHYSIQUE)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new MoteurPhysique((Log)getService(ServiceNames.LOG)); 		
+			instanciedServices[serviceRequested.ordinal()] = (Service)new MoteurPhysique((Log)getServicePrivate(serviceRequested, ServiceNames.LOG)); 		
 		else if(serviceRequested == ServiceNames.STRATEGIE_NOTIFIEUR)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new StrategieNotifieur();		
 		else if(serviceRequested == ServiceNames.A_STAR_COURBE)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new AStarCourbe((Log)getService(ServiceNames.LOG),
-																					(DStarLite)getService(ServiceNames.D_STAR_LITE),
-																					(AStarCourbeArcManager)getService(ServiceNames.A_STAR_COURBE_ARC_MANAGER),
-																					(GameState<RobotReal,ReadOnly>)getService(ServiceNames.REAL_GAME_STATE),
-																					(CheminPathfinding)getService(ServiceNames.CHEMIN_PATHFINDING),
-																					(AStarCourbeMemoryManager)getService(ServiceNames.A_STAR_COURBE_MEMORY_MANAGER));
+			instanciedServices[serviceRequested.ordinal()] = (Service)new AStarCourbe((Log)getServicePrivate(serviceRequested, ServiceNames.LOG),
+																					(DStarLite)getServicePrivate(serviceRequested, ServiceNames.D_STAR_LITE),
+																					(AStarCourbeArcManager)getServicePrivate(serviceRequested, ServiceNames.A_STAR_COURBE_ARC_MANAGER),
+																					(GameState<RobotReal,ReadOnly>)getServicePrivate(serviceRequested, ServiceNames.REAL_GAME_STATE),
+																					(CheminPathfinding)getServicePrivate(serviceRequested, ServiceNames.CHEMIN_PATHFINDING),
+																					(AStarCourbeMemoryManager)getServicePrivate(serviceRequested, ServiceNames.A_STAR_COURBE_MEMORY_MANAGER));
 		else if(serviceRequested == ServiceNames.A_STAR_COURBE_MEMORY_MANAGER)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new AStarCourbeMemoryManager((Log)getService(ServiceNames.LOG),
-																								   (GameState<RobotReal,ReadOnly>)getService(ServiceNames.REAL_GAME_STATE));
+			instanciedServices[serviceRequested.ordinal()] = (Service)new AStarCourbeMemoryManager((Log)getServicePrivate(serviceRequested, ServiceNames.LOG),
+																								   (GameState<RobotReal,ReadOnly>)getServicePrivate(serviceRequested, ServiceNames.REAL_GAME_STATE));
 		else if(serviceRequested == ServiceNames.A_STAR_COURBE_ARC_MANAGER)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new AStarCourbeArcManager((Log)getService(ServiceNames.LOG),
-																								(MoteurPhysique)getService(ServiceNames.MOTEUR_PHYSIQUE),
-																								(DStarLite)getService(ServiceNames.D_STAR_LITE));
+			instanciedServices[serviceRequested.ordinal()] = (Service)new AStarCourbeArcManager((Log)getServicePrivate(serviceRequested, ServiceNames.LOG),
+																								(MoteurPhysique)getServicePrivate(serviceRequested, ServiceNames.MOTEUR_PHYSIQUE),
+																								(DStarLite)getServicePrivate(serviceRequested, ServiceNames.D_STAR_LITE));
 		else if(serviceRequested == ServiceNames.CLOTHOIDES_COMPUTER)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new ClothoidesComputer((Log)getService(ServiceNames.LOG));
+			instanciedServices[serviceRequested.ordinal()] = (Service)new ClothoidesComputer((Log)getServicePrivate(serviceRequested, ServiceNames.LOG));
 		// si le service demandé n'est pas connu, alors on log une erreur.
 		else
 		{
-			log.critical("Erreur de getService pour le service (service inconnu): "+serviceRequested);
+			log.critical("Erreur de getServicePrivate pour le service (service inconnu): "+serviceRequested);
 			throw new ContainerException();
 		}
 		
@@ -321,16 +396,6 @@ public class Container
 		return instanciedServices[serviceRequested.ordinal()];
 	}	
 
-	//TODO voir doc
-	public void printLock()
-	{
-		for(ServiceNames s: ServiceNames.values())
-		{
-			if(instanciedServices[s.ordinal()] != null && Thread.holdsLock(instanciedServices[s.ordinal()]))
-				log.debug("Lock sur "+s);
-		}
-	}
-	
 	/**
 	 * Démarrage de tous les threads
 	 */

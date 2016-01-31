@@ -2,7 +2,6 @@ package hook.types;
 
 import java.util.ArrayList;
 
-import pathfinding.GameState;
 import permissions.ReadOnly;
 import permissions.ReadWrite;
 import utils.Log;
@@ -27,9 +26,9 @@ public class HookDemiPlan extends Hook
 	 * @param log
 	 * @param state
 	 */
-	public HookDemiPlan(Log log, GameState<?, ReadOnly> state)
+	public HookDemiPlan(Log log)
 	{
-		super(log, state, true);
+		super(log, true);
 		point = new Vec2<ReadWrite>();
 		direction = new Vec2<ReadWrite>();
 	}
@@ -40,9 +39,9 @@ public class HookDemiPlan extends Hook
 	 * @param log
 	 * @param state
 	 */
-	public HookDemiPlan(Log log, GameState<?,ReadOnly> state, Vec2<ReadOnly> point, Vec2<ReadOnly> direction)
+	public HookDemiPlan(Log log, Vec2<ReadOnly> point, Vec2<ReadOnly> direction)
 	{
-		super(log, state, true);
+		super(log, true);
 		this.point = point.clone();
 		this.direction = direction.clone();
 	}

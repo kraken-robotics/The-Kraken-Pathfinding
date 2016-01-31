@@ -2,7 +2,6 @@ package hook.types;
 
 import java.util.ArrayList;
 
-import pathfinding.GameState;
 import permissions.ReadOnly;
 import utils.Log;
 import utils.Vec2;
@@ -24,9 +23,9 @@ public class HookDate extends Hook {
 	 * @param state
 	 * @param date
 	 */
-	public HookDate(Log log, GameState<?,ReadOnly> state, long date)
+	public HookDate(Log log, long date)
 	{
-		super(log, state, true);
+		super(log, true);
 		this.date_hook = date;
 	}
 	

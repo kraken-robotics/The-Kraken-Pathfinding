@@ -3,7 +3,6 @@ package obstacles;
 import obstacles.types.Obstacle;
 import obstacles.types.ObstacleCircular;
 import obstacles.types.ObstacleRectangular;
-import obstacles.types.ObstaclesFixes;
 import buffer.IncomingData;
 import container.Service;
 import permissions.ReadOnly;

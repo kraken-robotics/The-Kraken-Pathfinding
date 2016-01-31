@@ -3,7 +3,6 @@ package hook.types;
 import java.util.ArrayList;
 
 import obstacles.types.ObstacleCircular;
-import pathfinding.GameState;
 import permissions.ReadOnly;
 import hook.Hook;
 import utils.Log;
@@ -35,9 +34,9 @@ public class HookPosition extends Hook
      * @param tolerance : imprécision admise sur la position qui déclenche le hook
      * @param isYellowTeam : la couleur du robot: vert ou jaune 
      */
-	public HookPosition(Log log, GameState<?,ReadOnly> state, Vec2<ReadOnly> position, int tolerancy)
+	public HookPosition(Log log, Vec2<ReadOnly> position, int tolerancy)
 	{
-		super(log, state, true);
+		super(log, true);
 		this.position = position;
 		this.tolerancy = tolerancy;
 		this.squaredTolerancy = tolerancy*tolerancy;

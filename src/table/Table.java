@@ -16,7 +16,6 @@ public class Table implements Service
 	// Dépendances
 	private Log log;
 	private StrategieNotifieur notifieur;
-	private int codeCoquillage;
 	
 	/** Contient toutes les informations sur les éléments de jeux sans perte d'information. */
 	private volatile long etatTable = 0;
@@ -25,7 +24,7 @@ public class Table implements Service
 	 * de FALSE à MAYBE pendant une recherche de stratégie, donc deux nœuds au hash identiques auront bien
 	 * deux etatTable identiques **/
 	private volatile int hash = 0;
-	
+
 	public Table(Log log, StrategieNotifieur notifieur)
 	{
 		this.log = log;
@@ -100,28 +99,7 @@ public class Table implements Service
 
 	@Override
 	public void updateConfig(Config config)
-	{
-		int tmp = config.getInt(ConfigInfo.CODE_COQUILLAGE);
-		if(tmp != codeCoquillage)
-		{
-			codeCoquillage = tmp;
-			switch(codeCoquillage)
-			{
-				case 0:
-					break;
-				case 1:
-					break;
-				case 2:
-					break;
-				case 3:
-					break;
-				case 4:
-					break;
-				default:
-					break;
-			}
-		}
-	}
+	{}
 	
 	@Override
 	public void useConfig(Config config)

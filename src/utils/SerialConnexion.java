@@ -52,11 +52,29 @@ public class SerialConnexion implements SerialPortEventListener, Service
 	 * Constructeur pour la série de test
 	 * @param log
 	 */
-	public SerialConnexion(Log log, String question, String reponse)
+	public SerialConnexion(Log log, String question, String reponse, int baudrate)
 	{
 		this.log = log;
 		this.question = question;
 		this.reponse = reponse;
+		this.baudrate = baudrate;
+		if(!searchPort())
+		{
+			/**
+			 * Suppression des verrous qui empêchent parfois la connexion
+			 */
+			try {
+				log.critical("Port série non trouvé, suppression des verrous");
+				Runtime.getRuntime().exec("sudo rm -f /var/lock/LCK..tty*");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			while(!searchPort())
+			{
+				log.critical("Port série non trouvé, réessaie dans 500 ms");
+				Sleep.sleep(500);
+			}
+		}
 	}
 
 	private synchronized boolean searchPort()
@@ -302,24 +320,7 @@ public class SerialConnexion implements SerialPortEventListener, Service
 	@Override
 	public void useConfig(Config config)
 	{
-		baudrate = config.getInt(ConfigInfo.BAUDRATE);
-		if(!searchPort())
-		{
-			/**
-			 * Suppression des verrous qui empêchent parfois la connexion
-			 */
-			try {
-				log.critical("Port série non trouvé, suppression des verrous");
-				Runtime.getRuntime().exec("sudo rm -f /var/lock/LCK..tty*");
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			while(!searchPort())
-			{
-				log.critical("Port série non trouvé, réessaie dans 500 ms");
-				Sleep.sleep(500);
-			}
-		}
+
 	}
 	
 	@Override
