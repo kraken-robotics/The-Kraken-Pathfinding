@@ -17,7 +17,14 @@ public class RequeteSTM implements Service {
 	
 	public synchronized RequeteType get()
 	{
-		return type;
+		RequeteType out = type;
+		type = null;
+		return out;
+	}
+	
+	public synchronized boolean isEmpty()
+	{
+		return type == null;
 	}
 	
 	public synchronized void set(RequeteType type)

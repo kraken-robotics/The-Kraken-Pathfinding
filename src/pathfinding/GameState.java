@@ -2,7 +2,6 @@ package pathfinding;
 
 import obstacles.ObstaclesIterator;
 import obstacles.ObstaclesMemory;
-import buffer.DataForSerialOutput;
 import permissions.Permission;
 import permissions.ReadOnly;
 import permissions.ReadWrite;
@@ -43,7 +42,7 @@ public class GameState<R extends Robot, T extends Permission> implements Service
      * @param robot
      * @return
      */
-    public static GameState<RobotReal,ReadWrite> constructRealGameState(Log log, Table table, RobotReal robot, HookFactory hookfactory, DataForSerialOutput serie, ObstaclesMemory memory)
+    public static GameState<RobotReal,ReadWrite> constructRealGameState(Log log, Table table, RobotReal robot, HookFactory hookfactory, ObstaclesMemory memory)
     {
 		GameState<RobotReal,ReadWrite> out = new GameState<RobotReal,ReadWrite>(log, new ObstaclesIterator(log, memory), robot, table);
 		return out;

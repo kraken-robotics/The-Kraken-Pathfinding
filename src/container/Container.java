@@ -71,7 +71,7 @@ public class Container
 	private static int nbInstances = 0;
 	private boolean threadsStarted = false;
 	
-	private static final boolean showGraph = true;
+	private static final boolean showGraph = false;
 	private FileWriter fw;
 
 	/**
@@ -303,7 +303,6 @@ public class Container
                                                              (Table)getServiceDisplay(serviceRequested, ServiceNames.TABLE),
                                                              (RobotReal)getServiceDisplay(serviceRequested, ServiceNames.ROBOT_REAL),
         													 (HookFactory)getServiceDisplay(serviceRequested, ServiceNames.HOOK_FACTORY),
-		 													 (DataForSerialOutput)getServiceDisplay(serviceRequested, ServiceNames.SERIAL_OUTPUT_BUFFER),
 															 (ObstaclesMemory)getServiceDisplay(serviceRequested, ServiceNames.OBSTACLES_MEMORY));
 		else if(serviceRequested == ServiceNames.SCRIPT_MANAGER)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ScriptManager((HookFactory)getServiceDisplay(serviceRequested, ServiceNames.HOOK_FACTORY),

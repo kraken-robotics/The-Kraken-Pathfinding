@@ -97,7 +97,7 @@ public class SerialConnexion implements SerialPortEventListener, Service
 				// Il ne faut activer le listener que maintenant, sinon
 				// ça pose des problèmes avec le ping
 				serialPort.notifyOnDataAvailable(true);
-				notifyAll();
+//				notifyAll();
 				return true;
 			}
 			else
@@ -217,7 +217,9 @@ public class SerialConnexion implements SerialPortEventListener, Service
 			/**
 			 * On sait qu'une donnée arrive, donc l'attente est très faible.
 			 */
-			while(!input.ready());
+			if(!input.ready()) // série pas prête ? (au cas où)
+				return "";
+
 			canBeRead--;
 			String m = input.readLine();
 			if(Config.debugSerie)
@@ -235,8 +237,15 @@ public class SerialConnexion implements SerialPortEventListener, Service
 	 */
 	public synchronized void serialEvent(SerialPortEvent oEvent)
 	{
-		canBeRead++;
-		notify();
+		try {
+			if(input.ready())
+			{
+				canBeRead++;
+				notify();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public boolean canBeRead()
