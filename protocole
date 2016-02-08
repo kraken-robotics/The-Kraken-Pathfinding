@@ -82,7 +82,7 @@ Une méthode
 ou
     scr nb_script
 ou
-    act ordre_act
+    act id_ax_12 angle
 
 Exemple complet: un hook de position d'id 10 qui dit qu'un élément a été shooté
     hpo 20 1300 5 10 1 T tbl 18
