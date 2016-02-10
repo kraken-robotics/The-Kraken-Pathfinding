@@ -4,6 +4,10 @@ import pathfinding.GameState;
 import permissions.ReadWrite;
 import robot.RobotChrono;
 import scripts.ScriptHookNames;
+
+import java.util.ArrayList;
+
+import enums.SerialProtocol;
 import hook.Executable;
 
 /**
@@ -30,9 +34,11 @@ public class ThrowScriptRequest implements Executable
 	{}
 	
 	@Override
-	public String toSerial()
+	public ArrayList<Byte> toSerial()
 	{
-		return "scr "+n.ordinal();
+		ArrayList<Byte> out = new ArrayList<Byte>();
+		out.add((byte)(SerialProtocol.CALLBACK_SCRIPT.nb+n.nbCapteur));
+		return out;
 	}
 
 

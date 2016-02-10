@@ -153,7 +153,7 @@ public class SerialConnexion implements SerialPortEventListener, Service
 	 * Méthode pour envoyer un message à la carte
 	 * @param messages
 	 */
-	public synchronized void communiquer(String out)
+	public synchronized void communiquer(byte[] out)
 	{
 		/**
 		 * Un appel à une série fermée ne devrait jamais être effectué.
@@ -169,8 +169,7 @@ public class SerialConnexion implements SerialPortEventListener, Service
 			if(Config.debugSerie)
 				log.debug("OUT: "+out);
 
-			output.write(out.getBytes());
-			output.write(retourLigne);
+			output.write(out);
 		}
 		catch (Exception e)
 		{
@@ -183,7 +182,7 @@ public class SerialConnexion implements SerialPortEventListener, Service
 			{
 				log.critical("Pas trouvé... On recommence");
 				// On laisse la série respirer un peu
-				Sleep.sleep(500);
+				Sleep.sleep(200);
 			}
 			// On a retrouvé la série, on renvoie le message
 			communiquer(out);

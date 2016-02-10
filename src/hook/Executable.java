@@ -1,5 +1,7 @@
 package hook;
 
+import java.util.ArrayList;
+
 import pathfinding.GameState;
 import permissions.ReadWrite;
 import robot.RobotChrono;
@@ -34,6 +36,6 @@ public interface Executable
 	 * Afin de l'envoyer par série
 	 * @return
 	 */
-	public String toSerial();
+	public ArrayList<Byte> toSerial();
 
 }

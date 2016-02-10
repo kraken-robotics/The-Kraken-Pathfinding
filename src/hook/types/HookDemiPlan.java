@@ -4,6 +4,10 @@ import permissions.ReadOnly;
 import permissions.ReadWrite;
 import utils.Log;
 import utils.Vec2;
+
+import java.util.ArrayList;
+
+import enums.SerialProtocol;
 import hook.Hook;
 
 /**
@@ -65,9 +69,17 @@ public class HookDemiPlan extends Hook
 	}
 
 	@Override
-	public String toSerial()
+	public ArrayList<Byte> toSerial()
 	{
-		return "Hdp "+point.x+" "+point.y+" "+direction.x+" "+direction.y+" "+super.toSerial();
-	}
-	
+		ArrayList<Byte> out = new ArrayList<Byte>();
+		out.add(SerialProtocol.HOOK_DEMI_PLAN.nb);
+		out.add((byte) ((point.x+1500) >> 4));
+		out.add((byte) ((point.x+1500) << 4 + point.y >> 8));
+		out.add((byte) (point.y));
+		out.add((byte) ((direction.x+1500) >> 4));
+		out.add((byte) ((direction.x+1500) << 4 + direction.y >> 8));
+		out.add((byte) (direction.y));
+		out.addAll(super.toSerial());
+		return out;
+	}	
 }

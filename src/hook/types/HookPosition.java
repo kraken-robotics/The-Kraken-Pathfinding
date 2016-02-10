@@ -2,6 +2,10 @@ package hook.types;
 
 import obstacles.types.ObstacleCircular;
 import permissions.ReadOnly;
+
+import java.util.ArrayList;
+
+import enums.SerialProtocol;
 import hook.Hook;
 import utils.Log;
 import utils.Vec2;
@@ -49,8 +53,19 @@ public class HookPosition extends Hook
 	}
 	
 	@Override
-	public String toSerial()
+	public ArrayList<Byte> toSerial()
 	{
-		return "Hpo "+position.x+" "+position.y+" "+squaredTolerancy+" "+super.toSerial();
+		ArrayList<Byte> out = new ArrayList<Byte>();
+		if(isUnique)
+			out.add(SerialProtocol.HOOK_POSITION_UNIQUE.nb);
+		else
+			out.add(SerialProtocol.HOOK_POSITION.nb);
+		out.add((byte) ((position.x+1500) >> 4));
+		out.add((byte) ((position.x+1500) << 4 + position.y >> 8));
+		out.add((byte) (position.y));
+		out.add((byte) (squaredTolerancy >> 8));
+		out.add((byte) (squaredTolerancy));
+		out.addAll(super.toSerial());
+		return out;
 	}
 }

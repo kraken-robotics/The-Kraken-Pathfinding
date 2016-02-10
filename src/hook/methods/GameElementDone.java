@@ -4,6 +4,10 @@ import pathfinding.GameState;
 import permissions.ReadWrite;
 import robot.RobotChrono;
 import table.GameElementNames;
+
+import java.util.ArrayList;
+
+import enums.SerialProtocol;
 import enums.Tribool;
 import hook.Executable;
 
@@ -44,9 +48,11 @@ public class GameElementDone implements Executable
 	}
 	
 	@Override
-	public String toSerial()
+	public ArrayList<Byte> toSerial()
 	{
-		return "tbl "+element.ordinal();
+		ArrayList<Byte> out = new ArrayList<Byte>();
+		out.add((byte)(SerialProtocol.CALLBACK_ELEMENT.nb+element.ordinal()));
+		return out;
 	}
 
 

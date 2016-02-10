@@ -1,0 +1,34 @@
+package enums;
+
+public enum SerialProtocol {
+	PING(0x00),
+	PONG(0x01),
+	AVANCER(0x02),
+	AVANCER_DANS_MUR(0x03),
+	TOURNER(0x04),
+	ACTIONNEUR(0x06),
+	STOP(0x07),
+	INIT_ODO(0x08),
+	GET_XYO(0x09),
+	SET_VITESSE(0x10),
+	REMOVE_ALL_HOOKS(0x40),
+	REMOVE_SOME_HOOKS(0x41),
+	
+	HOOK_DATE(0x44),
+	HOOK_DEMI_PLAN(0x45),
+	HOOK_POSITION(0x46),
+	HOOK_POSITION_UNIQUE(0x47),
+	HOOK_CONTACT(0x48),
+	HOOK_CONTACT_UNIQUE(0x49),
+	
+	CALLBACK_ELEMENT(0x00),
+	CALLBACK_SCRIPT(0x40),
+	CALLBACK_AX12(0x80);
+	
+	public final byte nb;
+	private SerialProtocol(int nb)
+	{
+		this.nb = (byte) nb;
+	}
+	
+}

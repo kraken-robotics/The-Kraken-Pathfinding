@@ -31,7 +31,7 @@ public class ThreadSerialOutput extends Thread implements Service
 	@Override
 	public void run()
 	{
-		String message;
+		byte[] message;
 		while(true)
 		{
 			try {

@@ -3,6 +3,10 @@ package hook.types;
 import permissions.ReadOnly;
 import utils.Log;
 import utils.Vec2;
+
+import java.util.ArrayList;
+
+import enums.SerialProtocol;
 import hook.Hook;
 
 /**
@@ -35,9 +39,15 @@ public class HookDate extends Hook {
 	}
 
 	@Override
-	public String toSerial()
+	public ArrayList<Byte> toSerial()
 	{
-		return "Hda "+date_hook+" "+super.toSerial();
+		ArrayList<Byte> out = new ArrayList<Byte>();
+		out.add(SerialProtocol.HOOK_DATE.nb);
+		out.add((byte) (date_hook >> 16));
+		out.add((byte) (date_hook >> 8));
+		out.add((byte) (date_hook));
+		out.addAll(super.toSerial());
+		return out;
 	}
 	
 }

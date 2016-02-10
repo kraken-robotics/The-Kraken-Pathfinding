@@ -3,6 +3,10 @@ package hook.types;
 import permissions.ReadOnly;
 import utils.Log;
 import utils.Vec2;
+
+import java.util.ArrayList;
+
+import enums.SerialProtocol;
 import hook.Hook;
 
 /**
@@ -31,14 +35,15 @@ public class HookContact extends Hook {
 	}
 
 	@Override
-	public String toSerial()
+	public ArrayList<Byte> toSerial()
 	{
-		String out = "Hct "+nbCapteur;
+		ArrayList<Byte> out = new ArrayList<Byte>();
 		if(isUnique)
-			out += " T";
+			out.add(SerialProtocol.HOOK_CONTACT_UNIQUE.nb);
 		else
-			out += " F";
-		out += " "+super.toSerial();
+			out.add(SerialProtocol.HOOK_CONTACT.nb);
+		out.add((byte) nbCapteur);
+		out.addAll(super.toSerial());
 		return out;
 	}
 	

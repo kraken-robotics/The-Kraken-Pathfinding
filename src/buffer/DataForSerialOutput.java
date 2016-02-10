@@ -10,6 +10,7 @@ import permissions.ReadOnly;
 import robot.ActuatorOrder;
 import robot.Speed;
 import container.Service;
+import enums.SerialProtocol;
 import utils.Config;
 import utils.Log;
 import utils.Vec2;
@@ -35,12 +36,12 @@ public class DataForSerialOutput implements Service
 		
 	private int nbPaquet = 0; // numéro du prochain paquet
 	private static final int NB_BUFFER_SAUVEGARDE = 10;
-	private String[] derniersEnvois = new String[NB_BUFFER_SAUVEGARDE];
+	private byte[][] derniersEnvois = new byte[NB_BUFFER_SAUVEGARDE][];
 	private boolean[] derniersEnvoisPriority = new boolean[NB_BUFFER_SAUVEGARDE];
 	
 	// priorité 0 = priorité minimale
-	private volatile LinkedList<String> bufferBassePriorite = new LinkedList<String>();
-	private volatile LinkedList<String> bufferTrajectoireCourbe = new LinkedList<String>();
+	private volatile LinkedList<byte[]> bufferBassePriorite = new LinkedList<byte[]>();
+	private volatile LinkedList<byte[]> bufferTrajectoireCourbe = new LinkedList<byte[]>();
 	private volatile boolean stop = false;
 	
 	/**
@@ -52,33 +53,47 @@ public class DataForSerialOutput implements Service
 		return bufferBassePriorite.isEmpty() && bufferTrajectoireCourbe.isEmpty() && !stop;
 	}
 
+	private void completePaquet(byte[] out)
+	{
+		out[0] = (byte) ((nbPaquet>>8) & 0xFF);
+		out[1] = (byte) (nbPaquet & 0xFF);
+		nbPaquet++;
+		// calcul du checksum
+		int c = 0;
+		for(int i = 0; i < out.length-1; i++)
+			c += out[i];
+		out[out.length-1] = (byte) ((~c) & 0xFF);
+	}
+	
 	/**
 	 * Retire un élément du buffer
 	 * @return
 	 */
-	public synchronized String poll()
+	public synchronized byte[] poll()
 	{
+		byte[] out;
 		if(stop)
 		{
 			stop = false;
 			bufferTrajectoireCourbe.clear(); // on annule tout mouvement
-			return "stop";
+			out = new byte[3+1];
+			out[2] = SerialProtocol.STOP.nb;
+			completePaquet(out);
+			return out;
 		}
 		else if(!bufferTrajectoireCourbe.isEmpty())
 		{
-			String out = bufferTrajectoireCourbe.poll();
+			out = bufferTrajectoireCourbe.poll();
 			derniersEnvois[nbPaquet % NB_BUFFER_SAUVEGARDE] = out;
 			derniersEnvoisPriority[nbPaquet % NB_BUFFER_SAUVEGARDE] = true;
-			out = nbPaquet+" "+out;
-			nbPaquet++;
+			completePaquet(out);
 			return out;
 		}
 		{
-			String out = bufferBassePriorite.poll();
+			out = bufferBassePriorite.poll();
 			derniersEnvois[nbPaquet % NB_BUFFER_SAUVEGARDE] = out;
 			derniersEnvoisPriority[nbPaquet % NB_BUFFER_SAUVEGARDE] = false;
-			out = nbPaquet+" "+out;
-			nbPaquet++;
+			completePaquet(out);
 			return out;
 		}
 	}
@@ -104,20 +119,32 @@ public class DataForSerialOutput implements Service
 	
 	public synchronized void setSpeed(Speed speed)
 	{
-		bufferBassePriorite.add("sspd "+speed.PWMRotation+" "+speed.PWMTranslation);
+		byte[] out = new byte[3+3];
+		out[2] = SerialProtocol.SET_VITESSE.nb;
+		out[3] = (byte) speed.PWMRotation;
+		out[4] = (byte) speed.PWMTranslation;
+		bufferBassePriorite.add(out);
 		notify();
-
 	}
 	
 	public synchronized void getPositionOrientation()
 	{
-		bufferBassePriorite.add("gxyo");
+		byte[] out = new byte[3+1];
+		out[2] = SerialProtocol.GET_XYO.nb;
+		bufferBassePriorite.add(out);
 		notify();
 	}
 	
 	public synchronized void initOdoSTM(Vec2<ReadOnly> pos, double angle)
 	{
-		bufferBassePriorite.add("initodo "+pos.x+" "+pos.y+" "+Math.round(angle*1000));
+		byte[] out = new byte[3+6];
+		out[2] = SerialProtocol.INIT_ODO.nb;
+		out[3] = (byte) ((pos.x+1500) >> 4);
+		out[4] = (byte) ((pos.x+1500) << 4 + pos.y >> 8);
+		out[5] = (byte) (pos.y);
+		out[6] = (byte) (Math.round(angle*1000) >> 8);
+		out[7] = (byte) (Math.round(angle*1000));
+		bufferBassePriorite.add(out);
 		notify();
 	}
 
@@ -127,12 +154,14 @@ public class DataForSerialOutput implements Service
 	 */
 	public synchronized void avancer(int distance, boolean mur)
 	{
-		String elems = "t "+distance;
+		byte[] out = new byte[3+3];
 		if(mur)
-			elems += " T";
+			out[2] = SerialProtocol.AVANCER_DANS_MUR.nb;
 		else
-			elems += " F";
-		bufferBassePriorite.add(elems);
+			out[2] = SerialProtocol.AVANCER.nb;
+		out[3] = (byte) (distance >> 8);
+		out[4] = (byte) (distance);
+		bufferBassePriorite.add(out);
 		notify();
 	}
 
@@ -142,7 +171,10 @@ public class DataForSerialOutput implements Service
 	 */
 	public synchronized void turn(double angle)
 	{
-		bufferBassePriorite.add("r "+Math.round(angle*1000));
+		byte[] out = new byte[3+3];
+		out[2] = SerialProtocol.TOURNER.nb;
+		out[3] = (byte) (Math.round(angle*1000) >> 8);
+		out[4] = (byte) (Math.round(angle*1000));
 		notify();
 	}
 
@@ -152,7 +184,15 @@ public class DataForSerialOutput implements Service
 			return;
 
 		for(Hook h : hooks)
-			bufferBassePriorite.add(h.toSerial());
+		{
+			ArrayList<Byte> list = h.toSerial();
+			byte[] out = new byte[list.size()+3];
+		    for (int i = 0; i < list.size(); i++)
+		    {
+		        out[i+2] = list.get(i).byteValue();
+		    }
+			bufferBassePriorite.add(out);
+		}
 		
 		notify();
 	}
@@ -161,17 +201,22 @@ public class DataForSerialOutput implements Service
 	{
 		if(hooks.isEmpty())
 			return;
-		String out = "hkclr "+hooks.size();
-		for(Hook h : hooks)
-			out += " "+h.getNum();
 		
+		int size = hooks.size();
+		byte[] out = new byte[3+2+size];
+		out[2] = SerialProtocol.REMOVE_SOME_HOOKS.nb;
+		out[3] = (byte) (size);
+		for(int i = 0; i < size; i++)
+			out[4+i] = (byte) (hooks.get(i).getNum());
 		bufferBassePriorite.add(out);
 		notify();
 	}
 	
 	public synchronized void deleteAllHooks()
 	{
-		bufferBassePriorite.add("hkclrall");
+		byte[] out = new byte[3+1];
+		out[2] = SerialProtocol.REMOVE_ALL_HOOKS.nb;
+		bufferBassePriorite.add(out);
 		notify();
 	}
 
@@ -192,7 +237,10 @@ public class DataForSerialOutput implements Service
 	 */
 	public synchronized void utiliseActionneurs(ActuatorOrder elem)
 	{
-		bufferBassePriorite.add("act "+elem.ordinal());
+		byte[] out = new byte[3+2];
+		out[2] = SerialProtocol.ACTIONNEUR.nb;
+		out[3] = (byte) (0); // TODO
+		bufferBassePriorite.add(out);
 		notify();
 	}
 	
