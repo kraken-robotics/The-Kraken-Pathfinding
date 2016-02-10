@@ -7,14 +7,14 @@ import gnu.io.SerialPortEvent;
 import gnu.io.SerialPortEventListener;
 import gnu.io.UnsupportedCommOperationException;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Enumeration;
 import java.util.TooManyListenersException;
 
 import container.Service;
+import exceptions.MissingCharacterException;
 
 /**
  * La connexion série vers la STM ou la XBEE
@@ -29,17 +29,11 @@ public class SerialConnexion implements SerialPortEventListener, Service
 	
 	private boolean isClosed;
 	private int baudrate;
-	private int canBeRead = 0;
-	private String question, reponse;
+	private boolean isPaquet;
+	private byte[] question, reponse;
 	
-	private byte[] retourLigne = new String("\r").getBytes();
-	
-	/**
-	 * A BufferedReader which will be fed by a InputStreamReader 
-	 * converting the bytes into characters 
-	 * making the displayed results codepage independent
-	 */
-	private BufferedReader input;
+	/** The input stream from the port */
+	private InputStream input;
 
 	/** The output stream to the port */
 	private OutputStream output;
@@ -47,12 +41,17 @@ public class SerialConnexion implements SerialPortEventListener, Service
 	/** Milliseconds to block while waiting for port open */
 	private static final int TIME_OUT = 2000;
 
+	public SerialConnexion(Log log, String question, String reponse, int baudrate, boolean isPaquet)
+	{
+		this(log, (question+'\r').getBytes(), (reponse+'\r').getBytes(), baudrate, isPaquet);
+	}
 	/**
 	 * Constructeur pour la série de test
 	 * @param log
 	 */
-	public SerialConnexion(Log log, String question, String reponse, int baudrate)
+	public SerialConnexion(Log log, byte[] question, byte[] reponse, int baudrate, boolean isPaquet)
 	{
+		this.isPaquet = isPaquet;
 		this.log = log;
 		this.question = question;
 		this.reponse = reponse;
@@ -136,7 +135,8 @@ public class SerialConnexion implements SerialPortEventListener, Service
 			}
 
 			// open the streams
-			input = new BufferedReader(new InputStreamReader(serialPort.getInputStream()));
+//			input = new BufferedReader(new InputStreamReader(serialPort.getInputStream()));
+			input = serialPort.getInputStream();
 			output = serialPort.getOutputStream();
 			
 			isClosed = false;
@@ -169,7 +169,10 @@ public class SerialConnexion implements SerialPortEventListener, Service
 			if(Config.debugSerie)
 				log.debug("OUT: "+out);
 
+			output.write(0x55);
+			output.write(0xAA);
 			output.write(out);
+			output.write('\r');
 		}
 		catch (Exception e)
 		{
@@ -207,51 +210,36 @@ public class SerialConnexion implements SerialPortEventListener, Service
 	}
 
 	/**
-	 * Lit une ligne.
-	 * @return
-	 */
-	public synchronized String read()
-	{
-		try {
-			/**
-			 * On sait qu'une donnée arrive, donc l'attente est très faible.
-			 */
-			if(!input.ready()) // série pas prête ? (au cas où)
-				return "";
-
-			canBeRead--;
-			String m = input.readLine();
-			if(Config.debugSerie)
-				log.debug("IN: "+m);
-			return m;
-		} catch (IOException e) {
-			// Impossible car on sait qu'il y a des données
-			e.printStackTrace();
-			return "";
-		}
-	}
-
-	/**
 	 * Gestion d'un évènement sur la série.
 	 */
 	public synchronized void serialEvent(SerialPortEvent oEvent)
 	{
 		try {
-			if(input.ready())
-			{
-				canBeRead++;
+			if(input.available() > 0)
 				notify();
-			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 	
-	public boolean canBeRead()
+	public boolean available() throws IOException
 	{
-		return canBeRead > 0;
+		return input.available() != 0;
 	}
-
+	
+	public byte read() throws IOException, MissingCharacterException
+	{
+		int lu = input.read();
+		if(lu == -1)
+		{
+			Sleep.sleep(1);
+			lu = input.read();
+			if(lu == -1)
+				throw new MissingCharacterException();
+		}
+		return (byte) lu;
+	}
+	
 	/**
 	 * Ping de la carte.
 	 * Utilisé que par createSerial de SerialManager
@@ -260,39 +248,55 @@ public class SerialConnexion implements SerialPortEventListener, Service
 	public synchronized boolean ping()
 	{
 		try
-		{		
+		{
 			//Evacuation de l'éventuel buffer indésirable
 			output.flush();
 
 			//ping
-			output.write(question.getBytes());
-			output.write(retourLigne);
+			output.write(question);
 
 			//recuperation de l'id de la carte avec un timeout
 			long timeout = 500;
 			long debut = System.currentTimeMillis();
-			while(!input.ready())
+			while(input.available() == 0)
 				if(System.currentTimeMillis() - debut > timeout)
 					return false;
 			
-			String lu = input.readLine().trim();
-//			log.debug("Lu : "+lu+", attendu : "+reponse);
-			if(lu.compareTo(reponse) == 0)
+			byte[] lu = new byte[reponse.length];
+			int nbLu = input.read(lu);
+			
+			if(!isPaquet)
 			{
-				log.debug("Série trouvée. Estimation de la latence…");
-				long avant = System.currentTimeMillis();
-				for(int i = 0; i < 10; i++)
-				{
-					output.write(question.getBytes());
-					output.write(retourLigne);
-					while(!input.ready());
-					input.readLine();
-				}
-				log.debug("Latence de la série : "+((System.currentTimeMillis() - avant)*50)+" ns.");
-				return true;
+				if(nbLu != reponse.length)	// c'est pas lui
+					return false;
+				
+				for(int i = 0; i < reponse.length; i++)
+					if(reponse[i] != lu[i])
+						return false;		// toujours pas lui
 			}
 			else
-				return false;
+			{
+				if(nbLu != reponse.length+4)	// toujours pas…
+					return false;
+
+				for(int i = 0; i < reponse.length; i++)
+					if(reponse[i] != lu[i+2])
+						return false;		// non non
+
+			}
+
+			log.debug("Série trouvée.");//Estimation de la latence…");
+/*			long avant = System.currentTimeMillis();
+			for(int i = 0; i < 10; i++)
+			{
+				output.write();
+				output.write(question.getBytes());
+				output.write(retourLigne);
+				while(!input.ready());
+				input.readLine();
+			}
+			log.debug("Latence de la série : "+((System.currentTimeMillis() - avant)*50)+" ns.");*/
+			return true;
 		}
 		catch (Exception e)
 		{

@@ -57,9 +57,9 @@ public class HookPosition extends Hook
 	{
 		ArrayList<Byte> out = new ArrayList<Byte>();
 		if(isUnique)
-			out.add(SerialProtocol.HOOK_POSITION_UNIQUE.nb);
+			out.add(SerialProtocol.OUT_HOOK_POSITION_UNIQUE.nb);
 		else
-			out.add(SerialProtocol.HOOK_POSITION.nb);
+			out.add(SerialProtocol.OUT_HOOK_POSITION.nb);
 		out.add((byte) ((position.x+1500) >> 4));
 		out.add((byte) ((position.x+1500) << 4 + position.y >> 8));
 		out.add((byte) (position.y));

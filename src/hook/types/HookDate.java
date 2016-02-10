@@ -42,7 +42,7 @@ public class HookDate extends Hook {
 	public ArrayList<Byte> toSerial()
 	{
 		ArrayList<Byte> out = new ArrayList<Byte>();
-		out.add(SerialProtocol.HOOK_DATE.nb);
+		out.add(SerialProtocol.OUT_HOOK_DATE.nb);
 		out.add((byte) (date_hook >> 16));
 		out.add((byte) (date_hook >> 8));
 		out.add((byte) (date_hook));

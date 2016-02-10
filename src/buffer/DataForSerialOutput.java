@@ -77,7 +77,7 @@ public class DataForSerialOutput implements Service
 			stop = false;
 			bufferTrajectoireCourbe.clear(); // on annule tout mouvement
 			out = new byte[3+1];
-			out[2] = SerialProtocol.STOP.nb;
+			out[2] = SerialProtocol.OUT_STOP.nb;
 			completePaquet(out);
 			return out;
 		}
@@ -117,10 +117,20 @@ public class DataForSerialOutput implements Service
 		}
 	}
 	
+	public synchronized void askResend(int id)
+	{
+		byte[] out = new byte[3+3];
+		out[2] = SerialProtocol.OUT_RESEND_PACKET.nb;
+		out[3] = (byte) (id >> 8);
+		out[4] = (byte) id;
+		bufferBassePriorite.addFirst(out);
+		notify();
+	}
+	
 	public synchronized void setSpeed(Speed speed)
 	{
 		byte[] out = new byte[3+3];
-		out[2] = SerialProtocol.SET_VITESSE.nb;
+		out[2] = SerialProtocol.OUT_SET_VITESSE.nb;
 		out[3] = (byte) speed.PWMRotation;
 		out[4] = (byte) speed.PWMTranslation;
 		bufferBassePriorite.add(out);
@@ -130,7 +140,7 @@ public class DataForSerialOutput implements Service
 	public synchronized void getPositionOrientation()
 	{
 		byte[] out = new byte[3+1];
-		out[2] = SerialProtocol.GET_XYO.nb;
+		out[2] = SerialProtocol.OUT_GET_XYO.nb;
 		bufferBassePriorite.add(out);
 		notify();
 	}
@@ -138,7 +148,7 @@ public class DataForSerialOutput implements Service
 	public synchronized void initOdoSTM(Vec2<ReadOnly> pos, double angle)
 	{
 		byte[] out = new byte[3+6];
-		out[2] = SerialProtocol.INIT_ODO.nb;
+		out[2] = SerialProtocol.OUT_INIT_ODO.nb;
 		out[3] = (byte) ((pos.x+1500) >> 4);
 		out[4] = (byte) ((pos.x+1500) << 4 + pos.y >> 8);
 		out[5] = (byte) (pos.y);
@@ -156,9 +166,9 @@ public class DataForSerialOutput implements Service
 	{
 		byte[] out = new byte[3+3];
 		if(mur)
-			out[2] = SerialProtocol.AVANCER_DANS_MUR.nb;
+			out[2] = SerialProtocol.OUT_AVANCER_DANS_MUR.nb;
 		else
-			out[2] = SerialProtocol.AVANCER.nb;
+			out[2] = SerialProtocol.OUT_AVANCER.nb;
 		out[3] = (byte) (distance >> 8);
 		out[4] = (byte) (distance);
 		bufferBassePriorite.add(out);
@@ -172,7 +182,7 @@ public class DataForSerialOutput implements Service
 	public synchronized void turn(double angle)
 	{
 		byte[] out = new byte[3+3];
-		out[2] = SerialProtocol.TOURNER.nb;
+		out[2] = SerialProtocol.OUT_TOURNER.nb;
 		out[3] = (byte) (Math.round(angle*1000) >> 8);
 		out[4] = (byte) (Math.round(angle*1000));
 		notify();
@@ -204,7 +214,7 @@ public class DataForSerialOutput implements Service
 		
 		int size = hooks.size();
 		byte[] out = new byte[3+2+size];
-		out[2] = SerialProtocol.REMOVE_SOME_HOOKS.nb;
+		out[2] = SerialProtocol.OUT_REMOVE_SOME_HOOKS.nb;
 		out[3] = (byte) (size);
 		for(int i = 0; i < size; i++)
 			out[4+i] = (byte) (hooks.get(i).getNum());
@@ -215,7 +225,7 @@ public class DataForSerialOutput implements Service
 	public synchronized void deleteAllHooks()
 	{
 		byte[] out = new byte[3+1];
-		out[2] = SerialProtocol.REMOVE_ALL_HOOKS.nb;
+		out[2] = SerialProtocol.OUT_REMOVE_ALL_HOOKS.nb;
 		bufferBassePriorite.add(out);
 		notify();
 	}
@@ -238,7 +248,7 @@ public class DataForSerialOutput implements Service
 	public synchronized void utiliseActionneurs(ActuatorOrder elem)
 	{
 		byte[] out = new byte[3+2];
-		out[2] = SerialProtocol.ACTIONNEUR.nb;
+		out[2] = SerialProtocol.OUT_ACTIONNEUR.nb;
 		out[3] = (byte) (0); // TODO
 		bufferBassePriorite.add(out);
 		notify();

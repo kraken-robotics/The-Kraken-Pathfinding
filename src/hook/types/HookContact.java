@@ -39,9 +39,9 @@ public class HookContact extends Hook {
 	{
 		ArrayList<Byte> out = new ArrayList<Byte>();
 		if(isUnique)
-			out.add(SerialProtocol.HOOK_CONTACT_UNIQUE.nb);
+			out.add(SerialProtocol.OUT_HOOK_CONTACT_UNIQUE.nb);
 		else
-			out.add(SerialProtocol.HOOK_CONTACT.nb);
+			out.add(SerialProtocol.OUT_HOOK_CONTACT.nb);
 		out.add((byte) nbCapteur);
 		out.addAll(super.toSerial());
 		return out;

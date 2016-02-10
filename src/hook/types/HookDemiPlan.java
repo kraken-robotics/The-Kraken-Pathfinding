@@ -72,7 +72,7 @@ public class HookDemiPlan extends Hook
 	public ArrayList<Byte> toSerial()
 	{
 		ArrayList<Byte> out = new ArrayList<Byte>();
-		out.add(SerialProtocol.HOOK_DEMI_PLAN.nb);
+		out.add(SerialProtocol.OUT_HOOK_DEMI_PLAN.nb);
 		out.add((byte) ((point.x+1500) >> 4));
 		out.add((byte) ((point.x+1500) << 4 + point.y >> 8));
 		out.add((byte) (point.y));

@@ -1,15 +1,14 @@
-Java vers STM
-
-Paquet : ID_PAQUET (16bits) + message + CHECKSUM (8 bits)
+Paquet Java vers STM : 0x55 0xAA ID_PAQUET (16bits) + message + CHECKSUM (8 bits) + CR ('\r')
+Paquet STM vers JAVA : 0x55 0xAA ID_PAQUET (16bits) + message + CHECKSUM (8 bits)
 BIG ENDIAN (octet de poids fort en premier)
 Checksum sur 8bits : somme des octets, puis non logique (comme AX12)
 
+Java vers STM
+
 ping
-    0x00
+    0x3F
 pong
-    0x01
-set vitesse
-    0x10 PWM_ROT(8) PWM_TR(8)
+    0x42 0x57
 avancer
     0x02 DISTANCE(16)
 avancer dans mur
@@ -24,6 +23,10 @@ set xyo (init odométrie)
     0x08 X+(12) Y(12) ORIENTATION(16)
 get xyo (test uniquement)
     0x09
+set vitesse
+    0x0A PWM_ROT(8) PWM_TR(8)
+resend paquet
+    0xFF ID_PAQUET(16)
 supprime tous les hooks
     0x40
 supprime certains hooks
@@ -54,9 +57,9 @@ Hook de contact unique
 
 STM vers Java
 ping
-    0x00
+    0x3F
 pong
-    0x01
+    0x54 0x33
 robot arrivé
     0x02
 problème meca
@@ -65,18 +68,22 @@ debut match
     0x04
 match fini
     0x05
-couleur robot 1
+couleur robot sans symétrie
     0x06
-couleur robot 2
+couleur robot avec symétrie
     0x07
 le robot est en marche avant
     0x08
 le robot est en marche arrière
     0x09
 info capteurs
-    0x10 X+(12) Y(12) ORIENTATION(16) CPT1(12) CPT2(12) …
+    0x0A X+(12) Y(12) ORIENTATION(16) COURBURE(8) CPT1(12) CPT2(12) …
 xyo
-    0x11 X+(12) Y(12) ORIENTATION(16)
+    0x0B X+(12) Y(12) ORIENTATION(16)
+code coquillages
+    0x0C CODE(8)
+resend paquet
+    0xFF ID_PAQUET(16)
 élément shooté
-    0x40 + ID(6)
+    0x0D ID(8)
 
