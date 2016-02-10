@@ -17,8 +17,6 @@ utiliser un actionneur (protocole complet dans src/robot/ActuatorOrder.java)
     act nb_ordre
 stopper le robot (procédure d'urgence) et annule l'itinéraire en cours
     stop
-envoie le protocole des actionneurs
-    alst nb_act [protocole_SSC32 a_symetrie …]
 supprime tous les hook
     hkclrall
 supprime des hooks
