@@ -116,6 +116,13 @@ public class ThreadSerialInput extends Thread implements Service
 							break;
 
 							/**
+							 * Erreur série : il faut renvoyer un message
+							 */
+						case "ers":
+							int idMessage = Integer.parseInt(messages[1]);
+							output.resend(idMessage);
+
+							/**
 							 * Récupère le code des coquillages
 							 */
 						case "cdcoq":

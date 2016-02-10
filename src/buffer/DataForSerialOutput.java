@@ -33,6 +33,11 @@ public class DataForSerialOutput implements Service
 		this.log = log;
 	}
 		
+	private int nbPaquet = 0; // numéro du prochain paquet
+	private static final int NB_BUFFER_SAUVEGARDE = 10;
+	private String[] derniersEnvois = new String[NB_BUFFER_SAUVEGARDE];
+	private boolean[] derniersEnvoisPriority = new boolean[NB_BUFFER_SAUVEGARDE];
+	
 	// priorité 0 = priorité minimale
 	private volatile LinkedList<String> bufferBassePriorite = new LinkedList<String>();
 	private volatile LinkedList<String> bufferTrajectoireCourbe = new LinkedList<String>();
@@ -60,8 +65,41 @@ public class DataForSerialOutput implements Service
 			return "stop";
 		}
 		else if(!bufferTrajectoireCourbe.isEmpty())
-			return bufferTrajectoireCourbe.poll();
-		return bufferBassePriorite.poll();
+		{
+			String out = bufferTrajectoireCourbe.poll();
+			derniersEnvois[nbPaquet % NB_BUFFER_SAUVEGARDE] = out;
+			derniersEnvoisPriority[nbPaquet % NB_BUFFER_SAUVEGARDE] = true;
+			out = nbPaquet+" "+out;
+			nbPaquet++;
+			return out;
+		}
+		{
+			String out = bufferBassePriorite.poll();
+			derniersEnvois[nbPaquet % NB_BUFFER_SAUVEGARDE] = out;
+			derniersEnvoisPriority[nbPaquet % NB_BUFFER_SAUVEGARDE] = false;
+			out = nbPaquet+" "+out;
+			nbPaquet++;
+			return out;
+		}
+	}
+	
+	/**
+	 * Réenvoie un paquet à partir de son id
+	 * Comme on ne conserve pas tous les précédents paquets, on n'est pas sûr de l'avoir encore…
+	 * La priorité est rétablie et le message est envoyé aussi tôt que possible afin de bousculer le moins possible l'ordre
+	 * @param id
+	 */
+	public synchronized void resend(int id)
+	{
+		if(id <= nbPaquet - NB_BUFFER_SAUVEGARDE)
+			log.critical("Réenvoie de message impossible : message perdu");
+		else
+		{
+			if(derniersEnvoisPriority[id % NB_BUFFER_SAUVEGARDE]) // on redonne la bonne priorité
+				bufferTrajectoireCourbe.addFirst(derniersEnvois[id % NB_BUFFER_SAUVEGARDE]);
+			else
+				bufferBassePriorite.addFirst(derniersEnvois[id % NB_BUFFER_SAUVEGARDE]);
+		}
 	}
 	
 	public synchronized void setSpeed(Speed speed)
