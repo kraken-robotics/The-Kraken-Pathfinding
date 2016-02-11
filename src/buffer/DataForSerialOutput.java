@@ -58,16 +58,11 @@ public class DataForSerialOutput implements Service
 		return bufferBassePriorite.isEmpty() && bufferTrajectoireCourbe.isEmpty() && !stop;
 	}
 
-	private void completePaquet(byte[] out)
+	private synchronized void completePaquet(byte[] out)
 	{
 		out[ID_FORT] = (byte) ((nbPaquet>>8) & 0xFF);
 		out[ID_FAIBLE] = (byte) (nbPaquet & 0xFF);
 		nbPaquet++;
-		// calcul du checksum
-		int c = 0;
-		for(int i = 0; i < out.length-1; i++)
-			c += out[i];
-		out[out.length-1] = (byte) ((~c) & 0xFF);
 	}
 	
 	/**
@@ -81,7 +76,7 @@ public class DataForSerialOutput implements Service
 		{
 			stop = false;
 			bufferTrajectoireCourbe.clear(); // on annule tout mouvement
-			out = new byte[3+1];
+			out = new byte[2+1];
 			out[COMMANDE] = SerialProtocol.OUT_STOP.code;
 			completePaquet(out);
 			return out;
@@ -124,7 +119,7 @@ public class DataForSerialOutput implements Service
 	
 	public synchronized void askResend(int id)
 	{
-		byte[] out = new byte[3+3];
+		byte[] out = new byte[2+3];
 		out[COMMANDE] = SerialProtocol.OUT_RESEND_PACKET.code;
 		out[PARAM] = (byte) (id >> 8);
 		out[PARAM+1] = (byte) id;
@@ -134,7 +129,7 @@ public class DataForSerialOutput implements Service
 	
 	public synchronized void setSpeed(Speed speed)
 	{
-		byte[] out = new byte[3+3];
+		byte[] out = new byte[2+3];
 		out[COMMANDE] = SerialProtocol.OUT_SET_VITESSE.code;
 		out[PARAM] = (byte) speed.PWMRotation;
 		out[PARAM+1] = (byte) speed.PWMTranslation;
@@ -144,7 +139,7 @@ public class DataForSerialOutput implements Service
 	
 	public synchronized void getPositionOrientation()
 	{
-		byte[] out = new byte[3+1];
+		byte[] out = new byte[2+1];
 		out[COMMANDE] = SerialProtocol.OUT_GET_XYO.code;
 		bufferBassePriorite.add(out);
 		notify();
@@ -152,7 +147,7 @@ public class DataForSerialOutput implements Service
 	
 	public synchronized void initOdoSTM(Vec2<ReadOnly> pos, double angle)
 	{
-		byte[] out = new byte[3+6];
+		byte[] out = new byte[2+6];
 		out[COMMANDE] = SerialProtocol.OUT_INIT_ODO.code;
 		out[PARAM] = (byte) ((pos.x+1500) >> 4);
 		out[PARAM+1] = (byte) ((pos.x+1500) << 4 + pos.y >> 8);
@@ -169,7 +164,7 @@ public class DataForSerialOutput implements Service
 	 */
 	public synchronized void avancer(int distance, boolean mur)
 	{
-		byte[] out = new byte[3+3];
+		byte[] out = new byte[2+3];
 		if(mur)
 			out[COMMANDE] = SerialProtocol.OUT_AVANCER_DANS_MUR.code;
 		else
@@ -186,7 +181,7 @@ public class DataForSerialOutput implements Service
 	 */
 	public synchronized void turn(double angle)
 	{
-		byte[] out = new byte[3+3];
+		byte[] out = new byte[2+3];
 		out[COMMANDE] = SerialProtocol.OUT_TOURNER.code;
 		out[PARAM] = (byte) (Math.round(angle*1000) >> 8);
 		out[PARAM+1] = (byte) (Math.round(angle*1000));
@@ -218,7 +213,7 @@ public class DataForSerialOutput implements Service
 			return;
 		
 		int size = hooks.size();
-		byte[] out = new byte[3+2+size];
+		byte[] out = new byte[2+2+size];
 		out[COMMANDE] = SerialProtocol.OUT_REMOVE_SOME_HOOKS.code;
 		out[PARAM] = (byte) (size);
 		for(int i = 0; i < size; i++)
@@ -229,7 +224,7 @@ public class DataForSerialOutput implements Service
 	
 	public synchronized void deleteAllHooks()
 	{
-		byte[] out = new byte[3+1];
+		byte[] out = new byte[2+1];
 		out[COMMANDE] = SerialProtocol.OUT_REMOVE_ALL_HOOKS.code;
 		bufferBassePriorite.add(out);
 		notify();
@@ -252,7 +247,7 @@ public class DataForSerialOutput implements Service
 	 */
 	public synchronized void utiliseActionneurs(ActuatorOrder elem)
 	{
-		byte[] out = new byte[3+2];
+		byte[] out = new byte[2+2];
 		out[COMMANDE] = SerialProtocol.OUT_ACTIONNEUR.code;
 		out[PARAM] = (byte) (0); // TODO
 		bufferBassePriorite.add(out);
@@ -314,17 +309,17 @@ public class DataForSerialOutput implements Service
 		notify();			
 	}
 
-	public byte[] getPing()
+	public synchronized byte[] getPing()
 	{
-		byte[] out = new byte[3+1];
+		byte[] out = new byte[2+1];
 		out[COMMANDE] = SerialProtocol.OUT_PING.code;
 		completePaquet(out);
 		return out;
 	}
 
-	public void sendPong()
+	public synchronized void sendPong()
 	{
-		byte[] out = new byte[3+1];
+		byte[] out = new byte[2+1];
 		out[COMMANDE] = SerialProtocol.OUT_PONG1.code;
 		out[COMMANDE+1] = SerialProtocol.OUT_PONG2.code;
 		bufferBassePriorite.add(out);

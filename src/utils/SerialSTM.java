@@ -115,6 +115,11 @@ public class SerialSTM extends SerialConnexion implements Service
 			output.write(0x55);
 			output.write(0xAA);
 			output.write(out);
+			// calcul du checksum
+			int c = 0;
+			for(int i = 0; i < out.length; i++)
+				c += out[i];
+			output.write(~c);
 		}
 		catch (Exception e)
 		{
