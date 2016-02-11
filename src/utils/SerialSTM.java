@@ -3,6 +3,12 @@ package utils;
 import container.Service;
 import enums.SerialProtocol;
 
+/**
+ * Série de la STM
+ * @author pf
+ *
+ */
+
 public class SerialSTM extends SerialConnexion implements Service
 {
 	private byte[] question, reponse;
