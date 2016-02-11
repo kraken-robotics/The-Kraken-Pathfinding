@@ -125,7 +125,10 @@ public abstract class SerialConnexion implements SerialPortEventListener
 					SerialPort.DATABITS_8,
 					SerialPort.STOPBITS_1,
 					SerialPort.PARITY_NONE);
+			serialPort.setInputBufferSize(100);
+			serialPort.setOutputBufferSize(100);
 			serialPort.enableReceiveTimeout(100);
+			serialPort.enableReceiveThreshold(1);
 			// Configuration du Listener
 			try {
 				serialPort.addEventListener(this);
