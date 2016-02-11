@@ -441,7 +441,8 @@ public class ThreadSerialInput extends Thread implements Service
 						if(!verifieChecksum(lecture, index))
 							continue;
 
-						requete.set(RequeteType.MATCH_FINI);
+						log.debug("Fin du Match !");
+						config.set(ConfigInfo.FIN_MATCH, true);
 						serie.close();
 						return;
 					}

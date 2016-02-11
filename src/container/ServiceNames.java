@@ -49,7 +49,6 @@ public enum ServiceNames {
 	 CLOTHOIDES_COMPUTER,
 	 
 	 // Les threads
-	 THREAD_FIN_MATCH,
 	 THREAD_SERIAL_INPUT,
 	 THREAD_SERIAL_OUTPUT,
 	 THREAD_CONFIG,

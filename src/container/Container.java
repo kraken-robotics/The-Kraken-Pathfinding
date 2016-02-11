@@ -40,7 +40,6 @@ import table.Table;
 import threads.ThreadCapteurs;
 import threads.ThreadConfig;
 import threads.ThreadEvitement;
-import threads.ThreadFinMatch;
 import threads.ThreadGameElementDoneByEnemy;
 import threads.ThreadPathfinding;
 import threads.ThreadPeremption;
@@ -191,7 +190,6 @@ public class Container
 			ok.add(ServiceNames.OBSTACLES_MEMORY);
 			ok.add(ServiceNames.THREAD_SERIAL_INPUT);
 			ok.add(ServiceNames.THREAD_SERIAL_OUTPUT);
-			ok.add(ServiceNames.THREAD_FIN_MATCH);
 			ok.add(ServiceNames.THREAD_PEREMPTION);
 			ok.add(ServiceNames.THREAD_CAPTEURS);
 			ok.add(ServiceNames.THREAD_CONFIG);
@@ -308,9 +306,6 @@ public class Container
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ScriptManager((HookFactory)getServiceDisplay(serviceRequested, ServiceNames.HOOK_FACTORY),
 																					(Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
 																					 (GridSpace)getServiceDisplay(serviceRequested, ServiceNames.GRID_SPACE));
-		else if(serviceRequested == ServiceNames.THREAD_FIN_MATCH)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadFinMatch((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
-																		(Config)getServiceDisplay(serviceRequested, ServiceNames.CONFIG));
 		else if(serviceRequested == ServiceNames.THREAD_PEREMPTION)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadPeremption((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
 																		(ObstaclesMemory)getServiceDisplay(serviceRequested, ServiceNames.OBSTACLES_MEMORY));

@@ -82,11 +82,6 @@ public class Execution implements Service {
 			{
 				// TODO
 			}
-			else if(type == RequeteType.MATCH_FINI)
-			{
-				log.debug("Fin du match: arrêt du thread principal");
-				break;
-			}
 		}
 	}
 	

@@ -35,9 +35,9 @@ public class DataForSerialOutput implements Service
 	}
 		
 	private int nbPaquet = 0; // numéro du prochain paquet
-	private static final int NB_BUFFER_SAUVEGARDE = 10;
-	private byte[][] derniersEnvois = new byte[NB_BUFFER_SAUVEGARDE][];
-	private boolean[] derniersEnvoisPriority = new boolean[NB_BUFFER_SAUVEGARDE];
+	private static final int NB_BUFFER_SAUVEGARDE = 50; // on a de la place de toute façon…
+	private volatile byte[][] derniersEnvois = new byte[NB_BUFFER_SAUVEGARDE][];
+	private volatile boolean[] derniersEnvoisPriority = new boolean[NB_BUFFER_SAUVEGARDE];
 	
 	// priorité 0 = priorité minimale
 	private volatile LinkedList<byte[]> bufferBassePriorite = new LinkedList<byte[]>();
@@ -325,4 +325,5 @@ public class DataForSerialOutput implements Service
 		bufferBassePriorite.add(out);
 		notify();
 	}
+
 }
