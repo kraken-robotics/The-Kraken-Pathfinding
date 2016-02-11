@@ -39,7 +39,7 @@ public class UtiliseActionneur implements Executable
 	{
 		// TODO
 		ArrayList<Byte> out = new ArrayList<Byte>();
-		out.add((byte)(SerialProtocol.CALLBACK_AX12.nb+0));
+		out.add((byte)(SerialProtocol.CALLBACK_AX12.code+0));
 		out.add((byte)0);
 		out.add((byte)0);
 		return out;

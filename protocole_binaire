@@ -1,5 +1,4 @@
-Paquet Java vers STM : 0x55 0xAA ID_PAQUET (16bits) + message + CHECKSUM (8 bits) + CR ('\r')
-Paquet STM vers JAVA : 0x55 0xAA ID_PAQUET (16bits) + message + CHECKSUM (8 bits)
+0x55 0xAA ID_PAQUET (16bits) + message + CHECKSUM (8 bits)
 BIG ENDIAN (octet de poids fort en premier)
 Checksum sur 8bits : somme des octets, puis non logique (comme AX12)
 
@@ -79,7 +78,7 @@ le robot est en marche arrière
 info capteurs
     0x0A X+(12) Y(12) ORIENTATION(16) COURBURE(8) CPT1(12) CPT2(12) …
 xyo
-    0x0B X+(12) Y(12) ORIENTATION(16)
+    0x0B X+(12) Y(12) ORIENTATION(16) COURBURE(8)
 code coquillages
     0x0C CODE(8)
 resend paquet

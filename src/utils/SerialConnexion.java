@@ -13,7 +13,6 @@ import java.io.OutputStream;
 import java.util.Enumeration;
 import java.util.TooManyListenersException;
 
-import container.Service;
 import exceptions.MissingCharacterException;
 
 /**
@@ -22,39 +21,32 @@ import exceptions.MissingCharacterException;
  *
  */
 
-public class SerialConnexion implements SerialPortEventListener, Service
+public abstract class SerialConnexion implements SerialPortEventListener
 {
 	private SerialPort serialPort;
 	protected Log log;
 	
-	private boolean isClosed;
+	protected boolean isClosed;
 	private int baudrate;
-	private boolean isPaquet;
-	private byte[] question, reponse;
 	
 	/** The input stream from the port */
-	private InputStream input;
+	protected InputStream input;
 
 	/** The output stream to the port */
-	private OutputStream output;
+	protected OutputStream output;
 
 	/** Milliseconds to block while waiting for port open */
 	private static final int TIME_OUT = 2000;
 
-	public SerialConnexion(Log log, String question, String reponse, int baudrate, boolean isPaquet)
-	{
-		this(log, (question+'\r').getBytes(), (reponse+'\r').getBytes(), baudrate, isPaquet);
-	}
+	private boolean shouldEstimateLatency = true; // on estime la latence qu'une seule fois
+	
 	/**
 	 * Constructeur pour la série de test
 	 * @param log
 	 */
-	public SerialConnexion(Log log, byte[] question, byte[] reponse, int baudrate, boolean isPaquet)
+	public SerialConnexion(Log log, int baudrate)
 	{
-		this.isPaquet = isPaquet;
 		this.log = log;
-		this.question = question;
-		this.reponse = reponse;
 		this.baudrate = baudrate;
 		if(!searchPort())
 		{
@@ -75,10 +67,11 @@ public class SerialConnexion implements SerialPortEventListener, Service
 		}
 	}
 
-	private synchronized boolean searchPort()
+	protected synchronized boolean searchPort()
 	{
 		log.debug("Recherche de la série à "+baudrate+" baud");
 		Enumeration<?> ports = CommPortIdentifier.getPortIdentifiers();
+		serialPort.notifyOnDataAvailable(false); // on désactive le listener qui pourrait paniquer avec le ping
 
 		while(ports.hasMoreElements())
 		{
@@ -93,6 +86,12 @@ public class SerialConnexion implements SerialPortEventListener, Service
 			if(ping())
 			{
 				log.debug("STM sur " + port.getName());
+				if(shouldEstimateLatency)
+				{
+					shouldEstimateLatency = false;
+					estimeLatence();
+				}
+				
 				// Il ne faut activer le listener que maintenant, sinon
 				// ça pose des problèmes avec le ping
 				serialPort.notifyOnDataAvailable(true);
@@ -135,7 +134,6 @@ public class SerialConnexion implements SerialPortEventListener, Service
 			}
 
 			// open the streams
-//			input = new BufferedReader(new InputStreamReader(serialPort.getInputStream()));
 			input = serialPort.getInputStream();
 			output = serialPort.getOutputStream();
 			
@@ -149,48 +147,16 @@ public class SerialConnexion implements SerialPortEventListener, Service
 		}
 	}
 	
+	protected abstract void estimeLatence();
+
+	protected abstract boolean ping();
+
 	/**
 	 * Méthode pour envoyer un message à la carte
 	 * @param messages
 	 */
-	public synchronized void communiquer(byte[] out)
-	{
-		/**
-		 * Un appel à une série fermée ne devrait jamais être effectué.
-		 */
-		if(isClosed)
-		{
-			log.debug("La série est fermée et ne peut envoyer "+out);
-			return;
-		}
+	public abstract void communiquer(byte[] out);
 
-		try
-		{
-			if(Config.debugSerie)
-				log.debug("OUT: "+out);
-
-			output.write(0x55);
-			output.write(0xAA);
-			output.write(out);
-			output.write('\r');
-		}
-		catch (Exception e)
-		{
-			/**
-			 * Si la STM ne répond vraiment pas, on recommence de manière infinie.
-			 * De toute façon, on n'a pas d'autre choix...
-			 */
-			log.critical("Ne peut pas parler à la STM. Tentative de reconnexion.");
-			while(!searchPort())
-			{
-				log.critical("Pas trouvé... On recommence");
-				// On laisse la série respirer un peu
-				Sleep.sleep(200);
-			}
-			// On a retrouvé la série, on renvoie le message
-			communiquer(out);
-		}
-	}
 
 	/**
 	 * Doit être appelé quand on arrête de se servir de la série
@@ -227,91 +193,22 @@ public class SerialConnexion implements SerialPortEventListener, Service
 		return input.available() != 0;
 	}
 	
+	/**
+	 * Lit un byte. On sait qu'il doit y en a avoir un.
+	 * @return
+	 * @throws IOException
+	 * @throws MissingCharacterException
+	 */
 	public byte read() throws IOException, MissingCharacterException
 	{
-		int lu = input.read();
-		if(lu == -1)
-		{
-			Sleep.sleep(1);
-			lu = input.read();
-			if(lu == -1)
-				throw new MissingCharacterException();
-		}
-		return (byte) lu;
+		if(input.available() == 0)
+			Sleep.sleep(1); // On attend un tout petit peu, au cas où
+
+		if(input.available() == 0)
+			throw new MissingCharacterException(); // visiblement on ne recevra rien de plus
+
+		return (byte) input.read();
 	}
 	
-	/**
-	 * Ping de la carte.
-	 * Utilisé que par createSerial de SerialManager
-	 * @return l'id de la carte
-	 */
-	public synchronized boolean ping()
-	{
-		try
-		{
-			//Evacuation de l'éventuel buffer indésirable
-			output.flush();
 
-			//ping
-			output.write(question);
-
-			//recuperation de l'id de la carte avec un timeout
-			long timeout = 500;
-			long debut = System.currentTimeMillis();
-			while(input.available() == 0)
-				if(System.currentTimeMillis() - debut > timeout)
-					return false;
-			
-			byte[] lu = new byte[reponse.length];
-			int nbLu = input.read(lu);
-			
-			if(!isPaquet)
-			{
-				if(nbLu != reponse.length)	// c'est pas lui
-					return false;
-				
-				for(int i = 0; i < reponse.length; i++)
-					if(reponse[i] != lu[i])
-						return false;		// toujours pas lui
-			}
-			else
-			{
-				if(nbLu != reponse.length+4)	// toujours pas…
-					return false;
-
-				for(int i = 0; i < reponse.length; i++)
-					if(reponse[i] != lu[i+2])
-						return false;		// non non
-
-			}
-
-			log.debug("Série trouvée.");//Estimation de la latence…");
-/*			long avant = System.currentTimeMillis();
-			for(int i = 0; i < 10; i++)
-			{
-				output.write();
-				output.write(question.getBytes());
-				output.write(retourLigne);
-				while(!input.ready());
-				input.readLine();
-			}
-			log.debug("Latence de la série : "+((System.currentTimeMillis() - avant)*50)+" ns.");*/
-			return true;
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-			return false;
-		}
-	}
-
-	@Override
-	public void useConfig(Config config)
-	{
-
-	}
-	
-	@Override
-	public void updateConfig(Config config)
-	{}
 }

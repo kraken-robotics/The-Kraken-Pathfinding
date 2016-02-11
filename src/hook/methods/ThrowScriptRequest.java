@@ -37,7 +37,7 @@ public class ThrowScriptRequest implements Executable
 	public ArrayList<Byte> toSerial()
 	{
 		ArrayList<Byte> out = new ArrayList<Byte>();
-		out.add((byte)(SerialProtocol.CALLBACK_SCRIPT.nb+n.nbCapteur));
+		out.add((byte)(SerialProtocol.CALLBACK_SCRIPT.code+n.nbCapteur));
 		return out;
 	}
 

@@ -103,7 +103,7 @@ public class Container
 		log.debug("Fermeture de la série");
 		// fermeture de la connexion série
 		
-		SerialConnexion stm = (SerialConnexion)instanciedServices[ServiceNames.SERIE_STM.ordinal()];
+		SerialSTM stm = (SerialSTM)instanciedServices[ServiceNames.SERIE_STM.ordinal()];
 		if(stm != null)
 			stm.close();
 
@@ -281,9 +281,9 @@ public class Container
 		else if(serviceRequested == ServiceNames.SERIAL_OUTPUT_BUFFER)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new DataForSerialOutput((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG));
 		else if(serviceRequested == ServiceNames.SERIE_STM)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new SerialConnexion((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG), "?", "T3", config.getInt(ConfigInfo.BAUDRATE_STM), true);
-		else if(serviceRequested == ServiceNames.SERIE_XBEE)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new SerialConnexion((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG), "", "", config.getInt(ConfigInfo.BAUDRATE_XBEE), false);
+			instanciedServices[serviceRequested.ordinal()] = (Service)new SerialSTM((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG), config.getInt(ConfigInfo.BAUDRATE_STM));
+//		else if(serviceRequested == ServiceNames.SERIE_XBEE)
+//			instanciedServices[serviceRequested.ordinal()] = (Service)new SerialXBEE((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG), config.getInt(ConfigInfo.BAUDRATE_XBEE));
 		else if(serviceRequested == ServiceNames.EXECUTION)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new Execution((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
 			                                                 (LPAStar)getServiceDisplay(serviceRequested, ServiceNames.LPA_STAR),
@@ -327,7 +327,7 @@ public class Container
 		else if(serviceRequested == ServiceNames.THREAD_SERIAL_INPUT)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadSerialInput((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
 																		(Config)getServiceDisplay(serviceRequested, ServiceNames.CONFIG),
-																		(SerialConnexion)getServiceDisplay(serviceRequested, ServiceNames.SERIE_STM),
+																		(SerialSTM)getServiceDisplay(serviceRequested, ServiceNames.SERIE_STM),
 																		(IncomingDataBuffer)getServiceDisplay(serviceRequested, ServiceNames.INCOMING_DATA_BUFFER),
 																		(IncomingHookBuffer)getServiceDisplay(serviceRequested, ServiceNames.INCOMING_HOOK_BUFFER),
 																		(RequeteSTM)getServiceDisplay(serviceRequested, ServiceNames.REQUETE_STM),
@@ -340,7 +340,7 @@ public class Container
 		else if(serviceRequested == ServiceNames.THREAD_SERIAL_OUTPUT)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadSerialOutput((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
 																		(Config)getServiceDisplay(serviceRequested, ServiceNames.CONFIG),
-																		(SerialConnexion)getServiceDisplay(serviceRequested, ServiceNames.SERIE_STM),
+																		(SerialSTM)getServiceDisplay(serviceRequested, ServiceNames.SERIE_STM),
 																		(DataForSerialOutput)getServiceDisplay(serviceRequested, ServiceNames.SERIAL_OUTPUT_BUFFER));
 		else if(serviceRequested == ServiceNames.THREAD_GAME_ELEMENT_DONE_BY_ENEMY)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadGameElementDoneByEnemy((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),

@@ -43,10 +43,10 @@ public enum SerialProtocol {
 	IN_ELT_SHOOT(0x0D),
 	IN_RESEND_PACKET(0xFF);
 	
-	public final byte nb;
-	private SerialProtocol(int nb)
+	public final byte code;
+	private SerialProtocol(int code)
 	{
-		this.nb = (byte) nb;
+		this.code = (byte) code;
 	}
 	
 }

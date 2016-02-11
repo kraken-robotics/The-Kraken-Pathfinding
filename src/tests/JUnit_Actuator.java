@@ -5,7 +5,7 @@ import org.junit.Test;
 
 import buffer.DataForSerialOutput;
 import robot.ActuatorOrder;
-import utils.SerialConnexion;
+import utils.SerialSTM;
 import utils.Sleep;
 import container.ServiceNames;
 
@@ -17,13 +17,13 @@ import container.ServiceNames;
 
 public class JUnit_Actuator extends JUnit_Test {
 
-	private SerialConnexion actionneurs;
+	private SerialSTM actionneurs;
 	private DataForSerialOutput data;
 	@Before
     public void setUp() throws Exception {
         super.setUp();
         data = (DataForSerialOutput) container.getService(ServiceNames.SERIAL_OUTPUT_BUFFER);
-        actionneurs = (SerialConnexion) container.getService(ServiceNames.SERIE_STM);
+        actionneurs = (SerialSTM) container.getService(ServiceNames.SERIE_STM);
 	}
 	
 	@Test

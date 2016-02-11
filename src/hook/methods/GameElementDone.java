@@ -51,7 +51,7 @@ public class GameElementDone implements Executable
 	public ArrayList<Byte> toSerial()
 	{
 		ArrayList<Byte> out = new ArrayList<Byte>();
-		out.add((byte)(SerialProtocol.CALLBACK_ELEMENT.nb+element.ordinal()));
+		out.add((byte)(SerialProtocol.CALLBACK_ELEMENT.code+element.ordinal()));
 		return out;
 	}
 

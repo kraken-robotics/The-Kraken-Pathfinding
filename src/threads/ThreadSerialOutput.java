@@ -3,7 +3,7 @@ package threads;
 import buffer.DataForSerialOutput;
 import utils.Config;
 import utils.Log;
-import utils.SerialConnexion;
+import utils.SerialSTM;
 import utils.Sleep;
 import container.Service;
 
@@ -17,10 +17,10 @@ public class ThreadSerialOutput extends Thread implements Service
 {
 	protected Log log;
 	protected Config config;
-	private SerialConnexion serie;
+	private SerialSTM serie;
 	private DataForSerialOutput data;
 	
-	public ThreadSerialOutput(Log log, Config config, SerialConnexion serie, DataForSerialOutput data)
+	public ThreadSerialOutput(Log log, Config config, SerialSTM serie, DataForSerialOutput data)
 	{
 		this.log = log;
 		this.config = config;
@@ -37,10 +37,13 @@ public class ThreadSerialOutput extends Thread implements Service
 			try {
 				synchronized(data)
 				{
-					while(data.isEmpty())
-						data.wait();
+					if(data.isEmpty()) // pas de message ? On attend
+						data.wait(500);
 
-					message = data.poll();
+					if(data.isEmpty()) // si c'est le timeout qui nous a réveillé, on envoie un ping
+						message = data.getPing();
+					else
+						message = data.poll();
 				}
 				// communiquer est synchronized
 				serie.communiquer(message);

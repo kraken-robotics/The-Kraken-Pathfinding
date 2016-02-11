@@ -44,6 +44,11 @@ public class DataForSerialOutput implements Service
 	private volatile LinkedList<byte[]> bufferTrajectoireCourbe = new LinkedList<byte[]>();
 	private volatile boolean stop = false;
 	
+	private final static int ID_FORT = 0;
+	private final static int ID_FAIBLE = 1;
+	private final static int COMMANDE = 2;
+	private final static int PARAM = 3;
+
 	/**
 	 * Le buffer est-il vide?
 	 * @return
@@ -55,8 +60,8 @@ public class DataForSerialOutput implements Service
 
 	private void completePaquet(byte[] out)
 	{
-		out[0] = (byte) ((nbPaquet>>8) & 0xFF);
-		out[1] = (byte) (nbPaquet & 0xFF);
+		out[ID_FORT] = (byte) ((nbPaquet>>8) & 0xFF);
+		out[ID_FAIBLE] = (byte) (nbPaquet & 0xFF);
 		nbPaquet++;
 		// calcul du checksum
 		int c = 0;
@@ -77,7 +82,7 @@ public class DataForSerialOutput implements Service
 			stop = false;
 			bufferTrajectoireCourbe.clear(); // on annule tout mouvement
 			out = new byte[3+1];
-			out[2] = SerialProtocol.OUT_STOP.nb;
+			out[COMMANDE] = SerialProtocol.OUT_STOP.code;
 			completePaquet(out);
 			return out;
 		}
@@ -120,9 +125,9 @@ public class DataForSerialOutput implements Service
 	public synchronized void askResend(int id)
 	{
 		byte[] out = new byte[3+3];
-		out[2] = SerialProtocol.OUT_RESEND_PACKET.nb;
-		out[3] = (byte) (id >> 8);
-		out[4] = (byte) id;
+		out[COMMANDE] = SerialProtocol.OUT_RESEND_PACKET.code;
+		out[PARAM] = (byte) (id >> 8);
+		out[PARAM+1] = (byte) id;
 		bufferBassePriorite.addFirst(out);
 		notify();
 	}
@@ -130,9 +135,9 @@ public class DataForSerialOutput implements Service
 	public synchronized void setSpeed(Speed speed)
 	{
 		byte[] out = new byte[3+3];
-		out[2] = SerialProtocol.OUT_SET_VITESSE.nb;
-		out[3] = (byte) speed.PWMRotation;
-		out[4] = (byte) speed.PWMTranslation;
+		out[COMMANDE] = SerialProtocol.OUT_SET_VITESSE.code;
+		out[PARAM] = (byte) speed.PWMRotation;
+		out[PARAM+1] = (byte) speed.PWMTranslation;
 		bufferBassePriorite.add(out);
 		notify();
 	}
@@ -140,7 +145,7 @@ public class DataForSerialOutput implements Service
 	public synchronized void getPositionOrientation()
 	{
 		byte[] out = new byte[3+1];
-		out[2] = SerialProtocol.OUT_GET_XYO.nb;
+		out[COMMANDE] = SerialProtocol.OUT_GET_XYO.code;
 		bufferBassePriorite.add(out);
 		notify();
 	}
@@ -148,12 +153,12 @@ public class DataForSerialOutput implements Service
 	public synchronized void initOdoSTM(Vec2<ReadOnly> pos, double angle)
 	{
 		byte[] out = new byte[3+6];
-		out[2] = SerialProtocol.OUT_INIT_ODO.nb;
-		out[3] = (byte) ((pos.x+1500) >> 4);
-		out[4] = (byte) ((pos.x+1500) << 4 + pos.y >> 8);
-		out[5] = (byte) (pos.y);
-		out[6] = (byte) (Math.round(angle*1000) >> 8);
-		out[7] = (byte) (Math.round(angle*1000));
+		out[COMMANDE] = SerialProtocol.OUT_INIT_ODO.code;
+		out[PARAM] = (byte) ((pos.x+1500) >> 4);
+		out[PARAM+1] = (byte) ((pos.x+1500) << 4 + pos.y >> 8);
+		out[PARAM+2] = (byte) (pos.y);
+		out[PARAM+3] = (byte) (Math.round(angle*1000) >> 8);
+		out[PARAM+4] = (byte) (Math.round(angle*1000));
 		bufferBassePriorite.add(out);
 		notify();
 	}
@@ -166,11 +171,11 @@ public class DataForSerialOutput implements Service
 	{
 		byte[] out = new byte[3+3];
 		if(mur)
-			out[2] = SerialProtocol.OUT_AVANCER_DANS_MUR.nb;
+			out[COMMANDE] = SerialProtocol.OUT_AVANCER_DANS_MUR.code;
 		else
-			out[2] = SerialProtocol.OUT_AVANCER.nb;
-		out[3] = (byte) (distance >> 8);
-		out[4] = (byte) (distance);
+			out[COMMANDE] = SerialProtocol.OUT_AVANCER.code;
+		out[PARAM] = (byte) (distance >> 8);
+		out[PARAM+1] = (byte) (distance);
 		bufferBassePriorite.add(out);
 		notify();
 	}
@@ -182,9 +187,9 @@ public class DataForSerialOutput implements Service
 	public synchronized void turn(double angle)
 	{
 		byte[] out = new byte[3+3];
-		out[2] = SerialProtocol.OUT_TOURNER.nb;
-		out[3] = (byte) (Math.round(angle*1000) >> 8);
-		out[4] = (byte) (Math.round(angle*1000));
+		out[COMMANDE] = SerialProtocol.OUT_TOURNER.code;
+		out[PARAM] = (byte) (Math.round(angle*1000) >> 8);
+		out[PARAM+1] = (byte) (Math.round(angle*1000));
 		notify();
 	}
 
@@ -214,8 +219,8 @@ public class DataForSerialOutput implements Service
 		
 		int size = hooks.size();
 		byte[] out = new byte[3+2+size];
-		out[2] = SerialProtocol.OUT_REMOVE_SOME_HOOKS.nb;
-		out[3] = (byte) (size);
+		out[COMMANDE] = SerialProtocol.OUT_REMOVE_SOME_HOOKS.code;
+		out[PARAM] = (byte) (size);
 		for(int i = 0; i < size; i++)
 			out[4+i] = (byte) (hooks.get(i).getNum());
 		bufferBassePriorite.add(out);
@@ -225,7 +230,7 @@ public class DataForSerialOutput implements Service
 	public synchronized void deleteAllHooks()
 	{
 		byte[] out = new byte[3+1];
-		out[2] = SerialProtocol.OUT_REMOVE_ALL_HOOKS.nb;
+		out[COMMANDE] = SerialProtocol.OUT_REMOVE_ALL_HOOKS.code;
 		bufferBassePriorite.add(out);
 		notify();
 	}
@@ -248,8 +253,8 @@ public class DataForSerialOutput implements Service
 	public synchronized void utiliseActionneurs(ActuatorOrder elem)
 	{
 		byte[] out = new byte[3+2];
-		out[2] = SerialProtocol.OUT_ACTIONNEUR.nb;
-		out[3] = (byte) (0); // TODO
+		out[COMMANDE] = SerialProtocol.OUT_ACTIONNEUR.code;
+		out[PARAM] = (byte) (0); // TODO
 		bufferBassePriorite.add(out);
 		notify();
 	}
@@ -307,5 +312,22 @@ public class DataForSerialOutput implements Service
 		elems.add(String.valueOf(arc.theta));
 		bufferTrajectoireCourbe.add(elems);*/
 		notify();			
+	}
+
+	public byte[] getPing()
+	{
+		byte[] out = new byte[3+1];
+		out[COMMANDE] = SerialProtocol.OUT_PING.code;
+		completePaquet(out);
+		return out;
+	}
+
+	public void sendPong()
+	{
+		byte[] out = new byte[3+1];
+		out[COMMANDE] = SerialProtocol.OUT_PONG1.code;
+		out[COMMANDE+1] = SerialProtocol.OUT_PONG2.code;
+		bufferBassePriorite.add(out);
+		notify();
 	}
 }
