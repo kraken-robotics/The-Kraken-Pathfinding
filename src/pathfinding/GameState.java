@@ -8,7 +8,6 @@ import permissions.ReadWrite;
 import robot.Robot;
 import robot.RobotChrono;
 import robot.RobotReal;
-import hook.HookFactory;
 import container.Service;
 import exceptions.FinMatchException;
 import table.Table;
@@ -42,7 +41,7 @@ public class GameState<R extends Robot, T extends Permission> implements Service
      * @param robot
      * @return
      */
-    public static GameState<RobotReal,ReadWrite> constructRealGameState(Log log, Table table, RobotReal robot, HookFactory hookfactory, ObstaclesMemory memory)
+    public static GameState<RobotReal,ReadWrite> constructRealGameState(Log log, Table table, RobotReal robot, ObstaclesMemory memory)
     {
 		GameState<RobotReal,ReadWrite> out = new GameState<RobotReal,ReadWrite>(log, new ObstaclesIterator(log, memory), robot, table);
 		return out;

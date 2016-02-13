@@ -55,5 +55,13 @@ public enum RobotColor {
 				return r.toString();
 		return null;
 	}
+
+	public static String getCouleur(boolean symetrie)
+	{
+		for(RobotColor r: RobotColor.values())
+			if(symetrie == r.symmetry)
+				return r.toString();
+		return null;
+	}
 	
 }

@@ -34,8 +34,6 @@ public abstract class Robot implements Service
 	public abstract void setVitesse(Speed vitesse);
 	
     public abstract void sleep(long duree, ArrayList<Hook> hooks) throws FinMatchException;
-//    public abstract void desactiveAsservissement() throws FinMatchException;
-//    public abstract void activeAsservissement() throws FinMatchException;
     public abstract long getTempsDepuisDebutMatch();
 
     protected volatile Vec2<ReadWrite> position = new Vec2<ReadWrite>();
@@ -117,19 +115,6 @@ public abstract class Robot implements Service
 	public double getCourbure()
 	{
 		return courbure;
-	}
-	
-	public void setCourbure(double courbure)
-	{
-		this.courbure = courbure;
-	}
-	
-	public double getOrientationAvance()
-	{
-		if(enMarcheAvant)
-			return orientation + Math.PI;
-		else
-			return orientation;
 	}
 	
 	/**

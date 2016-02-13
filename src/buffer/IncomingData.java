@@ -1,5 +1,8 @@
 package buffer;
 
+import permissions.ReadOnly;
+import utils.Vec2;
+
 /**
  * Un groupe de mesures qui proviennent des capteurs
  * @author pf
@@ -8,16 +11,17 @@ package buffer;
 
 public class IncomingData
 {
+	public Vec2<ReadOnly> positionRobot;
+	public double orientationRobot;
+	public boolean enMarcheAvant;
 	/** Ce que voit chacun des capteurs */
 	public int[] mesures;
 	
-	/** Faut-il ignorer les capteurs ? */
-//	public boolean capteursOn;
-
-	public IncomingData(int[] mesures/*, boolean capteursOn*/)
+	public IncomingData(int[] mesures, Vec2<ReadOnly> positionRobot, double orientationRobot, boolean enMarcheAvant)
 	{
 		this.mesures = mesures;
-//		this.capteursOn = capteursOn;
+		this.positionRobot = positionRobot;
+		this.orientationRobot = orientationRobot;
 	}
 	
 }

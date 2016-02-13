@@ -8,7 +8,7 @@ import container.ServiceNames;
 import exceptions.ContainerException;
 import exceptions.PointSortieException;
 import obstacles.ObstaclesFixes;
-import obstacles.OldCapteurs;
+import obstacles.Capteurs;
 import obstacles.types.Obstacle;
 import obstacles.types.ObstacleCircular;
 import obstacles.types.ObstacleRectangular;
@@ -44,7 +44,7 @@ public class Fenetre extends JPanel {
 	private ArrayList<ObstacleRectangular> obstaclesEnBiais = new ArrayList<ObstacleRectangular>();
 	private ArrayList<ObstacleCircular> obstaclesCirulaires = new ArrayList<ObstacleCircular>();
 
-	protected OldCapteurs capteurs;
+	protected Capteurs capteurs;
 	private boolean printObsFixes;
 //	private int firstNotDead = 0;
     
@@ -161,7 +161,7 @@ public class Fenetre extends JPanel {
 		return (2000-y)*sizeY/2000;
 	}
 
-	public void setCapteurs(OldCapteurs capteurs)
+	public void setCapteurs(Capteurs capteurs)
 	{
 		this.capteurs = capteurs;
 	}

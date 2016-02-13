@@ -13,7 +13,6 @@ import java.util.ArrayList;
 
 import buffer.DataForSerialOutput;
 import buffer.IncomingDataBuffer;
-import buffer.IncomingHookBuffer;
 import pathfinding.CheminPathfinding;
 import pathfinding.GameState;
 import pathfinding.astarCourbe.AStarCourbe;
@@ -22,7 +21,6 @@ import pathfinding.astarCourbe.AStarCourbeMemoryManager;
 import pathfinding.dstarlite.DStarLite;
 import pathfinding.dstarlite.GridSpace;
 import permissions.ReadOnly;
-import permissions.ReadWrite;
 import hook.HookFactory;
 import exceptions.ContainerException;
 import exceptions.PointSortieException;
@@ -31,7 +29,6 @@ import scripts.ScriptManager;
 import serie.SerialInterface;
 import serie.SerialSTM;
 import serie.SerialSimulation;
-import strategie.Execution;
 import strategie.StrategieInfo;
 import strategie.StrategieNotifieur;
 import strategie.astar.AStar;
@@ -185,7 +182,6 @@ public class Container
 			ok.add(ServiceNames.CONFIG);
 			ok.add(ServiceNames.SERIE_STM);
 //			ok.add(ServiceNames.SERIE_XBEE);
-			ok.add(ServiceNames.INCOMING_HOOK_BUFFER);
 			ok.add(ServiceNames.INCOMING_DATA_BUFFER);
 			ok.add(ServiceNames.SERIAL_OUTPUT_BUFFER);
 			ok.add(ServiceNames.REQUETE_STM);
@@ -239,9 +235,7 @@ public class Container
 			instanciedServices[serviceRequested.ordinal()] = (Service)new Config();
 		else if(serviceRequested == ServiceNames.CAPTEURS)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new Capteurs((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
-																					(Config) getServiceDisplay(serviceRequested, ServiceNames.CONFIG),
-																					(ObstaclesMemory)getServiceDisplay(serviceRequested, ServiceNames.OBSTACLES_MEMORY),
-																					(RobotReal)getServiceDisplay(serviceRequested, ServiceNames.ROBOT_REAL));
+																					(ObstaclesMemory)getServiceDisplay(serviceRequested, ServiceNames.OBSTACLES_MEMORY));
 		else if(serviceRequested == ServiceNames.TABLE)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new Table((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
 																				(StrategieNotifieur)getServiceDisplay(serviceRequested, ServiceNames.STRATEGIE_NOTIFIEUR));
@@ -276,8 +270,6 @@ public class Container
 																							(GameState<RobotReal,ReadOnly>)getServiceDisplay(serviceRequested, ServiceNames.REAL_GAME_STATE));
 		else if(serviceRequested == ServiceNames.INCOMING_DATA_BUFFER)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new IncomingDataBuffer((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG));
-		else if(serviceRequested == ServiceNames.INCOMING_HOOK_BUFFER)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new IncomingHookBuffer((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG));
 		else if(serviceRequested == ServiceNames.SERIAL_OUTPUT_BUFFER)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new DataForSerialOutput((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG));
 		else if(serviceRequested == ServiceNames.SERIE_STM && !Config.simuleSerie)
@@ -286,12 +278,6 @@ public class Container
 			instanciedServices[serviceRequested.ordinal()] = (Service)new SerialSimulation((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG));
 //		else if(serviceRequested == ServiceNames.SERIE_XBEE)
 //			instanciedServices[serviceRequested.ordinal()] = (Service)new SerialXBEE((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG), config.getInt(ConfigInfo.BAUDRATE_XBEE));
-		else if(serviceRequested == ServiceNames.EXECUTION)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new Execution((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
-			                                                 (LPAStar)getServiceDisplay(serviceRequested, ServiceNames.LPA_STAR),
-  															 (ScriptManager)getServiceDisplay(serviceRequested, ServiceNames.SCRIPT_MANAGER),
-        													 (GameState<RobotReal,ReadWrite>)getServiceDisplay(serviceRequested, ServiceNames.REAL_GAME_STATE),
-        													 (RequeteSTM)getServiceDisplay(serviceRequested, ServiceNames.REQUETE_STM));
 		else if(serviceRequested == ServiceNames.HOOK_FACTORY)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new HookFactory((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG));
 		else if(serviceRequested == ServiceNames.ROBOT_REAL)
@@ -304,12 +290,10 @@ public class Container
             instanciedServices[serviceRequested.ordinal()] = (Service) GameState.constructRealGameState((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
                                                              (Table)getServiceDisplay(serviceRequested, ServiceNames.TABLE),
                                                              (RobotReal)getServiceDisplay(serviceRequested, ServiceNames.ROBOT_REAL),
-        													 (HookFactory)getServiceDisplay(serviceRequested, ServiceNames.HOOK_FACTORY),
 															 (ObstaclesMemory)getServiceDisplay(serviceRequested, ServiceNames.OBSTACLES_MEMORY));
 		else if(serviceRequested == ServiceNames.SCRIPT_MANAGER)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ScriptManager((HookFactory)getServiceDisplay(serviceRequested, ServiceNames.HOOK_FACTORY),
-																					(Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
-																					 (GridSpace)getServiceDisplay(serviceRequested, ServiceNames.GRID_SPACE));
+																					(Log)getServiceDisplay(serviceRequested, ServiceNames.LOG));
 		else if(serviceRequested == ServiceNames.THREAD_PEREMPTION)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadPeremption((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
 																		(ObstaclesMemory)getServiceDisplay(serviceRequested, ServiceNames.OBSTACLES_MEMORY));
@@ -328,17 +312,13 @@ public class Container
 																		(Config)getServiceDisplay(serviceRequested, ServiceNames.CONFIG),
 																		(SerialInterface)getServiceDisplay(serviceRequested, ServiceNames.SERIE_STM),
 																		(IncomingDataBuffer)getServiceDisplay(serviceRequested, ServiceNames.INCOMING_DATA_BUFFER),
-																		(IncomingHookBuffer)getServiceDisplay(serviceRequested, ServiceNames.INCOMING_HOOK_BUFFER),
 																		(RequeteSTM)getServiceDisplay(serviceRequested, ServiceNames.REQUETE_STM),
-																		(Table)getServiceDisplay(serviceRequested, ServiceNames.TABLE),
-																		(RobotReal)getServiceDisplay(serviceRequested, ServiceNames.ROBOT_REAL),
-																		(HookFactory)getServiceDisplay(serviceRequested, ServiceNames.HOOK_FACTORY),
+																		(GameState<RobotReal,ReadOnly>)getServiceDisplay(serviceRequested, ServiceNames.REAL_GAME_STATE),																		(HookFactory)getServiceDisplay(serviceRequested, ServiceNames.HOOK_FACTORY),
 					 													(DataForSerialOutput)getServiceDisplay(serviceRequested, ServiceNames.SERIAL_OUTPUT_BUFFER));
 		else if(serviceRequested == ServiceNames.REQUETE_STM)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new RequeteSTM((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG));
 		else if(serviceRequested == ServiceNames.THREAD_SERIAL_OUTPUT)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadSerialOutput((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
-																		(Config)getServiceDisplay(serviceRequested, ServiceNames.CONFIG),
 																		(SerialInterface)getServiceDisplay(serviceRequested, ServiceNames.SERIE_STM),
 																		(DataForSerialOutput)getServiceDisplay(serviceRequested, ServiceNames.SERIAL_OUTPUT_BUFFER));
 		else if(serviceRequested == ServiceNames.THREAD_GAME_ELEMENT_DONE_BY_ENEMY)

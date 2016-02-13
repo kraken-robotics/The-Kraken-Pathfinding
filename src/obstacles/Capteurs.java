@@ -7,7 +7,6 @@ import buffer.IncomingData;
 import container.Service;
 import permissions.ReadOnly;
 import permissions.ReadWrite;
-import robot.RobotReal;
 import utils.Config;
 import utils.ConfigInfo;
 import utils.Log;
@@ -22,11 +21,8 @@ import utils.Vec2;
 
 @SuppressWarnings("unchecked")
 public class Capteurs implements Service {
-	// DEPENDS ON ROBOT
-	
 	protected Log log;
 	private ObstaclesMemory memory;
-	private RobotReal robot;
 	
 	private static final int nbCapteurs = 12;
 	
@@ -64,11 +60,10 @@ public class Capteurs implements Service {
 	 */
 	public double[] orientationsRelatives;
 
-	public Capteurs(Log log, Config config, ObstaclesMemory memory, RobotReal robot)
+	public Capteurs(Log log, ObstaclesMemory memory)
 	{
 		this.log = log;
 		this.memory = memory;
-		this.robot = robot;
 		positionsRelatives = new Vec2[nbCapteurs];
 		orientationsRelatives = new double[nbCapteurs];
 
@@ -205,9 +200,13 @@ public class Capteurs implements Service {
 	{
 		boolean[] neVoitRien = new boolean[nbCapteurs];
 		boolean[] dejaTraite = new boolean[nbCapteurs];
-		double orientationRobot = robot.getOrientation();
-		Vec2<ReadOnly> orientationRobotAvance = new Vec2<ReadOnly>(robot.getOrientationAvance());
-		Vec2<ReadOnly> positionRobot = robot.getPosition();
+		double orientationRobot = data.orientationRobot;
+		double tmp = orientationRobot;
+		if(data.enMarcheAvant)
+			tmp += Math.PI;
+
+		Vec2<ReadOnly> orientationRobotAvance = new Vec2<ReadOnly>(tmp);
+		Vec2<ReadOnly> positionRobot = data.positionRobot;
 		
 		// Ce synchronized permet d'ajouter plusieurs obstacles avant de mettre à jour le gridspace
 		synchronized(memory)
@@ -538,6 +537,7 @@ public class Capteurs implements Service {
 	 * @param angleAvance
 	 * @return
 	 */
+	// TODO
 	private final boolean isUrgent(Vec2<ReadOnly> positionEnnemi, Vec2<ReadOnly> positionRobot, Vec2<ReadOnly> angleAvance)
 	{
 		return positionEnnemi.squaredDistance(positionRobot) < squaredDistanceUrgence

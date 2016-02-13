@@ -5,8 +5,8 @@ import java.io.IOException;
 import buffer.DataForSerialOutput;
 import buffer.IncomingData;
 import buffer.IncomingDataBuffer;
-import buffer.IncomingHookBuffer;
 import enums.SerialProtocol;
+import pathfinding.GameState;
 import permissions.ReadOnly;
 import requete.RequeteSTM;
 import requete.RequeteType;
@@ -14,7 +14,6 @@ import robot.RobotReal;
 import serie.SerialInterface;
 import table.GameElementNames;
 import table.GameElementType;
-import table.Table;
 import utils.Config;
 import utils.ConfigInfo;
 import utils.Log;
@@ -38,11 +37,10 @@ public class ThreadSerialInput extends Thread implements Service
 	protected Config config;
 	private SerialInterface serie;
 	private IncomingDataBuffer buffer;
-	private IncomingHookBuffer hookbuffer;
-	private Table table;
-	private RobotReal robot;
 	private HookFactory hookfactory;
 	private DataForSerialOutput output;
+	private GameState<RobotReal,ReadOnly> state;
+	
 	private int codeCoquillage;
 	
 	private RequeteSTM requete;
@@ -57,16 +55,13 @@ public class ThreadSerialInput extends Thread implements Service
 	private final static int PARAM = 3;
 
 	
-	public ThreadSerialInput(Log log, Config config, SerialInterface serie, IncomingDataBuffer buffer, IncomingHookBuffer hookbuffer, RequeteSTM requete, Table table, RobotReal robot, HookFactory hookfactory, DataForSerialOutput output)
+	public ThreadSerialInput(Log log, Config config, SerialInterface serie, IncomingDataBuffer buffer, RequeteSTM requete, GameState<RobotReal,ReadOnly> state, HookFactory hookfactory, DataForSerialOutput output)
 	{
 		this.log = log;
 		this.config = config;
 		this.serie = serie;
 		this.buffer = buffer;
-		this.hookbuffer = hookbuffer;
 		this.requete = requete;
-		this.table = table;
-		this.robot = robot;
 		this.hookfactory = hookfactory;
 		this.output = output;
 	}
@@ -144,7 +139,7 @@ public class ThreadSerialInput extends Thread implements Service
 						if(lecture[COMMANDE+1] != SerialProtocol.IN_PONG2.code)
 							log.warning("Pong reçu non conforme");
 					}
-					else if(lecture[COMMANDE] == SerialProtocol.IN_XYO.code)
+					else if((lecture[COMMANDE] & SerialProtocol.MASK_LAST_BIT.code) == SerialProtocol.IN_XYO.code)
 					{
 						lecture[index++] = serie.read(); // xy
 						lecture[index++] = serie.read(); // xy
@@ -168,11 +163,11 @@ public class ThreadSerialInput extends Thread implements Service
 						Vec2<ReadOnly> positionRobot = new Vec2<ReadOnly>(xRobot, yRobot);
 						double orientationRobot = (lecture[PARAM+3] << 8 + lecture[PARAM+4]) / 1000.;
 						double courbure = lecture[PARAM+5] / 1000.;
-						robot.setPositionOrientationJava(positionRobot, orientationRobot);
-						robot.setCourbure(courbure);
+						boolean enMarcheAvant = lecture[COMMANDE] == SerialProtocol.IN_XYO.code;
+						state.robot.setPositionOrientationCourbureDirection(positionRobot, orientationRobot, courbure, enMarcheAvant);
 
 					}
-					else if(lecture[COMMANDE] == SerialProtocol.IN_INFO_CAPTEURS.code)
+					else if((lecture[COMMANDE] & SerialProtocol.MASK_LAST_BIT.code) == SerialProtocol.IN_INFO_CAPTEURS.code)
 					{
 						lecture[index++] = serie.read(); // xy
 						lecture[index++] = serie.read(); // xy
@@ -203,7 +198,7 @@ public class ThreadSerialInput extends Thread implements Service
 						Vec2<ReadOnly> positionRobot = new Vec2<ReadOnly>(xRobot, yRobot);
 						double orientationRobot = (lecture[PARAM+3] << 8 + lecture[PARAM+4]) / 1000.;
 						double courbure = lecture[PARAM+5] / 1000.;
-
+						boolean enMarcheAvant = lecture[COMMANDE] == SerialProtocol.IN_INFO_CAPTEURS.code;
 						/**
 						 * Acquiert ce que voit les capteurs
 					 	 */
@@ -214,38 +209,26 @@ public class ThreadSerialInput extends Thread implements Service
 							if(2*i+1 != nbCapteurs-1)
 								mesures[2*i+1] = ((lecture[PARAM+6+3*i+1] & 0x0F) << 8) + lecture[PARAM+6+3*i+2];
 						}
-						robot.setPositionOrientationJava(positionRobot, orientationRobot);
-						robot.setCourbure(courbure);
+						state.robot.setPositionOrientationCourbureDirection(positionRobot, orientationRobot, courbure, enMarcheAvant);
 						if(capteursOn)
-							buffer.add(new IncomingData(mesures/*, capteursOn*/));
+							buffer.add(new IncomingData(mesures, positionRobot, orientationRobot, enMarcheAvant));
 					}
 					
 					/**
 					 * Le robot commence à droite
 					 */
-					else if(lecture[COMMANDE] == SerialProtocol.IN_COULEUR_ROBOT_SANS_SYMETRIE.code)
+					else if((lecture[COMMANDE] & SerialProtocol.MASK_LAST_BIT.code) == SerialProtocol.IN_COULEUR_ROBOT.code)
 					{
 						// Mauvais checksum. Annulation.
 						if(!verifieChecksum(lecture, index))
 							continue;
 
 						if(!matchDemarre)
-							config.set(ConfigInfo.COULEUR, RobotColor.getCouleurSansSymetrie());
+							config.set(ConfigInfo.COULEUR, RobotColor.getCouleur(lecture[COMMANDE] != SerialProtocol.IN_COULEUR_ROBOT.code));
+						else
+							log.warning("Le bas niveau a signalé un changement de couleur en plein match");
 					}
 					
-					/**
-					 * Le robot commence à gauche
-					 */
-					else if(lecture[COMMANDE] == SerialProtocol.IN_COULEUR_ROBOT_AVEC_SYMETRIE.code)
-					{
-						// Mauvais checksum. Annulation.
-						if(!verifieChecksum(lecture, index))
-							continue;
-
-						if(!matchDemarre)
-							config.set(ConfigInfo.COULEUR, RobotColor.getCouleurAvecSymetrie());
-					}
-
 					/**
 					 * Erreur série : il faut renvoyer un message
 					 */
@@ -392,28 +375,7 @@ public class ThreadSerialInput extends Thread implements Service
 							}
 						}
 					}
-							/**
-							 * Le robot est en marche avant
-							 */
-					else if(lecture[COMMANDE] == SerialProtocol.IN_ROBOT_EN_MARCHE_AVANT.code)
-					{
-						// Mauvais checksum. Annulation.
-						if(!verifieChecksum(lecture, index))
-							continue;
-						
-						robot.setEnMarcheAvance(true);
-					}
-							/**
-							 * Le robot est en marche arrière
-							 */
-					else if(lecture[COMMANDE] == SerialProtocol.IN_ROBOT_EN_MARCHE_ARRIERE.code)
-					{
-						// Mauvais checksum. Annulation.
-						if(!verifieChecksum(lecture, index))
-							continue;
 
-						robot.setEnMarcheAvance(false);
-					}
 					/**
 					 * Démarrage du match
 					 */
@@ -457,7 +419,7 @@ public class ThreadSerialInput extends Thread implements Service
 							continue;
 
 						int nbElement = lecture[PARAM];
-						table.setDone(GameElementNames.values()[nbElement], Tribool.TRUE);
+						state.table.setDone(GameElementNames.values()[nbElement], Tribool.TRUE);
 					}
 							/**
 							 * Demande de hook

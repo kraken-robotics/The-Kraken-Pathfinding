@@ -2,7 +2,7 @@ package entryPoints.graphicTests;
 
 import java.util.Random;
 
-import obstacles.OldCapteurs;
+import obstacles.Capteurs;
 import obstacles.ObstaclesMemory;
 import buffer.IncomingData;
 import buffer.IncomingDataBuffer;
@@ -30,7 +30,7 @@ public class ObstacleMobileDebug  {
 			int bruit = 10;
 			Container container = new Container();
 			Log log = (Log) container.getService(ServiceNames.LOG);
-			OldCapteurs capteurs = (OldCapteurs) container.getService(ServiceNames.CAPTEURS);
+			Capteurs capteurs = (Capteurs) container.getService(ServiceNames.CAPTEURS);
 			ObstaclesMemory memory = (ObstaclesMemory) container.getService(ServiceNames.OBSTACLES_MEMORY);
 			IncomingDataBuffer buffer = (IncomingDataBuffer) container.getService(ServiceNames.INCOMING_DATA_BUFFER);
 			Fenetre.setInstance(container);
@@ -53,7 +53,7 @@ public class ObstacleMobileDebug  {
 			mesures[6] = 3000;
 			mesures[7] = 3000;
 			
-			buffer.add(new IncomingData(mesures));
+			buffer.add(new IncomingData(mesures, positionRobot, 0, true));
 			Sleep.sleep(100);
 			fenetre.repaint();
 //			if(true)
@@ -89,7 +89,7 @@ public class ObstacleMobileDebug  {
 					log.debug("Capteur "+j+": "+mesures[j]);
 				}
 
-				buffer.add(new IncomingData(mesures));
+				buffer.add(new IncomingData(mesures, positionRobot, 0, true));
 				fenetre.repaint();
 				Sleep.sleep(dureeSleep);
 			}

@@ -71,14 +71,14 @@ couleur robot sans symétrie
     0x06
 couleur robot avec symétrie
     0x07
-le robot est en marche avant
-    0x08
-le robot est en marche arrière
-    0x09
-info capteurs
+info capteurs. Le robot est en marche avant
     0x0A X+(12) Y(12) ORIENTATION(16) COURBURE(8) CPT1(12) CPT2(12) …
-xyo
-    0x0B X+(12) Y(12) ORIENTATION(16) COURBURE(8)
+info capteurs. Le robot est en marche arrière
+    0x0B X+(12) Y(12) ORIENTATION(16) COURBURE(8) CPT1(12) CPT2(12) …
+xyo. Le robot est en marche avant
+    0x0E X+(12) Y(12) ORIENTATION(16) COURBURE(8)
+xyo. Le robot est en marche arrière
+    0x0F X+(12) Y(12) ORIENTATION(16) COURBURE(8
 code coquillages
     0x0C CODE(8)
 resend paquet

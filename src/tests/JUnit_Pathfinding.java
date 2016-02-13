@@ -51,7 +51,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
 	@Test
     public void test_chemin_thetastar() throws Exception
     {
-		robot.setPositionOrientationJava(new Vec2<ReadOnly>(-1000, 200), 0);
+		robot.setPositionOrientationCourbureDirection(new Vec2<ReadOnly>(-1000, 200), 0, 0, true);
 		long avant = System.currentTimeMillis();
 		for(int i = 0; i < 10000; i++)
 		pathfindingCourbe.computeNewPath(new Vec2<ReadOnly>(1000, 400), true, DirectionStrategy.FASTEST);

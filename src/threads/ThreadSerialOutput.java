@@ -16,14 +16,12 @@ import container.Service;
 public class ThreadSerialOutput extends Thread implements Service
 {
 	protected Log log;
-	protected Config config;
 	private SerialInterface serie;
 	private DataForSerialOutput data;
 	
-	public ThreadSerialOutput(Log log, Config config, SerialInterface serie, DataForSerialOutput data)
+	public ThreadSerialOutput(Log log, SerialInterface serie, DataForSerialOutput data)
 	{
 		this.log = log;
-		this.config = config;
 		this.serie = serie;
 		this.data = data;
 	}
