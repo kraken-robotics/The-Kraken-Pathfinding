@@ -14,6 +14,12 @@ import utils.Sleep;
 import utils.Vec2;
 import container.ServiceNames;
 
+/**
+ * Tests unitaires de l'obstacle memory manager
+ * @author pf
+ *
+ */
+
 public class JUnit_OMMemory extends JUnit_Test {
 
 	ObstaclesMemory memory;

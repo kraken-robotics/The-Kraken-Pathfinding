@@ -27,9 +27,9 @@ set vitesse
 resend paquet
     0xFF ID_PAQUET(16)
 supprime tous les hooks
-    0x40
+    0x10
 supprime certains hooks
-    0x41 NB_HOOKS(8) ID1(8) ...
+    0x11 NB_HOOKS(8) ID1(8) ...
 
 Hook : type param ID(8) NB_CALLBACK(8) callback
 
@@ -47,8 +47,6 @@ Hook de demi-plan
     0x45 X+_POINT(12) Y_POINT(12) X+_DIRECTION(12) Y_DIRECTION(12)
 Hook de position
     0x46 X+(12) Y(12) RAYON_CARRE(16)
-Hook de position unique
-    0x47 X+(12) Y(12) RAYON_CARRE(16)
 Hook de contact
     0x48 NB_CAPT(8)
 Hook de contact unique
@@ -78,7 +76,7 @@ info capteurs. Le robot est en marche arrière
 xyo. Le robot est en marche avant
     0x0E X+(12) Y(12) ORIENTATION(16) COURBURE(8)
 xyo. Le robot est en marche arrière
-    0x0F X+(12) Y(12) ORIENTATION(16) COURBURE(8
+    0x0F X+(12) Y(12) ORIENTATION(16) COURBURE(8)
 code coquillages
     0x0C CODE(8)
 resend paquet

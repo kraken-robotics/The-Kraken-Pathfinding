@@ -33,13 +33,14 @@ public class ObstaclesMemory implements Service
 		this.log = log;
 	}
 	
-	public synchronized void add(Vec2<ReadOnly> position, long date_actuelle, boolean urgent)
+	public synchronized ObstacleProximity add(Vec2<ReadOnly> position, long date_actuelle, boolean urgent)
 	{
         ObstacleProximity obstacle = new ObstacleProximity(position, rayonEnnemi, date_actuelle+dureeAvantPeremption, urgent);
 //      log.warning("Obstacle créé, rayon = "+rayon_robot_adverse+", centre = "+position+", meurt à "+(date_actuelle+dureeAvantPeremption), this);
         listObstaclesMobiles.add(obstacle);
         size++;
 		notify();
+		return obstacle;
 	}
 	
 	public synchronized int size()

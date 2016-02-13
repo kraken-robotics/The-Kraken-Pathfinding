@@ -2,11 +2,15 @@ package obstacles;
 
 import obstacles.types.Obstacle;
 import obstacles.types.ObstacleCircular;
+import obstacles.types.ObstacleProximity;
 import obstacles.types.ObstacleRectangular;
 import buffer.IncomingData;
 import container.Service;
+import enums.Tribool;
 import permissions.ReadOnly;
 import permissions.ReadWrite;
+import table.GameElementNames;
+import table.Table;
 import utils.Config;
 import utils.ConfigInfo;
 import utils.Log;
@@ -23,6 +27,8 @@ import utils.Vec2;
 public class Capteurs implements Service {
 	protected Log log;
 	private ObstaclesMemory memory;
+	private Table table;
+	private MoteurPhysique moteur;
 	
 	private static final int nbCapteurs = 12;
 	
@@ -60,10 +66,12 @@ public class Capteurs implements Service {
 	 */
 	public double[] orientationsRelatives;
 
-	public Capteurs(Log log, ObstaclesMemory memory)
+	public Capteurs(Log log, ObstaclesMemory memory, Table table, MoteurPhysique moteur)
 	{
 		this.log = log;
 		this.memory = memory;
+		this.table = table;
+		this.moteur = moteur;
 		positionsRelatives = new Vec2[nbCapteurs];
 		orientationsRelatives = new double[nbCapteurs];
 
@@ -524,7 +532,10 @@ public class Capteurs implements Service {
 					Vec2.plus(positionEnnemi, positionRobot);
 					if(debug)
 						log.debug("Obstacle vu par un capteur: "+positionEnnemi);
-					memory.add(positionEnnemi.getReadOnly(), System.currentTimeMillis(), isUrgent(positionEnnemi.getReadOnly(), positionRobot, orientationRobotAvance));
+					ObstacleProximity o = memory.add(positionEnnemi.getReadOnly(), System.currentTimeMillis(), isUrgent(positionEnnemi.getReadOnly(), positionRobot, orientationRobotAvance));
+				    for(GameElementNames g: GameElementNames.values)
+				        if(table.isDone(g) == Tribool.FALSE && moteur.didTheEnemyTakeIt(g, o))
+				        	table.setDone(g, Tribool.MAYBE);						
 	
 				}
 		}

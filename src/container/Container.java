@@ -40,7 +40,6 @@ import table.Table;
 import threads.ThreadCapteurs;
 import threads.ThreadConfig;
 import threads.ThreadEvitement;
-import threads.ThreadGameElementDoneByEnemy;
 import threads.ThreadPathfinding;
 import threads.ThreadPeremption;
 import threads.ThreadSerialInput;
@@ -235,7 +234,9 @@ public class Container
 			instanciedServices[serviceRequested.ordinal()] = (Service)new Config();
 		else if(serviceRequested == ServiceNames.CAPTEURS)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new Capteurs((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
-																					(ObstaclesMemory)getServiceDisplay(serviceRequested, ServiceNames.OBSTACLES_MEMORY));
+																					(ObstaclesMemory)getServiceDisplay(serviceRequested, ServiceNames.OBSTACLES_MEMORY),
+																					(Table)getServiceDisplay(serviceRequested, ServiceNames.TABLE),
+																					(MoteurPhysique)getServiceDisplay(serviceRequested, ServiceNames.MOTEUR_PHYSIQUE));
 		else if(serviceRequested == ServiceNames.TABLE)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new Table((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
 																				(StrategieNotifieur)getServiceDisplay(serviceRequested, ServiceNames.STRATEGIE_NOTIFIEUR));
@@ -321,11 +322,6 @@ public class Container
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadSerialOutput((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
 																		(SerialInterface)getServiceDisplay(serviceRequested, ServiceNames.SERIE_STM),
 																		(DataForSerialOutput)getServiceDisplay(serviceRequested, ServiceNames.SERIAL_OUTPUT_BUFFER));
-		else if(serviceRequested == ServiceNames.THREAD_GAME_ELEMENT_DONE_BY_ENEMY)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadGameElementDoneByEnemy((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
-																		(ObstaclesMemory)getServiceDisplay(serviceRequested, ServiceNames.OBSTACLES_MEMORY),
-																		(Table)getServiceDisplay(serviceRequested, ServiceNames.TABLE),
-																		(MoteurPhysique)getServiceDisplay(serviceRequested, ServiceNames.MOTEUR_PHYSIQUE));
 		else if(serviceRequested == ServiceNames.THREAD_CONFIG)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadConfig((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
 																		(Config)getServiceDisplay(serviceRequested, ServiceNames.CONFIG),
