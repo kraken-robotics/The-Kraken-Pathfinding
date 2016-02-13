@@ -25,7 +25,7 @@ public class GridSpace implements Service
 	protected Log log;
 	private ObstaclesIterator iterator;
 	private boolean ignoreElementJeu;
-	
+	private Table table;
 	/**
 	 * Comme on veut que le DStarLite recherche plus de noeuds qu'il n'y en aurait besoin, ce coeff ne vaut pas 1
 	 */
@@ -46,19 +46,12 @@ public class GridSpace implements Service
 	public GridSpace(Log log, ObstaclesMemory memory, Table table)
 	{
 		this.log = log;
-//		this.table = table;
+		this.table = table;
 		iterator = new ObstaclesIterator(log, memory);
 
 		for(int i = 0; i < NB_POINTS; i++)
 			grille.set(i);
 
-	}
-	
-	public void updateObstaclesMobiles()
-	{
-		// Il y a urgence s'il y a apparition d'un obstacle à moins de distanceUrgence devant le robot
-		iterator.reinitNow();
-		
 	}
 	
 	/**
@@ -73,12 +66,6 @@ public class GridSpace implements Service
 		int dy = Math.abs((pointA >> PRECISION) - (pointB >> PRECISION)); // ceci est une division
 		return 1000 * Math.max(dx, dy) + 414 * Math.min(dx, dy);
 //		return (int) Math.round(COEFF_HEURISTIQUE * 1000 * Math.hypot(dx, dy));
-	}
-
-	public void updateElementsJeu()
-	{
-		if(ignoreElementJeu)
-			return;
 	}
 
 	public int getGridPointVoisin(int point, int direction)
@@ -206,5 +193,18 @@ public class GridSpace implements Service
 	{
 		v.x = (((gridpoint & (NB_POINTS_POUR_TROIS_METRES - 1)) * GridSpace.DISTANCE_ENTRE_DEUX_POINTS_1024) >> 10) - 1500;
 		v.y = ((gridpoint >> PRECISION) * GridSpace.DISTANCE_ENTRE_DEUX_POINTS_1024) >> 10;
+	}
+
+	/**
+	 * Update le gridspace à partir de la liste des obstacles et de la table
+	 * @return
+	 */
+	public boolean update()
+	{
+		// Il y a urgence s'il y a apparition d'un obstacle à moins de distanceUrgence devant le robot
+		iterator.reinitNow();
+
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

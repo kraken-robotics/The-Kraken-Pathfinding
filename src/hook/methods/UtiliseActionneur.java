@@ -18,7 +18,6 @@ import hook.Executable;
 
 public class UtiliseActionneur implements Executable
 {
-	//TODO attention à la symétrie des actionneurs
 	private ActuatorOrder o;
 	
 	public UtiliseActionneur(ActuatorOrder o)
@@ -37,11 +36,10 @@ public class UtiliseActionneur implements Executable
 	@Override
 	public ArrayList<Byte> toSerial()
 	{
-		// TODO
 		ArrayList<Byte> out = new ArrayList<Byte>();
-		out.add((byte)(SerialProtocol.CALLBACK_AX12.code+0));
-		out.add((byte)0);
-		out.add((byte)0);
+		out.add((byte)(SerialProtocol.CALLBACK_AX12.code+o.id));
+		out.add((byte) (o.angle >> 8));
+		out.add((byte)o.angle);
 		return out;
 	}
 

@@ -1,9 +1,9 @@
 package threads;
 
-import obstacles.ObstaclesIterator;
-import obstacles.ObstaclesMemory;
+import obstacles.ObserveTableEtObstacles;
 import container.Service;
 import pathfinding.astarCourbe.AStarCourbe;
+import pathfinding.dstarlite.GridSpace;
 import utils.Config;
 import utils.Log;
 
@@ -17,17 +17,16 @@ public class ThreadPathfinding extends Thread implements Service
 {
 	protected Log log;
 	private AStarCourbe pathfinding;
-	private ObstaclesMemory obstacles;
-	private ObstaclesIterator iterator;
-	
+	private ObserveTableEtObstacles observeur;
+	private GridSpace gridspace;
 	private boolean urgence = false;
 
-	public ThreadPathfinding(Log log, AStarCourbe pathfinding, ObstaclesMemory obstacles)
+	public ThreadPathfinding(Log log, AStarCourbe pathfinding, ObserveTableEtObstacles observeur, GridSpace gridspace)
 	{
 		this.log = log;
 		this.pathfinding = pathfinding;
-		this.obstacles = obstacles;
-		iterator = new ObstaclesIterator(log, obstacles);
+		this.observeur = observeur;
+		this.gridspace = gridspace;
 	}
 
 	@Override
@@ -35,22 +34,18 @@ public class ThreadPathfinding extends Thread implements Service
 	{
 		while(true)
 		{
-			synchronized(obstacles)
+			synchronized(observeur)
 			{
 				try {
-					obstacles.wait();
+					observeur.wait();
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
 			}
-			// TODO : il faut qu'il ne fasse rien si on n'est pas en déplacement entre scripts
-			iterator.reinitNow();
-			while(iterator.hasNext())
-				if(iterator.next().isUrgent())
-				{
-					urgence = true;
-					break;
-				}
+			if(gridspace.update())
+			{
+				// update path
+			}
 //			try {
 //				pathfinding.updatePath();
 //			} catch (PathfindingException e) {
