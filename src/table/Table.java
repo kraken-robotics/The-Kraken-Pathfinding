@@ -18,7 +18,7 @@ public class Table implements Service
 	private StrategieNotifieur notifieur;
 	
 	/** Contient toutes les informations sur les éléments de jeux sans perte d'information. */
-	private volatile long etatTable = 0;
+	private volatile long etatTable = 0L;
 
 	/** Version compressée de l'état de la table. Mélange les Tribool FALSE et MAYBE car on ne peut pas passer
 	 * de FALSE à MAYBE pendant une recherche de stratégie, donc deux nœuds au hash identiques auront bien
@@ -88,6 +88,12 @@ public class Table implements Service
 		return other.etatTable == etatTable;
  	}
 	
+	@Override
+	public int hashCode()
+	{
+		return hash;
+	}
+	
 	/**
 	 * Récupération du hash utilisé par le LPA*
 	 * @return
@@ -117,4 +123,13 @@ public class Table implements Service
 		}
 	}
 
+	/**
+	 * Utilisé par les tests
+	 * @return
+	 */
+	public long getEtatTable()
+	{
+		return etatTable;
+	}
+	
 }

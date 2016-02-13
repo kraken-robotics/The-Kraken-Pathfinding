@@ -44,5 +44,22 @@ public class JUnit_Table extends JUnit_Test {
     	table.setDone(GameElementNames.TAS_SABLE_PROCHE, Tribool.TRUE);
     	Assert.assertTrue(!table.equals(cloned_table));
     }
-
+    
+    @Test
+    public void test_unicite() throws Exception
+    {
+    	long hash = table.getEtatTable();
+    	int code = table.hashCode();
+    	for(GameElementNames e : GameElementNames.values)
+		{
+			table.setDone(e, Tribool.MAYBE);
+			Assert.assertTrue(table.getEtatTable() != hash);
+			hash = table.getEtatTable();
+			table.setDone(e, Tribool.TRUE);
+			Assert.assertTrue(table.getEtatTable() != hash);
+			Assert.assertTrue(table.hashCode() != code);
+			hash = table.getEtatTable();
+			code = table.hashCode();
+		}
+    }
 }

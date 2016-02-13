@@ -13,14 +13,14 @@ public enum Tribool {
 	TRUE(3); // en effet, on modifie la valeur du hash par un OU logique
 	// De plus, on a l'ordre FALSE < MAYBE < TRUE
 	
-	public final int hash;
+	public final long hash;
 	public final int hashBool;
 	private static Tribool reversed[] = new Tribool[4];
 	
 	static
 	{
 		for(Tribool t: values())
-			reversed[t.hash] = t;
+			reversed[(int) t.hash] = t;
 	}
 	
 	private Tribool(int hash)
