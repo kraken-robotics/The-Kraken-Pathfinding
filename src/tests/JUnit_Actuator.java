@@ -5,7 +5,7 @@ import org.junit.Test;
 
 import buffer.DataForSerialOutput;
 import robot.ActuatorOrder;
-import utils.SerialSTM;
+import serie.SerialSTM;
 import utils.Sleep;
 import container.ServiceNames;
 

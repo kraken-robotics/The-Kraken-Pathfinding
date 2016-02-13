@@ -1,9 +1,9 @@
 package threads;
 
 import buffer.DataForSerialOutput;
+import serie.SerialInterface;
 import utils.Config;
 import utils.Log;
-import utils.SerialSTM;
 import utils.Sleep;
 import container.Service;
 
@@ -17,10 +17,10 @@ public class ThreadSerialOutput extends Thread implements Service
 {
 	protected Log log;
 	protected Config config;
-	private SerialSTM serie;
+	private SerialInterface serie;
 	private DataForSerialOutput data;
 	
-	public ThreadSerialOutput(Log log, Config config, SerialSTM serie, DataForSerialOutput data)
+	public ThreadSerialOutput(Log log, Config config, SerialInterface serie, DataForSerialOutput data)
 	{
 		this.log = log;
 		this.config = config;

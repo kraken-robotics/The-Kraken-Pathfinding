@@ -17,7 +17,7 @@ public enum ServiceNames {
 	 SCRIPT_MANAGER,
 	 STRATEGIE_INFO,
 	 SERIE_STM,
-	 SERIE_XBEE,
+//	 SERIE_XBEE,
 
 	 D_STAR_LITE,
 	 GRID_SPACE,

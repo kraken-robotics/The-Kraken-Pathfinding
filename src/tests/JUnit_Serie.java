@@ -4,7 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import buffer.DataForSerialOutput;
-import utils.SerialSTM;
+import serie.SerialSTM;
 import container.ServiceNames;
 
 /**

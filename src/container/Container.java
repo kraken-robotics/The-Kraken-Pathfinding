@@ -28,6 +28,9 @@ import exceptions.ContainerException;
 import exceptions.PointSortieException;
 import utils.*;
 import scripts.ScriptManager;
+import serie.SerialInterface;
+import serie.SerialSTM;
+import serie.SerialSimulation;
 import strategie.Execution;
 import strategie.StrategieInfo;
 import strategie.StrategieNotifieur;
@@ -70,7 +73,7 @@ public class Container
 	private static int nbInstances = 0;
 	private boolean threadsStarted = false;
 	
-	private static final boolean showGraph = false;
+	private static final boolean showGraph = true;
 	private FileWriter fw;
 
 	/**
@@ -102,7 +105,7 @@ public class Container
 		log.debug("Fermeture de la série");
 		// fermeture de la connexion série
 		
-		SerialSTM stm = (SerialSTM)instanciedServices[ServiceNames.SERIE_STM.ordinal()];
+		SerialInterface stm = (SerialInterface)instanciedServices[ServiceNames.SERIE_STM.ordinal()];
 		if(stm != null)
 			stm.close();
 
@@ -173,8 +176,7 @@ public class Container
 	{
 		return getServiceDisplay(null, serviceTo);
 	}
-	 
-	@SuppressWarnings("unused")
+	
 	private Service getServiceDisplay(ServiceNames serviceFrom, ServiceNames serviceTo) throws ContainerException, PointSortieException
 	{
 		if(showGraph && !serviceTo.equals(ServiceNames.LOG))
@@ -182,7 +184,7 @@ public class Container
 			ArrayList<ServiceNames> ok = new ArrayList<ServiceNames>();
 			ok.add(ServiceNames.CONFIG);
 			ok.add(ServiceNames.SERIE_STM);
-			ok.add(ServiceNames.SERIE_XBEE);
+//			ok.add(ServiceNames.SERIE_XBEE);
 			ok.add(ServiceNames.INCOMING_HOOK_BUFFER);
 			ok.add(ServiceNames.INCOMING_DATA_BUFFER);
 			ok.add(ServiceNames.SERIAL_OUTPUT_BUFFER);
@@ -211,7 +213,7 @@ public class Container
 	}
 
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "unused" })
 	/**
 	 * Fournit un service. Deux possibilités: soit il n'est pas encore instancié et on l'instancie.
 	 * Soit il est déjà instancié et on le renvoie.
@@ -278,8 +280,10 @@ public class Container
 			instanciedServices[serviceRequested.ordinal()] = (Service)new IncomingHookBuffer((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG));
 		else if(serviceRequested == ServiceNames.SERIAL_OUTPUT_BUFFER)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new DataForSerialOutput((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG));
-		else if(serviceRequested == ServiceNames.SERIE_STM)
+		else if(serviceRequested == ServiceNames.SERIE_STM && !Config.simuleSerie)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new SerialSTM((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG), config.getInt(ConfigInfo.BAUDRATE_STM));
+		else if(serviceRequested == ServiceNames.SERIE_STM && Config.simuleSerie)
+			instanciedServices[serviceRequested.ordinal()] = (Service)new SerialSimulation((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG));
 //		else if(serviceRequested == ServiceNames.SERIE_XBEE)
 //			instanciedServices[serviceRequested.ordinal()] = (Service)new SerialXBEE((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG), config.getInt(ConfigInfo.BAUDRATE_XBEE));
 		else if(serviceRequested == ServiceNames.EXECUTION)
@@ -322,7 +326,7 @@ public class Container
 		else if(serviceRequested == ServiceNames.THREAD_SERIAL_INPUT)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadSerialInput((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
 																		(Config)getServiceDisplay(serviceRequested, ServiceNames.CONFIG),
-																		(SerialSTM)getServiceDisplay(serviceRequested, ServiceNames.SERIE_STM),
+																		(SerialInterface)getServiceDisplay(serviceRequested, ServiceNames.SERIE_STM),
 																		(IncomingDataBuffer)getServiceDisplay(serviceRequested, ServiceNames.INCOMING_DATA_BUFFER),
 																		(IncomingHookBuffer)getServiceDisplay(serviceRequested, ServiceNames.INCOMING_HOOK_BUFFER),
 																		(RequeteSTM)getServiceDisplay(serviceRequested, ServiceNames.REQUETE_STM),
@@ -335,7 +339,7 @@ public class Container
 		else if(serviceRequested == ServiceNames.THREAD_SERIAL_OUTPUT)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadSerialOutput((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
 																		(Config)getServiceDisplay(serviceRequested, ServiceNames.CONFIG),
-																		(SerialSTM)getServiceDisplay(serviceRequested, ServiceNames.SERIE_STM),
+																		(SerialInterface)getServiceDisplay(serviceRequested, ServiceNames.SERIE_STM),
 																		(DataForSerialOutput)getServiceDisplay(serviceRequested, ServiceNames.SERIAL_OUTPUT_BUFFER));
 		else if(serviceRequested == ServiceNames.THREAD_GAME_ELEMENT_DONE_BY_ENEMY)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadGameElementDoneByEnemy((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),

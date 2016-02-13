@@ -11,13 +11,13 @@ import permissions.ReadOnly;
 import requete.RequeteSTM;
 import requete.RequeteType;
 import robot.RobotReal;
+import serie.SerialInterface;
 import table.GameElementNames;
 import table.GameElementType;
 import table.Table;
 import utils.Config;
 import utils.ConfigInfo;
 import utils.Log;
-import utils.SerialSTM;
 import utils.Vec2;
 import container.Service;
 import enums.RobotColor;
@@ -36,7 +36,7 @@ public class ThreadSerialInput extends Thread implements Service
 {
 	protected Log log;
 	protected Config config;
-	private SerialSTM serie;
+	private SerialInterface serie;
 	private IncomingDataBuffer buffer;
 	private IncomingHookBuffer hookbuffer;
 	private Table table;
@@ -57,7 +57,7 @@ public class ThreadSerialInput extends Thread implements Service
 	private final static int PARAM = 3;
 
 	
-	public ThreadSerialInput(Log log, Config config, SerialSTM serie, IncomingDataBuffer buffer, IncomingHookBuffer hookbuffer, RequeteSTM requete, Table table, RobotReal robot, HookFactory hookfactory, DataForSerialOutput output)
+	public ThreadSerialInput(Log log, Config config, SerialInterface serie, IncomingDataBuffer buffer, IncomingHookBuffer hookbuffer, RequeteSTM requete, Table table, RobotReal robot, HookFactory hookfactory, DataForSerialOutput output)
 	{
 		this.log = log;
 		this.config = config;
