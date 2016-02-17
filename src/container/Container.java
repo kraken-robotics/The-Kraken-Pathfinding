@@ -30,13 +30,6 @@ import scripts.ScriptManager;
 import serie.SerialInterface;
 import serie.SerialSTM;
 import serie.SerialSimulation;
-import strategie.StrategieInfo;
-import strategie.StrategieNotifieur;
-import strategie.astar.AStar;
-import strategie.astar.AStarArcManager;
-import strategie.astar.AStarMemoryManager;
-import strategie.astar.GridSpaceStrategie;
-import strategie.lpastar.LPAStar;
 import table.Table;
 import threads.ThreadCapteurs;
 import threads.ThreadConfig;
@@ -241,7 +234,6 @@ public class Container
 																					(MoteurPhysique)getServiceDisplay(serviceRequested, ServiceNames.MOTEUR_PHYSIQUE));
 		else if(serviceRequested == ServiceNames.TABLE)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new Table((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
-																				(StrategieNotifieur)getServiceDisplay(serviceRequested, ServiceNames.STRATEGIE_NOTIFIEUR),
 																				(ObserveTableEtObstacles)getServiceDisplay(serviceRequested, ServiceNames.OBSERVE_TABLE_ET_OBSTACLES));
 		else if(serviceRequested == ServiceNames.D_STAR_LITE)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new DStarLite((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
@@ -258,22 +250,6 @@ public class Container
 			instanciedServices[serviceRequested.ordinal()] = (Service)new GridSpace((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
 																					(ObstaclesMemory)getServiceDisplay(serviceRequested, ServiceNames.OBSTACLES_MEMORY),
 																					(Table)getServiceDisplay(serviceRequested, ServiceNames.TABLE));
-		else if(serviceRequested == ServiceNames.LPA_STAR)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new LPAStar((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
-																					(GameState<RobotReal,ReadOnly>)getServiceDisplay(serviceRequested, ServiceNames.REAL_GAME_STATE),
-																					(AStar)getServiceDisplay(serviceRequested, ServiceNames.A_STAR));
-		else if(serviceRequested == ServiceNames.A_STAR)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new AStar((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
-																					(AStarArcManager)getServiceDisplay(serviceRequested, ServiceNames.A_STAR_ARC_MANAGER),
-																					(AStarMemoryManager)getServiceDisplay(serviceRequested, ServiceNames.A_STAR_MEMORY_MANAGER),
-																					(GridSpaceStrategie)getServiceDisplay(serviceRequested, ServiceNames.GRID_SPACE_STRATEGIE));
-		else if(serviceRequested == ServiceNames.GRID_SPACE_STRATEGIE)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new GridSpaceStrategie((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG));
-		else if(serviceRequested == ServiceNames.A_STAR_ARC_MANAGER)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new AStarArcManager((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG));
-		else if(serviceRequested == ServiceNames.A_STAR_MEMORY_MANAGER)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new AStarMemoryManager((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
-																							(GameState<RobotReal,ReadOnly>)getServiceDisplay(serviceRequested, ServiceNames.REAL_GAME_STATE));
 		else if(serviceRequested == ServiceNames.INCOMING_DATA_BUFFER)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new IncomingDataBuffer((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG));
 		else if(serviceRequested == ServiceNames.SERIAL_OUTPUT_BUFFER)
@@ -336,13 +312,8 @@ public class Container
 																		(AStarCourbe)getServiceDisplay(serviceRequested, ServiceNames.A_STAR_COURBE),
 																		(ObserveTableEtObstacles)getServiceDisplay(serviceRequested, ServiceNames.OBSERVE_TABLE_ET_OBSTACLES),
 																		 (GridSpace)getServiceDisplay(serviceRequested, ServiceNames.GRID_SPACE));
-		else if(serviceRequested == ServiceNames.STRATEGIE_INFO)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new StrategieInfo((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG), 
-																		(StrategieNotifieur)getServiceDisplay(serviceRequested, ServiceNames.STRATEGIE_NOTIFIEUR));
 		else if(serviceRequested == ServiceNames.MOTEUR_PHYSIQUE)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new MoteurPhysique((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG)); 		
-		else if(serviceRequested == ServiceNames.STRATEGIE_NOTIFIEUR)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new StrategieNotifieur();		
 		else if(serviceRequested == ServiceNames.A_STAR_COURBE)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new AStarCourbe((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
 																					(DStarLite)getServiceDisplay(serviceRequested, ServiceNames.D_STAR_LITE),

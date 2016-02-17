@@ -3,7 +3,6 @@ package table;
 import obstacles.ObserveTableEtObstacles;
 import container.Service;
 import enums.Tribool;
-import strategie.StrategieNotifieur;
 import utils.*;
 
 /**
@@ -16,7 +15,6 @@ public class Table implements Service
 {
 	// Dépendances
 	private Log log;
-	private StrategieNotifieur notifieur;
 	private ObserveTableEtObstacles observeur;
 	
 	/** Contient toutes les informations sur les éléments de jeux sans perte d'information. */
@@ -27,10 +25,9 @@ public class Table implements Service
 	 * deux etatTable identiques **/
 	private volatile int hash = 0;
 
-	public Table(Log log, StrategieNotifieur notifieur, ObserveTableEtObstacles observeur)
+	public Table(Log log, ObserveTableEtObstacles observeur)
 	{
 		this.log = log;
-		this.notifieur = notifieur;
 		this.observeur = observeur;
 	}
 
@@ -46,11 +43,7 @@ public class Table implements Service
 		hash |= (done.hashBool << (id.ordinal()));
 		// Si besoin est, on dit à la stratégie que la table a été modifiée
 		if(old_hash != etatTable)
-			synchronized(notifieur)
-			{
-				notifieur.notify();
-				observeur.notify();
-			}
+			observeur.notify();
 	}
 
 	/**
@@ -77,7 +70,7 @@ public class Table implements Service
 	 */
 	public Table clone()
 	{
-		Table cloned_table = new Table(log, notifieur, observeur);
+		Table cloned_table = new Table(log, observeur);
 		copy(cloned_table);
 		return cloned_table;
 	}
