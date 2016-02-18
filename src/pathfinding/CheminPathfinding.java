@@ -3,10 +3,14 @@ package pathfinding;
 import pathfinding.astarCourbe.ArcCourbe;
 import utils.Config;
 import utils.Log;
+
+import java.util.LinkedList;
+
 import container.Service;
 
 /**
- * S'occupe de la trajectoire actuelle
+ * S'occupe de la trajectoire actuelle.
+ * Notifie dès qu'un chemin (partiel ou complet) est disponible
  * @author pf
  *
  */
@@ -14,18 +18,19 @@ import container.Service;
 public class CheminPathfinding implements Service
 {
 	protected Log log;
-	private static final int NB_ARCS_MAX = 100;
-	private volatile ArcCourbe[] chemin = new ArcCourbe[NB_ARCS_MAX];
-	private volatile int dernierIndiceChemin = -1;
-	private volatile boolean uptodate;
-	private volatile boolean needToStartAgain;
-	private volatile boolean last;
+	private volatile boolean doitFixerCheminPartiel;
+	private volatile boolean finish;
+	
+	private volatile LinkedList<ArcCourbe> chemin = new LinkedList<ArcCourbe>();
 	
 	public CheminPathfinding(Log log)
 	{
 		this.log = log;
-		for(int i = 0 ; i < NB_ARCS_MAX; i++)
-			chemin[i] = new ArcCourbe();
+	}
+	
+	public void resetChemin()
+	{
+		chemin.clear();
 	}
 	
 	@Override
@@ -36,53 +41,45 @@ public class CheminPathfinding implements Service
 	public void useConfig(Config config)
 	{}
 
-	public synchronized ArcCourbe[] get()
+	public synchronized void addArc(ArcCourbe a)
 	{
-		return chemin;
+		chemin.add(a);
 	}
 	
 	/**
-	 * Demande à ThetaStar s'il faut ou non relancer le pathfinding avec un nouveau départ
+	 * Le pathfinding demande s'il faut fixer le chemin partiel
 	 * @return
 	 */
-	public synchronized boolean isNeededToStartAgain()
+	public synchronized boolean doitFixerCheminPartiel()
 	{
-		boolean out = needToStartAgain;
-		needToStartAgain = false;
+		boolean out = doitFixerCheminPartiel;
+		doitFixerCheminPartiel = false;
 		return out;
 	}
 
-	public synchronized void setDernierIndiceChemin(int dernierIndiceChemin)
+	public synchronized void demandeCheminPartiel()
 	{
-		uptodate = true;
-		this.dernierIndiceChemin = dernierIndiceChemin;
-		notify();
+		doitFixerCheminPartiel = true;
 	}
 
-	public int getDernierIndiceChemin()
+	public ArcCourbe poll()
 	{
-		needToStartAgain = true;
-		return dernierIndiceChemin;
-	}
-	
-	public boolean isUptodate()
-	{
-		return uptodate;
-	}
-	
-	public void notUptodate()
-	{
-		uptodate = false;
+		return chemin.poll();
 	}
 
-	public void setLast(boolean last)
+	public boolean isEmpty()
 	{
-		this.last = last;
+		return chemin.isEmpty();
+	}
+
+	public void setFinish(boolean finish)
+	{
+		this.finish = finish;
 	}
 	
-	public boolean isLast()
+	public boolean isFinish()
 	{
-		return last;
+		return finish;
 	}
 
 }

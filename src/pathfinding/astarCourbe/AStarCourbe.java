@@ -118,7 +118,7 @@ public class AStarCourbe implements Service
 		depart.g_score = 0;
 		depart.f_score = arcmanager.heuristicCost(depart);
 
-		cheminContainer.notUptodate();
+		cheminContainer.resetChemin();
 		memorymanager.empty();
 
 		openset.clear();
@@ -150,7 +150,7 @@ public class AStarCourbe implements Service
 			
 			while(arcmanager.hasNext())
 			{
-				if(cheminContainer.isNeededToStartAgain())
+				if(cheminContainer.doitFixerCheminPartiel())
 				{
 					partialReconstruct(current, false);
 					// Il est nécessaire de copier current dans depart car current
@@ -195,22 +195,17 @@ public class AStarCourbe implements Service
 	{
 		synchronized(cheminContainer)
 		{
-			int k = 0;
-			ArcCourbe[] chemin = cheminContainer.get();
 			AStarCourbeNode noeud_parent = best;
 			ArcCourbe arc_parent = best.came_from_arc;
 			while(best.came_from != null)
 			{
-				arc_parent.copy(chemin[k]);
-				k++;
+				cheminContainer.addArc(arc_parent);
 				noeud_parent = noeud_parent.came_from;
 				arc_parent = noeud_parent.came_from_arc;
 			}
-			cheminContainer.setDernierIndiceChemin(k-1);
-			cheminContainer.setLast(last);
+			cheminContainer.setFinish(last);
+			cheminContainer.notify(); // on prévient le thread d'évitement qu'un chemin est disponible
 		}
-//		openset.clear();
-//		openset.add(best);
 	}
 
 	@Override

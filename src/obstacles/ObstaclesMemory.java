@@ -41,7 +41,10 @@ public class ObstaclesMemory implements Service
 //      log.warning("Obstacle créé, rayon = "+rayon_robot_adverse+", centre = "+position+", meurt à "+(date_actuelle+dureeAvantPeremption), this);
         listObstaclesMobiles.add(obstacle);
         size++;
-		observeur.notify();
+        synchronized (observeur)
+        {
+    		observeur.notify();			
+		}
 		notify();
 		return obstacle;
 	}
@@ -86,7 +89,10 @@ public class ObstaclesMemory implements Service
 		}
 		if(shouldNotify)
 		{
-			observeur.notify();
+			synchronized (observeur)
+			{
+				observeur.notify();				
+			}
 			notify();
 		}
 	}

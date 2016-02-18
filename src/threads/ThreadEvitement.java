@@ -1,7 +1,6 @@
 package threads;
 
 import pathfinding.CheminPathfinding;
-import pathfinding.astarCourbe.AStarCourbe;
 import pathfinding.astarCourbe.ArcCourbe;
 import utils.Config;
 import utils.ConfigInfo;
@@ -11,14 +10,14 @@ import container.Service;
 
 
 /**
- * Thread qui gère l'évitement lors d'une trajectoire courbe
+ * Thread qui gère l'évitement lors d'une trajectoire courbe.
+ * Ce n'est pas lui qui calcule le chemin : lui, son rôle, c'est d'envoyer le chemin dans un temps imparti.
  * @author pf
  *
  */
 
 public class ThreadEvitement extends Thread implements Service
 {
-	private AStarCourbe pathfinding;
 	private DataForSerialOutput serie;
 	private ThreadPathfinding threadpathfinding;
 	private CheminPathfinding chemin;
@@ -26,10 +25,9 @@ public class ThreadEvitement extends Thread implements Service
 	
 	private int msMaxAvantEvitement;
 	
-	public ThreadEvitement(Log log, ThreadPathfinding threadpathfinding, DataForSerialOutput serie, AStarCourbe pathfinding, CheminPathfinding chemin)
+	public ThreadEvitement(Log log, ThreadPathfinding threadpathfinding, DataForSerialOutput serie, CheminPathfinding chemin)
 	{
 		this.log = log;
-		this.pathfinding = pathfinding;
 		this.serie = serie;
 		this.threadpathfinding = threadpathfinding;
 		this.chemin = chemin;
@@ -43,41 +41,33 @@ public class ThreadEvitement extends Thread implements Service
 			try {
 				synchronized(threadpathfinding)
 				{
-					threadpathfinding.wait();
-					synchronized(pathfinding)
+					threadpathfinding.wait(); // on attend qu'un nouveau calcul de chemin soit lancé
+					synchronized(chemin)
 					{
-						if(threadpathfinding.isUrgence())
-							pathfinding.wait(msMaxAvantEvitement);
+						if(threadpathfinding.isUrgence()) // en cas d'urgence, on attend très peu. sinon, on a plus de temps
+							chemin.wait(msMaxAvantEvitement); // grâce au wait, on peut attendre moins si c'est prêt
 						else
-							pathfinding.wait(100);
+							chemin.wait(100);
 					}
 				}			
+				synchronized(chemin)
+				{
+					chemin.demandeCheminPartiel(); // on demande au pathfinding de fixer un chemin partiel
+					
+					while(chemin.isFinish()) // tant qu'on n'est pas arrivé au bout…
+					{
+						chemin.wait(); // ça devrait venir vite
+						while(!chemin.isEmpty())
+						{
+							ArcCourbe a = chemin.poll(); // on envoie les chemins un par un
+							serie.envoieArcCourbe(a);
+						}
+					}
+				}
 			} catch (InterruptedException e2) {
 				e2.printStackTrace();
 			}
-			try {
-				synchronized(chemin)
-				{
-					while(!chemin.isUptodate())
-							chemin.wait();
-					ArcCourbe[] arcs = chemin.get();
-					int dernierIndice = chemin.getDernierIndiceChemin();
 
-					if(chemin.isLast())
-					{
-						for(int i = dernierIndice ; i >= 1 ; i--)
-							serie.envoieArcCourbe(arcs[i]);
-						serie.envoieArcCourbeLast(arcs[0]);
-					}
-					else
-					{
-						for(int i = dernierIndice ; i >= 0 ; i--)
-							serie.envoieArcCourbe(arcs[i]);
-					}
-				}
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
 		}
 	}
 	

@@ -124,19 +124,19 @@ public class ObstaclesIterator implements Iterator<ObstacleProximity>
 	@Override
 	public boolean hasNext()
 	{		
-		return nbTmp++ < memory.size();
+		return nbTmp < memory.size();
 	}
 	
 	@Override
 	public ObstacleProximity next()
 	{
-		return memory.getObstacle(nbTmp-1);
+		return memory.getObstacle(nbTmp++);
 	}
 
 	@Override
 	public void remove()
 	{
-		// TODO lancer exception
+		throw new UnsupportedOperationException();
 	}
 
 	

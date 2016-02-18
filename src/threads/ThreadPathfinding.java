@@ -51,6 +51,7 @@ public class ThreadPathfinding extends Thread implements Service
 			if(!xor.isEmpty()) // si y'a du changement
 			{
 				try {
+					notify(); // on prévient le thread d'évitement qu'un nouveau chemin est en calcul
 					pathfinding.updatePath(xor);
 				} catch (PathfindingException e) {
 					// TODO Auto-generated catch block

@@ -52,6 +52,7 @@ public class GridSpace implements Service
 	
 	private static BitSet masqueObs = null;
 	private static int centreMasque;
+	private static int tailleMasque;
 	
 	static
 	{
@@ -160,41 +161,53 @@ public class GridSpace implements Service
 	{
 		int rayonEnnemi = config.getInt(ConfigInfo.RAYON_ROBOT_ADVERSE);
 		int rayonPoint = (int) Math.round(rayonEnnemi / DISTANCE_ENTRE_DEUX_POINTS);
-		int tailleMasque = 2*(rayonPoint+1)+1;
+		tailleMasque = 2*(rayonPoint+1)+1;
 		centreMasque = tailleMasque / 2;
 		masqueObs = new BitSet(tailleMasque * tailleMasque);
 		for(int i = 0; i < tailleMasque; i++)
 			for(int j = 0; j < tailleMasque; j++)
-				if((i-centreMasque) * (i-centreMasque) + (j-centreMasque) * (j-centreMasque) < rayonPoint*rayonPoint)
+				if((i-centreMasque) * (i-centreMasque) + (j-centreMasque) * (j-centreMasque) <= rayonPoint*rayonPoint)
 				{
 					int i2, j2;
-					i2 = i-1;
+					i2 = i - 1;
 					j2 = j;
 					if(i2 >= 0 && (i2-centreMasque) * (i2-centreMasque) + (j2-centreMasque) * (j2-centreMasque) > rayonPoint*rayonPoint)
 					{
 						masqueObs.set(i*tailleMasque+j);
-						break;
+						continue;
 					}
-					i2 = i+1;
+					i2 = i + 1;
 					if(i2 < tailleMasque && (i2-centreMasque) * (i2-centreMasque) + (j2-centreMasque) * (j2-centreMasque) > rayonPoint*rayonPoint)
 					{
 						masqueObs.set(i*tailleMasque+j);
-						break;
+						continue;
 					}
 					i2 = i;
 					j2 = j - 1;
 					if(j2 >= 0 && (i2-centreMasque) * (i2-centreMasque) + (j2-centreMasque) * (j2-centreMasque) > rayonPoint*rayonPoint)
 					{
 						masqueObs.set(i*tailleMasque+j);
-						break;
+						continue;
 					}
-					j2 = j+1;
+					j2 = j + 1;
 					if(j2 < tailleMasque && (i2-centreMasque) * (i2-centreMasque) + (j2-centreMasque) * (j2-centreMasque) > rayonPoint*rayonPoint)
 					{
 						masqueObs.set(i*tailleMasque+j);
-						break;
+						continue;
 					}
-				}
+
+			}
+/*
+		System.out.println("Masque : ");
+		for(int i = 0; i < tailleMasque; i++)
+		{
+			for(int j = 0; j < tailleMasque; j++)
+				if(masqueObs.get(i*tailleMasque+j))
+					System.out.print("X");
+				else
+					System.out.print(".");
+			System.out.println();
+		}*/
 	}
 
 	@Override
@@ -320,6 +333,9 @@ public class GridSpace implements Service
 	private void setObstacle(ObstacleProximity o)
 	{
 		int centre = computeGridPoint(o.position); // TODO
+		for(int i = 0; i < tailleMasque; i++)
+			for(int j = 0; j < tailleMasque; j++)
+				;
 //		grilleDynamique
 	}
 

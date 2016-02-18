@@ -56,11 +56,6 @@ public class JUnit_Pathfinding extends JUnit_Test {
 		for(int i = 0; i < 10000; i++)
 		pathfindingCourbe.computeNewPath(new Vec2<ReadOnly>(1000, 400), true, DirectionStrategy.FASTEST);
 		log.debug("Durée d'une recherche : "+(System.currentTimeMillis() - avant)/10000.+" ms");
-		ArcCourbe[] trajet = chemin.get();
-		for(ArcCourbe v : trajet)
-		{
-			log.debug(v);
-		}
     }
 
 }
