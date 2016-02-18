@@ -1,7 +1,11 @@
 package threads;
 
 import obstacles.ObserveTableEtObstacles;
+
+import java.util.BitSet;
+
 import container.Service;
+import exceptions.PathfindingException;
 import pathfinding.astarCourbe.AStarCourbe;
 import pathfinding.dstarlite.GridSpace;
 import utils.Config;
@@ -42,16 +46,17 @@ public class ThreadPathfinding extends Thread implements Service
 					e.printStackTrace();
 				}
 			}
-			if(gridspace.update())
+			BitSet xor = gridspace.update();
+			
+			if(!xor.isEmpty()) // si y'a du changement
 			{
-				// update path
+				try {
+					pathfinding.updatePath(xor);
+				} catch (PathfindingException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
-//			try {
-//				pathfinding.updatePath();
-//			} catch (PathfindingException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
 		}
 
 //		log.debug("Fermeture de ThreadPathfinding");

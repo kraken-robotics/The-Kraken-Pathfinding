@@ -1,6 +1,7 @@
 package pathfinding.dstarlite;
 
 import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.PriorityQueue;
 
 import permissions.ReadOnly;
@@ -194,7 +195,7 @@ public class DStarLite implements Service
 	 */
 	public void computeNewPath(Vec2<ReadOnly> depart, Vec2<ReadOnly> arrivee) throws PathfindingException
 	{
-		computeNewPath(gridspace.computeGridPoint(depart), gridspace.computeGridPoint(arrivee));
+		computeNewPath(GridSpace.computeGridPoint(depart), GridSpace.computeGridPoint(arrivee));
 	}
 	/**
 	 * Calcule un nouvel itinéraire.
@@ -241,16 +242,16 @@ public class DStarLite implements Service
 	public void useConfig(Config config)
 	{}
 	
-	public void updatePath(Vec2<ReadOnly> positionRobot) throws PathfindingException
+	public void updatePath(Vec2<ReadOnly> positionRobot, BitSet xor) throws PathfindingException
 	{
-		updatePath(gridspace.computeGridPoint(positionRobot));
+		updatePath(GridSpace.computeGridPoint(positionRobot), xor);
 	}
 	
 	/**
 	 * Met à jour le pathfinding
 	 * @throws PathfindingException 
 	 */
-	public void updatePath(int positionRobot) throws PathfindingException
+	public void updatePath(int positionRobot, BitSet xor) throws PathfindingException
 	{
 		depart = getFromMemory(positionRobot);
 		km += distanceHeuristique(last);
@@ -276,7 +277,7 @@ public class DStarLite implements Service
 		while(!node.equals(arrivee))
 		{
 			
-			trajet.add(gridspace.computeVec2(node.gridpoint));
+			trajet.add(GridSpace.computeVec2(node.gridpoint));
 			if(Config.graphicDStarLite)
 				fenetre.setColor(node.gridpoint, Fenetre.Couleur.VIOLET);
 			coutMin = Integer.MAX_VALUE;
@@ -296,7 +297,7 @@ public class DStarLite implements Service
 			}
 			node = min;
 		}
-		trajet.add(gridspace.computeVec2(arrivee.gridpoint));
+		trajet.add(GridSpace.computeVec2(arrivee.gridpoint));
 		return trajet;
 		
 	}
@@ -308,7 +309,7 @@ public class DStarLite implements Service
 	 */
 	public int heuristicCostCourbe(Vec2<ReadOnly> position)
 	{
-		return getFromMemory(gridspace.computeGridPoint(position)).rhs;
+		return getFromMemory(GridSpace.computeGridPoint(position)).rhs;
 	}
 	
 	public int getHashDebut()

@@ -14,7 +14,6 @@ public enum ServiceNames {
 	 HOOK_FACTORY,
 	 REAL_GAME_STATE,
 	 SCRIPT_MANAGER,
-	 STRATEGIE_INFO,
 	 SERIE_STM,
 //	 SERIE_XBEE,
 

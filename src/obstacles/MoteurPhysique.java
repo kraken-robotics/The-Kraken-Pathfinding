@@ -84,11 +84,11 @@ public class MoteurPhysique implements Service {
   //      if(isThereHypotheticalEnemy && hypotheticalEnemy.obstacle_proximite_dans_segment(A, B, date))
   //      	return true;
         
-    	state.iterator.reinit();
+/*    	state.iterator.reinit();
     	while(state.iterator.hasNext())
         	if(state.iterator.next().obstacle_proximite_dans_segment(A, B, date))
         		return true;
-
+*/
         return false;
     }
 
@@ -117,11 +117,11 @@ public class MoteurPhysique implements Service {
     {
     //    if(isThereHypotheticalEnemy && isObstaclePresent(position, hypotheticalEnemy.getReadOnly(), distance))
     //    	return true;
-    	state.iterator.reinit();
+/*    	state.iterator.reinit();
     	while(state.iterator.hasNext())
         	if(isObstaclePresent(position, state.iterator.next(), distance))
         		return true;
-        return false;
+ */       return false;
     }
 
     /**

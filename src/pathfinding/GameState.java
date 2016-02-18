@@ -1,7 +1,7 @@
 package pathfinding;
 
 import obstacles.ObstaclesIterator;
-import obstacles.ObstaclesMemory;
+import pathfinding.dstarlite.GridSpace;
 import permissions.Permission;
 import permissions.ReadOnly;
 import permissions.ReadWrite;
@@ -26,8 +26,10 @@ import utils.Config;
 
 public class GameState<R extends Robot, T extends Permission> implements Service
 {
+	// cet iterator et cette table sont ceux du gridspace. Modifier l'un modifie l'autre.
     public final R robot;
     public final ObstaclesIterator iterator;
+    public final GridSpace gridspace;
     public final Table table;
     
     private Log log;
@@ -41,26 +43,27 @@ public class GameState<R extends Robot, T extends Permission> implements Service
      * @param robot
      * @return
      */
-    public static GameState<RobotReal,ReadWrite> constructRealGameState(Log log, Table table, RobotReal robot, ObstaclesMemory memory)
+    public static GameState<RobotReal,ReadWrite> constructRealGameState(Log log, RobotReal robot, GridSpace gridspace)
     {
-		GameState<RobotReal,ReadWrite> out = new GameState<RobotReal,ReadWrite>(log, new ObstaclesIterator(log, memory), robot, table);
+		GameState<RobotReal,ReadWrite> out = new GameState<RobotReal,ReadWrite>(log, gridspace, robot);
 		return out;
     }
     
-    private GameState(Log log, ObstaclesIterator iterator, R robot, Table table)
+    private GameState(Log log,GridSpace gridspace, R robot)
     {
-    	this.iterator = iterator;
+    	this.iterator = gridspace.getIterator();
+    	this.gridspace = gridspace;
         this.log = log;
         this.robot = robot;
-        this.table = table;
+        this.table = gridspace.getTable();
     }
     
 	/**
-     * Fournit un clone de this. Le clone sera un GameState<RobotChrono>, peu importe si this est un GameState<RobotVrai> ou un GameState<RobotChrono>
+     * Fournit un clone de this. Le clone sera un GameState<RobotChrono>, peu importe si l'original est un GameState<RobotVrai> ou un GameState<RobotChrono>
      */
 	public static final GameState<RobotChrono,ReadWrite> cloneGameState(GameState<? extends Robot,ReadOnly> state)
 	{
-		GameState<RobotChrono,ReadWrite> cloned = new GameState<RobotChrono,ReadWrite>(state.log, state.iterator.clone(state.robot.getTempsDepuisDebutMatch()), state.robot.cloneIntoRobotChrono(), state.table.clone());
+		GameState<RobotChrono,ReadWrite> cloned = new GameState<RobotChrono,ReadWrite>(state.log, state.gridspace.clone(state.robot.getTempsDepuisDebutMatch()), state.robot.cloneIntoRobotChrono());
 		// la copie est déjà exacte
 		//		GameState.copy(state, cloned);
 		return cloned;
@@ -75,8 +78,9 @@ public class GameState<R extends Robot, T extends Permission> implements Service
     public static final void copyThetaStar(GameState<?,ReadOnly> state, GameState<RobotChrono,ReadWrite> modified)
     {
         state.robot.copyThetaStar(modified.robot);
-        state.table.copy(modified.table);
-        state.iterator.copy(modified.iterator, state.robot.getTempsDepuisDebutMatch());
+        state.gridspace.copy(modified.gridspace, state.robot.getTempsDepuisDebutMatch());
+        // Table et iterator on été copié par gridspace
+        // iterator a été mis à jour
     }
 
     @Override
@@ -108,47 +112,6 @@ public class GameState<R extends Robot, T extends Permission> implements Service
 		return hash;
 	}
 	
-	public static final void printHash(GameState<RobotChrono,?> state)
-	{
-//		state.gridspace.printHash();
-//		state.robot.printHash();
-	}
-	
-	/**
-	 * Utilisé par le script d'attente
-	 * @return
-	 */
-	public static final boolean canSleepUntilSomethingChange(GameState<?,ReadOnly> state)
-	{
-		// si on utilise le vrai robot, alors les valeurs des capteurs peuvent changer
-		// (ce qui n'est pas anticipable par robotchrono)
-		if(state.robot instanceof RobotReal)
-			return true;
-		return state.iterator.getDateSomethingChange() != Integer.MAX_VALUE;
-	}
-	
-	// FIXME: vérifier aussi les capteurs du robot vrai
-	/**
-	 * Utilisé par le script d'attente
-	 * @throws FinMatchException
-	 */
-	public static final void sleepUntilSomethingChange(GameState<?,ReadWrite> state) throws FinMatchException
-	{
-		// on ajoute quelques microsecondes afin d'être bien
-		// sûr qu'après cette date l'obstacle soit parti
-		long date_fin = state.iterator.getDateSomethingChange() + 5;
-/*		if(robot instanceof RobotReal)
-		{
-			while(robot.getTempsDepuisDebutMatch() < date_fin)
-			{
-				
-			}
-		}
-		else*/
-		state.robot.sleepUntil(date_fin);
-	}
-
-
 	@SuppressWarnings("unchecked")
 	public final GameState<R, ReadOnly> getReadOnly() {
 		return (GameState<R, ReadOnly>) this;

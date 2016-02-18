@@ -4,6 +4,7 @@ import obstacles.Capteurs;
 import obstacles.ClothoidesComputer;
 import obstacles.MoteurPhysique;
 import obstacles.ObserveTableEtObstacles;
+import obstacles.ObstaclesIterator;
 import obstacles.ObstaclesMemory;
 import obstacles.types.Obstacle;
 
@@ -171,6 +172,8 @@ public class Container
 	{
 		if(showGraph && !serviceTo.equals(ServiceNames.LOG))
 		{
+			ArrayList<ServiceNames> postponed = new ArrayList<ServiceNames>();
+			postponed.add(ServiceNames.CAPTEURS);
 			ArrayList<ServiceNames> ok = new ArrayList<ServiceNames>();
 			ok.add(ServiceNames.CONFIG);
 			ok.add(ServiceNames.SERIE_STM);
@@ -187,7 +190,9 @@ public class Container
 			ok.add(ServiceNames.THREAD_CONFIG);
 
 			try {
-				if(ok.contains(serviceTo))
+				if(postponed.contains(serviceTo))
+					fw.write(serviceTo+" [color=firebrick2, style=filled];\n");
+				else if(ok.contains(serviceTo))
 					fw.write(serviceTo+" [color=grey80, style=filled];\n");
 				else
 					fw.write(serviceTo+";\n");
@@ -248,7 +253,7 @@ public class Container
 																						(ObserveTableEtObstacles)getServiceDisplay(serviceRequested, ServiceNames.OBSERVE_TABLE_ET_OBSTACLES));
 		else if(serviceRequested == ServiceNames.GRID_SPACE)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new GridSpace((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
-																					(ObstaclesMemory)getServiceDisplay(serviceRequested, ServiceNames.OBSTACLES_MEMORY),
+																					(ObstaclesIterator) new ObstaclesIterator((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG), (ObstaclesMemory)getServiceDisplay(serviceRequested, ServiceNames.OBSTACLES_MEMORY)),
 																					(Table)getServiceDisplay(serviceRequested, ServiceNames.TABLE));
 		else if(serviceRequested == ServiceNames.INCOMING_DATA_BUFFER)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new IncomingDataBuffer((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG));
@@ -265,14 +270,12 @@ public class Container
 		else if(serviceRequested == ServiceNames.ROBOT_REAL)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new RobotReal((DataForSerialOutput)getServiceDisplay(serviceRequested, ServiceNames.SERIAL_OUTPUT_BUFFER),
 															 (Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
-															 (RequeteSTM)getServiceDisplay(serviceRequested, ServiceNames.REQUETE_STM),
-															 (GridSpace)getServiceDisplay(serviceRequested, ServiceNames.GRID_SPACE));
+															 (RequeteSTM)getServiceDisplay(serviceRequested, ServiceNames.REQUETE_STM));
         else if(serviceRequested == ServiceNames.REAL_GAME_STATE)
         	// ici la construction est un petit peu différente car on interdit l'instanciation publique d'un GameSTate<RobotChrono>
             instanciedServices[serviceRequested.ordinal()] = (Service) GameState.constructRealGameState((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
-                                                             (Table)getServiceDisplay(serviceRequested, ServiceNames.TABLE),
                                                              (RobotReal)getServiceDisplay(serviceRequested, ServiceNames.ROBOT_REAL),
-															 (ObstaclesMemory)getServiceDisplay(serviceRequested, ServiceNames.OBSTACLES_MEMORY));
+															 (GridSpace)getServiceDisplay(serviceRequested, ServiceNames.GRID_SPACE));
 		else if(serviceRequested == ServiceNames.SCRIPT_MANAGER)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ScriptManager((HookFactory)getServiceDisplay(serviceRequested, ServiceNames.HOOK_FACTORY),
 																					(Log)getServiceDisplay(serviceRequested, ServiceNames.LOG));

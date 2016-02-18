@@ -1,5 +1,6 @@
 package pathfinding.astarCourbe;
 
+import java.util.BitSet;
 import java.util.PriorityQueue;
 
 import pathfinding.CheminPathfinding;
@@ -91,7 +92,7 @@ public class AStarCourbe implements Service
 //			fenetre.setColor(arc.getGridpointArrivee(), Fenetre.Couleur.VIOLET);
 	}
 	
-	public synchronized void updatePath() throws PathfindingException
+	public synchronized void updatePath(BitSet xor) throws PathfindingException
 	{
 		synchronized(state)
 		{
@@ -99,7 +100,7 @@ public class AStarCourbe implements Service
 			GameState.copyAStarCourbe(state, depart.state);
 		}
 		
-		dstarlite.updatePath(depart.state.robot.getPosition());
+		dstarlite.updatePath(depart.state.robot.getPosition(), xor);
 		process();
 		
 		if(Config.graphicAStarCourbe)

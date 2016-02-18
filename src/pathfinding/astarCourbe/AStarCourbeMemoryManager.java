@@ -25,6 +25,7 @@ public class AStarCourbeMemoryManager implements Service {
 	protected Log log;
 	
 	// nodes est triés: avant firstAvailable, les gamestate sont indisponibles, après, ils sont disponibles
+	// en fait, on est dans un cas très simple, où l'AStarCourbe demande les nœuds un par un et les libère tous d'un coup
 	private int firstAvailable;
 	
 	@Override

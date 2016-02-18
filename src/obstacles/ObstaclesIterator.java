@@ -46,6 +46,11 @@ public class ObstaclesIterator implements Iterator<ObstacleProximity>
     	other.dateInit = date;
     }
     
+    @Override
+    public int hashCode()
+    {
+    	return firstNotDead;
+    }
     /**
      * Utilisé afin de calculer la péremption du cache du gridspace
      * @param other
