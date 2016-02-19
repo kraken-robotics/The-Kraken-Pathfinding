@@ -32,14 +32,18 @@ public class ObstaclesMemory implements Service
 	{
 		this.log = log;
 	}
-	
-	public synchronized ObstacleProximity add(Vec2<ReadOnly> position, long date_actuelle, boolean urgent)
+
+	public synchronized ObstacleProximity add(Vec2<ReadOnly> position, boolean urgent)
 	{
-        ObstacleProximity obstacle = new ObstacleProximity(position, rayonEnnemi, date_actuelle+dureeAvantPeremption, urgent);
+		return add(position, System.currentTimeMillis(), urgent);
+	}
+	
+	public synchronized ObstacleProximity add(Vec2<ReadOnly> position, long date, boolean urgent)
+	{
+        ObstacleProximity obstacle = new ObstacleProximity(position, rayonEnnemi, date+dureeAvantPeremption, urgent);
 //      log.warning("Obstacle créé, rayon = "+rayon_robot_adverse+", centre = "+position+", meurt à "+(date_actuelle+dureeAvantPeremption), this);
         listObstaclesMobiles.add(obstacle);
         size++;
-		notify();
 		return obstacle;
 	}
 	
@@ -66,23 +70,26 @@ public class ObstaclesMemory implements Service
 		return listObstaclesMobiles.get(nbTmp-firstNotDeadNow);
 	}
 
-	public synchronized void deleteOldObstacles()
+	/**
+	 * Renvoie vrai s'il y a effectivement suppression
+	 * @return
+	 */
+	public synchronized boolean deleteOldObstacles()
 	{
 		long dateActuelle = System.currentTimeMillis();
-		boolean shouldNotify = false;
+		boolean destroyed = false;
 		while(!listObstaclesMobiles.isEmpty())
 		{
 			if(listObstaclesMobiles.getFirst().isDestructionNecessary(dateActuelle))
 			{
 				firstNotDeadNow++;
 				listObstaclesMobiles.removeFirst();
-				shouldNotify = true;
+				destroyed = true;
 			}
 			else
 				break;
 		}
-		if(shouldNotify)
-			notify();
+		return destroyed;
 	}
 	
 	public synchronized long getNextDeathDate()

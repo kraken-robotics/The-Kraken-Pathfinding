@@ -131,7 +131,7 @@ public class DStarLite implements Service
 					fenetre.setColor(u.gridpoint, Fenetre.Couleur.ROUGE);
 				for(int i = 0; i < 8; i++)
 				{
-					int voisin = gridspace.getGridPointVoisin(u.gridpoint, i);
+					int voisin = GridSpace.getGridPointVoisin(u.gridpoint, i);
 					if(voisin < 0)
 						continue;
 					DStarLiteNode s = getFromMemory(voisin);
@@ -146,7 +146,7 @@ public class DStarLite implements Service
 				u.g = Integer.MAX_VALUE;
 				for(int i = 0; i < 8; i++)
 				{
-					int voisin = gridspace.getGridPointVoisin(u.gridpoint, i);
+					int voisin = GridSpace.getGridPointVoisin(u.gridpoint, i);
 					if(voisin < 0)
 						continue;
 					DStarLiteNode s = getFromMemory(voisin);
@@ -157,7 +157,7 @@ public class DStarLite implements Service
 						s.rhs = Integer.MAX_VALUE;
 						for(int j = 0; j < 8; j++)
 						{
-							voisin = gridspace.getGridPointVoisin(s.gridpoint, j);
+							voisin = GridSpace.getGridPointVoisin(s.gridpoint, j);
 							if(voisin < 0)
 								continue;
 							DStarLiteNode s2 = getFromMemory(voisin);
@@ -171,7 +171,7 @@ public class DStarLite implements Service
 					u.rhs = Integer.MAX_VALUE;
 					for(int i = 0; i < 8; i++)
 					{
-						int voisin = gridspace.getGridPointVoisin(u.gridpoint, i);
+						int voisin = GridSpace.getGridPointVoisin(u.gridpoint, i);
 						if(voisin < 0)
 							continue;
 						DStarLiteNode s = getFromMemory(voisin);
@@ -231,7 +231,7 @@ public class DStarLite implements Service
 	
 	private final int distanceHeuristique(int gridpoint)
 	{
-		return gridspace.distanceHeuristiqueDStarLite(depart.gridpoint, gridpoint);
+		return GridSpace.distanceHeuristiqueDStarLite(depart.gridpoint, gridpoint);
 	}
 
 	@Override
@@ -284,7 +284,7 @@ public class DStarLite implements Service
 			
 			for(int i = 0; i < 8; i++)
 			{
-				int voisin = gridspace.getGridPointVoisin(node.gridpoint, i);
+				int voisin = GridSpace.getGridPointVoisin(node.gridpoint, i);
 				if(voisin < 0)
 					continue;
 				DStarLiteNode s = getFromMemory(voisin);
@@ -365,7 +365,7 @@ public class DStarLite implements Service
 		notes.clear();
 		for(int i = 0 ; i < 8 ; i++)
 		{
-			int voisin = gridspace.getGridPointVoisin(gridpoint, i);
+			int voisin = GridSpace.getGridPointVoisin(gridpoint, i);
 			if(voisin < 0 || !isThisNodeUptodate(voisin))
 				continue;
 

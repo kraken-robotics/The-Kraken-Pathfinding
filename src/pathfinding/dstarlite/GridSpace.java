@@ -2,6 +2,7 @@ package pathfinding.dstarlite;
 
 import java.util.BitSet;
 
+import obstacles.ObstaclesFixes;
 import obstacles.ObstaclesIterator;
 import obstacles.ObstaclesMemory;
 import obstacles.types.ObstacleProximity;
@@ -19,6 +20,7 @@ import enums.Tribool;
 /**
  * La classe qui contient la grille utilisée par le pathfinding.
  * Utilisée uniquement pour le pathfinding DStarLite.
+ * Notifie quand il y a un changement d'obstacles
  * Ordre des directions : NO, SE, NE, SO, N, S, O, E;
  * @author pf
  *
@@ -29,8 +31,8 @@ public class GridSpace implements Service
 	protected Log log;
 	private ObstaclesIterator iterator;
 	private ObstaclesMemory memory;
-	private boolean ignoreElementJeu;
 	private Table table;
+
 	/**
 	 * Comme on veut que le DStarLite recherche plus de noeuds qu'il n'y en aurait besoin, ce coeff ne vaut pas 1
 	 */
@@ -51,8 +53,8 @@ public class GridSpace implements Service
 	// grille des obstacles dynamiques
 	private BitSet grilleDynamique = new BitSet(NB_POINTS);
 	
-	// grille des éléments de jeu
-	private BitSet grilleElementJeu = new BitSet(NB_POINTS);
+	// la grille pour laquelle le dernier pathfinding a été calculé
+	private BitSet grilleDynamiquePrevious = new BitSet(NB_POINTS);
 	
 	private static BitSet masqueObs = null;
 	private static int centreMasque;
@@ -61,8 +63,16 @@ public class GridSpace implements Service
 	static
 	{
 		// A priori, tout est traversable
+		grilleStatique.clear();
 		for(int i = 0; i < NB_POINTS; i++)
-			grilleStatique.set(i);
+		{
+			for(ObstaclesFixes o : ObstaclesFixes.values)
+				if(o.getObstacle().isInObstacle(computeVec2(i)))
+				{
+					grilleStatique.set(i);
+					break; // on ne vérifie pas les autres obstacles
+				}
+		}
 	}
 	
 	public GridSpace(Log log, ObstaclesMemory memory, Table table)
@@ -73,12 +83,7 @@ public class GridSpace implements Service
 		this.iterator = new ObstaclesIterator(log, memory);
 
 		// A priori, tout est traversable
-		for(int i = 0; i < NB_POINTS; i++)
-		{
-			grilleDynamique.set(i);
-			grilleElementJeu.set(i);
-		}
-
+		grilleDynamique.clear();
 	}
 	
 	/**
@@ -95,12 +100,7 @@ public class GridSpace implements Service
 		this.iterator = iterator;
 
 		// A priori, tout est traversable
-		for(int i = 0; i < NB_POINTS; i++)
-		{
-			grilleDynamique.set(i);
-			grilleElementJeu.set(i);
-		}
-
+		grilleDynamique.clear();
 	}
 	
 	/**
@@ -109,7 +109,7 @@ public class GridSpace implements Service
 	 * @param pointB
 	 * @return
 	 */
-	public final int distanceHeuristiqueDStarLite(int pointA, int pointB)
+	public static final int distanceHeuristiqueDStarLite(int pointA, int pointB)
 	{
 		int dx = Math.abs((pointA & (NB_POINTS_POUR_TROIS_METRES - 1)) - (pointB & (NB_POINTS_POUR_TROIS_METRES - 1))); // ceci est un modulo
 		int dy = Math.abs((pointA >> PRECISION) - (pointB >> PRECISION)); // ceci est une division
@@ -124,7 +124,7 @@ public class GridSpace implements Service
 	 * @param direction
 	 * @return
 	 */
-	public int getGridPointVoisin(int point, int direction)
+	public static int getGridPointVoisin(int point, int direction)
 	{
 		int x = point & (NB_POINTS_POUR_TROIS_METRES - 1);
 		int y = point >> PRECISION;
@@ -191,6 +191,7 @@ public class GridSpace implements Service
 		tailleMasque = 2*(rayonPoint+1)+1;
 		centreMasque = tailleMasque / 2;
 		masqueObs = new BitSet(tailleMasque * tailleMasque);
+		masqueObs.clear();
 		for(int i = 0; i < tailleMasque; i++)
 			for(int j = 0; j < tailleMasque; j++)
 				if((i-centreMasque) * (i-centreMasque) + (j-centreMasque) * (j-centreMasque) <= rayonPoint*rayonPoint)
@@ -250,7 +251,8 @@ public class GridSpace implements Service
 	 */
 	private boolean isTraversable(int gridpoint, int direction)
 	{
-		return grilleStatique.get(getGridPointVoisin(gridpoint, direction));
+		int point = getGridPointVoisin(gridpoint, direction);
+		return !grilleStatique.get(point) && !grilleDynamique.get(point);
 	}
 
 	/**
@@ -261,7 +263,7 @@ public class GridSpace implements Service
 	 */
 	public boolean isTraversable(int gridpoint)
 	{
-		return grilleStatique.get(gridpoint);
+		return !grilleStatique.get(gridpoint) && !grilleDynamique.get(gridpoint);
 	}
 
 	public static int getGridPointX(Vec2<ReadOnly> p)
@@ -295,7 +297,7 @@ public class GridSpace implements Service
 	 * @return
 	 */
 	public int distanceDStarLite(int point, int i) {
-		if(!isTraversable(point, i)) // TODO : et les obstacles dynamiques ?
+		if(!isTraversable(point, i))
 			return Integer.MAX_VALUE;
 		if(i < 4) // cf ordre des directions
 			return 1414;
@@ -317,18 +319,19 @@ public class GridSpace implements Service
 	}
 	
 	/**
-	 * Update le gridspace à partir de la liste des obstacles et de la table
 	 * Utilisé par un thread régulièrement
 	 * Récupère la différence dans la grilleDynamique
 	 * @return
 	 */
-	public BitSet update()
+	public synchronized BitSet getWhatChanged()
 	{
-		iterator.reinitNow();
-		BitSet old = (BitSet) grilleDynamique.clone();
-		updateGrilleDynamique();
-		old.xor(grilleDynamique);
-		return old;
+		BitSet out = (BitSet) grilleDynamiquePrevious.clone();
+		out.xor(grilleDynamique);
+		out.andNot(grilleStatique); // pas besoin de mettre à jour ce qui est dans les obstacles fixes
+		// copie
+		grilleDynamiquePrevious.clear();
+		grilleDynamiquePrevious.or(grilleDynamique);
+		return out;
 	}
 
 	public GridSpace clone(long date)
@@ -359,15 +362,16 @@ public class GridSpace implements Service
 			other.grilleDynamique.or(grilleDynamique);
 		}
 		else
-			updateGrilleDynamique();
+			other.regenereGrilleDynamique();
 	}
 	
 	/**
 	 * Ajoute tous les obstacles à la grille.
 	 * A l'appel de cette méthode, la grille est vide
 	 */
-	private void updateGrilleDynamique()
+	private void regenereGrilleDynamique()
 	{
+		grilleDynamique.clear();
 		iterator.reinit();
 		while(iterator.hasNext())
 			setObstacle(iterator.next());
@@ -420,10 +424,11 @@ public class GridSpace implements Service
 	 * @param urgent
 	 * @return
 	 */
-	public ObstacleProximity addObstacle(Vec2<ReadOnly> position,
-			long dateActuelle, boolean urgent) {
-		ObstacleProximity o = memory.add(position, dateActuelle, urgent);
+	public synchronized ObstacleProximity addObstacle(Vec2<ReadOnly> position, boolean urgent) {
+		ObstacleProximity o = memory.add(position, urgent);
+		// pour un ajout, pas besoin de tout régénérer
 		setObstacle(o);
+		notify(); // changement de la grille dynamique !
 		return o;
 	}
 
@@ -434,14 +439,15 @@ public class GridSpace implements Service
 
 	public void setDoneTable(GameElementNames g, Tribool done)
 	{
-		// TODO modif grille
 		table.setDone(g, done);
 	}
 
-	public void deleteOldObstacles()
+	public synchronized void deleteOldObstacles()
 	{
-		memory.deleteOldObstacles();
-		updateGrilleDynamique();
+		// S'il y a effectivement suppression, on régénère la grille
+		if(memory.deleteOldObstacles())
+			regenereGrilleDynamique();
+		notify(); // changement de la grille dynamique !
 	}
 
 	public long getNextDeathDate()

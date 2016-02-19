@@ -42,7 +42,7 @@ public class ThreadPathfinding extends Thread implements Service
 					e.printStackTrace();
 				}
 			}
-			BitSet xor = gridspace.update();
+			BitSet xor = gridspace.getWhatChanged();
 			
 			if(!xor.isEmpty()) // si y'a du changement
 			{

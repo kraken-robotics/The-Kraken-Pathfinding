@@ -155,7 +155,7 @@ public class Capteurs implements Service {
 				Vec2.plus(positionEnnemi, positionRobot);
 				if(debug)
 					log.debug("Obstacle vu par un capteur: "+positionEnnemi);
-				ObstacleProximity o = gridspace.addObstacle(positionEnnemi.getReadOnly(), System.currentTimeMillis(), true);
+				ObstacleProximity o = gridspace.addObstacle(positionEnnemi.getReadOnly(), true);
 			    for(GameElementNames g: GameElementNames.values)
 			        if(gridspace.isDoneTable(g) == Tribool.FALSE && moteur.didTheEnemyTakeIt(g, o))
 			        	gridspace.setDoneTable(g, Tribool.MAYBE);						
