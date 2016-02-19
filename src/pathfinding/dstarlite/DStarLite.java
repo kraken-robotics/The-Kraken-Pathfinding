@@ -1,7 +1,7 @@
 package pathfinding.dstarlite;
 
 import java.util.ArrayList;
-import java.util.BitSet;
+import java.util.ListIterator;
 import java.util.PriorityQueue;
 
 import permissions.ReadOnly;
@@ -16,6 +16,9 @@ import exceptions.PathfindingException;
  * Recherche de chemin avec replanification rapide.
  * Fournit un chemin non courbe sous forme d'une ligne brisée.
  * En fait utilisé comme heuristique par ThetaStar.
+ * N'est utilisé qu'avec le "vrai" gridspace. Pour la planification à plus long terme,
+ * on utilise l'AStarCourbe sans DStarLite mais avec une heuristique toute simple.
+ * En effet, un souci de cette implémentation est qu'elle ne peut travailler qu'avec le robot réel et ne prévoit rien.
  * @author pf
  *
  */
@@ -242,17 +245,18 @@ public class DStarLite implements Service
 	public void useConfig(Config config)
 	{}
 	
-	public void updatePath(Vec2<ReadOnly> positionRobot, BitSet xor) throws PathfindingException
+	public void updatePath(Vec2<ReadOnly> positionRobot) throws PathfindingException
 	{
-		updatePath(GridSpace.computeGridPoint(positionRobot), xor);
+		updatePath(GridSpace.computeGridPoint(positionRobot));
 	}
 	
 	/**
 	 * Met à jour le pathfinding
 	 * @throws PathfindingException 
 	 */
-	public void updatePath(int positionRobot, BitSet xor) throws PathfindingException
+	public void updatePath(int positionRobot) throws PathfindingException
 	{
+		ListIterator<Integer> obstaclesAAjouter = gridspace.getWhatChanged();
 		depart = getFromMemory(positionRobot);
 		km += distanceHeuristique(last);
 		last = depart.gridpoint;

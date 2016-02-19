@@ -1,6 +1,8 @@
 package pathfinding.dstarlite;
 
+import java.util.ArrayList;
 import java.util.BitSet;
+import java.util.ListIterator;
 
 import obstacles.ObstaclesFixes;
 import obstacles.ObstaclesIterator;
@@ -30,7 +32,7 @@ public class GridSpace implements Service
 {
 	protected Log log;
 	private ObstaclesIterator iterator;
-	private ObstaclesMemory memory;
+	private ObstaclesMemory obstaclesMemory;
 	private Table table;
 
 	/**
@@ -39,6 +41,7 @@ public class GridSpace implements Service
 //	private static final int COEFF_HEURISTIQUE = 2;
 
 	public static final int PRECISION = 6;
+	public static final int DEUXIEME_POINT_COUPLE = 12;
 	public static final int NB_POINTS_POUR_TROIS_METRES = (1 << PRECISION);
 	public static final int NB_POINTS_POUR_DEUX_METRES = (int) ((1 << PRECISION)*2./3.);
 	public static final double DISTANCE_ENTRE_DEUX_POINTS = 3000./NB_POINTS_POUR_TROIS_METRES;
@@ -48,42 +51,37 @@ public class GridSpace implements Service
 	private static final int Y_MAX = NB_POINTS_POUR_DEUX_METRES - 1;
 	
 	// cette grille est constante, c'est-à-dire qu'elle ne contient que les obstacles fixes
-	private static BitSet grilleStatique = new BitSet(NB_POINTS);
+	private static BitSet grilleStatique = null;
 	
-	// grille des obstacles dynamiques
-	private BitSet grilleDynamique = new BitSet(NB_POINTS);
+	// couples de points dont le coût a été changé
+	private ArrayList<Integer> couplesCout = new ArrayList<Integer>();
 	
-	// la grille pour laquelle le dernier pathfinding a été calculé
-	private BitSet grilleDynamiquePrevious = new BitSet(NB_POINTS);
-	
-	private static BitSet masqueObs = null;
+	private static ArrayList<Integer> masque = new ArrayList<Integer>();
 	private static int centreMasque;
-	private static int tailleMasque;
+	private int nbCouplesEnvoyes = 0;
 	
-	static
+	public GridSpace(Log log, ObstaclesMemory obstaclesMemory, Table table)
 	{
-		// A priori, tout est traversable
-		grilleStatique.clear();
-		for(int i = 0; i < NB_POINTS; i++)
-		{
-			for(ObstaclesFixes o : ObstaclesFixes.values)
-				if(o.getObstacle().isInObstacle(computeVec2(i)))
-				{
-					grilleStatique.set(i);
-					break; // on ne vérifie pas les autres obstacles
-				}
-		}
-	}
-	
-	public GridSpace(Log log, ObstaclesMemory memory, Table table)
-	{
-		this.memory = memory;
+		this.obstaclesMemory = obstaclesMemory;
 		this.log = log;
 		this.table = table;
-		this.iterator = new ObstaclesIterator(log, memory);
+		this.iterator = new ObstaclesIterator(log, obstaclesMemory);
 
-		// A priori, tout est traversable
-		grilleDynamique.clear();
+		if(grilleStatique == null)
+		{
+			// Initialisation, une fois pour toutes, de la grille statique
+			grilleStatique = new BitSet(NB_POINTS);
+			for(int i = 0; i < NB_POINTS; i++)
+			{
+				for(ObstaclesFixes o : ObstaclesFixes.values)
+					if(o.getObstacle().isInObstacle(computeVec2(i)))
+					{
+						grilleStatique.set(i);
+						break; // on ne vérifie pas les autres obstacles
+					}
+			}
+			log.debug("Grille statique initialisée");
+		}
 	}
 	
 	/**
@@ -98,9 +96,6 @@ public class GridSpace implements Service
 		this.log = log;
 		this.table = table;
 		this.iterator = iterator;
-
-		// A priori, tout est traversable
-		grilleDynamique.clear();
 	}
 	
 	/**
@@ -134,50 +129,50 @@ public class GridSpace implements Service
 		case 0:
 //			NO
 			if(x > 0 && y < Y_MAX)
-				return point+NB_POINTS_POUR_TROIS_METRES-1;
+				return point + NB_POINTS_POUR_TROIS_METRES - 1;
 			return -1; // hors table
 
 		case 1:
 //			SE
 			if(x < X_MAX && y > 0)
-				return point-NB_POINTS_POUR_TROIS_METRES+1;
+				return point - NB_POINTS_POUR_TROIS_METRES + 1;
 			return -1; // hors table
 
 		case 2:
 //			NE
 			if(x < X_MAX && y < Y_MAX)
-				return point+NB_POINTS_POUR_TROIS_METRES+1;
+				return point + NB_POINTS_POUR_TROIS_METRES + 1;
 			return -1; // hors table
 
 		case 3:
 //			SO
 			if(x > 0 && y > 0)
-				return point-NB_POINTS_POUR_TROIS_METRES-1;
+				return point - NB_POINTS_POUR_TROIS_METRES - 1;
 			return -1; // hors table
 
 		case 4:
 //			N
 			if(y < Y_MAX)
-				return point+NB_POINTS_POUR_TROIS_METRES;
+				return point + NB_POINTS_POUR_TROIS_METRES;
 			return -1; // hors table
 
 		case 5:
 //			S
 			if(y > 0)
-				return point-NB_POINTS_POUR_TROIS_METRES;
+				return point - NB_POINTS_POUR_TROIS_METRES;
 			return -1; // hors table
 
 		case 6:
 //			O
-			if(x > 0)
-				return point-1;
+			if(x > 0) // en fait, on pourrait directement renvoyer point - 1 dans tous les cas…
+				return point - 1;
 			return -1; // hors table
 
 //		case 7:
 		default:
 //			E
 			if(x < X_MAX)
-				return point+1;
+				return point + 1;
 			return -1; // hors table
 		}
 		
@@ -188,52 +183,60 @@ public class GridSpace implements Service
 	{
 		int rayonEnnemi = config.getInt(ConfigInfo.RAYON_ROBOT_ADVERSE);
 		int rayonPoint = (int) Math.round(rayonEnnemi / DISTANCE_ENTRE_DEUX_POINTS);
-		tailleMasque = 2*(rayonPoint+1)+1;
+		int tailleMasque = 2*(rayonPoint+1)+1;
 		centreMasque = tailleMasque / 2;
-		masqueObs = new BitSet(tailleMasque * tailleMasque);
-		masqueObs.clear();
-		for(int i = 0; i < tailleMasque; i++)
-			for(int j = 0; j < tailleMasque; j++)
+		for(int i = 1; i < tailleMasque-1; i++)
+			for(int j = 1; j < tailleMasque-1; j++)
 				if((i-centreMasque) * (i-centreMasque) + (j-centreMasque) * (j-centreMasque) <= rayonPoint*rayonPoint)
 				{
 					int i2, j2;
 					i2 = i - 1;
 					j2 = j;
-					if(i2 >= 0 && (i2-centreMasque) * (i2-centreMasque) + (j2-centreMasque) * (j2-centreMasque) > rayonPoint*rayonPoint)
+					if((i2-centreMasque) * (i2-centreMasque) + (j2-centreMasque) * (j2-centreMasque) > rayonPoint*rayonPoint)
 					{
-						masqueObs.set(i*tailleMasque+j);
-						continue;
+//						log.debug("1 Dans masque : "+i+" "+j+" "+i2+" "+j2);
+						masque.add((((j2 << PRECISION) +i2) << DEUXIEME_POINT_COUPLE) + (j << PRECISION) + i);
 					}
 					i2 = i + 1;
-					if(i2 < tailleMasque && (i2-centreMasque) * (i2-centreMasque) + (j2-centreMasque) * (j2-centreMasque) > rayonPoint*rayonPoint)
+					if((i2-centreMasque) * (i2-centreMasque) + (j2-centreMasque) * (j2-centreMasque) > rayonPoint*rayonPoint)
 					{
-						masqueObs.set(i*tailleMasque+j);
-						continue;
+//						log.debug("2 Dans masque : "+i+" "+j+" "+i2+" "+j2);
+						masque.add((((j2 << PRECISION) +i2) << DEUXIEME_POINT_COUPLE) + (j << PRECISION) + i);
 					}
 					i2 = i;
 					j2 = j - 1;
-					if(j2 >= 0 && (i2-centreMasque) * (i2-centreMasque) + (j2-centreMasque) * (j2-centreMasque) > rayonPoint*rayonPoint)
+					if((i2-centreMasque) * (i2-centreMasque) + (j2-centreMasque) * (j2-centreMasque) > rayonPoint*rayonPoint)
 					{
-						masqueObs.set(i*tailleMasque+j);
-						continue;
+//						log.debug("3 Dans masque : "+i+" "+j+" "+i2+" "+j2);
+						masque.add((((j2 << PRECISION) +i2) << DEUXIEME_POINT_COUPLE) + (j << PRECISION) + i);
 					}
 					j2 = j + 1;
-					if(j2 < tailleMasque && (i2-centreMasque) * (i2-centreMasque) + (j2-centreMasque) * (j2-centreMasque) > rayonPoint*rayonPoint)
+					if((i2-centreMasque) * (i2-centreMasque) + (j2-centreMasque) * (j2-centreMasque) > rayonPoint*rayonPoint)
 					{
-						masqueObs.set(i*tailleMasque+j);
-						continue;
+//						log.debug("4 Dans masque : "+i+" "+j+" "+i2+" "+j2);
+						masque.add((((j2 << PRECISION) +i2) << DEUXIEME_POINT_COUPLE) + (j << PRECISION) + i);
 					}
-
 			}
-/*
+
+		/*
 		System.out.println("Masque : ");
 		for(int i = 0; i < tailleMasque; i++)
 		{
 			for(int j = 0; j < tailleMasque; j++)
-				if(masqueObs.get(i*tailleMasque+j))
-					System.out.print("X");
-				else
+			{
+				boolean aff = false;
+				for(Integer c : masque)
+				{
+					if((i << PRECISION) + j == (c & ((1 << DEUXIEME_POINT_COUPLE) - 1)))
+					{
+						aff = true;
+						System.out.print("X");
+						break;
+					}
+				}
+				if(!aff)
 					System.out.print(".");
+			}
 			System.out.println();
 		}*/
 	}
@@ -252,18 +255,8 @@ public class GridSpace implements Service
 	private boolean isTraversable(int gridpoint, int direction)
 	{
 		int point = getGridPointVoisin(gridpoint, direction);
-		return !grilleStatique.get(point) && !grilleDynamique.get(point);
-	}
-
-	/**
-	 * Utilisé pour l'affichage
-	 * @param gridpoint
-	 * @param direction
-	 * @return
-	 */
-	public boolean isTraversable(int gridpoint)
-	{
-		return !grilleStatique.get(gridpoint) && !grilleDynamique.get(gridpoint);
+		// TODO
+		return true;
 	}
 
 	public static int getGridPointX(Vec2<ReadOnly> p)
@@ -297,6 +290,7 @@ public class GridSpace implements Service
 	 * @return
 	 */
 	public int distanceDStarLite(int point, int i) {
+		// TODO
 		if(!isTraversable(point, i))
 			return Integer.MAX_VALUE;
 		if(i < 4) // cf ordre des directions
@@ -323,23 +317,19 @@ public class GridSpace implements Service
 	 * Récupère la différence dans la grilleDynamique
 	 * @return
 	 */
-	public synchronized BitSet getWhatChanged()
+	public synchronized ListIterator<Integer> getWhatChanged()
 	{
-		BitSet out = (BitSet) grilleDynamiquePrevious.clone();
-		out.xor(grilleDynamique);
-		out.andNot(grilleStatique); // pas besoin de mettre à jour ce qui est dans les obstacles fixes
-		// copie
-		grilleDynamiquePrevious.clear();
-		grilleDynamiquePrevious.or(grilleDynamique);
+//		log.debug(couplesCout.size()+" "+nbCouplesEnvoyes);
+		ListIterator<Integer> out = couplesCout.listIterator(nbCouplesEnvoyes);
+		nbCouplesEnvoyes = couplesCout.size();
 		return out;
 	}
 
 	public GridSpace clone(long date)
 	{
 		GridSpace out = new GridSpace(log, iterator.clone(date), table.clone());
-		// Ceci est une copie. Si si.
-		out.grilleDynamique.clear();
-		out.grilleDynamique.or(grilleDynamique);
+		out.couplesCout.clear();
+		out.couplesCout.addAll(couplesCout);
 		return out;
 	}
 
@@ -358,23 +348,23 @@ public class GridSpace implements Service
 		// Pas de modification de la grille dynamique, on recopie juste
 		if(iterator.hashCode() == hash)
 		{
-			other.grilleDynamique.clear(); // copie de la grille dynamique
-			other.grilleDynamique.or(grilleDynamique);
+			other.couplesCout.clear();
+			other.couplesCout.addAll(couplesCout);
 		}
 		else
-			other.regenereGrilleDynamique();
+			other.regenereCouplesCout();
 	}
 	
 	/**
 	 * Ajoute tous les obstacles à la grille.
-	 * A l'appel de cette méthode, la grille est vide
 	 */
-	private void regenereGrilleDynamique()
+	private void regenereCouplesCout()
 	{
-		grilleDynamique.clear();
 		iterator.reinit();
+		couplesCout.clear();
 		while(iterator.hasNext())
 			setObstacle(iterator.next());
+		nbCouplesEnvoyes = 0; // il va falloir tout renvoyer
 	}
 
 	/**
@@ -385,17 +375,30 @@ public class GridSpace implements Service
 	{
 		int x = getGridPointX(o.position);
 		int y = getGridPointY(o.position);
-		int x2, y2;
-		for(int i = 0; i < tailleMasque; i++)
-			for(int j = 0; j < tailleMasque; j++)
+		log.debug("xy : "+x+" "+y);
+		int xC1, yC1, xC2, yC2;
+		for(Integer c : masque)
+		{
+//			log.debug("c : "+c);
+			int p1 = c >> DEUXIEME_POINT_COUPLE;
+			int p2 = c & ((1 << DEUXIEME_POINT_COUPLE) - 1);
+			xC1 = (p1 & (NB_POINTS_POUR_TROIS_METRES - 1)) + x - centreMasque;
+			yC1 = (p1 >> PRECISION) + y - centreMasque;
+			xC2 = (p2 & (NB_POINTS_POUR_TROIS_METRES - 1)) + x - centreMasque;
+			yC2 = (p2 >> PRECISION) + y - centreMasque;
+
+//			log.debug("Obtenu : "+((((yC1 << PRECISION) +xC1) << DEUXIEME_POINT_COUPLE) + (yC2 << PRECISION) +xC2));
+			
+//			log.debug("Lecture masque : "+xC1+" "+yC1+" "+xC2+" "+yC2);
+//			log.debug("Lecture masque : "+computeVec2((yC1 << PRECISION) + xC2));
+
+			if(xC1 >= 0 && xC1 <= X_MAX && yC1 >= 0 && yC1 <= Y_MAX
+					&& xC2 >= 0 && xC2 <= X_MAX && yC2 >= 0 && yC2 <= Y_MAX)
 			{
-				if(!masqueObs.get(i*tailleMasque + j))
-					continue;
-				x2 = x + i - centreMasque;
-				y2 = y + j - centreMasque;
-				if(x2 >= 0 && x2 <= X_MAX && y2 >= 0 && y2 <= Y_MAX)
-					grilleDynamique.set(getGridPoint(x2, y2));					
+				couplesCout.add(getGridPoint(xC1,yC1) << DEUXIEME_POINT_COUPLE + getGridPoint(xC2,yC2));
+//				log.debug("Ajout !");
 			}
+		}
 	}
 
 	/**
@@ -425,7 +428,7 @@ public class GridSpace implements Service
 	 * @return
 	 */
 	public synchronized ObstacleProximity addObstacle(Vec2<ReadOnly> position, boolean urgent) {
-		ObstacleProximity o = memory.add(position, urgent);
+		ObstacleProximity o = obstaclesMemory.add(position, urgent);
 		// pour un ajout, pas besoin de tout régénérer
 		setObstacle(o);
 		notify(); // changement de la grille dynamique !
@@ -445,13 +448,21 @@ public class GridSpace implements Service
 	public synchronized void deleteOldObstacles()
 	{
 		// S'il y a effectivement suppression, on régénère la grille
-		if(memory.deleteOldObstacles())
-			regenereGrilleDynamique();
+		if(obstaclesMemory.deleteOldObstacles())
+			regenereCouplesCout();
 		notify(); // changement de la grille dynamique !
 	}
 
 	public long getNextDeathDate()
 	{
-		return memory.getNextDeathDate();
+		return obstaclesMemory.getNextDeathDate();
+	}
+
+	public boolean isTraversable(int point)
+	{
+		for(int i = 0; i < 8; i++)
+			if(!isTraversable(point, i))
+				return false;
+		return true;
 	}
 }

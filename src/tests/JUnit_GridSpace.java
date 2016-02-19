@@ -1,6 +1,7 @@
 package tests;
 
 import java.util.BitSet;
+import java.util.ListIterator;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -82,14 +83,14 @@ public class JUnit_GridSpace extends JUnit_Test {
 	@Test
 	public void test_ajout_obstacle() throws Exception
 	{
-		BitSet b = gridspace.getWhatChanged();
-		Assert.assertTrue(b.isEmpty());
+		ListIterator<Integer> b = gridspace.getWhatChanged();
+		Assert.assertTrue(!b.hasNext());
 		gridspace.addObstacle(new Vec2<ReadOnly>(200, 100), false);
 		b = gridspace.getWhatChanged();
-		Assert.assertTrue(!b.isEmpty());
-		gridspace.addObstacle(new Vec2<ReadOnly>(200, 100), false);
+		Assert.assertTrue(b.hasNext());
+		gridspace.addObstacle(new Vec2<ReadOnly>(400, 100), false);
 		b = gridspace.getWhatChanged();
-		Assert.assertTrue(b.isEmpty());
+		Assert.assertTrue(b.hasNext());
 	}
 
 }

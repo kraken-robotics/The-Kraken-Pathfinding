@@ -42,17 +42,15 @@ public class ThreadPathfinding extends Thread implements Service
 					e.printStackTrace();
 				}
 			}
-			BitSet xor = gridspace.getWhatChanged();
-			
-			if(!xor.isEmpty()) // si y'a du changement
-			{
-				try {
+			try {
+				synchronized(this)
+				{
 					notify(); // on prévient le thread d'évitement qu'un nouveau chemin est en calcul
-					pathfinding.updatePath(xor);
-				} catch (PathfindingException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					pathfinding.updatePath();
 				}
+			} catch (PathfindingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
 

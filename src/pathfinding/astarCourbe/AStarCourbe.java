@@ -92,7 +92,7 @@ public class AStarCourbe implements Service
 //			fenetre.setColor(arc.getGridpointArrivee(), Fenetre.Couleur.VIOLET);
 	}
 	
-	public synchronized void updatePath(BitSet xor) throws PathfindingException
+	public synchronized void updatePath() throws PathfindingException
 	{
 		synchronized(state)
 		{
@@ -100,7 +100,7 @@ public class AStarCourbe implements Service
 			GameState.copyAStarCourbe(state, depart.state);
 		}
 		
-		dstarlite.updatePath(depart.state.robot.getPosition(), xor);
+		dstarlite.updatePath(depart.state.robot.getPosition());
 		process();
 		
 		if(Config.graphicAStarCourbe)
