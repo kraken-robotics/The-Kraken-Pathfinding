@@ -36,10 +36,10 @@ public class GridSpace implements Service
 	public static final int NB_POINTS_POUR_TROIS_METRES = (1 << PRECISION);
 	public static final int NB_POINTS_POUR_DEUX_METRES = (int) ((1 << PRECISION)*2./3.);
 	public static final double DISTANCE_ENTRE_DEUX_POINTS = 3000./NB_POINTS_POUR_TROIS_METRES;
-	public static final int DISTANCE_ENTRE_DEUX_POINTS_1024 = (3000 << 10)/NB_POINTS_POUR_TROIS_METRES;
+	public static final int DISTANCE_ENTRE_DEUX_POINTS_1024 = 3000 << (10-PRECISION);
 	public static final int NB_POINTS = NB_POINTS_POUR_DEUX_METRES * NB_POINTS_POUR_TROIS_METRES;
-	private static final int X_MAX = NB_POINTS_POUR_TROIS_METRES-1;
-	private static final int Y_MAX = NB_POINTS_POUR_DEUX_METRES-1;
+	private static final int X_MAX = NB_POINTS_POUR_TROIS_METRES - 1;
+	private static final int Y_MAX = NB_POINTS_POUR_DEUX_METRES - 1;
 	
 	// cette grille est constante, c'est-à-dire qu'elle ne contient que les obstacles fixes
 	private static BitSet grilleStatique = new BitSet(NB_POINTS);
@@ -237,6 +237,21 @@ public class GridSpace implements Service
 		return grilleStatique.get(gridpoint);
 	}
 
+	public static int getGridPointX(Vec2<ReadOnly> p)
+	{
+		return (int) Math.round((p.x+1500) / GridSpace.DISTANCE_ENTRE_DEUX_POINTS);
+	}
+
+	public static int getGridPointY(Vec2<ReadOnly> p)
+	{
+		return (int) Math.round(p.y / GridSpace.DISTANCE_ENTRE_DEUX_POINTS);
+	}
+
+	public static int getGridPoint(int x, int y)
+	{
+		return y << PRECISION + x;
+	}
+
 	/**
 	 * Renvoie l'indice du gridpoint le plus proche de cette position
 	 * @param p
@@ -320,30 +335,51 @@ public class GridSpace implements Service
 			updateGrilleDynamique();
 	}
 	
+	/**
+	 * Ajoute tous les obstacles à la grille.
+	 * A l'appel de cette méthode, la grille est vide
+	 */
 	private void updateGrilleDynamique()
 	{
 		iterator.reinit();
 		while(iterator.hasNext())
-		{
 			setObstacle(iterator.next());
-		}
-
 	}
 
+	/**
+	 * Ajoute le contour d'un obstacle de proximité dans la grille dynamique
+	 * @param o
+	 */
 	private void setObstacle(ObstacleProximity o)
 	{
-		int centre = computeGridPoint(o.position); // TODO
+		int x = getGridPointX(o.position);
+		int y = getGridPointY(o.position);
+		int x2, y2;
 		for(int i = 0; i < tailleMasque; i++)
 			for(int j = 0; j < tailleMasque; j++)
-				;
-//		grilleDynamique
+			{
+				if(!masqueObs.get(i*tailleMasque + j))
+					continue;
+				x2 = x + i - centreMasque;
+				y2 = y + j - centreMasque;
+				if(x2 >= 0 && x2 <= X_MAX && y2 >= 0 && y2 <= Y_MAX)
+					grilleDynamique.set(getGridPoint(x2, y2));					
+			}
 	}
 
+	/**
+	 * Appelé par GameState
+	 * @return
+	 */
 	public ObstaclesIterator getIterator()
 	{
 		return iterator;
 	}
 
+	/**
+	 * Appelé par GameState
+	 * @return
+	 */
 	public Table getTable()
 	{
 		return table;
