@@ -20,7 +20,6 @@ import container.Service;
 public class ObstaclesMemory implements Service
 {
     // Les obstacles mobiles, c'est-à-dire des obstacles de proximité
-	private ObserveTableEtObstacles observeur;
     private volatile LinkedList<ObstacleProximity> listObstaclesMobiles = new LinkedList<ObstacleProximity>();
     private int dureeAvantPeremption;
 	private int rayonEnnemi;
@@ -29,10 +28,9 @@ public class ObstaclesMemory implements Service
 	
 	protected Log log;
 	
-	public ObstaclesMemory(Log log, ObserveTableEtObstacles observeur)
+	public ObstaclesMemory(Log log)
 	{
 		this.log = log;
-		this.observeur = observeur;
 	}
 	
 	public synchronized ObstacleProximity add(Vec2<ReadOnly> position, long date_actuelle, boolean urgent)
@@ -41,10 +39,6 @@ public class ObstaclesMemory implements Service
 //      log.warning("Obstacle créé, rayon = "+rayon_robot_adverse+", centre = "+position+", meurt à "+(date_actuelle+dureeAvantPeremption), this);
         listObstaclesMobiles.add(obstacle);
         size++;
-        synchronized (observeur)
-        {
-    		observeur.notify();			
-		}
 		notify();
 		return obstacle;
 	}
@@ -88,13 +82,7 @@ public class ObstaclesMemory implements Service
 				break;
 		}
 		if(shouldNotify)
-		{
-			synchronized (observeur)
-			{
-				observeur.notify();				
-			}
 			notify();
-		}
 	}
 	
 	public synchronized long getNextDeathDate()

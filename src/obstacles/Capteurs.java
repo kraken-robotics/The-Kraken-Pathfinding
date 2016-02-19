@@ -4,10 +4,10 @@ import obstacles.types.ObstacleProximity;
 import buffer.IncomingData;
 import container.Service;
 import enums.Tribool;
+import pathfinding.dstarlite.GridSpace;
 import permissions.ReadOnly;
 import permissions.ReadWrite;
 import table.GameElementNames;
-import table.Table;
 import utils.Config;
 import utils.ConfigInfo;
 import utils.Log;
@@ -23,9 +23,8 @@ import utils.Vec2;
 @SuppressWarnings("unchecked")
 public class Capteurs implements Service {
 	protected Log log;
-	private ObstaclesMemory memory;
-	private Table table;
 	private MoteurPhysique moteur;
+	private GridSpace gridspace;
 	
 	private static final int nbCapteurs = 12;
 	
@@ -53,11 +52,10 @@ public class Capteurs implements Service {
 	 */
 	public double[] orientationsRelatives;
 
-	public Capteurs(Log log, ObstaclesMemory memory, Table table, MoteurPhysique moteur)
+	public Capteurs(Log log, GridSpace gridspace, MoteurPhysique moteur)
 	{
 		this.log = log;
-		this.memory = memory;
-		this.table = table;
+		this.gridspace = gridspace;
 		this.moteur = moteur;
 		positionsRelatives = new Vec2[nbCapteurs];
 		orientationsRelatives = new double[nbCapteurs];
@@ -135,8 +133,7 @@ public class Capteurs implements Service {
 		double orientationRobot = data.orientationRobot;
 		Vec2<ReadOnly> positionRobot = data.positionRobot;
 		
-		// Ce synchronized permet d'ajouter plusieurs obstacles avant de mettre à jour le gridspace
-		synchronized(memory)
+		synchronized(gridspace)
 		{
 			/**
 			 * Suppression des mesures qui sont hors-table ou qui voient un obstacle de table
@@ -158,10 +155,10 @@ public class Capteurs implements Service {
 				Vec2.plus(positionEnnemi, positionRobot);
 				if(debug)
 					log.debug("Obstacle vu par un capteur: "+positionEnnemi);
-				ObstacleProximity o = memory.add(positionEnnemi.getReadOnly(), System.currentTimeMillis(), true);
+				ObstacleProximity o = gridspace.addObstacle(positionEnnemi.getReadOnly(), System.currentTimeMillis(), true);
 			    for(GameElementNames g: GameElementNames.values)
-			        if(table.isDone(g) == Tribool.FALSE && moteur.didTheEnemyTakeIt(g, o))
-			        	table.setDone(g, Tribool.MAYBE);						
+			        if(gridspace.isDoneTable(g) == Tribool.FALSE && moteur.didTheEnemyTakeIt(g, o))
+			        	gridspace.setDoneTable(g, Tribool.MAYBE);						
 			}
 		}
 	}

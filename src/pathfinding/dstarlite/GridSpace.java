@@ -3,15 +3,18 @@ package pathfinding.dstarlite;
 import java.util.BitSet;
 
 import obstacles.ObstaclesIterator;
+import obstacles.ObstaclesMemory;
 import obstacles.types.ObstacleProximity;
 import permissions.ReadOnly;
 import permissions.ReadWrite;
+import table.GameElementNames;
 import table.Table;
 import utils.Config;
 import utils.ConfigInfo;
 import utils.Log;
 import utils.Vec2;
 import container.Service;
+import enums.Tribool;
 
 /**
  * La classe qui contient la grille utilisée par le pathfinding.
@@ -25,6 +28,7 @@ public class GridSpace implements Service
 {
 	protected Log log;
 	private ObstaclesIterator iterator;
+	private ObstaclesMemory memory;
 	private boolean ignoreElementJeu;
 	private Table table;
 	/**
@@ -61,7 +65,30 @@ public class GridSpace implements Service
 			grilleStatique.set(i);
 	}
 	
-	public GridSpace(Log log, ObstaclesIterator iterator, Table table)
+	public GridSpace(Log log, ObstaclesMemory memory, Table table)
+	{
+		this.memory = memory;
+		this.log = log;
+		this.table = table;
+		this.iterator = new ObstaclesIterator(log, memory);
+
+		// A priori, tout est traversable
+		for(int i = 0; i < NB_POINTS; i++)
+		{
+			grilleDynamique.set(i);
+			grilleElementJeu.set(i);
+		}
+
+	}
+	
+	/**
+	 * Constructeur privé utilisé par le clone.
+	 * Comme ces gridspace cloné n'ont pas besoin du ObstaclesMemory, on lui donne pas
+	 * @param log
+	 * @param iterator
+	 * @param table
+	 */
+	private GridSpace(Log log, ObstaclesIterator iterator, Table table)
 	{
 		this.log = log;
 		this.table = table;
@@ -383,5 +410,42 @@ public class GridSpace implements Service
 	public Table getTable()
 	{
 		return table;
+	}
+
+	/**
+	 * Appelé par le thread des capteurs par l'intermédiaire de la classe capteurs
+	 * Ajoute l'obstacle à la mémoire et dans le gridspace
+	 * @param position
+	 * @param dateActuelle
+	 * @param urgent
+	 * @return
+	 */
+	public ObstacleProximity addObstacle(Vec2<ReadOnly> position,
+			long dateActuelle, boolean urgent) {
+		ObstacleProximity o = memory.add(position, dateActuelle, urgent);
+		setObstacle(o);
+		return o;
+	}
+
+	public Tribool isDoneTable(GameElementNames g)
+	{
+		return table.isDone(g);
+	}
+
+	public void setDoneTable(GameElementNames g, Tribool done)
+	{
+		// TODO modif grille
+		table.setDone(g, done);
+	}
+
+	public void deleteOldObstacles()
+	{
+		memory.deleteOldObstacles();
+		updateGrilleDynamique();
+	}
+
+	public long getNextDeathDate()
+	{
+		return memory.getNextDeathDate();
 	}
 }

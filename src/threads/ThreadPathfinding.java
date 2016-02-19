@@ -1,7 +1,5 @@
 package threads;
 
-import obstacles.ObserveTableEtObstacles;
-
 import java.util.BitSet;
 
 import container.Service;
@@ -21,15 +19,13 @@ public class ThreadPathfinding extends Thread implements Service
 {
 	protected Log log;
 	private AStarCourbe pathfinding;
-	private ObserveTableEtObstacles observeur;
 	private GridSpace gridspace;
 	private boolean urgence = false;
 
-	public ThreadPathfinding(Log log, AStarCourbe pathfinding, ObserveTableEtObstacles observeur, GridSpace gridspace)
+	public ThreadPathfinding(Log log, AStarCourbe pathfinding, GridSpace gridspace)
 	{
 		this.log = log;
 		this.pathfinding = pathfinding;
-		this.observeur = observeur;
 		this.gridspace = gridspace;
 	}
 
@@ -38,10 +34,10 @@ public class ThreadPathfinding extends Thread implements Service
 	{
 		while(true)
 		{
-			synchronized(observeur)
+			synchronized(gridspace)
 			{
 				try {
-					observeur.wait();
+					gridspace.wait();
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}

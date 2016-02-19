@@ -3,8 +3,6 @@ package container;
 import obstacles.Capteurs;
 import obstacles.ClothoidesComputer;
 import obstacles.MoteurPhysique;
-import obstacles.ObserveTableEtObstacles;
-import obstacles.ObstaclesIterator;
 import obstacles.ObstaclesMemory;
 import obstacles.types.Obstacle;
 
@@ -182,7 +180,6 @@ public class Container
 			ok.add(ServiceNames.SERIAL_OUTPUT_BUFFER);
 			ok.add(ServiceNames.REQUETE_STM);
 			ok.add(ServiceNames.OBSTACLES_MEMORY);
-			ok.add(ServiceNames.OBSERVE_TABLE_ET_OBSTACLES);
 			ok.add(ServiceNames.THREAD_SERIAL_INPUT);
 			ok.add(ServiceNames.THREAD_SERIAL_OUTPUT);
 			ok.add(ServiceNames.THREAD_PEREMPTION);
@@ -234,26 +231,21 @@ public class Container
 			instanciedServices[serviceRequested.ordinal()] = (Service)new Config();
 		else if(serviceRequested == ServiceNames.CAPTEURS)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new Capteurs((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
-																					(ObstaclesMemory)getServiceDisplay(serviceRequested, ServiceNames.OBSTACLES_MEMORY),
-																					(Table)getServiceDisplay(serviceRequested, ServiceNames.TABLE),
+																					(GridSpace)getServiceDisplay(serviceRequested, ServiceNames.GRID_SPACE),
 																					(MoteurPhysique)getServiceDisplay(serviceRequested, ServiceNames.MOTEUR_PHYSIQUE));
 		else if(serviceRequested == ServiceNames.TABLE)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new Table((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
-																				(ObserveTableEtObstacles)getServiceDisplay(serviceRequested, ServiceNames.OBSERVE_TABLE_ET_OBSTACLES));
+			instanciedServices[serviceRequested.ordinal()] = (Service)new Table((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG));
 		else if(serviceRequested == ServiceNames.D_STAR_LITE)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new DStarLite((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
 																				(GridSpace)getServiceDisplay(serviceRequested, ServiceNames.GRID_SPACE));
 		else if(serviceRequested == ServiceNames.CHEMIN_PATHFINDING)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new CheminPathfinding((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG));
 		
-		else if(serviceRequested == ServiceNames.OBSERVE_TABLE_ET_OBSTACLES)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new ObserveTableEtObstacles((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG));
 		else if(serviceRequested == ServiceNames.OBSTACLES_MEMORY)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new ObstaclesMemory((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
-																						(ObserveTableEtObstacles)getServiceDisplay(serviceRequested, ServiceNames.OBSERVE_TABLE_ET_OBSTACLES));
+			instanciedServices[serviceRequested.ordinal()] = (Service)new ObstaclesMemory((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG));
 		else if(serviceRequested == ServiceNames.GRID_SPACE)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new GridSpace((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
-																					(ObstaclesIterator) new ObstaclesIterator((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG), (ObstaclesMemory)getServiceDisplay(serviceRequested, ServiceNames.OBSTACLES_MEMORY)),
+																					(ObstaclesMemory)getServiceDisplay(serviceRequested, ServiceNames.OBSTACLES_MEMORY),
 																					(Table)getServiceDisplay(serviceRequested, ServiceNames.TABLE));
 		else if(serviceRequested == ServiceNames.INCOMING_DATA_BUFFER)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new IncomingDataBuffer((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG));
@@ -281,7 +273,7 @@ public class Container
 																					(Log)getServiceDisplay(serviceRequested, ServiceNames.LOG));
 		else if(serviceRequested == ServiceNames.THREAD_PEREMPTION)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadPeremption((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
-																		(ObstaclesMemory)getServiceDisplay(serviceRequested, ServiceNames.OBSTACLES_MEMORY));
+																		(GridSpace)getServiceDisplay(serviceRequested, ServiceNames.GRID_SPACE));
 		else if(serviceRequested == ServiceNames.THREAD_EVITEMENT)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadEvitement((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
 																		(ThreadPathfinding)getServiceDisplay(serviceRequested, ServiceNames.THREAD_PATHFINDING),
@@ -312,7 +304,6 @@ public class Container
 		else if(serviceRequested == ServiceNames.THREAD_PATHFINDING)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadPathfinding((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
 																		(AStarCourbe)getServiceDisplay(serviceRequested, ServiceNames.A_STAR_COURBE),
-																		(ObserveTableEtObstacles)getServiceDisplay(serviceRequested, ServiceNames.OBSERVE_TABLE_ET_OBSTACLES),
 																		 (GridSpace)getServiceDisplay(serviceRequested, ServiceNames.GRID_SPACE));
 		else if(serviceRequested == ServiceNames.MOTEUR_PHYSIQUE)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new MoteurPhysique((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG)); 		

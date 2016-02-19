@@ -1,6 +1,6 @@
 package threads;
 
-import obstacles.ObstaclesMemory;
+import pathfinding.dstarlite.GridSpace;
 import utils.Config;
 import utils.ConfigInfo;
 import utils.Log;
@@ -17,15 +17,15 @@ import container.Service;
 public class ThreadPeremption extends Thread implements Service
 {
 
-	private ObstaclesMemory memory;
+	private GridSpace gridspace;
 	protected Log log;
 
 	private int dureePeremption;
 
-	public ThreadPeremption(Log log, ObstaclesMemory memory)
+	public ThreadPeremption(Log log, GridSpace gridspace)
 	{
 		this.log = log;
-		this.memory = memory;
+		this.gridspace = gridspace;
 	}
 	
 	@Override
@@ -33,9 +33,9 @@ public class ThreadPeremption extends Thread implements Service
 	{
 		while(true)
 		{
-			memory.deleteOldObstacles();
+			gridspace.deleteOldObstacles();
 
-			long prochain = memory.getNextDeathDate();
+			long prochain = gridspace.getNextDeathDate();
 			
 			/**
 			 * S'il n'y a pas d'obstacles, on dort de dureePeremption, qui est la durée minimale avant la prochaine péremption.

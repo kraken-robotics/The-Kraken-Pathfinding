@@ -1,6 +1,5 @@
 package table;
 
-import obstacles.ObserveTableEtObstacles;
 import container.Service;
 import enums.Tribool;
 import utils.*;
@@ -15,7 +14,6 @@ public class Table implements Service
 {
 	// Dépendances
 	private Log log;
-	private ObserveTableEtObstacles observeur;
 	
 	/** Contient toutes les informations sur les éléments de jeux sans perte d'information. */
 	private volatile long etatTable = 0L;
@@ -25,25 +23,24 @@ public class Table implements Service
 	 * deux etatTable identiques **/
 	private volatile int hash = 0;
 
-	public Table(Log log, ObserveTableEtObstacles observeur)
+	public Table(Log log)
 	{
 		this.log = log;
-		this.observeur = observeur;
 	}
 
 	/**
 	 * On a pris l'objet, on est passé dessus, le robot ennemi est passé dessus...
 	 * Attention, on ne peut qu'augmenter cette valeur.
+	 * Renvoie vrai si l'état de la table a changé pour le futur (?)
 	 * @param id
 	 */
-	public synchronized void setDone(GameElementNames id, Tribool done)
+	public synchronized boolean setDone(GameElementNames id, Tribool done)
 	{
 		long old_hash = etatTable;
 		etatTable |= (done.hash << (2*id.ordinal()));
 		hash |= (done.hashBool << (id.ordinal()));
 		// Si besoin est, on dit à la stratégie que la table a été modifiée
-		if(old_hash != etatTable)
-			observeur.notify();
+		return old_hash != etatTable;
 	}
 
 	/**
@@ -70,7 +67,7 @@ public class Table implements Service
 	 */
 	public Table clone()
 	{
-		Table cloned_table = new Table(log, observeur);
+		Table cloned_table = new Table(log);
 		copy(cloned_table);
 		return cloned_table;
 	}
