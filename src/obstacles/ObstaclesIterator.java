@@ -126,7 +126,13 @@ public class ObstaclesIterator implements Iterator<ObstacleProximity>
 	{		
 		return nbTmp < memory.size();
 	}
-	
+
+	// Pour parcourir tous ceux qui sont morts
+	public boolean hasNextDead()
+	{		
+		return nbTmp < memory.getFirstNotDeadNow();
+	}
+
 	@Override
 	public ObstacleProximity next()
 	{

@@ -133,6 +133,9 @@ public class Capteurs implements Service {
 		double orientationRobot = data.orientationRobot;
 		Vec2<ReadOnly> positionRobot = data.positionRobot;
 		
+		/**
+		 * On prend le contrôle de gridspace. Ainsi, la mise à jour du pathfinding se fera quand tous les obstacles auront été ajoutés
+		 */
 		synchronized(gridspace)
 		{
 			/**

@@ -3,6 +3,7 @@ package container;
 import obstacles.Capteurs;
 import obstacles.ClothoidesComputer;
 import obstacles.MoteurPhysique;
+import obstacles.ObstaclesIterator;
 import obstacles.ObstaclesMemory;
 import obstacles.types.Obstacle;
 
@@ -237,7 +238,8 @@ public class Container
 			instanciedServices[serviceRequested.ordinal()] = (Service)new Table((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG));
 		else if(serviceRequested == ServiceNames.D_STAR_LITE)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new DStarLite((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
-																				(GridSpace)getServiceDisplay(serviceRequested, ServiceNames.GRID_SPACE));
+																				(GridSpace)getServiceDisplay(serviceRequested, ServiceNames.GRID_SPACE),
+																				(ObstaclesIterator)new ObstaclesIterator((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG), (ObstaclesMemory)getServiceDisplay(serviceRequested, ServiceNames.OBSTACLES_MEMORY)));
 		else if(serviceRequested == ServiceNames.CHEMIN_PATHFINDING)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new CheminPathfinding((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG));
 		

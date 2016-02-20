@@ -1,5 +1,7 @@
 package obstacles.types;
 
+import java.util.ArrayList;
+
 import permissions.ReadOnly;
 import permissions.ReadWrite;
 import robot.Speed;
@@ -12,20 +14,15 @@ import utils.Vec2;
 public class ObstacleProximity extends ObstacleCircular
 {
 	private long death_date;
-//	private ArrayList<Integer> pourtourGrille = new ArrayList<Integer>();
 	private boolean urgent;
+	private ArrayList<Integer> masque;
 	
-	public ObstacleProximity(Vec2<ReadOnly> position, int rad, long death_date, boolean urgent)
+	public ObstacleProximity(Vec2<ReadOnly> position, int rad, long death_date, boolean urgent, ArrayList<Integer> masque)
 	{
 		super(position,rad);
 		this.urgent = urgent;
 		this.death_date = death_date;
-//		int centreX = (int) Math.round(position.x / GridSpace.DISTANCE_ENTRE_DEUX_POINTS + GridSpace.NB_POINTS_POUR_TROIS_METRES / 2);
-//		int centreY = (int) Math.round(position.y / GridSpace.DISTANCE_ENTRE_DEUX_POINTS);
-//		for(Vec2<ReadOnly> point : Obstacle.pourtourGrillePatron)
-			// On s'assure bien d'être dans la grille
-//			if(centreX + point.x >= 0 && centreX + point.x < GridSpace.NB_POINTS_POUR_TROIS_METRES && centreY + point.y >= 0 && centreY + point.y < GridSpace.NB_POINTS_POUR_DEUX_METRES)
-//				pourtourGrille.add(4 * (GridSpace.NB_POINTS_POUR_TROIS_METRES * (centreY+point.y) + (centreX+point.x)));
+		this.masque = masque;
 	}
 	
 	public boolean isUrgent()
@@ -33,10 +30,10 @@ public class ObstacleProximity extends ObstacleCircular
 		return urgent;
 	}
 	
-//	public ArrayList<Integer> getPourtourGrille()
-//	{
-//		return pourtourGrille;
-//	}
+	public ArrayList<Integer> getMasque()
+	{
+		return masque;
+	}
 	
 	@Override
 	public String toString()

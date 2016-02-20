@@ -1,6 +1,5 @@
 package pathfinding.astarCourbe;
 
-import java.util.BitSet;
 import java.util.PriorityQueue;
 
 import pathfinding.CheminPathfinding;
@@ -106,7 +105,7 @@ public class AStarCourbe implements Service
 		if(Config.graphicAStarCourbe)
 			printChemin();
 	}
-		
+
 	/**
 	 * Le calcul du AStarCourbe
 	 * @param depart

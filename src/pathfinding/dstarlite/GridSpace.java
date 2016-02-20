@@ -2,7 +2,6 @@ package pathfinding.dstarlite;
 
 import java.util.ArrayList;
 import java.util.BitSet;
-import java.util.ListIterator;
 
 import obstacles.ObstaclesFixes;
 import obstacles.ObstaclesIterator;
@@ -53,12 +52,8 @@ public class GridSpace implements Service
 	// cette grille est constante, c'est-à-dire qu'elle ne contient que les obstacles fixes
 	private static BitSet grilleStatique = null;
 	
-	// couples de points dont le coût a été changé
-	private ArrayList<Integer> couplesCout = new ArrayList<Integer>();
-	
 	private static ArrayList<Integer> masque = new ArrayList<Integer>();
 	private static int centreMasque;
-	private int nbCouplesEnvoyes = 0;
 	
 	public GridSpace(Log log, ObstaclesMemory obstaclesMemory, Table table)
 	{
@@ -188,36 +183,14 @@ public class GridSpace implements Service
 		for(int i = 1; i < tailleMasque-1; i++)
 			for(int j = 1; j < tailleMasque-1; j++)
 				if((i-centreMasque) * (i-centreMasque) + (j-centreMasque) * (j-centreMasque) <= rayonPoint*rayonPoint)
-				{
-					int i2, j2;
-					i2 = i - 1;
-					j2 = j;
-					if((i2-centreMasque) * (i2-centreMasque) + (j2-centreMasque) * (j2-centreMasque) > rayonPoint*rayonPoint)
-					{
-//						log.debug("1 Dans masque : "+i+" "+j+" "+i2+" "+j2);
-						masque.add((((j2 << PRECISION) +i2) << DEUXIEME_POINT_COUPLE) + (j << PRECISION) + i);
-					}
-					i2 = i + 1;
-					if((i2-centreMasque) * (i2-centreMasque) + (j2-centreMasque) * (j2-centreMasque) > rayonPoint*rayonPoint)
-					{
-//						log.debug("2 Dans masque : "+i+" "+j+" "+i2+" "+j2);
-						masque.add((((j2 << PRECISION) +i2) << DEUXIEME_POINT_COUPLE) + (j << PRECISION) + i);
-					}
-					i2 = i;
-					j2 = j - 1;
-					if((i2-centreMasque) * (i2-centreMasque) + (j2-centreMasque) * (j2-centreMasque) > rayonPoint*rayonPoint)
-					{
-//						log.debug("3 Dans masque : "+i+" "+j+" "+i2+" "+j2);
-						masque.add((((j2 << PRECISION) +i2) << DEUXIEME_POINT_COUPLE) + (j << PRECISION) + i);
-					}
-					j2 = j + 1;
-					if((i2-centreMasque) * (i2-centreMasque) + (j2-centreMasque) * (j2-centreMasque) > rayonPoint*rayonPoint)
-					{
-//						log.debug("4 Dans masque : "+i+" "+j+" "+i2+" "+j2);
-						masque.add((((j2 << PRECISION) +i2) << DEUXIEME_POINT_COUPLE) + (j << PRECISION) + i);
-					}
-			}
-
+					for(int a = -1; a <= 1; a++)
+						for(int b = -1; b <= 1; b++)
+						{
+							int i2 = i + a, j2 = j + b;
+							if((i2-centreMasque) * (i2-centreMasque) + (j2-centreMasque) * (j2-centreMasque) > rayonPoint*rayonPoint)
+								masque.add((((j2 << PRECISION) +i2) << DEUXIEME_POINT_COUPLE) + (j << PRECISION) + i);
+						}
+		log.debug("Taille du masque : "+masque.size());
 		/*
 		System.out.println("Masque : ");
 		for(int i = 0; i < tailleMasque; i++)
@@ -254,8 +227,17 @@ public class GridSpace implements Service
 	 */
 	private boolean isTraversable(int gridpoint, int direction)
 	{
-		int point = getGridPointVoisin(gridpoint, direction);
-		// TODO
+		int voisin = getGridPointVoisin(gridpoint, direction);
+		if(grilleStatique.get(voisin))
+			return false;
+		int couple = (gridpoint << DEUXIEME_POINT_COUPLE) + voisin;
+		iterator.reinit();
+		while(iterator.hasNext())
+		{
+			ObstacleProximity o = iterator.next();
+			if(o.getMasque().contains(couple))
+				return false;
+		}
 		return true;
 	}
 
@@ -311,25 +293,10 @@ public class GridSpace implements Service
 		v.x = (((gridpoint & (NB_POINTS_POUR_TROIS_METRES - 1)) * GridSpace.DISTANCE_ENTRE_DEUX_POINTS_1024) >> 10) - 1500;
 		v.y = ((gridpoint >> PRECISION) * GridSpace.DISTANCE_ENTRE_DEUX_POINTS_1024) >> 10;
 	}
-	
-	/**
-	 * Utilisé par un thread régulièrement
-	 * Récupère la différence dans la grilleDynamique
-	 * @return
-	 */
-	public synchronized ListIterator<Integer> getWhatChanged()
-	{
-//		log.debug(couplesCout.size()+" "+nbCouplesEnvoyes);
-		ListIterator<Integer> out = couplesCout.listIterator(nbCouplesEnvoyes);
-		nbCouplesEnvoyes = couplesCout.size();
-		return out;
-	}
 
 	public GridSpace clone(long date)
 	{
 		GridSpace out = new GridSpace(log, iterator.clone(date), table.clone());
-		out.couplesCout.clear();
-		out.couplesCout.addAll(couplesCout);
 		return out;
 	}
 
@@ -340,43 +307,21 @@ public class GridSpace implements Service
 	 */
 	public void copy(GridSpace other, long date)
 	{
-		// TODO vérifier hash de la table pour mise à jour grilleElementJeu
 		table.copy(other.table);
-		int hash = iterator.hashCode();
 		iterator.copy(other.iterator, date);
-		
-		// Pas de modification de la grille dynamique, on recopie juste
-		if(iterator.hashCode() == hash)
-		{
-			other.couplesCout.clear();
-			other.couplesCout.addAll(couplesCout);
-		}
-		else
-			other.regenereCouplesCout();
-	}
-	
-	/**
-	 * Ajoute tous les obstacles à la grille.
-	 */
-	private void regenereCouplesCout()
-	{
-		iterator.reinit();
-		couplesCout.clear();
-		while(iterator.hasNext())
-			setObstacle(iterator.next());
-		nbCouplesEnvoyes = 0; // il va falloir tout renvoyer
 	}
 
 	/**
 	 * Ajoute le contour d'un obstacle de proximité dans la grille dynamique
 	 * @param o
 	 */
-	private void setObstacle(ObstacleProximity o)
+	private ArrayList<Integer> getMasqueObstacle(Vec2<ReadOnly> position)
 	{
-		int x = getGridPointX(o.position);
-		int y = getGridPointY(o.position);
+		int x = getGridPointX(position);
+		int y = getGridPointY(position);
 		log.debug("xy : "+x+" "+y);
 		int xC1, yC1, xC2, yC2;
+		ArrayList<Integer> out = new ArrayList<Integer>();
 		for(Integer c : masque)
 		{
 //			log.debug("c : "+c);
@@ -395,10 +340,11 @@ public class GridSpace implements Service
 			if(xC1 >= 0 && xC1 <= X_MAX && yC1 >= 0 && yC1 <= Y_MAX
 					&& xC2 >= 0 && xC2 <= X_MAX && yC2 >= 0 && yC2 <= Y_MAX)
 			{
-				couplesCout.add(getGridPoint(xC1,yC1) << DEUXIEME_POINT_COUPLE + getGridPoint(xC2,yC2));
+				out.add(getGridPoint(xC1,yC1) << DEUXIEME_POINT_COUPLE + getGridPoint(xC2,yC2));
 //				log.debug("Ajout !");
 			}
 		}
+		return out;
 	}
 
 	/**
@@ -428,9 +374,9 @@ public class GridSpace implements Service
 	 * @return
 	 */
 	public synchronized ObstacleProximity addObstacle(Vec2<ReadOnly> position, boolean urgent) {
-		ObstacleProximity o = obstaclesMemory.add(position, urgent);
+		ArrayList<Integer> masque = getMasqueObstacle(position);
+		ObstacleProximity o = obstaclesMemory.add(position, urgent, masque);
 		// pour un ajout, pas besoin de tout régénérer
-		setObstacle(o);
 		notify(); // changement de la grille dynamique !
 		return o;
 	}
@@ -449,8 +395,7 @@ public class GridSpace implements Service
 	{
 		// S'il y a effectivement suppression, on régénère la grille
 		if(obstaclesMemory.deleteOldObstacles())
-			regenereCouplesCout();
-		notify(); // changement de la grille dynamique !
+			notify(); // changement de la grille dynamique !
 	}
 
 	public long getNextDeathDate()

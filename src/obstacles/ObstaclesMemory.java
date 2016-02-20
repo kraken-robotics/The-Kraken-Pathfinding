@@ -1,5 +1,6 @@
 package obstacles;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 import obstacles.types.ObstacleProximity;
@@ -33,14 +34,14 @@ public class ObstaclesMemory implements Service
 		this.log = log;
 	}
 
-	public synchronized ObstacleProximity add(Vec2<ReadOnly> position, boolean urgent)
+	public synchronized ObstacleProximity add(Vec2<ReadOnly> position, boolean urgent, ArrayList<Integer> masque)
 	{
-		return add(position, System.currentTimeMillis(), urgent);
+		return add(position, System.currentTimeMillis(), urgent, masque);
 	}
 	
-	public synchronized ObstacleProximity add(Vec2<ReadOnly> position, long date, boolean urgent)
+	public synchronized ObstacleProximity add(Vec2<ReadOnly> position, long date, boolean urgent, ArrayList<Integer> masque)
 	{
-        ObstacleProximity obstacle = new ObstacleProximity(position, rayonEnnemi, date+dureeAvantPeremption, urgent);
+        ObstacleProximity obstacle = new ObstacleProximity(position, rayonEnnemi, date+dureeAvantPeremption, urgent, masque);
 //      log.warning("Obstacle créé, rayon = "+rayon_robot_adverse+", centre = "+position+", meurt à "+(date_actuelle+dureeAvantPeremption), this);
         listObstaclesMobiles.add(obstacle);
         size++;

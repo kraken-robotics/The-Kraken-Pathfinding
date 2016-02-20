@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.ListIterator;
 import java.util.PriorityQueue;
 
+import obstacles.ObstaclesIterator;
 import permissions.ReadOnly;
 import tests.graphicLib.Fenetre;
 import utils.Config;
@@ -28,15 +29,17 @@ public class DStarLite implements Service
 	protected Log log;
 	private GridSpace gridspace;
 	private Fenetre fenetre;
+	private ObstaclesIterator iterator;
 	
-	public DStarLite(Log log, GridSpace gridspace)
+	public DStarLite(Log log, GridSpace gridspace, ObstaclesIterator iterator)
 	{
 		this.log = log;
 		this.gridspace = gridspace;
+		this.iterator = iterator;
+		
 		for(int i = 0; i < GridSpace.NB_POINTS; i++)
-		{
 			memory[i] = new DStarLiteNode(i);
-		}
+
 		if(Config.graphicDStarLite)
 			fenetre = Fenetre.getInstance();
 	}
@@ -256,11 +259,20 @@ public class DStarLite implements Service
 	 */
 	public void updatePath(int positionRobot) throws PathfindingException
 	{
-		ListIterator<Integer> obstaclesAAjouter = gridspace.getWhatChanged();
 		depart = getFromMemory(positionRobot);
 		km += distanceHeuristique(last);
 		last = depart.gridpoint;
+
+		// Les obstacles à retirer
+		while(iterator.hasNextDead())
 		
+		while(obstaclesAAjouter.hasNext())
+		{
+			int i = obstaclesAAjouter.next();
+			int p1 = i >> GridSpace.DEUXIEME_POINT_COUPLE;
+			int p2 = i & ((1 << GridSpace.DEUXIEME_POINT_COUPLE) - 1);
+			// 
+		}
 		// TODO
 		
 		computeShortestPath();
