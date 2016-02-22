@@ -4,7 +4,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import container.ServiceNames;
-import pathfinding.GameState;
+import pathfinding.ChronoGameState;
+import pathfinding.RealGameState;
 import permissions.ReadWrite;
 import robot.RobotReal;
 import scripts.ScriptAnticipableNames;
@@ -19,21 +20,21 @@ import utils.Sleep;
 
 public class JUnit_Script extends JUnit_Test
 {
-	private GameState<RobotReal,ReadWrite> realstate;
+	private RealGameState realstate;
 	private ScriptManager scripts;
 	
 	@SuppressWarnings("unchecked")
 	@Before
     public void setUp() throws Exception {
         super.setUp();
-        realstate = (GameState<RobotReal,ReadWrite>)container.getService(ServiceNames.REAL_GAME_STATE);
+        realstate = (RealGameState)container.getService(ServiceNames.REAL_GAME_STATE);
         scripts = (ScriptManager) container.getService(ServiceNames.SCRIPT_MANAGER);
     }
 
     @Test
     public void test_script() throws Exception
     {
-    	scripts.getScript(ScriptAnticipableNames.SORTIE_ZONE_DEPART).agit(0, realstate);
+    	scripts.getScript(ScriptAnticipableNames.SORTIE_ZONE_DEPART).agit(0, realstate.table, realstate.getRobot());
     	Sleep.sleep(1000);
     }
 }

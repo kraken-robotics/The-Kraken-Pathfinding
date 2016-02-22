@@ -1,8 +1,6 @@
 package hook.methods;
 
-import pathfinding.GameState;
-import permissions.ReadWrite;
-import robot.RobotChrono;
+import pathfinding.ChronoGameState;
 import table.GameElementNames;
 
 import java.util.ArrayList;
@@ -19,11 +17,11 @@ import hook.Executable;
 
 public class GameElementDone implements Executable
 {
-	private GameState<?, ReadWrite> state;
+	private ChronoGameState state;
 	private Tribool done;
 	private GameElementNames element;
 	
-	public GameElementDone(GameState<?, ReadWrite> state, GameElementNames element, Tribool done)
+	public GameElementDone(ChronoGameState state, GameElementNames element, Tribool done)
 	{
 		this.state = state;
 		this.done = done;
@@ -42,7 +40,7 @@ public class GameElementDone implements Executable
 	}
 
 	@Override
-	public void updateGameState(GameState<RobotChrono,ReadWrite> state)
+	public void updateGameState(ChronoGameState state)
 	{
 		this.state = state;
 	}

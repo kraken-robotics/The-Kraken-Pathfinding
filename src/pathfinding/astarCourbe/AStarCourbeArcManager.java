@@ -1,7 +1,7 @@
 package pathfinding.astarCourbe;
 
 import obstacles.MoteurPhysique;
-import pathfinding.GameState;
+import pathfinding.ChronoGameState;
 import pathfinding.VitesseCourbure;
 import pathfinding.dstarlite.DStarLite;
 import robot.DirectionStrategy;
@@ -76,7 +76,7 @@ public class AStarCourbeArcManager implements Service
     {
     	successeur.came_from = current;
     	successeur.came_from_arc.vitesseCourbure = VitesseCourbure.values[iterator];
-		GameState.copyAStarCourbe(current.state.getReadOnly(), successeur.state);
+		current.state.copyAStarCourbe(successeur.state);
     	iterator++;
 		vitesseActuelle = VitesseCourbure.values[iterator];
     }

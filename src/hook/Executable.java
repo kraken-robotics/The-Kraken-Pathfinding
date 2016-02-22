@@ -2,9 +2,7 @@ package hook;
 
 import java.util.ArrayList;
 
-import pathfinding.GameState;
-import permissions.ReadWrite;
-import robot.RobotChrono;
+import pathfinding.ChronoGameState;
 
 /**
  * Interface utilisée pour passer des méthodes à Callback.
@@ -30,7 +28,7 @@ public interface Executable
 	 * le recyclage, qui est utilisé.
 	 * @param state
 	 */
-	public void updateGameState(GameState<RobotChrono,ReadWrite> state);
+	public void updateGameState(ChronoGameState state);
 	
 	/**
 	 * Afin de l'envoyer par série

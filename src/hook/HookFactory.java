@@ -2,17 +2,14 @@ package hook;
 
 import java.util.ArrayList;
 
-import pathfinding.GameState;
-import permissions.ReadWrite;
+import pathfinding.ChronoGameState;
 import hook.methods.GameElementDone;
-import hook.methods.ThrowScriptRequest;
 import hook.types.HookContact;
 import hook.types.HookDate;
 import hook.types.HookPosition;
 import container.Service;
 import enums.Tribool;
 import exceptions.FinMatchException;
-import robot.RobotChrono;
 import table.GameElementNames;
 import table.GameElementType;
 import utils.Log;
@@ -63,7 +60,7 @@ public class HookFactory implements Service
      * @return
      * @throws FinMatchException 
      */
-    public ArrayList<Hook> getHooksEntreScriptsChrono(GameState<RobotChrono,ReadWrite> state, int date_limite) throws FinMatchException
+    public ArrayList<Hook> getHooksEntreScriptsChrono(ChronoGameState state, int date_limite) throws FinMatchException
     {
     	if(hooks_table_chrono == null)
     		hooks_table_chrono = getHooksPermanentsAEnvoyer();
@@ -91,7 +88,7 @@ public class HookFactory implements Service
      * @return
      * @throws FinMatchException 
      */
-    public ArrayList<Hook> getHooksPermanents(GameState<RobotChrono,ReadWrite> state)
+    public ArrayList<Hook> getHooksPermanents(ChronoGameState state)
     {
     	ArrayList<Hook> hooksPermanents = new ArrayList<Hook>();
 		Hook hook;
@@ -115,13 +112,6 @@ public class HookFactory implements Service
 				hooksPermanents.add(hook);
 			}
 
-			// Les hooks de contact
-			if(t.scriptHookThrown() != null)
-			{
-				hook = new HookContact(log, t.scriptHookThrown().nbCapteur, true);
-				hook.ajouter_callback(new ThrowScriptRequest(t.scriptHookThrown()));
-				hooksPermanents.add(hook);
-			}
 		}
 
 		for(GameElementNames n: GameElementNames.values())

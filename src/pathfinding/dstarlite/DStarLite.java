@@ -6,6 +6,7 @@ import java.util.PriorityQueue;
 
 import obstacles.memory.ObstaclesIterator;
 import obstacles.memory.ObstaclesIteratorPresent;
+import pathfinding.astarCourbe.HeuristiqueCourbe;
 import permissions.ReadOnly;
 import tests.graphicLib.Fenetre;
 import utils.Config;
@@ -25,7 +26,7 @@ import exceptions.PathfindingException;
  *
  */
 
-public class DStarLite implements Service
+public class DStarLite implements Service, HeuristiqueCourbe
 {
 	protected Log log;
 	private GridSpace gridspace;
@@ -325,6 +326,7 @@ public class DStarLite implements Service
 	 * @param gridpoint
 	 * @return
 	 */
+	@Override
 	public int heuristicCostCourbe(Vec2<ReadOnly> position)
 	{
 		return getFromMemory(GridSpace.computeGridPoint(position)).rhs;

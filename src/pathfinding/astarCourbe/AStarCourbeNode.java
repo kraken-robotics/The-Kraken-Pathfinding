@@ -1,6 +1,6 @@
 package pathfinding.astarCourbe;
 
-import pathfinding.GameState;
+import pathfinding.ChronoGameState;
 import permissions.ReadWrite;
 import robot.RobotChrono;
 
@@ -12,7 +12,7 @@ import robot.RobotChrono;
 
 public class AStarCourbeNode {
 
-	public GameState<RobotChrono,ReadWrite> state;
+	public ChronoGameState state;
 	public int g_score;
 	public int f_score;
 	public AStarCourbeNode came_from;
@@ -43,7 +43,7 @@ public class AStarCourbeNode {
 	{
 		modified.g_score = g_score;
 		modified.f_score = f_score;
-		GameState.copyThetaStar(state.getReadOnly(), modified.state);
+		state.copyThetaStar(modified.state);
 		modified.came_from = null;
 	}
 	

@@ -4,7 +4,8 @@ import hook.HookFactory;
 
 import org.junit.Before;
 
-import pathfinding.GameState;
+import pathfinding.ChronoGameState;
+import pathfinding.RealGameState;
 import permissions.ReadWrite;
 import container.ServiceNames;
 import robot.RobotChrono;
@@ -19,16 +20,16 @@ import robot.RobotReal;
 public class JUnit_Hook extends JUnit_Test {
 	
 	private HookFactory hookfactory;
-	private GameState<RobotReal,ReadWrite> real_gamestate;
-	private GameState<RobotChrono,ReadWrite> chrono_gamestate;
+	private RealGameState real_gamestate;
+	private ChronoGameState chrono_gamestate;
 
 	@SuppressWarnings("unchecked")
 	@Before
     public void setUp() throws Exception {
         super.setUp();
         hookfactory = (HookFactory) container.getService(ServiceNames.HOOK_FACTORY);
-        real_gamestate = (GameState<RobotReal,ReadWrite>) container.getService(ServiceNames.REAL_GAME_STATE);
-        chrono_gamestate = GameState.cloneGameState(real_gamestate.getReadOnly());
+        real_gamestate = (RealGameState) container.getService(ServiceNames.REAL_GAME_STATE);
+        chrono_gamestate = real_gamestate.cloneGameState();
     }
 /*
 	@Test

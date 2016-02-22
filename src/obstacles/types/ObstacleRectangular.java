@@ -1,6 +1,6 @@
 package obstacles.types;
 
-import pathfinding.GameState;
+import pathfinding.ChronoGameState;
 import permissions.ReadOnly;
 import permissions.ReadWrite;
 import exceptions.FinMatchException;
@@ -98,7 +98,7 @@ public class ObstacleRectangular extends ObstacleAvecAngle
 	 * @param state
 	 * @throws FinMatchException 
 	 */
-	public ObstacleRectangular(GameState<?,ReadOnly> state) throws FinMatchException
+	public ObstacleRectangular(ChronoGameState state) throws FinMatchException
 	{
 		this(state.robot.getPosition(), longueurRobot, largeurRobot, state.robot.getOrientation());
 	}

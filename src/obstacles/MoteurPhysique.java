@@ -3,7 +3,7 @@ package obstacles;
 import obstacles.types.Obstacle;
 import obstacles.types.ObstacleProximity;
 import obstacles.types.ObstacleRectangular;
-import pathfinding.GameState;
+import pathfinding.ChronoGameState;
 import pathfinding.astarCourbe.AStarCourbeNode;
 import permissions.ReadOnly;
 import robot.RobotReal;
@@ -57,7 +57,7 @@ public class MoteurPhysique implements Service {
 	 * @param B
 	 * @return
 	 */
-    public boolean obstacleTableDansSegment(GameState<RobotReal,ReadOnly> state, Vec2<ReadOnly> A, Vec2<ReadOnly> B)
+    public boolean obstacleTableDansSegment(ChronoGameState state, Vec2<ReadOnly> A, Vec2<ReadOnly> B)
     {
     	ObstacleRectangular chemin = new ObstacleRectangular(A, B);
         for(GameElementNames g: GameElementNames.values())
@@ -79,7 +79,7 @@ public class MoteurPhysique implements Service {
      * @param sommet2
      * @return
      */
-    public boolean obstacleProximiteDansSegment(GameState<RobotReal,ReadOnly> state, Vec2<ReadOnly> A, Vec2<ReadOnly> B, int date)
+    public boolean obstacleProximiteDansSegment(ChronoGameState state, Vec2<ReadOnly> A, Vec2<ReadOnly> B, int date)
     {
   //      if(isThereHypotheticalEnemy && hypotheticalEnemy.obstacle_proximite_dans_segment(A, B, date))
   //      	return true;
@@ -113,7 +113,7 @@ public class MoteurPhysique implements Service {
      * @param position
      * @return
      */
-    public boolean isObstacleMobilePresent(GameState<RobotReal,ReadOnly> state, Vec2<ReadOnly> position, int distance) 
+    public boolean isObstacleMobilePresent(ChronoGameState state, Vec2<ReadOnly> position, int distance) 
     {
     //    if(isThereHypotheticalEnemy && isObstaclePresent(position, hypotheticalEnemy.getReadOnly(), distance))
     //    	return true;

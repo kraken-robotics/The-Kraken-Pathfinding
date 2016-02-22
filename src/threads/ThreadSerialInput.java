@@ -6,7 +6,7 @@ import buffer.DataForSerialOutput;
 import buffer.IncomingData;
 import buffer.IncomingDataBuffer;
 import enums.SerialProtocol;
-import pathfinding.GameState;
+import pathfinding.ChronoGameState;
 import permissions.ReadOnly;
 import requete.RequeteSTM;
 import requete.RequeteType;
@@ -14,6 +14,7 @@ import robot.RobotReal;
 import serie.SerialInterface;
 import table.GameElementNames;
 import table.GameElementType;
+import table.Table;
 import utils.Config;
 import utils.ConfigInfo;
 import utils.Log;
@@ -39,7 +40,8 @@ public class ThreadSerialInput extends Thread implements Service
 	private IncomingDataBuffer buffer;
 	private HookFactory hookfactory;
 	private DataForSerialOutput output;
-	private GameState<RobotReal,ReadOnly> state;
+	private RobotReal robot;
+	private Table table;
 	
 	private int codeCoquillage;
 	
@@ -55,7 +57,7 @@ public class ThreadSerialInput extends Thread implements Service
 	private final static int PARAM = 3;
 
 	
-	public ThreadSerialInput(Log log, Config config, SerialInterface serie, IncomingDataBuffer buffer, RequeteSTM requete, GameState<RobotReal,ReadOnly> state, HookFactory hookfactory, DataForSerialOutput output)
+	public ThreadSerialInput(Log log, Config config, SerialInterface serie, IncomingDataBuffer buffer, RequeteSTM requete, RobotReal robot, Table table, HookFactory hookfactory, DataForSerialOutput output)
 	{
 		this.log = log;
 		this.config = config;
@@ -64,6 +66,8 @@ public class ThreadSerialInput extends Thread implements Service
 		this.requete = requete;
 		this.hookfactory = hookfactory;
 		this.output = output;
+		this.robot = robot;
+		this.table = table;
 	}
 
 	@Override
@@ -164,7 +168,7 @@ public class ThreadSerialInput extends Thread implements Service
 						double orientationRobot = (lecture[PARAM+3] << 8 + lecture[PARAM+4]) / 1000.;
 						double courbure = lecture[PARAM+5] / 1000.;
 						boolean enMarcheAvant = lecture[COMMANDE] == SerialProtocol.IN_XYO.code;
-						state.robot.setPositionOrientationCourbureDirection(positionRobot, orientationRobot, courbure, enMarcheAvant);
+						robot.setPositionOrientationCourbureDirection(positionRobot, orientationRobot, courbure, enMarcheAvant);
 
 					}
 					else if((lecture[COMMANDE] & SerialProtocol.MASK_LAST_BIT.code) == SerialProtocol.IN_INFO_CAPTEURS.code)
@@ -209,7 +213,7 @@ public class ThreadSerialInput extends Thread implements Service
 							if(2*i+1 != nbCapteurs-1)
 								mesures[2*i+1] = ((lecture[PARAM+6+3*i+1] & 0x0F) << 8) + lecture[PARAM+6+3*i+2];
 						}
-						state.robot.setPositionOrientationCourbureDirection(positionRobot, orientationRobot, courbure, enMarcheAvant);
+						robot.setPositionOrientationCourbureDirection(positionRobot, orientationRobot, courbure, enMarcheAvant);
 						if(capteursOn)
 							buffer.add(new IncomingData(mesures, positionRobot, orientationRobot, enMarcheAvant));
 					}
@@ -419,7 +423,7 @@ public class ThreadSerialInput extends Thread implements Service
 							continue;
 
 						int nbElement = lecture[PARAM];
-						state.table.setDone(GameElementNames.values()[nbElement], Tribool.TRUE);
+						table.setDone(GameElementNames.values()[nbElement], Tribool.TRUE);
 					}
 							/**
 							 * Demande de hook

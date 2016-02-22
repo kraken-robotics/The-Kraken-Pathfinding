@@ -1,9 +1,7 @@
 package hook.methods;
 
-import pathfinding.GameState;
-import permissions.ReadWrite;
+import pathfinding.ChronoGameState;
 import robot.ActuatorOrder;
-import robot.RobotChrono;
 
 import java.util.ArrayList;
 
@@ -30,7 +28,7 @@ public class UtiliseActionneur implements Executable
 	{}
 
 	@Override
-	public void updateGameState(GameState<RobotChrono,ReadWrite> state)
+	public void updateGameState(ChronoGameState state)
 	{}
 	
 	@Override

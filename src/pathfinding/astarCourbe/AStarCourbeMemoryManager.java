@@ -1,6 +1,7 @@
 package pathfinding.astarCourbe;
 
-import pathfinding.GameState;
+import pathfinding.ChronoGameState;
+import pathfinding.RealGameState;
 import permissions.ReadOnly;
 import container.Service;
 import exceptions.FinMatchException;
@@ -39,7 +40,7 @@ public class AStarCourbeMemoryManager implements Service {
 	public void useConfig(Config config)
 	{}
 
-	public AStarCourbeMemoryManager(Log log, GameState<RobotReal,ReadOnly> realstate)
+	public AStarCourbeMemoryManager(Log log, RealGameState realstate)
 	{	
 		this.log = log;
 
@@ -50,7 +51,7 @@ public class AStarCourbeMemoryManager implements Service {
 		for(int i = 0; i < nb_instances; i++)
 		{
 			nodes[i] = new AStarCourbeNode();
-			nodes[i].state = GameState.cloneGameState(realstate);
+			nodes[i].state = realstate.cloneGameState();
 		}
 		log.debug("Instanciation finie");
 	}

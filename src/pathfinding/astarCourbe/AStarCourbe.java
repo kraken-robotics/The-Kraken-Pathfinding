@@ -3,7 +3,8 @@ package pathfinding.astarCourbe;
 import java.util.PriorityQueue;
 
 import pathfinding.CheminPathfinding;
-import pathfinding.GameState;
+import pathfinding.ChronoGameState;
+import pathfinding.RealGameState;
 import pathfinding.dstarlite.DStarLite;
 import pathfinding.dstarlite.GridSpace;
 import permissions.ReadOnly;
@@ -33,7 +34,7 @@ public class AStarCourbe implements Service
 	protected Log log;
 	private DStarLite dstarlite;
 	private AStarCourbeArcManager arcmanager;
-	private GameState<RobotReal,ReadOnly> state;
+	private RealGameState state;
 	private CheminPathfinding cheminContainer;
 	private AStarCourbeMemoryManager memorymanager;
 	protected Fenetre fenetre;
@@ -43,7 +44,7 @@ public class AStarCourbe implements Service
 	/**
 	 * Constructeur du AStarCourbe
 	 */
-	public AStarCourbe(Log log, DStarLite dstarlite, AStarCourbeArcManager arcmanager, GameState<RobotReal,ReadOnly> state, CheminPathfinding chemin, AStarCourbeMemoryManager memorymanager)
+	public AStarCourbe(Log log, DStarLite dstarlite, AStarCourbeArcManager arcmanager, RealGameState state, CheminPathfinding chemin, AStarCourbeMemoryManager memorymanager)
 	{
 		this.log = log;
 		this.dstarlite = dstarlite;
@@ -75,7 +76,7 @@ public class AStarCourbe implements Service
 		arcmanager.setEjecteGameElement(ejecteGameElement);
 		
 		depart.init();
-		GameState.copyAStarCourbe(state, depart.state);
+		state.copyAStarCourbe(depart.state);
 		
 		dstarlite.computeNewPath(depart.state.robot.getPosition(), arrivee);
 		process();
@@ -96,7 +97,7 @@ public class AStarCourbe implements Service
 		synchronized(state)
 		{
 			depart.init();
-			GameState.copyAStarCourbe(state, depart.state);
+			state.copyAStarCourbe(depart.state);
 		}
 		
 		dstarlite.updatePath(depart.state.robot.getPosition());
