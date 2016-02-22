@@ -34,7 +34,7 @@ public class JUnit_Script extends JUnit_Test
     @Test
     public void test_script() throws Exception
     {
-    	scripts.getScript(ScriptAnticipableNames.SORTIE_ZONE_DEPART).agit(0, realstate.table, realstate.getRobot());
+    	scripts.getScript(ScriptAnticipableNames.SORTIE_ZONE_DEPART).agit(0, realstate.table, realstate.robot);
     	Sleep.sleep(1000);
     }
 }

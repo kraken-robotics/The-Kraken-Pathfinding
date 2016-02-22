@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import pathfinding.ChronoGameState;
 import hook.methods.GameElementDone;
-import hook.types.HookContact;
 import hook.types.HookDate;
 import hook.types.HookPosition;
 import container.Service;

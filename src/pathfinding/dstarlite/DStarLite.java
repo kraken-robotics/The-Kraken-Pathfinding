@@ -1,11 +1,9 @@
 package pathfinding.dstarlite;
 
 import java.util.ArrayList;
-import java.util.ListIterator;
+import java.util.Comparator;
 import java.util.PriorityQueue;
 
-import obstacles.memory.ObstaclesIterator;
-import obstacles.memory.ObstaclesIteratorPresent;
 import pathfinding.astarCourbe.HeuristiqueCourbe;
 import permissions.ReadOnly;
 import tests.graphicLib.Fenetre;
@@ -31,13 +29,25 @@ public class DStarLite implements Service, HeuristiqueCourbe
 	protected Log log;
 	private GridSpace gridspace;
 	private Fenetre fenetre;
-	private ObstaclesIteratorPresent iterator;
+
+	private class DStarLiteNodeComparator implements Comparator<DStarLiteNode>
+	{
+
+		@Override
+		public int compare(DStarLiteNode arg0, DStarLiteNode arg1)
+		{
+			int out = (arg0.cle.first - arg1.cle.first) << 1;
+			if(arg0.cle.second > arg1.cle.second)
+				out++;
+			return out;
+		}
+		
+	}
 	
-	public DStarLite(Log log, GridSpace gridspace, ObstaclesIteratorPresent iterator)
+	public DStarLite(Log log, GridSpace gridspace)
 	{
 		this.log = log;
 		this.gridspace = gridspace;
-		this.iterator = iterator;
 		
 		for(int i = 0; i < GridSpace.NB_POINTS; i++)
 			memory[i] = new DStarLiteNode(i);

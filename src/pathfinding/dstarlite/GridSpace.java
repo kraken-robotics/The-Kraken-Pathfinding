@@ -30,7 +30,7 @@ import enums.Tribool;
 public class GridSpace implements Service
 {
 	protected Log log;
-	private ObstaclesIteratorPresent iteratorDStarLite; // n'est présent que dans que gridspace du real gamestate
+	private ObstaclesIteratorPresent iteratorDStarLite;
 	private ObstaclesMemory obstaclesMemory;
 	private Table table;
 
@@ -78,20 +78,6 @@ public class GridSpace implements Service
 			}
 			log.debug("Grille statique initialisée");
 		}
-	}
-	
-	/**
-	 * Constructeur privé utilisé par le clone.
-	 * Comme ces gridspace cloné n'ont pas besoin du ObstaclesMemory, on lui donne pas
-	 * @param log
-	 * @param iterator
-	 * @param table
-	 */
-	private GridSpace(Log log, Table table)
-	{
-		this.log = log;
-		this.table = table;
-		// iteratorDStarLite n'est pas initialisé dans un clone
 	}
 	
 	/**
@@ -294,22 +280,6 @@ public class GridSpace implements Service
 		v.y = ((gridpoint >> PRECISION) * GridSpace.DISTANCE_ENTRE_DEUX_POINTS_1024) >> 10;
 	}
 
-	public GridSpace clone()
-	{
-		GridSpace out = new GridSpace(log, table.clone());
-		return out;
-	}
-
-	/**
-	 * Copie le gridspace, la table et l'iterator. En profite pour mettre l'iterator à jour
-	 * @param other
-	 * @param date
-	 */
-	public void copy(GridSpace other)
-	{
-		table.copy(other.table);
-	}
-
 	/**
 	 * Ajoute le contour d'un obstacle de proximité dans la grille dynamique
 	 * @param o
@@ -347,7 +317,7 @@ public class GridSpace implements Service
 	}
 
 	/**
-	 * Appelé par GameState
+	 * Appelé par RealGameState
 	 * @return
 	 */
 	public Table getTable()
@@ -441,8 +411,6 @@ public class GridSpace implements Service
 
 		while(iteratorDStarLite.hasNextDead())
 			out[0].add(iteratorDStarLite.next());
-//		iteratorDStarLite.save();
-//		iteratorDStarLite.init(System.currentTimeMillis());
 
 		long tmp = deathDateLastObstacle;
 		while(iteratorDStarLite.hasNext())
@@ -456,7 +424,7 @@ public class GridSpace implements Service
 			}
 		}
 		deathDateLastObstacle = tmp;
-
+		iteratorDStarLite.reinit(); // l'itérateur reprendra juste avant les futurs obstacles périmés
 		return out;
 	}
 }

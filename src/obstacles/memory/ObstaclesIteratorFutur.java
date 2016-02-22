@@ -15,7 +15,6 @@ public class ObstaclesIteratorFutur extends ObstaclesIterator
     
     private int firstNotDead = 0;
     private long dateInit = -1;
-    private boolean needInit = true;
 	
     public ObstaclesIteratorFutur(Log log, ObstaclesMemory memory)
     {
@@ -35,30 +34,23 @@ public class ObstaclesIteratorFutur extends ObstaclesIterator
      */
     public void copy(ObstaclesIteratorFutur other, long date)
     {
-    	if(date < dateInit)
-    		log.critical("ObstaclesIteratorFutur ne peut aller dans le passé !");
-    	other.firstNotDead = firstNotDead;
-    	other.needInit = true;
-    	other.dateInit = date;
+    	other.init(date);
     }
 
 	/**
 	 * Réinitialise l'itérateur avec la date donnée à la dernière initialisation
 	 */
-	public void reinit()
+/*	public void reinit()
 	{
-		if(needInit)
-			init(dateInit);
-		else
-			nbTmp = firstNotDead;
+		nbTmp = firstNotDead;
 	}
-
+*/
 	/**
-	 * Calcule l'entrée où commence les obstacles à cette date.
+	 * Calcule l'entrée où commencent les obstacles à cette date.
 	 * Se fait à la copie.
 	 * @param date
 	 */
-	private void init(long date)
+	public void init(long date)
 	{
 		// Si on a avancé dans le futur, on sait que firstNotDead ne peut qu'être plus grand
 		if(date < dateInit)
@@ -73,7 +65,5 @@ public class ObstaclesIteratorFutur extends ObstaclesIterator
 		}
 		nbTmp = firstNotDead;		
 		dateInit = date;
-		needInit = false;
 	}
-	
 }

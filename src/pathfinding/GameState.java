@@ -4,7 +4,7 @@ import robot.Robot;
 import table.Table;
 
 /**
- * GameState abstrait. Permet juste d'avoir le robot.
+ * GameState abstrait. Permet juste d'avoir le robot et la table pour les scripts.
  * @author pf
  *
  */
@@ -12,6 +12,6 @@ import table.Table;
 public abstract class GameState
 {
 	public Table table;
-	public abstract Robot getRobot();	
+	public Robot robot;
 	public abstract void copyAStarCourbe(ChronoGameState state);
 }

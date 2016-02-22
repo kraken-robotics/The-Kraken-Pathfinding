@@ -1,7 +1,6 @@
 package pathfinding;
 
 import obstacles.memory.ObstaclesIteratorFutur;
-import robot.Robot;
 import robot.RobotChrono;
 import exceptions.FinMatchException;
 import table.Table;
@@ -13,16 +12,13 @@ import utils.Log;
  * - infos sur le robot (position, objet, ...) dans Robot
  * - infos sur les obstacles mobiles dans ObstaclesIteratorFutur
  * - infos sur les éléments de jeux dans Table
+ * Utilisé dans l'arbre des possibles
  * @author pf
- *
- * @param <R>
  */
 
-public class ChronoGameState
+public class ChronoGameState extends GameState
 {
-    public final RobotChrono robot;
     public final ObstaclesIteratorFutur iterator;
-    public final Table table;    
     protected Log log;
 
     public ChronoGameState(Log log, RobotChrono robot, ObstaclesIteratorFutur iterator, Table table)
@@ -38,10 +34,7 @@ public class ChronoGameState
      */
 	public final ChronoGameState cloneGameState()
 	{
-		ChronoGameState cloned = new ChronoGameState(log, robot.cloneIntoRobotChrono(), iterator.clone(), table.clone());
-		// la copie est déjà exacte
-		//		GameState.copy(state, cloned);
-		return cloned;
+		return new ChronoGameState(log, robot.cloneIntoRobotChrono(), iterator.clone(), table.clone());
 	}
 
     /**
@@ -50,45 +43,17 @@ public class ChronoGameState
      * @param other
      * @throws FinMatchException 
      */
-    public final void copyThetaStar(ChronoGameState modified)
+    public final void copyAStarCourbe(ChronoGameState modified)
     {
     	table.copy(modified.table);
-        robot.copyThetaStar(modified.robot);
+        robot.copyThetaStar((RobotChrono) modified.robot);
         iterator.copy(modified.iterator, robot.getTempsDepuisDebutMatch());
         // Table a été copié par gridspace
     }
-
-    /**
-     * Disponible uniquement pour GameState<RobotChrono>
-     * @return
-     */
-	public final int getHashLPAStar()
-	{
-		/**
-		 * Un long est codé sur 64 bits.
-		 * T'es content Martial, y'a assez de commentaires?
-		 * Je peux en rajouter si tu veux.
-		 * La vitesse de pointe d'une autruche est de 70km/h (dans le référentiel de Piccadilly Circus)
-		 * C'est plus rapide que RCVA. Du coup, on sait comment faire pour les battre.
-		 */		
-		int hash;
-		hash = table.getHashLPAStar(); // codé sur le reste
-		hash = (hash << 16) | robot.getHashLPAStar(); // codé sur 16 bits (cf getHash() de RobotChrono)
-		return hash;
-	}
-
-	public Robot getRobot()
-	{
-		return robot;
-	}
 
 	public void updateConfig(Config config)
 	{
 		robot.updateConfig(config);
 		table.updateConfig(config);
-	}
-	
-	public void copyAStarCourbe(ChronoGameState state)
-	{
 	}
 }

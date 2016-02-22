@@ -1,9 +1,9 @@
 package pathfinding.astarCourbe;
 
+import java.util.Comparator;
 import java.util.PriorityQueue;
 
 import pathfinding.CheminPathfinding;
-import pathfinding.ChronoGameState;
 import pathfinding.RealGameState;
 import pathfinding.dstarlite.DStarLite;
 import pathfinding.dstarlite.GridSpace;
@@ -12,7 +12,6 @@ import container.Service;
 import exceptions.FinMatchException;
 import exceptions.PathfindingException;
 import robot.DirectionStrategy;
-import robot.RobotReal;
 import tests.graphicLib.Fenetre;
 import utils.Config;
 import utils.Log;
@@ -28,7 +27,6 @@ import utils.Vec2;
 
 public class AStarCourbe implements Service
 {
-	private PriorityQueue<AStarCourbeNode> openset = new PriorityQueue<AStarCourbeNode>(GridSpace.NB_POINTS, new AStarCourbeNodeComparator());
 	private DirectionStrategy directionstrategyactuelle;
 	
 	protected Log log;
@@ -40,6 +38,20 @@ public class AStarCourbe implements Service
 	protected Fenetre fenetre;
 	private Vec2<ReadOnly> arrivee;
 	private AStarCourbeNode depart;
+
+	private class AStarCourbeNodeComparator implements Comparator<AStarCourbeNode>
+	{
+
+		@Override
+		public int compare(AStarCourbeNode arg0, AStarCourbeNode arg1)
+		{
+			return 0; // TODO
+
+		}
+
+	}
+
+	private PriorityQueue<AStarCourbeNode> openset = new PriorityQueue<AStarCourbeNode>(GridSpace.NB_POINTS, new AStarCourbeNodeComparator());
 
 	/**
 	 * Constructeur du AStarCourbe

@@ -1,8 +1,6 @@
 package tests;
 
 import java.util.ArrayList;
-import java.util.BitSet;
-import java.util.ListIterator;
 
 import obstacles.types.ObstacleProximity;
 
@@ -46,10 +44,11 @@ public class JUnit_GridSpace extends JUnit_Test {
 	@Test
 	public void test_distance() throws Exception
 	{
-		Assert.assertTrue(gridspace.distanceDStarLite(1, 2) == 1414);
-		Assert.assertTrue(gridspace.distanceDStarLite(1, 4) == 1000);
+		Assert.assertTrue(gridspace.distanceDStarLite(523, 2) == 1414);
+		Assert.assertTrue(gridspace.distanceDStarLite(523, 4) == 1000);
+		Assert.assertTrue(gridspace.distanceDStarLite(1, 2) == Integer.MAX_VALUE);
 	}
-	
+
 	@Test
 	public void test_distanceHeuristique() throws Exception
 	{

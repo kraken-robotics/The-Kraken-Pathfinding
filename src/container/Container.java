@@ -3,7 +3,6 @@ package container;
 import obstacles.Capteurs;
 import obstacles.ClothoidesComputer;
 import obstacles.MoteurPhysique;
-import obstacles.memory.ObstaclesIteratorPresent;
 import obstacles.memory.ObstaclesMemory;
 import obstacles.types.Obstacle;
 
@@ -21,7 +20,6 @@ import pathfinding.astarCourbe.AStarCourbeArcManager;
 import pathfinding.astarCourbe.AStarCourbeMemoryManager;
 import pathfinding.dstarlite.DStarLite;
 import pathfinding.dstarlite.GridSpace;
-import permissions.ReadOnly;
 import hook.HookFactory;
 import exceptions.ContainerException;
 import exceptions.PointSortieException;
@@ -63,7 +61,7 @@ public class Container
 	private static int nbInstances = 0;
 	private boolean threadsStarted = false;
 	
-	private static final boolean showGraph = true;
+	private static final boolean showGraph = false;
 	private FileWriter fw;
 
 	/**
@@ -177,6 +175,7 @@ public class Container
 			ok.add(ServiceNames.CONFIG);
 			ok.add(ServiceNames.SERIE_STM);
 			ok.add(ServiceNames.TABLE);
+			ok.add(ServiceNames.GRID_SPACE);
 			ok.add(ServiceNames.INCOMING_DATA_BUFFER);
 			ok.add(ServiceNames.SERIAL_OUTPUT_BUFFER);
 			ok.add(ServiceNames.REQUETE_STM);
@@ -206,7 +205,7 @@ public class Container
 	}
 
 
-	@SuppressWarnings({ "unchecked", "unused" })
+	@SuppressWarnings({"unused"})
 	/**
 	 * Fournit un service. Deux possibilités: soit il n'est pas encore instancié et on l'instancie.
 	 * Soit il est déjà instancié et on le renvoie.
@@ -238,8 +237,7 @@ public class Container
 			instanciedServices[serviceRequested.ordinal()] = (Service)new Table((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG));
 		else if(serviceRequested == ServiceNames.D_STAR_LITE)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new DStarLite((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
-																				(GridSpace)getServiceDisplay(serviceRequested, ServiceNames.GRID_SPACE),
-																				(ObstaclesIteratorPresent)new ObstaclesIteratorPresent((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG), (ObstaclesMemory)getServiceDisplay(serviceRequested, ServiceNames.OBSTACLES_MEMORY)));
+																				(GridSpace)getServiceDisplay(serviceRequested, ServiceNames.GRID_SPACE));
 		else if(serviceRequested == ServiceNames.CHEMIN_PATHFINDING)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new CheminPathfinding((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG));
 		

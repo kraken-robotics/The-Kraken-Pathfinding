@@ -1,8 +1,6 @@
 package pathfinding.astarCourbe;
 
 import pathfinding.ChronoGameState;
-import permissions.ReadWrite;
-import robot.RobotChrono;
 
 /**
  * Un nœud de l'A* courbe
@@ -43,7 +41,7 @@ public class AStarCourbeNode {
 	{
 		modified.g_score = g_score;
 		modified.f_score = f_score;
-		state.copyThetaStar(modified.state);
+		state.copyAStarCourbe(modified.state);
 		modified.came_from = null;
 	}
 	

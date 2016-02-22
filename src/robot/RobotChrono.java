@@ -342,11 +342,6 @@ public class RobotChrono extends Robot
 		
 	}
 
-	public boolean isArrete() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
 /*	public void printHash()
 	{
 //		log.debug("Tapis posés: "+tapisPoses);

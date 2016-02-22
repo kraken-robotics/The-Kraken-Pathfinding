@@ -23,7 +23,10 @@ public class ObstaclesIteratorPresent extends ObstaclesIterator
 		nbTmp = memory.getFirstNotDeadNow();
 	}
 	
-	// Pour parcourir tous ceux qui sont morts
+	/**
+	 * Pour parcourir tous ceux qui sont morts (utilisé par le GridSpace)
+	 * @return
+	 */
 	public boolean hasNextDead()
 	{
 //		log.debug(nbTmp+" "+memory.getFirstNotDeadNow());
