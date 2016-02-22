@@ -1,6 +1,7 @@
 package pathfinding;
 
-import obstacles.ObstaclesIterator;
+import obstacles.memory.ObstaclesIteratorFutur;
+import obstacles.memory.ObstaclesMemory;
 import pathfinding.dstarlite.GridSpace;
 import permissions.Permission;
 import permissions.ReadOnly;
@@ -17,7 +18,7 @@ import utils.Config;
 /**
  * Le game state rassemble toutes les informations disponibles à un instant
  * - infos sur le robot (position, objet, ...) dans Robot
- * - infos sur les obstacles mobiles dans ObstaclesMobilesIterator
+ * - infos sur les obstacles mobiles dans ObstaclesIteratorFutur
  * - infos sur les éléments de jeux dans Table
  * @author pf
  *
@@ -28,7 +29,7 @@ public class GameState<R extends Robot, T extends Permission> implements Service
 {
 	// cet iterator et cette table sont ceux du gridspace. Modifier l'un modifie l'autre.
     public final R robot;
-    public final ObstaclesIterator iterator;
+    public final ObstaclesIteratorFutur iterator;
     public final GridSpace gridspace;
     public final Table table;
     
@@ -43,15 +44,15 @@ public class GameState<R extends Robot, T extends Permission> implements Service
      * @param robot
      * @return
      */
-    public static GameState<RobotReal,ReadWrite> constructRealGameState(Log log, RobotReal robot, GridSpace gridspace)
+    public static GameState<RobotReal,ReadWrite> constructRealGameState(Log log, RobotReal robot, GridSpace gridspace, ObstaclesMemory memory)
     {
-		GameState<RobotReal,ReadWrite> out = new GameState<RobotReal,ReadWrite>(log, gridspace, robot);
+		GameState<RobotReal,ReadWrite> out = new GameState<RobotReal,ReadWrite>(log, gridspace, robot, new ObstaclesIteratorFutur(log, memory));
 		return out;
     }
     
-    private GameState(Log log,GridSpace gridspace, R robot)
+    private GameState(Log log,GridSpace gridspace, R robot, ObstaclesIteratorFutur iterator)
     {
-    	this.iterator = gridspace.getIterator();
+    	this.iterator = iterator.clone();
     	this.gridspace = gridspace;
         this.log = log;
         this.robot = robot;
@@ -63,7 +64,7 @@ public class GameState<R extends Robot, T extends Permission> implements Service
      */
 	public static final GameState<RobotChrono,ReadWrite> cloneGameState(GameState<? extends Robot,ReadOnly> state)
 	{
-		GameState<RobotChrono,ReadWrite> cloned = new GameState<RobotChrono,ReadWrite>(state.log, state.gridspace.clone(state.robot.getTempsDepuisDebutMatch()), state.robot.cloneIntoRobotChrono());
+		GameState<RobotChrono,ReadWrite> cloned = new GameState<RobotChrono,ReadWrite>(state.log, state.gridspace.clone(), state.robot.cloneIntoRobotChrono(), state.iterator.clone());
 		// la copie est déjà exacte
 		//		GameState.copy(state, cloned);
 		return cloned;
@@ -78,9 +79,9 @@ public class GameState<R extends Robot, T extends Permission> implements Service
     public static final void copyThetaStar(GameState<?,ReadOnly> state, GameState<RobotChrono,ReadWrite> modified)
     {
         state.robot.copyThetaStar(modified.robot);
-        state.gridspace.copy(modified.gridspace, state.robot.getTempsDepuisDebutMatch());
-        // Table et iterator on été copié par gridspace
-        // iterator a été mis à jour
+        state.gridspace.copy(modified.gridspace);
+        state.iterator.copy(modified.iterator, state.robot.getTempsDepuisDebutMatch());
+        // Table a été copié par gridspace
     }
 
     @Override

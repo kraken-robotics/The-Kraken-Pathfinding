@@ -1,4 +1,4 @@
-package obstacles;
+package obstacles.memory;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -25,7 +25,9 @@ public class ObstaclesMemory implements Service
     private int dureeAvantPeremption;
 	private int rayonEnnemi;
 	private volatile int size = 0;
-	private volatile int firstNotDeadNow;
+	private volatile int indicePremierObstacle = 0;
+	private volatile int firstNotDeadNow = 0;
+	private volatile long nextDeathDate = Long.MAX_VALUE;
 	
 	protected Log log;
 	
@@ -39,6 +41,14 @@ public class ObstaclesMemory implements Service
 		return add(position, System.currentTimeMillis(), urgent, masque);
 	}
 	
+	/**
+	 * Appelé directement par les tests uniquement
+	 * @param position
+	 * @param date
+	 * @param urgent
+	 * @param masque
+	 * @return
+	 */
 	public synchronized ObstacleProximity add(Vec2<ReadOnly> position, long date, boolean urgent, ArrayList<Integer> masque)
 	{
         ObstacleProximity obstacle = new ObstacleProximity(position, rayonEnnemi, date+dureeAvantPeremption, urgent, masque);
@@ -66,39 +76,53 @@ public class ObstaclesMemory implements Service
 
 	public synchronized ObstacleProximity getObstacle(int nbTmp)
 	{
-		if(nbTmp < firstNotDeadNow)
+		if(nbTmp < indicePremierObstacle)
+		{
+			log.critical("Erreur : demande d'un vieil obstacle");
 			return null;
-		return listObstaclesMobiles.get(nbTmp-firstNotDeadNow);
+		}
+		return listObstaclesMobiles.get(nbTmp-indicePremierObstacle);
 	}
 
 	/**
-	 * Renvoie vrai s'il y a effectivement suppression
+	 * Renvoie vrai s'il y a effectivement suppression.
+	 * On conserve les obstacles récemment périmés, car le DStarLite en a besoin.
+	 * Une recherche dichotomique ne serait pas plus efficace car on oublie peu d'obstacles à la fois
 	 * @return
 	 */
 	public synchronized boolean deleteOldObstacles()
 	{
 		long dateActuelle = System.currentTimeMillis();
-		boolean destroyed = false;
-		while(!listObstaclesMobiles.isEmpty())
+		int firstNotDeadNowSave = firstNotDeadNow;
+		
+		// S'il est périmé depuis deux secondes : on vire.
+		while(!listObstaclesMobiles.isEmpty() && listObstaclesMobiles.getFirst().isDestructionNecessary(dateActuelle-2000))
 		{
-			if(listObstaclesMobiles.getFirst().isDestructionNecessary(dateActuelle))
-			{
-				firstNotDeadNow++;
-				listObstaclesMobiles.removeFirst();
-				destroyed = true;
-			}
-			else
-				break;
+			indicePremierObstacle++;
+			listObstaclesMobiles.removeFirst();
 		}
-		return destroyed;
+		
+		nextDeathDate = Long.MAX_VALUE;
+		firstNotDeadNow = 0;
+		while(firstNotDeadNow < listObstaclesMobiles.size())
+		{
+			ObstacleProximity o = listObstaclesMobiles.get(firstNotDeadNow);
+			// s'il est fraîchement périmé, on prévient qu'il y a du changement mais on conserve quand même l'obstacle en mémoire
+			if(o.isDestructionNecessary(dateActuelle))
+				firstNotDeadNow++;
+			else
+			{
+				nextDeathDate = o.getDeathDate();
+				break;
+			}
+		}
+		firstNotDeadNow += indicePremierObstacle;
+		return firstNotDeadNow != firstNotDeadNowSave;
 	}
 	
 	public synchronized long getNextDeathDate()
 	{
-	    if(!listObstaclesMobiles.isEmpty())
-	    	return listObstaclesMobiles.getFirst().getDeathDate();
-	    else
-	    	return Long.MAX_VALUE;
+		return nextDeathDate;
 	}
 	
 	public synchronized int getFirstNotDeadNow()
@@ -113,6 +137,17 @@ public class ObstaclesMemory implements Service
 	public LinkedList<ObstacleProximity> getListObstaclesMobiles()
 	{
 		return listObstaclesMobiles;
+	}
+
+	/**
+	 * Il s'agit forcément d'une date du futur
+	 * @param firstNotDead
+	 * @param date
+	 * @return
+	 */
+	public boolean isDestructionNecessary(int indice, long date)
+	{
+		return indice < firstNotDeadNow || listObstaclesMobiles.get(indice-indicePremierObstacle).isDestructionNecessary(date);
 	}
 
 }

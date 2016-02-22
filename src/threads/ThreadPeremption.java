@@ -16,7 +16,6 @@ import container.Service;
 
 public class ThreadPeremption extends Thread implements Service
 {
-
 	private GridSpace gridspace;
 	protected Log log;
 
@@ -44,7 +43,7 @@ public class ThreadPeremption extends Thread implements Service
 				Sleep.sleep(dureePeremption);
 			else
 				// Il faut toujours s'assurer qu'on dorme un temps positif. Il y a aussi une petite marge
-				Sleep.sleep(Math.min(dureePeremption, Math.max(prochain - System.currentTimeMillis() + 5, 0)));
+				Sleep.sleep(Math.min(dureePeremption, Math.max(prochain - System.currentTimeMillis() + 5, 10)));
 		}
 //		log.debug("Fermeture de ThreadPeremption");
 	}

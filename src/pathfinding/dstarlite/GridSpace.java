@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.BitSet;
 
 import obstacles.ObstaclesFixes;
-import obstacles.ObstaclesIterator;
-import obstacles.ObstaclesMemory;
+import obstacles.memory.ObstaclesIteratorPresent;
+import obstacles.memory.ObstaclesMemory;
 import obstacles.types.ObstacleProximity;
 import permissions.ReadOnly;
 import permissions.ReadWrite;
@@ -30,7 +30,7 @@ import enums.Tribool;
 public class GridSpace implements Service
 {
 	protected Log log;
-	private ObstaclesIterator iterator;
+	private ObstaclesIteratorPresent iteratorDStarLite; // n'est présent que dans que gridspace du real gamestate
 	private ObstaclesMemory obstaclesMemory;
 	private Table table;
 
@@ -54,13 +54,14 @@ public class GridSpace implements Service
 	
 	private static ArrayList<Integer> masque = new ArrayList<Integer>();
 	private static int centreMasque;
+	private long deathDateLastObstacle;
 	
 	public GridSpace(Log log, ObstaclesMemory obstaclesMemory, Table table)
 	{
 		this.obstaclesMemory = obstaclesMemory;
 		this.log = log;
 		this.table = table;
-		this.iterator = new ObstaclesIterator(log, obstaclesMemory);
+		this.iteratorDStarLite = new ObstaclesIteratorPresent(log, obstaclesMemory);
 
 		if(grilleStatique == null)
 		{
@@ -86,11 +87,11 @@ public class GridSpace implements Service
 	 * @param iterator
 	 * @param table
 	 */
-	private GridSpace(Log log, ObstaclesIterator iterator, Table table)
+	private GridSpace(Log log, Table table)
 	{
 		this.log = log;
 		this.table = table;
-		this.iterator = iterator;
+		// iteratorDStarLite n'est pas initialisé dans un clone
 	}
 	
 	/**
@@ -190,8 +191,7 @@ public class GridSpace implements Service
 							if((i2-centreMasque) * (i2-centreMasque) + (j2-centreMasque) * (j2-centreMasque) > rayonPoint*rayonPoint)
 								masque.add((((j2 << PRECISION) +i2) << DEUXIEME_POINT_COUPLE) + (j << PRECISION) + i);
 						}
-		log.debug("Taille du masque : "+masque.size());
-		/*
+/*		log.debug("Taille du masque : "+masque.size());
 		System.out.println("Masque : ");
 		for(int i = 0; i < tailleMasque; i++)
 		{
@@ -231,10 +231,10 @@ public class GridSpace implements Service
 		if(grilleStatique.get(voisin))
 			return false;
 		int couple = (gridpoint << DEUXIEME_POINT_COUPLE) + voisin;
-		iterator.reinit();
-		while(iterator.hasNext())
+		iteratorDStarLite.reinit();
+		while(iteratorDStarLite.hasNext())
 		{
-			ObstacleProximity o = iterator.next();
+			ObstacleProximity o = iteratorDStarLite.next();
 			if(o.getMasque().contains(couple))
 				return false;
 		}
@@ -294,9 +294,9 @@ public class GridSpace implements Service
 		v.y = ((gridpoint >> PRECISION) * GridSpace.DISTANCE_ENTRE_DEUX_POINTS_1024) >> 10;
 	}
 
-	public GridSpace clone(long date)
+	public GridSpace clone()
 	{
-		GridSpace out = new GridSpace(log, iterator.clone(date), table.clone());
+		GridSpace out = new GridSpace(log, table.clone());
 		return out;
 	}
 
@@ -305,10 +305,9 @@ public class GridSpace implements Service
 	 * @param other
 	 * @param date
 	 */
-	public void copy(GridSpace other, long date)
+	public void copy(GridSpace other)
 	{
 		table.copy(other.table);
-		iterator.copy(other.iterator, date);
 	}
 
 	/**
@@ -319,7 +318,7 @@ public class GridSpace implements Service
 	{
 		int x = getGridPointX(position);
 		int y = getGridPointY(position);
-		log.debug("xy : "+x+" "+y);
+//		log.debug("xy : "+x+" "+y);
 		int xC1, yC1, xC2, yC2;
 		ArrayList<Integer> out = new ArrayList<Integer>();
 		for(Integer c : masque)
@@ -345,15 +344,6 @@ public class GridSpace implements Service
 			}
 		}
 		return out;
-	}
-
-	/**
-	 * Appelé par GameState
-	 * @return
-	 */
-	public ObstaclesIterator getIterator()
-	{
-		return iterator;
 	}
 
 	/**
@@ -393,6 +383,7 @@ public class GridSpace implements Service
 
 	public synchronized void deleteOldObstacles()
 	{
+		log.debug("Appel de deleteOldObstacles");
 		// S'il y a effectivement suppression, on régénère la grille
 		if(obstaclesMemory.deleteOldObstacles())
 			notify(); // changement de la grille dynamique !
@@ -403,11 +394,69 @@ public class GridSpace implements Service
 		return obstaclesMemory.getNextDeathDate();
 	}
 
+	/**
+	 * Utilisé uniquement pour les tests
+	 * @param point
+	 * @return
+	 */
 	public boolean isTraversable(int point)
 	{
 		for(int i = 0; i < 8; i++)
 			if(!isTraversable(point, i))
 				return false;
 		return true;
+	}
+	
+	/**
+	 * Un nouveau DStarLite commence. Il faut lui fournir les obstacles actuels
+	 * @return
+	 */
+	public ArrayList<ObstacleProximity> startNewPathfinding()
+	{
+		iteratorDStarLite.reinit();
+		ArrayList<ObstacleProximity> out = new ArrayList<ObstacleProximity>();
+		ObstacleProximity o = null;
+		while(iteratorDStarLite.hasNext())
+		{
+			o = iteratorDStarLite.next();
+			out.add(o);
+		}
+		if(o != null)
+			deathDateLastObstacle = o.getDeathDate();
+		else
+			deathDateLastObstacle = 0;
+		
+		return out;
+	}
+	
+	/**
+	 * Retourne les obstacles à supprimer (indice 0) et ceux à ajouter (indice 1) dans le DStarLite
+	 */
+	public ArrayList<ObstacleProximity>[] getOldAndNewObstacles()
+	{
+		@SuppressWarnings("unchecked")
+		ArrayList<ObstacleProximity>[] out = (ArrayList<ObstacleProximity>[]) new ArrayList[2];
+		out[0] = new ArrayList<ObstacleProximity>();
+		out[1] = new ArrayList<ObstacleProximity>();
+
+		while(iteratorDStarLite.hasNextDead())
+			out[0].add(iteratorDStarLite.next());
+//		iteratorDStarLite.save();
+//		iteratorDStarLite.init(System.currentTimeMillis());
+
+		long tmp = deathDateLastObstacle;
+		while(iteratorDStarLite.hasNext())
+		{
+			ObstacleProximity o = iteratorDStarLite.next();
+			long deathDate = o.getDeathDate();
+			if(deathDate > deathDateLastObstacle)
+			{
+				tmp = deathDate;
+				out[1].add(o);
+			}
+		}
+		deathDateLastObstacle = tmp;
+
+		return out;
 	}
 }

@@ -1,7 +1,10 @@
 package tests;
 
+import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.ListIterator;
+
+import obstacles.types.ObstacleProximity;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -10,6 +13,8 @@ import org.junit.Test;
 import pathfinding.dstarlite.GridSpace;
 import permissions.ReadOnly;
 import container.ServiceNames;
+import utils.ConfigInfo;
+import utils.Sleep;
 import utils.Vec2;
 
 /**
@@ -83,14 +88,29 @@ public class JUnit_GridSpace extends JUnit_Test {
 	@Test
 	public void test_ajout_obstacle() throws Exception
 	{
-		ListIterator<Integer> b = gridspace.getWhatChanged();
-		Assert.assertTrue(!b.hasNext());
+    	int peremption = config.getInt(ConfigInfo.DUREE_PEREMPTION_OBSTACLES);
+		Assert.assertTrue(gridspace.startNewPathfinding().isEmpty());
+		ArrayList<ObstacleProximity>[] b = gridspace.getOldAndNewObstacles();
+		Assert.assertTrue(b[0].isEmpty() && b[1].isEmpty());
 		gridspace.addObstacle(new Vec2<ReadOnly>(200, 100), false);
-		b = gridspace.getWhatChanged();
-		Assert.assertTrue(b.hasNext());
-		gridspace.addObstacle(new Vec2<ReadOnly>(400, 100), false);
-		b = gridspace.getWhatChanged();
-		Assert.assertTrue(b.hasNext());
+		b = gridspace.getOldAndNewObstacles();
+		Assert.assertTrue(b[0].isEmpty() && !b[1].isEmpty());
+		gridspace.addObstacle(new Vec2<ReadOnly>(200, 100), false);
+		b = gridspace.getOldAndNewObstacles();
+		Assert.assertTrue(b[0].isEmpty() && !b[1].isEmpty());
+		b = gridspace.getOldAndNewObstacles();
+		Assert.assertTrue(b[0].isEmpty() && b[1].isEmpty());
+		Sleep.sleep(peremption+10);
+		log.debug("Ça commence");
+		b = gridspace.getOldAndNewObstacles();
+		log.debug("Old : ");
+		for(ObstacleProximity o : b[0])
+			log.debug(o.getDeathDate());
+		log.debug("New : ");
+		for(ObstacleProximity o : b[1])
+			log.debug(o.getDeathDate());
+
+		Assert.assertTrue(!b[0].isEmpty() && b[1].isEmpty());
 	}
 
 }

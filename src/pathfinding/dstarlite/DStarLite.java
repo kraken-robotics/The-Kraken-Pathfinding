@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.ListIterator;
 import java.util.PriorityQueue;
 
-import obstacles.ObstaclesIterator;
+import obstacles.memory.ObstaclesIterator;
+import obstacles.memory.ObstaclesIteratorPresent;
 import permissions.ReadOnly;
 import tests.graphicLib.Fenetre;
 import utils.Config;
@@ -29,9 +30,9 @@ public class DStarLite implements Service
 	protected Log log;
 	private GridSpace gridspace;
 	private Fenetre fenetre;
-	private ObstaclesIterator iterator;
+	private ObstaclesIteratorPresent iterator;
 	
-	public DStarLite(Log log, GridSpace gridspace, ObstaclesIterator iterator)
+	public DStarLite(Log log, GridSpace gridspace, ObstaclesIteratorPresent iterator)
 	{
 		this.log = log;
 		this.gridspace = gridspace;
@@ -263,7 +264,8 @@ public class DStarLite implements Service
 		km += distanceHeuristique(last);
 		last = depart.gridpoint;
 
-		// Les obstacles à retirer
+		
+/*		// Les obstacles à retirer
 		while(iterator.hasNextDead())
 		
 		while(obstaclesAAjouter.hasNext())
@@ -272,7 +274,7 @@ public class DStarLite implements Service
 			int p1 = i >> GridSpace.DEUXIEME_POINT_COUPLE;
 			int p2 = i & ((1 << GridSpace.DEUXIEME_POINT_COUPLE) - 1);
 			// 
-		}
+		}*/
 		// TODO
 		
 		computeShortestPath();

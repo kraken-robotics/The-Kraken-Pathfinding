@@ -1,6 +1,6 @@
 package tests;
 
-import obstacles.ObstaclesIterator;
+import obstacles.memory.ObstaclesIterator;
 
 import org.junit.Assert;
 import org.junit.Before;

@@ -3,8 +3,8 @@ package container;
 import obstacles.Capteurs;
 import obstacles.ClothoidesComputer;
 import obstacles.MoteurPhysique;
-import obstacles.ObstaclesIterator;
-import obstacles.ObstaclesMemory;
+import obstacles.memory.ObstaclesIteratorPresent;
+import obstacles.memory.ObstaclesMemory;
 import obstacles.types.Obstacle;
 
 import java.io.File;
@@ -239,7 +239,7 @@ public class Container
 		else if(serviceRequested == ServiceNames.D_STAR_LITE)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new DStarLite((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
 																				(GridSpace)getServiceDisplay(serviceRequested, ServiceNames.GRID_SPACE),
-																				(ObstaclesIterator)new ObstaclesIterator((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG), (ObstaclesMemory)getServiceDisplay(serviceRequested, ServiceNames.OBSTACLES_MEMORY)));
+																				(ObstaclesIteratorPresent)new ObstaclesIteratorPresent((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG), (ObstaclesMemory)getServiceDisplay(serviceRequested, ServiceNames.OBSTACLES_MEMORY)));
 		else if(serviceRequested == ServiceNames.CHEMIN_PATHFINDING)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new CheminPathfinding((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG));
 		
@@ -269,7 +269,8 @@ public class Container
         	// ici la construction est un petit peu différente car on interdit l'instanciation publique d'un GameSTate<RobotChrono>
             instanciedServices[serviceRequested.ordinal()] = (Service) GameState.constructRealGameState((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
                                                              (RobotReal)getServiceDisplay(serviceRequested, ServiceNames.ROBOT_REAL),
-															 (GridSpace)getServiceDisplay(serviceRequested, ServiceNames.GRID_SPACE));
+															 (GridSpace)getServiceDisplay(serviceRequested, ServiceNames.GRID_SPACE),
+															 (ObstaclesMemory)getServiceDisplay(serviceRequested, ServiceNames.OBSTACLES_MEMORY));
 		else if(serviceRequested == ServiceNames.SCRIPT_MANAGER)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ScriptManager((HookFactory)getServiceDisplay(serviceRequested, ServiceNames.HOOK_FACTORY),
 																					(Log)getServiceDisplay(serviceRequested, ServiceNames.LOG));
