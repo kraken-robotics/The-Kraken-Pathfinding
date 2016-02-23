@@ -266,7 +266,7 @@ public class GridSpace implements Service
 
 	public static final int getGridPoint(int x, int y)
 	{
-		return y << PRECISION + x;
+		return (y << PRECISION) + x;
 	}
 
 	/**
@@ -334,10 +334,11 @@ public class GridSpace implements Service
 //			log.debug("Lecture masque : "+xC1+" "+yC1+" "+xC2+" "+yC2);
 //			log.debug("Lecture masque : "+computeVec2((yC1 << PRECISION) + xC2));
 
+			// On vérifie que tous les points sont bien dans la table
 			if(xC1 >= 0 && xC1 <= X_MAX && yC1 >= 0 && yC1 <= Y_MAX
 					&& xC2 >= 0 && xC2 <= X_MAX && yC2 >= 0 && yC2 <= Y_MAX)
 			{
-				out.add(getGridPoint(xC1,yC1) << DECALAGE_POUR_DIRECTION + dir);
+				out.add((getGridPoint(xC1,yC1) << DECALAGE_POUR_DIRECTION) + dir);
 //				log.debug("Ajout !");
 			}
 		}

@@ -150,7 +150,7 @@ public class DataForSerialOutput implements Service
 		byte[] out = new byte[2+6];
 		out[COMMANDE] = SerialProtocol.OUT_INIT_ODO.code;
 		out[PARAM] = (byte) ((pos.x+1500) >> 4);
-		out[PARAM+1] = (byte) ((pos.x+1500) << 4 + pos.y >> 8);
+		out[PARAM+1] = (byte) (((pos.x+1500) << 4) + (pos.y >> 8));
 		out[PARAM+2] = (byte) (pos.y);
 		out[PARAM+3] = (byte) (Math.round(angle*1000) >> 8);
 		out[PARAM+4] = (byte) (Math.round(angle*1000));

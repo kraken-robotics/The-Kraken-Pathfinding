@@ -165,7 +165,7 @@ public class ThreadSerialInput extends Thread implements Service
 						int yRobot = (lecture[PARAM+1] & 0x0F) << 8;
 						yRobot = yRobot + lecture[PARAM+2];
 						Vec2<ReadOnly> positionRobot = new Vec2<ReadOnly>(xRobot, yRobot);
-						double orientationRobot = (lecture[PARAM+3] << 8 + lecture[PARAM+4]) / 1000.;
+						double orientationRobot = ((lecture[PARAM+3] << 8) + lecture[PARAM+4]) / 1000.;
 						double courbure = lecture[PARAM+5] / 1000.;
 						boolean enMarcheAvant = lecture[COMMANDE] == SerialProtocol.IN_XYO.code;
 						robot.setPositionOrientationCourbureDirection(positionRobot, orientationRobot, courbure, enMarcheAvant);
@@ -200,7 +200,7 @@ public class ThreadSerialInput extends Thread implements Service
 						int yRobot = (lecture[PARAM+1] & 0x0F) << 8;
 						yRobot = yRobot + lecture[PARAM+2];
 						Vec2<ReadOnly> positionRobot = new Vec2<ReadOnly>(xRobot, yRobot);
-						double orientationRobot = (lecture[PARAM+3] << 8 + lecture[PARAM+4]) / 1000.;
+						double orientationRobot = ((lecture[PARAM+3] << 8) + lecture[PARAM+4]) / 1000.;
 						double courbure = lecture[PARAM+5] / 1000.;
 						boolean enMarcheAvant = lecture[COMMANDE] == SerialProtocol.IN_INFO_CAPTEURS.code;
 						/**
