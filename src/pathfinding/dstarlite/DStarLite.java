@@ -152,7 +152,7 @@ public class DStarLite implements Service, HeuristiqueCourbe
 					if(voisin < 0)
 						continue;
 					DStarLiteNode s = getFromMemory(voisin);
-					s.rhs = Math.min(s.rhs, add(gridspace.distanceDStarLite(u.gridpoint, i), u.g));
+					s.rhs = Math.min(s.rhs, add(distanceDynamique(u.gridpoint, i), u.g));
 					updateVertex(s);
 				}
 			}
@@ -169,7 +169,7 @@ public class DStarLite implements Service, HeuristiqueCourbe
 					DStarLiteNode s = getFromMemory(voisin);
 //					if(s == null)
 //						continue;
-					if(s.rhs == add(gridspace.distanceDStarLite(u.gridpoint, i), gold) && s.gridpoint != arrivee.gridpoint)
+					if(s.rhs == add(distanceDynamique(u.gridpoint, i), gold) && s.gridpoint != arrivee.gridpoint)
 					{
 						s.rhs = Integer.MAX_VALUE;
 						for(int j = 0; j < 8; j++)
@@ -178,7 +178,7 @@ public class DStarLite implements Service, HeuristiqueCourbe
 							if(voisin < 0)
 								continue;
 							DStarLiteNode s2 = getFromMemory(voisin);
-							s.rhs = Math.min(s.rhs, add(gridspace.distanceDStarLite(s.gridpoint, j), s2.g));
+							s.rhs = Math.min(s.rhs, add(distanceDynamique(s.gridpoint, j), s2.g));
 						}
 					}
 					updateVertex(s);
@@ -192,7 +192,7 @@ public class DStarLite implements Service, HeuristiqueCourbe
 						if(voisin < 0)
 							continue;
 						DStarLiteNode s = getFromMemory(voisin);
-						u.rhs = Math.min(u.rhs, add(gridspace.distanceDStarLite(u.gridpoint, i), s.g));
+						u.rhs = Math.min(u.rhs, add(distanceDynamique(u.gridpoint, i), s.g));
 					}
 				}
 				updateVertex(u);
@@ -241,7 +241,7 @@ public class DStarLite implements Service, HeuristiqueCourbe
 		}
 
 		obstaclesConnus = gridspace.startNewPathfinding();
-		
+		log.debug("Nb obstacles connus : "+obstaclesConnus.size());
 		computeShortestPath();
 		
 		if(Config.graphicDStarLite)
@@ -284,7 +284,7 @@ public class DStarLite implements Service, HeuristiqueCourbe
 					DStarLiteNode u = getFromMemory(upoint);
 					int dir = (i & ((1 << GridSpace.DECALAGE_POUR_DIRECTION) - 1));
 					DStarLiteNode v = getFromMemory(GridSpace.getGridPointVoisin(upoint, dir));
-					u.rhs = Math.min(u.rhs, add(v.g, gridspace.distanceDStarLite(upoint, dir))); // TODO
+					u.rhs = Math.min(u.rhs, add(v.g, gridspace.distanceStatique(upoint, dir))); // TODO
 					updateVertex(u);
 				}
 			}
@@ -301,10 +301,10 @@ public class DStarLite implements Service, HeuristiqueCourbe
 					int dir = (i & ((1 << GridSpace.DECALAGE_POUR_DIRECTION) - 1));
 					DStarLiteNode v = getFromMemory(GridSpace.getGridPointVoisin(upoint, dir));
 
-					if(u.rhs == add(gridspace.distanceDStarLite(upoint, dir), v.g) && u.equals(arrivee))
+					if(u.rhs == add(gridspace.distanceStatique(upoint, dir), v.g) && u.equals(arrivee))
 					{
 						for(int voisin = 0; voisin < 8; voisin++)
-							u.rhs = Math.min(u.rhs, add(gridspace.distanceDStarLite(u.gridpoint, voisin), getFromMemory(GridSpace.getGridPointVoisin(u.gridpoint, i)).g));
+							u.rhs = Math.min(u.rhs, add(gridspace.distanceStatique(u.gridpoint, voisin), getFromMemory(GridSpace.getGridPointVoisin(u.gridpoint, i)).g));
 					}
 					updateVertex(u);
 				}
@@ -329,10 +329,11 @@ public class DStarLite implements Service, HeuristiqueCourbe
 		
 		while(!node.equals(arrivee))
 		{
-			
 			trajet.add(GridSpace.computeVec2(node.gridpoint));
+
 			if(Config.graphicDStarLite)
 				fenetre.setColor(node.gridpoint, Fenetre.Couleur.VIOLET);
+
 			coutMin = Integer.MAX_VALUE;
 			
 			for(int i = 0; i < 8; i++)
@@ -341,7 +342,7 @@ public class DStarLite implements Service, HeuristiqueCourbe
 				if(voisin < 0)
 					continue;
 				DStarLiteNode s = getFromMemory(voisin);
-				int coutTmp = add(gridspace.distanceDStarLite(node.gridpoint, i), s.g);
+				int coutTmp = add(gridspace.distanceStatique(node.gridpoint, i), s.g);
 				if(coutTmp < coutMin)
 				{
 					coutMin = coutTmp;
@@ -423,7 +424,7 @@ public class DStarLite implements Service, HeuristiqueCourbe
 			if(voisin < 0 || !isThisNodeUptodate(voisin))
 				continue;
 
-			int c = gridspace.distanceDStarLite(gridpoint, i);
+			int c = gridspace.distanceStatique(gridpoint, i);
 			if(c == Integer.MAX_VALUE)
 				continue;
 			
@@ -448,6 +449,14 @@ public class DStarLite implements Service, HeuristiqueCourbe
 			iterator++;
 		}
 		voisinsTries.add(gridpoint);
+	}
+
+	private int distanceDynamique(int point, int dir)
+	{
+		if(obstaclesConnus.contains((point << GridSpace.DECALAGE_POUR_DIRECTION) + dir))
+			return Integer.MAX_VALUE;
+		else
+			return gridspace.distanceStatique(point, dir);
 	}
 	
 }

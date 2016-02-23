@@ -44,9 +44,9 @@ public class JUnit_GridSpace extends JUnit_Test {
 	@Test
 	public void test_distance() throws Exception
 	{
-		Assert.assertTrue(gridspace.distanceDStarLite(523, 2) == 1414);
-		Assert.assertTrue(gridspace.distanceDStarLite(523, 4) == 1000);
-		Assert.assertTrue(gridspace.distanceDStarLite(1, 2) == Integer.MAX_VALUE);
+		Assert.assertTrue(gridspace.distanceStatique(523, 2) == 1414);
+		Assert.assertTrue(gridspace.distanceStatique(523, 4) == 1000);
+		Assert.assertTrue(gridspace.distanceStatique(1, 2) == Integer.MAX_VALUE);
 	}
 
 	@Test

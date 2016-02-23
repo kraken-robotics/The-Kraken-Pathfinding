@@ -42,16 +42,18 @@ public class ThreadPathfinding extends Thread implements Service
 					e.printStackTrace();
 				}
 			}
-			try {
+			log.debug("Recalcule de trajectoire !");
+/*			try {
 				synchronized(this)
 				{
 					notify(); // on prévient le thread d'évitement qu'un nouveau chemin est en calcul
+					// TODO
 					pathfinding.updatePath();
 				}
 			} catch (PathfindingException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			}
+			}*/
 		}
 
 //		log.debug("Fermeture de ThreadPathfinding");

@@ -10,6 +10,7 @@ import pathfinding.CheminPathfinding;
 import pathfinding.astarCourbe.AStarCourbe;
 import pathfinding.astarCourbe.ArcCourbe;
 import pathfinding.dstarlite.DStarLite;
+import pathfinding.dstarlite.GridSpace;
 import permissions.ReadOnly;
 import robot.DirectionStrategy;
 import robot.RobotReal;
@@ -27,6 +28,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
 	private AStarCourbe pathfindingCourbe;
 	private CheminPathfinding chemin;
 	private RobotReal robot;
+	private GridSpace gridspace;
 	
 	@Before
     public void setUp() throws Exception {
@@ -35,17 +37,20 @@ public class JUnit_Pathfinding extends JUnit_Test {
         pathfindingCourbe = (AStarCourbe) container.getService(ServiceNames.A_STAR_COURBE);
         chemin = (CheminPathfinding) container.getService(ServiceNames.CHEMIN_PATHFINDING);
         robot = (RobotReal) container.getService(ServiceNames.ROBOT_REAL);
+        gridspace = (GridSpace) container.getService(ServiceNames.GRID_SPACE);
 	}
 
 	@Test
     public void test_chemin_dstarlite() throws Exception
     {
+		gridspace.addObstacle(new Vec2<ReadOnly>(400, 1000), false);
 		pathfinding.computeNewPath(new Vec2<ReadOnly>(-1000, 200), new Vec2<ReadOnly>(1200, 1500));
 		ArrayList<Vec2<ReadOnly>> trajet = pathfinding.itineraireBrut();
 		for(Vec2<ReadOnly> v : trajet)
 		{
 			log.debug(v);
 		}
+//		pathfinding.updatePath(new Vec2<ReadOnly>(0,600));
     }
 
 	@Test

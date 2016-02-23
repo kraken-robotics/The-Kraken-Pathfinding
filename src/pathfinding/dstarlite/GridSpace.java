@@ -7,6 +7,7 @@ import obstacles.ObstaclesFixes;
 import obstacles.memory.ObstaclesIteratorPresent;
 import obstacles.memory.ObstaclesMemory;
 import obstacles.types.ObstacleProximity;
+import obstacles.types.ObstacleRectangular;
 import permissions.ReadOnly;
 import permissions.ReadWrite;
 import table.GameElementNames;
@@ -68,14 +69,17 @@ public class GridSpace implements Service
 			// Initialisation, une fois pour toutes, de la grille statique
 			grilleStatique = new BitSet(NB_POINTS);
 			for(int i = 0; i < NB_POINTS; i++)
-			{
 				for(ObstaclesFixes o : ObstaclesFixes.values)
-					if(o.getObstacle().isInObstacle(computeVec2(i)))
+				{
+					if(o.toString().equals("BORD_GAUCHE"))
+						log.debug(computeVec2(i)+" "+((ObstacleRectangular)o.getObstacle()).squaredDistance(computeVec2(i)));
+					if(o.getObstacle().isProcheObstacle(computeVec2(i), (int)Math.round(DISTANCE_ENTRE_DEUX_POINTS)))
 					{
+						log.debug(computeVec2(i)+" "+o);
 						grilleStatique.set(i);
 						break; // on ne vérifie pas les autres obstacles
 					}
-			}
+				}
 			log.debug("Grille statique initialisée");
 		}
 	}
@@ -203,7 +207,7 @@ public class GridSpace implements Service
 		centreMasque = tailleMasque / 2;
 		for(int i = 1; i < tailleMasque-1; i++)
 			for(int j = 1; j < tailleMasque-1; j++)
-				if((i-centreMasque) * (i-centreMasque) + (j-centreMasque) * (j-centreMasque) <= rayonPoint*rayonPoint)
+				if((i-centreMasque) * (i-centreMasque) + (j-centreMasque) * (j-centreMasque) > rayonPoint*rayonPoint)
 					for(int a = -1; a <= 1; a++)
 						for(int b = -1; b <= 1; b++)
 						{
@@ -211,7 +215,7 @@ public class GridSpace implements Service
 								continue;
 							int dir = convertToDirection(a, b);
 							int i2 = i + a, j2 = j + b;
-							if((i2-centreMasque) * (i2-centreMasque) + (j2-centreMasque) * (j2-centreMasque) > rayonPoint*rayonPoint)
+							if((i2-centreMasque) * (i2-centreMasque) + (j2-centreMasque) * (j2-centreMasque) <= rayonPoint*rayonPoint)
 								masque.add((((j2 << PRECISION) +i2) << DECALAGE_POUR_DIRECTION) + dir);
 						}
 /*		log.debug("Taille du masque : "+masque.size());
@@ -248,20 +252,10 @@ public class GridSpace implements Service
 	 * @param direction
 	 * @return
 	 */
-	private boolean isTraversable(int gridpoint, int direction)
+	private boolean isTraversableStatique(int gridpoint, int direction)
 	{
 		int voisin = getGridPointVoisin(gridpoint, direction);
-		if(voisin == -1 || grilleStatique.get(voisin))
-			return false;
-		int couple = (gridpoint << DECALAGE_POUR_DIRECTION) + direction;
-		iteratorDStarLite.reinit();
-		while(iteratorDStarLite.hasNext())
-		{
-			ObstacleProximity o = iteratorDStarLite.next();
-			if(o.getMasque().contains(couple))
-				return false;
-		}
-		return true;
+		return voisin != -1 && !grilleStatique.get(voisin);
 	}
 
 	public static int getGridPointX(Vec2<ReadOnly> p)
@@ -290,13 +284,13 @@ public class GridSpace implements Service
 	}
 
 	/**
-	 * Renvoie la distance en fonction de la direction
+	 * Renvoie la distance en fonction de la direction.
+	 * Attention ! Ne prend pas en compte les obstacles dynamiques
 	 * @param i
 	 * @return
 	 */
-	public int distanceDStarLite(int point, int i) {
-		// TODO
-		if(!isTraversable(point, i))
+	public int distanceStatique(int point, int i) {
+		if(!isTraversableStatique(point, i))
 			return Integer.MAX_VALUE;
 		if(i < 4) // cf ordre des directions
 			return 1414;
@@ -407,10 +401,10 @@ public class GridSpace implements Service
 	 * @param point
 	 * @return
 	 */
-	public boolean isTraversable(int point)
+	public boolean isTraversableStatique(int point)
 	{
 		for(int i = 0; i < 8; i++)
-			if(!isTraversable(point, i))
+			if(!isTraversableStatique(point, i))
 				return false;
 		return true;
 	}
@@ -427,6 +421,7 @@ public class GridSpace implements Service
 		while(iteratorDStarLite.hasNext())
 		{
 			o = iteratorDStarLite.next();
+//			log.debug("Ajout d'un obstacle au début du dstarlite");
 			out.addAll(o.getMasque());
 		}
 		if(o != null)

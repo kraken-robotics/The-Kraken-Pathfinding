@@ -9,6 +9,8 @@ import exceptions.ContainerException;
 import exceptions.PointSortieException;
 import obstacles.ObstaclesFixes;
 import obstacles.Capteurs;
+import obstacles.memory.ObstaclesIteratorPresent;
+import obstacles.memory.ObstaclesMemory;
 import obstacles.types.Obstacle;
 import obstacles.types.ObstacleCircular;
 import obstacles.types.ObstacleRectangular;
@@ -16,6 +18,7 @@ import pathfinding.dstarlite.GridSpace;
 import permissions.ReadOnly;
 import utils.Config;
 import utils.Vec2;
+import utils.Log;
 
 import java.awt.*;
 import java.io.File;
@@ -41,6 +44,7 @@ public class Fenetre extends JPanel {
 //	private Vec2<ReadWrite>[] point;
 //	private AttributedString affichage = new AttributedString("");
 	
+	private ObstaclesIteratorPresent iterator;
 	private ArrayList<ObstacleRectangular> obstaclesEnBiais = new ArrayList<ObstacleRectangular>();
 	private ArrayList<ObstacleCircular> obstaclesCirulaires = new ArrayList<ObstacleCircular>();
 
@@ -54,6 +58,8 @@ public class Fenetre extends JPanel {
 	private Fenetre(Container container)
 	{
 		try {
+			iterator = new ObstaclesIteratorPresent((Log)container.getService(ServiceNames.LOG),
+					(ObstaclesMemory)container.getService(ServiceNames.OBSTACLES_MEMORY));
 			gs = (GridSpace)container.getService(ServiceNames.GRID_SPACE);
 		} catch (ContainerException e) {
 			e.printStackTrace();
@@ -73,7 +79,7 @@ public class Fenetre extends JPanel {
 		sizeX = image.getWidth(this);
 		sizeY = image.getHeight(this);
 		for(int i = 0; i < GridSpace.NB_POINTS; i++)
-			if(gs.isTraversable(i))
+			if(gs.isTraversableStatique(i))
 				grid[i] = Couleur.BLANC;
 			else
 				grid[i] = Couleur.NOIR;
@@ -193,6 +199,9 @@ public class Fenetre extends JPanel {
 
 			paintObstacleEnBiais(g);
 			paintObstaclesCirculaires(g);
+			iterator.reinit();
+			while(iterator.hasNext())				
+				paintObstacleCirculaire(iterator.next(), g, 0);
 		}
 /*
 		g.setColor(new Color(0, 0, 130, 40));

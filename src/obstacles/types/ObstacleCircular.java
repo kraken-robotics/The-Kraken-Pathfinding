@@ -2,8 +2,6 @@ package obstacles.types;
 
 import permissions.ReadOnly;
 import permissions.ReadWrite;
-import tests.graphicLib.Fenetre;
-import utils.Config;
 import utils.Vec2;
 
 /**
@@ -30,9 +28,6 @@ public class ObstacleCircular extends Obstacle
 			squared_radius_with_dilatation_obstacle = radius + marge + rayonRobot;
 			squared_radius_with_dilatation_obstacle *= squared_radius_with_dilatation_obstacle;
 		}
-		
-		if(Config.graphicObstacles)
-			Fenetre.getInstance().addObstacleCirculaire(this);
 	}
 
 	public String toString()
@@ -59,7 +54,12 @@ public class ObstacleCircular extends Obstacle
 	{
 		return point.squaredDistance(position) <= (radius+distance)*(radius+distance);
 	}
-
+	
+/*	public int getSquaredDistance(Vec2<ReadOnly> point)
+	{
+		return Math.max(0, (int)((point.distance(position)-radius)*(point.distance(position)-radius)));
+	}
+*/
 	private boolean collisionDroite(Vec2<ReadOnly> A, Vec2<ReadOnly> B, int distance)
 	{
 		Vec2<ReadOnly> C = position.getReadOnly();

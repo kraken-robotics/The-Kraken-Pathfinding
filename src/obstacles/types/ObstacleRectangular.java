@@ -5,8 +5,6 @@ import permissions.ReadOnly;
 import permissions.ReadWrite;
 import exceptions.FinMatchException;
 import obstacles.ObstaclesFixes;
-import tests.graphicLib.Fenetre;
-import utils.Config;
 import utils.Vec2;
 
 /**
@@ -88,9 +86,6 @@ public class ObstacleRectangular extends ObstacleAvecAngle
 		coinBasDroiteRotate = rotatePlusAngle(coinBasDroite).getReadOnly();
 		coinHautDroiteRotate = rotatePlusAngle(coinHautDroite).getReadOnly();
 		demieDiagonale = Math.sqrt(sizeY*sizeY/4+sizeX*sizeX/4);
-
-		if(Config.graphicObstacles)
-			Fenetre.getInstance().addObstacleEnBiais(this);
 	}
 	
 	/**
@@ -362,6 +357,7 @@ public class ObstacleRectangular extends ObstacleAvecAngle
 	public double squaredDistance(Vec2<ReadOnly> v)
 	{
 		Vec2<ReadWrite> in = rotateMoinsAngle(v);
+		log.debug("in = : "+in);
 		/*		
 		 *  Schéma de la situation :
 		 *
