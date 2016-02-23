@@ -165,6 +165,7 @@ public class Container
 		return getServiceDisplay(null, serviceTo);
 	}
 	
+	@SuppressWarnings("unused")
 	private Service getServiceDisplay(ServiceNames serviceFrom, ServiceNames serviceTo) throws ContainerException, PointSortieException
 	{
 		if(showGraph && !serviceTo.equals(ServiceNames.LOG))
@@ -205,7 +206,7 @@ public class Container
 	}
 
 
-	@SuppressWarnings({"unused"})
+	@SuppressWarnings("unused")
 	/**
 	 * Fournit un service. Deux possibilités: soit il n'est pas encore instancié et on l'instancie.
 	 * Soit il est déjà instancié et on le renvoie.

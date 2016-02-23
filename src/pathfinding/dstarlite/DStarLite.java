@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.PriorityQueue;
 
+import obstacles.types.ObstacleProximity;
 import pathfinding.astarCourbe.HeuristiqueCourbe;
 import permissions.ReadOnly;
 import tests.graphicLib.Fenetre;
@@ -17,7 +18,7 @@ import exceptions.PathfindingException;
  * Recherche de chemin avec replanification rapide.
  * Fournit un chemin non courbe sous forme d'une ligne brisée.
  * En fait utilisé comme heuristique par ThetaStar.
- * N'est utilisé qu'avec le "vrai" gridspace. Pour la planification à plus long terme,
+ * N'est utilisé qu'avec le "vrai" robot. Pour la planification à plus long terme,
  * on utilise l'AStarCourbe sans DStarLite mais avec une heuristique toute simple.
  * En effet, un souci de cette implémentation est qu'elle ne peut travailler qu'avec le robot réel et ne prévoit rien.
  * @author pf
@@ -32,7 +33,6 @@ public class DStarLite implements Service, HeuristiqueCourbe
 
 	private class DStarLiteNodeComparator implements Comparator<DStarLiteNode>
 	{
-
 		@Override
 		public int compare(DStarLiteNode arg0, DStarLiteNode arg1)
 		{
@@ -40,8 +40,7 @@ public class DStarLite implements Service, HeuristiqueCourbe
 			if(arg0.cle.second > arg1.cle.second)
 				out++;
 			return out;
-		}
-		
+		}		
 	}
 	
 	public DStarLite(Log log, GridSpace gridspace)
@@ -63,9 +62,9 @@ public class DStarLite implements Service, HeuristiqueCourbe
 	private int km;
 	private DStarLiteNode arrivee;
 	private DStarLiteNode depart;
-	private int last;
+	private int lastDepart;
 	private long nbPF = 0;
-	
+	private ArrayList<Integer> obstaclesConnus = new ArrayList<Integer>();
 	private Cle knew = new Cle();
 	private Cle inutile = new Cle();
 
@@ -227,7 +226,7 @@ public class DStarLite implements Service, HeuristiqueCourbe
 		nbPF++;
 		km = 0;
 		this.depart = getFromMemory(depart);
-		last = this.depart.gridpoint;
+		lastDepart = this.depart.gridpoint;
 
 		this.arrivee = getFromMemory(arrivee);
 		this.arrivee.rhs = 0;
@@ -241,6 +240,8 @@ public class DStarLite implements Service, HeuristiqueCourbe
 			fenetre.setColor(this.depart.gridpoint, Fenetre.Couleur.VIOLET);
 		}
 
+		obstaclesConnus = gridspace.startNewPathfinding();
+		
 		computeShortestPath();
 		
 		if(Config.graphicDStarLite)
@@ -260,34 +261,57 @@ public class DStarLite implements Service, HeuristiqueCourbe
 	public void useConfig(Config config)
 	{}
 	
-	public void updatePath(Vec2<ReadOnly> positionRobot) throws PathfindingException
-	{
-		updatePath(GridSpace.computeGridPoint(positionRobot));
-	}
-	
 	/**
 	 * Met à jour le pathfinding
 	 * @throws PathfindingException 
 	 */
-	public void updatePath(int positionRobot) throws PathfindingException
+	public void updatePath(Vec2<ReadOnly> positionRobot) throws PathfindingException
 	{
-		depart = getFromMemory(positionRobot);
-		km += distanceHeuristique(last);
-		last = depart.gridpoint;
-
+		depart = getFromMemory(GridSpace.computeGridPoint(positionRobot));
+		km += distanceHeuristique(lastDepart);
+		lastDepart = depart.gridpoint;
+		ArrayList<ObstacleProximity>[] obs = gridspace.getOldAndNewObstacles();
 		
-/*		// Les obstacles à retirer
-		while(iterator.hasNextDead())
-		
-		while(obstaclesAAjouter.hasNext())
+		for(ObstacleProximity o : obs[0])
 		{
-			int i = obstaclesAAjouter.next();
-			int p1 = i >> GridSpace.DEUXIEME_POINT_COUPLE;
-			int p2 = i & ((1 << GridSpace.DEUXIEME_POINT_COUPLE) - 1);
-			// 
-		}*/
-		// TODO
-		
+			for(Integer i : o.getMasque())
+			{
+				obstaclesConnus.remove(i);
+				if(!obstaclesConnus.contains(i))
+				{
+					// Retrait d'un obstacle. Le coût va donc diminuer.
+					int upoint = i >> GridSpace.DECALAGE_POUR_DIRECTION;
+					DStarLiteNode u = getFromMemory(upoint);
+					int dir = (i & ((1 << GridSpace.DECALAGE_POUR_DIRECTION) - 1));
+					DStarLiteNode v = getFromMemory(GridSpace.getGridPointVoisin(upoint, dir));
+					u.rhs = Math.min(u.rhs, add(v.g, gridspace.distanceDStarLite(upoint, dir))); // TODO
+					updateVertex(u);
+				}
+			}
+		}
+		for(ObstacleProximity o : obs[1])
+		{
+			for(Integer i : o.getMasque())
+			{
+				if(!obstaclesConnus.contains(i))
+				{
+					// Ajout d'un obstacle
+					int upoint = i >> GridSpace.DECALAGE_POUR_DIRECTION;
+					DStarLiteNode u = getFromMemory(upoint);
+					int dir = (i & ((1 << GridSpace.DECALAGE_POUR_DIRECTION) - 1));
+					DStarLiteNode v = getFromMemory(GridSpace.getGridPointVoisin(upoint, dir));
+
+					if(u.rhs == add(gridspace.distanceDStarLite(upoint, dir), v.g) && u.equals(arrivee))
+					{
+						for(int voisin = 0; voisin < 8; voisin++)
+							u.rhs = Math.min(u.rhs, add(gridspace.distanceDStarLite(u.gridpoint, voisin), getFromMemory(GridSpace.getGridPointVoisin(u.gridpoint, i)).g));
+					}
+					updateVertex(u);
+				}
+				obstaclesConnus.add(i);
+			}
+		}
+
 		computeShortestPath();
 	}
 	

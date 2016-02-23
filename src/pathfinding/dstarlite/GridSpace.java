@@ -40,7 +40,7 @@ public class GridSpace implements Service
 //	private static final int COEFF_HEURISTIQUE = 2;
 
 	public static final int PRECISION = 6;
-	public static final int DEUXIEME_POINT_COUPLE = 12;
+	public static final int DECALAGE_POUR_DIRECTION = 3;
 	public static final int NB_POINTS_POUR_TROIS_METRES = (1 << PRECISION);
 	public static final int NB_POINTS_POUR_DEUX_METRES = (int) ((1 << PRECISION)*2./3.);
 	public static final double DISTANCE_ENTRE_DEUX_POINTS = 3000./NB_POINTS_POUR_TROIS_METRES;
@@ -94,6 +94,40 @@ public class GridSpace implements Service
 //		return (int) Math.round(COEFF_HEURISTIQUE * 1000 * Math.hypot(dx, dy));
 	}
 
+	private int convertToDirection(int deltaX, int deltaY)
+	{
+		if(deltaY == 1)
+		{
+			if(deltaX == -1)
+				return 0; // NO
+			else if(deltaX == 0)
+				return 4; // N
+			else
+				return 2; // NE
+		}
+		else if(deltaY == 0)
+		{
+			if(deltaX == -1)
+				return 6; // O
+			else if(deltaX == 0)
+			{
+				log.critical("Erreur : "+deltaX+" "+deltaY);
+				return 0;
+			}
+			else
+				return 7; // E
+		}
+		else
+		{
+			if(deltaX == -1)
+				return 3; // SO
+			else if(deltaX == 0)
+				return 5; // S
+			else
+				return 1; // SE
+		}
+	}
+	
 	/**
 	 * Récupère le voisin de "point" dans la direction indiquée.
 	 * Renvoie -1 si un tel voisin est hors table
@@ -173,9 +207,12 @@ public class GridSpace implements Service
 					for(int a = -1; a <= 1; a++)
 						for(int b = -1; b <= 1; b++)
 						{
+							if(a == 0 && b == 0)
+								continue;
+							int dir = convertToDirection(a, b);
 							int i2 = i + a, j2 = j + b;
 							if((i2-centreMasque) * (i2-centreMasque) + (j2-centreMasque) * (j2-centreMasque) > rayonPoint*rayonPoint)
-								masque.add((((j2 << PRECISION) +i2) << DEUXIEME_POINT_COUPLE) + (j << PRECISION) + i);
+								masque.add((((j2 << PRECISION) +i2) << DECALAGE_POUR_DIRECTION) + dir);
 						}
 /*		log.debug("Taille du masque : "+masque.size());
 		System.out.println("Masque : ");
@@ -216,7 +253,7 @@ public class GridSpace implements Service
 		int voisin = getGridPointVoisin(gridpoint, direction);
 		if(grilleStatique.get(voisin))
 			return false;
-		int couple = (gridpoint << DEUXIEME_POINT_COUPLE) + voisin;
+		int couple = (gridpoint << DECALAGE_POUR_DIRECTION) + direction;
 		iteratorDStarLite.reinit();
 		while(iteratorDStarLite.hasNext())
 		{
@@ -294,12 +331,13 @@ public class GridSpace implements Service
 		for(Integer c : masque)
 		{
 //			log.debug("c : "+c);
-			int p1 = c >> DEUXIEME_POINT_COUPLE;
-			int p2 = c & ((1 << DEUXIEME_POINT_COUPLE) - 1);
+			int p1 = c >> DECALAGE_POUR_DIRECTION;
+			int dir = c & ((1 << DECALAGE_POUR_DIRECTION) - 1);
 			xC1 = (p1 & (NB_POINTS_POUR_TROIS_METRES - 1)) + x - centreMasque;
 			yC1 = (p1 >> PRECISION) + y - centreMasque;
-			xC2 = (p2 & (NB_POINTS_POUR_TROIS_METRES - 1)) + x - centreMasque;
-			yC2 = (p2 >> PRECISION) + y - centreMasque;
+			int	gridpoint = getGridPointVoisin(p1, dir);
+			xC2 = (gridpoint & (NB_POINTS_POUR_TROIS_METRES - 1)) + x - centreMasque;
+			yC2 = (gridpoint >> PRECISION) + y - centreMasque;
 
 //			log.debug("Obtenu : "+((((yC1 << PRECISION) +xC1) << DEUXIEME_POINT_COUPLE) + (yC2 << PRECISION) +xC2));
 			
@@ -309,7 +347,7 @@ public class GridSpace implements Service
 			if(xC1 >= 0 && xC1 <= X_MAX && yC1 >= 0 && yC1 <= Y_MAX
 					&& xC2 >= 0 && xC2 <= X_MAX && yC2 >= 0 && yC2 <= Y_MAX)
 			{
-				out.add(getGridPoint(xC1,yC1) << DEUXIEME_POINT_COUPLE + getGridPoint(xC2,yC2));
+				out.add(getGridPoint(xC1,yC1) << DECALAGE_POUR_DIRECTION + dir);
 //				log.debug("Ajout !");
 			}
 		}
@@ -381,15 +419,15 @@ public class GridSpace implements Service
 	 * Un nouveau DStarLite commence. Il faut lui fournir les obstacles actuels
 	 * @return
 	 */
-	public ArrayList<ObstacleProximity> startNewPathfinding()
+	public ArrayList<Integer> startNewPathfinding()
 	{
 		iteratorDStarLite.reinit();
-		ArrayList<ObstacleProximity> out = new ArrayList<ObstacleProximity>();
+		ArrayList<Integer> out = new ArrayList<Integer>();
 		ObstacleProximity o = null;
 		while(iteratorDStarLite.hasNext())
 		{
 			o = iteratorDStarLite.next();
-			out.add(o);
+			out.addAll(o.getMasque());
 		}
 		if(o != null)
 			deathDateLastObstacle = o.getDeathDate();
