@@ -66,7 +66,7 @@ public class Fenetre extends JPanel {
 	{
 		needInit = false;
 		try {
-			image = ImageIO.read(new File("table2016.png"));
+			image = ImageIO.read(new File("minitable2016.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

@@ -251,7 +251,7 @@ public class GridSpace implements Service
 	private boolean isTraversable(int gridpoint, int direction)
 	{
 		int voisin = getGridPointVoisin(gridpoint, direction);
-		if(grilleStatique.get(voisin))
+		if(voisin == -1 || grilleStatique.get(voisin))
 			return false;
 		int couple = (gridpoint << DECALAGE_POUR_DIRECTION) + direction;
 		iteratorDStarLite.reinit();
@@ -391,7 +391,7 @@ public class GridSpace implements Service
 
 	public synchronized void deleteOldObstacles()
 	{
-		log.debug("Appel de deleteOldObstacles");
+//		log.debug("Appel de deleteOldObstacles");
 		// S'il y a effectivement suppression, on régénère la grille
 		if(obstaclesMemory.deleteOldObstacles())
 			notify(); // changement de la grille dynamique !
