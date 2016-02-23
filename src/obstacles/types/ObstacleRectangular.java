@@ -413,7 +413,7 @@ public class ObstacleRectangular extends ObstacleAvecAngle
 	public boolean isProcheObstacle(Vec2<ReadOnly> point, int distance)
 	{
 		// Attention! squaredDistance effectue déjà la rotation du point
-		return squaredDistance(point) < (distance+0.01f) * (distance+0.01f); // vu qu'on a une précision limitée, mieux vaut prendre un peu de marge
+		return squaredDistance(point) <= (distance+0.01f) * (distance+0.01f); // vu qu'on a une précision limitée, mieux vaut prendre un peu de marge
 	}
 
 	/**

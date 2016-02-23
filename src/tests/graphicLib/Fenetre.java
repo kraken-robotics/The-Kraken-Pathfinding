@@ -149,12 +149,12 @@ public class Fenetre extends JPanel {
 */
 	private int XGridPointtoWindow(int g)
 	{
-		return (g & (GridSpace.NB_POINTS_POUR_TROIS_METRES-1))*sizeX/GridSpace.NB_POINTS_POUR_TROIS_METRES;
+		return (g & (GridSpace.NB_POINTS_POUR_TROIS_METRES-1))*sizeX/(GridSpace.NB_POINTS_POUR_TROIS_METRES-1);
 	}
 
 	private int YGridPointtoWindow(int g)
 	{
-		return sizeY-(g >> (GridSpace.PRECISION))*sizeY/GridSpace.NB_POINTS_POUR_DEUX_METRES;
+		return sizeY-(g >> (GridSpace.PRECISION))*sizeY/(GridSpace.NB_POINTS_POUR_DEUX_METRES-1);
 	}
 
 	private int XtoWindow(int x)

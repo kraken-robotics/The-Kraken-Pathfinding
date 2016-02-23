@@ -7,7 +7,6 @@ import obstacles.ObstaclesFixes;
 import obstacles.memory.ObstaclesIteratorPresent;
 import obstacles.memory.ObstaclesMemory;
 import obstacles.types.ObstacleProximity;
-import obstacles.types.ObstacleRectangular;
 import permissions.ReadOnly;
 import permissions.ReadWrite;
 import table.GameElementNames;
@@ -43,9 +42,9 @@ public class GridSpace implements Service
 	public static final int PRECISION = 6;
 	public static final int DECALAGE_POUR_DIRECTION = 3;
 	public static final int NB_POINTS_POUR_TROIS_METRES = (1 << PRECISION);
-	public static final int NB_POINTS_POUR_DEUX_METRES = (int) ((1 << PRECISION)*2./3.);
-	public static final double DISTANCE_ENTRE_DEUX_POINTS = 3000./NB_POINTS_POUR_TROIS_METRES;
-	public static final int DISTANCE_ENTRE_DEUX_POINTS_1024 = 3000 << (10-PRECISION);
+	public static final int NB_POINTS_POUR_DEUX_METRES = (int) ((1 << PRECISION)*2./3.)+1;
+	public static final double DISTANCE_ENTRE_DEUX_POINTS = 3000./(NB_POINTS_POUR_TROIS_METRES-1);
+	public static final int DISTANCE_ENTRE_DEUX_POINTS_1024 = (int)(1024*3000./(NB_POINTS_POUR_TROIS_METRES-1));
 	public static final int NB_POINTS = NB_POINTS_POUR_DEUX_METRES * NB_POINTS_POUR_TROIS_METRES;
 	private static final int X_MAX = NB_POINTS_POUR_TROIS_METRES - 1;
 	private static final int Y_MAX = NB_POINTS_POUR_DEUX_METRES - 1;
@@ -71,11 +70,8 @@ public class GridSpace implements Service
 			for(int i = 0; i < NB_POINTS; i++)
 				for(ObstaclesFixes o : ObstaclesFixes.values)
 				{
-					if(o.toString().equals("BORD_GAUCHE"))
-						log.debug(computeVec2(i)+" "+((ObstacleRectangular)o.getObstacle()).squaredDistance(computeVec2(i)));
-					if(o.getObstacle().isProcheObstacle(computeVec2(i), (int)Math.round(DISTANCE_ENTRE_DEUX_POINTS)))
+					if(o.getObstacle().isProcheObstacle(computeVec2(i), (int)(DISTANCE_ENTRE_DEUX_POINTS/2)))
 					{
-						log.debug(computeVec2(i)+" "+o);
 						grilleStatique.set(i);
 						break; // on ne vérifie pas les autres obstacles
 					}
@@ -258,17 +254,17 @@ public class GridSpace implements Service
 		return voisin != -1 && !grilleStatique.get(voisin);
 	}
 
-	public static int getGridPointX(Vec2<ReadOnly> p)
+	public static final int getGridPointX(Vec2<ReadOnly> p)
 	{
 		return (int) Math.round((p.x+1500) / GridSpace.DISTANCE_ENTRE_DEUX_POINTS);
 	}
 
-	public static int getGridPointY(Vec2<ReadOnly> p)
+	public static final int getGridPointY(Vec2<ReadOnly> p)
 	{
 		return (int) Math.round(p.y / GridSpace.DISTANCE_ENTRE_DEUX_POINTS);
 	}
 
-	public static int getGridPoint(int x, int y)
+	public static final int getGridPoint(int x, int y)
 	{
 		return y << PRECISION + x;
 	}
@@ -278,7 +274,7 @@ public class GridSpace implements Service
 	 * @param p
 	 * @return
 	 */
-	public static int computeGridPoint(Vec2<ReadOnly> p)
+	public static final int computeGridPoint(Vec2<ReadOnly> p)
 	{
 		return (int) (NB_POINTS_POUR_TROIS_METRES*(int) Math.round(p.y / GridSpace.DISTANCE_ENTRE_DEUX_POINTS) + Math.round((p.x+1500) / GridSpace.DISTANCE_ENTRE_DEUX_POINTS));
 	}
@@ -403,10 +399,7 @@ public class GridSpace implements Service
 	 */
 	public boolean isTraversableStatique(int point)
 	{
-		for(int i = 0; i < 8; i++)
-			if(!isTraversableStatique(point, i))
-				return false;
-		return true;
+		return !grilleStatique.get(point);
 	}
 	
 	/**
