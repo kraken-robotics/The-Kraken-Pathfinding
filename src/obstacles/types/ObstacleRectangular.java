@@ -16,6 +16,8 @@ import utils.Vec2;
 
 public class ObstacleRectangular extends ObstacleAvecAngle
 {
+	// Position est le centre de rotation, c'est-à-dire le croisement des deux diagonales
+	
 	// taille selon l'axe X
 	protected int sizeX;
 	
@@ -26,11 +28,13 @@ public class ObstacleRectangular extends ObstacleAvecAngle
 	protected double demieDiagonale;
 	
 	// calcul des positions des coins
+	// ces coins sont dans le repère de l'obstacle !
 	public Vec2<ReadOnly> coinBasGauche;
 	public Vec2<ReadOnly> coinHautGauche;
 	public Vec2<ReadOnly> coinBasDroite;
 	public Vec2<ReadOnly> coinHautDroite;
 
+	// ces coins sont dans le repère de la table
 	protected Vec2<ReadOnly> coinBasGaucheRotate;
 	protected Vec2<ReadOnly> coinHautGaucheRotate;
 	protected Vec2<ReadOnly> coinBasDroiteRotate;
@@ -81,10 +85,10 @@ public class ObstacleRectangular extends ObstacleAvecAngle
 		coinHautGauche = new Vec2<ReadOnly>(-sizeX/2,sizeY/2);
 		coinBasDroite = new Vec2<ReadOnly>(sizeX/2,-sizeY/2);
 		coinHautDroite = new Vec2<ReadOnly>(sizeX/2,sizeY/2);
-		coinBasGaucheRotate = rotatePlusAngle(coinBasGauche).getReadOnly();
-		coinHautGaucheRotate = rotatePlusAngle(coinHautGauche).getReadOnly();
-		coinBasDroiteRotate = rotatePlusAngle(coinBasDroite).getReadOnly();
-		coinHautDroiteRotate = rotatePlusAngle(coinHautDroite).getReadOnly();
+		coinBasGaucheRotate = convertitVersRepereTable(coinBasGauche).getReadOnly();
+		coinHautGaucheRotate = convertitVersRepereTable(coinHautGauche).getReadOnly();
+		coinBasDroiteRotate = convertitVersRepereTable(coinBasDroite).getReadOnly();
+		coinHautDroiteRotate = convertitVersRepereTable(coinHautDroite).getReadOnly();
 		demieDiagonale = Math.sqrt(sizeY*sizeY/4+sizeX*sizeX/4);
 	}
 	
@@ -120,20 +124,21 @@ public class ObstacleRectangular extends ObstacleAvecAngle
 	 * @param point
 	 * @return
 	 */
-	private Vec2<ReadWrite> rotateMoinsAngle(Vec2<ReadOnly> point)
+	private Vec2<ReadWrite> convertitVersRepereObstacle(Vec2<ReadOnly> point)
 	{
 		Vec2<ReadWrite> out = new Vec2<ReadWrite>();
-		out.x = (int)(cos*(point.x-position.x)+sin*(point.y-position.y))+position.x;
-		out.y = (int)(-sin*(point.x-position.x)+cos*(point.y-position.y))+position.y;
+		out.x = (int)(cos*(point.x-position.x)+sin*(point.y-position.y));
+		out.y = (int)(-sin*(point.x-position.x)+cos*(point.y-position.y));
 		return out;
 	}
 
 	/**
 	 * Rotation dans le sens +angle
+	 * Passe du repère de l'obstacle au repère de la table
 	 * @param point
 	 * @return
 	 */
-	private Vec2<ReadWrite> rotatePlusAngle(Vec2<ReadOnly> point)
+	private Vec2<ReadWrite> convertitVersRepereTable(Vec2<ReadOnly> point)
 	{
 		Vec2<ReadWrite> out = new Vec2<ReadWrite>();
 		out.x = (int)(cos*point.x-sin*point.y)+position.x;
@@ -166,9 +171,9 @@ public class ObstacleRectangular extends ObstacleAvecAngle
 	 * @param point
 	 * @return
 	 */
-	private int getXRotateMoinsAngle(Vec2<ReadOnly> point)
+	private int getXConvertiVersRepereObstacle(Vec2<ReadOnly> point)
 	{
-		return (int)(cos*(point.x-position.x)+sin*(point.y-position.y))+position.x;
+		return (int)(cos*(point.x-position.x)+sin*(point.y-position.y));
 	}
 
 	/**
@@ -176,9 +181,9 @@ public class ObstacleRectangular extends ObstacleAvecAngle
 	 * @param point
 	 * @return
 	 */
-	private int getYRotateMoinsAngle(Vec2<ReadOnly> point)
+	private int getYConvertiVersRepereObstacle(Vec2<ReadOnly> point)
 	{
-		return (int)(-sin*(point.x-position.x)+cos*(point.y-position.y))+position.y;
+		return (int)(-sin*(point.x-position.x)+cos*(point.y-position.y));
 	}
 
 	/**
@@ -194,10 +199,10 @@ public class ObstacleRectangular extends ObstacleAvecAngle
 		if(position.squaredDistance(r.position) >= (demieDiagonale+r.demieDiagonale)*(demieDiagonale+r.demieDiagonale))
 			return false;
 		// Il faut tester les quatres axes
-		return !testeSeparation(coinBasGauche.x, coinBasDroite.x, getXRotateMoinsAngle(r.coinBasGaucheRotate), getXRotateMoinsAngle(r.coinHautGaucheRotate), getXRotateMoinsAngle(r.coinBasDroiteRotate), getXRotateMoinsAngle(r.coinHautDroiteRotate))
-				&& !testeSeparation(coinBasGauche.y, coinHautGauche.y, getYRotateMoinsAngle(r.coinBasGaucheRotate), getYRotateMoinsAngle(r.coinHautGaucheRotate), getYRotateMoinsAngle(r.coinBasDroiteRotate), getYRotateMoinsAngle(r.coinHautDroiteRotate))
-				&& !testeSeparation(r.coinBasGauche.x, r.coinBasDroite.x, r.getXRotateMoinsAngle(coinBasGaucheRotate), r.getXRotateMoinsAngle(coinHautGaucheRotate), r.getXRotateMoinsAngle(coinBasDroiteRotate), r.getXRotateMoinsAngle(coinHautDroiteRotate))
-				&& !testeSeparation(r.coinBasGauche.y, r.coinHautGauche.y, r.getYRotateMoinsAngle(coinBasGaucheRotate), r.getYRotateMoinsAngle(coinHautGaucheRotate), r.getYRotateMoinsAngle(coinBasDroiteRotate), r.getYRotateMoinsAngle(coinHautDroiteRotate));
+		return !testeSeparation(coinBasGauche.x, coinBasDroite.x, getXConvertiVersRepereObstacle(r.coinBasGaucheRotate), getXConvertiVersRepereObstacle(r.coinHautGaucheRotate), getXConvertiVersRepereObstacle(r.coinBasDroiteRotate), getXConvertiVersRepereObstacle(r.coinHautDroiteRotate))
+				&& !testeSeparation(coinBasGauche.y, coinHautGauche.y, getYConvertiVersRepereObstacle(r.coinBasGaucheRotate), getYConvertiVersRepereObstacle(r.coinHautGaucheRotate), getYConvertiVersRepereObstacle(r.coinBasDroiteRotate), getYConvertiVersRepereObstacle(r.coinHautDroiteRotate))
+				&& !testeSeparation(r.coinBasGauche.x, r.coinBasDroite.x, r.getXConvertiVersRepereObstacle(coinBasGaucheRotate), r.getXConvertiVersRepereObstacle(coinHautGaucheRotate), r.getXConvertiVersRepereObstacle(coinBasDroiteRotate), r.getXConvertiVersRepereObstacle(coinHautDroiteRotate))
+				&& !testeSeparation(r.coinBasGauche.y, r.coinHautGauche.y, r.getYConvertiVersRepereObstacle(coinBasGaucheRotate), r.getYConvertiVersRepereObstacle(coinHautGaucheRotate), r.getYConvertiVersRepereObstacle(coinBasDroiteRotate), r.getYConvertiVersRepereObstacle(coinHautDroiteRotate));
 	}
 	
 	/**
@@ -342,11 +347,11 @@ public class ObstacleRectangular extends ObstacleAvecAngle
 	
 	public boolean isInObstacle(Vec2<ReadOnly> point)
 	{
-		Vec2<ReadWrite> pointWrite = rotateMoinsAngle(point);
-		return (pointWrite.x < position.x + sizeX/2) &&
-				(pointWrite.x > position.x - sizeX/2) &&
-				(pointWrite.y < position.y + sizeY/2) &&
-				(pointWrite.y > position.y - sizeY/2);
+		Vec2<ReadWrite> pointWrite = convertitVersRepereObstacle(point);
+		return (pointWrite.x < sizeX/2) &&
+				(pointWrite.x > - sizeX/2) &&
+				(pointWrite.y < sizeY/2) &&
+				(pointWrite.y > - sizeY/2);
 	}
 	
 	/**
@@ -356,8 +361,8 @@ public class ObstacleRectangular extends ObstacleAvecAngle
 	 */
 	public double squaredDistance(Vec2<ReadOnly> v)
 	{
-		Vec2<ReadWrite> in = rotateMoinsAngle(v);
-		log.debug("in = : "+in);
+		Vec2<ReadWrite> in = convertitVersRepereObstacle(v);
+//		log.debug("in = : "+in);
 		/*		
 		 *  Schéma de la situation :
 		 *
