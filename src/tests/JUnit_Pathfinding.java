@@ -45,12 +45,11 @@ public class JUnit_Pathfinding extends JUnit_Test {
     {
 		gridspace.addObstacle(new Vec2<ReadOnly>(400, 1000), false);
 		pathfinding.computeNewPath(new Vec2<ReadOnly>(-1000, 200), new Vec2<ReadOnly>(1200, 1500));
-		ArrayList<Vec2<ReadOnly>> trajet = pathfinding.itineraireBrut();
-		for(Vec2<ReadOnly> v : trajet)
-		{
-			log.debug(v);
-		}
-//		pathfinding.updatePath(new Vec2<ReadOnly>(0,600));
+		pathfinding.itineraireBrut();
+
+		gridspace.addObstacle(new Vec2<ReadOnly>(600, 1000), false);
+		pathfinding.updatePath(new Vec2<ReadOnly>(0,600));
+		pathfinding.itineraireBrut();
     }
 
 	@Test

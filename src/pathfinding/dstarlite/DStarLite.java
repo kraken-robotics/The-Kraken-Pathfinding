@@ -242,6 +242,10 @@ public class DStarLite implements Service, HeuristiqueCourbe
 
 		obstaclesConnus = gridspace.startNewPathfinding();
 		log.debug("Nb obstacles connus : "+obstaclesConnus.size());
+		if(Config.graphicDStarLite)
+			for(Integer i : obstaclesConnus)
+				fenetre.setColor(GridSpace.getGridPointVoisin(i >> 3, i & 7), Fenetre.Couleur.NOIR);
+
 		computeShortestPath();
 		
 		if(Config.graphicDStarLite)
@@ -284,7 +288,7 @@ public class DStarLite implements Service, HeuristiqueCourbe
 					DStarLiteNode u = getFromMemory(upoint);
 					int dir = (i & ((1 << GridSpace.DECALAGE_POUR_DIRECTION) - 1));
 					DStarLiteNode v = getFromMemory(GridSpace.getGridPointVoisin(upoint, dir));
-					u.rhs = Math.min(u.rhs, add(v.g, gridspace.distanceStatique(upoint, dir))); // TODO
+					u.rhs = Math.min(u.rhs, add(v.g, gridspace.distanceStatique(upoint, dir)));
 					updateVertex(u);
 				}
 			}
@@ -456,7 +460,10 @@ public class DStarLite implements Service, HeuristiqueCourbe
 		if(obstaclesConnus.contains((point << GridSpace.DECALAGE_POUR_DIRECTION) + dir))
 			return Integer.MAX_VALUE;
 		else
+		{
+//			log.debug("OK pour "+GridSpace.computeVec2(point));
 			return gridspace.distanceStatique(point, dir);
+		}
 	}
 	
 }

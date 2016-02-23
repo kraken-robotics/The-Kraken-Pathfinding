@@ -111,7 +111,7 @@ public class GridSpace implements Service
 				return 6; // O
 			else if(deltaX == 0)
 			{
-				log.critical("Erreur : "+deltaX+" "+deltaY);
+				log.critical("Erreur : direction nulle");
 				return 0;
 			}
 			else
@@ -201,8 +201,8 @@ public class GridSpace implements Service
 		int rayonPoint = (int) Math.round(rayonEnnemi / DISTANCE_ENTRE_DEUX_POINTS);
 		int tailleMasque = 2*(rayonPoint+1)+1;
 		centreMasque = tailleMasque / 2;
-		for(int i = 1; i < tailleMasque-1; i++)
-			for(int j = 1; j < tailleMasque-1; j++)
+		for(int i = 0; i < tailleMasque; i++)
+			for(int j = 0; j < tailleMasque; j++)
 				if((i-centreMasque) * (i-centreMasque) + (j-centreMasque) * (j-centreMasque) > rayonPoint*rayonPoint)
 					for(int a = -1; a <= 1; a++)
 						for(int b = -1; b <= 1; b++)
@@ -212,7 +212,7 @@ public class GridSpace implements Service
 							int dir = convertToDirection(a, b);
 							int i2 = i + a, j2 = j + b;
 							if((i2-centreMasque) * (i2-centreMasque) + (j2-centreMasque) * (j2-centreMasque) <= rayonPoint*rayonPoint)
-								masque.add((((j2 << PRECISION) +i2) << DECALAGE_POUR_DIRECTION) + dir);
+								masque.add((((j << PRECISION) +i) << DECALAGE_POUR_DIRECTION) + dir);
 						}
 /*		log.debug("Taille du masque : "+masque.size());
 		System.out.println("Masque : ");
@@ -294,14 +294,14 @@ public class GridSpace implements Service
 			return 1000;
 	}
 
-	public static Vec2<ReadOnly> computeVec2(int gridpoint)
+	public static final Vec2<ReadOnly> computeVec2(int gridpoint)
 	{
 		Vec2<ReadWrite> out = new Vec2<ReadWrite>();
 		computeVec2(out, gridpoint);
 		return out.getReadOnly();
 	}
 
-	public static void computeVec2(Vec2<ReadWrite> v, int gridpoint)
+	public static final void computeVec2(Vec2<ReadWrite> v, int gridpoint)
 	{
 		v.x = (((gridpoint & (NB_POINTS_POUR_TROIS_METRES - 1)) * GridSpace.DISTANCE_ENTRE_DEUX_POINTS_1024) >> 10) - 1500;
 		v.y = ((gridpoint >> PRECISION) * GridSpace.DISTANCE_ENTRE_DEUX_POINTS_1024) >> 10;
