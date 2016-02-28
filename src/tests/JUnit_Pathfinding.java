@@ -1,19 +1,17 @@
 package tests;
 
-import java.util.ArrayList;
-
 import org.junit.Before;
 import org.junit.Test;
 
 import container.ServiceNames;
 import pathfinding.CheminPathfinding;
 import pathfinding.astarCourbe.AStarCourbe;
-import pathfinding.astarCourbe.ArcCourbe;
 import pathfinding.dstarlite.DStarLite;
 import pathfinding.dstarlite.GridSpace;
 import permissions.ReadOnly;
 import robot.DirectionStrategy;
 import robot.RobotReal;
+import utils.Sleep;
 import utils.Vec2;
 
 /**
@@ -44,12 +42,17 @@ public class JUnit_Pathfinding extends JUnit_Test {
     public void test_chemin_dstarlite() throws Exception
     {
 		gridspace.addObstacle(new Vec2<ReadOnly>(200, 1000), false);
-		pathfinding.computeNewPath(new Vec2<ReadOnly>(-1000, 200), new Vec2<ReadOnly>(1200, 1500));
-//		pathfinding.itineraireBrut();
-
+		pathfinding.computeNewPath(new Vec2<ReadOnly>(-1000, 200), new Vec2<ReadOnly>(1200, 1200));
+		pathfinding.itineraireBrut();		
+		Sleep.sleep(500);
+		log.debug("RECALCUL");
 		gridspace.addObstacle(new Vec2<ReadOnly>(600, 1300), false);
-		pathfinding.updatePath(new Vec2<ReadOnly>(-1000,100));
+		pathfinding.updatePath(new Vec2<ReadOnly>(600,1300));
 		pathfinding.itineraireBrut();
+		Sleep.sleep(4000);
+		pathfinding.updatePath(new Vec2<ReadOnly>(-800,1300));
+		pathfinding.itineraireBrut();
+		log.debug("RECALCUL");
     }
 
 	@Test
