@@ -52,6 +52,7 @@ public class GridSpace implements Service
 	// cette grille est constante, c'est-à-dire qu'elle ne contient que les obstacles fixes
 	private static BitSet grilleStatique = null;
 	
+	// TODO dilater obstacle
 	private static ArrayList<Integer> masque = new ArrayList<Integer>();
 	private static int centreMasque;
 	private long deathDateLastObstacle;

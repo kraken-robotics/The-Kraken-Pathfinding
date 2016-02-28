@@ -11,8 +11,12 @@ public class DStarLiteNode {
 	public final int gridpoint;
 	public Cle cle = new Cle();
 	public int g = Integer.MAX_VALUE, rhs = Integer.MAX_VALUE;
+	
+	/**
+	 * "done" correspond à l'appartenance à U dans l'algo du DStarLite
+	 */
 	public boolean done = false;
-	public long nbPF = 1;
+	public long nbPF = 0;
 	
 	public DStarLiteNode(int gridpoint)
 	{
