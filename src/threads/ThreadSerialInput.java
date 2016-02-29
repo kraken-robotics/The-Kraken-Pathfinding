@@ -6,7 +6,6 @@ import buffer.DataForSerialOutput;
 import buffer.IncomingData;
 import buffer.IncomingDataBuffer;
 import enums.SerialProtocol;
-import pathfinding.ChronoGameState;
 import permissions.ReadOnly;
 import requete.RequeteSTM;
 import requete.RequeteType;
@@ -68,6 +67,8 @@ public class ThreadSerialInput extends Thread implements Service
 		this.output = output;
 		this.robot = robot;
 		this.table = table;
+		
+		idDernierPaquet = serie.getFirstID();
 	}
 
 	@Override
@@ -87,21 +88,23 @@ public class ThreadSerialInput extends Thread implements Service
 				{
 					while(!serie.available())
 						serie.wait();
+
 					int index = 0;
 
 					try {
 						// On s'assure de bien commencer au début d'un message
-						if(serie.read() != 0x55)
+						if(serie.read() != (byte)0x55)
 						{
 							log.warning("Mauvais entête (0x55)");
 							continue;
 						}
-						if(serie.read() != 0xAA)
+						if(serie.read() != (byte)0xAA)
 						{
 							log.warning("Mauvais entête (0xAA)");
 							continue;
 						}
-						
+
+						log.debug("Lecture d'un message");
 						lecture[index++] = serie.read(); // id partie 1
 						lecture[index++] = serie.read(); // id partie 2
 						int idPaquet = (lecture[ID_FORT] << 8) + lecture[ID_FAIBLE];
@@ -142,6 +145,8 @@ public class ThreadSerialInput extends Thread implements Service
 						lecture[index++] = serie.read(); // checksum
 						if(lecture[COMMANDE+1] != SerialProtocol.IN_PONG2.code)
 							log.warning("Pong reçu non conforme");
+						else if(Config.debugSerie)
+							log.debug("Reçu pong");
 					}
 					else if((lecture[COMMANDE] & SerialProtocol.MASK_LAST_BIT.code) == SerialProtocol.IN_XYO.code)
 					{

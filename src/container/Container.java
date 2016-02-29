@@ -180,6 +180,7 @@ public class Container
 			ok.add(ServiceNames.INCOMING_DATA_BUFFER);
 			ok.add(ServiceNames.SERIAL_OUTPUT_BUFFER);
 			ok.add(ServiceNames.REQUETE_STM);
+			ok.add(ServiceNames.D_STAR_LITE);
 			ok.add(ServiceNames.OBSTACLES_MEMORY);
 			ok.add(ServiceNames.THREAD_SERIAL_INPUT);
 			ok.add(ServiceNames.THREAD_SERIAL_OUTPUT);

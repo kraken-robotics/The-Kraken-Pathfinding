@@ -185,6 +185,7 @@ public class DataForSerialOutput implements Service
 		out[COMMANDE] = SerialProtocol.OUT_TOURNER.code;
 		out[PARAM] = (byte) (Math.round(angle*1000) >> 8);
 		out[PARAM+1] = (byte) (Math.round(angle*1000));
+		bufferBassePriorite.add(out);
 		notify();
 	}
 

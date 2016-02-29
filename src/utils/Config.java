@@ -15,13 +15,13 @@ import enums.RobotColor;
  */
 public class Config implements Service
 {
-	public static final boolean debugSerie = false;
+	public static final boolean debugSerie = true;
 	// Permet de savoir si le match a démarré et quand
-	public static final boolean graphicDStarLite = true;
+	public static final boolean graphicDStarLite = false;
 	public static final boolean graphicThetaStar = false;
-	public static final boolean graphicObstacles = true;
+	public static final boolean graphicObstacles = false;
 	public static final boolean graphicAStarCourbe = false;
-	public static final boolean simuleSerie = true;
+	public static final boolean simuleSerie = false;
 	
 	private String name_config_file = "config.ini";
 	private volatile Properties properties = new Properties();
@@ -141,7 +141,7 @@ public class Config implements Service
 	{
 		log.debug("Configuration initiale");
 		for(ConfigInfo info: ConfigInfo.values())
-			log.warning(info+" = "+getString(info));
+			log.debug(info+" = "+getString(info));
 	}
 	
 	/**

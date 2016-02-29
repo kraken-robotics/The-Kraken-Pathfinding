@@ -168,7 +168,7 @@ public class Log implements Service
 				sauvegarde_fichier = false;
 			}
 		}
-		warning("Service de log démarré");
+		debug("Service de log démarré");
 	}
 
 }
