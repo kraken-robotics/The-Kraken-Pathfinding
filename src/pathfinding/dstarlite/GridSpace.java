@@ -52,7 +52,6 @@ public class GridSpace implements Service
 	// cette grille est constante, c'est-à-dire qu'elle ne contient que les obstacles fixes
 	private static BitSet grilleStatique = null;
 	
-	// TODO dilater obstacle
 	private static ArrayList<Integer> masque = new ArrayList<Integer>();
 	private static int centreMasque;
 	private long deathDateLastObstacle;
@@ -199,7 +198,8 @@ public class GridSpace implements Service
 	public void useConfig(Config config)
 	{
 		int rayonEnnemi = config.getInt(ConfigInfo.RAYON_ROBOT_ADVERSE);
-		int rayonPoint = (int) Math.round(rayonEnnemi / DISTANCE_ENTRE_DEUX_POINTS);
+		int rayonRobot = config.getInt(ConfigInfo.RAYON_ROBOT);
+		int rayonPoint = (int) Math.round((rayonEnnemi + rayonRobot) / DISTANCE_ENTRE_DEUX_POINTS);
 		int tailleMasque = 2*(rayonPoint+1)+1;
 		centreMasque = tailleMasque / 2;
 		for(int i = 0; i < tailleMasque; i++)

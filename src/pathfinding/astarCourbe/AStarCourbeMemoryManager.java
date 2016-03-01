@@ -1,11 +1,8 @@
 package pathfinding.astarCourbe;
 
-import pathfinding.ChronoGameState;
 import pathfinding.RealGameState;
-import permissions.ReadOnly;
 import container.Service;
 import exceptions.FinMatchException;
-import robot.RobotReal;
 import utils.Config;
 import utils.Log;
 // TODO unifier les MemoryManager
@@ -25,7 +22,7 @@ public class AStarCourbeMemoryManager implements Service {
 	private final AStarCourbeNode[] nodes = new AStarCourbeNode[nb_instances];
 	protected Log log;
 	
-	// nodes est triés: avant firstAvailable, les gamestate sont indisponibles, après, ils sont disponibles
+	// nodes est trié: avant firstAvailable, les gamestate sont indisponibles, après, ils sont disponibles
 	// en fait, on est dans un cas très simple, où l'AStarCourbe demande les nœuds un par un et les libère tous d'un coup
 	private int firstAvailable;
 	
@@ -53,7 +50,6 @@ public class AStarCourbeMemoryManager implements Service {
 			nodes[i] = new AStarCourbeNode();
 			nodes[i].state = realstate.cloneGameState();
 		}
-		log.debug("Instanciation finie");
 	}
 	
 	/**

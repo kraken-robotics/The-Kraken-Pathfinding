@@ -262,11 +262,13 @@ public class DStarLite implements Service, HeuristiqueCourbe
 		}
 
 		obstaclesConnus = gridspace.startNewPathfinding();
+
+		computeShortestPath();
+
 		if(Config.graphicDStarLite)
 			for(Integer i : obstaclesConnus)
 				fenetre.setColor(GridSpace.getGridPointVoisin(i >> 3, i & 7), Fenetre.Couleur.NOIR);
 
-		computeShortestPath();
 	}
 	
 	private final int distanceHeuristique(int gridpoint)
@@ -418,16 +420,6 @@ public class DStarLite implements Service, HeuristiqueCourbe
 		return getFromMemory(gridpoint).rhs;
 	}
 	
-/*	public int getHashDebut()
-	{
-		return depart.gridpoint;
-	}*/
-/*
-	public int getHashArrivee()
-	{
-		return arrivee.gridpoint;
-	}
-*/
 	/**
 	 * Somme en faisant attention aux valeurs infinies
 	 * @param a
@@ -454,54 +446,7 @@ public class DStarLite implements Service, HeuristiqueCourbe
 			return Integer.MAX_VALUE;
 		return a + b + c;
 	}
-
-//	private ArrayList<Integer> voisinsTries = new ArrayList<Integer>();
-//	private ArrayList<Integer> notes = new ArrayList<Integer>();
 	
-	/**
-	 * Renvoie la liste des nodes du plus court au plus long
-	 * @param gridpoint
-	 * @return
-	 */
-	// TODO : passer en tableau
-/*	public ArrayList<Integer> getListVoisins(int gridpoint)
-	{
-		// TODO : plutôt un tableau
-		voisinsTries.clear();
-		notes.clear();
-		for(int i = 0 ; i < 8 ; i++)
-		{
-			int voisin = GridSpace.getGridPointVoisin(gridpoint, i);
-			if(voisin < 0 || !isThisNodeUptodate(voisin))
-				continue;
-
-			int c = gridspace.distanceStatique(gridpoint, i);
-			if(c == Integer.MAX_VALUE)
-				continue;
-			
-			int note = c + memory[voisin].g;
-			addInVoisinsTries(note, voisin);
-		}			
-		return voisinsTries;
-	}
-
-	private void addInVoisinsTries(int note, int gridpoint)
-	{
-		int iterator = 0;
-//		Iterator<Integer> iterator = notes.listIterator();
-		while(iterator < notes.size())
-		{
-			if(note < notes.get(iterator))
-			{
-				notes.add(iterator, note);
-				voisinsTries.add(iterator, gridpoint);
-				return;
-			}
-			iterator++;
-		}
-		voisinsTries.add(gridpoint);
-	}
-*/
 	/**
 	 * Donne la distance c(voisin, point)
 	 * @param point
