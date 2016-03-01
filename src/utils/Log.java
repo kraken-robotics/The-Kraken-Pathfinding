@@ -117,7 +117,8 @@ public class Log implements Service
 	 */
 	public void close()
 	{
-		warning("Fin du log");
+		debug("Fin du log");
+		debug("Et n'oubliez pas : il faut dire NON à l'égoïsme artistique !");
 		
 		if(sauvegarde_fichier)
 			try {

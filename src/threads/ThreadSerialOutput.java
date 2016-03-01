@@ -39,11 +39,9 @@ public class ThreadSerialOutput extends Thread implements Service
 						data.wait(500);
 
 					if(data.isEmpty()) // si c'est le timeout qui nous a réveillé, on envoie un ping
-						message = data.getPing();
-					else
-						message = data.poll();
+						data.addPing();
+					message = data.poll();
 				}
-				// communiquer est synchronized
 				serie.communiquer(message);
 				Sleep.sleep(5); // il faut un peu laisser la STM respirer…
 			} catch (InterruptedException e) {

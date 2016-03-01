@@ -53,6 +53,7 @@ public enum ConfigInfo {
 	X_DEPART("0", true),
 	Y_DEPART("1000", true),
 	O_DEPART("3.14", true),
+	AFFICHE_CONFIG("false", true),
 	
 	/**
 	 * Config dynamique

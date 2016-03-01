@@ -89,6 +89,7 @@ public class DataForSerialOutput implements Service
 			completePaquet(out);
 			return out;
 		}
+		else
 		{
 			out = bufferBassePriorite.poll();
 			derniersEnvois[nbPaquet % NB_BUFFER_SAUVEGARDE] = out;
@@ -107,13 +108,16 @@ public class DataForSerialOutput implements Service
 	public synchronized void resend(int id)
 	{
 		if(id <= nbPaquet - NB_BUFFER_SAUVEGARDE)
-			log.critical("Réenvoie de message impossible : message perdu");
+			log.critical("Réenvoie de message impossible : message trop vieux");
+		else if(id >= nbPaquet)
+			log.critical("Réenvoie de message impossible : message demandé pas encore envoyé");
 		else
 		{
 			if(derniersEnvoisPriority[id % NB_BUFFER_SAUVEGARDE]) // on redonne la bonne priorité
 				bufferTrajectoireCourbe.addFirst(derniersEnvois[id % NB_BUFFER_SAUVEGARDE]);
 			else
 				bufferBassePriorite.addFirst(derniersEnvois[id % NB_BUFFER_SAUVEGARDE]);
+			notify();
 		}
 	}
 	
@@ -310,14 +314,6 @@ public class DataForSerialOutput implements Service
 		notify();			
 	}
 
-	public synchronized byte[] getPing()
-	{
-		byte[] out = new byte[2+1];
-		out[COMMANDE] = SerialProtocol.OUT_PING.code;
-		completePaquet(out);
-		return out;
-	}
-
 	public synchronized void sendPong()
 	{
 		byte[] out = new byte[2+1];
@@ -325,6 +321,13 @@ public class DataForSerialOutput implements Service
 		out[COMMANDE+1] = SerialProtocol.OUT_PONG2.code;
 		bufferBassePriorite.add(out);
 		notify();
+	}
+
+	public synchronized void addPing()
+	{
+		byte[] out = new byte[2+1];
+		out[COMMANDE] = SerialProtocol.OUT_PING.code;
+		bufferBassePriorite.add(out);
 	}
 
 }

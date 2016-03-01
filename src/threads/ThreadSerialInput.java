@@ -48,7 +48,7 @@ public class ThreadSerialInput extends Thread implements Service
 	private boolean capteursOn = false;
 	private volatile int nbCapteurs;
 	private boolean matchDemarre = false;
-	private byte[] lecture = new byte[100];
+	private int[] lecture = new int[100];
 	private int idDernierPaquet = -1;
 	private final static int ID_FORT = 0;
 	private final static int ID_FAIBLE = 1;
@@ -93,18 +93,17 @@ public class ThreadSerialInput extends Thread implements Service
 
 					try {
 						// On s'assure de bien commencer au début d'un message
-						if(serie.read() != (byte)0x55)
+						if(serie.read() != 0x55)
 						{
 							log.warning("Mauvais entête (0x55)");
 							continue;
 						}
-						if(serie.read() != (byte)0xAA)
+						if(serie.read() != 0xAA)
 						{
 							log.warning("Mauvais entête (0xAA)");
 							continue;
 						}
 
-						log.debug("Lecture d'un message");
 						lecture[index++] = serie.read(); // id partie 1
 						lecture[index++] = serie.read(); // id partie 2
 						int idPaquet = (lecture[ID_FORT] << 8) + lecture[ID_FAIBLE];
@@ -130,7 +129,7 @@ public class ThreadSerialInput extends Thread implements Service
 					}
 					lecture[index++] = serie.read(); // commande
 
-					if(lecture[COMMANDE] == SerialProtocol.IN_PING.code)
+					if(lecture[COMMANDE] == SerialProtocol.IN_PING.codeInt)
 					{
 						// Mauvais checksum. Annulation.
 						if(!verifieChecksum(lecture, index))
@@ -139,16 +138,16 @@ public class ThreadSerialInput extends Thread implements Service
 						output.sendPong();
 					}
 
-					else if(lecture[COMMANDE] == SerialProtocol.IN_PONG1.code) // si le pong est corrompu, pas besoin de le redemander…
+					else if(lecture[COMMANDE] == SerialProtocol.IN_PONG1.codeInt) // si le pong est corrompu, pas besoin de le redemander…
 					{
 						lecture[index++] = serie.read(); // pong2
 						lecture[index++] = serie.read(); // checksum
-						if(lecture[COMMANDE+1] != SerialProtocol.IN_PONG2.code)
+						if(lecture[COMMANDE+1] != SerialProtocol.IN_PONG2.codeInt)
 							log.warning("Pong reçu non conforme");
 						else if(Config.debugSerie)
 							log.debug("Reçu pong");
 					}
-					else if((lecture[COMMANDE] & SerialProtocol.MASK_LAST_BIT.code) == SerialProtocol.IN_XYO.code)
+					else if((lecture[COMMANDE] & SerialProtocol.MASK_LAST_BIT.codeInt) == SerialProtocol.IN_XYO.codeInt)
 					{
 						lecture[index++] = serie.read(); // xy
 						lecture[index++] = serie.read(); // xy
@@ -172,11 +171,11 @@ public class ThreadSerialInput extends Thread implements Service
 						Vec2<ReadOnly> positionRobot = new Vec2<ReadOnly>(xRobot, yRobot);
 						double orientationRobot = ((lecture[PARAM+3] << 8) + lecture[PARAM+4]) / 1000.;
 						double courbure = lecture[PARAM+5] / 1000.;
-						boolean enMarcheAvant = lecture[COMMANDE] == SerialProtocol.IN_XYO.code;
+						boolean enMarcheAvant = lecture[COMMANDE] == SerialProtocol.IN_XYO.codeInt;
 						robot.setPositionOrientationCourbureDirection(positionRobot, orientationRobot, courbure, enMarcheAvant);
 
 					}
-					else if((lecture[COMMANDE] & SerialProtocol.MASK_LAST_BIT.code) == SerialProtocol.IN_INFO_CAPTEURS.code)
+					else if((lecture[COMMANDE] & SerialProtocol.MASK_LAST_BIT.codeInt) == SerialProtocol.IN_INFO_CAPTEURS.codeInt)
 					{
 						lecture[index++] = serie.read(); // xy
 						lecture[index++] = serie.read(); // xy
@@ -207,7 +206,7 @@ public class ThreadSerialInput extends Thread implements Service
 						Vec2<ReadOnly> positionRobot = new Vec2<ReadOnly>(xRobot, yRobot);
 						double orientationRobot = ((lecture[PARAM+3] << 8) + lecture[PARAM+4]) / 1000.;
 						double courbure = lecture[PARAM+5] / 1000.;
-						boolean enMarcheAvant = lecture[COMMANDE] == SerialProtocol.IN_INFO_CAPTEURS.code;
+						boolean enMarcheAvant = lecture[COMMANDE] == SerialProtocol.IN_INFO_CAPTEURS.codeInt;
 						/**
 						 * Acquiert ce que voit les capteurs
 					 	 */
@@ -226,14 +225,14 @@ public class ThreadSerialInput extends Thread implements Service
 					/**
 					 * Le robot commence à droite
 					 */
-					else if((lecture[COMMANDE] & SerialProtocol.MASK_LAST_BIT.code) == SerialProtocol.IN_COULEUR_ROBOT.code)
+					else if((lecture[COMMANDE] & SerialProtocol.MASK_LAST_BIT.codeInt) == SerialProtocol.IN_COULEUR_ROBOT.codeInt)
 					{
 						// Mauvais checksum. Annulation.
 						if(!verifieChecksum(lecture, index))
 							continue;
 
 						if(!matchDemarre)
-							config.set(ConfigInfo.COULEUR, RobotColor.getCouleur(lecture[COMMANDE] != SerialProtocol.IN_COULEUR_ROBOT.code));
+							config.set(ConfigInfo.COULEUR, RobotColor.getCouleur(lecture[COMMANDE] != SerialProtocol.IN_COULEUR_ROBOT.codeInt));
 						else
 							log.warning("Le bas niveau a signalé un changement de couleur en plein match");
 					}
@@ -241,21 +240,23 @@ public class ThreadSerialInput extends Thread implements Service
 					/**
 					 * Erreur série : il faut renvoyer un message
 					 */
-					else if(lecture[COMMANDE] == SerialProtocol.IN_RESEND_PACKET.code)
+					else if(lecture[COMMANDE] == SerialProtocol.IN_RESEND_PACKET.codeInt)
 					{
 						lecture[index++] = serie.read(); // id à retransmettre
 						lecture[index++] = serie.read(); // id à retransmettre
+
 						// Mauvais checksum. Annulation.
 						if(!verifieChecksum(lecture, index))
 							continue;
 
+						log.warning("Demande de renvoi du paquet "+((lecture[PARAM] << 8) + lecture[PARAM+1]));
 						output.resend((lecture[PARAM] << 8) + lecture[PARAM+1]);
 					}
 					
 					/**
 					 * Récupère le code des coquillages
 					 */
-					else if(lecture[COMMANDE] == SerialProtocol.IN_CODE_COQUILLAGES.code)
+					else if(lecture[COMMANDE] == SerialProtocol.IN_CODE_COQUILLAGES.codeInt)
 					{
 						if(!matchDemarre)
 						{
@@ -388,7 +389,7 @@ public class ThreadSerialInput extends Thread implements Service
 					/**
 					 * Démarrage du match
 					 */
-					else if(lecture[COMMANDE] == SerialProtocol.IN_DEBUT_MATCH.code)
+					else if(lecture[COMMANDE] == SerialProtocol.IN_DEBUT_MATCH.codeInt)
 					{
 						// Mauvais checksum. Annulation.
 						if(!verifieChecksum(lecture, index))
@@ -406,7 +407,7 @@ public class ThreadSerialInput extends Thread implements Service
 					/**
 					 * Fin du match, on coupe la série et on arrête ce thread
 					 */
-					else if(lecture[COMMANDE] == SerialProtocol.IN_MATCH_FINI.code)
+					else if(lecture[COMMANDE] == SerialProtocol.IN_MATCH_FINI.codeInt)
 					{
 						// Mauvais checksum. Annulation.
 						if(!verifieChecksum(lecture, index))
@@ -420,7 +421,7 @@ public class ThreadSerialInput extends Thread implements Service
 					/**
 					 * Un élément a été shooté
 					 */
-					else if(lecture[COMMANDE] == SerialProtocol.IN_ELT_SHOOT.code)
+					else if(lecture[COMMANDE] == SerialProtocol.IN_ELT_SHOOT.codeInt)
 					{
 						lecture[index++] = serie.read(); // nb element
 						// Mauvais checksum. Annulation.
@@ -443,7 +444,7 @@ public class ThreadSerialInput extends Thread implements Service
 					/**
 					 * On est arrivé à destination.
 					 */
-					else if(lecture[COMMANDE] == SerialProtocol.IN_ROBOT_ARRIVE.code)
+					else if(lecture[COMMANDE] == SerialProtocol.IN_ROBOT_ARRIVE.codeInt)
 					{
 						// Mauvais checksum. Annulation.
 						if(!verifieChecksum(lecture, index))
@@ -455,7 +456,7 @@ public class ThreadSerialInput extends Thread implements Service
 					/**
 					 * Il y a un blocage mécanique
 					 */
-					else if(lecture[COMMANDE] == SerialProtocol.IN_PB_DEPLACEMENT.code)
+					else if(lecture[COMMANDE] == SerialProtocol.IN_PB_DEPLACEMENT.codeInt)
 					{
 						// Mauvais checksum. Annulation.
 						if(!verifieChecksum(lecture, index))
@@ -487,16 +488,17 @@ public class ThreadSerialInput extends Thread implements Service
 	 * @throws MissingCharacterException 
 	 * @throws IOException 
 	 */
-	private boolean verifieChecksum(byte[] lecture, int longueur) throws IOException, MissingCharacterException
+	private boolean verifieChecksum(int[] lecture, int longueur) throws IOException, MissingCharacterException
 	{
-		lecture[longueur++] = serie.read(); // checksum
+//		lecture[longueur++] = serie.read(); // checksum
+		lecture[longueur] = serie.read(); // checksum
 
 		int c = 0;
 		for(int i = 0; i < longueur; i++)
 			c += lecture[i];
-		if(lecture[longueur] != (byte)(~c))
+		if(lecture[longueur] != ((~c) & 0xFF))
 		{
-			log.warning("Erreur de checksum. Paquet redemandé");
+			log.warning("Erreur de checksum (attendu : "+((~c) & 0xFF)+", obtenu : "+lecture[longueur]+"). Paquet redemandé");
 			output.askResend(idDernierPaquet);
 			return false;
 		}

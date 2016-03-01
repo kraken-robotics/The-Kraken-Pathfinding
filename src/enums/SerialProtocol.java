@@ -2,6 +2,7 @@ package enums;
 
 public enum SerialProtocol {
 	OUT_PING(0x3F),
+	OUT_PING_NEW_CONNECTION(0x40),
 	OUT_PONG1(0x42),
 	OUT_PONG2(0x57),
 	OUT_AVANCER(0x02),
@@ -42,8 +43,10 @@ public enum SerialProtocol {
 	MASK_LAST_BIT(0xFE);
 
 	public final byte code;
+	public final int codeInt;
 	private SerialProtocol(int code)
 	{
+		codeInt = code;
 		this.code = (byte) code;
 	}
 	

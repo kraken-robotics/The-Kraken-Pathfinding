@@ -32,9 +32,11 @@ public class JUnit_Serie extends JUnit_Test {
 	}
 	
 	@Test
-	public void test_avancer() throws Exception
+	public void test_stress_test() throws Exception
 	{
-		data.avancer(100, true);
+		for(int i = 0; i < 10000; i++)
+			data.addPing();
+		Sleep.sleep(300000);
 	}
 	
 }

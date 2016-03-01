@@ -6,6 +6,8 @@ Java vers STM
 
 ping
     0x3F
+ping nouvelle connexion
+    0x40
 pong
     0x42 0x57
 avancer

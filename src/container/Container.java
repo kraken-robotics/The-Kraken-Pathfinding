@@ -114,7 +114,6 @@ public class Container
 		System.out.println("Container détruit");
 	}
 	
-	
 	/**
 	 * instancie le gestionnaire de dépendances et quelques services critiques
 	 * Services instanciés:
