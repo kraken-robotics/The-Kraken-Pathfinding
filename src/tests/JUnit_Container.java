@@ -19,7 +19,7 @@ public class JUnit_Container extends JUnit_Test {
 		for(ServiceNames s : ServiceNames.values())
 		{
 			log.debug("JUnit_ContainerTest: "+s.toString());
-			container.getService(s);
+			Assert.assertTrue(container.getService(s) != null);
 		}
 		Assert.assertTrue(container.afficheNonInstancies());
 	}

@@ -13,6 +13,7 @@ import java.util.ArrayList;
 
 import buffer.DataForSerialOutput;
 import buffer.IncomingDataBuffer;
+import debug.IncomingDataDebugBuffer;
 import pathfinding.CheminPathfinding;
 import pathfinding.RealGameState;
 import pathfinding.astarCourbe.AStarCourbe;
@@ -147,6 +148,8 @@ public class Container
 		Obstacle.setLog(log);
 		Obstacle.useConfig(config);
 		
+		startAllThreads();
+		
 		if(showGraph)
 		{
 			try {
@@ -251,6 +254,8 @@ public class Container
 																					(Table)getServiceDisplay(serviceRequested, ServiceNames.TABLE));
 		else if(serviceRequested == ServiceNames.INCOMING_DATA_BUFFER)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new IncomingDataBuffer((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG));
+		else if(serviceRequested == ServiceNames.INCOMING_DATA_DEBUG_BUFFER)
+			instanciedServices[serviceRequested.ordinal()] = (Service)new IncomingDataDebugBuffer((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG));
 		else if(serviceRequested == ServiceNames.SERIAL_OUTPUT_BUFFER)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new DataForSerialOutput((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG));
 		else if(serviceRequested == ServiceNames.SERIE_STM && !Config.simuleSerie)
@@ -291,6 +296,7 @@ public class Container
 																		(Config)getServiceDisplay(serviceRequested, ServiceNames.CONFIG),
 																		(SerialInterface)getServiceDisplay(serviceRequested, ServiceNames.SERIE_STM),
 																		(IncomingDataBuffer)getServiceDisplay(serviceRequested, ServiceNames.INCOMING_DATA_BUFFER),
+																		(IncomingDataDebugBuffer)getServiceDisplay(serviceRequested, ServiceNames.INCOMING_DATA_DEBUG_BUFFER),
 																		(RequeteSTM)getServiceDisplay(serviceRequested, ServiceNames.REQUETE_STM),
 			                                                             (RobotReal)getServiceDisplay(serviceRequested, ServiceNames.ROBOT_REAL),
 																			(Table)getServiceDisplay(serviceRequested, ServiceNames.TABLE),
@@ -348,7 +354,7 @@ public class Container
 	/**
 	 * Démarrage de tous les threads
 	 */
-	public void startAllThreads()
+	private void startAllThreads()
 	{
 		if(threadsStarted)
 			return;

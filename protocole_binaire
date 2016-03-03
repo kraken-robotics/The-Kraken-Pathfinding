@@ -75,6 +75,8 @@ info capteurs. Le robot est en marche avant
     0x0A X+(12) Y(12) ORIENTATION(16) COURBURE(8) CPT1(12) CPT2(12) …
 info capteurs. Le robot est en marche arrière
     0x0B X+(12) Y(12) ORIENTATION(16) COURBURE(8) CPT1(12) CPT2(12) …
+debug asser
+    0x10 PWMgauche(16) PWMdroit(16) vitesseGauche(16) vitesseDroite(16) distance(16) orientation(16) vitesseLineaire(16) courbure(16)
 xyo. Le robot est en marche avant
     0x0E X+(12) Y(12) ORIENTATION(16) COURBURE(8)
 xyo. Le robot est en marche arrière

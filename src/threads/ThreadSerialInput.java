@@ -19,6 +19,8 @@ import utils.ConfigInfo;
 import utils.Log;
 import utils.Vec2;
 import container.Service;
+import debug.IncomingDataDebug;
+import debug.IncomingDataDebugBuffer;
 import enums.RobotColor;
 import enums.Tribool;
 import exceptions.MissingCharacterException;
@@ -41,6 +43,7 @@ public class ThreadSerialInput extends Thread implements Service
 	private DataForSerialOutput output;
 	private RobotReal robot;
 	private Table table;
+	private IncomingDataDebugBuffer bufferdebug;
 	
 	private int codeCoquillage;
 	
@@ -56,7 +59,7 @@ public class ThreadSerialInput extends Thread implements Service
 	private final static int PARAM = 3;
 
 	
-	public ThreadSerialInput(Log log, Config config, SerialInterface serie, IncomingDataBuffer buffer, RequeteSTM requete, RobotReal robot, Table table, HookFactory hookfactory, DataForSerialOutput output)
+	public ThreadSerialInput(Log log, Config config, SerialInterface serie, IncomingDataBuffer buffer, IncomingDataDebugBuffer bufferdebug, RequeteSTM requete, RobotReal robot, Table table, HookFactory hookfactory, DataForSerialOutput output)
 	{
 		this.log = log;
 		this.config = config;
@@ -67,7 +70,7 @@ public class ThreadSerialInput extends Thread implements Service
 		this.output = output;
 		this.robot = robot;
 		this.table = table;
-		
+		this.bufferdebug = bufferdebug;
 		idDernierPaquet = serie.getFirstID();
 	}
 
@@ -146,6 +149,38 @@ public class ThreadSerialInput extends Thread implements Service
 							log.warning("Pong reçu non conforme");
 						else if(Config.debugSerie)
 							log.debug("Reçu pong");
+					}
+					else if(lecture[COMMANDE] == SerialProtocol.IN_DEBUG_ASSER.codeInt)
+					{
+						lecture[index++] = serie.read();
+						lecture[index++] = serie.read();
+						lecture[index++] = serie.read();
+						lecture[index++] = serie.read();
+						lecture[index++] = serie.read();
+						lecture[index++] = serie.read();
+						lecture[index++] = serie.read();
+						lecture[index++] = serie.read();
+						lecture[index++] = serie.read();
+						lecture[index++] = serie.read();
+						lecture[index++] = serie.read();
+						lecture[index++] = serie.read();
+						lecture[index++] = serie.read();
+						lecture[index++] = serie.read();
+						lecture[index++] = serie.read();
+						lecture[index++] = serie.read();
+
+						// Mauvais checksum. Annulation.
+						if(!verifieChecksum(lecture, index))
+							continue;
+
+						bufferdebug.add(new IncomingDataDebug((lecture[PARAM] << 8) + lecture[PARAM+1], 
+								(lecture[PARAM+2] << 8) + lecture[PARAM+3],
+								(lecture[PARAM+4] << 8) + lecture[PARAM+5],
+								(lecture[PARAM+6] << 8) + lecture[PARAM+7],
+								(lecture[PARAM+8] << 8) + lecture[PARAM+9],
+								(lecture[PARAM+10] << 8) + lecture[PARAM+11],
+								(lecture[PARAM+12] << 8) + lecture[PARAM+13],
+								(lecture[PARAM+14] << 8) + lecture[PARAM+15]));
 					}
 					else if((lecture[COMMANDE] & SerialProtocol.MASK_LAST_BIT.codeInt) == SerialProtocol.IN_XYO.codeInt)
 					{

@@ -39,8 +39,6 @@ public abstract class JUnit_Test
 		}
 		if(Config.graphicDStarLite || Config.graphicThetaStar || Config.graphicObstacles)
 			Fenetre.setInstance(container);
-		
-		container.startAllThreads();
 	}
 
 	@SuppressWarnings("unused")
