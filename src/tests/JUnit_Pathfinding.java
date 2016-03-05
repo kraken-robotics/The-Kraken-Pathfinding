@@ -32,7 +32,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
     public void setUp() throws Exception {
         super.setUp();
         pathfinding = (DStarLite) container.getService(ServiceNames.D_STAR_LITE);
-        pathfindingCourbe = (AStarCourbe) container.getService(ServiceNames.A_STAR_COURBE);
+        pathfindingCourbe = (AStarCourbe) container.getService(ServiceNames.A_STAR_COURBE_DYNAMIQUE);
         chemin = (CheminPathfinding) container.getService(ServiceNames.CHEMIN_PATHFINDING);
         robot = (RobotReal) container.getService(ServiceNames.ROBOT_REAL);
         gridspace = (GridSpace) container.getService(ServiceNames.GRID_SPACE);

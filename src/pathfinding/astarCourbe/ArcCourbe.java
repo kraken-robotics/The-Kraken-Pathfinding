@@ -5,19 +5,19 @@ import permissions.ReadWrite;
 import utils.Vec2;
 
 /**
- * Un arc de trajectoire courbe. Le bas niveau a besoin de connaître le point de départ de l'arc,
- * l'orientation et la courbure à ce point. Les autres informations sont interpolées.
- * La vitesse de courbure n'est pas envoyée à la STM mais est utilisée par le pathfinding.
+ * Un arc de trajectoire courbe.
  * @author pf
  *
  */
 
 public class ArcCourbe {
 
-	public Vec2<ReadWrite> pointDepart;
-	public double courbure;
-	public double theta;
-	public VitesseCourbure vitesseCourbure; // ne sera pas envoyée à la STM
+	public Vec2<ReadWrite> pointDepart; // la position au départ de l'arc
+	public double thetaDepart; // l'angle au départ de l'arc
+
+	public double courbureDepart; // la courbure au départ de l'arc
+	public double vitesse; // la vitesse à laquelle on souhaite parcourir l'arc
+	public VitesseCourbure vitesseCourbure; // la dérivée de la courbure
 	
 	/**
 	 * Une copie afin d'éviter la création d'objet
@@ -26,8 +26,9 @@ public class ArcCourbe {
 	public void copy(ArcCourbe arcCourbe)
 	{
 		Vec2.copy(pointDepart.getReadOnly(), arcCourbe.pointDepart);
-		arcCourbe.courbure = courbure;
-		arcCourbe.theta = theta;
+		arcCourbe.vitesse = vitesse;
+		arcCourbe.courbureDepart = courbureDepart;
+		arcCourbe.thetaDepart = thetaDepart;
 		arcCourbe.vitesseCourbure = vitesseCourbure;
 	}
 

@@ -1,7 +1,6 @@
 package pathfinding.astarCourbe;
 
 import obstacles.MoteurPhysique;
-import pathfinding.ChronoGameState;
 import pathfinding.VitesseCourbure;
 import pathfinding.dstarlite.DStarLite;
 import robot.DirectionStrategy;
@@ -129,6 +128,23 @@ public class AStarCourbeArcManager implements Service
 	public int heuristicCost(AStarCourbeNode successeur)
 	{
 		return dstarlite.heuristicCostCourbe(successeur.state.robot.getPosition());
+	}
+
+	private void partialReconstruct(AStarCourbeNode best, boolean last)
+	{
+		synchronized(cheminContainer)
+		{
+			AStarCourbeNode noeud_parent = best;
+			ArcCourbe arc_parent = best.came_from_arc;
+			while(best.came_from != null)
+			{
+				cheminContainer.addArc(arc_parent);
+				noeud_parent = noeud_parent.came_from;
+				arc_parent = noeud_parent.came_from_arc;
+			}
+			cheminContainer.setFinish(last);
+			cheminContainer.notify(); // on prévient le thread d'évitement qu'un chemin est disponible
+		}
 	}
 
 }

@@ -1,16 +1,14 @@
 package pathfinding.astarCourbe;
 
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.PriorityQueue;
 
-import pathfinding.CheminPathfinding;
 import pathfinding.RealGameState;
-import pathfinding.dstarlite.DStarLite;
 import pathfinding.dstarlite.GridSpace;
 import permissions.ReadOnly;
 import container.Service;
 import exceptions.FinMatchException;
-import exceptions.PathfindingException;
 import robot.DirectionStrategy;
 import tests.graphicLib.Fenetre;
 import utils.Config;
@@ -27,28 +25,27 @@ import utils.Vec2;
 
 public class AStarCourbe implements Service
 {
-	private DirectionStrategy directionstrategyactuelle;
-	
+	protected DirectionStrategy directionstrategyactuelle;
 	protected Log log;
-	private DStarLite dstarlite;
-	private AStarCourbeArcManager arcmanager;
-	private RealGameState state;
-	private CheminPathfinding cheminContainer;
-	private AStarCourbeMemoryManager memorymanager;
+	protected HeuristiqueCourbe heuristique;
+	protected AStarCourbeArcManager arcmanager;
+	protected RealGameState state;
+	protected AStarCourbeMemoryManager memorymanager;
 	protected Fenetre fenetre;
-	private Vec2<ReadOnly> arrivee;
-	private AStarCourbeNode depart;
+	protected Vec2<ReadOnly> arrivee;
+	protected AStarCourbeNode depart;
+	protected Collection<ArcCourbe> chemin;
 
 	private class AStarCourbeNodeComparator implements Comparator<AStarCourbeNode>
 	{
-
 		@Override
 		public int compare(AStarCourbeNode arg0, AStarCourbeNode arg1)
 		{
-			return 0; // TODO
-
+			int out = (arg0.f_score - arg1.f_score) << 1;
+			if(arg0.g_score > arg1.g_score)
+				out++;
+			return out;
 		}
-
 	}
 
 	private PriorityQueue<AStarCourbeNode> openset = new PriorityQueue<AStarCourbeNode>(GridSpace.NB_POINTS, new AStarCourbeNodeComparator());
@@ -56,81 +53,38 @@ public class AStarCourbe implements Service
 	/**
 	 * Constructeur du AStarCourbe
 	 */
-	public AStarCourbe(Log log, DStarLite dstarlite, AStarCourbeArcManager arcmanager, RealGameState state, CheminPathfinding chemin, AStarCourbeMemoryManager memorymanager)
+	public AStarCourbe(Log log, AStarCourbeArcManager arcmanager, RealGameState state, AStarCourbeMemoryManager memorymanager, HeuristiqueCourbe heuristique, Collection<ArcCourbe> chemin)
 	{
 		this.log = log;
-		this.dstarlite = dstarlite;
 		this.arcmanager = arcmanager;
 		this.state = state;
-		this.cheminContainer = chemin;
 		this.memorymanager = memorymanager;
+		this.chemin = chemin;
 		depart = new AStarCourbeNode();
 
 		if(Config.graphicAStarCourbe)
 			fenetre = Fenetre.getInstance();
 	}
 
-	/**
-	 * Calcul d'un chemin à partir d'un certain état (state) et d'un point d'arrivée (endNode).
-	 * Le boolean permet de signaler au pathfinding si on autorise ou non le shootage d'élément de jeu pas déjà pris.
-	 * @param state
-	 * @param endNode
-	 * @param shoot_game_element
-	 * @return
-	 * @throws PathfindingException 
-	 */
-	public synchronized void computeNewPath(Vec2<ReadOnly> arrivee, boolean ejecteGameElement, DirectionStrategy directionstrategy) throws PathfindingException
-	{
-//		if(Config.graphicAStarCourbe)
-//			fenetre.setColor(arrivee, Fenetre.Couleur.VIOLET);
-
-		this.directionstrategyactuelle = directionstrategy;
-		arcmanager.setEjecteGameElement(ejecteGameElement);
-		
-		depart.init();
-		state.copyAStarCourbe(depart.state);
-		
-		dstarlite.computeNewPath(depart.state.robot.getPosition(), arrivee);
-		process();
-		
-		if(Config.graphicAStarCourbe)
-			printChemin();
-	}
-	
-	private void printChemin()
+	protected void printChemin()
 	{
 //		ArcCourbe[] cheminAff = cheminContainer.get();	
 //		for(ArcCourbe arc : cheminAff)
 //			fenetre.setColor(arc.getGridpointArrivee(), Fenetre.Couleur.VIOLET);
 	}
 	
-	public synchronized void updatePath() throws PathfindingException
-	{
-		synchronized(state)
-		{
-			depart.init();
-			state.copyAStarCourbe(depart.state);
-		}
-		
-		dstarlite.updatePath(depart.state.robot.getPosition());
-		process();
-		
-		if(Config.graphicAStarCourbe)
-			printChemin();
-	}
 
 	/**
 	 * Le calcul du AStarCourbe
 	 * @param depart
 	 * @return
 	 */
-	private void process()
+	protected Collection<ArcCourbe> process()
 	{
 		depart.came_from = null;
 		depart.g_score = 0;
 		depart.f_score = arcmanager.heuristicCost(depart);
 
-		cheminContainer.resetChemin();
 		memorymanager.empty();
 
 		openset.clear();
@@ -153,7 +107,7 @@ public class AStarCourbe implements Service
 			{
 				partialReconstruct(current, true);
 				memorymanager.empty();
-				return;
+				return chemin;
 			}
 			
 			// On parcourt les voisins de current
@@ -162,7 +116,7 @@ public class AStarCourbe implements Service
 			
 			while(arcmanager.hasNext())
 			{
-				if(cheminContainer.doitFixerCheminPartiel())
+				if(doitFixerCheminPartiel())
 				{
 					partialReconstruct(current, false);
 					// Il est nécessaire de copier current dans depart car current
@@ -193,7 +147,7 @@ public class AStarCourbe implements Service
 		 * Impossible car un nombre infini de nœuds !
 		 */
 		log.critical("AStarCourbe n'a pas trouvé de chemin !");
-		return;
+		return null;
 	}
 	
 	/**
@@ -205,18 +159,18 @@ public class AStarCourbe implements Service
 	 */
 	private void partialReconstruct(AStarCourbeNode best, boolean last)
 	{
-		synchronized(cheminContainer)
+		synchronized(chemin)
 		{
 			AStarCourbeNode noeud_parent = best;
 			ArcCourbe arc_parent = best.came_from_arc;
 			while(best.came_from != null)
 			{
-				cheminContainer.addArc(arc_parent);
+				chemin.add(arc_parent);
 				noeud_parent = noeud_parent.came_from;
 				arc_parent = noeud_parent.came_from_arc;
 			}
-			cheminContainer.setFinish(last);
-			cheminContainer.notify(); // on prévient le thread d'évitement qu'un chemin est disponible
+//			chemin.setFinish(last);
+			chemin.notify(); // on prévient le thread d'évitement qu'un chemin est disponible
 		}
 	}
 
@@ -228,4 +182,9 @@ public class AStarCourbe implements Service
 	public void useConfig(Config config)
 	{}
 		
+	protected boolean doitFixerCheminPartiel()
+	{
+		return false;
+	}
+	
 }

@@ -9,8 +9,7 @@ import utils.Vec2;
  *
  */
 
-public interface HeuristiqueCourbe {
-
+public interface HeuristiqueCourbe
+{
 	public int heuristicCostCourbe(Vec2<ReadOnly> position);
-	
 }
