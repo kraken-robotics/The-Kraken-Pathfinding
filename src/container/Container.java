@@ -322,11 +322,10 @@ public class Container
 			instanciedServices[serviceRequested.ordinal()] = (Service)new MoteurPhysique((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG)); 		
 		else if(serviceRequested == ServiceNames.A_STAR_COURBE_PLANIFICATION)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new AStarCourbe((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
-																					(DStarLite)getServiceDisplay(serviceRequested, ServiceNames.D_STAR_LITE),
 																					(AStarCourbeArcManager)getServiceDisplay(serviceRequested, ServiceNames.A_STAR_COURBE_ARC_MANAGER),
 																					(RealGameState)getServiceDisplay(serviceRequested, ServiceNames.REAL_GAME_STATE),
-																					(CheminPathfinding)getServiceDisplay(serviceRequested, ServiceNames.CHEMIN_PATHFINDING),
-																					(AStarCourbeMemoryManager)getServiceDisplay(serviceRequested, ServiceNames.A_STAR_COURBE_MEMORY_MANAGER));
+																					(AStarCourbeMemoryManager)getServiceDisplay(serviceRequested, ServiceNames.A_STAR_COURBE_MEMORY_MANAGER),
+																					null, null);
 		else if(serviceRequested == ServiceNames.A_STAR_COURBE_DYNAMIQUE)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new AStarCourbeDynamique((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
 																					(DStarLite)getServiceDisplay(serviceRequested, ServiceNames.D_STAR_LITE),

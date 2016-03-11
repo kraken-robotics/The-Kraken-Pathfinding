@@ -61,7 +61,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
 		robot.setPositionOrientationCourbureDirection(new Vec2<ReadOnly>(-1000, 200), 0, 0, true);
 		long avant = System.currentTimeMillis();
 		for(int i = 0; i < 10000; i++)
-		pathfindingCourbe.computeNewPath(new Vec2<ReadOnly>(1000, 400), true, DirectionStrategy.FASTEST);
+//		pathfindingCourbe.computeNewPath(new Vec2<ReadOnly>(1000, 400), true, DirectionStrategy.FASTEST);
 		log.debug("Durée d'une recherche : "+(System.currentTimeMillis() - avant)/10000.+" ms");
     }
 
