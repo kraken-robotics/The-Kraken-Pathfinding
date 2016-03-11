@@ -16,6 +16,8 @@ avancer dans mur
     0x03 DISTANCE(16)
 tourner
     0x04 ANGLE(16)
+va au point
+    0x05 X+(12) Y(12)
 utilise actionneurs
     0x06 NB_ORDRE(8)
 stop le robot
