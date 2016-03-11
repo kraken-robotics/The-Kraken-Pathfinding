@@ -54,6 +54,18 @@ public enum ConfigInfo {
 	Y_DEPART("1000", true),
 	O_DEPART("3.14", true),
 	AFFICHE_CONFIG("false", true),
+	CONST_KP_VIT_GAUCHE("0", true),
+	CONST_KD_VIT_GAUCHE("0", true),
+	CONST_KP_VIT_DROITE("0", true),
+	CONST_KD_VIT_DROITE("0", true),
+	CONST_KP_TRANSLATION("0", true),
+	CONST_KD_TRANSLATION("0", true),
+	CONST_KP_ROTATION("0", true),
+	CONST_KD_ROTATION("0", true),
+	CONST_KP_COURBURE("0", true),
+	CONST_KD_COURBURE("0", true),
+	CONST_KP_VIT_LINEAIRE("0", true),
+	CONST_KD_VIT_LINEAIRE("0", true),
 	
 	/**
 	 * Config dynamique

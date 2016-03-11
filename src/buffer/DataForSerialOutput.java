@@ -157,7 +157,7 @@ public class DataForSerialOutput implements Service
 		out[PARAM+1] = (byte) (((pos.x+1500) << 4) + (pos.y >> 8));
 		out[PARAM+2] = (byte) (pos.y);
 		out[PARAM+3] = (byte) (Math.round(angle*1000) >> 8);
-		out[PARAM+4] = (byte) (Math.round(angle*1000));
+		out[PARAM+4] = (byte) (Math.round(angle*1000) & 0xFF);
 		bufferBassePriorite.add(out);
 		notify();
 	}
@@ -169,6 +169,48 @@ public class DataForSerialOutput implements Service
 		out[PARAM] = (byte) ((pos.x+1500) >> 4);
 		out[PARAM+1] = (byte) (((pos.x+1500) << 4) + (pos.y >> 8));
 		out[PARAM+2] = (byte) (pos.y);
+		bufferBassePriorite.add(out);
+		notify();
+	}
+	
+	public synchronized void setPIDconstVitesseGauche(double kp, double kd)
+	{
+		setPIDconst(SerialProtocol.OUT_PID_CONST_VIT_GAUCHE.code, kp, kd);
+	}
+
+	public synchronized void setPIDconstVitesseDroite(double kp, double kd)
+	{
+		setPIDconst(SerialProtocol.OUT_PID_CONST_VIT_DROITE.code, kp, kd);
+	}
+	
+	public synchronized void setPIDconstTranslation(double kp, double kd)
+	{
+		setPIDconst(SerialProtocol.OUT_PID_CONST_TRANSLATION.code, kp, kd);
+	}
+	
+	public synchronized void setPIDconstRotation(double kp, double kd)
+	{
+		setPIDconst(SerialProtocol.OUT_PID_CONST_ROTATION.code, kp, kd);
+	}
+	
+	public synchronized void setPIDconstCourbure(double kp, double kd)
+	{
+		setPIDconst(SerialProtocol.OUT_PID_CONST_COURBURE.code, kp, kd);
+	}
+	
+	public synchronized void setPIDconstVitesseLineaire(double kp, double kd)
+	{
+		setPIDconst(SerialProtocol.OUT_PID_CONST_VIT_LINEAIRE.code, kp, kd);
+	}
+	
+	private synchronized void setPIDconst(byte code, double kp, double kd)
+	{
+		byte[] out = new byte[2+6];
+		out[COMMANDE] = code;
+		out[PARAM] = (byte) ((int)(kp*200) >> 8);
+		out[PARAM+1] = (byte) ((int)(kp*200) & 0xFF);
+		out[PARAM+2] = (byte) ((int)(kd*200) >> 8);
+		out[PARAM+3] = (byte) ((int)(kd*200) & 0xFF);
 		bufferBassePriorite.add(out);
 		notify();
 	}
