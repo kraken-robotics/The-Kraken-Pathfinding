@@ -162,6 +162,17 @@ public class DataForSerialOutput implements Service
 		notify();
 	}
 
+	public synchronized void vaAuPoint(Vec2<ReadOnly> pos)
+	{
+		byte[] out = new byte[2+4];
+		out[COMMANDE] = SerialProtocol.OUT_VA_AU_POINT.code;
+		out[PARAM] = (byte) ((pos.x+1500) >> 4);
+		out[PARAM+1] = (byte) (((pos.x+1500) << 4) + (pos.y >> 8));
+		out[PARAM+2] = (byte) (pos.y);
+		bufferBassePriorite.add(out);
+		notify();
+	}
+	
 	/**
 	 * Ajout d'une demande d'ordre d'avancer pour la série
 	 * @param elem
