@@ -126,7 +126,7 @@ public class DataForSerialOutput implements Service
 		byte[] out = new byte[2+3];
 		out[COMMANDE] = SerialProtocol.OUT_RESEND_PACKET.code;
 		out[PARAM] = (byte) (id >> 8);
-		out[PARAM+1] = (byte) id;
+		out[PARAM+1] = (byte) (id & 0xFF);
 		bufferBassePriorite.addFirst(out);
 		notify();
 	}

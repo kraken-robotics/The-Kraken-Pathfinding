@@ -118,7 +118,11 @@ public class ThreadSerialInput extends Thread implements Service
 		
 							// tiens, on a raté des paquets…
 							while(idPaquet > idDernierPaquet)
+							{
+								if(Config.debugSerie)
+									log.warning("On a raté un message");
 								output.askResend(idDernierPaquet++);
+							}
 							
 							// on a idDernierPaquet = idPaquet
 						}
