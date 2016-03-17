@@ -3,9 +3,9 @@ package obstacles.types;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-import obstacles.ClothoidesComputer;
 import pathfinding.VitesseCourbure;
 import pathfinding.astarCourbe.AStarCourbeNode;
+import pathfinding.astarCourbe.ClothoidesComputer;
 import permissions.ReadOnly;
 import utils.Vec2;
 

@@ -38,6 +38,13 @@ public class JUnit_Pathfinding extends JUnit_Test {
         gridspace = (GridSpace) container.getService(ServiceNames.GRID_SPACE);
 	}
 
+	
+	@Test
+    public void test_cloto() throws Exception
+    {
+		container.getService(ServiceNames.CLOTHOIDES_COMPUTER);
+    }
+	
 	@Test
     public void test_chemin_dstarlite() throws Exception
     {

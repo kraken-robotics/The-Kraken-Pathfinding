@@ -8,18 +8,15 @@ package pathfinding;
 
 public enum VitesseCourbure
 {
-	// TODO : faisableALArret est-il encore d'actualité ?
+	GAUCHE_VITE(-2),
+	GAUCHE_LENTEMENT(-1),
+	COURBURE_IDENTIQUE(0),
+	DROITE_LENTEMENT(1),
+	DROITE_VITE(2),
+	REBROUSSE_AVANT(0),
+	REBROUSSE_ARRIERE(0);
 	
-	GAUCHE_VITE(-2, false),
-	GAUCHE_LENTEMENT(-1, false),
-	COURBURE_IDENTIQUE(0, false),
-	DROITE_LENTEMENT(1, false),
-	DROITE_VITE(2, false),
-	REBROUSSE_AVANT(0, true),
-	REBROUSSE_ARRIERE(0, true);
-	
-	public final int vitesse;
-	public final boolean faisableALArret;
+	public final int vitesse; // dérivée de la courbure, en m^-1/s
 	
 	public final static VitesseCourbure[] values;
 
@@ -28,10 +25,9 @@ public enum VitesseCourbure
 		values = values();
 	}
 	
-	private VitesseCourbure(int vitesse, boolean faisableALArret)
+	private VitesseCourbure(int vitesse)
 	{
 		this.vitesse = vitesse;
-		this.faisableALArret = faisableALArret;
 	}
 	
 }

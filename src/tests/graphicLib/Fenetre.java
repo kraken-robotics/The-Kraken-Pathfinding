@@ -36,6 +36,7 @@ public class Fenetre extends JPanel {
 	private static final long serialVersionUID = 1L;
 	private static Fenetre instance;
 	
+	private static final boolean afficheFond = false;
 	private int sizeX = 450, sizeY = 300;
 //	private ArrayList<Vec2<ReadOnly>> pointsADessiner = new ArrayList<Vec2<ReadOnly>>();
 //	private LinkedList<ObstacleProximity> listObstaclesMobiles;
@@ -175,7 +176,8 @@ public class Fenetre extends JPanel {
 	@SuppressWarnings("unused")
 	public void paint(Graphics g)
 	{
-		g.drawImage(image, 0, 0, this);
+		if(afficheFond)
+			g.drawImage(image, 0, 0, this);
 		if(Config.graphicDStarLite || Config.graphicThetaStar)
 			for(int i = 0; i < GridSpace.NB_POINTS; i++)
 			{

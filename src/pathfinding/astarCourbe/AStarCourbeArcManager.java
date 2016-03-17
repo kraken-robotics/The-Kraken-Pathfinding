@@ -82,8 +82,6 @@ public class AStarCourbeArcManager implements Service
     
     private final boolean acceptable()
     {
-    	if(current.state.robot.isArrete() && !vitesseActuelle.faisableALArret)
-    		return false;
     	if((vitesseActuelle == VitesseCourbure.REBROUSSE_AVANT && directionstrategyactuelle == DirectionStrategy.FORCE_BACK_MOTION) ||
     			(vitesseActuelle == VitesseCourbure.REBROUSSE_ARRIERE && directionstrategyactuelle == DirectionStrategy.FORCE_FORWARD_MOTION))
     		return false;

@@ -1,7 +1,6 @@
 package container;
 
 import obstacles.Capteurs;
-import obstacles.ClothoidesComputer;
 import obstacles.MoteurPhysique;
 import obstacles.memory.ObstaclesMemory;
 import obstacles.types.Obstacle;
@@ -20,6 +19,7 @@ import pathfinding.astarCourbe.AStarCourbe;
 import pathfinding.astarCourbe.AStarCourbeArcManager;
 import pathfinding.astarCourbe.AStarCourbeDynamique;
 import pathfinding.astarCourbe.AStarCourbeMemoryManager;
+import pathfinding.astarCourbe.ClothoidesComputer;
 import pathfinding.dstarlite.DStarLite;
 import pathfinding.dstarlite.GridSpace;
 import hook.HookFactory;

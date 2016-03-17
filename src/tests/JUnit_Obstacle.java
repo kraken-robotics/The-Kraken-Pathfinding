@@ -6,11 +6,11 @@ import org.junit.Test;
 
 import container.ServiceNames;
 import utils.Vec2;
-import obstacles.ClothoidesComputer;
 import obstacles.ObstaclesFixes;
 import obstacles.types.ObstacleCircular;
 import obstacles.types.ObstacleRectangular;
 import obstacles.types.ObstacleTrajectoireCourbe;
+import pathfinding.astarCourbe.ClothoidesComputer;
 import pathfinding.dstarlite.GridSpace;
 import permissions.ReadOnly;
 
