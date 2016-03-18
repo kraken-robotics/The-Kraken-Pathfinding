@@ -11,6 +11,7 @@ import container.Service;
 import obstacles.types.ObstacleRectangular;
 import pathfinding.VitesseCourbure;
 import permissions.ReadOnly;
+import permissions.ReadWrite;
 import tests.graphicLib.Fenetre;
 import utils.Config;
 import utils.Log;
@@ -137,8 +138,17 @@ public class ClothoidesComputer implements Service
 		else
 			modified.marcheAvant = marcheAvant;
 		
+		// si
+		if(vitesse.vitesse == 0)
+		{
+			if(courbure == 0)
+				getTrajectoireLigneDroite(position, orientation, modified);
+			else
+				getTrajectoireCirculaire(position, orientation, courbure, modified);
+			return;
+		}
+		
 		modified.vitesseCourbure = vitesse;
-		int nbPoints = NB_POINTS;
 		double coeffMultiplicatif = 1./vitesse.squaredRootVitesse;
 		double sDepart = courbure / vitesse.squaredRootVitesse; // sDepart peut parfaitement être négatif
 		if(!vitesse.positif)
@@ -148,17 +158,15 @@ public class ClothoidesComputer implements Service
 		if(!vitesse.positif)
 			orientationClothoDepart = - orientationClothoDepart;
 			
-		log.debug("coeffMultiplicatif : "+coeffMultiplicatif);
-		
 		double cos = Math.cos(orientation - orientationClothoDepart);
 		double sin = Math.sin(orientation - orientationClothoDepart);
 
-		for(int i = 0; i < nbPoints; i++)
-			log.debug("Clotho : "+trajectoire[vitesse.squaredRootVitesse * (i + 1)]);
+//		for(int i = 0; i < NB_POINTS; i++)
+//			log.debug("Clotho : "+trajectoire[vitesse.squaredRootVitesse * (i + 1)]);
 	
 		// le premier point n'est pas position, mais le suivant
 		// (afin de ne pas avoir de doublon quand on enchaîne les arcs, entre le dernier point de l'arc t et le premier de l'arc t+1)		
-		for(int i = 0; i < nbPoints; i++)
+		for(int i = 0; i < NB_POINTS; i++)
 		{
 			sDepart += vitesse.squaredRootVitesse * PRECISION_TRACE;
 
@@ -181,6 +189,70 @@ public class ClothoidesComputer implements Service
 			modified.arcselems[i].courbure = sDepart * vitesse.squaredRootVitesse;
  			if(!vitesse.positif)
  				modified.arcselems[i].courbure = - modified.arcselems[i].courbure;
+		}
+	}
+
+	/**
+	 * Calcule la trajectoire dans le cas particulier d'une trajectoire circulaire
+	 * @param position
+	 * @param orientation
+	 * @param courbure
+	 * @param modified
+	 */
+	private void getTrajectoireCirculaire(Vec2<ReadOnly> position,
+			double orientation, double courbure, ArcCourbe modified)
+	{		
+		// rappel = la courbure est l'inverse du rayon de courbure
+		// le facteur 1000 vient du fait que la courbure est en mètre^-1
+		double rayonCourbure = 1000. / courbure;
+		Vec2<ReadOnly> delta = new Vec2<ReadOnly>((int)(Math.cos(orientation + Math.PI / 2) * rayonCourbure),
+				(int) (Math.sin(orientation + Math.PI / 2) * rayonCourbure));
+		Vec2<ReadWrite> deltaTmp = new Vec2<ReadWrite>();
+		Vec2<ReadOnly> centreCercle = position.plusNewVector(delta).getReadOnly();
+		double d = PRECISION_TRACE * 1000 / 2;
+		
+		double cos = Math.sqrt(rayonCourbure * rayonCourbure - d * d) / rayonCourbure;
+		double sin = Math.abs(d / rayonCourbure);
+		sin = 2 * sin * cos; // sin(a) devient sin(2a)
+		cos = 2 * cos * cos - 1; // cos(a) devient cos(2a)
+		double cosSauv = cos;
+		double sinSauv = sin;
+		double angle = Math.asin(sin);
+		sin = 0;
+		cos = 1;
+		for(int i = 0; i < NB_POINTS; i++)
+		{
+			double tmp = sin;
+			sin = sin * cosSauv + sinSauv * cos; // sin vaut sin(2a*(i+1))
+			cos = cos * cosSauv - tmp * sinSauv;
+			Vec2.copy(delta, deltaTmp);
+			Vec2.rotate(deltaTmp, cos, sin);
+			Vec2.copy(centreCercle, modified.arcselems[i].point);
+			Vec2.minus(modified.arcselems[i].point, deltaTmp);
+			modified.arcselems[i].theta = orientation + angle * (i + 1);
+			modified.arcselems[i].courbure = courbure;
+		}
+	}
+
+	/**
+	 * Calcule la trajectoire dans le cas particulier d'une ligne droite
+	 * @param position
+	 * @param orientation
+	 * @param modified
+	 */
+	private void getTrajectoireLigneDroite(Vec2<ReadOnly> position, double orientation, ArcCourbe modified)
+	{
+		double cos = Math.cos(orientation);
+		double sin = Math.sin(orientation);
+
+		for(int i = 0; i < NB_POINTS; i++)
+		{
+			double distance = (i + 1) * PRECISION_TRACE * 1000;
+			modified.arcselems[i].point.x = (int) Math.round(position.x + distance * cos);
+			modified.arcselems[i].point.y = (int) Math.round(position.y + distance * sin);
+			modified.arcselems[i].theta = orientation;
+			modified.arcselems[i].courbure = 0;
+			
 		}
 	}
 

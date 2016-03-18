@@ -64,9 +64,9 @@ public class JUnit_Pathfinding extends JUnit_Test {
 				Fenetre.getInstance().addObstacleEnBiais(new ObstacleRectangular(arc.arcselems[i].point.getReadOnly(), 10, 10, 0));
 			}
 */
-		clotho.getTrajectoire(new Vec2<ReadOnly>(0, 1000), true, 0, 0, VitesseCourbure.DROITE_3, arc[0]);
+		clotho.getTrajectoire(new Vec2<ReadOnly>(0, 1000), true, Math.PI/2, -1, VitesseCourbure.COURBURE_IDENTIQUE, arc[0]);
 		clotho.getTrajectoire(arc[0], VitesseCourbure.GAUCHE_3, arc[1]);
-		clotho.getTrajectoire(arc[1], VitesseCourbure.GAUCHE_3, arc[2]);
+		clotho.getTrajectoire(arc[1], VitesseCourbure.COURBURE_IDENTIQUE, arc[2]);
 		clotho.getTrajectoire(arc[2], VitesseCourbure.GAUCHE_1, arc[3]);
 		clotho.getTrajectoire(arc[3], VitesseCourbure.GAUCHE_3, arc[4]);
 		clotho.getTrajectoire(arc[4], VitesseCourbure.DROITE_3, arc[5]);
