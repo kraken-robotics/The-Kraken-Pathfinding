@@ -1,6 +1,5 @@
 package pathfinding.astarCourbe;
 
-import pathfinding.VitesseCourbure;
 import permissions.ReadWrite;
 import utils.Vec2;
  
@@ -13,10 +12,9 @@ import utils.Vec2;
 
 public class ArcElem {
 
-	public Vec2<ReadWrite> pointDepart; // la position au départ de l'arc
-	public double thetaDepart; // l'angle au départ de l'arc
-
-	public double courbureDepart; // la courbure au départ de l'arc
+	public Vec2<ReadWrite> point = new Vec2<ReadWrite>(); // la position
+	public double thetaDepart; // l'angle
+	public double courbure; // la courbure
 	
 	/**
 	 * Une copie afin d'éviter la création d'objet
@@ -24,8 +22,8 @@ public class ArcElem {
 	 */
 	public void copy(ArcElem arcelem)
 	{
-		Vec2.copy(pointDepart.getReadOnly(), arcelem.pointDepart);
-		arcelem.courbureDepart = courbureDepart;
+		Vec2.copy(point.getReadOnly(), arcelem.point);
+		arcelem.courbure = courbure;
 		arcelem.thetaDepart = thetaDepart;
 	}
 

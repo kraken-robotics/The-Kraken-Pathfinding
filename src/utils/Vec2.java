@@ -1,5 +1,7 @@
 package utils;
 
+import java.io.Serializable;
+
 import permissions.Permission;
 import permissions.ReadOnly;
 import permissions.ReadWrite;
@@ -11,8 +13,9 @@ import permissions.ReadWrite;
  *
  */
 
-public class Vec2<T extends Permission>
+public class Vec2<T extends Permission> implements Serializable
 {
+	private static final long serialVersionUID = 1L;
 	public static final int coeffDirection = 1024; // le coefficient 1024 est là pour éviter une division bas niveau
 	public int x;
 	public int y;
@@ -168,7 +171,14 @@ public class Vec2<T extends Permission>
 		v.y = (int)(d*v.y);
 		return v;
 	}
-	
+
+	public static final Vec2<ReadWrite> Ysym(Vec2<ReadWrite> v, boolean symetrie)
+	{
+		if(symetrie)
+			v.y = -v.y;
+		return v;
+	}
+
 	public Vec2<ReadWrite> scalarNewVector(double d)
 	{
 		Vec2<ReadWrite> out = new Vec2<ReadWrite>(this);

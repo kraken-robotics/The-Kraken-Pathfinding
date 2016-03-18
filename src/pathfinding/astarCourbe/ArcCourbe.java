@@ -10,10 +10,16 @@ import pathfinding.VitesseCourbure;
 
 public class ArcCourbe {
 
-	ArcElem[] arcselems;
+	public ArcElem[] arcselems = new ArcElem[ClothoidesComputer.NB_POINTS];
 	public double vitesse; // la vitesse à laquelle on souhaite parcourir l'arc
 	public VitesseCourbure vitesseCourbure; // la dérivée de la courbure
 
+	public ArcCourbe()
+	{
+		for(int i = 0; i < ClothoidesComputer.NB_POINTS; i++)
+			arcselems[i] = new ArcElem();
+	}
+	
 	/**
 	 * Une copie afin d'éviter la création d'objet
 	 * @param arcCourbe
