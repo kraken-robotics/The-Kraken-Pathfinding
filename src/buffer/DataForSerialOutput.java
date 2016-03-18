@@ -321,49 +321,29 @@ public class DataForSerialOutput implements Service
 	{}
 	
 	/**
-	 * Informe la STM du protocole des actionneurs
+	 * Envoi de tous les arcs élémentaires d'un arc courbe
+	 * @param arc
 	 */
-/*	public synchronized void envoieActionneurs()
-	{
-		ArrayList<String> elems = new ArrayList<String>();
-		elems.add("alst");
-		elems.add(String.valueOf(ActuatorOrder.values().length));
-		for(ActuatorOrder a : ActuatorOrder.values())
-		{
-			elems.add(a.getOrdreSSC32());
-			elems.add(String.valueOf(a.hasSymmetry()));
-		}
-		bufferBassePriorite.add(elems);
-		notify();
-	}*/
-	
-	public synchronized void envoieArcCourbeLast(ArcCourbe arc)
-	{
-/*		ArrayList<String> elems = new ArrayList<String>();
-		elems.add("addl");
-		elems.add(String.valueOf(arc.pointDepart.x));
-		elems.add(String.valueOf(arc.pointDepart.y));
-		Vec2<ReadOnly> direction = new Vec2<ReadOnly>(arc.theta);
-		elems.add(String.valueOf(direction.x));
-		elems.add(String.valueOf(direction.y));
-		elems.add(String.valueOf(arc.courbure));
-		elems.add(String.valueOf(arc.theta));
-		bufferTrajectoireCourbe.add(elems);*/
-		notify();		
-	}
-
 	public synchronized void envoieArcCourbe(ArcCourbe arc)
 	{
-/*		ArrayList<String> elems = new ArrayList<String>();
-		elems.add("add");
-		elems.add(String.valueOf(arc.pointDepart.x));
-		elems.add(String.valueOf(arc.pointDepart.y));
-		Vec2<ReadOnly> direction = new Vec2<ReadOnly>(arc.theta);
-		elems.add(String.valueOf(direction.x));
-		elems.add(String.valueOf(direction.y));
-		elems.add(String.valueOf(arc.courbure));
-		elems.add(String.valueOf(arc.theta));
-		bufferTrajectoireCourbe.add(elems);*/
+		for(int i = 0; i < arc.arcselems.length; i++)
+		{
+			byte[] out = new byte[2+1];
+			if(arc.marcheAvant)
+				out[COMMANDE] = SerialProtocol.OUT_SEND_ARC_MARCHE_AVANT.code;
+			else
+				out[COMMANDE] = SerialProtocol.OUT_SEND_ARC_MARCHE_ARRIERE.code;
+			out[PARAM] = (byte) ((arc.arcselems[i].point.x+1500) >> 4);
+			out[PARAM+1] = (byte) (((arc.arcselems[i].point.x+1500) << 4) + (arc.arcselems[i].point.y >> 8));
+			out[PARAM+2] = (byte) (arc.arcselems[i].point.y);
+			out[PARAM+3] = (byte) (Math.round(arc.arcselems[i].theta*1000) >> 8);
+			out[PARAM+4] = (byte) (Math.round(arc.arcselems[i].theta*1000));
+			out[PARAM+5] = (byte) (Math.round(arc.arcselems[i].courbure*1000) >> 8);
+			out[PARAM+6] = (byte) (Math.round(arc.arcselems[i].courbure*1000));
+			out[PARAM+7] = (byte) (Math.round(arc.vitesse));
+			
+			bufferBassePriorite.add(out);
+		}
 		notify();			
 	}
 

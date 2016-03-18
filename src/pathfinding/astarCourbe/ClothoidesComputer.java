@@ -112,9 +112,8 @@ public class ClothoidesComputer implements Service
 	public void getTrajectoire(ArcCourbe depart, VitesseCourbure vitesse, ArcCourbe modified)
 	{
 		ArcElem last = depart.arcselems[NB_POINTS - 1];
-		getTrajectoire(last.point.getReadOnly(), last.thetaDepart, last.courbure, vitesse, modified);
+		getTrajectoire(last.point.getReadOnly(), depart.marcheAvant, last.theta, last.courbure, vitesse, modified);
 	}
-
 	
 	/**
 	 * ATTENTION ! La courbure est en m^-1 et pas en mm^-1
@@ -127,13 +126,16 @@ public class ClothoidesComputer implements Service
 	 * @param distance
 	 * @return
 	 */
-	public void getTrajectoire(Vec2<ReadOnly> position, double orientation, double courbure, VitesseCourbure vitesse, ArcCourbe modified)
+	public void getTrajectoire(Vec2<ReadOnly> position, boolean marcheAvant, double orientation, double courbure, VitesseCourbure vitesse, ArcCourbe modified)
 	{
 		if(vitesse.rebrousse)
 		{
 			courbure = 0;
 			orientation += Math.PI;
+			modified.marcheAvant = !marcheAvant;
 		}
+		else
+			modified.marcheAvant = marcheAvant;
 		
 		modified.vitesseCourbure = vitesse;
 		int nbPoints = NB_POINTS;
@@ -175,7 +177,7 @@ public class ClothoidesComputer implements Service
  			double orientationClotho = sDepart * sDepart / 2;
  			if(!vitesse.positif)
  				orientationClotho = - orientationClotho;
-			modified.arcselems[i].thetaDepart = orientation + orientationClotho - orientationClothoDepart;
+			modified.arcselems[i].theta = orientation + orientationClotho - orientationClothoDepart;
 			modified.arcselems[i].courbure = sDepart * vitesse.squaredRootVitesse;
  			if(!vitesse.positif)
  				modified.arcselems[i].courbure = - modified.arcselems[i].courbure;

@@ -13,7 +13,7 @@ import utils.Vec2;
 public class ArcElem {
 
 	public Vec2<ReadWrite> point = new Vec2<ReadWrite>(); // la position
-	public double thetaDepart; // l'angle
+	public double theta; // l'angle
 	public double courbure; // la courbure
 	
 	/**
@@ -24,7 +24,7 @@ public class ArcElem {
 	{
 		Vec2.copy(point.getReadOnly(), arcelem.point);
 		arcelem.courbure = courbure;
-		arcelem.thetaDepart = thetaDepart;
+		arcelem.theta = theta;
 	}
 
 }
