@@ -129,10 +129,18 @@ public class ClothoidesComputer implements Service
 	 */
 	public void getTrajectoire(Vec2<ReadOnly> position, double orientation, double courbure, VitesseCourbure vitesse, ArcCourbe modified)
 	{
+		if(vitesse.rebrousse)
+		{
+			courbure = 0;
+			orientation += Math.PI;
+		}
+		
 		modified.vitesseCourbure = vitesse;
 		int nbPoints = NB_POINTS;
 		double coeffMultiplicatif = 1./vitesse.squaredRootVitesse;
 		double sDepart = courbure / vitesse.squaredRootVitesse; // sDepart peut parfaitement être négatif
+		if(!vitesse.positif)
+			sDepart = -sDepart;
 		int pointDepart = (int) Math.round(sDepart / PRECISION_TRACE) + INDICE_MAX - 1;
 		double orientationClothoDepart = sDepart * sDepart / 2; // orientation au départ
 		if(!vitesse.positif)
@@ -150,10 +158,8 @@ public class ClothoidesComputer implements Service
 		// (afin de ne pas avoir de doublon quand on enchaîne les arcs, entre le dernier point de l'arc t et le premier de l'arc t+1)		
 		for(int i = 0; i < nbPoints; i++)
 		{
-			if(vitesse.positif)
-				sDepart += vitesse.squaredRootVitesse * PRECISION_TRACE;
-			else	
-				sDepart -= vitesse.squaredRootVitesse * PRECISION_TRACE;
+			sDepart += vitesse.squaredRootVitesse * PRECISION_TRACE;
+
  			Vec2.copy(
 				Vec2.plus(
 					Vec2.rotate(

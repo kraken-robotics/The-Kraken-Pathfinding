@@ -50,7 +50,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
     public void test_clotho() throws Exception
     {
 		ClothoidesComputer clotho = (ClothoidesComputer) container.getService(ServiceNames.CLOTHOIDES_COMPUTER);
-		int nbArc = 3;
+		int nbArc = 16;
 		ArcCourbe arc[] = new ArcCourbe[nbArc];
 		for(int i = 0; i < nbArc; i++)
 			arc[i] = new ArcCourbe();
@@ -64,23 +64,29 @@ public class JUnit_Pathfinding extends JUnit_Test {
 				Fenetre.getInstance().addObstacleEnBiais(new ObstacleRectangular(arc.arcselems[i].point.getReadOnly(), 10, 10, 0));
 			}
 */
-		clotho.getTrajectoire(new Vec2<ReadOnly>(0, 1000), 0, 0, VitesseCourbure.DROITE_4, arc[0]);
-		clotho.getTrajectoire(arc[0], VitesseCourbure.DROITE_4, arc[1]);
-		clotho.getTrajectoire(arc[1], VitesseCourbure.DROITE_4, arc[2]);
-//		clotho.getTrajectoire(arc[2], VitesseCourbure.GAUCHE_1, arc[3]);
-//		clotho.getTrajectoire(arc[3], VitesseCourbure.GAUCHE_3, arc[4]);
-//		clotho.getTrajectoire(arc[4], VitesseCourbure.DROITE_3, arc[5]);
-//		clotho.getTrajectoire(arc[5], VitesseCourbure.GAUCHE_4, arc[6]);
-//		clotho.getTrajectoire(arc[6], VitesseCourbure.GAUCHE_4, arc[7]);
-//		clotho.getTrajectoire(arc[7], VitesseCourbure.GAUCHE_4, arc[8]);
-//		clotho.getTrajectoire(arc[8], VitesseCourbure.GAUCHE_4, arc[9]);
+		clotho.getTrajectoire(new Vec2<ReadOnly>(0, 1000), 0, 0, VitesseCourbure.DROITE_3, arc[0]);
+		clotho.getTrajectoire(arc[0], VitesseCourbure.GAUCHE_3, arc[1]);
+		clotho.getTrajectoire(arc[1], VitesseCourbure.GAUCHE_3, arc[2]);
+		clotho.getTrajectoire(arc[2], VitesseCourbure.GAUCHE_1, arc[3]);
+		clotho.getTrajectoire(arc[3], VitesseCourbure.GAUCHE_3, arc[4]);
+		clotho.getTrajectoire(arc[4], VitesseCourbure.DROITE_3, arc[5]);
+		clotho.getTrajectoire(arc[5], VitesseCourbure.GAUCHE_3_REBROUSSE, arc[6]);
+		clotho.getTrajectoire(arc[6], VitesseCourbure.GAUCHE_2, arc[7]);
+		clotho.getTrajectoire(arc[7], VitesseCourbure.GAUCHE_3, arc[8]);
+		clotho.getTrajectoire(arc[8], VitesseCourbure.DROITE_3_REBROUSSE, arc[9]);
+		clotho.getTrajectoire(arc[9], VitesseCourbure.DROITE_1, arc[10]);
+		clotho.getTrajectoire(arc[10], VitesseCourbure.DROITE_1, arc[11]);
+		clotho.getTrajectoire(arc[11], VitesseCourbure.DROITE_1, arc[12]);
+		clotho.getTrajectoire(arc[12], VitesseCourbure.DROITE_1, arc[13]);
+		clotho.getTrajectoire(arc[13], VitesseCourbure.DROITE_1, arc[14]);
+		clotho.getTrajectoire(arc[14], VitesseCourbure.DROITE_1, arc[15]);
 		
 		if(Config.graphicObstacles)
 			for(int a = 0; a < nbArc; a++)			
 				for(int i = 0; i < ClothoidesComputer.NB_POINTS; i++)
 				{
 					Sleep.sleep(100);
-					System.out.println(arc[a].arcselems[i].point+" "+arc[a].arcselems[i].thetaDepart);
+					System.out.println(arc[a].arcselems[i].point+" "+arc[a].arcselems[i].courbure);
 					Fenetre.getInstance().addObstacleEnBiais(new ObstacleRectangular(arc[a].arcselems[i].point.getReadOnly(), 10, 10, 0));
 				}
 
