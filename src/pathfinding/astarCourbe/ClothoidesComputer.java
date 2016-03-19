@@ -31,11 +31,10 @@ public class ClothoidesComputer implements Service
 	private static final int S_MAX = 10; // une valeur très grande pour dire qu'on trace beaucoup de points.
 	private static final double PRECISION_TRACE = 0.02; // précision du tracé. Plus le tracé est précis, plus on couvre de point une même distance
 	private static final int INDICE_MAX = (int) (S_MAX / PRECISION_TRACE);
-	public static final int NB_POINTS = 10;
-
-	//	public static final int NB_POINTS = 10; // nombre de points dans un arc
+	public static final int NB_POINTS = 10; // nombre de points dans un arc
 	public static final double DISTANCE_ARC_COURBE = PRECISION_TRACE * NB_POINTS; // en mm
-	
+	private static final double d = PRECISION_TRACE * 1000 / 2; // utilisé pour la trajectoire circulaire
+
 	@SuppressWarnings("unchecked")
 	private Vec2<ReadOnly>[] trajectoire = (Vec2<ReadOnly>[]) new Vec2[2 * INDICE_MAX - 1];
 	
@@ -137,18 +136,18 @@ public class ClothoidesComputer implements Service
 		}
 		else
 			modified.marcheAvant = marcheAvant;
+		modified.vitesseCourbure = vitesse;
 		
-		// si
+		// si la dérivée de la courbure est nulle, on est dans le cas particulier d'une trajectoire rectiligne ou circulaire
 		if(vitesse.vitesse == 0)
 		{
-			if(courbure == 0)
+			if(courbure < 0.00001 && courbure > -0.00001)
 				getTrajectoireLigneDroite(position, orientation, modified);
 			else
 				getTrajectoireCirculaire(position, orientation, courbure, modified);
 			return;
 		}
 		
-		modified.vitesseCourbure = vitesse;
 		double coeffMultiplicatif = 1./vitesse.squaredRootVitesse;
 		double sDepart = courbure / vitesse.squaredRootVitesse; // sDepart peut parfaitement être négatif
 		if(!vitesse.positif)
@@ -192,6 +191,10 @@ public class ClothoidesComputer implements Service
 		}
 	}
 
+	private Vec2<ReadWrite> deltaTmp = new Vec2<ReadWrite>();
+	private Vec2<ReadOnly> delta = new Vec2<ReadOnly>();
+	private Vec2<ReadOnly> centreCercle = new Vec2<ReadOnly>();
+	
 	/**
 	 * Calcule la trajectoire dans le cas particulier d'une trajectoire circulaire
 	 * @param position
@@ -205,11 +208,12 @@ public class ClothoidesComputer implements Service
 		// rappel = la courbure est l'inverse du rayon de courbure
 		// le facteur 1000 vient du fait que la courbure est en mètre^-1
 		double rayonCourbure = 1000. / courbure;
-		Vec2<ReadOnly> delta = new Vec2<ReadOnly>((int)(Math.cos(orientation + Math.PI / 2) * rayonCourbure),
-				(int) (Math.sin(orientation + Math.PI / 2) * rayonCourbure));
-		Vec2<ReadWrite> deltaTmp = new Vec2<ReadWrite>();
-		Vec2<ReadOnly> centreCercle = position.plusNewVector(delta).getReadOnly();
-		double d = PRECISION_TRACE * 1000 / 2;
+		delta.x = (int)(Math.cos(orientation + Math.PI / 2) * rayonCourbure);
+		delta.y = (int) (Math.sin(orientation + Math.PI / 2) * rayonCourbure);
+		
+		centreCercle.x = position.x + delta.x;
+		centreCercle.y = position.y + delta.y;
+
 		
 		double cos = Math.sqrt(rayonCourbure * rayonCourbure - d * d) / rayonCourbure;
 		double sin = Math.abs(d / rayonCourbure);
