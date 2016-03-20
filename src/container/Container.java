@@ -186,6 +186,7 @@ public class Container
 			ok.add(ServiceNames.REQUETE_STM);
 			ok.add(ServiceNames.A_STAR_COURBE_MEMORY_MANAGER);
 			ok.add(ServiceNames.D_STAR_LITE);
+			ok.add(ServiceNames.CLOTHOIDES_COMPUTER);
 			ok.add(ServiceNames.OBSTACLES_MEMORY);
 			ok.add(ServiceNames.THREAD_SERIAL_INPUT);
 			ok.add(ServiceNames.THREAD_SERIAL_OUTPUT);

@@ -32,7 +32,7 @@ public class ClothoidesComputer implements Service
 	private static final double PRECISION_TRACE = 0.02; // précision du tracé. Plus le tracé est précis, plus on couvre de point une même distance
 	private static final int INDICE_MAX = (int) (S_MAX / PRECISION_TRACE);
 	public static final int NB_POINTS = 10; // nombre de points dans un arc
-	public static final double DISTANCE_ARC_COURBE = PRECISION_TRACE * NB_POINTS; // en mm
+	public static final double DISTANCE_ARC_COURBE = PRECISION_TRACE * NB_POINTS * 1000; // en mm
 	private static final double d = PRECISION_TRACE * 1000 / 2; // utilisé pour la trajectoire circulaire
 
 	@SuppressWarnings("unchecked")
@@ -54,13 +54,12 @@ public class ClothoidesComputer implements Service
 	{
 		x = s;
 		BigDecimal factorielle = new BigDecimal(1).setScale(15, RoundingMode.HALF_EVEN);
-		BigDecimal b = new BigDecimal(Math.sqrt(2)).setScale(15, RoundingMode.HALF_EVEN);
-		BigDecimal b2 = b.multiply(b);
+		BigDecimal b2 = new BigDecimal(1).setScale(15, RoundingMode.HALF_EVEN);
 		BigDecimal s2 = s.multiply(s);
-		b = b2;
+		BigDecimal b = b2;
 		s = s.multiply(s2);
 		y = s.divide(b.multiply(new BigDecimal(3).setScale(15, RoundingMode.HALF_EVEN)), RoundingMode.HALF_EVEN);		
-		BigDecimal seuil = new BigDecimal(0.0001).setScale(15, RoundingMode.HALF_EVEN);
+		BigDecimal seuil = new BigDecimal(0.000000000001).setScale(15, RoundingMode.HALF_EVEN);
 		BigDecimal tmp;
 		
 		long i = 1;
@@ -148,17 +147,18 @@ public class ClothoidesComputer implements Service
 			return;
 		}
 		
-		double coeffMultiplicatif = 1./vitesse.squaredRootVitesse;
+		double coeffMultiplicatif = 1. / vitesse.squaredRootVitesse;
 		double sDepart = courbure / vitesse.squaredRootVitesse; // sDepart peut parfaitement être négatif
 		if(!vitesse.positif)
 			sDepart = -sDepart;
 		int pointDepart = (int) Math.round(sDepart / PRECISION_TRACE) + INDICE_MAX - 1;
-		double orientationClothoDepart = sDepart * sDepart / 2; // orientation au départ
+		double orientationClothoDepart = sDepart * sDepart; // orientation au départ
 		if(!vitesse.positif)
 			orientationClothoDepart = - orientationClothoDepart;
 			
-		double cos = Math.cos(orientation - orientationClothoDepart);
-		double sin = Math.sin(orientation - orientationClothoDepart);
+		double baseOrientation = orientation - orientationClothoDepart;
+		double cos = Math.cos(baseOrientation);
+		double sin = Math.sin(baseOrientation);
 
 //		for(int i = 0; i < NB_POINTS; i++)
 //			log.debug("Clotho : "+trajectoire[vitesse.squaredRootVitesse * (i + 1)]);
@@ -181,10 +181,10 @@ public class ClothoidesComputer implements Service
 				position).getReadOnly(),
 			modified.arcselems[i].point);
 
- 			double orientationClotho = sDepart * sDepart / 2;
+ 			double orientationClotho = sDepart * sDepart;
  			if(!vitesse.positif)
  				orientationClotho = - orientationClotho;
-			modified.arcselems[i].theta = orientation + orientationClotho - orientationClothoDepart;
+			modified.arcselems[i].theta = baseOrientation + orientationClotho;
 			modified.arcselems[i].courbure = sDepart * vitesse.squaredRootVitesse;
  			if(!vitesse.positif)
  				modified.arcselems[i].courbure = - modified.arcselems[i].courbure;
