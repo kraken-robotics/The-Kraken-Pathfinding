@@ -133,6 +133,8 @@ public class DataForSerialOutput implements Service
 	
 	public synchronized void setSpeed(Speed speed)
 	{
+		if(Config.debugSerie)
+			log.debug("Changement de vitesse : "+speed);
 		byte[] out = new byte[2+3];
 		out[COMMANDE] = SerialProtocol.OUT_SET_VITESSE.code;
 		out[PARAM] = (byte) speed.PWMRotation;
@@ -151,6 +153,8 @@ public class DataForSerialOutput implements Service
 	
 	public synchronized void initOdoSTM(Vec2<ReadOnly> pos, double angle)
 	{
+		if(Config.debugSerie)
+			log.debug("Initialisation de l'odométrie à "+pos+", angle "+angle);
 		byte[] out = new byte[2+6];
 		out[COMMANDE] = SerialProtocol.OUT_INIT_ODO.code;
 		out[PARAM] = (byte) ((pos.x+1500) >> 4);
@@ -164,6 +168,8 @@ public class DataForSerialOutput implements Service
 
 	public synchronized void vaAuPoint(Vec2<ReadOnly> pos)
 	{
+		if(Config.debugSerie)
+			log.debug("Va au point "+pos);
 		byte[] out = new byte[2+4];
 		out[COMMANDE] = SerialProtocol.OUT_VA_AU_POINT.code;
 		out[PARAM] = (byte) ((pos.x+1500) >> 4);
@@ -175,38 +181,46 @@ public class DataForSerialOutput implements Service
 	
 	public synchronized void setPIDconstVitesseGauche(double kp, double kd)
 	{
-		setPIDconst(SerialProtocol.OUT_PID_CONST_VIT_GAUCHE.code, kp, kd);
+		setPIDconst(SerialProtocol.OUT_PID_CONST_VIT_GAUCHE, kp, kd);
 	}
 
 	public synchronized void setPIDconstVitesseDroite(double kp, double kd)
 	{
-		setPIDconst(SerialProtocol.OUT_PID_CONST_VIT_DROITE.code, kp, kd);
+		setPIDconst(SerialProtocol.OUT_PID_CONST_VIT_DROITE, kp, kd);
 	}
 	
 	public synchronized void setPIDconstTranslation(double kp, double kd)
 	{
-		setPIDconst(SerialProtocol.OUT_PID_CONST_TRANSLATION.code, kp, kd);
+		setPIDconst(SerialProtocol.OUT_PID_CONST_TRANSLATION, kp, kd);
 	}
 	
 	public synchronized void setPIDconstRotation(double kp, double kd)
 	{
-		setPIDconst(SerialProtocol.OUT_PID_CONST_ROTATION.code, kp, kd);
+		setPIDconst(SerialProtocol.OUT_PID_CONST_ROTATION, kp, kd);
 	}
 	
 	public synchronized void setPIDconstCourbure(double kp, double kd)
 	{
-		setPIDconst(SerialProtocol.OUT_PID_CONST_COURBURE.code, kp, kd);
+		setPIDconst(SerialProtocol.OUT_PID_CONST_COURBURE, kp, kd);
 	}
 	
 	public synchronized void setPIDconstVitesseLineaire(double kp, double kd)
 	{
-		setPIDconst(SerialProtocol.OUT_PID_CONST_VIT_LINEAIRE.code, kp, kd);
+		setPIDconst(SerialProtocol.OUT_PID_CONST_VIT_LINEAIRE, kp, kd);
 	}
 	
-	private synchronized void setPIDconst(byte code, double kp, double kd)
+	public synchronized void setConstSamson(double k1, double k2)
 	{
-		byte[] out = new byte[2+6];
-		out[COMMANDE] = code;
+		setPIDconst(SerialProtocol.OUT_CONST_SAMSON, k1, k2);
+	}
+	
+	private synchronized void setPIDconst(SerialProtocol code, double kp, double kd)
+	{
+		if(Config.debugSerie)
+			log.debug("Envoi des constantes pour "+code+" : "+kp+" et "+kd);
+
+		byte[] out = new byte[2+5];
+		out[COMMANDE] = code.code;
 		out[PARAM] = (byte) ((int)(kp*200) >> 8);
 		out[PARAM+1] = (byte) ((int)(kp*200) & 0xFF);
 		out[PARAM+2] = (byte) ((int)(kd*200) >> 8);
@@ -219,13 +233,12 @@ public class DataForSerialOutput implements Service
 	 * Ajout d'une demande d'ordre d'avancer pour la série
 	 * @param elem
 	 */
-	public synchronized void avancer(int distance, boolean mur)
+	public synchronized void avancer(int distance)
 	{
+		if(Config.debugSerie)
+			log.debug("Avance de "+distance);
 		byte[] out = new byte[2+3];
-		if(mur)
-			out[COMMANDE] = SerialProtocol.OUT_AVANCER_DANS_MUR.code;
-		else
-			out[COMMANDE] = SerialProtocol.OUT_AVANCER.code;
+		out[COMMANDE] = SerialProtocol.OUT_AVANCER.code;
 		out[PARAM] = (byte) (distance >> 8);
 		out[PARAM+1] = (byte) (distance);
 		bufferBassePriorite.add(out);
@@ -238,6 +251,8 @@ public class DataForSerialOutput implements Service
 	 */
 	public synchronized void turn(double angle)
 	{
+		if(Config.debugSerie)
+			log.debug("Tourne à "+angle);
 		byte[] out = new byte[2+3];
 		out[COMMANDE] = SerialProtocol.OUT_TOURNER.code;
 		out[PARAM] = (byte) (Math.round(angle*1000) >> 8);
@@ -294,6 +309,8 @@ public class DataForSerialOutput implements Service
 	 */
 	public synchronized void immobilise()
 	{
+		if(Config.debugSerie)
+			log.debug("Stop !");
 		stop = true;
 		notify();
 	}
@@ -326,23 +343,41 @@ public class DataForSerialOutput implements Service
 	 */
 	public synchronized void envoieArcCourbe(ArcCourbe arc)
 	{
+		if(Config.debugSerie)
+			log.debug("Envoi d'un arc "+arc.vitesseCourbure);
+
 		for(int i = 0; i < arc.arcselems.length; i++)
 		{
-			byte[] out = new byte[2+1];
-			if(arc.marcheAvant)
-				out[COMMANDE] = SerialProtocol.OUT_SEND_ARC_MARCHE_AVANT.code;
+			log.debug(i);
+			byte[] out = new byte[2+9];
+			if(arc.vitesseCourbure.rebrousse && i == 0)
+				out[COMMANDE] = SerialProtocol.OUT_SEND_ARC_ARRET.code;
 			else
-				out[COMMANDE] = SerialProtocol.OUT_SEND_ARC_MARCHE_ARRIERE.code;
+				out[COMMANDE] = SerialProtocol.OUT_SEND_ARC.code;
 			out[PARAM] = (byte) ((arc.arcselems[i].point.x+1500) >> 4);
 			out[PARAM+1] = (byte) (((arc.arcselems[i].point.x+1500) << 4) + (arc.arcselems[i].point.y >> 8));
 			out[PARAM+2] = (byte) (arc.arcselems[i].point.y);
-			out[PARAM+3] = (byte) (Math.round(arc.arcselems[i].theta*1000) >> 8);
+			long theta = Math.round(arc.arcselems[i].theta*1000);
+			while(theta < 0)
+				theta += (long)(2*Math.PI*1000);
+			if(!arc.marcheAvant)
+				theta += (long)(Math.PI*1000);
+			theta %= (long)(2*Math.PI*1000);
+			// TODO plus propre
+			out[PARAM+3] = (byte) (theta >> 8);
+			out[PARAM+3] = (byte) theta;
 			out[PARAM+4] = (byte) (Math.round(arc.arcselems[i].theta*1000));
 			out[PARAM+5] = (byte) (Math.round(arc.arcselems[i].courbure*1000) >> 8);
 			out[PARAM+6] = (byte) (Math.round(arc.arcselems[i].courbure*1000));
-			out[PARAM+7] = (byte) (Math.round(arc.vitesse));
 			
-			bufferBassePriorite.add(out);
+			// TODO
+			arc.vitesse = 10;
+			if(arc.marcheAvant)
+				out[PARAM+7] = (byte) (Math.round(arc.vitesse));
+			else
+				out[PARAM+7] = (byte) (Math.round(-arc.vitesse));
+			
+			bufferTrajectoireCourbe.add(out);
 		}
 		notify();			
 	}
