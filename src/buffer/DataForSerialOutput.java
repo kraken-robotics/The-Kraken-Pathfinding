@@ -382,9 +382,17 @@ public class DataForSerialOutput implements Service
 		notify();			
 	}
 
-	public synchronized void sendPong()
+	public synchronized void activeDebugMode()
 	{
 		byte[] out = new byte[2+1];
+		out[COMMANDE] = SerialProtocol.OUT_DEBUG_MODE.code;
+		bufferBassePriorite.add(out);
+		notify();
+	}
+
+	public synchronized void sendPong()
+	{
+		byte[] out = new byte[2+2];
 		out[COMMANDE] = SerialProtocol.OUT_PONG1.code;
 		out[COMMANDE+1] = SerialProtocol.OUT_PONG2.code;
 		bufferBassePriorite.add(out);

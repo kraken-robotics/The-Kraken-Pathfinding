@@ -44,6 +44,8 @@ public class DebugAsser
 			config.set(ConfigInfo.DATE_DEBUT_MATCH, System.currentTimeMillis());
 		}
 		
+		stm.activeDebugMode();
+		
 		double kpVitesse = 0;
 		double kdVitesse = 0;
 		
