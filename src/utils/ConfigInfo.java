@@ -74,6 +74,7 @@ public enum ConfigInfo {
 	TRAJECTOIRE_COURBE("true", false),
 	MATCH_DEMARRE("false", false),
 	DATE_DEBUT_MATCH("0", false),
+	BALISE_PRESENTE("false", false),
 	FIN_MATCH("false", false);
 
 	private String defaultValue;

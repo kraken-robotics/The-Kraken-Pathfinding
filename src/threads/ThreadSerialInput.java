@@ -262,7 +262,7 @@ public class ThreadSerialInput extends Thread implements Service
 					}
 					
 					/**
-					 * Le robot commence à droite
+					 * La couleur du robot
 					 */
 					else if((lecture[COMMANDE] & SerialProtocol.MASK_LAST_BIT.codeInt) == SerialProtocol.IN_COULEUR_ROBOT.codeInt)
 					{
@@ -275,7 +275,22 @@ public class ThreadSerialInput extends Thread implements Service
 						else
 							log.warning("Le bas niveau a signalé un changement de couleur en plein match");
 					}
-					
+
+					/**
+					 * La balise est-elle présente ?
+					 */
+					else if((lecture[COMMANDE] & SerialProtocol.MASK_LAST_BIT.codeInt) == SerialProtocol.IN_PRESENCE_BALISE.codeInt)
+					{
+						// Mauvais checksum. Annulation.
+						if(!verifieChecksum(lecture, index))
+							continue;
+
+						if(!matchDemarre)
+							config.set(ConfigInfo.BALISE_PRESENTE, RobotColor.getCouleur(lecture[COMMANDE] == SerialProtocol.IN_PRESENCE_BALISE.codeInt));
+						else
+							log.warning("Le bas niveau a signalé un changement de présence de balise en plein match");
+					}
+
 					/**
 					 * Erreur série : il faut renvoyer un message
 					 */
@@ -311,6 +326,9 @@ public class ThreadSerialInput extends Thread implements Service
 								continue;
 
 							codeCoquillage = lecture[PARAM];
+							
+							log.debug("Code coquillage reçu : "+codeCoquillage);
+							
 							if(tmp != codeCoquillage)
 							{
 								switch(codeCoquillage)
