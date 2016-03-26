@@ -42,7 +42,7 @@ public enum ConfigInfo {
 	DISTANCE_ENNEMI_URGENCE("550", true),
 	CHECK_POINTS_SORTIE("false", true),
 	PREVISION_COLLISION("50", true),
-	BAUDRATE_STM("115200", true),
+	BAUDRATE_STM("921600", true),
 	BAUDRATE_XBEE("115200", true),
 	NB_CAPTEURS_PROXIMITE("14", true),
 	MS_MAX_AVANT_EVITEMENT("5", true),

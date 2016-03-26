@@ -304,7 +304,14 @@ public class ThreadSerialInput extends Thread implements Service
 						if(!verifieChecksum(lecture, index))
 							continue;
 
-						log.warning("Demande de renvoi du paquet "+((lecture[PARAM] << 8) + lecture[PARAM+1]));
+						String s = Integer.toHexString(((lecture[PARAM] << 8) + lecture[PARAM+1])).toUpperCase();
+						if(s.length() == 1)
+							s = "0"+s;
+						else
+							s = s.substring(s.length()-2, s.length());
+
+						log.warning("Demande de renvoi du paquet "+s);
+						
 						output.resend((lecture[PARAM] << 8) + lecture[PARAM+1]);
 					}
 					
