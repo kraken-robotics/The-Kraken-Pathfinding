@@ -256,6 +256,7 @@ public class ThreadSerialInput extends Thread implements Service
 							if(2*i+1 != nbCapteurs-1)
 								mesures[2*i+1] = ((lecture[PARAM+6+3*i+1] & 0x0F) << 8) + lecture[PARAM+6+3*i+2];
 						}
+						log.debug("Le robot est en "+positionRobot);
 						robot.setPositionOrientationCourbureDirection(positionRobot, orientationRobot, courbure, enMarcheAvant);
 						if(capteursOn)
 							buffer.add(new IncomingData(mesures, positionRobot, orientationRobot, enMarcheAvant));
@@ -286,7 +287,7 @@ public class ThreadSerialInput extends Thread implements Service
 							continue;
 
 						if(!matchDemarre)
-							config.set(ConfigInfo.BALISE_PRESENTE, RobotColor.getCouleur(lecture[COMMANDE] == SerialProtocol.IN_PRESENCE_BALISE.codeInt));
+							config.set(ConfigInfo.BALISE_PRESENTE, lecture[COMMANDE] == SerialProtocol.IN_PRESENCE_BALISE.codeInt);
 						else
 							log.warning("Le bas niveau a signalé un changement de présence de balise en plein match");
 					}

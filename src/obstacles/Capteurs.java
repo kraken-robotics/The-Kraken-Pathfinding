@@ -26,9 +26,9 @@ public class Capteurs implements Service {
 	private MoteurPhysique moteur;
 	private GridSpace gridspace;
 	
-	private static final int nbCapteurs = 12;
+	private static final int nbCapteurs = 10;
 	
-	private static final boolean debug = true;
+	private static final boolean debug = false;
 	
 	private int squaredDistanceUrgence;
 	private int rayonEnnemi;
@@ -66,13 +66,9 @@ public class Capteurs implements Service {
 		
 		positionsRelatives[8] = new Vec2<ReadOnly>(100, 100);
 		positionsRelatives[9] = new Vec2<ReadOnly>(-100, 100);
-		positionsRelatives[10] = new Vec2<ReadOnly>(-100, -100);
-		positionsRelatives[11] = new Vec2<ReadOnly>(100, -100);
 
 		orientationsRelatives[8] = Math.PI/4;
 		orientationsRelatives[9] = Math.PI/4 + Math.PI/2;
-		orientationsRelatives[10] = Math.PI/4 + Math.PI;
-		orientationsRelatives[11] = Math.PI/4 + 3*Math.PI/2;		
 		
 		/**
 		 * Définition des ultrasons
