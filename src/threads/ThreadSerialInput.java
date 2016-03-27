@@ -252,9 +252,9 @@ public class ThreadSerialInput extends Thread implements Service
 						int[] mesures = new int[nbCapteurs];
 						for(int i = 0; i < nbCapteurs / 2; i++)
 						{
-							mesures[2*i] = (lecture[PARAM+6+3*i] << 4) + (lecture[PARAM+6+3*i+1] >> 4);
+							mesures[2*i] = convertIR((lecture[PARAM+6+3*i] << 4) + (lecture[PARAM+6+3*i+1] >> 4));
 							if(2*i+1 != nbCapteurs-1)
-								mesures[2*i+1] = ((lecture[PARAM+6+3*i+1] & 0x0F) << 8) + lecture[PARAM+6+3*i+2];
+								mesures[2*i+1] = convertIR(((lecture[PARAM+6+3*i+1] & 0x0F) << 8) + lecture[PARAM+6+3*i+2]);
 						}
 						log.debug("Le robot est en "+positionRobot);
 						robot.setPositionOrientationCourbureDirection(positionRobot, orientationRobot, courbure, enMarcheAvant);
@@ -546,6 +546,23 @@ public class ThreadSerialInput extends Thread implements Service
 //		log.debug("Fermeture de ThreadSerialInput");
 	}
 	
+	/**
+	 * Passe de la mesure analogique à la distance
+	 * @param capteur
+	 * @return
+	 */
+	private int convertIR(int capteur)
+	{
+	    double V = capteur * 3.3 / 4096; // la tension. 4096 : <=> 3.3V
+
+	    if(V < 2.75) // au-dessus de 8cm
+	        return (int) (207.7 / (V - 0.15));
+	    else if(V < 3)
+	        return (int) (140 / (V - 1));
+	    else
+	        return (int) (63 / (V - 2.1));
+	}
+
 	/**
 	 * Vérifie si le checksum est bon. En cas de problème, il relance la STM
 	 * @param lecture
