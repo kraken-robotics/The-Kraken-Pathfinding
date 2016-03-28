@@ -10,8 +10,8 @@ public enum RobotColor {
 	/**
 	 * Ces noms sont utilisés pour les tests uniquement. Sinon, on utilise le boolean symmetry
 	 */
-	GREEN(false),
-	YELLOW(true);
+	VERT(false),
+	VIOLET(true);
 	
 	public final boolean symmetry;
 	
@@ -26,8 +26,8 @@ public enum RobotColor {
 				chaine.toLowerCase().contains("green") ||
 				chaine.toLowerCase().contains("nosym") ||
 				chaine.toLowerCase().contains("false"))
-			return GREEN;
-		return YELLOW;
+			return VERT;
+		return VIOLET;
 	}
 
 	/**
