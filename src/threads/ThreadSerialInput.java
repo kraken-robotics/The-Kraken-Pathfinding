@@ -96,14 +96,16 @@ public class ThreadSerialInput extends Thread implements Service
 
 					try {
 						// On s'assure de bien commencer au début d'un message
-						if(serie.read() != 0x55)
+						int tmp = serie.read();
+						if(tmp != 0x55)
 						{
-							log.warning("Mauvais entête (0x55)");
+							log.warning("Mauvais entête (0x55) : "+tmp);
 							continue;
 						}
-						if(serie.read() != 0xAA)
+						tmp = serie.read();
+						if(tmp != 0xAA)
 						{
-							log.warning("Mauvais entête (0xAA)");
+							log.warning("Mauvais entête (0xAA) : "+tmp);
 							continue;
 						}
 
@@ -151,7 +153,7 @@ public class ThreadSerialInput extends Thread implements Service
 						lecture[index++] = serie.read(); // checksum
 						if(lecture[COMMANDE+1] != SerialProtocol.IN_PONG2.codeInt)
 							log.warning("Pong reçu non conforme");
-						else if(Config.debugSerie)
+						else if(Config.debugSerieTrame)
 							log.debug("Reçu pong");
 					}
 					else if(lecture[COMMANDE] == SerialProtocol.IN_DEBUG_ASSER.codeInt)
@@ -243,6 +245,7 @@ public class ThreadSerialInput extends Thread implements Service
 						int yRobot = (lecture[PARAM+1] & 0x0F) << 8;
 						yRobot = yRobot + lecture[PARAM+2];
 						Vec2<ReadOnly> positionRobot = new Vec2<ReadOnly>(xRobot, yRobot);
+
 						double orientationRobot = ((lecture[PARAM+3] << 8) + lecture[PARAM+4]) / 1000.;
 						double courbure = lecture[PARAM+5] / 1000.;
 						boolean enMarcheAvant = lecture[COMMANDE] == SerialProtocol.IN_INFO_CAPTEURS.codeInt;
@@ -253,10 +256,14 @@ public class ThreadSerialInput extends Thread implements Service
 						for(int i = 0; i < nbCapteurs / 2; i++)
 						{
 							mesures[2*i] = convertIR((lecture[PARAM+6+3*i] << 4) + (lecture[PARAM+6+3*i+1] >> 4));
+//							log.debug("Capteur "+(2*i)+" voit "+mesures[2*i]+"mm (brut "+((lecture[PARAM+6+3*i] << 4) + (lecture[PARAM+6+3*i+1] >> 4))+")");
 							if(2*i+1 != nbCapteurs-1)
+							{
 								mesures[2*i+1] = convertIR(((lecture[PARAM+6+3*i+1] & 0x0F) << 8) + lecture[PARAM+6+3*i+2]);
+//								log.debug("Capteur "+(2*i+1)+" voit "+mesures[2*i+1]+"mm (brut "+(((lecture[PARAM+6+3*i+1] & 0x0F) << 8) + lecture[PARAM+6+3*i+2])+")");
+							}
 						}
-						log.debug("Le robot est en "+positionRobot);
+						log.debug("Le robot est en "+positionRobot+", orientation : "+orientationRobot);
 						robot.setPositionOrientationCourbureDirection(positionRobot, orientationRobot, courbure, enMarcheAvant);
 						if(capteursOn)
 							buffer.add(new IncomingData(mesures, positionRobot, orientationRobot, enMarcheAvant));
@@ -496,16 +503,7 @@ public class ThreadSerialInput extends Thread implements Service
 						int nbElement = lecture[PARAM];
 						table.setDone(GameElementNames.values()[nbElement], Tribool.TRUE);
 					}
-							/**
-							 * Demande de hook
-							 */
-/*						case "dhk":
-							int nbScript = Integer.parseInt(messages[1]);
-							ScriptHookNames s = ScriptHookNames.values()[nbScript];
-							int param = Integer.parseInt(messages[2]);
-							hookbuffer.add(new IncomingHook(s, param));
-							break;
-*/
+
 					/**
 					 * On est arrivé à destination.
 					 */
@@ -553,9 +551,11 @@ public class ThreadSerialInput extends Thread implements Service
 	 */
 	private int convertIR(int capteur)
 	{
-	    double V = capteur * 3.3 / 4096; // la tension. 4096 : <=> 3.3V
+	    double V = capteur * 3.3 / 4096; // la tension. 4096 : <=> 3.3V TODO
 
-	    if(V < 2.75) // au-dessus de 8cm
+	    if(V < 0.3) // tension trop basse, obstacle à perpèt'
+	    	return 0;
+	    else if(V < 2.75) // au-dessus de 8cm
 	        return (int) (207.7 / (V - 0.15));
 	    else if(V < 3)
 	        return (int) (140 / (V - 1));
@@ -567,7 +567,7 @@ public class ThreadSerialInput extends Thread implements Service
 	 * Vérifie si le checksum est bon. En cas de problème, il relance la STM
 	 * @param lecture
 	 * @return
-	 * @throws MissingCharacterException 
+	 * @throws MissingCharacterExcept
 	 * @throws IOException 
 	 */
 	private boolean verifieChecksum(int[] lecture, int longueur) throws IOException, MissingCharacterException

@@ -221,10 +221,10 @@ public class DataForSerialOutput implements Service
 
 		byte[] out = new byte[2+5];
 		out[COMMANDE] = code.code;
-		out[PARAM] = (byte) ((int)(kp*200) >> 8);
-		out[PARAM+1] = (byte) ((int)(kp*200) & 0xFF);
-		out[PARAM+2] = (byte) ((int)(kd*200) >> 8);
-		out[PARAM+3] = (byte) ((int)(kd*200) & 0xFF);
+		out[PARAM] = (byte) ((int)(kp*1000) >> 8);
+		out[PARAM+1] = (byte) ((int)(kp*1000) & 0xFF);
+		out[PARAM+2] = (byte) ((int)(kd*1000) >> 8);
+		out[PARAM+3] = (byte) ((int)(kd*1000) & 0xFF);
 		bufferBassePriorite.add(out);
 		notify();
 	}
