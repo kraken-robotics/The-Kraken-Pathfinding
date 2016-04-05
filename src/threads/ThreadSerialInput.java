@@ -551,8 +551,9 @@ public class ThreadSerialInput extends Thread implements Service
 	 */
 	private int convertIR(int capteur)
 	{
-	    double V = capteur * 3.3 / 4096; // la tension. 4096 : <=> 3.3V TODO
+		double V = (capteur - 24) / 1341; // formule trouvée expérimentalement
 
+		// Ces formules ont été calculée à partir de la datasheet des capteurs IR
 	    if(V < 0.3) // tension trop basse, obstacle à perpèt'
 	    	return 0;
 	    else if(V < 2.75) // au-dessus de 8cm

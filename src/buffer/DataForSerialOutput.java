@@ -179,53 +179,56 @@ public class DataForSerialOutput implements Service
 		notify();
 	}
 	
-	public synchronized void setPIDconstVitesseGauche(double kp, double kd)
+	public synchronized void setPIDconstVitesseGauche(double kp, double ki, double kd)
 	{
-		setPIDconst(SerialProtocol.OUT_PID_CONST_VIT_GAUCHE, kp, kd);
+		setPIDconst(SerialProtocol.OUT_PID_CONST_VIT_GAUCHE, kp, ki, kd);
 	}
 
-	public synchronized void setPIDconstVitesseDroite(double kp, double kd)
+	public synchronized void setPIDconstVitesseDroite(double kp, double ki, double kd)
 	{
-		setPIDconst(SerialProtocol.OUT_PID_CONST_VIT_DROITE, kp, kd);
+		setPIDconst(SerialProtocol.OUT_PID_CONST_VIT_DROITE, kp, ki, kd);
 	}
 	
-	public synchronized void setPIDconstTranslation(double kp, double kd)
+	public synchronized void setPIDconstTranslation(double kp, double ki, double kd)
 	{
-		setPIDconst(SerialProtocol.OUT_PID_CONST_TRANSLATION, kp, kd);
+		setPIDconst(SerialProtocol.OUT_PID_CONST_TRANSLATION, kp, ki, kd);
 	}
 	
-	public synchronized void setPIDconstRotation(double kp, double kd)
+	public synchronized void setPIDconstRotation(double kp, double ki, double kd)
 	{
-		setPIDconst(SerialProtocol.OUT_PID_CONST_ROTATION, kp, kd);
+		setPIDconst(SerialProtocol.OUT_PID_CONST_ROTATION, kp, ki, kd);
 	}
 	
-	public synchronized void setPIDconstCourbure(double kp, double kd)
+	public synchronized void setPIDconstCourbure(double kp, double ki, double kd)
 	{
-		setPIDconst(SerialProtocol.OUT_PID_CONST_COURBURE, kp, kd);
+		setPIDconst(SerialProtocol.OUT_PID_CONST_COURBURE, kp, ki, kd);
 	}
 	
-	public synchronized void setPIDconstVitesseLineaire(double kp, double kd)
+	public synchronized void setPIDconstVitesseLineaire(double kp, double ki, double kd)
 	{
-		setPIDconst(SerialProtocol.OUT_PID_CONST_VIT_LINEAIRE, kp, kd);
+		setPIDconst(SerialProtocol.OUT_PID_CONST_VIT_LINEAIRE, kp, ki, kd);
 	}
 	
 	public synchronized void setConstSamson(double k1, double k2)
 	{
-		setPIDconst(SerialProtocol.OUT_CONST_SAMSON, k1, k2);
+		setPIDconst(SerialProtocol.OUT_CONST_SAMSON, k1, k2, 0);
 	}
 	
-	private synchronized void setPIDconst(SerialProtocol code, double kp, double kd)
+	private synchronized void setPIDconst(SerialProtocol code, double kp, double ki, double kd)
 	{
 		if(Config.debugSerie)
-			log.debug("Envoi des constantes pour "+code+" : "+kp+" et "+kd);
+			log.debug("Envoi des constantes pour "+code+" : "+kp+", "+ki+" et "+kd);
 
-		byte[] out = new byte[2+5];
+		byte[] out = new byte[2+7];
 		out[COMMANDE] = code.code;
 		out[PARAM] = (byte) ((int)(kp*1000) >> 8);
 		out[PARAM+1] = (byte) ((int)(kp*1000) & 0xFF);
-		out[PARAM+2] = (byte) ((int)(kd*1000) >> 8);
-		out[PARAM+3] = (byte) ((int)(kd*1000) & 0xFF);
+		out[PARAM+2] = (byte) ((int)(ki*1000) >> 8);
+		out[PARAM+3] = (byte) ((int)(ki*1000) & 0xFF);
+		out[PARAM+4] = (byte) ((int)(kd*1000) >> 8);
+		out[PARAM+5] = (byte) ((int)(kd*1000) & 0xFF);
 		bufferBassePriorite.add(out);
+
 		notify();
 	}
 	
@@ -238,7 +241,13 @@ public class DataForSerialOutput implements Service
 		if(Config.debugSerie)
 			log.debug("Avance de "+distance);
 		byte[] out = new byte[2+3];
-		out[COMMANDE] = SerialProtocol.OUT_AVANCER.code;
+		if(distance >= 0)
+			out[COMMANDE] = SerialProtocol.OUT_AVANCER.code;
+		else
+		{
+			out[COMMANDE] = SerialProtocol.OUT_AVANCER_NEG.code;
+			distance = -distance;
+		}
 		out[PARAM] = (byte) (distance >> 8);
 		out[PARAM+1] = (byte) (distance);
 		bufferBassePriorite.add(out);

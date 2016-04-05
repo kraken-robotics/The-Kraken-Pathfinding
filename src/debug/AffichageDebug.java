@@ -31,7 +31,7 @@ public class AffichageDebug  extends ApplicationFrame
 	
 	public void add(IncomingDataDebug data)
 	{
-		serie[0].add(new Millisecond(), data.vitesseDroite);
+		serie[0].add(new Millisecond(), data.orientation);
 	}
 	
     public AffichageDebug() {
