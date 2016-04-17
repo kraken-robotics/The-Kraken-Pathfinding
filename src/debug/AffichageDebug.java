@@ -27,11 +27,12 @@ public class AffichageDebug  extends ApplicationFrame
 	 */
 	private static final long serialVersionUID = 1L;
 	private TimeSeries serie[];
-	private final static int nbGraphe = 1;
+	private final static int nbGraphe = 2;
 	
 	public void add(IncomingDataDebug data)
 	{
-		serie[0].add(new Millisecond(), data.orientation);
+		serie[0].add(new Millisecond(), data.PWMdroit);
+		serie[1].add(new Millisecond(), data.PWMgauche);
 	}
 	
     public AffichageDebug() {
@@ -74,7 +75,7 @@ public class AffichageDebug  extends ApplicationFrame
         ChartPanel panel = new ChartPanel(chart);
         panel.setFillZoomRectangle(true);
         panel.setMouseWheelEnabled(true);
-        panel.setPreferredSize(new java.awt.Dimension(1500, 800));
+        panel.setPreferredSize(new java.awt.Dimension(1024, 600));
         setContentPane(panel);
 
     }

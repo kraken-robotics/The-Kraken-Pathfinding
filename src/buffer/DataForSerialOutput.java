@@ -219,14 +219,17 @@ public class DataForSerialOutput implements Service
 		if(Config.debugSerie)
 			log.debug("Envoi des constantes pour "+code+" : "+kp+", "+ki+" et "+kd);
 
-		byte[] out = new byte[2+7];
+		byte[] out = new byte[2+10];
 		out[COMMANDE] = code.code;
-		out[PARAM] = (byte) ((int)(kp*1000) >> 8);
-		out[PARAM+1] = (byte) ((int)(kp*1000) & 0xFF);
-		out[PARAM+2] = (byte) ((int)(ki*1000) >> 8);
-		out[PARAM+3] = (byte) ((int)(ki*1000) & 0xFF);
-		out[PARAM+4] = (byte) ((int)(kd*1000) >> 8);
-		out[PARAM+5] = (byte) ((int)(kd*1000) & 0xFF);
+		out[PARAM] = (byte) (((int)(kp*1000) >> 16) & 0xFF);
+		out[PARAM+1] = (byte) (((int)(kp*1000) >> 8) & 0xFF);
+		out[PARAM+2] = (byte) ((int)(kp*1000) & 0xFF);
+		out[PARAM+3] = (byte) (((int)(ki*1000) >> 16) & 0xFF);
+		out[PARAM+4] = (byte) (((int)(ki*1000) >> 8) & 0xFF);
+		out[PARAM+5] = (byte) ((int)(ki*1000) & 0xFF);
+		out[PARAM+6] = (byte) (((int)(kd*1000) >> 16) & 0xFF);
+		out[PARAM+7] = (byte) (((int)(kd*1000) >> 8) & 0xFF);
+		out[PARAM+8] = (byte) ((int)(kd*1000) & 0xFF);
 		bufferBassePriorite.add(out);
 
 		notify();
@@ -263,6 +266,11 @@ public class DataForSerialOutput implements Service
 		if(Config.debugSerie)
 			log.debug("Tourne à "+angle);
 		byte[] out = new byte[2+3];
+
+		angle %= 2*Math.PI;
+		if(angle < 0)
+			angle += 2*Math.PI; // il faut toujours envoyer des nombres positifs
+
 		out[COMMANDE] = SerialProtocol.OUT_TOURNER.code;
 		out[PARAM] = (byte) (Math.round(angle*1000) >> 8);
 		out[PARAM+1] = (byte) (Math.round(angle*1000));
@@ -337,7 +345,30 @@ public class DataForSerialOutput implements Service
 		bufferBassePriorite.add(out);
 		notify();
 	}
+
+	public synchronized void asserVitesse(int vitesseGauche, int vitesseDroite)
+	{
+		byte[] out = new byte[2+5];
+		out[COMMANDE] = SerialProtocol.OUT_VITESSE.code;
+		out[PARAM] = (byte) (vitesseGauche >> 8);
+		out[PARAM + 1] = (byte) (vitesseGauche & 0xFF);
+		out[PARAM + 2] = (byte) (vitesseDroite >> 8);
+		out[PARAM + 3] = (byte) (vitesseDroite & 0xFF);
+		bufferBassePriorite.add(out);
+		notify();
+	}
 	
+	/**
+	 * Désasservit le robot
+	 */
+	public synchronized void asserOff()
+	{
+		byte[] out = new byte[2+1];
+		out[COMMANDE] = SerialProtocol.OUT_ASSER_OFF.code;
+		bufferBassePriorite.add(out);
+		notify();
+	}
+
 	@Override
 	public void updateConfig(Config config)
 	{}

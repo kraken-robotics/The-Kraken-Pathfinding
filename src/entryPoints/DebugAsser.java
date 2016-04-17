@@ -10,6 +10,7 @@ import buffer.DataForSerialOutput;
 import utils.Config;
 import utils.ConfigInfo;
 import utils.Log;
+import utils.Sleep;
 import utils.Vec2;
 import container.Container;
 import container.ServiceNames;
@@ -49,23 +50,25 @@ public class DebugAsser
 		}
 	*/	
 		stm.activeDebugMode();
-		
-		double kpVitesse = 0.4; // 11 pour 23V
-		double kiVitesse = 0; // 1
-		double kdVitesse = 0; // 0.9
+
+		stm.asserOff();
+
+		double kpVitesse = 5; // 11 pour 23V // 5 // 80
+		double kiVitesse = 1; // 1 // 1 // 0
+		double kdVitesse = 0.2; // 0.9 // 0.2 // 0.7
 		
 		stm.setPIDconstVitesseDroite(kpVitesse, kiVitesse, kdVitesse);
 		stm.setPIDconstVitesseGauche(kpVitesse, kiVitesse, kdVitesse);
 
-		double kpRot = 0.01;
+		double kpRot = 0.04;
 		double kiRot = 0;
 		double kdRot = 0;
 		
 		stm.setPIDconstRotation(kpRot, kiRot, kdRot);
 
-		double kpTr = 10; // 0.4
-		double kiTr = 0.001; // 0.003
-		double kdTr = 0; // 0.04
+		double kpTr = 300; // 300
+		double kiTr = 0.05; // 0.05
+		double kdTr = 80; // 80
 		
 		stm.setPIDconstTranslation(kpTr, kiTr, kdTr);
 
@@ -84,8 +87,16 @@ public class DebugAsser
 		
 		stm.setConstSamson(k1, k2);
 		
-//		stm.avancer(100);
-//		stm.turn(Math.PI/2);
+//		stm.asserVitesse(50, 80);
+//		stm.avancer(400);
+		stm.turn(Math.PI/2);
+/*		stm.turn(-Math.PI/2);
+		Sleep.sleep(5000);
+		stm.turn(0);
+		Sleep.sleep(5000);
+		stm.turn(Math.PI/2);
+		Sleep.sleep(5000);
+		stm.turn(Math.PI);*/
 //		stm.immobilise();
 /*
 		int nbArc = 2;
