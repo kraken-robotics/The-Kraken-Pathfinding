@@ -280,6 +280,14 @@ public class DataForSerialOutput implements Service
 		notify();
 	}
 	
+	public synchronized void reprendMouvement()
+	{
+		byte[] out = new byte[2+1];
+		out[COMMANDE] = SerialProtocol.OUT_CONTINUE_MOVE.code;
+		bufferBassePriorite.add(out);
+		notify();
+	}
+	
 	/**
 	 * Ajout d'une demande d'ordre de tourner pour la série
 	 * @param elem
@@ -343,18 +351,36 @@ public class DataForSerialOutput implements Service
 		notify();
 	}
 
+	public synchronized void suspendMouvement()
+	{
+		byte[] out = new byte[2+1];
+		out[COMMANDE] = SerialProtocol.OUT_SUSPEND_MOVE.code;
+		bufferBassePriorite.add(out);
+		notify();
+	}
 	
 	/**
 	 * Ajout d'une demande d'ordre de s'arrêter
 	 */
 	public synchronized void immobilise()
 	{
+		byte[] out = new byte[2+1];
+		out[COMMANDE] = SerialProtocol.OUT_ASSER_POS_ACTUELLE.code;
+		bufferBassePriorite.add(out);
+		notify();
+
+	}
+
+	/**
+	 * Ajout d'une demande d'ordre de s'arrêter
+	 */
+	public synchronized void immobiliseUrgence()
+	{
 		if(Config.debugSerie)
 			log.debug("Stop !");
 		stop = true;
 		notify();
 	}
-
 	
 	/**
 	 * Ajout d'une demande d'ordre d'actionneurs pour la série

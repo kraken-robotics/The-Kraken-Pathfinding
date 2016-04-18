@@ -9,5 +9,6 @@ package requete;
 public enum RequeteType
 {
 	BLOCAGE_MECANIQUE,
-	TRAJET_FINI;
+	TRAJET_FINI,
+	ENNEMI_SUR_CHEMIN;
 }
