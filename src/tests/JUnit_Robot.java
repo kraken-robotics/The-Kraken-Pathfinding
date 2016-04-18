@@ -32,13 +32,7 @@ public class JUnit_Robot extends JUnit_Test
         super.setUp();
         robot = (RobotReal) container.getService(ServiceNames.ROBOT_REAL);
         robotchrono = robot.cloneIntoRobotChrono();
-    }
-
-    @Test
-    public void test_stop() throws Exception
-    {
-    	robot.stopper();
-    }
+	}
 
 	@Test
 	public void test_actionneurs() throws Exception

@@ -212,12 +212,6 @@ public class RobotChrono extends Robot
 		this.date += duree;
 		checkHooks(position.getReadOnly(), position.getReadOnly(), hooks);
 	}
-	
-	@Override
-    public void stopper()
-    {
-		date += sleepAvanceDuration;
-    }
     
 /*    @Override
     public void desactiveAsservissement()

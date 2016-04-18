@@ -258,6 +258,29 @@ public class DataForSerialOutput implements Service
 	}
 
 	/**
+	 * Ajout d'une demande d'ordre d'avancer pour la série
+	 * Si on avançait précédement, on va avancer. Si on reculait, on va reculer.
+	 * @param elem
+	 */
+	public synchronized void avancerMemeSens(int distance)
+	{
+		if(Config.debugSerie)
+			log.debug("Avance (même sens) de "+distance);
+		byte[] out = new byte[2+3];
+		if(distance >= 0)
+			out[COMMANDE] = SerialProtocol.OUT_AVANCER_IDEM.code;
+		else
+		{
+			out[COMMANDE] = SerialProtocol.OUT_AVANCER_REVERSE.code;
+			distance = -distance;
+		}
+		out[PARAM] = (byte) (distance >> 8);
+		out[PARAM+1] = (byte) (distance);
+		bufferBassePriorite.add(out);
+		notify();
+	}
+	
+	/**
 	 * Ajout d'une demande d'ordre de tourner pour la série
 	 * @param elem
 	 */

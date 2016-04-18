@@ -25,7 +25,6 @@ public abstract class Robot implements Service
 	 * DÉPLACEMENT HAUT NIVEAU
 	 */
 	
-	public abstract void stopper();
 	public abstract int getPositionGridSpace();
     public abstract void tourner(double angle)
             throws UnableToMoveException, FinMatchException;
