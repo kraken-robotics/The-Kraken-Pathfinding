@@ -118,7 +118,7 @@ public class AStarCourbeArcManager implements Service
 
 	public void setEjecteGameElement(boolean ejecteGameElement)
 	{
-		// TODO Auto-generated method stub
+		// TODO AStarCourbe
 		
 	}
 

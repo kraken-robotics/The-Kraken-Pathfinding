@@ -50,7 +50,7 @@ public class Vec2<T extends Permission> implements Serializable
 		y = requestedY;
 	}
 	
-	public static Vec2<ReadWrite> setAngle(Vec2<ReadWrite> out, double angle)
+	public final static Vec2<ReadWrite> setAngle(Vec2<ReadWrite> out, double angle)
 	{
 		out.x = (int) (Math.cos(angle)*coeffDirection);
 		out.y = (int) (Math.sin(angle)*coeffDirection);
@@ -59,51 +59,51 @@ public class Vec2<T extends Permission> implements Serializable
 
 	// Do not square a length, use squared length directly
 	// to increase performances
-	public int squaredLength()
+	public final int squaredLength()
 	{
 		return x*x + y*y;
 	}
 
 	// Returns this vec2's magnitude
-	public double length()
+	public final double length()
 	{
 		return Math.hypot(x, y);
 	}
 	
 	// dot product
-	public int dot(Vec2<? extends Permission> other)
+	public final int dot(Vec2<? extends Permission> other)
 	{
 		return x*other.x + y*other.y;
 	}
 
 	// build a new Vec2 by summing the calling Vec2 and the one in args
-	public Vec2<ReadWrite> plusNewVector(Vec2<? extends Permission> other)
+	public final Vec2<ReadWrite> plusNewVector(Vec2<? extends Permission> other)
 	{
 		return new Vec2<ReadWrite>(x + other.x, y + other.y);
 	}
 	
 	// build a new Vec2 with the value obtained by decrementing the
 	// calling Vec2 by the provided Vec2 in args
-	public Vec2<ReadWrite> minusNewVector(Vec2<? extends Permission> other)
+	public final Vec2<ReadWrite> minusNewVector(Vec2<? extends Permission> other)
 	{
 		return new Vec2<ReadWrite>(x - other.x, y - other.y);
 	}
 
-	public static Vec2<ReadWrite> plus(Vec2<ReadWrite> modified, Vec2<? extends Permission> other)
+	public final static Vec2<ReadWrite> plus(Vec2<ReadWrite> modified, Vec2<? extends Permission> other)
 	{
 		modified.x += other.x;
 		modified.y += other.y;
 		return modified;
 	}
 	
-	public static Vec2<ReadWrite> minus(Vec2<ReadWrite> modified, Vec2<? extends Permission> other)
+	public final static Vec2<ReadWrite> minus(Vec2<ReadWrite> modified, Vec2<? extends Permission> other)
 	{
 		modified.x -= other.x;
 		modified.y -= other.y;
 		return modified;
 	}
 
-	public Vec2<ReadWrite> clone()
+	public final Vec2<ReadWrite> clone()
 	{
 		return new Vec2<ReadWrite>(this.x, this.y);
 	}
@@ -114,29 +114,29 @@ public class Vec2<T extends Permission> implements Serializable
 		return (Vec2<ReadOnly>) this;
 	}
 
-	public int squaredDistance(Vec2<? extends Permission> other)
+	public final int squaredDistance(Vec2<? extends Permission> other)
 	{
 		int tmp_x = x-other.x, tmp_y = y-other.y;
 		return tmp_x*tmp_x + tmp_y*tmp_y;
 	}
 
-	public double distance(Vec2<? extends Permission> other)
+	public final double distance(Vec2<? extends Permission> other)
 	{
 		return Math.sqrt(squaredDistance(other));
 	}
 	
-	public String toString()
+	public final String toString()
 	{
 		return "("+x+","+y+")";
 	}
 	
-	public boolean equals(Vec2<? extends Permission> other)
+	public final boolean equals(Vec2<? extends Permission> other)
 	{
 		return x == other.x && y == other.y;
 	}
 
 	@Override
-	public boolean equals(Object obj) {
+	public final boolean equals(Object obj) {
 		if (this == obj)
 			return true;
 		else if (obj == null)
@@ -160,7 +160,7 @@ public class Vec2<T extends Permission> implements Serializable
 	    other.y = v.y;
 	}
 
-	public Vec2<ReadWrite> middleNewVector(Vec2<? extends Permission> b)
+	public final Vec2<ReadWrite> middleNewVector(Vec2<? extends Permission> b)
 	{
 		return new Vec2<ReadWrite>((x+b.x)/2, (y+b.y)/2);
 	}
@@ -179,14 +179,14 @@ public class Vec2<T extends Permission> implements Serializable
 		return v;
 	}
 
-	public Vec2<ReadWrite> scalarNewVector(double d)
+	public final Vec2<ReadWrite> scalarNewVector(double d)
 	{
 		Vec2<ReadWrite> out = new Vec2<ReadWrite>(this);
 		scalar(out, d);
 		return out;
 	}
 	
-	public Vec2<ReadWrite> rotateNewVector(double angle, Vec2<? extends Permission> centreRotation)
+	public final Vec2<ReadWrite> rotateNewVector(double angle, Vec2<? extends Permission> centreRotation)
 	{
 		double cos = Math.cos(angle);
 		double sin = Math.sin(angle);
@@ -194,7 +194,7 @@ public class Vec2<T extends Permission> implements Serializable
 		(int)(sin*(x-centreRotation.x)+cos*(y-centreRotation.y))+centreRotation.y);
 	}
 
-	public Vec2<ReadWrite> rotateNewVector(double cos, double sin, Vec2<? extends Permission> centreRotation)
+	public final Vec2<ReadWrite> rotateNewVector(double cos, double sin, Vec2<? extends Permission> centreRotation)
 	{
 		return new Vec2<ReadWrite>((int)(cos*(x-centreRotation.x)-sin*(y-centreRotation.y))+centreRotation.x,
 		(int)(sin*(x-centreRotation.x)+cos*(y-centreRotation.y))+centreRotation.y);
@@ -213,14 +213,14 @@ public class Vec2<T extends Permission> implements Serializable
 	 * @param d
 	 * @return
 	 */
-	public Vec2<ReadWrite> rotateNewVector(double angle)
+	public final Vec2<ReadWrite> rotateNewVector(double angle)
 	{
 		double cos = Math.cos(angle);
 		double sin = Math.sin(angle);
 		return new Vec2<ReadWrite>((int)(cos*x-sin*y), (int)(sin*x+cos*y));
 	}
 
-	public static Vec2<ReadWrite> rotate(Vec2<ReadWrite> v, double angle)
+	public final static Vec2<ReadWrite> rotate(Vec2<ReadWrite> v, double angle)
 	{
 		double cos = Math.cos(angle);
 		double sin = Math.sin(angle);
@@ -230,7 +230,7 @@ public class Vec2<T extends Permission> implements Serializable
 		return v;
 	}
 
-	public static Vec2<ReadWrite> rotate(Vec2<ReadWrite> v, double cos, double sin)
+	public final static Vec2<ReadWrite> rotate(Vec2<ReadWrite> v, double cos, double sin)
 	{
 		int old_x = v.x;
 		v.x = (int)(cos*v.x-sin*v.y);
@@ -238,7 +238,7 @@ public class Vec2<T extends Permission> implements Serializable
 		return v;
 	}
 
-	public double getArgument()
+	public final double getArgument()
 	{
 		return Math.atan2(y, x);
 	}
@@ -248,9 +248,8 @@ public class Vec2<T extends Permission> implements Serializable
 	 * @param other
 	 * @return
 	 */
-	public Vec2<ReadWrite> projectOnNewVector(Vec2<? extends Permission> other)
+	public final Vec2<ReadWrite> projectOnNewVector(Vec2<? extends Permission> other)
 	{
-		// TODO pas plutôt other.scalarNewVector(dot(other)) ?
 		return scalarNewVector(dot(other));
 	}
 
@@ -258,7 +257,7 @@ public class Vec2<T extends Permission> implements Serializable
 	 * Tourne le vecteur de PI/2
 	 * @return
 	 */
-	public static Vec2<ReadWrite> rotateAngleDroit(Vec2<ReadWrite> v)
+	public final static Vec2<ReadWrite> rotateAngleDroit(Vec2<ReadWrite> v)
 	{
 		int tmp = v.x;
 		v.x = -v.y;
@@ -271,7 +270,7 @@ public class Vec2<T extends Permission> implements Serializable
 	 * @param v
 	 * @return
 	 */
-	public static Vec2<ReadWrite> oppose(Vec2<ReadWrite> v)
+	public final static Vec2<ReadWrite> oppose(Vec2<ReadWrite> v)
 	{
 		v.x = -v.x;
 		v.y = -v.y;

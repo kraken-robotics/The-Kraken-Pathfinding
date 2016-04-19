@@ -134,12 +134,6 @@ public abstract class Robot implements Service
     {
         return orientation;
     }
-    
-	public boolean isArrete() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
 
 
 	/**

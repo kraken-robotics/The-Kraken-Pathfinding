@@ -8,6 +8,7 @@ package robot;
 
 public enum Speed
 {
+	// TODO refondre les vitesses
 	// vitesse en temps normal
 //    BETWEEN_SCRIPTS(170, 0.52, 17.0, 160, 2.0, 50.0),
     BETWEEN_SCRIPTS(17, 0.52, 17.0, 16, 2.0, 50.0),
@@ -62,8 +63,6 @@ public enum Speed
         this.kd_trans = kd_trans;
         this.kp_rot = kp_rot;
         this.kd_rot = kd_rot;
-        
-        // TODO: faire des MESURES
         
         invertedTranslationnalSpeed = (int) (1./((2500.)/(613.52 * (Math.pow(PWM_translation,(-1.034))))/1000));
         invertedRotationnalSpeed = (int) (1./((Math.PI)/(277.85 * Math.pow(PWM_rotation,(-1.222)))/1000));

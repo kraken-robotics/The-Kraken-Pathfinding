@@ -35,12 +35,9 @@ public class ThreadConfig extends Thread implements Service {
 				try {
 					config.wait();
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
-
-//			log.debug("Réveil de ThreadConfig");	
 			
 			for(ServiceNames name: ServiceNames.values())
 			{
@@ -49,7 +46,6 @@ public class ThreadConfig extends Thread implements Service {
 					service.updateConfig(config);
 			}
 		}
-//		log.debug("Fermeture de ThreadConfig");
 	}
 
 	@Override

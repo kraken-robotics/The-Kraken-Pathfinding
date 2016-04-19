@@ -47,11 +47,10 @@ public class ThreadPathfinding extends Thread implements Service
 				synchronized(this)
 				{
 					notify(); // on prévient le thread d'évitement qu'un nouveau chemin est en calcul
-					// TODO
+					// TODO thread pathfinding qui communique avec AStarCourbe
 					pathfinding.updatePath();
 				}
 			} catch (PathfindingException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}*/
 		}

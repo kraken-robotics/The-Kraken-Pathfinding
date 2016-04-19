@@ -31,7 +31,7 @@ public class JUnit_Actuator extends JUnit_Test {
 	{
 		for(ActuatorOrder o: ActuatorOrder.values())
 		{
-			// TODO
+			// TODO test AX12
 //			actionneurs.communiquer(String.valueOf(o.ordinal()));
 			Sleep.sleep(200);
 		}

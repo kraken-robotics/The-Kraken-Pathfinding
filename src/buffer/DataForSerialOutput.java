@@ -390,19 +390,17 @@ public class DataForSerialOutput implements Service
 	{
 		byte[] out = new byte[2+2];
 		out[COMMANDE] = SerialProtocol.OUT_ACTIONNEUR.code;
-		out[PARAM] = (byte) (0); // TODO
+		out[PARAM] = (byte) (0); // TODO protocole AX12
 		bufferBassePriorite.add(out);
 		notify();
 	}
 
-	public synchronized void asserVitesse(int vitesseGauche, int vitesseDroite)
+	public synchronized void asserVitesse(int vitesseMax)
 	{
-		byte[] out = new byte[2+5];
+		byte[] out = new byte[2+3];
 		out[COMMANDE] = SerialProtocol.OUT_VITESSE.code;
-		out[PARAM] = (byte) (vitesseGauche >> 8);
-		out[PARAM + 1] = (byte) (vitesseGauche & 0xFF);
-		out[PARAM + 2] = (byte) (vitesseDroite >> 8);
-		out[PARAM + 3] = (byte) (vitesseDroite & 0xFF);
+		out[PARAM] = (byte) (vitesseMax >> 8);
+		out[PARAM + 1] = (byte) (vitesseMax & 0xFF);
 		bufferBassePriorite.add(out);
 		notify();
 	}
@@ -446,20 +444,23 @@ public class DataForSerialOutput implements Service
 			out[PARAM] = (byte) ((arc.arcselems[i].point.x+1500) >> 4);
 			out[PARAM+1] = (byte) (((arc.arcselems[i].point.x+1500) << 4) + (arc.arcselems[i].point.y >> 8));
 			out[PARAM+2] = (byte) (arc.arcselems[i].point.y);
-			long theta = Math.round(arc.arcselems[i].theta*1000);
-			while(theta < 0)
-				theta += (long)(2*Math.PI*1000);
+			double angle = arc.arcselems[i].theta;
 			if(!arc.marcheAvant)
-				theta += (long)(Math.PI*1000);
-			theta %= (long)(2*Math.PI*1000);
-			// TODO plus propre
+				angle += Math.PI;
+		
+			angle %= 2*Math.PI;
+			if(angle < 0)
+				angle += 2*Math.PI; // il faut toujours envoyer des nombres positifs
+
+			long theta = (long) (angle*1000);
+
 			out[PARAM+3] = (byte) (theta >> 8);
 			out[PARAM+3] = (byte) theta;
 			out[PARAM+4] = (byte) (Math.round(arc.arcselems[i].theta*1000));
 			out[PARAM+5] = (byte) (Math.round(arc.arcselems[i].courbure*1000) >> 8);
 			out[PARAM+6] = (byte) (Math.round(arc.arcselems[i].courbure*1000));
 			
-			// TODO
+			// TODO envoi de trajectoire courbe
 			arc.vitesse = 10;
 			if(arc.marcheAvant)
 				out[PARAM+7] = (byte) (Math.round(arc.vitesse));

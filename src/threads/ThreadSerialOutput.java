@@ -43,6 +43,7 @@ public class ThreadSerialOutput extends Thread implements Service
 					message = data.poll();
 				}
 				serie.communiquer(message);
+				// TODO : vérifier si on peut virer le sleep
 				Sleep.sleep(5); // il faut un peu laisser la STM respirer…
 			} catch (InterruptedException e) {
 				e.printStackTrace();
