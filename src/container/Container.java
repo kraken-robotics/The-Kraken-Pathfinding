@@ -14,12 +14,14 @@ import buffer.DataForSerialOutput;
 import buffer.IncomingDataBuffer;
 import debug.IncomingDataDebugBuffer;
 import pathfinding.CheminPathfinding;
+import pathfinding.CheminPlanif;
 import pathfinding.RealGameState;
 import pathfinding.astarCourbe.AStarCourbe;
 import pathfinding.astarCourbe.AStarCourbeArcManager;
 import pathfinding.astarCourbe.AStarCourbeDynamique;
 import pathfinding.astarCourbe.AStarCourbeMemoryManager;
 import pathfinding.astarCourbe.ClothoidesComputer;
+import pathfinding.astarCourbe.HeuristiqueSimple;
 import pathfinding.dstarlite.DStarLite;
 import pathfinding.dstarlite.GridSpace;
 import hook.HookFactory;
@@ -53,7 +55,7 @@ import robot.RobotReal;
 public class Container
 {
 
-	// liste des services déjà instanciés. Contient au moins Config et Log. Les autres services appelables seront présents s'ils ont déjà étés appellés au moins une fois
+	// liste des services déjà instanciés. Contient au moins Config et Log. Les autres services appelables seront présents quand ils auront été appelés
 	private Service[] instanciedServices = new Service[ServiceNames.values().length];
 	
 	//gestion des log
@@ -63,7 +65,7 @@ public class Container
 	private static int nbInstances = 0;
 	private boolean threadsStarted = false;
 	
-	private static final boolean showGraph = false;
+	private static final boolean showGraph = true;
 	private FileWriter fw;
 
 	/**
@@ -148,19 +150,18 @@ public class Container
 		
 		Obstacle.setLog(log);
 		Obstacle.useConfig(config);
-		
-		startAllThreads();
-		
+				
 		if(showGraph)
 		{
 			try {
 				fw = new FileWriter(new File("dependances.dot"));
 				fw.write("digraph dependancesJava {\n");
-				
-			} catch (IOException e) {
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
+		
+		startAllThreads();
 	}
 	
 	public Service getService(ServiceNames serviceTo) throws ContainerException, PointSortieException
@@ -174,8 +175,8 @@ public class Container
 		if(showGraph && !serviceTo.equals(ServiceNames.LOG))
 		{
 			ArrayList<ServiceNames> postponed = new ArrayList<ServiceNames>();
-			postponed.add(ServiceNames.CAPTEURS);
 			ArrayList<ServiceNames> ok = new ArrayList<ServiceNames>();
+			ok.add(ServiceNames.CAPTEURS);
 			ok.add(ServiceNames.CONFIG);
 			ok.add(ServiceNames.SERIE_STM);
 			ok.add(ServiceNames.TABLE);
@@ -184,7 +185,8 @@ public class Container
 			ok.add(ServiceNames.INCOMING_DATA_BUFFER);
 			ok.add(ServiceNames.SERIAL_OUTPUT_BUFFER);
 			ok.add(ServiceNames.REQUETE_STM);
-			ok.add(ServiceNames.A_STAR_COURBE_MEMORY_MANAGER);
+			ok.add(ServiceNames.A_STAR_COURBE_MEMORY_MANAGER_DYN);
+			ok.add(ServiceNames.A_STAR_COURBE_MEMORY_MANAGER_PLANIF);
 			ok.add(ServiceNames.D_STAR_LITE);
 			ok.add(ServiceNames.CLOTHOIDES_COMPUTER);
 			ok.add(ServiceNames.OBSTACLES_MEMORY);
@@ -323,24 +325,35 @@ public class Container
 			instanciedServices[serviceRequested.ordinal()] = (Service)new MoteurPhysique((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG)); 		
 		else if(serviceRequested == ServiceNames.A_STAR_COURBE_PLANIFICATION)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new AStarCourbe((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
-																					(AStarCourbeArcManager)getServiceDisplay(serviceRequested, ServiceNames.A_STAR_COURBE_ARC_MANAGER),
+																					(AStarCourbeArcManager)getServiceDisplay(serviceRequested, ServiceNames.A_STAR_COURBE_ARC_MANAGER_PLANIF),
 																					(RealGameState)getServiceDisplay(serviceRequested, ServiceNames.REAL_GAME_STATE),
-																					(AStarCourbeMemoryManager)getServiceDisplay(serviceRequested, ServiceNames.A_STAR_COURBE_MEMORY_MANAGER),
-																					null, null);
+																					(AStarCourbeMemoryManager)getServiceDisplay(serviceRequested, ServiceNames.A_STAR_COURBE_MEMORY_MANAGER_PLANIF),
+																					(CheminPlanif)getServiceDisplay(serviceRequested, ServiceNames.CHEMIN_PLANIF));
 		else if(serviceRequested == ServiceNames.A_STAR_COURBE_DYNAMIQUE)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new AStarCourbeDynamique((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
 																					(DStarLite)getServiceDisplay(serviceRequested, ServiceNames.D_STAR_LITE),
-																					(AStarCourbeArcManager)getServiceDisplay(serviceRequested, ServiceNames.A_STAR_COURBE_ARC_MANAGER),
+																					(AStarCourbeArcManager)getServiceDisplay(serviceRequested, ServiceNames.A_STAR_COURBE_ARC_MANAGER_DYN),
 																					(RealGameState)getServiceDisplay(serviceRequested, ServiceNames.REAL_GAME_STATE),
 																					(CheminPathfinding)getServiceDisplay(serviceRequested, ServiceNames.CHEMIN_PATHFINDING),
-																					(AStarCourbeMemoryManager)getServiceDisplay(serviceRequested, ServiceNames.A_STAR_COURBE_MEMORY_MANAGER));
-		else if(serviceRequested == ServiceNames.A_STAR_COURBE_MEMORY_MANAGER)
+																					(AStarCourbeMemoryManager)getServiceDisplay(serviceRequested, ServiceNames.A_STAR_COURBE_MEMORY_MANAGER_DYN));
+		else if(serviceRequested == ServiceNames.CHEMIN_PLANIF)
+			instanciedServices[serviceRequested.ordinal()] = (Service)new CheminPlanif((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG));
+		else if(serviceRequested == ServiceNames.A_STAR_COURBE_MEMORY_MANAGER_PLANIF)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new AStarCourbeMemoryManager((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
 																								   (RealGameState)getServiceDisplay(serviceRequested, ServiceNames.REAL_GAME_STATE));
-		else if(serviceRequested == ServiceNames.A_STAR_COURBE_ARC_MANAGER)
+		else if(serviceRequested == ServiceNames.A_STAR_COURBE_MEMORY_MANAGER_DYN)
+			instanciedServices[serviceRequested.ordinal()] = (Service)new AStarCourbeMemoryManager((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
+																								   (RealGameState)getServiceDisplay(serviceRequested, ServiceNames.REAL_GAME_STATE));
+		else if(serviceRequested == ServiceNames.A_STAR_COURBE_ARC_MANAGER_DYN)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new AStarCourbeArcManager((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
 																								(MoteurPhysique)getServiceDisplay(serviceRequested, ServiceNames.MOTEUR_PHYSIQUE),
-																								(DStarLite)getServiceDisplay(serviceRequested, ServiceNames.D_STAR_LITE));
+																								(DStarLite)getServiceDisplay(serviceRequested, ServiceNames.D_STAR_LITE),
+																								(ClothoidesComputer)getServiceDisplay(serviceRequested, ServiceNames.CLOTHOIDES_COMPUTER));
+		else if(serviceRequested == ServiceNames.A_STAR_COURBE_ARC_MANAGER_PLANIF)
+			instanciedServices[serviceRequested.ordinal()] = (Service)new AStarCourbeArcManager((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
+																								(MoteurPhysique)getServiceDisplay(serviceRequested, ServiceNames.MOTEUR_PHYSIQUE),
+																								new HeuristiqueSimple(),
+																								(ClothoidesComputer)getServiceDisplay(serviceRequested, ServiceNames.CLOTHOIDES_COMPUTER));
 		else if(serviceRequested == ServiceNames.CLOTHOIDES_COMPUTER)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ClothoidesComputer((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG));
 		// si le service demandé n'est pas connu, alors on log une erreur.

@@ -1,7 +1,5 @@
 package pathfinding.astarCourbe;
 
-import java.util.Collection;
-
 import exceptions.PathfindingException;
 import pathfinding.CheminPathfinding;
 import pathfinding.RealGameState;
@@ -18,7 +16,7 @@ public class AStarCourbeDynamique extends AStarCourbe
 
 	public AStarCourbeDynamique(Log log, DStarLite dstarlite, AStarCourbeArcManager arcmanager, RealGameState state, CheminPathfinding chemin, AStarCourbeMemoryManager memorymanager)
 	{
-		super(log, arcmanager, state, memorymanager, dstarlite, chemin);
+		super(log, arcmanager, state, memorymanager, chemin);
 		this.dstarlite = dstarlite;
 	}
 	

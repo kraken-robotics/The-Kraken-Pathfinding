@@ -20,7 +20,8 @@ public class AStarCourbeArcManager implements Service
 {
 	protected Log log;
 	private MoteurPhysique moteur;
-	private DStarLite dstarlite;
+	private HeuristiqueCourbe heuristique;
+	private ClothoidesComputer clotho;
 	
 	private AStarCourbeNode current;
 	private int courbureMax;
@@ -29,11 +30,11 @@ public class AStarCourbeArcManager implements Service
 	private int iterator;
 	private VitesseCourbure vitesseActuelle;
 	
-	public AStarCourbeArcManager(Log log, MoteurPhysique moteur, DStarLite dstarlite)
+	public AStarCourbeArcManager(Log log, MoteurPhysique moteur, HeuristiqueCourbe heuristique, ClothoidesComputer clotho)
 	{
 		this.log = log;
 		this.moteur = moteur;
-		this.dstarlite = dstarlite;
+		this.heuristique = heuristique;
 	}
 	
 	/**
@@ -78,6 +79,7 @@ public class AStarCourbeArcManager implements Service
 		current.state.copyAStarCourbe(successeur.state);
     	iterator++;
 		vitesseActuelle = VitesseCourbure.values[iterator];
+//		clotho.
     }
     
     private final boolean acceptable()
@@ -124,7 +126,7 @@ public class AStarCourbeArcManager implements Service
 
 	public int heuristicCost(AStarCourbeNode successeur)
 	{
-		return dstarlite.heuristicCostCourbe(successeur.state.robot.getPosition());
+		return heuristique.heuristicCostCourbe(successeur.state.robot.getPosition());
 	}
 
 }

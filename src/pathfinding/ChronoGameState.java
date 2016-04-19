@@ -1,6 +1,7 @@
 package pathfinding;
 
 import obstacles.memory.ObstaclesIteratorFutur;
+import robot.Robot;
 import robot.RobotChrono;
 import exceptions.FinMatchException;
 import table.Table;
@@ -20,6 +21,7 @@ public class ChronoGameState extends GameState
 {
     public final ObstaclesIteratorFutur iterator;
     protected Log log;
+	public RobotChrono robot;
 
     public ChronoGameState(Log log, RobotChrono robot, ObstaclesIteratorFutur iterator, Table table)
     {

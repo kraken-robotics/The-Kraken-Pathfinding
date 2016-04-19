@@ -72,6 +72,11 @@ public class RobotChrono extends Robot
 		RobotChrono.tempsMax = tempsMax;
 	}
 	
+	public boolean estArrive(RobotChrono autre)
+	{
+		return position.squaredDistance(autre.position) < 50*50; // TODO prendre en compte l'orientation, la courbure, ...
+	}
+	
 	@Override
     public void avancer(int distance, ArrayList<Hook> hooks, boolean mur) throws FinMatchException
 	{

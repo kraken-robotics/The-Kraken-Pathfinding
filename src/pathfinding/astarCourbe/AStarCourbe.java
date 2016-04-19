@@ -6,14 +6,13 @@ import java.util.PriorityQueue;
 
 import pathfinding.RealGameState;
 import pathfinding.dstarlite.GridSpace;
-import permissions.ReadOnly;
 import container.Service;
 import exceptions.FinMatchException;
 import robot.DirectionStrategy;
+import robot.RobotChrono;
 import tests.graphicLib.Fenetre;
 import utils.Config;
 import utils.Log;
-import utils.Vec2;
 
 /**
  * AStar* simplifié, qui lisse le résultat du D* Lite et fournit une trajectoire courbe
@@ -32,7 +31,7 @@ public class AStarCourbe implements Service
 	protected RealGameState state;
 	protected AStarCourbeMemoryManager memorymanager;
 	protected Fenetre fenetre;
-	protected Vec2<ReadOnly> arrivee;
+	protected RobotChrono arrivee;
 	protected AStarCourbeNode depart;
 	protected Collection<ArcCourbe> chemin;
 
@@ -48,12 +47,12 @@ public class AStarCourbe implements Service
 		}
 	}
 
-	private PriorityQueue<AStarCourbeNode> openset = new PriorityQueue<AStarCourbeNode>(GridSpace.NB_POINTS, new AStarCourbeNodeComparator());
+	private final PriorityQueue<AStarCourbeNode> openset = new PriorityQueue<AStarCourbeNode>(GridSpace.NB_POINTS, new AStarCourbeNodeComparator());
 
 	/**
 	 * Constructeur du AStarCourbe
 	 */
-	public AStarCourbe(Log log, AStarCourbeArcManager arcmanager, RealGameState state, AStarCourbeMemoryManager memorymanager, HeuristiqueCourbe heuristique, Collection<ArcCourbe> chemin)
+	public AStarCourbe(Log log, AStarCourbeArcManager arcmanager, RealGameState state, AStarCourbeMemoryManager memorymanager, Collection<ArcCourbe> chemin)
 	{
 		this.log = log;
 		this.arcmanager = arcmanager;
@@ -66,8 +65,9 @@ public class AStarCourbe implements Service
 			fenetre = Fenetre.getInstance();
 	}
 
-	protected void printChemin()
+	protected final void printChemin()
 	{
+		// TODO affichage
 //		ArcCourbe[] cheminAff = cheminContainer.get();	
 //		for(ArcCourbe arc : cheminAff)
 //			fenetre.setColor(arc.getGridpointArrivee(), Fenetre.Couleur.VIOLET);
@@ -79,7 +79,7 @@ public class AStarCourbe implements Service
 	 * @param depart
 	 * @return
 	 */
-	protected Collection<ArcCourbe> process()
+	protected final Collection<ArcCourbe> process()
 	{
 		depart.came_from = null;
 		depart.g_score = 0;
@@ -103,7 +103,7 @@ public class AStarCourbe implements Service
 			}
 			
 			// Si on est arrivé, on reconstruit le chemin
-			if(current.state.robot.getPosition().squaredDistance(arrivee) < 50*50)
+			if(current.state.robot.estArrive(arrivee))
 			{
 				partialReconstruct(current, true);
 				memorymanager.empty();
@@ -157,7 +157,7 @@ public class AStarCourbe implements Service
 	 * @param best
 	 * @param last
 	 */
-	private void partialReconstruct(AStarCourbeNode best, boolean last)
+	private final void partialReconstruct(AStarCourbeNode best, boolean last)
 	{
 		synchronized(chemin)
 		{
@@ -182,6 +182,10 @@ public class AStarCourbe implements Service
 	public void useConfig(Config config)
 	{}
 		
+	/**
+	 * Redéfini par l'AStar dynamique
+	 * @return
+	 */
 	protected boolean doitFixerCheminPartiel()
 	{
 		return false;
