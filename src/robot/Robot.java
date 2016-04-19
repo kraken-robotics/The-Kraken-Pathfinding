@@ -135,6 +135,10 @@ public abstract class Robot implements Service
         return orientation;
     }
 
+    public boolean isMarcheAvant()
+    {
+    	return enMarcheAvant;
+    }
 
 	/**
 	 * Tourne par rapport à l'angle actuel.

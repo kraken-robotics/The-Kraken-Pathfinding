@@ -2,7 +2,6 @@ package pathfinding.astarCourbe;
 
 import obstacles.MoteurPhysique;
 import pathfinding.VitesseCourbure;
-import pathfinding.dstarlite.DStarLite;
 import robot.DirectionStrategy;
 import container.Service;
 import utils.Config;
@@ -57,6 +56,9 @@ public class AStarCourbeArcManager implements Service
 	 */
 	public int distanceTo(AStarCourbeNode node)
 	{
+		// TODO : vérifier les hooks
+		// TODO : vitesse
+		return (int) (ClothoidesComputer.DISTANCE_ARC_COURBE * 1.);
 		// TODO : si, il faut les exécuter
 		/*
 		 * Il n'y a pas d'utilisation de hook.
@@ -68,18 +70,18 @@ public class AStarCourbeArcManager implements Service
 //		long temps_debut = node.state.robot.getTempsDepuisDebutMatch();
 //		node.state.robot.suitArcCourbe(node.came_from_arc);
 //		return (int)(node.state.robot.getTempsDepuisDebutMatch() - temps_debut);
-		return 1000;
 	}
 
 
     public void next(AStarCourbeNode successeur)
     {
-    	successeur.came_from = current;
-    	successeur.came_from_arc.vitesseCourbure = VitesseCourbure.values[iterator];
 		current.state.copyAStarCourbe(successeur.state);
     	iterator++;
 		vitesseActuelle = VitesseCourbure.values[iterator];
-//		clotho.
+		if(current.came_from_arc != null)
+			clotho.getTrajectoire(current.came_from_arc, VitesseCourbure.values[iterator], successeur.came_from_arc);
+		else // pas de prédécesseur
+			clotho.getTrajectoire(current.state.robot, VitesseCourbure.values[iterator], successeur.came_from_arc);
     }
     
     private final boolean acceptable()

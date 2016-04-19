@@ -8,13 +8,17 @@ import org.junit.Test;
 
 import container.ServiceNames;
 import pathfinding.CheminPathfinding;
+import pathfinding.ChronoGameState;
+import pathfinding.RealGameState;
 import pathfinding.VitesseCourbure;
 import pathfinding.astarCourbe.AStarCourbe;
+import pathfinding.astarCourbe.AStarCourbeDynamique;
 import pathfinding.astarCourbe.ArcCourbe;
 import pathfinding.astarCourbe.ClothoidesComputer;
 import pathfinding.dstarlite.DStarLite;
 import pathfinding.dstarlite.GridSpace;
 import permissions.ReadOnly;
+import robot.DirectionStrategy;
 import robot.RobotReal;
 import tests.graphicLib.Fenetre;
 import utils.Config;
@@ -30,21 +34,32 @@ import utils.Vec2;
 public class JUnit_Pathfinding extends JUnit_Test {
 
 	private DStarLite pathfinding;
-	private AStarCourbe pathfindingCourbe;
+	private AStarCourbeDynamique pathfindingCourbeDyn;
+	private AStarCourbe pathfindingCourbePlanif;
 	private CheminPathfinding chemin;
 	private RobotReal robot;
 	private GridSpace gridspace;
+	private RealGameState state;
 	
 	@Before
     public void setUp() throws Exception {
         super.setUp();
         pathfinding = (DStarLite) container.getService(ServiceNames.D_STAR_LITE);
-        pathfindingCourbe = (AStarCourbe) container.getService(ServiceNames.A_STAR_COURBE_DYNAMIQUE);
+        pathfindingCourbeDyn = (AStarCourbeDynamique) container.getService(ServiceNames.A_STAR_COURBE_DYNAMIQUE);
+        pathfindingCourbePlanif = (AStarCourbe) container.getService(ServiceNames.A_STAR_COURBE_PLANIFICATION);
         chemin = (CheminPathfinding) container.getService(ServiceNames.CHEMIN_PATHFINDING);
         robot = (RobotReal) container.getService(ServiceNames.ROBOT_REAL);
+        state = (RealGameState) container.getService(ServiceNames.REAL_GAME_STATE);
         gridspace = (GridSpace) container.getService(ServiceNames.GRID_SPACE);
 	}
 
+	@Test
+    public void test_pathfinding_planif() throws Exception
+    {
+		ChronoGameState arrivee = state.cloneGameState();
+		arrivee.robot.avancer(500);
+		pathfindingCourbePlanif.computeNewPath(state.cloneGameState(), arrivee, true, DirectionStrategy.FASTEST);
+    }
 	
 	@Test
     public void test_clotho() throws Exception

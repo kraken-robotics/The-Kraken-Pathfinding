@@ -12,6 +12,7 @@ import obstacles.types.ObstacleRectangular;
 import pathfinding.VitesseCourbure;
 import permissions.ReadOnly;
 import permissions.ReadWrite;
+import robot.RobotChrono;
 import tests.graphicLib.Fenetre;
 import utils.Config;
 import utils.Log;
@@ -114,6 +115,12 @@ public class ClothoidesComputer implements Service
 		getTrajectoire(last.point.getReadOnly(), depart.marcheAvant, last.theta, last.courbure, vitesse, modified);
 	}
 	
+	public final void getTrajectoire(RobotChrono robot, VitesseCourbure vitesse, ArcCourbe modified)
+	{
+		getTrajectoire(robot.getPosition(), robot.isMarcheAvant(), robot.getOrientation(), robot.getCourbure(), vitesse, modified);
+	}
+
+	
 	/**
 	 * ATTENTION ! La courbure est en m^-1 et pas en mm^-1
 	 * En effet, comme le rayon de courbure sera souvent plus petit que le mètre, on aura une courbure souvent plus grande que 1
@@ -125,7 +132,7 @@ public class ClothoidesComputer implements Service
 	 * @param distance
 	 * @return
 	 */
-	public void getTrajectoire(Vec2<ReadOnly> position, boolean marcheAvant, double orientation, double courbure, VitesseCourbure vitesse, ArcCourbe modified)
+	public final void getTrajectoire(Vec2<ReadOnly> position, boolean marcheAvant, double orientation, double courbure, VitesseCourbure vitesse, ArcCourbe modified)
 	{
 		if(vitesse.rebrousse)
 		{

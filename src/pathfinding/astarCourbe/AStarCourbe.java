@@ -4,15 +4,19 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.PriorityQueue;
 
+import pathfinding.ChronoGameState;
 import pathfinding.RealGameState;
 import pathfinding.dstarlite.GridSpace;
+import permissions.ReadOnly;
 import container.Service;
 import exceptions.FinMatchException;
+import exceptions.PathfindingException;
 import robot.DirectionStrategy;
 import robot.RobotChrono;
 import tests.graphicLib.Fenetre;
 import utils.Config;
 import utils.Log;
+import utils.Vec2;
 
 /**
  * AStar* simplifié, qui lisse le résultat du D* Lite et fournit une trajectoire courbe
@@ -28,7 +32,7 @@ public class AStarCourbe implements Service
 	protected Log log;
 	protected HeuristiqueCourbe heuristique;
 	protected AStarCourbeArcManager arcmanager;
-	protected RealGameState state;
+//	protected RealGameState state;
 	protected AStarCourbeMemoryManager memorymanager;
 	protected Fenetre fenetre;
 	protected RobotChrono arrivee;
@@ -52,11 +56,11 @@ public class AStarCourbe implements Service
 	/**
 	 * Constructeur du AStarCourbe
 	 */
-	public AStarCourbe(Log log, AStarCourbeArcManager arcmanager, RealGameState state, AStarCourbeMemoryManager memorymanager, Collection<ArcCourbe> chemin)
+	public AStarCourbe(Log log, AStarCourbeArcManager arcmanager, AStarCourbeMemoryManager memorymanager, Collection<ArcCourbe> chemin)
 	{
 		this.log = log;
 		this.arcmanager = arcmanager;
-		this.state = state;
+//		this.state = state;
 		this.memorymanager = memorymanager;
 		this.chemin = chemin;
 		depart = new AStarCourbeNode();
@@ -172,6 +176,20 @@ public class AStarCourbe implements Service
 //			chemin.setFinish(last);
 			chemin.notify(); // on prévient le thread d'évitement qu'un chemin est disponible
 		}
+	}
+	
+	public synchronized void computeNewPath(ChronoGameState stateDepart, ChronoGameState arrivee, boolean ejecteGameElement, DirectionStrategy directionstrategy) throws PathfindingException
+	{
+		this.directionstrategyactuelle = directionstrategy;
+		arcmanager.setEjecteGameElement(ejecteGameElement);
+		
+		depart.init();
+		stateDepart.copyAStarCourbe(depart.state);
+		
+		process();
+		
+		if(Config.graphicAStarCourbe)
+			printChemin();
 	}
 
 	@Override

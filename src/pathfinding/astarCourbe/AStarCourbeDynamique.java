@@ -13,10 +13,12 @@ import utils.Vec2;
 public class AStarCourbeDynamique extends AStarCourbe
 {
 	private DStarLite dstarlite;
-
+	private RealGameState state;
+	
 	public AStarCourbeDynamique(Log log, DStarLite dstarlite, AStarCourbeArcManager arcmanager, RealGameState state, CheminPathfinding chemin, AStarCourbeMemoryManager memorymanager)
 	{
-		super(log, arcmanager, state, memorymanager, chemin);
+		super(log, arcmanager, memorymanager, chemin);
+		this.state = state;
 		this.dstarlite = dstarlite;
 	}
 	

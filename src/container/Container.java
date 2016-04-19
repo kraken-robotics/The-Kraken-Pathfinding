@@ -65,7 +65,7 @@ public class Container
 	private static int nbInstances = 0;
 	private boolean threadsStarted = false;
 	
-	private static final boolean showGraph = true;
+	private static final boolean showGraph = false;
 	private FileWriter fw;
 
 	/**
@@ -326,7 +326,6 @@ public class Container
 		else if(serviceRequested == ServiceNames.A_STAR_COURBE_PLANIFICATION)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new AStarCourbe((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
 																					(AStarCourbeArcManager)getServiceDisplay(serviceRequested, ServiceNames.A_STAR_COURBE_ARC_MANAGER_PLANIF),
-																					(RealGameState)getServiceDisplay(serviceRequested, ServiceNames.REAL_GAME_STATE),
 																					(AStarCourbeMemoryManager)getServiceDisplay(serviceRequested, ServiceNames.A_STAR_COURBE_MEMORY_MANAGER_PLANIF),
 																					(CheminPlanif)getServiceDisplay(serviceRequested, ServiceNames.CHEMIN_PLANIF));
 		else if(serviceRequested == ServiceNames.A_STAR_COURBE_DYNAMIQUE)
