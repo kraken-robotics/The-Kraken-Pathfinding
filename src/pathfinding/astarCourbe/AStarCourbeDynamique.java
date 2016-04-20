@@ -4,12 +4,16 @@ import exceptions.PathfindingException;
 import pathfinding.CheminPathfinding;
 import pathfinding.RealGameState;
 import pathfinding.dstarlite.DStarLite;
-import permissions.ReadOnly;
 import robot.Cinematique;
 import robot.DirectionStrategy;
 import utils.Config;
 import utils.Log;
-import utils.Vec2;
+
+/**
+ * AStar courbe utilisé pour la replanification rapide
+ * @author pgimenez
+ *
+ */
 
 public class AStarCourbeDynamique extends AStarCourbe
 {

@@ -10,7 +10,7 @@ import pathfinding.ChronoGameState;
 
 public class AStarCourbeNode {
 
-	public ChronoGameState state; // TODO : inutile ?
+	public ChronoGameState state;
 	public int g_score;
 	public int f_score;
 	public AStarCourbeNode came_from;

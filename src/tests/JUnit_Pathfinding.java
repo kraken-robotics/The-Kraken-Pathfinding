@@ -8,6 +8,7 @@ import org.junit.Test;
 
 import container.ServiceNames;
 import pathfinding.CheminPathfinding;
+import pathfinding.CheminPlanif;
 import pathfinding.ChronoGameState;
 import pathfinding.RealGameState;
 import pathfinding.VitesseCourbure;
@@ -38,6 +39,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
 	private AStarCourbeDynamique pathfindingCourbeDyn;
 	private AStarCourbe pathfindingCourbePlanif;
 	private CheminPathfinding chemin;
+	private CheminPlanif cheminPlanif;
 	private RobotReal robot;
 	private GridSpace gridspace;
 	private RealGameState state;
@@ -49,6 +51,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
         pathfindingCourbeDyn = (AStarCourbeDynamique) container.getService(ServiceNames.A_STAR_COURBE_DYNAMIQUE);
         pathfindingCourbePlanif = (AStarCourbe) container.getService(ServiceNames.A_STAR_COURBE_PLANIFICATION);
         chemin = (CheminPathfinding) container.getService(ServiceNames.CHEMIN_PATHFINDING);
+        cheminPlanif = (CheminPlanif) container.getService(ServiceNames.CHEMIN_PLANIF);
         robot = (RobotReal) container.getService(ServiceNames.ROBOT_REAL);
         state = (RealGameState) container.getService(ServiceNames.REAL_GAME_STATE);
         gridspace = (GridSpace) container.getService(ServiceNames.GRID_SPACE);
@@ -60,7 +63,9 @@ public class JUnit_Pathfinding extends JUnit_Test {
 		Cinematique arrivee = new Cinematique();
 		arrivee.position.x = 1000;
 		arrivee.position.y = 500;
+		log.debug(cheminPlanif.size());
 		pathfindingCourbePlanif.computeNewPath(state.cloneGameState(), arrivee, true, DirectionStrategy.FASTEST);
+		log.debug(cheminPlanif.size());
     }
 	
 	@Test

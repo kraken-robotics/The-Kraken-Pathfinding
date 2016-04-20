@@ -33,7 +33,7 @@ public abstract class Robot implements Service
     public abstract void sleep(long duree, ArrayList<Hook> hooks) throws FinMatchException;
     public abstract long getTempsDepuisDebutMatch();
 
-    protected Cinematique cinematique;
+    protected Cinematique cinematique = new Cinematique();
     protected volatile boolean symetrie;
 	protected volatile boolean matchDemarre = false;
 	protected int pointsObtenus = 0;
@@ -211,6 +211,12 @@ public abstract class Robot implements Service
     public void sleep(long duree) throws FinMatchException
     {
     	sleep(duree, new ArrayList<Hook>());
+    }
+    
+    @Override
+    public String toString()
+    {
+    	return cinematique.toString();
     }
 
     

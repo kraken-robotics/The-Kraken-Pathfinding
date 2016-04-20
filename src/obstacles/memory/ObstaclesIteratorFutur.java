@@ -10,9 +10,7 @@ import utils.Log;
 
 public class ObstaclesIteratorFutur extends ObstaclesIterator
 {
-    private Log log;
-    private ObstaclesMemory memory;
-    
+   
     private int firstNotDead = 0;
     private long dateInit = -1;
 	

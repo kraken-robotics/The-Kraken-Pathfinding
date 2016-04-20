@@ -34,6 +34,7 @@ public class AStarCourbeArcManager implements Service
 		this.log = log;
 		this.moteur = moteur;
 		this.heuristique = heuristique;
+		this.clotho = clotho;
 	}
 	
 	/**
@@ -75,13 +76,18 @@ public class AStarCourbeArcManager implements Service
 
     public void next(AStarCourbeNode successeur)
     {
+    	log.debug(current+" "+successeur);
 		current.state.copyAStarCourbe(successeur.state);
     	iterator++;
 		vitesseActuelle = VitesseCourbure.values[iterator];
 		if(current.came_from_arc != null)
-			clotho.getTrajectoire(current.came_from_arc, VitesseCourbure.values[iterator], successeur.came_from_arc);
+			clotho.getTrajectoire(current.came_from_arc,
+					VitesseCourbure.values[iterator],
+					successeur.came_from_arc);
 		else // pas de prédécesseur
-			clotho.getTrajectoire(current.state.robot, VitesseCourbure.values[iterator], successeur.came_from_arc);
+			clotho.getTrajectoire(current.state.robot,
+					VitesseCourbure.values[iterator],
+					successeur.came_from_arc);
     }
     
     private final boolean acceptable()

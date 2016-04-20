@@ -25,7 +25,7 @@ public class Cinematique
 	 */
 	public boolean estProche(Cinematique autre)
 	{
-		return true; // TODO écrire
+		return position.squaredDistance(autre.position) < 50*50; // TODO écrire
 	}
 
 	/**
@@ -35,7 +35,7 @@ public class Cinematique
 	 */
 	public boolean estProcheUrgence(Cinematique autre)
 	{
-		return true; // TODO écrire
+		return position.squaredDistance(autre.position) < 50*50; // TODO écrire
 	}
 
 	/**
@@ -56,5 +56,11 @@ public class Cinematique
 	{
 		vitesseRotation = speed.rotationalSpeed;
 		vitesseTranslation = speed.translationalSpeed;
+	}
+	
+	@Override
+	public String toString()
+	{
+		return position+", "+orientation;
 	}
 }

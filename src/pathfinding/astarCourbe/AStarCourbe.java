@@ -19,6 +19,7 @@ import utils.Log;
  * AStar* simplifié, qui lisse le résultat du D* Lite et fournit une trajectoire courbe
  * On suppose qu'il n'y a jamais collision de noeuds
  * (je parle de collision dans le sens "égalité", pas "robot qui fonce dans le mur"…)
+ * Cette classe est utilisée tel quel pour la version "planification". La version "dynamique" est dans une autre classe.
  * @author pf
  *
  */
@@ -111,6 +112,7 @@ public class AStarCourbe implements Service
 			// Si on est arrivé, on reconstruit le chemin
 			if(current.state.robot.estArrive(arrivee))
 			{
+				log.debug("On est arrivé !");
 				partialReconstruct(current, true);
 				memorymanager.empty();
 				return chemin;
@@ -119,9 +121,10 @@ public class AStarCourbe implements Service
 			// On parcourt les voisins de current
 
 			arcmanager.reinitIterator(current, directionstrategyactuelle);
-			
+			log.debug("Traitement d'un noeud");
 			while(arcmanager.hasNext())
 			{
+				log.debug("Voisin");
 				if(doitFixerCheminPartiel())
 				{
 					partialReconstruct(current, false);
@@ -182,11 +185,15 @@ public class AStarCourbe implements Service
 	
 	public synchronized void computeNewPath(ChronoGameState stateDepart, Cinematique arrivee, boolean ejecteGameElement, DirectionStrategy directionstrategy) throws PathfindingException
 	{
+		log.debug("Recherche de chemin entre "+stateDepart.robot+" et "+arrivee);
 		this.directionstrategyactuelle = directionstrategy;
 		arcmanager.setEjecteGameElement(ejecteGameElement);
 		this.arrivee = arrivee;
 		depart.init();
-		stateDepart.copyAStarCourbe(depart.state);
+		if(depart.state == null)
+			depart.state = stateDepart.cloneGameState();
+		else
+			stateDepart.copyAStarCourbe(depart.state);
 		
 		process();
 		
