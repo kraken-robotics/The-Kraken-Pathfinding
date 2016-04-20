@@ -80,7 +80,7 @@ public class RobotChrono extends Robot
 	@Override
     public void avancer(int distance, ArrayList<Hook> hooks, boolean mur) throws FinMatchException
 	{
-		date += Math.abs(distance)*vitesse.invertedTranslationnalSpeed + sleepAvanceDuration;
+		date += Math.abs(distance)*cinematique.vitesse.invertedTranslationnalSpeed + sleepAvanceDuration;
 	
         Vec2<ReadWrite> ecart = new Vec2<ReadWrite>((int)(distance*Math.cos(orientation)), (int)(distance*Math.sin(orientation)));
 
@@ -94,7 +94,7 @@ public class RobotChrono extends Robot
 	@Override
 	public void setVitesse(Speed vitesse)
 	{
-	    this.vitesse = vitesse;
+		cinematique.vitesse = vitesse;
 //		date += approximateSerialLatency;
 	}
 	
@@ -126,7 +126,7 @@ public class RobotChrono extends Robot
 		// et la marche arrière automatique?
 		double delta = calculateDelta(angle);
 		orientation = angle;
-		date += delta*vitesse.invertedRotationnalSpeed + sleepTourneDuration;
+		date += delta*cinematique.vitesse.invertedRotationnalSpeed + sleepTourneDuration;
 	}
 
 /*	private void va_au_point_no_hook(Vec2<ReadOnly> point) throws FinMatchException
@@ -265,7 +265,7 @@ public class RobotChrono extends Robot
 	 */
 	public void inverseSensMarche()
 	{
-		enMarcheAvant = !enMarcheAvant;
+		cinematique.enMarcheAvant = !cinematique.enMarcheAvant;
 	}
 	
 

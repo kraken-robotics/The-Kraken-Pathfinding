@@ -3,7 +3,6 @@ package robot;
 import java.util.ArrayList;
 
 import permissions.ReadOnly;
-import permissions.ReadWrite;
 import hook.Hook;
 import container.Service;
 import exceptions.FinMatchException;
@@ -35,13 +34,9 @@ public abstract class Robot implements Service
     public abstract void sleep(long duree, ArrayList<Hook> hooks) throws FinMatchException;
     public abstract long getTempsDepuisDebutMatch();
 
-    protected volatile Vec2<ReadWrite> position = new Vec2<ReadWrite>();
-    protected volatile double orientation;
-    protected volatile double courbure;
-	protected volatile boolean symetrie;
-    protected volatile boolean enMarcheAvant;
+    protected Cinematique cinematique;
+    protected volatile boolean symetrie;
 	protected volatile boolean matchDemarre = false;
-	protected Speed vitesse;
 	protected int pointsObtenus = 0;
     protected volatile long dateDebutMatch;
     
@@ -51,7 +46,7 @@ public abstract class Robot implements Service
 	public Robot(Log log)
 	{
 		this.log = log;
-		vitesse = Speed.BETWEEN_SCRIPTS;
+		cinematique.vitesse = Speed.BETWEEN_SCRIPTS;
 	}
 
 	public RobotChrono cloneIntoRobotChrono()
@@ -68,12 +63,8 @@ public abstract class Robot implements Service
 	 */
     public final void copy(RobotChrono rc)
     {
+    	cinematique.copy(rc.cinematique);
     	// pas besoin de copier symétrie car elle ne change pas en cours de match
-    	Vec2.copy(position.getReadOnly(), rc.position);
-    	rc.orientation = orientation;
-    	rc.enMarcheAvant = enMarcheAvant;
-    	rc.courbure = courbure;
-    	rc.vitesse = vitesse;
     	rc.pointsObtenus = pointsObtenus;
     	rc.date = getTempsDepuisDebutMatch();
     	rc.positionGridSpace = getPositionGridSpace();
@@ -89,12 +80,13 @@ public abstract class Robot implements Service
 	 */
     public final void copyThetaStar(RobotChrono rc)
     {
-    	rc.orientation = orientation;
+    	// TODO utile ?
+/*    	rc.orientation = orientation;
     	rc.enMarcheAvant = enMarcheAvant;
     	rc.courbure = courbure;
     	rc.vitesse = vitesse;
     	rc.date = getTempsDepuisDebutMatch();
-    	rc.positionGridSpace = getPositionGridSpace();
+    	rc.positionGridSpace = getPositionGridSpace();*/
     }
     
 	public synchronized void updateConfig(Config config)
@@ -113,7 +105,7 @@ public abstract class Robot implements Service
 
 	public double getCourbure()
 	{
-		return courbure;
+		return cinematique.courbure;
 	}
 	
 	/**
@@ -122,22 +114,22 @@ public abstract class Robot implements Service
 	 */
 	public boolean isEnMarcheAvant()
 	{
-		return enMarcheAvant;
+		return cinematique.enMarcheAvant;
 	}
 	
     public Vec2<ReadOnly> getPosition()
     {
-        return position.getReadOnly();
+        return cinematique.position.getReadOnly();
     }
 
     public double getOrientation()
     {
-        return orientation;
+        return cinematique.orientation;
     }
 
     public boolean isMarcheAvant()
     {
-    	return enMarcheAvant;
+    	return cinematique.enMarcheAvant;
     }
 
 	/**
@@ -198,7 +190,7 @@ public abstract class Robot implements Service
      */
     public void avancerDansMur(int distance) throws UnableToMoveException, FinMatchException
     {
-        Speed sauv_vitesse = vitesse; 
+        Speed sauv_vitesse = cinematique.vitesse; 
         setVitesse(Speed.INTO_WALL);
         try {
         	avancer(distance, new ArrayList<Hook>(), true);

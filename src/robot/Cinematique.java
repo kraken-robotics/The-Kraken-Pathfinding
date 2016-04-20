@@ -3,13 +3,19 @@ package robot;
 import permissions.ReadWrite;
 import utils.Vec2;
 
+/**
+ * Une structure qui regroupe des infos de cinématique
+ * @author pf
+ *
+ */
+
 public class Cinematique
 {
 	public final Vec2<ReadWrite> position = new Vec2<ReadWrite>();
-	public double orientation;
-	public boolean enMarcheAvant;
-	public double courbure;
-	public Speed vitesse;
+	public volatile double orientation;
+	public volatile boolean enMarcheAvant;
+	public volatile double courbure;
+	public volatile Speed vitesse;
 	
 	/**
 	 * Renvoie vrai si this est proche de autre

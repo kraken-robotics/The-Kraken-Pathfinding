@@ -97,17 +97,17 @@ public class JUnit_Pathfinding extends JUnit_Test {
 				else if(a > 0)
 					System.out.println(arc[a-1].arcselems[ClothoidesComputer.NB_POINTS - 1].point.distance(arc[a].arcselems[0].point));
 	*/				
-				System.out.println(arc[a].arcselems[i].point+" "+arc[a].arcselems[i].courbure);
+				System.out.println(arc[a].arcselems[i].position+" "+arc[a].arcselems[i].courbure);
 				if(Config.graphicObstacles)
 				{
 					Sleep.sleep(100);
-					Fenetre.getInstance().addObstacleEnBiais(new ObstacleRectangular(arc[a].arcselems[i].point.getReadOnly(), 10, 10, 0));
+					Fenetre.getInstance().addObstacleEnBiais(new ObstacleRectangular(arc[a].arcselems[i].position.getReadOnly(), 10, 10, 0));
 				}
 			}
 			if(a == 0)
 			{
-				Assert.assertEquals(arc[0].arcselems[ClothoidesComputer.NB_POINTS - 1].point.x, 0);
-				Assert.assertEquals(arc[0].arcselems[ClothoidesComputer.NB_POINTS - 1].point.y, 1000+(int)ClothoidesComputer.DISTANCE_ARC_COURBE);
+				Assert.assertEquals(arc[0].arcselems[ClothoidesComputer.NB_POINTS - 1].position.x, 0);
+				Assert.assertEquals(arc[0].arcselems[ClothoidesComputer.NB_POINTS - 1].position.y, 1000+(int)ClothoidesComputer.DISTANCE_ARC_COURBE);
 			}
 			if(arc[a].vitesseCourbure.rebrousse)
 				Assert.assertEquals(arc[a].vitesseCourbure.vitesse / 1000. * ClothoidesComputer.DISTANCE_ARC_COURBE, arc[a].arcselems[ClothoidesComputer.NB_POINTS-1].courbure, 0.1);

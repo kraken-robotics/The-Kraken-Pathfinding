@@ -17,8 +17,8 @@ public class Vec2<T extends Permission> implements Serializable
 {
 	private static final long serialVersionUID = 1L;
 	public static final int coeffDirection = 1024; // le coefficient 1024 est là pour éviter une division bas niveau
-	public int x;
-	public int y;
+	public volatile int x;
+	public volatile int y;
 	
 	public Vec2()
 	{

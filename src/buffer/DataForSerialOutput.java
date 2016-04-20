@@ -441,10 +441,10 @@ public class DataForSerialOutput implements Service
 				out[COMMANDE] = SerialProtocol.OUT_SEND_ARC_ARRET.code;
 			else
 				out[COMMANDE] = SerialProtocol.OUT_SEND_ARC.code;
-			out[PARAM] = (byte) ((arc.arcselems[i].point.x+1500) >> 4);
-			out[PARAM+1] = (byte) (((arc.arcselems[i].point.x+1500) << 4) + (arc.arcselems[i].point.y >> 8));
-			out[PARAM+2] = (byte) (arc.arcselems[i].point.y);
-			double angle = arc.arcselems[i].theta;
+			out[PARAM] = (byte) ((arc.arcselems[i].position.x+1500) >> 4);
+			out[PARAM+1] = (byte) (((arc.arcselems[i].position.x+1500) << 4) + (arc.arcselems[i].position.y >> 8));
+			out[PARAM+2] = (byte) (arc.arcselems[i].position.y);
+			double angle = arc.arcselems[i].orientation;
 			if(!arc.marcheAvant)
 				angle += Math.PI;
 		
@@ -456,7 +456,7 @@ public class DataForSerialOutput implements Service
 
 			out[PARAM+3] = (byte) (theta >> 8);
 			out[PARAM+3] = (byte) theta;
-			out[PARAM+4] = (byte) (Math.round(arc.arcselems[i].theta*1000));
+			out[PARAM+4] = (byte) (Math.round(arc.arcselems[i].orientation*1000));
 			out[PARAM+5] = (byte) (Math.round(arc.arcselems[i].courbure*1000) >> 8);
 			out[PARAM+6] = (byte) (Math.round(arc.arcselems[i].courbure*1000));
 			

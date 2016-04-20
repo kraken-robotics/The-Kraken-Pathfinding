@@ -1,6 +1,7 @@
 package pathfinding.astarCourbe;
 
 import pathfinding.VitesseCourbure;
+import robot.Cinematique;
 
 /**
  * Un arc de trajectoire courbe.
@@ -10,7 +11,7 @@ import pathfinding.VitesseCourbure;
 
 public class ArcCourbe {
 
-	public ArcElem[] arcselems = new ArcElem[ClothoidesComputer.NB_POINTS];
+	public Cinematique[] arcselems = new Cinematique[ClothoidesComputer.NB_POINTS];
 	public double vitesse; // la vitesse à laquelle on souhaite parcourir l'arc.
 	// si cette vitesse est nulle, ça veut dire qu'on souhaite s'arrêter à la fin de l'arc
 	public VitesseCourbure vitesseCourbure; // la dérivée de la courbure
@@ -19,7 +20,7 @@ public class ArcCourbe {
 	public ArcCourbe()
 	{
 		for(int i = 0; i < ClothoidesComputer.NB_POINTS; i++)
-			arcselems[i] = new ArcElem();
+			arcselems[i] = new Cinematique();
 	}
 	
 	/**

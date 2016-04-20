@@ -12,6 +12,7 @@ import obstacles.types.ObstacleRectangular;
 import pathfinding.VitesseCourbure;
 import permissions.ReadOnly;
 import permissions.ReadWrite;
+import robot.Cinematique;
 import robot.RobotChrono;
 import tests.graphicLib.Fenetre;
 import utils.Config;
@@ -111,8 +112,8 @@ public class ClothoidesComputer implements Service
 
 	public void getTrajectoire(ArcCourbe depart, VitesseCourbure vitesse, ArcCourbe modified)
 	{
-		ArcElem last = depart.arcselems[NB_POINTS - 1];
-		getTrajectoire(last.point.getReadOnly(), depart.marcheAvant, last.theta, last.courbure, vitesse, modified);
+		Cinematique last = depart.arcselems[NB_POINTS - 1];
+		getTrajectoire(last.position.getReadOnly(), depart.marcheAvant, last.orientation, last.courbure, vitesse, modified);
 	}
 	
 	public final void getTrajectoire(RobotChrono robot, VitesseCourbure vitesse, ArcCourbe modified)
@@ -186,12 +187,12 @@ public class ClothoidesComputer implements Service
 						!vitesse.positif),
 					cos, sin),
 				position).getReadOnly(),
-			modified.arcselems[i].point);
+			modified.arcselems[i].position);
 
  			double orientationClotho = sDepart * sDepart;
  			if(!vitesse.positif)
  				orientationClotho = - orientationClotho;
-			modified.arcselems[i].theta = baseOrientation + orientationClotho;
+			modified.arcselems[i].orientation = baseOrientation + orientationClotho;
 			modified.arcselems[i].courbure = sDepart * vitesse.squaredRootVitesse;
  			if(!vitesse.positif)
  				modified.arcselems[i].courbure = - modified.arcselems[i].courbure;
@@ -238,9 +239,9 @@ public class ClothoidesComputer implements Service
 			cos = cos * cosSauv - tmp * sinSauv;
 			Vec2.copy(delta, deltaTmp);
 			Vec2.rotate(deltaTmp, cos, sin);
-			Vec2.copy(centreCercle, modified.arcselems[i].point);
-			Vec2.minus(modified.arcselems[i].point, deltaTmp);
-			modified.arcselems[i].theta = orientation + angle * (i + 1);
+			Vec2.copy(centreCercle, modified.arcselems[i].position);
+			Vec2.minus(modified.arcselems[i].position, deltaTmp);
+			modified.arcselems[i].orientation = orientation + angle * (i + 1);
 			modified.arcselems[i].courbure = courbure;
 		}
 	}
@@ -259,9 +260,9 @@ public class ClothoidesComputer implements Service
 		for(int i = 0; i < NB_POINTS; i++)
 		{
 			double distance = (i + 1) * PRECISION_TRACE * 1000;
-			modified.arcselems[i].point.x = (int) Math.round(position.x + distance * cos);
-			modified.arcselems[i].point.y = (int) Math.round(position.y + distance * sin);
-			modified.arcselems[i].theta = orientation;
+			modified.arcselems[i].position.x = (int) Math.round(position.x + distance * cos);
+			modified.arcselems[i].position.y = (int) Math.round(position.y + distance * sin);
+			modified.arcselems[i].orientation = orientation;
 			modified.arcselems[i].courbure = 0;
 			
 		}
