@@ -24,7 +24,7 @@ import utils.Log;
  *
  */
 
-public class AStarCourbe implements Service
+public abstract class AStarCourbe implements Service
 {
 	protected DirectionStrategy directionstrategyactuelle;
 	protected Log log;
@@ -180,24 +180,6 @@ public class AStarCourbe implements Service
 			chemin.notify(); // on prévient le thread d'évitement qu'un chemin est disponible
 		}
 	}
-	
-	public synchronized void computeNewPath(ChronoGameState stateDepart, Cinematique arrivee, boolean ejecteGameElement, DirectionStrategy directionstrategy) throws PathfindingException
-	{
-		log.debug("Recherche de chemin entre "+stateDepart.robot+" et "+arrivee);
-		this.directionstrategyactuelle = directionstrategy;
-		arcmanager.setEjecteGameElement(ejecteGameElement);
-		this.arrivee = arrivee;
-		depart.init();
-		if(depart.state == null)
-			depart.state = stateDepart.cloneGameState();
-		else
-			stateDepart.copyAStarCourbe(depart.state);
-		
-		process();
-		
-		if(Config.graphicAStarCourbe)
-			printChemin();
-	}
 
 	@Override
 	public void updateConfig(Config config)
@@ -207,13 +189,6 @@ public class AStarCourbe implements Service
 	public void useConfig(Config config)
 	{}
 		
-	/**
-	 * Redéfini par l'AStar dynamique
-	 * @return
-	 */
-	protected boolean doitFixerCheminPartiel()
-	{
-		return false;
-	}
+	protected abstract boolean doitFixerCheminPartiel();
 	
 }

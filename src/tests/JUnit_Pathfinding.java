@@ -14,6 +14,7 @@ import pathfinding.RealGameState;
 import pathfinding.VitesseCourbure;
 import pathfinding.astarCourbe.AStarCourbe;
 import pathfinding.astarCourbe.AStarCourbeDynamique;
+import pathfinding.astarCourbe.AStarCourbePlanif;
 import pathfinding.astarCourbe.ArcCourbe;
 import pathfinding.astarCourbe.ClothoidesComputer;
 import pathfinding.dstarlite.DStarLite;
@@ -37,7 +38,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
 
 	private DStarLite pathfinding;
 	private AStarCourbeDynamique pathfindingCourbeDyn;
-	private AStarCourbe pathfindingCourbePlanif;
+	private AStarCourbePlanif pathfindingCourbePlanif;
 	private CheminPathfinding chemin;
 	private CheminPlanif cheminPlanif;
 	private RobotReal robot;
@@ -49,7 +50,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
         super.setUp();
         pathfinding = (DStarLite) container.getService(ServiceNames.D_STAR_LITE);
         pathfindingCourbeDyn = (AStarCourbeDynamique) container.getService(ServiceNames.A_STAR_COURBE_DYNAMIQUE);
-        pathfindingCourbePlanif = (AStarCourbe) container.getService(ServiceNames.A_STAR_COURBE_PLANIFICATION);
+        pathfindingCourbePlanif = (AStarCourbePlanif) container.getService(ServiceNames.A_STAR_COURBE_PLANIFICATION);
         chemin = (CheminPathfinding) container.getService(ServiceNames.CHEMIN_PATHFINDING);
         cheminPlanif = (CheminPlanif) container.getService(ServiceNames.CHEMIN_PLANIF);
         robot = (RobotReal) container.getService(ServiceNames.ROBOT_REAL);

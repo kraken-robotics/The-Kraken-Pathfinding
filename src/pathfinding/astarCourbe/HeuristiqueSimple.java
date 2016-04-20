@@ -1,7 +1,10 @@
 package pathfinding.astarCourbe;
 
+import container.Service;
 import permissions.ReadOnly;
 import permissions.ReadWrite;
+import utils.Config;
+import utils.Log;
 import utils.Vec2;
 
 /**
@@ -11,10 +14,16 @@ import utils.Vec2;
  *
  */
 
-public class HeuristiqueSimple implements HeuristiqueCourbe
+public class HeuristiqueSimple implements HeuristiqueCourbe, Service
 {
 	private Vec2<ReadWrite> arrivee = new Vec2<ReadWrite>();
+	protected Log log;
 
+	public HeuristiqueSimple(Log log)
+	{
+		this.log = log;
+	}
+	
 	public void setPositionArrivee(Vec2<ReadOnly> arrivee)
 	{
 		Vec2.copy(arrivee, this.arrivee);
@@ -25,5 +34,13 @@ public class HeuristiqueSimple implements HeuristiqueCourbe
 	{
 		return (int) arrivee.distance(position);
 	}
+
+	@Override
+	public void updateConfig(Config config)
+	{}
+
+	@Override
+	public void useConfig(Config config)
+	{}
 
 }

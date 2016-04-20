@@ -50,8 +50,11 @@ public class ClothoidesComputer implements Service
 		}
 	}
 	
-	// Calcul grâce au développement limité d'Euler
-	// Génère la courbe pour laquelle s = courbure
+	/**
+	 * Calcul grâce au développement limité d'Euler
+	 * Génère le point de la clothoïde unitaire de courbure = s
+	 * @param s
+	 */
 	private void calculeXY(BigDecimal s)
 	{
 		x = s;
@@ -96,7 +99,9 @@ public class ClothoidesComputer implements Service
 		x = x.multiply(new BigDecimal(1000));
 	}
 	
-	// Calcule, une fois pour toutes, les clothoïdes
+	/**
+	 * Calcule, une fois pour toutes, les points de la clothoïde unitaire
+	 */
 	private void init()
 	{
 		for(int s = 0; s < 2 * INDICE_MAX - 1; s++)
@@ -120,7 +125,6 @@ public class ClothoidesComputer implements Service
 	{
 		getTrajectoire(robot.getCinematique(), vitesse, modified);
 	}
-
 	
 	/**
 	 * ATTENTION ! La courbure est en m^-1 et pas en mm^-1
@@ -133,30 +137,30 @@ public class ClothoidesComputer implements Service
 	 * @param distance
 	 * @return
 	 */
-	public final void getTrajectoire(Cinematique c, VitesseCourbure vitesse, ArcCourbe modified)
+	public final void getTrajectoire(Cinematique cinematiqueInitiale, VitesseCourbure vitesse, ArcCourbe modified)
 	{
 		if(vitesse.rebrousse)
 		{
-			c.courbure = 0;
-			c.orientation += Math.PI;
-			modified.arcselems[0].enMarcheAvant = !c.enMarcheAvant;
+			cinematiqueInitiale.courbure = 0;
+			cinematiqueInitiale.orientation += Math.PI;
+			modified.arcselems[0].enMarcheAvant = !cinematiqueInitiale.enMarcheAvant;
 		}
 		else
-			modified.arcselems[0].enMarcheAvant = c.enMarcheAvant;
+			modified.arcselems[0].enMarcheAvant = cinematiqueInitiale.enMarcheAvant;
 		modified.vitesseCourbure = vitesse;
 		
 		// si la dérivée de la courbure est nulle, on est dans le cas particulier d'une trajectoire rectiligne ou circulaire
 		if(vitesse.vitesse == 0)
 		{
-			if(c.courbure < 0.00001 && c.courbure > -0.00001)
-				getTrajectoireLigneDroite(c.position.getReadOnly(), c.orientation, modified);
+			if(cinematiqueInitiale.courbure < 0.00001 && cinematiqueInitiale.courbure > -0.00001)
+				getTrajectoireLigneDroite(cinematiqueInitiale.position.getReadOnly(), cinematiqueInitiale.orientation, modified);
 			else
-				getTrajectoireCirculaire(c.position.getReadOnly(), c.orientation, c.courbure, modified);
+				getTrajectoireCirculaire(cinematiqueInitiale.position.getReadOnly(), cinematiqueInitiale.orientation, cinematiqueInitiale.courbure, modified);
 			return;
 		}
 		
 		double coeffMultiplicatif = 1. / vitesse.squaredRootVitesse;
-		double sDepart = c.courbure / vitesse.squaredRootVitesse; // sDepart peut parfaitement être négatif
+		double sDepart = cinematiqueInitiale.courbure / vitesse.squaredRootVitesse; // sDepart peut parfaitement être négatif
 		if(!vitesse.positif)
 			sDepart = -sDepart;
 		int pointDepart = (int) Math.round(sDepart / PRECISION_TRACE) + INDICE_MAX - 1;
@@ -164,7 +168,7 @@ public class ClothoidesComputer implements Service
 		if(!vitesse.positif)
 			orientationClothoDepart = - orientationClothoDepart;
 			
-		double baseOrientation = c.orientation - orientationClothoDepart;
+		double baseOrientation = cinematiqueInitiale.orientation - orientationClothoDepart;
 		double cos = Math.cos(baseOrientation);
 		double sin = Math.sin(baseOrientation);
 
@@ -186,7 +190,7 @@ public class ClothoidesComputer implements Service
 							coeffMultiplicatif),
 						!vitesse.positif),
 					cos, sin),
-				c.position).getReadOnly(),
+				cinematiqueInitiale.position).getReadOnly(),
 			modified.arcselems[i].position);
 
  			double orientationClotho = sDepart * sDepart;
@@ -276,6 +280,9 @@ public class ClothoidesComputer implements Service
 	public void useConfig(Config config)
 	{}
 
+	/**
+	 * Sauvegarde les points de la clothoïde unitaire
+	 */
     private void sauvegardePoints()
     {
     	log.debug("Sauvegarde des points de la clothoïde");
@@ -300,7 +307,11 @@ public class ClothoidesComputer implements Service
         }
     }
 	
-    @SuppressWarnings("unchecked")
+    /**
+     * Chargement des points de la clothoïde unitaire
+     * @return
+     */
+	@SuppressWarnings("unchecked")
 	private boolean chargePoints()
     {
     	log.debug("Chargement des points de la clothoïde");

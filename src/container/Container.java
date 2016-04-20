@@ -20,6 +20,7 @@ import pathfinding.astarCourbe.AStarCourbe;
 import pathfinding.astarCourbe.AStarCourbeArcManager;
 import pathfinding.astarCourbe.AStarCourbeDynamique;
 import pathfinding.astarCourbe.AStarCourbeMemoryManager;
+import pathfinding.astarCourbe.AStarCourbePlanif;
 import pathfinding.astarCourbe.ClothoidesComputer;
 import pathfinding.astarCourbe.HeuristiqueSimple;
 import pathfinding.dstarlite.DStarLite;
@@ -324,10 +325,11 @@ public class Container
 		else if(serviceRequested == ServiceNames.MOTEUR_PHYSIQUE)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new MoteurPhysique((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG)); 		
 		else if(serviceRequested == ServiceNames.A_STAR_COURBE_PLANIFICATION)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new AStarCourbe((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
+			instanciedServices[serviceRequested.ordinal()] = (Service)new AStarCourbePlanif((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
 																					(AStarCourbeArcManager)getServiceDisplay(serviceRequested, ServiceNames.A_STAR_COURBE_ARC_MANAGER_PLANIF),
 																					(AStarCourbeMemoryManager)getServiceDisplay(serviceRequested, ServiceNames.A_STAR_COURBE_MEMORY_MANAGER_PLANIF),
-																					(CheminPlanif)getServiceDisplay(serviceRequested, ServiceNames.CHEMIN_PLANIF));
+																					(CheminPlanif)getServiceDisplay(serviceRequested, ServiceNames.CHEMIN_PLANIF),
+																					(HeuristiqueSimple)getServiceDisplay(serviceRequested, ServiceNames.HEURISTIQUE_SIMPLE));
 		else if(serviceRequested == ServiceNames.A_STAR_COURBE_DYNAMIQUE)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new AStarCourbeDynamique((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
 																					(DStarLite)getServiceDisplay(serviceRequested, ServiceNames.D_STAR_LITE),
@@ -351,10 +353,12 @@ public class Container
 		else if(serviceRequested == ServiceNames.A_STAR_COURBE_ARC_MANAGER_PLANIF)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new AStarCourbeArcManager((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
 																								(MoteurPhysique)getServiceDisplay(serviceRequested, ServiceNames.MOTEUR_PHYSIQUE),
-																								new HeuristiqueSimple(),
+																								(HeuristiqueSimple)getServiceDisplay(serviceRequested, ServiceNames.HEURISTIQUE_SIMPLE),
 																								(ClothoidesComputer)getServiceDisplay(serviceRequested, ServiceNames.CLOTHOIDES_COMPUTER));
 		else if(serviceRequested == ServiceNames.CLOTHOIDES_COMPUTER)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ClothoidesComputer((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG));
+		else if(serviceRequested == ServiceNames.HEURISTIQUE_SIMPLE)
+			instanciedServices[serviceRequested.ordinal()] = (Service)new HeuristiqueSimple((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG));
 		// si le service demandé n'est pas connu, alors on log une erreur.
 		else
 		{

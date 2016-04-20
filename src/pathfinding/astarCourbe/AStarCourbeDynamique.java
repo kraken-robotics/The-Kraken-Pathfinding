@@ -36,7 +36,7 @@ public class AStarCourbeDynamique extends AStarCourbe
 	 * @return
 	 * @throws PathfindingException 
 	 */
-	public synchronized void computeNewPath(Cinematique arrivee, boolean ejecteGameElement, DirectionStrategy directionstrategy) throws PathfindingException
+	public void computeNewPath(Cinematique arrivee, boolean ejecteGameElement, DirectionStrategy directionstrategy) throws PathfindingException
 	{
 //		if(Config.graphicAStarCourbe)
 //			fenetre.setColor(arrivee, Fenetre.Couleur.VIOLET);

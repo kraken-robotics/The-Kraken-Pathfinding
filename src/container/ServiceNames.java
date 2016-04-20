@@ -16,7 +16,7 @@ public enum ServiceNames {
 	 SCRIPT_MANAGER,
 	 SERIE_STM,
 //	 SERIE_XBEE,
-
+	 HEURISTIQUE_SIMPLE,
 	 D_STAR_LITE,
 	 GRID_SPACE,
 

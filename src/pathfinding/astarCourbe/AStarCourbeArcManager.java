@@ -5,7 +5,6 @@ import pathfinding.VitesseCourbure;
 import robot.DirectionStrategy;
 
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
@@ -31,7 +30,6 @@ public class AStarCourbeArcManager implements Service
 	private AStarCourbeNode current;
 	private int courbureMax;
 	private DirectionStrategy directionstrategyactuelle;
-	private int nbVoisins = VitesseCourbure.values().length;
 	private List<VitesseCourbure> listeVitesse = Arrays.asList(VitesseCourbure.values());
 	
 	private ListIterator<VitesseCourbure> iterator = listeVitesse.listIterator();
@@ -82,7 +80,10 @@ public class AStarCourbeArcManager implements Service
 //		return (int)(node.state.robot.getTempsDepuisDebutMatch() - temps_debut);
 	}
 
-
+	/**
+	 * Fournit le prochain successeur. On suppose qu'il existe
+	 * @param successeur
+	 */
     public void next(AStarCourbeNode successeur)
     {
 		current.state.copyAStarCourbe(successeur.state);
@@ -96,6 +97,11 @@ public class AStarCourbeArcManager implements Service
 					successeur.came_from_arc);
     }
     
+    /**
+     * Renvoie "true" si cette vitesse est acceptable par rapport à "current".
+     * @param vitesse
+     * @return
+     */
     private final boolean acceptable(VitesseCourbure vitesse)
     {
     	// Pas le droit de rebrousser chemin, sauf quand on est en "fastest"
@@ -122,6 +128,11 @@ public class AStarCourbeArcManager implements Service
     	return false;
     }
     
+    /**
+     * Réinitialise l'itérateur à partir d'un nouvel état
+     * @param current
+     * @param directionstrategyactuelle
+     */
     public void reinitIterator(AStarCourbeNode current, DirectionStrategy directionstrategyactuelle)
     {
     	this.directionstrategyactuelle = directionstrategyactuelle;
@@ -145,6 +156,11 @@ public class AStarCourbeArcManager implements Service
 		
 	}
 
+	/**
+	 * Renvoie le coût heuristique. L'implémentation dépend s'il s'agit d'un calcul stratégique ou dynamique
+	 * @param successeur
+	 * @return
+	 */
 	public int heuristicCost(AStarCourbeNode successeur)
 	{
 		return heuristique.heuristicCostCourbe(successeur.state.robot.getPosition());
