@@ -279,7 +279,7 @@ public class DataForSerialOutput implements Service
 	public synchronized void reprendMouvement()
 	{
 		byte[] out = new byte[2+1];
-		out[COMMANDE] = SerialProtocol.OUT_CONTINUE_MOVE.code;
+		out[COMMANDE] = SerialProtocol.OUT_RESUME_MOVE.code;
 		bufferBassePriorite.add(out);
 		notify();
 	}
