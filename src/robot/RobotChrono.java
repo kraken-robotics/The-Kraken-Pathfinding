@@ -72,15 +72,15 @@ public class RobotChrono extends Robot
 		RobotChrono.tempsMax = tempsMax;
 	}
 	
-	public boolean estArrive(RobotChrono autre)
+	public boolean estArrive(Cinematique autre)
 	{
-		return position.squaredDistance(autre.position) < 50*50; // TODO prendre en compte l'orientation, la courbure, ...
+		return cinematique.estProche(autre);
 	}
 	
 	@Override
-    public void avancer(int distance, ArrayList<Hook> hooks, boolean mur) throws FinMatchException
+    public void avancer(int distance, ArrayList<Hook> hooks, boolean mur, Speed vitesse) throws FinMatchException
 	{
-		date += Math.abs(distance)*cinematique.vitesse.invertedTranslationnalSpeed + sleepAvanceDuration;
+		date += Math.abs(distance)*vitesse.translationalSpeed + sleepAvanceDuration;
 	
         Vec2<ReadWrite> ecart = new Vec2<ReadWrite>((int)(distance*Math.cos(orientation)), (int)(distance*Math.sin(orientation)));
 
@@ -89,13 +89,6 @@ public class RobotChrono extends Robot
 //		isPositionPathfindingActive = false;
 //		positionPathfindingAnterieure = null;
 //		positionPathfinding = null;
-	}
-	
-	@Override
-	public void setVitesse(Speed vitesse)
-	{
-		cinematique.vitesse = vitesse;
-//		date += approximateSerialLatency;
 	}
 	
 	@Override
@@ -120,13 +113,13 @@ public class RobotChrono extends Robot
 	}
 	
 	@Override
-    public void tourner(double angle)
+    public void tourner(double angle, Speed vitesse)
 	{
 		// TODO: avec les trajectoires courbes, les durées changent
 		// et la marche arrière automatique?
 		double delta = calculateDelta(angle);
 		orientation = angle;
-		date += delta*cinematique.vitesse.invertedRotationnalSpeed + sleepTourneDuration;
+		date += delta*vitesse.rotationalSpeed + sleepTourneDuration;
 	}
 
 /*	private void va_au_point_no_hook(Vec2<ReadOnly> point) throws FinMatchException

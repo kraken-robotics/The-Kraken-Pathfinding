@@ -63,7 +63,7 @@ public class ObstacleProximity extends ObstacleCircular
     		int tempsRestant = (int)(death_date - date);
     		
     		// distance maximale à parcourir alors que l'obstacle est encore là
-    		double distanceMax = tempsRestant*Speed.BETWEEN_SCRIPTS.translationnalSpeed;
+    		double distanceMax = tempsRestant*Speed.STANDARD.translationalSpeed; // TODO
     		// C est le point auquel l'obstacle disparaît
     		Vec2<ReadWrite> C = B.minusNewVector(A);
     		double distanceBetweenAandB = (long)A.distance(B);

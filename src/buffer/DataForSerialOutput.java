@@ -131,18 +131,6 @@ public class DataForSerialOutput implements Service
 		notify();
 	}
 	
-	public synchronized void setSpeed(Speed speed)
-	{
-		if(Config.debugSerie)
-			log.debug("Changement de vitesse : "+speed);
-		byte[] out = new byte[2+3];
-		out[COMMANDE] = SerialProtocol.OUT_SET_VITESSE.code;
-		out[PARAM] = (byte) speed.PWMRotation;
-		out[PARAM+1] = (byte) speed.PWMTranslation;
-		bufferBassePriorite.add(out);
-		notify();
-	}
-	
 	public synchronized void getPositionOrientation()
 	{
 		byte[] out = new byte[2+1];
@@ -166,15 +154,19 @@ public class DataForSerialOutput implements Service
 		notify();
 	}
 
-	public synchronized void vaAuPoint(Vec2<ReadOnly> pos)
+	public synchronized void vaAuPoint(Vec2<ReadOnly> pos, Speed vitesse)
 	{
 		if(Config.debugSerie)
 			log.debug("Va au point "+pos);
-		byte[] out = new byte[2+4];
+		byte[] out = new byte[2+8];
 		out[COMMANDE] = SerialProtocol.OUT_VA_AU_POINT.code;
 		out[PARAM] = (byte) ((pos.x+1500) >> 4);
 		out[PARAM+1] = (byte) (((pos.x+1500) << 4) + (pos.y >> 8));
 		out[PARAM+2] = (byte) (pos.y);
+		out[PARAM+3] = (byte) ((int)(vitesse.translationalSpeed) >> 8);
+		out[PARAM+4] = (byte) ((int)(vitesse.translationalSpeed) & 0xFF);
+		out[PARAM+5] = (byte) ((int)(vitesse.rotationalSpeed) >> 8);
+		out[PARAM+6] = (byte) ((int)(vitesse.rotationalSpeed) & 0xFF);
 		bufferBassePriorite.add(out);
 		notify();
 	}
@@ -239,11 +231,11 @@ public class DataForSerialOutput implements Service
 	 * Ajout d'une demande d'ordre d'avancer pour la série
 	 * @param elem
 	 */
-	public synchronized void avancer(int distance)
+	public synchronized void avancer(int distance, Speed vitesse)
 	{
 		if(Config.debugSerie)
 			log.debug("Avance de "+distance);
-		byte[] out = new byte[2+3];
+		byte[] out = new byte[2+5];
 		if(distance >= 0)
 			out[COMMANDE] = SerialProtocol.OUT_AVANCER.code;
 		else
@@ -253,6 +245,8 @@ public class DataForSerialOutput implements Service
 		}
 		out[PARAM] = (byte) (distance >> 8);
 		out[PARAM+1] = (byte) (distance);
+		out[PARAM+2] = (byte) ((int)(vitesse.translationalSpeed) >> 8);
+		out[PARAM+3] = (byte) ((int)(vitesse.translationalSpeed) & 0xFF);
 		bufferBassePriorite.add(out);
 		notify();
 	}
@@ -262,11 +256,11 @@ public class DataForSerialOutput implements Service
 	 * Si on avançait précédement, on va avancer. Si on reculait, on va reculer.
 	 * @param elem
 	 */
-	public synchronized void avancerMemeSens(int distance)
+	public synchronized void avancerMemeSens(int distance, Speed vitesse)
 	{
 		if(Config.debugSerie)
 			log.debug("Avance (même sens) de "+distance);
-		byte[] out = new byte[2+3];
+		byte[] out = new byte[2+5];
 		if(distance >= 0)
 			out[COMMANDE] = SerialProtocol.OUT_AVANCER_IDEM.code;
 		else
@@ -276,6 +270,8 @@ public class DataForSerialOutput implements Service
 		}
 		out[PARAM] = (byte) (distance >> 8);
 		out[PARAM+1] = (byte) (distance);
+		out[PARAM+2] = (byte) ((int)(vitesse.translationalSpeed) >> 8);
+		out[PARAM+3] = (byte) ((int)(vitesse.translationalSpeed) & 0xFF);
 		bufferBassePriorite.add(out);
 		notify();
 	}
@@ -292,11 +288,11 @@ public class DataForSerialOutput implements Service
 	 * Ajout d'une demande d'ordre de tourner pour la série
 	 * @param elem
 	 */
-	public synchronized void turn(double angle)
+	public synchronized void turn(double angle, Speed vitesse)
 	{
 		if(Config.debugSerie)
 			log.debug("Tourne à "+angle);
-		byte[] out = new byte[2+3];
+		byte[] out = new byte[2+5];
 
 		angle %= 2*Math.PI;
 		if(angle < 0)
@@ -305,6 +301,8 @@ public class DataForSerialOutput implements Service
 		out[COMMANDE] = SerialProtocol.OUT_TOURNER.code;
 		out[PARAM] = (byte) (Math.round(angle*1000) >> 8);
 		out[PARAM+1] = (byte) (Math.round(angle*1000));
+		out[PARAM+2] = (byte) ((int)(vitesse.rotationalSpeed) >> 8);
+		out[PARAM+3] = (byte) ((int)(vitesse.rotationalSpeed) & 0xFF);
 		bufferBassePriorite.add(out);
 		notify();
 	}
@@ -445,7 +443,7 @@ public class DataForSerialOutput implements Service
 			out[PARAM+1] = (byte) (((arc.arcselems[i].position.x+1500) << 4) + (arc.arcselems[i].position.y >> 8));
 			out[PARAM+2] = (byte) (arc.arcselems[i].position.y);
 			double angle = arc.arcselems[i].orientation;
-			if(!arc.marcheAvant)
+			if(!arc.arcselems[0].enMarcheAvant)
 				angle += Math.PI;
 		
 			angle %= 2*Math.PI;
@@ -461,11 +459,10 @@ public class DataForSerialOutput implements Service
 			out[PARAM+6] = (byte) (Math.round(arc.arcselems[i].courbure*1000));
 			
 			// TODO envoi de trajectoire courbe
-			arc.vitesse = 10;
-			if(arc.marcheAvant)
-				out[PARAM+7] = (byte) (Math.round(arc.vitesse));
+			if(arc.arcselems[0].enMarcheAvant)
+				out[PARAM+7] = (byte) (Math.round(arc.arcselems[i].vitesseTranslation));
 			else
-				out[PARAM+7] = (byte) (Math.round(-arc.vitesse));
+				out[PARAM+7] = (byte) (Math.round(-arc.arcselems[i].vitesseTranslation));
 			
 			bufferTrajectoireCourbe.add(out);
 		}

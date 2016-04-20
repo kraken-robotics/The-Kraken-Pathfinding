@@ -44,32 +44,26 @@ public class JUnit_Robot extends JUnit_Test
     @Test
     public void test_avance() throws Exception
     {
-    	robot.avancer(100);
+    	robot.avancer(100, Speed.STANDARD);
     	log.debug("On est arrivé");
     }
 
     @Test
     public void test_tourne() throws Exception
     {
-    	robot.tourner(Math.PI);
-    }
-
-    @Test
-    public void test_speed() throws Exception
-    {
-    	robot.setVitesse(Speed.BETWEEN_SCRIPTS);
+    	robot.tourner(Math.PI, Speed.STANDARD);
     }
 
     @Test
     public void test_chrono() throws Exception
     {
-    	robotchrono.avancer(100);
+    	robotchrono.avancer(100, Speed.STANDARD);
     }
 
 	@Test(expected=FinMatchException.class)
     public void test_chrono_timeout() throws Exception
     {
-    	robotchrono.avancer(100000000);
+    	robotchrono.avancer(100000000, Speed.STANDARD);
     }
     
     @Test
@@ -83,16 +77,16 @@ public class JUnit_Robot extends JUnit_Test
     			config.set(ConfigInfo.COULEUR, RobotColor.getCouleurAvecSymetrie());
 // TODO tests robot
     		//    		robotchrono.setPositionOrientationSTM(new Vec2<ReadOnly>(200, 600), 0);
-    		robotchrono.avancer(100);
+    		robotchrono.avancer(100, Speed.STANDARD);
     		Assert.assertTrue(robotchrono.getPosition().squaredDistance(new Vec2<ReadWrite>(300, 600)) < 10);
-    		robotchrono.tourner(Math.PI/2);
-    		robotchrono.avancer(100);
+    		robotchrono.tourner(Math.PI/2, Speed.STANDARD);
+    		robotchrono.avancer(100, Speed.STANDARD);
     		Assert.assertTrue(robotchrono.getPosition().squaredDistance(new Vec2<ReadWrite>(300, 700)) < 10);
-    		robotchrono.tourner(Math.PI);
-    		robotchrono.avancer(100);
+    		robotchrono.tourner(Math.PI, Speed.STANDARD);
+    		robotchrono.avancer(100, Speed.STANDARD);
     		Assert.assertTrue(robotchrono.getPosition().squaredDistance(new Vec2<ReadWrite>(200, 700)) < 10);
-    		robotchrono.tourner(-Math.PI/2);
-    		robotchrono.avancer(100);
+    		robotchrono.tourner(-Math.PI/2, Speed.STANDARD);
+    		robotchrono.avancer(100, Speed.STANDARD);
     		Assert.assertTrue(robotchrono.getPosition().squaredDistance(new Vec2<ReadWrite>(200, 600)) < 10);
 //    		ArrayList<LocomotionArc> chemin = new ArrayList<LocomotionArc>();
 //	    		chemin.add(new SegmentTrajectoireCourbe(PathfindingNodes.BAS));

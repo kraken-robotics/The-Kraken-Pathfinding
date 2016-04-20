@@ -5,18 +5,15 @@ import java.util.Comparator;
 import java.util.PriorityQueue;
 
 import pathfinding.ChronoGameState;
-import pathfinding.RealGameState;
 import pathfinding.dstarlite.GridSpace;
-import permissions.ReadOnly;
 import container.Service;
 import exceptions.FinMatchException;
 import exceptions.PathfindingException;
+import robot.Cinematique;
 import robot.DirectionStrategy;
-import robot.RobotChrono;
 import tests.graphicLib.Fenetre;
 import utils.Config;
 import utils.Log;
-import utils.Vec2;
 
 /**
  * AStar* simplifié, qui lisse le résultat du D* Lite et fournit une trajectoire courbe
@@ -35,10 +32,15 @@ public class AStarCourbe implements Service
 //	protected RealGameState state;
 	protected AStarCourbeMemoryManager memorymanager;
 	protected Fenetre fenetre;
-	protected RobotChrono arrivee;
+	protected Cinematique arrivee;
 	protected AStarCourbeNode depart;
 	protected Collection<ArcCourbe> chemin;
 
+	/**
+	 * Comparateur de noeud utilisé par la priority queue
+	 * @author pf
+	 *
+	 */
 	private class AStarCourbeNodeComparator implements Comparator<AStarCourbeNode>
 	{
 		@Override
@@ -178,11 +180,11 @@ public class AStarCourbe implements Service
 		}
 	}
 	
-	public synchronized void computeNewPath(ChronoGameState stateDepart, ChronoGameState arrivee, boolean ejecteGameElement, DirectionStrategy directionstrategy) throws PathfindingException
+	public synchronized void computeNewPath(ChronoGameState stateDepart, Cinematique arrivee, boolean ejecteGameElement, DirectionStrategy directionstrategy) throws PathfindingException
 	{
 		this.directionstrategyactuelle = directionstrategy;
 		arcmanager.setEjecteGameElement(ejecteGameElement);
-		
+		this.arrivee = arrivee;
 		depart.init();
 		stateDepart.copyAStarCourbe(depart.state);
 		

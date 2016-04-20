@@ -5,6 +5,7 @@ import pathfinding.CheminPathfinding;
 import pathfinding.RealGameState;
 import pathfinding.dstarlite.DStarLite;
 import permissions.ReadOnly;
+import robot.Cinematique;
 import robot.DirectionStrategy;
 import utils.Config;
 import utils.Log;
@@ -31,18 +32,18 @@ public class AStarCourbeDynamique extends AStarCourbe
 	 * @return
 	 * @throws PathfindingException 
 	 */
-	public synchronized void computeNewPath(Vec2<ReadOnly> arrivee, boolean ejecteGameElement, DirectionStrategy directionstrategy) throws PathfindingException
+	public synchronized void computeNewPath(Cinematique arrivee, boolean ejecteGameElement, DirectionStrategy directionstrategy) throws PathfindingException
 	{
 //		if(Config.graphicAStarCourbe)
 //			fenetre.setColor(arrivee, Fenetre.Couleur.VIOLET);
 
 		this.directionstrategyactuelle = directionstrategy;
 		arcmanager.setEjecteGameElement(ejecteGameElement);
-		
+		this.arrivee = arrivee;
 		depart.init();
 		state.copyAStarCourbe(depart.state);
 		
-		dstarlite.computeNewPath(depart.state.robot.getPosition(), arrivee);
+		dstarlite.computeNewPath(depart.state.robot.getPosition(), arrivee.position.getReadOnly());
 		process();
 		
 		if(Config.graphicAStarCourbe)

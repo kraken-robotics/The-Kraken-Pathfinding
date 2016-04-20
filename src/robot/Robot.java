@@ -25,11 +25,10 @@ public abstract class Robot implements Service
 	 */
 	
 	public abstract int getPositionGridSpace();
-    public abstract void tourner(double angle)
+    public abstract void tourner(double angle, Speed vitesse)
             throws UnableToMoveException, FinMatchException;
-    public abstract void avancer(int distance, ArrayList<Hook> hooks, boolean mur)
+    public abstract void avancer(int distance, ArrayList<Hook> hooks, boolean mur, Speed vitesse)
             throws UnableToMoveException, FinMatchException;
-	public abstract void setVitesse(Speed vitesse);
 	
     public abstract void sleep(long duree, ArrayList<Hook> hooks) throws FinMatchException;
     public abstract long getTempsDepuisDebutMatch();
@@ -46,7 +45,6 @@ public abstract class Robot implements Service
 	public Robot(Log log)
 	{
 		this.log = log;
-		cinematique.vitesse = Speed.BETWEEN_SCRIPTS;
 	}
 
 	public RobotChrono cloneIntoRobotChrono()
@@ -138,9 +136,9 @@ public abstract class Robot implements Service
 	 * @throws UnableToMoveException
 	 * @throws FinMatchException
 	 */
-	public void tournerRelatif(double angle) throws UnableToMoveException, FinMatchException
+	public void tournerRelatif(double angle, Speed vitesse) throws UnableToMoveException, FinMatchException
 	{
-		tourner(getOrientation() + angle);
+		tourner(getOrientation() + angle, vitesse);
 	}
 
     /**
@@ -148,12 +146,12 @@ public abstract class Robot implements Service
      * @param angle
      * @throws UnableToMoveException
      */
-    public void tournerSansSymetrie(double angle) throws UnableToMoveException, FinMatchException
+    public void tournerSansSymetrie(double angle, Speed vitesse) throws UnableToMoveException, FinMatchException
     {
         if(symetrie)
-            tourner(Math.PI-angle);
+            tourner(Math.PI-angle, vitesse);
         else
-            tourner(angle);
+            tourner(angle, vitesse);
     }
 
     /**
@@ -163,9 +161,9 @@ public abstract class Robot implements Service
      * @throws FinMatchException
      * @throws ScriptHookException
      */
-    public void avancer(int distance) throws UnableToMoveException, FinMatchException
+    public void avancer(int distance, Speed vitesse) throws UnableToMoveException, FinMatchException
     {
-        avancer(distance, new ArrayList<Hook>(), false);
+        avancer(distance, new ArrayList<Hook>(), false, vitesse);
     }
 
     /**
@@ -176,9 +174,9 @@ public abstract class Robot implements Service
      * @throws FinMatchException
      * @throws ScriptHookException
      */
-    public void avancer(int distance, ArrayList<Hook> hooks) throws UnableToMoveException, FinMatchException
+    public void avancer(int distance, ArrayList<Hook> hooks, Speed vitesse) throws UnableToMoveException, FinMatchException
     {
-        avancer(distance, hooks, false);
+        avancer(distance, hooks, false, vitesse);
     }
 
     /**
@@ -190,16 +188,7 @@ public abstract class Robot implements Service
      */
     public void avancerDansMur(int distance) throws UnableToMoveException, FinMatchException
     {
-        Speed sauv_vitesse = cinematique.vitesse; 
-        setVitesse(Speed.INTO_WALL);
-        try {
-        	avancer(distance, new ArrayList<Hook>(), true);
-        }
-        finally
-        {
-        	// Dans tous les cas, il faut restaurer l'ancienne vitesse
-        	setVitesse(sauv_vitesse);
-        }
+    	avancer(distance, new ArrayList<Hook>(), true, Speed.INTO_WALL);
     }
 
     /**

@@ -113,7 +113,7 @@ public class ClothoidesComputer implements Service
 	public void getTrajectoire(ArcCourbe depart, VitesseCourbure vitesse, ArcCourbe modified)
 	{
 		Cinematique last = depart.arcselems[NB_POINTS - 1];
-		getTrajectoire(last.position.getReadOnly(), depart.marcheAvant, last.orientation, last.courbure, vitesse, modified);
+		getTrajectoire(last.position.getReadOnly(), depart.arcselems[0].enMarcheAvant, last.orientation, last.courbure, vitesse, modified);
 	}
 	
 	public final void getTrajectoire(RobotChrono robot, VitesseCourbure vitesse, ArcCourbe modified)
@@ -139,10 +139,10 @@ public class ClothoidesComputer implements Service
 		{
 			courbure = 0;
 			orientation += Math.PI;
-			modified.marcheAvant = !marcheAvant;
+			modified.arcselems[0].enMarcheAvant = !marcheAvant;
 		}
 		else
-			modified.marcheAvant = marcheAvant;
+			modified.arcselems[0].enMarcheAvant = marcheAvant;
 		modified.vitesseCourbure = vitesse;
 		
 		// si la dérivée de la courbure est nulle, on est dans le cas particulier d'une trajectoire rectiligne ou circulaire

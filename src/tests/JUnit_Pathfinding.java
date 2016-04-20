@@ -18,6 +18,7 @@ import pathfinding.astarCourbe.ClothoidesComputer;
 import pathfinding.dstarlite.DStarLite;
 import pathfinding.dstarlite.GridSpace;
 import permissions.ReadOnly;
+import robot.Cinematique;
 import robot.DirectionStrategy;
 import robot.RobotReal;
 import tests.graphicLib.Fenetre;
@@ -56,8 +57,9 @@ public class JUnit_Pathfinding extends JUnit_Test {
 	@Test
     public void test_pathfinding_planif() throws Exception
     {
-		ChronoGameState arrivee = state.cloneGameState();
-		arrivee.robot.avancer(500);
+		Cinematique arrivee = new Cinematique();
+		arrivee.position.x = 1000;
+		arrivee.position.y = 500;
 		pathfindingCourbePlanif.computeNewPath(state.cloneGameState(), arrivee, true, DirectionStrategy.FASTEST);
     }
 	

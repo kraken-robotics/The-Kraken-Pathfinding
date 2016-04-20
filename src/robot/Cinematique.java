@@ -15,7 +15,8 @@ public class Cinematique
 	public volatile double orientation;
 	public volatile boolean enMarcheAvant;
 	public volatile double courbure;
-	public volatile Speed vitesse;
+	public volatile double vitesseTranslation;
+	public volatile double vitesseRotation;
 	
 	/**
 	 * Renvoie vrai si this est proche de autre
@@ -24,7 +25,7 @@ public class Cinematique
 	 */
 	public boolean estProche(Cinematique autre)
 	{
-		return true;
+		return true; // TODO écrire
 	}
 
 	/**
@@ -34,7 +35,7 @@ public class Cinematique
 	 */
 	public boolean estProcheUrgence(Cinematique autre)
 	{
-		return true;
+		return true; // TODO écrire
 	}
 
 	/**
@@ -47,6 +48,13 @@ public class Cinematique
     	autre.orientation = orientation;
     	autre.enMarcheAvant = enMarcheAvant;
     	autre.courbure = courbure;
-    	autre.vitesse = vitesse;
+    	autre.vitesseRotation = vitesseRotation;
+    	autre.vitesseTranslation = vitesseTranslation;
+	}
+
+	public void setVitesse(Speed speed)
+	{
+		vitesseRotation = speed.rotationalSpeed;
+		vitesseTranslation = speed.translationalSpeed;
 	}
 }
