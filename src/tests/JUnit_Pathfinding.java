@@ -77,7 +77,14 @@ public class JUnit_Pathfinding extends JUnit_Test {
 		for(int i = 0; i < nbArc; i++)
 			arc[i] = new ArcCourbe();
 
-		clotho.getTrajectoire(new Vec2<ReadOnly>(0, 1000), true, Math.PI/2, 0, VitesseCourbure.COURBURE_IDENTIQUE, arc[0]);
+		Cinematique c = new Cinematique();
+		c.position.x = 0;
+		c.position.y = 1000;
+		c.enMarcheAvant = true;
+		c.orientation = Math.PI/2;
+		c.courbure = 0;
+		
+		clotho.getTrajectoire(c, VitesseCourbure.COURBURE_IDENTIQUE, arc[0]);
 		clotho.getTrajectoire(arc[0], VitesseCourbure.GAUCHE_3, arc[1]);
 		clotho.getTrajectoire(arc[1], VitesseCourbure.COURBURE_IDENTIQUE, arc[2]);
 		clotho.getTrajectoire(arc[2], VitesseCourbure.GAUCHE_1, arc[3]);

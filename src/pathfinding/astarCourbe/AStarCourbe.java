@@ -103,7 +103,7 @@ public class AStarCourbe implements Service
 		{
 			current = openset.poll();
 			try {
-				if(!arcmanager.execute(current))
+				if(!arcmanager.isReachable(current))
 					continue; // collision mécanique attendue. On passe au suivant !
 			} catch (FinMatchException e) {
 				continue;
@@ -117,14 +117,12 @@ public class AStarCourbe implements Service
 				memorymanager.empty();
 				return chemin;
 			}
-			
+
 			// On parcourt les voisins de current
 
 			arcmanager.reinitIterator(current, directionstrategyactuelle);
-			log.debug("Traitement d'un noeud");
 			while(arcmanager.hasNext())
 			{
-				log.debug("Voisin");
 				if(doitFixerCheminPartiel())
 				{
 					partialReconstruct(current, false);
@@ -138,18 +136,18 @@ public class AStarCourbe implements Service
 				}
 
 				successeur = memorymanager.getNewNode();
+
 				arcmanager.next(successeur);
 				 
 				successeur.g_score = current.g_score + arcmanager.distanceTo(successeur);
 				successeur.f_score = successeur.g_score + arcmanager.heuristicCost(successeur);
-
+				
 				openset.add(successeur);
 				
 //				if(Config.graphicAStarCourbe)
 //					fenetre.setColor(current.gridpoint, Fenetre.Couleur.ROUGE);
 
 			}
-			
 		} while(!openset.isEmpty());
 		
 		/**

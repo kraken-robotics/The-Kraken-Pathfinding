@@ -3,6 +3,7 @@ package robot;
 import java.util.ArrayList;
 
 import pathfinding.astarCourbe.ArcCourbe;
+import pathfinding.astarCourbe.ClothoidesComputer;
 import permissions.ReadOnly;
 import permissions.ReadWrite;
 import hook.Hook;
@@ -329,10 +330,17 @@ public class RobotChrono extends Robot
 		
 	}
 
-	public void suitArcCourbe(ArcCourbe came_from_arc) {
-		// TODO Auto-generated method stub
-		
+	public void suitArcCourbe(ArcCourbe came_from_arc)
+	{
+		// TODO compléter
+		came_from_arc.arcselems[ClothoidesComputer.NB_POINTS-1].copy(cinematique);
 	}
+
+	public Cinematique getCinematique()
+	{
+		return cinematique;
+	}
+
 
 /*	public void printHash()
 	{

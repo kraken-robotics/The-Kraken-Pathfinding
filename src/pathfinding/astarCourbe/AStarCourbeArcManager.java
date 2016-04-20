@@ -3,6 +3,12 @@ package pathfinding.astarCourbe;
 import obstacles.MoteurPhysique;
 import pathfinding.VitesseCourbure;
 import robot.DirectionStrategy;
+
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+
 import container.Service;
 import utils.Config;
 import utils.ConfigInfo;
@@ -26,8 +32,9 @@ public class AStarCourbeArcManager implements Service
 	private int courbureMax;
 	private DirectionStrategy directionstrategyactuelle;
 	private int nbVoisins = VitesseCourbure.values().length;
-	private int iterator;
-	private VitesseCourbure vitesseActuelle;
+	private List<VitesseCourbure> listeVitesse = Arrays.asList(VitesseCourbure.values());
+	
+	private ListIterator<VitesseCourbure> iterator = listeVitesse.listIterator();
 	
 	public AStarCourbeArcManager(Log log, MoteurPhysique moteur, HeuristiqueCourbe heuristique, ClothoidesComputer clotho)
 	{
@@ -38,28 +45,30 @@ public class AStarCourbeArcManager implements Service
 	}
 	
 	/**
-	 * Retourne vrai si l'exécution s'est bien passée, faux s'il y a collision 
+	 * Retourne faux si un obstacle est sur la route
 	 * @param node
 	 * @return
 	 * @throws FinMatchException
 	 */
-	public boolean execute(AStarCourbeNode node) throws FinMatchException
+	public boolean isReachable(AStarCourbeNode node) throws FinMatchException
 	{
 		if(node.came_from == null)
 			return true;
-		return moteur.isTraversableCourbe(node); // s'occupe de mettre à jour state également
+		return moteur.isTraversableCourbe(node);
 	}
 	
 	/**
 	 * Renvoie la distance entre deux points. Et par distance, j'entends "durée".
 	 * Heureusement, les longueurs des arcs de clothoïdes qu'on considère sont égales.
 	 * Ne reste plus qu'à prendre en compte la vitesse, qui dépend de la courbure.
+	 * Il faut exécuter tout ce qui se passe pendant ce trajet
 	 */
 	public int distanceTo(AStarCourbeNode node)
 	{
 		// TODO : vérifier les hooks
-		// TODO : vitesse
-		return (int) (ClothoidesComputer.DISTANCE_ARC_COURBE * 1.);
+		node.state.robot.suitArcCourbe(node.came_from_arc);
+		System.out.println(ClothoidesComputer.DISTANCE_ARC_COURBE+", "+node.came_from_arc.arcselems[0].vitesseTranslation);
+		return (int) (ClothoidesComputer.DISTANCE_ARC_COURBE / node.came_from_arc.arcselems[0].vitesseTranslation);
 		// TODO : si, il faut les exécuter
 		/*
 		 * Il n'y a pas d'utilisation de hook.
@@ -76,44 +85,48 @@ public class AStarCourbeArcManager implements Service
 
     public void next(AStarCourbeNode successeur)
     {
-    	log.debug(current+" "+successeur);
 		current.state.copyAStarCourbe(successeur.state);
-    	iterator++;
-		vitesseActuelle = VitesseCourbure.values[iterator];
 		if(current.came_from_arc != null)
 			clotho.getTrajectoire(current.came_from_arc,
-					VitesseCourbure.values[iterator],
+					iterator.next(),
 					successeur.came_from_arc);
 		else // pas de prédécesseur
 			clotho.getTrajectoire(current.state.robot,
-					VitesseCourbure.values[iterator],
+					iterator.next(),
 					successeur.came_from_arc);
     }
     
-    private final boolean acceptable()
+    private final boolean acceptable(VitesseCourbure vitesse)
     {
-    	if(vitesseActuelle.rebrousse && directionstrategyactuelle != DirectionStrategy.FASTEST)
+    	// Pas le droit de rebrousser chemin, sauf quand on est en "fastest"
+    	if(vitesse.rebrousse && directionstrategyactuelle != DirectionStrategy.FASTEST)
     		return false;
-    	double courbureFuture = current.state.robot.getCourbure() + vitesseActuelle.vitesse;
+
+    	double courbureFuture = current.state.robot.getCourbure() + vitesse.vitesse;
     	return courbureFuture >= -courbureMax && courbureFuture <= courbureMax;
     }
     
+    /**
+     * Y a-t-il encore une vitesse possible ?
+     * On vérifie ici si certaines vitesses sont interdites (à cause de la courbure trop grande ou du rebroussement)
+     * @return
+     */
     public boolean hasNext()
     {
-    	while(iterator < nbVoisins && !acceptable())
-    	{
-    		iterator++;
-    		vitesseActuelle = VitesseCourbure.values[iterator];
-    	}
-    	return iterator < nbVoisins;
+    	while(iterator.hasNext())
+    		if(acceptable(iterator.next()))
+    		{
+    			iterator.previous();
+    			return true;
+    		}
+    	return false;
     }
     
     public void reinitIterator(AStarCourbeNode current, DirectionStrategy directionstrategyactuelle)
     {
     	this.directionstrategyactuelle = directionstrategyactuelle;
     	this.current = current;
-    	iterator = 0;
-    	vitesseActuelle = VitesseCourbure.values[0];
+    	iterator = listeVitesse.listIterator();
     }
 
 	@Override

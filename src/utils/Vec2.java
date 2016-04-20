@@ -122,7 +122,7 @@ public class Vec2<T extends Permission> implements Serializable
 
 	public final double distance(Vec2<? extends Permission> other)
 	{
-		return Math.sqrt(squaredDistance(other));
+		return Math.hypot(x-other.x, y-other.y);
 	}
 	
 	public final String toString()

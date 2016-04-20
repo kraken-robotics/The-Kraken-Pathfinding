@@ -113,12 +113,12 @@ public class ClothoidesComputer implements Service
 	public void getTrajectoire(ArcCourbe depart, VitesseCourbure vitesse, ArcCourbe modified)
 	{
 		Cinematique last = depart.arcselems[NB_POINTS - 1];
-		getTrajectoire(last.position.getReadOnly(), depart.arcselems[0].enMarcheAvant, last.orientation, last.courbure, vitesse, modified);
+		getTrajectoire(last, vitesse, modified);
 	}
 	
 	public final void getTrajectoire(RobotChrono robot, VitesseCourbure vitesse, ArcCourbe modified)
 	{
-		getTrajectoire(robot.getPosition(), robot.isMarcheAvant(), robot.getOrientation(), robot.getCourbure(), vitesse, modified);
+		getTrajectoire(robot.getCinematique(), vitesse, modified);
 	}
 
 	
@@ -133,30 +133,30 @@ public class ClothoidesComputer implements Service
 	 * @param distance
 	 * @return
 	 */
-	public final void getTrajectoire(Vec2<ReadOnly> position, boolean marcheAvant, double orientation, double courbure, VitesseCourbure vitesse, ArcCourbe modified)
+	public final void getTrajectoire(Cinematique c, VitesseCourbure vitesse, ArcCourbe modified)
 	{
 		if(vitesse.rebrousse)
 		{
-			courbure = 0;
-			orientation += Math.PI;
-			modified.arcselems[0].enMarcheAvant = !marcheAvant;
+			c.courbure = 0;
+			c.orientation += Math.PI;
+			modified.arcselems[0].enMarcheAvant = !c.enMarcheAvant;
 		}
 		else
-			modified.arcselems[0].enMarcheAvant = marcheAvant;
+			modified.arcselems[0].enMarcheAvant = c.enMarcheAvant;
 		modified.vitesseCourbure = vitesse;
 		
 		// si la dérivée de la courbure est nulle, on est dans le cas particulier d'une trajectoire rectiligne ou circulaire
 		if(vitesse.vitesse == 0)
 		{
-			if(courbure < 0.00001 && courbure > -0.00001)
-				getTrajectoireLigneDroite(position, orientation, modified);
+			if(c.courbure < 0.00001 && c.courbure > -0.00001)
+				getTrajectoireLigneDroite(c.position.getReadOnly(), c.orientation, modified);
 			else
-				getTrajectoireCirculaire(position, orientation, courbure, modified);
+				getTrajectoireCirculaire(c.position.getReadOnly(), c.orientation, c.courbure, modified);
 			return;
 		}
 		
 		double coeffMultiplicatif = 1. / vitesse.squaredRootVitesse;
-		double sDepart = courbure / vitesse.squaredRootVitesse; // sDepart peut parfaitement être négatif
+		double sDepart = c.courbure / vitesse.squaredRootVitesse; // sDepart peut parfaitement être négatif
 		if(!vitesse.positif)
 			sDepart = -sDepart;
 		int pointDepart = (int) Math.round(sDepart / PRECISION_TRACE) + INDICE_MAX - 1;
@@ -164,7 +164,7 @@ public class ClothoidesComputer implements Service
 		if(!vitesse.positif)
 			orientationClothoDepart = - orientationClothoDepart;
 			
-		double baseOrientation = orientation - orientationClothoDepart;
+		double baseOrientation = c.orientation - orientationClothoDepart;
 		double cos = Math.cos(baseOrientation);
 		double sin = Math.sin(baseOrientation);
 
@@ -186,7 +186,7 @@ public class ClothoidesComputer implements Service
 							coeffMultiplicatif),
 						!vitesse.positif),
 					cos, sin),
-				position).getReadOnly(),
+				c.position).getReadOnly(),
 			modified.arcselems[i].position);
 
  			double orientationClotho = sDepart * sDepart;
