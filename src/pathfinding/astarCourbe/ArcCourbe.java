@@ -11,6 +11,7 @@ import robot.Cinematique;
 public class ArcCourbe {
 
 	public Cinematique[] arcselems = new Cinematique[ClothoidesComputer.NB_POINTS];
+	public boolean rebrousse; // cet arc commence par un rebroussement
 	
 	public ArcCourbe()
 	{

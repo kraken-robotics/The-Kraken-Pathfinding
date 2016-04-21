@@ -48,7 +48,8 @@ public class CheminPlanif implements Service, Collection<ArcCourbe>
 
 	@Override
 	public boolean add(ArcCourbe arg0) {
-		return chemin.add(arg0);
+		chemin.addFirst(arg0);
+		return true;
 	}
 
 	@Override

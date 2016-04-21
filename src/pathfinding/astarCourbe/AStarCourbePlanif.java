@@ -45,6 +45,7 @@ public class AStarCourbePlanif extends AStarCourbe implements Service
 			depart.state = stateDepart.cloneGameState();
 		else
 			stateDepart.copyAStarCourbe(depart.state);
+
 		vitesseMax = Speed.STANDARD;
 
 		process();

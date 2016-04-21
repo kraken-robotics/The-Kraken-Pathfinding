@@ -20,7 +20,6 @@ public class ChronoGameState extends GameState
 {
     public final ObstaclesIteratorFutur iterator;
     protected Log log;
-	public RobotChrono robot;
 
     public ChronoGameState(Log log, RobotChrono robot, ObstaclesIteratorFutur iterator, Table table)
     {

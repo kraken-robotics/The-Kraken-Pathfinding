@@ -1,6 +1,7 @@
 package obstacles.types;
 
 import pathfinding.ChronoGameState;
+import robot.RobotChrono;
 import exceptions.FinMatchException;
 import obstacles.ObstaclesFixes;
 import utils.Vec2;
@@ -99,7 +100,7 @@ public class ObstacleRectangular extends ObstacleAvecAngle
 	 */
 	public ObstacleRectangular(ChronoGameState state) throws FinMatchException
 	{
-		this(state.robot.getCinematique().getPosition(), longueurRobot, largeurRobot, state.robot.getCinematique().orientation);
+		this(((RobotChrono)state.robot).getCinematique().getPosition(), longueurRobot, largeurRobot, ((RobotChrono)state.robot).getCinematique().orientation);
 	}
 /*
 	public void update(Vec2<ReadOnly> position, double angle)

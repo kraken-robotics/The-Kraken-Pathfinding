@@ -41,12 +41,13 @@ public class AStarCourbeMemoryManager implements Service {
 
 		firstAvailable = 0;
 		// on prépare déjà des gamestates
-		log.debug("Instanciation de "+nb_instances+" GameState<RobotChrono>");
+		log.debug("Instanciation de "+nb_instances+" ChronoGameState");
 
 		for(int i = 0; i < nb_instances; i++)
 		{
 			nodes[i] = new AStarCourbeNode();
 			nodes[i].state = realstate.cloneGameState();
+			nodes[i].setIndiceMemoryManager(i);
 		}
 	}
 	
@@ -80,6 +81,48 @@ public class AStarCourbeMemoryManager implements Service {
 	public boolean isMemoryManagerEmpty()
 	{
 		return firstAvailable == 0;
+	}
+	
+	/**
+	 * Signale qu'un gamestate est de nouveau disponible
+	 * @param state
+	 * @param id_astar
+	 * @throws MemoryManagerException
+	 */
+	public void destroyNode(AStarCourbeNode state)
+	{
+		
+		int indice_state = state.getIndiceMemoryManager();
+
+		/**
+		 * S'il est déjà détruit, on lève une exception
+		 */
+		if(indice_state >= firstAvailable)
+		{
+			int z = 0;
+			z = 1 / z;
+		}
+
+		// On inverse dans le Vector les deux gamestates,
+		// de manière à avoir toujours un Vector trié.
+		firstAvailable--;
+		
+		AStarCourbeNode tmp1 = nodes[indice_state];
+		AStarCourbeNode tmp2 = nodes[firstAvailable];
+
+		tmp1.setIndiceMemoryManager(firstAvailable);
+		tmp2.setIndiceMemoryManager(indice_state);
+
+		nodes[firstAvailable] = tmp1;
+		nodes[indice_state] = tmp2;
+	}
+
+	/**
+	 * Retourne le nombre d'élément utilisé
+	 */
+	public int getSize()
+	{
+		return firstAvailable;
 	}
 	
 }

@@ -4,11 +4,13 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.PriorityQueue;
 
+import pathfinding.VitesseCourbure;
 import pathfinding.dstarlite.GridSpace;
 import container.Service;
 import exceptions.FinMatchException;
 import robot.Cinematique;
 import robot.DirectionStrategy;
+import robot.RobotChrono;
 import robot.Speed;
 import tests.graphicLib.Fenetre;
 import utils.Config;
@@ -55,6 +57,7 @@ public abstract class AStarCourbe implements Service
 	}
 
 	private final PriorityQueue<AStarCourbeNode> openset = new PriorityQueue<AStarCourbeNode>(GridSpace.NB_POINTS, new AStarCourbeNodeComparator());
+	private final PriorityQueue<AStarCourbeNode> miniset = new PriorityQueue<AStarCourbeNode>(VitesseCourbure.values.length, new AStarCourbeNodeComparator());
 
 	/**
 	 * Constructeur du AStarCourbe
@@ -77,10 +80,9 @@ public abstract class AStarCourbe implements Service
 	protected final Collection<ArcCourbe> process()
 	{
 		depart.came_from = null;
+		depart.came_from_arc = null;
 		depart.g_score = 0;
 		depart.f_score = arcmanager.heuristicCost(depart);
-
-		memorymanager.empty();
 
 		openset.clear();
 		openset.add(depart);	// Les nœuds à évaluer
@@ -90,18 +92,23 @@ public abstract class AStarCourbe implements Service
 		do
 		{
 			current = openset.poll();
+
 			try {
 				if(!arcmanager.isReachable(current))
+				{
+					memorymanager.destroyNode(current);
 					continue; // collision mécanique attendue. On passe au suivant !
+				}
 			} catch (FinMatchException e) {
 				continue;
 			}
 			
 			// Si on est arrivé, on reconstruit le chemin
-			if(current.state.robot.getCinematique().estProche(arrivee))
+			if(((RobotChrono)current.state.robot).getCinematique().estProche(arrivee))
 			{
 				log.debug("On est arrivé !");
 				partialReconstruct(current, true);
+				log.debug(memorymanager.getSize());
 				memorymanager.empty();
 				return chemin;
 			}
@@ -129,18 +136,23 @@ public abstract class AStarCourbe implements Service
 				 
 				successeur.g_score = current.g_score + arcmanager.distanceTo(successeur);
 				successeur.f_score = successeur.g_score + arcmanager.heuristicCost(successeur);
+				successeur.came_from = current;
 				
-				openset.add(successeur);
+				miniset.add(successeur);
 				
-//				if(Config.graphicAStarCourbe)
-//					fenetre.setColor(current.gridpoint, Fenetre.Couleur.ROUGE);
-
 			}
+			
+			for(int i = 0; i < 3; i++)
+				openset.add(miniset.poll());
+			while(!miniset.isEmpty())
+				memorymanager.destroyNode(miniset.poll());
+
 		} while(!openset.isEmpty());
 		
 		/**
 		 * Impossible car un nombre infini de nœuds !
 		 */
+		memorymanager.empty();
 		log.critical("AStarCourbe n'a pas trouvé de chemin !");
 		return null;
 	}
@@ -154,14 +166,12 @@ public abstract class AStarCourbe implements Service
 	 */
 	private final void partialReconstruct(AStarCourbeNode best, boolean last)
 	{
-		log.debug("Reconstruction");
 		synchronized(chemin)
 		{
 			AStarCourbeNode noeud_parent = best;
 			ArcCourbe arc_parent = best.came_from_arc;
-			while(best.came_from != null)
+			while(noeud_parent.came_from != null)
 			{
-				log.debug("Ajout");
 				chemin.add(arc_parent);
 				noeud_parent = noeud_parent.came_from;
 				arc_parent = noeud_parent.came_from_arc;

@@ -21,6 +21,7 @@ import pathfinding.dstarlite.DStarLite;
 import pathfinding.dstarlite.GridSpace;
 import robot.Cinematique;
 import robot.DirectionStrategy;
+import robot.RobotChrono;
 import robot.RobotReal;
 import robot.Speed;
 import tests.graphicLib.Fenetre;
@@ -63,14 +64,17 @@ public class JUnit_Pathfinding extends JUnit_Test {
     public void test_pathfinding_planif() throws Exception
     {
 		Cinematique arrivee = new Cinematique(1000, 500, 0, true, 0, 0, 0);
+		ChronoGameState chrono = state.cloneGameState();
+		((RobotChrono)chrono.robot).getCinematique().getPosition().x = -300;
+		((RobotChrono)chrono.robot).getCinematique().getPosition().y = 300;
+		((RobotChrono)chrono.robot).getCinematique().orientation = 0;
 		log.debug(cheminPlanif.size());
-		pathfindingCourbePlanif.computeNewPath(state.cloneGameState(), arrivee, true, DirectionStrategy.FASTEST);
+		pathfindingCourbePlanif.computeNewPath(chrono, arrivee, true, DirectionStrategy.FASTEST);
 		log.debug(cheminPlanif.size());
 		
 		while(!cheminPlanif.isEmpty())
 		{
 			ArcCourbe arc = cheminPlanif.poll();
-			System.out.println("arc avec "+arc.arcselems[0]);
 			for(int i = 0; i < ClothoidesComputer.NB_POINTS; i++)
 			{
 				System.out.println(arc.arcselems[i].getPosition()+" "+arc.arcselems[i].courbure);
@@ -101,7 +105,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
 		clotho.getTrajectoire(arc[3], VitesseCourbure.COURBURE_IDENTIQUE, Speed.STANDARD, arc[4]);
 		clotho.getTrajectoire(arc[4], VitesseCourbure.COURBURE_IDENTIQUE, Speed.STANDARD, arc[5]);
 		clotho.getTrajectoire(arc[5], VitesseCourbure.GAUCHE_3_REBROUSSE, Speed.STANDARD, arc[6]);
-		clotho.getTrajectoire(arc[6], VitesseCourbure.GAUCHE_2, Speed.STANDARD, arc[7]);
+		clotho.getTrajectoire(arc[6], VitesseCourbure.GAUCHE_1, Speed.STANDARD, arc[7]);
 		clotho.getTrajectoire(arc[7], VitesseCourbure.GAUCHE_3, Speed.STANDARD, arc[8]);
 		clotho.getTrajectoire(arc[8], VitesseCourbure.DROITE_3_REBROUSSE, Speed.STANDARD, arc[9]);
 		clotho.getTrajectoire(arc[9], VitesseCourbure.DROITE_1, Speed.STANDARD, arc[10]);

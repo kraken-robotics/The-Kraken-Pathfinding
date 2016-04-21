@@ -6,6 +6,7 @@ import pathfinding.RealGameState;
 import pathfinding.dstarlite.DStarLite;
 import robot.Cinematique;
 import robot.DirectionStrategy;
+import robot.RobotChrono;
 import robot.Speed;
 import utils.Log;
 
@@ -47,7 +48,7 @@ public class AStarCourbeDynamique extends AStarCourbe
 		depart.init();
 		state.copyAStarCourbe(depart.state);
 		
-		dstarlite.computeNewPath(depart.state.robot.getCinematique().getPosition(), arrivee.getPosition());
+		dstarlite.computeNewPath(((RobotChrono)depart.state.robot).getCinematique().getPosition(), arrivee.getPosition());
 		process();
 	}
 	
@@ -60,7 +61,7 @@ public class AStarCourbeDynamique extends AStarCourbe
 		}
 		vitesseMax = Speed.REPLANIF;
 		
-		dstarlite.updatePath(depart.state.robot.getCinematique().getPosition());
+		dstarlite.updatePath(((RobotChrono)depart.state.robot).getCinematique().getPosition());
 		chemin.clear();
 		process();
 	}

@@ -3,6 +3,7 @@ package pathfinding.astarCourbe;
 import obstacles.MoteurPhysique;
 import pathfinding.VitesseCourbure;
 import robot.DirectionStrategy;
+import robot.RobotChrono;
 import robot.Speed;
 
 import java.util.Arrays;
@@ -32,7 +33,7 @@ public class AStarCourbeArcManager implements Service
 	private int courbureMax;
 	private DirectionStrategy directionstrategyactuelle;
 	private List<VitesseCourbure> listeVitesse = Arrays.asList(VitesseCourbure.values());
-	
+	private final static int TEMPS_REBROUSSEMENT = 500;
 	private ListIterator<VitesseCourbure> iterator = listeVitesse.listIterator();
 	
 	public AStarCourbeArcManager(Log log, MoteurPhysique moteur, HeuristiqueCourbe heuristique, ClothoidesComputer clotho)
@@ -65,8 +66,11 @@ public class AStarCourbeArcManager implements Service
 	public int distanceTo(AStarCourbeNode node)
 	{
 		// TODO : vérifier les hooks
-		node.state.robot.suitArcCourbe(node.came_from_arc);
-		return (int) (ClothoidesComputer.DISTANCE_ARC_COURBE / node.came_from_arc.arcselems[0].vitesseTranslation);
+		((RobotChrono)node.state.robot).suitArcCourbe(node.came_from_arc);
+		int out = (int) (ClothoidesComputer.DISTANCE_ARC_COURBE / node.came_from_arc.arcselems[0].vitesseTranslation);
+		if(node.came_from_arc.rebrousse)
+			out += TEMPS_REBROUSSEMENT;
+		return out;
 		// TODO : si, il faut les exécuter
 		/*
 		 * Il n'y a pas d'utilisation de hook.
@@ -93,7 +97,7 @@ public class AStarCourbeArcManager implements Service
 					vitesseMax,
 					successeur.came_from_arc);
 		else // pas de prédécesseur
-			clotho.getTrajectoire(current.state.robot,
+			clotho.getTrajectoire((RobotChrono)current.state.robot,
 					iterator.next(),
 					vitesseMax,
 					successeur.came_from_arc);
@@ -106,11 +110,21 @@ public class AStarCourbeArcManager implements Service
      */
     private final boolean acceptable(VitesseCourbure vitesse)
     {
-    	// Pas le droit de rebrousser chemin, sauf quand on est en "fastest"
-    	if(vitesse.rebrousse && directionstrategyactuelle != DirectionStrategy.FASTEST)
+    	// il y a un problème si :
+    	// - on veut rebrousser chemin
+    	// ET
+    	// - si :
+    	//      - on n'est pas en fast, donc pas d'autorisation
+    	//      ET
+    	//      - on est dans la bonne direction, donc pas d'autorisation exceptionnelle de se retourner
+    	if(vitesse.rebrousse && (directionstrategyactuelle != DirectionStrategy.FASTEST && directionstrategyactuelle.isPossible(((RobotChrono)current.state.robot).getCinematique().enMarcheAvant)))
+    		return false;
+    	
+    	// Si on ne rebrousse pas chemin alors que c'est nécessaire
+    	if(!vitesse.rebrousse && !directionstrategyactuelle.isPossible(((RobotChrono)current.state.robot).getCinematique().enMarcheAvant))
     		return false;
 
-    	double courbureFuture = current.state.robot.getCinematique().courbure + vitesse.vitesse;
+    	double courbureFuture = ((RobotChrono)current.state.robot).getCinematique().courbure + vitesse.vitesse;
     	return courbureFuture >= -courbureMax && courbureFuture <= courbureMax;
     }
     
@@ -165,7 +179,7 @@ public class AStarCourbeArcManager implements Service
 	 */
 	public int heuristicCost(AStarCourbeNode successeur)
 	{
-		return heuristique.heuristicCostCourbe(successeur.state.robot.getCinematique().getPosition());
+		return heuristique.heuristicCostCourbe(((RobotChrono)successeur.state.robot).getCinematique().getPosition());
 	}
 
 }
