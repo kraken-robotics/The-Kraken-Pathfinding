@@ -2,7 +2,6 @@ package robot;
 
 import java.util.ArrayList;
 
-import permissions.ReadOnly;
 import hook.Hook;
 import container.Service;
 import exceptions.FinMatchException;
@@ -10,11 +9,10 @@ import exceptions.UnableToMoveException;
 import utils.ConfigInfo;
 import utils.Log;
 import utils.Config;
-import utils.Vec2;
 
 /**
  * Classe abstraite du robot, dont héritent RobotVrai et RobotChrono
- * @author PF, marsu
+ * @author PF
  */
 
 public abstract class Robot implements Service 
@@ -33,7 +31,7 @@ public abstract class Robot implements Service
     public abstract void sleep(long duree, ArrayList<Hook> hooks) throws FinMatchException;
     public abstract long getTempsDepuisDebutMatch();
 
-    protected Cinematique cinematique = new Cinematique();
+    protected CinematiqueSansVitesse cinematique;
     protected volatile boolean symetrie;
 	protected volatile boolean matchDemarre = false;
 	protected int pointsObtenus = 0;
@@ -49,7 +47,7 @@ public abstract class Robot implements Service
 
 	public RobotChrono cloneIntoRobotChrono()
 	{
-		RobotChrono cloned_robotchrono = new RobotChrono(log);
+		RobotChrono cloned_robotchrono = new RobotChrono(log, cinematique);
 		copy(cloned_robotchrono);
 		return cloned_robotchrono;
 	}

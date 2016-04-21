@@ -43,20 +43,11 @@ public class RobotChrono extends Robot
 		paliers[6] = 84000;
 	}
 	
-	public RobotChrono(Log log)
+	RobotChrono(Log log, CinematiqueSansVitesse cinematique)
 	{
 		super(log);
+		this.cinematique = new CinematiqueSansVitesse(cinematique);
 	}
-	
-//	@Override
-//	public void setPositionOrientationSTM(Vec2<ReadOnly> position, double orientation) {
-//		Vec2.copy(position, this.position);
-//		this.orientation = orientation;
-//		isPositionPathfindingActive = false;
-//		positionPathfindingAnterieure = null;
-//		positionPathfinding = null;
-//		date += approximateSerialLatency;
-//	}
 
 	/**
 	 * Mise à jour permettant de modifier, pour RobotChrono, la date limite de la recherche stratégique
@@ -123,18 +114,6 @@ public class RobotChrono extends Robot
 		this.date += duree;
 		checkHooks(cinematique.getPosition(), cinematique.getPosition(), hooks);
 	}
-    
-/*    @Override
-    public void desactiveAsservissement()
-    {
-		date += approximateSerialLatency;
-    }
-
-    @Override
-    public void activeAsservissement()
-    {
-		date += approximateSerialLatency;
-    }*/
 
 	/**
 	 * On déclenche tous les hooks entre le point A et le point B.
@@ -188,7 +167,7 @@ public class RobotChrono extends Robot
 		came_from_arc.arcselems[ClothoidesComputer.NB_POINTS-1].copy(cinematique);
 	}
 
-	public Cinematique getCinematique()
+	public CinematiqueSansVitesse getCinematique()
 	{
 		return cinematique;
 	}

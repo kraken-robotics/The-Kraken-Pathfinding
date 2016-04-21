@@ -1,7 +1,6 @@
 package pathfinding;
 
 import obstacles.memory.ObstaclesIteratorFutur;
-import robot.Robot;
 import robot.RobotChrono;
 import exceptions.FinMatchException;
 import table.Table;

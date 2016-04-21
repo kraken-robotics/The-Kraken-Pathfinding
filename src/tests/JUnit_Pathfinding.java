@@ -23,6 +23,7 @@ import permissions.ReadOnly;
 import robot.Cinematique;
 import robot.DirectionStrategy;
 import robot.RobotReal;
+import robot.Speed;
 import tests.graphicLib.Fenetre;
 import utils.Config;
 import utils.Sleep;
@@ -61,9 +62,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
 	@Test
     public void test_pathfinding_planif() throws Exception
     {
-		Cinematique arrivee = new Cinematique();
-		arrivee.getPositionEcriture().x = 1000;
-		arrivee.getPositionEcriture().y = 500;
+		Cinematique arrivee = new Cinematique(1000, 500, 0, true, 0, 0, 0);
 		log.debug(cheminPlanif.size());
 		pathfindingCourbePlanif.computeNewPath(state.cloneGameState(), arrivee, true, DirectionStrategy.FASTEST);
 		log.debug(cheminPlanif.size());
@@ -78,33 +77,28 @@ public class JUnit_Pathfinding extends JUnit_Test {
 		for(int i = 0; i < nbArc; i++)
 			arc[i] = new ArcCourbe();
 
-		Cinematique c = new Cinematique();
-		c.getPositionEcriture().x = 0;
-		c.getPositionEcriture().y = 1000;
-		c.enMarcheAvant = true;
-		c.orientation = Math.PI/2;
-		c.courbure = 0;
+		Cinematique c = new Cinematique(0, 1000, Math.PI/2, true, 0, 0, 0);
 		
-		clotho.getTrajectoire(c, VitesseCourbure.COURBURE_IDENTIQUE, arc[0]);
-		clotho.getTrajectoire(arc[0], VitesseCourbure.GAUCHE_3, arc[1]);
-		clotho.getTrajectoire(arc[1], VitesseCourbure.COURBURE_IDENTIQUE, arc[2]);
-		clotho.getTrajectoire(arc[2], VitesseCourbure.GAUCHE_1, arc[3]);
-		clotho.getTrajectoire(arc[3], VitesseCourbure.COURBURE_IDENTIQUE, arc[4]);
-		clotho.getTrajectoire(arc[4], VitesseCourbure.COURBURE_IDENTIQUE, arc[5]);
-		clotho.getTrajectoire(arc[5], VitesseCourbure.GAUCHE_3_REBROUSSE, arc[6]);
-		clotho.getTrajectoire(arc[6], VitesseCourbure.GAUCHE_2, arc[7]);
-		clotho.getTrajectoire(arc[7], VitesseCourbure.GAUCHE_3, arc[8]);
-		clotho.getTrajectoire(arc[8], VitesseCourbure.DROITE_3_REBROUSSE, arc[9]);
-		clotho.getTrajectoire(arc[9], VitesseCourbure.DROITE_1, arc[10]);
-		clotho.getTrajectoire(arc[10], VitesseCourbure.DROITE_1, arc[11]);
-		clotho.getTrajectoire(arc[11], VitesseCourbure.DROITE_1, arc[12]);
-		clotho.getTrajectoire(arc[12], VitesseCourbure.DROITE_1, arc[13]);
-		clotho.getTrajectoire(arc[13], VitesseCourbure.DROITE_1, arc[14]);
-		clotho.getTrajectoire(arc[14], VitesseCourbure.GAUCHE_3, arc[15]);
+		clotho.getTrajectoire(c, VitesseCourbure.COURBURE_IDENTIQUE, Speed.STANDARD, arc[0]);
+		clotho.getTrajectoire(arc[0], VitesseCourbure.GAUCHE_3, Speed.STANDARD, arc[1]);
+		clotho.getTrajectoire(arc[1], VitesseCourbure.COURBURE_IDENTIQUE, Speed.STANDARD, arc[2]);
+		clotho.getTrajectoire(arc[2], VitesseCourbure.GAUCHE_1, Speed.STANDARD, arc[3]);
+		clotho.getTrajectoire(arc[3], VitesseCourbure.COURBURE_IDENTIQUE, Speed.STANDARD, arc[4]);
+		clotho.getTrajectoire(arc[4], VitesseCourbure.COURBURE_IDENTIQUE, Speed.STANDARD, arc[5]);
+		clotho.getTrajectoire(arc[5], VitesseCourbure.GAUCHE_3_REBROUSSE, Speed.STANDARD, arc[6]);
+		clotho.getTrajectoire(arc[6], VitesseCourbure.GAUCHE_2, Speed.STANDARD, arc[7]);
+		clotho.getTrajectoire(arc[7], VitesseCourbure.GAUCHE_3, Speed.STANDARD, arc[8]);
+		clotho.getTrajectoire(arc[8], VitesseCourbure.DROITE_3_REBROUSSE, Speed.STANDARD, arc[9]);
+		clotho.getTrajectoire(arc[9], VitesseCourbure.DROITE_1, Speed.STANDARD, arc[10]);
+		clotho.getTrajectoire(arc[10], VitesseCourbure.DROITE_1, Speed.STANDARD, arc[11]);
+		clotho.getTrajectoire(arc[11], VitesseCourbure.DROITE_1, Speed.STANDARD, arc[12]);
+		clotho.getTrajectoire(arc[12], VitesseCourbure.DROITE_1, Speed.STANDARD, arc[13]);
+		clotho.getTrajectoire(arc[13], VitesseCourbure.DROITE_1, Speed.STANDARD, arc[14]);
+		clotho.getTrajectoire(arc[14], VitesseCourbure.GAUCHE_3, Speed.STANDARD, arc[15]);
 	
 		for(int a = 0; a < nbArc; a++)	
 		{
-			System.out.println("arc "+a+" avec "+arc[a].vitesseCourbure);
+			System.out.println("arc "+a+" avec "+arc[a].arcselems[0]);
 			for(int i = 0; i < ClothoidesComputer.NB_POINTS; i++)
 			{
 /*				if(i > 0)
@@ -124,11 +118,11 @@ public class JUnit_Pathfinding extends JUnit_Test {
 				Assert.assertEquals(arc[0].arcselems[ClothoidesComputer.NB_POINTS - 1].getPositionEcriture().x, 0);
 				Assert.assertEquals(arc[0].arcselems[ClothoidesComputer.NB_POINTS - 1].getPositionEcriture().y, 1000+(int)ClothoidesComputer.DISTANCE_ARC_COURBE);
 			}
-			if(arc[a].vitesseCourbure.rebrousse)
+/*			else if(arc[a].arcselems[0].enMarcheAvant != arc[a-1].arcselems[0].enMarcheAvant)
 				Assert.assertEquals(arc[a].vitesseCourbure.vitesse / 1000. * ClothoidesComputer.DISTANCE_ARC_COURBE, arc[a].arcselems[ClothoidesComputer.NB_POINTS-1].courbure, 0.1);
 			else if(a > 0)
 				Assert.assertEquals(arc[a].vitesseCourbure.vitesse / 1000. * ClothoidesComputer.DISTANCE_ARC_COURBE + arc[a-1].arcselems[ClothoidesComputer.NB_POINTS-1].courbure, arc[a].arcselems[ClothoidesComputer.NB_POINTS-1].courbure, 0.1);
-		}
+*/		}
 		
     }
 	
@@ -147,16 +141,6 @@ public class JUnit_Pathfinding extends JUnit_Test {
 		pathfinding.updatePath(new Vec2<ReadOnly>(-800,1300));
 		pathfinding.itineraireBrut();
 		log.debug("RECALCUL");
-    }
-
-	@Test
-    public void test_chemin_thetastar() throws Exception
-    {
-		robot.setPositionOrientationCourbureDirection(new Vec2<ReadOnly>(-1000, 200), 0, 0, true);
-		long avant = System.currentTimeMillis();
-		for(int i = 0; i < 10000; i++)
-//		pathfindingCourbe.computeNewPath(new Vec2<ReadOnly>(1000, 400), true, DirectionStrategy.FASTEST);
-		log.debug("Durée d'une recherche : "+(System.currentTimeMillis() - avant)/10000.+" ms");
     }
 
 }

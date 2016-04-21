@@ -4,13 +4,12 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.PriorityQueue;
 
-import pathfinding.ChronoGameState;
 import pathfinding.dstarlite.GridSpace;
 import container.Service;
 import exceptions.FinMatchException;
-import exceptions.PathfindingException;
 import robot.Cinematique;
 import robot.DirectionStrategy;
+import robot.Speed;
 import tests.graphicLib.Fenetre;
 import utils.Config;
 import utils.Log;
@@ -36,7 +35,8 @@ public abstract class AStarCourbe implements Service
 	protected Cinematique arrivee;
 	protected AStarCourbeNode depart;
 	protected Collection<ArcCourbe> chemin;
-
+	protected Speed vitesseMax;
+	
 	/**
 	 * Comparateur de noeud utilisé par la priority queue
 	 * @author pf
@@ -137,7 +137,7 @@ public abstract class AStarCourbe implements Service
 
 				successeur = memorymanager.getNewNode();
 
-				arcmanager.next(successeur);
+				arcmanager.next(successeur, vitesseMax);
 				 
 				successeur.g_score = current.g_score + arcmanager.distanceTo(successeur);
 				successeur.f_score = successeur.g_score + arcmanager.heuristicCost(successeur);

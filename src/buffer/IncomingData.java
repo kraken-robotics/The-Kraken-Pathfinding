@@ -1,7 +1,6 @@
 package buffer;
 
-import permissions.ReadOnly;
-import utils.Vec2;
+import robot.CinematiqueSansVitesse;
 
 /**
  * Un groupe de mesures qui proviennent des capteurs
@@ -11,17 +10,14 @@ import utils.Vec2;
 
 public class IncomingData
 {
-	public Vec2<ReadOnly> positionRobot;
-	public double orientationRobot;
-	public boolean enMarcheAvant;
+	public CinematiqueSansVitesse cinematique;
 	/** Ce que voit chacun des capteurs */
 	public int[] mesures;
 	
-	public IncomingData(int[] mesures, Vec2<ReadOnly> positionRobot, double orientationRobot, boolean enMarcheAvant)
+	public IncomingData(int[] mesures, CinematiqueSansVitesse cinematique)
 	{
 		this.mesures = mesures;
-		this.positionRobot = positionRobot;
-		this.orientationRobot = orientationRobot;
+		this.cinematique = cinematique;
 	}
 	
 }

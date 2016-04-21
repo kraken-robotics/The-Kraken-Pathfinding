@@ -6,6 +6,7 @@ import pathfinding.RealGameState;
 import pathfinding.dstarlite.DStarLite;
 import robot.Cinematique;
 import robot.DirectionStrategy;
+import robot.Speed;
 import utils.Config;
 import utils.Log;
 
@@ -40,7 +41,7 @@ public class AStarCourbeDynamique extends AStarCourbe
 	{
 //		if(Config.graphicAStarCourbe)
 //			fenetre.setColor(arrivee, Fenetre.Couleur.VIOLET);
-
+		vitesseMax = Speed.STANDARD;
 		this.directionstrategyactuelle = directionstrategy;
 		arcmanager.setEjecteGameElement(ejecteGameElement);
 		this.arrivee = arrivee;
@@ -61,6 +62,7 @@ public class AStarCourbeDynamique extends AStarCourbe
 			depart.init();
 			state.copyAStarCourbe(depart.state);
 		}
+		vitesseMax = Speed.REPLANIF;
 		
 		dstarlite.updatePath(depart.state.robot.getCinematique().getPosition());
 		chemin.clear();

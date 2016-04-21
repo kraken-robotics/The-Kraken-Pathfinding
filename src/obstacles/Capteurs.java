@@ -126,8 +126,8 @@ public class Capteurs implements Service {
 	 */
 	public void updateObstaclesMobiles(IncomingData data)
 	{
-		double orientationRobot = data.orientationRobot;
-		Vec2<ReadOnly> positionRobot = data.positionRobot;
+		double orientationRobot = data.cinematique.orientation;
+		Vec2<ReadOnly> positionRobot = data.cinematique.getPosition();
 		
 		/**
 		 * On prend le contrôle de gridspace. Ainsi, la mise à jour du pathfinding se fera quand tous les obstacles auront été ajoutés

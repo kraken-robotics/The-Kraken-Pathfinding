@@ -421,13 +421,13 @@ public class DataForSerialOutput implements Service
 	public synchronized void envoieArcCourbe(ArcCourbe arc)
 	{
 		if(Config.debugSerie)
-			log.debug("Envoi d'un arc "+arc.vitesseCourbure);
+			log.debug("Envoi d'un arc "+arc.arcselems[0]);
 
 		for(int i = 0; i < arc.arcselems.length; i++)
 		{
 			log.debug(i);
 			byte[] out = new byte[2+9];
-			if(arc.vitesseCourbure.rebrousse && i == 0)
+			if(i != 0 && arc.arcselems[i].enMarcheAvant != arc.arcselems[i - 1].enMarcheAvant)
 				out[COMMANDE] = SerialProtocol.OUT_SEND_ARC_ARRET.code;
 			else
 				out[COMMANDE] = SerialProtocol.OUT_SEND_ARC.code;

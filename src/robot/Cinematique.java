@@ -1,65 +1,36 @@
 package robot;
 
-import permissions.ReadOnly;
-import permissions.ReadWrite;
-import utils.Vec2;
-
 /**
  * Une structure qui regroupe des infos de cinématique
  * @author pf
  *
  */
 
-public class Cinematique
+public class Cinematique extends CinematiqueSansVitesse
 {
-	private final Vec2<ReadWrite> position = new Vec2<ReadWrite>();
-	public volatile double orientation;
-	public volatile boolean enMarcheAvant;
-	public volatile double courbure;
 	public volatile double vitesseTranslation;
 	public volatile double vitesseRotation;
 	
-	public final Vec2<ReadOnly> getPosition()
+	public Cinematique(CinematiqueSansVitesse c, double vitesseTranslation, double vitesseRotation)
 	{
-		return position.getReadOnly();
+		super(c);
+		this.vitesseRotation = vitesseRotation;
+		this.vitesseTranslation = vitesseTranslation;
 	}
-
-	public final Vec2<ReadWrite> getPositionEcriture()
+	
+	public Cinematique(int x, int y, double orientation, boolean enMarcheAvant, double courbure, double vitesseTranslation, double vitesseRotation)
 	{
-		return position;
+		super(x, y, orientation, enMarcheAvant, courbure);
+		this.vitesseTranslation = vitesseTranslation;
+		this.vitesseRotation = vitesseRotation;
 	}
-
-	/**
-	 * Renvoie vrai si this est proche de autre
-	 * @param autre
-	 * @return
-	 */
-	public boolean estProche(Cinematique autre)
-	{
-		System.out.println("Distance : "+position.squaredDistance(autre.position));
-		return position.squaredDistance(autre.position) < 50*50; // TODO écrire
-	}
-
-	/**
-	 * Renvoie vrai si this est proche de autre. Plus laxiste que "estProche"
-	 * @param autre
-	 * @return
-	 */
-	public boolean estProcheUrgence(Cinematique autre)
-	{
-		return position.squaredDistance(autre.position) < 50*50; // TODO écrire
-	}
-
 	/**
 	 * Copie this dans autre
 	 * @param autre
 	 */
 	public void copy(Cinematique autre)
 	{
-    	Vec2.copy(position.getReadOnly(), autre.position);
-    	autre.orientation = orientation;
-    	autre.enMarcheAvant = enMarcheAvant;
-    	autre.courbure = courbure;
+		super.copy(autre);
     	autre.vitesseRotation = vitesseRotation;
     	autre.vitesseTranslation = vitesseTranslation;
 	}
@@ -70,9 +41,4 @@ public class Cinematique
 		vitesseTranslation = speed.translationalSpeed;
 	}
 	
-	@Override
-	public String toString()
-	{
-		return position+", "+orientation;
-	}
 }

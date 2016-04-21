@@ -3,6 +3,7 @@ package pathfinding.astarCourbe;
 import obstacles.MoteurPhysique;
 import pathfinding.VitesseCourbure;
 import robot.DirectionStrategy;
+import robot.Speed;
 
 import java.util.Arrays;
 import java.util.List;
@@ -65,7 +66,7 @@ public class AStarCourbeArcManager implements Service
 	{
 		// TODO : vérifier les hooks
 		node.state.robot.suitArcCourbe(node.came_from_arc);
-		System.out.println(ClothoidesComputer.DISTANCE_ARC_COURBE+", "+node.came_from_arc.arcselems[0].vitesseTranslation);
+		System.out.println(ClothoidesComputer.DISTANCE_ARC_COURBE+", "+node.came_from_arc.arcselems[0].vitesseTranslation+", ");
 		return (int) (ClothoidesComputer.DISTANCE_ARC_COURBE / node.came_from_arc.arcselems[0].vitesseTranslation);
 		// TODO : si, il faut les exécuter
 		/*
@@ -84,16 +85,18 @@ public class AStarCourbeArcManager implements Service
 	 * Fournit le prochain successeur. On suppose qu'il existe
 	 * @param successeur
 	 */
-    public void next(AStarCourbeNode successeur)
+    public void next(AStarCourbeNode successeur, Speed vitesseMax)
     {
 		current.state.copyAStarCourbe(successeur.state);
 		if(current.came_from_arc != null)
 			clotho.getTrajectoire(current.came_from_arc,
 					iterator.next(),
+					vitesseMax,
 					successeur.came_from_arc);
 		else // pas de prédécesseur
 			clotho.getTrajectoire(current.state.robot,
 					iterator.next(),
+					vitesseMax,
 					successeur.came_from_arc);
     }
     

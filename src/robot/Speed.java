@@ -14,6 +14,9 @@ public enum Speed
     // On avance moins vite si l'on veut percuter un mur.
     INTO_WALL(10, 10),
     
+    // Vitesse du robot lors d'une replanification, plus lent que la vitesse standard
+    REPLANIF(10,10),
+    
     SLOW(10, 10);
     
     public static final int translationStopDuration = 200; // le temps de s'arrêter en translation
@@ -41,7 +44,6 @@ public enum Speed
     	this.rotationalSpeed = rotationalSpeed;
     	invertedTranslationalSpeed = 1. / translationalSpeed;
     	invertedRotationalSpeed = 1. / rotationalSpeed;
-
     }
    
 }

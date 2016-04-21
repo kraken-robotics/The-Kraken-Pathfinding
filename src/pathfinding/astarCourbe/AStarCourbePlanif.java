@@ -7,6 +7,7 @@ import container.Service;
 import exceptions.PathfindingException;
 import robot.Cinematique;
 import robot.DirectionStrategy;
+import robot.Speed;
 import utils.Config;
 import utils.Log;
 
@@ -44,7 +45,8 @@ public class AStarCourbePlanif extends AStarCourbe implements Service
 			depart.state = stateDepart.cloneGameState();
 		else
 			stateDepart.copyAStarCourbe(depart.state);
-		
+		vitesseMax = Speed.STANDARD;
+
 		process();
 		
 		if(Config.graphicAStarCourbe)

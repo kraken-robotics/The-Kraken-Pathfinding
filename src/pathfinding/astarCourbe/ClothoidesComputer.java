@@ -13,7 +13,9 @@ import pathfinding.VitesseCourbure;
 import permissions.ReadOnly;
 import permissions.ReadWrite;
 import robot.Cinematique;
+import robot.CinematiqueSansVitesse;
 import robot.RobotChrono;
+import robot.Speed;
 import tests.graphicLib.Fenetre;
 import utils.Config;
 import utils.Log;
@@ -115,15 +117,21 @@ public class ClothoidesComputer implements Service
 		}
 	}
 
-	public void getTrajectoire(ArcCourbe depart, VitesseCourbure vitesse, ArcCourbe modified)
+	public void getTrajectoire(ArcCourbe depart, VitesseCourbure vitesse, Speed vitesseMax, ArcCourbe modified)
 	{
 		Cinematique last = depart.arcselems[NB_POINTS - 1];
-		getTrajectoire(last, vitesse, modified);
+		getTrajectoire(last, vitesse, vitesseMax, modified);
 	}
 	
-	public final void getTrajectoire(RobotChrono robot, VitesseCourbure vitesse, ArcCourbe modified)
+	/**
+	 * Première trajectoire. On considère que la vitesse initiale du robot est nulle
+	 * @param robot
+	 * @param vitesse
+	 * @param modified
+	 */
+	public final void getTrajectoire(RobotChrono robot, VitesseCourbure vitesse, Speed vitesseMax, ArcCourbe modified)
 	{
-		getTrajectoire(robot.getCinematique(), vitesse, modified);
+		getTrajectoire(robot.getCinematique(), vitesse, vitesseMax, modified);
 	}
 	
 	/**
@@ -137,7 +145,7 @@ public class ClothoidesComputer implements Service
 	 * @param distance
 	 * @return
 	 */
-	public final void getTrajectoire(Cinematique cinematiqueInitiale, VitesseCourbure vitesse, ArcCourbe modified)
+	public final void getTrajectoire(CinematiqueSansVitesse cinematiqueInitiale, VitesseCourbure vitesse, Speed vitesseMax, ArcCourbe modified)
 	{
 		if(vitesse.rebrousse)
 		{
@@ -147,7 +155,6 @@ public class ClothoidesComputer implements Service
 		}
 		else
 			modified.arcselems[0].enMarcheAvant = cinematiqueInitiale.enMarcheAvant;
-		modified.vitesseCourbure = vitesse;
 		
 		// si la dérivée de la courbure est nulle, on est dans le cas particulier d'une trajectoire rectiligne ou circulaire
 		if(vitesse.vitesse == 0)
@@ -198,6 +205,11 @@ public class ClothoidesComputer implements Service
  				orientationClotho = - orientationClotho;
 			modified.arcselems[i].orientation = baseOrientation + orientationClotho;
 			modified.arcselems[i].courbure = sDepart * vitesse.squaredRootVitesse;
+			
+			// TODO : doit dépendre de la courbure !
+			modified.arcselems[i].vitesseRotation = vitesseMax.rotationalSpeed;
+			modified.arcselems[i].vitesseTranslation = vitesseMax.translationalSpeed;
+			
  			if(!vitesse.positif)
  				modified.arcselems[i].courbure = - modified.arcselems[i].courbure;
 		}

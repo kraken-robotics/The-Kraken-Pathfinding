@@ -9,6 +9,7 @@ import enums.SerialProtocol;
 import permissions.ReadOnly;
 import requete.RequeteSTM;
 import requete.RequeteType;
+import robot.CinematiqueSansVitesse;
 import robot.RobotReal;
 import serie.SerialInterface;
 import table.GameElementNames;
@@ -188,34 +189,6 @@ public class ThreadSerialInput extends Thread implements Service
 								(lecture[PARAM+12] << 8) + lecture[PARAM+13],
 								(lecture[PARAM+14] << 8) + lecture[PARAM+15]));
 					}
-					else if((lecture[COMMANDE] & SerialProtocol.MASK_LAST_BIT.codeInt) == SerialProtocol.IN_XYO.codeInt)
-					{
-						lecture[index++] = serie.read(); // xy
-						lecture[index++] = serie.read(); // xy
-						lecture[index++] = serie.read(); // xy
-						lecture[index++] = serie.read(); // o
-						lecture[index++] = serie.read(); // o
-						lecture[index++] = serie.read(); // courbure
-
-						// Mauvais checksum. Annulation.
-						if(!verifieChecksum(lecture, index))
-							continue;
-
-						/**
-						 * Récupération de la position et de l'orientation
-						 */
-						int xRobot = lecture[PARAM] << 4;
-						xRobot += lecture[PARAM+1] >> 4;
-						xRobot -= 1500;
-						int yRobot = (lecture[PARAM+1] & 0x0F) << 8;
-						yRobot = yRobot + lecture[PARAM+2];
-						Vec2<ReadOnly> positionRobot = new Vec2<ReadOnly>(xRobot, yRobot);
-						double orientationRobot = ((lecture[PARAM+3] << 8) + lecture[PARAM+4]) / 1000.;
-						double courbure = lecture[PARAM+5] / 1000.;
-						boolean enMarcheAvant = lecture[COMMANDE] == SerialProtocol.IN_XYO.codeInt;
-						robot.setPositionOrientationCourbureDirection(positionRobot, orientationRobot, courbure, enMarcheAvant);
-
-					}
 					else if((lecture[COMMANDE] & SerialProtocol.MASK_LAST_BIT.codeInt) == SerialProtocol.IN_INFO_CAPTEURS.codeInt)
 					{
 						lecture[index++] = serie.read(); // xy
@@ -264,9 +237,10 @@ public class ThreadSerialInput extends Thread implements Service
 							}
 						}
 						log.debug("Le robot est en "+positionRobot+", orientation : "+orientationRobot);
-						robot.setPositionOrientationCourbureDirection(positionRobot, orientationRobot, courbure, enMarcheAvant);
+						CinematiqueSansVitesse c = new CinematiqueSansVitesse(positionRobot.x, positionRobot.y, orientationRobot, enMarcheAvant, courbure);
+						robot.setCinematique(c);
 						if(capteursOn)
-							buffer.add(new IncomingData(mesures, positionRobot, orientationRobot, enMarcheAvant));
+							buffer.add(new IncomingData(mesures, c));
 					}
 					
 					/**
