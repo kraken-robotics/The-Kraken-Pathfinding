@@ -1,4 +1,4 @@
-package requete;
+package robot.requete;
 
 import utils.Config;
 import utils.Log;

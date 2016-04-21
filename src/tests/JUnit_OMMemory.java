@@ -8,10 +8,10 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import permissions.ReadOnly;
 import utils.ConfigInfo;
 import utils.Sleep;
 import utils.Vec2;
+import utils.permissions.ReadOnly;
 import container.ServiceNames;
 
 /**

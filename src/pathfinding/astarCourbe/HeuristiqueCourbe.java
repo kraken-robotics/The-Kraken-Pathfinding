@@ -1,7 +1,7 @@
 package pathfinding.astarCourbe;
 
-import permissions.ReadOnly;
 import utils.Vec2;
+import utils.permissions.ReadOnly;
 
 /**
  * Interface pour l'heuristique du pathfinding courbe

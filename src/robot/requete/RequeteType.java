@@ -1,4 +1,4 @@
-package requete;
+package robot.requete;
 
 /**
  * Requête soulevée par le bas niveau

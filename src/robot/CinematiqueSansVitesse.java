@@ -1,8 +1,8 @@
 package robot;
 
-import permissions.ReadOnly;
-import permissions.ReadWrite;
 import utils.Vec2;
+import utils.permissions.ReadOnly;
+import utils.permissions.ReadWrite;
 
 /**
  * Une structure qui regroupe des infos de cinématique, sauf la vitesse

@@ -6,11 +6,11 @@ import java.util.PriorityQueue;
 
 import obstacles.types.ObstacleProximity;
 import pathfinding.astarCourbe.HeuristiqueCourbe;
-import permissions.ReadOnly;
 import tests.graphicLib.Fenetre;
 import utils.Config;
 import utils.Log;
 import utils.Vec2;
+import utils.permissions.ReadOnly;
 import container.Service;
 import exceptions.PathfindingException;
 

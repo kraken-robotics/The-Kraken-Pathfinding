@@ -1,6 +1,7 @@
 package container;
 
 import obstacles.Capteurs;
+import obstacles.IncomingDataBuffer;
 import obstacles.MoteurPhysique;
 import obstacles.memory.ObstaclesMemory;
 import obstacles.types.Obstacle;
@@ -10,8 +11,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import buffer.DataForSerialOutput;
-import buffer.IncomingDataBuffer;
 import debug.IncomingDataDebugBuffer;
 import pathfinding.CheminPathfinding;
 import pathfinding.CheminPlanif;
@@ -30,6 +29,7 @@ import exceptions.ContainerException;
 import exceptions.PointSortieException;
 import utils.*;
 import scripts.ScriptManager;
+import serie.DataForSerialOutput;
 import serie.SerialInterface;
 import serie.SerialSTM;
 import serie.SerialSimulation;
@@ -41,8 +41,8 @@ import threads.ThreadPathfinding;
 import threads.ThreadPeremption;
 import threads.ThreadSerialInput;
 import threads.ThreadSerialOutput;
-import requete.RequeteSTM;
 import robot.RobotReal;
+import robot.requete.RequeteSTM;
 
 
 /**
@@ -175,7 +175,6 @@ public class Container
 	{
 		if(showGraph && !serviceTo.equals(ServiceNames.LOG))
 		{
-			ArrayList<ServiceNames> postponed = new ArrayList<ServiceNames>();
 			ArrayList<ServiceNames> ok = new ArrayList<ServiceNames>();
 			ok.add(ServiceNames.CAPTEURS);
 			ok.add(ServiceNames.CONFIG);
@@ -198,16 +197,13 @@ public class Container
 			ok.add(ServiceNames.THREAD_CONFIG);
 
 			try {
-				if(postponed.contains(serviceTo))
-					fw.write(serviceTo+" [color=firebrick2, style=filled];\n");
-				else if(ok.contains(serviceTo))
+				if(ok.contains(serviceTo))
 					fw.write(serviceTo+" [color=grey80, style=filled];\n");
 				else
 					fw.write(serviceTo+";\n");
+
 				if(serviceFrom != null)
-				{
-					fw.write(serviceFrom+" -> "+serviceTo+";\n");					
-				}
+					fw.write(serviceFrom+" -> "+serviceTo+";\n");
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

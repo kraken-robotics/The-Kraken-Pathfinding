@@ -4,8 +4,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import permissions.ReadOnly;
-import permissions.ReadWrite;
 import container.ServiceNames;
 import enums.RobotColor;
 import exceptions.FinMatchException;
@@ -15,6 +13,8 @@ import robot.RobotReal;
 import robot.Speed;
 import utils.ConfigInfo;
 import utils.Vec2;
+import utils.permissions.ReadOnly;
+import utils.permissions.ReadWrite;
 
 /**
  * Tests unitaires sur Robot, RobotReal et RobotChrono

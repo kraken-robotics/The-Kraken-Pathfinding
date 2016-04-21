@@ -1,8 +1,8 @@
 package table;
 
 import obstacles.types.ObstacleCircular;
-import permissions.ReadOnly;
 import utils.Vec2;
+import utils.permissions.ReadOnly;
 
 /**
  * Enumérations contenant tous les éléments de jeux

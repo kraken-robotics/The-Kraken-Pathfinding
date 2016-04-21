@@ -6,8 +6,8 @@ import java.math.RoundingMode;
 import pathfinding.VitesseCourbure;
 import pathfinding.astarCourbe.AStarCourbeNode;
 import pathfinding.astarCourbe.ClothoidesComputer;
-import permissions.ReadOnly;
 import utils.Vec2;
+import utils.permissions.ReadOnly;
 
 /**
  * Obstacle formé par le robot lorsqu'il effectue une trajectoire courbe

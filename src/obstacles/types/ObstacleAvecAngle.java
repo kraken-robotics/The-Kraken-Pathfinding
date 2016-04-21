@@ -1,7 +1,7 @@
 package obstacles.types;
 
-import permissions.ReadOnly;
 import utils.Vec2;
+import utils.permissions.ReadOnly;
 
 /**
  * Classe abstraite d'obstacles qui possèdent une orientation

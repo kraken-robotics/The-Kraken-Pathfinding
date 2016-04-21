@@ -1,7 +1,6 @@
 package hook.types;
 
 import obstacles.types.ObstacleCircular;
-import permissions.ReadOnly;
 
 import java.util.ArrayList;
 
@@ -9,6 +8,7 @@ import enums.SerialProtocol;
 import hook.Hook;
 import utils.Log;
 import utils.Vec2;
+import utils.permissions.ReadOnly;
 
 /**
  * Hook se déclenchant si le robot est a une distance a un point de la table inférieure a un certain seuil

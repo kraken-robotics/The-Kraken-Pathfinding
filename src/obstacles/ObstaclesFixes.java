@@ -3,8 +3,8 @@ package obstacles;
 import obstacles.types.Obstacle;
 import obstacles.types.ObstacleCircular;
 import obstacles.types.ObstacleRectangular;
-import permissions.ReadOnly;
 import utils.Vec2;
+import utils.permissions.ReadOnly;
 
 /**
  * Enumération des obstacles fixes.

@@ -1,4 +1,4 @@
-package buffer;
+package obstacles;
 
 import java.util.LinkedList;
 import java.util.Queue;

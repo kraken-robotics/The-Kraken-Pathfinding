@@ -3,8 +3,8 @@ package tests;
 import org.junit.Test;
 import org.junit.Assert;
 
-import permissions.ReadWrite;
 import utils.Vec2;
+import utils.permissions.ReadWrite;
 
 /**
  * Tests unitaires pour Vec2<ReadWrite>

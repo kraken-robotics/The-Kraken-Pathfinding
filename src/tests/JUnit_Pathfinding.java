@@ -19,7 +19,6 @@ import pathfinding.astarCourbe.ArcCourbe;
 import pathfinding.astarCourbe.ClothoidesComputer;
 import pathfinding.dstarlite.DStarLite;
 import pathfinding.dstarlite.GridSpace;
-import permissions.ReadOnly;
 import robot.Cinematique;
 import robot.DirectionStrategy;
 import robot.RobotReal;
@@ -28,6 +27,7 @@ import tests.graphicLib.Fenetre;
 import utils.Config;
 import utils.Sleep;
 import utils.Vec2;
+import utils.permissions.ReadOnly;
 
 /**
  * Tests unitaires de la recherche de chemin.

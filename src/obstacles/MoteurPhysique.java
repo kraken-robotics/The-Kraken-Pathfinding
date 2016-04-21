@@ -5,13 +5,13 @@ import obstacles.types.ObstacleProximity;
 import obstacles.types.ObstacleRectangular;
 import pathfinding.ChronoGameState;
 import pathfinding.astarCourbe.AStarCourbeNode;
-import permissions.ReadOnly;
 import robot.RobotReal;
 import table.GameElementNames;
 import utils.Config;
 import utils.ConfigInfo;
 import utils.Log;
 import utils.Vec2;
+import utils.permissions.ReadOnly;
 import container.Service;
 import enums.Tribool;
 

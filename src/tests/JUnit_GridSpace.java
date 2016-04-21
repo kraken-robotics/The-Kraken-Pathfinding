@@ -9,11 +9,11 @@ import org.junit.Before;
 import org.junit.Test;
 
 import pathfinding.dstarlite.GridSpace;
-import permissions.ReadOnly;
 import container.ServiceNames;
 import utils.ConfigInfo;
 import utils.Sleep;
 import utils.Vec2;
+import utils.permissions.ReadOnly;
 
 /**
  * Tests unitaires de GridSpace

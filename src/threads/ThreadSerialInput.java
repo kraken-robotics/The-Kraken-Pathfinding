@@ -2,15 +2,12 @@ package threads;
 
 import java.io.IOException;
 
-import buffer.DataForSerialOutput;
-import buffer.IncomingData;
-import buffer.IncomingDataBuffer;
 import enums.SerialProtocol;
-import permissions.ReadOnly;
-import requete.RequeteSTM;
-import requete.RequeteType;
 import robot.CinematiqueSansVitesse;
 import robot.RobotReal;
+import robot.requete.RequeteSTM;
+import robot.requete.RequeteType;
+import serie.DataForSerialOutput;
 import serie.SerialInterface;
 import table.GameElementNames;
 import table.GameElementType;
@@ -19,6 +16,7 @@ import utils.Config;
 import utils.ConfigInfo;
 import utils.Log;
 import utils.Vec2;
+import utils.permissions.ReadOnly;
 import container.Service;
 import debug.IncomingDataDebug;
 import debug.IncomingDataDebugBuffer;
@@ -26,6 +24,8 @@ import enums.RobotColor;
 import enums.Tribool;
 import exceptions.MissingCharacterException;
 import hook.HookFactory;
+import obstacles.IncomingData;
+import obstacles.IncomingDataBuffer;
 import obstacles.types.ObstacleCircular;
 
 /**

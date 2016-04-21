@@ -2,12 +2,12 @@ package hook;
 
 import java.util.ArrayList;
 
-import permissions.ReadOnly;
 import exceptions.FinMatchException;
 import utils.ConfigInfo;
 import utils.Log;
 import utils.Config;
 import utils.Vec2;
+import utils.permissions.ReadOnly;
 
 /**
  * Classe-mère abstraite des hooks, utilisés pour la programmation évènementielle

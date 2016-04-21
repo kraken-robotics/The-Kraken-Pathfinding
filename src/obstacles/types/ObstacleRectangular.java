@@ -1,11 +1,11 @@
 package obstacles.types;
 
 import pathfinding.ChronoGameState;
-import permissions.ReadOnly;
-import permissions.ReadWrite;
 import exceptions.FinMatchException;
 import obstacles.ObstaclesFixes;
 import utils.Vec2;
+import utils.permissions.ReadOnly;
+import utils.permissions.ReadWrite;
 
 /**
  * Rectangle ayant subi une rotation.

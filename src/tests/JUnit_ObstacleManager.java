@@ -6,12 +6,12 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import permissions.ReadOnly;
 import container.ServiceNames;
 import table.GameElementNames;
 import table.Table;
 import utils.ConfigInfo;
 import utils.Vec2;
+import utils.permissions.ReadOnly;
 import enums.Tribool;
 
 /**

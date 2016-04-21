@@ -1,11 +1,11 @@
 package pathfinding.astarCourbe;
 
 import container.Service;
-import permissions.ReadOnly;
-import permissions.ReadWrite;
 import utils.Config;
 import utils.Log;
 import utils.Vec2;
+import utils.permissions.ReadOnly;
+import utils.permissions.ReadWrite;
 
 /**
  * Heuristique pour l'AStarCourbe pour la planification.

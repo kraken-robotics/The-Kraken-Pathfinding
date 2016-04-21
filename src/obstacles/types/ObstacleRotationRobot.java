@@ -1,7 +1,7 @@
 package obstacles.types;
 
-import permissions.ReadOnly;
 import utils.Vec2;
+import utils.permissions.ReadOnly;
 
 /**
  * Cet obstacle a une forme étrange, car c'est la forme du robot quand il tourne.

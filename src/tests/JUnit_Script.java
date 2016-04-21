@@ -6,11 +6,11 @@ import org.junit.Test;
 import container.ServiceNames;
 import pathfinding.ChronoGameState;
 import pathfinding.RealGameState;
-import permissions.ReadWrite;
 import robot.RobotReal;
 import scripts.ScriptAnticipableNames;
 import scripts.ScriptManager;
 import utils.Sleep;
+import utils.permissions.ReadWrite;
 
 /**
  * Test de script

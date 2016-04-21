@@ -3,7 +3,7 @@ package tests;
 import org.junit.Before;
 import org.junit.Test;
 
-import buffer.DataForSerialOutput;
+import serie.DataForSerialOutput;
 import serie.SerialSTM;
 import utils.Sleep;
 import container.ServiceNames;

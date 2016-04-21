@@ -1,6 +1,6 @@
 package threads;
 
-import buffer.DataForSerialOutput;
+import serie.DataForSerialOutput;
 import serie.SerialInterface;
 import utils.Config;
 import utils.Log;

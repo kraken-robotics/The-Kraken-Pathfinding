@@ -1,8 +1,8 @@
 package obstacles.types;
 
 import obstacles.ObstaclesFixes;
-import permissions.ReadOnly;
 import utils.Vec2;
+import utils.permissions.ReadOnly;
 
 /**
  * Classe abstraite regroupant les obstacles de collision formés d'une collection

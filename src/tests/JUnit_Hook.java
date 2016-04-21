@@ -6,10 +6,10 @@ import org.junit.Before;
 
 import pathfinding.ChronoGameState;
 import pathfinding.RealGameState;
-import permissions.ReadWrite;
 import container.ServiceNames;
 import robot.RobotChrono;
 import robot.RobotReal;
+import utils.permissions.ReadWrite;
 
 /**
  * Tests unitaires des hooks

@@ -2,9 +2,9 @@ package utils;
 
 import java.io.Serializable;
 
-import permissions.Permission;
-import permissions.ReadOnly;
-import permissions.ReadWrite;
+import utils.permissions.Permission;
+import utils.permissions.ReadOnly;
+import utils.permissions.ReadWrite;
 
 
 /**

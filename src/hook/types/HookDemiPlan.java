@@ -1,9 +1,9 @@
 package hook.types;
 
-import permissions.ReadOnly;
-import permissions.ReadWrite;
 import utils.Log;
 import utils.Vec2;
+import utils.permissions.ReadOnly;
+import utils.permissions.ReadWrite;
 
 import java.util.ArrayList;
 

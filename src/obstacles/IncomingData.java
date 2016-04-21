@@ -1,4 +1,4 @@
-package buffer;
+package obstacles;
 
 import robot.CinematiqueSansVitesse;
 

@@ -15,9 +15,9 @@ import obstacles.types.Obstacle;
 import obstacles.types.ObstacleCircular;
 import obstacles.types.ObstacleRectangular;
 import pathfinding.dstarlite.GridSpace;
-import permissions.ReadOnly;
 import utils.Config;
 import utils.Vec2;
+import utils.permissions.ReadOnly;
 import utils.Log;
 
 import java.awt.*;

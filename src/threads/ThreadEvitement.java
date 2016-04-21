@@ -2,10 +2,10 @@ package threads;
 
 import pathfinding.CheminPathfinding;
 import pathfinding.astarCourbe.ArcCourbe;
+import serie.DataForSerialOutput;
 import utils.Config;
 import utils.ConfigInfo;
 import utils.Log;
-import buffer.DataForSerialOutput;
 import container.Service;
 
 

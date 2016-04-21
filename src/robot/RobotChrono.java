@@ -4,11 +4,11 @@ import java.util.ArrayList;
 
 import pathfinding.astarCourbe.ArcCourbe;
 import pathfinding.astarCourbe.ClothoidesComputer;
-import permissions.ReadOnly;
-import permissions.ReadWrite;
 import hook.Hook;
 import utils.Log;
 import utils.Vec2;
+import utils.permissions.ReadOnly;
+import utils.permissions.ReadWrite;
 import exceptions.FinMatchException;
 
 /**

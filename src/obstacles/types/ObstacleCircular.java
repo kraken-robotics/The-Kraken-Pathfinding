@@ -1,8 +1,8 @@
 package obstacles.types;
 
-import permissions.ReadOnly;
-import permissions.ReadWrite;
 import utils.Vec2;
+import utils.permissions.ReadOnly;
+import utils.permissions.ReadWrite;
 
 /**
  * Obstacle circulaire

@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 
 import obstacles.types.ObstacleProximity;
-import permissions.ReadOnly;
 import utils.Config;
 import utils.ConfigInfo;
 import utils.Log;
 import utils.Vec2;
+import utils.permissions.ReadOnly;
 import container.Service;
 
 /**

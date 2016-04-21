@@ -1,17 +1,16 @@
 package obstacles;
 
 import obstacles.types.ObstacleProximity;
-import buffer.IncomingData;
 import container.Service;
 import enums.Tribool;
 import pathfinding.dstarlite.GridSpace;
-import permissions.ReadOnly;
-import permissions.ReadWrite;
 import table.GameElementNames;
 import utils.Config;
 import utils.ConfigInfo;
 import utils.Log;
 import utils.Vec2;
+import utils.permissions.ReadOnly;
+import utils.permissions.ReadWrite;
 
 /**
  * Cette classe contient les informations sur la situation

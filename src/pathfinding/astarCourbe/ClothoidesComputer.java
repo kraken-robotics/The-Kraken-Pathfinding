@@ -10,8 +10,6 @@ import java.math.RoundingMode;
 import container.Service;
 import obstacles.types.ObstacleRectangular;
 import pathfinding.VitesseCourbure;
-import permissions.ReadOnly;
-import permissions.ReadWrite;
 import robot.Cinematique;
 import robot.CinematiqueSansVitesse;
 import robot.RobotChrono;
@@ -20,6 +18,8 @@ import tests.graphicLib.Fenetre;
 import utils.Config;
 import utils.Log;
 import utils.Vec2;
+import utils.permissions.ReadOnly;
+import utils.permissions.ReadWrite;
 
 /**
  * Classe qui s'occupe de tous les calculs concernant les clothoïdes
