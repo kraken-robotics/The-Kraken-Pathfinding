@@ -68,25 +68,6 @@ public abstract class Robot implements Service
     	rc.positionGridSpace = getPositionGridSpace();
     }
 	
-	/**
-	 * Copie this dans rc. this reste inchangé.
-	 * Copie seulement ce qui importe pour le ThetaStar
-	 * En particulier, la position sous forme de Vec2 n'est pas copiée (elle y est
-	 * sous forme de gridpoint). Il n'y a pas non plus de copie du nombre de points obtenus.
-	 * 
-	 * @param rc
-	 */
-    public final void copyThetaStar(RobotChrono rc)
-    {
-    	// TODO utile ?
-/*    	rc.orientation = orientation;
-    	rc.enMarcheAvant = enMarcheAvant;
-    	rc.courbure = courbure;
-    	rc.vitesse = vitesse;
-    	rc.date = getTempsDepuisDebutMatch();
-    	rc.positionGridSpace = getPositionGridSpace();*/
-    }
-    
 	public synchronized void updateConfig(Config config)
 	{
 		dateDebutMatch = config.getLong(ConfigInfo.DATE_DEBUT_MATCH);
@@ -96,40 +77,7 @@ public abstract class Robot implements Service
 
 	public void useConfig(Config config)
 	{}
-
-/*	public Speed getVitesse() {
-		return vitesse;
-	}*/
-
-	public double getCourbure()
-	{
-		return cinematique.courbure;
-	}
 	
-	/**
-	 * Permet de savoir si on peut prendre des scripts de hook
-	 * @return
-	 */
-	public boolean isEnMarcheAvant()
-	{
-		return cinematique.enMarcheAvant;
-	}
-	
-    public Vec2<ReadOnly> getPosition()
-    {
-        return cinematique.position.getReadOnly();
-    }
-
-    public double getOrientation()
-    {
-        return cinematique.orientation;
-    }
-
-    public boolean isMarcheAvant()
-    {
-    	return cinematique.enMarcheAvant;
-    }
-
 	/**
 	 * Tourne par rapport à l'angle actuel.
 	 * @param angle
@@ -138,7 +86,7 @@ public abstract class Robot implements Service
 	 */
 	public void tournerRelatif(double angle, Speed vitesse) throws UnableToMoveException, FinMatchException
 	{
-		tourner(getOrientation() + angle, vitesse);
+		tourner(cinematique.orientation + angle, vitesse);
 	}
 
     /**

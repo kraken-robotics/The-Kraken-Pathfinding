@@ -62,8 +62,8 @@ public class JUnit_Pathfinding extends JUnit_Test {
     public void test_pathfinding_planif() throws Exception
     {
 		Cinematique arrivee = new Cinematique();
-		arrivee.position.x = 1000;
-		arrivee.position.y = 500;
+		arrivee.getPositionEcriture().x = 1000;
+		arrivee.getPositionEcriture().y = 500;
 		log.debug(cheminPlanif.size());
 		pathfindingCourbePlanif.computeNewPath(state.cloneGameState(), arrivee, true, DirectionStrategy.FASTEST);
 		log.debug(cheminPlanif.size());
@@ -79,8 +79,8 @@ public class JUnit_Pathfinding extends JUnit_Test {
 			arc[i] = new ArcCourbe();
 
 		Cinematique c = new Cinematique();
-		c.position.x = 0;
-		c.position.y = 1000;
+		c.getPositionEcriture().x = 0;
+		c.getPositionEcriture().y = 1000;
 		c.enMarcheAvant = true;
 		c.orientation = Math.PI/2;
 		c.courbure = 0;
@@ -112,17 +112,17 @@ public class JUnit_Pathfinding extends JUnit_Test {
 				else if(a > 0)
 					System.out.println(arc[a-1].arcselems[ClothoidesComputer.NB_POINTS - 1].point.distance(arc[a].arcselems[0].point));
 	*/				
-				System.out.println(arc[a].arcselems[i].position+" "+arc[a].arcselems[i].courbure);
+				System.out.println(arc[a].arcselems[i].getPosition()+" "+arc[a].arcselems[i].courbure);
 				if(Config.graphicObstacles)
 				{
 					Sleep.sleep(100);
-					Fenetre.getInstance().addObstacleEnBiais(new ObstacleRectangular(arc[a].arcselems[i].position.getReadOnly(), 10, 10, 0));
+					Fenetre.getInstance().addObstacleEnBiais(new ObstacleRectangular(arc[a].arcselems[i].getPosition(), 10, 10, 0));
 				}
 			}
 			if(a == 0)
 			{
-				Assert.assertEquals(arc[0].arcselems[ClothoidesComputer.NB_POINTS - 1].position.x, 0);
-				Assert.assertEquals(arc[0].arcselems[ClothoidesComputer.NB_POINTS - 1].position.y, 1000+(int)ClothoidesComputer.DISTANCE_ARC_COURBE);
+				Assert.assertEquals(arc[0].arcselems[ClothoidesComputer.NB_POINTS - 1].getPositionEcriture().x, 0);
+				Assert.assertEquals(arc[0].arcselems[ClothoidesComputer.NB_POINTS - 1].getPositionEcriture().y, 1000+(int)ClothoidesComputer.DISTANCE_ARC_COURBE);
 			}
 			if(arc[a].vitesseCourbure.rebrousse)
 				Assert.assertEquals(arc[a].vitesseCourbure.vitesse / 1000. * ClothoidesComputer.DISTANCE_ARC_COURBE, arc[a].arcselems[ClothoidesComputer.NB_POINTS-1].courbure, 0.1);

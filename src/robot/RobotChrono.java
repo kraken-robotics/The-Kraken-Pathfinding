@@ -20,12 +20,7 @@ public class RobotChrono extends Robot
 {
 	private static final long[] paliers = new long[7];
 	
-	protected final Vec2<ReadWrite> position = new Vec2<ReadWrite>();
 	protected int positionGridSpace;
-//	protected PathfindingNodes positionPathfinding;
-//	protected PathfindingNodes positionPathfindingAnterieure;
-//	protected boolean isPositionPathfindingActive = false;
-	protected double orientation;
 	private static int tempsMax = 90000;
    
 	// Date en millisecondes depuis le début du match.
@@ -36,7 +31,6 @@ public class RobotChrono extends Robot
 
 	private final static int sleepAvanceDuration = /*approximateSerialLatency+*/Speed.translationStopDuration;
 	private final static int sleepTourneDuration = /*approximateSerialLatency+*/Speed.rotationStopDuration;
-//	private final static int sleepTourneAndAvanceDuration = sleepTourneDuration + sleepAvanceDuration;
 	
 	static
 	{
@@ -83,10 +77,10 @@ public class RobotChrono extends Robot
 	{
 		date += Math.abs(distance)*vitesse.translationalSpeed + sleepAvanceDuration;
 	
-        Vec2<ReadWrite> ecart = new Vec2<ReadWrite>((int)(distance*Math.cos(orientation)), (int)(distance*Math.sin(orientation)));
+        Vec2<ReadWrite> ecart = new Vec2<ReadWrite>((int)(distance*Math.cos(cinematique.orientation)), (int)(distance*Math.sin(cinematique.orientation)));
 
-		checkHooks(position.getReadOnly(), position.plusNewVector(ecart).getReadOnly(), hooks);
-		Vec2.plus(position, ecart);
+		checkHooks(cinematique.getPosition(), cinematique.getPosition().plusNewVector(ecart).getReadOnly(), hooks);
+		Vec2.plus(cinematique.getPositionEcriture(), ecart);
 //		isPositionPathfindingActive = false;
 //		positionPathfindingAnterieure = null;
 //		positionPathfinding = null;
@@ -106,7 +100,7 @@ public class RobotChrono extends Robot
 	 */
 	public double calculateDelta(double angle)
 	{
-		double delta = orientation-angle % (2*Math.PI);
+		double delta = cinematique.orientation-angle % (2*Math.PI);
 		delta = Math.abs(delta);
 		if(delta > Math.PI)
 			delta = 2*Math.PI - delta;
@@ -119,97 +113,15 @@ public class RobotChrono extends Robot
 		// TODO: avec les trajectoires courbes, les durées changent
 		// et la marche arrière automatique?
 		double delta = calculateDelta(angle);
-		orientation = angle;
+		cinematique.orientation = angle;
 		date += delta*vitesse.rotationalSpeed + sleepTourneDuration;
 	}
-
-/*	private void va_au_point_no_hook(Vec2<ReadOnly> point) throws FinMatchException
-	{
-		double orientation_finale = Math.atan2(point.y - position.y, point.x - position.x);
-		tourner(orientation_finale);
-		date += position.distance(point)*vitesse.invertedTranslationnalSpeed + sleepAvanceDuration;
-		Vec2.copy(point, position);
-		isPositionPathfindingActive = false;
-		positionPathfindingAnterieure = null;
-		positionPathfinding = null;
-	}*/
 	
-	/**
-	 * @param n
-	 * @param hooks
-	 * @throws FinMatchException
-	 */
-	/*	public void va_au_point_pathfinding(PathfindingNodes n, int differenceDistance, ArrayList<Hook> hooks) throws FinMatchException
-	{
-		// Compensation de la trajectoire courbe
-		if(differenceDistance != 0)
-			date -= differenceDistance*vitesse.invertedTranslationnalSpeed;// + sleepTourneAndAvanceDuration;
-
-		if(!isPositionPathfindingActive)
-		{
-			checkHooks(position.getReadOnly(), n.getCoordonnees(), hooks);
-			va_au_point_no_hook(n.getCoordonnees());
-		}
-		else if(positionPathfindingAnterieure != null && vitesse == Speed.BETWEEN_SCRIPTS)
-		{
-			date += positionPathfinding.angleWith(positionPathfindingAnterieure, n)
-					+ positionPathfinding.timeTo(n)
-					+ sleepTourneAndAvanceDuration;
-			checkHooks(position.getReadOnly(), n.getCoordonnees(), hooks);
-		}
-		else if(vitesse == Speed.BETWEEN_SCRIPTS)
-		{
-			tourner(positionPathfinding.getOrientationFinale(n));
-			date += positionPathfinding.timeTo(n) + sleepAvanceDuration;
-			checkHooks(position.getReadOnly(), n.getCoordonnees(), hooks);
-		}
-		else
-		{
-			tourner(positionPathfinding.getOrientationFinale(n));
-			date += positionPathfinding.distanceTo(n)*vitesse.invertedTranslationnalSpeed + sleepAvanceDuration;
-			checkHooks(position.getReadOnly(), n.getCoordonnees(), hooks);
-		}
-		setPositionPathfinding(n);
-	}*/
-
-	/**
-	 * Optimisation incroyable, même si on ne dirait pas comme ça.
-	 * @param n
-	 * @throws FinMatchException
-	 */
-	/*	public void va_au_point_pathfinding_no_hook(LocomotionArc segment) throws FinMatchException
-	{
-		PathfindingNodes n = segment.objectifFinal;
-		// Compensation de la trajectoire courbe
-		if(segment.differenceDistance != 0)
-			date -= segment.differenceDistance*vitesse.invertedTranslationnalSpeed;// + sleepTourneAndAvanceDuration;
-		
-		if(!isPositionPathfindingActive)
-			va_au_point_no_hook(n.getCoordonnees());
-		else if(positionPathfindingAnterieure != null && vitesse == Speed.BETWEEN_SCRIPTS)
-		{
-			date += positionPathfinding.angleWith(positionPathfindingAnterieure, n)
-					+ positionPathfinding.timeTo(n)
-					+ sleepTourneAndAvanceDuration;
-		}
-		else if(vitesse == Speed.BETWEEN_SCRIPTS)
-		{
-			tourner(positionPathfinding.getOrientationFinale(n));
-			date += positionPathfinding.timeTo(n) + sleepAvanceDuration;
-		}
-		else
-		{
-			tourner(positionPathfinding.getOrientationFinale(n));
-			date += positionPathfinding.distanceTo(n)*vitesse.invertedTranslationnalSpeed + sleepAvanceDuration;
-		}
-		setPositionPathfinding(n);
-	}*/
-
 	@Override
 	public void sleep(long duree, ArrayList<Hook> hooks) throws FinMatchException 
 	{
 		this.date += duree;
-		checkHooks(position.getReadOnly(), position.getReadOnly(), hooks);
+		checkHooks(cinematique.getPosition(), cinematique.getPosition(), hooks);
 	}
     
 /*    @Override
@@ -261,23 +173,6 @@ public class RobotChrono extends Robot
 	{
 		cinematique.enMarcheAvant = !cinematique.enMarcheAvant;
 	}
-	
-
-	
-/*	public void setPositionPathfinding(PathfindingNodes n)
-	{
-		Vec2.copy(n.getCoordonnees(), position);
-		positionPathfindingAnterieure = positionPathfinding;
-		positionPathfinding = n;
-		isPositionPathfindingActive = true;
-	}
-	
-	public PathfindingNodes getPositionPathfinding()
-	{
-		if(isPositionPathfindingActive)
-			return positionPathfinding;
-		return null;
-	}*/
 
 	/**
 	 * UTILISE UNIQUEMENT PAR LES TESTS
@@ -285,49 +180,6 @@ public class RobotChrono extends Robot
 	public void reinitDate()
 	{
 		date = 0;
-	}
-
-	// Permet de commander le lissage en vérifiant si on part d'un point qui n'est pas un node
-/*	public boolean isAtPathfindingNodes()
-	{
-		return isPositionPathfindingActive;
-	}*/
-	
-	// TODO: passer en hashCode et equals()
-	
-	public int getHashLPAStar()
-	{
-		int hash = 7;
-		// Calcul du palier
-		for(int i = 0; i < 7 ; i++)
-		{
-			if(date < paliers[i])
-			{
-				hash = i;
-				break;
-			}
-		}
-/*		if(isPositionPathfindingActive)
-		{
-			hash = 0;
-//			hash = tapisPoses?1:0; // information sur les tapis
-			hash = (hash << 6) | positionPathfinding.ordinal(); // codé sur 6 bits (ce qui laisse de la marge)
-			hash = (hash << 9) | pointsObtenus; // d'ici provient le &511 de StrategyArcManager (511 = 2^9 - 1)
-		}
-		else
-		{*/
-			// Pour la position, on ne prend pas les bits de poids trop faibles dont le risque de collision est trop grand
-//			hash = tapisPoses?1:0; // information sur les tapis
-			hash = (hash << 3) | ((position.x >> 2)&7); // petit hash sur 3 bits
-			hash = (hash << 3) | ((position.y >> 2)&7); // petit hash sur 3 bits
-			hash = (hash << 9) | pointsObtenus; // d'ici provient le &511 de StrategyArcManager (511 = 2^9 - 1)
-//		}
-		return hash;
-	}
-
-	public void vaAuPointAStar() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	public void suitArcCourbe(ArcCourbe came_from_arc)
@@ -340,16 +192,5 @@ public class RobotChrono extends Robot
 	{
 		return cinematique;
 	}
-
-
-/*	public void printHash()
-	{
-//		log.debug("Tapis posés: "+tapisPoses);
-		if(isPositionPathfindingActive)
-			log.debug("Position pathfinding: "+positionPathfinding);
-		else
-			log.debug("Hash position: "+((position.x >> 2)&7)+" et "+((position.y >> 2)&7));
-		log.debug("Points obtenus: "+pointsObtenus);
-	}*/
 	
 }

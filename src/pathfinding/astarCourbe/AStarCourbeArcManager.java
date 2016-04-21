@@ -108,7 +108,7 @@ public class AStarCourbeArcManager implements Service
     	if(vitesse.rebrousse && directionstrategyactuelle != DirectionStrategy.FASTEST)
     		return false;
 
-    	double courbureFuture = current.state.robot.getCourbure() + vitesse.vitesse;
+    	double courbureFuture = current.state.robot.getCinematique().courbure + vitesse.vitesse;
     	return courbureFuture >= -courbureMax && courbureFuture <= courbureMax;
     }
     
@@ -163,7 +163,7 @@ public class AStarCourbeArcManager implements Service
 	 */
 	public int heuristicCost(AStarCourbeNode successeur)
 	{
-		return heuristique.heuristicCostCourbe(successeur.state.robot.getPosition());
+		return heuristique.heuristicCostCourbe(successeur.state.robot.getCinematique().getPosition());
 	}
 
 }

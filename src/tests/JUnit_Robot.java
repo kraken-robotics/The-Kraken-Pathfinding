@@ -78,16 +78,16 @@ public class JUnit_Robot extends JUnit_Test
 // TODO tests robot
     		//    		robotchrono.setPositionOrientationSTM(new Vec2<ReadOnly>(200, 600), 0);
     		robotchrono.avancer(100, Speed.STANDARD);
-    		Assert.assertTrue(robotchrono.getPosition().squaredDistance(new Vec2<ReadWrite>(300, 600)) < 10);
+    		Assert.assertTrue(robotchrono.getCinematique().getPosition().squaredDistance(new Vec2<ReadWrite>(300, 600)) < 10);
     		robotchrono.tourner(Math.PI/2, Speed.STANDARD);
     		robotchrono.avancer(100, Speed.STANDARD);
-    		Assert.assertTrue(robotchrono.getPosition().squaredDistance(new Vec2<ReadWrite>(300, 700)) < 10);
+    		Assert.assertTrue(robotchrono.getCinematique().getPosition().squaredDistance(new Vec2<ReadWrite>(300, 700)) < 10);
     		robotchrono.tourner(Math.PI, Speed.STANDARD);
     		robotchrono.avancer(100, Speed.STANDARD);
-    		Assert.assertTrue(robotchrono.getPosition().squaredDistance(new Vec2<ReadWrite>(200, 700)) < 10);
+    		Assert.assertTrue(robotchrono.getCinematique().getPosition().squaredDistance(new Vec2<ReadWrite>(200, 700)) < 10);
     		robotchrono.tourner(-Math.PI/2, Speed.STANDARD);
     		robotchrono.avancer(100, Speed.STANDARD);
-    		Assert.assertTrue(robotchrono.getPosition().squaredDistance(new Vec2<ReadWrite>(200, 600)) < 10);
+    		Assert.assertTrue(robotchrono.getCinematique().getPosition().squaredDistance(new Vec2<ReadWrite>(200, 600)) < 10);
 //    		ArrayList<LocomotionArc> chemin = new ArrayList<LocomotionArc>();
 //	    		chemin.add(new SegmentTrajectoireCourbe(PathfindingNodes.BAS));
 //	    		chemin.add(new SegmentTrajectoireCourbe(PathfindingNodes.DEVANT_DEPART_DROITE));

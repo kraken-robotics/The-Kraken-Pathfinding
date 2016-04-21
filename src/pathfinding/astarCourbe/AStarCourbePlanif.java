@@ -39,7 +39,7 @@ public class AStarCourbePlanif extends AStarCourbe implements Service
 		arcmanager.setEjecteGameElement(ejecteGameElement);
 		this.arrivee = arrivee;
 		depart.init();
-		heuristique.setPositionArrivee(arrivee.position.getReadOnly());
+		heuristique.setPositionArrivee(arrivee.getPosition());
 		if(depart.state == null)
 			depart.state = stateDepart.cloneGameState();
 		else

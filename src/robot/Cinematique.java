@@ -1,5 +1,6 @@
 package robot;
 
+import permissions.ReadOnly;
 import permissions.ReadWrite;
 import utils.Vec2;
 
@@ -11,13 +12,23 @@ import utils.Vec2;
 
 public class Cinematique
 {
-	public final Vec2<ReadWrite> position = new Vec2<ReadWrite>();
+	private final Vec2<ReadWrite> position = new Vec2<ReadWrite>();
 	public volatile double orientation;
 	public volatile boolean enMarcheAvant;
 	public volatile double courbure;
 	public volatile double vitesseTranslation;
 	public volatile double vitesseRotation;
 	
+	public final Vec2<ReadOnly> getPosition()
+	{
+		return position.getReadOnly();
+	}
+
+	public final Vec2<ReadWrite> getPositionEcriture()
+	{
+		return position;
+	}
+
 	/**
 	 * Renvoie vrai si this est proche de autre
 	 * @param autre
@@ -25,6 +36,7 @@ public class Cinematique
 	 */
 	public boolean estProche(Cinematique autre)
 	{
+		System.out.println("Distance : "+position.squaredDistance(autre.position));
 		return position.squaredDistance(autre.position) < 50*50; // TODO écrire
 	}
 

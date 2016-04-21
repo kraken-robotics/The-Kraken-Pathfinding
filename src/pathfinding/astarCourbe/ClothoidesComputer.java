@@ -153,9 +153,9 @@ public class ClothoidesComputer implements Service
 		if(vitesse.vitesse == 0)
 		{
 			if(cinematiqueInitiale.courbure < 0.00001 && cinematiqueInitiale.courbure > -0.00001)
-				getTrajectoireLigneDroite(cinematiqueInitiale.position.getReadOnly(), cinematiqueInitiale.orientation, modified);
+				getTrajectoireLigneDroite(cinematiqueInitiale.getPosition(), cinematiqueInitiale.orientation, modified);
 			else
-				getTrajectoireCirculaire(cinematiqueInitiale.position.getReadOnly(), cinematiqueInitiale.orientation, cinematiqueInitiale.courbure, modified);
+				getTrajectoireCirculaire(cinematiqueInitiale.getPosition(), cinematiqueInitiale.orientation, cinematiqueInitiale.courbure, modified);
 			return;
 		}
 		
@@ -190,8 +190,8 @@ public class ClothoidesComputer implements Service
 							coeffMultiplicatif),
 						!vitesse.positif),
 					cos, sin),
-				cinematiqueInitiale.position).getReadOnly(),
-			modified.arcselems[i].position);
+				cinematiqueInitiale.getPosition()).getReadOnly(),
+			modified.arcselems[i].getPositionEcriture());
 
  			double orientationClotho = sDepart * sDepart;
  			if(!vitesse.positif)
@@ -243,8 +243,8 @@ public class ClothoidesComputer implements Service
 			cos = cos * cosSauv - tmp * sinSauv;
 			Vec2.copy(delta, deltaTmp);
 			Vec2.rotate(deltaTmp, cos, sin);
-			Vec2.copy(centreCercle, modified.arcselems[i].position);
-			Vec2.minus(modified.arcselems[i].position, deltaTmp);
+			Vec2.copy(centreCercle, modified.arcselems[i].getPositionEcriture());
+			Vec2.minus(modified.arcselems[i].getPositionEcriture(), deltaTmp);
 			modified.arcselems[i].orientation = orientation + angle * (i + 1);
 			modified.arcselems[i].courbure = courbure;
 		}
@@ -264,8 +264,8 @@ public class ClothoidesComputer implements Service
 		for(int i = 0; i < NB_POINTS; i++)
 		{
 			double distance = (i + 1) * PRECISION_TRACE * 1000;
-			modified.arcselems[i].position.x = (int) Math.round(position.x + distance * cos);
-			modified.arcselems[i].position.y = (int) Math.round(position.y + distance * sin);
+			modified.arcselems[i].getPositionEcriture().x = (int) Math.round(position.x + distance * cos);
+			modified.arcselems[i].getPositionEcriture().y = (int) Math.round(position.y + distance * sin);
 			modified.arcselems[i].orientation = orientation;
 			modified.arcselems[i].courbure = 0;
 			

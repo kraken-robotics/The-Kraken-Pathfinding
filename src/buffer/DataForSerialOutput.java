@@ -131,14 +131,6 @@ public class DataForSerialOutput implements Service
 		notify();
 	}
 	
-	public synchronized void getPositionOrientation()
-	{
-		byte[] out = new byte[2+1];
-		out[COMMANDE] = SerialProtocol.OUT_GET_XYO.code;
-		bufferBassePriorite.add(out);
-		notify();
-	}
-	
 	public synchronized void initOdoSTM(Vec2<ReadOnly> pos, double angle)
 	{
 		if(Config.debugSerie)
@@ -392,7 +384,7 @@ public class DataForSerialOutput implements Service
 		bufferBassePriorite.add(out);
 		notify();
 	}
-
+/*
 	public synchronized void asserVitesse(int vitesseMax)
 	{
 		byte[] out = new byte[2+3];
@@ -401,7 +393,7 @@ public class DataForSerialOutput implements Service
 		out[PARAM + 1] = (byte) (vitesseMax & 0xFF);
 		bufferBassePriorite.add(out);
 		notify();
-	}
+	}*/
 	
 	/**
 	 * Désasservit le robot
@@ -439,9 +431,9 @@ public class DataForSerialOutput implements Service
 				out[COMMANDE] = SerialProtocol.OUT_SEND_ARC_ARRET.code;
 			else
 				out[COMMANDE] = SerialProtocol.OUT_SEND_ARC.code;
-			out[PARAM] = (byte) ((arc.arcselems[i].position.x+1500) >> 4);
-			out[PARAM+1] = (byte) (((arc.arcselems[i].position.x+1500) << 4) + (arc.arcselems[i].position.y >> 8));
-			out[PARAM+2] = (byte) (arc.arcselems[i].position.y);
+			out[PARAM] = (byte) ((arc.arcselems[i].getPosition().x+1500) >> 4);
+			out[PARAM+1] = (byte) (((arc.arcselems[i].getPosition().x+1500) << 4) + (arc.arcselems[i].getPosition().y >> 8));
+			out[PARAM+2] = (byte) (arc.arcselems[i].getPosition().y);
 			double angle = arc.arcselems[i].orientation;
 			if(!arc.arcselems[0].enMarcheAvant)
 				angle += Math.PI;

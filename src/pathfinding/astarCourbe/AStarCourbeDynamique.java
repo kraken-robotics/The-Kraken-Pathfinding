@@ -47,7 +47,7 @@ public class AStarCourbeDynamique extends AStarCourbe
 		depart.init();
 		state.copyAStarCourbe(depart.state);
 		
-		dstarlite.computeNewPath(depart.state.robot.getPosition(), arrivee.position.getReadOnly());
+		dstarlite.computeNewPath(depart.state.robot.getCinematique().getPosition(), arrivee.getPosition());
 		process();
 		
 		if(Config.graphicAStarCourbe)
@@ -62,7 +62,7 @@ public class AStarCourbeDynamique extends AStarCourbe
 			state.copyAStarCourbe(depart.state);
 		}
 		
-		dstarlite.updatePath(depart.state.robot.getPosition());
+		dstarlite.updatePath(depart.state.robot.getCinematique().getPosition());
 		chemin.clear();
 		process();
 		
