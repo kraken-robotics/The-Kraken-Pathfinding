@@ -65,8 +65,8 @@ public class JUnit_Pathfinding extends JUnit_Test {
     {
 		Cinematique arrivee = new Cinematique(1000, 500, 0, true, 0, 0, 0);
 		ChronoGameState chrono = state.cloneGameState();
-		((RobotChrono)chrono.robot).getCinematique().getPosition().x = -300;
-		((RobotChrono)chrono.robot).getCinematique().getPosition().y = 300;
+		((RobotChrono)chrono.robot).getCinematique().getPosition().x = 600;
+		((RobotChrono)chrono.robot).getCinematique().getPosition().y = 600;
 		((RobotChrono)chrono.robot).getCinematique().orientation = 0;
 		log.debug(cheminPlanif.size());
 		pathfindingCourbePlanif.computeNewPath(chrono, arrivee, true, DirectionStrategy.FASTEST);
@@ -77,7 +77,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
 			ArcCourbe arc = cheminPlanif.poll();
 			for(int i = 0; i < ClothoidesComputer.NB_POINTS; i++)
 			{
-				System.out.println(arc.arcselems[i].getPosition()+" "+arc.arcselems[i].courbure);
+				System.out.println(arc.arcselems[i].getPosition().distance(arrivee.getPosition()));
 				if(Config.graphicObstacles)
 				{
 					Sleep.sleep(100);

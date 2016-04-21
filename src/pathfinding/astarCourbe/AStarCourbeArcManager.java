@@ -118,14 +118,26 @@ public class AStarCourbeArcManager implements Service
     	//      ET
     	//      - on est dans la bonne direction, donc pas d'autorisation exceptionnelle de se retourner
     	if(vitesse.rebrousse && (directionstrategyactuelle != DirectionStrategy.FASTEST && directionstrategyactuelle.isPossible(((RobotChrono)current.state.robot).getCinematique().enMarcheAvant)))
+    	{ 
+    		log.debug(vitesse+" n'est acceptable (rebroussement interdit");
     		return false;
+    	}
     	
     	// Si on ne rebrousse pas chemin alors que c'est nécessaire
     	if(!vitesse.rebrousse && !directionstrategyactuelle.isPossible(((RobotChrono)current.state.robot).getCinematique().enMarcheAvant))
+    	{
+    		log.debug(vitesse+" n'est acceptable (rebroussement nécessaire");
     		return false;
+    	}
 
-    	double courbureFuture = ((RobotChrono)current.state.robot).getCinematique().courbure + vitesse.vitesse;
-    	return courbureFuture >= -courbureMax && courbureFuture <= courbureMax;
+    	double courbureFuture = ((RobotChrono)current.state.robot).getCinematique().courbure + vitesse.vitesse * ClothoidesComputer.DISTANCE_ARC_COURBE_M;
+    	if(courbureFuture >= -courbureMax && courbureFuture <= courbureMax)
+    		return true;
+    	else
+    	{
+    		log.debug(vitesse+" n'est acceptable (courbure trop grande");
+    		return false;
+    	}
     }
     
     /**

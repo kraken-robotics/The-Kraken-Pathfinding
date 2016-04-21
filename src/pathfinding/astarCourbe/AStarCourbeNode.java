@@ -11,16 +11,16 @@ import pathfinding.ChronoGameState;
 public class AStarCourbeNode {
 
 	public ChronoGameState state;
-	public int g_score;
-	public int f_score;
+	public double g_score;
+	public double f_score;
 	public AStarCourbeNode came_from;
 	public ArcCourbe came_from_arc = new ArcCourbe();
 	private int indiceMemoryManager;
 	
 	public void init()
 	{
-		g_score = Integer.MAX_VALUE;
-		f_score = Integer.MAX_VALUE;
+		g_score = Double.MAX_VALUE;
+		f_score = Double.MAX_VALUE;
 	}
 	
 	public void setIndiceMemoryManager(int indice)

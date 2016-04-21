@@ -49,9 +49,9 @@ public abstract class AStarCourbe implements Service
 		@Override
 		public int compare(AStarCourbeNode arg0, AStarCourbeNode arg1)
 		{
-			int out = (arg0.f_score - arg1.f_score) << 1;
-			if(arg0.g_score > arg1.g_score)
-				out++;
+			int out = (int) Math.signum((arg0.f_score - arg1.f_score));// << 1;
+//			if(arg0.g_score > arg1.g_score)
+//				out++;
 			return out;
 		}
 	}
@@ -104,8 +104,12 @@ public abstract class AStarCourbe implements Service
 			}
 			
 			// Si on est arrivé, on reconstruit le chemin
-			if(((RobotChrono)current.state.robot).getCinematique().estProche(arrivee))
+			if(((RobotChrono)current.state.robot).getCinematique().estProche(arrivee) || memorymanager.getSize() > 3000)
 			{
+				// TODO
+				if(memorymanager.getSize() > 3000)
+					log.critical("Arret anticipé");
+
 				log.debug("On est arrivé !");
 				partialReconstruct(current, true);
 				log.debug(memorymanager.getSize());
@@ -137,16 +141,17 @@ public abstract class AStarCourbe implements Service
 				successeur.g_score = current.g_score + arcmanager.distanceTo(successeur);
 				successeur.f_score = successeur.g_score + arcmanager.heuristicCost(successeur);
 				successeur.came_from = current;
-				
-				miniset.add(successeur);
+				log.debug(successeur.f_score);
+//				miniset.add(successeur);
+				openset.add(successeur);
 				
 			}
 			
-			for(int i = 0; i < 3; i++)
+/*			for(int i = 0; i < 3; i++)
 				openset.add(miniset.poll());
 			while(!miniset.isEmpty())
 				memorymanager.destroyNode(miniset.poll());
-
+*/
 		} while(!openset.isEmpty());
 		
 		/**

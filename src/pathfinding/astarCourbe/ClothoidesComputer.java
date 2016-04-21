@@ -36,6 +36,7 @@ public class ClothoidesComputer implements Service
 	private static final int INDICE_MAX = (int) (S_MAX / PRECISION_TRACE);
 	public static final int NB_POINTS = 3; // nombre de points dans un arc
 	public static final double DISTANCE_ARC_COURBE = PRECISION_TRACE * NB_POINTS * 1000; // en mm
+	public static final double DISTANCE_ARC_COURBE_M = PRECISION_TRACE * NB_POINTS; // en m
 	private static final double d = PRECISION_TRACE * 1000 / 2; // utilisé pour la trajectoire circulaire
 
 	@SuppressWarnings("unchecked")
@@ -146,6 +147,7 @@ public class ClothoidesComputer implements Service
 	 */
 	public final void getTrajectoire(Cinematique cinematiqueInitiale, VitesseCourbure vitesse, Speed vitesseMax, ArcCourbe modified)
 	{
+		log.debug(vitesse);
 		if(vitesse.rebrousse)
 		{
 			cinematiqueInitiale.courbure = 0;
