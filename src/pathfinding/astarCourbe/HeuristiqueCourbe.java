@@ -1,7 +1,6 @@
 package pathfinding.astarCourbe;
 
-import utils.Vec2;
-import utils.permissions.ReadOnly;
+import robot.Cinematique;
 
 /**
  * Interface pour l'heuristique du pathfinding courbe
@@ -11,5 +10,5 @@ import utils.permissions.ReadOnly;
 
 public interface HeuristiqueCourbe
 {
-	public double heuristicCostCourbe(Vec2<ReadOnly> position);
+	public double heuristicCostCourbe(Cinematique c);
 }

@@ -191,7 +191,7 @@ public class AStarCourbeArcManager implements Service
 	 */
 	public double heuristicCost(AStarCourbeNode successeur)
 	{
-		return heuristique.heuristicCostCourbe(((RobotChrono)successeur.state.robot).getCinematique().getPosition());
+		return heuristique.heuristicCostCourbe(((RobotChrono)successeur.state.robot).getCinematique());
 	}
 
 }

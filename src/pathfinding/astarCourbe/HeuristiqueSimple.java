@@ -1,6 +1,7 @@
 package pathfinding.astarCourbe;
 
 import container.Service;
+import robot.Cinematique;
 import utils.Config;
 import utils.Log;
 import utils.Vec2;
@@ -30,10 +31,13 @@ public class HeuristiqueSimple implements HeuristiqueCourbe, Service
 	}
 	
 	@Override
-	public double heuristicCostCourbe(Vec2<ReadOnly> position)
+	public double heuristicCostCourbe(Cinematique c)
 	{
-//		log.debug((int) arrivee.distance(position));
-		return arrivee.distance(position);
+		double distance = arrivee.distance(c.getPosition());
+		if(distance > 400)
+			return distance;
+		else
+			return distance + 200*Math.abs((c.orientation - Math.atan2(arrivee.y - c.getPosition().y, arrivee.x - c.getPosition().x)) % 2*Math.PI);
 	}
 
 	@Override

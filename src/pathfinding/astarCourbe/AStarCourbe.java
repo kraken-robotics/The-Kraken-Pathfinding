@@ -141,8 +141,8 @@ public abstract class AStarCourbe implements Service
 				successeur.g_score = current.g_score + arcmanager.distanceTo(successeur);
 				successeur.f_score = successeur.g_score + arcmanager.heuristicCost(successeur);
 				successeur.came_from = current;
-
-				//				miniset.add(successeur);
+				log.debug(successeur.f_score);
+//				miniset.add(successeur);
 				openset.add(successeur);
 				
 			}

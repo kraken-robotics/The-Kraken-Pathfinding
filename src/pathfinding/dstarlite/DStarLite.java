@@ -6,6 +6,7 @@ import java.util.PriorityQueue;
 
 import obstacles.types.ObstacleProximity;
 import pathfinding.astarCourbe.HeuristiqueCourbe;
+import robot.Cinematique;
 import tests.graphicLib.Fenetre;
 import utils.Config;
 import utils.Log;
@@ -401,14 +402,14 @@ public class DStarLite implements Service, HeuristiqueCourbe
 	 * @return
 	 */
 	@Override
-	public double heuristicCostCourbe(Vec2<ReadOnly> position)
+	public double heuristicCostCourbe(Cinematique c)
 	{
-		int gridpoint = GridSpace.computeGridPoint(position);
+		int gridpoint = GridSpace.computeGridPoint(c.getPosition());
 		
 		// Si ce n'est pas à jour, on recalcule
 		if(isThisNodeUptodate(gridpoint))
 		{
-			updateGoal(position);
+			updateGoal(c.getPosition());
 			try {
 				computeShortestPath();
 			} catch (PathfindingException e) {
