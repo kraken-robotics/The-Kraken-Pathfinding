@@ -19,7 +19,7 @@ import exceptions.FinMatchException;
 public class RobotChrono extends Robot
 {
 	private static final long[] paliers = new long[7];
-	
+
 	protected int positionGridSpace;
 	private static int tempsMax = 90000;
    
@@ -43,10 +43,10 @@ public class RobotChrono extends Robot
 		paliers[6] = 84000;
 	}
 	
-	RobotChrono(Log log, CinematiqueSansVitesse cinematique)
+	RobotChrono(Log log, Cinematique cinematique)
 	{
 		super(log);
-		this.cinematique = new CinematiqueSansVitesse(cinematique);
+		this.cinematique = new Cinematique(cinematique);
 	}
 
 	/**
@@ -56,11 +56,6 @@ public class RobotChrono extends Robot
 	public static void setTempsMax(int tempsMax)
 	{
 		RobotChrono.tempsMax = tempsMax;
-	}
-	
-	public boolean estArrive(Cinematique autre)
-	{
-		return cinematique.estProche(autre);
 	}
 	
 	@Override
@@ -167,7 +162,7 @@ public class RobotChrono extends Robot
 		came_from_arc.arcselems[ClothoidesComputer.NB_POINTS-1].copy(cinematique);
 	}
 
-	public CinematiqueSansVitesse getCinematique()
+	public Cinematique getCinematique()
 	{
 		return cinematique;
 	}

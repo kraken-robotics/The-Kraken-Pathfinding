@@ -3,7 +3,7 @@ package threads;
 import java.io.IOException;
 
 import enums.SerialProtocol;
-import robot.CinematiqueSansVitesse;
+import robot.Cinematique;
 import robot.RobotReal;
 import robot.requete.RequeteSTM;
 import robot.requete.RequeteType;
@@ -197,6 +197,10 @@ public class ThreadSerialInput extends Thread implements Service
 						lecture[index++] = serie.read(); // o
 						lecture[index++] = serie.read(); // o
 						lecture[index++] = serie.read(); // courbure
+						lecture[index++] = serie.read(); // vitesse linéaire
+						lecture[index++] = serie.read(); // vitesse linéaire
+						lecture[index++] = serie.read(); // vitesse rotation
+						lecture[index++] = serie.read(); // vitesse rotation
 
 						for(int i = 0; i < nbCapteurs / 2; i++)
 						{
@@ -222,22 +226,24 @@ public class ThreadSerialInput extends Thread implements Service
 						double orientationRobot = ((lecture[PARAM+3] << 8) + lecture[PARAM+4]) / 1000.;
 						double courbure = lecture[PARAM+5] / 1000.;
 						boolean enMarcheAvant = lecture[COMMANDE] == SerialProtocol.IN_INFO_CAPTEURS.codeInt;
+						double vitesseLineaire = (lecture[PARAM + 6] << 8) + lecture[PARAM + 7];
+						double vitesseRotation = (lecture[PARAM + 8] << 8) + lecture[PARAM + 9];
 						/**
 						 * Acquiert ce que voit les capteurs
 					 	 */
 						int[] mesures = new int[nbCapteurs];
 						for(int i = 0; i < nbCapteurs / 2; i++)
 						{
-							mesures[2*i] = convertIR((lecture[PARAM+6+3*i] << 4) + (lecture[PARAM+6+3*i+1] >> 4));
+							mesures[2*i] = convertIR((lecture[PARAM+10+3*i] << 4) + (lecture[PARAM+10+3*i+1] >> 4));
 //							log.debug("Capteur "+(2*i)+" voit "+mesures[2*i]+"mm (brut "+((lecture[PARAM+6+3*i] << 4) + (lecture[PARAM+6+3*i+1] >> 4))+")");
 							if(2*i+1 != nbCapteurs-1)
 							{
-								mesures[2*i+1] = convertIR(((lecture[PARAM+6+3*i+1] & 0x0F) << 8) + lecture[PARAM+6+3*i+2]);
+								mesures[2*i+1] = convertIR(((lecture[PARAM+10+3*i+1] & 0x0F) << 8) + lecture[PARAM+10+3*i+2]);
 //								log.debug("Capteur "+(2*i+1)+" voit "+mesures[2*i+1]+"mm (brut "+(((lecture[PARAM+6+3*i+1] & 0x0F) << 8) + lecture[PARAM+6+3*i+2])+")");
 							}
 						}
 						log.debug("Le robot est en "+positionRobot+", orientation : "+orientationRobot);
-						CinematiqueSansVitesse c = new CinematiqueSansVitesse(positionRobot.x, positionRobot.y, orientationRobot, enMarcheAvant, courbure);
+						Cinematique c = new Cinematique(positionRobot.x, positionRobot.y, orientationRobot, enMarcheAvant, courbure, vitesseLineaire, vitesseRotation);
 						robot.setCinematique(c);
 						if(capteursOn)
 							buffer.add(new IncomingData(mesures, c));

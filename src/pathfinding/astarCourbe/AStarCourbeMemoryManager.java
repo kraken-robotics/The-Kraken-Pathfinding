@@ -17,7 +17,7 @@ import utils.Log;
 
 public class AStarCourbeMemoryManager implements Service {
 
-	private static final int nb_instances = 10000;
+	private static final int nb_instances = 50000;
 
 	private final AStarCourbeNode[] nodes = new AStarCourbeNode[nb_instances];
 	protected Log log;

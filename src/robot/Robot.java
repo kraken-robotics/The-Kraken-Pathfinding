@@ -31,7 +31,7 @@ public abstract class Robot implements Service
     public abstract void sleep(long duree, ArrayList<Hook> hooks) throws FinMatchException;
     public abstract long getTempsDepuisDebutMatch();
 
-    protected CinematiqueSansVitesse cinematique;
+    protected Cinematique cinematique;
     protected volatile boolean symetrie;
 	protected volatile boolean matchDemarre = false;
 	protected int pointsObtenus = 0;

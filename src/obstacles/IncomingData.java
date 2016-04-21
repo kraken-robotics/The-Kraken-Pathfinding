@@ -1,6 +1,6 @@
 package obstacles;
 
-import robot.CinematiqueSansVitesse;
+import robot.Cinematique;
 
 /**
  * Un groupe de mesures qui proviennent des capteurs
@@ -10,11 +10,11 @@ import robot.CinematiqueSansVitesse;
 
 public class IncomingData
 {
-	public CinematiqueSansVitesse cinematique;
+	public Cinematique cinematique;
 	/** Ce que voit chacun des capteurs */
 	public int[] mesures;
 	
-	public IncomingData(int[] mesures, CinematiqueSansVitesse cinematique)
+	public IncomingData(int[] mesures, Cinematique cinematique)
 	{
 		this.mesures = mesures;
 		this.cinematique = cinematique;

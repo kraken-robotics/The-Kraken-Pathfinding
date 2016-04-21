@@ -20,8 +20,7 @@ public class Config implements Service
 	// Permet de savoir si le match a démarré et quand
 	public static final boolean graphicDStarLite = false;
 	public static final boolean graphicThetaStar = false;
-	public static final boolean graphicObstacles = false;
-	public static final boolean graphicAStarCourbe = false;
+	public static final boolean graphicObstacles = true;
 	public static final boolean simuleSerie = true;
 	
 	private String name_config_file = "config.ini";

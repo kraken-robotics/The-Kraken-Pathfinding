@@ -7,7 +7,6 @@ import pathfinding.dstarlite.DStarLite;
 import robot.Cinematique;
 import robot.DirectionStrategy;
 import robot.Speed;
-import utils.Config;
 import utils.Log;
 
 /**
@@ -50,9 +49,6 @@ public class AStarCourbeDynamique extends AStarCourbe
 		
 		dstarlite.computeNewPath(depart.state.robot.getCinematique().getPosition(), arrivee.getPosition());
 		process();
-		
-		if(Config.graphicAStarCourbe)
-			printChemin();
 	}
 	
 	public synchronized void updatePath() throws PathfindingException
@@ -67,9 +63,6 @@ public class AStarCourbeDynamique extends AStarCourbe
 		dstarlite.updatePath(depart.state.robot.getCinematique().getPosition());
 		chemin.clear();
 		process();
-		
-		if(Config.graphicAStarCourbe)
-			printChemin();
 	}
 
 	protected boolean doitFixerCheminPartiel()

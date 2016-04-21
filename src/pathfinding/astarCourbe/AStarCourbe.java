@@ -67,19 +67,7 @@ public abstract class AStarCourbe implements Service
 		this.memorymanager = memorymanager;
 		this.chemin = chemin;
 		depart = new AStarCourbeNode();
-
-		if(Config.graphicAStarCourbe)
-			fenetre = Fenetre.getInstance();
 	}
-
-	protected final void printChemin()
-	{
-		// TODO affichage
-//		ArcCourbe[] cheminAff = cheminContainer.get();	
-//		for(ArcCourbe arc : cheminAff)
-//			fenetre.setColor(arc.getGridpointArrivee(), Fenetre.Couleur.VIOLET);
-	}
-	
 
 	/**
 	 * Le calcul du AStarCourbe
@@ -110,7 +98,7 @@ public abstract class AStarCourbe implements Service
 			}
 			
 			// Si on est arrivé, on reconstruit le chemin
-			if(current.state.robot.estArrive(arrivee))
+			if(current.state.robot.getCinematique().estProche(arrivee))
 			{
 				log.debug("On est arrivé !");
 				partialReconstruct(current, true);
@@ -166,12 +154,14 @@ public abstract class AStarCourbe implements Service
 	 */
 	private final void partialReconstruct(AStarCourbeNode best, boolean last)
 	{
+		log.debug("Reconstruction");
 		synchronized(chemin)
 		{
 			AStarCourbeNode noeud_parent = best;
 			ArcCourbe arc_parent = best.came_from_arc;
 			while(best.came_from != null)
 			{
+				log.debug("Ajout");
 				chemin.add(arc_parent);
 				noeud_parent = noeud_parent.came_from;
 				arc_parent = noeud_parent.came_from_arc;

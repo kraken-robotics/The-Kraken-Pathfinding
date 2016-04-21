@@ -66,6 +66,21 @@ public class JUnit_Pathfinding extends JUnit_Test {
 		log.debug(cheminPlanif.size());
 		pathfindingCourbePlanif.computeNewPath(state.cloneGameState(), arrivee, true, DirectionStrategy.FASTEST);
 		log.debug(cheminPlanif.size());
+		
+		while(!cheminPlanif.isEmpty())
+		{
+			ArcCourbe arc = cheminPlanif.poll();
+			System.out.println("arc avec "+arc.arcselems[0]);
+			for(int i = 0; i < ClothoidesComputer.NB_POINTS; i++)
+			{
+				System.out.println(arc.arcselems[i].getPosition()+" "+arc.arcselems[i].courbure);
+				if(Config.graphicObstacles)
+				{
+					Sleep.sleep(100);
+					Fenetre.getInstance().addObstacleEnBiais(new ObstacleRectangular(arc.arcselems[i].getPosition(), 10, 10, 0));
+				}
+			}
+		}
     }
 	
 	@Test

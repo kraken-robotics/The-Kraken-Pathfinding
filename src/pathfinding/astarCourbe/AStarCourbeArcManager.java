@@ -66,7 +66,6 @@ public class AStarCourbeArcManager implements Service
 	{
 		// TODO : vérifier les hooks
 		node.state.robot.suitArcCourbe(node.came_from_arc);
-		System.out.println(ClothoidesComputer.DISTANCE_ARC_COURBE+", "+node.came_from_arc.arcselems[0].vitesseTranslation+", ");
 		return (int) (ClothoidesComputer.DISTANCE_ARC_COURBE / node.came_from_arc.arcselems[0].vitesseTranslation);
 		// TODO : si, il faut les exécuter
 		/*

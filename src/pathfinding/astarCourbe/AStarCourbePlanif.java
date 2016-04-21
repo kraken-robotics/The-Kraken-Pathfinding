@@ -48,9 +48,6 @@ public class AStarCourbePlanif extends AStarCourbe implements Service
 		vitesseMax = Speed.STANDARD;
 
 		process();
-		
-		if(Config.graphicAStarCourbe)
-			printChemin();
 	}
 
 	@Override
