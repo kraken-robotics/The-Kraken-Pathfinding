@@ -219,13 +219,13 @@ public class ObstacleRectangular extends ObstacleAvecAngle
 	 * @param d2
 	 * @return
 	 */
-	private static final boolean testeSeparation(int a, int b, int a2, int b2, int c2, int d2)
+	private static final boolean testeSeparation(double a, double b, double a2, double b2, double c2, double d2)
 	{
-		int min1 = Math.min(a,b);
-		int max1 = Math.max(a,b);
+		double min1 = Math.min(a,b);
+		double max1 = Math.max(a,b);
 
-		int min2 = Math.min(Math.min(a2, b2), Math.min(c2, d2));
-		int max2 = Math.max(Math.max(a2, b2), Math.max(c2, d2));
+		double min2 = Math.min(Math.min(a2, b2), Math.min(c2, d2));
+		double max2 = Math.max(Math.max(a2, b2), Math.max(c2, d2));
 		
 		return min1 > max2 || min2 > max1; // vrai s'il y a une séparation
 	}
@@ -237,10 +237,10 @@ public class ObstacleRectangular extends ObstacleAvecAngle
 	public static int[] getXPositions(ObstacleRectangular t)
 	{
 		int[] X = new int[4];
-		X[0] = t.coinBasDroiteRotate.x;
-		X[1] = t.coinHautDroiteRotate.x;
-		X[2] = t.coinHautGaucheRotate.x;
-		X[3] = t.coinBasGaucheRotate.x;
+		X[0] = (int)t.coinBasDroiteRotate.x;
+		X[1] = (int)t.coinHautDroiteRotate.x;
+		X[2] = (int)t.coinHautGaucheRotate.x;
+		X[3] = (int)t.coinBasGaucheRotate.x;
 		return X;
 	}
 
@@ -251,10 +251,10 @@ public class ObstacleRectangular extends ObstacleAvecAngle
 	public static int[] getYPositions(ObstacleRectangular t)
 	{
 		int[] Y = new int[4];
-		Y[0] = t.coinBasDroiteRotate.y;
-		Y[1] = t.coinHautDroiteRotate.y;
-		Y[2] = t.coinHautGaucheRotate.y;
-		Y[3] = t.coinBasGaucheRotate.y;
+		Y[0] = (int)t.coinBasDroiteRotate.y;
+		Y[1] = (int)t.coinHautDroiteRotate.y;
+		Y[2] = (int)t.coinHautGaucheRotate.y;
+		Y[3] = (int)t.coinBasGaucheRotate.y;
 		return Y;
 	}
 

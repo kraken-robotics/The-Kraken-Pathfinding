@@ -55,11 +55,13 @@ public class HookPosition extends Hook
 	@Override
 	public ArrayList<Byte> toSerial()
 	{
+		int x = (int)position.x;
+		int y = (int)position.y;
 		ArrayList<Byte> out = new ArrayList<Byte>();
 		out.add(SerialProtocol.OUT_HOOK_POSITION.code);
-		out.add((byte) ((position.x+1500) >> 4));
-		out.add((byte) (((position.x+1500) << 4) + (position.y >> 8)));
-		out.add((byte) (position.y));
+		out.add((byte) ((x+1500) >> 4));
+		out.add((byte) (((x+1500) << 4) + (y >> 8)));
+		out.add((byte) (y));
 		out.add((byte) (squaredTolerancy >> 8));
 		out.add((byte) (squaredTolerancy));
 		out.addAll(super.toSerial());

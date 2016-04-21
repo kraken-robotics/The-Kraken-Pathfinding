@@ -11,5 +11,5 @@ import utils.permissions.ReadOnly;
 
 public interface HeuristiqueCourbe
 {
-	public int heuristicCostCourbe(Vec2<ReadOnly> position);
+	public double heuristicCostCourbe(Vec2<ReadOnly> position);
 }

@@ -66,7 +66,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
 		Cinematique arrivee = new Cinematique(1000, 500, 0, true, 0, 0, 0);
 		ChronoGameState chrono = state.cloneGameState();
 		((RobotChrono)chrono.robot).getCinematique().getPosition().x = 600;
-		((RobotChrono)chrono.robot).getCinematique().getPosition().y = 600;
+		((RobotChrono)chrono.robot).getCinematique().getPosition().y = 800;
 		((RobotChrono)chrono.robot).getCinematique().orientation = 0;
 		log.debug(cheminPlanif.size());
 		pathfindingCourbePlanif.computeNewPath(chrono, arrivee, true, DirectionStrategy.FASTEST);

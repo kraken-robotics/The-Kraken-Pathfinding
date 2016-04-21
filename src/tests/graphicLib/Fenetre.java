@@ -158,14 +158,14 @@ public class Fenetre extends JPanel {
 		return sizeY-(g >> (GridSpace.PRECISION))*sizeY/(GridSpace.NB_POINTS_POUR_DEUX_METRES-1);
 	}
 
-	private int XtoWindow(int x)
+	private int XtoWindow(double x)
 	{
-		return (x+1500)*sizeX/3000;
+		return (int)((x+1500)*sizeX/3000);
 	}
 
-	private int YtoWindow(int y)
+	private int YtoWindow(double y)
 	{
-		return (2000-y)*sizeY/2000;
+		return (int)((2000-y)*sizeY/2000);
 	}
 
 	public void setCapteurs(Capteurs capteurs)

@@ -104,10 +104,10 @@ public abstract class AStarCourbe implements Service
 			}
 			
 			// Si on est arrivé, on reconstruit le chemin
-			if(((RobotChrono)current.state.robot).getCinematique().estProche(arrivee) || memorymanager.getSize() > 3000)
+			if(((RobotChrono)current.state.robot).getCinematique().estProche(arrivee) || memorymanager.getSize() > 30000)
 			{
 				// TODO
-				if(memorymanager.getSize() > 3000)
+				if(memorymanager.getSize() > 30000)
 					log.critical("Arret anticipé");
 
 				log.debug("On est arrivé !");
@@ -141,8 +141,8 @@ public abstract class AStarCourbe implements Service
 				successeur.g_score = current.g_score + arcmanager.distanceTo(successeur);
 				successeur.f_score = successeur.g_score + arcmanager.heuristicCost(successeur);
 				successeur.came_from = current;
-				log.debug(successeur.f_score);
-//				miniset.add(successeur);
+
+				//				miniset.add(successeur);
 				openset.add(successeur);
 				
 			}

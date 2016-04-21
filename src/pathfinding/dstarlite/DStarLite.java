@@ -401,7 +401,7 @@ public class DStarLite implements Service, HeuristiqueCourbe
 	 * @return
 	 */
 	@Override
-	public int heuristicCostCourbe(Vec2<ReadOnly> position)
+	public double heuristicCostCourbe(Vec2<ReadOnly> position)
 	{
 		int gridpoint = GridSpace.computeGridPoint(position);
 		

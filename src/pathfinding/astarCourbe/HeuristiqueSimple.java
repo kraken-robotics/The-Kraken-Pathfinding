@@ -30,10 +30,10 @@ public class HeuristiqueSimple implements HeuristiqueCourbe, Service
 	}
 	
 	@Override
-	public int heuristicCostCourbe(Vec2<ReadOnly> position)
+	public double heuristicCostCourbe(Vec2<ReadOnly> position)
 	{
 //		log.debug((int) arrivee.distance(position));
-		return (int) arrivee.distance(position);
+		return arrivee.distance(position);
 	}
 
 	@Override

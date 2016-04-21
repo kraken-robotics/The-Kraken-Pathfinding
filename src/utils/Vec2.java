@@ -17,8 +17,8 @@ public class Vec2<T extends Permission> implements Serializable
 {
 	private static final long serialVersionUID = 1L;
 	public static final int coeffDirection = 1024; // le coefficient 1024 est là pour éviter une division bas niveau
-	public volatile int x;
-	public volatile int y;
+	public volatile double x;
+	public volatile double y;
 	
 	public Vec2()
 	{
@@ -28,14 +28,14 @@ public class Vec2<T extends Permission> implements Serializable
 	
 	public Vec2(double angle)
 	{
-		x = (int) (Math.cos(angle)*coeffDirection);	
-		y = (int) (Math.sin(angle)*coeffDirection);
+		x = Math.cos(angle)*coeffDirection;	
+		y = Math.sin(angle)*coeffDirection;
 	}
 
-	public Vec2(int longueur, double angle, boolean useless)
+	public Vec2(double longueur, double angle, boolean useless)
 	{
-		x = (int) (Math.cos(angle)*longueur);
-		y = (int) (Math.sin(angle)*longueur);
+		x = Math.cos(angle)*longueur;
+		y = Math.sin(angle)*longueur;
 	}
 
 	public Vec2(Vec2<? extends Permission> model)
@@ -44,7 +44,7 @@ public class Vec2<T extends Permission> implements Serializable
 		y = model.y;
 	}
 
-	public Vec2(int requestedX, int requestedY)
+	public Vec2(double requestedX, double requestedY)
 	{
 		x = requestedX;
 		y = requestedY;
@@ -52,14 +52,14 @@ public class Vec2<T extends Permission> implements Serializable
 	
 	public final static Vec2<ReadWrite> setAngle(Vec2<ReadWrite> out, double angle)
 	{
-		out.x = (int) (Math.cos(angle)*coeffDirection);
-		out.y = (int) (Math.sin(angle)*coeffDirection);
+		out.x = Math.cos(angle)*coeffDirection;
+		out.y = Math.sin(angle)*coeffDirection;
 		return out;
 	}
 
 	// Do not square a length, use squared length directly
 	// to increase performances
-	public final int squaredLength()
+	public final double squaredLength()
 	{
 		return x*x + y*y;
 	}
@@ -71,7 +71,7 @@ public class Vec2<T extends Permission> implements Serializable
 	}
 	
 	// dot product
-	public final int dot(Vec2<? extends Permission> other)
+	public final double dot(Vec2<? extends Permission> other)
 	{
 		return x*other.x + y*other.y;
 	}
@@ -114,9 +114,9 @@ public class Vec2<T extends Permission> implements Serializable
 		return (Vec2<ReadOnly>) this;
 	}
 
-	public final int squaredDistance(Vec2<? extends Permission> other)
+	public final double squaredDistance(Vec2<? extends Permission> other)
 	{
-		int tmp_x = x-other.x, tmp_y = y-other.y;
+		double tmp_x = x-other.x, tmp_y = y-other.y;
 		return tmp_x*tmp_x + tmp_y*tmp_y;
 	}
 
@@ -167,8 +167,8 @@ public class Vec2<T extends Permission> implements Serializable
 
 	public static final Vec2<ReadWrite> scalar(Vec2<ReadWrite> v, double d)
 	{
-		v.x = (int)(d*v.x);
-		v.y = (int)(d*v.y);
+		v.x = d*v.x;
+		v.y = d*v.y;
 		return v;
 	}
 
@@ -190,20 +190,20 @@ public class Vec2<T extends Permission> implements Serializable
 	{
 		double cos = Math.cos(angle);
 		double sin = Math.sin(angle);
-		return new Vec2<ReadWrite>((int)(cos*(x-centreRotation.x)-sin*(y-centreRotation.y))+centreRotation.x,
-		(int)(sin*(x-centreRotation.x)+cos*(y-centreRotation.y))+centreRotation.y);
+		return new Vec2<ReadWrite>(cos*(x-centreRotation.x)-sin*(y-centreRotation.y)+centreRotation.x,
+		sin*(x-centreRotation.x)+cos*(y-centreRotation.y)+centreRotation.y);
 	}
 
 	public final Vec2<ReadWrite> rotateNewVector(double cos, double sin, Vec2<? extends Permission> centreRotation)
 	{
-		return new Vec2<ReadWrite>((int)(cos*(x-centreRotation.x)-sin*(y-centreRotation.y))+centreRotation.x,
-		(int)(sin*(x-centreRotation.x)+cos*(y-centreRotation.y))+centreRotation.y);
+		return new Vec2<ReadWrite>(cos*(x-centreRotation.x)-sin*(y-centreRotation.y)+centreRotation.x,
+		sin*(x-centreRotation.x)+cos*(y-centreRotation.y)+centreRotation.y);
 	}
 
 	public final static Vec2<ReadWrite> rotate(Vec2<ReadWrite> v, double cos, double sin, Vec2<? extends Permission> centreRotation)
 	{
-		int a = (int)(cos*(v.x-centreRotation.x)-sin*(v.y-centreRotation.y))+centreRotation.x;
-		v.y = (int)(sin*(v.x-centreRotation.x)+cos*(v.y-centreRotation.y))+centreRotation.y;
+		double a = (cos*(v.x-centreRotation.x)-sin*(v.y-centreRotation.y))+centreRotation.x;
+		v.y = (sin*(v.x-centreRotation.x)+cos*(v.y-centreRotation.y))+centreRotation.y;
 		v.x = a;
 		return v;
 	}
@@ -217,24 +217,24 @@ public class Vec2<T extends Permission> implements Serializable
 	{
 		double cos = Math.cos(angle);
 		double sin = Math.sin(angle);
-		return new Vec2<ReadWrite>((int)(cos*x-sin*y), (int)(sin*x+cos*y));
+		return new Vec2<ReadWrite>(cos*x-sin*y, sin*x+cos*y);
 	}
 
 	public final static Vec2<ReadWrite> rotate(Vec2<ReadWrite> v, double angle)
 	{
 		double cos = Math.cos(angle);
 		double sin = Math.sin(angle);
-		int old_x = v.x;
-		v.x = (int)(cos*v.x-sin*v.y);
-		v.y = (int)(sin*old_x+cos*v.y);
+		double old_x = v.x;
+		v.x = cos*v.x-sin*v.y;
+		v.y = sin*old_x+cos*v.y;
 		return v;
 	}
 
 	public final static Vec2<ReadWrite> rotate(Vec2<ReadWrite> v, double cos, double sin)
 	{
-		int old_x = v.x;
-		v.x = (int)(cos*v.x-sin*v.y);
-		v.y = (int)(sin*old_x+cos*v.y);
+		double old_x = v.x;
+		v.x = cos*v.x-sin*v.y;
+		v.y = sin*old_x+cos*v.y;
 		return v;
 	}
 
@@ -259,7 +259,7 @@ public class Vec2<T extends Permission> implements Serializable
 	 */
 	public final static Vec2<ReadWrite> rotateAngleDroit(Vec2<ReadWrite> v)
 	{
-		int tmp = v.x;
+		double tmp = v.x;
 		v.x = -v.y;
 		v.y = tmp;
 		return v;

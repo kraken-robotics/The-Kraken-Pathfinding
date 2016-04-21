@@ -19,7 +19,7 @@ public class Cinematique
 	public volatile double vitesseTranslation;
 	public volatile double vitesseRotation;
 
-	public Cinematique(int x, int y, double orientation, boolean enMarcheAvant, double courbure, double vitesseTranslation, double vitesseRotation)
+	public Cinematique(double x, double y, double orientation, boolean enMarcheAvant, double courbure, double vitesseTranslation, double vitesseRotation)
 	{
 		position.x = x;
 		position.y = y;

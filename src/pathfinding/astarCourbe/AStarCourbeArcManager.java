@@ -33,7 +33,7 @@ public class AStarCourbeArcManager implements Service
 	private int courbureMax;
 	private DirectionStrategy directionstrategyactuelle;
 	private List<VitesseCourbure> listeVitesse = Arrays.asList(VitesseCourbure.values());
-	private final static int TEMPS_REBROUSSEMENT = 500;
+	private final static int TEMPS_REBROUSSEMENT = 50;
 	private ListIterator<VitesseCourbure> iterator = listeVitesse.listIterator();
 	
 	public AStarCourbeArcManager(Log log, MoteurPhysique moteur, HeuristiqueCourbe heuristique, ClothoidesComputer clotho)
@@ -189,7 +189,7 @@ public class AStarCourbeArcManager implements Service
 	 * @param successeur
 	 * @return
 	 */
-	public int heuristicCost(AStarCourbeNode successeur)
+	public double heuristicCost(AStarCourbeNode successeur)
 	{
 		return heuristique.heuristicCostCourbe(((RobotChrono)successeur.state.robot).getCinematique().getPosition());
 	}

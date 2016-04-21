@@ -352,13 +352,16 @@ public class Container
 																								(HeuristiqueSimple)getServiceDisplay(serviceRequested, ServiceNames.HEURISTIQUE_SIMPLE),
 																								(ClothoidesComputer)getServiceDisplay(serviceRequested, ServiceNames.CLOTHOIDES_COMPUTER));
 		else if(serviceRequested == ServiceNames.CLOTHOIDES_COMPUTER)
+		{
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ClothoidesComputer((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG));
+			log.debug("C'EST FINIIII");
+		}
 		else if(serviceRequested == ServiceNames.HEURISTIQUE_SIMPLE)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new HeuristiqueSimple((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG));
 		// si le service demandé n'est pas connu, alors on log une erreur.
 		else
 		{
-			log.critical("Erreur de getServicePrivate pour le service (service inconnu): "+serviceRequested);
+			log.critical("Erreur d'instanciation pour le service : "+serviceRequested+" (service inconnu)");
 			throw new ContainerException();
 		}
 		

@@ -34,7 +34,7 @@ public class ClothoidesComputer implements Service
 	private static final int S_MAX = 10; // une valeur très grande pour dire qu'on trace beaucoup de points.
 	private static final double PRECISION_TRACE = 0.02; // précision du tracé. Plus le tracé est précis, plus on couvre de point une même distance
 	private static final int INDICE_MAX = (int) (S_MAX / PRECISION_TRACE);
-	public static final int NB_POINTS = 3; // nombre de points dans un arc
+	public static final int NB_POINTS = 1; // nombre de points dans un arc
 	public static final double DISTANCE_ARC_COURBE = PRECISION_TRACE * NB_POINTS * 1000; // en mm
 	public static final double DISTANCE_ARC_COURBE_M = PRECISION_TRACE * NB_POINTS; // en m
 	private static final double d = PRECISION_TRACE * 1000 / 2; // utilisé pour la trajectoire circulaire
@@ -50,6 +50,7 @@ public class ClothoidesComputer implements Service
 			init();
 			sauvegardePoints();
 		}
+		
 	}
 	
 	/**
@@ -109,11 +110,12 @@ public class ClothoidesComputer implements Service
 		for(int s = 0; s < 2 * INDICE_MAX - 1; s++)
 		{
 			calculeXY(new BigDecimal((s - INDICE_MAX + 1) * PRECISION_TRACE).setScale(15, RoundingMode.HALF_EVEN));
-			trajectoire[s] = new Vec2<ReadOnly>((int)Math.round(x.doubleValue()), (int)Math.round(y.doubleValue()));
+			trajectoire[s] = new Vec2<ReadOnly>(x.doubleValue(), y.doubleValue());
 			System.out.println((s - INDICE_MAX + 1) * PRECISION_TRACE+" "+trajectoire[s]);
-			
-			if(Config.graphicObstacles)
-				Fenetre.getInstance().addObstacleEnBiais(new ObstacleRectangular(new Vec2<ReadOnly>((int)(x.doubleValue()/2), (int)(1000+y.doubleValue()/2)), 10, 10, 0));
+
+			// Non, car la fenêtre n'est pas encore créée
+//			if(Config.graphicObstacles)
+//				Fenetre.getInstance().addObstacleEnBiais(new ObstacleRectangular(new Vec2<ReadOnly>((int)(x.doubleValue()/2), (int)(1000+y.doubleValue()/2)), 10, 10, 0));
 		}
 	}
 
@@ -147,7 +149,6 @@ public class ClothoidesComputer implements Service
 	 */
 	public final void getTrajectoire(Cinematique cinematiqueInitiale, VitesseCourbure vitesse, Speed vitesseMax, ArcCourbe modified)
 	{
-		log.debug(vitesse);
 		if(vitesse.rebrousse)
 		{
 			cinematiqueInitiale.courbure = 0;
@@ -343,7 +344,6 @@ public class ClothoidesComputer implements Service
         catch(Exception e)
         {
         	log.critical("Chargement échoué !");
-            e.printStackTrace();
         }
         return false;
     }

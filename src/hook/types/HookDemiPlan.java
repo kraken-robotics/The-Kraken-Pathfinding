@@ -71,14 +71,18 @@ public class HookDemiPlan extends Hook
 	@Override
 	public ArrayList<Byte> toSerial()
 	{
+		int x = (int)point.x;
+		int y = (int)point.y;
+		int dx = (int)direction.x;
+		int dy = (int)direction.y;
 		ArrayList<Byte> out = new ArrayList<Byte>();
 		out.add(SerialProtocol.OUT_HOOK_DEMI_PLAN.code);
-		out.add((byte) ((point.x+1500) >> 4));
-		out.add((byte) (((point.x+1500) << 4) + (point.y >> 8)));
-		out.add((byte) (point.y));
-		out.add((byte) ((direction.x+1500) >> 4));
-		out.add((byte) (((direction.x+1500) << 4) + (direction.y >> 8)));
-		out.add((byte) (direction.y));
+		out.add((byte) ((x+1500) >> 4));
+		out.add((byte) (((x+1500) << 4) + (y >> 8)));
+		out.add((byte) (y));
+		out.add((byte) ((dx+1500) >> 4));
+		out.add((byte) (((dx+1500) << 4) + (dy >> 8)));
+		out.add((byte) (dy));
 		out.addAll(super.toSerial());
 		return out;
 	}	
