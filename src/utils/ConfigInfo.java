@@ -49,7 +49,7 @@ public enum ConfigInfo {
 	MS_MAX_AVANT_EVITEMENT("5", true),
 	DISTANCE_URGENCE("200", true),
 	NB_SUCCESSEUR_MAX("2", true),
-	COURBURE_MAX("10", true),
+	COURBURE_MAX("10.", true),
 	X_DEPART("0", true),
 	Y_DEPART("1000", true),
 	O_DEPART("3.14", true),

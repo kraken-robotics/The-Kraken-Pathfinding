@@ -1,6 +1,5 @@
 package pathfinding;
 
-import pathfinding.astarCourbe.ArcCourbe;
 import utils.Config;
 import utils.Log;
 
@@ -9,6 +8,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 
 import container.Service;
+import pathfinding.astarCourbe.arcs.ArcCourbe;
 
 /**
  * S'occupe de la trajectoire actuelle.

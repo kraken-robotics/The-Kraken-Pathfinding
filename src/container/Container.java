@@ -16,12 +16,12 @@ import pathfinding.CheminPathfinding;
 import pathfinding.CheminPlanif;
 import pathfinding.RealGameState;
 import pathfinding.astarCourbe.AStarCourbe;
-import pathfinding.astarCourbe.AStarCourbeArcManager;
 import pathfinding.astarCourbe.AStarCourbeDynamique;
 import pathfinding.astarCourbe.AStarCourbeMemoryManager;
 import pathfinding.astarCourbe.AStarCourbePlanif;
-import pathfinding.astarCourbe.ClothoidesComputer;
 import pathfinding.astarCourbe.HeuristiqueSimple;
+import pathfinding.astarCourbe.arcs.AStarCourbeArcManager;
+import pathfinding.astarCourbe.arcs.ClothoidesComputer;
 import pathfinding.dstarlite.DStarLite;
 import pathfinding.dstarlite.GridSpace;
 import hook.HookFactory;
@@ -352,10 +352,7 @@ public class Container
 																								(HeuristiqueSimple)getServiceDisplay(serviceRequested, ServiceNames.HEURISTIQUE_SIMPLE),
 																								(ClothoidesComputer)getServiceDisplay(serviceRequested, ServiceNames.CLOTHOIDES_COMPUTER));
 		else if(serviceRequested == ServiceNames.CLOTHOIDES_COMPUTER)
-		{
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ClothoidesComputer((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG));
-			log.debug("C'EST FINIIII");
-		}
 		else if(serviceRequested == ServiceNames.HEURISTIQUE_SIMPLE)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new HeuristiqueSimple((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG));
 		// si le service demandé n'est pas connu, alors on log une erreur.

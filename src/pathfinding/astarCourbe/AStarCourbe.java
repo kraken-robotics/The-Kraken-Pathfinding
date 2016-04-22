@@ -5,9 +5,12 @@ import java.util.Comparator;
 import java.util.PriorityQueue;
 
 import pathfinding.VitesseCourbure;
+import pathfinding.astarCourbe.arcs.AStarCourbeArcManager;
+import pathfinding.astarCourbe.arcs.ArcCourbe;
 import pathfinding.dstarlite.GridSpace;
 import container.Service;
 import exceptions.FinMatchException;
+import obstacles.types.ObstacleRectangular;
 import robot.Cinematique;
 import robot.DirectionStrategy;
 import robot.RobotChrono;
@@ -15,6 +18,7 @@ import robot.Speed;
 import tests.graphicLib.Fenetre;
 import utils.Config;
 import utils.Log;
+import utils.Sleep;
 
 /**
  * AStar* simplifié, qui lisse le résultat du D* Lite et fournit une trajectoire courbe
@@ -92,15 +96,19 @@ public abstract class AStarCourbe implements Service
 		do
 		{
 			current = openset.poll();
-
-			try {
-				if(!arcmanager.isReachable(current))
+/*
+			if(Config.graphicObstacles && current.came_from_arc != null)
+				for(int i = 0; i < ClothoidesComputer.NB_POINTS; i++)
 				{
-					memorymanager.destroyNode(current);
-					continue; // collision mécanique attendue. On passe au suivant !
-				}
-			} catch (FinMatchException e) {
-				continue;
+					Sleep.sleep(100);
+					Fenetre.getInstance().addObstacleEnBiais(new ObstacleRectangular(current.came_from_arc.arcselems[i].getPosition(), 4, 4, 0));
+				}*/
+			
+			// ce calcul étant un peu lourd, on ne le fait que si le noeud a été choisi, et pas à la sélection des voisins (dans hasNext par exemple)
+			if(!arcmanager.isReachable(current))
+			{
+				memorymanager.destroyNode(current);
+				continue; // collision mécanique attendue. On passe au suivant !
 			}
 			
 			// Si on est arrivé, on reconstruit le chemin
@@ -136,7 +144,7 @@ public abstract class AStarCourbe implements Service
 
 				successeur = memorymanager.getNewNode();
 
-				arcmanager.next(successeur, vitesseMax);
+				arcmanager.next(successeur, vitesseMax, arrivee);
 				 
 				successeur.g_score = current.g_score + arcmanager.distanceTo(successeur);
 				successeur.f_score = successeur.g_score + arcmanager.heuristicCost(successeur);
@@ -146,7 +154,7 @@ public abstract class AStarCourbe implements Service
 				openset.add(successeur);
 				
 			}
-			
+
 /*			for(int i = 0; i < 3; i++)
 				openset.add(miniset.poll());
 			while(!miniset.isEmpty())

@@ -1,6 +1,8 @@
 package pathfinding.astarCourbe;
 
 import pathfinding.ChronoGameState;
+import pathfinding.astarCourbe.arcs.ArcCourbe;
+import pathfinding.astarCourbe.arcs.ArcCourbeClotho;
 
 /**
  * Un nœud de l'A* courbe
@@ -14,7 +16,7 @@ public class AStarCourbeNode {
 	public double g_score;
 	public double f_score;
 	public AStarCourbeNode came_from;
-	public ArcCourbe came_from_arc = new ArcCourbe();
+	public ArcCourbe came_from_arc = new ArcCourbeClotho();
 	private int indiceMemoryManager;
 	
 	public void init()

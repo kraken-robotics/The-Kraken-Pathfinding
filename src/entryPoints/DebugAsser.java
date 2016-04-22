@@ -3,8 +3,8 @@ package entryPoints;
 import org.jfree.ui.RefineryUtilities;
 
 import pathfinding.VitesseCourbure;
-import pathfinding.astarCourbe.ArcCourbe;
-import pathfinding.astarCourbe.ClothoidesComputer;
+import pathfinding.astarCourbe.arcs.ArcCourbe;
+import pathfinding.astarCourbe.arcs.ClothoidesComputer;
 import robot.Speed;
 import serie.DataForSerialOutput;
 import utils.Config;

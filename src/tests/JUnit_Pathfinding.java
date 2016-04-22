@@ -2,6 +2,8 @@ package tests;
 
 import obstacles.types.ObstacleRectangular;
 
+import java.util.ArrayList;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,8 +17,10 @@ import pathfinding.VitesseCourbure;
 import pathfinding.astarCourbe.AStarCourbe;
 import pathfinding.astarCourbe.AStarCourbeDynamique;
 import pathfinding.astarCourbe.AStarCourbePlanif;
-import pathfinding.astarCourbe.ArcCourbe;
-import pathfinding.astarCourbe.ClothoidesComputer;
+import pathfinding.astarCourbe.arcs.ArcCourbe;
+import pathfinding.astarCourbe.arcs.ArcCourbeClotho;
+import pathfinding.astarCourbe.arcs.ArcCourbeCubique;
+import pathfinding.astarCourbe.arcs.ClothoidesComputer;
 import pathfinding.dstarlite.DStarLite;
 import pathfinding.dstarlite.GridSpace;
 import robot.Cinematique;
@@ -46,6 +50,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
 	private RobotReal robot;
 	private GridSpace gridspace;
 	private RealGameState state;
+	private ClothoidesComputer clotho;
 	
 	@Before
     public void setUp() throws Exception {
@@ -58,8 +63,52 @@ public class JUnit_Pathfinding extends JUnit_Test {
         robot = (RobotReal) container.getService(ServiceNames.ROBOT_REAL);
         state = (RealGameState) container.getService(ServiceNames.REAL_GAME_STATE);
         gridspace = (GridSpace) container.getService(ServiceNames.GRID_SPACE);
+		clotho = (ClothoidesComputer) container.getService(ServiceNames.CLOTHOIDES_COMPUTER);
 	}
 
+	@Test
+    public void test_interpolation_cubique() throws Exception
+    {		
+		Cinematique c1 = new Cinematique(-1000, 1000, Math.PI/4, true, 0, 1000, 1000);
+		Cinematique c2 = new Cinematique(0, 1000, 0, true, 0, 0, 0);
+		
+		ArcCourbeCubique arccubique = clotho.cubicInterpolation(c1, c2, Speed.STANDARD, false);
+	
+		for(int i = 0; i < arccubique.arcs.size(); i++)
+		{
+			// Vérification de l'orientation
+			if(i > 0)
+				Assert.assertEquals(Math.atan2(
+						arccubique.arcs.get(i).getPosition().y - arccubique.arcs.get(i-1).getPosition().y,
+						arccubique.arcs.get(i).getPosition().x - arccubique.arcs.get(i-1).getPosition().x), arccubique.arcs.get(i).orientation, 0.5);
+			
+			// Vérification de la courbure
+/*			if(i > 1)
+			{
+				double x1 = arc.get(i).getPosition().x;
+				double x2 = arc.get(i-1).getPosition().x;
+				double x3 = arc.get(i-2).getPosition().x;
+				double y1 = arc.get(i).getPosition().y;
+				double y2 = arc.get(i-1).getPosition().y;
+				double y3 = arc.get(i-2).getPosition().y;
+				
+				double xc = ((x3*x3 - x2*x2 + y3*y3 - y2*y2)/(2*(y3-y2)) - (x2*x2 - x1*x1 + y2*y2 - y1*y1) / (2*(y2 - y1)))
+						/ ((x2 - x1) / (y2 - y1) - (x3 - x2) / (y3 - y2));
+				double yc = -(x2-x1)/(y2-y1)*xc + (x2*x2 - x1*x1 + y2*y2 - y1*y1) / (2*(y2 - y1));
+				log.debug(1000/Math.hypot(x1-xc, y1-yc)+" "+arc.get(i).courbure);
+				Fenetre.getInstance().addObstacleEnBiais(new ObstacleRectangular(new Vec2<ReadOnly>(xc, yc), 30, 30, 0));
+			}*/
+			
+			
+			if(Config.graphicObstacles)
+			{
+				Sleep.sleep(100);
+				Fenetre.getInstance().addObstacleEnBiais(new ObstacleRectangular(arccubique.arcs.get(i).getPosition(), 10, 10, 0));
+			}
+		}
+		
+    }
+	
 	@Test
     public void test_pathfinding_planif() throws Exception
     {
@@ -75,15 +124,31 @@ public class JUnit_Pathfinding extends JUnit_Test {
 		while(!cheminPlanif.isEmpty())
 		{
 			ArcCourbe arc = cheminPlanif.poll();
-			for(int i = 0; i < ClothoidesComputer.NB_POINTS; i++)
-			{
-				System.out.println(arc.arcselems[i].getPosition().distance(arrivee.getPosition()));
-				if(Config.graphicObstacles)
+			if(arc instanceof ArcCourbeClotho)
+				for(int i = 0; i < ClothoidesComputer.NB_POINTS; i++)
 				{
-					Sleep.sleep(100);
-					Fenetre.getInstance().addObstacleEnBiais(new ObstacleRectangular(arc.arcselems[i].getPosition(), 10, 10, 0));
+					System.out.println(arc.v+" "+((ArcCourbeClotho)arc).arcselems[i].getPosition().distance(arrivee.getPosition()));
+					if(Config.graphicObstacles)
+					{
+						Sleep.sleep(100);
+						if(arc.rebrousse)
+							Fenetre.getInstance().addObstacleEnBiais(new ObstacleRectangular(((ArcCourbeClotho)arc).arcselems[i].getPosition(), 15, 15, 0));
+						else
+							Fenetre.getInstance().addObstacleEnBiais(new ObstacleRectangular(((ArcCourbeClotho)arc).arcselems[i].getPosition(), 10, 10, 0));
+					}
 				}
-			}
+			else
+				for(int i = 0; i < ((ArcCourbeCubique)arc).arcs.size(); i++)
+				{
+					if(Config.graphicObstacles)
+					{
+						Sleep.sleep(100);
+						if(arc.rebrousse)
+							Fenetre.getInstance().addObstacleEnBiais(new ObstacleRectangular(((ArcCourbeCubique)arc).arcs.get(i).getPosition(), 15, 15, 0));
+						else
+							Fenetre.getInstance().addObstacleEnBiais(new ObstacleRectangular(((ArcCourbeCubique)arc).arcs.get(i).getPosition(), 10, 10, 0));
+					}
+				}
 		}
     }
 	
@@ -92,9 +157,9 @@ public class JUnit_Pathfinding extends JUnit_Test {
     {
 		ClothoidesComputer clotho = (ClothoidesComputer) container.getService(ServiceNames.CLOTHOIDES_COMPUTER);
 		int nbArc = 16;
-		ArcCourbe arc[] = new ArcCourbe[nbArc];
+		ArcCourbeClotho arc[] = new ArcCourbeClotho[nbArc];
 		for(int i = 0; i < nbArc; i++)
-			arc[i] = new ArcCourbe();
+			arc[i] = new ArcCourbeClotho();
 
 		Cinematique c = new Cinematique(0, 1000, Math.PI/2, true, 0, 0, 0);
 		
@@ -134,8 +199,8 @@ public class JUnit_Pathfinding extends JUnit_Test {
 			}
 			if(a == 0)
 			{
-				Assert.assertEquals(arc[0].arcselems[ClothoidesComputer.NB_POINTS - 1].getPositionEcriture().x, 0);
-				Assert.assertEquals(arc[0].arcselems[ClothoidesComputer.NB_POINTS - 1].getPositionEcriture().y, 1000+(int)ClothoidesComputer.DISTANCE_ARC_COURBE);
+				Assert.assertEquals(arc[0].arcselems[ClothoidesComputer.NB_POINTS - 1].getPositionEcriture().x, 0, 0.1);
+				Assert.assertEquals(arc[0].arcselems[ClothoidesComputer.NB_POINTS - 1].getPositionEcriture().y, 1000+(int)ClothoidesComputer.DISTANCE_ARC_COURBE, 0.1);
 			}
 /*			else if(arc[a].arcselems[0].enMarcheAvant != arc[a-1].arcselems[0].enMarcheAvant)
 				Assert.assertEquals(arc[a].vitesseCourbure.vitesse / 1000. * ClothoidesComputer.DISTANCE_ARC_COURBE, arc[a].arcselems[ClothoidesComputer.NB_POINTS-1].courbure, 0.1);

@@ -34,10 +34,10 @@ public class HeuristiqueSimple implements HeuristiqueCourbe, Service
 	public double heuristicCostCourbe(Cinematique c)
 	{
 		double distance = arrivee.distance(c.getPosition());
-		if(distance > 400)
+//		if(distance > 400)
 			return distance;
-		else
-			return distance + 200*Math.abs((c.orientation - Math.atan2(arrivee.y - c.getPosition().y, arrivee.x - c.getPosition().x)) % 2*Math.PI);
+//		else
+//			return distance + 200*Math.abs((c.orientation - Math.atan2(arrivee.y - c.getPosition().y, arrivee.x - c.getPosition().x)) % 2*Math.PI);
 	}
 
 	@Override

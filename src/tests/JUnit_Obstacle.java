@@ -11,7 +11,7 @@ import obstacles.ObstaclesFixes;
 import obstacles.types.ObstacleCircular;
 import obstacles.types.ObstacleRectangular;
 import obstacles.types.ObstacleTrajectoireCourbe;
-import pathfinding.astarCourbe.ClothoidesComputer;
+import pathfinding.astarCourbe.arcs.ClothoidesComputer;
 import pathfinding.dstarlite.GridSpace;
 
 /**

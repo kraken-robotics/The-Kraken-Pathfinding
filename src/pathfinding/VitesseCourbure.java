@@ -8,6 +8,15 @@ package pathfinding;
 
 public enum VitesseCourbure
 {
+	// Ces deux-là sont particuliers. Il ne s'agit pas d'une trajectoire courbe mais juste d'atteindre, en s'arrêtant, tournant puis avançant, l'objectif final
+	// En effet, les trajectoires courbes, par manque d'expressivité, peuvent avoir besoin d'une trajectoire directe pour atteindre rapidement la destination
+//	DIRECT(0, 0, false), // TODO
+//	DIRECT_REBROUSSE(0, 0, true),
+	
+	// Interpolation cubique avec l'arrivée
+	DIRECT_COURBE(0, 0, false),
+	DIRECT_COURBE_REBROUSSE(0, 0, false),
+	
 	GAUCHE_0(1, 1, false),
 	GAUCHE_1(4, 2, false),
 	GAUCHE_2(9, 3, false),

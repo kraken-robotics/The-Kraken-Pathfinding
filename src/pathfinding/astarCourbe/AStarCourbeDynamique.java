@@ -3,6 +3,7 @@ package pathfinding.astarCourbe;
 import exceptions.PathfindingException;
 import pathfinding.CheminPathfinding;
 import pathfinding.RealGameState;
+import pathfinding.astarCourbe.arcs.AStarCourbeArcManager;
 import pathfinding.dstarlite.DStarLite;
 import robot.Cinematique;
 import robot.DirectionStrategy;

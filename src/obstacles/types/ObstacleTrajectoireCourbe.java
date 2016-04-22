@@ -5,7 +5,7 @@ import java.math.RoundingMode;
 
 import pathfinding.VitesseCourbure;
 import pathfinding.astarCourbe.AStarCourbeNode;
-import pathfinding.astarCourbe.ClothoidesComputer;
+import pathfinding.astarCourbe.arcs.ClothoidesComputer;
 import utils.Vec2;
 import utils.permissions.ReadOnly;
 

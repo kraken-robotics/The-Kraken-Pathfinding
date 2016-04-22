@@ -1,4 +1,4 @@
-package pathfinding.astarCourbe;
+package pathfinding.astarCourbe.arcs;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -6,15 +6,15 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
 
 import container.Service;
-import obstacles.types.ObstacleRectangular;
 import pathfinding.VitesseCourbure;
 import robot.Cinematique;
 import robot.RobotChrono;
 import robot.Speed;
-import tests.graphicLib.Fenetre;
 import utils.Config;
+import utils.ConfigInfo;
 import utils.Log;
 import utils.Vec2;
 import utils.permissions.ReadOnly;
@@ -32,13 +32,15 @@ public class ClothoidesComputer implements Service
 	
 	private BigDecimal x, y; // utilisés dans le calcul de trajectoire
 	private static final int S_MAX = 10; // une valeur très grande pour dire qu'on trace beaucoup de points.
-	private static final double PRECISION_TRACE = 0.02; // précision du tracé. Plus le tracé est précis, plus on couvre de point une même distance
+	private static final double PRECISION_TRACE = 0.02; // précision du tracé, en m (distance entre deux points consécutifs). Plus le tracé est précis, plus on couvre de point une même distance
 	private static final int INDICE_MAX = (int) (S_MAX / PRECISION_TRACE);
 	public static final int NB_POINTS = 3; // nombre de points dans un arc
 	public static final double DISTANCE_ARC_COURBE = PRECISION_TRACE * NB_POINTS * 1000; // en mm
 	public static final double DISTANCE_ARC_COURBE_M = PRECISION_TRACE * NB_POINTS; // en m
 	private static final double d = PRECISION_TRACE * 1000 / 2; // utilisé pour la trajectoire circulaire
 
+	private double courbureMax;
+	
 	@SuppressWarnings("unchecked")
 	private Vec2<ReadOnly>[] trajectoire = (Vec2<ReadOnly>[]) new Vec2[2 * INDICE_MAX - 1];
 	
@@ -119,9 +121,76 @@ public class ClothoidesComputer implements Service
 		}
 	}
 
-	public void getTrajectoire(ArcCourbe depart, VitesseCourbure vitesse, Speed vitesseMax, ArcCourbe modified)
+	public final ArcCourbeCubique cubicInterpolation(Cinematique cinematiqueInitiale, Cinematique arrivee, Speed vitesseMax, boolean rebrousse)
 	{
-		Cinematique last = depart.arcselems[NB_POINTS - 1];
+		double delta = 0;
+		double courbure = cinematiqueInitiale.courbure;
+		if(rebrousse) // si on rebrousse, la courbure est nulle
+		{
+			delta += Math.PI;
+			courbure = 0;
+		}
+		
+		// les paramètres du polynomes x = ax * t^3 + bx * t^2 + cx * t + dx,
+		// en fixant la position en 0 (départ) et en 1 (arrivée), la dérivée en 0 (vecteur vitesse) et la dérivée seconde en 0 (courbure)
+		double dx = cinematiqueInitiale.getPosition().x;
+		double cx = Math.cos(cinematiqueInitiale.orientation + delta)*cinematiqueInitiale.vitesseTranslation;
+		double bx = courbure*Math.sin(cinematiqueInitiale.orientation)*Math.pow(1+cx*cx, 1.5); // expression de la dérivée seconde en fonction de la courbure
+		double ax = arrivee.getPosition().x - bx - cx - dx;
+		
+		// idem pour y
+		double dy = cinematiqueInitiale.getPosition().y;
+		double cy = Math.sin(cinematiqueInitiale.orientation + delta)*cinematiqueInitiale.vitesseTranslation;
+		double by = courbure*Math.cos(cinematiqueInitiale.orientation)*Math.pow(1+cy*cy, 1.5);
+		double ay = arrivee.getPosition().y - by - cy - dy;
+		
+		ArrayList<Cinematique> out = new ArrayList<Cinematique>();
+		double t = 0, tnext = 0;
+		double longueur = 0;
+		Cinematique last = null, actuel;
+
+		tnext += 1/(Math.hypot(3*ax*t*t+2*bx*t+cx, 3*ay*t*t+2*by*t+cy)*PRECISION_TRACE*2);
+		while(t < 1.)
+		{
+			t = tnext;
+			tnext += 1/(Math.hypot(3*ax*t*t+2*bx*t+cx, 3*ay*t*t+2*by*t+cy)*PRECISION_TRACE*2);
+			if(tnext > 1)
+			{
+				t = 1;
+			}
+			log.debug(t);
+			
+			double vx = 3*ax*t*t+2*bx*t+cx;
+			double vy = 3*ay*t*t+2*by*t+cy;
+			double acx = 6*ax*t+2*bx;
+			double acy = 6*ay*t+2*by;
+			
+			actuel = new Cinematique(
+					ax*t*t*t + bx*t*t + cx*t + dx, // x
+					ay*t*t*t + by*t*t + cy*t + dy, // y
+					Math.atan2(vy, vx), // orientation = atan2(vy, vx)
+					rebrousse ^ cinematiqueInitiale.enMarcheAvant,
+					1000*(vx * acy - vy * acx) / Math.pow(vx*vx + vy*vy, 1.5), // formule de la courbure d'une courbe paramétrique
+					vitesseMax.translationalSpeed, // vitesses calculées classiquement
+					vitesseMax.rotationalSpeed);
+	
+			// Il faut faire attention à ne pas dépasser la coubure maximale !
+			if(Math.abs(actuel.courbure) > courbureMax)
+				return null;
+			
+			// calcul de la longueur de l'arc
+			if(last != null)
+				longueur += actuel.getPosition().distance(last.getPosition());
+
+			out.add(actuel);
+			last = actuel;
+		}
+		return new ArcCourbeCubique(out, longueur);
+	}
+	
+	public void getTrajectoire(ArcCourbe depart, VitesseCourbure vitesse, Speed vitesseMax, ArcCourbeClotho modified)
+	{
+		Cinematique last = depart.getLast();
 		getTrajectoire(last, vitesse, vitesseMax, modified);
 	}
 	
@@ -131,7 +200,7 @@ public class ClothoidesComputer implements Service
 	 * @param vitesse
 	 * @param modified
 	 */
-	public final void getTrajectoire(RobotChrono robot, VitesseCourbure vitesse, Speed vitesseMax, ArcCourbe modified)
+	public final void getTrajectoire(RobotChrono robot, VitesseCourbure vitesse, Speed vitesseMax, ArcCourbeClotho modified)
 	{
 		getTrajectoire(robot.getCinematique(), vitesse, vitesseMax, modified);
 	}
@@ -147,7 +216,7 @@ public class ClothoidesComputer implements Service
 	 * @param distance
 	 * @return
 	 */
-	public final void getTrajectoire(Cinematique cinematiqueInitiale, VitesseCourbure vitesse, Speed vitesseMax, ArcCourbe modified)
+	public final void getTrajectoire(Cinematique cinematiqueInitiale, VitesseCourbure vitesse, Speed vitesseMax, ArcCourbeClotho modified)
 	{
 		log.debug(vitesse);
 		if(vitesse.rebrousse)
@@ -158,6 +227,7 @@ public class ClothoidesComputer implements Service
 		}
 		else
 			modified.arcselems[0].enMarcheAvant = cinematiqueInitiale.enMarcheAvant;
+		modified.v = vitesse;
 		
 		// si la dérivée de la courbure est nulle, on est dans le cas particulier d'une trajectoire rectiligne ou circulaire
 		if(vitesse.vitesse == 0)
@@ -231,7 +301,7 @@ public class ClothoidesComputer implements Service
 	 * @param modified
 	 */
 	private void getTrajectoireCirculaire(Vec2<ReadOnly> position,
-			double orientation, double courbure, Speed vitesseMax, ArcCourbe modified)
+			double orientation, double courbure, Speed vitesseMax, ArcCourbeClotho modified)
 	{		
 		// rappel = la courbure est l'inverse du rayon de courbure
 		// le facteur 1000 vient du fait que la courbure est en mètre^-1
@@ -275,7 +345,7 @@ public class ClothoidesComputer implements Service
 	 * @param orientation
 	 * @param modified
 	 */
-	private void getTrajectoireLigneDroite(Vec2<ReadOnly> position, double orientation, Speed vitesseMax, ArcCourbe modified)
+	private void getTrajectoireLigneDroite(Vec2<ReadOnly> position, double orientation, Speed vitesseMax, ArcCourbeClotho modified)
 	{
 		double cos = Math.cos(orientation);
 		double sin = Math.sin(orientation);
@@ -298,7 +368,9 @@ public class ClothoidesComputer implements Service
 
 	@Override
 	public void useConfig(Config config)
-	{}
+	{
+		courbureMax = config.getDouble(ConfigInfo.COURBURE_MAX);
+	}
 
 	/**
 	 * Sauvegarde les points de la clothoïde unitaire

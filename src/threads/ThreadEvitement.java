@@ -1,7 +1,7 @@
 package threads;
 
 import pathfinding.CheminPathfinding;
-import pathfinding.astarCourbe.ArcCourbe;
+import pathfinding.astarCourbe.arcs.ArcCourbe;
 import serie.DataForSerialOutput;
 import utils.Config;
 import utils.ConfigInfo;

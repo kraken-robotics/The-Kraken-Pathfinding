@@ -3,6 +3,8 @@ package pathfinding.astarCourbe;
 import java.util.Collection;
 
 import pathfinding.ChronoGameState;
+import pathfinding.astarCourbe.arcs.AStarCourbeArcManager;
+import pathfinding.astarCourbe.arcs.ArcCourbe;
 import container.Service;
 import exceptions.PathfindingException;
 import robot.Cinematique;

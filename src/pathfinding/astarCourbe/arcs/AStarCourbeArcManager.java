@@ -1,7 +1,10 @@
-package pathfinding.astarCourbe;
+package pathfinding.astarCourbe.arcs;
 
 import obstacles.MoteurPhysique;
 import pathfinding.VitesseCourbure;
+import pathfinding.astarCourbe.AStarCourbeNode;
+import pathfinding.astarCourbe.HeuristiqueCourbe;
+import robot.Cinematique;
 import robot.DirectionStrategy;
 import robot.RobotChrono;
 import robot.Speed;
@@ -30,7 +33,7 @@ public class AStarCourbeArcManager implements Service
 	private ClothoidesComputer clotho;
 	
 	private AStarCourbeNode current;
-	private int courbureMax;
+	private double courbureMax;
 	private DirectionStrategy directionstrategyactuelle;
 	private List<VitesseCourbure> listeVitesse = Arrays.asList(VitesseCourbure.values());
 	private final static int TEMPS_REBROUSSEMENT = 50;
@@ -50,7 +53,7 @@ public class AStarCourbeArcManager implements Service
 	 * @return
 	 * @throws FinMatchException
 	 */
-	public boolean isReachable(AStarCourbeNode node) throws FinMatchException
+	public boolean isReachable(AStarCourbeNode node)
 	{
 		if(node.came_from == null)
 			return true;
@@ -65,12 +68,23 @@ public class AStarCourbeArcManager implements Service
 	 */
 	public int distanceTo(AStarCourbeNode node)
 	{
-		// TODO : vérifier les hooks
-		((RobotChrono)node.state.robot).suitArcCourbe(node.came_from_arc);
-		int out = (int) (ClothoidesComputer.DISTANCE_ARC_COURBE / node.came_from_arc.arcselems[0].vitesseTranslation);
-		if(node.came_from_arc.rebrousse)
-			out += TEMPS_REBROUSSEMENT;
-		return out;
+		if(node.came_from_arc instanceof ArcCourbeClotho)
+		{
+			// TODO : vérifier les hooks
+			((RobotChrono)node.state.robot).suitArcCourbeClotho((ArcCourbeClotho)node.came_from_arc);
+			int out = (int) (ClothoidesComputer.DISTANCE_ARC_COURBE / ((ArcCourbeClotho)node.came_from_arc).arcselems[0].vitesseTranslation);
+			if(node.came_from_arc.rebrousse)
+				out += TEMPS_REBROUSSEMENT;
+			return out;
+		}
+		else
+		{
+			((RobotChrono)node.state.robot).suitArcCourbeCubique((ArcCourbeCubique)node.came_from_arc);
+			int out = (int)((ArcCourbeCubique)node.came_from_arc).longueur;
+			if(node.came_from_arc.rebrousse)
+				out += TEMPS_REBROUSSEMENT;
+			return out;
+		}
 		// TODO : si, il faut les exécuter
 		/*
 		 * Il n'y a pas d'utilisation de hook.
@@ -88,19 +102,26 @@ public class AStarCourbeArcManager implements Service
 	 * Fournit le prochain successeur. On suppose qu'il existe
 	 * @param successeur
 	 */
-    public void next(AStarCourbeNode successeur, Speed vitesseMax)
+    public void next(AStarCourbeNode successeur, Speed vitesseMax, Cinematique arrivee)
     {
+    	VitesseCourbure v = iterator.next();
 		current.state.copyAStarCourbe(successeur.state);
-		if(current.came_from_arc != null)
-			clotho.getTrajectoire(current.came_from_arc,
-					iterator.next(),
+		if(v == VitesseCourbure.DIRECT_COURBE || v == VitesseCourbure.DIRECT_COURBE_REBROUSSE)
+			clotho.cubicInterpolation(
+					successeur.came_from_arc.getLast(),
+					arrivee,
 					vitesseMax,
-					successeur.came_from_arc);
+					v.rebrousse);
+		else if(current.came_from_arc != null)
+			clotho.getTrajectoire(current.came_from_arc,
+					v,
+					vitesseMax,
+					(ArcCourbeClotho)successeur.came_from_arc);
 		else // pas de prédécesseur
 			clotho.getTrajectoire((RobotChrono)current.state.robot,
-					iterator.next(),
+					v,
 					vitesseMax,
-					successeur.came_from_arc);
+					(ArcCourbeClotho)successeur.came_from_arc);
     }
     
     /**
@@ -175,7 +196,7 @@ public class AStarCourbeArcManager implements Service
 	@Override
 	public void useConfig(Config config)
 	{
-		courbureMax = config.getInt(ConfigInfo.COURBURE_MAX);		
+		courbureMax = config.getDouble(ConfigInfo.COURBURE_MAX);		
 	}
 
 	public void setEjecteGameElement(boolean ejecteGameElement)
