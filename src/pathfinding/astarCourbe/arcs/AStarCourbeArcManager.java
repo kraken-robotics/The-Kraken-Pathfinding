@@ -97,11 +97,24 @@ public class AStarCourbeArcManager implements Service
     	
 		current.state.copyAStarCourbe(successeur.state);
 		if(v == VitesseCourbure.DIRECT_COURBE || v == VitesseCourbure.DIRECT_COURBE_REBROUSSE)
-			successeur.came_from_arc = clotho.cubicInterpolation(
-					successeur.came_from_arc.getLast(),
-					arrivee,
-					vitesseMax,
-					v.rebrousse);
+		{
+			ArcCourbe tmp;
+			if(current.came_from_arc != null)
+				tmp = clotho.cubicInterpolation(
+						current.came_from_arc.getLast(),
+						arrivee,
+						vitesseMax,
+						v);
+			else
+				tmp = clotho.cubicInterpolation(
+						(RobotChrono)current.state.robot,
+						arrivee,
+						vitesseMax,
+						v);
+			if(tmp == null)
+				return false;
+			successeur.came_from_arc = tmp;
+		}
 		else if(current.came_from_arc != null)
 			clotho.getTrajectoire(current.came_from_arc,
 					v,
@@ -112,8 +125,8 @@ public class AStarCourbeArcManager implements Service
 					v,
 					vitesseMax,
 					(ArcCourbeClotho)successeur.came_from_arc);
-		
-		return successeur.came_from_arc != null;
+
+		return true;
     }
     
     /**
@@ -143,6 +156,10 @@ public class AStarCourbeArcManager implements Service
     		return false;
     	}
 
+    	// On ne tente pas l'interpolation si on est trop loin
+    	if((vitesse == VitesseCourbure.DIRECT_COURBE || vitesse == VitesseCourbure.DIRECT_COURBE_REBROUSSE) && heuristique.heuristicCostCourbe(((RobotChrono)current.state.robot).getCinematique()) > 500)
+			return false;
+    	
     	double courbureFuture = ((RobotChrono)current.state.robot).getCinematique().courbure + vitesse.vitesse * ClothoidesComputer.DISTANCE_ARC_COURBE_M;
     	if(courbureFuture >= -courbureMax && courbureFuture <= courbureMax)
     		return true;

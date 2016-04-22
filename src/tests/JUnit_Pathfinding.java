@@ -72,7 +72,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
 		Cinematique c1 = new Cinematique(-1000, 1500, Math.PI/4, true, 0, 1000, 1000);
 		Cinematique c2 = new Cinematique(0, 1000, 0, true, 0, 0, 0);
 		
-		ArcCourbeCubique arccubique = clotho.cubicInterpolation(c1, c2, Speed.STANDARD, false);
+		ArcCourbeCubique arccubique = clotho.cubicInterpolation(c1, c2, Speed.STANDARD, VitesseCourbure.DIRECT_COURBE);
 	
 		for(int i = 0; i < arccubique.arcs.size(); i++)
 		{
@@ -114,7 +114,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
     {
 		Cinematique arrivee = new Cinematique(1000, 500, 0, true, 0, 0, 0);
 		ChronoGameState chrono = state.cloneGameState();
-		((RobotChrono)chrono.robot).getCinematique().getPosition().x = 600;
+		((RobotChrono)chrono.robot).getCinematique().getPosition().x = -500;
 		((RobotChrono)chrono.robot).getCinematique().getPosition().y = 800;
 		((RobotChrono)chrono.robot).getCinematique().orientation = 0;
 		log.debug(cheminPlanif.size());

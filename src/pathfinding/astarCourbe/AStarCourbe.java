@@ -97,13 +97,13 @@ public abstract class AStarCourbe implements Service
 		do
 		{
 			current = openset.poll();
-
+/*
 			if(Config.graphicObstacles && current.came_from_arc != null)
 				for(int i = 0; i < current.came_from_arc.getNbPoints(); i++)
 				{
 					Sleep.sleep(100);
 					Fenetre.getInstance().addObstacleEnBiais(new ObstacleRectangular(current.came_from_arc.getPoint(i).getPosition(), 4, 4, 0));
-				}
+				}*/
 			
 			// ce calcul étant un peu lourd, on ne le fait que si le noeud a été choisi, et pas à la sélection des voisins (dans hasNext par exemple)
 			if(!arcmanager.isReachable(current))
@@ -117,8 +117,12 @@ public abstract class AStarCourbe implements Service
 			if(current.came_from_arc instanceof ArcCourbeCubique || memorymanager.getSize() > 30000)
 			{
 				// TODO
-				if(memorymanager.getSize() > 30000)
-					log.critical("Arret anticipé");
+				if(memorymanager.getSize() > 30000) // étant donné qu'il peut continuer jusqu'à l'infini...
+				{
+					memorymanager.empty();
+					log.critical("AStarCourbe n'a pas trouvé de chemin !");
+					return null;
+				}
 
 				log.debug("On est arrivé !");
 				partialReconstruct(current, true);

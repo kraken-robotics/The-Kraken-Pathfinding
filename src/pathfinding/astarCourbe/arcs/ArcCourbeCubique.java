@@ -2,6 +2,7 @@ package pathfinding.astarCourbe.arcs;
 
 import java.util.ArrayList;
 
+import pathfinding.VitesseCourbure;
 import robot.Cinematique;
 
 /**
@@ -15,8 +16,9 @@ public class ArcCourbeCubique extends ArcCourbe
 	public ArrayList<Cinematique> arcs;
 	public double longueur;
 	
-	public ArcCourbeCubique(ArrayList<Cinematique> arcs, double longueur)
+	public ArcCourbeCubique(ArrayList<Cinematique> arcs, double longueur, boolean rebrousse, boolean stop, VitesseCourbure v)
 	{
+		super(rebrousse, stop, v);
 		this.arcs = arcs;
 		this.longueur = longueur;
 	}

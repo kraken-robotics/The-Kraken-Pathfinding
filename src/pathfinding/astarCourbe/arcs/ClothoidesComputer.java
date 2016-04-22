@@ -121,12 +121,17 @@ public class ClothoidesComputer implements Service
 		}
 	}
 
-	public final ArcCourbeCubique cubicInterpolation(Cinematique cinematiqueInitiale, Cinematique arrivee, Speed vitesseMax, boolean rebrousse)
+	public final ArcCourbeCubique cubicInterpolation(RobotChrono r, Cinematique arrivee, Speed vitesseMax, VitesseCourbure v)
 	{
-		log.debug("Interpolation cubique, rebrousse : "+rebrousse);
+		return cubicInterpolation(r.getCinematique(), arrivee, vitesseMax, v);
+	}
+	
+	public final ArcCourbeCubique cubicInterpolation(Cinematique cinematiqueInitiale, Cinematique arrivee, Speed vitesseMax, VitesseCourbure v)
+	{
+		log.debug("Interpolation cubique, rebrousse : "+v.rebrousse);
 		double delta = 0;
 		double courbure = cinematiqueInitiale.courbure;
-		if(rebrousse) // si on rebrousse, la courbure est nulle
+		if(v.rebrousse) // si on rebrousse, la courbure est nulle
 		{
 			delta += Math.PI;
 			courbure = 0;
@@ -170,7 +175,7 @@ public class ClothoidesComputer implements Service
 					ax*t*t*t + bx*t*t + cx*t + dx, // x
 					ay*t*t*t + by*t*t + cy*t + dy, // y
 					Math.atan2(vy, vx), // orientation = atan2(vy, vx)
-					rebrousse ^ cinematiqueInitiale.enMarcheAvant,
+					v.rebrousse ^ cinematiqueInitiale.enMarcheAvant,
 					1000*(vx * acy - vy * acx) / Math.pow(vx*vx + vy*vy, 1.5), // formule de la courbure d'une courbe paramétrique
 					vitesseMax.translationalSpeed, // vitesses calculées classiquement
 					vitesseMax.rotationalSpeed);
@@ -186,7 +191,7 @@ public class ClothoidesComputer implements Service
 			out.add(actuel);
 			last = actuel;
 		}
-		return new ArcCourbeCubique(out, longueur);
+		return new ArcCourbeCubique(out, longueur, v.rebrousse, v.rebrousse, v);
 	}
 	
 	public void getTrajectoire(ArcCourbe depart, VitesseCourbure vitesse, Speed vitesseMax, ArcCourbeClotho modified)
@@ -219,6 +224,7 @@ public class ClothoidesComputer implements Service
 	 */
 	public final void getTrajectoire(Cinematique cinematiqueInitiale, VitesseCourbure vitesse, Speed vitesseMax, ArcCourbeClotho modified)
 	{
+		modified.v = vitesse;
 		log.debug(vitesse);
 		if(vitesse.rebrousse)
 		{
@@ -228,7 +234,6 @@ public class ClothoidesComputer implements Service
 		}
 		else
 			modified.arcselems[0].enMarcheAvant = cinematiqueInitiale.enMarcheAvant;
-		modified.v = vitesse;
 		
 		// si la dérivée de la courbure est nulle, on est dans le cas particulier d'une trajectoire rectiligne ou circulaire
 		if(vitesse.vitesse == 0)

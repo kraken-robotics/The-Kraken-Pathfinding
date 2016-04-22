@@ -15,6 +15,13 @@ public abstract class ArcCourbe {
 	public boolean stop; // cet arc commence par un arrêt du robot
 	public VitesseCourbure v; // TODO virer
 	
+	public ArcCourbe(boolean rebrousse, boolean stop, VitesseCourbure v)
+	{
+		this.rebrousse = rebrousse;
+		this.stop = stop;
+		this.v = v;
+	}
+	
 	public abstract int getNbPoints();
 	public abstract Cinematique getPoint(int indice);
 	public abstract Cinematique getLast();
