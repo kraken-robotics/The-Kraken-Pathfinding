@@ -18,4 +18,5 @@ public abstract class ArcCourbe {
 	public abstract int getNbPoints();
 	public abstract Cinematique getPoint(int indice);
 	public abstract Cinematique getLast();
+	public abstract double getDuree();
 }

@@ -15,7 +15,7 @@ public enum VitesseCourbure
 	
 	// Interpolation cubique avec l'arrivée
 	DIRECT_COURBE(0, 0, false),
-	DIRECT_COURBE_REBROUSSE(0, 0, false),
+	DIRECT_COURBE_REBROUSSE(0, 0, true),
 	
 	GAUCHE_0(1, 1, false),
 	GAUCHE_1(4, 2, false),

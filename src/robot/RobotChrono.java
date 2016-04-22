@@ -3,9 +3,6 @@ package robot;
 import java.util.ArrayList;
 
 import pathfinding.astarCourbe.arcs.ArcCourbe;
-import pathfinding.astarCourbe.arcs.ArcCourbeClotho;
-import pathfinding.astarCourbe.arcs.ArcCourbeCubique;
-import pathfinding.astarCourbe.arcs.ClothoidesComputer;
 import hook.Hook;
 import utils.Log;
 import utils.Vec2;
@@ -158,17 +155,12 @@ public class RobotChrono extends Robot
 		date = 0;
 	}
 
-	public void suitArcCourbeClotho(ArcCourbeClotho came_from_arc)
+	public void suitArcCourbe(ArcCourbe came_from_arc)
 	{
 		// TODO compléter
-		came_from_arc.arcselems[ClothoidesComputer.NB_POINTS-1].copy(cinematique);
+		came_from_arc.getLast().copy(cinematique);
 	}
 
-	public void suitArcCourbeCubique(ArcCourbeCubique came_from_arc)
-	{
-		// TODO compléter
-		came_from_arc.arcs.get(came_from_arc.arcs.size()-1).copy(cinematique);
-	}
 	
 	public Cinematique getCinematique()
 	{

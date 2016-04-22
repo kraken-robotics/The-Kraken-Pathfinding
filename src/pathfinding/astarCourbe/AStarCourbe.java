@@ -7,6 +7,7 @@ import java.util.PriorityQueue;
 import pathfinding.VitesseCourbure;
 import pathfinding.astarCourbe.arcs.AStarCourbeArcManager;
 import pathfinding.astarCourbe.arcs.ArcCourbe;
+import pathfinding.astarCourbe.arcs.ArcCourbeCubique;
 import pathfinding.dstarlite.GridSpace;
 import container.Service;
 import exceptions.FinMatchException;
@@ -96,13 +97,13 @@ public abstract class AStarCourbe implements Service
 		do
 		{
 			current = openset.poll();
-/*
+
 			if(Config.graphicObstacles && current.came_from_arc != null)
-				for(int i = 0; i < ClothoidesComputer.NB_POINTS; i++)
+				for(int i = 0; i < current.came_from_arc.getNbPoints(); i++)
 				{
 					Sleep.sleep(100);
-					Fenetre.getInstance().addObstacleEnBiais(new ObstacleRectangular(current.came_from_arc.arcselems[i].getPosition(), 4, 4, 0));
-				}*/
+					Fenetre.getInstance().addObstacleEnBiais(new ObstacleRectangular(current.came_from_arc.getPoint(i).getPosition(), 4, 4, 0));
+				}
 			
 			// ce calcul étant un peu lourd, on ne le fait que si le noeud a été choisi, et pas à la sélection des voisins (dans hasNext par exemple)
 			if(!arcmanager.isReachable(current))
@@ -112,7 +113,8 @@ public abstract class AStarCourbe implements Service
 			}
 			
 			// Si on est arrivé, on reconstruit le chemin
-			if(((RobotChrono)current.state.robot).getCinematique().estProche(arrivee) || memorymanager.getSize() > 30000)
+			// On est arrivé seulement si on vient d'un arc cubique
+			if(current.came_from_arc instanceof ArcCourbeCubique || memorymanager.getSize() > 30000)
 			{
 				// TODO
 				if(memorymanager.getSize() > 30000)
@@ -144,8 +146,13 @@ public abstract class AStarCourbe implements Service
 
 				successeur = memorymanager.getNewNode();
 
-				arcmanager.next(successeur, vitesseMax, arrivee);
-				 
+				// S'il y a un problème, on passe au suivant (interpolation cubique impossible par exemple)
+				if(!arcmanager.next(successeur, vitesseMax, arrivee))
+				{
+					memorymanager.destroyNode(successeur);
+					continue;
+				}
+
 				successeur.g_score = current.g_score + arcmanager.distanceTo(successeur);
 				successeur.f_score = successeur.g_score + arcmanager.heuristicCost(successeur);
 				successeur.came_from = current;

@@ -45,5 +45,11 @@ public class ArcCourbeClotho extends ArcCourbe
 	{
 		return arcselems[ClothoidesComputer.NB_POINTS - 1];
 	}
+	
+	@Override
+	public double getDuree()
+	{
+		return ClothoidesComputer.DISTANCE_ARC_COURBE / arcselems[0].vitesseTranslation;
+	}
 
 }

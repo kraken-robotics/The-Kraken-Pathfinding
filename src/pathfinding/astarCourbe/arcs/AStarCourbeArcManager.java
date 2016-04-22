@@ -66,25 +66,14 @@ public class AStarCourbeArcManager implements Service
 	 * Ne reste plus qu'à prendre en compte la vitesse, qui dépend de la courbure.
 	 * Il faut exécuter tout ce qui se passe pendant ce trajet
 	 */
-	public int distanceTo(AStarCourbeNode node)
+	public double distanceTo(AStarCourbeNode node)
 	{
-		if(node.came_from_arc instanceof ArcCourbeClotho)
-		{
 			// TODO : vérifier les hooks
-			((RobotChrono)node.state.robot).suitArcCourbeClotho((ArcCourbeClotho)node.came_from_arc);
-			int out = (int) (ClothoidesComputer.DISTANCE_ARC_COURBE / ((ArcCourbeClotho)node.came_from_arc).arcselems[0].vitesseTranslation);
+			((RobotChrono)node.state.robot).suitArcCourbe(node.came_from_arc);
+			double out = node.came_from_arc.getDuree();
 			if(node.came_from_arc.rebrousse)
 				out += TEMPS_REBROUSSEMENT;
 			return out;
-		}
-		else
-		{
-			((RobotChrono)node.state.robot).suitArcCourbeCubique((ArcCourbeCubique)node.came_from_arc);
-			int out = (int)((ArcCourbeCubique)node.came_from_arc).longueur;
-			if(node.came_from_arc.rebrousse)
-				out += TEMPS_REBROUSSEMENT;
-			return out;
-		}
 		// TODO : si, il faut les exécuter
 		/*
 		 * Il n'y a pas d'utilisation de hook.
@@ -102,12 +91,13 @@ public class AStarCourbeArcManager implements Service
 	 * Fournit le prochain successeur. On suppose qu'il existe
 	 * @param successeur
 	 */
-    public void next(AStarCourbeNode successeur, Speed vitesseMax, Cinematique arrivee)
+    public boolean next(AStarCourbeNode successeur, Speed vitesseMax, Cinematique arrivee)
     {
     	VitesseCourbure v = iterator.next();
+    	
 		current.state.copyAStarCourbe(successeur.state);
 		if(v == VitesseCourbure.DIRECT_COURBE || v == VitesseCourbure.DIRECT_COURBE_REBROUSSE)
-			clotho.cubicInterpolation(
+			successeur.came_from_arc = clotho.cubicInterpolation(
 					successeur.came_from_arc.getLast(),
 					arrivee,
 					vitesseMax,
@@ -122,6 +112,8 @@ public class AStarCourbeArcManager implements Service
 					v,
 					vitesseMax,
 					(ArcCourbeClotho)successeur.came_from_arc);
+		
+		return successeur.came_from_arc != null;
     }
     
     /**

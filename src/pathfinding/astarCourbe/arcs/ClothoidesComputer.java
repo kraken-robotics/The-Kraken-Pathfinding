@@ -123,6 +123,7 @@ public class ClothoidesComputer implements Service
 
 	public final ArcCourbeCubique cubicInterpolation(Cinematique cinematiqueInitiale, Cinematique arrivee, Speed vitesseMax, boolean rebrousse)
 	{
+		log.debug("Interpolation cubique, rebrousse : "+rebrousse);
 		double delta = 0;
 		double courbure = cinematiqueInitiale.courbure;
 		if(rebrousse) // si on rebrousse, la courbure est nulle
@@ -149,16 +150,16 @@ public class ClothoidesComputer implements Service
 		double longueur = 0;
 		Cinematique last = null, actuel;
 
-		tnext += 1/(Math.hypot(3*ax*t*t+2*bx*t+cx, 3*ay*t*t+2*by*t+cy)*PRECISION_TRACE*2);
+		tnext += Math.min(0.1, 1/(Math.hypot(3*ax*t*t+2*bx*t+cx, 3*ay*t*t+2*by*t+cy)*PRECISION_TRACE*2));
 		while(t < 1.)
 		{
 			t = tnext;
-			tnext += 1/(Math.hypot(3*ax*t*t+2*bx*t+cx, 3*ay*t*t+2*by*t+cy)*PRECISION_TRACE*2);
+			
+			tnext += Math.min(0.1, 1/(Math.hypot(3*ax*t*t+2*bx*t+cx, 3*ay*t*t+2*by*t+cy)*PRECISION_TRACE*2));
 			if(tnext > 1)
-			{
-				t = 1;
-			}
-			log.debug(t);
+				t = 1; // on veut finir à 1 exactement
+
+//			log.debug(t);
 			
 			double vx = 3*ax*t*t+2*bx*t+cx;
 			double vy = 3*ay*t*t+2*by*t+cy;

@@ -69,7 +69,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
 	@Test
     public void test_interpolation_cubique() throws Exception
     {		
-		Cinematique c1 = new Cinematique(-1000, 1000, Math.PI/4, true, 0, 1000, 1000);
+		Cinematique c1 = new Cinematique(-1000, 1500, Math.PI/4, true, 0, 1000, 1000);
 		Cinematique c2 = new Cinematique(0, 1000, 0, true, 0, 0, 0);
 		
 		ArcCourbeCubique arccubique = clotho.cubicInterpolation(c1, c2, Speed.STANDARD, false);
@@ -124,31 +124,18 @@ public class JUnit_Pathfinding extends JUnit_Test {
 		while(!cheminPlanif.isEmpty())
 		{
 			ArcCourbe arc = cheminPlanif.poll();
-			if(arc instanceof ArcCourbeClotho)
-				for(int i = 0; i < ClothoidesComputer.NB_POINTS; i++)
+			for(int i = 0; i < arc.getNbPoints(); i++)
+			{
+				System.out.println(arc.v+" "+arc.getPoint(i).getPosition().distance(arrivee.getPosition()));
+				if(Config.graphicObstacles)
 				{
-					System.out.println(arc.v+" "+((ArcCourbeClotho)arc).arcselems[i].getPosition().distance(arrivee.getPosition()));
-					if(Config.graphicObstacles)
-					{
-						Sleep.sleep(100);
-						if(arc.rebrousse)
-							Fenetre.getInstance().addObstacleEnBiais(new ObstacleRectangular(((ArcCourbeClotho)arc).arcselems[i].getPosition(), 15, 15, 0));
-						else
-							Fenetre.getInstance().addObstacleEnBiais(new ObstacleRectangular(((ArcCourbeClotho)arc).arcselems[i].getPosition(), 10, 10, 0));
-					}
+					Sleep.sleep(100);
+					if(arc.rebrousse)
+						Fenetre.getInstance().addObstacleEnBiais(new ObstacleRectangular(arc.getPoint(i).getPosition(), 15, 15, 0));
+					else
+						Fenetre.getInstance().addObstacleEnBiais(new ObstacleRectangular(arc.getPoint(i).getPosition(), 10, 10, 0));
 				}
-			else
-				for(int i = 0; i < ((ArcCourbeCubique)arc).arcs.size(); i++)
-				{
-					if(Config.graphicObstacles)
-					{
-						Sleep.sleep(100);
-						if(arc.rebrousse)
-							Fenetre.getInstance().addObstacleEnBiais(new ObstacleRectangular(((ArcCourbeCubique)arc).arcs.get(i).getPosition(), 15, 15, 0));
-						else
-							Fenetre.getInstance().addObstacleEnBiais(new ObstacleRectangular(((ArcCourbeCubique)arc).arcs.get(i).getPosition(), 10, 10, 0));
-					}
-				}
+			}
 		}
     }
 	
