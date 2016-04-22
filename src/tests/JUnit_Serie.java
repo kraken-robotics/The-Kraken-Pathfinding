@@ -6,6 +6,8 @@ import org.junit.Test;
 import serie.DataForSerialOutput;
 import serie.SerialSTM;
 import utils.Sleep;
+import utils.Vec2;
+import utils.permissions.ReadOnly;
 import container.ServiceNames;
 
 /**
@@ -31,6 +33,13 @@ public class JUnit_Serie extends JUnit_Test {
 		Sleep.sleep(3000);
 	}
 	
+	@Test
+	public void test_init_odo() throws Exception
+	{
+		data.initOdoSTM(new Vec2<ReadOnly>(12, 34), 1);
+		Sleep.sleep(100);
+	}
+
 	@Test
 	public void test_stress_test() throws Exception
 	{

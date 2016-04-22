@@ -52,7 +52,7 @@ public enum ConfigInfo {
 	COURBURE_MAX("10.", true),
 	X_DEPART("0", true),
 	Y_DEPART("1000", true),
-	O_DEPART("3.14", true),
+	O_DEPART("3.142", true),
 	AFFICHE_CONFIG("false", true),
 	
 	CONST_KP_VIT_GAUCHE("11", true),

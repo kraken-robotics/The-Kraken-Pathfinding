@@ -9,15 +9,15 @@ package robot;
 public enum Speed
 {
 	// TODO fixer les valeurs
-    STANDARD(10, 10),
+    STANDARD(3., 60./1000.),
     
     // On avance moins vite si l'on veut percuter un mur.
-    INTO_WALL(10, 10),
+    INTO_WALL(0.5, 30./1000.),
     
     // Vitesse du robot lors d'une replanification, plus lent que la vitesse standard
-    REPLANIF(10,10),
+    REPLANIF(2., 50./1000.),
     
-    SLOW(10, 10);
+    SLOW(1., 20./1000.);
     
     public static final int translationStopDuration = 200; // le temps de s'arrêter en translation
     public static final int rotationStopDuration = 100; // le temps de s'arrêter en rotation
@@ -28,7 +28,7 @@ public enum Speed
     /** en millisecondes par radian */
     public final double invertedRotationalSpeed;
         
-    /** en millimètres par milliseconde */
+    /** en millimètres par milliseconde = mètre par seconde */
     public final double translationalSpeed;
     
     /** en radians par milliseconde */

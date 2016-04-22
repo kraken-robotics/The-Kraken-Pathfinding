@@ -492,7 +492,7 @@ public class ThreadSerialInput extends Thread implements Service
 						// Mauvais checksum. Annulation.
 						if(!verifieChecksum(lecture, index))
 							continue;
-
+						log.debug("Le robot est arrivé !");
 						requete.set(RequeteType.TRAJET_FINI);
 					}
 
@@ -504,7 +504,7 @@ public class ThreadSerialInput extends Thread implements Service
 						// Mauvais checksum. Annulation.
 						if(!verifieChecksum(lecture, index))
 							continue;
-
+						log.debug("Le robot a rencontré un problème mécanique !");
 						requete.set(RequeteType.BLOCAGE_MECANIQUE);
 					}
 					else

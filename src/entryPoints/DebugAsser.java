@@ -89,8 +89,8 @@ public class DebugAsser
 		stm.setConstSamson(k1, k2);
 		
 //		stm.asserVitesse(50, 80);
-//		stm.avancer(400, Speed.STANDARD);
-		stm.turn(Math.PI/2, Speed.STANDARD);
+		stm.avancer(200, Speed.STANDARD);
+//		stm.turn(Math.PI/2, Speed.STANDARD);
 /*		stm.turn(-Math.PI/2);
 		Sleep.sleep(5000);
 		stm.turn(0);
