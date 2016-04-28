@@ -33,6 +33,7 @@ public class HeuristiqueSimple implements HeuristiqueCourbe, Service
 	@Override
 	public double heuristicCostCourbe(Cinematique c)
 	{
+//		log.debug(c.getPosition()+" "+arrivee);
 		// TODO prendre en compte l'orientation et la courbure à proximité
 		double distance = arrivee.distance(c.getPosition());
 //		if(distance > 400)

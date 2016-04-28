@@ -98,7 +98,7 @@ public class Cinematique
 	@Override
 	public String toString()
 	{
-		return position+", "+orientation;
+		return position+", "+orientation+", "+(enMarcheAvant ? "marche avant " : "marche arrière");
 	}
 	
 }

@@ -26,4 +26,6 @@ public abstract class ArcCourbe {
 	public abstract Cinematique getPoint(int indice);
 	public abstract Cinematique getLast();
 	public abstract double getDuree();
+	public abstract double getVitesseTr();
+
 }

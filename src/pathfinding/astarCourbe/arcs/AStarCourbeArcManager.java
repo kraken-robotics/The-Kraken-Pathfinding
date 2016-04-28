@@ -36,7 +36,7 @@ public class AStarCourbeArcManager implements Service
 	private double courbureMax;
 	private DirectionStrategy directionstrategyactuelle;
 	private List<VitesseCourbure> listeVitesse = Arrays.asList(VitesseCourbure.values());
-	private final static int TEMPS_REBROUSSEMENT = 50;
+	private final static int TEMPS_REBROUSSEMENT = 500;
 	private ListIterator<VitesseCourbure> iterator = listeVitesse.listIterator();
 	
 	public AStarCourbeArcManager(Log log, MoteurPhysique moteur, HeuristiqueCourbe heuristique, ClothoidesComputer clotho)
@@ -112,7 +112,11 @@ public class AStarCourbeArcManager implements Service
 						vitesseMax,
 						v);
 			if(tmp == null)
+			{
+//				log.debug("Interpolation impossible");
 				return false;
+			}
+
 			successeur.came_from_arc = tmp;
 		}
 		else if(current.came_from_arc != null)
@@ -145,20 +149,23 @@ public class AStarCourbeArcManager implements Service
     	//      - on est dans la bonne direction, donc pas d'autorisation exceptionnelle de se retourner
     	if(vitesse.rebrousse && (directionstrategyactuelle != DirectionStrategy.FASTEST && directionstrategyactuelle.isPossible(((RobotChrono)current.state.robot).getCinematique().enMarcheAvant)))
     	{ 
-    		log.debug(vitesse+" n'est acceptable (rebroussement interdit");
+    		log.debug(vitesse+" n'est pas acceptable (rebroussement interdit");
     		return false;
     	}
     	
     	// Si on ne rebrousse pas chemin alors que c'est nécessaire
     	if(!vitesse.rebrousse && !directionstrategyactuelle.isPossible(((RobotChrono)current.state.robot).getCinematique().enMarcheAvant))
     	{
-    		log.debug(vitesse+" n'est acceptable (rebroussement nécessaire");
+    		log.debug(vitesse+" n'est pas acceptable (rebroussement nécessaire");
     		return false;
     	}
 
     	// On ne tente pas l'interpolation si on est trop loin
-    	if((vitesse == VitesseCourbure.DIRECT_COURBE || vitesse == VitesseCourbure.DIRECT_COURBE_REBROUSSE) && heuristique.heuristicCostCourbe(((RobotChrono)current.state.robot).getCinematique()) > 500)
+    	if((vitesse == VitesseCourbure.DIRECT_COURBE || vitesse == VitesseCourbure.DIRECT_COURBE_REBROUSSE) && heuristique.heuristicCostCourbe(((RobotChrono)current.state.robot).getCinematique()) > 100)
+    	{
+    		log.debug(vitesse+" n'est pas acceptable (on est trop loin)");
 			return false;
+    	}
     	
     	double courbureFuture = ((RobotChrono)current.state.robot).getCinematique().courbure + vitesse.vitesse * ClothoidesComputer.DISTANCE_ARC_COURBE_M;
     	if(courbureFuture >= -courbureMax && courbureFuture <= courbureMax)

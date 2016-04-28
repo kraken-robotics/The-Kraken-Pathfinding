@@ -128,70 +128,110 @@ public class ClothoidesComputer implements Service
 	
 	public final ArcCourbeCubique cubicInterpolation(Cinematique cinematiqueInitiale, Cinematique arrivee, Speed vitesseMax, VitesseCourbure v)
 	{
-		log.debug("Interpolation cubique, rebrousse : "+v.rebrousse);
-		double delta = 0;
+//		log.debug(v);
+		double alphas[] = {100, 300, 600, 800, 1000, 1200};
+//		log.debug("Interpolation cubique, rebrousse : "+v.rebrousse);
+		double sin, cos;
 		double courbure = cinematiqueInitiale.courbure;
 		if(v.rebrousse) // si on rebrousse, la courbure est nulle
 		{
-			delta += Math.PI;
+			sin = Math.sin(cinematiqueInitiale.orientation + Math.PI);
+			cos = Math.cos(cinematiqueInitiale.orientation + Math.PI);
 			courbure = 0;
 		}
-		
-		// les paramètres du polynomes x = ax * t^3 + bx * t^2 + cx * t + dx,
-		// en fixant la position en 0 (départ) et en 1 (arrivée), la dérivée en 0 (vecteur vitesse) et la dérivée seconde en 0 (courbure)
-		double dx = cinematiqueInitiale.getPosition().x;
-		double cx = Math.cos(cinematiqueInitiale.orientation + delta)*cinematiqueInitiale.vitesseTranslation;
-		double bx = courbure*Math.sin(cinematiqueInitiale.orientation)*Math.pow(1+cx*cx, 1.5); // expression de la dérivée seconde en fonction de la courbure
-		double ax = arrivee.getPosition().x - bx - cx - dx;
-		
-		// idem pour y
-		double dy = cinematiqueInitiale.getPosition().y;
-		double cy = Math.sin(cinematiqueInitiale.orientation + delta)*cinematiqueInitiale.vitesseTranslation;
-		double by = courbure*Math.cos(cinematiqueInitiale.orientation)*Math.pow(1+cy*cy, 1.5);
-		double ay = arrivee.getPosition().y - by - cy - dy;
-		
-		ArrayList<Cinematique> out = new ArrayList<Cinematique>();
-		double t = 0, tnext = 0;
-		double longueur = 0;
-		Cinematique last = null, actuel;
-
-		tnext += Math.min(0.1, 1/(Math.hypot(3*ax*t*t+2*bx*t+cx, 3*ay*t*t+2*by*t+cy)*PRECISION_TRACE*2));
-		while(t < 1.)
+		else
 		{
-			t = tnext;
-			
-			tnext += Math.min(0.1, 1/(Math.hypot(3*ax*t*t+2*bx*t+cx, 3*ay*t*t+2*by*t+cy)*PRECISION_TRACE*2));
-			if(tnext > 1)
-				t = 1; // on veut finir à 1 exactement
-
-//			log.debug(t);
-			
-			double vx = 3*ax*t*t+2*bx*t+cx;
-			double vy = 3*ay*t*t+2*by*t+cy;
-			double acx = 6*ax*t+2*bx;
-			double acy = 6*ay*t+2*by;
-			
-			actuel = new Cinematique(
-					ax*t*t*t + bx*t*t + cx*t + dx, // x
-					ay*t*t*t + by*t*t + cy*t + dy, // y
-					Math.atan2(vy, vx), // orientation = atan2(vy, vx)
-					v.rebrousse ^ cinematiqueInitiale.enMarcheAvant,
-					1000*(vx * acy - vy * acx) / Math.pow(vx*vx + vy*vy, 1.5), // formule de la courbure d'une courbe paramétrique
-					vitesseMax.translationalSpeed, // vitesses calculées classiquement
-					vitesseMax.rotationalSpeed);
-	
-			// Il faut faire attention à ne pas dépasser la coubure maximale !
-			if(Math.abs(actuel.courbure) > courbureMax)
-				return null;
-			
-			// calcul de la longueur de l'arc
-			if(last != null)
-				longueur += actuel.getPosition().distance(last.getPosition());
-
-			out.add(actuel);
-			last = actuel;
+			sin = Math.sin(cinematiqueInitiale.orientation);
+			cos = Math.cos(cinematiqueInitiale.orientation);			
 		}
-		return new ArcCourbeCubique(out, longueur, v.rebrousse, v.rebrousse, v);
+		
+		for(int i = 0; i < alphas.length; i++)
+		{
+			double alpha = alphas[i];
+			
+			double bx, by;
+			
+			if(Math.abs(cos) < Math.abs(sin))
+			{
+				bx = -courbure/1000*alpha*alpha/(2*sin);
+				by = 0;
+			}
+			else
+			{
+				bx = 0;
+				by = courbure/1000*alpha*alpha/(2*cos);
+			}
+	
+			// les paramètres du polynomes x = ax * t^3 + bx * t^2 + cx * t + dx,
+			// en fixant la position en 0 (départ) et en 1 (arrivée), la dérivée en 0 (vecteur vitesse) et la dérivée seconde en 0 (courbure)
+			double dx = cinematiqueInitiale.getPosition().x;
+			double cx = cos*alpha;
+			double ax = arrivee.getPosition().x - bx - cx - dx;
+			
+			// idem pour y
+			double dy = cinematiqueInitiale.getPosition().y;
+			double cy = sin*alpha;
+			double ay = arrivee.getPosition().y - by - cy - dy;
+	
+			ArrayList<Cinematique> out = new ArrayList<Cinematique>();
+			double t = 0, tnext = 0, lastCourbure = courbure;
+			double longueur = 0;
+			Cinematique last = null, actuel;
+			boolean error = false;
+			
+			tnext += PRECISION_TRACE*1000/alpha;
+			while(t < 1.)
+			{
+				t = tnext;
+				
+				tnext += PRECISION_TRACE*1000/(Math.hypot(3*ax*t*t+2*bx*t+cx, 3*ay*t*t+2*by*t+cy));
+				if(tnext > 1)
+					t = 1; // on veut finir à 1 exactement
+	
+				double x = ax*t*t*t + bx*t*t + cx*t + dx;
+				double y = ay*t*t*t + by*t*t + cy*t + dy;
+				double vx = 3*ax*t*t+2*bx*t+cx;
+				double vy = 3*ay*t*t+2*by*t+cy;
+				double acx = 6*ax*t+2*bx;
+				double acy = 6*ay*t+2*by;
+				
+				actuel = new Cinematique(
+						x, // x
+						y, // y
+						Math.atan2(vy, vx), // orientation = atan2(vy, vx)
+						v.rebrousse ^ cinematiqueInitiale.enMarcheAvant,
+						1000*(vx * acy - vy * acx) / Math.pow(vx*vx + vy*vy, 1.5), // formule de la courbure d'une courbe paramétrique
+						vitesseMax.translationalSpeed, // vitesses calculées classiquement
+						vitesseMax.rotationalSpeed);
+		
+//				log.debug(t);
+				
+				// Il faut faire attention à ne pas dépasser la coubure maximale !
+				// On prend de la marge
+				if(x < -1500 || x > 1500 || y < 0 || y > 2000 || Math.abs(actuel.courbure) > courbureMax*0.7 || Math.abs(actuel.courbure - lastCourbure) > 3)
+				{
+//					log.debug("ERREUR");
+					error = true;
+					break;
+				}
+				
+				
+//				log.debug(x+" "+y);
+				lastCourbure = actuel.courbure;
+				
+				// calcul de la longueur de l'arc
+				if(last != null)
+					longueur += actuel.getPosition().distance(last.getPosition());
+	
+				out.add(actuel);
+				last = actuel;
+			}
+			if(error) // on essaye un autre alpha
+				continue;
+			
+			return new ArcCourbeCubique(out, longueur, v.rebrousse, v.rebrousse, v);
+		}
+		return null;
 	}
 	
 	public void getTrajectoire(ArcCourbe depart, VitesseCourbure vitesse, Speed vitesseMax, ArcCourbeClotho modified)
@@ -225,7 +265,7 @@ public class ClothoidesComputer implements Service
 	public final void getTrajectoire(Cinematique cinematiqueInitiale, VitesseCourbure vitesse, Speed vitesseMax, ArcCourbeClotho modified)
 	{
 		modified.v = vitesse;
-		log.debug(vitesse);
+//		log.debug(vitesse);
 		if(vitesse.rebrousse)
 		{
 			cinematiqueInitiale.courbure = 0;

@@ -4,22 +4,17 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.PriorityQueue;
 
-import pathfinding.VitesseCourbure;
 import pathfinding.astarCourbe.arcs.AStarCourbeArcManager;
 import pathfinding.astarCourbe.arcs.ArcCourbe;
 import pathfinding.astarCourbe.arcs.ArcCourbeCubique;
 import pathfinding.dstarlite.GridSpace;
 import container.Service;
-import exceptions.FinMatchException;
-import obstacles.types.ObstacleRectangular;
 import robot.Cinematique;
 import robot.DirectionStrategy;
-import robot.RobotChrono;
 import robot.Speed;
 import tests.graphicLib.Fenetre;
 import utils.Config;
 import utils.Log;
-import utils.Sleep;
 
 /**
  * AStar* simplifié, qui lisse le résultat du D* Lite et fournit une trajectoire courbe
@@ -62,7 +57,7 @@ public abstract class AStarCourbe implements Service
 	}
 
 	private final PriorityQueue<AStarCourbeNode> openset = new PriorityQueue<AStarCourbeNode>(GridSpace.NB_POINTS, new AStarCourbeNodeComparator());
-	private final PriorityQueue<AStarCourbeNode> miniset = new PriorityQueue<AStarCourbeNode>(VitesseCourbure.values.length, new AStarCourbeNodeComparator());
+//	private final PriorityQueue<AStarCourbeNode> miniset = new PriorityQueue<AStarCourbeNode>(VitesseCourbure.values.length, new AStarCourbeNodeComparator());
 
 	/**
 	 * Constructeur du AStarCourbe
@@ -116,7 +111,6 @@ public abstract class AStarCourbe implements Service
 			// On est arrivé seulement si on vient d'un arc cubique
 			if(current.came_from_arc instanceof ArcCourbeCubique || memorymanager.getSize() > 30000)
 			{
-				// TODO
 				if(memorymanager.getSize() > 30000) // étant donné qu'il peut continuer jusqu'à l'infini...
 				{
 					memorymanager.empty();
@@ -157,10 +151,17 @@ public abstract class AStarCourbe implements Service
 					continue;
 				}
 
-				successeur.g_score = current.g_score + arcmanager.distanceTo(successeur);
-				successeur.f_score = successeur.g_score + arcmanager.heuristicCost(successeur);
+//				log.debug(successeur.came_from_arc.getPoint(0).getPosition()+" "+successeur.came_from_arc.getLast());
+				
+				successeur.g_score = current.g_score
+						+ successeur.came_from_arc.getPoint(0).getPosition().distance(successeur.came_from_arc.getLast().getPosition());
+//				+				
+	;
+				log.debug(successeur.came_from_arc.getPoint(0).getPosition().distance(successeur.came_from_arc.getLast().getPosition()) + " "+ arcmanager.distanceTo(successeur));
+				successeur.f_score = successeur.g_score //+ successeur.came_from_arc.getLast().getPosition().distance(arrivee.getPosition());
+				 + arcmanager.heuristicCost(successeur);// / successeur.came_from_arc.getVitesseTr();
 				successeur.came_from = current;
-				log.debug(successeur.f_score);
+//				log.debug(successeur.came_from_arc.getLast().getPosition().distance(arrivee.getPosition()));
 //				miniset.add(successeur);
 				openset.add(successeur);
 				

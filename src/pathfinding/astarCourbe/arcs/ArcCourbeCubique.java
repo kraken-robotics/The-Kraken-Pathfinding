@@ -40,10 +40,20 @@ public class ArcCourbeCubique extends ArcCourbe
 	{
 		return arcs.get(arcs.size()-1);
 	}
-	
+
 	@Override
 	public double getDuree()
 	{
-		return longueur / arcs.get(0).vitesseTranslation;
+		return longueur / getVitesseTr();
 	}
+	
+	@Override
+	public double getVitesseTr()
+	{
+		double v = 0;
+		for(Cinematique c : arcs)
+			v += c.vitesseTranslation;
+		return v / arcs.size();
+	}
+
 }

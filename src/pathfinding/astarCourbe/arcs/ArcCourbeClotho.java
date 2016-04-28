@@ -1,6 +1,5 @@
 package pathfinding.astarCourbe.arcs;
 
-import pathfinding.VitesseCourbure;
 import robot.Cinematique;
 
 /**
@@ -51,7 +50,16 @@ public class ArcCourbeClotho extends ArcCourbe
 	@Override
 	public double getDuree()
 	{
-		return ClothoidesComputer.DISTANCE_ARC_COURBE / arcselems[0].vitesseTranslation;
+		return ClothoidesComputer.DISTANCE_ARC_COURBE / getVitesseTr();
+	}
+	
+	@Override
+	public double getVitesseTr()
+	{
+		double v = 0;
+		for(int i = 0; i < ClothoidesComputer.NB_POINTS; i++)
+			v += arcselems[i].vitesseTranslation;
+		return v / ClothoidesComputer.NB_POINTS;
 	}
 
 }
