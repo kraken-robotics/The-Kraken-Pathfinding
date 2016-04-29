@@ -5,7 +5,6 @@ import obstacles.types.ObstacleProximity;
 import obstacles.types.ObstacleRectangular;
 import pathfinding.ChronoGameState;
 import pathfinding.astarCourbe.AStarCourbeNode;
-import robot.RobotReal;
 import table.GameElementNames;
 import utils.Config;
 import utils.ConfigInfo;
@@ -26,7 +25,6 @@ public class MoteurPhysique implements Service {
 	protected Log log;
 	
 	private int distanceApproximation;
-	private double courbureMax;
 	
 	public MoteurPhysique(Log log)
 	{
@@ -81,14 +79,11 @@ public class MoteurPhysique implements Service {
      */
     public boolean obstacleProximiteDansSegment(ChronoGameState state, Vec2<ReadOnly> A, Vec2<ReadOnly> B, int date)
     {
-  //      if(isThereHypotheticalEnemy && hypotheticalEnemy.obstacle_proximite_dans_segment(A, B, date))
-  //      	return true;
-        
-/*    	state.iterator.reinit();
+    	state.iterator.reinit();
     	while(state.iterator.hasNext())
         	if(state.iterator.next().obstacle_proximite_dans_segment(A, B, date))
         		return true;
-*/
+
         return false;
     }
 
@@ -144,27 +139,31 @@ public class MoteurPhysique implements Service {
 	@Override
 	public void useConfig(Config config)
 	{
-		courbureMax = config.getDouble(ConfigInfo.COURBURE_MAX);
 		distanceApproximation = config.getInt(ConfigInfo.DISTANCE_MAX_ENTRE_MESURE_ET_OBJET);		
 	}
 	
-
+	/**
+	 * Y a-t-il collision sur le chemin d'une trajectoire courbe ?
+	 * @param node
+	 * @return
+	 */
 	public boolean isTraversableCourbe(AStarCourbeNode node)
 	{
-		return true;
-/*		ObstacleTrajectoireCourbe obstacleTrajectoireCourbe = new ObstacleTrajectoireCourbe(arc);
-
-		// Collision avec un obstacle fixe?
-    	for(ObstaclesFixes o: ObstaclesFixes.values)
-    		if(obstacleTrajectoireCourbe.isColliding(o.getObstacle()))
-    			return false;
-
-    	state.iterator.reinit();
-    	while(state.iterator.hasNext())
-           	if(obstacleTrajectoireCourbe.isColliding(state.iterator.next()))
-        		return false;
-
-        return true;*/
+		for(int i = 0; i < node.came_from_arc.getNbPoints(); i++)
+		{
+			ObstacleRectangular obs = new ObstacleRectangular(node.came_from_arc.getPoint(i), node.state.robot.isDeploye());
+	
+			// Collision avec un obstacle fixe?
+	    	for(ObstaclesFixes o: ObstaclesFixes.values)
+	    		if(obs.isColliding(o.getObstacle()))
+	    			return false;
+	
+	    	node.state.iterator.reinit();
+	    	while(node.state.iterator.hasNext())
+	           	if(obs.isColliding(node.state.iterator.next()))
+	        		return false;
+		}
+        return true;
 	}
 	
 	/**

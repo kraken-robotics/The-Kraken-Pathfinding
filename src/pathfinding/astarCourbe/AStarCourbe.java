@@ -62,7 +62,6 @@ public abstract class AStarCourbe implements Service
 
 	private final ArrayList<Integer> closedset = new ArrayList<Integer>();
 	private final PriorityQueue<AStarCourbeNode> openset = new PriorityQueue<AStarCourbeNode>(GridSpace.NB_POINTS, new AStarCourbeNodeComparator());
-//	private final PriorityQueue<AStarCourbeNode> miniset = new PriorityQueue<AStarCourbeNode>(VitesseCourbure.values.length, new AStarCourbeNodeComparator());
 
 	/**
 	 * Constructeur du AStarCourbe
@@ -105,12 +104,12 @@ public abstract class AStarCourbe implements Service
 			else
 				closedset.add(hash);
 			
-/*			if(Config.graphicObstacles && current.came_from_arc != null)
+			if(Config.graphicObstacles && current.came_from_arc != null)
 				for(int i = 0; i < current.came_from_arc.getNbPoints(); i++)
 				{
-					Sleep.sleep(100);
+//					Sleep.sleep(20);
 					Fenetre.getInstance().addObstacleEnBiais(new ObstacleRectangular(current.came_from_arc.getPoint(i).getPosition(), 4, 4, 0));
-				}*/
+				}
 			
 			// ce calcul étant un peu lourd, on ne le fait que si le noeud a été choisi, et pas à la sélection des voisins (dans hasNext par exemple)
 			if(!arcmanager.isReachable(current))
@@ -121,9 +120,9 @@ public abstract class AStarCourbe implements Service
 			
 			// Si on est arrivé, on reconstruit le chemin
 			// On est arrivé seulement si on vient d'un arc cubique
-			if(current.came_from_arc instanceof ArcCourbeCubique || memorymanager.getSize() > 30000)
+			if(current.came_from_arc instanceof ArcCourbeCubique || memorymanager.getSize() > 10000)
 			{
-				if(memorymanager.getSize() > 30000) // étant donné qu'il peut continuer jusqu'à l'infini...
+				if(memorymanager.getSize() > 10000) // étant donné qu'il peut continuer jusqu'à l'infini...
 				{
 					memorymanager.empty();
 					log.critical("AStarCourbe n'a pas trouvé de chemin !");
@@ -169,16 +168,10 @@ public abstract class AStarCourbe implements Service
 
 				successeur.came_from = current;
 
-//				miniset.add(successeur);
 				openset.add(successeur);
 				
 			}
 
-/*			for(int i = 0; i < 3; i++)
-				openset.add(miniset.poll());
-			while(!miniset.isEmpty())
-				memorymanager.destroyNode(miniset.poll());
-*/
 		} while(!openset.isEmpty());
 		
 		/**

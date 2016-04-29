@@ -124,7 +124,12 @@ public class Vec2<T extends Permission> implements Serializable
 	{
 		return Math.hypot(x-other.x, y-other.y);
 	}
-	
+
+	public final double distanceManhattan(Vec2<? extends Permission> other)
+	{
+		return Math.abs(x - other.x) + Math.abs(y - other.y);
+	}
+
 	public final String toString()
 	{
 		return "("+x+","+y+")";

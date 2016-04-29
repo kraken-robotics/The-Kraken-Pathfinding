@@ -50,7 +50,7 @@ public class Fenetre extends JPanel {
 	private ArrayList<ObstacleCircular> obstaclesCirulaires = new ArrayList<ObstacleCircular>();
 
 	protected Capteurs capteurs;
-	private boolean printObsFixes;
+	private boolean printObsFixes = false;
 //	private int firstNotDead = 0;
     
 	private GridSpace gs;
@@ -385,9 +385,9 @@ public class Fenetre extends JPanel {
 	public void printObsFixes()
 	{
 		printObsFixes = true;
-                if(needInit)
-                        init();
-                repaint();
+        if(needInit)
+            init();
+        repaint();
 	}
 	
 	public void addObstacleCirculaire(ObstacleCircular o)

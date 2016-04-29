@@ -20,7 +20,7 @@ public class RobotChrono extends Robot
 	private static final long[] paliers = new long[7];
 
 	protected int positionGridSpace;
-	private static int tempsMax = 90000;
+//	private static int tempsMax = 90000;
    
 	// Date en millisecondes depuis le début du match.
 	protected long date;
@@ -52,13 +52,13 @@ public class RobotChrono extends Robot
 	 * Mise à jour permettant de modifier, pour RobotChrono, la date limite de la recherche stratégique
 	 * @param dateLimite
 	 */
-	public static void setTempsMax(int tempsMax)
+/*	public static void setTempsMax(int tempsMax)
 	{
 		RobotChrono.tempsMax = tempsMax;
-	}
+	}*/
 	
 	@Override
-    public void avancer(int distance, ArrayList<Hook> hooks, boolean mur, Speed vitesse) throws FinMatchException
+    public void avancer(int distance, ArrayList<Hook> hooks, boolean mur, Speed vitesse)
 	{
 		date += Math.abs(distance)*vitesse.translationalSpeed + sleepAvanceDuration;
 	
@@ -117,15 +117,15 @@ public class RobotChrono extends Robot
 	 * @param hooks
 	 * @throws FinMatchException 
 	 */
-	private void checkHooks(Vec2<ReadOnly> pointA, Vec2<ReadOnly> pointB, ArrayList<Hook> hooks) throws FinMatchException
+	private void checkHooks(Vec2<ReadOnly> pointA, Vec2<ReadOnly> pointB, ArrayList<Hook> hooks)
 	{
 		for(Hook hook: hooks)
 			if(hook.simulated_evaluate(pointA, pointB, date))
 				hook.trigger();
 		
 		// vérification de la fin de la recherche
-		if(tempsMax < date)
-			throw new FinMatchException();
+//		if(tempsMax < date)
+//			throw new FinMatchException();
 	}
 
 	public void setPositionGridSpace(int gridpoint)

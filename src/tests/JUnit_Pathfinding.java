@@ -112,16 +112,22 @@ public class JUnit_Pathfinding extends JUnit_Test {
 	@Test
     public void test_pathfinding_planif() throws Exception
     {
-		Cinematique arrivee = new Cinematique(1000, 500, 0, true, 0, 0, 0, Speed.STANDARD);
+		Cinematique arrivee = new Cinematique(1000, 500, -Math.PI/2, true, 0, 0, 0, Speed.STANDARD);
+		
+		Fenetre.getInstance().printObsFixes();
 		Fenetre.getInstance().addObstacleEnBiais(new ObstacleRectangular(arrivee.getPosition(), 30, 30, 0));
+		gridspace.addObstacle(new Vec2<ReadOnly>(1000, 900), false);
 
 		ChronoGameState chrono = state.cloneGameState();
 		((RobotChrono)chrono.robot).getCinematique().enMarcheAvant = true;
-		((RobotChrono)chrono.robot).getCinematique().getPosition().x = -500;
-		((RobotChrono)chrono.robot).getCinematique().getPosition().y = 800;
-		((RobotChrono)chrono.robot).getCinematique().orientation = Math.PI/2;
+		((RobotChrono)chrono.robot).getCinematique().getPosition().x = -300;
+		((RobotChrono)chrono.robot).getCinematique().getPosition().y = 1700;
+		((RobotChrono)chrono.robot).getCinematique().orientation = Math.PI;
+
+		Fenetre.getInstance().addObstacleEnBiais(new ObstacleRectangular(((RobotChrono)chrono.robot).getCinematique().getPosition(), 30, 30, 0));
+
 		log.debug(cheminPlanif.size());
-		pathfindingCourbePlanif.computeNewPath(chrono, arrivee, true, DirectionStrategy.FORCE_BACK_MOTION);
+		pathfindingCourbePlanif.computeNewPath(chrono, arrivee, true, DirectionStrategy.FASTEST);
 		log.debug(cheminPlanif.size());
 		
 		while(!cheminPlanif.isEmpty())

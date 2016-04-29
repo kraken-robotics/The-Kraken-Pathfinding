@@ -36,7 +36,7 @@ public class AStarCourbeArcManager implements Service
 	private double courbureMax;
 	private DirectionStrategy directionstrategyactuelle;
 	private List<VitesseCourbure> listeVitesse = Arrays.asList(VitesseCourbure.values());
-	private final static int TEMPS_REBROUSSEMENT = 500;
+	private final static int TEMPS_REBROUSSEMENT = 700;
 	private ListIterator<VitesseCourbure> iterator = listeVitesse.listIterator();
 	
 	public AStarCourbeArcManager(Log log, MoteurPhysique moteur, HeuristiqueCourbe heuristique, ClothoidesComputer clotho)

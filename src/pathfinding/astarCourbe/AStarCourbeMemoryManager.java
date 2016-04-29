@@ -17,7 +17,7 @@ import utils.Log;
 
 public class AStarCourbeMemoryManager implements Service {
 
-	private static final int nb_instances = 50000;
+	private static final int nb_instances = 10100;
 
 	private final AStarCourbeNode[] nodes = new AStarCourbeNode[nb_instances];
 	protected Log log;
@@ -49,6 +49,7 @@ public class AStarCourbeMemoryManager implements Service {
 			nodes[i].state = realstate.cloneGameState();
 			nodes[i].setIndiceMemoryManager(i);
 		}
+		log.debug("Instanciation finie");
 	}
 	
 	/**

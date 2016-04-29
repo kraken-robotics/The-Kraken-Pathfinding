@@ -20,6 +20,8 @@ public abstract class Obstacle
 	
     protected static int largeurRobot; // le sens gauche-droite du robot
     protected static int longueurRobot; // le sens avant-arrière du robot
+    protected static int largeurRobotDeploye;
+    protected static int longueurRobotDeploye;
     protected static int rayonRobot;
     protected static int marge;
 	protected static double anglePas; // utilisé pour les calculs de collision pendant les rotations	
@@ -34,6 +36,8 @@ public abstract class Obstacle
 	{
 		largeurRobot = config.getInt(ConfigInfo.LARGEUR_ROBOT_AXE_GAUCHE_DROITE);
 		longueurRobot = config.getInt(ConfigInfo.LONGUEUR_ROBOT_AXE_AVANT_ARRIERE);
+		largeurRobotDeploye = config.getInt(ConfigInfo.LARGEUR_ROBOT_AXE_GAUCHE_DROITE_DEPLOYE);
+		longueurRobotDeploye = config.getInt(ConfigInfo.LONGUEUR_ROBOT_AXE_AVANT_ARRIERE_DEPLOYE);
 		rayonRobot = config.getInt(ConfigInfo.RAYON_ROBOT);
 		marge = config.getInt(ConfigInfo.MARGE);
 		anglePas = Math.PI-2*Math.atan2(largeurRobot, longueurRobot);

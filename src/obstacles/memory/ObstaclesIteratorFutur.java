@@ -38,11 +38,11 @@ public class ObstaclesIteratorFutur extends ObstaclesIterator
 	/**
 	 * Réinitialise l'itérateur avec la date donnée à la dernière initialisation
 	 */
-/*	public void reinit()
+	public void reinit()
 	{
 		nbTmp = firstNotDead;
 	}
-*/
+
 	/**
 	 * Calcule l'entrée où commencent les obstacles à cette date.
 	 * Se fait à la copie.

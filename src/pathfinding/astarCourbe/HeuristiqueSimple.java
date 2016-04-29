@@ -35,6 +35,8 @@ public class HeuristiqueSimple implements HeuristiqueCourbe, Service
 	{
 //		log.debug(c.getPosition()+" "+arrivee);
 		// TODO prendre en compte l'orientation et la courbure à proximité
+//		double distance = arrivee.distanceManhattan(c.getPosition()) / c.vitesseMax.translationalSpeed;
+
 		double distance = arrivee.distance(c.getPosition()) / c.vitesseMax.translationalSpeed;
 //		if(distance > 400)
 			return distance;

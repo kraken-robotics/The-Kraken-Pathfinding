@@ -109,27 +109,28 @@ public class Cinematique
 	public int hashCode()
 	{
 		int codeCourbure, codeOrientation;
-		if(courbure < -5)
-			codeCourbure = 0;
-		else if(courbure < -2)
+//		if(courbure < -5)
+//			codeCourbure = 0;
+//		else
+		if(courbure < -2)
 			codeCourbure = 1;
 		else if(courbure < 0)
 			codeCourbure = 2;
 		else if(courbure < 2)
 			codeCourbure = 3;
-		else if(courbure < 5)
+//		else if(courbure < 5)
 			codeCourbure = 4;
-		else
-			codeCourbure = 5;
-		System.out.println("codeCourbure : "+codeCourbure+", "+courbure);
+//		else
+//			codeCourbure = 5;
+//		System.out.println("codeCourbure : "+codeCourbure+", "+courbure);
 		orientation = orientation % (2*Math.PI);
 		if(orientation < 0)
 			orientation += 2*Math.PI;
 		
-		codeOrientation = (int)(orientation / (Math.PI / 8));
-		System.out.println("codeOrientation : "+codeOrientation+" "+orientation);
+		codeOrientation = (int)(orientation / (Math.PI / 6));
+//		System.out.println("codeOrientation : "+codeOrientation+" "+orientation);
 		
-		return (((((int)position.x + 1500) / 5) * 400 + (int)position.y / 5) * 6 + codeCourbure) * 16 + codeOrientation;
+		return (((((int)position.x + 1500) / 15) * 150 + (int)position.y / 15) * 6 + codeCourbure) * 16 + codeOrientation;
 	}
 	
 	@Override

@@ -26,7 +26,7 @@ public abstract class Robot implements Service
     public abstract void tourner(double angle, Speed vitesse)
             throws UnableToMoveException, FinMatchException;
     public abstract void avancer(int distance, ArrayList<Hook> hooks, boolean mur, Speed vitesse)
-            throws UnableToMoveException, FinMatchException;
+            throws UnableToMoveException;
 	
     public abstract void sleep(long duree, ArrayList<Hook> hooks) throws FinMatchException;
     public abstract long getTempsDepuisDebutMatch();
@@ -36,6 +36,7 @@ public abstract class Robot implements Service
 	protected volatile boolean matchDemarre = false;
 	protected int pointsObtenus = 0;
     protected volatile long dateDebutMatch;
+    protected boolean deploye = false;
     
 	// Dépendances
 	protected Log log;
@@ -107,7 +108,7 @@ public abstract class Robot implements Service
      * @throws FinMatchException
      * @throws ScriptHookException
      */
-    public void avancer(int distance, Speed vitesse) throws UnableToMoveException, FinMatchException
+    public void avancer(int distance, Speed vitesse) throws UnableToMoveException
     {
         avancer(distance, new ArrayList<Hook>(), false, vitesse);
     }
@@ -120,7 +121,7 @@ public abstract class Robot implements Service
      * @throws FinMatchException
      * @throws ScriptHookException
      */
-    public void avancer(int distance, ArrayList<Hook> hooks, Speed vitesse) throws UnableToMoveException, FinMatchException
+    public void avancer(int distance, ArrayList<Hook> hooks, Speed vitesse) throws UnableToMoveException
     {
         avancer(distance, hooks, false, vitesse);
     }
@@ -132,7 +133,7 @@ public abstract class Robot implements Service
      * @throws FinMatchException
      * @throws ScriptHookException
      */
-    public void avancerDansMur(int distance) throws UnableToMoveException, FinMatchException
+    public void avancerDansMur(int distance) throws UnableToMoveException
     {
     	avancer(distance, new ArrayList<Hook>(), true, Speed.INTO_WALL);
     }
@@ -175,5 +176,10 @@ public abstract class Robot implements Service
     public int getPointsObtenus()
     {
     	return pointsObtenus;
-    }    
+    }
+    
+	public boolean isDeploye()
+	{
+		return deploye;
+	}    
 }
