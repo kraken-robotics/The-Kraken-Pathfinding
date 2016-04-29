@@ -105,4 +105,33 @@ public class Cinematique
 		return position+", "+orientation+", "+(enMarcheAvant ? "marche avant " : "marche arrière");
 	}
 	
+	@Override
+	public int hashCode()
+	{
+		int codeCourbure, codeOrientation;
+		if(courbure < -5)
+			codeCourbure = 0;
+		else if(courbure < 0)
+			codeCourbure = 1;
+		else if(courbure < 5)
+			codeCourbure = 2;
+		else
+			codeCourbure = 3;
+		System.out.println("codeCourbure : "+codeCourbure+", "+courbure);
+		orientation = orientation % (2*Math.PI);
+		if(orientation < 0)
+			orientation += 2*Math.PI;
+		
+		codeOrientation = (int)(orientation / (Math.PI / 8));
+		System.out.println("codeOrientation : "+codeOrientation+" "+orientation);
+		
+		return (((((int)position.x + 1500) / 5) * 400 + (int)position.y / 5) * 4 + codeCourbure) * 16 + codeOrientation;
+	}
+	
+	@Override
+	public boolean equals(Object o)
+	{
+		return o.hashCode() == hashCode();
+	}
+	
 }

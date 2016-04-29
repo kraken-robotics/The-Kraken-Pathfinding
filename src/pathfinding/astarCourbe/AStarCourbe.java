@@ -1,5 +1,6 @@
 package pathfinding.astarCourbe;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.PriorityQueue;
@@ -12,6 +13,7 @@ import pathfinding.dstarlite.GridSpace;
 import container.Service;
 import robot.Cinematique;
 import robot.DirectionStrategy;
+import robot.RobotChrono;
 import robot.Speed;
 import tests.graphicLib.Fenetre;
 import utils.Config;
@@ -58,6 +60,7 @@ public abstract class AStarCourbe implements Service
 		}
 	}
 
+	private final ArrayList<Integer> closedset = new ArrayList<Integer>();
 	private final PriorityQueue<AStarCourbeNode> openset = new PriorityQueue<AStarCourbeNode>(GridSpace.NB_POINTS, new AStarCourbeNodeComparator());
 //	private final PriorityQueue<AStarCourbeNode> miniset = new PriorityQueue<AStarCourbeNode>(VitesseCourbure.values.length, new AStarCourbeNodeComparator());
 
@@ -88,13 +91,20 @@ public abstract class AStarCourbe implements Service
 
 		openset.clear();
 		openset.add(depart);	// Les nœuds à évaluer
-
+		closedset.clear();
+		
 		AStarCourbeNode current, successeur;
 
 		do
 		{
 			current = openset.poll();
-
+			
+			int hash = ((RobotChrono)current.state.robot).getCinematique().hashCode();
+			if(closedset.contains(hash))
+				continue;
+			else
+				closedset.add(hash);
+			
 /*			if(Config.graphicObstacles && current.came_from_arc != null)
 				for(int i = 0; i < current.came_from_arc.getNbPoints(); i++)
 				{
