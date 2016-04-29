@@ -5,6 +5,7 @@ import java.io.IOException;
 import enums.SerialProtocol;
 import robot.Cinematique;
 import robot.RobotReal;
+import robot.Speed;
 import robot.requete.RequeteSTM;
 import robot.requete.RequeteType;
 import serie.DataForSerialOutput;
@@ -243,7 +244,7 @@ public class ThreadSerialInput extends Thread implements Service
 							}
 						}
 						log.debug("Le robot est en "+positionRobot+", orientation : "+orientationRobot);
-						Cinematique c = new Cinematique(positionRobot.x, positionRobot.y, orientationRobot, enMarcheAvant, courbure, vitesseLineaire, vitesseRotation);
+						Cinematique c = new Cinematique(positionRobot.x, positionRobot.y, orientationRobot, enMarcheAvant, courbure, vitesseLineaire, vitesseRotation, Speed.STANDARD);
 						robot.setCinematique(c);
 						if(capteursOn)
 							buffer.add(new IncomingData(mesures, c));

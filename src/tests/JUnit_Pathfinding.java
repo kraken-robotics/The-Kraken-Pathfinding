@@ -69,8 +69,8 @@ public class JUnit_Pathfinding extends JUnit_Test {
 	@Test
     public void test_interpolation_cubique() throws Exception
     {		
-		Cinematique c1 = new Cinematique(-1000, 1500, Math.PI/4, true, 0, 1000, 1000);
-		Cinematique c2 = new Cinematique(0, 1000, 0, true, 0, 0, 0);
+		Cinematique c1 = new Cinematique(-1000, 1500, Math.PI/4, true, 0, 1000, 1000, Speed.STANDARD);
+		Cinematique c2 = new Cinematique(0, 1000, 0, true, 0, 0, 0, Speed.STANDARD);
 		
 		ArcCourbeCubique arccubique = clotho.cubicInterpolation(c1, c2, Speed.STANDARD, VitesseCourbure.DIRECT_COURBE);
 	
@@ -112,21 +112,25 @@ public class JUnit_Pathfinding extends JUnit_Test {
 	@Test
     public void test_pathfinding_planif() throws Exception
     {
-		Cinematique arrivee = new Cinematique(1000, 500, 0, true, 0, 0, 0);
+		Cinematique arrivee = new Cinematique(1000, 500, 0, true, 0, 0, 0, Speed.STANDARD);
+		Fenetre.getInstance().addObstacleEnBiais(new ObstacleRectangular(arrivee.getPosition(), 30, 30, 0));
+
 		ChronoGameState chrono = state.cloneGameState();
+		((RobotChrono)chrono.robot).getCinematique().enMarcheAvant = true;
 		((RobotChrono)chrono.robot).getCinematique().getPosition().x = -500;
 		((RobotChrono)chrono.robot).getCinematique().getPosition().y = 800;
-		((RobotChrono)chrono.robot).getCinematique().orientation = 0;
+		((RobotChrono)chrono.robot).getCinematique().orientation = Math.PI/2;
 		log.debug(cheminPlanif.size());
-		pathfindingCourbePlanif.computeNewPath(chrono, arrivee, true, DirectionStrategy.FASTEST);
+		pathfindingCourbePlanif.computeNewPath(chrono, arrivee, true, DirectionStrategy.FORCE_BACK_MOTION);
 		log.debug(cheminPlanif.size());
 		
 		while(!cheminPlanif.isEmpty())
 		{
 			ArcCourbe arc = cheminPlanif.poll();
+			log.debug("ARC!");
 			for(int i = 0; i < arc.getNbPoints(); i++)
 			{
-				System.out.println(arc.v+" "+arc.getPoint(i).getPosition().distance(arrivee.getPosition()));
+				System.out.println(arc.v+" "+arc.getPoint(i));
 				if(Config.graphicObstacles)
 				{
 					Sleep.sleep(100);
@@ -148,8 +152,8 @@ public class JUnit_Pathfinding extends JUnit_Test {
 		for(int i = 0; i < nbArc; i++)
 			arc[i] = new ArcCourbeClotho();
 
-		Cinematique c = new Cinematique(0, 1000, Math.PI/2, true, 0, 0, 0);
-		
+		Cinematique c = new Cinematique(0, 1000, Math.PI/2, false, 0, 0, 0, Speed.STANDARD);
+		log.debug("Initial : "+c);
 		clotho.getTrajectoire(c, VitesseCourbure.COURBURE_IDENTIQUE, Speed.STANDARD, arc[0]);
 		clotho.getTrajectoire(arc[0], VitesseCourbure.GAUCHE_3, Speed.STANDARD, arc[1]);
 		clotho.getTrajectoire(arc[1], VitesseCourbure.COURBURE_IDENTIQUE, Speed.STANDARD, arc[2]);
@@ -169,7 +173,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
 	
 		for(int a = 0; a < nbArc; a++)	
 		{
-			System.out.println("arc "+a+" avec "+arc[a].arcselems[0]);
+			System.out.println("arc "+arc[a].v+" avec "+arc[a].arcselems[0]);
 			for(int i = 0; i < ClothoidesComputer.NB_POINTS; i++)
 			{
 /*				if(i > 0)
@@ -177,7 +181,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
 				else if(a > 0)
 					System.out.println(arc[a-1].arcselems[ClothoidesComputer.NB_POINTS - 1].point.distance(arc[a].arcselems[0].point));
 	*/				
-				System.out.println(arc[a].arcselems[i].getPosition()+" "+arc[a].arcselems[i].courbure);
+				System.out.println(arc[a].arcselems[i]);
 				if(Config.graphicObstacles)
 				{
 					Sleep.sleep(100);

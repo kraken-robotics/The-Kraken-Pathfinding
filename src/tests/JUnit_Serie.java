@@ -4,7 +4,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import serie.DataForSerialOutput;
-import serie.SerialSTM;
 import utils.Sleep;
 import utils.Vec2;
 import utils.permissions.ReadOnly;
@@ -18,13 +17,13 @@ import container.ServiceNames;
 
 public class JUnit_Serie extends JUnit_Test {
 
-	private SerialSTM serie;
+//	private SerialSTM serie;
 	private DataForSerialOutput data;
 	@Before
     public void setUp() throws Exception {
         super.setUp();
         data = (DataForSerialOutput) container.getService(ServiceNames.SERIAL_OUTPUT_BUFFER);
-        serie = (SerialSTM) container.getService(ServiceNames.SERIE_STM);
+//        serie = (SerialSTM) container.getService(ServiceNames.SERIE_STM);
 	}
 	
 	@Test

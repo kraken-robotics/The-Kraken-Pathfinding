@@ -1,6 +1,7 @@
 package pathfinding.astarCourbe.arcs;
 
 import robot.Cinematique;
+import robot.Speed;
 
 /**
  * Arc de clothoïde, utilisé dans l'AStarCourbe
@@ -16,7 +17,7 @@ public class ArcCourbeClotho extends ArcCourbe
 	{
 		super(false, false, null); // modifié par copy
 		for(int i = 0; i < ClothoidesComputer.NB_POINTS; i++)
-			arcselems[i] = new Cinematique(0, 0, 0, true, 0, 0, 0);
+			arcselems[i] = new Cinematique(0, 0, 0, true, 0, 0, 0, Speed.STANDARD);
 	}
 	
 	/**
@@ -59,7 +60,7 @@ public class ArcCourbeClotho extends ArcCourbe
 		double v = 0;
 		for(int i = 0; i < ClothoidesComputer.NB_POINTS; i++)
 			v += arcselems[i].vitesseTranslation;
-		return v / ClothoidesComputer.NB_POINTS;
+		return v / (ClothoidesComputer.NB_POINTS);
 	}
 
 }

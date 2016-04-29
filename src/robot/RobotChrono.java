@@ -157,7 +157,6 @@ public class RobotChrono extends Robot
 
 	public void suitArcCourbe(ArcCourbe came_from_arc)
 	{
-		// TODO compléter
 		came_from_arc.getLast().copy(cinematique);
 	}
 

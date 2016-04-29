@@ -17,9 +17,10 @@ public class Cinematique
 	public volatile boolean enMarcheAvant;
 	public volatile double courbure;
 	public volatile double vitesseTranslation;
+	public volatile Speed vitesseMax;
 	public volatile double vitesseRotation;
 
-	public Cinematique(double x, double y, double orientation, boolean enMarcheAvant, double courbure, double vitesseTranslation, double vitesseRotation)
+	public Cinematique(double x, double y, double orientation, boolean enMarcheAvant, double courbure, double vitesseTranslation, double vitesseRotation, Speed vitesseMax)
 	{
 		position.x = x;
 		position.y = y;
@@ -28,6 +29,7 @@ public class Cinematique
 		this.courbure = courbure;
 		this.vitesseTranslation = vitesseTranslation;
 		this.vitesseRotation = vitesseRotation;
+		this.vitesseMax = vitesseMax;
 	}
 	
 	/**
@@ -43,6 +45,7 @@ public class Cinematique
 		courbure = cinematique.courbure;
 		vitesseTranslation = cinematique.vitesseTranslation;
 		vitesseRotation = cinematique.vitesseRotation;
+		vitesseMax = cinematique.vitesseMax;
 	}
 
 	/**
@@ -57,6 +60,7 @@ public class Cinematique
     	autre.courbure = courbure;
     	autre.vitesseRotation = vitesseRotation;
     	autre.vitesseTranslation = vitesseTranslation;
+    	autre.vitesseMax = vitesseMax;
 	}
 
 	public void setVitesse(Speed speed)

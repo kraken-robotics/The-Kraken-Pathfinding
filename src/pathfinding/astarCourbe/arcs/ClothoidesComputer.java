@@ -202,7 +202,8 @@ public class ClothoidesComputer implements Service
 						v.rebrousse ^ cinematiqueInitiale.enMarcheAvant,
 						1000*(vx * acy - vy * acx) / Math.pow(vx*vx + vy*vy, 1.5), // formule de la courbure d'une courbe paramétrique
 						vitesseMax.translationalSpeed, // vitesses calculées classiquement
-						vitesseMax.rotationalSpeed);
+						vitesseMax.rotationalSpeed,
+						vitesseMax);
 		
 //				log.debug(t);
 				
@@ -266,27 +267,27 @@ public class ClothoidesComputer implements Service
 	{
 		modified.v = vitesse;
 //		log.debug(vitesse);
+		double courbure = cinematiqueInitiale.courbure;
+		double orientation = cinematiqueInitiale.orientation;
+
 		if(vitesse.rebrousse)
 		{
-			cinematiqueInitiale.courbure = 0;
-			cinematiqueInitiale.orientation += Math.PI;
-			modified.arcselems[0].enMarcheAvant = !cinematiqueInitiale.enMarcheAvant;
+			courbure = 0;
+			orientation += Math.PI;
 		}
-		else
-			modified.arcselems[0].enMarcheAvant = cinematiqueInitiale.enMarcheAvant;
 		
 		// si la dérivée de la courbure est nulle, on est dans le cas particulier d'une trajectoire rectiligne ou circulaire
 		if(vitesse.vitesse == 0)
 		{
-			if(cinematiqueInitiale.courbure < 0.00001 && cinematiqueInitiale.courbure > -0.00001)
-				getTrajectoireLigneDroite(cinematiqueInitiale.getPosition(), cinematiqueInitiale.orientation, vitesseMax, modified);
+			if(courbure < 0.00001 && courbure > -0.00001)
+				getTrajectoireLigneDroite(cinematiqueInitiale.getPosition(), orientation, vitesseMax, modified, vitesse.rebrousse ^ cinematiqueInitiale.enMarcheAvant);
 			else
-				getTrajectoireCirculaire(cinematiqueInitiale.getPosition(), cinematiqueInitiale.orientation, cinematiqueInitiale.courbure, vitesseMax, modified);
+				getTrajectoireCirculaire(cinematiqueInitiale.getPosition(), orientation, courbure, vitesseMax, modified, vitesse.rebrousse ^ cinematiqueInitiale.enMarcheAvant);
 			return;
 		}
 		
 		double coeffMultiplicatif = 1. / vitesse.squaredRootVitesse;
-		double sDepart = cinematiqueInitiale.courbure / vitesse.squaredRootVitesse; // sDepart peut parfaitement être négatif
+		double sDepart = courbure / vitesse.squaredRootVitesse; // sDepart peut parfaitement être négatif
 		if(!vitesse.positif)
 			sDepart = -sDepart;
 		int pointDepart = (int) Math.round(sDepart / PRECISION_TRACE) + INDICE_MAX - 1;
@@ -294,7 +295,7 @@ public class ClothoidesComputer implements Service
 		if(!vitesse.positif)
 			orientationClothoDepart = - orientationClothoDepart;
 			
-		double baseOrientation = cinematiqueInitiale.orientation - orientationClothoDepart;
+		double baseOrientation = orientation - orientationClothoDepart;
 		double cos = Math.cos(baseOrientation);
 		double sin = Math.sin(baseOrientation);
 
@@ -330,6 +331,8 @@ public class ClothoidesComputer implements Service
 			modified.arcselems[i].vitesseTranslation = vitesseMax.translationalSpeed;
 			modified.rebrousse = vitesse.rebrousse;
 			
+			modified.arcselems[i].enMarcheAvant = vitesse.rebrousse ^ cinematiqueInitiale.enMarcheAvant;
+			modified.arcselems[i].vitesseMax = vitesseMax;
  			if(!vitesse.positif)
  				modified.arcselems[i].courbure = - modified.arcselems[i].courbure;
 		}
@@ -347,7 +350,7 @@ public class ClothoidesComputer implements Service
 	 * @param modified
 	 */
 	private void getTrajectoireCirculaire(Vec2<ReadOnly> position,
-			double orientation, double courbure, Speed vitesseMax, ArcCourbeClotho modified)
+			double orientation, double courbure, Speed vitesseMax, ArcCourbeClotho modified, boolean enMarcheAvant)
 	{		
 		// rappel = la courbure est l'inverse du rayon de courbure
 		// le facteur 1000 vient du fait que la courbure est en mètre^-1
@@ -382,6 +385,7 @@ public class ClothoidesComputer implements Service
 			// TODO : doit dépendre de la courbure !
 			modified.arcselems[i].vitesseRotation = vitesseMax.rotationalSpeed;
 			modified.arcselems[i].vitesseTranslation = vitesseMax.translationalSpeed;
+			modified.arcselems[i].enMarcheAvant = enMarcheAvant;
 		}
 	}
 
@@ -391,7 +395,7 @@ public class ClothoidesComputer implements Service
 	 * @param orientation
 	 * @param modified
 	 */
-	private void getTrajectoireLigneDroite(Vec2<ReadOnly> position, double orientation, Speed vitesseMax, ArcCourbeClotho modified)
+	private void getTrajectoireLigneDroite(Vec2<ReadOnly> position, double orientation, Speed vitesseMax, ArcCourbeClotho modified, boolean enMarcheAvant)
 	{
 		double cos = Math.cos(orientation);
 		double sin = Math.sin(orientation);
@@ -405,6 +409,7 @@ public class ClothoidesComputer implements Service
 			modified.arcselems[i].courbure = 0;
 			modified.arcselems[i].vitesseRotation = vitesseMax.rotationalSpeed;
 			modified.arcselems[i].vitesseTranslation = vitesseMax.translationalSpeed;
+			modified.arcselems[i].enMarcheAvant = enMarcheAvant;
 		}
 	}
 

@@ -36,7 +36,8 @@ public class JUnit_Math extends JUnit_Test {
 		c.x = 3;
 		c.y = 4;
 		Assert.assertTrue(c.length() == 5);
-		Assert.assertEquals(new Vec2<ReadWrite>(0,1), new Vec2<ReadWrite>(1,0).rotateNewVector(Math.PI/2, new Vec2<ReadWrite>(0,0)));
+		Assert.assertEquals(new Vec2<ReadWrite>(0,1).x, new Vec2<ReadWrite>(1,0).rotateNewVector(Math.PI/2, new Vec2<ReadWrite>(0,0)).x, 0.1);
+		Assert.assertEquals(new Vec2<ReadWrite>(0,1).y, new Vec2<ReadWrite>(1,0).rotateNewVector(Math.PI/2, new Vec2<ReadWrite>(0,0)).y, 0.1);
 	}
 	
 }

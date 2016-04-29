@@ -94,8 +94,9 @@ public class AStarCourbeArcManager implements Service
     public boolean next(AStarCourbeNode successeur, Speed vitesseMax, Cinematique arrivee)
     {
     	VitesseCourbure v = iterator.next();
-    	
+
 		current.state.copyAStarCourbe(successeur.state);
+
 		if(v == VitesseCourbure.DIRECT_COURBE || v == VitesseCourbure.DIRECT_COURBE_REBROUSSE)
 		{
 			ArcCourbe tmp;
@@ -125,7 +126,7 @@ public class AStarCourbeArcManager implements Service
 					vitesseMax,
 					(ArcCourbeClotho)successeur.came_from_arc);
 		else // pas de prédécesseur
-			clotho.getTrajectoire((RobotChrono)current.state.robot,
+			clotho.getTrajectoire((RobotChrono)successeur.state.robot,
 					v,
 					vitesseMax,
 					(ArcCourbeClotho)successeur.came_from_arc);
@@ -149,21 +150,21 @@ public class AStarCourbeArcManager implements Service
     	//      - on est dans la bonne direction, donc pas d'autorisation exceptionnelle de se retourner
     	if(vitesse.rebrousse && (directionstrategyactuelle != DirectionStrategy.FASTEST && directionstrategyactuelle.isPossible(((RobotChrono)current.state.robot).getCinematique().enMarcheAvant)))
     	{ 
-    		log.debug(vitesse+" n'est pas acceptable (rebroussement interdit");
+//    		log.debug(vitesse+" n'est pas acceptable (rebroussement interdit");
     		return false;
     	}
     	
     	// Si on ne rebrousse pas chemin alors que c'est nécessaire
     	if(!vitesse.rebrousse && !directionstrategyactuelle.isPossible(((RobotChrono)current.state.robot).getCinematique().enMarcheAvant))
     	{
-    		log.debug(vitesse+" n'est pas acceptable (rebroussement nécessaire");
+//    		log.debug(vitesse+" n'est pas acceptable (rebroussement nécessaire");
     		return false;
     	}
 
     	// On ne tente pas l'interpolation si on est trop loin
     	if((vitesse == VitesseCourbure.DIRECT_COURBE || vitesse == VitesseCourbure.DIRECT_COURBE_REBROUSSE) && heuristique.heuristicCostCourbe(((RobotChrono)current.state.robot).getCinematique()) > 100)
     	{
-    		log.debug(vitesse+" n'est pas acceptable (on est trop loin)");
+//    		log.debug(vitesse+" n'est pas acceptable (on est trop loin)");
 			return false;
     	}
     	
@@ -172,7 +173,7 @@ public class AStarCourbeArcManager implements Service
     		return true;
     	else
     	{
-    		log.debug(vitesse+" n'est acceptable (courbure trop grande");
+//    		log.debug(vitesse+" n'est acceptable (courbure trop grande");
     		return false;
     	}
     }

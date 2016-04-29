@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.PriorityQueue;
 
+import obstacles.types.ObstacleRectangular;
 import pathfinding.astarCourbe.arcs.AStarCourbeArcManager;
 import pathfinding.astarCourbe.arcs.ArcCourbe;
 import pathfinding.astarCourbe.arcs.ArcCourbeCubique;
@@ -15,6 +16,7 @@ import robot.Speed;
 import tests.graphicLib.Fenetre;
 import utils.Config;
 import utils.Log;
+import utils.Sleep;
 
 /**
  * AStar* simplifié, qui lisse le résultat du D* Lite et fournit une trajectoire courbe
@@ -92,8 +94,8 @@ public abstract class AStarCourbe implements Service
 		do
 		{
 			current = openset.poll();
-/*
-			if(Config.graphicObstacles && current.came_from_arc != null)
+
+/*			if(Config.graphicObstacles && current.came_from_arc != null)
 				for(int i = 0; i < current.came_from_arc.getNbPoints(); i++)
 				{
 					Sleep.sleep(100);
@@ -151,17 +153,12 @@ public abstract class AStarCourbe implements Service
 					continue;
 				}
 
-//				log.debug(successeur.came_from_arc.getPoint(0).getPosition()+" "+successeur.came_from_arc.getLast());
+				successeur.g_score = current.g_score + arcmanager.distanceTo(successeur);
 				
-				successeur.g_score = current.g_score
-						+ successeur.came_from_arc.getPoint(0).getPosition().distance(successeur.came_from_arc.getLast().getPosition());
-//				+				
-	;
-				log.debug(successeur.came_from_arc.getPoint(0).getPosition().distance(successeur.came_from_arc.getLast().getPosition()) + " "+ arcmanager.distanceTo(successeur));
-				successeur.f_score = successeur.g_score //+ successeur.came_from_arc.getLast().getPosition().distance(arrivee.getPosition());
-				 + arcmanager.heuristicCost(successeur);// / successeur.came_from_arc.getVitesseTr();
+				successeur.f_score = successeur.g_score + arcmanager.heuristicCost(successeur);// / successeur.came_from_arc.getVitesseTr();
+
 				successeur.came_from = current;
-//				log.debug(successeur.came_from_arc.getLast().getPosition().distance(arrivee.getPosition()));
+
 //				miniset.add(successeur);
 				openset.add(successeur);
 				
