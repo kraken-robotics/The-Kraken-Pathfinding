@@ -4,7 +4,9 @@ import org.jfree.ui.RefineryUtilities;
 
 import pathfinding.VitesseCourbure;
 import pathfinding.astarCourbe.arcs.ArcCourbe;
+import pathfinding.astarCourbe.arcs.ArcCourbeClotho;
 import pathfinding.astarCourbe.arcs.ClothoidesComputer;
+import robot.RobotReal;
 import robot.Speed;
 import serie.DataForSerialOutput;
 import utils.Config;
@@ -20,6 +22,7 @@ import debug.IncomingDataDebug;
 import debug.IncomingDataDebugBuffer;
 import exceptions.ContainerException;
 import exceptions.PointSortieException;
+import exceptions.UnableToMoveException;
 
 /**
  * Debug l'asser en affichant les grandeurs
@@ -38,10 +41,14 @@ public class DebugAsser
 		ClothoidesComputer clotho = (ClothoidesComputer) container.getService(ServiceNames.CLOTHOIDES_COMPUTER);
 		IncomingDataDebugBuffer buffer = (IncomingDataDebugBuffer) container.getService(ServiceNames.INCOMING_DATA_DEBUG_BUFFER);
 		AffichageDebug aff = new AffichageDebug();
-		
-		aff.pack();
-		RefineryUtilities.centerFrameOnScreen(aff);
-		aff.setVisible(true);
+		RobotReal robot = (RobotReal) container.getService(ServiceNames.ROBOT_REAL);
+
+		if(Config.debugAsser)
+		{
+			aff.pack();
+			RefineryUtilities.centerFrameOnScreen(aff);
+			aff.setVisible(true);
+		}
 		
 //		Config config = (Config) container.getService(ServiceNames.CONFIG);
 /*		synchronized(config)
@@ -50,7 +57,8 @@ public class DebugAsser
 			config.set(ConfigInfo.DATE_DEBUT_MATCH, System.currentTimeMillis());
 		}
 	*/	
-		stm.activeDebugMode();
+		if(Config.debugAsser)
+			stm.activeDebugMode();
 
 		stm.asserOff();
 
@@ -68,7 +76,8 @@ public class DebugAsser
 		stm.setPIDconstRotation(kpRot, kiRot, kdRot);
 
 		double kpTr = 300; // 300
-		double kiTr = 0.05; // 0.05
+//		double kiTr = 0.05; // 0.05
+		double kiTr = 0.0; // sur les conseils de Sylvain
 		double kdTr = 80; // 80
 		
 		stm.setPIDconstTranslation(kpTr, kiTr, kdTr);
@@ -87,9 +96,29 @@ public class DebugAsser
 		double k2 = 0.3;
 		
 		stm.setConstSamson(k1, k2);
+		/*
+		try {
+			robot.avancer(500, Speed.STANDARD);
+		} catch (UnableToMoveException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}*//*
+		try {
+			robot.tourner(Math.PI/2, Speed.STANDARD);
+		} catch (UnableToMoveException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+			robot.avancer(100, Speed.STANDARD);
+		} catch (UnableToMoveException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}*/
+
 		
 //		stm.asserVitesse(50, 80);
-		stm.avancer(200, Speed.STANDARD);
+//		stm.avancer(600, Speed.STANDARD);
 //		stm.turn(Math.PI/2, Speed.STANDARD);
 /*		stm.turn(-Math.PI/2);
 		Sleep.sleep(5000);
@@ -99,31 +128,32 @@ public class DebugAsser
 		Sleep.sleep(5000);
 		stm.turn(Math.PI);*/
 //		stm.immobilise();
-/*
-		int nbArc = 2;
-		ArcCourbe arc[] = new ArcCourbe[nbArc];
-		for(int i = 0; i < nbArc; i++)
-			arc[i] = new ArcCourbe();
 
-		clotho.getTrajectoire(new Vec2<ReadOnly>(0, 1000), true, Math.PI, 0, VitesseCourbure.COURBURE_IDENTIQUE, arc[0]);
+		int nbArc = 2;
+		ArcCourbeClotho arc[] = new ArcCourbeClotho[nbArc];
+		for(int i = 0; i < nbArc; i++)
+			arc[i] = new ArcCourbeClotho();
+
+		clotho.getTrajectoire(robot.getCinematique(), VitesseCourbure.COURBURE_IDENTIQUE, Speed.INTO_WALL, arc[0]);
 		stm.envoieArcCourbe(arc[0]);
 
-		clotho.getTrajectoire(arc[0], VitesseCourbure.DROITE_0, arc[1]);
+		clotho.getTrajectoire(arc[0], VitesseCourbure.COURBURE_IDENTIQUE, Speed.INTO_WALL, arc[1]);
 		stm.envoieArcCourbe(arc[1]);
-*/
 
-		while(true)
-		{
-			synchronized(buffer)
+
+		if(Config.debugAsser)
+			while(true)
 			{
-				if(buffer.isEmpty())
-					buffer.wait();
-				IncomingDataDebug in = buffer.poll();
-				log.debug(in);
-				aff.add(in);
-//				aff.add(new IncomingDataDebug((new Random()).nextInt(10), (new Random()).nextInt(7), 7, 2, 1, 2, 5, 6));
-//				Sleep.sleep(100);
+				synchronized(buffer)
+				{
+					if(buffer.isEmpty())
+						buffer.wait();
+					IncomingDataDebug in = buffer.poll();
+					log.debug(in);
+					aff.add(in);
+	//				aff.add(new IncomingDataDebug((new Random()).nextInt(10), (new Random()).nextInt(7), 7, 2, 1, 2, 5, 6));
+	//				Sleep.sleep(100);
+				}
 			}
-		}
 	}
 }
