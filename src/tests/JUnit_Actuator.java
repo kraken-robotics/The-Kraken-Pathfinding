@@ -26,6 +26,18 @@ public class JUnit_Actuator extends JUnit_Test {
         actionneurs = (SerialSTM) container.getService(ServiceNames.SERIE_STM);
 	}
 	
+
+	@Test
+	public void test_angle() throws Exception
+	{
+		for(int i = 200; i < 900; i+= 10)
+		{
+			log.debug(i);
+			data.utiliseActionneurs(3, i);
+			Sleep.sleep(500);
+		}
+	}
+	
 	@Test
 	public void test_tous() throws Exception
 	{
