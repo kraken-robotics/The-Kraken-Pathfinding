@@ -15,7 +15,7 @@ public class RequeteSTM implements Service {
 	private volatile RequeteType type;
 	protected Log log;
 	
-	public synchronized RequeteType get()
+	public synchronized RequeteType getAndClear()
 	{
 		RequeteType out = type;
 		type = null;
