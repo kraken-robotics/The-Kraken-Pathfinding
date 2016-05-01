@@ -243,7 +243,8 @@ public class ThreadSerialInput extends Thread implements Service
 //								log.debug("Capteur "+(2*i+1)+" voit "+mesures[2*i+1]+"mm (brut "+(((lecture[PARAM+6+3*i+1] & 0x0F) << 8) + lecture[PARAM+6+3*i+2])+")");
 							}
 						}
-						log.debug("Le robot est en "+positionRobot+", orientation : "+orientationRobot);
+						if(Config.debugSerie)
+							log.debug("Le robot est en "+positionRobot+", orientation : "+orientationRobot);
 						Cinematique c = new Cinematique(positionRobot.x, positionRobot.y, orientationRobot, enMarcheAvant, courbure, vitesseLineaire, vitesseRotation, Speed.STANDARD);
 						robot.setCinematique(c);
 						if(capteursOn)

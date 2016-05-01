@@ -11,7 +11,7 @@ public enum AngleAX12
 	FERME(5),
 	OUVERT_90(45),
 	OUVERT1(135),
-	OUVERT2(100),
+	OUVERT2(108),
 	VERR1(210),
 	VERR2(216),
 	
