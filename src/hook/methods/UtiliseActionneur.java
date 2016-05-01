@@ -37,7 +37,7 @@ public class UtiliseActionneur implements Executable
 		ArrayList<Byte> out = new ArrayList<Byte>();
 		out.add((byte)(SerialProtocol.CALLBACK_AX12.code+o.id));
 		out.add((byte) (o.angle >> 8));
-		out.add((byte)o.angle);
+		out.add((byte) (o.angle & 0xFF));
 		return out;
 	}
 
