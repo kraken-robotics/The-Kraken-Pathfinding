@@ -47,7 +47,7 @@ public enum ConfigInfo {
 	PREVISION_COLLISION("50", true),
 	BAUDRATE_STM("460800", true),
 	BAUDRATE_XBEE("115200", true),
-	NB_CAPTEURS_PROXIMITE("14", true),
+	NB_CAPTEURS_PROXIMITE("8", true),
 	MS_MAX_AVANT_EVITEMENT("5", true),
 	DISTANCE_URGENCE("200", true),
 	NB_SUCCESSEUR_MAX("2", true),

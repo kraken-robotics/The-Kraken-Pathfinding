@@ -29,7 +29,7 @@ public class JUnit_Serie extends JUnit_Test {
 	@Test
 	public void test_ping() throws Exception
 	{
-		Sleep.sleep(3000);
+		Sleep.sleep(300000);
 	}
 	
 	@Test

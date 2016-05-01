@@ -1,5 +1,11 @@
 package tests;
 
+import hook.Hook;
+import hook.methods.UtiliseActionneur;
+import hook.types.HookDate;
+
+import java.util.ArrayList;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -54,22 +60,20 @@ public class JUnit_Actuator extends JUnit_Test {
 	{
 		for(ActuatorOrder o: ActuatorOrder.values())
 		{
-			// TODO test AX12
 			log.debug(o);
 			data.utiliseActionneurs(o);
-//			actionneurs.communiquer(String.valueOf(o.ordinal()));
-			Sleep.sleep(1000);
+			Sleep.sleep(2000);
 		}
 	}
 	
 	@Test
-	public void test_tous_thread() throws Exception
+	public void test_hook_actuator() throws Exception
 	{
-		for(ActuatorOrder o: ActuatorOrder.values())
-		{
-			data.utiliseActionneurs(o);
-			Sleep.sleep(200);
-		}
+		ArrayList<Hook> hooks = new ArrayList<Hook>();
+		Hook hook = new HookDate(log, 10000);
+		hook.ajouter_callback(new UtiliseActionneur(ActuatorOrder.TEST));
+		hooks.add(hook);
+		data.envoieHooks(hooks);
 	}
 
 }

@@ -51,8 +51,10 @@ public enum ActuatorOrder {
 	AX12_POISSON_FERME(false, AX12.AX12_LACHE_POISSON, AngleAX12.POISSON_FERME.angle),
 
 	AX12_POISSON_MILIEU(false, AX12.AX12_PORTE_CANNE, AngleAX12.POISSON_MILIEU.angle),
-	AX12_POISSON_HAUT(false, AX12.AX12_PORTE_CANNE, AngleAX12.POISSON_HAUT.angle);
+	AX12_POISSON_HAUT(false, AX12.AX12_PORTE_CANNE, AngleAX12.POISSON_HAUT.angle),
 
+	TEST(false, AX12.AX12_GROS_1, AngleAX12.FERME.angle);
+	
 	public final boolean symetrie;
 	public final int id;
 	public final int angle;
