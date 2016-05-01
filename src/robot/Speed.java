@@ -13,7 +13,10 @@ public enum Speed
     
     // On avance moins vite si l'on veut percuter un mur.
     INTO_WALL(0.5, .5/1000.),
-    
+
+    // On avance moins vite si l'on veut percuter un mur.
+    TEST(0.1, .1/1000.),
+
     // Vitesse du robot lors d'une replanification, plus lent que la vitesse standard
     REPLANIF(2., 1./1000.),
     

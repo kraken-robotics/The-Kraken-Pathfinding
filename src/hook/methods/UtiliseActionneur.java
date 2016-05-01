@@ -1,7 +1,7 @@
 package hook.methods;
 
 import pathfinding.ChronoGameState;
-import robot.ActuatorOrder;
+import robot.actuator.ActuatorOrder;
 
 import java.util.ArrayList;
 
