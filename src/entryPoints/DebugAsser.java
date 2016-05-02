@@ -38,7 +38,7 @@ public class DebugAsser
 		Log log = (Log) container.getService(ServiceNames.LOG);
 		container.getService(ServiceNames.ROBOT_REAL); // initialisation de l'odo
 		DataForSerialOutput stm = (DataForSerialOutput) container.getService(ServiceNames.SERIAL_OUTPUT_BUFFER);
-		ClothoidesComputer clotho = (ClothoidesComputer) container.getService(ServiceNames.CLOTHOIDES_COMPUTER);
+//		ClothoidesComputer clotho = (ClothoidesComputer) container.getService(ServiceNames.CLOTHOIDES_COMPUTER);
 		IncomingDataDebugBuffer buffer = (IncomingDataDebugBuffer) container.getService(ServiceNames.INCOMING_DATA_DEBUG_BUFFER);
 		AffichageDebug aff = new AffichageDebug();
 		RobotReal robot = (RobotReal) container.getService(ServiceNames.ROBOT_REAL);
@@ -61,25 +61,28 @@ public class DebugAsser
 			stm.activeDebugMode();
 
 		stm.asserOff();
-
-		double kpVitesse = 5; // 11 pour 23V // 5 // 80
-		double kiVitesse = 1; // 1 // 1 // 0
-		double kdVitesse = 0.2; // 0.9 // 0.2 // 0.7
 		
-		stm.setPIDconstVitesseDroite(kpVitesse, kiVitesse, kdVitesse);
-		stm.setPIDconstVitesseGauche(kpVitesse, kiVitesse, kdVitesse);
+		double kpVitesseD = 5; // 11 pour 23V // 5 // 80 // 3
+		double kiVitesseD = 0.2; // 1 // 1 // 0 // 1
+		double kdVitesseD = 0.17; // 0.9 // 0.2 // 0.7 // 0.2
 
-		double kpRot = 0.04;
+		double kpVitesseG = 8; // 11 pour 23V // 5 // 80 // 5
+		double kiVitesseG = 0.2; // 1 // 1 // 0 // 1
+		double kdVitesseG = 0.27; // 0.9 // 0.2 // 0.7 // 0.2
+
+		stm.setPIDconstVitesseDroite(kpVitesseD, kiVitesseD, kdVitesseD);
+		stm.setPIDconstVitesseGauche(kpVitesseG, kiVitesseG, kdVitesseG);
+
+		double kpRot = 0.12;
 		double kiRot = 0;
-		double kdRot = 0;
+		double kdRot = 0.008;
 		
 		stm.setPIDconstRotation(kpRot, kiRot, kdRot);
 
-		double kpTr = 300; // 300
-//		double kiTr = 0.05; // 0.05
+		double kpTr = 0.04; // 0.03
 		double kiTr = 0.0; // sur les conseils de Sylvain
-		double kdTr = 80; // 80
-		
+		double kdTr = 0.006; // 0.002
+			
 		stm.setPIDconstTranslation(kpTr, kiTr, kdTr);
 
 		double kpVitLin = 0.3;
@@ -98,7 +101,7 @@ public class DebugAsser
 		stm.setConstSamson(k1, k2);
 		/*
 		try {
-			robot.avancer(500, Speed.STANDARD);
+			robot.avancer(1000, Speed.STANDARD);
 		} catch (UnableToMoveException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -110,16 +113,36 @@ public class DebugAsser
 			e.printStackTrace();
 		}
 		try {
+			robot.tourner(0, Speed.INTO_WALL);
+		} catch (UnableToMoveException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
 			robot.avancer(100, Speed.STANDARD);
 		} catch (UnableToMoveException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}*/
 
-		
+
+		stm.avancer(2500, Speed.STANDARD);
+		Sleep.sleep(1000);
+		stm.immobiliseUrgence();
 //		stm.asserVitesse(50, 80);
-//		stm.avancer(600, Speed.STANDARD);
 //		stm.turn(Math.PI/2, Speed.STANDARD);
+//		Sleep.sleep(1000);
+//		stm.turn(Math.PI, Speed.STANDARD);
+//		log.debug("On demande à avancer !");
+//		stm.avancer(200, Speed.INTO_WALL);
+//		Sleep.sleep(5000);
+//		stm.avancer(-200, Speed.STANDARD);
+		//stm.avancerMemeSens(200, Speed.STANDARD);
+/*		Sleep.sleep(5000);
+		stm.avancer(-200, Speed.STANDARD);
+		Sleep.sleep(5000);
+		stm.avancerMemeSens(-200, Speed.STANDARD);*/
+//		stm.turn(0, Speed.STANDARD);
 /*		stm.turn(-Math.PI/2);
 		Sleep.sleep(5000);
 		stm.turn(0);
@@ -128,7 +151,7 @@ public class DebugAsser
 		Sleep.sleep(5000);
 		stm.turn(Math.PI);*/
 //		stm.immobilise();
-
+/*
 		int nbArc = 2;
 		ArcCourbeClotho arc[] = new ArcCourbeClotho[nbArc];
 		for(int i = 0; i < nbArc; i++)
@@ -139,7 +162,7 @@ public class DebugAsser
 
 		clotho.getTrajectoire(arc[0], VitesseCourbure.COURBURE_IDENTIQUE, Speed.INTO_WALL, arc[1]);
 		stm.envoieArcCourbe(arc[1]);
-
+*/
 
 		if(Config.debugAsser)
 			while(true)

@@ -15,8 +15,9 @@ import enums.RobotColor;
  */
 public class Config implements Service
 {
+	public static final boolean debugCapteurs = true;
 	public static final boolean debugAsser = true;	
-	public static final boolean debugSerie = false;
+	public static final boolean debugSerie = true;
 	public static final boolean debugSerieTrame = false;
 	// Permet de savoir si le match a démarré et quand
 	public static final boolean graphicDStarLite = false;

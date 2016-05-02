@@ -236,12 +236,12 @@ public class ThreadSerialInput extends Thread implements Service
 						for(int i = 0; i < nbCapteurs / 2; i++)
 						{
 							mesures[2*i] = convertIR((lecture[PARAM+10+3*i] << 4) + (lecture[PARAM+10+3*i+1] >> 4));
-							log.debug("distance : "+mesures[2*i]);
+//							log.debug("distance : "+mesures[2*i]);
 //							log.debug("Capteur "+(2*i)+" voit "+mesures[2*i]+"mm (brut "+((lecture[PARAM+6+3*i] << 4) + (lecture[PARAM+6+3*i+1] >> 4))+")");
 //							if(2*i+1 != nbCapteurs-1)
 //							{
 								mesures[2*i+1] = convertIR(((lecture[PARAM+10+3*i+1] & 0x0F) << 8) + lecture[PARAM+10+3*i+2]);
-								log.debug("distance : "+mesures[2*i+1]);
+//								log.debug("distance : "+mesures[2*i+1]);
 //								log.debug("Capteur "+(2*i+1)+" voit "+mesures[2*i+1]+"mm (brut "+(((lecture[PARAM+6+3*i+1] & 0x0F) << 8) + lecture[PARAM+6+3*i+2])+")");
 //							}
 						}
@@ -252,7 +252,7 @@ public class ThreadSerialInput extends Thread implements Service
 						
 						robot.setSable(devant, derriere);
 						
-						if(Config.debugSerie)
+						if(Config.debugCapteurs)
 						{
 							log.debug("Le robot est en "+positionRobot+", orientation : "+orientationRobot);
 							String out = "";
@@ -548,7 +548,7 @@ public class ThreadSerialInput extends Thread implements Service
 	 */
 	private int convertIR(int capteur)
 	{
-		log.debug("Brut : "+capteur);
+//		log.debug("Brut : "+capteur);
 		double V = (capteur - 24) / 1341.; // formule trouvée expérimentalement
 
 		// Ces formules ont été calculée à partir de la datasheet des capteurs IR
