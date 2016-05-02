@@ -82,7 +82,7 @@ public class DebugAsser
 		double kpTr = 0.04; // 0.04
 		double kiTr = 0.0; // sur les conseils de Sylvain
 		double kdTr = 0.006; // 0.006
-			
+
 		stm.setPIDconstTranslation(kpTr, kiTr, kdTr);
 
 		double kpVitLin = 6;
@@ -91,14 +91,14 @@ public class DebugAsser
 		
 		stm.setPIDconstVitesseLineaire(kpVitLin, kiVitLin, kdVitLin);
 		
-		double kpCourbure = 6;
-		double kiCourbure = 0.2;
-		double kdCourbure = 0.2;
+		double kpCourbure = 0.1;
+		double kiCourbure = 0.01;
+		double kdCourbure = 0.01;
 		
 		stm.setPIDconstCourbure(kpCourbure, kiCourbure, kdCourbure);
 		
-		double k1 = 0.3;
-		double k2 = 0.3;
+		double k1 = 0.0;
+		double k2 = 0.2;
 		
 		stm.setConstSamson(k1, k2);
 		/*
@@ -164,12 +164,14 @@ public class DebugAsser
 		stm.turn(Math.PI);*/
 //		stm.immobilise();
 
+		Sleep.sleep(3000);
+		
 		int nbArc = 2;
 		ArcCourbeClotho arc[] = new ArcCourbeClotho[nbArc];
 		for(int i = 0; i < nbArc; i++)
 			arc[i] = new ArcCourbeClotho();
 
-		clotho.getTrajectoire(robot.getCinematique(), VitesseCourbure.COURBURE_IDENTIQUE, Speed.INTO_WALL, arc[0]);
+		clotho.getTrajectoire(robot.getCinematique(), VitesseCourbure.COURBURE_IDENTIQUE, Speed.TEST, arc[0]);
 		stm.envoieArcCourbe(arc[0]);
 
 //		clotho.getTrajectoire(arc[0], VitesseCourbure.COURBURE_IDENTIQUE, Speed.INTO_WALL, arc[1]);
