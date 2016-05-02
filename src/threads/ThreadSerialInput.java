@@ -516,12 +516,20 @@ public class ThreadSerialInput extends Thread implements Service
 					/**
 					 * Il y a un blocage mécanique
 					 */
-					else if(lecture[COMMANDE] == SerialProtocol.IN_PB_DEPLACEMENT.codeInt)
+					else if(lecture[COMMANDE] == SerialProtocol.IN_PB_DEPLACEMENT_VITESSE.codeInt)
 					{
 						// Mauvais checksum. Annulation.
 						if(!verifieChecksum(lecture, index))
 							continue;
-						log.critical("Le robot a rencontré un problème mécanique !");
+						log.critical("Le robot a rencontré un problème mécanique : vitesse trop basse");
+						requete.set(RequeteType.BLOCAGE_MECANIQUE);
+					}
+					else if(lecture[COMMANDE] == SerialProtocol.IN_PB_DEPLACEMENT_ACC.codeInt)
+					{
+						// Mauvais checksum. Annulation.
+						if(!verifieChecksum(lecture, index))
+							continue;
+						log.critical("Le robot a rencontré un problème mécanique : accélération trop forte");
 						requete.set(RequeteType.BLOCAGE_MECANIQUE);
 					}
 					else
