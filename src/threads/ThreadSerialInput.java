@@ -496,8 +496,8 @@ public class ThreadSerialInput extends Thread implements Service
 						// Mauvais checksum. Annulation.
 						if(!verifieChecksum(lecture, index))
 							continue;
-
 						int nbElement = lecture[PARAM];
+						log.debug(nbElement);
 						table.setDone(GameElementNames.values()[nbElement], Tribool.TRUE);
 					}
 

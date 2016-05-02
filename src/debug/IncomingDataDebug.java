@@ -32,6 +32,10 @@ public class IncomingDataDebug
 			vitesseGauche -= 65536;
 		if(vitesseDroite > 30000)
 			vitesseDroite -= 65536;
+		if(vitesseLineaire > 30000)
+			vitesseLineaire -= 65536;
+		if(courbure > 30000)
+			courbure -= 65536;
 		this.PWMgauche = PWMgauche;
 		this.PWMdroit = PWMdroit;
 		this.vitesseGauche = vitesseGauche;

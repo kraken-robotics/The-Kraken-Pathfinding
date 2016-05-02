@@ -24,12 +24,13 @@ public class AffichageDebug  extends ApplicationFrame
 {
 	private static final long serialVersionUID = 1L;
 	private TimeSeries serie[];
-	private final static int nbGraphe = 2;
+	private final static int nbGraphe = 1;
 	
 	public void add(IncomingDataDebug data)
 	{
-		serie[0].add(new Millisecond(), Math.abs(data.vitesseDroite));
-		serie[1].add(new Millisecond(), Math.abs(data.vitesseGauche));
+		serie[0].add(new Millisecond(), data.distance);
+//		serie[0].add(new Millisecond(), Math.abs(data.vitesseDroite));
+//		serie[1].add(new Millisecond(), Math.abs(data.vitesseGauche));
 	}
 	
     public AffichageDebug() {
