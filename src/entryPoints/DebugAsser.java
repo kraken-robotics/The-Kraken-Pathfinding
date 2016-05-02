@@ -85,15 +85,9 @@ public class DebugAsser
 
 		stm.setPIDconstTranslation(kpTr, kiTr, kdTr);
 
-		double kpVitLin = 6;
-		double kiVitLin = 0.2;
-		double kdVitLin = 0.2;
-		
-		stm.setPIDconstVitesseLineaire(kpVitLin, kiVitLin, kdVitLin);
-		
 		double kpCourbure = 0.1;
-		double kiCourbure = 0.01;
-		double kdCourbure = 0.01;
+		double kiCourbure = 0.00;
+		double kdCourbure = 0.00;
 		
 		stm.setPIDconstCourbure(kpCourbure, kiCourbure, kdCourbure);
 		
