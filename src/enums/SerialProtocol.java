@@ -35,7 +35,7 @@ public enum SerialProtocol {
 	OUT_ASSER_OFF(0x28),
 
 	OUT_SEND_ARC(0x2E),
-	OUT_SEND_ARC_ARRET(0x2F), // TODO à virer ?
+	OUT_SEND_ARC_ARRET(0x2F),
 
 	OUT_SUSPEND_MOVE(0x30),
 	OUT_RESUME_MOVE(0x31),

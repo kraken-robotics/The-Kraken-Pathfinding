@@ -85,14 +85,14 @@ public class DebugAsser
 
 		stm.setPIDconstTranslation(kpTr, kiTr, kdTr);
 
-		double kpCourbure = 0.1;
-		double kiCourbure = 0.00;
-		double kdCourbure = 0.00;
+		double kpCourbure = 2;
+		double kiCourbure = 0;
+		double kdCourbure = 0.001;
 		
 		stm.setPIDconstCourbure(kpCourbure, kiCourbure, kdCourbure);
 		
-		double k1 = 0.0;
-		double k2 = 0.2;
+		double k1 = 0.01;
+		double k2 = 0.01;//0.05;
 		
 		stm.setConstSamson(k1, k2);
 		/*
@@ -165,15 +165,14 @@ public class DebugAsser
 		for(int i = 0; i < nbArc; i++)
 			arc[i] = new ArcCourbeClotho();
 
-		clotho.getTrajectoire(robot.getCinematique(), VitesseCourbure.COURBURE_IDENTIQUE, Speed.TEST, arc[0]);
+		clotho.getTrajectoire(robot.getCinematique(), VitesseCourbure.DROITE_2, Speed.INTO_WALL, arc[0]);
 		stm.envoieArcCourbe(arc[0]);
 
-//		clotho.getTrajectoire(arc[0], VitesseCourbure.COURBURE_IDENTIQUE, Speed.INTO_WALL, arc[1]);
+//		clotho.getTrajectoire(arc[0], VitesseCourbure.DROITE_2, Speed.INTO_WALL, arc[1]);
 //		stm.envoieArcCourbe(arc[1]);
 		
 		for(int i = 0; i < arc[0].getNbPoints(); i++)
 			log.debug(arc[0].arcselems[i]);
-
 
 		if(Config.debugAsser)
 			while(true)
