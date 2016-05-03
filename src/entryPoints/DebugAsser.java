@@ -98,7 +98,9 @@ public class DebugAsser
 		double k2 = 50;//0.05;
 		
 		stm.setConstSamson(k1, k2);
-		
+		stm.initOdoSTM(robot.getCinematique().getPosition(), robot.getCinematique().orientation);
+
+		Sleep.sleep(500);
 		try {
 			robot.vaAuPoint(new Vec2<ReadOnly>(-200, 1200), Speed.STANDARD);
 		} catch (UnableToMoveException e) {

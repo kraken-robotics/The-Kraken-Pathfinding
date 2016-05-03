@@ -62,11 +62,11 @@ public class Capteurs implements Service {
 		 * Définition des ultrasons
 		 */
 				
-		positionsRelatives[0] = new Vec2<ReadOnly>(10, -25);
-		positionsRelatives[1] = new Vec2<ReadOnly>(10, 75);
+		positionsRelatives[0] = new Vec2<ReadOnly>(70, -25);
+		positionsRelatives[1] = new Vec2<ReadOnly>(70, 75);
 
-		positionsRelatives[2] = new Vec2<ReadOnly>(-20, -20);
-		positionsRelatives[3] = new Vec2<ReadOnly>(-20, 20);
+		positionsRelatives[2] = new Vec2<ReadOnly>(-90, -20);
+		positionsRelatives[3] = new Vec2<ReadOnly>(-90, 20);
 
 		orientationsRelatives[0] = 0;
 		orientationsRelatives[1] = 0;
@@ -122,12 +122,16 @@ public class Capteurs implements Service {
 				Vec2.plus(positionEnnemi, positionsRelatives[i]);
 				Vec2.rotate(positionEnnemi, orientationRobot);
 				Vec2.plus(positionEnnemi, positionRobot);
+				
+				if(positionEnnemi.x > 1500 || positionEnnemi.x < -1500 || positionEnnemi.y > 2000 || positionEnnemi.y < 0)
+					continue; // hors table
+				
 				if(Config.debugCapteurs)
 					log.debug("Obstacle vu par un capteur: "+positionEnnemi);
 				ObstacleProximity o = gridspace.addObstacle(positionEnnemi.getReadOnly(), true);
-			    for(GameElementNames g: GameElementNames.values)
-			        if(gridspace.isDoneTable(g) == Tribool.FALSE && moteur.didTheEnemyTakeIt(g, o))
-			        	gridspace.setDoneTable(g, Tribool.MAYBE);						
+//			    for(GameElementNames g: GameElementNames.values)
+//			        if(gridspace.isDoneTable(g) == Tribool.FALSE && moteur.didTheEnemyTakeIt(g, o))
+//			        	gridspace.setDoneTable(g, Tribool.MAYBE);						
 			}
 		}
 	}

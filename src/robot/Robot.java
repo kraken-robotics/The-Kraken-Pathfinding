@@ -72,6 +72,24 @@ public abstract class Robot implements Service
 		dateDebutMatch = config.getLong(ConfigInfo.DATE_DEBUT_MATCH);
 		matchDemarre = config.getBoolean(ConfigInfo.MATCH_DEMARRE);
 		symetrie = config.getSymmetry();
+		if(symetrie)
+		{
+			int x = config.getInt(ConfigInfo.X_DEPART);
+			int y = config.getInt(ConfigInfo.Y_DEPART);
+			double o = config.getDouble(ConfigInfo.O_DEPART);
+			cinematique.getPosition().x = -x;
+			cinematique.getPosition().y = y;
+			cinematique.orientation = Math.PI - o;
+		}
+		else
+		{
+			int x = config.getInt(ConfigInfo.X_DEPART);
+			int y = config.getInt(ConfigInfo.Y_DEPART);
+			double o = config.getDouble(ConfigInfo.O_DEPART);
+			cinematique.getPosition().x = x;
+			cinematique.getPosition().y = y;
+			cinematique.orientation = o;
+		}
 	}
 
 	public void useConfig(Config config)

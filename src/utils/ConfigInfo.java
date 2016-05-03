@@ -52,9 +52,9 @@ public enum ConfigInfo {
 	DISTANCE_URGENCE("200", true),
 	NB_SUCCESSEUR_MAX("2", true),
 	COURBURE_MAX("10.", true),
-	X_DEPART("0", true),
-	Y_DEPART("1000", true),
-	O_DEPART("3.142", true),
+	X_DEPART("-1350", true),
+	Y_DEPART("1290", true),
+	O_DEPART("2.786", true),
 	AFFICHE_CONFIG("false", true),
 	
 	CONST_KP_VIT_GAUCHE("8", true),
@@ -73,9 +73,9 @@ public enum ConfigInfo {
 	CONST_KI_ROTATION("0", true),
 	CONST_KD_ROTATION("0.008", true),
 	
-	CONST_KP_COURBURE("0", true),
+	CONST_KP_COURBURE("0.8", true),
 	CONST_KI_COURBURE("0", true),
-	CONST_KD_COURBURE("0", true),
+	CONST_KD_COURBURE("0.001", true),
 	
 	CONST_KP_VIT_LINEAIRE("0", true),
 	CONST_KI_VIT_LINEAIRE("0", true),

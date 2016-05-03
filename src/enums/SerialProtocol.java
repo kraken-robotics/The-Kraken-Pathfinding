@@ -74,6 +74,7 @@ public enum SerialProtocol {
 	IN_ELT_SHOOT(0x0D),
 	IN_DEBUG_ASSER(0x10),
 	IN_PB_DEPLACEMENT_ACC(0x11),
+	IN_RAB(0x12),
 	IN_PING(0x3F),
 	IN_PONG1(0x54),
 		IN_PONG2(0x33),

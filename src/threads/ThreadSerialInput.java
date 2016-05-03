@@ -504,6 +504,15 @@ public class ThreadSerialInput extends Thread implements Service
 					/**
 					 * On est arrivé à destination.
 					 */
+					else if(lecture[COMMANDE] == SerialProtocol.IN_RAB.codeInt)
+					{
+						// Mauvais checksum. Annulation.
+						if(!verifieChecksum(lecture, index))
+							continue;
+						if(!matchDemarre)
+							output.initOdoSTM(robot.getCinematique().getPosition(), robot.getCinematique().orientation);
+					}
+
 					else if(lecture[COMMANDE] == SerialProtocol.IN_ROBOT_ARRIVE.codeInt)
 					{
 						// Mauvais checksum. Annulation.
