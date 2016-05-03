@@ -34,7 +34,7 @@ public class ClothoidesComputer implements Service
 	private static final int S_MAX = 10; // une valeur très grande pour dire qu'on trace beaucoup de points.
 	private static final double PRECISION_TRACE = 0.02; // précision du tracé, en m (distance entre deux points consécutifs). Plus le tracé est précis, plus on couvre de point une même distance
 	private static final int INDICE_MAX = (int) (S_MAX / PRECISION_TRACE);
-	public static final int NB_POINTS = 20; // nombre de points dans un arc
+	public static final int NB_POINTS = 25; // nombre de points dans un arc
 	public static final double DISTANCE_ARC_COURBE = PRECISION_TRACE * NB_POINTS * 1000; // en mm
 	public static final double DISTANCE_ARC_COURBE_M = PRECISION_TRACE * NB_POINTS; // en m
 	private static final double d = PRECISION_TRACE * 1000 / 2; // utilisé pour la trajectoire circulaire

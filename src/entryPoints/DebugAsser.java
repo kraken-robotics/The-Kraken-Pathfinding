@@ -85,16 +85,27 @@ public class DebugAsser
 
 		stm.setPIDconstTranslation(kpTr, kiTr, kdTr);
 
-		double kpCourbure = 2;
+		double kpCourbure = 0.8; // 0.8
 		double kiCourbure = 0;
-		double kdCourbure = 0.001;
+		double kdCourbure = 0.001; // 0.001
 		
 		stm.setPIDconstCourbure(kpCourbure, kiCourbure, kdCourbure);
 		
-		double k1 = 0.01;
-		double k2 = 0.01;//0.05;
+		// distance
+		double k1 = 0;
+		
+		// angle
+		double k2 = 50;//0.05;
 		
 		stm.setConstSamson(k1, k2);
+		
+		try {
+			robot.vaAuPoint(new Vec2<ReadOnly>(-200, 1200), Speed.STANDARD);
+		} catch (UnableToMoveException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		/*
 		try {
 			robot.avancer(-1000, Speed.STANDARD);
@@ -157,22 +168,33 @@ public class DebugAsser
 		Sleep.sleep(5000);
 		stm.turn(Math.PI);*/
 //		stm.immobilise();
-
+/*
 		Sleep.sleep(3000);
 		
-		int nbArc = 2;
+		int nbArc = 4;
 		ArcCourbeClotho arc[] = new ArcCourbeClotho[nbArc];
 		for(int i = 0; i < nbArc; i++)
 			arc[i] = new ArcCourbeClotho();
 
-		clotho.getTrajectoire(robot.getCinematique(), VitesseCourbure.DROITE_2, Speed.INTO_WALL, arc[0]);
+//		robot.getCinematique().getPositionEcriture().y = 100;
+		robot.getCinematique().orientation = - 3 * Math.PI / 4;
+		
+		clotho.getTrajectoire(robot.getCinematique(), VitesseCourbure.COURBURE_IDENTIQUE, Speed.STANDARD, arc[0]);
 		stm.envoieArcCourbe(arc[0]);
 
-//		clotho.getTrajectoire(arc[0], VitesseCourbure.DROITE_2, Speed.INTO_WALL, arc[1]);
-//		stm.envoieArcCourbe(arc[1]);
-		
+		clotho.getTrajectoire(arc[0], VitesseCourbure.COURBURE_IDENTIQUE, Speed.STANDARD, arc[1]);
+		stm.envoieArcCourbe(arc[1]);
+
+		clotho.getTrajectoire(arc[1], VitesseCourbure.COURBURE_IDENTIQUE, Speed.STANDARD, arc[2]);
+		stm.envoieArcCourbe(arc[2]);
+
+		clotho.getTrajectoire(arc[2], VitesseCourbure.COURBURE_IDENTIQUE, Speed.STANDARD, arc[3]);
+		stm.envoieArcCourbe(arc[3]);
+
 		for(int i = 0; i < arc[0].getNbPoints(); i++)
-			log.debug(arc[0].arcselems[i]);
+			log.debug(arc[3].arcselems[i]);*/
+/*		for(int i = 0; i < arc[0].getNbPoints(); i++)
+			log.debug(arc[1].arcselems[i]);*/
 
 		if(Config.debugAsser)
 			while(true)

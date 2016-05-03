@@ -108,9 +108,9 @@ public abstract class Robot implements Service
      * @throws FinMatchException
      * @throws ScriptHookException
      */
-    public void avancer(int distance, Speed vitesse) throws UnableToMoveException
+    public void avancer(int distance, boolean mur, Speed vitesse) throws UnableToMoveException
     {
-        avancer(distance, new ArrayList<Hook>(), false, vitesse);
+        avancer(distance, new ArrayList<Hook>(), mur, vitesse);
     }
 
     /**
