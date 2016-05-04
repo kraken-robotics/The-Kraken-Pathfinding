@@ -252,9 +252,10 @@ public class ThreadSerialInput extends Thread implements Service
 						
 						robot.setSable(devant, derriere);
 						
+						if(Config.debugSerie)
+							log.debug("Le robot est en "+positionRobot+", orientation : "+orientationRobot);
 						if(Config.debugCapteurs)
 						{
-							log.debug("Le robot est en "+positionRobot+", orientation : "+orientationRobot);
 							String out = "";
 							for(int i = 0; i < nbCapteurs; i++)
 								out += "("+i+") "+mesures[i]+" ";
@@ -502,7 +503,7 @@ public class ThreadSerialInput extends Thread implements Service
 					}
 
 					/**
-					 * On est arrivé à destination.
+					 * Lancement de l'odo
 					 */
 					else if(lecture[COMMANDE] == SerialProtocol.IN_RAB.codeInt)
 					{
@@ -531,7 +532,7 @@ public class ThreadSerialInput extends Thread implements Service
 						if(!verifieChecksum(lecture, index))
 							continue;
 						log.critical("Le robot a rencontré un problème mécanique : vitesse trop basse");
-						requete.set(RequeteType.BLOCAGE_MECANIQUE);
+						requete.set(RequeteType.BLOCAGE_MECANIQUE_VITESSE);
 					}
 					else if(lecture[COMMANDE] == SerialProtocol.IN_PB_DEPLACEMENT_ACC.codeInt)
 					{
@@ -539,7 +540,7 @@ public class ThreadSerialInput extends Thread implements Service
 						if(!verifieChecksum(lecture, index))
 							continue;
 						log.critical("Le robot a rencontré un problème mécanique : accélération trop forte");
-						requete.set(RequeteType.BLOCAGE_MECANIQUE);
+						requete.set(RequeteType.BLOCAGE_MECANIQUE_ACCELERATION);
 					}
 					else
 					{

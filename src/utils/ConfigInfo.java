@@ -52,9 +52,15 @@ public enum ConfigInfo {
 	DISTANCE_URGENCE("200", true),
 	NB_SUCCESSEUR_MAX("2", true),
 	COURBURE_MAX("10.", true),
-	X_DEPART("-1350", true),
+	
+/*	X_DEPART("1360", true),
 	Y_DEPART("1290", true),
-	O_DEPART("2.786", true),
+	O_DEPART("2.934", true),*/
+
+	X_DEPART("1360", true),
+	Y_DEPART("1310", true),
+	O_DEPART("3.142", true),
+
 	AFFICHE_CONFIG("false", true),
 	
 	CONST_KP_VIT_GAUCHE("8", true),

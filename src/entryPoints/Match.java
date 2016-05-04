@@ -1,13 +1,14 @@
 package entryPoints;
 
-import org.jfree.ui.RefineryUtilities;
+import hook.Hook;
+import hook.methods.UtiliseActionneur;
+import hook.types.HookDemiPlan;
 
-import pathfinding.VitesseCourbure;
-import pathfinding.astarCourbe.arcs.ArcCourbe;
-import pathfinding.astarCourbe.arcs.ArcCourbeClotho;
-import pathfinding.astarCourbe.arcs.ClothoidesComputer;
+import java.util.ArrayList;
+
 import robot.RobotReal;
 import robot.Speed;
+import robot.actuator.ActuatorOrder;
 import serie.DataForSerialOutput;
 import utils.Config;
 import utils.ConfigInfo;
@@ -17,12 +18,8 @@ import utils.Vec2;
 import utils.permissions.ReadOnly;
 import container.Container;
 import container.ServiceNames;
-import debug.AffichageDebug;
-import debug.IncomingDataDebug;
-import debug.IncomingDataDebugBuffer;
 import exceptions.ContainerException;
 import exceptions.PointSortieException;
-import exceptions.UnableToMoveException;
 
 /**
  * Debug l'asser en affichant les grandeurs
@@ -39,60 +36,95 @@ public class Match
 		Config config = (Config) container.getService(ServiceNames.CONFIG);
 		container.getService(ServiceNames.ROBOT_REAL); // initialisation de l'odo
 		DataForSerialOutput stm = (DataForSerialOutput) container.getService(ServiceNames.SERIAL_OUTPUT_BUFFER);
-		ClothoidesComputer clotho = (ClothoidesComputer) container.getService(ServiceNames.CLOTHOIDES_COMPUTER);
 		RobotReal robot = (RobotReal) container.getService(ServiceNames.ROBOT_REAL);
-/*
-		stm.asserOff();
-		
-		double kpVitesseD = 5; // 11 pour 23V // 5 // 80 // 3
-		double kiVitesseD = 0.2; // 1 // 1 // 0 // 1
-		double kdVitesseD = 0.17; // 0.9 // 0.2 // 0.7 // 0.2
 
-		double kpVitesseG = 8; // 11 pour 23V // 5 // 80 // 5
-		double kiVitesseG = 0.2; // 1 // 1 // 0 // 1
-		double kdVitesseG = 0.27; // 0.9 // 0.2 // 0.7 // 0.2
+		ArrayList<Hook> hooks = new ArrayList<Hook>();
 
-		stm.setPIDconstVitesseDroite(kpVitesseD, kiVitesseD, kdVitesseD);
-		stm.setPIDconstVitesseGauche(kpVitesseG, kiVitesseG, kdVitesseG);
-
-		double kpRot = 0.12;
-		double kiRot = 0;
-		double kdRot = 0.008;
-		
-		stm.setPIDconstRotation(kpRot, kiRot, kdRot);
-
-		double kpTr = 0.04; // 0.04
-		double kiTr = 0.0; // sur les conseils de Sylvain
-		double kdTr = 0.006; // 0.006
-
-		stm.setPIDconstTranslation(kpTr, kiTr, kdTr);
-
-		double kpCourbure = 0.8; // 0.8
-		double kiCourbure = 0;
-		double kdCourbure = 0.001; // 0.001
-		
-		stm.setPIDconstCourbure(kpCourbure, kiCourbure, kdCourbure);
-		
-		// distance
-		double k1 = 0;
-		
-		// angle
-		double k2 = 50;//0.05;
-		
-		stm.setConstSamson(k1, k2);
-		*/
 		while(!config.getBoolean(ConfigInfo.MATCH_DEMARRE))
 			Sleep.sleep(1);
 
-		try {
-			robot.avancer(1900, false, Speed.STANDARD);
-			robot.tourner(Math.PI, Speed.STANDARD);
-//			robot.vaAuPoint(new Vec2<ReadOnly>(-200, 1200), Speed.STANDARD);
-//			robot.vaAuPoint(new Vec2<ReadOnly>(-200, 1200), Speed.STANDARD);
-		} catch (UnableToMoveException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		boolean symetrie = config.getSymmetry();
+		
+//		stm.avancer(1000, Speed.STANDARD);
+		
+		Speed vitesse = Speed.SLOW;
+		
+/*
+		robot.avancerB(1400, false, vitesse);
+		stm.utiliseActionneurs(ActuatorOrder.AX12_ARRIERE_DROIT_VERR1);
+		stm.utiliseActionneurs(ActuatorOrder.AX12_ARRIERE_GAUCHE_VERR1);
+		robot.vaAuPointB(new Vec2<ReadOnly>(-380, 1750), vitesse);
+		stm.utiliseActionneurs(ActuatorOrder.AX12_AVANT_DROIT_OUVERT1);
+		stm.utiliseActionneurs(ActuatorOrder.AX12_AVANT_GAUCHE_OUVERT1);
+		robot.vaAuPointB(new Vec2<ReadOnly>(-280, 1800), vitesse);
+		robot.tournerB(Math.PI, vitesse);
+		robot.avancerB(500, false, vitesse);*/
+		/*
+		ArrayList<Hook> hooks2 = new ArrayList<Hook>();
+		Hook hooktest = new HookDemiPlan(log, new Vec2<ReadOnly>(1400, 1000), new Vec2<ReadOnly>(-10, 0), symetrie);
+		hooktest.ajouter_callback(new UtiliseActionneur(ActuatorOrder.AX12_POISSON_BAS));
+
+		hooks2.add(hooktest);
+		robot.avancerB(300, hooks2, Speed.INTO_WALL);
+*/
+		
+		robot.vaAuPointB(new Vec2<ReadOnly>(1080, 1310), vitesse, true);
+
+		stm.utiliseActionneurs(ActuatorOrder.AX12_ARRIERE_GAUCHE_OUVERT1);
+		stm.utiliseActionneurs(ActuatorOrder.AX12_ARRIERE_DROIT_OUVERT1);
+		robot.tournerB(-Math.PI/2, vitesse);		
+		robot.avancerB(-680, true, vitesse);
+
+		stm.utiliseActionneurs(ActuatorOrder.AX12_ARRIERE_DROIT_VERR2);
+		stm.utiliseActionneurs(ActuatorOrder.AX12_ARRIERE_GAUCHE_VERR2);
+		robot.avancerB(100, true, vitesse);
+		
+		hooks.clear();
+		Hook hookBras = new HookDemiPlan(log, new Vec2<ReadOnly>(0, 1600), new Vec2<ReadOnly>(0, -10), symetrie);
+
+		hookBras.ajouter_callback(new UtiliseActionneur(ActuatorOrder.AX12_AVANT_DROIT_OUVERT2));
+		hookBras.ajouter_callback(new UtiliseActionneur(ActuatorOrder.AX12_AVANT_GAUCHE_OUVERT2));
+
+		hooks.add(hookBras);
+
+		robot.vaAuPointB(new Vec2<ReadOnly>(1200, 1000), hooks, vitesse, true);
+		robot.tournerB(Math.PI, vitesse);
+		robot.avancerB(900, false, vitesse);
+		robot.avancerB(-400, false, vitesse);
+
+		
+		robot.vaAuPointB(new Vec2<ReadOnly>(1080, 240), vitesse, true);
+		robot.vaAuPointB(new Vec2<ReadOnly>(1000, 195), vitesse, !symetrie);
+		robot.vaAuPointB(new Vec2<ReadOnly>(1080, 150), vitesse, symetrie);
+		
+		if(symetrie)
+			robot.tournerB(0, vitesse);
+		else
+			robot.tournerB(Math.PI, vitesse);
+
+		hooks.clear();
+		Hook hookBaisse = new HookDemiPlan(log, new Vec2<ReadOnly>(1000, 120), new Vec2<ReadOnly>(-10, 0), symetrie);
+		Hook hookMilieu = new HookDemiPlan(log, new Vec2<ReadOnly>(700, 120), new Vec2<ReadOnly>(-10, 0), symetrie);
+		Hook hookBaisse2 = new HookDemiPlan(log, new Vec2<ReadOnly>(500, 120), new Vec2<ReadOnly>(-10, 0), symetrie);
+		Hook hookOuvre = new HookDemiPlan(log, new Vec2<ReadOnly>(450, 120), new Vec2<ReadOnly>(-10, 0), symetrie);
+		Hook hookFerme = new HookDemiPlan(log, new Vec2<ReadOnly>(400, 120), new Vec2<ReadOnly>(-10, 0), symetrie);
+		Hook hookLeve = new HookDemiPlan(log, new Vec2<ReadOnly>(350, 120), new Vec2<ReadOnly>(-10, 0), symetrie);
+
+		hookBaisse.ajouter_callback(new UtiliseActionneur(ActuatorOrder.AX12_POISSON_BAS));
+		hookMilieu.ajouter_callback(new UtiliseActionneur(ActuatorOrder.AX12_POISSON_MILIEU));
+		hookBaisse2.ajouter_callback(new UtiliseActionneur(ActuatorOrder.AX12_POISSON_BAS));
+		hookOuvre.ajouter_callback(new UtiliseActionneur(ActuatorOrder.AX12_POISSON_OUVRE));
+		hookFerme.ajouter_callback(new UtiliseActionneur(ActuatorOrder.AX12_POISSON_FERME));
+		hookLeve.ajouter_callback(new UtiliseActionneur(ActuatorOrder.AX12_POISSON_HAUT));
+
+		hooks.add(hookBaisse);
+		hooks.add(hookMilieu);
+		hooks.add(hookBaisse2);
+		hooks.add(hookOuvre);
+		hooks.add(hookFerme);
+		hooks.add(hookLeve);
+		
+		robot.vaAuPointB(new Vec2<ReadOnly>(300, 150), hooks, Speed.POISSON, !symetrie);
 		
 	}
 }

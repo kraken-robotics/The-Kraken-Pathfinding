@@ -42,6 +42,7 @@ public class DebugAsser
 		IncomingDataDebugBuffer buffer = (IncomingDataDebugBuffer) container.getService(ServiceNames.INCOMING_DATA_DEBUG_BUFFER);
 		AffichageDebug aff = new AffichageDebug();
 		RobotReal robot = (RobotReal) container.getService(ServiceNames.ROBOT_REAL);
+		Config config = (Config) container.getService(ServiceNames.CONFIG);
 
 		if(Config.debugAsser)
 		{
@@ -98,105 +99,14 @@ public class DebugAsser
 		double k2 = 50;//0.05;
 		
 		stm.setConstSamson(k1, k2);
-		stm.initOdoSTM(robot.getCinematique().getPosition(), robot.getCinematique().orientation);
 
-		Sleep.sleep(500);
-		try {
-			robot.vaAuPoint(new Vec2<ReadOnly>(-200, 1200), Speed.STANDARD);
-		} catch (UnableToMoveException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		while(!config.getBoolean(ConfigInfo.MATCH_DEMARRE))
+			Sleep.sleep(1);
+
+		stm.avancer(500, Speed.SLOW);
+		Sleep.sleep(1000);
+		stm.avancer(-500, Speed.SLOW);
 		
-		/*
-		try {
-			robot.avancer(-1000, Speed.STANDARD);
-		} catch (UnableToMoveException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}*//*
-		try {
-			robot.tourner(Math.PI/2, Speed.STANDARD);
-		} catch (UnableToMoveException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		try {
-			robot.tourner(0, Speed.INTO_WALL);
-		} catch (UnableToMoveException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		try {
-			robot.avancer(100, Speed.STANDARD);
-		} catch (UnableToMoveException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}*/
-//		stm.avancer(500, Speed.STANDARD);
-//		stm.turn(-Math.PI/2, Speed.STANDARD);
-/*
-		stm.turn(-Math.PI/2, Speed.STANDARD);
-		Sleep.sleep(600);
-		stm.turn(Math.PI, Speed.STANDARD);
-		Sleep.sleep(600);
-		stm.avancer(1500, Speed.STANDARD);*/
-/*		Sleep.sleep(600);
-		stm.suspendMouvement();
-		Sleep.sleep(1000);
-		stm.reprendMouvement();*/
-//		Sleep.sleep(1000);
-//		stm.immobiliseUrgence();
-//		stm.asserVitesse(50, 80);
-//		stm.turn(Math.PI/2, Speed.STANDARD);
-//		Sleep.sleep(1000);
-//		stm.turn(Math.PI, Speed.STANDARD);
-//		log.debug("On demande à avancer !");
-//		stm.avancer(200, Speed.INTO_WALL);
-//		Sleep.sleep(5000);
-/*		stm.avancer(-200, Speed.STANDARD);
-		Sleep.sleep(1000);
-		stm.avancerMemeSens(200, Speed.STANDARD);
-		Sleep.sleep(1000);
-		stm.avancer(-200, Speed.STANDARD);
-		Sleep.sleep(1000);
-		stm.avancerMemeSens(-200, Speed.STANDARD);*/
-//		stm.turn(0, Speed.STANDARD);
-/*		stm.turn(-Math.PI/2);
-		Sleep.sleep(5000);
-		stm.turn(0);
-		Sleep.sleep(5000);
-		stm.turn(Math.PI/2);
-		Sleep.sleep(5000);
-		stm.turn(Math.PI);*/
-//		stm.immobilise();
-/*
-		Sleep.sleep(3000);
-		
-		int nbArc = 4;
-		ArcCourbeClotho arc[] = new ArcCourbeClotho[nbArc];
-		for(int i = 0; i < nbArc; i++)
-			arc[i] = new ArcCourbeClotho();
-
-//		robot.getCinematique().getPositionEcriture().y = 100;
-		robot.getCinematique().orientation = - 3 * Math.PI / 4;
-		
-		clotho.getTrajectoire(robot.getCinematique(), VitesseCourbure.COURBURE_IDENTIQUE, Speed.STANDARD, arc[0]);
-		stm.envoieArcCourbe(arc[0]);
-
-		clotho.getTrajectoire(arc[0], VitesseCourbure.COURBURE_IDENTIQUE, Speed.STANDARD, arc[1]);
-		stm.envoieArcCourbe(arc[1]);
-
-		clotho.getTrajectoire(arc[1], VitesseCourbure.COURBURE_IDENTIQUE, Speed.STANDARD, arc[2]);
-		stm.envoieArcCourbe(arc[2]);
-
-		clotho.getTrajectoire(arc[2], VitesseCourbure.COURBURE_IDENTIQUE, Speed.STANDARD, arc[3]);
-		stm.envoieArcCourbe(arc[3]);
-
-		for(int i = 0; i < arc[0].getNbPoints(); i++)
-			log.debug(arc[3].arcselems[i]);*/
-/*		for(int i = 0; i < arc[0].getNbPoints(); i++)
-			log.debug(arc[1].arcselems[i]);*/
 
 		if(Config.debugAsser)
 			while(true)

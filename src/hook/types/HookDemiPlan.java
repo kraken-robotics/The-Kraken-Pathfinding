@@ -41,11 +41,15 @@ public class HookDemiPlan extends Hook
 	 * @param log
 	 * @param state
 	 */
-	public HookDemiPlan(Log log, Vec2<ReadOnly> point, Vec2<ReadOnly> direction)
+	public HookDemiPlan(Log log, Vec2<ReadOnly> point, Vec2<ReadOnly> direction, boolean symetrie)
 	{
 		super(log, true);
 		this.point = point.clone();
+		if(symetrie)
+			this.point.x = -this.point.x;
 		this.direction = direction.clone();
+		if(symetrie)
+			this.direction.x = -this.direction.x;
 	}
 	
 	/**
@@ -81,8 +85,8 @@ public class HookDemiPlan extends Hook
 		out.add((byte) (((x+1500) << 4) + (y >> 8)));
 		out.add((byte) (y));
 		out.add((byte) ((dx+1500) >> 4));
-		out.add((byte) (((dx+1500) << 4) + (dy >> 8)));
-		out.add((byte) (dy));
+		out.add((byte) (((dx+1500) << 4) + ((dy+1500) >> 8)));
+		out.add((byte) (dy+1500));
 		out.addAll(super.toSerial());
 		return out;
 	}	

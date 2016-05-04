@@ -41,12 +41,6 @@ public class JUnit_Robot extends JUnit_Test
 			robot.useActuator(o);
 	}
 
-	@Test
-	public void test_va_au_point() throws Exception
-	{
-		robot.vaAuPoint(new Vec2<ReadOnly>(-300, 300), Speed.STANDARD);
-	}
-
     @Test
     public void test_avance() throws Exception
     {

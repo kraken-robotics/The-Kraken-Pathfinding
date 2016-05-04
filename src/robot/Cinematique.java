@@ -54,13 +54,16 @@ public class Cinematique
 	 */
 	public void copy(Cinematique autre)
 	{
-    	Vec2.copy(position.getReadOnly(), autre.position);
-    	autre.orientation = orientation;
-    	autre.enMarcheAvant = enMarcheAvant;
-    	autre.courbure = courbure;
-    	autre.vitesseRotation = vitesseRotation;
-    	autre.vitesseTranslation = vitesseTranslation;
-    	autre.vitesseMax = vitesseMax;
+		synchronized(autre)
+		{
+	    	Vec2.copy(position.getReadOnly(), autre.position);
+	    	autre.orientation = orientation;
+	    	autre.enMarcheAvant = enMarcheAvant;
+	    	autre.courbure = courbure;
+	    	autre.vitesseRotation = vitesseRotation;
+	    	autre.vitesseTranslation = vitesseTranslation;
+	    	autre.vitesseMax = vitesseMax;
+		}
 	}
 
 	public void setVitesse(Speed speed)
