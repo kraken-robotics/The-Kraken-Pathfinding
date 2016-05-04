@@ -48,7 +48,13 @@ public class Match
 //		stm.avancer(1000, Speed.STANDARD);
 		
 		Speed vitesse = Speed.SLOW;
+
+		robot.avancerB(100, false, vitesse);
 		
+		
+		if(true)
+			while(true)
+				Sleep.sleep(1000);
 /*
 		robot.avancerB(1400, false, vitesse);
 		stm.utiliseActionneurs(ActuatorOrder.AX12_ARRIERE_DROIT_VERR1);

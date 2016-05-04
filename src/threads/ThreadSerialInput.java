@@ -246,20 +246,12 @@ public class ThreadSerialInput extends Thread implements Service
 //							}
 						}
 						
-						// TODO
-						boolean devant = mesures[4] < 20 || mesures[5] < 20;
-						boolean derriere = mesures[6] < 20 || mesures[7] < 20;
-						
-						robot.setSable(devant, derriere);
-						
 						if(Config.debugSerie)
 							log.debug("Le robot est en "+positionRobot+", orientation : "+orientationRobot);
+	
 						if(Config.debugCapteurs)
 						{
-							String out = "";
-							for(int i = 0; i < nbCapteurs; i++)
-								out += "("+i+") "+mesures[i]+" ";
-							log.debug(out);
+							log.debug("droite : "+mesures[0]+", gauche : "+mesures[1]);
 						}
 						Cinematique c = new Cinematique(positionRobot.x, positionRobot.y, orientationRobot, enMarcheAvant, courbure, vitesseLineaire, vitesseRotation, Speed.STANDARD);
 						robot.setCinematique(c);

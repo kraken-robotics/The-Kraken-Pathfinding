@@ -239,7 +239,8 @@ public class Container
 		else if(serviceRequested == ServiceNames.CAPTEURS)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new Capteurs((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
 																					(GridSpace)getServiceDisplay(serviceRequested, ServiceNames.GRID_SPACE),
-																					(MoteurPhysique)getServiceDisplay(serviceRequested, ServiceNames.MOTEUR_PHYSIQUE));
+																					(MoteurPhysique)getServiceDisplay(serviceRequested, ServiceNames.MOTEUR_PHYSIQUE),
+																					(RequeteSTM)getServiceDisplay(serviceRequested, ServiceNames.REQUETE_STM));
 		else if(serviceRequested == ServiceNames.TABLE)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new Table((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG));
 		else if(serviceRequested == ServiceNames.D_STAR_LITE)

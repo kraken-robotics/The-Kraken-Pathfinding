@@ -4,6 +4,8 @@ import obstacles.types.ObstacleProximity;
 import container.Service;
 import enums.Tribool;
 import pathfinding.dstarlite.GridSpace;
+import robot.requete.RequeteSTM;
+import robot.requete.RequeteType;
 import table.GameElementNames;
 import utils.Config;
 import utils.ConfigInfo;
@@ -24,11 +26,12 @@ public class Capteurs implements Service {
 	protected Log log;
 	private MoteurPhysique moteur;
 	private GridSpace gridspace;
-	
+	private RequeteSTM requete;
+
 	// Il y a seulement 4 capteurs de détection d'ennemi
-	private static final int nbCapteurs = 4;
+	private static final int nbCapteurs = 2;
 	
-	private int squaredDistanceUrgence;
+	private int distanceUrgence;
 	private int rayonEnnemi;
     private int horizonCapteurs;
 
@@ -50,11 +53,12 @@ public class Capteurs implements Service {
 	 */
 	public double[] orientationsRelatives;
 
-	public Capteurs(Log log, GridSpace gridspace, MoteurPhysique moteur)
+	public Capteurs(Log log, GridSpace gridspace, MoteurPhysique moteur, RequeteSTM requete)
 	{
 		this.log = log;
 		this.gridspace = gridspace;
 		this.moteur = moteur;
+		this.requete = requete;
 		positionsRelatives = new Vec2[nbCapteurs];
 		orientationsRelatives = new double[nbCapteurs];
 
@@ -65,14 +69,14 @@ public class Capteurs implements Service {
 		positionsRelatives[0] = new Vec2<ReadOnly>(70, -25);
 		positionsRelatives[1] = new Vec2<ReadOnly>(70, 75);
 
-		positionsRelatives[2] = new Vec2<ReadOnly>(-90, -20);
-		positionsRelatives[3] = new Vec2<ReadOnly>(-90, 20);
+//		positionsRelatives[2] = new Vec2<ReadOnly>(-90, -20);
+//		positionsRelatives[3] = new Vec2<ReadOnly>(-90, 20);
 
 		orientationsRelatives[0] = 0;
 		orientationsRelatives[1] = 0;
 
-		orientationsRelatives[2] = Math.PI;
-		orientationsRelatives[3] = Math.PI;
+//		orientationsRelatives[2] = Math.PI;
+//		orientationsRelatives[3] = Math.PI;
 
 	}
 	
@@ -87,8 +91,7 @@ public class Capteurs implements Service {
 		horizonCapteurs = config.getInt(ConfigInfo.HORIZON_CAPTEURS);
 		horizonCapteursSquared = config.getInt(ConfigInfo.HORIZON_CAPTEURS);
 		horizonCapteursSquared *= horizonCapteursSquared;
-		squaredDistanceUrgence = config.getInt(ConfigInfo.DISTANCE_URGENCE);
-		squaredDistanceUrgence *= squaredDistanceUrgence;
+		distanceUrgence = config.getInt(ConfigInfo.DISTANCE_URGENCE);
 	}
 
 	/**
@@ -126,11 +129,13 @@ public class Capteurs implements Service {
 				if(positionEnnemi.x > 1500 || positionEnnemi.x < -1500 || positionEnnemi.y > 2000 || positionEnnemi.y < 0)
 					continue; // hors table
 				
-				if(positionEnnemi.squaredDistance(positionRobot) < squaredDistanceUrgence)
-
+				if(data.mesures[i] < distanceUrgence)
+					requete.set(RequeteType.ENNEMI_SUR_CHEMIN);
+				
 				if(Config.debugCapteurs)
 					log.debug("Obstacle vu par un capteur: "+positionEnnemi);
 				ObstacleProximity o = gridspace.addObstacle(positionEnnemi.getReadOnly(), true);
+				
 //			    for(GameElementNames g: GameElementNames.values)
 //			        if(gridspace.isDoneTable(g) == Tribool.FALSE && moteur.didTheEnemyTakeIt(g, o))
 //			        	gridspace.setDoneTable(g, Tribool.MAYBE);						
