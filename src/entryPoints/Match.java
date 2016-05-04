@@ -40,6 +40,8 @@ public class Match
 
 		ArrayList<Hook> hooks = new ArrayList<Hook>();
 
+		System.out.println("Attente du début du match");
+
 		while(!config.getBoolean(ConfigInfo.MATCH_DEMARRE))
 			Sleep.sleep(1);
 
@@ -48,13 +50,13 @@ public class Match
 //		stm.avancer(1000, Speed.STANDARD);
 		
 		Speed vitesse = Speed.SLOW;
-
+/*
 		robot.avancerB(100, false, vitesse);
 		
 		
 		if(true)
 			while(true)
-				Sleep.sleep(1000);
+				Sleep.sleep(1000);*/
 /*
 		robot.avancerB(1400, false, vitesse);
 		stm.utiliseActionneurs(ActuatorOrder.AX12_ARRIERE_DROIT_VERR1);
@@ -74,12 +76,14 @@ public class Match
 		robot.avancerB(300, hooks2, Speed.INTO_WALL);
 */
 		
-		robot.vaAuPointB(new Vec2<ReadOnly>(1080, 1310), vitesse, true);
+//		robot.vaAuPointB(new Vec2<ReadOnly>(1080, 1310), vitesse, true);
+		robot.vaAuPointB(new Vec2<ReadOnly>(1080, 1610), vitesse, true);
 
 		stm.utiliseActionneurs(ActuatorOrder.AX12_ARRIERE_GAUCHE_OUVERT1);
 		stm.utiliseActionneurs(ActuatorOrder.AX12_ARRIERE_DROIT_OUVERT1);
 		robot.tournerB(-Math.PI/2, vitesse);		
-		robot.avancerB(-680, true, vitesse);
+//		robot.avancerB(-680, true, vitesse);
+		robot.avancerB(-380, true, vitesse);
 
 		stm.utiliseActionneurs(ActuatorOrder.AX12_ARRIERE_DROIT_VERR2);
 		stm.utiliseActionneurs(ActuatorOrder.AX12_ARRIERE_GAUCHE_VERR2);

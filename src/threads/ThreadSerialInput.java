@@ -503,7 +503,11 @@ public class ThreadSerialInput extends Thread implements Service
 						if(!verifieChecksum(lecture, index))
 							continue;
 						if(!matchDemarre)
+						{
 							output.initOdoSTM(robot.getCinematique().getPosition(), robot.getCinematique().orientation);
+							output.initOdoSTM(robot.getCinematique().getPosition(), robot.getCinematique().orientation);
+							output.initOdoSTM(robot.getCinematique().getPosition(), robot.getCinematique().orientation);
+						}
 					}
 
 					else if(lecture[COMMANDE] == SerialProtocol.IN_ROBOT_ARRIVE.codeInt)
@@ -589,7 +593,7 @@ public class ThreadSerialInput extends Thread implements Service
 			c += lecture[i];
 		if(lecture[longueur] != ((~c) & 0xFF))
 		{
-			log.warning("Erreur de checksum (attendu : "+((~c) & 0xFF)+", obtenu : "+lecture[longueur]+"). Paquet redemandé");
+			log.warning("Erreur de checksum (attendu : "+((~c) & 0xFF)+", obtenu : "+lecture[longueur]+") pour "+lecture[COMMANDE]+". Paquet redemandé");
 			output.askResend(idDernierPaquet);
 			return false;
 		}

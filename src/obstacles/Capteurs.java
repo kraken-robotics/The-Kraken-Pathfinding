@@ -112,12 +112,12 @@ public class Capteurs implements Service {
 			 */
 			for(int i = 0; i < nbCapteurs; i++)
 			{
-				if(Config.debugCapteurs)
-					log.debug("Capteur "+i);
+//				if(Config.debugCapteurs)
+//					log.debug("Capteur "+i);
 				if(data.mesures[i] < 40 || data.mesures[i] > horizonCapteurs)
 				{
-					if(Config.debugCapteurs)
-						log.debug("Capteur "+i+" trop proche ou trop loin.");
+//					if(Config.debugCapteurs)
+//						log.debug("Capteur "+i+" trop proche ou trop loin.");
 					continue;
 				}
 
@@ -130,10 +130,14 @@ public class Capteurs implements Service {
 					continue; // hors table
 				
 				if(data.mesures[i] < distanceUrgence)
+				{
+					if(Config.debugCapteurs)
+						log.warning("Ennemi !");
 					requete.set(RequeteType.ENNEMI_SUR_CHEMIN);
+				}
 				
-				if(Config.debugCapteurs)
-					log.debug("Obstacle vu par un capteur: "+positionEnnemi);
+//				if(Config.debugCapteurs)
+//					log.debug("Obstacle vu par un capteur: "+positionEnnemi);
 				ObstacleProximity o = gridspace.addObstacle(positionEnnemi.getReadOnly(), true);
 				
 //			    for(GameElementNames g: GameElementNames.values)

@@ -91,7 +91,7 @@ public class Log implements Service
 			{
 				if(sauvegarde_fichier)
 					ecrireFichier(affichage);
-				else
+//				else
 					ou.println(affichage);
 			}
 		}
@@ -118,7 +118,6 @@ public class Log implements Service
 	public void close()
 	{
 		debug("Fin du log");
-		debug("Et n'oubliez pas : il faut dire NON à l'égoïsme artistique !");
 		
 		if(sauvegarde_fichier)
 			try {
@@ -130,6 +129,8 @@ public class Log implements Service
 			{
 				e.printStackTrace();
 			}
+		
+		debug("Et n'oubliez pas : il faut dire NON à l'égoïsme artistique !");
 		logClosed = true;
 	}
 	

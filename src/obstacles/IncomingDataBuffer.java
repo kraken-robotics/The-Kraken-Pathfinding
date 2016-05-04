@@ -41,7 +41,10 @@ public class IncomingDataBuffer implements Service
 	{
 		buffer.add(elem);
 		if(buffer.size() > 5)
-			log.debug("Capteurs traités trop lentement");
+		{
+			buffer.poll(); // on évacue une ancienne valeur
+//			log.debug("Capteurs traités trop lentement");
+		}
 //		log.debug("Taille buffer: "+buffer.size());
 		notify();
 	}
