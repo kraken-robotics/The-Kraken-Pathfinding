@@ -58,7 +58,7 @@ public enum ConfigInfo {
 	O_DEPART("2.934", true),*/
 
 	X_DEPART("1360", true),
-	Y_DEPART("1310", true),
+	Y_DEPART("1360", true),
 	O_DEPART("3.142", true),
 
 	AFFICHE_CONFIG("false", true),

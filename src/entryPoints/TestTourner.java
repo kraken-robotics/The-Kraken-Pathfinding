@@ -7,20 +7,18 @@ import serie.DataForSerialOutput;
 import utils.Config;
 import utils.ConfigInfo;
 import utils.Sleep;
-import utils.Vec2;
-import utils.permissions.ReadOnly;
 import container.Container;
 import container.ServiceNames;
 import exceptions.ContainerException;
 import exceptions.PointSortieException;
 
 /**
- * Script d'homologation
+ * Test odo / asser
  * @author pf
  *
  */
 
-public class HomologWithBig
+public class TestTourner
 {
 	public static void main(String[] args) throws ContainerException, InterruptedException, PointSortieException
 	{
@@ -40,15 +38,12 @@ public class HomologWithBig
 
 		Speed vitesse = Speed.SLOW;
 
-		robot.avancerB(100, true, vitesse);
-		robot.vaAuPointB(new Vec2<ReadOnly>(1080, 1610), vitesse, true);
-
-		stm.utiliseActionneurs(ActuatorOrder.AX12_ARRIERE_GAUCHE_OUVERT1);
-		stm.utiliseActionneurs(ActuatorOrder.AX12_ARRIERE_DROIT_OUVERT1);
-		robot.tournerB(-Math.PI/2, vitesse);		
-		robot.avancerB(-480, true, vitesse);
-
-		robot.avancerB(100, false, vitesse);
-		
+		while(true)
+		{
+			robot.tournerB(2*Math.PI/3, vitesse);
+			Sleep.sleep(1000);
+			robot.tournerB(-2*Math.PI/3, vitesse);
+			Sleep.sleep(1000);
+		}
 	}
 }

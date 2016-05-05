@@ -246,12 +246,12 @@ public class ThreadSerialInput extends Thread implements Service
 //							}
 						}
 						
-						if(Config.debugSerie)
+//						if(Config.debugSerie)
 							log.debug("Le robot est en "+positionRobot+", orientation : "+orientationRobot);
 	
 						if(Config.debugCapteurs)
 						{
-							log.debug("droite : "+mesures[0]+", gauche : "+mesures[1]);
+							log.debug("droite : "+(mesures[0] == 0 ? "infini" : mesures[0])+", gauche : "+(mesures[1] == 0 ? "infini" : mesures[1]));
 						}
 						Cinematique c = new Cinematique(positionRobot.x, positionRobot.y, orientationRobot, enMarcheAvant, courbure, vitesseLineaire, vitesseRotation, Speed.STANDARD);
 						robot.setCinematique(c);
