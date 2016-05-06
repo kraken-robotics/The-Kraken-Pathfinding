@@ -19,8 +19,8 @@ public enum Speed
 
     // Vitesse du robot lors d'une replanification, plus lent que la vitesse standard
     REPLANIF(2., 1./1000.),
-    
-    SLOW(.8, 1./1000.),
+   
+    SLOW(1.5, 4./1000.),
 
     POISSON(.15, 4./1000.);
 

@@ -133,7 +133,8 @@ public class Capteurs implements Service {
 				{
 					if(Config.debugCapteurs)
 						log.warning("Ennemi !");
-					requete.set(RequeteType.ENNEMI_SUR_CHEMIN);
+					// TODO
+//					requete.set(RequeteType.ENNEMI_SUR_CHEMIN);
 				}
 				
 //				if(Config.debugCapteurs)

@@ -26,17 +26,17 @@ public class AffichageDebug  extends ApplicationFrame
 {
 	private static final long serialVersionUID = 1L;
 	private TimeSeries serie[];
-	private final static int nbGraphe = 2;
+	private final static int nbGraphe = 4;
 	
 	private Date temps = new Date();
 	
 	public void add(IncomingDataDebug data)
 	{
 		temps.setSeconds(temps.getSeconds()+1);
-//		serie[0].add(new Millisecond(), data.PWMdroit);
-//		serie[1].add(new Millisecond(), data.PWMgauche);
-		serie[0].add(new Millisecond(temps), data.vitesseDroite);
-		serie[1].add(new Millisecond(temps), data.vitesseGauche);
+		serie[0].add(new Millisecond(temps), data.PWMdroit);
+		serie[1].add(new Millisecond(temps), data.PWMgauche);
+		serie[2].add(new Millisecond(temps), data.vitesseDroite);
+		serie[3].add(new Millisecond(temps), data.vitesseGauche);
 	}
 	
     public AffichageDebug() {

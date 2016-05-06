@@ -63,21 +63,21 @@ public enum ConfigInfo {
 
 	AFFICHE_CONFIG("false", true),
 	
-	CONST_KP_VIT_GAUCHE("8", true),
-	CONST_KI_VIT_GAUCHE("0.2", true),
-	CONST_KD_VIT_GAUCHE("0.27", true),
+	CONST_KP_VIT_GAUCHE("10", true),
+	CONST_KI_VIT_GAUCHE("6", true),
+	CONST_KD_VIT_GAUCHE("0", true),
 	
-	CONST_KP_VIT_DROITE("5", true),
-	CONST_KI_VIT_DROITE("0.2", true),
-	CONST_KD_VIT_DROITE("0.17", true),
+	CONST_KP_VIT_DROITE("14", true),
+	CONST_KI_VIT_DROITE("7", true),
+	CONST_KD_VIT_DROITE("0", true),
 	
-	CONST_KP_TRANSLATION("0.04", true),
+	CONST_KP_TRANSLATION("0.1", true),
 	CONST_KI_TRANSLATION("0", true),	
-	CONST_KD_TRANSLATION("0.006", true),
+	CONST_KD_TRANSLATION("0.01", true),
 	
-	CONST_KP_ROTATION("0.12", true),
+	CONST_KP_ROTATION("0.017", true),
 	CONST_KI_ROTATION("0", true),
-	CONST_KD_ROTATION("0.008", true),
+	CONST_KD_ROTATION("0", true),
 	
 	CONST_KP_COURBURE("0.8", true),
 	CONST_KI_COURBURE("0", true),
