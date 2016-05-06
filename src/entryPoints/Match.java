@@ -47,7 +47,7 @@ public class Match
 
 		boolean symetrie = config.getSymmetry();
 		
-//		Sleep.sleep(10000);
+		Sleep.sleep(10000);
 		
 //		stm.avancer(1000, Speed.STANDARD);
 		

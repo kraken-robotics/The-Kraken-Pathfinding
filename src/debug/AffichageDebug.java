@@ -33,10 +33,12 @@ public class AffichageDebug  extends ApplicationFrame
 	public void add(IncomingDataDebug data)
 	{
 		temps.setSeconds(temps.getSeconds()+1);
-		serie[0].add(new Millisecond(temps), data.PWMdroit);
-		serie[1].add(new Millisecond(temps), data.PWMgauche);
-		serie[2].add(new Millisecond(temps), data.vitesseDroite);
-		serie[3].add(new Millisecond(temps), data.vitesseGauche);
+		serie[0].add(new Millisecond(temps), data.vitesseDroite);
+		serie[1].add(new Millisecond(temps), data.vitesseGauche);
+		serie[2].add(new Millisecond(temps), data.PWMdroit);
+		serie[3].add(new Millisecond(temps), data.PWMgauche);
+//		serie[0].add(new Millisecond(temps), data.orientation);
+//		serie[1].add(new Millisecond(temps), data.vitesseGauche);
 	}
 	
     public AffichageDebug() {

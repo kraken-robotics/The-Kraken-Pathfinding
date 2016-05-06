@@ -20,9 +20,9 @@ public enum Speed
     // Vitesse du robot lors d'une replanification, plus lent que la vitesse standard
     REPLANIF(2., 1./1000.),
    
-    SLOW(1.5, 4./1000.),
+    SLOW(1.2, 2./1000.),
 
-    POISSON(.15, 4./1000.);
+    POISSON(.15, 2./1000.);
 
     public static final int translationStopDuration = 200; // le temps de s'arrêter en translation
     public static final int rotationStopDuration = 100; // le temps de s'arrêter en rotation

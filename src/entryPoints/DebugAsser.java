@@ -64,25 +64,25 @@ public class DebugAsser
 		stm.asserOff();
 		
 		double kpVitesseD = 14;
-		double kiVitesseD = 7;
+		double kiVitesseD = 13;
 		double kdVitesseD = 0;
 
-		double kpVitesseG = 10;
-		double kiVitesseG = 6;
+		double kpVitesseG = 11;
+		double kiVitesseG = 11;
 		double kdVitesseG = 0;
 
 		stm.setPIDconstVitesseDroite(kpVitesseD, kiVitesseD, kdVitesseD);
 		stm.setPIDconstVitesseGauche(kpVitesseG, kiVitesseG, kdVitesseG);
 
-		double kpRot = 0.017;
+		double kpRot = 0.02;
 		double kiRot = 0;
-		double kdRot = 0.00; // TODO à augmenter (x10)
+		double kdRot = 0.001; // TODO à augmenter (x10)
 		
 		stm.setPIDconstRotation(kpRot, kiRot, kdRot);
 
-		double kpTr = 0.1; // 0.04
+		double kpTr = 0.05; // 0.04
 		double kiTr = 0.0; // sur les conseils de Sylvain
-		double kdTr = 0.01; // 0.006 TODO idem
+		double kdTr = 0.001; 
 
 		stm.setPIDconstTranslation(kpTr, kiTr, kdTr);
 
@@ -100,11 +100,13 @@ public class DebugAsser
 		
 		stm.setConstSamson(k1, k2);
 
-		while(!config.getBoolean(ConfigInfo.MATCH_DEMARRE))
-			Sleep.sleep(1);
-		stm.turn(Math.PI/2, Speed.SLOW);
+		Sleep.sleep(2000);
+		
+//		while(!config.getBoolean(ConfigInfo.MATCH_DEMARRE))
+//			Sleep.sleep(1);
+//		stm.turn(Math.PI/2, Speed.SLOW);
 
-//		stm.avancer(300, Speed.SLOW);
+		stm.avancer(500, Speed.SLOW);
 		
 		if(Config.debugAsser)
 			while(true)
