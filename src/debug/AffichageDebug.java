@@ -1,6 +1,8 @@
 package debug;
 
 import java.awt.Color;
+import java.util.Date;
+
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -26,15 +28,19 @@ public class AffichageDebug  extends ApplicationFrame
 	private TimeSeries serie[];
 	private final static int nbGraphe = 2;
 	
+	private Date temps = new Date();
+	
 	public void add(IncomingDataDebug data)
 	{
-//		serie[1].add(new Millisecond(), data.vitesseLineaire);
-		serie[0].add(new Millisecond(), data.orientation);
-//		serie[0].add(new Millisecond(), Math.abs(data.vitesseDroite));
-//		serie[1].add(new Millisecond(), Math.abs(data.vitesseGauche));
+		temps.setSeconds(temps.getSeconds()+1);
+//		serie[0].add(new Millisecond(), data.PWMdroit);
+//		serie[1].add(new Millisecond(), data.PWMgauche);
+		serie[0].add(new Millisecond(temps), data.vitesseDroite);
+		serie[1].add(new Millisecond(temps), data.vitesseGauche);
 	}
 	
     public AffichageDebug() {
+    	
         super("Debug asser");
         TimeSeriesCollection dataset = new TimeSeriesCollection();
         serie = new TimeSeries[nbGraphe];

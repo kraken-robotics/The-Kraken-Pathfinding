@@ -40,12 +40,37 @@ public class Match
 
 		ArrayList<Hook> hooks = new ArrayList<Hook>();
 
+		double kpVitesseD = 14;
+		double kiVitesseD = 7;
+		double kdVitesseD = 0;
+
+		double kpVitesseG = 10;
+		double kiVitesseG = 6;
+		double kdVitesseG = 0;
+
+		stm.setPIDconstVitesseDroite(kpVitesseD, kiVitesseD, kdVitesseD);
+		stm.setPIDconstVitesseGauche(kpVitesseG, kiVitesseG, kdVitesseG);
+
+		double kpRot = 0.12;
+		double kiRot = 0;
+		double kdRot = 0.008; // TODO à augmenter (x10)
+		
+		stm.setPIDconstRotation(kpRot, kiRot, kdRot);
+
+		double kpTr = 1; // 0.04
+		double kiTr = 0.0; // sur les conseils de Sylvain
+		double kdTr = 0.0; // 0.006 TODO idem
+
+		stm.setPIDconstTranslation(kpTr, kiTr, kdTr);
+
 		System.out.println("Attente du début du match");
 
 		while(!config.getBoolean(ConfigInfo.MATCH_DEMARRE))
 			Sleep.sleep(1);
 
 		boolean symetrie = config.getSymmetry();
+		
+		Sleep.sleep(10000);
 		
 //		stm.avancer(1000, Speed.STANDARD);
 		
