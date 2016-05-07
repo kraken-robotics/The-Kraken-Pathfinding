@@ -75,13 +75,13 @@ public class DebugAsser
 		stm.setPIDconstVitesseGauche(kpVitesseG, kiVitesseG, kdVitesseG);
 
 		double kpRot = 0.02;
-		double kiRot = 0;
+		double kiRot = 0.001;
 		double kdRot = 0.001; // TODO à augmenter (x10)
 		
 		stm.setPIDconstRotation(kpRot, kiRot, kdRot);
 
 		double kpTr = 0.05; // 0.04
-		double kiTr = 0.0; // sur les conseils de Sylvain
+		double kiTr = 0.001; // sur les conseils de Sylvain
 		double kdTr = 0.001; 
 
 		stm.setPIDconstTranslation(kpTr, kiTr, kdTr);
@@ -104,6 +104,7 @@ public class DebugAsser
 		
 //		while(!config.getBoolean(ConfigInfo.MATCH_DEMARRE))
 //			Sleep.sleep(1);
+
 //		stm.turn(Math.PI/2, Speed.SLOW);
 
 		stm.avancer(500, Speed.SLOW);

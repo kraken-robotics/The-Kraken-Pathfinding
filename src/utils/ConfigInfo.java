@@ -72,11 +72,11 @@ public enum ConfigInfo {
 	CONST_KD_VIT_DROITE("0", true),
 	
 	CONST_KP_TRANSLATION("0.04", true),
-	CONST_KI_TRANSLATION("0.001", true),	
+	CONST_KI_TRANSLATION("0.002", true),	
 	CONST_KD_TRANSLATION("0.001", true),
 	
-	CONST_KP_ROTATION("0.01", true),
-	CONST_KI_ROTATION("0.0", true),
+	CONST_KP_ROTATION("0.02", true),
+	CONST_KI_ROTATION("0.004", true),
 	CONST_KD_ROTATION("0.001", true),
 	
 	CONST_KP_COURBURE("0.8", true),
