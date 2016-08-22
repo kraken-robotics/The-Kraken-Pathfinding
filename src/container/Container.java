@@ -24,11 +24,9 @@ import pathfinding.astarCourbe.arcs.AStarCourbeArcManager;
 import pathfinding.astarCourbe.arcs.ClothoidesComputer;
 import pathfinding.dstarlite.DStarLite;
 import pathfinding.dstarlite.GridSpace;
-import hook.HookFactory;
 import exceptions.ContainerException;
 import exceptions.PointSortieException;
 import utils.*;
-import scripts.ScriptManager;
 import serie.DataForSerialOutput;
 import serie.SerialInterface;
 import serie.SerialSTM;
@@ -267,8 +265,6 @@ public class Container
 			instanciedServices[serviceRequested.ordinal()] = (Service)new SerialSimulation((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG));
 //		else if(serviceRequested == ServiceNames.SERIE_XBEE)
 //			instanciedServices[serviceRequested.ordinal()] = (Service)new SerialXBEE((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG), config.getInt(ConfigInfo.BAUDRATE_XBEE));
-		else if(serviceRequested == ServiceNames.HOOK_FACTORY)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new HookFactory((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG));
 		else if(serviceRequested == ServiceNames.ROBOT_REAL)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new RobotReal((DataForSerialOutput)getServiceDisplay(serviceRequested, ServiceNames.SERIAL_OUTPUT_BUFFER),
 															 (Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
@@ -279,9 +275,6 @@ public class Container
                                                              (RobotReal)getServiceDisplay(serviceRequested, ServiceNames.ROBOT_REAL),
 															 (ObstaclesMemory)getServiceDisplay(serviceRequested, ServiceNames.OBSTACLES_MEMORY),
 															 (Table)getServiceDisplay(serviceRequested, ServiceNames.TABLE));
-		else if(serviceRequested == ServiceNames.SCRIPT_MANAGER)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new ScriptManager((HookFactory)getServiceDisplay(serviceRequested, ServiceNames.HOOK_FACTORY),
-																					(Log)getServiceDisplay(serviceRequested, ServiceNames.LOG));
 		else if(serviceRequested == ServiceNames.THREAD_PEREMPTION)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadPeremption((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
 																		(GridSpace)getServiceDisplay(serviceRequested, ServiceNames.GRID_SPACE));
@@ -303,7 +296,6 @@ public class Container
 																		(RequeteSTM)getServiceDisplay(serviceRequested, ServiceNames.REQUETE_STM),
 			                                                             (RobotReal)getServiceDisplay(serviceRequested, ServiceNames.ROBOT_REAL),
 																			(Table)getServiceDisplay(serviceRequested, ServiceNames.TABLE),
-																			(HookFactory)getServiceDisplay(serviceRequested, ServiceNames.HOOK_FACTORY),
 																			(DataForSerialOutput)getServiceDisplay(serviceRequested, ServiceNames.SERIAL_OUTPUT_BUFFER));
 		else if(serviceRequested == ServiceNames.REQUETE_STM)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new RequeteSTM((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG));

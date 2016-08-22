@@ -3,7 +3,6 @@ package robot;
 import java.util.ArrayList;
 
 import pathfinding.astarCourbe.arcs.ArcCourbe;
-import hook.Hook;
 import utils.Log;
 import utils.Vec2;
 import utils.permissions.ReadOnly;
@@ -58,13 +57,12 @@ public class RobotChrono extends Robot
 	}*/
 	
 	@Override
-    public void avancer(int distance, ArrayList<Hook> hooks, boolean mur, Speed vitesse)
+    public void avancer(int distance, boolean mur, Speed vitesse)
 	{
 		date += Math.abs(distance)*vitesse.translationalSpeed + sleepAvanceDuration;
 	
         Vec2<ReadWrite> ecart = new Vec2<ReadWrite>((int)(distance*Math.cos(cinematique.orientation)), (int)(distance*Math.sin(cinematique.orientation)));
 
-		checkHooks(cinematique.getPosition(), cinematique.getPosition().plusNewVector(ecart).getReadOnly(), hooks);
 		Vec2.plus(cinematique.getPositionEcriture(), ecart);
 //		isPositionPathfindingActive = false;
 //		positionPathfindingAnterieure = null;
@@ -103,29 +101,9 @@ public class RobotChrono extends Robot
 	}
 	
 	@Override
-	public void sleep(long duree, ArrayList<Hook> hooks) throws FinMatchException 
+	public void sleep(long duree) throws FinMatchException 
 	{
 		this.date += duree;
-		checkHooks(cinematique.getPosition(), cinematique.getPosition(), hooks);
-	}
-
-	/**
-	 * On déclenche tous les hooks entre le point A et le point B.
-	 * Il faut appeler checkHooks APRÈS avoir mis à jour date!
-	 * @param pointA
-	 * @param pointB
-	 * @param hooks
-	 * @throws FinMatchException 
-	 */
-	private void checkHooks(Vec2<ReadOnly> pointA, Vec2<ReadOnly> pointB, ArrayList<Hook> hooks)
-	{
-		for(Hook hook: hooks)
-			if(hook.simulated_evaluate(pointA, pointB, date))
-				hook.trigger();
-		
-		// vérification de la fin de la recherche
-//		if(tempsMax < date)
-//			throw new FinMatchException();
 	}
 
 	public void setPositionGridSpace(int gridpoint)

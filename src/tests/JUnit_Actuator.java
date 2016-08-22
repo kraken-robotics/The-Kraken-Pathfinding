@@ -1,9 +1,5 @@
 package tests;
 
-import hook.Hook;
-import hook.methods.UtiliseActionneur;
-import hook.types.HookDate;
-
 import java.util.ArrayList;
 
 import org.junit.Before;
@@ -64,16 +60,6 @@ public class JUnit_Actuator extends JUnit_Test {
 			data.utiliseActionneurs(o);
 			Sleep.sleep(2000);
 		}
-	}
-	
-	@Test
-	public void test_hook_actuator() throws Exception
-	{
-		ArrayList<Hook> hooks = new ArrayList<Hook>();
-		Hook hook = new HookDate(log, 10000);
-		hook.ajouter_callback(new UtiliseActionneur(ActuatorOrder.TEST));
-		hooks.add(hook);
-		data.envoieHooks(hooks);
 	}
 
 }

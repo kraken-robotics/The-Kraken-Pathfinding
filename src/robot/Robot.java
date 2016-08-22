@@ -2,7 +2,6 @@ package robot;
 
 import java.util.ArrayList;
 
-import hook.Hook;
 import container.Service;
 import exceptions.FinMatchException;
 import exceptions.UnableToMoveException;
@@ -25,10 +24,10 @@ public abstract class Robot implements Service
 	public abstract int getPositionGridSpace();
     public abstract void tourner(double angle, Speed vitesse)
             throws UnableToMoveException, FinMatchException;
-    public abstract void avancer(int distance, ArrayList<Hook> hooks, boolean mur, Speed vitesse)
+    public abstract void avancer(int distance, boolean mur, Speed vitesse)
             throws UnableToMoveException;
 	
-    public abstract void sleep(long duree, ArrayList<Hook> hooks) throws FinMatchException;
+    public abstract void sleep(long duree) throws FinMatchException;
     public abstract long getTempsDepuisDebutMatch();
 
     protected Cinematique cinematique;
@@ -120,31 +119,6 @@ public abstract class Robot implements Service
     }
 
     /**
-     * Avancer sans hook, et pas dans un mur
-     * @param distance
-     * @throws UnableToMoveException
-     * @throws FinMatchException
-     * @throws ScriptHookException
-     */
-    public void avancer(int distance, boolean mur, Speed vitesse) throws UnableToMoveException
-    {
-        avancer(distance, new ArrayList<Hook>(), mur, vitesse);
-    }
-
-    /**
-     * Avancer, mais pas dans un mur
-     * @param distance
-     * @param hooks
-     * @throws UnableToMoveException
-     * @throws FinMatchException
-     * @throws ScriptHookException
-     */
-    public void avancer(int distance, ArrayList<Hook> hooks, Speed vitesse) throws UnableToMoveException
-    {
-        avancer(distance, hooks, false, vitesse);
-    }
-
-    /**
      * Avance dans un mur sans hook
      * @param distance
      * @throws UnableToMoveException
@@ -153,7 +127,7 @@ public abstract class Robot implements Service
      */
     public void avancerDansMur(int distance) throws UnableToMoveException
     {
-    	avancer(distance, new ArrayList<Hook>(), true, Speed.INTO_WALL);
+    	avancer(distance, true, Speed.INTO_WALL);
     }
 
     /**
@@ -165,17 +139,6 @@ public abstract class Robot implements Service
     public void sleepUntil(long date) throws FinMatchException
     {
     	sleep(date - getTempsDepuisDebutMatch());
-    }
-    
-    /**
-     * Dort une certaine durée.
-     * Utilise le sleep du robot, donc réel ou simulé.
-     * @param duree
-     * @throws FinMatchException
-     */
-    public void sleep(long duree) throws FinMatchException
-    {
-    	sleep(duree, new ArrayList<Hook>());
     }
     
     @Override

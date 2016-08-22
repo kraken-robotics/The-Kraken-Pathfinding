@@ -24,7 +24,6 @@ import debug.IncomingDataDebugBuffer;
 import enums.RobotColor;
 import enums.Tribool;
 import exceptions.MissingCharacterException;
-import hook.HookFactory;
 import obstacles.IncomingData;
 import obstacles.IncomingDataBuffer;
 import obstacles.types.ObstacleCircular;
@@ -41,7 +40,6 @@ public class ThreadSerialInput extends Thread implements Service
 	protected Config config;
 	private SerialInterface serie;
 	private IncomingDataBuffer buffer;
-	private HookFactory hookfactory;
 	private DataForSerialOutput output;
 	private RobotReal robot;
 	private Table table;
@@ -61,14 +59,13 @@ public class ThreadSerialInput extends Thread implements Service
 	private final static int PARAM = 3;
 
 	
-	public ThreadSerialInput(Log log, Config config, SerialInterface serie, IncomingDataBuffer buffer, IncomingDataDebugBuffer bufferdebug, RequeteSTM requete, RobotReal robot, Table table, HookFactory hookfactory, DataForSerialOutput output)
+	public ThreadSerialInput(Log log, Config config, SerialInterface serie, IncomingDataBuffer buffer, IncomingDataDebugBuffer bufferdebug, RequeteSTM requete, RobotReal robot, Table table, DataForSerialOutput output)
 	{
 		this.log = log;
 		this.config = config;
 		this.serie = serie;
 		this.buffer = buffer;
 		this.requete = requete;
-		this.hookfactory = hookfactory;
 		this.output = output;
 		this.robot = robot;
 		this.table = table;
@@ -436,13 +433,6 @@ public class ThreadSerialInput extends Thread implements Service
 									default:
 										log.critical("Code coquillage inconnu ! "+codeCoquillage);
 										break;
-								}
-								
-								// Evitons un nullpointer exception…
-								if(codeCoquillage >= 0 && codeCoquillage <= 4)
-								{
-									output.deleteAllHooks();
-									output.envoieHooks(hookfactory.getHooksPermanentsAEnvoyer());
 								}
 							}
 						}
