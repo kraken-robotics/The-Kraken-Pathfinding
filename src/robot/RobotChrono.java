@@ -1,11 +1,8 @@
 package robot;
 
-import java.util.ArrayList;
-
 import pathfinding.astarCourbe.arcs.ArcCourbe;
 import utils.Log;
 import utils.Vec2;
-import utils.permissions.ReadOnly;
 import utils.permissions.ReadWrite;
 import exceptions.FinMatchException;
 
@@ -16,7 +13,7 @@ import exceptions.FinMatchException;
 
 public class RobotChrono extends Robot
 {
-	private static final long[] paliers = new long[7];
+//	private static final long[] paliers = new long[7];
 
 	protected int positionGridSpace;
 //	private static int tempsMax = 90000;
@@ -29,7 +26,7 @@ public class RobotChrono extends Robot
 
 	private final static int sleepAvanceDuration = /*approximateSerialLatency+*/Speed.translationStopDuration;
 	private final static int sleepTourneDuration = /*approximateSerialLatency+*/Speed.rotationStopDuration;
-	
+	/*
 	static
 	{
 		paliers[0] = 20000;
@@ -40,7 +37,7 @@ public class RobotChrono extends Robot
 		paliers[5] = 78000;
 		paliers[6] = 84000;
 	}
-	
+	*/
 	RobotChrono(Log log, Cinematique cinematique)
 	{
 		super(log);

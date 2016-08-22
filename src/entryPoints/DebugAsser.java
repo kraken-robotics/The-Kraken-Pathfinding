@@ -61,47 +61,6 @@ public class DebugAsser
 		if(Config.debugAsser)
 			stm.activeDebugMode();
 
-		stm.asserOff();
-		
-		double kpVitesseD = 14;
-		double kiVitesseD = 13;
-		double kdVitesseD = 0;
-
-		double kpVitesseG = 11;
-		double kiVitesseG = 11;
-		double kdVitesseG = 0;
-
-		stm.setPIDconstVitesseDroite(kpVitesseD, kiVitesseD, kdVitesseD);
-		stm.setPIDconstVitesseGauche(kpVitesseG, kiVitesseG, kdVitesseG);
-
-		double kpRot = 0.02;
-		double kiRot = 0.001;
-		double kdRot = 0.001; // TODO à augmenter (x10)
-		
-		stm.setPIDconstRotation(kpRot, kiRot, kdRot);
-
-		double kpTr = 0.05; // 0.04
-		double kiTr = 0.001; // sur les conseils de Sylvain
-		double kdTr = 0.001; 
-
-		stm.setPIDconstTranslation(kpTr, kiTr, kdTr);
-
-		double kpCourbure = 0.8; // 0.8
-		double kiCourbure = 0;
-		double kdCourbure = 0.001; // 0.001
-		
-		stm.setPIDconstCourbure(kpCourbure, kiCourbure, kdCourbure);
-		
-		// distance
-		double k1 = 0;
-		
-		// angle
-		double k2 = 50;//0.05;
-		
-		stm.setConstSamson(k1, k2);
-
-		Sleep.sleep(2000);
-		
 //		while(!config.getBoolean(ConfigInfo.MATCH_DEMARRE))
 //			Sleep.sleep(1);
 
@@ -118,7 +77,7 @@ public class DebugAsser
 						buffer.wait();
 					IncomingDataDebug in = buffer.poll();
 					log.debug(in);
-					aff.add(in);
+//					aff.add(in);
 	//				aff.add(new IncomingDataDebug((new Random()).nextInt(10), (new Random()).nextInt(7), 7, 2, 1, 2, 5, 6));
 	//				Sleep.sleep(100);
 				}

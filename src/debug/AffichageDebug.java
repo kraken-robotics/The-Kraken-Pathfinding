@@ -1,8 +1,5 @@
 package debug;
 
-import java.awt.Color;
-import java.util.Date;
-
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -14,6 +11,12 @@ import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
 import org.jfree.ui.ApplicationFrame;
 import org.jfree.ui.RectangleInsets;
+import org.jfree.ui.RefineryUtilities;
+
+import java.awt.*;
+import java.security.InvalidParameterException;
+import java.util.ArrayList;
+import java.util.Date;
 
 
 /**
@@ -22,45 +25,42 @@ import org.jfree.ui.RectangleInsets;
  *
  */
 
-public class AffichageDebug  extends ApplicationFrame
+public class AffichageDebug extends ApplicationFrame
 {
 	private static final long serialVersionUID = 1L;
-	private TimeSeries serie[];
-	private final static int nbGraphe = 4;
+	private ArrayList<TimeSeries> series = new ArrayList<TimeSeries>();
+    private TimeSeriesCollection dataset = new TimeSeriesCollection();
 	
-	private Date temps = new Date();
-	
-	public void add(IncomingDataDebug data)
+	public void addData(double[] data, String[] names) throws InvalidParameterException
 	{
-		temps.setSeconds(temps.getSeconds()+1);
-		serie[0].add(new Millisecond(temps), data.vitesseDroite);
-		serie[1].add(new Millisecond(temps), data.vitesseGauche);
-		serie[2].add(new Millisecond(temps), data.PWMdroit);
-		serie[3].add(new Millisecond(temps), data.PWMgauche);
-//		serie[0].add(new Millisecond(temps), data.orientation);
-//		serie[1].add(new Millisecond(temps), data.vitesseGauche);
+		if(names.length != data.length)
+			throw new InvalidParameterException();
+
+		Date temps = new Date();
+		for(int i = 0; i < data.length; i++)
+		{
+			if(i == series.size())
+			{
+				TimeSeries tmp = new TimeSeries(names[i]);
+	        	series.add(tmp);
+	            dataset.addSeries(tmp);
+			}
+			series.get(i).add(new Millisecond(temps), data[i]);
+		}
 	}
 	
-    public AffichageDebug() {
-    	
-        super("Debug asser");
-        TimeSeriesCollection dataset = new TimeSeriesCollection();
-        serie = new TimeSeries[nbGraphe];
-        for(int i = 0; i < nbGraphe; i++)
-        {
-        	serie[i] = new TimeSeries("Test");
-            dataset.addSeries(serie[i]);
-        }
+    public AffichageDebug() {    	
+        super("Debug INTech");
         JFreeChart chart = ChartFactory.createTimeSeriesChart(
-        		"ABWABWA",  // title
-        		"Temps",             // x-axis label
-        		"truc",   // y-axis label
+        		"To the moon !",  		// title
+        		"Temps",            // x-axis label
+        		"Grandeur physique quelconque",   		// y-axis label
         		dataset,            // data
         		true,               // create legend?
         		true,               // generate tooltips?
         		false               // generate URLs?
         		);
-        
+
         chart.setBackgroundPaint(Color.white);
         XYPlot plot = (XYPlot) chart.getPlot();
         plot.setBackgroundPaint(Color.lightGray);
@@ -84,6 +84,10 @@ public class AffichageDebug  extends ApplicationFrame
         panel.setMouseWheelEnabled(true);
         panel.setPreferredSize(new java.awt.Dimension(1024, 600));
         setContentPane(panel);
+
+		pack();
+		RefineryUtilities.centerFrameOnScreen(this);
+		setVisible(true);
 
     }
 

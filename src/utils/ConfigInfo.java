@@ -52,40 +52,12 @@ public enum ConfigInfo {
 	DISTANCE_URGENCE("200", true),
 	NB_SUCCESSEUR_MAX("2", true),
 	COURBURE_MAX("10.", true),
-	
-/*	X_DEPART("1360", true),
-	Y_DEPART("1290", true),
-	O_DEPART("2.934", true),*/
 
 	X_DEPART("1380", true),
 	Y_DEPART("1120", true),
 	O_DEPART("3.142", true),
 
 	AFFICHE_CONFIG("false", true),
-	
-	CONST_KP_VIT_GAUCHE("11", true),
-	CONST_KI_VIT_GAUCHE("11", true),
-	CONST_KD_VIT_GAUCHE("0", true),
-	
-	CONST_KP_VIT_DROITE("14", true),
-	CONST_KI_VIT_DROITE("13", true),
-	CONST_KD_VIT_DROITE("0", true),
-	
-	CONST_KP_TRANSLATION("0.04", true),
-	CONST_KI_TRANSLATION("0.002", true),	
-	CONST_KD_TRANSLATION("0.001", true),
-	
-	CONST_KP_ROTATION("0.02", true),
-	CONST_KI_ROTATION("0.004", true),
-	CONST_KD_ROTATION("0.001", true),
-	
-	CONST_KP_COURBURE("0.8", true),
-	CONST_KI_COURBURE("0", true),
-	CONST_KD_COURBURE("0.001", true),
-	
-	CONST_KP_VIT_LINEAIRE("0", true),
-	CONST_KI_VIT_LINEAIRE("0", true),
-	CONST_KD_VIT_LINEAIRE("0", true),
 	
 	/**
 	 * Config dynamique

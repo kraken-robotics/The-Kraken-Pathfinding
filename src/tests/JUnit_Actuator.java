@@ -32,17 +32,7 @@ public class JUnit_Actuator extends JUnit_Test {
 	@Test
 	public void test_angle() throws Exception
 	{
-		data.utiliseActionneurs(ActuatorOrder.AX12_ARRIERE_GAUCHE_VERR1);
-		Sleep.sleep(2000);
-		data.utiliseActionneurs(ActuatorOrder.AX12_AVANT_GAUCHE_OUVERT1);
-		Sleep.sleep(2000);
-		data.utiliseActionneurs(ActuatorOrder.AX12_AVANT_GAUCHE_FERME);
-		data.utiliseActionneurs(ActuatorOrder.AX12_ARRIERE_GAUCHE_FERME);
-		Sleep.sleep(2000);
-		data.utiliseActionneurs(ActuatorOrder.AX12_ARRIERE_GAUCHE_VERR2);
-		Sleep.sleep(2000);
-		data.utiliseActionneurs(ActuatorOrder.AX12_AVANT_GAUCHE_OUVERT2);
-		Sleep.sleep(2000);
+		data.utiliseActionneurs(ActuatorOrder.TEST);
 /*		for(int i = 200; i < 900; i+= 10)
 		{
 			log.debug(i);

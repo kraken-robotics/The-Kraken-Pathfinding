@@ -5,7 +5,6 @@ import container.Service;
 import exceptions.FinMatchException;
 import utils.Config;
 import utils.Log;
-// TODO unifier les MemoryManager
 
 /**
  * Classe qui fournit des objets AStarCourbeNode à AStarCourbe.

@@ -1,7 +1,5 @@
 package robot;
 
-import java.util.ArrayList;
-
 import container.Service;
 import exceptions.FinMatchException;
 import exceptions.UnableToMoveException;
