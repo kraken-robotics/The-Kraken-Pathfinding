@@ -1,5 +1,6 @@
 package robot;
 
+import obstacles.types.Obstacle;
 import container.Service;
 import exceptions.FinMatchException;
 import exceptions.UnableToMoveException;
@@ -20,8 +21,6 @@ public abstract class Robot implements Service
 	 */
 	
 	public abstract int getPositionGridSpace();
-    public abstract void tourner(double angle, Speed vitesse)
-            throws UnableToMoveException, FinMatchException;
     public abstract void avancer(int distance, boolean mur, Speed vitesse)
             throws UnableToMoveException;
 	
@@ -91,30 +90,6 @@ public abstract class Robot implements Service
 
 	public void useConfig(Config config)
 	{}
-	
-	/**
-	 * Tourne par rapport à l'angle actuel.
-	 * @param angle
-	 * @throws UnableToMoveException
-	 * @throws FinMatchException
-	 */
-	public void tournerRelatif(double angle, Speed vitesse) throws UnableToMoveException, FinMatchException
-	{
-		tourner(cinematique.orientation + angle, vitesse);
-	}
-
-    /**
-     * Utilisé lorsque le robot n'a pas de symétrie gauche/droite
-     * @param angle
-     * @throws UnableToMoveException
-     */
-    public void tournerSansSymetrie(double angle, Speed vitesse) throws UnableToMoveException, FinMatchException
-    {
-        if(symetrie)
-            tourner(Math.PI-angle, vitesse);
-        else
-            tourner(angle, vitesse);
-    }
 
     /**
      * Avance dans un mur sans hook
@@ -157,8 +132,13 @@ public abstract class Robot implements Service
     	return pointsObtenus;
     }
     
-	public boolean isDeploye()
+    /**
+     * Renvoie la forme actuelle du robot.
+     * Utilisé par le pathfinding pour s'assurer qu'on ne se prend pas un obstacle
+     * @return
+     */
+	public Obstacle getCurrentConvexHull()
 	{
-		return deploye;
+		return null;
 	}    
 }

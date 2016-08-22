@@ -151,7 +151,8 @@ public class MoteurPhysique implements Service {
 	{
 		for(int i = 0; i < node.came_from_arc.getNbPoints(); i++)
 		{
-			ObstacleRectangular obs = new ObstacleRectangular(node.came_from_arc.getPoint(i), node.state.robot.isDeploye());
+			// TODO
+			ObstacleRectangular obs = null; //new ObstacleRectangular(node.came_from_arc.getPoint(i), node.state.robot.isDeploye());
 	
 			// Collision avec un obstacle fixe?
 	    	for(ObstaclesFixes o: ObstaclesFixes.values)

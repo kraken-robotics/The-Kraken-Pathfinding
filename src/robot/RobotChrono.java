@@ -13,31 +13,11 @@ import exceptions.FinMatchException;
 
 public class RobotChrono extends Robot
 {
-//	private static final long[] paliers = new long[7];
-
 	protected int positionGridSpace;
-//	private static int tempsMax = 90000;
    
 	// Date en millisecondes depuis le début du match.
 	protected long date;
-	
-	/** valeur approchée du temps (en millisecondes) nécessaire pour qu'une information que l'on envoie à la série soit acquittée */
-//	private final static int approximateSerialLatency = 50;
 
-	private final static int sleepAvanceDuration = /*approximateSerialLatency+*/Speed.translationStopDuration;
-	private final static int sleepTourneDuration = /*approximateSerialLatency+*/Speed.rotationStopDuration;
-	/*
-	static
-	{
-		paliers[0] = 20000;
-		paliers[1] = 35000;
-		paliers[2] = 48000;
-		paliers[3] = 60000;
-		paliers[4] = 70000;
-		paliers[5] = 78000;
-		paliers[6] = 84000;
-	}
-	*/
 	RobotChrono(Log log, Cinematique cinematique)
 	{
 		super(log);
@@ -56,7 +36,7 @@ public class RobotChrono extends Robot
 	@Override
     public void avancer(int distance, boolean mur, Speed vitesse)
 	{
-		date += Math.abs(distance)*vitesse.translationalSpeed + sleepAvanceDuration;
+		date += Math.abs(distance)*vitesse.translationalSpeed;
 	
         Vec2<ReadWrite> ecart = new Vec2<ReadWrite>((int)(distance*Math.cos(cinematique.orientation)), (int)(distance*Math.sin(cinematique.orientation)));
 
@@ -85,16 +65,6 @@ public class RobotChrono extends Robot
 		if(delta > Math.PI)
 			delta = 2*Math.PI - delta;
 		return delta;
-	}
-	
-	@Override
-    public void tourner(double angle, Speed vitesse)
-	{
-		// TODO: avec les trajectoires courbes, les durées changent
-		// et la marche arrière automatique?
-		double delta = calculateDelta(angle);
-		cinematique.orientation = angle;
-		date += delta*vitesse.rotationalSpeed + sleepTourneDuration;
 	}
 	
 	@Override
