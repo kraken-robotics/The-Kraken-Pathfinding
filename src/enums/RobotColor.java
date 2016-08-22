@@ -7,6 +7,9 @@ package enums;
  */
 
 public enum RobotColor {
+	
+	// TODO attendre le règlement
+	
 	/**
 	 * Ces noms sont utilisés pour les tests uniquement. Sinon, on utilise le boolean symmetry
 	 */
@@ -20,10 +23,14 @@ public enum RobotColor {
 		this.symmetry = symmetry;
 	}
 	
+	/**
+	 * Convertit une chaîne de caractère en enum
+	 * @param chaine
+	 * @return
+	 */
 	public static RobotColor parse(String chaine)
 	{
-		if(chaine.toLowerCase().contains("vert") ||
-				chaine.toLowerCase().contains("green") ||
+		if(chaine.toLowerCase().contains(VERT.name().toLowerCase()) ||
 				chaine.toLowerCase().contains("nosym") ||
 				chaine.toLowerCase().contains("false"))
 			return VERT;

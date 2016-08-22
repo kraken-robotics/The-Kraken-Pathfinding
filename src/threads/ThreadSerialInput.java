@@ -25,7 +25,6 @@ import enums.Tribool;
 import exceptions.MissingCharacterException;
 import obstacles.IncomingData;
 import obstacles.IncomingDataBuffer;
-import obstacles.types.ObstacleCircular;
 
 /**
  * Thread qui écoute la série et appelle qui il faut.
@@ -43,8 +42,6 @@ public class ThreadSerialInput extends Thread implements Service
 	private RobotReal robot;
 	private Table table;
 	private IncomingDataDebugBuffer bufferdebug;
-	
-	private int codeCoquillage;
 	
 	private RequeteSTM requete;
 	private boolean capteursOn = false;
@@ -231,15 +228,8 @@ public class ThreadSerialInput extends Thread implements Service
 						int[] mesures = new int[nbCapteurs];
 						for(int i = 0; i < nbCapteurs / 2; i++)
 						{
-							mesures[2*i] = convertIR((lecture[PARAM+10+3*i] << 4) + (lecture[PARAM+10+3*i+1] >> 4));
-//							log.debug("distance : "+mesures[2*i]);
-//							log.debug("Capteur "+(2*i)+" voit "+mesures[2*i]+"mm (brut "+((lecture[PARAM+6+3*i] << 4) + (lecture[PARAM+6+3*i+1] >> 4))+")");
-//							if(2*i+1 != nbCapteurs-1)
-//							{
-								mesures[2*i+1] = convertIR(((lecture[PARAM+10+3*i+1] & 0x0F) << 8) + lecture[PARAM+10+3*i+2]);
-//								log.debug("distance : "+mesures[2*i+1]);
-//								log.debug("Capteur "+(2*i+1)+" voit "+mesures[2*i+1]+"mm (brut "+(((lecture[PARAM+6+3*i+1] & 0x0F) << 8) + lecture[PARAM+6+3*i+2])+")");
-//							}
+							mesures[2*i] = (lecture[PARAM+10+3*i] << 4) + (lecture[PARAM+10+3*i+1] >> 4);
+							mesures[2*i+1] = ((lecture[PARAM+10+3*i+1] & 0x0F) << 8) + lecture[PARAM+10+3*i+2];
 						}
 						
 //						if(Config.debugSerie)
@@ -355,22 +345,6 @@ public class ThreadSerialInput extends Thread implements Service
 						table.setDone(GameElementNames.values()[nbElement], Tribool.TRUE);
 					}
 
-					/**
-					 * Lancement de l'odo
-					 */
-					else if(lecture[COMMANDE] == SerialProtocol.IN_RAB.codeInt)
-					{
-						// Mauvais checksum. Annulation.
-						if(!verifieChecksum(lecture, index))
-							continue;
-						if(!matchDemarre)
-						{
-							output.initOdoSTM(robot.getCinematique().getPosition(), robot.getCinematique().orientation);
-							output.initOdoSTM(robot.getCinematique().getPosition(), robot.getCinematique().orientation);
-							output.initOdoSTM(robot.getCinematique().getPosition(), robot.getCinematique().orientation);
-						}
-					}
-
 					else if(lecture[COMMANDE] == SerialProtocol.IN_ROBOT_ARRIVE.codeInt)
 					{
 						// Mauvais checksum. Annulation.
@@ -416,27 +390,6 @@ public class ThreadSerialInput extends Thread implements Service
 //		log.debug("Fermeture de ThreadSerialInput");
 	}
 	
-	/**
-	 * Passe de la mesure analogique à la distance
-	 * @param capteur
-	 * @return
-	 */
-	private int convertIR(int capteur)
-	{
-//		log.debug("Brut : "+capteur);
-		double V = (capteur - 24) / 1341.; // formule trouvée expérimentalement
-
-		// Ces formules ont été calculée à partir de la datasheet des capteurs IR
-	    if(V < 0.3) // tension trop basse, obstacle à perpèt'
-	    	return 0;
-	    else if(V < 2.75) // au-dessus de 8cm
-	        return (int) (207.7 / (V - 0.15));
-	    else if(V < 3)
-	        return (int) (140 / (V - 1));
-	    else
-	        return (int) (63 / (V - 2.1));
-	}
-
 	/**
 	 * Vérifie si le checksum est bon. En cas de problème, il relance la STM
 	 * @param lecture

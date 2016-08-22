@@ -16,6 +16,11 @@ public enum DirectionStrategy
 
 	public static final DirectionStrategy defaultStrategy = FASTEST;
 	
+	/**
+	 * Cette direction est-elle possible pour cette stratégie ?
+	 * @param marcheAvant
+	 * @return
+	 */
 	public boolean isPossible(boolean marcheAvant)
 	{
 		if(marcheAvant)

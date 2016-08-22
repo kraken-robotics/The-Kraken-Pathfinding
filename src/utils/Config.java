@@ -9,8 +9,15 @@ import enums.RobotColor;
 
 
 /**
- * Gère le fichier de configuration externe.
- * @author pf, marsu
+ * S'occupe de fournir un ensemble de valeurs aux autres classes qui l'utilisent.
+ * Ces valeurs sont la configuration du robot. Elles sont stockées dans deux endroits :
+ * - la configuration initiale, contenue dans ConfigInfo
+ * - le fichier config.ini, qui surcharge la configuration initiale
+ * L'intérêt du fichier config.ini est de pouvoir modifier facilement la configuration sans recompiler.
+ * 
+ * Enfin, ce fichier contient des "define" utilisés pour debugger facilement le programme.
+ * 
+ * @author pf
  *
  */
 public class Config implements Service
@@ -23,7 +30,7 @@ public class Config implements Service
 	public static final boolean graphicDStarLite = false;
 	public static final boolean graphicThetaStar = false;
 	public static final boolean graphicObstacles = false;
-	public static final boolean simuleSerie = false;
+	public static final boolean simuleSerie = true;
 	
 	private String name_config_file = "config.ini";
 	private volatile Properties properties = new Properties();
@@ -38,7 +45,7 @@ public class Config implements Service
 			properties.load(new FileInputStream(name_config_file));
 			configIniCharge = true;
 		}
-		catch  (IOException e)
+		catch(IOException e)
 		{
 			System.out.println("Erreur lors de l'ouverture de config.ini. Utilisation des valeurs par défaut.");
 		}
