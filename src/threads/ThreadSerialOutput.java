@@ -1,11 +1,13 @@
 package threads;
 
 import serie.DataForSerialOutput;
-import serie.SerialInterface;
+import serie.Order;
+import serie.SerialLowLevel;
 import utils.Config;
 import utils.Log;
 import utils.Sleep;
 import container.Service;
+import enums.SerialProtocol;
 
 /**
  * Thread qui vérifie s'il faut envoyer des choses sur la série
@@ -16,10 +18,10 @@ import container.Service;
 public class ThreadSerialOutput extends Thread implements Service
 {
 	protected Log log;
-	private SerialInterface serie;
+	private SerialLowLevel serie;
 	private DataForSerialOutput data;
 	
-	public ThreadSerialOutput(Log log, SerialInterface serie, DataForSerialOutput data)
+	public ThreadSerialOutput(Log log, SerialLowLevel serie, DataForSerialOutput data)
 	{
 		this.log = log;
 		this.serie = serie;
@@ -29,7 +31,7 @@ public class ThreadSerialOutput extends Thread implements Service
 	@Override
 	public void run()
 	{
-		byte[] message;
+		Order message;
 		while(true)
 		{
 			try {
@@ -39,18 +41,22 @@ public class ThreadSerialOutput extends Thread implements Service
 						data.wait(500);
 
 					if(data.isEmpty()) // si c'est le timeout qui nous a réveillé, on envoie un ping
-						data.addPing();
-					message = data.poll();
+					{
+						byte[] out = new byte[1];
+						out[0] = SerialProtocol.OUT_PING.code;
+						message = new Order(out, Order.Type.SHORT);
+					}
+					else
+						message = data.poll();
 				}
-				serie.communiquer(message);
+				serie.sendOrder(message);
 				// TODO : vérifier si on peut virer le sleep
-				Sleep.sleep(10); // il faut un peu laisser la STM respirer…
+				Sleep.sleep(2); // il faut un peu laisser la STM respirer…
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 				continue;
 			}
 		}
-//		log.debug("Fermeture de ThreadSerialOutput");
 	}
 	
 	@Override

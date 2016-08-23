@@ -60,7 +60,7 @@ public enum ConfigInfo {
 	O_DEPART("3.142", true),
 
 	AFFICHE_CONFIG("false", true),
-	
+	SERIAL_TIMEOUT("5", true),
 	/**
 	 * Config dynamique
 	 */

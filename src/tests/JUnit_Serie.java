@@ -32,19 +32,5 @@ public class JUnit_Serie extends JUnit_Test {
 		Sleep.sleep(300000);
 	}
 	
-	@Test
-	public void test_init_odo() throws Exception
-	{
-		data.initOdoSTM(new Vec2<ReadOnly>(12, 34), 1);
-		Sleep.sleep(100);
-	}
-
-	@Test
-	public void test_stress_test() throws Exception
-	{
-		for(int i = 0; i < 10000; i++)
-			data.addPing();
-		Sleep.sleep(300000);
-	}
 	
 }

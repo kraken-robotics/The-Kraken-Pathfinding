@@ -58,8 +58,6 @@ public class DebugAsser
 			config.set(ConfigInfo.DATE_DEBUT_MATCH, System.currentTimeMillis());
 		}
 	*/	
-		if(Config.debugAsser)
-			stm.activeDebugMode();
 
 //		while(!config.getBoolean(ConfigInfo.MATCH_DEMARRE))
 //			Sleep.sleep(1);

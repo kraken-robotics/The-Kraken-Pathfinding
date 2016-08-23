@@ -29,6 +29,7 @@ import exceptions.PointSortieException;
 import utils.*;
 import serie.DataForSerialOutput;
 import serie.SerialInterface;
+import serie.SerialLowLevel;
 import serie.SerialSTM;
 import serie.SerialSimulation;
 import table.Table;
@@ -290,19 +291,19 @@ public class Container
 		else if(serviceRequested == ServiceNames.THREAD_SERIAL_INPUT)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadSerialInput((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
 																		(Config)getServiceDisplay(serviceRequested, ServiceNames.CONFIG),
-																		(SerialInterface)getServiceDisplay(serviceRequested, ServiceNames.SERIE_STM),
+																		(SerialLowLevel)getServiceDisplay(serviceRequested, ServiceNames.SERIAL_LOW_LEVEL),
 																		(IncomingDataBuffer)getServiceDisplay(serviceRequested, ServiceNames.INCOMING_DATA_BUFFER),
-																		(IncomingDataDebugBuffer)getServiceDisplay(serviceRequested, ServiceNames.INCOMING_DATA_DEBUG_BUFFER),
 																		(RequeteSTM)getServiceDisplay(serviceRequested, ServiceNames.REQUETE_STM),
-			                                                             (RobotReal)getServiceDisplay(serviceRequested, ServiceNames.ROBOT_REAL),
-																			(Table)getServiceDisplay(serviceRequested, ServiceNames.TABLE),
-																			(DataForSerialOutput)getServiceDisplay(serviceRequested, ServiceNames.SERIAL_OUTPUT_BUFFER));
+			                                                             (RobotReal)getServiceDisplay(serviceRequested, ServiceNames.ROBOT_REAL));
 		else if(serviceRequested == ServiceNames.REQUETE_STM)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new RequeteSTM((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG));
 		else if(serviceRequested == ServiceNames.THREAD_SERIAL_OUTPUT)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadSerialOutput((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
-																		(SerialInterface)getServiceDisplay(serviceRequested, ServiceNames.SERIE_STM),
+																		(SerialLowLevel)getServiceDisplay(serviceRequested, ServiceNames.SERIAL_LOW_LEVEL),
 																		(DataForSerialOutput)getServiceDisplay(serviceRequested, ServiceNames.SERIAL_OUTPUT_BUFFER));
+		else if(serviceRequested == ServiceNames.SERIAL_LOW_LEVEL)
+			instanciedServices[serviceRequested.ordinal()] = (Service)new SerialLowLevel((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
+																		(SerialInterface)getServiceDisplay(serviceRequested, ServiceNames.SERIE_STM));
 		else if(serviceRequested == ServiceNames.THREAD_CONFIG)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadConfig((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
 																		(Config)getServiceDisplay(serviceRequested, ServiceNames.CONFIG),
