@@ -7,7 +7,6 @@ import utils.Config;
 import utils.Log;
 import utils.Sleep;
 import container.Service;
-import enums.SerialProtocol;
 
 /**
  * Thread qui vérifie s'il faut envoyer des choses sur la série
@@ -41,11 +40,7 @@ public class ThreadSerialOutput extends Thread implements Service
 						data.wait(500);
 
 					if(data.isEmpty()) // si c'est le timeout qui nous a réveillé, on envoie un ping
-					{
-						byte[] out = new byte[1];
-						out[0] = SerialProtocol.OUT_PING.code;
-						message = new Order(out, Order.Type.SHORT);
-					}
+						message = data.getPing();
 					else
 						message = data.poll();
 				}

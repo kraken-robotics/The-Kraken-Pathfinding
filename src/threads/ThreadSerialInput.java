@@ -71,6 +71,7 @@ public class ThreadSerialInput extends Thread implements Service
 				boolean enMarcheAvant = lecture[COMMANDE] == SerialProtocol.IN_INFO_CAPTEURS.codeInt;
 				double vitesseLineaire = (lecture[PARAM + 6] << 8) + lecture[PARAM + 7];
 				double vitesseRotation = (lecture[PARAM + 8] << 8) + lecture[PARAM + 9];
+
 				/**
 				 * Acquiert ce que voit les capteurs
 			 	 */
@@ -81,13 +82,9 @@ public class ThreadSerialInput extends Thread implements Service
 					mesures[2*i+1] = ((lecture[PARAM+10+3*i+1] & 0x0F) << 8) + lecture[PARAM+10+3*i+2];
 				}
 				
-//						if(Config.debugSerie)
+				if(Config.debugSerie)
 					log.debug("Le robot est en "+positionRobot+", orientation : "+orientationRobot);
 
-				if(Config.debugCapteurs)
-				{
-					log.debug("droite : "+(mesures[0] == 0 ? "infini" : mesures[0])+", gauche : "+(mesures[1] == 0 ? "infini" : mesures[1]));
-				}
 				Cinematique c = new Cinematique(positionRobot.x, positionRobot.y, orientationRobot, enMarcheAvant, courbure, vitesseLineaire, vitesseRotation, Speed.STANDARD);
 				robot.setCinematique(c);
 				if(capteursOn)
