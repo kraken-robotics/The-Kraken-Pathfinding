@@ -4,6 +4,7 @@ import enums.SerialProtocol;
 import robot.Cinematique;
 import robot.RobotReal;
 import robot.Speed;
+import serie.Paquet;
 import serie.SerialLowLevel;
 import utils.Config;
 import utils.ConfigInfo;
@@ -32,7 +33,7 @@ public class ThreadSerialInput extends Thread implements Service
 	private boolean capteursOn = false;
 	private volatile int nbCapteurs;
 	private boolean matchDemarre = false;
-	private int[] lecture = new int[100];
+	private Paquet paquet;
 	private final static int COMMANDE = 0;
 	private final static int PARAM = 1;
 	
@@ -50,7 +51,8 @@ public class ThreadSerialInput extends Thread implements Service
 	{
 		while(true)
 		{
-			lecture = serie.readData();
+			paquet = serie.readData();
+			int[] lecture = paquet.message;
 			
 			if((lecture[COMMANDE] & SerialProtocol.MASK_LAST_BIT.codeInt) == SerialProtocol.IN_INFO_CAPTEURS.codeInt)
 			{
@@ -131,9 +133,15 @@ public class ThreadSerialInput extends Thread implements Service
 			else if(lecture[COMMANDE] == SerialProtocol.IN_ROBOT_ARRIVE.codeInt)
 			{
 				log.debug("Le robot est arrivé !");
-//				requete.set(RequeteType.TRAJET_FINI);
+				paquet.ticket.set(SerialProtocol.IN_ROBOT_ARRIVE);
 			}
 
+			else if(lecture[COMMANDE] == SerialProtocol.IN_PB_DEPLACEMENT.codeInt)
+			{
+				log.debug("Le robot a recontré un problème !");
+				paquet.ticket.set(SerialProtocol.IN_PB_DEPLACEMENT);
+			}
+			
 			else
 			{
 				log.critical("Commande série inconnue: "+lecture[COMMANDE]);
