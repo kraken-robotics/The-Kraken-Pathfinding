@@ -1,8 +1,8 @@
 package threads;
 
 import serie.DataForSerialOutput;
-import serie.Order;
 import serie.SerialLowLevel;
+import serie.trame.Order;
 import utils.Config;
 import utils.Log;
 import utils.Sleep;

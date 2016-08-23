@@ -13,7 +13,7 @@ public class MissingCharacterException extends Exception
 
 	public MissingCharacterException()
 	{
-		super();
+		super("Un caractère attendu n'est pas arrivé");
 	}
 	
 	public MissingCharacterException(String m)

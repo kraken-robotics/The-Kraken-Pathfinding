@@ -1,29 +1,19 @@
 package threads;
 
-import java.io.IOException;
-
 import enums.SerialProtocol;
 import robot.Cinematique;
 import robot.RobotReal;
 import robot.Speed;
 import robot.requete.RequeteSTM;
 import robot.requete.RequeteType;
-import serie.DataForSerialOutput;
-import serie.SerialInterface;
 import serie.SerialLowLevel;
-import table.GameElementNames;
-import table.Table;
 import utils.Config;
 import utils.ConfigInfo;
 import utils.Log;
 import utils.Vec2;
 import utils.permissions.ReadOnly;
 import container.Service;
-import debug.IncomingDataDebug;
-import debug.IncomingDataDebugBuffer;
 import enums.RobotColor;
-import enums.Tribool;
-import exceptions.MissingCharacterException;
 import obstacles.IncomingData;
 import obstacles.IncomingDataBuffer;
 
@@ -46,11 +36,8 @@ public class ThreadSerialInput extends Thread implements Service
 	private volatile int nbCapteurs;
 	private boolean matchDemarre = false;
 	private int[] lecture = new int[100];
-	private int idDernierPaquet = -1;
-	private final static int ID_FORT = 0;
-	private final static int ID_FAIBLE = 1;
-	private final static int COMMANDE = 2;
-	private final static int PARAM = 3;
+	private final static int COMMANDE = 0;
+	private final static int PARAM = 1;
 	
 	public ThreadSerialInput(Log log, Config config, SerialLowLevel serie, IncomingDataBuffer buffer, RequeteSTM requete, RobotReal robot)
 	{
@@ -70,104 +57,94 @@ public class ThreadSerialInput extends Thread implements Service
 		 */
 		while(true)
 		{
-			try {
-				while(!serie.available())
-					serie.wait();
+			lecture = serie.readData();
+			
+			if((lecture[COMMANDE] & SerialProtocol.MASK_LAST_BIT.codeInt) == SerialProtocol.IN_INFO_CAPTEURS.codeInt)
+			{
+				/**
+				 * Récupération de la position et de l'orientation
+				 */
+				int xRobot = lecture[PARAM] << 4;
+				xRobot += lecture[PARAM+1] >> 4;
+				xRobot -= 1500;
+				int yRobot = (lecture[PARAM+1] & 0x0F) << 8;
+				yRobot = yRobot + lecture[PARAM+2];
+				Vec2<ReadOnly> positionRobot = new Vec2<ReadOnly>(xRobot, yRobot);
 
-				int index = 0;
-
-				lecture = serie.readData();
-				
-				if((lecture[COMMANDE] & SerialProtocol.MASK_LAST_BIT.codeInt) == SerialProtocol.IN_INFO_CAPTEURS.codeInt)
+				double orientationRobot = ((lecture[PARAM+3] << 8) + lecture[PARAM+4]) / 1000.;
+				double courbure = lecture[PARAM+5] / 1000.;
+				boolean enMarcheAvant = lecture[COMMANDE] == SerialProtocol.IN_INFO_CAPTEURS.codeInt;
+				double vitesseLineaire = (lecture[PARAM + 6] << 8) + lecture[PARAM + 7];
+				double vitesseRotation = (lecture[PARAM + 8] << 8) + lecture[PARAM + 9];
+				/**
+				 * Acquiert ce que voit les capteurs
+			 	 */
+				int[] mesures = new int[nbCapteurs];
+				for(int i = 0; i < nbCapteurs / 2; i++)
 				{
-					/**
-					 * Récupération de la position et de l'orientation
-					 */
-					int xRobot = lecture[PARAM] << 4;
-					xRobot += lecture[PARAM+1] >> 4;
-					xRobot -= 1500;
-					int yRobot = (lecture[PARAM+1] & 0x0F) << 8;
-					yRobot = yRobot + lecture[PARAM+2];
-					Vec2<ReadOnly> positionRobot = new Vec2<ReadOnly>(xRobot, yRobot);
-
-					double orientationRobot = ((lecture[PARAM+3] << 8) + lecture[PARAM+4]) / 1000.;
-					double courbure = lecture[PARAM+5] / 1000.;
-					boolean enMarcheAvant = lecture[COMMANDE] == SerialProtocol.IN_INFO_CAPTEURS.codeInt;
-					double vitesseLineaire = (lecture[PARAM + 6] << 8) + lecture[PARAM + 7];
-					double vitesseRotation = (lecture[PARAM + 8] << 8) + lecture[PARAM + 9];
-					/**
-					 * Acquiert ce que voit les capteurs
-				 	 */
-					int[] mesures = new int[nbCapteurs];
-					for(int i = 0; i < nbCapteurs / 2; i++)
-					{
-						mesures[2*i] = (lecture[PARAM+10+3*i] << 4) + (lecture[PARAM+10+3*i+1] >> 4);
-						mesures[2*i+1] = ((lecture[PARAM+10+3*i+1] & 0x0F) << 8) + lecture[PARAM+10+3*i+2];
-					}
-					
+					mesures[2*i] = (lecture[PARAM+10+3*i] << 4) + (lecture[PARAM+10+3*i+1] >> 4);
+					mesures[2*i+1] = ((lecture[PARAM+10+3*i+1] & 0x0F) << 8) + lecture[PARAM+10+3*i+2];
+				}
+				
 //						if(Config.debugSerie)
-						log.debug("Le robot est en "+positionRobot+", orientation : "+orientationRobot);
+					log.debug("Le robot est en "+positionRobot+", orientation : "+orientationRobot);
 
-					if(Config.debugCapteurs)
-					{
-						log.debug("droite : "+(mesures[0] == 0 ? "infini" : mesures[0])+", gauche : "+(mesures[1] == 0 ? "infini" : mesures[1]));
-					}
-					Cinematique c = new Cinematique(positionRobot.x, positionRobot.y, orientationRobot, enMarcheAvant, courbure, vitesseLineaire, vitesseRotation, Speed.STANDARD);
-					robot.setCinematique(c);
-					if(capteursOn)
-						buffer.add(new IncomingData(mesures, c));
-				}
-				
-				/**
-				 * La couleur du robot
-				 */
-				else if((lecture[COMMANDE] & SerialProtocol.MASK_LAST_BIT.codeInt) == SerialProtocol.IN_COULEUR_ROBOT.codeInt)
+				if(Config.debugCapteurs)
 				{
-					if(!matchDemarre)
-						config.set(ConfigInfo.COULEUR, RobotColor.getCouleur(lecture[COMMANDE] != SerialProtocol.IN_COULEUR_ROBOT.codeInt));
-					else
-						log.warning("Le bas niveau a signalé un changement de couleur en plein match");
+					log.debug("droite : "+(mesures[0] == 0 ? "infini" : mesures[0])+", gauche : "+(mesures[1] == 0 ? "infini" : mesures[1]));
 				}
-
-
-				/**
-				 * Démarrage du match
-				 */
-				else if(lecture[COMMANDE] == SerialProtocol.IN_DEBUT_MATCH.codeInt)
-				{
-					capteursOn = true;
-					synchronized(config)
-					{
-						config.set(ConfigInfo.DATE_DEBUT_MATCH, System.currentTimeMillis());
-						config.set(ConfigInfo.MATCH_DEMARRE, true);
-						matchDemarre = true;
-					}
-				}
-				
-				/**
-				 * Fin du match, on coupe la série et on arrête ce thread
-				 */
-				else if(lecture[COMMANDE] == SerialProtocol.IN_MATCH_FINI.codeInt)
-				{
-					log.debug("Fin du Match !");
-					config.set(ConfigInfo.FIN_MATCH, true);
-					serie.close();
-					return;
-				}
-
-				else if(lecture[COMMANDE] == SerialProtocol.IN_ROBOT_ARRIVE.codeInt)
-				{
-					log.debug("Le robot est arrivé !");
-					requete.set(RequeteType.TRAJET_FINI);
-				}
-
+				Cinematique c = new Cinematique(positionRobot.x, positionRobot.y, orientationRobot, enMarcheAvant, courbure, vitesseLineaire, vitesseRotation, Speed.STANDARD);
+				robot.setCinematique(c);
+				if(capteursOn)
+					buffer.add(new IncomingData(mesures, c));
+			}
+			
+			/**
+			 * La couleur du robot
+			 */
+			else if((lecture[COMMANDE] & SerialProtocol.MASK_LAST_BIT.codeInt) == SerialProtocol.IN_COULEUR_ROBOT.codeInt)
+			{
+				if(!matchDemarre)
+					config.set(ConfigInfo.COULEUR, RobotColor.getCouleur(lecture[COMMANDE] != SerialProtocol.IN_COULEUR_ROBOT.codeInt));
 				else
+					log.warning("Le bas niveau a signalé un changement de couleur en plein match");
+			}
+
+
+			/**
+			 * Démarrage du match
+			 */
+			else if(lecture[COMMANDE] == SerialProtocol.IN_DEBUT_MATCH.codeInt)
+			{
+				capteursOn = true;
+				synchronized(config)
 				{
-					log.critical("Commande série inconnue: "+lecture[COMMANDE]);
+					config.set(ConfigInfo.DATE_DEBUT_MATCH, System.currentTimeMillis());
+					config.set(ConfigInfo.MATCH_DEMARRE, true);
+					matchDemarre = true;
 				}
-				
-			} catch (InterruptedException e) {
-				e.printStackTrace();
+			}
+			
+			/**
+			 * Fin du match, on coupe la série et on arrête ce thread
+			 */
+			else if(lecture[COMMANDE] == SerialProtocol.IN_MATCH_FINI.codeInt)
+			{
+				log.debug("Fin du Match !");
+				config.set(ConfigInfo.FIN_MATCH, true);
+				serie.close();
+				return;
+			}
+
+			else if(lecture[COMMANDE] == SerialProtocol.IN_ROBOT_ARRIVE.codeInt)
+			{
+				log.debug("Le robot est arrivé !");
+				requete.set(RequeteType.TRAJET_FINI);
+			}
+
+			else
+			{
+				log.critical("Commande série inconnue: "+lecture[COMMANDE]);
 			}
 		}
 //		log.debug("Fermeture de ThreadSerialInput");
