@@ -4,8 +4,6 @@ import enums.SerialProtocol;
 import robot.Cinematique;
 import robot.RobotReal;
 import robot.Speed;
-import robot.requete.RequeteSTM;
-import robot.requete.RequeteType;
 import serie.SerialLowLevel;
 import utils.Config;
 import utils.ConfigInfo;
@@ -31,7 +29,6 @@ public class ThreadSerialInput extends Thread implements Service
 	private IncomingDataBuffer buffer;
 	private RobotReal robot;
 	
-	private RequeteSTM requete;
 	private boolean capteursOn = false;
 	private volatile int nbCapteurs;
 	private boolean matchDemarre = false;
@@ -39,13 +36,12 @@ public class ThreadSerialInput extends Thread implements Service
 	private final static int COMMANDE = 0;
 	private final static int PARAM = 1;
 	
-	public ThreadSerialInput(Log log, Config config, SerialLowLevel serie, IncomingDataBuffer buffer, RequeteSTM requete, RobotReal robot)
+	public ThreadSerialInput(Log log, Config config, SerialLowLevel serie, IncomingDataBuffer buffer, RobotReal robot)
 	{
 		this.log = log;
 		this.config = config;
 		this.serie = serie;
 		this.buffer = buffer;
-		this.requete = requete;
 		this.robot = robot;
 	}
 
@@ -139,7 +135,7 @@ public class ThreadSerialInput extends Thread implements Service
 			else if(lecture[COMMANDE] == SerialProtocol.IN_ROBOT_ARRIVE.codeInt)
 			{
 				log.debug("Le robot est arrivé !");
-				requete.set(RequeteType.TRAJET_FINI);
+//				requete.set(RequeteType.TRAJET_FINI);
 			}
 
 			else

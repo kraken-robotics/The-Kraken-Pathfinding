@@ -42,7 +42,6 @@ import threads.ThreadSerialInput;
 import threads.ThreadSerialOutput;
 import threads.ThreadSerialOutputTimeout;
 import robot.RobotReal;
-import robot.requete.RequeteSTM;
 
 
 /**
@@ -66,7 +65,7 @@ public class Container
 	private static int nbInstances = 0;
 	private boolean threadsStarted = false;
 	
-	private static final boolean showGraph = false;
+	private static final boolean showGraph = true;
 	private FileWriter fw;
 
 	/**
@@ -184,7 +183,6 @@ public class Container
 			ok.add(ServiceNames.INCOMING_DATA_DEBUG_BUFFER);
 			ok.add(ServiceNames.INCOMING_DATA_BUFFER);
 			ok.add(ServiceNames.SERIAL_OUTPUT_BUFFER);
-			ok.add(ServiceNames.REQUETE_STM);
 			ok.add(ServiceNames.A_STAR_COURBE_MEMORY_MANAGER_DYN);
 			ok.add(ServiceNames.A_STAR_COURBE_MEMORY_MANAGER_PLANIF);
 			ok.add(ServiceNames.D_STAR_LITE);
@@ -240,8 +238,7 @@ public class Container
 		else if(serviceRequested == ServiceNames.CAPTEURS)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new Capteurs((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
 																					(GridSpace)getServiceDisplay(serviceRequested, ServiceNames.GRID_SPACE),
-																					(MoteurPhysique)getServiceDisplay(serviceRequested, ServiceNames.MOTEUR_PHYSIQUE),
-																					(RequeteSTM)getServiceDisplay(serviceRequested, ServiceNames.REQUETE_STM));
+																					(MoteurPhysique)getServiceDisplay(serviceRequested, ServiceNames.MOTEUR_PHYSIQUE));
 		else if(serviceRequested == ServiceNames.TABLE)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new Table((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG));
 		else if(serviceRequested == ServiceNames.D_STAR_LITE)
@@ -270,8 +267,7 @@ public class Container
 //			instanciedServices[serviceRequested.ordinal()] = (Service)new SerialXBEE((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG), config.getInt(ConfigInfo.BAUDRATE_XBEE));
 		else if(serviceRequested == ServiceNames.ROBOT_REAL)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new RobotReal((DataForSerialOutput)getServiceDisplay(serviceRequested, ServiceNames.SERIAL_OUTPUT_BUFFER),
-															 (Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
-															 (RequeteSTM)getServiceDisplay(serviceRequested, ServiceNames.REQUETE_STM));
+															 (Log)getServiceDisplay(serviceRequested, ServiceNames.LOG));
         else if(serviceRequested == ServiceNames.REAL_GAME_STATE)
         	// ici la construction est un petit peu différente car on interdit l'instanciation publique d'un GameSTate<RobotChrono>
             instanciedServices[serviceRequested.ordinal()] = (Service) new RealGameState((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
@@ -295,10 +291,7 @@ public class Container
 																		(Config)getServiceDisplay(serviceRequested, ServiceNames.CONFIG),
 																		(SerialLowLevel)getServiceDisplay(serviceRequested, ServiceNames.SERIAL_LOW_LEVEL),
 																		(IncomingDataBuffer)getServiceDisplay(serviceRequested, ServiceNames.INCOMING_DATA_BUFFER),
-																		(RequeteSTM)getServiceDisplay(serviceRequested, ServiceNames.REQUETE_STM),
 			                                                             (RobotReal)getServiceDisplay(serviceRequested, ServiceNames.ROBOT_REAL));
-		else if(serviceRequested == ServiceNames.REQUETE_STM)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new RequeteSTM((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG));
 		else if(serviceRequested == ServiceNames.THREAD_SERIAL_OUTPUT)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadSerialOutput((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
 																		(SerialLowLevel)getServiceDisplay(serviceRequested, ServiceNames.SERIAL_LOW_LEVEL),

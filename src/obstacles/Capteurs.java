@@ -2,11 +2,8 @@ package obstacles;
 
 import obstacles.types.ObstacleProximity;
 import container.Service;
-import enums.Tribool;
 import pathfinding.dstarlite.GridSpace;
-import robot.requete.RequeteSTM;
-import robot.requete.RequeteType;
-import table.GameElementNames;
+import serie.Ticket;
 import utils.Config;
 import utils.ConfigInfo;
 import utils.Log;
@@ -26,7 +23,7 @@ public class Capteurs implements Service {
 	protected Log log;
 	private MoteurPhysique moteur;
 	private GridSpace gridspace;
-	private RequeteSTM requete;
+	private Ticket ticket;
 
 	// Il y a seulement 4 capteurs de détection d'ennemi
 	private static final int nbCapteurs = 2;
@@ -53,12 +50,11 @@ public class Capteurs implements Service {
 	 */
 	public double[] orientationsRelatives;
 
-	public Capteurs(Log log, GridSpace gridspace, MoteurPhysique moteur, RequeteSTM requete)
+	public Capteurs(Log log, GridSpace gridspace, MoteurPhysique moteur)
 	{
 		this.log = log;
 		this.gridspace = gridspace;
 		this.moteur = moteur;
-		this.requete = requete;
 		positionsRelatives = new Vec2[nbCapteurs];
 		orientationsRelatives = new double[nbCapteurs];
 
