@@ -40,6 +40,7 @@ import threads.ThreadPathfinding;
 import threads.ThreadPeremption;
 import threads.ThreadSerialInput;
 import threads.ThreadSerialOutput;
+import threads.ThreadSerialOutputTimeout;
 import robot.RobotReal;
 import robot.requete.RequeteSTM;
 
@@ -191,6 +192,7 @@ public class Container
 			ok.add(ServiceNames.OBSTACLES_MEMORY);
 			ok.add(ServiceNames.THREAD_SERIAL_INPUT);
 			ok.add(ServiceNames.THREAD_SERIAL_OUTPUT);
+			ok.add(ServiceNames.THREAD_SERIAL_OUTPUT_TIMEOUT);
 			ok.add(ServiceNames.THREAD_PEREMPTION);
 			ok.add(ServiceNames.THREAD_CAPTEURS);
 			ok.add(ServiceNames.THREAD_CONFIG);
@@ -301,7 +303,9 @@ public class Container
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadSerialOutput((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
 																		(SerialLowLevel)getServiceDisplay(serviceRequested, ServiceNames.SERIAL_LOW_LEVEL),
 																		(DataForSerialOutput)getServiceDisplay(serviceRequested, ServiceNames.SERIAL_OUTPUT_BUFFER));
-		else if(serviceRequested == ServiceNames.SERIAL_LOW_LEVEL)
+		else if(serviceRequested == ServiceNames.THREAD_SERIAL_OUTPUT_TIMEOUT)
+			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadSerialOutputTimeout((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
+																		(SerialLowLevel)getServiceDisplay(serviceRequested, ServiceNames.SERIAL_LOW_LEVEL));		else if(serviceRequested == ServiceNames.SERIAL_LOW_LEVEL)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new SerialLowLevel((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
 																		(SerialInterface)getServiceDisplay(serviceRequested, ServiceNames.SERIE_STM));
 		else if(serviceRequested == ServiceNames.THREAD_CONFIG)
