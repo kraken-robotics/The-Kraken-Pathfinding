@@ -1,14 +1,14 @@
 package enums;
 
 /**
- * Protocole série entre la STM et la Java
+ * Protocole série entre le bas niveau et la Java
  * @author pf
  *
  */
 
 public enum SerialProtocol {
 	/**
-	 * Protocole Java vers STM
+	 * Protocole Java vers bas niveau
 	 */
 	OUT_ACTIONNEUR(0x06),
 	OUT_STOP(0x07),
@@ -27,7 +27,7 @@ public enum SerialProtocol {
 	OUT_PING(0x3F),
 
 	/**
-	 * Protocole STM vers Java
+	 * Protocole bas niveau vers Java
 	 */
 	
 	IN_ROBOT_ARRIVE(0x02),

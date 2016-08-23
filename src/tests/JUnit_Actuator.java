@@ -25,7 +25,7 @@ public class JUnit_Actuator extends JUnit_Test {
     public void setUp() throws Exception {
         super.setUp();
         data = (DataForSerialOutput) container.getService(ServiceNames.SERIAL_OUTPUT_BUFFER);
-        actionneurs = (SerialSTM) container.getService(ServiceNames.SERIE_STM);
+        actionneurs = (SerialSTM) container.getService(ServiceNames.SERIE);
 	}
 	
 

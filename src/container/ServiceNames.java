@@ -12,7 +12,7 @@ public enum ServiceNames {
 	 CAPTEURS,
 	 ROBOT_REAL,
 	 REAL_GAME_STATE,
-	 SERIE_STM,
+	 SERIE,
 //	 SERIE_XBEE,
 	 HEURISTIQUE_SIMPLE,
 	 D_STAR_LITE,

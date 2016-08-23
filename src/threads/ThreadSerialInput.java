@@ -48,9 +48,6 @@ public class ThreadSerialInput extends Thread implements Service
 	@Override
 	public void run()
 	{
-		/**
-		 * Initialisation des valeurs de la STM
-		 */
 		while(true)
 		{
 			lecture = serie.readData();

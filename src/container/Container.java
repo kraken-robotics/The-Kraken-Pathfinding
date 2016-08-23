@@ -28,9 +28,9 @@ import exceptions.ContainerException;
 import exceptions.PointSortieException;
 import utils.*;
 import serie.DataForSerialOutput;
+import serie.SerialConnexion;
 import serie.SerialInterface;
 import serie.SerialLowLevel;
-import serie.SerialSTM;
 import serie.SerialSimulation;
 import table.Table;
 import threads.ThreadCapteurs;
@@ -97,9 +97,9 @@ public class Container
 		log.debug("Fermeture de la série");
 		// fermeture de la connexion série
 		
-		SerialInterface stm = (SerialInterface)instanciedServices[ServiceNames.SERIE_STM.ordinal()];
-		if(stm != null)
-			stm.close();
+		SerialInterface serialOutput = (SerialInterface)instanciedServices[ServiceNames.SERIE.ordinal()];
+		if(serialOutput != null)
+			serialOutput.close();
 
 		if(showGraph)
 		{
@@ -177,7 +177,7 @@ public class Container
 			ArrayList<ServiceNames> ok = new ArrayList<ServiceNames>();
 			ok.add(ServiceNames.CAPTEURS);
 			ok.add(ServiceNames.CONFIG);
-			ok.add(ServiceNames.SERIE_STM);
+			ok.add(ServiceNames.SERIE);
 			ok.add(ServiceNames.TABLE);
 			ok.add(ServiceNames.GRID_SPACE);
 			ok.add(ServiceNames.INCOMING_DATA_DEBUG_BUFFER);
@@ -259,9 +259,9 @@ public class Container
 			instanciedServices[serviceRequested.ordinal()] = (Service)new IncomingDataDebugBuffer((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG));
 		else if(serviceRequested == ServiceNames.SERIAL_OUTPUT_BUFFER)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new DataForSerialOutput((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG));
-		else if(serviceRequested == ServiceNames.SERIE_STM && !Config.simuleSerie)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new SerialSTM((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG), config.getInt(ConfigInfo.BAUDRATE_STM));
-		else if(serviceRequested == ServiceNames.SERIE_STM && Config.simuleSerie)
+		else if(serviceRequested == ServiceNames.SERIE && !Config.simuleSerie)
+			instanciedServices[serviceRequested.ordinal()] = (Service)new SerialConnexion((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG), config.getInt(ConfigInfo.BAUDRATE));
+		else if(serviceRequested == ServiceNames.SERIE && Config.simuleSerie)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new SerialSimulation((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG));
 //		else if(serviceRequested == ServiceNames.SERIE_XBEE)
 //			instanciedServices[serviceRequested.ordinal()] = (Service)new SerialXBEE((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG), config.getInt(ConfigInfo.BAUDRATE_XBEE));
@@ -300,7 +300,7 @@ public class Container
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadSerialOutputTimeout((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
 																		(SerialLowLevel)getServiceDisplay(serviceRequested, ServiceNames.SERIAL_LOW_LEVEL));		else if(serviceRequested == ServiceNames.SERIAL_LOW_LEVEL)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new SerialLowLevel((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
-																		(SerialInterface)getServiceDisplay(serviceRequested, ServiceNames.SERIE_STM));
+																		(SerialInterface)getServiceDisplay(serviceRequested, ServiceNames.SERIE));
 		else if(serviceRequested == ServiceNames.THREAD_CONFIG)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadConfig((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
 																		(Config)getServiceDisplay(serviceRequested, ServiceNames.CONFIG),
