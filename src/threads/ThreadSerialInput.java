@@ -103,7 +103,6 @@ public class ThreadSerialInput extends Thread implements Service
 					log.warning("Le bas niveau a signalé un changement de couleur en plein match");
 			}
 
-
 			/**
 			 * Démarrage du match
 			 */

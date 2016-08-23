@@ -32,7 +32,6 @@ public class ThreadPathfinding extends Thread implements Service
 	@Override
 	public void run()
 	{
-		if(true) return; // Adieu
 		while(true)
 		{
 			synchronized(gridspace)
