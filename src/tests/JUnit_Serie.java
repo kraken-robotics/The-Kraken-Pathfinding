@@ -5,8 +5,6 @@ import org.junit.Test;
 
 import serie.DataForSerialOutput;
 import utils.Sleep;
-import utils.Vec2;
-import utils.permissions.ReadOnly;
 import container.ServiceNames;
 
 /**
@@ -32,5 +30,10 @@ public class JUnit_Serie extends JUnit_Test {
 		Sleep.sleep(300000);
 	}
 	
+	@Test
+	public void test_data() throws Exception
+	{
+		data.longPing();
+	}
 	
 }
