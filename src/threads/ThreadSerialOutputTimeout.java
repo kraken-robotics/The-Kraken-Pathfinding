@@ -2,6 +2,7 @@ package threads;
 
 import serie.SerialLowLevel;
 import utils.Config;
+import utils.ConfigInfo;
 import utils.Log;
 import utils.Sleep;
 import container.Service;
@@ -16,6 +17,7 @@ public class ThreadSerialOutputTimeout extends Thread implements Service
 {
 	protected Log log;
 	private SerialLowLevel serie;
+	private int sleep;
 	
 	public ThreadSerialOutputTimeout(Log log, SerialLowLevel serie)
 	{
@@ -29,7 +31,7 @@ public class ThreadSerialOutputTimeout extends Thread implements Service
 		while(true)
 		{
 			int time = serie.timeBeforeRetry();
-			Sleep.sleep(time);
+			Sleep.sleep(time+sleep);
 			serie.retry();
 		}
 	}
@@ -40,6 +42,8 @@ public class ThreadSerialOutputTimeout extends Thread implements Service
 
 	@Override
 	public void useConfig(Config config)
-	{}
+	{
+		sleep = config.getInt(ConfigInfo.SLEEP_ENTRE_TRAMES);
+	}
 
 }
