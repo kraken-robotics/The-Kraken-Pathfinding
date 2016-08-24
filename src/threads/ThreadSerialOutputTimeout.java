@@ -30,9 +30,19 @@ public class ThreadSerialOutputTimeout extends Thread implements Service
 	{
 		while(true)
 		{
-			int time = serie.timeBeforeRetry();
-			Sleep.sleep(time+sleep);
-			serie.retry();
+			int timeResend = serie.timeBeforeResend();
+			int timeDeath = serie.timeBeforeDeath();
+			
+			if(timeDeath <= timeResend)
+			{
+				Sleep.sleep(timeDeath+sleep);
+				serie.kill();
+			}
+			else
+			{
+				Sleep.sleep(timeResend+sleep);
+				serie.resend();
+			}			
 		}
 	}
 	
