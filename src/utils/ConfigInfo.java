@@ -30,6 +30,7 @@ public enum ConfigInfo {
 	HORIZON_CAPTEURS("800", true),
 	CAPTEURS_TEMPORISATION_OBSTACLES("100", true),
 //	DISTANCE_DETECTION("300"),
+	
 	AFFICHE_DEBUG("true", true),
 	SAUVEGARDE_FICHIER("true", true),
 	DISTANCE_MAX_ENTRE_MESURE_ET_OBJET("50", true),
@@ -48,6 +49,8 @@ public enum ConfigInfo {
 //	CHECK_POINTS_SORTIE("false", true),
 	PREVISION_COLLISION("50", true),
 	BAUDRATE("460800", true),
+	SERIAL_PORT("ttyUSB10", true),
+	SLEEP_ENTRE_TRAMES("0", true),
 	NB_CAPTEURS_PROXIMITE("2", true),
 	MS_MAX_AVANT_EVITEMENT("5", true),
 	DISTANCE_URGENCE("200", true),
