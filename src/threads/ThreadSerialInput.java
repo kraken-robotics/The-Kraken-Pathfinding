@@ -52,7 +52,7 @@ public class ThreadSerialInput extends Thread implements Service
 		while(true)
 		{
 			try {
-				synchronized(paquet)
+				synchronized(serie)
 				{
 					if(!serie.isEmpty())
 						paquet = serie.poll();

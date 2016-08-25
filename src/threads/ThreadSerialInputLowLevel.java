@@ -37,7 +37,7 @@ public class ThreadSerialInputLowLevel extends Thread implements Service
 		while(true)
 		{
 			try {
-				synchronized(serie)
+				synchronized(seriePhysique)
 				{
 					// dès que la série reçoit un octet, on demande au bas niveau de le traiter
 					if(seriePhysique.available())
