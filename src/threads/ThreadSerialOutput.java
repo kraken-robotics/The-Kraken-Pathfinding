@@ -42,7 +42,11 @@ public class ThreadSerialOutput extends Thread implements Service
 						data.wait(500);
 
 					if(data.isEmpty()) // si c'est le timeout qui nous a réveillé, on envoie un ping
+					{
 						message = data.getPing();
+						if(Config.debugSerie)
+							log.debug("Envoi d'un ping pour vérifier la connexion");
+					}
 					else
 						message = data.poll();
 				}

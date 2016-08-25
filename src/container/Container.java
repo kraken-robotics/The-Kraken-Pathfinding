@@ -28,6 +28,7 @@ import exceptions.ContainerException;
 import exceptions.PointSortieException;
 import utils.*;
 import serie.DataForSerialOutput;
+import serie.PaquetBuffer;
 import serie.SerialConnexion;
 import serie.SerialInterface;
 import serie.SerialLowLevel;
@@ -39,6 +40,7 @@ import threads.ThreadEvitement;
 import threads.ThreadPathfinding;
 import threads.ThreadPeremption;
 import threads.ThreadSerialInput;
+import threads.ThreadSerialInputLowLevel;
 import threads.ThreadSerialOutput;
 import threads.ThreadSerialOutputTimeout;
 import robot.RobotReal;
@@ -255,6 +257,8 @@ public class Container
 																					(Table)getServiceDisplay(serviceRequested, ServiceNames.TABLE));
 		else if(serviceRequested == ServiceNames.INCOMING_DATA_BUFFER)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new IncomingDataBuffer((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG));
+		else if(serviceRequested == ServiceNames.PAQUET_BUFFER)
+			instanciedServices[serviceRequested.ordinal()] = (Service)new PaquetBuffer((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG));
 		else if(serviceRequested == ServiceNames.INCOMING_DATA_DEBUG_BUFFER)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new IncomingDataDebugBuffer((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG));
 		else if(serviceRequested == ServiceNames.SERIAL_OUTPUT_BUFFER)
@@ -289,9 +293,15 @@ public class Container
 		else if(serviceRequested == ServiceNames.THREAD_SERIAL_INPUT)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadSerialInput((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
 																		(Config)getServiceDisplay(serviceRequested, ServiceNames.CONFIG),
-																		(SerialLowLevel)getServiceDisplay(serviceRequested, ServiceNames.SERIAL_LOW_LEVEL),
+																		(PaquetBuffer)getServiceDisplay(serviceRequested, ServiceNames.PAQUET_BUFFER),
 																		(IncomingDataBuffer)getServiceDisplay(serviceRequested, ServiceNames.INCOMING_DATA_BUFFER),
 			                                                             (RobotReal)getServiceDisplay(serviceRequested, ServiceNames.ROBOT_REAL));
+		else if(serviceRequested == ServiceNames.THREAD_SERIAL_INPUT_LOW_LEVEL)
+			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadSerialInputLowLevel((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
+																		(Config)getServiceDisplay(serviceRequested, ServiceNames.CONFIG),
+																		(SerialLowLevel)getServiceDisplay(serviceRequested, ServiceNames.SERIAL_LOW_LEVEL),
+																		(SerialInterface)getServiceDisplay(serviceRequested, ServiceNames.SERIE),
+																		(PaquetBuffer)getServiceDisplay(serviceRequested, ServiceNames.PAQUET_BUFFER));
 		else if(serviceRequested == ServiceNames.THREAD_SERIAL_OUTPUT)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadSerialOutput((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
 																		(SerialLowLevel)getServiceDisplay(serviceRequested, ServiceNames.SERIAL_LOW_LEVEL),

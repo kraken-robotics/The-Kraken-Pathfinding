@@ -34,6 +34,7 @@ public class JUnit_Serie extends JUnit_Test {
 	public void test_data() throws Exception
 	{
 		data.longPing();
+		Sleep.sleep(20000);
 	}
 	
 }
