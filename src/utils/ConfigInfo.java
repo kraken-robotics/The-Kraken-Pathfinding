@@ -49,7 +49,7 @@ public enum ConfigInfo {
 //	CHECK_POINTS_SORTIE("false", true),
 	PREVISION_COLLISION("50", true),
 	BAUDRATE("115200", true),
-	SERIAL_PORT("ttyS0", true),
+	SERIAL_PORT("/dev/ttyS0", true),
 	SLEEP_ENTRE_TRAMES("0", true),
 	NB_CAPTEURS_PROXIMITE("2", true),
 	MS_MAX_AVANT_EVITEMENT("5", true),
