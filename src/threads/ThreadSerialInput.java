@@ -5,6 +5,7 @@ import robot.Cinematique;
 import robot.RobotReal;
 import robot.Speed;
 import serie.PaquetBuffer;
+import serie.Ticket;
 import serie.trame.Paquet;
 import utils.Config;
 import utils.ConfigInfo;
@@ -106,9 +107,17 @@ public class ThreadSerialInput extends Thread implements Service
 					else if((lecture[COMMANDE] & SerialProtocol.MASK_LAST_BIT.codeInt) == SerialProtocol.IN_COULEUR_ROBOT.codeInt)
 					{
 						if(!matchDemarre)
-							config.set(ConfigInfo.COULEUR, RobotColor.getCouleur(lecture[COMMANDE] != SerialProtocol.IN_COULEUR_ROBOT.codeInt));
+						{
+							if(lecture[COMMANDE] == SerialProtocol.IN_COULEUR_ROBOT_INCONNU.codeInt)
+								paquet.ticket.set(Ticket.State.KO);
+							else
+							{
+								paquet.ticket.set(Ticket.State.OK);
+								config.set(ConfigInfo.COULEUR, RobotColor.getCouleur(lecture[COMMANDE] != SerialProtocol.IN_COULEUR_ROBOT.codeInt));
+							}
+						}
 						else
-							log.warning("Le bas niveau a signalé un changement de couleur en plein match");
+							log.warning("Le bas niveau a signalé un changement de couleur en plein match : "+lecture[COMMANDE]);
 					}
 		
 					/**
@@ -122,6 +131,7 @@ public class ThreadSerialInput extends Thread implements Service
 							config.set(ConfigInfo.DATE_DEBUT_MATCH, System.currentTimeMillis());
 							config.set(ConfigInfo.MATCH_DEMARRE, true);
 							matchDemarre = true;
+							paquet.ticket.set(Ticket.State.OK);
 						}
 					}
 					
@@ -135,16 +145,25 @@ public class ThreadSerialInput extends Thread implements Service
 						return;
 					}
 		
+					/**
+					 * Le robot est arrivé après un arrêt demandé par le haut niveau
+					 */
+					else if(lecture[COMMANDE] == SerialProtocol.IN_ROBOT_ARRIVE_APRES_ARRET.codeInt)
+						paquet.ticket.set(Ticket.State.OK);
+
+					/**
+					 * Le robot est arrivé
+					 */
 					else if(lecture[COMMANDE] == SerialProtocol.IN_ROBOT_ARRIVE.codeInt)
-					{
-						log.debug("Le robot est arrivé !");
-						paquet.ticket.set(SerialProtocol.IN_ROBOT_ARRIVE);
-					}
-		
+						paquet.ticket.set(Ticket.State.OK);
+
+					/**
+					 * Le robot a rencontré un problème
+					 */
 					else if(lecture[COMMANDE] == SerialProtocol.IN_PB_DEPLACEMENT.codeInt)
 					{
-						log.debug("Le robot a recontré un problème !");
-						paquet.ticket.set(SerialProtocol.IN_PB_DEPLACEMENT);
+						log.warning("Le robot a recontré un problème !");
+						paquet.ticket.set(Ticket.State.KO);
 					}
 					
 					else
@@ -153,11 +172,9 @@ public class ThreadSerialInput extends Thread implements Service
 					}
 				}
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
-//		log.debug("Fermeture de ThreadSerialInput");
 	}
 	
 	@Override

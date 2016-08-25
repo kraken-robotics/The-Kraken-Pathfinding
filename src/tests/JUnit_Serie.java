@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import serie.DataForSerialOutput;
+import serie.Ticket;
 import utils.Sleep;
 import container.ServiceNames;
 
@@ -31,9 +32,19 @@ public class JUnit_Serie extends JUnit_Test {
 	}
 	
 	@Test
-	public void test_data() throws Exception
+	public void test_ask_color() throws Exception
 	{
-//		data.longPing();
+		Ticket.State etat;
+		do {
+			Ticket t = data.demandeCouleur();
+			synchronized(t)
+			{
+				if(t.isEmpty())
+					t.wait();
+			}
+			etat = t.getAndClear();
+		} while(etat != Ticket.State.OK);
+		
 		Sleep.sleep(20000);
 	}
 	
