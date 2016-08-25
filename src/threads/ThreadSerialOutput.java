@@ -33,6 +33,19 @@ public class ThreadSerialOutput extends Thread implements Service
 	public void run()
 	{
 		Order message;
+		
+		// On envoie d'abord le ping long initial
+		Order initPing = data.getInitialLongPing();
+		try {
+			synchronized(serie)
+			{
+				serie.sendOrder(initPing);
+				serie.wait(); // on est notifié dès qu'on reçoit quelque chose sur la série
+			}
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		
 		while(true)
 		{
 			try {
@@ -40,6 +53,7 @@ public class ThreadSerialOutput extends Thread implements Service
 				{
 					if(data.isEmpty()) // pas de message ? On attend
 						data.wait(500);
+//						data.wait();
 
 					if(data.isEmpty()) // si c'est le timeout qui nous a réveillé, on envoie un ping
 					{
