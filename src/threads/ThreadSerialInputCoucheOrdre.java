@@ -4,7 +4,7 @@ import enums.SerialProtocol;
 import robot.Cinematique;
 import robot.RobotReal;
 import robot.Speed;
-import serie.PaquetBuffer;
+import serie.BufferIncomingOrder;
 import serie.Ticket;
 import serie.trame.Paquet;
 import utils.Config;
@@ -23,11 +23,11 @@ import obstacles.IncomingDataBuffer;
  *
  */
 
-public class ThreadSerialInput extends Thread implements Service
+public class ThreadSerialInputCoucheOrdre extends Thread implements Service
 {
 	protected Log log;
 	protected Config config;
-	private PaquetBuffer serie;
+	private BufferIncomingOrder serie;
 	private IncomingDataBuffer buffer;
 	private RobotReal robot;
 	
@@ -38,7 +38,7 @@ public class ThreadSerialInput extends Thread implements Service
 	private final static int COMMANDE = 0;
 	private final static int PARAM = 1;
 	
-	public ThreadSerialInput(Log log, Config config, PaquetBuffer serie, IncomingDataBuffer buffer, RobotReal robot)
+	public ThreadSerialInputCoucheOrdre(Log log, Config config, BufferIncomingOrder serie, IncomingDataBuffer buffer, RobotReal robot)
 	{
 		this.log = log;
 		this.config = config;

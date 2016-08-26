@@ -3,7 +3,7 @@ package tests;
 import org.junit.Before;
 import org.junit.Test;
 
-import serie.DataForSerialOutput;
+import serie.BufferOutgoingOrder;
 import serie.Ticket;
 import utils.Sleep;
 import container.ServiceNames;
@@ -17,11 +17,11 @@ import container.ServiceNames;
 public class JUnit_Serie extends JUnit_Test {
 
 //	private SerialSTM serie;
-	private DataForSerialOutput data;
+	private BufferOutgoingOrder data;
 	@Before
     public void setUp() throws Exception {
         super.setUp();
-        data = (DataForSerialOutput) container.getService(ServiceNames.SERIAL_OUTPUT_BUFFER);
+        data = (BufferOutgoingOrder) container.getService(ServiceNames.SERIAL_OUTPUT_BUFFER);
 //        serie = (SerialSTM) container.getService(ServiceNames.SERIE_STM);
 	}
 	

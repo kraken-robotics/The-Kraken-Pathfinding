@@ -1,9 +1,9 @@
 package threads;
 
 import container.Service;
-import serie.PaquetBuffer;
+import serie.BufferIncomingOrder;
 import serie.SerialInterface;
-import serie.SerialLowLevel;
+import serie.SerieCoucheTrame;
 import utils.Config;
 import utils.Log;
 
@@ -13,16 +13,16 @@ import utils.Log;
  *
  */
 
-public class ThreadSerialInputLowLevel extends Thread implements Service
+public class ThreadSerialInputCoucheTrame extends Thread implements Service
 {
 
 	protected Log log;
 	protected Config config;
-	private SerialLowLevel serie;
-	private PaquetBuffer buffer;
+	private SerieCoucheTrame serie;
+	private BufferIncomingOrder buffer;
 	private SerialInterface seriePhysique;
 	
-	public ThreadSerialInputLowLevel(Log log, Config config, SerialLowLevel serie, SerialInterface seriePhysique, PaquetBuffer buffer)
+	public ThreadSerialInputCoucheTrame(Log log, Config config, SerieCoucheTrame serie, SerialInterface seriePhysique, BufferIncomingOrder buffer)
 	{
 		this.log = log;
 		this.config = config;

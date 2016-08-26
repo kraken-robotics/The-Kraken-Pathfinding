@@ -2,7 +2,7 @@ package threads;
 
 import pathfinding.CheminPathfinding;
 import pathfinding.astarCourbe.arcs.ArcCourbe;
-import serie.DataForSerialOutput;
+import serie.BufferOutgoingOrder;
 import utils.Config;
 import utils.ConfigInfo;
 import utils.Log;
@@ -18,14 +18,14 @@ import container.Service;
 
 public class ThreadEvitement extends Thread implements Service
 {
-	private DataForSerialOutput serie;
+	private BufferOutgoingOrder serie;
 	private ThreadPathfinding threadpathfinding;
 	private CheminPathfinding chemin;
 	protected Log log;
 	
 	private int msMaxAvantEvitement;
 	
-	public ThreadEvitement(Log log, ThreadPathfinding threadpathfinding, DataForSerialOutput serie, CheminPathfinding chemin)
+	public ThreadEvitement(Log log, ThreadPathfinding threadpathfinding, BufferOutgoingOrder serie, CheminPathfinding chemin)
 	{
 		this.log = log;
 		this.serie = serie;

@@ -1,6 +1,6 @@
 package threads;
 
-import serie.SerialLowLevel;
+import serie.SerieCoucheTrame;
 import utils.Config;
 import utils.ConfigInfo;
 import utils.Log;
@@ -16,10 +16,10 @@ import container.Service;
 public class ThreadSerialOutputTimeout extends Thread implements Service
 {
 	protected Log log;
-	private SerialLowLevel serie;
+	private SerieCoucheTrame serie;
 	private int sleep;
 	
-	public ThreadSerialOutputTimeout(Log log, SerialLowLevel serie)
+	public ThreadSerialOutputTimeout(Log log, SerieCoucheTrame serie)
 	{
 		this.log = log;
 		this.serie = serie;

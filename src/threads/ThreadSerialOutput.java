@@ -1,7 +1,7 @@
 package threads;
 
-import serie.DataForSerialOutput;
-import serie.SerialLowLevel;
+import serie.BufferOutgoingOrder;
+import serie.SerieCoucheTrame;
 import serie.trame.Order;
 import utils.Config;
 import utils.ConfigInfo;
@@ -18,11 +18,11 @@ import container.Service;
 public class ThreadSerialOutput extends Thread implements Service
 {
 	protected Log log;
-	private SerialLowLevel serie;
-	private DataForSerialOutput data;
+	private SerieCoucheTrame serie;
+	private BufferOutgoingOrder data;
 	private int sleep;
 	
-	public ThreadSerialOutput(Log log, SerialLowLevel serie, DataForSerialOutput data)
+	public ThreadSerialOutput(Log log, SerieCoucheTrame serie, BufferOutgoingOrder data)
 	{
 		this.log = log;
 		this.serie = serie;
