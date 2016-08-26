@@ -2,7 +2,6 @@ package threads;
 
 import container.Service;
 import serie.BufferIncomingOrder;
-import serie.SerialInterface;
 import serie.SerieCoucheTrame;
 import utils.Config;
 import utils.Log;
@@ -20,15 +19,13 @@ public class ThreadSerialInputCoucheTrame extends Thread implements Service
 	protected Config config;
 	private SerieCoucheTrame serie;
 	private BufferIncomingOrder buffer;
-	private SerialInterface seriePhysique;
 	
-	public ThreadSerialInputCoucheTrame(Log log, Config config, SerieCoucheTrame serie, SerialInterface seriePhysique, BufferIncomingOrder buffer)
+	public ThreadSerialInputCoucheTrame(Log log, Config config, SerieCoucheTrame serie, BufferIncomingOrder buffer)
 	{
 		this.log = log;
 		this.config = config;
 		this.serie = serie;
 		this.buffer = buffer;
-		this.seriePhysique = seriePhysique;
 	}
 
 	@Override
@@ -36,18 +33,7 @@ public class ThreadSerialInputCoucheTrame extends Thread implements Service
 	{
 		while(true)
 		{
-			try {
-				synchronized(seriePhysique)
-				{
-					// dès que la série reçoit un octet, on demande au bas niveau de le traiter
-					if(seriePhysique.available())
-						buffer.add(serie.readData());
-					else
-						seriePhysique.wait();
-				}
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+			buffer.add(serie.readData());
 		}
 	}
 

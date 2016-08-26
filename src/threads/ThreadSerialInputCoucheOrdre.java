@@ -55,13 +55,10 @@ public class ThreadSerialInputCoucheOrdre extends Thread implements Service
 			try {
 				synchronized(serie)
 				{
-					if(!serie.isEmpty())
-						paquet = serie.poll();
-					else
-					{
+					if(serie.isEmpty())
 						serie.wait();
-						paquet = serie.poll();
-					}
+
+					paquet = serie.poll();
 					int[] lecture = paquet.message;
 					
 					if((lecture[COMMANDE] & SerialProtocol.InOrder.MASK_LAST_BIT.codeInt) == SerialProtocol.InOrder.INFO_CAPTEURS.codeInt)

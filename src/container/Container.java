@@ -6,7 +6,9 @@ import obstacles.MoteurPhysique;
 import obstacles.memory.ObstaclesMemory;
 import obstacles.types.Obstacle;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -117,7 +119,8 @@ public class Container
 		log.debug("Fermeture du log");
 		log.close();
 		nbInstances--;
-		System.out.println("Container détruit");
+		System.out.println("Container détruit.");
+		printMessage("outro.txt");
 	}
 	
 	/**
@@ -135,28 +138,15 @@ public class Container
 			throw new ContainerException();
 		}
 		nbInstances++;
+		
+		/**
+		 * Open and read a file, and return the lines in the file as a list
+		 * of Strings.
+		 * (Demonstrates Java FileReader, BufferedReader, and Java5.)
+		 */
+		printMessage("intro.txt");
+		
 		// affiche la configuration avant toute autre chose
-		System.out.println("	Welcome to the");
-		System.out.println("    _____                      __________                          ");
-		System.out.println("   /     \\   ____   ____   ____\\______   \\ _______  __ ___________ ");
-		System.out.println("  /  \\ /  \\ /  _ \\ /  _ \\ /    \\|       _//  _ \\  \\/ // __ \\_  __ \\");
-		System.out.println(" /    Y    (  <_> |  <_> )   |  \\    |   (  <_> )   /\\  ___/|  | \\/");
-		System.out.println(" \\____|__  /\\____/ \\____/|___|  /____|_  /\\____/ \\_/  \\___  >__|   ");
-		System.out.println("         \\/                   \\/       \\/                 \\/   ");    
-		
-/*		System.out.println("   __  __                   ____                     "); 
-		System.out.println("  |  \\/  | ___   ___  _ __ |  _ \\ _____   _____ _ __ "); 
-		System.out.println("  | |\\/| |/ _ \\ / _ \\| '_ \\| |_) / _ \\ \\ / / _ \\ '__|"); 
-		System.out.println("  | |  | | (_) | (_) | | | |  _ < (_) \\ V /  __/ |   "); 
-		System.out.println("  |_|  |_|\\___/ \\___/|_| |_|_| \\_\\___/ \\_/ \\___|_|"); 
-		
-		System.out.println("  _|      _|                                _|_|_|                                              "); 
-		System.out.println("  _|_|  _|_|    _|_|      _|_|    _|_|_|    _|    _|    _|_|    _|      _|    _|_|    _|  _|_|  "); 
-		System.out.println("  _|  _|  _|  _|    _|  _|    _|  _|    _|  _|_|_|    _|    _|  _|      _|  _|_|_|_|  _|_|   ");    
-		System.out.println("  _|      _|  _|    _|  _|    _|  _|    _|  _|    _|  _|    _|    _|  _|    _|        _|        "); 
-		System.out.println("  _|      _|    _|_|      _|_|    _|    _|  _|    _|    _|_|        _|        _|_|_|  _|"); 
-*/
-		System.out.println();
 		System.out.println("Loading config from current directory : " +  System.getProperty("user.dir"));
 
 		try {
@@ -320,7 +310,6 @@ public class Container
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadSerialInputCoucheTrame((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
 																		(Config)getServiceDisplay(serviceRequested, ServiceNames.CONFIG),
 																		(SerieCoucheTrame)getServiceDisplay(serviceRequested, ServiceNames.SERIAL_LOW_LEVEL),
-																		(SerialInterface)getServiceDisplay(serviceRequested, ServiceNames.SERIE_COUCHE_PHYSIQUE),
 																		(BufferIncomingOrder)getServiceDisplay(serviceRequested, ServiceNames.INCOMING_ORDER_BUFFER));
 		else if(serviceRequested == ServiceNames.THREAD_SERIAL_OUTPUT)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadSerialOutput((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
@@ -442,6 +431,28 @@ public class Container
 	 */
 	public Service getInstanciedService(ServiceNames serviceRequested) {
 		return instanciedServices[serviceRequested.ordinal()];
+	}
+	
+	/**
+	 * Affichage un fichier
+	 * @param filename
+	 */
+	private void printMessage(String filename)
+	{
+		try
+		{
+			BufferedReader reader = new BufferedReader(new FileReader(filename));
+			String line;
+			    
+			while ((line = reader.readLine()) != null)
+				System.out.println(line);
+			    
+			reader.close();
+		}
+		catch (Exception e)
+		{
+			System.out.println(e);
+		}
 	}
 	
 }
