@@ -35,11 +35,10 @@ public class ThreadSerialOutput extends Thread implements Service
 		Order message;
 		
 		// On envoie d'abord le ping long initial
-		Order initPing = data.getInitialLongPing();
 		try {
 			synchronized(serie)
 			{
-				serie.sendOrder(initPing);
+				serie.sendOrder(data.getPing());
 				serie.wait(); // on est notifié dès qu'on reçoit quelque chose sur la série
 			}
 		} catch (InterruptedException e) {

@@ -64,7 +64,7 @@ public class ThreadSerialInputCoucheOrdre extends Thread implements Service
 					}
 					int[] lecture = paquet.message;
 					
-					if((lecture[COMMANDE] & SerialProtocol.MASK_LAST_BIT.codeInt) == SerialProtocol.IN_INFO_CAPTEURS.codeInt)
+					if((lecture[COMMANDE] & SerialProtocol.InOrder.MASK_LAST_BIT.codeInt) == SerialProtocol.InOrder.INFO_CAPTEURS.codeInt)
 					{
 						/**
 						 * Récupération de la position et de l'orientation
@@ -78,7 +78,7 @@ public class ThreadSerialInputCoucheOrdre extends Thread implements Service
 		
 						double orientationRobot = ((lecture[PARAM+3] << 8) + lecture[PARAM+4]) / 1000.;
 						double courbure = lecture[PARAM+5] / 1000.;
-						boolean enMarcheAvant = lecture[COMMANDE] == SerialProtocol.IN_INFO_CAPTEURS.codeInt;
+						boolean enMarcheAvant = lecture[COMMANDE] == SerialProtocol.InOrder.INFO_CAPTEURS.codeInt;
 						double vitesseLineaire = (lecture[PARAM + 6] << 8) + lecture[PARAM + 7];
 						double vitesseRotation = (lecture[PARAM + 8] << 8) + lecture[PARAM + 9];
 		
@@ -104,16 +104,16 @@ public class ThreadSerialInputCoucheOrdre extends Thread implements Service
 					/**
 					 * La couleur du robot
 					 */
-					else if((lecture[COMMANDE] & SerialProtocol.MASK_LAST_BIT.codeInt) == SerialProtocol.IN_COULEUR_ROBOT.codeInt)
+					else if((lecture[COMMANDE] & SerialProtocol.InOrder.MASK_LAST_BIT.codeInt) == SerialProtocol.InOrder.COULEUR_ROBOT.codeInt)
 					{
 						if(!matchDemarre)
 						{
-							if(lecture[COMMANDE] == SerialProtocol.IN_COULEUR_ROBOT_INCONNU.codeInt)
+							if(lecture[COMMANDE] == SerialProtocol.InOrder.COULEUR_ROBOT_INCONNU.codeInt)
 								paquet.ticket.set(Ticket.State.KO);
 							else
 							{
 								paquet.ticket.set(Ticket.State.OK);
-								config.set(ConfigInfo.COULEUR, RobotColor.getCouleur(lecture[COMMANDE] != SerialProtocol.IN_COULEUR_ROBOT.codeInt));
+								config.set(ConfigInfo.COULEUR, RobotColor.getCouleur(lecture[COMMANDE] != SerialProtocol.InOrder.COULEUR_ROBOT.codeInt));
 							}
 						}
 						else
@@ -123,7 +123,7 @@ public class ThreadSerialInputCoucheOrdre extends Thread implements Service
 					/**
 					 * Démarrage du match
 					 */
-					else if(lecture[COMMANDE] == SerialProtocol.IN_DEBUT_MATCH.codeInt)
+					else if(lecture[COMMANDE] == SerialProtocol.InOrder.DEBUT_MATCH.codeInt)
 					{
 						capteursOn = true;
 						synchronized(config)
@@ -138,7 +138,7 @@ public class ThreadSerialInputCoucheOrdre extends Thread implements Service
 					/**
 					 * Fin du match, on coupe la série et on arrête ce thread
 					 */
-					else if(lecture[COMMANDE] == SerialProtocol.IN_MATCH_FINI.codeInt)
+					else if(lecture[COMMANDE] == SerialProtocol.InOrder.MATCH_FINI.codeInt)
 					{
 						log.debug("Fin du Match !");
 						config.set(ConfigInfo.FIN_MATCH, true);
@@ -148,19 +148,19 @@ public class ThreadSerialInputCoucheOrdre extends Thread implements Service
 					/**
 					 * Le robot est arrivé après un arrêt demandé par le haut niveau
 					 */
-					else if(lecture[COMMANDE] == SerialProtocol.IN_ROBOT_ARRIVE_APRES_ARRET.codeInt)
+					else if(lecture[COMMANDE] == SerialProtocol.InOrder.ROBOT_ARRIVE_APRES_ARRET.codeInt)
 						paquet.ticket.set(Ticket.State.OK);
 
 					/**
 					 * Le robot est arrivé
 					 */
-					else if(lecture[COMMANDE] == SerialProtocol.IN_ROBOT_ARRIVE.codeInt)
+					else if(lecture[COMMANDE] == SerialProtocol.InOrder.ROBOT_ARRIVE.codeInt)
 						paquet.ticket.set(Ticket.State.OK);
 
 					/**
 					 * Le robot a rencontré un problème
 					 */
-					else if(lecture[COMMANDE] == SerialProtocol.IN_PB_DEPLACEMENT.codeInt)
+					else if(lecture[COMMANDE] == SerialProtocol.InOrder.PB_DEPLACEMENT.codeInt)
 					{
 						log.warning("Le robot a recontré un problème !");
 						paquet.ticket.set(Ticket.State.KO);
