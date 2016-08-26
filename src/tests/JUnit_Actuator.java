@@ -22,8 +22,8 @@ public class JUnit_Actuator extends JUnit_Test {
 	@Before
     public void setUp() throws Exception {
         super.setUp();
-        data = (BufferOutgoingOrder) container.getService(ServiceNames.SERIAL_OUTPUT_BUFFER);
-        actionneurs = (SerieCouchePhysique) container.getService(ServiceNames.SERIE);
+        data = (BufferOutgoingOrder) container.getService(ServiceNames.OUTGOING_ORDER_BUFFER);
+        actionneurs = (SerieCouchePhysique) container.getService(ServiceNames.SERIE_COUCHE_PHYSIQUE);
 	}
 	
 

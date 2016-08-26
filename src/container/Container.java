@@ -99,7 +99,7 @@ public class Container
 		log.debug("Fermeture de la série");
 		// fermeture de la connexion série
 		
-		SerialInterface serialOutput = (SerialInterface)instanciedServices[ServiceNames.SERIE.ordinal()];
+		SerialInterface serialOutput = (SerialInterface)instanciedServices[ServiceNames.SERIE_COUCHE_PHYSIQUE.ordinal()];
 		if(serialOutput != null)
 			serialOutput.close();
 
@@ -136,7 +136,27 @@ public class Container
 		}
 		nbInstances++;
 		// affiche la configuration avant toute autre chose
-		System.out.println("== Container bootstrap ==");
+		System.out.println("	Welcome to the");
+		System.out.println("    _____                      __________                          ");
+		System.out.println("   /     \\   ____   ____   ____\\______   \\ _______  __ ___________ ");
+		System.out.println("  /  \\ /  \\ /  _ \\ /  _ \\ /    \\|       _//  _ \\  \\/ // __ \\_  __ \\");
+		System.out.println(" /    Y    (  <_> |  <_> )   |  \\    |   (  <_> )   /\\  ___/|  | \\/");
+		System.out.println(" \\____|__  /\\____/ \\____/|___|  /____|_  /\\____/ \\_/  \\___  >__|   ");
+		System.out.println("         \\/                   \\/       \\/                 \\/   ");    
+		
+/*		System.out.println("   __  __                   ____                     "); 
+		System.out.println("  |  \\/  | ___   ___  _ __ |  _ \\ _____   _____ _ __ "); 
+		System.out.println("  | |\\/| |/ _ \\ / _ \\| '_ \\| |_) / _ \\ \\ / / _ \\ '__|"); 
+		System.out.println("  | |  | | (_) | (_) | | | |  _ < (_) \\ V /  __/ |   "); 
+		System.out.println("  |_|  |_|\\___/ \\___/|_| |_|_| \\_\\___/ \\_/ \\___|_|"); 
+		
+		System.out.println("  _|      _|                                _|_|_|                                              "); 
+		System.out.println("  _|_|  _|_|    _|_|      _|_|    _|_|_|    _|    _|    _|_|    _|      _|    _|_|    _|  _|_|  "); 
+		System.out.println("  _|  _|  _|  _|    _|  _|    _|  _|    _|  _|_|_|    _|    _|  _|      _|  _|_|_|_|  _|_|   ");    
+		System.out.println("  _|      _|  _|    _|  _|    _|  _|    _|  _|    _|  _|    _|    _|  _|    _|        _|        "); 
+		System.out.println("  _|      _|    _|_|      _|_|    _|    _|  _|    _|    _|_|        _|        _|_|_|  _|"); 
+*/
+		System.out.println();
 		System.out.println("Loading config from current directory : " +  System.getProperty("user.dir"));
 
 		try {
@@ -179,18 +199,18 @@ public class Container
 			ArrayList<ServiceNames> ok = new ArrayList<ServiceNames>();
 			ok.add(ServiceNames.CAPTEURS);
 			ok.add(ServiceNames.CONFIG);
-			ok.add(ServiceNames.SERIE);
+			ok.add(ServiceNames.SERIE_COUCHE_PHYSIQUE);
 			ok.add(ServiceNames.TABLE);
 			ok.add(ServiceNames.GRID_SPACE);
 			ok.add(ServiceNames.INCOMING_DATA_DEBUG_BUFFER);
 			ok.add(ServiceNames.INCOMING_DATA_BUFFER);
-			ok.add(ServiceNames.SERIAL_OUTPUT_BUFFER);
+			ok.add(ServiceNames.OUTGOING_ORDER_BUFFER);
 			ok.add(ServiceNames.A_STAR_COURBE_MEMORY_MANAGER_DYN);
 			ok.add(ServiceNames.A_STAR_COURBE_MEMORY_MANAGER_PLANIF);
 			ok.add(ServiceNames.D_STAR_LITE);
 			ok.add(ServiceNames.CLOTHOIDES_COMPUTER);
 			ok.add(ServiceNames.OBSTACLES_MEMORY);
-			ok.add(ServiceNames.THREAD_SERIAL_INPUT);
+			ok.add(ServiceNames.THREAD_SERIAL_INPUT_COUCHE_ORDRE);
 			ok.add(ServiceNames.THREAD_SERIAL_OUTPUT);
 			ok.add(ServiceNames.THREAD_SERIAL_OUTPUT_TIMEOUT);
 			ok.add(ServiceNames.THREAD_PEREMPTION);
@@ -257,20 +277,20 @@ public class Container
 																					(Table)getServiceDisplay(serviceRequested, ServiceNames.TABLE));
 		else if(serviceRequested == ServiceNames.INCOMING_DATA_BUFFER)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new IncomingDataBuffer((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG));
-		else if(serviceRequested == ServiceNames.PAQUET_BUFFER)
+		else if(serviceRequested == ServiceNames.INCOMING_ORDER_BUFFER)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new BufferIncomingOrder((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG));
 		else if(serviceRequested == ServiceNames.INCOMING_DATA_DEBUG_BUFFER)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new IncomingDataDebugBuffer((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG));
-		else if(serviceRequested == ServiceNames.SERIAL_OUTPUT_BUFFER)
+		else if(serviceRequested == ServiceNames.OUTGOING_ORDER_BUFFER)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new BufferOutgoingOrder((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG));
-		else if(serviceRequested == ServiceNames.SERIE && !Config.simuleSerie)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new SerieCouchePhysique((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG), config.getInt(ConfigInfo.BAUDRATE));
-		else if(serviceRequested == ServiceNames.SERIE && Config.simuleSerie)
+		else if(serviceRequested == ServiceNames.SERIE_COUCHE_PHYSIQUE && !Config.simuleSerie)
+			instanciedServices[serviceRequested.ordinal()] = (Service)new SerieCouchePhysique((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG));
+		else if(serviceRequested == ServiceNames.SERIE_COUCHE_PHYSIQUE && Config.simuleSerie)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new SerialSimulation((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG));
 //		else if(serviceRequested == ServiceNames.SERIE_XBEE)
 //			instanciedServices[serviceRequested.ordinal()] = (Service)new SerialXBEE((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG), config.getInt(ConfigInfo.BAUDRATE_XBEE));
 		else if(serviceRequested == ServiceNames.ROBOT_REAL)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new RobotReal((BufferOutgoingOrder)getServiceDisplay(serviceRequested, ServiceNames.SERIAL_OUTPUT_BUFFER),
+			instanciedServices[serviceRequested.ordinal()] = (Service)new RobotReal((BufferOutgoingOrder)getServiceDisplay(serviceRequested, ServiceNames.OUTGOING_ORDER_BUFFER),
 															 (Log)getServiceDisplay(serviceRequested, ServiceNames.LOG));
         else if(serviceRequested == ServiceNames.REAL_GAME_STATE)
         	// ici la construction est un petit peu différente car on interdit l'instanciation publique d'un GameSTate<RobotChrono>
@@ -284,33 +304,33 @@ public class Container
 		else if(serviceRequested == ServiceNames.THREAD_EVITEMENT)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadEvitement((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
 																		(ThreadPathfinding)getServiceDisplay(serviceRequested, ServiceNames.THREAD_PATHFINDING),
-																		(BufferOutgoingOrder)getServiceDisplay(serviceRequested, ServiceNames.SERIAL_OUTPUT_BUFFER),
+																		(BufferOutgoingOrder)getServiceDisplay(serviceRequested, ServiceNames.OUTGOING_ORDER_BUFFER),
 																		(CheminPathfinding)getServiceDisplay(serviceRequested, ServiceNames.CHEMIN_PATHFINDING));
 		else if(serviceRequested == ServiceNames.THREAD_CAPTEURS)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadCapteurs((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
 																		(IncomingDataBuffer)getServiceDisplay(serviceRequested, ServiceNames.INCOMING_DATA_BUFFER),
 																		(Capteurs)getServiceDisplay(serviceRequested, ServiceNames.CAPTEURS));
-		else if(serviceRequested == ServiceNames.THREAD_SERIAL_INPUT)
+		else if(serviceRequested == ServiceNames.THREAD_SERIAL_INPUT_COUCHE_ORDRE)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadSerialInputCoucheOrdre((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
 																		(Config)getServiceDisplay(serviceRequested, ServiceNames.CONFIG),
-																		(BufferIncomingOrder)getServiceDisplay(serviceRequested, ServiceNames.PAQUET_BUFFER),
+																		(BufferIncomingOrder)getServiceDisplay(serviceRequested, ServiceNames.INCOMING_ORDER_BUFFER),
 																		(IncomingDataBuffer)getServiceDisplay(serviceRequested, ServiceNames.INCOMING_DATA_BUFFER),
 			                                                             (RobotReal)getServiceDisplay(serviceRequested, ServiceNames.ROBOT_REAL));
-		else if(serviceRequested == ServiceNames.THREAD_SERIAL_INPUT_LOW_LEVEL)
+		else if(serviceRequested == ServiceNames.THREAD_SERIAL_INPUT_COUCHE_TRAME)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadSerialInputCoucheTrame((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
 																		(Config)getServiceDisplay(serviceRequested, ServiceNames.CONFIG),
 																		(SerieCoucheTrame)getServiceDisplay(serviceRequested, ServiceNames.SERIAL_LOW_LEVEL),
-																		(SerialInterface)getServiceDisplay(serviceRequested, ServiceNames.SERIE),
-																		(BufferIncomingOrder)getServiceDisplay(serviceRequested, ServiceNames.PAQUET_BUFFER));
+																		(SerialInterface)getServiceDisplay(serviceRequested, ServiceNames.SERIE_COUCHE_PHYSIQUE),
+																		(BufferIncomingOrder)getServiceDisplay(serviceRequested, ServiceNames.INCOMING_ORDER_BUFFER));
 		else if(serviceRequested == ServiceNames.THREAD_SERIAL_OUTPUT)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadSerialOutput((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
 																		(SerieCoucheTrame)getServiceDisplay(serviceRequested, ServiceNames.SERIAL_LOW_LEVEL),
-																		(BufferOutgoingOrder)getServiceDisplay(serviceRequested, ServiceNames.SERIAL_OUTPUT_BUFFER));
+																		(BufferOutgoingOrder)getServiceDisplay(serviceRequested, ServiceNames.OUTGOING_ORDER_BUFFER));
 		else if(serviceRequested == ServiceNames.THREAD_SERIAL_OUTPUT_TIMEOUT)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadSerialOutputTimeout((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
 																		(SerieCoucheTrame)getServiceDisplay(serviceRequested, ServiceNames.SERIAL_LOW_LEVEL));		else if(serviceRequested == ServiceNames.SERIAL_LOW_LEVEL)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new SerieCoucheTrame((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
-																		(SerialInterface)getServiceDisplay(serviceRequested, ServiceNames.SERIE));
+																		(SerialInterface)getServiceDisplay(serviceRequested, ServiceNames.SERIE_COUCHE_PHYSIQUE));
 		else if(serviceRequested == ServiceNames.THREAD_CONFIG)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadConfig((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
 																		(Config)getServiceDisplay(serviceRequested, ServiceNames.CONFIG),

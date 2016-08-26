@@ -21,7 +21,7 @@ public class JUnit_Serie extends JUnit_Test {
 	@Before
     public void setUp() throws Exception {
         super.setUp();
-        data = (BufferOutgoingOrder) container.getService(ServiceNames.SERIAL_OUTPUT_BUFFER);
+        data = (BufferOutgoingOrder) container.getService(ServiceNames.OUTGOING_ORDER_BUFFER);
 //        serie = (SerialSTM) container.getService(ServiceNames.SERIE_STM);
 	}
 	

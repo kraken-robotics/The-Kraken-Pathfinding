@@ -37,7 +37,7 @@ public class DebugAsser
 		Container container = new Container();
 		Log log = (Log) container.getService(ServiceNames.LOG);
 		container.getService(ServiceNames.ROBOT_REAL); // initialisation de l'odo
-		BufferOutgoingOrder stm = (BufferOutgoingOrder) container.getService(ServiceNames.SERIAL_OUTPUT_BUFFER);
+		BufferOutgoingOrder stm = (BufferOutgoingOrder) container.getService(ServiceNames.OUTGOING_ORDER_BUFFER);
 		ClothoidesComputer clotho = (ClothoidesComputer) container.getService(ServiceNames.CLOTHOIDES_COMPUTER);
 		IncomingDataDebugBuffer buffer = (IncomingDataDebugBuffer) container.getService(ServiceNames.INCOMING_DATA_DEBUG_BUFFER);
 		AffichageDebug aff = new AffichageDebug();
