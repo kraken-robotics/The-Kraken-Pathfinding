@@ -50,6 +50,10 @@ public class ThreadSerialOutput extends Thread implements Service
 			try {
 				synchronized(data)
 				{
+					/**
+					 * Pour désactiver le ping automatique, remplacer "data.wait(500)" par "data.wait()"
+					 */
+						
 					if(data.isEmpty()) // pas de message ? On attend
 						data.wait(500);
 //						data.wait();
