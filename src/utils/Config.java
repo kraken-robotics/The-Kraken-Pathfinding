@@ -47,7 +47,9 @@ public class Config implements Service
 		}
 		catch(IOException e)
 		{
-			System.out.println("Erreur lors de l'ouverture de config.ini. Utilisation des valeurs par défaut.");
+			System.out.println("Chargement de la configuration depuis  : " +  System.getProperty("user.dir"));
+			System.out.println(e);
+			System.out.println("Utilisation des valeurs par défaut.");
 		}
 		completeConfig();
 	}
@@ -170,8 +172,8 @@ public class Config implements Service
 					System.out.println(info+" NE peut PAS être surchargé par config.ini");
 					properties.setProperty(info.toString(), info.getDefaultValue());
 				}
-				else
-					System.out.println(info+" surchargé par config.ini");
+				else if(!info.getDefaultValue().equals(properties.getProperty(info.name())))
+					System.out.println(info+" surchargé par config.ini ("+info.getDefaultValue()+" -> "+properties.getProperty(info.name())+")");
 			}
 			for(String cle: properties.stringPropertyNames())
 			{
@@ -196,6 +198,7 @@ public class Config implements Service
 			for(ConfigInfo info: ConfigInfo.values())
 				properties.setProperty(info.toString(), info.getDefaultValue());
 		}
+		System.out.println();
 	}
 		
 	/**

@@ -120,6 +120,7 @@ public class Container
 		log.close();
 		nbInstances--;
 		System.out.println("Container détruit.");
+		System.out.println();
 		printMessage("outro.txt");
 	}
 	
@@ -159,10 +160,18 @@ public class Container
 		} catch (IOException e1) {
 			System.out.println(e1);
 		}
+		
+		/**
+		 * Infos diverses
+		 */
+		System.out.println("System : "+System.getProperty("os.name")+" "+System.getProperty("os.version")+" "+System.getProperty("os.arch"));
+		System.out.println("Java : "+System.getProperty("java.vendor")+" "+System.getProperty("java.version"));
+		System.out.println();
 
+		System.out.println("Remember, with great power comes great current squared times resistance !");
+		System.out.println();
+		
 		// affiche la configuration avant toute autre chose
-		System.out.println("Loading config from current directory : " +  System.getProperty("user.dir"));
-
 		try {
 			log = (Log)getServiceRecursif(ServiceNames.LOG);
 			config = (Config)getServiceRecursif(ServiceNames.CONFIG);
@@ -454,7 +463,7 @@ public class Container
 			BufferedReader reader = new BufferedReader(new FileReader(filename));
 			String line;
 			    
-			while ((line = reader.readLine()) != null)
+			while((line = reader.readLine()) != null)
 				System.out.println(line);
 			    
 			reader.close();

@@ -26,13 +26,13 @@ public class JUnit_Serie extends JUnit_Test {
 	
 	/**
 	 * Un test pour vérifie la connexion
-	 * Le programme s'arrête automatiquement au bout de 10s
+	 * Le programme s'arrête automatiquement au bout de 3s
 	 * @throws Exception
 	 */
 	@Test
 	public void test_ping() throws Exception
 	{
-		Sleep.sleep(10000);
+		Sleep.sleep(3000);
 	}
 
 	/**

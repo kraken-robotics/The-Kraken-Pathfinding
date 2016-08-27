@@ -22,10 +22,6 @@ public class Log implements Service
 	private GregorianCalendar calendar = new GregorianCalendar();
 	private FileWriter writer = null;
 
-	private String 	couleurDebug 	= "\u001B[32m",
-					couleurWarning 	= "\u001B[33m",
-					couleurCritical = "\u001B[31m";
-
 	// Ne pas afficher les messages de bug permet d'économiser du temps CPU
 	private boolean affiche_debug = true;
 	
@@ -52,7 +48,7 @@ public class Log implements Service
 	 */
 	public void debug(Object message)
 	{
-		ecrire(" DEBUG ", message, couleurDebug, System.out);
+		ecrire(" ", message, true, System.out);
 	}
 
 	/**
@@ -62,7 +58,7 @@ public class Log implements Service
 	 */
 	public void warning(Object message)
 	{
-		ecrire(" WARNING ", message, couleurWarning, System.out);
+		ecrire(" WARNING ", message, false, System.out);
 	}
 	
 	/**
@@ -72,7 +68,7 @@ public class Log implements Service
 	 */
 	public void critical(Object message)
 	{
-		ecrire(" CRITICAL ", message, couleurCritical, System.err);
+		ecrire(" CRITICAL ", message, false, System.err);
 	}
 
 	/**
@@ -82,11 +78,11 @@ public class Log implements Service
 	 * @param couleur
 	 * @param ou
 	 */
-	private synchronized void ecrire(String niveau, Object message, String couleur, PrintStream ou)
+	private synchronized void ecrire(String niveau, Object message, boolean debug, PrintStream ou)
 	{
 		if(logClosed)
 			System.out.println("WARNING * Log fermé! Message: "+message);
-		else if(couleur != couleurDebug || affiche_debug || sauvegarde_fichier)
+		else if(!debug || affiche_debug || sauvegarde_fichier)
 		{
 			long date = System.currentTimeMillis() - dateInitiale;
 			String affichage;
@@ -96,9 +92,9 @@ public class Log implements Service
 			else
 			{
 				StackTraceElement elem = Thread.currentThread().getStackTrace()[3];
-				affichage = date+niveau+elem.getClassName()+"."+elem.getMethodName()+":"+elem.getLineNumber()+" > "+message;//+"\u001B[0m";
+				affichage = date+niveau+elem.getClassName().substring(elem.getClassName().lastIndexOf(".")+1)+/*"."+elem.getMethodName()+*/":"+elem.getLineNumber()+" > "+message;//+"\u001B[0m";
 			}
-			if(couleur != couleurDebug || affiche_debug)
+			if(!debug || affiche_debug)
 			{
 				if(sauvegarde_fichier)
 					ecrireFichier(affichage);
