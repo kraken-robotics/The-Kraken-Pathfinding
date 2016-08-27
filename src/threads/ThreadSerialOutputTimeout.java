@@ -40,6 +40,7 @@ public class ThreadSerialOutputTimeout extends Thread implements Service
 			}
 			else
 			{
+				log.debug("Temps avant renvoi : "+timeResend);
 				Sleep.sleep(timeResend+sleep);
 				serie.resend();
 			}			

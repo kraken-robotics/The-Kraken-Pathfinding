@@ -69,7 +69,7 @@ public class Container
 	private static int nbInstances = 0;
 	private boolean threadsStarted = false;
 	
-	private static final boolean showGraph = true;
+	private static final boolean showGraph = false;
 	private FileWriter fw;
 
 	/**
