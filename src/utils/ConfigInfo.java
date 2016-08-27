@@ -58,7 +58,7 @@ public enum ConfigInfo {
 	COURBURE_MAX("10.", true),
 
 	AFFICHE_CONFIG("false", true),
-	SERIAL_TIMEOUT("10", true),
+	SERIAL_TIMEOUT("20", true),
 	/**
 	 * Config dynamique
 	 */
