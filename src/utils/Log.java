@@ -36,6 +36,16 @@ public class Log implements Service
 	private boolean fastLog = false;
 	
 	/**
+	 * date du démarrage
+	 */
+	private long dateInitiale;
+	
+	public Log()
+	{
+		dateInitiale = System.currentTimeMillis();
+	}
+	
+	/**
 	 * Affichage de debug, en vert
 	 * @param message
 	 * @param objet
@@ -78,14 +88,15 @@ public class Log implements Service
 			System.out.println("WARNING * Log fermé! Message: "+message);
 		else if(couleur != couleurDebug || affiche_debug || sauvegarde_fichier)
 		{
+			long date = System.currentTimeMillis() - dateInitiale;
 			String affichage;
 //			String heure = calendar.get(Calendar.HOUR_OF_DAY)+":"+calendar.get(Calendar.MINUTE)+":"+calendar.get(Calendar.SECOND)+","+calendar.get(Calendar.MILLISECOND);
 			if(fastLog)
-				affichage = System.currentTimeMillis()+" > "+message;
+				affichage = date+" > "+message;
 			else
 			{
 				StackTraceElement elem = Thread.currentThread().getStackTrace()[3];
-				affichage = System.currentTimeMillis()+niveau+elem.getClassName()+"."+elem.getMethodName()+":"+elem.getLineNumber()+" > "+message;//+"\u001B[0m";
+				affichage = date+niveau+elem.getClassName()+"."+elem.getMethodName()+":"+elem.getLineNumber()+" > "+message;//+"\u001B[0m";
 			}
 			if(couleur != couleurDebug || affiche_debug)
 			{
