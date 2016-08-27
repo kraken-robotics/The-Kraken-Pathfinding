@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 import debug.IncomingDataDebugBuffer;
@@ -146,8 +147,19 @@ public class Container
 		 */
 		printMessage("intro.txt");
 		
+		/**
+		 * Affiche la version du programme
+		 */
+		try {
+			Process p = Runtime.getRuntime().exec("git log -1 --oneline");
+			BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()));
+			System.out.println("Version : "+in.readLine());
+			in.close();
+		} catch (IOException e1) {
+			System.out.println(e1);
+		}
+
 		// affiche la configuration avant toute autre chose
-		System.out.println("Version : 57368d");
 		System.out.println("Loading config from current directory : " +  System.getProperty("user.dir"));
 
 		try {
