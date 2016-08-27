@@ -38,6 +38,8 @@ public class ThreadSerialOutput extends Thread implements Service
 		try {
 			synchronized(serie)
 			{
+				serie.init();
+				Sleep.sleep(50); // on attend que la série soit bien prête
 				serie.sendOrder(data.getPing());
 				serie.wait(); // on est notifié dès qu'on reçoit quelque chose sur la série
 			}
