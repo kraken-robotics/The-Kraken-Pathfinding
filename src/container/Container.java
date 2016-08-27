@@ -147,6 +147,7 @@ public class Container
 		printMessage("intro.txt");
 		
 		// affiche la configuration avant toute autre chose
+		System.out.println("Version : 57368d");
 		System.out.println("Loading config from current directory : " +  System.getProperty("user.dir"));
 
 		try {
