@@ -55,8 +55,8 @@ public class ThreadSerialOutput extends Thread implements Service
 					 */
 						
 					if(data.isEmpty()) // pas de message ? On attend
-						data.wait(500);
-//						data.wait();
+//						data.wait(500);
+						data.wait();
 
 					if(data.isEmpty()) // si c'est le timeout qui nous a réveillé, on envoie un ping
 					{
