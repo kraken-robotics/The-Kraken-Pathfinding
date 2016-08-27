@@ -74,30 +74,33 @@ public class ThreadSerialInputCoucheOrdre extends Thread implements Service
 							{
 								paquet.ticket.set(Ticket.State.KO);
 								if(data[0] != SerialProtocol.InOrder.COULEUR_ROBOT_INCONNU.codeInt)
-									log.critical("Code couleur inconnue : "+data[0]);
+									log.critical("Code couleur inconnu : "+data[0]);
 							}
 						}
 						else
 							log.critical("Le bas niveau a signalé un changement de couleur en plein match : "+data[0]);
 					}
 					
-					if((data[0] & SerialProtocol.InOrder.MASK_LAST_BIT.codeInt) == SerialProtocol.InOrder.INFO_CAPTEURS.codeInt)
+					/**
+					 * Capteurs
+					 */
+					else if(paquet.origine == SerialProtocol.OutOrder.START_CAPTEURS)
 					{
 						/**
 						 * Récupération de la position et de l'orientation
 						 */
 						int xRobot = data[0] << 4;
-						xRobot += data[0+1] >> 4;
+						xRobot += data[1] >> 4;
 						xRobot -= 1500;
-						int yRobot = (data[0+1] & 0x0F) << 8;
-						yRobot = yRobot + data[0+2];
+						int yRobot = (data[1] & 0x0F) << 8;
+						yRobot = yRobot + data[2];
 						Vec2<ReadOnly> positionRobot = new Vec2<ReadOnly>(xRobot, yRobot);
 		
-						double orientationRobot = ((data[0+3] << 8) + data[0+4]) / 1000.;
-						double courbure = data[0+5] / 1000.;
-						boolean enMarcheAvant = data[0] == SerialProtocol.InOrder.INFO_CAPTEURS.codeInt;
-						double vitesseLineaire = (data[0 + 6] << 8) + data[0 + 7];
-						double vitesseRotation = (data[0 + 8] << 8) + data[0 + 9];
+						double orientationRobot = ((data[3] << 8) + data[4]) / 1000.;
+						double courbure = data[5] / 1000.;
+						boolean enMarcheAvant = data[0] == 0;
+						double vitesseLineaire = (data[6] << 8) + data[7];
+						double vitesseRotation = (data[8] << 8) + data[9];
 		
 						/**
 						 * Acquiert ce que voit les capteurs
@@ -105,8 +108,8 @@ public class ThreadSerialInputCoucheOrdre extends Thread implements Service
 						int[] mesures = new int[nbCapteurs];
 						for(int i = 0; i < nbCapteurs / 2; i++)
 						{
-							mesures[2*i] = (data[0+10+3*i] << 4) + (data[0+10+3*i+1] >> 4);
-							mesures[2*i+1] = ((data[0+10+3*i+1] & 0x0F) << 8) + data[0+10+3*i+2];
+							mesures[2*i] = (data[10+3*i] << 4) + (data[10+3*i+1] >> 4);
+							mesures[2*i+1] = ((data[10+3*i+1] & 0x0F) << 8) + data[10+3*i+2];
 						}
 						
 						if(Config.debugSerie)
@@ -121,7 +124,7 @@ public class ThreadSerialInputCoucheOrdre extends Thread implements Service
 					/**
 					 * Démarrage du match
 					 */
-					else if(data[0] == SerialProtocol.InOrder.DEBUT_MATCH.codeInt)
+					else if(paquet.origine == SerialProtocol.OutOrder.MATCH_BEGIN)
 					{
 						capteursOn = true;
 						synchronized(config)
@@ -136,38 +139,36 @@ public class ThreadSerialInputCoucheOrdre extends Thread implements Service
 					/**
 					 * Fin du match, on coupe la série et on arrête ce thread
 					 */
-					else if(data[0] == SerialProtocol.InOrder.MATCH_FINI.codeInt)
+					else if(paquet.origine == SerialProtocol.OutOrder.MATCH_END)
 					{
 						log.debug("Fin du Match !");
 						config.set(ConfigInfo.FIN_MATCH, true);
 						return;
 					}
-		
+							
 					/**
 					 * Le robot est arrivé après un arrêt demandé par le haut niveau
 					 */
-					else if(data[0] == SerialProtocol.InOrder.ROBOT_ARRIVE_APRES_ARRET.codeInt)
-						paquet.ticket.set(Ticket.State.OK);
-
-					/**
-					 * Le robot est arrivé
-					 */
-					else if(data[0] == SerialProtocol.InOrder.ROBOT_ARRIVE.codeInt)
-						paquet.ticket.set(Ticket.State.OK);
-
-					/**
-					 * Le robot a rencontré un problème
-					 */
-					else if(data[0] == SerialProtocol.InOrder.PB_DEPLACEMENT.codeInt)
+					else if(paquet.origine == SerialProtocol.OutOrder.AVANCER ||
+							paquet.origine == SerialProtocol.OutOrder.AVANCER_IDEM ||
+							paquet.origine == SerialProtocol.OutOrder.AVANCER_NEG ||
+							paquet.origine == SerialProtocol.OutOrder.AVANCER_REVERSE)
 					{
-						log.warning("Le robot a recontré un problème !");
-						paquet.ticket.set(Ticket.State.KO);
+
+						if(data[0] == SerialProtocol.InOrder.MOUVEMENT_ANNULE.codeInt ||
+								data[0] == SerialProtocol.InOrder.ROBOT_ARRIVE.codeInt)
+							paquet.ticket.set(Ticket.State.OK);
+						else
+						{
+							paquet.ticket.set(Ticket.State.KO);
+							if(data[0] != SerialProtocol.InOrder.PB_DEPLACEMENT.codeInt)
+								log.critical("Code fin mouvement inconnu : "+data[0]);
+						}
 					}
 					
-					else
-					{
-						log.critical("0 série inconnue: "+data[0]);
-					}
+					else if(data.length != 0)
+						log.critical("On a ignoré un paquet d'origine "+paquet.origine+" (taille : "+data.length+")");
+
 				}
 			} catch (InterruptedException e) {
 				e.printStackTrace();

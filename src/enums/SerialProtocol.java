@@ -51,22 +51,15 @@ public class SerialProtocol {
 		 * Protocole bas niveau vers Java
 		 */
 	
-		ROBOT_ARRIVE_APRES_ARRET(0x01),
 		ROBOT_ARRIVE(0x02),
 		PB_DEPLACEMENT(0x03),
-		DEBUT_MATCH(0x04),
-		MATCH_FINI(0x05),
 		MOUVEMENT_ANNULE(0x03),
 		
 		// Couleur
 		COULEUR_ROBOT_GAUCHE(0x02),
 		COULEUR_ROBOT_DROITE(0x01),
-		COULEUR_ROBOT_INCONNU(0x03),
+		COULEUR_ROBOT_INCONNU(0x03);
 
-		INFO_CAPTEURS(0x0A),
-	
-		MASK_LAST_BIT(0xFE);
-		
 		public final int codeInt;
 		
 		private InOrder(int code)
