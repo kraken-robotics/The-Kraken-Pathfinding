@@ -153,7 +153,9 @@ public class Container
 		try {
 			Process p = Runtime.getRuntime().exec("git log -1 --oneline");
 			BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()));
-			System.out.println("Version : "+in.readLine());
+			String s = in.readLine();
+			int index = s.indexOf(" ");
+			System.out.println("Version : "+s.substring(0, index)+" - ["+s.substring(index+1)+"]");
 			in.close();
 		} catch (IOException e1) {
 			System.out.println(e1);
