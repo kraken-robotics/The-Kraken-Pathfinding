@@ -30,7 +30,7 @@ public class Config implements Service
 	public static final boolean graphicDStarLite = false;
 	public static final boolean graphicThetaStar = false;
 	public static final boolean graphicObstacles = false;
-	public static final boolean simuleSerie = true;
+	public static final boolean simuleSerie = false;
 	
 	private String name_config_file = "config.ini";
 	private volatile Properties properties = new Properties();
