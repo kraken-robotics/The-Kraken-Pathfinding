@@ -1,6 +1,7 @@
 package threads;
 
-import enums.SerialProtocol;
+import enums.SerialProtocol.InOrder;
+import enums.SerialProtocol.OutOrder;
 import robot.Cinematique;
 import robot.RobotReal;
 import robot.Speed;
@@ -61,19 +62,19 @@ public class ThreadSerialInputCoucheOrdre extends Thread implements Service
 					/**
 					 * Couleur du robot
 					 */
-					if(paquet.origine == SerialProtocol.OutOrder.ASK_COLOR)
+					if(paquet.origine == OutOrder.ASK_COLOR)
 					{
 						if(!matchDemarre)
 						{
-							if(data[0] == SerialProtocol.InOrder.COULEUR_ROBOT_DROITE.codeInt || data[0] == SerialProtocol.InOrder.COULEUR_ROBOT_GAUCHE.codeInt)
+							if(data[0] == InOrder.COULEUR_ROBOT_DROITE.codeInt || data[0] == InOrder.COULEUR_ROBOT_GAUCHE.codeInt)
 							{
 								paquet.ticket.set(Ticket.State.OK);
-								config.set(ConfigInfo.COULEUR, RobotColor.getCouleur(data[0] == SerialProtocol.InOrder.COULEUR_ROBOT_GAUCHE.codeInt));
+								config.set(ConfigInfo.COULEUR, RobotColor.getCouleur(data[0] == InOrder.COULEUR_ROBOT_GAUCHE.codeInt));
 							}
 							else
 							{
 								paquet.ticket.set(Ticket.State.KO);
-								if(data[0] != SerialProtocol.InOrder.COULEUR_ROBOT_INCONNU.codeInt)
+								if(data[0] != InOrder.COULEUR_ROBOT_INCONNU.codeInt)
 									log.critical("Code couleur inconnu : "+data[0]);
 							}
 						}
@@ -84,7 +85,7 @@ public class ThreadSerialInputCoucheOrdre extends Thread implements Service
 					/**
 					 * Capteurs
 					 */
-					else if(paquet.origine == SerialProtocol.OutOrder.START_CAPTEURS)
+					else if(paquet.origine == OutOrder.START_CAPTEURS)
 					{
 						/**
 						 * Récupération de la position et de l'orientation
@@ -124,7 +125,7 @@ public class ThreadSerialInputCoucheOrdre extends Thread implements Service
 					/**
 					 * Démarrage du match
 					 */
-					else if(paquet.origine == SerialProtocol.OutOrder.MATCH_BEGIN)
+					else if(paquet.origine == OutOrder.MATCH_BEGIN)
 					{
 						capteursOn = true;
 						synchronized(config)
@@ -139,7 +140,7 @@ public class ThreadSerialInputCoucheOrdre extends Thread implements Service
 					/**
 					 * Fin du match, on coupe la série et on arrête ce thread
 					 */
-					else if(paquet.origine == SerialProtocol.OutOrder.MATCH_END)
+					else if(paquet.origine == OutOrder.MATCH_END)
 					{
 						log.debug("Fin du Match !");
 						config.set(ConfigInfo.FIN_MATCH, true);
@@ -149,19 +150,19 @@ public class ThreadSerialInputCoucheOrdre extends Thread implements Service
 					/**
 					 * Le robot est arrivé après un arrêt demandé par le haut niveau
 					 */
-					else if(paquet.origine == SerialProtocol.OutOrder.AVANCER ||
-							paquet.origine == SerialProtocol.OutOrder.AVANCER_IDEM ||
-							paquet.origine == SerialProtocol.OutOrder.AVANCER_NEG ||
-							paquet.origine == SerialProtocol.OutOrder.AVANCER_REVERSE)
+					else if(paquet.origine == OutOrder.AVANCER ||
+							paquet.origine == OutOrder.AVANCER_IDEM ||
+							paquet.origine == OutOrder.AVANCER_NEG ||
+							paquet.origine == OutOrder.AVANCER_REVERSE)
 					{
 
-						if(data[0] == SerialProtocol.InOrder.MOUVEMENT_ANNULE.codeInt ||
-								data[0] == SerialProtocol.InOrder.ROBOT_ARRIVE.codeInt)
+						if(data[0] == InOrder.MOUVEMENT_ANNULE.codeInt ||
+								data[0] == InOrder.ROBOT_ARRIVE.codeInt)
 							paquet.ticket.set(Ticket.State.OK);
 						else
 						{
 							paquet.ticket.set(Ticket.State.KO);
-							if(data[0] != SerialProtocol.InOrder.PB_DEPLACEMENT.codeInt)
+							if(data[0] != InOrder.PB_DEPLACEMENT.codeInt)
 								log.critical("Code fin mouvement inconnu : "+data[0]);
 						}
 					}

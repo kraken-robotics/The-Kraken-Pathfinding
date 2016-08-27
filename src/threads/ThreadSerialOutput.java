@@ -8,6 +8,7 @@ import utils.ConfigInfo;
 import utils.Log;
 import utils.Sleep;
 import container.Service;
+import enums.SerialProtocol.OutOrder;
 
 /**
  * Thread qui vérifie s'il faut envoyer des choses sur la série
@@ -40,7 +41,7 @@ public class ThreadSerialOutput extends Thread implements Service
 			{
 				serie.init();
 				Sleep.sleep(50); // on attend que la série soit bien prête
-				serie.sendOrder(data.getPing());
+				serie.sendOrder(new Order(OutOrder.PING));
 				serie.wait(); // on est notifié dès qu'on reçoit quelque chose sur la série
 			}
 		} catch (InterruptedException e) {
@@ -62,7 +63,7 @@ public class ThreadSerialOutput extends Thread implements Service
 
 					if(data.isEmpty()) // si c'est le timeout qui nous a réveillé, on envoie un ping
 					{
-						message = data.getPing();
+						message = new Order(OutOrder.PING);
 						if(Config.debugSerie)
 							log.debug("Envoi d'un ping pour vérifier la connexion");
 					}
