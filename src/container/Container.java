@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 
-import debug.IncomingDataDebugBuffer;
 import pathfinding.CheminPathfinding;
 import pathfinding.CheminPlanif;
 import pathfinding.RealGameState;
@@ -207,7 +206,6 @@ public class Container
 			ok.add(ServiceNames.SERIE_COUCHE_PHYSIQUE);
 			ok.add(ServiceNames.TABLE);
 			ok.add(ServiceNames.GRID_SPACE);
-			ok.add(ServiceNames.INCOMING_DATA_DEBUG_BUFFER);
 			ok.add(ServiceNames.INCOMING_DATA_BUFFER);
 			ok.add(ServiceNames.OUTGOING_ORDER_BUFFER);
 			ok.add(ServiceNames.A_STAR_COURBE_MEMORY_MANAGER_DYN);
@@ -284,8 +282,6 @@ public class Container
 			instanciedServices[serviceRequested.ordinal()] = (Service)new IncomingDataBuffer((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG));
 		else if(serviceRequested == ServiceNames.INCOMING_ORDER_BUFFER)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new BufferIncomingOrder((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG));
-		else if(serviceRequested == ServiceNames.INCOMING_DATA_DEBUG_BUFFER)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new IncomingDataDebugBuffer((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG));
 		else if(serviceRequested == ServiceNames.OUTGOING_ORDER_BUFFER)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new BufferOutgoingOrder((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG));
 		else if(serviceRequested == ServiceNames.SERIE_COUCHE_PHYSIQUE && !Config.simuleSerie)
@@ -323,7 +319,6 @@ public class Container
 			                                                             (RobotReal)getServiceDisplay(serviceRequested, ServiceNames.ROBOT_REAL));
 		else if(serviceRequested == ServiceNames.THREAD_SERIAL_INPUT_COUCHE_TRAME)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadSerialInputCoucheTrame((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
-																		(Config)getServiceDisplay(serviceRequested, ServiceNames.CONFIG),
 																		(SerieCoucheTrame)getServiceDisplay(serviceRequested, ServiceNames.SERIAL_LOW_LEVEL),
 																		(BufferIncomingOrder)getServiceDisplay(serviceRequested, ServiceNames.INCOMING_ORDER_BUFFER));
 		else if(serviceRequested == ServiceNames.THREAD_SERIAL_OUTPUT)
