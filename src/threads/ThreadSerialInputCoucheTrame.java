@@ -32,9 +32,7 @@ public class ThreadSerialInputCoucheTrame extends Thread implements Service
 	public void run()
 	{
 		while(true)
-		{
 			buffer.add(serie.readData());
-		}
 	}
 
 	@Override
