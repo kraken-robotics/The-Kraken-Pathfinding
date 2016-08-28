@@ -33,6 +33,7 @@ import serie.BufferIncomingOrder;
 import serie.BufferOutgoingOrder;
 import serie.SerieCouchePhysique;
 import serie.SerialInterface;
+import serie.BufferIncomingBytes;
 import serie.SerieCoucheTrame;
 import serie.SerialSimulation;
 import table.Table;
@@ -294,16 +295,16 @@ public class Container
 		else if(serviceRequested == ServiceNames.OUTGOING_ORDER_BUFFER)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new BufferOutgoingOrder((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG));
 		else if(serviceRequested == ServiceNames.SERIE_COUCHE_PHYSIQUE && !Config.simuleSerie)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new SerieCouchePhysique((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG));
+			instanciedServices[serviceRequested.ordinal()] = (Service)new SerieCouchePhysique((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
+		 													 (BufferIncomingBytes)getServiceDisplay(serviceRequested, ServiceNames.BUFFER_INCOMING_BYTES));
 		else if(serviceRequested == ServiceNames.SERIE_COUCHE_PHYSIQUE && Config.simuleSerie)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new SerialSimulation((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG));
-//		else if(serviceRequested == ServiceNames.SERIE_XBEE)
-//			instanciedServices[serviceRequested.ordinal()] = (Service)new SerialXBEE((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG), config.getInt(ConfigInfo.BAUDRATE_XBEE));
+		else if(serviceRequested == ServiceNames.BUFFER_INCOMING_BYTES)
+			instanciedServices[serviceRequested.ordinal()] = (Service)new BufferIncomingBytes((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG));
 		else if(serviceRequested == ServiceNames.ROBOT_REAL)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new RobotReal((BufferOutgoingOrder)getServiceDisplay(serviceRequested, ServiceNames.OUTGOING_ORDER_BUFFER),
 															 (Log)getServiceDisplay(serviceRequested, ServiceNames.LOG));
         else if(serviceRequested == ServiceNames.REAL_GAME_STATE)
-        	// ici la construction est un petit peu différente car on interdit l'instanciation publique d'un GameSTate<RobotChrono>
             instanciedServices[serviceRequested.ordinal()] = (Service) new RealGameState((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
                                                              (RobotReal)getServiceDisplay(serviceRequested, ServiceNames.ROBOT_REAL),
 															 (ObstaclesMemory)getServiceDisplay(serviceRequested, ServiceNames.OBSTACLES_MEMORY),
@@ -328,17 +329,19 @@ public class Container
 			                                                             (RobotReal)getServiceDisplay(serviceRequested, ServiceNames.ROBOT_REAL));
 		else if(serviceRequested == ServiceNames.THREAD_SERIAL_INPUT_COUCHE_TRAME)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadSerialInputCoucheTrame((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
-																		(SerieCoucheTrame)getServiceDisplay(serviceRequested, ServiceNames.SERIAL_LOW_LEVEL),
+																		(SerieCoucheTrame)getServiceDisplay(serviceRequested, ServiceNames.SERIE_COUCHE_TRAME),
 																		(BufferIncomingOrder)getServiceDisplay(serviceRequested, ServiceNames.INCOMING_ORDER_BUFFER));
 		else if(serviceRequested == ServiceNames.THREAD_SERIAL_OUTPUT)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadSerialOutput((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
-																		(SerieCoucheTrame)getServiceDisplay(serviceRequested, ServiceNames.SERIAL_LOW_LEVEL),
+																		(SerieCoucheTrame)getServiceDisplay(serviceRequested, ServiceNames.SERIE_COUCHE_TRAME),
 																		(BufferOutgoingOrder)getServiceDisplay(serviceRequested, ServiceNames.OUTGOING_ORDER_BUFFER));
 		else if(serviceRequested == ServiceNames.THREAD_SERIAL_OUTPUT_TIMEOUT)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadSerialOutputTimeout((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
-																		(SerieCoucheTrame)getServiceDisplay(serviceRequested, ServiceNames.SERIAL_LOW_LEVEL));		else if(serviceRequested == ServiceNames.SERIAL_LOW_LEVEL)
+																		(SerieCoucheTrame)getServiceDisplay(serviceRequested, ServiceNames.SERIE_COUCHE_TRAME));
+		else if(serviceRequested == ServiceNames.SERIE_COUCHE_TRAME)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new SerieCoucheTrame((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
-																		(SerialInterface)getServiceDisplay(serviceRequested, ServiceNames.SERIE_COUCHE_PHYSIQUE));
+																		(SerieCouchePhysique)getServiceDisplay(serviceRequested, ServiceNames.SERIE_COUCHE_PHYSIQUE),
+																		(BufferIncomingBytes)getServiceDisplay(serviceRequested, ServiceNames.BUFFER_INCOMING_BYTES));
 		else if(serviceRequested == ServiceNames.THREAD_CONFIG)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadConfig((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
 																		(Config)getServiceDisplay(serviceRequested, ServiceNames.CONFIG),
