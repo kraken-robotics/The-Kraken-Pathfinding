@@ -211,7 +211,7 @@ public class Container
 		if(showGraph && !serviceTo.equals(ServiceNames.LOG))
 		{
 			ArrayList<ServiceNames> ok = new ArrayList<ServiceNames>();
-			ok.add(ServiceNames.CAPTEURS);
+/*			ok.add(ServiceNames.CAPTEURS);
 			ok.add(ServiceNames.CONFIG);
 			ok.add(ServiceNames.SERIE_COUCHE_PHYSIQUE);
 			ok.add(ServiceNames.TABLE);
@@ -229,7 +229,7 @@ public class Container
 			ok.add(ServiceNames.THREAD_PEREMPTION);
 			ok.add(ServiceNames.THREAD_CAPTEURS);
 			ok.add(ServiceNames.THREAD_CONFIG);
-
+*/
 			try {
 				if(ok.contains(serviceTo))
 					fw.write(serviceTo+" [color=grey80, style=filled];\n");
