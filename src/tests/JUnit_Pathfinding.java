@@ -7,6 +7,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import container.ServiceNames;
+import debug.Fenetre;
 import pathfinding.VitesseCourbure;
 import pathfinding.astarCourbe.arcs.ArcCourbeClotho;
 import pathfinding.astarCourbe.arcs.ArcCourbeCubique;
@@ -15,7 +16,6 @@ import pathfinding.dstarlite.DStarLite;
 import pathfinding.dstarlite.GridSpace;
 import robot.Cinematique;
 import robot.Speed;
-import tests.graphicLib.Fenetre;
 import utils.Config;
 import utils.Sleep;
 import utils.Vec2;

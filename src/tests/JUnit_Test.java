@@ -3,13 +3,13 @@ package tests;
 import org.junit.Before;
 import org.junit.After;
 
-import tests.graphicLib.Fenetre;
 import utils.ConfigInfo;
 import utils.Log;
 import utils.Config;
 import utils.Sleep;
 import container.Container;
 import container.ServiceNames;
+import debug.Fenetre;
 
 /**
  * Classe mère de tous les tests.

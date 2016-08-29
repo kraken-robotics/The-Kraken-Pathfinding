@@ -1,4 +1,4 @@
-package tests.graphicLib;
+package debug;
 
 //import java.awt.Point;
 import java.awt.event.MouseAdapter;

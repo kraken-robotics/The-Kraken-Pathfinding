@@ -13,12 +13,12 @@ import pathfinding.astarCourbe.arcs.ArcCourbeCubique;
 import pathfinding.dstarlite.DStarLite;
 import pathfinding.dstarlite.GridSpace;
 import container.Service;
+import debug.Fenetre;
 import exceptions.PathfindingException;
 import robot.Cinematique;
 import robot.DirectionStrategy;
 import robot.RobotChrono;
 import robot.Speed;
-import tests.graphicLib.Fenetre;
 import utils.Config;
 import utils.Log;
 

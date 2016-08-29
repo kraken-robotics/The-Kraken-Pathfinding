@@ -6,12 +6,12 @@ import java.util.PriorityQueue;
 
 import obstacles.types.ObstacleProximity;
 import robot.Cinematique;
-import tests.graphicLib.Fenetre;
 import utils.Config;
 import utils.Log;
 import utils.Vec2;
 import utils.permissions.ReadOnly;
 import container.Service;
+import debug.Fenetre;
 import exceptions.PathfindingException;
 
 /**
