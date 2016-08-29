@@ -10,7 +10,6 @@ import exceptions.FinMatchException;
 import robot.RobotChrono;
 import robot.RobotReal;
 import robot.Speed;
-import robot.actuator.ActuatorOrder;
 import utils.ConfigInfo;
 import utils.Vec2;
 import utils.permissions.ReadOnly;
@@ -32,13 +31,6 @@ public class JUnit_Robot extends JUnit_Test
         super.setUp();
         robot = (RobotReal) container.getService(ServiceNames.ROBOT_REAL);
         robotchrono = robot.cloneIntoRobotChrono();
-	}
-
-	@Test
-	public void test_actionneurs() throws Exception
-	{
-		for(ActuatorOrder o: ActuatorOrder.values())
-			robot.useActuator(o);
 	}
 
     @Test
