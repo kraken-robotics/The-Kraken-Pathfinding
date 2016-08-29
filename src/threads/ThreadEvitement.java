@@ -36,6 +36,7 @@ public class ThreadEvitement extends Thread implements Service
 	@Override
 	public void run()
 	{
+		Thread.currentThread().setName("ThreadEvitement");
 		while(true)
 		{
 			try {

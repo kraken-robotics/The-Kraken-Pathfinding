@@ -32,6 +32,7 @@ public class ThreadPathfinding extends Thread implements Service
 	@Override
 	public void run()
 	{
+		Thread.currentThread().setName("ThreadPathfinding");
 		while(true)
 		{
 			synchronized(gridspace)

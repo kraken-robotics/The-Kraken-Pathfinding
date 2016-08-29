@@ -30,6 +30,7 @@ public class ThreadPeremption extends Thread implements Service
 	@Override
 	public void run()
 	{
+		Thread.currentThread().setName("ThreadPeremption");
 		while(true)
 		{
 			gridspace.deleteOldObstacles();

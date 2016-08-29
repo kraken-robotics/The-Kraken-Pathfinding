@@ -27,6 +27,7 @@ public class ThreadConfig extends Thread implements Service {
 	@Override
 	public void run()
 	{
+		Thread.currentThread().setName("ThreadConfig");
 		while(true)
 		{
 			synchronized(config)
