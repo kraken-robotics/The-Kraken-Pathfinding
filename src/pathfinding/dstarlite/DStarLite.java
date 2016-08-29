@@ -5,7 +5,6 @@ import java.util.Comparator;
 import java.util.PriorityQueue;
 
 import obstacles.types.ObstacleProximity;
-import pathfinding.astarCourbe.HeuristiqueCourbe;
 import robot.Cinematique;
 import tests.graphicLib.Fenetre;
 import utils.Config;
@@ -26,7 +25,7 @@ import exceptions.PathfindingException;
  *
  */
 
-public class DStarLite implements Service, HeuristiqueCourbe
+public class DStarLite implements Service
 {
 	protected Log log;
 	private GridSpace gridspace;
@@ -401,7 +400,6 @@ public class DStarLite implements Service, HeuristiqueCourbe
 	 * @param gridpoint
 	 * @return
 	 */
-	@Override
 	public double heuristicCostCourbe(Cinematique c)
 	{
 		int gridpoint = GridSpace.computeGridPoint(c.getPosition());

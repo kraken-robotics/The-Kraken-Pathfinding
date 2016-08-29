@@ -3,10 +3,6 @@ package pathfinding;
 import utils.Config;
 import utils.Log;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.LinkedList;
-
 import container.Service;
 import pathfinding.astarCourbe.arcs.ArcCourbe;
 
@@ -17,13 +13,15 @@ import pathfinding.astarCourbe.arcs.ArcCourbe;
  *
  */
 
-public class CheminPathfinding implements Service, Collection<ArcCourbe>
+public class CheminPathfinding implements Service
 {
 	protected Log log;
 	private volatile boolean doitFixerCheminPartiel;
 	private volatile boolean finish;
 	
-	private volatile LinkedList<ArcCourbe> chemin = new LinkedList<ArcCourbe>();
+	private volatile ArcCourbe[] chemin = new ArcCourbe[256];
+	private int indexFirst = 0;
+	private int indexLast = 0;
 	
 	public CheminPathfinding(Log log)
 	{
@@ -56,12 +54,12 @@ public class CheminPathfinding implements Service, Collection<ArcCourbe>
 
 	public ArcCourbe poll()
 	{
-		return chemin.poll();
+		return chemin[indexFirst++];
 	}
 
 	public boolean isEmpty()
 	{
-		return chemin.isEmpty();
+		return indexFirst == indexLast;
 	}
 
 	public void setFinish(boolean finish)
@@ -74,64 +72,14 @@ public class CheminPathfinding implements Service, Collection<ArcCourbe>
 		return finish;
 	}
 
-	@Override
-	public boolean add(ArcCourbe arg0) {
-		return chemin.add(arg0);
+	public void add(ArcCourbe arc)
+	{
+		chemin[indexLast++] = arc;
 	}
 
-	@Override
-	public boolean addAll(Collection<? extends ArcCourbe> arg0) {
-		return chemin.addAll(arg0);
-	}
-
-	@Override
-	public void clear() {
-		chemin.clear();
-	}
-
-	@Override
-	public boolean contains(Object arg0) {
-		return chemin.contains(arg0);
-	}
-
-	@Override
-	public boolean containsAll(Collection<?> arg0) {
-		return chemin.containsAll(arg0);
-	}
-
-	@Override
-	public Iterator<ArcCourbe> iterator() {
-		return chemin.iterator();
-	}
-
-	@Override
-	public boolean remove(Object arg0) {
-		return chemin.remove(arg0);
-	}
-
-	@Override
-	public boolean removeAll(Collection<?> arg0) {
-		return chemin.removeAll(arg0);
-	}
-
-	@Override
-	public boolean retainAll(Collection<?> arg0) {
-		return chemin.retainAll(arg0);
-	}
-
-	@Override
-	public int size() {
-		return chemin.size();
-	}
-
-	@Override
-	public Object[] toArray() {
-		return chemin.toArray();
-	}
-
-	@Override
-	public <T> T[] toArray(T[] arg0) {
-		return chemin.toArray(arg0);
+	public void clear()
+	{
+		indexLast = indexFirst;
 	}
 
 }

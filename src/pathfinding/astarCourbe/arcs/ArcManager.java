@@ -3,7 +3,7 @@ package pathfinding.astarCourbe.arcs;
 import obstacles.MoteurPhysique;
 import pathfinding.VitesseCourbure;
 import pathfinding.astarCourbe.AStarCourbeNode;
-import pathfinding.astarCourbe.HeuristiqueCourbe;
+import pathfinding.dstarlite.DStarLite;
 import robot.Cinematique;
 import robot.DirectionStrategy;
 import robot.RobotChrono;
@@ -25,11 +25,11 @@ import exceptions.FinMatchException;
  *
  */
 
-public class AStarCourbeArcManager implements Service
+public class ArcManager implements Service
 {
 	protected Log log;
 	private MoteurPhysique moteur;
-	private HeuristiqueCourbe heuristique;
+	private DStarLite heuristique;
 	private ClothoidesComputer clotho;
 	
 	private AStarCourbeNode current;
@@ -39,7 +39,7 @@ public class AStarCourbeArcManager implements Service
 	private final static int TEMPS_REBROUSSEMENT = 700;
 	private ListIterator<VitesseCourbure> iterator = listeVitesse.listIterator();
 	
-	public AStarCourbeArcManager(Log log, MoteurPhysique moteur, HeuristiqueCourbe heuristique, ClothoidesComputer clotho)
+	public ArcManager(Log log, MoteurPhysique moteur, DStarLite heuristique, ClothoidesComputer clotho)
 	{
 		this.log = log;
 		this.moteur = moteur;

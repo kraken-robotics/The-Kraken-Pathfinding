@@ -14,7 +14,7 @@ import utils.Log;
  *
  */
 
-public class AStarCourbeMemoryManager implements Service {
+public class MemoryManager implements Service {
 
 	private static final int nb_instances = 10100;
 
@@ -34,7 +34,7 @@ public class AStarCourbeMemoryManager implements Service {
 	public void useConfig(Config config)
 	{}
 
-	public AStarCourbeMemoryManager(Log log, RealGameState realstate)
+	public MemoryManager(Log log, RealGameState realstate)
 	{	
 		this.log = log;
 

@@ -1,16 +1,19 @@
 package pathfinding.astarCourbe;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.PriorityQueue;
 
 import obstacles.types.ObstacleRectangular;
-import pathfinding.astarCourbe.arcs.AStarCourbeArcManager;
+import pathfinding.CheminPathfinding;
+import pathfinding.RealGameState;
+import pathfinding.astarCourbe.arcs.ArcManager;
 import pathfinding.astarCourbe.arcs.ArcCourbe;
 import pathfinding.astarCourbe.arcs.ArcCourbeCubique;
+import pathfinding.dstarlite.DStarLite;
 import pathfinding.dstarlite.GridSpace;
 import container.Service;
+import exceptions.PathfindingException;
 import robot.Cinematique;
 import robot.DirectionStrategy;
 import robot.RobotChrono;
@@ -28,19 +31,19 @@ import utils.Log;
  *
  */
 
-public abstract class AStarCourbe implements Service
+public class AStarCourbe implements Service
 {
 	protected DirectionStrategy directionstrategyactuelle;
 	protected Log log;
-	protected HeuristiqueCourbe heuristique;
-	protected AStarCourbeArcManager arcmanager;
-//	protected RealGameState state;
-	protected AStarCourbeMemoryManager memorymanager;
+	private ArcManager arcmanager;
+	private DStarLite dstarlite;
+	private RealGameState state;
+	private MemoryManager memorymanager;
 	protected Fenetre fenetre;
-	protected Cinematique arrivee;
-	protected AStarCourbeNode depart;
-	protected Collection<ArcCourbe> chemin;
-	protected Speed vitesseMax;
+	private Cinematique arrivee;
+	private AStarCourbeNode depart;
+	private CheminPathfinding chemin;
+	private Speed vitesseMax;
 	
 	/**
 	 * Comparateur de noeud utilisé par la priority queue
@@ -65,7 +68,7 @@ public abstract class AStarCourbe implements Service
 	/**
 	 * Constructeur du AStarCourbe
 	 */
-	public AStarCourbe(Log log, AStarCourbeArcManager arcmanager, AStarCourbeMemoryManager memorymanager, Collection<ArcCourbe> chemin)
+	public AStarCourbe(Log log, DStarLite dstarlite, ArcManager arcmanager, RealGameState state, CheminPathfinding chemin, MemoryManager memorymanager)
 	{
 		this.log = log;
 		this.arcmanager = arcmanager;
@@ -73,15 +76,17 @@ public abstract class AStarCourbe implements Service
 		this.memorymanager = memorymanager;
 		this.chemin = chemin;
 		depart = new AStarCourbeNode();
+		this.state = state;
+		this.dstarlite = dstarlite;
 	}
-
+	
 	/**
 	 * Le calcul du AStarCourbe
 	 * @param depart
 	 * @return
 	 */
 	@SuppressWarnings("unused")
-	protected final Collection<ArcCourbe> process()
+	protected final CheminPathfinding process()
 	{
 		depart.came_from = null;
 		depart.came_from_arc = null;
@@ -213,7 +218,49 @@ public abstract class AStarCourbe implements Service
 	@Override
 	public void useConfig(Config config)
 	{}
+				
+	/**
+	 * Calcul d'un chemin à partir d'un certain état (state) et d'un point d'arrivée (endNode).
+	 * Le boolean permet de signaler au pathfinding si on autorise ou non le shootage d'élément de jeu pas déjà pris.
+	 * @param state
+	 * @param endNode
+	 * @param shoot_game_element
+	 * @return
+	 * @throws PathfindingException 
+	 */
+	public void computeNewPath(Cinematique arrivee, boolean ejecteGameElement, DirectionStrategy directionstrategy) throws PathfindingException
+	{
+//		if(Config.graphicAStarCourbe)
+//			fenetre.setColor(arrivee, Fenetre.Couleur.VIOLET);
+		vitesseMax = Speed.STANDARD;
+		this.directionstrategyactuelle = directionstrategy;
+		arcmanager.setEjecteGameElement(ejecteGameElement);
+		this.arrivee = arrivee;
+		depart.init();
+		state.copyAStarCourbe(depart.state);
 		
-	protected abstract boolean doitFixerCheminPartiel();
+		dstarlite.computeNewPath(((RobotChrono)depart.state.robot).getCinematique().getPosition(), arrivee.getPosition());
+		process();
+	}
+	
+	public synchronized void updatePath() throws PathfindingException
+	{
+		synchronized(state)
+		{
+			depart.init();
+			state.copyAStarCourbe(depart.state);
+		}
+		vitesseMax = Speed.REPLANIF;
+		
+		dstarlite.updatePath(((RobotChrono)depart.state.robot).getCinematique().getPosition());
+		chemin.clear();
+		process();
+	}
+
+	protected boolean doitFixerCheminPartiel()
+	{
+		return chemin.isEmpty();
+	}
+
 	
 }
