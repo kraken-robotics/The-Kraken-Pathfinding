@@ -44,7 +44,7 @@ public enum ConfigInfo {
 	DISTANCE_ENNEMI_URGENCE("550", true),
 	PREVISION_COLLISION("50", true),
 	NB_CAPTEURS_PROXIMITE("2", true),
-	MS_MAX_AVANT_EVITEMENT("5", true),
+//	MS_MAX_AVANT_EVITEMENT("5", true),
 	DISTANCE_URGENCE("200", true),
 	NB_SUCCESSEUR_MAX("2", true),
 	COURBURE_MAX("10.", true),

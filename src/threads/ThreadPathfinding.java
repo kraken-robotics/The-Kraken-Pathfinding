@@ -1,7 +1,5 @@
 package threads;
 
-import java.util.BitSet;
-
 import container.Service;
 import exceptions.PathfindingException;
 import pathfinding.astarCourbe.AStarCourbe;
@@ -20,7 +18,6 @@ public class ThreadPathfinding extends Thread implements Service
 	protected Log log;
 	private AStarCourbe pathfinding;
 	private GridSpace gridspace;
-	private boolean urgence = false;
 
 	public ThreadPathfinding(Log log, AStarCourbe pathfinding, GridSpace gridspace)
 	{
@@ -35,6 +32,9 @@ public class ThreadPathfinding extends Thread implements Service
 		Thread.currentThread().setName("ThreadPathfinding");
 		while(true)
 		{
+			/**
+			 * En attente d'une modification des obstacles
+			 */
 			synchronized(gridspace)
 			{
 				try {
@@ -43,20 +43,17 @@ public class ThreadPathfinding extends Thread implements Service
 					e.printStackTrace();
 				}
 			}
-			log.debug("Recalcule de trajectoire !");
-/*			try {
+			log.debug("Recalcul de trajectoire !");
+			try {
 				synchronized(this)
 				{
 					notify(); // on prévient le thread d'évitement qu'un nouveau chemin est en calcul
-					// TODO thread pathfinding qui communique avec AStarCourbe
 					pathfinding.updatePath();
 				}
 			} catch (PathfindingException e) {
 				e.printStackTrace();
-			}*/
+			}
 		}
-
-//		log.debug("Fermeture de ThreadPathfinding");
 	}
 
 	@Override
@@ -66,10 +63,5 @@ public class ThreadPathfinding extends Thread implements Service
 	@Override
 	public void useConfig(Config config)
 	{}
-
-	public final boolean isUrgence()
-	{
-		return urgence;
-	}
 	
 }
