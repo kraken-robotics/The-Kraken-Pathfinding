@@ -3,7 +3,6 @@ package tests;
 import org.junit.Before;
 import org.junit.Test;
 
-import robot.Speed;
 import serie.BufferOutgoingOrder;
 import serie.Ticket;
 import utils.Sleep;
@@ -37,19 +36,13 @@ public class JUnit_Serie extends JUnit_Test {
 
 	/**
 	 * Un test d'ordre long
-	 * On arrête dès qu'on a une réponse, qu'elle soit positive ou négative
 	 * @throws Exception
 	 */
 	@Test
-	public void test_avancer() throws Exception
+	public void test_stream() throws Exception
 	{
-		Ticket t = data.avancer(100, Speed.INTO_WALL);
-		synchronized(t)
-		{
-			if(t.isEmpty())
-				t.wait();
-		}
-		log.debug("Avancer fini, code : "+t.getAndClear());
+		data.startStream();
+		Sleep.sleep(10000);
 	}
 
 	/**

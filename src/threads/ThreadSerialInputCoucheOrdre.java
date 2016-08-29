@@ -85,7 +85,7 @@ public class ThreadSerialInputCoucheOrdre extends Thread implements Service
 					/**
 					 * Capteurs
 					 */
-					else if(paquet.origine == OutOrder.START_CAPTEURS)
+					else if(paquet.origine == OutOrder.START_STREAM_ALL)
 					{
 						/**
 						 * Récupération de la position et de l'orientation
@@ -98,34 +98,36 @@ public class ThreadSerialInputCoucheOrdre extends Thread implements Service
 						Vec2<ReadOnly> positionRobot = new Vec2<ReadOnly>(xRobot, yRobot);
 		
 						double orientationRobot = ((data[3] << 8) + data[4]) / 1000.;
-						double courbure = data[5] / 1000.;
-						boolean enMarcheAvant = data[0] == 0;
-						double vitesseLineaire = (data[6] << 8) + data[7];
-						double vitesseRotation = (data[8] << 8) + data[9];
-		
-						/**
-						 * Acquiert ce que voit les capteurs
-					 	 */
-						int[] mesures = new int[nbCapteurs];
-						for(int i = 0; i < nbCapteurs / 2; i++)
-						{
-							mesures[2*i] = (data[10+3*i] << 4) + (data[10+3*i+1] >> 4);
-							mesures[2*i+1] = ((data[10+3*i+1] & 0x0F) << 8) + data[10+3*i+2];
-						}
+						int indexTrajectoirey = data[5];
 						
 						if(Config.debugSerie)
 							log.debug("Le robot est en "+positionRobot+", orientation : "+orientationRobot);
 		
-						Cinematique c = new Cinematique(positionRobot.x, positionRobot.y, orientationRobot, enMarcheAvant, courbure, vitesseLineaire, vitesseRotation, Speed.STANDARD);
+						// TODO récupérer à partir de l'index trajectory les info de cinématique
+						Cinematique c = new Cinematique(positionRobot.x, positionRobot.y, orientationRobot, true, 0, 0, 0, Speed.STANDARD);
 						robot.setCinematique(c);
-						if(capteursOn)
-							buffer.add(new IncomingData(mesures, c));
+						
+						if(data.length > 6) // la présence de ces infos n'est pas obligatoire
+						{
+							/**
+							 * Acquiert ce que voit les capteurs
+						 	 */
+							int[] mesures = new int[nbCapteurs];
+							for(int i = 0; i < nbCapteurs / 2; i++)
+							{
+								mesures[2*i] = (data[10+3*i] << 4) + (data[10+3*i+1] >> 4);
+								mesures[2*i+1] = ((data[10+3*i+1] & 0x0F) << 8) + data[10+3*i+2];
+							}
+							if(capteursOn)
+								buffer.add(new IncomingData(mesures, c));
+						}
+
 					}
 		
 					/**
 					 * Démarrage du match
 					 */
-					else if(paquet.origine == OutOrder.MATCH_BEGIN)
+					else if(paquet.origine == OutOrder.WAIT_FOR_JUMPER)
 					{
 						capteursOn = true;
 						synchronized(config)
@@ -140,7 +142,7 @@ public class ThreadSerialInputCoucheOrdre extends Thread implements Service
 					/**
 					 * Fin du match, on coupe la série et on arrête ce thread
 					 */
-					else if(paquet.origine == OutOrder.MATCH_END)
+					else if(paquet.origine == OutOrder.START_MATCH_CHRONO)
 					{
 						log.debug("Fin du Match !");
 						config.set(ConfigInfo.FIN_MATCH, true);
@@ -150,19 +152,15 @@ public class ThreadSerialInputCoucheOrdre extends Thread implements Service
 					/**
 					 * Le robot est arrivé après un arrêt demandé par le haut niveau
 					 */
-					else if(paquet.origine == OutOrder.AVANCER ||
-							paquet.origine == OutOrder.AVANCER_IDEM ||
-							paquet.origine == OutOrder.AVANCER_NEG ||
-							paquet.origine == OutOrder.AVANCER_REVERSE)
+					else if(paquet.origine == OutOrder.FOLLOW_TRAJECTORY)
 					{
 
-						if(data[0] == InOrder.MOUVEMENT_ANNULE.codeInt ||
-								data[0] == InOrder.ROBOT_ARRIVE.codeInt)
+						if(data[0] == InOrder.ROBOT_ARRIVE.codeInt)
 							paquet.ticket.set(Ticket.State.OK);
 						else
 						{
 							paquet.ticket.set(Ticket.State.KO);
-							if(data[0] != InOrder.PB_DEPLACEMENT.codeInt)
+							if(data[0] != InOrder.ROBOT_BLOQUE.codeInt && data[0] != InOrder.PLUS_DE_POINTS.codeInt)
 								log.critical("Code fin mouvement inconnu : "+data[0]);
 						}
 					}

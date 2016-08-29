@@ -37,28 +37,33 @@ public enum ConfigInfo {
 	HOOKS_TOLERANCE_MM("20", true),
 	DISQUE_TOLERANCE_MAJ("100", true),
 	DISQUE_TOLERANCE_CONSIGNE("40", true),
-//	NB_TENTATIVES("30"),
-//	ANTICIPATION_TRAJECTOIRE_COURBE("200"),
-//	ANGLE_DEGAGEMENT_ROBOT("0.2"),
 	ATTENTE_ENNEMI_PART("500", true),
 	DISTANCE_DEGAGEMENT_ROBOT("200", true),
 	MARGE("20", true),
 	TEMPS_MAX_ANTICIPATION_EN_S("30", true),
-//	TOLERANCE_DEPART_SCRIPT("20", true),
 	DISTANCE_ENNEMI_URGENCE("550", true),
-//	CHECK_POINTS_SORTIE("false", true),
 	PREVISION_COLLISION("50", true),
-	BAUDRATE("115200", true),
-	SERIAL_PORT("/dev/ttyS0", true),
-	SLEEP_ENTRE_TRAMES("0", true),
 	NB_CAPTEURS_PROXIMITE("2", true),
 	MS_MAX_AVANT_EVITEMENT("5", true),
 	DISTANCE_URGENCE("200", true),
 	NB_SUCCESSEUR_MAX("2", true),
 	COURBURE_MAX("10.", true),
-
 	AFFICHE_CONFIG("false", true),
+
+	/**
+	 * Paramètres de la série
+	 */
 	SERIAL_TIMEOUT("20", true),
+	BAUDRATE("115200", true),
+	SERIAL_PORT("/dev/ttyS0", true),
+	SLEEP_ENTRE_TRAMES("0", true),	
+	
+	/**
+	 * Paramètres des capteurs
+	 */
+	SENSORS_SEND_PERIOD("20", true),
+	SENSORS_PRESCALER("5", true),
+	
 	/**
 	 * Config dynamique
 	 */

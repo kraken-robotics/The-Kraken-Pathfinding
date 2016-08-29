@@ -1,6 +1,6 @@
 package enums;
 
-import serie.trame.Order;
+import serie.trame.Order.Type;
 
 /**
  * Protocole série entre le bas niveau et la Java
@@ -15,30 +15,25 @@ public class SerialProtocol {
 		/**
 		 * Protocole Java vers bas niveau
 		 */
-		ACTIONNEUR(0x06, Order.Type.LONG),
-		STOP(0x07, Order.Type.SHORT),
+		STOP(0x07, Type.LONG),
 	
-		AVANCER(0x0C, Order.Type.LONG),
-		AVANCER_NEG(0x0D, Order.Type.LONG),
-		AVANCER_IDEM(0x0E, Order.Type.LONG),
-		AVANCER_REVERSE(0x0F, Order.Type.LONG),
+		SEND_ARC(0x2E, Type.SHORT),
+
+		SET_MAX_SPEED(0, Type.SHORT),
+		
+		FOLLOW_TRAJECTORY(0, Type.LONG),
+		
+		START_STREAM_ALL(0x10, Type.LONG),
+		WAIT_FOR_JUMPER(0x11, Type.LONG),
+		START_MATCH_CHRONO(0x12, Type.LONG),
+		ASK_COLOR(0x13, Type.SHORT),
 	
-		ASSER_OFF(0x28, Order.Type.SHORT),
-	
-		SEND_ARC(0x2E, Order.Type.SHORT),
-		SEND_ARC_ARRET(0x2C, Order.Type.SHORT),
-	
-		START_CAPTEURS(0x10, Order.Type.LONG),
-		MATCH_BEGIN(0x11, Order.Type.LONG),
-		MATCH_END(0x12, Order.Type.LONG),
-		ASK_COLOR(0x13, Order.Type.SHORT),
-	
-		PING(0x5A, Order.Type.SHORT);
+		PING(0x5A, Type.SHORT);
 		
 		public final byte code;
-		public final Order.Type type;
+		public final Type type;
 		
-		private OutOrder(int code, Order.Type type)
+		private OutOrder(int code, Type type)
 		{
 			this.type = type;
 			this.code = (byte) code;
@@ -51,14 +46,14 @@ public class SerialProtocol {
 		 * Protocole bas niveau vers Java
 		 */
 	
-		ROBOT_ARRIVE(0x02),
-		PB_DEPLACEMENT(0x03),
-		MOUVEMENT_ANNULE(0x03),
+		ROBOT_ARRIVE(0x00),
+		ROBOT_BLOQUE(0x01),
+		PLUS_DE_POINTS(0x02),
 		
 		// Couleur
-		COULEUR_ROBOT_GAUCHE(0x02),
-		COULEUR_ROBOT_DROITE(0x01),
-		COULEUR_ROBOT_INCONNU(0x03);
+		COULEUR_ROBOT_GAUCHE(0x01),
+		COULEUR_ROBOT_DROITE(0x00),
+		COULEUR_ROBOT_INCONNU(0x02);
 
 		public final int codeInt;
 		
