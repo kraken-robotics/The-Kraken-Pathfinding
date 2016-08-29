@@ -2,9 +2,6 @@ package robot;
 
 import pathfinding.astarCourbe.arcs.ArcCourbe;
 import utils.Log;
-import utils.Vec2;
-import utils.permissions.ReadWrite;
-import exceptions.FinMatchException;
 
 /**
  * Robot particulier qui fait pas bouger le robot réel, mais détermine la durée des actions
@@ -24,28 +21,6 @@ public class RobotChrono extends Robot
 		this.cinematique = new Cinematique(cinematique);
 	}
 
-	/**
-	 * Mise à jour permettant de modifier, pour RobotChrono, la date limite de la recherche stratégique
-	 * @param dateLimite
-	 */
-/*	public static void setTempsMax(int tempsMax)
-	{
-		RobotChrono.tempsMax = tempsMax;
-	}*/
-	
-	@Override
-    public void avancer(int distance, boolean mur, Speed vitesse)
-	{
-		date += Math.abs(distance)*vitesse.translationalSpeed;
-	
-        Vec2<ReadWrite> ecart = new Vec2<ReadWrite>((int)(distance*Math.cos(cinematique.orientation)), (int)(distance*Math.sin(cinematique.orientation)));
-
-		Vec2.plus(cinematique.getPositionEcriture(), ecart);
-//		isPositionPathfindingActive = false;
-//		positionPathfindingAnterieure = null;
-//		positionPathfinding = null;
-	}
-	
 	@Override
 	public long getTempsDepuisDebutMatch()
 	{
@@ -65,12 +40,6 @@ public class RobotChrono extends Robot
 		if(delta > Math.PI)
 			delta = 2*Math.PI - delta;
 		return delta;
-	}
-	
-	@Override
-	public void sleep(long duree) throws FinMatchException 
-	{
-		this.date += duree;
 	}
 
 	public void setPositionGridSpace(int gridpoint)

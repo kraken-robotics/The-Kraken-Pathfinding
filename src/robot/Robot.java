@@ -2,8 +2,6 @@ package robot;
 
 import obstacles.types.Obstacle;
 import container.Service;
-import exceptions.FinMatchException;
-import exceptions.UnableToMoveException;
 import utils.ConfigInfo;
 import utils.Log;
 import utils.Config;
@@ -21,10 +19,6 @@ public abstract class Robot implements Service
 	 */
 	
 	public abstract int getPositionGridSpace();
-    public abstract void avancer(int distance, boolean mur, Speed vitesse)
-            throws UnableToMoveException;
-	
-    public abstract void sleep(long duree) throws FinMatchException;
     public abstract long getTempsDepuisDebutMatch();
 
     protected Cinematique cinematique;
@@ -72,46 +66,11 @@ public abstract class Robot implements Service
 
 	public void useConfig(Config config)
 	{}
-
-    /**
-     * Avance dans un mur sans hook
-     * @param distance
-     * @throws UnableToMoveException
-     * @throws FinMatchException
-     * @throws ScriptHookException
-     */
-    public void avancerDansMur(int distance) throws UnableToMoveException
-    {
-    	avancer(distance, true, Speed.INTO_WALL);
-    }
-
-    /**
-     * Dort jusqu'à une certaine date.
-     * Utilisé le sleep du robot, donc réel ou simulé.
-     * @param date
-     * @throws FinMatchException
-     */
-    public void sleepUntil(long date) throws FinMatchException
-    {
-    	sleep(date - getTempsDepuisDebutMatch());
-    }
     
     @Override
     public String toString()
     {
     	return cinematique.toString();
-    }
-
-    
-    // DEPENDS_ON_RULES
-
-    /**
-     * Points obtenus depuis le début du match
-     * @return
-     */
-    public int getPointsObtenus()
-    {
-    	return pointsObtenus;
     }
     
     /**
