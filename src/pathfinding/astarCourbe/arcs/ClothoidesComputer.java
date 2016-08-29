@@ -230,7 +230,7 @@ public class ClothoidesComputer implements Service
 			if(error) // on essaye un autre alpha
 				continue;
 			
-			return new ArcCourbeCubique(out, longueur, v.rebrousse, v.rebrousse, v);
+			return new ArcCourbeCubique(out, longueur, v.rebrousse, v.rebrousse);
 		}
 		return null;
 	}
@@ -265,7 +265,7 @@ public class ClothoidesComputer implements Service
 	 */
 	public final void getTrajectoire(Cinematique cinematiqueInitiale, VitesseCourbure vitesse, Speed vitesseMax, ArcCourbeClotho modified)
 	{
-		modified.v = vitesse;
+//		modified.v = vitesse;
 //		log.debug(vitesse);
 		double courbure = cinematiqueInitiale.courbure;
 		double orientation = cinematiqueInitiale.orientation;

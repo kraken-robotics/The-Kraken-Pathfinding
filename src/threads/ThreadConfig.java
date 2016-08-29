@@ -2,7 +2,6 @@ package threads;
 
 import container.Container;
 import container.Service;
-import container.ServiceNames;
 import utils.Config;
 import utils.Log;
 
@@ -39,12 +38,7 @@ public class ThreadConfig extends Thread implements Service {
 				}
 			}
 			
-			for(ServiceNames name: ServiceNames.values())
-			{
-				Service service = container.getInstanciedService(name);
-				if(service != null)
-					service.updateConfig(config);
-			}
+			container.updateConfigForAll();
 		}
 	}
 

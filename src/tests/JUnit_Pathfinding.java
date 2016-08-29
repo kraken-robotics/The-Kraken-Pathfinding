@@ -2,31 +2,18 @@ package tests;
 
 import obstacles.types.ObstacleRectangular;
 
-import java.util.ArrayList;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import container.ServiceNames;
-import pathfinding.CheminPathfinding;
-import pathfinding.CheminPlanif;
-import pathfinding.ChronoGameState;
-import pathfinding.RealGameState;
 import pathfinding.VitesseCourbure;
-import pathfinding.astarCourbe.AStarCourbe;
-import pathfinding.astarCourbe.AStarCourbeDynamique;
-import pathfinding.astarCourbe.AStarCourbePlanif;
-import pathfinding.astarCourbe.arcs.ArcCourbe;
 import pathfinding.astarCourbe.arcs.ArcCourbeClotho;
 import pathfinding.astarCourbe.arcs.ArcCourbeCubique;
 import pathfinding.astarCourbe.arcs.ClothoidesComputer;
 import pathfinding.dstarlite.DStarLite;
 import pathfinding.dstarlite.GridSpace;
 import robot.Cinematique;
-import robot.DirectionStrategy;
-import robot.RobotChrono;
-import robot.RobotReal;
 import robot.Speed;
 import tests.graphicLib.Fenetre;
 import utils.Config;
@@ -43,25 +30,13 @@ import utils.permissions.ReadOnly;
 public class JUnit_Pathfinding extends JUnit_Test {
 
 	private DStarLite pathfinding;
-	private AStarCourbeDynamique pathfindingCourbeDyn;
-	private AStarCourbePlanif pathfindingCourbePlanif;
-	private CheminPathfinding chemin;
-	private CheminPlanif cheminPlanif;
-	private RobotReal robot;
 	private GridSpace gridspace;
-	private RealGameState state;
 	private ClothoidesComputer clotho;
 	
 	@Before
     public void setUp() throws Exception {
         super.setUp();
         pathfinding = (DStarLite) container.getService(ServiceNames.D_STAR_LITE);
-        pathfindingCourbeDyn = (AStarCourbeDynamique) container.getService(ServiceNames.A_STAR_COURBE_DYNAMIQUE);
-        pathfindingCourbePlanif = (AStarCourbePlanif) container.getService(ServiceNames.A_STAR_COURBE_PLANIFICATION);
-        chemin = (CheminPathfinding) container.getService(ServiceNames.CHEMIN_PATHFINDING);
-        cheminPlanif = (CheminPlanif) container.getService(ServiceNames.CHEMIN_PLANIF);
-        robot = (RobotReal) container.getService(ServiceNames.ROBOT_REAL);
-        state = (RealGameState) container.getService(ServiceNames.REAL_GAME_STATE);
         gridspace = (GridSpace) container.getService(ServiceNames.GRID_SPACE);
 		clotho = (ClothoidesComputer) container.getService(ServiceNames.CLOTHOIDES_COMPUTER);
 	}
@@ -110,46 +85,6 @@ public class JUnit_Pathfinding extends JUnit_Test {
     }
 	
 	@Test
-    public void test_pathfinding_planif() throws Exception
-    {
-		Cinematique arrivee = new Cinematique(1000, 500, -Math.PI/2, true, 0, 0, 0, Speed.STANDARD);
-		
-		Fenetre.getInstance().printObsFixes();
-		Fenetre.getInstance().addObstacleEnBiais(new ObstacleRectangular(arrivee.getPosition(), 30, 30, 0));
-		gridspace.addObstacle(new Vec2<ReadOnly>(1000, 900), false);
-
-		ChronoGameState chrono = state.cloneGameState();
-		((RobotChrono)chrono.robot).getCinematique().enMarcheAvant = true;
-		((RobotChrono)chrono.robot).getCinematique().getPosition().x = -300;
-		((RobotChrono)chrono.robot).getCinematique().getPosition().y = 1700;
-		((RobotChrono)chrono.robot).getCinematique().orientation = Math.PI;
-
-		Fenetre.getInstance().addObstacleEnBiais(new ObstacleRectangular(((RobotChrono)chrono.robot).getCinematique().getPosition(), 30, 30, 0));
-
-		log.debug(cheminPlanif.size());
-		pathfindingCourbePlanif.computeNewPath(chrono, arrivee, true, DirectionStrategy.FASTEST);
-		log.debug(cheminPlanif.size());
-		
-		while(!cheminPlanif.isEmpty())
-		{
-			ArcCourbe arc = cheminPlanif.poll();
-			log.debug("ARC!");
-			for(int i = 0; i < arc.getNbPoints(); i++)
-			{
-				System.out.println(arc.v+" "+arc.getPoint(i));
-				if(Config.graphicObstacles)
-				{
-					Sleep.sleep(100);
-					if(arc.rebrousse)
-						Fenetre.getInstance().addObstacleEnBiais(new ObstacleRectangular(arc.getPoint(i).getPosition(), 15, 15, 0));
-					else
-						Fenetre.getInstance().addObstacleEnBiais(new ObstacleRectangular(arc.getPoint(i).getPosition(), 10, 10, 0));
-				}
-			}
-		}
-    }
-	
-	@Test
     public void test_clotho() throws Exception
     {
 		ClothoidesComputer clotho = (ClothoidesComputer) container.getService(ServiceNames.CLOTHOIDES_COMPUTER);
@@ -179,7 +114,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
 	
 		for(int a = 0; a < nbArc; a++)	
 		{
-			System.out.println("arc "+arc[a].v+" avec "+arc[a].arcselems[0]);
+//			System.out.println("arc "+arc[a].v+" avec "+arc[a].arcselems[0]);
 			for(int i = 0; i < ClothoidesComputer.NB_POINTS; i++)
 			{
 /*				if(i > 0)

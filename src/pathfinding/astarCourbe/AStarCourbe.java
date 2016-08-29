@@ -18,7 +18,6 @@ import robot.Speed;
 import tests.graphicLib.Fenetre;
 import utils.Config;
 import utils.Log;
-import utils.Sleep;
 
 /**
  * AStar* simplifié, qui lisse le résultat du D* Lite et fournit une trajectoire courbe
@@ -81,6 +80,7 @@ public abstract class AStarCourbe implements Service
 	 * @param depart
 	 * @return
 	 */
+	@SuppressWarnings("unused")
 	protected final Collection<ArcCourbe> process()
 	{
 		depart.came_from = null;

@@ -32,26 +32,7 @@ public class JUnit_Robot extends JUnit_Test
         robot = (RobotReal) container.getService(ServiceNames.ROBOT_REAL);
         robotchrono = robot.cloneIntoRobotChrono();
 	}
-
-    @Test
-    public void test_avance() throws Exception
-    {
-    	robot.avancer(100, false, Speed.STANDARD);
-    	log.debug("On est arrivé");
-    }
-
-    @Test
-    public void test_chrono() throws Exception
-    {
-    	robotchrono.avancer(100, false, Speed.STANDARD);
-    }
-
-	@Test(expected=FinMatchException.class)
-    public void test_chrono_timeout() throws Exception
-    {
-    	robotchrono.avancer(100000000, false, Speed.STANDARD);
-    }
-    
+    /*
     @Test
     public void test_symetrie_robot_chrono() throws Exception
     {
@@ -77,6 +58,6 @@ public class JUnit_Robot extends JUnit_Test
 //    		robotchrono.suit_chemin(chemin, new ArrayList<Hook>());
 //    		Assert.assertTrue(robotchrono.getPosition(robotchrono.getReadOnly()).squaredDistance(PathfindingNodes.DEVANT_DEPART_DROITE.getCoordonnees()) < 10);
     	}
-    }
+    }*/
 
 }

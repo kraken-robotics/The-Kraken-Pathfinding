@@ -15,13 +15,10 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 import pathfinding.CheminPathfinding;
-import pathfinding.CheminPlanif;
 import pathfinding.RealGameState;
 import pathfinding.astarCourbe.AStarCourbe;
 import pathfinding.astarCourbe.AStarCourbeDynamique;
 import pathfinding.astarCourbe.AStarCourbeMemoryManager;
-import pathfinding.astarCourbe.AStarCourbePlanif;
-import pathfinding.astarCourbe.HeuristiqueSimple;
 import pathfinding.astarCourbe.arcs.AStarCourbeArcManager;
 import pathfinding.astarCourbe.arcs.ClothoidesComputer;
 import pathfinding.dstarlite.DStarLite;
@@ -42,10 +39,10 @@ import threads.ThreadConfig;
 import threads.ThreadEvitement;
 import threads.ThreadPathfinding;
 import threads.ThreadPeremption;
-import threads.ThreadSerialInputCoucheOrdre;
-import threads.ThreadSerialInputCoucheTrame;
-import threads.ThreadSerialOutput;
-import threads.ThreadSerialOutputTimeout;
+import threads.serie.ThreadSerialInputCoucheOrdre;
+import threads.serie.ThreadSerialInputCoucheTrame;
+import threads.serie.ThreadSerialOutput;
+import threads.serie.ThreadSerialOutputTimeout;
 import robot.RobotReal;
 
 
@@ -352,12 +349,6 @@ public class Container
 																		 (GridSpace)getServiceDisplay(serviceRequested, ServiceNames.GRID_SPACE));
 		else if(serviceRequested == ServiceNames.MOTEUR_PHYSIQUE)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new MoteurPhysique((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG)); 		
-		else if(serviceRequested == ServiceNames.A_STAR_COURBE_PLANIFICATION)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new AStarCourbePlanif((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
-																					(AStarCourbeArcManager)getServiceDisplay(serviceRequested, ServiceNames.A_STAR_COURBE_ARC_MANAGER_PLANIF),
-																					(AStarCourbeMemoryManager)getServiceDisplay(serviceRequested, ServiceNames.A_STAR_COURBE_MEMORY_MANAGER_PLANIF),
-																					(CheminPlanif)getServiceDisplay(serviceRequested, ServiceNames.CHEMIN_PLANIF),
-																					(HeuristiqueSimple)getServiceDisplay(serviceRequested, ServiceNames.HEURISTIQUE_SIMPLE));
 		else if(serviceRequested == ServiceNames.A_STAR_COURBE_DYNAMIQUE)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new AStarCourbeDynamique((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
 																					(DStarLite)getServiceDisplay(serviceRequested, ServiceNames.D_STAR_LITE),
@@ -365,11 +356,6 @@ public class Container
 																					(RealGameState)getServiceDisplay(serviceRequested, ServiceNames.REAL_GAME_STATE),
 																					(CheminPathfinding)getServiceDisplay(serviceRequested, ServiceNames.CHEMIN_PATHFINDING),
 																					(AStarCourbeMemoryManager)getServiceDisplay(serviceRequested, ServiceNames.A_STAR_COURBE_MEMORY_MANAGER_DYN));
-		else if(serviceRequested == ServiceNames.CHEMIN_PLANIF)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new CheminPlanif((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG));
-		else if(serviceRequested == ServiceNames.A_STAR_COURBE_MEMORY_MANAGER_PLANIF)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new AStarCourbeMemoryManager((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
-																								   (RealGameState)getServiceDisplay(serviceRequested, ServiceNames.REAL_GAME_STATE));
 		else if(serviceRequested == ServiceNames.A_STAR_COURBE_MEMORY_MANAGER_DYN)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new AStarCourbeMemoryManager((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
 																								   (RealGameState)getServiceDisplay(serviceRequested, ServiceNames.REAL_GAME_STATE));
@@ -378,15 +364,8 @@ public class Container
 																								(MoteurPhysique)getServiceDisplay(serviceRequested, ServiceNames.MOTEUR_PHYSIQUE),
 																								(DStarLite)getServiceDisplay(serviceRequested, ServiceNames.D_STAR_LITE),
 																								(ClothoidesComputer)getServiceDisplay(serviceRequested, ServiceNames.CLOTHOIDES_COMPUTER));
-		else if(serviceRequested == ServiceNames.A_STAR_COURBE_ARC_MANAGER_PLANIF)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new AStarCourbeArcManager((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
-																								(MoteurPhysique)getServiceDisplay(serviceRequested, ServiceNames.MOTEUR_PHYSIQUE),
-																								(HeuristiqueSimple)getServiceDisplay(serviceRequested, ServiceNames.HEURISTIQUE_SIMPLE),
-																								(ClothoidesComputer)getServiceDisplay(serviceRequested, ServiceNames.CLOTHOIDES_COMPUTER));
 		else if(serviceRequested == ServiceNames.CLOTHOIDES_COMPUTER)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ClothoidesComputer((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG));
-		else if(serviceRequested == ServiceNames.HEURISTIQUE_SIMPLE)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new HeuristiqueSimple((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG));
 		// si le service demandé n'est pas connu, alors on log une erreur.
 		else
 		{
@@ -446,13 +425,15 @@ public class Container
 
 
 	/**
-	 * Renvoie le service demandé s'il est déjà instancié, null sinon.
-	 * Utilisé pour la mise à jour de la config.
+	 * Mise à jour de la config pour tous les services démarrés
 	 * @param s
 	 * @return
 	 */
-	public Service getInstanciedService(ServiceNames serviceRequested) {
-		return instanciedServices[serviceRequested.ordinal()];
+	public void updateConfigForAll()
+	{
+		for(int i = 0; i < instanciedServices.length; i++)
+			if(instanciedServices[i] != null)
+				instanciedServices[i].updateConfig(config);
 	}
 	
 	/**

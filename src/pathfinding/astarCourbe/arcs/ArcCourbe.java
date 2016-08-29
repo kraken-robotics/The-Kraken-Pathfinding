@@ -1,6 +1,5 @@
 package pathfinding.astarCourbe.arcs;
 
-import pathfinding.VitesseCourbure;
 import robot.Cinematique;
 
 /**
@@ -13,13 +12,12 @@ public abstract class ArcCourbe {
 
 	public boolean rebrousse; // cet arc commence par un rebroussement, c'est-à-dire que la marche avant change
 	public boolean stop; // cet arc commence par un arrêt du robot
-	public VitesseCourbure v; // TODO virer
+//	public VitesseCourbure v;
 	
-	public ArcCourbe(boolean rebrousse, boolean stop, VitesseCourbure v)
+	public ArcCourbe(boolean rebrousse, boolean stop)
 	{
 		this.rebrousse = rebrousse;
 		this.stop = stop;
-		this.v = v;
 	}
 	
 	public abstract int getNbPoints();
