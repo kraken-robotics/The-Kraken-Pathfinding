@@ -74,12 +74,22 @@ public class CheminPathfinding implements Service
 
 	public void add(ArcCourbe arc)
 	{
+		arc.indexTrajectory = indexLast;
 		chemin[indexLast++] = arc;
+		
+		// si on revient au début, c'est qu'il y a un problème ou que le buffer est sous-dimensionné
+		if(indexLast == indexFirst)
+			log.critical("Buffer trop petit !");
 	}
 
 	public void clear()
 	{
 		indexLast = indexFirst;
+	}
+
+	public void setCurrentIndex(int indexTrajectory)
+	{
+		indexFirst = indexTrajectory;
 	}
 
 }

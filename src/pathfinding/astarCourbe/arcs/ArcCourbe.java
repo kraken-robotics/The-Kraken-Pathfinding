@@ -12,7 +12,7 @@ public abstract class ArcCourbe {
 
 	public boolean rebrousse; // cet arc commence par un rebroussement, c'est-à-dire que la marche avant change
 	public boolean stop; // cet arc commence par un arrêt du robot
-//	public VitesseCourbure v;
+	public int indexTrajectory;
 	
 	public ArcCourbe(boolean rebrousse, boolean stop)
 	{
