@@ -177,7 +177,7 @@ public class Config implements Service
 			}
 			for(String cle: properties.stringPropertyNames())
 			{
-				if(cle.contains("#"))
+				if(cle.contains("#") || cle.contains(";"))
 				{
 					properties.remove(cle);
 					continue;
@@ -190,7 +190,7 @@ public class Config implements Service
 						break;
 					}
 				if(!found)
-					System.out.println(cle+" inutilisé. Veuillez le retirer de config.ini");
+					System.err.println("Config "+cle+" inconnue !");
 			}
 		}
 		else
