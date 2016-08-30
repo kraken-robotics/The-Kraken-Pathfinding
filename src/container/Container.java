@@ -13,6 +13,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Set;
 
 import pathfinding.CheminPathfinding;
 import pathfinding.RealGameState;
@@ -87,8 +88,18 @@ public class Container
 			threadsStarted = false;
 		}
 
-		Thread.sleep(100); // on attend la fermeture des autres threads
+		Thread.sleep(50); // on attend la fermeture des autres threads
 			
+		/**
+		 * Affiche la liste des threads qui ne sont pas fermés
+		 */
+		Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
+		for(Thread t : threadSet)
+		{
+			if(!t.getName().equals("ThreadExit") && t.getName().startsWith("Thread"))
+				log.critical("Thread "+t.getName()+" pas arrêté !");
+		}
+		
 		log.debug("Fermeture de la série");
 		// fermeture de la connexion série
 		
