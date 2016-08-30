@@ -336,7 +336,7 @@ public class Container
 																		(SerieCoucheTrame)getServiceDisplay(serviceRequested, ServiceNames.SERIE_COUCHE_TRAME));
 		else if(serviceRequested == ServiceNames.SERIE_COUCHE_TRAME)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new SerieCoucheTrame((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
-																		(SerieCouchePhysique)getServiceDisplay(serviceRequested, ServiceNames.SERIE_COUCHE_PHYSIQUE),
+																		(SerialInterface)getServiceDisplay(serviceRequested, ServiceNames.SERIE_COUCHE_PHYSIQUE),
 																		(BufferIncomingBytes)getServiceDisplay(serviceRequested, ServiceNames.BUFFER_INCOMING_BYTES));
 		else if(serviceRequested == ServiceNames.THREAD_CONFIG)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadConfig((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
