@@ -18,7 +18,8 @@ public interface Service {
 	/**
 	 * Affecte les valeurs de config. N'est appelé qu'une fois, juste après le constructeur.
 	 * @param config
+	 * @throws InterruptedException 
 	 */
-	public void useConfig(Config config);
+	public void useConfig(Config config) throws InterruptedException;
 	
 }

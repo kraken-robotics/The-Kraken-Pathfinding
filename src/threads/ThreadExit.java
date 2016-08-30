@@ -1,6 +1,7 @@
 package threads;
 
 import container.Container;
+import exceptions.ContainerException;
 
 
 /**
@@ -22,6 +23,10 @@ public class ThreadExit extends Thread
 	public void run()
 	{
 		Thread.currentThread().setName("ThreadExit");
-		container.destructor();
+		try {
+			container.destructor();
+		} catch (ContainerException | InterruptedException e) {
+			System.out.println(e);
+		}
 	}
 }

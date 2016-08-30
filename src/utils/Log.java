@@ -113,7 +113,7 @@ public class Log implements Service
 		try{
 		     writer.write(message+"\n");
 		}
-		catch(Exception e)
+		catch(IOException e)
 		{
 			e.printStackTrace();
 		}
@@ -132,7 +132,7 @@ public class Log implements Service
 				if(writer != null)
 					writer.close();
 			}
-			catch(Exception e)
+			catch(IOException e)
 			{
 				e.printStackTrace();
 			}
@@ -146,7 +146,7 @@ public class Log implements Service
 	{}
 	
 	@Override
-	public void useConfig(Config config)
+	public void useConfig(Config config) throws InterruptedException
 	{
 		affiche_debug = config.getBoolean(ConfigInfo.AFFICHE_DEBUG);
 		sauvegarde_fichier = config.getBoolean(ConfigInfo.SAUVEGARDE_FICHIER);
@@ -163,7 +163,7 @@ public class Log implements Service
 			{
 				try {
 					Runtime.getRuntime().exec("mkdir logs");
-					Sleep.sleep(500);
+					Thread.sleep(500);
 					writer = new FileWriter(file); 
 					debug("Un fichier de sauvegarde est utilisé: "+file);
 				} catch (IOException e1) {

@@ -6,7 +6,6 @@ import javax.swing.*;
 import container.Container;
 import container.ServiceNames;
 import exceptions.ContainerException;
-import exceptions.PointSortieException;
 import obstacles.ObstaclesFixes;
 import obstacles.Capteurs;
 import obstacles.memory.ObstaclesIteratorPresent;
@@ -56,15 +55,13 @@ public class Fenetre extends JPanel {
 	private GridSpace gs;
 	public static boolean needInit = true;
 	
-	private Fenetre(Container container)
+	private Fenetre(Container container) throws InterruptedException
 	{
 		try {
 			iterator = new ObstaclesIteratorPresent((Log)container.getService(ServiceNames.LOG),
 					(ObstaclesMemory)container.getService(ServiceNames.OBSTACLES_MEMORY));
 			gs = (GridSpace)container.getService(ServiceNames.GRID_SPACE);
 		} catch (ContainerException e) {
-			e.printStackTrace();
-		} catch (PointSortieException e) {
 			e.printStackTrace();
 		}
 	}
@@ -123,7 +120,7 @@ public class Fenetre extends JPanel {
 		return instance;
 	}
 
-	public static void setInstance(Container container)
+	public static void setInstance(Container container) throws InterruptedException
 	{
 		instance = new Fenetre(container);
 	}

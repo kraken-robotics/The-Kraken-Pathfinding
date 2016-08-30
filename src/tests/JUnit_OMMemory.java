@@ -9,7 +9,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import utils.ConfigInfo;
-import utils.Sleep;
 import utils.Vec2;
 import utils.permissions.ReadOnly;
 import container.ServiceNames;
@@ -59,7 +58,7 @@ public class JUnit_OMMemory extends JUnit_Test {
     	memory.deleteOldObstacles();
     	Assert.assertTrue(memory.getFirstNotDeadNow() == 0);
     	Assert.assertTrue(memory.getNextDeathDate() == (date+peremption));
-    	Sleep.sleep(peremption+10);
+    	Thread.sleep(peremption+10);
 //    	iterator.reinitNow();
 //    	Assert.assertTrue(memory.getFirstNotDeadNow() == 0);
 //    	Assert.assertTrue(memory.getNextDeathDate() == (date+peremption));

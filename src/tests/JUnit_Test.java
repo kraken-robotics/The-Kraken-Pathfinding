@@ -6,7 +6,6 @@ import org.junit.After;
 import utils.ConfigInfo;
 import utils.Log;
 import utils.Config;
-import utils.Sleep;
 import container.Container;
 import container.ServiceNames;
 import debug.Fenetre;
@@ -45,7 +44,7 @@ public abstract class JUnit_Test
 	@After
 	public void tearDown() throws Exception {
 		if((Config.graphicDStarLite || Config.graphicThetaStar || Config.graphicObstacles) && !Fenetre.needInit)
-			Sleep.sleep(100000);
+			Thread.sleep(100000);
 	}
 
 	

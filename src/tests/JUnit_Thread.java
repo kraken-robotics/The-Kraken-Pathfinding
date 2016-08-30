@@ -4,7 +4,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import utils.ConfigInfo;
-import utils.Sleep;
 
 /**
  * Test les threads
@@ -23,7 +22,7 @@ public class JUnit_Thread extends JUnit_Test
     public void test_fin_match() throws Exception
     {
     	config.set(ConfigInfo.FIN_MATCH, true);
-    	Sleep.sleep(5000);
+    	Thread.sleep(5000);
     }
 
     

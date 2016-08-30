@@ -11,7 +11,6 @@ import org.junit.Test;
 import pathfinding.dstarlite.GridSpace;
 import container.ServiceNames;
 import utils.ConfigInfo;
-import utils.Sleep;
 import utils.Vec2;
 import utils.permissions.ReadOnly;
 
@@ -99,7 +98,7 @@ public class JUnit_GridSpace extends JUnit_Test {
 		Assert.assertTrue(b[0].isEmpty() && !b[1].isEmpty());
 		b = gridspace.getOldAndNewObstacles();
 		Assert.assertTrue(b[0].isEmpty() && b[1].isEmpty());
-		Sleep.sleep(peremption+10);
+		Thread.sleep(peremption+10);
 		log.debug("Ça commence");
 		b = gridspace.getOldAndNewObstacles();
 		log.debug("Old : ");

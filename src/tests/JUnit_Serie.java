@@ -5,7 +5,6 @@ import org.junit.Test;
 
 import serie.BufferOutgoingOrder;
 import serie.Ticket;
-import utils.Sleep;
 import container.ServiceNames;
 
 /**
@@ -31,7 +30,7 @@ public class JUnit_Serie extends JUnit_Test {
 	@Test
 	public void test_ping() throws Exception
 	{
-		Sleep.sleep(3000);
+		Thread.sleep(3000);
 	}
 
 	/**
@@ -42,7 +41,7 @@ public class JUnit_Serie extends JUnit_Test {
 	public void test_stream() throws Exception
 	{
 		data.startStream();
-		Sleep.sleep(10000);
+		Thread.sleep(10000);
 	}
 
 	/**
@@ -64,7 +63,7 @@ public class JUnit_Serie extends JUnit_Test {
 			etat = t.getAndClear();
 		} while(etat != Ticket.State.OK);
 		
-		Sleep.sleep(20000);
+		Thread.sleep(20000);
 	}
 	
 }

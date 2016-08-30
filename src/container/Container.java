@@ -23,7 +23,6 @@ import pathfinding.astarCourbe.arcs.ClothoidesComputer;
 import pathfinding.dstarlite.DStarLite;
 import pathfinding.dstarlite.GridSpace;
 import exceptions.ContainerException;
-import exceptions.PointSortieException;
 import utils.*;
 import serie.BufferIncomingOrder;
 import serie.BufferOutgoingOrder;
@@ -73,21 +72,21 @@ public class Container
 	/**
 	 * Fonction à appeler à la fin du programme.
 	 * ferme la connexion serie, termine les différents threads, et ferme le log.
+	 * @throws InterruptedException 
+	 * @throws ContainerException 
 	 */
-	public void destructor()
+	public void destructor() throws ContainerException, InterruptedException
 	{
 		// arrêt des threads
 		if(threadsStarted)
-			try {
-				for(ServiceNames s: ServiceNames.values())
-				{
-					if(s.isThread())
-						((Thread)getService(s)).interrupt();
-				}
-				threadsStarted = false;
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+		{
+			for(ServiceNames s: ServiceNames.values())
+				if(s.isThread())
+					((Thread)getService(s)).interrupt();
+
+			threadsStarted = false;
+		}
+
 			
 		log.debug("Fermeture de la série");
 		// fermeture de la connexion série
@@ -121,8 +120,9 @@ public class Container
 	 * 		Config
 	 * 		Log
 	 * @throws ContainerException si un autre container est déjà instancié
+	 * @throws InterruptedException 
 	 */
-	public Container() throws ContainerException
+	public Container() throws ContainerException, InterruptedException
 	{
 		if(nbInstances != 0)
 		{
@@ -163,13 +163,8 @@ public class Container
 		System.out.println();
 		
 		// affiche la configuration avant toute autre chose
-		try {
-			log = (Log)getServiceRecursif(ServiceNames.LOG);
-			config = (Config)getServiceRecursif(ServiceNames.CONFIG);
-		} catch (PointSortieException e) {
-			// Impossible
-			e.printStackTrace();
-		}
+		log = (Log)getServiceRecursif(ServiceNames.LOG);
+		config = (Config)getServiceRecursif(ServiceNames.CONFIG);
 		log.updateConfig(config);
 		log.useConfig(config);
 		config.init(log);
@@ -182,21 +177,21 @@ public class Container
 			try {
 				fw = new FileWriter(new File("dependances.dot"));
 				fw.write("digraph dependancesJava {\n");
-			} catch (Exception e) {
-				e.printStackTrace();
+			} catch (IOException e) {
+				log.warning(e);
 			}
 		}
 		
 		startAllThreads();
 	}
 	
-	public Service getService(ServiceNames serviceTo) throws ContainerException, PointSortieException
+	public Service getService(ServiceNames serviceTo) throws ContainerException, InterruptedException
 	{
 		return getServiceDisplay(null, serviceTo);
 	}
 	
 	@SuppressWarnings("unused")
-	private Service getServiceDisplay(ServiceNames serviceFrom, ServiceNames serviceTo) throws ContainerException, PointSortieException
+	private Service getServiceDisplay(ServiceNames serviceFrom, ServiceNames serviceTo) throws ContainerException, InterruptedException
 	{
 		if(showGraph && !serviceTo.equals(ServiceNames.LOG))
 		{
@@ -246,7 +241,7 @@ public class Container
 	 * @throws FinMatchException
 	 * @throws PointSortieException
 	 */
-	private Service getServiceRecursif(ServiceNames serviceRequested) throws ContainerException, PointSortieException
+	private Service getServiceRecursif(ServiceNames serviceRequested) throws ContainerException, InterruptedException
 	{
     	// instancie le service demandé lors de son premier appel 
     	boolean updateConfig = true;
@@ -379,24 +374,24 @@ public class Container
 	/**
 	 * Démarrage de tous les threads
 	 */
-	private void startAllThreads()
+	private void startAllThreads() throws InterruptedException
 	{
 		if(threadsStarted)
 			return;
-		try {
 			for(ServiceNames s: ServiceNames.values())
 			{
 				if(s.isThread())
 				{
 					log.debug("Démarrage de "+s);
-					((Thread)getService(s)).start();
+					try {
+						((Thread)getService(s)).start();
+					} catch (ContainerException e) {
+						e.printStackTrace();
+					}
 				}
 			}
 			Runtime.getRuntime().addShutdownHook(new ThreadExit(this));
 			threadsStarted = true;
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 		log.debug("Démarrage des threads fini");
 	}
 	
@@ -436,20 +431,19 @@ public class Container
 	 */
 	private void printMessage(String filename)
 	{
-		try
-		{
-			BufferedReader reader = new BufferedReader(new FileReader(filename));
-			String line;
-			    
-			while((line = reader.readLine()) != null)
-				System.out.println(line);
-			    
-			reader.close();
-		}
-		catch (Exception e)
-		{
-			System.out.println(e);
-		}
+			BufferedReader reader;
+			try {
+				reader = new BufferedReader(new FileReader(filename));
+				String line;
+				    
+				while((line = reader.readLine()) != null)
+					System.out.println(line);
+				    
+				reader.close();
+			} catch (IOException e) {
+				log.warning(e);
+			}
+
 	}
 	
 }

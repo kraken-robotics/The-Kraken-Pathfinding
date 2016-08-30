@@ -2,6 +2,7 @@ package pathfinding.astarCourbe.arcs;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.math.BigDecimal;
@@ -443,7 +444,7 @@ public class ClothoidesComputer implements Service
             oos.close();
         	log.debug("Sauvegarde terminée");
         }
-        catch(Exception e)
+        catch(IOException e)
         {
             log.critical("Erreur lors de la sauvegarde des points de la clothoïde !");
             e.printStackTrace();
@@ -465,7 +466,7 @@ public class ClothoidesComputer implements Service
             ois.close();
             return true;
         }
-        catch(Exception e)
+        catch(IOException | ClassNotFoundException e)
         {
         	log.critical("Chargement échoué !");
         }

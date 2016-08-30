@@ -17,7 +17,6 @@ import pathfinding.dstarlite.GridSpace;
 import robot.Cinematique;
 import robot.Speed;
 import utils.Config;
-import utils.Sleep;
 import utils.Vec2;
 import utils.permissions.ReadOnly;
 
@@ -77,7 +76,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
 			
 			if(Config.graphicObstacles)
 			{
-				Sleep.sleep(100);
+				Thread.sleep(100);
 				Fenetre.getInstance().addObstacleEnBiais(new ObstacleRectangular(arccubique.arcs.get(i).getPosition(), 10, 10, 0));
 			}
 		}
@@ -125,7 +124,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
 				System.out.println(arc[a].arcselems[i]);
 				if(Config.graphicObstacles)
 				{
-					Sleep.sleep(100);
+					Thread.sleep(100);
 					Fenetre.getInstance().addObstacleEnBiais(new ObstacleRectangular(arc[a].arcselems[i].getPosition(), 10, 10, 0));
 				}
 			}
@@ -148,12 +147,12 @@ public class JUnit_Pathfinding extends JUnit_Test {
 		gridspace.addObstacle(new Vec2<ReadOnly>(200, 800), false);
 		pathfinding.computeNewPath(new Vec2<ReadOnly>(-1000, 200), new Vec2<ReadOnly>(1200, 1200));
 		pathfinding.itineraireBrut();		
-		Sleep.sleep(500);
+		Thread.sleep(500);
 		log.debug("RECALCUL");
 		gridspace.addObstacle(new Vec2<ReadOnly>(600, 1300), false);
 		pathfinding.updatePath(new Vec2<ReadOnly>(600,1300));
 		pathfinding.itineraireBrut();
-		Sleep.sleep(4000);
+		Thread.sleep(4000);
 		pathfinding.updatePath(new Vec2<ReadOnly>(-800,1300));
 		pathfinding.itineraireBrut();
 		log.debug("RECALCUL");
