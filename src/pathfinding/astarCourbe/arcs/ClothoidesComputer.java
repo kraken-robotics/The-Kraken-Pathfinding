@@ -447,7 +447,7 @@ public class ClothoidesComputer implements Service
         catch(IOException e)
         {
             log.critical("Erreur lors de la sauvegarde des points de la clothoïde !");
-            e.printStackTrace();
+            log.warning(e);
         }
     }
 	

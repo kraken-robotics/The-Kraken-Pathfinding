@@ -2,7 +2,6 @@ package pathfinding.astarCourbe;
 
 import pathfinding.RealGameState;
 import container.Service;
-import exceptions.FinMatchException;
 import utils.Config;
 import utils.Log;
 

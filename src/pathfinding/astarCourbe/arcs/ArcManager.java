@@ -17,7 +17,6 @@ import container.Service;
 import utils.Config;
 import utils.ConfigInfo;
 import utils.Log;
-import exceptions.FinMatchException;
 
 /**
  * Réalise des calculs pour l'AStarCourbe.

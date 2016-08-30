@@ -1,7 +1,6 @@
 package obstacles.types;
 
 import robot.Cinematique;
-import exceptions.FinMatchException;
 import obstacles.ObstaclesFixes;
 import utils.Vec2;
 import utils.permissions.ReadOnly;

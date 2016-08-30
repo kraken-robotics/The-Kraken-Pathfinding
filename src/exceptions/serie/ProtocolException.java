@@ -1,4 +1,4 @@
-package exceptions;
+package exceptions.serie;
 
 /**
  * Exception levée par la série en cas d'erreur de protocole

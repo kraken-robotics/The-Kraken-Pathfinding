@@ -49,7 +49,7 @@ public class ThreadPathfinding extends Thread implements Service
 						pathfinding.updatePath();
 					}
 				} catch (PathfindingException e) {
-					e.printStackTrace();
+					log.warning(e);
 				}
 			}
 		} catch (InterruptedException e) {

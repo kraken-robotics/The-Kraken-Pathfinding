@@ -6,7 +6,6 @@ import org.junit.Test;
 
 import container.ServiceNames;
 import enums.RobotColor;
-import exceptions.FinMatchException;
 import robot.RobotChrono;
 import robot.RobotReal;
 import robot.Speed;

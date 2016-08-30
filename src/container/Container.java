@@ -390,7 +390,7 @@ public class Container
 				try {
 					((Thread)getService(s)).start();
 				} catch (ContainerException e) {
-					e.printStackTrace();
+					log.critical(e);
 				}
 			}
 		}

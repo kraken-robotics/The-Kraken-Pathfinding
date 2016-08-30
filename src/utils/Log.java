@@ -164,13 +164,11 @@ public class Log implements Service
 					writer = new FileWriter(file); 
 					debug("Un fichier de sauvegarde est utilisé: "+file);
 				} catch (IOException e1) {
-					e.printStackTrace();
-					critical("Erreur (1) lors de la création du fichier. Sauvegarde annulée.");
+					critical("Erreur (1) lors de la création du fichier : "+e1);
 					sauvegarde_fichier = false;
 				}
 			} catch (IOException e) {
-				e.printStackTrace();
-				critical("Erreur (2) lors de la création du fichier. Sauvegarde annulée.");
+				critical("Erreur (2) lors de la création du fichier : "+e);
 				sauvegarde_fichier = false;
 			}
 		}
