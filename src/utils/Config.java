@@ -26,11 +26,10 @@ public class Config implements Service
 	public static final boolean debugAsser = false;	
 	public static final boolean debugSerie = true;
 	public static final boolean debugSerieTrame = true;
-	// Permet de savoir si le match a démarré et quand
+
 	public static final boolean graphicDStarLite = false;
 	public static final boolean graphicThetaStar = false;
 	public static final boolean graphicObstacles = false;
-	public static final boolean simuleSerie = false;
 	
 	private String name_config_file = "config.ini";
 	private volatile Properties properties = new Properties();
@@ -153,7 +152,8 @@ public class Config implements Service
 	{
 		log.debug("Configuration initiale");
 		for(ConfigInfo info: ConfigInfo.values())
-			log.debug(info+" = "+getString(info));
+			if(info.isConstant())
+				log.debug(info+" = "+getString(info));
 	}
 	
 	/**

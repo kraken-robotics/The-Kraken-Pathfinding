@@ -1,5 +1,6 @@
 package utils;
 
+import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -19,8 +20,7 @@ public class Log implements Service
 {
 	// Dépendances
 	private boolean logClosed = false;
-	private GregorianCalendar calendar = new GregorianCalendar();
-	private FileWriter writer = null;
+	private BufferedWriter writer = null;
 
 	// Ne pas afficher les messages de bug permet d'économiser du temps CPU
 	private boolean affiche_debug = true;
@@ -48,7 +48,10 @@ public class Log implements Service
 	 */
 	public void debug(Object message)
 	{
-		ecrire(" ", message, true, System.out);
+		if(fastLog)
+			ecrireFast(message, true, System.out);
+		else
+			ecrire(" ", message, true, System.out);
 	}
 
 	/**
@@ -58,7 +61,10 @@ public class Log implements Service
 	 */
 	public void warning(Object message)
 	{
-		ecrire(" WARNING ", message, false, System.out);
+		if(fastLog)
+			ecrireFast(message, false, System.out);
+		else
+			ecrire(" WARNING ", message, false, System.out);
 	}
 	
 	/**
@@ -68,7 +74,10 @@ public class Log implements Service
 	 */
 	public void critical(Object message)
 	{
-		ecrire(" CRITICAL ", message, false, System.err);
+		if(fastLog)
+			ecrireFast(message, false, System.err);
+		else
+			ecrire(" CRITICAL ", message, false, System.err);
 	}
 
 	/**
@@ -86,18 +95,21 @@ public class Log implements Service
 		{
 			long date = System.currentTimeMillis() - dateInitiale;
 			String affichage;
-//			String heure = calendar.get(Calendar.HOUR_OF_DAY)+":"+calendar.get(Calendar.MINUTE)+":"+calendar.get(Calendar.SECOND)+","+calendar.get(Calendar.MILLISECOND);
-			if(fastLog)
-				affichage = date+" > "+message;
-			else
-			{
-				StackTraceElement elem = Thread.currentThread().getStackTrace()[3];
-				affichage = date+niveau+elem.getClassName().substring(elem.getClassName().lastIndexOf(".")+1)+/*"."+elem.getMethodName()+*/":"+elem.getLineNumber()+" > "+message;//+"\u001B[0m";
-			}
+			StackTraceElement elem = Thread.currentThread().getStackTrace()[3];
+			affichage = date+niveau+elem.getClassName().substring(elem.getClassName().lastIndexOf(".")+1)+":"+elem.getLineNumber()+" > "+message;//+"\u001B[0m";
+
 			if(!debug || affiche_debug)
 			{
 				if(sauvegarde_fichier)
-					ecrireFichier(affichage);
+				{
+					try{
+					     writer.write(message+"\n");
+					}
+					catch(IOException e)
+					{
+						e.printStackTrace();
+					}
+				}
 //				else
 					ou.println(affichage);
 			}
@@ -105,20 +117,38 @@ public class Log implements Service
 	}
 	
 	/**
-	 * Ecrit dans un fichier. Utilisé pendant la coupe.
+	 * Affichage rapide
+	 * @param niveau
 	 * @param message
+	 * @param couleur
+	 * @param ou
 	 */
-	private void ecrireFichier(String message)
+	private void ecrireFast(Object message, boolean debug, PrintStream ou)
 	{
-		try{
-		     writer.write(message+"\n");
-		}
-		catch(IOException e)
+		if(logClosed)
+			System.out.println("WARNING * Log fermé! Message: "+message);
+		else if(!debug || affiche_debug || sauvegarde_fichier)
 		{
-			e.printStackTrace();
+			long date = System.currentTimeMillis() - dateInitiale;
+			String affichage = date+" > "+message;
+			if(!debug || affiche_debug)
+			{
+				if(sauvegarde_fichier)
+				{
+					try{
+					     writer.write(message+"\n");
+					}
+					catch(IOException e)
+					{
+						e.printStackTrace();
+					}					
+				}
+//				else
+					ou.println(affichage);
+			}
 		}
 	}
-
+	
 	/**
 	 * Sorte de destructeur, dans lequel le fichier est sauvegardé.
 	 */
@@ -128,7 +158,10 @@ public class Log implements Service
 			try {
 				debug("Sauvegarde du fichier de logs");
 				if(writer != null)
+				{
+					writer.flush();
 					writer.close();
+				}
 			}
 			catch(IOException e)
 			{
@@ -150,10 +183,11 @@ public class Log implements Service
 		fastLog = config.getBoolean(ConfigInfo.FAST_LOG);
 		if(sauvegarde_fichier)
 		{
+			GregorianCalendar calendar = new GregorianCalendar();
 			String heure = calendar.get(Calendar.HOUR_OF_DAY)+":"+calendar.get(Calendar.MINUTE)+":"+calendar.get(Calendar.SECOND);
 			String file = "logs/LOG-"+heure+".txt";
 			try {
-				writer = new FileWriter(file); 
+				writer = new BufferedWriter(new FileWriter(file)); 
 				debug("Un fichier de sauvegarde est utilisé: "+file);
 			}
 			catch(FileNotFoundException e)
@@ -161,7 +195,7 @@ public class Log implements Service
 				try {
 					Runtime.getRuntime().exec("mkdir logs");
 					Thread.sleep(500);
-					writer = new FileWriter(file); 
+					writer = new BufferedWriter(new FileWriter(file));
 					debug("Un fichier de sauvegarde est utilisé: "+file);
 				} catch (IOException e1) {
 					critical("Erreur (1) lors de la création du fichier : "+e1);

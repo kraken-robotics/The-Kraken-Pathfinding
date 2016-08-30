@@ -71,7 +71,7 @@ public class Container
 	private FileWriter fw;
 
 	/**
-	 * Fonction à appeler à la fin du programme.
+	 * Fonction appelé automatiquement à la fin du programme.
 	 * ferme la connexion serie, termine les différents threads, et ferme le log.
 	 * @throws InterruptedException 
 	 * @throws ContainerException 
@@ -96,7 +96,7 @@ public class Container
 		Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
 		for(Thread t : threadSet)
 		{
-			if(!t.getName().equals("ThreadExit") && t.getName().startsWith("Thread"))
+			if(!t.getName().equals(Thread.currentThread().getName()) && t.getName().startsWith("Thread"))
 				log.critical("Thread "+t.getName()+" pas arrêté !");
 		}
 		
@@ -242,8 +242,6 @@ public class Container
 		return getServiceRecursif(serviceTo);
 	}
 
-
-	@SuppressWarnings("unused")
 	/**
 	 * Fournit un service. Deux possibilités: soit il n'est pas encore instancié et on l'instancie.
 	 * Soit il est déjà instancié et on le renvoie.
@@ -291,10 +289,10 @@ public class Container
 			instanciedServices[serviceRequested.ordinal()] = (Service)new BufferIncomingOrder((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG));
 		else if(serviceRequested == ServiceNames.OUTGOING_ORDER_BUFFER)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new BufferOutgoingOrder((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG));
-		else if(serviceRequested == ServiceNames.SERIE_COUCHE_PHYSIQUE && !Config.simuleSerie)
+		else if(serviceRequested == ServiceNames.SERIE_COUCHE_PHYSIQUE && !config.getBoolean(ConfigInfo.SIMULE_SERIE))
 			instanciedServices[serviceRequested.ordinal()] = (Service)new SerieCouchePhysique((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
 		 													 (BufferIncomingBytes)getServiceDisplay(serviceRequested, ServiceNames.BUFFER_INCOMING_BYTES));
-		else if(serviceRequested == ServiceNames.SERIE_COUCHE_PHYSIQUE && Config.simuleSerie)
+		else if(serviceRequested == ServiceNames.SERIE_COUCHE_PHYSIQUE && config.getBoolean(ConfigInfo.SIMULE_SERIE))
 			instanciedServices[serviceRequested.ordinal()] = (Service)new SerialSimulation((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG));
 		else if(serviceRequested == ServiceNames.BUFFER_INCOMING_BYTES)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new BufferIncomingBytes((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG));
@@ -442,7 +440,7 @@ public class Container
 	}
 	
 	/**
-	 * Affichage un fichier
+	 * Affichage d'un fichier
 	 * @param filename
 	 */
 	private void printMessage(String filename)

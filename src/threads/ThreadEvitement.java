@@ -36,16 +36,14 @@ public class ThreadEvitement extends Thread implements Service
 		try {
 			while(true)
 			{
+				ArcCourbe a = null;
 				synchronized(chemin)
 				{
 					if(chemin.isEmpty())
 						chemin.wait();
-					while(!chemin.isEmpty())
-					{
-						ArcCourbe a = chemin.poll(); // on envoie les chemins un par un
-						serie.envoieArcCourbe(a);
-					}
+					a = chemin.poll(); // on envoie les chemins un par un
 				}			
+				serie.envoieArcCourbe(a);
 			}
 		} catch (InterruptedException e2) {
 			log.debug("Arrêt de "+Thread.currentThread().getName());

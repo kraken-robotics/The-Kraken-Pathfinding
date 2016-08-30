@@ -5,7 +5,7 @@ import exceptions.ContainerException;
 
 
 /**
- * Thread qui sera exécuté à la fin de l'exécution
+ * Thread qui sera exécuté à la fin du programme
  * @author pf
  *
  */

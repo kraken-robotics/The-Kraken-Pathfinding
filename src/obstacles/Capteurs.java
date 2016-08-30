@@ -28,7 +28,6 @@ public class Capteurs implements Service {
 	// Il y a seulement 4 capteurs de détection d'ennemi
 	private static final int nbCapteurs = 2;
 	
-	private int distanceUrgence;
 	private int rayonEnnemi;
     private int horizonCapteurs;
 
@@ -87,7 +86,6 @@ public class Capteurs implements Service {
 		horizonCapteurs = config.getInt(ConfigInfo.HORIZON_CAPTEURS);
 		horizonCapteursSquared = config.getInt(ConfigInfo.HORIZON_CAPTEURS);
 		horizonCapteursSquared *= horizonCapteursSquared;
-		distanceUrgence = config.getInt(ConfigInfo.DISTANCE_URGENCE);
 	}
 
 	/**
@@ -125,13 +123,13 @@ public class Capteurs implements Service {
 				if(positionEnnemi.x > 1500 || positionEnnemi.x < -1500 || positionEnnemi.y > 2000 || positionEnnemi.y < 0)
 					continue; // hors table
 				
-				if(data.mesures[i] < distanceUrgence)
+/*				if(data.mesures[i] < distanceUrgence)
 				{
 					if(Config.debugCapteurs)
 						log.warning("Ennemi !");
 					// TODO
 //					requete.set(RequeteType.ENNEMI_SUR_CHEMIN);
-				}
+				}*/
 				
 //				if(Config.debugCapteurs)
 //					log.debug("Obstacle vu par un capteur: "+positionEnnemi);
