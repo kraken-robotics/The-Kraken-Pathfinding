@@ -30,6 +30,7 @@ public class ThreadPathfinding extends Thread implements Service
 	public void run()
 	{
 		Thread.currentThread().setName("ThreadPathfinding");
+		log.debug("Démarrage de "+Thread.currentThread().getName());
 		try {
 			while(true)
 			{
@@ -52,7 +53,7 @@ public class ThreadPathfinding extends Thread implements Service
 				}
 			}
 		} catch (InterruptedException e) {
-			log.debug(e);
+			log.debug("Arrêt de "+Thread.currentThread().getName());
 		}
 	}
 

@@ -124,8 +124,6 @@ public class Log implements Service
 	 */
 	public void close()
 	{
-		debug("Fin du log");
-		
 		if(sauvegarde_fichier)
 			try {
 				debug("Sauvegarde du fichier de logs");
@@ -136,8 +134,7 @@ public class Log implements Service
 			{
 				e.printStackTrace();
 			}
-		
-		debug("Et n'oubliez pas : il faut dire NON à l'égoïsme artistique !");
+
 		logClosed = true;
 	}
 	

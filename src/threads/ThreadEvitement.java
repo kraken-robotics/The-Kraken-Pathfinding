@@ -32,6 +32,7 @@ public class ThreadEvitement extends Thread implements Service
 	public void run()
 	{
 		Thread.currentThread().setName("ThreadEvitement");
+		log.debug("Démarrage de "+Thread.currentThread().getName());
 		try {
 			while(true)
 			{
@@ -47,7 +48,7 @@ public class ThreadEvitement extends Thread implements Service
 				}			
 			}
 		} catch (InterruptedException e2) {
-			log.debug(e2);
+			log.debug("Arrêt de "+Thread.currentThread().getName());
 		}
 	}
 	

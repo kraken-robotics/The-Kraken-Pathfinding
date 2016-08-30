@@ -28,6 +28,7 @@ public class ThreadConfig extends Thread implements Service {
 	public void run()
 	{
 		Thread.currentThread().setName("ThreadConfig");
+		log.debug("Démarrage de "+Thread.currentThread().getName());
 		try {
 			while(true)
 			{
@@ -39,7 +40,7 @@ public class ThreadConfig extends Thread implements Service {
 				container.updateConfigForAll();
 			}
 		} catch (InterruptedException e) {
-			log.debug(e);
+			log.debug("Arrêt de "+Thread.currentThread().getName());
 		}
 	}
 

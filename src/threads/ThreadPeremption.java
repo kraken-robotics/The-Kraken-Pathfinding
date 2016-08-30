@@ -30,6 +30,7 @@ public class ThreadPeremption extends Thread implements Service
 	public void run()
 	{
 		Thread.currentThread().setName("ThreadPeremption");
+		log.debug("Démarrage de "+Thread.currentThread().getName());
 		try {
 			while(true)
 			{

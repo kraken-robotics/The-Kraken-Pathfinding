@@ -87,6 +87,7 @@ public class Container
 			threadsStarted = false;
 		}
 
+		Thread.sleep(100); // on attend la fermeture des autres threads
 			
 		log.debug("Fermeture de la série");
 		// fermeture de la connexion série
@@ -109,7 +110,7 @@ public class Container
 		log.debug("Fermeture du log");
 		log.close();
 		nbInstances--;
-		System.out.println("Container détruit.");
+		System.out.println("Singularité évaporée.");
 		System.out.println();
 		printMessage("outro.txt");
 	}
@@ -159,7 +160,7 @@ public class Container
 		System.out.println("Java : "+System.getProperty("java.vendor")+" "+System.getProperty("java.version")+", max memory : "+Math.round(100.*Runtime.getRuntime().maxMemory()/(1024.*1024.*1024.))/100.+"G, available processors : "+Runtime.getRuntime().availableProcessors());
 		System.out.println();
 
-		System.out.println("Remember, with great power comes great current squared times resistance !");
+		System.out.println("    Remember, with great power comes great current squared times resistance !");
 		System.out.println();
 		
 		// affiche la configuration avant toute autre chose
@@ -377,21 +378,24 @@ public class Container
 	private void startAllThreads() throws InterruptedException
 	{
 		if(threadsStarted)
+		{
+			log.warning("Threads déjà démarrés !");
 			return;
-			for(ServiceNames s: ServiceNames.values())
+		}
+		
+		for(ServiceNames s: ServiceNames.values())
+		{
+			if(s.isThread())
 			{
-				if(s.isThread())
-				{
-					log.debug("Démarrage de "+s);
-					try {
-						((Thread)getService(s)).start();
-					} catch (ContainerException e) {
-						e.printStackTrace();
-					}
+				try {
+					((Thread)getService(s)).start();
+				} catch (ContainerException e) {
+					e.printStackTrace();
 				}
 			}
-			Runtime.getRuntime().addShutdownHook(new ThreadExit(this));
-			threadsStarted = true;
+		}
+		Runtime.getRuntime().addShutdownHook(new ThreadExit(this));
+		threadsStarted = true;
 		log.debug("Démarrage des threads fini");
 	}
 	
