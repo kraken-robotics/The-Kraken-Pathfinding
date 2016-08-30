@@ -15,9 +15,8 @@ import pathfinding.astarCourbe.arcs.ArcCourbe;
 
 public class CheminPathfinding implements Service
 {
+	public Object mutexRead = new Object(), mutexWrite = new Object();
 	protected Log log;
-	private volatile boolean doitFixerCheminPartiel;
-	private volatile boolean finish;
 	
 	private volatile ArcCourbe[] chemin = new ArcCourbe[256];
 	private int indexFirst = 0;
@@ -36,22 +35,6 @@ public class CheminPathfinding implements Service
 	public void useConfig(Config config)
 	{}
 	
-	/**
-	 * Le pathfinding demande s'il faut fixer le chemin partiel
-	 * @return
-	 */
-	public synchronized boolean doitFixerCheminPartiel()
-	{
-		boolean out = doitFixerCheminPartiel;
-		doitFixerCheminPartiel = false;
-		return out;
-	}
-
-	public synchronized void demandeCheminPartiel()
-	{
-		doitFixerCheminPartiel = true;
-	}
-
 	public ArcCourbe poll()
 	{
 		return chemin[indexFirst++];
@@ -59,37 +42,39 @@ public class CheminPathfinding implements Service
 
 	public boolean isEmpty()
 	{
-		return indexFirst == indexLast;
-	}
-
-	public void setFinish(boolean finish)
-	{
-		this.finish = finish;
-	}
-	
-	public boolean isFinish()
-	{
-		return finish;
+		synchronized(mutexWrite)
+		{
+			return indexFirst == indexLast;
+		}
 	}
 
 	public void add(ArcCourbe arc)
 	{
-		arc.indexTrajectory = indexLast;
-		chemin[indexLast++] = arc;
-		
-		// si on revient au début, c'est qu'il y a un problème ou que le buffer est sous-dimensionné
-		if(indexLast == indexFirst)
-			log.critical("Buffer trop petit !");
+		synchronized(mutexWrite)
+		{
+			arc.indexTrajectory = indexLast;
+			chemin[indexLast++] = arc;
+			
+			// si on revient au début, c'est qu'il y a un problème ou que le buffer est sous-dimensionné
+			if(indexLast == indexFirst)
+				log.critical("Buffer trop petit !");
+		}
 	}
 
 	public void clear()
 	{
-		indexLast = indexFirst;
+		synchronized(mutexRead)
+		{
+			indexLast = indexFirst;
+		}
 	}
 
 	public void setCurrentIndex(int indexTrajectory)
 	{
-		indexFirst = indexTrajectory;
+		synchronized(mutexWrite)
+		{
+			indexFirst = indexTrajectory;
+		}
 	}
 
 }

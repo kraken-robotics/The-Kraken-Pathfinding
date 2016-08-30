@@ -51,6 +51,7 @@ public enum ConfigInfo {
 	DISTANCE_DEGAGEMENT_ROBOT("200", true),
 	MARGE("20", true),
 	COURBURE_MAX("10.", true),
+	PATHFINDING_UPDATE_TIMEOUT("50", true),
 
 	/**
 	 * Paramètres de la série

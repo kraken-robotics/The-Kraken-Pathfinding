@@ -26,7 +26,6 @@ import utils.Log;
  * AStar* simplifié, qui lisse le résultat du D* Lite et fournit une trajectoire courbe
  * On suppose qu'il n'y a jamais collision de noeuds
  * (je parle de collision dans le sens "égalité", pas "robot qui fonce dans le mur"…)
- * Cette classe est utilisée tel quel pour la version "planification". La version "dynamique" est dans une autre classe.
  * @author pf
  *
  */
@@ -44,6 +43,9 @@ public class AStarCourbe implements Service
 	private AStarCourbeNode depart;
 	private CheminPathfinding chemin;
 	private Speed vitesseMax;
+	
+	private volatile boolean partialPathNeeded = false;
+	private volatile boolean isUpdating = false;
 	
 	/**
 	 * Comparateur de noeud utilisé par la priority queue
@@ -86,7 +88,7 @@ public class AStarCourbe implements Service
 	 * @return
 	 */
 	@SuppressWarnings("unused")
-	protected final CheminPathfinding process()
+	protected final void process()
 	{
 		depart.came_from = null;
 		depart.came_from_arc = null;
@@ -131,14 +133,14 @@ public class AStarCourbe implements Service
 				{
 					memorymanager.empty();
 					log.critical("AStarCourbe n'a pas trouvé de chemin !");
-					return null;
+					return;
 				}
 
 				log.debug("On est arrivé !");
 				partialReconstruct(current, true);
 				log.debug(memorymanager.getSize());
 				memorymanager.empty();
-				return chemin;
+				return;
 			}
 
 			// On parcourt les voisins de current
@@ -146,8 +148,9 @@ public class AStarCourbe implements Service
 			arcmanager.reinitIterator(current, directionstrategyactuelle);
 			while(arcmanager.hasNext())
 			{
-				if(doitFixerCheminPartiel())
+				if(partialPathNeeded)
 				{
+					partialPathNeeded = false;
 					partialReconstruct(current, false);
 					// Il est nécessaire de copier current dans depart car current
 					// est effacé quand le memorymanager est vidé. Cette copie n'est effectuée qu'ici
@@ -184,7 +187,7 @@ public class AStarCourbe implements Service
 		 */
 		memorymanager.empty();
 		log.critical("AStarCourbe n'a pas trouvé de chemin !");
-		return null;
+		return;
 	}
 	
 	/**
@@ -245,6 +248,7 @@ public class AStarCourbe implements Service
 	
 	public synchronized void updatePath() throws PathfindingException
 	{
+		isUpdating = true;
 		synchronized(state)
 		{
 			depart.init();
@@ -255,11 +259,17 @@ public class AStarCourbe implements Service
 		dstarlite.updatePath(((RobotChrono)depart.state.robot).getCinematique().getPosition());
 		chemin.clear();
 		process();
+		isUpdating = false;
 	}
 
-	protected boolean doitFixerCheminPartiel()
+	public void givePartialPath()
 	{
-		return chemin.isEmpty();
+		partialPathNeeded = true;
+	}
+
+	public boolean isUpdating()
+	{
+		return isUpdating;
 	}
 
 	
