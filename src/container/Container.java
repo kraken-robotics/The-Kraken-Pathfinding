@@ -36,6 +36,7 @@ import table.Table;
 import threads.ThreadCapteurs;
 import threads.ThreadConfig;
 import threads.ThreadEvitement;
+import threads.ThreadExit;
 import threads.ThreadPathfinding;
 import threads.ThreadPeremption;
 import threads.serie.ThreadSerialInputCoucheOrdre;
@@ -73,7 +74,6 @@ public class Container
 	 * Fonction à appeler à la fin du programme.
 	 * ferme la connexion serie, termine les différents threads, et ferme le log.
 	 */
-	@SuppressWarnings("deprecation")
 	public void destructor()
 	{
 		// arrêt des threads
@@ -82,13 +82,7 @@ public class Container
 				for(ServiceNames s: ServiceNames.values())
 				{
 					if(s.isThread())
-					{
-						log.debug("Arrêt de "+s);
-//						((ThreadAvecStop)getServicePrivate(s)).setFinThread();
-						// C'est déprécié. Mais ce n'est utilisé qu'en fin de match ;
-						// en fait, ce n'est utile que pour les tests
-						((Thread)getService(s)).stop();
-					}
+						((Thread)getService(s)).interrupt();
 				}
 				threadsStarted = false;
 			} catch (Exception e) {
@@ -162,7 +156,7 @@ public class Container
 		 * Infos diverses
 		 */
 		System.out.println("System : "+System.getProperty("os.name")+" "+System.getProperty("os.version")+" "+System.getProperty("os.arch"));
-		System.out.println("Java : "+System.getProperty("java.vendor")+" "+System.getProperty("java.version"));
+		System.out.println("Java : "+System.getProperty("java.vendor")+" "+System.getProperty("java.version")+", max memory : "+Math.round(100.*Runtime.getRuntime().maxMemory()/(1024.*1024.*1024.))/100.+"G, available processors : "+Runtime.getRuntime().availableProcessors());
 		System.out.println();
 
 		System.out.println("Remember, with great power comes great current squared times resistance !");
@@ -321,7 +315,8 @@ public class Container
 																		(Config)getServiceDisplay(serviceRequested, ServiceNames.CONFIG),
 																		(BufferIncomingOrder)getServiceDisplay(serviceRequested, ServiceNames.INCOMING_ORDER_BUFFER),
 																		(IncomingDataBuffer)getServiceDisplay(serviceRequested, ServiceNames.INCOMING_DATA_BUFFER),
-			                                                             (RobotReal)getServiceDisplay(serviceRequested, ServiceNames.ROBOT_REAL));
+			                                                            (RobotReal)getServiceDisplay(serviceRequested, ServiceNames.ROBOT_REAL),
+																        (CheminPathfinding)getServiceDisplay(serviceRequested, ServiceNames.CHEMIN_PATHFINDING));
 		else if(serviceRequested == ServiceNames.THREAD_SERIAL_INPUT_COUCHE_TRAME)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadSerialInputCoucheTrame((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
 																		(SerieCoucheTrame)getServiceDisplay(serviceRequested, ServiceNames.SERIE_COUCHE_TRAME),
@@ -397,6 +392,7 @@ public class Container
 					((Thread)getService(s)).start();
 				}
 			}
+			Runtime.getRuntime().addShutdownHook(new ThreadExit(this));
 			threadsStarted = true;
 		} catch (Exception e) {
 			e.printStackTrace();

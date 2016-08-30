@@ -32,9 +32,9 @@ public class ThreadEvitement extends Thread implements Service
 	public void run()
 	{
 		Thread.currentThread().setName("ThreadEvitement");
-		while(true)
-		{
-			try {
+		try {
+			while(true)
+			{
 				synchronized(chemin)
 				{
 					if(chemin.isEmpty())
@@ -45,10 +45,9 @@ public class ThreadEvitement extends Thread implements Service
 						serie.envoieArcCourbe(a);
 					}
 				}			
-			} catch (InterruptedException e2) {
-				e2.printStackTrace();
 			}
-
+		} catch (InterruptedException e2) {
+			log.debug(e2);
 		}
 	}
 	

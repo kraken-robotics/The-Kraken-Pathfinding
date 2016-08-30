@@ -30,29 +30,29 @@ public class ThreadPathfinding extends Thread implements Service
 	public void run()
 	{
 		Thread.currentThread().setName("ThreadPathfinding");
-		while(true)
-		{
-			/**
-			 * En attente d'une modification des obstacles
-			 */
-			synchronized(gridspace)
+		try {
+			while(true)
 			{
-				try {
+				/**
+				 * En attente d'une modification des obstacles
+				 */
+				synchronized(gridspace)
+				{
 					gridspace.wait();
-				} catch (InterruptedException e) {
+				}
+				log.debug("Recalcul de trajectoire !");
+				try {
+					synchronized(this)
+					{
+						notify(); // on prévient le thread d'évitement qu'un nouveau chemin est en calcul
+						pathfinding.updatePath();
+					}
+				} catch (PathfindingException e) {
 					e.printStackTrace();
 				}
 			}
-			log.debug("Recalcul de trajectoire !");
-			try {
-				synchronized(this)
-				{
-					notify(); // on prévient le thread d'évitement qu'un nouveau chemin est en calcul
-					pathfinding.updatePath();
-				}
-			} catch (PathfindingException e) {
-				e.printStackTrace();
-			}
+		} catch (InterruptedException e) {
+			log.debug(e);
 		}
 	}
 

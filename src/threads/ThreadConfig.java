@@ -28,18 +28,18 @@ public class ThreadConfig extends Thread implements Service {
 	public void run()
 	{
 		Thread.currentThread().setName("ThreadConfig");
-		while(true)
-		{
-			synchronized(config)
+		try {
+			while(true)
 			{
-				try {
+				synchronized(config)
+				{
 					config.wait();
-				} catch (InterruptedException e) {
-					e.printStackTrace();
 				}
+				
+				container.updateConfigForAll();
 			}
-			
-			container.updateConfigForAll();
+		} catch (InterruptedException e) {
+			log.debug(e);
 		}
 	}
 
