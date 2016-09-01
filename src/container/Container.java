@@ -35,7 +35,6 @@ import serie.SerialSimulation;
 import table.Table;
 import threads.ThreadCapteurs;
 import threads.ThreadConfig;
-import threads.ThreadEvitement;
 import threads.ThreadExit;
 import threads.ThreadPathfinding;
 import threads.ThreadPeremption;
@@ -307,10 +306,6 @@ public class Container
 		else if(serviceRequested == ServiceNames.THREAD_PEREMPTION)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadPeremption((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
 																		(GridSpace)getServiceDisplay(serviceRequested, ServiceNames.GRID_SPACE));
-		else if(serviceRequested == ServiceNames.THREAD_EVITEMENT)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadEvitement((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
-																		(BufferOutgoingOrder)getServiceDisplay(serviceRequested, ServiceNames.OUTGOING_ORDER_BUFFER),
-																		(CheminPathfinding)getServiceDisplay(serviceRequested, ServiceNames.CHEMIN_PATHFINDING));
 		else if(serviceRequested == ServiceNames.THREAD_CAPTEURS)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadCapteurs((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
 																		(IncomingDataBuffer)getServiceDisplay(serviceRequested, ServiceNames.INCOMING_DATA_BUFFER),
