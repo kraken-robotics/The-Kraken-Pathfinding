@@ -18,6 +18,7 @@ import exceptions.PathfindingException;
 import robot.Cinematique;
 import robot.DirectionStrategy;
 import robot.RobotChrono;
+import robot.RobotReal;
 import robot.Speed;
 import utils.Config;
 import utils.Log;
@@ -42,6 +43,8 @@ public class AStarCourbe implements Service
 	private Cinematique arrivee;
 	private AStarCourbeNode depart;
 	private CheminPathfinding chemin;
+	private GridSpace gridspace;
+	
 	private Speed vitesseMax;
 	
 	private volatile boolean partialPathNeeded = false;
@@ -70,18 +73,42 @@ public class AStarCourbe implements Service
 	/**
 	 * Constructeur du AStarCourbe
 	 */
-	public AStarCourbe(Log log, DStarLite dstarlite, ArcManager arcmanager, RealGameState state, CheminPathfinding chemin, MemoryManager memorymanager)
+	public AStarCourbe(Log log, DStarLite dstarlite, ArcManager arcmanager, RealGameState state, CheminPathfinding chemin, MemoryManager memorymanager, GridSpace gridspace)
 	{
 		this.log = log;
 		this.arcmanager = arcmanager;
-//		this.state = state;
+		this.state = state;
 		this.memorymanager = memorymanager;
 		this.chemin = chemin;
 		depart = new AStarCourbeNode();
 		this.state = state;
 		this.dstarlite = dstarlite;
+		this.gridspace = gridspace;
 	}
 	
+	public void doYourJob() throws InterruptedException
+	{
+		while(true)
+		{/*
+			wait(); // en attente d'une nouvelle destination
+			computeNewPath(arrivee, ejecteGameElement, directionstrategy);
+			do {
+				gridspace.wait();
+				
+				boolean updateDone;
+				do {
+					if(gridspace.needUpdate())
+					{
+						gridspace.add();
+						dstarlite.updatePath(((RobotReal)state.robot).getPositionGridSpace());
+						
+					}
+					updateDone = updatePath();
+				} while(!updateDone);
+			} while(pasArrive);*/
+		}
+	}
+
 	/**
 	 * Le calcul du AStarCourbe
 	 * @param depart
@@ -271,6 +298,5 @@ public class AStarCourbe implements Service
 	{
 		return isUpdating;
 	}
-
 	
 }

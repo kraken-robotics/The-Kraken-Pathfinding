@@ -1,9 +1,7 @@
 package threads;
 
 import container.Service;
-import exceptions.PathfindingException;
 import pathfinding.astarCourbe.AStarCourbe;
-import pathfinding.dstarlite.GridSpace;
 import utils.Config;
 import utils.Log;
 
@@ -17,13 +15,11 @@ public class ThreadPathfinding extends Thread implements Service
 {
 	protected Log log;
 	private AStarCourbe pathfinding;
-	private GridSpace gridspace;
 
-	public ThreadPathfinding(Log log, AStarCourbe pathfinding, GridSpace gridspace)
+	public ThreadPathfinding(Log log, AStarCourbe pathfinding)
 	{
 		this.log = log;
 		this.pathfinding = pathfinding;
-		this.gridspace = gridspace;
 	}
 
 	@Override
@@ -33,25 +29,7 @@ public class ThreadPathfinding extends Thread implements Service
 		log.debug("Démarrage de "+Thread.currentThread().getName());
 		try {
 			while(true)
-			{
-				/**
-				 * En attente d'une modification des obstacles
-				 */
-				synchronized(gridspace)
-				{
-					gridspace.wait();
-				}
-				log.debug("Recalcul de trajectoire !");
-				try {
-					synchronized(this)
-					{
-						notify(); // on prévient le thread d'évitement qu'un nouveau chemin est en calcul
-						pathfinding.updatePath();
-					}
-				} catch (PathfindingException e) {
-					log.warning(e);
-				}
-			}
+				pathfinding.doYourJob();
 		} catch (InterruptedException e) {
 			log.debug("Arrêt de "+Thread.currentThread().getName());
 		}

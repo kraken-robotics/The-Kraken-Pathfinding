@@ -337,9 +337,8 @@ public class Container
 																		(Config)getServiceDisplay(serviceRequested, ServiceNames.CONFIG),
 																		this);
 		else if(serviceRequested == ServiceNames.THREAD_PATHFINDING)
-			instanciedServices[serviceRequested.ordinal()] = new ThreadPathfinding((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
-																		(AStarCourbe)getServiceDisplay(serviceRequested, ServiceNames.A_STAR_COURBE),
-																		 (GridSpace)getServiceDisplay(serviceRequested, ServiceNames.GRID_SPACE));
+			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadPathfinding((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
+																		(AStarCourbe)getServiceDisplay(serviceRequested, ServiceNames.A_STAR_COURBE));
 		else if(serviceRequested == ServiceNames.MOTEUR_PHYSIQUE)
 			instanciedServices[serviceRequested.ordinal()] = new MoteurPhysique((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG)); 		
 		else if(serviceRequested == ServiceNames.A_STAR_COURBE)
@@ -348,7 +347,8 @@ public class Container
 																					(ArcManager)getServiceDisplay(serviceRequested, ServiceNames.ARC_MANAGER),
 																					(RealGameState)getServiceDisplay(serviceRequested, ServiceNames.REAL_GAME_STATE),
 																					(CheminPathfinding)getServiceDisplay(serviceRequested, ServiceNames.CHEMIN_PATHFINDING),
-																					(MemoryManager)getServiceDisplay(serviceRequested, ServiceNames.MEMORY_MANAGER));
+																					(MemoryManager)getServiceDisplay(serviceRequested, ServiceNames.MEMORY_MANAGER),
+																					(GridSpace)getServiceDisplay(serviceRequested, ServiceNames.GRID_SPACE));
 		else if(serviceRequested == ServiceNames.MEMORY_MANAGER)
 			instanciedServices[serviceRequested.ordinal()] = new MemoryManager((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
 																								   (RealGameState)getServiceDisplay(serviceRequested, ServiceNames.REAL_GAME_STATE));
