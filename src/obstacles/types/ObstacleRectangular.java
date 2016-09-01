@@ -1,7 +1,6 @@
 package obstacles.types;
 
 import robot.Cinematique;
-import obstacles.ObstaclesFixes;
 import utils.Vec2;
 import utils.permissions.ReadOnly;
 import utils.permissions.ReadWrite;
@@ -40,14 +39,14 @@ public class ObstacleRectangular extends Obstacle
 	protected Vec2<ReadOnly> coinHautDroiteRotate;
 	
 	protected double angle, cos, sin;
-
+/*
 	protected void setAngle(double angle)
 	{
 		this.angle = angle;
 		cos = Math.cos(angle);
 		sin = Math.sin(angle);
 	}
-	
+	*/
 	/**
 	 * Cas où l'angle est nul
 	 * @param log
@@ -60,16 +59,6 @@ public class ObstacleRectangular extends Obstacle
 	public ObstacleRectangular(Vec2<ReadOnly> position, int sizeX, int sizeY)
 	{
 		this(position, sizeX, sizeY, 0);
-	}
-
-	/**
-	 * Constructeur user-friendly pour le pathfinding
-	 * @param depart
-	 * @param arrivee
-	 */
-	public ObstacleRectangular(Vec2<ReadOnly> depart, Vec2<ReadOnly> arrivee)
-	{
-		this(depart.middleNewVector(arrivee).getReadOnly(), (int)depart.distance(arrivee)/*+longueurRobot+2*marge*/, largeurRobot+2*marge, Math.atan2(arrivee.y-depart.y, arrivee.x-depart.x));
 	}
 
 	/**
@@ -204,7 +193,7 @@ public class ObstacleRectangular extends Obstacle
 	 * @param r
 	 * @return
 	 */
-	public final boolean isCollidingRectangular(ObstacleRectangular r)
+	public final boolean isColliding(ObstacleRectangular r)
 	{
 		// Calcul simple permettant de vérifier les cas absurdes où les obstacles sont loin l'un de l'autre
 		if(position.squaredDistance(r.position) >= (demieDiagonale+r.demieDiagonale)*(demieDiagonale+r.demieDiagonale))
@@ -268,66 +257,6 @@ public class ObstacleRectangular extends Obstacle
 		return Y;
 	}
 
-	public boolean isCollidingCircular(ObstacleCircular o)
-	{
-		return squaredDistance(o.position) < o.radius*o.radius;
-	}
-	
-	public boolean isColliding(Obstacle o)
-	{
-		if(o instanceof ObstacleRectangular)
-			return isCollidingRectangular((ObstacleRectangular)o);
-		else if(o instanceof ObstacleCircular)
-			return isCollidingCircular((ObstacleCircular)o);
-
-		log.critical("Appel de isColliding avec un type d'obstacle inconnu!");
-		return false;
-	}
-
-	/**
-	 * Retourne le coin le plus proche de la position donnée.
-	 * @param pos
-	 * @return
-	 */
-	public Vec2<ReadOnly> getPlusProcheCoinVisible(Vec2<ReadOnly> pos, boolean coinBasDroiteVisible, boolean coinBasGaucheVisible, boolean coinHautDroiteVisible, boolean coinHautGaucheVisible)
-	{
-		Vec2<ReadOnly> out = null;
-		double min = Integer.MAX_VALUE, tmp;
-		if(coinBasGaucheVisible)
-		{
-			out = coinBasGauche;
-			min = pos.squaredDistance(coinBasGauche);
-		}
-		if(coinHautGaucheVisible)
-		{
-			tmp = pos.squaredDistance(coinHautGauche);
-			if(tmp < min)
-			{
-				out = coinHautGauche;
-				min = tmp;
-			}
-		}
-		if(coinBasDroiteVisible)
-		{
-			tmp = pos.squaredDistance(coinBasDroite);
-			if(tmp < min)
-			{
-				out = coinBasDroite;
-				min = tmp;
-			}
-		}
-		if(coinHautDroiteVisible)
-		{
-			tmp = pos.squaredDistance(coinHautDroite);
-			if(tmp < min)
-			{
-				out = coinHautDroite;
-				min = tmp;
-			}
-		}
-		return out;
-	}
-	
 	/**
 	 * Utilisé pour l'affichage uniquement
 	 * @return
@@ -350,11 +279,6 @@ public class ObstacleRectangular extends Obstacle
 	public String toString()
 	{
 		return "ObstacleRectangulaire";
-	}
-	
-	public double distance(Vec2<ReadOnly> point)
-	{
-		return Math.sqrt(squaredDistance(point));
 	}
 	
 	/**
@@ -412,17 +336,5 @@ public class ObstacleRectangular extends Obstacle
 
 		// Sinon, on est dans l'obstacle
 		return 0;
-	}
-
-	/**
-	 * Y a-t-il collision avec un obstacle fixe?
-	 * @return
-	 */
-	public boolean isCollidingObstacleFixe()
-	{
-		for(ObstaclesFixes o: ObstaclesFixes.values)
-			if(isColliding(o.getObstacle()))
-				return true;
-		return false;
 	}
 }

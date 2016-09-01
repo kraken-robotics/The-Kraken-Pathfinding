@@ -36,16 +36,7 @@ public class ObstacleProximity extends ObstacleCircular
 	{
 		return death_date < date;
 	}
-	
-    /**
-     * Utilisé pour mettre à jour l'ennemi hypothétique
-     * @param clone
-     */
-	public void setDeathDate(long death_date)
-	{
-		this.death_date = death_date;
-	}
-	
+		
 	public long getDeathDate()
 	{
 		return death_date;

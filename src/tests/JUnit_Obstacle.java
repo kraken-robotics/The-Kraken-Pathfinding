@@ -99,7 +99,7 @@ public class JUnit_Obstacle extends JUnit_Test {
     public void test_collision_robot_bord() throws Exception
     {
     	ObstacleRectangular o = new ObstacleRectangular(new Vec2<ReadOnly>(1320, 250), 250, 360, Math.PI/6);
-    	Assert.assertTrue(o.isColliding(ObstaclesFixes.BORD_DROITE.getObstacle()));
+    	Assert.assertTrue(ObstaclesFixes.BORD_DROITE.getObstacle().isColliding(o));
     }
 
 }

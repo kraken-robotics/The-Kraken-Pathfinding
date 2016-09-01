@@ -61,5 +61,17 @@ public abstract class Obstacle
 	{
 		return squaredDistance(position) < distance * distance;
 	}
+
+	public abstract boolean isColliding(ObstacleRectangular obs);
+	
+	public boolean isColliding(ObstacleArcCourbe obs)
+	{
+		for(ObstacleRectangular o : obs.ombresRobot)
+		{
+			if(isColliding(o))
+				return true;
+		}
+		return false;
+	}
 	
 }

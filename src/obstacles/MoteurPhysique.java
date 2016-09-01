@@ -1,7 +1,7 @@
 package obstacles;
 
+import obstacles.types.ObstacleArcCourbe;
 import obstacles.types.ObstacleProximity;
-import obstacles.types.ObstacleRectangular;
 import pathfinding.ChronoGameState;
 import pathfinding.astarCourbe.AStarCourbeNode;
 import table.GameElementNames;
@@ -92,22 +92,20 @@ public class MoteurPhysique implements Service {
 	 */
 	public boolean isTraversableCourbe(AStarCourbeNode node)
 	{
-		for(int i = 0; i < node.came_from_arc.getNbPoints(); i++)
-		{
-			// TODO
-			ObstacleRectangular obs = null; //new ObstacleRectangular(node.came_from_arc.getPoint(i), node.state.robot.isDeploye());
-	
-			// Collision avec un obstacle fixe?
-	    	for(ObstaclesFixes o: ObstaclesFixes.values)
-	    		if(obs.isColliding(o.getObstacle()))
-	    			return false;
-	
-	    	node.state.iterator.reinit();
-	    	while(node.state.iterator.hasNext())
-	           	if(obs.isColliding(node.state.iterator.next()))
-	        		return false;
-		}
-        return true;
+		ObstacleArcCourbe obs = new ObstacleArcCourbe(node.came_from_arc);
+
+		// Collision avec un obstacle fixe?
+    	for(ObstaclesFixes o: ObstaclesFixes.values)
+    		if(o.getObstacle().isColliding(obs))
+    			return false;
+
+    	// Collision avec un obstacle de proximité ?
+    	node.state.iterator.reinit();
+    	while(node.state.iterator.hasNext())
+           	if(node.state.iterator.next().isColliding(obs))
+        		return false;
+
+    	return true;
 	}
 	
 	/**
