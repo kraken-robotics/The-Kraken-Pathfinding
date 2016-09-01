@@ -45,6 +45,7 @@ public abstract class JUnit_Test
 	public void tearDown() throws Exception {
 		if((Config.graphicDStarLite || Config.graphicThetaStar || Config.graphicObstacles) && !Fenetre.needInit)
 			Thread.sleep(100000);
+		container.destructor();
 	}
 
 	

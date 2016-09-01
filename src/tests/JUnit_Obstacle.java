@@ -21,19 +21,19 @@ public class JUnit_Obstacle extends JUnit_Test {
     public void test_collision_cercle() throws Exception
     {
     	ObstacleCircular o = new ObstacleCircular(new Vec2<ReadOnly>(0, 0), 30);
-    	Assert.assertTrue(o.isInObstacle(new Vec2<ReadOnly>(10,10)));
-    	Assert.assertTrue(!o.isInObstacle(new Vec2<ReadOnly>(22,22)));
+    	Assert.assertTrue(o.squaredDistance(new Vec2<ReadOnly>(10,10)) == 0);
+    	Assert.assertTrue(o.squaredDistance(new Vec2<ReadOnly>(22,22)) > 0);
     }
 
     @Test
     public void test_collision_rectangle() throws Exception
     {
     	ObstacleRectangular o = new ObstacleRectangular(new Vec2<ReadOnly>(0, 0), 30, 10, 0);
-    	Assert.assertTrue(o.isInObstacle(new Vec2<ReadOnly>(13,-3)));
-    	Assert.assertTrue(!o.isInObstacle(new Vec2<ReadOnly>(16,0)));
-    	Assert.assertTrue(!o.isInObstacle(new Vec2<ReadOnly>(-16,0)));
-    	Assert.assertTrue(!o.isInObstacle(new Vec2<ReadOnly>(0,7)));
-    	Assert.assertTrue(!o.isInObstacle(new Vec2<ReadOnly>(0,-7)));
+    	Assert.assertTrue(o.squaredDistance(new Vec2<ReadOnly>(13,-3)) == 0);
+    	Assert.assertTrue(o.squaredDistance(new Vec2<ReadOnly>(16,0)) > 0);
+    	Assert.assertTrue(o.squaredDistance(new Vec2<ReadOnly>(-16,0)) > 0);
+    	Assert.assertTrue(o.squaredDistance(new Vec2<ReadOnly>(0,7)) > 0);
+    	Assert.assertTrue(o.squaredDistance(new Vec2<ReadOnly>(0,-7)) > 0);
     }
 
     @Test
@@ -70,16 +70,16 @@ public class JUnit_Obstacle extends JUnit_Test {
     public void test_is_dans_obstacle_rectangle() throws Exception
     {
     	ObstacleRectangular o = new ObstacleRectangular(new Vec2<ReadOnly>(0,0), 200, 200, Math.PI/8);
-    	Assert.assertTrue(o.isInObstacle(new Vec2<ReadOnly>(0,0)));
-    	Assert.assertTrue(o.isInObstacle(new Vec2<ReadOnly>(100,0)));
-    	Assert.assertTrue(o.isInObstacle(new Vec2<ReadOnly>(0,-100)));
-    	Assert.assertTrue(!o.isInObstacle(new Vec2<ReadOnly>(90,90)));
-    	Assert.assertTrue(!o.isInObstacle(new Vec2<ReadOnly>(-90,-90)));
-    	Assert.assertTrue(o.isInObstacle(new Vec2<ReadOnly>(54,130)));
-    	Assert.assertTrue(o.isInObstacle(new Vec2<ReadOnly>(-54,-130)));
-    	Assert.assertTrue(!o.isInObstacle(new Vec2<ReadOnly>(-54,130)));
-    	Assert.assertTrue(!o.isInObstacle(new Vec2<ReadOnly>(54,-130)));
-    	Assert.assertTrue(!o.isInObstacle(new Vec2<ReadOnly>(-100,100)));
+    	Assert.assertTrue(o.squaredDistance(new Vec2<ReadOnly>(0,0)) == 0);
+    	Assert.assertTrue(o.squaredDistance(new Vec2<ReadOnly>(100,0)) == 0);
+    	Assert.assertTrue(o.squaredDistance(new Vec2<ReadOnly>(0,-100)) == 0);
+    	Assert.assertTrue(o.squaredDistance(new Vec2<ReadOnly>(90,90)) > 0);
+    	Assert.assertTrue(o.squaredDistance(new Vec2<ReadOnly>(-90,-90)) > 0);
+    	Assert.assertTrue(o.squaredDistance(new Vec2<ReadOnly>(54,130)) == 0);
+    	Assert.assertTrue(o.squaredDistance(new Vec2<ReadOnly>(-54,-130)) == 0);
+    	Assert.assertTrue(o.squaredDistance(new Vec2<ReadOnly>(-54,130)) > 0);
+    	Assert.assertTrue(o.squaredDistance(new Vec2<ReadOnly>(54,-130)) > 0);
+    	Assert.assertTrue(o.squaredDistance(new Vec2<ReadOnly>(-100,100)) > 0);
     }
     
     @Test

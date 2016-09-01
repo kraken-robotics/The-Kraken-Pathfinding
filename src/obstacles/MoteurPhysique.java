@@ -32,62 +32,6 @@ public class MoteurPhysique implements Service {
 	}
 
     /**
-     * Cette méthode vérifie les obstacles fixes uniquement.
-     * Elle est utilisée dans le lissage.
-     * @param A
-     * @param B
-     * @return
-     */
-    public boolean obstacleFixeDansSegmentPathfinding(Vec2<ReadOnly> A, Vec2<ReadOnly> B)
-    {
-    	ObstacleRectangular chemin = new ObstacleRectangular(A, B);
-    	for(ObstaclesFixes o: ObstaclesFixes.values)
-    	{
-    		if(chemin.isColliding(o.getObstacle()))
-    			return true;
-    	}
-    	return false;
-    }
- 
-	/**
-	 * Y a-t-il un obstacle de table dans ce segment?
-	 * @param A
-	 * @param B
-	 * @return
-	 */
-    public boolean obstacleTableDansSegment(ChronoGameState state, Vec2<ReadOnly> A, Vec2<ReadOnly> B)
-    {
-    	ObstacleRectangular chemin = new ObstacleRectangular(A, B);
-        for(GameElementNames g: GameElementNames.values())
-        	// Si on a interprété que l'ennemi est passé sur un obstacle,
-        	// on peut passer dessus par la suite.
-            if(state.table.isDone(g) == Tribool.FALSE && obstacle_proximite_dans_segment(g, chemin))
-            {
-//            	log.debug(o.getName()+" est dans le chemin.", this);
-                return true;
-            }
-
-        return false;    	
-    }
-
-    /**
-     * Y a-t-il un obstacle de proximité dans ce segment?
-     * Va-t-il disparaître pendant le temps de parcours?
-     * @param sommet1
-     * @param sommet2
-     * @return
-     */
-    public boolean obstacleProximiteDansSegment(ChronoGameState state, Vec2<ReadOnly> A, Vec2<ReadOnly> B, int date)
-    {
-    	state.iterator.reinit();
-    	while(state.iterator.hasNext())
-        	if(state.iterator.next().obstacle_proximite_dans_segment(A, B, date))
-        		return true;
-
-        return false;
-    }
-
-    /**
      * Utilisé pour savoir si ce qu'on voit est un obstacle fixe.
      * @param position
      * @return
@@ -95,7 +39,7 @@ public class MoteurPhysique implements Service {
     public boolean isObstacleFixePresentCapteurs(Vec2<ReadOnly> position)
     {
     	for(ObstaclesFixes o: ObstaclesFixes.obstaclesFixesVisibles)
-            if(isObstaclePresent(position, o.getObstacle(), distanceApproximation))
+    		if(o.getObstacle().squaredDistance(position) < distanceApproximation * distanceApproximation)
                 return true;
         return false;
     }
@@ -117,19 +61,6 @@ public class MoteurPhysique implements Service {
         	if(isObstaclePresent(position, state.iterator.next(), distance))
         		return true;
  */       return false;
-    }
-
-    /**
-     * Vérifie pour un seul obstacle.
-     * Renvoie true si un obstacle est proche
-     * @param position
-     * @param o
-     * @param distance
-     * @return
-     */
-    private boolean isObstaclePresent(Vec2<ReadOnly> position, Obstacle o, int distance)
-    {
-    	return o.isProcheObstacle(position, distance);
     }
     
 	@Override
@@ -177,18 +108,6 @@ public class MoteurPhysique implements Service {
 	public boolean didTheEnemyTakeIt(GameElementNames g, ObstacleProximity o)
 	{
 		return g.getObstacle().isProcheObstacle(o.position, o.radius);
-	}
-
-	/**
-	 * g est-il dans le segment[a, b]?
-	 * @param g
-	 * @param a
-	 * @param b
-	 * @return
-	 */
-	public boolean obstacle_proximite_dans_segment(GameElementNames g, ObstacleRectangular o)
-	{
-		return o.isColliding(g.getObstacle());
 	}
 
 }

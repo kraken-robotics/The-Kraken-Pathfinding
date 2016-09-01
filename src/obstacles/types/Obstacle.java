@@ -24,6 +24,7 @@ public abstract class Obstacle
     protected static int longueurRobotDeploye;
     protected static int rayonRobot;
     protected static int marge;
+    protected static int distanceApprox;
 	protected static double anglePas; // utilisé pour les calculs de collision pendant les rotations	
 //	protected static ArrayList<Vec2<ReadOnly>> pourtourGrillePatron; // utilisé pour les obstacles mobiles et le gridspace
 	
@@ -39,6 +40,7 @@ public abstract class Obstacle
 		largeurRobotDeploye = config.getInt(ConfigInfo.LARGEUR_ROBOT_AXE_GAUCHE_DROITE_DEPLOYE);
 		longueurRobotDeploye = config.getInt(ConfigInfo.LONGUEUR_ROBOT_AXE_AVANT_ARRIERE_DEPLOYE);
 		rayonRobot = config.getInt(ConfigInfo.RAYON_ROBOT);
+		distanceApprox = config.getInt(ConfigInfo.DISTANCE_MAX_ENTRE_MESURE_ET_OBJET);
 		marge = config.getInt(ConfigInfo.MARGE);
 		anglePas = Math.PI-2*Math.atan2(largeurRobot, longueurRobot);
 
@@ -74,9 +76,6 @@ public abstract class Obstacle
 		this.position = position;
 	}
 	
-	public abstract boolean isProcheObstacle(Vec2<ReadOnly> point, int distance);
-	public abstract boolean isInObstacle(Vec2<ReadOnly> point);
-	
 /*
 	public static final void setPosition(Obstacle o, Vec2<ReadOnly> v)
 	{
@@ -87,6 +86,13 @@ public abstract class Obstacle
 	public String toString()
 	{
 		return "Obstacle en "+position;
+	}
+
+	public abstract double squaredDistance(Vec2<ReadOnly> position);
+
+	public boolean isProcheObstacle(Vec2<ReadOnly> position, int distance)
+	{
+		return squaredDistance(position) < distance * distance;
 	}
 	
 }

@@ -16,6 +16,7 @@ import container.ServiceNames;
 public class JUnit_Serie extends JUnit_Test {
 
 	private BufferOutgoingOrder data;
+	@Override
 	@Before
     public void setUp() throws Exception {
         super.setUp();
@@ -62,8 +63,6 @@ public class JUnit_Serie extends JUnit_Test {
 			}
 			etat = t.getAndClear();
 		} while(etat != Ticket.State.OK);
-		
-		Thread.sleep(20000);
 	}
 	
 }

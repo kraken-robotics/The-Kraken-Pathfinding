@@ -344,7 +344,7 @@ public class ObstacleRectangular extends ObstacleAvecAngle
 	{
 		return Math.sqrt(squaredDistance(point));
 	}
-	
+	/*
 	@Override
 	public boolean isInObstacle(Vec2<ReadOnly> point)
 	{
@@ -353,13 +353,14 @@ public class ObstacleRectangular extends ObstacleAvecAngle
 				(pointWrite.x > - sizeX/2) &&
 				(pointWrite.y < sizeY/2) &&
 				(pointWrite.y > - sizeY/2);
-	}
+	}*/
 	
 	/**
 	 * Fourni la plus petite distance au carré entre le point fourni et l'obstacle
 	 * @param in
 	 * @return la plus petite distance au carré entre le point fourni et l'obstacle
 	 */
+	@Override
 	public double squaredDistance(Vec2<ReadOnly> v)
 	{
 		Vec2<ReadWrite> in = convertitVersRepereObstacle(v);
@@ -411,13 +412,13 @@ public class ObstacleRectangular extends ObstacleAvecAngle
 		return 0;
 	}
 
-	@Override
+/*	@Override
 	public boolean isProcheObstacle(Vec2<ReadOnly> point, int distance)
 	{
 		// Attention! squaredDistance effectue déjà la rotation du point
 		return squaredDistance(point) <= (distance+0.01f) * (distance+0.01f); // vu qu'on a une précision limitée, mieux vaut prendre un peu de marge
 	}
-
+*/
 	/**
 	 * Y a-t-il collision avec un obstacle fixe?
 	 * @return

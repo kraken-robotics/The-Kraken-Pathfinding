@@ -19,7 +19,8 @@ public class JUnit_Table extends JUnit_Test {
 
 	private Table table;
 	
-    @Before
+    @Override
+	@Before
     public void setUp() throws Exception {
         super.setUp();
         table = (Table) container.getService(ServiceNames.TABLE);

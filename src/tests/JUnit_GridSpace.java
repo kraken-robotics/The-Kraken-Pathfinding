@@ -24,6 +24,7 @@ public class JUnit_GridSpace extends JUnit_Test {
 
 	private GridSpace gridspace;
 	
+	@Override
 	@Before
     public void setUp() throws Exception {
         super.setUp();
@@ -90,10 +91,10 @@ public class JUnit_GridSpace extends JUnit_Test {
 		Assert.assertTrue(gridspace.startNewPathfinding().isEmpty());
 		ArrayList<ObstacleProximity>[] b = gridspace.getOldAndNewObstacles();
 		Assert.assertTrue(b[0].isEmpty() && b[1].isEmpty());
-		gridspace.addObstacle(new Vec2<ReadOnly>(200, 100), false);
+		gridspace.addObstacle(new Vec2<ReadOnly>(200, 100));
 		b = gridspace.getOldAndNewObstacles();
 		Assert.assertTrue(b[0].isEmpty() && !b[1].isEmpty());
-		gridspace.addObstacle(new Vec2<ReadOnly>(200, 100), false);
+		gridspace.addObstacle(new Vec2<ReadOnly>(200, 100));
 		b = gridspace.getOldAndNewObstacles();
 		Assert.assertTrue(b[0].isEmpty() && !b[1].isEmpty());
 		b = gridspace.getOldAndNewObstacles();

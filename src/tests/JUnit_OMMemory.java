@@ -24,7 +24,8 @@ public class JUnit_OMMemory extends JUnit_Test {
 	ObstaclesMemory memory;
 	ObstaclesIteratorPresent iterator;
 	
-    @Before
+    @Override
+	@Before
     public void setUp() throws Exception {
         super.setUp();
         memory = (ObstaclesMemory) container.getService(ServiceNames.OBSTACLES_MEMORY);
@@ -41,7 +42,7 @@ public class JUnit_OMMemory extends JUnit_Test {
 
     	Assert.assertTrue(!iterator.hasNext());
     	long date = System.currentTimeMillis();
-    	memory.add(new Vec2<ReadOnly>(1324,546), date, false, null);
+    	memory.add(new Vec2<ReadOnly>(1324,546), date, null);
     	Assert.assertTrue(memory.getFirstNotDeadNow() == 0);
     	iterator.reinit();
 
@@ -51,10 +52,10 @@ public class JUnit_OMMemory extends JUnit_Test {
     	Assert.assertTrue(o.position.y == 546);
     	Assert.assertTrue(!iterator.hasNext());
     	Assert.assertTrue(memory.getFirstNotDeadNow() == 0);
-    	memory.add(new Vec2<ReadOnly>(1324,546), date, false, null);
-    	memory.add(new Vec2<ReadOnly>(1324,546), date, false, null);
-    	memory.add(new Vec2<ReadOnly>(1324,546), date, false, null);
-    	memory.add(new Vec2<ReadOnly>(1324,546), date, false, null);
+    	memory.add(new Vec2<ReadOnly>(1324,546), date, null);
+    	memory.add(new Vec2<ReadOnly>(1324,546), date, null);
+    	memory.add(new Vec2<ReadOnly>(1324,546), date, null);
+    	memory.add(new Vec2<ReadOnly>(1324,546), date, null);
     	memory.deleteOldObstacles();
     	Assert.assertTrue(memory.getFirstNotDeadNow() == 0);
     	Assert.assertTrue(memory.getNextDeathDate() == (date+peremption));

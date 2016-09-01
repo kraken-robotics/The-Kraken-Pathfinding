@@ -113,7 +113,7 @@ public class Capteurs implements Service {
 				if(positionEnnemi.x > 1500 || positionEnnemi.x < -1500 || positionEnnemi.y > 2000 || positionEnnemi.y < 0)
 					continue; // hors table
 				
-				ObstacleProximity o = gridspace.addObstacle(positionEnnemi.getReadOnly(), true);
+				ObstacleProximity o = gridspace.addObstacle(positionEnnemi.getReadOnly());
 				
 				/**
 				 * Mise à jour de l'état de la table

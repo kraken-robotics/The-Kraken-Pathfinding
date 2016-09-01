@@ -70,7 +70,7 @@ public class GridSpace implements Service
 			for(int i = 0; i < NB_POINTS; i++)
 				for(ObstaclesFixes o : ObstaclesFixes.values)
 				{
-					if(o.getObstacle().isProcheObstacle(computeVec2(i), (int)(DISTANCE_ENTRE_DEUX_POINTS/2)))
+					if(o.getObstacle().squaredDistance(computeVec2(i)) < (int)(DISTANCE_ENTRE_DEUX_POINTS/2 * DISTANCE_ENTRE_DEUX_POINTS/2))
 					{
 						grilleStatique.set(i);
 						break; // on ne vérifie pas les autres obstacles
@@ -362,9 +362,9 @@ public class GridSpace implements Service
 	 * @param urgent
 	 * @return
 	 */
-	public synchronized ObstacleProximity addObstacle(Vec2<ReadOnly> position, boolean urgent) {
+	public synchronized ObstacleProximity addObstacle(Vec2<ReadOnly> position) {
 		ArrayList<Integer> masque = getMasqueObstacle(position);
-		ObstacleProximity o = obstaclesMemory.add(position, urgent, masque);
+		ObstacleProximity o = obstaclesMemory.add(position, masque);
 		// pour un ajout, pas besoin de tout régénérer
 		return o;
 	}

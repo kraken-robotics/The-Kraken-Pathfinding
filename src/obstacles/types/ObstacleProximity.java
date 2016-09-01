@@ -14,22 +14,22 @@ import utils.permissions.ReadWrite;
 public class ObstacleProximity extends ObstacleCircular
 {
 	private long death_date;
-	private boolean urgent;
+//	private boolean urgent;
 	private ArrayList<Integer> masque;
 	
-	public ObstacleProximity(Vec2<ReadOnly> position, int rad, long death_date, boolean urgent, ArrayList<Integer> masque)
+	public ObstacleProximity(Vec2<ReadOnly> position, int rad, long death_date, /*boolean urgent, */ArrayList<Integer> masque)
 	{
 		super(position,rad);
-		this.urgent = urgent;
+//		this.urgent = urgent;
 		this.death_date = death_date;
 		this.masque = masque;
 	}
-	
+	/*
 	public boolean isUrgent()
 	{
 		return urgent;
 	}
-	
+	*/
 	public ArrayList<Integer> getMasque()
 	{
 		return masque;
@@ -52,7 +52,7 @@ public class ObstacleProximity extends ObstacleCircular
 	 * @param B
 	 * @param date
 	 * @return
-	 */
+	 *//*
     public boolean obstacle_proximite_dans_segment(Vec2<ReadOnly> A, Vec2<ReadOnly> B, long date)
     {
     	// si l'obstacle est présent dans le segment...
@@ -80,7 +80,7 @@ public class ObstacleProximity extends ObstacleCircular
         	return r2.isColliding(this);
     	}
     	return false;
-    }
+    }*/
 	
     /**
      * Utilisé pour mettre à jour l'ennemi hypothétique
