@@ -1,6 +1,8 @@
 package tests;
 
 import org.junit.Before;
+import org.junit.Rule;
+import org.junit.rules.TestName;
 import org.junit.After;
 
 import utils.ConfigInfo;
@@ -9,6 +11,7 @@ import utils.Config;
 import container.Container;
 import container.ServiceNames;
 import debug.Fenetre;
+import threads.ThreadExit;
 
 /**
  * Classe mère de tous les tests.
@@ -19,15 +22,19 @@ import debug.Fenetre;
 
 public abstract class JUnit_Test
 {
-
 	protected Container container;
 	protected Config config;
 	protected Log log;
 	
+    @Rule public TestName testName = new TestName();
+    
 	@SuppressWarnings("unused")
 	@Before
 	public void setUp() throws Exception
 	{
+		
+		System.err.println("\n\n----- DÉBUT DU TEST "+testName.getMethodName()+" -----\n\n");
+
 		container = new Container();
 		config = (Config) container.getService(ServiceNames.CONFIG);
 		log = (Log) container.getService(ServiceNames.LOG);
@@ -45,6 +52,7 @@ public abstract class JUnit_Test
 	public void tearDown() throws Exception {
 		if((Config.graphicDStarLite || Config.graphicThetaStar || Config.graphicObstacles) && !Fenetre.needInit)
 			Thread.sleep(100000);
+		Runtime.getRuntime().removeShutdownHook(ThreadExit.getInstance());
 		container.destructor();
 	}
 

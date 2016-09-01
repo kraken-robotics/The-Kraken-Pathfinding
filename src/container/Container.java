@@ -82,13 +82,14 @@ public class Container
 		{
 			for(ServiceNames s: ServiceNames.values())
 				if(s.isThread())
+				{
 					((Thread)getService(s)).interrupt();
+					((Thread)getService(s)).join();
+				}
 
 			threadsStarted = false;
 		}
 
-		Thread.sleep(50); // on attend la fermeture des autres threads
-			
 		/**
 		 * Affiche la liste des threads qui ne sont pas fermés
 		 */
@@ -394,7 +395,10 @@ public class Container
 				}
 			}
 		}
-		Runtime.getRuntime().addShutdownHook(new ThreadExit(this));
+
+		ThreadExit.makeInstance(this);
+		Runtime.getRuntime().addShutdownHook(ThreadExit.getInstance());
+		
 		threadsStarted = true;
 		log.debug("Démarrage des threads fini");
 	}

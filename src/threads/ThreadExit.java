@@ -13,12 +13,23 @@ import exceptions.ContainerException;
 public class ThreadExit extends Thread
 {
 	protected Container container;
+	private static ThreadExit instance = null;
 	
-	public ThreadExit(Container container)
+	public static ThreadExit getInstance()
+	{
+		return instance;
+	}
+	
+	public static ThreadExit makeInstance(Container container)
+	{
+		return instance = new ThreadExit(container);
+	}
+
+	private ThreadExit(Container container)
 	{
 		this.container = container;
 	}
-	
+
 	@Override
 	public void run()
 	{
