@@ -153,11 +153,20 @@ public class Container
 		 */
 		try {
 			Process p = Runtime.getRuntime().exec("git log -1 --oneline");
+			Process p2 = Runtime.getRuntime().exec("git branch");
 			BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()));
+			BufferedReader in2 = new BufferedReader(new InputStreamReader(p2.getInputStream()));
 			String s = in.readLine();
 			int index = s.indexOf(" ");
-			System.out.println("Version : "+s.substring(0, index)+" - ["+s.substring(index+1)+"]");
 			in.close();
+			String s2 = in2.readLine();
+
+			while(!s2.contains("*"))
+				s2 = in2.readLine();
+
+			int index2 = s2.indexOf(" ");
+			System.out.println("Version : "+s.substring(0, index)+" on "+s2.substring(index2+1)+" - ["+s.substring(index+1)+"]");
+			in2.close();
 		} catch (IOException e1) {
 			System.out.println(e1);
 		}
