@@ -170,6 +170,7 @@ public class Fenetre extends JPanel {
 		this.capteurs = capteurs;
 	}
 	
+	@Override
 	@SuppressWarnings("unused")
 	public void paint(Graphics g)
 	{
@@ -316,7 +317,7 @@ public class Fenetre extends JPanel {
 	public void addSegment(Vec2<ReadOnly> a, Vec2<ReadOnly> b)
 	{
 		@SuppressWarnings("unchecked")
-		Vec2<ReadOnly>[] v = (Vec2<ReadOnly>[]) new Vec2[2];
+		Vec2<ReadOnly>[] v = new Vec2[2];
 		v[0] = a;
 		v[1] = b;
 		segments.add(v);

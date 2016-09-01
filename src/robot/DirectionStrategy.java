@@ -25,8 +25,8 @@ public enum DirectionStrategy
 	{
 		if(marcheAvant)
 			return marcheAvantPossible;
-		else
-			return marcheArrierePossible;
+
+		return marcheArrierePossible;
 	}
 	
 	private DirectionStrategy(boolean pointRebroussementPossible, boolean marcheAvantPossible, boolean marcheArrierePossible)

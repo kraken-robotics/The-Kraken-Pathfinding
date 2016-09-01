@@ -19,7 +19,8 @@ public class ObstaclesIteratorFutur extends ObstaclesIterator
     	super(log, memory);
     }
     
-    public ObstaclesIteratorFutur clone()
+    @Override
+	public ObstaclesIteratorFutur clone()
     {
     	ObstaclesIteratorFutur cloned_manager = new ObstaclesIteratorFutur(log, memory);
 		copy(cloned_manager, dateInit);

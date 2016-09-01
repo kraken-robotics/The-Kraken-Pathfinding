@@ -83,6 +83,7 @@ public abstract class Obstacle
 		Vec2.copy(v, o.position);
 	}
 */
+	@Override
 	public String toString()
 	{
 		return "Obstacle en "+position;

@@ -57,6 +57,7 @@ public abstract class Robot implements Service
     	rc.positionGridSpace = getPositionGridSpace();
     }
 	
+	@Override
 	public synchronized void updateConfig(Config config)
 	{
 		dateDebutMatch = config.getLong(ConfigInfo.DATE_DEBUT_MATCH);
@@ -64,6 +65,7 @@ public abstract class Robot implements Service
 		symetrie = config.getSymmetry();
 	}
 
+	@Override
 	public void useConfig(Config config)
 	{}
     

@@ -291,8 +291,7 @@ public class GridSpace implements Service
 			return Integer.MAX_VALUE;
 		if(i < 4) // cf ordre des directions
 			return 1414;
-		else
-			return 1000;
+		return 1000;
 	}
 
 	public static final Vec2<ReadOnly> computeVec2(int gridpoint)
@@ -432,7 +431,7 @@ public class GridSpace implements Service
 	public ArrayList<ObstacleProximity>[] getOldAndNewObstacles()
 	{
 		@SuppressWarnings("unchecked")
-		ArrayList<ObstacleProximity>[] out = (ArrayList<ObstacleProximity>[]) new ArrayList[2];
+		ArrayList<ObstacleProximity>[] out = new ArrayList[2];
 		out[0] = new ArrayList<ObstacleProximity>();
 		out[1] = new ArrayList<ObstacleProximity>();
 

@@ -108,8 +108,8 @@ public class AStarCourbe implements Service
 			int hash = ((RobotChrono)current.state.robot).getCinematique().hashCode();
 			if(closedset.contains(hash))
 				continue;
-			else
-				closedset.add(hash);
+
+			closedset.add(hash);
 			
 			if(Config.graphicObstacles && current.came_from_arc != null)
 				for(int i = 0; i < current.came_from_arc.getNbPoints(); i++)

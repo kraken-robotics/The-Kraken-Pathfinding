@@ -30,6 +30,7 @@ public class ObstacleCircular extends Obstacle
 		}
 	}
 
+	@Override
 	public String toString()
 	{
 		return super.toString()+", rayon: "+radius;
@@ -45,11 +46,13 @@ public class ObstacleCircular extends Obstacle
 		return point.squaredDistance(position) <= squared_radius_with_dilatation_obstacle;
 	}
 
+	@Override
 	public boolean isInObstacle(Vec2<ReadOnly> point)
 	{
 		return point.squaredDistance(position) <= squared_radius;
 	}
 
+	@Override
 	public boolean isProcheObstacle(Vec2<ReadOnly> point, int distance)
 	{
 		return point.squaredDistance(position) <= (radius+distance)*(radius+distance);

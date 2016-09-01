@@ -30,6 +30,7 @@ public class Cle
 		this.second = second;
 	}
 	
+	@Override
 	public Cle clone()
 	{
 		Cle out = new Cle();

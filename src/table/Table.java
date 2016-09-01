@@ -65,6 +65,7 @@ public class Table implements Service
 	/**
 	 * Fournit un clone.
 	 */
+	@Override
 	public Table clone()
 	{
 		Table cloned_table = new Table(log);

@@ -334,6 +334,7 @@ public class ObstacleRectangular extends ObstacleAvecAngle
 		return sizeY;
 	}
 
+	@Override
 	public String toString()
 	{
 		return "ObstacleRectangulaire";
@@ -344,6 +345,7 @@ public class ObstacleRectangular extends ObstacleAvecAngle
 		return Math.sqrt(squaredDistance(point));
 	}
 	
+	@Override
 	public boolean isInObstacle(Vec2<ReadOnly> point)
 	{
 		Vec2<ReadWrite> pointWrite = convertitVersRepereObstacle(point);
@@ -409,6 +411,7 @@ public class ObstacleRectangular extends ObstacleAvecAngle
 		return 0;
 	}
 
+	@Override
 	public boolean isProcheObstacle(Vec2<ReadOnly> point, int distance)
 	{
 		// Attention! squaredDistance effectue déjà la rotation du point

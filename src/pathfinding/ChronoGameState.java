@@ -42,7 +42,8 @@ public class ChronoGameState extends GameState
      * @param other
      * @throws FinMatchException 
      */
-    public final void copyAStarCourbe(ChronoGameState modified)
+    @Override
+	public final void copyAStarCourbe(ChronoGameState modified)
     {
     	table.copy(modified.table);
         robot.copy((RobotChrono) modified.robot);

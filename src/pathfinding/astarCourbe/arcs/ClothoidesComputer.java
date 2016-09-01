@@ -43,7 +43,7 @@ public class ClothoidesComputer implements Service
 	private double courbureMax;
 	
 	@SuppressWarnings("unchecked")
-	private Vec2<ReadOnly>[] trajectoire = (Vec2<ReadOnly>[]) new Vec2[2 * INDICE_MAX - 1];
+	private Vec2<ReadOnly>[] trajectoire = new Vec2[2 * INDICE_MAX - 1];
 	
 	public ClothoidesComputer(Log log)
 	{
