@@ -13,7 +13,8 @@ import utils.permissions.ReadOnly;
 // DEPENDS_ON_RULES
 
 public enum GameElementNames {
-	TRUC(new Vec2<ReadOnly>(1410, 150), -1);
+	TRUC(new Vec2<ReadOnly>(1410, 150), -1),
+	MACHIN(new Vec2<ReadOnly>(1410, 150), -1);
 
 	private ObstacleCircular obstacle;
 

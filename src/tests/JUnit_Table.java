@@ -42,7 +42,7 @@ public class JUnit_Table extends JUnit_Test {
 		Assert.assertTrue(table.isDone(GameElementNames.TRUC) == Tribool.TRUE);
 		Assert.assertTrue(cloned_table.isDone(GameElementNames.TRUC) == Tribool.TRUE);
     	Assert.assertTrue(table.equals(cloned_table));
-    	table.setDone(GameElementNames.TRUC, Tribool.TRUE);
+    	table.setDone(GameElementNames.MACHIN, Tribool.TRUE);
     	Assert.assertTrue(!table.equals(cloned_table));
     }
     

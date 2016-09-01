@@ -26,7 +26,6 @@ public abstract class Obstacle
     protected static int marge;
     protected static int distanceApprox;
 	protected static double anglePas; // utilisé pour les calculs de collision pendant les rotations	
-//	protected static ArrayList<Vec2<ReadOnly>> pourtourGrillePatron; // utilisé pour les obstacles mobiles et le gridspace
 	
 	public static void setLog(Log log)
 	{
@@ -43,32 +42,6 @@ public abstract class Obstacle
 		distanceApprox = config.getInt(ConfigInfo.DISTANCE_MAX_ENTRE_MESURE_ET_OBJET);
 		marge = config.getInt(ConfigInfo.MARGE);
 		anglePas = Math.PI-2*Math.atan2(largeurRobot, longueurRobot);
-
-//		pourtourGrillePatron = new ArrayList<Vec2<ReadOnly>>();
-//		int enTout = 0;
-		/*		int rayonObstacleDilate = config.getInt(ConfigInfo.RAYON_ROBOT_ADVERSE) + rayonRobot;
-		int squaredRayonObstacleDilate = rayonObstacleDilate * rayonObstacleDilate;
-		for(int x = (int) Math.round(- rayonObstacleDilate/GridSpace.DISTANCE_ENTRE_DEUX_POINTS - 1) ; x <= (int) Math.round(rayonObstacleDilate/GridSpace.DISTANCE_ENTRE_DEUX_POINTS + 1) ; x++)
-			for(int y = (int) Math.round(- rayonObstacleDilate/GridSpace.DISTANCE_ENTRE_DEUX_POINTS - 1) ; y <= (int) Math.round(rayonObstacleDilate/GridSpace.DISTANCE_ENTRE_DEUX_POINTS + 1) ; y++)
-			{
-				Vec2<ReadOnly> point = new Vec2<ReadOnly>((int) Math.round(GridSpace.DISTANCE_ENTRE_DEUX_POINTS*x), (int) Math.round(GridSpace.DISTANCE_ENTRE_DEUX_POINTS*y));
-				if(point.squaredLength() < squaredRayonObstacleDilate)
-				{
-//					enTout++;
-					for(int x2 = -1 ; x2 <= 1 ; x2++)
-						for(int y2 = -1 ; y2 <= 1 ; y2++)
-							if((new Vec2<ReadOnly>((int) Math.round(GridSpace.DISTANCE_ENTRE_DEUX_POINTS*(x2+x)), (int) Math.round(GridSpace.DISTANCE_ENTRE_DEUX_POINTS*(y2+y)))).squaredLength() >= squaredRayonObstacleDilate)
-							{
-//								log.debug("Point du patron : "+point+" ie "+new Vec2<ReadOnly>(x, y));
-								pourtourGrillePatron.add(new Vec2<ReadOnly>(x, y));
-								x2 = 10;
-								y2 = 10;								
-							}
-				}
-			}
-//		log.debug("Taille patron : "+pourtourGrillePatron.size());
-//		log.debug("Taille totale de l'obstacle : "+enTout);
- */
 	}
 	
 	public Obstacle (Vec2<ReadOnly> position)
@@ -76,12 +49,6 @@ public abstract class Obstacle
 		this.position = position;
 	}
 	
-/*
-	public static final void setPosition(Obstacle o, Vec2<ReadOnly> v)
-	{
-		Vec2.copy(v, o.position);
-	}
-*/
 	@Override
 	public String toString()
 	{

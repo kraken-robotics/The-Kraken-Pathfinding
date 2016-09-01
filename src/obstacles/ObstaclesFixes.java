@@ -15,23 +15,6 @@ import utils.permissions.ReadOnly;
 
 public enum ObstaclesFixes {
 
-	DEPOT_SABLE_1(new ObstacleRectangular(new Vec2<ReadOnly>(0,1250), 1200, 22), false),
-	DEPOT_SABLE_2(new ObstacleRectangular(new Vec2<ReadOnly>(0,950), 48, 600), true),
-
-	REGLETTE_DUNE_1(new ObstacleRectangular(new Vec2<ReadOnly>(-700,1900), 22, 200), false),
-	REGLETTE_DUNE_2(new ObstacleRectangular(new Vec2<ReadOnly>(700,1900), 22, 200), false),
-
-	ROCHER_1(new ObstacleCircular(new Vec2<ReadOnly>(-1500,0), 250), false),
-	ROCHER_2(new ObstacleCircular(new Vec2<ReadOnly>(1500,0), 250), false),
-
-	CABINE_1(new ObstacleRectangular(new Vec2<ReadOnly>(-1200,1950), 100, 100), true),
-	CABINE_2(new ObstacleRectangular(new Vec2<ReadOnly>(-900,1950), 100, 100), true),
-	CABINE_3(new ObstacleRectangular(new Vec2<ReadOnly>(1200,1950), 100, 100), true),
-	CABINE_4(new ObstacleRectangular(new Vec2<ReadOnly>(900,1950), 100, 100), true),
-
-	REPOSE_FILET_1(new ObstacleRectangular(new Vec2<ReadOnly>(-561,11), 22, 22), false),
-	REPOSE_FILET_2(new ObstacleRectangular(new Vec2<ReadOnly>(561,11), 22, 22), false),
-	
 	// bords
     BORD_BAS(new ObstacleRectangular(new Vec2<ReadOnly>(0,0),3000,0), false),
     BORD_GAUCHE(new ObstacleRectangular(new Vec2<ReadOnly>(-1500,1000),0,2000), false),

@@ -13,7 +13,7 @@ import utils.permissions.ReadWrite;
  *
  */
 
-public class ObstacleRectangular extends ObstacleAvecAngle
+public class ObstacleRectangular extends Obstacle
 {
 	// Position est le centre de rotation, c'est-à-dire le croisement des deux diagonales
 	
@@ -38,6 +38,15 @@ public class ObstacleRectangular extends ObstacleAvecAngle
 	protected Vec2<ReadOnly> coinHautGaucheRotate;
 	protected Vec2<ReadOnly> coinBasDroiteRotate;
 	protected Vec2<ReadOnly> coinHautDroiteRotate;
+	
+	protected double angle, cos, sin;
+
+	protected void setAngle(double angle)
+	{
+		this.angle = angle;
+		cos = Math.cos(angle);
+		sin = Math.sin(angle);
+	}
 	
 	/**
 	 * Cas où l'angle est nul
@@ -76,7 +85,10 @@ public class ObstacleRectangular extends ObstacleAvecAngle
 	 */
 	public ObstacleRectangular(Vec2<ReadOnly> position, int sizeX, int sizeY, double angle)
 	{
-		super(position,angle);
+		super(position);
+		this.angle = angle;
+		cos = Math.cos(angle);
+		sin = Math.sin(angle);
 		this.sizeY = sizeY;
 		this.sizeX = sizeX;
 		this.angle = angle;
@@ -344,16 +356,6 @@ public class ObstacleRectangular extends ObstacleAvecAngle
 	{
 		return Math.sqrt(squaredDistance(point));
 	}
-	/*
-	@Override
-	public boolean isInObstacle(Vec2<ReadOnly> point)
-	{
-		Vec2<ReadWrite> pointWrite = convertitVersRepereObstacle(point);
-		return (pointWrite.x < sizeX/2) &&
-				(pointWrite.x > - sizeX/2) &&
-				(pointWrite.y < sizeY/2) &&
-				(pointWrite.y > - sizeY/2);
-	}*/
 	
 	/**
 	 * Fourni la plus petite distance au carré entre le point fourni et l'obstacle
@@ -412,13 +414,6 @@ public class ObstacleRectangular extends ObstacleAvecAngle
 		return 0;
 	}
 
-/*	@Override
-	public boolean isProcheObstacle(Vec2<ReadOnly> point, int distance)
-	{
-		// Attention! squaredDistance effectue déjà la rotation du point
-		return squaredDistance(point) <= (distance+0.01f) * (distance+0.01f); // vu qu'on a une précision limitée, mieux vaut prendre un peu de marge
-	}
-*/
 	/**
 	 * Y a-t-il collision avec un obstacle fixe?
 	 * @return

@@ -20,25 +20,7 @@ public abstract class ObstacleRectanglesCollection extends Obstacle
 
 	protected ObstacleRectangular[] ombresRobot;
 	protected int nbRectangles;
-/*
-	@Override
-	public boolean isProcheObstacle(Vec2<ReadOnly> point, int distance)
-	{
-		for(int i = 0; i < nbRectangles; i++)
-			if(ombresRobot[i].isProcheObstacle(point, distance))
-				return true;
-		return false;
-	}
 
-	@Override
-	public boolean isInObstacle(Vec2<ReadOnly> point)
-	{
-		for(int i = 0; i < nbRectangles; i++)
-			if(ombresRobot[i].isInObstacle(point))
-				return true;
-		return false;
-	}	
-	*/
 	/**
 	 * Y a-t-il collision avec un obstacle fixe?
 	 * Il y a collision s'il y a collision avec au moins un des robots tournés.
