@@ -26,20 +26,20 @@ public abstract class ObstaclesIterator implements Iterator<ObstacleProximity>
 		
 	@Override
 	public boolean hasNext()
-	{		
-		return nbTmp < memory.size();
+	{
+		return nbTmp + 1 < memory.size();
 	}
 
 	@Override
 	public ObstacleProximity next()
 	{
-		return memory.getObstacle(nbTmp++);
+		return memory.getObstacle(++nbTmp);
 	}
 
 	@Override
 	public void remove()
 	{
-		throw new UnsupportedOperationException();
+		memory.remove(nbTmp--);
 	}
 
 }

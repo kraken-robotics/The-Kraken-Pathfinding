@@ -1,6 +1,5 @@
 package obstacles;
 
-import obstacles.types.Obstacle;
 import obstacles.types.ObstacleProximity;
 import obstacles.types.ObstacleRectangular;
 import pathfinding.ChronoGameState;
@@ -12,7 +11,6 @@ import utils.Log;
 import utils.Vec2;
 import utils.permissions.ReadOnly;
 import container.Service;
-import enums.Tribool;
 
 /**
  * Service qui permet de calculer, pour un certain GameState, des collisions
@@ -25,6 +23,8 @@ public class MoteurPhysique implements Service {
 	protected Log log;
 	
 	private int distanceApproximation;
+	private int distanceMinimaleEntreProximite;
+	private int rayonRobot;
 	
 	public MoteurPhysique(Log log)
 	{
@@ -43,24 +43,34 @@ public class MoteurPhysique implements Service {
                 return true;
         return false;
     }
+
+    /**
+     * Supprime les obstacles mobiles proches
+     * Ça allège le nombre d'obstacles.
+     * @param position
+     * @return
+     */
+    public void removeNearbyObstacles(ChronoGameState state, Vec2<ReadOnly> position)
+    {
+    	state.iterator.reinit();
+    	while(state.iterator.hasNext())
+        	if(state.iterator.next().isProcheObstacle(position, distanceMinimaleEntreProximite))
+        		state.iterator.remove();
+    }
     
     /**
      * Indique si un obstacle fixe de centre proche de la position indiquée existe.
-     * Cela permet de ne pas détecter en obstacle mobile des obstacles fixes.
-     * De plus, ça allège le nombre d'obstacles.
      * Utilisé pour savoir s'il y a un ennemi devant nous.
      * @param position
      * @return
      */
-    public boolean isObstacleMobilePresent(ChronoGameState state, Vec2<ReadOnly> position, int distance) 
+    public boolean isThereObstacle(ChronoGameState state, Vec2<ReadOnly> position)
     {
-    //    if(isThereHypotheticalEnemy && isObstaclePresent(position, hypotheticalEnemy.getReadOnly(), distance))
-    //    	return true;
-/*    	state.iterator.reinit();
+    	state.iterator.reinit();
     	while(state.iterator.hasNext())
-        	if(isObstaclePresent(position, state.iterator.next(), distance))
+        	if(state.iterator.next().isProcheObstacle(position, rayonRobot + distanceApproximation))
         		return true;
- */       return false;
+       return false;
     }
     
 	@Override
@@ -71,6 +81,8 @@ public class MoteurPhysique implements Service {
 	public void useConfig(Config config)
 	{
 		distanceApproximation = config.getInt(ConfigInfo.DISTANCE_MAX_ENTRE_MESURE_ET_OBJET);		
+		distanceMinimaleEntreProximite = config.getInt(ConfigInfo.DISTANCE_BETWEEN_PROXIMITY_OBSTACLES);
+		rayonRobot = config.getInt(ConfigInfo.RAYON_ROBOT);
 	}
 	
 	/**

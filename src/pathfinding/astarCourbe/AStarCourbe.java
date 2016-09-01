@@ -89,9 +89,12 @@ public class AStarCourbe implements Service
 	public void doYourJob() throws InterruptedException
 	{
 		while(true)
-		{/*
-			wait(); // en attente d'une nouvelle destination
-			computeNewPath(arrivee, ejecteGameElement, directionstrategy);
+		{
+			synchronized(this)
+			{
+				wait(); // en attente d'une nouvelle destination
+			}
+/*			computeNewPath(arrivee, ejecteGameElement, directionstrategy);
 			do {
 				gridspace.wait();
 				

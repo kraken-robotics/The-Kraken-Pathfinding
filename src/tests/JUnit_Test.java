@@ -32,8 +32,7 @@ public abstract class JUnit_Test
 	@Before
 	public void setUp() throws Exception
 	{
-		
-		System.err.println("\n\n----- DÉBUT DU TEST "+testName.getMethodName()+" -----\n\n");
+		System.err.println("----- DÉBUT DU TEST "+testName.getMethodName()+" -----\n\n");
 
 		container = new Container();
 		config = (Config) container.getService(ServiceNames.CONFIG);
@@ -54,6 +53,7 @@ public abstract class JUnit_Test
 			Thread.sleep(100000);
 		Runtime.getRuntime().removeShutdownHook(ThreadExit.getInstance());
 		container.destructor();
+		System.out.println("\n\n");
 	}
 
 	

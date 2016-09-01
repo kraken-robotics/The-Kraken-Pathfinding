@@ -40,8 +40,18 @@ public class JUnit_OMMemory extends JUnit_Test {
     	Assert.assertTrue(memory.getFirstNotDeadNow() == 0);
     	Assert.assertTrue(memory.getNextDeathDate() == Long.MAX_VALUE);
 
-    	Assert.assertTrue(!iterator.hasNext());
     	long date = System.currentTimeMillis();
+    	memory.add(new Vec2<ReadOnly>(1324,546), date, null);
+    	memory.add(new Vec2<ReadOnly>(1324,546), date, null);
+    	iterator.reinit();
+    	Assert.assertTrue(iterator.hasNext());
+    	iterator.next();
+    	iterator.remove();
+    	Assert.assertTrue(iterator.hasNext());
+    	iterator.next();
+    	Assert.assertTrue(!iterator.hasNext());
+    	iterator.remove();
+
     	memory.add(new Vec2<ReadOnly>(1324,546), date, null);
     	Assert.assertTrue(memory.getFirstNotDeadNow() == 0);
     	iterator.reinit();

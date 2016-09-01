@@ -430,27 +430,33 @@ public class GridSpace implements Service
 	 */
 	public ArrayList<ObstacleProximity>[] getOldAndNewObstacles()
 	{
-		@SuppressWarnings("unchecked")
-		ArrayList<ObstacleProximity>[] out = new ArrayList[2];
-		out[0] = new ArrayList<ObstacleProximity>();
-		out[1] = new ArrayList<ObstacleProximity>();
-
-		while(iteratorDStarLite.hasNextDead())
-			out[0].add(iteratorDStarLite.next());
-
-		long tmp = deathDateLastObstacle;
-		while(iteratorDStarLite.hasNext())
+		synchronized(obstaclesMemory)
 		{
-			ObstacleProximity o = iteratorDStarLite.next();
-			long deathDate = o.getDeathDate();
-			if(deathDate > deathDateLastObstacle)
+			@SuppressWarnings("unchecked")
+			ArrayList<ObstacleProximity>[] out = new ArrayList[2];
+			out[0] = new ArrayList<ObstacleProximity>();
+			out[1] = new ArrayList<ObstacleProximity>();
+	
+			while(iteratorDStarLite.hasNextDead())
+				out[0].add(iteratorDStarLite.next());
+			ObstacleProximity p;
+			while((p = obstaclesMemory.pollMortTot()) != null)
+				out[0].add(p);
+	
+			long tmp = deathDateLastObstacle;
+			while(iteratorDStarLite.hasNext())
 			{
-				tmp = deathDate;
-				out[1].add(o);
+				ObstacleProximity o = iteratorDStarLite.next();
+				long deathDate = o.getDeathDate();
+				if(deathDate > deathDateLastObstacle)
+				{
+					tmp = deathDate;
+					out[1].add(o);
+				}
 			}
+			deathDateLastObstacle = tmp;
+			iteratorDStarLite.reinit(); // l'itérateur reprendra juste avant les futurs obstacles périmés
+			return out;
 		}
-		deathDateLastObstacle = tmp;
-		iteratorDStarLite.reinit(); // l'itérateur reprendra juste avant les futurs obstacles périmés
-		return out;
 	}
 }

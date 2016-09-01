@@ -22,6 +22,7 @@ public class ObstaclesMemory implements Service
 {
     // Les obstacles mobiles, c'est-à-dire des obstacles de proximité
     private volatile LinkedList<ObstacleProximity> listObstaclesMobiles = new LinkedList<ObstacleProximity>();
+    private volatile LinkedList<ObstacleProximity> listObstaclesMortsTot = new LinkedList<ObstacleProximity>();
     private int dureeAvantPeremption;
 	private int rayonEnnemi;
 	private volatile int size = 0;
@@ -36,9 +37,9 @@ public class ObstaclesMemory implements Service
 		this.log = log;
 	}
 
-	public synchronized ObstacleProximity add(Vec2<ReadOnly> position, /*boolean urgent, */ArrayList<Integer> masque)
+	public synchronized ObstacleProximity add(Vec2<ReadOnly> position, ArrayList<Integer> masque)
 	{
-		return add(position, System.currentTimeMillis(), /*urgent, */masque);
+		return add(position, System.currentTimeMillis(), masque);
 	}
 	
 	/**
@@ -49,10 +50,9 @@ public class ObstaclesMemory implements Service
 	 * @param masque
 	 * @return
 	 */
-	public synchronized ObstacleProximity add(Vec2<ReadOnly> position, long date, /*boolean urgent, */ArrayList<Integer> masque)
+	public synchronized ObstacleProximity add(Vec2<ReadOnly> position, long date, ArrayList<Integer> masque)
 	{
-        ObstacleProximity obstacle = new ObstacleProximity(position, rayonEnnemi, date+dureeAvantPeremption,/* urgent,*/ masque);
-//      log.warning("Obstacle créé, rayon = "+rayon_robot_adverse+", centre = "+position+", meurt à "+(date_actuelle+dureeAvantPeremption), this);
+        ObstacleProximity obstacle = new ObstacleProximity(position, rayonEnnemi, date+dureeAvantPeremption, masque);
         listObstaclesMobiles.add(obstacle);
         size++;
 		return obstacle;
@@ -84,6 +84,13 @@ public class ObstaclesMemory implements Service
 		return listObstaclesMobiles.get(nbTmp-indicePremierObstacle);
 	}
 
+	public synchronized void remove(int indice)
+	{
+		listObstaclesMortsTot.add(listObstaclesMobiles.get(indice-indicePremierObstacle));
+		listObstaclesMobiles.remove(indice-indicePremierObstacle);
+		size--;
+	}
+	
 	/**
 	 * Renvoie vrai s'il y a effectivement suppression.
 	 * On conserve les obstacles récemment périmés, car le DStarLite en a besoin.
@@ -150,4 +157,13 @@ public class ObstaclesMemory implements Service
 		return indice < firstNotDeadNow || listObstaclesMobiles.get(indice-indicePremierObstacle).isDestructionNecessary(date);
 	}
 
+	/**
+	 * Permet de récupérer les obstacles morts prématurément
+	 * @return
+	 */
+	public ObstacleProximity pollMortTot()
+	{
+		return listObstaclesMortsTot.poll();
+	}
+	
 }
