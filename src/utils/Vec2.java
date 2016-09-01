@@ -32,7 +32,7 @@ public class Vec2<T extends Permission> implements Serializable
 		y = Math.sin(angle)*coeffDirection;
 	}*/
 
-	public Vec2(double longueur, double angle, @SuppressWarnings("unused") boolean useless)
+	public Vec2(double longueur, double angle, boolean useless)
 	{
 		x = Math.cos(angle)*longueur;
 		y = Math.sin(angle)*longueur;

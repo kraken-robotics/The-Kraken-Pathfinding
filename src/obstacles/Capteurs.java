@@ -84,6 +84,14 @@ public class Capteurs implements Service {
 		synchronized(gridspace)
 		{
 			/**
+			 * On update la table avec notre position
+			 */
+		    for(GameElementNames g: GameElementNames.values)
+		        if(moteur.didWeShootIt(g, positionRobot))
+		        	gridspace.setDoneTable(g, Tribool.TRUE); // on est sûr de l'avoir shooté
+			
+			
+			/**
 			 * Suppression des mesures qui sont hors-table ou qui voient un obstacle de table
 			 */
 			for(int i = 0; i < nbCapteurs; i++)
@@ -120,7 +128,8 @@ public class Capteurs implements Service {
 				 */
 			    for(GameElementNames g: GameElementNames.values)
 			        if(gridspace.isDoneTable(g) == Tribool.FALSE && moteur.didTheEnemyTakeIt(g, o))
-			        	gridspace.setDoneTable(g, Tribool.MAYBE);						
+			        	gridspace.setDoneTable(g, Tribool.MAYBE);
+
 			}
 			if(needNotify)
 				notify();

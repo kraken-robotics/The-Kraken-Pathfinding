@@ -2,10 +2,8 @@ package obstacles.types;
 
 import java.util.ArrayList;
 
-import robot.Speed;
 import utils.Vec2;
 import utils.permissions.ReadOnly;
-import utils.permissions.ReadWrite;
 
 /**
  * Obstacles détectés par capteurs de proximité (ultrasons et infrarouges)

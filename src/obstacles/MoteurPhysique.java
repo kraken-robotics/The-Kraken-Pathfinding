@@ -68,7 +68,7 @@ public class MoteurPhysique implements Service {
     {
     	state.iterator.reinit();
     	while(state.iterator.hasNext())
-        	if(state.iterator.next().isProcheObstacle(position, rayonRobot + distanceApproximation))
+        	if(state.iterator.next().isProcheObstacle(position, rayonRobot + 20))
         		return true;
        return false;
     }
@@ -113,13 +113,18 @@ public class MoteurPhysique implements Service {
 	/**
 	 * g est-il proche de position? (utilisé pour vérifier si on shoot dans un élément de jeu)
 	 * @param g
-	 * @param position
+	 * @param positionCentreRotation
 	 * @param rayon_robot_adverse
 	 * @return
 	 */
 	public boolean didTheEnemyTakeIt(GameElementNames g, ObstacleProximity o)
 	{
 		return g.getObstacle().isProcheObstacle(o.position, o.radius);
+	}
+
+	public boolean didWeShootIt(GameElementNames g, Vec2<ReadOnly> position)
+	{
+		return g.getObstacle().isProcheObstacle(position, rayonRobot);
 	}
 
 }
