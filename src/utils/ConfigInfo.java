@@ -24,12 +24,6 @@ public enum ConfigInfo {
 	LARGEUR_ROBOT_AXE_GAUCHE_DROITE_DEPLOYE("350", true),
 	LONGUEUR_ROBOT_AXE_AVANT_ARRIERE_DEPLOYE("220", true),
 	RAYON_ROBOT("150", true),
-
-	/**
-	 * Infos du règlement
-	 */
-	TABLE_X("3000", true), // largeur de la table (axe X) en mm
-	TABLE_Y("2000", true), // longueur de la table (axe Y) en mm
 	
 	/**
 	 * Paramètres du log
@@ -74,7 +68,6 @@ public enum ConfigInfo {
 	HORIZON_CAPTEURS("800", true), // jusqu'où peuvent voir les capteurs
 	DUREE_PEREMPTION_OBSTACLES("3000", true), // pendant combien de temps va-t-on garder un obstacle de proximité
 	DISTANCE_MAX_ENTRE_MESURE_ET_OBJET("50", true), // quelle marge d'erreur autorise-t-on entre un objet et sa détection
-	NB_CAPTEURS_PROXIMITE("2", true), // combien y a-t-il de capteurs de proximité
 
 	/**
 	 * Config dynamique

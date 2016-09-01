@@ -61,8 +61,9 @@ public class ClothoidesComputer implements Service
 	 * Génère le point de la clothoïde unitaire de courbure = s
 	 * @param s
 	 */
-	private void calculeXY(BigDecimal s)
+	private void calculeXY(BigDecimal sparam)
 	{
+		BigDecimal s = sparam;
 		x = s;
 		BigDecimal factorielle = new BigDecimal(1).setScale(15, RoundingMode.HALF_EVEN);
 		BigDecimal b2 = new BigDecimal(1).setScale(15, RoundingMode.HALF_EVEN);

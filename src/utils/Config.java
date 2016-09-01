@@ -22,8 +22,6 @@ import enums.RobotColor;
  */
 public class Config implements Service
 {
-	public static final boolean debugCapteurs = false;
-	public static final boolean debugAsser = false;	
 	public static final boolean debugSerie = true;
 	public static final boolean debugSerieTrame = true;
 
@@ -41,7 +39,9 @@ public class Config implements Service
 	{
 		try
 		{
-			properties.load(new FileInputStream(name_config_file));
+			FileInputStream f = new FileInputStream(name_config_file);
+			properties.load(f);
+			f.close();
 			configIniCharge = true;
 		}
 		catch(IOException e)

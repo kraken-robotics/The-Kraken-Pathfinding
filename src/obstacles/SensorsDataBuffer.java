@@ -13,11 +13,11 @@ import container.Service;
  *
  */
 
-public class IncomingDataBuffer implements Service
+public class SensorsDataBuffer implements Service
 {
 	protected Log log;
 	
-	public IncomingDataBuffer(Log log)
+	public SensorsDataBuffer(Log log)
 	{
 		this.log = log;
 	}
@@ -31,13 +31,13 @@ public class IncomingDataBuffer implements Service
 		return buffer.isEmpty();
 	}
 	
-	private volatile Queue<IncomingData> buffer = new LinkedList<IncomingData>();
+	private volatile Queue<SensorsData> buffer = new LinkedList<SensorsData>();
 	
 	/**
 	 * Ajout d'un élément dans le buffer et provoque un "notifyAll"
 	 * @param elem
 	 */
-	public synchronized void add(IncomingData elem)
+	public synchronized void add(SensorsData elem)
 	{
 		buffer.add(elem);
 		if(buffer.size() > 5)
@@ -53,7 +53,7 @@ public class IncomingDataBuffer implements Service
 	 * Retire un élément du buffer
 	 * @return
 	 */
-	public synchronized IncomingData poll()
+	public synchronized SensorsData poll()
 	{
 		return buffer.poll();
 	}

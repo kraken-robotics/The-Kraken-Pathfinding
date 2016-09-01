@@ -55,13 +55,13 @@ public enum RobotColor {
 	 * Utilisé pour les tests sans avoir à hardcoder la couleur.
 	 * @return
 	 */
-	public static String getCouleurAvecSymetrie()
+/*	public static String getCouleurAvecSymetrie()
 	{
 		for(RobotColor r: RobotColor.values())
 			if(r.symmetry)
 				return r.toString();
 		return null;
-	}
+	}*/
 
 	public static String getCouleur(boolean symetrie)
 	{

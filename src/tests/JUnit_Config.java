@@ -18,8 +18,8 @@ public class JUnit_Config extends JUnit_Test {
 	{
 		for(ConfigInfo c: ConfigInfo.values())
 			config.getString(c);
-		Thread.sleep(5000);
-		Assert.assertTrue(config.getString(ConfigInfo.TABLE_X).equals("3000"));
+		Assert.assertTrue(config.getString(ConfigInfo.FIN_MATCH).equals("false"));
+		Assert.assertTrue(!config.getBoolean(ConfigInfo.FIN_MATCH));
 	}
 
 	@Test

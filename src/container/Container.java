@@ -1,7 +1,7 @@
 package container;
 
 import obstacles.Capteurs;
-import obstacles.IncomingDataBuffer;
+import obstacles.SensorsDataBuffer;
 import obstacles.MoteurPhysique;
 import obstacles.memory.ObstaclesMemory;
 import obstacles.types.Obstacle;
@@ -136,10 +136,8 @@ public class Container
 	public Container() throws ContainerException, InterruptedException
 	{
 		if(nbInstances != 0)
-		{
-			System.out.println("Un autre container existe déjà! Annulation du constructeur.");
-			throw new ContainerException();
-		}
+			throw new ContainerException("Un autre container existe déjà! Annulation du constructeur.");
+
 		nbInstances++;
 		
 		/**
@@ -282,8 +280,8 @@ public class Container
 			instanciedServices[serviceRequested.ordinal()] = (Service)new GridSpace((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
 																					(ObstaclesMemory)getServiceDisplay(serviceRequested, ServiceNames.OBSTACLES_MEMORY),
 																					(Table)getServiceDisplay(serviceRequested, ServiceNames.TABLE));
-		else if(serviceRequested == ServiceNames.INCOMING_DATA_BUFFER)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new IncomingDataBuffer((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG));
+		else if(serviceRequested == ServiceNames.SENSORS_DATA_BUFFER)
+			instanciedServices[serviceRequested.ordinal()] = (Service)new SensorsDataBuffer((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG));
 		else if(serviceRequested == ServiceNames.INCOMING_ORDER_BUFFER)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new BufferIncomingOrder((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG));
 		else if(serviceRequested == ServiceNames.OUTGOING_ORDER_BUFFER)
@@ -308,13 +306,13 @@ public class Container
 																		(GridSpace)getServiceDisplay(serviceRequested, ServiceNames.GRID_SPACE));
 		else if(serviceRequested == ServiceNames.THREAD_CAPTEURS)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadCapteurs((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
-																		(IncomingDataBuffer)getServiceDisplay(serviceRequested, ServiceNames.INCOMING_DATA_BUFFER),
+																		(SensorsDataBuffer)getServiceDisplay(serviceRequested, ServiceNames.SENSORS_DATA_BUFFER),
 																		(Capteurs)getServiceDisplay(serviceRequested, ServiceNames.CAPTEURS));
 		else if(serviceRequested == ServiceNames.THREAD_SERIAL_INPUT_COUCHE_ORDRE)
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadSerialInputCoucheOrdre((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
 																		(Config)getServiceDisplay(serviceRequested, ServiceNames.CONFIG),
 																		(BufferIncomingOrder)getServiceDisplay(serviceRequested, ServiceNames.INCOMING_ORDER_BUFFER),
-																		(IncomingDataBuffer)getServiceDisplay(serviceRequested, ServiceNames.INCOMING_DATA_BUFFER),
+																		(SensorsDataBuffer)getServiceDisplay(serviceRequested, ServiceNames.SENSORS_DATA_BUFFER),
 			                                                            (RobotReal)getServiceDisplay(serviceRequested, ServiceNames.ROBOT_REAL),
 																		(CheminPathfinding)getServiceDisplay(serviceRequested, ServiceNames.CHEMIN_PATHFINDING));
 		else if(serviceRequested == ServiceNames.THREAD_SERIAL_INPUT_COUCHE_TRAME)
@@ -362,10 +360,7 @@ public class Container
 			instanciedServices[serviceRequested.ordinal()] = (Service)new ClothoidesComputer((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG));
 		// si le service demandé n'est pas connu, alors on log une erreur.
 		else
-		{
-			log.critical("Erreur d'instanciation pour le service : "+serviceRequested+" (service inconnu)");
-			throw new ContainerException();
-		}
+			throw new ContainerException("Erreur d'instanciation pour le service : "+serviceRequested+" (service inconnu)");
 		
 		if(updateConfig && config != null)
 		{
@@ -408,7 +403,7 @@ public class Container
 	 * Méthode qui affiche le nom de tous les services non-instanciés.
 	 * Renvoie true si cette liste est vide
 	 */
-	public boolean afficheNonInstancies()
+	public boolean afficheNonInstancies() // NO_UCD (test only)
 	{
 		boolean out = true;
 		

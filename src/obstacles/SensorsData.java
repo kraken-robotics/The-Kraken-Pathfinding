@@ -8,13 +8,13 @@ import robot.Cinematique;
  *
  */
 
-public class IncomingData
+public class SensorsData
 {
 	public Cinematique cinematique;
 	/** Ce que voit chacun des capteurs */
 	public int[] mesures;
 	
-	public IncomingData(int[] mesures, Cinematique cinematique)
+	public SensorsData(int[] mesures, Cinematique cinematique)
 	{
 		this.mesures = mesures;
 		this.cinematique = cinematique;

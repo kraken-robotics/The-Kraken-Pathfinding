@@ -222,7 +222,7 @@ public class DStarLite implements Service
 		}
 
 		if(depart.rhs == Integer.MAX_VALUE)
-			throw new PathfindingException();
+			throw new PathfindingException("Aucun chemin n'a été trouvé");
 	}
 
 	/**

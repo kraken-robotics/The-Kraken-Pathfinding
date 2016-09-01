@@ -367,7 +367,6 @@ public class GridSpace implements Service
 		ArrayList<Integer> masque = getMasqueObstacle(position);
 		ObstacleProximity o = obstaclesMemory.add(position, urgent, masque);
 		// pour un ajout, pas besoin de tout régénérer
-		notify(); // changement de la grille dynamique !
 		return o;
 	}
 
