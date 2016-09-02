@@ -33,7 +33,7 @@ public class ThreadExit extends Thread
 	@Override
 	public void run()
 	{
-		Thread.currentThread().setName("ThreadExit");
+		Thread.currentThread().setName("ThreadRobotExit");
 		try {
 			container.destructor();
 		} catch (ContainerException | InterruptedException e) {

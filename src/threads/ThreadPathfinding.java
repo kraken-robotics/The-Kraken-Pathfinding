@@ -25,7 +25,7 @@ public class ThreadPathfinding extends Thread implements Service
 	@Override
 	public void run()
 	{
-		Thread.currentThread().setName("ThreadPathfinding");
+		Thread.currentThread().setName("ThreadRobotPathfinding");
 		log.debug("Démarrage de "+Thread.currentThread().getName());
 		try {
 			while(true)

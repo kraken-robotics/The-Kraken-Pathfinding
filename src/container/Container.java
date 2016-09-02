@@ -97,7 +97,7 @@ public class Container
 		Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
 		for(Thread t : threadSet)
 		{
-			if(!t.getName().equals(Thread.currentThread().getName()) && t.getName().startsWith("Thread"))
+			if(!t.getName().equals(Thread.currentThread().getName()) && t.getName().startsWith("ThreadRobot"))
 				log.critical("Thread "+t.getName()+" pas arrêté !");
 		}
 		

@@ -46,7 +46,7 @@ public enum ConfigInfo {
 	/**
 	 * Paramètres de la série
 	 */
-	SERIAL_TIMEOUT("20", true), // quel TIMEOUT pour le protocole série des trames ?
+	SERIAL_TIMEOUT("30", true), // quel TIMEOUT pour le protocole série des trames ?
 	BAUDRATE("115200", true), // le baudrate de la liaison série
 	SERIAL_PORT("/dev/ttyS0", true), // le port de la liaison série
 	SLEEP_ENTRE_TRAMES("0", true),	// la durée minimale entre deux envois de nouvelles trames
