@@ -1,6 +1,7 @@
 package obstacles.types;
 
 import robot.Cinematique;
+import robot.RobotChrono;
 import utils.Vec2;
 import utils.permissions.ReadOnly;
 import utils.permissions.ReadWrite;
@@ -17,10 +18,10 @@ public class ObstacleRectangular extends Obstacle
 	// Position est le centre de rotation, c'est-à-dire le croisement des deux diagonales
 	
 	// taille selon l'axe X
-	protected int sizeX;
+/*	protected int sizeX;
 	
 	// taille selon l'axe Y
-	protected int sizeY;
+	protected int sizeY;*/
 	
 	// Longueur entre le centre et un des coins
 	protected double demieDiagonale;
@@ -37,6 +38,8 @@ public class ObstacleRectangular extends Obstacle
 	protected Vec2<ReadOnly> coinHautGaucheRotate;
 	protected Vec2<ReadOnly> coinBasDroiteRotate;
 	protected Vec2<ReadOnly> coinHautDroiteRotate;
+	
+	private int indiceMemory;
 	
 	protected double angle, cos, sin;
 /*
@@ -60,7 +63,12 @@ public class ObstacleRectangular extends Obstacle
 	{
 		this(position, sizeX, sizeY, 0);
 	}
-
+	
+	public ObstacleRectangular()
+	{
+		this(null, 0, 0, 0);
+	}
+	
 	/**
 	 * Cet angle est celui par lequel le rectangle a été tourné.
 	 * C'est donc l'opposé de l'angle par lequel on va tourner les points afin de considérer
@@ -78,8 +86,8 @@ public class ObstacleRectangular extends Obstacle
 		this.angle = angle;
 		cos = Math.cos(angle);
 		sin = Math.sin(angle);
-		this.sizeY = sizeY;
-		this.sizeX = sizeX;
+//		this.sizeY = sizeY;
+//		this.sizeX = sizeX;
 		this.angle = angle;
 		coinBasGauche = new Vec2<ReadOnly>(-sizeX/2,-sizeY/2);
 		coinHautGauche = new Vec2<ReadOnly>(-sizeX/2,sizeY/2);
@@ -92,30 +100,6 @@ public class ObstacleRectangular extends Obstacle
 		demieDiagonale = Math.sqrt(sizeY*sizeY/4+sizeX*sizeX/4);
 	}
 	
-	/**
-	 * Crée l'obstacle du robot
-	 * @param state
-	 * @throws FinMatchException 
-	 */
-	public ObstacleRectangular(Cinematique c, boolean deploye)
-	{
-		this(c.getPosition(), deploye ? longueurRobotDeploye : longueurRobot, deploye ? largeurRobotDeploye : largeurRobot, c.orientation);
-	}
-/*
-	public void update(Vec2<ReadOnly> position, double angle)
-	{
-		int sizeX = o.sizeX, sizeY = o.sizeY;
-		Vec2.copy(position.plusNewVector((new Vec2<ReadWrite>(-sizeX/2,-sizeY/2))).getReadOnly(), o.coinBasGauche);
-		Vec2.copy(position.plusNewVector((new Vec2<ReadWrite>(-sizeX/2,sizeY/2))).getReadOnly(), o.coinHautGauche);
-		Vec2.copy(position.plusNewVector((new Vec2<ReadWrite>(sizeX/2,-sizeY/2))).getReadOnly(), o.coinBasDroite);
-		Vec2.copy(position.plusNewVector((new Vec2<ReadWrite>(sizeX/2,sizeY/2))).getReadOnly(), o.coinHautDroite);
-		setAngle(o, angle);
-		Vec2.copy(o.rotatePlusAngle(o.coinBasGauche.getReadOnly()).getReadOnly(), o.coinBasGaucheRotate);
-		Vec2.copy(o.rotatePlusAngle(o.coinHautGauche.getReadOnly()).getReadOnly(), o.coinHautGaucheRotate);
-		Vec2.copy(o.rotatePlusAngle(o.coinBasDroite.getReadOnly()).getReadOnly(), o.coinBasDroiteRotate);
-		Vec2.copy(o.rotatePlusAngle(o.coinHautDroite.getReadOnly()).getReadOnly(), o.coinHautDroiteRotate);
-	}
-	*/
 	/**
 	 * Effectue la rotation d'un point, ce qui équivaut à la rotation de cet obstacle,
 	 * ce qui équivaut à le faire devenir un ObstacleRectagularAligned
@@ -193,16 +177,17 @@ public class ObstacleRectangular extends Obstacle
 	 * @param r
 	 * @return
 	 */
+	@Override
 	public final boolean isColliding(ObstacleRectangular r)
 	{
 		// Calcul simple permettant de vérifier les cas absurdes où les obstacles sont loin l'un de l'autre
 		if(position.squaredDistance(r.position) >= (demieDiagonale+r.demieDiagonale)*(demieDiagonale+r.demieDiagonale))
 			return false;
 		// Il faut tester les quatres axes
-		return !testeSeparation(coinBasGauche.x, coinBasDroite.x, getXConvertiVersRepereObstacle(r.coinBasGaucheRotate), getXConvertiVersRepereObstacle(r.coinHautGaucheRotate), getXConvertiVersRepereObstacle(r.coinBasDroiteRotate), getXConvertiVersRepereObstacle(r.coinHautDroiteRotate))
-				&& !testeSeparation(coinBasGauche.y, coinHautGauche.y, getYConvertiVersRepereObstacle(r.coinBasGaucheRotate), getYConvertiVersRepereObstacle(r.coinHautGaucheRotate), getYConvertiVersRepereObstacle(r.coinBasDroiteRotate), getYConvertiVersRepereObstacle(r.coinHautDroiteRotate))
-				&& !testeSeparation(r.coinBasGauche.x, r.coinBasDroite.x, r.getXConvertiVersRepereObstacle(coinBasGaucheRotate), r.getXConvertiVersRepereObstacle(coinHautGaucheRotate), r.getXConvertiVersRepereObstacle(coinBasDroiteRotate), r.getXConvertiVersRepereObstacle(coinHautDroiteRotate))
-				&& !testeSeparation(r.coinBasGauche.y, r.coinHautGauche.y, r.getYConvertiVersRepereObstacle(coinBasGaucheRotate), r.getYConvertiVersRepereObstacle(coinHautGaucheRotate), r.getYConvertiVersRepereObstacle(coinBasDroiteRotate), r.getYConvertiVersRepereObstacle(coinHautDroiteRotate));
+		return !testeSeparation(coinBasGauche.x, coinBasDroite.x, getXConvertiVersRepereObstacle(r.coinBasGaucheRotate.getReadOnly()), getXConvertiVersRepereObstacle(r.coinHautGaucheRotate.getReadOnly()), getXConvertiVersRepereObstacle(r.coinBasDroiteRotate.getReadOnly()), getXConvertiVersRepereObstacle(r.coinHautDroiteRotate.getReadOnly()))
+				&& !testeSeparation(coinBasGauche.y, coinHautGauche.y, getYConvertiVersRepereObstacle(r.coinBasGaucheRotate.getReadOnly()), getYConvertiVersRepereObstacle(r.coinHautGaucheRotate.getReadOnly()), getYConvertiVersRepereObstacle(r.coinBasDroiteRotate.getReadOnly()), getYConvertiVersRepereObstacle(r.coinHautDroiteRotate.getReadOnly()))
+				&& !testeSeparation(r.coinBasGauche.x, r.coinBasDroite.x, r.getXConvertiVersRepereObstacle(coinBasGaucheRotate.getReadOnly()), r.getXConvertiVersRepereObstacle(coinHautGaucheRotate.getReadOnly()), r.getXConvertiVersRepereObstacle(coinBasDroiteRotate.getReadOnly()), r.getXConvertiVersRepereObstacle(coinHautDroiteRotate.getReadOnly()))
+				&& !testeSeparation(r.coinBasGauche.y, r.coinHautGauche.y, r.getYConvertiVersRepereObstacle(coinBasGaucheRotate.getReadOnly()), r.getYConvertiVersRepereObstacle(coinHautGaucheRotate.getReadOnly()), r.getYConvertiVersRepereObstacle(coinBasDroiteRotate.getReadOnly()), r.getYConvertiVersRepereObstacle(coinHautDroiteRotate.getReadOnly()));
 	}
 	
 	/**
@@ -261,19 +246,19 @@ public class ObstacleRectangular extends Obstacle
 	 * Utilisé pour l'affichage uniquement
 	 * @return
 	 */
-	public int getSizeX()
+/*	public int getSizeX()
 	{
 		return sizeX;
-	}
+	}*/
 
 	/**
 	 * Utilisé pour l'affichage uniquement
 	 * @return
 	 */
-	public int getSizeY()
+/*	public int getSizeY()
 	{
 		return sizeY;
-	}
+	}*/
 
 	@Override
 	public String toString()
@@ -337,4 +322,42 @@ public class ObstacleRectangular extends Obstacle
 		// Sinon, on est dans l'obstacle
 		return 0;
 	}
+
+	public void setIndiceMemoryManager(int indice)
+	{
+		indiceMemory = indice;
+	}
+
+	public int getIndiceMemoryManager()
+	{
+		return indiceMemory;
+	}
+
+	public ObstacleRectangular update(Vec2<ReadOnly> position, double orientation, RobotChrono robot)
+	{
+		Vec2.copy(position, this.position);
+		this.angle = orientation;
+		cos = Math.cos(angle);
+		sin = Math.sin(angle);
+		int a = robot.getDemieLargeurDroite();
+		int b = robot.getDemieLargeurGauche();
+		int c = robot.getDemieLongueurAvant();
+		int d = robot.getDemieLongueurArriere();
+		this.angle = orientation;
+		coinBasGauche.x = -d;
+		coinBasGauche.y = -a;
+		coinHautGauche.x = -d;
+		coinHautGauche.y = b;		
+		coinBasDroite.y = c;
+		coinBasDroite.y = -a;
+		coinHautDroite.x = c;
+		coinHautDroite.y = b;
+		coinBasGaucheRotate = convertitVersRepereTable(coinBasGauche).getReadOnly();
+		coinHautGaucheRotate = convertitVersRepereTable(coinHautGauche).getReadOnly();
+		coinBasDroiteRotate = convertitVersRepereTable(coinBasDroite).getReadOnly();
+		coinHautDroiteRotate = convertitVersRepereTable(coinHautDroite).getReadOnly();
+		demieDiagonale = robot.getDemieDiagonale();
+		return this;
+	}
+	
 }

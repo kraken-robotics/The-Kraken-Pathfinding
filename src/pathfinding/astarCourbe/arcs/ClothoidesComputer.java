@@ -10,6 +10,8 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 
 import container.Service;
+import obstacles.ObstaclesRectangularMemory;
+import pathfinding.ChronoGameState;
 import pathfinding.VitesseCourbure;
 import robot.Cinematique;
 import robot.RobotChrono;
@@ -30,6 +32,7 @@ import utils.permissions.ReadWrite;
 public class ClothoidesComputer implements Service
 {
 	protected Log log;
+	private ObstaclesRectangularMemory memory;
 	
 	private BigDecimal x, y; // utilisés dans le calcul de trajectoire
 	private static final int S_MAX = 10; // une valeur très grande pour dire qu'on trace beaucoup de points.
@@ -45,8 +48,9 @@ public class ClothoidesComputer implements Service
 	@SuppressWarnings("unchecked")
 	private Vec2<ReadOnly>[] trajectoire = new Vec2[2 * INDICE_MAX - 1];
 	
-	public ClothoidesComputer(Log log)
+	public ClothoidesComputer(Log log, ObstaclesRectangularMemory memory)
 	{
+		this.memory = memory;
 		this.log = log;
 		if(!chargePoints()) // le calcul est un peu long, donc on le sauvegarde
 		{
@@ -237,10 +241,10 @@ public class ClothoidesComputer implements Service
 		return null;
 	}
 	
-	public void getTrajectoire(ArcCourbe depart, VitesseCourbure vitesse, Speed vitesseMax, ArcCourbeClotho modified)
+	public void getTrajectoire(RobotChrono robot, ArcCourbe depart, VitesseCourbure vitesse, Speed vitesseMax, ArcCourbeClotho modified)
 	{
 		Cinematique last = depart.getLast();
-		getTrajectoire(last, vitesse, vitesseMax, modified);
+		getTrajectoire(robot, last, vitesse, vitesseMax, modified);
 	}
 	
 	/**
@@ -251,7 +255,7 @@ public class ClothoidesComputer implements Service
 	 */
 	public final void getTrajectoire(RobotChrono robot, VitesseCourbure vitesse, Speed vitesseMax, ArcCourbeClotho modified)
 	{
-		getTrajectoire(robot.getCinematique(), vitesse, vitesseMax, modified);
+		getTrajectoire(robot, robot.getCinematique(), vitesse, vitesseMax, modified);
 	}
 	
 	/**
@@ -265,7 +269,7 @@ public class ClothoidesComputer implements Service
 	 * @param distance
 	 * @return
 	 */
-	public final void getTrajectoire(Cinematique cinematiqueInitiale, VitesseCourbure vitesse, Speed vitesseMax, ArcCourbeClotho modified)
+	public final void getTrajectoire(RobotChrono robot, Cinematique cinematiqueInitiale, VitesseCourbure vitesse, Speed vitesseMax, ArcCourbeClotho modified)
 	{
 //		modified.v = vitesse;
 //		log.debug(vitesse);
@@ -282,9 +286,9 @@ public class ClothoidesComputer implements Service
 		if(vitesse.vitesse == 0)
 		{
 			if(courbure < 0.00001 && courbure > -0.00001)
-				getTrajectoireLigneDroite(cinematiqueInitiale.getPosition(), orientation, vitesseMax, modified, vitesse.rebrousse ^ cinematiqueInitiale.enMarcheAvant);
+				getTrajectoireLigneDroite(robot, cinematiqueInitiale.getPosition(), orientation, vitesseMax, modified, vitesse.rebrousse ^ cinematiqueInitiale.enMarcheAvant);
 			else
-				getTrajectoireCirculaire(cinematiqueInitiale.getPosition(), orientation, courbure, vitesseMax, modified, vitesse.rebrousse ^ cinematiqueInitiale.enMarcheAvant);
+				getTrajectoireCirculaire(robot, cinematiqueInitiale.getPosition(), orientation, courbure, vitesseMax, modified, vitesse.rebrousse ^ cinematiqueInitiale.enMarcheAvant);
 			return;
 		}
 		
@@ -351,7 +355,7 @@ public class ClothoidesComputer implements Service
 	 * @param courbure
 	 * @param modified
 	 */
-	private void getTrajectoireCirculaire(Vec2<ReadOnly> position,
+	private void getTrajectoireCirculaire(RobotChrono robot, Vec2<ReadOnly> position,
 			double orientation, double courbure, Speed vitesseMax, ArcCourbeClotho modified, boolean enMarcheAvant)
 	{		
 		// rappel = la courbure est l'inverse du rayon de courbure
@@ -373,6 +377,7 @@ public class ClothoidesComputer implements Service
 		double angle = Math.asin(sin);
 		sin = 0;
 		cos = 1;
+		modified.obstacle.clear();
 		for(int i = 0; i < NB_POINTS; i++)
 		{
 			double tmp = sin;
@@ -388,6 +393,7 @@ public class ClothoidesComputer implements Service
 			modified.arcselems[i].vitesseRotation = vitesseMax.rotationalSpeed;
 			modified.arcselems[i].vitesseTranslation = vitesseMax.translationalSpeed;
 			modified.arcselems[i].enMarcheAvant = enMarcheAvant;
+			modified.obstacle.add(memory.getNewNode().update(modified.arcselems[i].getPosition(), orientation, robot));
 		}
 	}
 
@@ -397,11 +403,12 @@ public class ClothoidesComputer implements Service
 	 * @param orientation
 	 * @param modified
 	 */
-	private void getTrajectoireLigneDroite(Vec2<ReadOnly> position, double orientation, Speed vitesseMax, ArcCourbeClotho modified, boolean enMarcheAvant)
+	private void getTrajectoireLigneDroite(RobotChrono robot, Vec2<ReadOnly> position, double orientation, Speed vitesseMax, ArcCourbeClotho modified, boolean enMarcheAvant)
 	{
 		double cos = Math.cos(orientation);
 		double sin = Math.sin(orientation);
 
+		modified.obstacle.clear();
 		for(int i = 0; i < NB_POINTS; i++)
 		{
 			double distance = (i + 1) * PRECISION_TRACE * 1000;
@@ -412,6 +419,7 @@ public class ClothoidesComputer implements Service
 			modified.arcselems[i].vitesseRotation = vitesseMax.rotationalSpeed;
 			modified.arcselems[i].vitesseTranslation = vitesseMax.translationalSpeed;
 			modified.arcselems[i].enMarcheAvant = enMarcheAvant;
+			modified.obstacle.add(memory.getNewNode().update(modified.arcselems[i].getPosition(), orientation, robot));
 		}
 	}
 

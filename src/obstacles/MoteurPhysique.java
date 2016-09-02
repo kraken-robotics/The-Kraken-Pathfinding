@@ -92,7 +92,7 @@ public class MoteurPhysique implements Service {
 	 */
 	public boolean isTraversableCourbe(AStarCourbeNode node)
 	{
-		ObstacleArcCourbe obs = new ObstacleArcCourbe(node.came_from_arc);
+		ObstacleArcCourbe obs = node.came_from_arc.obstacle;
 
 		// Collision avec un obstacle fixe?
     	for(ObstaclesFixes o: ObstaclesFixes.values)
@@ -117,7 +117,7 @@ public class MoteurPhysique implements Service {
 	 */
 	public boolean didTheEnemyTakeIt(GameElementNames g, ObstacleProximity o)
 	{
-		return g.getObstacle().isProcheObstacle(o.position, o.radius);
+		return g.getObstacle().isProcheObstacle(o.getPosition(), o.radius);
 	}
 
 	public boolean didWeShootIt(GameElementNames g, Vec2<ReadOnly> position)

@@ -3,6 +3,7 @@ package container;
 import obstacles.Capteurs;
 import obstacles.SensorsDataBuffer;
 import obstacles.MoteurPhysique;
+import obstacles.ObstaclesRectangularMemory;
 import obstacles.memory.ObstaclesMemory;
 import obstacles.types.Obstacle;
 
@@ -346,7 +347,7 @@ public class Container
 																		(Config)getServiceDisplay(serviceRequested, ServiceNames.CONFIG),
 																		this);
 		else if(serviceRequested == ServiceNames.THREAD_PATHFINDING)
-			instanciedServices[serviceRequested.ordinal()] = (Service)new ThreadPathfinding((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
+			instanciedServices[serviceRequested.ordinal()] = new ThreadPathfinding((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
 																		(AStarCourbe)getServiceDisplay(serviceRequested, ServiceNames.A_STAR_COURBE));
 		else if(serviceRequested == ServiceNames.MOTEUR_PHYSIQUE)
 			instanciedServices[serviceRequested.ordinal()] = new MoteurPhysique((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG)); 		
@@ -367,8 +368,11 @@ public class Container
 																								(DStarLite)getServiceDisplay(serviceRequested, ServiceNames.D_STAR_LITE),
 																								(ClothoidesComputer)getServiceDisplay(serviceRequested, ServiceNames.CLOTHOIDES_COMPUTER));
 		else if(serviceRequested == ServiceNames.CLOTHOIDES_COMPUTER)
-			instanciedServices[serviceRequested.ordinal()] = new ClothoidesComputer((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG));
+			instanciedServices[serviceRequested.ordinal()] = new ClothoidesComputer((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
+																					(ObstaclesRectangularMemory)getServiceDisplay(serviceRequested, ServiceNames.OBSTACLES_RECTANGULAR_MEMORY));
 		// si le service demandé n'est pas connu, alors on log une erreur.
+		else if(serviceRequested == ServiceNames.OBSTACLES_RECTANGULAR_MEMORY)
+			instanciedServices[serviceRequested.ordinal()] = new ObstaclesRectangularMemory((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG));			
 		else
 			throw new ContainerException("Erreur d'instanciation pour le service : "+serviceRequested+" (service inconnu)");
 		

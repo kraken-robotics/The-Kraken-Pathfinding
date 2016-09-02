@@ -58,8 +58,8 @@ public class JUnit_OMMemory extends JUnit_Test {
 
     	Assert.assertTrue(iterator.hasNext());    	
     	ObstacleProximity o = iterator.next();
-    	Assert.assertTrue(o.position.x == 1324);
-    	Assert.assertTrue(o.position.y == 546);
+    	Assert.assertTrue(o.getPosition().x == 1324);
+    	Assert.assertTrue(o.getPosition().y == 546);
     	Assert.assertTrue(!iterator.hasNext());
     	Assert.assertTrue(memory.getFirstNotDeadNow() == 0);
     	memory.add(new Vec2<ReadOnly>(1324,546), date, null);

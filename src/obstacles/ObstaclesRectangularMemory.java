@@ -1,52 +1,46 @@
-package pathfinding.astarCourbe;
+package obstacles;
 
 import pathfinding.RealGameState;
 import container.Service;
+import obstacles.types.ObstacleRectangular;
 import utils.Config;
 import utils.Log;
 
 /**
- * Classe qui fournit des objets AStarCourbeNode à AStarCourbe.
- * AStar a besoin de beaucoup de nodes, et l'instanciation d'un objet est long.
+ * Classe qui fournit des objets ObstaclesRectangular
+ * Le moteur a besoin de beaucoup de ces obstacles de robot, et l'instanciation d'un objet est long.
  * Du coup on réutilise les mêmes objets sans devoir en créer tout le temps de nouveaux.
  * @author pf
  *
  */
 
-public class MemoryManager implements Service {
+public class ObstaclesRectangularMemory implements Service {
 
-	private static final int nb_instances = 1000;
+	private static final int nb_instances = 500;
 
-	private final AStarCourbeNode[] nodes = new AStarCourbeNode[nb_instances];
+	private final ObstacleRectangular[] nodes = new ObstacleRectangular[nb_instances];
 	protected Log log;
 	
 	private int firstAvailable;
 	
 	@Override
 	public void updateConfig(Config config)
-	{
-		for(int j = 0; j < nb_instances; j++)
-			nodes[j].state.updateConfig(config);
-	}
+	{}
 
 	@Override
 	public void useConfig(Config config)
 	{}
 
-	public MemoryManager(Log log, RealGameState realstate)
+	public ObstaclesRectangularMemory(Log log)
 	{	
 		this.log = log;
 
 		firstAvailable = 0;
-		// on prépare déjà des gamestates
-		log.debug("Instanciation de "+nb_instances+" ChronoGameState");
+		log.debug("Instanciation de "+nb_instances+" ObstaclesRectangular");
 
 		for(int i = 0; i < nb_instances; i++)
-		{
-			nodes[i] = new AStarCourbeNode();
-			nodes[i].state = realstate.cloneGameState();
-			nodes[i].setIndiceMemoryManager(i);
-		}
+			nodes[i] = new ObstacleRectangular();
+
 		log.debug("Instanciation finie");
 	}
 	
@@ -56,10 +50,10 @@ public class MemoryManager implements Service {
 	 * @return
 	 * @throws FinMatchException
 	 */
-	public AStarCourbeNode getNewNode()
+	public ObstacleRectangular getNewNode()
 	{
 		// lève une exception s'il n'y a plus de place
-		AStarCourbeNode out;
+		ObstacleRectangular out;
 		out = nodes[firstAvailable];
 		firstAvailable++;
 		return out;
@@ -88,7 +82,7 @@ public class MemoryManager implements Service {
 	 * @param id_astar
 	 * @throws MemoryManagerException
 	 */
-	public void destroyNode(AStarCourbeNode state)
+	public void destroyNode(ObstacleRectangular state)
 	{
 		
 		int indice_state = state.getIndiceMemoryManager();
@@ -102,12 +96,10 @@ public class MemoryManager implements Service {
 			z = 1 / z;
 		}
 
-		// On inverse dans le Vector les deux gamestates,
-		// de manière à avoir toujours un Vector trié.
 		firstAvailable--;
 		
-		AStarCourbeNode tmp1 = nodes[indice_state];
-		AStarCourbeNode tmp2 = nodes[firstAvailable];
+		ObstacleRectangular tmp1 = nodes[indice_state];
+		ObstacleRectangular tmp2 = nodes[firstAvailable];
 
 		tmp1.setIndiceMemoryManager(firstAvailable);
 		tmp2.setIndiceMemoryManager(indice_state);

@@ -96,6 +96,9 @@ public class ArcManager implements Service
 
 		current.state.copyAStarCourbe(successeur.state);
 
+		/**
+		 * Si on est proche et qu'on tente une interpolation cubique
+		 */
 		if(v == VitesseCourbure.DIRECT_COURBE || v == VitesseCourbure.DIRECT_COURBE_REBROUSSE)
 		{
 			ArcCourbe tmp;
@@ -119,8 +122,13 @@ public class ArcManager implements Service
 
 			successeur.came_from_arc = tmp;
 		}
+		
+		/**
+		 * Si on fait une interpolation par clothoïde
+		 */
 		else if(current.came_from_arc != null)
-			clotho.getTrajectoire(current.came_from_arc,
+			clotho.getTrajectoire((RobotChrono)current.state.robot,
+					current.came_from_arc,
 					v,
 					vitesseMax,
 					(ArcCourbeClotho)successeur.came_from_arc);

@@ -36,9 +36,10 @@ public class ObstacleCircular extends Obstacle
 		return out * out;
 	}
 
+	@Override
 	public boolean isColliding(ObstacleRectangular o)
 	{
-		return o.squaredDistance(o.position) < radius*radius;
+		return o.squaredDistance(o.position.getReadOnly()) < radius*radius;
 	}
 
 }

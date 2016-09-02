@@ -1,6 +1,7 @@
 package robot;
 
 import obstacles.types.Obstacle;
+import obstacles.types.ObstacleRectangular;
 import container.Service;
 import utils.ConfigInfo;
 import utils.Log;
@@ -24,7 +25,6 @@ public abstract class Robot implements Service
     protected Cinematique cinematique;
     protected volatile boolean symetrie;
 	protected volatile boolean matchDemarre = false;
-	protected int pointsObtenus = 0;
     protected volatile long dateDebutMatch;
     protected boolean deploye = false;
     
@@ -52,7 +52,6 @@ public abstract class Robot implements Service
     {
     	cinematique.copy(rc.cinematique);
     	// pas besoin de copier symétrie car elle ne change pas en cours de match
-    	rc.pointsObtenus = pointsObtenus;
     	rc.date = getTempsDepuisDebutMatch();
     	rc.positionGridSpace = getPositionGridSpace();
     }
@@ -75,13 +74,34 @@ public abstract class Robot implements Service
     	return cinematique.toString();
     }
     
-    /**
-     * Renvoie la forme actuelle du robot.
-     * Utilisé par le pathfinding pour s'assurer qu'on ne se prend pas un obstacle
-     * @return
-     */
-	public Obstacle getCurrentConvexHull()
+	public int getDemieLargeurGauche()
 	{
-		return null;
-	}    
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	public int getDemieLargeurDroite()
+	{
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	public int getDemieLongueurAvant()
+	{
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	public int getDemieLongueurArriere()
+	{
+		// TODO Auto-generated method stub
+		return 0;
+	}
+	
+	public double getDemieDiagonale()
+	{
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
 }

@@ -19,10 +19,6 @@ public enum ConfigInfo {
 	/**
 	 * Infos sur le robot
 	 */
-	LARGEUR_ROBOT_AXE_GAUCHE_DROITE("180", true),
-	LONGUEUR_ROBOT_AXE_AVANT_ARRIERE("140", true),
-	LARGEUR_ROBOT_AXE_GAUCHE_DROITE_DEPLOYE("350", true),
-	LONGUEUR_ROBOT_AXE_AVANT_ARRIERE_DEPLOYE("220", true),
 	RAYON_ROBOT("150", true),
 	
 	/**

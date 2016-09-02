@@ -5,6 +5,7 @@ import utils.ConfigInfo;
 import utils.Log;
 import utils.Vec2;
 import utils.permissions.ReadOnly;
+import utils.permissions.ReadWrite;
 
 /**
  * Superclasse abstraite des obstacles.
@@ -14,18 +15,13 @@ import utils.permissions.ReadOnly;
 
 public abstract class Obstacle
 {
-	public final Vec2<ReadOnly> position;
+	protected final Vec2<ReadWrite> position;
 	protected int distance_dilatation;
 	protected static Log log;
 	
-    protected static int largeurRobot; // le sens gauche-droite du robot
-    protected static int longueurRobot; // le sens avant-arrière du robot
-    protected static int largeurRobotDeploye;
-    protected static int longueurRobotDeploye;
     protected static int rayonRobot;
     protected static int marge;
     protected static int distanceApprox;
-	protected static double anglePas; // utilisé pour les calculs de collision pendant les rotations	
 	
 	public static void setLog(Log log)
 	{
@@ -34,19 +30,18 @@ public abstract class Obstacle
 	
 	public static void useConfig(Config config)
 	{
-		largeurRobot = config.getInt(ConfigInfo.LARGEUR_ROBOT_AXE_GAUCHE_DROITE);
+/*		largeurRobot = config.getInt(ConfigInfo.LARGEUR_ROBOT_AXE_GAUCHE_DROITE);
 		longueurRobot = config.getInt(ConfigInfo.LONGUEUR_ROBOT_AXE_AVANT_ARRIERE);
 		largeurRobotDeploye = config.getInt(ConfigInfo.LARGEUR_ROBOT_AXE_GAUCHE_DROITE_DEPLOYE);
-		longueurRobotDeploye = config.getInt(ConfigInfo.LONGUEUR_ROBOT_AXE_AVANT_ARRIERE_DEPLOYE);
+		longueurRobotDeploye = config.getInt(ConfigInfo.LONGUEUR_ROBOT_AXE_AVANT_ARRIERE_DEPLOYE);*/
 		rayonRobot = config.getInt(ConfigInfo.RAYON_ROBOT);
 		distanceApprox = config.getInt(ConfigInfo.DISTANCE_MAX_ENTRE_MESURE_ET_OBJET);
 		marge = config.getInt(ConfigInfo.MARGE);
-		anglePas = Math.PI-2*Math.atan2(largeurRobot, longueurRobot);
 	}
 	
 	public Obstacle (Vec2<ReadOnly> position)
 	{
-		this.position = position;
+		this.position = position.clone();
 	}
 	
 	@Override
@@ -74,4 +69,8 @@ public abstract class Obstacle
 		return false;
 	}
 	
+	public Vec2<ReadOnly> getPosition()
+	{
+		return position.getReadOnly();
+	}
 }

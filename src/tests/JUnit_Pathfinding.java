@@ -84,7 +84,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
 		
     }
 	
-	@Test
+/*	@Test
     public void test_clotho() throws Exception
     {
 		ClothoidesComputer clotho = (ClothoidesComputer) container.getService(ServiceNames.CLOTHOIDES_COMPUTER);
@@ -116,12 +116,12 @@ public class JUnit_Pathfinding extends JUnit_Test {
 		{
 //			System.out.println("arc "+arc[a].v+" avec "+arc[a].arcselems[0]);
 			for(int i = 0; i < ClothoidesComputer.NB_POINTS; i++)
-			{
+			{*/
 /*				if(i > 0)
 					System.out.println(arc[a].arcselems[i-1].point.distance(arc[a].arcselems[i].point));
 				else if(a > 0)
 					System.out.println(arc[a-1].arcselems[ClothoidesComputer.NB_POINTS - 1].point.distance(arc[a].arcselems[0].point));
-	*/				
+	*/		/*		
 				System.out.println(arc[a].arcselems[i]);
 				if(Config.graphicObstacles)
 				{
@@ -133,14 +133,14 @@ public class JUnit_Pathfinding extends JUnit_Test {
 			{
 				Assert.assertEquals(arc[0].arcselems[ClothoidesComputer.NB_POINTS - 1].getPositionEcriture().x, 0, 0.1);
 				Assert.assertEquals(arc[0].arcselems[ClothoidesComputer.NB_POINTS - 1].getPositionEcriture().y, 1000+(int)ClothoidesComputer.DISTANCE_ARC_COURBE, 0.1);
-			}
+			}*/
 /*			else if(arc[a].arcselems[0].enMarcheAvant != arc[a-1].arcselems[0].enMarcheAvant)
 				Assert.assertEquals(arc[a].vitesseCourbure.vitesse / 1000. * ClothoidesComputer.DISTANCE_ARC_COURBE, arc[a].arcselems[ClothoidesComputer.NB_POINTS-1].courbure, 0.1);
 			else if(a > 0)
 				Assert.assertEquals(arc[a].vitesseCourbure.vitesse / 1000. * ClothoidesComputer.DISTANCE_ARC_COURBE + arc[a-1].arcselems[ClothoidesComputer.NB_POINTS-1].courbure, arc[a].arcselems[ClothoidesComputer.NB_POINTS-1].courbure, 0.1);
-*/		}
+*//*		}
 		
-    }
+    }*/
 	
 	@Test
     public void test_chemin_dstarlite() throws Exception

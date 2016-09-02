@@ -1,5 +1,6 @@
 package robot;
 
+import obstacles.types.ObstacleRectangular;
 import utils.Vec2;
 import utils.permissions.ReadOnly;
 import utils.permissions.ReadWrite;
@@ -19,7 +20,7 @@ public class Cinematique
 	public volatile double vitesseTranslation;
 	public volatile Speed vitesseMax;
 	public volatile double vitesseRotation;
-
+	
 	public Cinematique(double x, double y, double orientation, boolean enMarcheAvant, double courbure, double vitesseTranslation, double vitesseRotation, Speed vitesseMax)
 	{
 		position.x = x;
@@ -38,9 +39,6 @@ public class Cinematique
 	 */
 	public Cinematique(Cinematique cinematique)
 	{
-		position.x = cinematique.position.x;
-		position.y = cinematique.position.y;
-		orientation = cinematique.orientation;
 		enMarcheAvant = cinematique.enMarcheAvant;
 		courbure = cinematique.courbure;
 		vitesseTranslation = cinematique.vitesseTranslation;
