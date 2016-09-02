@@ -66,7 +66,7 @@ public class ObstacleRectangular extends Obstacle
 	
 	public ObstacleRectangular()
 	{
-		this(null, 0, 0, 0);
+		this(new Vec2<ReadOnly>(), 0, 0, 0);
 	}
 	
 	/**
