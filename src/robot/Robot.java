@@ -1,7 +1,5 @@
 package robot;
 
-import obstacles.types.Obstacle;
-import obstacles.types.ObstacleRectangular;
 import container.Service;
 import utils.ConfigInfo;
 import utils.Log;

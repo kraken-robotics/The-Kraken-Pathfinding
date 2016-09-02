@@ -1,10 +1,7 @@
 package pathfinding.astarCourbe.arcs;
 
-import obstacles.types.ObstacleRectangular;
 import robot.Cinematique;
 import robot.Speed;
-import utils.Vec2;
-import utils.permissions.ReadOnly;
 
 /**
  * Arc de clothoïde, utilisé dans l'AStarCourbe

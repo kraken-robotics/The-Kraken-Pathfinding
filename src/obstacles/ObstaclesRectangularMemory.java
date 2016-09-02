@@ -1,6 +1,5 @@
 package obstacles;
 
-import pathfinding.RealGameState;
 import container.Service;
 import obstacles.types.ObstacleRectangular;
 import utils.Config;

@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 import container.Service;
 import obstacles.ObstaclesRectangularMemory;
-import pathfinding.ChronoGameState;
+import obstacles.types.ObstacleArcCourbe;
 import pathfinding.VitesseCourbure;
 import robot.Cinematique;
 import robot.RobotChrono;
@@ -127,13 +127,14 @@ public class ClothoidesComputer implements Service
 		}
 	}
 
-	public final ArcCourbeCubique cubicInterpolation(RobotChrono r, Cinematique arrivee, Speed vitesseMax, VitesseCourbure v)
+	public final ArcCourbeCubique cubicInterpolation(RobotChrono robot, Cinematique arrivee, Speed vitesseMax, VitesseCourbure v)
 	{
-		return cubicInterpolation(r.getCinematique(), arrivee, vitesseMax, v);
+		return cubicInterpolation(robot, robot.getCinematique(), arrivee, vitesseMax, v);
 	}
 	
-	public final ArcCourbeCubique cubicInterpolation(Cinematique cinematiqueInitiale, Cinematique arrivee, Speed vitesseMax, VitesseCourbure v)
+	public final ArcCourbeCubique cubicInterpolation(RobotChrono robot, Cinematique cinematiqueInitiale, Cinematique arrivee, Speed vitesseMax, VitesseCourbure v)
 	{
+		ObstacleArcCourbe obstacle = new ObstacleArcCourbe();
 //		log.debug(v);
 		double alphas[] = {100, 300, 600, 800, 1000, 1200};
 //		log.debug("Interpolation cubique, rebrousse : "+v.rebrousse);
@@ -231,12 +232,13 @@ public class ClothoidesComputer implements Service
 					longueur += actuel.getPosition().distance(last.getPosition());
 	
 				out.add(actuel);
+				obstacle.add(memory.getNewNode().update(actuel.getPosition(), actuel.orientation, robot));
 				last = actuel;
 			}
 			if(error) // on essaye un autre alpha
 				continue;
 			
-			return new ArcCourbeCubique(out, longueur, v.rebrousse, v.rebrousse);
+			return new ArcCourbeCubique(obstacle, out, longueur, v.rebrousse, v.rebrousse);
 		}
 		return null;
 	}
@@ -308,6 +310,8 @@ public class ClothoidesComputer implements Service
 //		for(int i = 0; i < NB_POINTS; i++)
 //			log.debug("Clotho : "+trajectoire[vitesse.squaredRootVitesse * (i + 1)]);
 	
+		modified.obstacle.clear();
+
 		// le premier point n'est pas position, mais le suivant
 		// (afin de ne pas avoir de doublon quand on enchaîne les arcs, entre le dernier point de l'arc t et le premier de l'arc t+1)		
 		for(int i = 0; i < NB_POINTS; i++)
@@ -341,6 +345,7 @@ public class ClothoidesComputer implements Service
 			modified.arcselems[i].vitesseMax = vitesseMax;
  			if(!vitesse.positif)
  				modified.arcselems[i].courbure = - modified.arcselems[i].courbure;
+			modified.obstacle.add(memory.getNewNode().update(modified.arcselems[i].getPosition(), orientation, robot));
 		}
 	}
 

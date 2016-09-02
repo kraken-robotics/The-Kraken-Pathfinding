@@ -1,6 +1,5 @@
 package robot;
 
-import obstacles.types.ObstacleRectangular;
 import utils.Vec2;
 import utils.permissions.ReadOnly;
 import utils.permissions.ReadWrite;

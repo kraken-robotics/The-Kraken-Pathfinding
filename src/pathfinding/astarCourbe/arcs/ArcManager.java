@@ -67,23 +67,11 @@ public class ArcManager implements Service
 	 */
 	public double distanceTo(AStarCourbeNode node)
 	{
-			// TODO : vérifier les hooks
-			((RobotChrono)node.state.robot).suitArcCourbe(node.came_from_arc);
-			double out = node.came_from_arc.getDuree();
-			if(node.came_from_arc.rebrousse)
-				out += TEMPS_REBROUSSEMENT;
-			return out;
-		// TODO : si, il faut les exécuter
-		/*
-		 * Il n'y a pas d'utilisation de hook.
-		 * En effet, les obstacles temporaires sont vérifiés à chaque copie (=chaque segment)
-		 * Et la disparition éléments de jeu n'influence pas la recherche de chemin
-		 * Par contre, à l'"exécution" par robotchrono du chemin entre deux scripts, là ils seront exécutés.
-		 * Rappel: même quand on fait un appel à RobotChrono sans hook, le hook de fin de match est exécuté
-		 */
-//		long temps_debut = node.state.robot.getTempsDepuisDebutMatch();
-//		node.state.robot.suitArcCourbe(node.came_from_arc);
-//		return (int)(node.state.robot.getTempsDepuisDebutMatch() - temps_debut);
+		((RobotChrono)node.state.robot).suitArcCourbe(node.came_from_arc);
+		double out = node.came_from_arc.getDuree();
+		if(node.came_from_arc.rebrousse)
+			out += TEMPS_REBROUSSEMENT;
+		return out;
 	}
 
 	/**
@@ -104,6 +92,7 @@ public class ArcManager implements Service
 			ArcCourbe tmp;
 			if(current.came_from_arc != null)
 				tmp = clotho.cubicInterpolation(
+						(RobotChrono)current.state.robot,
 						current.came_from_arc.getLast(),
 						arrivee,
 						vitesseMax,

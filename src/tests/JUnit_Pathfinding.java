@@ -9,12 +9,12 @@ import org.junit.Test;
 import container.ServiceNames;
 import debug.Fenetre;
 import pathfinding.VitesseCourbure;
-import pathfinding.astarCourbe.arcs.ArcCourbeClotho;
 import pathfinding.astarCourbe.arcs.ArcCourbeCubique;
 import pathfinding.astarCourbe.arcs.ClothoidesComputer;
 import pathfinding.dstarlite.DStarLite;
 import pathfinding.dstarlite.GridSpace;
 import robot.Cinematique;
+import robot.RobotChrono;
 import robot.Speed;
 import utils.Config;
 import utils.Vec2;
@@ -47,7 +47,8 @@ public class JUnit_Pathfinding extends JUnit_Test {
 		Cinematique c1 = new Cinematique(-1000, 1500, Math.PI/4, true, 0, 1000, 1000, Speed.STANDARD);
 		Cinematique c2 = new Cinematique(0, 1000, 0, true, 0, 0, 0, Speed.STANDARD);
 		
-		ArcCourbeCubique arccubique = clotho.cubicInterpolation(c1, c2, Speed.STANDARD, VitesseCourbure.DIRECT_COURBE);
+		// TODO
+		ArcCourbeCubique arccubique = clotho.cubicInterpolation(null, c1, c2, Speed.STANDARD, VitesseCourbure.DIRECT_COURBE);
 	
 		for(int i = 0; i < arccubique.arcs.size(); i++)
 		{
