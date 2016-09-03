@@ -9,6 +9,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import pathfinding.dstarlite.GridSpace;
+import pathfinding.dstarlite.GridSpace.Direction;
 import container.ServiceNames;
 import utils.ConfigInfo;
 import utils.Vec2;
@@ -44,9 +45,9 @@ public class JUnit_GridSpace extends JUnit_Test {
 	@Test
 	public void test_distance() throws Exception
 	{
-		Assert.assertTrue(gridspace.distanceStatique(523, 2) == 1414);
-		Assert.assertTrue(gridspace.distanceStatique(523, 4) == 1000);
-		Assert.assertTrue(gridspace.distanceStatique(1, 2) == Integer.MAX_VALUE);
+		Assert.assertTrue(gridspace.distanceStatique(523, Direction.NE) == 1414);
+		Assert.assertTrue(gridspace.distanceStatique(523, Direction.N) == 1000);
+		Assert.assertTrue(gridspace.distanceStatique(1, Direction.E) == Integer.MAX_VALUE);
 	}
 
 	@Test
@@ -68,13 +69,14 @@ public class JUnit_GridSpace extends JUnit_Test {
 		for(int i = 0; i < 8; i++)
 		{
 			log.debug(i);
-			Assert.assertEquals((i<4?1414:1000), GridSpace.distanceHeuristiqueDStarLite(GridSpace.getGridPointVoisin(150, i), 150));
+			Assert.assertEquals((i<4?1414:1000), GridSpace.distanceHeuristiqueDStarLite(GridSpace.getGridPointVoisin(150, Direction.values()[i]), 150));
 		}
-		Assert.assertEquals(-1, GridSpace.getGridPointVoisin(21, 5));
-		Assert.assertEquals(-1, GridSpace.getGridPointVoisin(63, 1));
-		Assert.assertEquals(-1, GridSpace.getGridPointVoisin(127, 7));
-		Assert.assertEquals(-1, GridSpace.getGridPointVoisin(128, 6));
-		Assert.assertEquals(-1, GridSpace.getGridPointVoisin(21, 1));
+
+		Assert.assertEquals(-1, GridSpace.getGridPointVoisin(21, Direction.S));
+		Assert.assertEquals(-1, GridSpace.getGridPointVoisin(63, Direction.SE));
+		Assert.assertEquals(-1, GridSpace.getGridPointVoisin(127, Direction.E));
+		Assert.assertEquals(-1, GridSpace.getGridPointVoisin(128, Direction.O));
+		Assert.assertEquals(-1, GridSpace.getGridPointVoisin(21, Direction.SE));
 	}
 	
 	@Test

@@ -20,7 +20,7 @@ public class ObstaclesIteratorPresent extends ObstaclesIterator
 	 */
 	public void reinit()
 	{
-		nbTmp = memory.getFirstNotDeadNow() - 1;
+		nbTmp = memory.getFirstNotDeadNow();
 	}
 	
 	/**
@@ -30,6 +30,6 @@ public class ObstaclesIteratorPresent extends ObstaclesIterator
 	public boolean hasNextDead()
 	{
 //		log.debug(nbTmp+" "+memory.getFirstNotDeadNow());
-		return nbTmp - 1 < memory.getFirstNotDeadNow();
+		return nbTmp + 1 < memory.getFirstNotDeadNow();
 	}
 }

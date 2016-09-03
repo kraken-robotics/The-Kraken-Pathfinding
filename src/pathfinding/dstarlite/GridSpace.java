@@ -34,13 +34,41 @@ public class GridSpace implements Service
 	private ObstaclesMemory obstaclesMemory;
 	private Table table;
 
+	public class PointDirige
+	{
+		public int point;
+		public Direction dir;
+
+		public PointDirige(int point, Direction dir) {
+			this.point = point;
+			this.dir = dir;
+		}
+		
+		@Override
+		public int hashCode()
+		{
+			return (point << 3) + dir.ordinal();
+		}
+		
+		@Override
+		public boolean equals(Object d)
+		{
+			return d instanceof PointDirige && hashCode() == ((PointDirige)d).hashCode();
+		}
+	}
+	
+	public enum Direction
+	{
+		NO,SE,NE,SO,
+		N,S,O,E;
+	}
+	
 	/**
 	 * Comme on veut que le DStarLite recherche plus de noeuds qu'il n'y en aurait besoin, ce coeff ne vaut pas 1
 	 */
 //	private static final int COEFF_HEURISTIQUE = 2;
 
 	public static final int PRECISION = 6;
-	public static final int DECALAGE_POUR_DIRECTION = 3;
 	public static final int NB_POINTS_POUR_TROIS_METRES = (1 << PRECISION);
 	public static final int NB_POINTS_POUR_DEUX_METRES = (int) ((1 << PRECISION)*2./3.)+1;
 	public static final double DISTANCE_ENTRE_DEUX_POINTS = 3000./(NB_POINTS_POUR_TROIS_METRES-1);
@@ -52,7 +80,7 @@ public class GridSpace implements Service
 	// cette grille est constante, c'est-à-dire qu'elle ne contient que les obstacles fixes
 	private static BitSet grilleStatique = null;
 	
-	private static ArrayList<Integer> masque = new ArrayList<Integer>();
+	private static ArrayList<PointDirige> masque = new ArrayList<PointDirige>();
 	private static int centreMasque;
 	private long deathDateLastObstacle;
 	
@@ -72,9 +100,11 @@ public class GridSpace implements Service
 				{
 					if(o.getObstacle().squaredDistance(computeVec2(i)) < (int)(DISTANCE_ENTRE_DEUX_POINTS/2 * DISTANCE_ENTRE_DEUX_POINTS/2))
 					{
+//						log.debug(i+" : obstacle");
 						grilleStatique.set(i);
 						break; // on ne vérifie pas les autres obstacles
 					}
+//					log.debug(i+" : pas obstacle");
 				}
 			log.debug("Grille statique initialisée");
 		}
@@ -94,37 +124,37 @@ public class GridSpace implements Service
 //		return (int) Math.round(COEFF_HEURISTIQUE * 1000 * Math.hypot(dx, dy));
 	}
 
-	private int convertToDirection(int deltaX, int deltaY)
+	private Direction convertToDirection(int deltaX, int deltaY)
 	{
 		if(deltaY == 1)
 		{
 			if(deltaX == -1)
-				return 0; // NO
+				return Direction.NO; // NO
 			else if(deltaX == 0)
-				return 4; // N
+				return Direction.N; // N
 			else
-				return 2; // NE
+				return Direction.NE; // NE
 		}
 		else if(deltaY == 0)
 		{
 			if(deltaX == -1)
-				return 6; // O
+				return Direction.O; // O
 			else if(deltaX == 0)
 			{
 				log.critical("Erreur : direction nulle");
-				return 0;
+				return null;
 			}
 			else
-				return 7; // E
+				return Direction.E; // E
 		}
 		else
 		{
 			if(deltaX == -1)
-				return 3; // SO
+				return Direction.SO; // SO
 			else if(deltaX == 0)
-				return 5; // S
+				return Direction.S; // S
 			else
-				return 1; // SE
+				return Direction.SE; // SE
 		}
 	}
 	
@@ -135,61 +165,53 @@ public class GridSpace implements Service
 	 * @param direction
 	 * @return
 	 */
-	public static int getGridPointVoisin(int point, int direction)
+	public static int getGridPointVoisin(int point, Direction direction)
 	{
 		int x = point & (NB_POINTS_POUR_TROIS_METRES - 1);
 		int y = point >> PRECISION;
 
 		switch(direction)
 		{
-		case 0:
-//			NO
-			if(x > 0 && y < Y_MAX)
-				return point + NB_POINTS_POUR_TROIS_METRES - 1;
-			return -1; // hors table
-
-		case 1:
-//			SE
-			if(x < X_MAX && y > 0)
-				return point - NB_POINTS_POUR_TROIS_METRES + 1;
-			return -1; // hors table
-
-		case 2:
-//			NE
-			if(x < X_MAX && y < Y_MAX)
-				return point + NB_POINTS_POUR_TROIS_METRES + 1;
-			return -1; // hors table
-
-		case 3:
-//			SO
-			if(x > 0 && y > 0)
-				return point - NB_POINTS_POUR_TROIS_METRES - 1;
-			return -1; // hors table
-
-		case 4:
-//			N
-			if(y < Y_MAX)
-				return point + NB_POINTS_POUR_TROIS_METRES;
-			return -1; // hors table
-
-		case 5:
-//			S
-			if(y > 0)
-				return point - NB_POINTS_POUR_TROIS_METRES;
-			return -1; // hors table
-
-		case 6:
-//			O
-			if(x > 0) // en fait, on pourrait directement renvoyer point - 1 dans tous les cas…
-				return point - 1;
-			return -1; // hors table
-
-//		case 7:
-		default:
-//			E
-			if(x < X_MAX)
-				return point + 1;
-			return -1; // hors table
+			case NO:
+				if(x > 0 && y < Y_MAX)
+					return point + NB_POINTS_POUR_TROIS_METRES - 1;
+				return -1; // hors table
+	
+			case SE:
+				if(x < X_MAX && y > 0)
+					return point - NB_POINTS_POUR_TROIS_METRES + 1;
+				return -1; // hors table
+	
+			case NE:
+				if(x < X_MAX && y < Y_MAX)
+					return point + NB_POINTS_POUR_TROIS_METRES + 1;
+				return -1; // hors table
+	
+			case SO:
+				if(x > 0 && y > 0)
+					return point - NB_POINTS_POUR_TROIS_METRES - 1;
+				return -1; // hors table
+	
+			case N:
+				if(y < Y_MAX)
+					return point + NB_POINTS_POUR_TROIS_METRES;
+				return -1; // hors table
+	
+			case S:
+				if(y > 0)
+					return point - NB_POINTS_POUR_TROIS_METRES;
+				return -1; // hors table
+	
+			case O:
+				if(x > 0) // en fait, on pourrait directement renvoyer point - 1 dans tous les cas…
+					return point - 1;
+				return -1; // hors table
+	
+			case E:
+			default:
+				if(x < X_MAX)
+					return point + 1;
+				return -1; // hors table
 		}
 		
 	}
@@ -210,10 +232,10 @@ public class GridSpace implements Service
 						{
 							if(a == 0 && b == 0)
 								continue;
-							int dir = convertToDirection(a, b);
+							Direction dir = convertToDirection(a, b);
 							int i2 = i + a, j2 = j + b;
 							if((i2-centreMasque) * (i2-centreMasque) + (j2-centreMasque) * (j2-centreMasque) <= rayonPoint*rayonPoint)
-								masque.add((((j << PRECISION) +i) << DECALAGE_POUR_DIRECTION) + dir);
+								masque.add(new PointDirige(((j << PRECISION) +i), dir));
 						}
 /*		log.debug("Taille du masque : "+masque.size());
 		System.out.println("Masque : ");
@@ -249,7 +271,7 @@ public class GridSpace implements Service
 	 * @param direction
 	 * @return
 	 */
-	private boolean isTraversableStatique(int gridpoint, int direction)
+	private boolean isTraversableStatique(int gridpoint, Direction direction)
 	{
 		int voisin = getGridPointVoisin(gridpoint, direction);
 		return voisin != -1 && !grilleStatique.get(voisin);
@@ -286,10 +308,10 @@ public class GridSpace implements Service
 	 * @param i
 	 * @return
 	 */
-	public int distanceStatique(int point, int i) {
+	public int distanceStatique(int point, Direction i) {
 		if(!isTraversableStatique(point, i))
 			return Integer.MAX_VALUE;
-		if(i < 4) // cf ordre des directions
+		if(i.ordinal() < 4) // cf ordre des directions
 			return 1414;
 		return 1000;
 	}
@@ -311,18 +333,18 @@ public class GridSpace implements Service
 	 * Ajoute le contour d'un obstacle de proximité dans la grille dynamique
 	 * @param o
 	 */
-	private ArrayList<Integer> getMasqueObstacle(Vec2<ReadOnly> position)
+	private ArrayList<PointDirige> getMasqueObstacle(Vec2<ReadOnly> position)
 	{
 		int x = getGridPointX(position);
 		int y = getGridPointY(position);
 //		log.debug("xy : "+x+" "+y);
 		int xC1, yC1, xC2, yC2;
-		ArrayList<Integer> out = new ArrayList<Integer>();
-		for(Integer c : masque)
+		ArrayList<PointDirige> out = new ArrayList<PointDirige>();
+		for(PointDirige c : masque)
 		{
 //			log.debug("c : "+c);
-			int p1 = c >> DECALAGE_POUR_DIRECTION;
-			int dir = c & ((1 << DECALAGE_POUR_DIRECTION) - 1);
+			int p1 = c.point;
+			Direction dir = c.dir;
 			xC1 = (p1 & (NB_POINTS_POUR_TROIS_METRES - 1)) + x - centreMasque;
 			yC1 = (p1 >> PRECISION) + y - centreMasque;
 			int	gridpoint = getGridPointVoisin(p1, dir);
@@ -338,7 +360,7 @@ public class GridSpace implements Service
 			if(xC1 >= 0 && xC1 <= X_MAX && yC1 >= 0 && yC1 <= Y_MAX
 					&& xC2 >= 0 && xC2 <= X_MAX && yC2 >= 0 && yC2 <= Y_MAX)
 			{
-				out.add((getGridPoint(xC1,yC1) << DECALAGE_POUR_DIRECTION) + dir);
+				out.add(new PointDirige(getGridPoint(xC1,yC1), dir));
 //				log.debug("Ajout !");
 			}
 		}
@@ -363,7 +385,7 @@ public class GridSpace implements Service
 	 * @return
 	 */
 	public synchronized ObstacleProximity addObstacle(Vec2<ReadOnly> position) {
-		ArrayList<Integer> masque = getMasqueObstacle(position);
+		ArrayList<PointDirige> masque = getMasqueObstacle(position);
 		ObstacleProximity o = obstaclesMemory.add(position, masque);
 		// pour un ajout, pas besoin de tout régénérer
 		return o;
@@ -406,10 +428,10 @@ public class GridSpace implements Service
 	 * Un nouveau DStarLite commence. Il faut lui fournir les obstacles actuels
 	 * @return
 	 */
-	public ArrayList<Integer> startNewPathfinding()
+	public ArrayList<PointDirige> startNewPathfinding() // TODO renommer
 	{
 		iteratorDStarLite.reinit();
-		ArrayList<Integer> out = new ArrayList<Integer>();
+		ArrayList<PointDirige> out = new ArrayList<PointDirige>();
 		ObstacleProximity o = null;
 		while(iteratorDStarLite.hasNext())
 		{

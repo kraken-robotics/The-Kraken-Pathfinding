@@ -5,6 +5,8 @@ import java.util.Comparator;
 import java.util.PriorityQueue;
 
 import obstacles.types.ObstacleProximity;
+import pathfinding.dstarlite.GridSpace.Direction;
+import pathfinding.dstarlite.GridSpace.PointDirige;
 import robot.Cinematique;
 import utils.Config;
 import utils.Log;
@@ -74,7 +76,7 @@ public class DStarLite implements Service
 	private DStarLiteNode depart;
 	private int lastDepart;
 	private long nbPF = 0;
-	private ArrayList<Integer> obstaclesConnus = new ArrayList<Integer>();
+	private ArrayList<PointDirige> obstaclesConnus = new ArrayList<PointDirige>();
 	private Cle knew = new Cle();
 	private Cle inutile = new Cle();
 
@@ -166,7 +168,7 @@ public class DStarLite implements Service
 				u.done = true;
 				if(Config.graphicDStarLite)
 					fenetre.setColor(u.gridpoint, Fenetre.Couleur.ROUGE);
-				for(int i = 0; i < 8; i++)
+				for(Direction i : Direction.values())
 				{
 					int voisin = GridSpace.getGridPointVoisin(u.gridpoint, i);
 					if(voisin < 0)
@@ -181,7 +183,7 @@ public class DStarLite implements Service
 //				log.debug("Cas 3");
 				int gold = u.g;
 				u.g = Integer.MAX_VALUE;
-				for(int i = 0; i < 8; i++)
+				for(Direction i : Direction.values())
 				{
 					int voisin = GridSpace.getGridPointVoisin(u.gridpoint, i);
 					if(voisin < 0)
@@ -192,7 +194,7 @@ public class DStarLite implements Service
 					if(s.rhs == add(distanceDynamiquePred(u.gridpoint, i), gold) && s.gridpoint != arrivee.gridpoint)
 					{
 						s.rhs = Integer.MAX_VALUE;
-						for(int j = 0; j < 8; j++)
+						for(Direction j : Direction.values())
 						{
 							voisin = GridSpace.getGridPointVoisin(s.gridpoint, j);
 							if(voisin < 0)
@@ -207,7 +209,7 @@ public class DStarLite implements Service
 				if(u.rhs == gold && u.gridpoint != arrivee.gridpoint)
 				{
 					u.rhs = Integer.MAX_VALUE;
-					for(int i = 0; i < 8; i++)
+					for(Direction i : Direction.values())
 					{
 						int voisin = GridSpace.getGridPointVoisin(u.gridpoint, i);
 						if(voisin < 0)
@@ -266,8 +268,8 @@ public class DStarLite implements Service
 		computeShortestPath();
 
 		if(Config.graphicDStarLite)
-			for(Integer i : obstaclesConnus)
-				fenetre.setColor(GridSpace.getGridPointVoisin(i >> 3, i & 7), Fenetre.Couleur.NOIR);
+			for(PointDirige i : obstaclesConnus)
+				fenetre.setColor(GridSpace.getGridPointVoisin(i.point, i.dir), Fenetre.Couleur.NOIR);
 
 	}
 	
@@ -303,15 +305,15 @@ public class DStarLite implements Service
 		for(ObstacleProximity o : obs[0])
 		{
 //			log.debug("Retrait de "+o);
-			for(Integer i : o.getMasque())
+			for(PointDirige i : o.getMasque())
 			{
 				obstaclesConnus.remove(i);
 				if(!obstaclesConnus.contains(i))
 				{
 					// Retrait d'un obstacle. Le coût va donc diminuer.
-					int upoint = i >> GridSpace.DECALAGE_POUR_DIRECTION;
+					int upoint = i.point;
 					DStarLiteNode u = getFromMemory(upoint);
-					int dir = (i & ((1 << GridSpace.DECALAGE_POUR_DIRECTION) - 1));
+					Direction dir = i.dir;
 					DStarLiteNode v = getFromMemory(GridSpace.getGridPointVoisin(upoint, dir));
 					u.rhs = Math.min(u.rhs, add(v.g, gridspace.distanceStatique(upoint, dir)));
 					updateVertex(u);
@@ -321,23 +323,23 @@ public class DStarLite implements Service
 		for(ObstacleProximity o : obs[1])
 		{
 //			log.debug("Ajout de "+o);
-			for(Integer i : o.getMasque())
+			for(PointDirige i : o.getMasque())
 			{
 				if(!obstaclesConnus.contains(i))
 				{
 					obstaclesConnus.add(i);
 					// Ajout d'un obstacle
-					int upoint = i >> GridSpace.DECALAGE_POUR_DIRECTION;
+					int upoint = i.point;
 					DStarLiteNode u = getFromMemory(upoint);
-					int dir = (i & ((1 << GridSpace.DECALAGE_POUR_DIRECTION) - 1));
+					Direction dir = i.dir;
 					DStarLiteNode v = getFromMemory(GridSpace.getGridPointVoisin(upoint, dir));
 
 					// l'ancienne distance est la distance statique car c'est un ajout d'obstacle
 					if(u.rhs == add(gridspace.distanceStatique(upoint, dir), v.g) && !u.equals(arrivee))
 					{
 						u.rhs = Integer.MAX_VALUE;
-						for(int voisin = 0; voisin < 8; voisin++)
-							u.rhs = Math.min(u.rhs, add(distanceDynamiqueSucc(u.gridpoint, voisin), getFromMemory(GridSpace.getGridPointVoisin(u.gridpoint, i)).g));
+						for(Direction voisin : Direction.values())
+							u.rhs = Math.min(u.rhs, add(distanceDynamiqueSucc(u.gridpoint, voisin), getFromMemory(GridSpace.getGridPointVoisin(u.gridpoint, i.dir)).g));
 					}
 					updateVertex(u);
 				}
@@ -347,8 +349,8 @@ public class DStarLite implements Service
 			}
 		}
 		if(Config.graphicDStarLite)
-			for(Integer i : obstaclesConnus)
-				fenetre.setColor(GridSpace.getGridPointVoisin(i >> 3, i & 7), Fenetre.Couleur.NOIR);
+			for(PointDirige i : obstaclesConnus)
+				fenetre.setColor(GridSpace.getGridPointVoisin(i.point, i.dir), Fenetre.Couleur.NOIR);
 
 		computeShortestPath();
 	}
@@ -375,7 +377,7 @@ public class DStarLite implements Service
 
 			coutMin = Integer.MAX_VALUE;
 			
-			for(int i = 0; i < 8; i++)
+			for(Direction i : Direction.values())
 			{
 				int voisin = GridSpace.getGridPointVoisin(node.gridpoint, i);
 				if(voisin < 0)
@@ -452,11 +454,11 @@ public class DStarLite implements Service
 	 * @param dir
 	 * @return
 	 */
-	private int distanceDynamiquePred(int point, int dir)
+	private int distanceDynamiquePred(int point, Direction dir)
 	{
 		int voisin = GridSpace.getGridPointVoisin(point, dir);
-		int dirOpposee = dir ^ 1; // ouais ouais
-		return distanceDynamiqueSucc(voisin, dirOpposee);
+		int dirOpposee = dir.ordinal() ^ 1; // ouais ouais
+		return distanceDynamiqueSucc(voisin, Direction.values()[dirOpposee]);
 	}
 
 	/**
@@ -465,9 +467,9 @@ public class DStarLite implements Service
 	 * @param dir
 	 * @return
 	 */
-	private int distanceDynamiqueSucc(int point, int dir)
+	private int distanceDynamiqueSucc(int point, Direction dir)
 	{
-		if(obstaclesConnus.contains((point << GridSpace.DECALAGE_POUR_DIRECTION) + dir))
+		if(obstaclesConnus.contains(gridspace.new PointDirige(point, dir)))
 			return Integer.MAX_VALUE;
 		return gridspace.distanceStatique(point, dir);
 	}

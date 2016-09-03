@@ -2,6 +2,7 @@ package obstacles.types;
 
 import java.util.ArrayList;
 
+import pathfinding.dstarlite.GridSpace.PointDirige;
 import utils.Vec2;
 import utils.permissions.ReadOnly;
 
@@ -12,16 +13,16 @@ import utils.permissions.ReadOnly;
 public class ObstacleProximity extends ObstacleCircular
 {
 	private long death_date;
-	private ArrayList<Integer> masque;
+	private ArrayList<PointDirige> masque;
 	
-	public ObstacleProximity(Vec2<ReadOnly> position, int rad, long death_date, ArrayList<Integer> masque)
+	public ObstacleProximity(Vec2<ReadOnly> position, int rad, long death_date, ArrayList<PointDirige> masque)
 	{
 		super(position,rad);
 		this.death_date = death_date;
 		this.masque = masque;
 	}
 
-	public ArrayList<Integer> getMasque()
+	public ArrayList<PointDirige> getMasque()
 	{
 		return masque;
 	}

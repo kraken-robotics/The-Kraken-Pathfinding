@@ -16,10 +16,10 @@ import utils.permissions.ReadOnly;
 public enum ObstaclesFixes {
 
 	// bords
-    BORD_BAS(new ObstacleRectangular(new Vec2<ReadOnly>(0,0),3000,0), false),
-    BORD_GAUCHE(new ObstacleRectangular(new Vec2<ReadOnly>(-1500,1000),0,2000), false),
-    BORD_DROITE(new ObstacleRectangular(new Vec2<ReadOnly>(1500,1000),0,2000), false),
-    BORD_HAUT(new ObstacleRectangular(new Vec2<ReadOnly>(0,2000),3000,0), false);
+    BORD_BAS(new ObstacleRectangular(new Vec2<ReadOnly>(0,0),3000,5), false),
+    BORD_GAUCHE(new ObstacleRectangular(new Vec2<ReadOnly>(-1500,1000),5,2000), false),
+    BORD_DROITE(new ObstacleRectangular(new Vec2<ReadOnly>(1500,1000),5,2000), false),
+    BORD_HAUT(new ObstacleRectangular(new Vec2<ReadOnly>(0,2000),3000,5), false);
 
     private final Obstacle obstacle;
     private boolean visible;
