@@ -14,7 +14,7 @@ import pathfinding.astarCourbe.arcs.ClothoidesComputer;
 import pathfinding.dstarlite.DStarLite;
 import pathfinding.dstarlite.GridSpace;
 import robot.Cinematique;
-import robot.RobotChrono;
+import robot.RobotReal;
 import robot.Speed;
 import utils.Config;
 import utils.Vec2;
@@ -31,6 +31,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
 	private DStarLite pathfinding;
 	private GridSpace gridspace;
 	private ClothoidesComputer clotho;
+	private RobotReal robot;
 	
 	@Override
 	@Before
@@ -39,6 +40,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
         pathfinding = (DStarLite) container.getService(ServiceNames.D_STAR_LITE);
         gridspace = (GridSpace) container.getService(ServiceNames.GRID_SPACE);
 		clotho = (ClothoidesComputer) container.getService(ServiceNames.CLOTHOIDES_COMPUTER);
+		robot = (RobotReal) container.getService(ServiceNames.ROBOT_REAL);
 	}
 
 	@Test
@@ -47,8 +49,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
 		Cinematique c1 = new Cinematique(-1000, 1500, Math.PI/4, true, 0, 1000, 1000, Speed.STANDARD);
 		Cinematique c2 = new Cinematique(0, 1000, 0, true, 0, 0, 0, Speed.STANDARD);
 		
-		// TODO
-		ArcCourbeCubique arccubique = clotho.cubicInterpolation(null, c1, c2, Speed.STANDARD, VitesseCourbure.DIRECT_COURBE);
+		ArcCourbeCubique arccubique = clotho.cubicInterpolation(robot.cloneIntoRobotChrono(), c1, c2, Speed.STANDARD, VitesseCourbure.DIRECT_COURBE);
 	
 		for(int i = 0; i < arccubique.arcs.size(); i++)
 		{

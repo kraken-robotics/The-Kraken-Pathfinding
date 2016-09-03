@@ -1,10 +1,11 @@
-package tests;
+package tests.lowlevel;
 
 import org.junit.Before;
 import org.junit.Test;
 
 import serie.BufferOutgoingOrder;
 import serie.Ticket;
+import tests.JUnit_Test;
 import container.ServiceNames;
 
 /**
