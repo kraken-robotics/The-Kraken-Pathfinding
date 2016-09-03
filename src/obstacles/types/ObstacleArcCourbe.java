@@ -2,7 +2,6 @@ package obstacles.types;
 
 import java.util.ArrayList;
 
-import pathfinding.astarCourbe.arcs.ArcCourbe;
 import utils.Vec2;
 import utils.permissions.ReadOnly;
 
@@ -20,17 +19,7 @@ public class ObstacleArcCourbe extends Obstacle
 		super(null);
 	}
 	
-	public void add(ObstacleRectangular o)
-	{
-		ombresRobot.add(o);
-	}
-
-	public void clear()
-	{
-		ombresRobot.clear();
-	}
-	
-	protected ArrayList<ObstacleRectangular> ombresRobot = new ArrayList<ObstacleRectangular>();
+	public ArrayList<ObstacleRectangular> ombresRobot = new ArrayList<ObstacleRectangular>();
 
 	@Override
 	public double squaredDistance(Vec2<ReadOnly> position)

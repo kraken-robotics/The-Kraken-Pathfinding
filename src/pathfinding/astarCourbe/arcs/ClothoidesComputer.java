@@ -232,7 +232,7 @@ public class ClothoidesComputer implements Service
 					longueur += actuel.getPosition().distance(last.getPosition());
 	
 				out.add(actuel);
-				obstacle.add(memory.getNewNode().update(actuel.getPosition(), actuel.orientation, robot));
+				obstacle.ombresRobot.add(memory.getNewNode().update(actuel.getPosition(), actuel.orientation, robot));
 				last = actuel;
 			}
 			if(error) // on essaye un autre alpha
@@ -310,7 +310,7 @@ public class ClothoidesComputer implements Service
 //		for(int i = 0; i < NB_POINTS; i++)
 //			log.debug("Clotho : "+trajectoire[vitesse.squaredRootVitesse * (i + 1)]);
 	
-		modified.obstacle.clear();
+		modified.obstacle.ombresRobot.clear();
 
 		// le premier point n'est pas position, mais le suivant
 		// (afin de ne pas avoir de doublon quand on enchaîne les arcs, entre le dernier point de l'arc t et le premier de l'arc t+1)		
@@ -345,7 +345,7 @@ public class ClothoidesComputer implements Service
 			modified.arcselems[i].vitesseMax = vitesseMax;
  			if(!vitesse.positif)
  				modified.arcselems[i].courbure = - modified.arcselems[i].courbure;
-			modified.obstacle.add(memory.getNewNode().update(modified.arcselems[i].getPosition(), orientation, robot));
+			modified.obstacle.ombresRobot.add(memory.getNewNode().update(modified.arcselems[i].getPosition(), orientation, robot));
 		}
 	}
 
@@ -382,7 +382,7 @@ public class ClothoidesComputer implements Service
 		double angle = Math.asin(sin);
 		sin = 0;
 		cos = 1;
-		modified.obstacle.clear();
+		modified.obstacle.ombresRobot.clear();
 		for(int i = 0; i < NB_POINTS; i++)
 		{
 			double tmp = sin;
@@ -398,7 +398,7 @@ public class ClothoidesComputer implements Service
 			modified.arcselems[i].vitesseRotation = vitesseMax.rotationalSpeed;
 			modified.arcselems[i].vitesseTranslation = vitesseMax.translationalSpeed;
 			modified.arcselems[i].enMarcheAvant = enMarcheAvant;
-			modified.obstacle.add(memory.getNewNode().update(modified.arcselems[i].getPosition(), orientation, robot));
+			modified.obstacle.ombresRobot.add(memory.getNewNode().update(modified.arcselems[i].getPosition(), orientation, robot));
 		}
 	}
 
@@ -413,7 +413,7 @@ public class ClothoidesComputer implements Service
 		double cos = Math.cos(orientation);
 		double sin = Math.sin(orientation);
 
-		modified.obstacle.clear();
+		modified.obstacle.ombresRobot.clear();
 		for(int i = 0; i < NB_POINTS; i++)
 		{
 			double distance = (i + 1) * PRECISION_TRACE * 1000;
@@ -424,7 +424,7 @@ public class ClothoidesComputer implements Service
 			modified.arcselems[i].vitesseRotation = vitesseMax.rotationalSpeed;
 			modified.arcselems[i].vitesseTranslation = vitesseMax.translationalSpeed;
 			modified.arcselems[i].enMarcheAvant = enMarcheAvant;
-			modified.obstacle.add(memory.getNewNode().update(modified.arcselems[i].getPosition(), orientation, robot));
+			modified.obstacle.ombresRobot.add(memory.getNewNode().update(modified.arcselems[i].getPosition(), orientation, robot));
 		}
 	}
 

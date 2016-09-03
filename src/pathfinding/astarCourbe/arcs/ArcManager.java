@@ -31,6 +31,7 @@ public class ArcManager implements Service
 	private DStarLite heuristique;
 	private ClothoidesComputer clotho;
 	
+	private boolean shoot;
 	private AStarCourbeNode current;
 	private double courbureMax;
 	private DirectionStrategy directionstrategyactuelle;
@@ -54,9 +55,10 @@ public class ArcManager implements Service
 	 */
 	public boolean isReachable(AStarCourbeNode node)
 	{
+		// le tout premier nœud n'a pas de parent
 		if(node.came_from == null)
 			return true;
-		return moteur.isTraversableCourbe(node);
+		return moteur.isTraversableCourbe(node, shoot);
 	}
 	
 	/**
@@ -212,8 +214,7 @@ public class ArcManager implements Service
 
 	public void setEjecteGameElement(boolean ejecteGameElement)
 	{
-		// TODO AStarCourbe
-		
+		shoot = ejecteGameElement;
 	}
 
 	/**

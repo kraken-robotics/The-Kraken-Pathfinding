@@ -1,6 +1,7 @@
 package obstacles;
 
 import container.Service;
+import obstacles.types.ObstacleArcCourbe;
 import obstacles.types.ObstacleRectangular;
 import utils.Config;
 import utils.Log;
@@ -15,7 +16,7 @@ import utils.Log;
 
 public class ObstaclesRectangularMemory implements Service {
 
-	private static final int nb_instances = 500;
+	private static final int nb_instances = 5000;
 
 	private final ObstacleRectangular[] nodes = new ObstacleRectangular[nb_instances];
 	protected Log log;
@@ -76,15 +77,25 @@ public class ObstaclesRectangularMemory implements Service {
 	}
 	
 	/**
-	 * Signale qu'un gamestate est de nouveau disponible
-	 * @param state
-	 * @param id_astar
-	 * @throws MemoryManagerException
+	 * Détruit un obstacle d'arc courbe
+	 * @param arc
 	 */
-	public void destroyNode(ObstacleRectangular state)
+	public void destroyNode(ObstacleArcCourbe arc)
+	{
+		for(ObstacleRectangular o : arc.ombresRobot)
+			destroyNode(o);
+		arc.ombresRobot.clear();
+	}
+
+	
+	/**
+	 * Signale qu'un obstacle est de nouveau disponible
+	 * @param obs
+	 */
+	private void destroyNode(ObstacleRectangular obs)
 	{
 		
-		int indice_state = state.getIndiceMemoryManager();
+		int indice_state = obs.getIndiceMemoryManager();
 
 		/**
 		 * S'il est déjà détruit, on lève une exception

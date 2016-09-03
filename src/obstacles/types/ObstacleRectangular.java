@@ -1,6 +1,5 @@
 package obstacles.types;
 
-import robot.Cinematique;
 import robot.RobotChrono;
 import utils.Vec2;
 import utils.permissions.ReadOnly;
@@ -16,12 +15,6 @@ import utils.permissions.ReadWrite;
 public class ObstacleRectangular extends Obstacle
 {
 	// Position est le centre de rotation, c'est-à-dire le croisement des deux diagonales
-	
-	// taille selon l'axe X
-/*	protected int sizeX;
-	
-	// taille selon l'axe Y
-	protected int sizeY;*/
 	
 	// Longueur entre le centre et un des coins
 	protected double demieDiagonale;
@@ -73,6 +66,7 @@ public class ObstacleRectangular extends Obstacle
 	 * Cet angle est celui par lequel le rectangle a été tourné.
 	 * C'est donc l'opposé de l'angle par lequel on va tourner les points afin de considérer
 	 * le rectangle comme aligné
+	 * Le rectangle est centré sur la position
 	 * @param log
 	 * @param config
 	 * @param position
@@ -86,9 +80,6 @@ public class ObstacleRectangular extends Obstacle
 		this.angle = angle;
 		cos = Math.cos(angle);
 		sin = Math.sin(angle);
-//		this.sizeY = sizeY;
-//		this.sizeX = sizeX;
-		this.angle = angle;
 		coinBasGauche = new Vec2<ReadOnly>(-sizeX/2,-sizeY/2);
 		coinHautGauche = new Vec2<ReadOnly>(-sizeX/2,sizeY/2);
 		coinBasDroite = new Vec2<ReadOnly>(sizeX/2,-sizeY/2);
@@ -129,26 +120,6 @@ public class ObstacleRectangular extends Obstacle
 		out.y = (int)(sin*point.x+cos*point.y)+position.y;
 		return out;
 	}
-
-	/**
-	 * Donne l'abscisse du point après rotation de +angle
-	 * @param point
-	 * @return
-	 */
-/*	private int getXRotatePlusAngle(Vec2<ReadOnly> point)
-	{
-		return (int)(cos*(point.x-position.x)-sin*(point.y-position.y))+position.x;
-	}*/
-
-	/**
-	 * Donne l'abscisse du point après rotation de +angle
-	 * @param point
-	 * @return
-	 */
-/*	private int getYRotatePlusAngle(Vec2<ReadOnly> point)
-	{
-		return (int)(sin*(point.x-position.x)+cos*(point.y-position.y))+position.y;
-	}*/
 
 	/**
 	 * Donne l'abscisse du point après rotation de +angle
@@ -242,24 +213,6 @@ public class ObstacleRectangular extends Obstacle
 		return Y;
 	}
 
-	/**
-	 * Utilisé pour l'affichage uniquement
-	 * @return
-	 */
-/*	public int getSizeX()
-	{
-		return sizeX;
-	}*/
-
-	/**
-	 * Utilisé pour l'affichage uniquement
-	 * @return
-	 */
-/*	public int getSizeY()
-	{
-		return sizeY;
-	}*/
-
 	@Override
 	public String toString()
 	{
@@ -281,16 +234,12 @@ public class ObstacleRectangular extends Obstacle
 		 *
 		 * 		 												  y
 		 * 			4	|		3		|		2					    ^
-		 * 				|				|								|
 		 * 		____________________________________				    |
-		 * 				|				|								-----> x
 		 * 				|				|
 		 * 			5	|	obstacle	|		1
-		 * 		
 		 * 		____________________________________
 		 * 		
 		 * 			6	|		7		|		8
-		 * 				|				|
 		 */		
 		
 		// si le point fourni est dans les quarts de plan n°2,4,6 ou 8
@@ -333,6 +282,13 @@ public class ObstacleRectangular extends Obstacle
 		return indiceMemory;
 	}
 
+	/**
+	 * Mise à jour de l'obstacle
+	 * @param position
+	 * @param orientation
+	 * @param robot
+	 * @return
+	 */
 	public ObstacleRectangular update(Vec2<ReadOnly> position, double orientation, RobotChrono robot)
 	{
 		Vec2.copy(position, this.position);
@@ -348,7 +304,7 @@ public class ObstacleRectangular extends Obstacle
 		coinBasGauche.y = -a;
 		coinHautGauche.x = -d;
 		coinHautGauche.y = b;		
-		coinBasDroite.y = c;
+		coinBasDroite.x = c;
 		coinBasDroite.y = -a;
 		coinHautDroite.x = c;
 		coinHautDroite.y = b;

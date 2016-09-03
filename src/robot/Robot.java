@@ -74,32 +74,29 @@ public abstract class Robot implements Service
     
 	public int getDemieLargeurGauche()
 	{
-		// TODO Auto-generated method stub
-		return 0;
+		return 100; // TODO
 	}
 
 	public int getDemieLargeurDroite()
 	{
-		// TODO Auto-generated method stub
-		return 0;
+		return 100; // TODO
 	}
 
 	public int getDemieLongueurAvant()
 	{
-		// TODO Auto-generated method stub
-		return 0;
+		return 200; // TODO
 	}
 
 	public int getDemieLongueurArriere()
 	{
-		// TODO Auto-generated method stub
-		return 0;
+		return 200; // TODO
 	}
 	
 	public double getDemieDiagonale()
 	{
-		// TODO Auto-generated method stub
-		return 0;
+		// TODO optimiser en ne faisant le calcul qu'une fois
+		return Math.max(Math.max(Math.hypot(getDemieLongueurArriere(), getDemieLargeurGauche()),Math.hypot(getDemieLongueurArriere(), getDemieLargeurDroite())),
+				Math.max(Math.hypot(getDemieLongueurAvant(), getDemieLargeurGauche()), Math.hypot(getDemieLongueurAvant(), getDemieLargeurDroite())));
 	}
 
 }

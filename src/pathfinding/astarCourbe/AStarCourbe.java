@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.PriorityQueue;
 
+import obstacles.ObstaclesRectangularMemory;
 import obstacles.types.ObstacleRectangular;
 import pathfinding.CheminPathfinding;
 import pathfinding.RealGameState;
@@ -44,6 +45,7 @@ public class AStarCourbe implements Service
 	private AStarCourbeNode depart;
 	private CheminPathfinding chemin;
 	private GridSpace gridspace;
+	private ObstaclesRectangularMemory rectMemory;
 	
 	private Speed vitesseMax;
 	
@@ -73,7 +75,7 @@ public class AStarCourbe implements Service
 	/**
 	 * Constructeur du AStarCourbe
 	 */
-	public AStarCourbe(Log log, DStarLite dstarlite, ArcManager arcmanager, RealGameState state, CheminPathfinding chemin, MemoryManager memorymanager, GridSpace gridspace)
+	public AStarCourbe(Log log, DStarLite dstarlite, ArcManager arcmanager, RealGameState state, CheminPathfinding chemin, MemoryManager memorymanager, GridSpace gridspace, ObstaclesRectangularMemory rectMemory)
 	{
 		this.log = log;
 		this.arcmanager = arcmanager;
@@ -84,6 +86,7 @@ public class AStarCourbe implements Service
 		this.state = state;
 		this.dstarlite = dstarlite;
 		this.gridspace = gridspace;
+		this.rectMemory = rectMemory;
 	}
 	
 	public void doYourJob() throws InterruptedException
@@ -151,6 +154,7 @@ public class AStarCourbe implements Service
 			// ce calcul étant un peu lourd, on ne le fait que si le noeud a été choisi, et pas à la sélection des voisins (dans hasNext par exemple)
 			if(!arcmanager.isReachable(current))
 			{
+				rectMemory.destroyNode(current.came_from_arc.obstacle);
 				memorymanager.destroyNode(current);
 				continue; // collision mécanique attendue. On passe au suivant !
 			}
@@ -196,6 +200,7 @@ public class AStarCourbe implements Service
 				// S'il y a un problème, on passe au suivant (interpolation cubique impossible par exemple)
 				if(!arcmanager.next(successeur, vitesseMax, arrivee))
 				{
+					rectMemory.destroyNode(successeur.came_from_arc.obstacle);
 					memorymanager.destroyNode(successeur);
 					continue;
 				}
@@ -216,7 +221,7 @@ public class AStarCourbe implements Service
 		 * Impossible car un nombre infini de nœuds !
 		 */
 		memorymanager.empty();
-		log.critical("AStarCourbe n'a pas trouvé de chemin !");
+		log.critical("IMPOSSIBLE : recherche AStarCourbe échouée");
 		return;
 	}
 	

@@ -1,8 +1,8 @@
 package pathfinding;
 
+import serie.BufferOutgoingOrder;
 import utils.Config;
 import utils.Log;
-
 import container.Service;
 import pathfinding.astarCourbe.arcs.ArcCourbe;
 
@@ -15,16 +15,17 @@ import pathfinding.astarCourbe.arcs.ArcCourbe;
 
 public class CheminPathfinding implements Service
 {
-	public Object mutexRead = new Object(), mutexWrite = new Object();
 	protected Log log;
+	private BufferOutgoingOrder out;
 	
 	private volatile ArcCourbe[] chemin = new ArcCourbe[256];
 	private int indexFirst = 0;
 	private int indexLast = 0;
 	
-	public CheminPathfinding(Log log)
+	public CheminPathfinding(Log log, BufferOutgoingOrder out)
 	{
 		this.log = log;
+		this.out = out;
 	}
 	
 	@Override
@@ -35,46 +36,31 @@ public class CheminPathfinding implements Service
 	public void useConfig(Config config)
 	{}
 	
-	public ArcCourbe poll()
+	public synchronized boolean isEmpty()
 	{
-		return chemin[indexFirst++];
+		return indexFirst == indexLast;
 	}
 
-	public boolean isEmpty()
+	public synchronized void add(ArcCourbe arc)
 	{
-		synchronized(mutexWrite)
-		{
-			return indexFirst == indexLast;
-		}
-	}
-
-	public void add(ArcCourbe arc)
-	{
-		synchronized(mutexWrite)
-		{
-			arc.indexTrajectory = indexLast;
-			chemin[indexLast++] = arc;
-			
-			// si on revient au début, c'est qu'il y a un problème ou que le buffer est sous-dimensionné
-			if(indexLast == indexFirst)
-				log.critical("Buffer trop petit !");
-		}
+		arc.indexTrajectory = indexLast;
+		chemin[indexLast++] = arc;
+		
+		out.envoieArcCourbe(arc);
+		
+		// si on revient au début, c'est qu'il y a un problème ou que le buffer est sous-dimensionné
+		if(indexLast == indexFirst)
+			log.critical("Buffer trop petit !");
 	}
 
 	public void clear()
 	{
-		synchronized(mutexRead)
-		{
-			indexLast = indexFirst;
-		}
+		indexLast = indexFirst;
 	}
 
-	public void setCurrentIndex(int indexTrajectory)
+	public synchronized void setCurrentIndex(int indexTrajectory)
 	{
-		synchronized(mutexWrite)
-		{
-			indexFirst = indexTrajectory;
-		}
+		indexFirst = indexTrajectory;
 	}
 
 }

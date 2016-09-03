@@ -283,8 +283,8 @@ public class Container
 			instanciedServices[serviceRequested.ordinal()] = new DStarLite((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
 																				(GridSpace)getServiceDisplay(serviceRequested, ServiceNames.GRID_SPACE));
 		else if(serviceRequested == ServiceNames.CHEMIN_PATHFINDING)
-			instanciedServices[serviceRequested.ordinal()] = new CheminPathfinding((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG));
-		
+			instanciedServices[serviceRequested.ordinal()] = new CheminPathfinding((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
+															(BufferOutgoingOrder)getServiceDisplay(serviceRequested, ServiceNames.OUTGOING_ORDER_BUFFER));
 		else if(serviceRequested == ServiceNames.OBSTACLES_MEMORY)
 			instanciedServices[serviceRequested.ordinal()] = new ObstaclesMemory((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG));
 		else if(serviceRequested == ServiceNames.GRID_SPACE)
@@ -359,7 +359,8 @@ public class Container
 																					(RealGameState)getServiceDisplay(serviceRequested, ServiceNames.REAL_GAME_STATE),
 																					(CheminPathfinding)getServiceDisplay(serviceRequested, ServiceNames.CHEMIN_PATHFINDING),
 																					(MemoryManager)getServiceDisplay(serviceRequested, ServiceNames.MEMORY_MANAGER),
-																					(GridSpace)getServiceDisplay(serviceRequested, ServiceNames.GRID_SPACE));
+																					(GridSpace)getServiceDisplay(serviceRequested, ServiceNames.GRID_SPACE),
+																					(ObstaclesRectangularMemory)getServiceDisplay(serviceRequested, ServiceNames.OBSTACLES_RECTANGULAR_MEMORY));
 		else if(serviceRequested == ServiceNames.MEMORY_MANAGER)
 			instanciedServices[serviceRequested.ordinal()] = new MemoryManager((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
 																								   (RealGameState)getServiceDisplay(serviceRequested, ServiceNames.REAL_GAME_STATE));
