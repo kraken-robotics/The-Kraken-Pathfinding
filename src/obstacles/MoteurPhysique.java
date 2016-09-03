@@ -5,12 +5,14 @@ import obstacles.types.ObstacleProximity;
 import pathfinding.ChronoGameState;
 import pathfinding.astarCourbe.AStarCourbeNode;
 import table.GameElementNames;
+import table.Table;
 import utils.Config;
 import utils.ConfigInfo;
 import utils.Log;
 import utils.Vec2;
 import utils.permissions.ReadOnly;
 import container.Service;
+import enums.Tribool;
 
 /**
  * Service qui permet de calculer, pour un certain GameState, des collisions
@@ -21,14 +23,16 @@ import container.Service;
 public class MoteurPhysique implements Service {
 	
 	protected Log log;
+	private Table table;
 	
 	private int distanceApproximation;
 	private int distanceMinimaleEntreProximite;
 	private int rayonRobot;
 	
-	public MoteurPhysique(Log log)
+	public MoteurPhysique(Log log, Table table)
 	{
 		this.log = log;
+		this.table = table;
 	}
 
     /**
@@ -90,7 +94,7 @@ public class MoteurPhysique implements Service {
 	 * @param node
 	 * @return
 	 */
-	public boolean isTraversableCourbe(AStarCourbeNode node)
+	public boolean isTraversableCourbe(AStarCourbeNode node, boolean shoot)
 	{
 		ObstacleArcCourbe obs = node.came_from_arc.obstacle;
 
@@ -104,6 +108,12 @@ public class MoteurPhysique implements Service {
     	while(node.state.iterator.hasNext())
            	if(node.state.iterator.next().isColliding(obs))
         		return false;
+    	
+    	// On vérifie si on collisionne un élément de jeu
+    	if(!shoot)
+    		for(GameElementNames g : GameElementNames.values)
+    			if(table.isDone(g) != Tribool.FALSE && g.getObstacle().isColliding(obs))
+    				return false;
 
     	return true;
 	}

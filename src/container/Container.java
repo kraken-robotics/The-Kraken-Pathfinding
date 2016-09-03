@@ -348,9 +348,10 @@ public class Container
 																		this);
 		else if(serviceRequested == ServiceNames.THREAD_PATHFINDING)
 			instanciedServices[serviceRequested.ordinal()] = new ThreadPathfinding((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
-																		(AStarCourbe)getServiceDisplay(serviceRequested, ServiceNames.A_STAR_COURBE));
+																				(AStarCourbe)getServiceDisplay(serviceRequested, ServiceNames.A_STAR_COURBE));
 		else if(serviceRequested == ServiceNames.MOTEUR_PHYSIQUE)
-			instanciedServices[serviceRequested.ordinal()] = new MoteurPhysique((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG)); 		
+			instanciedServices[serviceRequested.ordinal()] = new MoteurPhysique((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
+																				(Table)getServiceDisplay(serviceRequested, ServiceNames.TABLE));
 		else if(serviceRequested == ServiceNames.A_STAR_COURBE)
 			instanciedServices[serviceRequested.ordinal()] = new AStarCourbe((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
 																					(DStarLite)getServiceDisplay(serviceRequested, ServiceNames.D_STAR_LITE),
