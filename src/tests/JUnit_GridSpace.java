@@ -87,18 +87,28 @@ public class JUnit_GridSpace extends JUnit_Test {
 	}
 	
 	@Test
+	public void test_suppression_obstacles_proches() throws Exception
+	{
+		
+	}	
+	
+	@Test
 	public void test_ajout_obstacle() throws Exception
 	{
     	int peremption = config.getInt(ConfigInfo.DUREE_PEREMPTION_OBSTACLES);
 		Assert.assertTrue(gridspace.startNewPathfinding().isEmpty());
 		ArrayList<ObstacleProximity>[] b = gridspace.getOldAndNewObstacles();
 		Assert.assertTrue(b[0].isEmpty());
-		Assert.assertTrue( b[1].isEmpty());
-		gridspace.addObstacle(new Vec2<ReadOnly>(200, 100));
+		Assert.assertTrue(b[1].isEmpty());
+		gridspace.addObstacleAndRemoveNearbyObstacles(new Vec2<ReadOnly>(200, 100));
 		b = gridspace.getOldAndNewObstacles();
 		Assert.assertTrue(b[0].isEmpty());
 		Assert.assertTrue(!b[1].isEmpty());
-		gridspace.addObstacle(new Vec2<ReadOnly>(200, 100));
+		gridspace.addObstacleAndRemoveNearbyObstacles(new Vec2<ReadOnly>(210, 100));
+		b = gridspace.getOldAndNewObstacles();
+		Assert.assertEquals(b[0].size(), 1); // on a supprimé l'autre qui était trop proche
+		Assert.assertEquals(b[1].size(), 1);
+		gridspace.addObstacleAndRemoveNearbyObstacles(new Vec2<ReadOnly>(400, 100));
 		b = gridspace.getOldAndNewObstacles();
 		Assert.assertTrue(b[0].isEmpty());
 		Assert.assertTrue(!b[1].isEmpty());
@@ -115,7 +125,8 @@ public class JUnit_GridSpace extends JUnit_Test {
 		for(ObstacleProximity o : b[1])
 			log.debug(o.getDeathDate());
 
-		Assert.assertTrue(!b[0].isEmpty() && b[1].isEmpty());
+		Assert.assertTrue(!b[0].isEmpty());
+		Assert.assertTrue(b[1].isEmpty());
 	}
 
 }

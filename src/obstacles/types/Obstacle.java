@@ -51,6 +51,11 @@ public abstract class Obstacle
 	}
 
 	public abstract double squaredDistance(Vec2<ReadOnly> position);
+	
+	public boolean isProcheCentre(Vec2<ReadOnly> position, int distance)
+	{
+		return this.position.squaredDistance(position) < distance * distance;
+	}
 
 	public boolean isProcheObstacle(Vec2<ReadOnly> position, int distance)
 	{

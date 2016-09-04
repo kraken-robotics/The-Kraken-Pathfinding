@@ -2,7 +2,6 @@ package container;
 
 import obstacles.Capteurs;
 import obstacles.SensorsDataBuffer;
-import obstacles.MoteurPhysique;
 import obstacles.ObstaclesRectangularMemory;
 import obstacles.memory.ObstaclesMemory;
 import obstacles.types.Obstacle;
@@ -275,8 +274,7 @@ public class Container
 			instanciedServices[serviceRequested.ordinal()] = new Config();
 		else if(serviceRequested == ServiceNames.CAPTEURS)
 			instanciedServices[serviceRequested.ordinal()] = new Capteurs((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
-																					(GridSpace)getServiceDisplay(serviceRequested, ServiceNames.GRID_SPACE),
-																					(MoteurPhysique)getServiceDisplay(serviceRequested, ServiceNames.MOTEUR_PHYSIQUE));
+																					(GridSpace)getServiceDisplay(serviceRequested, ServiceNames.GRID_SPACE));
 		else if(serviceRequested == ServiceNames.TABLE)
 			instanciedServices[serviceRequested.ordinal()] = new Table((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG));
 		else if(serviceRequested == ServiceNames.D_STAR_LITE)
@@ -349,9 +347,6 @@ public class Container
 		else if(serviceRequested == ServiceNames.THREAD_PATHFINDING)
 			instanciedServices[serviceRequested.ordinal()] = new ThreadPathfinding((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
 																				(AStarCourbe)getServiceDisplay(serviceRequested, ServiceNames.A_STAR_COURBE));
-		else if(serviceRequested == ServiceNames.MOTEUR_PHYSIQUE)
-			instanciedServices[serviceRequested.ordinal()] = new MoteurPhysique((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
-																				(Table)getServiceDisplay(serviceRequested, ServiceNames.TABLE));
 		else if(serviceRequested == ServiceNames.A_STAR_COURBE)
 			instanciedServices[serviceRequested.ordinal()] = new AStarCourbe((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
 																					(DStarLite)getServiceDisplay(serviceRequested, ServiceNames.D_STAR_LITE),
@@ -366,7 +361,7 @@ public class Container
 																								   (RealGameState)getServiceDisplay(serviceRequested, ServiceNames.REAL_GAME_STATE));
 		else if(serviceRequested == ServiceNames.ARC_MANAGER)
 			instanciedServices[serviceRequested.ordinal()] = new ArcManager((Log)getServiceDisplay(serviceRequested, ServiceNames.LOG),
-																								(MoteurPhysique)getServiceDisplay(serviceRequested, ServiceNames.MOTEUR_PHYSIQUE),
+																								(GridSpace)getServiceDisplay(serviceRequested, ServiceNames.GRID_SPACE),
 																								(DStarLite)getServiceDisplay(serviceRequested, ServiceNames.D_STAR_LITE),
 																								(ClothoidesComputer)getServiceDisplay(serviceRequested, ServiceNames.CLOTHOIDES_COMPUTER));
 		else if(serviceRequested == ServiceNames.CLOTHOIDES_COMPUTER)

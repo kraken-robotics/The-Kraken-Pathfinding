@@ -147,12 +147,12 @@ public class JUnit_Pathfinding extends JUnit_Test {
 	@Test
     public void test_chemin_dstarlite() throws Exception
     {
-		gridspace.addObstacle(new Vec2<ReadOnly>(200, 800));
+		gridspace.addObstacleAndRemoveNearbyObstacles(new Vec2<ReadOnly>(200, 800));
 		pathfinding.computeNewPath(new Vec2<ReadOnly>(-1000, 200), new Vec2<ReadOnly>(1200, 1200));
 		pathfinding.itineraireBrut();		
 		Thread.sleep(500);
 		log.debug("RECALCUL");
-		gridspace.addObstacle(new Vec2<ReadOnly>(600, 1300));
+		gridspace.addObstacleAndRemoveNearbyObstacles(new Vec2<ReadOnly>(600, 1300));
 		pathfinding.updatePath(new Vec2<ReadOnly>(600,1300));
 		pathfinding.itineraireBrut();
 		Thread.sleep(4000);

@@ -1,9 +1,9 @@
 package pathfinding.astarCourbe.arcs;
 
-import obstacles.MoteurPhysique;
 import pathfinding.VitesseCourbure;
 import pathfinding.astarCourbe.AStarCourbeNode;
 import pathfinding.dstarlite.DStarLite;
+import pathfinding.dstarlite.GridSpace;
 import robot.Cinematique;
 import robot.DirectionStrategy;
 import robot.RobotChrono;
@@ -27,7 +27,7 @@ import utils.Log;
 public class ArcManager implements Service
 {
 	protected Log log;
-	private MoteurPhysique moteur;
+	private GridSpace gridspace;
 	private DStarLite heuristique;
 	private ClothoidesComputer clotho;
 	
@@ -39,10 +39,10 @@ public class ArcManager implements Service
 	private final static int TEMPS_REBROUSSEMENT = 700;
 	private ListIterator<VitesseCourbure> iterator = listeVitesse.listIterator();
 	
-	public ArcManager(Log log, MoteurPhysique moteur, DStarLite heuristique, ClothoidesComputer clotho)
+	public ArcManager(Log log, GridSpace gridspace, DStarLite heuristique, ClothoidesComputer clotho)
 	{
 		this.log = log;
-		this.moteur = moteur;
+		this.gridspace = gridspace;
 		this.heuristique = heuristique;
 		this.clotho = clotho;
 	}
@@ -58,7 +58,7 @@ public class ArcManager implements Service
 		// le tout premier nœud n'a pas de parent
 		if(node.came_from == null)
 			return true;
-		return moteur.isTraversableCourbe(node, shoot);
+		return gridspace.isTraversableCourbe(node, shoot);
 	}
 	
 	/**

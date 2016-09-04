@@ -6,7 +6,10 @@ import java.util.BitSet;
 import obstacles.ObstaclesFixes;
 import obstacles.memory.ObstaclesIteratorPresent;
 import obstacles.memory.ObstaclesMemory;
+import obstacles.types.ObstacleArcCourbe;
 import obstacles.types.ObstacleProximity;
+import pathfinding.ChronoGameState;
+import pathfinding.astarCourbe.AStarCourbeNode;
 import table.GameElementNames;
 import table.Table;
 import utils.Config;
@@ -22,7 +25,6 @@ import enums.Tribool;
  * La classe qui contient la grille utilisée par le pathfinding.
  * Utilisée uniquement pour le pathfinding DStarLite.
  * Notifie quand il y a un changement d'obstacles
- * Ordre des directions : NO, SE, NE, SO, N, S, O, E;
  * @author pf
  *
  */
@@ -31,8 +33,13 @@ public class GridSpace implements Service
 {
 	protected Log log;
 	private ObstaclesIteratorPresent iteratorDStarLite;
+	private ObstaclesIteratorPresent iteratorRemoveNearby;
 	private ObstaclesMemory obstaclesMemory;
 	private Table table;
+
+	private int distanceApproximation;
+	private int distanceMinimaleEntreProximite;
+	private int rayonRobot;
 
 	public class PointDirige
 	{
@@ -89,8 +96,9 @@ public class GridSpace implements Service
 		this.obstaclesMemory = obstaclesMemory;
 		this.log = log;
 		this.table = table;
-		this.iteratorDStarLite = new ObstaclesIteratorPresent(log, obstaclesMemory);
-
+		iteratorDStarLite = new ObstaclesIteratorPresent(log, obstaclesMemory);
+		iteratorRemoveNearby = new ObstaclesIteratorPresent(log, obstaclesMemory);
+		
 		if(grilleStatique == null)
 		{
 			// Initialisation, une fois pour toutes, de la grille statique
@@ -219,8 +227,10 @@ public class GridSpace implements Service
 	@Override
 	public void useConfig(Config config)
 	{
+		distanceApproximation = config.getInt(ConfigInfo.DISTANCE_MAX_ENTRE_MESURE_ET_OBJET);		
+		distanceMinimaleEntreProximite = config.getInt(ConfigInfo.DISTANCE_BETWEEN_PROXIMITY_OBSTACLES);
+		rayonRobot = config.getInt(ConfigInfo.RAYON_ROBOT);
 		int rayonEnnemi = config.getInt(ConfigInfo.RAYON_ROBOT_ADVERSE);
-		int rayonRobot = config.getInt(ConfigInfo.RAYON_ROBOT);
 		int rayonPoint = (int) Math.round((rayonEnnemi + rayonRobot) / DISTANCE_ENTRE_DEUX_POINTS);
 		int tailleMasque = 2*(rayonPoint+1)+1;
 		centreMasque = tailleMasque / 2;
@@ -367,30 +377,6 @@ public class GridSpace implements Service
 		return out;
 	}
 
-	/**
-	 * Appelé par RealGameState
-	 * @return
-	 */
-	public Table getTable()
-	{
-		return table;
-	}
-
-	/**
-	 * Appelé par le thread des capteurs par l'intermédiaire de la classe capteurs
-	 * Ajoute l'obstacle à la mémoire et dans le gridspace
-	 * @param position
-	 * @param dateActuelle
-	 * @param urgent
-	 * @return
-	 */
-	public synchronized ObstacleProximity addObstacle(Vec2<ReadOnly> position) {
-		ArrayList<PointDirige> masque = getMasqueObstacle(position);
-		ObstacleProximity o = obstaclesMemory.add(position, masque);
-		// pour un ajout, pas besoin de tout régénérer
-		return o;
-	}
-
 	public Tribool isDoneTable(GameElementNames g)
 	{
 		return table.isDone(g);
@@ -481,4 +467,105 @@ public class GridSpace implements Service
 			return out;
 		}
 	}
+	
+    /**
+     * Utilisé pour savoir si ce qu'on voit est un obstacle fixe.
+     * @param position
+     * @return
+     */
+    public boolean isObstacleFixePresentCapteurs(Vec2<ReadOnly> position)
+    {
+    	for(ObstaclesFixes o: ObstaclesFixes.obstaclesFixesVisibles)
+    		if(o.getObstacle().squaredDistance(position) < distanceApproximation * distanceApproximation)
+                return true;
+        return false;
+    }
+
+    /**
+	 * Appelé par le thread des capteurs par l'intermédiaire de la classe capteurs
+	 * Ajoute l'obstacle à la mémoire et dans le gridspace
+     * Supprime les obstacles mobiles proches
+     * Ça allège le nombre d'obstacles.
+     * Utilisé par les capteurs
+     * @param position
+     * @return 
+     * @return
+     */
+    public ObstacleProximity addObstacleAndRemoveNearbyObstacles(Vec2<ReadOnly> position)
+    {
+    	iteratorRemoveNearby.reinit();
+    	while(iteratorRemoveNearby.hasNext())
+        	if(iteratorRemoveNearby.next().isProcheCentre(position, distanceMinimaleEntreProximite))
+        	{
+        		log.debug("Suppression d'un obstacle");
+        		iteratorRemoveNearby.remove();
+        	}
+
+    	ArrayList<PointDirige> masque = getMasqueObstacle(position);
+		ObstacleProximity o = obstaclesMemory.add(position, masque);
+		// pour un ajout, pas besoin de tout régénérer
+		return o;
+    }
+    
+    /**
+     * Indique si un obstacle fixe de centre proche de la position indiquée existe.
+     * Utilisé pour savoir s'il y a un ennemi devant nous.
+     * @param position
+     * @return
+     */
+    public boolean isThereObstacle(ChronoGameState state, Vec2<ReadOnly> position)
+    {
+    	state.iterator.reinit();
+    	while(state.iterator.hasNext())
+        	if(state.iterator.next().isProcheObstacle(position, rayonRobot + 20))
+        		return true;
+       return false;
+    }
+	
+	/**
+	 * Y a-t-il collision sur le chemin d'une trajectoire courbe ?
+	 * @param node
+	 * @return
+	 */
+	public boolean isTraversableCourbe(AStarCourbeNode node, boolean shoot)
+	{
+		ObstacleArcCourbe obs = node.came_from_arc.obstacle;
+
+		// Collision avec un obstacle fixe?
+    	for(ObstaclesFixes o: ObstaclesFixes.values)
+    		if(o.getObstacle().isColliding(obs))
+    			return false;
+
+    	// Collision avec un obstacle de proximité ?
+    	node.state.iterator.reinit();
+    	while(node.state.iterator.hasNext())
+           	if(node.state.iterator.next().isColliding(obs))
+        		return false;
+    	
+    	// On vérifie si on collisionne un élément de jeu
+    	if(!shoot)
+    		for(GameElementNames g : GameElementNames.values)
+    			if(table.isDone(g) != Tribool.FALSE && g.getObstacle().isColliding(obs))
+    				return false;
+
+    	return true;
+	}
+	
+	/**
+	 * g est-il proche de position? (utilisé pour vérifier si on shoot dans un élément de jeu)
+	 * @param g
+	 * @param positionCentreRotation
+	 * @param rayon_robot_adverse
+	 * @return
+	 */
+	public boolean didTheEnemyTakeIt(GameElementNames g, ObstacleProximity o)
+	{
+		return g.getObstacle().isProcheObstacle(o.getPosition(), o.radius);
+	}
+
+	public boolean didWeShootIt(GameElementNames g, Vec2<ReadOnly> position)
+	{
+		return g.getObstacle().isProcheObstacle(position, rayonRobot);
+	}
+
 }

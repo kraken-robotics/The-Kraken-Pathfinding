@@ -22,7 +22,6 @@ import utils.permissions.ReadWrite;
 @SuppressWarnings("unchecked")
 public class Capteurs implements Service {
 	protected Log log;
-	private MoteurPhysique moteur;
 	private GridSpace gridspace;
 
 	public static final int nbCapteurs = 2;
@@ -41,11 +40,10 @@ public class Capteurs implements Service {
 	 */
 	public double[] orientationsRelatives;
 
-	public Capteurs(Log log, GridSpace gridspace, MoteurPhysique moteur)
+	public Capteurs(Log log, GridSpace gridspace)
 	{
 		this.log = log;
 		this.gridspace = gridspace;
-		this.moteur = moteur;
 		positionsRelatives = new Vec2[nbCapteurs];
 		orientationsRelatives = new double[nbCapteurs];
 
@@ -87,7 +85,7 @@ public class Capteurs implements Service {
 			 * On update la table avec notre position
 			 */
 		    for(GameElementNames g: GameElementNames.values)
-		        if(moteur.didWeShootIt(g, positionRobot))
+		        if(gridspace.didWeShootIt(g, positionRobot))
 		        	gridspace.setDoneTable(g, Tribool.TRUE); // on est sûr de l'avoir shooté
 			
 			
@@ -106,7 +104,7 @@ public class Capteurs implements Service {
 				 * Si ce qu'on voit est un obstacle de table, on l'ignore
 				 */
 				Vec2<ReadOnly> positionVue = new Vec2<ReadOnly>(data.mesures[i], orientationsRelatives[i], true);
-				if(moteur.isObstacleFixePresentCapteurs(positionVue))
+				if(gridspace.isObstacleFixePresentCapteurs(positionVue))
 					continue;
 				
 				/**
@@ -121,13 +119,13 @@ public class Capteurs implements Service {
 				if(positionEnnemi.x > 1500 || positionEnnemi.x < -1500 || positionEnnemi.y > 2000 || positionEnnemi.y < 0)
 					continue; // hors table
 				
-				ObstacleProximity o = gridspace.addObstacle(positionEnnemi.getReadOnly());
+				ObstacleProximity o = gridspace.addObstacleAndRemoveNearbyObstacles(positionEnnemi.getReadOnly());
 				
 				/**
 				 * Mise à jour de l'état de la table
 				 */
 			    for(GameElementNames g: GameElementNames.values)
-			        if(gridspace.isDoneTable(g) == Tribool.FALSE && moteur.didTheEnemyTakeIt(g, o))
+			        if(gridspace.isDoneTable(g) == Tribool.FALSE && gridspace.didTheEnemyTakeIt(g, o))
 			        	gridspace.setDoneTable(g, Tribool.MAYBE);
 
 			}
