@@ -6,7 +6,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import container.ServiceNames;
 import debug.Fenetre;
 import pathfinding.VitesseCourbure;
 import pathfinding.astarCourbe.arcs.ArcCourbeCubique;
@@ -37,10 +36,10 @@ public class JUnit_Pathfinding extends JUnit_Test {
 	@Before
     public void setUp() throws Exception {
         super.setUp();
-        pathfinding = (DStarLite) container.getService(ServiceNames.D_STAR_LITE);
-        gridspace = (GridSpace) container.getService(ServiceNames.GRID_SPACE);
-		clotho = (ClothoidesComputer) container.getService(ServiceNames.CLOTHOIDES_COMPUTER);
-		robot = (RobotReal) container.getService(ServiceNames.ROBOT_REAL);
+        pathfinding = container.getService(DStarLite.class);
+        gridspace = container.getService(GridSpace.class);
+		clotho = container.getService(ClothoidesComputer.class);
+		robot = container.getService(RobotReal.class);
 	}
 
 	@Test

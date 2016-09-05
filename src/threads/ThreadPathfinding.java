@@ -1,6 +1,5 @@
 package threads;
 
-import container.Service;
 import pathfinding.astarCourbe.AStarCourbe;
 import utils.Config;
 import utils.Log;
@@ -11,7 +10,7 @@ import utils.Log;
  *
  */
 
-public class ThreadPathfinding extends Thread implements Service
+public class ThreadPathfinding extends ThreadService
 {
 	protected Log log;
 	private AStarCourbe pathfinding;

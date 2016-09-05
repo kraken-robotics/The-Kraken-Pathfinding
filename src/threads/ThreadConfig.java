@@ -1,7 +1,6 @@
 package threads;
 
 import container.Container;
-import container.Service;
 import utils.Config;
 import utils.Log;
 
@@ -11,7 +10,8 @@ import utils.Log;
  *
  */
 
-public class ThreadConfig extends Thread implements Service {
+public class ThreadConfig extends ThreadService
+{
 
 	protected Log log;
 	protected Config config;

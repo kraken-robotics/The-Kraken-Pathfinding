@@ -6,7 +6,6 @@ import org.junit.Test;
 import serie.BufferOutgoingOrder;
 import serie.Ticket;
 import tests.JUnit_Test;
-import container.ServiceNames;
 
 /**
  * Tests unitaires de la série.
@@ -21,7 +20,7 @@ public class JUnit_Serie extends JUnit_Test {
 	@Before
     public void setUp() throws Exception {
         super.setUp();
-        data = (BufferOutgoingOrder) container.getService(ServiceNames.OUTGOING_ORDER_BUFFER);
+        data = container.getService(BufferOutgoingOrder.class);
 	}
 	
 	/**

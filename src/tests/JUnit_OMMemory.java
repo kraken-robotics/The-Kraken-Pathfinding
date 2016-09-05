@@ -11,7 +11,6 @@ import org.junit.Test;
 import utils.ConfigInfo;
 import utils.Vec2;
 import utils.permissions.ReadOnly;
-import container.ServiceNames;
 
 /**
  * Tests unitaires de l'obstacle memory manager
@@ -28,7 +27,7 @@ public class JUnit_OMMemory extends JUnit_Test {
 	@Before
     public void setUp() throws Exception {
         super.setUp();
-        memory = (ObstaclesMemory) container.getService(ServiceNames.OBSTACLES_MEMORY);
+        memory = container.getService(ObstaclesMemory.class);
         iterator = new ObstaclesIteratorPresent(log, memory);
     }
 

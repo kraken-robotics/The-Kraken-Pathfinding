@@ -10,7 +10,6 @@ import org.junit.Test;
 
 import pathfinding.dstarlite.Direction;
 import pathfinding.dstarlite.GridSpace;
-import container.ServiceNames;
 import utils.ConfigInfo;
 import utils.Vec2;
 import utils.permissions.ReadOnly;
@@ -29,7 +28,7 @@ public class JUnit_GridSpace extends JUnit_Test {
 	@Before
     public void setUp() throws Exception {
         super.setUp();
-        gridspace = (GridSpace) container.getService(ServiceNames.GRID_SPACE);
+        gridspace = container.getService(GridSpace.class);
     }
 	
 	@Test

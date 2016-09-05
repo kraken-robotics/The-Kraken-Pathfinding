@@ -4,7 +4,6 @@ import pathfinding.dstarlite.GridSpace;
 import utils.Config;
 import utils.ConfigInfo;
 import utils.Log;
-import container.Service;
 
 /**
  * Thread qui gère la péremption des obstacles en dormant
@@ -13,7 +12,7 @@ import container.Service;
  *
  */
 
-public class ThreadPeremption extends Thread implements Service
+public class ThreadPeremption extends ThreadService
 {
 	private GridSpace gridspace;
 	protected Log log;

@@ -9,7 +9,6 @@ import utils.ConfigInfo;
 import utils.Log;
 import utils.Config;
 import container.Container;
-import container.ServiceNames;
 import debug.Fenetre;
 import threads.ThreadExit;
 
@@ -35,8 +34,8 @@ public abstract class JUnit_Test
 		System.err.println("----- DÉBUT DU TEST "+testName.getMethodName()+" -----\n\n");
 
 		container = new Container();
-		config = (Config) container.getService(ServiceNames.CONFIG);
-		log = (Log) container.getService(ServiceNames.LOG);
+		config = container.getService(Config.class);
+		log = container.getService(Log.class);
 		synchronized(config)
 		{
 			config.set(ConfigInfo.MATCH_DEMARRE, true);

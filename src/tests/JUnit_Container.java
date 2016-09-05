@@ -3,7 +3,9 @@ package tests;
 import org.junit.Assert;
 import org.junit.Test;
 
-import container.ServiceNames;
+import pathfinding.astarCourbe.AStarCourbe;
+import table.Table;
+import utils.Config;
 
 /**
  * Tests unitaires pour le container
@@ -16,24 +18,19 @@ public class JUnit_Container extends JUnit_Test {
 	@Test
 	public void test_instanciation() throws Exception
 	{
-		for(ServiceNames s : ServiceNames.values())
-		{
-			log.debug("JUnit_ContainerTest: "+s.toString());
-			Assert.assertTrue(container.getService(s) != null);
-		}
-		Assert.assertTrue(container.afficheNonInstancies());
+		container.getService(Table.class);
+		container.getService(AStarCourbe.class);
 	}
-
+	
 	/**
-	 * Test vérifiant que le système de containers se comporte bien si on appelle deux fois  le meme service 
+	 * Test vérifiant que le système de containers se comporte bien si on appelle deux fois le meme service 
 	 * @throws Exception
 	 */
 	@Test
 	public void test_doublon() throws Exception
 	{
-		for(ServiceNames s : ServiceNames.values())
-			Assert.assertTrue(container.getService(s)
-					== container.getService(s));
+		Assert.assertTrue(container.getService(Config.class)
+				== container.getService(Config.class));
 		// comparaison physique entre les deux objets
 	}
 

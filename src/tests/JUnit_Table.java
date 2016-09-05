@@ -4,7 +4,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import container.ServiceNames;
 import table.GameElementNames;
 import table.Table;
 import enums.Tribool;
@@ -23,7 +22,7 @@ public class JUnit_Table extends JUnit_Test {
 	@Before
     public void setUp() throws Exception {
         super.setUp();
-        table = (Table) container.getService(ServiceNames.TABLE);
+        table = container.getService(Table.class);
     }
 
     @Test
