@@ -12,7 +12,10 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Set;
 
 import pathfinding.CheminPathfinding;
@@ -57,7 +60,7 @@ public class Container
 {
 
 	// liste des services déjà instanciés. Contient au moins Config et Log. Les autres services appelables seront présents quand ils auront été appelés
-	private Service[] instanciedServices = new Service[ServiceNames.values().length];
+	private HashMap<String, Service> instanciedServices = new HashMap<String, Service>();
 	
 	//gestion des log
 	private Log log;
@@ -249,6 +252,54 @@ public class Container
 		return getServiceRecursif(serviceTo);
 	}
 
+	
+	/**
+	 * Créé un object de la classe demandée, ou le récupère s'il a déjà été créé
+	 * S'occupe automatiquement des dépendances
+	 * Toutes les classes demandées doivent implémenter Service ; c'est juste une sécurité.
+	 * @param classe
+	 * @return un objet de cette classe
+	 * @throws ContainerException
+	 */
+	@SuppressWarnings("unchecked")
+	public <S extends Service> S getServiceTest(Class<S> classe) throws ContainerException
+	{
+		try {
+			if(instanciedServices.containsKey(classe.getSimpleName()))
+			{
+				System.out.println(classe.getSimpleName()+" déjà instanciée");
+				return (S) instanciedServices.get(classe.getSimpleName());
+			}
+			else
+				System.out.println(classe.getSimpleName()+" créé !");
+							
+			// On suppose qu'il n'y a chaque fois qu'un seul constructeur pour cette classe
+			Constructor<S> constructeur = (Constructor<S>) classe.getDeclaredConstructors()[0];
+			Class<Service>[] param = (Class<Service>[]) constructeur.getParameterTypes();
+			Object[] paramObject = new Object[param.length];
+			for(int i = 0; i < param.length; i++)
+				paramObject[i] = getServiceTest(param[i]);
+			S s = constructeur.newInstance(paramObject);
+			instanciedServices.put(classe.getSimpleName(), (Service) s);
+			
+			/**
+			 * Mise à jour de la config
+			 */
+			if(instanciedServices.containsKey("Config"))
+			{
+				Config config = (Config) instanciedServices.get("Config");
+				classe.getDeclaredMethod("useConfig", Config.class).invoke(s, config);
+				classe.getDeclaredMethod("updateConfig", Config.class).invoke(s, config);
+			}
+
+			return s;
+		} catch (IllegalAccessException | IllegalArgumentException
+				| InvocationTargetException | NoSuchMethodException
+				| SecurityException | InstantiationException e) {
+			e.printStackTrace();
+			throw new ContainerException(e.getMessage());
+		}
+	}
 	/**
 	 * Fournit un service. Deux possibilités: soit il n'est pas encore instancié et on l'instancie.
 	 * Soit il est déjà instancié et on le renvoie.
