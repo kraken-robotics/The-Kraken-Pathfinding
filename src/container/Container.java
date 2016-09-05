@@ -10,9 +10,11 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
+import java.util.Stack;
 
 import exceptions.ContainerException;
 import utils.*;
@@ -24,7 +26,7 @@ import threads.ThreadName;
  * 
  * Gestionnaire de la durée de vie des objets dans le code.
  * Permet à n'importe quelle classe implémentant l'interface "Service" d'appeller d'autres instances de services via son constructeur.
- * Une classe implémentant service n'est instanciée que par la classe "Container"
+ * Une classe implémentant Service n'est instanciée que par la classe "Container"
  * 
  * @author pf
  */
@@ -34,7 +36,7 @@ public class Container implements Service
 	private HashMap<String, Service> instanciedServices = new HashMap<String, Service>();
 	
 	// permet de détecter les dépendances circulaires
-	private ArrayList<String> stack = new ArrayList<String>();
+	private Stack<String> stack = new Stack<String>();
 	
 	private Log log;
 	private Config config;
@@ -56,7 +58,7 @@ public class Container implements Service
 		for(ThreadName n : ThreadName.values())
 		{
 			getService(n.c).interrupt();
-			getService(n.c).join();
+			getService(n.c).join(100); // on attend au plus 50ms que le thread s'arrête
 		}
 
 		/**
@@ -97,29 +99,27 @@ public class Container implements Service
 	}
 	
 	/**
-	 * instancie le gestionnaire de dépendances et quelques services critiques
-	 * Services instanciés:
-	 * 		Config
-	 * 		Log
+	 * Instancie le gestionnaire de dépendances et quelques services critiques (log et config qui sont interdépendants)
 	 * @throws ContainerException si un autre container est déjà instancié
 	 * @throws InterruptedException 
 	 */
 	public Container() throws ContainerException, InterruptedException
 	{
+		/**
+		 * On vérifie qu'il y ait un seul container à la fois
+		 */
 		if(nbInstances != 0)
 			throw new ContainerException("Un autre container existe déjà! Annulation du constructeur.");
 
 		nbInstances++;
 		
 		/**
-		 * Open and read a file, and return the lines in the file as a list
-		 * of Strings.
-		 * (Demonstrates Java FileReader, BufferedReader, and Java5.)
+		 * Affichage d'un petit message de bienvenue
 		 */
 		printMessage("intro.txt");
 		
 		/**
-		 * Affiche la version du programme
+		 * Affiche la version du programme (dernier commit et sa branche)
 		 */
 		try {
 			Process p = Runtime.getRuntime().exec("git log -1 --oneline");
@@ -151,13 +151,16 @@ public class Container implements Service
 		System.out.println("    Remember, with great power comes great current squared times resistance !");
 		System.out.println();
 		
-		// affiche la configuration avant toute autre chose
 		log = getServiceRecursif(Log.class);
 		config = getServiceRecursif(Config.class);
 		log.updateConfig(config);
 		log.useConfig(config);
+		// Interdépendance entre log et config…
 		config.init(log);
+
+		// Le container est aussi un service
 		instanciedServices.put(getClass().getSimpleName(), this);
+
 		Obstacle.setLog(log);
 		Obstacle.useConfig(config);
 				
@@ -174,9 +177,18 @@ public class Container implements Service
 		startAllThreads();
 	}
 	
+	/**
+	 * Créé un object de la classe demandée, ou le récupère s'il a déjà été créé
+	 * S'occupe automatiquement des dépendances
+	 * Toutes les classes demandées doivent implémenter Service ; c'est juste une sécurité.
+	 * @param classe
+	 * @return un objet de cette classe
+	 * @throws ContainerException
+	 * @throws InterruptedException 
+	 */
 	public <S extends Service> S getService(Class<S> serviceTo) throws ContainerException, InterruptedException
 	{
-		stack.clear();
+		stack.clear(); // pile d'appel vidée
 		return getServiceDisplay(null, serviceTo);
 	}
 	
@@ -184,11 +196,10 @@ public class Container implements Service
 	private <S extends Service> S getServiceDisplay(Class<? extends Service> serviceFrom, Class<S> serviceTo) throws ContainerException, InterruptedException
 	{
 		/**
-		 * On affiche pas le log sur le graphe de dépendances pour éviter une loudeur inutile
+		 * On ne crée pas forcément le graphe de dépendances pour éviter une lourdeur inutile
 		 */
 		if(showGraph && !serviceTo.equals(Log.class))
 		{
-			// TODO
 			ArrayList<String> ok = new ArrayList<String>();
 
 			try {
@@ -206,20 +217,23 @@ public class Container implements Service
 		return getServiceRecursif(serviceTo);
 	}
 
-	
 	/**
-	 * Créé un object de la classe demandée, ou le récupère s'il a déjà été créé
-	 * S'occupe automatiquement des dépendances
-	 * Toutes les classes demandées doivent implémenter Service ; c'est juste une sécurité.
+	 * Méthode récursive qui fait tout le boulot
 	 * @param classe
-	 * @return un objet de cette classe
+	 * @return
 	 * @throws ContainerException
-	 * @throws InterruptedException 
+	 * @throws InterruptedException
 	 */
 	@SuppressWarnings("unchecked")
 	public <S extends Service> S getServiceRecursif(Class<S> classe) throws ContainerException, InterruptedException
 	{
 		try {
+			/**
+			 * Si l'objet existe déjà, on le renvoie
+			 */			
+			if(instanciedServices.containsKey(classe.getSimpleName()))
+				return (S) instanciedServices.get(classe.getSimpleName());
+			
 			/**
 			 * Détection de dépendances circulaires
 			 */
@@ -235,20 +249,17 @@ public class Container implements Service
 			
 			// Pas de dépendance circulaire
 			
-			/**
-			 * Si l'objet existe déjà, on le renvoie
-			 */
-			
-			if(instanciedServices.containsKey(classe.getSimpleName()))
-				return (S) instanciedServices.get(classe.getSimpleName());
-
-			stack.add(classe.getSimpleName());
+			// On met à jour la pile
+			stack.push(classe.getSimpleName());
 
 			/**
 			 * Récupération du constructeur et de ses paramètres
 			 * On suppose qu'il n'y a chaque fois qu'un seul constructeur pour cette classe
 			 */
-			Constructor<S> constructeur = (Constructor<S>) classe.getDeclaredConstructors()[0];
+			if(classe.getConstructors().length > 1)
+				throw new ContainerException(classe.getSimpleName()+" a plusieurs constructeurs !");
+
+			Constructor<S> constructeur = (Constructor<S>) classe.getConstructors()[0];
 			Class<Service>[] param = (Class<Service>[]) constructeur.getParameterTypes();
 			
 			/**
@@ -267,14 +278,13 @@ public class Container implements Service
 			/**
 			 * Mise à jour de la config
 			 */
-			if(instanciedServices.containsKey(Config.class.getSimpleName()))
-			{
-				classe.getMethod("useConfig", Config.class).invoke(s, config);
-				classe.getMethod("updateConfig", Config.class).invoke(s, config);
-			}
+			if(config != null)
+				for(Method m : Service.class.getMethods())
+					classe.getMethod(m.getName(), Config.class).invoke(s, config);
 			
 			// Mise à jour de la pile
-			stack.remove(classe.getSimpleName());
+			stack.pop();
+			
 			return s;
 		} catch (IllegalAccessException | IllegalArgumentException
 				| InvocationTargetException | NoSuchMethodException
@@ -298,6 +308,9 @@ public class Container implements Service
 			}
 		}
 		
+		/**
+		 * Planification du hook de fermeture
+		 */
 		ThreadExit.makeInstance(this);
 		Runtime.getRuntime().addShutdownHook(ThreadExit.getInstance());
 		
@@ -341,7 +354,7 @@ public class Container implements Service
 	{}
 
 	@Override
-	public void useConfig(Config config) throws InterruptedException
+	public void useConfig(Config config)
 	{}
 	
 }

@@ -1,4 +1,4 @@
-package tests.circular;
+package tests.container;
 
 import utils.Config;
 import container.Service;
@@ -8,14 +8,14 @@ import container.Service;
  * @author pf
  *
  */
-public class A implements Service
+public class B implements Service
 {
-	public A(B b)
+	public B(A a)
 	{}
 	
 	@Override
 	public void updateConfig(Config config) {}
 
 	@Override
-	public void useConfig(Config config) throws InterruptedException {}
+	public void useConfig(Config config) {}
 }

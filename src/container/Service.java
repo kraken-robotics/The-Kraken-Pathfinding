@@ -20,6 +20,6 @@ public interface Service {
 	 * @param config
 	 * @throws InterruptedException 
 	 */
-	public void useConfig(Config config) throws InterruptedException;
+	public void useConfig(Config config);
 	
 }
