@@ -3,8 +3,10 @@ package tests;
 import org.junit.Assert;
 import org.junit.Test;
 
+import exceptions.ContainerException;
 import pathfinding.astarCourbe.AStarCourbe;
 import table.Table;
+import tests.circular.A;
 import utils.Config;
 
 /**
@@ -21,7 +23,13 @@ public class JUnit_Container extends JUnit_Test {
 		container.getService(Table.class);
 		container.getService(AStarCourbe.class);
 	}
-	
+
+	@Test(expected = ContainerException.class)
+	public void test_dependance_circulaire() throws Exception
+	{
+		container.getService(A.class);
+	}
+
 	/**
 	 * Test vérifiant que le système de containers se comporte bien si on appelle deux fois le meme service 
 	 * @throws Exception
