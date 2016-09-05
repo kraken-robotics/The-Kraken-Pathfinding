@@ -40,49 +40,11 @@ public class GridSpace implements Service
 	private int distanceApproximation;
 	private int distanceMinimaleEntreProximite;
 	private int rayonRobot;
-
-	public class PointDirige
-	{
-		public int point;
-		public Direction dir;
-
-		public PointDirige(int point, Direction dir) {
-			this.point = point;
-			this.dir = dir;
-		}
-		
-		@Override
-		public int hashCode()
-		{
-			return (point << 3) + dir.ordinal();
-		}
-		
-		@Override
-		public boolean equals(Object d)
-		{
-			return d instanceof PointDirige && hashCode() == ((PointDirige)d).hashCode();
-		}
-	}
-	
-	public enum Direction
-	{
-		NO,SE,NE,SO,
-		N,S,O,E;
-	}
 	
 	/**
 	 * Comme on veut que le DStarLite recherche plus de noeuds qu'il n'y en aurait besoin, ce coeff ne vaut pas 1
 	 */
 //	private static final int COEFF_HEURISTIQUE = 2;
-
-	public static final int PRECISION = 6;
-	public static final int NB_POINTS_POUR_TROIS_METRES = (1 << PRECISION);
-	public static final int NB_POINTS_POUR_DEUX_METRES = (int) ((1 << PRECISION)*2./3.)+1;
-	public static final double DISTANCE_ENTRE_DEUX_POINTS = 3000./(NB_POINTS_POUR_TROIS_METRES-1);
-	public static final int DISTANCE_ENTRE_DEUX_POINTS_1024 = (int)(1024*3000./(NB_POINTS_POUR_TROIS_METRES-1));
-	public static final int NB_POINTS = NB_POINTS_POUR_DEUX_METRES * NB_POINTS_POUR_TROIS_METRES;
-	private static final int X_MAX = NB_POINTS_POUR_TROIS_METRES - 1;
-	private static final int Y_MAX = NB_POINTS_POUR_DEUX_METRES - 1;
 	
 	// cette grille est constante, c'est-à-dire qu'elle ne contient que les obstacles fixes
 	private static BitSet grilleStatique = null;
@@ -102,11 +64,11 @@ public class GridSpace implements Service
 		if(grilleStatique == null)
 		{
 			// Initialisation, une fois pour toutes, de la grille statique
-			grilleStatique = new BitSet(NB_POINTS);
-			for(int i = 0; i < NB_POINTS; i++)
+			grilleStatique = new BitSet(PointGridSpace.NB_POINTS);
+			for(int i = 0; i < PointGridSpace.NB_POINTS; i++)
 				for(ObstaclesFixes o : ObstaclesFixes.values)
 				{
-					if(o.getObstacle().squaredDistance(computeVec2(i)) < (int)(DISTANCE_ENTRE_DEUX_POINTS/2 * DISTANCE_ENTRE_DEUX_POINTS/2))
+					if(o.getObstacle().squaredDistance(computeVec2(i)) < (int)(PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS/2 * PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS/2))
 					{
 //						log.debug(i+" : obstacle");
 						grilleStatique.set(i);
@@ -118,111 +80,6 @@ public class GridSpace implements Service
 		}
 	}
 	
-	/**
-	 * On utilise la distance octile pour l'heuristique (surtout parce que c'est rapide)
-	 * @param pointA
-	 * @param pointB
-	 * @return
-	 */
-	public static final int distanceHeuristiqueDStarLite(int pointA, int pointB)
-	{
-		int dx = Math.abs((pointA & (NB_POINTS_POUR_TROIS_METRES - 1)) - (pointB & (NB_POINTS_POUR_TROIS_METRES - 1))); // ceci est un modulo
-		int dy = Math.abs((pointA >> PRECISION) - (pointB >> PRECISION)); // ceci est une division
-		return 1000 * Math.max(dx, dy) + 414 * Math.min(dx, dy);
-//		return (int) Math.round(COEFF_HEURISTIQUE * 1000 * Math.hypot(dx, dy));
-	}
-
-	private Direction convertToDirection(int deltaX, int deltaY)
-	{
-		if(deltaY == 1)
-		{
-			if(deltaX == -1)
-				return Direction.NO; // NO
-			else if(deltaX == 0)
-				return Direction.N; // N
-			else
-				return Direction.NE; // NE
-		}
-		else if(deltaY == 0)
-		{
-			if(deltaX == -1)
-				return Direction.O; // O
-			else if(deltaX == 0)
-			{
-				log.critical("Erreur : direction nulle");
-				return null;
-			}
-			else
-				return Direction.E; // E
-		}
-		else
-		{
-			if(deltaX == -1)
-				return Direction.SO; // SO
-			else if(deltaX == 0)
-				return Direction.S; // S
-			else
-				return Direction.SE; // SE
-		}
-	}
-	
-	/**
-	 * Récupère le voisin de "point" dans la direction indiquée.
-	 * Renvoie -1 si un tel voisin est hors table
-	 * @param point
-	 * @param direction
-	 * @return
-	 */
-	public static int getGridPointVoisin(int point, Direction direction)
-	{
-		int x = point & (NB_POINTS_POUR_TROIS_METRES - 1);
-		int y = point >> PRECISION;
-
-		switch(direction)
-		{
-			case NO:
-				if(x > 0 && y < Y_MAX)
-					return point + NB_POINTS_POUR_TROIS_METRES - 1;
-				return -1; // hors table
-	
-			case SE:
-				if(x < X_MAX && y > 0)
-					return point - NB_POINTS_POUR_TROIS_METRES + 1;
-				return -1; // hors table
-	
-			case NE:
-				if(x < X_MAX && y < Y_MAX)
-					return point + NB_POINTS_POUR_TROIS_METRES + 1;
-				return -1; // hors table
-	
-			case SO:
-				if(x > 0 && y > 0)
-					return point - NB_POINTS_POUR_TROIS_METRES - 1;
-				return -1; // hors table
-	
-			case N:
-				if(y < Y_MAX)
-					return point + NB_POINTS_POUR_TROIS_METRES;
-				return -1; // hors table
-	
-			case S:
-				if(y > 0)
-					return point - NB_POINTS_POUR_TROIS_METRES;
-				return -1; // hors table
-	
-			case O:
-				if(x > 0) // en fait, on pourrait directement renvoyer point - 1 dans tous les cas…
-					return point - 1;
-				return -1; // hors table
-	
-			case E:
-			default:
-				if(x < X_MAX)
-					return point + 1;
-				return -1; // hors table
-		}
-		
-	}
 
 	@Override
 	public void useConfig(Config config)
@@ -231,7 +88,7 @@ public class GridSpace implements Service
 		distanceMinimaleEntreProximite = config.getInt(ConfigInfo.DISTANCE_BETWEEN_PROXIMITY_OBSTACLES);
 		rayonRobot = config.getInt(ConfigInfo.RAYON_ROBOT);
 		int rayonEnnemi = config.getInt(ConfigInfo.RAYON_ROBOT_ADVERSE);
-		int rayonPoint = (int) Math.round((rayonEnnemi + rayonRobot) / DISTANCE_ENTRE_DEUX_POINTS);
+		int rayonPoint = (int) Math.round((rayonEnnemi + rayonRobot) / PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS);
 		int tailleMasque = 2*(rayonPoint+1)+1;
 		centreMasque = tailleMasque / 2;
 		for(int i = 0; i < tailleMasque; i++)
@@ -242,32 +99,11 @@ public class GridSpace implements Service
 						{
 							if(a == 0 && b == 0)
 								continue;
-							Direction dir = convertToDirection(a, b);
+							Direction dir = Direction.convertToDirection(a, b);
 							int i2 = i + a, j2 = j + b;
 							if((i2-centreMasque) * (i2-centreMasque) + (j2-centreMasque) * (j2-centreMasque) <= rayonPoint*rayonPoint)
-								masque.add(new PointDirige(((j << PRECISION) +i), dir));
+								masque.add(new PointDirige(new PointGridSpace(j,i), dir));
 						}
-/*		log.debug("Taille du masque : "+masque.size());
-		System.out.println("Masque : ");
-		for(int i = 0; i < tailleMasque; i++)
-		{
-			for(int j = 0; j < tailleMasque; j++)
-			{
-				boolean aff = false;
-				for(Integer c : masque)
-				{
-					if((i << PRECISION) + j == (c & ((1 << DEUXIEME_POINT_COUPLE) - 1)))
-					{
-						aff = true;
-						System.out.print("X");
-						break;
-					}
-				}
-				if(!aff)
-					System.out.print(".");
-			}
-			System.out.println();
-		}*/
 	}
 
 	@Override
@@ -281,25 +117,10 @@ public class GridSpace implements Service
 	 * @param direction
 	 * @return
 	 */
-	private boolean isTraversableStatique(int gridpoint, Direction direction)
+	private boolean isTraversableStatique(PointGridSpace gridpoint, Direction direction)
 	{
-		int voisin = getGridPointVoisin(gridpoint, direction);
-		return voisin != -1 && !grilleStatique.get(voisin);
-	}
-
-	public static final int getGridPointX(Vec2<ReadOnly> p)
-	{
-		return (int) Math.round((p.x+1500) / GridSpace.DISTANCE_ENTRE_DEUX_POINTS);
-	}
-
-	public static final int getGridPointY(Vec2<ReadOnly> p)
-	{
-		return (int) Math.round(p.y / GridSpace.DISTANCE_ENTRE_DEUX_POINTS);
-	}
-
-	public static final int getGridPoint(int x, int y)
-	{
-		return (y << PRECISION) + x;
+		PointGridSpace voisin = gridpoint.getGridPointVoisin(direction);
+		return voisin != null && !grilleStatique.get(voisin.hashCode());
 	}
 
 	/**
@@ -307,9 +128,8 @@ public class GridSpace implements Service
 	 * @param p
 	 * @return
 	 */
-	public static final int computeGridPoint(Vec2<ReadOnly> p)
+	public static final PointGridSpace computeGridPoint(Vec2<ReadOnly> p)
 	{
-		return (int) (NB_POINTS_POUR_TROIS_METRES*(int) Math.round(p.y / GridSpace.DISTANCE_ENTRE_DEUX_POINTS) + Math.round((p.x+1500) / GridSpace.DISTANCE_ENTRE_DEUX_POINTS));
 	}
 
 	/**

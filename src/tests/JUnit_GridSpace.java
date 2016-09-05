@@ -8,8 +8,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import pathfinding.dstarlite.Direction;
 import pathfinding.dstarlite.GridSpace;
-import pathfinding.dstarlite.GridSpace.Direction;
 import container.ServiceNames;
 import utils.ConfigInfo;
 import utils.Vec2;
@@ -85,12 +85,6 @@ public class JUnit_GridSpace extends JUnit_Test {
 		for(int i = 0; i < GridSpace.NB_POINTS; i++)
 			Assert.assertTrue(GridSpace.computeGridPoint(GridSpace.computeVec2(i)) == i);
 	}
-	
-	@Test
-	public void test_suppression_obstacles_proches() throws Exception
-	{
-		
-	}	
 	
 	@Test
 	public void test_ajout_obstacle() throws Exception

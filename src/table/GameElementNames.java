@@ -19,12 +19,10 @@ public enum GameElementNames {
 	private ObstacleCircular obstacle;
 
 	public static final GameElementNames[] values;
-	public static final int valuesLength;
 	
 	static
 	{
 		values = values();
-		valuesLength = values.length;
 	}
 	
 	public ObstacleCircular getObstacle()

@@ -5,8 +5,6 @@ import java.util.Comparator;
 import java.util.PriorityQueue;
 
 import obstacles.types.ObstacleProximity;
-import pathfinding.dstarlite.GridSpace.Direction;
-import pathfinding.dstarlite.GridSpace.PointDirige;
 import robot.Cinematique;
 import utils.Config;
 import utils.Log;
@@ -469,7 +467,7 @@ public class DStarLite implements Service
 	 */
 	private int distanceDynamiqueSucc(int point, Direction dir)
 	{
-		if(obstaclesConnus.contains(gridspace.new PointDirige(point, dir)))
+		if(obstaclesConnus.contains(new PointDirige(point, dir)))
 			return Integer.MAX_VALUE;
 		return gridspace.distanceStatique(point, dir);
 	}
