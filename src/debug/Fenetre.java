@@ -4,7 +4,6 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 
 import container.Container;
-import container.ServiceNames;
 import exceptions.ContainerException;
 import obstacles.ObstaclesFixes;
 import obstacles.Capteurs;
@@ -14,6 +13,7 @@ import obstacles.types.Obstacle;
 import obstacles.types.ObstacleCircular;
 import obstacles.types.ObstacleRectangular;
 import pathfinding.dstarlite.GridSpace;
+import pathfinding.dstarlite.PointGridSpace;
 import utils.Config;
 import utils.Vec2;
 import utils.permissions.ReadOnly;
@@ -58,9 +58,9 @@ public class Fenetre extends JPanel {
 	private Fenetre(Container container) throws InterruptedException
 	{
 		try {
-			iterator = new ObstaclesIteratorPresent((Log)container.getService(ServiceNames.LOG),
-					(ObstaclesMemory)container.getService(ServiceNames.OBSTACLES_MEMORY));
-			gs = (GridSpace)container.getService(ServiceNames.GRID_SPACE);
+			iterator = new ObstaclesIteratorPresent(container.getService(Log.class),
+					container.getService(ObstaclesMemory.class));
+			gs = container.getService(GridSpace.class);
 		} catch (ContainerException e) {
 			e.printStackTrace();
 		}
@@ -76,8 +76,8 @@ public class Fenetre extends JPanel {
 		}
 		sizeX = image.getWidth(this);
 		sizeY = image.getHeight(this);
-		for(int i = 0; i < GridSpace.NB_POINTS; i++)
-			if(gs.isTraversableStatique(i))
+		for(int i = 0; i < PointGridSpace.NB_POINTS; i++)
+			if(gs.isTraversableStatique(new PointGridSpace(i)))
 				grid[i] = Couleur.BLANC;
 			else
 				grid[i] = Couleur.NOIR;
@@ -101,13 +101,13 @@ public class Fenetre extends JPanel {
 		}
 	}
 	
-	private Couleur[] grid = new Couleur[GridSpace.NB_POINTS];
+	private Couleur[] grid = new Couleur[PointGridSpace.NB_POINTS];
 	
-	public void setColor(int gridpoint, Couleur couleur)
+	public void setColor(PointGridSpace gridpoint, Couleur couleur)
 	{
-		if(grid[gridpoint] != couleur)
+		if(grid[gridpoint.hashCode()] != couleur)
 		{
-			grid[gridpoint] = couleur;
+			grid[gridpoint.hashCode()] = couleur;
 			if(needInit)
 				init();
 			repaint();
@@ -147,12 +147,12 @@ public class Fenetre extends JPanel {
 */
 	private int XGridPointtoWindow(int g)
 	{
-		return (g & (GridSpace.NB_POINTS_POUR_TROIS_METRES-1))*sizeX/(GridSpace.NB_POINTS_POUR_TROIS_METRES-1);
+		return (g & (PointGridSpace.NB_POINTS_POUR_TROIS_METRES-1))*sizeX/(PointGridSpace.NB_POINTS_POUR_TROIS_METRES-1);
 	}
 
 	private int YGridPointtoWindow(int g)
 	{
-		return sizeY-(g >> (GridSpace.PRECISION))*sizeY/(GridSpace.NB_POINTS_POUR_DEUX_METRES-1);
+		return sizeY-(g >> (PointGridSpace.PRECISION))*sizeY/(PointGridSpace.NB_POINTS_POUR_DEUX_METRES-1);
 	}
 
 	private int XtoWindow(double x)
@@ -177,13 +177,13 @@ public class Fenetre extends JPanel {
 		if(afficheFond)
 			g.drawImage(image, 0, 0, this);
 		if(Config.graphicDStarLite || Config.graphicThetaStar)
-			for(int i = 0; i < GridSpace.NB_POINTS; i++)
+			for(int i = 0; i < PointGridSpace.NB_POINTS; i++)
 			{
 				g.setColor(grid[i].couleur);
-				g.fillOval(XGridPointtoWindow(i)-distanceXtoWindow((int) GridSpace.DISTANCE_ENTRE_DEUX_POINTS)/2,
-						YGridPointtoWindow(i)-distanceYtoWindow((int) GridSpace.DISTANCE_ENTRE_DEUX_POINTS)/2,
-						distanceXtoWindow((int) GridSpace.DISTANCE_ENTRE_DEUX_POINTS),
-						distanceYtoWindow((int) GridSpace.DISTANCE_ENTRE_DEUX_POINTS));
+				g.fillOval(XGridPointtoWindow(i)-distanceXtoWindow((int) PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS)/2,
+						YGridPointtoWindow(i)-distanceYtoWindow((int) PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS)/2,
+						distanceXtoWindow((int) PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS),
+						distanceYtoWindow((int) PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS));
 			}
 		if(Config.graphicObstacles)
 		{

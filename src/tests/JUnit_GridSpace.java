@@ -10,6 +10,8 @@ import org.junit.Test;
 
 import pathfinding.dstarlite.Direction;
 import pathfinding.dstarlite.GridSpace;
+import pathfinding.dstarlite.PointDirige;
+import pathfinding.dstarlite.PointGridSpace;
 import utils.ConfigInfo;
 import utils.Vec2;
 import utils.permissions.ReadOnly;
@@ -34,32 +36,32 @@ public class JUnit_GridSpace extends JUnit_Test {
 	@Test
 	public void test_computeVec2() throws Exception
 	{
-		log.debug(GridSpace.computeVec2(0));
-		log.debug(GridSpace.computeVec2(64));
-		log.debug(GridSpace.computeVec2(63));
-		Assert.assertTrue(GridSpace.computeVec2(0).equals(new Vec2<ReadOnly>(-1500, 0)));
-		Assert.assertTrue(GridSpace.computeVec2(0).equals(new Vec2<ReadOnly>(-1500, 0)));
+		log.debug(PointGridSpace.computeVec2(new PointGridSpace(0)));
+		log.debug(PointGridSpace.computeVec2(new PointGridSpace(64)));
+		log.debug(PointGridSpace.computeVec2(new PointGridSpace(63)));
+		Assert.assertTrue(PointGridSpace.computeVec2(new PointGridSpace(0)).equals(new Vec2<ReadOnly>(-1500, 0)));
+		Assert.assertTrue(PointGridSpace.computeVec2(new PointGridSpace(0)).equals(new Vec2<ReadOnly>(-1500, 0)));
 	}
 
 	@Test
 	public void test_distance() throws Exception
 	{
-		Assert.assertTrue(gridspace.distanceStatique(523, Direction.NE) == 1414);
-		Assert.assertTrue(gridspace.distanceStatique(523, Direction.N) == 1000);
-		Assert.assertTrue(gridspace.distanceStatique(1, Direction.E) == Integer.MAX_VALUE);
+		Assert.assertTrue(gridspace.distanceStatique(new PointDirige(new PointGridSpace(523), Direction.NE)) == 1414);
+		Assert.assertTrue(gridspace.distanceStatique(new PointDirige(new PointGridSpace(523), Direction.N)) == 1000);
+		Assert.assertTrue(gridspace.distanceStatique(new PointDirige(new PointGridSpace(1), Direction.E)) == Integer.MAX_VALUE);
 	}
 
 	@Test
 	public void test_distanceHeuristique() throws Exception
 	{
-		Assert.assertTrue(GridSpace.distanceHeuristiqueDStarLite(1, 2) == 1000);
-		Assert.assertTrue(GridSpace.distanceHeuristiqueDStarLite(1, 65) == 1000);
-		Assert.assertTrue(GridSpace.distanceHeuristiqueDStarLite(1, 64) == 1414);
-		Assert.assertTrue(GridSpace.distanceHeuristiqueDStarLite(64, 1) == 1414);
-		Assert.assertTrue(GridSpace.distanceHeuristiqueDStarLite(1, 1+2*64) == 2000);
-		Assert.assertTrue(GridSpace.distanceHeuristiqueDStarLite(1+2*64, 1) == 2000);
-		Assert.assertTrue(GridSpace.distanceHeuristiqueDStarLite(64, 63) == 63414);
-		Assert.assertTrue(GridSpace.distanceHeuristiqueDStarLite(63, 64) == 63414);
+		Assert.assertTrue(new PointGridSpace(1).distanceHeuristiqueDStarLite(new PointGridSpace(2)) == 1000);
+		Assert.assertTrue(new PointGridSpace(1).distanceHeuristiqueDStarLite(new PointGridSpace(65)) == 1000);
+		Assert.assertTrue(new PointGridSpace(1).distanceHeuristiqueDStarLite(new PointGridSpace(64)) == 1414);
+		Assert.assertTrue(new PointGridSpace(64).distanceHeuristiqueDStarLite(new PointGridSpace(1)) == 1414);
+		Assert.assertTrue(new PointGridSpace(1).distanceHeuristiqueDStarLite(new PointGridSpace(1+2*64)) == 2000);
+		Assert.assertTrue(new PointGridSpace(1+2*64).distanceHeuristiqueDStarLite(new PointGridSpace(1)) == 2000);
+		Assert.assertTrue(new PointGridSpace(64).distanceHeuristiqueDStarLite(new PointGridSpace(63)) == 63414);
+		Assert.assertTrue(new PointGridSpace(63).distanceHeuristiqueDStarLite(new PointGridSpace(64)) == 63414);
 	}
 	
 	@Test
@@ -68,21 +70,21 @@ public class JUnit_GridSpace extends JUnit_Test {
 		for(int i = 0; i < 8; i++)
 		{
 			log.debug(i);
-			Assert.assertEquals((i<4?1414:1000), GridSpace.distanceHeuristiqueDStarLite(GridSpace.getGridPointVoisin(150, Direction.values()[i]), 150));
+			Assert.assertEquals((i<4?1414:1000), new PointGridSpace(150).getGridPointVoisin(Direction.values()[i]).distanceHeuristiqueDStarLite(new PointGridSpace(150)));
 		}
 
-		Assert.assertEquals(-1, GridSpace.getGridPointVoisin(21, Direction.S));
-		Assert.assertEquals(-1, GridSpace.getGridPointVoisin(63, Direction.SE));
-		Assert.assertEquals(-1, GridSpace.getGridPointVoisin(127, Direction.E));
-		Assert.assertEquals(-1, GridSpace.getGridPointVoisin(128, Direction.O));
-		Assert.assertEquals(-1, GridSpace.getGridPointVoisin(21, Direction.SE));
+		Assert.assertEquals(null, new PointGridSpace(21).getGridPointVoisin(Direction.S));
+		Assert.assertEquals(null, new PointGridSpace(63).getGridPointVoisin(Direction.SE));
+		Assert.assertEquals(null, new PointGridSpace(127).getGridPointVoisin(Direction.E));
+		Assert.assertEquals(null, new PointGridSpace(128).getGridPointVoisin(Direction.O));
+		Assert.assertEquals(null, new PointGridSpace(21).getGridPointVoisin(Direction.SE));
 	}
 	
 	@Test
 	public void test_computeGridPoint() throws Exception
 	{
-		for(int i = 0; i < GridSpace.NB_POINTS; i++)
-			Assert.assertTrue(GridSpace.computeGridPoint(GridSpace.computeVec2(i)) == i);
+		for(int i = 0; i < PointGridSpace.NB_POINTS; i++)
+			Assert.assertTrue(new PointGridSpace(PointGridSpace.computeVec2(new PointGridSpace(i))).hashCode() == i);
 	}
 	
 	@Test

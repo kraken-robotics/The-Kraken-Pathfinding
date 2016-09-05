@@ -20,4 +20,9 @@ public enum Direction {
 				return d;
 		return null; // pas reconnu
 	}
+
+	public Direction getOppose()
+	{
+		return values()[ordinal() ^ 1]; // ouais ouais
+	}
 }

@@ -58,21 +58,21 @@ public class DStarLite implements Service
 		this.log = log;
 		this.gridspace = gridspace;
 		
-		for(int i = 0; i < GridSpace.NB_POINTS; i++)
-			memory[i] = new DStarLiteNode(i);
+		for(int i = 0; i < PointGridSpace.NB_POINTS; i++)
+			memory[i] = new DStarLiteNode(new PointGridSpace(i));
 
 		if(Config.graphicDStarLite)
 			fenetre = Fenetre.getInstance();
 	}
 	
-	private DStarLiteNode[] memory = new DStarLiteNode[GridSpace.NB_POINTS];
+	private DStarLiteNode[] memory = new DStarLiteNode[PointGridSpace.NB_POINTS];
 //	private BitSet contained = new BitSet(GridSpace.NB_POINTS);
 
-	private PriorityQueue<DStarLiteNode> openset = new PriorityQueue<DStarLiteNode>(GridSpace.NB_POINTS, new DStarLiteNodeComparator());
+	private PriorityQueue<DStarLiteNode> openset = new PriorityQueue<DStarLiteNode>(PointGridSpace.NB_POINTS, new DStarLiteNodeComparator());
 	private int km;
 	private DStarLiteNode arrivee;
 	private DStarLiteNode depart;
-	private int lastDepart;
+	private PointGridSpace lastDepart;
 	private long nbPF = 0;
 	private ArrayList<PointDirige> obstaclesConnus = new ArrayList<PointDirige>();
 	private Cle knew = new Cle();
@@ -85,14 +85,14 @@ public class DStarLite implements Service
 		return copy;
 	}
 
-	private boolean isThisNodeUptodate(int gridpoint)
+	private boolean isThisNodeUptodate(PointGridSpace gridpoint)
 	{
-		return memory[gridpoint].nbPF == nbPF;
+		return memory[gridpoint.hashCode()].nbPF == nbPF;
 	}
 
-	private DStarLiteNode getFromMemory(int gridpoint)
+	private DStarLiteNode getFromMemory(PointGridSpace gridpoint)
 	{
-		DStarLiteNode out = memory[gridpoint];
+		DStarLiteNode out = memory[gridpoint.hashCode()];
 		
 		/**
 		 * Si ce point n'a pas encore été utilisé pour ce pathfinding, on l'initialise
@@ -168,8 +168,8 @@ public class DStarLite implements Service
 					fenetre.setColor(u.gridpoint, Fenetre.Couleur.ROUGE);
 				for(Direction i : Direction.values())
 				{
-					int voisin = GridSpace.getGridPointVoisin(u.gridpoint, i);
-					if(voisin < 0)
+					PointGridSpace voisin = u.gridpoint.getGridPointVoisin(i);
+					if(voisin == null)
 						continue;
 					DStarLiteNode s = getFromMemory(voisin);
 					s.rhs = Math.min(s.rhs, add(distanceDynamiquePred(u.gridpoint, i), u.g));
@@ -183,8 +183,8 @@ public class DStarLite implements Service
 				u.g = Integer.MAX_VALUE;
 				for(Direction i : Direction.values())
 				{
-					int voisin = GridSpace.getGridPointVoisin(u.gridpoint, i);
-					if(voisin < 0)
+					PointGridSpace voisin = u.gridpoint.getGridPointVoisin(i);
+					if(voisin == null)
 						continue;
 					DStarLiteNode s = getFromMemory(voisin);
 //					if(s == null)
@@ -194,8 +194,8 @@ public class DStarLite implements Service
 						s.rhs = Integer.MAX_VALUE;
 						for(Direction j : Direction.values())
 						{
-							voisin = GridSpace.getGridPointVoisin(s.gridpoint, j);
-							if(voisin < 0)
+							voisin = s.gridpoint.getGridPointVoisin(j);
+							if(voisin == null)
 								continue;
 							DStarLiteNode s2 = getFromMemory(voisin);
 							s.rhs = Math.min(s.rhs, add(distanceDynamiquePred(s.gridpoint, j), s2.g));
@@ -209,8 +209,8 @@ public class DStarLite implements Service
 					u.rhs = Integer.MAX_VALUE;
 					for(Direction i : Direction.values())
 					{
-						int voisin = GridSpace.getGridPointVoisin(u.gridpoint, i);
-						if(voisin < 0)
+						PointGridSpace voisin = u.gridpoint.getGridPointVoisin(i);
+						if(voisin == null)
 							continue;
 						DStarLiteNode s = getFromMemory(voisin);
 						u.rhs = Math.min(u.rhs, add(distanceDynamiquePred(u.gridpoint, i), s.g));
@@ -233,7 +233,7 @@ public class DStarLite implements Service
 	 */
 	public void computeNewPath(Vec2<ReadOnly> depart, Vec2<ReadOnly> arrivee) throws PathfindingException
 	{
-		computeNewPath(GridSpace.computeGridPoint(depart), GridSpace.computeGridPoint(arrivee));
+		computeNewPath(new PointGridSpace(depart), new PointGridSpace(arrivee));
 	}
 	/**
 	 * Calcule un nouvel itinéraire.
@@ -241,7 +241,7 @@ public class DStarLite implements Service
 	 * @param depart (un gridpoint)
 	 * @throws PathfindingException 
 	 */
-	private void computeNewPath(int depart, int arrivee) throws PathfindingException
+	private void computeNewPath(PointGridSpace depart, PointGridSpace arrivee) throws PathfindingException
 	{
 //		log.debug("Calcul chemin D* Lite entre "+depart+" et "+gridspace.computeVec2(arrivee));
 		nbPF++;
@@ -267,13 +267,13 @@ public class DStarLite implements Service
 
 		if(Config.graphicDStarLite)
 			for(PointDirige i : obstaclesConnus)
-				fenetre.setColor(GridSpace.getGridPointVoisin(i.point, i.dir), Fenetre.Couleur.NOIR);
+				fenetre.setColor(i.point.getGridPointVoisin(i.dir), Fenetre.Couleur.NOIR);
 
 	}
 	
-	private final int distanceHeuristique(int gridpoint)
+	private final int distanceHeuristique(PointGridSpace gridpoint)
 	{
-		return GridSpace.distanceHeuristiqueDStarLite(depart.gridpoint, gridpoint);
+		return depart.gridpoint.distanceHeuristiqueDStarLite(gridpoint);
 	}
 
 	@Override
@@ -286,7 +286,7 @@ public class DStarLite implements Service
 	
 	private void updateGoal(Vec2<ReadOnly> positionRobot)
 	{
-		depart = getFromMemory(GridSpace.computeGridPoint(positionRobot));
+		depart = getFromMemory(new PointGridSpace(positionRobot));
 		km += distanceHeuristique(lastDepart);
 		lastDepart = depart.gridpoint;
 	}
@@ -309,11 +309,11 @@ public class DStarLite implements Service
 				if(!obstaclesConnus.contains(i))
 				{
 					// Retrait d'un obstacle. Le coût va donc diminuer.
-					int upoint = i.point;
+					PointGridSpace upoint = i.point;
 					DStarLiteNode u = getFromMemory(upoint);
 					Direction dir = i.dir;
-					DStarLiteNode v = getFromMemory(GridSpace.getGridPointVoisin(upoint, dir));
-					u.rhs = Math.min(u.rhs, add(v.g, gridspace.distanceStatique(upoint, dir)));
+					DStarLiteNode v = getFromMemory(upoint.getGridPointVoisin(dir));
+					u.rhs = Math.min(u.rhs, add(v.g, gridspace.distanceStatique(new PointDirige(upoint, dir))));
 					updateVertex(u);
 				}
 			}
@@ -327,17 +327,17 @@ public class DStarLite implements Service
 				{
 					obstaclesConnus.add(i);
 					// Ajout d'un obstacle
-					int upoint = i.point;
+					PointGridSpace upoint = i.point;
 					DStarLiteNode u = getFromMemory(upoint);
 					Direction dir = i.dir;
-					DStarLiteNode v = getFromMemory(GridSpace.getGridPointVoisin(upoint, dir));
+					DStarLiteNode v = getFromMemory(upoint.getGridPointVoisin(dir));
 
 					// l'ancienne distance est la distance statique car c'est un ajout d'obstacle
-					if(u.rhs == add(gridspace.distanceStatique(upoint, dir), v.g) && !u.equals(arrivee))
+					if(u.rhs == add(gridspace.distanceStatique(new PointDirige(upoint, dir)), v.g) && !u.equals(arrivee))
 					{
 						u.rhs = Integer.MAX_VALUE;
 						for(Direction voisin : Direction.values())
-							u.rhs = Math.min(u.rhs, add(distanceDynamiqueSucc(u.gridpoint, voisin), getFromMemory(GridSpace.getGridPointVoisin(u.gridpoint, i.dir)).g));
+							u.rhs = Math.min(u.rhs, add(distanceDynamiqueSucc(u.gridpoint, voisin), getFromMemory(u.gridpoint.getGridPointVoisin(i.dir)).g));
 					}
 					updateVertex(u);
 				}
@@ -348,7 +348,7 @@ public class DStarLite implements Service
 		}
 		if(Config.graphicDStarLite)
 			for(PointDirige i : obstaclesConnus)
-				fenetre.setColor(GridSpace.getGridPointVoisin(i.point, i.dir), Fenetre.Couleur.NOIR);
+				fenetre.setColor(i.point.getGridPointVoisin(i.dir), Fenetre.Couleur.NOIR);
 
 		computeShortestPath();
 	}
@@ -361,14 +361,14 @@ public class DStarLite implements Service
 	{
 		ArrayList<Vec2<ReadOnly>> trajet = new ArrayList<Vec2<ReadOnly>>();
 
-		log.debug("depart : "+GridSpace.computeVec2(depart.gridpoint));
+		log.debug("depart : "+PointGridSpace.computeVec2(depart.gridpoint));
 		DStarLiteNode node = depart;
 		DStarLiteNode min = null;
 		int coutMin;
 		
 		while(!node.equals(arrivee))
 		{
-			trajet.add(GridSpace.computeVec2(node.gridpoint));
+			trajet.add(PointGridSpace.computeVec2(node.gridpoint));
 
 			if(Config.graphicDStarLite)
 				fenetre.setColor(node.gridpoint, Fenetre.Couleur.VIOLET);
@@ -377,8 +377,8 @@ public class DStarLite implements Service
 			
 			for(Direction i : Direction.values())
 			{
-				int voisin = GridSpace.getGridPointVoisin(node.gridpoint, i);
-				if(voisin < 0)
+				PointGridSpace voisin = node.gridpoint.getGridPointVoisin(i);
+				if(voisin == null)
 					continue;
 				DStarLiteNode s = getFromMemory(voisin);
 				int coutTmp = add(distanceDynamiqueSucc(node.gridpoint, i), s.g);
@@ -390,7 +390,7 @@ public class DStarLite implements Service
 			}
 			node = min;
 		}
-		trajet.add(GridSpace.computeVec2(arrivee.gridpoint));
+		trajet.add(PointGridSpace.computeVec2(arrivee.gridpoint));
 		return trajet;
 		
 	}
@@ -402,7 +402,7 @@ public class DStarLite implements Service
 	 */
 	public double heuristicCostCourbe(Cinematique c)
 	{
-		int gridpoint = GridSpace.computeGridPoint(c.getPosition());
+		PointGridSpace gridpoint = new PointGridSpace(c.getPosition());
 		
 		// Si ce n'est pas à jour, on recalcule
 		if(isThisNodeUptodate(gridpoint))
@@ -452,11 +452,10 @@ public class DStarLite implements Service
 	 * @param dir
 	 * @return
 	 */
-	private int distanceDynamiquePred(int point, Direction dir)
+	private int distanceDynamiquePred(PointGridSpace point, Direction dir)
 	{
-		int voisin = GridSpace.getGridPointVoisin(point, dir);
-		int dirOpposee = dir.ordinal() ^ 1; // ouais ouais
-		return distanceDynamiqueSucc(voisin, Direction.values()[dirOpposee]);
+		PointGridSpace voisin = point.getGridPointVoisin(dir);
+		return distanceDynamiqueSucc(voisin, dir.getOppose());
 	}
 
 	/**
@@ -465,11 +464,11 @@ public class DStarLite implements Service
 	 * @param dir
 	 * @return
 	 */
-	private int distanceDynamiqueSucc(int point, Direction dir)
+	private int distanceDynamiqueSucc(PointGridSpace point, Direction dir)
 	{
 		if(obstaclesConnus.contains(new PointDirige(point, dir)))
 			return Integer.MAX_VALUE;
-		return gridspace.distanceStatique(point, dir);
+		return gridspace.distanceStatique(new PointDirige(point, dir));
 	}
 	
 }

@@ -1,5 +1,6 @@
 package robot;
 
+import pathfinding.dstarlite.PointGridSpace;
 import container.Service;
 import utils.ConfigInfo;
 import utils.Log;
@@ -17,7 +18,7 @@ public abstract class Robot implements Service
 	 * DÉPLACEMENT HAUT NIVEAU
 	 */
 	
-	public abstract int getPositionGridSpace();
+	public abstract PointGridSpace getPositionGridSpace();
     public abstract long getTempsDepuisDebutMatch();
 
     protected Cinematique cinematique;

@@ -13,6 +13,7 @@ import pathfinding.astarCourbe.arcs.ArcCourbe;
 import pathfinding.astarCourbe.arcs.ArcCourbeCubique;
 import pathfinding.dstarlite.DStarLite;
 import pathfinding.dstarlite.GridSpace;
+import pathfinding.dstarlite.PointGridSpace;
 import container.Service;
 import debug.Fenetre;
 import exceptions.PathfindingException;
@@ -70,7 +71,7 @@ public class AStarCourbe implements Service
 	}
 
 	private final ArrayList<Integer> closedset = new ArrayList<Integer>();
-	private final PriorityQueue<AStarCourbeNode> openset = new PriorityQueue<AStarCourbeNode>(GridSpace.NB_POINTS, new AStarCourbeNodeComparator());
+	private final PriorityQueue<AStarCourbeNode> openset = new PriorityQueue<AStarCourbeNode>(PointGridSpace.NB_POINTS, new AStarCourbeNodeComparator());
 
 	/**
 	 * Constructeur du AStarCourbe

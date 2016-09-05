@@ -2,6 +2,7 @@ package pathfinding.dstarlite;
 
 import utils.Vec2;
 import utils.permissions.ReadOnly;
+import utils.permissions.ReadWrite;
 
 /**
  * Un point du gridspace
@@ -17,8 +18,8 @@ public class PointGridSpace
 	public static final double DISTANCE_ENTRE_DEUX_POINTS = 3000./(NB_POINTS_POUR_TROIS_METRES-1);
 	public static final int DISTANCE_ENTRE_DEUX_POINTS_1024 = (int)(1024*3000./(NB_POINTS_POUR_TROIS_METRES-1));
 	public static final int NB_POINTS = NB_POINTS_POUR_DEUX_METRES * NB_POINTS_POUR_TROIS_METRES;
-	private static final int X_MAX = NB_POINTS_POUR_TROIS_METRES - 1;
-	private static final int Y_MAX = NB_POINTS_POUR_DEUX_METRES - 1;
+	public static final int X_MAX = NB_POINTS_POUR_TROIS_METRES - 1;
+	public static final int Y_MAX = NB_POINTS_POUR_DEUX_METRES - 1;
 
 	public int x, y;
 
@@ -28,16 +29,31 @@ public class PointGridSpace
 		this.y = y;
 	}
 	
+	/**
+	 * Renvoie l'indice du gridpoint le plus proche de cette position
+	 * @param p
+	 * @return
+	 */
 	public PointGridSpace(Vec2<ReadOnly> p)
 	{
-		x = (int) Math.round(p.y / DISTANCE_ENTRE_DEUX_POINTS);
-		y = (int) Math.round((p.x+1500) / DISTANCE_ENTRE_DEUX_POINTS);
+		y = (int) Math.round(p.y / DISTANCE_ENTRE_DEUX_POINTS);
+		x = (int) Math.round((p.x+1500) / DISTANCE_ENTRE_DEUX_POINTS);
 	}
 	
+	/**
+	 * Construit à partir du hashCode
+	 * @param i
+	 */
+	public PointGridSpace(int i)
+	{
+		y = i >> PRECISION;
+		x = i & (NB_POINTS_POUR_TROIS_METRES - 1);
+	}
+
 	@Override
 	public int hashCode()
 	{
-		return (x << PRECISION) + y;
+		return (y << PRECISION) + x;
 	}
 	
 	/**
@@ -46,10 +62,10 @@ public class PointGridSpace
 	 * @param pointB
 	 * @return
 	 */
-	public static final int distanceHeuristiqueDStarLite(PointGridSpace pointA, PointGridSpace pointB)
+	public final int distanceHeuristiqueDStarLite(PointGridSpace point)
 	{
-		int dx = Math.abs(pointA.x - pointB.x);
-		int dy = Math.abs(pointA.y - pointB.y);
+		int dx = Math.abs(x - point.x);
+		int dy = Math.abs(y - point.y);
 		return 1000 * Math.max(dx, dy) + 414 * Math.min(dx, dy);
 	}
 	
@@ -70,19 +86,38 @@ public class PointGridSpace
 		return new PointGridSpace(x,y);		
 	}
 
-	public static final PointGridSpace getGridPointX(Vec2<ReadOnly> p)
+	public static final int getGridPointX(Vec2<ReadOnly> p)
 	{
-		return new PointGridSpace(Math.round((p.x+1500) / PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS);
+		return (int) Math.round((p.x + 1500) / DISTANCE_ENTRE_DEUX_POINTS);
 	}
 
 	public static final int getGridPointY(Vec2<ReadOnly> p)
 	{
-		return (int) Math.round(p.y / PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS);
+		return (int) Math.round(p.y / DISTANCE_ENTRE_DEUX_POINTS);
 	}
 
 	public static final int getGridPoint(int x, int y)
 	{
 		return (y << PRECISION) + x;
+	}
+
+	public static final Vec2<ReadOnly> computeVec2(PointGridSpace gridpoint)
+	{
+		Vec2<ReadWrite> out = new Vec2<ReadWrite>();
+		computeVec2(out, gridpoint);
+		return out.getReadOnly();
+	}
+
+	public static final void computeVec2(Vec2<ReadWrite> v, PointGridSpace gridpoint)
+	{
+		v.x = ((gridpoint.x * DISTANCE_ENTRE_DEUX_POINTS_1024) >> 10) - 1500;
+		v.y = (gridpoint.y * DISTANCE_ENTRE_DEUX_POINTS_1024) >> 10;
+	}
+
+	public void copy(PointGridSpace p)
+	{
+		p.x = x;
+		p.y = y;
 	}
 
 }

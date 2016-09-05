@@ -17,7 +17,6 @@ import utils.ConfigInfo;
 import utils.Log;
 import utils.Vec2;
 import utils.permissions.ReadOnly;
-import utils.permissions.ReadWrite;
 import container.Service;
 import enums.Tribool;
 
@@ -68,7 +67,7 @@ public class GridSpace implements Service
 			for(int i = 0; i < PointGridSpace.NB_POINTS; i++)
 				for(ObstaclesFixes o : ObstaclesFixes.values)
 				{
-					if(o.getObstacle().squaredDistance(computeVec2(i)) < (int)(PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS/2 * PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS/2))
+					if(o.getObstacle().squaredDistance(PointGridSpace.computeVec2(new PointGridSpace(i))) < (int)(PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS/2 * PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS/2))
 					{
 //						log.debug(i+" : obstacle");
 						grilleStatique.set(i);
@@ -124,39 +123,17 @@ public class GridSpace implements Service
 	}
 
 	/**
-	 * Renvoie l'indice du gridpoint le plus proche de cette position
-	 * @param p
-	 * @return
-	 */
-	public static final PointGridSpace computeGridPoint(Vec2<ReadOnly> p)
-	{
-	}
-
-	/**
 	 * Renvoie la distance en fonction de la direction.
 	 * Attention ! Ne prend pas en compte les obstacles dynamiques
 	 * @param i
 	 * @return
 	 */
-	public int distanceStatique(int point, Direction i) {
-		if(!isTraversableStatique(point, i))
+	public int distanceStatique(PointDirige point) {
+		if(!isTraversableStatique(point.point))
 			return Integer.MAX_VALUE;
-		if(i.ordinal() < 4) // cf ordre des directions
+		if(point.dir.ordinal() < 4) // cf ordre des directions
 			return 1414;
 		return 1000;
-	}
-
-	public static final Vec2<ReadOnly> computeVec2(int gridpoint)
-	{
-		Vec2<ReadWrite> out = new Vec2<ReadWrite>();
-		computeVec2(out, gridpoint);
-		return out.getReadOnly();
-	}
-
-	public static final void computeVec2(Vec2<ReadWrite> v, int gridpoint)
-	{
-		v.x = (((gridpoint & (NB_POINTS_POUR_TROIS_METRES - 1)) * GridSpace.DISTANCE_ENTRE_DEUX_POINTS_1024) >> 10) - 1500;
-		v.y = ((gridpoint >> PRECISION) * GridSpace.DISTANCE_ENTRE_DEUX_POINTS_1024) >> 10;
 	}
 
 	/**
@@ -165,21 +142,25 @@ public class GridSpace implements Service
 	 */
 	private ArrayList<PointDirige> getMasqueObstacle(Vec2<ReadOnly> position)
 	{
-		int x = getGridPointX(position);
-		int y = getGridPointY(position);
+		int x = PointGridSpace.getGridPointX(position);
+		int y = PointGridSpace.getGridPointY(position);
 //		log.debug("xy : "+x+" "+y);
 		int xC1, yC1, xC2, yC2;
 		ArrayList<PointDirige> out = new ArrayList<PointDirige>();
 		for(PointDirige c : masque)
 		{
 //			log.debug("c : "+c);
-			int p1 = c.point;
+			PointGridSpace p1 = c.point;
 			Direction dir = c.dir;
-			xC1 = (p1 & (NB_POINTS_POUR_TROIS_METRES - 1)) + x - centreMasque;
-			yC1 = (p1 >> PRECISION) + y - centreMasque;
-			int	gridpoint = getGridPointVoisin(p1, dir);
-			xC2 = (gridpoint & (NB_POINTS_POUR_TROIS_METRES - 1)) + x - centreMasque;
-			yC2 = (gridpoint >> PRECISION) + y - centreMasque;
+			xC1 = p1.x + x - centreMasque;
+			yC1 = p1.y + y - centreMasque;
+			PointGridSpace gridpoint = p1.getGridPointVoisin(dir);
+
+			if(gridpoint == null) // hors table
+				continue;
+			
+			xC2 = gridpoint.x + x - centreMasque;
+			yC2 = gridpoint.y + y - centreMasque;
 
 //			log.debug("Obtenu : "+((((yC1 << PRECISION) +xC1) << DEUXIEME_POINT_COUPLE) + (yC2 << PRECISION) +xC2));
 			
@@ -187,10 +168,10 @@ public class GridSpace implements Service
 //			log.debug("Lecture masque : "+computeVec2((yC1 << PRECISION) + xC2));
 
 			// On vérifie que tous les points sont bien dans la table
-			if(xC1 >= 0 && xC1 <= X_MAX && yC1 >= 0 && yC1 <= Y_MAX
-					&& xC2 >= 0 && xC2 <= X_MAX && yC2 >= 0 && yC2 <= Y_MAX)
+			if(xC1 >= 0 && xC1 <= PointGridSpace.X_MAX && yC1 >= 0 && yC1 <= PointGridSpace.Y_MAX
+					&& xC2 >= 0 && xC2 <= PointGridSpace.X_MAX && yC2 >= 0 && yC2 <= PointGridSpace.Y_MAX)
 			{
-				out.add(new PointDirige(getGridPoint(xC1,yC1), dir));
+				out.add(new PointDirige(new PointGridSpace(xC1,yC1), dir));
 //				log.debug("Ajout !");
 			}
 		}
@@ -225,9 +206,9 @@ public class GridSpace implements Service
 	 * @param point
 	 * @return
 	 */
-	public boolean isTraversableStatique(int point)
+	public boolean isTraversableStatique(PointGridSpace point)
 	{
-		return !grilleStatique.get(point);
+		return !grilleStatique.get(point.hashCode());
 	}
 	
 	/**

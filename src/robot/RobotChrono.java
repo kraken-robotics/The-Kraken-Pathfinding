@@ -1,6 +1,7 @@
 package robot;
 
 import pathfinding.astarCourbe.arcs.ArcCourbe;
+import pathfinding.dstarlite.PointGridSpace;
 import utils.Log;
 
 /**
@@ -10,7 +11,7 @@ import utils.Log;
 
 public class RobotChrono extends Robot
 {
-	protected int positionGridSpace;
+	protected PointGridSpace positionGridSpace;
    
 	// Date en millisecondes depuis le début du match.
 	protected long date;
@@ -42,13 +43,13 @@ public class RobotChrono extends Robot
 		return delta;
 	}
 
-	public void setPositionGridSpace(int gridpoint)
+	public void setPositionGridSpace(PointGridSpace gridpoint)
 	{
-		positionGridSpace = gridpoint;
+		 gridpoint.copy(positionGridSpace);
 	}
 	
 	@Override
-	public int getPositionGridSpace()
+	public PointGridSpace getPositionGridSpace()
 	{
 		return positionGridSpace;
 	}
