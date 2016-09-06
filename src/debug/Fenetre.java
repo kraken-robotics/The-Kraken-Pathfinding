@@ -14,6 +14,7 @@ import obstacles.types.ObstacleCircular;
 import obstacles.types.ObstacleRectangular;
 import pathfinding.dstarlite.GridSpace;
 import pathfinding.dstarlite.PointGridSpace;
+import pathfinding.dstarlite.PointGridSpaceManager;
 import utils.Config;
 import utils.Vec2;
 import utils.permissions.ReadOnly;
@@ -53,6 +54,7 @@ public class Fenetre extends JPanel {
 //	private int firstNotDead = 0;
     
 	private GridSpace gs;
+	private PointGridSpaceManager pm;
 	public static boolean needInit = true;
 	
 	private Fenetre(Container container) throws InterruptedException
@@ -61,6 +63,7 @@ public class Fenetre extends JPanel {
 			iterator = new ObstaclesIteratorPresent(container.getService(Log.class),
 					container.getService(ObstaclesMemory.class));
 			gs = container.getService(GridSpace.class);
+			pm = container.getService(PointGridSpaceManager.class);
 		} catch (ContainerException e) {
 			e.printStackTrace();
 		}
@@ -77,7 +80,7 @@ public class Fenetre extends JPanel {
 		sizeX = image.getWidth(this);
 		sizeY = image.getHeight(this);
 		for(int i = 0; i < PointGridSpace.NB_POINTS; i++)
-			if(gs.isTraversableStatique(new PointGridSpace(i)))
+			if(gs.isTraversableStatique(pm.get(i)))
 				grid[i] = Couleur.BLANC;
 			else
 				grid[i] = Couleur.NOIR;

@@ -30,6 +30,7 @@ public class DStarLite implements Service
 	protected Log log;
 	private GridSpace gridspace;
 	private Fenetre fenetre;
+	private PointGridSpaceManager pointManager;
 
 	/**
 	 * Le comparateur de DStarLiteNode, utilisé par la PriorityQueue
@@ -53,10 +54,11 @@ public class DStarLite implements Service
 	 * @param log
 	 * @param gridspace
 	 */
-	public DStarLite(Log log, GridSpace gridspace)
+	public DStarLite(Log log, GridSpace gridspace, PointGridSpaceManager pointManager)
 	{
 		this.log = log;
 		this.gridspace = gridspace;
+		this.pointManager = pointManager;
 		
 		for(int i = 0; i < PointGridSpace.NB_POINTS; i++)
 			memory[i] = new DStarLiteNode(new PointGridSpace(i));
@@ -168,7 +170,7 @@ public class DStarLite implements Service
 					fenetre.setColor(u.gridpoint, Fenetre.Couleur.ROUGE);
 				for(Direction i : Direction.values())
 				{
-					PointGridSpace voisin = u.gridpoint.getGridPointVoisin(i);
+					PointGridSpace voisin = pointManager.getGridPointVoisin(u.gridpoint, i);
 					if(voisin == null)
 						continue;
 					DStarLiteNode s = getFromMemory(voisin);
@@ -183,7 +185,7 @@ public class DStarLite implements Service
 				u.g = Integer.MAX_VALUE;
 				for(Direction i : Direction.values())
 				{
-					PointGridSpace voisin = u.gridpoint.getGridPointVoisin(i);
+					PointGridSpace voisin = pointManager.getGridPointVoisin(u.gridpoint, i);
 					if(voisin == null)
 						continue;
 					DStarLiteNode s = getFromMemory(voisin);
@@ -194,7 +196,7 @@ public class DStarLite implements Service
 						s.rhs = Integer.MAX_VALUE;
 						for(Direction j : Direction.values())
 						{
-							voisin = s.gridpoint.getGridPointVoisin(j);
+							voisin = pointManager.getGridPointVoisin(s.gridpoint, j);
 							if(voisin == null)
 								continue;
 							DStarLiteNode s2 = getFromMemory(voisin);
@@ -209,7 +211,7 @@ public class DStarLite implements Service
 					u.rhs = Integer.MAX_VALUE;
 					for(Direction i : Direction.values())
 					{
-						PointGridSpace voisin = u.gridpoint.getGridPointVoisin(i);
+						PointGridSpace voisin = pointManager.getGridPointVoisin(u.gridpoint, i);
 						if(voisin == null)
 							continue;
 						DStarLiteNode s = getFromMemory(voisin);
@@ -233,7 +235,7 @@ public class DStarLite implements Service
 	 */
 	public void computeNewPath(Vec2<ReadOnly> depart, Vec2<ReadOnly> arrivee) throws PathfindingException
 	{
-		computeNewPath(new PointGridSpace(depart), new PointGridSpace(arrivee));
+		computeNewPath(pointManager.get(depart), pointManager.get(arrivee));
 	}
 	/**
 	 * Calcule un nouvel itinéraire.
@@ -267,7 +269,7 @@ public class DStarLite implements Service
 
 		if(Config.graphicDStarLite)
 			for(PointDirige i : obstaclesConnus)
-				fenetre.setColor(i.point.getGridPointVoisin(i.dir), Fenetre.Couleur.NOIR);
+				fenetre.setColor(pointManager.getGridPointVoisin(i.point, i.dir), Fenetre.Couleur.NOIR);
 
 	}
 	
@@ -286,7 +288,7 @@ public class DStarLite implements Service
 	
 	private void updateGoal(Vec2<ReadOnly> positionRobot)
 	{
-		depart = getFromMemory(new PointGridSpace(positionRobot));
+		depart = getFromMemory(pointManager.get(positionRobot));
 		km += distanceHeuristique(lastDepart);
 		lastDepart = depart.gridpoint;
 	}
@@ -312,7 +314,7 @@ public class DStarLite implements Service
 					PointGridSpace upoint = i.point;
 					DStarLiteNode u = getFromMemory(upoint);
 					Direction dir = i.dir;
-					DStarLiteNode v = getFromMemory(upoint.getGridPointVoisin(dir));
+					DStarLiteNode v = getFromMemory(pointManager.getGridPointVoisin(upoint,dir));
 					u.rhs = Math.min(u.rhs, add(v.g, gridspace.distanceStatique(new PointDirige(upoint, dir))));
 					updateVertex(u);
 				}
@@ -330,14 +332,14 @@ public class DStarLite implements Service
 					PointGridSpace upoint = i.point;
 					DStarLiteNode u = getFromMemory(upoint);
 					Direction dir = i.dir;
-					DStarLiteNode v = getFromMemory(upoint.getGridPointVoisin(dir));
+					DStarLiteNode v = getFromMemory(pointManager.getGridPointVoisin(upoint,dir));
 
 					// l'ancienne distance est la distance statique car c'est un ajout d'obstacle
 					if(u.rhs == add(gridspace.distanceStatique(new PointDirige(upoint, dir)), v.g) && !u.equals(arrivee))
 					{
 						u.rhs = Integer.MAX_VALUE;
 						for(Direction voisin : Direction.values())
-							u.rhs = Math.min(u.rhs, add(distanceDynamiqueSucc(u.gridpoint, voisin), getFromMemory(u.gridpoint.getGridPointVoisin(i.dir)).g));
+							u.rhs = Math.min(u.rhs, add(distanceDynamiqueSucc(u.gridpoint, voisin), getFromMemory(pointManager.getGridPointVoisin(u.gridpoint,i.dir)).g));
 					}
 					updateVertex(u);
 				}
@@ -348,7 +350,7 @@ public class DStarLite implements Service
 		}
 		if(Config.graphicDStarLite)
 			for(PointDirige i : obstaclesConnus)
-				fenetre.setColor(i.point.getGridPointVoisin(i.dir), Fenetre.Couleur.NOIR);
+				fenetre.setColor(pointManager.getGridPointVoisin(i.point, i.dir), Fenetre.Couleur.NOIR);
 
 		computeShortestPath();
 	}
@@ -377,7 +379,7 @@ public class DStarLite implements Service
 			
 			for(Direction i : Direction.values())
 			{
-				PointGridSpace voisin = node.gridpoint.getGridPointVoisin(i);
+				PointGridSpace voisin = pointManager.getGridPointVoisin(node.gridpoint,i);
 				if(voisin == null)
 					continue;
 				DStarLiteNode s = getFromMemory(voisin);
@@ -402,7 +404,7 @@ public class DStarLite implements Service
 	 */
 	public double heuristicCostCourbe(Cinematique c)
 	{
-		PointGridSpace gridpoint = new PointGridSpace(c.getPosition());
+		PointGridSpace gridpoint = pointManager.get(c.getPosition());
 		
 		// Si ce n'est pas à jour, on recalcule
 		if(isThisNodeUptodate(gridpoint))
@@ -454,7 +456,7 @@ public class DStarLite implements Service
 	 */
 	private int distanceDynamiquePred(PointGridSpace point, Direction dir)
 	{
-		PointGridSpace voisin = point.getGridPointVoisin(dir);
+		PointGridSpace voisin = pointManager.getGridPointVoisin(point, dir);
 		return distanceDynamiqueSucc(voisin, dir.getOppose());
 	}
 

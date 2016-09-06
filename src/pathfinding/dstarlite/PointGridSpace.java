@@ -1,8 +1,10 @@
 package pathfinding.dstarlite;
 
+import utils.Config;
 import utils.Vec2;
 import utils.permissions.ReadOnly;
 import utils.permissions.ReadWrite;
+import container.Service;
 
 /**
  * Un point du gridspace
@@ -10,7 +12,7 @@ import utils.permissions.ReadWrite;
  *
  */
 
-public class PointGridSpace
+public class PointGridSpace implements Service
 {
 	public static final int PRECISION = 6;
 	public static final int NB_POINTS_POUR_TROIS_METRES = (1 << PRECISION);
@@ -21,41 +23,28 @@ public class PointGridSpace
 	public static final int X_MAX = NB_POINTS_POUR_TROIS_METRES - 1;
 	public static final int Y_MAX = NB_POINTS_POUR_DEUX_METRES - 1;
 
-	public int x, y;
-
-	public PointGridSpace(int x, int y)
-	{
-		this.x = x;
-		this.y = y;
-	}
-	
 	/**
-	 * Renvoie l'indice du gridpoint le plus proche de cette position
-	 * @param p
-	 * @return
+	 * Attention ! Le repère de ce x,y est celui pour lequel x et y sont toujours positifs
 	 */
-	public PointGridSpace(Vec2<ReadOnly> p)
-	{
-		y = (int) Math.round(p.y / DISTANCE_ENTRE_DEUX_POINTS);
-		x = (int) Math.round((p.x+1500) / DISTANCE_ENTRE_DEUX_POINTS);
-	}
+	public final int x, y, hashcode;
 	
 	/**
 	 * Construit à partir du hashCode
 	 * @param i
 	 */
-	public PointGridSpace(int i)
+	PointGridSpace(int i)
 	{
 		y = i >> PRECISION;
 		x = i & (NB_POINTS_POUR_TROIS_METRES - 1);
+		hashcode = i;
 	}
 
 	@Override
 	public int hashCode()
 	{
-		return (y << PRECISION) + x;
+		return hashcode;
 	}
-	
+		
 	/**
 	 * On utilise la distance octile pour l'heuristique (surtout parce que c'est rapide)
 	 * @param pointA
@@ -68,56 +57,19 @@ public class PointGridSpace
 		int dy = Math.abs(y - point.y);
 		return 1000 * Math.max(dx, dy) + 414 * Math.min(dx, dy);
 	}
-	
-	/**
-	 * Récupère le voisin de "point" dans la direction indiquée.
-	 * Renvoie -1 si un tel voisin est hors table
-	 * @param point
-	 * @param direction
-	 * @return
-	 */
-	public PointGridSpace getGridPointVoisin(Direction direction)
-	{
-		int x = this.x + direction.deltaX;
-		int y = this.y + direction.deltaY;
-
-		if(x < 0 || x > X_MAX || y < 0 || y > Y_MAX)
-			return null;
-		return new PointGridSpace(x,y);		
-	}
-
-	public static final int getGridPointX(Vec2<ReadOnly> p)
-	{
-		return (int) Math.round((p.x + 1500) / DISTANCE_ENTRE_DEUX_POINTS);
-	}
-
-	public static final int getGridPointY(Vec2<ReadOnly> p)
-	{
-		return (int) Math.round(p.y / DISTANCE_ENTRE_DEUX_POINTS);
-	}
-
-	public static final int getGridPoint(int x, int y)
-	{
-		return (y << PRECISION) + x;
-	}
 
 	public static final Vec2<ReadOnly> computeVec2(PointGridSpace gridpoint)
 	{
-		Vec2<ReadWrite> out = new Vec2<ReadWrite>();
-		computeVec2(out, gridpoint);
+		Vec2<ReadWrite> out = new Vec2<ReadWrite>(((gridpoint.x * DISTANCE_ENTRE_DEUX_POINTS_1024) >> 10) - 1500, (gridpoint.y * DISTANCE_ENTRE_DEUX_POINTS_1024) >> 10);
 		return out.getReadOnly();
 	}
 
-	public static final void computeVec2(Vec2<ReadWrite> v, PointGridSpace gridpoint)
-	{
-		v.x = ((gridpoint.x * DISTANCE_ENTRE_DEUX_POINTS_1024) >> 10) - 1500;
-		v.y = (gridpoint.y * DISTANCE_ENTRE_DEUX_POINTS_1024) >> 10;
-	}
+	@Override
+	public void updateConfig(Config config)
+	{}
 
-	public void copy(PointGridSpace p)
-	{
-		p.x = x;
-		p.y = y;
-	}
+	@Override
+	public void useConfig(Config config)
+	{}
 
 }

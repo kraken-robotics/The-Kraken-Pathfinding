@@ -225,7 +225,7 @@ public class Container implements Service
 	 * @throws InterruptedException
 	 */
 	@SuppressWarnings("unchecked")
-	public <S extends Service> S getServiceRecursif(Class<S> classe) throws ContainerException, InterruptedException
+	private <S extends Service> S getServiceRecursif(Class<S> classe) throws ContainerException, InterruptedException
 	{
 		try {
 			/**
@@ -273,7 +273,7 @@ public class Container implements Service
 			 * Instanciation et sauvegarde
 			 */
 			S s = constructeur.newInstance(paramObject);
-			instanciedServices.put(classe.getSimpleName(), (Service) s);
+			instanciedServices.put(classe.getSimpleName(), s);
 			
 			/**
 			 * Mise à jour de la config

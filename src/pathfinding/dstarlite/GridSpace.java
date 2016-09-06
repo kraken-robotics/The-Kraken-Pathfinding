@@ -35,6 +35,7 @@ public class GridSpace implements Service
 	private ObstaclesIteratorPresent iteratorRemoveNearby;
 	private ObstaclesMemory obstaclesMemory;
 	private Table table;
+	private PointGridSpaceManager pointManager;
 
 	private int distanceApproximation;
 	private int distanceMinimaleEntreProximite;
@@ -52,11 +53,12 @@ public class GridSpace implements Service
 	private static int centreMasque;
 	private long deathDateLastObstacle;
 	
-	public GridSpace(Log log, ObstaclesMemory obstaclesMemory, Table table)
+	public GridSpace(Log log, ObstaclesMemory obstaclesMemory, Table table, PointGridSpaceManager pointManager)
 	{
 		this.obstaclesMemory = obstaclesMemory;
 		this.log = log;
 		this.table = table;
+		this.pointManager = pointManager;
 		iteratorDStarLite = new ObstaclesIteratorPresent(log, obstaclesMemory);
 		iteratorRemoveNearby = new ObstaclesIteratorPresent(log, obstaclesMemory);
 		
@@ -101,26 +103,13 @@ public class GridSpace implements Service
 							Direction dir = Direction.convertToDirection(a, b);
 							int i2 = i + a, j2 = j + b;
 							if((i2-centreMasque) * (i2-centreMasque) + (j2-centreMasque) * (j2-centreMasque) <= rayonPoint*rayonPoint)
-								masque.add(new PointDirige(new PointGridSpace(j,i), dir));
+								masque.add(new PointDirige(pointManager.get(j,i), dir));
 						}
 	}
 
 	@Override
 	public void updateConfig(Config config)
 	{}
-
-	/**
-	 * Signale si on peut passer d'un point à un de ses voisins.
-	 * On suppose que ce voisin n'est pas hors table (sinon, ça lève une exception)
-	 * @param gridpoint
-	 * @param direction
-	 * @return
-	 */
-	private boolean isTraversableStatique(PointGridSpace gridpoint, Direction direction)
-	{
-		PointGridSpace voisin = gridpoint.getGridPointVoisin(direction);
-		return voisin != null && !grilleStatique.get(voisin.hashCode());
-	}
 
 	/**
 	 * Renvoie la distance en fonction de la direction.
@@ -142,8 +131,9 @@ public class GridSpace implements Service
 	 */
 	private ArrayList<PointDirige> getMasqueObstacle(Vec2<ReadOnly> position)
 	{
-		int x = PointGridSpace.getGridPointX(position);
-		int y = PointGridSpace.getGridPointY(position);
+		PointGridSpace p = pointManager.get(position);
+		int x = p.x;
+		int y = p.y;
 //		log.debug("xy : "+x+" "+y);
 		int xC1, yC1, xC2, yC2;
 		ArrayList<PointDirige> out = new ArrayList<PointDirige>();
@@ -154,7 +144,7 @@ public class GridSpace implements Service
 			Direction dir = c.dir;
 			xC1 = p1.x + x - centreMasque;
 			yC1 = p1.y + y - centreMasque;
-			PointGridSpace gridpoint = p1.getGridPointVoisin(dir);
+			PointGridSpace gridpoint = pointManager.getGridPointVoisin(p1, dir);
 
 			if(gridpoint == null) // hors table
 				continue;
@@ -171,7 +161,7 @@ public class GridSpace implements Service
 			if(xC1 >= 0 && xC1 <= PointGridSpace.X_MAX && yC1 >= 0 && yC1 <= PointGridSpace.Y_MAX
 					&& xC2 >= 0 && xC2 <= PointGridSpace.X_MAX && yC2 >= 0 && yC2 <= PointGridSpace.Y_MAX)
 			{
-				out.add(new PointDirige(new PointGridSpace(xC1,yC1), dir));
+				out.add(new PointDirige(pointManager.get(xC1,yC1), dir));
 //				log.debug("Ajout !");
 			}
 		}

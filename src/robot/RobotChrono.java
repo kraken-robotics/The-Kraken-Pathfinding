@@ -45,7 +45,7 @@ public class RobotChrono extends Robot
 
 	public void setPositionGridSpace(PointGridSpace gridpoint)
 	{
-		 gridpoint.copy(positionGridSpace);
+		positionGridSpace = gridpoint;
 	}
 	
 	@Override
