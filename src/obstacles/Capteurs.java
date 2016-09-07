@@ -2,9 +2,9 @@ package obstacles;
 
 import obstacles.types.ObstacleProximity;
 import container.Service;
-import enums.Tribool;
 import pathfinding.dstarlite.GridSpace;
 import table.GameElementNames;
+import table.Tribool;
 import utils.Config;
 import utils.ConfigInfo;
 import utils.Log;
@@ -84,7 +84,7 @@ public class Capteurs implements Service {
 			/**
 			 * On update la table avec notre position
 			 */
-		    for(GameElementNames g: GameElementNames.values)
+		    for(GameElementNames g: GameElementNames.values())
 		        if(gridspace.didWeShootIt(g, positionRobot))
 		        	gridspace.setDoneTable(g, Tribool.TRUE); // on est sûr de l'avoir shooté
 			
@@ -124,7 +124,7 @@ public class Capteurs implements Service {
 				/**
 				 * Mise à jour de l'état de la table
 				 */
-			    for(GameElementNames g: GameElementNames.values)
+			    for(GameElementNames g: GameElementNames.values())
 			        if(gridspace.isDoneTable(g) == Tribool.FALSE && gridspace.didTheEnemyTakeIt(g, o))
 			        	gridspace.setDoneTable(g, Tribool.MAYBE);
 

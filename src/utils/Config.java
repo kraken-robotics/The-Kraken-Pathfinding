@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.util.Properties;
 
 import container.Service;
-import enums.RobotColor;
+import robot.RobotColor;
 
 
 /**
@@ -166,11 +166,11 @@ public class Config implements Service
 			for(ConfigInfo info: ConfigInfo.values())
 			{
 				if(!properties.containsKey(info.toString()))
-					properties.setProperty(info.toString(), info.getDefaultValue());
+					properties.setProperty(info.toString(), info.getDefaultValue().toString());
 				else if(!info.isConstant())
 				{
 					System.out.println(info+" NE peut PAS être surchargé par config.ini");
-					properties.setProperty(info.toString(), info.getDefaultValue());
+					properties.setProperty(info.toString(), info.getDefaultValue().toString());
 				}
 				else if(!info.getDefaultValue().equals(properties.getProperty(info.name())))
 					System.out.println(info+" surchargé par config.ini ("+info.getDefaultValue()+" -> "+properties.getProperty(info.name())+")");
@@ -196,7 +196,7 @@ public class Config implements Service
 		else
 		{
 			for(ConfigInfo info: ConfigInfo.values())
-				properties.setProperty(info.toString(), info.getDefaultValue());
+				properties.setProperty(info.toString(), info.getDefaultValue().toString());
 		}
 		System.out.println();
 	}
