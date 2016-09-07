@@ -25,7 +25,6 @@ public class JUnit_Config extends JUnit_Test {
 	@Test
 	public void test_set1() throws Exception
 	{
-		log.debug("JUnit_ReadIniTest.test_set1()");
 		config.set(ConfigInfo.COULEUR, "fushia");
 		Assert.assertTrue(config.getString(ConfigInfo.COULEUR).equals("fushia"));
 	}
@@ -33,7 +32,6 @@ public class JUnit_Config extends JUnit_Test {
 	@Test
 	public void test_set2() throws Exception
 	{
-		log.debug("JUnit_ReadIniTest.test_set2()");
 		config.set(ConfigInfo.DATE_DEBUT_MATCH, 42);
 		Assert.assertTrue(config.getInt(ConfigInfo.DATE_DEBUT_MATCH) == 42);
 	}

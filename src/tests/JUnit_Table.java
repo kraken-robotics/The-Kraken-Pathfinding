@@ -28,28 +28,25 @@ public class JUnit_Table extends JUnit_Test {
     @Test
     public void test_clone_copy() throws Exception
     {
-    	int hash = table.getHashLPAStar();
+    	long hash = table.getEtatTable();
     	Table cloned_table = table.clone();
-    	Assert.assertTrue(table.equals(cloned_table));
-        Assert.assertTrue(hash == cloned_table.getHashLPAStar());
+        Assert.assertTrue(hash == cloned_table.getEtatTable());
         cloned_table.setDone(GameElementNames.TRUC, Tribool.TRUE);
-        Assert.assertTrue(hash != cloned_table.getHashLPAStar());
-    	Assert.assertTrue(!table.equals(cloned_table));
+        Assert.assertTrue(hash != cloned_table.getEtatTable());
     	cloned_table.copy(table);
-    	hash = table.getHashLPAStar();
-        Assert.assertTrue(hash == cloned_table.getHashLPAStar());
+    	hash = table.getEtatTable();
+        Assert.assertTrue(hash == cloned_table.getEtatTable());
 		Assert.assertTrue(table.isDone(GameElementNames.TRUC) == Tribool.TRUE);
 		Assert.assertTrue(cloned_table.isDone(GameElementNames.TRUC) == Tribool.TRUE);
-    	Assert.assertTrue(table.equals(cloned_table));
+    	Assert.assertTrue(table.getEtatTable() == cloned_table.getEtatTable());
     	table.setDone(GameElementNames.MACHIN, Tribool.TRUE);
-    	Assert.assertTrue(!table.equals(cloned_table));
+    	Assert.assertTrue(table.getEtatTable() != cloned_table.getEtatTable());
     }
     
     @Test
     public void test_unicite() throws Exception
     {
     	long hash = table.getEtatTable();
-    	int code = table.hashCode();
     	for(GameElementNames e : GameElementNames.values)
 		{
 			table.setDone(e, Tribool.MAYBE);
@@ -57,9 +54,7 @@ public class JUnit_Table extends JUnit_Test {
 			hash = table.getEtatTable();
 			table.setDone(e, Tribool.TRUE);
 			Assert.assertTrue(table.getEtatTable() != hash);
-			Assert.assertTrue(table.hashCode() != code);
 			hash = table.getEtatTable();
-			code = table.hashCode();
 		}
     }
 }

@@ -18,11 +18,6 @@ public class Table implements Service
 	/** Contient toutes les informations sur les éléments de jeux sans perte d'information. */
 	private volatile long etatTable = 0L;
 
-	/** Version compressée de l'état de la table. Mélange les Tribool FALSE et MAYBE car on ne peut pas passer
-	 * de FALSE à MAYBE pendant une recherche de stratégie, donc deux nœuds au hash identiques auront bien
-	 * deux etatTable identiques **/
-	private volatile int hash = 0;
-
 	public Table(Log log)
 	{
 		this.log = log;
@@ -38,7 +33,6 @@ public class Table implements Service
 	{
 		long old_hash = etatTable;
 		etatTable |= (done.hash << (2*id.ordinal()));
-		hash |= (done.hashBool << (id.ordinal()));
 		// Si besoin est, on dit à la stratégie que la table a été modifiée
 		return old_hash != etatTable;
 	}
@@ -59,7 +53,6 @@ public class Table implements Service
 	public void copy(Table ct)
 	{
 		ct.etatTable = etatTable;
-		ct.hash = hash;
 	}
 	
 	/**
@@ -73,31 +66,6 @@ public class Table implements Service
 		return cloned_table;
 	}
 
-	/**
-	 * Utilisé pour les tests
-	 * @param other
-	 * @return
-	 */
-	public boolean equals(Table other)
-	{
-		return other.etatTable == etatTable;
- 	}
-	
-	@Override
-	public int hashCode()
-	{
-		return hash;
-	}
-	
-	/**
-	 * Récupération du hash utilisé par le LPA*
-	 * @return
-	 */
-	public int getHashLPAStar()
-	{
-		return hash;
-	}
-
 	@Override
 	public void updateConfig(Config config)
 	{}
@@ -105,19 +73,7 @@ public class Table implements Service
 	@Override
 	public void useConfig(Config config)
 	{}
-
-	/**
-	 * Utilisé pour le debug
-	 */
-	public void printHash()
-	{
-		for(GameElementNames g: GameElementNames.values)
-		{
-			long etat = (etatTable >> 2*g.ordinal()) % 4;
-			log.debug(g+" : "+Tribool.parse((int)etat));
-		}
-	}
-
+	
 	/**
 	 * Utilisé par les tests
 	 * @return
