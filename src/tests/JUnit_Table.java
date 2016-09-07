@@ -1,12 +1,17 @@
 package tests;
 
+import java.lang.reflect.Field;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import obstacles.types.Obstacle;
 import table.GameElementNames;
 import table.Table;
 import table.Tribool;
+import utils.Vec2;
+import utils.permissions.ReadWrite;
 
 /**
  * Tests unitaires pour Table
@@ -28,33 +33,39 @@ public class JUnit_Table extends JUnit_Test {
     @Test
     public void test_clone_copy() throws Exception
     {
-    	long hash = table.getEtatTable();
+    	Field f = Table.class.getDeclaredField("etatTable");
+    	f.setAccessible(true);
+
+    	long hash = f.getLong(table);
     	Table cloned_table = table.clone();
-        Assert.assertTrue(hash == cloned_table.getEtatTable());
+        Assert.assertTrue(hash == f.getLong(cloned_table));
         cloned_table.setDone(GameElementNames.TRUC, Tribool.TRUE);
-        Assert.assertTrue(hash != cloned_table.getEtatTable());
+        Assert.assertTrue(hash != f.getLong(cloned_table));
     	cloned_table.copy(table);
-    	hash = table.getEtatTable();
-        Assert.assertTrue(hash == cloned_table.getEtatTable());
+    	hash = f.getLong(table);
+        Assert.assertTrue(hash == f.getLong(cloned_table));
 		Assert.assertTrue(table.isDone(GameElementNames.TRUC) == Tribool.TRUE);
 		Assert.assertTrue(cloned_table.isDone(GameElementNames.TRUC) == Tribool.TRUE);
-    	Assert.assertTrue(table.getEtatTable() == cloned_table.getEtatTable());
+    	Assert.assertTrue(f.getLong(table) == f.getLong(cloned_table));
     	table.setDone(GameElementNames.MACHIN, Tribool.TRUE);
-    	Assert.assertTrue(table.getEtatTable() != cloned_table.getEtatTable());
+    	Assert.assertTrue(f.getLong(table) != f.getLong(cloned_table));
     }
     
     @Test
     public void test_unicite() throws Exception
     {
-    	long hash = table.getEtatTable();
+    	Field f = Table.class.getDeclaredField("etatTable");
+    	f.setAccessible(true);
+
+    	long hash = f.getLong(table);
     	for(GameElementNames e : GameElementNames.values())
 		{
 			table.setDone(e, Tribool.MAYBE);
-			Assert.assertTrue(table.getEtatTable() != hash);
-			hash = table.getEtatTable();
+			Assert.assertTrue(f.getLong(table) != hash);
+			hash = f.getLong(table);
 			table.setDone(e, Tribool.TRUE);
-			Assert.assertTrue(table.getEtatTable() != hash);
-			hash = table.getEtatTable();
+			Assert.assertTrue(f.getLong(table) != hash);
+			hash = f.getLong(table);
 		}
     }
 }

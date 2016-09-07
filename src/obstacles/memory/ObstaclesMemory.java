@@ -42,16 +42,8 @@ public class ObstaclesMemory implements Service
 	{
 		return add(position, System.currentTimeMillis(), masque);
 	}
-	
-	/**
-	 * Appelé directement par les tests uniquement
-	 * @param position
-	 * @param date
-	 * @param urgent
-	 * @param masque
-	 * @return
-	 */
-	public synchronized ObstacleProximity add(Vec2<ReadOnly> position, long date, ArrayList<PointDirige> masque)
+
+	private synchronized ObstacleProximity add(Vec2<ReadOnly> position, long date, ArrayList<PointDirige> masque)
 	{
         ObstacleProximity obstacle = new ObstacleProximity(position, rayonEnnemi, date+dureeAvantPeremption, masque);
         listObstaclesMobiles.add(obstacle);
@@ -85,6 +77,10 @@ public class ObstaclesMemory implements Service
 		return listObstaclesMobiles.get(nbTmp-indicePremierObstacle);
 	}
 
+	/**
+	 * Supprime cet obstacle
+	 * @param indice
+	 */
 	public synchronized void remove(int indice)
 	{
 		listObstaclesMortsTot.add(listObstaclesMobiles.get(indice-indicePremierObstacle));
@@ -136,15 +132,6 @@ public class ObstaclesMemory implements Service
 	public synchronized int getFirstNotDeadNow()
 	{
 		return firstNotDeadNow;
-	}
-
-	/**
-	 * Utilisé à fin de test uniquement
-	 * @return
-	 */
-	public LinkedList<ObstacleProximity> getListObstaclesMobiles()
-	{
-		return listObstaclesMobiles;
 	}
 
 	/**

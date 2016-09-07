@@ -75,14 +75,6 @@ public class MemoryManager implements Service {
 	}
 	
 	/**
-	 * Utilisé par les tests
-	 */
-	public boolean isMemoryManagerEmpty()
-	{
-		return firstAvailable == 0;
-	}
-	
-	/**
 	 * Signale qu'un gamestate est de nouveau disponible
 	 * @param state
 	 * @param id_astar

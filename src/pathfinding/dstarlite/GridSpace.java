@@ -191,12 +191,7 @@ public class GridSpace implements Service
 		return obstaclesMemory.getNextDeathDate();
 	}
 
-	/**
-	 * Utilisé uniquement pour les tests
-	 * @param point
-	 * @return
-	 */
-	public boolean isTraversableStatique(PointGridSpace point)
+	private boolean isTraversableStatique(PointGridSpace point)
 	{
 		return !grilleStatique.get(point.hashCode());
 	}
@@ -351,7 +346,7 @@ public class GridSpace implements Service
 	 */
 	public boolean didTheEnemyTakeIt(GameElementNames g, ObstacleProximity o)
 	{
-		return g.obstacle.isProcheObstacle(o.getPosition(), o.radius);
+		return g.obstacle.isProcheObstacle(o, o.radius);
 	}
 
 	public boolean didWeShootIt(GameElementNames g, Vec2<ReadOnly> position)

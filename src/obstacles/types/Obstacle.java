@@ -39,6 +39,10 @@ public abstract class Obstacle
 		marge = config.getInt(ConfigInfo.MARGE);
 	}
 	
+	/**
+	 * Constructeur. La position est celle du centre de rotation de l'obstacle
+	 * @param position
+	 */
 	public Obstacle (Vec2<ReadOnly> position)
 	{
 		this.position = position.clone();
@@ -50,20 +54,59 @@ public abstract class Obstacle
 		return "Obstacle en "+position;
 	}
 
+	/**
+	 * Renvoie la distance au carré de l'obstacle avec cette position
+	 * @param position
+	 * @return
+	 */
 	public abstract double squaredDistance(Vec2<ReadOnly> position);
 	
+	/**
+	 * Renvoi "vrai" si position est à moins de distance du centre de l'obstacle
+	 * @param position
+	 * @param distance
+	 * @return
+	 */
 	public boolean isProcheCentre(Vec2<ReadOnly> position, int distance)
 	{
 		return this.position.squaredDistance(position) < distance * distance;
 	}
 
+	/**
+	 * Renvoi "vrai" si position est à moins de distance d'un bord de l'obstacle ou à l'intérieur
+	 * @param position
+	 * @param distance
+	 * @return
+	 */
 	public boolean isProcheObstacle(Vec2<ReadOnly> position, int distance)
 	{
 		return squaredDistance(position) < distance * distance;
 	}
 
-	public abstract boolean isColliding(ObstacleRectangular obs);
+	/**
+	 * Renvoi "vrai" si le centre de obs est à moins de distance d'un bord de l'obstacle ou à l'intérieur
+	 * Ce n'est pas pareil que vérifier une collision !
+	 * @param position
+	 * @param distance
+	 * @return
+	 */
+	public boolean isProcheObstacle(Obstacle obs, int distance)
+	{
+		return squaredDistance(obs.position.getReadOnly()) < distance * distance;
+	}
 	
+	/**
+	 * Renvoie vrai s'il y a collision avec obs
+	 * @param obs
+	 * @return
+	 */
+	public abstract boolean isColliding(ObstacleRectangular obs);
+
+	/**
+	 * Revoie vrai s'il y a une collision avec obs
+	 * @param obs
+	 * @return
+	 */
 	public boolean isColliding(ObstacleArcCourbe obs)
 	{
 		for(ObstacleRectangular o : obs.ombresRobot)
@@ -74,8 +117,4 @@ public abstract class Obstacle
 		return false;
 	}
 	
-	public Vec2<ReadOnly> getPosition()
-	{
-		return position.getReadOnly();
-	}
 }

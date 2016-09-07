@@ -184,34 +184,6 @@ public class ObstacleRectangular extends Obstacle
 		
 		return min1 > max2 || min2 > max1; // vrai s'il y a une séparation
 	}
-	
-	/**
-	 * Utilisé pour l'affichage
-	 * @return
-	 */
-	public static int[] getXPositions(ObstacleRectangular t)
-	{
-		int[] X = new int[4];
-		X[0] = (int)t.coinBasDroiteRotate.x;
-		X[1] = (int)t.coinHautDroiteRotate.x;
-		X[2] = (int)t.coinHautGaucheRotate.x;
-		X[3] = (int)t.coinBasGaucheRotate.x;
-		return X;
-	}
-
-	/**
-	 * Utilisé pour l'affichage
-	 * @return
-	 */
-	public static int[] getYPositions(ObstacleRectangular t)
-	{
-		int[] Y = new int[4];
-		Y[0] = (int)t.coinBasDroiteRotate.y;
-		Y[1] = (int)t.coinHautDroiteRotate.y;
-		Y[2] = (int)t.coinHautGaucheRotate.y;
-		Y[3] = (int)t.coinBasGaucheRotate.y;
-		return Y;
-	}
 
 	@Override
 	public String toString()

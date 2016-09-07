@@ -18,7 +18,7 @@ public enum Direction {
 		return ordinal() < 4;
 	}
 	
-	public static Direction convertToDirection(int deltaX, int deltaY)
+	static Direction convertToDirection(int deltaX, int deltaY)
 	{
 		for(Direction d : values())
 			if(deltaX == d.deltaX && deltaY == d.deltaY)

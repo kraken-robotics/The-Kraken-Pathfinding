@@ -6,10 +6,10 @@ package pathfinding.dstarlite;
  *
  */
 
-public class Cle
+class Cle
 {
 	// En gros, first c'est f_score et second c'est g_score
-	public int first, second;
+	int first, second;
 
 	public Cle()
 	{}
@@ -19,12 +19,12 @@ public class Cle
 	 * @param other
 	 * @return
 	 */
-	public boolean isLesserThan(Cle other)
+	boolean isLesserThan(Cle other)
 	{
 		return first < other.first || (first == other.first && second < other.second);
 	}
 
-	public void set(int first, int second)
+	void set(int first, int second)
 	{
 		this.first = first;
 		this.second = second;
@@ -43,7 +43,7 @@ public class Cle
 	 * @param modified
 	 * @return
 	 */
-	public void copy(Cle modified)
+	void copy(Cle modified)
 	{
 		modified.set(first, second);
 	}

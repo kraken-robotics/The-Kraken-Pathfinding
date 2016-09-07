@@ -41,5 +41,4 @@ public class ObstacleCircular extends Obstacle
 	{
 		return o.squaredDistance(o.position.getReadOnly()) < radius*radius;
 	}
-
 }

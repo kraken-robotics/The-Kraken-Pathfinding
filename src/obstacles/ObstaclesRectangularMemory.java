@@ -45,7 +45,7 @@ public class ObstaclesRectangularMemory implements Service {
 	}
 	
 	/**
-	 * Donne un gamestate disponible
+	 * Donne un obstacle disponible
 	 * @param id_astar
 	 * @return
 	 * @throws FinMatchException
@@ -66,14 +66,6 @@ public class ObstaclesRectangularMemory implements Service {
 	public void empty()
 	{
 		firstAvailable = 0;
-	}
-	
-	/**
-	 * Utilisé par les tests
-	 */
-	public boolean isMemoryManagerEmpty()
-	{
-		return firstAvailable == 0;
 	}
 	
 	/**

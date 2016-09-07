@@ -72,14 +72,4 @@ public class Table implements Service
 	@Override
 	public void useConfig(Config config)
 	{}
-	
-	/**
-	 * Utilisé par les tests
-	 * @return
-	 */
-	public long getEtatTable()
-	{
-		return etatTable;
-	}
-	
 }

@@ -68,26 +68,6 @@ public class Cinematique
 		vitesseRotation = speed.rotationalSpeed;
 		vitesseTranslation = speed.translationalSpeed;
 	}
-	
-	/**
-	 * Renvoie vrai si this est proche de autre
-	 * @param autre
-	 * @return
-	 */
-	public boolean estProche(Cinematique autre)
-	{
-		return position.squaredDistance(autre.position) < 50*50; // TODO écrire
-	}
-
-	/**
-	 * Renvoie vrai si this est proche de autre. Plus laxiste que "estProche"
-	 * @param autre
-	 * @return
-	 */
-	public boolean estProcheUrgence(Cinematique autre)
-	{
-		return position.squaredDistance(autre.position) < 50*50; // TODO écrire
-	}
 
 	public final Vec2<ReadOnly> getPosition()
 	{

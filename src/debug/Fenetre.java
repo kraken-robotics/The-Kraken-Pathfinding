@@ -15,14 +15,19 @@ import obstacles.types.ObstacleRectangular;
 import pathfinding.dstarlite.GridSpace;
 import pathfinding.dstarlite.PointGridSpace;
 import pathfinding.dstarlite.PointGridSpaceManager;
+import table.Table;
 import utils.Config;
 import utils.Vec2;
 import utils.permissions.ReadOnly;
+import utils.permissions.ReadWrite;
 import utils.Log;
 
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 /**
@@ -79,11 +84,18 @@ public class Fenetre extends JPanel {
 		}
 		sizeX = image.getWidth(this);
 		sizeY = image.getHeight(this);
-		for(int i = 0; i < PointGridSpace.NB_POINTS; i++)
-			if(gs.isTraversableStatique(pm.get(i)))
-				grid[i] = Couleur.BLANC;
-			else
-				grid[i] = Couleur.NOIR;
+		try {
+	    	Method m = GridSpace.class.getDeclaredMethod("isTraversableStatique", PointGridSpace.class);
+	    	m.setAccessible(true);
+
+			for(int i = 0; i < PointGridSpace.NB_POINTS; i++)
+				if((boolean) m.invoke(gs, pm.get(i)))
+					grid[i] = Couleur.BLANC;
+				else
+					grid[i] = Couleur.NOIR;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		new MouseListener(this);
 		showOnFrame();
 	}
@@ -277,12 +289,22 @@ public class Fenetre extends JPanel {
 		frame.setVisible(true);
 	}
 
+	@SuppressWarnings("unchecked")
 	public void paintObstacleCirculaire(ObstacleCircular o, Graphics g, int dilatationObstacle)
 	{
-		if(o.radius <= 0)
-			g.fillOval(XtoWindow(o.getPosition().x)-5, YtoWindow(o.getPosition().y)-5, 10, 10);
-		else
-			g.fillOval(XtoWindow(o.getPosition().x-o.radius-dilatationObstacle), YtoWindow(o.getPosition().y+o.radius+dilatationObstacle), distanceXtoWindow((o.radius+dilatationObstacle)*2), distanceYtoWindow((o.radius+dilatationObstacle)*2));		
+    	Field f;
+		try {
+			f = Obstacle.class.getDeclaredField("position");
+	    	f.setAccessible(true);
+	
+			if(o.radius <= 0)
+				g.fillOval(XtoWindow(((Vec2<ReadWrite>)f.get(o)).x)-5, YtoWindow(((Vec2<ReadWrite>)f.get(o)).y)-5, 10, 10);
+			else
+				g.fillOval(XtoWindow(((Vec2<ReadWrite>)f.get(o)).x-o.radius-dilatationObstacle), YtoWindow(((Vec2<ReadWrite>)f.get(o)).y+o.radius+dilatationObstacle), distanceXtoWindow((o.radius+dilatationObstacle)*2), distanceYtoWindow((o.radius+dilatationObstacle)*2));		
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void paintObstacleRectangulaire(ObstacleRectangular o, Graphics g, int dilatationObstacle)
@@ -340,16 +362,38 @@ public class Fenetre extends JPanel {
 				paintObstacleCirculaire(o, g, 0);
 		}
 	}
+	@SuppressWarnings("unchecked")
 	public void paintObstacleEnBiais(Graphics g)
 	{
+		try {
 		g.setColor(Couleur.NOIR.couleur);
 		int[] X, Y;
 		synchronized(obstaclesEnBiais)
 		{
 			for(ObstacleRectangular o: obstaclesEnBiais)
 			{
-				X = ObstacleRectangular.getXPositions(o);
-				Y = ObstacleRectangular.getYPositions(o);
+				Field f1 = ObstacleRectangular.class.getDeclaredField("coinBasDroiteRotate");
+		    	f1.setAccessible(true);
+		    	Field f2 = ObstacleRectangular.class.getDeclaredField("coinHautDroiteRotate");
+		    	f2.setAccessible(true);
+		    	Field f3 = ObstacleRectangular.class.getDeclaredField("coinHautGaucheRotate");
+		    	f3.setAccessible(true);
+		    	Field f4 = ObstacleRectangular.class.getDeclaredField("coinBasGaucheRotate");
+		    	f4.setAccessible(true);
+
+				
+				X = new int[4];
+				X[0] = (int) ((Vec2<ReadOnly>)f1.get(o)).x;
+				X[1] = (int) ((Vec2<ReadOnly>)f2.get(o)).x;
+				X[2] = (int) ((Vec2<ReadOnly>)f3.get(o)).x;
+				X[3] = (int) ((Vec2<ReadOnly>)f4.get(o)).x;
+
+				Y = new int[4];
+				Y[0] = (int) ((Vec2<ReadOnly>)f1.get(o)).y;
+				Y[1] = (int) ((Vec2<ReadOnly>)f2.get(o)).y;
+				Y[2] = (int) ((Vec2<ReadOnly>)f3.get(o)).y;
+				Y[3] = (int) ((Vec2<ReadOnly>)f4.get(o)).y;
+				
 				for(int i = 0; i < 4; i++)
 				{
 					X[i] = XtoWindow(X[i]);
@@ -357,6 +401,10 @@ public class Fenetre extends JPanel {
 				}
 				g.fillPolygon(X, Y, 4);
 			}
+		}
+		} catch (Exception e)
+		{
+			e.printStackTrace();
 		}
 //		g.fillRect(100, 100, 100, 100);
 	}
