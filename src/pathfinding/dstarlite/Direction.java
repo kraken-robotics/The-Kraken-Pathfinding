@@ -13,6 +13,11 @@ public enum Direction {
 		this.deltaY = deltaY;
 	}
 	
+	public boolean isDiagonal()
+	{
+		return ordinal() < 4;
+	}
+	
 	public static Direction convertToDirection(int deltaX, int deltaY)
 	{
 		for(Direction d : values())

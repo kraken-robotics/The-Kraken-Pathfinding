@@ -1,4 +1,4 @@
-package enums;
+package table;
 
 /**
  * Utilisé on veut qualifier un troisième état pour un booléen: "peut-être".

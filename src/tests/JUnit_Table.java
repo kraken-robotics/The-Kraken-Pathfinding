@@ -6,7 +6,7 @@ import org.junit.Test;
 
 import table.GameElementNames;
 import table.Table;
-import enums.Tribool;
+import table.Tribool;
 
 /**
  * Tests unitaires pour Table
@@ -47,7 +47,7 @@ public class JUnit_Table extends JUnit_Test {
     public void test_unicite() throws Exception
     {
     	long hash = table.getEtatTable();
-    	for(GameElementNames e : GameElementNames.values)
+    	for(GameElementNames e : GameElementNames.values())
 		{
 			table.setDone(e, Tribool.MAYBE);
 			Assert.assertTrue(table.getEtatTable() != hash);

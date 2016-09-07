@@ -12,13 +12,13 @@ import pathfinding.ChronoGameState;
 import pathfinding.astarCourbe.AStarCourbeNode;
 import table.GameElementNames;
 import table.Table;
+import table.Tribool;
 import utils.Config;
 import utils.ConfigInfo;
 import utils.Log;
 import utils.Vec2;
 import utils.permissions.ReadOnly;
 import container.Service;
-import enums.Tribool;
 
 /**
  * La classe qui contient la grille utilisée par le pathfinding.
@@ -120,7 +120,7 @@ public class GridSpace implements Service
 	public int distanceStatique(PointDirige point) {
 		if(!isTraversableStatique(point.point))
 			return Integer.MAX_VALUE;
-		if(point.dir.ordinal() < 4) // cf ordre des directions
+		if(point.dir.isDiagonal()) // cf ordre des directions
 			return 1414;
 		return 1000;
 	}
@@ -335,8 +335,8 @@ public class GridSpace implements Service
     	
     	// On vérifie si on collisionne un élément de jeu
     	if(!shoot)
-    		for(GameElementNames g : GameElementNames.values)
-    			if(table.isDone(g) != Tribool.FALSE && g.getObstacle().isColliding(obs))
+    		for(GameElementNames g : GameElementNames.values())
+    			if(table.isDone(g) != Tribool.FALSE && g.obstacle.isColliding(obs))
     				return false;
 
     	return true;
@@ -351,12 +351,12 @@ public class GridSpace implements Service
 	 */
 	public boolean didTheEnemyTakeIt(GameElementNames g, ObstacleProximity o)
 	{
-		return g.getObstacle().isProcheObstacle(o.getPosition(), o.radius);
+		return g.obstacle.isProcheObstacle(o.getPosition(), o.radius);
 	}
 
 	public boolean didWeShootIt(GameElementNames g, Vec2<ReadOnly> position)
 	{
-		return g.getObstacle().isProcheObstacle(position, rayonRobot);
+		return g.obstacle.isProcheObstacle(position, rayonRobot);
 	}
 
 }
