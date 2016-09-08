@@ -16,9 +16,8 @@ import pathfinding.dstarlite.gridspace.PointGridSpaceManager;
 import utils.Config;
 import utils.ConfigInfo;
 import utils.Log;
-import utils.Vec2;
-import utils.permissions.ReadOnly;
-import utils.permissions.ReadWrite;
+import utils.Vec2RO;
+import utils.Vec2RW;
 
 import java.awt.*;
 import java.awt.event.WindowAdapter;
@@ -42,12 +41,12 @@ public class Fenetre extends JPanel implements Service {
 	
 	private boolean afficheFond;
 	private int sizeX = 450, sizeY = 300;
-//	private ArrayList<Vec2<ReadOnly>> pointsADessiner = new ArrayList<Vec2<ReadOnly>>();
+//	private ArrayList<Vec2RO> pointsADessiner = new ArrayList<Vec2RO>();
 //	private LinkedList<ObstacleProximity> listObstaclesMobiles;
-	private ArrayList<Vec2<ReadOnly>[]> segments = new ArrayList<Vec2<ReadOnly>[]>();
+	private ArrayList<Vec2RO[]> segments = new ArrayList<Vec2RO[]>();
 	private Image image;
 	private JFrame frame;
-//	private Vec2<ReadWrite>[] point;
+//	private Vec2RW[] point;
 //	private AttributedString affichage = new AttributedString("");
 	
 	private ObstaclesIteratorPresent iterator;
@@ -224,9 +223,9 @@ public class Fenetre extends JPanel implements Service {
 					angleCone = 35.*Math.PI/180;
 //				else
 //					angleCone = 5.*Math.PI/180;
-				Vec2<ReadWrite> p1 = capteurs.positionsRelatives[i].plusNewVector(new Vec2<ReadOnly>(0, 1000));
-				Vec2<ReadWrite> p2 = p1.plusNewVector(new Vec2<ReadOnly>(800, angleCone + Capteurs.orientationsRelatives[i], true));
-				Vec2<ReadWrite> p3 = p1.plusNewVector(new Vec2<ReadOnly>(800, - angleCone + Capteurs.orientationsRelatives[i], true));
+				Vec2RW p1 = capteurs.positionsRelatives[i].plusNewVector(new Vec2RO(0, 1000));
+				Vec2RW p2 = p1.plusNewVector(new Vec2RO(800, angleCone + Capteurs.orientationsRelatives[i], true));
+				Vec2RW p3 = p1.plusNewVector(new Vec2RO(800, - angleCone + Capteurs.orientationsRelatives[i], true));
 				int[] x = new int[3];
 				x[0] = XtoWindow(p1.x);
 				x[1] = XtoWindow(p2.x);
@@ -246,7 +245,7 @@ public class Fenetre extends JPanel implements Service {
 		g.setColor(new Color(255, 0, 0, 30));
 
 		if(point != null)
-			for(Vec2<ReadWrite> v: point)
+			for(Vec2RW v: point)
 				g.fillOval(XtoWindow(v.x-200), YtoWindow(v.y+200), distanceXtoWindow(400), distanceYtoWindow(400));
 
 		ObstacleRectangular o = (ObstacleRectangular)ObstaclesFixes.TEST_RECT.getObstacle();
@@ -259,7 +258,7 @@ public class Fenetre extends JPanel implements Service {
 		}
 		g.fillPolygon(X, Y, 4);
 
-//		Vec2<ReadOnly> v = ObstaclesFixes.TEST.getObstacle().position;
+//		Vec2RO v = ObstaclesFixes.TEST.getObstacle().position;
 //		int r = ((ObstacleCircular)ObstaclesFixes.TEST.getObstacle()).getRadius();
 //		g.fillOval(XtoWindow(v.x-r), YtoWindow(v.y+r), distanceXtoWindow(r*2), distanceYtoWindow(r*2));
 */
@@ -280,7 +279,6 @@ public class Fenetre extends JPanel implements Service {
 		frame.setVisible(true);
 	}
 
-	@SuppressWarnings("unchecked")
 	public void paintObstacleCirculaire(ObstacleCircular o, Graphics g)
 	{
     	Field f;
@@ -289,19 +287,18 @@ public class Fenetre extends JPanel implements Service {
 	    	f.setAccessible(true);
 	
 			if(o.radius <= 0)
-				g.fillOval(XtoWindow(((Vec2<ReadWrite>)f.get(o)).x)-5, YtoWindow(((Vec2<ReadWrite>)f.get(o)).y)-5, 10, 10);
+				g.fillOval(XtoWindow(((Vec2RW)f.get(o)).x)-5, YtoWindow(((Vec2RW)f.get(o)).y)-5, 10, 10);
 			else
-				g.fillOval(XtoWindow(((Vec2<ReadWrite>)f.get(o)).x-o.radius), YtoWindow(((Vec2<ReadWrite>)f.get(o)).y+o.radius), distanceXtoWindow((o.radius)*2), distanceYtoWindow((o.radius)*2));		
+				g.fillOval(XtoWindow(((Vec2RW)f.get(o)).x-o.radius), YtoWindow(((Vec2RW)f.get(o)).y+o.radius), distanceXtoWindow((o.radius)*2), distanceYtoWindow((o.radius)*2));		
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	public void addSegment(Vec2<ReadOnly> a, Vec2<ReadOnly> b)
+	public void addSegment(Vec2RO a, Vec2RO b)
 	{
-		@SuppressWarnings("unchecked")
-		Vec2<ReadOnly>[] v = new Vec2[2];
+		Vec2RO[] v = new Vec2RO[2];
 		v[0] = a;
 		v[1] = b;
 		segments.add(v);
@@ -309,7 +306,7 @@ public class Fenetre extends JPanel implements Service {
 	
 	public void paintSegments(Graphics g)
 	{
-		for(Vec2<ReadOnly>[] v : segments)
+		for(Vec2RO[] v : segments)
 			g.drawLine(XtoWindow(v[0].x), YtoWindow(v[0].y), XtoWindow(v[1].x), YtoWindow(v[1].y));
 	}
 	
@@ -334,7 +331,6 @@ public class Fenetre extends JPanel implements Service {
 //		g.fillRect(100, 100, 100, 100);
 	}
 	
-	@SuppressWarnings("unchecked")
 	public void paintObstacleRectangular(ObstacleRectangular o, Graphics g)
 	{
 		try {
@@ -349,16 +345,16 @@ public class Fenetre extends JPanel implements Service {
 	
 			
 			int[] X = new int[4];
-			X[0] = (int) ((Vec2<ReadOnly>)f1.get(o)).x;
-			X[1] = (int) ((Vec2<ReadOnly>)f2.get(o)).x;
-			X[2] = (int) ((Vec2<ReadOnly>)f3.get(o)).x;
-			X[3] = (int) ((Vec2<ReadOnly>)f4.get(o)).x;
+			X[0] = (int) ((Vec2RO)f1.get(o)).x;
+			X[1] = (int) ((Vec2RO)f2.get(o)).x;
+			X[2] = (int) ((Vec2RO)f3.get(o)).x;
+			X[3] = (int) ((Vec2RO)f4.get(o)).x;
 	
 			int[] Y = new int[4];
-			Y[0] = (int) ((Vec2<ReadOnly>)f1.get(o)).y;
-			Y[1] = (int) ((Vec2<ReadOnly>)f2.get(o)).y;
-			Y[2] = (int) ((Vec2<ReadOnly>)f3.get(o)).y;
-			Y[3] = (int) ((Vec2<ReadOnly>)f4.get(o)).y;
+			Y[0] = (int) ((Vec2RO)f1.get(o)).y;
+			Y[1] = (int) ((Vec2RO)f2.get(o)).y;
+			Y[2] = (int) ((Vec2RO)f3.get(o)).y;
+			Y[3] = (int) ((Vec2RO)f4.get(o)).y;
 			
 			for(int i = 0; i < 4; i++)
 			{

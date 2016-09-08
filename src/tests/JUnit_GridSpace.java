@@ -14,8 +14,7 @@ import pathfinding.dstarlite.gridspace.PointDirigeManager;
 import pathfinding.dstarlite.gridspace.PointGridSpace;
 import pathfinding.dstarlite.gridspace.PointGridSpaceManager;
 import utils.ConfigInfo;
-import utils.Vec2;
-import utils.permissions.ReadOnly;
+import utils.Vec2RO;
 
 /**
  * Tests unitaires de GridSpace
@@ -44,7 +43,7 @@ public class JUnit_GridSpace extends JUnit_Test {
 		log.debug(PointGridSpace.computeVec2(pointManager.get(0)));
 		log.debug(PointGridSpace.computeVec2(pointManager.get(64)));
 		log.debug(PointGridSpace.computeVec2(pointManager.get(63)));
-		Assert.assertTrue(PointGridSpace.computeVec2(pointManager.get(0)).equals(new Vec2<ReadOnly>(-1500, 0)));
+		Assert.assertTrue(PointGridSpace.computeVec2(pointManager.get(0)).equals(new Vec2RO(-1500, 0)));
 	}
 
 	@Test
@@ -99,15 +98,15 @@ public class JUnit_GridSpace extends JUnit_Test {
 		ArrayList<ObstacleProximity>[] b = gridspace.getOldAndNewObstacles();
 		Assert.assertTrue(b[0].isEmpty());
 		Assert.assertTrue(b[1].isEmpty());
-		gridspace.addObstacleAndRemoveNearbyObstacles(new Vec2<ReadOnly>(200, 100));
+		gridspace.addObstacleAndRemoveNearbyObstacles(new Vec2RO(200, 100));
 		b = gridspace.getOldAndNewObstacles();
 		Assert.assertTrue(b[0].isEmpty());
 		Assert.assertTrue(!b[1].isEmpty());
-		gridspace.addObstacleAndRemoveNearbyObstacles(new Vec2<ReadOnly>(210, 100));
+		gridspace.addObstacleAndRemoveNearbyObstacles(new Vec2RO(210, 100));
 		b = gridspace.getOldAndNewObstacles();
 		Assert.assertEquals(b[0].size(), 1); // on a supprimé l'autre qui était trop proche
 		Assert.assertEquals(b[1].size(), 1);
-		gridspace.addObstacleAndRemoveNearbyObstacles(new Vec2<ReadOnly>(400, 100));
+		gridspace.addObstacleAndRemoveNearbyObstacles(new Vec2RO(400, 100));
 		b = gridspace.getOldAndNewObstacles();
 		Assert.assertTrue(b[0].isEmpty());
 		Assert.assertTrue(!b[1].isEmpty());

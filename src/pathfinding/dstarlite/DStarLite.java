@@ -15,8 +15,7 @@ import robot.Cinematique;
 import utils.Config;
 import utils.ConfigInfo;
 import utils.Log;
-import utils.Vec2;
-import utils.permissions.ReadOnly;
+import utils.Vec2RO;
 import container.Service;
 import debug.Fenetre;
 import exceptions.PathfindingException;
@@ -241,7 +240,7 @@ public class DStarLite implements Service
 	 * @param depart (un gridpoint)
 	 * @throws PathfindingException 
 	 */
-	public void computeNewPath(Vec2<ReadOnly> depart, Vec2<ReadOnly> arrivee) throws PathfindingException
+	public void computeNewPath(Vec2RO depart, Vec2RO arrivee) throws PathfindingException
 	{
 		computeNewPath(pointManager.get(depart), pointManager.get(arrivee));
 	}
@@ -296,7 +295,7 @@ public class DStarLite implements Service
 		graphicDStarLite = config.getBoolean(ConfigInfo.GRAPHIC_DSTARLISTE);
 	}
 	
-	private void updateGoal(Vec2<ReadOnly> positionRobot)
+	private void updateGoal(Vec2RO positionRobot)
 	{
 		depart = getFromMemory(pointManager.get(positionRobot));
 		km += distanceHeuristique(lastDepart);
@@ -307,7 +306,7 @@ public class DStarLite implements Service
 	 * Met à jour le pathfinding
 	 * @throws PathfindingException 
 	 */
-	public void updatePath(Vec2<ReadOnly> positionRobot) throws PathfindingException
+	public void updatePath(Vec2RO positionRobot) throws PathfindingException
 	{
 		updateGoal(positionRobot);
 		ArrayList<ObstacleProximity>[] obs = gridspace.getOldAndNewObstacles();
@@ -369,9 +368,9 @@ public class DStarLite implements Service
 	 * Utilisé pour l'affichage et le debug
 	 * @return
 	 */
-	public ArrayList<Vec2<ReadOnly>> itineraireBrut()
+	public ArrayList<Vec2RO> itineraireBrut()
 	{
-		ArrayList<Vec2<ReadOnly>> trajet = new ArrayList<Vec2<ReadOnly>>();
+		ArrayList<Vec2RO> trajet = new ArrayList<Vec2RO>();
 
 		log.debug("depart : "+PointGridSpace.computeVec2(depart.gridpoint));
 		DStarLiteNode node = depart;

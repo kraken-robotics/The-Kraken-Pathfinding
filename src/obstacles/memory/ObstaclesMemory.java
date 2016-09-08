@@ -8,8 +8,7 @@ import pathfinding.dstarlite.gridspace.PointDirige;
 import utils.Config;
 import utils.ConfigInfo;
 import utils.Log;
-import utils.Vec2;
-import utils.permissions.ReadOnly;
+import utils.Vec2RO;
 import container.Service;
 
 /**
@@ -38,12 +37,12 @@ public class ObstaclesMemory implements Service
 		this.log = log;
 	}
 
-	public synchronized ObstacleProximity add(Vec2<ReadOnly> position, ArrayList<PointDirige> masque)
+	public synchronized ObstacleProximity add(Vec2RO position, ArrayList<PointDirige> masque)
 	{
 		return add(position, System.currentTimeMillis(), masque);
 	}
 
-	private synchronized ObstacleProximity add(Vec2<ReadOnly> position, long date, ArrayList<PointDirige> masque)
+	private synchronized ObstacleProximity add(Vec2RO position, long date, ArrayList<PointDirige> masque)
 	{
         ObstacleProximity obstacle = new ObstacleProximity(position, rayonEnnemi, date+dureeAvantPeremption, masque);
         listObstaclesMobiles.add(obstacle);

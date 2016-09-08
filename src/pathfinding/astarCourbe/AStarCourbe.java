@@ -8,7 +8,6 @@ import memory.NodeMM;
 import memory.ObsMM;
 import obstacles.types.ObstacleRectangular;
 import pathfinding.CheminPathfinding;
-import pathfinding.ChronoGameState;
 import pathfinding.RealGameState;
 import pathfinding.astarCourbe.arcs.ArcManager;
 import pathfinding.astarCourbe.arcs.ArcCourbe;
@@ -16,14 +15,12 @@ import pathfinding.astarCourbe.arcs.ArcCourbeCubique;
 import pathfinding.dstarlite.DStarLite;
 import pathfinding.dstarlite.gridspace.GridSpace;
 import pathfinding.dstarlite.gridspace.PointGridSpace;
-import container.Container;
 import container.Service;
 import debug.Fenetre;
 import exceptions.PathfindingException;
 import robot.Cinematique;
 import robot.DirectionStrategy;
 import robot.RobotChrono;
-import robot.RobotReal;
 import robot.Speed;
 import utils.Config;
 import utils.ConfigInfo;
@@ -127,7 +124,6 @@ public class AStarCourbe implements Service
 	 * @param depart
 	 * @return
 	 */
-	@SuppressWarnings("unused")
 	protected final void process()
 	{
 		depart.came_from = null;

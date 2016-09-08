@@ -1,8 +1,7 @@
 package robot;
 
-import utils.Vec2;
-import utils.permissions.ReadOnly;
-import utils.permissions.ReadWrite;
+import utils.Vec2RO;
+import utils.Vec2RW;
 
 /**
  * Une structure qui regroupe des infos de cinématique
@@ -12,7 +11,7 @@ import utils.permissions.ReadWrite;
 
 public class Cinematique
 {
-	protected final Vec2<ReadWrite> position = new Vec2<ReadWrite>();
+	protected final Vec2RW position = new Vec2RW();
 	public volatile double orientation;
 	public volatile boolean enMarcheAvant;
 	public volatile double courbure;
@@ -59,7 +58,7 @@ public class Cinematique
 	{
 		synchronized(autre)
 		{
-	    	Vec2.copy(position.getReadOnly(), autre.position);
+	    	position.getReadOnly().copy(autre.position);
 	    	autre.orientation = orientation;
 	    	autre.enMarcheAvant = enMarcheAvant;
 	    	autre.courbure = courbure;
@@ -75,12 +74,12 @@ public class Cinematique
 		vitesseTranslation = speed.translationalSpeed;
 	}
 
-	public final Vec2<ReadOnly> getPosition()
+	public final Vec2RO getPosition()
 	{
 		return position.getReadOnly();
 	}
 
-	public final Vec2<ReadWrite> getPositionEcriture()
+	public final Vec2RW getPositionEcriture()
 	{
 		return position;
 	}

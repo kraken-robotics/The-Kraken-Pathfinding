@@ -3,8 +3,7 @@ package pathfinding.dstarlite.gridspace;
 import container.Service;
 import utils.Config;
 import utils.Log;
-import utils.Vec2;
-import utils.permissions.ReadOnly;
+import utils.Vec2RO;
 
 /**
  * S'occupe de gérer les PointGridSpace
@@ -46,7 +45,7 @@ public class PointGridSpaceManager implements Service
 	 * @param p
 	 * @return
 	 */
-	public PointGridSpace get(Vec2<ReadOnly> p)
+	public PointGridSpace get(Vec2RO p)
 	{
 		int y = (int) Math.round(p.y / PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS);
 		int x = (int) Math.round((p.x + 1500) / PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS);

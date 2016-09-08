@@ -2,8 +2,7 @@ package table;
 
 import obstacles.types.Obstacle;
 import obstacles.types.ObstacleCircular;
-import utils.Vec2;
-import utils.permissions.ReadOnly;
+import utils.Vec2RO;
 
 /**
  * Enumérations contenant tous les éléments de jeux
@@ -14,8 +13,8 @@ import utils.permissions.ReadOnly;
 // DEPENDS_ON_RULES
 
 public enum GameElementNames {
-	TRUC(new ObstacleCircular(new Vec2<ReadOnly>(1410, 150), -1)),
-	MACHIN(new ObstacleCircular(new Vec2<ReadOnly>(1410, 150), -1));
+	TRUC(new ObstacleCircular(new Vec2RO(1410, 150), -1)),
+	MACHIN(new ObstacleCircular(new Vec2RO(1410, 150), -1));
 
 	public final Obstacle obstacle;
 

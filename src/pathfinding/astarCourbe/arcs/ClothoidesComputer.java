@@ -19,9 +19,8 @@ import robot.Speed;
 import utils.Config;
 import utils.ConfigInfo;
 import utils.Log;
-import utils.Vec2;
-import utils.permissions.ReadOnly;
-import utils.permissions.ReadWrite;
+import utils.Vec2RO;
+import utils.Vec2RW;
 
 /**
  * Classe qui s'occupe de tous les calculs concernant les clothoïdes
@@ -45,8 +44,7 @@ public class ClothoidesComputer implements Service
 
 	private double courbureMax;
 	
-	@SuppressWarnings("unchecked")
-	private Vec2<ReadOnly>[] trajectoire = new Vec2[2 * INDICE_MAX - 1];
+	private Vec2RO[] trajectoire = new Vec2RO[2 * INDICE_MAX - 1];
 	
 	public ClothoidesComputer(Log log, ObsMM memory)
 	{
@@ -117,12 +115,12 @@ public class ClothoidesComputer implements Service
 		for(int s = 0; s < 2 * INDICE_MAX - 1; s++)
 		{
 			calculeXY(new BigDecimal((s - INDICE_MAX + 1) * PRECISION_TRACE).setScale(15, RoundingMode.HALF_EVEN));
-			trajectoire[s] = new Vec2<ReadOnly>(x.doubleValue(), y.doubleValue());
+			trajectoire[s] = new Vec2RO(x.doubleValue(), y.doubleValue());
 			System.out.println((s - INDICE_MAX + 1) * PRECISION_TRACE+" "+trajectoire[s]);
 
 			// Non, car la fenêtre n'est pas encore créée
 //			if(Config.graphicObstacles)
-//				Fenetre.getInstance().addObstacleEnBiais(new ObstacleRectangular(new Vec2<ReadOnly>((int)(x.doubleValue()/2), (int)(1000+y.doubleValue()/2)), 10, 10, 0));
+//				Fenetre.getInstance().addObstacleEnBiais(new ObstacleRectangular(new Vec2RO((int)(x.doubleValue()/2), (int)(1000+y.doubleValue()/2)), 10, 10, 0));
 		}
 	}
 
@@ -317,16 +315,11 @@ public class ClothoidesComputer implements Service
 		{
 			sDepart += vitesse.squaredRootVitesse * PRECISION_TRACE;
 
- 			Vec2.copy(
-				Vec2.plus(
-					Vec2.rotate(
-						Vec2.Ysym(
-							Vec2.scalar(
-								trajectoire[pointDepart + vitesse.squaredRootVitesse * (i + 1)].minusNewVector(trajectoire[pointDepart]),
-							coeffMultiplicatif),
-						!vitesse.positif),
-					cos, sin),
-				cinematiqueInitiale.getPosition()).getReadOnly(),
+							trajectoire[pointDepart + vitesse.squaredRootVitesse * (i + 1)].minusNewVector(trajectoire[pointDepart]).scalar(
+						coeffMultiplicatif)
+						.Ysym(!vitesse.positif).rotate(
+				cos, sin).plus(
+				cinematiqueInitiale.getPosition()).getReadOnly().copy(
 			modified.arcselems[i].getPositionEcriture());
 
  			double orientationClotho = sDepart * sDepart;
@@ -348,9 +341,9 @@ public class ClothoidesComputer implements Service
 		}
 	}
 
-	private Vec2<ReadWrite> deltaTmp = new Vec2<ReadWrite>();
-	private Vec2<ReadOnly> delta = new Vec2<ReadOnly>();
-	private Vec2<ReadOnly> centreCercle = new Vec2<ReadOnly>();
+	private Vec2RW deltaTmp = new Vec2RW();
+	private Vec2RO delta = new Vec2RO();
+	private Vec2RO centreCercle = new Vec2RO();
 	
 	/**
 	 * Calcule la trajectoire dans le cas particulier d'une trajectoire circulaire
@@ -359,7 +352,7 @@ public class ClothoidesComputer implements Service
 	 * @param courbure
 	 * @param modified
 	 */
-	private void getTrajectoireCirculaire(RobotChrono robot, Vec2<ReadOnly> position,
+	private void getTrajectoireCirculaire(RobotChrono robot, Vec2RO position,
 			double orientation, double courbure, Speed vitesseMax, ArcCourbeClotho modified, boolean enMarcheAvant)
 	{		
 		// rappel = la courbure est l'inverse du rayon de courbure
@@ -387,10 +380,10 @@ public class ClothoidesComputer implements Service
 			double tmp = sin;
 			sin = sin * cosSauv + sinSauv * cos; // sin vaut sin(2a*(i+1))
 			cos = cos * cosSauv - tmp * sinSauv;
-			Vec2.copy(delta, deltaTmp);
-			Vec2.rotate(deltaTmp, cos, sin);
-			Vec2.copy(centreCercle, modified.arcselems[i].getPositionEcriture());
-			Vec2.minus(modified.arcselems[i].getPositionEcriture(), deltaTmp);
+			position.copy(deltaTmp);
+			deltaTmp.rotate(cos, sin);
+			centreCercle.copy(modified.arcselems[i].getPositionEcriture());
+			modified.arcselems[i].getPositionEcriture().minus(deltaTmp);
 			modified.arcselems[i].orientation = orientation + angle * (i + 1);
 			modified.arcselems[i].courbure = courbure;
 			// TODO : doit dépendre de la courbure !
@@ -407,7 +400,7 @@ public class ClothoidesComputer implements Service
 	 * @param orientation
 	 * @param modified
 	 */
-	private void getTrajectoireLigneDroite(RobotChrono robot, Vec2<ReadOnly> position, double orientation, Speed vitesseMax, ArcCourbeClotho modified, boolean enMarcheAvant)
+	private void getTrajectoireLigneDroite(RobotChrono robot, Vec2RO position, double orientation, Speed vitesseMax, ArcCourbeClotho modified, boolean enMarcheAvant)
 	{
 		double cos = Math.cos(orientation);
 		double sin = Math.sin(orientation);
@@ -468,14 +461,13 @@ public class ClothoidesComputer implements Service
      * Chargement des points de la clothoïde unitaire
      * @return
      */
-	@SuppressWarnings("unchecked")
 	private boolean chargePoints()
     {
     	log.debug("Chargement des points de la clothoïde");
         try {
             FileInputStream fichier = new FileInputStream("clotho.dat");
             ObjectInputStream ois = new ObjectInputStream(fichier);
-            trajectoire = (Vec2<ReadOnly>[]) ois.readObject();
+            trajectoire = (Vec2RO[]) ois.readObject();
             ois.close();
             return true;
         }

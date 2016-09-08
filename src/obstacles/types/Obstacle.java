@@ -3,9 +3,8 @@ package obstacles.types;
 import utils.Config;
 import utils.ConfigInfo;
 import utils.Log;
-import utils.Vec2;
-import utils.permissions.ReadOnly;
-import utils.permissions.ReadWrite;
+import utils.Vec2RO;
+import utils.Vec2RW;
 
 /**
  * Superclasse abstraite des obstacles.
@@ -15,7 +14,7 @@ import utils.permissions.ReadWrite;
 
 public abstract class Obstacle
 {
-	protected final Vec2<ReadWrite> position;
+	protected final Vec2RW position;
 	protected int distance_dilatation;
 	protected static Log log;
 	
@@ -39,7 +38,7 @@ public abstract class Obstacle
 	 * Constructeur. La position est celle du centre de rotation de l'obstacle
 	 * @param position
 	 */
-	public Obstacle(Vec2<ReadOnly> position)
+	public Obstacle(Vec2RO position)
 	{
 		this.position = position.clone();
 	}
@@ -55,7 +54,7 @@ public abstract class Obstacle
 	 * @param position
 	 * @return
 	 */
-	public abstract double squaredDistance(Vec2<ReadOnly> position);
+	public abstract double squaredDistance(Vec2RO position);
 	
 	/**
 	 * Renvoi "vrai" si position est à moins de distance du centre de l'obstacle
@@ -63,7 +62,7 @@ public abstract class Obstacle
 	 * @param distance
 	 * @return
 	 */
-	public boolean isProcheCentre(Vec2<ReadOnly> position, int distance)
+	public boolean isProcheCentre(Vec2RO position, int distance)
 	{
 		return this.position.squaredDistance(position) < distance * distance;
 	}
@@ -74,7 +73,7 @@ public abstract class Obstacle
 	 * @param distance
 	 * @return
 	 */
-	public boolean isProcheObstacle(Vec2<ReadOnly> position, int distance)
+	public boolean isProcheObstacle(Vec2RO position, int distance)
 	{
 		return squaredDistance(position) < distance * distance;
 	}

@@ -15,8 +15,7 @@ import pathfinding.dstarlite.gridspace.GridSpace;
 import robot.Cinematique;
 import robot.RobotChrono;
 import robot.Speed;
-import utils.Vec2;
-import utils.permissions.ReadOnly;
+import utils.Vec2RO;
 
 /**
  * Tests unitaires de la recherche de chemin.
@@ -73,7 +72,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
 						/ ((x2 - x1) / (y2 - y1) - (x3 - x2) / (y3 - y2));
 				double yc = -(x2-x1)/(y2-y1)*xc + (x2*x2 - x1*x1 + y2*y2 - y1*y1) / (2*(y2 - y1));
 				log.debug(1000/Math.hypot(x1-xc, y1-yc)+" "+arc.get(i).courbure);
-				Fenetre.getInstance().addObstacleEnBiais(new ObstacleRectangular(new Vec2<ReadOnly>(xc, yc), 30, 30, 0));
+				Fenetre.getInstance().addObstacleEnBiais(new ObstacleRectangular(new Vec2RO(xc, yc), 30, 30, 0));
 			}*/
 			
 			
@@ -147,16 +146,16 @@ public class JUnit_Pathfinding extends JUnit_Test {
 	@Test
     public void test_chemin_dstarlite() throws Exception
     {
-		gridspace.addObstacleAndRemoveNearbyObstacles(new Vec2<ReadOnly>(200, 800));
-		pathfinding.computeNewPath(new Vec2<ReadOnly>(-1000, 200), new Vec2<ReadOnly>(1200, 1200));
+		gridspace.addObstacleAndRemoveNearbyObstacles(new Vec2RO(200, 800));
+		pathfinding.computeNewPath(new Vec2RO(-1000, 200), new Vec2RO(1200, 1200));
 		pathfinding.itineraireBrut();		
 		Thread.sleep(500);
 		log.debug("RECALCUL");
-		gridspace.addObstacleAndRemoveNearbyObstacles(new Vec2<ReadOnly>(600, 1300));
-		pathfinding.updatePath(new Vec2<ReadOnly>(600,1300));
+		gridspace.addObstacleAndRemoveNearbyObstacles(new Vec2RO(600, 1300));
+		pathfinding.updatePath(new Vec2RO(600,1300));
 		pathfinding.itineraireBrut();
 		Thread.sleep(4000);
-		pathfinding.updatePath(new Vec2<ReadOnly>(-800,1300));
+		pathfinding.updatePath(new Vec2RO(-800,1300));
 		pathfinding.itineraireBrut();
 		log.debug("RECALCUL");
     }

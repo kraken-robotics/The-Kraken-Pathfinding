@@ -10,8 +10,7 @@ import obstacles.types.ObstacleProximity;
 import utils.Config;
 import utils.ConfigInfo;
 import utils.Log;
-import utils.Vec2;
-import utils.permissions.ReadOnly;
+import utils.Vec2RO;
 import container.Service;
 
 /**
@@ -108,7 +107,7 @@ public class GridSpace implements Service
 	 * Ajoute le contour d'un obstacle de proximité dans la grille dynamique
 	 * @param o
 	 */
-	private ArrayList<PointDirige> getMasqueObstacle(Vec2<ReadOnly> position)
+	private ArrayList<PointDirige> getMasqueObstacle(Vec2RO position)
 	{
 		PointGridSpace p = pointManager.get(position);
 		ArrayList<PointDirige> out = new ArrayList<PointDirige>();
@@ -209,7 +208,7 @@ public class GridSpace implements Service
      * @return 
      * @return
      */
-    public ObstacleProximity addObstacleAndRemoveNearbyObstacles(Vec2<ReadOnly> position)
+    public ObstacleProximity addObstacleAndRemoveNearbyObstacles(Vec2RO position)
     {
     	iteratorRemoveNearby.reinit();
     	while(iteratorRemoveNearby.hasNext())

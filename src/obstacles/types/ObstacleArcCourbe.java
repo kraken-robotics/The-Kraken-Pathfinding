@@ -2,8 +2,7 @@ package obstacles.types;
 
 import java.util.ArrayList;
 
-import utils.Vec2;
-import utils.permissions.ReadOnly;
+import utils.Vec2RO;
 
 /**
  * Obstacle d'un arc de trajectoire courbe
@@ -16,13 +15,13 @@ public class ObstacleArcCourbe extends Obstacle
 {
 	public ObstacleArcCourbe()
 	{
-		super(new Vec2<ReadOnly>());
+		super(new Vec2RO());
 	}
 	
 	public ArrayList<ObstacleRectangular> ombresRobot = new ArrayList<ObstacleRectangular>();
 
 	@Override
-	public double squaredDistance(Vec2<ReadOnly> position)
+	public double squaredDistance(Vec2RO position)
 	{
 		double min = Double.MAX_VALUE;
 		for(ObstacleRectangular o : ombresRobot)

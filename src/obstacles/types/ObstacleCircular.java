@@ -1,7 +1,6 @@
 package obstacles.types;
 
-import utils.Vec2;
-import utils.permissions.ReadOnly;
+import utils.Vec2RO;
 
 /**
  * Obstacle circulaire
@@ -16,7 +15,7 @@ public class ObstacleCircular extends Obstacle
 	public final int radius;
 	public final int squared_radius;
 	
-	public ObstacleCircular(Vec2<ReadOnly> position, int rad)
+	public ObstacleCircular(Vec2RO position, int rad)
 	{
 		super(position);
 		this.radius = rad;
@@ -30,7 +29,7 @@ public class ObstacleCircular extends Obstacle
 	}
 
 	@Override
-	public double squaredDistance(Vec2<ReadOnly> position)
+	public double squaredDistance(Vec2RO position)
 	{
 		double out = Math.max(0, position.distance(this.position) - radius);
 		return out * out;

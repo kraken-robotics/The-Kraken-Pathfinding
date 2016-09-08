@@ -14,9 +14,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import utils.ConfigInfo;
-import utils.Vec2;
-import utils.permissions.ReadOnly;
-import utils.permissions.ReadWrite;
+import utils.Vec2RO;
+import utils.Vec2RW;
 
 /**
  * Tests unitaires de l'obstacle memory manager
@@ -37,14 +36,13 @@ public class JUnit_OMMemory extends JUnit_Test {
         iterator = new ObstaclesIteratorPresent(log, memory);
     }
 
-    @SuppressWarnings("unchecked")
 	@Test
     public void test_iterator() throws Exception
     {
     	Field f = Obstacle.class.getDeclaredField("position");
     	f.setAccessible(true);
 
-    	Method m = ObstaclesMemory.class.getDeclaredMethod("add", Vec2.class, long.class, ArrayList.class);
+    	Method m = ObstaclesMemory.class.getDeclaredMethod("add", Vec2RO.class, long.class, ArrayList.class);
     	m.setAccessible(true);
     	
     	int peremption = config.getInt(ConfigInfo.DUREE_PEREMPTION_OBSTACLES);
@@ -55,8 +53,8 @@ public class JUnit_OMMemory extends JUnit_Test {
     	
     	
     	long date = System.currentTimeMillis();
-    	m.invoke(memory, new Vec2<ReadOnly>(1324,546), date, null);
-    	m.invoke(memory, new Vec2<ReadOnly>(1324,546), date, null);
+    	m.invoke(memory, new Vec2RO(1324,546), date, null);
+    	m.invoke(memory, new Vec2RO(1324,546), date, null);
     	iterator.reinit();
     	Assert.assertTrue(iterator.hasNext());
     	iterator.next();
@@ -66,20 +64,20 @@ public class JUnit_OMMemory extends JUnit_Test {
     	Assert.assertTrue(!iterator.hasNext());
     	iterator.remove();
 
-    	m.invoke(memory, new Vec2<ReadOnly>(1324,546), date, null);
+    	m.invoke(memory, new Vec2RO(1324,546), date, null);
     	Assert.assertTrue(memory.getFirstNotDeadNow() == 0);
     	iterator.reinit();
 
     	Assert.assertTrue(iterator.hasNext());    	
     	ObstacleProximity o = iterator.next();    	
-    	Assert.assertTrue(((Vec2<ReadWrite>)f.get(o)).x == 1324);
-    	Assert.assertTrue(((Vec2<ReadWrite>)f.get(o)).y == 546);
+    	Assert.assertTrue(((Vec2RW)f.get(o)).x == 1324);
+    	Assert.assertTrue(((Vec2RW)f.get(o)).y == 546);
     	Assert.assertTrue(!iterator.hasNext());
     	Assert.assertTrue(memory.getFirstNotDeadNow() == 0);
-    	m.invoke(memory, new Vec2<ReadOnly>(1324,546), date, null);
-    	m.invoke(memory, new Vec2<ReadOnly>(1324,546), date, null);
-    	m.invoke(memory, new Vec2<ReadOnly>(1324,546), date, null);
-    	m.invoke(memory, new Vec2<ReadOnly>(1324,546), date, null);
+    	m.invoke(memory, new Vec2RO(1324,546), date, null);
+    	m.invoke(memory, new Vec2RO(1324,546), date, null);
+    	m.invoke(memory, new Vec2RO(1324,546), date, null);
+    	m.invoke(memory, new Vec2RO(1324,546), date, null);
     	memory.deleteOldObstacles();
     	Assert.assertTrue(memory.getFirstNotDeadNow() == 0);
     	Assert.assertTrue(memory.getNextDeathDate() == (date+peremption));

@@ -3,8 +3,7 @@ package obstacles.types;
 import java.util.ArrayList;
 
 import pathfinding.dstarlite.gridspace.PointDirige;
-import utils.Vec2;
-import utils.permissions.ReadOnly;
+import utils.Vec2RO;
 
 /**
  * Obstacles détectés par capteurs de proximité (ultrasons et infrarouges)
@@ -15,7 +14,7 @@ public class ObstacleProximity extends ObstacleCircular
 	private long death_date;
 	private ArrayList<PointDirige> masque;
 	
-	public ObstacleProximity(Vec2<ReadOnly> position, int rad, long death_date, ArrayList<PointDirige> masque)
+	public ObstacleProximity(Vec2RO position, int rad, long death_date, ArrayList<PointDirige> masque)
 	{
 		super(position,rad);
 		this.death_date = death_date;

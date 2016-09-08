@@ -3,9 +3,8 @@ package obstacles.types;
 import memory.Memorizable;
 import robot.RobotChrono;
 import utils.Config;
-import utils.Vec2;
-import utils.permissions.ReadOnly;
-import utils.permissions.ReadWrite;
+import utils.Vec2RO;
+import utils.Vec2RW;
 
 /**
  * Rectangle ayant subi une rotation.
@@ -23,16 +22,16 @@ public class ObstacleRectangular extends Obstacle implements Memorizable
 	
 	// calcul des positions des coins
 	// ces coins sont dans le repère de l'obstacle !
-	public Vec2<ReadOnly> coinBasGauche;
-	public Vec2<ReadOnly> coinHautGauche;
-	public Vec2<ReadOnly> coinBasDroite;
-	public Vec2<ReadOnly> coinHautDroite;
+	public Vec2RO coinBasGauche;
+	public Vec2RO coinHautGauche;
+	public Vec2RO coinBasDroite;
+	public Vec2RO coinHautDroite;
 
 	// ces coins sont dans le repère de la table
-	protected Vec2<ReadOnly> coinBasGaucheRotate;
-	protected Vec2<ReadOnly> coinHautGaucheRotate;
-	protected Vec2<ReadOnly> coinBasDroiteRotate;
-	protected Vec2<ReadOnly> coinHautDroiteRotate;
+	protected Vec2RO coinBasGaucheRotate;
+	protected Vec2RO coinHautGaucheRotate;
+	protected Vec2RO coinBasDroiteRotate;
+	protected Vec2RO coinHautDroiteRotate;
 	
 	private int indiceMemory;
 	
@@ -47,14 +46,14 @@ public class ObstacleRectangular extends Obstacle implements Memorizable
 	 * @param sizeY
 	 * @param angle
 	 */
-	public ObstacleRectangular(Vec2<ReadOnly> position, int sizeX, int sizeY)
+	public ObstacleRectangular(Vec2RO position, int sizeX, int sizeY)
 	{
 		this(position, sizeX, sizeY, 0);
 	}
 	
 	public ObstacleRectangular()
 	{
-		this(new Vec2<ReadOnly>(), 0, 0, 0);
+		this(new Vec2RO(), 0, 0, 0);
 	}
 	
 	/**
@@ -69,16 +68,16 @@ public class ObstacleRectangular extends Obstacle implements Memorizable
 	 * @param sizeY
 	 * @param angle
 	 */
-	public ObstacleRectangular(Vec2<ReadOnly> position, int sizeX, int sizeY, double angle)
+	public ObstacleRectangular(Vec2RO position, int sizeX, int sizeY, double angle)
 	{
 		super(position);
 		this.angle = angle;
 		cos = Math.cos(angle);
 		sin = Math.sin(angle);
-		coinBasGauche = new Vec2<ReadOnly>(-sizeX/2,-sizeY/2);
-		coinHautGauche = new Vec2<ReadOnly>(-sizeX/2,sizeY/2);
-		coinBasDroite = new Vec2<ReadOnly>(sizeX/2,-sizeY/2);
-		coinHautDroite = new Vec2<ReadOnly>(sizeX/2,sizeY/2);
+		coinBasGauche = new Vec2RO(-sizeX/2,-sizeY/2);
+		coinHautGauche = new Vec2RO(-sizeX/2,sizeY/2);
+		coinBasDroite = new Vec2RO(sizeX/2,-sizeY/2);
+		coinHautDroite = new Vec2RO(sizeX/2,sizeY/2);
 		coinBasGaucheRotate = convertitVersRepereTable(coinBasGauche).getReadOnly();
 		coinHautGaucheRotate = convertitVersRepereTable(coinHautGauche).getReadOnly();
 		coinBasDroiteRotate = convertitVersRepereTable(coinBasDroite).getReadOnly();
@@ -94,9 +93,9 @@ public class ObstacleRectangular extends Obstacle implements Memorizable
 	 * @param point
 	 * @return
 	 */
-	private Vec2<ReadWrite> convertitVersRepereObstacle(Vec2<ReadOnly> point)
+	private Vec2RW convertitVersRepereObstacle(Vec2RO point)
 	{
-		Vec2<ReadWrite> out = new Vec2<ReadWrite>();
+		Vec2RW out = new Vec2RW();
 		out.x = (int)(cos*(point.x-position.x)+sin*(point.y-position.y));
 		out.y = (int)(-sin*(point.x-position.x)+cos*(point.y-position.y));
 		return out;
@@ -108,9 +107,9 @@ public class ObstacleRectangular extends Obstacle implements Memorizable
 	 * @param point
 	 * @return
 	 */
-	private Vec2<ReadWrite> convertitVersRepereTable(Vec2<ReadOnly> point)
+	private Vec2RW convertitVersRepereTable(Vec2RO point)
 	{
-		Vec2<ReadWrite> out = new Vec2<ReadWrite>();
+		Vec2RW out = new Vec2RW();
 		out.x = (int)(cos*point.x-sin*point.y)+position.x;
 		out.y = (int)(sin*point.x+cos*point.y)+position.y;
 		return out;
@@ -121,7 +120,7 @@ public class ObstacleRectangular extends Obstacle implements Memorizable
 	 * @param point
 	 * @return
 	 */
-	private int getXConvertiVersRepereObstacle(Vec2<ReadOnly> point)
+	private int getXConvertiVersRepereObstacle(Vec2RO point)
 	{
 		return (int)(cos*(point.x-position.x)+sin*(point.y-position.y));
 	}
@@ -131,7 +130,7 @@ public class ObstacleRectangular extends Obstacle implements Memorizable
 	 * @param point
 	 * @return
 	 */
-	private int getYConvertiVersRepereObstacle(Vec2<ReadOnly> point)
+	private int getYConvertiVersRepereObstacle(Vec2RO point)
 	{
 		return (int)(-sin*(point.x-position.x)+cos*(point.y-position.y));
 	}
@@ -150,10 +149,10 @@ public class ObstacleRectangular extends Obstacle implements Memorizable
 		if(position.squaredDistance(r.position) >= (demieDiagonale+r.demieDiagonale)*(demieDiagonale+r.demieDiagonale))
 			return false;
 		// Il faut tester les quatres axes
-		return !testeSeparation(coinBasGauche.x, coinBasDroite.x, getXConvertiVersRepereObstacle(r.coinBasGaucheRotate.getReadOnly()), getXConvertiVersRepereObstacle(r.coinHautGaucheRotate.getReadOnly()), getXConvertiVersRepereObstacle(r.coinBasDroiteRotate.getReadOnly()), getXConvertiVersRepereObstacle(r.coinHautDroiteRotate.getReadOnly()))
-				&& !testeSeparation(coinBasGauche.y, coinHautGauche.y, getYConvertiVersRepereObstacle(r.coinBasGaucheRotate.getReadOnly()), getYConvertiVersRepereObstacle(r.coinHautGaucheRotate.getReadOnly()), getYConvertiVersRepereObstacle(r.coinBasDroiteRotate.getReadOnly()), getYConvertiVersRepereObstacle(r.coinHautDroiteRotate.getReadOnly()))
-				&& !testeSeparation(r.coinBasGauche.x, r.coinBasDroite.x, r.getXConvertiVersRepereObstacle(coinBasGaucheRotate.getReadOnly()), r.getXConvertiVersRepereObstacle(coinHautGaucheRotate.getReadOnly()), r.getXConvertiVersRepereObstacle(coinBasDroiteRotate.getReadOnly()), r.getXConvertiVersRepereObstacle(coinHautDroiteRotate.getReadOnly()))
-				&& !testeSeparation(r.coinBasGauche.y, r.coinHautGauche.y, r.getYConvertiVersRepereObstacle(coinBasGaucheRotate.getReadOnly()), r.getYConvertiVersRepereObstacle(coinHautGaucheRotate.getReadOnly()), r.getYConvertiVersRepereObstacle(coinBasDroiteRotate.getReadOnly()), r.getYConvertiVersRepereObstacle(coinHautDroiteRotate.getReadOnly()));
+		return !testeSeparation(coinBasGauche.x, coinBasDroite.x, getXConvertiVersRepereObstacle(r.coinBasGaucheRotate), getXConvertiVersRepereObstacle(r.coinHautGaucheRotate), getXConvertiVersRepereObstacle(r.coinBasDroiteRotate), getXConvertiVersRepereObstacle(r.coinHautDroiteRotate))
+				&& !testeSeparation(coinBasGauche.y, coinHautGauche.y, getYConvertiVersRepereObstacle(r.coinBasGaucheRotate), getYConvertiVersRepereObstacle(r.coinHautGaucheRotate), getYConvertiVersRepereObstacle(r.coinBasDroiteRotate), getYConvertiVersRepereObstacle(r.coinHautDroiteRotate))
+				&& !testeSeparation(r.coinBasGauche.x, r.coinBasDroite.x, r.getXConvertiVersRepereObstacle(coinBasGaucheRotate), r.getXConvertiVersRepereObstacle(coinHautGaucheRotate), r.getXConvertiVersRepereObstacle(coinBasDroiteRotate), r.getXConvertiVersRepereObstacle(coinHautDroiteRotate))
+				&& !testeSeparation(r.coinBasGauche.y, r.coinHautGauche.y, r.getYConvertiVersRepereObstacle(coinBasGaucheRotate), r.getYConvertiVersRepereObstacle(coinHautGaucheRotate), r.getYConvertiVersRepereObstacle(coinBasDroiteRotate), r.getYConvertiVersRepereObstacle(coinHautDroiteRotate));
 	}
 	
 	/**
@@ -192,9 +191,9 @@ public class ObstacleRectangular extends Obstacle implements Memorizable
 	 * @return la plus petite distance au carré entre le point fourni et l'obstacle
 	 */
 	@Override
-	public double squaredDistance(Vec2<ReadOnly> v)
+	public double squaredDistance(Vec2RO v)
 	{
-		Vec2<ReadWrite> in = convertitVersRepereObstacle(v);
+		Vec2RW in = convertitVersRepereObstacle(v);
 //		log.debug("in = : "+in);
 		/*		
 		 *  Schéma de la situation :
@@ -256,9 +255,9 @@ public class ObstacleRectangular extends Obstacle implements Memorizable
 	 * @param robot
 	 * @return
 	 */
-	public ObstacleRectangular update(Vec2<ReadOnly> position, double orientation, RobotChrono robot)
+	public ObstacleRectangular update(Vec2RO position, double orientation, RobotChrono robot)
 	{
-		Vec2.copy(position, this.position);
+		position.copy(this.position);
 		this.angle = orientation;
 		cos = Math.cos(angle);
 		sin = Math.sin(angle);

@@ -9,9 +9,8 @@ import table.Tribool;
 import utils.Config;
 import utils.ConfigInfo;
 import utils.Log;
-import utils.Vec2;
-import utils.permissions.ReadOnly;
-import utils.permissions.ReadWrite;
+import utils.Vec2RO;
+import utils.Vec2RW;
 
 /**
  * Cette classe contient les informations sur la situation
@@ -20,7 +19,6 @@ import utils.permissions.ReadWrite;
  *
  */
 
-@SuppressWarnings("unchecked")
 public class Capteurs implements Service {
 	protected Log log;
 	private GridSpace gridspace;
@@ -36,7 +34,7 @@ public class Capteurs implements Service {
 	 * Les positions relatives des capteurs par rapport au centre du
 	 * robot lorsque celui-ci a une orientation nulle.
 	 */
-	public final Vec2<ReadOnly>[] positionsRelatives;
+	public final Vec2RO[] positionsRelatives;
 
 	/**
 	 * L'orientation des capteurs lorsque le robot a une orientation nulle
@@ -48,12 +46,12 @@ public class Capteurs implements Service {
 		this.table = table;
 		this.log = log;
 		this.gridspace = gridspace;
-		positionsRelatives = new Vec2[nbCapteurs];
+		positionsRelatives = new Vec2RO[nbCapteurs];
 		orientationsRelatives = new double[nbCapteurs];
 
 		// TODO à compléter
-		positionsRelatives[0] = new Vec2<ReadOnly>(70, -25);
-		positionsRelatives[1] = new Vec2<ReadOnly>(70, 75);
+		positionsRelatives[0] = new Vec2RO(70, -25);
+		positionsRelatives[1] = new Vec2RO(70, 75);
 
 		orientationsRelatives[0] = 0;
 		orientationsRelatives[1] = 0;
@@ -79,7 +77,7 @@ public class Capteurs implements Service {
 	public void updateObstaclesMobiles(SensorsData data)
 	{
 		double orientationRobot = data.cinematique.orientation;
-		Vec2<ReadOnly> positionRobot = data.cinematique.getPosition();
+		Vec2RO positionRobot = data.cinematique.getPosition();
 		boolean needNotify = false; // on ne notifie qu'une seule fois
 		
 		/**
@@ -109,7 +107,7 @@ public class Capteurs implements Service {
 				/**
 				 * Si ce qu'on voit est un obstacle de table, on l'ignore
 				 */
-				Vec2<ReadOnly> positionVue = new Vec2<ReadOnly>(data.mesures[i], orientationsRelatives[i], true);
+				Vec2RO positionVue = new Vec2RO(data.mesures[i], orientationsRelatives[i], true);
 				
 		    	for(ObstaclesFixes o: ObstaclesFixes.obstaclesFixesVisibles)
 		    		if(o.getObstacle().squaredDistance(positionVue) < distanceApproximation * distanceApproximation)
@@ -119,10 +117,10 @@ public class Capteurs implements Service {
 				 * Sinon, on ajoute
 				 */
 				needNotify = true;
-				Vec2<ReadWrite> positionEnnemi = new Vec2<ReadWrite>(data.mesures[i]+rayonEnnemi, orientationsRelatives[i], true);
-				Vec2.plus(positionEnnemi, positionsRelatives[i]);
-				Vec2.rotate(positionEnnemi, orientationRobot);
-				Vec2.plus(positionEnnemi, positionRobot);
+				Vec2RW positionEnnemi = new Vec2RW(data.mesures[i]+rayonEnnemi, orientationsRelatives[i], true);
+				positionEnnemi.plus(positionsRelatives[i]);
+				positionEnnemi.rotate(orientationRobot);
+				positionEnnemi.plus(positionRobot);
 				
 				if(positionEnnemi.x > 1500 || positionEnnemi.x < -1500 || positionEnnemi.y > 2000 || positionEnnemi.y < 0)
 					continue; // hors table

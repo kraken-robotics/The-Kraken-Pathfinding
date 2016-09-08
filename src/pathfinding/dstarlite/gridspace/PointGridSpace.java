@@ -1,9 +1,7 @@
 package pathfinding.dstarlite.gridspace;
 
 import utils.Config;
-import utils.Vec2;
-import utils.permissions.ReadOnly;
-import utils.permissions.ReadWrite;
+import utils.Vec2RO;
 import container.Service;
 
 /**
@@ -56,10 +54,9 @@ public class PointGridSpace implements Service
 		return 1000 * Math.max(dx, dy) + 414 * Math.min(dx, dy);
 	}
 
-	public static final Vec2<ReadOnly> computeVec2(PointGridSpace gridpoint)
+	public static final Vec2RO computeVec2(PointGridSpace gridpoint)
 	{
-		Vec2<ReadWrite> out = new Vec2<ReadWrite>(((gridpoint.x * DISTANCE_ENTRE_DEUX_POINTS_1024) >> 10) - 1500, (gridpoint.y * DISTANCE_ENTRE_DEUX_POINTS_1024) >> 10);
-		return out.getReadOnly();
+		return new Vec2RO(((gridpoint.x * DISTANCE_ENTRE_DEUX_POINTS_1024) >> 10) - 1500, (gridpoint.y * DISTANCE_ENTRE_DEUX_POINTS_1024) >> 10);
 	}
 
 	@Override
