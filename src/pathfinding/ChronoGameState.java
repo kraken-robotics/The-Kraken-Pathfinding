@@ -4,7 +4,6 @@ import obstacles.memory.ObstaclesIteratorFutur;
 import robot.RobotChrono;
 import table.Table;
 import utils.Config;
-import utils.Log;
 
 /**
  * Le game state rassemble toutes les informations disponibles à un instant
@@ -18,11 +17,9 @@ import utils.Log;
 public class ChronoGameState extends GameState<RobotChrono>
 {
     public final ObstaclesIteratorFutur iterator;
-    protected Log log;
 
-    public ChronoGameState(Log log, RobotChrono robot, ObstaclesIteratorFutur iterator, Table table)
+    public ChronoGameState(RobotChrono robot, ObstaclesIteratorFutur iterator, Table table)
     {
-    	this.log = log;
     	this.robot = robot;
     	this.iterator = iterator;
     	this.table = table;

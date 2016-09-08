@@ -8,6 +8,7 @@ import memory.NodeMM;
 import memory.ObsMM;
 import obstacles.types.ObstacleRectangular;
 import pathfinding.CheminPathfinding;
+import pathfinding.ChronoGameState;
 import pathfinding.RealGameState;
 import pathfinding.astarCourbe.arcs.ArcManager;
 import pathfinding.astarCourbe.arcs.ArcCourbe;
@@ -15,6 +16,7 @@ import pathfinding.astarCourbe.arcs.ArcCourbeCubique;
 import pathfinding.dstarlite.DStarLite;
 import pathfinding.dstarlite.gridspace.GridSpace;
 import pathfinding.dstarlite.gridspace.PointGridSpace;
+import container.Container;
 import container.Service;
 import debug.Fenetre;
 import exceptions.PathfindingException;
@@ -79,14 +81,14 @@ public class AStarCourbe implements Service
 	/**
 	 * Constructeur du AStarCourbe
 	 */
-	public AStarCourbe(Log log, DStarLite dstarlite, ArcManager arcmanager, RealGameState state, CheminPathfinding chemin, NodeMM memorymanager, GridSpace gridspace, ObsMM rectMemory, Fenetre fenetre)
+	public AStarCourbe(Log log, DStarLite dstarlite, ArcManager arcmanager, RealGameState state, CheminPathfinding chemin, NodeMM memorymanager, GridSpace gridspace, ObsMM rectMemory, Fenetre fenetre, AStarCourbeNode depart)
 	{
 		this.log = log;
 		this.arcmanager = arcmanager;
 		this.state = state;
 		this.memorymanager = memorymanager;
 		this.chemin = chemin;
-		depart = new AStarCourbeNode();
+		this.depart = depart;
 		this.state = state;
 		this.dstarlite = dstarlite;
 		this.gridspace = gridspace;

@@ -240,6 +240,8 @@ public class Container implements Service
 	 */
 	public synchronized <S> S make(Class<S> serviceTo) throws ContainerException
 	{
+		if(Service.class.isAssignableFrom(serviceTo))
+			throw new ContainerException("make doit être utilisé avec des non-services");
 		return getServiceDisplay(null, serviceTo, new Stack<String>());
 	}
 
@@ -248,7 +250,7 @@ public class Container implements Service
 		/**
 		 * On ne crée pas forcément le graphe de dépendances pour éviter une lourdeur inutile
 		 */
-		if(showGraph && !serviceTo.equals(Log.class) && Service.class.isAssignableFrom(serviceTo) && (serviceFrom == null || Service.class.isAssignableFrom(serviceFrom)))
+		if(showGraph && !serviceTo.equals(Log.class) && showGraph && !serviceTo.equals(Container.class) && Service.class.isAssignableFrom(serviceTo) && (serviceFrom == null || Service.class.isAssignableFrom(serviceFrom)))
 		{
 			try {
 				if(ok.contains(serviceTo.getSimpleName()))

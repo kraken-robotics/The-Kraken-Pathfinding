@@ -14,13 +14,17 @@ import utils.Config;
 
 public class AStarCourbeNode implements Memorizable
 {
-
 	public ChronoGameState state;
 	public double g_score;
 	public double f_score;
 	public AStarCourbeNode came_from;
 	public ArcCourbe came_from_arc = new ArcCourbeClotho();
 	private int indiceMemoryManager;
+	
+	public AStarCourbeNode(ChronoGameState state)
+	{
+		this.state = state;
+	}
 	
 	public void init()
 	{
@@ -52,6 +56,8 @@ public class AStarCourbeNode implements Memorizable
 
 	@Override
 	public void useConfig(Config config)
-	{}
+	{
+		state.updateConfig(config);
+	}
 	
 }

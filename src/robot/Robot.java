@@ -1,6 +1,5 @@
 package robot;
 
-import container.Service;
 import pathfinding.dstarlite.gridspace.PointGridSpace;
 import utils.ConfigInfo;
 import utils.Log;
@@ -11,7 +10,7 @@ import utils.Config;
  * @author PF
  */
 
-public abstract class Robot implements Service 
+public abstract class Robot 
 {
 	
 	/*
@@ -49,7 +48,6 @@ public abstract class Robot implements Service
     	rc.positionGridSpace = getPositionGridSpace();
     }
 	
-	@Override
 	public synchronized void updateConfig(Config config)
 	{
 		dateDebutMatch = config.getLong(ConfigInfo.DATE_DEBUT_MATCH);
@@ -57,7 +55,6 @@ public abstract class Robot implements Service
 		symetrie = config.getSymmetry();
 	}
 
-	@Override
 	public void useConfig(Config config)
 	{}
     
