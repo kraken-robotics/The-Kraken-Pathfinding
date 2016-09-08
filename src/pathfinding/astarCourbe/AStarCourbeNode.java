@@ -1,8 +1,10 @@
 package pathfinding.astarCourbe;
 
+import memory.Memorizable;
 import pathfinding.ChronoGameState;
 import pathfinding.astarCourbe.arcs.ArcCourbe;
 import pathfinding.astarCourbe.arcs.ArcCourbeClotho;
+import utils.Config;
 
 /**
  * Un nœud de l'A* courbe
@@ -10,7 +12,8 @@ import pathfinding.astarCourbe.arcs.ArcCourbeClotho;
  *
  */
 
-public class AStarCourbeNode {
+public class AStarCourbeNode implements Memorizable
+{
 
 	public ChronoGameState state;
 	public double g_score;
@@ -46,5 +49,9 @@ public class AStarCourbeNode {
 		state.copyAStarCourbe(modified.state);
 		modified.came_from = null;
 	}
+
+	@Override
+	public void useConfig(Config config)
+	{}
 	
 }

@@ -1,7 +1,7 @@
-package pathfinding.astarCourbe;
+package memory;
 
-import pathfinding.ChronoGameState;
-import pathfinding.RealGameState;
+import java.lang.reflect.Array;
+
 import container.Container;
 import container.Service;
 import exceptions.ContainerException;
@@ -9,45 +9,47 @@ import utils.Config;
 import utils.Log;
 
 /**
- * Classe qui fournit des objets AStarCourbeNode à AStarCourbe.
- * AStar a besoin de beaucoup de nodes, et l'instanciation d'un objet est long.
+ * Classe qui fournit des objets
+ * Quand on a besoin de beaucoup d'objets, car l'instanciation d'un objet est long.
  * Du coup on réutilise les mêmes objets sans devoir en créer tout le temps de nouveaux.
  * @author pf
  *
  */
 
-public class MemoryManager implements Service {
+public class MemoryManager<T extends Memorizable> implements Service {
 
-	private static final int nb_instances = 1000;
+	protected int nb_instances;
 
-	private final AStarCourbeNode[] nodes = new AStarCourbeNode[nb_instances];
+	private final T[] nodes;
 	protected Log log;
 	
 	private int firstAvailable;
 	
 	@Override
 	public void updateConfig(Config config)
-	{
-		for(int j = 0; j < nb_instances; j++)
-			nodes[j].state.updateConfig(config);
-	}
+	{}
 
 	@Override
 	public void useConfig(Config config)
-	{}
+	{
+		for(int i = 0; i < nb_instances; i++)
+			nodes[i].useConfig(config);
+	}
 
-	public MemoryManager(Log log, Container container) throws ContainerException, InterruptedException
+	@SuppressWarnings("unchecked")
+	public MemoryManager(Class<T> classe, Log log, Container container, int nb_instances) throws ContainerException
 	{	
 		this.log = log;
-
+		this.nb_instances = nb_instances;
+		nodes = (T[]) Array.newInstance(classe, nb_instances);
 		firstAvailable = 0;
-		// on prépare déjà des gamestates
-		log.debug("Instanciation de "+nb_instances+" ChronoGameState");
+
+		// on instancie une fois pour toutes les objets
+		log.debug("Instanciation de "+nb_instances+" "+classe.getSimpleName());
 
 		for(int i = 0; i < nb_instances; i++)
 		{
-			nodes[i] = new AStarCourbeNode();
-			nodes[i].state = container.make(ChronoGameState.class);
+			nodes[i] = container.make(classe);
 			nodes[i].setIndiceMemoryManager(i);
 		}
 		log.debug("Instanciation finie");
@@ -59,17 +61,17 @@ public class MemoryManager implements Service {
 	 * @return
 	 * @throws FinMatchException
 	 */
-	public AStarCourbeNode getNewNode()
+	public T getNewNode()
 	{
 		// lève une exception s'il n'y a plus de place
-		AStarCourbeNode out;
+		T out;
 		out = nodes[firstAvailable];
 		firstAvailable++;
 		return out;
 	}
 
 	/**
-	 * Signale que tous les gamestates sont disponibles. Très rapide.
+	 * Signale que tous les objets sont disponibles. Très rapide.
 	 * @param id_astar
 	 */
 	public void empty()
@@ -78,12 +80,12 @@ public class MemoryManager implements Service {
 	}
 	
 	/**
-	 * Signale qu'un gamestate est de nouveau disponible
+	 * Signale qu'un objet est de nouveau disponible
 	 * @param state
 	 * @param id_astar
 	 * @throws MemoryManagerException
 	 */
-	public void destroyNode(AStarCourbeNode state)
+	public void destroyNode(T state)
 	{
 		
 		int indice_state = state.getIndiceMemoryManager();
@@ -101,8 +103,8 @@ public class MemoryManager implements Service {
 		// de manière à avoir toujours un Vector trié.
 		firstAvailable--;
 		
-		AStarCourbeNode tmp1 = nodes[indice_state];
-		AStarCourbeNode tmp2 = nodes[firstAvailable];
+		T tmp1 = nodes[indice_state];
+		T tmp2 = nodes[firstAvailable];
 
 		tmp1.setIndiceMemoryManager(firstAvailable);
 		tmp2.setIndiceMemoryManager(indice_state);

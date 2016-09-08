@@ -28,7 +28,7 @@ public abstract class Obstacle
 		Obstacle.log = log;
 	}
 	
-	public static void useConfig(Config config)
+	public static void useConfigStatic(Config config)
 	{
 		rayonRobot = config.getInt(ConfigInfo.RAYON_ROBOT);
 		distanceApprox = config.getInt(ConfigInfo.DISTANCE_MAX_ENTRE_MESURE_ET_OBJET);

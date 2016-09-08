@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.PriorityQueue;
 
-import obstacles.ObstaclesRectangularMemory;
+import memory.NodeMM;
+import memory.ObsMM;
 import obstacles.types.ObstacleRectangular;
 import pathfinding.CheminPathfinding;
 import pathfinding.RealGameState;
@@ -41,13 +42,13 @@ public class AStarCourbe implements Service
 	private ArcManager arcmanager;
 	private DStarLite dstarlite;
 	private RealGameState state;
-	private MemoryManager memorymanager;
+	private NodeMM memorymanager;
 	protected Fenetre fenetre;
 	private Cinematique arrivee;
 	private AStarCourbeNode depart;
 	private CheminPathfinding chemin;
 	private GridSpace gridspace;
-	private ObstaclesRectangularMemory rectMemory;
+	private ObsMM rectMemory;
 	private boolean graphicTrajectory;
 	
 	private Speed vitesseMax;
@@ -78,7 +79,7 @@ public class AStarCourbe implements Service
 	/**
 	 * Constructeur du AStarCourbe
 	 */
-	public AStarCourbe(Log log, DStarLite dstarlite, ArcManager arcmanager, RealGameState state, CheminPathfinding chemin, MemoryManager memorymanager, GridSpace gridspace, ObstaclesRectangularMemory rectMemory, Fenetre fenetre)
+	public AStarCourbe(Log log, DStarLite dstarlite, ArcManager arcmanager, RealGameState state, CheminPathfinding chemin, NodeMM memorymanager, GridSpace gridspace, ObsMM rectMemory, Fenetre fenetre)
 	{
 		this.log = log;
 		this.arcmanager = arcmanager;

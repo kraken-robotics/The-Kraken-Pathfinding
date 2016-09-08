@@ -1,6 +1,8 @@
 package obstacles.types;
 
+import memory.Memorizable;
 import robot.RobotChrono;
+import utils.Config;
 import utils.Vec2;
 import utils.permissions.ReadOnly;
 import utils.permissions.ReadWrite;
@@ -12,7 +14,7 @@ import utils.permissions.ReadWrite;
  *
  */
 
-public class ObstacleRectangular extends Obstacle
+public class ObstacleRectangular extends Obstacle implements Memorizable
 {
 	// Position est le centre de rotation, c'est-à-dire le croisement des deux diagonales
 	
@@ -280,5 +282,9 @@ public class ObstacleRectangular extends Obstacle
 		demieDiagonale = robot.getDemieDiagonale();
 		return this;
 	}
+
+	@Override
+	public void useConfig(Config config)
+	{}
 	
 }

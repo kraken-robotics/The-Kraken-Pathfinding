@@ -1,9 +1,9 @@
 package container;
 
+import memory.*;
 import obstacles.*;
 import obstacles.memory.*;
 import obstacles.types.*;
-import pathfinding.astarCourbe.*;
 import pathfinding.dstarlite.gridspace.*;
 
 import java.io.BufferedReader;
@@ -178,7 +178,7 @@ public class Container implements Service
 	
 		useConfig(config);
 		Obstacle.setLog(log);
-		Obstacle.useConfig(config);
+		Obstacle.useConfigStatic(config);
 				
 		if(showGraph)
 		{
@@ -190,9 +190,7 @@ public class Container implements Service
 				log.warning(e);
 			}
 		}
-		
-		startAllThreads();
-		
+
 		ok.add(Config.class.getSimpleName());
 		ok.add(ThreadSerialOutput.class.getSimpleName());
 		ok.add(BufferIncomingBytes.class.getSimpleName());
@@ -206,15 +204,18 @@ public class Container implements Service
 		ok.add(Table.class.getSimpleName());
 		ok.add(SensorsDataBuffer.class.getSimpleName());
 		ok.add(ThreadPeremption.class.getSimpleName());
-		ok.add(ObstaclesRectangularMemory.class.getSimpleName());
+		ok.add(ObsMM.class.getSimpleName());
 		ok.add(ThreadSerialInputCoucheTrame.class.getSimpleName());
 		ok.add(ObstaclesMemory.class.getSimpleName());
 		ok.add(ThreadCapteurs.class.getSimpleName());
 		ok.add(PointGridSpaceManager.class.getSimpleName());
 		ok.add(PointDirigeManager.class.getSimpleName());
 		ok.add(GridSpace.class.getSimpleName());
-		ok.add(MemoryManager.class.getSimpleName());
-		ok.add(MemoryManager.class.getSimpleName());
+		ok.add(NodeMM.class.getSimpleName());
+		ok.add(ObsMM.class.getSimpleName());
+		
+		startAllThreads();
+		
 	}
 	
 	/**
@@ -303,29 +304,34 @@ public class Container implements Service
 			 * Récupération du constructeur et de ses paramètres
 			 * On suppose qu'il n'y a chaque fois qu'un seul constructeur pour cette classe
 			 */
+			Constructor<S> constructeur;
+			
 			if(classe.getConstructors().length > 1)
-				throw new ContainerException(classe.getSimpleName()+" a plusieurs constructeurs !");
-
-			Constructor<S> constructeur = (Constructor<S>) classe.getConstructors()[0];
+			{
+				try
+				{
+					// Plus d'un constructeur ? On prend celui par défaut
+					constructeur = classe.getConstructor();
+				} catch(Exception e)
+				{
+					throw new ContainerException(classe.getSimpleName()+" a plusieurs constructeurs et aucun constructeur par défaut !");					
+				}
+			}
+			else if(classe.getConstructors().length == 0)
+				throw new ContainerException(classe.getSimpleName()+" n'a aucun constructeur !");
+			else
+				constructeur = (Constructor<S>) classe.getConstructors()[0];
+			
 			Class<Service>[] param = (Class<Service>[]) constructeur.getParameterTypes();
 			
 			/**
 			 * On demande récursivement chacun de ses paramètres
 			 */
-			boolean logPresent = false;
-			if(classe == Log.class || classe == Config.class)
-				logPresent = true;
-			
 			Object[] paramObject = new Object[param.length];
 			for(int i = 0; i < param.length; i++)
 			{
-				if(param[i].isAssignableFrom(Log.class))
-					logPresent = true;
 				paramObject[i] = getServiceDisplay(classe, param[i], stack);
 			}
-			
-			if(!logPresent)
-				log.warning("La classe "+classe.getSimpleName()+" n'utilise pas Log !");
 
 			/**
 			 * Instanciation et sauvegarde
@@ -349,7 +355,7 @@ public class Container implements Service
 				| InvocationTargetException | NoSuchMethodException
 				| SecurityException | InstantiationException e) {
 			e.printStackTrace();
-			throw new ContainerException(e.getMessage());
+			throw new ContainerException(e.toString());
 		}
 	}
 

@@ -9,8 +9,8 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 
+import memory.ObsMM;
 import container.Service;
-import obstacles.ObstaclesRectangularMemory;
 import obstacles.types.ObstacleArcCourbe;
 import pathfinding.VitesseCourbure;
 import robot.Cinematique;
@@ -32,7 +32,7 @@ import utils.permissions.ReadWrite;
 public class ClothoidesComputer implements Service
 {
 	private Log log;
-	private ObstaclesRectangularMemory memory;
+	private ObsMM memory;
 	
 	private BigDecimal x, y; // utilisés dans le calcul de trajectoire
 	private static final int S_MAX = 10; // une valeur très grande pour dire qu'on trace beaucoup de points.
@@ -48,7 +48,7 @@ public class ClothoidesComputer implements Service
 	@SuppressWarnings("unchecked")
 	private Vec2<ReadOnly>[] trajectoire = new Vec2[2 * INDICE_MAX - 1];
 	
-	public ClothoidesComputer(Log log, ObstaclesRectangularMemory memory)
+	public ClothoidesComputer(Log log, ObsMM memory)
 	{
 		this.memory = memory;
 		this.log = log;
