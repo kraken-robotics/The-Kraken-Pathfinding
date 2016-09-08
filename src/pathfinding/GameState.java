@@ -9,9 +9,9 @@ import table.Table;
  *
  */
 
-public abstract class GameState
+public abstract class GameState<R extends Robot>
 {
 	public Table table;
-	public Robot robot;
+	public R robot;
 	public abstract void copyAStarCourbe(ChronoGameState state);
 }

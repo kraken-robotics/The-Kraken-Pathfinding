@@ -3,6 +3,7 @@ package container;
 import obstacles.*;
 import obstacles.memory.*;
 import obstacles.types.*;
+import pathfinding.astarCourbe.*;
 import pathfinding.dstarlite.gridspace.*;
 
 import java.io.BufferedReader;
@@ -39,9 +40,6 @@ public class Container implements Service
 	// liste des services déjà instanciés. Contient au moins Config et Log. Les autres services appelables seront présents quand ils auront été appelés
 	private HashMap<String, Service> instanciedServices = new HashMap<String, Service>();
 	
-	// permet de détecter les dépendances circulaires
-	private volatile Stack<String> stack = new Stack<String>();
-	
 	private Log log;
 	private Config config;
 	
@@ -50,6 +48,8 @@ public class Container implements Service
 	private boolean showGraph;
 	private FileWriter fw;
 
+	private ArrayList<String> ok = new ArrayList<String>();
+	
 	/**
 	 * Fonction appelé automatiquement à la fin du programme.
 	 * ferme la connexion serie, termine les différents threads, et ferme le log.
@@ -163,15 +163,19 @@ public class Container implements Service
 		System.out.println("    Remember, with great power comes great current squared times resistance !");
 		System.out.println();
 		
-		log = getService(Log.class);
-		config = getService(Config.class);
+		log = new Log();
+		config = new Config();
 		log.updateConfig(config);
 		log.useConfig(config);
 		// Interdépendance entre log et config…
 		config.init(log);
 		
+		instanciedServices.put(Log.class.getSimpleName(), log);
+		instanciedServices.put(Config.class.getSimpleName(), config);
+
 		// Le container est aussi un service
 		instanciedServices.put(getClass().getSimpleName(), this);
+	
 		useConfig(config);
 		Obstacle.setLog(log);
 		Obstacle.useConfig(config);
@@ -188,6 +192,29 @@ public class Container implements Service
 		}
 		
 		startAllThreads();
+		
+		ok.add(Config.class.getSimpleName());
+		ok.add(ThreadSerialOutput.class.getSimpleName());
+		ok.add(BufferIncomingBytes.class.getSimpleName());
+		ok.add(SerieCouchePhysique.class.getSimpleName());
+		ok.add(SerieCoucheTrame.class.getSimpleName());
+		ok.add(ThreadSerialOutputTimeout.class.getSimpleName());
+		ok.add(BufferIncomingOrder.class.getSimpleName());
+		ok.add(Container.class.getSimpleName());
+		ok.add(ThreadConfig.class.getSimpleName());
+		ok.add(BufferOutgoingOrder.class.getSimpleName());
+		ok.add(Table.class.getSimpleName());
+		ok.add(SensorsDataBuffer.class.getSimpleName());
+		ok.add(ThreadPeremption.class.getSimpleName());
+		ok.add(ObstaclesRectangularMemory.class.getSimpleName());
+		ok.add(ThreadSerialInputCoucheTrame.class.getSimpleName());
+		ok.add(ObstaclesMemory.class.getSimpleName());
+		ok.add(ThreadCapteurs.class.getSimpleName());
+		ok.add(PointGridSpaceManager.class.getSimpleName());
+		ok.add(PointDirigeManager.class.getSimpleName());
+		ok.add(GridSpace.class.getSimpleName());
+		ok.add(MemoryManager.class.getSimpleName());
+		ok.add(MemoryManager.class.getSimpleName());
 	}
 	
 	/**
@@ -199,41 +226,29 @@ public class Container implements Service
 	 * @throws ContainerException
 	 * @throws InterruptedException 
 	 */
-	public synchronized <S> S getService(Class<S> serviceTo) throws ContainerException, InterruptedException
+	public synchronized <S extends Service> S getService(Class<S> serviceTo) throws ContainerException
 	{
-		stack.clear(); // pile d'appel vidée
-		return getServiceDisplay(null, serviceTo);
+		return getServiceDisplay(null, serviceTo, new Stack<String>());
 	}
 	
-	private synchronized <S> S getServiceDisplay(Class<?> serviceFrom, Class<S> serviceTo) throws ContainerException, InterruptedException
+	/**
+	 * Aucune différence avec getService ; c'est juste que c'est fait pour les non-services aussi
+	 * @param serviceTo
+	 * @return
+	 * @throws ContainerException
+	 */
+	public synchronized <S> S make(Class<S> serviceTo) throws ContainerException
+	{
+		return getServiceDisplay(null, serviceTo, new Stack<String>());
+	}
+
+	private synchronized <S> S getServiceDisplay(Class<?> serviceFrom, Class<S> serviceTo, Stack<String> stack) throws ContainerException
 	{
 		/**
 		 * On ne crée pas forcément le graphe de dépendances pour éviter une lourdeur inutile
 		 */
 		if(showGraph && !serviceTo.equals(Log.class) && Service.class.isAssignableFrom(serviceTo) && (serviceFrom == null || Service.class.isAssignableFrom(serviceFrom)))
 		{
-			ArrayList<String> ok = new ArrayList<String>();
-			ok.add(Config.class.getSimpleName());
-			ok.add(ThreadSerialOutput.class.getSimpleName());
-			ok.add(BufferIncomingBytes.class.getSimpleName());
-			ok.add(SerieCouchePhysique.class.getSimpleName());
-			ok.add(SerieCoucheTrame.class.getSimpleName());
-			ok.add(ThreadSerialOutputTimeout.class.getSimpleName());
-			ok.add(BufferIncomingOrder.class.getSimpleName());
-			ok.add(Container.class.getSimpleName());
-			ok.add(ThreadConfig.class.getSimpleName());
-			ok.add(BufferOutgoingOrder.class.getSimpleName());
-			ok.add(Table.class.getSimpleName());
-			ok.add(SensorsDataBuffer.class.getSimpleName());
-			ok.add(ThreadPeremption.class.getSimpleName());
-			ok.add(ObstaclesRectangularMemory.class.getSimpleName());
-			ok.add(ThreadSerialInputCoucheTrame.class.getSimpleName());
-			ok.add(ObstaclesMemory.class.getSimpleName());
-			ok.add(ThreadCapteurs.class.getSimpleName());
-			ok.add(PointGridSpaceManager.class.getSimpleName());
-			ok.add(PointDirigeManager.class.getSimpleName());
-			ok.add(GridSpace.class.getSimpleName());
-			
 			try {
 				if(ok.contains(serviceTo.getSimpleName()))
 					fw.write(serviceTo.getSimpleName()+" [color=green3, style=filled];\n");
@@ -246,7 +261,7 @@ public class Container implements Service
 				e.printStackTrace();
 			}
 		}
-		return getServiceRecursif(serviceTo);
+		return getServiceRecursif(serviceTo, stack);
 	}
 
 	/**
@@ -257,7 +272,7 @@ public class Container implements Service
 	 * @throws InterruptedException
 	 */
 	@SuppressWarnings("unchecked")
-	private synchronized <S> S getServiceRecursif(Class<S> classe) throws ContainerException, InterruptedException
+	private synchronized <S> S getServiceRecursif(Class<S> classe, Stack<String> stack) throws ContainerException
 	{
 		try {
 			/**
@@ -306,11 +321,11 @@ public class Container implements Service
 			{
 				if(param[i].isAssignableFrom(Log.class))
 					logPresent = true;
-				paramObject[i] = getServiceDisplay(classe, param[i]);
+				paramObject[i] = getServiceDisplay(classe, param[i], stack);
 			}
 			
 			if(!logPresent)
-				log.warning("La classe "+classe+" n'utilise pas Log !");
+				log.warning("La classe "+classe.getSimpleName()+" n'utilise pas Log !");
 
 			/**
 			 * Instanciation et sauvegarde

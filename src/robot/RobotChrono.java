@@ -16,10 +16,15 @@ public class RobotChrono extends Robot
 	// Date en millisecondes depuis le début du match.
 	protected long date;
 
-	RobotChrono(Log log, Cinematique cinematique)
+	/**
+	 * Constructeur clone
+	 * @param log
+	 * @param robot
+	 */
+	public RobotChrono(Log log, RobotReal robot)
 	{
 		super(log);
-		this.cinematique = new Cinematique(cinematique);
+		robot.copy(this);
 	}
 
 	@Override
@@ -60,14 +65,6 @@ public class RobotChrono extends Robot
 	public void inverseSensMarche()
 	{
 		cinematique.enMarcheAvant = !cinematique.enMarcheAvant;
-	}
-
-	/**
-	 * UTILISE UNIQUEMENT PAR LES TESTS
-	 */
-	public void reinitDate()
-	{
-		date = 0;
 	}
 
 	public void suitArcCourbe(ArcCourbe came_from_arc)

@@ -3,36 +3,29 @@ package debug;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
-import container.Container;
 import container.Service;
-import exceptions.ContainerException;
 import obstacles.ObstaclesFixes;
 import obstacles.Capteurs;
 import obstacles.memory.ObstaclesIteratorPresent;
-import obstacles.memory.ObstaclesMemory;
 import obstacles.types.Obstacle;
 import obstacles.types.ObstacleCircular;
 import obstacles.types.ObstacleRectangular;
 import pathfinding.dstarlite.gridspace.GridSpace;
 import pathfinding.dstarlite.gridspace.PointGridSpace;
 import pathfinding.dstarlite.gridspace.PointGridSpaceManager;
-import table.Table;
 import utils.Config;
 import utils.ConfigInfo;
+import utils.Log;
 import utils.Vec2;
 import utils.permissions.ReadOnly;
 import utils.permissions.ReadWrite;
-import utils.Log;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 
@@ -45,6 +38,7 @@ import java.util.ArrayList;
 public class Fenetre extends JPanel implements Service {
 
 	private static final long serialVersionUID = 1L;
+	protected Log log;
 	
 	private boolean afficheFond;
 	private int sizeX = 450, sizeY = 300;
@@ -68,8 +62,9 @@ public class Fenetre extends JPanel implements Service {
 	private PointGridSpaceManager pm;
 	private boolean needInit = true;
 	
-	public Fenetre(ObstaclesIteratorPresent iterator, GridSpace gs, PointGridSpaceManager pm) throws InterruptedException
+	public Fenetre(Log log, ObstaclesIteratorPresent iterator, GridSpace gs, PointGridSpaceManager pm)
 	{
+		this.log = log;
 		this.iterator = iterator;
 		this.gs = gs;
 		this.pm = pm;

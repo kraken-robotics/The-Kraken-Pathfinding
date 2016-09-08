@@ -27,19 +27,12 @@ public abstract class Robot implements Service
     protected volatile long dateDebutMatch;
     protected boolean deploye = false;
     
-	// Dépendances
 	protected Log log;
 	
 	public Robot(Log log)
 	{
 		this.log = log;
-	}
-
-	public RobotChrono cloneIntoRobotChrono()
-	{
-		RobotChrono cloned_robotchrono = new RobotChrono(log, cinematique);
-		copy(cloned_robotchrono);
-		return cloned_robotchrono;
+		cinematique = new Cinematique();
 	}
 
 	/**

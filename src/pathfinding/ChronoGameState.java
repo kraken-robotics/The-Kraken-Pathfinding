@@ -15,7 +15,7 @@ import utils.Log;
  * @author pf
  */
 
-public class ChronoGameState extends GameState
+public class ChronoGameState extends GameState<RobotChrono>
 {
     public final ObstaclesIteratorFutur iterator;
     protected Log log;
@@ -28,14 +28,6 @@ public class ChronoGameState extends GameState
     	this.table = table;
     }
     
-	/**
-     * Fournit un clone de this. Le clone sera un GameState<RobotChrono>, peu importe si l'original est un GameState<RobotVrai> ou un GameState<RobotChrono>
-     */
-	public final ChronoGameState cloneGameState()
-	{
-		return new ChronoGameState(log, robot.cloneIntoRobotChrono(), iterator.clone(), table.clone());
-	}
-
     /**
      * Copie this dans other. this reste inchangé.
      * Cette copie met à jour les obstacles et les attributs de temps.

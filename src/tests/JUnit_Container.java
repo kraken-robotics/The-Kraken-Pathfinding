@@ -68,8 +68,8 @@ public class JUnit_Container extends JUnit_Test {
 		Assert.assertTrue(container.getService(Config.class)
 				== container.getService(Config.class));
 		// ObstaclesIteratorPresent n'est pas un service : deux objets différents
-		Assert.assertTrue(container.getService(ObstaclesIteratorPresent.class)
-				!= container.getService(ObstaclesIteratorPresent.class));	
+		Assert.assertTrue(container.make(ObstaclesIteratorPresent.class)
+				!= container.make(ObstaclesIteratorPresent.class));	
 	}
 
 }

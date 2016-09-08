@@ -46,6 +46,12 @@ public class Cinematique
 	}
 
 	/**
+	 * Cinématique vide
+	 */
+	public Cinematique()
+	{}
+
+	/**
 	 * Copie this dans autre
 	 * @param autre
 	 */

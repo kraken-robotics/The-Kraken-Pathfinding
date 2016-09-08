@@ -1,7 +1,10 @@
 package pathfinding.astarCourbe;
 
+import pathfinding.ChronoGameState;
 import pathfinding.RealGameState;
+import container.Container;
 import container.Service;
+import exceptions.ContainerException;
 import utils.Config;
 import utils.Log;
 
@@ -33,7 +36,7 @@ public class MemoryManager implements Service {
 	public void useConfig(Config config)
 	{}
 
-	public MemoryManager(Log log, RealGameState realstate)
+	public MemoryManager(Log log, Container container) throws ContainerException, InterruptedException
 	{	
 		this.log = log;
 
@@ -44,7 +47,7 @@ public class MemoryManager implements Service {
 		for(int i = 0; i < nb_instances; i++)
 		{
 			nodes[i] = new AStarCourbeNode();
-			nodes[i].state = realstate.cloneGameState();
+			nodes[i].state = container.make(ChronoGameState.class);
 			nodes[i].setIndiceMemoryManager(i);
 		}
 		log.debug("Instanciation finie");
