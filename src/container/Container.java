@@ -58,7 +58,7 @@ public class Container implements Service
 	
 	private static int nbInstances = 0;
 	
-	private static final boolean showGraph = false;
+	private boolean showGraph;
 	private FileWriter fw;
 
 	/**
@@ -67,7 +67,7 @@ public class Container implements Service
 	 * @throws InterruptedException 
 	 * @throws ContainerException 
 	 */
-	public void destructor() throws ContainerException, InterruptedException
+	public void destructor(boolean unitTest) throws ContainerException, InterruptedException
 	{
 		// arrêt des threads
 		for(ThreadName n : ThreadName.values())
@@ -115,7 +115,8 @@ public class Container implements Service
 		/**
 		 * Arrête tout, même si destructor est appelé depuis un thread
 		 */
-		System.exit(0);
+		if(!unitTest)
+			System.exit(0);
 	}
 	
 	/**
@@ -182,7 +183,7 @@ public class Container implements Service
 		
 		// Le container est aussi un service
 		instanciedServices.put(getClass().getSimpleName(), this);
-
+		useConfig(config);
 		Obstacle.setLog(log);
 		Obstacle.useConfig(config);
 				
@@ -215,7 +216,6 @@ public class Container implements Service
 		return getServiceDisplay(null, serviceTo);
 	}
 	
-	@SuppressWarnings("unused")
 	private synchronized <S> S getServiceDisplay(Class<?> serviceFrom, Class<S> serviceTo) throws ContainerException, InterruptedException
 	{
 		/**
@@ -408,6 +408,8 @@ public class Container implements Service
 
 	@Override
 	public void useConfig(Config config)
-	{}
+	{
+		showGraph = config.getBoolean(ConfigInfo.GENERATE_DEPENDENCY_GRAPH);
+	}
 	
 }

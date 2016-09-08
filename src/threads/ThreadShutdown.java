@@ -35,7 +35,7 @@ public class ThreadShutdown extends Thread
 	{
 		Thread.currentThread().setName("ThreadRobotShutdown");
 		try {
-			container.destructor();
+			container.destructor(false);
 		} catch (ContainerException | InterruptedException e) {
 			System.out.println(e);
 		}

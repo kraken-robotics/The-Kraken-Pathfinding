@@ -67,6 +67,20 @@ public enum ConfigInfo {
 	DISTANCE_BETWEEN_PROXIMITY_OBSTACLES(50), // sous quelle distance fusionne-t-on deux obstacles de proximité ?
 
 	/**
+	 * Debug
+	 */
+	DEBUG_SERIE_TRAME(false),
+	DEBUG_SERIE(false),
+	GENERATE_DEPENDENCY_GRAPH(false),
+	
+	/**
+	 * Interface graphique
+	 */
+	GRAPHIC_DSTARLISTE(false),
+	GRAPHIC_OBSTACLES(false),
+	GRAPHIC_TRAJECTORY(false),
+	
+	/**
 	 * Config dynamique
 	 */
 	COULEUR(RobotColor.getCouleurSansSymetrie(), false), // quelle est la couleur du robot

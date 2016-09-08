@@ -31,6 +31,8 @@ public class JUnit_Pathfinding extends JUnit_Test {
 	private GridSpace gridspace;
 	private ClothoidesComputer clotho;
 	private RobotReal robot;
+	private Fenetre fenetre;
+	private boolean graphicTrajectory;
 	
 	@Override
 	@Before
@@ -40,6 +42,8 @@ public class JUnit_Pathfinding extends JUnit_Test {
         gridspace = container.getService(GridSpace.class);
 		clotho = container.getService(ClothoidesComputer.class);
 		robot = container.getService(RobotReal.class);
+		fenetre = container.getService(Fenetre.class);
+		graphicTrajectory = false;
 	}
 
 	@Test
@@ -76,10 +80,10 @@ public class JUnit_Pathfinding extends JUnit_Test {
 			}*/
 			
 			
-			if(Config.graphicObstacles)
+			if(graphicTrajectory)
 			{
 				Thread.sleep(100);
-				Fenetre.getInstance().addObstacleEnBiais(new ObstacleRectangular(arccubique.arcs.get(i).getPosition(), 10, 10, 0));
+				fenetre.addObstacleEnBiais(new ObstacleRectangular(arccubique.arcs.get(i).getPosition(), 10, 10, 0));
 			}
 		}
 		

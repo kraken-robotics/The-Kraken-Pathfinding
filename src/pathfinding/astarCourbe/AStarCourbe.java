@@ -23,6 +23,7 @@ import robot.RobotChrono;
 import robot.RobotReal;
 import robot.Speed;
 import utils.Config;
+import utils.ConfigInfo;
 import utils.Log;
 
 /**
@@ -47,6 +48,7 @@ public class AStarCourbe implements Service
 	private CheminPathfinding chemin;
 	private GridSpace gridspace;
 	private ObstaclesRectangularMemory rectMemory;
+	private boolean graphicTrajectory;
 	
 	private Speed vitesseMax;
 	
@@ -76,7 +78,7 @@ public class AStarCourbe implements Service
 	/**
 	 * Constructeur du AStarCourbe
 	 */
-	public AStarCourbe(Log log, DStarLite dstarlite, ArcManager arcmanager, RealGameState state, CheminPathfinding chemin, MemoryManager memorymanager, GridSpace gridspace, ObstaclesRectangularMemory rectMemory)
+	public AStarCourbe(Log log, DStarLite dstarlite, ArcManager arcmanager, RealGameState state, CheminPathfinding chemin, MemoryManager memorymanager, GridSpace gridspace, ObstaclesRectangularMemory rectMemory, Fenetre fenetre)
 	{
 		this.log = log;
 		this.arcmanager = arcmanager;
@@ -88,6 +90,7 @@ public class AStarCourbe implements Service
 		this.dstarlite = dstarlite;
 		this.gridspace = gridspace;
 		this.rectMemory = rectMemory;
+		this.fenetre = fenetre;
 	}
 	
 	public void doYourJob() throws InterruptedException
@@ -145,11 +148,11 @@ public class AStarCourbe implements Service
 
 			closedset.add(hash);
 			
-			if(Config.graphicObstacles && current.came_from_arc != null)
+			if(graphicTrajectory && current.came_from_arc != null)
 				for(int i = 0; i < current.came_from_arc.getNbPoints(); i++)
 				{
 //					Sleep.sleep(20);
-					Fenetre.getInstance().addObstacleEnBiais(new ObstacleRectangular(current.came_from_arc.getPoint(i).getPosition(), 4, 4, 0));
+					fenetre.addObstacleEnBiais(new ObstacleRectangular(current.came_from_arc.getPoint(i).getPosition(), 4, 4, 0));
 				}
 			
 			// ce calcul étant un peu lourd, on ne le fait que si le noeud a été choisi, et pas à la sélection des voisins (dans hasNext par exemple)
@@ -256,7 +259,9 @@ public class AStarCourbe implements Service
 
 	@Override
 	public void useConfig(Config config)
-	{}
+	{
+		graphicTrajectory = config.getBoolean(ConfigInfo.GRAPHIC_TRAJECTORY);
+	}
 				
 	/**
 	 * Calcul d'un chemin à partir d'un certain état (state) et d'un point d'arrivée (endNode).

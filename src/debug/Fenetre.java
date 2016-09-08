@@ -4,6 +4,7 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 
 import container.Container;
+import container.Service;
 import exceptions.ContainerException;
 import obstacles.ObstaclesFixes;
 import obstacles.Capteurs;
@@ -36,10 +37,9 @@ import java.util.ArrayList;
  *
  */
 
-public class Fenetre extends JPanel {
+public class Fenetre extends JPanel implements Service {
 
 	private static final long serialVersionUID = 1L;
-	private static Fenetre instance;
 	
 	private static final boolean afficheFond = false;
 	private int sizeX = 450, sizeY = 300;
@@ -60,18 +60,13 @@ public class Fenetre extends JPanel {
     
 	private GridSpace gs;
 	private PointGridSpaceManager pm;
-	public static boolean needInit = true;
+	public boolean needInit = true;
 	
-	private Fenetre(Container container) throws InterruptedException
+	public Fenetre(ObstaclesIteratorPresent iterator, GridSpace gs, PointGridSpaceManager pm) throws InterruptedException
 	{
-		try {
-			iterator = new ObstaclesIteratorPresent(container.getService(Log.class),
-					container.getService(ObstaclesMemory.class));
-			gs = container.getService(GridSpace.class);
-			pm = container.getService(PointGridSpaceManager.class);
-		} catch (ContainerException e) {
-			e.printStackTrace();
-		}
+		this.iterator = iterator;
+		this.gs = gs;
+		this.pm = pm;
 	}
 	
 	private void init()
@@ -96,7 +91,6 @@ public class Fenetre extends JPanel {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		new MouseListener(this);
 		showOnFrame();
 	}
 	
@@ -128,16 +122,6 @@ public class Fenetre extends JPanel {
 			repaint();
 //			Sleep.sleep(50);
 		}
-	}
-	
-	public static Fenetre getInstance()
-	{
-		return instance;
-	}
-
-	public static void setInstance(Container container) throws InterruptedException
-	{
-		instance = new Fenetre(container);
 	}
 
 	private int distanceXtoWindow(int dist)
@@ -191,33 +175,29 @@ public class Fenetre extends JPanel {
 	{
 		if(afficheFond)
 			g.drawImage(image, 0, 0, this);
-		if(Config.graphicDStarLite || Config.graphicThetaStar)
-			for(int i = 0; i < PointGridSpace.NB_POINTS; i++)
-			{
-				g.setColor(grid[i].couleur);
-				g.fillOval(XGridPointtoWindow(i)-distanceXtoWindow((int) PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS)/2,
-						YGridPointtoWindow(i)-distanceYtoWindow((int) PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS)/2,
-						distanceXtoWindow((int) PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS),
-						distanceYtoWindow((int) PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS));
-			}
-		if(Config.graphicObstacles)
+		for(int i = 0; i < PointGridSpace.NB_POINTS; i++)
 		{
-			if(printObsFixes)
-				for(ObstaclesFixes obs : ObstaclesFixes.values)
-				{
-					Obstacle o = obs.getObstacle();
-					if(o instanceof ObstacleRectangular)
-						paintObstacleRectangulaire((ObstacleRectangular)o, g, 0);
-					else if(o instanceof ObstacleCircular)
-						paintObstacleCirculaire((ObstacleCircular)o, g, 0);
-				}
-
-			paintObstacleEnBiais(g);
-			paintObstaclesCirculaires(g);
-			iterator.reinit();
-			while(iterator.hasNext())				
-				paintObstacleCirculaire(iterator.next(), g, 0);
+			g.setColor(grid[i].couleur);
+			g.fillOval(XGridPointtoWindow(i)-distanceXtoWindow((int) PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS)/2,
+					YGridPointtoWindow(i)-distanceYtoWindow((int) PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS)/2,
+					distanceXtoWindow((int) PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS),
+					distanceYtoWindow((int) PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS));
 		}
+		if(printObsFixes)
+			for(ObstaclesFixes obs : ObstaclesFixes.values)
+			{
+				Obstacle o = obs.getObstacle();
+				if(o instanceof ObstacleRectangular)
+					paintObstacleRectangulaire((ObstacleRectangular)o, g, 0);
+				else if(o instanceof ObstacleCircular)
+					paintObstacleCirculaire((ObstacleCircular)o, g, 0);
+			}
+
+		paintObstacleEnBiais(g);
+		paintObstaclesCirculaires(g);
+		iterator.reinit();
+		while(iterator.hasNext())				
+			paintObstacleCirculaire(iterator.next(), g, 0);
 /*
 		g.setColor(new Color(0, 0, 130, 40));
 
@@ -446,5 +426,13 @@ public class Fenetre extends JPanel {
 			init();
 		repaint();
 	}
+
+	@Override
+	public void updateConfig(Config config)
+	{}
+
+	@Override
+	public void useConfig(Config config)
+	{}
 	
 }

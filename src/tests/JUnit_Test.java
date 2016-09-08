@@ -24,10 +24,10 @@ public abstract class JUnit_Test
 	protected Container container;
 	protected Config config;
 	protected Log log;
+	protected Fenetre fenetre;
 	
     @Rule public TestName testName = new TestName();
     
-	@SuppressWarnings("unused")
 	@Before
 	public void setUp() throws Exception
 	{
@@ -36,24 +36,20 @@ public abstract class JUnit_Test
 		container = new Container();
 		config = container.getService(Config.class);
 		log = container.getService(Log.class);
+		fenetre = container.getService(Fenetre.class);
 		synchronized(config)
 		{
 			config.set(ConfigInfo.MATCH_DEMARRE, true);
 			config.set(ConfigInfo.DATE_DEBUT_MATCH, System.currentTimeMillis());
 		}
-		if(Config.graphicDStarLite || Config.graphicThetaStar || Config.graphicObstacles)
-			Fenetre.setInstance(container);
 	}
 
-	@SuppressWarnings("unused")
 	@After
 	public void tearDown() throws Exception {
-		if((Config.graphicDStarLite || Config.graphicThetaStar || Config.graphicObstacles) && !Fenetre.needInit)
+		if(!fenetre.needInit)
 			Thread.sleep(100000);
 		Runtime.getRuntime().removeShutdownHook(ThreadShutdown.getInstance());
-		ThreadShutdown.getInstance().start();
-		Thread.sleep(100000);
-//		container.destructor();
+		container.destructor(true);
 		System.out.println("\n\n");
 	}
 

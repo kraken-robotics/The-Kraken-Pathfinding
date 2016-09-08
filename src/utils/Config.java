@@ -2,6 +2,7 @@ package utils;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.Properties;
 
 import container.Service;
@@ -21,14 +22,7 @@ import robot.RobotColor;
  *
  */
 public class Config implements Service
-{
-	public static final boolean debugSerie = false;
-	public static final boolean debugSerieTrame = false;
-
-	public static final boolean graphicDStarLite = false;
-	public static final boolean graphicThetaStar = false;
-	public static final boolean graphicObstacles = false;
-	
+{	
 	private String name_config_file = "config.ini";
 	private volatile Properties properties = new Properties();
 	private Log log;
@@ -61,17 +55,6 @@ public class Config implements Service
 		this.log = log;
 		if(getBoolean(ConfigInfo.AFFICHE_CONFIG))
 			afficheTout();
-
-		if(debugSerie)
-			log.warning("debugSerie = true");
-		if(debugSerieTrame)
-			log.warning("debugSerieTrame = true");
-		if(graphicDStarLite)
-			log.warning("graphicDStarLite = true");
-		if(graphicThetaStar)
-			log.warning("graphicThetaStar = true");
-		if(graphicObstacles)
-			log.warning("graphicObstacles = true");
 	}
 	
 	/**
