@@ -6,13 +6,7 @@ import java.util.BitSet;
 import obstacles.ObstaclesFixes;
 import obstacles.memory.ObstaclesIteratorPresent;
 import obstacles.memory.ObstaclesMemory;
-import obstacles.types.ObstacleArcCourbe;
 import obstacles.types.ObstacleProximity;
-import pathfinding.ChronoGameState;
-import pathfinding.astarCourbe.AStarCourbeNode;
-import table.GameElementNames;
-import table.Table;
-import table.Tribool;
 import utils.Config;
 import utils.ConfigInfo;
 import utils.Log;
@@ -39,11 +33,6 @@ public class GridSpace implements Service
 
 	private int distanceMinimaleEntreProximite;
 	private int rayonRobot;
-	
-	/**
-	 * Comme on veut que le DStarLite recherche plus de noeuds qu'il n'y en aurait besoin, ce coeff ne vaut pas 1
-	 */
-//	private static final int COEFF_HEURISTIQUE = 2;
 	
 	// cette grille est constante, c'est-à-dire qu'elle ne contient que les obstacles fixes
 	private BitSet grilleStatique = new BitSet(PointGridSpace.NB_POINTS);
@@ -107,7 +96,8 @@ public class GridSpace implements Service
 	 */
 	public int distanceStatique(PointDirige point)
 	{
-		if(!isTraversableStatique(point.point))
+		// s'il y a un obstacle statique
+		if(grilleStatique.get(point.point.hashCode()))
 			return Integer.MAX_VALUE;
 		if(point.dir.isDiagonal())
 			return 1414;
@@ -132,6 +122,9 @@ public class GridSpace implements Service
 		return out;
 	}
 
+	/**
+	 * Supprime les anciens obstacles et notifie si changement
+	 */
 	public synchronized void deleteOldObstacles()
 	{
 		// S'il y a effectivement suppression, on régénère la grille
@@ -139,21 +132,20 @@ public class GridSpace implements Service
 			notify(); // changement de la grille dynamique !
 	}
 
+	/**
+	 * Fournit au thread de péremption la date de la prochaine mort
+	 * @return
+	 */
 	public long getNextDeathDate()
 	{
 		return obstaclesMemory.getNextDeathDate();
 	}
 
-	private boolean isTraversableStatique(PointGridSpace point)
-	{
-		return !grilleStatique.get(point.hashCode());
-	}
-	
 	/**
 	 * Un nouveau DStarLite commence. Il faut lui fournir les obstacles actuels
 	 * @return
 	 */
-	public ArrayList<PointDirige> startNewPathfinding() // TODO renommer
+	public ArrayList<PointDirige> getCurrentObstacles()
 	{
 		iteratorDStarLite.reinit();
 		ArrayList<PointDirige> out = new ArrayList<PointDirige>();
@@ -222,30 +214,12 @@ public class GridSpace implements Service
     	iteratorRemoveNearby.reinit();
     	while(iteratorRemoveNearby.hasNext())
         	if(iteratorRemoveNearby.next().isProcheCentre(position, distanceMinimaleEntreProximite))
-        	{
-        		log.debug("Suppression d'un obstacle");
         		iteratorRemoveNearby.remove();
-        	}
 
     	ArrayList<PointDirige> masque = getMasqueObstacle(position);
 		ObstacleProximity o = obstaclesMemory.add(position, masque);
 		// pour un ajout, pas besoin de tout régénérer
 		return o;
     }
-    
-    /**
-     * Indique si un obstacle fixe de centre proche de la position indiquée existe.
-     * Utilisé pour savoir s'il y a un ennemi devant nous.
-     * @param position
-     * @return
-     */
-/*    public boolean isThereObstacle(ChronoGameState state, Vec2<ReadOnly> position)
-    {
-    	state.iterator.reinit();
-    	while(state.iterator.hasNext())
-        	if(state.iterator.next().isProcheObstacle(position, rayonRobot + 20))
-        		return true;
-       return false;
-    }*/
 
 }

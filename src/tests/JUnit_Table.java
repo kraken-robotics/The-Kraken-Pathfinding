@@ -6,12 +6,9 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import obstacles.types.Obstacle;
 import table.GameElementNames;
 import table.Table;
 import table.Tribool;
-import utils.Vec2;
-import utils.permissions.ReadWrite;
 
 /**
  * Tests unitaires pour Table

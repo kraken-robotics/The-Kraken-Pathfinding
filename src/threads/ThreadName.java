@@ -5,6 +5,12 @@ import threads.serie.ThreadSerialInputCoucheTrame;
 import threads.serie.ThreadSerialOutput;
 import threads.serie.ThreadSerialOutputTimeout;
 
+/**
+ * Tous les threads à instancier au début du match. Utilisé par le container
+ * @author pf
+ *
+ */
+
 public enum ThreadName
 {
 	CAPTEURS(ThreadCapteurs.class),

@@ -271,7 +271,7 @@ public class DStarLite implements Service
 			fenetre.setColor(this.depart.gridpoint, Fenetre.Couleur.VIOLET);
 		}
 
-		obstaclesConnus = gridspace.startNewPathfinding();
+		obstaclesConnus = gridspace.getCurrentObstacles();
 
 		computeShortestPath();
 

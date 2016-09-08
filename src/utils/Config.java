@@ -2,12 +2,10 @@ package utils;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.util.Properties;
 
 import container.Service;
 import robot.RobotColor;
-
 
 /**
  * S'occupe de fournir un ensemble de valeurs aux autres classes qui l'utilisent.

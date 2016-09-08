@@ -15,7 +15,6 @@ import pathfinding.dstarlite.gridspace.GridSpace;
 import robot.Cinematique;
 import robot.RobotReal;
 import robot.Speed;
-import utils.Config;
 import utils.Vec2;
 import utils.permissions.ReadOnly;
 

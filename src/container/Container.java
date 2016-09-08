@@ -1,10 +1,9 @@
 package container;
 
-import obstacles.ObstaclesRectangularMemory;
-import obstacles.SensorsDataBuffer;
-import obstacles.memory.ObstaclesMemory;
-import obstacles.types.Obstacle;
-import pathfinding.dstarlite.gridspace.PointGridSpaceManager;
+import obstacles.*;
+import obstacles.memory.*;
+import obstacles.types.*;
+import pathfinding.dstarlite.gridspace.*;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -22,20 +21,10 @@ import java.util.Stack;
 
 import exceptions.ContainerException;
 import utils.*;
-import serie.BufferIncomingBytes;
-import serie.BufferIncomingOrder;
-import serie.BufferOutgoingOrder;
-import serie.SerieCouchePhysique;
-import serie.SerieCoucheTrame;
+import serie.*;
 import table.Table;
-import threads.ThreadCapteurs;
-import threads.ThreadConfig;
-import threads.ThreadShutdown;
-import threads.ThreadName;
-import threads.ThreadPeremption;
-import threads.serie.ThreadSerialInputCoucheTrame;
-import threads.serie.ThreadSerialOutput;
-import threads.serie.ThreadSerialOutputTimeout;
+import threads.*;
+import threads.serie.*;
 
 /**
  * 
@@ -73,7 +62,7 @@ public class Container implements Service
 		for(ThreadName n : ThreadName.values())
 		{
 			getService(n.c).interrupt();
-			getService(n.c).join(100); // on attend au plus 50ms que le thread s'arrête
+			getService(n.c).join(100); // on attend au plus 100ms que le thread s'arrête
 		}
 
 		/**
@@ -221,7 +210,7 @@ public class Container implements Service
 		/**
 		 * On ne crée pas forcément le graphe de dépendances pour éviter une lourdeur inutile
 		 */
-		if(showGraph && !serviceTo.equals(Log.class) && Service.class.isAssignableFrom(serviceTo))
+		if(showGraph && !serviceTo.equals(Log.class) && Service.class.isAssignableFrom(serviceTo) && (serviceFrom == null || Service.class.isAssignableFrom(serviceFrom)))
 		{
 			ArrayList<String> ok = new ArrayList<String>();
 			ok.add(Config.class.getSimpleName());
@@ -242,6 +231,8 @@ public class Container implements Service
 			ok.add(ObstaclesMemory.class.getSimpleName());
 			ok.add(ThreadCapteurs.class.getSimpleName());
 			ok.add(PointGridSpaceManager.class.getSimpleName());
+			ok.add(PointDirigeManager.class.getSimpleName());
+			ok.add(GridSpace.class.getSimpleName());
 			
 			try {
 				if(ok.contains(serviceTo.getSimpleName()))
@@ -397,7 +388,7 @@ public class Container implements Service
 				    
 				reader.close();
 			} catch (IOException e) {
-				log.warning(e);
+				System.err.println(e);
 			}
 
 	}

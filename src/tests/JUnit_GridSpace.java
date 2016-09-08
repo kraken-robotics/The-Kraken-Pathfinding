@@ -10,7 +10,6 @@ import org.junit.Test;
 
 import pathfinding.dstarlite.gridspace.Direction;
 import pathfinding.dstarlite.gridspace.GridSpace;
-import pathfinding.dstarlite.gridspace.PointDirige;
 import pathfinding.dstarlite.gridspace.PointDirigeManager;
 import pathfinding.dstarlite.gridspace.PointGridSpace;
 import pathfinding.dstarlite.gridspace.PointGridSpaceManager;
@@ -96,7 +95,7 @@ public class JUnit_GridSpace extends JUnit_Test {
 	public void test_ajout_obstacle() throws Exception
 	{
     	int peremption = config.getInt(ConfigInfo.DUREE_PEREMPTION_OBSTACLES);
-		Assert.assertTrue(gridspace.startNewPathfinding().isEmpty());
+		Assert.assertTrue(gridspace.getCurrentObstacles().isEmpty());
 		ArrayList<ObstacleProximity>[] b = gridspace.getOldAndNewObstacles();
 		Assert.assertTrue(b[0].isEmpty());
 		Assert.assertTrue(b[1].isEmpty());
