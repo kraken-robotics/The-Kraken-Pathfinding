@@ -10,22 +10,22 @@ import exceptions.ContainerException;
  *
  */
 
-public class ThreadExit extends Thread
+public class ThreadShutdown extends Thread
 {
 	protected Container container;
-	private static ThreadExit instance = null;
+	private static ThreadShutdown instance = null;
 	
-	public static ThreadExit getInstance()
+	public static ThreadShutdown getInstance()
 	{
 		return instance;
 	}
 	
-	public static ThreadExit makeInstance(Container container)
+	public static ThreadShutdown makeInstance(Container container)
 	{
-		return instance = new ThreadExit(container);
+		return instance = new ThreadShutdown(container);
 	}
 
-	private ThreadExit(Container container)
+	private ThreadShutdown(Container container)
 	{
 		this.container = container;
 	}
@@ -33,7 +33,7 @@ public class ThreadExit extends Thread
 	@Override
 	public void run()
 	{
-		Thread.currentThread().setName("ThreadRobotExit");
+		Thread.currentThread().setName("ThreadRobotShutdown");
 		try {
 			container.destructor();
 		} catch (ContainerException | InterruptedException e) {

@@ -30,7 +30,7 @@ import serie.SerieCoucheTrame;
 import table.Table;
 import threads.ThreadCapteurs;
 import threads.ThreadConfig;
-import threads.ThreadExit;
+import threads.ThreadShutdown;
 import threads.ThreadName;
 import threads.ThreadPeremption;
 import threads.serie.ThreadSerialInputCoucheTrame;
@@ -111,6 +111,11 @@ public class Container implements Service
 		System.out.println("Singularité évaporée.");
 		System.out.println();
 		printMessage("outro.txt");
+		
+		/**
+		 * Arrête tout, même si destructor est appelé depuis un thread
+		 */
+		System.exit(0);
 	}
 	
 	/**
@@ -127,6 +132,8 @@ public class Container implements Service
 			throw new ContainerException("Un autre container existe déjà! Annulation du constructeur.");
 
 		nbInstances++;
+		
+		Thread.currentThread().setName("ThreadPrincipal");
 		
 		/**
 		 * Affichage d'un petit message de bienvenue
@@ -357,8 +364,8 @@ public class Container implements Service
 		/**
 		 * Planification du hook de fermeture
 		 */
-		ThreadExit.makeInstance(this);
-		Runtime.getRuntime().addShutdownHook(ThreadExit.getInstance());
+		ThreadShutdown.makeInstance(this);
+		Runtime.getRuntime().addShutdownHook(ThreadShutdown.getInstance());
 		
 		log.debug("Démarrage des threads fini");
 	}

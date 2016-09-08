@@ -71,8 +71,7 @@ public enum ConfigInfo {
 	 */
 	COULEUR(RobotColor.getCouleurSansSymetrie(), false), // quelle est la couleur du robot
 	MATCH_DEMARRE(false, false), // le match a-t-il démarré
-	DATE_DEBUT_MATCH(0, false), // date du début du match
-	FIN_MATCH(false, false); // le match est-il fini
+	DATE_DEBUT_MATCH(0, false); // date du début du match
 
 	private Object defaultValue;
 	private boolean constant;

@@ -18,8 +18,8 @@ public class JUnit_Config extends JUnit_Test {
 	{
 		for(ConfigInfo c: ConfigInfo.values())
 			config.getString(c);
-		Assert.assertTrue(config.getString(ConfigInfo.FIN_MATCH).equals("false"));
-		Assert.assertTrue(!config.getBoolean(ConfigInfo.FIN_MATCH));
+		Assert.assertTrue(config.getString(ConfigInfo.MATCH_DEMARRE).equals("true"));
+		Assert.assertTrue(config.getBoolean(ConfigInfo.MATCH_DEMARRE));
 	}
 
 	@Test

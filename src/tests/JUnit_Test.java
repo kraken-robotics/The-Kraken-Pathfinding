@@ -10,7 +10,7 @@ import utils.Log;
 import utils.Config;
 import container.Container;
 import debug.Fenetre;
-import threads.ThreadExit;
+import threads.ThreadShutdown;
 
 /**
  * Classe mère de tous les tests.
@@ -50,8 +50,10 @@ public abstract class JUnit_Test
 	public void tearDown() throws Exception {
 		if((Config.graphicDStarLite || Config.graphicThetaStar || Config.graphicObstacles) && !Fenetre.needInit)
 			Thread.sleep(100000);
-		Runtime.getRuntime().removeShutdownHook(ThreadExit.getInstance());
-		container.destructor();
+		Runtime.getRuntime().removeShutdownHook(ThreadShutdown.getInstance());
+		ThreadShutdown.getInstance().start();
+		Thread.sleep(100000);
+//		container.destructor();
 		System.out.println("\n\n");
 	}
 
