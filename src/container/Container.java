@@ -51,7 +51,7 @@ public class Container implements Service
 	private HashMap<String, Service> instanciedServices = new HashMap<String, Service>();
 	
 	// permet de détecter les dépendances circulaires
-	private Stack<String> stack = new Stack<String>();
+	private volatile Stack<String> stack = new Stack<String>();
 	
 	private Log log;
 	private Config config;
@@ -166,8 +166,8 @@ public class Container implements Service
 		System.out.println("    Remember, with great power comes great current squared times resistance !");
 		System.out.println();
 		
-		log = getServiceRecursif(Log.class);
-		config = getServiceRecursif(Config.class);
+		log = getService(Log.class);
+		config = getService(Config.class);
 		log.updateConfig(config);
 		log.useConfig(config);
 		// Interdépendance entre log et config…
@@ -202,14 +202,14 @@ public class Container implements Service
 	 * @throws ContainerException
 	 * @throws InterruptedException 
 	 */
-	public <S extends Service> S getService(Class<S> serviceTo) throws ContainerException, InterruptedException
+	public synchronized <S extends Service> S getService(Class<S> serviceTo) throws ContainerException, InterruptedException
 	{
 		stack.clear(); // pile d'appel vidée
 		return getServiceDisplay(null, serviceTo);
 	}
 	
 	@SuppressWarnings("unused")
-	private <S extends Service> S getServiceDisplay(Class<? extends Service> serviceFrom, Class<S> serviceTo) throws ContainerException, InterruptedException
+	private synchronized <S extends Service> S getServiceDisplay(Class<? extends Service> serviceFrom, Class<S> serviceTo) throws ContainerException, InterruptedException
 	{
 		/**
 		 * On ne crée pas forcément le graphe de dépendances pour éviter une lourdeur inutile
@@ -259,7 +259,7 @@ public class Container implements Service
 	 * @throws InterruptedException
 	 */
 	@SuppressWarnings("unchecked")
-	private <S extends Service> S getServiceRecursif(Class<S> classe) throws ContainerException, InterruptedException
+	private synchronized <S extends Service> S getServiceRecursif(Class<S> classe) throws ContainerException, InterruptedException
 	{
 		try {
 			/**
@@ -274,7 +274,7 @@ public class Container implements Service
 			if(stack.contains(classe.getSimpleName()))
 			{
 				// Dépendance circulaire détectée !
-				String out = "";
+				String out = "Dépendance circulaire détectée : ";
 				for(String s : stack)
 					out += s + " -> ";
 				out += classe.getSimpleName();
@@ -306,6 +306,7 @@ public class Container implements Service
 			/**
 			 * Instanciation et sauvegarde
 			 */
+			System.out.println(classe.getSimpleName());
 			S s = constructeur.newInstance(paramObject);
 			instanciedServices.put(classe.getSimpleName(), s);
 			
@@ -336,7 +337,7 @@ public class Container implements Service
 		for(ThreadName n : ThreadName.values())
 		{
 			try {
-				getServiceRecursif(n.c).start();
+				getService(n.c).start();
 			} catch (ContainerException e) {
 				log.critical(e);
 			}
