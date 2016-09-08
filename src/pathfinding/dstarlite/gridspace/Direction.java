@@ -1,4 +1,4 @@
-package pathfinding.dstarlite;
+package pathfinding.dstarlite.gridspace;
 
 public enum Direction {
 
@@ -13,11 +13,21 @@ public enum Direction {
 		this.deltaY = deltaY;
 	}
 	
+	/**
+	 * Cette direction est-elle diagonale ?
+	 * @return
+	 */
 	public boolean isDiagonal()
 	{
 		return ordinal() < 4;
 	}
 	
+	/**
+	 * Récupère la direction associée à un déplacement exprimé en deltaX et deltaY
+	 * @param deltaX
+	 * @param deltaY
+	 * @return
+	 */
 	static Direction convertToDirection(int deltaX, int deltaY)
 	{
 		for(Direction d : values())
@@ -26,6 +36,10 @@ public enum Direction {
 		return null; // pas reconnu
 	}
 
+	/**
+	 * Fournit la direction opposée
+	 * @return
+	 */
 	public Direction getOppose()
 	{
 		return values()[ordinal() ^ 1]; // ouais ouais

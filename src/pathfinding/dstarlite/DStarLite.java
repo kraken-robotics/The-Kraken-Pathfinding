@@ -5,6 +5,11 @@ import java.util.Comparator;
 import java.util.PriorityQueue;
 
 import obstacles.types.ObstacleProximity;
+import pathfinding.dstarlite.gridspace.Direction;
+import pathfinding.dstarlite.gridspace.GridSpace;
+import pathfinding.dstarlite.gridspace.PointDirige;
+import pathfinding.dstarlite.gridspace.PointGridSpace;
+import pathfinding.dstarlite.gridspace.PointGridSpaceManager;
 import robot.Cinematique;
 import utils.Config;
 import utils.Log;
@@ -61,7 +66,7 @@ public class DStarLite implements Service
 		this.pointManager = pointManager;
 		
 		for(int i = 0; i < PointGridSpace.NB_POINTS; i++)
-			memory[i] = new DStarLiteNode(new PointGridSpace(i));
+			memory[i] = new DStarLiteNode(pointManager.get(i));
 
 		if(Config.graphicDStarLite)
 			fenetre = Fenetre.getInstance();

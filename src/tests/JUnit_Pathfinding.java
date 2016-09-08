@@ -11,7 +11,7 @@ import pathfinding.VitesseCourbure;
 import pathfinding.astarCourbe.arcs.ArcCourbeCubique;
 import pathfinding.astarCourbe.arcs.ClothoidesComputer;
 import pathfinding.dstarlite.DStarLite;
-import pathfinding.dstarlite.GridSpace;
+import pathfinding.dstarlite.gridspace.GridSpace;
 import robot.Cinematique;
 import robot.RobotReal;
 import robot.Speed;

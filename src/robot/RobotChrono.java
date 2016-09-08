@@ -1,7 +1,7 @@
 package robot;
 
 import pathfinding.astarCourbe.arcs.ArcCourbe;
-import pathfinding.dstarlite.PointGridSpace;
+import pathfinding.dstarlite.gridspace.PointGridSpace;
 import utils.Log;
 
 /**

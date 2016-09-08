@@ -1,7 +1,7 @@
 package robot;
 
-import pathfinding.dstarlite.PointGridSpace;
 import container.Service;
+import pathfinding.dstarlite.gridspace.PointGridSpace;
 import utils.ConfigInfo;
 import utils.Log;
 import utils.Config;

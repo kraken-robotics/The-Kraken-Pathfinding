@@ -3,7 +3,7 @@ package pathfinding.astarCourbe.arcs;
 import pathfinding.VitesseCourbure;
 import pathfinding.astarCourbe.AStarCourbeNode;
 import pathfinding.dstarlite.DStarLite;
-import pathfinding.dstarlite.GridSpace;
+import pathfinding.dstarlite.gridspace.GridSpace;
 import robot.Cinematique;
 import robot.DirectionStrategy;
 import robot.RobotChrono;

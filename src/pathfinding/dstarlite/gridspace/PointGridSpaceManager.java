@@ -1,4 +1,4 @@
-package pathfinding.dstarlite;
+package pathfinding.dstarlite.gridspace;
 
 import container.Service;
 import utils.Config;
@@ -29,7 +29,7 @@ public class PointGridSpaceManager implements Service
 	 */
 	public PointGridSpace get(int x, int y)
 	{
-		return allPoints[index(x,y)];
+		return get(index(x,y));
 	}
 	
 	/**
@@ -37,7 +37,7 @@ public class PointGridSpaceManager implements Service
 	 * @param p
 	 * @return
 	 */
-	public PointGridSpace get (Vec2<ReadOnly> p)
+	public PointGridSpace get(Vec2<ReadOnly> p)
 	{
 		int y = (int) Math.round(p.y / PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS);
 		int x = (int) Math.round((p.x + 1500) / PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS);

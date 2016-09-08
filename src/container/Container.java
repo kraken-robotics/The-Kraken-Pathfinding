@@ -1,6 +1,10 @@
 package container;
 
+import obstacles.ObstaclesRectangularMemory;
+import obstacles.SensorsDataBuffer;
+import obstacles.memory.ObstaclesMemory;
 import obstacles.types.Obstacle;
+import pathfinding.dstarlite.gridspace.PointGridSpaceManager;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -18,9 +22,20 @@ import java.util.Stack;
 
 import exceptions.ContainerException;
 import utils.*;
+import serie.BufferIncomingBytes;
+import serie.BufferIncomingOrder;
+import serie.BufferOutgoingOrder;
 import serie.SerieCouchePhysique;
+import serie.SerieCoucheTrame;
+import table.Table;
+import threads.ThreadCapteurs;
+import threads.ThreadConfig;
 import threads.ThreadExit;
 import threads.ThreadName;
+import threads.ThreadPeremption;
+import threads.serie.ThreadSerialInputCoucheTrame;
+import threads.serie.ThreadSerialOutput;
+import threads.serie.ThreadSerialOutputTimeout;
 
 /**
  * 
@@ -157,7 +172,7 @@ public class Container implements Service
 		log.useConfig(config);
 		// Interdépendance entre log et config…
 		config.init(log);
-
+		
 		// Le container est aussi un service
 		instanciedServices.put(getClass().getSimpleName(), this);
 
@@ -166,6 +181,7 @@ public class Container implements Service
 				
 		if(showGraph)
 		{
+			log.warning("Le graphe de dépendances va être généré !");
 			try {
 				fw = new FileWriter(new File("dependances.dot"));
 				fw.write("digraph dependancesJava {\n");
@@ -201,10 +217,28 @@ public class Container implements Service
 		if(showGraph && !serviceTo.equals(Log.class))
 		{
 			ArrayList<String> ok = new ArrayList<String>();
-
+			ok.add(Config.class.getSimpleName());
+			ok.add(ThreadSerialOutput.class.getSimpleName());
+			ok.add(BufferIncomingBytes.class.getSimpleName());
+			ok.add(SerieCouchePhysique.class.getSimpleName());
+			ok.add(SerieCoucheTrame.class.getSimpleName());
+			ok.add(ThreadSerialOutputTimeout.class.getSimpleName());
+			ok.add(BufferIncomingOrder.class.getSimpleName());
+			ok.add(Container.class.getSimpleName());
+			ok.add(ThreadConfig.class.getSimpleName());
+			ok.add(BufferOutgoingOrder.class.getSimpleName());
+			ok.add(Table.class.getSimpleName());
+			ok.add(SensorsDataBuffer.class.getSimpleName());
+			ok.add(ThreadPeremption.class.getSimpleName());
+			ok.add(ObstaclesRectangularMemory.class.getSimpleName());
+			ok.add(ThreadSerialInputCoucheTrame.class.getSimpleName());
+			ok.add(ObstaclesMemory.class.getSimpleName());
+			ok.add(ThreadCapteurs.class.getSimpleName());
+			ok.add(PointGridSpaceManager.class.getSimpleName());
+			
 			try {
 				if(ok.contains(serviceTo.getSimpleName()))
-					fw.write(serviceTo.getSimpleName()+" [color=grey80, style=filled];\n");
+					fw.write(serviceTo.getSimpleName()+" [color=green3, style=filled];\n");
 				else
 					fw.write(serviceTo.getSimpleName()+";\n");
 

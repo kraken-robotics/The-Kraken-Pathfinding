@@ -1,4 +1,4 @@
-package pathfinding.dstarlite;
+package pathfinding.dstarlite.gridspace;
 
 import utils.Config;
 import utils.Vec2;

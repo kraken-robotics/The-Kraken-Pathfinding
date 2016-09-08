@@ -1,5 +1,7 @@
 package pathfinding.dstarlite;
 
+import pathfinding.dstarlite.gridspace.PointGridSpace;
+
 /**
  * Un nœud du D* Lite.
  * @author pf

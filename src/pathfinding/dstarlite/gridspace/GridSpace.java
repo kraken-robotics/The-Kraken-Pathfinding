@@ -1,4 +1,4 @@
-package pathfinding.dstarlite;
+package pathfinding.dstarlite.gridspace;
 
 import java.util.ArrayList;
 import java.util.BitSet;

@@ -2,7 +2,7 @@ package obstacles.types;
 
 import java.util.ArrayList;
 
-import pathfinding.dstarlite.PointDirige;
+import pathfinding.dstarlite.gridspace.PointDirige;
 import utils.Vec2;
 import utils.permissions.ReadOnly;
 

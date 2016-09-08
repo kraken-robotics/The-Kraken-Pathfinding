@@ -1,6 +1,6 @@
 package threads;
 
-import pathfinding.dstarlite.GridSpace;
+import pathfinding.dstarlite.gridspace.GridSpace;
 import utils.Config;
 import utils.ConfigInfo;
 import utils.Log;

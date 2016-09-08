@@ -61,6 +61,17 @@ public class Config implements Service
 		this.log = log;
 		if(getBoolean(ConfigInfo.AFFICHE_CONFIG))
 			afficheTout();
+
+		if(debugSerie)
+			log.warning("debugSerie = true");
+		if(debugSerieTrame)
+			log.warning("debugSerieTrame = true");
+		if(graphicDStarLite)
+			log.warning("graphicDStarLite = true");
+		if(graphicThetaStar)
+			log.warning("graphicThetaStar = true");
+		if(graphicObstacles)
+			log.warning("graphicObstacles = true");
 	}
 	
 	/**

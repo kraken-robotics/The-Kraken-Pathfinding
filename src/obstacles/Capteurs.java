@@ -1,8 +1,8 @@
 package obstacles;
 
 import obstacles.types.ObstacleProximity;
+import pathfinding.dstarlite.gridspace.GridSpace;
 import container.Service;
-import pathfinding.dstarlite.GridSpace;
 import table.GameElementNames;
 import table.Tribool;
 import utils.Config;

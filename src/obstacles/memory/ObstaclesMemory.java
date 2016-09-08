@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 
 import obstacles.types.ObstacleProximity;
-import pathfinding.dstarlite.PointDirige;
+import pathfinding.dstarlite.gridspace.PointDirige;
 import utils.Config;
 import utils.ConfigInfo;
 import utils.Log;

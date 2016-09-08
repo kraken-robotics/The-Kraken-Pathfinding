@@ -8,11 +8,11 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import pathfinding.dstarlite.Direction;
-import pathfinding.dstarlite.GridSpace;
-import pathfinding.dstarlite.PointDirige;
-import pathfinding.dstarlite.PointGridSpace;
-import pathfinding.dstarlite.PointGridSpaceManager;
+import pathfinding.dstarlite.gridspace.Direction;
+import pathfinding.dstarlite.gridspace.GridSpace;
+import pathfinding.dstarlite.gridspace.PointDirige;
+import pathfinding.dstarlite.gridspace.PointGridSpace;
+import pathfinding.dstarlite.gridspace.PointGridSpaceManager;
 import utils.ConfigInfo;
 import utils.Vec2;
 import utils.permissions.ReadOnly;

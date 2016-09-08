@@ -1,4 +1,4 @@
-package pathfinding.dstarlite;
+package pathfinding.dstarlite.gridspace;
 
 /**
  * Une structure utilisée par le GridSpace
