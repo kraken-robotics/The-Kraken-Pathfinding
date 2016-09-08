@@ -299,14 +299,24 @@ public class Container implements Service
 			/**
 			 * On demande récursivement chacun de ses paramètres
 			 */
+			boolean logPresent = false;
+			if(classe == Log.class || classe == Config.class)
+				logPresent = true;
+			
 			Object[] paramObject = new Object[param.length];
 			for(int i = 0; i < param.length; i++)
+			{
+				if(param[i].isAssignableFrom(Log.class))
+					logPresent = true;
 				paramObject[i] = getServiceDisplay(classe, param[i]);
+			}
+			
+			if(!logPresent)
+				log.warning("La classe "+classe+" n'utilise pas Log !");
 
 			/**
 			 * Instanciation et sauvegarde
 			 */
-			System.out.println(classe.getSimpleName());
 			S s = constructeur.newInstance(paramObject);
 			instanciedServices.put(classe.getSimpleName(), s);
 			
