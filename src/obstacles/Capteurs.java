@@ -4,6 +4,7 @@ import obstacles.types.ObstacleProximity;
 import pathfinding.dstarlite.gridspace.GridSpace;
 import container.Service;
 import table.GameElementNames;
+import table.Table;
 import table.Tribool;
 import utils.Config;
 import utils.ConfigInfo;
@@ -23,12 +24,14 @@ import utils.permissions.ReadWrite;
 public class Capteurs implements Service {
 	protected Log log;
 	private GridSpace gridspace;
-
+	private Table table;
 	public static final int nbCapteurs = 2;
 	
 	private int rayonEnnemi;
     private int horizonCapteurs;
-	
+    private int rayonRobot;
+	private int distanceApproximation;
+
 	/**
 	 * Les positions relatives des capteurs par rapport au centre du
 	 * robot lorsque celui-ci a une orientation nulle.
@@ -40,8 +43,9 @@ public class Capteurs implements Service {
 	 */
 	public double[] orientationsRelatives;
 
-	public Capteurs(Log log, GridSpace gridspace)
+	public Capteurs(Log log, GridSpace gridspace, Table table)
 	{
+		this.table = table;
 		this.log = log;
 		this.gridspace = gridspace;
 		positionsRelatives = new Vec2[nbCapteurs];
@@ -64,7 +68,9 @@ public class Capteurs implements Service {
 	public void useConfig(Config config)
 	{
 		rayonEnnemi = config.getInt(ConfigInfo.RAYON_ROBOT_ADVERSE);
+		rayonRobot = config.getInt(ConfigInfo.RAYON_ROBOT);
 		horizonCapteurs = config.getInt(ConfigInfo.HORIZON_CAPTEURS);
+		distanceApproximation = config.getInt(ConfigInfo.DISTANCE_MAX_ENTRE_MESURE_ET_OBJET);		
 	}
 
 	/**
@@ -85,8 +91,8 @@ public class Capteurs implements Service {
 			 * On update la table avec notre position
 			 */
 		    for(GameElementNames g: GameElementNames.values())
-		        if(gridspace.didWeShootIt(g, positionRobot))
-		        	gridspace.setDoneTable(g, Tribool.TRUE); // on est sûr de l'avoir shooté
+		        if(g.obstacle.isProcheObstacle(positionRobot, rayonRobot))
+		        	table.setDone(g, Tribool.TRUE); // on est sûr de l'avoir shooté
 			
 			
 			/**
@@ -104,8 +110,10 @@ public class Capteurs implements Service {
 				 * Si ce qu'on voit est un obstacle de table, on l'ignore
 				 */
 				Vec2<ReadOnly> positionVue = new Vec2<ReadOnly>(data.mesures[i], orientationsRelatives[i], true);
-				if(gridspace.isObstacleFixePresentCapteurs(positionVue))
-					continue;
+				
+		    	for(ObstaclesFixes o: ObstaclesFixes.obstaclesFixesVisibles)
+		    		if(o.getObstacle().squaredDistance(positionVue) < distanceApproximation * distanceApproximation)
+		                continue;
 				
 				/**
 				 * Sinon, on ajoute
@@ -125,8 +133,8 @@ public class Capteurs implements Service {
 				 * Mise à jour de l'état de la table
 				 */
 			    for(GameElementNames g: GameElementNames.values())
-			        if(gridspace.isDoneTable(g) == Tribool.FALSE && gridspace.didTheEnemyTakeIt(g, o))
-			        	gridspace.setDoneTable(g, Tribool.MAYBE);
+			        if(table.isDone(g) == Tribool.FALSE && g.obstacle.isProcheObstacle(o, o.radius))
+			        	table.setDone(g, Tribool.MAYBE);
 
 			}
 			if(needNotify)

@@ -14,6 +14,9 @@ import utils.permissions.ReadOnly;
 
 public class PointGridSpaceManager implements Service
 {
+	private static final int X_MAX = PointGridSpace.NB_POINTS_POUR_TROIS_METRES - 1;
+	private static final int Y_MAX = PointGridSpace.NB_POINTS_POUR_DEUX_METRES - 1;
+	
 	protected Log log;
 	private static PointGridSpace[] allPoints = new PointGridSpace[PointGridSpace.NB_POINTS];
 	
@@ -32,7 +35,7 @@ public class PointGridSpaceManager implements Service
 	 */
 	public PointGridSpace get(int x, int y)
 	{
-		if(x < 0 || x > PointGridSpace.X_MAX || y < 0 || y > PointGridSpace.Y_MAX)
+		if(x < 0 || x > X_MAX || y < 0 || y > Y_MAX)
 			return null;
 
 		return get(index(x,y));
@@ -48,7 +51,7 @@ public class PointGridSpaceManager implements Service
 		int y = (int) Math.round(p.y / PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS);
 		int x = (int) Math.round((p.x + 1500) / PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS);
 		
-		if(x < 0 || x > PointGridSpace.X_MAX || y < 0 || y > PointGridSpace.Y_MAX)
+		if(x < 0 || x > X_MAX || y < 0 || y > Y_MAX)
 			return null;
 
 		return allPoints[index(x,y)];
@@ -81,7 +84,7 @@ public class PointGridSpaceManager implements Service
 		int x = point.x + direction.deltaX;
 		int y = point.y + direction.deltaY;
 
-		if(x < 0 || x > PointGridSpace.X_MAX || y < 0 || y > PointGridSpace.Y_MAX)
+		if(x < 0 || x > X_MAX || y < 0 || y > Y_MAX)
 			return null;
 		return get(x,y);
 	}

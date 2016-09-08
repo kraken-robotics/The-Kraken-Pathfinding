@@ -30,11 +30,19 @@ public class PointDirigeManager implements Service
 	
 	public PointDirige get(int x, int y, Direction d)
 	{
-		return mem[(pm.get(x,y).hashcode << 3) + d.ordinal()];
+		PointGridSpace p = pm.get(x,y);
+		
+		if(p == null) // hors table
+			return null;
+		
+		return mem[(p.hashcode << 3) + d.ordinal()];
 	}
 
 	public PointDirige get(PointGridSpace p, Direction d)
 	{
+		if(p == null)
+			return null;
+		
 		return mem[(p.hashcode << 3) + d.ordinal()];
 	}
 

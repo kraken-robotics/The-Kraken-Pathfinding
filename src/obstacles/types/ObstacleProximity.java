@@ -8,7 +8,7 @@ import utils.permissions.ReadOnly;
 
 /**
  * Obstacles détectés par capteurs de proximité (ultrasons et infrarouges)
- * @author pf, marsu
+ * @author pf
  */
 public class ObstacleProximity extends ObstacleCircular
 {

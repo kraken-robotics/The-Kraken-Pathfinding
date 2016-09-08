@@ -30,10 +30,6 @@ public abstract class Obstacle
 	
 	public static void useConfig(Config config)
 	{
-/*		largeurRobot = config.getInt(ConfigInfo.LARGEUR_ROBOT_AXE_GAUCHE_DROITE);
-		longueurRobot = config.getInt(ConfigInfo.LONGUEUR_ROBOT_AXE_AVANT_ARRIERE);
-		largeurRobotDeploye = config.getInt(ConfigInfo.LARGEUR_ROBOT_AXE_GAUCHE_DROITE_DEPLOYE);
-		longueurRobotDeploye = config.getInt(ConfigInfo.LONGUEUR_ROBOT_AXE_AVANT_ARRIERE_DEPLOYE);*/
 		rayonRobot = config.getInt(ConfigInfo.RAYON_ROBOT);
 		distanceApprox = config.getInt(ConfigInfo.DISTANCE_MAX_ENTRE_MESURE_ET_OBJET);
 		marge = config.getInt(ConfigInfo.MARGE);
@@ -43,7 +39,7 @@ public abstract class Obstacle
 	 * Constructeur. La position est celle du centre de rotation de l'obstacle
 	 * @param position
 	 */
-	public Obstacle (Vec2<ReadOnly> position)
+	public Obstacle(Vec2<ReadOnly> position)
 	{
 		this.position = position.clone();
 	}

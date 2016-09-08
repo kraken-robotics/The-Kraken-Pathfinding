@@ -8,12 +8,17 @@ import robot.Cinematique;
 import robot.DirectionStrategy;
 import robot.RobotChrono;
 import robot.Speed;
+import table.GameElementNames;
+import table.Table;
+import table.Tribool;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.ListIterator;
 
 import container.Service;
+import obstacles.ObstaclesFixes;
+import obstacles.types.ObstacleArcCourbe;
 import utils.Config;
 import utils.ConfigInfo;
 import utils.Log;
@@ -27,10 +32,9 @@ import utils.Log;
 public class ArcManager implements Service
 {
 	protected Log log;
-	private GridSpace gridspace;
 	private DStarLite heuristique;
 	private ClothoidesComputer clotho;
-	
+	private Table table;
 	private boolean shoot;
 	private AStarCourbeNode current;
 	private double courbureMax;
@@ -39,10 +43,10 @@ public class ArcManager implements Service
 	private final static int TEMPS_REBROUSSEMENT = 700;
 	private ListIterator<VitesseCourbure> iterator = listeVitesse.listIterator();
 	
-	public ArcManager(Log log, GridSpace gridspace, DStarLite heuristique, ClothoidesComputer clotho)
+	public ArcManager(Log log, DStarLite heuristique, ClothoidesComputer clotho, Table table)
 	{
+		this.table = table;
 		this.log = log;
-		this.gridspace = gridspace;
 		this.heuristique = heuristique;
 		this.clotho = clotho;
 	}
@@ -58,7 +62,27 @@ public class ArcManager implements Service
 		// le tout premier nœud n'a pas de parent
 		if(node.came_from == null)
 			return true;
-		return gridspace.isTraversableCourbe(node, shoot);
+
+		ObstacleArcCourbe obs = node.came_from_arc.obstacle;
+
+		// Collision avec un obstacle fixe?
+    	for(ObstaclesFixes o: ObstaclesFixes.values)
+    		if(o.getObstacle().isColliding(obs))
+    			return false;
+
+    	// Collision avec un obstacle de proximité ?
+    	node.state.iterator.reinit();
+    	while(node.state.iterator.hasNext())
+           	if(node.state.iterator.next().isColliding(obs))
+        		return false;
+    	
+    	// On vérifie si on collisionne un élément de jeu
+    	if(!shoot)
+    		for(GameElementNames g : GameElementNames.values())
+    			if(table.isDone(g) != Tribool.FALSE && g.obstacle.isColliding(obs))
+    				return false;
+
+    	return true;
 	}
 	
 	/**

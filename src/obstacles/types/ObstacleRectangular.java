@@ -35,14 +35,7 @@ public class ObstacleRectangular extends Obstacle
 	private int indiceMemory;
 	
 	protected double angle, cos, sin;
-/*
-	protected void setAngle(double angle)
-	{
-		this.angle = angle;
-		cos = Math.cos(angle);
-		sin = Math.sin(angle);
-	}
-	*/
+
 	/**
 	 * Cas où l'angle est nul
 	 * @param log
