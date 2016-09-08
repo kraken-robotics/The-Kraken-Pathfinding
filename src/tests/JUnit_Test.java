@@ -46,8 +46,7 @@ public abstract class JUnit_Test
 
 	@After
 	public void tearDown() throws Exception {
-		if(!fenetre.needInit)
-			Thread.sleep(100000);
+		fenetre.destructor();
 		Runtime.getRuntime().removeShutdownHook(ThreadShutdown.getInstance());
 		container.destructor(true);
 		System.out.println("\n\n");

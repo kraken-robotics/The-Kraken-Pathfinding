@@ -13,6 +13,10 @@ import org.jfree.ui.ApplicationFrame;
 import org.jfree.ui.RectangleInsets;
 import org.jfree.ui.RefineryUtilities;
 
+import container.Service;
+import utils.Config;
+import utils.Log;
+
 import java.awt.*;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
@@ -25,17 +29,28 @@ import java.util.Date;
  *
  */
 
-public class AffichageDebug extends ApplicationFrame
+public class AffichageDebug extends ApplicationFrame implements Service
 {
 	private static final long serialVersionUID = 1L;
 	private ArrayList<TimeSeries> series = new ArrayList<TimeSeries>();
     private TimeSeriesCollection dataset = new TimeSeriesCollection();
-	
+	private boolean init = false;
+    protected Log log;
+    
+    /**
+     * Ajoute des données à afficher
+     * @param data
+     * @param names
+     * @throws InvalidParameterException
+     */
 	public void addData(double[] data, String[] names) throws InvalidParameterException
 	{
 		if(names.length != data.length)
 			throw new InvalidParameterException();
 
+		if(!init)
+			init();
+		
 		Date temps = new Date();
 		for(int i = 0; i < data.length; i++)
 		{
@@ -49,8 +64,18 @@ public class AffichageDebug extends ApplicationFrame
 		}
 	}
 	
-    public AffichageDebug() {    	
+    public AffichageDebug(Log log)
+    {    	
         super("Debug INTech");
+        this.log = log;
+    }    
+    
+    /**
+     * L'initialisation se fait à part afin de ne pas ouvrir une fenêtre dès qu'on crée un objet
+     */
+    private void init()
+    {
+    	init = true;
         JFreeChart chart = ChartFactory.createTimeSeriesChart(
         		"To the moon !",  		// title
         		"Temps",            // x-axis label
@@ -88,7 +113,14 @@ public class AffichageDebug extends ApplicationFrame
 		pack();
 		RefineryUtilities.centerFrameOnScreen(this);
 		setVisible(true);
-
     }
+
+	@Override
+	public void updateConfig(Config config)
+	{}
+
+	@Override
+	public void useConfig(Config config)
+	{}
 
 }

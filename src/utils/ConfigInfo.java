@@ -69,16 +69,18 @@ public enum ConfigInfo {
 	/**
 	 * Debug
 	 */
-	DEBUG_SERIE_TRAME(false),
-	DEBUG_SERIE(false),
-	GENERATE_DEPENDENCY_GRAPH(false),
+	DEBUG_SERIE_TRAME(false), // debug verbeux sur le contenu des trames
+	DEBUG_SERIE(false), // debug sur la série
+	GENERATE_DEPENDENCY_GRAPH(false), // génère le graphe des dépendances
 	
 	/**
 	 * Interface graphique
 	 */
-	GRAPHIC_DSTARLISTE(false),
-	GRAPHIC_OBSTACLES(false),
-	GRAPHIC_TRAJECTORY(false),
+	GRAPHIC_DSTARLISTE(false), // affiche les calculs du D* Lite
+	GRAPHIC_OBSTACLES(false), // affiche les obstacles de proximité
+	GRAPHIC_TRAJECTORY(false), // affiche les trajectoires
+	GRAPHIC_FIXED_OBSTACLES(false), // affiche les obstacles fixes
+	GRAPHIC_BACKGROUND(false), // affiche d'image de la table
 	
 	/**
 	 * Config dynamique

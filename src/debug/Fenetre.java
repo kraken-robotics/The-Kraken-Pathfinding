@@ -18,12 +18,17 @@ import pathfinding.dstarlite.gridspace.PointGridSpace;
 import pathfinding.dstarlite.gridspace.PointGridSpaceManager;
 import table.Table;
 import utils.Config;
+import utils.ConfigInfo;
 import utils.Vec2;
 import utils.permissions.ReadOnly;
 import utils.permissions.ReadWrite;
 import utils.Log;
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -32,7 +37,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 /**
- * Interface graphique écrite à l'arrache
+ * Interface graphique
  * @author pf
  *
  */
@@ -41,12 +46,13 @@ public class Fenetre extends JPanel implements Service {
 
 	private static final long serialVersionUID = 1L;
 	
-	private static final boolean afficheFond = false;
+	private boolean afficheFond;
 	private int sizeX = 450, sizeY = 300;
 //	private ArrayList<Vec2<ReadOnly>> pointsADessiner = new ArrayList<Vec2<ReadOnly>>();
 //	private LinkedList<ObstacleProximity> listObstaclesMobiles;
 	private ArrayList<Vec2<ReadOnly>[]> segments = new ArrayList<Vec2<ReadOnly>[]>();
 	private Image image;
+	private JFrame frame;
 //	private Vec2<ReadWrite>[] point;
 //	private AttributedString affichage = new AttributedString("");
 	
@@ -55,18 +61,24 @@ public class Fenetre extends JPanel implements Service {
 	private ArrayList<ObstacleCircular> obstaclesCirulaires = new ArrayList<ObstacleCircular>();
 
 	protected Capteurs capteurs;
-	private boolean printObsFixes = false;
+	private boolean printObsFixes;
 //	private int firstNotDead = 0;
     
 	private GridSpace gs;
 	private PointGridSpaceManager pm;
-	public boolean needInit = true;
+	private boolean needInit = true;
 	
 	public Fenetre(ObstaclesIteratorPresent iterator, GridSpace gs, PointGridSpaceManager pm) throws InterruptedException
 	{
 		this.iterator = iterator;
 		this.gs = gs;
 		this.pm = pm;
+	}
+	
+	public void destructor()
+	{
+		if(!needInit)
+			frame.dispose();
 	}
 	
 	private void init()
@@ -120,7 +132,6 @@ public class Fenetre extends JPanel implements Service {
 			if(needInit)
 				init();
 			repaint();
-//			Sleep.sleep(50);
 		}
 	}
 
@@ -170,7 +181,6 @@ public class Fenetre extends JPanel implements Service {
 	}
 	
 	@Override
-	@SuppressWarnings("unused")
 	public void paint(Graphics g)
 	{
 		if(afficheFond)
@@ -188,16 +198,16 @@ public class Fenetre extends JPanel implements Service {
 			{
 				Obstacle o = obs.getObstacle();
 				if(o instanceof ObstacleRectangular)
-					paintObstacleRectangulaire((ObstacleRectangular)o, g, 0);
+					paintObstacleRectangular((ObstacleRectangular)o, g);
 				else if(o instanceof ObstacleCircular)
-					paintObstacleCirculaire((ObstacleCircular)o, g, 0);
+					paintObstacleCirculaire((ObstacleCircular)o, g);
 			}
 
 		paintObstacleEnBiais(g);
 		paintObstaclesCirculaires(g);
 		iterator.reinit();
 		while(iterator.hasNext())				
-			paintObstacleCirculaire(iterator.next(), g, 0);
+			paintObstacleCirculaire(iterator.next(), g);
 /*
 		g.setColor(new Color(0, 0, 130, 40));
 
@@ -263,14 +273,20 @@ public class Fenetre extends JPanel implements Service {
 	public void showOnFrame() {
 		setBackground(Color.WHITE);
 		setPreferredSize(new Dimension(sizeX,sizeY));
-		JFrame frame = new JFrame("Test");
-		frame.getContentPane().add(this);
+        frame = new JFrame();
+        frame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                frame.dispose();
+            }
+        });        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.getContentPane().add(this);
 		frame.pack();
 		frame.setVisible(true);
 	}
 
 	@SuppressWarnings("unchecked")
-	public void paintObstacleCirculaire(ObstacleCircular o, Graphics g, int dilatationObstacle)
+	public void paintObstacleCirculaire(ObstacleCircular o, Graphics g)
 	{
     	Field f;
 		try {
@@ -280,45 +296,13 @@ public class Fenetre extends JPanel implements Service {
 			if(o.radius <= 0)
 				g.fillOval(XtoWindow(((Vec2<ReadWrite>)f.get(o)).x)-5, YtoWindow(((Vec2<ReadWrite>)f.get(o)).y)-5, 10, 10);
 			else
-				g.fillOval(XtoWindow(((Vec2<ReadWrite>)f.get(o)).x-o.radius-dilatationObstacle), YtoWindow(((Vec2<ReadWrite>)f.get(o)).y+o.radius+dilatationObstacle), distanceXtoWindow((o.radius+dilatationObstacle)*2), distanceYtoWindow((o.radius+dilatationObstacle)*2));		
+				g.fillOval(XtoWindow(((Vec2<ReadWrite>)f.get(o)).x-o.radius), YtoWindow(((Vec2<ReadWrite>)f.get(o)).y+o.radius), distanceXtoWindow((o.radius)*2), distanceYtoWindow((o.radius)*2));		
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	public void paintObstacleRectangulaire(ObstacleRectangular o, Graphics g, int dilatationObstacle)
-	{/*// TODO
-		if(dilatationObstacle != 0)
-		{
-			// les quatre coins
-			g.fillOval(XtoWindow(o.getPosition().x-o.getSizeX()/2-dilatationObstacle), YtoWindow(o.getPosition().y+o.getSizeY()/2+dilatationObstacle), distanceXtoWindow(dilatationObstacle*2), distanceYtoWindow(dilatationObstacle*2));
-			g.fillOval(XtoWindow(o.getPosition().x-o.getSizeX()/2-dilatationObstacle), YtoWindow(o.getPosition().y-o.getSizeY()/2+dilatationObstacle), distanceXtoWindow(dilatationObstacle*2), distanceYtoWindow(dilatationObstacle*2));		
-			g.fillOval(XtoWindow(o.getPosition().x+o.getSizeX()/2-dilatationObstacle), YtoWindow(o.getPosition().y+o.getSizeY()/2+dilatationObstacle), distanceXtoWindow(dilatationObstacle*2), distanceYtoWindow(dilatationObstacle*2));		
-			g.fillOval(XtoWindow(o.getPosition().x+o.getSizeX()/2-dilatationObstacle), YtoWindow(o.getPosition().y-o.getSizeY()/2+dilatationObstacle), distanceXtoWindow(dilatationObstacle*2), distanceYtoWindow(dilatationObstacle*2));		
-
-			g.fillRect(XtoWindow(o.getPosition().x-o.getSizeX()/2-dilatationObstacle), YtoWindow(o.getPosition().y+o.getSizeY()/2), distanceXtoWindow(dilatationObstacle), distanceYtoWindow(o.getSizeY()));
-			g.fillRect(XtoWindow(o.getPosition().x+o.getSizeX()/2), YtoWindow(o.getPosition().y+o.getSizeY()/2), distanceXtoWindow(dilatationObstacle), distanceYtoWindow(o.getSizeY()));
-			g.fillRect(XtoWindow(o.getPosition().x-o.getSizeX()/2), YtoWindow(o.getPosition().y+o.getSizeY()/2+dilatationObstacle), distanceXtoWindow(o.getSizeX()), distanceYtoWindow(dilatationObstacle));
-			g.fillRect(XtoWindow(o.getPosition().x-o.getSizeX()/2), YtoWindow(o.getPosition().y-o.getSizeY()/2), distanceXtoWindow(o.getSizeX()), distanceYtoWindow(dilatationObstacle));
-		}
-		g.fillRect(XtoWindow(o.getPosition().x-o.getSizeX()/2), YtoWindow(o.getPosition().y+o.getSizeY()/2), distanceXtoWindow(o.getSizeX()), distanceYtoWindow(o.getSizeY()));
-*/	}
-	
-	// Impossible
-//	public void paintObstacle(Obstacle<ReadOnly> o, Graphics g, int dilatationObstacle)
-//	{
-//		if(o instanceof ObstacleRectangular)
-//			paintObstacle((ObstacleRectangular<ReadOnly>)o, g, dilatationObstacle);
-//		else if(o instanceof ObstacleCircular)
-//			paintObstacle((ObstacleCircular<ReadOnly>)o, g, dilatationObstacle);
-//	}
-
-/*	public void afficheCoordonnees(Point point)
-	{
-		affichage = new AttributedString("("+WindowToX((int)point.getX())+", "+WindowToY((int)point.getY())+")");
-	}
-	*/
 	public void addSegment(Vec2<ReadOnly> a, Vec2<ReadOnly> b)
 	{
 		@SuppressWarnings("unchecked")
@@ -333,60 +317,64 @@ public class Fenetre extends JPanel implements Service {
 		for(Vec2<ReadOnly>[] v : segments)
 			g.drawLine(XtoWindow(v[0].x), YtoWindow(v[0].y), XtoWindow(v[1].x), YtoWindow(v[1].y));
 	}
+	
 	public void paintObstaclesCirculaires(Graphics g)
 	{
 		g.setColor(Couleur.NOIR.couleur);		
 		synchronized(obstaclesCirulaires)
 		{
 			for(ObstacleCircular o: obstaclesCirulaires)
-				paintObstacleCirculaire(o, g, 0);
+				paintObstacleCirculaire(o, g);
 		}
 	}
-	@SuppressWarnings("unchecked")
+	
 	public void paintObstacleEnBiais(Graphics g)
 	{
-		try {
 		g.setColor(Couleur.NOIR.couleur);
-		int[] X, Y;
 		synchronized(obstaclesEnBiais)
 		{
 			for(ObstacleRectangular o: obstaclesEnBiais)
-			{
-				Field f1 = ObstacleRectangular.class.getDeclaredField("coinBasDroiteRotate");
-		    	f1.setAccessible(true);
-		    	Field f2 = ObstacleRectangular.class.getDeclaredField("coinHautDroiteRotate");
-		    	f2.setAccessible(true);
-		    	Field f3 = ObstacleRectangular.class.getDeclaredField("coinHautGaucheRotate");
-		    	f3.setAccessible(true);
-		    	Field f4 = ObstacleRectangular.class.getDeclaredField("coinBasGaucheRotate");
-		    	f4.setAccessible(true);
-
-				
-				X = new int[4];
-				X[0] = (int) ((Vec2<ReadOnly>)f1.get(o)).x;
-				X[1] = (int) ((Vec2<ReadOnly>)f2.get(o)).x;
-				X[2] = (int) ((Vec2<ReadOnly>)f3.get(o)).x;
-				X[3] = (int) ((Vec2<ReadOnly>)f4.get(o)).x;
-
-				Y = new int[4];
-				Y[0] = (int) ((Vec2<ReadOnly>)f1.get(o)).y;
-				Y[1] = (int) ((Vec2<ReadOnly>)f2.get(o)).y;
-				Y[2] = (int) ((Vec2<ReadOnly>)f3.get(o)).y;
-				Y[3] = (int) ((Vec2<ReadOnly>)f4.get(o)).y;
-				
-				for(int i = 0; i < 4; i++)
-				{
-					X[i] = XtoWindow(X[i]);
-					Y[i] = YtoWindow(Y[i]);
-				}
-				g.fillPolygon(X, Y, 4);
-			}
+				paintObstacleRectangular(o, g);
 		}
-		} catch (Exception e)
+//		g.fillRect(100, 100, 100, 100);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public void paintObstacleRectangular(ObstacleRectangular o, Graphics g)
+	{
+		try {
+			Field f1 = ObstacleRectangular.class.getDeclaredField("coinBasDroiteRotate");
+	    	f1.setAccessible(true);
+	    	Field f2 = ObstacleRectangular.class.getDeclaredField("coinHautDroiteRotate");
+	    	f2.setAccessible(true);
+	    	Field f3 = ObstacleRectangular.class.getDeclaredField("coinHautGaucheRotate");
+	    	f3.setAccessible(true);
+	    	Field f4 = ObstacleRectangular.class.getDeclaredField("coinBasGaucheRotate");
+	    	f4.setAccessible(true);
+	
+			
+			int[] X = new int[4];
+			X[0] = (int) ((Vec2<ReadOnly>)f1.get(o)).x;
+			X[1] = (int) ((Vec2<ReadOnly>)f2.get(o)).x;
+			X[2] = (int) ((Vec2<ReadOnly>)f3.get(o)).x;
+			X[3] = (int) ((Vec2<ReadOnly>)f4.get(o)).x;
+	
+			int[] Y = new int[4];
+			Y[0] = (int) ((Vec2<ReadOnly>)f1.get(o)).y;
+			Y[1] = (int) ((Vec2<ReadOnly>)f2.get(o)).y;
+			Y[2] = (int) ((Vec2<ReadOnly>)f3.get(o)).y;
+			Y[3] = (int) ((Vec2<ReadOnly>)f4.get(o)).y;
+			
+			for(int i = 0; i < 4; i++)
+			{
+				X[i] = XtoWindow(X[i]);
+				Y[i] = YtoWindow(Y[i]);
+			}
+			g.fillPolygon(X, Y, 4);
+		} catch(Exception e)
 		{
 			e.printStackTrace();
 		}
-//		g.fillRect(100, 100, 100, 100);
 	}
 	
 	public void clearObstacleEnBiais()
@@ -411,14 +399,6 @@ public class Fenetre extends JPanel implements Service {
 		repaint();
 	}
 	
-	public void printObsFixes()
-	{
-		printObsFixes = true;
-        if(needInit)
-            init();
-        repaint();
-	}
-	
 	public void addObstacleCirculaire(ObstacleCircular o)
 	{
 		obstaclesCirulaires.add(o);
@@ -433,6 +413,9 @@ public class Fenetre extends JPanel implements Service {
 
 	@Override
 	public void useConfig(Config config)
-	{}
+	{
+		printObsFixes = config.getBoolean(ConfigInfo.GRAPHIC_FIXED_OBSTACLES);
+		afficheFond = config.getBoolean(ConfigInfo.GRAPHIC_BACKGROUND);
+	}
 	
 }
