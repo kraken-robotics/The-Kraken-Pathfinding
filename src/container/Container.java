@@ -202,19 +202,19 @@ public class Container implements Service
 	 * @throws ContainerException
 	 * @throws InterruptedException 
 	 */
-	public synchronized <S extends Service> S getService(Class<S> serviceTo) throws ContainerException, InterruptedException
+	public synchronized <S> S getService(Class<S> serviceTo) throws ContainerException, InterruptedException
 	{
 		stack.clear(); // pile d'appel vidée
 		return getServiceDisplay(null, serviceTo);
 	}
 	
 	@SuppressWarnings("unused")
-	private synchronized <S extends Service> S getServiceDisplay(Class<? extends Service> serviceFrom, Class<S> serviceTo) throws ContainerException, InterruptedException
+	private synchronized <S> S getServiceDisplay(Class<?> serviceFrom, Class<S> serviceTo) throws ContainerException, InterruptedException
 	{
 		/**
 		 * On ne crée pas forcément le graphe de dépendances pour éviter une lourdeur inutile
 		 */
-		if(showGraph && !serviceTo.equals(Log.class))
+		if(showGraph && !serviceTo.equals(Log.class) && Service.class.isAssignableFrom(serviceTo))
 		{
 			ArrayList<String> ok = new ArrayList<String>();
 			ok.add(Config.class.getSimpleName());
@@ -259,13 +259,13 @@ public class Container implements Service
 	 * @throws InterruptedException
 	 */
 	@SuppressWarnings("unchecked")
-	private synchronized <S extends Service> S getServiceRecursif(Class<S> classe) throws ContainerException, InterruptedException
+	private synchronized <S> S getServiceRecursif(Class<S> classe) throws ContainerException, InterruptedException
 	{
 		try {
 			/**
-			 * Si l'objet existe déjà, on le renvoie
-			 */			
-			if(instanciedServices.containsKey(classe.getSimpleName()))
+			 * Si l'objet existe déjà et que c'est un Service, on le renvoie
+			 */	
+			if(Service.class.isAssignableFrom(classe) && instanciedServices.containsKey(classe.getSimpleName()))
 				return (S) instanciedServices.get(classe.getSimpleName());
 			
 			/**
@@ -318,12 +318,13 @@ public class Container implements Service
 			 * Instanciation et sauvegarde
 			 */
 			S s = constructeur.newInstance(paramObject);
-			instanciedServices.put(classe.getSimpleName(), s);
+			if(Service.class.isAssignableFrom(classe))
+				instanciedServices.put(classe.getSimpleName(), (Service)s);
 			
 			/**
 			 * Mise à jour de la config
 			 */
-			if(config != null)
+			if(config != null && Service.class.isAssignableFrom(classe))
 				for(Method m : Service.class.getMethods())
 					classe.getMethod(m.getName(), Config.class).invoke(s, config);
 			

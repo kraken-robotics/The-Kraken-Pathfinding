@@ -4,6 +4,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import exceptions.ContainerException;
+import obstacles.memory.ObstaclesIteratorPresent;
 import pathfinding.astarCourbe.AStarCourbe;
 import table.Table;
 import tests.container.A;
@@ -63,9 +64,12 @@ public class JUnit_Container extends JUnit_Test {
 	@Test
 	public void test_doublon() throws Exception
 	{
+		// Config est un service, c'est le même object
 		Assert.assertTrue(container.getService(Config.class)
 				== container.getService(Config.class));
-		// comparaison physique entre les deux objets
+		// ObstaclesIteratorPresent n'est pas un service : deux objets différents
+		Assert.assertTrue(container.getService(ObstaclesIteratorPresent.class)
+				!= container.getService(ObstaclesIteratorPresent.class));	
 	}
 
 }
