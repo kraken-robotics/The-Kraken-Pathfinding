@@ -2,6 +2,7 @@ package pathfinding.dstarlite.gridspace;
 
 import container.Service;
 import utils.Config;
+import utils.Log;
 import utils.Vec2;
 import utils.permissions.ReadOnly;
 
@@ -13,10 +14,12 @@ import utils.permissions.ReadOnly;
 
 public class PointGridSpaceManager implements Service
 {
+	protected Log log;
 	private static PointGridSpace[] allPoints = new PointGridSpace[PointGridSpace.NB_POINTS];
 	
-	public PointGridSpaceManager()
+	public PointGridSpaceManager(Log log)
 	{
+		this.log = log;
 		for(int i = 0; i < PointGridSpace.NB_POINTS; i++)
 			allPoints[i] = new PointGridSpace(i);			
 	}
@@ -29,6 +32,9 @@ public class PointGridSpaceManager implements Service
 	 */
 	public PointGridSpace get(int x, int y)
 	{
+		if(x < 0 || x > PointGridSpace.X_MAX || y < 0 || y > PointGridSpace.Y_MAX)
+			return null;
+
 		return get(index(x,y));
 	}
 	
@@ -41,6 +47,10 @@ public class PointGridSpaceManager implements Service
 	{
 		int y = (int) Math.round(p.y / PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS);
 		int x = (int) Math.round((p.x + 1500) / PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS);
+		
+		if(x < 0 || x > PointGridSpace.X_MAX || y < 0 || y > PointGridSpace.Y_MAX)
+			return null;
+
 		return allPoints[index(x,y)];
 	}
 	

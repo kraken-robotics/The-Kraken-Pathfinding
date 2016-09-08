@@ -64,7 +64,7 @@ public enum ConfigInfo {
 	HORIZON_CAPTEURS(800), // jusqu'où peuvent voir les capteurs
 	DUREE_PEREMPTION_OBSTACLES(3000), // pendant combien de temps va-t-on garder un obstacle de proximité
 	DISTANCE_MAX_ENTRE_MESURE_ET_OBJET(50), // quelle marge d'erreur autorise-t-on entre un objet et sa détection
-	DISTANCE_BETWEEN_PROXIMITY_OBSTACLES(20), // sous quelle distance fusionne-t-on deux obstacles de proximité ?
+	DISTANCE_BETWEEN_PROXIMITY_OBSTACLES(50), // sous quelle distance fusionne-t-on deux obstacles de proximité ?
 
 	/**
 	 * Config dynamique

@@ -23,20 +23,6 @@ public enum Direction {
 	}
 	
 	/**
-	 * Récupère la direction associée à un déplacement exprimé en deltaX et deltaY
-	 * @param deltaX
-	 * @param deltaY
-	 * @return
-	 */
-	static Direction convertToDirection(int deltaX, int deltaY)
-	{
-		for(Direction d : values())
-			if(deltaX == d.deltaX && deltaY == d.deltaY)
-				return d;
-		return null; // pas reconnu
-	}
-
-	/**
 	 * Fournit la direction opposée
 	 * @return
 	 */

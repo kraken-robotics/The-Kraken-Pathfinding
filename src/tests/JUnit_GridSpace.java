@@ -11,6 +11,7 @@ import org.junit.Test;
 import pathfinding.dstarlite.gridspace.Direction;
 import pathfinding.dstarlite.gridspace.GridSpace;
 import pathfinding.dstarlite.gridspace.PointDirige;
+import pathfinding.dstarlite.gridspace.PointDirigeManager;
 import pathfinding.dstarlite.gridspace.PointGridSpace;
 import pathfinding.dstarlite.gridspace.PointGridSpaceManager;
 import utils.ConfigInfo;
@@ -27,6 +28,7 @@ public class JUnit_GridSpace extends JUnit_Test {
 
 	private GridSpace gridspace;
 	private PointGridSpaceManager pointManager;
+	private PointDirigeManager pointDManager;
 	
 	@Override
 	@Before
@@ -34,6 +36,7 @@ public class JUnit_GridSpace extends JUnit_Test {
         super.setUp();
         gridspace = container.getService(GridSpace.class);
         pointManager = container.getService(PointGridSpaceManager.class);
+        pointDManager = container.getService(PointDirigeManager.class);
     }
 	
 	@Test
@@ -48,9 +51,9 @@ public class JUnit_GridSpace extends JUnit_Test {
 	@Test
 	public void test_distance() throws Exception
 	{
-		Assert.assertTrue(gridspace.distanceStatique(new PointDirige(pointManager.get(523), Direction.NE)) == 1414);
-		Assert.assertTrue(gridspace.distanceStatique(new PointDirige(pointManager.get(523), Direction.N)) == 1000);
-		Assert.assertTrue(gridspace.distanceStatique(new PointDirige(pointManager.get(1), Direction.E)) == Integer.MAX_VALUE);
+		Assert.assertTrue(gridspace.distanceStatique(pointDManager.get(pointManager.get(523), Direction.NE)) == 1414);
+		Assert.assertTrue(gridspace.distanceStatique(pointDManager.get(pointManager.get(523), Direction.N)) == 1000);
+		Assert.assertTrue(gridspace.distanceStatique(pointDManager.get(pointManager.get(1), Direction.E)) == Integer.MAX_VALUE);
 	}
 
 	@Test

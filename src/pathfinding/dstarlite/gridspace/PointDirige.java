@@ -8,10 +8,11 @@ package pathfinding.dstarlite.gridspace;
 
 public class PointDirige
 {
-	public PointGridSpace point;
-	public Direction dir;
-
-	public PointDirige(PointGridSpace point, Direction dir) {
+	public final PointGridSpace point;
+	public final Direction dir;
+	
+	PointDirige(PointGridSpace point, Direction dir)
+	{
 		this.point = point;
 		this.dir = dir;
 	}

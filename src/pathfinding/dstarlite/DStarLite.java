@@ -8,6 +8,7 @@ import obstacles.types.ObstacleProximity;
 import pathfinding.dstarlite.gridspace.Direction;
 import pathfinding.dstarlite.gridspace.GridSpace;
 import pathfinding.dstarlite.gridspace.PointDirige;
+import pathfinding.dstarlite.gridspace.PointDirigeManager;
 import pathfinding.dstarlite.gridspace.PointGridSpace;
 import pathfinding.dstarlite.gridspace.PointGridSpaceManager;
 import robot.Cinematique;
@@ -36,6 +37,7 @@ public class DStarLite implements Service
 	private GridSpace gridspace;
 	private Fenetre fenetre;
 	private PointGridSpaceManager pointManager;
+	private PointDirigeManager pointDManager;
 
 	/**
 	 * Le comparateur de DStarLiteNode, utilisé par la PriorityQueue
@@ -59,11 +61,12 @@ public class DStarLite implements Service
 	 * @param log
 	 * @param gridspace
 	 */
-	public DStarLite(Log log, GridSpace gridspace, PointGridSpaceManager pointManager)
+	public DStarLite(Log log, GridSpace gridspace, PointGridSpaceManager pointManager, PointDirigeManager pointDManager)
 	{
 		this.log = log;
 		this.gridspace = gridspace;
 		this.pointManager = pointManager;
+		this.pointDManager = pointDManager;
 		
 		for(int i = 0; i < PointGridSpace.NB_POINTS; i++)
 			memory[i] = new DStarLiteNode(pointManager.get(i));
@@ -320,7 +323,7 @@ public class DStarLite implements Service
 					DStarLiteNode u = getFromMemory(upoint);
 					Direction dir = i.dir;
 					DStarLiteNode v = getFromMemory(pointManager.getGridPointVoisin(upoint,dir));
-					u.rhs = Math.min(u.rhs, add(v.g, gridspace.distanceStatique(new PointDirige(upoint, dir))));
+					u.rhs = Math.min(u.rhs, add(v.g, gridspace.distanceStatique(pointDManager.get(upoint, dir))));
 					updateVertex(u);
 				}
 			}
@@ -340,7 +343,7 @@ public class DStarLite implements Service
 					DStarLiteNode v = getFromMemory(pointManager.getGridPointVoisin(upoint,dir));
 
 					// l'ancienne distance est la distance statique car c'est un ajout d'obstacle
-					if(u.rhs == add(gridspace.distanceStatique(new PointDirige(upoint, dir)), v.g) && !u.equals(arrivee))
+					if(u.rhs == add(gridspace.distanceStatique(pointDManager.get(upoint, dir)), v.g) && !u.equals(arrivee))
 					{
 						u.rhs = Integer.MAX_VALUE;
 						for(Direction voisin : Direction.values())
@@ -473,9 +476,9 @@ public class DStarLite implements Service
 	 */
 	private int distanceDynamiqueSucc(PointGridSpace point, Direction dir)
 	{
-		if(obstaclesConnus.contains(new PointDirige(point, dir)))
+		if(obstaclesConnus.contains(pointDManager.get(point, dir)))
 			return Integer.MAX_VALUE;
-		return gridspace.distanceStatique(new PointDirige(point, dir));
+		return gridspace.distanceStatique(pointDManager.get(point, dir));
 	}
 	
 }

@@ -36,6 +36,7 @@ public class GridSpace implements Service
 	private ObstaclesMemory obstaclesMemory;
 	private Table table;
 	private PointGridSpaceManager pointManager;
+	private PointDirigeManager pointDManager;
 
 	private int distanceApproximation;
 	private int distanceMinimaleEntreProximite;
@@ -47,38 +48,32 @@ public class GridSpace implements Service
 //	private static final int COEFF_HEURISTIQUE = 2;
 	
 	// cette grille est constante, c'est-à-dire qu'elle ne contient que les obstacles fixes
-	private static BitSet grilleStatique = null;
+	private BitSet grilleStatique = new BitSet(PointGridSpace.NB_POINTS);
 	
 	private static ArrayList<PointDirige> masque = new ArrayList<PointDirige>();
 	private static int centreMasque;
 	private long deathDateLastObstacle;
 	
-	public GridSpace(Log log, ObstaclesMemory obstaclesMemory, Table table, PointGridSpaceManager pointManager)
+	public GridSpace(Log log, ObstaclesMemory obstaclesMemory, Table table, PointGridSpaceManager pointManager, PointDirigeManager pointDManager)
 	{
 		this.obstaclesMemory = obstaclesMemory;
 		this.log = log;
 		this.table = table;
 		this.pointManager = pointManager;
+		this.pointDManager = pointDManager;
 		iteratorDStarLite = new ObstaclesIteratorPresent(log, obstaclesMemory);
 		iteratorRemoveNearby = new ObstaclesIteratorPresent(log, obstaclesMemory);
 		
-		if(grilleStatique == null)
-		{
-			// Initialisation, une fois pour toutes, de la grille statique
-			grilleStatique = new BitSet(PointGridSpace.NB_POINTS);
-			for(int i = 0; i < PointGridSpace.NB_POINTS; i++)
-				for(ObstaclesFixes o : ObstaclesFixes.values)
+		for(int i = 0; i < PointGridSpace.NB_POINTS; i++)
+			for(ObstaclesFixes o : ObstaclesFixes.values)
+			{
+				if(o.getObstacle().squaredDistance(PointGridSpace.computeVec2(new PointGridSpace(i))) < (int)(PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS/2 * PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS/2))
 				{
-					if(o.getObstacle().squaredDistance(PointGridSpace.computeVec2(new PointGridSpace(i))) < (int)(PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS/2 * PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS/2))
-					{
-//						log.debug(i+" : obstacle");
-						grilleStatique.set(i);
-						break; // on ne vérifie pas les autres obstacles
-					}
-//					log.debug(i+" : pas obstacle");
+					grilleStatique.set(i);
+					break; // on ne vérifie pas les autres obstacles
 				}
-			log.debug("Grille statique initialisée");
-		}
+			}
+		log.debug("Grille statique initialisée");
 	}
 	
 
@@ -91,20 +86,17 @@ public class GridSpace implements Service
 		int rayonEnnemi = config.getInt(ConfigInfo.RAYON_ROBOT_ADVERSE);
 		int rayonPoint = (int) Math.round((rayonEnnemi + rayonRobot) / PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS);
 		int tailleMasque = 2*(rayonPoint+1)+1;
+		int squaredRayonPoint = rayonPoint * rayonPoint;
 		centreMasque = tailleMasque / 2;
 		for(int i = 0; i < tailleMasque; i++)
 			for(int j = 0; j < tailleMasque; j++)
-				if((i-centreMasque) * (i-centreMasque) + (j-centreMasque) * (j-centreMasque) > rayonPoint*rayonPoint)
-					for(int a = -1; a <= 1; a++)
-						for(int b = -1; b <= 1; b++)
-						{
-							if(a == 0 && b == 0)
-								continue;
-							Direction dir = Direction.convertToDirection(a, b);
-							int i2 = i + a, j2 = j + b;
-							if((i2-centreMasque) * (i2-centreMasque) + (j2-centreMasque) * (j2-centreMasque) <= rayonPoint*rayonPoint)
-								masque.add(new PointDirige(pointManager.get(j,i), dir));
-						}
+				if((i-centreMasque) * (i-centreMasque) + (j-centreMasque) * (j-centreMasque) > squaredRayonPoint)
+					for(Direction d : Direction.values())
+					{
+						int i2 = i + d.deltaX, j2 = j + d.deltaY;
+						if((i2-centreMasque) * (i2-centreMasque) + (j2-centreMasque) * (j2-centreMasque) <= squaredRayonPoint)
+							masque.add(pointDManager.get(j,i,d));
+					}
 	}
 
 	@Override
@@ -117,10 +109,11 @@ public class GridSpace implements Service
 	 * @param i
 	 * @return
 	 */
-	public int distanceStatique(PointDirige point) {
+	public int distanceStatique(PointDirige point)
+	{
 		if(!isTraversableStatique(point.point))
 			return Integer.MAX_VALUE;
-		if(point.dir.isDiagonal()) // cf ordre des directions
+		if(point.dir.isDiagonal())
 			return 1414;
 		return 1000;
 	}
@@ -161,7 +154,7 @@ public class GridSpace implements Service
 			if(xC1 >= 0 && xC1 <= PointGridSpace.X_MAX && yC1 >= 0 && yC1 <= PointGridSpace.Y_MAX
 					&& xC2 >= 0 && xC2 <= PointGridSpace.X_MAX && yC2 >= 0 && yC2 <= PointGridSpace.Y_MAX)
 			{
-				out.add(new PointDirige(pointManager.get(xC1,yC1), dir));
+				out.add(pointDManager.get(xC1,yC1, dir));
 //				log.debug("Ajout !");
 			}
 		}
