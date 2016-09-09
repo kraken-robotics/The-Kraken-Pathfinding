@@ -87,7 +87,7 @@ public abstract class Obstacle
 	 */
 	public boolean isProcheObstacle(Obstacle obs, int distance)
 	{
-		return squaredDistance(obs.position.getReadOnly()) < distance * distance;
+		return squaredDistance(obs.position) < distance * distance;
 	}
 	
 	/**

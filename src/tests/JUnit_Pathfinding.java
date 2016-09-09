@@ -55,8 +55,8 @@ public class JUnit_Pathfinding extends JUnit_Test {
 			// Vérification de l'orientation
 			if(i > 0)
 				Assert.assertEquals(Math.atan2(
-						arccubique.arcs.get(i).getPosition().y - arccubique.arcs.get(i-1).getPosition().y,
-						arccubique.arcs.get(i).getPosition().x - arccubique.arcs.get(i-1).getPosition().x), arccubique.arcs.get(i).orientation, 0.5);
+						arccubique.arcs.get(i).getPosition().getY() - arccubique.arcs.get(i-1).getPosition().getY(),
+						arccubique.arcs.get(i).getPosition().getX() - arccubique.arcs.get(i-1).getPosition().getX()), arccubique.arcs.get(i).orientation, 0.5);
 			
 			// Vérification de la courbure
 /*			if(i > 1)

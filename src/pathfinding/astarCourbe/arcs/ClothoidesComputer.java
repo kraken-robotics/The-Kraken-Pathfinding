@@ -168,14 +168,14 @@ public class ClothoidesComputer implements Service
 	
 			// les paramètres du polynomes x = ax * t^3 + bx * t^2 + cx * t + dx,
 			// en fixant la position en 0 (départ) et en 1 (arrivée), la dérivée en 0 (vecteur vitesse) et la dérivée seconde en 0 (courbure)
-			double dx = cinematiqueInitiale.getPosition().x;
+			double dx = cinematiqueInitiale.getPosition().getX();
 			double cx = cos*alpha;
-			double ax = arrivee.getPosition().x - bx - cx - dx;
+			double ax = arrivee.getPosition().getX() - bx - cx - dx;
 			
 			// idem pour y
-			double dy = cinematiqueInitiale.getPosition().y;
+			double dy = cinematiqueInitiale.getPosition().getY();
 			double cy = sin*alpha;
-			double ay = arrivee.getPosition().y - by - cy - dy;
+			double ay = arrivee.getPosition().getY() - by - cy - dy;
 	
 			ArrayList<Cinematique> out = new ArrayList<Cinematique>();
 			double t = 0, tnext = 0, lastCourbure = courbure;
@@ -319,7 +319,7 @@ public class ClothoidesComputer implements Service
 						coeffMultiplicatif)
 						.Ysym(!vitesse.positif).rotate(
 				cos, sin).plus(
-				cinematiqueInitiale.getPosition()).getReadOnly().copy(
+				cinematiqueInitiale.getPosition()).copy(
 			modified.arcselems[i].getPositionEcriture());
 
  			double orientationClotho = sDepart * sDepart;
@@ -342,8 +342,8 @@ public class ClothoidesComputer implements Service
 	}
 
 	private Vec2RW deltaTmp = new Vec2RW();
-	private Vec2RO delta = new Vec2RO();
-	private Vec2RO centreCercle = new Vec2RO();
+	private Vec2RW delta = new Vec2RW();
+	private Vec2RW centreCercle = new Vec2RW();
 	
 	/**
 	 * Calcule la trajectoire dans le cas particulier d'une trajectoire circulaire
@@ -358,11 +358,11 @@ public class ClothoidesComputer implements Service
 		// rappel = la courbure est l'inverse du rayon de courbure
 		// le facteur 1000 vient du fait que la courbure est en mètre^-1
 		double rayonCourbure = 1000. / courbure;
-		delta.x = (int)(Math.cos(orientation + Math.PI / 2) * rayonCourbure);
-		delta.y = (int) (Math.sin(orientation + Math.PI / 2) * rayonCourbure);
+		delta.setX((int)(Math.cos(orientation + Math.PI / 2) * rayonCourbure));
+		delta.setY((int) (Math.sin(orientation + Math.PI / 2) * rayonCourbure));
 		
-		centreCercle.x = position.x + delta.x;
-		centreCercle.y = position.y + delta.y;
+		centreCercle.setX(position.getX() + delta.getX());
+		centreCercle.setY(position.getY() + delta.getY());
 
 		
 		double cos = Math.sqrt(rayonCourbure * rayonCourbure - d * d) / rayonCourbure;
@@ -409,8 +409,8 @@ public class ClothoidesComputer implements Service
 		for(int i = 0; i < NB_POINTS; i++)
 		{
 			double distance = (i + 1) * PRECISION_TRACE * 1000;
-			modified.arcselems[i].getPositionEcriture().x = (int) Math.round(position.x + distance * cos);
-			modified.arcselems[i].getPositionEcriture().y = (int) Math.round(position.y + distance * sin);
+			modified.arcselems[i].getPositionEcriture().setX((int) Math.round(position.getX() + distance * cos));
+			modified.arcselems[i].getPositionEcriture().setY((int) Math.round(position.getY() + distance * sin));
 			modified.arcselems[i].orientation = orientation;
 			modified.arcselems[i].courbure = 0;
 			modified.arcselems[i].vitesseRotation = vitesseMax.rotationalSpeed;

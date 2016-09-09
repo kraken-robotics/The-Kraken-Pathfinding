@@ -47,8 +47,8 @@ public class PointGridSpaceManager implements Service
 	 */
 	public PointGridSpace get(Vec2RO p)
 	{
-		int y = (int) Math.round(p.y / PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS);
-		int x = (int) Math.round((p.x + 1500) / PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS);
+		int y = (int) Math.round(p.getY() / PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS);
+		int x = (int) Math.round((p.getX() + 1500) / PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS);
 		
 		if(x < 0 || x > X_MAX || y < 0 || y > Y_MAX)
 			return null;

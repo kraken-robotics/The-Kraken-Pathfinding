@@ -22,16 +22,16 @@ public class ObstacleRectangular extends Obstacle implements Memorizable
 	
 	// calcul des positions des coins
 	// ces coins sont dans le repère de l'obstacle !
-	public Vec2RO coinBasGauche;
-	public Vec2RO coinHautGauche;
-	public Vec2RO coinBasDroite;
-	public Vec2RO coinHautDroite;
+	public Vec2RW coinBasGauche;
+	public Vec2RW coinHautGauche;
+	public Vec2RW coinBasDroite;
+	public Vec2RW coinHautDroite;
 
 	// ces coins sont dans le repère de la table
-	protected Vec2RO coinBasGaucheRotate;
-	protected Vec2RO coinHautGaucheRotate;
-	protected Vec2RO coinBasDroiteRotate;
-	protected Vec2RO coinHautDroiteRotate;
+	protected Vec2RW coinBasGaucheRotate;
+	protected Vec2RW coinHautGaucheRotate;
+	protected Vec2RW coinBasDroiteRotate;
+	protected Vec2RW coinHautDroiteRotate;
 	
 	private int indiceMemory;
 	
@@ -74,14 +74,14 @@ public class ObstacleRectangular extends Obstacle implements Memorizable
 		this.angle = angle;
 		cos = Math.cos(angle);
 		sin = Math.sin(angle);
-		coinBasGauche = new Vec2RO(-sizeX/2,-sizeY/2);
-		coinHautGauche = new Vec2RO(-sizeX/2,sizeY/2);
-		coinBasDroite = new Vec2RO(sizeX/2,-sizeY/2);
-		coinHautDroite = new Vec2RO(sizeX/2,sizeY/2);
-		coinBasGaucheRotate = convertitVersRepereTable(coinBasGauche).getReadOnly();
-		coinHautGaucheRotate = convertitVersRepereTable(coinHautGauche).getReadOnly();
-		coinBasDroiteRotate = convertitVersRepereTable(coinBasDroite).getReadOnly();
-		coinHautDroiteRotate = convertitVersRepereTable(coinHautDroite).getReadOnly();
+		coinBasGauche = new Vec2RW(-sizeX/2,-sizeY/2);
+		coinHautGauche = new Vec2RW(-sizeX/2,sizeY/2);
+		coinBasDroite = new Vec2RW(sizeX/2,-sizeY/2);
+		coinHautDroite = new Vec2RW(sizeX/2,sizeY/2);
+		coinBasGaucheRotate = convertitVersRepereTable(coinBasGauche);
+		coinHautGaucheRotate = convertitVersRepereTable(coinHautGauche);
+		coinBasDroiteRotate = convertitVersRepereTable(coinBasDroite);
+		coinHautDroiteRotate = convertitVersRepereTable(coinHautDroite);
 		demieDiagonale = Math.sqrt(sizeY*sizeY/4+sizeX*sizeX/4);
 	}
 	
@@ -96,8 +96,8 @@ public class ObstacleRectangular extends Obstacle implements Memorizable
 	private Vec2RW convertitVersRepereObstacle(Vec2RO point)
 	{
 		Vec2RW out = new Vec2RW();
-		out.x = (int)(cos*(point.x-position.x)+sin*(point.y-position.y));
-		out.y = (int)(-sin*(point.x-position.x)+cos*(point.y-position.y));
+		out.setX((int)(cos*(point.getX()-position.getX())+sin*(point.getY()-position.getY())));
+		out.setY((int)(-sin*(point.getX()-position.getX())+cos*(point.getY()-position.getY())));
 		return out;
 	}
 
@@ -110,8 +110,8 @@ public class ObstacleRectangular extends Obstacle implements Memorizable
 	private Vec2RW convertitVersRepereTable(Vec2RO point)
 	{
 		Vec2RW out = new Vec2RW();
-		out.x = (int)(cos*point.x-sin*point.y)+position.x;
-		out.y = (int)(sin*point.x+cos*point.y)+position.y;
+		out.setX((int)(cos*point.getX()-sin*point.getY())+position.getX());
+		out.setY((int)(sin*point.getX()+cos*point.getY())+position.getY());
 		return out;
 	}
 
@@ -122,7 +122,7 @@ public class ObstacleRectangular extends Obstacle implements Memorizable
 	 */
 	private int getXConvertiVersRepereObstacle(Vec2RO point)
 	{
-		return (int)(cos*(point.x-position.x)+sin*(point.y-position.y));
+		return (int)(cos*(point.getX()-position.getX())+sin*(point.getY()-position.getY()));
 	}
 
 	/**
@@ -132,7 +132,7 @@ public class ObstacleRectangular extends Obstacle implements Memorizable
 	 */
 	private int getYConvertiVersRepereObstacle(Vec2RO point)
 	{
-		return (int)(-sin*(point.x-position.x)+cos*(point.y-position.y));
+		return (int)(-sin*(point.getX()-position.getX())+cos*(point.getY()-position.getY()));
 	}
 
 	/**
@@ -149,10 +149,10 @@ public class ObstacleRectangular extends Obstacle implements Memorizable
 		if(position.squaredDistance(r.position) >= (demieDiagonale+r.demieDiagonale)*(demieDiagonale+r.demieDiagonale))
 			return false;
 		// Il faut tester les quatres axes
-		return !testeSeparation(coinBasGauche.x, coinBasDroite.x, getXConvertiVersRepereObstacle(r.coinBasGaucheRotate), getXConvertiVersRepereObstacle(r.coinHautGaucheRotate), getXConvertiVersRepereObstacle(r.coinBasDroiteRotate), getXConvertiVersRepereObstacle(r.coinHautDroiteRotate))
-				&& !testeSeparation(coinBasGauche.y, coinHautGauche.y, getYConvertiVersRepereObstacle(r.coinBasGaucheRotate), getYConvertiVersRepereObstacle(r.coinHautGaucheRotate), getYConvertiVersRepereObstacle(r.coinBasDroiteRotate), getYConvertiVersRepereObstacle(r.coinHautDroiteRotate))
-				&& !testeSeparation(r.coinBasGauche.x, r.coinBasDroite.x, r.getXConvertiVersRepereObstacle(coinBasGaucheRotate), r.getXConvertiVersRepereObstacle(coinHautGaucheRotate), r.getXConvertiVersRepereObstacle(coinBasDroiteRotate), r.getXConvertiVersRepereObstacle(coinHautDroiteRotate))
-				&& !testeSeparation(r.coinBasGauche.y, r.coinHautGauche.y, r.getYConvertiVersRepereObstacle(coinBasGaucheRotate), r.getYConvertiVersRepereObstacle(coinHautGaucheRotate), r.getYConvertiVersRepereObstacle(coinBasDroiteRotate), r.getYConvertiVersRepereObstacle(coinHautDroiteRotate));
+		return !testeSeparation(coinBasGauche.getX(), coinBasDroite.getX(), getXConvertiVersRepereObstacle(r.coinBasGaucheRotate), getXConvertiVersRepereObstacle(r.coinHautGaucheRotate), getXConvertiVersRepereObstacle(r.coinBasDroiteRotate), getXConvertiVersRepereObstacle(r.coinHautDroiteRotate))
+				&& !testeSeparation(coinBasGauche.getY(), coinHautGauche.getY(), getYConvertiVersRepereObstacle(r.coinBasGaucheRotate), getYConvertiVersRepereObstacle(r.coinHautGaucheRotate), getYConvertiVersRepereObstacle(r.coinBasDroiteRotate), getYConvertiVersRepereObstacle(r.coinHautDroiteRotate))
+				&& !testeSeparation(r.coinBasGauche.getX(), r.coinBasDroite.getX(), r.getXConvertiVersRepereObstacle(coinBasGaucheRotate), r.getXConvertiVersRepereObstacle(coinHautGaucheRotate), r.getXConvertiVersRepereObstacle(coinBasDroiteRotate), r.getXConvertiVersRepereObstacle(coinHautDroiteRotate))
+				&& !testeSeparation(r.coinBasGauche.getY(), r.coinHautGauche.getY(), r.getYConvertiVersRepereObstacle(coinBasGaucheRotate), r.getYConvertiVersRepereObstacle(coinHautGaucheRotate), r.getYConvertiVersRepereObstacle(coinBasDroiteRotate), r.getYConvertiVersRepereObstacle(coinHautDroiteRotate));
 	}
 	
 	/**
@@ -209,40 +209,42 @@ public class ObstacleRectangular extends Obstacle implements Memorizable
 		 */		
 		
 		// si le point fourni est dans les quarts de plan n°2,4,6 ou 8
-		if(in.x < coinBasGauche.x && in.y < coinBasGauche.y)
+		if(in.getX() < coinBasGauche.getX() && in.getY() < coinBasGauche.getY())
 			return in.squaredDistance(coinBasGauche);
 		
-		else if(in.x < coinHautGauche.x && in.y > coinHautGauche.y)
+		else if(in.getX() < coinHautGauche.getX() && in.getY() > coinHautGauche.getY())
 			return in.squaredDistance(coinHautGauche);
 		
-		else if(in.x > coinBasDroite.x && in.y < coinBasDroite.y)
+		else if(in.getX() > coinBasDroite.getX() && in.getY() < coinBasDroite.getY())
 			return in.squaredDistance(coinBasDroite);
 
-		else if(in.x > coinHautDroite.x && in.y > coinHautDroite.y)
+		else if(in.getX() > coinHautDroite.getX() && in.getY() > coinHautDroite.getY())
 			return in.squaredDistance(coinHautDroite);
 
 		// Si le point fourni est dans les demi-bandes n°1,3,5,ou 7
-		if(in.x > coinHautDroite.x)
-			return (in.x - coinHautDroite.x)*(in.x - coinHautDroite.x);
+		if(in.getX() > coinHautDroite.getX())
+			return (in.getX() - coinHautDroite.getX())*(in.getX() - coinHautDroite.getX());
 		
-		else if(in.x < coinBasGauche.x)
-			return (in.x - coinBasGauche.x)*(in.x - coinBasGauche.x);
+		else if(in.getX() < coinBasGauche.getX())
+			return (in.getX() - coinBasGauche.getX())*(in.getX() - coinBasGauche.getX());
 
-		else if(in.y > coinHautDroite.y)
-			return (in.y - coinHautDroite.y)*(in.y - coinHautDroite.y);
+		else if(in.getY() > coinHautDroite.getY())
+			return (in.getY() - coinHautDroite.getY())*(in.getY() - coinHautDroite.getY());
 		
-		else if(in.y < coinBasGauche.y)
-			return (in.y - coinBasGauche.y)*(in.y - coinBasGauche.y);
+		else if(in.getY() < coinBasGauche.getY())
+			return (in.getY() - coinBasGauche.getY())*(in.getY() - coinBasGauche.getY());
 
 		// Sinon, on est dans l'obstacle
 		return 0;
 	}
 
+	@Override
 	public void setIndiceMemoryManager(int indice)
 	{
 		indiceMemory = indice;
 	}
 
+	@Override
 	public int getIndiceMemoryManager()
 	{
 		return indiceMemory;
@@ -266,18 +268,18 @@ public class ObstacleRectangular extends Obstacle implements Memorizable
 		int c = robot.getDemieLongueurAvant();
 		int d = robot.getDemieLongueurArriere();
 		this.angle = orientation;
-		coinBasGauche.x = -d;
-		coinBasGauche.y = -a;
-		coinHautGauche.x = -d;
-		coinHautGauche.y = b;		
-		coinBasDroite.x = c;
-		coinBasDroite.y = -a;
-		coinHautDroite.x = c;
-		coinHautDroite.y = b;
-		coinBasGaucheRotate = convertitVersRepereTable(coinBasGauche).getReadOnly();
-		coinHautGaucheRotate = convertitVersRepereTable(coinHautGauche).getReadOnly();
-		coinBasDroiteRotate = convertitVersRepereTable(coinBasDroite).getReadOnly();
-		coinHautDroiteRotate = convertitVersRepereTable(coinHautDroite).getReadOnly();
+		coinBasGauche.setX(-d);
+		coinBasGauche.setY(-a);
+		coinHautGauche.setX(-d);
+		coinHautGauche.setY(b);	
+		coinBasDroite.setX(c);
+		coinBasDroite.setY(-a);
+		coinHautDroite.setX(c);
+		coinHautDroite.setY(b);
+		coinBasGaucheRotate = convertitVersRepereTable(coinBasGauche);
+		coinHautGaucheRotate = convertitVersRepereTable(coinHautGauche);
+		coinBasDroiteRotate = convertitVersRepereTable(coinBasDroite);
+		coinHautDroiteRotate = convertitVersRepereTable(coinHautDroite);
 		demieDiagonale = robot.getDemieDiagonale();
 		return this;
 	}

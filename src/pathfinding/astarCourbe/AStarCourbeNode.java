@@ -32,11 +32,13 @@ public class AStarCourbeNode implements Memorizable
 		f_score = Double.MAX_VALUE;
 	}
 	
+	@Override
 	public void setIndiceMemoryManager(int indice)
 	{
 		indiceMemoryManager = indice;
 	}
 
+	@Override
 	public int getIndiceMemoryManager()
 	{
 		return indiceMemoryManager;

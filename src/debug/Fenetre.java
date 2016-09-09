@@ -287,9 +287,9 @@ public class Fenetre extends JPanel implements Service {
 	    	f.setAccessible(true);
 	
 			if(o.radius <= 0)
-				g.fillOval(XtoWindow(((Vec2RW)f.get(o)).x)-5, YtoWindow(((Vec2RW)f.get(o)).y)-5, 10, 10);
+				g.fillOval(XtoWindow(((Vec2RW)f.get(o)).getX())-5, YtoWindow(((Vec2RW)f.get(o)).getY())-5, 10, 10);
 			else
-				g.fillOval(XtoWindow(((Vec2RW)f.get(o)).x-o.radius), YtoWindow(((Vec2RW)f.get(o)).y+o.radius), distanceXtoWindow((o.radius)*2), distanceYtoWindow((o.radius)*2));		
+				g.fillOval(XtoWindow(((Vec2RW)f.get(o)).getX()-o.radius), YtoWindow(((Vec2RW)f.get(o)).getY()+o.radius), distanceXtoWindow((o.radius)*2), distanceYtoWindow((o.radius)*2));		
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -307,7 +307,7 @@ public class Fenetre extends JPanel implements Service {
 	public void paintSegments(Graphics g)
 	{
 		for(Vec2RO[] v : segments)
-			g.drawLine(XtoWindow(v[0].x), YtoWindow(v[0].y), XtoWindow(v[1].x), YtoWindow(v[1].y));
+			g.drawLine(XtoWindow(v[0].getX()), YtoWindow(v[0].getY()), XtoWindow(v[1].getX()), YtoWindow(v[1].getY()));
 	}
 	
 	public void paintObstaclesCirculaires(Graphics g)
@@ -345,16 +345,16 @@ public class Fenetre extends JPanel implements Service {
 	
 			
 			int[] X = new int[4];
-			X[0] = (int) ((Vec2RO)f1.get(o)).x;
-			X[1] = (int) ((Vec2RO)f2.get(o)).x;
-			X[2] = (int) ((Vec2RO)f3.get(o)).x;
-			X[3] = (int) ((Vec2RO)f4.get(o)).x;
+			X[0] = (int) ((Vec2RO)f1.get(o)).getX();
+			X[1] = (int) ((Vec2RO)f2.get(o)).getX();
+			X[2] = (int) ((Vec2RO)f3.get(o)).getX();
+			X[3] = (int) ((Vec2RO)f4.get(o)).getX();
 	
 			int[] Y = new int[4];
-			Y[0] = (int) ((Vec2RO)f1.get(o)).y;
-			Y[1] = (int) ((Vec2RO)f2.get(o)).y;
-			Y[2] = (int) ((Vec2RO)f3.get(o)).y;
-			Y[3] = (int) ((Vec2RO)f4.get(o)).y;
+			Y[0] = (int) ((Vec2RO)f1.get(o)).getY();
+			Y[1] = (int) ((Vec2RO)f2.get(o)).getY();
+			Y[2] = (int) ((Vec2RO)f3.get(o)).getY();
+			Y[3] = (int) ((Vec2RO)f4.get(o)).getY();
 			
 			for(int i = 0; i < 4; i++)
 			{

@@ -25,19 +25,14 @@ public class Vec2RW extends Vec2RO
 		super(requestedX, requestedY);
 	}
 
-	public final Vec2RO getReadOnly()
-	{
-		return (Vec2RO) this;
-	}
-
-	public final Vec2RW plus(Vec2 other)
+	public final Vec2RW plus(Vec2RO other)
 	{
 		x += other.x;
 		y += other.y;
 		return this;
 	}
 	
-	public final Vec2RW minus(Vec2 other)
+	public final Vec2RW minus(Vec2RO other)
 	{
 		x -= other.x;
 		y -= other.y;
@@ -76,5 +71,14 @@ public class Vec2RW extends Vec2RO
 		y = sin*old_x+cos*y;
 		return this;
 	}
+	
+	public final void setX(double x)
+	{
+		this.x = x;
+	}
 
+	public final void setY(double y)
+	{
+		this.y = y;
+	}
 }

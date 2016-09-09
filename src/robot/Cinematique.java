@@ -21,8 +21,8 @@ public class Cinematique
 	
 	public Cinematique(double x, double y, double orientation, boolean enMarcheAvant, double courbure, double vitesseTranslation, double vitesseRotation, Speed vitesseMax)
 	{
-		position.x = x;
-		position.y = y;
+		position.setX(x);
+		position.setY(y);
 		this.orientation = orientation;
 		this.enMarcheAvant = enMarcheAvant;
 		this.courbure = courbure;
@@ -58,7 +58,7 @@ public class Cinematique
 	{
 		synchronized(autre)
 		{
-	    	position.getReadOnly().copy(autre.position);
+	    	position.copy(autre.position);
 	    	autre.orientation = orientation;
 	    	autre.enMarcheAvant = enMarcheAvant;
 	    	autre.courbure = courbure;
@@ -76,7 +76,7 @@ public class Cinematique
 
 	public final Vec2RO getPosition()
 	{
-		return position.getReadOnly();
+		return position;
 	}
 
 	public final Vec2RW getPositionEcriture()
@@ -115,7 +115,7 @@ public class Cinematique
 		codeOrientation = (int)(orientation / (Math.PI / 6));
 //		System.out.println("codeOrientation : "+codeOrientation+" "+orientation);
 		
-		return (((((int)position.x + 1500) / 15) * 150 + (int)position.y / 15) * 6 + codeCourbure) * 16 + codeOrientation;
+		return (((((int)position.getX() + 1500) / 15) * 150 + (int)position.getY() / 15) * 6 + codeCourbure) * 16 + codeOrientation;
 	}
 	
 	@Override

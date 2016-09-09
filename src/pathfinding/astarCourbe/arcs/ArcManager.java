@@ -92,7 +92,7 @@ public class ArcManager implements Service
 	 */
 	public double distanceTo(AStarCourbeNode node)
 	{
-		((RobotChrono)node.state.robot).suitArcCourbe(node.came_from_arc);
+		node.state.robot.suitArcCourbe(node.came_from_arc);
 		double out = node.came_from_arc.getDuree();
 		if(node.came_from_arc.rebrousse)
 			out += TEMPS_REBROUSSEMENT;
@@ -117,14 +117,14 @@ public class ArcManager implements Service
 			ArcCourbe tmp;
 			if(current.came_from_arc != null)
 				tmp = clotho.cubicInterpolation(
-						(RobotChrono)current.state.robot,
+						current.state.robot,
 						current.came_from_arc.getLast(),
 						arrivee,
 						vitesseMax,
 						v);
 			else
 				tmp = clotho.cubicInterpolation(
-						(RobotChrono)current.state.robot,
+						current.state.robot,
 						arrivee,
 						vitesseMax,
 						v);
@@ -141,13 +141,13 @@ public class ArcManager implements Service
 		 * Si on fait une interpolation par clothoïde
 		 */
 		else if(current.came_from_arc != null)
-			clotho.getTrajectoire((RobotChrono)current.state.robot,
+			clotho.getTrajectoire(current.state.robot,
 					current.came_from_arc,
 					v,
 					vitesseMax,
 					(ArcCourbeClotho)successeur.came_from_arc);
 		else // pas de prédécesseur
-			clotho.getTrajectoire((RobotChrono)successeur.state.robot,
+			clotho.getTrajectoire(successeur.state.robot,
 					v,
 					vitesseMax,
 					(ArcCourbeClotho)successeur.came_from_arc);
@@ -169,27 +169,27 @@ public class ArcManager implements Service
     	//      - on n'est pas en fast, donc pas d'autorisation
     	//      ET
     	//      - on est dans la bonne direction, donc pas d'autorisation exceptionnelle de se retourner
-    	if(vitesse.rebrousse && (directionstrategyactuelle != DirectionStrategy.FASTEST && directionstrategyactuelle.isPossible(((RobotChrono)current.state.robot).getCinematique().enMarcheAvant)))
+    	if(vitesse.rebrousse && (directionstrategyactuelle != DirectionStrategy.FASTEST && directionstrategyactuelle.isPossible((current.state.robot).getCinematique().enMarcheAvant)))
     	{ 
 //    		log.debug(vitesse+" n'est pas acceptable (rebroussement interdit");
     		return false;
     	}
     	
     	// Si on ne rebrousse pas chemin alors que c'est nécessaire
-    	if(!vitesse.rebrousse && !directionstrategyactuelle.isPossible(((RobotChrono)current.state.robot).getCinematique().enMarcheAvant))
+    	if(!vitesse.rebrousse && !directionstrategyactuelle.isPossible((current.state.robot).getCinematique().enMarcheAvant))
     	{
 //    		log.debug(vitesse+" n'est pas acceptable (rebroussement nécessaire");
     		return false;
     	}
 
     	// On ne tente pas l'interpolation si on est trop loin
-    	if((vitesse == VitesseCourbure.DIRECT_COURBE || vitesse == VitesseCourbure.DIRECT_COURBE_REBROUSSE) && heuristique.heuristicCostCourbe(((RobotChrono)current.state.robot).getCinematique()) > 100)
+    	if((vitesse == VitesseCourbure.DIRECT_COURBE || vitesse == VitesseCourbure.DIRECT_COURBE_REBROUSSE) && heuristique.heuristicCostCourbe((current.state.robot).getCinematique()) > 100)
     	{
 //    		log.debug(vitesse+" n'est pas acceptable (on est trop loin)");
 			return false;
     	}
     	
-    	double courbureFuture = ((RobotChrono)current.state.robot).getCinematique().courbure + vitesse.vitesse * ClothoidesComputer.DISTANCE_ARC_COURBE_M;
+    	double courbureFuture = (current.state.robot).getCinematique().courbure + vitesse.vitesse * ClothoidesComputer.DISTANCE_ARC_COURBE_M;
     	if(courbureFuture >= -courbureMax && courbureFuture <= courbureMax)
     		return true;
 
@@ -247,7 +247,7 @@ public class ArcManager implements Service
 	 */
 	public double heuristicCost(AStarCourbeNode successeur)
 	{
-		return heuristique.heuristicCostCourbe(((RobotChrono)successeur.state.robot).getCinematique());
+		return heuristique.heuristicCostCourbe((successeur.state.robot).getCinematique());
 	}
 
 }

@@ -35,7 +35,7 @@ public class ChronoGameState extends GameState<RobotChrono>
 	public final void copyAStarCourbe(ChronoGameState modified)
     {
     	table.copy(modified.table);
-        robot.copy((RobotChrono) modified.robot);
+        robot.copy(modified.robot);
         iterator.copy(modified.iterator, robot.getTempsDepuisDebutMatch());
         // Table a été copié par gridspace
     }

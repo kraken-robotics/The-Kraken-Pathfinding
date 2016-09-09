@@ -141,7 +141,7 @@ public class AStarCourbe implements Service
 		{
 			current = openset.poll();
 			
-			int hash = ((RobotChrono)current.state.robot).getCinematique().hashCode();
+			int hash = current.state.robot.getCinematique().hashCode();
 			if(closedset.contains(hash))
 				continue;
 
@@ -282,7 +282,7 @@ public class AStarCourbe implements Service
 		depart.init();
 		state.copyAStarCourbe(depart.state);
 		
-		dstarlite.computeNewPath(((RobotChrono)depart.state.robot).getCinematique().getPosition(), arrivee.getPosition());
+		dstarlite.computeNewPath(depart.state.robot.getCinematique().getPosition(), arrivee.getPosition());
 		process();
 	}
 	
@@ -296,7 +296,7 @@ public class AStarCourbe implements Service
 		}
 		vitesseMax = Speed.REPLANIF;
 		
-		dstarlite.updatePath(((RobotChrono)depart.state.robot).getCinematique().getPosition());
+		dstarlite.updatePath(depart.state.robot.getCinematique().getPosition());
 		chemin.clear();
 		process();
 		isUpdating = false;

@@ -122,10 +122,10 @@ public class Capteurs implements Service {
 				positionEnnemi.rotate(orientationRobot);
 				positionEnnemi.plus(positionRobot);
 				
-				if(positionEnnemi.x > 1500 || positionEnnemi.x < -1500 || positionEnnemi.y > 2000 || positionEnnemi.y < 0)
+				if(positionEnnemi.getX() > 1500 || positionEnnemi.getX() < -1500 || positionEnnemi.getY() > 2000 || positionEnnemi.getY() < 0)
 					continue; // hors table
 				
-				ObstacleProximity o = gridspace.addObstacleAndRemoveNearbyObstacles(positionEnnemi.getReadOnly());
+				ObstacleProximity o = gridspace.addObstacleAndRemoveNearbyObstacles(positionEnnemi);
 				
 				/**
 				 * Mise à jour de l'état de la table
