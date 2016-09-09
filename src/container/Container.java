@@ -34,7 +34,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Set;
 import java.util.Stack;
 
 import exceptions.ContainerException;
@@ -80,18 +79,12 @@ public class Container implements Service
 			getService(n.c).interrupt();
 
 		for(ThreadName n : ThreadName.values())
-			getService(n.c).join(1000); // on attend au plus 1000ms que le thread s'arrête
-
-		/**
-		 * Affiche la liste des threads qui ne sont pas fermés
-		 */
-		Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
-		for(Thread t : threadSet)
 		{
-			if(!t.getName().equals(Thread.currentThread().getName()) && t.getName().startsWith("ThreadRobot"))
-				log.critical("Thread "+t.getName()+" pas arrêté !");
+			getService(n.c).join(1000); // on attend au plus 1000ms que le thread s'arrête
+			if(getService(n.c).isAlive())
+				log.critical(n.c.getSimpleName()+" encore vivant !");
 		}
-		
+
 		log.debug("Fermeture de la série");
 		/**
 		 * Mieux vaut écrire SerieCouchePhysique.class.getSimpleName()) que "SerieCouchePhysique",
@@ -395,8 +388,11 @@ public class Container implements Service
 		/**
 		 * Planification du hook de fermeture
 		 */
-		ThreadShutdown.makeInstance(this);
-		Runtime.getRuntime().addShutdownHook(ThreadShutdown.getInstance());
+		try {
+			Runtime.getRuntime().addShutdownHook(getService(ThreadShutdown.class));
+		} catch (ContainerException e) {
+			log.critical(e);
+		}
 		
 		log.debug("Démarrage des threads fini");
 	}
@@ -418,19 +414,18 @@ public class Container implements Service
 	 */
 	private void printMessage(String filename)
 	{
-			BufferedReader reader;
-			try {
-				reader = new BufferedReader(new FileReader(filename));
-				String line;
-				    
-				while((line = reader.readLine()) != null)
-					System.out.println(line);
-				    
-				reader.close();
-			} catch (IOException e) {
-				System.err.println(e);
-			}
-
+		BufferedReader reader;
+		try {
+			reader = new BufferedReader(new FileReader(filename));
+			String line;
+			    
+			while((line = reader.readLine()) != null)
+				System.out.println(line);
+			    
+			reader.close();
+		} catch (IOException e) {
+			System.err.println(e); // peut-être que log n'est pas encore démarré…
+		}
 	}
 
 	@Override

@@ -45,7 +45,7 @@ public class ThreadPeremption extends ThreadService
 	@Override
 	public void run()
 	{
-		Thread.currentThread().setName("ThreadRobotPeremption");
+		Thread.currentThread().setName(getClass().getSimpleName());
 		log.debug("Démarrage de "+Thread.currentThread().getName());
 		try {
 			while(true)

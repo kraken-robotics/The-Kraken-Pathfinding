@@ -17,7 +17,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 package threads;
 
+import utils.Config;
+import utils.Log;
 import container.Container;
+import container.Service;
 import exceptions.ContainerException;
 
 
@@ -27,34 +30,34 @@ import exceptions.ContainerException;
  *
  */
 
-public class ThreadShutdown extends Thread
+public class ThreadShutdown extends Thread implements Service
 {
 	protected Container container;
-	private static ThreadShutdown instance = null;
+	protected Log log;
 	
-	public static ThreadShutdown getInstance()
-	{
-		return instance;
-	}
-	
-	public static ThreadShutdown makeInstance(Container container)
-	{
-		return instance = new ThreadShutdown(container);
-	}
-
-	private ThreadShutdown(Container container)
+	public ThreadShutdown(Container container, Log log)
 	{
 		this.container = container;
+		this.log = log;
 	}
 
 	@Override
 	public void run()
 	{
-		Thread.currentThread().setName("ThreadRobotShutdown");
+		Thread.currentThread().setName(getClass().getSimpleName());
+		log.debug("Appel à "+Thread.currentThread().getName());
 		try {
 			container.destructor(false);
 		} catch (ContainerException | InterruptedException e) {
 			System.out.println(e);
 		}
 	}
+
+	@Override
+	public void updateConfig(Config config)
+	{}
+
+	@Override
+	public void useConfig(Config config)
+	{}
 }

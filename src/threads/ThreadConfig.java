@@ -44,7 +44,7 @@ public class ThreadConfig extends ThreadService
 	@Override
 	public void run()
 	{
-		Thread.currentThread().setName("ThreadRobotConfig");
+		Thread.currentThread().setName(getClass().getSimpleName());
 		log.debug("Démarrage de "+Thread.currentThread().getName());
 		try {
 			while(true)
