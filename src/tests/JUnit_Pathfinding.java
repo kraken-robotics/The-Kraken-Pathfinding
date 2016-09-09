@@ -96,7 +96,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
 			if(graphicTrajectory)
 			{
 				Thread.sleep(100);
-				fenetre.addObstacleEnBiais(new ObstacleRectangular(arccubique.arcs.get(i).getPosition(), 10, 10, 0));
+				fenetre.add(new ObstacleRectangular(arccubique.arcs.get(i).getPosition(), 10, 10, 0));
 			}
 		}
 		

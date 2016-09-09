@@ -17,6 +17,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 package obstacles.types;
 
+import java.awt.Graphics;
+import java.lang.reflect.Field;
+
+import debug.Fenetre;
+import debug.Printable;
 import memory.Memorizable;
 import robot.RobotChrono;
 import utils.Config;
@@ -304,5 +309,27 @@ public class ObstacleRectangular extends Obstacle implements Memorizable
 	@Override
 	public void useConfig(Config config)
 	{}
+
+	@Override
+	public void print(Graphics g, Fenetre f)
+	{
+		int[] X = new int[4];
+		X[0] = (int) coinBasDroiteRotate.getX();
+		X[1] = (int) coinHautDroiteRotate.getX();
+		X[2] = (int) coinHautGaucheRotate.getX();
+		X[3] = (int) coinBasGaucheRotate.getX();
+
+		int[] Y = new int[4];
+		Y[0] = (int) coinBasDroiteRotate.getY();
+		Y[1] = (int) coinHautDroiteRotate.getY();
+		Y[2] = (int) coinHautGaucheRotate.getY();
+		Y[3] = (int) coinBasGaucheRotate.getY();
+		
+		for(int i = 0; i < 4; i++)
+		{
+			X[i] = f.XtoWindow(X[i]);
+			Y[i] = f.YtoWindow(Y[i]);
+		}
+		g.fillPolygon(X, Y, 4);	}
 	
 }

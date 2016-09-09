@@ -17,6 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 package obstacles.types;
 
+import debug.Printable;
 import utils.Config;
 import utils.ConfigInfo;
 import utils.Log;
@@ -29,7 +30,7 @@ import utils.Vec2RW;
  *
  */
 
-public abstract class Obstacle
+public abstract class Obstacle implements Printable
 {
 	protected final Vec2RW position;
 	protected int distance_dilatation;

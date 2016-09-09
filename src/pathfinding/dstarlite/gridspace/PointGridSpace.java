@@ -19,7 +19,12 @@ package pathfinding.dstarlite.gridspace;
 
 import utils.Config;
 import utils.Vec2RO;
+
+import java.awt.Graphics;
+
 import container.Service;
+import debug.Fenetre;
+import debug.Printable;
 
 /**
  * Un point du gridspace
@@ -27,7 +32,7 @@ import container.Service;
  *
  */
 
-public class PointGridSpace implements Service
+public class PointGridSpace implements Service, Printable
 {
 	public static final int PRECISION = 6;
 	public static final int NB_POINTS_POUR_TROIS_METRES = (1 << PRECISION);
@@ -83,5 +88,14 @@ public class PointGridSpace implements Service
 	@Override
 	public void useConfig(Config config)
 	{}
+
+	@Override
+	public void print(Graphics g, Fenetre f)
+	{
+		g.fillOval(f.XGridPointtoWindow(x)-f.distanceXtoWindow((int) PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS)/2,
+				f.YGridPointtoWindow(y)-f.distanceYtoWindow((int) PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS)/2,
+				f.distanceXtoWindow((int) PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS),
+				f.distanceYtoWindow((int) PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS));
+	}
 
 }

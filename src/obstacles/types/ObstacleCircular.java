@@ -17,7 +17,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 package obstacles.types;
 
+import java.awt.Graphics;
+
+import debug.Fenetre;
+import debug.Printable;
 import utils.Vec2RO;
+import utils.Vec2RW;
 
 /**
  * Obstacle circulaire
@@ -56,5 +61,14 @@ public class ObstacleCircular extends Obstacle
 	public boolean isColliding(ObstacleRectangular o)
 	{
 		return o.squaredDistance(o.position) < radius*radius;
+	}
+
+	@Override
+	public void print(Graphics g, Fenetre f)
+	{
+		if(radius <= 0)
+			g.fillOval(f.XtoWindow(position.getX())-5, f.YtoWindow(position.getY())-5, 10, 10);
+		else
+			g.fillOval(f.XtoWindow(position.getX()-radius), f.YtoWindow(position.getY()+radius), f.distanceXtoWindow((radius)*2), f.distanceYtoWindow((radius)*2));		
 	}
 }

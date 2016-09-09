@@ -17,8 +17,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 package obstacles.types;
 
+import java.awt.Graphics;
 import java.util.ArrayList;
 
+import debug.Fenetre;
 import utils.Vec2RO;
 
 /**
@@ -56,6 +58,13 @@ public class ObstacleArcCourbe extends Obstacle
 			if(obs.isColliding(o))
 				return true;
 		return false;
+	}
+
+	@Override
+	public void print(Graphics g, Fenetre f)
+	{
+		for(ObstacleRectangular o : ombresRobot)
+			o.print(g,f);
 	}
 
 }

@@ -44,6 +44,7 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Interface graphique
@@ -58,17 +59,12 @@ public class Fenetre extends JPanel implements Service {
 	
 	private boolean afficheFond;
 	private int sizeX = 450, sizeY = 300;
-//	private ArrayList<Vec2RO> pointsADessiner = new ArrayList<Vec2RO>();
-//	private LinkedList<ObstacleProximity> listObstaclesMobiles;
-	private ArrayList<Vec2RO[]> segments = new ArrayList<Vec2RO[]>();
 	private Image image;
 	private JFrame frame;
-//	private Vec2RW[] point;
-//	private AttributedString affichage = new AttributedString("");
+	
+	private HashMap<Class<?>, ArrayList<Printable>> elementsAffichables = new HashMap<Class<?>, ArrayList<Printable>>();
 	
 	private ObstaclesIteratorPresent iterator;
-	private ArrayList<ObstacleRectangular> obstaclesEnBiais = new ArrayList<ObstacleRectangular>();
-	private ArrayList<ObstacleCircular> obstaclesCirulaires = new ArrayList<ObstacleCircular>();
 
 	protected Capteurs capteurs;
 	private boolean printObsFixes;
@@ -78,12 +74,13 @@ public class Fenetre extends JPanel implements Service {
 	private PointGridSpaceManager pm;
 	private boolean needInit = true;
 	
-	public Fenetre(Log log, ObstaclesIteratorPresent iterator, GridSpace gs, PointGridSpaceManager pm)
+	public Fenetre(Log log, ObstaclesIteratorPresent iterator, GridSpace gs, PointGridSpaceManager pm, Capteurs capteurs)
 	{
 		this.log = log;
 		this.iterator = iterator;
 		this.gs = gs;
 		this.pm = pm;
+		this.capteurs = capteurs;
 	}
 	
 	public void destructor()
@@ -146,49 +143,34 @@ public class Fenetre extends JPanel implements Service {
 		}
 	}
 
-	private int distanceXtoWindow(int dist)
+	public int distanceXtoWindow(int dist)
 	{
 		return dist*sizeX/3000;
 	}
 
-	private int distanceYtoWindow(int dist)
+	public int distanceYtoWindow(int dist)
 	{
 		return dist*sizeY/2000;
 	}
-/*
-	private int WindowToX(int x)
+
+	public int XGridPointtoWindow(int x)
 	{
-		return x*3000/sizeX-1500;
+		return x*sizeX/(PointGridSpace.NB_POINTS_POUR_TROIS_METRES-1);
 	}
 
-	private int WindowToY(int y)
+	public int YGridPointtoWindow(int y)
 	{
-		return 2000-y*2000/sizeY;
-	}
-*/
-	private int XGridPointtoWindow(int g)
-	{
-		return (g & (PointGridSpace.NB_POINTS_POUR_TROIS_METRES-1))*sizeX/(PointGridSpace.NB_POINTS_POUR_TROIS_METRES-1);
+		return sizeY-y*sizeY/(PointGridSpace.NB_POINTS_POUR_DEUX_METRES-1);
 	}
 
-	private int YGridPointtoWindow(int g)
-	{
-		return sizeY-(g >> (PointGridSpace.PRECISION))*sizeY/(PointGridSpace.NB_POINTS_POUR_DEUX_METRES-1);
-	}
-
-	private int XtoWindow(double x)
+	public int XtoWindow(double x)
 	{
 		return (int)((x+1500)*sizeX/3000);
 	}
 
-	private int YtoWindow(double y)
+	public int YtoWindow(double y)
 	{
 		return (int)((2000-y)*sizeY/2000);
-	}
-
-	public void setCapteurs(Capteurs capteurs)
-	{
-		this.capteurs = capteurs;
 	}
 	
 	@Override
@@ -196,29 +178,18 @@ public class Fenetre extends JPanel implements Service {
 	{
 		if(afficheFond)
 			g.drawImage(image, 0, 0, this);
-		for(int i = 0; i < PointGridSpace.NB_POINTS; i++)
-		{
-			g.setColor(grid[i].couleur);
-			g.fillOval(XGridPointtoWindow(i)-distanceXtoWindow((int) PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS)/2,
-					YGridPointtoWindow(i)-distanceYtoWindow((int) PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS)/2,
-					distanceXtoWindow((int) PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS),
-					distanceYtoWindow((int) PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS));
-		}
+
 		if(printObsFixes)
 			for(ObstaclesFixes obs : ObstaclesFixes.values)
-			{
-				Obstacle o = obs.getObstacle();
-				if(o instanceof ObstacleRectangular)
-					paintObstacleRectangular((ObstacleRectangular)o, g);
-				else if(o instanceof ObstacleCircular)
-					paintObstacleCirculaire((ObstacleCircular)o, g);
-			}
+				obs.getObstacle().print(g, this);
 
-		paintObstacleEnBiais(g);
-		paintObstaclesCirculaires(g);
+		for(ArrayList<Printable> l : elementsAffichables.values())
+			for(Printable p : l)
+				p.print(g,this);
+		
 		iterator.reinit();
 		while(iterator.hasNext())				
-			paintObstacleCirculaire(iterator.next(), g);
+			iterator.next().print(g, this);
 /*
 		g.setColor(new Color(0, 0, 130, 40));
 
@@ -296,125 +267,6 @@ public class Fenetre extends JPanel implements Service {
 		frame.setVisible(true);
 	}
 
-	public void paintObstacleCirculaire(ObstacleCircular o, Graphics g)
-	{
-    	Field f;
-		try {
-			f = Obstacle.class.getDeclaredField("position");
-	    	f.setAccessible(true);
-	
-			if(o.radius <= 0)
-				g.fillOval(XtoWindow(((Vec2RW)f.get(o)).getX())-5, YtoWindow(((Vec2RW)f.get(o)).getY())-5, 10, 10);
-			else
-				g.fillOval(XtoWindow(((Vec2RW)f.get(o)).getX()-o.radius), YtoWindow(((Vec2RW)f.get(o)).getY()+o.radius), distanceXtoWindow((o.radius)*2), distanceYtoWindow((o.radius)*2));		
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	public void addSegment(Vec2RO a, Vec2RO b)
-	{
-		Vec2RO[] v = new Vec2RO[2];
-		v[0] = a;
-		v[1] = b;
-		segments.add(v);
-	}
-	
-	public void paintSegments(Graphics g)
-	{
-		for(Vec2RO[] v : segments)
-			g.drawLine(XtoWindow(v[0].getX()), YtoWindow(v[0].getY()), XtoWindow(v[1].getX()), YtoWindow(v[1].getY()));
-	}
-	
-	public void paintObstaclesCirculaires(Graphics g)
-	{
-		g.setColor(Couleur.NOIR.couleur);		
-		synchronized(obstaclesCirulaires)
-		{
-			for(ObstacleCircular o: obstaclesCirulaires)
-				paintObstacleCirculaire(o, g);
-		}
-	}
-	
-	public void paintObstacleEnBiais(Graphics g)
-	{
-		g.setColor(Couleur.NOIR.couleur);
-		synchronized(obstaclesEnBiais)
-		{
-			for(ObstacleRectangular o: obstaclesEnBiais)
-				paintObstacleRectangular(o, g);
-		}
-//		g.fillRect(100, 100, 100, 100);
-	}
-	
-	public void paintObstacleRectangular(ObstacleRectangular o, Graphics g)
-	{
-		try {
-			Field f1 = ObstacleRectangular.class.getDeclaredField("coinBasDroiteRotate");
-	    	f1.setAccessible(true);
-	    	Field f2 = ObstacleRectangular.class.getDeclaredField("coinHautDroiteRotate");
-	    	f2.setAccessible(true);
-	    	Field f3 = ObstacleRectangular.class.getDeclaredField("coinHautGaucheRotate");
-	    	f3.setAccessible(true);
-	    	Field f4 = ObstacleRectangular.class.getDeclaredField("coinBasGaucheRotate");
-	    	f4.setAccessible(true);
-	
-			
-			int[] X = new int[4];
-			X[0] = (int) ((Vec2RO)f1.get(o)).getX();
-			X[1] = (int) ((Vec2RO)f2.get(o)).getX();
-			X[2] = (int) ((Vec2RO)f3.get(o)).getX();
-			X[3] = (int) ((Vec2RO)f4.get(o)).getX();
-	
-			int[] Y = new int[4];
-			Y[0] = (int) ((Vec2RO)f1.get(o)).getY();
-			Y[1] = (int) ((Vec2RO)f2.get(o)).getY();
-			Y[2] = (int) ((Vec2RO)f3.get(o)).getY();
-			Y[3] = (int) ((Vec2RO)f4.get(o)).getY();
-			
-			for(int i = 0; i < 4; i++)
-			{
-				X[i] = XtoWindow(X[i]);
-				Y[i] = YtoWindow(Y[i]);
-			}
-			g.fillPolygon(X, Y, 4);
-		} catch(Exception e)
-		{
-			e.printStackTrace();
-		}
-	}
-	
-	public void clearObstacleEnBiais()
-	{
-		synchronized(obstaclesEnBiais)
-		{
-			obstaclesEnBiais.clear();
-		}
-		if(needInit)
-			init();
-		repaint();
-	}
-	
-	public void addObstacleEnBiais(ObstacleRectangular obstacleEnBiais)
-	{
-		synchronized(obstaclesEnBiais)
-		{
-			obstaclesEnBiais.add(obstacleEnBiais);
-		}
-		if(needInit)
-			init();
-		repaint();
-	}
-	
-	public void addObstacleCirculaire(ObstacleCircular o)
-	{
-		obstaclesCirulaires.add(o);
-		if(needInit)
-			init();
-		repaint();
-	}
-
 	@Override
 	public void updateConfig(Config config)
 	{}
@@ -424,6 +276,33 @@ public class Fenetre extends JPanel implements Service {
 	{
 		printObsFixes = config.getBoolean(ConfigInfo.GRAPHIC_FIXED_OBSTACLES);
 		afficheFond = config.getBoolean(ConfigInfo.GRAPHIC_BACKGROUND);
+	}
+	
+	/**
+	 * Supprime des obstacles d'une même classe
+	 * @param c
+	 */
+	public void clear(Class<? extends Printable> c)
+	{
+		elementsAffichables.remove(c);
+	}
+	
+	/**
+	 * Ajoute un obstacle
+	 * @param o
+	 */
+	public void add(Printable o)
+	{
+		ArrayList<Printable> l = elementsAffichables.get(o.getClass());
+		if(l == null)
+		{
+			l = new ArrayList<Printable>();
+			elementsAffichables.put(o.getClass(), l);
+		}
+		l.add(o);
+		if(needInit)
+			init();
+		repaint();
 	}
 	
 }
