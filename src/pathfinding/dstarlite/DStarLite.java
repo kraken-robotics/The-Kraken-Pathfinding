@@ -34,8 +34,8 @@ import utils.ConfigInfo;
 import utils.Log;
 import utils.Vec2RO;
 import container.Service;
-import debug.Fenetre;
 import exceptions.PathfindingException;
+import graphic.Fenetre;
 
 /**
  * Recherche de chemin avec replanification rapide.

@@ -19,8 +19,9 @@ package obstacles.types;
 
 import java.awt.Graphics;
 
-import debug.Fenetre;
-import debug.Printable;
+import graphic.Fenetre;
+import graphic.Printable;
+import robot.RobotReal;
 import utils.Vec2RO;
 import utils.Vec2RW;
 
@@ -64,7 +65,7 @@ public class ObstacleCircular extends Obstacle
 	}
 
 	@Override
-	public void print(Graphics g, Fenetre f)
+	public void print(Graphics g, Fenetre f, RobotReal robot)
 	{
 		if(radius <= 0)
 			g.fillOval(f.XtoWindow(position.getX())-5, f.YtoWindow(position.getY())-5, 10, 10);

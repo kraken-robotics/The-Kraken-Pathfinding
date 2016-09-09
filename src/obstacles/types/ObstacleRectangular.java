@@ -20,10 +20,11 @@ package obstacles.types;
 import java.awt.Graphics;
 import java.lang.reflect.Field;
 
-import debug.Fenetre;
-import debug.Printable;
+import graphic.Fenetre;
+import graphic.Printable;
 import memory.Memorizable;
 import robot.RobotChrono;
+import robot.RobotReal;
 import utils.Config;
 import utils.Vec2RO;
 import utils.Vec2RW;
@@ -311,7 +312,7 @@ public class ObstacleRectangular extends Obstacle implements Memorizable
 	{}
 
 	@Override
-	public void print(Graphics g, Fenetre f)
+	public void print(Graphics g, Fenetre f, RobotReal robot)
 	{
 		int[] X = new int[4];
 		X[0] = (int) coinBasDroiteRotate.getX();

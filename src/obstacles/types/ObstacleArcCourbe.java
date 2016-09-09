@@ -20,7 +20,8 @@ package obstacles.types;
 import java.awt.Graphics;
 import java.util.ArrayList;
 
-import debug.Fenetre;
+import graphic.Fenetre;
+import robot.RobotReal;
 import utils.Vec2RO;
 
 /**
@@ -61,10 +62,10 @@ public class ObstacleArcCourbe extends Obstacle
 	}
 
 	@Override
-	public void print(Graphics g, Fenetre f)
+	public void print(Graphics g, Fenetre f, RobotReal robot)
 	{
 		for(ObstacleRectangular o : ombresRobot)
-			o.print(g,f);
+			o.print(g,f,robot);
 	}
 
 }

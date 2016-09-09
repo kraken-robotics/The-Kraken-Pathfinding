@@ -15,14 +15,14 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>
 */
 
-package debug;
+package graphic;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
 import container.Service;
 import obstacles.ObstaclesFixes;
-import obstacles.Capteurs;
+import obstacles.CapteursProcess;
 import obstacles.memory.ObstaclesIteratorPresent;
 import obstacles.types.Obstacle;
 import obstacles.types.ObstacleCircular;
@@ -30,6 +30,7 @@ import obstacles.types.ObstacleRectangular;
 import pathfinding.dstarlite.gridspace.GridSpace;
 import pathfinding.dstarlite.gridspace.PointGridSpace;
 import pathfinding.dstarlite.gridspace.PointGridSpaceManager;
+import robot.RobotReal;
 import utils.Config;
 import utils.ConfigInfo;
 import utils.Log;
@@ -62,25 +63,25 @@ public class Fenetre extends JPanel implements Service {
 	private Image image;
 	private JFrame frame;
 	
-	private HashMap<Class<?>, ArrayList<Printable>> elementsAffichables = new HashMap<Class<?>, ArrayList<Printable>>();
+	private ArrayList<Printable> elementsAffichables = new ArrayList<Printable>();
 	
 	private ObstaclesIteratorPresent iterator;
 
-	protected Capteurs capteurs;
 	private boolean printObsFixes;
-//	private int firstNotDead = 0;
+	private boolean printObsCapteurs;
     
 	private GridSpace gs;
 	private PointGridSpaceManager pm;
+	private RobotReal robot;
 	private boolean needInit = true;
 	
-	public Fenetre(Log log, ObstaclesIteratorPresent iterator, GridSpace gs, PointGridSpaceManager pm, Capteurs capteurs)
+	public Fenetre(Log log, ObstaclesIteratorPresent iterator, GridSpace gs, PointGridSpaceManager pm, RobotReal robot)
 	{
 		this.log = log;
 		this.iterator = iterator;
 		this.gs = gs;
 		this.pm = pm;
-		this.capteurs = capteurs;
+		this.robot = robot;
 	}
 	
 	public void destructor()
@@ -94,11 +95,12 @@ public class Fenetre extends JPanel implements Service {
 		needInit = false;
 		try {
 			image = ImageIO.read(new File("minitable2016.png"));
+			sizeX = image.getWidth(this);
+			sizeY = image.getHeight(this);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		sizeX = image.getWidth(this);
-		sizeY = image.getHeight(this);
+
 		try {
 	    	Method m = GridSpace.class.getDeclaredMethod("isTraversableStatique", PointGridSpace.class);
 	    	m.setAccessible(true);
@@ -181,75 +183,17 @@ public class Fenetre extends JPanel implements Service {
 
 		if(printObsFixes)
 			for(ObstaclesFixes obs : ObstaclesFixes.values)
-				obs.getObstacle().print(g, this);
+				obs.getObstacle().print(g, this, robot);
 
-		for(ArrayList<Printable> l : elementsAffichables.values())
-			for(Printable p : l)
-				p.print(g,this);
+		for(Printable p : elementsAffichables)
+			p.print(g, this, robot);
 		
-		iterator.reinit();
-		while(iterator.hasNext())				
-			iterator.next().print(g, this);
-/*
-		g.setColor(new Color(0, 0, 130, 40));
-
-//		for(int i = firstNotDead; i < listObstaclesMobiles.size(); i++)
-//			paintObstacle(listObstaclesMobiles.get(i).getTestOnly(), g, 0);
-		int nbPoints = 4;
-		for(int k = 0; k < nbPoints; k++)
-			if(listObstaclesMobiles.size() > k)
-				paintObstacle(listObstaclesMobiles.get(listObstaclesMobiles.size()-1-k), g, 0);
-		
-		if(capteurs != null)
+		if(printObsCapteurs)
 		{
-//			int nbCapteurs = 12;
-			int nbCapteurs = 8;
-			double angleCone;
-			for(int i = 0; i < nbCapteurs; i++)
-			{
-//				if(i < 8)
-					angleCone = 35.*Math.PI/180;
-//				else
-//					angleCone = 5.*Math.PI/180;
-				Vec2RW p1 = capteurs.positionsRelatives[i].plusNewVector(new Vec2RO(0, 1000));
-				Vec2RW p2 = p1.plusNewVector(new Vec2RO(800, angleCone + Capteurs.orientationsRelatives[i], true));
-				Vec2RW p3 = p1.plusNewVector(new Vec2RO(800, - angleCone + Capteurs.orientationsRelatives[i], true));
-				int[] x = new int[3];
-				x[0] = XtoWindow(p1.x);
-				x[1] = XtoWindow(p2.x);
-				x[2] = XtoWindow(p3.x);
-				int[] y = new int[3];
-				y[0] = YtoWindow(p1.y);
-				y[1] = YtoWindow(p2.y);
-				y[2] = YtoWindow(p3.y);
-				g.setColor(new Color(0, 130, 0, 50));
-				g.fillArc(XtoWindow(p1.x-800), YtoWindow(p1.y+800), distanceXtoWindow(2*800), distanceYtoWindow(2*800), (int)(Capteurs.orientationsRelatives[i]*180/Math.PI-35.), 70);
-//				g.fillPolygon(x, y, 3);
-				g.setColor(new Color(0, 130, 0, 255));
-				g.drawPolygon(x, y, 3);
-			}
+			iterator.reinit();
+			while(iterator.hasNext())				
+				iterator.next().print(g, this, robot);
 		}
-
-		g.setColor(new Color(255, 0, 0, 30));
-
-		if(point != null)
-			for(Vec2RW v: point)
-				g.fillOval(XtoWindow(v.x-200), YtoWindow(v.y+200), distanceXtoWindow(400), distanceYtoWindow(400));
-
-		ObstacleRectangular o = (ObstacleRectangular)ObstaclesFixes.TEST_RECT.getObstacle();
-		int[] X = ObstacleRectangular.getXPositions(o);
-		int[] Y = ObstacleRectangular.getYPositions(o);
-		for(int i = 0; i < 4; i++)
-		{
-			X[i] = XtoWindow(X[i]);
-			Y[i] = YtoWindow(Y[i]);
-		}
-		g.fillPolygon(X, Y, 4);
-
-//		Vec2RO v = ObstaclesFixes.TEST.getObstacle().position;
-//		int r = ((ObstacleCircular)ObstaclesFixes.TEST.getObstacle()).getRadius();
-//		g.fillOval(XtoWindow(v.x-r), YtoWindow(v.y+r), distanceXtoWindow(r*2), distanceYtoWindow(r*2));
-*/
 	}
 
 	public void showOnFrame() {
@@ -274,17 +218,18 @@ public class Fenetre extends JPanel implements Service {
 	@Override
 	public void useConfig(Config config)
 	{
+		printObsCapteurs = config.getBoolean(ConfigInfo.GRAPHIC_OBSTACLES);
 		printObsFixes = config.getBoolean(ConfigInfo.GRAPHIC_FIXED_OBSTACLES);
 		afficheFond = config.getBoolean(ConfigInfo.GRAPHIC_BACKGROUND);
 	}
 	
 	/**
-	 * Supprime des obstacles d'une même classe
+	 * Supprime tous les obstacles
 	 * @param c
 	 */
-	public void clear(Class<? extends Printable> c)
+	public void clear()
 	{
-		elementsAffichables.remove(c);
+		elementsAffichables.clear();
 	}
 	
 	/**
@@ -293,13 +238,7 @@ public class Fenetre extends JPanel implements Service {
 	 */
 	public void add(Printable o)
 	{
-		ArrayList<Printable> l = elementsAffichables.get(o.getClass());
-		if(l == null)
-		{
-			l = new ArrayList<Printable>();
-			elementsAffichables.put(o.getClass(), l);
-		}
-		l.add(o);
+		elementsAffichables.add(o);
 		if(needInit)
 			init();
 		repaint();

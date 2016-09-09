@@ -26,7 +26,7 @@ import utils.ConfigInfo;
 import utils.Log;
 import utils.Config;
 import container.Container;
-import debug.Fenetre;
+import graphic.Fenetre;
 import threads.ThreadShutdown;
 
 /**

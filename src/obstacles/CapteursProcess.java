@@ -36,43 +36,28 @@ import utils.Vec2RW;
  *
  */
 
-public class Capteurs implements Service {
+public class CapteursProcess implements Service {
 	protected Log log;
 	private GridSpace gridspace;
 	private Table table;
 	public static final int nbCapteurs = 2;
 	
 	private int rayonEnnemi;
-    private int horizonCapteurs;
     private int rayonRobot;
 	private int distanceApproximation;
 
-	/**
-	 * Les positions relatives des capteurs par rapport au centre du
-	 * robot lorsque celui-ci a une orientation nulle.
-	 */
-	public final Vec2RO[] positionsRelatives;
+	private Capteur[] capteurs;
 
-	/**
-	 * L'orientation des capteurs lorsque le robot a une orientation nulle
-	 */
-	public double[] orientationsRelatives;
-
-	public Capteurs(Log log, GridSpace gridspace, Table table)
+	public CapteursProcess(Log log, GridSpace gridspace, Table table)
 	{
 		this.table = table;
 		this.log = log;
 		this.gridspace = gridspace;
-		positionsRelatives = new Vec2RO[nbCapteurs];
-		orientationsRelatives = new double[nbCapteurs];
-
-		// TODO à compléter
-		positionsRelatives[0] = new Vec2RO(70, -25);
-		positionsRelatives[1] = new Vec2RO(70, 75);
-
-		orientationsRelatives[0] = 0;
-		orientationsRelatives[1] = 0;
-
+		
+		capteurs = new Capteur[nbCapteurs];
+		
+		capteurs[0] = new Capteur(new Vec2RO(70, -25), 0., 15, 200);
+		capteurs[1] = new Capteur(new Vec2RO(70, 75), 0., 15, 200);
 	}
 	
 	@Override
@@ -84,7 +69,6 @@ public class Capteurs implements Service {
 	{
 		rayonEnnemi = config.getInt(ConfigInfo.RAYON_ROBOT_ADVERSE);
 		rayonRobot = config.getInt(ConfigInfo.RAYON_ROBOT);
-		horizonCapteurs = config.getInt(ConfigInfo.HORIZON_CAPTEURS);
 		distanceApproximation = config.getInt(ConfigInfo.DISTANCE_MAX_ENTRE_MESURE_ET_OBJET);		
 	}
 
@@ -118,13 +102,13 @@ public class Capteurs implements Service {
 				/**
 				 * Si le capteur voit trop proche ou trop loin, on ne peut pas lui faire confiance
 				 */
-				if(data.mesures[i] < 40 || data.mesures[i] > horizonCapteurs)
+				if(data.mesures[i] < 40 || data.mesures[i] > capteurs[i].portee)
 					continue;
 
 				/**
 				 * Si ce qu'on voit est un obstacle de table, on l'ignore
 				 */
-				Vec2RO positionVue = new Vec2RO(data.mesures[i], orientationsRelatives[i], true);
+				Vec2RO positionVue = new Vec2RO(data.mesures[i], capteurs[i].orientationRelative, true);
 				
 		    	for(ObstaclesFixes o: ObstaclesFixes.obstaclesFixesVisibles)
 		    		if(o.getObstacle().squaredDistance(positionVue) < distanceApproximation * distanceApproximation)
@@ -134,8 +118,8 @@ public class Capteurs implements Service {
 				 * Sinon, on ajoute
 				 */
 				needNotify = true;
-				Vec2RW positionEnnemi = new Vec2RW(data.mesures[i]+rayonEnnemi, orientationsRelatives[i], true);
-				positionEnnemi.plus(positionsRelatives[i]);
+				Vec2RW positionEnnemi = new Vec2RW(data.mesures[i]+rayonEnnemi, capteurs[i].orientationRelative, true);
+				positionEnnemi.plus(capteurs[i].positionRelative);
 				positionEnnemi.rotate(orientationRobot);
 				positionEnnemi.plus(positionRobot);
 				

@@ -17,7 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 package obstacles.types;
 
-import debug.Printable;
+import graphic.Printable;
 import utils.Config;
 import utils.ConfigInfo;
 import utils.Log;

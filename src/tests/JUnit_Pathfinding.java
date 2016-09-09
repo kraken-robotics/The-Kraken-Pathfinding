@@ -23,7 +23,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import debug.Fenetre;
+import graphic.Fenetre;
 import pathfinding.VitesseCourbure;
 import pathfinding.astarCourbe.arcs.ArcCourbeCubique;
 import pathfinding.astarCourbe.arcs.ClothoidesComputer;

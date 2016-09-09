@@ -15,21 +15,33 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>
 */
 
-package debug;
+package graphic;
 
 import java.awt.Graphics;
 
+import robot.RobotReal;
+import utils.Vec2RO;
+
 /**
- * Élément affichable
+ * Un segment affichable
  * @author pf
  *
  */
 
-public interface Printable
+public class Segment implements Printable
 {
-	/**
-	 * Affiche cet objet
-	 * @param g
-	 */
-	public void print(Graphics g, Fenetre f);
+	private Vec2RO a, b;
+
+	public Segment(Vec2RO a, Vec2RO b)
+	{
+		this.a = a;
+		this.b = b;
+	}
+
+	@Override
+	public void print(Graphics g, Fenetre f, RobotReal robot)
+	{
+		g.drawLine(f.XtoWindow(a.getX()), f.YtoWindow(a.getY()), f.XtoWindow(b.getX()), f.YtoWindow(b.getY()));
+	}
+
 }
