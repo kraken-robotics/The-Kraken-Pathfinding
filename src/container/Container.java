@@ -248,14 +248,14 @@ public class Container implements Service
 	 * @return
 	 * @throws ContainerException
 	 */
-	public synchronized <S> S make(Class<S> serviceTo) throws ContainerException
+	public synchronized <S> S make(Class<S> serviceTo, Object... extraParam) throws ContainerException
 	{
 		if(Service.class.isAssignableFrom(serviceTo))
 			throw new ContainerException("make doit être utilisé avec des non-services");
-		return getServiceDisplay(null, serviceTo, new Stack<String>());
+		return getServiceDisplay(null, serviceTo, new Stack<String>(), extraParam);
 	}
 
-	private synchronized <S> S getServiceDisplay(Class<?> serviceFrom, Class<S> serviceTo, Stack<String> stack) throws ContainerException
+	private synchronized <S> S getServiceDisplay(Class<?> serviceFrom, Class<S> serviceTo, Stack<String> stack, Object... extraParam) throws ContainerException
 	{
 		/**
 		 * On ne crée pas forcément le graphe de dépendances pour éviter une lourdeur inutile
@@ -274,7 +274,7 @@ public class Container implements Service
 				e.printStackTrace();
 			}
 		}
-		return getServiceRecursif(serviceTo, stack);
+		return getServiceRecursif(serviceTo, stack, extraParam);
 	}
 
 	/**
@@ -285,7 +285,7 @@ public class Container implements Service
 	 * @throws InterruptedException
 	 */
 	@SuppressWarnings("unchecked")
-	private synchronized <S> S getServiceRecursif(Class<S> classe, Stack<String> stack) throws ContainerException
+	private synchronized <S> S getServiceRecursif(Class<S> classe, Stack<String> stack, Object... extraParam) throws ContainerException
 	{
 		try {
 			/**
@@ -334,21 +334,23 @@ public class Container implements Service
 			else
 				constructeur = (Constructor<S>) classe.getConstructors()[0];
 			
-			Class<Service>[] param = (Class<Service>[]) constructeur.getParameterTypes();
+			Class<?>[] param = (Class<?>[]) constructeur.getParameterTypes();
 			
 			/**
 			 * On demande récursivement chacun de ses paramètres
+			 * On complète automatiquement avec ceux déjà donnés
 			 */
 			Object[] paramObject = new Object[param.length];
-			for(int i = 0; i < param.length; i++)
-			{
+			for(int i = 0; i < param.length - extraParam.length; i++)
 				paramObject[i] = getServiceDisplay(classe, param[i], stack);
-			}
+			for(int i = 0; i < extraParam.length; i++)
+				paramObject[i + param.length - extraParam.length] = extraParam[i];
 
 			/**
 			 * Instanciation et sauvegarde
 			 */
 			S s = constructeur.newInstance(paramObject);
+
 			if(Service.class.isAssignableFrom(classe))
 				instanciedServices.put(classe.getSimpleName(), (Service)s);
 			

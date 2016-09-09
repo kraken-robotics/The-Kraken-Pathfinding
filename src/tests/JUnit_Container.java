@@ -22,12 +22,14 @@ import org.junit.Test;
 
 import exceptions.ContainerException;
 import obstacles.memory.ObstaclesIteratorPresent;
+import obstacles.types.ObstacleCircular;
 import pathfinding.astarCourbe.AStarCourbe;
 import table.Table;
 import tests.container.A;
 import tests.container.C;
 import tests.container.D;
 import utils.Config;
+import utils.Vec2RO;
 
 /**
  * Tests unitaires pour le container
@@ -88,5 +90,12 @@ public class JUnit_Container extends JUnit_Test {
 		Assert.assertTrue(container.make(ObstaclesIteratorPresent.class)
 				!= container.make(ObstaclesIteratorPresent.class));	
 	}
+	
+	@Test
+	public void test_extra_param() throws Exception
+	{
+		container.make(ObstacleCircular.class, new Vec2RO(100, 200), 10);
+	}
+
 
 }
