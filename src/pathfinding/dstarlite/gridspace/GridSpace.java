@@ -67,7 +67,7 @@ public class GridSpace implements Service
 		this.iteratorRemoveNearby = iteratorRemoveNearby;
 		
 		for(int i = 0; i < PointGridSpace.NB_POINTS; i++)
-			for(ObstaclesFixes o : ObstaclesFixes.values)
+			for(ObstaclesFixes o : ObstaclesFixes.values())
 			{
 				if(o.getObstacle().squaredDistance(PointGridSpace.computeVec2(new PointGridSpace(i))) < (int)(PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS/2 * PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS/2))
 				{

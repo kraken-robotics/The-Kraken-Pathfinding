@@ -77,10 +77,10 @@ public class Container implements Service
 	{
 		// arrêt des threads
 		for(ThreadName n : ThreadName.values())
-		{
 			getService(n.c).interrupt();
-			getService(n.c).join(100); // on attend au plus 100ms que le thread s'arrête
-		}
+
+		for(ThreadName n : ThreadName.values())
+			getService(n.c).join(1000); // on attend au plus 1000ms que le thread s'arrête
 
 		/**
 		 * Affiche la liste des threads qui ne sont pas fermés

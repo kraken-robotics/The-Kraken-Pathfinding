@@ -20,10 +20,8 @@ package obstacles.types;
 import java.awt.Graphics;
 
 import graphic.Fenetre;
-import graphic.Printable;
 import robot.RobotReal;
 import utils.Vec2RO;
-import utils.Vec2RW;
 
 /**
  * Obstacle circulaire

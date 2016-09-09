@@ -22,7 +22,6 @@ import pathfinding.astarCourbe.AStarCourbeNode;
 import pathfinding.dstarlite.DStarLite;
 import robot.Cinematique;
 import robot.DirectionStrategy;
-import robot.RobotChrono;
 import robot.Speed;
 import table.GameElementNames;
 import table.Table;
@@ -82,7 +81,7 @@ public class ArcManager implements Service
 		ObstacleArcCourbe obs = node.came_from_arc.obstacle;
 
 		// Collision avec un obstacle fixe?
-    	for(ObstaclesFixes o: ObstaclesFixes.values)
+    	for(ObstaclesFixes o: ObstaclesFixes.values())
     		if(o.getObstacle().isColliding(obs))
     			return false;
 

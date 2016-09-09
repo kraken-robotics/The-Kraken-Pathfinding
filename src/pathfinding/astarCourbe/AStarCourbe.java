@@ -37,7 +37,6 @@ import exceptions.PathfindingException;
 import graphic.Fenetre;
 import robot.Cinematique;
 import robot.DirectionStrategy;
-import robot.RobotChrono;
 import robot.Speed;
 import utils.Config;
 import utils.ConfigInfo;

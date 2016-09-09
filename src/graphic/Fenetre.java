@@ -22,30 +22,19 @@ import javax.swing.*;
 
 import container.Service;
 import obstacles.ObstaclesFixes;
-import obstacles.CapteursProcess;
 import obstacles.memory.ObstaclesIteratorPresent;
-import obstacles.types.Obstacle;
-import obstacles.types.ObstacleCircular;
-import obstacles.types.ObstacleRectangular;
-import pathfinding.dstarlite.gridspace.GridSpace;
 import pathfinding.dstarlite.gridspace.PointGridSpace;
-import pathfinding.dstarlite.gridspace.PointGridSpaceManager;
 import robot.RobotReal;
 import utils.Config;
 import utils.ConfigInfo;
 import utils.Log;
-import utils.Vec2RO;
-import utils.Vec2RW;
 
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * Interface graphique
@@ -62,6 +51,7 @@ public class Fenetre extends JPanel implements Service {
 	private int sizeX = 450, sizeY = 300;
 	private Image image;
 	private JFrame frame;
+	private WindowExit exit = new WindowExit();
 	
 	private ArrayList<Printable> elementsAffichables = new ArrayList<Printable>();
 	
@@ -70,24 +60,25 @@ public class Fenetre extends JPanel implements Service {
 	private boolean printObsFixes;
 	private boolean printObsCapteurs;
     
-	private GridSpace gs;
-	private PointGridSpaceManager pm;
 	private RobotReal robot;
 	private boolean needInit = true;
 	
-	public Fenetre(Log log, ObstaclesIteratorPresent iterator, GridSpace gs, PointGridSpaceManager pm, RobotReal robot)
+	public Fenetre(Log log, ObstaclesIteratorPresent iterator, RobotReal robot)
 	{
 		this.log = log;
 		this.iterator = iterator;
-		this.gs = gs;
-		this.pm = pm;
 		this.robot = robot;
 	}
 	
-	public void destructor()
-	{
-		if(!needInit)
-			frame.dispose();
+	private class WindowExit extends WindowAdapter
+	{		
+		public boolean alreadyExited = false;
+        @Override
+        public synchronized void windowClosing(WindowEvent e) {
+            notify();
+            alreadyExited = true;
+            frame.dispose();
+        }
 	}
 	
 	private void init()
@@ -101,7 +92,7 @@ public class Fenetre extends JPanel implements Service {
 			e.printStackTrace();
 		}
 
-		try {
+/*		try {
 	    	Method m = GridSpace.class.getDeclaredMethod("isTraversableStatique", PointGridSpace.class);
 	    	m.setAccessible(true);
 
@@ -112,7 +103,7 @@ public class Fenetre extends JPanel implements Service {
 					grid[i] = Couleur.NOIR;
 		} catch (Exception e) {
 			e.printStackTrace();
-		}
+		}*/
 		showOnFrame();
 	}
 	
@@ -139,9 +130,7 @@ public class Fenetre extends JPanel implements Service {
 		if(grid[gridpoint.hashCode()] != couleur)
 		{
 			grid[gridpoint.hashCode()] = couleur;
-			if(needInit)
-				init();
-			repaint();
+			affiche();
 		}
 	}
 
@@ -182,7 +171,7 @@ public class Fenetre extends JPanel implements Service {
 			g.drawImage(image, 0, 0, this);
 
 		if(printObsFixes)
-			for(ObstaclesFixes obs : ObstaclesFixes.values)
+			for(ObstaclesFixes obs : ObstaclesFixes.values())
 				obs.getObstacle().print(g, this, robot);
 
 		for(Printable p : elementsAffichables)
@@ -196,16 +185,16 @@ public class Fenetre extends JPanel implements Service {
 		}
 	}
 
-	public void showOnFrame() {
+	public void showOnFrame()
+	{
 		setBackground(Color.WHITE);
 		setPreferredSize(new Dimension(sizeX,sizeY));
         frame = new JFrame();
-        frame.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                frame.dispose();
-            }
-        });        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        
+        /*
+         * Fermeture de la fenêtre quand on clique sur la croix
+         */
+        frame.addWindowListener(exit);
         frame.getContentPane().add(this);
 		frame.pack();
 		frame.setVisible(true);
@@ -239,9 +228,23 @@ public class Fenetre extends JPanel implements Service {
 	public void add(Printable o)
 	{
 		elementsAffichables.add(o);
+		affiche();
+	}
+	
+	public void affiche()
+	{
 		if(needInit)
 			init();
-		repaint();
+		repaint();		
+	}
+
+	public synchronized void waitUntilExit() throws InterruptedException
+	{
+		synchronized(exit)
+		{
+			if(!needInit && !exit.alreadyExited)
+				exit.wait();
+		}
 	}
 	
 }

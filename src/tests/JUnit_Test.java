@@ -63,7 +63,7 @@ public abstract class JUnit_Test
 
 	@After
 	public void tearDown() throws Exception {
-		fenetre.destructor();
+		fenetre.waitUntilExit();
 		Runtime.getRuntime().removeShutdownHook(ThreadShutdown.getInstance());
 		container.destructor(true);
 		System.out.println("\n\n");
