@@ -24,6 +24,7 @@ import container.Service;
 import obstacles.ObstaclesFixes;
 import obstacles.memory.ObstaclesIteratorPresent;
 import pathfinding.dstarlite.gridspace.PointGridSpace;
+import pathfinding.dstarlite.gridspace.PointGridSpaceManager;
 import robot.RobotReal;
 import utils.Config;
 import utils.ConfigInfo;
@@ -46,6 +47,7 @@ public class Fenetre extends JPanel implements Service {
 
 	private static final long serialVersionUID = 1L;
 	protected Log log;
+	private PointGridSpaceManager pointm;
 	
 	private boolean afficheFond;
 	private int sizeX = 450, sizeY = 300;
@@ -54,20 +56,26 @@ public class Fenetre extends JPanel implements Service {
 	private WindowExit exit = new WindowExit();
 	
 	private ArrayList<Printable> elementsAffichables = new ArrayList<Printable>();
+	private Couleur[] grid = new Couleur[PointGridSpace.NB_POINTS];
 	
 	private ObstaclesIteratorPresent iterator;
 
 	private boolean printObsFixes;
 	private boolean printObsCapteurs;
+    private boolean printDStarLite;
     
 	private RobotReal robot;
 	private boolean needInit = true;
 	
-	public Fenetre(Log log, ObstaclesIteratorPresent iterator, RobotReal robot)
+	public Fenetre(Log log, ObstaclesIteratorPresent iterator, RobotReal robot, PointGridSpaceManager pointm)
 	{
 		this.log = log;
 		this.iterator = iterator;
 		this.robot = robot;
+		this.pointm = pointm;
+
+		for(int i = 0; i < PointGridSpace.NB_POINTS; i++)
+			grid[i] = Couleur.INCOLOR;
 	}
 	
 	private class WindowExit extends WindowAdapter
@@ -81,6 +89,9 @@ public class Fenetre extends JPanel implements Service {
         }
 	}
 	
+	/**
+	 * Initialisation
+	 */
 	private void init()
 	{
 		needInit = false;
@@ -92,23 +103,12 @@ public class Fenetre extends JPanel implements Service {
 			e.printStackTrace();
 		}
 
-/*		try {
-	    	Method m = GridSpace.class.getDeclaredMethod("isTraversableStatique", PointGridSpace.class);
-	    	m.setAccessible(true);
-
-			for(int i = 0; i < PointGridSpace.NB_POINTS; i++)
-				if((boolean) m.invoke(gs, pm.get(i)))
-					grid[i] = Couleur.BLANC;
-				else
-					grid[i] = Couleur.NOIR;
-		} catch (Exception e) {
-			e.printStackTrace();
-		}*/
 		showOnFrame();
 	}
 	
 	public enum Couleur {
-		BLANC(new Color(255, 255, 255, 0)),
+		INCOLOR(new Color(255, 255, 255, 0)),
+		BLANC(new Color(255, 255, 255, 255)),
 		NOIR(new Color(0, 0, 0, 255)),
 		BLEU(new Color(0, 0, 200, 255)),
 		JAUNE(new Color(200, 200, 0, 255)),
@@ -122,9 +122,12 @@ public class Fenetre extends JPanel implements Service {
 			this.couleur = couleur;
 		}
 	}
-	
-	private Couleur[] grid = new Couleur[PointGridSpace.NB_POINTS];
-	
+		
+	/**
+	 * Met à jour la couleur d'un nœud
+	 * @param gridpoint
+	 * @param couleur
+	 */
 	public void setColor(PointGridSpace gridpoint, Couleur couleur)
 	{
 		if(grid[gridpoint.hashCode()] != couleur)
@@ -142,16 +145,6 @@ public class Fenetre extends JPanel implements Service {
 	public int distanceYtoWindow(int dist)
 	{
 		return dist*sizeY/2000;
-	}
-
-	public int XGridPointtoWindow(int x)
-	{
-		return x*sizeX/(PointGridSpace.NB_POINTS_POUR_TROIS_METRES-1);
-	}
-
-	public int YGridPointtoWindow(int y)
-	{
-		return sizeY-y*sizeY/(PointGridSpace.NB_POINTS_POUR_DEUX_METRES-1);
 	}
 
 	public int XtoWindow(double x)
@@ -183,8 +176,21 @@ public class Fenetre extends JPanel implements Service {
 			while(iterator.hasNext())				
 				iterator.next().print(g, this, robot);
 		}
+		
+		if(printDStarLite)
+			for(int i = 0; i < PointGridSpace.NB_POINTS; i++)
+			{
+				g.setColor(grid[i].couleur);
+				pointm.get(i).print(g, this, robot);
+			}
+		
+		g.setColor(Couleur.NOIR.couleur);
+
 	}
 
+	/**
+	 * Affiche la fenêtre
+	 */
 	public void showOnFrame()
 	{
 		setBackground(Color.WHITE);
@@ -207,6 +213,7 @@ public class Fenetre extends JPanel implements Service {
 	@Override
 	public void useConfig(Config config)
 	{
+		printDStarLite = config.getBoolean(ConfigInfo.GRAPHIC_D_STAR_LITE);
 		printObsCapteurs = config.getBoolean(ConfigInfo.GRAPHIC_OBSTACLES);
 		printObsFixes = config.getBoolean(ConfigInfo.GRAPHIC_FIXED_OBSTACLES);
 		afficheFond = config.getBoolean(ConfigInfo.GRAPHIC_BACKGROUND);
@@ -231,6 +238,9 @@ public class Fenetre extends JPanel implements Service {
 		affiche();
 	}
 	
+	/**
+	 * Réaffiche
+	 */
 	public void affiche()
 	{
 		if(needInit)
@@ -238,6 +248,10 @@ public class Fenetre extends JPanel implements Service {
 		repaint();		
 	}
 
+	/**
+	 * Attend que la fenêtre soit fermée
+	 * @throws InterruptedException
+	 */
 	public synchronized void waitUntilExit() throws InterruptedException
 	{
 		synchronized(exit)

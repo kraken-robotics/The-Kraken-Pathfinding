@@ -31,12 +31,6 @@ public class Vec2RO implements Serializable
 	protected volatile double x;
 	protected volatile double y;
 	
-	public Vec2RO()
-	{
-		x = 0;
-		y = 0;
-	}
-
 	public Vec2RO(double longueur, double angle, boolean useless)
 	{
 		x = Math.cos(angle)*longueur;

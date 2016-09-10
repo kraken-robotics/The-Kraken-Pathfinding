@@ -93,7 +93,7 @@ public enum ConfigInfo {
 	/**
 	 * Interface graphique
 	 */
-	GRAPHIC_DSTARLISTE(false), // affiche les calculs du D* Lite
+	GRAPHIC_D_STAR_LITE(false), // affiche les calculs du D* Lite
 	GRAPHIC_OBSTACLES(false), // affiche les obstacles de proximité
 	GRAPHIC_TRAJECTORY(false), // affiche les trajectoires
 	GRAPHIC_FIXED_OBSTACLES(false), // affiche les obstacles fixes

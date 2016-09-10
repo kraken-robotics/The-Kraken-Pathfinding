@@ -29,7 +29,7 @@ public class Vec2RW extends Vec2RO
 
 	public Vec2RW()
 	{
-		super();
+		super(0,0);
 	}
 
 	public Vec2RW(double longueur, double angle, boolean useless)

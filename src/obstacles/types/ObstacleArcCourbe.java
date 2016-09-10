@@ -35,7 +35,7 @@ public class ObstacleArcCourbe extends Obstacle
 {
 	public ObstacleArcCourbe()
 	{
-		super(new Vec2RO());
+		super(new Vec2RO(-1,-1));
 	}
 	
 	public ArrayList<ObstacleRectangular> ombresRobot = new ArrayList<ObstacleRectangular>();

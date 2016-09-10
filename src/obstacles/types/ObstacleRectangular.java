@@ -74,7 +74,7 @@ public class ObstacleRectangular extends Obstacle implements Memorizable
 	
 	public ObstacleRectangular()
 	{
-		this(new Vec2RO(), 0, 0, 0);
+		this(new Vec2RO(0,0), 0, 0, 0);
 	}
 	
 	/**

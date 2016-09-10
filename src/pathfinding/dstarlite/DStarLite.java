@@ -92,7 +92,6 @@ public class DStarLite implements Service
 	}
 	
 	private DStarLiteNode[] memory = new DStarLiteNode[PointGridSpace.NB_POINTS];
-//	private BitSet contained = new BitSet(GridSpace.NB_POINTS);
 
 	private PriorityQueue<DStarLiteNode> openset = new PriorityQueue<DStarLiteNode>(PointGridSpace.NB_POINTS, new DStarLiteNodeComparator());
 	private int km;
@@ -309,7 +308,7 @@ public class DStarLite implements Service
 	@Override
 	public void useConfig(Config config)
 	{
-		graphicDStarLite = config.getBoolean(ConfigInfo.GRAPHIC_DSTARLISTE);
+		graphicDStarLite = config.getBoolean(ConfigInfo.GRAPHIC_D_STAR_LITE);
 	}
 	
 	private void updateGoal(Vec2RO positionRobot)
@@ -389,14 +388,14 @@ public class DStarLite implements Service
 	{
 		ArrayList<Vec2RO> trajet = new ArrayList<Vec2RO>();
 
-		log.debug("depart : "+PointGridSpace.computeVec2(depart.gridpoint));
+		log.debug("depart : "+depart.gridpoint.computeVec2());
 		DStarLiteNode node = depart;
 		DStarLiteNode min = null;
 		int coutMin;
 		
 		while(!node.equals(arrivee))
 		{
-			trajet.add(PointGridSpace.computeVec2(node.gridpoint));
+			trajet.add(node.gridpoint.computeVec2());
 
 			if(graphicDStarLite)
 				fenetre.setColor(node.gridpoint, Fenetre.Couleur.VIOLET);
@@ -418,7 +417,7 @@ public class DStarLite implements Service
 			}
 			node = min;
 		}
-		trajet.add(PointGridSpace.computeVec2(arrivee.gridpoint));
+		trajet.add(arrivee.gridpoint.computeVec2());
 		return trajet;
 		
 	}

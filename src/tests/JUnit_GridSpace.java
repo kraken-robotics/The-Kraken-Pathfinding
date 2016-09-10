@@ -57,10 +57,10 @@ public class JUnit_GridSpace extends JUnit_Test {
 	@Test
 	public void test_computeVec2() throws Exception
 	{
-		log.debug(PointGridSpace.computeVec2(pointManager.get(0)));
-		log.debug(PointGridSpace.computeVec2(pointManager.get(64)));
-		log.debug(PointGridSpace.computeVec2(pointManager.get(63)));
-		Assert.assertTrue(PointGridSpace.computeVec2(pointManager.get(0)).equals(new Vec2RO(-1500, 0)));
+		log.debug(pointManager.get(0).computeVec2());
+		log.debug(pointManager.get(64).computeVec2());
+		log.debug(pointManager.get(63).computeVec2());
+		Assert.assertTrue(pointManager.get(0).computeVec2().equals(new Vec2RO(-1500, 0)));
 	}
 
 	@Test
@@ -104,7 +104,7 @@ public class JUnit_GridSpace extends JUnit_Test {
 	public void test_computeGridPoint() throws Exception
 	{
 		for(int i = 0; i < PointGridSpace.NB_POINTS; i++)
-			Assert.assertTrue(pointManager.get(PointGridSpace.computeVec2(pointManager.get(i))).hashCode() == i);
+			Assert.assertTrue(pointManager.get(pointManager.get(i).computeVec2()).hashCode() == i);
 	}
 	
 	@Test

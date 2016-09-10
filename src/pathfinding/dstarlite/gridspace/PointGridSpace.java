@@ -77,9 +77,9 @@ public class PointGridSpace implements Service, Printable
 		return 1000 * Math.max(dx, dy) + 414 * Math.min(dx, dy);
 	}
 
-	public static final Vec2RO computeVec2(PointGridSpace gridpoint)
+	public final Vec2RO computeVec2()
 	{
-		return new Vec2RO(((gridpoint.x * DISTANCE_ENTRE_DEUX_POINTS_1024) >> 10) - 1500, (gridpoint.y * DISTANCE_ENTRE_DEUX_POINTS_1024) >> 10);
+		return new Vec2RO(((x * DISTANCE_ENTRE_DEUX_POINTS_1024) >> 10) - 1500, (y * DISTANCE_ENTRE_DEUX_POINTS_1024) >> 10);
 	}
 
 	@Override
@@ -93,10 +93,17 @@ public class PointGridSpace implements Service, Printable
 	@Override
 	public void print(Graphics g, Fenetre f, RobotReal robot)
 	{
-		g.fillOval(f.XGridPointtoWindow(x)-f.distanceXtoWindow((int) PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS)/2,
-				f.YGridPointtoWindow(y)-f.distanceYtoWindow((int) PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS)/2,
+		Vec2RO p = computeVec2();
+		g.fillOval(f.XtoWindow(p.getX())-f.distanceXtoWindow((int) PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS)/2,
+				f.YtoWindow(p.getY())-f.distanceYtoWindow((int) PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS)/2,
 				f.distanceXtoWindow((int) PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS),
 				f.distanceYtoWindow((int) PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS));
 	}
 
+	@Override
+	public String toString()
+	{
+		return computeVec2().toString();
+	}
+	
 }

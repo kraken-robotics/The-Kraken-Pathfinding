@@ -17,6 +17,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 package pathfinding.dstarlite.gridspace;
 
+import graphic.Fenetre;
+import graphic.Fenetre.Couleur;
+
 import java.util.ArrayList;
 import java.util.BitSet;
 
@@ -57,7 +60,7 @@ public class GridSpace implements Service
 	private int centreMasque;
 	private long deathDateLastObstacle;
 	
-	public GridSpace(Log log, ObstaclesIteratorPresent iteratorDStarLite, ObstaclesIteratorPresent iteratorRemoveNearby, ObstaclesMemory obstaclesMemory, PointGridSpaceManager pointManager, PointDirigeManager pointDManager)
+	public GridSpace(Log log, ObstaclesIteratorPresent iteratorDStarLite, ObstaclesIteratorPresent iteratorRemoveNearby, ObstaclesMemory obstaclesMemory, PointGridSpaceManager pointManager, PointDirigeManager pointDManager, Fenetre fenetre)
 	{
 		this.obstaclesMemory = obstaclesMemory;
 		this.log = log;
@@ -68,13 +71,15 @@ public class GridSpace implements Service
 		
 		for(int i = 0; i < PointGridSpace.NB_POINTS; i++)
 			for(ObstaclesFixes o : ObstaclesFixes.values())
-			{
-				if(o.getObstacle().squaredDistance(PointGridSpace.computeVec2(new PointGridSpace(i))) < (int)(PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS/2 * PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS/2))
+				if(o.getObstacle().squaredDistance(pointManager.get(i).computeVec2())
+						<= (int)(PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS * PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS)/2)
 				{
+					log.debug(i+" occupé "+pointManager.get(i));
 					grilleStatique.set(i);
+					fenetre.setColor(pointManager.get(i), Couleur.NOIR);
 					break; // on ne vérifie pas les autres obstacles
 				}
-			}
+
 		log.debug("Grille statique initialisée");
 	}
 	
