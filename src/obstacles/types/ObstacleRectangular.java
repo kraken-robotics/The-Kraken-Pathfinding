@@ -189,7 +189,7 @@ public class ObstacleRectangular extends Obstacle implements Memorizable
 	 * @param d2
 	 * @return
 	 */
-	private static final boolean testeSeparation(double a, double b, double a2, double b2, double c2, double d2)
+	private final boolean testeSeparation(double a, double b, double a2, double b2, double c2, double d2)
 	{
 		double min1 = Math.min(a,b);
 		double max1 = Math.max(a,b);
@@ -312,6 +312,9 @@ public class ObstacleRectangular extends Obstacle implements Memorizable
 	@Override
 	public void print(Graphics g, Fenetre f, RobotReal robot)
 	{
+		if(coinBasDroiteRotate == null)
+			return;
+		
 		int[] X = new int[4];
 		X[0] = (int) coinBasDroiteRotate.getX();
 		X[1] = (int) coinHautDroiteRotate.getX();

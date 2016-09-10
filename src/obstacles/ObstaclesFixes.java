@@ -18,7 +18,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 package obstacles;
 
 import obstacles.types.Obstacle;
-import obstacles.types.ObstacleCircular;
 import obstacles.types.ObstacleRectangular;
 import utils.Vec2RO;
 
@@ -41,29 +40,9 @@ public enum ObstaclesFixes {
     BORD_HAUT(new ObstacleRectangular(new Vec2RO(0,2000),3000,5), false);
 
     private final Obstacle obstacle;
-    private boolean visible;
-    public static final ObstaclesFixes[] obstaclesFixesVisibles;
+    public final boolean visible;
     
-    static
-    {
-    	int nbVisibles = 0;
-    	for(ObstaclesFixes o : values())
-    		if(o.visible)
-    			nbVisibles++;
-    	obstaclesFixesVisibles = new ObstaclesFixes[nbVisibles];
-    	int i = 0;
-    	for(ObstaclesFixes o : values())
-    		if(o.visible)
-    			obstaclesFixesVisibles[i++] = o;
-    }
-
-    private ObstaclesFixes(ObstacleRectangular obstacle, boolean visible)
-    {
-    	this.obstacle = obstacle;
-    	this.visible = visible;
-    }
-
-    private ObstaclesFixes(ObstacleCircular obstacle, boolean visible)
+    private ObstaclesFixes(Obstacle obstacle, boolean visible)
     {
     	this.obstacle = obstacle;
     	this.visible = visible;

@@ -37,6 +37,7 @@ import java.util.HashMap;
 import java.util.Stack;
 
 import exceptions.ContainerException;
+import graphic.Fenetre;
 import utils.*;
 import serie.*;
 import table.Table;
@@ -179,7 +180,7 @@ public class Container implements Service
 		log.useConfig(config);
 		// Interdépendance entre log et config…
 		config.init(log);
-		
+
 		instanciedServices.put(Log.class.getSimpleName(), log);
 		instanciedServices.put(Config.class.getSimpleName(), config);
 
@@ -187,7 +188,7 @@ public class Container implements Service
 		instanciedServices.put(getClass().getSimpleName(), this);
 	
 		useConfig(config);
-		Obstacle.setLog(log);
+		Obstacle.set(log, getService(Fenetre.class));
 		Obstacle.useConfigStatic(config);
 				
 		if(showGraph)
@@ -225,7 +226,7 @@ public class Container implements Service
 		ok.add(ObsMM.class.getSimpleName());
 		
 		startAllThreads();
-		
+
 	}
 	
 	/**

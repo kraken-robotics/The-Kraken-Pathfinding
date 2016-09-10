@@ -59,13 +59,6 @@ public enum VitesseCourbure
 	public final boolean positif;
 	public final boolean rebrousse;
 	
-	public final static VitesseCourbure[] values;
-
-	static
-	{
-		values = values();
-	}
-	
 	private VitesseCourbure(int vitesse, int squaredRootVitesse, boolean rebrousse)
 	{
 		this.rebrousse = rebrousse;

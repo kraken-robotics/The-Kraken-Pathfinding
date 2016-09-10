@@ -53,8 +53,8 @@ public class GridSpace implements Service
 	// cette grille est constante, c'est-à-dire qu'elle ne contient que les obstacles fixes
 	private BitSet grilleStatique = new BitSet(PointGridSpace.NB_POINTS);
 	
-	private static ArrayList<PointDirige> masque = new ArrayList<PointDirige>();
-	private static int centreMasque;
+	private ArrayList<PointDirige> masque = new ArrayList<PointDirige>();
+	private int centreMasque;
 	private long deathDateLastObstacle;
 	
 	public GridSpace(Log log, ObstaclesIteratorPresent iteratorDStarLite, ObstaclesIteratorPresent iteratorRemoveNearby, ObstaclesMemory obstaclesMemory, PointGridSpaceManager pointManager, PointDirigeManager pointDManager)

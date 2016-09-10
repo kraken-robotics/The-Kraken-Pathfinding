@@ -59,7 +59,7 @@ public enum ConfigInfo {
 	MARGE(20),
 	COURBURE_MAX(10.), // quelle courbure maximale la trajectoire du robot peut-elle avoir 
 	PATHFINDING_UPDATE_TIMEOUT(50), // au bout de combien de temps le pathfinding est-il obligé de fournir un chemin partiel
-
+	TEMPS_REBROUSSEMENT(700), // temps qu'il faut au robot pour rebrousser chemin
 	/**
 	 * Paramètres de la série
 	 */
@@ -78,6 +78,7 @@ public enum ConfigInfo {
 	/**
 	 * Paramètres du traitement des capteurs
 	 */
+	NB_CAPTEURS(2),
 	DUREE_PEREMPTION_OBSTACLES(3000), // pendant combien de temps va-t-on garder un obstacle de proximité
 	DISTANCE_MAX_ENTRE_MESURE_ET_OBJET(50), // quelle marge d'erreur autorise-t-on entre un objet et sa détection
 	DISTANCE_BETWEEN_PROXIMITY_OBSTACLES(50), // sous quelle distance fusionne-t-on deux obstacles de proximité ?
@@ -95,8 +96,9 @@ public enum ConfigInfo {
 	GRAPHIC_DSTARLISTE(false), // affiche les calculs du D* Lite
 	GRAPHIC_OBSTACLES(false), // affiche les obstacles de proximité
 	GRAPHIC_TRAJECTORY(false), // affiche les trajectoires
-	GRAPHIC_FIXED_OBSTACLES(true), // affiche les obstacles fixes
+	GRAPHIC_FIXED_OBSTACLES(false), // affiche les obstacles fixes
 	GRAPHIC_BACKGROUND(false), // affiche d'image de la table
+	GRAPHIC_ALL_OBSTACLES(false), // affiche absolument tous les obstacles créés
 	
 	/**
 	 * Config dynamique

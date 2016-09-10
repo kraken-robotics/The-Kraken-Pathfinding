@@ -40,7 +40,7 @@ public class CapteursProcess implements Service {
 	protected Log log;
 	private GridSpace gridspace;
 	private Table table;
-	public static final int nbCapteurs = 2;
+	private int nbCapteurs;
 	
 	private int rayonEnnemi;
     private int rayonRobot;
@@ -53,11 +53,6 @@ public class CapteursProcess implements Service {
 		this.table = table;
 		this.log = log;
 		this.gridspace = gridspace;
-		
-		capteurs = new Capteur[nbCapteurs];
-		
-		capteurs[0] = new Capteur(new Vec2RO(70, -25), 0., 15, 200);
-		capteurs[1] = new Capteur(new Vec2RO(70, 75), 0., 15, 200);
 	}
 	
 	@Override
@@ -70,6 +65,12 @@ public class CapteursProcess implements Service {
 		rayonEnnemi = config.getInt(ConfigInfo.RAYON_ROBOT_ADVERSE);
 		rayonRobot = config.getInt(ConfigInfo.RAYON_ROBOT);
 		distanceApproximation = config.getInt(ConfigInfo.DISTANCE_MAX_ENTRE_MESURE_ET_OBJET);		
+		nbCapteurs = config.getInt(ConfigInfo.NB_CAPTEURS);
+		
+		capteurs = new Capteur[nbCapteurs];
+		
+		capteurs[0] = new Capteur(new Vec2RO(70, -25), 0., 15, 200);
+		capteurs[1] = new Capteur(new Vec2RO(70, 75), 0., 15, 200);
 	}
 
 	/**
@@ -110,8 +111,8 @@ public class CapteursProcess implements Service {
 				 */
 				Vec2RO positionVue = new Vec2RO(data.mesures[i], capteurs[i].orientationRelative, true);
 				
-		    	for(ObstaclesFixes o: ObstaclesFixes.obstaclesFixesVisibles)
-		    		if(o.getObstacle().squaredDistance(positionVue) < distanceApproximation * distanceApproximation)
+		    	for(ObstaclesFixes o: ObstaclesFixes.values())
+		    		if(o.visible && o.getObstacle().squaredDistance(positionVue) < distanceApproximation * distanceApproximation)
 		                continue;
 				
 				/**

@@ -165,7 +165,7 @@ public class Fenetre extends JPanel implements Service {
 	}
 	
 	@Override
-	public void paint(Graphics g)
+	public synchronized void paint(Graphics g)
 	{
 		if(afficheFond)
 			g.drawImage(image, 0, 0, this);
@@ -216,7 +216,7 @@ public class Fenetre extends JPanel implements Service {
 	 * Supprime tous les obstacles
 	 * @param c
 	 */
-	public void clear()
+	public synchronized void clear()
 	{
 		elementsAffichables.clear();
 	}
@@ -225,7 +225,7 @@ public class Fenetre extends JPanel implements Service {
 	 * Ajoute un obstacle
 	 * @param o
 	 */
-	public void add(Printable o)
+	public synchronized void add(Printable o)
 	{
 		elementsAffichables.add(o);
 		affiche();

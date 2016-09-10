@@ -467,7 +467,7 @@ public class DStarLite implements Service
 	 * @param c
 	 * @return
 	 */
-	private final static int add(int a, int b, int c)
+	private final int add(int a, int b, int c)
 	{
 		if(a == Integer.MAX_VALUE || b  == Integer.MAX_VALUE || c  == Integer.MAX_VALUE)
 			return Integer.MAX_VALUE;

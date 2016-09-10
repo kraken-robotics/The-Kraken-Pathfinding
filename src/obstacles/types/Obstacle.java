@@ -17,6 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 package obstacles.types;
 
+import graphic.Fenetre;
 import graphic.Printable;
 import utils.Config;
 import utils.ConfigInfo;
@@ -35,18 +36,22 @@ public abstract class Obstacle implements Printable
 	protected final Vec2RW position;
 	protected int distance_dilatation;
 	protected static Log log;
+	protected static Fenetre fenetre;
 	
     protected static int rayonRobot;
     protected static int marge;
     protected static int distanceApprox;
+    private static boolean printAllObstacles = false; // tant que set et useConfigStatic n'est pas appelé, on affiche rien
 	
-	public static void setLog(Log log)
+	public static void set(Log log, Fenetre fenetre)
 	{
 		Obstacle.log = log;
+		Obstacle.fenetre = fenetre;
 	}
-	
+
 	public static void useConfigStatic(Config config)
 	{
+		printAllObstacles = config.getBoolean(ConfigInfo.GRAPHIC_ALL_OBSTACLES);
 		rayonRobot = config.getInt(ConfigInfo.RAYON_ROBOT);
 		distanceApprox = config.getInt(ConfigInfo.DISTANCE_MAX_ENTRE_MESURE_ET_OBJET);
 		marge = config.getInt(ConfigInfo.MARGE);
@@ -59,6 +64,8 @@ public abstract class Obstacle implements Printable
 	public Obstacle(Vec2RO position)
 	{
 		this.position = position.clone();
+		if(printAllObstacles)
+			fenetre.add(this);
 	}
 	
 	@Override
