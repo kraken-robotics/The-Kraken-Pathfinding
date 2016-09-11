@@ -18,6 +18,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 package memory;
 
 import pathfinding.astarCourbe.AStarCourbeNode;
+import utils.Config;
+import utils.ConfigInfo;
 import utils.Log;
 import container.Container;
 import exceptions.ContainerException;
@@ -31,9 +33,9 @@ import exceptions.ContainerException;
 public class NodeMM extends MemoryManager<AStarCourbeNode>
 {
 
-	public NodeMM(Log log, Container container) throws ContainerException
+	public NodeMM(Log log, Config config, Container container) throws ContainerException
 	{
-		super(AStarCourbeNode.class, log, container, 1000);
+		super(AStarCourbeNode.class, log, container, config.getInt(ConfigInfo.NB_INSTANCES_NODE));
 	}
 
 }

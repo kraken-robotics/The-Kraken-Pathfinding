@@ -45,6 +45,27 @@ import java.util.ArrayList;
 
 public class Fenetre extends JPanel implements Service {
 
+	/**
+	 * Couleurs surtout utilisées pour le dstarlite
+	 * @author pf
+	 *
+	 */
+	public enum Couleur {
+		BLANC(new Color(255, 255, 255, 255)),
+		NOIR(new Color(0, 0, 0, 255)),
+		BLEU(new Color(0, 0, 200, 255)),
+		JAUNE(new Color(200, 200, 0, 255)),
+		ROUGE(new Color(200, 0, 0, 255)),
+		VIOLET(new Color(200, 0, 200, 255));
+		
+		public final Color couleur;
+		
+		private Couleur(Color couleur)
+		{
+			this.couleur = couleur;
+		}
+	}
+	
 	private static final long serialVersionUID = 1L;
 	protected Log log;
 	private PointGridSpaceManager pointm;
@@ -60,9 +81,9 @@ public class Fenetre extends JPanel implements Service {
 	
 	private ObstaclesIteratorPresent iterator;
 
-	private boolean printObsFixes;
-	private boolean printObsCapteurs;
-    private boolean printDStarLite;
+	private boolean printObsFixes = false;
+	private boolean printObsCapteurs = false;
+    private boolean printDStarLite = false;
     
 	private RobotReal robot;
 	private boolean needInit = true;
@@ -73,9 +94,6 @@ public class Fenetre extends JPanel implements Service {
 		this.iterator = iterator;
 		this.robot = robot;
 		this.pointm = pointm;
-
-		for(int i = 0; i < PointGridSpace.NB_POINTS; i++)
-			grid[i] = Couleur.INCOLOR;
 	}
 	
 	private class WindowExit extends WindowAdapter
@@ -105,24 +123,7 @@ public class Fenetre extends JPanel implements Service {
 
 		showOnFrame();
 	}
-	
-	public enum Couleur {
-		INCOLOR(new Color(255, 255, 255, 0)),
-		BLANC(new Color(255, 255, 255, 255)),
-		NOIR(new Color(0, 0, 0, 255)),
-		BLEU(new Color(0, 0, 200, 255)),
-		JAUNE(new Color(200, 200, 0, 255)),
-		ROUGE(new Color(200, 0, 0, 255)),
-		VIOLET(new Color(200, 0, 200, 255));
-		
-		public final Color couleur;
-		
-		private Couleur(Color couleur)
-		{
-			this.couleur = couleur;
-		}
-	}
-		
+			
 	/**
 	 * Met à jour la couleur d'un nœud
 	 * @param gridpoint
@@ -130,7 +131,7 @@ public class Fenetre extends JPanel implements Service {
 	 */
 	public void setColor(PointGridSpace gridpoint, Couleur couleur)
 	{
-		if(grid[gridpoint.hashCode()] != couleur)
+		if(printDStarLite && grid[gridpoint.hashCode()] != couleur)
 		{
 			grid[gridpoint.hashCode()] = couleur;
 			affiche();
@@ -179,10 +180,11 @@ public class Fenetre extends JPanel implements Service {
 		
 		if(printDStarLite)
 			for(int i = 0; i < PointGridSpace.NB_POINTS; i++)
-			{
-				g.setColor(grid[i].couleur);
-				pointm.get(i).print(g, this, robot);
-			}
+				if(grid[i].couleur != null)
+				{
+					g.setColor(grid[i].couleur);
+					pointm.get(i).print(g, this, robot);
+				}
 		
 		g.setColor(Couleur.NOIR.couleur);
 
@@ -217,6 +219,12 @@ public class Fenetre extends JPanel implements Service {
 		printObsCapteurs = config.getBoolean(ConfigInfo.GRAPHIC_OBSTACLES);
 		printObsFixes = config.getBoolean(ConfigInfo.GRAPHIC_FIXED_OBSTACLES);
 		afficheFond = config.getBoolean(ConfigInfo.GRAPHIC_BACKGROUND);
+	}
+	
+	public synchronized void clearGrid()
+	{
+		for(int i = 0; i < grid.length; i++)
+			grid[i] = null;
 	}
 	
 	/**
@@ -257,7 +265,10 @@ public class Fenetre extends JPanel implements Service {
 		synchronized(exit)
 		{
 			if(!needInit && !exit.alreadyExited)
+			{
+				log.debug("Attente de l'arrêt de la fenêtre…");
 				exit.wait();
+			}
 		}
 	}
 	

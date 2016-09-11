@@ -21,6 +21,8 @@ import container.Container;
 import exceptions.ContainerException;
 import obstacles.types.ObstacleArcCourbe;
 import obstacles.types.ObstacleRectangular;
+import utils.Config;
+import utils.ConfigInfo;
 import utils.Log;
 
 /**
@@ -34,9 +36,9 @@ import utils.Log;
 public class ObsMM extends MemoryManager<ObstacleRectangular>
 {
 
-	public ObsMM(Log log, Container container) throws ContainerException
+	public ObsMM(Log log, Config config, Container container) throws ContainerException
 	{
-		super(ObstacleRectangular.class, log, container, 100);
+		super(ObstacleRectangular.class, log, container, config.getInt(ConfigInfo.NB_INSTANCES_OBSTACLES));
 	}
 
 	public void destroyNode(ObstacleArcCourbe obstacle)

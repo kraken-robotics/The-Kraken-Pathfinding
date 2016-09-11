@@ -73,39 +73,32 @@ public class MemoryManager<T extends Memorizable> implements Service {
 	}
 	
 	/**
-	 * Donne un gamestate disponible
-	 * @param id_astar
+	 * Donne un objet disponible
 	 * @return
-	 * @throws FinMatchException
 	 */
-	public T getNewNode()
+	public synchronized T getNewNode()
 	{
 		// lève une exception s'il n'y a plus de place
-		T out;
-		out = nodes[firstAvailable];
-		firstAvailable++;
-		return out;
+		return nodes[firstAvailable++];
 	}
 
 	/**
 	 * Signale que tous les objets sont disponibles. Très rapide.
 	 * @param id_astar
 	 */
-	public void empty()
+	public synchronized void empty()
 	{
 		firstAvailable = 0;
 	}
 	
 	/**
 	 * Signale qu'un objet est de nouveau disponible
-	 * @param state
-	 * @param id_astar
-	 * @throws MemoryManagerException
+	 * @param objet
 	 */
-	public void destroyNode(T state)
+	public synchronized void destroyNode(T objet)
 	{
 		
-		int indice_state = state.getIndiceMemoryManager();
+		int indice_state = objet.getIndiceMemoryManager();
 
 		/**
 		 * S'il est déjà détruit, on lève une exception
@@ -116,24 +109,27 @@ public class MemoryManager<T extends Memorizable> implements Service {
 			z = 1 / z;
 		}
 
-		// On inverse dans le Vector les deux gamestates,
+		// On inverse dans le Vector les deux objets,
 		// de manière à avoir toujours un Vector trié.
 		firstAvailable--;
-		
-		T tmp1 = nodes[indice_state];
-		T tmp2 = nodes[firstAvailable];
-
-		tmp1.setIndiceMemoryManager(firstAvailable);
-		tmp2.setIndiceMemoryManager(indice_state);
-
-		nodes[firstAvailable] = tmp1;
-		nodes[indice_state] = tmp2;
+	
+		if(indice_state != firstAvailable)
+		{
+			T tmp1 = nodes[indice_state];
+			T tmp2 = nodes[firstAvailable];
+	
+			tmp1.setIndiceMemoryManager(firstAvailable);
+			tmp2.setIndiceMemoryManager(indice_state);
+	
+			nodes[firstAvailable] = tmp1;
+			nodes[indice_state] = tmp2;
+		}
 	}
 
 	/**
 	 * Retourne le nombre d'élément utilisé
 	 */
-	public int getSize()
+	public synchronized int getSize()
 	{
 		return firstAvailable;
 	}

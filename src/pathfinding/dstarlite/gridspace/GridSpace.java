@@ -49,6 +49,7 @@ public class GridSpace implements Service
 	private ObstaclesMemory obstaclesMemory;
 	private PointGridSpaceManager pointManager;
 	private PointDirigeManager pointDManager;
+	private Fenetre fenetre;
 
 	private int distanceMinimaleEntreProximite;
 	private int rayonRobot;
@@ -68,19 +69,7 @@ public class GridSpace implements Service
 		this.pointDManager = pointDManager;
 		this.iteratorDStarLite = iteratorDStarLite;
 		this.iteratorRemoveNearby = iteratorRemoveNearby;
-		
-		for(int i = 0; i < PointGridSpace.NB_POINTS; i++)
-			for(ObstaclesFixes o : ObstaclesFixes.values())
-				if(o.getObstacle().squaredDistance(pointManager.get(i).computeVec2())
-						<= (int)(PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS * PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS)/2)
-				{
-					log.debug(i+" occupé "+pointManager.get(i));
-					grilleStatique.set(i);
-					fenetre.setColor(pointManager.get(i), Couleur.NOIR);
-					break; // on ne vérifie pas les autres obstacles
-				}
-
-		log.debug("Grille statique initialisée");
+		this.fenetre = fenetre;
 	}
 	
 
@@ -103,6 +92,19 @@ public class GridSpace implements Service
 						if((i2-centreMasque) * (i2-centreMasque) + (j2-centreMasque) * (j2-centreMasque) <= squaredRayonPoint)
 							masque.add(pointDManager.get(j,i,d));
 					}
+
+		for(int i = 0; i < PointGridSpace.NB_POINTS; i++)
+			for(ObstaclesFixes o : ObstaclesFixes.values())
+				if(o.getObstacle().squaredDistance(pointManager.get(i).computeVec2())
+						<= (int)(PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS * PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS)/2)
+				{
+					grilleStatique.set(i);
+					fenetre.setColor(pointManager.get(i), Couleur.NOIR);
+					break; // on ne vérifie pas les autres obstacles
+				}
+
+		log.debug("Grille statique initialisée");
+
 	}
 
 	@Override

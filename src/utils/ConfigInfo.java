@@ -60,6 +60,7 @@ public enum ConfigInfo {
 	COURBURE_MAX(10.), // quelle courbure maximale la trajectoire du robot peut-elle avoir 
 	PATHFINDING_UPDATE_TIMEOUT(50), // au bout de combien de temps le pathfinding est-il obligé de fournir un chemin partiel
 	TEMPS_REBROUSSEMENT(700), // temps qu'il faut au robot pour rebrousser chemin
+
 	/**
 	 * Paramètres de la série
 	 */
@@ -83,6 +84,12 @@ public enum ConfigInfo {
 	DISTANCE_MAX_ENTRE_MESURE_ET_OBJET(50), // quelle marge d'erreur autorise-t-on entre un objet et sa détection
 	DISTANCE_BETWEEN_PROXIMITY_OBSTACLES(50), // sous quelle distance fusionne-t-on deux obstacles de proximité ?
 
+	/**
+	 * Paramètres sur la gestion de la mémoire
+	 */
+	NB_INSTANCES_NODE(10000),
+	NB_INSTANCES_OBSTACLES(10000),
+	
 	/**
 	 * Debug
 	 */
