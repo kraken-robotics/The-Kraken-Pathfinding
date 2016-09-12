@@ -74,7 +74,15 @@ public class ObstacleRectangular extends Obstacle implements Memorizable
 	
 	public ObstacleRectangular()
 	{
-		this(new Vec2RO(0,0), 0, 0, 0);
+		super(null);
+		coinBasGauche = new Vec2RW();
+		coinHautGauche = new Vec2RW();
+		coinBasDroite = new Vec2RW();
+		coinHautDroite = new Vec2RW();
+		coinBasGaucheRotate = new Vec2RW();
+		coinHautGaucheRotate = new Vec2RW();
+		coinBasDroiteRotate = new Vec2RW();
+		coinHautDroiteRotate = new Vec2RW();
 	}
 	
 	/**
@@ -280,7 +288,10 @@ public class ObstacleRectangular extends Obstacle implements Memorizable
 	 */
 	public ObstacleRectangular update(Vec2RO position, double orientation, RobotChrono robot)
 	{
-		position.copy(this.position);
+		if(this.position == null)
+			this.position = position.clone();
+		else
+			position.copy(this.position);
 		this.angle = orientation;
 		cos = Math.cos(angle);
 		sin = Math.sin(angle);
@@ -302,6 +313,10 @@ public class ObstacleRectangular extends Obstacle implements Memorizable
 		coinBasDroiteRotate = convertitVersRepereTable(coinBasDroite);
 		coinHautDroiteRotate = convertitVersRepereTable(coinHautDroite);
 		demieDiagonale = robot.getDemieDiagonale();
+
+		if(printAllObstacles)
+			fenetre.affiche();
+	
 		return this;
 	}
 

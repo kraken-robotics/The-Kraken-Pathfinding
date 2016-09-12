@@ -33,7 +33,7 @@ import utils.Vec2RW;
 
 public abstract class Obstacle implements Printable
 {
-	protected final Vec2RW position;
+	protected Vec2RW position;
 	protected int distance_dilatation;
 	protected static Log log;
 	protected static Fenetre fenetre;
@@ -41,7 +41,7 @@ public abstract class Obstacle implements Printable
     protected static int rayonRobot;
     protected static int marge;
     protected static int distanceApprox;
-    private static boolean printAllObstacles = false; // tant que set et useConfigStatic n'est pas appelé, on affiche rien
+    protected static boolean printAllObstacles = false; // tant que set et useConfigStatic n'est pas appelé, on affiche rien
 	
 	public static void set(Log log, Fenetre fenetre)
 	{
@@ -63,9 +63,14 @@ public abstract class Obstacle implements Printable
 	 */
 	public Obstacle(Vec2RO position)
 	{
-		this.position = position.clone();
-		if(printAllObstacles)
-			fenetre.add(this);
+		if(position != null)
+		{
+			this.position = position.clone();
+			if(printAllObstacles)
+				fenetre.add(this);
+		}
+		else
+			this.position = null;
 	}
 	
 	@Override

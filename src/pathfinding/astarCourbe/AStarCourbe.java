@@ -167,7 +167,7 @@ public class AStarCourbe implements Service
 				for(int i = 0; i < current.came_from_arc.getNbPoints(); i++)
 				{
 //					Sleep.sleep(20);
-					fenetre.add(new ObstacleRectangular(current.came_from_arc.getPoint(i).getPosition(), 4, 4, 0));
+					fenetre.add(new ObstacleRectangular(current.came_from_arc.getPoint(i).getPosition(), 4, 4));
 				}
 			
 			// ce calcul étant un peu lourd, on ne le fait que si le noeud a été choisi, et pas à la sélection des voisins (dans hasNext par exemple)
