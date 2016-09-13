@@ -19,5 +19,11 @@ package threads;
 
 import container.Service;
 
+/**
+ * Une sur-classe pratique pour typer
+ * @author pf
+ *
+ */
+
 public abstract class ThreadService extends Thread implements Service
 {}

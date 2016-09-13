@@ -24,7 +24,7 @@ import utils.Config;
 
 /**
  * Classe abstraite du robot, dont héritent RobotVrai et RobotChrono
- * @author PF
+ * @author pf
  */
 
 public abstract class Robot 

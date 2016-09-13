@@ -17,6 +17,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 package pathfinding.dstarlite.gridspace;
 
+/**
+ * Les différentes directions dans une grille
+ * @author pf
+ *
+ */
+
 public enum Direction {
 
 	NO(-1,1),SE(1,-1),NE(1,1),SO(-1,-1),
