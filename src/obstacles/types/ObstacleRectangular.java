@@ -125,8 +125,8 @@ public class ObstacleRectangular extends Obstacle implements Memorizable
 	private Vec2RW convertitVersRepereObstacle(Vec2RO point)
 	{
 		Vec2RW out = new Vec2RW();
-		out.setX((int)(cos*(point.getX()-position.getX())+sin*(point.getY()-position.getY())));
-		out.setY((int)(-sin*(point.getX()-position.getX())+cos*(point.getY()-position.getY())));
+		out.setX(cos*(point.getX()-position.getX())+sin*(point.getY()-position.getY()));
+		out.setY(-sin*(point.getX()-position.getX())+cos*(point.getY()-position.getY()));
 		return out;
 	}
 
@@ -139,8 +139,8 @@ public class ObstacleRectangular extends Obstacle implements Memorizable
 	private Vec2RW convertitVersRepereTable(Vec2RO point)
 	{
 		Vec2RW out = new Vec2RW();
-		out.setX((int)(cos*point.getX()-sin*point.getY())+position.getX());
-		out.setY((int)(sin*point.getX()+cos*point.getY())+position.getY());
+		out.setX(cos*point.getX()-sin*point.getY()+position.getX());
+		out.setY(sin*point.getX()+cos*point.getY()+position.getY());
 		return out;
 	}
 
@@ -149,9 +149,9 @@ public class ObstacleRectangular extends Obstacle implements Memorizable
 	 * @param point
 	 * @return
 	 */
-	private int getXConvertiVersRepereObstacle(Vec2RO point)
+	private double getXConvertiVersRepereObstacle(Vec2RO point)
 	{
-		return (int)(cos*(point.getX()-position.getX())+sin*(point.getY()-position.getY()));
+		return cos*(point.getX()-position.getX())+sin*(point.getY()-position.getY());
 	}
 
 	/**
@@ -159,9 +159,9 @@ public class ObstacleRectangular extends Obstacle implements Memorizable
 	 * @param point
 	 * @return
 	 */
-	private int getYConvertiVersRepereObstacle(Vec2RO point)
+	private double getYConvertiVersRepereObstacle(Vec2RO point)
 	{
-		return (int)(-sin*(point.getX()-position.getX())+cos*(point.getY()-position.getY()));
+		return -sin*(point.getX()-position.getX())+cos*(point.getY()-position.getY());
 	}
 
 	/**

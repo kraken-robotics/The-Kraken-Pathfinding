@@ -148,7 +148,7 @@ public class Vec2RO implements Serializable
 
 	@Override
 	public int hashCode() {
-		return (int)((x+1500)*2000+y);
+		return (int) Math.round((x+1500)*2000+y);
 	}
 	
 	public final double getX()

@@ -17,6 +17,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 package pathfinding.astarCourbe.arcs;
 
+import graphic.Fenetre;
+
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -29,6 +31,7 @@ import java.util.ArrayList;
 import memory.ObsMM;
 import container.Service;
 import obstacles.types.ObstacleArcCourbe;
+import obstacles.types.ObstacleRectangular;
 import pathfinding.VitesseCourbure;
 import robot.Cinematique;
 import robot.RobotChrono;
@@ -49,6 +52,7 @@ public class ClothoidesComputer implements Service
 {
 	private Log log;
 	private ObsMM memory;
+	private Fenetre fenetre;
 	
 	private BigDecimal x, y; // utilisés dans le calcul de trajectoire
 	private static final int S_MAX = 10; // une valeur très grande pour dire qu'on trace beaucoup de points.
@@ -63,10 +67,11 @@ public class ClothoidesComputer implements Service
 	
 	private Vec2RO[] trajectoire = new Vec2RO[2 * INDICE_MAX - 1];
 	
-	public ClothoidesComputer(Log log, ObsMM memory)
+	public ClothoidesComputer(Log log, ObsMM memory, Fenetre fenetre)
 	{
 		this.memory = memory;
 		this.log = log;
+		this.fenetre = fenetre;
 		if(!chargePoints()) // le calcul est un peu long, donc on le sauvegarde
 		{
 			init();
@@ -135,9 +140,7 @@ public class ClothoidesComputer implements Service
 			trajectoire[s] = new Vec2RO(x.doubleValue(), y.doubleValue());
 			System.out.println((s - INDICE_MAX + 1) * PRECISION_TRACE+" "+trajectoire[s]);
 
-			// Non, car la fenêtre n'est pas encore créée
-//			if(Config.graphicObstacles)
-//				Fenetre.getInstance().addObstacleEnBiais(new ObstacleRectangular(new Vec2RO((int)(x.doubleValue()/2), (int)(1000+y.doubleValue()/2)), 10, 10, 0));
+			fenetre.add(new ObstacleRectangular(new Vec2RO(x.doubleValue()/2, 1000+y.doubleValue()/2), 10, 10));
 		}
 	}
 
@@ -375,8 +378,8 @@ public class ClothoidesComputer implements Service
 		// rappel = la courbure est l'inverse du rayon de courbure
 		// le facteur 1000 vient du fait que la courbure est en mètre^-1
 		double rayonCourbure = 1000. / courbure;
-		delta.setX((int)(Math.cos(orientation + Math.PI / 2) * rayonCourbure));
-		delta.setY((int) (Math.sin(orientation + Math.PI / 2) * rayonCourbure));
+		delta.setX(Math.cos(orientation + Math.PI / 2) * rayonCourbure);
+		delta.setY(Math.sin(orientation + Math.PI / 2) * rayonCourbure);
 		
 		centreCercle.setX(position.getX() + delta.getX());
 		centreCercle.setY(position.getY() + delta.getY());
@@ -426,8 +429,8 @@ public class ClothoidesComputer implements Service
 		for(int i = 0; i < NB_POINTS; i++)
 		{
 			double distance = (i + 1) * PRECISION_TRACE * 1000;
-			modified.arcselems[i].getPositionEcriture().setX((int) Math.round(position.getX() + distance * cos));
-			modified.arcselems[i].getPositionEcriture().setY((int) Math.round(position.getY() + distance * sin));
+			modified.arcselems[i].getPositionEcriture().setX(position.getX() + distance * cos);
+			modified.arcselems[i].getPositionEcriture().setY(position.getY() + distance * sin);
 			modified.arcselems[i].orientation = orientation;
 			modified.arcselems[i].courbure = 0;
 			modified.arcselems[i].vitesseRotation = vitesseMax.rotationalSpeed;
