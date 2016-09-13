@@ -155,7 +155,9 @@ public class JUnit_Pathfinding extends JUnit_Test {
 			else if(a > 0)
 				Assert.assertEquals(arc[a].vitesseCourbure.vitesse / 1000. * ClothoidesComputer.DISTANCE_ARC_COURBE + arc[a-1].arcselems[ClothoidesComputer.NB_POINTS-1].courbure, arc[a].arcselems[ClothoidesComputer.NB_POINTS-1].courbure, 0.1);
 */		}
-		Thread.sleep(10000);
+	
+		
+		Assert.assertEquals(arc[nbArc-1].arcselems[arc[nbArc-1].arcselems.length - 1].getPosition().distance(new Vec2RO(-22.769859459053365,1875.782736417656)), 0, 0.1);
     }
 	
 	@Test
