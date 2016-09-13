@@ -397,7 +397,7 @@ public class ClothoidesComputer implements Service
 			double tmp = sin;
 			sin = sin * cosSauv + sinSauv * cos; // sin vaut sin(2a*(i+1))
 			cos = cos * cosSauv - tmp * sinSauv;
-			position.copy(deltaTmp);
+			delta.copy(deltaTmp);
 			deltaTmp.rotate(cos, sin);
 			centreCercle.copy(modified.arcselems[i].getPositionEcriture());
 			modified.arcselems[i].getPositionEcriture().minus(deltaTmp);
