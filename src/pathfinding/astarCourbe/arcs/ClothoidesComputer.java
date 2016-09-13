@@ -332,12 +332,12 @@ public class ClothoidesComputer implements Service
 		{
 			sDepart += vitesse.squaredRootVitesse * PRECISION_TRACE;
 
-							trajectoire[pointDepart + vitesse.squaredRootVitesse * (i + 1)].minusNewVector(trajectoire[pointDepart]).scalar(
-						coeffMultiplicatif)
-						.Ysym(!vitesse.positif).rotate(
-				cos, sin).plus(
-				cinematiqueInitiale.getPosition()).copy(
-			modified.arcselems[i].getPositionEcriture());
+			trajectoire[pointDepart + vitesse.squaredRootVitesse * (i + 1)].minusNewVector(trajectoire[pointDepart])
+			.scalar(coeffMultiplicatif)
+			.Ysym(!vitesse.positif)
+			.rotate(cos, sin)
+			.plus(cinematiqueInitiale.getPosition())
+			.copy(modified.arcselems[i].getPositionEcriture());
 
  			double orientationClotho = sDepart * sDepart;
  			if(!vitesse.positif)

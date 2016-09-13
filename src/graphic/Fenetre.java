@@ -163,6 +163,10 @@ public class Fenetre extends JPanel implements Service {
 	{
 		if(afficheFond)
 			g.drawImage(image, 0, 0, this);
+		else
+			g.clearRect(0, 0, sizeX, sizeY);
+
+		g.setColor(Couleur.NOIR.couleur);
 
 		if(printObsFixes)
 			for(ObstaclesFixes obs : ObstaclesFixes.values())
@@ -180,14 +184,12 @@ public class Fenetre extends JPanel implements Service {
 		
 		if(printDStarLite)
 			for(int i = 0; i < PointGridSpace.NB_POINTS; i++)
-				if(grid[i].couleur != null)
+				if(grid[i] != null)
 				{
 					g.setColor(grid[i].couleur);
 					pointm.get(i).print(g, this, robot);
 				}
-		
-		g.setColor(Couleur.NOIR.couleur);
-
+	
 	}
 
 	/**
