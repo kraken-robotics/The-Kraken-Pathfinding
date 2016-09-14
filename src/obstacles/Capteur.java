@@ -21,6 +21,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 
 import graphic.Fenetre;
+import graphic.Layer;
 import graphic.Printable;
 import robot.RobotReal;
 import utils.Vec2RO;
@@ -66,5 +67,10 @@ public class Capteur implements Printable
 //		g.fillPolygon(x, y, 3);
 		g.setColor(new Color(0, 130, 0, 255));
 		g.drawPolygon(x, y, 3);	}
+
+	@Override
+	public Layer getLayer() {
+		return Layer.FOREGROUND;
+	}
 
 }

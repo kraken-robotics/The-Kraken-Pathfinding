@@ -100,8 +100,9 @@ public enum ConfigInfo {
 	/**
 	 * Interface graphique
 	 */
+	GRAPHIC_ENABLE(false), // désactive tout affichage (empêche le thread d'affichage de se lancer)
 	GRAPHIC_D_STAR_LITE(false), // affiche les calculs du D* Lite
-	GRAPHIC_OBSTACLES(false), // affiche les obstacles de proximité
+	GRAPHIC_PROXIMITY_OBSTACLES(false), // affiche les obstacles de proximité
 	GRAPHIC_TRAJECTORY(false), // affiche les trajectoires
 	GRAPHIC_FIXED_OBSTACLES(false), // affiche les obstacles fixes
 	GRAPHIC_BACKGROUND(false), // affiche d'image de la table

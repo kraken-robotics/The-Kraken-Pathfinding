@@ -23,7 +23,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import graphic.Fenetre;
+import graphic.PrintBuffer;
 import pathfinding.VitesseCourbure;
 import pathfinding.astarCourbe.arcs.ArcCourbeClotho;
 import pathfinding.astarCourbe.arcs.ArcCourbeCubique;
@@ -46,7 +46,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
 	private DStarLite pathfinding;
 	private GridSpace gridspace;
 	private ClothoidesComputer clotho;
-	private Fenetre fenetre;
+	private PrintBuffer buffer;
 	private boolean graphicTrajectory;
 	
 	@Override
@@ -56,7 +56,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
         pathfinding = container.getService(DStarLite.class);
         gridspace = container.getService(GridSpace.class);
 		clotho = container.getService(ClothoidesComputer.class);
-		fenetre = container.getService(Fenetre.class);
+		buffer = container.getService(PrintBuffer.class);
 		graphicTrajectory = false;
 	}
 
@@ -97,7 +97,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
 			if(graphicTrajectory)
 			{
 				Thread.sleep(100);
-				fenetre.add(new ObstacleRectangular(arccubique.arcs.get(i).getPosition(), 10, 10, 0));
+				buffer.addSupprimable(new ObstacleRectangular(arccubique.arcs.get(i).getPosition(), 10, 10, 0));
 			}
 		}
 		
@@ -163,16 +163,19 @@ public class JUnit_Pathfinding extends JUnit_Test {
 	@Test
     public void test_chemin_dstarlite() throws Exception
     {
-		gridspace.addObstacleAndRemoveNearbyObstacles(new Vec2RO(200, 800));
+		gridspace.addObstacleAndRemoveNearbyObstacles(new Vec2RO(100, 700));
 		pathfinding.computeNewPath(new Vec2RO(-1000, 200), new Vec2RO(1200, 1200));
 		pathfinding.itineraireBrut();		
 		Thread.sleep(500);
-		fenetre.clear();
+		buffer.clearSupprimables();
+		gridspace.reinitgrid();
 		log.debug("RECALCUL");
 		gridspace.addObstacleAndRemoveNearbyObstacles(new Vec2RO(600, 1300));
 		pathfinding.updatePath(new Vec2RO(600,1300));
 		pathfinding.itineraireBrut();
 		Thread.sleep(4000);
+		buffer.clearSupprimables();
+		gridspace.reinitgrid();
 		pathfinding.updatePath(new Vec2RO(-800,1300));
 		pathfinding.itineraireBrut();
 		log.debug("RECALCUL");

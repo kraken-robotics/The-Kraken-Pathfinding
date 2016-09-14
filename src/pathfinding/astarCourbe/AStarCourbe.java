@@ -23,7 +23,7 @@ import java.util.PriorityQueue;
 
 import memory.NodeMM;
 import memory.ObsMM;
-import obstacles.types.ObstacleRectangular;
+import obstacles.types.ObstacleCircular;
 import pathfinding.CheminPathfinding;
 import pathfinding.RealGameState;
 import pathfinding.astarCourbe.arcs.ArcManager;
@@ -34,7 +34,7 @@ import pathfinding.dstarlite.gridspace.GridSpace;
 import pathfinding.dstarlite.gridspace.PointGridSpace;
 import container.Service;
 import exceptions.PathfindingException;
-import graphic.Fenetre;
+import graphic.PrintBuffer;
 import robot.Cinematique;
 import robot.DirectionStrategy;
 import robot.Speed;
@@ -58,7 +58,7 @@ public class AStarCourbe implements Service
 	private DStarLite dstarlite;
 	private RealGameState state;
 	private NodeMM memorymanager;
-	protected Fenetre fenetre;
+	private PrintBuffer buffer;
 	private Cinematique arrivee;
 	private AStarCourbeNode depart;
 	private CheminPathfinding chemin;
@@ -94,7 +94,7 @@ public class AStarCourbe implements Service
 	/**
 	 * Constructeur du AStarCourbe
 	 */
-	public AStarCourbe(Log log, DStarLite dstarlite, ArcManager arcmanager, RealGameState state, CheminPathfinding chemin, NodeMM memorymanager, GridSpace gridspace, ObsMM rectMemory, Fenetre fenetre, AStarCourbeNode depart)
+	public AStarCourbe(Log log, DStarLite dstarlite, ArcManager arcmanager, RealGameState state, CheminPathfinding chemin, NodeMM memorymanager, GridSpace gridspace, ObsMM rectMemory, PrintBuffer buffer, AStarCourbeNode depart)
 	{
 		this.log = log;
 		this.arcmanager = arcmanager;
@@ -106,7 +106,7 @@ public class AStarCourbe implements Service
 		this.dstarlite = dstarlite;
 		this.gridspace = gridspace;
 		this.rectMemory = rectMemory;
-		this.fenetre = fenetre;
+		this.buffer = buffer;
 	}
 	
 	public void doYourJob() throws InterruptedException
@@ -165,10 +165,7 @@ public class AStarCourbe implements Service
 			
 			if(graphicTrajectory && current.came_from_arc != null)
 				for(int i = 0; i < current.came_from_arc.getNbPoints(); i++)
-				{
-//					Sleep.sleep(20);
-					fenetre.add(new ObstacleRectangular(current.came_from_arc.getPoint(i).getPosition(), 4, 4));
-				}
+					buffer.addSupprimable(new ObstacleCircular(current.came_from_arc.getPoint(i).getPosition(), 4));
 			
 			// ce calcul étant un peu lourd, on ne le fait que si le noeud a été choisi, et pas à la sélection des voisins (dans hasNext par exemple)
 			if(!arcmanager.isReachable(current))

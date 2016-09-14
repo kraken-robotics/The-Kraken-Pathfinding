@@ -17,39 +17,27 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 package graphic;
 
-import java.awt.Graphics;
-
-import robot.RobotReal;
-import utils.Vec2RO;
+import java.awt.Color;
 
 /**
- * Un segment affichable
+ * Quelques couleurs prédéfinies
  * @author pf
  *
  */
 
-public class Segment implements Printable
-{
-	private Vec2RO a, b;
-	private Layer l;
-
-	public Segment(Vec2RO a, Vec2RO b, Layer l)
+public enum Couleur {
+	BLANC(new Color(255, 255, 255, 255)),
+	NOIR(new Color(0, 0, 0, 255)),
+	GRIS(new Color(50, 50, 50, 200)),
+	BLEU(new Color(0, 0, 200, 255)),
+	JAUNE(new Color(200, 200, 0, 255)),
+	ROUGE(new Color(200, 0, 0, 255)),
+	VIOLET(new Color(200, 0, 200, 255));
+	
+	public final Color couleur;
+	
+	private Couleur(Color couleur)
 	{
-		this.a = a;
-		this.b = b;
-		this.l = l;
+		this.couleur = couleur;
 	}
-
-	@Override
-	public void print(Graphics g, Fenetre f, RobotReal robot)
-	{
-		g.drawLine(f.XtoWindow(a.getX()), f.YtoWindow(a.getY()), f.XtoWindow(b.getX()), f.YtoWindow(b.getY()));
-	}
-
-	@Override
-	public Layer getLayer()
-	{
-		return l;
-	}
-
 }

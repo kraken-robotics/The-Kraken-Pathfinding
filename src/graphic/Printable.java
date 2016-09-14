@@ -34,4 +34,10 @@ public interface Printable
 	 * @param g
 	 */
 	public void print(Graphics g, Fenetre f, RobotReal robot);
+	
+	/**
+	 * Récupère le layer sur lequel afficher l'objet
+	 * @return
+	 */
+	public Layer getLayer();
 }

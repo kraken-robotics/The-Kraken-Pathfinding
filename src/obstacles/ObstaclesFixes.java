@@ -17,6 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 package obstacles;
 
+import graphic.Layer;
 import obstacles.types.Obstacle;
 import obstacles.types.ObstacleRectangular;
 import utils.Vec2RO;
@@ -34,10 +35,10 @@ public enum ObstaclesFixes {
 
 	
 	// bords
-    BORD_BAS(new ObstacleRectangular(new Vec2RO(0,0),3000,5), false),
-    BORD_GAUCHE(new ObstacleRectangular(new Vec2RO(-1500,1000),5,2000), false),
-    BORD_DROITE(new ObstacleRectangular(new Vec2RO(1500,1000),5,2000), false),
-    BORD_HAUT(new ObstacleRectangular(new Vec2RO(0,2000),3000,5), false);
+    BORD_BAS(new ObstacleRectangular(new Vec2RO(0,0),3000,5,Layer.BACKGROUND), false),
+    BORD_GAUCHE(new ObstacleRectangular(new Vec2RO(-1500,1000),5,2000,Layer.BACKGROUND), false),
+    BORD_DROITE(new ObstacleRectangular(new Vec2RO(1500,1000),5,2000,Layer.BACKGROUND), false),
+    BORD_HAUT(new ObstacleRectangular(new Vec2RO(0,2000),3000,5,Layer.BACKGROUND), false);
 
     private final Obstacle obstacle;
     public final boolean visible;

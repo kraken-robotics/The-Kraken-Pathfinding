@@ -17,8 +17,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 package pathfinding.dstarlite.gridspace;
 
+import graphic.Couleur;
 import graphic.Fenetre;
-import graphic.Fenetre.Couleur;
+import graphic.Layer;
+import graphic.PrintBuffer;
 import graphic.Printable;
 
 import java.awt.Graphics;
@@ -52,7 +54,7 @@ public class GridSpace implements Service, Printable
 	private ObstaclesMemory obstaclesMemory;
 	private PointGridSpaceManager pointManager;
 	private PointDirigeManager pointDManager;
-	private Fenetre fenetre;
+	private PrintBuffer buffer;
 
 	private int distanceMinimaleEntreProximite;
 	private int rayonRobot;
@@ -65,7 +67,7 @@ public class GridSpace implements Service, Printable
 	private int centreMasque;
 	private long deathDateLastObstacle;
 	
-	public GridSpace(Log log, ObstaclesIteratorPresent iteratorDStarLite, ObstaclesIteratorPresent iteratorRemoveNearby, ObstaclesMemory obstaclesMemory, PointGridSpaceManager pointManager, PointDirigeManager pointDManager, Fenetre fenetre)
+	public GridSpace(Log log, ObstaclesIteratorPresent iteratorDStarLite, ObstaclesIteratorPresent iteratorRemoveNearby, ObstaclesMemory obstaclesMemory, PointGridSpaceManager pointManager, PointDirigeManager pointDManager, PrintBuffer buffer)
 	{
 		this.obstaclesMemory = obstaclesMemory;
 		this.log = log;
@@ -73,7 +75,7 @@ public class GridSpace implements Service, Printable
 		this.pointDManager = pointDManager;
 		this.iteratorDStarLite = iteratorDStarLite;
 		this.iteratorRemoveNearby = iteratorRemoveNearby;
-		this.fenetre = fenetre;
+		this.buffer = buffer;
 	}
 	
 
@@ -96,31 +98,46 @@ public class GridSpace implements Service, Printable
 						if((i2-centreMasque) * (i2-centreMasque) + (j2-centreMasque) * (j2-centreMasque) <= squaredRayonPoint)
 							masque.add(pointDManager.get(j,i,d));
 					}
-
-		reinitgrid();
+		
+		// on ajoute les obstacles fixes une fois pour toute si c'est demandé
+		if(config.getBoolean(ConfigInfo.GRAPHIC_FIXED_OBSTACLES))
+			for(ObstaclesFixes o : ObstaclesFixes.values())
+				buffer.add(o.getObstacle());
+		
+		// l'affichage du d* lite est géré par le gridspace
+		if(config.getBoolean(ConfigInfo.GRAPHIC_D_STAR_LITE))
+		{
+			buffer.add(this);
+			reinitgrid();
+		}
 
 		log.debug("Grille statique initialisée");
 
 	}
 
+	/**
+	 * Réinitialise la grille d'affichage
+	 */
 	public void reinitgrid()
 	{
-		for(int i = 0; i < PointGridSpace.NB_POINTS; i++)
+		synchronized(buffer)
 		{
-			grid[pointManager.get(i).hashCode()] = null;
-
-			for(ObstaclesFixes o : ObstaclesFixes.values())
-				if(o.getObstacle().squaredDistance(pointManager.get(i).computeVec2())
-						<= (int)(PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS * PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS)/2)
-				{
-					grilleStatique.set(i);
-					grid[pointManager.get(i).hashCode()] = Couleur.NOIR;
-					fenetre.affiche();
-					break; // on ne vérifie pas les autres obstacles
-				}
+			for(int i = 0; i < PointGridSpace.NB_POINTS; i++)
+			{
+				grid[pointManager.get(i).hashCode()] = null;
+	
+				for(ObstaclesFixes o : ObstaclesFixes.values())
+					if(o.getObstacle().squaredDistance(pointManager.get(i).computeVec2())
+							<= (int)(PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS * PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS)/2)
+					{
+						grilleStatique.set(i);
+						grid[pointManager.get(i).hashCode()] = Couleur.NOIR;
+						break; // on ne vérifie pas les autres obstacles
+					}
+			}
+			buffer.notify();
 		}
-					
-		}
+	}
 
 
 	@Override
@@ -273,10 +290,25 @@ public class GridSpace implements Service, Printable
 			}
 	}
 
-
+	/**
+	 * Permet au D* Lite d'afficher des couleurs
+	 * @param gridpoint
+	 * @param couleur
+	 */
 	public void setColor(PointGridSpace gridpoint, Couleur couleur)
 	{
-		grid[gridpoint.hashcode] = couleur;
+		synchronized(buffer)
+		{
+			grid[gridpoint.hashcode] = couleur;
+			buffer.notify();
+		}
+	}
+
+
+	@Override
+	public Layer getLayer()
+	{
+		return Layer.FOREGROUND;
 	}
 
 }

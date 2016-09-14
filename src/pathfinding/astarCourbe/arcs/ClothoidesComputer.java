@@ -17,7 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 package pathfinding.astarCourbe.arcs;
 
-import graphic.Fenetre;
+import graphic.PrintBuffer;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -31,7 +31,7 @@ import java.util.ArrayList;
 import memory.ObsMM;
 import container.Service;
 import obstacles.types.ObstacleArcCourbe;
-import obstacles.types.ObstacleRectangular;
+import obstacles.types.ObstacleCircular;
 import pathfinding.VitesseCourbure;
 import robot.Cinematique;
 import robot.RobotChrono;
@@ -52,7 +52,7 @@ public class ClothoidesComputer implements Service
 {
 	private Log log;
 	private ObsMM memory;
-	private Fenetre fenetre;
+	private PrintBuffer buffer;
 	
 	private BigDecimal x, y; // utilisés dans le calcul de trajectoire
 	private static final int S_MAX = 10; // une valeur très grande pour dire qu'on trace beaucoup de points.
@@ -67,11 +67,11 @@ public class ClothoidesComputer implements Service
 	
 	private Vec2RO[] trajectoire = new Vec2RO[2 * INDICE_MAX - 1];
 	
-	public ClothoidesComputer(Log log, ObsMM memory, Fenetre fenetre)
+	public ClothoidesComputer(Log log, ObsMM memory, PrintBuffer buffer)
 	{
 		this.memory = memory;
 		this.log = log;
-		this.fenetre = fenetre;
+		this.buffer = buffer;
 		if(!chargePoints()) // le calcul est un peu long, donc on le sauvegarde
 		{
 			init();
@@ -140,7 +140,7 @@ public class ClothoidesComputer implements Service
 			trajectoire[s] = new Vec2RO(x.doubleValue(), y.doubleValue());
 			System.out.println((s - INDICE_MAX + 1) * PRECISION_TRACE+" "+trajectoire[s]);
 
-			fenetre.add(new ObstacleRectangular(new Vec2RO(x.doubleValue()/2, 1000+y.doubleValue()/2), 10, 10));
+			buffer.addSupprimable(new ObstacleCircular(new Vec2RO(x.doubleValue(), 1000+y.doubleValue()), 5));
 		}
 	}
 

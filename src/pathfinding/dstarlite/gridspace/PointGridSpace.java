@@ -24,6 +24,7 @@ import java.awt.Graphics;
 
 import container.Service;
 import graphic.Fenetre;
+import graphic.Layer;
 import graphic.Printable;
 import robot.RobotReal;
 
@@ -104,6 +105,12 @@ public class PointGridSpace implements Service, Printable
 	public String toString()
 	{
 		return computeVec2().toString();
+	}
+
+	@Override
+	public Layer getLayer()
+	{
+		return Layer.FOREGROUND;
 	}
 	
 }

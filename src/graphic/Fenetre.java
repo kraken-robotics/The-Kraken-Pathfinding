@@ -21,10 +21,7 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 
 import container.Service;
-import obstacles.ObstaclesFixes;
 import obstacles.memory.ObstaclesIteratorPresent;
-import pathfinding.dstarlite.gridspace.PointGridSpace;
-import pathfinding.dstarlite.gridspace.PointGridSpaceManager;
 import robot.RobotReal;
 import utils.Config;
 import utils.ConfigInfo;
@@ -35,7 +32,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 
 /**
  * Interface graphique
@@ -50,46 +46,30 @@ public class Fenetre extends JPanel implements Service {
 	 * @author pf
 	 *
 	 */
-	public enum Couleur {
-		BLANC(new Color(255, 255, 255, 255)),
-		NOIR(new Color(0, 0, 0, 255)),
-		BLEU(new Color(0, 0, 200, 255)),
-		JAUNE(new Color(200, 200, 0, 255)),
-		ROUGE(new Color(200, 0, 0, 255)),
-		VIOLET(new Color(200, 0, 200, 255));
-		
-		public final Color couleur;
-		
-		private Couleur(Color couleur)
-		{
-			this.couleur = couleur;
-		}
-	}
 	
 	private static final long serialVersionUID = 1L;
 	protected Log log;
+	private PrintBuffer buffer;
 	
 	private boolean afficheFond;
 	private int sizeX = 450, sizeY = 300;
 	private Image image;
 	private JFrame frame;
 	private WindowExit exit = new WindowExit();
-	
-	private ArrayList<Printable> elementsAffichables = new ArrayList<Printable>();
-	
+		
 	private ObstaclesIteratorPresent iterator;
 
-	private boolean printObsFixes = false;
 	private boolean printObsCapteurs = false;
     
 	private RobotReal robot;
 	private boolean needInit = true;
 	
-	public Fenetre(Log log, ObstaclesIteratorPresent iterator, RobotReal robot)
+	public Fenetre(Log log, ObstaclesIteratorPresent iterator, RobotReal robot, PrintBuffer buffer)
 	{
 		this.log = log;
 		this.iterator = iterator;
 		this.robot = robot;
+		this.buffer = buffer;
 	}
 	
 	private class WindowExit extends WindowAdapter
@@ -149,29 +129,27 @@ public class Fenetre extends JPanel implements Service {
 		else
 			g.clearRect(0, 0, sizeX, sizeY);
 
-		g.setColor(Couleur.NOIR.couleur);
+		/**
+		 * Affichage des obstacles de proximité en gris
+		 */
+		g.setColor(Couleur.GRIS.couleur);
 
-		if(printObsFixes)
-			for(ObstaclesFixes obs : ObstaclesFixes.values())
-				obs.getObstacle().print(g, this, robot);
-
-		for(Printable p : elementsAffichables)
-			p.print(g, this, robot);
-		
 		if(printObsCapteurs)
 		{
 			iterator.reinit();
 			while(iterator.hasNext())				
 				iterator.next().print(g, this, robot);
-		}
-		
+		}		
 
+		g.setColor(Couleur.NOIR.couleur);
+
+		buffer.print(g, this, robot);
 	}
 
 	/**
 	 * Affiche la fenêtre
 	 */
-	public void showOnFrame()
+	private void showOnFrame()
 	{
 		setBackground(Color.WHITE);
 		setPreferredSize(new Dimension(sizeX,sizeY));
@@ -193,34 +171,14 @@ public class Fenetre extends JPanel implements Service {
 	@Override
 	public void useConfig(Config config)
 	{
-		printObsCapteurs = config.getBoolean(ConfigInfo.GRAPHIC_OBSTACLES);
-		printObsFixes = config.getBoolean(ConfigInfo.GRAPHIC_FIXED_OBSTACLES);
+		printObsCapteurs = config.getBoolean(ConfigInfo.GRAPHIC_PROXIMITY_OBSTACLES);
 		afficheFond = config.getBoolean(ConfigInfo.GRAPHIC_BACKGROUND);
 	}
-	
-	/**
-	 * Supprime tous les obstacles
-	 * @param c
-	 */
-	public synchronized void clear()
-	{
-		elementsAffichables.clear();
-	}
-	
-	/**
-	 * Ajoute un obstacle
-	 * @param o
-	 */
-	public synchronized void add(Printable o)
-	{
-		elementsAffichables.add(o);
-		affiche();
-	}
-	
+		
 	/**
 	 * Réaffiche
 	 */
-	public void affiche()
+	public synchronized void refresh()
 	{
 		if(needInit)
 			init();
@@ -238,7 +196,7 @@ public class Fenetre extends JPanel implements Service {
 			if(!needInit && !exit.alreadyExited)
 			{
 				log.debug("Attente de l'arrêt de la fenêtre…");
-				exit.wait();
+				exit.wait(5000);
 			}
 		}
 	}

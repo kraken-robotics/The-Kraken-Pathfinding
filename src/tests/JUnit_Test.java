@@ -41,7 +41,6 @@ public abstract class JUnit_Test
 	protected Container container;
 	protected Config config;
 	protected Log log;
-	protected Fenetre fenetre;
 	
     @Rule public TestName testName = new TestName();
     
@@ -53,7 +52,6 @@ public abstract class JUnit_Test
 		container = new Container();
 		config = container.getService(Config.class);
 		log = container.getService(Log.class);
-		fenetre = container.getService(Fenetre.class);
 		synchronized(config)
 		{
 			config.set(ConfigInfo.MATCH_DEMARRE, true);
@@ -63,7 +61,7 @@ public abstract class JUnit_Test
 
 	@After
 	public void tearDown() throws Exception {
-		fenetre.waitUntilExit();
+		container.getService(Fenetre.class).waitUntilExit();
 		Runtime.getRuntime().removeShutdownHook(container.getService(ThreadShutdown.class));
 		container.destructor(true);
 		System.out.println("\n\n");

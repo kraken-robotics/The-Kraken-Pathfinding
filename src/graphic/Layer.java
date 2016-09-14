@@ -17,39 +17,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 package graphic;
 
-import java.awt.Graphics;
-
-import robot.RobotReal;
-import utils.Vec2RO;
-
 /**
- * Un segment affichable
+ * Les couches d'affichage
  * @author pf
  *
  */
 
-public class Segment implements Printable
-{
-	private Vec2RO a, b;
-	private Layer l;
-
-	public Segment(Vec2RO a, Vec2RO b, Layer l)
-	{
-		this.a = a;
-		this.b = b;
-		this.l = l;
-	}
-
-	@Override
-	public void print(Graphics g, Fenetre f, RobotReal robot)
-	{
-		g.drawLine(f.XtoWindow(a.getX()), f.YtoWindow(a.getY()), f.XtoWindow(b.getX()), f.YtoWindow(b.getY()));
-	}
-
-	@Override
-	public Layer getLayer()
-	{
-		return l;
-	}
-
+public enum Layer {
+	// L'affichage se fait du premier au dernier (l'ordre est donc important)
+	BACKGROUND,
+	MIDDLE,
+	FOREGROUND;
 }

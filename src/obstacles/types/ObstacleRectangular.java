@@ -20,6 +20,7 @@ package obstacles.types;
 import java.awt.Graphics;
 
 import graphic.Fenetre;
+import graphic.Layer;
 import memory.Memorizable;
 import robot.RobotChrono;
 import robot.RobotReal;
@@ -71,7 +72,13 @@ public class ObstacleRectangular extends Obstacle implements Memorizable
 	{
 		this(position, sizeX, sizeY, 0);
 	}
-	
+
+	public ObstacleRectangular(Vec2RO position, int sizeX, int sizeY, Layer l)
+	{
+		this(position, sizeX, sizeY, 0);
+		this.l = l;
+	}
+
 	public ObstacleRectangular()
 	{
 		super(null);
@@ -83,7 +90,7 @@ public class ObstacleRectangular extends Obstacle implements Memorizable
 		coinHautGaucheRotate = new Vec2RW();
 		coinBasDroiteRotate = new Vec2RW();
 		coinHautDroiteRotate = new Vec2RW();
-	}
+	}	
 	
 	/**
 	 * Cet angle est celui par lequel le rectangle a été tourné.
@@ -315,7 +322,10 @@ public class ObstacleRectangular extends Obstacle implements Memorizable
 		demieDiagonale = robot.getDemieDiagonale();
 
 		if(printAllObstacles)
-			fenetre.affiche();
+			synchronized(buffer)
+			{
+				buffer.notify();
+			}
 	
 		return this;
 	}

@@ -23,6 +23,7 @@ import org.junit.Test;
 import exceptions.ContainerException;
 import obstacles.memory.ObstaclesIteratorPresent;
 import obstacles.types.ObstacleCircular;
+import obstacles.types.ObstacleProximity;
 import pathfinding.astarCourbe.AStarCourbe;
 import table.Table;
 import tests.container.A;
@@ -94,7 +95,7 @@ public class JUnit_Container extends JUnit_Test {
 	@Test
 	public void test_extra_param() throws Exception
 	{
-		container.make(ObstacleCircular.class, new Vec2RO(100, 200), 10);
+		container.make(ObstacleProximity.class, new Vec2RO(100, 200), 10, System.currentTimeMillis(), null);
 	}
 
 

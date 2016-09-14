@@ -32,15 +32,17 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Stack;
 
 import exceptions.ContainerException;
-import graphic.Fenetre;
+import graphic.*;
 import utils.*;
 import serie.*;
-import table.Table;
+import table.*;
 import threads.*;
 import threads.serie.*;
 
@@ -169,6 +171,7 @@ public class Container implements Service
 		 */
 		System.out.println("System : "+System.getProperty("os.name")+" "+System.getProperty("os.version")+" "+System.getProperty("os.arch"));
 		System.out.println("Java : "+System.getProperty("java.vendor")+" "+System.getProperty("java.version")+", max memory : "+Math.round(100.*Runtime.getRuntime().maxMemory()/(1024.*1024.*1024.))/100.+"G, available processors : "+Runtime.getRuntime().availableProcessors());
+		System.out.println("Date : "+new SimpleDateFormat("E dd/MM à kk:mm").format(new Date()));
 		System.out.println();
 
 		System.out.println("    Remember, with great power comes great current squared times resistance !");
@@ -188,7 +191,7 @@ public class Container implements Service
 		instanciedServices.put(getClass().getSimpleName(), this);
 	
 		useConfig(config);
-		Obstacle.set(log, getService(Fenetre.class));
+		Obstacle.set(log, getService(PrintBuffer.class));
 		Obstacle.useConfigStatic(config);
 				
 		if(showGraph)
@@ -370,7 +373,7 @@ public class Container implements Service
 				| InvocationTargetException | NoSuchMethodException
 				| SecurityException | InstantiationException e) {
 			e.printStackTrace();
-			throw new ContainerException(e.toString());
+			throw new ContainerException(e.toString()+"Classe demandée : "+classe);
 		}
 	}
 

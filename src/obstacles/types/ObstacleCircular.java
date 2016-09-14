@@ -20,6 +20,7 @@ package obstacles.types;
 import java.awt.Graphics;
 
 import graphic.Fenetre;
+import graphic.Layer;
 import robot.RobotReal;
 import utils.Vec2RO;
 
@@ -39,6 +40,13 @@ public class ObstacleCircular extends Obstacle
 	public ObstacleCircular(Vec2RO position, int rad)
 	{
 		super(position);
+		this.radius = rad;
+		squared_radius = rad * rad;
+	}
+
+	public ObstacleCircular(Vec2RO position, int rad, Layer l)
+	{
+		super(position,l);
 		this.radius = rad;
 		squared_radius = rad * rad;
 	}

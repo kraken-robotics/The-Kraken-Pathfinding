@@ -34,6 +34,7 @@ public enum ThreadName
 	CONFIG(ThreadConfig.class),
 	PATHFINDING(ThreadPathfinding.class),
 	PEREMPTION(ThreadPeremption.class),
+	FENETRE(ThreadFenetre.class),
 	SERIAL_INPUT_ORDRE(ThreadSerialInputCoucheOrdre.class),
 	SERIAL_INPUT_TRAME(ThreadSerialInputCoucheTrame.class),
 	SERIAL_OUTPUT(ThreadSerialOutput.class),

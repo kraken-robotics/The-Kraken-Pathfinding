@@ -17,7 +17,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 package obstacles.types;
 
-import graphic.Fenetre;
+import graphic.Layer;
+import graphic.PrintBuffer;
 import graphic.Printable;
 import utils.Config;
 import utils.ConfigInfo;
@@ -36,17 +37,18 @@ public abstract class Obstacle implements Printable
 	protected Vec2RW position;
 	protected int distance_dilatation;
 	protected static Log log;
-	protected static Fenetre fenetre;
+	protected static PrintBuffer buffer;
 	
     protected static int rayonRobot;
     protected static int marge;
     protected static int distanceApprox;
     protected static boolean printAllObstacles = false; // tant que set et useConfigStatic n'est pas appelé, on affiche rien
+	protected Layer l = null;
 	
-	public static void set(Log log, Fenetre fenetre)
+	public static void set(Log log, PrintBuffer buffer)
 	{
 		Obstacle.log = log;
-		Obstacle.fenetre = fenetre;
+		Obstacle.buffer = buffer;
 	}
 
 	public static void useConfigStatic(Config config)
@@ -55,6 +57,12 @@ public abstract class Obstacle implements Printable
 		rayonRobot = config.getInt(ConfigInfo.RAYON_ROBOT);
 		distanceApprox = config.getInt(ConfigInfo.DISTANCE_MAX_ENTRE_MESURE_ET_OBJET);
 		marge = config.getInt(ConfigInfo.MARGE);
+	}
+	
+	public Obstacle(Vec2RO position, Layer l)
+	{
+		this(position);
+		this.l = l;
 	}
 	
 	/**
@@ -67,10 +75,11 @@ public abstract class Obstacle implements Printable
 		{
 			this.position = position.clone();
 			if(printAllObstacles)
-				fenetre.add(this);
+				buffer.addSupprimable(this);
 		}
 		else
 			this.position = null;
+		l = Layer.MIDDLE;
 	}
 	
 	@Override
@@ -142,4 +151,10 @@ public abstract class Obstacle implements Printable
 		return false;
 	}
 	
+	@Override
+	public Layer getLayer()
+	{
+		return l;
+	}
+
 }
