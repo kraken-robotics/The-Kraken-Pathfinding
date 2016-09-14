@@ -122,8 +122,10 @@ public class Fenetre extends JPanel implements Service {
 	}
 	
 	@Override
-	public synchronized void paint(Graphics g)
+	public void paintComponent(Graphics g)
 	{
+		super.paintComponent(g);
+
 		if(afficheFond)
 			g.drawImage(image, 0, 0, this);
 		else
@@ -178,7 +180,7 @@ public class Fenetre extends JPanel implements Service {
 	/**
 	 * Réaffiche
 	 */
-	public synchronized void refresh()
+	public void refresh()
 	{
 		if(needInit)
 			init();
@@ -189,7 +191,7 @@ public class Fenetre extends JPanel implements Service {
 	 * Attend que la fenêtre soit fermée
 	 * @throws InterruptedException
 	 */
-	public synchronized void waitUntilExit() throws InterruptedException
+	public void waitUntilExit() throws InterruptedException
 	{
 		synchronized(exit)
 		{

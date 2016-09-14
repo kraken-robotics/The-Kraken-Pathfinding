@@ -22,7 +22,6 @@ import org.junit.Test;
 
 import exceptions.ContainerException;
 import obstacles.memory.ObstaclesIteratorPresent;
-import obstacles.types.ObstacleCircular;
 import obstacles.types.ObstacleProximity;
 import pathfinding.astarCourbe.AStarCourbe;
 import table.Table;
