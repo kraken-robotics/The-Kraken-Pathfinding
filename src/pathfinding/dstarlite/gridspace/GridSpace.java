@@ -19,7 +19,9 @@ package pathfinding.dstarlite.gridspace;
 
 import graphic.Fenetre;
 import graphic.Fenetre.Couleur;
+import graphic.Printable;
 
+import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.BitSet;
 
@@ -27,6 +29,7 @@ import obstacles.ObstaclesFixes;
 import obstacles.memory.ObstaclesIteratorPresent;
 import obstacles.memory.ObstaclesMemory;
 import obstacles.types.ObstacleProximity;
+import robot.RobotReal;
 import utils.Config;
 import utils.ConfigInfo;
 import utils.Log;
@@ -41,7 +44,7 @@ import container.Service;
  *
  */
 
-public class GridSpace implements Service
+public class GridSpace implements Service, Printable
 {
 	protected Log log;
 	private ObstaclesIteratorPresent iteratorDStarLite;
@@ -56,7 +59,8 @@ public class GridSpace implements Service
 	
 	// cette grille est constante, c'est-à-dire qu'elle ne contient que les obstacles fixes
 	private BitSet grilleStatique = new BitSet(PointGridSpace.NB_POINTS);
-	
+	private Couleur[] grid = new Couleur[PointGridSpace.NB_POINTS];
+
 	private ArrayList<PointDirige> masque = new ArrayList<PointDirige>();
 	private int centreMasque;
 	private long deathDateLastObstacle;
@@ -93,19 +97,31 @@ public class GridSpace implements Service
 							masque.add(pointDManager.get(j,i,d));
 					}
 
+		reinitgrid();
+
+		log.debug("Grille statique initialisée");
+
+	}
+
+	public void reinitgrid()
+	{
 		for(int i = 0; i < PointGridSpace.NB_POINTS; i++)
+		{
+			grid[pointManager.get(i).hashCode()] = null;
+
 			for(ObstaclesFixes o : ObstaclesFixes.values())
 				if(o.getObstacle().squaredDistance(pointManager.get(i).computeVec2())
 						<= (int)(PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS * PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS)/2)
 				{
 					grilleStatique.set(i);
-					fenetre.setColor(pointManager.get(i), Couleur.NOIR);
+					grid[pointManager.get(i).hashCode()] = Couleur.NOIR;
+					fenetre.affiche();
 					break; // on ne vérifie pas les autres obstacles
 				}
+		}
+					
+		}
 
-		log.debug("Grille statique initialisée");
-
-	}
 
 	@Override
 	public void updateConfig(Config config)
@@ -244,5 +260,23 @@ public class GridSpace implements Service
 		// pour un ajout, pas besoin de tout régénérer
 		return o;
     }
+
+
+	@Override
+	public void print(Graphics g, Fenetre f, RobotReal robot)
+	{
+		for(int i = 0; i < PointGridSpace.NB_POINTS; i++)
+			if(grid[i] != null)
+			{
+				g.setColor(grid[i].couleur);
+				pointManager.get(i).print(g, f, robot);
+			}
+	}
+
+
+	public void setColor(PointGridSpace gridpoint, Couleur couleur)
+	{
+		grid[gridpoint.hashcode] = couleur;
+	}
 
 }

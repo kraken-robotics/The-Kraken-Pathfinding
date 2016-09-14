@@ -68,7 +68,6 @@ public class Fenetre extends JPanel implements Service {
 	
 	private static final long serialVersionUID = 1L;
 	protected Log log;
-	private PointGridSpaceManager pointm;
 	
 	private boolean afficheFond;
 	private int sizeX = 450, sizeY = 300;
@@ -77,23 +76,20 @@ public class Fenetre extends JPanel implements Service {
 	private WindowExit exit = new WindowExit();
 	
 	private ArrayList<Printable> elementsAffichables = new ArrayList<Printable>();
-	private Couleur[] grid = new Couleur[PointGridSpace.NB_POINTS];
 	
 	private ObstaclesIteratorPresent iterator;
 
 	private boolean printObsFixes = false;
 	private boolean printObsCapteurs = false;
-    private boolean printDStarLite = false;
     
 	private RobotReal robot;
 	private boolean needInit = true;
 	
-	public Fenetre(Log log, ObstaclesIteratorPresent iterator, RobotReal robot, PointGridSpaceManager pointm)
+	public Fenetre(Log log, ObstaclesIteratorPresent iterator, RobotReal robot)
 	{
 		this.log = log;
 		this.iterator = iterator;
 		this.robot = robot;
-		this.pointm = pointm;
 	}
 	
 	private class WindowExit extends WindowAdapter
@@ -123,20 +119,7 @@ public class Fenetre extends JPanel implements Service {
 
 		showOnFrame();
 	}
-			
-	/**
-	 * Met à jour la couleur d'un nœud
-	 * @param gridpoint
-	 * @param couleur
-	 */
-	public void setColor(PointGridSpace gridpoint, Couleur couleur)
-	{
-		if(printDStarLite && grid[gridpoint.hashCode()] != couleur)
-		{
-			grid[gridpoint.hashCode()] = couleur;
-			affiche();
-		}
-	}
+		
 
 	public int distanceXtoWindow(int dist)
 	{
@@ -182,14 +165,7 @@ public class Fenetre extends JPanel implements Service {
 				iterator.next().print(g, this, robot);
 		}
 		
-		if(printDStarLite)
-			for(int i = 0; i < PointGridSpace.NB_POINTS; i++)
-				if(grid[i] != null)
-				{
-					g.setColor(grid[i].couleur);
-					pointm.get(i).print(g, this, robot);
-				}
-	
+
 	}
 
 	/**
@@ -217,16 +193,9 @@ public class Fenetre extends JPanel implements Service {
 	@Override
 	public void useConfig(Config config)
 	{
-		printDStarLite = config.getBoolean(ConfigInfo.GRAPHIC_D_STAR_LITE);
 		printObsCapteurs = config.getBoolean(ConfigInfo.GRAPHIC_OBSTACLES);
 		printObsFixes = config.getBoolean(ConfigInfo.GRAPHIC_FIXED_OBSTACLES);
 		afficheFond = config.getBoolean(ConfigInfo.GRAPHIC_BACKGROUND);
-	}
-	
-	public synchronized void clearGrid()
-	{
-		for(int i = 0; i < grid.length; i++)
-			grid[i] = null;
 	}
 	
 	/**

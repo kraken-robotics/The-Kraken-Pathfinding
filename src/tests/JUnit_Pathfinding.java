@@ -167,6 +167,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
 		pathfinding.computeNewPath(new Vec2RO(-1000, 200), new Vec2RO(1200, 1200));
 		pathfinding.itineraireBrut();		
 		Thread.sleep(500);
+		fenetre.clear();
 		log.debug("RECALCUL");
 		gridspace.addObstacleAndRemoveNearbyObstacles(new Vec2RO(600, 1300));
 		pathfinding.updatePath(new Vec2RO(600,1300));

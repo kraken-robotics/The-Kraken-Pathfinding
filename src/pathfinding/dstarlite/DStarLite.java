@@ -52,7 +52,6 @@ public class DStarLite implements Service
 {
 	protected Log log;
 	private GridSpace gridspace;
-	private Fenetre fenetre;
 	private PointGridSpaceManager pointManager;
 	private PointDirigeManager pointDManager;
 	private boolean graphicDStarLite;
@@ -79,13 +78,12 @@ public class DStarLite implements Service
 	 * @param log
 	 * @param gridspace
 	 */
-	public DStarLite(Log log, GridSpace gridspace, PointGridSpaceManager pointManager, PointDirigeManager pointDManager, Fenetre fenetre)
+	public DStarLite(Log log, GridSpace gridspace, PointGridSpaceManager pointManager, PointDirigeManager pointDManager)
 	{
 		this.log = log;
 		this.gridspace = gridspace;
 		this.pointManager = pointManager;
 		this.pointDManager = pointDManager;
-		this.fenetre = fenetre;
 		
 		for(int i = 0; i < PointGridSpace.NB_POINTS; i++)
 			memory[i] = new DStarLiteNode(pointManager.get(i));
@@ -148,7 +146,7 @@ public class DStarLite implements Service
 			openset.add(u);
 //			contained.set(u.gridpoint);
 			if(graphicDStarLite)
-				fenetre.setColor(u.gridpoint, Fenetre.Couleur.BLEU);
+				gridspace.setColor(u.gridpoint, Fenetre.Couleur.BLEU);
 		}
 		else if(!u.done)
 		{
@@ -169,7 +167,7 @@ public class DStarLite implements Service
 				continue;
 			}
 			if(graphicDStarLite)
-				fenetre.setColor(u.gridpoint, Fenetre.Couleur.ROUGE);
+				gridspace.setColor(u.gridpoint, Fenetre.Couleur.ROUGE);
 			
 			u.cle.copy(kold);
 //			Cle kold = u.cle.clone();
@@ -181,7 +179,7 @@ public class DStarLite implements Service
 				openset.poll();
 				openset.add(u);
 				if(graphicDStarLite)
-					fenetre.setColor(u.gridpoint, Fenetre.Couleur.BLEU);
+					gridspace.setColor(u.gridpoint, Fenetre.Couleur.BLEU);
 			}
 			else if(u.g > u.rhs)
 			{
@@ -190,7 +188,7 @@ public class DStarLite implements Service
 				openset.poll();
 				u.done = true;
 				if(graphicDStarLite)
-					fenetre.setColor(u.gridpoint, Fenetre.Couleur.ROUGE);
+					gridspace.setColor(u.gridpoint, Fenetre.Couleur.ROUGE);
 				for(Direction i : Direction.values())
 				{
 					PointGridSpace voisin = pointManager.getGridPointVoisin(u.gridpoint, i);
@@ -282,8 +280,8 @@ public class DStarLite implements Service
 		openset.add(this.arrivee);
 		if(graphicDStarLite)
 		{
-			fenetre.setColor(this.arrivee.gridpoint, Fenetre.Couleur.JAUNE);
-			fenetre.setColor(this.depart.gridpoint, Fenetre.Couleur.VIOLET);
+			gridspace.setColor(this.arrivee.gridpoint, Fenetre.Couleur.JAUNE);
+			gridspace.setColor(this.depart.gridpoint, Fenetre.Couleur.VIOLET);
 		}
 
 		obstaclesConnus = gridspace.getCurrentObstacles();
@@ -292,7 +290,7 @@ public class DStarLite implements Service
 
 		if(graphicDStarLite)
 			for(PointDirige i : obstaclesConnus)
-				fenetre.setColor(pointManager.getGridPointVoisin(i.point, i.dir), Fenetre.Couleur.NOIR);
+				gridspace.setColor(pointManager.getGridPointVoisin(i.point, i.dir), Fenetre.Couleur.NOIR);
 
 	}
 	
@@ -375,7 +373,7 @@ public class DStarLite implements Service
 		}
 		if(graphicDStarLite)
 			for(PointDirige i : obstaclesConnus)
-				fenetre.setColor(pointManager.getGridPointVoisin(i.point, i.dir), Fenetre.Couleur.NOIR);
+				gridspace.setColor(pointManager.getGridPointVoisin(i.point, i.dir), Fenetre.Couleur.NOIR);
 
 		computeShortestPath();
 	}
@@ -398,7 +396,7 @@ public class DStarLite implements Service
 			trajet.add(node.gridpoint.computeVec2());
 
 			if(graphicDStarLite)
-				fenetre.setColor(node.gridpoint, Fenetre.Couleur.VIOLET);
+				gridspace.setColor(node.gridpoint, Fenetre.Couleur.VIOLET);
 
 			coutMin = Integer.MAX_VALUE;
 			
