@@ -21,7 +21,6 @@ import obstacles.types.ObstacleCircular;
 import obstacles.types.ObstacleRectangular;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 import org.junit.Assert;
 import org.junit.Before;

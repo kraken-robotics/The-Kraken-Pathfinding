@@ -19,8 +19,6 @@ package tests;
 
 import java.util.ArrayList;
 
-import obstacles.types.ObstacleProximity;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

@@ -17,12 +17,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 package obstacles.memory;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 
 import obstacles.types.ObstacleProximity;
 import pathfinding.dstarlite.gridspace.Masque;
-import pathfinding.dstarlite.gridspace.PointDirige;
 import utils.Config;
 import utils.ConfigInfo;
 import utils.Log;

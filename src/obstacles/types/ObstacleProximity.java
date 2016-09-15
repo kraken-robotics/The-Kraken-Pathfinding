@@ -17,10 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 package obstacles.types;
 
-import java.util.ArrayList;
-
 import pathfinding.dstarlite.gridspace.Masque;
-import pathfinding.dstarlite.gridspace.PointDirige;
 import utils.Vec2RO;
 
 /**

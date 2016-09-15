@@ -22,10 +22,6 @@ import javax.swing.*;
 
 import container.Service;
 import graphic.printable.BackgroundImage;
-import graphic.printable.Couleur;
-import obstacles.memory.ObstaclesIteratorPresent;
-import obstacles.types.ObstacleProximity;
-import pathfinding.dstarlite.gridspace.GridSpace;
 import robot.RobotReal;
 import utils.Config;
 import utils.ConfigInfo;

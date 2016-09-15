@@ -67,7 +67,7 @@ public class Container implements Service
 	private boolean showGraph;
 	private FileWriter fw;
 
-	private ArrayList<String> ok = new ArrayList<String>();
+	private ArrayList<Class<? extends Service>> ok = new ArrayList<Class<? extends Service>>();
 	
 	/**
 	 * Fonction appelé automatiquement à la fin du programme.
@@ -189,11 +189,8 @@ public class Container implements Service
 
 		// Le container est aussi un service
 		instanciedServices.put(getClass().getSimpleName(), this);
-	
 		useConfig(config);
-		Obstacle.set(log, getService(PrintBuffer.class));
-		Obstacle.useConfigStatic(config);
-				
+	
 		if(showGraph)
 		{
 			log.warning("Le graphe de dépendances va être généré !");
@@ -203,32 +200,38 @@ public class Container implements Service
 			} catch (IOException e) {
 				log.warning(e);
 			}
+			
+			ok.add(Config.class);
+			ok.add(ThreadSerialOutput.class);
+			ok.add(BufferIncomingBytes.class);
+			ok.add(SerieCouchePhysique.class);
+			ok.add(SerieCoucheTrame.class);
+			ok.add(ThreadSerialOutputTimeout.class);
+			ok.add(BufferIncomingOrder.class);
+			ok.add(Container.class);
+			ok.add(ThreadConfig.class);
+			ok.add(BufferOutgoingOrder.class);
+			ok.add(Table.class);
+			ok.add(SensorsDataBuffer.class);
+			ok.add(ThreadPeremption.class);
+			ok.add(ObsMM.class);
+			ok.add(ThreadSerialInputCoucheTrame.class);
+			ok.add(ObstaclesMemory.class);
+			ok.add(ThreadCapteurs.class);
+			ok.add(PointGridSpaceManager.class);
+			ok.add(PointDirigeManager.class);
+			ok.add(GridSpace.class);
+			ok.add(NodeMM.class);
+			ok.add(ObsMM.class);
+			ok.add(PrintBuffer.class);
+			ok.add(ThreadFenetre.class);
+			ok.add(Fenetre.class);
+			ok.add(MasqueManager.class);
+			ok.add(ThreadShutdown.class);
 		}
-
-		ok.add(Config.class.getSimpleName());
-		ok.add(ThreadSerialOutput.class.getSimpleName());
-		ok.add(BufferIncomingBytes.class.getSimpleName());
-		ok.add(SerieCouchePhysique.class.getSimpleName());
-		ok.add(SerieCoucheTrame.class.getSimpleName());
-		ok.add(ThreadSerialOutputTimeout.class.getSimpleName());
-		ok.add(BufferIncomingOrder.class.getSimpleName());
-		ok.add(Container.class.getSimpleName());
-		ok.add(ThreadConfig.class.getSimpleName());
-		ok.add(BufferOutgoingOrder.class.getSimpleName());
-		ok.add(Table.class.getSimpleName());
-		ok.add(SensorsDataBuffer.class.getSimpleName());
-		ok.add(ThreadPeremption.class.getSimpleName());
-		ok.add(ObsMM.class.getSimpleName());
-		ok.add(ThreadSerialInputCoucheTrame.class.getSimpleName());
-		ok.add(ObstaclesMemory.class.getSimpleName());
-		ok.add(ThreadCapteurs.class.getSimpleName());
-		ok.add(PointGridSpaceManager.class.getSimpleName());
-		ok.add(PointDirigeManager.class.getSimpleName());
-		ok.add(GridSpace.class.getSimpleName());
-		ok.add(NodeMM.class.getSimpleName());
-		ok.add(ObsMM.class.getSimpleName());
-		ok.add(PrintBuffer.class.getSimpleName());
-		ok.add(ThreadFenetre.class.getSimpleName());
+		
+		Obstacle.set(log, getService(PrintBuffer.class));
+		Obstacle.useConfigStatic(config);
 		
 		startAllThreads();
 
@@ -269,7 +272,7 @@ public class Container implements Service
 		if(showGraph && !serviceTo.equals(Log.class) && showGraph && !serviceTo.equals(Container.class) && Service.class.isAssignableFrom(serviceTo) && (serviceFrom == null || Service.class.isAssignableFrom(serviceFrom)))
 		{
 			try {
-				if(ok.contains(serviceTo.getSimpleName()))
+				if(ok.contains(serviceTo))
 					fw.write(serviceTo.getSimpleName()+" [color=green3, style=filled];\n");
 				else
 					fw.write(serviceTo.getSimpleName()+";\n");
