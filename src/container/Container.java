@@ -228,6 +228,7 @@ public class Container implements Service
 			ok.add(Fenetre.class);
 			ok.add(MasqueManager.class);
 			ok.add(ThreadShutdown.class);
+			ok.add(CapteursProcess.class);
 		}
 		
 		Obstacle.set(log, getService(PrintBuffer.class));

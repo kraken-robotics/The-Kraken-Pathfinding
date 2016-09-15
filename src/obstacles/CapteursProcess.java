@@ -93,8 +93,7 @@ public class CapteursProcess implements Service {
 		    for(GameElementNames g: GameElementNames.values())
 		        if(g.obstacle.isProcheObstacle(positionRobot, rayonRobot))
 		        	table.setDone(g, Tribool.TRUE); // on est sûr de l'avoir shooté
-			
-			
+						
 			/**
 			 * Suppression des mesures qui sont hors-table ou qui voient un obstacle de table
 			 */

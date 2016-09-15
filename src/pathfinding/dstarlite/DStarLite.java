@@ -39,10 +39,8 @@ import graphic.printable.Couleur;
 /**
  * Recherche de chemin avec replanification rapide.
  * Fournit un chemin non courbe sous forme d'une ligne brisée.
- * En fait utilisé comme heuristique par ThetaStar.
- * N'est utilisé qu'avec le "vrai" robot. Pour la planification à plus long terme,
- * on utilise l'AStarCourbe sans DStarLite mais avec une heuristique toute simple.
- * En effet, un souci de cette implémentation est qu'elle ne peut travailler qu'avec le robot réel et ne prévoit rien.
+ * En fait utilisé comme heuristique par l'AStarCourbe
+ * N'est utilisé qu'avec le "vrai" robot et ne peut pas prendre en compte la disparition prochaine d'obstacle
  * @author pf
  *
  */
@@ -55,6 +53,19 @@ public class DStarLite implements Service
 	private PointDirigeManager pointDManager;
 	private boolean graphicDStarLite;
 
+	private DStarLiteNode[] memory = new DStarLiteNode[PointGridSpace.NB_POINTS];
+
+	private PriorityQueue<DStarLiteNode> openset = new PriorityQueue<DStarLiteNode>(PointGridSpace.NB_POINTS, new DStarLiteNodeComparator());
+	private int km;
+	private DStarLiteNode arrivee;
+	private DStarLiteNode depart;
+	private PointGridSpace lastDepart;
+	private long nbPF = 0;
+	private ArrayList<PointDirige> obstaclesConnus = new ArrayList<PointDirige>();
+	private Cle knew = new Cle();
+	private Cle tmp = new Cle();
+	private Cle kold = new Cle();
+
 	/**
 	 * Le comparateur de DStarLiteNode, utilisé par la PriorityQueue
 	 * @author pf
@@ -65,10 +76,12 @@ public class DStarLite implements Service
 		@Override
 		public int compare(DStarLiteNode arg0, DStarLiteNode arg1)
 		{
-			int out = (arg0.cle.first - arg1.cle.first) << 1;
-			if(arg0.cle.second > arg1.cle.second)
-				out++;
-			return out;
+			// Ordre lexico : on compare d'abord first, puis second
+			if(arg0.cle.first > arg1.cle.first)
+				return 1;
+			if(arg0.cle.first < arg1.cle.first)
+				return -1;
+			return (int) Math.signum(arg0.cle.second - arg1.cle.second);
 		}		
 	}
 	
@@ -87,22 +100,10 @@ public class DStarLite implements Service
 		for(int i = 0; i < PointGridSpace.NB_POINTS; i++)
 			memory[i] = new DStarLiteNode(pointManager.get(i));
 	}
-	
-	private DStarLiteNode[] memory = new DStarLiteNode[PointGridSpace.NB_POINTS];
-
-	private PriorityQueue<DStarLiteNode> openset = new PriorityQueue<DStarLiteNode>(PointGridSpace.NB_POINTS, new DStarLiteNodeComparator());
-	private int km;
-	private DStarLiteNode arrivee;
-	private DStarLiteNode depart;
-	private PointGridSpace lastDepart;
-	private long nbPF = 0;
-	private ArrayList<PointDirige> obstaclesConnus = new ArrayList<PointDirige>();
-	private Cle knew = new Cle();
-	private Cle inutile = new Cle();
-
+		
 	private final Cle calcKey(DStarLiteNode s, Cle copy)
 	{
-		copy.set(add(Math.min(s.g,s.rhs), distanceHeuristique(s.gridpoint), km),
+		copy.set(add(add(Math.min(s.g,s.rhs), distanceHeuristique(s.gridpoint)), km),
 				Math.min(s.g, s.rhs));
 		return copy;
 	}
@@ -114,21 +115,13 @@ public class DStarLite implements Service
 
 	private DStarLiteNode getFromMemory(PointGridSpace gridpoint)
 	{
+		// Il peut arriver qu'on sorte de la grille
 		if(gridpoint == null)
 			return null;
 		
 		DStarLiteNode out = memory[gridpoint.hashCode()];
+		out.update(nbPF);
 		
-		/**
-		 * Si ce point n'a pas encore été utilisé pour ce pathfinding, on l'initialise
-		 */
-		if(out.nbPF != nbPF)
-		{
-			out.g = Integer.MAX_VALUE;
-			out.rhs = Integer.MAX_VALUE;
-			out.done = false;
-			out.nbPF = nbPF;
-		}
 		return out;
 	}
 		
@@ -160,8 +153,7 @@ public class DStarLite implements Service
 	private void computeShortestPath() throws PathfindingException
 	{
 		DStarLiteNode u;
-		Cle kold = new Cle();
-		while(!openset.isEmpty() && ((u = openset.peek()).cle.isLesserThan(calcKey(depart, inutile)) || depart.rhs > depart.g))
+		while(!openset.isEmpty() && ((u = openset.peek()).cle.isLesserThan(calcKey(depart, tmp)) || depart.rhs > depart.g))
 		{
 			if(u.done)
 			{
@@ -451,7 +443,7 @@ public class DStarLite implements Service
 			}
 		}
 
-		return getFromMemory(gridpoint).rhs;
+		return getFromMemory(gridpoint).rhs; // TODO unité ?
 	}
 	
 	/**
@@ -465,20 +457,6 @@ public class DStarLite implements Service
 		if(a == Integer.MAX_VALUE || b  == Integer.MAX_VALUE)
 			return Integer.MAX_VALUE;
 		return a + b;
-	}
-
-	/**
-	 * Somme en faisant attention aux valeurs infinies
-	 * @param a
-	 * @param b
-	 * @param c
-	 * @return
-	 */
-	private final int add(int a, int b, int c)
-	{
-		if(a == Integer.MAX_VALUE || b  == Integer.MAX_VALUE || c  == Integer.MAX_VALUE)
-			return Integer.MAX_VALUE;
-		return a + b + c;
 	}
 	
 	/**

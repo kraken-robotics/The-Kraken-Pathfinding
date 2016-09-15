@@ -25,7 +25,7 @@ import pathfinding.dstarlite.gridspace.PointGridSpace;
  *
  */
 
-public class DStarLiteNode {
+class DStarLiteNode {
 
 	public final PointGridSpace gridpoint;
 	public Cle cle = new Cle();
@@ -60,6 +60,21 @@ public class DStarLiteNode {
 		int x = gridpoint.x;
 		int y = gridpoint.y;
 		return x+" "+y+" ("+cle+")";
+	}
+
+	/**
+	 * Initialisation du nœud s'il n'a pas encore été utilisé pour ce pathfinding
+	 * @param nbPF
+	 */
+	public void update(long nbPF)
+	{
+		if(this.nbPF != nbPF)
+		{
+			g = Integer.MAX_VALUE;
+			rhs = Integer.MAX_VALUE;
+			done = false;
+			this.nbPF = nbPF;
+		}
 	}
 	
 }
