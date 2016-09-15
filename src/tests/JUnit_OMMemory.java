@@ -21,6 +21,7 @@ import obstacles.memory.ObstaclesIteratorPresent;
 import obstacles.memory.ObstaclesMemory;
 import obstacles.types.Obstacle;
 import obstacles.types.ObstacleProximity;
+import pathfinding.dstarlite.gridspace.Masque;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -59,7 +60,7 @@ public class JUnit_OMMemory extends JUnit_Test {
     	Field f = Obstacle.class.getDeclaredField("position");
     	f.setAccessible(true);
 
-    	Method m = ObstaclesMemory.class.getDeclaredMethod("add", Vec2RO.class, long.class, ArrayList.class);
+    	Method m = ObstaclesMemory.class.getDeclaredMethod("add", Vec2RO.class, long.class, Masque.class);
     	m.setAccessible(true);
     	
     	int peremption = config.getInt(ConfigInfo.DUREE_PEREMPTION_OBSTACLES);

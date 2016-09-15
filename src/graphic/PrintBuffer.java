@@ -24,6 +24,9 @@ import robot.RobotReal;
 import utils.Config;
 import utils.Log;
 import container.Service;
+import graphic.printable.Layer;
+import graphic.printable.Printable;
+import obstacles.types.ObstacleProximity;
 
 /**
  * Buffer de ce qu'il faut afficher
@@ -98,6 +101,16 @@ public class PrintBuffer implements Service
 			for(Printable p : elementsAffichables.get(i))
 				p.print(g, f, robot);
 		}
+	}
+
+	public synchronized void removeSupprimable(ObstacleProximity o)
+	{
+		for(int i = 0 ; i < Layer.values().length; i++)
+			if(elementsAffichablesSupprimables.remove(o))
+			{
+				notify();
+				break;
+			}
 	}
 	
 }

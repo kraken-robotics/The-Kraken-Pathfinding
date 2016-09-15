@@ -21,7 +21,11 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 
 import container.Service;
+import graphic.printable.BackgroundImage;
+import graphic.printable.Couleur;
 import obstacles.memory.ObstaclesIteratorPresent;
+import obstacles.types.ObstacleProximity;
+import pathfinding.dstarlite.gridspace.GridSpace;
 import robot.RobotReal;
 import utils.Config;
 import utils.ConfigInfo;
@@ -53,28 +57,23 @@ public class Fenetre extends JPanel implements Service {
 	
 	private boolean afficheFond;
 	private int sizeX = 450, sizeY = 300;
-	private Image image;
 	private JFrame frame;
 	private WindowExit exit = new WindowExit();
 		
-	private ObstaclesIteratorPresent iterator;
-
-	private boolean printObsCapteurs = false;
-    
 	private RobotReal robot;
 	private boolean needInit = true;
 	
-	public Fenetre(Log log, ObstaclesIteratorPresent iterator, RobotReal robot, PrintBuffer buffer)
+	public Fenetre(Log log, RobotReal robot, PrintBuffer buffer)
 	{
 		this.log = log;
-		this.iterator = iterator;
 		this.robot = robot;
 		this.buffer = buffer;
 	}
 	
 	private class WindowExit extends WindowAdapter
 	{		
-		public boolean alreadyExited = false;
+		public volatile boolean alreadyExited = false;
+		
         @Override
         public synchronized void windowClosing(WindowEvent e) {
             notify();
@@ -89,12 +88,17 @@ public class Fenetre extends JPanel implements Service {
 	private void init()
 	{
 		needInit = false;
-		try {
-			image = ImageIO.read(new File("minitable2016.png"));
-			sizeX = image.getWidth(this);
-			sizeY = image.getHeight(this);
-		} catch (IOException e) {
-			e.printStackTrace();
+		
+		if(afficheFond)
+		{
+			try {
+				Image image = ImageIO.read(new File("minitable2016.png"));
+				sizeX = image.getWidth(this);
+				sizeY = image.getHeight(this);
+				buffer.add(new BackgroundImage(image));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 
 		showOnFrame();
@@ -126,23 +130,7 @@ public class Fenetre extends JPanel implements Service {
 	{
 		super.paintComponent(g);
 
-		if(afficheFond)
-			g.drawImage(image, 0, 0, this);
-		else
-			g.clearRect(0, 0, sizeX, sizeY);
-
-		/**
-		 * Affichage des obstacles de proximité en gris
-		 */
-		if(printObsCapteurs)
-		{
-			g.setColor(Couleur.GRIS.couleur);
-			iterator.reinit();
-			while(iterator.hasNext())				
-				iterator.next().print(g, this, robot);
-		}		
-
-		g.setColor(Couleur.NOIR.couleur);
+		g.clearRect(0, 0, sizeX, sizeY);
 
 		buffer.print(g, this, robot);
 	}
@@ -172,7 +160,6 @@ public class Fenetre extends JPanel implements Service {
 	@Override
 	public void useConfig(Config config)
 	{
-		printObsCapteurs = config.getBoolean(ConfigInfo.GRAPHIC_PROXIMITY_OBSTACLES);
 		afficheFond = config.getBoolean(ConfigInfo.GRAPHIC_BACKGROUND);
 	}
 		

@@ -27,6 +27,7 @@ import org.junit.Test;
 
 import pathfinding.dstarlite.gridspace.Direction;
 import pathfinding.dstarlite.gridspace.GridSpace;
+import pathfinding.dstarlite.gridspace.PointDirige;
 import pathfinding.dstarlite.gridspace.PointDirigeManager;
 import pathfinding.dstarlite.gridspace.PointGridSpace;
 import pathfinding.dstarlite.gridspace.PointGridSpaceManager;
@@ -112,36 +113,36 @@ public class JUnit_GridSpace extends JUnit_Test {
 	{
     	int peremption = config.getInt(ConfigInfo.DUREE_PEREMPTION_OBSTACLES);
 		Assert.assertTrue(gridspace.getCurrentObstacles().isEmpty());
-		ArrayList<ObstacleProximity>[] b = gridspace.getOldAndNewObstacles();
-		Assert.assertTrue(b[0].isEmpty());
-		Assert.assertTrue(b[1].isEmpty());
+		ArrayList<ArrayList<PointDirige>> b = gridspace.getOldAndNewObstacles();
+		Assert.assertTrue(b.get(0).isEmpty());
+		Assert.assertTrue(b.get(1).isEmpty());
 		gridspace.addObstacleAndRemoveNearbyObstacles(new Vec2RO(200, 100));
 		b = gridspace.getOldAndNewObstacles();
-		Assert.assertTrue(b[0].isEmpty());
-		Assert.assertTrue(!b[1].isEmpty());
+		Assert.assertTrue(b.get(0).isEmpty());
+		Assert.assertTrue(!b.get(1).isEmpty());
 		gridspace.addObstacleAndRemoveNearbyObstacles(new Vec2RO(210, 100));
 		b = gridspace.getOldAndNewObstacles();
-		Assert.assertEquals(b[0].size(), 1); // on a supprimé l'autre qui était trop proche
-		Assert.assertEquals(b[1].size(), 1);
+		Assert.assertEquals(b.get(0).size(), 1); // on a supprimé l'autre qui était trop proche
+		Assert.assertEquals(b.get(1).size(), 1);
 		gridspace.addObstacleAndRemoveNearbyObstacles(new Vec2RO(400, 100));
 		b = gridspace.getOldAndNewObstacles();
-		Assert.assertTrue(b[0].isEmpty());
-		Assert.assertTrue(!b[1].isEmpty());
+		Assert.assertTrue(b.get(0).isEmpty());
+		Assert.assertTrue(!b.get(1).isEmpty());
 		b = gridspace.getOldAndNewObstacles();
-		Assert.assertTrue(b[0].isEmpty());
-		Assert.assertTrue(b[1].isEmpty());
+		Assert.assertTrue(b.get(0).isEmpty());
+		Assert.assertTrue(b.get(1).isEmpty());
 		Thread.sleep(peremption+10);
 		log.debug("Ça commence");
 		b = gridspace.getOldAndNewObstacles();
-		log.debug("Old : ");
-		for(ObstacleProximity o : b[0])
+/*		log.debug("Old : ");
+		for(ObstacleProximity o : b.get(0))
 			log.debug(o.getDeathDate());
 		log.debug("New : ");
-		for(ObstacleProximity o : b[1])
-			log.debug(o.getDeathDate());
+		for(ObstacleProximity o : b.get(1))
+			log.debug(o.getDeathDate());*/
 
-		Assert.assertTrue(!b[0].isEmpty());
-		Assert.assertTrue(b[1].isEmpty());
+		Assert.assertTrue(!b.get(0).isEmpty());
+		Assert.assertTrue(b.get(1).isEmpty());
 	}
 
 }

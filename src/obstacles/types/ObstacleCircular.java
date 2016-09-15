@@ -20,7 +20,7 @@ package obstacles.types;
 import java.awt.Graphics;
 
 import graphic.Fenetre;
-import graphic.Layer;
+import graphic.printable.Layer;
 import robot.RobotReal;
 import utils.Vec2RO;
 

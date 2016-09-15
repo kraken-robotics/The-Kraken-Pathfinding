@@ -15,7 +15,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>
 */
 
-package graphic;
+package graphic.printable;
 
 /**
  * Les couches d'affichage
@@ -25,6 +25,7 @@ package graphic;
 
 public enum Layer {
 	// L'affichage se fait du premier au dernier (l'ordre est donc important)
+	IMAGE_BACKGROUND,
 	BACKGROUND,
 	MIDDLE,
 	FOREGROUND;

@@ -15,29 +15,42 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>
 */
 
-package graphic;
+package graphic.printable;
 
 import java.awt.Graphics;
 
+import graphic.Fenetre;
 import robot.RobotReal;
+import utils.Vec2RO;
 
 /**
- * Élément affichable
+ * Un segment affichable
  * @author pf
  *
  */
 
-public interface Printable
+public class Segment implements Printable
 {
-	/**
-	 * Affiche cet objet
-	 * @param g
-	 */
-	public void print(Graphics g, Fenetre f, RobotReal robot);
-	
-	/**
-	 * Récupère le layer sur lequel afficher l'objet
-	 * @return
-	 */
-	public Layer getLayer();
+	private Vec2RO a, b;
+	private Layer l;
+
+	public Segment(Vec2RO a, Vec2RO b, Layer l)
+	{
+		this.a = a;
+		this.b = b;
+		this.l = l;
+	}
+
+	@Override
+	public void print(Graphics g, Fenetre f, RobotReal robot)
+	{
+		g.drawLine(f.XtoWindow(a.getX()), f.YtoWindow(a.getY()), f.XtoWindow(b.getX()), f.YtoWindow(b.getY()));
+	}
+
+	@Override
+	public Layer getLayer()
+	{
+		return l;
+	}
+
 }

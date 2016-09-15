@@ -17,7 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 package obstacles;
 
-import graphic.Layer;
+import graphic.printable.Layer;
 import obstacles.types.Obstacle;
 import obstacles.types.ObstacleRectangular;
 import utils.Vec2RO;

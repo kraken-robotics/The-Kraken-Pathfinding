@@ -24,8 +24,8 @@ import java.awt.Graphics;
 
 import container.Service;
 import graphic.Fenetre;
-import graphic.Layer;
-import graphic.Printable;
+import graphic.printable.Layer;
+import graphic.printable.Printable;
 import robot.RobotReal;
 
 /**

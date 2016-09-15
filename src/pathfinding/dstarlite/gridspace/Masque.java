@@ -15,41 +15,42 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>
 */
 
-package graphic;
+package pathfinding.dstarlite.gridspace;
 
 import java.awt.Graphics;
+import java.util.ArrayList;
 
+import graphic.Fenetre;
+import graphic.printable.Layer;
+import graphic.printable.Printable;
 import robot.RobotReal;
-import utils.Vec2RO;
 
 /**
- * Un segment affichable
+ * Le masque d'un obstacle de proximité
  * @author pf
  *
  */
 
-public class Segment implements Printable
+public class Masque implements Printable
 {
-	private Vec2RO a, b;
-	private Layer l;
-
-	public Segment(Vec2RO a, Vec2RO b, Layer l)
+	public ArrayList<PointDirige> masque = new ArrayList<PointDirige>();
+	
+	public Masque(ArrayList<PointDirige> masque)
 	{
-		this.a = a;
-		this.b = b;
-		this.l = l;
+		this.masque = masque;
 	}
 
 	@Override
 	public void print(Graphics g, Fenetre f, RobotReal robot)
 	{
-		g.drawLine(f.XtoWindow(a.getX()), f.YtoWindow(a.getY()), f.XtoWindow(b.getX()), f.YtoWindow(b.getY()));
+		for(PointDirige p : masque)
+			p.point.print(g, f, robot);
 	}
 
 	@Override
 	public Layer getLayer()
 	{
-		return l;
+		return Layer.MIDDLE;
 	}
-
+	
 }

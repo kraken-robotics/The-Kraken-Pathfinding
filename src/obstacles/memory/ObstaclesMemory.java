@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 
 import obstacles.types.ObstacleProximity;
+import pathfinding.dstarlite.gridspace.Masque;
 import pathfinding.dstarlite.gridspace.PointDirige;
 import utils.Config;
 import utils.ConfigInfo;
@@ -54,12 +55,12 @@ public class ObstaclesMemory implements Service
 		this.log = log;
 	}
 
-	public synchronized ObstacleProximity add(Vec2RO position, ArrayList<PointDirige> masque)
+	public synchronized ObstacleProximity add(Vec2RO position, Masque masque)
 	{
 		return add(position, System.currentTimeMillis(), masque);
 	}
 
-	private synchronized ObstacleProximity add(Vec2RO position, long date, ArrayList<PointDirige> masque)
+	private synchronized ObstacleProximity add(Vec2RO position, long date, Masque masque)
 	{
         ObstacleProximity obstacle = new ObstacleProximity(position, rayonEnnemi, date+dureeAvantPeremption, masque);
         listObstaclesMobiles.add(obstacle);

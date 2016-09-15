@@ -19,6 +19,7 @@ package obstacles.types;
 
 import java.util.ArrayList;
 
+import pathfinding.dstarlite.gridspace.Masque;
 import pathfinding.dstarlite.gridspace.PointDirige;
 import utils.Vec2RO;
 
@@ -29,16 +30,16 @@ import utils.Vec2RO;
 public class ObstacleProximity extends ObstacleCircular
 {
 	private long death_date;
-	private ArrayList<PointDirige> masque;
+	private Masque masque;
 	
-	public ObstacleProximity(Vec2RO position, int rad, long death_date, ArrayList<PointDirige> masque)
+	public ObstacleProximity(Vec2RO position, int rad, long death_date, Masque masque)
 	{
 		super(position,rad);
 		this.death_date = death_date;
 		this.masque = masque;
 	}
 
-	public ArrayList<PointDirige> getMasque()
+	public Masque getMasque()
 	{
 		return masque;
 	}

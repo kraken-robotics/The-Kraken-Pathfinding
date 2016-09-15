@@ -21,8 +21,8 @@ import java.awt.Color;
 import java.awt.Graphics;
 
 import graphic.Fenetre;
-import graphic.Layer;
-import graphic.Printable;
+import graphic.printable.Layer;
+import graphic.printable.Printable;
 import robot.RobotReal;
 import utils.Vec2RO;
 import utils.Vec2RW;

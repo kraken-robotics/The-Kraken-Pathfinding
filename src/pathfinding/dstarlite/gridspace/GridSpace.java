@@ -17,11 +17,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 package pathfinding.dstarlite.gridspace;
 
-import graphic.Couleur;
 import graphic.Fenetre;
-import graphic.Layer;
 import graphic.PrintBuffer;
-import graphic.Printable;
+import graphic.printable.Couleur;
+import graphic.printable.Layer;
+import graphic.printable.Printable;
 
 import java.awt.Graphics;
 import java.util.ArrayList;
@@ -53,29 +53,27 @@ public class GridSpace implements Service, Printable
 	private ObstaclesIteratorPresent iteratorRemoveNearby;
 	private ObstaclesMemory obstaclesMemory;
 	private PointGridSpaceManager pointManager;
-	private PointDirigeManager pointDManager;
+	private MasqueManager masquemanager;
 	private PrintBuffer buffer;
 
 	private int distanceMinimaleEntreProximite;
-	private int rayonRobot;
+	private boolean printObsCapteurs;
 	
 	// cette grille est constante, c'est-à-dire qu'elle ne contient que les obstacles fixes
 	private BitSet grilleStatique = new BitSet(PointGridSpace.NB_POINTS);
 	private Couleur[] grid = new Couleur[PointGridSpace.NB_POINTS];
 
-	private ArrayList<PointDirige> masque = new ArrayList<PointDirige>();
-	private int centreMasque;
 	private long deathDateLastObstacle;
 	
-	public GridSpace(Log log, ObstaclesIteratorPresent iteratorDStarLite, ObstaclesIteratorPresent iteratorRemoveNearby, ObstaclesMemory obstaclesMemory, PointGridSpaceManager pointManager, PointDirigeManager pointDManager, PrintBuffer buffer)
+	public GridSpace(Log log, ObstaclesIteratorPresent iteratorDStarLite, ObstaclesIteratorPresent iteratorRemoveNearby, ObstaclesMemory obstaclesMemory, PointGridSpaceManager pointManager, PrintBuffer buffer, MasqueManager masquemanager)
 	{
 		this.obstaclesMemory = obstaclesMemory;
 		this.log = log;
 		this.pointManager = pointManager;
-		this.pointDManager = pointDManager;
 		this.iteratorDStarLite = iteratorDStarLite;
 		this.iteratorRemoveNearby = iteratorRemoveNearby;
 		this.buffer = buffer;
+		this.masquemanager = masquemanager;
 	}
 	
 
@@ -83,21 +81,7 @@ public class GridSpace implements Service, Printable
 	public void useConfig(Config config)
 	{
 		distanceMinimaleEntreProximite = config.getInt(ConfigInfo.DISTANCE_BETWEEN_PROXIMITY_OBSTACLES);
-		rayonRobot = config.getInt(ConfigInfo.RAYON_ROBOT);
-		int rayonEnnemi = config.getInt(ConfigInfo.RAYON_ROBOT_ADVERSE);
-		int rayonPoint = (int) Math.round((rayonEnnemi + rayonRobot) / PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS);
-		int tailleMasque = 2*(rayonPoint+1)+1;
-		int squaredRayonPoint = rayonPoint * rayonPoint;
-		centreMasque = tailleMasque / 2;
-		for(int i = 0; i < tailleMasque; i++)
-			for(int j = 0; j < tailleMasque; j++)
-				if((i-centreMasque) * (i-centreMasque) + (j-centreMasque) * (j-centreMasque) > squaredRayonPoint)
-					for(Direction d : Direction.values())
-					{
-						int i2 = i + d.deltaX, j2 = j + d.deltaY;
-						if((i2-centreMasque) * (i2-centreMasque) + (j2-centreMasque) * (j2-centreMasque) <= squaredRayonPoint)
-							masque.add(pointDManager.get(j,i,d));
-					}
+		printObsCapteurs = config.getBoolean(ConfigInfo.GRAPHIC_PROXIMITY_OBSTACLES);
 		
 		// on ajoute les obstacles fixes une fois pour toute si c'est demandé
 		if(config.getBoolean(ConfigInfo.GRAPHIC_FIXED_OBSTACLES))
@@ -161,24 +145,6 @@ public class GridSpace implements Service, Printable
 	}
 
 	/**
-	 * Ajoute le contour d'un obstacle de proximité dans la grille dynamique
-	 * @param o
-	 */
-	private ArrayList<PointDirige> getMasqueObstacle(Vec2RO position)
-	{
-		PointGridSpace p = pointManager.get(position);
-		ArrayList<PointDirige> out = new ArrayList<PointDirige>();
-		
-		for(PointDirige c : masque)
-		{
-			PointDirige point = pointDManager.get(pointManager.get(c.point.x + p.x - centreMasque, c.point.y + p.y - centreMasque), c.dir);
-			if(point != null)
-				out.add(point);
-		}
-		return out;
-	}
-
-	/**
 	 * Supprime les anciens obstacles et notifie si changement
 	 */
 	public synchronized void deleteOldObstacles()
@@ -210,7 +176,7 @@ public class GridSpace implements Service, Printable
 		{
 			o = iteratorDStarLite.next();
 //			log.debug("Ajout d'un obstacle au début du dstarlite");
-			out.addAll(o.getMasque());
+			out.addAll(o.getMasque().masque);
 		}
 		if(o != null)
 			deathDateLastObstacle = o.getDeathDate();
@@ -223,20 +189,19 @@ public class GridSpace implements Service, Printable
 	/**
 	 * Retourne les obstacles à supprimer (indice 0) et ceux à ajouter (indice 1) dans le DStarLite
 	 */
-	public ArrayList<ObstacleProximity>[] getOldAndNewObstacles()
+	public ArrayList<ArrayList<PointDirige>> getOldAndNewObstacles()
 	{
 		synchronized(obstaclesMemory)
 		{
-			@SuppressWarnings("unchecked")
-			ArrayList<ObstacleProximity>[] out = new ArrayList[2];
-			out[0] = new ArrayList<ObstacleProximity>();
-			out[1] = new ArrayList<ObstacleProximity>();
+			ArrayList<ArrayList<PointDirige>> out = new ArrayList<ArrayList<PointDirige>>();
+			out.add(new ArrayList<PointDirige>());
+			out.add(new ArrayList<PointDirige>());
 	
 			while(iteratorDStarLite.hasNextDead())
-				out[0].add(iteratorDStarLite.next());
+				out.get(0).addAll(iteratorDStarLite.next().getMasque().masque);
 			ObstacleProximity p;
 			while((p = obstaclesMemory.pollMortTot()) != null)
-				out[0].add(p);
+				out.get(0).addAll(p.getMasque().masque);
 	
 			long tmp = deathDateLastObstacle;
 			while(iteratorDStarLite.hasNext())
@@ -246,7 +211,7 @@ public class GridSpace implements Service, Printable
 				if(deathDate > deathDateLastObstacle)
 				{
 					tmp = deathDate;
-					out[1].add(o);
+					out.get(1).addAll(o.getMasque().masque);
 				}
 			}
 			deathDateLastObstacle = tmp;
@@ -269,15 +234,22 @@ public class GridSpace implements Service, Printable
     {
     	iteratorRemoveNearby.reinit();
     	while(iteratorRemoveNearby.hasNext())
-        	if(iteratorRemoveNearby.next().isProcheCentre(position, distanceMinimaleEntreProximite))
+    	{
+    		ObstacleProximity o = iteratorRemoveNearby.next();
+        	if(o.isProcheCentre(position, distanceMinimaleEntreProximite))
+        	{
         		iteratorRemoveNearby.remove();
+        		if(printObsCapteurs)
+        			buffer.removeSupprimable(o);
+        	}
+    	}
 
-    	ArrayList<PointDirige> masque = getMasqueObstacle(position);
+    	Masque masque = masquemanager.getMasque(position);
 		ObstacleProximity o = obstaclesMemory.add(position, masque);
+		
 		// pour un ajout, pas besoin de tout régénérer
 		return o;
     }
-
 
 	@Override
 	public void print(Graphics g, Fenetre f, RobotReal robot)
@@ -312,5 +284,5 @@ public class GridSpace implements Service, Printable
 	{
 		return Layer.FOREGROUND;
 	}
-
+	
 }

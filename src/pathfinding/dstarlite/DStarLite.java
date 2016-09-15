@@ -24,6 +24,7 @@ import java.util.PriorityQueue;
 import obstacles.types.ObstacleProximity;
 import pathfinding.dstarlite.gridspace.Direction;
 import pathfinding.dstarlite.gridspace.GridSpace;
+import pathfinding.dstarlite.gridspace.Masque;
 import pathfinding.dstarlite.gridspace.PointDirige;
 import pathfinding.dstarlite.gridspace.PointDirigeManager;
 import pathfinding.dstarlite.gridspace.PointGridSpace;
@@ -35,7 +36,7 @@ import utils.Log;
 import utils.Vec2RO;
 import container.Service;
 import exceptions.PathfindingException;
-import graphic.Couleur;
+import graphic.printable.Couleur;
 
 /**
  * Recherche de chemin avec replanification rapide.
@@ -333,60 +334,53 @@ public class DStarLite implements Service
 			gridspace.reinitgrid();
 
 		updateGoal(positionRobot);
-		ArrayList<ObstacleProximity>[] obs = gridspace.getOldAndNewObstacles();
+		ArrayList<ArrayList<PointDirige>> obs = gridspace.getOldAndNewObstacles();
 		
-		for(ObstacleProximity o : obs[0])
+		for(PointDirige i : obs.get(0))
 		{
 //			log.debug("Retrait de "+o);
-			for(PointDirige i : o.getMasque())
+			obstaclesConnus.remove(i);
+			if(!obstaclesConnus.contains(i))
 			{
-				obstaclesConnus.remove(i);
-				if(!obstaclesConnus.contains(i))
-				{
-					// Retrait d'un obstacle. Le coût va donc diminuer.
-					PointGridSpace upoint = i.point;
-					DStarLiteNode u = getFromMemory(upoint);
-					Direction dir = i.dir;
-					DStarLiteNode v = getFromMemory(pointManager.getGridPointVoisin(upoint,dir));
-					
-					if(v == null) // TODO
-						continue;
+				// Retrait d'un obstacle. Le coût va donc diminuer.
+				PointGridSpace upoint = i.point;
+				DStarLiteNode u = getFromMemory(upoint);
+				Direction dir = i.dir;
+				DStarLiteNode v = getFromMemory(pointManager.getGridPointVoisin(upoint,dir));
+				
+				if(v == null) // TODO
+					continue;
 
-					u.rhs = Math.min(u.rhs, add(v.g, gridspace.distanceStatique(pointDManager.get(upoint, dir))));
-					updateVertex(u);
-				}
+				u.rhs = Math.min(u.rhs, add(v.g, gridspace.distanceStatique(pointDManager.get(upoint, dir))));
+				updateVertex(u);
 			}
 		}
-		for(ObstacleProximity o : obs[1])
+		for(PointDirige i : obs.get(1))
 		{
 //			log.debug("Ajout de "+o);
-			for(PointDirige i : o.getMasque())
+			if(!obstaclesConnus.contains(i))
 			{
-				if(!obstaclesConnus.contains(i))
+				obstaclesConnus.add(i);
+				// Ajout d'un obstacle
+				PointGridSpace upoint = i.point;
+				DStarLiteNode u = getFromMemory(upoint);
+				Direction dir = i.dir;
+				DStarLiteNode v = getFromMemory(pointManager.getGridPointVoisin(upoint,dir));
+
+				if(v == null) // TODO
+					continue;
+				
+				// l'ancienne distance est la distance statique car c'est un ajout d'obstacle
+				if(u.rhs == add(gridspace.distanceStatique(pointDManager.get(upoint, dir)), v.g) && !u.equals(arrivee))
 				{
-					obstaclesConnus.add(i);
-					// Ajout d'un obstacle
-					PointGridSpace upoint = i.point;
-					DStarLiteNode u = getFromMemory(upoint);
-					Direction dir = i.dir;
-					DStarLiteNode v = getFromMemory(pointManager.getGridPointVoisin(upoint,dir));
-
-					if(v == null) // TODO
-						continue;
-					
-					// l'ancienne distance est la distance statique car c'est un ajout d'obstacle
-					if(u.rhs == add(gridspace.distanceStatique(pointDManager.get(upoint, dir)), v.g) && !u.equals(arrivee))
-					{
-						u.rhs = Integer.MAX_VALUE;
-						for(Direction voisin : Direction.values())
-							u.rhs = Math.min(u.rhs, add(distanceDynamiqueSucc(u.gridpoint, voisin), getFromMemory(pointManager.getGridPointVoisin(u.gridpoint,i.dir)).g));
-					}
-					updateVertex(u);
+					u.rhs = Integer.MAX_VALUE;
+					for(Direction voisin : Direction.values())
+						u.rhs = Math.min(u.rhs, add(distanceDynamiqueSucc(u.gridpoint, voisin), getFromMemory(pointManager.getGridPointVoisin(u.gridpoint,i.dir)).g));
 				}
-				else
-					obstaclesConnus.add(i);
-
+				updateVertex(u);
 			}
+			else
+				obstaclesConnus.add(i);
 		}
 		if(graphicDStarLite)
 			for(PointDirige i : obstaclesConnus)

@@ -20,7 +20,7 @@ package obstacles.types;
 import java.awt.Graphics;
 
 import graphic.Fenetre;
-import graphic.Layer;
+import graphic.printable.Layer;
 import memory.Memorizable;
 import robot.RobotChrono;
 import robot.RobotReal;
