@@ -71,6 +71,7 @@ public abstract class Obstacle implements Printable
 	 */
 	public Obstacle(Vec2RO position)
 	{
+		l = Layer.MIDDLE;
 		if(position != null)
 		{
 			this.position = position.clone();
@@ -79,7 +80,6 @@ public abstract class Obstacle implements Printable
 		}
 		else
 			this.position = null;
-		l = Layer.MIDDLE;
 	}
 	
 	@Override

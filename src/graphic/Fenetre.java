@@ -134,10 +134,9 @@ public class Fenetre extends JPanel implements Service {
 		/**
 		 * Affichage des obstacles de proximité en gris
 		 */
-		g.setColor(Couleur.GRIS.couleur);
-
 		if(printObsCapteurs)
 		{
+			g.setColor(Couleur.GRIS.couleur);
 			iterator.reinit();
 			while(iterator.hasNext())				
 				iterator.next().print(g, this, robot);

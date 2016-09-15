@@ -32,7 +32,8 @@ public enum Couleur {
 	BLEU(new Color(0, 0, 200, 255)),
 	JAUNE(new Color(200, 200, 0, 255)),
 	ROUGE(new Color(200, 0, 0, 255)),
-	VIOLET(new Color(200, 0, 200, 255));
+	VIOLET(new Color(200, 0, 200, 255)),
+	VERT(new Color(0, 200, 0, 255));
 	
 	public final Color couleur;
 	

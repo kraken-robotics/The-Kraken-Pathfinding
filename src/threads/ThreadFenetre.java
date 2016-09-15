@@ -63,6 +63,7 @@ public class ThreadFenetre extends ThreadService
 				{
 					buffer.wait();
 				}
+				Thread.sleep(200); // on ne met pas à jour plus souvent que toutes les 200ms
 				
 				fenetre.refresh();
 			}

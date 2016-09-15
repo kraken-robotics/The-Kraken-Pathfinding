@@ -19,10 +19,14 @@ package tests;
 
 import obstacles.types.ObstacleRectangular;
 
+import java.util.ArrayList;
+import java.util.Random;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import exceptions.PathfindingException;
 import graphic.PrintBuffer;
 import pathfinding.VitesseCourbure;
 import pathfinding.astarCourbe.arcs.ArcCourbeClotho;
@@ -33,6 +37,7 @@ import pathfinding.dstarlite.gridspace.GridSpace;
 import robot.Cinematique;
 import robot.RobotChrono;
 import robot.Speed;
+import utils.ConfigInfo;
 import utils.Vec2RO;
 
 /**
@@ -167,18 +172,39 @@ public class JUnit_Pathfinding extends JUnit_Test {
 		pathfinding.computeNewPath(new Vec2RO(-1000, 200), new Vec2RO(1200, 1200));
 		pathfinding.itineraireBrut();		
 		Thread.sleep(500);
-		buffer.clearSupprimables();
-		gridspace.reinitgrid();
 		log.debug("RECALCUL");
 		gridspace.addObstacleAndRemoveNearbyObstacles(new Vec2RO(600, 1300));
 		pathfinding.updatePath(new Vec2RO(600,1300));
 		pathfinding.itineraireBrut();
 		Thread.sleep(4000);
-		buffer.clearSupprimables();
-		gridspace.reinitgrid();
 		pathfinding.updatePath(new Vec2RO(-800,1300));
 		pathfinding.itineraireBrut();
 		log.debug("RECALCUL");
     }
 
+	@Test(expected = PathfindingException.class)
+    public void test_chemin_impossible() throws Exception
+    {
+		gridspace.addObstacleAndRemoveNearbyObstacles(new Vec2RO(1200, 1200));
+		pathfinding.computeNewPath(new Vec2RO(-1000, 200), new Vec2RO(1200, 1200));
+    }
+	
+	@Test
+    public void test_simulation_pathfinding() throws Exception
+    {
+		Vec2RO posRobot = new Vec2RO(-1200, 200);
+		pathfinding.computeNewPath(posRobot, new Vec2RO(1200, 1800));
+		ArrayList<Vec2RO> chemin = pathfinding.itineraireBrut();
+		
+		int n = 3;
+		for(int i = 0; i < 2; i++)
+//		while(n+7 < chemin.size())
+		{
+			Thread.sleep(1000);
+			posRobot = chemin.get(n);
+			gridspace.addObstacleAndRemoveNearbyObstacles(chemin.get(n+7));
+			pathfinding.updatePath(posRobot);
+			chemin = pathfinding.itineraireBrut();
+		}
+    }
 }

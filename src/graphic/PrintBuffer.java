@@ -33,21 +33,19 @@ import container.Service;
 
 public class PrintBuffer implements Service
 {	
-	@SuppressWarnings("unchecked")
-	private ArrayList<Printable>[] elementsAffichablesSupprimables = (ArrayList<Printable>[]) new ArrayList[Layer.values().length];
-	@SuppressWarnings("unchecked")
-	private ArrayList<Printable>[] elementsAffichables = (ArrayList<Printable>[]) new ArrayList[Layer.values().length];
+	private ArrayList<ArrayList<Printable>> elementsAffichablesSupprimables = new ArrayList<ArrayList<Printable>>();
+	private ArrayList<ArrayList<Printable>> elementsAffichables = new ArrayList<ArrayList<Printable>>();
 
 	protected Log log;
 	
 	public PrintBuffer(Log log)
 	{
 		this.log = log;
-		for(int i = 0 ; i < elementsAffichablesSupprimables.length; i++)
-			elementsAffichablesSupprimables[i] = new ArrayList<Printable>();
-
-		for(int i = 0 ; i < elementsAffichables.length; i++)
-			elementsAffichables[i] = new ArrayList<Printable>();
+		for(int i = 0 ; i < Layer.values().length; i++)
+		{
+			elementsAffichablesSupprimables.add(new ArrayList<Printable>());
+			elementsAffichables.add(new ArrayList<Printable>());
+		}
 	}
 
 	/**
@@ -56,18 +54,18 @@ public class PrintBuffer implements Service
 	 */
 	public synchronized void clearSupprimables()
 	{
-		for(int i = 0 ; i < elementsAffichablesSupprimables.length; i++)
-			elementsAffichablesSupprimables[i].clear();
+		for(int i = 0 ; i < Layer.values().length; i++)
+			elementsAffichablesSupprimables.get(i).clear();
 		notify();
 	}
-	
+
 	/**
 	 * Ajoute un obstacle
 	 * @param o
 	 */
 	public synchronized void addSupprimable(Printable o)
 	{
-		elementsAffichablesSupprimables[o.getLayer().ordinal()].add(o);
+		elementsAffichablesSupprimables.get(o.getLayer().ordinal()).add(o);
 		notify();
 	}
 
@@ -77,7 +75,7 @@ public class PrintBuffer implements Service
 	 */
 	public synchronized void add(Printable o)
 	{
-		elementsAffichables[o.getLayer().ordinal()].add(o);
+		elementsAffichables.get(o.getLayer().ordinal()).add(o);
 		notify();
 	}
 
@@ -94,10 +92,10 @@ public class PrintBuffer implements Service
 	{
 		for(int i = 0 ; i < Layer.values().length; i++)
 		{
-			for(Printable p : elementsAffichablesSupprimables[i])
+			for(Printable p : elementsAffichablesSupprimables.get(i))
 				p.print(g, f, robot);
 
-			for(Printable p : elementsAffichables[i])
+			for(Printable p : elementsAffichables.get(i))
 				p.print(g, f, robot);
 		}
 	}

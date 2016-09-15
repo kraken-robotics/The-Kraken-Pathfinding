@@ -288,6 +288,7 @@ public class GridSpace implements Service, Printable
 				g.setColor(grid[i].couleur);
 				pointManager.get(i).print(g, f, robot);
 			}
+		g.setColor(Couleur.NOIR.couleur);
 	}
 
 	/**
@@ -297,11 +298,12 @@ public class GridSpace implements Service, Printable
 	 */
 	public void setColor(PointGridSpace gridpoint, Couleur couleur)
 	{
-		synchronized(buffer)
-		{
-			grid[gridpoint.hashcode] = couleur;
-			buffer.notify();
-		}
+		if(gridpoint != null)
+			synchronized(buffer)
+			{
+				grid[gridpoint.hashcode] = couleur;
+				buffer.notify();
+			}
 	}
 
 

@@ -227,6 +227,8 @@ public class Container implements Service
 		ok.add(GridSpace.class.getSimpleName());
 		ok.add(NodeMM.class.getSimpleName());
 		ok.add(ObsMM.class.getSimpleName());
+		ok.add(PrintBuffer.class.getSimpleName());
+		ok.add(ThreadFenetre.class.getSimpleName());
 		
 		startAllThreads();
 
@@ -338,7 +340,7 @@ public class Container implements Service
 			else
 				constructeur = (Constructor<S>) classe.getConstructors()[0];
 			
-			Class<?>[] param = (Class<?>[]) constructeur.getParameterTypes();
+			Class<?>[] param = constructeur.getParameterTypes();
 			
 			/**
 			 * On demande récursivement chacun de ses paramètres
@@ -373,7 +375,7 @@ public class Container implements Service
 				| InvocationTargetException | NoSuchMethodException
 				| SecurityException | InstantiationException e) {
 			e.printStackTrace();
-			throw new ContainerException(e.toString()+"Classe demandée : "+classe);
+			throw new ContainerException(e.toString()+"\nClasse demandée : "+classe.getSimpleName());
 		}
 	}
 

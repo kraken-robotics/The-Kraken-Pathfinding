@@ -115,6 +115,9 @@ public class DStarLite implements Service
 
 	private DStarLiteNode getFromMemory(PointGridSpace gridpoint)
 	{
+		if(gridpoint == null)
+			return null;
+		
 		DStarLiteNode out = memory[gridpoint.hashCode()];
 		
 		/**
@@ -258,6 +261,7 @@ public class DStarLite implements Service
 	{
 		computeNewPath(pointManager.get(depart), pointManager.get(arrivee));
 	}
+	
 	/**
 	 * Calcule un nouvel itinéraire.
 	 * @param arrivee (un Vec2)
@@ -266,6 +270,9 @@ public class DStarLite implements Service
 	 */
 	private void computeNewPath(PointGridSpace depart, PointGridSpace arrivee) throws PathfindingException
 	{
+		if(graphicDStarLite)
+			gridspace.reinitgrid();
+
 //		log.debug("Calcul chemin D* Lite entre "+depart+" et "+gridspace.computeVec2(arrivee));
 		nbPF++;
 		km = 0;
@@ -322,6 +329,9 @@ public class DStarLite implements Service
 	 */
 	public void updatePath(Vec2RO positionRobot) throws PathfindingException
 	{
+		if(graphicDStarLite)
+			gridspace.reinitgrid();
+
 		updateGoal(positionRobot);
 		ArrayList<ObstacleProximity>[] obs = gridspace.getOldAndNewObstacles();
 		
@@ -338,6 +348,10 @@ public class DStarLite implements Service
 					DStarLiteNode u = getFromMemory(upoint);
 					Direction dir = i.dir;
 					DStarLiteNode v = getFromMemory(pointManager.getGridPointVoisin(upoint,dir));
+					
+					if(v == null) // TODO
+						continue;
+
 					u.rhs = Math.min(u.rhs, add(v.g, gridspace.distanceStatique(pointDManager.get(upoint, dir))));
 					updateVertex(u);
 				}
@@ -357,6 +371,9 @@ public class DStarLite implements Service
 					Direction dir = i.dir;
 					DStarLiteNode v = getFromMemory(pointManager.getGridPointVoisin(upoint,dir));
 
+					if(v == null) // TODO
+						continue;
+					
 					// l'ancienne distance est la distance statique car c'est un ajout d'obstacle
 					if(u.rhs == add(gridspace.distanceStatique(pointDManager.get(upoint, dir)), v.g) && !u.equals(arrivee))
 					{
@@ -396,7 +413,7 @@ public class DStarLite implements Service
 			trajet.add(node.gridpoint.computeVec2());
 
 			if(graphicDStarLite)
-				gridspace.setColor(node.gridpoint, Couleur.VIOLET);
+				gridspace.setColor(node.gridpoint, Couleur.VERT);
 
 			coutMin = Integer.MAX_VALUE;
 			
