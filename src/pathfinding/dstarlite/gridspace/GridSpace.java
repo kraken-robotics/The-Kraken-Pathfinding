@@ -137,7 +137,7 @@ public class GridSpace implements Service, Printable
 	public int distanceStatique(PointDirige point)
 	{
 		// s'il y a un obstacle statique
-		if(grilleStatique.get(point.point.hashCode()))
+		if(grilleStatique.get(point.point.hashCode())) // TODO : vérifier le point d'arrivée aussi ?
 			return Integer.MAX_VALUE;
 		if(point.dir.isDiagonal())
 			return 1414;
@@ -171,18 +171,22 @@ public class GridSpace implements Service, Printable
 	{
 		iteratorDStarLite.reinit();
 		ArrayList<PointDirige> out = new ArrayList<PointDirige>();
+		deathDateLastObstacle = 0;
 		ObstacleProximity o = null;
 		while(iteratorDStarLite.hasNext())
 		{
 			o = iteratorDStarLite.next();
 //			log.debug("Ajout d'un obstacle au début du dstarlite");
 			out.addAll(o.getMasque().masque);
-		}
-		if(o != null)
+			
+			// le dstarlite est mis à jour jusqu'au dernier obstacle, celui qui meurt à cette date.
+			// si un obstacle meurt avant : il est connu
+			// s'il meurt après : il est inconnu
 			deathDateLastObstacle = o.getDeathDate();
-		else
-			deathDateLastObstacle = 0;
+		}		
 		
+		iteratorDStarLite.reinit(); // on revient au début pour pouvoir assister à la mort des premiers obstacles
+
 		return out;
 	}
 	
@@ -209,12 +213,13 @@ public class GridSpace implements Service, Printable
 			{
 				ObstacleProximity o = iteratorDStarLite.next();
 				long deathDate = o.getDeathDate();
-				if(deathDate > deathDateLastObstacle)
+				if(deathDate > deathDateLastObstacle) // si cet obstacle est effectivement nouveau pour le dstarlite
 				{
 					tmp = deathDate;
 					out.get(1).addAll(o.getMasque().masque);
 				}
 			}
+			
 			deathDateLastObstacle = tmp;
 			iteratorDStarLite.reinit(); // l'itérateur reprendra juste avant les futurs obstacles périmés
 			return out;
@@ -233,15 +238,12 @@ public class GridSpace implements Service, Printable
      */
     public ObstacleProximity addObstacleAndRemoveNearbyObstacles(Vec2RO position)
     {
-    	boolean removed = false;
-    	
     	iteratorRemoveNearby.reinit();
     	while(iteratorRemoveNearby.hasNext())
     	{
     		ObstacleProximity o = iteratorRemoveNearby.next();
         	if(o.isProcheCentre(position, distanceMinimaleEntreProximite))
         	{
-        		removed = true;
         		iteratorRemoveNearby.remove();
         		if(printObsCapteurs)
         			buffer.removeSupprimable(o);
@@ -250,9 +252,6 @@ public class GridSpace implements Service, Printable
 
     	Masque masque = masquemanager.getMasque(position);
 		ObstacleProximity o = obstaclesMemory.add(position, masque);
-		
-		if(removed)
-			iteratorDStarLite.reinit();
 		
 		return o;
     }

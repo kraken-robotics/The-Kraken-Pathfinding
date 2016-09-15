@@ -78,8 +78,6 @@ public class MasqueManager implements Service
 	
 	public Masque getMasque(Vec2RO position)
 	{
-//		log.debug("Création d'un masque en "+position);
-		
 		PointGridSpace p = pointManager.get(position);
 		ArrayList<PointDirige> out = new ArrayList<PointDirige>();
 		

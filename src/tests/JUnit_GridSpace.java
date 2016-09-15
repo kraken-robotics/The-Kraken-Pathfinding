@@ -116,34 +116,39 @@ public class JUnit_GridSpace extends JUnit_Test {
     	int peremption = config.getInt(ConfigInfo.DUREE_PEREMPTION_OBSTACLES);
 		Assert.assertTrue(gridspace.getCurrentObstacles().isEmpty());
 		ArrayList<ArrayList<PointDirige>> b = gridspace.getOldAndNewObstacles();
+//		log.debug(b.get(0).size()+" "+b.get(1).size());
 		Assert.assertTrue(b.get(0).isEmpty());
 		Assert.assertTrue(b.get(1).isEmpty());
-		gridspace.addObstacleAndRemoveNearbyObstacles(new Vec2RO(200, 100));
+		gridspace.addObstacleAndRemoveNearbyObstacles(new Vec2RO(200, 1100));
 		b = gridspace.getOldAndNewObstacles();
+//		log.debug(b.get(0).size()+" "+b.get(1).size());
 		Assert.assertTrue(b.get(0).isEmpty());
 		Assert.assertTrue(!b.get(1).isEmpty());
-		gridspace.addObstacleAndRemoveNearbyObstacles(new Vec2RO(210, 100));
+		gridspace.addObstacleAndRemoveNearbyObstacles(new Vec2RO(210, 1100));
 		b = gridspace.getOldAndNewObstacles();
-		Assert.assertEquals(b.get(0).size(), 1); // on a supprimé l'autre qui était trop proche
-		Assert.assertEquals(b.get(1).size(), 1);
-		gridspace.addObstacleAndRemoveNearbyObstacles(new Vec2RO(400, 100));
+//		log.debug(b.get(0).size()+" "+b.get(1).size());
+		Assert.assertTrue(!b.get(0).isEmpty()); // on a supprimé l'autre qui était trop proche
+		Assert.assertTrue(!b.get(1).isEmpty());
+		gridspace.addObstacleAndRemoveNearbyObstacles(new Vec2RO(400, 600));
 		b = gridspace.getOldAndNewObstacles();
+//		log.debug(b.get(0).size()+" "+b.get(1).size());
 		Assert.assertTrue(b.get(0).isEmpty());
 		Assert.assertTrue(!b.get(1).isEmpty());
 		b = gridspace.getOldAndNewObstacles();
+//		log.debug(b.get(0).size()+" "+b.get(1).size());
 		Assert.assertTrue(b.get(0).isEmpty());
 		Assert.assertTrue(b.get(1).isEmpty());
 		Thread.sleep(peremption+10);
-		log.debug("Ça commence");
 		b = gridspace.getOldAndNewObstacles();
-/*		log.debug("Old : ");
-		for(ObstacleProximity o : b.get(0))
-			log.debug(o.getDeathDate());
-		log.debug("New : ");
-		for(ObstacleProximity o : b.get(1))
-			log.debug(o.getDeathDate());*/
-
+//		log.debug(b.get(0).size()+" "+b.get(1).size());
 		Assert.assertTrue(!b.get(0).isEmpty());
+		Assert.assertTrue(b.get(1).isEmpty());
+		gridspace.addObstacleAndRemoveNearbyObstacles(new Vec2RO(400, 800));
+		Assert.assertTrue(!gridspace.getCurrentObstacles().isEmpty());
+		Assert.assertTrue(!gridspace.getCurrentObstacles().isEmpty());
+		b = gridspace.getOldAndNewObstacles();
+//		log.debug(b.get(0).size()+" "+b.get(1).size());
+		Assert.assertTrue(b.get(0).isEmpty());
 		Assert.assertTrue(b.get(1).isEmpty());
 	}
 
