@@ -31,8 +31,6 @@ import robot.RobotColor;
  * - le fichier config.ini, qui surcharge la configuration initiale
  * L'intérêt du fichier config.ini est de pouvoir modifier facilement la configuration sans recompiler.
  * 
- * Enfin, ce fichier contient des "define" utilisés pour debugger facilement le programme.
- * 
  * @author pf
  *
  */

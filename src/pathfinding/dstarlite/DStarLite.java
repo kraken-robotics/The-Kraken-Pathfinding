@@ -255,7 +255,7 @@ public class DStarLite implements Service
 	/**
 	 * Calcule un nouvel itinéraire.
 	 * @param arrivee (un Vec2)
-	 * @param depart (un gridpoint)
+	 * @param depart (un Vec2)
 	 * @throws PathfindingException 
 	 */
 	public void computeNewPath(Vec2RO depart, Vec2RO arrivee) throws PathfindingException
@@ -265,7 +265,7 @@ public class DStarLite implements Service
 	
 	/**
 	 * Calcule un nouvel itinéraire.
-	 * @param arrivee (un Vec2)
+	 * @param arrivee (un gridpoint)
 	 * @param depart (un gridpoint)
 	 * @throws PathfindingException 
 	 */
@@ -286,6 +286,7 @@ public class DStarLite implements Service
 		
 		openset.clear();
 		openset.add(this.arrivee);
+		
 		if(graphicDStarLite)
 		{
 			gridspace.setColor(this.arrivee.gridpoint, Couleur.JAUNE);

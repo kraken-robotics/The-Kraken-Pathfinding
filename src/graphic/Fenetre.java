@@ -56,7 +56,7 @@ public class Fenetre extends JPanel implements Service {
 	private PrintBuffer buffer;
 	
 	private boolean afficheFond;
-	private int sizeX = 450, sizeY = 300;
+	private int sizeX, sizeY;
 	private JFrame frame;
 	private WindowExit exit = new WindowExit();
 		
@@ -93,7 +93,7 @@ public class Fenetre extends JPanel implements Service {
 		{
 			try {
 				Image image = ImageIO.read(new File("minitable2016.png"));
-				sizeX = image.getWidth(this);
+				sizeX = image.getWidth(this); // on ajuste la taille de la fenêtre à l'image
 				sizeY = image.getHeight(this);
 				buffer.add(new BackgroundImage(image));
 			} catch (IOException e) {
@@ -161,6 +161,8 @@ public class Fenetre extends JPanel implements Service {
 	public void useConfig(Config config)
 	{
 		afficheFond = config.getBoolean(ConfigInfo.GRAPHIC_BACKGROUND);
+		sizeX = config.getInt(ConfigInfo.GRAPHIC_SIZE_X);
+		sizeY = 2*sizeX/3;
 	}
 		
 	/**

@@ -17,6 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 package tests;
 
+import obstacles.types.ObstacleCircular;
 import obstacles.types.ObstacleRectangular;
 
 import java.util.ArrayList;
@@ -111,6 +112,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
 	@Test
     public void test_clotho() throws Exception
     {
+		boolean graphicTrajectory = config.getBoolean(ConfigInfo.GRAPHIC_TRAJECTORY);
 		ClothoidesComputer clotho = container.getService(ClothoidesComputer.class);
 		RobotChrono r = container.make(RobotChrono.class);
 		int nbArc = 16;
@@ -148,7 +150,9 @@ public class JUnit_Pathfinding extends JUnit_Test {
 					System.out.println(arc[a-1].arcselems[ClothoidesComputer.NB_POINTS - 1].point.distance(arc[a].arcselems[0].point));
 	*/				
 				System.out.println(arc[a].arcselems[i]);
-				new ObstacleRectangular(arc[a].arcselems[i].getPosition(), 10, 10, 0);
+				if(graphicTrajectory)
+					for(int j = 0; j < arc[a].getNbPoints(); j++)
+						buffer.addSupprimable(new ObstacleCircular(arc[a].getPoint(i).getPosition(), 4));
 			}
 			if(a == 0)
 			{
@@ -187,6 +191,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
     {
 		gridspace.addObstacleAndRemoveNearbyObstacles(new Vec2RO(1200, 1200));
 		pathfinding.computeNewPath(new Vec2RO(-1000, 200), new Vec2RO(1200, 1200));
+		pathfinding.itineraireBrut();
     }
 	
 	@Test

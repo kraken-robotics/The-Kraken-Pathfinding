@@ -50,7 +50,7 @@ public class Masque implements Printable
 	@Override
 	public Layer getLayer()
 	{
-		return Layer.MIDDLE;
+		return Layer.FOREGROUND;
 	}
 	
 }

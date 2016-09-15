@@ -25,8 +25,11 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import graphic.PrintBuffer;
 import pathfinding.dstarlite.gridspace.Direction;
 import pathfinding.dstarlite.gridspace.GridSpace;
+import pathfinding.dstarlite.gridspace.Masque;
+import pathfinding.dstarlite.gridspace.MasqueManager;
 import pathfinding.dstarlite.gridspace.PointDirige;
 import pathfinding.dstarlite.gridspace.PointDirigeManager;
 import pathfinding.dstarlite.gridspace.PointGridSpace;
@@ -53,6 +56,7 @@ public class JUnit_GridSpace extends JUnit_Test {
         gridspace = container.getService(GridSpace.class);
         pointManager = container.getService(PointGridSpaceManager.class);
         pointDManager = container.getService(PointDirigeManager.class);
+       
     }
 	
 	@Test
@@ -145,4 +149,15 @@ public class JUnit_GridSpace extends JUnit_Test {
 		Assert.assertTrue(b.get(1).isEmpty());
 	}
 
+	@Test
+	public void test_masque() throws Exception
+	{
+		MasqueManager mm = container.getService(MasqueManager.class);
+		PrintBuffer buffer = container.getService(PrintBuffer.class);
+		Masque m = mm.getMasque(new Vec2RO(0, 1000));
+		
+		if(config.getBoolean(ConfigInfo.GRAPHIC_D_STAR_LITE))
+			buffer.add(m);
+	}
+	
 }

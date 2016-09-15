@@ -23,6 +23,7 @@ import container.Service;
 import graphic.PrintBuffer;
 import utils.Config;
 import utils.ConfigInfo;
+import utils.Log;
 import utils.Vec2RO;
 
 /**
@@ -37,11 +38,13 @@ public class MasqueManager implements Service
 	private PointGridSpaceManager pointManager;
 	private PointDirigeManager pointDManager;
 	private PrintBuffer buffer;
+	protected Log log;
 	private ArrayList<PointDirige> model = new ArrayList<PointDirige>();
 	private boolean printObsCapteurs;
 	
-	public MasqueManager(PointGridSpaceManager pointManager, PointDirigeManager pointDManager, PrintBuffer buffer)
+	public MasqueManager(Log log, PointGridSpaceManager pointManager, PointDirigeManager pointDManager, PrintBuffer buffer)
 	{
+		this.log = log;
 		this.pointManager = pointManager;
 		this.pointDManager = pointDManager;
 		this.buffer = buffer;
@@ -75,6 +78,8 @@ public class MasqueManager implements Service
 	
 	public Masque getMasque(Vec2RO position)
 	{
+//		log.debug("Création d'un masque en "+position);
+		
 		PointGridSpace p = pointManager.get(position);
 		ArrayList<PointDirige> out = new ArrayList<PointDirige>();
 		

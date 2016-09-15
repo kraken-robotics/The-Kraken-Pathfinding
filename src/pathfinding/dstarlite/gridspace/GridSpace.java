@@ -199,6 +199,7 @@ public class GridSpace implements Service, Printable
 	
 			while(iteratorDStarLite.hasNextDead())
 				out.get(0).addAll(iteratorDStarLite.next().getMasque().masque);
+			
 			ObstacleProximity p;
 			while((p = obstaclesMemory.pollMortTot()) != null)
 				out.get(0).addAll(p.getMasque().masque);
@@ -232,12 +233,15 @@ public class GridSpace implements Service, Printable
      */
     public ObstacleProximity addObstacleAndRemoveNearbyObstacles(Vec2RO position)
     {
+    	boolean removed = false;
+    	
     	iteratorRemoveNearby.reinit();
     	while(iteratorRemoveNearby.hasNext())
     	{
     		ObstacleProximity o = iteratorRemoveNearby.next();
         	if(o.isProcheCentre(position, distanceMinimaleEntreProximite))
         	{
+        		removed = true;
         		iteratorRemoveNearby.remove();
         		if(printObsCapteurs)
         			buffer.removeSupprimable(o);
@@ -247,7 +251,9 @@ public class GridSpace implements Service, Printable
     	Masque masque = masquemanager.getMasque(position);
 		ObstacleProximity o = obstaclesMemory.add(position, masque);
 		
-		// pour un ajout, pas besoin de tout régénérer
+		if(removed)
+			iteratorDStarLite.reinit();
+		
 		return o;
     }
 
