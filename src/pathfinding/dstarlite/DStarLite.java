@@ -18,6 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 package pathfinding.dstarlite;
 
 import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.Comparator;
 import java.util.PriorityQueue;
 
@@ -61,7 +62,9 @@ public class DStarLite implements Service
 	private DStarLiteNode depart;
 	private PointGridSpace lastDepart;
 	private long nbPF = 0;
-	private ArrayList<PointDirige> obstaclesConnus = new ArrayList<PointDirige>();
+	
+	private BitSet obstaclesConnus;
+	
 	private Cle knew = new Cle();
 	private Cle tmp = new Cle();
 	private Cle kold = new Cle();
@@ -96,6 +99,8 @@ public class DStarLite implements Service
 		this.gridspace = gridspace;
 		this.pointManager = pointManager;
 		this.pointDManager = pointDManager;
+		
+		obstaclesConnus = new BitSet(PointGridSpace.NB_POINTS * 8);
 		
 		for(int i = 0; i < PointGridSpace.NB_POINTS; i++)
 			memory[i] = new DStarLiteNode(pointManager.get(i));
@@ -283,7 +288,8 @@ public class DStarLite implements Service
 			gridspace.setColor(this.depart.gridpoint, Couleur.VIOLET);
 		}
 
-		obstaclesConnus = gridspace.getCurrentObstacles();
+		obstaclesConnus.clear();
+		obstaclesConnus.or(gridspace.getCurrentObstacles());
 
 		computeShortestPath();
 	}
@@ -320,19 +326,21 @@ public class DStarLite implements Service
 			gridspace.reinitGraphicGrid();
 
 		updateGoal(positionRobot);
-		ArrayList<ArrayList<PointDirige>> obs = gridspace.getOldAndNewObstacles();
+		BitSet[] obs = gridspace.getOldAndNewObstacles();
 		
-		for(PointDirige i : obs.get(0))
+		for(int i = obs[0].nextSetBit(0); i >= 0; i = obs[0].nextSetBit(i+1))
 		{
 //			log.debug("Retrait de "+o);
-			obstaclesConnus.remove(i);
-			if(!obstaclesConnus.contains(i))
+			if(obstaclesConnus.get(i))
 			{
+				obstaclesConnus.clear(i);
+
+				PointDirige p = pointDManager.get(i);
 				// Retrait d'un obstacle. Le coût va donc diminuer.
-				PointGridSpace upoint = i.point;
+				PointGridSpace upoint = p.point;
 				DStarLiteNode u = getFromMemory(upoint);
-				Direction dir = i.dir;
-				DStarLiteNode v = getFromMemory(pointManager.getGridPointVoisin(i));
+				Direction dir = p.dir;
+				DStarLiteNode v = getFromMemory(pointManager.getGridPointVoisin(p));
 				
 				if(v == null) // TODO
 					continue;
@@ -341,16 +349,18 @@ public class DStarLite implements Service
 				updateVertex(u);
 			}
 		}
-		for(PointDirige i : obs.get(1))
+		for(int i = obs[1].nextSetBit(0); i >= 0; i = obs[1].nextSetBit(i+1))
 		{
 //			log.debug("Ajout de "+o);
-			if(!obstaclesConnus.contains(i))
+			if(!obstaclesConnus.get(i))
 			{
-				obstaclesConnus.add(i);
+				obstaclesConnus.set(i);
+
+				PointDirige p = pointDManager.get(i);
 				// Ajout d'un obstacle
-				PointGridSpace upoint = i.point;
+				PointGridSpace upoint = p.point;
 				DStarLiteNode u = getFromMemory(upoint);
-				Direction dir = i.dir;
+				Direction dir = p.dir;
 				DStarLiteNode v = getFromMemory(pointManager.getGridPointVoisin(upoint,dir));
 
 				if(v == null) // TODO
@@ -361,16 +371,17 @@ public class DStarLite implements Service
 				{
 					u.rhs = Integer.MAX_VALUE;
 					for(Direction voisin : Direction.values())
-						u.rhs = Math.min(u.rhs, add(distanceDynamiqueSucc(u.gridpoint, voisin), getFromMemory(pointManager.getGridPointVoisin(u.gridpoint,i.dir)).g));
+						u.rhs = Math.min(u.rhs, add(distanceDynamiqueSucc(u.gridpoint, voisin), getFromMemory(pointManager.getGridPointVoisin(u.gridpoint,p.dir)).g));
 				}
 				updateVertex(u);
 			}
 			else
-				obstaclesConnus.add(i);
+				obstaclesConnus.set(i);
 		}
-		if(graphicDStarLite)
-			for(PointDirige i : obstaclesConnus)
-				gridspace.setColor(pointManager.getGridPointVoisin(i.point, i.dir), Couleur.NOIR);
+		
+//		if(graphicDStarLite)
+//			for(PointDirige i : obstaclesConnus)
+//				gridspace.setColor(pointManager.getGridPointVoisin(i.point, i.dir), Couleur.NOIR);
 
 		computeShortestPath();
 	}
@@ -474,7 +485,7 @@ public class DStarLite implements Service
 	 */
 	private int distanceDynamiqueSucc(PointGridSpace point, Direction dir)
 	{
-		if(obstaclesConnus.contains(pointDManager.get(point, dir)))
+		if(obstaclesConnus.get(pointDManager.get(point, dir).hashCode()))
 			return Integer.MAX_VALUE;
 		return gridspace.distanceStatique(pointDManager.get(point, dir));
 	}

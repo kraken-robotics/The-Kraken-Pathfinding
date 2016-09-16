@@ -59,11 +59,14 @@ public class GridSpace implements Service, Printable
 
 	private int distanceMinimaleEntreProximite;
 	private boolean printObsCapteurs;
-	private boolean printObsFixes;
 	private int rayonRobot;
 	
 	// cette grille est constante, c'est-à-dire qu'elle ne contient que les obstacles fixes
 	private BitSet grilleStatique = new BitSet(PointGridSpace.NB_POINTS);
+	private BitSet newObstacles = new BitSet(PointGridSpace.NB_POINTS * 8);
+	private BitSet oldObstacles = new BitSet(PointGridSpace.NB_POINTS * 8);
+	private BitSet intersect = new BitSet(PointGridSpace.NB_POINTS * 8);
+	private BitSet[] newOldObstacles = new BitSet[2];
 	private Couleur[] grid = new Couleur[PointGridSpace.NB_POINTS];
 
 	public GridSpace(Log log, ObstaclesIteratorPresent iteratorDStarLiteFirst, ObstaclesIteratorPresent iteratorDStarLiteLast, ObstaclesIteratorPresent iteratorRemoveNearby, ObstaclesMemory obstaclesMemory, PointGridSpaceManager pointManager, PrintBuffer buffer, MasqueManager masquemanager)
@@ -76,6 +79,8 @@ public class GridSpace implements Service, Printable
 		this.iteratorRemoveNearby = iteratorRemoveNearby;
 		this.buffer = buffer;
 		this.masquemanager = masquemanager;
+		newOldObstacles[0] = oldObstacles;
+		newOldObstacles[1] = newObstacles;
 	}
 	
 
@@ -84,7 +89,6 @@ public class GridSpace implements Service, Printable
 	{
 		distanceMinimaleEntreProximite = config.getInt(ConfigInfo.DISTANCE_BETWEEN_PROXIMITY_OBSTACLES);
 		printObsCapteurs = config.getBoolean(ConfigInfo.GRAPHIC_PROXIMITY_OBSTACLES);
-		printObsFixes = config.getBoolean(ConfigInfo.GRAPHIC_FIXED_OBSTACLES);
 		rayonRobot = config.getInt(ConfigInfo.RAYON_ROBOT);
 		
 		// on ajoute les obstacles fixes une fois pour toute si c'est demandé
@@ -100,6 +104,24 @@ public class GridSpace implements Service, Printable
 		}
 
 		log.debug("Grille statique initialisée");
+		
+		double distance = rayonRobot + PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS / 2;
+		distance = distance * distance;
+		
+		for(int i = 0; i < PointGridSpace.NB_POINTS; i++)
+		{
+			grid[pointManager.get(i).hashCode()] = null;
+
+			for(ObstaclesFixes o : ObstaclesFixes.values())
+				if(o.getObstacle().squaredDistance(pointManager.get(i).computeVec2())
+						<= (int)(distance))
+				{
+					// Pour le D* Lite, il faut dilater les obstacles du rayon du robot
+					grilleStatique.set(i);
+					break; // on ne vérifie pas les autres obstacles
+				}
+		}
+
 
 	}
 
@@ -122,9 +144,7 @@ public class GridSpace implements Service, Printable
 							<= (int)(distance))
 					{
 						// Pour le D* Lite, il faut dilater les obstacles du rayon du robot
-						grilleStatique.set(i);
-						if(printObsFixes)
-							grid[pointManager.get(i).hashCode()] = Couleur.NOIR;
+						grid[pointManager.get(i).hashCode()] = Couleur.NOIR;
 						break; // on ne vérifie pas les autres obstacles
 					}
 			}
@@ -147,7 +167,7 @@ public class GridSpace implements Service, Printable
 	{
 		// s'il y a un obstacle statique
 		PointGridSpace voisin = pointManager.getGridPointVoisin(point); // TODO : vérifier le point d'arrivée aussi ?
-		if(grilleStatique.get(point.point.hashCode()) || grilleStatique.get(voisin.hashcode))
+		if(grilleStatique.get(point.point.hashCode()) || voisin == null || grilleStatique.get(voisin.hashcode))
 			return Integer.MAX_VALUE;
 		if(point.dir.isDiagonal())
 			return 1414;
@@ -177,63 +197,66 @@ public class GridSpace implements Service, Printable
 	 * Un nouveau DStarLite commence. Il faut lui fournir les obstacles actuels
 	 * @return
 	 */
-	public ArrayList<PointDirige> getCurrentObstacles()
+	public BitSet getCurrentObstacles()
 	{
 		iteratorDStarLiteFirst.reinit();
 		iteratorDStarLiteLast.reinit();
-		ArrayList<PointDirige> out = new ArrayList<PointDirige>();
+		newObstacles.clear();
 
 		while(iteratorDStarLiteLast.hasNext())
-			out.addAll(iteratorDStarLiteLast.next().getMasque().masque);
+		{
+			ArrayList<PointDirige> tmp = iteratorDStarLiteLast.next().getMasque().masque;
+			for(PointDirige p : tmp)
+				newObstacles.set(p.hashCode());
+		}
 		
-		return out;
+		return newObstacles;
 	}
 	
 	/**
 	 * Retourne les obstacles à supprimer (indice 0) et ceux à ajouter (indice 1) dans le DStarLite
 	 */
-	public ArrayList<ArrayList<PointDirige>> getOldAndNewObstacles()
+	public BitSet[] getOldAndNewObstacles()
 	{
 		synchronized(obstaclesMemory)
 		{
-			ArrayList<ArrayList<PointDirige>> out = new ArrayList<ArrayList<PointDirige>>();
-			out.add(new ArrayList<PointDirige>());
-			out.add(new ArrayList<PointDirige>());
-	
+			oldObstacles.clear();
+			newObstacles.clear();
+			
 			while(iteratorDStarLiteFirst.hasNextDead())
 			{
-				log.debug("Mort");
-				out.get(0).addAll(iteratorDStarLiteFirst.next().getMasque().masque);
+//				log.debug("Mort");
+				ArrayList<PointDirige> tmp = iteratorDStarLiteFirst.next().getMasque().masque;
+				for(PointDirige p : tmp)
+					oldObstacles.set(p.hashCode());
 			}
 			
-			ObstacleProximity p;
-			while((p = obstaclesMemory.pollMortTot()) != null)
+			ObstacleProximity o;
+			while((o = obstaclesMemory.pollMortTot()) != null)
 			{
-				log.debug("Mort tôt");
-				out.get(0).addAll(p.getMasque().masque);
+				ArrayList<PointDirige> tmp = o.getMasque().masque;
+				for(PointDirige p : tmp)
+					oldObstacles.set(p.hashCode());
 			}
 	
 			while(iteratorDStarLiteLast.hasNext())
 			{
-				log.debug("Nouveau");
-				ObstacleProximity o = iteratorDStarLiteLast.next();
-				out.get(1).addAll(o.getMasque().masque);
+				ArrayList<PointDirige> tmp = iteratorDStarLiteLast.next().getMasque().masque;
+				for(PointDirige p : tmp)
+					newObstacles.set(p.hashCode());
 			}
 
 			/**
 			 * On ne va pas enlever un point pour le remettre juste après…
 			 */
-			
-			ArrayList<PointDirige> intersection = new ArrayList<PointDirige>();
-			intersection.addAll(out.get(0));
-			intersection.retainAll(out.get(1));
-			
-			out.get(0).removeAll(intersection);
-			out.get(1).removeAll(intersection);
 
-			// TODO : vraiment ?
-//			iteratorDStarLiteFirst.reinit(); // l'itérateur reprendra juste avant les futurs obstacles périmés
-			return out;
+			intersect.clear();
+			intersect.or(newObstacles);
+			intersect.and(oldObstacles);
+			newObstacles.andNot(intersect);
+			oldObstacles.andNot(intersect);
+
+			return newOldObstacles;
 		}
 	}
 

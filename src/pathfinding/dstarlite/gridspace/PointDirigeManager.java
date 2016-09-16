@@ -71,4 +71,14 @@ public class PointDirigeManager implements Service
 	public void useConfig(Config config)
 	{}
 
+	/**
+	 * Récupère un PointDirige à partir de son hash
+	 * @param indice
+	 * @return
+	 */
+	public PointDirige get(int indice)
+	{
+		return mem[indice];
+	}
+
 }

@@ -17,7 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 package tests;
 
-import java.util.ArrayList;
+import java.util.BitSet;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -28,7 +28,6 @@ import pathfinding.dstarlite.gridspace.Direction;
 import pathfinding.dstarlite.gridspace.GridSpace;
 import pathfinding.dstarlite.gridspace.Masque;
 import pathfinding.dstarlite.gridspace.MasqueManager;
-import pathfinding.dstarlite.gridspace.PointDirige;
 import pathfinding.dstarlite.gridspace.PointDirigeManager;
 import pathfinding.dstarlite.gridspace.PointGridSpace;
 import pathfinding.dstarlite.gridspace.PointGridSpaceManager;
@@ -69,9 +68,9 @@ public class JUnit_GridSpace extends JUnit_Test {
 	@Test
 	public void test_distance() throws Exception
 	{
-		Assert.assertTrue(gridspace.distanceStatique(pointDManager.get(pointManager.get(523), Direction.NE)) == 1414);
-		Assert.assertTrue(gridspace.distanceStatique(pointDManager.get(pointManager.get(523), Direction.N)) == 1000);
-		Assert.assertTrue(gridspace.distanceStatique(pointDManager.get(pointManager.get(1), Direction.E)) == Integer.MAX_VALUE);
+		Assert.assertEquals(1414, gridspace.distanceStatique(pointDManager.get(pointManager.get(523), Direction.NE)));
+		Assert.assertEquals(1000, gridspace.distanceStatique(pointDManager.get(pointManager.get(523), Direction.N)));
+		Assert.assertEquals(Integer.MAX_VALUE, gridspace.distanceStatique(pointDManager.get(pointManager.get(1), Direction.E)));
 	}
 
 	@Test
@@ -114,47 +113,47 @@ public class JUnit_GridSpace extends JUnit_Test {
 	public void test_ajout_obstacle() throws Exception
 	{
 		int peremption = config.getInt(ConfigInfo.DUREE_PEREMPTION_OBSTACLES);
-		Assert.assertTrue(gridspace.getCurrentObstacles().isEmpty());
-		ArrayList<ArrayList<PointDirige>> b = gridspace.getOldAndNewObstacles();
-		log.debug(b.get(0).size()+" "+b.get(1).size());
-		Assert.assertTrue(b.get(0).isEmpty());
-		Assert.assertTrue(b.get(1).isEmpty());
+		Assert.assertEquals(gridspace.getCurrentObstacles().cardinality(), 0);
+		BitSet[] b = gridspace.getOldAndNewObstacles();
+		log.debug(b[0].cardinality()+" "+b[1].cardinality());
+		Assert.assertEquals(b[0].cardinality(), 0);
+		Assert.assertEquals(b[1].cardinality(), 0);
 		gridspace.addObstacleAndRemoveNearbyObstacles(new Vec2RO(200, 1100));
 		b = gridspace.getOldAndNewObstacles();
-		log.debug(b.get(0).size()+" "+b.get(1).size());
-		Assert.assertTrue(b.get(0).isEmpty());
-		Assert.assertTrue(!b.get(1).isEmpty());
+		log.debug(b[0].cardinality()+" "+b[1].cardinality());
+		Assert.assertEquals(b[0].cardinality(), 0);
+		Assert.assertTrue(b[1].cardinality() != 0);
 		gridspace.addObstacleAndRemoveNearbyObstacles(new Vec2RO(200, 1100));
 		b = gridspace.getOldAndNewObstacles();
-		log.debug(b.get(0).size()+" "+b.get(1).size());
-		Assert.assertTrue(b.get(0).isEmpty()); // finalement, rien n'a changé
-		Assert.assertTrue(b.get(1).isEmpty());
+		log.debug(b[0].cardinality()+" "+b[1].cardinality());
+		Assert.assertEquals(b[0].cardinality(), 0); // finalement, rien n'a changé
+		Assert.assertEquals(b[1].cardinality(), 0);
 		gridspace.addObstacleAndRemoveNearbyObstacles(new Vec2RO(230, 1100));
 		b = gridspace.getOldAndNewObstacles();
-		log.debug(b.get(0).size()+" "+b.get(1).size());
-		Assert.assertTrue(b.get(0).isEmpty()); // on a supprimé l'autre qui était trop proche
-		Assert.assertTrue(b.get(1).isEmpty());
+		log.debug(b[0].cardinality()+" "+b[1].cardinality());
+		Assert.assertEquals(b[0].cardinality(), 0); // on a supprimé l'autre qui était trop proche
+		Assert.assertEquals(b[1].cardinality(), 0);
 		gridspace.addObstacleAndRemoveNearbyObstacles(new Vec2RO(400, 600));
 		b = gridspace.getOldAndNewObstacles();
-		log.debug(b.get(0).size()+" "+b.get(1).size());
-		Assert.assertTrue(b.get(0).isEmpty());
-		Assert.assertTrue(!b.get(1).isEmpty());
+		log.debug(b[0].cardinality()+" "+b[1].cardinality());
+		Assert.assertEquals(b[0].cardinality(), 0);
+		Assert.assertTrue(b[1].cardinality() != 0);
 		b = gridspace.getOldAndNewObstacles();
-		log.debug(b.get(0).size()+" "+b.get(1).size());
-		Assert.assertTrue(b.get(0).isEmpty());
-		Assert.assertTrue(b.get(1).isEmpty());
+		log.debug(b[0].cardinality()+" "+b[1].cardinality());
+		Assert.assertEquals(b[0].cardinality(), 0);
+		Assert.assertEquals(b[1].cardinality(), 0);
 		Thread.sleep(peremption+10);
 		b = gridspace.getOldAndNewObstacles();
-		log.debug(b.get(0).size()+" "+b.get(1).size());
-		Assert.assertTrue(!b.get(0).isEmpty());
-		Assert.assertTrue(b.get(1).isEmpty());
+		log.debug(b[0].cardinality()+" "+b[1].cardinality());
+		Assert.assertTrue(b[0].cardinality() != 0);
+		Assert.assertEquals(b[1].cardinality(), 0);
 		gridspace.addObstacleAndRemoveNearbyObstacles(new Vec2RO(400, 800));
-		Assert.assertTrue(!gridspace.getCurrentObstacles().isEmpty());
-		Assert.assertTrue(!gridspace.getCurrentObstacles().isEmpty());
+		Assert.assertTrue(gridspace.getCurrentObstacles().cardinality() != 0);
+		Assert.assertTrue(gridspace.getCurrentObstacles().cardinality() != 0);
 		b = gridspace.getOldAndNewObstacles();
-		log.debug(b.get(0).size()+" "+b.get(1).size());
-		Assert.assertTrue(b.get(0).isEmpty());
-		Assert.assertTrue(b.get(1).isEmpty());
+		log.debug(b[0].cardinality()+" "+b[1].cardinality());
+		Assert.assertEquals(b[0].cardinality(), 0);
+		Assert.assertEquals(b[1].cardinality(), 0);
 	}
 
 	@Test
