@@ -49,7 +49,8 @@ import container.Service;
 public class GridSpace implements Service, Printable
 {
 	protected Log log;
-	private ObstaclesIteratorPresent iteratorDStarLite;
+	private ObstaclesIteratorPresent iteratorDStarLiteFirst;
+	private ObstaclesIteratorPresent iteratorDStarLiteLast;
 	private ObstaclesIteratorPresent iteratorRemoveNearby;
 	private ObstaclesMemory obstaclesMemory;
 	private PointGridSpaceManager pointManager;
@@ -65,14 +66,13 @@ public class GridSpace implements Service, Printable
 	private BitSet grilleStatique = new BitSet(PointGridSpace.NB_POINTS);
 	private Couleur[] grid = new Couleur[PointGridSpace.NB_POINTS];
 
-	private long deathDateLastObstacle;
-	
-	public GridSpace(Log log, ObstaclesIteratorPresent iteratorDStarLite, ObstaclesIteratorPresent iteratorRemoveNearby, ObstaclesMemory obstaclesMemory, PointGridSpaceManager pointManager, PrintBuffer buffer, MasqueManager masquemanager)
+	public GridSpace(Log log, ObstaclesIteratorPresent iteratorDStarLiteFirst, ObstaclesIteratorPresent iteratorDStarLiteLast, ObstaclesIteratorPresent iteratorRemoveNearby, ObstaclesMemory obstaclesMemory, PointGridSpaceManager pointManager, PrintBuffer buffer, MasqueManager masquemanager)
 	{
 		this.obstaclesMemory = obstaclesMemory;
 		this.log = log;
 		this.pointManager = pointManager;
-		this.iteratorDStarLite = iteratorDStarLite;
+		this.iteratorDStarLiteFirst = iteratorDStarLiteFirst;
+		this.iteratorDStarLiteLast = iteratorDStarLiteLast;
 		this.iteratorRemoveNearby = iteratorRemoveNearby;
 		this.buffer = buffer;
 		this.masquemanager = masquemanager;
@@ -179,24 +179,13 @@ public class GridSpace implements Service, Printable
 	 */
 	public ArrayList<PointDirige> getCurrentObstacles()
 	{
-		iteratorDStarLite.reinit();
+		iteratorDStarLiteFirst.reinit();
+		iteratorDStarLiteLast.reinit();
 		ArrayList<PointDirige> out = new ArrayList<PointDirige>();
-		deathDateLastObstacle = 0;
-		ObstacleProximity o = null;
-		while(iteratorDStarLite.hasNext())
-		{
-			o = iteratorDStarLite.next();
-//			log.debug("Ajout d'un obstacle au début du dstarlite");
-			out.addAll(o.getMasque().masque);
-			
-			// le dstarlite est mis à jour jusqu'au dernier obstacle, celui qui meurt à cette date.
-			// si un obstacle meurt avant : il est connu
-			// s'il meurt après : il est inconnu
-			deathDateLastObstacle = o.getDeathDate();
-		}		
-		
-		iteratorDStarLite.reinit(); // on revient au début pour pouvoir assister à la mort des premiers obstacles
 
+		while(iteratorDStarLiteLast.hasNext())
+			out.addAll(iteratorDStarLiteLast.next().getMasque().masque);
+		
 		return out;
 	}
 	
@@ -211,27 +200,39 @@ public class GridSpace implements Service, Printable
 			out.add(new ArrayList<PointDirige>());
 			out.add(new ArrayList<PointDirige>());
 	
-			while(iteratorDStarLite.hasNextDead())
-				out.get(0).addAll(iteratorDStarLite.next().getMasque().masque);
+			while(iteratorDStarLiteFirst.hasNextDead())
+			{
+				log.debug("Mort");
+				out.get(0).addAll(iteratorDStarLiteFirst.next().getMasque().masque);
+			}
 			
 			ObstacleProximity p;
 			while((p = obstaclesMemory.pollMortTot()) != null)
-				out.get(0).addAll(p.getMasque().masque);
-	
-			long tmp = deathDateLastObstacle;
-			while(iteratorDStarLite.hasNext())
 			{
-				ObstacleProximity o = iteratorDStarLite.next();
-				long deathDate = o.getDeathDate();
-				if(deathDate > deathDateLastObstacle) // si cet obstacle est effectivement nouveau pour le dstarlite
-				{
-					tmp = deathDate;
-					out.get(1).addAll(o.getMasque().masque);
-				}
+				log.debug("Mort tôt");
+				out.get(0).addAll(p.getMasque().masque);
 			}
+	
+			while(iteratorDStarLiteLast.hasNext())
+			{
+				log.debug("Nouveau");
+				ObstacleProximity o = iteratorDStarLiteLast.next();
+				out.get(1).addAll(o.getMasque().masque);
+			}
+
+			/**
+			 * On ne va pas enlever un point pour le remettre juste après…
+			 */
 			
-			deathDateLastObstacle = tmp;
-			iteratorDStarLite.reinit(); // l'itérateur reprendra juste avant les futurs obstacles périmés
+			ArrayList<PointDirige> intersection = new ArrayList<PointDirige>();
+			intersection.addAll(out.get(0));
+			intersection.retainAll(out.get(1));
+			
+			out.get(0).removeAll(intersection);
+			out.get(1).removeAll(intersection);
+
+			// TODO : vraiment ?
+//			iteratorDStarLiteFirst.reinit(); // l'itérateur reprendra juste avant les futurs obstacles périmés
 			return out;
 		}
 	}

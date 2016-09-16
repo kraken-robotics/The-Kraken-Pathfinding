@@ -99,8 +99,7 @@ public class ObstaclesMemory implements Service
 	public synchronized void remove(int indice)
 	{
 		listObstaclesMortsTot.add(listObstaclesMobiles.get(indice-indicePremierObstacle));
-		listObstaclesMobiles.remove(indice-indicePremierObstacle);
-		size--;
+		listObstaclesMobiles.set(indice-indicePremierObstacle, null);
 	}
 	
 	/**
@@ -115,7 +114,7 @@ public class ObstaclesMemory implements Service
 		int firstNotDeadNowSave = firstNotDeadNow;
 		
 		// S'il est périmé depuis deux secondes : on vire.
-		while(!listObstaclesMobiles.isEmpty() && listObstaclesMobiles.getFirst().isDestructionNecessary(dateActuelle-2000))
+		while(!listObstaclesMobiles.isEmpty() && (listObstaclesMobiles.getFirst() == null || listObstaclesMobiles.getFirst().isDestructionNecessary(dateActuelle-2000)))
 		{
 			indicePremierObstacle++;
 			listObstaclesMobiles.removeFirst();
@@ -127,7 +126,7 @@ public class ObstaclesMemory implements Service
 		{
 			ObstacleProximity o = listObstaclesMobiles.get(firstNotDeadNow);
 			// s'il est fraîchement périmé, on prévient qu'il y a du changement mais on conserve quand même l'obstacle en mémoire
-			if(o.isDestructionNecessary(dateActuelle))
+			if(o == null || o.isDestructionNecessary(dateActuelle))
 				firstNotDeadNow++;
 			else
 			{
@@ -157,7 +156,7 @@ public class ObstaclesMemory implements Service
 	 */
 	public boolean isDestructionNecessary(int indice, long date)
 	{
-		return indice < firstNotDeadNow || listObstaclesMobiles.get(indice-indicePremierObstacle).isDestructionNecessary(date);
+		return indice < firstNotDeadNow || listObstaclesMobiles.get(indice-indicePremierObstacle) == null || listObstaclesMobiles.get(indice-indicePremierObstacle).isDestructionNecessary(date);
 	}
 
 	/**

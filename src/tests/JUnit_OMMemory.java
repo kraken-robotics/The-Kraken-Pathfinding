@@ -63,13 +63,11 @@ public class JUnit_OMMemory extends JUnit_Test {
     	m.setAccessible(true);
     	
     	int peremption = config.getInt(ConfigInfo.DUREE_PEREMPTION_OBSTACLES);
+    	long date = System.currentTimeMillis();
     	iterator.reinit();
     	Assert.assertTrue(memory.getFirstNotDeadNow() == 0);
-    	Assert.assertTrue(memory.getNextDeathDate() == Long.MAX_VALUE);
-
+    	Assert.assertTrue(memory.getNextDeathDate() == Long.MAX_VALUE);    	
     	
-    	
-    	long date = System.currentTimeMillis();
     	m.invoke(memory, new Vec2RO(1324,546), date, null);
     	m.invoke(memory, new Vec2RO(1324,546), date, null);
     	iterator.reinit();
@@ -80,6 +78,7 @@ public class JUnit_OMMemory extends JUnit_Test {
     	iterator.next();
     	Assert.assertTrue(!iterator.hasNext());
     	iterator.remove();
+    	Assert.assertTrue(!iterator.hasNext());
 
     	m.invoke(memory, new Vec2RO(1324,546), date, null);
     	Assert.assertTrue(memory.getFirstNotDeadNow() == 0);
@@ -90,14 +89,14 @@ public class JUnit_OMMemory extends JUnit_Test {
     	Assert.assertTrue(((Vec2RW)f.get(o)).getX() == 1324);
     	Assert.assertTrue(((Vec2RW)f.get(o)).getY() == 546);
     	Assert.assertTrue(!iterator.hasNext());
-    	Assert.assertTrue(memory.getFirstNotDeadNow() == 0);
+    	Assert.assertEquals(0, memory.getFirstNotDeadNow());
     	m.invoke(memory, new Vec2RO(1324,546), date, null);
     	m.invoke(memory, new Vec2RO(1324,546), date, null);
     	m.invoke(memory, new Vec2RO(1324,546), date, null);
     	m.invoke(memory, new Vec2RO(1324,546), date, null);
     	memory.deleteOldObstacles();
-    	Assert.assertTrue(memory.getFirstNotDeadNow() == 0);
-    	Assert.assertTrue(memory.getNextDeathDate() == (date+peremption));
+    	Assert.assertEquals(2, memory.getFirstNotDeadNow());
+    	Assert.assertEquals(memory.getNextDeathDate(), (date+peremption));
     	Thread.sleep(peremption+10);
 //    	iterator.reinitNow();
 //    	Assert.assertTrue(memory.getFirstNotDeadNow() == 0);
@@ -105,9 +104,9 @@ public class JUnit_OMMemory extends JUnit_Test {
 //    	Assert.assertTrue(iterator.hasNext());
 //    	memory.deleteOldObstacles();
     	iterator.reinit();
-    	Assert.assertTrue(memory.getFirstNotDeadNow() == 5);
-    	Assert.assertTrue(memory.size() == 5);
-    	Assert.assertTrue(memory.getNextDeathDate() == Long.MAX_VALUE);
+    	Assert.assertEquals(7, memory.getFirstNotDeadNow());
+    	Assert.assertEquals(7, memory.size());
+    	Assert.assertEquals(Long.MAX_VALUE, memory.getNextDeathDate());
     	Assert.assertTrue(!iterator.hasNext());
     	
     }

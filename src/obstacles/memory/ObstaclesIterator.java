@@ -44,6 +44,9 @@ public abstract class ObstaclesIterator implements Iterator<ObstacleProximity>
 	@Override
 	public boolean hasNext()
 	{
+		while(nbTmp + 1 < memory.size() && memory.getObstacle(nbTmp + 1) == null)
+			nbTmp++;
+		
 		return nbTmp + 1 < memory.size();
 	}
 
@@ -56,7 +59,7 @@ public abstract class ObstaclesIterator implements Iterator<ObstacleProximity>
 	@Override
 	public void remove()
 	{
-		memory.remove(nbTmp--);
+		memory.remove(nbTmp);
 	}
 
 }
