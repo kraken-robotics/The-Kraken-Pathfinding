@@ -188,8 +188,8 @@ public class JUnit_Pathfinding extends JUnit_Test {
 	@Test(expected = PathfindingException.class)
     public void test_chemin_impossible() throws Exception
     {
-		gridspace.addObstacleAndRemoveNearbyObstacles(new Vec2RO(1200, 1200));
-		pathfinding.computeNewPath(new Vec2RO(-1000, 200), new Vec2RO(1200, 1200));
+		gridspace.addObstacleAndRemoveNearbyObstacles(new Vec2RO(1000, 1200));
+		pathfinding.computeNewPath(new Vec2RO(-1000, 400), new Vec2RO(1000, 1200));
 		pathfinding.itineraireBrut();
     }
 	

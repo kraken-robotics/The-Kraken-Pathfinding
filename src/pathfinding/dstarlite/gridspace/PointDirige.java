@@ -45,5 +45,11 @@ public class PointDirige
 	{
 		return d instanceof PointDirige && hashCode() == ((PointDirige)d).hashCode();
 	}
+	
+	@Override
+	public String toString()
+	{
+		return point+" "+dir;
+	}
 
 }

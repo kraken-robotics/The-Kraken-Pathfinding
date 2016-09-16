@@ -262,7 +262,7 @@ public class DStarLite implements Service
 	private void computeNewPath(PointGridSpace depart, PointGridSpace arrivee) throws PathfindingException
 	{
 		if(graphicDStarLite)
-			gridspace.reinitgrid();
+			gridspace.reinitGraphicGrid();
 
 //		log.debug("Calcul chemin D* Lite entre "+depart+" et "+gridspace.computeVec2(arrivee));
 		nbPF++;
@@ -286,11 +286,6 @@ public class DStarLite implements Service
 		obstaclesConnus = gridspace.getCurrentObstacles();
 
 		computeShortestPath();
-
-		if(graphicDStarLite)
-			for(PointDirige i : obstaclesConnus)
-				gridspace.setColor(pointManager.getGridPointVoisin(i.point, i.dir), Couleur.NOIR);
-
 	}
 	
 	private final int distanceHeuristique(PointGridSpace gridpoint)
@@ -322,7 +317,7 @@ public class DStarLite implements Service
 	public void updatePath(Vec2RO positionRobot) throws PathfindingException
 	{
 		if(graphicDStarLite)
-			gridspace.reinitgrid();
+			gridspace.reinitGraphicGrid();
 
 		updateGoal(positionRobot);
 		ArrayList<ArrayList<PointDirige>> obs = gridspace.getOldAndNewObstacles();
@@ -337,7 +332,7 @@ public class DStarLite implements Service
 				PointGridSpace upoint = i.point;
 				DStarLiteNode u = getFromMemory(upoint);
 				Direction dir = i.dir;
-				DStarLiteNode v = getFromMemory(pointManager.getGridPointVoisin(upoint,dir));
+				DStarLiteNode v = getFromMemory(pointManager.getGridPointVoisin(i));
 				
 				if(v == null) // TODO
 					continue;

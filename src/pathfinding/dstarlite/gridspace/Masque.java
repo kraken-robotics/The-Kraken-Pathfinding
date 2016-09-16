@@ -21,6 +21,7 @@ import java.awt.Graphics;
 import java.util.ArrayList;
 
 import graphic.Fenetre;
+import graphic.printable.Couleur;
 import graphic.printable.Layer;
 import graphic.printable.Printable;
 import robot.RobotReal;
@@ -34,9 +35,11 @@ import robot.RobotReal;
 public class Masque implements Printable
 {
 	public ArrayList<PointDirige> masque = new ArrayList<PointDirige>();
+	private PointGridSpaceManager pm;
 	
-	public Masque(ArrayList<PointDirige> masque)
+	public Masque(PointGridSpaceManager pm, ArrayList<PointDirige> masque)
 	{
+		this.pm = pm;
 		this.masque = masque;
 	}
 
@@ -44,7 +47,12 @@ public class Masque implements Printable
 	public void print(Graphics g, Fenetre f, RobotReal robot)
 	{
 		for(PointDirige p : masque)
+		{
+			g.setColor(Couleur.GRIS.couleur);
 			p.point.print(g, f, robot);
+			g.setColor(Couleur.NOIR.couleur);
+			pm.getGridPointVoisin(p).print(g, f, robot);
+		}
 	}
 
 	@Override

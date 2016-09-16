@@ -112,4 +112,9 @@ public class PointGridSpaceManager implements Service
 	@Override
 	public void useConfig(Config config)
 	{}
+
+	public PointGridSpace getGridPointVoisin(PointDirige point)
+	{
+		return getGridPointVoisin(point.point, point.dir);
+	}
 }

@@ -58,6 +58,8 @@ public class GridSpace implements Service, Printable
 
 	private int distanceMinimaleEntreProximite;
 	private boolean printObsCapteurs;
+	private boolean printObsFixes;
+	private int rayonRobot;
 	
 	// cette grille est constante, c'est-à-dire qu'elle ne contient que les obstacles fixes
 	private BitSet grilleStatique = new BitSet(PointGridSpace.NB_POINTS);
@@ -82,6 +84,8 @@ public class GridSpace implements Service, Printable
 	{
 		distanceMinimaleEntreProximite = config.getInt(ConfigInfo.DISTANCE_BETWEEN_PROXIMITY_OBSTACLES);
 		printObsCapteurs = config.getBoolean(ConfigInfo.GRAPHIC_PROXIMITY_OBSTACLES);
+		printObsFixes = config.getBoolean(ConfigInfo.GRAPHIC_FIXED_OBSTACLES);
+		rayonRobot = config.getInt(ConfigInfo.RAYON_ROBOT);
 		
 		// on ajoute les obstacles fixes une fois pour toute si c'est demandé
 		if(config.getBoolean(ConfigInfo.GRAPHIC_FIXED_OBSTACLES))
@@ -92,7 +96,7 @@ public class GridSpace implements Service, Printable
 		if(config.getBoolean(ConfigInfo.GRAPHIC_D_STAR_LITE))
 		{
 			buffer.add(this);
-			reinitgrid();
+			reinitGraphicGrid();
 		}
 
 		log.debug("Grille statique initialisée");
@@ -102,20 +106,25 @@ public class GridSpace implements Service, Printable
 	/**
 	 * Réinitialise la grille d'affichage
 	 */
-	public void reinitgrid()
+	public void reinitGraphicGrid()
 	{
 		synchronized(buffer)
 		{
+			double distance = rayonRobot + PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS / 2;
+			distance = distance * distance;
+			
 			for(int i = 0; i < PointGridSpace.NB_POINTS; i++)
 			{
 				grid[pointManager.get(i).hashCode()] = null;
 	
 				for(ObstaclesFixes o : ObstaclesFixes.values())
 					if(o.getObstacle().squaredDistance(pointManager.get(i).computeVec2())
-							<= (int)(PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS * PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS)/2)
+							<= (int)(distance))
 					{
+						// Pour le D* Lite, il faut dilater les obstacles du rayon du robot
 						grilleStatique.set(i);
-						grid[pointManager.get(i).hashCode()] = Couleur.NOIR;
+						if(printObsFixes)
+							grid[pointManager.get(i).hashCode()] = Couleur.NOIR;
 						break; // on ne vérifie pas les autres obstacles
 					}
 			}
@@ -137,7 +146,8 @@ public class GridSpace implements Service, Printable
 	public int distanceStatique(PointDirige point)
 	{
 		// s'il y a un obstacle statique
-		if(grilleStatique.get(point.point.hashCode())) // TODO : vérifier le point d'arrivée aussi ?
+		PointGridSpace voisin = pointManager.getGridPointVoisin(point); // TODO : vérifier le point d'arrivée aussi ?
+		if(grilleStatique.get(point.point.hashCode()) || grilleStatique.get(voisin.hashcode))
 			return Integer.MAX_VALUE;
 		if(point.dir.isDiagonal())
 			return 1414;

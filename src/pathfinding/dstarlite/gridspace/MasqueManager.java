@@ -19,7 +19,9 @@ package pathfinding.dstarlite.gridspace;
 
 import java.util.ArrayList;
 
+import container.Container;
 import container.Service;
+import exceptions.ContainerException;
 import graphic.PrintBuffer;
 import utils.Config;
 import utils.ConfigInfo;
@@ -38,16 +40,18 @@ public class MasqueManager implements Service
 	private PointGridSpaceManager pointManager;
 	private PointDirigeManager pointDManager;
 	private PrintBuffer buffer;
+	private Container container;
 	protected Log log;
 	private ArrayList<PointDirige> model = new ArrayList<PointDirige>();
 	private boolean printObsCapteurs;
 	
-	public MasqueManager(Log log, PointGridSpaceManager pointManager, PointDirigeManager pointDManager, PrintBuffer buffer)
+	public MasqueManager(Log log, PointGridSpaceManager pointManager, PointDirigeManager pointDManager, PrintBuffer buffer, Container container)
 	{
 		this.log = log;
 		this.pointManager = pointManager;
 		this.pointDManager = pointDManager;
 		this.buffer = buffer;
+		this.container = container;
 	}
 	
 	@Override
@@ -70,7 +74,7 @@ public class MasqueManager implements Service
 				if((i-centreMasque) * (i-centreMasque) + (j-centreMasque) * (j-centreMasque) > squaredRayonPoint)
 					for(Direction d : Direction.values())
 					{
-						int i2 = i + d.deltaX, j2 = j + d.deltaY;
+						int i2 = i + d.deltaY, j2 = j + d.deltaX;
 						if((i2-centreMasque) * (i2-centreMasque) + (j2-centreMasque) * (j2-centreMasque) <= squaredRayonPoint)
 							model.add(pointDManager.get(j,i,d));
 					}
@@ -87,7 +91,13 @@ public class MasqueManager implements Service
 			if(point != null)
 				out.add(point);
 		}
-		Masque m = new Masque(out);
+		
+		Masque m = null;
+		try {
+			m = container.make(Masque.class, out);
+		} catch (ContainerException e) {
+			log.critical(e);
+		}
 
 		if(printObsCapteurs)
 			buffer.addSupprimable(m);
