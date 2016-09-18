@@ -57,4 +57,15 @@ public class ObstacleProximity extends ObstacleCircular
 		return death_date;
 	}
 	
+	/**
+	 * Renvoi "vrai" si position est à moins de distance du centre de l'obstacle
+	 * @param position
+	 * @param distance
+	 * @return
+	 */
+	public boolean isProcheCentre(Vec2RO position, int distance)
+	{
+		return this.position.squaredDistance(position) < distance * distance;
+	}
+
 }
