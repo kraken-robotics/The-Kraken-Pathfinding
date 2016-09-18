@@ -120,6 +120,15 @@ public class ObstaclesMemory implements Service
 			listObstaclesMobiles.removeFirst();
 		}
 		
+		return updateFirstNotDeadNow() != firstNotDeadNowSave;
+	}
+	
+	/**
+	 * Met à jour firstNotDeadNow
+	 */
+	private int updateFirstNotDeadNow()
+	{
+		long dateActuelle = System.currentTimeMillis();
 		nextDeathDate = Long.MAX_VALUE;
 		firstNotDeadNow = 0;
 		while(firstNotDeadNow < listObstaclesMobiles.size())
@@ -135,7 +144,7 @@ public class ObstaclesMemory implements Service
 			}
 		}
 		firstNotDeadNow += indicePremierObstacle;
-		return firstNotDeadNow != firstNotDeadNowSave;
+		return firstNotDeadNow;
 	}
 	
 	public synchronized long getNextDeathDate()
@@ -145,7 +154,7 @@ public class ObstaclesMemory implements Service
 	
 	public synchronized int getFirstNotDeadNow()
 	{
-		return firstNotDeadNow;
+		return updateFirstNotDeadNow();
 	}
 
 	/**
