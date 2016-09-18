@@ -45,26 +45,22 @@ public class JUnit_DStarLite extends JUnit_Test {
         pathfinding = container.getService(DStarLite.class);
         gridspace = container.getService(GridSpace.class);
 	}
-
 	
 	@Test
     public void test_chemin_dstarlite() throws Exception
     {
-		for(int i = 0; i < 10000; i++)
-		{
 		gridspace.addObstacleAndRemoveNearbyObstacles(new Vec2RO(100, 700));
 		pathfinding.computeNewPath(new Vec2RO(-1000, 200), new Vec2RO(1200, 1200));
-//		pathfinding.itineraireBrut();		
-//		Thread.sleep(500);
-//		log.debug("RECALCUL");
+		pathfinding.itineraireBrut();		
+		Thread.sleep(500);
+		log.debug("RECALCUL");
 		gridspace.addObstacleAndRemoveNearbyObstacles(new Vec2RO(600, 1300));
 		pathfinding.updatePath(new Vec2RO(600,1300));
-//		pathfinding.itineraireBrut();
-//		Thread.sleep(4000);
+		pathfinding.itineraireBrut();
+		Thread.sleep(4000);
 		pathfinding.updatePath(new Vec2RO(-800,1300));
-//		pathfinding.itineraireBrut();
-//		log.debug("RECALCUL");
-		}
+		pathfinding.itineraireBrut();
+		log.debug("RECALCUL");
     }
 
 	@Test(expected = PathfindingException.class)
@@ -110,13 +106,12 @@ public class JUnit_DStarLite extends JUnit_Test {
 		pathfinding.computeNewPath(posRobot, new Vec2RO(1200, 1800));
 		ArrayList<Vec2RO> chemin = pathfinding.itineraireBrut();
 		
-		int n = 10;
-//		for(int i = 0; i < 1; i++)
-		while(n+11 < chemin.size())
+		int n = 15;
+		while(n+6 < chemin.size())
 		{
-			Thread.sleep(1000);
+			Thread.sleep(2000);
 			posRobot = chemin.get(n);
-			gridspace.addObstacleAndRemoveNearbyObstacles(chemin.get(n+11));
+			gridspace.addObstacleAndRemoveNearbyObstacles(chemin.get(n+6));
 			pathfinding.updatePath(posRobot);
 			chemin = pathfinding.itineraireBrut();
 		}
