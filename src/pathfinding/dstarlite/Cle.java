@@ -25,7 +25,7 @@ package pathfinding.dstarlite;
 
 class Cle
 {
-	// En gros, first c'est f_score et second c'est g_score
+	// Quand un nœud est consistent, first = vraie distance + heuristique, second = vraie distance
 	int first, second;
 
 	public Cle()

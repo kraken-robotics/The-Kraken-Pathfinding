@@ -68,7 +68,7 @@ public class PointGridSpace implements Service, Printable
 	@Override
 	public boolean equals(Object o)
 	{
-		return o instanceof PointGridSpace && hashCode() == o.hashCode();
+		return o instanceof PointGridSpace && hashcode == o.hashCode();
 	}
 	
 	/**

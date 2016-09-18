@@ -110,7 +110,7 @@ public class GridSpace implements Service, Printable
 		
 		for(int i = 0; i < PointGridSpace.NB_POINTS; i++)
 		{
-			grid[pointManager.get(i).hashCode()] = null;
+			grid[pointManager.get(i).hashcode] = null;
 
 			for(ObstaclesFixes o : ObstaclesFixes.values())
 				if(o.getObstacle().squaredDistance(pointManager.get(i).computeVec2())
@@ -137,14 +137,14 @@ public class GridSpace implements Service, Printable
 			
 			for(int i = 0; i < PointGridSpace.NB_POINTS; i++)
 			{
-				grid[pointManager.get(i).hashCode()] = null;
+				grid[pointManager.get(i).hashcode] = null;
 	
 				for(ObstaclesFixes o : ObstaclesFixes.values())
 					if(o.getObstacle().squaredDistance(pointManager.get(i).computeVec2())
 							<= (int)(distance))
 					{
 						// Pour le D* Lite, il faut dilater les obstacles du rayon du robot
-						grid[pointManager.get(i).hashCode()] = Couleur.NOIR;
+						grid[pointManager.get(i).hashcode] = Couleur.NOIR;
 						break; // on ne vérifie pas les autres obstacles
 					}
 			}
@@ -166,8 +166,8 @@ public class GridSpace implements Service, Printable
 	public int distanceStatique(PointDirige point)
 	{
 		// s'il y a un obstacle statique
-		PointGridSpace voisin = pointManager.getGridPointVoisin(point); // TODO : vérifier le point d'arrivée aussi ?
-		if(grilleStatique.get(point.point.hashCode()) || voisin == null || grilleStatique.get(voisin.hashcode))
+		PointGridSpace voisin = pointManager.getGridPointVoisin(point);
+		if(grilleStatique.get(point.point.hashcode) || voisin == null || grilleStatique.get(voisin.hashcode))
 			return Integer.MAX_VALUE;
 		if(point.dir.isDiagonal())
 			return 1414;

@@ -74,9 +74,9 @@ public class MasqueManager implements Service
 				if((i-centreMasque) * (i-centreMasque) + (j-centreMasque) * (j-centreMasque) > squaredRayonPoint)
 					for(Direction d : Direction.values())
 					{
-						int i2 = i + d.deltaY, j2 = j + d.deltaX;
+						int i2 = i + d.deltaX, j2 = j + d.deltaY;
 						if((i2-centreMasque) * (i2-centreMasque) + (j2-centreMasque) * (j2-centreMasque) <= squaredRayonPoint)
-							model.add(pointDManager.get(j,i,d));
+							model.add(pointDManager.get(i,j,d));
 					}
 	}
 	
@@ -89,7 +89,11 @@ public class MasqueManager implements Service
 		{
 			PointDirige point = pointDManager.get(pointManager.get(c.point.x + p.x - centreMasque, c.point.y + p.y - centreMasque), c.dir);
 			if(point != null)
-				out.add(point);
+			{
+				PointGridSpace voisin = pointManager.getGridPointVoisin(point);
+				if(voisin != null) // on vérifie que les deux points sont bien dans la table
+					out.add(point);
+			}
 		}
 		
 		Masque m = null;

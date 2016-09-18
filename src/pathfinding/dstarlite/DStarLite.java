@@ -135,17 +135,19 @@ public class DStarLite implements Service
 		if(gridpoint == null)
 			return null;
 		
-		DStarLiteNode out = memory[gridpoint.hashCode()];
+		DStarLiteNode out = memory[gridpoint.hashcode];
 		out.update(nbPF);
 		
 		return out;
 	}
-		
+	
 	private void updateVertex(DStarLiteNode u)
 	{
 		/**
 		 * C'est un peu différent de l'algo classique
 		 */
+		if(graphicDStarLite)
+			gridspace.setColor(u.gridpoint, Couleur.BLEU);
 		
 		if(u.g != u.rhs)
 		{
@@ -155,9 +157,6 @@ public class DStarLite implements Service
 			else
 				u.inOpenSet = true;
 			openset.add(u);
-
-			if(graphicDStarLite)
-				gridspace.setColor(u.gridpoint, Couleur.BLEU);
 		}
 		else if(u.inOpenSet)
 		{
@@ -170,7 +169,7 @@ public class DStarLite implements Service
 	private void computeShortestPath() throws PathfindingException
 	{
 		DStarLiteNode u;
-		while(!openset.isEmpty() && ((u = openset.poll()).cle.isLesserThan(calcKey(depart, tmp)) || depart.rhs > depart.g))
+		while(!openset.isEmpty() && ((u = openset.peek()).cle.isLesserThan(calcKey(depart, tmp)) || depart.rhs > depart.g))
 		{
 			u.cle.copy(kold);
 //			Cle kold = u.cle.clone();
@@ -179,6 +178,7 @@ public class DStarLite implements Service
 			{
 //				log.debug("Cas 1");
 				knew.copy(u.cle);
+				openset.poll();
 				openset.add(u);
 				if(graphicDStarLite)
 					gridspace.setColor(u.gridpoint, Couleur.BLEU);
@@ -187,6 +187,7 @@ public class DStarLite implements Service
 			{
 //				log.debug("Cas 2");
 				u.g = u.rhs;
+				openset.poll();
 				u.inOpenSet = false;
 				if(graphicDStarLite)
 					gridspace.setColor(u.gridpoint, Couleur.ROUGE);
@@ -291,7 +292,7 @@ public class DStarLite implements Service
 
 		obstaclesConnus.clear();
 		obstaclesConnus.or(gridspace.getCurrentObstacles());
-
+		
 		computeShortestPath();
 	}
 	
@@ -340,13 +341,8 @@ public class DStarLite implements Service
 				PointDirige p = pointDManager.get(i);
 				DStarLiteNode u = getFromMemory(p.point);
 				DStarLiteNode v = getFromMemory(pointManager.getGridPointVoisin(p));
-				if(v == null)
-				{
-					log.critical("Obstacle hors terrain !");
-					continue;
-				}
 				
-				u.rhs = Math.min(u.rhs, v.g);				
+				u.rhs = Math.min(u.rhs, add(v.g, gridspace.distanceStatique(p)));	
 				updateVertex(u);
 			}
 			else
@@ -368,14 +364,8 @@ public class DStarLite implements Service
 				DStarLiteNode u = getFromMemory(p.point);
 				DStarLiteNode v = getFromMemory(pointManager.getGridPointVoisin(p));
 
-				if(v == null)
-				{
-					log.critical("Obstacle hors terrain !");
-					continue;
-				}
-				
 				// l'ancienne distance est la distance statique car c'est un ajout d'obstacle
-				if(u.rhs == v.g && !u.equals(arrivee))
+				if(u.rhs == add(v.g, gridspace.distanceStatique(p)) && !u.equals(arrivee))
 				{
 					u.rhs = Integer.MAX_VALUE;
 					for(Direction voisin : Direction.values())
@@ -451,7 +441,7 @@ public class DStarLite implements Service
 		PointGridSpace gridpoint = pointManager.get(c.getPosition());
 		
 		// Si ce n'est pas à jour, on recalcule
-		if(memory[gridpoint.hashCode()].nbPF != nbPF)
+		if(memory[gridpoint.hashcode].nbPF != nbPF)
 		{
 			updateGoal(c.getPosition());
 			try {

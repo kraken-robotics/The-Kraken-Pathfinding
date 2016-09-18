@@ -37,7 +37,7 @@ public class PointDirige
 	@Override
 	public int hashCode()
 	{
-		return (point.hashCode() << 3) + dir.ordinal();
+		return (point.hashcode << 3) + dir.ordinal();
 	}
 	
 	@Override
