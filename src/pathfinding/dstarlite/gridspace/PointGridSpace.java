@@ -65,13 +65,19 @@ public class PointGridSpace implements Service, Printable
 		return hashcode;
 	}
 		
+	@Override
+	public boolean equals(Object o)
+	{
+		return o instanceof PointGridSpace && hashCode() == o.hashCode();
+	}
+	
 	/**
 	 * On utilise la distance octile pour l'heuristique (surtout parce que c'est rapide)
 	 * @param pointA
 	 * @param pointB
 	 * @return
 	 */
-	public final int distanceHeuristiqueDStarLite(PointGridSpace point)
+	public final int distanceOctile(PointGridSpace point)
 	{
 		int dx = Math.abs(x - point.x);
 		int dy = Math.abs(y - point.y);

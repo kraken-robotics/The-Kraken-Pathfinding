@@ -28,13 +28,13 @@ import pathfinding.dstarlite.gridspace.PointGridSpace;
 class DStarLiteNode {
 
 	public final PointGridSpace gridpoint;
-	public Cle cle = new Cle();
+	public final Cle cle = new Cle();
 	public int g = Integer.MAX_VALUE, rhs = Integer.MAX_VALUE;
 	
 	/**
 	 * "done" correspond à l'appartenance à U dans l'algo du DStarLite
 	 */
-	public boolean done = false;
+	public boolean inOpenSet = false;
 	public long nbPF = 0;
 	
 	public DStarLiteNode(PointGridSpace gridpoint)
@@ -45,13 +45,13 @@ class DStarLiteNode {
 	@Override
 	public final int hashCode()
 	{
-		return gridpoint.hashCode();
+		return gridpoint.hashcode;
 	}
 	
 	@Override
 	public final boolean equals(Object o)
 	{
-		return gridpoint.hashCode() == o.hashCode();
+		return o instanceof DStarLiteNode && gridpoint.hashcode == o.hashCode();
 	}
 	
 	@Override
@@ -72,7 +72,7 @@ class DStarLiteNode {
 		{
 			g = Integer.MAX_VALUE;
 			rhs = Integer.MAX_VALUE;
-			done = false;
+			inOpenSet = false;
 			this.nbPF = nbPF;
 		}
 	}

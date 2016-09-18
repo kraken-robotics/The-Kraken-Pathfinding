@@ -76,14 +76,14 @@ public class JUnit_GridSpace extends JUnit_Test {
 	@Test
 	public void test_distanceHeuristique() throws Exception
 	{
-		Assert.assertTrue(pointManager.get(1).distanceHeuristiqueDStarLite(pointManager.get(2)) == 1000);
-		Assert.assertTrue(pointManager.get(1).distanceHeuristiqueDStarLite(pointManager.get(65)) == 1000);
-		Assert.assertTrue(pointManager.get(1).distanceHeuristiqueDStarLite(pointManager.get(64)) == 1414);
-		Assert.assertTrue(pointManager.get(64).distanceHeuristiqueDStarLite(pointManager.get(1)) == 1414);
-		Assert.assertTrue(pointManager.get(1).distanceHeuristiqueDStarLite(pointManager.get(1+2*64)) == 2000);
-		Assert.assertTrue(pointManager.get(1+2*64).distanceHeuristiqueDStarLite(pointManager.get(1)) == 2000);
-		Assert.assertTrue(pointManager.get(64).distanceHeuristiqueDStarLite(pointManager.get(63)) == 63414);
-		Assert.assertTrue(pointManager.get(63).distanceHeuristiqueDStarLite(pointManager.get(64)) == 63414);
+		Assert.assertTrue(pointManager.get(1).distanceOctile(pointManager.get(2)) == 1000);
+		Assert.assertTrue(pointManager.get(1).distanceOctile(pointManager.get(65)) == 1000);
+		Assert.assertTrue(pointManager.get(1).distanceOctile(pointManager.get(64)) == 1414);
+		Assert.assertTrue(pointManager.get(64).distanceOctile(pointManager.get(1)) == 1414);
+		Assert.assertTrue(pointManager.get(1).distanceOctile(pointManager.get(1+2*64)) == 2000);
+		Assert.assertTrue(pointManager.get(1+2*64).distanceOctile(pointManager.get(1)) == 2000);
+		Assert.assertTrue(pointManager.get(64).distanceOctile(pointManager.get(63)) == 63414);
+		Assert.assertTrue(pointManager.get(63).distanceOctile(pointManager.get(64)) == 63414);
 	}
 	
 	@Test
@@ -92,7 +92,7 @@ public class JUnit_GridSpace extends JUnit_Test {
 		for(int i = 0; i < 8; i++)
 		{
 			log.debug(i);
-			Assert.assertEquals((i<4?1414:1000), pointManager.getGridPointVoisin(pointManager.get(150), Direction.values()[i]).distanceHeuristiqueDStarLite(pointManager.get(150)));
+			Assert.assertEquals((i<4?1414:1000), pointManager.getGridPointVoisin(pointManager.get(150), Direction.values()[i]).distanceOctile(pointManager.get(150)));
 		}
 
 		Assert.assertEquals(null, pointManager.getGridPointVoisin(pointManager.get(21), Direction.S));

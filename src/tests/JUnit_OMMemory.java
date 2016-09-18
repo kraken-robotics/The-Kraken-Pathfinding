@@ -81,7 +81,7 @@ public class JUnit_OMMemory extends JUnit_Test {
     	Assert.assertTrue(!iterator.hasNext());
 
     	m.invoke(memory, new Vec2RO(1324,546), date, null);
-    	Assert.assertTrue(memory.getFirstNotDeadNow() == 0);
+    	Assert.assertEquals(2, memory.getFirstNotDeadNow());
     	iterator.reinit();
 
     	Assert.assertTrue(iterator.hasNext());    	
@@ -89,7 +89,7 @@ public class JUnit_OMMemory extends JUnit_Test {
     	Assert.assertTrue(((Vec2RW)f.get(o)).getX() == 1324);
     	Assert.assertTrue(((Vec2RW)f.get(o)).getY() == 546);
     	Assert.assertTrue(!iterator.hasNext());
-    	Assert.assertEquals(0, memory.getFirstNotDeadNow());
+    	Assert.assertEquals(2, memory.getFirstNotDeadNow());
     	m.invoke(memory, new Vec2RO(1324,546), date, null);
     	m.invoke(memory, new Vec2RO(1324,546), date, null);
     	m.invoke(memory, new Vec2RO(1324,546), date, null);

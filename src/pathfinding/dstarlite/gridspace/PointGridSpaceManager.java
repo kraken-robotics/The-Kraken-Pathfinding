@@ -113,6 +113,11 @@ public class PointGridSpaceManager implements Service
 	public void useConfig(Config config)
 	{}
 
+	/**
+	 * Donne le point voisin au point dirigé
+	 * @param point
+	 * @return
+	 */
 	public PointGridSpace getGridPointVoisin(PointDirige point)
 	{
 		return getGridPointVoisin(point.point, point.dir);

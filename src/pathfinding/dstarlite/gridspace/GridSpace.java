@@ -207,7 +207,9 @@ public class GridSpace implements Service, Printable
 		{
 			ArrayList<PointDirige> tmp = iteratorDStarLiteLast.next().getMasque().masque;
 			for(PointDirige p : tmp)
-				newObstacles.set(p.hashCode());
+				// si on est déjà dans un obstacle, la distance ne change pas
+				if(distanceStatique(p) != Integer.MAX_VALUE)
+					newObstacles.set(p.hashCode());
 		}
 		
 		return newObstacles;
@@ -228,7 +230,8 @@ public class GridSpace implements Service, Printable
 //				log.debug("Mort");
 				ArrayList<PointDirige> tmp = iteratorDStarLiteFirst.next().getMasque().masque;
 				for(PointDirige p : tmp)
-					oldObstacles.set(p.hashCode());
+					if(distanceStatique(p) != Integer.MAX_VALUE)
+						oldObstacles.set(p.hashCode());
 			}
 			
 			ObstacleProximity o;
@@ -236,14 +239,16 @@ public class GridSpace implements Service, Printable
 			{
 				ArrayList<PointDirige> tmp = o.getMasque().masque;
 				for(PointDirige p : tmp)
-					oldObstacles.set(p.hashCode());
+					if(distanceStatique(p) != Integer.MAX_VALUE)
+						oldObstacles.set(p.hashCode());
 			}
 	
 			while(iteratorDStarLiteLast.hasNext())
 			{
 				ArrayList<PointDirige> tmp = iteratorDStarLiteLast.next().getMasque().masque;
 				for(PointDirige p : tmp)
-					newObstacles.set(p.hashCode());
+					if(distanceStatique(p) != Integer.MAX_VALUE)
+						newObstacles.set(p.hashCode());
 			}
 
 			/**
