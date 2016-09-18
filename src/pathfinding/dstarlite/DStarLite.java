@@ -52,7 +52,7 @@ public class DStarLite implements Service
 	private GridSpace gridspace;
 	private PointGridSpaceManager pointManager;
 	private PointDirigeManager pointDManager;
-	private boolean graphicDStarLite;
+	private boolean graphicDStarLite, graphicDStarLiteFinal;
 
 	private DStarLiteNode[] memory = new DStarLiteNode[PointGridSpace.NB_POINTS];
 
@@ -309,6 +309,7 @@ public class DStarLite implements Service
 	public void useConfig(Config config)
 	{
 		graphicDStarLite = config.getBoolean(ConfigInfo.GRAPHIC_D_STAR_LITE);
+		graphicDStarLiteFinal = config.getBoolean(ConfigInfo.GRAPHIC_D_STAR_LITE_FINAL);
 	}
 	
 	private void updateGoal(Vec2RO positionRobot)
@@ -324,7 +325,7 @@ public class DStarLite implements Service
 	 */
 	public void updatePath(Vec2RO positionRobot) throws PathfindingException
 	{
-		if(graphicDStarLite)
+		if(graphicDStarLite || graphicDStarLiteFinal)
 			gridspace.reinitGraphicGrid();
 
 		updateGoal(positionRobot);
@@ -344,10 +345,6 @@ public class DStarLite implements Service
 				
 				u.rhs = Math.min(u.rhs, add(v.g, gridspace.distanceStatique(p)));	
 				updateVertex(u);
-			}
-			else
-			{
-				log.critical("Suppression d'un obstacle déjà supprimé ?");
 			}
 		}
 		
@@ -374,10 +371,6 @@ public class DStarLite implements Service
 				}
 				updateVertex(u);
 			}
-			else
-			{
-				log.critical("Ajout d'un obstacle déjà ajouté ?");
-			}
 		}
 		
 		computeShortestPath();
@@ -391,16 +384,18 @@ public class DStarLite implements Service
 	{
 		ArrayList<Vec2RO> trajet = new ArrayList<Vec2RO>();
 
-		log.debug("depart : "+depart.gridpoint.computeVec2());
+//		log.debug("depart : "+depart.gridpoint.computeVec2());
 		DStarLiteNode node = depart;
 		DStarLiteNode min = null;
 		int coutMin;
 		
-		while(!node.equals(arrivee))
+		int nbMax = 500;
+		
+		while(!node.equals(arrivee) && --nbMax>0)
 		{
 			trajet.add(node.gridpoint.computeVec2());
-			log.debug(node.gridpoint.computeVec2());
-			if(graphicDStarLite)
+//			log.debug(node.gridpoint.computeVec2());
+			if(graphicDStarLiteFinal)
 				gridspace.setColor(node.gridpoint, Couleur.VERT);
 
 			coutMin = Integer.MAX_VALUE;
@@ -412,20 +407,20 @@ public class DStarLite implements Service
 					continue;
 				DStarLiteNode s = getFromMemory(voisin);
 				int coutTmp = add(distanceDynamiqueSucc(node.gridpoint, i), s.g);
-				if(coutTmp < coutMin && coutTmp < node.g)
+				if(coutTmp < coutMin)
 				{
 					coutMin = coutTmp;
 					min = s;
 				}
 			}
-			
-			if(coutMin == Integer.MAX_VALUE)
-				throw new PathfindingException("Itinéraire brut : aucun chemin !");
-			
+						
 			node = min;
 		}
+		if(nbMax < 0)
+			throw new PathfindingException("Itinéraire brut : aucun chemin !");
+
 		trajet.add(arrivee.gridpoint.computeVec2());
-		log.debug("Arrivée : "+arrivee.gridpoint.computeVec2());
+//		log.debug("Arrivée : "+arrivee.gridpoint.computeVec2());
 
 		return trajet;
 		

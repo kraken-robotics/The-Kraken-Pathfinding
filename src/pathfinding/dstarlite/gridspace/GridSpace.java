@@ -58,7 +58,6 @@ public class GridSpace implements Service, Printable
 	private PrintBuffer buffer;
 
 	private int distanceMinimaleEntreProximite;
-	private boolean printObsCapteurs;
 	private int rayonRobot;
 	
 	// cette grille est constante, c'est-à-dire qu'elle ne contient que les obstacles fixes
@@ -83,12 +82,10 @@ public class GridSpace implements Service, Printable
 		newOldObstacles[1] = newObstacles;
 	}
 	
-
 	@Override
 	public void useConfig(Config config)
 	{
 		distanceMinimaleEntreProximite = config.getInt(ConfigInfo.DISTANCE_BETWEEN_PROXIMITY_OBSTACLES);
-		printObsCapteurs = config.getBoolean(ConfigInfo.GRAPHIC_PROXIMITY_OBSTACLES);
 		rayonRobot = config.getInt(ConfigInfo.RAYON_ROBOT);
 		
 		// on ajoute les obstacles fixes une fois pour toute si c'est demandé
@@ -96,13 +93,6 @@ public class GridSpace implements Service, Printable
 			for(ObstaclesFixes o : ObstaclesFixes.values())
 				buffer.add(o.getObstacle());
 		
-		// l'affichage du d* lite est géré par le gridspace
-		if(config.getBoolean(ConfigInfo.GRAPHIC_D_STAR_LITE))
-		{
-			buffer.add(this);
-			reinitGraphicGrid();
-		}
-
 		log.debug("Grille statique initialisée");
 		
 		double distance = rayonRobot + PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS / 2;
@@ -110,8 +100,6 @@ public class GridSpace implements Service, Printable
 		
 		for(int i = 0; i < PointGridSpace.NB_POINTS; i++)
 		{
-			grid[pointManager.get(i).hashcode] = null;
-
 			for(ObstaclesFixes o : ObstaclesFixes.values())
 				if(o.getObstacle().squaredDistance(pointManager.get(i).computeVec2())
 						<= (int)(distance))
@@ -122,6 +110,12 @@ public class GridSpace implements Service, Printable
 				}
 		}
 
+		// l'affichage du d* lite est géré par le gridspace
+		if(config.getBoolean(ConfigInfo.GRAPHIC_D_STAR_LITE) || config.getBoolean(ConfigInfo.GRAPHIC_D_STAR_LITE_FINAL))
+		{
+			buffer.add(this);
+			reinitGraphicGrid();
+		}
 
 	}
 
@@ -132,22 +126,12 @@ public class GridSpace implements Service, Printable
 	{
 		synchronized(buffer)
 		{
-			double distance = rayonRobot + PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS / 2;
-			distance = distance * distance;
-			
 			for(int i = 0; i < PointGridSpace.NB_POINTS; i++)
-			{
-				grid[pointManager.get(i).hashcode] = null;
-	
-				for(ObstaclesFixes o : ObstaclesFixes.values())
-					if(o.getObstacle().squaredDistance(pointManager.get(i).computeVec2())
-							<= (int)(distance))
-					{
-						// Pour le D* Lite, il faut dilater les obstacles du rayon du robot
-						grid[pointManager.get(i).hashcode] = Couleur.NOIR;
-						break; // on ne vérifie pas les autres obstacles
-					}
-			}
+				if(grilleStatique.get(i))
+					grid[pointManager.get(i).hashcode] = Couleur.NOIR;
+				else
+					grid[pointManager.get(i).hashcode] = null;
+
 			buffer.notify();
 		}
 	}
@@ -282,11 +266,7 @@ public class GridSpace implements Service, Printable
     	{
     		ObstacleProximity o = iteratorRemoveNearby.next();
         	if(o.isProcheCentre(position, distanceMinimaleEntreProximite))
-        	{
         		iteratorRemoveNearby.remove();
-        		if(printObsCapteurs)
-        			buffer.removeSupprimable(o);
-        	}
     	}
 
     	Masque masque = masquemanager.getMasque(position);

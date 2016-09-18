@@ -26,7 +26,6 @@ import utils.Log;
 import container.Service;
 import graphic.printable.Layer;
 import graphic.printable.Printable;
-import obstacles.types.ObstacleProximity;
 
 /**
  * Buffer de ce qu'il faut afficher
@@ -103,14 +102,10 @@ public class PrintBuffer implements Service
 		}
 	}
 
-	public synchronized void removeSupprimable(ObstacleProximity o)
+	public synchronized void removeSupprimable(Printable o)
 	{
-		for(int i = 0 ; i < Layer.values().length; i++)
-			if(elementsAffichablesSupprimables.remove(o))
-			{
-				notify();
-				break;
-			}
+		if(elementsAffichablesSupprimables.get(o.getLayer().ordinal()).remove(o))
+			notify();
 	}
 	
 }

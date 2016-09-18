@@ -68,4 +68,10 @@ public class ObstacleProximity extends ObstacleCircular
 		return this.position.squaredDistance(position) < distance * distance;
 	}
 
+	@Override
+	public int hashCode()
+	{
+		return (int) (masque.hashCode()+(death_date & 0xFFFF));
+	}
+	
 }

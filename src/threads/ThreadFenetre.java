@@ -64,7 +64,7 @@ public class ThreadFenetre extends ThreadService
 					buffer.wait();
 				}
 				fenetre.refresh();
-				Thread.sleep(200); // on ne met pas à jour plus souvent que toutes les 200ms
+				Thread.sleep(50); // on ne met pas à jour plus souvent que toutes les 50ms
 			}
 		} catch (InterruptedException e) {
 			log.debug("Arrêt de "+Thread.currentThread().getName());

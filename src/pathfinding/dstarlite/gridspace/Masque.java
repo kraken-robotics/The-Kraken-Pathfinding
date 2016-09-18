@@ -42,14 +42,20 @@ public class Masque implements Printable
 		this.pm = pm;
 		this.masque = masque;
 	}
+	
+	@Override
+	public int hashCode()
+	{
+		return masque.get(0).hashCode();
+	}
 
 	@Override
 	public void print(Graphics g, Fenetre f, RobotReal robot)
 	{
 		for(PointDirige p : masque)
 		{
-			g.setColor(Couleur.GRIS.couleur);
-			p.point.print(g, f, robot);
+//			g.setColor(Couleur.GRIS.couleur);
+//			p.point.print(g, f, robot);
 			g.setColor(Couleur.NOIR.couleur);
 			pm.getGridPointVoisin(p).print(g, f, robot);
 		}
