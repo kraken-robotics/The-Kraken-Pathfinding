@@ -63,6 +63,22 @@ public class JUnit_DStarLite extends JUnit_Test {
 		log.debug("RECALCUL");
     }
 
+	@Test
+    public void test_stress() throws Exception
+    {
+		long dateAvant = System.currentTimeMillis();
+		int nbBoucle = 100000;
+		for(int i = 0; i < nbBoucle; i++)
+		{
+			pathfinding.computeNewPath(new Vec2RO(-1000, 200), new Vec2RO(1200, 1200));
+			gridspace.addObstacleAndRemoveNearbyObstacles(new Vec2RO(100, 700));
+			pathfinding.updatePath(new Vec2RO(600,1300));
+			gridspace.addObstacleAndRemoveNearbyObstacles(new Vec2RO(500, 1200));
+			pathfinding.updatePath(new Vec2RO(-800,1300));
+		}
+		log.debug("En moyenne : "+((System.currentTimeMillis() - dateAvant)/(3.*nbBoucle)));
+    }
+	
 	@Test(expected = PathfindingException.class)
     public void test_exception1() throws Exception
     {

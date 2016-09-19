@@ -19,6 +19,7 @@ package obstacles.memory;
 
 import graphic.PrintBuffer;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 
 import obstacles.types.ObstacleProximity;
@@ -121,6 +122,19 @@ public class ObstaclesMemory implements Service
 		
 		listObstaclesMortsTot.add(o);
 		listObstaclesMobiles.set(indice-indicePremierObstacle, null);
+		
+		/**
+		 * Mise à jour de firstNotDeadNow
+		 */
+		firstNotDeadNow -= indicePremierObstacle;
+		
+//		while(firstNotDeadNow < 0)
+//			firstNotDeadNow++;
+		
+		while(firstNotDeadNow < listObstaclesMobiles.size() && listObstaclesMobiles.get(firstNotDeadNow) == null)
+			firstNotDeadNow++;
+		
+		firstNotDeadNow += indicePremierObstacle;
 	}
 	
 	/**
@@ -134,47 +148,33 @@ public class ObstaclesMemory implements Service
 		long dateActuelle = System.currentTimeMillis();
 		int firstNotDeadNowSave = firstNotDeadNow;
 		
-		ObstacleProximity o;
+		ObstacleProximity o = null;
 		
-		// S'il est périmé depuis deux secondes : on vire.
-		while(!listObstaclesMobiles.isEmpty() && ((o = listObstaclesMobiles.getFirst()) == null || o.isDestructionNecessary(dateActuelle-2000)))
-		{
-			indicePremierObstacle++;
-			listObstaclesMobiles.removeFirst();
-		}
-		
-		return updateFirstNotDeadNow() != firstNotDeadNowSave;
-	}
-	
-	/**
-	 * Met à jour firstNotDeadNow
-	 */
-	private int updateFirstNotDeadNow()
-	{
-		long dateActuelle = System.currentTimeMillis();
 		nextDeathDate = Long.MAX_VALUE;
-		firstNotDeadNow = 0;
-		while(firstNotDeadNow < listObstaclesMobiles.size())
+		firstNotDeadNow = indicePremierObstacle;
+		Iterator<ObstacleProximity> iter = listObstaclesMobiles.iterator();
+		
+		while(iter.hasNext() && ((o = iter.next()) == null || o.isDestructionNecessary(dateActuelle)))
 		{
-			ObstacleProximity o = listObstaclesMobiles.get(firstNotDeadNow);
-			// s'il est fraîchement périmé, on prévient qu'il y a du changement mais on conserve quand même l'obstacle en mémoire
-			if(o == null || o.isDestructionNecessary(dateActuelle))
+			if(o != null && o.isDestructionNecessary(dateActuelle-2000))
 			{
-				if(printProx && o != null)
-				{
-					buffer.removeSupprimable(o);
-					buffer.removeSupprimable(o.getMasque());
-				}
+				indicePremierObstacle++;
+				listObstaclesMobiles.removeFirst();
 				firstNotDeadNow++;
 			}
-			else
+
+			if(printProx && o != null)
 			{
-				nextDeathDate = o.getDeathDate();
-				break;
+				buffer.removeSupprimable(o);
+				buffer.removeSupprimable(o.getMasque());
 			}
+			firstNotDeadNow++;
 		}
-		firstNotDeadNow += indicePremierObstacle;
-		return firstNotDeadNow;
+		
+		if(o != null && o.getDeathDate() > dateActuelle)
+			nextDeathDate = o.getDeathDate();
+
+		return firstNotDeadNow != firstNotDeadNowSave;
 	}
 	
 	public synchronized long getNextDeathDate()
@@ -184,7 +184,7 @@ public class ObstaclesMemory implements Service
 	
 	public synchronized int getFirstNotDeadNow()
 	{
-		return updateFirstNotDeadNow();
+		return firstNotDeadNow;
 	}
 
 	/**
