@@ -253,7 +253,7 @@ public class Container implements Service
 		/**
 		 * On ne crée pas forcément le graphe de dépendances pour éviter une lourdeur inutile
 		 */
-		if(showGraph && !serviceTo.equals(Log.class) && showGraph && !serviceTo.equals(Container.class) && Service.class.isAssignableFrom(serviceTo) && (serviceFrom == null || Service.class.isAssignableFrom(serviceFrom)))
+		if(showGraph && !serviceTo.equals(Log.class) && !serviceTo.equals(PrintBuffer.class) && showGraph && !serviceTo.equals(Container.class) && Service.class.isAssignableFrom(serviceTo) && (serviceFrom == null || Service.class.isAssignableFrom(serviceFrom)))
 		{
 			try {
 				if(ko.contains(serviceTo))

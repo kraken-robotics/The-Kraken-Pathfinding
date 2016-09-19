@@ -18,6 +18,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 package threads;
 
 import graphic.PrintBuffer;
+import obstacles.memory.ObstaclesMemory;
+import pathfinding.dstarlite.DStarLite;
 import pathfinding.dstarlite.gridspace.GridSpace;
 import utils.Config;
 import utils.ConfigInfo;
@@ -32,18 +34,20 @@ import utils.Log;
 
 public class ThreadPeremption extends ThreadService
 {
-	private GridSpace gridspace;
+	private ObstaclesMemory memory;
 	protected Log log;
 	private PrintBuffer buffer;
+	private DStarLite dstarlite;
 	
 	private int dureePeremption;
 	private boolean printProxObs;
 	
-	public ThreadPeremption(Log log, GridSpace gridspace, PrintBuffer buffer)
+	public ThreadPeremption(Log log, ObstaclesMemory memory, PrintBuffer buffer, DStarLite dstarlite)
 	{
 		this.log = log;
-		this.gridspace = gridspace;
+		this.memory = memory;
 		this.buffer = buffer;
+		this.dstarlite = dstarlite;
 	}
 	
 	@Override
@@ -54,9 +58,10 @@ public class ThreadPeremption extends ThreadService
 		try {
 			while(true)
 			{
-				gridspace.deleteOldObstacles();
+				if(memory.deleteOldObstacles())
+					dstarlite.updateObstacles();
 	
-				long prochain = gridspace.getNextDeathDate();
+				long prochain = memory.getNextDeathDate();
 				
 				/**
 				 * S'il n'y a pas d'obstacles, on dort de dureePeremption, qui est la durée minimale avant la prochaine péremption.
@@ -65,7 +70,7 @@ public class ThreadPeremption extends ThreadService
 					Thread.sleep(dureePeremption);
 				else
 					// Il faut toujours s'assurer qu'on dorme un temps positif. Il y a aussi une petite marge
-					Thread.sleep(Math.min(dureePeremption, Math.max(prochain - System.currentTimeMillis() + 5, 10)));
+					Thread.sleep(Math.min(dureePeremption, Math.max(prochain - System.currentTimeMillis() + 2, 5)));
 				
 				// mise à jour des obstacles : on réaffiche
 				if(printProxObs)

@@ -309,7 +309,7 @@ public class AStarCourbe implements Service
 		}
 		vitesseMax = Speed.REPLANIF;
 		
-		dstarlite.updatePath(depart.state.robot.getCinematique().getPosition());
+//		dstarlite.updatePath(depart.state.robot.getCinematique().getPosition());
 		chemin.clear();
 		process();
 		isUpdating = false;

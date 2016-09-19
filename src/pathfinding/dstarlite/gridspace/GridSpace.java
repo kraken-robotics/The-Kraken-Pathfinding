@@ -159,25 +159,6 @@ public class GridSpace implements Service, Printable
 	}
 
 	/**
-	 * Supprime les anciens obstacles et notifie si changement
-	 */
-	public synchronized void deleteOldObstacles()
-	{
-		// S'il y a effectivement suppression, on régénère la grille
-		if(obstaclesMemory.deleteOldObstacles())
-			notify(); // changement de la grille dynamique !
-	}
-
-	/**
-	 * Fournit au thread de péremption la date de la prochaine mort
-	 * @return
-	 */
-	public long getNextDeathDate()
-	{
-		return obstaclesMemory.getNextDeathDate();
-	}
-
-	/**
 	 * Un nouveau DStarLite commence. Il faut lui fournir les obstacles actuels
 	 * @return
 	 */
@@ -221,6 +202,7 @@ public class GridSpace implements Service, Printable
 			ObstacleProximity o;
 			while((o = obstaclesMemory.pollMortTot()) != null)
 			{
+//				log.debug("Mort tôt");
 				ArrayList<PointDirige> tmp = o.getMasque().masque;
 				for(PointDirige p : tmp)
 					if(distanceStatique(p) != Integer.MAX_VALUE)
@@ -229,6 +211,7 @@ public class GridSpace implements Service, Printable
 	
 			while(iteratorDStarLiteLast.hasNext())
 			{
+//				log.debug("Nouveau");
 				ArrayList<PointDirige> tmp = iteratorDStarLiteLast.next().getMasque().masque;
 				for(PointDirige p : tmp)
 					if(distanceStatique(p) != Integer.MAX_VALUE)

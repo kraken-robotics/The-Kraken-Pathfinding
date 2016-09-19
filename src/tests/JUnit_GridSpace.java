@@ -31,6 +31,7 @@ import pathfinding.dstarlite.gridspace.MasqueManager;
 import pathfinding.dstarlite.gridspace.PointDirigeManager;
 import pathfinding.dstarlite.gridspace.PointGridSpace;
 import pathfinding.dstarlite.gridspace.PointGridSpaceManager;
+import threads.ThreadCapteurs;
 import utils.ConfigInfo;
 import utils.Vec2RO;
 
@@ -108,11 +109,14 @@ public class JUnit_GridSpace extends JUnit_Test {
 		for(int i = 0; i < PointGridSpace.NB_POINTS; i++)
 			Assert.assertTrue(pointManager.get(pointManager.get(i).computeVec2()).hashCode() == i);
 	}
-	
+	/*
 	@Test
 	public void test_ajout_obstacle() throws Exception
-	{
-		int peremption = config.getInt(ConfigInfo.DUREE_PEREMPTION_OBSTACLES);
+	{*/
+		/**
+		 * Ce test ne peut plus être mené car getOldAndNewObstacles est appelé par un thread, ce qui fausse tout
+		 */
+/*		int peremption = config.getInt(ConfigInfo.DUREE_PEREMPTION_OBSTACLES);
 		Assert.assertEquals(gridspace.getCurrentObstacles().cardinality(), 0);
 		BitSet[] b = gridspace.getOldAndNewObstacles();
 		log.debug(b[0].cardinality()+" "+b[1].cardinality());
@@ -154,7 +158,7 @@ public class JUnit_GridSpace extends JUnit_Test {
 		log.debug(b[0].cardinality()+" "+b[1].cardinality());
 		Assert.assertEquals(b[0].cardinality(), 0);
 		Assert.assertEquals(b[1].cardinality(), 0);
-	}
+	}*/
 
 	@Test
 	public void test_masque() throws Exception
