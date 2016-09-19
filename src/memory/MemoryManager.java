@@ -62,14 +62,13 @@ public class MemoryManager<T extends Memorizable> implements Service {
 		firstAvailable = 0;
 
 		// on instancie une fois pour toutes les objets
-		log.debug("Instanciation de "+nb_instances+" "+classe.getSimpleName());
+		log.debug("Instanciation de "+nb_instances+" "+classe.getSimpleName()+"…");
 
 		for(int i = 0; i < nb_instances; i++)
 		{
 			nodes[i] = container.make(classe);
 			nodes[i].setIndiceMemoryManager(i);
 		}
-		log.debug("Instanciation finie");
 	}
 	
 	/**

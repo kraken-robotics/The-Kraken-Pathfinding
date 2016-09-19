@@ -330,7 +330,6 @@ public class DStarLite implements Service
 		if(graphicDStarLite || graphicDStarLiteFinal)
 			gridspace.reinitGraphicGrid();
 
-		log.debug("Update DStarLite obstacles");
 		BitSet[] obs = gridspace.getOldAndNewObstacles();
 		
 		// Disparition d'un obstacle : le coût baisse

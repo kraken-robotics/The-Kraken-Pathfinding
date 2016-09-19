@@ -61,6 +61,13 @@ public class ThreadPeremption extends ThreadService
 				if(memory.deleteOldObstacles())
 					dstarlite.updateObstacles();
 	
+				// mise à jour des obstacles : on réaffiche
+				if(printProxObs)
+					synchronized(buffer)
+					{
+						buffer.notify();
+					}
+				
 				long prochain = memory.getNextDeathDate();
 				
 				/**
@@ -71,14 +78,7 @@ public class ThreadPeremption extends ThreadService
 				else
 					// Il faut toujours s'assurer qu'on dorme un temps positif. Il y a aussi une petite marge
 					Thread.sleep(Math.min(dureePeremption, Math.max(prochain - System.currentTimeMillis() + 2, 5)));
-				
-				// mise à jour des obstacles : on réaffiche
-				if(printProxObs)
-					synchronized(buffer)
-					{
-						buffer.notify();
-					}
-			}
+				}
 		} catch (InterruptedException e) {
 			log.debug("Arrêt de "+Thread.currentThread().getName());
 		}

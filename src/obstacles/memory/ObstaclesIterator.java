@@ -33,7 +33,7 @@ public abstract class ObstaclesIterator implements Iterator<ObstacleProximity>
     protected Log log;
     protected ObstaclesMemory memory;
     
-    protected int nbTmp;
+    protected volatile int nbTmp;
 	
     public ObstaclesIterator(Log log, ObstaclesMemory memory)
     {

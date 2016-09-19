@@ -134,7 +134,7 @@ public class JUnit_DStarLite extends JUnit_Test {
 		int n = 15;
 		while(n+6 < chemin.size())
 		{
-			Thread.sleep(2000);
+			Thread.sleep(1000);
 			posRobot = chemin.get(n);
 			gridspace.addObstacleAndRemoveNearbyObstacles(chemin.get(n+6));
 			pathfinding.updateStart(posRobot);

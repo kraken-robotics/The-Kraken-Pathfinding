@@ -455,7 +455,7 @@ public class ClothoidesComputer implements Service
 	 */
     private void sauvegardePoints()
     {
-    	log.debug("Sauvegarde des points de la clothoïde");
+    	log.debug("Sauvegarde des points de la clothoïde unitaire");
         try {
             java.io.File fichier_creation;
             FileOutputStream fichier;
@@ -472,8 +472,7 @@ public class ClothoidesComputer implements Service
         }
         catch(IOException e)
         {
-            log.critical("Erreur lors de la sauvegarde des points de la clothoïde !");
-            log.warning(e);
+            log.critical("Erreur lors de la sauvegarde des points de la clothoïde ! "+e);
         }
     }
 	

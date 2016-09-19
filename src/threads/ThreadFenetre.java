@@ -50,13 +50,14 @@ public class ThreadFenetre extends ThreadService
 	{
 		Thread.currentThread().setName(getClass().getSimpleName());
 		log.debug("Démarrage de "+Thread.currentThread().getName());
-		if(!print)
-		{
-			log.debug(getClass().getSimpleName()+" annulé ("+ConfigInfo.GRAPHIC_ENABLE+" = "+print+")");
-			log.debug("Arrêt de "+Thread.currentThread().getName());
-			return;
-		}
 		try {
+			if(!print)
+			{
+				log.debug(getClass().getSimpleName()+" annulé ("+ConfigInfo.GRAPHIC_ENABLE+" = "+print+")");
+				while(true)
+					Thread.sleep(10000);
+			}
+			
 			while(true)
 			{
 				synchronized(buffer)

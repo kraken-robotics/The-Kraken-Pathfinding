@@ -46,9 +46,10 @@ public class ObstaclesIteratorPresent extends ObstaclesIterator
 	 */
 	public boolean hasNextDead()
 	{
-		while(nbTmp + 1 < memory.getFirstNotDeadNow() && memory.getObstacle(nbTmp + 1) == null)
+		int firstNotDeadNow = memory.getFirstNotDeadNow();
+		while(nbTmp + 1 < firstNotDeadNow && memory.getObstacle(nbTmp + 1) == null)
 			nbTmp++;
 		
-		return nbTmp + 1 < memory.getFirstNotDeadNow();
+		return nbTmp + 1 < firstNotDeadNow;
 	}
 }

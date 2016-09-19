@@ -80,9 +80,14 @@ public class Container implements Service
 	 */
 	public void destructor(boolean unitTest) throws ContainerException, InterruptedException
 	{
+		ThreadName threadError = null;
 		// arrêt des threads
 		for(ThreadName n : ThreadName.values())
+		{
+			if(!getService(n.c).isAlive())
+				threadError = n;
 			getService(n.c).interrupt();
+		}
 
 		for(ThreadName n : ThreadName.values())
 		{
@@ -90,7 +95,7 @@ public class Container implements Service
 			if(getService(n.c).isAlive())
 				log.critical(n.c.getSimpleName()+" encore vivant !");
 		}
-
+		
 		log.debug("Fermeture de la série");
 		/**
 		 * Mieux vaut écrire SerieCouchePhysique.class.getSimpleName()) que "SerieCouchePhysique",
@@ -116,6 +121,9 @@ public class Container implements Service
 		System.out.println("Singularité évaporée.");
 		System.out.println();
 		printMessage("outro.txt");
+		
+		if(threadError != null)
+			throw new ContainerException("Un thread a planté : "+threadError);
 		
 		/**
 		 * Arrête tout, même si destructor est appelé depuis un thread
@@ -260,7 +268,6 @@ public class Container implements Service
 					fw.write(serviceTo.getSimpleName()+" [color=red, style=filled];\n");					
 				else
 					fw.write(serviceTo.getSimpleName()+";\n");
-
 				if(serviceFrom != null)
 					fw.write(serviceFrom.getSimpleName()+" -> "+serviceTo.getSimpleName()+";\n");
 			} catch (IOException e) {
@@ -388,8 +395,6 @@ public class Container implements Service
 		} catch (ContainerException e) {
 			log.critical(e);
 		}
-		
-		log.debug("Démarrage des threads fini");
 	}
 
 	/**
