@@ -51,7 +51,7 @@ class DStarLiteNode {
 	@Override
 	public final boolean equals(Object o)
 	{
-		return o instanceof DStarLiteNode && gridpoint.hashcode == o.hashCode();
+		return gridpoint.hashcode == o.hashCode();
 	}
 	
 	@Override

@@ -141,11 +141,8 @@ public class DStarLite implements Service
 		return out;
 	}
 	
-	private void updateVertex(DStarLiteNode u)
+	private final void updateVertex(DStarLiteNode u)
 	{
-		/**
-		 * C'est un peu différent de l'algo classique
-		 */
 		if(graphicDStarLite)
 			gridspace.setColor(u.gridpoint, Couleur.BLEU);
 		
@@ -163,7 +160,6 @@ public class DStarLite implements Service
 			openset.remove(u);
 			u.inOpenSet = false;
 		}
-		
 	}
 	
 	private void computeShortestPath() throws PathfindingException
@@ -240,6 +236,10 @@ public class DStarLite implements Service
 						u.rhs = Math.min(u.rhs, add(distanceDynamiqueSucc(u.gridpoint, i), s2.g));
 					}
 				}
+				
+				// de toute façon, comme u sera forcément retiré de la liste dans updateVertex… autant le faire efficacement ici
+				openset.poll();
+				u.inOpenSet = false;
 				updateVertex(u);
 			}
 
@@ -368,7 +368,7 @@ public class DStarLite implements Service
 					for(Direction voisin : Direction.values())
 						u.rhs = Math.min(u.rhs, add(distanceDynamiqueSucc(u.gridpoint, voisin),
 								getFromMemory(pointManager.getGridPointVoisin(u.gridpoint,voisin)).g));
-				}
+				}				
 				updateVertex(u);
 			}
 		}
@@ -427,27 +427,24 @@ public class DStarLite implements Service
 	}
 	
 	/**
-	 * Renvoie l'heuristique au ThetaStar. Attention ! On suppose que le gridpoint est à jour.
-	 * @param gridpoint
+	 * Renvoie l'heuristique au A* courbe.
+	 * L'heuristique est une distance en mm
+	 * @param c
 	 * @return
 	 */
 	public double heuristicCostCourbe(Cinematique c)
 	{
 		PointGridSpace gridpoint = pointManager.get(c.getPosition());
 		
-		// Si ce n'est pas à jour, on recalcule
-		if(memory[gridpoint.hashcode].nbPF != nbPF)
-		{
-			updateGoal(c.getPosition());
-			try {
-				computeShortestPath();
-			} catch (PathfindingException e) {
-				// Pas de chemin ? Alors distance infinie
-				return Integer.MAX_VALUE;
-			}
+		updateGoal(c.getPosition());
+		try {
+			computeShortestPath();
+		} catch (PathfindingException e) {
+			// Pas de chemin ? Alors distance infinie
+			return Integer.MAX_VALUE;
 		}
-
-		return getFromMemory(gridpoint).rhs; // TODO unité ?
+		
+		return getFromMemory(gridpoint).rhs / 1000. * PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS; // heuristique en mm
 	}
 	
 	/**

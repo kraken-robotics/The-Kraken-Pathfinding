@@ -101,10 +101,10 @@ public class PointGridSpace implements Service, Printable
 	public void print(Graphics g, Fenetre f, RobotReal robot)
 	{
 		Vec2RO p = computeVec2();
-		g.fillOval(f.XtoWindow(p.getX())-f.distanceXtoWindow((int) PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS)/2,
-				f.YtoWindow(p.getY())-f.distanceYtoWindow((int) PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS)/2,
-				f.distanceXtoWindow((int) PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS),
-				f.distanceYtoWindow((int) PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS));
+		g.fillOval(f.XtoWindow(p.getX())-f.distanceXtoWindow((int) DISTANCE_ENTRE_DEUX_POINTS)/2,
+				f.YtoWindow(p.getY())-f.distanceYtoWindow((int) DISTANCE_ENTRE_DEUX_POINTS)/2,
+				f.distanceXtoWindow((int) DISTANCE_ENTRE_DEUX_POINTS),
+				f.distanceYtoWindow((int) DISTANCE_ENTRE_DEUX_POINTS));
 	}
 
 	@Override

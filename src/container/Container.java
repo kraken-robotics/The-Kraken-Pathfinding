@@ -17,12 +17,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 package container;
 
-import memory.*;
-import obstacles.*;
-import obstacles.memory.*;
-import obstacles.types.*;
-import pathfinding.dstarlite.gridspace.*;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -38,13 +32,22 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Stack;
 
-import exceptions.ContainerException;
-import graphic.*;
+import container.Service;
 import utils.*;
-import serie.*;
-import table.*;
-import threads.*;
-import threads.serie.*;
+import exceptions.ContainerException;
+import graphic.PrintBuffer;
+import obstacles.types.Obstacle;
+import pathfinding.CheminPathfinding;
+import pathfinding.RealGameState;
+import pathfinding.astarCourbe.AStarCourbe;
+import pathfinding.astarCourbe.arcs.ArcManager;
+import pathfinding.astarCourbe.arcs.ClothoidesComputer;
+import robot.RobotReal;
+import serie.SerieCouchePhysique;
+import threads.ThreadName;
+import threads.ThreadPathfinding;
+import threads.ThreadShutdown;
+import threads.serie.ThreadSerialInputCoucheOrdre;
 
 /**
  * 
@@ -67,7 +70,7 @@ public class Container implements Service
 	private boolean showGraph;
 	private FileWriter fw;
 
-	private ArrayList<Class<? extends Service>> ok = new ArrayList<Class<? extends Service>>();
+	private ArrayList<Class<? extends Service>> ko = new ArrayList<Class<? extends Service>>();
 	
 	/**
 	 * Fonction appelé automatiquement à la fin du programme.
@@ -201,34 +204,14 @@ public class Container implements Service
 				log.warning(e);
 			}
 			
-			ok.add(Config.class);
-			ok.add(ThreadSerialOutput.class);
-			ok.add(BufferIncomingBytes.class);
-			ok.add(SerieCouchePhysique.class);
-			ok.add(SerieCoucheTrame.class);
-			ok.add(ThreadSerialOutputTimeout.class);
-			ok.add(BufferIncomingOrder.class);
-			ok.add(Container.class);
-			ok.add(ThreadConfig.class);
-			ok.add(BufferOutgoingOrder.class);
-			ok.add(Table.class);
-			ok.add(SensorsDataBuffer.class);
-			ok.add(ThreadPeremption.class);
-			ok.add(ObsMM.class);
-			ok.add(ThreadSerialInputCoucheTrame.class);
-			ok.add(ObstaclesMemory.class);
-			ok.add(ThreadCapteurs.class);
-			ok.add(PointGridSpaceManager.class);
-			ok.add(PointDirigeManager.class);
-			ok.add(GridSpace.class);
-			ok.add(NodeMM.class);
-			ok.add(ObsMM.class);
-			ok.add(PrintBuffer.class);
-			ok.add(ThreadFenetre.class);
-			ok.add(Fenetre.class);
-			ok.add(MasqueManager.class);
-			ok.add(ThreadShutdown.class);
-			ok.add(CapteursProcess.class);
+			ko.add(ThreadPathfinding.class);
+			ko.add(AStarCourbe.class);
+			ko.add(ArcManager.class);
+			ko.add(ClothoidesComputer.class);
+			ko.add(RealGameState.class);
+			ko.add(RobotReal.class);
+			ko.add(ThreadSerialInputCoucheOrdre.class);
+			ko.add(CheminPathfinding.class);
 		}
 		
 		Obstacle.set(log, getService(PrintBuffer.class));
@@ -273,8 +256,8 @@ public class Container implements Service
 		if(showGraph && !serviceTo.equals(Log.class) && showGraph && !serviceTo.equals(Container.class) && Service.class.isAssignableFrom(serviceTo) && (serviceFrom == null || Service.class.isAssignableFrom(serviceFrom)))
 		{
 			try {
-				if(ok.contains(serviceTo))
-					fw.write(serviceTo.getSimpleName()+" [color=green3, style=filled];\n");
+				if(ko.contains(serviceTo))
+					fw.write(serviceTo.getSimpleName()+" [color=red, style=filled];\n");					
 				else
 					fw.write(serviceTo.getSimpleName()+";\n");
 
