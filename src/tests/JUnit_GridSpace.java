@@ -17,8 +17,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 package tests;
 
-import java.util.BitSet;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,7 +29,6 @@ import pathfinding.dstarlite.gridspace.MasqueManager;
 import pathfinding.dstarlite.gridspace.PointDirigeManager;
 import pathfinding.dstarlite.gridspace.PointGridSpace;
 import pathfinding.dstarlite.gridspace.PointGridSpaceManager;
-import threads.ThreadCapteurs;
 import utils.ConfigInfo;
 import utils.Vec2RO;
 

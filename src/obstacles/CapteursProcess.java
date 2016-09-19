@@ -18,6 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 package obstacles;
 
 import obstacles.types.ObstacleProximity;
+import pathfinding.CheminPathfinding;
 import pathfinding.dstarlite.DStarLite;
 import pathfinding.dstarlite.gridspace.GridSpace;
 import container.Service;
@@ -42,20 +43,22 @@ public class CapteursProcess implements Service {
 	private GridSpace gridspace;
 	private Table table;
 	private DStarLite dstarlite;
-	private int nbCapteurs;
+	private CheminPathfinding chemin;
 	
+	private int nbCapteurs;
 	private int rayonEnnemi;
     private int rayonRobot;
 	private int distanceApproximation;
 
 	private Capteur[] capteurs;
 
-	public CapteursProcess(Log log, GridSpace gridspace, Table table, DStarLite dstarlite)
+	public CapteursProcess(Log log, GridSpace gridspace, Table table, DStarLite dstarlite, CheminPathfinding chemin)
 	{
 		this.table = table;
 		this.log = log;
 		this.gridspace = gridspace;
 		this.dstarlite = dstarlite;
+		this.chemin = chemin;
 	}
 	
 	@Override
@@ -133,7 +136,7 @@ public class CapteursProcess implements Service {
 
 		}
 		dstarlite.updateObstacles();
-
+		chemin.checkColliding();
 	}
 	
 }

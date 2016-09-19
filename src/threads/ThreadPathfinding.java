@@ -17,6 +17,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 package threads;
 
+import exceptions.PathfindingException;
+import pathfinding.CheminPathfinding;
 import pathfinding.astarCourbe.AStarCourbe;
 import utils.Config;
 import utils.Log;
@@ -31,11 +33,13 @@ public class ThreadPathfinding extends ThreadService
 {
 	protected Log log;
 	private AStarCourbe pathfinding;
+	private CheminPathfinding chemin;
 
-	public ThreadPathfinding(Log log, AStarCourbe pathfinding)
+	public ThreadPathfinding(Log log, AStarCourbe pathfinding, CheminPathfinding chemin)
 	{
 		this.log = log;
 		this.pathfinding = pathfinding;
+		this.chemin = chemin;
 	}
 
 	@Override
@@ -44,8 +48,16 @@ public class ThreadPathfinding extends ThreadService
 		Thread.currentThread().setName(getClass().getSimpleName());
 		log.debug("Démarrage de "+Thread.currentThread().getName());
 		try {
-			while(true)
-				pathfinding.doYourJob();
+			synchronized(chemin)
+			{
+				chemin.wait();
+				try {
+					pathfinding.updatePath();
+				} catch (PathfindingException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 		} catch (InterruptedException e) {
 			log.debug("Arrêt de "+Thread.currentThread().getName());
 		}

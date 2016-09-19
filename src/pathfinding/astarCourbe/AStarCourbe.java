@@ -30,7 +30,6 @@ import pathfinding.astarCourbe.arcs.ArcManager;
 import pathfinding.astarCourbe.arcs.ArcCourbe;
 import pathfinding.astarCourbe.arcs.ArcCourbeCubique;
 import pathfinding.dstarlite.DStarLite;
-import pathfinding.dstarlite.gridspace.GridSpace;
 import pathfinding.dstarlite.gridspace.PointGridSpace;
 import container.Service;
 import exceptions.PathfindingException;
@@ -62,7 +61,6 @@ public class AStarCourbe implements Service
 	private Cinematique arrivee;
 	private AStarCourbeNode depart;
 	private CheminPathfinding chemin;
-	private GridSpace gridspace;
 	private ObsMM rectMemory;
 	private boolean graphicTrajectory;
 	
@@ -94,7 +92,7 @@ public class AStarCourbe implements Service
 	/**
 	 * Constructeur du AStarCourbe
 	 */
-	public AStarCourbe(Log log, DStarLite dstarlite, ArcManager arcmanager, RealGameState state, CheminPathfinding chemin, NodeMM memorymanager, GridSpace gridspace, ObsMM rectMemory, PrintBuffer buffer, AStarCourbeNode depart)
+	public AStarCourbe(Log log, DStarLite dstarlite, ArcManager arcmanager, RealGameState state, CheminPathfinding chemin, NodeMM memorymanager, ObsMM rectMemory, PrintBuffer buffer, AStarCourbeNode depart)
 	{
 		this.log = log;
 		this.arcmanager = arcmanager;
@@ -104,37 +102,10 @@ public class AStarCourbe implements Service
 		this.depart = depart;
 		this.state = state;
 		this.dstarlite = dstarlite;
-		this.gridspace = gridspace;
 		this.rectMemory = rectMemory;
 		this.buffer = buffer;
 	}
 	
-	public void doYourJob() throws InterruptedException
-	{
-		while(true)
-		{
-			synchronized(this)
-			{
-				wait(); // en attente d'une nouvelle destination
-			}
-/*			computeNewPath(arrivee, ejecteGameElement, directionstrategy);
-			do {
-				gridspace.wait();
-				
-				boolean updateDone;
-				do {
-					if(gridspace.needUpdate())
-					{
-						gridspace.add();
-						dstarlite.updatePath(((RobotReal)state.robot).getPositionGridSpace());
-						
-					}
-					updateDone = updatePath();
-				} while(!updateDone);
-			} while(pasArrive);*/
-		}
-	}
-
 	/**
 	 * Le calcul du AStarCourbe
 	 * @param depart

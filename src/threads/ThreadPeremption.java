@@ -20,7 +20,6 @@ package threads;
 import graphic.PrintBuffer;
 import obstacles.memory.ObstaclesMemory;
 import pathfinding.dstarlite.DStarLite;
-import pathfinding.dstarlite.gridspace.GridSpace;
 import utils.Config;
 import utils.ConfigInfo;
 import utils.Log;
