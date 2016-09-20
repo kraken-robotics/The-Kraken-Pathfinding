@@ -18,8 +18,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 package threads;
 
 import exceptions.PathfindingException;
-import pathfinding.CheminPathfinding;
 import pathfinding.astarCourbe.AStarCourbe;
+import pathfinding.chemin.CheminPathfinding;
 import utils.Config;
 import utils.Log;
 

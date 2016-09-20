@@ -18,7 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 package obstacles;
 
 import obstacles.types.ObstacleProximity;
-import pathfinding.CheminPathfinding;
+import pathfinding.chemin.CheminPathfinding;
 import pathfinding.dstarlite.DStarLite;
 import pathfinding.dstarlite.gridspace.GridSpace;
 import container.Service;
