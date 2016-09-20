@@ -22,6 +22,7 @@ import java.util.BitSet;
 import java.util.Comparator;
 import java.util.PriorityQueue;
 
+import pathfinding.astarCourbe.arcs.ClothoidesComputer;
 import pathfinding.dstarlite.gridspace.Direction;
 import pathfinding.dstarlite.gridspace.GridSpace;
 import pathfinding.dstarlite.gridspace.PointDirige;
@@ -33,6 +34,7 @@ import utils.Config;
 import utils.ConfigInfo;
 import utils.Log;
 import utils.Vec2RO;
+import utils.Vec2RW;
 import container.Service;
 import exceptions.PathfindingException;
 import graphic.printable.Couleur;
@@ -271,6 +273,11 @@ public class DStarLite implements Service
 		updateObstacles();
 	}
 	
+	/**
+	 * Heuristique (distance octile) entre le point de départ et ce gridpoint
+	 * @param gridpoint
+	 * @return
+	 */
 	private final int distanceHeuristique(PointGridSpace gridpoint)
 	{
 		return depart.gridpoint.distanceOctile(gridpoint);
@@ -430,6 +437,11 @@ public class DStarLite implements Service
 		
 	}
 	
+	private Vec2RW delta = new Vec2RW();
+	private Vec2RW deltaTmp = new Vec2RW();
+	private Vec2RW centreCercle = new Vec2RW();
+	private Vec2RW posRobot = new Vec2RW();
+	
 	/**
 	 * Renvoie l'heuristique au A* courbe.
 	 * L'heuristique est une distance en mm
@@ -438,15 +450,52 @@ public class DStarLite implements Service
 	 */
 	public synchronized double heuristicCostCourbe(Cinematique c)
 	{
-		PointGridSpace gridpoint = pointManager.get(c.getPosition());
-		
 		updateStart(c.getPosition());
-		DStarLiteNode n = getFromMemory(gridpoint);
+		DStarLiteNode premier = getFromMemory(pointManager.get(c.getPosition()));
 		
-		if(n.rhs == Integer.MAX_VALUE)
-			return n.rhs;
+		if(premier.rhs == Integer.MAX_VALUE)
+			return Integer.MAX_VALUE;
 		
-		return n.rhs / 1000. * PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS; // heuristique en mm
+		double rayonCourbure = 1000. / c.courbure;
+		delta.setX(Math.cos(c.orientation + Math.PI / 2) * rayonCourbure);
+		delta.setY(Math.sin(c.orientation + Math.PI / 2) * rayonCourbure);
+		
+		centreCercle.setX(c.getPosition().getX() + delta.getX());
+		centreCercle.setY(c.getPosition().getY() + delta.getY());
+
+		
+		double cos = Math.sqrt(rayonCourbure * rayonCourbure - ClothoidesComputer.d * ClothoidesComputer.d) / rayonCourbure;
+		double sin = Math.abs(ClothoidesComputer.d / rayonCourbure);
+		sin = 2 * sin * cos; // sin(a) devient sin(2a)
+		cos = 2 * cos * cos - 1; // cos(a) devient cos(2a)
+		double cosSauv = cos;
+		double sinSauv = sin;
+		sin = 0;
+		cos = 1;
+		
+		DStarLiteNode n = null;
+		
+		// On trace un (petit) arc de cercle dans la continuité de l'arc pour voir s'il se prend un mur ou pas
+		for(int i = 0; i < 5; i++)
+		{
+			double tmp = sin;
+			sin = sin * cosSauv + sinSauv * cos; // sin vaut sin(2a*(i+1))
+			cos = cos * cosSauv - tmp * sinSauv;
+			delta.copy(deltaTmp);
+			deltaTmp.rotate(cos, sin);
+			centreCercle.copy(posRobot);
+			posRobot.minus(deltaTmp);
+			
+			PointGridSpace p = pointManager.get(posRobot);
+			updateStart(c.getPosition());
+			n = getFromMemory(p);
+			
+			if(n.rhs == Integer.MAX_VALUE)
+				return Integer.MAX_VALUE;
+		}
+		
+		// On renvoie la distance du dernier point
+		return (n.rhs + distanceHeuristique(premier.gridpoint)) / 1000. * PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS; // heuristique en mm
 	}
 	
 	/**

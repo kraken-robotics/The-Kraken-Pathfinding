@@ -28,8 +28,6 @@ import utils.Log;
 
 public class RobotChrono extends Robot
 {
-	protected PointGridSpace positionGridSpace;
-   
 	// Date en millisecondes depuis le début du match.
 	protected long date;
 
@@ -49,46 +47,12 @@ public class RobotChrono extends Robot
 	{
 		return date;
 	}
-
-	/**
-	 * Donne l'angle (non orienté, en valeur absolue) entre
-	 * l'orientation actuelle et l'angle donné en argument
-	 * @param angle
-	 * @return
-	 */
-	public double calculateDelta(double angle)
-	{
-		double delta = cinematique.orientation-angle % (2*Math.PI);
-		delta = Math.abs(delta);
-		if(delta > Math.PI)
-			delta = 2*Math.PI - delta;
-		return delta;
-	}
-
-	public void setPositionGridSpace(PointGridSpace gridpoint)
-	{
-		positionGridSpace = gridpoint;
-	}
 	
-	@Override
-	public PointGridSpace getPositionGridSpace()
-	{
-		return positionGridSpace;
-	}
-	
-	/** Inverse le sens actuel de la marche.
-	 * Utilisé lors d'un point de rebroussement
-	 */
-	public void inverseSensMarche()
-	{
-		cinematique.enMarcheAvant = !cinematique.enMarcheAvant;
-	}
-
 	public void suitArcCourbe(ArcCourbe came_from_arc)
 	{
+		date += came_from_arc.getDuree();
 		came_from_arc.getLast().copy(cinematique);
 	}
-
 	
 	public Cinematique getCinematique()
 	{

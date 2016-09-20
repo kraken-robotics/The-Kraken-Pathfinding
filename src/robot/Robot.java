@@ -29,18 +29,14 @@ import utils.Config;
 
 public abstract class Robot 
 {
-	
 	/*
 	 * DÉPLACEMENT HAUT NIVEAU
 	 */
 	
-	public abstract PointGridSpace getPositionGridSpace();
     public abstract long getTempsDepuisDebutMatch();
 
     protected Cinematique cinematique;
     protected volatile boolean symetrie;
-	protected volatile boolean matchDemarre = false;
-    protected volatile long dateDebutMatch;
     protected boolean deploye = false;
     
 	protected Log log;
@@ -61,14 +57,10 @@ public abstract class Robot
     	cinematique.copy(rc.cinematique);
     	// pas besoin de copier symétrie car elle ne change pas en cours de match
     	rc.date = getTempsDepuisDebutMatch();
-    	
-    	rc.positionGridSpace = getPositionGridSpace();
     }
 	
 	public synchronized void updateConfig(Config config)
 	{
-		dateDebutMatch = config.getLong(ConfigInfo.DATE_DEBUT_MATCH);
-		matchDemarre = config.getBoolean(ConfigInfo.MATCH_DEMARRE);
 		symetrie = config.getSymmetry();
 	}
 

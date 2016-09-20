@@ -108,7 +108,7 @@ public class Cinematique
 	}
 	
 	@Override
-	public int hashCode()
+	public int hashCode() // TODO
 	{
 		int codeCourbure, codeOrientation;
 //		if(courbure < -5)

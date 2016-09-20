@@ -19,6 +19,7 @@ package pathfinding.astarCourbe;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.PriorityQueue;
 
 import memory.NodeMM;
@@ -42,9 +43,7 @@ import utils.ConfigInfo;
 import utils.Log;
 
 /**
- * AStar* simplifié, qui lisse le résultat du D* Lite et fournit une trajectoire courbe
- * On suppose qu'il n'y a jamais collision de noeuds
- * (je parle de collision dans le sens "égalité", pas "robot qui fonce dans le mur"…)
+ * A* qui utilise le D* Lite comme heuristique pour fournir une trajectoire courbe
  * @author pf
  *
  */
@@ -79,14 +78,15 @@ public class AStarCourbe implements Service
 		@Override
 		public int compare(AStarCourbeNode arg0, AStarCourbeNode arg1)
 		{
-			int out = (int) Math.signum((arg0.f_score - arg1.f_score));// << 1;
-//			if(arg0.g_score > arg1.g_score)
-//				out++;
-			return out;
+			if(arg0.f_score < arg1.f_score)
+				return -1;
+			if(arg0.f_score > arg1.f_score)
+				return 1;
+			return (int) Math.signum(arg0.g_score - arg1.g_score);
 		}
 	}
 
-	private final ArrayList<Integer> closedset = new ArrayList<Integer>();
+	private final HashSet<AStarCourbeNode> closedset = new HashSet<AStarCourbeNode>();
 	private final PriorityQueue<AStarCourbeNode> openset = new PriorityQueue<AStarCourbeNode>(PointGridSpace.NB_POINTS, new AStarCourbeNodeComparator());
 
 	/**
@@ -116,8 +116,14 @@ public class AStarCourbe implements Service
 		depart.came_from = null;
 		depart.came_from_arc = null;
 		depart.g_score = 0;
-		depart.f_score = arcmanager.heuristicCost(depart);
+		depart.f_score = dstarlite.heuristicCostCourbe((depart.state.robot).getCinematique());
 
+		if(depart.f_score == Integer.MAX_VALUE)
+		{
+			log.critical("Le dstarlite dit qu'aucun chemin n'est possible…");
+			return;
+		}
+		
 		openset.clear();
 		openset.add(depart);	// Les nœuds à évaluer
 		closedset.clear();
@@ -128,11 +134,10 @@ public class AStarCourbe implements Service
 		{
 			current = openset.poll();
 			
-			int hash = current.state.robot.getCinematique().hashCode();
-			if(closedset.contains(hash))
+			if(closedset.contains(current))
 				continue;
 
-			closedset.add(hash);
+			closedset.add(current);
 			
 			if(graphicTrajectory && current.came_from_arc != null)
 				for(int i = 0; i < current.came_from_arc.getNbPoints(); i++)
@@ -194,7 +199,7 @@ public class AStarCourbe implements Service
 
 				successeur.g_score = current.g_score + arcmanager.distanceTo(successeur);
 				
-				successeur.f_score = successeur.g_score + arcmanager.heuristicCost(successeur);// / successeur.came_from_arc.getVitesseTr();
+				successeur.f_score = successeur.g_score + dstarlite.heuristicCostCourbe((successeur.state.robot).getCinematique()) / successeur.came_from_arc.getVitesseTr();
 
 				successeur.came_from = current;
 

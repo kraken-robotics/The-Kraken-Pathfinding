@@ -257,14 +257,4 @@ public class ArcManager implements Service
 		shoot = ejecteGameElement;
 	}
 
-	/**
-	 * Renvoie le coût heuristique. L'implémentation dépend s'il s'agit d'un calcul stratégique ou dynamique
-	 * @param successeur
-	 * @return
-	 */
-	public double heuristicCost(AStarCourbeNode successeur)
-	{
-		return heuristique.heuristicCostCourbe((successeur.state.robot).getCinematique());
-	}
-
 }

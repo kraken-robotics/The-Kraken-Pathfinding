@@ -104,7 +104,8 @@ public enum ConfigInfo {
 	GRAPHIC_D_STAR_LITE(false), // affiche les calculs du D* Lite
 	GRAPHIC_D_STAR_LITE_FINAL(false), // affiche l'itinéraire final du D* Lite
 	GRAPHIC_PROXIMITY_OBSTACLES(false), // affiche les obstacles de proximité
-	GRAPHIC_TRAJECTORY(false), // affiche les trajectoires
+	GRAPHIC_TRAJECTORY(false), // affiche les trajectoires temporaires
+	GRAPHIC_TRAJECTORY_FINAL(false), // affiche les trajectoires
 	GRAPHIC_FIXED_OBSTACLES(false), // affiche les obstacles fixes
 	GRAPHIC_BACKGROUND(false), // affiche d'image de la table
 	GRAPHIC_SIZE_X(1000), // taille par défaut (sans image) de la fenêtre

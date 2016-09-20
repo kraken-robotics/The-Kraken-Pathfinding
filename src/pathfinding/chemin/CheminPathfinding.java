@@ -108,7 +108,7 @@ public class CheminPathfinding implements Service, Printable
 	@Override
 	public void useConfig(Config config)
 	{
-		if(config.getBoolean(ConfigInfo.GRAPHIC_TRAJECTORY))
+		if(config.getBoolean(ConfigInfo.GRAPHIC_TRAJECTORY_FINAL))
 			buffer.add(this);
 	}
 	

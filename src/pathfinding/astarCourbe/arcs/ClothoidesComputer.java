@@ -61,7 +61,7 @@ public class ClothoidesComputer implements Service
 	public static final int NB_POINTS = 25; // nombre de points dans un arc
 	public static final double DISTANCE_ARC_COURBE = PRECISION_TRACE * NB_POINTS * 1000; // en mm
 	static final double DISTANCE_ARC_COURBE_M = PRECISION_TRACE * NB_POINTS; // en m
-	private static final double d = PRECISION_TRACE * 1000 / 2; // utilisé pour la trajectoire circulaire
+	public static final double d = PRECISION_TRACE * 1000 / 2; // utilisé pour la trajectoire circulaire
 
 	private double courbureMax;
 	

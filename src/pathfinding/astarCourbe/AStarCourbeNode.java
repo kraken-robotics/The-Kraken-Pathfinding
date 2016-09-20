@@ -50,6 +50,12 @@ public class AStarCourbeNode implements Memorizable
 	}
 	
 	@Override
+	public int hashCode()
+	{
+		return state.robot.getCinematique().hashCode();
+	}
+	
+	@Override
 	public void setIndiceMemoryManager(int indice)
 	{
 		indiceMemoryManager = indice;
