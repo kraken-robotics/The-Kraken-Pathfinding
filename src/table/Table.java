@@ -26,7 +26,7 @@ import utils.*;
  *
  */
 
-public class Table implements Service
+public class Table
 {
 	// Dépendances
 	private Log log;
@@ -81,12 +81,4 @@ public class Table implements Service
 		copy(cloned_table);
 		return cloned_table;
 	}
-
-	@Override
-	public void updateConfig(Config config)
-	{}
-	
-	@Override
-	public void useConfig(Config config)
-	{}
 }

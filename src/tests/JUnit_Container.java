@@ -24,6 +24,7 @@ import exceptions.ContainerException;
 import obstacles.memory.ObstaclesIteratorPresent;
 import obstacles.types.ObstacleProximity;
 import pathfinding.astarCourbe.AStarCourbe;
+import table.RealTable;
 import table.Table;
 import tests.container.A;
 import tests.container.C;
@@ -41,7 +42,7 @@ public class JUnit_Container extends JUnit_Test {
 	@Test
 	public void test_instanciation() throws Exception
 	{
-		container.getService(Table.class);
+		container.getService(RealTable.class);
 		container.getService(AStarCourbe.class);
 	}
 

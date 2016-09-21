@@ -24,6 +24,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import table.GameElementNames;
+import table.RealTable;
 import table.Table;
 import table.Tribool;
 
@@ -41,7 +42,7 @@ public class JUnit_Table extends JUnit_Test {
 	@Before
     public void setUp() throws Exception {
         super.setUp();
-        table = container.getService(Table.class);
+        table = container.getService(RealTable.class);
     }
 
     @Test

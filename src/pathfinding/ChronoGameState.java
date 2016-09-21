@@ -60,6 +60,5 @@ public class ChronoGameState extends GameState<RobotChrono>
 	public void updateConfig(Config config)
 	{
 		robot.updateConfig(config);
-		table.updateConfig(config);
 	}
 }
