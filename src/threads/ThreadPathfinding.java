@@ -50,7 +50,8 @@ public class ThreadPathfinding extends ThreadService
 		try {
 			synchronized(chemin)
 			{
-				chemin.wait();
+				if(chemin.isUptodate())
+					chemin.wait();
 				try {
 					pathfinding.updatePath();
 				} catch (PathfindingException e) {

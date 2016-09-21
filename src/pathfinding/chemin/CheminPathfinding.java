@@ -27,6 +27,7 @@ import graphic.Fenetre;
 import graphic.PrintBuffer;
 import graphic.printable.Layer;
 import graphic.printable.Printable;
+import robot.Cinematique;
 import robot.RobotReal;
 import serie.BufferOutgoingOrder;
 import utils.Config;
@@ -34,6 +35,7 @@ import utils.ConfigInfo;
 import utils.Log;
 import container.Service;
 import pathfinding.astarCourbe.arcs.ArcCourbe;
+import pathfinding.astarCourbe.arcs.ClothoidesComputer;
 
 /**
  * S'occupe de la trajectoire actuelle.
@@ -50,10 +52,15 @@ public class CheminPathfinding implements Service, Printable
 	private IteratorCheminPathfinding iterChemin;	
 	private PrintBuffer buffer;
 	
-	private volatile ArcCourbe[] chemin = new ArcCourbe[256];
+	private final static int tailleTab = 256 / ClothoidesComputer.NB_POINTS;
+	private volatile ArcCourbe[] chemin = new ArcCourbe[tailleTab];
 	protected int indexFirst = 0;
 	protected int indexLast = 0;
 	private int lastValidIndex; // l'indice du dernier index (-1 si aucun ne l'est, Integer.MAX_VALUE si tous le sont)
+	private boolean uptodate = true; // le chemin est-il complet
+	private int margeNecessaire = 2;
+	private int anticipationReplanif = 2;
+	private boolean graphic;
 	
 	public CheminPathfinding(Log log, BufferOutgoingOrder out, ObstaclesIteratorPresent iterator, PrintBuffer buffer)
 	{
@@ -65,12 +72,24 @@ public class CheminPathfinding implements Service, Printable
 	}
 	
 	/**
+	 * A-t-on besoin d'un chemin partiel ?
+	 * @return
+	 */
+	public boolean needPartial()
+	{
+		return !uptodate && minus(indexLast, indexFirst) < margeNecessaire;
+	}
+	
+	/**
 	 * Y a-t-il une collision avec un obstacle de proximité ?
 	 */
 	public void checkColliding()
 	{
 		if(isColliding())
+		{
+			uptodate = false;
 			notify();
+		}
 	}
 	
 	/**
@@ -96,7 +115,16 @@ public class CheminPathfinding implements Service, Printable
 					return true;
 				}
 			}
+			
+			/**
+			 * Mise à jour de lastValidIndex
+			 */
 			lastValidIndex = iterChemin.getIndex();
+			if(minus(lastValidIndex, add(indexFirst, margeNecessaire)) >= anticipationReplanif)
+				lastValidIndex = minus(lastValidIndex, anticipationReplanif);
+			else
+				lastValidIndex = add(indexFirst, margeNecessaire);
+			
 		}
 		return false;
 	}
@@ -108,49 +136,93 @@ public class CheminPathfinding implements Service, Printable
 	@Override
 	public void useConfig(Config config)
 	{
-		if(config.getBoolean(ConfigInfo.GRAPHIC_TRAJECTORY_FINAL))
+		margeNecessaire = config.getInt(ConfigInfo.PF_MARGE_NECESSAIRE);
+		anticipationReplanif = config.getInt(ConfigInfo.PF_ANTICIPATION);
+		graphic = config.getBoolean(ConfigInfo.GRAPHIC_TRAJECTORY_FINAL);
+		if(graphic)
 			buffer.add(this);
 	}
 	
+	/**
+	 * Le chemin est-il vide ?
+	 * TODO inutilisé ?
+	 * @return
+	 */
 	public synchronized boolean isEmpty()
 	{
 		return indexFirst == indexLast;
 	}
 
+	/**
+	 * Ajoute un arc au chemin
+	 * Il sera directement envoyé à la série
+	 * @param arc
+	 */
 	public synchronized void add(ArcCourbe arc)
 	{
-		arc.indexTrajectory = indexLast;
-		chemin[indexLast++] = arc;
-		indexLast &= 0xFF;
-		out.envoieArcCourbe(arc);
+		chemin[indexLast] = arc;
+		out.envoieArcCourbe(arc, indexLast);
+		indexLast = add(indexLast, 1);
 		
 		// si on revient au début, c'est qu'il y a un problème ou que le buffer est sous-dimensionné
 		if(indexLast == indexFirst)
 			log.critical("Buffer trop petit !");
+		
+		if(graphic)
+			buffer.notify();
 	}
 	
 	protected synchronized ArcCourbe get(int index)
 	{
 		if((indexFirst <= index && index < indexLast)
-		|| (indexFirst > indexLast && indexFirst <= index && index < indexLast + 256)
-		|| (indexFirst > indexLast && indexFirst <= index + 256 && index < indexLast))
+		|| (indexFirst > indexLast && indexFirst <= index && index < indexLast + tailleTab)
+		|| (indexFirst > indexLast && indexFirst <= index + tailleTab && index < indexLast))
 			return chemin[index];
 		return null;
 	}
 
+	/**
+	 * Supprime complètement le trajet en cours
+	 */
 	public void clear()
 	{
+		/**
+		 * Parfois, le plus simple est de s'arrêter et de réfléchir sur sa vie
+		 */
+		out.immobilise();
+		uptodate = true;
 		indexLast = indexFirst;
+		
+		if(graphic)
+			buffer.notify();
+	}
+	
+	public void setUptodate(boolean uptodate)
+	{
+		this.uptodate = uptodate;
+	}
+	
+	public boolean isUptodate()
+	{
+		return uptodate;
 	}
 
+	/**
+	 * Mise à jour, depuis le bas niveau, de la cinématique actuelle
+	 * @param indexTrajectory
+	 */
 	public synchronized void setCurrentIndex(int indexTrajectory)
 	{
 		indexFirst = indexTrajectory;
+		if(graphic)
+			buffer.notify();
 	}
 	
-	public int getLastValidIndex()
+	public Cinematique getLastValidCinematique()
 	{
-		return lastValidIndex;
+		if(lastValidIndex == -1)
+			return null;
+		return chemin[lastValidIndex].getLast();
 	}
 
 	@Override
@@ -171,4 +243,14 @@ public class CheminPathfinding implements Service, Printable
 		return Layer.FOREGROUND;
 	}
 
+	private int minus(int indice1, int indice2)
+	{
+		return (indice1 - indice2 + tailleTab) % tailleTab;
+	}
+	
+	private int add(int indice1, int indice2)
+	{
+		return (indice1 + indice2) % tailleTab;
+	}
+	
 }

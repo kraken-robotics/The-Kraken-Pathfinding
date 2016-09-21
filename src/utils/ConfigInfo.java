@@ -60,7 +60,9 @@ public enum ConfigInfo {
 	COURBURE_MAX(10.), // quelle courbure maximale la trajectoire du robot peut-elle avoir 
 	PATHFINDING_UPDATE_TIMEOUT(50), // au bout de combien de temps le pathfinding est-il obligé de fournir un chemin partiel
 	TEMPS_REBROUSSEMENT(700), // temps qu'il faut au robot pour rebrousser chemin
-
+	PF_MARGE_NECESSAIRE(2), // combien d'arc de pathfinding le bas niveau doit-il toujours avoir
+	PF_ANTICIPATION(2), // combien d'arcs avant le dernier valide supprime-t-on avant de replanifier
+	
 	/**
 	 * Paramètres de la série
 	 */

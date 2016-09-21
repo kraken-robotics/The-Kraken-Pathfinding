@@ -65,9 +65,6 @@ public class AStarCourbe implements Service
 	
 	private Speed vitesseMax;
 	
-	private volatile boolean partialPathNeeded = false;
-	private volatile boolean isUpdating = false;
-	
 	/**
 	 * Comparateur de noeud utilisé par la priority queue
 	 * @author pf
@@ -163,7 +160,8 @@ public class AStarCourbe implements Service
 				}
 
 				log.debug("On est arrivé !");
-				partialReconstruct(current, true);
+				partialReconstruct(current);
+				chemin.setUptodate(true);
 				log.debug(memorymanager.getSize());
 				memorymanager.empty();
 				return;
@@ -174,10 +172,9 @@ public class AStarCourbe implements Service
 			arcmanager.reinitIterator(current, directionstrategyactuelle);
 			while(arcmanager.hasNext())
 			{
-				if(partialPathNeeded)
+				if(chemin.needPartial())
 				{
-					partialPathNeeded = false;
-					partialReconstruct(current, false);
+					partialReconstruct(current);
 					// Il est nécessaire de copier current dans depart car current
 					// est effacé quand le memorymanager est vidé. Cette copie n'est effectuée qu'ici
 					current.copyReconstruct(depart);
@@ -224,7 +221,7 @@ public class AStarCourbe implements Service
 	 * @param best
 	 * @param last
 	 */
-	private final void partialReconstruct(AStarCourbeNode best, boolean last)
+	private final void partialReconstruct(AStarCourbeNode best)
 	{
 		synchronized(chemin)
 		{
@@ -236,8 +233,6 @@ public class AStarCourbe implements Service
 				noeud_parent = noeud_parent.came_from;
 				arc_parent = noeud_parent.came_from_arc;
 			}
-//			chemin.setFinish(last);
-			chemin.notify(); // on prévient le thread d'évitement qu'un chemin est disponible
 		}
 	}
 
@@ -277,7 +272,6 @@ public class AStarCourbe implements Service
 	
 	public synchronized void updatePath() throws PathfindingException
 	{
-		isUpdating = true;
 		synchronized(state)
 		{
 			depart.init();
@@ -285,20 +279,8 @@ public class AStarCourbe implements Service
 		}
 		vitesseMax = Speed.REPLANIF;
 		
-//		dstarlite.updatePath(depart.state.robot.getCinematique().getPosition());
 		chemin.clear();
 		process();
-		isUpdating = false;
 	}
 
-	public void givePartialPath()
-	{
-		partialPathNeeded = true;
-	}
-
-	public boolean isUpdating()
-	{
-		return isUpdating;
-	}
-	
 }
