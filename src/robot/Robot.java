@@ -17,6 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 package robot;
 
+import utils.ConfigInfo;
 import utils.Log;
 import utils.Config;
 
@@ -36,7 +37,7 @@ public abstract class Robot
     protected Cinematique cinematique;
     protected volatile boolean symetrie;
     protected boolean deploye = false;
-    
+    protected int largeurNonDeploye, longueurNonDeploye;
 	protected Log log;
 	
 	public Robot(Log log)
@@ -63,7 +64,10 @@ public abstract class Robot
 	}
 
 	public void useConfig(Config config)
-	{}
+	{
+		largeurNonDeploye = config.getInt(ConfigInfo.LARGEUR_NON_DEPLOYE);
+		longueurNonDeploye = config.getInt(ConfigInfo.LONGUEUR_NON_DEPLOYE);
+	}
     
     @Override
     public String toString()

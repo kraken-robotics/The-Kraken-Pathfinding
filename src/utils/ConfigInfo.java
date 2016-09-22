@@ -39,6 +39,8 @@ public enum ConfigInfo {
 	RAYON_ROBOT(150),
 	DISTANCE_ROUES_AVANT_ET_ARRIERE(200), // la distance entre l'axe des roues avant et l'axe des roues arrières
 	DISTANCE_ROUES_GAUCHE_ET_DROITE(50), // la distance entre la roue arrière gauche et la roue arrière droite
+	LARGEUR_NON_DEPLOYE(50), // distance entre le bord gauche et le bord droit du robot non-déployé
+	LONGUEUR_NON_DEPLOYE(250), // distance entre le bord avant et le bord arrière du robot non-déployé
 	
 	/**
 	 * Paramètres du log
@@ -114,7 +116,7 @@ public enum ConfigInfo {
 	GRAPHIC_BACKGROUND(false), // affiche d'image de la table
 	GRAPHIC_SIZE_X(1000), // taille par défaut (sans image) de la fenêtre
 	GRAPHIC_ALL_OBSTACLES(false), // affiche absolument tous les obstacles créés
-	
+	GRAPHIC_ROBOT_AND_SENSORS(false), // affiche le robot et ses capteurs
 	/**
 	 * Config dynamique
 	 */
