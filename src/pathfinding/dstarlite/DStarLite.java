@@ -262,15 +262,16 @@ public class DStarLite implements Service
 	{
 		if(graphicDStarLite)
 			gridspace.reinitGraphicGrid();
+		
+		updateGoalAndStart(depart, arrivee);
+		updateObstacles();
 
 		if(graphicDStarLite)
 		{
 			gridspace.setColor(this.arrivee.gridpoint, Couleur.JAUNE);
 			gridspace.setColor(this.depart.gridpoint, Couleur.VIOLET);
 		}
-		
-		updateGoalAndStart(depart, arrivee);
-		updateObstacles();
+
 	}
 	
 	/**
