@@ -160,4 +160,9 @@ public class Vec2RO implements Serializable
 	{
 		return y;
 	}
+
+	public boolean isHorsTable()
+	{
+		return x < -1500 || x > 1500 || y < 0 || y > 2000;
+	}
 }

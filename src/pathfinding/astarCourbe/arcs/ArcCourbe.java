@@ -51,4 +51,15 @@ public abstract class ArcCourbe {
 			return getLongueur() / getVitesseTr() + tempsRebroussement;
 		return getLongueur() / getVitesseTr();
 	}
+	
+	@Override
+	public String toString()
+	{
+		String out = getClass().getSimpleName()+" :\n";
+		for(int i = 0; i < getNbPoints()-1; i++)
+			out += getPoint(i)+"\n";
+		out += getLast();
+		return out;
+	}
+
 }

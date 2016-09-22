@@ -20,6 +20,7 @@ package pathfinding.astarCourbe;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.PriorityQueue;
+import java.util.Stack;
 
 import memory.NodeMM;
 import memory.ObsMM;
@@ -84,7 +85,8 @@ public class AStarCourbe implements Service
 
 	private final HashSet<AStarCourbeNode> closedset = new HashSet<AStarCourbeNode>();
 	private final PriorityQueue<AStarCourbeNode> openset = new PriorityQueue<AStarCourbeNode>(PointGridSpace.NB_POINTS, new AStarCourbeNodeComparator());
-
+	private Stack<ArcCourbe> pileTmp = new Stack<ArcCourbe>();
+	
 	/**
 	 * Constructeur du AStarCourbe
 	 */
@@ -223,17 +225,16 @@ public class AStarCourbe implements Service
 	 */
 	private final void partialReconstruct(AStarCourbeNode best)
 	{
-		synchronized(chemin)
+		AStarCourbeNode noeudParent = best;
+		ArcCourbe arcParent = best.cameFromArc;
+		while(noeudParent.parent != null)
 		{
-			AStarCourbeNode noeud_parent = best;
-			ArcCourbe arc_parent = best.cameFromArc;
-			while(noeud_parent.parent != null)
-			{
-				chemin.add(arc_parent);
-				noeud_parent = noeud_parent.parent;
-				arc_parent = noeud_parent.cameFromArc;
-			}
+			pileTmp.push(arcParent);
+			noeudParent = noeudParent.parent;
+			arcParent = noeudParent.cameFromArc;
 		}
+		while(!pileTmp.isEmpty())
+			chemin.add(pileTmp.pop());
 	}
 
 	@Override

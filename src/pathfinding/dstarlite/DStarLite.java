@@ -452,6 +452,9 @@ public class DStarLite implements Service
 	 */
 	public synchronized double heuristicCostCourbe(Cinematique c)
 	{
+		if(c.getPosition().isHorsTable())
+			return Integer.MAX_VALUE;
+		
 		updateStart(c.getPosition());
 		DStarLiteNode premier = getFromMemory(pointManager.get(c.getPosition()));
 		

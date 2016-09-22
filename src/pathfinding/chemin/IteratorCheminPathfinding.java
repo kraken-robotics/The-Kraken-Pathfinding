@@ -53,16 +53,15 @@ public class IteratorCheminPathfinding implements Iterator<ArcCourbe>
 	@Override
 	public ArcCourbe next()
 	{
-		index++;
-		index &= 0xFF;
-		return chemin.get(index);
+		ArcCourbe out = chemin.get(index);
+		index = chemin.add(index, 1);
+		return out;
 	}
 
 	@Override
 	public void remove()
 	{
-		chemin.indexFirst++;
-		chemin.indexFirst &= 0xFF;
+		chemin.indexFirst = chemin.add(chemin.indexFirst, 1);
 	}
 
 	public int getIndex()

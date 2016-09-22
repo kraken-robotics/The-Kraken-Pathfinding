@@ -26,11 +26,16 @@ import org.junit.Test;
 
 import graphic.PrintBuffer;
 import pathfinding.VitesseCourbure;
+import pathfinding.astarCourbe.AStarCourbe;
+import pathfinding.astarCourbe.arcs.ArcCourbe;
 import pathfinding.astarCourbe.arcs.ArcCourbeClotho;
 import pathfinding.astarCourbe.arcs.ArcCourbeCubique;
 import pathfinding.astarCourbe.arcs.ClothoidesComputer;
+import pathfinding.chemin.IteratorCheminPathfinding;
 import robot.Cinematique;
+import robot.DirectionStrategy;
 import robot.RobotChrono;
+import robot.RobotReal;
 import robot.Speed;
 import utils.ConfigInfo;
 import utils.Vec2RO;
@@ -43,8 +48,11 @@ import utils.Vec2RO;
 
 public class JUnit_AStarCourbe extends JUnit_Test {
 
+	private AStarCourbe astar;
 	private ClothoidesComputer clotho;
 	private PrintBuffer buffer;
+	private RobotReal robot;
+	private IteratorCheminPathfinding iterator;
 	private boolean graphicTrajectory;
 	
 	@Override
@@ -53,6 +61,9 @@ public class JUnit_AStarCourbe extends JUnit_Test {
         super.setUp();
 		clotho = container.getService(ClothoidesComputer.class);
 		buffer = container.getService(PrintBuffer.class);
+		astar = container.getService(AStarCourbe.class);
+		robot = container.getService(RobotReal.class);
+		iterator = container.make(IteratorCheminPathfinding.class);
 		graphicTrajectory = false;
 	}
 
@@ -157,6 +168,26 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 	
 		
 		Assert.assertEquals(arc[nbArc-1].arcselems[arc[nbArc-1].arcselems.length - 1].getPosition().distance(new Vec2RO(-22.769859459053365,1875.782736417656)), 0, 0.1);
+    }
+	
+	@Test
+    public void test_recherche() throws Exception
+    {
+		Cinematique depart = new Cinematique(0, 300, 0, true, 3, 0, 0, Speed.STANDARD);
+		robot.setCinematique(depart);
+		Cinematique c = new Cinematique(1000, 1000, Math.PI/2, false, 0, 0, 0, Speed.STANDARD);
+		astar.computeNewPath(c, true, DirectionStrategy.FASTEST);
+		iterator.reinit();
+		while(iterator.hasNext())
+		{
+			ArcCourbe a = iterator.next();
+			for(int i = 0; i < a.getNbPoints(); i++)
+			{
+				log.debug(a.getPoint(i));
+				robot.setCinematique(a.getPoint(i));
+				Thread.sleep(100);
+			}
+		}
     }
 	
 }

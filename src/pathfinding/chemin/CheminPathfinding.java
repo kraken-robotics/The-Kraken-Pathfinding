@@ -157,18 +157,23 @@ public class CheminPathfinding implements Service, Printable
 	 * Il sera directement envoyé à la série
 	 * @param arc
 	 */
-	public synchronized void add(ArcCourbe arc)
+	public void add(ArcCourbe arc)
 	{
-		chemin[indexLast] = arc;
-		out.envoieArcCourbe(arc, indexLast);
-		indexLast = add(indexLast, 1);
-		
-		// si on revient au début, c'est qu'il y a un problème ou que le buffer est sous-dimensionné
-		if(indexLast == indexFirst)
-			log.critical("Buffer trop petit !");
-		
+		synchronized(this)
+		{
+			chemin[indexLast] = arc;
+			out.envoieArcCourbe(arc, indexLast);
+			indexLast = add(indexLast, 1);
+			
+			// si on revient au début, c'est qu'il y a un problème ou que le buffer est sous-dimensionné
+			if(indexLast == indexFirst)
+				log.critical("Buffer trop petit !");
+		}
 		if(graphic)
-			buffer.notify();
+			synchronized(buffer)
+			{
+				buffer.notify();
+			}
 	}
 	
 	protected synchronized ArcCourbe get(int index)
@@ -193,7 +198,10 @@ public class CheminPathfinding implements Service, Printable
 		indexLast = indexFirst;
 		
 		if(graphic)
-			buffer.notify();
+			synchronized(buffer)
+			{
+				buffer.notify();
+			}
 	}
 	
 	public void setUptodate(boolean uptodate)
@@ -210,11 +218,17 @@ public class CheminPathfinding implements Service, Printable
 	 * Mise à jour, depuis le bas niveau, de la cinématique actuelle
 	 * @param indexTrajectory
 	 */
-	public synchronized void setCurrentIndex(int indexTrajectory)
+	public void setCurrentIndex(int indexTrajectory)
 	{
-		indexFirst = indexTrajectory;
+		synchronized(this)
+		{
+			indexFirst = indexTrajectory;
+		}
 		if(graphic)
-			buffer.notify();
+			synchronized(buffer)
+			{
+				buffer.notify();
+			}
 	}
 	
 	public Cinematique getLastValidCinematique()
@@ -231,8 +245,11 @@ public class CheminPathfinding implements Service, Printable
 		while(iterChemin.hasNext())
 		{
 			ArcCourbe a = iterChemin.next();
-			for(int i = 0; i < a.getNbPoints(); i++)
-				buffer.addSupprimable(new ObstacleCircular(a.getPoint(i).getPosition(), 8));
+			if(a == null)
+				log.critical("Nul !");
+			else
+				for(int i = 0; i < a.getNbPoints(); i++)
+					buffer.addSupprimable(new ObstacleCircular(a.getPoint(i).getPosition(), 8));
 		}
 	}
 
@@ -242,12 +259,12 @@ public class CheminPathfinding implements Service, Printable
 		return Layer.FOREGROUND;
 	}
 
-	private int minus(int indice1, int indice2)
+	public int minus(int indice1, int indice2)
 	{
 		return (indice1 - indice2 + tailleTab) % tailleTab;
 	}
 	
-	private int add(int indice1, int indice2)
+	public int add(int indice1, int indice2)
 	{
 		return (indice1 + indice2) % tailleTab;
 	}
