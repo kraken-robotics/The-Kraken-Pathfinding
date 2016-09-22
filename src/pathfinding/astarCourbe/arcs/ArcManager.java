@@ -55,7 +55,6 @@ public class ArcManager implements Service
 	private double courbureMax;
 	private DirectionStrategy directionstrategyactuelle;
 	private List<VitesseCourbure> listeVitesse = Arrays.asList(VitesseCourbure.values());
-	private int tempsRebroussement;
 	private ListIterator<VitesseCourbure> iterator = listeVitesse.listIterator();
 	
 	public ArcManager(Log log, DStarLite heuristique, ClothoidesComputer clotho, Table table)
@@ -109,10 +108,7 @@ public class ArcManager implements Service
 	public double distanceTo(AStarCourbeNode node)
 	{
 		node.state.robot.suitArcCourbe(node.cameFromArc);
-		double out = node.cameFromArc.getDuree();
-		if(node.cameFromArc.rebrousse)
-			out += tempsRebroussement;
-		return out;
+		return node.cameFromArc.getDuree();
 	}
 
 	/**
@@ -248,7 +244,7 @@ public class ArcManager implements Service
 	@Override
 	public void useConfig(Config config)
 	{
-		tempsRebroussement = config.getInt(ConfigInfo.TEMPS_REBROUSSEMENT);
+		ArcCourbe.tempsRebroussement = config.getInt(ConfigInfo.TEMPS_REBROUSSEMENT);
 		courbureMax = config.getDouble(ConfigInfo.COURBURE_MAX);		
 	}
 

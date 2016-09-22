@@ -60,9 +60,9 @@ public class ArcCourbeCubique extends ArcCourbe
 	}
 
 	@Override
-	public double getDuree()
+	public double getLongueur()
 	{
-		return longueur / getVitesseTr();
+		return longueur;
 	}
 	
 	@Override

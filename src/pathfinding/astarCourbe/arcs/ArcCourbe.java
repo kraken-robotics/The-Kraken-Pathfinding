@@ -31,6 +31,7 @@ public abstract class ArcCourbe {
 	public boolean rebrousse; // cet arc commence par un rebroussement, c'est-à-dire que la marche avant change
 	public boolean stop; // cet arc commence par un arrêt du robot
 	public ObstacleArcCourbe obstacle = new ObstacleArcCourbe();
+	protected static int tempsRebroussement;
 	
 	public ArcCourbe(boolean rebrousse, boolean stop)
 	{
@@ -41,7 +42,13 @@ public abstract class ArcCourbe {
 	public abstract int getNbPoints();
 	public abstract Cinematique getPoint(int indice);
 	public abstract Cinematique getLast();
-	public abstract double getDuree();
 	public abstract double getVitesseTr();
+	protected abstract double getLongueur();
 
+	public double getDuree()
+	{
+		if(rebrousse)
+			return getLongueur() / getVitesseTr() + tempsRebroussement;
+		return getLongueur() / getVitesseTr();
+	}
 }
