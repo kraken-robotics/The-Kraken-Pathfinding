@@ -109,8 +109,8 @@ public class AStarCourbe implements Service
 	 */
 	protected final void process()
 	{
-		depart.came_from = null;
-		depart.came_from_arc = null;
+		depart.parent = null;
+		depart.cameFromArc = null;
 		depart.g_score = 0;
 		depart.f_score = dstarlite.heuristicCostCourbe((depart.state.robot).getCinematique());
 
@@ -135,21 +135,21 @@ public class AStarCourbe implements Service
 
 			closedset.add(current);
 			
-			if(graphicTrajectory && current.came_from_arc != null)
-				for(int i = 0; i < current.came_from_arc.getNbPoints(); i++)
-					buffer.addSupprimable(new ObstacleCircular(current.came_from_arc.getPoint(i).getPosition(), 4));
+			if(graphicTrajectory && current.cameFromArc != null)
+				for(int i = 0; i < current.cameFromArc.getNbPoints(); i++)
+					buffer.addSupprimable(new ObstacleCircular(current.cameFromArc.getPoint(i).getPosition(), 4));
 			
 			// ce calcul étant un peu lourd, on ne le fait que si le noeud a été choisi, et pas à la sélection des voisins (dans hasNext par exemple)
 			if(!arcmanager.isReachable(current))
 			{
-				rectMemory.destroyNode(current.came_from_arc.obstacle);
+				rectMemory.destroyNode(current.cameFromArc.obstacle);
 				memorymanager.destroyNode(current);
 				continue; // collision mécanique attendue. On passe au suivant !
 			}
 			
 			// Si on est arrivé, on reconstruit le chemin
 			// On est arrivé seulement si on vient d'un arc cubique
-			if(current.came_from_arc instanceof ArcCourbeCubique || memorymanager.getSize() > 10000)
+			if(current.cameFromArc instanceof ArcCourbeCubique || memorymanager.getSize() > 10000)
 			{
 				if(memorymanager.getSize() > 10000) // étant donné qu'il peut continuer jusqu'à l'infini...
 				{
@@ -171,6 +171,7 @@ public class AStarCourbe implements Service
 			arcmanager.reinitIterator(current, directionstrategyactuelle);
 			while(arcmanager.hasNext())
 			{
+				// On vérifie *très* régulièremet s'il ne faut pas fournir un chemin partiel
 				if(chemin.needPartial())
 				{
 					partialReconstruct(current);
@@ -188,16 +189,16 @@ public class AStarCourbe implements Service
 				// S'il y a un problème, on passe au suivant (interpolation cubique impossible par exemple)
 				if(!arcmanager.next(successeur, vitesseMax, arrivee))
 				{
-					rectMemory.destroyNode(successeur.came_from_arc.obstacle);
+					rectMemory.destroyNode(successeur.cameFromArc.obstacle);
 					memorymanager.destroyNode(successeur);
 					continue;
 				}
 
 				successeur.g_score = current.g_score + arcmanager.distanceTo(successeur);
 				
-				successeur.f_score = successeur.g_score + dstarlite.heuristicCostCourbe((successeur.state.robot).getCinematique()) / successeur.came_from_arc.getVitesseTr();
+				successeur.f_score = successeur.g_score + dstarlite.heuristicCostCourbe((successeur.state.robot).getCinematique()) / successeur.cameFromArc.getVitesseTr();
 
-				successeur.came_from = current;
+				successeur.parent = current;
 
 				openset.add(successeur);
 				
@@ -225,12 +226,12 @@ public class AStarCourbe implements Service
 		synchronized(chemin)
 		{
 			AStarCourbeNode noeud_parent = best;
-			ArcCourbe arc_parent = best.came_from_arc;
-			while(noeud_parent.came_from != null)
+			ArcCourbe arc_parent = best.cameFromArc;
+			while(noeud_parent.parent != null)
 			{
 				chemin.add(arc_parent);
-				noeud_parent = noeud_parent.came_from;
-				arc_parent = noeud_parent.came_from_arc;
+				noeud_parent = noeud_parent.parent;
+				arc_parent = noeud_parent.cameFromArc;
 			}
 		}
 	}

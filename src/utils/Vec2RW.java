@@ -98,4 +98,10 @@ public class Vec2RW extends Vec2RO
 	{
 		this.y = y;
 	}
+
+	public void set(double longueur, double angle)
+	{
+		x = Math.cos(angle)*longueur;
+		y = Math.sin(angle)*longueur;
+	}
 }

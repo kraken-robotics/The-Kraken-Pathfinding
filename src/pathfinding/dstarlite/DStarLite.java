@@ -441,7 +441,8 @@ public class DStarLite implements Service
 	private Vec2RW deltaTmp = new Vec2RW();
 	private Vec2RW centreCercle = new Vec2RW();
 	private Vec2RW posRobot = new Vec2RW();
-	
+	private Vec2RW pos = new Vec2RW();
+
 	/**
 	 * Renvoie l'heuristique au A* courbe.
 	 * L'heuristique est une distance en mm
@@ -456,13 +457,64 @@ public class DStarLite implements Service
 		if(premier.rhs == Integer.MAX_VALUE)
 			return Integer.MAX_VALUE;
 		
+		double h1 = heuristiqueCercle(c);
+
+		// si on ne peut pas avancer sans se prendre un mur, peut-être peut-on reculer sans se prendre un mur
+		if(h1 == Integer.MAX_VALUE)
+			return heuristiqueMarcheArriere(c);
+		
+		return h1;
+	}
+
+	/**
+	 * On regarde si le robot peut reculer un peu
+	 * @param c
+	 * @return
+	 */
+	private double heuristiqueMarcheArriere(Cinematique c)
+	{
+		DStarLiteNode premier = getFromMemory(pointManager.get(c.getPosition()));
+		double d = ClothoidesComputer.PRECISION_TRACE * 1000; // passage de m en mm
+
+		// Si on va en marche avant, on teste la marche arrière, et inversement
+		if(c.enMarcheAvant)
+			d = -d;
+		
+		pos = c.getPosition().clone();
+		delta.set(d, c.orientation);
+		DStarLiteNode n = null;
+		
+		for(int i = 0; i < 5; i++)
+		{
+			pos.plus(delta);
+
+			PointGridSpace p = pointManager.get(pos);
+			updateStart(c.getPosition());
+			n = getFromMemory(p);
+			
+			if(n.rhs == Integer.MAX_VALUE)
+				return Integer.MAX_VALUE;
+		}
+		
+		// On renvoie la distance du dernier point
+		return (n.rhs + distanceHeuristique(premier.gridpoint)) / 1000. * PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS; // heuristique en mm
+	}
+
+	/**
+	 * On regarde si le robot peut avancer un peu avec sa courbure actuelle
+	 * @param c
+	 * @return
+	 */
+	private double heuristiqueCercle(Cinematique c)
+	{
+		DStarLiteNode premier = getFromMemory(pointManager.get(c.getPosition()));
+
 		double rayonCourbure = 1000. / c.courbure;
 		delta.setX(Math.cos(c.orientation + Math.PI / 2) * rayonCourbure);
 		delta.setY(Math.sin(c.orientation + Math.PI / 2) * rayonCourbure);
 		
 		centreCercle.setX(c.getPosition().getX() + delta.getX());
 		centreCercle.setY(c.getPosition().getY() + delta.getY());
-
 		
 		double cos = Math.sqrt(rayonCourbure * rayonCourbure - ClothoidesComputer.d * ClothoidesComputer.d) / rayonCourbure;
 		double sin = Math.abs(ClothoidesComputer.d / rayonCourbure);

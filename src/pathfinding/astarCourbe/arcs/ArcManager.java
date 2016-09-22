@@ -39,7 +39,7 @@ import utils.ConfigInfo;
 import utils.Log;
 
 /**
- * Réalise des calculs pour l'AStarCourbe.
+ * Réalise des calculs pour l'A* courbe.
  * @author pf
  *
  */
@@ -75,10 +75,10 @@ public class ArcManager implements Service
 	public boolean isReachable(AStarCourbeNode node)
 	{
 		// le tout premier nœud n'a pas de parent
-		if(node.came_from == null)
+		if(node.parent == null)
 			return true;
 
-		ObstacleArcCourbe obs = node.came_from_arc.obstacle;
+		ObstacleArcCourbe obs = node.cameFromArc.obstacle;
 
 		// Collision avec un obstacle fixe?
     	for(ObstaclesFixes o: ObstaclesFixes.values())
@@ -108,9 +108,9 @@ public class ArcManager implements Service
 	 */
 	public double distanceTo(AStarCourbeNode node)
 	{
-		node.state.robot.suitArcCourbe(node.came_from_arc);
-		double out = node.came_from_arc.getDuree();
-		if(node.came_from_arc.rebrousse)
+		node.state.robot.suitArcCourbe(node.cameFromArc);
+		double out = node.cameFromArc.getDuree();
+		if(node.cameFromArc.rebrousse)
 			out += tempsRebroussement;
 		return out;
 	}
@@ -131,10 +131,10 @@ public class ArcManager implements Service
 		if(v == VitesseCourbure.DIRECT_COURBE || v == VitesseCourbure.DIRECT_COURBE_REBROUSSE)
 		{
 			ArcCourbe tmp;
-			if(current.came_from_arc != null)
+			if(current.cameFromArc != null)
 				tmp = clotho.cubicInterpolation(
 						current.state.robot,
-						current.came_from_arc.getLast(),
+						current.cameFromArc.getLast(),
 						arrivee,
 						vitesseMax,
 						v);
@@ -150,23 +150,23 @@ public class ArcManager implements Service
 				return false;
 			}
 
-			successeur.came_from_arc = tmp;
+			successeur.cameFromArc = tmp;
 		}
 		
 		/**
 		 * Si on fait une interpolation par clothoïde
 		 */
-		else if(current.came_from_arc != null)
+		else if(current.cameFromArc != null)
 			clotho.getTrajectoire(current.state.robot,
-					current.came_from_arc,
+					current.cameFromArc,
 					v,
 					vitesseMax,
-					(ArcCourbeClotho)successeur.came_from_arc);
+					(ArcCourbeClotho)successeur.cameFromArc);
 		else // pas de prédécesseur
 			clotho.getTrajectoire(successeur.state.robot,
 					v,
 					vitesseMax,
-					(ArcCourbeClotho)successeur.came_from_arc);
+					(ArcCourbeClotho)successeur.cameFromArc);
 
 		return true;
     }

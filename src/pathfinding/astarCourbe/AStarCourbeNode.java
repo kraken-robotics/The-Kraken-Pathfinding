@@ -34,8 +34,8 @@ public class AStarCourbeNode implements Memorizable
 	public ChronoGameState state;
 	public double g_score;
 	public double f_score;
-	public AStarCourbeNode came_from;
-	public ArcCourbe came_from_arc = new ArcCourbeClotho();
+	public AStarCourbeNode parent;
+	public ArcCourbe cameFromArc = new ArcCourbeClotho();
 	private int indiceMemoryManager;
 	
 	public AStarCourbeNode(ChronoGameState state)
@@ -76,7 +76,7 @@ public class AStarCourbeNode implements Memorizable
 		modified.g_score = g_score;
 		modified.f_score = f_score;
 		state.copyAStarCourbe(modified.state);
-		modified.came_from = null;
+		modified.parent = null;
 	}
 
 	@Override
