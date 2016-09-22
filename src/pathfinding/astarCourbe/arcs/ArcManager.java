@@ -32,8 +32,8 @@ import java.util.List;
 import java.util.ListIterator;
 
 import container.Service;
-import obstacles.ObstaclesFixes;
 import obstacles.types.ObstacleArcCourbe;
+import obstacles.types.ObstaclesFixes;
 import utils.Config;
 import utils.ConfigInfo;
 import utils.Log;

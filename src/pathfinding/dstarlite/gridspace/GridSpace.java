@@ -27,10 +27,10 @@ import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.BitSet;
 
-import obstacles.ObstaclesFixes;
 import obstacles.memory.ObstaclesIteratorPresent;
 import obstacles.memory.ObstaclesMemory;
 import obstacles.types.ObstacleProximity;
+import obstacles.types.ObstaclesFixes;
 import robot.RobotReal;
 import utils.Config;
 import utils.ConfigInfo;

@@ -15,11 +15,9 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>
 */
 
-package obstacles;
+package obstacles.types;
 
 import graphic.printable.Layer;
-import obstacles.types.Obstacle;
-import obstacles.types.ObstacleRectangular;
 import utils.Vec2RO;
 
 /**

@@ -37,6 +37,8 @@ public enum ConfigInfo {
 	 * Infos sur le robot
 	 */
 	RAYON_ROBOT(150),
+	DISTANCE_ROUES_AVANT_ET_ARRIERE(200), // la distance entre l'axe des roues avant et l'axe des roues arrières
+	DISTANCE_ROUES_GAUCHE_ET_DROITE(50), // la distance entre la roue arrière gauche et la roue arrière droite
 	
 	/**
 	 * Paramètres du log

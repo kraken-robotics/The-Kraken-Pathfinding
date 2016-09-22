@@ -21,9 +21,9 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import utils.Vec2RO;
-import obstacles.ObstaclesFixes;
 import obstacles.types.ObstacleCircular;
 import obstacles.types.ObstacleRectangular;
+import obstacles.types.ObstaclesFixes;
 
 /**
  * Test unitaire des obstacles
