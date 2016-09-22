@@ -25,7 +25,6 @@ import obstacles.memory.ObstaclesIteratorPresent;
 import obstacles.types.ObstacleProximity;
 import pathfinding.astarCourbe.AStarCourbe;
 import table.RealTable;
-import table.Table;
 import tests.container.A;
 import tests.container.C;
 import tests.container.D;

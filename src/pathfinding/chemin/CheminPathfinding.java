@@ -22,7 +22,6 @@ import java.awt.Graphics;
 import obstacles.memory.ObstaclesIteratorPresent;
 import obstacles.types.ObstacleArcCourbe;
 import obstacles.types.ObstacleCircular;
-import obstacles.types.ObstacleProximity;
 import graphic.Fenetre;
 import graphic.PrintBuffer;
 import graphic.printable.Layer;
