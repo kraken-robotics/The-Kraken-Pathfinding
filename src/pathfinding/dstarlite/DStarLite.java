@@ -496,7 +496,7 @@ public class DStarLite implements Service
 			updateStart(c.getPosition());
 			n = getFromMemory(p);
 			
-			if(n.rhs == Integer.MAX_VALUE)
+			if(n == null || n.rhs == Integer.MAX_VALUE)
 				return Integer.MAX_VALUE;
 		}
 		
@@ -546,7 +546,7 @@ public class DStarLite implements Service
 			updateStart(c.getPosition());
 			n = getFromMemory(p);
 			
-			if(n.rhs == Integer.MAX_VALUE)
+			if(n == null || n.rhs == Integer.MAX_VALUE)
 				return Integer.MAX_VALUE;
 		}
 		

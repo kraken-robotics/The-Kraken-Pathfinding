@@ -240,7 +240,6 @@ public class ClothoidesComputer implements Service
 					break;
 				}
 				
-				
 //				log.debug(x+" "+y);
 				lastCourbure = actuel.courbure;
 				
@@ -345,15 +344,30 @@ public class ClothoidesComputer implements Service
  			double orientationClotho = sDepart * sDepart;
  			if(!vitesse.positif)
  				orientationClotho = - orientationClotho;
+ 			
+ 			boolean marcheAvant = vitesse.rebrousse ^ cinematiqueInitiale.enMarcheAvant;
+ 			
 			modified.arcselems[i].orientation = baseOrientation + orientationClotho;
 			modified.arcselems[i].courbure = sDepart * vitesse.squaredRootVitesse;
-			
+
+ 			if(marcheAvant)
+ 			{
+				modified.arcselems[i].orientationReelle = modified.arcselems[i].orientation;
+				modified.arcselems[i].courbureReelle = modified.arcselems[i].courbure;
+ 			}
+ 			else
+ 			{
+				modified.arcselems[i].orientationReelle = modified.arcselems[i].orientation + Math.PI;
+				modified.arcselems[i].courbureReelle = - modified.arcselems[i].courbure;
+ 			}
+ 			
 			// TODO : doit dépendre de la courbure !
+ 			// TODO : valeurs signées ?
 			modified.arcselems[i].vitesseRotation = vitesseMax.rotationalSpeed;
 			modified.arcselems[i].vitesseTranslation = vitesseMax.translationalSpeed;
 			modified.rebrousse = vitesse.rebrousse;
 			
-			modified.arcselems[i].enMarcheAvant = vitesse.rebrousse ^ cinematiqueInitiale.enMarcheAvant;
+			modified.arcselems[i].enMarcheAvant = marcheAvant;
 			modified.arcselems[i].vitesseMax = vitesseMax;
  			if(!vitesse.positif)
  				modified.arcselems[i].courbure = - modified.arcselems[i].courbure;
@@ -406,6 +420,18 @@ public class ClothoidesComputer implements Service
 			modified.arcselems[i].getPositionEcriture().minus(deltaTmp);
 			modified.arcselems[i].orientation = orientation + angle * (i + 1);
 			modified.arcselems[i].courbure = courbure;
+
+ 			if(enMarcheAvant)
+ 			{
+				modified.arcselems[i].orientationReelle = modified.arcselems[i].orientation;
+				modified.arcselems[i].courbureReelle = modified.arcselems[i].courbure;
+ 			}
+ 			else
+ 			{
+				modified.arcselems[i].orientationReelle = modified.arcselems[i].orientation + Math.PI;
+				modified.arcselems[i].courbureReelle = - modified.arcselems[i].courbure;
+ 			}
+
 			// TODO : doit dépendre de la courbure !
 			modified.arcselems[i].vitesseRotation = vitesseMax.rotationalSpeed;
 			modified.arcselems[i].vitesseTranslation = vitesseMax.translationalSpeed;
@@ -433,6 +459,13 @@ public class ClothoidesComputer implements Service
 			modified.arcselems[i].getPositionEcriture().setY(position.getY() + distance * sin);
 			modified.arcselems[i].orientation = orientation;
 			modified.arcselems[i].courbure = 0;
+			modified.arcselems[i].courbureReelle = 0;
+			
+ 			if(enMarcheAvant)
+				modified.arcselems[i].orientationReelle = modified.arcselems[i].orientation;
+ 			else
+				modified.arcselems[i].orientationReelle = modified.arcselems[i].orientation + Math.PI;
+ 			
 			modified.arcselems[i].vitesseRotation = vitesseMax.rotationalSpeed;
 			modified.arcselems[i].vitesseTranslation = vitesseMax.translationalSpeed;
 			modified.arcselems[i].enMarcheAvant = enMarcheAvant;

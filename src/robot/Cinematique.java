@@ -29,15 +29,28 @@ import utils.Vec2RW;
 public class Cinematique
 {
 	protected final Vec2RW position = new Vec2RW();
-	public volatile double orientation;
+	public volatile double orientation; // il s'agit de l'orientation qui avance. donc l'arrière du robot s'il recule
 	public volatile boolean enMarcheAvant;
 	public volatile double courbure;
 	public volatile double vitesseTranslation;
 	public volatile Speed vitesseMax;
 	public volatile double vitesseRotation;
+	public volatile double orientationReelle;
+	public volatile double courbureReelle;
 	
 	public Cinematique(double x, double y, double orientation, boolean enMarcheAvant, double courbure, double vitesseTranslation, double vitesseRotation, Speed vitesseMax)
 	{
+		if(enMarcheAvant)
+		{
+			orientationReelle = orientation;
+			courbureReelle = courbure;
+		}
+		else
+		{
+			orientationReelle = orientation + Math.PI;
+			courbureReelle = - courbure;
+		}
+		
 		position.setX(x);
 		position.setY(y);
 		this.orientation = orientation;
@@ -77,14 +90,16 @@ public class Cinematique
 		{
 	    	position.copy(autre.position);
 	    	autre.orientation = orientation;
+	    	autre.orientationReelle = orientationReelle;
 	    	autre.enMarcheAvant = enMarcheAvant;
 	    	autre.courbure = courbure;
+	    	autre.courbureReelle = courbureReelle;
 	    	autre.vitesseRotation = vitesseRotation;
 	    	autre.vitesseTranslation = vitesseTranslation;
 	    	autre.vitesseMax = vitesseMax;
 		}
 	}
-
+	
 	public void setVitesse(Speed speed)
 	{
 		vitesseRotation = speed.rotationalSpeed;
@@ -104,7 +119,7 @@ public class Cinematique
 	@Override
 	public String toString()
 	{
-		return position+", "+orientation+", "+(enMarcheAvant ? "marche avant" : "marche arrière")+", vitesse : "+vitesseTranslation+" courbure : "+courbure;
+		return position+", "+orientation+"(réelle : "+orientationReelle+"), "+(enMarcheAvant ? "marche avant" : "marche arrière")+", vitesse : "+vitesseTranslation+" courbure : "+courbure+"(réelle : "+courbureReelle+")";
 	}
 	
 	@Override
