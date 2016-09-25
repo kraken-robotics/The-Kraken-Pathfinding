@@ -93,6 +93,8 @@ public class CheminPathfinding implements Service, Printable
 	
 	/**
 	 * Vérifie des collisions et met à jour lastIndex
+	 * On ne vérifie la collision qu'avec les obstacles de proximité
+	 * On suppose qu'il n'y a pas de collision avec les autres éléments
 	 * @return
 	 */
 	private boolean isColliding()

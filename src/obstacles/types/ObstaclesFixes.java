@@ -28,10 +28,29 @@ import utils.Vec2RO;
  */
 
 public enum ObstaclesFixes {
+	// TODO visibilité à mettre à jour selon le robot / les capteurs
+	ZONE_DEPART_ENNEMI(new ObstacleRectangular(new Vec2RO(1100/2-1500,2000-350/2),1100,350), false),
+	ZONE_DEPART_A_NOUS(new ObstacleRectangular(new Vec2RO(1500-750/2,2000-350/2),750,350), false),
 
-    TEST(new ObstacleRectangular(new Vec2RO(0,1000),50,50), true),
+	BAC_GAUCHE(new ObstacleRectangular(new Vec2RO(25-1500,1075),50,450), false),
+	BAC_DROIT(new ObstacleRectangular(new Vec2RO(1500-25,1075),50,450), false),
 
+	CENTRE_VILLAGE(new ObstacleCircular(new Vec2RO(0,0),200), false),
+
+	SUPPORT_MODULE_GAUCHE(new ObstacleRectangular(new Vec2RO(0,500).rotateNewVector(-Math.PI/4, new Vec2RO(0,0)),140,600, -Math.PI/4), false),
+	SUPPORT_MODULE_MILIEU(new ObstacleRectangular(new Vec2RO(0,500),140,600), false),
+	SUPPORT_MODULE_DROITE(new ObstacleRectangular(new Vec2RO(0,500).rotateNewVector(Math.PI/4, new Vec2RO(0,0)),140,600, Math.PI/4), false),
 	
+	PETIT_CRATERE_HAUT_GAUCHE(new ObstacleCircular(new Vec2RO(650-1500,2000-530),90), false),
+	PETIT_CRATERE_HAUT_DROITE(new ObstacleCircular(new Vec2RO(1500-650,2000-530),90), false),
+
+	PETIT_CRATERE_BAS_GAUCHE(new ObstacleCircular(new Vec2RO(1100-1500,2000-1870),90), false),
+	PETIT_CRATERE_BAS_DROITE(new ObstacleCircular(new Vec2RO(1500-1100,2000-1870),90), false),
+
+	GROS_CRATERE_GAUCHE(new ObstacleCircular(new Vec2RO(-1500,0),575), false),
+	GROS_CRATERE_DROITE(new ObstacleCircular(new Vec2RO(1500,0),575), false),
+
+		
 	// bords
     BORD_BAS(new ObstacleRectangular(new Vec2RO(0,0),3000,5,Layer.BACKGROUND), false),
     BORD_GAUCHE(new ObstacleRectangular(new Vec2RO(-1500,1000),5,2000,Layer.BACKGROUND), false),
