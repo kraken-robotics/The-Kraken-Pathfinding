@@ -203,6 +203,7 @@ public class ClothoidesComputer implements Service
 			Cinematique last = null, actuel;
 			boolean error = false;
 			
+			// TODO : mettre la discontinuité le plus tôt possible
 			tnext += PRECISION_TRACE*1000/alpha;
 			while(t < 1.)
 			{

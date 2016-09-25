@@ -36,8 +36,9 @@ import utils.Log;
 public class MemoryManager<T extends Memorizable> implements Service {
 
 	protected int nb_instances;
+	private Container container;
 
-	private final T[] nodes;
+	private T[] nodes;
 	protected Log log;
 	
 	private int firstAvailable;
@@ -56,6 +57,7 @@ public class MemoryManager<T extends Memorizable> implements Service {
 	@SuppressWarnings("unchecked")
 	public MemoryManager(Class<T> classe, Log log, Container container, int nb_instances) throws ContainerException
 	{	
+		this.container = container;
 		this.log = log;
 		this.nb_instances = nb_instances;
 		nodes = (T[]) Array.newInstance(classe, nb_instances);
@@ -75,10 +77,31 @@ public class MemoryManager<T extends Memorizable> implements Service {
 	 * Donne un objet disponible
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	public synchronized T getNewNode()
 	{
 		// lève une exception s'il n'y a plus de place
+		if(firstAvailable == nodes.length)
+		{
+			try {
+				log.warning("Mémoire trop petite, extension (nouvelle taille : "+(nodes.length * 2)+")");
+				T[] newNodes = (T[]) Array.newInstance(nodes[0].getClass(), nodes.length * 2);
+				for(int i = 0; i < nodes.length; i++)
+					newNodes[i] = nodes[i];
+				for(int i = nodes.length; i < 2 * nodes.length; i++)
+				{
+					newNodes[i] = container.make((Class<T>) nodes[0].getClass());
+					newNodes[i].setIndiceMemoryManager(i);
+				}
+	
+				nodes = newNodes;
+			} catch(ContainerException e)
+			{
+				log.critical(e);
+			}
+		}
 		return nodes[firstAvailable++];
+		
 	}
 
 	/**
