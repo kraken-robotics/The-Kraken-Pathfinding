@@ -316,6 +316,10 @@ public class ClothoidesComputer implements Service
 		if(!vitesse.positif)
 			sDepart = -sDepart;
 		int pointDepart = (int) Math.round(sDepart / PRECISION_TRACE) + INDICE_MAX - 1;
+		
+		if(pointDepart < 0 || pointDepart >= trajectoire.length)
+			log.critical("Sorti de la clothoïde précalculée !");
+		
 		double orientationClothoDepart = sDepart * sDepart; // orientation au départ
 		if(!vitesse.positif)
 			orientationClothoDepart = - orientationClothoDepart;
@@ -495,9 +499,9 @@ public class ClothoidesComputer implements Service
             FileOutputStream fichier;
             ObjectOutputStream oos;
 
-            fichier_creation = new java.io.File("clotho.dat");
+            fichier_creation = new java.io.File("clotho-"+S_MAX+".dat");
             fichier_creation.createNewFile();
-            fichier = new FileOutputStream("clotho.dat");
+            fichier = new FileOutputStream("clotho-"+S_MAX+".dat");
             oos = new ObjectOutputStream(fichier);
             oos.writeObject(trajectoire);
             oos.flush();
@@ -518,7 +522,7 @@ public class ClothoidesComputer implements Service
     {
     	log.debug("Chargement des points de la clothoïde");
         try {
-            FileInputStream fichier = new FileInputStream("clotho.dat");
+            FileInputStream fichier = new FileInputStream("clotho-"+S_MAX+".dat");
             ObjectInputStream ois = new ObjectInputStream(fichier);
             trajectoire = (Vec2RO[]) ois.readObject();
             ois.close();

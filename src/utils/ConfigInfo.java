@@ -32,11 +32,11 @@ public enum ConfigInfo {
 	/**
 	 * Infos sur le robot
 	 */
-	RAYON_ROBOT(150),
-	DISTANCE_ROUES_AVANT_ET_ARRIERE(300), // la distance entre l'axe des roues avant et l'axe des roues arrières
-	DISTANCE_ROUES_GAUCHE_ET_DROITE(200), // la distance entre la roue arrière gauche et la roue arrière droite
-	LONGUEUR_NON_DEPLOYE(400), // distance entre le bord avant et le bord arrière du robot non-déployé
-	LARGEUR_NON_DEPLOYE(200), // distance entre le bord gauche et le bord droit du robot non-déployé
+	RAYON_ROBOT(150), // TODO
+	DISTANCE_ROUES_AVANT_ET_ARRIERE(300), // la distance entre l'axe des roues avant et l'axe des roues arrières TODO
+	DISTANCE_ROUES_GAUCHE_ET_DROITE(200), // la distance entre la roue arrière gauche et la roue arrière droite TODO
+	LONGUEUR_NON_DEPLOYE(400), // distance entre le bord avant et le bord arrière du robot non-déployé TODO
+	LARGEUR_NON_DEPLOYE(200), // distance entre le bord gauche et le bord droit du robot non-déployé TODO
 	
 	/**
 	 * Paramètres du log
@@ -54,11 +54,7 @@ public enum ConfigInfo {
 	/**
 	 * Paramètres du pathfinding
 	 */
-	ATTENTE_ENNEMI_PART(500),	// pendant combien de temps peut-on attendre que l'ennemi parte avant d'abandonner ?
-	DISTANCE_DEGAGEMENT_ROBOT(200),
-	MARGE(20),
-	COURBURE_MAX(10.), // quelle courbure maximale la trajectoire du robot peut-elle avoir 
-	PATHFINDING_UPDATE_TIMEOUT(50), // au bout de combien de temps le pathfinding est-il obligé de fournir un chemin partiel
+	COURBURE_MAX(8.), // quelle courbure maximale la trajectoire du robot peut-elle avoir TODO
 	TEMPS_REBROUSSEMENT(700), // temps qu'il faut au robot pour rebrousser chemin
 	PF_MARGE_NECESSAIRE(2), // combien d'arc de pathfinding le bas niveau doit-il toujours avoir
 	PF_ANTICIPATION(2), // combien d'arcs avant le dernier valide supprime-t-on avant de replanifier
@@ -66,7 +62,7 @@ public enum ConfigInfo {
 	/**
 	 * Paramètres de la série
 	 */
-	SERIAL_TIMEOUT(30), // quel TIMEOUT pour le protocole série des trames ?
+	SERIAL_TIMEOUT(30), // quel TIMEOUT pour le protocole série des trames ? (en ms) TODO
 	BAUDRATE(115200), // le baudrate de la liaison série
 	SERIAL_PORT("/dev/ttyS0"), // le port de la liaison série
 	SLEEP_ENTRE_TRAMES(0),	// la durée minimale entre deux envois de nouvelles trames
@@ -81,7 +77,7 @@ public enum ConfigInfo {
 	/**
 	 * Paramètres du traitement des capteurs
 	 */
-	NB_CAPTEURS(2),
+	NB_CAPTEURS(2), // TODO
 	DUREE_PEREMPTION_OBSTACLES(3000), // pendant combien de temps va-t-on garder un obstacle de proximité
 	DISTANCE_MAX_ENTRE_MESURE_ET_OBJET(50), // quelle marge d'erreur autorise-t-on entre un objet et sa détection
 	DISTANCE_BETWEEN_PROXIMITY_OBSTACLES(50), // sous quelle distance fusionne-t-on deux obstacles de proximité ?

@@ -178,16 +178,18 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 		Cinematique c = new Cinematique(1000, 1000, Math.PI/2, false, 0, 0, 0, Speed.STANDARD);
 		astar.computeNewPath(c, true, DirectionStrategy.FASTEST);
 		iterator.reinit();
+		ArcCourbe a = null;
 		while(iterator.hasNext())
 		{
-			ArcCourbe a = iterator.next();
+			a = iterator.next();
 			for(int i = 0; i < a.getNbPoints(); i++)
 			{
-				log.debug(a.getPoint(i));
+//				log.debug(a.getPoint(i));
 				robot.setCinematique(a.getPoint(i));
 				Thread.sleep(100);
 			}
 		}
+		Assert.assertTrue(a instanceof ArcCourbeCubique);
     }
 	
 }
