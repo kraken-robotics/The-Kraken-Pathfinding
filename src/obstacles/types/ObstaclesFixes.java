@@ -50,7 +50,10 @@ public enum ObstaclesFixes {
 	GROS_CRATERE_GAUCHE(new ObstacleCircular(new Vec2RO(-1500,0),575), false),
 	GROS_CRATERE_DROITE(new ObstacleCircular(new Vec2RO(1500,0),575), false),
 
-		
+	FUSEE_GAUCHE(new ObstacleCircular(new Vec2RO(-350,1960),40), true),	
+	FUSEE_MILIEU(new ObstacleCircular(new Vec2RO(0,1960),40), true),	
+	FUSEE_DROITE(new ObstacleCircular(new Vec2RO(350,1960),40), true),	
+	
 	// bords
     BORD_BAS(new ObstacleRectangular(new Vec2RO(0,0),3000,5,Layer.BACKGROUND), false),
     BORD_GAUCHE(new ObstacleRectangular(new Vec2RO(-1500,1000),5,2000,Layer.BACKGROUND), false),
