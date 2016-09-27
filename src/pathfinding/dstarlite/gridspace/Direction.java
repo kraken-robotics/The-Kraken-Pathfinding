@@ -53,4 +53,35 @@ public enum Direction {
 	{
 		return values()[ordinal() ^ 1]; // ouais ouais
 	}
+	
+	private final static double seuil = Math.sqrt(2 - Math.sqrt(2)) / 2; // cos(3pi/8)
+	
+	/**
+	 * Fournit la direction la plus proche de l'orientation donnée
+	 * @param orientation
+	 * @return
+	 */
+	public static Direction getDirection(double orientation)
+	{
+		double cos = Math.cos(orientation);
+		double sin = Math.sin(orientation);
+		
+		int deltaX = 0;
+		if(cos > seuil)
+			deltaX = 1;
+		else if(cos < -seuil)
+			deltaX = -1;
+		
+		int deltaY = 0;
+		if(sin > seuil)
+			deltaY = 1;
+		else if(sin < -seuil)
+			deltaY = -1;
+		
+		for(Direction d : values())
+			if(d.deltaX == deltaX && d.deltaY == deltaY)
+				return d;
+		
+		return null;
+	}
 }

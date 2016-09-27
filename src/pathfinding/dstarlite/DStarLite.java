@@ -30,6 +30,7 @@ import pathfinding.dstarlite.gridspace.PointDirigeManager;
 import pathfinding.dstarlite.gridspace.PointGridSpace;
 import pathfinding.dstarlite.gridspace.PointGridSpaceManager;
 import robot.Cinematique;
+import robot.DirectionStrategy;
 import utils.Config;
 import utils.ConfigInfo;
 import utils.Log;
@@ -470,6 +471,64 @@ public class DStarLite implements Service
 		return h1;
 	}
 
+	/**
+	 * Estime la courbure à prendre en ce point
+	 * @param p
+	 * @param orientation
+	 * @return
+	 */
+	private double getCourbureHeuristique(PointGridSpace p, double orientation)
+	{
+		Direction d = Direction.getDirection(orientation);
+		PointGridSpace voisinAvant = pointManager.getGridPointVoisin(p, d.getOppose());
+		PointGridSpace voisinApres = pointManager.getGridPointVoisin(p, d);
+
+		double orientationAvant = 10, orientationApres = 10;
+		
+		if(voisinAvant == null && voisinApres == null)
+			return 0; // ne devrait pas arriver…
+		
+		if(voisinAvant != null)
+			orientationAvant = getOrientationHeuristique(voisinAvant);
+		
+		if(voisinApres != null)
+			orientationApres = getOrientationHeuristique(voisinApres);
+		
+		// TODO finir
+		
+		return 0;
+	}
+	
+	/**
+	 * Fournit une heuristique de l'orientation à prendre en ce point
+	 * @param p
+	 * @return
+	 */
+	private double getOrientationHeuristique(PointGridSpace p)
+	{
+		double directionX = 0;
+		double directionY = 0;
+		int score = getFromMemory(p).rhs;
+		
+		for(Direction d : Direction.values())
+		{
+			PointGridSpace voisin = pointManager.getGridPointVoisin(p, d);
+			if(voisin == null)
+				continue;
+			int scoreVoisin = getFromMemory(voisin).rhs;
+			directionX += Math.signum(scoreVoisin - score) * d.deltaX;
+			directionY += Math.signum(scoreVoisin - score) * d.deltaY;
+		}
+		
+		if(directionX == 0 && directionY == 0) // si on a aucune info, on utilise une heuristique plus simple (trajet à vol d'oiseau)
+		{
+			directionX = arrivee.gridpoint.x - p.x;
+			directionY = arrivee.gridpoint.y - p.y;
+		}
+		
+		return Math.atan2(directionX, directionY);
+	}
+	
 	/**
 	 * On regarde si le robot peut reculer un peu
 	 * @param c

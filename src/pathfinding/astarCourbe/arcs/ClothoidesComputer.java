@@ -55,7 +55,7 @@ public class ClothoidesComputer implements Service
 	private PrintBuffer buffer;
 	
 	private BigDecimal x, y; // utilisés dans le calcul de trajectoire
-	private static final int S_MAX = 20; // courbure max qu'on puisse gérer
+	private static final int S_MAX = 10; // courbure max qu'on puisse gérer
 	public static final double PRECISION_TRACE = 0.02; // précision du tracé, en m (distance entre deux points consécutifs). Plus le tracé est précis, plus on couvre de point une même distance
 	private static final int INDICE_MAX = (int) (S_MAX / PRECISION_TRACE);
 	public static final int NB_POINTS = 25; // nombre de points dans un arc

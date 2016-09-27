@@ -201,6 +201,7 @@ public class ArcManager implements Service
 			return false;
     	}
     	
+    	// TODO
     	double courbureFuture = (current.state.robot).getCinematique().courbure + vitesse.vitesse * ClothoidesComputer.DISTANCE_ARC_COURBE_M;
     	if(courbureFuture >= -courbureMax && courbureFuture <= courbureMax)
     		return true;
