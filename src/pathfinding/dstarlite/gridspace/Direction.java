@@ -29,11 +29,13 @@ public enum Direction {
 	N(0,1),S(0,-1),O(-1,0),E(1,0);
 
 	public final int deltaX, deltaY;
+	public final double distance;
 	
 	private Direction(int deltaX, int deltaY)
 	{
 		this.deltaX = deltaX;
 		this.deltaY = deltaY;
+		distance = (Math.max(deltaX, deltaY) + 0.414 * Math.min(deltaX, deltaY)) * PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS;
 	}
 	
 	/**
@@ -84,4 +86,5 @@ public enum Direction {
 		
 		return null;
 	}
+	
 }

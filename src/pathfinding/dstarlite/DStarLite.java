@@ -30,7 +30,6 @@ import pathfinding.dstarlite.gridspace.PointDirigeManager;
 import pathfinding.dstarlite.gridspace.PointGridSpace;
 import pathfinding.dstarlite.gridspace.PointGridSpaceManager;
 import robot.Cinematique;
-import robot.DirectionStrategy;
 import utils.Config;
 import utils.ConfigInfo;
 import utils.Log;
@@ -133,6 +132,26 @@ public class DStarLite implements Service
 		return copy;
 	}
 
+	/**
+	 * Récupère un nœud dans la mémoire. Ce nœud doit être à jour.
+	 * @param gridpoint
+	 * @return
+	 */
+	private DStarLiteNode getFromMemoryUpdated(PointGridSpace gridpoint)
+	{
+		// Il peut arriver qu'on sorte de la grille
+		if(gridpoint == null)
+			return null;
+		
+		DStarLiteNode out = memory[gridpoint.hashcode];
+
+		if(out.nbPF != nbPF)
+			return null;
+		
+		return out;
+	}
+
+	
 	private DStarLiteNode getFromMemory(PointGridSpace gridpoint)
 	{
 		// Il peut arriver qu'on sorte de la grille
@@ -317,14 +336,19 @@ public class DStarLite implements Service
 		
 		computeShortestPath();
 	}
+
+	public synchronized void updateStart(Vec2RO positionRobot)
+	{
+		updateStart(pointManager.get(positionRobot));
+	}
 	
 	/**
 	 * Met à jour la position actuelle du robot
 	 * @param positionRobot
 	 */
-	public synchronized void updateStart(Vec2RO positionRobot)
+	private synchronized void updateStart(PointGridSpace p)
 	{
-		depart = getFromMemory(pointManager.get(positionRobot));
+		depart = getFromMemory(p);
 		km += distanceHeuristique(lastDepart);
 		lastDepart = depart.gridpoint;
 		
@@ -456,19 +480,23 @@ public class DStarLite implements Service
 		if(c.getPosition().isHorsTable())
 			return Integer.MAX_VALUE;
 		
-		updateStart(c.getPosition());
-		DStarLiteNode premier = getFromMemory(pointManager.get(c.getPosition()));
+		PointGridSpace pos = pointManager.get(c.getPosition());
 		
-		if(premier.rhs == Integer.MAX_VALUE)
+		updateStart(pos);
+		DStarLiteNode premier = getFromMemoryUpdated(pos);
+
+//		log.debug(premier.rhs+" "+premier.gridpoint.distanceOctile(arrivee.gridpoint));
+//		return premier.rhs / 1000. * PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS;
+		
+		// on ne peut ni avancer, ni reculer : on abandonne le nœud
+		if(!heuristiqueMarcheArriere(c) && !heuristiqueCercle(c))
 			return Integer.MAX_VALUE;
 		
-		double h1 = heuristiqueCercle(c);
-
-		// si on ne peut pas avancer sans se prendre un mur, peut-être peut-on reculer sans se prendre un mur
-		if(h1 == Integer.MAX_VALUE)
-			return heuristiqueMarcheArriere(c);
+		double erreurCourbure = Math.abs(c.courbure - getCourbureHeuristique(pos, c.orientation));
+		double erreurOrientation = Math.abs(c.orientation - getOrientationHeuristique(pos));
+		double erreurDistance = premier.rhs;
 		
-		return h1;
+		return erreurDistance + erreurCourbure + erreurOrientation; // TODO : coeff
 	}
 
 	/**
@@ -480,23 +508,30 @@ public class DStarLite implements Service
 	private double getCourbureHeuristique(PointGridSpace p, double orientation)
 	{
 		Direction d = Direction.getDirection(orientation);
-		PointGridSpace voisinAvant = pointManager.getGridPointVoisin(p, d.getOppose());
 		PointGridSpace voisinApres = pointManager.getGridPointVoisin(p, d);
+		PointGridSpace voisinAvant = pointManager.getGridPointVoisin(p, d.getOppose());
 
-		double orientationAvant = 10, orientationApres = 10;
-		
-		if(voisinAvant == null && voisinApres == null)
-			return 0; // ne devrait pas arriver…
+		double courbureAvant = 0, courbureApres = 0;
 		
 		if(voisinAvant != null)
-			orientationAvant = getOrientationHeuristique(voisinAvant);
+		{
+			double tmp = getOrientationHeuristique(voisinAvant);
+			double angle = (orientation - tmp) % (2 * Math.PI);
+			courbureAvant = angle / d.distance;
+		}
 		
 		if(voisinApres != null)
-			orientationApres = getOrientationHeuristique(voisinApres);
+		{
+			double tmp = getOrientationHeuristique(voisinApres);
+			double angle = (tmp - orientation) % (2 * Math.PI);
+			courbureApres = angle / d.distance;
+		}
+
+		// Moyenne des deux
+		if(voisinAvant != null && voisinApres != null)
+			return (courbureAvant + courbureApres) / 2.;
 		
-		// TODO finir
-		
-		return 0;
+		return courbureAvant + courbureApres; // l'un des deux est nul
 	}
 	
 	/**
@@ -506,16 +541,17 @@ public class DStarLite implements Service
 	 */
 	private double getOrientationHeuristique(PointGridSpace p)
 	{
+		updateStart(p); // on met à jour
 		double directionX = 0;
 		double directionY = 0;
-		int score = getFromMemory(p).rhs;
+		int score = getFromMemoryUpdated(p).rhs;
 		
 		for(Direction d : Direction.values())
 		{
 			PointGridSpace voisin = pointManager.getGridPointVoisin(p, d);
 			if(voisin == null)
 				continue;
-			int scoreVoisin = getFromMemory(voisin).rhs;
+			int scoreVoisin = getFromMemoryUpdated(voisin).rhs;
 			directionX += Math.signum(scoreVoisin - score) * d.deltaX;
 			directionY += Math.signum(scoreVoisin - score) * d.deltaY;
 		}
@@ -534,9 +570,8 @@ public class DStarLite implements Service
 	 * @param c
 	 * @return
 	 */
-	private double heuristiqueMarcheArriere(Cinematique c)
+	private boolean heuristiqueMarcheArriere(Cinematique c)
 	{
-		DStarLiteNode premier = getFromMemory(pointManager.get(c.getPosition()));
 		double d = ClothoidesComputer.PRECISION_TRACE * 1000; // passage de m en mm
 
 		// Si on va en marche avant, on teste la marche arrière, et inversement
@@ -553,14 +588,13 @@ public class DStarLite implements Service
 
 			PointGridSpace p = pointManager.get(pos);
 			updateStart(c.getPosition());
-			n = getFromMemory(p);
+			n = getFromMemoryUpdated(p);
 			
 			if(n == null || n.rhs == Integer.MAX_VALUE)
-				return Integer.MAX_VALUE;
+				return false;
 		}
 		
-		// On renvoie la distance du dernier point
-		return (n.rhs + distanceHeuristique(premier.gridpoint)) / 1000. * PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS; // heuristique en mm
+		return true;
 	}
 
 	/**
@@ -568,10 +602,8 @@ public class DStarLite implements Service
 	 * @param c
 	 * @return
 	 */
-	private double heuristiqueCercle(Cinematique c)
+	private boolean heuristiqueCercle(Cinematique c)
 	{
-		DStarLiteNode premier = getFromMemory(pointManager.get(c.getPosition()));
-
 		double rayonCourbure = 1000. / c.courbure;
 		delta.setX(Math.cos(c.orientation + Math.PI / 2) * rayonCourbure);
 		delta.setY(Math.sin(c.orientation + Math.PI / 2) * rayonCourbure);
@@ -603,14 +635,13 @@ public class DStarLite implements Service
 			
 			PointGridSpace p = pointManager.get(posRobot);
 			updateStart(c.getPosition());
-			n = getFromMemory(p);
+			n = getFromMemoryUpdated(p);
 			
 			if(n == null || n.rhs == Integer.MAX_VALUE)
-				return Integer.MAX_VALUE;
+				return false;
 		}
 		
-		// On renvoie la distance du dernier point
-		return (n.rhs + distanceHeuristique(premier.gridpoint)) / 1000. * PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS; // heuristique en mm
+		return true; // pas de problème
 	}
 	
 	/**
