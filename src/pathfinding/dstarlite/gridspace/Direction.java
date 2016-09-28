@@ -29,20 +29,27 @@ public enum Direction {
 	N(0,1),S(0,-1),O(-1,0),E(1,0);
 
 	public final int deltaX, deltaY;
-	public final double distance;
+	public final double distance_m;
+	public final int distance;
 	
 	private Direction(int deltaX, int deltaY)
 	{
 		this.deltaX = deltaX;
 		this.deltaY = deltaY;
-		distance = (Math.max(deltaX, deltaY) + 0.414 * Math.min(deltaX, deltaY)) * PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS;
+		
+		if(isDiagonal())
+			distance = 1414;
+		else
+			distance = 1000;
+		
+		distance_m = distance / 1000000. * PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS;
 	}
 	
 	/**
 	 * Cette direction est-elle diagonale ?
 	 * @return
 	 */
-	public boolean isDiagonal()
+	private boolean isDiagonal()
 	{
 		return ordinal() < 4;
 	}

@@ -158,17 +158,17 @@ public class ClothoidesComputer implements Service
 		double alphas[] = {100, 300, 600, 800, 1000, 1200};
 //		log.debug("Interpolation cubique, rebrousse : "+v.rebrousse);
 		double sin, cos;
-		double courbure = cinematiqueInitiale.courbure;
+		double courbure = cinematiqueInitiale.courbureGeometrique;
 		if(v.rebrousse) // si on rebrousse, la courbure est nulle
 		{
-			sin = Math.sin(cinematiqueInitiale.orientation + Math.PI);
-			cos = Math.cos(cinematiqueInitiale.orientation + Math.PI);
+			sin = Math.sin(cinematiqueInitiale.orientationGeometrique + Math.PI);
+			cos = Math.cos(cinematiqueInitiale.orientationGeometrique + Math.PI);
 			courbure = 0;
 		}
 		else
 		{
-			sin = Math.sin(cinematiqueInitiale.orientation);
-			cos = Math.cos(cinematiqueInitiale.orientation);			
+			sin = Math.sin(cinematiqueInitiale.orientationGeometrique);
+			cos = Math.cos(cinematiqueInitiale.orientationGeometrique);			
 		}
 		
 		for(int i = 0; i < alphas.length; i++)
@@ -234,7 +234,7 @@ public class ClothoidesComputer implements Service
 				
 				// Il faut faire attention à ne pas dépasser la coubure maximale !
 				// On prend de la marge
-				if(x < -1500 || x > 1500 || y < 0 || y > 2000 || Math.abs(actuel.courbure) > courbureMax*0.7 || Math.abs(actuel.courbure - lastCourbure) > 3)
+				if(x < -1500 || x > 1500 || y < 0 || y > 2000 || Math.abs(actuel.courbureGeometrique) > courbureMax*0.7 || Math.abs(actuel.courbureGeometrique - lastCourbure) > 3)
 				{
 //					log.debug("ERREUR");
 					error = true;
@@ -242,14 +242,14 @@ public class ClothoidesComputer implements Service
 				}
 				
 //				log.debug(x+" "+y);
-				lastCourbure = actuel.courbure;
+				lastCourbure = actuel.courbureGeometrique;
 				
 				// calcul de la longueur de l'arc
 				if(last != null)
 					longueur += actuel.getPosition().distance(last.getPosition());
 	
 				out.add(actuel);
-				obstacle.ombresRobot.add(memory.getNewNode().update(actuel.getPosition(), actuel.orientation, robot));
+				obstacle.ombresRobot.add(memory.getNewNode().update(actuel.getPosition(), actuel.orientationGeometrique, robot));
 				last = actuel;
 			}
 			if(error) // on essaye un autre alpha
@@ -282,18 +282,18 @@ public class ClothoidesComputer implements Service
 	 * En effet, comme le rayon de courbure sera souvent plus petit que le mètre, on aura une courbure souvent plus grande que 1
 	 * Le contenu est mis dans l'arccourbe directement
 	 * @param position
-	 * @param orientation
-	 * @param courbure
+	 * @param orientationGeometrique
+	 * @param courbureGeometrique
 	 * @param vitesse
-	 * @param distance
+	 * @param distance_mm
 	 * @return
 	 */
 	public final void getTrajectoire(RobotChrono robot, Cinematique cinematiqueInitiale, VitesseCourbure vitesse, Speed vitesseMax, ArcCourbeClotho modified)
 	{
 //		modified.v = vitesse;
 //		log.debug(vitesse);
-		double courbure = cinematiqueInitiale.courbure;
-		double orientation = cinematiqueInitiale.orientation;
+		double courbure = cinematiqueInitiale.courbureGeometrique;
+		double orientation = cinematiqueInitiale.orientationGeometrique;
 
 		if(vitesse.rebrousse)
 		{
@@ -352,18 +352,18 @@ public class ClothoidesComputer implements Service
  			
  			boolean marcheAvant = vitesse.rebrousse ^ cinematiqueInitiale.enMarcheAvant;
  			
-			modified.arcselems[i].orientation = baseOrientation + orientationClotho;
-			modified.arcselems[i].courbure = sDepart * vitesse.squaredRootVitesse;
+			modified.arcselems[i].orientationGeometrique = baseOrientation + orientationClotho;
+			modified.arcselems[i].courbureGeometrique = sDepart * vitesse.squaredRootVitesse;
 
  			if(marcheAvant)
  			{
-				modified.arcselems[i].orientationReelle = modified.arcselems[i].orientation;
-				modified.arcselems[i].courbureReelle = modified.arcselems[i].courbure;
+				modified.arcselems[i].orientationReelle = modified.arcselems[i].orientationGeometrique;
+				modified.arcselems[i].courbureReelle = modified.arcselems[i].courbureGeometrique;
  			}
  			else
  			{
-				modified.arcselems[i].orientationReelle = modified.arcselems[i].orientation + Math.PI;
-				modified.arcselems[i].courbureReelle = - modified.arcselems[i].courbure;
+				modified.arcselems[i].orientationReelle = modified.arcselems[i].orientationGeometrique + Math.PI;
+				modified.arcselems[i].courbureReelle = - modified.arcselems[i].courbureGeometrique;
  			}
  			
 			modified.rebrousse = vitesse.rebrousse;
@@ -373,7 +373,7 @@ public class ClothoidesComputer implements Service
 			// TODO : vitesse max dépend de la courbure !
 			modified.arcselems[i].vitesseMax = vitesseMax;
  			if(!vitesse.positif)
- 				modified.arcselems[i].courbure = - modified.arcselems[i].courbure;
+ 				modified.arcselems[i].courbureGeometrique = - modified.arcselems[i].courbureGeometrique;
 			modified.obstacle.ombresRobot.add(memory.getNewNode().update(modified.arcselems[i].getPosition(), orientation, robot));
 		}
 	}
@@ -421,18 +421,18 @@ public class ClothoidesComputer implements Service
 			deltaTmp.rotate(cos, sin);
 			centreCercle.copy(modified.arcselems[i].getPositionEcriture());
 			modified.arcselems[i].getPositionEcriture().minus(deltaTmp);
-			modified.arcselems[i].orientation = orientation + angle * (i + 1);
-			modified.arcselems[i].courbure = courbure;
+			modified.arcselems[i].orientationGeometrique = orientation + angle * (i + 1);
+			modified.arcselems[i].courbureGeometrique = courbure;
 
  			if(enMarcheAvant)
  			{
-				modified.arcselems[i].orientationReelle = modified.arcselems[i].orientation;
-				modified.arcselems[i].courbureReelle = modified.arcselems[i].courbure;
+				modified.arcselems[i].orientationReelle = modified.arcselems[i].orientationGeometrique;
+				modified.arcselems[i].courbureReelle = modified.arcselems[i].courbureGeometrique;
  			}
  			else
  			{
-				modified.arcselems[i].orientationReelle = modified.arcselems[i].orientation + Math.PI;
-				modified.arcselems[i].courbureReelle = - modified.arcselems[i].courbure;
+				modified.arcselems[i].orientationReelle = modified.arcselems[i].orientationGeometrique + Math.PI;
+				modified.arcselems[i].courbureReelle = - modified.arcselems[i].courbureGeometrique;
  			}
 
 			// TODO : doit dépendre de la courbure !
@@ -459,14 +459,14 @@ public class ClothoidesComputer implements Service
 			double distance = (i + 1) * PRECISION_TRACE * 1000;
 			modified.arcselems[i].getPositionEcriture().setX(position.getX() + distance * cos);
 			modified.arcselems[i].getPositionEcriture().setY(position.getY() + distance * sin);
-			modified.arcselems[i].orientation = orientation;
-			modified.arcselems[i].courbure = 0;
+			modified.arcselems[i].orientationGeometrique = orientation;
+			modified.arcselems[i].courbureGeometrique = 0;
 			modified.arcselems[i].courbureReelle = 0;
 			
  			if(enMarcheAvant)
-				modified.arcselems[i].orientationReelle = modified.arcselems[i].orientation;
+				modified.arcselems[i].orientationReelle = modified.arcselems[i].orientationGeometrique;
  			else
-				modified.arcselems[i].orientationReelle = modified.arcselems[i].orientation + Math.PI;
+				modified.arcselems[i].orientationReelle = modified.arcselems[i].orientationGeometrique + Math.PI;
  			
  			// TODO : doit dépendre de la courbure !
  			modified.arcselems[i].vitesseMax = vitesseMax;

@@ -82,19 +82,28 @@ public class ArcManager implements Service
 		// Collision avec un obstacle fixe?
     	for(ObstaclesFixes o: ObstaclesFixes.values())
     		if(o.getObstacle().isColliding(obs))
+    		{
+				log.debug("Collision avec "+o);
     			return false;
+    		}
 
     	// Collision avec un obstacle de proximité ?
     	node.state.iterator.reinit();
     	while(node.state.iterator.hasNext())
            	if(node.state.iterator.next().isColliding(obs))
-        		return false;
+    		{
+				log.debug("Collision avec un obstacle de proximité.");
+    			return false;
+    		}
     	
     	// On vérifie si on collisionne un élément de jeu
     	if(!shoot)
     		for(GameElementNames g : GameElementNames.values())
     			if(table.isDone(g) != Tribool.FALSE && g.obstacle.isColliding(obs))
-    				return false;
+        		{
+    				log.debug("Collision avec "+g);
+        			return false;
+        		}
 
     	return true;
 	}
@@ -202,7 +211,7 @@ public class ArcManager implements Service
     	}
     	
     	// TODO
-    	double courbureFuture = (current.state.robot).getCinematique().courbure + vitesse.vitesse * ClothoidesComputer.DISTANCE_ARC_COURBE_M;
+    	double courbureFuture = (current.state.robot).getCinematique().courbureGeometrique + vitesse.vitesse * ClothoidesComputer.DISTANCE_ARC_COURBE_M;
     	if(courbureFuture >= -courbureMax && courbureFuture <= courbureMax)
     		return true;
 

@@ -39,7 +39,6 @@ public abstract class Obstacle implements Printable
 	protected static Log log;
 	protected static PrintBuffer buffer;
 	
-    protected static int rayonRobot;
     protected static int distanceApprox;
     protected static boolean printAllObstacles = false; // tant que set et useConfigStatic n'est pas appelé, on affiche rien
 	protected Layer l = null;
@@ -53,7 +52,6 @@ public abstract class Obstacle implements Printable
 	public static void useConfigStatic(Config config)
 	{
 		printAllObstacles = config.getBoolean(ConfigInfo.GRAPHIC_ALL_OBSTACLES);
-		rayonRobot = config.getInt(ConfigInfo.RAYON_ROBOT);
 		distanceApprox = config.getInt(ConfigInfo.DISTANCE_MAX_ENTRE_MESURE_ET_OBJET);
 	}
 	

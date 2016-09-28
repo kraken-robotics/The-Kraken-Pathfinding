@@ -29,9 +29,9 @@ import utils.Vec2RW;
 public class Cinematique
 {
 	protected final Vec2RW position = new Vec2RW();
-	public volatile double orientation; // il s'agit de l'orientation qui avance. donc l'arrière du robot s'il recule
+	public volatile double orientationGeometrique; // il s'agit de l'orientation qui avance. donc l'arrière du robot s'il recule
 	public volatile boolean enMarcheAvant;
-	public volatile double courbure;
+	public volatile double courbureGeometrique;
 //	public volatile double vitesseTranslation;
 	public volatile Speed vitesseMax;
 //	public volatile double vitesseRotation;
@@ -53,9 +53,9 @@ public class Cinematique
 		
 		position.setX(x);
 		position.setY(y);
-		this.orientation = orientation;
+		this.orientationGeometrique = orientation;
 		this.enMarcheAvant = enMarcheAvant;
-		this.courbure = courbure;
+		this.courbureGeometrique = courbure;
 //		this.vitesseTranslation = vitesseTranslation;
 //		this.vitesseRotation = vitesseRotation;
 		this.vitesseMax = vitesseMax;
@@ -68,7 +68,7 @@ public class Cinematique
 	public Cinematique(Cinematique cinematique)
 	{
 		enMarcheAvant = cinematique.enMarcheAvant;
-		courbure = cinematique.courbure;
+		courbureGeometrique = cinematique.courbureGeometrique;
 //		vitesseTranslation = cinematique.vitesseTranslation;
 //		vitesseRotation = cinematique.vitesseRotation;
 		vitesseMax = cinematique.vitesseMax;
@@ -89,10 +89,10 @@ public class Cinematique
 		synchronized(autre)
 		{
 	    	position.copy(autre.position);
-	    	autre.orientation = orientation;
+	    	autre.orientationGeometrique = orientationGeometrique;
 	    	autre.orientationReelle = orientationReelle;
 	    	autre.enMarcheAvant = enMarcheAvant;
-	    	autre.courbure = courbure;
+	    	autre.courbureGeometrique = courbureGeometrique;
 	    	autre.courbureReelle = courbureReelle;
 //	    	autre.vitesseRotation = vitesseRotation;
 //	    	autre.vitesseTranslation = vitesseTranslation;
@@ -120,7 +120,7 @@ public class Cinematique
 	@Override
 	public String toString()
 	{
-		return position+", "+orientation+"(réelle : "+orientationReelle+"), "+(enMarcheAvant ? "marche avant" : "marche arrière")+", vitesse max : "+vitesseMax+" courbure : "+courbure+"(réelle : "+courbureReelle+")";
+		return position+", "+orientationGeometrique+"(réelle : "+orientationReelle+"), "+(enMarcheAvant ? "marche avant" : "marche arrière")+", vitesse max : "+vitesseMax+" courbure : "+courbureGeometrique+"(réelle : "+courbureReelle+")";
 	}
 	
 	@Override
@@ -130,22 +130,22 @@ public class Cinematique
 //		if(courbure < -5)
 //			codeCourbure = 0;
 //		else
-		if(courbure < -2)
+		if(courbureGeometrique < -2)
 			codeCourbure = 1;
-		else if(courbure < 0)
+		else if(courbureGeometrique < 0)
 			codeCourbure = 2;
-		else if(courbure < 2)
+		else if(courbureGeometrique < 2)
 			codeCourbure = 3;
 //		else if(courbure < 5)
 			codeCourbure = 4;
 //		else
 //			codeCourbure = 5;
 //		System.out.println("codeCourbure : "+codeCourbure+", "+courbure);
-		orientation = orientation % (2*Math.PI);
-		if(orientation < 0)
-			orientation += 2*Math.PI;
+		orientationGeometrique = orientationGeometrique % (2*Math.PI);
+		if(orientationGeometrique < 0)
+			orientationGeometrique += 2*Math.PI;
 		
-		codeOrientation = (int)(orientation / (Math.PI / 6));
+		codeOrientation = (int)(orientationGeometrique / (Math.PI / 6));
 //		System.out.println("codeOrientation : "+codeOrientation+" "+orientation);
 		
 		return (((((int)position.getX() + 1500) / 15) * 150 + (int)position.getY() / 15) * 6 + codeCourbure) * 16 + codeOrientation;

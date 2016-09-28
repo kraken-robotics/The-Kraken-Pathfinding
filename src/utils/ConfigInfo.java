@@ -32,7 +32,8 @@ public enum ConfigInfo {
 	/**
 	 * Infos sur le robot
 	 */
-	RAYON_ROBOT(150), // TODO
+	RAYON_ROBOT(150), // permet de savoir si on shoot un élément de jeu TODO
+	DILATATION_ROBOT_DSTARLITE(100), // dilatation des obstacles dans le D* Lite. Comme c'est une heuristique, on peut prendre plus petit que la vraie valeur TODO
 	DISTANCE_ROUES_AVANT_ET_ARRIERE(300), // la distance entre l'axe des roues avant et l'axe des roues arrières TODO
 	DISTANCE_ROUES_GAUCHE_ET_DROITE(210), // la distance entre la roue arrière gauche et la roue arrière droite TODO
 	LONGUEUR_NON_DEPLOYE(400), // distance entre le bord avant et le bord arrière du robot non-déployé TODO

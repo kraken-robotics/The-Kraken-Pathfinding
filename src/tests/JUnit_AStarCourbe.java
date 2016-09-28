@@ -81,7 +81,7 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 			if(i > 0)
 				Assert.assertEquals(Math.atan2(
 						arccubique.arcs.get(i).getPosition().getY() - arccubique.arcs.get(i-1).getPosition().getY(),
-						arccubique.arcs.get(i).getPosition().getX() - arccubique.arcs.get(i-1).getPosition().getX()), arccubique.arcs.get(i).orientation, 0.5);
+						arccubique.arcs.get(i).getPosition().getX() - arccubique.arcs.get(i-1).getPosition().getX()), arccubique.arcs.get(i).orientationGeometrique, 0.5);
 			
 			// Vérification de la courbure
 /*			if(i > 1)
@@ -173,9 +173,9 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 	@Test
     public void test_recherche() throws Exception
     {
-		Cinematique depart = new Cinematique(0, 300, 0, true, 3, Speed.STANDARD);
+		Cinematique depart = new Cinematique(100, 1500, 0, true, 3, Speed.STANDARD);
 		robot.setCinematique(depart);
-		Cinematique c = new Cinematique(1000, 1000, Math.PI/2, false, 0, Speed.STANDARD);
+		Cinematique c = new Cinematique(0, 1500, Math.PI, false, 0, Speed.STANDARD);
 		astar.computeNewPath(c, true, DirectionStrategy.FASTEST);
 		iterator.reinit();
 		ArcCourbe a = null;

@@ -114,7 +114,14 @@ public class AStarCourbe implements Service
 		depart.parent = null;
 		depart.cameFromArc = null;
 		depart.g_score = 0;
-		depart.f_score = dstarlite.heuristicCostCourbe((depart.state.robot).getCinematique());
+		Double heuristique = dstarlite.heuristicCostCourbe((depart.state.robot).getCinematique());
+		if(heuristique == null)
+		{
+			int z = 0;
+			z = 1/z;
+		}
+
+		depart.f_score = heuristique;
 
 		if(depart.f_score == Integer.MAX_VALUE)
 		{
@@ -140,10 +147,17 @@ public class AStarCourbe implements Service
 			if(graphicTrajectory && current.cameFromArc != null)
 				for(int i = 0; i < current.cameFromArc.getNbPoints(); i++)
 					buffer.addSupprimable(new ObstacleCircular(current.cameFromArc.getPoint(i).getPosition(), 4));
+
+			if(current.cameFromArc != null)
+			{
+				heuristique = dstarlite.heuristicCostCourbe((current.state.robot).getCinematique()) / current.cameFromArc.getVitesseTr();
+				log.debug("Heuristique : "+heuristique+" ("+current.state.robot.getCinematique().getPosition().distance(arrivee.getPosition()) / current.cameFromArc.getVitesseTr()+")");
+			}
 			
 			// ce calcul étant un peu lourd, on ne le fait que si le noeud a été choisi, et pas à la sélection des voisins (dans hasNext par exemple)
 			if(!arcmanager.isReachable(current))
 			{
+				log.debug("Collision");
 				rectMemory.destroyNode(current.cameFromArc.obstacle);
 				memorymanager.destroyNode(current);
 				continue; // collision mécanique attendue. On passe au suivant !
@@ -198,7 +212,17 @@ public class AStarCourbe implements Service
 
 				successeur.g_score = current.g_score + arcmanager.distanceTo(successeur);
 				
-				successeur.f_score = successeur.g_score + dstarlite.heuristicCostCourbe((successeur.state.robot).getCinematique()) / successeur.cameFromArc.getVitesseTr();
+				heuristique = dstarlite.heuristicCostCourbe((successeur.state.robot).getCinematique());
+				
+				if(heuristique == null) // hors table, D* lite dit que c'est impossible, …
+				{
+					log.debug("Heuristique nulle");
+					rectMemory.destroyNode(successeur.cameFromArc.obstacle);
+					memorymanager.destroyNode(successeur);
+					continue;
+				}
+				
+				successeur.f_score = successeur.g_score + heuristique / successeur.cameFromArc.getVitesseTr();
 
 				successeur.parent = current;
 

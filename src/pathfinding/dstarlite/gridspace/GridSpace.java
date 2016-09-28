@@ -86,7 +86,7 @@ public class GridSpace implements Service, Printable
 	public void useConfig(Config config)
 	{
 		distanceMinimaleEntreProximite = config.getInt(ConfigInfo.DISTANCE_BETWEEN_PROXIMITY_OBSTACLES);
-		rayonRobot = config.getInt(ConfigInfo.RAYON_ROBOT);
+		rayonRobot = config.getInt(ConfigInfo.DILATATION_ROBOT_DSTARLITE);
 		
 		// on ajoute les obstacles fixes une fois pour toute si c'est demandé
 		if(config.getBoolean(ConfigInfo.GRAPHIC_FIXED_OBSTACLES))
@@ -153,9 +153,7 @@ public class GridSpace implements Service, Printable
 		PointGridSpace voisin = pointManager.getGridPointVoisin(point);
 		if(grilleStatique.get(point.point.hashcode) || voisin == null || grilleStatique.get(voisin.hashcode))
 			return Integer.MAX_VALUE;
-		if(point.dir.isDiagonal())
-			return 1414;
-		return 1000;
+		return point.dir.distance;
 	}
 
 	/**
