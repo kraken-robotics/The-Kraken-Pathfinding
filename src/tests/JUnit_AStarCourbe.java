@@ -70,8 +70,8 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 	@Test
     public void test_interpolation_cubique() throws Exception
     {		
-		Cinematique c1 = new Cinematique(-1000, 1500, Math.PI/4, true, 0, 1000, 1000, Speed.STANDARD);
-		Cinematique c2 = new Cinematique(0, 1000, 0, true, 0, 0, 0, Speed.STANDARD);
+		Cinematique c1 = new Cinematique(-1000, 1500, Math.PI/4, true, 0, Speed.STANDARD);
+		Cinematique c2 = new Cinematique(0, 1000, 0, true, 0, Speed.STANDARD);
 		
 		ArcCourbeCubique arccubique = clotho.cubicInterpolation(container.make(RobotChrono.class), c1, c2, Speed.STANDARD, VitesseCourbure.DIRECT_COURBE);
 	
@@ -121,7 +121,7 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 		for(int i = 0; i < nbArc; i++)
 			arc[i] = new ArcCourbeClotho();
 
-		Cinematique c = new Cinematique(0, 1000, Math.PI/2, false, 0, 0, 0, Speed.STANDARD);
+		Cinematique c = new Cinematique(0, 1000, Math.PI/2, false, 0, Speed.STANDARD);
 		log.debug("Initial : "+c);
 		clotho.getTrajectoire(r, c, VitesseCourbure.COURBURE_IDENTIQUE, Speed.STANDARD, arc[0]);
 		clotho.getTrajectoire(r, arc[0], VitesseCourbure.GAUCHE_3, Speed.STANDARD, arc[1]);
@@ -173,9 +173,9 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 	@Test
     public void test_recherche() throws Exception
     {
-		Cinematique depart = new Cinematique(0, 300, 0, true, 3, 0, 0, Speed.STANDARD);
+		Cinematique depart = new Cinematique(0, 300, 0, true, 3, Speed.STANDARD);
 		robot.setCinematique(depart);
-		Cinematique c = new Cinematique(1000, 1000, Math.PI/2, false, 0, 0, 0, Speed.STANDARD);
+		Cinematique c = new Cinematique(1000, 1000, Math.PI/2, false, 0, Speed.STANDARD);
 		astar.computeNewPath(c, true, DirectionStrategy.FASTEST);
 		iterator.reinit();
 		ArcCourbe a = null;

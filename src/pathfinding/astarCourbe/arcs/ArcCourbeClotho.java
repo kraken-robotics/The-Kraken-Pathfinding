@@ -34,7 +34,7 @@ public class ArcCourbeClotho extends ArcCourbe
 	{
 		super(false, false); // modifié par copy
 		for(int i = 0; i < ClothoidesComputer.NB_POINTS; i++)
-			arcselems[i] = new Cinematique(0, 0, 0, true, 0, 0, 0, Speed.STANDARD);
+			arcselems[i] = new Cinematique(0, 0, 0, true, 0, Speed.STANDARD);
 	}
 	
 	/**
@@ -70,7 +70,7 @@ public class ArcCourbeClotho extends ArcCourbe
 	{
 		double v = 0;
 		for(int i = 0; i < ClothoidesComputer.NB_POINTS; i++)
-			v += arcselems[i].vitesseTranslation;
+			v += arcselems[i].vitesseMax.translationalSpeed;
 		return v / (ClothoidesComputer.NB_POINTS);
 	}
 

@@ -228,8 +228,6 @@ public class ClothoidesComputer implements Service
 						Math.atan2(vy, vx), // orientation = atan2(vy, vx)
 						v.rebrousse ^ cinematiqueInitiale.enMarcheAvant,
 						1000*(vx * acy - vy * acx) / Math.pow(vx*vx + vy*vy, 1.5), // formule de la courbure d'une courbe paramétrique
-						vitesseMax.translationalSpeed, // vitesses calculées classiquement
-						vitesseMax.rotationalSpeed,
 						vitesseMax);
 		
 //				log.debug(t);
@@ -368,13 +366,11 @@ public class ClothoidesComputer implements Service
 				modified.arcselems[i].courbureReelle = - modified.arcselems[i].courbure;
  			}
  			
-			// TODO : doit dépendre de la courbure !
- 			// TODO : valeurs signées ?
-			modified.arcselems[i].vitesseRotation = vitesseMax.rotationalSpeed;
-			modified.arcselems[i].vitesseTranslation = vitesseMax.translationalSpeed;
 			modified.rebrousse = vitesse.rebrousse;
 			
 			modified.arcselems[i].enMarcheAvant = marcheAvant;
+			
+			// TODO : vitesse max dépend de la courbure !
 			modified.arcselems[i].vitesseMax = vitesseMax;
  			if(!vitesse.positif)
  				modified.arcselems[i].courbure = - modified.arcselems[i].courbure;
@@ -440,8 +436,7 @@ public class ClothoidesComputer implements Service
  			}
 
 			// TODO : doit dépendre de la courbure !
-			modified.arcselems[i].vitesseRotation = vitesseMax.rotationalSpeed;
-			modified.arcselems[i].vitesseTranslation = vitesseMax.translationalSpeed;
+ 			modified.arcselems[i].vitesseMax = vitesseMax;
 			modified.arcselems[i].enMarcheAvant = enMarcheAvant;
 			modified.obstacle.ombresRobot.add(memory.getNewNode().update(modified.arcselems[i].getPosition(), orientation, robot));
 		}
@@ -473,8 +468,8 @@ public class ClothoidesComputer implements Service
  			else
 				modified.arcselems[i].orientationReelle = modified.arcselems[i].orientation + Math.PI;
  			
-			modified.arcselems[i].vitesseRotation = vitesseMax.rotationalSpeed;
-			modified.arcselems[i].vitesseTranslation = vitesseMax.translationalSpeed;
+ 			// TODO : doit dépendre de la courbure !
+ 			modified.arcselems[i].vitesseMax = vitesseMax;
 			modified.arcselems[i].enMarcheAvant = enMarcheAvant;
 			modified.obstacle.ombresRobot.add(memory.getNewNode().update(modified.arcselems[i].getPosition(), orientation, robot));
 		}

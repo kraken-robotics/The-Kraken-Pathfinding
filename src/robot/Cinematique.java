@@ -32,13 +32,13 @@ public class Cinematique
 	public volatile double orientation; // il s'agit de l'orientation qui avance. donc l'arrière du robot s'il recule
 	public volatile boolean enMarcheAvant;
 	public volatile double courbure;
-	public volatile double vitesseTranslation;
+//	public volatile double vitesseTranslation;
 	public volatile Speed vitesseMax;
-	public volatile double vitesseRotation;
+//	public volatile double vitesseRotation;
 	public volatile double orientationReelle;
 	public volatile double courbureReelle;
 	
-	public Cinematique(double x, double y, double orientation, boolean enMarcheAvant, double courbure, double vitesseTranslation, double vitesseRotation, Speed vitesseMax)
+	public Cinematique(double x, double y, double orientation, boolean enMarcheAvant, double courbure, Speed vitesseMax)
 	{
 		if(enMarcheAvant)
 		{
@@ -56,8 +56,8 @@ public class Cinematique
 		this.orientation = orientation;
 		this.enMarcheAvant = enMarcheAvant;
 		this.courbure = courbure;
-		this.vitesseTranslation = vitesseTranslation;
-		this.vitesseRotation = vitesseRotation;
+//		this.vitesseTranslation = vitesseTranslation;
+//		this.vitesseRotation = vitesseRotation;
 		this.vitesseMax = vitesseMax;
 	}
 	
@@ -69,8 +69,8 @@ public class Cinematique
 	{
 		enMarcheAvant = cinematique.enMarcheAvant;
 		courbure = cinematique.courbure;
-		vitesseTranslation = cinematique.vitesseTranslation;
-		vitesseRotation = cinematique.vitesseRotation;
+//		vitesseTranslation = cinematique.vitesseTranslation;
+//		vitesseRotation = cinematique.vitesseRotation;
 		vitesseMax = cinematique.vitesseMax;
 	}
 
@@ -94,16 +94,17 @@ public class Cinematique
 	    	autre.enMarcheAvant = enMarcheAvant;
 	    	autre.courbure = courbure;
 	    	autre.courbureReelle = courbureReelle;
-	    	autre.vitesseRotation = vitesseRotation;
-	    	autre.vitesseTranslation = vitesseTranslation;
+//	    	autre.vitesseRotation = vitesseRotation;
+//	    	autre.vitesseTranslation = vitesseTranslation;
 	    	autre.vitesseMax = vitesseMax;
 		}
 	}
 	
 	public void setVitesse(Speed speed)
 	{
-		vitesseRotation = speed.rotationalSpeed;
-		vitesseTranslation = speed.translationalSpeed;
+		vitesseMax = speed;
+//		vitesseRotation = speed.rotationalSpeed;
+//		vitesseTranslation = speed.translationalSpeed;
 	}
 
 	public final Vec2RO getPosition()
@@ -119,7 +120,7 @@ public class Cinematique
 	@Override
 	public String toString()
 	{
-		return position+", "+orientation+"(réelle : "+orientationReelle+"), "+(enMarcheAvant ? "marche avant" : "marche arrière")+", vitesse : "+vitesseTranslation+" courbure : "+courbure+"(réelle : "+courbureReelle+")";
+		return position+", "+orientation+"(réelle : "+orientationReelle+"), "+(enMarcheAvant ? "marche avant" : "marche arrière")+", vitesse max : "+vitesseMax+" courbure : "+courbure+"(réelle : "+courbureReelle+")";
 	}
 	
 	@Override
