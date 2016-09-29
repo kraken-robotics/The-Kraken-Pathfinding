@@ -66,22 +66,22 @@ public class JUnit_GridSpace extends JUnit_Test {
 	@Test
 	public void test_distance() throws Exception
 	{
-		Assert.assertEquals(1414, gridspace.distanceStatique(pointDManager.get(pointManager.get(523), Direction.NE)));
-		Assert.assertEquals(1000, gridspace.distanceStatique(pointDManager.get(pointManager.get(523), Direction.N)));
+		Assert.assertEquals(1414, gridspace.distanceStatique(pointDManager.get(pointManager.get(new Vec2RO(0,1000)), Direction.NE)));
+		Assert.assertEquals(1000, gridspace.distanceStatique(pointDManager.get(pointManager.get(new Vec2RO(0,1000)), Direction.N)));
 		Assert.assertEquals(Integer.MAX_VALUE, gridspace.distanceStatique(pointDManager.get(pointManager.get(1), Direction.E)));
 	}
 
 	@Test
 	public void test_distanceHeuristique() throws Exception
 	{
-		Assert.assertTrue(pointManager.get(1).distanceOctile(pointManager.get(2)) == 1000);
-		Assert.assertTrue(pointManager.get(1).distanceOctile(pointManager.get(65)) == 1000);
-		Assert.assertTrue(pointManager.get(1).distanceOctile(pointManager.get(64)) == 1414);
-		Assert.assertTrue(pointManager.get(64).distanceOctile(pointManager.get(1)) == 1414);
-		Assert.assertTrue(pointManager.get(1).distanceOctile(pointManager.get(1+2*64)) == 2000);
-		Assert.assertTrue(pointManager.get(1+2*64).distanceOctile(pointManager.get(1)) == 2000);
-		Assert.assertTrue(pointManager.get(64).distanceOctile(pointManager.get(63)) == 63414);
-		Assert.assertTrue(pointManager.get(63).distanceOctile(pointManager.get(64)) == 63414);
+		Assert.assertEquals(1000, pointManager.get(1).distanceOctile(pointManager.get(2)));
+		Assert.assertEquals(1000, pointManager.get(1).distanceOctile(pointManager.get(PointGridSpace.NB_POINTS_POUR_TROIS_METRES + 1)));
+		Assert.assertEquals(1414, pointManager.get(1).distanceOctile(pointManager.get(PointGridSpace.NB_POINTS_POUR_TROIS_METRES)));
+		Assert.assertEquals(1414, pointManager.get(PointGridSpace.NB_POINTS_POUR_TROIS_METRES).distanceOctile(pointManager.get(1)));
+		Assert.assertEquals(2000, pointManager.get(1).distanceOctile(pointManager.get(1+2*PointGridSpace.NB_POINTS_POUR_TROIS_METRES)));
+		Assert.assertEquals(2000, pointManager.get(1+2*PointGridSpace.NB_POINTS_POUR_TROIS_METRES).distanceOctile(pointManager.get(1)));
+		Assert.assertEquals(1000*(PointGridSpace.NB_POINTS_POUR_TROIS_METRES-2)+1414, pointManager.get(PointGridSpace.NB_POINTS_POUR_TROIS_METRES).distanceOctile(pointManager.get(PointGridSpace.NB_POINTS_POUR_TROIS_METRES - 1)));
+		Assert.assertEquals(1000*(PointGridSpace.NB_POINTS_POUR_TROIS_METRES-2)+1414, pointManager.get(PointGridSpace.NB_POINTS_POUR_TROIS_METRES-1).distanceOctile(pointManager.get(PointGridSpace.NB_POINTS_POUR_TROIS_METRES)));
 	}
 	
 	@Test

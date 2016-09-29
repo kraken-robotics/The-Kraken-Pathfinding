@@ -115,11 +115,11 @@ public class JUnit_DStarLite extends JUnit_Test {
 	@Test
     public void test_ajout_proche() throws Exception
     {
-		Vec2RO posRobot = new Vec2RO(-1200, 200);
+		Vec2RO posRobot = new Vec2RO(0, 1200);
 		gridspace.addObstacleAndRemoveNearbyObstacles(new Vec2RO(1000, 1200));
-		pathfinding.computeNewPath(posRobot, new Vec2RO(1200, 1800));
+		pathfinding.computeNewPath(posRobot, new Vec2RO(1000, 600));
 		gridspace.addObstacleAndRemoveNearbyObstacles(new Vec2RO(900, 1200));
-		pathfinding.updateStart(new Vec2RO(-900, 1400));
+		pathfinding.updateStart(new Vec2RO(-900, 1000));
 		pathfinding.updateObstacles();
 		pathfinding.itineraireBrut();
     }
