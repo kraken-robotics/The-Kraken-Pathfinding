@@ -17,7 +17,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 package pathfinding.astarCourbe.arcs;
 
-import pathfinding.VitesseCourbure;
 import pathfinding.astarCourbe.AStarCourbeNode;
 import pathfinding.dstarlite.DStarLite;
 import robot.Cinematique;

@@ -25,12 +25,12 @@ import org.junit.Before;
 import org.junit.Test;
 
 import graphic.PrintBuffer;
-import pathfinding.VitesseCourbure;
 import pathfinding.astarCourbe.AStarCourbe;
 import pathfinding.astarCourbe.arcs.ArcCourbe;
 import pathfinding.astarCourbe.arcs.ArcCourbeClotho;
 import pathfinding.astarCourbe.arcs.ArcCourbeCubique;
 import pathfinding.astarCourbe.arcs.ClothoidesComputer;
+import pathfinding.astarCourbe.arcs.VitesseCourbure;
 import pathfinding.chemin.IteratorCheminPathfinding;
 import robot.Cinematique;
 import robot.DirectionStrategy;
