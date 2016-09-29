@@ -80,7 +80,29 @@ public class Config implements Service
 	{
 		return Integer.parseInt(getString(nom));
 	}
-
+	
+	/**
+	 * Récupère un entier de la config
+	 * @param nom
+	 * @return
+	 * @throws NumberFormatException 
+	 */
+	public short getShort(ConfigInfo nom) throws NumberFormatException
+	{
+		return Short.parseShort(getString(nom));
+	}
+	
+	/**
+	 * Récupère un entier de la config
+	 * @param nom
+	 * @return
+	 * @throws NumberFormatException 
+	 */
+	public byte getByte(ConfigInfo nom) throws NumberFormatException
+	{
+		return Byte.parseByte(getString(nom));
+	}
+	
 	/**
 	 * Récupère un entier long de la config
 	 * @param nom
