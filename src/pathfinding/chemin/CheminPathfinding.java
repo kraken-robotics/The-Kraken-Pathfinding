@@ -218,9 +218,10 @@ public class CheminPathfinding implements Service, Printable
 
 	/**
 	 * Mise à jour, depuis le bas niveau, de la cinématique actuelle
+	 * Renvoie la cinématique actuelle
 	 * @param indexTrajectory
 	 */
-	public void setCurrentIndex(int indexTrajectory)
+	public Cinematique setCurrentIndex(int indexTrajectory)
 	{
 		synchronized(this)
 		{
@@ -231,6 +232,10 @@ public class CheminPathfinding implements Service, Printable
 			{
 				buffer.notify();
 			}
+		synchronized(this)
+		{
+			return chemin[indexFirst].getLast(); // TODO
+		}
 	}
 	
 	public Cinematique getLastValidCinematique()
