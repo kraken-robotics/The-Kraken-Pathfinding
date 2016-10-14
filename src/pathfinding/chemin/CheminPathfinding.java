@@ -43,6 +43,8 @@ import pathfinding.astarCourbe.arcs.ClothoidesComputer;
  *
  */
 
+// TODO : le premier point du chemin doit être la position actuelle du robot
+
 public class CheminPathfinding implements Service, Printable
 {
 	protected Log log;
