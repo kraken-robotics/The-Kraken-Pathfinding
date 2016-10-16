@@ -17,11 +17,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 package pathfinding.astarCourbe;
 
+import config.Config;
+import config.Configurable;
 import memory.Memorizable;
 import pathfinding.ChronoGameState;
 import pathfinding.astarCourbe.arcs.ArcCourbe;
 import pathfinding.astarCourbe.arcs.ArcCourbeClotho;
-import utils.Config;
 
 /**
  * Un nœud de l'A* courbe
@@ -29,7 +30,7 @@ import utils.Config;
  *
  */
 
-public class AStarCourbeNode implements Memorizable
+public class AStarCourbeNode implements Memorizable, Configurable
 {
 	public ChronoGameState state;
 	public double g_score;

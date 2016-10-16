@@ -17,7 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 package pathfinding.astarCourbe.arcs;
 
-import robot.Cinematique;
+import robot.CinematiqueObs;
 import robot.Speed;
 
 /**
@@ -28,13 +28,13 @@ import robot.Speed;
 
 public class ArcCourbeClotho extends ArcCourbe
 {
-	public Cinematique[] arcselems = new Cinematique[ClothoidesComputer.NB_POINTS];
+	public CinematiqueObs[] arcselems = new CinematiqueObs[ClothoidesComputer.NB_POINTS];
 	
 	public ArcCourbeClotho()
 	{
 		super(false, false); // modifié par copy
 		for(int i = 0; i < ClothoidesComputer.NB_POINTS; i++)
-			arcselems[i] = new Cinematique(0, 0, 0, true, 0, Speed.STANDARD);
+			arcselems[i] = new CinematiqueObs(0, 0, 0, true, 0, Speed.STANDARD, null, null);
 	}
 	
 	/**
@@ -54,13 +54,13 @@ public class ArcCourbeClotho extends ArcCourbe
 	}
 	
 	@Override
-	public Cinematique getPoint(int indice)
+	public CinematiqueObs getPoint(int indice)
 	{
 		return arcselems[indice];
 	}
 	
 	@Override
-	public Cinematique getLast()
+	public CinematiqueObs getLast()
 	{
 		return arcselems[ClothoidesComputer.NB_POINTS - 1];
 	}

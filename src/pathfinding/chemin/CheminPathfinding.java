@@ -20,21 +20,22 @@ package pathfinding.chemin;
 import java.awt.Graphics;
 
 import obstacles.memory.ObstaclesIteratorPresent;
-import obstacles.types.ObstacleArcCourbe;
 import obstacles.types.ObstacleCircular;
+import obstacles.types.ObstacleRectangular;
 import graphic.Fenetre;
 import graphic.PrintBuffer;
 import graphic.printable.Layer;
 import graphic.printable.Printable;
 import robot.Cinematique;
+import robot.CinematiqueObs;
 import robot.RobotReal;
 import serie.BufferOutgoingOrder;
-import utils.Config;
-import utils.ConfigInfo;
 import utils.Log;
+import config.Config;
+import config.ConfigInfo;
+import config.Configurable;
 import container.Service;
 import pathfinding.astarCourbe.arcs.ArcCourbe;
-import pathfinding.astarCourbe.arcs.ClothoidesComputer;
 
 /**
  * S'occupe de la trajectoire actuelle.
@@ -45,18 +46,17 @@ import pathfinding.astarCourbe.arcs.ClothoidesComputer;
 
 // TODO : le premier point du chemin doit être la position actuelle du robot
 
-public class CheminPathfinding implements Service, Printable
+public class CheminPathfinding implements Service, Printable, Configurable
 {
 	protected Log log;
 	private BufferOutgoingOrder out;
-	private ObstaclesIteratorPresent iterator;
+	private ObstaclesIteratorPresent iterObstacles;
 	private IteratorCheminPathfinding iterChemin;	
 	private PrintBuffer buffer;
 	
-	private final static int tailleTab = 256 / ClothoidesComputer.NB_POINTS;
-	private volatile ArcCourbe[] chemin = new ArcCourbe[tailleTab];
-	protected int indexFirst = 0;
-	protected int indexLast = 0;
+	private volatile CinematiqueObs[] chemin = new CinematiqueObs[256];
+	protected int indexFirst = 0; // indice du point en cours
+	protected int indexLast = 0; // indice du dernier point de la trajectoire
 	private int lastValidIndex; // l'indice du dernier index (-1 si aucun ne l'est, Integer.MAX_VALUE si tous le sont)
 	private boolean uptodate = true; // le chemin est-il complet
 	private int margeNecessaire = 2;
@@ -67,7 +67,7 @@ public class CheminPathfinding implements Service, Printable
 	{
 		this.log = log;
 		this.out = out;
-		this.iterator = iterator;
+		this.iterObstacles = iterator;
 		iterChemin = new IteratorCheminPathfinding(this);
 		this.buffer = buffer;
 	}
@@ -101,20 +101,20 @@ public class CheminPathfinding implements Service, Printable
 	 */
 	private boolean isColliding()
 	{
-		iterator.save(); // on sauvegarde sa position actuelle, c'est-à-dire la première position des nouveaux obstacles
+		iterObstacles.save(); // on sauvegarde sa position actuelle, c'est-à-dire la première position des nouveaux obstacles
 		iterChemin.reinit();
 		lastValidIndex = -1;
 		
 		while(iterChemin.hasNext())
 		{
-			ObstacleArcCourbe a = iterChemin.next().obstacle;
-			iterator.load();
-			while(iterator.hasNext())
+			ObstacleRectangular a = iterChemin.next().obstacle;
+			iterObstacles.load();
+			while(iterObstacles.hasNext())
 			{
-				if(iterator.next().isColliding(a))
+				if(iterObstacles.next().isColliding(a))
 				{
-					while(iterator.hasNext()) // on s'assure que l'iterateur se termine à la fin des obstacles connus
-						iterator.next();
+					while(iterObstacles.hasNext()) // on s'assure que l'iterateur se termine à la fin des obstacles connus
+						iterObstacles.next();
 					return true;
 				}
 			}
@@ -132,10 +132,6 @@ public class CheminPathfinding implements Service, Printable
 		return false;
 	}
 	
-	@Override
-	public void updateConfig(Config config)
-	{}
-
 	@Override
 	public void useConfig(Config config)
 	{
@@ -155,6 +151,16 @@ public class CheminPathfinding implements Service, Printable
 	{
 		return indexFirst == indexLast;
 	}
+	
+	private void add(CinematiqueObs c)
+	{
+		chemin[indexLast] = c;
+		indexLast = add(indexLast, 1);
+		
+		// si on revient au début, c'est qu'il y a un problème ou que le buffer est sous-dimensionné
+		if(indexLast == indexFirst)
+			log.critical("Buffer trop petit !");
+	}
 
 	/**
 	 * Ajoute un arc au chemin
@@ -165,13 +171,10 @@ public class CheminPathfinding implements Service, Printable
 	{
 		synchronized(this)
 		{
-			chemin[indexLast] = arc;
-			out.envoieArcCourbe(arc, indexLast);
-			indexLast = add(indexLast, 1);
-			
-			// si on revient au début, c'est qu'il y a un problème ou que le buffer est sous-dimensionné
-			if(indexLast == indexFirst)
-				log.critical("Buffer trop petit !");
+			int tmp = indexLast;
+			for(int i = 0; i < arc.getNbPoints(); i++)
+				add(arc.getPoint(i));
+			out.envoieArcCourbe(arc, tmp);
 		}
 		if(graphic)
 			synchronized(buffer)
@@ -180,11 +183,11 @@ public class CheminPathfinding implements Service, Printable
 			}
 	}
 	
-	protected synchronized ArcCourbe get(int index)
+	protected synchronized CinematiqueObs get(int index)
 	{
 		if((indexFirst <= index && index < indexLast)
-		|| (indexFirst > indexLast && indexFirst <= index && index < indexLast + tailleTab)
-		|| (indexFirst > indexLast && indexFirst <= index + tailleTab && index < indexLast))
+		|| (indexFirst > indexLast && indexFirst <= index && index < indexLast + 256)
+		|| (indexFirst > indexLast && indexFirst <= index + 256 && index < indexLast))
 			return chemin[index];
 		return null;
 	}
@@ -236,7 +239,7 @@ public class CheminPathfinding implements Service, Printable
 			}
 		synchronized(this)
 		{
-			return chemin[indexFirst].getLast(); // TODO
+			return chemin[indexFirst];
 		}
 	}
 	
@@ -244,7 +247,7 @@ public class CheminPathfinding implements Service, Printable
 	{
 		if(lastValidIndex == -1)
 			return null;
-		return chemin[lastValidIndex].getLast();
+		return chemin[lastValidIndex];
 	}
 
 	@Override
@@ -253,12 +256,11 @@ public class CheminPathfinding implements Service, Printable
 		iterChemin.reinit();
 		while(iterChemin.hasNext())
 		{
-			ArcCourbe a = iterChemin.next();
+			Cinematique a = iterChemin.next();
 			if(a == null)
 				log.critical("Nul !");
 			else
-				for(int i = 0; i < a.getNbPoints(); i++)
-					buffer.addSupprimable(new ObstacleCircular(a.getPoint(i).getPosition(), 8));
+				buffer.addSupprimable(new ObstacleCircular(a.getPosition(), 8));
 		}
 	}
 
@@ -270,12 +272,12 @@ public class CheminPathfinding implements Service, Printable
 
 	public int minus(int indice1, int indice2)
 	{
-		return (indice1 - indice2 + tailleTab) % tailleTab;
+		return (indice1 - indice2 + 256) & 0xFF;
 	}
 	
 	public int add(int indice1, int indice2)
 	{
-		return (indice1 + indice2) % tailleTab;
+		return (indice1 + indice2) & 0xFF;
 	}
 	
 }

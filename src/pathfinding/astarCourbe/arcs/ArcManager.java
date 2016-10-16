@@ -64,6 +64,8 @@ public class ArcManager implements Service, Configurable
 		this.heuristique = heuristique;
 		this.clotho = clotho;
 	}
+
+	private ObstacleArcCourbe obs = new ObstacleArcCourbe();
 	
 	/**
 	 * Retourne faux si un obstacle est sur la route
@@ -77,8 +79,13 @@ public class ArcManager implements Service, Configurable
 		if(node.parent == null)
 			return true;
 
-		ObstacleArcCourbe obs = node.cameFromArc.obstacle;
-
+		/**
+		 * On agrège les obstacles en un seul pour simplifier l'écriture des calculs
+		 */
+		obs.ombresRobot.clear();
+		for(int i = 0; i < node.cameFromArc.getNbPoints(); i++)
+			obs.ombresRobot.add(node.cameFromArc.getPoint(i).obstacle);
+		
 		// Collision avec un obstacle fixe?
     	for(ObstaclesFixes o: ObstaclesFixes.values())
     		if(o.getObstacle().isColliding(obs))

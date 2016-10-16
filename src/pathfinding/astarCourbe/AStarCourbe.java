@@ -23,7 +23,7 @@ import java.util.PriorityQueue;
 import java.util.Stack;
 
 import memory.NodeMM;
-import memory.ObsMM;
+import memory.CinemObsMM;
 import obstacles.types.ObstacleCircular;
 import pathfinding.RealGameState;
 import pathfinding.astarCourbe.arcs.ArcManager;
@@ -61,7 +61,7 @@ public class AStarCourbe implements Service, Configurable
 	private Cinematique arrivee;
 	private AStarCourbeNode depart;
 	private CheminPathfinding chemin;
-	private ObsMM rectMemory;
+	private CinemObsMM rectMemory;
 	private boolean graphicTrajectory;
 	
 	private Speed vitesseMax;
@@ -91,7 +91,7 @@ public class AStarCourbe implements Service, Configurable
 	/**
 	 * Constructeur du AStarCourbe
 	 */
-	public AStarCourbe(Log log, DStarLite dstarlite, ArcManager arcmanager, RealGameState state, CheminPathfinding chemin, NodeMM memorymanager, ObsMM rectMemory, PrintBuffer buffer, AStarCourbeNode depart)
+	public AStarCourbe(Log log, DStarLite dstarlite, ArcManager arcmanager, RealGameState state, CheminPathfinding chemin, NodeMM memorymanager, CinemObsMM rectMemory, PrintBuffer buffer, AStarCourbeNode depart)
 	{
 		this.log = log;
 		this.arcmanager = arcmanager;
@@ -159,7 +159,7 @@ public class AStarCourbe implements Service, Configurable
 			if(!arcmanager.isReachable(current))
 			{
 				log.debug("Collision");
-				rectMemory.destroyNode(current.cameFromArc.obstacle);
+				rectMemory.destroyNode(current.cameFromArc);
 				memorymanager.destroyNode(current);
 				continue; // collision mécanique attendue. On passe au suivant !
 			}
@@ -206,7 +206,7 @@ public class AStarCourbe implements Service, Configurable
 				// S'il y a un problème, on passe au suivant (interpolation cubique impossible par exemple)
 				if(!arcmanager.next(successeur, vitesseMax, arrivee))
 				{
-					rectMemory.destroyNode(successeur.cameFromArc.obstacle);
+					rectMemory.destroyNode(successeur.cameFromArc);
 					memorymanager.destroyNode(successeur);
 					continue;
 				}
@@ -218,7 +218,7 @@ public class AStarCourbe implements Service, Configurable
 				if(heuristique == null) // hors table, D* lite dit que c'est impossible, …
 				{
 					log.debug("Heuristique nulle");
-					rectMemory.destroyNode(successeur.cameFromArc.obstacle);
+					rectMemory.destroyNode(successeur.cameFromArc);
 					memorymanager.destroyNode(successeur);
 					continue;
 				}

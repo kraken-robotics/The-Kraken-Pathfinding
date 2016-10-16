@@ -27,13 +27,13 @@ import org.junit.Test;
 import config.ConfigInfo;
 import graphic.PrintBuffer;
 import pathfinding.astarCourbe.AStarCourbe;
-import pathfinding.astarCourbe.arcs.ArcCourbe;
 import pathfinding.astarCourbe.arcs.ArcCourbeClotho;
 import pathfinding.astarCourbe.arcs.ArcCourbeCubique;
 import pathfinding.astarCourbe.arcs.ClothoidesComputer;
 import pathfinding.astarCourbe.arcs.VitesseCourbure;
 import pathfinding.chemin.IteratorCheminPathfinding;
 import robot.Cinematique;
+import robot.CinematiqueObs;
 import robot.DirectionStrategy;
 import robot.RobotChrono;
 import robot.RobotReal;
@@ -178,18 +178,13 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 		Cinematique c = new Cinematique(0, 1200, Math.PI, false, 0, Speed.STANDARD);
 		astar.computeNewPath(c, true, DirectionStrategy.FASTEST);
 		iterator.reinit();
-		ArcCourbe a = null;
+		CinematiqueObs a = null;
 		while(iterator.hasNext())
 		{
 			a = iterator.next();
-			for(int i = 0; i < a.getNbPoints(); i++)
-			{
-//				log.debug(a.getPoint(i));
-				robot.setCinematique(a.getPoint(i));
-				Thread.sleep(100);
-			}
+			robot.setCinematique(a);
+			Thread.sleep(100);
 		}
-		Assert.assertTrue(a instanceof ArcCourbeCubique);
     }
 	
 }

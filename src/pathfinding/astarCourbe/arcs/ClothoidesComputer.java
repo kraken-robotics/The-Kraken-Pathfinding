@@ -28,15 +28,16 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 
-import memory.ObsMM;
+import memory.CinemObsMM;
+import config.Config;
+import config.ConfigInfo;
+import config.Configurable;
 import container.Service;
-import obstacles.types.ObstacleArcCourbe;
 import obstacles.types.ObstacleCircular;
 import robot.Cinematique;
+import robot.CinematiqueObs;
 import robot.RobotChrono;
 import robot.Speed;
-import utils.Config;
-import utils.ConfigInfo;
 import utils.Log;
 import utils.Vec2RO;
 import utils.Vec2RW;
@@ -47,10 +48,10 @@ import utils.Vec2RW;
  *
  */
 
-public class ClothoidesComputer implements Service
+public class ClothoidesComputer implements Service, Configurable
 {
 	private Log log;
-	private ObsMM memory;
+	private CinemObsMM memory;
 	private PrintBuffer buffer;
 	
 	private BigDecimal x, y; // utilisés dans le calcul de trajectoire
@@ -66,7 +67,7 @@ public class ClothoidesComputer implements Service
 	
 	private Vec2RO[] trajectoire = new Vec2RO[2 * INDICE_MAX - 1];
 	
-	public ClothoidesComputer(Log log, ObsMM memory, PrintBuffer buffer)
+	public ClothoidesComputer(Log log, CinemObsMM memory, PrintBuffer buffer)
 	{
 		this.memory = memory;
 		this.log = log;
@@ -152,7 +153,6 @@ public class ClothoidesComputer implements Service
 	
 	public final ArcCourbeCubique cubicInterpolation(RobotChrono robot, Cinematique cinematiqueInitiale, Cinematique arrivee, Speed vitesseMax, VitesseCourbure v)
 	{
-		ObstacleArcCourbe obstacle = new ObstacleArcCourbe();
 //		log.debug(v);
 		double alphas[] = {100, 300, 600, 800, 1000, 1200};
 //		log.debug("Interpolation cubique, rebrousse : "+v.rebrousse);
@@ -198,10 +198,10 @@ public class ClothoidesComputer implements Service
 			double cy = sin*alpha;
 			double ay = arrivee.getPosition().getY() - by - cy - dy;
 	
-			ArrayList<Cinematique> out = new ArrayList<Cinematique>();
+			ArrayList<CinematiqueObs> out = new ArrayList<CinematiqueObs>();
 			double t = 0, tnext = 0, lastCourbure = courbure;
 			double longueur = 0;
-			Cinematique last = null, actuel;
+			CinematiqueObs last = null, actuel;
 			boolean error = false;
 			
 			// TODO : mettre la discontinuité le plus tôt possible
@@ -221,14 +221,16 @@ public class ClothoidesComputer implements Service
 				double acx = 6*ax*t+2*bx;
 				double acy = 6*ay*t+2*by;
 				
-				actuel = new Cinematique(
+				actuel = memory.getNewNode();
+				actuel.update(
 						x, // x
 						y, // y
 						Math.atan2(vy, vx), // orientation = atan2(vy, vx)
 						v.rebrousse ^ cinematiqueInitiale.enMarcheAvant,
 						1000*(vx * acy - vy * acx) / Math.pow(vx*vx + vy*vy, 1.5), // formule de la courbure d'une courbe paramétrique
-						vitesseMax);
-		
+						vitesseMax,
+						robot);
+
 //				log.debug(t);
 				
 				// Il faut faire attention à ne pas dépasser la coubure maximale !
@@ -240,28 +242,35 @@ public class ClothoidesComputer implements Service
 					break;
 				}
 				
-//				log.debug(x+" "+y);
+				//				log.debug(x+" "+y);
 				lastCourbure = actuel.courbureGeometrique;
 				
 				// calcul de la longueur de l'arc
 				if(last != null)
 					longueur += actuel.getPosition().distance(last.getPosition());
 	
+				actuel = memory.getNewNode();
 				out.add(actuel);
-				obstacle.ombresRobot.add(memory.getNewNode().update(actuel.getPosition(), actuel.orientationGeometrique, robot));
 				last = actuel;
+				
+
 			}
 			if(error) // on essaye un autre alpha
+			{
+				// on détruit les cinématiques qui ne seront pas utilisées
+				for(CinematiqueObs c : out)
+					memory.destroyNode(c);
 				continue;
+			}
 			
-			return new ArcCourbeCubique(obstacle, out, longueur, v.rebrousse, v.rebrousse);
+			return new ArcCourbeCubique(out, longueur, v.rebrousse, v.rebrousse);
 		}
 		return null;
 	}
 	
 	public void getTrajectoire(RobotChrono robot, ArcCourbe depart, VitesseCourbure vitesse, Speed vitesseMax, ArcCourbeClotho modified)
 	{
-		Cinematique last = depart.getLast();
+		CinematiqueObs last = depart.getLast();
 		getTrajectoire(robot, last, vitesse, vitesseMax, modified);
 	}
 	
@@ -330,8 +339,6 @@ public class ClothoidesComputer implements Service
 //		for(int i = 0; i < NB_POINTS; i++)
 //			log.debug("Clotho : "+trajectoire[vitesse.squaredRootVitesse * (i + 1)]);
 	
-		modified.obstacle.ombresRobot.clear();
-
 		// le premier point n'est pas position, mais le suivant
 		// (afin de ne pas avoir de doublon quand on enchaîne les arcs, entre le dernier point de l'arc t et le premier de l'arc t+1)		
 		for(int i = 0; i < NB_POINTS; i++)
@@ -373,7 +380,7 @@ public class ClothoidesComputer implements Service
 			modified.arcselems[i].vitesseMax = vitesseMax;
  			if(!vitesse.positif)
  				modified.arcselems[i].courbureGeometrique = - modified.arcselems[i].courbureGeometrique;
-			modified.obstacle.ombresRobot.add(memory.getNewNode().update(modified.arcselems[i].getPosition(), orientation, robot));
+ 			modified.arcselems[i].obstacle.update(modified.arcselems[i].getPosition(), orientation, robot);
 		}
 	}
 
@@ -410,7 +417,7 @@ public class ClothoidesComputer implements Service
 		double angle = Math.asin(sin);
 		sin = 0;
 		cos = 1;
-		modified.obstacle.ombresRobot.clear();
+
 		for(int i = 0; i < NB_POINTS; i++)
 		{
 			double tmp = sin;
@@ -437,7 +444,7 @@ public class ClothoidesComputer implements Service
 			// TODO : doit dépendre de la courbure !
  			modified.arcselems[i].vitesseMax = vitesseMax;
 			modified.arcselems[i].enMarcheAvant = enMarcheAvant;
-			modified.obstacle.ombresRobot.add(memory.getNewNode().update(modified.arcselems[i].getPosition(), orientation, robot));
+			modified.arcselems[i].obstacle.update(modified.arcselems[i].getPosition(), orientation, robot);
 		}
 	}
 
@@ -452,7 +459,6 @@ public class ClothoidesComputer implements Service
 		double cos = Math.cos(orientation);
 		double sin = Math.sin(orientation);
 
-		modified.obstacle.ombresRobot.clear();
 		for(int i = 0; i < NB_POINTS; i++)
 		{
 			double distance = (i + 1) * PRECISION_TRACE * 1000;
@@ -470,13 +476,9 @@ public class ClothoidesComputer implements Service
  			// TODO : doit dépendre de la courbure !
  			modified.arcselems[i].vitesseMax = vitesseMax;
 			modified.arcselems[i].enMarcheAvant = enMarcheAvant;
-			modified.obstacle.ombresRobot.add(memory.getNewNode().update(modified.arcselems[i].getPosition(), orientation, robot));
+			modified.arcselems[i].obstacle.update(modified.arcselems[i].getPosition(), orientation, robot);
 		}
 	}
-
-	@Override
-	public void updateConfig(Config config)
-	{}
 
 	@Override
 	public void useConfig(Config config)

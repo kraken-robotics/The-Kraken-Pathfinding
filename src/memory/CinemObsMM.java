@@ -17,34 +17,34 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 package memory;
 
+import config.Config;
+import config.ConfigInfo;
 import container.Container;
 import exceptions.ContainerException;
-import obstacles.types.ObstacleArcCourbe;
-import obstacles.types.ObstacleRectangular;
-import utils.Config;
-import utils.ConfigInfo;
+import pathfinding.astarCourbe.arcs.ArcCourbe;
+import robot.CinematiqueObs;
 import utils.Log;
 
 /**
- * Classe qui fournit des objets ObstaclesRectangular
- * Le moteur a besoin de beaucoup de ces obstacles de robot, et l'instanciation d'un objet est long.
+ * Classe qui fournit des objets CinematiqueObs
+ * Le moteur physique a besoin de beaucoup de ces obstacles de robot, et l'instanciation d'un objet est long.
  * Du coup on réutilise les mêmes objets sans devoir en créer tout le temps de nouveaux.
  * @author pf
  *
  */
 
-public class ObsMM extends MemoryManager<ObstacleRectangular>
+public class CinemObsMM extends MemoryManager<CinematiqueObs>
 {
 
-	public ObsMM(Log log, Config config, Container container) throws ContainerException
+	public CinemObsMM(Log log, Config config, Container container) throws ContainerException
 	{
-		super(ObstacleRectangular.class, log, container, config.getInt(ConfigInfo.NB_INSTANCES_OBSTACLES));
+		super(CinematiqueObs.class, log, container, config.getInt(ConfigInfo.NB_INSTANCES_OBSTACLES));
 	}
 
-	public void destroyNode(ObstacleArcCourbe obstacle)
+	public void destroyNode(ArcCourbe arc)
 	{
-		for(ObstacleRectangular o : obstacle.ombresRobot)
-			destroyNode(o);
+		for(int i = 0; i < arc.getNbPoints(); i++)
+			destroyNode(arc.getPoint(i));
 	}
 	
 }

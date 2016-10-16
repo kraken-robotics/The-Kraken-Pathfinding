@@ -53,7 +53,6 @@ public class JUnit_CheminPF extends JUnit_Test {
 		ArcCourbeClotho arc = new ArcCourbeClotho();
 		chemin.add(arc);
 		Assert.assertTrue(iterator.hasNext());
-		Assert.assertTrue(arc == iterator.next());
 	}
 
 }

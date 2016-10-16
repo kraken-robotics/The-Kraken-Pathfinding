@@ -19,8 +19,7 @@ package pathfinding.astarCourbe.arcs;
 
 import java.util.ArrayList;
 
-import obstacles.types.ObstacleArcCourbe;
-import robot.Cinematique;
+import robot.CinematiqueObs;
 
 /**
  * Arc de trajectoire courbe issu d'une interpolation cubique
@@ -30,15 +29,15 @@ import robot.Cinematique;
 
 public class ArcCourbeCubique extends ArcCourbe
 {
-	public ArrayList<Cinematique> arcs;
+	public ArrayList<CinematiqueObs> arcs;
 	public double longueur;
 	
-	public ArcCourbeCubique(ObstacleArcCourbe obstacle, ArrayList<Cinematique> arcs, double longueur, boolean rebrousse, boolean stop)
+	public ArcCourbeCubique(ArrayList<CinematiqueObs> arcs, double longueur, boolean rebrousse, boolean stop)
 	{
 		super(rebrousse, stop);
 		this.arcs = arcs;
 		this.longueur = longueur;
-		this.obstacle = obstacle;
+//		this.obstacle = obstacle;
 	}
 	
 	@Override
@@ -48,13 +47,13 @@ public class ArcCourbeCubique extends ArcCourbe
 	}
 	
 	@Override
-	public Cinematique getPoint(int indice)
+	public CinematiqueObs getPoint(int indice)
 	{
 		return arcs.get(indice);
 	}
 	
 	@Override
-	public Cinematique getLast()
+	public CinematiqueObs getLast()
 	{
 		return arcs.get(arcs.size()-1);
 	}
@@ -69,7 +68,7 @@ public class ArcCourbeCubique extends ArcCourbe
 	public double getVitesseTr()
 	{
 		double v = 0;
-		for(Cinematique c : arcs)
+		for(CinematiqueObs c : arcs)
 			v += c.vitesseMax.translationalSpeed;
 		return v / arcs.size();
 	}

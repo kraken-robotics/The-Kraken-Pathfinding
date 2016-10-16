@@ -19,7 +19,7 @@ package pathfinding.chemin;
 
 import java.util.Iterator;
 
-import pathfinding.astarCourbe.arcs.ArcCourbe;
+import robot.CinematiqueObs;
 
 /**
  * Un iterateur pour manipuler facilement le chemin pathfinding
@@ -27,7 +27,7 @@ import pathfinding.astarCourbe.arcs.ArcCourbe;
  *
  */
 
-public class IteratorCheminPathfinding implements Iterator<ArcCourbe>
+public class IteratorCheminPathfinding implements Iterator<CinematiqueObs>
 {
 	private int index;
 	private CheminPathfinding chemin;
@@ -47,13 +47,12 @@ public class IteratorCheminPathfinding implements Iterator<ArcCourbe>
 	public boolean hasNext()
 	{
 		return index != chemin.indexLast;
-
 	}
 
 	@Override
-	public ArcCourbe next()
+	public CinematiqueObs next()
 	{
-		ArcCourbe out = chemin.get(index);
+		CinematiqueObs out = chemin.get(index);
 		index = chemin.add(index, 1);
 		return out;
 	}

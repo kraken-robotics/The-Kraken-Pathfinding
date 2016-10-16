@@ -21,10 +21,8 @@ import java.awt.Graphics;
 
 import graphic.Fenetre;
 import graphic.printable.Layer;
-import memory.Memorizable;
 import robot.RobotChrono;
 import robot.RobotReal;
-import utils.Config;
 import utils.Vec2RO;
 import utils.Vec2RW;
 
@@ -35,7 +33,7 @@ import utils.Vec2RW;
  *
  */
 
-public class ObstacleRectangular extends Obstacle implements Memorizable
+public class ObstacleRectangular extends Obstacle
 {
 	// Position est le centre de rotation, c'est-à-dire le croisement des deux diagonales
 	
@@ -54,8 +52,6 @@ public class ObstacleRectangular extends Obstacle implements Memorizable
 	protected Vec2RW coinHautGaucheRotate;
 	protected Vec2RW coinBasDroiteRotate;
 	protected Vec2RW coinHautDroiteRotate;
-	
-	private int indiceMemory;
 	
 	protected double angle, cos, sin;
 
@@ -274,18 +270,6 @@ public class ObstacleRectangular extends Obstacle implements Memorizable
 		return 0;
 	}
 
-	@Override
-	public void setIndiceMemoryManager(int indice)
-	{
-		indiceMemory = indice;
-	}
-
-	@Override
-	public int getIndiceMemoryManager()
-	{
-		return indiceMemory;
-	}
-
 	/**
 	 * Mise à jour de l'obstacle
 	 * @param position
@@ -331,10 +315,6 @@ public class ObstacleRectangular extends Obstacle implements Memorizable
 	}
 
 	@Override
-	public void useConfig(Config config)
-	{}
-
-	@Override
 	public void print(Graphics g, Fenetre f, RobotReal robot)
 	{
 		if(coinBasDroiteRotate == null)
@@ -357,6 +337,7 @@ public class ObstacleRectangular extends Obstacle implements Memorizable
 			X[i] = f.XtoWindow(X[i]);
 			Y[i] = f.YtoWindow(Y[i]);
 		}
-		g.fillPolygon(X, Y, 4);	}
+		g.fillPolygon(X, Y, 4);
+	}
 	
 }

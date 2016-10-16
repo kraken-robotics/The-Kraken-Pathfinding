@@ -40,25 +40,7 @@ public class Cinematique
 	
 	public Cinematique(double x, double y, double orientation, boolean enMarcheAvant, double courbure, Speed vitesseMax)
 	{
-		if(enMarcheAvant)
-		{
-			orientationReelle = orientation;
-			courbureReelle = courbure;
-		}
-		else
-		{
-			orientationReelle = orientation + Math.PI;
-			courbureReelle = - courbure;
-		}
-		
-		position.setX(x);
-		position.setY(y);
-		this.orientationGeometrique = orientation;
-		this.enMarcheAvant = enMarcheAvant;
-		this.courbureGeometrique = courbure;
-//		this.vitesseTranslation = vitesseTranslation;
-//		this.vitesseRotation = vitesseRotation;
-		this.vitesseMax = vitesseMax;
+		update(x,y,orientation,enMarcheAvant, courbure, vitesseMax);
 	}
 	
 	/**
@@ -155,6 +137,27 @@ public class Cinematique
 	public boolean equals(Object o)
 	{
 		return o.hashCode() == hashCode();
+	}
+
+	public void update(double x, double y, double orientation, boolean enMarcheAvant, double courbure, Speed vitesseMax)
+	{
+		if(enMarcheAvant)
+		{
+			orientationReelle = orientation;
+			courbureReelle = courbure;
+		}
+		else
+		{
+			orientationReelle = orientation + Math.PI;
+			courbureReelle = - courbure;
+		}
+		
+		position.setX(x);
+		position.setY(y);
+		this.orientationGeometrique = orientation;
+		this.enMarcheAvant = enMarcheAvant;
+		this.courbureGeometrique = courbure;
+		this.vitesseMax = vitesseMax;
 	}
 	
 }
