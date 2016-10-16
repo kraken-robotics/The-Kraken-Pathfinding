@@ -29,13 +29,11 @@ import utils.Vec2RO;
 
 public enum ObstaclesFixes {
 	// TODO visibilité à mettre à jour selon le robot / les capteurs
-	ZONE_DEPART_ENNEMI(new ObstacleRectangular(new Vec2RO(1100/2-1500,2000-350/2),1100,350), false, false),
-	ZONE_DEPART_A_NOUS(new ObstacleRectangular(new Vec2RO(1500-750/2,2000-350/2),750,350), false, false),
-
-	// TODO baguettes
+	ZONE_DEPART_ENNEMI(new ObstacleRectangular(new Vec2RO(1070/2-1500,2000-382/2),1070,382), false, false),
+	ZONE_DEPART_A_NOUS(new ObstacleRectangular(new Vec2RO(1500-710/2,2000-382/2),710,382), false, false),
 	
-	BAC_GAUCHE(new ObstacleRectangular(new Vec2RO(25-1500,1075),50,450), true, false),
-	BAC_DROIT(new ObstacleRectangular(new Vec2RO(1500-25,1075),50,450), true, false),
+	BAC_GAUCHE(new ObstacleRectangular(new Vec2RO(54-1500,1075),108,494), true, false),
+	BAC_DROIT(new ObstacleRectangular(new Vec2RO(1500-54,1075),108,494), true, false),
 
 	CENTRE_VILLAGE(new ObstacleCircular(new Vec2RO(0,0),200), true, false),
 
@@ -43,19 +41,22 @@ public enum ObstaclesFixes {
 	SUPPORT_MODULE_MILIEU(new ObstacleRectangular(new Vec2RO(0,500),140,600), true, false),
 	SUPPORT_MODULE_DROITE(new ObstacleRectangular(new Vec2RO(0,500).rotateNewVector(Math.PI/4, new Vec2RO(0,0)),140,600, Math.PI/4), true, false),
 	
-	PETIT_CRATERE_HAUT_GAUCHE(new ObstacleCircular(new Vec2RO(650-1500,2000-530),90), false, false),
-	PETIT_CRATERE_HAUT_DROITE(new ObstacleCircular(new Vec2RO(1500-650,2000-530),90), false, false),
+	PETIT_CRATERE_HAUT_GAUCHE(new ObstacleCircular(new Vec2RO(650-1500,2000-530),115), false, false),
+	PETIT_CRATERE_HAUT_DROITE(new ObstacleCircular(new Vec2RO(1500-650,2000-530),115), false, false),
 
-	PETIT_CRATERE_BAS_GAUCHE(new ObstacleCircular(new Vec2RO(1100-1500,2000-1870),90), false, false),
-	PETIT_CRATERE_BAS_DROITE(new ObstacleCircular(new Vec2RO(1500-1100,2000-1870),90), false, false),
+	PETIT_CRATERE_BAS_GAUCHE(new ObstacleCircular(new Vec2RO(1100-1500,2000-1870),115), false, false),
+	PETIT_CRATERE_BAS_DROITE(new ObstacleCircular(new Vec2RO(1500-1100,2000-1870),115), false, false),
 
-	GROS_CRATERE_GAUCHE(new ObstacleCircular(new Vec2RO(-1500,0),575), false, false),
-	GROS_CRATERE_DROITE(new ObstacleCircular(new Vec2RO(1500,0),575), false, false),
+	// Les gros cratères ne sont pas des obstacles pour le pathfinding	
+//	GROS_CRATERE_GAUCHE(new ObstacleCircular(new Vec2RO(-1500,0),575), false, false),
+//	GROS_CRATERE_DROITE(new ObstacleCircular(new Vec2RO(1500,0),575), false, false),
 
-	FUSEE_GAUCHE(new ObstacleCircular(new Vec2RO(-350,1960),40), true, true),	
-	FUSEE_MILIEU(new ObstacleCircular(new Vec2RO(0,1960),40), true, true),	
-	FUSEE_DROITE(new ObstacleCircular(new Vec2RO(350,1960),40), true, true),	
-	
+	FUSEE_HAUT_GAUCHE(new ObstacleCircular(new Vec2RO(-350,1960),40), true, true),
+	FUSEE_HAUT_DROITE(new ObstacleCircular(new Vec2RO(350,1960),40), true, true),
+
+	FUSEE_BORD_GAUCHE(new ObstacleCircular(new Vec2RO(-1460,650),40), true, true),
+	FUSEE_BORD_DROIT(new ObstacleCircular(new Vec2RO(1460,650),40), true, true),
+
 	// bords
     BORD_BAS(new ObstacleRectangular(new Vec2RO(0,0),3000,5,Layer.BACKGROUND), true, false),
     BORD_GAUCHE(new ObstacleRectangular(new Vec2RO(-1500,1000),5,2000,Layer.BACKGROUND), true, false),

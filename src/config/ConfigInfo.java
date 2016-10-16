@@ -107,6 +107,7 @@ public enum ConfigInfo {
 	GRAPHIC_TRAJECTORY(false), // affiche les trajectoires temporaires
 	GRAPHIC_TRAJECTORY_FINAL(false), // affiche les trajectoires
 	GRAPHIC_FIXED_OBSTACLES(false), // affiche les obstacles fixes
+	GRAPHIC_BACKGROUND_PATH("background-2017.png"), // affiche d'image de la table
 	GRAPHIC_BACKGROUND(false), // affiche d'image de la table
 	GRAPHIC_SIZE_X(1000), // taille par défaut (sans image) de la fenêtre
 	GRAPHIC_ALL_OBSTACLES(false), // affiche absolument tous les obstacles créés

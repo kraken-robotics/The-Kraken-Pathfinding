@@ -59,6 +59,7 @@ public class Fenetre extends JPanel implements Service, Configurable {
 		
 	private RobotReal robot;
 	private boolean needInit = true;
+	private String backgroundPath;
 	
 	public Fenetre(Log log, RobotReal robot, PrintBuffer buffer)
 	{
@@ -89,7 +90,7 @@ public class Fenetre extends JPanel implements Service, Configurable {
 		if(afficheFond)
 		{
 			try {
-				Image image = ImageIO.read(new File("minitable2016.png"));
+				Image image = ImageIO.read(new File(backgroundPath));
 				sizeX = image.getWidth(this); // on ajuste la taille de la fenêtre à l'image
 				sizeY = image.getHeight(this);
 				buffer.add(new BackgroundImage(image));
@@ -154,6 +155,7 @@ public class Fenetre extends JPanel implements Service, Configurable {
 	public void useConfig(Config config)
 	{
 		afficheFond = config.getBoolean(ConfigInfo.GRAPHIC_BACKGROUND);
+		backgroundPath = config.getString(ConfigInfo.GRAPHIC_BACKGROUND_PATH);
 		sizeX = config.getInt(ConfigInfo.GRAPHIC_SIZE_X);
 		sizeY = 2*sizeX/3;
 	}
