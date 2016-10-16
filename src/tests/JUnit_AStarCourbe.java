@@ -150,10 +150,9 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 				else if(a > 0)
 					System.out.println(arc[a-1].arcselems[ClothoidesComputer.NB_POINTS - 1].point.distance(arc[a].arcselems[0].point));
 	*/				
-				System.out.println(arc[a].arcselems[i]);
+				System.out.println(a+" "+i+" "+arc[a].arcselems[i]);
 				if(graphicTrajectory)
-					for(int j = 0; j < arc[a].getNbPoints(); j++)
-						buffer.addSupprimable(new ObstacleCircular(arc[a].getPoint(i).getPosition(), 4));
+					buffer.addSupprimable(new ObstacleCircular(arc[a].getPoint(i).getPosition(), 4));
 			}
 			if(a == 0)
 			{
@@ -167,7 +166,7 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 */		}
 	
 		
-		Assert.assertEquals(arc[nbArc-1].arcselems[arc[nbArc-1].arcselems.length - 1].getPosition().distance(new Vec2RO(-22.769859459053365,1875.782736417656)), 0, 0.1);
+		Assert.assertEquals(arc[nbArc-1].arcselems[arc[nbArc-1].arcselems.length - 1].getPosition().distance(new Vec2RO(-75.23359007226547,1573.5289638045665)), 0, 0.1);
     }
 	
 	@Test

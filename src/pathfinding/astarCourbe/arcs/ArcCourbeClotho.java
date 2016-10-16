@@ -18,7 +18,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 package pathfinding.astarCourbe.arcs;
 
 import robot.CinematiqueObs;
-import robot.Speed;
 
 /**
  * Arc de clothoïde, utilisé dans l'AStarCourbe
@@ -34,7 +33,7 @@ public class ArcCourbeClotho extends ArcCourbe
 	{
 		super(false, false); // modifié par copy
 		for(int i = 0; i < ClothoidesComputer.NB_POINTS; i++)
-			arcselems[i] = new CinematiqueObs(0, 0, 0, true, 0, Speed.STANDARD, null, null);
+			arcselems[i] = new CinematiqueObs();
 	}
 	
 	/**

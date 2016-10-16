@@ -31,13 +31,19 @@ public class CinematiqueObs extends Cinematique implements Memorizable
 	public volatile ObstacleRectangular obstacle;
 	private int indiceMemory;	
 
-	public CinematiqueObs(double x, double y, double orientation, boolean enMarcheAvant, double courbure, Speed vitesseMax, ObstacleRectangular obstacle, RobotChrono r)
+	public CinematiqueObs()
+	{
+		super(0,0,0,true,0,null);
+		obstacle = new ObstacleRectangular();
+	}
+	
+/*	public CinematiqueObs(double x, double y, double orientation, boolean enMarcheAvant, double courbure, Speed vitesseMax, RobotChrono r)
 	{
 		super(x,y,orientation,enMarcheAvant, courbure,vitesseMax);
-		this.obstacle = obstacle;
+		obstacle = new ObstacleRectangular();
 		this.obstacle.update(position, orientationReelle, r);
 	}
-
+*/
 	@Override
 	public void setIndiceMemoryManager(int indice)
 	{

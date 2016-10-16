@@ -17,6 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 package obstacles.memory;
 
+import exceptions.ContainerException;
 import graphic.PrintBuffer;
 
 import java.util.Iterator;
@@ -29,6 +30,7 @@ import utils.Vec2RO;
 import config.Config;
 import config.ConfigInfo;
 import config.Configurable;
+import container.Container;
 import container.Service;
 
 /**
@@ -54,11 +56,13 @@ public class ObstaclesMemory implements Service, Configurable
 	
 	protected Log log;
 	private PrintBuffer buffer;
+	private Container container;
 	
-	public ObstaclesMemory(Log log, PrintBuffer buffer)
+	public ObstaclesMemory(Log log, PrintBuffer buffer, Container container)
 	{
 		this.log = log;
 		this.buffer = buffer;
+		this.container = container;
 	}
 
 	public synchronized ObstacleProximity add(Vec2RO position, Masque masque)
@@ -68,16 +72,21 @@ public class ObstaclesMemory implements Service, Configurable
 
 	private synchronized ObstacleProximity add(Vec2RO position, long date, Masque masque)
 	{
-        ObstacleProximity obstacle = new ObstacleProximity(position, rayonEnnemi, date+dureeAvantPeremption, masque);
-        listObstaclesMobiles.add(obstacle);
-
-        if(printProx)
-        {
-        	buffer.addSupprimable(obstacle);
-        	buffer.addSupprimable(obstacle.getMasque());
-        }
-        
-        size++;
+        ObstacleProximity obstacle = null;
+		try {
+			obstacle = container.make(ObstacleProximity.class, position, rayonEnnemi, date+dureeAvantPeremption, masque);
+	        listObstaclesMobiles.add(obstacle);
+	
+	        if(printProx)
+	        {
+	        	buffer.addSupprimable(obstacle);
+	        	buffer.addSupprimable(obstacle.getMasque());
+	        }
+	        
+	        size++;
+		} catch (ContainerException e) {
+			log.critical(e);
+		}
 		return obstacle;
 	}
 	

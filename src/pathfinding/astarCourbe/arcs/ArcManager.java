@@ -257,7 +257,6 @@ public class ArcManager implements Service, Configurable
 	@Override
 	public void useConfig(Config config)
 	{
-		ArcCourbe.tempsRebroussement = config.getInt(ConfigInfo.TEMPS_REBROUSSEMENT);
 		courbureMax = config.getDouble(ConfigInfo.COURBURE_MAX);		
 	}
 

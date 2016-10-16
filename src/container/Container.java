@@ -363,7 +363,10 @@ public class Container implements Service, Configurable
 				((Configurable) s).useConfig(config);
 			if(DynamicConfigurable.class.isAssignableFrom(classe))
 			{
-				dynaConf.add((DynamicConfigurable) s);
+				synchronized(dynaConf)
+				{
+					dynaConf.add((DynamicConfigurable) s);
+				}
 				if(config != null)
 					((DynamicConfigurable) s).updateConfig(config);
 			}
@@ -410,8 +413,11 @@ public class Container implements Service, Configurable
 	 */
 	public void updateConfigForAll()
 	{
-		for(DynamicConfigurable s : dynaConf)
-			s.updateConfig(config);
+		synchronized(dynaConf)
+		{
+			for(DynamicConfigurable s : dynaConf)
+				s.updateConfig(config);
+		}
 	}
 	
 	/**

@@ -40,8 +40,8 @@ public abstract class Obstacle implements Printable, Configurable
 	protected static Log log;
 	protected static PrintBuffer buffer;
 	
-    protected static int distanceApprox;
-    protected boolean printAllObstacles = false; // tant que set et useConfigStatic n'est pas appelé, on affiche rien
+    protected int distanceApprox; // TODO : pas utilisé
+    protected static boolean printAllObstacles = false; // static car commun à tous
 	protected Layer l = null;
 	
 	public static void set(Log log, PrintBuffer buffer)

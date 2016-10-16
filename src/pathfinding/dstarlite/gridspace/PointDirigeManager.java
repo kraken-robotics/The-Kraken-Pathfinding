@@ -27,7 +27,7 @@ import utils.Log;
  */
 public class PointDirigeManager implements Service
 {
-	private static PointDirige[] mem = new PointDirige[PointGridSpace.NB_POINTS * 8];
+	private PointDirige[] mem = new PointDirige[PointGridSpace.NB_POINTS * 8];
 	private PointGridSpaceManager pm;
 	protected Log log;
 	

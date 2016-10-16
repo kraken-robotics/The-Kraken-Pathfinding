@@ -17,7 +17,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 package pathfinding;
 
-import config.Config;
 import obstacles.memory.ObstaclesIteratorFutur;
 import robot.RobotChrono;
 import table.Table;
@@ -56,9 +55,4 @@ public class ChronoGameState extends GameState<RobotChrono>
         iterator.copy(modified.iterator, robot.getTempsDepuisDebutMatch());
         // Table a été copié par gridspace
     }
-
-	public void updateConfig(Config config)
-	{
-		robot.updateConfig(config);
-	}
 }

@@ -17,8 +17,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 package pathfinding.astarCourbe;
 
-import config.Config;
-import config.Configurable;
 import memory.Memorizable;
 import pathfinding.ChronoGameState;
 import pathfinding.astarCourbe.arcs.ArcCourbe;
@@ -30,7 +28,7 @@ import pathfinding.astarCourbe.arcs.ArcCourbeClotho;
  *
  */
 
-public class AStarCourbeNode implements Memorizable, Configurable
+public class AStarCourbeNode implements Memorizable
 {
 	public ChronoGameState state;
 	public double g_score;
@@ -80,10 +78,4 @@ public class AStarCourbeNode implements Memorizable, Configurable
 		modified.parent = null;
 	}
 
-	@Override
-	public void useConfig(Config config)
-	{
-		state.updateConfig(config);
-	}
-	
 }

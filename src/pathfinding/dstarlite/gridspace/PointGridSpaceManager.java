@@ -33,7 +33,7 @@ public class PointGridSpaceManager implements Service
 	private static final int Y_MAX = PointGridSpace.NB_POINTS_POUR_DEUX_METRES - 1;
 	
 	protected Log log;
-	private static PointGridSpace[] allPoints = new PointGridSpace[PointGridSpace.NB_POINTS];
+	private PointGridSpace[] allPoints = new PointGridSpace[PointGridSpace.NB_POINTS];
 	
 	public PointGridSpaceManager(Log log)
 	{

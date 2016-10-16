@@ -17,6 +17,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 package pathfinding.astarCourbe.arcs;
 
+import config.Config;
+import config.ConfigInfo;
+import config.Configurable;
 import robot.CinematiqueObs;
 
 /**
@@ -25,12 +28,13 @@ import robot.CinematiqueObs;
  *
  */
 
-public abstract class ArcCourbe {
+public abstract class ArcCourbe implements Configurable
+{
 
 	public boolean rebrousse; // cet arc commence par un rebroussement, c'est-à-dire que la marche avant change
 	public boolean stop; // cet arc commence par un arrêt du robot
 //	public ObstacleArcCourbe obstacle = new ObstacleArcCourbe();
-	protected static int tempsRebroussement;
+	protected int tempsRebroussement;
 	
 	public ArcCourbe(boolean rebrousse, boolean stop)
 	{
@@ -59,6 +63,12 @@ public abstract class ArcCourbe {
 			out += getPoint(i)+"\n";
 		out += getLast();
 		return out;
+	}
+	
+	@Override
+	public void useConfig(Config config)
+	{
+		tempsRebroussement = config.getInt(ConfigInfo.TEMPS_REBROUSSEMENT);
 	}
 
 }

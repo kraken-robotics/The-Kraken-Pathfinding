@@ -19,6 +19,8 @@ package robot;
 
 import config.Config;
 import config.ConfigInfo;
+import config.Configurable;
+import config.DynamicConfigurable;
 import utils.Log;
 
 /**
@@ -26,7 +28,7 @@ import utils.Log;
  * @author pf
  */
 
-public abstract class Robot 
+public abstract class Robot implements Configurable, DynamicConfigurable
 {
 	/*
 	 * DÉPLACEMENT HAUT NIVEAU
@@ -58,11 +60,13 @@ public abstract class Robot
     	rc.date = getTempsDepuisDebutMatch();
     }
 	
+    @Override
 	public synchronized void updateConfig(Config config)
 	{
 		symetrie = config.getSymmetry();
 	}
 
+	@Override
 	public void useConfig(Config config)
 	{
 		largeurNonDeploye = config.getInt(ConfigInfo.LARGEUR_NON_DEPLOYE);
