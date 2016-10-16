@@ -15,35 +15,18 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>
 */
 
-package tests.container;
-
-import config.Config;
-import config.Configurable;
-import config.DynamicConfigurable;
-import container.Service;
+package config;
 
 /**
- * Classe utilisée pour le test de l'appel de config
+ * Tout ce qui utilite la config dynamique
  * @author pf
  *
  */
-public class D implements Service, Configurable, DynamicConfigurable
-{
-	public boolean useConfigOk = false;
-	public boolean updateConfigOk = false;
-	
-	public D()
-	{}
-	
-	@Override
-	public void updateConfig(Config config)
-	{
-		updateConfigOk = true;
-	}
 
-	@Override
-	public void useConfig(Config config)
-	{
-		useConfigOk = true;
-	}
+public interface DynamicConfigurable
+{
+	/**
+	 * Met à jour les variables de config qui doivent l'être. Peut-être appelé n'importe quand.
+	 */
+	public void updateConfig(Config config);
 }

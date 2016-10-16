@@ -25,13 +25,16 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Stack;
 
+import config.Config;
+import config.ConfigInfo;
+import config.Configurable;
+import config.DynamicConfigurable;
 import container.Service;
 import utils.*;
 import exceptions.ContainerException;
@@ -57,7 +60,7 @@ import threads.serie.ThreadSerialInputCoucheOrdre;
  * 
  * @author pf
  */
-public class Container implements Service
+public class Container implements Service, Configurable
 {
 	// liste des services déjà instanciés. Contient au moins Config et Log. Les autres services appelables seront présents quand ils auront été appelés
 	private HashMap<String, Service> instanciedServices = new HashMap<String, Service>();
@@ -71,6 +74,7 @@ public class Container implements Service
 	private FileWriter fw;
 
 	private ArrayList<Class<? extends Service>> ko = new ArrayList<Class<? extends Service>>();
+	private ArrayList<DynamicConfigurable> dynaConf = new ArrayList<DynamicConfigurable>();
 	
 	/**
 	 * Fonction appelé automatiquement à la fin du programme.
@@ -190,7 +194,6 @@ public class Container implements Service
 		
 		log = new Log();
 		config = new Config();
-		log.updateConfig(config);
 		log.useConfig(config);
 		// Interdépendance entre log et config…
 		config.init(log);
@@ -223,7 +226,6 @@ public class Container implements Service
 		}
 		
 		Obstacle.set(log, getService(PrintBuffer.class));
-		Obstacle.useConfigStatic(config);
 		
 		startAllThreads();
 
@@ -357,17 +359,21 @@ public class Container implements Service
 			/**
 			 * Mise à jour de la config
 			 */
-			if(config != null && Service.class.isAssignableFrom(classe))
-				for(Method m : Service.class.getMethods())
-					classe.getMethod(m.getName(), Config.class).invoke(s, config);
+			if(config != null && Configurable.class.isAssignableFrom(classe))
+				((Configurable) s).useConfig(config);
+			if(DynamicConfigurable.class.isAssignableFrom(classe))
+			{
+				dynaConf.add((DynamicConfigurable) s);
+				if(config != null)
+					((DynamicConfigurable) s).updateConfig(config);
+			}
 			
 			// Mise à jour de la pile
 			stack.pop();
 			
 			return s;
 		} catch (IllegalAccessException | IllegalArgumentException
-				| InvocationTargetException | NoSuchMethodException
-				| SecurityException | InstantiationException e) {
+				| InvocationTargetException | SecurityException | InstantiationException e) {
 			e.printStackTrace();
 			throw new ContainerException(e.toString()+"\nClasse demandée : "+classe.getSimpleName());
 		}
@@ -404,7 +410,7 @@ public class Container implements Service
 	 */
 	public void updateConfigForAll()
 	{
-		for(Service s : instanciedServices.values())
+		for(DynamicConfigurable s : dynaConf)
 			s.updateConfig(config);
 	}
 	
@@ -427,10 +433,6 @@ public class Container implements Service
 			System.err.println(e); // peut-être que log n'est pas encore démarré…
 		}
 	}
-
-	@Override
-	public void updateConfig(Config config)
-	{}
 
 	@Override
 	public void useConfig(Config config)

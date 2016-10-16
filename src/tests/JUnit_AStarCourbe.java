@@ -24,6 +24,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import config.ConfigInfo;
 import graphic.PrintBuffer;
 import pathfinding.astarCourbe.AStarCourbe;
 import pathfinding.astarCourbe.arcs.ArcCourbe;
@@ -37,7 +38,6 @@ import robot.DirectionStrategy;
 import robot.RobotChrono;
 import robot.RobotReal;
 import robot.Speed;
-import utils.ConfigInfo;
 import utils.Vec2RO;
 
 /**

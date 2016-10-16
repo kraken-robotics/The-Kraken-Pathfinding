@@ -17,7 +17,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 package pathfinding.dstarlite.gridspace;
 
-import utils.Config;
 import utils.Vec2RO;
 
 import java.awt.Graphics;
@@ -88,14 +87,6 @@ public class PointGridSpace implements Service, Printable
 	{
 		return new Vec2RO(((x * DISTANCE_ENTRE_DEUX_POINTS_1024) >> 10) - 1500, (y * DISTANCE_ENTRE_DEUX_POINTS_1024) >> 10);
 	}
-
-	@Override
-	public void updateConfig(Config config)
-	{}
-
-	@Override
-	public void useConfig(Config config)
-	{}
 
 	@Override
 	public void print(Graphics g, Fenetre f, RobotReal robot)

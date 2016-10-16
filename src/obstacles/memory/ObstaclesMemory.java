@@ -24,10 +24,11 @@ import java.util.LinkedList;
 
 import obstacles.types.ObstacleProximity;
 import pathfinding.dstarlite.gridspace.Masque;
-import utils.Config;
-import utils.ConfigInfo;
 import utils.Log;
 import utils.Vec2RO;
+import config.Config;
+import config.ConfigInfo;
+import config.Configurable;
 import container.Service;
 
 /**
@@ -37,7 +38,7 @@ import container.Service;
  *
  */
 
-public class ObstaclesMemory implements Service
+public class ObstaclesMemory implements Service, Configurable
 {
     // Les obstacles mobiles, c'est-à-dire des obstacles de proximité
     private volatile LinkedList<ObstacleProximity> listObstaclesMobiles = new LinkedList<ObstacleProximity>();
@@ -85,10 +86,6 @@ public class ObstaclesMemory implements Service
 		return size;
 	}
 	
-	@Override
-	public void updateConfig(Config config)
-	{}
-
 	@Override
 	public void useConfig(Config config)
 	{

@@ -17,10 +17,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 package threads;
 
+import config.Config;
+import config.ConfigInfo;
+import config.Configurable;
 import graphic.Fenetre;
 import graphic.PrintBuffer;
-import utils.Config;
-import utils.ConfigInfo;
 import utils.Log;
 
 /**
@@ -29,7 +30,7 @@ import utils.Log;
  *
  */
 
-public class ThreadFenetre extends ThreadService
+public class ThreadFenetre extends ThreadService implements Configurable
 {
 
 	protected Log log;
@@ -71,10 +72,6 @@ public class ThreadFenetre extends ThreadService
 			log.debug("Arrêt de "+Thread.currentThread().getName());
 		}
 	}
-
-	@Override
-	public void updateConfig(Config config)
-	{}
 
 	@Override
 	public void useConfig(Config config)

@@ -28,9 +28,6 @@ class Cle
 	// Quand un nœud est consistent, first = vraie distance + heuristique, second = vraie distance
 	int first, second;
 
-	public Cle()
-	{}
-	
 	/**
 	 * Teste la stricte infériorité
 	 * @param other

@@ -17,11 +17,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 package obstacles.types;
 
+import config.Config;
+import config.ConfigInfo;
+import config.Configurable;
 import graphic.PrintBuffer;
 import graphic.printable.Layer;
 import graphic.printable.Printable;
-import utils.Config;
-import utils.ConfigInfo;
 import utils.Log;
 import utils.Vec2RO;
 import utils.Vec2RW;
@@ -32,7 +33,7 @@ import utils.Vec2RW;
  *
  */
 
-public abstract class Obstacle implements Printable
+public abstract class Obstacle implements Printable, Configurable
 {
 	protected Vec2RW position;
 	protected int distance_dilatation;
@@ -40,7 +41,7 @@ public abstract class Obstacle implements Printable
 	protected static PrintBuffer buffer;
 	
     protected static int distanceApprox;
-    protected static boolean printAllObstacles = false; // tant que set et useConfigStatic n'est pas appelé, on affiche rien
+    protected boolean printAllObstacles = false; // tant que set et useConfigStatic n'est pas appelé, on affiche rien
 	protected Layer l = null;
 	
 	public static void set(Log log, PrintBuffer buffer)
@@ -48,13 +49,13 @@ public abstract class Obstacle implements Printable
 		Obstacle.log = log;
 		Obstacle.buffer = buffer;
 	}
-
-	public static void useConfigStatic(Config config)
+	
+	public void useConfig(Config config)
 	{
 		printAllObstacles = config.getBoolean(ConfigInfo.GRAPHIC_ALL_OBSTACLES);
 		distanceApprox = config.getInt(ConfigInfo.DISTANCE_MAX_ENTRE_MESURE_ET_OBJET);
 	}
-	
+
 	public Obstacle(Vec2RO position, Layer l)
 	{
 		this(position);

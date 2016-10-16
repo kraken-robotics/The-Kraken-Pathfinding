@@ -29,10 +29,11 @@ import pathfinding.dstarlite.gridspace.PointDirigeManager;
 import pathfinding.dstarlite.gridspace.PointGridSpace;
 import pathfinding.dstarlite.gridspace.PointGridSpaceManager;
 import robot.Cinematique;
-import utils.Config;
-import utils.ConfigInfo;
 import utils.Log;
 import utils.Vec2RO;
+import config.Config;
+import config.ConfigInfo;
+import config.Configurable;
 import container.Service;
 import exceptions.PathfindingException;
 import graphic.printable.Couleur;
@@ -46,7 +47,7 @@ import graphic.printable.Couleur;
  *
  */
 
-public class DStarLite implements Service
+public class DStarLite implements Service, Configurable
 {
 	protected Log log;
 	private GridSpace gridspace;
@@ -301,10 +302,6 @@ public class DStarLite implements Service
 	{
 		return depart.gridpoint.distanceOctile(gridpoint);
 	}
-
-	@Override
-	public void updateConfig(Config config)
-	{}
 
 	@Override
 	public void useConfig(Config config)

@@ -30,11 +30,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.ListIterator;
 
+import config.Config;
+import config.ConfigInfo;
+import config.Configurable;
 import container.Service;
 import obstacles.types.ObstacleArcCourbe;
 import obstacles.types.ObstaclesFixes;
-import utils.Config;
-import utils.ConfigInfo;
 import utils.Log;
 
 /**
@@ -43,7 +44,7 @@ import utils.Log;
  *
  */
 
-public class ArcManager implements Service
+public class ArcManager implements Service, Configurable
 {
 	protected Log log;
 	private DStarLite heuristique;
@@ -245,10 +246,6 @@ public class ArcManager implements Service
     	this.current = current;
     	iterator = listeVitesse.listIterator();
     }
-
-	@Override
-	public void updateConfig(Config config)
-	{}
 
 	@Override
 	public void useConfig(Config config)

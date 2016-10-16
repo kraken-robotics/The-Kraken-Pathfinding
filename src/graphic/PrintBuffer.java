@@ -21,7 +21,6 @@ import java.awt.Graphics;
 import java.util.ArrayList;
 
 import robot.RobotReal;
-import utils.Config;
 import utils.Log;
 import container.Service;
 import graphic.printable.Layer;
@@ -80,15 +79,6 @@ public class PrintBuffer implements Service
 		elementsAffichables.get(o.getLayer().ordinal()).add(o);
 		notify();
 	}
-
-	
-	@Override
-	public void updateConfig(Config config)
-	{}
-
-	@Override
-	public void useConfig(Config config)
-	{}
 
 	/**
 	 * Affiche tout

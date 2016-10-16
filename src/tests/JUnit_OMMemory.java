@@ -31,7 +31,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import utils.ConfigInfo;
+import config.ConfigInfo;
 import utils.Vec2RO;
 import utils.Vec2RW;
 

@@ -19,12 +19,13 @@ package pathfinding.dstarlite.gridspace;
 
 import java.util.ArrayList;
 
+import config.Config;
+import config.ConfigInfo;
+import config.Configurable;
 import container.Container;
 import container.Service;
 import exceptions.ContainerException;
 import graphic.PrintBuffer;
-import utils.Config;
-import utils.ConfigInfo;
 import utils.Log;
 import utils.Vec2RO;
 
@@ -34,7 +35,7 @@ import utils.Vec2RO;
  *
  */
 
-public class MasqueManager implements Service
+public class MasqueManager implements Service, Configurable
 {
 	private int centreMasque;
 	private PointGridSpaceManager pointManager;
@@ -54,10 +55,6 @@ public class MasqueManager implements Service
 		this.container = container;
 	}
 	
-	@Override
-	public void updateConfig(Config config)
-	{}
-
 	@Override
 	public void useConfig(Config config)
 	{

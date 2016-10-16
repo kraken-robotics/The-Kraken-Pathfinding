@@ -31,7 +31,6 @@ import org.jfree.ui.RectangleInsets;
 import org.jfree.ui.RefineryUtilities;
 
 import container.Service;
-import utils.Config;
 import utils.Log;
 
 import java.awt.*;
@@ -131,13 +130,5 @@ public class AffichageDebug extends ApplicationFrame implements Service
 		RefineryUtilities.centerFrameOnScreen(this);
 		setVisible(true);
     }
-
-	@Override
-	public void updateConfig(Config config)
-	{}
-
-	@Override
-	public void useConfig(Config config)
-	{}
 
 }

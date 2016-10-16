@@ -17,10 +17,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 package pathfinding;
 
+import config.Config;
 import obstacles.memory.ObstaclesIteratorFutur;
 import robot.RobotChrono;
 import table.Table;
-import utils.Config;
 
 /**
  * Le game state rassemble toutes les informations disponibles à un instant

@@ -20,7 +20,7 @@ package tests;
 import org.junit.Test;
 import org.junit.Assert;
 
-import utils.ConfigInfo;
+import config.ConfigInfo;
 
 /**
  * Tests unitaires pour la configuration... juste épique.

@@ -17,9 +17,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 package robot;
 
-import utils.ConfigInfo;
+import config.Config;
+import config.ConfigInfo;
 import utils.Log;
-import utils.Config;
 
 /**
  * Classe abstraite du robot, dont héritent RobotVrai et RobotChrono

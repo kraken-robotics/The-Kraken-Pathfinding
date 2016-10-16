@@ -22,9 +22,9 @@ import org.junit.Rule;
 import org.junit.rules.TestName;
 import org.junit.After;
 
-import utils.ConfigInfo;
 import utils.Log;
-import utils.Config;
+import config.Config;
+import config.ConfigInfo;
 import container.Container;
 import graphic.Fenetre;
 import threads.ThreadShutdown;

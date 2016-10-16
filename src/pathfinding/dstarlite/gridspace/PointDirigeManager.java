@@ -18,7 +18,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 package pathfinding.dstarlite.gridspace;
 
 import container.Service;
-import utils.Config;
 import utils.Log;
 
 /**
@@ -62,14 +61,6 @@ public class PointDirigeManager implements Service
 		
 		return mem[(p.hashcode << 3) + d.ordinal()];
 	}
-
-	@Override
-	public void updateConfig(Config config)
-	{}
-
-	@Override
-	public void useConfig(Config config)
-	{}
 
 	/**
 	 * Récupère un PointDirige à partir de son hash

@@ -22,7 +22,6 @@ import java.lang.reflect.Array;
 import container.Container;
 import container.Service;
 import exceptions.ContainerException;
-import utils.Config;
 import utils.Log;
 
 /**
@@ -43,17 +42,6 @@ public class MemoryManager<T extends Memorizable> implements Service {
 	
 	private int firstAvailable;
 	
-	@Override
-	public void updateConfig(Config config)
-	{}
-
-	@Override
-	public void useConfig(Config config)
-	{
-		for(int i = 0; i < nb_instances; i++)
-			nodes[i].useConfig(config);
-	}
-
 	@SuppressWarnings("unchecked")
 	public MemoryManager(Class<T> classe, Log log, Container container, int nb_instances) throws ContainerException
 	{	

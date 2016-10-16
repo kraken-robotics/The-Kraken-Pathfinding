@@ -32,14 +32,15 @@ import pathfinding.astarCourbe.arcs.ArcCourbe;
 import pathfinding.astarCourbe.arcs.ArcCourbeCubique;
 import pathfinding.dstarlite.DStarLite;
 import pathfinding.dstarlite.gridspace.PointGridSpace;
+import config.Config;
+import config.ConfigInfo;
+import config.Configurable;
 import container.Service;
 import exceptions.PathfindingException;
 import graphic.PrintBuffer;
 import robot.Cinematique;
 import robot.DirectionStrategy;
 import robot.Speed;
-import utils.Config;
-import utils.ConfigInfo;
 import utils.Log;
 
 /**
@@ -48,7 +49,7 @@ import utils.Log;
  *
  */
 
-public class AStarCourbe implements Service
+public class AStarCourbe implements Service, Configurable
 {
 	protected DirectionStrategy directionstrategyactuelle;
 	protected Log log;
@@ -260,10 +261,6 @@ public class AStarCourbe implements Service
 		while(!pileTmp.isEmpty())
 			chemin.add(pileTmp.pop());
 	}
-
-	@Override
-	public void updateConfig(Config config)
-	{}
 
 	@Override
 	public void useConfig(Config config)

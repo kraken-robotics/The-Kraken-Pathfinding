@@ -20,7 +20,6 @@ package threads;
 import exceptions.PathfindingException;
 import pathfinding.astarCourbe.AStarCourbe;
 import pathfinding.chemin.CheminPathfinding;
-import utils.Config;
 import utils.Log;
 
 /**
@@ -64,12 +63,4 @@ public class ThreadPathfinding extends ThreadService
 		}
 	}
 
-	@Override
-	public void updateConfig(Config config)
-	{}
-
-	@Override
-	public void useConfig(Config config)
-	{}
-	
 }

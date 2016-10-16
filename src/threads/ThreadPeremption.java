@@ -17,11 +17,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 package threads;
 
+import config.Config;
+import config.ConfigInfo;
+import config.Configurable;
 import graphic.PrintBuffer;
 import obstacles.memory.ObstaclesMemory;
 import pathfinding.dstarlite.DStarLite;
-import utils.Config;
-import utils.ConfigInfo;
 import utils.Log;
 
 /**
@@ -31,7 +32,7 @@ import utils.Log;
  *
  */
 
-public class ThreadPeremption extends ThreadService
+public class ThreadPeremption extends ThreadService implements Configurable
 {
 	private ObstaclesMemory memory;
 	protected Log log;
@@ -82,10 +83,6 @@ public class ThreadPeremption extends ThreadService
 			log.debug("Arrêt de "+Thread.currentThread().getName());
 		}
 	}
-
-	@Override
-	public void updateConfig(Config config)
-	{}
 
 	@Override
 	public void useConfig(Config config)

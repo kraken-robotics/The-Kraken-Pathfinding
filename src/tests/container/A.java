@@ -17,7 +17,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 package tests.container;
 
-import utils.Config;
 import container.Service;
 
 /**
@@ -29,10 +28,4 @@ public class A implements Service
 {
 	public A(B b)
 	{}
-	
-	@Override
-	public void updateConfig(Config config) {}
-
-	@Override
-	public void useConfig(Config config) {}
 }

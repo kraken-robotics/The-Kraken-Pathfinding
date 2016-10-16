@@ -18,7 +18,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 package table;
 
 import container.Service;
-import utils.Config;
 import utils.Log;
 
 /**
@@ -33,12 +32,4 @@ public class RealTable extends Table implements Service
 	{
 		super(log);
 	}
-
-	@Override
-	public void updateConfig(Config config)
-	{}
-	
-	@Override
-	public void useConfig(Config config)
-	{}
 }

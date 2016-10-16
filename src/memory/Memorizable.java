@@ -17,8 +17,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 package memory;
 
-import utils.Config;
-
 /**
  * Interface de ce qui est mémorisable par le MemoryManager
  * @author pf
@@ -38,6 +36,4 @@ public interface Memorizable
 	 * @return
 	 */
 	public int getIndiceMemoryManager();
-		
-	public void useConfig(Config config);
 }

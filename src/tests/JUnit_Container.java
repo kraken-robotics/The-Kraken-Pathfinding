@@ -20,6 +20,7 @@ package tests;
 import org.junit.Assert;
 import org.junit.Test;
 
+import config.Config;
 import exceptions.ContainerException;
 import obstacles.memory.ObstaclesIteratorPresent;
 import obstacles.types.ObstacleProximity;
@@ -28,7 +29,6 @@ import table.RealTable;
 import tests.container.A;
 import tests.container.C;
 import tests.container.D;
-import utils.Config;
 import utils.Vec2RO;
 
 /**

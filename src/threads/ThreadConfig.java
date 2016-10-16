@@ -17,8 +17,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 package threads;
 
+import config.Config;
 import container.Container;
-import utils.Config;
 import utils.Log;
 
 /**
@@ -60,13 +60,5 @@ public class ThreadConfig extends ThreadService
 			log.debug("Arrêt de "+Thread.currentThread().getName());
 		}
 	}
-
-	@Override
-	public void updateConfig(Config config)
-	{}
-
-	@Override
-	public void useConfig(Config config)
-	{}
 
 }

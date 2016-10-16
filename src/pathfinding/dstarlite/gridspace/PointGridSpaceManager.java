@@ -18,7 +18,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 package pathfinding.dstarlite.gridspace;
 
 import container.Service;
-import utils.Config;
 import utils.Log;
 import utils.Vec2RO;
 
@@ -104,14 +103,6 @@ public class PointGridSpaceManager implements Service
 			return null;
 		return get(x,y);
 	}
-
-	@Override
-	public void updateConfig(Config config)
-	{}
-
-	@Override
-	public void useConfig(Config config)
-	{}
 
 	/**
 	 * Donne le point voisin au point dirigé

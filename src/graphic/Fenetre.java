@@ -20,11 +20,12 @@ package graphic;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
+import config.Config;
+import config.ConfigInfo;
+import config.Configurable;
 import container.Service;
 import graphic.printable.BackgroundImage;
 import robot.RobotReal;
-import utils.Config;
-import utils.ConfigInfo;
 import utils.Log;
 
 import java.awt.*;
@@ -39,7 +40,7 @@ import java.io.IOException;
  *
  */
 
-public class Fenetre extends JPanel implements Service {
+public class Fenetre extends JPanel implements Service, Configurable {
 
 	/**
 	 * Couleurs surtout utilisées pour le dstarlite
@@ -148,10 +149,6 @@ public class Fenetre extends JPanel implements Service {
 		frame.pack();
 		frame.setVisible(true);
 	}
-
-	@Override
-	public void updateConfig(Config config)
-	{}
 
 	@Override
 	public void useConfig(Config config)

@@ -17,7 +17,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 package threads;
 
-import utils.Config;
 import utils.Log;
 import container.Container;
 import container.Service;
@@ -52,12 +51,4 @@ public class ThreadShutdown extends Thread implements Service
 			System.out.println(e);
 		}
 	}
-
-	@Override
-	public void updateConfig(Config config)
-	{}
-
-	@Override
-	public void useConfig(Config config)
-	{}
 }

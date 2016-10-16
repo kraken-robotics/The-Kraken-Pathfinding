@@ -25,6 +25,9 @@ import java.io.PrintStream;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
+import config.Config;
+import config.ConfigInfo;
+import config.Configurable;
 import container.Service;
 
 /**
@@ -33,7 +36,7 @@ import container.Service;
  *
  */
 
-public class Log implements Service
+public class Log implements Service, Configurable
 {
 	// Dépendances
 	private boolean logClosed = false;
@@ -187,10 +190,6 @@ public class Log implements Service
 
 		logClosed = true;
 	}
-	
-	@Override
-	public void updateConfig(Config config)
-	{}
 	
 	@Override
 	public void useConfig(Config config)

@@ -32,10 +32,11 @@ import obstacles.memory.ObstaclesMemory;
 import obstacles.types.ObstacleProximity;
 import obstacles.types.ObstaclesFixes;
 import robot.RobotReal;
-import utils.Config;
-import utils.ConfigInfo;
 import utils.Log;
 import utils.Vec2RO;
+import config.Config;
+import config.ConfigInfo;
+import config.Configurable;
 import container.Service;
 
 /**
@@ -46,7 +47,7 @@ import container.Service;
  *
  */
 
-public class GridSpace implements Service, Printable
+public class GridSpace implements Service, Printable, Configurable
 {
 	protected Log log;
 	private ObstaclesIteratorPresent iteratorDStarLiteFirst;
@@ -135,11 +136,6 @@ public class GridSpace implements Service, Printable
 			buffer.notify();
 		}
 	}
-
-
-	@Override
-	public void updateConfig(Config config)
-	{}
 
 	/**
 	 * Renvoie la distance en fonction de la direction.
