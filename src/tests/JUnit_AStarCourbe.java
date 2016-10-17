@@ -111,6 +111,45 @@ public class JUnit_AStarCourbe extends JUnit_Test {
     }
 	
 	@Test
+    public void test_depose() throws Exception
+    {
+		RobotChrono robot = container.make(RobotChrono.class);
+		robot.useConfig(config);
+		ClothoidesComputer clotho = container.getService(ClothoidesComputer.class);
+		RobotChrono r = container.make(RobotChrono.class);
+		int nbArc = 6;
+		ArcCourbeClotho arc[] = new ArcCourbeClotho[nbArc];
+		for(int i = 0; i < nbArc; i++)
+			arc[i] = new ArcCourbeClotho();
+
+		Cinematique c = new Cinematique(0, 1000, -Math.PI/2, false, -5.5, Speed.STANDARD);
+		log.debug("Initial : "+c);
+		clotho.getTrajectoire(r, c, VitesseCourbure.COURBURE_IDENTIQUE, Speed.STANDARD, arc[0]);
+		clotho.getTrajectoire(r, arc[0], VitesseCourbure.COURBURE_IDENTIQUE, Speed.STANDARD, arc[1]);
+		clotho.getTrajectoire(r, arc[1], VitesseCourbure.COURBURE_IDENTIQUE, Speed.STANDARD, arc[2]);
+		clotho.getTrajectoire(r, arc[2], VitesseCourbure.COURBURE_IDENTIQUE, Speed.STANDARD, arc[3]);
+		clotho.getTrajectoire(r, arc[3], VitesseCourbure.COURBURE_IDENTIQUE, Speed.STANDARD, arc[4]);
+		clotho.getTrajectoire(r, arc[4], VitesseCourbure.COURBURE_IDENTIQUE, Speed.STANDARD, arc[5]);
+	
+		buffer.addSupprimable(new ObstacleCircular(new Vec2RO(200, 1000-360), 15));
+		ObstacleRectangular[] obs= new ObstacleRectangular[nbArc*ClothoidesComputer.NB_POINTS];
+		for(int i = 0; i < obs.length; i++)
+			obs[i] = new ObstacleRectangular(new Vec2RO(0,0),0,0);
+		
+		for(int a = 0; a < nbArc; a++)	
+		{
+//			System.out.println("arc "+arc[a].v+" avec "+arc[a].arcselems[0]);
+				for(int j = 0; j < arc[a].getNbPoints(); j++)
+				{
+					obs[a*ClothoidesComputer.NB_POINTS+j].update(arc[a].getPoint(j).getPosition(), arc[a].getPoint(j).orientationGeometrique, robot);
+					System.out.println(obs[a*ClothoidesComputer.NB_POINTS+j]);
+					buffer.addSupprimable(obs[a*ClothoidesComputer.NB_POINTS+j]);
+					Thread.sleep(100);
+				}
+		}
+    }
+	
+	@Test
     public void test_clotho() throws Exception
     {
 		boolean graphicTrajectory = config.getBoolean(ConfigInfo.GRAPHIC_TRAJECTORY);

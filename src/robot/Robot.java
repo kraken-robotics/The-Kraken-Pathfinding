@@ -81,22 +81,22 @@ public abstract class Robot implements Configurable, DynamicConfigurable
     
 	public int getDemieLargeurGauche()
 	{
-		return 100; // TODO
+		return largeurNonDeploye / 2; // TODO
 	}
 
 	public int getDemieLargeurDroite()
 	{
-		return 100; // TODO
+		return largeurNonDeploye / 2; // TODO
 	}
 
 	public int getDemieLongueurAvant()
 	{
-		return 200; // TODO
+		return longueurNonDeploye; // TODO
 	}
 
 	public int getDemieLongueurArriere()
 	{
-		return 200; // TODO
+		return 0; // TODO
 	}
 	
 	public double getDemieDiagonale()
