@@ -41,11 +41,11 @@ public enum ObstaclesFixes {
 	SUPPORT_MODULE_MILIEU(new ObstacleRectangular(new Vec2RO(0,500),140,600), true, false),
 	SUPPORT_MODULE_DROITE(new ObstacleRectangular(new Vec2RO(0,500).rotateNewVector(Math.PI/4, new Vec2RO(0,0)),140,600, Math.PI/4), true, false),
 	
-	PETIT_CRATERE_HAUT_GAUCHE(new ObstacleCircular(new Vec2RO(650-1500,2000-530),115), false, false),
-	PETIT_CRATERE_HAUT_DROITE(new ObstacleCircular(new Vec2RO(1500-650,2000-530),115), false, false),
+	PETIT_CRATERE_HAUT_GAUCHE(new ObstacleCircular(new Vec2RO(650-1500,2000-540),125), false, false),
+	PETIT_CRATERE_HAUT_DROITE(new ObstacleCircular(new Vec2RO(1500-650,2000-540),125), false, false),
 
-	PETIT_CRATERE_BAS_GAUCHE(new ObstacleCircular(new Vec2RO(1100-1500,2000-1870),115), false, false),
-	PETIT_CRATERE_BAS_DROITE(new ObstacleCircular(new Vec2RO(1500-1100,2000-1870),115), false, false),
+	PETIT_CRATERE_BAS_GAUCHE(new ObstacleCircular(new Vec2RO(1070-1500,2000-1870),125), false, false),
+	PETIT_CRATERE_BAS_DROITE(new ObstacleCircular(new Vec2RO(1500-1070,2000-1870),125), false, false),
 
 	// Les gros cratères ne sont pas des obstacles pour le pathfinding	
 //	GROS_CRATERE_GAUCHE(new ObstacleCircular(new Vec2RO(-1500,0),575), false, false),

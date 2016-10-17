@@ -50,6 +50,7 @@ public abstract class Obstacle implements Printable, Configurable
 		Obstacle.buffer = buffer;
 	}
 	
+	@Override
 	public void useConfig(Config config)
 	{
 		printAllObstacles = config.getBoolean(ConfigInfo.GRAPHIC_ALL_OBSTACLES);
