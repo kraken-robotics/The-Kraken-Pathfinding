@@ -20,9 +20,13 @@ package graphic;
 import java.awt.Graphics;
 import java.util.ArrayList;
 
+import config.Config;
+import config.ConfigInfo;
+import config.Configurable;
 import robot.RobotReal;
 import utils.Log;
 import container.Service;
+import graphic.printable.Couleur;
 import graphic.printable.Layer;
 import graphic.printable.Printable;
 
@@ -32,12 +36,13 @@ import graphic.printable.Printable;
  *
  */
 
-public class PrintBuffer implements Service
+public class PrintBuffer implements Service, Configurable
 {	
 	private ArrayList<ArrayList<Printable>> elementsAffichablesSupprimables = new ArrayList<ArrayList<Printable>>();
 	private ArrayList<ArrayList<Printable>> elementsAffichables = new ArrayList<ArrayList<Printable>>();
 
 	protected Log log;
+	private boolean afficheFond;
 	
 	public PrintBuffer(Log log)
 	{
@@ -90,8 +95,18 @@ public class PrintBuffer implements Service
 	{
 		for(int i = 0 ; i < Layer.values().length; i++)
 		{
+			if(afficheFond)
+				g.setColor(Couleur.VERT.couleur);
+			else
+				g.setColor(Couleur.NOIR.couleur);
+			
 			for(Printable p : elementsAffichablesSupprimables.get(i))
 				p.print(g, f, robot);
+
+			if(afficheFond)
+				g.setColor(Couleur.VERT.couleur);
+			else
+				g.setColor(Couleur.NOIR.couleur);
 
 			for(Printable p : elementsAffichables.get(i))
 				p.print(g, f, robot);
@@ -107,6 +122,12 @@ public class PrintBuffer implements Service
 	{
 		if(elementsAffichablesSupprimables.get(o.getLayer().ordinal()).remove(o))
 			notify();
+	}
+
+	@Override
+	public void useConfig(Config config)
+	{
+		afficheFond = config.getBoolean(ConfigInfo.GRAPHIC_BACKGROUND);
 	}
 	
 }
