@@ -62,7 +62,7 @@ public class AStarCourbe implements Service, Configurable
 	private AStarCourbeNode depart;
 	private CheminPathfinding chemin;
 	private CinemObsMM cinemMemory;
-	private boolean graphicTrajectory;
+	private boolean graphicTrajectory, graphicDStarLite;
 	
 	private Speed vitesseMax;
 	
@@ -109,51 +109,44 @@ public class AStarCourbe implements Service, Configurable
 	 * Le calcul du AStarCourbe
 	 * @param depart
 	 * @return
+	 * @throws PathfindingException 
 	 */
-	protected final void process()
+	protected final void process() throws PathfindingException
 	{
 		depart.parent = null;
 		depart.cameFromArc = null;
 		depart.g_score = 0;
 		Double heuristique = dstarlite.heuristicCostCourbe((depart.state.robot).getCinematique());
-		if(heuristique == null)
-		{
-			int z = 0;
-			z = 1/z;
-		}
 
 		depart.f_score = heuristique;
 
 		if(depart.f_score == Integer.MAX_VALUE)
-		{
-			log.critical("Le dstarlite dit qu'aucun chemin n'est possible…");
-			return;
-		}
+			throw new PathfindingException("Le dstarlite dit qu'aucun chemin n'est possible…");
 		
 		openset.clear();
 		openset.add(depart);	// Les nœuds à évaluer
 		closedset.clear();
 		
 		AStarCourbeNode current, successeur;
-
 		do
 		{
 			current = openset.poll();
 			
-			if(closedset.contains(current))
+			if(closedset.contains(current)) // si on a déjà fait ce point ou un point très proche…
 				continue;
 
 			closedset.add(current);
 			
+			// affichage
 			if(graphicTrajectory && current.cameFromArc != null)
 				for(int i = 0; i < current.cameFromArc.getNbPoints(); i++)
 					buffer.addSupprimable(new ObstacleCircular(current.cameFromArc.getPoint(i).getPosition(), 4));
 
-			if(current.cameFromArc != null)
+/*			if(current.cameFromArc != null)
 			{
 				heuristique = dstarlite.heuristicCostCourbe((current.state.robot).getCinematique()) / current.cameFromArc.getVitesseTr();
 				log.debug("Heuristique : "+heuristique+" ("+current.state.robot.getCinematique().getPosition().distance(arrivee.getPosition()) / current.cameFromArc.getVitesseTr()+")");
-			}
+			}*/
 			
 			// ce calcul étant un peu lourd, on ne le fait que si le noeud a été choisi, et pas à la sélection des voisins (dans hasNext par exemple)
 			if(!arcmanager.isReachable(current))
@@ -167,13 +160,12 @@ public class AStarCourbe implements Service, Configurable
 			
 			// Si on est arrivé, on reconstruit le chemin
 			// On est arrivé seulement si on vient d'un arc cubique
-			if(current.cameFromArc instanceof ArcCourbeCubique || memorymanager.getSize() > 10000)
+			if(current.cameFromArc instanceof ArcCourbeCubique || memorymanager.getSize() > 30000)
 			{
-				if(memorymanager.getSize() > 10000) // étant donné qu'il peut continuer jusqu'à l'infini...
+				if(memorymanager.getSize() > 30000) // étant donné qu'il peut continuer jusqu'à l'infini...
 				{
 					memorymanager.empty();
-					log.critical("AStarCourbe n'a pas trouvé de chemin !");
-					return;
+					throw new PathfindingException("AStarCourbe n'a pas trouvé de chemin !");
 				}
 
 				log.debug("On est arrivé !");
@@ -217,6 +209,7 @@ public class AStarCourbe implements Service, Configurable
 				
 				heuristique = dstarlite.heuristicCostCourbe((successeur.state.robot).getCinematique());
 				
+				// TODO ce n'est plus possible
 				if(heuristique == null) // hors table, D* lite dit que c'est impossible, …
 				{
 					log.debug("Heuristique nulle");
@@ -230,8 +223,9 @@ public class AStarCourbe implements Service, Configurable
 
 				successeur.parent = current;
 
+//				log.debug("Nouveau voisin : "+successeur.f_score);
+								
 				openset.add(successeur);
-				
 			}
 
 		} while(!openset.isEmpty());
@@ -240,8 +234,7 @@ public class AStarCourbe implements Service, Configurable
 		 * Impossible car un nombre infini de nœuds !
 		 */
 		memorymanager.empty();
-		log.critical("IMPOSSIBLE : recherche AStarCourbe échouée");
-		return;
+		throw new PathfindingException("IMPOSSIBLE : recherche AStarCourbe échouée");
 	}
 	
 	/**
@@ -269,6 +262,7 @@ public class AStarCourbe implements Service, Configurable
 	public void useConfig(Config config)
 	{
 		graphicTrajectory = config.getBoolean(ConfigInfo.GRAPHIC_TRAJECTORY);
+		graphicDStarLite = config.getBoolean(ConfigInfo.GRAPHIC_D_STAR_LITE_FINAL);
 	}
 				
 	/**
@@ -282,8 +276,6 @@ public class AStarCourbe implements Service, Configurable
 	 */
 	public void computeNewPath(Cinematique arrivee, boolean ejecteGameElement, DirectionStrategy directionstrategy) throws PathfindingException
 	{
-//		if(Config.graphicAStarCourbe)
-//			fenetre.setColor(arrivee, Fenetre.Couleur.VIOLET);
 		vitesseMax = Speed.STANDARD;
 		this.directionstrategyactuelle = directionstrategy;
 		arcmanager.setEjecteGameElement(ejecteGameElement);
@@ -292,6 +284,9 @@ public class AStarCourbe implements Service, Configurable
 		state.copyAStarCourbe(depart.state);
 		
 		dstarlite.computeNewPath(depart.state.robot.getCinematique().getPosition(), arrivee.getPosition());
+		if(graphicDStarLite)
+			dstarlite.itineraireBrut();
+		
 		process();
 	}
 	

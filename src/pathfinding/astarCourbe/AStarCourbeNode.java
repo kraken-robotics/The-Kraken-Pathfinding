@@ -31,8 +31,8 @@ import pathfinding.astarCourbe.arcs.ArcCourbeClotho;
 public class AStarCourbeNode implements Memorizable
 {
 	public ChronoGameState state;
-	public double g_score;
-	public double f_score;
+	public double g_score; // distance du point de départ à ce point
+	public double f_score; // g_score + heuristique = meilleure distance qu'on peut espérer avec ce point
 	public AStarCourbeNode parent;
 	public ArcCourbe cameFromArc = new ArcCourbeClotho();
 	private int indiceMemoryManager;

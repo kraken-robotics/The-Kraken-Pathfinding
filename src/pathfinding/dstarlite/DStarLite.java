@@ -470,13 +470,10 @@ public class DStarLite implements Service, Configurable
 	 * @param c
 	 * @return
 	 */
-	public synchronized Double heuristicCostCourbe(Cinematique c)
+	public synchronized Double heuristicCostCourbe(Cinematique c) throws PathfindingException
 	{
 		if(c.getPosition().isHorsTable())
-		{
-			log.debug("Hors table");
-			return null;
-		}
+			throw new PathfindingException("Heuristique : hors table");
 		
 		PointGridSpace pos = pointManager.get(c.getPosition());
 		
@@ -491,17 +488,14 @@ public class DStarLite implements Service, Configurable
 		double erreurDistance = premier.rhs / 1000. * PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS; // distance en mm
 		
 		if(premier.rhs == Integer.MAX_VALUE)
-		{
-			log.debug("Inaccessible");
-			return null;
-		}
+			throw new PathfindingException("Heuristique : inaccessible");
+
+//		log.debug("rhs : "+premier.rhs);
+//		log.debug("erreurCourbure : "+erreurCourbure);
+//		log.debug("erreurOrientation : "+erreurOrientation);
+//		log.debug("erreurDistance : "+erreurDistance);
 		
-		log.debug("rhs : "+premier.rhs);
-		log.debug("erreurCourbure : "+erreurCourbure);
-		log.debug("erreurOrientation : "+erreurOrientation);
-		log.debug("erreurDistance : "+erreurDistance);
-		
-		return erreurDistance + 50*erreurCourbure + 100*erreurOrientation; // TODO : coeff
+		return erreurDistance + 5*erreurCourbure + 10*erreurOrientation; // TODO : coeff
 	}
 
 	/**

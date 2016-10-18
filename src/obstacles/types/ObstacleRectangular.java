@@ -35,7 +35,7 @@ import utils.Vec2RW;
 
 public class ObstacleRectangular extends Obstacle
 {
-	// Position est le centre de rotation, c'est-à-dire le croisement des deux diagonales
+	// Position est le centre de rotation
 	
 	// Longueur entre le centre et un des coins
 	protected double demieDiagonale;

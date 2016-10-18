@@ -377,7 +377,7 @@ public class ClothoidesComputer implements Service, Configurable
 			modified.arcselems[i].vitesseMax = vitesseMax;
  			if(!vitesse.positif)
  				modified.arcselems[i].courbureGeometrique = - modified.arcselems[i].courbureGeometrique;
- 			modified.arcselems[i].obstacle.update(modified.arcselems[i].getPosition(), orientation, robot);
+ 			modified.arcselems[i].obstacle.update(modified.arcselems[i].getPosition(), modified.arcselems[i].orientationReelle, robot);
 		}
 	}
 
@@ -441,7 +441,7 @@ public class ClothoidesComputer implements Service, Configurable
 			// TODO : doit dépendre de la courbure !
  			modified.arcselems[i].vitesseMax = vitesseMax;
 			modified.arcselems[i].enMarcheAvant = enMarcheAvant;
-			modified.arcselems[i].obstacle.update(modified.arcselems[i].getPosition(), orientation, robot);
+			modified.arcselems[i].obstacle.update(modified.arcselems[i].getPosition(), modified.arcselems[i].orientationReelle, robot);
 		}
 	}
 
@@ -473,7 +473,7 @@ public class ClothoidesComputer implements Service, Configurable
  			// TODO : doit dépendre de la courbure !
  			modified.arcselems[i].vitesseMax = vitesseMax;
 			modified.arcselems[i].enMarcheAvant = enMarcheAvant;
-			modified.arcselems[i].obstacle.update(modified.arcselems[i].getPosition(), orientation, robot);
+			modified.arcselems[i].obstacle.update(modified.arcselems[i].getPosition(), modified.arcselems[i].orientationReelle, robot);
 		}
 	}
 

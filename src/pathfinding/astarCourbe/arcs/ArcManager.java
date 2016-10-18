@@ -34,6 +34,7 @@ import config.Config;
 import config.ConfigInfo;
 import config.Configurable;
 import container.Service;
+import exceptions.PathfindingException;
 import graphic.PrintBuffer;
 import obstacles.types.ObstacleArcCourbe;
 import obstacles.types.ObstaclesFixes;
@@ -219,11 +220,15 @@ public class ArcManager implements Service, Configurable
     	}
 
     	// On ne tente pas l'interpolation si on est trop loin
-    	if((vitesse == VitesseCourbure.DIRECT_COURBE || vitesse == VitesseCourbure.DIRECT_COURBE_REBROUSSE) && heuristique.heuristicCostCourbe((current.state.robot).getCinematique()) > 100)
-    	{
+    	try {
+			if((vitesse == VitesseCourbure.DIRECT_COURBE || vitesse == VitesseCourbure.DIRECT_COURBE_REBROUSSE) && heuristique.heuristicCostCourbe((current.state.robot).getCinematique()) > 100)
+			{
 //    		log.debug(vitesse+" n'est pas acceptable (on est trop loin)");
+				return false;
+			}
+		} catch (PathfindingException e) {
 			return false;
-    	}
+		}
     	
     	// TODO
     	double courbureFuture = (current.state.robot).getCinematique().courbureGeometrique + vitesse.vitesse * ClothoidesComputer.DISTANCE_ARC_COURBE_M;
