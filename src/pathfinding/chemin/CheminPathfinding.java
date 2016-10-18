@@ -56,7 +56,7 @@ public class CheminPathfinding implements Service, Printable, Configurable
 	
 	private volatile CinematiqueObs[] chemin = new CinematiqueObs[256];
 	protected int indexFirst = 0; // indice du point en cours
-	protected int indexLast = 0; // indice du dernier point de la trajectoire
+	protected int indexLast = 0; // indice du prochain point de la trajectoire (donc indexLast - 1 est l'index du dernier point accessible)
 	private int lastValidIndex; // l'indice du dernier index (-1 si aucun ne l'est, Integer.MAX_VALUE si tous le sont)
 	private boolean uptodate = true; // le chemin est-il complet
 	private int margeNecessaire = 2;
@@ -185,9 +185,10 @@ public class CheminPathfinding implements Service, Printable, Configurable
 	
 	protected synchronized CinematiqueObs get(int index)
 	{
-		if((indexFirst <= index && index < indexLast)
+		if(minus(index, indexFirst) < minus(indexLast, indexFirst))
+/*		if((indexFirst <= index && index < indexLast)
 		|| (indexFirst > indexLast && indexFirst <= index && index < indexLast + 256)
-		|| (indexFirst > indexLast && indexFirst <= index + 256 && index < indexLast))
+		|| (indexFirst > indexLast && indexFirst <= index + 256 && index < indexLast))*/
 			return chemin[index];
 		return null;
 	}

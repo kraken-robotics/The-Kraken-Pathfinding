@@ -29,7 +29,7 @@ import robot.CinematiqueObs;
 
 public class IteratorCheminPathfinding implements Iterator<CinematiqueObs>
 {
-	private int index;
+	private int index; // l'index du prochain point à lire
 	private CheminPathfinding chemin;
 	
 	public IteratorCheminPathfinding(CheminPathfinding chemin)

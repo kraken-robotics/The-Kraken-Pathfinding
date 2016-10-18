@@ -64,13 +64,13 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 		astar = container.getService(AStarCourbe.class);
 		robot = container.getService(RobotReal.class);
 		iterator = container.make(IteratorCheminPathfinding.class);
-		graphicTrajectory = false;
+		graphicTrajectory = config.getBoolean(ConfigInfo.GRAPHIC_TRAJECTORY);
 	}
 
 	@Test
     public void test_interpolation_cubique() throws Exception
     {		
-		Cinematique c1 = new Cinematique(-1000, 1500, Math.PI/4, true, 0, Speed.STANDARD);
+		Cinematique c1 = new Cinematique(-1100, 300, Math.PI/2, true, 0, Speed.STANDARD);
 		Cinematique c2 = new Cinematique(0, 1000, 0, true, 0, Speed.STANDARD);
 		
 		ArcCourbeCubique arccubique = clotho.cubicInterpolation(container.make(RobotChrono.class), c1, c2, Speed.STANDARD, VitesseCourbure.DIRECT_COURBE);
@@ -104,7 +104,8 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 			if(graphicTrajectory)
 			{
 				Thread.sleep(100);
-				buffer.addSupprimable(new ObstacleRectangular(arccubique.arcs.get(i).getPosition(), 10, 10, 0));
+				buffer.addSupprimable(new ObstacleRectangular(arccubique.arcs.get(i).getPosition(), 20, 20, 0));
+				log.debug(arccubique.arcs.get(i).getPosition());
 			}
 		}
 		

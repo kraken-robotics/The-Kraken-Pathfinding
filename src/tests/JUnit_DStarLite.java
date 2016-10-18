@@ -59,7 +59,7 @@ public class JUnit_DStarLite extends JUnit_Test {
 		pathfinding.updateObstacles();
 		pathfinding.itineraireBrut();
 		Thread.sleep(4000);
-		pathfinding.updateStart(new Vec2RO(-800,1300));
+		pathfinding.updateStart(new Vec2RO(-1100,1300));
 		pathfinding.updateObstacles();
 		pathfinding.itineraireBrut();
 		log.debug("RECALCUL");
@@ -127,8 +127,8 @@ public class JUnit_DStarLite extends JUnit_Test {
 	@Test
     public void test_simulation_pathfinding() throws Exception
     {
-		Vec2RO posRobot = new Vec2RO(-1200, 200);
-		pathfinding.computeNewPath(posRobot, new Vec2RO(1200, 1800));
+		Vec2RO posRobot = new Vec2RO(-1100, 1300);
+		pathfinding.computeNewPath(posRobot, new Vec2RO(1100, 500));
 		ArrayList<Vec2RO> chemin = pathfinding.itineraireBrut();
 		
 		int n = 15;
