@@ -34,6 +34,7 @@ import config.Config;
 import config.ConfigInfo;
 import config.Configurable;
 import container.Service;
+import exceptions.DStarLiteException;
 import exceptions.PathfindingException;
 import graphic.PrintBuffer;
 import obstacles.types.ObstacleArcCourbe;
@@ -226,7 +227,7 @@ public class ArcManager implements Service, Configurable
 //    		log.debug(vitesse+" n'est pas acceptable (on est trop loin)");
 				return false;
 			}
-		} catch (PathfindingException e) {
+		} catch (DStarLiteException e) {
 			return false;
 		}
     	

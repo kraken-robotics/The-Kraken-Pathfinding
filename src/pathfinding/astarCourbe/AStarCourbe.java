@@ -36,6 +36,7 @@ import config.Config;
 import config.ConfigInfo;
 import config.Configurable;
 import container.Service;
+import exceptions.DStarLiteException;
 import exceptions.PathfindingException;
 import graphic.PrintBuffer;
 import robot.Cinematique;
@@ -116,7 +117,14 @@ public class AStarCourbe implements Service, Configurable
 		depart.parent = null;
 		depart.cameFromArc = null;
 		depart.g_score = 0;
-		Double heuristique = dstarlite.heuristicCostCourbe((depart.state.robot).getCinematique());
+		Double heuristique;
+		try {
+			heuristique = dstarlite.heuristicCostCourbe((depart.state.robot).getCinematique());
+		}
+		catch(DStarLiteException e)
+		{
+			throw new PathfindingException("DStarLiteException pour le point de départ !");
+		}
 
 		depart.f_score = heuristique;
 
@@ -207,7 +215,13 @@ public class AStarCourbe implements Service, Configurable
 
 				successeur.g_score = current.g_score + arcmanager.distanceTo(successeur);
 				
-				heuristique = dstarlite.heuristicCostCourbe((successeur.state.robot).getCinematique());
+				try {
+					heuristique = dstarlite.heuristicCostCourbe((successeur.state.robot).getCinematique());
+				}
+				catch(DStarLiteException e)
+				{
+					continue;
+				}
 				
 				// TODO ce n'est plus possible
 				if(heuristique == null) // hors table, D* lite dit que c'est impossible, …

@@ -35,6 +35,7 @@ import config.Config;
 import config.ConfigInfo;
 import config.Configurable;
 import container.Service;
+import exceptions.DStarLiteException;
 import exceptions.PathfindingException;
 import graphic.printable.Couleur;
 
@@ -470,10 +471,10 @@ public class DStarLite implements Service, Configurable
 	 * @param c
 	 * @return
 	 */
-	public synchronized Double heuristicCostCourbe(Cinematique c) throws PathfindingException
+	public synchronized Double heuristicCostCourbe(Cinematique c) throws DStarLiteException
 	{
 		if(c.getPosition().isHorsTable())
-			throw new PathfindingException("Heuristique : hors table");
+			throw new DStarLiteException("Heuristique : hors table");
 		
 		PointGridSpace pos = pointManager.get(c.getPosition());
 		
@@ -488,7 +489,7 @@ public class DStarLite implements Service, Configurable
 		double erreurDistance = premier.rhs / 1000. * PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS; // distance en mm
 		
 		if(premier.rhs == Integer.MAX_VALUE)
-			throw new PathfindingException("Heuristique : inaccessible");
+			throw new DStarLiteException("Heuristique : inaccessible");
 
 //		log.debug("rhs : "+premier.rhs);
 //		log.debug("erreurCourbure : "+erreurCourbure);
