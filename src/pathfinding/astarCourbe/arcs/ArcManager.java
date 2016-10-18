@@ -34,6 +34,7 @@ import config.Config;
 import config.ConfigInfo;
 import config.Configurable;
 import container.Service;
+import graphic.PrintBuffer;
 import obstacles.types.ObstacleArcCourbe;
 import obstacles.types.ObstaclesFixes;
 import utils.Log;
@@ -49,20 +50,24 @@ public class ArcManager implements Service, Configurable
 	protected Log log;
 	private DStarLite heuristique;
 	private ClothoidesComputer clotho;
+	private PrintBuffer buffer;
 	private Table table;
 	private boolean shoot;
 	private AStarCourbeNode current;
 	private double courbureMax;
+	private boolean printObs;
+	
 	private DirectionStrategy directionstrategyactuelle;
 	private List<VitesseCourbure> listeVitesse = Arrays.asList(VitesseCourbure.values());
 	private ListIterator<VitesseCourbure> iterator = listeVitesse.listIterator();
 	
-	public ArcManager(Log log, DStarLite heuristique, ClothoidesComputer clotho, Table table)
+	public ArcManager(Log log, DStarLite heuristique, ClothoidesComputer clotho, Table table, PrintBuffer buffer)
 	{
 		this.table = table;
 		this.log = log;
 		this.heuristique = heuristique;
 		this.clotho = clotho;
+		this.buffer = buffer;
 	}
 
 	private ObstacleArcCourbe obs = new ObstacleArcCourbe();
@@ -85,6 +90,9 @@ public class ArcManager implements Service, Configurable
 		obs.ombresRobot.clear();
 		for(int i = 0; i < node.cameFromArc.getNbPoints(); i++)
 			obs.ombresRobot.add(node.cameFromArc.getPoint(i).obstacle);
+		
+		if(printObs)
+			buffer.addSupprimable(obs);
 		
 		// Collision avec un obstacle fixe?
     	for(ObstaclesFixes o: ObstaclesFixes.values())
@@ -257,7 +265,8 @@ public class ArcManager implements Service, Configurable
 	@Override
 	public void useConfig(Config config)
 	{
-		courbureMax = config.getDouble(ConfigInfo.COURBURE_MAX);		
+		courbureMax = config.getDouble(ConfigInfo.COURBURE_MAX);
+		printObs = config.getBoolean(ConfigInfo.GRAPHIC_ROBOT_COLLISION);
 	}
 
 	public void setEjecteGameElement(boolean ejecteGameElement)
