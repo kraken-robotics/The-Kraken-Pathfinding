@@ -27,8 +27,8 @@ import utils.Log;
 
 /**
  * Classe qui fournit des objets CinematiqueObs
- * Le moteur physique a besoin de beaucoup de ces obstacles de robot, et l'instanciation d'un objet est long.
- * Du coup on réutilise les mêmes objets sans devoir en créer tout le temps de nouveaux.
+ * Ces CinematiqueObs ne sont utilisés QUE pas les arcs courbes cubiques, qui ont un nombre de CinematiqueObs pas connu à l'avance
+ * Les arcs courbes de clothoïde contiennent des CinematiqueObs et sont gérés par le NodeMM
  * @author pf
  *
  */

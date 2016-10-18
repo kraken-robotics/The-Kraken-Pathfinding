@@ -61,7 +61,7 @@ public class AStarCourbe implements Service, Configurable
 	private Cinematique arrivee;
 	private AStarCourbeNode depart;
 	private CheminPathfinding chemin;
-	private CinemObsMM rectMemory;
+	private CinemObsMM cinemMemory;
 	private boolean graphicTrajectory;
 	
 	private Speed vitesseMax;
@@ -101,7 +101,7 @@ public class AStarCourbe implements Service, Configurable
 		this.depart = depart;
 		this.state = state;
 		this.dstarlite = dstarlite;
-		this.rectMemory = rectMemory;
+		this.cinemMemory = rectMemory;
 		this.buffer = buffer;
 	}
 	
@@ -159,7 +159,8 @@ public class AStarCourbe implements Service, Configurable
 			if(!arcmanager.isReachable(current))
 			{
 				log.debug("Collision");
-				rectMemory.destroyNode(current.cameFromArc);
+				if(current.cameFromArc instanceof ArcCourbeCubique)
+					cinemMemory.destroyNode(current.cameFromArc);
 				memorymanager.destroyNode(current);
 				continue; // collision mécanique attendue. On passe au suivant !
 			}
@@ -206,7 +207,8 @@ public class AStarCourbe implements Service, Configurable
 				// S'il y a un problème, on passe au suivant (interpolation cubique impossible par exemple)
 				if(!arcmanager.next(successeur, vitesseMax, arrivee))
 				{
-					rectMemory.destroyNode(successeur.cameFromArc);
+					if(successeur.cameFromArc instanceof ArcCourbeCubique)
+						cinemMemory.destroyNode(successeur.cameFromArc);
 					memorymanager.destroyNode(successeur);
 					continue;
 				}
@@ -218,7 +220,8 @@ public class AStarCourbe implements Service, Configurable
 				if(heuristique == null) // hors table, D* lite dit que c'est impossible, …
 				{
 					log.debug("Heuristique nulle");
-					rectMemory.destroyNode(successeur.cameFromArc);
+					if(successeur.cameFromArc instanceof ArcCourbeCubique)
+						cinemMemory.destroyNode(successeur.cameFromArc);
 					memorymanager.destroyNode(successeur);
 					continue;
 				}
