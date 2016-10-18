@@ -199,13 +199,13 @@ public class ClothoidesComputer implements Service, Configurable
 			double ay = arrivee.getPosition().getY() - by - cy - dy;
 	
 			ArrayList<CinematiqueObs> out = new ArrayList<CinematiqueObs>();
-			double t = 0, tnext = 0, lastCourbure = courbure;
+			double t = 0, tnext, lastCourbure = courbure;
 			double longueur = 0;
 			CinematiqueObs last = null, actuel;
 			boolean error = false;
 			
 			// TODO : mettre la discontinuité le plus tôt possible
-			tnext += PRECISION_TRACE*1000/alpha;
+			tnext = PRECISION_TRACE*1000/alpha;
 			while(t < 1.)
 			{
 				t = tnext;
@@ -249,11 +249,8 @@ public class ClothoidesComputer implements Service, Configurable
 				if(last != null)
 					longueur += actuel.getPosition().distance(last.getPosition());
 	
-				actuel = memory.getNewNode();
 				out.add(actuel);
 				last = actuel;
-				
-
 			}
 			if(error) // on essaye un autre alpha
 			{
