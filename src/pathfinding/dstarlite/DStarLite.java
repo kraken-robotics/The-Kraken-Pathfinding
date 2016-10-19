@@ -484,6 +484,10 @@ public class DStarLite implements Service, Configurable
 //		log.debug(premier.rhs+" "+premier.gridpoint.distanceOctile(arrivee.gridpoint));
 //		return premier.rhs / 1000. * PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS;
 		
+		// si on est arrivée… on est arrivée.
+		if(pos.equals(arrivee.gridpoint))
+			return 0.;
+		
 		double erreurCourbure = Math.abs(c.courbureGeometrique - getCourbureHeuristique(pos, c.orientationGeometrique)); // erreur en m^-1
 		double erreurOrientation = Math.abs((c.orientationGeometrique - getOrientationHeuristique(pos)) % (2 * Math.PI)); // erreur en radian
 		double erreurDistance = premier.rhs / 1000. * PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS; // distance en mm
@@ -492,7 +496,7 @@ public class DStarLite implements Service, Configurable
 			throw new DStarLiteException("Heuristique : inaccessible");
 
 //		log.debug("rhs : "+premier.rhs);
-//		log.debug("erreurCourbure : "+erreurCourbure);
+//		log.debug("erreurCourbure : "+erreurCourbure+" "+c.courbureGeometrique+" "+getCourbureHeuristique(pos, c.orientationGeometrique));
 //		log.debug("erreurOrientation : "+erreurOrientation);
 //		log.debug("erreurDistance : "+erreurDistance);
 		

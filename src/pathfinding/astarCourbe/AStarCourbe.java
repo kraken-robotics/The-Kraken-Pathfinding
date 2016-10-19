@@ -179,7 +179,6 @@ public class AStarCourbe implements Service, Configurable
 				log.debug("On est arrivé !");
 				partialReconstruct(current);
 				chemin.setUptodate(true);
-				log.debug(memorymanager.getSize());
 				memorymanager.empty();
 				return;
 			}

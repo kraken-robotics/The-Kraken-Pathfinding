@@ -212,7 +212,7 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 	@Test
     public void test_recherche() throws Exception
     {
-		Cinematique depart = new Cinematique(-1200, 400, Math.PI, true, 0, Speed.STANDARD);
+		Cinematique depart = new Cinematique(-1100, 400, 0, true, 0, Speed.STANDARD);
 		robot.setCinematique(depart);
 		Cinematique c = new Cinematique(0, 1200, Math.PI, false, 0, Speed.STANDARD);
 		astar.computeNewPath(c, true, DirectionStrategy.FASTEST);
@@ -221,6 +221,7 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 		while(iterator.hasNext())
 		{
 			a = iterator.next();
+			log.debug(a);
 			robot.setCinematique(a);
 			Thread.sleep(100);
 		}
