@@ -36,6 +36,7 @@ import utils.Log;
 import java.awt.*;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Date;
 
 
@@ -48,7 +49,7 @@ import java.util.Date;
 public class AffichageDebug extends ApplicationFrame implements Service
 {
 	private static final long serialVersionUID = 1L;
-	private ArrayList<TimeSeries> series = new ArrayList<TimeSeries>();
+	private List<TimeSeries> series = new ArrayList<TimeSeries>();
     private TimeSeriesCollection dataset = new TimeSeriesCollection();
 	private boolean init = false;
     protected Log log;

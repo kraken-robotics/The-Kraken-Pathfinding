@@ -18,6 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 package tests;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -129,7 +130,7 @@ public class JUnit_DStarLite extends JUnit_Test {
     {
 		Vec2RO posRobot = new Vec2RO(-1100, 1300);
 		pathfinding.computeNewPath(posRobot, new Vec2RO(1100, 500));
-		ArrayList<Vec2RO> chemin = pathfinding.itineraireBrut();
+		List<Vec2RO> chemin = pathfinding.itineraireBrut();
 		
 		int n = 15;
 		while(n+6 < chemin.size())

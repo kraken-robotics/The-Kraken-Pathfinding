@@ -18,6 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 package pathfinding.dstarlite.gridspace;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import config.Config;
 import config.ConfigInfo;
@@ -43,7 +44,7 @@ public class MasqueManager implements Service, Configurable
 	private PrintBuffer buffer;
 	private Container container;
 	protected Log log;
-	private ArrayList<PointDirige> model = new ArrayList<PointDirige>();
+	private List<PointDirige> model = new ArrayList<PointDirige>();
 	private boolean printObsCapteurs;
 	
 	public MasqueManager(Log log, PointGridSpaceManager pointManager, PointDirigeManager pointDManager, PrintBuffer buffer, Container container)
@@ -80,7 +81,7 @@ public class MasqueManager implements Service, Configurable
 	public Masque getMasque(Vec2RO position)
 	{
 		PointGridSpace p = pointManager.get(position);
-		ArrayList<PointDirige> out = new ArrayList<PointDirige>();
+		List<PointDirige> out = new ArrayList<PointDirige>();
 		
 		for(PointDirige c : model)
 		{

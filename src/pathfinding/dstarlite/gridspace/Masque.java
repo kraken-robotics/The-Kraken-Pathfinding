@@ -19,6 +19,7 @@ package pathfinding.dstarlite.gridspace;
 
 import java.awt.Graphics;
 import java.util.ArrayList;
+import java.util.List;
 
 import graphic.Fenetre;
 import graphic.printable.Couleur;
@@ -34,7 +35,7 @@ import robot.RobotReal;
 
 public class Masque implements Printable
 {
-	public ArrayList<PointDirige> masque = new ArrayList<PointDirige>();
+	public List<PointDirige> masque = new ArrayList<PointDirige>();
 	private PointGridSpaceManager pm;
 	
 	public Masque(PointGridSpaceManager pm, ArrayList<PointDirige> masque)

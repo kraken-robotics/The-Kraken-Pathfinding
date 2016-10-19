@@ -20,6 +20,7 @@ package pathfinding.dstarlite;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Comparator;
+import java.util.List;
 import java.util.PriorityQueue;
 
 import pathfinding.dstarlite.gridspace.Direction;
@@ -410,9 +411,9 @@ public class DStarLite implements Service, Configurable
 	 * Utilisé pour l'affichage et le debug
 	 * @return
 	 */
-	public synchronized ArrayList<Vec2RO> itineraireBrut() throws PathfindingException
+	public synchronized List<Vec2RO> itineraireBrut() throws PathfindingException
 	{
-		ArrayList<Vec2RO> trajet = new ArrayList<Vec2RO>();
+		List<Vec2RO> trajet = new ArrayList<Vec2RO>();
 
 //		log.debug("depart : "+depart.gridpoint.computeVec2());
 		DStarLiteNode node = depart;

@@ -19,6 +19,7 @@ package obstacles.types;
 
 import java.awt.Graphics;
 import java.util.ArrayList;
+import java.util.List;
 
 import graphic.Fenetre;
 import robot.RobotReal;
@@ -38,7 +39,7 @@ public class ObstacleArcCourbe extends Obstacle
 		super(null);
 	}
 	
-	public ArrayList<ObstacleRectangular> ombresRobot = new ArrayList<ObstacleRectangular>();
+	public List<ObstacleRectangular> ombresRobot = new ArrayList<ObstacleRectangular>();
 
 	@Override
 	public double squaredDistance(Vec2RO position)

@@ -26,6 +26,7 @@ import graphic.printable.Printable;
 import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.BitSet;
+import java.util.List;
 
 import obstacles.memory.ObstaclesIteratorPresent;
 import obstacles.memory.ObstaclesMemory;
@@ -164,7 +165,7 @@ public class GridSpace implements Service, Printable, Configurable
 
 		while(iteratorDStarLiteLast.hasNext())
 		{
-			ArrayList<PointDirige> tmp = iteratorDStarLiteLast.next().getMasque().masque;
+			List<PointDirige> tmp = iteratorDStarLiteLast.next().getMasque().masque;
 			for(PointDirige p : tmp)
 				// si on est déjà dans un obstacle, la distance ne change pas
 				if(distanceStatique(p) != Integer.MAX_VALUE)
@@ -187,7 +188,7 @@ public class GridSpace implements Service, Printable, Configurable
 			while(iteratorDStarLiteFirst.hasNextDead())
 			{
 //				log.debug("Mort");
-				ArrayList<PointDirige> tmp = iteratorDStarLiteFirst.next().getMasque().masque;
+				List<PointDirige> tmp = iteratorDStarLiteFirst.next().getMasque().masque;
 				for(PointDirige p : tmp)
 					if(distanceStatique(p) != Integer.MAX_VALUE)
 						oldObstacles.set(p.hashCode());
@@ -197,7 +198,7 @@ public class GridSpace implements Service, Printable, Configurable
 			while((o = obstaclesMemory.pollMortTot()) != null)
 			{
 //				log.debug("Mort tôt");
-				ArrayList<PointDirige> tmp = o.getMasque().masque;
+				List<PointDirige> tmp = o.getMasque().masque;
 				for(PointDirige p : tmp)
 					if(distanceStatique(p) != Integer.MAX_VALUE)
 						oldObstacles.set(p.hashCode());
@@ -206,7 +207,7 @@ public class GridSpace implements Service, Printable, Configurable
 			while(iteratorDStarLiteLast.hasNext())
 			{
 //				log.debug("Nouveau");
-				ArrayList<PointDirige> tmp = iteratorDStarLiteLast.next().getMasque().masque;
+				List<PointDirige> tmp = iteratorDStarLiteLast.next().getMasque().masque;
 				for(PointDirige p : tmp)
 					if(distanceStatique(p) != Integer.MAX_VALUE)
 						newObstacles.set(p.hashCode());

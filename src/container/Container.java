@@ -29,6 +29,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Stack;
 
 import config.Config;
@@ -73,8 +74,8 @@ public class Container implements Service, Configurable
 	private boolean showGraph;
 	private FileWriter fw;
 
-	private ArrayList<Class<? extends Service>> ko = new ArrayList<Class<? extends Service>>();
-	private ArrayList<DynamicConfigurable> dynaConf = new ArrayList<DynamicConfigurable>();
+	private List<Class<? extends Service>> ko = new ArrayList<Class<? extends Service>>();
+	private List<DynamicConfigurable> dynaConf = new ArrayList<DynamicConfigurable>();
 	
 	/**
 	 * Fonction appelé automatiquement à la fin du programme.

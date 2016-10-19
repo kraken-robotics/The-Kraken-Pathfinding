@@ -19,6 +19,7 @@ package graphic;
 
 import java.awt.Graphics;
 import java.util.ArrayList;
+import java.util.List;
 
 import config.Config;
 import config.ConfigInfo;
@@ -38,8 +39,8 @@ import graphic.printable.Printable;
 
 public class PrintBuffer implements Service, Configurable
 {	
-	private ArrayList<ArrayList<Printable>> elementsAffichablesSupprimables = new ArrayList<ArrayList<Printable>>();
-	private ArrayList<ArrayList<Printable>> elementsAffichables = new ArrayList<ArrayList<Printable>>();
+	private List<ArrayList<Printable>> elementsAffichablesSupprimables = new ArrayList<ArrayList<Printable>>();
+	private List<ArrayList<Printable>> elementsAffichables = new ArrayList<ArrayList<Printable>>();
 
 	protected Log log;
 	private boolean afficheFond;
