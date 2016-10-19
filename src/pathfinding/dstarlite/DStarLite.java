@@ -59,7 +59,7 @@ public class DStarLite implements Service, Configurable
 
 	private DStarLiteNode[] memory = new DStarLiteNode[PointGridSpace.NB_POINTS];
 
-	private PriorityQueue<DStarLiteNode> openset = new PriorityQueue<DStarLiteNode>(PointGridSpace.NB_POINTS, new DStarLiteNodeComparator());
+	private EnhancedPriorityQueue openset = new EnhancedPriorityQueue();
 	private int km;
 	private DStarLiteNode arrivee;
 	private DStarLiteNode depart;
@@ -71,25 +71,6 @@ public class DStarLite implements Service, Configurable
 	private Cle knew = new Cle();
 	private Cle kold = new Cle();
 	private Cle tmp = new Cle();
-
-	/**
-	 * Le comparateur de DStarLiteNode, utilisé par la PriorityQueue
-	 * @author pf
-	 *
-	 */
-	private class DStarLiteNodeComparator implements Comparator<DStarLiteNode>
-	{
-		@Override
-		public int compare(DStarLiteNode arg0, DStarLiteNode arg1)
-		{
-			// Ordre lexico : on compare d'abord first, puis second
-			if(arg0.cle.first > arg1.cle.first)
-				return 1;
-			if(arg0.cle.first < arg1.cle.first)
-				return -1;
-			return (int) Math.signum(arg0.cle.second - arg1.cle.second);
-		}		
-	}
 	
 	/**
 	 * Constructeur, rien à dire
@@ -172,6 +153,21 @@ public class DStarLite implements Service, Configurable
 		
 		if(u.g != u.rhs)
 		{
+/*			Cle tmp = u.cle.clone();
+			calcKey(u);
+			if(u.inOpenSet)
+			{
+				if(tmp.compare(u.cle) < 0) // la clé a augmenté
+					openset.percolateDown(u);
+				else
+					openset.percolateUp(u);
+			}
+			else
+			{
+				u.inOpenSet = true;
+				openset.add(u);
+			}*/
+			
 			calcKey(u);
 			if(u.inOpenSet)
 				openset.remove(u);
@@ -189,12 +185,12 @@ public class DStarLite implements Service, Configurable
 	private void computeShortestPath()
 	{
 		DStarLiteNode u;
-		while(!openset.isEmpty() && ((u = openset.peek()).cle.isLesserThan(calcKey(depart, tmp)) || depart.rhs > depart.g))
+		while(!openset.isEmpty() && ((u = openset.peek()).cle.compare(calcKey(depart, tmp)) < 0 || depart.rhs > depart.g))
 		{
 			u.cle.copy(kold);
 //			Cle kold = u.cle.clone();
 			calcKey(u, knew);
-			if(kold.isLesserThan(knew))
+			if(kold.compare(knew) < 0)
 			{
 //				log.debug("Cas 1");
 				knew.copy(u.cle);
@@ -578,85 +574,6 @@ public class DStarLite implements Service, Configurable
 		n.heuristiqueOrientation = Math.atan2(directionX, directionY);
 		return n.heuristiqueOrientation;
 	}
-	
-	/**
-	 * On regarde si le robot peut reculer un peu
-	 * @param c
-	 * @return
-	 */
-/*	private boolean heuristiqueMarcheArriere(Cinematique c)
-	{
-		double d = ClothoidesComputer.PRECISION_TRACE * 1000; // passage de m en mm
-
-		// Si on va en marche avant, on teste la marche arrière, et inversement
-		if(c.enMarcheAvant)
-			d = -d;
-		
-		pos = c.getPosition().clone();
-		delta.set(d, c.orientation);
-		DStarLiteNode n = null;
-		
-		for(int i = 0; i < 5; i++)
-		{
-			pos.plus(delta);
-
-			PointGridSpace p = pointManager.get(pos);
-			updateStart(c.getPosition());
-			n = getFromMemoryUpdated(p);
-			
-			if(n == null || n.rhs == Integer.MAX_VALUE)
-				return false;
-		}
-		
-		return true;
-	}*/
-
-	/**
-	 * On regarde si le robot peut avancer un peu avec sa courbure actuelle
-	 * @param c
-	 * @return
-	 */
-/*	private boolean heuristiqueCercle(Cinematique c)
-	{
-		double rayonCourbure = 1000. / c.courbure;
-		delta.setX(Math.cos(c.orientation + Math.PI / 2) * rayonCourbure);
-		delta.setY(Math.sin(c.orientation + Math.PI / 2) * rayonCourbure);
-		
-		centreCercle.setX(c.getPosition().getX() + delta.getX());
-		centreCercle.setY(c.getPosition().getY() + delta.getY());
-		
-		double cos = Math.sqrt(rayonCourbure * rayonCourbure - ClothoidesComputer.d * ClothoidesComputer.d) / rayonCourbure;
-		double sin = Math.abs(ClothoidesComputer.d / rayonCourbure);
-		sin = 2 * sin * cos; // sin(a) devient sin(2a)
-		cos = 2 * cos * cos - 1; // cos(a) devient cos(2a)
-		double cosSauv = cos;
-		double sinSauv = sin;
-		sin = 0;
-		cos = 1;
-		
-		DStarLiteNode n = null;
-		
-		// On trace un (petit) arc de cercle dans la continuité de l'arc pour voir s'il se prend un mur ou pas
-		for(int i = 0; i < 5; i++)
-		{
-			double tmp = sin;
-			sin = sin * cosSauv + sinSauv * cos; // sin vaut sin(2a*(i+1))
-			cos = cos * cosSauv - tmp * sinSauv;
-			delta.copy(deltaTmp);
-			deltaTmp.rotate(cos, sin);
-			centreCercle.copy(posRobot);
-			posRobot.minus(deltaTmp);
-			
-			PointGridSpace p = pointManager.get(posRobot);
-			updateStart(c.getPosition());
-			n = getFromMemoryUpdated(p);
-			
-			if(n == null || n.rhs == Integer.MAX_VALUE)
-				return false;
-		}
-		
-		return true; // pas de problème
-	}*/
 	
 	/**
 	 * Somme en faisant attention aux valeurs infinies

@@ -25,12 +25,13 @@ import pathfinding.dstarlite.gridspace.PointGridSpace;
  *
  */
 
-class DStarLiteNode {
+public class DStarLiteNode {
 
 	public final PointGridSpace gridpoint;
 	public final Cle cle = new Cle();
 	public int g = Integer.MAX_VALUE, rhs = Integer.MAX_VALUE;
 	public Double heuristiqueOrientation = null;
+	public int indexPriorityQueue;
 	
 	/**
 	 * "done" correspond à l'appartenance à U dans l'algo du DStarLite
@@ -79,4 +80,8 @@ class DStarLiteNode {
 		}
 	}
 	
+	public int compare(DStarLiteNode autre)
+	{
+		return cle.compare(autre.cle);
+	}	
 }

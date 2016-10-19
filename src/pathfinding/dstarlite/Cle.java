@@ -23,22 +23,12 @@ package pathfinding.dstarlite;
  *
  */
 
-class Cle
+public class Cle
 {
 	// Quand un nœud est consistent, first = vraie distance + heuristique, second = vraie distance
 	int first, second;
 
-	/**
-	 * Teste la stricte infériorité
-	 * @param other
-	 * @return
-	 */
-	boolean isLesserThan(Cle other)
-	{
-		return first < other.first || (first == other.first && second < other.second);
-	}
-
-	void set(int first, int second)
+	public void set(int first, int second)
 	{
 		this.first = first;
 		this.second = second;
@@ -67,5 +57,15 @@ class Cle
 	{
 		return "first = "+first+", second = "+second;
 	}
+	
+	public int compare(Cle autre)
+	{
+		// Ordre lexico : on compare d'abord first, puis second
+		if(first > autre.first)
+			return 1;
+		if(first < autre.first)
+			return -1;
+		return (int) Math.signum(second - autre.second);
+	}	
 	
 }
