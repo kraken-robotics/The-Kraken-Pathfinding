@@ -18,6 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 package pathfinding.astarCourbe.arcs;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import robot.CinematiqueObs;
 
@@ -29,10 +30,10 @@ import robot.CinematiqueObs;
 
 public class ArcCourbeCubique extends ArcCourbe
 {
-	public ArrayList<CinematiqueObs> arcs;
+	public List<CinematiqueObs> arcs;
 	public double longueur;
 	
-	public ArcCourbeCubique(ArrayList<CinematiqueObs> arcs, double longueur, boolean rebrousse, boolean stop)
+	public ArcCourbeCubique(List<CinematiqueObs> arcs, double longueur, boolean rebrousse, boolean stop)
 	{
 		super(rebrousse, stop);
 		this.arcs = arcs;

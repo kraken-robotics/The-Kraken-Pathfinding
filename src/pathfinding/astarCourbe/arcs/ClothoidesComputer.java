@@ -27,6 +27,7 @@ import java.io.ObjectOutputStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 import memory.CinemObsMM;
 import config.Config;
@@ -198,21 +199,20 @@ public class ClothoidesComputer implements Service, Configurable
 			double cy = sin*alpha;
 			double ay = arrivee.getPosition().getY() - by - cy - dy;
 	
-			ArrayList<CinematiqueObs> out = new ArrayList<CinematiqueObs>();
-			double t = 0, tnext, lastCourbure = courbure;
+			LinkedList<CinematiqueObs> out = new LinkedList<CinematiqueObs>();
+			double t = 1, tnext, lastCourbure = courbure;
 			double longueur = 0;
 			CinematiqueObs last = null, actuel;
 			boolean error = false;
 			
-			// TODO : mettre la discontinuité le plus tôt possible
-			tnext = PRECISION_TRACE*1000/alpha;
-			while(t < 1.)
+			tnext = 1;
+			while(t > 0.)
 			{
 				t = tnext;
 				
-				tnext += PRECISION_TRACE*1000/(Math.hypot(3*ax*t*t+2*bx*t+cx, 3*ay*t*t+2*by*t+cy));
-				if(tnext > 1)
-					t = 1; // on veut finir à 1 exactement
+				tnext -= PRECISION_TRACE*1000/(Math.hypot(3*ax*t*t+2*bx*t+cx, 3*ay*t*t+2*by*t+cy));
+				if(tnext < 0)
+					t = 0; // on veut finir à 0 exactement
 	
 				double x = ax*t*t*t + bx*t*t + cx*t + dx;
 				double y = ay*t*t*t + by*t*t + cy*t + dy;
@@ -248,8 +248,8 @@ public class ClothoidesComputer implements Service, Configurable
 				// calcul de la longueur de l'arc
 				if(last != null)
 					longueur += actuel.getPosition().distance(last.getPosition());
-	
-				out.add(actuel);
+
+				out.addFirst(actuel); // vu qu'on génère la trajectoire cubique en partant de la fin
 				last = actuel;
 			}
 			if(error) // on essaye un autre alpha
