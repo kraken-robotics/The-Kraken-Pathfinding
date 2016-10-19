@@ -218,7 +218,7 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 		robot.setCinematique(depart);
 		Cinematique c = new Cinematique(0, 1200, Math.PI, false, 0, Speed.STANDARD);
 		for(int i = 0; i < nbmax; i++)
-			astar.computeNewPath(c, true, DirectionStrategy.FASTEST);
+			astar.computeNewPath(c, DirectionStrategy.FASTEST);
 		log.debug("Temps : "+(System.nanoTime() - avant) / (nbmax * 1000000.));
 		iterator.reinit();
 		CinematiqueObs a = null;

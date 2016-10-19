@@ -19,9 +19,7 @@ package pathfinding.dstarlite;
 
 import java.util.ArrayList;
 import java.util.BitSet;
-import java.util.Comparator;
 import java.util.List;
-import java.util.PriorityQueue;
 
 import pathfinding.dstarlite.gridspace.Direction;
 import pathfinding.dstarlite.gridspace.GridSpace;

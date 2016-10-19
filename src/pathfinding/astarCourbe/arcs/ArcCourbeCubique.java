@@ -17,7 +17,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 package pathfinding.astarCourbe.arcs;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import robot.CinematiqueObs;

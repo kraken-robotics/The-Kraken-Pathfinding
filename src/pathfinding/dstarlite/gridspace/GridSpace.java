@@ -24,7 +24,6 @@ import graphic.printable.Layer;
 import graphic.printable.Printable;
 
 import java.awt.Graphics;
-import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
 

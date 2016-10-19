@@ -22,9 +22,6 @@ import pathfinding.dstarlite.DStarLite;
 import robot.Cinematique;
 import robot.DirectionStrategy;
 import robot.Speed;
-import table.GameElementNames;
-import table.Table;
-import table.Tribool;
 
 import java.util.Arrays;
 import java.util.List;
@@ -35,7 +32,6 @@ import config.ConfigInfo;
 import config.Configurable;
 import container.Service;
 import exceptions.DStarLiteException;
-import exceptions.PathfindingException;
 import graphic.PrintBuffer;
 import obstacles.types.ObstacleArcCourbe;
 import obstacles.types.ObstaclesFixes;
@@ -53,8 +49,8 @@ public class ArcManager implements Service, Configurable
 	private DStarLite heuristique;
 	private ClothoidesComputer clotho;
 	private PrintBuffer buffer;
-	private Table table;
-	private boolean shoot;
+//	private Table table;
+//	private boolean shoot;
 	private AStarCourbeNode current;
 	private double courbureMax;
 	private boolean printObs;
@@ -63,9 +59,9 @@ public class ArcManager implements Service, Configurable
 	private List<VitesseCourbure> listeVitesse = Arrays.asList(VitesseCourbure.values());
 	private ListIterator<VitesseCourbure> iterator = listeVitesse.listIterator();
 	
-	public ArcManager(Log log, DStarLite heuristique, ClothoidesComputer clotho, Table table, PrintBuffer buffer)
+	public ArcManager(Log log, DStarLite heuristique, ClothoidesComputer clotho, /*Table table,*/ PrintBuffer buffer)
 	{
-		this.table = table;
+//		this.table = table;
 		this.log = log;
 		this.heuristique = heuristique;
 		this.clotho = clotho;
@@ -114,13 +110,13 @@ public class ArcManager implements Service, Configurable
     		}
     	
     	// On vérifie si on collisionne un élément de jeu
-    	if(!shoot)
+/*    	if(!shoot)
     		for(GameElementNames g : GameElementNames.values())
     			if(table.isDone(g) != Tribool.FALSE && g.obstacle.isColliding(obs))
         		{
 //    				log.debug("Collision avec "+g);
         			return false;
-        		}
+        		}*/
 
     	return true;
 	}
@@ -276,10 +272,10 @@ public class ArcManager implements Service, Configurable
 		courbureMax = config.getDouble(ConfigInfo.COURBURE_MAX);
 		printObs = config.getBoolean(ConfigInfo.GRAPHIC_ROBOT_COLLISION);
 	}
-
+/*
 	public void setEjecteGameElement(boolean ejecteGameElement)
 	{
 		shoot = ejecteGameElement;
 	}
-
+*/
 }

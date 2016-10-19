@@ -287,11 +287,11 @@ public class AStarCourbe implements Service, Configurable
 	 * @return
 	 * @throws PathfindingException 
 	 */
-	public void computeNewPath(Cinematique arrivee, boolean ejecteGameElement, DirectionStrategy directionstrategy) throws PathfindingException
+	public void computeNewPath(Cinematique arrivee, /*boolean ejecteGameElement,*/ DirectionStrategy directionstrategy) throws PathfindingException
 	{
 		vitesseMax = Speed.STANDARD;
 		this.directionstrategyactuelle = directionstrategy;
-		arcmanager.setEjecteGameElement(ejecteGameElement);
+//		arcmanager.setEjecteGameElement(ejecteGameElement);
 		this.arrivee = arrivee;
 		depart.init();
 		state.copyAStarCourbe(depart.state);

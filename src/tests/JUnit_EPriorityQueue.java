@@ -23,10 +23,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import pathfinding.dstarlite.Cle;
 import pathfinding.dstarlite.DStarLiteNode;
 import pathfinding.dstarlite.EnhancedPriorityQueue;
-import utils.Vec2RO;
 
 /**
  * Tests unitaires de l'Enhanced Priority Queue
