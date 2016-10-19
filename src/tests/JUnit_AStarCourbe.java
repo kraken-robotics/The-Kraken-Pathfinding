@@ -212,10 +212,14 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 	@Test
     public void test_recherche() throws Exception
     {
+		int nbmax = 150;
+		long avant = System.nanoTime();
 		Cinematique depart = new Cinematique(-1100, 400, 0, true, 0, Speed.STANDARD);
 		robot.setCinematique(depart);
 		Cinematique c = new Cinematique(0, 1200, Math.PI, false, 0, Speed.STANDARD);
-		astar.computeNewPath(c, true, DirectionStrategy.FASTEST);
+		for(int i = 0; i < nbmax; i++)
+			astar.computeNewPath(c, true, DirectionStrategy.FASTEST);
+		log.debug("Temps : "+(System.nanoTime() - avant) / (nbmax * 1000000.));
 		iterator.reinit();
 		CinematiqueObs a = null;
 		while(iterator.hasNext())

@@ -99,11 +99,10 @@ public abstract class Robot implements Configurable, DynamicConfigurable
 		return 0; // TODO
 	}
 	
-	public double getDemieDiagonale()
+/*	public double getDemieDiagonale()
 	{
-		// TODO optimiser en ne faisant le calcul qu'une fois
 		return Math.max(Math.max(Math.hypot(getDemieLongueurArriere(), getDemieLargeurGauche()),Math.hypot(getDemieLongueurArriere(), getDemieLargeurDroite())),
 				Math.max(Math.hypot(getDemieLongueurAvant(), getDemieLargeurGauche()), Math.hypot(getDemieLongueurAvant(), getDemieLargeurDroite())));
-	}
+	}*/
 
 }

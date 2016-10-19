@@ -100,7 +100,7 @@ public class ArcManager implements Service, Configurable
     	for(ObstaclesFixes o: ObstaclesFixes.values())
     		if(o.getObstacle().isColliding(obs))
     		{
-				log.debug("Collision avec "+o);
+//				log.debug("Collision avec "+o);
     			return false;
     		}
 
@@ -109,7 +109,7 @@ public class ArcManager implements Service, Configurable
     	while(node.state.iterator.hasNext())
            	if(node.state.iterator.next().isColliding(obs))
     		{
-				log.debug("Collision avec un obstacle de proximité.");
+//				log.debug("Collision avec un obstacle de proximité.");
     			return false;
     		}
     	
@@ -118,7 +118,7 @@ public class ArcManager implements Service, Configurable
     		for(GameElementNames g : GameElementNames.values())
     			if(table.isDone(g) != Tribool.FALSE && g.obstacle.isColliding(obs))
         		{
-    				log.debug("Collision avec "+g);
+//    				log.debug("Collision avec "+g);
         			return false;
         		}
 

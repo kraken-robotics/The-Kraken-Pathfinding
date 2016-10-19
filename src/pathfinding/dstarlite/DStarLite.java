@@ -549,7 +549,12 @@ public class DStarLite implements Service, Configurable
 		updateStart(p); // on met à jour
 		double directionX = 0;
 		double directionY = 0;
-		int score = getFromMemoryUpdated(p).rhs;
+		
+		DStarLiteNode n = getFromMemoryUpdated(p);
+		if(n.heuristiqueOrientation != null)
+			return n.heuristiqueOrientation;
+		
+		int score = n.rhs;
 		
 		for(Direction d : Direction.values())
 		{
@@ -570,7 +575,8 @@ public class DStarLite implements Service, Configurable
 			directionY = arrivee.gridpoint.y - p.y;
 		}
 		
-		return Math.atan2(directionX, directionY);
+		n.heuristiqueOrientation = Math.atan2(directionX, directionY);
+		return n.heuristiqueOrientation;
 	}
 	
 	/**

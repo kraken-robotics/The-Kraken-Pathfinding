@@ -38,7 +38,7 @@ public class ObstacleRectangular extends Obstacle
 	// Position est le centre de rotation
 	
 	// Longueur entre le centre et un des coins
-	protected double demieDiagonale;
+//	protected double demieDiagonale;
 	
 	// calcul des positions des coins
 	// ces coins sont dans le repère de l'obstacle !
@@ -114,7 +114,7 @@ public class ObstacleRectangular extends Obstacle
 		coinHautGaucheRotate = convertitVersRepereTable(coinHautGauche);
 		coinBasDroiteRotate = convertitVersRepereTable(coinBasDroite);
 		coinHautDroiteRotate = convertitVersRepereTable(coinHautDroite);
-		demieDiagonale = Math.sqrt(sizeY*sizeY/4+sizeX*sizeX/4);
+//		demieDiagonale = Math.sqrt(sizeY*sizeY/4+sizeX*sizeX/4);
 	}
 	
 	/**
@@ -178,8 +178,8 @@ public class ObstacleRectangular extends Obstacle
 	public final boolean isColliding(ObstacleRectangular r)
 	{
 		// Calcul simple permettant de vérifier les cas absurdes où les obstacles sont loin l'un de l'autre
-		if(position.squaredDistance(r.position) >= (demieDiagonale+r.demieDiagonale)*(demieDiagonale+r.demieDiagonale))
-			return false;
+//		if(position.squaredDistance(r.position) >= (demieDiagonale+r.demieDiagonale)*(demieDiagonale+r.demieDiagonale))
+//			return false;
 		// Il faut tester les quatres axes
 		return !testeSeparation(coinBasGauche.getX(), coinBasDroite.getX(), getXConvertiVersRepereObstacle(r.coinBasGaucheRotate), getXConvertiVersRepereObstacle(r.coinHautGaucheRotate), getXConvertiVersRepereObstacle(r.coinBasDroiteRotate), getXConvertiVersRepereObstacle(r.coinHautDroiteRotate))
 				&& !testeSeparation(coinBasGauche.getY(), coinHautGauche.getY(), getYConvertiVersRepereObstacle(r.coinBasGaucheRotate), getYConvertiVersRepereObstacle(r.coinHautGaucheRotate), getYConvertiVersRepereObstacle(r.coinBasDroiteRotate), getYConvertiVersRepereObstacle(r.coinHautDroiteRotate))
@@ -303,7 +303,7 @@ public class ObstacleRectangular extends Obstacle
 		coinHautGaucheRotate = convertitVersRepereTable(coinHautGauche);
 		coinBasDroiteRotate = convertitVersRepereTable(coinBasDroite);
 		coinHautDroiteRotate = convertitVersRepereTable(coinHautDroite);
-		demieDiagonale = robot.getDemieDiagonale();
+//		demieDiagonale = robot.getDemieDiagonale();
 
 		if(printAllObstacles)
 			synchronized(buffer)

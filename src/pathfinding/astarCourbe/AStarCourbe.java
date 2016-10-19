@@ -159,7 +159,7 @@ public class AStarCourbe implements Service, Configurable
 			// ce calcul étant un peu lourd, on ne le fait que si le noeud a été choisi, et pas à la sélection des voisins (dans hasNext par exemple)
 			if(!arcmanager.isReachable(current))
 			{
-				log.debug("Collision");
+//				log.debug("Collision");
 				if(current.cameFromArc instanceof ArcCourbeCubique)
 					cinemMemory.destroyNode(current.cameFromArc);
 				memorymanager.destroyNode(current);

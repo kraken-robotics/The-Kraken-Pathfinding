@@ -30,6 +30,7 @@ class DStarLiteNode {
 	public final PointGridSpace gridpoint;
 	public final Cle cle = new Cle();
 	public int g = Integer.MAX_VALUE, rhs = Integer.MAX_VALUE;
+	public Double heuristiqueOrientation = null;
 	
 	/**
 	 * "done" correspond à l'appartenance à U dans l'algo du DStarLite
@@ -73,6 +74,7 @@ class DStarLiteNode {
 			g = Integer.MAX_VALUE;
 			rhs = Integer.MAX_VALUE;
 			inOpenSet = false;
+			heuristiqueOrientation = null;
 			this.nbPF = nbPF;
 		}
 	}
