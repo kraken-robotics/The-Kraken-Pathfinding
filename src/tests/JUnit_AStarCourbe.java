@@ -212,7 +212,7 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 	@Test
     public void test_recherche() throws Exception
     {
-		int nbmax = 1;
+		int nbmax = 150;
 		long avant = System.nanoTime();
 		Cinematique depart = new Cinematique(-1100, 400, 0, true, 0, Speed.STANDARD);
 		robot.setCinematique(depart);

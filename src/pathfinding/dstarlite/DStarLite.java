@@ -151,7 +151,7 @@ public class DStarLite implements Service, Configurable
 		
 		if(u.g != u.rhs)
 		{
-/*			Cle tmp = u.cle.clone();
+			u.cle.copy(tmp);
 			calcKey(u);
 			if(u.inOpenSet)
 			{
@@ -164,14 +164,14 @@ public class DStarLite implements Service, Configurable
 			{
 				u.inOpenSet = true;
 				openset.add(u);
-			}*/
+			}
 			
-			calcKey(u);
+/*			calcKey(u);
 			if(u.inOpenSet)
 				openset.remove(u);
 			else
 				u.inOpenSet = true;
-			openset.add(u);
+			openset.add(u);*/
 		}
 		else if(u.inOpenSet)
 		{
@@ -190,10 +190,10 @@ public class DStarLite implements Service, Configurable
 			calcKey(u, knew);
 			if(kold.compare(knew) < 0)
 			{
+				// la clé a augmenté
 //				log.debug("Cas 1");
 				knew.copy(u.cle);
-				openset.poll();
-				openset.add(u);
+				openset.percolateDown(u);
 				if(graphicDStarLite)
 					gridspace.setColor(u.gridpoint, Couleur.BLEU);
 			}
@@ -256,8 +256,8 @@ public class DStarLite implements Service, Configurable
 				}
 				
 				// de toute façon, comme u sera forcément retiré de la liste dans updateVertex… autant le faire efficacement ici
-				openset.poll();
-				u.inOpenSet = false;
+//				openset.poll();
+//				u.inOpenSet = false;
 				updateVertex(u);
 			}
 

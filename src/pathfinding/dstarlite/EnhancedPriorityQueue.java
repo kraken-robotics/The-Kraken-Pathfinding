@@ -65,12 +65,12 @@ public class EnhancedPriorityQueue
 	}
 	
 	/**
-	 * Échange un nœud avec son père
+	 * Échange deux nœuds
 	 * @param index1
+	 * @param index2
 	 */
-	private final void swapWithFather(int index1)
+	private final void swap(int index1, int index2)
 	{
-		int index2 = pere(index1);
 		DStarLiteNode tmp = tab[index1];
 		tab[index1] = tab[index2];
 		tab[index2] = tmp;
@@ -127,18 +127,15 @@ public class EnhancedPriorityQueue
 	public void percolateDown(DStarLiteNode node)
 	{
 		DStarLiteNode n = node;
-		int fg, fd, min;
-		while((fg = filsGauche(n.indexPriorityQueue)) < firstAvailable)
+		int fg, diff;
+		while((diff = (firstAvailable - 1 - (fg = 2*n.indexPriorityQueue+1))) >= 0)
 		{
-			fd = filsDroit(n.indexPriorityQueue);
-			if(fd < firstAvailable && tab[fg].compare(tab[fd]) > 0)
-				min = fd;
+			if(diff > 0 && tab[fg].cle.compare(tab[fg+1].cle) > 0)
+				fg++;
+			if(n.cle.compare(tab[fg].cle) > 0)
+				swap(fg, n.indexPriorityQueue);
 			else
-				min = fg;
-			if(n.compare(tab[min]) > 0)
-				swapWithFather(min);
-			else
-				break;
+				return;
 		}
 	}
 	
@@ -152,7 +149,7 @@ public class EnhancedPriorityQueue
 		tab[node.indexPriorityQueue] = last;
 		last.indexPriorityQueue = node.indexPriorityQueue;
 		
-		if(node.compare(last) < 0) // ce qui a remplacé node est plus grand : on descend
+		if(node.cle.compare(last.cle) < 0) // ce qui a remplacé node est plus grand : on descend
 			percolateDown(last);
 		else
 			percolateUp(last);
@@ -164,9 +161,10 @@ public class EnhancedPriorityQueue
 	 */
 	public void percolateUp(DStarLiteNode node)
 	{
+		int p;
 		// si ce nœud n'est pas la racine et que son père est plus grand : on inverse
-		while(node.indexPriorityQueue > 0 && tab[pere(node.indexPriorityQueue)].compare(tab[node.indexPriorityQueue]) > 0)
-			swapWithFather(node.indexPriorityQueue);
+		while(node.indexPriorityQueue > 0 && tab[p = pere(node.indexPriorityQueue)].cle.compare(tab[node.indexPriorityQueue].cle) > 0)
+			swap(node.indexPriorityQueue, p);
 	}
 
 	/**

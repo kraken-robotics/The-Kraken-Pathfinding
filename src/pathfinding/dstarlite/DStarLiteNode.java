@@ -80,8 +80,4 @@ public class DStarLiteNode {
 		}
 	}
 	
-	public int compare(DStarLiteNode autre)
-	{
-		return cle.compare(autre.cle);
-	}	
 }

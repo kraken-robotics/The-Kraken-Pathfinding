@@ -57,15 +57,19 @@ public class Cle
 	{
 		return "first = "+first+", second = "+second;
 	}
-	
-	public int compare(Cle autre)
+		
+	/**
+	 * Pour calculer a > b, on vérifie a.compare(b) > 0
+	 * @param autre
+	 * @return
+	 */
+	public final int compare(Cle autre)
 	{
 		// Ordre lexico : on compare d'abord first, puis second
-		if(first > autre.first)
-			return 1;
-		if(first < autre.first)
-			return -1;
-		return (int) Math.signum(second - autre.second);
+		int tmp = first - autre.first;
+		if(tmp != 0)
+			return tmp;
+		return second - autre.second;
 	}	
 	
 }
