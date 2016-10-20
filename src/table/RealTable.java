@@ -17,7 +17,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 package table;
 
+import config.Config;
+import config.ConfigInfo;
+import config.Configurable;
 import container.Service;
+import graphic.PrintBuffer;
 import utils.Log;
 
 /**
@@ -26,10 +30,21 @@ import utils.Log;
  *
  */
 
-public class RealTable extends Table implements Service
+public class RealTable extends Table implements Service, Configurable
 {
-	public RealTable(Log log)
+	private PrintBuffer buffer;
+	
+	public RealTable(Log log, PrintBuffer buffer)
 	{
 		super(log);
+		this.buffer = buffer;
+	}
+
+	@Override
+	public void useConfig(Config config)
+	{
+		if(config.getBoolean(ConfigInfo.GRAPHIC_MOBILES_OBSTACLES))
+			for(GameElementNames g : GameElementNames.values())
+				buffer.addSupprimable(g.obstacle);
 	}
 }

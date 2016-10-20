@@ -54,15 +54,15 @@ public class JUnit_Table extends JUnit_Test {
     	long hash = f.getLong(table);
     	Table cloned_table = table.clone();
         Assert.assertTrue(hash == f.getLong(cloned_table));
-        cloned_table.setDone(GameElementNames.TRUC, Tribool.TRUE);
+        cloned_table.setDone(GameElementNames.CYLINDRE_1_D, Tribool.TRUE);
         Assert.assertTrue(hash != f.getLong(cloned_table));
     	cloned_table.copy(table);
     	hash = f.getLong(table);
         Assert.assertTrue(hash == f.getLong(cloned_table));
-		Assert.assertTrue(table.isDone(GameElementNames.TRUC) == Tribool.TRUE);
-		Assert.assertTrue(cloned_table.isDone(GameElementNames.TRUC) == Tribool.TRUE);
+		Assert.assertTrue(table.isDone(GameElementNames.CYLINDRE_1_D) == Tribool.TRUE);
+		Assert.assertTrue(cloned_table.isDone(GameElementNames.CYLINDRE_1_D) == Tribool.TRUE);
     	Assert.assertTrue(f.getLong(table) == f.getLong(cloned_table));
-    	table.setDone(GameElementNames.MACHIN, Tribool.TRUE);
+    	table.setDone(GameElementNames.CYLINDRE_3_D, Tribool.TRUE);
     	Assert.assertTrue(f.getLong(table) != f.getLong(cloned_table));
     }
     
