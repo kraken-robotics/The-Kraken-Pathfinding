@@ -88,8 +88,8 @@ public class ArcManager implements Service, Configurable
 		 * On agrège les obstacles en un seul pour simplifier l'écriture des calculs
 		 */
 		obs.ombresRobot.clear();
-		for(int i = 0; i < node.cameFromArc.getNbPoints(); i++)
-			obs.ombresRobot.add(node.cameFromArc.getPoint(i).obstacle);
+		for(int i = 0; i < node.getArc().getNbPoints(); i++)
+			obs.ombresRobot.add(node.getArc().getPoint(i).obstacle);
 		
 		if(printObs)
 			buffer.addSupprimable(obs);
@@ -130,8 +130,8 @@ public class ArcManager implements Service, Configurable
 	 */
 	public double distanceTo(AStarCourbeNode node)
 	{
-		node.state.robot.suitArcCourbe(node.cameFromArc);
-		return node.cameFromArc.getDuree();
+		node.state.robot.suitArcCourbe(node.getArc());
+		return node.getArc().getDuree();
 	}
 
 	/**
@@ -150,11 +150,11 @@ public class ArcManager implements Service, Configurable
 		if(v == VitesseCourbure.DIRECT_COURBE)// || v == VitesseCourbure.DIRECT_COURBE_REBROUSSE)
 		{
 //			log.debug("Recherche arc cubique");
-			ArcCourbe tmp;
-			if(current.cameFromArc != null)
+			ArcCourbeCubique tmp;
+			if(current.getArc() != null)
 				tmp = clotho.cubicInterpolation(
 						current.state.robot,
-						current.cameFromArc.getLast(),
+						current.getArc().getLast(),
 						arrivee,
 						vitesseMax,
 						v);
@@ -170,7 +170,7 @@ public class ArcManager implements Service, Configurable
 				return false;
 			}
 
-			successeur.cameFromArc = tmp;
+			successeur.cameFromArcCubique = tmp;
 		}
 		
 		/**
@@ -181,12 +181,12 @@ public class ArcManager implements Service, Configurable
 					current.cameFromArc,
 					v,
 					vitesseMax,
-					(ArcCourbeClotho)successeur.cameFromArc);
+					successeur.cameFromArc);
 		else // pas de prédécesseur
 			clotho.getTrajectoire(successeur.state.robot,
 					v,
 					vitesseMax,
-					(ArcCourbeClotho)successeur.cameFromArc);
+					successeur.cameFromArc);
 
 		return true;
     }

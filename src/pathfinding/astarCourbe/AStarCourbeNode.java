@@ -21,6 +21,7 @@ import memory.Memorizable;
 import pathfinding.ChronoGameState;
 import pathfinding.astarCourbe.arcs.ArcCourbe;
 import pathfinding.astarCourbe.arcs.ArcCourbeClotho;
+import pathfinding.astarCourbe.arcs.ArcCourbeCubique;
 
 /**
  * Un nœud de l'A* courbe
@@ -34,12 +35,20 @@ public class AStarCourbeNode implements Memorizable
 	public double g_score; // distance du point de départ à ce point
 	public double f_score; // g_score + heuristique = meilleure distance qu'on peut espérer avec ce point
 	public AStarCourbeNode parent;
-	public ArcCourbe cameFromArc = new ArcCourbeClotho();
+	public ArcCourbeClotho cameFromArc = new ArcCourbeClotho();
+	public ArcCourbeCubique cameFromArcCubique = null;
 	private int indiceMemoryManager;
 	
 	public AStarCourbeNode(ChronoGameState state)
 	{
 		this.state = state;
+	}
+	
+	public ArcCourbe getArc()
+	{
+		if(cameFromArcCubique != null)
+			return cameFromArcCubique;
+		return cameFromArc;
 	}
 	
 	public void init()

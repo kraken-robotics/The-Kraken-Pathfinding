@@ -501,7 +501,7 @@ public class DStarLite implements Service, Configurable
 	 * @param orientation
 	 * @return
 	 */
-	private double getCourbureHeuristique(PointGridSpace p, double orientation)
+/*	private double getCourbureHeuristique(PointGridSpace p, double orientation)
 	{
 		Direction d = Direction.getDirection(orientation);
 		PointGridSpace voisinApres = pointManager.getGridPointVoisin(p, d);
@@ -528,7 +528,7 @@ public class DStarLite implements Service, Configurable
 			return (courbureAvant + courbureApres) / 2.;
 		
 		return courbureAvant + courbureApres; // l'un des deux est nul
-	}
+	}*/
 	
 	/**
 	 * Fournit une heuristique de l'orientation à prendre en ce point

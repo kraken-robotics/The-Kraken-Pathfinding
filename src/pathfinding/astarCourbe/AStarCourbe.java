@@ -116,6 +116,7 @@ public class AStarCourbe implements Service, Configurable
 	{
 		depart.parent = null;
 		depart.cameFromArc = null;
+		depart.cameFromArcCubique = null;
 		depart.g_score = 0;
 		Double heuristique;
 		try {
@@ -148,9 +149,9 @@ public class AStarCourbe implements Service, Configurable
 			closedset.add(current);
 			
 			// affichage
-			if(graphicTrajectory && current.cameFromArc != null)
-				for(int i = 0; i < current.cameFromArc.getNbPoints(); i++)
-					buffer.addSupprimable(new ObstacleCircular(current.cameFromArc.getPoint(i).getPosition(), 4));
+			if(graphicTrajectory && current.getArc() != null)
+				for(int i = 0; i < current.getArc().getNbPoints(); i++)
+					buffer.addSupprimable(new ObstacleCircular(current.getArc().getPoint(i).getPosition(), 4));
 
 /*			if(current.cameFromArc != null)
 			{
@@ -162,17 +163,19 @@ public class AStarCourbe implements Service, Configurable
 			if(!arcmanager.isReachable(current))
 			{
 //				log.debug("Collision");
-				if(current.cameFromArc instanceof ArcCourbeCubique)
-					cinemMemory.destroyNode(current.cameFromArc);
+				if(current.cameFromArcCubique != null)
+				{
+					cinemMemory.destroyNode(current.cameFromArcCubique);
+					current.cameFromArcCubique = null;
+				}
 				memorymanager.destroyNode(current);
 				continue; // collision mécanique attendue. On passe au suivant !
 			}
 			
 			// Si on est arrivé, on reconstruit le chemin
 			// On est arrivé seulement si on vient d'un arc cubique			
-			if(current.cameFromArc instanceof ArcCourbeCubique)
+			if(current.cameFromArcCubique != null)
 			{
-
 				log.debug("On est arrivé !");
 				partialReconstruct(current);
 				chemin.setUptodate(true);
@@ -210,8 +213,11 @@ public class AStarCourbe implements Service, Configurable
 				// S'il y a un problème, on passe au suivant (interpolation cubique impossible par exemple)
 				if(!arcmanager.next(successeur, vitesseMax, arrivee))
 				{
-					if(successeur.cameFromArc instanceof ArcCourbeCubique)
-						cinemMemory.destroyNode(successeur.cameFromArc);
+					if(successeur.cameFromArcCubique != null)
+					{
+						cinemMemory.destroyNode(successeur.cameFromArcCubique);
+						successeur.cameFromArcCubique = null;
+					}
 					memorymanager.destroyNode(successeur);
 					continue;
 				}
@@ -223,20 +229,16 @@ public class AStarCourbe implements Service, Configurable
 				}
 				catch(DStarLiteException e)
 				{
-					continue;
-				}
-				
-				// TODO ce n'est plus possible
-				if(heuristique == null) // hors table, D* lite dit que c'est impossible, …
-				{
-					log.debug("Heuristique nulle");
-					if(successeur.cameFromArc instanceof ArcCourbeCubique)
-						cinemMemory.destroyNode(successeur.cameFromArc);
+					if(successeur.cameFromArcCubique != null)
+					{
+						cinemMemory.destroyNode(successeur.cameFromArcCubique);
+						successeur.cameFromArcCubique = null;
+					}
 					memorymanager.destroyNode(successeur);
 					continue;
 				}
 				
-				successeur.f_score = successeur.g_score + heuristique / successeur.cameFromArc.getVitesseTr();
+				successeur.f_score = successeur.g_score + heuristique / successeur.getArc().getVitesseTr();
 
 				successeur.parent = current;
 
@@ -264,12 +266,13 @@ public class AStarCourbe implements Service, Configurable
 	private final void partialReconstruct(AStarCourbeNode best)
 	{
 		AStarCourbeNode noeudParent = best;
-		ArcCourbe arcParent = best.cameFromArc;
+		ArcCourbe arcParent = best.getArc();
+		
 		while(noeudParent.parent != null)
 		{
 			pileTmp.push(arcParent);
 			noeudParent = noeudParent.parent;
-			arcParent = noeudParent.cameFromArc;
+			arcParent = noeudParent.getArc();
 		}
 		while(!pileTmp.isEmpty())
 			chemin.add(pileTmp.pop());

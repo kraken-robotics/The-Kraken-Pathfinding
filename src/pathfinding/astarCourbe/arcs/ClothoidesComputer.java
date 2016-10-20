@@ -169,6 +169,7 @@ public class ClothoidesComputer implements Service, Configurable
 			sin = Math.sin(cinematiqueInitiale.orientationGeometrique);
 			cos = Math.cos(cinematiqueInitiale.orientationGeometrique);			
 		}
+		LinkedList<CinematiqueObs> out = new LinkedList<CinematiqueObs>();
 		
 		for(int i = 0; i < alphas.length; i++)
 		{
@@ -198,25 +199,26 @@ public class ClothoidesComputer implements Service, Configurable
 			double cy = sin*alpha;
 			double ay = arrivee.getPosition().getY() - by - cy - dy;
 	
-			LinkedList<CinematiqueObs> out = new LinkedList<CinematiqueObs>();
-			double t = 1, tnext, lastCourbure = courbure;
+			double t = 1, tnext = 1, lastCourbure = courbure;
 			double longueur = 0;
 			CinematiqueObs last = null, actuel;
 			boolean error = false;
+			out.clear();
 			
-			tnext = 1;
 			while(t > 0.)
 			{
 				t = tnext;
 				
 				tnext -= PRECISION_TRACE*1000/(Math.hypot(3*ax*t*t+2*bx*t+cx, 3*ay*t*t+2*by*t+cy));
+
 				if(tnext < 0)
 					t = 0; // on veut finir à 0 exactement
 	
-				double x = ax*t*t*t + bx*t*t + cx*t + dx;
-				double y = ay*t*t*t + by*t*t + cy*t + dy;
-				double vx = 3*ax*t*t+2*bx*t+cx;
-				double vy = 3*ay*t*t+2*by*t+cy;
+				double t2 = t*t;
+				double x = ax*t*t2 + bx*t2 + cx*t + dx;
+				double y = ay*t*t2 + by*t2 + cy*t + dy;
+				double vx = 3*ax*t2+2*bx*t+cx;
+				double vy = 3*ay*t2+2*by*t+cy;
 				double acx = 6*ax*t+2*bx;
 				double acy = 6*ay*t+2*by;
 				
@@ -247,11 +249,17 @@ public class ClothoidesComputer implements Service, Configurable
 				// calcul de la longueur de l'arc
 				if(last != null)
 					longueur += actuel.getPosition().distance(last.getPosition());
+				// TODO : faire un pas plus petit, puis sélectionner seulement ceux qui correspondent à la bonne précision
 
+				
 				out.addFirst(actuel); // vu qu'on génère la trajectoire cubique en partant de la fin
 				last = actuel;
 			}
-			if(error) // on essaye un autre alpha
+			
+			// Parfois, l'interpolation cubique donne très peu de points (à cause du pas de t qui est une approximation)
+			// dans ce cas, on ignore l'arc
+
+			if(error || out.size() < (cinematiqueInitiale.getPosition().distance(arrivee.getPosition()) / (1000 * PRECISION_TRACE))) // on essaye un autre alpha
 			{
 				// on détruit les cinématiques qui ne seront pas utilisées
 				for(CinematiqueObs c : out)

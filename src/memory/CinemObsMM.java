@@ -22,6 +22,7 @@ import config.ConfigInfo;
 import container.Container;
 import exceptions.ContainerException;
 import pathfinding.astarCourbe.arcs.ArcCourbe;
+import pathfinding.astarCourbe.arcs.ArcCourbeCubique;
 import robot.CinematiqueObs;
 import utils.Log;
 
@@ -41,7 +42,7 @@ public class CinemObsMM extends MemoryManager<CinematiqueObs>
 		super(CinematiqueObs.class, log, container, config.getInt(ConfigInfo.NB_INSTANCES_OBSTACLES));
 	}
 
-	public void destroyNode(ArcCourbe arc)
+	public void destroyNode(ArcCourbeCubique arc)
 	{
 		for(int i = 0; i < arc.getNbPoints(); i++)
 			destroyNode(arc.getPoint(i));

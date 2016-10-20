@@ -108,7 +108,7 @@ public class Cinematique
 	@Override
 	public int hashCode() // TODO
 	{
-		int codeCourbure, codeOrientation;
+/*		int codeCourbure, codeOrientation;
 //		if(courbure < -5)
 //			codeCourbure = 0;
 //		else
@@ -130,7 +130,7 @@ public class Cinematique
 		
 		codeOrientation = (int)(orientationGeometrique / (Math.PI / 6));
 //		System.out.println("codeOrientation : "+codeOrientation+" "+orientation);
-		
+		*/
 		return (((((int)position.getX() + 1500) / 50) * 150 + (int)position.getY() / 50));// * 6 + codeCourbure) * 16 + codeOrientation;
 	}
 	
