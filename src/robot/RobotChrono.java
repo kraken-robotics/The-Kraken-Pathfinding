@@ -28,7 +28,7 @@ import utils.Log;
 public class RobotChrono extends Robot
 {
 	// Date en millisecondes depuis le début du match.
-	protected long date;
+	protected long date = 0;
 
 	/**
 	 * Constructeur clone

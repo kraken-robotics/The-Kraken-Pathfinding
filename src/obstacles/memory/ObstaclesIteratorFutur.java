@@ -50,6 +50,7 @@ public class ObstaclesIteratorFutur extends ObstaclesIterator
      */
     public void copy(ObstaclesIteratorFutur other, long date)
     {
+    	other.firstNotDead = firstNotDead;
     	other.init(date);
     }
 
@@ -69,8 +70,14 @@ public class ObstaclesIteratorFutur extends ObstaclesIterator
 	public void init(long date)
 	{
 		// Si on a avancé dans le futur, on sait que firstNotDead ne peut qu'être plus grand
-		if(date < dateInit)
+/*		if(date < dateInit)
+		{
+			log.debug(date+" "+dateInit);
+			int z = 0;
+			z = 1 / z;
 			log.critical("Un iterator d'obstacles ne peut pas remonter le temps !");
+		}
+		log.debug("Nouvelle date : "+date);*/
 
 		while(firstNotDead < memory.size())
 		{
@@ -79,7 +86,7 @@ public class ObstaclesIteratorFutur extends ObstaclesIterator
 			else
 				break;
 		}
-		nbTmp = firstNotDead;		
+		nbTmp = firstNotDead;
 		dateInit = date;
 	}
 }
