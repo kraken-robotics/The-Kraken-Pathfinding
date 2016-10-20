@@ -72,7 +72,7 @@ public class MemoryManager<T extends Memorizable> implements Service {
 		if(firstAvailable == nodes.length)
 		{
 			try {
-				log.warning("Mémoire trop petite, extension (nouvelle taille : "+(nodes.length * 2)+")");
+				log.warning("Mémoire trop petite pour les "+nodes[0].getClass().getSimpleName()+", extension (nouvelle taille : "+(nodes.length * 2)+")");
 				T[] newNodes = (T[]) Array.newInstance(nodes[0].getClass(), nodes.length * 2);
 				for(int i = 0; i < nodes.length; i++)
 					newNodes[i] = nodes[i];

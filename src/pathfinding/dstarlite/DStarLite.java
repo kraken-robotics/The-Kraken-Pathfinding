@@ -64,6 +64,8 @@ public class DStarLite implements Service, Configurable
 	private PointGridSpace lastDepart;
 	private long nbPF = 0;
 	
+	private double[][] atan2map = new double[19][19];
+	
 	private BitSet obstaclesConnus;
 	
 	private Cle knew = new Cle();
@@ -87,6 +89,10 @@ public class DStarLite implements Service, Configurable
 
 		for(int i = 0; i < PointGridSpace.NB_POINTS; i++)
 			memory[i] = new DStarLiteNode(pointManager.get(i));
+		
+		for(int x = -9; x <= 9; x++)
+			for(int y = -9; y <= 9; y++)
+				atan2map[x+9][y+9] = Math.atan2(y,x);
 	}
 		
 	/**
@@ -466,10 +472,11 @@ public class DStarLite implements Service, Configurable
 	 * @param c
 	 * @return
 	 */
-	public synchronized Double heuristicCostCourbe(Cinematique c) throws DStarLiteException
+	public synchronized Double heuristicCostCourbe(Cinematique c)
 	{
 		if(c.getPosition().isHorsTable())
-			throw new DStarLiteException("Heuristique : hors table");
+			return null;
+//			throw new DStarLiteException("Heuristique : hors table");
 		
 		PointGridSpace pos = pointManager.get(c.getPosition());
 		
@@ -480,56 +487,21 @@ public class DStarLite implements Service, Configurable
 		if(pos.equals(arrivee.gridpoint))
 			return 0.;
 		
-//		double erreurCourbure = Math.abs(c.courbureGeometrique - getCourbureHeuristique(pos, c.orientationGeometrique)); // erreur en m^-1
 		double erreurOrientation = Math.abs((c.orientationGeometrique - getOrientationHeuristique(pos)) % (2 * Math.PI)); // erreur en radian
 		double erreurDistance = premier.rhs / 1000. * PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS; // distance en mm
 		
 		if(premier.rhs == Integer.MAX_VALUE)
-			throw new DStarLiteException("Heuristique : inaccessible");
+			return null;
+//			throw new DStarLiteException("Heuristique : inaccessible");
 
 /*		log.debug("rhs : "+premier.rhs);
 		log.debug("erreurCourbure : "+erreurCourbure+" "+c.courbureGeometrique+" "+getCourbureHeuristique(pos, c.orientationGeometrique));
 		log.debug("erreurOrientation : "+erreurOrientation);
 		log.debug("erreurDistance : "+erreurDistance);
 		*/
-		return erreurDistance + /*2*erreurCourbure +*/ 20*erreurOrientation; // TODO : coeff
+		return erreurDistance + 5*erreurOrientation; // TODO : coeff
 	}
 
-	/**
-	 * Estime la courbure à prendre en ce point
-	 * @param p
-	 * @param orientation
-	 * @return
-	 */
-/*	private double getCourbureHeuristique(PointGridSpace p, double orientation)
-	{
-		Direction d = Direction.getDirection(orientation);
-		PointGridSpace voisinApres = pointManager.getGridPointVoisin(p, d);
-		PointGridSpace voisinAvant = pointManager.getGridPointVoisin(p, d.getOppose());
-
-		double courbureAvant = 0, courbureApres = 0;
-		
-		if(voisinAvant != null)
-		{
-			double tmp = getOrientationHeuristique(voisinAvant);
-			double angle = (orientation - tmp) % (2 * Math.PI);
-			courbureAvant = angle / d.distance_m;
-		}
-		
-		if(voisinApres != null)
-		{
-			double tmp = getOrientationHeuristique(voisinApres);
-			double angle = (tmp - orientation) % (2 * Math.PI);
-			courbureApres = angle / d.distance_m;
-		}
-
-		// Moyenne des deux
-		if(voisinAvant != null && voisinApres != null)
-			return (courbureAvant + courbureApres) / 2.;
-		
-		return courbureAvant + courbureApres; // l'un des deux est nul
-	}*/
-	
 	/**
 	 * Fournit une heuristique de l'orientation à prendre en ce point
 	 * @param p
@@ -556,17 +528,19 @@ public class DStarLite implements Service, Configurable
 //			directionX += (scoreVoisin - score) * d.deltaX / d.distance;
 //			directionY += (scoreVoisin - score) * d.deltaY / d.distance;
 			// ce devrait être équivalent
-			directionX += Math.signum(scoreVoisin - score) * d.deltaX;
-			directionY += Math.signum(scoreVoisin - score) * d.deltaY;
+			double s = Math.signum(scoreVoisin - score);
+			directionX += s * d.deltaX;
+			directionY += s * d.deltaY;
+			n.heuristiqueOrientation = atan2map[(int)directionY+9][(int)directionX+9];// Math.atan2(directionX, directionY);
 		}
 		
 		if(directionX == 0 && directionY == 0) // si on a aucune info, on utilise une heuristique plus simple (trajet à vol d'oiseau)
 		{
 			directionX = arrivee.gridpoint.x - p.x;
 			directionY = arrivee.gridpoint.y - p.y;
+			n.heuristiqueOrientation = Math.atan2(directionY, directionX);
 		}
 		
-		n.heuristiqueOrientation = Math.atan2(directionX, directionY);
 		return n.heuristiqueOrientation;
 	}
 	

@@ -25,7 +25,7 @@ package pathfinding.astarCourbe.arcs;
 
 public enum VitesseCourbure
 {
-	// Vitesse maximale AX-12A : 1.9 tours à la seconde (114 RPM)
+	// Vitesse maximale AX-12A : 0.8 tours à la seconde (50 RPM)
 	// TODO en déduire la dérivée de la courbure max
 	
 	// Interpolation cubique avec l'arrivée

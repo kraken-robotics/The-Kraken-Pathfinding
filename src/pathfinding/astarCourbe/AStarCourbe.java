@@ -119,13 +119,9 @@ public class AStarCourbe implements Service, Configurable
 		depart.cameFromArcCubique = null;
 		depart.g_score = 0;
 		Double heuristique;
-		try {
-			heuristique = dstarlite.heuristicCostCourbe((depart.state.robot).getCinematique());
-		}
-		catch(DStarLiteException e)
-		{
+		heuristique = dstarlite.heuristicCostCourbe((depart.state.robot).getCinematique());
+		if(heuristique == null)
 			throw new PathfindingException("DStarLiteException pour le point de départ !");
-		}
 
 		depart.f_score = heuristique;
 
@@ -224,10 +220,8 @@ public class AStarCourbe implements Service, Configurable
 
 				successeur.g_score = current.g_score + arcmanager.distanceTo(successeur);
 				
-				try {
-					heuristique = dstarlite.heuristicCostCourbe((successeur.state.robot).getCinematique());
-				}
-				catch(DStarLiteException e)
+				heuristique = dstarlite.heuristicCostCourbe((successeur.state.robot).getCinematique());
+				if(heuristique == null)
 				{
 					if(successeur.cameFromArcCubique != null)
 					{
@@ -253,6 +247,7 @@ public class AStarCourbe implements Service, Configurable
 		 * Impossible car un nombre infini de nœuds !
 		 */
 		memorymanager.empty();
+		cinemMemory.empty();
 		throw new PathfindingException("IMPOSSIBLE : recherche AStarCourbe échouée");
 	}
 	
@@ -274,6 +269,7 @@ public class AStarCourbe implements Service, Configurable
 			noeudParent = noeudParent.parent;
 			arcParent = noeudParent.getArc();
 		}
+		// TODO ! cloner
 		while(!pileTmp.isEmpty())
 			chemin.add(pileTmp.pop());
 	}

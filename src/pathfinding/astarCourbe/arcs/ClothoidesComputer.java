@@ -58,17 +58,32 @@ public class ClothoidesComputer implements Service, Configurable
 	private static final int S_MAX = 10; // courbure max qu'on puisse gérer
 	public static final double PRECISION_TRACE = 0.02; // précision du tracé, en m (distance entre deux points consécutifs). Plus le tracé est précis, plus on couvre de point une même distance
 	private static final int INDICE_MAX = (int) (S_MAX / PRECISION_TRACE);
-	public static final int NB_POINTS = 10; // nombre de points dans un arc
+	public static final int NB_POINTS = 5; // nombre de points dans un arc
 	public static final double DISTANCE_ARC_COURBE = PRECISION_TRACE * NB_POINTS * 1000; // en mm
 	static final double DISTANCE_ARC_COURBE_M = PRECISION_TRACE * NB_POINTS; // en m
 	public static final double d = PRECISION_TRACE * 1000 / 2; // utilisé pour la trajectoire circulaire
 
+	private double[] sinMap = new double[120];
+	private double[] cosMap = new double[120];
+	private double[] angleMap = new double[120];
+	
 	private double courbureMax;
 	
 	private Vec2RO[] trajectoire = new Vec2RO[2 * INDICE_MAX - 1];
 	
 	public ClothoidesComputer(Log log, CinemObsMM memory, PrintBuffer buffer)
 	{
+		for(int i = 0; i < 120; i++)
+		{
+			double courbure = (i-60) / 10;
+			double rayonCourbure = 1000. / courbure;
+			double cos = Math.sqrt(rayonCourbure * rayonCourbure - d * d) / rayonCourbure;
+			double sin = Math.abs(d / rayonCourbure);
+			sinMap[i] = 2 * sin * cos; // sin(a) devient sin(2a)
+			cosMap[i] = 2 * cos * cos - 1; // cos(a) devient cos(2a)
+			angleMap[i] = Math.atan2(cos, sin);
+		}
+		
 		this.memory = memory;
 		this.log = log;
 		this.buffer = buffer;
@@ -412,13 +427,16 @@ public class ClothoidesComputer implements Service, Configurable
 		centreCercle.setY(position.getY() + delta.getY());
 
 		
-		double cos = Math.sqrt(rayonCourbure * rayonCourbure - d * d) / rayonCourbure;
-		double sin = Math.abs(d / rayonCourbure);
-		sin = 2 * sin * cos; // sin(a) devient sin(2a)
-		cos = 2 * cos * cos - 1; // cos(a) devient cos(2a)
+//		double cos = Math.sqrt(rayonCourbure * rayonCourbure - d * d) / rayonCourbure;
+//		double sin = Math.abs(d / rayonCourbure);
+//		sin = 2 * sin * cos; // sin(a) devient sin(2a)
+//		cos = 2 * cos * cos - 1; // cos(a) devient cos(2a)
+		double cos = cosMap[(int)(courbure*10)+60];
+		double sin = sinMap[(int)(courbure*10)+60];
+		double angle = angleMap[(int)(courbure*10)+60];
 		double cosSauv = cos;
 		double sinSauv = sin;
-		double angle = Math.asin(sin);
+//		double angle = Math.atan2(cos, sin);
 		sin = 0;
 		cos = 1;
 
