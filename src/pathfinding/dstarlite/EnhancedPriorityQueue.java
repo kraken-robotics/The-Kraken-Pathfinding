@@ -151,8 +151,11 @@ public class EnhancedPriorityQueue
 		DStarLiteNode last =  tab[--firstAvailable];
 		tab[node.indexPriorityQueue] = last;
 		last.indexPriorityQueue = node.indexPriorityQueue;
-		percolateUp(last);
-		percolateDown(last);
+		
+		if(node.compare(last) < 0) // ce qui a remplacé node est plus grand : on descend
+			percolateDown(last);
+		else
+			percolateUp(last);
 	}
 	
 	/**
