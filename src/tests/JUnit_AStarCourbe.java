@@ -261,5 +261,30 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 			robot.setCinematique(a);
 			Thread.sleep(100);
 		}
-		log.debug("Nb points : "+i);    }
+		log.debug("Nb points : "+i);
+	}
+	
+	@Test
+    public void test_recherche_loin2() throws Exception
+    {
+		long avant = System.nanoTime();
+		Cinematique depart = new Cinematique(-1000, 400, Math.PI/2, true, 0, Speed.STANDARD);
+		robot.setCinematique(depart);
+		Cinematique c = new Cinematique(1100, 600, Math.PI, false, 0, Speed.STANDARD);
+		astar.computeNewPath(c, DirectionStrategy.FASTEST);
+		log.debug("Temps : "+(System.nanoTime() - avant) / (1000000.));
+		iterator.reinit();
+		CinematiqueObs a = null;
+		int i = 0;
+		while(iterator.hasNext())
+		{
+			i++;
+			a = iterator.next();
+			log.debug(a);
+			robot.setCinematique(a);
+			Thread.sleep(100);
+		}
+		log.debug("Nb points : "+i);
+	}
+	
 }

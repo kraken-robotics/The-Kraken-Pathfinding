@@ -131,7 +131,7 @@ public class Cinematique
 		codeOrientation = (int)(orientationGeometrique / (Math.PI / 6));
 //		System.out.println("codeOrientation : "+codeOrientation+" "+orientation);
 		
-		return (((((int)position.getX() + 1500) / 50) * 150 + (int)position.getY() / 50) * 6 + codeCourbure) * 16 + codeOrientation;
+		return (((((int)position.getX() + 1500) / 50) * 150 + (int)position.getY() / 50));// * 6 + codeCourbure) * 16 + codeOrientation;
 	}
 	
 	@Override
