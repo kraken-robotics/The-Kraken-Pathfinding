@@ -64,7 +64,7 @@ public class AStarCourbe implements Service, Configurable
 	private CheminPathfinding chemin;
 	private CinemObsMM cinemMemory;
 	private boolean graphicTrajectory, graphicDStarLite;
-	
+	private int dureeMaxPF;
 	private Speed vitesseMax;
 	
 	/**
@@ -135,6 +135,8 @@ public class AStarCourbe implements Service, Configurable
 		openset.add(depart);	// Les nœuds à évaluer
 		closedset.clear();
 		
+		long debutRecherche = System.currentTimeMillis();
+		
 		AStarCourbeNode current, successeur;
 		do
 		{
@@ -167,20 +169,22 @@ public class AStarCourbe implements Service, Configurable
 			}
 			
 			// Si on est arrivé, on reconstruit le chemin
-			// On est arrivé seulement si on vient d'un arc cubique
-			if(current.cameFromArc instanceof ArcCourbeCubique || memorymanager.getSize() > 30000)
+			// On est arrivé seulement si on vient d'un arc cubique			
+			if(current.cameFromArc instanceof ArcCourbeCubique)
 			{
-				if(memorymanager.getSize() > 30000) // étant donné qu'il peut continuer jusqu'à l'infini...
-				{
-					memorymanager.empty();
-					throw new PathfindingException("AStarCourbe n'a pas trouvé de chemin !");
-				}
 
 				log.debug("On est arrivé !");
 				partialReconstruct(current);
 				chemin.setUptodate(true);
 				memorymanager.empty();
 				return;
+			}
+			
+			long elapsed = System.currentTimeMillis() - debutRecherche;
+			if(elapsed > dureeMaxPF) // étant donné qu'il peut continuer jusqu'à l'infini...
+			{
+				memorymanager.empty();
+				throw new PathfindingException("Timeout AStarCourbe !");
 			}
 
 			// On parcourt les voisins de current
@@ -276,6 +280,7 @@ public class AStarCourbe implements Service, Configurable
 	{
 		graphicTrajectory = config.getBoolean(ConfigInfo.GRAPHIC_TRAJECTORY);
 		graphicDStarLite = config.getBoolean(ConfigInfo.GRAPHIC_D_STAR_LITE_FINAL);
+		dureeMaxPF = config.getInt(ConfigInfo.DUREE_MAX_RECHERCHE_PF);
 	}
 				
 	/**
