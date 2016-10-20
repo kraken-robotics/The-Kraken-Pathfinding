@@ -147,7 +147,7 @@ public class ArcManager implements Service, Configurable
 		/**
 		 * Si on est proche et qu'on tente une interpolation cubique
 		 */
-		if(v == VitesseCourbure.DIRECT_COURBE || v == VitesseCourbure.DIRECT_COURBE_REBROUSSE)
+		if(v == VitesseCourbure.DIRECT_COURBE)// || v == VitesseCourbure.DIRECT_COURBE_REBROUSSE)
 		{
 //			log.debug("Recherche arc cubique");
 			ArcCourbe tmp;
@@ -220,7 +220,7 @@ public class ArcManager implements Service, Configurable
 
     	// On ne tente pas l'interpolation si on est trop loin
     	try {
-			if((vitesse == VitesseCourbure.DIRECT_COURBE || vitesse == VitesseCourbure.DIRECT_COURBE_REBROUSSE) && heuristique.heuristicCostCourbe((current.state.robot).getCinematique()) > 250)
+			if((vitesse == VitesseCourbure.DIRECT_COURBE /*|| vitesse == VitesseCourbure.DIRECT_COURBE_REBROUSSE*/) && heuristique.heuristicCostCourbe((current.state.robot).getCinematique()) > 250)
 			{
 //				log.debug(vitesse+" n'est pas acceptable (on est trop loin)");
 				return false;

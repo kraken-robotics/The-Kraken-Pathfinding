@@ -30,7 +30,7 @@ public enum VitesseCourbure
 	
 	// Interpolation cubique avec l'arrivée
 	DIRECT_COURBE(0),
-	DIRECT_COURBE_REBROUSSE(0),
+//	DIRECT_COURBE_REBROUSSE(0),
 	
 	GAUCHE_0(1),
 	GAUCHE_1(4),
@@ -43,14 +43,14 @@ public enum VitesseCourbure
 	DROITE_3(-16),
 	
 	GAUCHE_0_REBROUSSE(1),
-	GAUCHE_1_REBROUSSE(4),
-	GAUCHE_2_REBROUSSE(9),
-	GAUCHE_3_REBROUSSE(16),
+//	GAUCHE_1_REBROUSSE(4),
+//	GAUCHE_2_REBROUSSE(9),
+//	GAUCHE_3_REBROUSSE(16),
 	COURBURE_IDENTIQUE_REBROUSSE(0),
-	DROITE_0_REBROUSSE(-1),
-	DROITE_1_REBROUSSE(-4),
-	DROITE_2_REBROUSSE(-9),
-	DROITE_3_REBROUSSE(-16);
+	DROITE_0_REBROUSSE(-1);
+//	DROITE_1_REBROUSSE(-4),
+//	DROITE_2_REBROUSSE(-9),
+//	DROITE_3_REBROUSSE(-16);
 
 	public final int vitesse; // vitesse en en m^-1/s
 	public final int squaredRootVitesse; // sqrt(abs(vitesse))

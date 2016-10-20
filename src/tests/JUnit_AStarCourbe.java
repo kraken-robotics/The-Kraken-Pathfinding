@@ -169,10 +169,10 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 		clotho.getTrajectoire(r, arc[2], VitesseCourbure.GAUCHE_1, Speed.STANDARD, arc[3]);
 		clotho.getTrajectoire(r, arc[3], VitesseCourbure.COURBURE_IDENTIQUE, Speed.STANDARD, arc[4]);
 		clotho.getTrajectoire(r, arc[4], VitesseCourbure.COURBURE_IDENTIQUE, Speed.STANDARD, arc[5]);
-		clotho.getTrajectoire(r, arc[5], VitesseCourbure.GAUCHE_3_REBROUSSE, Speed.STANDARD, arc[6]);
+		clotho.getTrajectoire(r, arc[5], VitesseCourbure.GAUCHE_0_REBROUSSE, Speed.STANDARD, arc[6]);
 		clotho.getTrajectoire(r, arc[6], VitesseCourbure.GAUCHE_1, Speed.STANDARD, arc[7]);
 		clotho.getTrajectoire(r, arc[7], VitesseCourbure.GAUCHE_3, Speed.STANDARD, arc[8]);
-		clotho.getTrajectoire(r, arc[8], VitesseCourbure.DROITE_3_REBROUSSE, Speed.STANDARD, arc[9]);
+		clotho.getTrajectoire(r, arc[8], VitesseCourbure.DROITE_0_REBROUSSE, Speed.STANDARD, arc[9]);
 		clotho.getTrajectoire(r, arc[9], VitesseCourbure.DROITE_1, Speed.STANDARD, arc[10]);
 		clotho.getTrajectoire(r, arc[10], VitesseCourbure.DROITE_1, Speed.STANDARD, arc[11]);
 		clotho.getTrajectoire(r, arc[11], VitesseCourbure.DROITE_1, Speed.STANDARD, arc[12]);
@@ -210,7 +210,7 @@ public class JUnit_AStarCourbe extends JUnit_Test {
     }
 	
 	@Test
-    public void test_recherche() throws Exception
+    public void test_bench() throws Exception
     {
 		int nbmax = 150;
 		long avant = System.nanoTime();
@@ -220,6 +220,15 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 		for(int i = 0; i < nbmax; i++)
 			astar.computeNewPath(c, DirectionStrategy.FASTEST);
 		log.debug("Temps : "+(System.nanoTime() - avant) / (nbmax * 1000000.));
+    }
+	
+	@Test
+    public void test_recherche_fastest() throws Exception
+    {
+		Cinematique depart = new Cinematique(-1100, 600, 0, true, 0, Speed.STANDARD);
+		robot.setCinematique(depart);
+		Cinematique c = new Cinematique(0, 1200, Math.PI, false, 0, Speed.STANDARD);
+		astar.computeNewPath(c, DirectionStrategy.FASTEST);
 		iterator.reinit();
 		CinematiqueObs a = null;
 		int i = 0;
@@ -234,4 +243,23 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 		log.debug("Nb points : "+i);
     }
 	
+	@Test
+    public void test_recherche_loin() throws Exception
+    {
+		Cinematique depart = new Cinematique(-1100, 600, 0, true, 0, Speed.STANDARD);
+		robot.setCinematique(depart);
+		Cinematique c = new Cinematique(1100, 600, Math.PI, false, 0, Speed.STANDARD);
+		astar.computeNewPath(c, DirectionStrategy.FASTEST);
+		iterator.reinit();
+		CinematiqueObs a = null;
+		int i = 0;
+		while(iterator.hasNext())
+		{
+			i++;
+			a = iterator.next();
+			log.debug(a);
+			robot.setCinematique(a);
+			Thread.sleep(100);
+		}
+		log.debug("Nb points : "+i);    }
 }

@@ -112,13 +112,14 @@ public class Cinematique
 //		if(courbure < -5)
 //			codeCourbure = 0;
 //		else
-		if(courbureGeometrique < -2)
+		if(courbureGeometrique < -4)
 			codeCourbure = 1;
 		else if(courbureGeometrique < 0)
 			codeCourbure = 2;
-		else if(courbureGeometrique < 2)
+		else if(courbureGeometrique < 4)
 			codeCourbure = 3;
 //		else if(courbure < 5)
+		else
 			codeCourbure = 4;
 //		else
 //			codeCourbure = 5;
@@ -130,7 +131,7 @@ public class Cinematique
 		codeOrientation = (int)(orientationGeometrique / (Math.PI / 6));
 //		System.out.println("codeOrientation : "+codeOrientation+" "+orientation);
 		
-		return (((((int)position.getX() + 1500) / 15) * 150 + (int)position.getY() / 15) * 6 + codeCourbure) * 16 + codeOrientation;
+		return (((((int)position.getX() + 1500) / 50) * 150 + (int)position.getY() / 50) * 6 + codeCourbure) * 16 + codeOrientation;
 	}
 	
 	@Override

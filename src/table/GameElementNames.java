@@ -35,14 +35,14 @@ public enum GameElementNames {
 	MINERAI_CRATERE_BAS_DROITE(new ObstacleCircular(new Vec2RO(1500-1070,2000-1870),125)),
 
 	MINERAI_GROS_CRATERE_DROITE_1(new ObstacleCircular(new Vec2RO(-1500+125,125),125)),
-	MINERAI_GROS_CRATERE_DROITE_2(new ObstacleCircular(new Vec2RO(-1500+125,125+250),125)),
+	MINERAI_GROS_CRATERE_DROITE_2(new ObstacleCircular(new Vec2RO(-1500+125,125+220),125)),
 	MINERAI_GROS_CRATERE_DROITE_3(new ObstacleCircular(new Vec2RO(-1500+125+250*0.5,150+250*0.5),125)),
-	MINERAI_GROS_CRATERE_DROITE_4(new ObstacleCircular(new Vec2RO(-1500+125+250,125),125)),
+	MINERAI_GROS_CRATERE_DROITE_4(new ObstacleCircular(new Vec2RO(-1500+125+220,125),125)),
 
 	MINERAI_GROS_CRATERE_GAUCHE_1(new ObstacleCircular(new Vec2RO(1500-125,125),125)),
-	MINERAI_GROS_CRATERE_GAUCHE_2(new ObstacleCircular(new Vec2RO(1500-125,125+250),125)),
+	MINERAI_GROS_CRATERE_GAUCHE_2(new ObstacleCircular(new Vec2RO(1500-125,125+220),125)),
 	MINERAI_GROS_CRATERE_GAUCHE_3(new ObstacleCircular(new Vec2RO(1500-(125+250*0.5),150+250*0.5),125)),
-	MINERAI_GROS_CRATERE_GAUCHE_4(new ObstacleCircular(new Vec2RO(1500-(125+250),125),125)),
+	MINERAI_GROS_CRATERE_GAUCHE_4(new ObstacleCircular(new Vec2RO(1500-(125+220),125),125)),
 
 	CYLINDRE_1_G(new ObstacleCircular(new Vec2RO(950-1500, 1800), 32)),
 	CYLINDRE_1_D(new ObstacleCircular(new Vec2RO(1500-950, 1800), 32)),
