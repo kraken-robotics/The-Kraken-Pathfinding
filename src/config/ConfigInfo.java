@@ -17,6 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 package config;
 
+import pathfinding.astarCourbe.arcs.ClothoidesComputer;
 import robot.RobotColor;
 
 /**
@@ -33,7 +34,7 @@ public enum ConfigInfo {
 	 * Infos sur le robot
 	 */
 	RAYON_ROBOT(150), // permet de savoir si on shoot un élément de jeu TODO
-	DILATATION_ROBOT_DSTARLITE(200), // dilatation des obstacles dans le D* Lite. Comme c'est une heuristique, on peut prendre plus petit que la vraie valeur TODO
+	DILATATION_ROBOT_DSTARLITE(150), // dilatation des obstacles dans le D* Lite. Comme c'est une heuristique, on peut prendre plus petit que la vraie valeur TODO
 	// en fait, comme on veut éviter que l'A* ne cherche à frôler les bords, on augmente artificiellement cette valeur
 	DISTANCE_ROUES_AVANT_ET_ARRIERE(300), // la distance entre l'axe des roues avant et l'axe des roues arrières TODO
 	DISTANCE_ROUES_GAUCHE_ET_DROITE(210), // la distance entre la roue arrière gauche et la roue arrière droite TODO
@@ -58,8 +59,8 @@ public enum ConfigInfo {
 	 */
 	COURBURE_MAX(5.5), // quelle courbure maximale la trajectoire du robot peut-elle avoir
 	TEMPS_REBROUSSEMENT(700), // temps qu'il faut au robot pour rebrousser chemin
-	PF_MARGE_NECESSAIRE(2), // combien d'arc de pathfinding le bas niveau doit-il toujours avoir
-	PF_ANTICIPATION(2), // combien d'arcs avant le dernier valide supprime-t-on avant de replanifier
+	PF_MARGE_NECESSAIRE((int)(0.10/ClothoidesComputer.PRECISION_TRACE)), // combien de points de pathfinding le bas niveau doit-il toujours avoir
+	PF_ANTICIPATION((int)(0.30/ClothoidesComputer.PRECISION_TRACE)), // combien de points avant le dernier valide supprime-t-on avant de replanifier
 	DUREE_MAX_RECHERCHE_PF(3000), // durée maximale que peut prendre le pathfinding
 	
 	/**

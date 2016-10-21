@@ -35,7 +35,7 @@ public class AStarCourbeNode implements Memorizable
 	public double g_score; // distance du point de départ à ce point
 	public double f_score; // g_score + heuristique = meilleure distance qu'on peut espérer avec ce point
 	public AStarCourbeNode parent;
-	public ArcCourbeClotho cameFromArc = new ArcCourbeClotho();
+	public final ArcCourbeClotho cameFromArc = new ArcCourbeClotho();
 	public ArcCourbeCubique cameFromArcCubique = null;
 	private int indiceMemoryManager;
 	
@@ -81,6 +81,7 @@ public class AStarCourbeNode implements Memorizable
 	 */
 	public void copyReconstruct(AStarCourbeNode modified)
 	{
+		modified.cameFromArcCubique = null;
 		modified.g_score = g_score;
 		modified.f_score = f_score;
 		state.copyAStarCourbe(modified.state);

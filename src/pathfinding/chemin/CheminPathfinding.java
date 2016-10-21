@@ -59,12 +59,14 @@ public class CheminPathfinding implements Service, Printable, Configurable
 	protected int indexLast = 0; // indice du prochain point de la trajectoire (donc indexLast - 1 est l'index du dernier point accessible)
 	private int lastValidIndex; // l'indice du dernier index (-1 si aucun ne l'est, Integer.MAX_VALUE si tous le sont)
 	private boolean uptodate = true; // le chemin est-il complet
-	private int margeNecessaire = 2;
-	private int anticipationReplanif = 2;
+	private int margeNecessaire;
+	private int anticipationReplanif;
 	private boolean graphic;
 	
 	public CheminPathfinding(Log log, BufferOutgoingOrder out, ObstaclesIteratorPresent iterator, PrintBuffer buffer)
 	{
+		for(int i = 0; i < chemin.length; i++)
+			chemin[i] = new CinematiqueObs();
 		this.log = log;
 		this.out = out;
 		this.iterObstacles = iterator;
@@ -154,7 +156,7 @@ public class CheminPathfinding implements Service, Printable, Configurable
 	
 	private void add(CinematiqueObs c)
 	{
-		chemin[indexLast] = c;
+		c.copy(chemin[indexLast]);
 		indexLast = add(indexLast, 1);
 		
 		// si on revient au début, c'est qu'il y a un problème ou que le buffer est sous-dimensionné
@@ -186,9 +188,6 @@ public class CheminPathfinding implements Service, Printable, Configurable
 	protected synchronized CinematiqueObs get(int index)
 	{
 		if(minus(index, indexFirst) < minus(indexLast, indexFirst))
-/*		if((indexFirst <= index && index < indexLast)
-		|| (indexFirst > indexLast && indexFirst <= index && index < indexLast + 256)
-		|| (indexFirst > indexLast && indexFirst <= index + 256 && index < indexLast))*/
 			return chemin[index];
 		return null;
 	}
@@ -244,10 +243,15 @@ public class CheminPathfinding implements Service, Printable, Configurable
 		}
 	}
 	
+	/**
+	 * Renvoie l'arc du dernier point qu'on peut encore utiliser
+	 * @return
+	 */
 	public Cinematique getLastValidCinematique()
 	{
 		if(lastValidIndex == -1)
 			return null;
+		indexLast = lastValidIndex + 1; // on complètera à partir de ce point
 		return chemin[lastValidIndex];
 	}
 

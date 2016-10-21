@@ -99,6 +99,11 @@ public abstract class Robot implements Configurable, DynamicConfigurable
 		return 0; // TODO
 	}
 	
+	public void setCinematique(Cinematique cinematique)
+	{
+		cinematique.copy(this.cinematique);
+	}
+	
 /*	public double getDemieDiagonale()
 	{
 		return Math.max(Math.max(Math.hypot(getDemieLongueurArriere(), getDemieLargeurGauche()),Math.hypot(getDemieLongueurArriere(), getDemieLargeurDroite())),

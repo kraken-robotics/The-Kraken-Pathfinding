@@ -115,7 +115,6 @@ public class AStarCourbe implements Service, Configurable
 	protected final void process() throws PathfindingException
 	{
 		depart.parent = null;
-		depart.cameFromArc = null;
 		depart.cameFromArcCubique = null;
 		depart.g_score = 0;
 		Double heuristique;
@@ -176,6 +175,7 @@ public class AStarCourbe implements Service, Configurable
 				partialReconstruct(current);
 				chemin.setUptodate(true);
 				memorymanager.empty();
+				cinemMemory.empty();
 				return;
 			}
 			
@@ -183,6 +183,7 @@ public class AStarCourbe implements Service, Configurable
 			if(elapsed > dureeMaxPF) // étant donné qu'il peut continuer jusqu'à l'infini...
 			{
 				memorymanager.empty();
+				cinemMemory.empty();
 				throw new PathfindingException("Timeout AStarCourbe !");
 			}
 
@@ -199,8 +200,11 @@ public class AStarCourbe implements Service, Configurable
 					// est effacé quand le memorymanager est vidé. Cette copie n'est effectuée qu'ici
 					current.copyReconstruct(depart);
 					memorymanager.empty();
+					cinemMemory.empty();
+					// En faisant "openset.clear()", il force le pathfinding a continuer sur sa lancée sans
+					// remettre en cause la trajectoire déjà calculée
 					openset.clear();
-					openset.add(depart);
+					openset.add(depart); // et on repart !
 					break;
 				}
 
@@ -253,8 +257,6 @@ public class AStarCourbe implements Service, Configurable
 	
 	/**
 	 * Reconstruit le chemin. Il peut reconstruire le chemin même si celui-ci n'est pas fini.
-	 * En effet, en faisant "openset.clear()", il force le pathfinding a continuer sur sa lancée sans
-	 * remettre en cause la trajectoire déjà calculée
 	 * @param best
 	 * @param last
 	 */
@@ -269,7 +271,8 @@ public class AStarCourbe implements Service, Configurable
 			noeudParent = noeudParent.parent;
 			arcParent = noeudParent.getArc();
 		}
-		// TODO ! cloner
+
+		// chemin.add fait des copies des arcs
 		while(!pileTmp.isEmpty())
 			chemin.add(pileTmp.pop());
 	}
@@ -291,11 +294,10 @@ public class AStarCourbe implements Service, Configurable
 	 * @return
 	 * @throws PathfindingException 
 	 */
-	public void computeNewPath(Cinematique arrivee, /*boolean ejecteGameElement,*/ DirectionStrategy directionstrategy) throws PathfindingException
+	public void computeNewPath(Cinematique arrivee, DirectionStrategy directionstrategy) throws PathfindingException
 	{
 		vitesseMax = Speed.STANDARD;
 		this.directionstrategyactuelle = directionstrategy;
-//		arcmanager.setEjecteGameElement(ejecteGameElement);
 		this.arrivee = arrivee;
 		depart.init();
 		state.copyAStarCourbe(depart.state);
@@ -313,9 +315,9 @@ public class AStarCourbe implements Service, Configurable
 		{
 			depart.init();
 			state.copyAStarCourbe(depart.state);
+			depart.state.robot.setCinematique(chemin.getLastValidCinematique());
 		}
 		vitesseMax = Speed.REPLANIF;
-		
 		chemin.clear();
 		process();
 	}
