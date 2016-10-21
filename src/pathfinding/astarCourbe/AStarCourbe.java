@@ -29,14 +29,12 @@ import pathfinding.RealGameState;
 import pathfinding.astarCourbe.arcs.ArcManager;
 import pathfinding.chemin.CheminPathfinding;
 import pathfinding.astarCourbe.arcs.ArcCourbe;
-import pathfinding.astarCourbe.arcs.ArcCourbeCubique;
 import pathfinding.dstarlite.DStarLite;
 import pathfinding.dstarlite.gridspace.PointGridSpace;
 import config.Config;
 import config.ConfigInfo;
 import config.Configurable;
 import container.Service;
-import exceptions.DStarLiteException;
 import exceptions.PathfindingException;
 import graphic.PrintBuffer;
 import robot.Cinematique;
@@ -121,12 +119,10 @@ public class AStarCourbe implements Service, Configurable
 		heuristique = dstarlite.heuristicCostCourbe((depart.state.robot).getCinematique());
 		if(heuristique == null)
 			throw new PathfindingException("DStarLiteException pour le point de départ !");
+		else if(heuristique == Integer.MAX_VALUE)
+			throw new PathfindingException("Le dstarlite dit qu'aucun chemin n'est possible…");
 
 		depart.f_score = heuristique;
-
-		if(depart.f_score == Integer.MAX_VALUE)
-			throw new PathfindingException("Le dstarlite dit qu'aucun chemin n'est possible…");
-		
 		openset.clear();
 		openset.add(depart);	// Les nœuds à évaluer
 		closedset.clear();
@@ -311,14 +307,13 @@ public class AStarCourbe implements Service, Configurable
 	
 	public synchronized void updatePath() throws PathfindingException
 	{
+		depart.init();
 		synchronized(state)
 		{
-			depart.init();
 			state.copyAStarCourbe(depart.state);
-			depart.state.robot.setCinematique(chemin.getLastValidCinematique());
 		}
-		vitesseMax = Speed.REPLANIF;
-		chemin.clear();
+		depart.state.robot.setCinematique(chemin.getLastValidCinematique());
+		vitesseMax = Speed.REPLANIF; // TODO
 		process();
 	}
 

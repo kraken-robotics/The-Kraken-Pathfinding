@@ -31,7 +31,9 @@ import pathfinding.astarCourbe.arcs.ArcCourbeClotho;
 import pathfinding.astarCourbe.arcs.ArcCourbeCubique;
 import pathfinding.astarCourbe.arcs.ClothoidesComputer;
 import pathfinding.astarCourbe.arcs.VitesseCourbure;
+import pathfinding.chemin.CheminPathfinding;
 import pathfinding.chemin.IteratorCheminPathfinding;
+import pathfinding.dstarlite.gridspace.GridSpace;
 import robot.Cinematique;
 import robot.CinematiqueObs;
 import robot.DirectionStrategy;
@@ -54,6 +56,8 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 	private RobotReal robot;
 	private IteratorCheminPathfinding iterator;
 	private boolean graphicTrajectory;
+	private CheminPathfinding chemin;
+	private GridSpace gridspace;
 	
 	@Override
 	@Before
@@ -63,7 +67,9 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 		buffer = container.getService(PrintBuffer.class);
 		astar = container.getService(AStarCourbe.class);
 		robot = container.getService(RobotReal.class);
+		chemin = container.getService(CheminPathfinding.class);
 		iterator = container.make(IteratorCheminPathfinding.class);
+		gridspace = container.getService(GridSpace.class);
 		graphicTrajectory = config.getBoolean(ConfigInfo.GRAPHIC_TRAJECTORY);
 	}
 
@@ -208,7 +214,7 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 		
 		Assert.assertEquals(arc[nbArc-1].arcselems[arc[nbArc-1].arcselems.length - 1].getPosition().distance(new Vec2RO(-75.23359007226547,1573.5289638045665)), 0, 0.1);
     }
-	
+	/*
 	@Test
     public void test_bench() throws Exception
     {
@@ -221,7 +227,7 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 			astar.computeNewPath(c, DirectionStrategy.FASTEST);
 		log.debug("Temps : "+(System.nanoTime() - avant) / (nbmax * 1000000.));
     }
-	
+	*/
 	@Test
     public void test_recherche_fastest() throws Exception
     {
@@ -244,6 +250,27 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 		}
 		log.debug("Nb points : "+i);
     }
+	
+	@Test
+    public void test_replanif() throws Exception
+    {
+		long avant = System.nanoTime();
+		Cinematique depart = new Cinematique(-1100, 600, 0, true, 0, Speed.STANDARD);
+		robot.setCinematique(depart);
+		Cinematique c = new Cinematique(0, 1200, Math.PI, false, 0, Speed.STANDARD);
+		astar.computeNewPath(c, DirectionStrategy.FASTEST);
+		log.debug("Temps : "+(System.nanoTime() - avant) / (1000000.));
+		synchronized(buffer)
+		{
+			buffer.notify();
+			Thread.sleep(100);
+		}
+		int n = 15;
+		chemin.setCurrentIndex(n);
+		gridspace.addObstacleAndRemoveNearbyObstacles(new Vec2RO(-300, 1100));
+		astar.updatePath();
+    }
+
 	
 	@Test
     public void test_recherche_loin() throws Exception

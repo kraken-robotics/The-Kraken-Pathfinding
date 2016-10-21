@@ -34,7 +34,6 @@ import config.Config;
 import config.ConfigInfo;
 import config.Configurable;
 import container.Service;
-import exceptions.DStarLiteException;
 import graphic.PrintBuffer;
 import obstacles.types.ObstacleArcCourbe;
 import obstacles.types.ObstaclesFixes;
