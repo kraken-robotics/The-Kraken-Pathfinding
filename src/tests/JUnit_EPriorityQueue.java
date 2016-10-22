@@ -49,7 +49,7 @@ public class JUnit_EPriorityQueue extends JUnit_Test {
 		Assert.assertTrue(file.isEmpty());
 		DStarLiteNode n = new DStarLiteNode(null);
 		file.add(n);
-		file.print(1);
+//		file.print(1);
 		Assert.assertTrue(!file.isEmpty());
 		Assert.assertTrue(file.peek() == n);
 		Assert.assertTrue(!file.isEmpty());
@@ -61,13 +61,13 @@ public class JUnit_EPriorityQueue extends JUnit_Test {
 		n2.cle.set(0, 1);
 		file.add(n2); // test de percolate up
 		Assert.assertTrue(file.peek() == n2);
-		file.print(2);
+//		file.print(2);
 		n2.cle.set(3, 4);
 		file.percolateDown(n2);
-		file.print(3);
+//		file.print(3);
 		Assert.assertTrue(file.peek() == n);
 		file.remove(n);
-		file.print(4);
+//		file.print(4);
 		Assert.assertTrue(file.peek() == n2);
 		Assert.assertTrue(!file.isEmpty());
 		file.clear();
@@ -85,13 +85,13 @@ public class JUnit_EPriorityQueue extends JUnit_Test {
 			n[i].cle.set(r.nextInt(10), r.nextInt(10));
 			file.add(n[i]);
 		}
-		file.print(0);
+//		file.print(0);
 		file.poll();
 		file.poll();
 		file.poll();
 		file.poll();
 		file.poll();
-		file.print(1);
+//		file.print(1);
 	}
 
 }

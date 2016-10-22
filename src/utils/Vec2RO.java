@@ -31,45 +31,44 @@ public class Vec2RO implements Serializable
 	protected volatile double x;
 	protected volatile double y;
 	
+//	private static long t = System.currentTimeMillis();
+	
 	public Vec2RO(double longueur, double angle, boolean useless)
 	{
+//		if(System.currentTimeMillis() - t > 4000)
+//			Thread.dumpStack();
 		x = Math.cos(angle)*longueur;
 		y = Math.sin(angle)*longueur;
 	}
 
 	public Vec2RO(double requestedX, double requestedY)
 	{
+//		if(System.currentTimeMillis() - t > 4000)
+//			Thread.dumpStack();
 		x = requestedX;
 		y = requestedY;
 	}
 
-	// Do not square a length, use squared length directly
-	// to increase performances
 	public final double squaredLength()
 	{
 		return x*x + y*y;
 	}
 
-	// Returns this vec2's magnitude
 	public final double length()
 	{
 		return Math.hypot(x, y);
 	}
 	
-	// dot product
 	public final double dot(Vec2RO other)
 	{
 		return x*other.x + y*other.y;
 	}
 
-	// build a new Vec2RO by summing the calling Vec2RO and the one in args
 	public final Vec2RW plusNewVector(Vec2RO other)
 	{
 		return new Vec2RW(x + other.x, y + other.y);
 	}
 	
-	// build a new Vec2RO with the value obtained by decrementing the
-	// calling Vec2RO by the provided Vec2RO in args
 	public final Vec2RW minusNewVector(Vec2RO other)
 	{
 		return new Vec2RW(x - other.x, y - other.y);
@@ -126,11 +125,6 @@ public class Vec2RO implements Serializable
 	{
 	    other.x = x;
 	    other.y = y;
-	}
-
-	public final Vec2RW middleNewVector(Vec2RO b)
-	{
-		return new Vec2RW((x+b.x)/2, (y+b.y)/2);
 	}
 
 	public final Vec2RW rotateNewVector(double angle, Vec2RO centreRotation)

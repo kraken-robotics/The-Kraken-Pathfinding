@@ -304,6 +304,8 @@ public class ClothoidesComputer implements Service, Configurable
 		getTrajectoire(robot, robot.getCinematique(), vitesse, vitesseMax, modified);
 	}
 	
+	private Vec2RW tmp = new Vec2RW();
+	
 	/**
 	 * ATTENTION ! La courbure est en m^-1 et pas en mm^-1
 	 * En effet, comme le rayon de courbure sera souvent plus petit que le mètre, on aura une courbure souvent plus grande que 1
@@ -362,9 +364,9 @@ public class ClothoidesComputer implements Service, Configurable
 		// (afin de ne pas avoir de doublon quand on enchaîne les arcs, entre le dernier point de l'arc t et le premier de l'arc t+1)		
 		for(int i = 0; i < NB_POINTS; i++)
 		{
+			trajectoire[pointDepart + vitesse.squaredRootVitesse * (i + 1)].copy(tmp);
 			sDepart += vitesse.squaredRootVitesse * PRECISION_TRACE;
-
-			trajectoire[pointDepart + vitesse.squaredRootVitesse * (i + 1)].minusNewVector(trajectoire[pointDepart])
+			tmp.minus(trajectoire[pointDepart])
 			.scalar(coeffMultiplicatif)
 			.Ysym(!vitesse.positif)
 			.rotate(cos, sin)

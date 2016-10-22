@@ -76,11 +76,11 @@ public class AStarCourbe implements Service, Configurable
 		@Override
 		public int compare(AStarCourbeNode arg0, AStarCourbeNode arg1)
 		{
-			if(arg0.f_score < arg1.f_score)
-				return -1;
-			if(arg0.f_score > arg1.f_score)
-				return 1;
-			return (int) Math.signum(arg0.g_score - arg1.g_score);
+			// Ordre lexico : on compare d'abord first, puis second
+			int tmp = (int) (arg0.f_score - arg1.f_score);
+			if(tmp != 0)
+				return tmp;
+			return (int) (arg0.g_score - arg1.g_score);
 		}
 	}
 
@@ -139,6 +139,19 @@ public class AStarCourbe implements Service, Configurable
 				continue;
 
 			closedset.add(current);
+
+			// ce calcul étant un peu lourd, on ne le fait que si le noeud a été choisi, et pas à la sélection des voisins (dans hasNext par exemple)
+			if(!arcmanager.isReachable(current))
+			{
+//				log.debug("Collision");
+				if(current.cameFromArcCubique != null)
+				{
+					cinemMemory.destroyNode(current.cameFromArcCubique);
+					current.cameFromArcCubique = null;
+				}
+				memorymanager.destroyNode(current);
+				continue; // collision mécanique attendue. On passe au suivant !
+			}
 			
 			// affichage
 			if(graphicTrajectory && current.getArc() != null)
@@ -155,7 +168,7 @@ public class AStarCourbe implements Service, Configurable
 			// On est arrivé seulement si on vient d'un arc cubique			
 			if(current.cameFromArcCubique != null)
 			{
-				log.debug("On est arrivé !");
+//				log.debug("On est arrivé !");
 				partialReconstruct(current);
 				chemin.setUptodate(true);
 				memorymanager.empty();
@@ -207,18 +220,6 @@ public class AStarCourbe implements Service, Configurable
 					continue;
 				}
 
-				if(!arcmanager.isReachable(successeur))
-				{
-//					log.debug("Collision");
-					if(successeur.cameFromArcCubique != null)
-					{
-						cinemMemory.destroyNode(successeur.cameFromArcCubique);
-						successeur.cameFromArcCubique = null;
-					}
-					memorymanager.destroyNode(successeur);
-					continue; // collision mécanique attendue. On passe au suivant !
-				}
-				
 				successeur.parent = current;
 				successeur.g_score = current.g_score + arcmanager.distanceTo(successeur);
 				

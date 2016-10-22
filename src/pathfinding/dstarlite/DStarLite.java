@@ -203,7 +203,7 @@ public class DStarLite implements Service, Configurable
 				u.inOpenSet = false;
 				if(graphicDStarLite)
 					gridspace.setColor(u.gridpoint, Couleur.BLEU);
-				for(Direction i : Direction.values())
+				for(Direction i : Direction.values)
 				{
 					DStarLiteNode s = getFromMemory(pointManager.getGridPointVoisin(u.gridpoint, i));
 
@@ -219,7 +219,7 @@ public class DStarLite implements Service, Configurable
 //				log.debug("Cas 3");
 				int gold = u.g;
 				u.g = Integer.MAX_VALUE;
-				for(Direction i : Direction.values())
+				for(Direction i : Direction.values)
 				{
 					DStarLiteNode s = getFromMemory(pointManager.getGridPointVoisin(u.gridpoint, i));
 					if(s == null)
@@ -228,7 +228,7 @@ public class DStarLite implements Service, Configurable
 					if(s.rhs == add(distanceDynamiquePred(u.gridpoint, i), gold) && !s.gridpoint.equals(arrivee.gridpoint))
 					{
 						s.rhs = Integer.MAX_VALUE;
-						for(Direction j : Direction.values())
+						for(Direction j : Direction.values)
 						{
 							DStarLiteNode s2 = getFromMemory(pointManager.getGridPointVoisin(s.gridpoint, j));
 							if(s2 == null)
@@ -243,7 +243,7 @@ public class DStarLite implements Service, Configurable
 				if(u.rhs == gold && !u.gridpoint.equals(arrivee.gridpoint))
 				{
 					u.rhs = Integer.MAX_VALUE;
-					for(Direction i : Direction.values())
+					for(Direction i : Direction.values)
 					{
 						DStarLiteNode s2 = getFromMemory(pointManager.getGridPointVoisin(u.gridpoint, i));
 						if(s2 == null)
@@ -388,7 +388,7 @@ public class DStarLite implements Service, Configurable
 				if(u.rhs == add(v.g, gridspace.distanceStatique(p)) && !u.equals(arrivee))
 				{
 					u.rhs = Integer.MAX_VALUE;
-					for(Direction voisin : Direction.values())
+					for(Direction voisin : Direction.values)
 						u.rhs = Math.min(u.rhs, add(distanceDynamiqueSucc(u.gridpoint, voisin),
 								getFromMemory(pointManager.getGridPointVoisin(u.gridpoint,voisin)).g));
 				}				
@@ -426,7 +426,7 @@ public class DStarLite implements Service, Configurable
 
 			coutMin = Integer.MAX_VALUE;
 			
-			for(Direction i : Direction.values())
+			for(Direction i : Direction.values)
 			{
 				PointGridSpace voisin = pointManager.getGridPointVoisin(node.gridpoint,i);
 				if(voisin == null)
@@ -526,7 +526,7 @@ public class DStarLite implements Service, Configurable
 		
 		int score = n.rhs;
 		
-		for(Direction d : Direction.values())
+		for(Direction d : Direction.values)
 		{
 			DStarLiteNode voisin = getFromMemoryUpdated(pointManager.getGridPointVoisin(p, d));
 			if(voisin == null)

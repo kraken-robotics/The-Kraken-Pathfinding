@@ -70,7 +70,7 @@ public class MasqueManager implements Service, Configurable
 		for(int i = 0; i < tailleMasque; i++)
 			for(int j = 0; j < tailleMasque; j++)
 				if((i-centreMasque) * (i-centreMasque) + (j-centreMasque) * (j-centreMasque) > squaredRayonPoint)
-					for(Direction d : Direction.values())
+					for(Direction d : Direction.values)
 					{
 						int i2 = i + d.deltaX, j2 = j + d.deltaY;
 						if((i2-centreMasque) * (i2-centreMasque) + (j2-centreMasque) * (j2-centreMasque) <= squaredRayonPoint)

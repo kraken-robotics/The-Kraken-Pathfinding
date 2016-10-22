@@ -37,7 +37,7 @@ public class PointDirigeManager implements Service
 		this.log = log;
 		for(int x = 0; x < PointGridSpace.NB_POINTS_POUR_TROIS_METRES; x++)
 			for(int y = 0; y < PointGridSpace.NB_POINTS_POUR_DEUX_METRES; y++)
-				for(Direction d : Direction.values())
+				for(Direction d : Direction.values)
 				{
 					PointDirige p = new PointDirige(pm.get(x,y),d);
 					mem[p.hashCode()] = p;

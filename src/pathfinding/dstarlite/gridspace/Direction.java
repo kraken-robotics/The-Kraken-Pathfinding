@@ -31,6 +31,7 @@ public enum Direction {
 	public final int deltaX, deltaY;
 	public final double distance_m;
 	public final int distance;
+	public static final Direction[] values = values();
 	
 	private Direction(int deltaX, int deltaY)
 	{

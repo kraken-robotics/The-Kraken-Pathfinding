@@ -38,7 +38,8 @@ public class ObstacleRectangular extends Obstacle
 	// Position est le centre de rotation
 	
 	// Longueur entre le centre et un des coins
-//	protected double demieDiagonale;
+	protected double demieDiagonale;
+	protected Vec2RW centreGeometrique;
 	
 	// calcul des positions des coins
 	// ces coins sont dans le repère de l'obstacle !
@@ -52,7 +53,9 @@ public class ObstacleRectangular extends Obstacle
 	protected Vec2RW coinHautGaucheRotate;
 	protected Vec2RW coinBasDroiteRotate;
 	protected Vec2RW coinHautDroiteRotate;
-	
+
+	private Vec2RW in = new Vec2RW();
+
 	protected double angle, cos, sin;
 
 	/**
@@ -77,7 +80,8 @@ public class ObstacleRectangular extends Obstacle
 
 	public ObstacleRectangular()
 	{
-		super(null);
+		super(new Vec2RW());
+		centreGeometrique = new Vec2RW();
 		coinBasGauche = new Vec2RW();
 		coinHautGauche = new Vec2RW();
 		coinBasDroite = new Vec2RW();
@@ -110,11 +114,16 @@ public class ObstacleRectangular extends Obstacle
 		coinHautGauche = new Vec2RW(-sizeX/2,sizeY/2);
 		coinBasDroite = new Vec2RW(sizeX/2,-sizeY/2);
 		coinHautDroite = new Vec2RW(sizeX/2,sizeY/2);
-		coinBasGaucheRotate = convertitVersRepereTable(coinBasGauche);
-		coinHautGaucheRotate = convertitVersRepereTable(coinHautGauche);
-		coinBasDroiteRotate = convertitVersRepereTable(coinBasDroite);
-		coinHautDroiteRotate = convertitVersRepereTable(coinHautDroite);
-//		demieDiagonale = Math.sqrt(sizeY*sizeY/4+sizeX*sizeX/4);
+		coinBasGaucheRotate = new Vec2RW();
+		coinHautGaucheRotate = new Vec2RW();
+		coinBasDroiteRotate = new Vec2RW();
+		coinHautDroiteRotate = new Vec2RW();
+		convertitVersRepereTable(coinBasGauche, coinBasGaucheRotate);
+		convertitVersRepereTable(coinHautGauche, coinHautGaucheRotate);
+		convertitVersRepereTable(coinBasDroite, coinBasDroiteRotate);
+		convertitVersRepereTable(coinHautDroite, coinHautDroiteRotate);
+		centreGeometrique = position.clone();
+		demieDiagonale = Math.sqrt(sizeY*sizeY/4+sizeX*sizeX/4);
 	}
 	
 	/**
@@ -125,12 +134,10 @@ public class ObstacleRectangular extends Obstacle
 	 * @param point
 	 * @return
 	 */
-	private Vec2RW convertitVersRepereObstacle(Vec2RO point)
+	private void convertitVersRepereObstacle(Vec2RO point, Vec2RW out)
 	{
-		Vec2RW out = new Vec2RW();
 		out.setX(cos*(point.getX()-position.getX())+sin*(point.getY()-position.getY()));
 		out.setY(-sin*(point.getX()-position.getX())+cos*(point.getY()-position.getY()));
-		return out;
 	}
 
 	/**
@@ -139,12 +146,10 @@ public class ObstacleRectangular extends Obstacle
 	 * @param point
 	 * @return
 	 */
-	private Vec2RW convertitVersRepereTable(Vec2RO point)
+	private void convertitVersRepereTable(Vec2RO point, Vec2RW out)
 	{
-		Vec2RW out = new Vec2RW();
 		out.setX(cos*point.getX()-sin*point.getY()+position.getX());
 		out.setY(sin*point.getX()+cos*point.getY()+position.getY());
-		return out;
 	}
 
 	/**
@@ -178,8 +183,8 @@ public class ObstacleRectangular extends Obstacle
 	public final boolean isColliding(ObstacleRectangular r)
 	{
 		// Calcul simple permettant de vérifier les cas absurdes où les obstacles sont loin l'un de l'autre
-//		if(position.squaredDistance(r.position) >= (demieDiagonale+r.demieDiagonale)*(demieDiagonale+r.demieDiagonale))
-//			return false;
+		if(centreGeometrique.squaredDistance(r.centreGeometrique) >= (demieDiagonale+r.demieDiagonale)*(demieDiagonale+r.demieDiagonale))
+			return false;
 		// Il faut tester les quatres axes
 		return !testeSeparation(coinBasGauche.getX(), coinBasDroite.getX(), getXConvertiVersRepereObstacle(r.coinBasGaucheRotate), getXConvertiVersRepereObstacle(r.coinHautGaucheRotate), getXConvertiVersRepereObstacle(r.coinBasDroiteRotate), getXConvertiVersRepereObstacle(r.coinHautDroiteRotate))
 				&& !testeSeparation(coinBasGauche.getY(), coinHautGauche.getY(), getYConvertiVersRepereObstacle(r.coinBasGaucheRotate), getYConvertiVersRepereObstacle(r.coinHautGaucheRotate), getYConvertiVersRepereObstacle(r.coinBasDroiteRotate), getYConvertiVersRepereObstacle(r.coinHautDroiteRotate))
@@ -216,7 +221,7 @@ public class ObstacleRectangular extends Obstacle
 	{
 		return "ObstacleRectangulaire "+coinBasGauche+" "+coinBasDroite+" "+coinHautGauche+" "+coinHautDroite+" "+super.toString();
 	}
-	
+		
 	/**
 	 * Fourni la plus petite distance au carré entre le point fourni et l'obstacle
 	 * @param in
@@ -225,7 +230,8 @@ public class ObstacleRectangular extends Obstacle
 	@Override
 	public double squaredDistance(Vec2RO v)
 	{
-		Vec2RW in = convertitVersRepereObstacle(v);
+		convertitVersRepereObstacle(v, in);
+
 //		log.debug("in = : "+in);
 		/*		
 		 *  Schéma de la situation :
@@ -299,11 +305,16 @@ public class ObstacleRectangular extends Obstacle
 		coinBasDroite.setY(-a);
 		coinHautDroite.setX(c);
 		coinHautDroite.setY(b);
-		coinBasGaucheRotate = convertitVersRepereTable(coinBasGauche);
-		coinHautGaucheRotate = convertitVersRepereTable(coinHautGauche);
-		coinBasDroiteRotate = convertitVersRepereTable(coinBasDroite);
-		coinHautDroiteRotate = convertitVersRepereTable(coinHautDroite);
-//		demieDiagonale = robot.getDemieDiagonale();
+		convertitVersRepereTable(coinBasGauche, coinBasGaucheRotate);
+		convertitVersRepereTable(coinHautGauche, coinHautGaucheRotate);
+		convertitVersRepereTable(coinBasDroite, coinBasDroiteRotate);
+		convertitVersRepereTable(coinHautDroite, coinHautDroiteRotate);
+		if(centreGeometrique == null)
+			centreGeometrique = coinBasDroiteRotate.clone();
+		else
+			coinBasDroiteRotate.copy(centreGeometrique);
+		centreGeometrique = centreGeometrique.plus(coinHautGaucheRotate).scalar(0.5);
+		demieDiagonale = Math.sqrt((a+b)*(a+b)/4+(c+d)*(c+d)/4);
 
 		if(printAllObstacles)
 			synchronized(buffer)
@@ -312,6 +323,11 @@ public class ObstacleRectangular extends Obstacle
 			}
 	
 		return this;
+	}
+	
+	public double getDemieDiagonale()
+	{
+		return demieDiagonale;
 	}
 
 	@Override
