@@ -63,7 +63,8 @@ public class ThreadFenetre extends ThreadService implements Configurable
 			{
 				synchronized(buffer)
 				{
-					buffer.wait();
+					if(!buffer.needRefresh())
+						buffer.wait();
 				}
 				fenetre.refresh();
 				Thread.sleep(50); // on ne met pas à jour plus souvent que toutes les 50ms

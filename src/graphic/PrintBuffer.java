@@ -44,6 +44,7 @@ public class PrintBuffer implements Service, Configurable
 
 	protected Log log;
 	private boolean afficheFond;
+	private boolean needRefresh = false;
 	
 	public PrintBuffer(Log log)
 	{
@@ -64,6 +65,7 @@ public class PrintBuffer implements Service, Configurable
 		for(int i = 0 ; i < Layer.values().length; i++)
 			elementsAffichablesSupprimables.get(i).clear();
 		notify();
+		needRefresh = true;
 	}
 
 	/**
@@ -74,6 +76,7 @@ public class PrintBuffer implements Service, Configurable
 	{
 		elementsAffichablesSupprimables.get(o.getLayer().ordinal()).add(o);
 		notify();
+		needRefresh = true;
 	}
 
 	/**
@@ -84,6 +87,7 @@ public class PrintBuffer implements Service, Configurable
 	{
 		elementsAffichables.get(o.getLayer().ordinal()).add(o);
 		notify();
+		needRefresh = true;
 	}
 
 	/**
@@ -94,6 +98,7 @@ public class PrintBuffer implements Service, Configurable
 	 */
 	public synchronized void print(Graphics g, Fenetre f, RobotReal robot)
 	{
+		needRefresh = false;
 		for(int i = 0 ; i < Layer.values().length; i++)
 		{
 			if(afficheFond)
@@ -122,13 +127,21 @@ public class PrintBuffer implements Service, Configurable
 	public synchronized void removeSupprimable(Printable o)
 	{
 		if(elementsAffichablesSupprimables.get(o.getLayer().ordinal()).remove(o))
+		{
 			notify();
+			needRefresh = true;
+		}
 	}
 
 	@Override
 	public void useConfig(Config config)
 	{
 		afficheFond = config.getBoolean(ConfigInfo.GRAPHIC_BACKGROUND);
+	}
+
+	public boolean needRefresh()
+	{
+		return needRefresh;
 	}
 	
 }
