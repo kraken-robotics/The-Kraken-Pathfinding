@@ -46,6 +46,8 @@ public class AStarCourbeNode implements Memorizable
 	
 	public ArcCourbe getArc()
 	{
+		if(parent == null)
+			return null;
 		if(cameFromArcCubique != null)
 			return cameFromArcCubique;
 		return cameFromArc;

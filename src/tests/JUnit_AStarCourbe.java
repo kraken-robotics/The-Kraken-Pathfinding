@@ -212,7 +212,7 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 */		}
 	
 		
-		Assert.assertEquals(arc[nbArc-1].arcselems[arc[nbArc-1].arcselems.length - 1].getPosition().distance(new Vec2RO(-75.23359007226547,1573.5289638045665)), 0, 0.1);
+		Assert.assertEquals(0, arc[nbArc-1].arcselems[arc[nbArc-1].arcselems.length - 1].getPosition().distance(new Vec2RO(-431.50765480210504,1743.5415294715754)), 0.1);
     }
 	/*
 	@Test

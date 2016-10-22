@@ -175,7 +175,7 @@ public class ArcManager implements Service, Configurable
 		/**
 		 * Si on fait une interpolation par clothoïde
 		 */
-		else if(current.cameFromArc != null)
+		else if(current.parent != null)
 			clotho.getTrajectoire(current.state.robot,
 					current.cameFromArc,
 					v,

@@ -81,7 +81,7 @@ public class ClothoidesComputer implements Service, Configurable
 			double sin = Math.abs(d / rayonCourbure);
 			sinMap[i] = 2 * sin * cos; // sin(a) devient sin(2a)
 			cosMap[i] = 2 * cos * cos - 1; // cos(a) devient cos(2a)
-			angleMap[i] = Math.atan2(cos, sin);
+			angleMap[i] = Math.asin(sinMap[i]);
 		}
 		
 		this.memory = memory;
@@ -417,6 +417,7 @@ public class ClothoidesComputer implements Service, Configurable
 	private void getTrajectoireCirculaire(RobotChrono robot, Vec2RO position,
 			double orientation, double courbure, Speed vitesseMax, ArcCourbeClotho modified, boolean enMarcheAvant)
 	{		
+//		log.debug("Trajectoire circulaire !");
 		// rappel = la courbure est l'inverse du rayon de courbure
 		// le facteur 1000 vient du fait que la courbure est en mètre^-1
 		double rayonCourbure = 1000. / courbure;
@@ -427,19 +428,14 @@ public class ClothoidesComputer implements Service, Configurable
 		centreCercle.setY(position.getY() + delta.getY());
 
 		
-//		double cos = Math.sqrt(rayonCourbure * rayonCourbure - d * d) / rayonCourbure;
-//		double sin = Math.abs(d / rayonCourbure);
-//		sin = 2 * sin * cos; // sin(a) devient sin(2a)
-//		cos = 2 * cos * cos - 1; // cos(a) devient cos(2a)
 		double cos = cosMap[(int)(courbure*10)+60];
 		double sin = sinMap[(int)(courbure*10)+60];
 		double angle = angleMap[(int)(courbure*10)+60];
 		double cosSauv = cos;
 		double sinSauv = sin;
-//		double angle = Math.atan2(cos, sin);
 		sin = 0;
 		cos = 1;
-
+		
 		for(int i = 0; i < NB_POINTS; i++)
 		{
 			double tmp = sin;

@@ -474,7 +474,10 @@ public class DStarLite implements Service, Configurable
 	public synchronized Double heuristicCostCourbe(Cinematique c)
 	{
 		if(c.getPosition().isHorsTable())
+		{
+//			log.debug("Hors table !");
 			return null;
+		}
 //			throw new DStarLiteException("Heuristique : hors table");
 		
 		PointGridSpace pos = pointManager.get(c.getPosition());
@@ -490,7 +493,10 @@ public class DStarLite implements Service, Configurable
 		double erreurDistance = premier.rhs / 1000. * PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS; // distance en mm
 		
 		if(premier.rhs == Integer.MAX_VALUE)
+		{
+//			log.debug("Inaccessible : "+c.getPosition());
 			return null;
+		}
 //			throw new DStarLiteException("Heuristique : inaccessible");
 
 /*		log.debug("rhs : "+premier.rhs);

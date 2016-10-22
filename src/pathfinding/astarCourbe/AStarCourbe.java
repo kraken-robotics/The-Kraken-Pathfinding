@@ -191,6 +191,7 @@ public class AStarCourbe implements Service, Configurable
 				// On vérifie *très* régulièremet s'il ne faut pas fournir un chemin partiel
 				if(chemin.needPartial())
 				{
+					log.debug("Reconstruction partielle demandée !");
 					partialReconstruct(current);
 					// Il est nécessaire de copier current dans depart car current
 					// est effacé quand le memorymanager est vidé. Cette copie n'est effectuée qu'ici
@@ -218,6 +219,7 @@ public class AStarCourbe implements Service, Configurable
 					continue;
 				}
 
+				successeur.parent = current;
 				successeur.g_score = current.g_score + arcmanager.distanceTo(successeur);
 				
 				heuristique = dstarlite.heuristicCostCourbe((successeur.state.robot).getCinematique());
@@ -233,10 +235,6 @@ public class AStarCourbe implements Service, Configurable
 				}
 				
 				successeur.f_score = successeur.g_score + heuristique / successeur.getArc().getVitesseTr();
-
-				successeur.parent = current;
-
-//				log.debug("Nouveau voisin : "+successeur.f_score);
 								
 				openset.add(successeur);
 			}
@@ -248,7 +246,7 @@ public class AStarCourbe implements Service, Configurable
 		 */
 		memorymanager.empty();
 		cinemMemory.empty();
-		throw new PathfindingException("IMPOSSIBLE : recherche AStarCourbe échouée");
+		throw new PathfindingException("Recherche AStarCourbe échouée");
 	}
 	
 	/**
@@ -297,11 +295,11 @@ public class AStarCourbe implements Service, Configurable
 		this.arrivee = arrivee;
 		depart.init();
 		state.copyAStarCourbe(depart.state);
-		
+
 		dstarlite.computeNewPath(depart.state.robot.getCinematique().getPosition(), arrivee.getPosition());
 		if(graphicDStarLite)
 			dstarlite.itineraireBrut();
-		
+
 		process();
 	}
 	
