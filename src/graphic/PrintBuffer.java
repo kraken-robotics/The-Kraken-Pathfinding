@@ -80,6 +80,17 @@ public class PrintBuffer implements Service, Configurable
 	}
 
 	/**
+	 * Ajoute un obstacle dans la liste des supprimables
+	 * @param o
+	 */
+	public synchronized void addSupprimable(Printable o, Layer l)
+	{
+		elementsAffichablesSupprimables.get(l.ordinal()).add(o);
+		notify();
+		needRefresh = true;
+	}
+
+	/**
 	 * Ajoute un obstacle
 	 * @param o
 	 */

@@ -18,7 +18,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 package pathfinding.astarCourbe.arcs;
 
 import pathfinding.astarCourbe.AStarCourbeNode;
-import pathfinding.dstarlite.DStarLite;
 import robot.Cinematique;
 import robot.DirectionStrategy;
 import robot.Speed;
@@ -48,7 +47,6 @@ import utils.Log;
 public class ArcManager implements Service, Configurable
 {
 	protected Log log;
-	private DStarLite heuristique;
 	private ClothoidesComputer clotho;
 	private PrintBuffer buffer;
 	private Table table;
@@ -60,11 +58,10 @@ public class ArcManager implements Service, Configurable
 	private List<VitesseCourbure> listeVitesse = Arrays.asList(VitesseCourbure.values());
 	private ListIterator<VitesseCourbure> iterator = listeVitesse.listIterator();
 	
-	public ArcManager(Log log, DStarLite heuristique, ClothoidesComputer clotho, Table table, PrintBuffer buffer)
+	public ArcManager(Log log, ClothoidesComputer clotho, Table table, PrintBuffer buffer)
 	{
 		this.table = table;
 		this.log = log;
-		this.heuristique = heuristique;
 		this.clotho = clotho;
 		this.buffer = buffer;
 	}
@@ -220,8 +217,9 @@ public class ArcManager implements Service, Configurable
     	// On ne tente pas l'interpolation si on est trop loin
 		if((vitesse == VitesseCourbure.DIRECT_COURBE /*|| vitesse == VitesseCourbure.DIRECT_COURBE_REBROUSSE*/))
 		{
-			Double h = heuristique.heuristicCostCourbe((current.state.robot).getCinematique());
-			if(h == null || h > 250)
+			// h vaut donc l'heuristique de current
+			Double h = current.f_score - current.g_score;
+			if(h > 250)
 //				log.debug(vitesse+" n'est pas acceptable (on est trop loin)");
 			return false;
 		}

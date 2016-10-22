@@ -170,13 +170,6 @@ public class DStarLite implements Service, Configurable
 				u.inOpenSet = true;
 				openset.add(u);
 			}
-			
-/*			calcKey(u);
-			if(u.inOpenSet)
-				openset.remove(u);
-			else
-				u.inOpenSet = true;
-			openset.add(u);*/
 		}
 		else if(u.inOpenSet)
 		{
@@ -209,7 +202,7 @@ public class DStarLite implements Service, Configurable
 				openset.poll();
 				u.inOpenSet = false;
 				if(graphicDStarLite)
-					gridspace.setColor(u.gridpoint, Couleur.ROUGE);
+					gridspace.setColor(u.gridpoint, Couleur.BLEU);
 				for(Direction i : Direction.values())
 				{
 					DStarLiteNode s = getFromMemory(pointManager.getGridPointVoisin(u.gridpoint, i));
@@ -356,11 +349,11 @@ public class DStarLite implements Service, Configurable
 	 */
 	public synchronized void updateObstacles()
 	{
-		if(graphicDStarLite || graphicDStarLiteFinal)
-			gridspace.reinitGraphicGrid();
-
 		BitSet[] obs = gridspace.getOldAndNewObstacles();
 		
+//		if((graphicDStarLite || graphicDStarLiteFinal) && (!obs[0].isEmpty() || !obs[1].isEmpty()))
+//			gridspace.reinitGraphicGrid();
+
 		// Disparition d'un obstacle : le coût baisse
 		for(int i = obs[0].nextSetBit(0); i >= 0; i = obs[0].nextSetBit(i+1))
 		{
@@ -429,7 +422,7 @@ public class DStarLite implements Service, Configurable
 			trajet.add(node.gridpoint.computeVec2());
 //			log.debug(node.gridpoint.computeVec2());
 			if(graphicDStarLiteFinal)
-				gridspace.setColor(node.gridpoint, Couleur.VERT);
+				gridspace.setColor(node.gridpoint, Couleur.ROUGE);
 
 			coutMin = Integer.MAX_VALUE;
 			
@@ -482,6 +475,12 @@ public class DStarLite implements Service, Configurable
 		
 		PointGridSpace pos = pointManager.get(c.getPosition());
 		
+		if(gridspace.isInGrilleStatique(pos)) // si on est dans un obstacle, D* Lite va chercher partout une solution… qui n'existe pas
+		{
+//			log.debug("Dans un obstacle");
+			return null;
+		}
+		
 		updateStart(pos);
 		DStarLiteNode premier = getFromMemoryUpdated(pos);
 		
@@ -514,13 +513,16 @@ public class DStarLite implements Service, Configurable
 	 */
 	private double getOrientationHeuristique(PointGridSpace p)
 	{
+		// réutilisation de la dernière valeur si possible
+		DStarLiteNode n = getFromMemoryUpdated(p);
+		if(n != null && n.heuristiqueOrientation != null)
+			return n.heuristiqueOrientation;
+		
 		updateStart(p); // on met à jour
 		double directionX = 0;
 		double directionY = 0;
 		
-		DStarLiteNode n = getFromMemoryUpdated(p);
-		if(n.heuristiqueOrientation != null)
-			return n.heuristiqueOrientation;
+		n = getFromMemoryUpdated(p);
 		
 		int score = n.rhs;
 		
@@ -530,13 +532,11 @@ public class DStarLite implements Service, Configurable
 			if(voisin == null)
 				continue;
 			int scoreVoisin = voisin.rhs;
-//			directionX += (scoreVoisin - score) * d.deltaX / d.distance;
-//			directionY += (scoreVoisin - score) * d.deltaY / d.distance;
 			// ce devrait être équivalent
 			double s = Math.signum(scoreVoisin - score);
 			directionX += s * d.deltaX;
 			directionY += s * d.deltaY;
-			n.heuristiqueOrientation = atan2map[(int)directionY+9][(int)directionX+9];// Math.atan2(directionX, directionY);
+			n.heuristiqueOrientation = atan2map[(int)directionX+9][(int)directionY+9];
 		}
 		
 		if(directionX == 0 && directionY == 0) // si on a aucune info, on utilise une heuristique plus simple (trajet à vol d'oiseau)

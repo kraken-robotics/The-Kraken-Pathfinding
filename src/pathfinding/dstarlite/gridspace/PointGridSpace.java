@@ -94,8 +94,8 @@ public class PointGridSpace implements Service, Printable
 		Vec2RO p = computeVec2();
 		g.fillOval(f.XtoWindow(p.getX())-f.distanceXtoWindow((int) DISTANCE_ENTRE_DEUX_POINTS)/2,
 				f.YtoWindow(p.getY())-f.distanceYtoWindow((int) DISTANCE_ENTRE_DEUX_POINTS)/2,
-				f.distanceXtoWindow((int) DISTANCE_ENTRE_DEUX_POINTS),
-				f.distanceYtoWindow((int) DISTANCE_ENTRE_DEUX_POINTS));
+				f.distanceXtoWindow((int) (DISTANCE_ENTRE_DEUX_POINTS*0.7)),
+				f.distanceYtoWindow((int) (DISTANCE_ENTRE_DEUX_POINTS*0.7)));
 	}
 
 	@Override

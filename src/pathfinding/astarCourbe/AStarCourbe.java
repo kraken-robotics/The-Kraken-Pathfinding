@@ -37,6 +37,7 @@ import config.Configurable;
 import container.Service;
 import exceptions.PathfindingException;
 import graphic.PrintBuffer;
+import graphic.printable.Layer;
 import robot.Cinematique;
 import robot.DirectionStrategy;
 import robot.Speed;
@@ -142,27 +143,14 @@ public class AStarCourbe implements Service, Configurable
 			// affichage
 			if(graphicTrajectory && current.getArc() != null)
 				for(int i = 0; i < current.getArc().getNbPoints(); i++)
-					buffer.addSupprimable(new ObstacleCircular(current.getArc().getPoint(i).getPosition(), 4));
+					buffer.addSupprimable(new ObstacleCircular(current.getArc().getPoint(i).getPosition(), 4), Layer.FOREGROUND);
 
 /*			if(current.cameFromArc != null)
 			{
 				heuristique = dstarlite.heuristicCostCourbe((current.state.robot).getCinematique()) / current.cameFromArc.getVitesseTr();
 				log.debug("Heuristique : "+heuristique+" ("+current.state.robot.getCinematique().getPosition().distance(arrivee.getPosition()) / current.cameFromArc.getVitesseTr()+")");
 			}*/
-			
-			// ce calcul étant un peu lourd, on ne le fait que si le noeud a été choisi, et pas à la sélection des voisins (dans hasNext par exemple)
-			if(!arcmanager.isReachable(current))
-			{
-//				log.debug("Collision");
-				if(current.cameFromArcCubique != null)
-				{
-					cinemMemory.destroyNode(current.cameFromArcCubique);
-					current.cameFromArcCubique = null;
-				}
-				memorymanager.destroyNode(current);
-				continue; // collision mécanique attendue. On passe au suivant !
-			}
-			
+						
 			// Si on est arrivé, on reconstruit le chemin
 			// On est arrivé seulement si on vient d'un arc cubique			
 			if(current.cameFromArcCubique != null)
@@ -219,6 +207,18 @@ public class AStarCourbe implements Service, Configurable
 					continue;
 				}
 
+				if(!arcmanager.isReachable(successeur))
+				{
+//					log.debug("Collision");
+					if(successeur.cameFromArcCubique != null)
+					{
+						cinemMemory.destroyNode(successeur.cameFromArcCubique);
+						successeur.cameFromArcCubique = null;
+					}
+					memorymanager.destroyNode(successeur);
+					continue; // collision mécanique attendue. On passe au suivant !
+				}
+				
 				successeur.parent = current;
 				successeur.g_score = current.g_score + arcmanager.distanceTo(successeur);
 				

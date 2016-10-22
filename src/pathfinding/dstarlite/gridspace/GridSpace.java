@@ -151,6 +151,11 @@ public class GridSpace implements Service, Printable, Configurable
 			return Integer.MAX_VALUE;
 		return point.dir.distance;
 	}
+	
+	public boolean isInGrilleStatique(PointGridSpace p)
+	{
+		return grilleStatique.get(p.hashcode);
+	}
 
 	/**
 	 * Un nouveau DStarLite commence. Il faut lui fournir les obstacles actuels
@@ -283,7 +288,7 @@ public class GridSpace implements Service, Printable, Configurable
 	@Override
 	public Layer getLayer()
 	{
-		return Layer.FOREGROUND;
+		return Layer.MIDDLE;
 	}
 	
 }
