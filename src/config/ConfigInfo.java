@@ -36,8 +36,8 @@ public enum ConfigInfo {
 	RAYON_ROBOT(150), // permet de savoir si on shoot un élément de jeu TODO : centre géométrique
 	DILATATION_ROBOT_DSTARLITE(150), // dilatation des obstacles dans le D* Lite. Comme c'est une heuristique, on peut prendre plus petit que la vraie valeur
 	// en fait, comme on veut éviter que l'A* ne cherche à frôler les bords, on augmente artificiellement cette valeur
-	DISTANCE_ROUES_AVANT_ET_ARRIERE(204), // la distance entre l'axe des roues avant et l'axe des roues arrières
-	DISTANCE_ROUES_GAUCHE_ET_DROITE(184), // la distance entre la roue arrière gauche et la roue arrière droite
+	CENTRE_ROTATION_ROUE_X(204), // la position du centre de rotation des roues. Est utilisé pour la rotation des capteurs
+	CENTRE_ROTATION_ROUE_Y(64),
 	DEMI_LONGUEUR_NON_DEPLOYE_ARRIERE(80), // distance entre le centre du robot et le bord arrière du robot non-déployé
 	DEMI_LONGUEUR_NON_DEPLOYE_AVANT(332-80), // distance entre le centre du robot et le bord avant du robot non-déployé
 	LARGEUR_NON_DEPLOYE(228), // distance entre le bord gauche et le bord droit du robot non-déployé
@@ -82,7 +82,7 @@ public enum ConfigInfo {
 	/**
 	 * Paramètres du traitement des capteurs
 	 */
-	NB_CAPTEURS(4), // TODO
+	NB_CAPTEURS(8), // le nombre de capteurs du robot
 	DUREE_PEREMPTION_OBSTACLES(3000), // pendant combien de temps va-t-on garder un obstacle de proximité
 	DISTANCE_MAX_ENTRE_MESURE_ET_OBJET(50), // quelle marge d'erreur autorise-t-on entre un objet et sa détection
 	DISTANCE_BETWEEN_PROXIMITY_OBSTACLES(50), // sous quelle distance fusionne-t-on deux obstacles de proximité ?
