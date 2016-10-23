@@ -244,8 +244,7 @@ public class ClothoidesComputer implements Service, Configurable
 						Math.atan2(vy, vx), // orientation = atan2(vy, vx)
 						v.rebrousse ^ cinematiqueInitiale.enMarcheAvant,
 						1000*(vx * acy - vy * acx) / Math.pow(vx*vx + vy*vy, 1.5), // formule de la courbure d'une courbe paramétrique
-						vitesseMax,
-						robot);
+						vitesseMax);
 
 //				log.debug(t);
 				
@@ -401,7 +400,7 @@ public class ClothoidesComputer implements Service, Configurable
 			modified.arcselems[i].vitesseMax = vitesseMax;
  			if(!vitesse.positif)
  				modified.arcselems[i].courbureGeometrique = - modified.arcselems[i].courbureGeometrique;
- 			modified.arcselems[i].obstacle.update(modified.arcselems[i].getPosition(), modified.arcselems[i].orientationReelle, robot);
+ 			modified.arcselems[i].obstacle.update(modified.arcselems[i].getPosition(), modified.arcselems[i].orientationReelle);
 		}
 	}
 
@@ -464,7 +463,7 @@ public class ClothoidesComputer implements Service, Configurable
 			// TODO : doit dépendre de la courbure !
  			modified.arcselems[i].vitesseMax = vitesseMax;
 			modified.arcselems[i].enMarcheAvant = enMarcheAvant;
-			modified.arcselems[i].obstacle.update(modified.arcselems[i].getPosition(), modified.arcselems[i].orientationReelle, robot);
+			modified.arcselems[i].obstacle.update(modified.arcselems[i].getPosition(), modified.arcselems[i].orientationReelle);
 		}
 	}
 
@@ -496,7 +495,7 @@ public class ClothoidesComputer implements Service, Configurable
  			// TODO : doit dépendre de la courbure !
  			modified.arcselems[i].vitesseMax = vitesseMax;
 			modified.arcselems[i].enMarcheAvant = enMarcheAvant;
-			modified.arcselems[i].obstacle.update(modified.arcselems[i].getPosition(), modified.arcselems[i].orientationReelle, robot);
+			modified.arcselems[i].obstacle.update(modified.arcselems[i].getPosition(), modified.arcselems[i].orientationReelle);
 		}
 	}
 

@@ -21,7 +21,6 @@ import java.awt.Graphics;
 
 import graphic.Fenetre;
 import graphic.printable.Layer;
-import robot.RobotChrono;
 import robot.RobotReal;
 import utils.Vec2RO;
 import utils.Vec2RW;
@@ -78,19 +77,10 @@ public class ObstacleRectangular extends Obstacle
 		this.l = l;
 	}
 
-	public ObstacleRectangular()
+	protected ObstacleRectangular(Vec2RW pos)
 	{
-		super(new Vec2RW());
-		centreGeometrique = new Vec2RW();
-		coinBasGauche = new Vec2RW();
-		coinHautGauche = new Vec2RW();
-		coinBasDroite = new Vec2RW();
-		coinHautDroite = new Vec2RW();
-		coinBasGaucheRotate = new Vec2RW();
-		coinHautGaucheRotate = new Vec2RW();
-		coinBasDroiteRotate = new Vec2RW();
-		coinHautDroiteRotate = new Vec2RW();
-	}	
+		super(pos);
+	}
 	
 	/**
 	 * Cet angle est celui par lequel le rectangle a été tourné.
@@ -134,7 +124,7 @@ public class ObstacleRectangular extends Obstacle
 	 * @param point
 	 * @return
 	 */
-	private void convertitVersRepereObstacle(Vec2RO point, Vec2RW out)
+	protected void convertitVersRepereObstacle(Vec2RO point, Vec2RW out)
 	{
 		out.setX(cos*(point.getX()-position.getX())+sin*(point.getY()-position.getY()));
 		out.setY(-sin*(point.getX()-position.getX())+cos*(point.getY()-position.getY()));
@@ -146,7 +136,7 @@ public class ObstacleRectangular extends Obstacle
 	 * @param point
 	 * @return
 	 */
-	private void convertitVersRepereTable(Vec2RO point, Vec2RW out)
+	protected void convertitVersRepereTable(Vec2RO point, Vec2RW out)
 	{
 		out.setX(cos*point.getX()-sin*point.getY()+position.getX());
 		out.setY(sin*point.getX()+cos*point.getY()+position.getY());
@@ -157,7 +147,7 @@ public class ObstacleRectangular extends Obstacle
 	 * @param point
 	 * @return
 	 */
-	private double getXConvertiVersRepereObstacle(Vec2RO point)
+	protected double getXConvertiVersRepereObstacle(Vec2RO point)
 	{
 		return cos*(point.getX()-position.getX())+sin*(point.getY()-position.getY());
 	}
@@ -167,7 +157,7 @@ public class ObstacleRectangular extends Obstacle
 	 * @param point
 	 * @return
 	 */
-	private double getYConvertiVersRepereObstacle(Vec2RO point)
+	protected double getYConvertiVersRepereObstacle(Vec2RO point)
 	{
 		return -sin*(point.getX()-position.getX())+cos*(point.getY()-position.getY());
 	}
@@ -274,55 +264,6 @@ public class ObstacleRectangular extends Obstacle
 
 		// Sinon, on est dans l'obstacle
 		return 0;
-	}
-
-	/**
-	 * Mise à jour de l'obstacle
-	 * @param position
-	 * @param orientation
-	 * @param robot
-	 * @return
-	 */
-	public ObstacleRectangular update(Vec2RO position, double orientation, RobotChrono robot)
-	{
-		if(this.position == null)
-			this.position = position.clone();
-		else
-			position.copy(this.position);
-		this.angle = orientation;
-		cos = Math.cos(angle);
-		sin = Math.sin(angle);
-		int a = robot.getDemieLargeurDroite();
-		int b = robot.getDemieLargeurGauche();
-		int c = robot.getDemieLongueurAvant();
-		int d = robot.getDemieLongueurArriere();
-		this.angle = orientation;
-		coinBasGauche.setX(-d);
-		coinBasGauche.setY(-a);
-		coinHautGauche.setX(-d);
-		coinHautGauche.setY(b);	
-		coinBasDroite.setX(c);
-		coinBasDroite.setY(-a);
-		coinHautDroite.setX(c);
-		coinHautDroite.setY(b);
-		convertitVersRepereTable(coinBasGauche, coinBasGaucheRotate);
-		convertitVersRepereTable(coinHautGauche, coinHautGaucheRotate);
-		convertitVersRepereTable(coinBasDroite, coinBasDroiteRotate);
-		convertitVersRepereTable(coinHautDroite, coinHautDroiteRotate);
-		if(centreGeometrique == null)
-			centreGeometrique = coinBasDroiteRotate.clone();
-		else
-			coinBasDroiteRotate.copy(centreGeometrique);
-		centreGeometrique = centreGeometrique.plus(coinHautGaucheRotate).scalar(0.5);
-		demieDiagonale = Math.sqrt((a+b)*(a+b)/4+(c+d)*(c+d)/4);
-
-		if(printAllObstacles)
-			synchronized(buffer)
-			{
-				buffer.notify();
-			}
-	
-		return this;
 	}
 	
 	public double getDemieDiagonale()

@@ -63,10 +63,10 @@ public class CheminPathfinding implements Service, Printable, Configurable
 	private int anticipationReplanif;
 	private boolean graphic;
 	
-	public CheminPathfinding(Log log, BufferOutgoingOrder out, ObstaclesIteratorPresent iterator, PrintBuffer buffer)
+	public CheminPathfinding(Log log, BufferOutgoingOrder out, ObstaclesIteratorPresent iterator, PrintBuffer buffer, RobotReal robot)
 	{
 		for(int i = 0; i < chemin.length; i++)
-			chemin[i] = new CinematiqueObs();
+			chemin[i] = new CinematiqueObs(robot);
 		this.log = log;
 		this.out = out;
 		this.iterObstacles = iterator;

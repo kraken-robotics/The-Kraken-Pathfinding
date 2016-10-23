@@ -78,27 +78,7 @@ public abstract class Robot implements Configurable, DynamicConfigurable
     {
     	return cinematique.toString();
     }
-    
-	public int getDemieLargeurGauche()
-	{
-		return largeurNonDeploye / 2; // TODO
-	}
-
-	public int getDemieLargeurDroite()
-	{
-		return largeurNonDeploye / 2; // TODO
-	}
-
-	public int getDemieLongueurAvant()
-	{
-		return longueurNonDeploye; // TODO
-	}
-
-	public int getDemieLongueurArriere()
-	{
-		return 0; // TODO
-	}
-	
+    	
 	public void setCinematique(Cinematique cinematique)
 	{
 		cinematique.copy(this.cinematique);

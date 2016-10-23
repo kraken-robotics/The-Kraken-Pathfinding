@@ -18,7 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 package robot;
 
 import memory.Memorizable;
-import obstacles.types.ObstacleRectangular;
+import obstacles.types.ObstacleRobot;
 
 /**
  * Une cinématique + un obstacle associé
@@ -28,13 +28,13 @@ import obstacles.types.ObstacleRectangular;
 
 public class CinematiqueObs extends Cinematique implements Memorizable
 {
-	public volatile ObstacleRectangular obstacle;
+	public volatile ObstacleRobot obstacle;
 	private int indiceMemory;	
 
-	public CinematiqueObs()
+	public CinematiqueObs(RobotReal r)
 	{
-		super(0,0,0,true,0,null);
-		obstacle = new ObstacleRectangular();
+		super();
+		obstacle = new ObstacleRobot(r);
 	}
 	
 /*	public CinematiqueObs(double x, double y, double orientation, boolean enMarcheAvant, double courbure, Speed vitesseMax, RobotChrono r)
@@ -67,10 +67,10 @@ public class CinematiqueObs extends Cinematique implements Memorizable
 	 * @param obstacle
 	 * @param r
 	 */
-	public void update(double x, double y, double orientation, boolean enMarcheAvant, double courbure, Speed vitesseMax, RobotChrono r)
+	public void update(double x, double y, double orientation, boolean enMarcheAvant, double courbure, Speed vitesseMax)
 	{
 		super.update(x,y,orientation,enMarcheAvant, courbure,vitesseMax);
-		obstacle.update(position, orientationReelle, r);
+		obstacle.update(position, orientationReelle);
 	}
 
 }

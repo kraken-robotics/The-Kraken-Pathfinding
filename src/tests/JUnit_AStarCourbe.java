@@ -19,6 +19,7 @@ package tests;
 
 import obstacles.types.ObstacleCircular;
 import obstacles.types.ObstacleRectangular;
+import obstacles.types.ObstacleRobot;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -124,10 +125,11 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 		robot.useConfig(config);
 		ClothoidesComputer clotho = container.getService(ClothoidesComputer.class);
 		RobotChrono r = container.make(RobotChrono.class);
+		RobotReal rr = container.getService(RobotReal.class);
 		int nbArc = 6;
 		ArcCourbeClotho arc[] = new ArcCourbeClotho[nbArc];
 		for(int i = 0; i < nbArc; i++)
-			arc[i] = new ArcCourbeClotho();
+			arc[i] = new ArcCourbeClotho(rr);
 
 		Cinematique c = new Cinematique(0, 1000, -Math.PI/2, false, -5.5, Speed.STANDARD);
 		log.debug("Initial : "+c);
@@ -139,16 +141,16 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 		clotho.getTrajectoire(r, arc[4], VitesseCourbure.COURBURE_IDENTIQUE, Speed.STANDARD, arc[5]);
 	
 		buffer.addSupprimable(new ObstacleCircular(new Vec2RO(200, 1000-360), 15));
-		ObstacleRectangular[] obs= new ObstacleRectangular[nbArc*ClothoidesComputer.NB_POINTS];
+		ObstacleRobot[] obs= new ObstacleRobot[nbArc*ClothoidesComputer.NB_POINTS];
 		for(int i = 0; i < obs.length; i++)
-			obs[i] = new ObstacleRectangular(new Vec2RO(0,0),0,0);
+			obs[i] = new ObstacleRobot(rr);
 		
 		for(int a = 0; a < nbArc; a++)	
 		{
 //			System.out.println("arc "+arc[a].v+" avec "+arc[a].arcselems[0]);
 				for(int j = 0; j < arc[a].getNbPoints(); j++)
 				{
-					obs[a*ClothoidesComputer.NB_POINTS+j].update(arc[a].getPoint(j).getPosition(), arc[a].getPoint(j).orientationGeometrique, robot);
+					obs[a*ClothoidesComputer.NB_POINTS+j].update(arc[a].getPoint(j).getPosition(), arc[a].getPoint(j).orientationGeometrique);
 					System.out.println(obs[a*ClothoidesComputer.NB_POINTS+j]);
 					buffer.addSupprimable(obs[a*ClothoidesComputer.NB_POINTS+j]);
 					Thread.sleep(100);
@@ -162,10 +164,11 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 		boolean graphicTrajectory = config.getBoolean(ConfigInfo.GRAPHIC_TRAJECTORY);
 		ClothoidesComputer clotho = container.getService(ClothoidesComputer.class);
 		RobotChrono r = container.make(RobotChrono.class);
+		RobotReal rr = container.getService(RobotReal.class);
 		int nbArc = 16;
 		ArcCourbeClotho arc[] = new ArcCourbeClotho[nbArc];
 		for(int i = 0; i < nbArc; i++)
-			arc[i] = new ArcCourbeClotho();
+			arc[i] = new ArcCourbeClotho(rr);
 
 		Cinematique c = new Cinematique(0, 1000, Math.PI/2, false, 0, Speed.STANDARD);
 		log.debug("Initial : "+c);
@@ -218,7 +221,7 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 	@Test
     public void test_bench() throws Exception
     {
-		int nbmax = 10000;
+		int nbmax = 1000;
 		long avant = System.nanoTime();
 		Cinematique depart = new Cinematique(-1100, 400, 0, true, 0, Speed.STANDARD);
 		robot.setCinematique(depart);
@@ -227,7 +230,7 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 			astar.computeNewPath(c, DirectionStrategy.FASTEST);
 		log.debug("Temps : "+(System.nanoTime() - avant) / (nbmax * 1000000.));
     }
-	*/
+*/
 	@Test
     public void test_recherche_fastest() throws Exception
     {

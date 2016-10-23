@@ -24,6 +24,7 @@ import org.junit.Test;
 import pathfinding.astarCourbe.arcs.ArcCourbeClotho;
 import pathfinding.chemin.CheminPathfinding;
 import pathfinding.chemin.IteratorCheminPathfinding;
+import robot.RobotReal;
 
 /**
  * Tests unitaires pour le chemin pathfinding
@@ -50,8 +51,8 @@ public class JUnit_CheminPF extends JUnit_Test {
 		iterator.reinit();
 		Assert.assertEquals(0, iterator.getIndex());
 		Assert.assertFalse(iterator.hasNext());
-		ArcCourbeClotho arc = new ArcCourbeClotho();
-		chemin.add(arc);
+		ArcCourbeClotho arc = new ArcCourbeClotho(container.getService(RobotReal.class));
+		chemin.add(arc, true);
 		Assert.assertTrue(iterator.hasNext());
 	}
 
