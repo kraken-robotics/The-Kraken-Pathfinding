@@ -36,8 +36,9 @@ public class ThreadFenetre extends ThreadService implements Configurable
 	protected Log log;
 	private Fenetre fenetre;
 	private PrintBuffer buffer;
-	
+	private boolean gif;
 	private boolean print;
+	private long derniereSauv = 0;
 	
 	public ThreadFenetre(Log log, Fenetre fenetre, PrintBuffer buffer)
 	{
@@ -67,16 +68,23 @@ public class ThreadFenetre extends ThreadService implements Configurable
 						buffer.wait();
 				}
 				fenetre.refresh();
+				if(gif && System.currentTimeMillis() - derniereSauv > 300)
+				{ // on sauvegarde une image toutes les 300ms au plus
+					fenetre.saveImage();
+					derniereSauv = System.currentTimeMillis();
+				}
 				Thread.sleep(50); // on ne met pas à jour plus souvent que toutes les 50ms
 			}
 		} catch (InterruptedException e) {
 			log.debug("Arrêt de "+Thread.currentThread().getName());
+			fenetre.saveGif("output.gif", 200);
 		}
 	}
 
 	@Override
 	public void useConfig(Config config)
 	{
+		gif = config.getBoolean(ConfigInfo.GRAPHIC_PRODUCE_GIF);
 		print = config.getBoolean(ConfigInfo.GRAPHIC_ENABLE);
 	}
 

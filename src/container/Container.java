@@ -96,9 +96,9 @@ public class Container implements Service, Configurable
 
 		for(ThreadName n : ThreadName.values())
 		{
-			getService(n.c).join(1000); // on attend au plus 1000ms que le thread s'arrête
-			if(getService(n.c).isAlive())
-				log.critical(n.c.getSimpleName()+" encore vivant !");
+			getService(n.c).join(0); // on attend indéfiniment que le thread s'arrête
+//			if(getService(n.c).isAlive())
+//				log.critical(n.c.getSimpleName()+" encore vivant !");
 		}
 		
 		log.debug("Fermeture de la série");

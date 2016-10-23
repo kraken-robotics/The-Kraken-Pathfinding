@@ -45,9 +45,12 @@ public abstract class Obstacle implements Printable
 	protected int distance_dilatation;
 	protected static Log log;
 	protected static PrintBuffer buffer;
-	protected static Image imageRobot = null;
 
-    protected static boolean printAllObstacles = false; // static car commun à tous
+	// Pour l'affichage du robot
+	protected static Image imageRobot = null, imageRobotRoueG = null, imageRobotRoueD = null;
+	protected static int L, d;
+	protected static Vec2RO centreRotationGauche, centreRotationDroite;
+    protected static boolean printAllObstacles = false;
 	protected Layer l = null;
 	public Color c;
 	
@@ -61,11 +64,19 @@ public abstract class Obstacle implements Printable
 	{
 		printAllObstacles = config.getBoolean(ConfigInfo.GRAPHIC_ALL_OBSTACLES);
 		if(imageRobot == null && config.getBoolean(ConfigInfo.GRAPHIC_ROBOT_AND_SENSORS))
+		{
+			L = config.getInt(ConfigInfo.CENTRE_ROTATION_ROUE_X);
+			d = config.getInt(ConfigInfo.CENTRE_ROTATION_ROUE_Y);
+			centreRotationGauche = new Vec2RO(L, d);
+			centreRotationDroite = new Vec2RO(L, -d);
 			try {
 				imageRobot = ImageIO.read(new File(config.getString(ConfigInfo.GRAPHIC_ROBOT_PATH)));
+				imageRobotRoueG = ImageIO.read(new File(config.getString(ConfigInfo.GRAPHIC_ROBOT_ROUE_GAUCHE_PATH)));
+				imageRobotRoueD = ImageIO.read(new File(config.getString(ConfigInfo.GRAPHIC_ROBOT_ROUE_DROITE_PATH)));
 			} catch (IOException e) {
 				log.warning(e);
 			}
+		}
 	}
 
 	public Obstacle(Vec2RO position, Layer l)

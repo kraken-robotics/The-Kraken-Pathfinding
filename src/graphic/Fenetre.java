@@ -18,6 +18,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 package graphic;
 
 import javax.imageio.ImageIO;
+import javax.imageio.stream.FileImageOutputStream;
+import javax.imageio.stream.ImageOutputStream;
 import javax.swing.*;
 
 import config.Config;
@@ -31,8 +33,11 @@ import utils.Log;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 
 /**
  * Interface graphique
@@ -56,7 +61,7 @@ public class Fenetre extends JPanel implements Service, Configurable {
 	private int sizeX, sizeY;
 	private JFrame frame;
 	private WindowExit exit = new WindowExit();
-		
+	private ArrayList<BufferedImage> images = new ArrayList<BufferedImage>();
 	private RobotReal robot;
 	private boolean needInit = true;
 	private String backgroundPath;
@@ -183,6 +188,46 @@ public class Fenetre extends JPanel implements Service, Configurable {
 				log.debug("Attente de l'arrêt de la fenêtre…");
 				exit.wait(5000);
 			}
+		}
+	}
+
+	/**
+	 * Ajoute une image au gif final
+	 */
+	public void saveImage()
+	{
+		BufferedImage bi = new BufferedImage(sizeX, sizeY, BufferedImage.TYPE_INT_RGB);
+		paint(bi.getGraphics());
+		images.add(bi);
+	}
+	
+	/**
+	 * @param file
+	 * @param delay
+	 */
+	public void saveGif(String file, int delay)
+	{
+		if(!images.isEmpty())
+		{
+			log.debug("Sauvegarde du gif de "+images.size()+" images…");
+		    ImageOutputStream output;
+			try {
+				output = new FileImageOutputStream(new File(file));
+		 
+			    GifSequenceWriter writer = new GifSequenceWriter(output, images.get(0).getType(), delay, true);    
+			 
+			    for(BufferedImage i : images)
+			    	writer.writeToSequence(i);
+	
+			    writer.close();    
+			    output.close();
+				log.debug("Sauvegarde finie !");
+	
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}  
 		}
 	}
 	

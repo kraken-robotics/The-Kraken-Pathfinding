@@ -115,7 +115,10 @@ public enum ConfigInfo {
 	GRAPHIC_GAME_ELEMENTS(false), // affiche les éléments de jeux
 	GRAPHIC_ROBOT_COLLISION(false), // affiche les obstacles du robot lors de la vérification des collisions
 	GRAPHIC_BACKGROUND_PATH("background-2017-color.png"), // affiche d'image de la table
-	GRAPHIC_ROBOT_PATH("robot_720.png"),
+	GRAPHIC_ROBOT_PATH("robot_sans_roues_720.png"), // image du robot sans les roues
+	GRAPHIC_ROBOT_ROUE_GAUCHE_PATH("robot_roue_gauche_720.png"), // image de la roue gauche
+	GRAPHIC_ROBOT_ROUE_DROITE_PATH("robot_roue_droite_720.png"), // image de la roue droite
+	GRAPHIC_PRODUCE_GIF(false), // produit un gif ?
 	GRAPHIC_BACKGROUND(false), // affiche d'image de la table
 	GRAPHIC_SIZE_X(1000), // taille par défaut (sans image) de la fenêtre
 	GRAPHIC_ALL_OBSTACLES(false), // affiche absolument tous les obstacles créés
