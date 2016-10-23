@@ -15,7 +15,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>
 */
 
-package pathfinding.astarCourbe;
+package pathfinding.astar;
 
 import java.util.Comparator;
 import java.util.HashSet;
@@ -26,9 +26,9 @@ import memory.NodeMM;
 import memory.CinemObsMM;
 import obstacles.types.ObstacleCircular;
 import pathfinding.RealGameState;
-import pathfinding.astarCourbe.arcs.ArcManager;
+import pathfinding.astar.arcs.ArcCourbe;
+import pathfinding.astar.arcs.ArcManager;
 import pathfinding.chemin.CheminPathfinding;
-import pathfinding.astarCourbe.arcs.ArcCourbe;
 import pathfinding.dstarlite.DStarLite;
 import pathfinding.dstarlite.gridspace.PointGridSpace;
 import config.Config;

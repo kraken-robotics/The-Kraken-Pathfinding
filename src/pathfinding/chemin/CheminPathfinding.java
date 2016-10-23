@@ -36,7 +36,7 @@ import config.Config;
 import config.ConfigInfo;
 import config.Configurable;
 import container.Service;
-import pathfinding.astarCourbe.arcs.ArcCourbe;
+import pathfinding.astar.arcs.ArcCourbe;
 
 /**
  * S'occupe de la trajectoire actuelle.

@@ -21,7 +21,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import pathfinding.astarCourbe.arcs.ArcCourbeClotho;
+import pathfinding.astar.arcs.ArcCourbeClotho;
 import pathfinding.chemin.CheminPathfinding;
 import pathfinding.chemin.IteratorCheminPathfinding;
 import robot.RobotReal;

@@ -17,7 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 package robot;
 
-import pathfinding.astarCourbe.arcs.ArcCourbe;
+import pathfinding.astar.arcs.ArcCourbe;
 import utils.Log;
 
 /**

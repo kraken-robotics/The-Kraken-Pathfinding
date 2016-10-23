@@ -15,9 +15,9 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>
 */
 
-package pathfinding.astarCourbe.arcs;
+package pathfinding.astar.arcs;
 
-import pathfinding.astarCourbe.AStarCourbeNode;
+import pathfinding.astar.AStarCourbeNode;
 import robot.Cinematique;
 import robot.DirectionStrategy;
 import robot.Speed;

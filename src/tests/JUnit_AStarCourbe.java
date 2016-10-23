@@ -27,11 +27,11 @@ import org.junit.Test;
 
 import config.ConfigInfo;
 import graphic.PrintBuffer;
-import pathfinding.astarCourbe.AStarCourbe;
-import pathfinding.astarCourbe.arcs.ArcCourbeClotho;
-import pathfinding.astarCourbe.arcs.ArcCourbeCubique;
-import pathfinding.astarCourbe.arcs.ClothoidesComputer;
-import pathfinding.astarCourbe.arcs.VitesseCourbure;
+import pathfinding.astar.AStarCourbe;
+import pathfinding.astar.arcs.ArcCourbeClotho;
+import pathfinding.astar.arcs.ArcCourbeCubique;
+import pathfinding.astar.arcs.ClothoidesComputer;
+import pathfinding.astar.arcs.VitesseCourbure;
 import pathfinding.chemin.CheminPathfinding;
 import pathfinding.chemin.IteratorCheminPathfinding;
 import pathfinding.dstarlite.gridspace.GridSpace;

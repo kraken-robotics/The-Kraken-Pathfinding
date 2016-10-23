@@ -24,7 +24,7 @@ import config.Config;
 import exceptions.ContainerException;
 import obstacles.memory.ObstaclesIteratorPresent;
 import obstacles.types.ObstacleProximity;
-import pathfinding.astarCourbe.AStarCourbe;
+import pathfinding.astar.AStarCourbe;
 import table.RealTable;
 import tests.container.A;
 import tests.container.C;

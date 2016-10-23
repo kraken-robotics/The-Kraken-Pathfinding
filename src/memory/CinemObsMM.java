@@ -21,7 +21,7 @@ import config.Config;
 import config.ConfigInfo;
 import container.Container;
 import exceptions.ContainerException;
-import pathfinding.astarCourbe.arcs.ArcCourbeCubique;
+import pathfinding.astar.arcs.ArcCourbeCubique;
 import robot.CinematiqueObs;
 import utils.Log;
 

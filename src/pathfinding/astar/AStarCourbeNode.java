@@ -15,13 +15,13 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>
 */
 
-package pathfinding.astarCourbe;
+package pathfinding.astar;
 
 import memory.Memorizable;
 import pathfinding.ChronoGameState;
-import pathfinding.astarCourbe.arcs.ArcCourbe;
-import pathfinding.astarCourbe.arcs.ArcCourbeClotho;
-import pathfinding.astarCourbe.arcs.ArcCourbeCubique;
+import pathfinding.astar.arcs.ArcCourbe;
+import pathfinding.astar.arcs.ArcCourbeClotho;
+import pathfinding.astar.arcs.ArcCourbeCubique;
 import robot.RobotReal;
 
 /**

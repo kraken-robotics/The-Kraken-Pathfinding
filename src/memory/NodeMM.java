@@ -17,7 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 package memory;
 
-import pathfinding.astarCourbe.AStarCourbeNode;
+import pathfinding.astar.AStarCourbeNode;
 import utils.Log;
 import config.Config;
 import config.ConfigInfo;
