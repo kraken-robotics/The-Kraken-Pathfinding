@@ -111,7 +111,8 @@ public enum ConfigInfo {
 	GRAPHIC_TRAJECTORY(false), // affiche les trajectoires temporaires
 	GRAPHIC_TRAJECTORY_FINAL(false), // affiche les trajectoires
 	GRAPHIC_FIXED_OBSTACLES(false), // affiche les obstacles fixes
-	GRAPHIC_MOBILES_OBSTACLES(false), // affiche les obstacles fixes
+	GRAPHIC_MOBILES_OBSTACLES(false), // affiche les obstacles mobiles
+	GRAPHIC_GAME_ELEMENTS(false), // affiche les éléments de jeux
 	GRAPHIC_ROBOT_COLLISION(false), // affiche les obstacles du robot lors de la vérification des collisions
 	GRAPHIC_BACKGROUND_PATH("background-2017-color.png"), // affiche d'image de la table
 	GRAPHIC_ROBOT_PATH("robot_720.png"),

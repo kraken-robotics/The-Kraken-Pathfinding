@@ -43,7 +43,7 @@ public class RealTable extends Table implements Service, Configurable
 	@Override
 	public void useConfig(Config config)
 	{
-		if(config.getBoolean(ConfigInfo.GRAPHIC_MOBILES_OBSTACLES))
+		if(config.getBoolean(ConfigInfo.GRAPHIC_GAME_ELEMENTS))
 			for(GameElementNames g : GameElementNames.values())
 				buffer.addSupprimable(g.obstacle);
 	}
