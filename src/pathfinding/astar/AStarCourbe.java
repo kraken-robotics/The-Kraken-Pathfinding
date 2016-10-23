@@ -111,7 +111,7 @@ public class AStarCourbe implements Service, Configurable
 	 * @return
 	 * @throws PathfindingException 
 	 */
-	protected final void process() throws PathfindingException
+	protected final void process(boolean shoot) throws PathfindingException
 	{
 		depart.parent = null;
 		depart.cameFromArcCubique = null;
@@ -141,7 +141,7 @@ public class AStarCourbe implements Service, Configurable
 			closedset.add(current);
 
 			// ce calcul étant un peu lourd, on ne le fait que si le noeud a été choisi, et pas à la sélection des voisins (dans hasNext par exemple)
-			if(!arcmanager.isReachable(current))
+			if(!arcmanager.isReachable(current, shoot))
 			{
 //				log.debug("Collision");
 				if(current.cameFromArcCubique != null)
@@ -289,7 +289,7 @@ public class AStarCourbe implements Service, Configurable
 	 * @return
 	 * @throws PathfindingException 
 	 */
-	public void computeNewPath(Cinematique arrivee, DirectionStrategy directionstrategy) throws PathfindingException
+	public void computeNewPath(Cinematique arrivee, DirectionStrategy directionstrategy, boolean shoot) throws PathfindingException
 	{
 		vitesseMax = Speed.STANDARD;
 		this.directionstrategyactuelle = directionstrategy;
@@ -301,10 +301,10 @@ public class AStarCourbe implements Service, Configurable
 		if(graphicDStarLite)
 			dstarlite.itineraireBrut();
 
-		process();
+		process(shoot);
 	}
 	
-	public synchronized void updatePath() throws PathfindingException
+	public synchronized void updatePath(boolean shoot) throws PathfindingException
 	{
 		depart.init();
 		synchronized(state)
@@ -313,7 +313,7 @@ public class AStarCourbe implements Service, Configurable
 		}
 		depart.state.robot.setCinematique(chemin.getLastValidCinematique());
 		vitesseMax = Speed.REPLANIF; // TODO
-		process();
+		process(shoot);
 	}
 
 }

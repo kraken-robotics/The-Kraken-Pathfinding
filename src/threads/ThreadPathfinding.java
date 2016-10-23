@@ -52,7 +52,7 @@ public class ThreadPathfinding extends ThreadService
 				if(chemin.isUptodate())
 					chemin.wait();
 				try {
-					pathfinding.updatePath();
+					pathfinding.updatePath(false); // TODO
 				} catch (PathfindingException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

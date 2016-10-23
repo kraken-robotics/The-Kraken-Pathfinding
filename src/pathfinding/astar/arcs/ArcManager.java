@@ -74,7 +74,7 @@ public class ArcManager implements Service, Configurable
 	 * @return
 	 * @throws FinMatchException
 	 */
-	public boolean isReachable(AStarCourbeNode node)
+	public boolean isReachable(AStarCourbeNode node, boolean shoot)
 	{
 		// le tout premier nœud n'a pas de parent
 		if(node.parent == null)
@@ -107,13 +107,14 @@ public class ArcManager implements Service, Configurable
     			return false;
     		}
     	
-    	// On vérifie si on collisionne un élément de jeu
-		for(GameElementNames g : GameElementNames.values())
-			if(table.isDone(g) != Tribool.FALSE && g.obstacle.isColliding(obs))
-    		{
-//    			log.debug("Collision avec "+g);
-    			return false;
-    		}
+    	// On vérifie si on collisionne un élément de jeu (sauf si on shoot)
+    	if(!shoot)
+			for(GameElementNames g : GameElementNames.values())
+				if(table.isDone(g) == Tribool.FALSE && g.obstacle.isColliding(obs))
+	    		{
+	//    			log.debug("Collision avec "+g);
+	    			return false;
+	    		}
 
     	return true;
 	}
