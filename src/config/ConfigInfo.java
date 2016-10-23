@@ -38,7 +38,8 @@ public enum ConfigInfo {
 	// en fait, comme on veut éviter que l'A* ne cherche à frôler les bords, on augmente artificiellement cette valeur
 	DISTANCE_ROUES_AVANT_ET_ARRIERE(204), // la distance entre l'axe des roues avant et l'axe des roues arrières
 	DISTANCE_ROUES_GAUCHE_ET_DROITE(184), // la distance entre la roue arrière gauche et la roue arrière droite
-	LONGUEUR_NON_DEPLOYE(332), // distance entre le bord avant et le bord arrière du robot non-déployé
+	DEMI_LONGUEUR_NON_DEPLOYE_ARRIERE(80), // distance entre le centre du robot et le bord arrière du robot non-déployé
+	DEMI_LONGUEUR_NON_DEPLOYE_AVANT(332-80), // distance entre le centre du robot et le bord avant du robot non-déployé
 	LARGEUR_NON_DEPLOYE(228), // distance entre le bord gauche et le bord droit du robot non-déployé
 	
 	/**

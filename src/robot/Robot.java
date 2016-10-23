@@ -18,8 +18,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 package robot;
 
 import config.Config;
-import config.ConfigInfo;
-import config.Configurable;
 import config.DynamicConfigurable;
 import utils.Log;
 
@@ -28,7 +26,7 @@ import utils.Log;
  * @author pf
  */
 
-public abstract class Robot implements Configurable, DynamicConfigurable
+public abstract class Robot implements DynamicConfigurable
 {
 	/*
 	 * DÉPLACEMENT HAUT NIVEAU
@@ -39,7 +37,6 @@ public abstract class Robot implements Configurable, DynamicConfigurable
     protected Cinematique cinematique;
     protected volatile boolean symetrie;
     protected boolean deploye = false;
-    protected int largeurNonDeploye, longueurNonDeploye;
 	protected Log log;
 	
 	public Robot(Log log)
@@ -64,13 +61,6 @@ public abstract class Robot implements Configurable, DynamicConfigurable
 	public synchronized void updateConfig(Config config)
 	{
 		symetrie = config.getSymmetry();
-	}
-
-	@Override
-	public void useConfig(Config config)
-	{
-		largeurNonDeploye = config.getInt(ConfigInfo.LARGEUR_NON_DEPLOYE);
-		longueurNonDeploye = config.getInt(ConfigInfo.LONGUEUR_NON_DEPLOYE);
 	}
     
     @Override

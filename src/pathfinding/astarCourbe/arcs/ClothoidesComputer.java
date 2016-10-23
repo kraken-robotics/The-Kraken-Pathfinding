@@ -303,8 +303,6 @@ public class ClothoidesComputer implements Service, Configurable
 		getTrajectoire(robot, robot.getCinematique(), vitesse, vitesseMax, modified);
 	}
 	
-	private Vec2RW tmp = new Vec2RW();
-	
 	/**
 	 * ATTENTION ! La courbure est en m^-1 et pas en mm^-1
 	 * En effet, comme le rayon de courbure sera souvent plus petit que le mètre, on aura une courbure souvent plus grande que 1
@@ -322,7 +320,6 @@ public class ClothoidesComputer implements Service, Configurable
 //		log.debug(vitesse);
 		double courbure = cinematiqueInitiale.courbureGeometrique;
 		double orientation = cinematiqueInitiale.orientationGeometrique;
-
 		if(vitesse.rebrousse)
 		{
 			courbure = 0;
@@ -363,14 +360,13 @@ public class ClothoidesComputer implements Service, Configurable
 		// (afin de ne pas avoir de doublon quand on enchaîne les arcs, entre le dernier point de l'arc t et le premier de l'arc t+1)		
 		for(int i = 0; i < NB_POINTS; i++)
 		{
-			trajectoire[pointDepart + vitesse.squaredRootVitesse * (i + 1)].copy(tmp);
+			trajectoire[pointDepart + vitesse.squaredRootVitesse * (i + 1)].copy(modified.arcselems[i].getPositionEcriture());
 			sDepart += vitesse.squaredRootVitesse * PRECISION_TRACE;
-			tmp.minus(trajectoire[pointDepart])
+			modified.arcselems[i].getPositionEcriture().minus(trajectoire[pointDepart])
 			.scalar(coeffMultiplicatif)
 			.Ysym(!vitesse.positif)
 			.rotate(cos, sin)
-			.plus(cinematiqueInitiale.getPosition())
-			.copy(modified.arcselems[i].getPositionEcriture());
+			.plus(cinematiqueInitiale.getPosition());
 
  			double orientationClotho = sDepart * sDepart;
  			if(!vitesse.positif)
@@ -380,6 +376,8 @@ public class ClothoidesComputer implements Service, Configurable
  			
 			modified.arcselems[i].orientationGeometrique = baseOrientation + orientationClotho;
 			modified.arcselems[i].courbureGeometrique = sDepart * vitesse.squaredRootVitesse;
+ 			if(!vitesse.positif)
+ 				modified.arcselems[i].courbureGeometrique = - modified.arcselems[i].courbureGeometrique;
 
  			if(marcheAvant)
  			{
@@ -398,8 +396,6 @@ public class ClothoidesComputer implements Service, Configurable
 			
 			// TODO : vitesse max dépend de la courbure !
 			modified.arcselems[i].vitesseMax = vitesseMax;
- 			if(!vitesse.positif)
- 				modified.arcselems[i].courbureGeometrique = - modified.arcselems[i].courbureGeometrique;
  			modified.arcselems[i].obstacle.update(modified.arcselems[i].getPosition(), modified.arcselems[i].orientationReelle);
 		}
 	}

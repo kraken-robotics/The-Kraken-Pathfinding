@@ -121,8 +121,6 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 	@Test
     public void test_depose() throws Exception
     {
-		RobotChrono robot = container.make(RobotChrono.class);
-		robot.useConfig(config);
 		ClothoidesComputer clotho = container.getService(ClothoidesComputer.class);
 		RobotChrono r = container.make(RobotChrono.class);
 		RobotReal rr = container.getService(RobotReal.class);
