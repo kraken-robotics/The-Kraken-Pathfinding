@@ -114,6 +114,7 @@ public enum ConfigInfo {
 	GRAPHIC_MOBILES_OBSTACLES(false), // affiche les obstacles fixes
 	GRAPHIC_ROBOT_COLLISION(false), // affiche les obstacles du robot lors de la vérification des collisions
 	GRAPHIC_BACKGROUND_PATH("background-2017-color.png"), // affiche d'image de la table
+	GRAPHIC_ROBOT_PATH("robot_720.png"),
 	GRAPHIC_BACKGROUND(false), // affiche d'image de la table
 	GRAPHIC_SIZE_X(1000), // taille par défaut (sans image) de la fenêtre
 	GRAPHIC_ALL_OBSTACLES(false), // affiche absolument tous les obstacles créés

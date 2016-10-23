@@ -227,6 +227,7 @@ public class Container implements Service, Configurable
 		}
 		
 		Obstacle.set(log, getService(PrintBuffer.class));
+		Obstacle.useConfig(config);
 		
 		startAllThreads();
 

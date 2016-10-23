@@ -24,6 +24,7 @@ import obstacles.types.ObstacleCircular;
 import obstacles.types.ObstacleRectangular;
 import graphic.Fenetre;
 import graphic.PrintBuffer;
+import graphic.printable.Couleur;
 import graphic.printable.Layer;
 import graphic.printable.Printable;
 import robot.Cinematique;
@@ -262,10 +263,7 @@ public class CheminPathfinding implements Service, Printable, Configurable
 		while(iterChemin.hasNext())
 		{
 			Cinematique a = iterChemin.next();
-			if(a == null)
-				log.critical("Nul !");
-			else
-				buffer.addSupprimable(new ObstacleCircular(a.getPosition(), 8));
+			buffer.addSupprimable(new ObstacleCircular(a.getPosition(), 8, Couleur.TRAJECTOIRE.couleur));
 		}
 	}
 

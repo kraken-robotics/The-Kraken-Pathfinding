@@ -17,6 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 package obstacles.types;
 
+import java.awt.Color;
 import java.awt.Graphics;
 
 import graphic.Fenetre;
@@ -75,6 +76,24 @@ public class ObstacleRectangular extends Obstacle
 	{
 		this(position, sizeX, sizeY, 0);
 		this.l = l;
+	}
+
+	public ObstacleRectangular(Vec2RO position, int sizeX, int sizeY, Layer l, Color c)
+	{
+		this(position, sizeX, sizeY, l);
+		this.c = c;
+	}
+
+	public ObstacleRectangular(Vec2RO position, int sizeX, int sizeY, double angle, Color c)
+	{
+		this(position, sizeX, sizeY, angle);
+		this.c = c;
+	}
+
+	public ObstacleRectangular(Vec2RO position, int sizeX, int sizeY, Color c)
+	{
+		this(position, sizeX, sizeY);
+		this.c = c;
 	}
 
 	protected ObstacleRectangular(Vec2RW pos)
@@ -276,6 +295,9 @@ public class ObstacleRectangular extends Obstacle
 	{
 		if(coinBasDroiteRotate == null)
 			return;
+
+		if(c != null)
+			g.setColor(c);
 		
 		int[] X = new int[4];
 		X[0] = (int) coinBasDroiteRotate.getX();

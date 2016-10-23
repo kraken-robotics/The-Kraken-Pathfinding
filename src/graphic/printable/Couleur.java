@@ -26,14 +26,20 @@ import java.awt.Color;
  */
 
 public enum Couleur {
-	BLANC(new Color(255, 255, 255, 255)),
-	NOIR(new Color(0, 0, 0, 255)),
+	BLANC(new Color(255, 255, 255)),
+	NOIR(new Color(0, 0, 0)),
 	GRIS(new Color(50, 50, 50, 200)),
-	BLEU(new Color(0, 0, 200, 255)),
-	JAUNE(new Color(200, 200, 0, 255)),
-	ROUGE(new Color(200, 0, 0, 255)),
-	VIOLET(new Color(200, 0, 200, 255)),
-	VERT(new Color(0, 200, 0, 255));
+	BLEU(new Color(0, 0, 200)),
+	JAUNE(new Color(200, 200, 0)),
+	ROUGE(new Color(200, 0, 0)),
+	VIOLET(new Color(200, 0, 200)),
+	VERT(new Color(0, 200, 0)),
+	ToF_COURT(new Color(0x00, 0xB0, 0x50)),
+	ToF_LONG(new Color(0x92, 0xD0, 0x50)),
+	IR(new Color(0x2E, 0x75, 0xB6)),
+	TRAJECTOIRE(new Color(0x00, 0x03, 0x12)),
+	OBSTACLES(new Color(0xFF, 0x63, 0x03)),
+	ROBOT(new Color(0x94, 0xEB, 0x2A));
 	
 	public final Color couleur;
 	

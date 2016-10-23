@@ -17,9 +17,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 package obstacles.types;
 
+import java.awt.Color;
+import java.awt.Image;
+import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
+
 import config.Config;
 import config.ConfigInfo;
-import config.Configurable;
 import graphic.PrintBuffer;
 import graphic.printable.Layer;
 import graphic.printable.Printable;
@@ -33,16 +39,17 @@ import utils.Vec2RW;
  *
  */
 
-public abstract class Obstacle implements Printable, Configurable
+public abstract class Obstacle implements Printable
 {
 	protected Vec2RW position;
 	protected int distance_dilatation;
 	protected static Log log;
 	protected static PrintBuffer buffer;
-	
-    protected int distanceApprox; // TODO : pas utilisé
+	protected static Image imageRobot = null;
+
     protected static boolean printAllObstacles = false; // static car commun à tous
 	protected Layer l = null;
+	public Color c;
 	
 	public static void set(Log log, PrintBuffer buffer)
 	{
@@ -50,11 +57,15 @@ public abstract class Obstacle implements Printable, Configurable
 		Obstacle.buffer = buffer;
 	}
 	
-	@Override
-	public void useConfig(Config config)
+	public static void useConfig(Config config)
 	{
 		printAllObstacles = config.getBoolean(ConfigInfo.GRAPHIC_ALL_OBSTACLES);
-		distanceApprox = config.getInt(ConfigInfo.DISTANCE_MAX_ENTRE_MESURE_ET_OBJET);
+		if(imageRobot == null && config.getBoolean(ConfigInfo.GRAPHIC_ROBOT_AND_SENSORS))
+			try {
+				imageRobot = ImageIO.read(new File(config.getString(ConfigInfo.GRAPHIC_ROBOT_PATH)));
+			} catch (IOException e) {
+				log.warning(e);
+			}
 	}
 
 	public Obstacle(Vec2RO position, Layer l)

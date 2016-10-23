@@ -17,6 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 package obstacles.types;
 
+import java.awt.Color;
 import java.awt.Graphics;
 
 import graphic.Fenetre;
@@ -51,6 +52,18 @@ public class ObstacleCircular extends Obstacle
 		squared_radius = rad * rad;
 	}
 
+	public ObstacleCircular(Vec2RO position, int rad, Layer l, Color c)
+	{
+		this(position, rad, l);
+		this.c = c;
+	}
+
+	public ObstacleCircular(Vec2RO position, int rad, Color c)
+	{
+		this(position, rad);
+		this.c = c;
+	}
+
 	@Override
 	public String toString()
 	{
@@ -73,6 +86,8 @@ public class ObstacleCircular extends Obstacle
 	@Override
 	public void print(Graphics g, Fenetre f, RobotReal robot)
 	{
+		if(c != null)
+			g.setColor(c);
 		if(radius <= 0)
 			g.fillOval(f.XtoWindow(position.getX())-5, f.YtoWindow(position.getY())-5, 10, 10);
 		else
