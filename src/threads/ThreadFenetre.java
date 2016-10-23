@@ -77,7 +77,8 @@ public class ThreadFenetre extends ThreadService implements Configurable
 			}
 		} catch (InterruptedException e) {
 			log.debug("Arrêt de "+Thread.currentThread().getName());
-			fenetre.saveGif("output.gif", 200);
+			if(gif)
+				fenetre.saveGif("output.gif", 200);
 		}
 	}
 

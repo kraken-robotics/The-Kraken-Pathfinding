@@ -33,7 +33,6 @@ public enum ConfigInfo {
 	/**
 	 * Infos sur le robot
 	 */
-	RAYON_ROBOT(150), // permet de savoir si on shoot un élément de jeu TODO : centre géométrique
 	DILATATION_ROBOT_DSTARLITE(150), // dilatation des obstacles dans le D* Lite. Comme c'est une heuristique, on peut prendre plus petit que la vraie valeur
 	// en fait, comme on veut éviter que l'A* ne cherche à frôler les bords, on augmente artificiellement cette valeur
 	CENTRE_ROTATION_ROUE_X(204), // la position du centre de rotation des roues. Est utilisé pour la rotation des capteurs

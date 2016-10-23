@@ -33,6 +33,7 @@ import utils.Log;
 public class RealTable extends Table implements Service, Configurable
 {
 	private PrintBuffer buffer;
+	private boolean print;
 	
 	public RealTable(Log log, PrintBuffer buffer)
 	{
@@ -43,8 +44,19 @@ public class RealTable extends Table implements Service, Configurable
 	@Override
 	public void useConfig(Config config)
 	{
-		if(config.getBoolean(ConfigInfo.GRAPHIC_GAME_ELEMENTS))
+		print = config.getBoolean(ConfigInfo.GRAPHIC_GAME_ELEMENTS);
+		if(print)
 			for(GameElementNames g : GameElementNames.values())
 				buffer.addSupprimable(g.obstacle);
+	}
+	
+	/**
+	 * Met à jour l'affichage en plus
+	 */
+	public synchronized boolean setDone(GameElementNames id, Tribool done)
+	{
+		if(print && done.hash > Tribool.FALSE.hash)
+			buffer.removeSupprimable(id.obstacle);
+		return super.setDone(id, done);
 	}
 }
