@@ -163,6 +163,15 @@ public class ObstacleRobot extends ObstacleRectangular
 			g.fillPolygon(X, Y, 4);
 		}
 	}
+	
+	/**
+	 * Met à jour cet obstacle
+	 * @param obstacle
+	 */
+	public void copy(ObstacleRobot obstacle)
+	{
+		obstacle.update(position, angle);
+	}
 
 	
 }

@@ -228,7 +228,7 @@ public class ObstacleRectangular extends Obstacle
 	@Override
 	public String toString()
 	{
-		return "ObstacleRectangulaire "+coinBasGauche+" "+coinBasDroite+" "+coinHautGauche+" "+coinHautDroite+" "+super.toString();
+		return "ObstacleRectangulaire "+coinBasGaucheRotate+" "+coinBasDroiteRotate+" "+coinHautGaucheRotate+" "+coinHautDroiteRotate+" "+super.toString();
 	}
 		
 	/**

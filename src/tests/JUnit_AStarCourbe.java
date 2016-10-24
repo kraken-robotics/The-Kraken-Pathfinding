@@ -36,6 +36,7 @@ import pathfinding.astar.arcs.ClothoidesComputer;
 import pathfinding.astar.arcs.VitesseCourbure;
 import pathfinding.chemin.CheminPathfinding;
 import pathfinding.chemin.IteratorCheminPathfinding;
+import pathfinding.dstarlite.DStarLite;
 import pathfinding.dstarlite.gridspace.GridSpace;
 import robot.Cinematique;
 import robot.CinematiqueObs;
@@ -61,7 +62,8 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 	private boolean graphicTrajectory;
 	private CheminPathfinding chemin;
 	private GridSpace gridspace;
-	
+//	private DStarLite dstarlite;
+
 	@Override
 	@Before
     public void setUp() throws Exception {
@@ -69,6 +71,7 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 		clotho = container.getService(ClothoidesComputer.class);
 		buffer = container.getService(PrintBuffer.class);
 		astar = container.getService(AStarCourbe.class);
+//		dstarlite = container.getService(DStarLite.class);
 		robot = container.getService(RobotReal.class);
 		chemin = container.getService(CheminPathfinding.class);
 		iterator = container.make(IteratorCheminPathfinding.class);
@@ -287,7 +290,7 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 		log.debug("Temps : "+(System.nanoTime() - avant) / (1000000.));
 		iterator.reinit();
 		CinematiqueObs a = null;
-		int n = 25;
+		int n = 10;
 		while(iterator.hasNext() && iterator.getIndex() < n)
 		{
 			a = iterator.next();

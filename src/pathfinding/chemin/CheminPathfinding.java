@@ -23,7 +23,9 @@ import java.util.List;
 
 import obstacles.memory.ObstaclesIteratorPresent;
 import obstacles.types.ObstacleCircular;
+import obstacles.types.ObstacleProximity;
 import obstacles.types.ObstacleRectangular;
+import obstacles.types.ObstacleRobot;
 import graphic.Fenetre;
 import graphic.PrintBuffer;
 import graphic.printable.Couleur;
@@ -60,7 +62,7 @@ public class CheminPathfinding implements Service, Printable, Configurable
 	private volatile ObstacleCircular[] aff = new ObstacleCircular[256];
 	protected int indexFirst = 0; // indice du point en cours
 	protected int indexLast = 0; // indice du prochain point de la trajectoire (donc indexLast - 1 est l'index du dernier point accessible)
-	private int lastValidIndex; // l'indice du dernier index (-1 si aucun ne l'est, Integer.MAX_VALUE si tous le sont)
+	private int lastValidIndex = -1; // l'indice du dernier index (-1 si aucun ne l'est, Integer.MAX_VALUE si tous le sont)
 	private boolean uptodate = true; // le chemin est-il complet
 	private int margeNecessaire;
 	private int anticipationReplanif;
@@ -89,7 +91,7 @@ public class CheminPathfinding implements Service, Printable, Configurable
 	/**
 	 * Y a-t-il une collision avec un obstacle de proximité ?
 	 */
-	public void checkColliding()
+	public synchronized void checkColliding()
 	{
 		if(isColliding())
 		{
@@ -106,20 +108,19 @@ public class CheminPathfinding implements Service, Printable, Configurable
 	 */
 	private boolean isColliding()
 	{
-		iterObstacles.save(); // on sauvegarde sa position actuelle, c'est-à-dire la première position des nouveaux obstacles
 		iterChemin.reinit();
 		lastValidIndex = -1;
-		
+
 		while(iterChemin.hasNext())
 		{
-			ObstacleRectangular a = iterChemin.next().obstacle;
-			iterObstacles.load();
+			ObstacleRobot a = iterChemin.next().obstacle;
+			iterObstacles.reinit();
 			while(iterObstacles.hasNext())
 			{
-				if(iterObstacles.next().isColliding(a))
+				ObstacleProximity o = iterObstacles.next();
+				if(o.isColliding(a))
 				{
-					while(iterObstacles.hasNext()) // on s'assure que l'iterateur se termine à la fin des obstacles connus
-						iterObstacles.next();
+//					log.debug(o+" collisionne le robot en "+a);
 					return true;
 				}
 			}
@@ -174,23 +175,26 @@ public class CheminPathfinding implements Service, Printable, Configurable
 	 */
 	public void add(LinkedList<CinematiqueObs> points)
 	{
-		synchronized(this)
+		if(!points.isEmpty())
 		{
-			int tmp = indexLast;
-			for(CinematiqueObs p : points)
-				add(p);
-			if(isIndexValid(tmp - 1) && chemin[tmp - 1].enMarcheAvant == points.getFirst().enMarcheAvant)
+			synchronized(this)
 			{
-				points.addFirst(chemin[tmp - 1]); // on renvoie ce point afin qu'il ne soit plus un point d'arrêt
-				tmp--;
+				int tmp = indexLast;
+				for(CinematiqueObs p : points)
+					add(p);
+				if(isIndexValid(tmp - 1) && chemin[tmp - 1].enMarcheAvant == points.getFirst().enMarcheAvant)
+				{
+					points.addFirst(chemin[tmp - 1]); // on renvoie ce point afin qu'il ne soit plus un point d'arrêt
+					tmp--;
+				}
+				out.envoieArcCourbe(points, tmp);
 			}
-			out.envoieArcCourbe(points, tmp);
+			if(graphic)
+				synchronized(buffer)
+				{
+					buffer.notify();
+				}
 		}
-		if(graphic)
-			synchronized(buffer)
-			{
-				buffer.notify();
-			}
 	}
 	
 	private boolean isIndexValid(int index)
@@ -258,6 +262,7 @@ public class CheminPathfinding implements Service, Printable, Configurable
 	
 	/**
 	 * Renvoie l'arc du dernier point qu'on peut encore utiliser
+	 * Un "checkColliding" doit être fait avant !
 	 * @return
 	 */
 	public Cinematique getLastValidCinematique()

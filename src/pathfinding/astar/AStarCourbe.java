@@ -329,8 +329,13 @@ public class AStarCourbe implements Service, Configurable
 		{
 			state.copyAStarCourbe(depart.state);
 		}
-		depart.state.robot.setCinematique(chemin.getLastValidCinematique());
-		log.debug("On reprend de "+chemin.getLastValidCinematique());
+		Cinematique c = chemin.getLastValidCinematique();
+
+		if(c == null)
+			throw new PathfindingException("Aucun point récupérable !");
+		
+		depart.state.robot.setCinematique(c);
+//		log.debug("On reprend de "+chemin.getLastValidCinematique());
 		
 		// On met à jour le D* Lite
 		dstarlite.updateStart(depart.state.robot.getCinematique().getPosition());
