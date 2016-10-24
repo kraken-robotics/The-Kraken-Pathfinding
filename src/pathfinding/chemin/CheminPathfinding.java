@@ -19,12 +19,10 @@ package pathfinding.chemin;
 
 import java.awt.Graphics;
 import java.util.LinkedList;
-import java.util.List;
 
 import obstacles.memory.ObstaclesIteratorPresent;
 import obstacles.types.ObstacleCircular;
 import obstacles.types.ObstacleProximity;
-import obstacles.types.ObstacleRectangular;
 import obstacles.types.ObstacleRobot;
 import graphic.Fenetre;
 import graphic.PrintBuffer;
@@ -36,13 +34,11 @@ import robot.CinematiqueObs;
 import robot.RobotReal;
 import serie.BufferOutgoingOrder;
 import utils.Log;
-import utils.Vec2RO;
 import config.Config;
 import config.ConfigInfo;
 import config.Configurable;
 import container.Service;
 import exceptions.PathfindingException;
-import pathfinding.astar.arcs.ArcCourbe;
 
 /**
  * S'occupe de la trajectoire actuelle.

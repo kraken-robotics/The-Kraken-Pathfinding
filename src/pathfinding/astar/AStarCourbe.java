@@ -46,7 +46,6 @@ import robot.CinematiqueObs;
 import robot.DirectionStrategy;
 import robot.Speed;
 import utils.Log;
-import utils.Vec2RO;
 
 /**
  * A* qui utilise le D* Lite comme heuristique pour fournir une trajectoire courbe

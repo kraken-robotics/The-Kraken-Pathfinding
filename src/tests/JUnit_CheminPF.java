@@ -23,7 +23,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import pathfinding.astar.arcs.ArcCourbeClotho;
 import pathfinding.chemin.CheminPathfinding;
 import pathfinding.chemin.IteratorCheminPathfinding;
 import robot.CinematiqueObs;

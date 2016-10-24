@@ -41,17 +41,10 @@ import utils.*;
 import exceptions.ContainerException;
 import graphic.PrintBuffer;
 import obstacles.types.Obstacle;
-import pathfinding.RealGameState;
-import pathfinding.astar.AStarCourbe;
-import pathfinding.astar.arcs.ArcManager;
-import pathfinding.astar.arcs.ClothoidesComputer;
-import pathfinding.chemin.CheminPathfinding;
-import robot.RobotReal;
 import serie.SerieCouchePhysique;
 import threads.ThreadName;
 import threads.ThreadPathfinding;
 import threads.ThreadShutdown;
-import threads.serie.ThreadSerialInputCoucheOrdre;
 
 /**
  * 

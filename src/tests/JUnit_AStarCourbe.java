@@ -27,8 +27,6 @@ import org.junit.Test;
 
 import config.ConfigInfo;
 import graphic.PrintBuffer;
-import pathfinding.ChronoGameState;
-import pathfinding.RealGameState;
 import pathfinding.astar.AStarCourbe;
 import pathfinding.astar.arcs.ArcCourbeClotho;
 import pathfinding.astar.arcs.ArcCourbeCubique;
@@ -36,17 +34,12 @@ import pathfinding.astar.arcs.ClothoidesComputer;
 import pathfinding.astar.arcs.VitesseCourbure;
 import pathfinding.chemin.CheminPathfinding;
 import pathfinding.chemin.IteratorCheminPathfinding;
-import pathfinding.dstarlite.DStarLite;
 import pathfinding.dstarlite.gridspace.GridSpace;
 import robot.Cinematique;
 import robot.CinematiqueObs;
 import robot.DirectionStrategy;
-import robot.RobotChrono;
 import robot.RobotReal;
 import robot.Speed;
-import table.GameElementNames;
-import table.RealTable;
-import table.Tribool;
 import threads.ThreadPathfinding;
 import utils.Vec2RO;
 
