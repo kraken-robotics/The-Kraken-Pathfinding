@@ -38,9 +38,9 @@ public class Cinematique
 	public volatile double orientationReelle;
 	public volatile double courbureReelle;
 	
-	public Cinematique(double x, double y, double orientation, boolean enMarcheAvant, double courbure, double vitesseMax)
+	public Cinematique(double x, double y, double orientationGeometrique, boolean enMarcheAvant, double courbure, double vitesseMax)
 	{
-		update(x,y,orientation,enMarcheAvant, courbure, vitesseMax);
+		update(x,y,orientationGeometrique,enMarcheAvant, courbure, vitesseMax);
 	}
 	
 	/**
@@ -106,21 +106,10 @@ public class Cinematique
 	@Override
 	public int hashCode() // TODO
 	{
-/*		int codeCourbure, codeOrientation;
-//		if(courbure < -5)
-//			codeCourbure = 0;
-//		else
-		if(courbureGeometrique < -4)
-			codeCourbure = 1;
-		else if(courbureGeometrique < 0)
-			codeCourbure = 2;
-		else if(courbureGeometrique < 4)
-			codeCourbure = 3;
-//		else if(courbure < 5)
-		else
-			codeCourbure = 4;
-//		else
-//			codeCourbure = 5;
+		int codeSens = 0;
+		if(enMarcheAvant)
+			codeSens = 1;
+		int codeOrientation;
 //		System.out.println("codeCourbure : "+codeCourbure+", "+courbure);
 		orientationGeometrique = orientationGeometrique % (2*Math.PI);
 		if(orientationGeometrique < 0)
@@ -128,8 +117,8 @@ public class Cinematique
 		
 		codeOrientation = (int)(orientationGeometrique / (Math.PI / 6));
 //		System.out.println("codeOrientation : "+codeOrientation+" "+orientation);
-		*/
-		return (((((int)position.getX() + 1500) / 50) * 150 + (int)position.getY() / 50));// * 6 + codeCourbure) * 16 + codeOrientation;
+		
+		return (((((int)(position.getX()) + 1500) / 30) * 200 + (int)(position.getY()) / 30) * 2 + codeSens) * 16 + codeOrientation;
 	}
 	
 	@Override
@@ -138,22 +127,22 @@ public class Cinematique
 		return o.hashCode() == hashCode();
 	}
 
-	public void update(double x, double y, double orientation, boolean enMarcheAvant, double courbure, double vitesseMax)
+	public void update(double x, double y, double orientationGeometrique, boolean enMarcheAvant, double courbure, double vitesseMax)
 	{
 		if(enMarcheAvant)
 		{
-			orientationReelle = orientation;
+			orientationReelle = orientationGeometrique;
 			courbureReelle = courbure;
 		}
 		else
 		{
-			orientationReelle = orientation + Math.PI;
+			orientationReelle = orientationGeometrique + Math.PI;
 			courbureReelle = - courbure;
 		}
 		
 		position.setX(x);
 		position.setY(y);
-		this.orientationGeometrique = orientation;
+		this.orientationGeometrique = orientationGeometrique;
 		this.enMarcheAvant = enMarcheAvant;
 		this.courbureGeometrique = courbure;
 		this.vitesseMax = vitesseMax;

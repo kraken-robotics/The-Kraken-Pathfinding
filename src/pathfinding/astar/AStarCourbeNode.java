@@ -62,6 +62,12 @@ public class AStarCourbeNode implements Memorizable
 	}
 	
 	@Override
+	public boolean equals(Object o)
+	{
+		return o.hashCode() == hashCode();
+	}
+	
+	@Override
 	public int hashCode()
 	{
 		return state.robot.getCinematique().hashCode();

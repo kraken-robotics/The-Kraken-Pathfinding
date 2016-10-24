@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
 
+import pathfinding.SensFinal;
 import pathfinding.dstarlite.gridspace.Direction;
 import pathfinding.dstarlite.gridspace.GridSpace;
 import pathfinding.dstarlite.gridspace.PointDirige;
@@ -464,7 +465,7 @@ public class DStarLite implements Service, Configurable
 	 * @param c
 	 * @return
 	 */
-	public synchronized Double heuristicCostCourbe(Cinematique c)
+	public synchronized Double heuristicCostCourbe(Cinematique c, SensFinal sens)
 	{
 		if(c.getPosition().isHorsTable())
 		{
@@ -484,11 +485,36 @@ public class DStarLite implements Service, Configurable
 		updateStart(pos);
 		DStarLiteNode premier = getFromMemoryUpdated(pos);
 		
+		if(!sens.isOK(c.enMarcheAvant))
+			return heuristicCostCourbeRebroussement(premier, pos, c);
+		
 		// si on est arrivé… on est arrivé.
 		if(pos.equals(arrivee.gridpoint))
 			return 0.;
 		
-		double erreurOrientation = Math.abs((c.orientationGeometrique - getOrientationHeuristique(pos)) % (2 * Math.PI)); // erreur en radian
+		double orientationOptimale = getOrientationHeuristique(pos);
+		double erreurOrientation;
+		
+		double tmp;
+		if(sens == SensFinal.AUCUNE_PREF)
+		{
+			// l'orientation est vérifiée modulo pi : on se fiche que ce soit en avant ou en arrière
+			tmp = (c.courbureGeometrique - orientationOptimale) % (Math.PI);
+			if(tmp > Math.PI/2)
+				tmp -= Math.PI;
+		}
+		else
+		{
+			// l'orientation est vérifiée modulo 2*pi : la marche avant et la marche arrière sont différenciées
+			if(sens == SensFinal.MARCHE_AVANT)
+				tmp = (c.courbureReelle - orientationOptimale) % (2*Math.PI);
+			else // marche arrière
+				tmp = (c.courbureReelle + Math.PI - orientationOptimale) % (2*Math.PI);
+			if(tmp > Math.PI)
+				tmp -= 2*Math.PI;
+		}
+		erreurOrientation = Math.abs(tmp);
+
 		double erreurDistance = premier.rhs / 1000. * PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS; // distance en mm
 		
 		if(premier.rhs == Integer.MAX_VALUE)
@@ -498,14 +524,31 @@ public class DStarLite implements Service, Configurable
 		}
 //			throw new DStarLiteException("Heuristique : inaccessible");
 
-/*		log.debug("rhs : "+premier.rhs);
-		log.debug("erreurCourbure : "+erreurCourbure+" "+c.courbureGeometrique+" "+getCourbureHeuristique(pos, c.orientationGeometrique));
-		log.debug("erreurOrientation : "+erreurOrientation);
+/*		log.debug("Sens : "+sens+" "+orientationOptimale+" "+c.orientationReelle+" "+c.enMarcheAvant);
+		log.debug("rhs : "+premier.rhs);
+		log.debug("erreurOrientation : "+50*erreurOrientation);
 		log.debug("erreurDistance : "+erreurDistance);
-		*/
-		return erreurDistance + 5*erreurOrientation; // TODO : coeff
+	*/	
+		return erreurDistance + 20*erreurOrientation;
 	}
 
+	private double heuristicCostCourbeRebroussement(DStarLiteNode premier, PointGridSpace pos, Cinematique c)
+	{
+		if(pos.equals(arrivee.gridpoint))
+			return 300.; // pas arrivé dans le bon sens !
+
+		double orientationOptimale = getOrientationHeuristique(pos) +Math.PI/2 ; // on va chercher à se retourner, donc on va tourner à angle droit
+		double erreurOrientation = (c.orientationReelle - orientationOptimale) % (Math.PI);
+		if(erreurOrientation > Math.PI/2)
+			erreurOrientation -= Math.PI;
+		erreurOrientation = Math.abs(erreurOrientation);
+
+		double erreurDistance = premier.rhs / 1000. * PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS; // distance en mm
+		
+//		return 500 + erreurDistance;
+		return 2000 + 100*erreurOrientation + erreurDistance/10;
+	}
+	
 	/**
 	 * Fournit une heuristique de l'orientation à prendre en ce point
 	 * @param p

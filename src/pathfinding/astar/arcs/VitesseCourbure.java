@@ -30,7 +30,7 @@ public enum VitesseCourbure
 	
 	// Interpolation cubique avec l'arrivée
 	DIRECT_COURBE(0),
-//	DIRECT_COURBE_REBROUSSE(0),
+	DIRECT_COURBE_REBROUSSE(0),
 	
 	GAUCHE_0(1),
 	GAUCHE_1(4),

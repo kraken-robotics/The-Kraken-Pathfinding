@@ -17,9 +17,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 package pathfinding.astar.arcs;
 
+import pathfinding.DirectionStrategy;
+import pathfinding.SensFinal;
 import pathfinding.astar.AStarCourbeNode;
+import pathfinding.dstarlite.DStarLite;
 import robot.Cinematique;
-import robot.DirectionStrategy;
 import robot.Speed;
 import table.GameElementNames;
 import table.Table;
@@ -51,19 +53,22 @@ public class ArcManager implements Service, Configurable
 	private PrintBuffer buffer;
 	private Table table;
 	private AStarCourbeNode current;
+	private DStarLite dstarlite;
 	private double courbureMax;
 	private boolean printObs;
 	
 	private DirectionStrategy directionstrategyactuelle;
+	private SensFinal sens;
 	private List<VitesseCourbure> listeVitesse = Arrays.asList(VitesseCourbure.values());
 	private ListIterator<VitesseCourbure> iterator = listeVitesse.listIterator();
 	
-	public ArcManager(Log log, ClothoidesComputer clotho, Table table, PrintBuffer buffer)
+	public ArcManager(Log log, ClothoidesComputer clotho, Table table, PrintBuffer buffer, DStarLite dstarlite)
 	{
 		this.table = table;
 		this.log = log;
 		this.clotho = clotho;
 		this.buffer = buffer;
+		this.dstarlite = dstarlite;
 	}
 
 	private ObstacleArcCourbe obs = new ObstacleArcCourbe();
@@ -144,7 +149,7 @@ public class ArcManager implements Service, Configurable
 		/**
 		 * Si on est proche et qu'on tente une interpolation cubique
 		 */
-		if(v == VitesseCourbure.DIRECT_COURBE)// || v == VitesseCourbure.DIRECT_COURBE_REBROUSSE)
+		if(v == VitesseCourbure.DIRECT_COURBE || v == VitesseCourbure.DIRECT_COURBE_REBROUSSE)
 		{
 //			log.debug("Recherche arc cubique");
 			ArcCourbeCubique tmp;
@@ -201,31 +206,36 @@ public class ArcManager implements Service, Configurable
     	//      - on n'est pas en fast, donc pas d'autorisation
     	//      ET
     	//      - on est dans la bonne direction, donc pas d'autorisation exceptionnelle de se retourner
-    	if(vitesse.rebrousse && (directionstrategyactuelle != DirectionStrategy.FASTEST && directionstrategyactuelle.isPossible((current.state.robot).getCinematique().enMarcheAvant)))
+    	
+    	if(vitesse.rebrousse && (directionstrategyactuelle != DirectionStrategy.FASTEST && directionstrategyactuelle.isPossible(current.state.robot.getCinematique().enMarcheAvant)))
     	{ 
 //    		log.debug(vitesse+" n'est pas acceptable (rebroussement interdit");
     		return false;
     	}
     	
     	// Si on ne rebrousse pas chemin alors que c'est nécessaire
-    	if(!vitesse.rebrousse && !directionstrategyactuelle.isPossible((current.state.robot).getCinematique().enMarcheAvant))
+    	if(!vitesse.rebrousse && !directionstrategyactuelle.isPossible(current.state.robot.getCinematique().enMarcheAvant))
     	{
 //    		log.debug(vitesse+" n'est pas acceptable (rebroussement nécessaire");
     		return false;
     	}
 
     	// On ne tente pas l'interpolation si on est trop loin
-		if((vitesse == VitesseCourbure.DIRECT_COURBE /*|| vitesse == VitesseCourbure.DIRECT_COURBE_REBROUSSE*/))
+		if((vitesse == VitesseCourbure.DIRECT_COURBE || vitesse == VitesseCourbure.DIRECT_COURBE_REBROUSSE))
 		{
+			// on n'arriverait pas dans le bon sens…
+			if(!sens.isOK(current.state.robot.getCinematique().enMarcheAvant ^ vitesse == VitesseCourbure.DIRECT_COURBE_REBROUSSE))
+				return false;
+			
 			// h vaut donc l'heuristique de current
-			Double h = current.f_score - current.g_score;
+			double h = current.f_score - current.g_score;
 			if(h > 250)
 //				log.debug(vitesse+" n'est pas acceptable (on est trop loin)");
-			return false;
+				return false;
 		}
     	
     	// TODO
-    	double courbureFuture = (current.state.robot).getCinematique().courbureGeometrique + vitesse.vitesse * ClothoidesComputer.DISTANCE_ARC_COURBE_M;
+    	double courbureFuture = current.state.robot.getCinematique().courbureGeometrique + vitesse.vitesse * ClothoidesComputer.DISTANCE_ARC_COURBE_M;
     	if(courbureFuture >= -courbureMax && courbureFuture <= courbureMax)
     		return true;
 
@@ -254,10 +264,11 @@ public class ArcManager implements Service, Configurable
      * @param current
      * @param directionstrategyactuelle
      */
-    public void reinitIterator(AStarCourbeNode current, DirectionStrategy directionstrategyactuelle)
+    public void reinitIterator(AStarCourbeNode current, DirectionStrategy directionstrategyactuelle, SensFinal sens)
     {
     	this.directionstrategyactuelle = directionstrategyactuelle;
     	this.current = current;
+    	this.sens = sens;
     	iterator = listeVitesse.listIterator();
     }
 
@@ -268,4 +279,8 @@ public class ArcManager implements Service, Configurable
 		printObs = config.getBoolean(ConfigInfo.GRAPHIC_ROBOT_COLLISION);
 	}
 
+	public synchronized Double heuristicCostCourbe(Cinematique c, SensFinal sens)
+	{
+		return dstarlite.heuristicCostCourbe(c, sens);
+	}
 }

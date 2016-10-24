@@ -27,7 +27,9 @@ import java.util.Stack;
 import memory.NodeMM;
 import memory.CinemObsMM;
 import obstacles.types.ObstacleCircular;
+import pathfinding.DirectionStrategy;
 import pathfinding.RealGameState;
+import pathfinding.SensFinal;
 import pathfinding.astar.arcs.ArcCourbe;
 import pathfinding.astar.arcs.ArcManager;
 import pathfinding.chemin.CheminPathfinding;
@@ -43,7 +45,6 @@ import graphic.printable.Couleur;
 import graphic.printable.Layer;
 import robot.Cinematique;
 import robot.CinematiqueObs;
-import robot.DirectionStrategy;
 import robot.Speed;
 import utils.Log;
 
@@ -56,6 +57,7 @@ import utils.Log;
 public class AStarCourbe implements Service, Configurable
 {
 	protected DirectionStrategy directionstrategyactuelle;
+	protected SensFinal sens;
 	protected Log log;
 	private ArcManager arcmanager;
 	private DStarLite dstarlite;
@@ -121,7 +123,7 @@ public class AStarCourbe implements Service, Configurable
 		depart.cameFromArcCubique = null;
 		depart.g_score = 0;
 		Double heuristique;
-		heuristique = dstarlite.heuristicCostCourbe((depart.state.robot).getCinematique());
+		heuristique = arcmanager.heuristicCostCourbe((depart.state.robot).getCinematique(), sens);
 		if(heuristique == null)
 			throw new PathfindingException("DStarLiteException pour le point de départ !");
 		else if(heuristique == Integer.MAX_VALUE)
@@ -147,13 +149,7 @@ public class AStarCourbe implements Service, Configurable
 			// ce calcul étant un peu lourd, on ne le fait que si le noeud a été choisi, et pas à la sélection des voisins (dans hasNext par exemple)
 			if(!arcmanager.isReachable(current, shoot))
 			{
-//				log.debug("Collision");
-				if(current.cameFromArcCubique != null)
-				{
-					cinemMemory.destroyNode(current.cameFromArcCubique);
-					current.cameFromArcCubique = null;
-				}
-				memorymanager.destroyNode(current);
+				destroy(current);
 				continue; // collision mécanique attendue. On passe au suivant !
 			}
 			
@@ -168,15 +164,10 @@ public class AStarCourbe implements Service, Configurable
 				for(int i = 0; i < current.getArc().getNbPoints(); i++)
 					buffer.addSupprimable(new ObstacleCircular(current.getArc().getPoint(i).getPosition(), 4, c), Layer.FOREGROUND);
 			}
-/*			if(current.cameFromArc != null)
-			{
-				heuristique = dstarlite.heuristicCostCourbe((current.state.robot).getCinematique()) / current.cameFromArc.getVitesseTr();
-				log.debug("Heuristique : "+heuristique+" ("+current.state.robot.getCinematique().getPosition().distance(arrivee.getPosition()) / current.cameFromArc.getVitesseTr()+")");
-			}*/
-						
+
 			// Si on est arrivé, on reconstruit le chemin
 			// On est arrivé seulement si on vient d'un arc cubique			
-			if(current.parent != null && current.getArc().getLast().getPosition().squaredDistance(arrivee.getPosition()) < 1)
+			if(current.parent != null && current.getArc().getLast().getPosition().squaredDistance(arrivee.getPosition()) < 1 && sens.isOK(current.getArc().getLast().enMarcheAvant))
 			{
 //				log.debug("On est arrivé !");
 				chemin.setUptodate(true);
@@ -197,7 +188,7 @@ public class AStarCourbe implements Service, Configurable
 
 			// On parcourt les voisins de current
 
-			arcmanager.reinitIterator(current, directionstrategyactuelle);
+			arcmanager.reinitIterator(current, directionstrategyactuelle, sens);
 			while(arcmanager.hasNext())
 			{
 				// On vérifie *très* régulièremet s'il ne faut pas fournir un chemin partiel
@@ -222,27 +213,24 @@ public class AStarCourbe implements Service, Configurable
 				// S'il y a un problème, on passe au suivant (interpolation cubique impossible par exemple)
 				if(!arcmanager.next(successeur, vitesseMax, arrivee))
 				{
-					if(successeur.cameFromArcCubique != null)
-					{
-						cinemMemory.destroyNode(successeur.cameFromArcCubique);
-						successeur.cameFromArcCubique = null;
-					}
-					memorymanager.destroyNode(successeur);
+					destroy(successeur);
 					continue;
 				}
-
+				
 				successeur.parent = current;
 				successeur.g_score = current.g_score + arcmanager.distanceTo(successeur);
+			
+				// on a déjà visité un point proche?
+				if(closedset.contains(successeur))
+				{
+					destroy(successeur);
+					continue;
+				}
 				
-				heuristique = dstarlite.heuristicCostCourbe((successeur.state.robot).getCinematique());
+				heuristique = arcmanager.heuristicCostCourbe((successeur.state.robot).getCinematique(), sens);
 				if(heuristique == null)
 				{
-					if(successeur.cameFromArcCubique != null)
-					{
-						cinemMemory.destroyNode(successeur.cameFromArcCubique);
-						successeur.cameFromArcCubique = null;
-					}
-					memorymanager.destroyNode(successeur);
+					destroy(successeur);
 					continue;
 				}
 				
@@ -259,6 +247,16 @@ public class AStarCourbe implements Service, Configurable
 		memorymanager.empty();
 		cinemMemory.empty();
 		throw new PathfindingException("Recherche AStarCourbe échouée");
+	}
+ 	
+	private void destroy(AStarCourbeNode n)
+	{
+		if(n.cameFromArcCubique != null)
+		{
+			cinemMemory.destroyNode(n.cameFromArcCubique);
+			n.cameFromArcCubique = null;
+		}
+		memorymanager.destroyNode(n);
 	}
 	
 	/**
@@ -299,6 +297,17 @@ public class AStarCourbe implements Service, Configurable
 	}
 				
 	/**
+	 * Valeurs par défaut : DirectionStrategy.FASTEST et SensFinal.AUCUNE_PREF
+	 * @param arrivee
+	 * @param shoot
+	 * @throws PathfindingException
+	 */
+	public void computeNewPath(Cinematique arrivee, boolean shoot) throws PathfindingException
+	{
+		computeNewPath(arrivee, DirectionStrategy.FASTEST, SensFinal.AUCUNE_PREF, shoot);
+	}
+	
+	/**
 	 * Calcul d'un chemin à partir d'un certain état (state) et d'un point d'arrivée (endNode).
 	 * Le boolean permet de signaler au pathfinding si on autorise ou non le shootage d'élément de jeu pas déjà pris.
 	 * @param state
@@ -307,10 +316,11 @@ public class AStarCourbe implements Service, Configurable
 	 * @return
 	 * @throws PathfindingException 
 	 */
-	public void computeNewPath(Cinematique arrivee, DirectionStrategy directionstrategy, boolean shoot) throws PathfindingException
+	public void computeNewPath(Cinematique arrivee, DirectionStrategy directionstrategy, SensFinal sens, boolean shoot) throws PathfindingException
 	{
 		vitesseMax = Speed.STANDARD;
 		this.directionstrategyactuelle = directionstrategy;
+		this.sens = sens;
 		this.arrivee = arrivee;
 		depart.init();
 		state.copyAStarCourbe(depart.state);
@@ -322,6 +332,12 @@ public class AStarCourbe implements Service, Configurable
 		process(shoot, false);
 	}
 	
+	/**
+	 * Replanification. On conserve la même DirectionStrategy ainsi que le même SensFinal
+	 * Par contre, si besoin est, on peut changer la politique de shootage d'éléments de jeu
+	 * @param shoot
+	 * @throws PathfindingException
+	 */
 	public synchronized void updatePath(boolean shoot) throws PathfindingException
 	{
 		depart.init();
@@ -338,7 +354,7 @@ public class AStarCourbe implements Service, Configurable
 		if(graphicDStarLite)
 			dstarlite.itineraireBrut();
 
-		vitesseMax = Speed.REPLANIF; // TODO
+		vitesseMax = Speed.REPLANIF;
 		process(shoot, true);
 	}
 

@@ -89,7 +89,10 @@ public class Container implements Service, Configurable
 
 		for(ThreadName n : ThreadName.values())
 		{
-			getService(n.c).join(10000); // on attend un peu que le thread s'arrête
+			if(n == ThreadName.FENETRE && config.getBoolean(ConfigInfo.GRAPHIC_PRODUCE_GIF))
+				getService(n.c).join(120000); // spécialement pour lui qui enregistre un gif…
+			else
+				getService(n.c).join(10000); // on attend un peu que le thread s'arrête
 			if(getService(n.c).isAlive())
 				log.critical(n.c.getSimpleName()+" encore vivant !");
 		}

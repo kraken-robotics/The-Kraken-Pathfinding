@@ -42,6 +42,11 @@ public enum ConfigInfo {
 	LARGEUR_NON_DEPLOYE(228), // distance entre le bord gauche et le bord droit du robot non-déployé
 	
 	/**
+	 * Paramètres des scripts
+	 */
+	DISTANCE_AU_CRATERE(10), // distance souhaitée entre l'arrière du rover et le bord du cratère
+	
+	/**
 	 * Paramètres du log
 	 */
 	FAST_LOG(false), // affichage plus rapide des logs

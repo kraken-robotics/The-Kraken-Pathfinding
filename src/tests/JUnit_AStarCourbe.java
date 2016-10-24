@@ -27,6 +27,8 @@ import org.junit.Test;
 
 import config.ConfigInfo;
 import graphic.PrintBuffer;
+import pathfinding.DirectionStrategy;
+import pathfinding.SensFinal;
 import pathfinding.astar.AStarCourbe;
 import pathfinding.astar.arcs.ArcCourbeClotho;
 import pathfinding.astar.arcs.ArcCourbeCubique;
@@ -37,7 +39,6 @@ import pathfinding.chemin.IteratorCheminPathfinding;
 import pathfinding.dstarlite.gridspace.GridSpace;
 import robot.Cinematique;
 import robot.CinematiqueObs;
-import robot.DirectionStrategy;
 import robot.RobotReal;
 import robot.Speed;
 import threads.ThreadPathfinding;
@@ -73,7 +74,7 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 		chemin = container.getService(CheminPathfinding.class);
 		iterator = container.make(IteratorCheminPathfinding.class);
 		gridspace = container.getService(GridSpace.class);
-		graphicTrajectory = config.getBoolean(ConfigInfo.GRAPHIC_TRAJECTORY);
+		graphicTrajectory = config.getBoolean(ConfigInfo.GRAPHIC_TRAJECTORY_FINAL);
 	}
 
 	@Test
@@ -156,6 +157,51 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 				}
 		}
     }
+
+	@Test
+    public void test_cubique() throws Exception
+    {
+		boolean graphicTrajectory = config.getBoolean(ConfigInfo.GRAPHIC_TRAJECTORY);
+		ClothoidesComputer clotho = container.getService(ClothoidesComputer.class);
+		ArcCourbeCubique arc;
+		Cinematique c, c2;
+		
+		c = new Cinematique(0, 1000, -Math.PI/4, true, 0, Speed.STANDARD.translationalSpeed);
+		c2 = new Cinematique(1000, 700, 0, false, 0, Speed.STANDARD.translationalSpeed);
+		arc = clotho.cubicInterpolation(c, c2, Speed.STANDARD, VitesseCourbure.DIRECT_COURBE);
+		if(graphicTrajectory)
+			for(int i = 0; i < arc.getNbPoints(); i++)
+				buffer.addSupprimable(new ObstacleCircular(arc.getPoint(i).getPosition(), 4));
+		Assert.assertTrue(arc.getLast().enMarcheAvant);
+
+		c = new Cinematique(0, 1000, Math.PI, true, 0, Speed.STANDARD.translationalSpeed);
+		c2 = new Cinematique(1000, 700, 0, false, 0, Speed.STANDARD.translationalSpeed);
+		arc = clotho.cubicInterpolation(c, c2, Speed.STANDARD, VitesseCourbure.DIRECT_COURBE_REBROUSSE);
+		if(graphicTrajectory)
+			for(int i = 0; i < arc.getNbPoints(); i++)
+				buffer.addSupprimable(new ObstacleCircular(arc.getPoint(i).getPosition(), 4));
+		Assert.assertTrue(!arc.getLast().enMarcheAvant);
+
+		c = new Cinematique(100, 1100, -Math.PI/4, false, 0, Speed.STANDARD.translationalSpeed);
+		c2 = new Cinematique(1000, 700, 0, false, 0, Speed.STANDARD.translationalSpeed);
+		arc = clotho.cubicInterpolation(c, c2, Speed.STANDARD, VitesseCourbure.DIRECT_COURBE);
+		if(graphicTrajectory)
+			for(int i = 0; i < arc.getNbPoints(); i++)
+				buffer.addSupprimable(new ObstacleCircular(arc.getPoint(i).getPosition(), 4));
+		Assert.assertTrue(!arc.getLast().enMarcheAvant);
+
+		c = new Cinematique(100, 1100, Math.PI, false, 0, Speed.STANDARD.translationalSpeed);
+		c2 = new Cinematique(1000, 700, 0, false, 0, Speed.STANDARD.translationalSpeed);
+		arc = clotho.cubicInterpolation(c, c2, Speed.STANDARD, VitesseCourbure.DIRECT_COURBE_REBROUSSE);
+		if(graphicTrajectory)
+			for(int i = 0; i < arc.getNbPoints(); i++)
+				buffer.addSupprimable(new ObstacleCircular(arc.getPoint(i).getPosition(), 4));
+		Assert.assertTrue(arc.getLast().enMarcheAvant);
+
+		c = new Cinematique(503, 884, -0.29, true, 0, Speed.STANDARD.translationalSpeed);
+		c2 = new Cinematique(1000, 700, 0, false, 0, Speed.STANDARD.translationalSpeed);
+		Assert.assertTrue(clotho.cubicInterpolation(c, c2, Speed.STANDARD, VitesseCourbure.DIRECT_COURBE_REBROUSSE) == null);
+    }
 	
 	@Test
     public void test_clotho() throws Exception
@@ -219,14 +265,14 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 	@Test
     public void test_bench() throws Exception
     {
-		int nbmax = 10000;
+		int nbmax = 1000;
 		long avant = System.nanoTime();
 		Cinematique depart = new Cinematique(-1100, 600, 0, true, 0, Speed.STANDARD.translationalSpeed);
 		robot.setCinematique(depart);
 		Cinematique c = new Cinematique(0, 1200, Math.PI, false, 0, Speed.STANDARD.translationalSpeed);
 		for(int i = 0; i < nbmax; i++)
 		{
-			astar.computeNewPath(c, DirectionStrategy.FASTEST, false);
+			astar.computeNewPath(c, false);
 			chemin.clear();
 		}
 		log.debug("Temps : "+(System.nanoTime() - avant) / (nbmax * 1000000.));
@@ -239,7 +285,7 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 		Cinematique depart = new Cinematique(-1100, 600, 0, true, 0, Speed.STANDARD.translationalSpeed);
 		robot.setCinematique(depart);
 		Cinematique c = new Cinematique(0, 1200, Math.PI, false, 0, Speed.STANDARD.translationalSpeed);
-		astar.computeNewPath(c, DirectionStrategy.FASTEST, false);
+		astar.computeNewPath(c, false);
 		log.debug("Temps : "+(System.nanoTime() - avant) / (1000000.));
 		iterator.reinit();
 		CinematiqueObs a = null;
@@ -262,7 +308,7 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 		Cinematique depart = new Cinematique(0, 1800, -Math.PI/4, true, 0, Speed.STANDARD.translationalSpeed);
 		robot.setCinematique(depart);
 		Cinematique c = new Cinematique(1000, 1200, Math.PI, false, 0, Speed.STANDARD.translationalSpeed);
-		astar.computeNewPath(c, DirectionStrategy.FASTEST, true);
+		astar.computeNewPath(c, true);
 		iterator.reinit();
 		CinematiqueObs a = null;
 		int i = 0;
@@ -284,7 +330,7 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 		Cinematique depart = new Cinematique(0, 1800, -Math.PI/4, true, 0, Speed.STANDARD.translationalSpeed);
 		robot.setCinematique(depart);
 		Cinematique c = new Cinematique(1000, 1200, Math.PI, false, 0, Speed.STANDARD.translationalSpeed);
-		astar.computeNewPath(c, DirectionStrategy.FASTEST, false);
+		astar.computeNewPath(c, false);
 		iterator.reinit();
 		CinematiqueObs a = null;
 		int i = 0;
@@ -311,7 +357,7 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 		Cinematique depart = new Cinematique(-1100, 600, 0, true, 0, Speed.STANDARD.translationalSpeed);
 		robot.setCinematique(depart);
 		Cinematique c = new Cinematique(0, 1600, Math.PI, false, 0, Speed.STANDARD.translationalSpeed);
-		astar.computeNewPath(c, DirectionStrategy.FASTEST, false);
+		astar.computeNewPath(c, false);
 		log.debug("Temps : "+(System.nanoTime() - avant) / (1000000.));
 		iterator.reinit();
 		CinematiqueObs a = null;
@@ -343,13 +389,13 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 	}
 	
 	@Test
-    public void test_recherche_loin() throws Exception
+    public void test_recherche_finit_en_arriere() throws Exception
     {
 		long avant = System.nanoTime();
 		Cinematique depart = new Cinematique(-1100, 600, 0, true, 0, Speed.STANDARD.translationalSpeed);
 		robot.setCinematique(depart);
 		Cinematique c = new Cinematique(1000, 700, Math.PI, false, 0, Speed.STANDARD.translationalSpeed);
-		astar.computeNewPath(c, DirectionStrategy.FASTEST, false);
+		astar.computeNewPath(c, DirectionStrategy.FASTEST, SensFinal.MARCHE_ARRIERE, false);
 		log.debug("Temps : "+(System.nanoTime() - avant) / (1000000.));
 		iterator.reinit();
 		CinematiqueObs a = null;
@@ -367,13 +413,13 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 	}
 	
 	@Test
-    public void test_recherche_loin2() throws Exception
+    public void test_recherche_loin() throws Exception
     {
 		long avant = System.nanoTime();
 		Cinematique depart = new Cinematique(-800, 300, 3*Math.PI/4, true, 0, Speed.STANDARD.translationalSpeed);
 		robot.setCinematique(depart);
 		Cinematique c = new Cinematique(900, 600, Math.PI, false, 0, Speed.STANDARD.translationalSpeed);
-		astar.computeNewPath(c, DirectionStrategy.FASTEST, false);
+		astar.computeNewPath(c, false);
 		log.debug("Temps : "+(System.nanoTime() - avant) / (1000000.));
 		iterator.reinit();
 		CinematiqueObs a = null;
@@ -397,7 +443,7 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 		Cinematique depart = new Cinematique(-800, 300, -Math.PI/4, true, 0, Speed.STANDARD.translationalSpeed);
 		robot.setCinematique(depart);
 		Cinematique c = new Cinematique(1000, 500, Math.PI, false, 0, Speed.STANDARD.translationalSpeed);
-		astar.computeNewPath(c, DirectionStrategy.FASTEST, true);
+		astar.computeNewPath(c, true);
 		log.debug("Temps : "+(System.nanoTime() - avant) / (1000000.));
 		iterator.reinit();
 		CinematiqueObs a = null;
