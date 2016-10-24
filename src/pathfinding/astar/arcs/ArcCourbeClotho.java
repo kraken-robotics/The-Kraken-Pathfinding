@@ -70,7 +70,7 @@ public class ArcCourbeClotho extends ArcCourbe
 	{
 		double v = 0;
 		for(int i = 0; i < ClothoidesComputer.NB_POINTS; i++)
-			v += arcselems[i].vitesseMax.translationalSpeed;
+			v += arcselems[i].vitesseMax;
 		return v / (ClothoidesComputer.NB_POINTS);
 	}
 

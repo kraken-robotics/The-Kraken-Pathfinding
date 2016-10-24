@@ -69,7 +69,7 @@ public class ArcCourbeCubique extends ArcCourbe
 	{
 		double v = 0;
 		for(CinematiqueObs c : arcs)
-			v += c.vitesseMax.translationalSpeed;
+			v += c.vitesseMax;
 		return v / arcs.size();
 	}
 

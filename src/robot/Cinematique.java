@@ -33,12 +33,12 @@ public class Cinematique
 	public volatile boolean enMarcheAvant;
 	public volatile double courbureGeometrique;
 //	public volatile double vitesseTranslation;
-	public volatile Speed vitesseMax;
+	public volatile double vitesseMax;
 //	public volatile double vitesseRotation;
 	public volatile double orientationReelle;
 	public volatile double courbureReelle;
 	
-	public Cinematique(double x, double y, double orientation, boolean enMarcheAvant, double courbure, Speed vitesseMax)
+	public Cinematique(double x, double y, double orientation, boolean enMarcheAvant, double courbure, double vitesseMax)
 	{
 		update(x,y,orientation,enMarcheAvant, courbure, vitesseMax);
 	}
@@ -84,9 +84,7 @@ public class Cinematique
 	
 	public void setVitesse(Speed speed)
 	{
-		vitesseMax = speed;
-//		vitesseRotation = speed.rotationalSpeed;
-//		vitesseTranslation = speed.translationalSpeed;
+		vitesseMax = speed.translationalSpeed;
 	}
 
 	public final Vec2RO getPosition()
@@ -140,7 +138,7 @@ public class Cinematique
 		return o.hashCode() == hashCode();
 	}
 
-	public void update(double x, double y, double orientation, boolean enMarcheAvant, double courbure, Speed vitesseMax)
+	public void update(double x, double y, double orientation, boolean enMarcheAvant, double courbure, double vitesseMax)
 	{
 		if(enMarcheAvant)
 		{
