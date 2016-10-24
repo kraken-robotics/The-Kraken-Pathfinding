@@ -217,13 +217,6 @@ public class Container implements Service, Configurable
 			}
 			
 			ko.add(ThreadPathfinding.class);
-			ko.add(AStarCourbe.class);
-			ko.add(ArcManager.class);
-			ko.add(ClothoidesComputer.class);
-			ko.add(RealGameState.class);
-			ko.add(RobotReal.class);
-			ko.add(ThreadSerialInputCoucheOrdre.class);
-			ko.add(CheminPathfinding.class);
 		}
 		
 		Obstacle.set(log, getService(PrintBuffer.class));

@@ -44,6 +44,9 @@ import robot.DirectionStrategy;
 import robot.RobotChrono;
 import robot.RobotReal;
 import robot.Speed;
+import table.GameElementNames;
+import table.RealTable;
+import table.Tribool;
 import threads.ThreadPathfinding;
 import utils.Vec2RO;
 
@@ -223,9 +226,9 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 	@Test
     public void test_bench() throws Exception
     {
-		int nbmax = 1000;
+		int nbmax = 10000;
 		long avant = System.nanoTime();
-		Cinematique depart = new Cinematique(-1100, 400, 0, true, 0, Speed.STANDARD.translationalSpeed);
+		Cinematique depart = new Cinematique(-1100, 600, 0, true, 0, Speed.STANDARD.translationalSpeed);
 		robot.setCinematique(depart);
 		Cinematique c = new Cinematique(0, 1200, Math.PI, false, 0, Speed.STANDARD.translationalSpeed);
 		for(int i = 0; i < nbmax; i++)
@@ -254,7 +257,8 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 			a = iterator.next();
 			log.debug(a);
 			robot.setCinematique(a);
-			Thread.sleep(100);
+			if(graphicTrajectory)
+				Thread.sleep(100);
 		}
 		log.debug("Nb points : "+i);
     }
@@ -275,7 +279,30 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 			a = iterator.next();
 			log.debug(a);
 			robot.setCinematique(a);
-			Thread.sleep(100);
+			if(graphicTrajectory)
+				Thread.sleep(100);
+		}
+		log.debug("Nb points : "+i);
+    }
+	
+	@Test
+    public void test_recherche_shoot_pas() throws Exception
+    {
+		Cinematique depart = new Cinematique(0, 1800, -Math.PI/4, true, 0, Speed.STANDARD.translationalSpeed);
+		robot.setCinematique(depart);
+		Cinematique c = new Cinematique(1000, 1200, Math.PI, false, 0, Speed.STANDARD.translationalSpeed);
+		astar.computeNewPath(c, DirectionStrategy.FASTEST, false);
+		iterator.reinit();
+		CinematiqueObs a = null;
+		int i = 0;
+		while(iterator.hasNext())
+		{
+			i++;
+			a = iterator.next();
+			log.debug(a);
+			robot.setCinematique(a);
+			if(graphicTrajectory)
+				Thread.sleep(100);
 		}
 		log.debug("Nb points : "+i);
     }
@@ -302,7 +329,8 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 			chemin.setCurrentIndex(iterator.getIndex());
 			log.debug(a);
 			robot.setCinematique(a);
-			Thread.sleep(100);
+			if(graphicTrajectory)
+				Thread.sleep(100);
 		}
 		gridspace.addObstacleAndRemoveNearbyObstacles(new Vec2RO(-400, 1300));
 		chemin.checkColliding();
@@ -316,7 +344,8 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 			chemin.setCurrentIndex(iterator.getIndex());
 			log.debug(a);
 			robot.setCinematique(a);
-			Thread.sleep(100);
+			if(graphicTrajectory)
+				Thread.sleep(100);
 		}
 	}
 	
@@ -338,7 +367,8 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 			a = iterator.next();
 			log.debug(a);
 			robot.setCinematique(a);
-			Thread.sleep(100);
+			if(graphicTrajectory)
+				Thread.sleep(100);
 		}
 		log.debug("Nb points : "+i);
 	}
@@ -361,7 +391,8 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 			a = iterator.next();
 			log.debug(a);
 			robot.setCinematique(a);
-			Thread.sleep(100);
+			if(graphicTrajectory)
+				Thread.sleep(100);
 		}
 		log.debug("Nb points : "+i);
 	}
@@ -384,7 +415,8 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 			a = iterator.next();
 			log.debug(a);
 			robot.setCinematique(a);
-			Thread.sleep(100);
+			if(graphicTrajectory)
+				Thread.sleep(100);
 		}
 		log.debug("Nb points : "+i);
 	}
