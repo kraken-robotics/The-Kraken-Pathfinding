@@ -180,9 +180,9 @@ public class AStarCourbe implements Service, Configurable
 			if(current.parent != null && current.getArc().getLast().getPosition().squaredDistance(arrivee.getPosition()) < 1)
 			{
 //				log.debug("On est arrivé !");
+				chemin.setUptodate(true);
 				partialReconstruct(current);
 				current.cameFromArcCubique = null;
-				chemin.setUptodate(true);
 				memorymanager.empty();
 				cinemMemory.empty();
 				return;
@@ -266,8 +266,9 @@ public class AStarCourbe implements Service, Configurable
 	 * Reconstruit le chemin. Il peut reconstruire le chemin même si celui-ci n'est pas fini.
 	 * @param best
 	 * @param last
+	 * @throws PathfindingException 
 	 */
-	private final void partialReconstruct(AStarCourbeNode best)
+	private final void partialReconstruct(AStarCourbeNode best) throws PathfindingException
 	{
 		AStarCourbeNode noeudParent = best;
 		ArcCourbe arcParent = best.getArc();
@@ -329,13 +330,8 @@ public class AStarCourbe implements Service, Configurable
 		{
 			state.copyAStarCourbe(depart.state);
 		}
-		Cinematique c = chemin.getLastValidCinematique();
-
-		if(c == null)
-			throw new PathfindingException("Aucun point récupérable !");
 		
-		depart.state.robot.setCinematique(c);
-//		log.debug("On reprend de "+chemin.getLastValidCinematique());
+		depart.state.robot.setCinematique(chemin.getLastValidCinematique());
 		
 		// On met à jour le D* Lite
 		dstarlite.updateStart(depart.state.robot.getCinematique().getPosition());

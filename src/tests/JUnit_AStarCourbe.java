@@ -295,7 +295,7 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 		log.debug("Temps : "+(System.nanoTime() - avant) / (1000000.));
 		iterator.reinit();
 		CinematiqueObs a = null;
-		int n = 10;
+		int n = 15;
 		while(iterator.hasNext() && iterator.getIndex() < n)
 		{
 			a = iterator.next();

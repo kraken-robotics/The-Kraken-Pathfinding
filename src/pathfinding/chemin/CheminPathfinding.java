@@ -41,6 +41,7 @@ import config.Config;
 import config.ConfigInfo;
 import config.Configurable;
 import container.Service;
+import exceptions.PathfindingException;
 import pathfinding.astar.arcs.ArcCourbe;
 
 /**
@@ -64,7 +65,7 @@ public class CheminPathfinding implements Service, Printable, Configurable
 	protected int indexLast = 0; // indice du prochain point de la trajectoire (donc indexLast - 1 est l'index du dernier point accessible)
 	private int lastValidIndex = -1; // l'indice du dernier index (-1 si aucun ne l'est, Integer.MAX_VALUE si tous le sont)
 	private boolean uptodate = true; // le chemin est-il complet
-	private int margeNecessaire, margeInitiale, anticipationReplanif;
+	private int margeNecessaire, margeInitiale;
 	private boolean graphic;
 	
 	public CheminPathfinding(Log log, BufferOutgoingOrder out, ObstaclesIteratorPresent iterator, PrintBuffer buffer, RobotReal robot)
@@ -107,9 +108,9 @@ public class CheminPathfinding implements Service, Printable, Configurable
 	 */
 	private boolean isColliding()
 	{
-		iterChemin.reinit();// TODO : si on a pas assez d'avance, arrêter le bas niveau
-		lastValidIndex = -1;
-
+		iterChemin.reinit();
+		lastValidIndex = -1; // reste à -1 à moins d'avoir assez de points pour le bas niveau
+		int firstPossible = add(indexFirst, margeInitiale);
 		while(iterChemin.hasNext())
 		{
 			ObstacleRobot a = iterChemin.next().obstacle;
@@ -127,12 +128,9 @@ public class CheminPathfinding implements Service, Printable, Configurable
 			/**
 			 * Mise à jour de lastValidIndex
 			 */
-			lastValidIndex = iterChemin.getIndex();
-			if(minus(lastValidIndex, add(indexFirst, margeInitiale)) >= anticipationReplanif)
-				lastValidIndex = minus(lastValidIndex, anticipationReplanif);
-			else
-				lastValidIndex = add(indexFirst, margeInitiale);
-			
+			int tmp = iterChemin.getIndex();
+			if(minus(tmp, firstPossible) >= 0)
+				lastValidIndex = firstPossible; // on reprendra d'ici
 		}
 		return false;
 	}
@@ -142,7 +140,6 @@ public class CheminPathfinding implements Service, Printable, Configurable
 	{
 		margeNecessaire = config.getInt(ConfigInfo.PF_MARGE_NECESSAIRE);
 		margeInitiale = config.getInt(ConfigInfo.PF_MARGE_INITIALE);
-		anticipationReplanif = config.getInt(ConfigInfo.PF_ANTICIPATION);
 		graphic = config.getBoolean(ConfigInfo.GRAPHIC_TRAJECTORY_FINAL);
 		if(graphic)
 			buffer.add(this);
@@ -173,8 +170,14 @@ public class CheminPathfinding implements Service, Printable, Configurable
 	 * Il sera directement envoyé à la série
 	 * @param arc
 	 */
-	public void add(LinkedList<CinematiqueObs> points)
+	public void add(LinkedList<CinematiqueObs> points) throws PathfindingException
 	{
+		/*
+		 * En cas de replanification, si les points ajoutés ne suffisent pas pour avoir assurer la marge du bas niveau, on lance une exception
+		 */
+		if(!uptodate && minus(add(indexLast, points.size()), indexFirst) < margeNecessaire)
+			throw new PathfindingException("Pas assez de points pour le bas niveau");
+				
 		if(!points.isEmpty())
 		{
 			synchronized(this)
@@ -269,10 +272,11 @@ public class CheminPathfinding implements Service, Printable, Configurable
 	 * Un "checkColliding" doit être fait avant !
 	 * @return
 	 */
-	public Cinematique getLastValidCinematique()
+	public Cinematique getLastValidCinematique() throws PathfindingException
 	{
 		if(lastValidIndex == -1)
-			return null;
+			throw new PathfindingException("Pas assez de points pour le bas niveau !");
+		
 		indexLast = lastValidIndex + 1; // on complètera à partir de ce point
 		return chemin[lastValidIndex];
 	}
