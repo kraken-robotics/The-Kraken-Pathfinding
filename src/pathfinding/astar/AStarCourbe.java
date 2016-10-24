@@ -19,6 +19,7 @@ package pathfinding.astar;
 
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.PriorityQueue;
 import java.util.Stack;
 
@@ -39,6 +40,7 @@ import exceptions.PathfindingException;
 import graphic.PrintBuffer;
 import graphic.printable.Layer;
 import robot.Cinematique;
+import robot.CinematiqueObs;
 import robot.DirectionStrategy;
 import robot.Speed;
 import utils.Log;
@@ -87,7 +89,7 @@ public class AStarCourbe implements Service, Configurable
 	private final HashSet<AStarCourbeNode> closedset = new HashSet<AStarCourbeNode>();
 	private final PriorityQueue<AStarCourbeNode> openset = new PriorityQueue<AStarCourbeNode>(PointGridSpace.NB_POINTS, new AStarCourbeNodeComparator());
 	private Stack<ArcCourbe> pileTmp = new Stack<ArcCourbe>();
-	
+	private LinkedList<CinematiqueObs> trajectory = new LinkedList<CinematiqueObs>();
 	/**
 	 * Constructeur du AStarCourbe
 	 */
@@ -266,10 +268,16 @@ public class AStarCourbe implements Service, Configurable
 			noeudParent = noeudParent.parent;
 			arcParent = noeudParent.getArc();
 		}
+		trajectory.clear();
 
-		// chemin.add fait des copies des arcs
+		// chemin.add fait des copies des points
 		while(!pileTmp.isEmpty())
-			chemin.add(pileTmp.pop());
+		{
+			ArcCourbe a = pileTmp.pop();
+			for(int i = 0; i < a.getNbPoints(); i++)
+				trajectory.add(a.getPoint(i));
+		}
+		chemin.add(trajectory);
 	}
 
 	@Override

@@ -17,6 +17,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 package tests;
 
+import java.util.LinkedList;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,6 +26,7 @@ import org.junit.Test;
 import pathfinding.astar.arcs.ArcCourbeClotho;
 import pathfinding.chemin.CheminPathfinding;
 import pathfinding.chemin.IteratorCheminPathfinding;
+import robot.CinematiqueObs;
 import robot.RobotReal;
 
 /**
@@ -51,8 +54,9 @@ public class JUnit_CheminPF extends JUnit_Test {
 		iterator.reinit();
 		Assert.assertEquals(0, iterator.getIndex());
 		Assert.assertFalse(iterator.hasNext());
-		ArcCourbeClotho arc = new ArcCourbeClotho(container.getService(RobotReal.class));
-		chemin.add(arc);
+		LinkedList<CinematiqueObs> l = new LinkedList<CinematiqueObs>();
+		l.add(new CinematiqueObs(container.getService(RobotReal.class)));
+		chemin.add(l);
 		Assert.assertTrue(iterator.hasNext());
 	}
 

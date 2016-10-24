@@ -213,7 +213,7 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 		
 		Assert.assertEquals(0, arc[nbArc-1].arcselems[arc[nbArc-1].arcselems.length - 1].getPosition().distance(new Vec2RO(-431.50765480210504,1743.5415294715754)), 0.1);
     }
-	/*
+	
 	@Test
     public void test_bench() throws Exception
     {
@@ -223,10 +223,13 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 		robot.setCinematique(depart);
 		Cinematique c = new Cinematique(0, 1200, Math.PI, false, 0, Speed.STANDARD);
 		for(int i = 0; i < nbmax; i++)
-			astar.computeNewPath(c, DirectionStrategy.FASTEST);
+		{
+			astar.computeNewPath(c, DirectionStrategy.FASTEST, false);
+			chemin.clear();
+		}
 		log.debug("Temps : "+(System.nanoTime() - avant) / (nbmax * 1000000.));
     }
-*/
+
 	@Test
     public void test_recherche_fastest() throws Exception
     {
@@ -253,9 +256,9 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 	@Test
     public void test_recherche_shoot() throws Exception
     {
-		Cinematique depart = new Cinematique(-900, 400, Math.PI/4, true, 0, Speed.STANDARD);
+		Cinematique depart = new Cinematique(0, 1800, -Math.PI/4, true, 0, Speed.STANDARD);
 		robot.setCinematique(depart);
-		Cinematique c = new Cinematique(0, 1200, Math.PI, false, 0, Speed.STANDARD);
+		Cinematique c = new Cinematique(1000, 1200, Math.PI, false, 0, Speed.STANDARD);
 		astar.computeNewPath(c, DirectionStrategy.FASTEST, true);
 		iterator.reinit();
 		CinematiqueObs a = null;
@@ -270,7 +273,6 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 		}
 		log.debug("Nb points : "+i);
     }
-
 	
 	@Test
     public void test_replanif() throws Exception
@@ -299,7 +301,7 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 		long avant = System.nanoTime();
 		Cinematique depart = new Cinematique(-1100, 600, 0, true, 0, Speed.STANDARD);
 		robot.setCinematique(depart);
-		Cinematique c = new Cinematique(1100, 600, Math.PI, false, 0, Speed.STANDARD);
+		Cinematique c = new Cinematique(1000, 700, Math.PI, false, 0, Speed.STANDARD);
 		astar.computeNewPath(c, DirectionStrategy.FASTEST, false);
 		log.debug("Temps : "+(System.nanoTime() - avant) / (1000000.));
 		iterator.reinit();

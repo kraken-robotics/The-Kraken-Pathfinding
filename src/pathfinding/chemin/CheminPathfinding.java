@@ -18,6 +18,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 package pathfinding.chemin;
 
 import java.awt.Graphics;
+import java.util.LinkedList;
+import java.util.List;
 
 import obstacles.memory.ObstaclesIteratorPresent;
 import obstacles.types.ObstacleCircular;
@@ -44,8 +46,6 @@ import pathfinding.astar.arcs.ArcCourbe;
  * @author pf
  *
  */
-
-// TODO : le premier point du chemin doit être la position actuelle du robot
 
 public class CheminPathfinding implements Service, Printable, Configurable
 {
@@ -170,14 +170,19 @@ public class CheminPathfinding implements Service, Printable, Configurable
 	 * Il sera directement envoyé à la série
 	 * @param arc
 	 */
-	public void add(ArcCourbe arc)
+	public void add(LinkedList<CinematiqueObs> points)
 	{
 		synchronized(this)
 		{
 			int tmp = indexLast;
-			for(int i = 0; i < arc.getNbPoints(); i++)
-				add(arc.getPoint(i));
-			out.envoieArcCourbe(arc, tmp);
+			for(CinematiqueObs p : points)
+				add(p);
+			if(isIndexValid(tmp - 1) && chemin[tmp - 1].enMarcheAvant == points.getFirst().enMarcheAvant)
+			{
+				points.addFirst(chemin[tmp - 1]); // on renvoie ce point afin qu'il ne soit plus un point d'arrêt
+				tmp--;
+			}
+			out.envoieArcCourbe(points, tmp);
 		}
 		if(graphic)
 			synchronized(buffer)
@@ -186,9 +191,14 @@ public class CheminPathfinding implements Service, Printable, Configurable
 			}
 	}
 	
+	private boolean isIndexValid(int index)
+	{
+		return minus(index, indexFirst) < minus(indexLast, indexFirst);
+	}
+	
 	protected synchronized CinematiqueObs get(int index)
 	{
-		if(minus(index, indexFirst) < minus(indexLast, indexFirst))
+		if(isIndexValid(index))
 			return chemin[index];
 		return null;
 	}
