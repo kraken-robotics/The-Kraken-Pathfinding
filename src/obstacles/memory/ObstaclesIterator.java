@@ -55,7 +55,7 @@ public abstract class ObstaclesIterator implements Iterator<ObstacleProximity>
 	{
 		return memory.getObstacle(++nbTmp);
 	}
-
+	
 	@Override
 	public void remove()
 	{

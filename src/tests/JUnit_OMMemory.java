@@ -21,6 +21,9 @@ import obstacles.memory.ObstaclesIteratorPresent;
 import obstacles.memory.ObstaclesMemory;
 import obstacles.types.Obstacle;
 import obstacles.types.ObstacleProximity;
+import pathfinding.ChronoGameState;
+import pathfinding.RealGameState;
+import pathfinding.dstarlite.gridspace.GridSpace;
 import pathfinding.dstarlite.gridspace.Masque;
 import pathfinding.dstarlite.gridspace.MasqueManager;
 
@@ -46,16 +49,33 @@ public class JUnit_OMMemory extends JUnit_Test {
 	private ObstaclesMemory memory;
 	private ObstaclesIteratorPresent iterator;
 	private MasqueManager mm;
-	
+	private GridSpace gridspace;
+	private RealGameState state;
+
     @Override
 	@Before
     public void setUp() throws Exception {
         super.setUp();
+        state = container.getService(RealGameState.class);
+		gridspace = container.getService(GridSpace.class);
         memory = container.getService(ObstaclesMemory.class);
         iterator = new ObstaclesIteratorPresent(log, memory);
         mm = container.getService(MasqueManager.class);
     }
 
+	@Test
+    public void test_obstacle() throws Exception
+    {
+		ChronoGameState chrono = container.make(ChronoGameState.class);
+		iterator.reinit();
+		Assert.assertTrue(!iterator.hasNext());
+		gridspace.addObstacleAndRemoveNearbyObstacles(new Vec2RO(-400, 1300));
+		Assert.assertTrue(iterator.hasNext());
+		state.copyAStarCourbe(chrono);
+		Assert.assertTrue(chrono.iterator.hasNext());
+    }
+
+    
 	@Test
     public void test_iterator() throws Exception
     {

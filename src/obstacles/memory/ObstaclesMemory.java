@@ -52,6 +52,7 @@ public class ObstaclesMemory implements Service, Configurable
 	private volatile int firstNotDeadNow = 0;
 	private volatile long nextDeathDate = Long.MAX_VALUE;
 	private boolean printProx;
+	private boolean printDStarLite;
 	private final int tempsAvantSuppression = 2000;
 	
 	protected Log log;
@@ -78,10 +79,9 @@ public class ObstaclesMemory implements Service, Configurable
 	        listObstaclesMobiles.add(obstacle);
 	
 	        if(printProx)
-	        {
 	        	buffer.addSupprimable(obstacle);
+	        if(printDStarLite)
 	        	buffer.addSupprimable(obstacle.getMasque());
-	        }
 	        
 	        size++;
 		} catch (ContainerException e) {
@@ -101,6 +101,7 @@ public class ObstaclesMemory implements Service, Configurable
 		rayonEnnemi = config.getInt(ConfigInfo.RAYON_ROBOT_ADVERSE);
 		dureeAvantPeremption = config.getInt(ConfigInfo.DUREE_PEREMPTION_OBSTACLES);
 		printProx = config.getBoolean(ConfigInfo.GRAPHIC_PROXIMITY_OBSTACLES);
+		printDStarLite = config.getBoolean(ConfigInfo.GRAPHIC_D_STAR_LITE);
 	}
 
 	public synchronized ObstacleProximity getObstacle(int nbTmp)
