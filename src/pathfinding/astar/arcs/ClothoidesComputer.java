@@ -281,7 +281,7 @@ public class ClothoidesComputer implements Service, Configurable
 				continue;
 			}
 			
-			return new ArcCourbeCubique(out, longueur, v.rebrousse, v.rebrousse);
+			return new ArcCourbeCubique(out, longueur, v.rebrousse);
 		}
 		return null;
 	}

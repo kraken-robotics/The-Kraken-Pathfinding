@@ -32,14 +32,12 @@ public abstract class ArcCourbe implements Configurable
 {
 
 	public boolean rebrousse; // cet arc commence par un rebroussement, c'est-à-dire que la marche avant change
-	public boolean stop; // cet arc commence par un arrêt du robot
 //	public ObstacleArcCourbe obstacle = new ObstacleArcCourbe();
 	protected int tempsRebroussement;
 	
-	public ArcCourbe(boolean rebrousse, boolean stop)
+	public ArcCourbe(boolean rebrousse)
 	{
 		this.rebrousse = rebrousse;
-		this.stop = stop;
 	}
 	
 	public abstract int getNbPoints();

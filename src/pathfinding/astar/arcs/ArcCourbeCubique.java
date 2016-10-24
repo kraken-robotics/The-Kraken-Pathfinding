@@ -32,9 +32,9 @@ public class ArcCourbeCubique extends ArcCourbe
 	public List<CinematiqueObs> arcs;
 	public double longueur;
 	
-	public ArcCourbeCubique(List<CinematiqueObs> arcs, double longueur, boolean rebrousse, boolean stop)
+	public ArcCourbeCubique(List<CinematiqueObs> arcs, double longueur, boolean rebrousse)
 	{
-		super(rebrousse, stop);
+		super(rebrousse);
 		this.arcs = arcs;
 		this.longueur = longueur;
 //		this.obstacle = obstacle;

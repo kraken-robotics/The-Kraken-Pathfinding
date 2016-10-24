@@ -32,7 +32,7 @@ public class ArcCourbeClotho extends ArcCourbe
 	
 	public ArcCourbeClotho(RobotReal r)
 	{
-		super(false, false); // modifié par copy
+		super(false); // modifié par copy
 		for(int i = 0; i < ClothoidesComputer.NB_POINTS; i++)
 			arcselems[i] = new CinematiqueObs(r);
 	}
