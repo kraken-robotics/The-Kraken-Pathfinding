@@ -172,18 +172,18 @@ public class ClothoidesComputer implements Service, Configurable
 		double alphas[] = {100, 300, 600, 800, 1000, 1200};
 //		log.debug("Interpolation cubique, rebrousse : "+v.rebrousse);
 		double sin, cos;
-		double courbure = cinematiqueInitiale.courbureGeometrique;
+		double courbure = cinematiqueInitiale.courbureGeometrique,
+				orientation = cinematiqueInitiale.orientationGeometrique;
+
 		if(v.rebrousse) // si on rebrousse, la courbure est nulle
 		{
-			sin = Math.sin(cinematiqueInitiale.orientationGeometrique + Math.PI);
-			cos = Math.cos(cinematiqueInitiale.orientationGeometrique + Math.PI);
+			orientation += Math.PI;
 			courbure = 0;
 		}
-		else
-		{
-			sin = Math.sin(cinematiqueInitiale.orientationGeometrique);
-			cos = Math.cos(cinematiqueInitiale.orientationGeometrique);			
-		}
+		
+		sin = Math.sin(orientation);
+		cos = Math.cos(orientation);
+
 		LinkedList<CinematiqueObs> out = new LinkedList<CinematiqueObs>();
 		
 		for(int i = 0; i < alphas.length; i++)
@@ -213,8 +213,8 @@ public class ClothoidesComputer implements Service, Configurable
 			double dy = cinematiqueInitiale.getPosition().getY();
 			double cy = sin*alpha;
 			double ay = arrivee.getPosition().getY() - by - cy - dy;
-	
-			double t = 1, tnext = 1, lastCourbure = courbure;
+			boolean first = true;
+			double t = 1, tnext = 1, lastCourbure = 0, lastOrientation = 0;
 			double longueur = 0;
 			CinematiqueObs last = null, actuel;
 			boolean error = false;
@@ -250,7 +250,7 @@ public class ClothoidesComputer implements Service, Configurable
 				
 				// Il faut faire attention à ne pas dépasser la coubure maximale !
 				// On prend de la marge
-				if(x < -1500 || x > 1500 || y < 0 || y > 2000 || Math.abs(actuel.courbureGeometrique) > courbureMax*0.7 || Math.abs(actuel.courbureGeometrique - lastCourbure) > 3)
+				if(x < -1500 || x > 1500 || y < 0 || y > 2000 || Math.abs(actuel.courbureGeometrique) > courbureMax*0.7 || (!first && (Math.abs(actuel.courbureGeometrique - lastCourbure) > 3 || Math.abs(actuel.orientationGeometrique - lastOrientation) > 1)))
 				{
 //					log.debug("ERREUR");
 					error = true;
@@ -259,7 +259,7 @@ public class ClothoidesComputer implements Service, Configurable
 				
 				//				log.debug(x+" "+y);
 				lastCourbure = actuel.courbureGeometrique;
-				
+				lastOrientation = actuel.orientationGeometrique;				
 				// calcul de la longueur de l'arc
 				if(last != null)
 					longueur += actuel.getPosition().distance(last.getPosition());
@@ -268,6 +268,7 @@ public class ClothoidesComputer implements Service, Configurable
 				
 				out.addFirst(actuel); // vu qu'on génère la trajectoire cubique en partant de la fin
 				last = actuel;
+				first = false;
 			}
 			
 			// Parfois, l'interpolation cubique donne très peu de points (à cause du pas de t qui est une approximation)
