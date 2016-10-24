@@ -53,6 +53,7 @@ public class RealTable extends Table implements Service, Configurable
 	/**
 	 * Met à jour l'affichage en plus
 	 */
+	@Override
 	public synchronized boolean setDone(GameElementNames id, Tribool done)
 	{
 		if(print && done.hash > Tribool.FALSE.hash)

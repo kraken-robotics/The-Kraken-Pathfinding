@@ -90,15 +90,10 @@ public class ObstacleRobot extends ObstacleRectangular
 	{
 		if(Math.abs(courbure) < 0.01)
 			return 0;
-		else
-		{
-			double R = Math.abs(1000 / courbure); // le rayon de courbure
-			if(roueDroite)
-				return Math.signum(courbure) * Math.atan2(L, Math.abs(d+R));
-			else
-				return Math.signum(courbure) * Math.atan2(L, Math.abs(R-d));
-		}
-
+		double R = Math.abs(1000 / courbure); // le rayon de courbure
+		if(roueDroite)
+			return Math.signum(courbure) * Math.atan2(L, Math.abs(d+R));
+		return Math.signum(courbure) * Math.atan2(L, Math.abs(R-d));
 	}
 	
 	@Override
@@ -111,18 +106,9 @@ public class ObstacleRobot extends ObstacleRectangular
 		if(imageRobot != null && imageRobotRoueD != null && imageRobotRoueG != null)
 		{
 			Graphics2D g2d = (Graphics2D)g;
-			AffineTransform trans = new AffineTransform();
-			trans.setTransform(new AffineTransform());
-			trans.translate(f.XtoWindow(position.getX()), f.YtoWindow(position.getY()));
-			trans.rotate(-angle);
-			trans.translate(f.distanceXtoWindow((int)coinHautGauche.getX()), f.distanceYtoWindow(-(int)coinHautGauche.getY()));
-			trans.scale(1. * f.distanceXtoWindow((int)coinHautGauche.distance(coinHautDroite)) / imageRobot.getWidth(null),
-					1. * f.distanceXtoWindow((int)coinHautGauche.distance(coinBasGauche)) / imageRobot.getHeight(null));
-			g2d.drawImage(imageRobot, trans, null);
-
 			Vec2RW centreRotationDroiteRotate = new Vec2RW();
 			convertitVersRepereTable(centreRotationDroite, centreRotationDroiteRotate);			
-			trans = new AffineTransform();
+			AffineTransform trans = new AffineTransform();
 			trans.setTransform(new AffineTransform());
 			trans.translate(f.XtoWindow((int)centreRotationDroiteRotate.getX()), f.YtoWindow((int)centreRotationDroiteRotate.getY()));
 			trans.rotate(-angle-getAngleRoue(true, robot.getCinematique().courbureReelle));
@@ -143,6 +129,15 @@ public class ObstacleRobot extends ObstacleRectangular
 			trans.scale(1. * f.distanceXtoWindow((int)coinHautGauche.distance(coinHautDroite)) / imageRobot.getWidth(null),
 					1. * f.distanceXtoWindow((int)coinHautGauche.distance(coinBasGauche)) / imageRobot.getHeight(null));
 			g2d.drawImage(imageRobotRoueG, trans, null);
+			
+			trans = new AffineTransform();
+			trans.setTransform(new AffineTransform());
+			trans.translate(f.XtoWindow(position.getX()), f.YtoWindow(position.getY()));
+			trans.rotate(-angle);
+			trans.translate(f.distanceXtoWindow((int)coinHautGauche.getX()), f.distanceYtoWindow(-(int)coinHautGauche.getY()));
+			trans.scale(1. * f.distanceXtoWindow((int)coinHautGauche.distance(coinHautDroite)) / imageRobot.getWidth(null),
+					1. * f.distanceXtoWindow((int)coinHautGauche.distance(coinBasGauche)) / imageRobot.getHeight(null));
+			g2d.drawImage(imageRobot, trans, null);
 		}
 		else
 		{

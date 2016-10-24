@@ -150,7 +150,6 @@ public class ArcManager implements Service, Configurable
 			ArcCourbeCubique tmp;
 			if(current.getArc() != null)
 				tmp = clotho.cubicInterpolation(
-						current.state.robot,
 						current.getArc().getLast(),
 						arrivee,
 						vitesseMax,
@@ -174,7 +173,7 @@ public class ArcManager implements Service, Configurable
 		 * Si on fait une interpolation par clothoïde
 		 */
 		else if(current.parent != null)
-			clotho.getTrajectoire(current.state.robot,
+			clotho.getTrajectoire(
 					current.cameFromArc,
 					v,
 					vitesseMax,

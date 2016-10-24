@@ -212,15 +212,38 @@ public class Fenetre extends JPanel implements Service, Configurable {
 			log.debug("Sauvegarde du gif de "+images.size()+" images…");
 		    ImageOutputStream output;
 			try {
-				output = new FileImageOutputStream(new File(file));
-		 
-			    GifSequenceWriter writer = new GifSequenceWriter(output, images.get(0).getType(), delay, true);    
-			 
-			    for(BufferedImage i : images)
-			    	writer.writeToSequence(i);
-	
-			    writer.close();    
-			    output.close();
+				try {
+					output = new FileImageOutputStream(new File(file));
+				} catch (FileNotFoundException e) {
+					e.printStackTrace();
+					return;
+				} catch (IOException e) {
+					e.printStackTrace();
+					return;
+				}  		 
+				
+			    GifSequenceWriter writer;
+				try {
+					writer = new GifSequenceWriter(output, images.get(0).getType(), delay, true);    
+				} catch (FileNotFoundException e) {
+					e.printStackTrace();
+					output.close();
+					return;
+				} catch (IOException e) {
+					e.printStackTrace();
+					output.close();
+					return;
+				}  		 
+
+				try {
+				    for(BufferedImage i : images)
+				    	writer.writeToSequence(i);
+				}
+				finally
+				{
+				    writer.close();    
+				    output.close();
+				}
 				log.debug("Sauvegarde finie !");
 	
 			} catch (FileNotFoundException e) {

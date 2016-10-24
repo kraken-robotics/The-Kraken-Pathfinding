@@ -80,7 +80,7 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 		Cinematique c1 = new Cinematique(-1100, 300, Math.PI/2, true, 0, Speed.STANDARD);
 		Cinematique c2 = new Cinematique(0, 1000, 0, true, 0, Speed.STANDARD);
 		
-		ArcCourbeCubique arccubique = clotho.cubicInterpolation(container.make(RobotChrono.class), c1, c2, Speed.STANDARD, VitesseCourbure.DIRECT_COURBE);
+		ArcCourbeCubique arccubique = clotho.cubicInterpolation(c1, c2, Speed.STANDARD, VitesseCourbure.DIRECT_COURBE);
 	
 		for(int i = 0; i < arccubique.arcs.size(); i++)
 		{
@@ -122,7 +122,6 @@ public class JUnit_AStarCourbe extends JUnit_Test {
     public void test_depose() throws Exception
     {
 		ClothoidesComputer clotho = container.getService(ClothoidesComputer.class);
-		RobotChrono r = container.make(RobotChrono.class);
 		RobotReal rr = container.getService(RobotReal.class);
 		int nbArc = 6;
 		ArcCourbeClotho arc[] = new ArcCourbeClotho[nbArc];
@@ -131,12 +130,12 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 
 		Cinematique c = new Cinematique(0, 1000, -Math.PI/2, false, -5.5, Speed.STANDARD);
 		log.debug("Initial : "+c);
-		clotho.getTrajectoire(r, c, VitesseCourbure.COURBURE_IDENTIQUE, Speed.STANDARD, arc[0]);
-		clotho.getTrajectoire(r, arc[0], VitesseCourbure.COURBURE_IDENTIQUE, Speed.STANDARD, arc[1]);
-		clotho.getTrajectoire(r, arc[1], VitesseCourbure.COURBURE_IDENTIQUE, Speed.STANDARD, arc[2]);
-		clotho.getTrajectoire(r, arc[2], VitesseCourbure.COURBURE_IDENTIQUE, Speed.STANDARD, arc[3]);
-		clotho.getTrajectoire(r, arc[3], VitesseCourbure.COURBURE_IDENTIQUE, Speed.STANDARD, arc[4]);
-		clotho.getTrajectoire(r, arc[4], VitesseCourbure.COURBURE_IDENTIQUE, Speed.STANDARD, arc[5]);
+		clotho.getTrajectoire(c, VitesseCourbure.COURBURE_IDENTIQUE, Speed.STANDARD, arc[0]);
+		clotho.getTrajectoire(arc[0], VitesseCourbure.COURBURE_IDENTIQUE, Speed.STANDARD, arc[1]);
+		clotho.getTrajectoire(arc[1], VitesseCourbure.COURBURE_IDENTIQUE, Speed.STANDARD, arc[2]);
+		clotho.getTrajectoire(arc[2], VitesseCourbure.COURBURE_IDENTIQUE, Speed.STANDARD, arc[3]);
+		clotho.getTrajectoire(arc[3], VitesseCourbure.COURBURE_IDENTIQUE, Speed.STANDARD, arc[4]);
+		clotho.getTrajectoire(arc[4], VitesseCourbure.COURBURE_IDENTIQUE, Speed.STANDARD, arc[5]);
 	
 		buffer.addSupprimable(new ObstacleCircular(new Vec2RO(200, 1000-360), 15));
 		ObstacleRobot[] obs= new ObstacleRobot[nbArc*ClothoidesComputer.NB_POINTS];
@@ -161,7 +160,6 @@ public class JUnit_AStarCourbe extends JUnit_Test {
     {
 		boolean graphicTrajectory = config.getBoolean(ConfigInfo.GRAPHIC_TRAJECTORY);
 		ClothoidesComputer clotho = container.getService(ClothoidesComputer.class);
-		RobotChrono r = container.make(RobotChrono.class);
 		RobotReal rr = container.getService(RobotReal.class);
 		int nbArc = 16;
 		ArcCourbeClotho arc[] = new ArcCourbeClotho[nbArc];
@@ -170,22 +168,22 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 
 		Cinematique c = new Cinematique(0, 1000, Math.PI/2, false, 0, Speed.STANDARD);
 		log.debug("Initial : "+c);
-		clotho.getTrajectoire(r, c, VitesseCourbure.COURBURE_IDENTIQUE, Speed.STANDARD, arc[0]);
-		clotho.getTrajectoire(r, arc[0], VitesseCourbure.GAUCHE_3, Speed.STANDARD, arc[1]);
-		clotho.getTrajectoire(r, arc[1], VitesseCourbure.COURBURE_IDENTIQUE, Speed.STANDARD, arc[2]);
-		clotho.getTrajectoire(r, arc[2], VitesseCourbure.GAUCHE_1, Speed.STANDARD, arc[3]);
-		clotho.getTrajectoire(r, arc[3], VitesseCourbure.COURBURE_IDENTIQUE, Speed.STANDARD, arc[4]);
-		clotho.getTrajectoire(r, arc[4], VitesseCourbure.COURBURE_IDENTIQUE, Speed.STANDARD, arc[5]);
-		clotho.getTrajectoire(r, arc[5], VitesseCourbure.GAUCHE_0_REBROUSSE, Speed.STANDARD, arc[6]);
-		clotho.getTrajectoire(r, arc[6], VitesseCourbure.GAUCHE_1, Speed.STANDARD, arc[7]);
-		clotho.getTrajectoire(r, arc[7], VitesseCourbure.GAUCHE_3, Speed.STANDARD, arc[8]);
-		clotho.getTrajectoire(r, arc[8], VitesseCourbure.DROITE_0_REBROUSSE, Speed.STANDARD, arc[9]);
-		clotho.getTrajectoire(r, arc[9], VitesseCourbure.DROITE_1, Speed.STANDARD, arc[10]);
-		clotho.getTrajectoire(r, arc[10], VitesseCourbure.DROITE_1, Speed.STANDARD, arc[11]);
-		clotho.getTrajectoire(r, arc[11], VitesseCourbure.DROITE_1, Speed.STANDARD, arc[12]);
-		clotho.getTrajectoire(r, arc[12], VitesseCourbure.DROITE_1, Speed.STANDARD, arc[13]);
-		clotho.getTrajectoire(r, arc[13], VitesseCourbure.DROITE_1, Speed.STANDARD, arc[14]);
-		clotho.getTrajectoire(r, arc[14], VitesseCourbure.GAUCHE_3, Speed.STANDARD, arc[15]);
+		clotho.getTrajectoire(c, VitesseCourbure.COURBURE_IDENTIQUE, Speed.STANDARD, arc[0]);
+		clotho.getTrajectoire(arc[0], VitesseCourbure.GAUCHE_3, Speed.STANDARD, arc[1]);
+		clotho.getTrajectoire(arc[1], VitesseCourbure.COURBURE_IDENTIQUE, Speed.STANDARD, arc[2]);
+		clotho.getTrajectoire(arc[2], VitesseCourbure.GAUCHE_1, Speed.STANDARD, arc[3]);
+		clotho.getTrajectoire(arc[3], VitesseCourbure.COURBURE_IDENTIQUE, Speed.STANDARD, arc[4]);
+		clotho.getTrajectoire(arc[4], VitesseCourbure.COURBURE_IDENTIQUE, Speed.STANDARD, arc[5]);
+		clotho.getTrajectoire(arc[5], VitesseCourbure.GAUCHE_0_REBROUSSE, Speed.STANDARD, arc[6]);
+		clotho.getTrajectoire(arc[6], VitesseCourbure.GAUCHE_1, Speed.STANDARD, arc[7]);
+		clotho.getTrajectoire(arc[7], VitesseCourbure.GAUCHE_3, Speed.STANDARD, arc[8]);
+		clotho.getTrajectoire(arc[8], VitesseCourbure.DROITE_0_REBROUSSE, Speed.STANDARD, arc[9]);
+		clotho.getTrajectoire(arc[9], VitesseCourbure.DROITE_1, Speed.STANDARD, arc[10]);
+		clotho.getTrajectoire(arc[10], VitesseCourbure.DROITE_1, Speed.STANDARD, arc[11]);
+		clotho.getTrajectoire(arc[11], VitesseCourbure.DROITE_1, Speed.STANDARD, arc[12]);
+		clotho.getTrajectoire(arc[12], VitesseCourbure.DROITE_1, Speed.STANDARD, arc[13]);
+		clotho.getTrajectoire(arc[13], VitesseCourbure.DROITE_1, Speed.STANDARD, arc[14]);
+		clotho.getTrajectoire(arc[14], VitesseCourbure.GAUCHE_3, Speed.STANDARD, arc[15]);
 	
 		for(int a = 0; a < nbArc; a++)	
 		{

@@ -163,10 +163,10 @@ public class ClothoidesComputer implements Service, Configurable
 
 	public final ArcCourbeCubique cubicInterpolation(RobotChrono robot, Cinematique arrivee, Speed vitesseMax, VitesseCourbure v)
 	{
-		return cubicInterpolation(robot, robot.getCinematique(), arrivee, vitesseMax, v);
+		return cubicInterpolation(robot.getCinematique(), arrivee, vitesseMax, v);
 	}
 	
-	public final ArcCourbeCubique cubicInterpolation(RobotChrono robot, Cinematique cinematiqueInitiale, Cinematique arrivee, Speed vitesseMax, VitesseCourbure v)
+	public final ArcCourbeCubique cubicInterpolation(Cinematique cinematiqueInitiale, Cinematique arrivee, Speed vitesseMax, VitesseCourbure v)
 	{
 //		log.debug(v);
 		double alphas[] = {100, 300, 600, 800, 1000, 1200};
@@ -286,10 +286,10 @@ public class ClothoidesComputer implements Service, Configurable
 		return null;
 	}
 	
-	public void getTrajectoire(RobotChrono robot, ArcCourbe depart, VitesseCourbure vitesse, Speed vitesseMax, ArcCourbeClotho modified)
+	public void getTrajectoire(ArcCourbe depart, VitesseCourbure vitesse, Speed vitesseMax, ArcCourbeClotho modified)
 	{
 		CinematiqueObs last = depart.getLast();
-		getTrajectoire(robot, last, vitesse, vitesseMax, modified);
+		getTrajectoire(last, vitesse, vitesseMax, modified);
 	}
 	
 	/**
@@ -300,7 +300,7 @@ public class ClothoidesComputer implements Service, Configurable
 	 */
 	public final void getTrajectoire(RobotChrono robot, VitesseCourbure vitesse, Speed vitesseMax, ArcCourbeClotho modified)
 	{
-		getTrajectoire(robot, robot.getCinematique(), vitesse, vitesseMax, modified);
+		getTrajectoire(robot.getCinematique(), vitesse, vitesseMax, modified);
 	}
 	
 	/**
@@ -314,7 +314,7 @@ public class ClothoidesComputer implements Service, Configurable
 	 * @param distance_mm
 	 * @return
 	 */
-	public final void getTrajectoire(RobotChrono robot, Cinematique cinematiqueInitiale, VitesseCourbure vitesse, Speed vitesseMax, ArcCourbeClotho modified)
+	public final void getTrajectoire(Cinematique cinematiqueInitiale, VitesseCourbure vitesse, Speed vitesseMax, ArcCourbeClotho modified)
 	{
 //		modified.v = vitesse;
 //		log.debug(vitesse);
@@ -330,9 +330,9 @@ public class ClothoidesComputer implements Service, Configurable
 		if(vitesse.vitesse == 0)
 		{
 			if(courbure < 0.00001 && courbure > -0.00001)
-				getTrajectoireLigneDroite(robot, cinematiqueInitiale.getPosition(), orientation, vitesseMax, modified, vitesse.rebrousse ^ cinematiqueInitiale.enMarcheAvant);
+				getTrajectoireLigneDroite(cinematiqueInitiale.getPosition(), orientation, vitesseMax, modified, vitesse.rebrousse ^ cinematiqueInitiale.enMarcheAvant);
 			else
-				getTrajectoireCirculaire(robot, cinematiqueInitiale.getPosition(), orientation, courbure, vitesseMax, modified, vitesse.rebrousse ^ cinematiqueInitiale.enMarcheAvant);
+				getTrajectoireCirculaire(cinematiqueInitiale.getPosition(), orientation, courbure, vitesseMax, modified, vitesse.rebrousse ^ cinematiqueInitiale.enMarcheAvant);
 			return;
 		}
 		
@@ -411,8 +411,7 @@ public class ClothoidesComputer implements Service, Configurable
 	 * @param courbure
 	 * @param modified
 	 */
-	private void getTrajectoireCirculaire(RobotChrono robot, Vec2RO position,
-			double orientation, double courbure, Speed vitesseMax, ArcCourbeClotho modified, boolean enMarcheAvant)
+	private void getTrajectoireCirculaire(Vec2RO position, double orientation, double courbure, Speed vitesseMax, ArcCourbeClotho modified, boolean enMarcheAvant)
 	{		
 //		log.debug("Trajectoire circulaire !");
 		// rappel = la courbure est l'inverse du rayon de courbure
@@ -469,7 +468,7 @@ public class ClothoidesComputer implements Service, Configurable
 	 * @param orientation
 	 * @param modified
 	 */
-	private void getTrajectoireLigneDroite(RobotChrono robot, Vec2RO position, double orientation, Speed vitesseMax, ArcCourbeClotho modified, boolean enMarcheAvant)
+	private void getTrajectoireLigneDroite(Vec2RO position, double orientation, Speed vitesseMax, ArcCourbeClotho modified, boolean enMarcheAvant)
 	{
 		double cos = Math.cos(orientation);
 		double sin = Math.sin(orientation);
