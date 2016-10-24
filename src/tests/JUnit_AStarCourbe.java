@@ -27,6 +27,8 @@ import org.junit.Test;
 
 import config.ConfigInfo;
 import graphic.PrintBuffer;
+import pathfinding.ChronoGameState;
+import pathfinding.RealGameState;
 import pathfinding.astar.AStarCourbe;
 import pathfinding.astar.arcs.ArcCourbeClotho;
 import pathfinding.astar.arcs.ArcCourbeCubique;
@@ -280,20 +282,35 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 		long avant = System.nanoTime();
 		Cinematique depart = new Cinematique(-1100, 600, 0, true, 0, Speed.STANDARD);
 		robot.setCinematique(depart);
-		Cinematique c = new Cinematique(0, 1200, Math.PI, false, 0, Speed.STANDARD);
+		Cinematique c = new Cinematique(0, 1600, Math.PI, false, 0, Speed.STANDARD);
 		astar.computeNewPath(c, DirectionStrategy.FASTEST, false);
 		log.debug("Temps : "+(System.nanoTime() - avant) / (1000000.));
-		synchronized(buffer)
+		iterator.reinit();
+		CinematiqueObs a = null;
+		int n = 25;
+		while(iterator.hasNext() && iterator.getIndex() < n)
 		{
-			buffer.notify();
+			a = iterator.next();
+			chemin.setCurrentIndex(iterator.getIndex());
+			log.debug(a);
+			robot.setCinematique(a);
 			Thread.sleep(100);
 		}
-		int n = 15;
-		chemin.setCurrentIndex(n);
-		gridspace.addObstacleAndRemoveNearbyObstacles(new Vec2RO(-300, 1100));
+		gridspace.addObstacleAndRemoveNearbyObstacles(new Vec2RO(-400, 1300));
+		chemin.checkColliding();
+		avant = System.nanoTime();
 		astar.updatePath(false);
-    }
-
+		log.debug("Temps recalcul : "+(System.nanoTime() - avant) / (1000000.));
+		iterator.reinit();
+		while(iterator.hasNext())
+		{
+			a = iterator.next();
+			chemin.setCurrentIndex(iterator.getIndex());
+			log.debug(a);
+			robot.setCinematique(a);
+			Thread.sleep(100);
+		}
+	}
 	
 	@Test
     public void test_recherche_loin() throws Exception
@@ -348,7 +365,7 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 		Cinematique depart = new Cinematique(-800, 300, -Math.PI/4, true, 0, Speed.STANDARD);
 		robot.setCinematique(depart);
 		Cinematique c = new Cinematique(1000, 500, Math.PI, false, 0, Speed.STANDARD);
-		astar.computeNewPath(c, DirectionStrategy.FASTEST, false);
+		astar.computeNewPath(c, DirectionStrategy.FASTEST, true);
 		log.debug("Temps : "+(System.nanoTime() - avant) / (1000000.));
 		iterator.reinit();
 		CinematiqueObs a = null;

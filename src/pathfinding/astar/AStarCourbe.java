@@ -17,6 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 package pathfinding.astar;
 
+import java.awt.Color;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -38,12 +39,14 @@ import config.Configurable;
 import container.Service;
 import exceptions.PathfindingException;
 import graphic.PrintBuffer;
+import graphic.printable.Couleur;
 import graphic.printable.Layer;
 import robot.Cinematique;
 import robot.CinematiqueObs;
 import robot.DirectionStrategy;
 import robot.Speed;
 import utils.Log;
+import utils.Vec2RO;
 
 /**
  * A* qui utilise le D* Lite comme heuristique pour fournir une trajectoire courbe
@@ -113,7 +116,7 @@ public class AStarCourbe implements Service, Configurable
 	 * @return
 	 * @throws PathfindingException 
 	 */
-	protected final void process(boolean shoot) throws PathfindingException
+	protected final void process(boolean shoot, boolean replanif) throws PathfindingException
 	{
 		depart.parent = null;
 		depart.cameFromArcCubique = null;
@@ -157,9 +160,15 @@ public class AStarCourbe implements Service, Configurable
 			
 			// affichage
 			if(graphicTrajectory && current.getArc() != null)
+			{
+				Color c;
+				if(replanif)
+					c = Couleur.TRAJECTOIRE_REPLANIF.couleur;
+				else
+					c = Couleur.TRAJECTOIRE.couleur;
 				for(int i = 0; i < current.getArc().getNbPoints(); i++)
-					buffer.addSupprimable(new ObstacleCircular(current.getArc().getPoint(i).getPosition(), 4), Layer.FOREGROUND);
-
+					buffer.addSupprimable(new ObstacleCircular(current.getArc().getPoint(i).getPosition(), 4, c), Layer.FOREGROUND);
+			}
 /*			if(current.cameFromArc != null)
 			{
 				heuristique = dstarlite.heuristicCostCourbe((current.state.robot).getCinematique()) / current.cameFromArc.getVitesseTr();
@@ -172,6 +181,7 @@ public class AStarCourbe implements Service, Configurable
 			{
 //				log.debug("On est arrivé !");
 				partialReconstruct(current);
+				current.cameFromArcCubique = null;
 				chemin.setUptodate(true);
 				memorymanager.empty();
 				cinemMemory.empty();
@@ -309,7 +319,7 @@ public class AStarCourbe implements Service, Configurable
 		if(graphicDStarLite)
 			dstarlite.itineraireBrut();
 
-		process(shoot);
+		process(shoot, false);
 	}
 	
 	public synchronized void updatePath(boolean shoot) throws PathfindingException
@@ -320,8 +330,16 @@ public class AStarCourbe implements Service, Configurable
 			state.copyAStarCourbe(depart.state);
 		}
 		depart.state.robot.setCinematique(chemin.getLastValidCinematique());
+		log.debug("On reprend de "+chemin.getLastValidCinematique());
+		
+		// On met à jour le D* Lite
+		dstarlite.updateStart(depart.state.robot.getCinematique().getPosition());
+		dstarlite.updateObstacles();
+		if(graphicDStarLite)
+			dstarlite.itineraireBrut();
+
 		vitesseMax = Speed.REPLANIF; // TODO
-		process(shoot);
+		process(shoot, true);
 	}
 
 }

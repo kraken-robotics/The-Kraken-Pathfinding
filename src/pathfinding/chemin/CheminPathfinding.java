@@ -34,6 +34,7 @@ import robot.CinematiqueObs;
 import robot.RobotReal;
 import serie.BufferOutgoingOrder;
 import utils.Log;
+import utils.Vec2RO;
 import config.Config;
 import config.ConfigInfo;
 import config.Configurable;
@@ -56,6 +57,7 @@ public class CheminPathfinding implements Service, Printable, Configurable
 	private PrintBuffer buffer;
 	
 	private volatile CinematiqueObs[] chemin = new CinematiqueObs[256];
+	private volatile ObstacleCircular[] aff = new ObstacleCircular[256];
 	protected int indexFirst = 0; // indice du point en cours
 	protected int indexLast = 0; // indice du prochain point de la trajectoire (donc indexLast - 1 est l'index du dernier point accessible)
 	private int lastValidIndex; // l'indice du dernier index (-1 si aucun ne l'est, Integer.MAX_VALUE si tous le sont)
@@ -269,11 +271,15 @@ public class CheminPathfinding implements Service, Printable, Configurable
 	@Override
 	public void print(Graphics g, Fenetre f, RobotReal robot)
 	{
+//		for(int i = 0; i < 256; i++)
+//			if(aff[i] != null)
+//				buffer.removeSupprimable(aff[i]);
 		iterChemin.reinit();
 		while(iterChemin.hasNext())
 		{
 			Cinematique a = iterChemin.next();
-			buffer.addSupprimable(new ObstacleCircular(a.getPosition(), 8, Couleur.TRAJECTOIRE.couleur));
+			aff[iterChemin.getIndex()] = new ObstacleCircular(a.getPosition(), 8, Couleur.TRAJECTOIRE.couleur);
+			buffer.addSupprimable(aff[iterChemin.getIndex()]);
 		}
 	}
 
