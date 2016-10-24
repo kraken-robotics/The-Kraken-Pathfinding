@@ -44,6 +44,7 @@ import robot.DirectionStrategy;
 import robot.RobotChrono;
 import robot.RobotReal;
 import robot.Speed;
+import threads.ThreadPathfinding;
 import utils.Vec2RO;
 
 /**
@@ -282,6 +283,10 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 	@Test
     public void test_replanif() throws Exception
     {
+		// Ce test impose l'arrêt du thread de pathfinding pour ne pas avoir d'interférence
+		ThreadPathfinding thread = container.getService(ThreadPathfinding.class);
+		thread.interrupt();
+		thread.join(1000);
 		long avant = System.nanoTime();
 		Cinematique depart = new Cinematique(-1100, 600, 0, true, 0, Speed.STANDARD);
 		robot.setCinematique(depart);

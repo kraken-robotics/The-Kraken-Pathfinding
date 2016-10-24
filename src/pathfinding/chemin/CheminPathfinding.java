@@ -64,8 +64,7 @@ public class CheminPathfinding implements Service, Printable, Configurable
 	protected int indexLast = 0; // indice du prochain point de la trajectoire (donc indexLast - 1 est l'index du dernier point accessible)
 	private int lastValidIndex = -1; // l'indice du dernier index (-1 si aucun ne l'est, Integer.MAX_VALUE si tous le sont)
 	private boolean uptodate = true; // le chemin est-il complet
-	private int margeNecessaire;
-	private int anticipationReplanif;
+	private int margeNecessaire, margeInitiale, anticipationReplanif;
 	private boolean graphic;
 	
 	public CheminPathfinding(Log log, BufferOutgoingOrder out, ObstaclesIteratorPresent iterator, PrintBuffer buffer, RobotReal robot)
@@ -108,7 +107,7 @@ public class CheminPathfinding implements Service, Printable, Configurable
 	 */
 	private boolean isColliding()
 	{
-		iterChemin.reinit();
+		iterChemin.reinit();// TODO : si on a pas assez d'avance, arrêter le bas niveau
 		lastValidIndex = -1;
 
 		while(iterChemin.hasNext())
@@ -129,10 +128,10 @@ public class CheminPathfinding implements Service, Printable, Configurable
 			 * Mise à jour de lastValidIndex
 			 */
 			lastValidIndex = iterChemin.getIndex();
-			if(minus(lastValidIndex, add(indexFirst, margeNecessaire)) >= anticipationReplanif)
+			if(minus(lastValidIndex, add(indexFirst, margeInitiale)) >= anticipationReplanif)
 				lastValidIndex = minus(lastValidIndex, anticipationReplanif);
 			else
-				lastValidIndex = add(indexFirst, margeNecessaire);
+				lastValidIndex = add(indexFirst, margeInitiale);
 			
 		}
 		return false;
@@ -142,6 +141,7 @@ public class CheminPathfinding implements Service, Printable, Configurable
 	public void useConfig(Config config)
 	{
 		margeNecessaire = config.getInt(ConfigInfo.PF_MARGE_NECESSAIRE);
+		margeInitiale = config.getInt(ConfigInfo.PF_MARGE_INITIALE);
 		anticipationReplanif = config.getInt(ConfigInfo.PF_ANTICIPATION);
 		graphic = config.getBoolean(ConfigInfo.GRAPHIC_TRAJECTORY_FINAL);
 		if(graphic)
@@ -228,6 +228,10 @@ public class CheminPathfinding implements Service, Printable, Configurable
 			}
 	}
 	
+	/**
+	 * Doit être mise à "true" si le trajet est entièrement planifié
+	 * @param uptodate
+	 */
 	public void setUptodate(boolean uptodate)
 	{
 		this.uptodate = uptodate;

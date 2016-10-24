@@ -177,7 +177,7 @@ public class AStarCourbe implements Service, Configurable
 						
 			// Si on est arrivé, on reconstruit le chemin
 			// On est arrivé seulement si on vient d'un arc cubique			
-			if(current.cameFromArcCubique != null)
+			if(current.parent != null && current.getArc().getLast().getPosition().squaredDistance(arrivee.getPosition()) < 1)
 			{
 //				log.debug("On est arrivé !");
 				partialReconstruct(current);
