@@ -156,13 +156,13 @@ public class AStarCourbe implements Service, Configurable
 			// affichage
 			if(graphicTrajectory && current.getArc() != null)
 			{
-				Color c;
+				Couleur c;
 				if(replanif)
-					c = Couleur.TRAJECTOIRE_REPLANIF.couleur;
+					c = Couleur.TRAJECTOIRE_REPLANIF;
 				else
-					c = Couleur.TRAJECTOIRE.couleur;
+					c = Couleur.TRAJECTOIRE;
 				for(int i = 0; i < current.getArc().getNbPoints(); i++)
-					buffer.addSupprimable(new ObstacleCircular(current.getArc().getPoint(i).getPosition(), 4, c), Layer.FOREGROUND);
+					buffer.addSupprimable(new ObstacleCircular(current.getArc().getPoint(i).getPosition(), 4, c));
 			}
 
 			// Si on est arrivé, on reconstruit le chemin

@@ -17,6 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 package obstacles.types;
 
+import graphic.printable.Couleur;
 import pathfinding.dstarlite.gridspace.Masque;
 import utils.Vec2RO;
 
@@ -31,7 +32,7 @@ public class ObstacleProximity extends ObstacleCircular
 	
 	public ObstacleProximity(Vec2RO position, int rad, long death_date, Masque masque)
 	{
-		super(position,rad);
+		super(position,rad,Couleur.OBSTACLES_PROX);
 		this.death_date = death_date;
 		this.masque = masque;
 	}

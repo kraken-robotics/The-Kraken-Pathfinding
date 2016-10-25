@@ -287,7 +287,7 @@ public class CheminPathfinding implements Service, Printable, Configurable
 		while(iterChemin.hasNext())
 		{
 			Cinematique a = iterChemin.next();
-			aff[iterChemin.getIndex()] = new ObstacleCircular(a.getPosition(), 8, Couleur.TRAJECTOIRE.couleur);
+			aff[iterChemin.getIndex()] = new ObstacleCircular(a.getPosition(), 8, Couleur.TRAJECTOIRE);
 			buffer.addSupprimable(aff[iterChemin.getIndex()]);
 		}
 	}

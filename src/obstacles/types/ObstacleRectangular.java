@@ -21,6 +21,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 
 import graphic.Fenetre;
+import graphic.printable.Couleur;
 import graphic.printable.Layer;
 import robot.RobotReal;
 import utils.Vec2RO;
@@ -58,42 +59,18 @@ public class ObstacleRectangular extends Obstacle
 
 	protected double angle, cos, sin;
 
-	/**
-	 * Cas où l'angle est nul
-	 * @param log
-	 * @param config
-	 * @param position
-	 * @param sizeX
-	 * @param sizeY
-	 * @param angle
-	 */
-	public ObstacleRectangular(Vec2RO position, int sizeX, int sizeY)
-	{
-		this(position, sizeX, sizeY, 0);
-	}
-
-	public ObstacleRectangular(Vec2RO position, int sizeX, int sizeY, Layer l)
-	{
-		this(position, sizeX, sizeY, 0);
-		this.l = l;
-	}
-
-	public ObstacleRectangular(Vec2RO position, int sizeX, int sizeY, Layer l, Color c)
-	{
-		this(position, sizeX, sizeY, l);
-		this.c = c;
-	}
-
-	public ObstacleRectangular(Vec2RO position, int sizeX, int sizeY, double angle, Color c)
+	public ObstacleRectangular(Vec2RO position, int sizeX, int sizeY, double angle, Couleur c)
 	{
 		this(position, sizeX, sizeY, angle);
-		this.c = c;
+		this.l = c.l;
+		this.c = c.couleur;
 	}
 
-	public ObstacleRectangular(Vec2RO position, int sizeX, int sizeY, Color c)
+	public ObstacleRectangular(Vec2RO position, int sizeX, int sizeY, Couleur c)
 	{
-		this(position, sizeX, sizeY);
-		this.c = c;
+		this(position, sizeX, sizeY, 0);
+		this.l = c.l;
+		this.c = c.couleur;
 	}
 
 	protected ObstacleRectangular(Vec2RW pos)

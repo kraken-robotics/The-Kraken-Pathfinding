@@ -21,6 +21,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 
 import graphic.Fenetre;
+import graphic.printable.Couleur;
 import graphic.printable.Layer;
 import robot.RobotReal;
 import utils.Vec2RO;
@@ -46,23 +47,11 @@ public class ObstacleCircular extends Obstacle
 		squared_radius = rad * rad;
 	}
 
-	public ObstacleCircular(Vec2RO position, int rad, Layer l)
+	public ObstacleCircular(Vec2RO position, int rad, Couleur c)
 	{
-		super(position,l);
+		super(position,c);
 		this.radius = rad;
 		squared_radius = rad * rad;
-	}
-
-	public ObstacleCircular(Vec2RO position, int rad, Layer l, Color c)
-	{
-		this(position, rad, l);
-		this.c = c;
-	}
-
-	public ObstacleCircular(Vec2RO position, int rad, Color c)
-	{
-		this(position, rad);
-		this.c = c;
 	}
 
 	@Override

@@ -63,7 +63,7 @@ public class JUnit_Obstacle extends JUnit_Test {
     @Test
     public void test_collision_rectangle_distance() throws Exception
     {
-    	ObstacleRectangular o = new ObstacleRectangular(new Vec2RO(0, 0), 25, 5);
+    	ObstacleRectangular o = new ObstacleRectangular(new Vec2RO(0, 0), 25, 5, 0);
     	Assert.assertTrue(o.isProcheObstacle(new Vec2RO(13,-3),5));
     	Assert.assertTrue(!o.isProcheObstacle(new Vec2RO(20,0),5));
     	Assert.assertTrue(!o.isProcheObstacle(new Vec2RO(20,0),5));

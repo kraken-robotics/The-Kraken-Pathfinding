@@ -27,6 +27,7 @@ import javax.imageio.ImageIO;
 import config.Config;
 import config.ConfigInfo;
 import graphic.PrintBuffer;
+import graphic.printable.Couleur;
 import graphic.printable.Layer;
 import graphic.printable.Printable;
 import utils.Log;
@@ -79,10 +80,11 @@ public abstract class Obstacle implements Printable
 		}
 	}
 
-	public Obstacle(Vec2RO position, Layer l)
+	public Obstacle(Vec2RO position, Couleur c)
 	{
 		this(position);
-		this.l = l;
+		this.l = c.l;
+		this.c = c.couleur;
 	}
 	
 	/**

@@ -40,6 +40,7 @@ public class ObstacleRobot extends ObstacleRectangular
 	{
 		super(new Vec2RW());
 		c = Couleur.ROBOT.couleur;
+		l = Couleur.ROBOT.l;
 		centreGeometrique = new Vec2RW();
 		coinBasGaucheRotate = new Vec2RW();
 		coinHautGaucheRotate = new Vec2RW();
