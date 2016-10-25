@@ -336,6 +336,7 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 				Thread.sleep(100);
 		}
 		gridspace.addObstacleAndRemoveNearbyObstacles(new Vec2RO(-400, 1300));
+//		gridspace.addObstacleAndRemoveNearbyObstacles(new Vec2RO(0, 1600)); // TODO
 		chemin.checkColliding();
 		avant = System.nanoTime();
 		astar.updatePath(true);
@@ -360,7 +361,80 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 		Cinematique depart = new Cinematique(-800, 350, Math.PI/2, true, 0, Speed.STANDARD.translationalSpeed);
 		robot.setCinematique(depart);
 		Cinematique c = new Cinematique(1000, 700, Math.PI, false, 0, Speed.STANDARD.translationalSpeed);
-		astar.computeNewPath(c, DirectionStrategy.FASTEST, SensFinal.MARCHE_ARRIERE, false);
+		astar.computeNewPath(c, SensFinal.MARCHE_ARRIERE, false);
+		log.debug("Temps : "+(System.nanoTime() - avant) / (1000000.));
+		iterator.reinit();
+		CinematiqueObs a = null;
+		int i = 0;
+		while(iterator.hasNext())
+		{
+			i++;
+			a = iterator.next();
+			log.debug(a);
+			robot.setCinematique(a);
+			if(graphicTrajectory)
+				Thread.sleep(100);
+		}
+		log.debug("Nb points : "+i);
+	}
+	
+	@Test
+    public void test_recherche_finit_en_arriere3() throws Exception
+    {
+		long avant = System.nanoTime();
+		Cinematique depart = new Cinematique(-800, 550, -Math.PI/2, true, 0, Speed.STANDARD.translationalSpeed);
+		robot.setCinematique(depart);
+		Cinematique c = new Cinematique(1000, 700, Math.PI, false, 0, Speed.STANDARD.translationalSpeed);
+		astar.computeNewPath(c, SensFinal.MARCHE_ARRIERE, false);
+		log.debug("Temps : "+(System.nanoTime() - avant) / (1000000.));
+		iterator.reinit();
+		CinematiqueObs a = null;
+		int i = 0;
+		while(iterator.hasNext())
+		{
+			i++;
+			a = iterator.next();
+			log.debug(a);
+			robot.setCinematique(a);
+			if(graphicTrajectory)
+				Thread.sleep(100);
+		}
+		log.debug("Nb points : "+i);
+	}
+	
+	@Test
+    public void test_recherche_finit_en_arriere2() throws Exception
+    {
+		long avant = System.nanoTime();
+		Cinematique depart = new Cinematique(-800, 800, Math.PI/4, true, 0, Speed.STANDARD.translationalSpeed);
+//		Cinematique depart = new Cinematique(1000, 1000, 0, true, 0, Speed.STANDARD.translationalSpeed);
+		robot.setCinematique(depart);
+		Cinematique c = new Cinematique(1100, 400, -Math.PI/4, false, 0, Speed.STANDARD.translationalSpeed);
+		astar.computeNewPath(c, SensFinal.MARCHE_ARRIERE, true);
+		log.debug("Temps : "+(System.nanoTime() - avant) / (1000000.));
+		iterator.reinit();
+		CinematiqueObs a = null;
+		int i = 0;
+		while(iterator.hasNext())
+		{
+			i++;
+			a = iterator.next();
+			log.debug(a);
+			robot.setCinematique(a);
+			if(graphicTrajectory)
+				Thread.sleep(100);
+		}
+		log.debug("Nb points : "+i);
+	}
+
+	@Test
+    public void test_recherche_finit_en_avant() throws Exception
+    {
+		long avant = System.nanoTime();
+		Cinematique depart = new Cinematique(-400, 1200, Math.PI, true, 0, Speed.STANDARD.translationalSpeed);
+		robot.setCinematique(depart);
+		Cinematique c = new Cinematique(300, 1200, 0, false, 0, Speed.STANDARD.translationalSpeed);
+		astar.computeNewPath(c, SensFinal.MARCHE_AVANT, false);
 		log.debug("Temps : "+(System.nanoTime() - avant) / (1000000.));
 		iterator.reinit();
 		CinematiqueObs a = null;

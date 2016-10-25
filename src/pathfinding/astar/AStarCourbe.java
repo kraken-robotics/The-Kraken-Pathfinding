@@ -333,7 +333,7 @@ public class AStarCourbe implements Service, Configurable
 	 */
 	public void computeNewPath(Cinematique arrivee, boolean shoot) throws PathfindingException
 	{
-		computeNewPath(arrivee, DirectionStrategy.FASTEST, SensFinal.AUCUNE_PREF, shoot);
+		computeNewPath(arrivee, SensFinal.AUCUNE_PREF, shoot);
 	}
 	
 	/**
@@ -345,13 +345,13 @@ public class AStarCourbe implements Service, Configurable
 	 * @return
 	 * @throws PathfindingException 
 	 */
-	public void computeNewPath(Cinematique arrivee, DirectionStrategy directionstrategy, SensFinal sens, boolean shoot) throws PathfindingException
+	public void computeNewPath(Cinematique arrivee, SensFinal sens, boolean shoot) throws PathfindingException
 	{
 		vitesseMax = Speed.STANDARD;
 		this.sens = sens;
 		depart.init();
 		state.copyAStarCourbe(depart.state);
-		arcmanager.configureArcManager(sens, directionstrategy, arrivee);
+		arcmanager.configureArcManager(sens, DirectionStrategy.defaultStrategy, arrivee);
 
 		dstarlite.computeNewPath(depart.state.robot.getCinematique().getPosition(), arrivee.getPosition());
 		if(graphicDStarLite)

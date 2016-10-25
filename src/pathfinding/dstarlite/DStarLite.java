@@ -29,6 +29,7 @@ import pathfinding.dstarlite.gridspace.PointDirigeManager;
 import pathfinding.dstarlite.gridspace.PointGridSpace;
 import pathfinding.dstarlite.gridspace.PointGridSpaceManager;
 import robot.Cinematique;
+import robot.Speed;
 import utils.Log;
 import utils.Vec2RO;
 import config.Config;
@@ -485,6 +486,8 @@ public class DStarLite implements Service, Configurable
 		// Cas particulier si on sait qu'on doit rebrousser chemin
 		if(!sens.isOK(c.enMarcheAvant))
 			return heuristicCostCourbeRebroussement(premier, pos, c);
+//		else if(sens == SensFinal.MARCHE_ARRIERE) // on doit arriver en marche arrière et on est en marche arrière
+//			return heuristicCostCourbeRebroussementFin(premier, pos, c);
 		
 		// si on est arrivé… on est arrivé.
 		if(pos.equals(arrivee.gridpoint))
@@ -515,9 +518,17 @@ public class DStarLite implements Service, Configurable
 //		log.debug("Score : "+(erreurDistance + 5*erreurOrientation));
 
 		// il faut toujours majorer la vraie distance, afin de ne pas chercher tous les trajets possibles…
-		return 1.1*erreurDistance + 10*erreurOrientation;
+		return 1.2*erreurDistance + 10*erreurOrientation;
 	}
 
+	/**
+	 * Cette heuristique favorise les trajectoires orthogonales à la direction de l'heuristique.
+	 * Ceci afin de promouvoir le rebroussement.
+	 * @param premier
+	 * @param pos
+	 * @param c
+	 * @return
+	 */
 	private double heuristicCostCourbeRebroussement(DStarLiteNode premier, PointGridSpace pos, Cinematique c)
 	{
 		if(pos.equals(arrivee.gridpoint))
@@ -531,8 +542,35 @@ public class DStarLite implements Service, Configurable
 
 		double erreurDistance = premier.rhs / 1000. * PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS; // distance en mm
 		
-//		return 500 + erreurDistance;
-		return 2000 + 10*erreurOrientation + (erreurDistance+800);
+		return 1.1*(2000 + 100*erreurOrientation + erreurDistance);
+	}
+	
+	/**
+	 * Une fois que le rebroussement est fait, le problème est que la marche arrière est lente, donc à une mauvaise note
+	 * @param premier
+	 * @param pos
+	 * @param c
+	 * @return
+	 */
+	private double heuristicCostCourbeRebroussementFin(DStarLiteNode premier, PointGridSpace pos, Cinematique c)
+	{
+		// si on est arrivé… on est arrivé.
+		if(pos.equals(arrivee.gridpoint))
+			return 0.;
+		
+		double orientationOptimale = getOrientationHeuristique(pos);
+		
+		// l'orientation est vérifiée modulo 2*pi : la marche avant et la marche arrière sont différenciées
+		double erreurOrientation = (c.orientationGeometrique - orientationOptimale) % (2*Math.PI);
+		if(erreurOrientation > Math.PI)
+			erreurOrientation -= 2*Math.PI;
+
+		erreurOrientation = Math.abs(erreurOrientation);
+
+		double erreurDistance = premier.rhs / 1000. * PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS; // distance en mm
+
+		// il faut toujours majorer la vraie distance, afin de ne pas chercher tous les trajets possibles…
+		return (erreurDistance + 10*erreurOrientation) * Speed.MARCHE_ARRIERE.translationalSpeed / Speed.STANDARD.translationalSpeed;
 	}
 	
 	/**
