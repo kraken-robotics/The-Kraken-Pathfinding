@@ -20,6 +20,7 @@ package pathfinding.dstarlite;
 import java.awt.Graphics;
 
 import graphic.Fenetre;
+import graphic.printable.Couleur;
 import graphic.printable.Layer;
 import graphic.printable.Printable;
 import pathfinding.dstarlite.gridspace.PointGridSpace;
@@ -91,6 +92,7 @@ public class DStarLiteNode implements Printable
 	@Override
 	public void print(Graphics g, Fenetre f, RobotReal robot)
 	{
+		g.setColor(Couleur.HEURISTIQUE.couleur);
 		if(heuristiqueOrientation != null)
 		{
 			double n = PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS/2;

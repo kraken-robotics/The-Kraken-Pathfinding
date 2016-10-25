@@ -54,7 +54,7 @@ public class DStarLite implements Service, Configurable
 	private GridSpace gridspace;
 	private PointGridSpaceManager pointManager;
 	private PointDirigeManager pointDManager;
-	private boolean graphicDStarLite, graphicDStarLiteFinal;
+	private boolean graphicDStarLite, graphicDStarLiteFinal, graphicHeuristique;
 
 	private DStarLiteNode[] memory = new DStarLiteNode[PointGridSpace.NB_POINTS];
 
@@ -306,6 +306,7 @@ public class DStarLite implements Service, Configurable
 	{
 		graphicDStarLite = config.getBoolean(ConfigInfo.GRAPHIC_D_STAR_LITE);
 		graphicDStarLiteFinal = config.getBoolean(ConfigInfo.GRAPHIC_D_STAR_LITE_FINAL);
+		graphicHeuristique = config.getBoolean(ConfigInfo.GRAPHIC_HEURISTIQUE);
 	}
 	
 	/**
@@ -543,7 +544,7 @@ public class DStarLite implements Service, Configurable
 		double erreurDistance = premier.rhs / 1000. * PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS; // distance en mm
 		
 //		return 500 + erreurDistance;
-		return 2000 + 100*erreurOrientation + erreurDistance/10;
+		return 1000 + 100*erreurOrientation + erreurDistance/10;
 	}
 	
 	/**
@@ -586,7 +587,7 @@ public class DStarLite implements Service, Configurable
 			n.heuristiqueOrientation = Math.atan2(directionY, directionX);
 		}
 		
-		if(graphicDStarLite)
+		if(graphicHeuristique)
 			buffer.addSupprimable(n);
 		
 		return n.heuristiqueOrientation;

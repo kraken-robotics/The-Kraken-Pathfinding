@@ -108,7 +108,8 @@ public enum ConfigInfo {
 	/**
 	 * Interface graphique
 	 */
-	GRAPHIC_ENABLE(false), // désactive tout affichage (empêche le thread d'affichage de se lancer)
+	GRAPHIC_HEURISTIQUE(false), // affichage des orientations heuristiques données par le D* Lite
+	GRAPHIC_ENABLE(false), // désactive tout affichage si faux (empêche le thread d'affichage de se lancer)
 	GRAPHIC_D_STAR_LITE(false), // affiche les calculs du D* Lite
 	GRAPHIC_D_STAR_LITE_FINAL(false), // affiche l'itinéraire final du D* Lite
 	GRAPHIC_PROXIMITY_OBSTACLES(false), // affiche les obstacles de proximité
