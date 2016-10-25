@@ -44,6 +44,7 @@ import obstacles.types.Obstacle;
 import serie.SerieCouchePhysique;
 import threads.ThreadName;
 import threads.ThreadPathfinding;
+import threads.ThreadService;
 import threads.ThreadShutdown;
 
 /**
@@ -373,6 +374,22 @@ public class Container implements Service, Configurable
 		}
 	}
 
+	public void restartThread(ThreadName n) throws InterruptedException
+	{
+		try {
+			ThreadService t = getService(n.c);
+			if(t.isAlive()) // s'il est encore en vie, on le tue
+			{
+				t.interrupt();
+				t.join(1000);
+			}
+			instanciedServices.remove(n.c.getSimpleName());
+			getService(n.c).start(); // et on le redémarre
+		} catch (ContainerException e) {
+			log.critical(e);
+		}
+	}
+	
 	/**
 	 * Démarrage de tous les threads
 	 */

@@ -41,6 +41,7 @@ import robot.Cinematique;
 import robot.CinematiqueObs;
 import robot.RobotReal;
 import robot.Speed;
+import threads.ThreadName;
 import threads.ThreadPathfinding;
 import utils.Vec2RO;
 
@@ -386,6 +387,7 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 			if(graphicTrajectory)
 				Thread.sleep(100);
 		}
+		container.restartThread(ThreadName.PATHFINDING); // pour pas qu'il soit mécontent
 	}
 	
 	@Test
