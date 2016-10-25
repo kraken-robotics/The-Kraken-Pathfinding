@@ -63,7 +63,6 @@ public class AStarCourbe implements Service, Configurable
 	private RealGameState state;
 	private NodeMM memorymanager;
 	private PrintBuffer buffer;
-	private Cinematique arrivee;
 	private AStarCourbeNode depart;
 	private AStarCourbeNode trajetDeSecours;
 	private CheminPathfinding chemin;
@@ -334,7 +333,6 @@ public class AStarCourbe implements Service, Configurable
 	{
 		vitesseMax = Speed.STANDARD;
 		this.sens = sens;
-		this.arrivee = arrivee;
 		depart.init();
 		state.copyAStarCourbe(depart.state);
 		arcmanager.configureArcManager(sens, directionstrategy, arrivee);

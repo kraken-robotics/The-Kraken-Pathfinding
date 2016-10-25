@@ -294,7 +294,7 @@ public class ArcManager implements Service, Configurable
 
 	public boolean isArrived(AStarCourbeNode successeur)
 	{
-		return successeur.getArc().getLast().getPosition().squaredDistance(arrivee.getPosition()) < 1 && sens.isOK(successeur.getArc().getLast().enMarcheAvant);
+		return successeur.getArc() != null && successeur.getArc().getLast().getPosition().squaredDistance(arrivee.getPosition()) < 1 && sens.isOK(successeur.getArc().getLast().enMarcheAvant);
 	}
 
 	/**

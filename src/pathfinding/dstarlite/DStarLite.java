@@ -491,27 +491,13 @@ public class DStarLite implements Service, Configurable
 			return 0.;
 		
 		double orientationOptimale = getOrientationHeuristique(pos);
-		double erreurOrientation;
 		
-		double tmp;
-		if(sens == SensFinal.AUCUNE_PREF)
-		{
-			// l'orientation est vérifiée modulo pi : on se fiche que ce soit en avant ou en arrière
-			tmp = (c.orientationGeometrique - orientationOptimale) % (Math.PI);
-			if(tmp > Math.PI/2)
-				tmp -= Math.PI;
-		}
-		else
-		{
-			// l'orientation est vérifiée modulo 2*pi : la marche avant et la marche arrière sont différenciées
-			if(sens == SensFinal.MARCHE_AVANT)
-				tmp = (c.orientationReelle - orientationOptimale) % (2*Math.PI);
-			else // marche arrière
-				tmp = (c.orientationReelle + Math.PI - orientationOptimale) % (2*Math.PI);
-			if(tmp > Math.PI)
-				tmp -= 2*Math.PI;
-		}
-		erreurOrientation = Math.abs(tmp);
+		// l'orientation est vérifiée modulo 2*pi : la marche avant et la marche arrière sont différenciées
+		double erreurOrientation = (c.orientationGeometrique +Math.PI- orientationOptimale) % (2*Math.PI);
+		if(erreurOrientation > Math.PI)
+			erreurOrientation -= 2*Math.PI;
+
+		erreurOrientation = Math.abs(erreurOrientation);
 
 		double erreurDistance = premier.rhs / 1000. * PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS; // distance en mm
 		
@@ -535,7 +521,7 @@ public class DStarLite implements Service, Configurable
 			return 300.; // pas arrivé dans le bon sens !
 
 		double orientationOptimale = getOrientationHeuristique(pos) + Math.PI/2 ; // on va chercher à se retourner, donc on va tourner à angle droit
-		double erreurOrientation = (c.orientationGeometrique - orientationOptimale) % (Math.PI);
+		double erreurOrientation = (c.orientationGeometrique - orientationOptimale) % (Math.PI); // vérification modulo pi : on veut juste être orthogonal à la trajectoire
 		if(erreurOrientation > Math.PI/2)
 			erreurOrientation -= Math.PI;
 		erreurOrientation = Math.abs(erreurOrientation);

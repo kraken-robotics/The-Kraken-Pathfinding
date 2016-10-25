@@ -109,7 +109,7 @@ public class DStarLiteNode implements Printable
 
 	@Override
 	public Layer getLayer() {
-		return Layer.FOREGROUND;
+		return Couleur.HEURISTIQUE.l;
 	}
 	
 }
