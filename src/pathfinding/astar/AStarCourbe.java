@@ -56,7 +56,6 @@ import utils.Log;
 
 public class AStarCourbe implements Service, Configurable
 {
-	protected DirectionStrategy directionstrategyactuelle;
 	protected SensFinal sens;
 	protected Log log;
 	private ArcManager arcmanager;
@@ -118,7 +117,7 @@ public class AStarCourbe implements Service, Configurable
 	 * @return
 	 * @throws PathfindingException 
 	 */
-	protected final void process(boolean shoot, boolean replanif) throws PathfindingException
+	protected final void process(boolean shoot) throws PathfindingException
 	{
 		trajetDeSecours = null;
 		depart.parent = null;
@@ -129,7 +128,7 @@ public class AStarCourbe implements Service, Configurable
 
 		// Il faut bien mettre quelque chose…
 		if(heuristique == null)
-			heuristique = 5*depart.state.robot.getCinematique().getPosition().distanceFast(arrivee.getPosition());
+			heuristique = arcmanager.heuristicDirect(depart.state.robot.getCinematique());
 		
 		else if(heuristique == Integer.MAX_VALUE)
 			throw new PathfindingException("Le dstarlite dit qu'aucun chemin n'est possible…");
@@ -146,7 +145,9 @@ public class AStarCourbe implements Service, Configurable
 		{
 			current = openset.poll();
 			
-			if(closedset.contains(current)) // si on a déjà fait ce point ou un point très proche…
+			// si on a déjà fait ce point ou un point très proche…
+			// exception si c'est un point d'arrivée
+			if(closedset.contains(current) && !arcmanager.isArrived(current))
 				continue;
 
 			closedset.add(current);
@@ -162,8 +163,8 @@ public class AStarCourbe implements Service, Configurable
 			if(graphicTrajectory && current.getArc() != null)
 			{
 				Couleur c;
-				if(replanif)
-					c = Couleur.TRAJECTOIRE_REPLANIF;
+				if(!sens.isOK(current.getArc().getLast().enMarcheAvant))
+					c = Couleur.TRAJECTOIRE_MAUVAIS_SENS;
 				else
 					c = Couleur.TRAJECTOIRE;
 				for(int i = 0; i < current.getArc().getNbPoints(); i++)
@@ -198,7 +199,7 @@ public class AStarCourbe implements Service, Configurable
 
 			// On parcourt les voisins de current
 
-			arcmanager.reinitIterator(current, directionstrategyactuelle, sens);
+			arcmanager.reinitIterator(current);
 			while(arcmanager.hasNext())
 			{
 				// On vérifie *très* régulièremet s'il ne faut pas fournir un chemin partiel
@@ -222,7 +223,7 @@ public class AStarCourbe implements Service, Configurable
 				successeur.cameFromArcCubique = null;
 
 				// S'il y a un problème, on passe au suivant (interpolation cubique impossible par exemple)
-				if(!arcmanager.next(successeur, vitesseMax, arrivee))
+				if(!arcmanager.next(successeur, vitesseMax))
 				{
 					destroy(successeur);
 					continue;
@@ -240,15 +241,15 @@ public class AStarCourbe implements Service, Configurable
 				
 				heuristique = arcmanager.heuristicCostCourbe(successeur.state.robot.getCinematique(), sens);
 				if(heuristique == null)
-					heuristique = 5*successeur.state.robot.getCinematique().getPosition().distanceFast(arrivee.getPosition());
+					heuristique = arcmanager.heuristicDirect(successeur.state.robot.getCinematique());
 				
 				successeur.f_score = successeur.g_score + heuristique / successeur.getArc().getVitesseTr();
 				
 				// noeud d'arrivé
-				if(successeur.parent != null && successeur.getArc().getLast().getPosition().squaredDistance(arrivee.getPosition()) < 1 && sens.isOK(successeur.getArc().getLast().enMarcheAvant)
+				if(arcmanager.isArrived(successeur) && arcmanager.isReachable(successeur, shoot)
 					&& (trajetDeSecours == null || trajetDeSecours.f_score > successeur.f_score))
 				{
-					log.debug("Arrivée trouvée !");
+//					log.debug("Arrivée trouvée !");
 					trajetDeSecours = successeur;
 				}
 				
@@ -262,12 +263,6 @@ public class AStarCourbe implements Service, Configurable
 		 */
 		memorymanager.empty();
 		cinemMemory.empty();
-		if(trajetDeSecours != null) // si on a un trajet de secours, on l'utilise
-		{
-			chemin.setUptodate(true);
-			partialReconstruct(trajetDeSecours);
-			return;
-		}
 		throw new PathfindingException("Recherche AStarCourbe échouée");
 	}
  	
@@ -338,17 +333,17 @@ public class AStarCourbe implements Service, Configurable
 	public void computeNewPath(Cinematique arrivee, DirectionStrategy directionstrategy, SensFinal sens, boolean shoot) throws PathfindingException
 	{
 		vitesseMax = Speed.STANDARD;
-		this.directionstrategyactuelle = directionstrategy;
 		this.sens = sens;
 		this.arrivee = arrivee;
 		depart.init();
 		state.copyAStarCourbe(depart.state);
+		arcmanager.configureArcManager(sens, directionstrategy, arrivee);
 
 		dstarlite.computeNewPath(depart.state.robot.getCinematique().getPosition(), arrivee.getPosition());
 		if(graphicDStarLite)
 			dstarlite.itineraireBrut();
 
-		process(shoot, false);
+		process(shoot);
 	}
 	
 	/**
@@ -374,7 +369,7 @@ public class AStarCourbe implements Service, Configurable
 			dstarlite.itineraireBrut();
 
 		vitesseMax = Speed.REPLANIF;
-		process(shoot, true);
+		process(shoot);
 	}
 
 }

@@ -49,8 +49,8 @@ public enum ObstaclesFixes {
 	PETIT_CRATERE_BAS_DROITE(new ObstacleCircular(new Vec2RO(1500-1070,2000-1870),125,Couleur.OBSTACLES), false, false),
 
 	// Les gros cratères ne sont pas des obstacles pour le pathfinding	
-	GROS_CRATERE_GAUCHE(new ObstacleCircular(new Vec2RO(-1500,0),575,Couleur.OBSTACLES), false, false),
-	GROS_CRATERE_DROITE(new ObstacleCircular(new Vec2RO(1500,0),575,Couleur.OBSTACLES), false, false),
+	GROS_CRATERE_GAUCHE(new ObstacleCircular(new Vec2RO(-1500,0),540,Couleur.OBSTACLES), false, false),
+	GROS_CRATERE_DROITE(new ObstacleCircular(new Vec2RO(1500,0),540,Couleur.OBSTACLES), false, false),
 
 	FUSEE_HAUT_GAUCHE(new ObstacleCircular(new Vec2RO(-350,1960),40,Couleur.OBSTACLES), true, true),
 	FUSEE_HAUT_DROITE(new ObstacleCircular(new Vec2RO(350,1960),40,Couleur.OBSTACLES), true, true),

@@ -38,11 +38,11 @@ public enum Couleur {
 	ToF_LONG(new Color(0x92, 0xD0, 0x50)),
 	IR(new Color(0x2E, 0x75, 0xB6)),
 	TRAJECTOIRE(new Color(0x00, 0x03, 0x12), Layer.MIDDLE),
-	TRAJECTOIRE_REPLANIF(new Color(0xC0, 0x00, 0x00), Layer.MIDDLE),
+	TRAJECTOIRE_MAUVAIS_SENS(new Color(0xC0, 0x00, 0x00), Layer.MIDDLE),
 	OBSTACLES(new Color(0xFF, 0x7D, 0x3D, 150), Layer.BACKGROUND),
 	OBSTACLES_PROX(new Color(0xFF, 0x7D, 0x3D, 150), Layer.MIDDLE),
 	ROBOT(new Color(0x94, 0xEB, 0x2A), Layer.FOREGROUND),
-	GAME_ELEMENT(new Color(0x26, 0xCB, 0xAF), Layer.FOREGROUND),
+	GAME_ELEMENT(new Color(0x26, 0xCB, 0xAF, 150), Layer.FOREGROUND),
 	HEURISTIQUE(new Color(0xFF, 0xD7, 0x00));
 	
 	public final Color couleur;

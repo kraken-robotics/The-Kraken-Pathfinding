@@ -39,6 +39,8 @@ import graphic.PrintBuffer;
 import obstacles.types.ObstacleArcCourbe;
 import obstacles.types.ObstaclesFixes;
 import utils.Log;
+import utils.Vec2RO;
+import utils.Vec2RW;
 
 /**
  * Réalise des calculs pour l'A* courbe.
@@ -59,6 +61,7 @@ public class ArcManager implements Service, Configurable
 	
 	private DirectionStrategy directionstrategyactuelle;
 	private SensFinal sens;
+	private Cinematique arrivee = new Cinematique();
 	private List<VitesseCourbure> listeVitesse = Arrays.asList(VitesseCourbure.values());
 	private ListIterator<VitesseCourbure> iterator = listeVitesse.listIterator();
 	
@@ -140,7 +143,7 @@ public class ArcManager implements Service, Configurable
 	 * Fournit le prochain successeur. On suppose qu'il existe
 	 * @param successeur
 	 */
-    public boolean next(AStarCourbeNode successeur, Speed vitesseMax, Cinematique arrivee)
+    public boolean next(AStarCourbeNode successeur, Speed vitesseMax)
     {
     	VitesseCourbure v = iterator.next();
 
@@ -190,6 +193,13 @@ public class ArcManager implements Service, Configurable
 					successeur.cameFromArc);
 
 		return true;
+    }
+    
+    public void configureArcManager(SensFinal sens, DirectionStrategy directionstrategyactuelle, Cinematique arrivee)
+    {
+    	this.sens = sens;
+    	this.directionstrategyactuelle = directionstrategyactuelle;
+    	arrivee.copy(this.arrivee);
     }
     
     /**
@@ -264,11 +274,9 @@ public class ArcManager implements Service, Configurable
      * @param current
      * @param directionstrategyactuelle
      */
-    public void reinitIterator(AStarCourbeNode current, DirectionStrategy directionstrategyactuelle, SensFinal sens)
+    public void reinitIterator(AStarCourbeNode current)
     {
-    	this.directionstrategyactuelle = directionstrategyactuelle;
     	this.current = current;
-    	this.sens = sens;
     	iterator = listeVitesse.listIterator();
     }
 
@@ -282,5 +290,20 @@ public class ArcManager implements Service, Configurable
 	public synchronized Double heuristicCostCourbe(Cinematique c, SensFinal sens)
 	{
 		return dstarlite.heuristicCostCourbe(c, sens);
+	}
+
+	public boolean isArrived(AStarCourbeNode successeur)
+	{
+		return successeur.getArc().getLast().getPosition().squaredDistance(arrivee.getPosition()) < 1 && sens.isOK(successeur.getArc().getLast().enMarcheAvant);
+	}
+
+	/**
+	 * heuristique de secours
+	 * @param cinematique
+	 * @return
+	 */
+	public double heuristicDirect(Cinematique cinematique)
+	{
+		return 5*cinematique.getPosition().distanceFast(arrivee.getPosition());
 	}
 }
