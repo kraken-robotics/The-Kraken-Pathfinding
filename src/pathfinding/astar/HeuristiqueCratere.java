@@ -50,6 +50,7 @@ public class HeuristiqueCratere implements Service, Configurable
 	 */
 	public double heuristicCost(CinematiqueObs c)
 	{
+		// TODO distanceFast ?
 		cratere.getNearestPosition(c.getPosition(), nearestPos, distance);
 		double erreurDistance = nearestPos.distance(c.getPosition());
 		// marche arrière imposée

@@ -124,12 +124,15 @@ public class AStarCourbe implements Service, Configurable
 		depart.g_score = 0;
 		Double heuristique;
 		heuristique = arcmanager.heuristicCostCourbe((depart.state.robot).getCinematique(), sens);
+
+		// Il faut bien mettre quelque chose…
 		if(heuristique == null)
-			throw new PathfindingException("DStarLiteException pour le point de départ !");
+			heuristique = 5*depart.state.robot.getCinematique().getPosition().distanceFast(arrivee.getPosition());
+		
 		else if(heuristique == Integer.MAX_VALUE)
 			throw new PathfindingException("Le dstarlite dit qu'aucun chemin n'est possible…");
 
-		depart.f_score = heuristique;
+		depart.f_score = heuristique / Speed.STANDARD.translationalSpeed;
 		openset.clear();
 		openset.add(depart);	// Les nœuds à évaluer
 		closedset.clear();
@@ -227,12 +230,9 @@ public class AStarCourbe implements Service, Configurable
 					continue;
 				}
 				
-				heuristique = arcmanager.heuristicCostCourbe((successeur.state.robot).getCinematique(), sens);
+				heuristique = arcmanager.heuristicCostCourbe(successeur.state.robot.getCinematique(), sens);
 				if(heuristique == null)
-				{
-					destroy(successeur);
-					continue;
-				}
+					heuristique = 5*successeur.state.robot.getCinematique().getPosition().distanceFast(arrivee.getPosition());
 				
 				successeur.f_score = successeur.g_score + heuristique / successeur.getArc().getVitesseTr();
 								

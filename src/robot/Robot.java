@@ -74,10 +74,4 @@ public abstract class Robot implements DynamicConfigurable
 		cinematique.copy(this.cinematique);
 	}
 	
-/*	public double getDemieDiagonale()
-	{
-		return Math.max(Math.max(Math.hypot(getDemieLongueurArriere(), getDemieLargeurGauche()),Math.hypot(getDemieLongueurArriere(), getDemieLargeurDroite())),
-				Math.max(Math.hypot(getDemieLongueurAvant(), getDemieLargeurGauche()), Math.hypot(getDemieLongueurAvant(), getDemieLargeurDroite())));
-	}*/
-
 }

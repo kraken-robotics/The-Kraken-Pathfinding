@@ -44,14 +44,12 @@ public class JUnit_Math extends JUnit_Test {
 		c.minus(b);
 		Assert.assertTrue(c.equals(new Vec2RW(-20, 20)));
 		Assert.assertTrue(c.squaredDistance(new Vec2RW()) == 800);
-		Assert.assertTrue(c.squaredLength() == 800);
 		Assert.assertTrue(c.dot(a) == (-20*30+20*480));
 		c.setX(4);
 		c.setY(5);
 		Assert.assertTrue(c.distance(new Vec2RW(1,1)) == 5);
 		c.setX(3);
 		c.setY(4);
-		Assert.assertTrue(c.length() == 5);
 		Assert.assertEquals(new Vec2RW(0,1).getX(), new Vec2RW(1,0).rotateNewVector(Math.PI/2, new Vec2RW(0,0)).getX(), 0.1);
 		Assert.assertEquals(new Vec2RW(0,1).getY(), new Vec2RW(1,0).rotateNewVector(Math.PI/2, new Vec2RW(0,0)).getY(), 0.1);
 	}

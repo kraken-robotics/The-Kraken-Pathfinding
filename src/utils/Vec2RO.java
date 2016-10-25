@@ -48,16 +48,6 @@ public class Vec2RO implements Serializable
 		x = requestedX;
 		y = requestedY;
 	}
-
-	public final double squaredLength()
-	{
-		return x*x + y*y;
-	}
-
-	public final double length()
-	{
-		return Math.hypot(x, y);
-	}
 	
 	public final double dot(Vec2RO other)
 	{
@@ -88,7 +78,15 @@ public class Vec2RO implements Serializable
 
 	public final double distance(Vec2RO other)
 	{
-		return Math.hypot(x-other.x, y-other.y);
+		return Math.sqrt((x-other.x)*(x-other.x) + (y-other.y)*(y-other.y));
+	}
+
+	// Renvoie une approximation de la distance. Très rapide
+	public final double distanceFast(Vec2RO other)
+	{
+		double dx = Math.abs(x - other.x);
+		double dy = Math.abs(y - other.y);
+		return Math.max(dx, dy) + 0.414 * Math.min(dx, dy);
 	}
 
 	@Override

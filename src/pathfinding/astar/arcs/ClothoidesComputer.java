@@ -181,6 +181,10 @@ public class ClothoidesComputer implements Service, Configurable
 			courbure = 0;
 		}
 		
+		Speed vitesse = vitesseMax;
+		if(!(v.rebrousse ^ cinematiqueInitiale.enMarcheAvant))
+			vitesse = Speed.values()[vitesseMax.ordinal()+1];
+		
 		sin = Math.sin(orientation);
 		cos = Math.cos(orientation);
 
@@ -224,10 +228,13 @@ public class ClothoidesComputer implements Service, Configurable
 			{
 				t = tnext;
 				
-				tnext -= PRECISION_TRACE*1000/(Math.hypot(3*ax*t*t+2*bx*t+cx, 3*ay*t*t+2*by*t+cy));
+				double tmp1 = 3*ax*t*t+2*bx*t+cx;
+				double tmp2 = 3*ay*t*t+2*by*t+cy;
+				
+				tnext -= PRECISION_TRACE*1000/(Math.sqrt(tmp1 * tmp1 + tmp2 * tmp2));
 
 				if(tnext < 0)
-					t = 0; // on veut finir à 0 exactement
+					tnext = 0; // on veut finir à 0 exactement
 	
 				double t2 = t*t;
 				double x = ax*t*t2 + bx*t2 + cx*t + dx;
@@ -244,7 +251,7 @@ public class ClothoidesComputer implements Service, Configurable
 						Math.atan2(vy, vx), // orientation = atan2(vy, vx)
 						v.rebrousse ^ cinematiqueInitiale.enMarcheAvant,
 						1000*(vx * acy - vy * acx) / Math.pow(vx*vx + vy*vy, 1.5), // formule de la courbure d'une courbe paramétrique
-						vitesseMax.translationalSpeed);
+						vitesse.translationalSpeed);
 				// TODO vitesse
 //				log.debug(t);
 				
@@ -262,7 +269,7 @@ public class ClothoidesComputer implements Service, Configurable
 				lastOrientation = actuel.orientationGeometrique;				
 				// calcul de la longueur de l'arc
 				if(last != null)
-					longueur += actuel.getPosition().distance(last.getPosition());
+					longueur += actuel.getPosition().distanceFast(last.getPosition());
 				// TODO : faire un pas plus petit, puis sélectionner seulement ceux qui correspondent à la bonne précision
 
 				
@@ -274,7 +281,7 @@ public class ClothoidesComputer implements Service, Configurable
 			// Parfois, l'interpolation cubique donne très peu de points (à cause du pas de t qui est une approximation)
 			// dans ce cas, on ignore l'arc
 
-			if(error || out.size() < (cinematiqueInitiale.getPosition().distance(arrivee.getPosition()) / (1000 * PRECISION_TRACE))) // on essaye un autre alpha
+			if(error || out.size() < (cinematiqueInitiale.getPosition().distanceFast(arrivee.getPosition()) / (1000 * PRECISION_TRACE))) // on essaye un autre alpha
 			{
 				// on détruit les cinématiques qui ne seront pas utilisées
 				for(CinematiqueObs c : out)
@@ -326,14 +333,21 @@ public class ClothoidesComputer implements Service, Configurable
 			courbure = 0;
 			orientation += Math.PI;
 		}
-		
+
+		boolean marcheAvant = vitesse.rebrousse ^ cinematiqueInitiale.enMarcheAvant;
+
+		// Gestion de la vitesse en marche arrière
+		Speed vitesseTr = vitesseMax;
+		if(!marcheAvant)
+			vitesseTr = Speed.values()[vitesseMax.ordinal()+1];
+
 		// si la dérivée de la courbure est nulle, on est dans le cas particulier d'une trajectoire rectiligne ou circulaire
 		if(vitesse.vitesse == 0)
 		{
 			if(courbure < 0.00001 && courbure > -0.00001)
-				getTrajectoireLigneDroite(cinematiqueInitiale.getPosition(), orientation, vitesseMax, modified, vitesse.rebrousse ^ cinematiqueInitiale.enMarcheAvant);
+				getTrajectoireLigneDroite(cinematiqueInitiale.getPosition(), orientation, vitesseTr, modified, marcheAvant);
 			else
-				getTrajectoireCirculaire(cinematiqueInitiale.getPosition(), orientation, courbure, vitesseMax, modified, vitesse.rebrousse ^ cinematiqueInitiale.enMarcheAvant);
+				getTrajectoireCirculaire(cinematiqueInitiale.getPosition(), orientation, courbure, vitesseTr, modified, marcheAvant);
 			return;
 		}
 		
@@ -341,7 +355,7 @@ public class ClothoidesComputer implements Service, Configurable
 		double sDepart = courbure / vitesse.squaredRootVitesse; // sDepart peut parfaitement être négatif
 		if(!vitesse.positif)
 			sDepart = -sDepart;
-		int pointDepart = (int) Math.round(sDepart / PRECISION_TRACE) + INDICE_MAX - 1;
+		int pointDepart = (int) ((sDepart / PRECISION_TRACE) + INDICE_MAX - 1 + 0.5); // le 0.5 vient du fait qu'on fait ici un arrondi
 		
 		if(pointDepart < 0 || pointDepart >= trajectoire.length)
 			log.critical("Sorti de la clothoïde précalculée !");
@@ -372,9 +386,7 @@ public class ClothoidesComputer implements Service, Configurable
  			double orientationClotho = sDepart * sDepart;
  			if(!vitesse.positif)
  				orientationClotho = - orientationClotho;
- 			
- 			boolean marcheAvant = vitesse.rebrousse ^ cinematiqueInitiale.enMarcheAvant;
- 			
+ 			 			
 			modified.arcselems[i].orientationGeometrique = baseOrientation + orientationClotho;
 			modified.arcselems[i].courbureGeometrique = sDepart * vitesse.squaredRootVitesse;
  			if(!vitesse.positif)
@@ -396,7 +408,7 @@ public class ClothoidesComputer implements Service, Configurable
 			modified.arcselems[i].enMarcheAvant = marcheAvant;
 			
 			// TODO : vitesse max dépend de la courbure !
-			modified.arcselems[i].vitesseMax = vitesseMax.translationalSpeed;
+			modified.arcselems[i].vitesseMax = vitesseTr.translationalSpeed;
  			modified.arcselems[i].obstacle.update(modified.arcselems[i].getPosition(), modified.arcselems[i].orientationReelle);
 		}
 	}

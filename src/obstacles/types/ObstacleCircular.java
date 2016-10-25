@@ -70,6 +70,9 @@ public class ObstacleCircular extends Obstacle
 	@Override
 	public boolean isColliding(ObstacleRectangular o)
 	{
+		// Calcul simple permettant de vérifier les cas absurdes où les obstacles sont loin l'un de l'autre
+		if(position.squaredDistance(o.centreGeometrique) >= (radius+o.demieDiagonale)*(radius+o.demieDiagonale))
+			return false;
 		return o.squaredDistance(position) < radius*radius;
 	}
 

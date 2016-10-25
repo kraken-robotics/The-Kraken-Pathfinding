@@ -82,11 +82,6 @@ public class Cinematique
 		}
 	}
 	
-	public void setVitesse(Speed speed)
-	{
-		vitesseMax = speed.translationalSpeed;
-	}
-
 	public final Vec2RO getPosition()
 	{
 		return position;

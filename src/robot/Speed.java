@@ -27,18 +27,19 @@ package robot;
 public enum Speed
 {
 	// TODO fixer les valeurs
-    STANDARD(3.),
+
+	// vitesse standard
+    STANDARD(1.),
     
-    // On avance moins vite si l'on veut percuter un mur.
-    INTO_WALL(0.5),
+    // pour décourager la marche arrière, on la met moins rapide
+    MARCHE_ARRIERE(0.5),
 
     // Vitesse du robot lors d'une replanification, plus lent que la vitesse standard
-    REPLANIF(2.);
+    REPLANIF(0.7),
 
-    /** en millisecondes par millimètre */
-    public final double invertedTranslationalSpeed;
-    
-    /** en millimètres par milliseconde = mètre par seconde */
+    REPLANIF_MARCHE_ARRIERE(0.3);
+
+    // en millimètre par milliseconde = mètre par seconde
     public final double translationalSpeed;
     
     /**
@@ -47,7 +48,6 @@ public enum Speed
     private Speed(double translationalSpeed)
     {
     	this.translationalSpeed = translationalSpeed;
-    	invertedTranslationalSpeed = 1. / translationalSpeed;
     }
    
 }
