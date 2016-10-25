@@ -28,12 +28,12 @@ import robot.CinematiqueObs;
  *
  */
 
-public abstract class ArcCourbe implements Configurable
+public abstract class ArcCourbe
 {
 
 	public boolean rebrousse; // cet arc commence par un rebroussement, c'est-à-dire que la marche avant change
 //	public ObstacleArcCourbe obstacle = new ObstacleArcCourbe();
-	protected int tempsRebroussement;
+	protected static int tempsRebroussement;
 	
 	public ArcCourbe(boolean rebrousse)
 	{
@@ -46,7 +46,7 @@ public abstract class ArcCourbe implements Configurable
 	public abstract double getVitesseTr();
 	protected abstract double getLongueur();
 
-	public double getDuree()
+	public final double getDuree()
 	{
 		if(rebrousse)
 			return getLongueur() / getVitesseTr() + tempsRebroussement;
@@ -63,8 +63,7 @@ public abstract class ArcCourbe implements Configurable
 		return out;
 	}
 	
-	@Override
-	public void useConfig(Config config)
+	public static void useConfig(Config config)
 	{
 		tempsRebroussement = config.getInt(ConfigInfo.TEMPS_REBROUSSEMENT);
 	}

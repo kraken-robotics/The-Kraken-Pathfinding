@@ -41,6 +41,7 @@ import utils.*;
 import exceptions.ContainerException;
 import graphic.PrintBuffer;
 import obstacles.types.Obstacle;
+import pathfinding.astar.arcs.ArcCourbe;
 import serie.SerieCouchePhysique;
 import threads.ThreadName;
 import threads.ThreadPathfinding;
@@ -218,7 +219,8 @@ public class Container implements Service, Configurable
 		
 		Obstacle.set(log, getService(PrintBuffer.class));
 		Obstacle.useConfig(config);
-		
+		ArcCourbe.useConfig(config);
+
 		startAllThreads();
 
 	}
