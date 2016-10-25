@@ -113,6 +113,7 @@ public enum ConfigInfo {
 	GRAPHIC_D_STAR_LITE_FINAL(false), // affiche l'itinéraire final du D* Lite
 	GRAPHIC_PROXIMITY_OBSTACLES(false), // affiche les obstacles de proximité
 	GRAPHIC_TRAJECTORY(false), // affiche les trajectoires temporaires
+	GRAPHIC_TRAJECTORY_ALL(false), // affiche TOUTES les trajectoires temporaires
 	GRAPHIC_TRAJECTORY_FINAL(false), // affiche les trajectoires
 	GRAPHIC_FIXED_OBSTACLES(false), // affiche les obstacles fixes
 	GRAPHIC_GAME_ELEMENTS(false), // affiche les éléments de jeux

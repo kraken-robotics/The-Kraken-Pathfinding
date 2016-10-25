@@ -68,7 +68,7 @@ public class ObstaclesIteratorFutur extends ObstaclesIterator
 	public void init(long date, int firstNotDead)
 	{
 		this.firstNotDead = firstNotDead;
-		while(firstNotDead < memory.size())
+		while(this.firstNotDead < memory.size())
 		{
 			if(memory.isDestructionNecessary(this.firstNotDead, date))
 				this.firstNotDead++;

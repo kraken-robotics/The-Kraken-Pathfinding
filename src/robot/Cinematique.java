@@ -17,6 +17,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 package robot;
 
+import java.awt.Graphics;
+
+import graphic.Fenetre;
+import graphic.printable.Couleur;
+import graphic.printable.Layer;
+import graphic.printable.Printable;
+import pathfinding.dstarlite.gridspace.PointGridSpace;
 import utils.Vec2RO;
 import utils.Vec2RW;
 
@@ -26,15 +33,13 @@ import utils.Vec2RW;
  *
  */
 
-public class Cinematique
+public class Cinematique implements Printable
 {
 	protected final Vec2RW position = new Vec2RW();
 	public volatile double orientationGeometrique; // il s'agit de l'orientation qui avance. donc l'arrière du robot s'il recule
 	public volatile boolean enMarcheAvant;
 	public volatile double courbureGeometrique;
-//	public volatile double vitesseTranslation;
 	public volatile double vitesseMax;
-//	public volatile double vitesseRotation;
 	public volatile double orientationReelle;
 	public volatile double courbureReelle;
 	
@@ -51,8 +56,6 @@ public class Cinematique
 	{
 		enMarcheAvant = cinematique.enMarcheAvant;
 		courbureGeometrique = cinematique.courbureGeometrique;
-//		vitesseTranslation = cinematique.vitesseTranslation;
-//		vitesseRotation = cinematique.vitesseRotation;
 		vitesseMax = cinematique.vitesseMax;
 	}
 
@@ -76,8 +79,6 @@ public class Cinematique
 	    	autre.enMarcheAvant = enMarcheAvant;
 	    	autre.courbureGeometrique = courbureGeometrique;
 	    	autre.courbureReelle = courbureReelle;
-//	    	autre.vitesseRotation = vitesseRotation;
-//	    	autre.vitesseTranslation = vitesseTranslation;
 	    	autre.vitesseMax = vitesseMax;
 		}
 	}
@@ -141,6 +142,27 @@ public class Cinematique
 		this.enMarcheAvant = enMarcheAvant;
 		this.courbureGeometrique = courbure;
 		this.vitesseMax = vitesseMax;
+	}
+
+	@Override
+	public void print(Graphics g, Fenetre f, RobotReal robot)
+	{
+		g.setColor(Couleur.CINEMATIQUE.couleur);
+		double n = PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS/2;
+		Vec2RW point1 = new Vec2RW(n, 0), point2 = new Vec2RW(-n/2, n/2), point3 = new Vec2RW(-n/2, -n/2);
+		point1.rotate(orientationGeometrique).plus(position);
+		point2.rotate(orientationGeometrique).plus(position);
+		point3.rotate(orientationGeometrique).plus(position);
+		int[] X = {f.XtoWindow((int)point1.getX()), f.XtoWindow((int)point2.getX()), f.XtoWindow((int)point3.getX())};
+		int[] Y = {f.YtoWindow((int)point1.getY()), f.YtoWindow((int)point2.getY()) ,f.YtoWindow((int)point3.getY())};
+		
+		g.drawPolygon(X, Y, 3);
+	}
+	
+	@Override
+	public Layer getLayer()
+	{
+		return Layer.FOREGROUND;
 	}
 	
 }

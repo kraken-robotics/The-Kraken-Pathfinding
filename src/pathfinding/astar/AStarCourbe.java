@@ -67,7 +67,7 @@ public class AStarCourbe implements Service, Configurable
 	private AStarCourbeNode trajetDeSecours;
 	private CheminPathfinding chemin;
 	private CinemObsMM cinemMemory;
-	private boolean graphicTrajectory, graphicDStarLite;
+	private boolean graphicTrajectory, graphicDStarLite, graphicTrajectoryAll;
 	private int dureeMaxPF;
 	private Speed vitesseMax;
 	
@@ -168,10 +168,11 @@ public class AStarCourbe implements Service, Configurable
 					c = Couleur.TRAJECTOIRE;
 				for(int i = 0; i < current.getArc().getNbPoints(); i++)
 					buffer.addSupprimable(new ObstacleCircular(current.getArc().getPoint(i).getPosition(), 4, c));
+				buffer.addSupprimable(current.getArc().getLast());
 			}
 
 			// Si on est arrivé, on reconstruit le chemin
-			// On est arrivé seulement si on vient d'un arc cubique			
+			// On est arrivé seulement si on vient d'un arc cubique
 			if(current == trajetDeSecours)
 			{
 //				log.debug("On est arrivé !");
@@ -211,6 +212,7 @@ public class AStarCourbe implements Service, Configurable
 					current.copyReconstruct(depart);
 					memorymanager.empty();
 					cinemMemory.empty();
+					closedset.clear();
 					// En faisant "openset.clear()", il force le pathfinding a continuer sur sa lancée sans
 					// remettre en cause la trajectoire déjà calculée
 					openset.clear();
@@ -236,6 +238,19 @@ public class AStarCourbe implements Service, Configurable
 				{
 					destroy(successeur);
 					continue;
+				}
+				
+				// affichage
+				if(graphicTrajectoryAll && current.getArc() != null)
+				{
+					Couleur c;
+					if(!sens.isOK(successeur.getArc().getLast().enMarcheAvant))
+						c = Couleur.TRAJECTOIRE_MAUVAIS_SENS;
+					else
+						c = Couleur.TRAJECTOIRE;
+					for(int i = 0; i < successeur.getArc().getNbPoints(); i++)
+						buffer.addSupprimable(new ObstacleCircular(successeur.getArc().getPoint(i).getPosition(), 4, c));
+					buffer.addSupprimable(successeur.getArc().getLast());
 				}
 				
 				heuristique = arcmanager.heuristicCostCourbe(successeur.state.robot.getCinematique(), sens);
@@ -305,6 +320,7 @@ public class AStarCourbe implements Service, Configurable
 	public void useConfig(Config config)
 	{
 		graphicTrajectory = config.getBoolean(ConfigInfo.GRAPHIC_TRAJECTORY);
+		graphicTrajectoryAll = config.getBoolean(ConfigInfo.GRAPHIC_TRAJECTORY_ALL);
 		graphicDStarLite = config.getBoolean(ConfigInfo.GRAPHIC_D_STAR_LITE_FINAL);
 		dureeMaxPF = config.getInt(ConfigInfo.DUREE_MAX_RECHERCHE_PF);
 	}
@@ -357,7 +373,8 @@ public class AStarCourbe implements Service, Configurable
 		{
 			state.copyAStarCourbe(depart.state);
 		}
-		
+
+		closedset.clear();
 		depart.state.robot.setCinematique(chemin.getLastValidCinematique());
 		
 		// On met à jour le D* Lite

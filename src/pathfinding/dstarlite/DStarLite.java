@@ -478,7 +478,7 @@ public class DStarLite implements Service, Configurable
 //			log.debug("Dans un obstacle");
 			return null;
 		}
-		
+
 		updateStart(pos);
 		DStarLiteNode premier = getFromMemoryUpdated(pos);
 		
@@ -493,7 +493,7 @@ public class DStarLite implements Service, Configurable
 		double orientationOptimale = getOrientationHeuristique(pos);
 		
 		// l'orientation est vérifiée modulo 2*pi : la marche avant et la marche arrière sont différenciées
-		double erreurOrientation = (c.orientationGeometrique +Math.PI- orientationOptimale) % (2*Math.PI);
+		double erreurOrientation = (c.orientationGeometrique - orientationOptimale) % (2*Math.PI);
 		if(erreurOrientation > Math.PI)
 			erreurOrientation -= 2*Math.PI;
 
@@ -508,11 +508,14 @@ public class DStarLite implements Service, Configurable
 		}
 //			throw new DStarLiteException("Heuristique : inaccessible");
 
-/*		log.debug("rhs : "+premier.rhs);
-		log.debug("erreurOrientation : "+50*erreurOrientation);
-		log.debug("erreurDistance : "+erreurDistance);
-	*/	
-		return erreurDistance + 5*erreurOrientation;
+//		log.debug(c);
+//		log.debug("rhs : "+premier.rhs);
+//		log.debug("erreurOrientation : "+erreurOrientation+" "+c.orientationGeometrique+" "+orientationOptimale);
+//		log.debug("erreurDistance : "+erreurDistance);
+//		log.debug("Score : "+(erreurDistance + 5*erreurOrientation));
+
+		// il faut toujours majorer la vraie distance, afin de ne pas chercher tous les trajets possibles…
+		return 1.1*erreurDistance + 10*erreurOrientation;
 	}
 
 	private double heuristicCostCourbeRebroussement(DStarLiteNode premier, PointGridSpace pos, Cinematique c)
