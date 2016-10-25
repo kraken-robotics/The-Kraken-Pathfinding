@@ -66,6 +66,7 @@ public class AStarCourbe implements Service, Configurable
 	private PrintBuffer buffer;
 	private Cinematique arrivee;
 	private AStarCourbeNode depart;
+	private AStarCourbeNode trajetDeSecours;
 	private CheminPathfinding chemin;
 	private CinemObsMM cinemMemory;
 	private boolean graphicTrajectory, graphicDStarLite;
@@ -119,6 +120,7 @@ public class AStarCourbe implements Service, Configurable
 	 */
 	protected final void process(boolean shoot, boolean replanif) throws PathfindingException
 	{
+		trajetDeSecours = null;
 		depart.parent = null;
 		depart.cameFromArcCubique = null;
 		depart.g_score = 0;
@@ -170,12 +172,11 @@ public class AStarCourbe implements Service, Configurable
 
 			// Si on est arrivé, on reconstruit le chemin
 			// On est arrivé seulement si on vient d'un arc cubique			
-			if(current.parent != null && current.getArc().getLast().getPosition().squaredDistance(arrivee.getPosition()) < 1 && sens.isOK(current.getArc().getLast().enMarcheAvant))
+			if(current == trajetDeSecours)
 			{
 //				log.debug("On est arrivé !");
 				chemin.setUptodate(true);
 				partialReconstruct(current);
-				current.cameFromArcCubique = null;
 				memorymanager.empty();
 				cinemMemory.empty();
 				return;
@@ -186,6 +187,12 @@ public class AStarCourbe implements Service, Configurable
 			{
 				memorymanager.empty();
 				cinemMemory.empty();
+				if(trajetDeSecours != null) // si on a un trajet de secours, on l'utilise
+				{
+					chemin.setUptodate(true);
+					partialReconstruct(trajetDeSecours);
+					return;
+				}
 				throw new PathfindingException("Timeout AStarCourbe !");
 			}
 
@@ -212,6 +219,7 @@ public class AStarCourbe implements Service, Configurable
 				}
 
 				successeur = memorymanager.getNewNode();
+				successeur.cameFromArcCubique = null;
 
 				// S'il y a un problème, on passe au suivant (interpolation cubique impossible par exemple)
 				if(!arcmanager.next(successeur, vitesseMax, arrivee))
@@ -235,7 +243,15 @@ public class AStarCourbe implements Service, Configurable
 					heuristique = 5*successeur.state.robot.getCinematique().getPosition().distanceFast(arrivee.getPosition());
 				
 				successeur.f_score = successeur.g_score + heuristique / successeur.getArc().getVitesseTr();
-								
+				
+				// noeud d'arrivé
+				if(successeur.parent != null && successeur.getArc().getLast().getPosition().squaredDistance(arrivee.getPosition()) < 1 && sens.isOK(successeur.getArc().getLast().enMarcheAvant)
+					&& (trajetDeSecours == null || trajetDeSecours.f_score > successeur.f_score))
+				{
+					log.debug("Arrivée trouvée !");
+					trajetDeSecours = successeur;
+				}
+				
 				openset.add(successeur);
 			}
 
@@ -252,10 +268,7 @@ public class AStarCourbe implements Service, Configurable
 	private void destroy(AStarCourbeNode n)
 	{
 		if(n.cameFromArcCubique != null)
-		{
 			cinemMemory.destroyNode(n.cameFromArcCubique);
-			n.cameFromArcCubique = null;
-		}
 		memorymanager.destroyNode(n);
 	}
 	
