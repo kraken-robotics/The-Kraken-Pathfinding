@@ -258,10 +258,16 @@ public class AStarCourbe implements Service, Configurable
 		} while(!openset.isEmpty());
 		
 		/**
-		 * Impossible car un nombre infini de nœuds !
+		 * Plus aucun nœud à explorer
 		 */
 		memorymanager.empty();
 		cinemMemory.empty();
+		if(trajetDeSecours != null) // si on a un trajet de secours, on l'utilise
+		{
+			chemin.setUptodate(true);
+			partialReconstruct(trajetDeSecours);
+			return;
+		}
 		throw new PathfindingException("Recherche AStarCourbe échouée");
 	}
  	

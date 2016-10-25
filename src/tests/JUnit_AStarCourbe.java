@@ -306,7 +306,7 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 	@Test
     public void test_recherche_shoot() throws Exception
     {
-		Cinematique depart = new Cinematique(0, 1800, -Math.PI/4, true, 0, Speed.STANDARD.translationalSpeed);
+		Cinematique depart = new Cinematique(0, 1800, -Math.PI/3, true, 0, Speed.STANDARD.translationalSpeed);
 		robot.setCinematique(depart);
 		Cinematique c = new Cinematique(1000, 1200, Math.PI, false, 0, Speed.STANDARD.translationalSpeed);
 		astar.computeNewPath(c, true);
@@ -328,7 +328,7 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 	@Test
     public void test_recherche_shoot_pas() throws Exception
     {
-		Cinematique depart = new Cinematique(0, 1800, -Math.PI/4, true, 0, Speed.STANDARD.translationalSpeed);
+		Cinematique depart = new Cinematique(0, 1800, -Math.PI/3, true, 0, Speed.STANDARD.translationalSpeed);
 		robot.setCinematique(depart);
 		Cinematique c = new Cinematique(1000, 1200, Math.PI, false, 0, Speed.STANDARD.translationalSpeed);
 		astar.computeNewPath(c, false);
@@ -394,7 +394,7 @@ public class JUnit_AStarCourbe extends JUnit_Test {
     public void test_recherche_finit_en_arriere() throws Exception
     {
 		long avant = System.nanoTime();
-		Cinematique depart = new Cinematique(-1050, 600, 0, true, 0, Speed.STANDARD.translationalSpeed);
+		Cinematique depart = new Cinematique(-800, 350, Math.PI/2, true, 0, Speed.STANDARD.translationalSpeed);
 		robot.setCinematique(depart);
 		Cinematique c = new Cinematique(1000, 700, Math.PI, false, 0, Speed.STANDARD.translationalSpeed);
 		astar.computeNewPath(c, DirectionStrategy.FASTEST, SensFinal.MARCHE_ARRIERE, false);

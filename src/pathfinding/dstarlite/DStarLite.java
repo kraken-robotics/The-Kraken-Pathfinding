@@ -470,7 +470,6 @@ public class DStarLite implements Service, Configurable
 //			log.debug("Hors table !");
 			return null;
 		}
-//			throw new DStarLiteException("Heuristique : hors table");
 		
 		PointGridSpace pos = pointManager.get(c.getPosition());
 		
@@ -483,6 +482,7 @@ public class DStarLite implements Service, Configurable
 		updateStart(pos);
 		DStarLiteNode premier = getFromMemoryUpdated(pos);
 		
+		// Cas particulier si on sait qu'on doit rebrousser chemin
 		if(!sens.isOK(c.enMarcheAvant))
 			return heuristicCostCourbeRebroussement(premier, pos, c);
 		
@@ -497,7 +497,7 @@ public class DStarLite implements Service, Configurable
 		if(sens == SensFinal.AUCUNE_PREF)
 		{
 			// l'orientation est vérifiée modulo pi : on se fiche que ce soit en avant ou en arrière
-			tmp = (c.courbureGeometrique - orientationOptimale) % (Math.PI);
+			tmp = (c.orientationGeometrique - orientationOptimale) % (Math.PI);
 			if(tmp > Math.PI/2)
 				tmp -= Math.PI;
 		}
@@ -505,9 +505,9 @@ public class DStarLite implements Service, Configurable
 		{
 			// l'orientation est vérifiée modulo 2*pi : la marche avant et la marche arrière sont différenciées
 			if(sens == SensFinal.MARCHE_AVANT)
-				tmp = (c.courbureReelle - orientationOptimale) % (2*Math.PI);
+				tmp = (c.orientationReelle - orientationOptimale) % (2*Math.PI);
 			else // marche arrière
-				tmp = (c.courbureReelle + Math.PI - orientationOptimale) % (2*Math.PI);
+				tmp = (c.orientationReelle + Math.PI - orientationOptimale) % (2*Math.PI);
 			if(tmp > Math.PI)
 				tmp -= 2*Math.PI;
 		}
@@ -522,12 +522,11 @@ public class DStarLite implements Service, Configurable
 		}
 //			throw new DStarLiteException("Heuristique : inaccessible");
 
-/*		log.debug("Sens : "+sens+" "+orientationOptimale+" "+c.orientationReelle+" "+c.enMarcheAvant);
-		log.debug("rhs : "+premier.rhs);
+/*		log.debug("rhs : "+premier.rhs);
 		log.debug("erreurOrientation : "+50*erreurOrientation);
 		log.debug("erreurDistance : "+erreurDistance);
 	*/	
-		return erreurDistance + 20*erreurOrientation;
+		return erreurDistance + 5*erreurOrientation;
 	}
 
 	private double heuristicCostCourbeRebroussement(DStarLiteNode premier, PointGridSpace pos, Cinematique c)
@@ -535,8 +534,8 @@ public class DStarLite implements Service, Configurable
 		if(pos.equals(arrivee.gridpoint))
 			return 300.; // pas arrivé dans le bon sens !
 
-		double orientationOptimale = getOrientationHeuristique(pos) +Math.PI/2 ; // on va chercher à se retourner, donc on va tourner à angle droit
-		double erreurOrientation = (c.orientationReelle - orientationOptimale) % (Math.PI);
+		double orientationOptimale = getOrientationHeuristique(pos) + Math.PI/2 ; // on va chercher à se retourner, donc on va tourner à angle droit
+		double erreurOrientation = (c.orientationGeometrique - orientationOptimale) % (Math.PI);
 		if(erreurOrientation > Math.PI/2)
 			erreurOrientation -= Math.PI;
 		erreurOrientation = Math.abs(erreurOrientation);
@@ -544,7 +543,7 @@ public class DStarLite implements Service, Configurable
 		double erreurDistance = premier.rhs / 1000. * PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS; // distance en mm
 		
 //		return 500 + erreurDistance;
-		return 1000 + 100*erreurOrientation + erreurDistance/10;
+		return 2000 + 10*erreurOrientation + (erreurDistance+800);
 	}
 	
 	/**
