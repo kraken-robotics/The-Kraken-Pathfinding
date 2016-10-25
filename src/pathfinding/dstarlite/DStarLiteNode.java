@@ -17,7 +17,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 package pathfinding.dstarlite;
 
+import java.awt.Graphics;
+
+import graphic.Fenetre;
+import graphic.printable.Layer;
+import graphic.printable.Printable;
 import pathfinding.dstarlite.gridspace.PointGridSpace;
+import robot.RobotReal;
+import utils.Vec2RW;
 
 /**
  * Un nœud du D* Lite.
@@ -25,7 +32,8 @@ import pathfinding.dstarlite.gridspace.PointGridSpace;
  *
  */
 
-public class DStarLiteNode {
+public class DStarLiteNode implements Printable
+{
 
 	public final PointGridSpace gridpoint;
 	public final Cle cle = new Cle();
@@ -78,6 +86,28 @@ public class DStarLiteNode {
 			heuristiqueOrientation = null;
 			this.nbPF = nbPF;
 		}
+	}
+
+	@Override
+	public void print(Graphics g, Fenetre f, RobotReal robot)
+	{
+		if(heuristiqueOrientation != null)
+		{
+			double n = PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS/2;
+			Vec2RW point1 = new Vec2RW(n, 0), point2 = new Vec2RW(-n/2, n/2), point3 = new Vec2RW(-n/2, -n/2);
+			point1.rotate(heuristiqueOrientation).plus(gridpoint.computeVec2());
+			point2.rotate(heuristiqueOrientation).plus(gridpoint.computeVec2());
+			point3.rotate(heuristiqueOrientation).plus(gridpoint.computeVec2());
+			int[] X = {f.XtoWindow((int)point1.getX()), f.XtoWindow((int)point2.getX()), f.XtoWindow((int)point3.getX())};
+			int[] Y = {f.YtoWindow((int)point1.getY()), f.YtoWindow((int)point2.getY()) ,f.YtoWindow((int)point3.getY())};
+			
+			g.drawPolygon(X, Y, 3);
+		}
+	}
+
+	@Override
+	public Layer getLayer() {
+		return Layer.FOREGROUND;
 	}
 	
 }

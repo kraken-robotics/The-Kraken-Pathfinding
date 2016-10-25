@@ -36,6 +36,7 @@ import config.ConfigInfo;
 import config.Configurable;
 import container.Service;
 import exceptions.PathfindingException;
+import graphic.PrintBuffer;
 import graphic.printable.Couleur;
 
 /**
@@ -62,6 +63,7 @@ public class DStarLite implements Service, Configurable
 	private DStarLiteNode arrivee;
 	private DStarLiteNode depart;
 	private PointGridSpace lastDepart;
+	private PrintBuffer buffer;
 	private long nbPF = 0;
 	
 	private double[][] atan2map = new double[19][19];
@@ -77,12 +79,13 @@ public class DStarLite implements Service, Configurable
 	 * @param log
 	 * @param gridspace
 	 */
-	public DStarLite(Log log, GridSpace gridspace, PointGridSpaceManager pointManager, PointDirigeManager pointDManager)
+	public DStarLite(Log log, GridSpace gridspace, PointGridSpaceManager pointManager, PointDirigeManager pointDManager, PrintBuffer buffer)
 	{
 		this.log = log;
 		this.gridspace = gridspace;
 		this.pointManager = pointManager;
 		this.pointDManager = pointDManager;
+		this.buffer = buffer;
 		
 		obstaclesConnus = new BitSet(PointGridSpace.NB_POINTS * 8);
 		obstaclesConnus.or(gridspace.getCurrentObstacles());
@@ -453,12 +456,6 @@ public class DStarLite implements Service, Configurable
 		
 	}
 	
-/*	private Vec2RW delta = new Vec2RW();
-	private Vec2RW deltaTmp = new Vec2RW();
-	private Vec2RW centreCercle = new Vec2RW();
-	private Vec2RW posRobot = new Vec2RW();
-	private Vec2RW pos = new Vec2RW();*/
-
 	/**
 	 * Renvoie l'heuristique au A* courbe.
 	 * L'heuristique est une distance en mm
@@ -576,7 +573,7 @@ public class DStarLite implements Service, Configurable
 				continue;
 			int scoreVoisin = voisin.rhs;
 			// ce devrait être équivalent
-			double s = Math.signum(scoreVoisin - score);
+			double s = Math.signum(score-scoreVoisin);
 			directionX += s * d.deltaX;
 			directionY += s * d.deltaY;
 			n.heuristiqueOrientation = atan2map[(int)directionX+9][(int)directionY+9];
@@ -588,6 +585,9 @@ public class DStarLite implements Service, Configurable
 			directionY = arrivee.gridpoint.y - p.y;
 			n.heuristiqueOrientation = Math.atan2(directionY, directionX);
 		}
+		
+		if(graphicDStarLite)
+			buffer.addSupprimable(n);
 		
 		return n.heuristiqueOrientation;
 	}
