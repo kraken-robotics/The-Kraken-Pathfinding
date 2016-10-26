@@ -274,7 +274,7 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 		Cinematique c = new Cinematique(1000, 1200, Math.PI, false, 0, Speed.STANDARD.translationalSpeed);
 		astar.computeNewPath(c, true);
 		iterator.reinit();
-		CinematiqueObs a = null;
+		CinematiqueObs a = null, b = null;
 		int i = 0;
 		while(iterator.hasNext())
 		{
@@ -282,6 +282,9 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 			a = iterator.next();
 			log.debug(a);
 			robot.setCinematique(a);
+			if(b != null)
+				log.debug(a.getPosition().distance(b.getPosition()));
+			b = a;
 			if(graphicTrajectory)
 				Thread.sleep(100);
 		}

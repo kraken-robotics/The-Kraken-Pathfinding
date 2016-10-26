@@ -375,42 +375,48 @@ public class ClothoidesComputer implements Service, Configurable
 		// (afin de ne pas avoir de doublon quand on enchaîne les arcs, entre le dernier point de l'arc t et le premier de l'arc t+1)		
 		for(int i = 0; i < NB_POINTS; i++)
 		{
-			trajectoire[pointDepart + vitesse.squaredRootVitesse * (i + 1)].copy(modified.arcselems[i].getPositionEcriture());
 			sDepart += vitesse.squaredRootVitesse * PRECISION_TRACE;
-			modified.arcselems[i].getPositionEcriture().minus(trajectoire[pointDepart])
-			.scalar(coeffMultiplicatif)
-			.Ysym(!vitesse.positif)
-			.rotate(cos, sin)
-			.plus(cinematiqueInitiale.getPosition());
-
- 			double orientationClotho = sDepart * sDepart;
- 			if(!vitesse.positif)
- 				orientationClotho = - orientationClotho;
- 			 			
-			modified.arcselems[i].orientationGeometrique = baseOrientation + orientationClotho;
-			modified.arcselems[i].courbureGeometrique = sDepart * vitesse.squaredRootVitesse;
- 			if(!vitesse.positif)
- 				modified.arcselems[i].courbureGeometrique = - modified.arcselems[i].courbureGeometrique;
-
- 			if(marcheAvant)
- 			{
-				modified.arcselems[i].orientationReelle = modified.arcselems[i].orientationGeometrique;
-				modified.arcselems[i].courbureReelle = modified.arcselems[i].courbureGeometrique;
- 			}
- 			else
- 			{
-				modified.arcselems[i].orientationReelle = modified.arcselems[i].orientationGeometrique + Math.PI;
-				modified.arcselems[i].courbureReelle = - modified.arcselems[i].courbureGeometrique;
- 			}
- 			
-			modified.rebrousse = vitesse.rebrousse;
-			
-			modified.arcselems[i].enMarcheAvant = marcheAvant;
-			
-			// TODO : vitesse max dépend de la courbure !
-			modified.arcselems[i].vitesseMax = vitesseTr.translationalSpeed;
- 			modified.arcselems[i].obstacle.update(modified.arcselems[i].getPosition(), modified.arcselems[i].orientationReelle);
+			computePoint(pointDepart, vitesse, sDepart, coeffMultiplicatif, i, baseOrientation, cos, sin, marcheAvant, vitesseTr, cinematiqueInitiale.getPosition(), modified.arcselems[i]);
 		}
+		modified.rebrousse = vitesse.rebrousse;
+
+	}
+	
+	private void computePoint(int pointDepart, VitesseCourbure vitesse, double sDepart, double coeffMultiplicatif, int i, double baseOrientation, double cos, double sin, boolean marcheAvant, Speed vitesseTr, Vec2RO positionInitiale, CinematiqueObs c)
+	{
+		trajectoire[pointDepart + vitesse.squaredRootVitesse * (i + 1)].copy(c.getPositionEcriture());
+		c.getPositionEcriture().minus(trajectoire[pointDepart])
+		.scalar(coeffMultiplicatif)
+		.Ysym(!vitesse.positif)
+		.rotate(cos, sin)
+		.plus(positionInitiale);
+
+			double orientationClotho = sDepart * sDepart;
+			if(!vitesse.positif)
+				orientationClotho = - orientationClotho;
+			 			
+		c.orientationGeometrique = baseOrientation + orientationClotho;
+		c.courbureGeometrique = sDepart * vitesse.squaredRootVitesse;
+		
+		if(!vitesse.positif)
+			c.courbureGeometrique = - c.courbureGeometrique;
+
+		if(marcheAvant)
+		{
+		c.orientationReelle = c.orientationGeometrique;
+		c.courbureReelle = c.courbureGeometrique;
+		}
+		else
+		{
+		c.orientationReelle = c.orientationGeometrique + Math.PI;
+		c.courbureReelle = - c.courbureGeometrique;
+		}
+		
+		c.enMarcheAvant = marcheAvant;
+		
+		// TODO : vitesse max dépend de la courbure !
+		c.vitesseMax = vitesseTr.translationalSpeed;
+			c.obstacle.update(c.getPosition(), c.orientationReelle);
 	}
 
 	private Vec2RW deltaTmp = new Vec2RW();

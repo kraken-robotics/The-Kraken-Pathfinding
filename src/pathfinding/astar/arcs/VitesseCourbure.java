@@ -32,7 +32,7 @@ public enum VitesseCourbure
 	DIRECT_COURBE(0),
 	DIRECT_COURBE_REBROUSSE(0),
 	
-	RAMENE_VOLANT(4), // ramène le volant au centre
+//	RAMENE_VOLANT(4), // ramène le volant au centre
 	
 	GAUCHE_0(1),
 	GAUCHE_1(4),
