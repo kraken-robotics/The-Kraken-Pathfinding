@@ -161,12 +161,12 @@ public class ClothoidesComputer implements Service, Configurable
 		}
 	}
 
-	public final ArcCourbeCubique cubicInterpolation(RobotChrono robot, Cinematique arrivee, Speed vitesseMax, VitesseCourbure v)
+	public final ArcCourbeDynamique cubicInterpolation(RobotChrono robot, Cinematique arrivee, Speed vitesseMax, VitesseCourbure v)
 	{
 		return cubicInterpolation(robot.getCinematique(), arrivee, vitesseMax, v);
 	}
 	
-	public final ArcCourbeCubique cubicInterpolation(Cinematique cinematiqueInitiale, Cinematique arrivee, Speed vitesseMax, VitesseCourbure v)
+	public final ArcCourbeDynamique cubicInterpolation(Cinematique cinematiqueInitiale, Cinematique arrivee, Speed vitesseMax, VitesseCourbure v)
 	{
 //		log.debug(v);
 		double alphas[] = {100, 300, 600, 800, 1000, 1200};
@@ -289,12 +289,12 @@ public class ClothoidesComputer implements Service, Configurable
 				continue;
 			}
 			
-			return new ArcCourbeCubique(out, longueur, v.rebrousse);
+			return new ArcCourbeDynamique(out, longueur, v.rebrousse);
 		}
 		return null;
 	}
 	
-	public void getTrajectoire(ArcCourbe depart, VitesseCourbure vitesse, Speed vitesseMax, ArcCourbeClotho modified)
+	public void getTrajectoire(ArcCourbe depart, VitesseCourbure vitesse, Speed vitesseMax, ArcCourbeStatique modified)
 	{
 		CinematiqueObs last = depart.getLast();
 		getTrajectoire(last, vitesse, vitesseMax, modified);
@@ -306,7 +306,7 @@ public class ClothoidesComputer implements Service, Configurable
 	 * @param vitesse
 	 * @param modified
 	 */
-	public final void getTrajectoire(RobotChrono robot, VitesseCourbure vitesse, Speed vitesseMax, ArcCourbeClotho modified)
+	public final void getTrajectoire(RobotChrono robot, VitesseCourbure vitesse, Speed vitesseMax, ArcCourbeStatique modified)
 	{
 		getTrajectoire(robot.getCinematique(), vitesse, vitesseMax, modified);
 	}
@@ -322,7 +322,7 @@ public class ClothoidesComputer implements Service, Configurable
 	 * @param distance_mm
 	 * @return
 	 */
-	public final void getTrajectoire(Cinematique cinematiqueInitiale, VitesseCourbure vitesse, Speed vitesseMax, ArcCourbeClotho modified)
+	public final void getTrajectoire(Cinematique cinematiqueInitiale, VitesseCourbure vitesse, Speed vitesseMax, ArcCourbeStatique modified)
 	{
 //		modified.v = vitesse;
 //		log.debug(vitesse);
@@ -424,7 +424,7 @@ public class ClothoidesComputer implements Service, Configurable
 	 * @param courbure
 	 * @param modified
 	 */
-	private void getTrajectoireCirculaire(Vec2RO position, double orientation, double courbure, Speed vitesseMax, ArcCourbeClotho modified, boolean enMarcheAvant)
+	private void getTrajectoireCirculaire(Vec2RO position, double orientation, double courbure, Speed vitesseMax, ArcCourbeStatique modified, boolean enMarcheAvant)
 	{		
 //		log.debug("Trajectoire circulaire !");
 		// rappel = la courbure est l'inverse du rayon de courbure
@@ -481,7 +481,7 @@ public class ClothoidesComputer implements Service, Configurable
 	 * @param orientation
 	 * @param modified
 	 */
-	private void getTrajectoireLigneDroite(Vec2RO position, double orientation, Speed vitesseMax, ArcCourbeClotho modified, boolean enMarcheAvant)
+	private void getTrajectoireLigneDroite(Vec2RO position, double orientation, Speed vitesseMax, ArcCourbeStatique modified, boolean enMarcheAvant)
 	{
 		double cos = Math.cos(orientation);
 		double sin = Math.sin(orientation);

@@ -22,22 +22,21 @@ import java.util.List;
 import robot.CinematiqueObs;
 
 /**
- * Arc de trajectoire courbe issu d'une interpolation cubique
+ * Arc courbe de longueur inconnue à l'avance
  * @author pf
  *
  */
 
-public class ArcCourbeCubique extends ArcCourbe
+public class ArcCourbeDynamique extends ArcCourbe
 {
 	public List<CinematiqueObs> arcs;
 	public double longueur;
 	
-	public ArcCourbeCubique(List<CinematiqueObs> arcs, double longueur, boolean rebrousse)
+	public ArcCourbeDynamique(List<CinematiqueObs> arcs, double longueur, boolean rebrousse)
 	{
 		super(rebrousse);
 		this.arcs = arcs;
 		this.longueur = longueur;
-//		this.obstacle = obstacle;
 	}
 	
 	@Override

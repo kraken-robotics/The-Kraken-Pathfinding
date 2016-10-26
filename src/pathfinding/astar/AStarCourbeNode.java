@@ -20,8 +20,8 @@ package pathfinding.astar;
 import memory.Memorizable;
 import pathfinding.ChronoGameState;
 import pathfinding.astar.arcs.ArcCourbe;
-import pathfinding.astar.arcs.ArcCourbeClotho;
-import pathfinding.astar.arcs.ArcCourbeCubique;
+import pathfinding.astar.arcs.ArcCourbeStatique;
+import pathfinding.astar.arcs.ArcCourbeDynamique;
 import robot.RobotReal;
 
 /**
@@ -36,13 +36,13 @@ public class AStarCourbeNode implements Memorizable
 	public double g_score; // distance du point de départ à ce point
 	public double f_score; // g_score + heuristique = meilleure distance qu'on peut espérer avec ce point
 	public AStarCourbeNode parent;
-	public final ArcCourbeClotho cameFromArc;
-	public ArcCourbeCubique cameFromArcCubique = null;
+	public final ArcCourbeStatique cameFromArc;
+	public ArcCourbeDynamique cameFromArcCubique = null;
 	private int indiceMemoryManager;
 	
 	public AStarCourbeNode(ChronoGameState state, RobotReal r)
 	{
-		cameFromArc = new ArcCourbeClotho(r);
+		cameFromArc = new ArcCourbeStatique(r);
 		this.state = state;
 	}
 	

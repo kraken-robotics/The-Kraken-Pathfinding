@@ -30,8 +30,8 @@ import graphic.PrintBuffer;
 import pathfinding.DirectionStrategy;
 import pathfinding.SensFinal;
 import pathfinding.astar.AStarCourbe;
-import pathfinding.astar.arcs.ArcCourbeClotho;
-import pathfinding.astar.arcs.ArcCourbeCubique;
+import pathfinding.astar.arcs.ArcCourbeStatique;
+import pathfinding.astar.arcs.ArcCourbeDynamique;
 import pathfinding.astar.arcs.ClothoidesComputer;
 import pathfinding.astar.arcs.VitesseCourbure;
 import pathfinding.chemin.CheminPathfinding;
@@ -84,7 +84,7 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 		Cinematique c1 = new Cinematique(-1100, 300, Math.PI/2, true, 0, Speed.STANDARD.translationalSpeed);
 		Cinematique c2 = new Cinematique(0, 1000, 0, true, 0, Speed.STANDARD.translationalSpeed);
 		
-		ArcCourbeCubique arccubique = clotho.cubicInterpolation(c1, c2, Speed.STANDARD, VitesseCourbure.DIRECT_COURBE);
+		ArcCourbeDynamique arccubique = clotho.cubicInterpolation(c1, c2, Speed.STANDARD, VitesseCourbure.DIRECT_COURBE);
 	
 		for(int i = 0; i < arccubique.arcs.size(); i++)
 		{
@@ -127,7 +127,7 @@ public class JUnit_AStarCourbe extends JUnit_Test {
     {
 		boolean graphicTrajectory = config.getBoolean(ConfigInfo.GRAPHIC_TRAJECTORY);
 		ClothoidesComputer clotho = container.getService(ClothoidesComputer.class);
-		ArcCourbeCubique arc;
+		ArcCourbeDynamique arc;
 		Cinematique c, c2;
 		
 		c = new Cinematique(0, 1000, -Math.PI/4, true, 0, Speed.STANDARD.translationalSpeed);
@@ -174,9 +174,9 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 		ClothoidesComputer clotho = container.getService(ClothoidesComputer.class);
 		RobotReal rr = container.getService(RobotReal.class);
 		int nbArc = 16;
-		ArcCourbeClotho arc[] = new ArcCourbeClotho[nbArc];
+		ArcCourbeStatique arc[] = new ArcCourbeStatique[nbArc];
 		for(int i = 0; i < nbArc; i++)
-			arc[i] = new ArcCourbeClotho(rr);
+			arc[i] = new ArcCourbeStatique(rr);
 
 		Cinematique c = new Cinematique(0, 1000, Math.PI/2, false, 0, Speed.STANDARD.translationalSpeed);
 		log.debug("Initial : "+c);

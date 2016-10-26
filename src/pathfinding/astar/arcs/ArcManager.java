@@ -155,7 +155,7 @@ public class ArcManager implements Service, Configurable
 		if(v == VitesseCourbure.DIRECT_COURBE || v == VitesseCourbure.DIRECT_COURBE_REBROUSSE)
 		{
 //			log.debug("Recherche arc cubique");
-			ArcCourbeCubique tmp;
+			ArcCourbeDynamique tmp;
 			if(current.getArc() != null)
 				tmp = clotho.cubicInterpolation(
 						current.getArc().getLast(),
