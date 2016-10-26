@@ -57,33 +57,19 @@ public class ClothoidesComputer implements Service, Configurable
 	private BigDecimal x, y; // utilisés dans le calcul de trajectoire
 	private static final int S_MAX = 10; // courbure max qu'on puisse gérer
 	public static final double PRECISION_TRACE = 0.02; // précision du tracé, en m (distance entre deux points consécutifs). Plus le tracé est précis, plus on couvre de point une même distance
+	public static final double PRECISION_TRACE_1000 = PRECISION_TRACE*1000; // précision du tracé, en mm
 	private static final int INDICE_MAX = (int) (S_MAX / PRECISION_TRACE);
 	public static final int NB_POINTS = 5; // nombre de points dans un arc
 	public static final double DISTANCE_ARC_COURBE = PRECISION_TRACE * NB_POINTS * 1000; // en mm
 	static final double DISTANCE_ARC_COURBE_M = PRECISION_TRACE * NB_POINTS; // en m
 	public static final double d = PRECISION_TRACE * 1000 / 2; // utilisé pour la trajectoire circulaire
 
-	private double[] sinMap = new double[120];
-	private double[] cosMap = new double[120];
-	private double[] angleMap = new double[120];
-	
 	private double courbureMax;
 	
 	private Vec2RO[] trajectoire = new Vec2RO[2 * INDICE_MAX - 1];
 	
 	public ClothoidesComputer(Log log, CinemObsMM memory, PrintBuffer buffer)
 	{
-		for(int i = 0; i < 120; i++)
-		{
-			double courbure = (i-60) / 10;
-			double rayonCourbure = 1000. / courbure;
-			double cos = Math.sqrt(rayonCourbure * rayonCourbure - d * d) / rayonCourbure;
-			double sin = Math.abs(d / rayonCourbure);
-			sinMap[i] = 2 * sin * cos; // sin(a) devient sin(2a)
-			cosMap[i] = 2 * cos * cos - 1; // cos(a) devient cos(2a)
-			angleMap[i] = Math.asin(sinMap[i]);
-		}
-		
 		this.memory = memory;
 		this.log = log;
 		this.buffer = buffer;
@@ -226,15 +212,13 @@ public class ClothoidesComputer implements Service, Configurable
 			
 			while(t > 0.)
 			{
-				t = tnext;
-				
 				double tmp1 = 3*ax*t*t+2*bx*t+cx;
 				double tmp2 = 3*ay*t*t+2*by*t+cy;
 				
 				tnext -= PRECISION_TRACE*1000/(Math.sqrt(tmp1 * tmp1 + tmp2 * tmp2));
 
 				if(tnext < 0)
-					tnext = 0; // on veut finir à 0 exactement
+					tnext = 0; // le 0 ne doit pas être utilisé (c'est le dernier point de l'arc précédent)
 	
 				double t2 = t*t;
 				double x = ax*t*t2 + bx*t2 + cx*t + dx;
@@ -269,14 +253,17 @@ public class ClothoidesComputer implements Service, Configurable
 				lastOrientation = actuel.orientationGeometrique;				
 				// calcul de la longueur de l'arc
 				if(last != null)
+				{
 					longueur += actuel.getPosition().distanceFast(last.getPosition());
+				}
 				// TODO : faire un pas plus petit, puis sélectionner seulement ceux qui correspondent à la bonne précision
 
 				
 				out.addFirst(actuel); // vu qu'on génère la trajectoire cubique en partant de la fin
 				last = actuel;
 				first = false;
-			}
+				t = tnext;
+			}			
 			
 			// Parfois, l'interpolation cubique donne très peu de points (à cause du pas de t qui est une approximation)
 			// dans ce cas, on ignore l'arc
@@ -289,6 +276,10 @@ public class ClothoidesComputer implements Service, Configurable
 				continue;
 			}
 			
+			// si le premier point est trop proche du point de départ, on ne le met pas
+			if(out.getFirst().getPosition().squaredDistance(cinematiqueInitiale.getPosition()) < (PRECISION_TRACE*1000*PRECISION_TRACE*1000)*0.7)
+				out.removeFirst();
+
 			return new ArcCourbeDynamique(out, longueur, v.rebrousse);
 		}
 		return null;
@@ -382,6 +373,21 @@ public class ClothoidesComputer implements Service, Configurable
 
 	}
 	
+	/**
+	 * Calcul un point à partir de ces quelques paramètres
+	 * @param pointDepart
+	 * @param vitesse
+	 * @param sDepart
+	 * @param coeffMultiplicatif
+	 * @param i
+	 * @param baseOrientation
+	 * @param cos
+	 * @param sin
+	 * @param marcheAvant
+	 * @param vitesseTr
+	 * @param positionInitiale
+	 * @param c
+	 */
 	private void computePoint(int pointDepart, VitesseCourbure vitesse, double sDepart, double coeffMultiplicatif, int i, double baseOrientation, double cos, double sin, boolean marcheAvant, Speed vitesseTr, Vec2RO positionInitiale, CinematiqueObs c)
 	{
 		trajectoire[pointDepart + vitesse.squaredRootVitesse * (i + 1)].copy(c.getPositionEcriture());
@@ -391,9 +397,9 @@ public class ClothoidesComputer implements Service, Configurable
 		.rotate(cos, sin)
 		.plus(positionInitiale);
 
-			double orientationClotho = sDepart * sDepart;
-			if(!vitesse.positif)
-				orientationClotho = - orientationClotho;
+		double orientationClotho = sDepart * sDepart;
+		if(!vitesse.positif)
+			orientationClotho = - orientationClotho;
 			 			
 		c.orientationGeometrique = baseOrientation + orientationClotho;
 		c.courbureGeometrique = sDepart * vitesse.squaredRootVitesse;
@@ -403,23 +409,22 @@ public class ClothoidesComputer implements Service, Configurable
 
 		if(marcheAvant)
 		{
-		c.orientationReelle = c.orientationGeometrique;
-		c.courbureReelle = c.courbureGeometrique;
+			c.orientationReelle = c.orientationGeometrique;
+			c.courbureReelle = c.courbureGeometrique;
 		}
 		else
 		{
-		c.orientationReelle = c.orientationGeometrique + Math.PI;
-		c.courbureReelle = - c.courbureGeometrique;
+			c.orientationReelle = c.orientationGeometrique + Math.PI;
+			c.courbureReelle = - c.courbureGeometrique;
 		}
 		
 		c.enMarcheAvant = marcheAvant;
 		
 		// TODO : vitesse max dépend de la courbure !
 		c.vitesseMax = vitesseTr.translationalSpeed;
-			c.obstacle.update(c.getPosition(), c.orientationReelle);
+		c.obstacle.update(c.getPosition(), c.orientationReelle);
 	}
 
-	private Vec2RW deltaTmp = new Vec2RW();
 	private Vec2RW delta = new Vec2RW();
 	private Vec2RW centreCercle = new Vec2RW();
 	
@@ -441,25 +446,17 @@ public class ClothoidesComputer implements Service, Configurable
 		
 		centreCercle.setX(position.getX() + delta.getX());
 		centreCercle.setY(position.getY() + delta.getY());
-
 		
-		double cos = cosMap[(int)(courbure*10)+60];
-		double sin = sinMap[(int)(courbure*10)+60];
-		double angle = angleMap[(int)(courbure*10)+60];
-		double cosSauv = cos;
-		double sinSauv = sin;
-		sin = 0;
-		cos = 1;
+		double angle = PRECISION_TRACE * courbure;
+		
+		double cos = Math.cos(angle);
+		double sin = Math.sin(angle);
 		
 		for(int i = 0; i < NB_POINTS; i++)
 		{
-			double tmp = sin;
-			sin = sin * cosSauv + sinSauv * cos; // sin vaut sin(2a*(i+1))
-			cos = cos * cosSauv - tmp * sinSauv;
-			delta.copy(deltaTmp);
-			deltaTmp.rotate(cos, sin);
+			delta.rotate(cos, sin);
 			centreCercle.copy(modified.arcselems[i].getPositionEcriture());
-			modified.arcselems[i].getPositionEcriture().minus(deltaTmp);
+			modified.arcselems[i].getPositionEcriture().minus(delta);
 			modified.arcselems[i].orientationGeometrique = orientation + angle * (i + 1);
 			modified.arcselems[i].courbureGeometrique = courbure;
 
