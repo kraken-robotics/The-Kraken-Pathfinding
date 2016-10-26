@@ -33,7 +33,7 @@ public enum ConfigInfo {
 	/**
 	 * Infos sur le robot
 	 */
-	DILATATION_ROBOT_DSTARLITE(115), // dilatation des obstacles dans le D* Lite. Comme c'est une heuristique, on peut prendre plus petit que la vraie valeur
+	DILATATION_ROBOT_DSTARLITE(40), // dilatation des obstacles dans le D* Lite. Comme c'est une heuristique, on peut prendre plus petit que la vraie valeur
 	CENTRE_ROTATION_ROUE_X(204), // la position du centre de rotation des roues. Est utilisé pour la rotation des capteurs
 	CENTRE_ROTATION_ROUE_Y(64),
 	DEMI_LONGUEUR_NON_DEPLOYE_ARRIERE(80), // distance entre le centre du robot et le bord arrière du robot non-déployé

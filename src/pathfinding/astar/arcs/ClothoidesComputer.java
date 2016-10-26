@@ -57,12 +57,11 @@ public class ClothoidesComputer implements Service, Configurable
 	private BigDecimal x, y; // utilisés dans le calcul de trajectoire
 	private static final int S_MAX = 10; // courbure max qu'on puisse gérer
 	public static final double PRECISION_TRACE = 0.02; // précision du tracé, en m (distance entre deux points consécutifs). Plus le tracé est précis, plus on couvre de point une même distance
-	public static final double PRECISION_TRACE_1000 = PRECISION_TRACE*1000; // précision du tracé, en mm
+	public static final double PRECISION_TRACE_MM = PRECISION_TRACE * 1000; // précision du tracé, en mm
 	private static final int INDICE_MAX = (int) (S_MAX / PRECISION_TRACE);
 	public static final int NB_POINTS = 5; // nombre de points dans un arc
-	public static final double DISTANCE_ARC_COURBE = PRECISION_TRACE * NB_POINTS * 1000; // en mm
+	public static final double DISTANCE_ARC_COURBE = PRECISION_TRACE_MM * NB_POINTS; // en mm
 	static final double DISTANCE_ARC_COURBE_M = PRECISION_TRACE * NB_POINTS; // en m
-	public static final double d = PRECISION_TRACE * 1000 / 2; // utilisé pour la trajectoire circulaire
 
 	private double courbureMax;
 	
@@ -215,7 +214,7 @@ public class ClothoidesComputer implements Service, Configurable
 				double tmp1 = 3*ax*t*t+2*bx*t+cx;
 				double tmp2 = 3*ay*t*t+2*by*t+cy;
 				
-				tnext -= PRECISION_TRACE*1000/(Math.sqrt(tmp1 * tmp1 + tmp2 * tmp2));
+				tnext -= PRECISION_TRACE_MM / Math.sqrt(tmp1 * tmp1 + tmp2 * tmp2);
 
 				if(tnext < 0)
 					tnext = 0; // le 0 ne doit pas être utilisé (c'est le dernier point de l'arc précédent)
@@ -268,7 +267,7 @@ public class ClothoidesComputer implements Service, Configurable
 			// Parfois, l'interpolation cubique donne très peu de points (à cause du pas de t qui est une approximation)
 			// dans ce cas, on ignore l'arc
 
-			if(error || out.size() < (cinematiqueInitiale.getPosition().distanceFast(arrivee.getPosition()) / (1000 * PRECISION_TRACE))) // on essaye un autre alpha
+			if(error || out.size() < (cinematiqueInitiale.getPosition().distanceFast(arrivee.getPosition()) / PRECISION_TRACE_MM)) // on essaye un autre alpha
 			{
 				// on détruit les cinématiques qui ne seront pas utilisées
 				for(CinematiqueObs c : out)
@@ -277,7 +276,7 @@ public class ClothoidesComputer implements Service, Configurable
 			}
 			
 			// si le premier point est trop proche du point de départ, on ne le met pas
-			if(out.getFirst().getPosition().squaredDistance(cinematiqueInitiale.getPosition()) < (PRECISION_TRACE*1000*PRECISION_TRACE*1000)*0.7)
+			if(out.getFirst().getPosition().squaredDistance(cinematiqueInitiale.getPosition()) < (PRECISION_TRACE_MM * PRECISION_TRACE_MM)*0.7)
 				out.removeFirst();
 
 			return new ArcCourbeDynamique(out, longueur, v.rebrousse);
@@ -324,6 +323,7 @@ public class ClothoidesComputer implements Service, Configurable
 			courbure = 0;
 			orientation += Math.PI;
 		}
+		modified.rebrousse = vitesse.rebrousse;
 
 		boolean marcheAvant = vitesse.rebrousse ^ cinematiqueInitiale.enMarcheAvant;
 
@@ -369,7 +369,6 @@ public class ClothoidesComputer implements Service, Configurable
 			sDepart += vitesse.squaredRootVitesse * PRECISION_TRACE;
 			computePoint(pointDepart, vitesse, sDepart, coeffMultiplicatif, i, baseOrientation, cos, sin, marcheAvant, vitesseTr, cinematiqueInitiale.getPosition(), modified.arcselems[i]);
 		}
-		modified.rebrousse = vitesse.rebrousse;
 
 	}
 	
@@ -447,9 +446,9 @@ public class ClothoidesComputer implements Service, Configurable
 		centreCercle.setX(position.getX() + delta.getX());
 		centreCercle.setY(position.getY() + delta.getY());
 		
-		double angle = PRECISION_TRACE * courbure;
+		double angle = PRECISION_TRACE * courbure; // périmètre = angle * rayon
 		
-		double cos = Math.cos(angle);
+		double cos = Math.cos(angle); // l'angle de rotation autour du cercle est le même que l'angle dont le robot tourne
 		double sin = Math.sin(angle);
 		
 		for(int i = 0; i < NB_POINTS; i++)
@@ -491,7 +490,7 @@ public class ClothoidesComputer implements Service, Configurable
 
 		for(int i = 0; i < NB_POINTS; i++)
 		{
-			double distance = (i + 1) * PRECISION_TRACE * 1000;
+			double distance = (i + 1) * PRECISION_TRACE_MM;
 			modified.arcselems[i].getPositionEcriture().setX(position.getX() + distance * cos);
 			modified.arcselems[i].getPositionEcriture().setY(position.getY() + distance * sin);
 			modified.arcselems[i].orientationGeometrique = orientation;

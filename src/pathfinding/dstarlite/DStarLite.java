@@ -518,7 +518,7 @@ public class DStarLite implements Service, Configurable
 //		log.debug("Score : "+(erreurDistance + 5*erreurOrientation));
 
 		// il faut toujours majorer la vraie distance, afin de ne pas chercher tous les trajets possibles…
-		return 1.2*erreurDistance + 10*erreurOrientation;
+		return 1.1*erreurDistance + 10*erreurOrientation;
 	}
 
 	/**

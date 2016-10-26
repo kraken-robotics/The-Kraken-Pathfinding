@@ -304,6 +304,6 @@ public class ArcManager implements Service, Configurable
 	 */
 	public double heuristicDirect(Cinematique cinematique)
 	{
-		return 5*cinematique.getPosition().distanceFast(arrivee.getPosition());
+		return 3*cinematique.getPosition().distanceFast(arrivee.getPosition());
 	}
 }
