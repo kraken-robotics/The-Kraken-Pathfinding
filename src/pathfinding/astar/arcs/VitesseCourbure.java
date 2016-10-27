@@ -54,7 +54,7 @@ public enum VitesseCourbure
 //	DROITE_2_REBROUSSE(-9),
 	DROITE_3_REBROUSSE(-16);
 
-	public final int vitesse; // vitesse en en m^-1/s
+	public final int vitesse; // vitesse en (1/m)/m = 1/m^2
 	public final int squaredRootVitesse; // sqrt(abs(vitesse))
 	public final boolean positif;
 	public final boolean rebrousse;

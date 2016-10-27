@@ -62,9 +62,10 @@ public class ClothoidesComputer implements Service, Configurable
 	public static final int NB_POINTS = 5; // nombre de points dans un arc
 	public static final double DISTANCE_ARC_COURBE = PRECISION_TRACE_MM * NB_POINTS; // en mm
 	static final double DISTANCE_ARC_COURBE_M = PRECISION_TRACE * NB_POINTS; // en m
+	private static final double VITESSE_ROT_AX12 = 4; // en rad / s. Valeur du constructeur : 5
 
 	private double courbureMax;
-	
+	private double arcapprox;
 	private Vec2RO[] trajectoire = new Vec2RO[2 * INDICE_MAX - 1];
 	
 	public ClothoidesComputer(Log log, CinemObsMM memory, PrintBuffer buffer)
@@ -419,8 +420,7 @@ public class ClothoidesComputer implements Service, Configurable
 		
 		c.enMarcheAvant = marcheAvant;
 		
-		// TODO : vitesse max dépend de la courbure !
-		c.vitesseMax = vitesseTr.translationalSpeed;
+		c.vitesseMax = computeVitesseMax(vitesseTr.translationalSpeed, vitesse.vitesse);
 		c.obstacle.update(c.getPosition(), c.orientationReelle);
 	}
 
@@ -470,7 +470,6 @@ public class ClothoidesComputer implements Service, Configurable
 				modified.arcselems[i].courbureReelle = - modified.arcselems[i].courbureGeometrique;
  			}
 
-			// TODO : doit dépendre de la courbure !
  			modified.arcselems[i].vitesseMax = vitesseMax.translationalSpeed;
 			modified.arcselems[i].enMarcheAvant = enMarcheAvant;
 			modified.arcselems[i].obstacle.update(modified.arcselems[i].getPosition(), modified.arcselems[i].orientationReelle);
@@ -502,7 +501,6 @@ public class ClothoidesComputer implements Service, Configurable
  			else
 				modified.arcselems[i].orientationReelle = modified.arcselems[i].orientationGeometrique + Math.PI;
  			
- 			// TODO : doit dépendre de la courbure !
  			modified.arcselems[i].vitesseMax = vitesseMax.translationalSpeed;
 			modified.arcselems[i].enMarcheAvant = enMarcheAvant;
 			modified.arcselems[i].obstacle.update(modified.arcselems[i].getPosition(), modified.arcselems[i].orientationReelle);
@@ -513,6 +511,9 @@ public class ClothoidesComputer implements Service, Configurable
 	public void useConfig(Config config)
 	{
 		courbureMax = config.getDouble(ConfigInfo.COURBURE_MAX);
+		int tmpx = config.getInt(ConfigInfo.CENTRE_ROTATION_ROUE_X);
+		int tmpy = config.getInt(ConfigInfo.CENTRE_ROTATION_ROUE_Y);
+		arcapprox = Math.sqrt(tmpx*tmpx + tmpy*tmpy) / 1000;
 	}
 
 	/**
@@ -561,5 +562,17 @@ public class ClothoidesComputer implements Service, Configurable
         }
         return false;
     }
- 
+
+	/**
+	 * Calcule la vitesse translatoire maximale pour une vitesse de courbure donnée et la vitesse de rotation des servo des roues directrices
+	 * @param vitesseMaxDesiree
+	 * @param vitesseCourbure
+	 * @return
+	 */
+	private double computeVitesseMax(double vitesseMaxDesiree, double vitesseCourbure)
+	{
+		log.debug(vitesseMaxDesiree+" "+(vitesseCourbure / VITESSE_ROT_AX12 / arcapprox));
+		return Math.min(vitesseMaxDesiree, Math.abs(vitesseCourbure / VITESSE_ROT_AX12 / arcapprox));
+	}
+	
 }
