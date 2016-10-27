@@ -91,6 +91,7 @@ public class AStarCourbe implements Service, Configurable
 	private final PriorityQueue<AStarCourbeNode> openset = new PriorityQueue<AStarCourbeNode>(PointGridSpace.NB_POINTS, new AStarCourbeNodeComparator());
 	private Stack<ArcCourbe> pileTmp = new Stack<ArcCourbe>();
 	private LinkedList<CinematiqueObs> trajectory = new LinkedList<CinematiqueObs>();
+
 	/**
 	 * Constructeur du AStarCourbe
 	 */
@@ -144,10 +145,12 @@ public class AStarCourbe implements Service, Configurable
 			
 			// si on a déjà fait ce point ou un point très proche…
 			// exception si c'est un point d'arrivée
-			if(closedset.contains(current) && !arcmanager.isArrived(current))
+			if(!closedset.add(current) && !arcmanager.isArrived(current))
+			{
+				if(graphicTrajectory || graphicTrajectoryAll)
+					current.setDead();
 				continue;
-
-			closedset.add(current);
+			}
 
 			// ce calcul étant un peu lourd, on ne le fait que si le noeud a été choisi, et pas à la sélection des voisins (dans hasNext par exemple)
 			if(!arcmanager.isReachable(current, shoot))
@@ -157,17 +160,8 @@ public class AStarCourbe implements Service, Configurable
 			}
 			
 			// affichage
-			if(graphicTrajectory && current.getArc() != null)
-			{
-				Couleur c;
-				if(!sens.isOK(current.getArc().getLast().enMarcheAvant))
-					c = Couleur.TRAJECTOIRE_MAUVAIS_SENS;
-				else
-					c = Couleur.TRAJECTOIRE;
-				for(int i = 0; i < current.getArc().getNbPoints(); i++)
-					buffer.addSupprimable(new ObstacleCircular(current.getArc().getPoint(i).getPosition(), 4, c));
-				buffer.addSupprimable(current.getArc().getLast());
-			}
+			if(graphicTrajectory && !graphicTrajectoryAll)
+				buffer.addSupprimable(current);
 
 			// Si on est arrivé, on reconstruit le chemin
 			// On est arrivé seulement si on vient d'un arc cubique
@@ -239,17 +233,8 @@ public class AStarCourbe implements Service, Configurable
 				}
 				
 				// affichage
-				if(graphicTrajectoryAll && current.getArc() != null)
-				{
-					Couleur c;
-					if(!sens.isOK(successeur.getArc().getLast().enMarcheAvant))
-						c = Couleur.TRAJECTOIRE_MAUVAIS_SENS;
-					else
-						c = Couleur.TRAJECTOIRE;
-					for(int i = 0; i < successeur.getArc().getNbPoints(); i++)
-						buffer.addSupprimable(new ObstacleCircular(successeur.getArc().getPoint(i).getPosition(), 4, c));
-					buffer.addSupprimable(successeur.getArc().getLast());
-				}
+				if(graphicTrajectoryAll)
+					buffer.addSupprimable(successeur);
 				
 				heuristique = arcmanager.heuristicCostCourbe(successeur.state.robot.getCinematique(), sens);
 				if(heuristique == null)

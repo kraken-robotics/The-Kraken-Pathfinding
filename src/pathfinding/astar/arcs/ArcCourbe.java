@@ -17,9 +17,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 package pathfinding.astar.arcs;
 
+import java.awt.Graphics;
+
+import obstacles.types.ObstacleCircular;
+import graphic.Fenetre;
+import graphic.printable.Couleur;
+import graphic.printable.Layer;
+import graphic.printable.Printable;
 import config.Config;
 import config.ConfigInfo;
 import robot.CinematiqueObs;
+import robot.RobotReal;
 
 /**
  * Un arc de trajectoire courbe. Juste une succession de points.
@@ -27,7 +35,7 @@ import robot.CinematiqueObs;
  *
  */
 
-public abstract class ArcCourbe
+public abstract class ArcCourbe implements Printable
 {
 
 	public boolean rebrousse; // cet arc commence par un rebroussement, c'est-à-dire que la marche avant change
@@ -65,6 +73,20 @@ public abstract class ArcCourbe
 	public static void useConfig(Config config)
 	{
 		tempsRebroussement = config.getInt(ConfigInfo.TEMPS_REBROUSSEMENT);
+	}
+
+
+	@Override
+	public void print(Graphics g, Fenetre f, RobotReal robot)
+	{
+		for(int i = 0; i < getNbPoints(); i++)
+			new ObstacleCircular(getPoint(i).getPosition(), 4, Couleur.TRAJECTOIRE).print(g, f, robot);
+	}
+
+	@Override	
+	public Layer getLayer()
+	{
+		return Couleur.TRAJECTOIRE.l;
 	}
 
 }

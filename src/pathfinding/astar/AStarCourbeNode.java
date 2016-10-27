@@ -17,6 +17,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 package pathfinding.astar;
 
+import graphic.Fenetre;
+import graphic.printable.Couleur;
+import graphic.printable.Layer;
+import graphic.printable.Printable;
+
+import java.awt.Color;
+import java.awt.Graphics;
+
 import memory.Memorizable;
 import pathfinding.ChronoGameState;
 import pathfinding.astar.arcs.ArcCourbe;
@@ -30,7 +38,7 @@ import robot.RobotReal;
  *
  */
 
-public class AStarCourbeNode implements Memorizable
+public class AStarCourbeNode implements Memorizable, Printable
 {
 	public ChronoGameState state;
 	public double g_score; // distance du point de départ à ce point
@@ -39,6 +47,7 @@ public class AStarCourbeNode implements Memorizable
 	public final ArcCourbeStatique cameFromArc;
 	public ArcCourbeDynamique cameFromArcCubique = null;
 	private int indiceMemoryManager;
+	private boolean dead = false;
 	
 	public AStarCourbeNode(ChronoGameState state, RobotReal r)
 	{
@@ -98,4 +107,35 @@ public class AStarCourbeNode implements Memorizable
 		modified.parent = null;
 	}
 
+	@Override
+	public void print(Graphics g, Fenetre f, RobotReal robot)
+	{
+		ArcCourbe a = getArc();
+		if(a != null)
+		{
+			a.print(g, f, robot);
+			double h = f_score;
+			double seuil = 5000;
+			if(h > seuil)
+				h = seuil;
+			
+			if(dead)
+				g.setColor(Couleur.BLANC.couleur);
+			else
+				g.setColor(new Color((int)(h*255/seuil), 0, (int)(255-h*255/seuil)));
+
+			a.getLast().print(g, f, robot);
+		}
+	}
+
+	@Override
+	public Layer getLayer()
+	{
+		return Couleur.TRAJECTOIRE.l;
+	}
+
+	public void setDead()
+	{
+		dead = true;
+	}
 }

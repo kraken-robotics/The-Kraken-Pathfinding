@@ -20,7 +20,6 @@ package robot;
 import java.awt.Graphics;
 
 import graphic.Fenetre;
-import graphic.printable.Couleur;
 import graphic.printable.Layer;
 import graphic.printable.Printable;
 import pathfinding.dstarlite.gridspace.PointGridSpace;
@@ -102,19 +101,35 @@ public class Cinematique implements Printable
 	@Override
 	public int hashCode() // TODO
 	{
+		// Il faut fusionner les points trop proches pour pas que le PF ne s'entête dans des coins impossibles
+		// Par contre, il ne faut pas trop fusionner sinon on ne verra pas les chemins simples et ne restera que les compliqués
+		
 		int codeSens = 0;
 		if(enMarcheAvant)
 			codeSens = 1;
-		int codeOrientation;
+		int codeCourbure, codeOrientation;
+		if(courbureGeometrique < -4)
+			codeCourbure = 0;
+		else if(courbureGeometrique < -2)
+			codeCourbure = 1;
+		else if(courbureGeometrique < 0)
+			codeCourbure = 2;
+		else if(courbureGeometrique < 2)
+			codeCourbure = 3;
+		else if(courbureGeometrique < 4)
+			codeCourbure = 4;
+		else
+			codeCourbure = 5;
+		
 //		System.out.println("codeCourbure : "+codeCourbure+", "+courbure);
 		orientationGeometrique = orientationGeometrique % (2*Math.PI);
 		if(orientationGeometrique < 0)
 			orientationGeometrique += 2*Math.PI;
 		
-		codeOrientation = (int)(orientationGeometrique / (Math.PI / 6));
+		codeOrientation = (int)(orientationGeometrique / (Math.PI / 16));
 //		System.out.println("codeOrientation : "+codeOrientation+" "+orientation);
 		
-		return (((((int)(position.getX()) + 1500) / 30) * 200 + (int)(position.getY()) / 30) * 2 + codeSens) * 16 + codeOrientation;
+		return ((((((int)(position.getX()) + 1500) / 10) * 200 + (int)(position.getY()) / 10) * 2 + codeSens) * 16 + codeOrientation) * 6 + codeCourbure;
 	}
 	
 	@Override
@@ -147,7 +162,6 @@ public class Cinematique implements Printable
 	@Override
 	public void print(Graphics g, Fenetre f, RobotReal robot)
 	{
-		g.setColor(Couleur.CINEMATIQUE.couleur);
 		double n = PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS/2;
 		Vec2RW point1 = new Vec2RW(n, 0), point2 = new Vec2RW(-n/2, n/2), point3 = new Vec2RW(-n/2, -n/2);
 		point1.rotate(orientationGeometrique).plus(position);

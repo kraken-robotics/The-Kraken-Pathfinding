@@ -221,7 +221,7 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 */		}
 	
 		
-		Assert.assertEquals(0, arc[nbArc-1].arcselems[arc[nbArc-1].arcselems.length - 1].getPosition().distance(new Vec2RO(-204.49063476285147,1699.4301324023606)), 0.1);
+		Assert.assertEquals(0, arc[nbArc-1].arcselems[arc[nbArc-1].arcselems.length - 1].getPosition().distance(new Vec2RO(-241.15808562189363,1723.4011449205677)), 0.1);
     }
 	/*
 	@Test
@@ -244,7 +244,7 @@ public class JUnit_AStarCourbe extends JUnit_Test {
     public void test_recherche_manoeuvre() throws Exception
     {
 		long avant = System.nanoTime();
-		Cinematique depart = new Cinematique(-950, 650, 0, true, 0, Speed.STANDARD.translationalSpeed);
+		Cinematique depart = new Cinematique(-900, 650, 0, true, 0, Speed.STANDARD.translationalSpeed);
 		robot.setCinematique(depart);
 		Cinematique c = new Cinematique(0, 1200, Math.PI, false, 0, Speed.STANDARD.translationalSpeed);
 		astar.computeNewPath(c, false);
