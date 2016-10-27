@@ -19,7 +19,6 @@ package pathfinding.astar.arcs;
 
 import config.Config;
 import config.ConfigInfo;
-import config.Configurable;
 import robot.CinematiqueObs;
 
 /**

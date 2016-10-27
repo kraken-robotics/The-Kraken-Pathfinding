@@ -40,6 +40,7 @@ public class Config implements Service
 	private String name_config_file = "config.ini";
 	private volatile Properties properties = new Properties();
 	private Log log;
+	private boolean graphicEnable;
 	
 	private boolean configIniCharge = false;
 	
@@ -59,6 +60,7 @@ public class Config implements Service
 			System.out.println("Utilisation des valeurs par défaut.");
 		}
 		completeConfig();
+		graphicEnable = Boolean.parseBoolean(getString(ConfigInfo.GRAPHIC_ENABLE));
 	}
 
 	/**
@@ -122,6 +124,10 @@ public class Config implements Service
 	 */
 	public boolean getBoolean(ConfigInfo nom)
 	{
+		// le booléen GRAPHIC_ENABLE peut désactiver tout ce qui est graphique
+		if(nom.name().startsWith("GRAPHIC_"))
+			return graphicEnable && Boolean.parseBoolean(getString(nom));
+		
 		return Boolean.parseBoolean(getString(nom));
 	}
 	

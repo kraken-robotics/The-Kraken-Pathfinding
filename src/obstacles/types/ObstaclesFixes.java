@@ -18,7 +18,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 package obstacles.types;
 
 import graphic.printable.Couleur;
-import graphic.printable.Layer;
 import utils.Vec2RO;
 
 /**

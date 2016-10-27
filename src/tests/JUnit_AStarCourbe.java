@@ -19,7 +19,6 @@ package tests;
 
 import obstacles.types.ObstacleCircular;
 import obstacles.types.ObstacleRectangular;
-import obstacles.types.ObstacleRobot;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -27,7 +26,6 @@ import org.junit.Test;
 
 import config.ConfigInfo;
 import graphic.PrintBuffer;
-import pathfinding.DirectionStrategy;
 import pathfinding.SensFinal;
 import pathfinding.astar.AStarCourbe;
 import pathfinding.astar.arcs.ArcCourbeStatique;

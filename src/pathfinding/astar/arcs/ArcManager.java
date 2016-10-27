@@ -39,8 +39,6 @@ import graphic.PrintBuffer;
 import obstacles.types.ObstacleArcCourbe;
 import obstacles.types.ObstaclesFixes;
 import utils.Log;
-import utils.Vec2RO;
-import utils.Vec2RW;
 
 /**
  * Réalise des calculs pour l'A* courbe.
