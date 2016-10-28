@@ -32,7 +32,7 @@ public enum VitesseCourbure
 	DIRECT_COURBE(0),
 	DIRECT_COURBE_REBROUSSE(0),
 	
-//	RAMENE_VOLANT(4), // ramène le volant au centre
+	RAMENE_VOLANT(4), // ramène le volant au centre
 	
 	GAUCHE_0(1),
 	GAUCHE_1(4),
@@ -58,10 +58,12 @@ public enum VitesseCourbure
 	public final int squaredRootVitesse; // sqrt(abs(vitesse))
 	public final boolean positif;
 	public final boolean rebrousse;
+	public final boolean ramene;
 	
 	private VitesseCourbure(int vitesse)
 	{
 		this.rebrousse = toString().contains("REBROUSSE");
+		this.ramene = toString().startsWith("RAMENE_");
 		this.vitesse = vitesse;
 		this.positif = vitesse >= 0;
 		

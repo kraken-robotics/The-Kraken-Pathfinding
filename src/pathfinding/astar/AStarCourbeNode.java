@@ -44,14 +44,14 @@ public class AStarCourbeNode implements Memorizable, Printable
 	public double g_score; // distance du point de départ à ce point
 	public double f_score; // g_score + heuristique = meilleure distance qu'on peut espérer avec ce point
 	public AStarCourbeNode parent;
-	public final ArcCourbeStatique cameFromArc;
-	public ArcCourbeDynamique cameFromArcCubique = null;
+	public final ArcCourbeStatique cameFromArcStatique;
+	public ArcCourbeDynamique cameFromArcDynamique = null;
 	private int indiceMemoryManager;
 	private boolean dead = false;
 	
 	public AStarCourbeNode(ChronoGameState state, RobotReal r)
 	{
-		cameFromArc = new ArcCourbeStatique(r);
+		cameFromArcStatique = new ArcCourbeStatique(r);
 		this.state = state;
 	}
 	
@@ -59,9 +59,9 @@ public class AStarCourbeNode implements Memorizable, Printable
 	{
 		if(parent == null)
 			return null;
-		if(cameFromArcCubique != null)
-			return cameFromArcCubique;
-		return cameFromArc;
+		if(cameFromArcDynamique != null)
+			return cameFromArcDynamique;
+		return cameFromArcStatique;
 	}
 	
 	public void init()
@@ -100,7 +100,7 @@ public class AStarCourbeNode implements Memorizable, Printable
 	 */
 	public void copyReconstruct(AStarCourbeNode modified)
 	{
-		modified.cameFromArcCubique = null;
+		modified.cameFromArcDynamique = null;
 		modified.g_score = g_score;
 		modified.f_score = f_score;
 		state.copyAStarCourbe(modified.state);

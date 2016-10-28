@@ -119,7 +119,7 @@ public class AStarCourbe implements Service, Configurable
 	{
 		trajetDeSecours = null;
 		depart.parent = null;
-		depart.cameFromArcCubique = null;
+		depart.cameFromArcDynamique = null;
 		depart.g_score = 0;
 		Double heuristique;
 		heuristique = arcmanager.heuristicCostCourbe((depart.state.robot).getCinematique(), sens);
@@ -213,7 +213,7 @@ public class AStarCourbe implements Service, Configurable
 				}
 
 				successeur = memorymanager.getNewNode();
-				successeur.cameFromArcCubique = null;
+				successeur.cameFromArcDynamique = null;
 
 				// S'il y a un problème, on passe au suivant (interpolation cubique impossible par exemple)
 				if(!arcmanager.next(successeur, vitesseMax))
@@ -265,8 +265,8 @@ public class AStarCourbe implements Service, Configurable
  	
 	private void destroy(AStarCourbeNode n)
 	{
-		if(n.cameFromArcCubique != null)
-			cinemMemory.destroyNode(n.cameFromArcCubique);
+		if(n.cameFromArcDynamique != null)
+			cinemMemory.destroyNode(n.cameFromArcDynamique);
 		memorymanager.destroyNode(n);
 	}
 	

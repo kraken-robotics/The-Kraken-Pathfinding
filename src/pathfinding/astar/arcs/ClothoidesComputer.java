@@ -26,7 +26,9 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 
 import memory.CinemObsMM;
 import config.Config;
@@ -62,10 +64,10 @@ public class ClothoidesComputer implements Service, Configurable
 	public static final int NB_POINTS = 5; // nombre de points dans un arc
 	public static final double DISTANCE_ARC_COURBE = PRECISION_TRACE_MM * NB_POINTS; // en mm
 	static final double DISTANCE_ARC_COURBE_M = PRECISION_TRACE * NB_POINTS; // en m
-	private static final double VITESSE_ROT_AX12 = 4; // en rad / s. Valeur du constructeur : 5
+//	private static final double VITESSE_ROT_AX12 = 4; // en rad / s. Valeur du constructeur : 5
 
 	private double courbureMax;
-	private double distanceArriereAuRoues; // la distance entre la position du robot et ses roues directrices
+//	private double distanceArriereAuRoues; // la distance entre la position du robot et ses roues directrices
 	private Vec2RO[] trajectoire = new Vec2RO[2 * INDICE_MAX - 1];
 	
 	public ClothoidesComputer(Log log, CinemObsMM memory, PrintBuffer buffer)
@@ -373,6 +375,69 @@ public class ClothoidesComputer implements Service, Configurable
 	}
 	
 	/**
+	 * Construit un arc courbe dynamique qui ramène la courbure à 0
+	 * @param position
+	 * @param orientation
+	 * @param courbure
+	 * @param vitesseTr
+	 * @param modified
+	 * @param enMarcheAvant
+	 * @param vitesse
+	 * @return 
+	 */
+	public final ArcCourbeDynamique getTrajectoireRamene(Cinematique cinematiqueInitiale, VitesseCourbure vitesse, Speed vitesseMax)
+	{
+		double courbure = cinematiqueInitiale.courbureGeometrique;
+		double orientation = cinematiqueInitiale.orientationGeometrique;
+
+		boolean marcheAvant = cinematiqueInitiale.enMarcheAvant;
+
+		// Gestion de la vitesse en marche arrière
+		Speed vitesseTr = vitesseMax;
+		if(!marcheAvant)
+			vitesseTr = Speed.values()[vitesseMax.ordinal()+1];
+
+		double coeffMultiplicatif = 1. / vitesse.squaredRootVitesse;
+		double sDepart = courbure / vitesse.squaredRootVitesse; // sDepart peut parfaitement être négatif
+		if(courbure > 0)
+			sDepart = -sDepart;
+		int pointDepart = (int) ((sDepart / PRECISION_TRACE) + INDICE_MAX - 1 + 0.5); // le 0.5 vient du fait qu'on fait ici un arrondi
+		
+		if(pointDepart < 0 || pointDepart >= trajectoire.length)
+			log.critical("Sorti de la clothoïde précalculée !");
+		
+		double orientationClothoDepart = sDepart * sDepart; // orientation au départ
+		if(courbure > 0)
+			orientationClothoDepart = - orientationClothoDepart;
+			
+		double baseOrientation = orientation - orientationClothoDepart;
+		double cos = Math.cos(baseOrientation);
+		double sin = Math.sin(baseOrientation);
+
+//		for(int i = 0; i < NB_POINTS; i++)
+//			log.debug("Clotho : "+trajectoire[vitesse.squaredRootVitesse * (i + 1)]);
+	
+		// le premier point n'est pas position, mais le suivant
+		// (afin de ne pas avoir de doublon quand on enchaîne les arcs, entre le dernier point de l'arc t et le premier de l'arc t+1)		
+		double sDepartPrecedent;
+		int i = 0;
+		List<CinematiqueObs> out = new ArrayList<CinematiqueObs>();
+		while(true)
+		{
+			sDepartPrecedent = sDepart;
+			sDepart += vitesse.squaredRootVitesse * PRECISION_TRACE;
+			if(Math.abs(sDepart) > Math.abs(sDepartPrecedent))
+				break;
+			CinematiqueObs obs = memory.getNewNode();
+			out.add(obs);
+			computePoint(pointDepart, vitesse, sDepart, coeffMultiplicatif, i, baseOrientation, cos, sin, marcheAvant, vitesseTr, cinematiqueInitiale.getPosition(), obs);
+			i++;
+		}
+		
+		return new ArcCourbeDynamique(out, i*PRECISION_TRACE_MM, false);
+	}
+	
+	/**
 	 * Calcul un point à partir de ces quelques paramètres
 	 * @param pointDepart
 	 * @param vitesse
@@ -510,9 +575,9 @@ public class ClothoidesComputer implements Service, Configurable
 	public void useConfig(Config config)
 	{
 		courbureMax = config.getDouble(ConfigInfo.COURBURE_MAX);
-		int tmpx = config.getInt(ConfigInfo.CENTRE_ROTATION_ROUE_X);
-		int tmpy = config.getInt(ConfigInfo.CENTRE_ROTATION_ROUE_Y);
-		distanceArriereAuRoues = Math.sqrt(tmpx*tmpx + tmpy*tmpy) / 1000;
+//		int tmpx = config.getInt(ConfigInfo.CENTRE_ROTATION_ROUE_X);
+//		int tmpy = config.getInt(ConfigInfo.CENTRE_ROTATION_ROUE_Y);
+//		distanceArriereAuRoues = Math.sqrt(tmpx*tmpx + tmpy*tmpy) / 1000;
 	}
 
 	/**

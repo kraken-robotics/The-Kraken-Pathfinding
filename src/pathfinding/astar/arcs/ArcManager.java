@@ -154,41 +154,43 @@ public class ArcManager implements Service, Configurable
 		{
 //			log.debug("Recherche arc cubique");
 			ArcCourbeDynamique tmp;
-			if(current.getArc() != null)
-				tmp = clotho.cubicInterpolation(
-						current.getArc().getLast(),
-						arrivee,
-						vitesseMax,
-						v);
-			else
-				tmp = clotho.cubicInterpolation(
-						current.state.robot,
-						arrivee,
-						vitesseMax,
-						v);
+			tmp = clotho.cubicInterpolation(
+					current.state.robot.getCinematique(),
+					arrivee,
+					vitesseMax,
+					v);
 			if(tmp == null)
 			{
 //				log.debug("Interpolation impossible");
 				return false;
 			}
 
-			successeur.cameFromArcCubique = tmp;
+			successeur.cameFromArcDynamique = tmp;
+		}
+		
+		/**
+		 * Si on veut ramener le volant au milieu
+		 */
+		else if(v.ramene)
+		{
+			ArcCourbeDynamique tmp = clotho.getTrajectoireRamene(
+					successeur.state.robot.getCinematique(),
+					v,
+					vitesseMax);
+			if(tmp.getNbPoints() == 0)
+				return false;
+			successeur.cameFromArcDynamique = tmp;
 		}
 		
 		/**
 		 * Si on fait une interpolation par clothoïde
 		 */
-		else if(current.parent != null)
+		else
 			clotho.getTrajectoire(
-					current.cameFromArc,
+					successeur.state.robot.getCinematique(),
 					v,
 					vitesseMax,
-					successeur.cameFromArc);
-		else // pas de prédécesseur
-			clotho.getTrajectoire(successeur.state.robot,
-					v,
-					vitesseMax,
-					successeur.cameFromArc);
+					successeur.cameFromArcStatique);
 
 		return true;
     }
@@ -244,11 +246,19 @@ public class ArcManager implements Service, Configurable
     	
     	// TODO
     	double courbureFuture = current.state.robot.getCinematique().courbureGeometrique + vitesse.vitesse * ClothoidesComputer.DISTANCE_ARC_COURBE_M;
-    	if(courbureFuture >= -courbureMax && courbureFuture <= courbureMax)
-    		return true;
+    	if(!(courbureFuture >= -courbureMax && courbureFuture <= courbureMax))
+    	{
+//        	log.debug(vitesse+" n'est acceptable (courbure trop grande");
+    		return false;
+    	}
+    	
+    	if(vitesse.ramene && Math.abs(current.state.robot.getCinematique().courbureGeometrique) < 0.1)
+    	{
+//    		log.debug("Ne peut pas ramener le volant si la courbure est déjà nulle…");
+    		return false;
+    	}
 
-//    	log.debug(vitesse+" n'est acceptable (courbure trop grande");
-		return false;
+		return true;
     }
     
     /**
