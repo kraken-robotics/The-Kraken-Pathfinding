@@ -65,7 +65,7 @@ public class ClothoidesComputer implements Service, Configurable
 	private static final double VITESSE_ROT_AX12 = 4; // en rad / s. Valeur du constructeur : 5
 
 	private double courbureMax;
-	private double arcapprox;
+	private double distanceArriereAuRoues; // la distance entre la position du robot et ses roues directrices
 	private Vec2RO[] trajectoire = new Vec2RO[2 * INDICE_MAX - 1];
 	
 	public ClothoidesComputer(Log log, CinemObsMM memory, PrintBuffer buffer)
@@ -236,7 +236,6 @@ public class ClothoidesComputer implements Service, Configurable
 						v.rebrousse ^ cinematiqueInitiale.enMarcheAvant,
 						1000*(vx * acy - vy * acx) / Math.pow(vx*vx + vy*vy, 1.5), // formule de la courbure d'une courbe paramétrique
 						vitesse.translationalSpeed);
-				// TODO vitesse
 //				log.debug(t);
 				
 				// Il faut faire attention à ne pas dépasser la coubure maximale !
@@ -420,7 +419,7 @@ public class ClothoidesComputer implements Service, Configurable
 		
 		c.enMarcheAvant = marcheAvant;
 		
-		c.vitesseMax = computeVitesseMax(vitesseTr.translationalSpeed, vitesse.vitesse);
+		c.vitesseMax = vitesseTr.translationalSpeed; //computeVitesseMax(vitesseTr.translationalSpeed, vitesse.vitesse);
 		c.obstacle.update(c.getPosition(), c.orientationReelle);
 	}
 
@@ -513,7 +512,7 @@ public class ClothoidesComputer implements Service, Configurable
 		courbureMax = config.getDouble(ConfigInfo.COURBURE_MAX);
 		int tmpx = config.getInt(ConfigInfo.CENTRE_ROTATION_ROUE_X);
 		int tmpy = config.getInt(ConfigInfo.CENTRE_ROTATION_ROUE_Y);
-		arcapprox = Math.sqrt(tmpx*tmpx + tmpy*tmpy) / 1000;
+		distanceArriereAuRoues = Math.sqrt(tmpx*tmpx + tmpy*tmpy) / 1000;
 	}
 
 	/**
@@ -565,14 +564,15 @@ public class ClothoidesComputer implements Service, Configurable
 
 	/**
 	 * Calcule la vitesse translatoire maximale pour une vitesse de courbure donnée et la vitesse de rotation des servo des roues directrices
+	 * La formule n'est pas exacte… mais ça suffit (la formule ne fonctionne plus pour des courbures très grandes)
+	 * Pour le moon-rover, il n'y aura jamais de problème
 	 * @param vitesseMaxDesiree
 	 * @param vitesseCourbure
 	 * @return
 	 */
-	private double computeVitesseMax(double vitesseMaxDesiree, double vitesseCourbure)
+/*	private double computeVitesseMax(double vitesseMaxDesiree, double vitesseCourbure)
 	{
-		log.debug(vitesseMaxDesiree+" "+(vitesseCourbure / VITESSE_ROT_AX12 / arcapprox));
-		return Math.min(vitesseMaxDesiree, Math.abs(vitesseCourbure / VITESSE_ROT_AX12 / arcapprox));
-	}
+		return Math.min(vitesseMaxDesiree, Math.abs(vitesseCourbure / VITESSE_ROT_AX12 / distanceArriereAuRoues));
+	}*/
 	
 }
