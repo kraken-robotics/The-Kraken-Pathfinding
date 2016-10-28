@@ -627,6 +627,8 @@ public class ClothoidesComputer implements Service, Configurable
         return false;
     }
 
+	// TODO
+	
 	/**
 	 * Calcule la vitesse translatoire maximale pour une vitesse de courbure donnée et la vitesse de rotation des servo des roues directrices
 	 * La formule n'est pas exacte… mais ça suffit (la formule ne fonctionne plus pour des courbures très grandes)

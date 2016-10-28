@@ -239,7 +239,7 @@ public class ArcManager implements Service, Configurable
 			
 			// h vaut donc l'heuristique de current
 			double h = current.f_score - current.g_score;
-			if(h > 250)
+			if(h > 1000)
 //				log.debug(vitesse+" n'est pas acceptable (on est trop loin)");
 				return false;
 		}
@@ -252,9 +252,10 @@ public class ArcManager implements Service, Configurable
     		return false;
     	}
     	
-    	if(vitesse.ramene && Math.abs(current.state.robot.getCinematique().courbureGeometrique) < 0.1)
+    	double courbure = Math.abs(current.state.robot.getCinematique().courbureGeometrique);
+    	if(vitesse.ramene && (courbure < 0.1 || courbure > 3))
     	{
-//    		log.debug("Ne peut pas ramener le volant si la courbure est déjà nulle…");
+//    		log.debug("Ne peut pas ramener le volant si la courbure est déjà nulle ou bien trop grande…");
     		return false;
     	}
 

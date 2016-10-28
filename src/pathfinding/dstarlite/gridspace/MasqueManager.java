@@ -60,7 +60,7 @@ public class MasqueManager implements Service, Configurable
 	public void useConfig(Config config)
 	{
 		printObsCapteurs = config.getBoolean(ConfigInfo.GRAPHIC_D_STAR_LITE);
-		int rayonRobot = config.getInt(ConfigInfo.DILATATION_ROBOT_DSTARLITE); // l'obstacle du D* Lite doit être dilaté du rayon du robot
+		int rayonRobot = config.getInt(ConfigInfo.DILATATION_ROBOT_ENNEMI_DSTARLITE); // l'obstacle du D* Lite doit être dilaté
 		int rayonEnnemi = config.getInt(ConfigInfo.RAYON_ROBOT_ADVERSE);
 		int rayonPoint = (int) Math.round((rayonEnnemi + rayonRobot) / PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS);
 		int tailleMasque = 2*(rayonPoint+1)+1;

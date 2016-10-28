@@ -34,6 +34,7 @@ public enum ConfigInfo {
 	 * Infos sur le robot
 	 */
 	DILATATION_ROBOT_DSTARLITE(40), // dilatation des obstacles dans le D* Lite. Comme c'est une heuristique, on peut prendre plus petit que la vraie valeur
+	DILATATION_ROBOT_ENNEMI_DSTARLITE(130), // dilatation du robot ennemi dans le calcul des masques
 	CENTRE_ROTATION_ROUE_X(204), // la position du centre de rotation des roues. Est utilisé pour la rotation des capteurs
 	CENTRE_ROTATION_ROUE_Y(64),
 	DEMI_LONGUEUR_NON_DEPLOYE_ARRIERE(80), // distance entre le centre du robot et le bord arrière du robot non-déployé
@@ -111,22 +112,22 @@ public enum ConfigInfo {
 	GRAPHIC_ENABLE(false), // désactive tout affichage si faux (empêche le thread d'affichage de se lancer)
 	GRAPHIC_D_STAR_LITE(false), // affiche les calculs du D* Lite
 	GRAPHIC_D_STAR_LITE_FINAL(false), // affiche l'itinéraire final du D* Lite
-	GRAPHIC_PROXIMITY_OBSTACLES(false), // affiche les obstacles de proximité
+	GRAPHIC_PROXIMITY_OBSTACLES(true), // affiche les obstacles de proximité
 	GRAPHIC_TRAJECTORY(false), // affiche les trajectoires temporaires
 	GRAPHIC_TRAJECTORY_ALL(false), // affiche TOUTES les trajectoires temporaires
-	GRAPHIC_TRAJECTORY_FINAL(false), // affiche les trajectoires
-	GRAPHIC_FIXED_OBSTACLES(false), // affiche les obstacles fixes
-	GRAPHIC_GAME_ELEMENTS(false), // affiche les éléments de jeux
+	GRAPHIC_TRAJECTORY_FINAL(true), // affiche les trajectoires
+	GRAPHIC_FIXED_OBSTACLES(true), // affiche les obstacles fixes
+	GRAPHIC_GAME_ELEMENTS(true), // affiche les éléments de jeux
 	GRAPHIC_ROBOT_COLLISION(false), // affiche les obstacles du robot lors de la vérification des collisions
 	GRAPHIC_BACKGROUND_PATH("background-2017-color.png"), // affiche d'image de la table
 	GRAPHIC_ROBOT_PATH("robot_sans_roues_720.png"), // image du robot sans les roues
 	GRAPHIC_ROBOT_ROUE_GAUCHE_PATH("robot_roue_gauche_720.png"), // image de la roue gauche
 	GRAPHIC_ROBOT_ROUE_DROITE_PATH("robot_roue_droite_720.png"), // image de la roue droite
 	GRAPHIC_PRODUCE_GIF(false), // produit un gif ?
-	GRAPHIC_BACKGROUND(false), // affiche d'image de la table
+	GRAPHIC_BACKGROUND(true), // affiche d'image de la table
 	GRAPHIC_SIZE_X(1000), // taille par défaut (sans image) de la fenêtre
 	GRAPHIC_ALL_OBSTACLES(false), // affiche absolument tous les obstacles créés
-	GRAPHIC_ROBOT_AND_SENSORS(false), // affiche le robot et ses capteurs
+	GRAPHIC_ROBOT_AND_SENSORS(true), // affiche le robot et ses capteurs
 
 	/**
 	 * Config dynamique

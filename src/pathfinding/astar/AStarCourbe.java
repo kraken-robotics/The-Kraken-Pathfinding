@@ -25,7 +25,6 @@ import java.util.Stack;
 
 import memory.NodeMM;
 import memory.CinemObsMM;
-import obstacles.types.ObstacleCircular;
 import pathfinding.DirectionStrategy;
 import pathfinding.RealGameState;
 import pathfinding.SensFinal;
@@ -40,7 +39,6 @@ import config.Configurable;
 import container.Service;
 import exceptions.PathfindingException;
 import graphic.PrintBuffer;
-import graphic.printable.Couleur;
 import robot.Cinematique;
 import robot.CinematiqueObs;
 import robot.Speed;

@@ -51,6 +51,8 @@ import graphic.printable.Couleur;
 
 public class DStarLite implements Service, Configurable
 {
+	// TODO : éléments de jeu comme obstacles
+	
 	protected Log log;
 	private GridSpace gridspace;
 	private PointGridSpaceManager pointManager;
@@ -517,10 +519,16 @@ public class DStarLite implements Service, Configurable
 //		log.debug("erreurDistance : "+erreurDistance);
 //		log.debug("Score : "+(erreurDistance + 5*erreurOrientation));
 
+		// on doit se retourner ? alors on l'encourage à tourner
+//		if(erreurOrientationReelle > Math.PI/2 && erreurDistance > 100)
+//			return 500 + 1.1*erreurDistance - Math.abs(30*c.courbureReelle);
+		
+//		log.debug(erreurDistance+" "+erreurOrientation+" "+erreurCourbure);
+		
 		// il faut toujours majorer la vraie distance, afin de ne pas chercher tous les trajets possibles…
 		// le poids de l'erreur d'orientation doit rester assez faible. Car vouloir trop coller à l'orientation, c'est risquer d'avoir une courbure impossible…
 		// on cherche une faible courbure. ça évite les trajectoires complexes
-		return 1.1*erreurDistance + 10*erreurOrientation + Math.abs(10*c.courbureReelle);
+		return 1.1*erreurDistance + 5*erreurOrientation + Math.abs(2*c.courbureReelle);
 	}
 
 	/**
@@ -600,6 +608,7 @@ public class DStarLite implements Service, Configurable
 			DStarLiteNode voisin = getFromMemoryUpdated(pointManager.getGridPointVoisin(p, d));
 			if(voisin == null)
 				continue;
+			// TODO : vérifier si ce cas arrive souvent
 			int scoreVoisin = voisin.rhs;
 			// ce devrait être équivalent
 			double s = Math.signum(score-scoreVoisin);
