@@ -66,6 +66,7 @@ public class AStarCourbe implements Service, Configurable
 	private boolean graphicTrajectory, graphicDStarLite, graphicTrajectoryAll;
 	private int dureeMaxPF;
 	private Speed vitesseMax;
+	private int tailleFaisceau;
 	
 	/**
 	 * Comparateur de noeud utilisé par la priority queue
@@ -90,6 +91,9 @@ public class AStarCourbe implements Service, Configurable
 	private Stack<ArcCourbe> pileTmp = new Stack<ArcCourbe>();
 	private LinkedList<CinematiqueObs> trajectory = new LinkedList<CinematiqueObs>();
 
+	private HashSet<AStarCourbeNode> closedsetTmp = new HashSet<AStarCourbeNode>();
+	private final PriorityQueue<AStarCourbeNode> opensetTmp = new PriorityQueue<AStarCourbeNode>(100, new AStarCourbeNodeComparator());
+	
 	/**
 	 * Constructeur du AStarCourbe
 	 */
@@ -188,7 +192,8 @@ public class AStarCourbe implements Service, Configurable
 			}
 
 			// On parcourt les voisins de current
-
+			opensetTmp.clear();
+			closedsetTmp.clear();
 			arcmanager.reinitIterator(current);
 			while(arcmanager.hasNext())
 			{
@@ -248,7 +253,23 @@ public class AStarCourbe implements Service, Configurable
 					trajetDeSecours = successeur;
 				}
 				
-				openset.add(successeur);
+				opensetTmp.add(successeur);
+				
+			}
+			
+			// On ajoute que les meilleurs
+			int nbAjoutes = 0;
+			while(nbAjoutes < tailleFaisceau)
+			{
+				AStarCourbeNode n = opensetTmp.poll();
+				if(n == null) // pas assez de nœuds ? Tant pis
+					break;
+				
+				if(closedsetTmp.add(n)) // on vérifie que ce hash n'est pas déjà utilisé
+				{
+					openset.add(n);
+					nbAjoutes++;
+				}
 			}
 
 		} while(!openset.isEmpty());
@@ -304,6 +325,7 @@ public class AStarCourbe implements Service, Configurable
 		graphicTrajectoryAll = config.getBoolean(ConfigInfo.GRAPHIC_TRAJECTORY_ALL);
 		graphicDStarLite = config.getBoolean(ConfigInfo.GRAPHIC_D_STAR_LITE_FINAL);
 		dureeMaxPF = config.getInt(ConfigInfo.DUREE_MAX_RECHERCHE_PF);
+		tailleFaisceau = config.getInt(ConfigInfo.TAILLE_FAISCEAU_PF);
 	}
 				
 	/**
