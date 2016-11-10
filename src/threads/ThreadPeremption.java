@@ -59,7 +59,7 @@ public class ThreadPeremption extends ThreadService implements Configurable
 			while(true)
 			{
 				if(memory.deleteOldObstacles())
-					dstarlite.updateObstacles();
+					dstarlite.updateObstaclesEnnemi();
 	
 				// mise à jour des obstacles : on réaffiche
 				if(printProxObs)

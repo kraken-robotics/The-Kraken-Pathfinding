@@ -91,8 +91,8 @@ public class JUnit_OMMemory extends JUnit_Test {
     	Assert.assertTrue(memory.getFirstNotDeadNow() == 0);
     	Assert.assertTrue(memory.getNextDeathDate() == Long.MAX_VALUE);    	
     	
-    	m.invoke(memory, new Vec2RO(1324,546), date, mm.getMasque(new Vec2RO(1324,546)));
-    	m.invoke(memory, new Vec2RO(1324,546), date, mm.getMasque(new Vec2RO(1324,546)));
+    	m.invoke(memory, new Vec2RO(1324,546), date, mm.getMasqueEnnemi(new Vec2RO(1324,546)));
+    	m.invoke(memory, new Vec2RO(1324,546), date, mm.getMasqueEnnemi(new Vec2RO(1324,546)));
     	iterator.reinit();
     	Assert.assertTrue(iterator.hasNext());
     	iterator.next();
@@ -103,7 +103,7 @@ public class JUnit_OMMemory extends JUnit_Test {
     	iterator.remove();
     	Assert.assertTrue(!iterator.hasNext());
 
-    	m.invoke(memory, new Vec2RO(1324,546), date, mm.getMasque(new Vec2RO(1324,546)));
+    	m.invoke(memory, new Vec2RO(1324,546), date, mm.getMasqueEnnemi(new Vec2RO(1324,546)));
     	Assert.assertEquals(2, memory.getFirstNotDeadNow());
     	iterator.reinit();
 
@@ -113,10 +113,10 @@ public class JUnit_OMMemory extends JUnit_Test {
     	Assert.assertTrue(((Vec2RW)f.get(o)).getY() == 546);
     	Assert.assertTrue(!iterator.hasNext());
     	Assert.assertEquals(2, memory.getFirstNotDeadNow());
-    	m.invoke(memory, new Vec2RO(1324,546), date, mm.getMasque(new Vec2RO(1324,546)));
-    	m.invoke(memory, new Vec2RO(1324,546), date, mm.getMasque(new Vec2RO(1324,546)));
-    	m.invoke(memory, new Vec2RO(1324,546), date, mm.getMasque(new Vec2RO(1324,546)));
-    	m.invoke(memory, new Vec2RO(1324,546), date, mm.getMasque(new Vec2RO(1324,546)));
+    	m.invoke(memory, new Vec2RO(1324,546), date, mm.getMasqueEnnemi(new Vec2RO(1324,546)));
+    	m.invoke(memory, new Vec2RO(1324,546), date, mm.getMasqueEnnemi(new Vec2RO(1324,546)));
+    	m.invoke(memory, new Vec2RO(1324,546), date, mm.getMasqueEnnemi(new Vec2RO(1324,546)));
+    	m.invoke(memory, new Vec2RO(1324,546), date, mm.getMasqueEnnemi(new Vec2RO(1324,546)));
     	memory.deleteOldObstacles();
     	Assert.assertEquals(2, memory.getFirstNotDeadNow());
     	Assert.assertEquals(memory.getNextDeathDate(), (date+peremption));

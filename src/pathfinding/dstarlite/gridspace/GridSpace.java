@@ -251,7 +251,7 @@ public class GridSpace implements Service, Printable, Configurable
         		iteratorRemoveNearby.remove();
     	}
 
-    	Masque masque = masquemanager.getMasque(position);
+    	Masque masque = masquemanager.getMasqueEnnemi(position);
 		ObstacleProximity o = obstaclesMemory.add(position, masque);
 		
 		return o;

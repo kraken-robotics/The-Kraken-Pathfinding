@@ -162,7 +162,7 @@ public class JUnit_GridSpace extends JUnit_Test {
 	{
 		MasqueManager mm = container.getService(MasqueManager.class);
 		PrintBuffer buffer = container.getService(PrintBuffer.class);
-		Masque m = mm.getMasque(new Vec2RO(0, 1000));
+		Masque m = mm.getMasqueEnnemi(new Vec2RO(0, 1000));
 		
 		if(config.getBoolean(ConfigInfo.GRAPHIC_D_STAR_LITE))
 			buffer.add(m);

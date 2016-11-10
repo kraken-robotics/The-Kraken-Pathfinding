@@ -242,7 +242,7 @@ public class ClothoidesComputer implements Service, Configurable
 				
 				// Il faut faire attention à ne pas dépasser la coubure maximale !
 				// On prend de la marge
-				if(x < -1500 || x > 1500 || y < 0 || y > 2000 || Math.abs(actuel.courbureGeometrique) > courbureMax*0.7 || (!first && (Math.abs(actuel.courbureGeometrique - lastCourbure) > 3 || Math.abs(actuel.orientationGeometrique - lastOrientation) > 1)))
+				if(x < -1500 || x > 1500 || y < 0 || y > 2000 || Math.abs(actuel.courbureGeometrique) > courbureMax*0.7 || (first && (Math.abs(actuel.courbureGeometrique - courbure) > 1)) || (!first && (Math.abs(actuel.courbureGeometrique - lastCourbure) > 1 || Math.abs(actuel.orientationGeometrique - lastOrientation) > 1)))
 				{
 //					log.debug("ERREUR");
 					error = true;

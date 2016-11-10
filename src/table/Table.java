@@ -31,7 +31,7 @@ public class Table
 	private Log log;
 	
 	/** Contient toutes les informations sur les éléments de jeux sans perte d'information. */
-	private volatile long etatTable = 0L;
+	protected volatile long etatTable = 0L;
 
 	public Table(Log log)
 	{
@@ -58,9 +58,18 @@ public class Table
 	 */
 	public Tribool isDone(GameElementNames id)
 	{
-		return Tribool.parse((int)((etatTable >> (2*id.ordinal()))&3));
+		return isDone(id, etatTable);
 	}
 
+	/**
+	 * Cet objet est-il présent ou non?
+	 * @param id
+	 */
+	protected Tribool isDone(GameElementNames id, long etat)
+	{
+		return Tribool.parse((int)((etat >> (2*id.ordinal()))&3));
+	}
+	
 	/**
 	 * La table en argument deviendra la copie de this (this reste inchangé)
 	 * @param ct

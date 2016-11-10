@@ -382,7 +382,7 @@ public class AStarCourbe implements Service, Configurable
 		
 		// On met à jour le D* Lite
 		dstarlite.updateStart(depart.state.robot.getCinematique().getPosition());
-		dstarlite.updateObstacles();
+		dstarlite.updateObstaclesEnnemi();
 		if(graphicDStarLite)
 			dstarlite.itineraireBrut();
 

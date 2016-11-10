@@ -30,6 +30,7 @@ import pathfinding.dstarlite.gridspace.PointGridSpace;
 import pathfinding.dstarlite.gridspace.PointGridSpaceManager;
 import robot.Cinematique;
 import robot.Speed;
+import table.RealTable;
 import utils.Log;
 import utils.Vec2RO;
 import config.Config;
@@ -55,6 +56,7 @@ public class DStarLite implements Service, Configurable
 	
 	protected Log log;
 	private GridSpace gridspace;
+	private RealTable table;
 	private PointGridSpaceManager pointManager;
 	private PointDirigeManager pointDManager;
 	private boolean graphicDStarLite, graphicDStarLiteFinal, graphicHeuristique;
@@ -82,13 +84,14 @@ public class DStarLite implements Service, Configurable
 	 * @param log
 	 * @param gridspace
 	 */
-	public DStarLite(Log log, GridSpace gridspace, PointGridSpaceManager pointManager, PointDirigeManager pointDManager, PrintBuffer buffer)
+	public DStarLite(Log log, GridSpace gridspace, PointGridSpaceManager pointManager, PointDirigeManager pointDManager, PrintBuffer buffer, RealTable table)
 	{
 		this.log = log;
 		this.gridspace = gridspace;
 		this.pointManager = pointManager;
 		this.pointDManager = pointDManager;
 		this.buffer = buffer;
+		this.table = table;
 		
 		obstaclesConnus = new BitSet(PointGridSpace.NB_POINTS * 8);
 		obstaclesConnus.or(gridspace.getCurrentObstacles());
@@ -284,7 +287,7 @@ public class DStarLite implements Service, Configurable
 			gridspace.reinitGraphicGrid();
 		
 		updateGoalAndStart(depart, arrivee);
-		updateObstacles();
+		updateObstaclesEnnemi();
 
 		if(graphicDStarLite)
 		{
@@ -353,11 +356,26 @@ public class DStarLite implements Service, Configurable
 	}
 	
 	/**
+	 * Met à jour les obstacles des éléments de jeux
+	 */
+	public synchronized void updateObstaclesTable()
+	{
+		updateObstacles(table.getOldAndNewObstacles(true));
+	}
+	
+	/**
+	 * Met à jour les obstacles des ennemies
+	 */
+	public synchronized void updateObstaclesEnnemi()
+	{
+		updateObstacles(gridspace.getOldAndNewObstacles());
+	}
+	
+	/**
 	 * Met à jour le pathfinding
 	 */
-	public synchronized void updateObstacles()
+	private synchronized void updateObstacles(BitSet[] obs)
 	{
-		BitSet[] obs = gridspace.getOldAndNewObstacles();
 		
 //		if((graphicDStarLite || graphicDStarLiteFinal) && (!obs[0].isEmpty() || !obs[1].isEmpty()))
 //			gridspace.reinitGraphicGrid();

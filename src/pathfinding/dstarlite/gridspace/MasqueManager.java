@@ -38,13 +38,14 @@ import utils.Vec2RO;
 
 public class MasqueManager implements Service, Configurable
 {
-	private int centreMasque;
+	private int centreMasqueEnnemi, centreMasqueCylindre;
 	private PointGridSpaceManager pointManager;
 	private PointDirigeManager pointDManager;
 	private PrintBuffer buffer;
 	private Container container;
 	protected Log log;
-	private List<PointDirige> model = new ArrayList<PointDirige>();
+	private List<PointDirige> modelEnnemi = new ArrayList<PointDirige>();
+	private List<PointDirige> modelCylindre = new ArrayList<PointDirige>();
 	private boolean printObsCapteurs;
 	
 	public MasqueManager(Log log, PointGridSpaceManager pointManager, PointDirigeManager pointDManager, PrintBuffer buffer, Container container)
@@ -62,11 +63,27 @@ public class MasqueManager implements Service, Configurable
 		printObsCapteurs = config.getBoolean(ConfigInfo.GRAPHIC_D_STAR_LITE);
 		int rayonRobot = config.getInt(ConfigInfo.DILATATION_ROBOT_ENNEMI_DSTARLITE); // l'obstacle du D* Lite doit être dilaté
 		int rayonEnnemi = config.getInt(ConfigInfo.RAYON_ROBOT_ADVERSE);
-		int rayonPoint = (int) Math.round((rayonEnnemi + rayonRobot) / PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS);
-		int tailleMasque = 2*(rayonPoint+1)+1;
-		int squaredRayonPoint = rayonPoint * rayonPoint;
+		int rayonPointEnnemi = (int) Math.round((rayonEnnemi + rayonRobot) / PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS);
+		int tailleMasqueEnnemi = 2*(rayonPointEnnemi+1)+1;
+		int squaredRayonPointEnnemi = rayonPointEnnemi * rayonPointEnnemi;
 
-		centreMasque = tailleMasque / 2;
+		centreMasqueEnnemi = tailleMasqueEnnemi / 2;
+		createMasque(centreMasqueEnnemi, tailleMasqueEnnemi, squaredRayonPointEnnemi, modelEnnemi);
+
+		
+		// la dilatation du robot est différente pour l'obstacle
+		int rayonRobot2 = config.getInt(ConfigInfo.DILATATION_ROBOT_DSTARLITE);		
+		int rayonCylindre = 32;
+		int rayonPointCylindre = (int) Math.round((rayonRobot2 + rayonCylindre) / PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS);
+		int tailleMasqueCylindre = 2*(rayonPointCylindre+1)+1;
+		int squaredRayonPointCylindre = rayonPointCylindre * rayonPointCylindre;
+
+		centreMasqueCylindre = tailleMasqueCylindre / 2;
+		createMasque(centreMasqueCylindre, tailleMasqueCylindre, squaredRayonPointCylindre, modelCylindre);
+	}
+	
+	private void createMasque(int centreMasque, int tailleMasque, int squaredRayonPoint, List<PointDirige> model)
+	{
 		for(int i = 0; i < tailleMasque; i++)
 			for(int j = 0; j < tailleMasque; j++)
 				if((i-centreMasque) * (i-centreMasque) + (j-centreMasque) * (j-centreMasque) > squaredRayonPoint)
@@ -77,8 +94,35 @@ public class MasqueManager implements Service, Configurable
 							model.add(pointDManager.get(i,j,d));
 					}
 	}
-	
-	public Masque getMasque(Vec2RO position)
+
+	/**
+	 * Renvoie le masque de l'ennemi
+	 * @param position
+	 * @return
+	 */
+	public Masque getMasqueEnnemi(Vec2RO position)
+	{
+		return getMasque(position, modelEnnemi, centreMasqueEnnemi);
+	}
+
+	/**
+	 * Renvoie le masque d'un cylindre
+	 * @param position
+	 * @return
+	 */
+	public Masque getMasqueCylindre(Vec2RO position)
+	{
+		return getMasque(position, modelCylindre, centreMasqueCylindre);
+	}
+
+	/**
+	 * Renvoie un masque
+	 * @param position
+	 * @param model
+	 * @param centreMasque
+	 * @return
+	 */
+	private Masque getMasque(Vec2RO position, List<PointDirige> model, int centreMasque)
 	{
 		PointGridSpace p = pointManager.get(position);
 		List<PointDirige> out = new ArrayList<PointDirige>();
@@ -106,5 +150,4 @@ public class MasqueManager implements Service, Configurable
 		
 		return m;
 	}
-
 }
