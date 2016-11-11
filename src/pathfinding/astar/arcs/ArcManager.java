@@ -149,31 +149,23 @@ public class ArcManager implements Service, Configurable
 
 		current.state.copyAStarCourbe(successeur.state);
 
-		/**
-		 * Si on est proche et qu'on tente une interpolation cubique
-		 */
-		if(v == VitesseCourbure.DIRECT_COURBE || v == VitesseCourbure.DIRECT_COURBE_REBROUSSE)
+		if(v == VitesseCourbure.BEZIER_QUAD)
 		{
-//			log.debug("Recherche arc cubique");
 			ArcCourbeDynamique tmp;
-			tmp = clotho.cubicInterpolation(
+			tmp = bezier.interpolationQuadratique(
 					current.state.robot.getCinematique(),
 					arrivee,
-					vitesseMax,
-					v);
+					vitesseMax);
 			if(tmp == null)
-			{
-//				log.debug("Interpolation impossible");
 				return false;
-			}
 
 			successeur.cameFromArcDynamique = tmp;
 		}
 		
-		else if(v == VitesseCourbure.BEZIER_QUAD)
+		else if(v == VitesseCourbure.BEZIER_CUBIQUE) // TODO vérifier qu'il y a une heuristique qui veut arriver quelque part
 		{
 			ArcCourbeDynamique tmp;
-			tmp = bezier.interpolationQuadratique(
+			tmp = bezier.interpolationCubique(
 					current.state.robot.getCinematique(),
 					arrivee,
 					vitesseMax);
@@ -256,19 +248,9 @@ public class ArcManager implements Service, Configurable
     		return false;
     	}
     	
-    	// On ne tente pas l'interpolation si on est trop loin
-		if((vitesse == VitesseCourbure.DIRECT_COURBE || vitesse == VitesseCourbure.DIRECT_COURBE_REBROUSSE))
-		{
-			// on n'arriverait pas dans le bon sens…
-			if(!sens.isOK(current.state.robot.getCinematique().enMarcheAvant ^ vitesse == VitesseCourbure.DIRECT_COURBE_REBROUSSE))
-				return false;
-			
-			// h vaut donc l'heuristique de current
-			double h = current.f_score - current.g_score;
-			if(h > 1000)
-//				log.debug(vitesse+" n'est pas acceptable (on est trop loin)");
-				return false;
-		}
+    	// on évite les demi-tours absurdes
+    	if(vitesse.demitour && ((vitesse.positif && current.state.robot.getCinematique().courbureGeometrique < -1) || (!vitesse.positif && current.state.robot.getCinematique().courbureGeometrique > 1)))
+    		return false;
     	
     	// TODO
     	double courbureFuture = current.state.robot.getCinematique().courbureGeometrique + vitesse.vitesse * ClothoidesComputer.DISTANCE_ARC_COURBE_M;

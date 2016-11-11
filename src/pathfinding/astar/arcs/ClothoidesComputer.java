@@ -27,13 +27,9 @@ import java.io.ObjectOutputStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 import memory.CinemObsMM;
-import config.Config;
-import config.ConfigInfo;
-import config.Configurable;
 import container.Service;
 import obstacles.types.ObstacleCircular;
 import robot.Cinematique;
@@ -50,7 +46,7 @@ import utils.Vec2RW;
  *
  */
 
-public class ClothoidesComputer implements Service, Configurable
+public class ClothoidesComputer implements Service
 {
 	private Log log;
 	private CinemObsMM memory;
@@ -66,7 +62,6 @@ public class ClothoidesComputer implements Service, Configurable
 	static final double DISTANCE_ARC_COURBE_M = PRECISION_TRACE * NB_POINTS; // en m
 //	private static final double VITESSE_ROT_AX12 = 4; // en rad / s. Valeur du constructeur : 5
 
-	private double courbureMax;
 //	private double distanceArriereAuRoues; // la distance entre la position du robot et ses roues directrices
 	private Vec2RO[] trajectoire = new Vec2RO[2 * INDICE_MAX - 1];
 	
@@ -148,143 +143,6 @@ public class ClothoidesComputer implements Service, Configurable
 			buffer.addSupprimable(new ObstacleCircular(new Vec2RO(-x.doubleValue(), 1000-y.doubleValue()), 5));
 		}
 	}
-
-	public final ArcCourbeDynamique cubicInterpolation(RobotChrono robot, Cinematique arrivee, Speed vitesseMax, VitesseCourbure v)
-	{
-		return cubicInterpolation(robot.getCinematique(), arrivee, vitesseMax, v);
-	}
-	
-	public final ArcCourbeDynamique cubicInterpolation(Cinematique cinematiqueInitiale, Cinematique arrivee, Speed vitesseMax, VitesseCourbure v)
-	{
-//		log.debug(v);
-		double alphas[] = {100, 300, 600, 800, 1000, 1200};
-//		log.debug("Interpolation cubique, rebrousse : "+v.rebrousse);
-		double sin, cos;
-		double courbure = cinematiqueInitiale.courbureGeometrique,
-				orientation = cinematiqueInitiale.orientationGeometrique;
-
-		if(v.rebrousse) // si on rebrousse, la courbure est nulle
-		{
-			orientation += Math.PI;
-			courbure = 0;
-		}
-		
-		Speed vitesse = vitesseMax;
-		if(!(v.rebrousse ^ cinematiqueInitiale.enMarcheAvant))
-			vitesse = Speed.values()[vitesseMax.ordinal()+1];
-		
-		sin = Math.sin(orientation);
-		cos = Math.cos(orientation);
-
-		LinkedList<CinematiqueObs> out = new LinkedList<CinematiqueObs>();
-		
-		for(int i = 0; i < alphas.length; i++)
-		{
-			double alpha = alphas[i];
-			
-			double bx, by;
-			
-			if(Math.abs(cos) < Math.abs(sin))
-			{
-				bx = -courbure/1000*alpha*alpha/(2*sin);
-				by = 0;
-			}
-			else
-			{
-				bx = 0;
-				by = courbure/1000*alpha*alpha/(2*cos);
-			}
-	
-			// les paramètres du polynomes x = ax * t^3 + bx * t^2 + cx * t + dx,
-			// en fixant la position en 0 (départ) et en 1 (arrivée), la dérivée en 0 (vecteur vitesse) et la dérivée seconde en 0 (courbure)
-			double dx = cinematiqueInitiale.getPosition().getX();
-			double cx = cos*alpha;
-			double ax = arrivee.getPosition().getX() - bx - cx - dx;
-			
-			// idem pour y
-			double dy = cinematiqueInitiale.getPosition().getY();
-			double cy = sin*alpha;
-			double ay = arrivee.getPosition().getY() - by - cy - dy;
-			boolean first = true;
-			double t = 1, tnext = 1, lastCourbure = 0, lastOrientation = 0;
-			double longueur = 0;
-			CinematiqueObs last = null, actuel;
-			boolean error = false;
-			out.clear();
-			
-			while(t > 0.)
-			{
-				double tmp1 = 3*ax*t*t+2*bx*t+cx;
-				double tmp2 = 3*ay*t*t+2*by*t+cy;
-				
-				tnext -= PRECISION_TRACE_MM / Math.sqrt(tmp1 * tmp1 + tmp2 * tmp2);
-
-				if(tnext < 0)
-					tnext = 0; // le 0 ne doit pas être utilisé (c'est le dernier point de l'arc précédent)
-	
-				double t2 = t*t;
-				double x = ax*t*t2 + bx*t2 + cx*t + dx;
-				double y = ay*t*t2 + by*t2 + cy*t + dy;
-				double vx = 3*ax*t2+2*bx*t+cx;
-				double vy = 3*ay*t2+2*by*t+cy;
-				double acx = 6*ax*t+2*bx;
-				double acy = 6*ay*t+2*by;
-				
-				actuel = memory.getNewNode();
-				actuel.update(
-						x, // x
-						y, // y
-						Math.atan2(vy, vx), // orientation = atan2(vy, vx)
-						v.rebrousse ^ cinematiqueInitiale.enMarcheAvant,
-						1000*(vx * acy - vy * acx) / Math.pow(vx*vx + vy*vy, 1.5), // formule de la courbure d'une courbe paramétrique
-						vitesse.translationalSpeed);
-//				log.debug(t);
-				
-				// Il faut faire attention à ne pas dépasser la coubure maximale !
-				// On prend de la marge
-				if(x < -1500 || x > 1500 || y < 0 || y > 2000 || Math.abs(actuel.courbureGeometrique) > courbureMax*0.7 || (first && (Math.abs(actuel.courbureGeometrique - courbure) > 1)) || (!first && (Math.abs(actuel.courbureGeometrique - lastCourbure) > 1 || Math.abs(actuel.orientationGeometrique - lastOrientation) > 1)))
-				{
-//					log.debug("ERREUR");
-					error = true;
-					break;
-				}
-				
-				//				log.debug(x+" "+y);
-				lastCourbure = actuel.courbureGeometrique;
-				lastOrientation = actuel.orientationGeometrique;				
-				// calcul de la longueur de l'arc
-				if(last != null)
-				{
-					longueur += actuel.getPosition().distanceFast(last.getPosition());
-				}
-				// TODO : faire un pas plus petit, puis sélectionner seulement ceux qui correspondent à la bonne précision
-
-				
-				out.addFirst(actuel); // vu qu'on génère la trajectoire cubique en partant de la fin
-				last = actuel;
-				first = false;
-				t = tnext;
-			}			
-			
-			// Parfois, l'interpolation cubique donne très peu de points (à cause du pas de t qui est une approximation)
-			// dans ce cas, on ignore l'arc
-
-			if(error || out.size() < (cinematiqueInitiale.getPosition().distanceFast(arrivee.getPosition()) / PRECISION_TRACE_MM)) // on essaye un autre alpha
-			{
-				// on détruit les cinématiques qui ne seront pas utilisées
-				for(CinematiqueObs c : out)
-					memory.destroyNode(c);
-				continue;
-			}
-			
-			// si le premier point est trop proche du point de départ, on ne le met pas
-			if(out.getFirst().getPosition().squaredDistance(cinematiqueInitiale.getPosition()) < (PRECISION_TRACE_MM * PRECISION_TRACE_MM)*0.7)
-				out.removeFirst();
-
-			return new ArcCourbeDynamique(out, longueur, v.rebrousse);
-		}
-		return null;
-	}
 	
 	public void getTrajectoire(ArcCourbe depart, VitesseCourbure vitesse, Speed vitesseMax, ArcCourbeStatique modified)
 	{
@@ -360,9 +218,6 @@ public class ClothoidesComputer implements Service, Configurable
 		double baseOrientation = orientation - orientationClothoDepart;
 		double cos = Math.cos(baseOrientation);
 		double sin = Math.sin(baseOrientation);
-
-//		for(int i = 0; i < NB_POINTS; i++)
-//			log.debug("Clotho : "+trajectoire[vitesse.squaredRootVitesse * (i + 1)]);
 	
 		// le premier point n'est pas position, mais le suivant
 		// (afin de ne pas avoir de doublon quand on enchaîne les arcs, entre le dernier point de l'arc t et le premier de l'arc t+1)		
@@ -571,15 +426,6 @@ public class ClothoidesComputer implements Service, Configurable
 		}
 	}
 
-	@Override
-	public void useConfig(Config config)
-	{
-		courbureMax = config.getDouble(ConfigInfo.COURBURE_MAX);
-//		int tmpx = config.getInt(ConfigInfo.CENTRE_ROTATION_ROUE_X);
-//		int tmpy = config.getInt(ConfigInfo.CENTRE_ROTATION_ROUE_Y);
-//		distanceArriereAuRoues = Math.sqrt(tmpx*tmpx + tmpy*tmpy) / 1000;
-	}
-
 	/**
 	 * Sauvegarde les points de la clothoïde unitaire
 	 */
@@ -628,6 +474,7 @@ public class ClothoidesComputer implements Service, Configurable
     }
 
 	private Vec2RW vecteurOrientationDepart = new Vec2RW();
+	private Vec2RW vecteurOrientationDepartRotate = new Vec2RW();
 	private Vec2RW vecteurOrientation = new Vec2RW();
 	
 	/**
@@ -664,9 +511,14 @@ public class ClothoidesComputer implements Service, Configurable
 			courbure = 0;
 			orientation += Math.PI;
 		}
-
+		
 		vecteurOrientationDepart.setX(Math.cos(orientation));
 		vecteurOrientationDepart.setY(Math.sin(orientation));
+		vecteurOrientationDepart.copy(vecteurOrientationDepartRotate);
+		if(vitesse.positif)
+			vecteurOrientationDepartRotate.rotate(0, 1);
+		else
+			vecteurOrientationDepartRotate.rotate(0, -1);
 		
 		boolean marcheAvant = rebrousse ^ cinematiqueInitiale.enMarcheAvant;
 
@@ -700,6 +552,7 @@ public class ClothoidesComputer implements Service, Configurable
 		Vec2RO positionInit = cinematiqueInitiale.getPosition();
 		do
 		{
+			log.debug(sDepart+" "+vitesse.squaredRootVitesse);
 			sDepart += vitesse.squaredRootVitesse * PRECISION_TRACE;
 			CinematiqueObs obs = memory.getNewNode();
 			out.add(obs);
@@ -707,7 +560,7 @@ public class ClothoidesComputer implements Service, Configurable
 			vecteurOrientation.setX(Math.cos(obs.orientationGeometrique));
 			vecteurOrientation.setY(Math.sin(obs.orientationGeometrique));
 			i++;
-		} while(vecteurOrientation.dot(vecteurOrientationDepart) >= 0);
+		} while(vecteurOrientation.dot(vecteurOrientationDepart) >= 0 || vecteurOrientation.dot(vecteurOrientationDepartRotate) <= 0);
 		return out;
 	}
 	

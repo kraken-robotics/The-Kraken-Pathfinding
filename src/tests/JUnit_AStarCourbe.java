@@ -18,7 +18,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 package tests;
 
 import obstacles.types.ObstacleCircular;
-import obstacles.types.ObstacleRectangular;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -81,95 +80,6 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 		graphicTrajectory = config.getBoolean(ConfigInfo.GRAPHIC_TRAJECTORY_FINAL);
 	}
 
-	@Test
-    public void test_interpolation_cubique() throws Exception
-    {		
-		Cinematique c1 = new Cinematique(-1100, 300, Math.PI/2, true, 0, Speed.STANDARD.translationalSpeed);
-		Cinematique c2 = new Cinematique(0, 1000, 0, true, 0, Speed.STANDARD.translationalSpeed);
-		
-		ArcCourbeDynamique arccubique = clotho.cubicInterpolation(c1, c2, Speed.STANDARD, VitesseCourbure.DIRECT_COURBE);
-	
-		for(int i = 0; i < arccubique.arcs.size(); i++)
-		{
-			// Vérification de l'orientation
-			if(i > 0)
-				Assert.assertEquals(Math.atan2(
-						arccubique.arcs.get(i).getPosition().getY() - arccubique.arcs.get(i-1).getPosition().getY(),
-						arccubique.arcs.get(i).getPosition().getX() - arccubique.arcs.get(i-1).getPosition().getX()), arccubique.arcs.get(i).orientationGeometrique, 0.5);
-			
-			// Vérification de la courbure
-/*			if(i > 1)
-			{
-				double x1 = arc.get(i).getPosition().x;
-				double x2 = arc.get(i-1).getPosition().x;
-				double x3 = arc.get(i-2).getPosition().x;
-				double y1 = arc.get(i).getPosition().y;
-				double y2 = arc.get(i-1).getPosition().y;
-				double y3 = arc.get(i-2).getPosition().y;
-				
-				double xc = ((x3*x3 - x2*x2 + y3*y3 - y2*y2)/(2*(y3-y2)) - (x2*x2 - x1*x1 + y2*y2 - y1*y1) / (2*(y2 - y1)))
-						/ ((x2 - x1) / (y2 - y1) - (x3 - x2) / (y3 - y2));
-				double yc = -(x2-x1)/(y2-y1)*xc + (x2*x2 - x1*x1 + y2*y2 - y1*y1) / (2*(y2 - y1));
-				log.debug(1000/Math.hypot(x1-xc, y1-yc)+" "+arc.get(i).courbure);
-				Fenetre.getInstance().addObstacleEnBiais(new ObstacleRectangular(new Vec2RO(xc, yc), 30, 30, 0));
-			}*/
-			
-			
-			if(graphicTrajectory)
-			{
-				Thread.sleep(100);
-				buffer.addSupprimable(new ObstacleRectangular(arccubique.arcs.get(i).getPosition(), 20, 20, 0));
-				log.debug(arccubique.arcs.get(i).getPosition());
-			}
-		}
-		
-    }
-	
-	@Test
-    public void test_cubique() throws Exception
-    {
-		boolean graphicTrajectory = config.getBoolean(ConfigInfo.GRAPHIC_TRAJECTORY);
-		ClothoidesComputer clotho = container.getService(ClothoidesComputer.class);
-		ArcCourbeDynamique arc;
-		Cinematique c, c2;
-		
-		c = new Cinematique(0, 1000, -Math.PI/4, true, 0, Speed.STANDARD.translationalSpeed);
-		c2 = new Cinematique(1000, 700, 0, false, 0, Speed.STANDARD.translationalSpeed);
-		arc = clotho.cubicInterpolation(c, c2, Speed.STANDARD, VitesseCourbure.DIRECT_COURBE);
-		if(graphicTrajectory)
-			for(int i = 0; i < arc.getNbPoints(); i++)
-				buffer.addSupprimable(new ObstacleCircular(arc.getPoint(i).getPosition(), 4));
-		Assert.assertTrue(arc.getLast().enMarcheAvant);
-
-		c = new Cinematique(0, 1000, Math.PI, true, 0, Speed.STANDARD.translationalSpeed);
-		c2 = new Cinematique(1000, 700, 0, false, 0, Speed.STANDARD.translationalSpeed);
-		arc = clotho.cubicInterpolation(c, c2, Speed.STANDARD, VitesseCourbure.DIRECT_COURBE_REBROUSSE);
-		if(graphicTrajectory)
-			for(int i = 0; i < arc.getNbPoints(); i++)
-				buffer.addSupprimable(new ObstacleCircular(arc.getPoint(i).getPosition(), 4));
-		Assert.assertTrue(!arc.getLast().enMarcheAvant);
-
-		c = new Cinematique(100, 1100, -Math.PI/4, false, 0, Speed.STANDARD.translationalSpeed);
-		c2 = new Cinematique(1000, 700, 0, false, 0, Speed.STANDARD.translationalSpeed);
-		arc = clotho.cubicInterpolation(c, c2, Speed.STANDARD, VitesseCourbure.DIRECT_COURBE);
-		if(graphicTrajectory)
-			for(int i = 0; i < arc.getNbPoints(); i++)
-				buffer.addSupprimable(new ObstacleCircular(arc.getPoint(i).getPosition(), 4));
-		Assert.assertTrue(!arc.getLast().enMarcheAvant);
-
-		c = new Cinematique(100, 1100, Math.PI, false, 0, Speed.STANDARD.translationalSpeed);
-		c2 = new Cinematique(1000, 700, 0, false, 0, Speed.STANDARD.translationalSpeed);
-		arc = clotho.cubicInterpolation(c, c2, Speed.STANDARD, VitesseCourbure.DIRECT_COURBE_REBROUSSE);
-		if(graphicTrajectory)
-			for(int i = 0; i < arc.getNbPoints(); i++)
-				buffer.addSupprimable(new ObstacleCircular(arc.getPoint(i).getPosition(), 4));
-		Assert.assertTrue(arc.getLast().enMarcheAvant);
-
-		c = new Cinematique(503, 884, -0.29, true, 0, Speed.STANDARD.translationalSpeed);
-		c2 = new Cinematique(1000, 700, 0, false, 0, Speed.STANDARD.translationalSpeed);
-		Assert.assertTrue(clotho.cubicInterpolation(c, c2, Speed.STANDARD, VitesseCourbure.DIRECT_COURBE_REBROUSSE) == null);
-    }
-	
 	@Test
     public void test_clotho() throws Exception
     {
@@ -238,8 +148,8 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 
 		Cinematique c = new Cinematique(0, 1000, Math.PI/2, false, 0, Speed.STANDARD.translationalSpeed);
 		log.debug("Initial : "+c);
-		arc[0] = clotho.getTrajectoireDemiTour(c, VitesseCourbure.DEMI_TOUR_DROITE, Speed.STANDARD); // TODO
-		arc[1] = clotho.getTrajectoireDemiTour(arc[0].getLast(), VitesseCourbure.DEMI_TOUR_GAUCHE, Speed.STANDARD);
+		arc[0] = clotho.getTrajectoireDemiTour(c, VitesseCourbure.DEMI_TOUR_GAUCHE, Speed.STANDARD);
+		arc[1] = clotho.getTrajectoireDemiTour(arc[0].getLast(), VitesseCourbure.DEMI_TOUR_DROITE, Speed.STANDARD);
 
 		for(int a = 0; a < nbArc; a++)	
 		{
