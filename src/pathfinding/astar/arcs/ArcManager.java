@@ -259,8 +259,6 @@ public class ArcManager implements Service, Configurable
     	// On ne tente pas l'interpolation si on est trop loin
 		if((vitesse == VitesseCourbure.DIRECT_COURBE || vitesse == VitesseCourbure.DIRECT_COURBE_REBROUSSE))
 		{
-			if(true)
-			return false;// TODO arc cubique désactivé
 			// on n'arriverait pas dans le bon sens…
 			if(!sens.isOK(current.state.robot.getCinematique().enMarcheAvant ^ vitesse == VitesseCourbure.DIRECT_COURBE_REBROUSSE))
 				return false;
