@@ -29,6 +29,7 @@ import pathfinding.SensFinal;
 import pathfinding.astar.AStarCourbe;
 import pathfinding.astar.arcs.ArcCourbeStatique;
 import pathfinding.astar.arcs.BezierComputer;
+import pathfinding.astar.arcs.ArcCourbe;
 import pathfinding.astar.arcs.ArcCourbeDynamique;
 import pathfinding.astar.arcs.ClothoidesComputer;
 import pathfinding.astar.arcs.VitesseCourbure;
@@ -163,6 +164,32 @@ public class JUnit_AStarCourbe extends JUnit_Test {
     }
 	
 	@Test
+    public void test_ramene() throws Exception
+    {
+		boolean graphicTrajectory = config.getBoolean(ConfigInfo.GRAPHIC_TRAJECTORY);
+		
+		int nbArc = 2;
+		ArcCourbe arc[] = new ArcCourbe[nbArc];
+
+		Cinematique c = new Cinematique(0, 1000, Math.PI/2, false, 0, Speed.STANDARD.translationalSpeed);
+		log.debug("Initial : "+c);
+		arc[0] = clotho.getTrajectoireDemiTour(c, VitesseCourbure.DEMI_TOUR_GAUCHE, Speed.STANDARD);
+//		arc[0] = new ArcCourbeStatique(container.getService(RobotReal.class));
+//		clotho.getTrajectoire(c, VitesseCourbure.DROITE_5, Speed.STANDARD, (ArcCourbeStatique)arc[0]);
+		arc[1] = clotho.getTrajectoireRamene(arc[0].getLast(), VitesseCourbure.RAMENE_VOLANT, Speed.STANDARD);
+
+		for(int a = 0; a < nbArc; a++)	
+		{
+			for(int i = 0; i < arc[a].getNbPoints(); i++)
+			{
+				System.out.println(a+" "+i+" "+arc[a].getPoint(i));
+				if(graphicTrajectory)
+					buffer.addSupprimable(new ObstacleCircular(arc[a].getPoint(i).getPosition(), 4));
+			}
+		}
+    }
+	
+	@Test
     public void test_bezier_quad() throws Exception
     {
 		boolean graphicTrajectory = config.getBoolean(ConfigInfo.GRAPHIC_TRAJECTORY);
@@ -171,7 +198,7 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 		ArcCourbeDynamique arc[] = new ArcCourbeDynamique[nbArc];
 
 		Cinematique c = new Cinematique(0, 1000, Math.PI/2, true, -1, Speed.STANDARD.translationalSpeed);
-		Cinematique arrivee = new Cinematique(400, 1200, Math.PI/2, false, 0, Speed.STANDARD.translationalSpeed);
+		Cinematique arrivee = new Cinematique(400, 1400, Math.PI/2, false, 0, Speed.STANDARD.translationalSpeed);
 		log.debug("Initial : "+c);
 		arc[0] = bezier.interpolationQuadratique(c, arrivee, Speed.STANDARD);
 
@@ -470,7 +497,7 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 		long avant = System.nanoTime();
 		Cinematique depart = new Cinematique(-800, 350, 3*Math.PI/4, true, 0, Speed.STANDARD.translationalSpeed);
 		robot.setCinematique(depart);
-		Cinematique c = new Cinematique(900, 600, Math.PI, false, 0, Speed.STANDARD.translationalSpeed);
+		Cinematique c = new Cinematique(800, 700, Math.PI, false, 0, Speed.STANDARD.translationalSpeed);
 		astar.computeNewPath(c, true);
 		log.debug("Temps : "+(System.nanoTime() - avant) / (1000000.));
 		iterator.reinit();

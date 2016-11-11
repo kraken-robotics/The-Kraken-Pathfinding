@@ -184,7 +184,8 @@ public class ClothoidesComputer implements Service
 			orientation += Math.PI;
 		}
 		modified.rebrousse = vitesse.rebrousse;
-
+		modified.vitesse = vitesse;
+		
 		boolean marcheAvant = vitesse.rebrousse ^ cinematiqueInitiale.enMarcheAvant;
 
 		// Gestion de la vitesse en marche arrière
@@ -246,7 +247,7 @@ public class ClothoidesComputer implements Service
 		double orientation = cinematiqueInitiale.orientationGeometrique;
 
 		boolean marcheAvant = cinematiqueInitiale.enMarcheAvant;
-
+		vitesse.positif = courbure < 0;
 		// Gestion de la vitesse en marche arrière
 		Speed vitesseTr = vitesseMax;
 		if(!marcheAvant)
@@ -254,7 +255,7 @@ public class ClothoidesComputer implements Service
 
 		double coeffMultiplicatif = 1. / vitesse.squaredRootVitesse;
 		double sDepart = courbure / vitesse.squaredRootVitesse; // sDepart peut parfaitement être négatif
-		if(courbure > 0)
+		if(!vitesse.positif)
 			sDepart = -sDepart;
 		int pointDepart = (int) ((sDepart / PRECISION_TRACE) + INDICE_MAX - 1 + 0.5); // le 0.5 vient du fait qu'on fait ici un arrondi
 		
@@ -262,7 +263,7 @@ public class ClothoidesComputer implements Service
 			log.critical("Sorti de la clothoïde précalculée !");
 		
 		double orientationClothoDepart = sDepart * sDepart; // orientation au départ
-		if(courbure > 0)
+		if(!vitesse.positif)
 			orientationClothoDepart = - orientationClothoDepart;
 			
 		double baseOrientation = orientation - orientationClothoDepart;
@@ -289,7 +290,7 @@ public class ClothoidesComputer implements Service
 			i++;
 		}
 		
-		return new ArcCourbeDynamique(out, i*PRECISION_TRACE_MM, false);
+		return new ArcCourbeDynamique(out, i*PRECISION_TRACE_MM, false, vitesse);
 	}
 	
 	/**
@@ -488,7 +489,7 @@ public class ClothoidesComputer implements Service
 	{
 		List<CinematiqueObs> trajet = getTrajectoireQuartDeTour(cinematiqueInitiale, vitesse, vitesseMax, false);
 		trajet.addAll(getTrajectoireQuartDeTour(trajet.get(trajet.size()-1), vitesse, vitesseMax, true)); // on reprend à la fin du premier quart de tour
-		return new ArcCourbeDynamique(trajet, trajet.size()*PRECISION_TRACE_MM, false); // TODO : rebrousse est faux…
+		return new ArcCourbeDynamique(trajet, trajet.size()*PRECISION_TRACE_MM, false, vitesse); // TODO : rebrousse est faux…
 	}
 	
 	/**
@@ -552,7 +553,6 @@ public class ClothoidesComputer implements Service
 		Vec2RO positionInit = cinematiqueInitiale.getPosition();
 		do
 		{
-			log.debug(sDepart+" "+vitesse.squaredRootVitesse);
 			sDepart += vitesse.squaredRootVitesse * PRECISION_TRACE;
 			CinematiqueObs obs = memory.getNewNode();
 			out.add(obs);

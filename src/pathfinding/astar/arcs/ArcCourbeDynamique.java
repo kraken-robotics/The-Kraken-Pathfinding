@@ -32,9 +32,10 @@ public class ArcCourbeDynamique extends ArcCourbe
 	public List<CinematiqueObs> arcs;
 	public double longueur;
 	
-	public ArcCourbeDynamique(List<CinematiqueObs> arcs, double longueur, boolean rebrousse)
+	public ArcCourbeDynamique(List<CinematiqueObs> arcs, double longueur, boolean rebrousse, VitesseCourbure v)
 	{
 		super(rebrousse);
+		vitesse = v;
 		this.arcs = arcs;
 		this.longueur = longueur;
 	}

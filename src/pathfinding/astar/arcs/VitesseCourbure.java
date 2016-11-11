@@ -59,7 +59,7 @@ public enum VitesseCourbure
 
 	public final int vitesse; // vitesse en (1/m)/m = 1/m^2
 	public final int squaredRootVitesse; // sqrt(abs(vitesse))
-	public final boolean positif;
+	public boolean positif; // calculé à la volée pour certaine vitesse
 	public final boolean rebrousse;
 	public final boolean ramene;
 	public final boolean demitour;

@@ -81,7 +81,7 @@ public class BezierComputer implements Service, Configurable
 		vecteurVitesse.rotate(0, -1);
 		vecteurVitesse.scalar(Math.sqrt(d/(2*cinematiqueInitiale.courbureGeometrique/1000))); // c'est les maths qui le disent
 		vecteurVitesse.plus(cinematiqueInitiale.getPosition());
-		return constructBezierQuad(cinematiqueInitiale.getPosition(), vecteurVitesse, arrivee.getPosition(), cinematiqueInitiale.enMarcheAvant, vitesseMax);
+		return constructBezierQuad(cinematiqueInitiale.getPosition(), vecteurVitesse, arrivee.getPosition(), cinematiqueInitiale.enMarcheAvant, vitesseMax, cinematiqueInitiale);
 	}
 
 	private Vec2RW a_tmp = new Vec2RW(), b_tmp = new Vec2RW(), c_tmp = new Vec2RW(), d_tmp = new Vec2RW(), acc = new Vec2RW();
@@ -94,7 +94,7 @@ public class BezierComputer implements Service, Configurable
 	 * @param position2
 	 * @return
 	 */
-	private ArcCourbeDynamique constructBezierQuad(Vec2RO A, Vec2RO B, Vec2RO C, boolean enMarcheAvant, Speed vitesseMax)
+	private ArcCourbeDynamique constructBezierQuad(Vec2RO A, Vec2RO B, Vec2RO C, boolean enMarcheAvant, Speed vitesseMax, Cinematique cinematiqueInitiale)
 	{
 /*		buffer.addSupprimable(new ObstacleCircular(A, 15));
 		buffer.addSupprimable(new ObstacleCircular(B, 15));
@@ -104,7 +104,7 @@ public class BezierComputer implements Service, Configurable
 		LinkedList<CinematiqueObs> out = new LinkedList<CinematiqueObs>();
 		Vec2RO lastPos = null;
 		double longueur = 0;
-		
+
 		// l'accélération est constante pour une courbe quadratique
 		A.copy(a_tmp);
 		a_tmp.scalar(2);
@@ -115,7 +115,9 @@ public class BezierComputer implements Service, Configurable
 		a_tmp.copy(acc);
 		acc.plus(b_tmp);
 		acc.plus(c_tmp);
-		
+		boolean first = true;
+		double lastCourbure = 0;
+		double lastOrientation = 0;
 		while(t > 0)
 		{
 			CinematiqueObs obs = memory.getNewNode();
@@ -162,7 +164,7 @@ public class BezierComputer implements Service, Configurable
 					vitesseMax.translationalSpeed); // TODO
 			
 			// on a dépassé la courbure maximale : on arrête tout
-			if(Math.abs(obs.courbureGeometrique) > courbureMax)
+			if(Math.abs(obs.courbureGeometrique) > courbureMax || (!first && (Math.abs(obs.courbureGeometrique - lastCourbure) > 0.5) || Math.abs(obs.orientationGeometrique - lastOrientation) > 0.5))
 			{
 //				log.debug("Courbure max dépassée");
 				for(CinematiqueObs c : out)
@@ -170,10 +172,23 @@ public class BezierComputer implements Service, Configurable
 				return null;
 			}
 			
+			lastOrientation = obs.orientationGeometrique;
+			lastCourbure = obs.courbureGeometrique;
+			first = false;
 			t -= ClothoidesComputer.PRECISION_TRACE_MM / vitesse;
 		}
 		
-		return new ArcCourbeDynamique(out, longueur, false);
+		if(!first && (Math.abs(cinematiqueInitiale.courbureGeometrique - lastCourbure) > 0.5) || Math.abs(cinematiqueInitiale.orientationGeometrique - lastOrientation) > 0.5)
+		{
+//			log.debug("Courbure max dépassée");
+			for(CinematiqueObs c : out)
+				memory.destroyNode(c);
+			return null;
+		}
+		if(out.getFirst().getPosition().distanceFast(cinematiqueInitiale.getPosition()) < ClothoidesComputer.PRECISION_TRACE_MM/2)
+			out.removeFirst();
+		
+		return new ArcCourbeDynamique(out, longueur, false, VitesseCourbure.BEZIER_QUAD);
 	}
 
 	private Vec2RW b = new Vec2RW(), c = new Vec2RW(), bp = new Vec2RW();
@@ -336,7 +351,7 @@ public class BezierComputer implements Service, Configurable
 			t -= ClothoidesComputer.PRECISION_TRACE_MM / vitesse;
 		}
 		
-		return new ArcCourbeDynamique(out, longueur, false);
+		return new ArcCourbeDynamique(out, longueur, false, VitesseCourbure.BEZIER_CUBIQUE);
 	}
 	
 	@Override

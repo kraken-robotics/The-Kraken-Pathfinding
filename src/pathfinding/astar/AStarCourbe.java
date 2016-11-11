@@ -312,6 +312,8 @@ public class AStarCourbe implements Service, Configurable
 		while(!pileTmp.isEmpty())
 		{
 			ArcCourbe a = pileTmp.pop();
+			if(graphicTrajectory)
+				log.debug(a.vitesse+" "+a.getPoint(0));
 			for(int i = 0; i < a.getNbPoints(); i++)
 				trajectory.add(a.getPoint(i));
 		}

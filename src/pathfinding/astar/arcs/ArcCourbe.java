@@ -41,6 +41,7 @@ public abstract class ArcCourbe implements Printable
 	public boolean rebrousse; // cet arc commence par un rebroussement, c'est-à-dire que la marche avant change
 //	public ObstacleArcCourbe obstacle = new ObstacleArcCourbe();
 	protected static int tempsRebroussement;
+	public VitesseCourbure vitesse; // utilisé pour le debug
 	
 	public ArcCourbe(boolean rebrousse)
 	{
