@@ -168,4 +168,9 @@ public abstract class Obstacle implements Printable
 		return l;
 	}
 
+	public Vec2RO getPosition()
+	{
+		return position;
+	}
+
 }

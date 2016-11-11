@@ -18,12 +18,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 package table;
 
 import java.util.BitSet;
+import java.util.List;
 
+import obstacles.types.ObstacleMasque;
 import config.Config;
 import config.ConfigInfo;
 import config.Configurable;
 import container.Service;
 import graphic.PrintBuffer;
+import pathfinding.dstarlite.gridspace.MasqueManager;
+import pathfinding.dstarlite.gridspace.PointDirige;
 import pathfinding.dstarlite.gridspace.PointGridSpace;
 import utils.Log;
 
@@ -38,16 +42,22 @@ public class RealTable extends Table implements Service, Configurable
 	private PrintBuffer buffer;
 	private boolean print;
 	private long lastEtatTableDStarLite = 0;
+	private boolean lastShoot = true;
 	private BitSet[] newOldObstacles = new BitSet[2];
 	private BitSet newObstacles = new BitSet(PointGridSpace.NB_POINTS * 8);
 	private BitSet oldObstacles = new BitSet(PointGridSpace.NB_POINTS * 8);
 
-	public RealTable(Log log, PrintBuffer buffer)
+	public RealTable(Log log, PrintBuffer buffer, MasqueManager masquemanager)
 	{
 		super(log);
 		this.buffer = buffer;
 		newOldObstacles[0] = oldObstacles;
 		newOldObstacles[1] = newObstacles;
+		
+		// On ajoute les masques aux cylindres
+		for(GameElementNames g : GameElementNames.values())
+			if(g.aUnMasque)
+				((ObstacleMasque)g.obstacle).setMasque(masquemanager.getMasqueCylindre(g.obstacle.getPosition()));
 	}
 
 	@Override
@@ -63,9 +73,9 @@ public class RealTable extends Table implements Service, Configurable
 	 * Met à jour l'affichage en plus
 	 */
 	@Override
-	public synchronized boolean setDone(GameElementNames id, Tribool done)
+	public synchronized boolean setDone(GameElementNames id, EtatElement done)
 	{
-		if(print && done.hash > Tribool.FALSE.hash)
+		if(print && done.hash > EtatElement.INDEMNE.hash)
 			buffer.removeSupprimable(id.obstacle);
 		return super.setDone(id, done);
 	}
@@ -77,21 +87,51 @@ public class RealTable extends Table implements Service, Configurable
 	 */
 	public BitSet[] getOldAndNewObstacles(boolean shoot)
 	{
-/*		oldObstacles.clear();
+		oldObstacles.clear();
 		newObstacles.clear();
-		if(shoot)
+
+		if(shoot) // si on shoot : on vire tout
 		{
-			for(GameElementNames id :GameElementNames.values())
-				if(isDone(id, lastEtatTableDStarLite) != Tribool.FALSE)
+			// si on n'avait pas déjà shooté avant, il faut tout virer.
+			if(!lastShoot)
+				for(GameElementNames id :GameElementNames.values())
+					if(id.aUnMasque && isDone(id, lastEtatTableDStarLite) == EtatElement.INDEMNE) // si l'élément de jeu n'est pas pris
+					{
+						List<PointDirige> points = ((ObstacleMasque)id.obstacle).getMasque().masque;
+						for(PointDirige p : points)
+							oldObstacles.set(p.hashCode());
+					}
+			// si on avait déjà shooté, il n'y a déjà plus rien…
+		}
+		else 
+		{
+			if(lastShoot) // il faut tout ajouter
+			{
+				for(GameElementNames id :GameElementNames.values())
+					if(id.aUnMasque && isDone(id, etatTable) == EtatElement.INDEMNE) // si l'élément de jeu n'est pas pris
+					{
+						List<PointDirige> points = ((ObstacleMasque)id.obstacle).getMasque().masque;
+						for(PointDirige p : points)
+							newObstacles.set(p.hashCode());
+					}				
+			}
+			else // des éléments de jeu ont pu disparaître
+			{
+				for(GameElementNames id :GameElementNames.values())
 				{
-					List<PointDirige> = id.obstacle;
-					oldObstacles.set();
+					if(id.aUnMasque && isDone(id, lastEtatTableDStarLite) == EtatElement.INDEMNE && isDone(id, etatTable) != EtatElement.INDEMNE) // l'élément de jeu été indemne et ne l'est plus
+					{
+						List<PointDirige> points = ((ObstacleMasque)id.obstacle).getMasque().masque;
+						for(PointDirige p : points)
+							oldObstacles.set(p.hashCode());
+					}
 				}
+			}
 		}
 		
-		lastEtatTableDStarLite = etatTable;*/
-		// TODO Auto-generated method stub
-		return null;
+		lastShoot = shoot;
+		lastEtatTableDStarLite = etatTable;
+		return newOldObstacles;
 	}
 
 }

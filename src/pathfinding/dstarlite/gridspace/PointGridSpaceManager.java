@@ -89,7 +89,7 @@ public class PointGridSpaceManager implements Service
 	
 	/**
 	 * Récupère le voisin de "point" dans la direction indiquée.
-	 * Renvoie -1 si un tel voisin est hors table
+	 * Renvoie null si un tel voisin est hors table
 	 * @param point
 	 * @param direction
 	 * @return

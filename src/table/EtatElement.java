@@ -18,35 +18,36 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 package table;
 
 /**
- * Utilisé on veut qualifier un troisième état pour un booléen: "peut-être".
- * Utilisé quand on interprète le comportement de l'ennemi.
+ * Les états de chaque élément de jeu
  * @author pf
  *
  */
 
-public enum Tribool {
-	FALSE(0), // ces hashs sont utilisés dans la génération du hash de la table
-	MAYBE(1), // ces valeurs ne sont pas choisies au hasard mais sont des masques logiques
-	TRUE(3); // en effet, on modifie la valeur du hash par un OU logique
-	// De plus, on a l'ordre FALSE < MAYBE < TRUE
+public enum EtatElement {
+	INDEMNE(0), // ces hashs sont utilisés dans la génération du hash de la table
+	PRIS_PAR_ENNEMI(1), // ces valeurs ne sont pas choisies au hasard mais sont des masques logiques
+	PRIS_PAR_NOUS(3); // en effet, on modifie la valeur du hash par un OU logique
+	// De plus, on a l'ordre INDEMNE < PRIS_PAR_ENNEMI < PRIS_PAR_NOUS
+	
+	// LE PATHFINDING A LE DROIT DE SHOOTER LES ÉLÉMENTS DE JEU SHOOTÉ PAR L'ENNEMI !
 	
 	public final long hash;
 	public final int hashBool;
-	private static Tribool reversed[] = new Tribool[4];
+	private static EtatElement reversed[] = new EtatElement[4];
 	
 	static
 	{
-		for(Tribool t: values())
+		for(EtatElement t: values())
 			reversed[(int) t.hash] = t;
 	}
 	
-	private Tribool(int hash)
+	private EtatElement(int hash)
 	{
 		this.hash = hash;
 		hashBool = hash >> 1;
 	}
 
-	public static Tribool parse(int hash)
+	public static EtatElement parse(int hash)
 	{
 		return reversed[hash];
 	}

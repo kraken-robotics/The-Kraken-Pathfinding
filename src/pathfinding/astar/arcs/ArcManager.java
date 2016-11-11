@@ -25,7 +25,7 @@ import robot.Cinematique;
 import robot.Speed;
 import table.GameElementNames;
 import table.Table;
-import table.Tribool;
+import table.EtatElement;
 
 import java.util.Arrays;
 import java.util.List;
@@ -116,7 +116,7 @@ public class ArcManager implements Service, Configurable
     	// On vérifie si on collisionne un élément de jeu (sauf si on shoot)
     	if(!shoot)
 			for(GameElementNames g : GameElementNames.values())
-				if(table.isDone(g) == Tribool.FALSE && g.obstacle.isColliding(obs))
+				if(table.isDone(g) == EtatElement.INDEMNE && g.obstacle.isColliding(obs))
 	    		{
 	//    			log.debug("Collision avec "+g);
 	    			return false;

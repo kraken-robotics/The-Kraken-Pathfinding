@@ -25,21 +25,14 @@ import utils.Vec2RO;
  * Obstacles détectés par capteurs de proximité (ultrasons et infrarouges)
  * @author pf
  */
-public class ObstacleProximity extends ObstacleCircular
+public class ObstacleProximity extends ObstacleMasque
 {
 	private long death_date;
-	private Masque masque;
 	
 	public ObstacleProximity(Vec2RO position, int rad, long death_date, Masque masque)
 	{
-		super(position,rad,Couleur.OBSTACLES_PROX);
+		super(position, rad, Couleur.OBSTACLES_PROX, masque);
 		this.death_date = death_date;
-		this.masque = masque;
-	}
-
-	public Masque getMasque()
-	{
-		return masque;
 	}
 	
 	@Override
@@ -69,10 +62,11 @@ public class ObstacleProximity extends ObstacleCircular
 		return this.position.squaredDistance(position) < distance * distance;
 	}
 
+	// TODO : utilisé où ?
 	@Override
 	public int hashCode()
 	{
-		return (int) (masque.hashCode()+(death_date & 0xFFFF));
+		return (int) (super.hashCode()+(death_date & 0xFFFF));
 	}
 	
 }

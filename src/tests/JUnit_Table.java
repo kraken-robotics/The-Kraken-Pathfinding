@@ -26,7 +26,7 @@ import org.junit.Test;
 import table.GameElementNames;
 import table.RealTable;
 import table.Table;
-import table.Tribool;
+import table.EtatElement;
 
 /**
  * Tests unitaires pour Table
@@ -54,15 +54,15 @@ public class JUnit_Table extends JUnit_Test {
     	long hash = f.getLong(table);
     	Table cloned_table = table.clone();
         Assert.assertTrue(hash == f.getLong(cloned_table));
-        cloned_table.setDone(GameElementNames.CYLINDRE_1_D, Tribool.TRUE);
+        cloned_table.setDone(GameElementNames.CYLINDRE_1_D, EtatElement.PRIS_PAR_NOUS);
         Assert.assertTrue(hash != f.getLong(cloned_table));
     	cloned_table.copy(table);
     	hash = f.getLong(table);
         Assert.assertTrue(hash == f.getLong(cloned_table));
-		Assert.assertTrue(table.isDone(GameElementNames.CYLINDRE_1_D) == Tribool.TRUE);
-		Assert.assertTrue(cloned_table.isDone(GameElementNames.CYLINDRE_1_D) == Tribool.TRUE);
+		Assert.assertTrue(table.isDone(GameElementNames.CYLINDRE_1_D) == EtatElement.PRIS_PAR_NOUS);
+		Assert.assertTrue(cloned_table.isDone(GameElementNames.CYLINDRE_1_D) == EtatElement.PRIS_PAR_NOUS);
     	Assert.assertTrue(f.getLong(table) == f.getLong(cloned_table));
-    	table.setDone(GameElementNames.CYLINDRE_3_D, Tribool.TRUE);
+    	table.setDone(GameElementNames.CYLINDRE_3_D, EtatElement.PRIS_PAR_NOUS);
     	Assert.assertTrue(f.getLong(table) != f.getLong(cloned_table));
     }
     
@@ -75,10 +75,10 @@ public class JUnit_Table extends JUnit_Test {
     	long hash = f.getLong(table);
     	for(GameElementNames e : GameElementNames.values())
 		{
-			table.setDone(e, Tribool.MAYBE);
+			table.setDone(e, EtatElement.PRIS_PAR_ENNEMI);
 			Assert.assertTrue(f.getLong(table) != hash);
 			hash = f.getLong(table);
-			table.setDone(e, Tribool.TRUE);
+			table.setDone(e, EtatElement.PRIS_PAR_NOUS);
 			Assert.assertTrue(f.getLong(table) != hash);
 			hash = f.getLong(table);
 		}

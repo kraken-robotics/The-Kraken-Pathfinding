@@ -52,15 +52,14 @@ import graphic.printable.Couleur;
 
 public class DStarLite implements Service, Configurable
 {
-	// TODO : éléments de jeu comme obstacles
-	
 	protected Log log;
 	private GridSpace gridspace;
 	private RealTable table;
 	private PointGridSpaceManager pointManager;
 	private PointDirigeManager pointDManager;
 	private boolean graphicDStarLite, graphicDStarLiteFinal, graphicHeuristique;
-
+	private boolean shoot = false;
+	
 	private DStarLiteNode[] memory = new DStarLiteNode[PointGridSpace.NB_POINTS];
 
 	private EnhancedPriorityQueue openset = new EnhancedPriorityQueue();
@@ -280,13 +279,15 @@ public class DStarLite implements Service, Configurable
 	 * @param arrivee (un Vec2)
 	 * @param depart (un Vec2)
 	 */
-	public void computeNewPath(Vec2RO depart, Vec2RO arrivee)
+	public void computeNewPath(Vec2RO depart, Vec2RO arrivee, boolean shoot)
 	{
+		this.shoot = shoot;
 		if(graphicDStarLite)
 			gridspace.reinitGraphicGrid();
 		
 		updateGoalAndStart(depart, arrivee);
 		updateObstaclesEnnemi();
+		updateObstaclesTable();
 
 		if(graphicDStarLite)
 		{
@@ -359,7 +360,7 @@ public class DStarLite implements Service, Configurable
 	 */
 	public synchronized void updateObstaclesTable()
 	{
-		updateObstacles(table.getOldAndNewObstacles(true));
+		updateObstacles(table.getOldAndNewObstacles(shoot));
 	}
 	
 	/**
@@ -414,8 +415,13 @@ public class DStarLite implements Service, Configurable
 				{
 					u.rhs = Integer.MAX_VALUE;
 					for(Direction voisin : Direction.values)
+					{
+						PointGridSpace pointvoisin = pointManager.getGridPointVoisin(u.gridpoint,voisin);
+						if(pointvoisin == null) // pas de bras…
+							continue;
 						u.rhs = Math.min(u.rhs, add(distanceDynamiqueSucc(u.gridpoint, voisin),
-								getFromMemory(pointManager.getGridPointVoisin(u.gridpoint,voisin)).g));
+								getFromMemory(pointvoisin).g));
+					}
 				}				
 				updateVertex(u);
 			}

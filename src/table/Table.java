@@ -28,7 +28,7 @@ import utils.*;
 public class Table
 {
 	// Dépendances
-	private Log log;
+	protected Log log;
 	
 	/** Contient toutes les informations sur les éléments de jeux sans perte d'information. */
 	protected volatile long etatTable = 0L;
@@ -44,7 +44,7 @@ public class Table
 	 * Renvoie vrai si l'état de la table a changé pour le futur (?)
 	 * @param id
 	 */
-	public synchronized boolean setDone(GameElementNames id, Tribool done)
+	public synchronized boolean setDone(GameElementNames id, EtatElement done)
 	{
 		long old_hash = etatTable;
 		etatTable |= (done.hash << (2*id.ordinal()));
@@ -56,7 +56,7 @@ public class Table
 	 * Cet objet est-il présent ou non?
 	 * @param id
 	 */
-	public Tribool isDone(GameElementNames id)
+	public EtatElement isDone(GameElementNames id)
 	{
 		return isDone(id, etatTable);
 	}
@@ -65,9 +65,9 @@ public class Table
 	 * Cet objet est-il présent ou non?
 	 * @param id
 	 */
-	protected Tribool isDone(GameElementNames id, long etat)
+	protected EtatElement isDone(GameElementNames id, long etat)
 	{
-		return Tribool.parse((int)((etat >> (2*id.ordinal()))&3));
+		return EtatElement.parse((int)((etat >> (2*id.ordinal()))&3));
 	}
 	
 	/**

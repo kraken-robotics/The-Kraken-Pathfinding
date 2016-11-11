@@ -356,7 +356,7 @@ public class AStarCourbe implements Service, Configurable
 		state.copyAStarCourbe(depart.state);
 		arcmanager.configureArcManager(sens, DirectionStrategy.defaultStrategy, arrivee);
 
-		dstarlite.computeNewPath(depart.state.robot.getCinematique().getPosition(), arrivee.getPosition());
+		dstarlite.computeNewPath(depart.state.robot.getCinematique().getPosition(), arrivee.getPosition(), shoot);
 		if(graphicDStarLite)
 			dstarlite.itineraireBrut();
 
