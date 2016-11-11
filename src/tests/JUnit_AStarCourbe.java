@@ -29,6 +29,7 @@ import graphic.PrintBuffer;
 import pathfinding.SensFinal;
 import pathfinding.astar.AStarCourbe;
 import pathfinding.astar.arcs.ArcCourbeStatique;
+import pathfinding.astar.arcs.BezierComputer;
 import pathfinding.astar.arcs.ArcCourbeDynamique;
 import pathfinding.astar.arcs.ClothoidesComputer;
 import pathfinding.astar.arcs.VitesseCourbure;
@@ -53,6 +54,7 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 
 	private AStarCourbe astar;
 	private ClothoidesComputer clotho;
+	protected BezierComputer bezier;
 	private PrintBuffer buffer;
 	private RobotReal robot;
 	private IteratorCheminPathfinding iterator;
@@ -74,6 +76,7 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 		chemin = container.getService(CheminPathfinding.class);
 		iterator = container.make(IteratorCheminPathfinding.class);
 		gridspace = container.getService(GridSpace.class);
+		bezier = container.getService(BezierComputer.class);
 //		arcmanager = container.getService(ArcManager.class);
 		graphicTrajectory = config.getBoolean(ConfigInfo.GRAPHIC_TRAJECTORY_FINAL);
 	}
@@ -171,7 +174,6 @@ public class JUnit_AStarCourbe extends JUnit_Test {
     public void test_clotho() throws Exception
     {
 		boolean graphicTrajectory = config.getBoolean(ConfigInfo.GRAPHIC_TRAJECTORY);
-		ClothoidesComputer clotho = container.getService(ClothoidesComputer.class);
 		RobotReal rr = container.getService(RobotReal.class);
 		int nbArc = 16;
 		ArcCourbeStatique arc[] = new ArcCourbeStatique[nbArc];
@@ -230,15 +232,14 @@ public class JUnit_AStarCourbe extends JUnit_Test {
     public void test_demi_tour() throws Exception
     {
 		boolean graphicTrajectory = config.getBoolean(ConfigInfo.GRAPHIC_TRAJECTORY);
-		ClothoidesComputer clotho = container.getService(ClothoidesComputer.class);
 		
-		int nbArc = 1;
+		int nbArc = 2;
 		ArcCourbeDynamique arc[] = new ArcCourbeDynamique[nbArc];
 
 		Cinematique c = new Cinematique(0, 1000, Math.PI/2, false, 0, Speed.STANDARD.translationalSpeed);
 		log.debug("Initial : "+c);
-		arc[0] = clotho.getTrajectoireDemiTour(c, VitesseCourbure.DEMI_TOUR_DROITE, Speed.STANDARD);
-//;		clotho.getTrajectoire(arc[0], VitesseCourbure.DEMI_TOUR_GAUCHE, Speed.STANDARD, arc[1]);
+		arc[0] = clotho.getTrajectoireDemiTour(c, VitesseCourbure.DEMI_TOUR_DROITE, Speed.STANDARD); // TODO
+		arc[1] = clotho.getTrajectoireDemiTour(arc[0].getLast(), VitesseCourbure.DEMI_TOUR_GAUCHE, Speed.STANDARD);
 
 		for(int a = 0; a < nbArc; a++)	
 		{
@@ -249,9 +250,30 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 					buffer.addSupprimable(new ObstacleCircular(arc[a].getPoint(i).getPosition(), 4));
 			}
 		}
+    }
 	
+	@Test
+    public void test_bezier_quad() throws Exception
+    {
+		boolean graphicTrajectory = config.getBoolean(ConfigInfo.GRAPHIC_TRAJECTORY);
 		
-//		Assert.assertEquals(0, arc[nbArc-1].arcselems[arc[nbArc-1].arcselems.length - 1].getPosition().distance(new Vec2RO(-241.15808562189363,1723.4011449205677)), 0.1);
+		int nbArc = 1;
+		ArcCourbeDynamique arc[] = new ArcCourbeDynamique[nbArc];
+
+		Cinematique c = new Cinematique(0, 1000, Math.PI/2, true, -1, Speed.STANDARD.translationalSpeed);
+		Cinematique arrivee = new Cinematique(400, 900, Math.PI/2, false, 0, Speed.STANDARD.translationalSpeed);
+		log.debug("Initial : "+c);
+		arc[0] = bezier.interpolationQuadratique(c, arrivee, Speed.STANDARD);
+
+		for(int a = 0; a < nbArc; a++)	
+		{
+			for(int i = 0; i < arc[a].getNbPoints(); i++)
+			{
+				System.out.println(a+" "+i+" "+arc[a].getPoint(i));
+				if(graphicTrajectory)
+					buffer.addSupprimable(new ObstacleCircular(arc[a].getPoint(i).getPosition(), 4));
+			}
+		}
     }
 
 	/*

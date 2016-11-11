@@ -50,6 +50,7 @@ public class ArcManager implements Service, Configurable
 {
 	protected Log log;
 	private ClothoidesComputer clotho;
+	protected BezierComputer bezier;
 	private PrintBuffer buffer;
 	private Table table;
 	private AStarCourbeNode current;
@@ -63,8 +64,9 @@ public class ArcManager implements Service, Configurable
 	private List<VitesseCourbure> listeVitesse = Arrays.asList(VitesseCourbure.values());
 	private ListIterator<VitesseCourbure> iterator = listeVitesse.listIterator();
 	
-	public ArcManager(Log log, ClothoidesComputer clotho, Table table, PrintBuffer buffer, DStarLite dstarlite)
+	public ArcManager(Log log, ClothoidesComputer clotho, Table table, PrintBuffer buffer, DStarLite dstarlite, BezierComputer bezier)
 	{
+		this.bezier = bezier;
 		this.table = table;
 		this.log = log;
 		this.clotho = clotho;
@@ -168,6 +170,19 @@ public class ArcManager implements Service, Configurable
 			successeur.cameFromArcDynamique = tmp;
 		}
 		
+		else if(v == VitesseCourbure.BEZIER_QUAD)
+		{
+			ArcCourbeDynamique tmp;
+			tmp = bezier.interpolationQuadratique(
+					current.state.robot.getCinematique(),
+					arrivee,
+					vitesseMax);
+			if(tmp == null)
+				return false;
+
+			successeur.cameFromArcDynamique = tmp;
+		}
+		
 		/**
 		 * Si on veut ramener le volant au milieu
 		 */
@@ -244,6 +259,8 @@ public class ArcManager implements Service, Configurable
     	// On ne tente pas l'interpolation si on est trop loin
 		if((vitesse == VitesseCourbure.DIRECT_COURBE || vitesse == VitesseCourbure.DIRECT_COURBE_REBROUSSE))
 		{
+			if(true)
+			return false;// TODO arc cubique désactivé
 			// on n'arriverait pas dans le bon sens…
 			if(!sens.isOK(current.state.robot.getCinematique().enMarcheAvant ^ vitesse == VitesseCourbure.DIRECT_COURBE_REBROUSSE))
 				return false;

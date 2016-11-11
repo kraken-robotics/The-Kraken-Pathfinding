@@ -157,4 +157,13 @@ public class Vec2RO implements Serializable
 	{
 		return x < -1500 || x > 1500 || y < 0 || y > 2000;
 	}
+
+	/**
+	 * La norme du vecteur
+	 * @return
+	 */
+	public double norm()
+	{
+		return Math.sqrt(x*x+y*y);
+	}
 }

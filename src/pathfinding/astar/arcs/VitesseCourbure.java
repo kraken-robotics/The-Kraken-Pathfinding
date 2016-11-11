@@ -48,6 +48,9 @@ public enum VitesseCourbure
 	DROITE_4(-25),
 	DROITE_5(-36),
 	
+	BEZIER_QUAD(0),
+	BEZIER_CUBIQUE(0),
+	
 	DEMI_TOUR_DROITE(-16), // TODO version avec d'autres vitesses ?
 	DEMI_TOUR_GAUCHE(16),
 	
