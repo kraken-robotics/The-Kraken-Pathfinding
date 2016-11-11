@@ -181,7 +181,18 @@ public class ArcManager implements Service, Configurable
 				return false;
 			successeur.cameFromArcDynamique = tmp;
 		}
-		
+
+		/**
+		 * Si on veut faire un demi-tour
+		 */
+		else if(v.demitour)
+		{
+			successeur.cameFromArcDynamique = clotho.getTrajectoireDemiTour(
+					successeur.state.robot.getCinematique(),
+					v,
+					vitesseMax);
+		}
+
 		/**
 		 * Si on fait une interpolation par clothoïde
 		 */
@@ -229,7 +240,7 @@ public class ArcManager implements Service, Configurable
 //    		log.debug(vitesse+" n'est pas acceptable (rebroussement nécessaire");
     		return false;
     	}
-
+    	
     	// On ne tente pas l'interpolation si on est trop loin
 		if((vitesse == VitesseCourbure.DIRECT_COURBE || vitesse == VitesseCourbure.DIRECT_COURBE_REBROUSSE))
 		{

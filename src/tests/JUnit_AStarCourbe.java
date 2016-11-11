@@ -59,6 +59,7 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 	private boolean graphicTrajectory;
 	private CheminPathfinding chemin;
 	private GridSpace gridspace;
+//	private ArcManager arcmanager;
 //	private DStarLite dstarlite;
 
 	@Override
@@ -73,6 +74,7 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 		chemin = container.getService(CheminPathfinding.class);
 		iterator = container.make(IteratorCheminPathfinding.class);
 		gridspace = container.getService(GridSpace.class);
+//		arcmanager = container.getService(ArcManager.class);
 		graphicTrajectory = config.getBoolean(ConfigInfo.GRAPHIC_TRAJECTORY_FINAL);
 	}
 
@@ -223,6 +225,35 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 		
 		Assert.assertEquals(0, arc[nbArc-1].arcselems[arc[nbArc-1].arcselems.length - 1].getPosition().distance(new Vec2RO(-241.15808562189363,1723.4011449205677)), 0.1);
     }
+
+	@Test
+    public void test_demi_tour() throws Exception
+    {
+		boolean graphicTrajectory = config.getBoolean(ConfigInfo.GRAPHIC_TRAJECTORY);
+		ClothoidesComputer clotho = container.getService(ClothoidesComputer.class);
+		
+		int nbArc = 1;
+		ArcCourbeDynamique arc[] = new ArcCourbeDynamique[nbArc];
+
+		Cinematique c = new Cinematique(0, 1000, Math.PI/2, false, 0, Speed.STANDARD.translationalSpeed);
+		log.debug("Initial : "+c);
+		arc[0] = clotho.getTrajectoireDemiTour(c, VitesseCourbure.DEMI_TOUR_DROITE, Speed.STANDARD);
+//;		clotho.getTrajectoire(arc[0], VitesseCourbure.DEMI_TOUR_GAUCHE, Speed.STANDARD, arc[1]);
+
+		for(int a = 0; a < nbArc; a++)	
+		{
+			for(int i = 0; i < arc[a].getNbPoints(); i++)
+			{
+				System.out.println(a+" "+i+" "+arc[a].getPoint(i));
+				if(graphicTrajectory)
+					buffer.addSupprimable(new ObstacleCircular(arc[a].getPoint(i).getPosition(), 4));
+			}
+		}
+	
+		
+//		Assert.assertEquals(0, arc[nbArc-1].arcselems[arc[nbArc-1].arcselems.length - 1].getPosition().distance(new Vec2RO(-241.15808562189363,1723.4011449205677)), 0.1);
+    }
+
 	/*
 	@Test
     public void test_bench() throws Exception
@@ -288,7 +319,32 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 		}
 		log.debug("Nb points : "+i);
     }
-	
+
+	@Test
+    public void test_recherche_shoot2() throws Exception
+    {
+		Cinematique depart = new Cinematique(-200, 1600, -Math.PI/3+Math.PI, true, 0, Speed.STANDARD.translationalSpeed);
+		robot.setCinematique(depart);
+		Cinematique c = new Cinematique(1000, 1200, Math.PI, false, 0, Speed.STANDARD.translationalSpeed);
+		astar.computeNewPath(c, true);
+		iterator.reinit();
+		CinematiqueObs a = null, b = null;
+		int i = 0;
+		while(iterator.hasNext())
+		{
+			i++;
+			a = iterator.next();
+			log.debug(a);
+			robot.setCinematique(a);
+			if(b != null)
+				log.debug(a.getPosition().distance(b.getPosition()));
+			b = a;
+			if(graphicTrajectory)
+				Thread.sleep(100);
+		}
+		log.debug("Nb points : "+i);
+    }
+
 	@Test
     public void test_recherche_shoot_pas() throws Exception
     {
@@ -410,7 +466,7 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 		Cinematique depart = new Cinematique(-800, 800, Math.PI/4, true, 0, Speed.STANDARD.translationalSpeed);
 //		Cinematique depart = new Cinematique(1000, 1000, 0, true, 0, Speed.STANDARD.translationalSpeed);
 		robot.setCinematique(depart);
-		Cinematique c = new Cinematique(1100, 400, -Math.PI/4, false, 0, Speed.STANDARD.translationalSpeed);
+		Cinematique c = new Cinematique(1000, 500, -Math.PI/4, false, 0, Speed.STANDARD.translationalSpeed);
 		astar.computeNewPath(c, SensFinal.MARCHE_ARRIERE, true);
 		log.debug("Temps : "+(System.nanoTime() - avant) / (1000000.));
 		iterator.reinit();

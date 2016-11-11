@@ -426,7 +426,7 @@ public class ClothoidesComputer implements Service, Configurable
 		{
 			sDepartPrecedent = sDepart;
 			sDepart += vitesse.squaredRootVitesse * PRECISION_TRACE;
-			if(Math.abs(sDepart) > Math.abs(sDepartPrecedent))
+			if(Math.abs(sDepart) > Math.abs(sDepartPrecedent)) // on vérifie la courbure
 				break;
 			CinematiqueObs obs = memory.getNewNode();
 			out.add(obs);
@@ -439,17 +439,17 @@ public class ClothoidesComputer implements Service, Configurable
 	
 	/**
 	 * Calcul un point à partir de ces quelques paramètres
-	 * @param pointDepart
-	 * @param vitesse
-	 * @param sDepart
-	 * @param coeffMultiplicatif
-	 * @param i
-	 * @param baseOrientation
-	 * @param cos
-	 * @param sin
-	 * @param marcheAvant
-	 * @param vitesseTr
-	 * @param positionInitiale
+	 * @param pointDepart : l'indice du point de depart dans trajectoire[]
+	 * @param vitesse : la vitesse de courbure
+	 * @param sDepart : la valeur de "s" au point de départ
+	 * @param coeffMultiplicatif : issu de la vitesse de courbure
+	 * @param i : quel point dans la trajectoire
+	 * @param baseOrientation : l'orientation au début du mouvement
+	 * @param cos : le cos de baseOrientation
+	 * @param sin : son sin
+	 * @param marcheAvant : si le trajet est fait en marche avant
+	 * @param vitesseTr : la vitesse translatoire souhaitée
+	 * @param positionInitiale : la position au début du mouvement
 	 * @param c
 	 */
 	private void computePoint(int pointDepart, VitesseCourbure vitesse, double sDepart, double coeffMultiplicatif, int i, double baseOrientation, double cos, double sin, boolean marcheAvant, Speed vitesseTr, Vec2RO positionInitiale, CinematiqueObs c)
@@ -627,6 +627,90 @@ public class ClothoidesComputer implements Service, Configurable
         return false;
     }
 
+	private Vec2RW vecteurOrientationDepart = new Vec2RW();
+	private Vec2RW vecteurOrientation = new Vec2RW();
+	
+	/**
+	 * Construit un arc courbe qui fait faire un demi-tour au robot
+	 * @param cinematiqueInitiale
+	 * @param vitesse
+	 * @param vitesseMax
+	 * @return
+	 */
+	public final ArcCourbeDynamique getTrajectoireDemiTour(Cinematique cinematiqueInitiale, VitesseCourbure vitesse, Speed vitesseMax)
+	{
+		List<CinematiqueObs> trajet = getTrajectoireQuartDeTour(cinematiqueInitiale, vitesse, vitesseMax, false);
+		trajet.addAll(getTrajectoireQuartDeTour(trajet.get(trajet.size()-1), vitesse, vitesseMax, true)); // on reprend à la fin du premier quart de tour
+		return new ArcCourbeDynamique(trajet, trajet.size()*PRECISION_TRACE_MM, false); // TODO : rebrousse est faux…
+	}
+	
+	/**
+	 * Construit un arc courbe qui fait un quart de tour au robot
+	 * @param position
+	 * @param orientation
+	 * @param courbure
+	 * @param vitesseTr
+	 * @param modified
+	 * @param enMarcheAvant
+	 * @param vitesse
+	 * @return 
+	 */
+	private final List<CinematiqueObs> getTrajectoireQuartDeTour(Cinematique cinematiqueInitiale, VitesseCourbure vitesse, Speed vitesseMax, boolean rebrousse)
+	{
+		double courbure = cinematiqueInitiale.courbureGeometrique;
+		double orientation = cinematiqueInitiale.orientationGeometrique;
+		if(rebrousse)
+		{
+			courbure = 0;
+			orientation += Math.PI;
+		}
+
+		vecteurOrientationDepart.setX(Math.cos(orientation));
+		vecteurOrientationDepart.setY(Math.sin(orientation));
+		
+		boolean marcheAvant = rebrousse ^ cinematiqueInitiale.enMarcheAvant;
+
+		// Gestion de la vitesse en marche arrière
+		Speed vitesseTr = vitesseMax;
+		if(!marcheAvant)
+			vitesseTr = Speed.values()[vitesseMax.ordinal()+1];
+
+		double coeffMultiplicatif = 1. / vitesse.squaredRootVitesse;
+		double sDepart = courbure / vitesse.squaredRootVitesse; // sDepart peut parfaitement être négatif
+		if(!vitesse.positif)
+			sDepart = -sDepart;
+		int pointDepart = (int) ((sDepart / PRECISION_TRACE) + INDICE_MAX - 1 + 0.5); // le 0.5 vient du fait qu'on fait ici un arrondi
+		
+		if(pointDepart < 0 || pointDepart >= trajectoire.length)
+			log.critical("Sorti de la clothoïde précalculée !");
+		
+		double orientationClothoDepart = sDepart * sDepart; // orientation au départ
+		if(!vitesse.positif)
+			orientationClothoDepart = - orientationClothoDepart;
+
+		double baseOrientation = orientation - orientationClothoDepart;
+		double cos = Math.cos(baseOrientation);
+		double sin = Math.sin(baseOrientation);
+
+		// le premier point n'est pas position, mais le suivant
+		// (afin de ne pas avoir de doublon quand on enchaîne les arcs, entre le dernier point de l'arc t et le premier de l'arc t+1)		
+		int i = 0;
+
+		List<CinematiqueObs> out = new ArrayList<CinematiqueObs>();
+		Vec2RO positionInit = cinematiqueInitiale.getPosition();
+		do
+		{
+			sDepart += vitesse.squaredRootVitesse * PRECISION_TRACE;
+			CinematiqueObs obs = memory.getNewNode();
+			out.add(obs);
+			computePoint(pointDepart, vitesse, sDepart, coeffMultiplicatif, i, baseOrientation, cos, sin, marcheAvant, vitesseTr, positionInit, obs);
+			vecteurOrientation.setX(Math.cos(obs.orientationGeometrique));
+			vecteurOrientation.setY(Math.sin(obs.orientationGeometrique));
+			i++;
+		} while(vecteurOrientation.dot(vecteurOrientationDepart) >= 0);
+		return out;
+	}
+	
 	// TODO
 	
 	/**

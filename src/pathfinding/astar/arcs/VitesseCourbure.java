@@ -48,6 +48,9 @@ public enum VitesseCourbure
 	DROITE_4(-25),
 	DROITE_5(-36),
 	
+	DEMI_TOUR_DROITE(-16), // TODO version avec d'autres vitesses ?
+	DEMI_TOUR_GAUCHE(16),
+	
 //	GAUCHE_0_REBROUSSE(1),
 //	GAUCHE_1_REBROUSSE(4),
 //	GAUCHE_2_REBROUSSE(9),
@@ -63,11 +66,13 @@ public enum VitesseCourbure
 	public final boolean positif;
 	public final boolean rebrousse;
 	public final boolean ramene;
+	public final boolean demitour;
 	
 	private VitesseCourbure(int vitesse)
 	{
 		this.rebrousse = toString().contains("REBROUSSE");
 		this.ramene = toString().startsWith("RAMENE_");
+		this.demitour = toString().startsWith("DEMI_TOUR_");
 		this.vitesse = vitesse;
 		this.positif = vitesse >= 0;
 		

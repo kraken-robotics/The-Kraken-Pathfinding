@@ -67,7 +67,7 @@ public enum ConfigInfo {
 	PF_MARGE_NECESSAIRE((int)(0.10/ClothoidesComputer.PRECISION_TRACE)), // combien de points de pathfinding le bas niveau doit-il toujours avoir
 	PF_MARGE_INITIALE((int)(0.15/ClothoidesComputer.PRECISION_TRACE)), // combien de points garde-t-on au début de la replanification
 	DUREE_MAX_RECHERCHE_PF(3000), // durée maximale que peut prendre le pathfinding
-	TAILLE_FAISCEAU_PF(5),
+	TAILLE_FAISCEAU_PF(10),
 	
 	/**
 	 * Paramètres de la série

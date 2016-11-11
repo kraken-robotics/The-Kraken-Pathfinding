@@ -277,7 +277,6 @@ public class DStarLite implements Service, Configurable
 
 	/**
 	 * Calcule un nouvel itinéraire.
-	 * Utilisé pour les tests
 	 * @param arrivee (un Vec2)
 	 * @param depart (un Vec2)
 	 */
@@ -504,8 +503,8 @@ public class DStarLite implements Service, Configurable
 		DStarLiteNode premier = getFromMemoryUpdated(pos);
 		
 		// Cas particulier si on sait qu'on doit rebrousser chemin
-		if(!sens.isOK(c.enMarcheAvant))
-			return heuristicCostCourbeRebroussement(premier, pos, c);
+//		if(!sens.isOK(c.enMarcheAvant))
+//			return heuristicCostCourbeRebroussement(premier, pos, c);
 //		else if(sens == SensFinal.MARCHE_ARRIERE) // on doit arriver en marche arrière et on est en marche arrière
 //			return heuristicCostCourbeRebroussementFin(premier, pos, c);
 		
@@ -515,13 +514,17 @@ public class DStarLite implements Service, Configurable
 		
 		double orientationOptimale = getOrientationHeuristique(pos);
 		
-		// l'orientation est vérifiée modulo 2*pi : la marche avant et la marche arrière sont différenciées
+		// l'orientation est vérifiée modulo 2*pi : la marche avant et la marche arrière sont différenciées (ce qu'on veut, c'est progresser vers la destination)
 		double erreurOrientation = (c.orientationGeometrique - orientationOptimale) % (2*Math.PI);
 		if(erreurOrientation > Math.PI)
 			erreurOrientation -= 2*Math.PI;
 
 		erreurOrientation = Math.abs(erreurOrientation);
 
+		double erreurSens = 0;
+		if(!sens.isOK(c.enMarcheAvant))
+			erreurSens = 1;
+		
 		double erreurDistance = premier.rhs / 1000. * PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS; // distance en mm
 		
 		if(premier.rhs == Integer.MAX_VALUE)
@@ -546,7 +549,7 @@ public class DStarLite implements Service, Configurable
 		// il faut toujours majorer la vraie distance, afin de ne pas chercher tous les trajets possibles…
 		// le poids de l'erreur d'orientation doit rester assez faible. Car vouloir trop coller à l'orientation, c'est risquer d'avoir une courbure impossible…
 		// on cherche une faible courbure. ça évite les trajectoires complexes
-		return 1.1*erreurDistance + 5*erreurOrientation + Math.abs(2*c.courbureReelle);
+		return 1500*erreurSens + 1.1*erreurDistance + 5*erreurOrientation + Math.abs(2*c.courbureReelle); // TODO : erreurSens
 	}
 
 	/**
