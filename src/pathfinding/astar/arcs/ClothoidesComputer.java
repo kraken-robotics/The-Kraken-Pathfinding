@@ -183,7 +183,6 @@ public class ClothoidesComputer implements Service
 			courbure = 0;
 			orientation += Math.PI;
 		}
-		modified.rebrousse = vitesse.rebrousse;
 		modified.vitesse = vitesse;
 		
 		boolean marcheAvant = vitesse.rebrousse ^ cinematiqueInitiale.enMarcheAvant;
@@ -290,7 +289,7 @@ public class ClothoidesComputer implements Service
 			i++;
 		}
 		
-		return new ArcCourbeDynamique(out, i*PRECISION_TRACE_MM, false, vitesse);
+		return new ArcCourbeDynamique(out, i*PRECISION_TRACE_MM, vitesse);
 	}
 	
 	/**
@@ -489,7 +488,7 @@ public class ClothoidesComputer implements Service
 	{
 		List<CinematiqueObs> trajet = getTrajectoireQuartDeTour(cinematiqueInitiale, vitesse, vitesseMax, false);
 		trajet.addAll(getTrajectoireQuartDeTour(trajet.get(trajet.size()-1), vitesse, vitesseMax, true)); // on reprend à la fin du premier quart de tour
-		return new ArcCourbeDynamique(trajet, trajet.size()*PRECISION_TRACE_MM, false, vitesse); // TODO : rebrousse est faux…
+		return new ArcCourbeDynamique(trajet, trajet.size()*PRECISION_TRACE_MM, vitesse); // TODO : rebrousse est faux…
 	}
 	
 	/**

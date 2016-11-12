@@ -136,7 +136,7 @@ public class ArcManager implements Service, Configurable
 	public double distanceTo(AStarCourbeNode node)
 	{
 		node.state.robot.suitArcCourbe(node.getArc());
-		return node.getArc().getDuree();
+		return node.getArc().getDuree(node.state.robot.getCinematique());
 	}
 
 	/**

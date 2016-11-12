@@ -26,6 +26,7 @@ import graphic.printable.Layer;
 import graphic.printable.Printable;
 import config.Config;
 import config.ConfigInfo;
+import robot.Cinematique;
 import robot.CinematiqueObs;
 import robot.RobotReal;
 
@@ -38,15 +39,9 @@ import robot.RobotReal;
 public abstract class ArcCourbe implements Printable
 {
 
-	public boolean rebrousse; // cet arc commence par un rebroussement, c'est-à-dire que la marche avant change
 //	public ObstacleArcCourbe obstacle = new ObstacleArcCourbe();
 	protected static int tempsRebroussement;
 	public VitesseCourbure vitesse; // utilisé pour le debug
-	
-	public ArcCourbe(boolean rebrousse)
-	{
-		this.rebrousse = rebrousse;
-	}
 	
 	public abstract int getNbPoints();
 	public abstract CinematiqueObs getPoint(int indice);
@@ -54,11 +49,18 @@ public abstract class ArcCourbe implements Printable
 	public abstract double getVitesseTr();
 	protected abstract double getLongueur();
 
-	public final double getDuree()
+	public final double getDuree(Cinematique obs)
 	{
-		if(rebrousse)
-			return getLongueur() / getVitesseTr() + tempsRebroussement;
-		return getLongueur() / getVitesseTr();
+		double out = getLongueur() / getVitesseTr();
+		boolean lastAvant = obs.enMarcheAvant;
+		for(int i = 0; i < getNbPoints(); i++)
+		{
+			CinematiqueObs p = getPoint(i);
+			if(p.enMarcheAvant != lastAvant)
+				out += tempsRebroussement;
+			lastAvant = p.enMarcheAvant;
+		}
+		return out;
 	}
 	
 	@Override

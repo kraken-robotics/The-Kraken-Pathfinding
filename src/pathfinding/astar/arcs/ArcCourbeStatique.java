@@ -32,7 +32,6 @@ public class ArcCourbeStatique extends ArcCourbe
 	
 	public ArcCourbeStatique(RobotReal r)
 	{
-		super(false); // modifié par copy
 		for(int i = 0; i < ClothoidesComputer.NB_POINTS; i++)
 			arcselems[i] = new CinematiqueObs(r);
 	}
