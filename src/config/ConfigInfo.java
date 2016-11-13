@@ -87,7 +87,6 @@ public enum ConfigInfo {
 	/**
 	 * Paramètres du traitement des capteurs
 	 */
-	NB_CAPTEURS(12), // le nombre de capteurs du robot
 	DUREE_PEREMPTION_OBSTACLES(3000), // pendant combien de temps va-t-on garder un obstacle de proximité
 	DISTANCE_MAX_ENTRE_MESURE_ET_OBJET(50), // quelle marge d'erreur autorise-t-on entre un objet et sa détection
 	DISTANCE_BETWEEN_PROXIMITY_OBSTACLES(50), // sous quelle distance fusionne-t-on deux obstacles de proximité ?
