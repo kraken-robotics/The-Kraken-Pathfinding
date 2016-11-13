@@ -297,6 +297,9 @@ public class ClothoidesComputer implements Service
 			i++;
 		}
 		
+		if(out.isEmpty())
+			return null;
+		
 		return new ArcCourbeDynamique(out, i*PRECISION_TRACE_MM, vitesse);
 	}
 	

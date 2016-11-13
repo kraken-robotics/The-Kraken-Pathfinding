@@ -72,7 +72,14 @@ public class MemoryManager<T extends Memorizable> implements Service {
 		if(firstAvailable == nodes.length)
 		{
 			try {
+				if(nodes.length > 1000000) // pas plus d'un million d'objets (sert à empêcher les bugs de tout faire planter… cette condition est inutile en temps normal)
+				{
+					int z = 0;
+					z = 1/z;
+				}
+
 				log.warning("Mémoire trop petite pour les "+nodes[0].getClass().getSimpleName()+", extension (nouvelle taille : "+(nodes.length * 2)+")");
+				
 				T[] newNodes = (T[]) Array.newInstance(nodes[0].getClass(), nodes.length * 2);
 				for(int i = 0; i < nodes.length; i++)
 					newNodes[i] = nodes[i];

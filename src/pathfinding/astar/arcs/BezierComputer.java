@@ -17,6 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 package pathfinding.astar.arcs;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 import config.Config;
@@ -26,8 +27,11 @@ import container.Service;
 import graphic.PrintBuffer;
 import memory.CinemObsMM;
 import pathfinding.astar.arcs.vitesses.VitesseBezier;
+import pathfinding.astar.arcs.vitesses.VitesseClotho;
+import pathfinding.astar.arcs.vitesses.VitesseRameneVolant;
 import robot.Cinematique;
 import robot.CinematiqueObs;
+import robot.RobotReal;
 import robot.Speed;
 import utils.Log;
 import utils.Vec2RO;
@@ -45,16 +49,21 @@ public class BezierComputer implements Service, Configurable
 	protected CinemObsMM memory;
 	protected PrintBuffer buffer;
 	protected double courbureMax;
+	private ClothoidesComputer clothocomputer;
 	
-	public BezierComputer(Log log, CinemObsMM memory, PrintBuffer buffer)
+	public BezierComputer(Log log, CinemObsMM memory, PrintBuffer buffer, ClothoidesComputer clothocomputer, RobotReal robot)
 	{
 		this.log = log;
 		this.memory = memory;
 		this.buffer = buffer;
+		this.clothocomputer = clothocomputer;
+		tmp = new ArcCourbeStatique(robot);
 	}
 	
 	private Vec2RW delta = new Vec2RW();
 	private Vec2RW vecteurVitesse = new Vec2RW();
+	
+	private ArcCourbeStatique tmp;
 	
 	/**
 	 * Interpolation avec des courbes de Bézier quadratique. La solution est unique.
@@ -66,23 +75,75 @@ public class BezierComputer implements Service, Configurable
 	 */
 	public ArcCourbeDynamique interpolationQuadratique(Cinematique cinematiqueInitiale, Cinematique arrivee, Speed vitesseMax)
 	{
+		Cinematique debut = cinematiqueInitiale;
 		arrivee.getPosition().copy(delta);
-		delta.minus(cinematiqueInitiale.getPosition());
-		vecteurVitesse.setX(Math.cos(cinematiqueInitiale.orientationGeometrique));
-		vecteurVitesse.setY(Math.sin(cinematiqueInitiale.orientationGeometrique));
+		delta.minus(debut.getPosition());
+		vecteurVitesse.setX(Math.cos(debut.orientationGeometrique));
+		vecteurVitesse.setY(Math.sin(debut.orientationGeometrique));
 		vecteurVitesse.rotate(0, 1); // orthogonal à la vitesse
 
 		double d = vecteurVitesse.dot(delta);
 		
+		ArcCourbeDynamique prefixe = null;
+		
 		// il faut absolument que la courbure ait déjà le bon signe
 		// si la courbure est nulle, il faut aussi annuler
-		if(Math.abs(cinematiqueInitiale.courbureGeometrique) < 0.1 || cinematiqueInitiale.courbureGeometrique >= 0 ^ d >= 0)
+		if(Math.abs(debut.courbureGeometrique) < 0.1 || debut.courbureGeometrique >= 0 ^ d >= 0)
+		{
+			if(Math.abs(debut.courbureGeometrique) > 0.1)
+			{
+//				log.debug("Préfixe nécessaire !");
+				prefixe = clothocomputer.getTrajectoireRamene(debut, VitesseRameneVolant.RAMENE_VOLANT, vitesseMax);
+			}
+			if(prefixe == null)
+				prefixe = new ArcCourbeDynamique(new ArrayList<CinematiqueObs>(), 0, VitesseBezier.BEZIER_QUAD);
+				
+			clothocomputer.getTrajectoire(prefixe.getNbPoints() > 0 ? prefixe.getLast() : cinematiqueInitiale, d > 0 ? VitesseClotho.GAUCHE_1 : VitesseClotho.DROITE_1 , vitesseMax, tmp);
+			for(CinematiqueObs c : tmp.arcselems)
+			{
+				CinematiqueObs o = memory.getNewNode();
+				c.copy(o);
+				prefixe.arcs.add(o);
+			}
+
+			prefixe.longueur += tmp.getLongueur();
+			debut = prefixe.getLast();
+
+			arrivee.getPosition().copy(delta);
+			delta.minus(debut.getPosition());
+			vecteurVitesse.setX(Math.cos(debut.orientationGeometrique));
+			vecteurVitesse.setY(Math.sin(debut.orientationGeometrique));
+			vecteurVitesse.rotate(0, 1); // orthogonal à la vitesse
+			d = vecteurVitesse.dot(delta);
+		}
+		
+		if(Math.abs(debut.courbureGeometrique) < 0.1 || debut.courbureGeometrique >= 0 ^ d >= 0)
+		{
+			memory.destroyNode(prefixe);
 			return null;
+		}
 		
 		vecteurVitesse.rotate(0, -1);
-		vecteurVitesse.scalar(Math.sqrt(d/(2*cinematiqueInitiale.courbureGeometrique/1000))); // c'est les maths qui le disent
-		vecteurVitesse.plus(cinematiqueInitiale.getPosition());
-		return constructBezierQuad(cinematiqueInitiale.getPosition(), vecteurVitesse, arrivee.getPosition(), cinematiqueInitiale.enMarcheAvant, vitesseMax, cinematiqueInitiale);
+		vecteurVitesse.scalar(Math.sqrt(d/(2*debut.courbureGeometrique/1000))); // c'est les maths qui le disent
+		vecteurVitesse.plus(debut.getPosition());
+		ArcCourbeDynamique arc = constructBezierQuad(debut.getPosition(), vecteurVitesse, arrivee.getPosition(), debut.enMarcheAvant, vitesseMax, debut);
+		
+		if(arc == null)
+		{
+			if(prefixe != null)
+				memory.destroyNode(prefixe);
+			return null;
+		}
+		
+		// on lui colle son préfixe si besoin est
+		if(prefixe != null)
+		{
+			prefixe.arcs.addAll(arc.arcs);
+			prefixe.longueur += arc.longueur;
+			prefixe.vitesse = VitesseBezier.BEZIER_QUAD;
+			return prefixe;
+		}
+		return arc;
 	}
 
 	private Vec2RW a_tmp = new Vec2RW(), b_tmp = new Vec2RW(), c_tmp = new Vec2RW(), d_tmp = new Vec2RW(), acc = new Vec2RW();
@@ -355,7 +416,7 @@ public class BezierComputer implements Service, Configurable
 			t -= ClothoidesComputer.PRECISION_TRACE_MM / vitesse;
 		}
 		
-		return new ArcCourbeDynamique(out, longueur, VitesseBezier.BEZIER_CUBIQUE);
+		return new ArcCourbeDynamique(out, longueur, null);
 	}
 	
 	@Override

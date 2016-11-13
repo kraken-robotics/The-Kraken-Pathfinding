@@ -199,7 +199,7 @@ public class ArcManager implements Service, Configurable
 					successeur.state.robot.getCinematique(),
 					(VitesseRameneVolant)v,
 					vitesseMax);
-			if(tmp.getNbPoints() == 0)
+			if(tmp == null)
 				return false;
 			successeur.cameFromArcDynamique = tmp;
 		}

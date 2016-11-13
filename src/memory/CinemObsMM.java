@@ -41,6 +41,7 @@ public class CinemObsMM extends MemoryManager<CinematiqueObs>
 		super(CinematiqueObs.class, log, container, config.getInt(ConfigInfo.NB_INSTANCES_OBSTACLES));
 	}
 
+	// TODO : optimisable : la mémoire est contigue
 	public void destroyNode(ArcCourbeDynamique arc)
 	{
 		for(int i = 0; i < arc.getNbPoints(); i++)
