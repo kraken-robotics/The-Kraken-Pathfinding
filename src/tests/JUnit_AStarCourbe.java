@@ -406,7 +406,6 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 		long avant = System.nanoTime();
 		Cinematique depart = new Cinematique(-800, 350, Math.PI/2, true, 0, Speed.STANDARD.translationalSpeed);
 		robot.setCinematique(depart);
-		Cinematique c = new Cinematique(1000, 700, Math.PI, false, 0, Speed.STANDARD.translationalSpeed);
 		cercle.set(GameElementNames.MINERAI_CRATERE_HAUT_DROITE.obstacle, Math.PI/2);
 		astar.computeNewPath(true);
 		log.debug("Temps : "+(System.nanoTime() - avant) / (1000000.));

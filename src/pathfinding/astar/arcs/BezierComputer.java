@@ -180,6 +180,7 @@ public class BezierComputer implements Service, Configurable
 		boolean first = true;
 		double lastCourbure = 0;
 		double lastOrientation = 0;
+		
 		while(t > 0)
 		{
 			CinematiqueObs obs = memory.getNewNode();
@@ -250,6 +251,7 @@ public class BezierComputer implements Service, Configurable
 				memory.destroyNode(c);
 			return null;
 		}
+		
 		if(out.getFirst().getPosition().distanceFast(cinematiqueInitiale.getPosition()) < ClothoidesComputer.PRECISION_TRACE_MM/2)
 			memory.destroyNode(out.removeFirst());
 		
@@ -319,16 +321,16 @@ public class BezierComputer implements Service, Configurable
 			c.plus(bp);
 			
 			if(beta >= 0)
-				continue; // pas de solution (TODO beta négatif est un rebroussement en fait)
+				continue; // pas de solution
 
-			return constructBezierCubique(cinematiqueInitiale.getPosition(), b, c, arrivee.getPosition(), cinematiqueInitiale.enMarcheAvant, vitesseMax);
+			return constructBezierCubique(cinematiqueInitiale.getPosition(), b, c, arrivee.getPosition(), cinematiqueInitiale.enMarcheAvant, vitesseMax, cinematiqueInitiale);
 		}
 		return null;
 	}
 	
 	private Vec2RW tmp_acc = new Vec2RW();
 	
-	private ArcCourbeDynamique constructBezierCubique(Vec2RO A, Vec2RO B, Vec2RO C, Vec2RO D, boolean enMarcheAvant, Speed vitesseMax)
+	private ArcCourbeDynamique constructBezierCubique(Vec2RO A, Vec2RO B, Vec2RO C, Vec2RO D, boolean enMarcheAvant, Speed vitesseMax, Cinematique cinematiqueInitiale)
 	{
 /*		buffer.addSupprimable(new ObstacleCircular(A, 15));
 		buffer.addSupprimable(new ObstacleCircular(B, 15));
@@ -338,7 +340,10 @@ public class BezierComputer implements Service, Configurable
 		LinkedList<CinematiqueObs> out = new LinkedList<CinematiqueObs>();
 		Vec2RO lastPos = null;
 		double longueur = 0;
-		
+		boolean first = true;
+		double lastCourbure = 0;
+		double lastOrientation = 0;
+
 		while(t > 0)
 		{
 			CinematiqueObs obs = memory.getNewNode();
@@ -408,16 +413,35 @@ public class BezierComputer implements Service, Configurable
 					vitesseMax.translationalSpeed); // TODO
 			
 			// on a dépassé la courbure maximale : on arrête tout
-			if(Math.abs(obs.courbureGeometrique) > courbureMax)
+			if(Math.abs(obs.courbureGeometrique) > courbureMax || (!first && (Math.abs(obs.courbureGeometrique - lastCourbure) > 0.5 || Math.abs(obs.orientationGeometrique - lastOrientation) > 0.5)))
 			{
-//				log.debug("Courbure max dépassée");
+//				log.debug("Courbure max dépassée : "+obs.courbureGeometrique+" "+Math.abs(obs.courbureGeometrique - lastCourbure)+" "+obs.orientationGeometrique+" "+orientation+" "+lastOrientation);
 				for(CinematiqueObs c : out)
 					memory.destroyNode(c);
 				return null;
 			}
+
+			lastOrientation = obs.orientationGeometrique;
+			lastCourbure = obs.courbureGeometrique;
+			first = false;
 			
 			t -= ClothoidesComputer.PRECISION_TRACE_MM / vitesse;
 		}
+
+		double diffOrientation = (Math.abs(cinematiqueInitiale.orientationGeometrique - lastOrientation)) % (2*Math.PI);
+		if(diffOrientation > Math.PI)
+			diffOrientation -= 2*Math.PI;
+		if(!first && (Math.abs(cinematiqueInitiale.courbureGeometrique - lastCourbure) > 0.5) || Math.abs(diffOrientation) > 0.5)
+		{
+//			log.debug("Erreur raccordement : "+cinematiqueInitiale.courbureGeometrique+" "+Math.abs(cinematiqueInitiale.courbureGeometrique - lastCourbure)+" "+cinematiqueInitiale.orientationGeometrique+" "+lastOrientation);
+			for(CinematiqueObs c : out)
+				memory.destroyNode(c);
+			return null;
+		}
+		
+		if(out.getFirst().getPosition().distanceFast(cinematiqueInitiale.getPosition()) < ClothoidesComputer.PRECISION_TRACE_MM/2)
+			memory.destroyNode(out.removeFirst());
+		
 		if(out.isEmpty())
 			return null;
 

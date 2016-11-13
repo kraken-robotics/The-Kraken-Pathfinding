@@ -379,7 +379,7 @@ public class AStarCourbe implements Service, Configurable
 		vitesseMax = Speed.STANDARD;
 		depart.init();
 		state.copyAStarCourbe(depart.state);
-		arcmanager.configureArcManager(DirectionStrategy.defaultStrategy, cercle);
+		arcmanager.configureArcManager(DirectionStrategy.defaultStrategy);
 
 		dstarlite.computeNewPath(depart.state.robot.getCinematique().getPosition(), cercle.arriveeDStarLite, shoot);
 		if(graphicDStarLite)

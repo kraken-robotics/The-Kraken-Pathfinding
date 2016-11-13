@@ -62,15 +62,16 @@ public class ArcManager implements Service, Configurable
 	private DStarLite dstarlite;
 	private double courbureMax;
 	private boolean printObs;
+	private boolean useCercle;
 	
 	private DirectionStrategy directionstrategyactuelle;
 	private SensFinal sens;
 	private Cinematique arrivee = new Cinematique();
-	private CercleArrivee cercle = null;
+	private CercleArrivee cercle;
 	private List<VitesseCourbure> listeVitesse = new ArrayList<VitesseCourbure>();
 	private ListIterator<VitesseCourbure> iterator = listeVitesse.listIterator();
 	
-	public ArcManager(Log log, ClothoidesComputer clotho, Table table, PrintBuffer buffer, DStarLite dstarlite, BezierComputer bezier)
+	public ArcManager(Log log, ClothoidesComputer clotho, Table table, PrintBuffer buffer, DStarLite dstarlite, BezierComputer bezier, CercleArrivee cercle)
 	{
 		this.bezier = bezier;
 		this.table = table;
@@ -78,6 +79,7 @@ public class ArcManager implements Service, Configurable
 		this.clotho = clotho;
 		this.buffer = buffer;
 		this.dstarlite = dstarlite;
+		this.cercle = cercle;
 		
 		for(VitesseCourbure v : VitesseClotho.values())
 			listeVitesse.add(v);
@@ -166,7 +168,7 @@ public class ArcManager implements Service, Configurable
 
 		if(v == VitesseBezier.BEZIER_QUAD)
 		{
-			if(cercle != null)
+			if(useCercle)
 				cercle.updateArrivee(successeur.state.robot.getCinematique(), arrivee);
 			ArcCourbeDynamique tmp;
 			tmp = bezier.interpolationQuadratique(
@@ -179,19 +181,23 @@ public class ArcManager implements Service, Configurable
 			successeur.cameFromArcDynamique = tmp;
 		}
 		
-		else if(cercle != null && v == VitesseBezier.BEZIER_CUBIQUE)
+		else if(v == VitesseBezier.BEZIER_CUBIQUE)
 		{
+			if(!useCercle) // l'interpolation cubique est réservée à l'arrivée sur un cercle
+				return false;
+			
 			cercle.updateArrivee(successeur.state.robot.getCinematique(), arrivee);
 			ArcCourbeDynamique tmp;
 			tmp = bezier.interpolationCubique(
 					current.state.robot.getCinematique(),
 					arrivee,
 					vitesseMax);
-			if(tmp == null)
+			if(tmp == null)			
 				return false;
 
+//			log.debug("Interpolation cubique : succès");
+			
 			successeur.cameFromArcDynamique = tmp;
-			return false; // TODO
 		}
 		
 		/**
@@ -240,14 +246,14 @@ public class ArcManager implements Service, Configurable
     	this.sens = sens;
     	this.directionstrategyactuelle = directionstrategyactuelle;
     	arrivee.copy(this.arrivee);
-    	cercle = null;
+    	useCercle = false;
     }
 
-    public void configureArcManager(DirectionStrategy directionstrategyactuelle, CercleArrivee cercle)
+    public void configureArcManager(DirectionStrategy directionstrategyactuelle)
     {
     	sens = cercle.sens;
     	this.directionstrategyactuelle = directionstrategyactuelle;
-    	this.cercle = cercle;
+    	useCercle = true;
     }
 
     /**
@@ -301,7 +307,7 @@ public class ArcManager implements Service, Configurable
 
 	public boolean isArrived(AStarCourbeNode successeur)
 	{
-		if(cercle != null)
+		if(useCercle)
 			return cercle.isArrived(successeur.getArc().getLast());
 		return successeur.getArc() != null && successeur.getArc().getLast().getPosition().squaredDistance(arrivee.getPosition()) < 25 && sens.isOK(successeur.getArc().getLast().enMarcheAvant);
 	}
