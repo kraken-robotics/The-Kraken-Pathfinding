@@ -165,23 +165,26 @@ public class BezierComputer implements Service, Configurable
 					vitesseMax.translationalSpeed); // TODO
 			
 			// on a dépassé la courbure maximale : on arrête tout
-			if(Math.abs(obs.courbureGeometrique) > courbureMax || (!first && (Math.abs(obs.courbureGeometrique - lastCourbure) > 0.5) || Math.abs(obs.orientationGeometrique - lastOrientation) > 0.5))
+			if(Math.abs(obs.courbureGeometrique) > courbureMax || (!first && (Math.abs(obs.courbureGeometrique - lastCourbure) > 0.5 || Math.abs(obs.orientationGeometrique - lastOrientation) > 0.5)))
 			{
-//				log.debug("Courbure max dépassée");
+//				log.debug("Courbure max dépassée : "+obs.courbureGeometrique+" "+Math.abs(obs.courbureGeometrique - lastCourbure)+" "+obs.orientationGeometrique+" "+orientation+" "+lastOrientation);
 				for(CinematiqueObs c : out)
 					memory.destroyNode(c);
 				return null;
 			}
-			
+	
 			lastOrientation = obs.orientationGeometrique;
 			lastCourbure = obs.courbureGeometrique;
 			first = false;
 			t -= ClothoidesComputer.PRECISION_TRACE_MM / vitesse;
 		}
 		
-		if(!first && (Math.abs(cinematiqueInitiale.courbureGeometrique - lastCourbure) > 0.5) || Math.abs(cinematiqueInitiale.orientationGeometrique - lastOrientation) > 0.5)
+		double diffOrientation = (Math.abs(cinematiqueInitiale.orientationGeometrique - lastOrientation)) % (2*Math.PI);
+		if(diffOrientation > Math.PI)
+			diffOrientation -= 2*Math.PI;
+		if(!first && (Math.abs(cinematiqueInitiale.courbureGeometrique - lastCourbure) > 0.5) || Math.abs(diffOrientation) > 0.5)
 		{
-//			log.debug("Courbure max dépassée");
+//			log.debug("Erreur raccordement : "+cinematiqueInitiale.courbureGeometrique+" "+Math.abs(cinematiqueInitiale.courbureGeometrique - lastCourbure)+" "+cinematiqueInitiale.orientationGeometrique+" "+lastOrientation);
 			for(CinematiqueObs c : out)
 				memory.destroyNode(c);
 			return null;
