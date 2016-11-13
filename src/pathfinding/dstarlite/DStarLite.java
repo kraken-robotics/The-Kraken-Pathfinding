@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
 
-import pathfinding.SensFinal;
 import pathfinding.dstarlite.gridspace.Direction;
 import pathfinding.dstarlite.gridspace.GridSpace;
 import pathfinding.dstarlite.gridspace.PointDirige;
@@ -488,7 +487,7 @@ public class DStarLite implements Service, Configurable
 	 * @param c
 	 * @return
 	 */
-	public synchronized Double heuristicCostCourbe(Cinematique c, SensFinal sens)
+	public synchronized Double heuristicCostCourbe(Cinematique c)
 	{
 		if(c.getPosition().isHorsTable())
 		{
@@ -520,10 +519,6 @@ public class DStarLite implements Service, Configurable
 
 		erreurOrientation = Math.abs(erreurOrientation);
 
-		double erreurSens = 0;
-		if(!sens.isOK(c.enMarcheAvant))
-			erreurSens = 1;
-		
 		double erreurDistance = premier.rhs / 1000. * PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS; // distance en mm
 		
 		if(premier.rhs == Integer.MAX_VALUE)

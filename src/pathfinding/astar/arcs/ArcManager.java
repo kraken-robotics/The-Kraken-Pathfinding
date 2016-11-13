@@ -66,6 +66,7 @@ public class ArcManager implements Service, Configurable
 	private DirectionStrategy directionstrategyactuelle;
 	private SensFinal sens;
 	private Cinematique arrivee = new Cinematique();
+	private CercleArrivee cercle = null;
 	private List<VitesseCourbure> listeVitesse = new ArrayList<VitesseCourbure>();
 	private ListIterator<VitesseCourbure> iterator = listeVitesse.listIterator();
 	
@@ -165,6 +166,8 @@ public class ArcManager implements Service, Configurable
 
 		if(v == VitesseBezier.BEZIER_QUAD)
 		{
+			if(cercle != null)
+				cercle.updateArrivee(successeur.state.robot.getCinematique(), arrivee);
 			ArcCourbeDynamique tmp;
 			tmp = bezier.interpolationQuadratique(
 					current.state.robot.getCinematique(),
@@ -176,8 +179,9 @@ public class ArcManager implements Service, Configurable
 			successeur.cameFromArcDynamique = tmp;
 		}
 		
-		else if(v == VitesseBezier.BEZIER_CUBIQUE) // TODO vérifier qu'il y a une heuristique qui veut arriver quelque part
+		else if(cercle != null && v == VitesseBezier.BEZIER_CUBIQUE)
 		{
+			cercle.updateArrivee(successeur.state.robot.getCinematique(), arrivee);
 			ArcCourbeDynamique tmp;
 			tmp = bezier.interpolationCubique(
 					current.state.robot.getCinematique(),
@@ -230,14 +234,22 @@ public class ArcManager implements Service, Configurable
 
 		return true;
     }
-    
-    public void configureArcManager(SensFinal sens, DirectionStrategy directionstrategyactuelle, Cinematique arrivee)
+
+	public void configureArcManager(DirectionStrategy directionstrategyactuelle, SensFinal sens, Cinematique arrivee)
     {
     	this.sens = sens;
     	this.directionstrategyactuelle = directionstrategyactuelle;
     	arrivee.copy(this.arrivee);
+    	cercle = null;
     }
-    
+
+    public void configureArcManager(DirectionStrategy directionstrategyactuelle, CercleArrivee cercle)
+    {
+    	sens = cercle.sens;
+    	this.directionstrategyactuelle = directionstrategyactuelle;
+    	this.cercle = cercle;
+    }
+
     /**
      * Renvoie "true" si cette vitesse est acceptable par rapport à "current".
      * @param vitesse
@@ -282,14 +294,16 @@ public class ArcManager implements Service, Configurable
 		printObs = config.getBoolean(ConfigInfo.GRAPHIC_ROBOT_COLLISION);
 	}
 
-	public synchronized Double heuristicCostCourbe(Cinematique c, SensFinal sens)
+	public synchronized Double heuristicCostCourbe(Cinematique c)
 	{
-		return dstarlite.heuristicCostCourbe(c, sens);
+		return dstarlite.heuristicCostCourbe(c);
 	}
 
 	public boolean isArrived(AStarCourbeNode successeur)
 	{
-		return successeur.getArc() != null && successeur.getArc().getLast().getPosition().squaredDistance(arrivee.getPosition()) < 1 && sens.isOK(successeur.getArc().getLast().enMarcheAvant);
+		if(cercle != null)
+			return cercle.isArrived(successeur.getArc().getLast());
+		return successeur.getArc() != null && successeur.getArc().getLast().getPosition().squaredDistance(arrivee.getPosition()) < 25 && sens.isOK(successeur.getArc().getLast().enMarcheAvant);
 	}
 
 	/**

@@ -29,6 +29,7 @@ import pathfinding.SensFinal;
 import pathfinding.astar.AStarCourbe;
 import pathfinding.astar.arcs.ArcCourbeStatique;
 import pathfinding.astar.arcs.BezierComputer;
+import pathfinding.astar.arcs.CercleArrivee;
 import pathfinding.astar.arcs.ArcCourbe;
 import pathfinding.astar.arcs.ArcCourbeDynamique;
 import pathfinding.astar.arcs.ClothoidesComputer;
@@ -42,6 +43,7 @@ import robot.Cinematique;
 import robot.CinematiqueObs;
 import robot.RobotReal;
 import robot.Speed;
+import table.GameElementNames;
 import threads.ThreadName;
 import threads.ThreadPathfinding;
 import utils.Vec2RO;
@@ -63,6 +65,7 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 	private boolean graphicTrajectory;
 	private CheminPathfinding chemin;
 	private GridSpace gridspace;
+	private CercleArrivee cercle;
 //	private ArcManager arcmanager;
 //	private DStarLite dstarlite;
 
@@ -79,6 +82,7 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 		iterator = container.make(IteratorCheminPathfinding.class);
 		gridspace = container.getService(GridSpace.class);
 		bezier = container.getService(BezierComputer.class);
+		cercle = container.getService(CercleArrivee.class);
 //		arcmanager = container.getService(ArcManager.class);
 		graphicTrajectory = config.getBoolean(ConfigInfo.GRAPHIC_TRAJECTORY_FINAL);
 	}
@@ -403,7 +407,8 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 		Cinematique depart = new Cinematique(-800, 350, Math.PI/2, true, 0, Speed.STANDARD.translationalSpeed);
 		robot.setCinematique(depart);
 		Cinematique c = new Cinematique(1000, 700, Math.PI, false, 0, Speed.STANDARD.translationalSpeed);
-		astar.computeNewPath(c, SensFinal.MARCHE_ARRIERE, false);
+		cercle.set(GameElementNames.MINERAI_CRATERE_HAUT_DROITE.obstacle, Math.PI/2);
+		astar.computeNewPath(true);
 		log.debug("Temps : "+(System.nanoTime() - avant) / (1000000.));
 		iterator.reinit();
 		CinematiqueObs a = null;

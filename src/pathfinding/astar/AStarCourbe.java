@@ -30,6 +30,7 @@ import pathfinding.RealGameState;
 import pathfinding.SensFinal;
 import pathfinding.astar.arcs.ArcCourbe;
 import pathfinding.astar.arcs.ArcManager;
+import pathfinding.astar.arcs.CercleArrivee;
 import pathfinding.chemin.CheminPathfinding;
 import pathfinding.dstarlite.DStarLite;
 import pathfinding.dstarlite.gridspace.PointGridSpace;
@@ -52,7 +53,6 @@ import utils.Log;
 
 public class AStarCourbe implements Service, Configurable
 {
-	protected SensFinal sens;
 	protected Log log;
 	private ArcManager arcmanager;
 	private DStarLite dstarlite;
@@ -63,6 +63,7 @@ public class AStarCourbe implements Service, Configurable
 	private AStarCourbeNode trajetDeSecours;
 	private CheminPathfinding chemin;
 	private CinemObsMM cinemMemory;
+	private CercleArrivee cercle;
 	private boolean graphicTrajectory, graphicDStarLite, graphicTrajectoryAll;
 	private int dureeMaxPF;
 	private Speed vitesseMax;
@@ -97,7 +98,7 @@ public class AStarCourbe implements Service, Configurable
 	/**
 	 * Constructeur du AStarCourbe
 	 */
-	public AStarCourbe(Log log, DStarLite dstarlite, ArcManager arcmanager, RealGameState state, CheminPathfinding chemin, NodeMM memorymanager, CinemObsMM rectMemory, PrintBuffer buffer, AStarCourbeNode depart)
+	public AStarCourbe(Log log, DStarLite dstarlite, ArcManager arcmanager, RealGameState state, CheminPathfinding chemin, NodeMM memorymanager, CinemObsMM rectMemory, PrintBuffer buffer, AStarCourbeNode depart, CercleArrivee cercle)
 	{
 		this.log = log;
 		this.arcmanager = arcmanager;
@@ -109,6 +110,7 @@ public class AStarCourbe implements Service, Configurable
 		this.dstarlite = dstarlite;
 		this.cinemMemory = rectMemory;
 		this.buffer = buffer;
+		this.cercle = cercle;
 	}
 	
 	/**
@@ -124,7 +126,7 @@ public class AStarCourbe implements Service, Configurable
 		depart.cameFromArcDynamique = null;
 		depart.g_score = 0;
 		Double heuristique;
-		heuristique = arcmanager.heuristicCostCourbe((depart.state.robot).getCinematique(), sens);
+		heuristique = arcmanager.heuristicCostCourbe((depart.state.robot).getCinematique());
 
 		// Il faut bien mettre quelque chose…
 		if(heuristique == null)
@@ -184,6 +186,7 @@ public class AStarCourbe implements Service, Configurable
 				cinemMemory.empty();
 				if(trajetDeSecours != null) // si on a un trajet de secours, on l'utilise
 				{
+					log.debug("Utilisation du trajet de secours !");
 					chemin.setUptodate(true);
 					partialReconstruct(trajetDeSecours);
 					return;
@@ -239,7 +242,7 @@ public class AStarCourbe implements Service, Configurable
 				if(graphicTrajectoryAll)
 					buffer.addSupprimable(successeur);
 				
-				heuristique = arcmanager.heuristicCostCourbe(successeur.state.robot.getCinematique(), sens);
+				heuristique = arcmanager.heuristicCostCourbe(successeur.state.robot.getCinematique());
 				if(heuristique == null)
 					heuristique = arcmanager.heuristicDirect(successeur.state.robot.getCinematique());
 				
@@ -249,12 +252,13 @@ public class AStarCourbe implements Service, Configurable
 				if(arcmanager.isArrived(successeur) && arcmanager.isReachable(successeur, shoot)
 					&& (trajetDeSecours == null || trajetDeSecours.f_score > successeur.f_score))
 				{
-//					log.debug("Arrivée trouvée !");
+					log.debug("Arrivée trouvée !");
 					trajetDeSecours = successeur;
 				}
 				
-				opensetTmp.add(successeur);
 				
+				opensetTmp.add(successeur);
+//				log.debug(successeur+" "+successeur.f_score);
 			}
 			
 			// On ajoute que les meilleurs
@@ -279,7 +283,7 @@ public class AStarCourbe implements Service, Configurable
 		 */
 		memorymanager.empty();
 		cinemMemory.empty();
-		throw new PathfindingException("Recherche AStarCourbe échouée");
+		throw new PathfindingException("Timeout recherche AStarCourbe");
 	}
  	
 	private void destroy(AStarCourbeNode n)
@@ -331,7 +335,7 @@ public class AStarCourbe implements Service, Configurable
 	}
 				
 	/**
-	 * Valeurs par défaut : DirectionStrategy.FASTEST et SensFinal.AUCUNE_PREF
+	 * Valeurs par défaut : DirectionStrategy.FASTEST
 	 * @param arrivee
 	 * @param shoot
 	 * @throws PathfindingException
@@ -342,23 +346,42 @@ public class AStarCourbe implements Service, Configurable
 	}
 	
 	/**
-	 * Calcul d'un chemin à partir d'un certain état (state) et d'un point d'arrivée (endNode).
-	 * Le boolean permet de signaler au pathfinding si on autorise ou non le shootage d'élément de jeu pas déjà pris.
+	 * Calcul de chemin classique
+	 * @param arrivee
+	 * @param sens
+	 * @param shoot
+	 * @throws PathfindingException
+	 */
+	public void computeNewPath(Cinematique arrivee, SensFinal sens, boolean shoot) throws PathfindingException
+	{
+		vitesseMax = Speed.STANDARD;
+		depart.init();
+		state.copyAStarCourbe(depart.state);
+		arcmanager.configureArcManager(DirectionStrategy.defaultStrategy, sens, arrivee);
+
+		dstarlite.computeNewPath(depart.state.robot.getCinematique().getPosition(), arrivee.getPosition(), shoot);
+		if(graphicDStarLite)
+			dstarlite.itineraireBrut();
+
+		process(shoot);
+	}
+	
+	/**
+	 * Calcul de chemin avec arrivée sur un cercle
 	 * @param state
 	 * @param endNode
 	 * @param shoot_game_element
 	 * @return
 	 * @throws PathfindingException 
 	 */
-	public void computeNewPath(Cinematique arrivee, SensFinal sens, boolean shoot) throws PathfindingException
+	public void computeNewPath(boolean shoot) throws PathfindingException
 	{
 		vitesseMax = Speed.STANDARD;
-		this.sens = sens;
 		depart.init();
 		state.copyAStarCourbe(depart.state);
-		arcmanager.configureArcManager(sens, DirectionStrategy.defaultStrategy, arrivee);
+		arcmanager.configureArcManager(DirectionStrategy.defaultStrategy, cercle);
 
-		dstarlite.computeNewPath(depart.state.robot.getCinematique().getPosition(), arrivee.getPosition(), shoot);
+		dstarlite.computeNewPath(depart.state.robot.getCinematique().getPosition(), cercle.arriveeDStarLite, shoot);
 		if(graphicDStarLite)
 			dstarlite.itineraireBrut();
 

@@ -23,7 +23,6 @@ import graphic.Fenetre;
 import graphic.printable.Couleur;
 import robot.RobotReal;
 import utils.Vec2RO;
-import utils.Vec2RW;
 
 /**
  * Obstacle circulaire
@@ -85,28 +84,4 @@ public class ObstacleCircular extends Obstacle
 			g.fillOval(f.XtoWindow(position.getX()-radius), f.YtoWindow(position.getY()+radius), f.distanceXtoWindow((radius)*2), f.distanceYtoWindow((radius)*2));
 	}
 
-	/**
-	 * Renvoie la position "nearestPos" la plus proche de "pos" tout en étant sur le cercle de centre "position" et de rayon "radius+distance"
-	 * Est utilisé pour aller sur les cratères
-	 * @param pos
-	 * @param nearestPos
-	 * @param distance
-	 */
-	public void getNearestPosition(Vec2RO pos, Vec2RW nearestPos, double distance)
-	{
-		pos.copy(nearestPos);
-		nearestPos.minus(position);
-		nearestPos.scalar((radius+distance)/position.distance(pos));
-		nearestPos.plus(position);
-	}
-
-	/**
-	 * Donne l'orientation à avoir au point donné par getNearestPosition
-	 * @param position
-	 * @return
-	 */
-	public double getNearestOrientation(Vec2RO pos)
-	{
-		return Math.atan2(pos.getY()-position.getY(), pos.getX()-position.getX());
-	}
 }

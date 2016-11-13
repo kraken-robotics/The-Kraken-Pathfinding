@@ -18,7 +18,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 package table;
 
 import graphic.printable.Couleur;
-import obstacles.types.Obstacle;
 import obstacles.types.ObstacleCircular;
 import obstacles.types.ObstacleMasque;
 import utils.Vec2RO;
@@ -59,10 +58,10 @@ public enum GameElementNames {
 	CYLINDRE_6_G(new ObstacleMasque(new Vec2RO(800-1500, 150), 32, Couleur.GAME_ELEMENT, null)),
 	CYLINDRE_6_D(new ObstacleMasque(new Vec2RO(1500-800, 150), 32, Couleur.GAME_ELEMENT, null));
 	
-	public final Obstacle obstacle;
+	public final ObstacleCircular obstacle; // il se trouve qu'ils sont tous circulaires…
 	public final boolean aUnMasque;
 	
-	private GameElementNames(Obstacle obs)
+	private GameElementNames(ObstacleCircular obs)
 	{
 		aUnMasque = obs instanceof ObstacleMasque;
 		obstacle = obs;

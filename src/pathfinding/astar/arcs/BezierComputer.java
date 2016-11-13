@@ -251,7 +251,10 @@ public class BezierComputer implements Service, Configurable
 			return null;
 		}
 		if(out.getFirst().getPosition().distanceFast(cinematiqueInitiale.getPosition()) < ClothoidesComputer.PRECISION_TRACE_MM/2)
-			out.removeFirst();
+			memory.destroyNode(out.removeFirst());
+		
+		if(out.isEmpty())
+			return null;
 		
 		return new ArcCourbeDynamique(out, longueur, VitesseBezier.BEZIER_QUAD);
 	}
@@ -415,7 +418,9 @@ public class BezierComputer implements Service, Configurable
 			
 			t -= ClothoidesComputer.PRECISION_TRACE_MM / vitesse;
 		}
-		
+		if(out.isEmpty())
+			return null;
+
 		return new ArcCourbeDynamique(out, longueur, null);
 	}
 	
