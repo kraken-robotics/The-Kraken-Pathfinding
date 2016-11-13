@@ -128,6 +128,7 @@ public enum ConfigInfo {
 	GRAPHIC_SIZE_X(1000), // taille par défaut (sans image) de la fenêtre
 	GRAPHIC_ALL_OBSTACLES(false), // affiche absolument tous les obstacles créés
 	GRAPHIC_ROBOT_AND_SENSORS(true), // affiche le robot et ses capteurs
+	GRAPHIC_CERCLE_ARRIVEE(false), // affiche le cercle d'arrivée
 
 	/**
 	 * Config dynamique

@@ -17,14 +17,23 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 package pathfinding.astar.arcs;
 
+import java.awt.Graphics;
+
 import config.Config;
 import config.ConfigInfo;
 import config.Configurable;
 import container.Service;
+import graphic.Fenetre;
+import graphic.PrintBuffer;
+import graphic.printable.Couleur;
+import graphic.printable.Layer;
+import graphic.printable.Printable;
 import obstacles.types.ObstacleCircular;
 import pathfinding.SensFinal;
 import robot.Cinematique;
 import robot.CinematiqueObs;
+import robot.RobotReal;
+import utils.Log;
 import utils.Vec2RO;
 import utils.Vec2RW;
 
@@ -34,13 +43,24 @@ import utils.Vec2RW;
  *
  */
 
-public class CercleArrivee implements Service, Configurable
+public class CercleArrivee implements Service, Configurable, Printable
 {
 	public Vec2RO position;
 	public double rayon;
 	public Vec2RO arriveeDStarLite;
 	public SensFinal sens;
+	
 	private double distance;
+	private boolean graphic;
+	
+	protected Log log;
+	private PrintBuffer buffer;
+	
+	public CercleArrivee(Log log, PrintBuffer buffer)
+	{
+		this.log = log;
+		this.buffer = buffer;
+	}
 	
 	public void set(Vec2RO position, double orientationArriveeDStarLite, double rayon, SensFinal sens)
 	{
@@ -49,6 +69,11 @@ public class CercleArrivee implements Service, Configurable
 		((Vec2RW)arriveeDStarLite).plus(position);
 		this.rayon = rayon;
 		this.sens = sens;
+		if(graphic)
+			synchronized(buffer)
+			{
+				buffer.notify();
+			}
 	}
 	
 	public void set(ObstacleCircular element, double orientationArriveeDStarLite)
@@ -90,13 +115,29 @@ public class CercleArrivee implements Service, Configurable
 			diffo -= 2*Math.PI;
 		
 		// on vérifie qu'on est proche du rayon avec la bonne orientation
-		return (robot.getPosition().squaredDistance(position) - rayon * rayon) < 25 && diffo < 5 / 180 * Math.PI;
+		return (robot.getPosition().squaredDistance(position) - rayon * rayon) < 10 && diffo < 2 / 180 * Math.PI;
 	}
 	
 	@Override
 	public void useConfig(Config config)
 	{
 		distance = config.getInt(ConfigInfo.DEMI_LONGUEUR_NON_DEPLOYE_ARRIERE) + config.getInt(ConfigInfo.DISTANCE_AU_CRATERE);
+		graphic = config.getBoolean(ConfigInfo.GRAPHIC_CERCLE_ARRIVEE);
+		if(graphic)
+			buffer.add(this);
+	}
+
+	@Override
+	public void print(Graphics g, Fenetre f, RobotReal robot)
+	{
+		g.setColor(Couleur.ROUGE.couleur);
+		g.drawOval(f.XtoWindow(position.getX()-rayon), f.YtoWindow(position.getY()+rayon), f.distanceXtoWindow((int)(2*rayon)), f.distanceYtoWindow((int)(2*rayon)));
+	}
+
+	@Override
+	public Layer getLayer()
+	{
+		return Layer.FOREGROUND;
 	}
 
 }
