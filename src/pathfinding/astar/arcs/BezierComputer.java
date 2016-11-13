@@ -25,6 +25,7 @@ import config.Configurable;
 import container.Service;
 import graphic.PrintBuffer;
 import memory.CinemObsMM;
+import pathfinding.astar.arcs.vitesses.VitesseBezier;
 import robot.Cinematique;
 import robot.CinematiqueObs;
 import robot.Speed;
@@ -188,7 +189,7 @@ public class BezierComputer implements Service, Configurable
 		if(out.getFirst().getPosition().distanceFast(cinematiqueInitiale.getPosition()) < ClothoidesComputer.PRECISION_TRACE_MM/2)
 			out.removeFirst();
 		
-		return new ArcCourbeDynamique(out, longueur, VitesseCourbure.BEZIER_QUAD);
+		return new ArcCourbeDynamique(out, longueur, VitesseBezier.BEZIER_QUAD);
 	}
 
 	private Vec2RW b = new Vec2RW(), c = new Vec2RW(), bp = new Vec2RW();
@@ -351,7 +352,7 @@ public class BezierComputer implements Service, Configurable
 			t -= ClothoidesComputer.PRECISION_TRACE_MM / vitesse;
 		}
 		
-		return new ArcCourbeDynamique(out, longueur, VitesseCourbure.BEZIER_CUBIQUE);
+		return new ArcCourbeDynamique(out, longueur, VitesseBezier.BEZIER_CUBIQUE);
 	}
 	
 	@Override

@@ -32,6 +32,9 @@ import java.util.List;
 import memory.CinemObsMM;
 import container.Service;
 import obstacles.types.ObstacleCircular;
+import pathfinding.astar.arcs.vitesses.VitesseClotho;
+import pathfinding.astar.arcs.vitesses.VitesseDemiTour;
+import pathfinding.astar.arcs.vitesses.VitesseRameneVolant;
 import robot.Cinematique;
 import robot.CinematiqueObs;
 import robot.RobotChrono;
@@ -59,7 +62,7 @@ public class ClothoidesComputer implements Service
 	private static final int INDICE_MAX = (int) (S_MAX / PRECISION_TRACE);
 	public static final int NB_POINTS = 5; // nombre de points dans un arc
 	public static final double DISTANCE_ARC_COURBE = PRECISION_TRACE_MM * NB_POINTS; // en mm
-	static final double DISTANCE_ARC_COURBE_M = PRECISION_TRACE * NB_POINTS; // en m
+	public static final double DISTANCE_ARC_COURBE_M = PRECISION_TRACE * NB_POINTS; // en m
 //	private static final double VITESSE_ROT_AX12 = 4; // en rad / s. Valeur du constructeur : 5
 
 //	private double distanceArriereAuRoues; // la distance entre la position du robot et ses roues directrices
@@ -144,7 +147,7 @@ public class ClothoidesComputer implements Service
 		}
 	}
 	
-	public void getTrajectoire(ArcCourbe depart, VitesseCourbure vitesse, Speed vitesseMax, ArcCourbeStatique modified)
+	public void getTrajectoire(ArcCourbe depart, VitesseClotho vitesse, Speed vitesseMax, ArcCourbeStatique modified)
 	{
 		CinematiqueObs last = depart.getLast();
 		getTrajectoire(last, vitesse, vitesseMax, modified);
@@ -156,7 +159,7 @@ public class ClothoidesComputer implements Service
 	 * @param vitesse
 	 * @param modified
 	 */
-	public final void getTrajectoire(RobotChrono robot, VitesseCourbure vitesse, Speed vitesseMax, ArcCourbeStatique modified)
+	public final void getTrajectoire(RobotChrono robot, VitesseClotho vitesse, Speed vitesseMax, ArcCourbeStatique modified)
 	{
 		getTrajectoire(robot.getCinematique(), vitesse, vitesseMax, modified);
 	}
@@ -172,7 +175,7 @@ public class ClothoidesComputer implements Service
 	 * @param distance_mm
 	 * @return
 	 */
-	public final void getTrajectoire(Cinematique cinematiqueInitiale, VitesseCourbure vitesse, Speed vitesseMax, ArcCourbeStatique modified)
+	public final void getTrajectoire(Cinematique cinematiqueInitiale, VitesseClotho vitesse, Speed vitesseMax, ArcCourbeStatique modified)
 	{
 //		modified.v = vitesse;
 //		log.debug(vitesse);
@@ -240,13 +243,18 @@ public class ClothoidesComputer implements Service
 	 * @param vitesse
 	 * @return 
 	 */
-	public final ArcCourbeDynamique getTrajectoireRamene(Cinematique cinematiqueInitiale, VitesseCourbure vitesse, Speed vitesseMax)
+	public final ArcCourbeDynamique getTrajectoireRamene(Cinematique cinematiqueInitiale, VitesseRameneVolant vitesseRamene, Speed vitesseMax)
 	{
 		double courbure = cinematiqueInitiale.courbureGeometrique;
 		double orientation = cinematiqueInitiale.orientationGeometrique;
 
+		VitesseClotho vitesse;
+		if(courbure > 0)
+			vitesse = vitesseRamene.vitesseDroite;
+		else
+			vitesse = vitesseRamene.vitesseGauche;
+		
 		boolean marcheAvant = cinematiqueInitiale.enMarcheAvant;
-		vitesse.positif = courbure < 0;
 		// Gestion de la vitesse en marche arrière
 		Speed vitesseTr = vitesseMax;
 		if(!marcheAvant)
@@ -307,7 +315,7 @@ public class ClothoidesComputer implements Service
 	 * @param positionInitiale : la position au début du mouvement
 	 * @param c
 	 */
-	private void computePoint(int pointDepart, VitesseCourbure vitesse, double sDepart, double coeffMultiplicatif, int i, double baseOrientation, double cos, double sin, boolean marcheAvant, Speed vitesseTr, Vec2RO positionInitiale, CinematiqueObs c)
+	private void computePoint(int pointDepart, VitesseClotho vitesse, double sDepart, double coeffMultiplicatif, int i, double baseOrientation, double cos, double sin, boolean marcheAvant, Speed vitesseTr, Vec2RO positionInitiale, CinematiqueObs c)
 	{
 		trajectoire[pointDepart + vitesse.squaredRootVitesse * (i + 1)].copy(c.getPositionEcriture());
 		c.getPositionEcriture().minus(trajectoire[pointDepart])
@@ -484,10 +492,10 @@ public class ClothoidesComputer implements Service
 	 * @param vitesseMax
 	 * @return
 	 */
-	public final ArcCourbeDynamique getTrajectoireDemiTour(Cinematique cinematiqueInitiale, VitesseCourbure vitesse, Speed vitesseMax)
+	public final ArcCourbeDynamique getTrajectoireDemiTour(Cinematique cinematiqueInitiale, VitesseDemiTour vitesse, Speed vitesseMax)
 	{
-		List<CinematiqueObs> trajet = getTrajectoireQuartDeTour(cinematiqueInitiale, vitesse, vitesseMax, false);
-		trajet.addAll(getTrajectoireQuartDeTour(trajet.get(trajet.size()-1), vitesse, vitesseMax, true)); // on reprend à la fin du premier quart de tour
+		List<CinematiqueObs> trajet = getTrajectoireQuartDeTour(cinematiqueInitiale, vitesse.v, vitesseMax, false);
+		trajet.addAll(getTrajectoireQuartDeTour(trajet.get(trajet.size()-1), vitesse.v, vitesseMax, true)); // on reprend à la fin du premier quart de tour
 		return new ArcCourbeDynamique(trajet, trajet.size()*PRECISION_TRACE_MM, vitesse); // TODO : rebrousse est faux…
 	}
 	
@@ -502,7 +510,7 @@ public class ClothoidesComputer implements Service
 	 * @param vitesse
 	 * @return 
 	 */
-	private final List<CinematiqueObs> getTrajectoireQuartDeTour(Cinematique cinematiqueInitiale, VitesseCourbure vitesse, Speed vitesseMax, boolean rebrousse)
+	private final List<CinematiqueObs> getTrajectoireQuartDeTour(Cinematique cinematiqueInitiale, VitesseClotho vitesse, Speed vitesseMax, boolean rebrousse)
 	{
 		double courbure = cinematiqueInitiale.courbureGeometrique;
 		double orientation = cinematiqueInitiale.orientationGeometrique;

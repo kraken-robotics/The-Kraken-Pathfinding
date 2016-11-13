@@ -19,6 +19,7 @@ package pathfinding.astar.arcs;
 
 import java.util.List;
 
+import pathfinding.astar.arcs.vitesses.VitesseCourbure;
 import robot.CinematiqueObs;
 
 /**

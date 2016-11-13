@@ -20,6 +20,11 @@ package pathfinding.astar.arcs;
 import pathfinding.DirectionStrategy;
 import pathfinding.SensFinal;
 import pathfinding.astar.AStarCourbeNode;
+import pathfinding.astar.arcs.vitesses.VitesseClotho;
+import pathfinding.astar.arcs.vitesses.VitesseBezier;
+import pathfinding.astar.arcs.vitesses.VitesseDemiTour;
+import pathfinding.astar.arcs.vitesses.VitesseRameneVolant;
+import pathfinding.astar.arcs.vitesses.VitesseCourbure;
 import pathfinding.dstarlite.DStarLite;
 import robot.Cinematique;
 import robot.Speed;
@@ -27,7 +32,7 @@ import table.GameElementNames;
 import table.Table;
 import table.EtatElement;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 
@@ -61,7 +66,7 @@ public class ArcManager implements Service, Configurable
 	private DirectionStrategy directionstrategyactuelle;
 	private SensFinal sens;
 	private Cinematique arrivee = new Cinematique();
-	private List<VitesseCourbure> listeVitesse = Arrays.asList(VitesseCourbure.values());
+	private List<VitesseCourbure> listeVitesse = new ArrayList<VitesseCourbure>();
 	private ListIterator<VitesseCourbure> iterator = listeVitesse.listIterator();
 	
 	public ArcManager(Log log, ClothoidesComputer clotho, Table table, PrintBuffer buffer, DStarLite dstarlite, BezierComputer bezier)
@@ -72,6 +77,15 @@ public class ArcManager implements Service, Configurable
 		this.clotho = clotho;
 		this.buffer = buffer;
 		this.dstarlite = dstarlite;
+		
+		for(VitesseCourbure v : VitesseClotho.values())
+			listeVitesse.add(v);
+		for(VitesseCourbure v : VitesseBezier.values())
+			listeVitesse.add(v);
+		for(VitesseCourbure v : VitesseDemiTour.values())
+			listeVitesse.add(v);
+		for(VitesseCourbure v : VitesseRameneVolant.values())
+			listeVitesse.add(v);
 	}
 
 	private ObstacleArcCourbe obs = new ObstacleArcCourbe();
@@ -149,7 +163,7 @@ public class ArcManager implements Service, Configurable
 
 		current.state.copyAStarCourbe(successeur.state);
 
-		if(v == VitesseCourbure.BEZIER_QUAD)
+		if(v == VitesseBezier.BEZIER_QUAD)
 		{
 			ArcCourbeDynamique tmp;
 			tmp = bezier.interpolationQuadratique(
@@ -162,7 +176,7 @@ public class ArcManager implements Service, Configurable
 			successeur.cameFromArcDynamique = tmp;
 		}
 		
-		else if(v == VitesseCourbure.BEZIER_CUBIQUE) // TODO vérifier qu'il y a une heuristique qui veut arriver quelque part
+		else if(v == VitesseBezier.BEZIER_CUBIQUE) // TODO vérifier qu'il y a une heuristique qui veut arriver quelque part
 		{
 			ArcCourbeDynamique tmp;
 			tmp = bezier.interpolationCubique(
@@ -179,11 +193,11 @@ public class ArcManager implements Service, Configurable
 		/**
 		 * Si on veut ramener le volant au milieu
 		 */
-		else if(v.ramene)
+		else if(v instanceof VitesseRameneVolant)
 		{
 			ArcCourbeDynamique tmp = clotho.getTrajectoireRamene(
 					successeur.state.robot.getCinematique(),
-					v,
+					(VitesseRameneVolant)v,
 					vitesseMax);
 			if(tmp.getNbPoints() == 0)
 				return false;
@@ -193,23 +207,26 @@ public class ArcManager implements Service, Configurable
 		/**
 		 * Si on veut faire un demi-tour
 		 */
-		else if(v.demitour)
+		else if(v instanceof VitesseDemiTour)
 		{
 			successeur.cameFromArcDynamique = clotho.getTrajectoireDemiTour(
 					successeur.state.robot.getCinematique(),
-					v,
+					(VitesseDemiTour)v,
 					vitesseMax);
 		}
 
 		/**
 		 * Si on fait une interpolation par clothoïde
 		 */
-		else
+		else if(v instanceof VitesseClotho)
 			clotho.getTrajectoire(
 					successeur.state.robot.getCinematique(),
-					v,
+					(VitesseClotho)v,
 					vitesseMax,
 					successeur.cameFromArcStatique);
+		
+		else
+			log.critical("Vitesse "+v+" inconnue ! ");
 
 		return true;
     }
@@ -228,47 +245,7 @@ public class ArcManager implements Service, Configurable
      */
     private final boolean acceptable(VitesseCourbure vitesse)
     {
-    	// il y a un problème si :
-    	// - on veut rebrousser chemin
-    	// ET
-    	// - si :
-    	//      - on n'est pas en fast, donc pas d'autorisation
-    	//      ET
-    	//      - on est dans la bonne direction, donc pas d'autorisation exceptionnelle de se retourner
-    	
-    	if(vitesse.rebrousse && (directionstrategyactuelle != DirectionStrategy.FASTEST && directionstrategyactuelle.isPossible(current.state.robot.getCinematique().enMarcheAvant)))
-    	{ 
-//    		log.debug(vitesse+" n'est pas acceptable (rebroussement interdit");
-    		return false;
-    	}
-    	
-    	// Si on ne rebrousse pas chemin alors que c'est nécessaire
-    	if(!vitesse.rebrousse && !directionstrategyactuelle.isPossible(current.state.robot.getCinematique().enMarcheAvant))
-    	{
-//    		log.debug(vitesse+" n'est pas acceptable (rebroussement nécessaire");
-    		return false;
-    	}
-    	
-    	// on évite les demi-tours absurdes
-    	if(vitesse.demitour && ((vitesse.positif && current.state.robot.getCinematique().courbureGeometrique < -1) || (!vitesse.positif && current.state.robot.getCinematique().courbureGeometrique > 1)))
-    		return false;
-    	
-    	// TODO
-    	double courbureFuture = current.state.robot.getCinematique().courbureGeometrique + vitesse.vitesse * ClothoidesComputer.DISTANCE_ARC_COURBE_M;
-    	if(!(courbureFuture >= -courbureMax && courbureFuture <= courbureMax))
-    	{
-//        	log.debug(vitesse+" n'est acceptable (courbure trop grande");
-    		return false;
-    	}
-    	
-    	double courbure = Math.abs(current.state.robot.getCinematique().courbureGeometrique);
-    	if(vitesse.ramene && (courbure < 0.1 || courbure > 3))
-    	{
-//    		log.debug("Ne peut pas ramener le volant si la courbure est déjà nulle ou bien trop grande…");
-    		return false;
-    	}
-
-		return true;
+    	return vitesse.isAcceptable(current.state.robot.getCinematique(), directionstrategyactuelle, courbureMax);
     }
     
     /**

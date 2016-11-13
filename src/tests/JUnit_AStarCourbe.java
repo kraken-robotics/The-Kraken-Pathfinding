@@ -32,7 +32,9 @@ import pathfinding.astar.arcs.BezierComputer;
 import pathfinding.astar.arcs.ArcCourbe;
 import pathfinding.astar.arcs.ArcCourbeDynamique;
 import pathfinding.astar.arcs.ClothoidesComputer;
-import pathfinding.astar.arcs.VitesseCourbure;
+import pathfinding.astar.arcs.vitesses.VitesseClotho;
+import pathfinding.astar.arcs.vitesses.VitesseDemiTour;
+import pathfinding.astar.arcs.vitesses.VitesseRameneVolant;
 import pathfinding.chemin.CheminPathfinding;
 import pathfinding.chemin.IteratorCheminPathfinding;
 import pathfinding.dstarlite.gridspace.GridSpace;
@@ -93,22 +95,22 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 
 		Cinematique c = new Cinematique(0, 1000, Math.PI/2, false, 0, Speed.STANDARD.translationalSpeed);
 		log.debug("Initial : "+c);
-		clotho.getTrajectoire(c, VitesseCourbure.COURBURE_IDENTIQUE, Speed.STANDARD, arc[0]);
-		clotho.getTrajectoire(arc[0], VitesseCourbure.GAUCHE_3, Speed.STANDARD, arc[1]);
-		clotho.getTrajectoire(arc[1], VitesseCourbure.COURBURE_IDENTIQUE, Speed.STANDARD, arc[2]);
-		clotho.getTrajectoire(arc[2], VitesseCourbure.GAUCHE_1, Speed.STANDARD, arc[3]);
-		clotho.getTrajectoire(arc[3], VitesseCourbure.COURBURE_IDENTIQUE, Speed.STANDARD, arc[4]);
-		clotho.getTrajectoire(arc[4], VitesseCourbure.COURBURE_IDENTIQUE, Speed.STANDARD, arc[5]);
-		clotho.getTrajectoire(arc[5], VitesseCourbure.GAUCHE_3_REBROUSSE, Speed.STANDARD, arc[6]);
-		clotho.getTrajectoire(arc[6], VitesseCourbure.GAUCHE_1, Speed.STANDARD, arc[7]);
-		clotho.getTrajectoire(arc[7], VitesseCourbure.GAUCHE_3, Speed.STANDARD, arc[8]);
-		clotho.getTrajectoire(arc[8], VitesseCourbure.DROITE_3_REBROUSSE, Speed.STANDARD, arc[9]);
-		clotho.getTrajectoire(arc[9], VitesseCourbure.DROITE_1, Speed.STANDARD, arc[10]);
-		clotho.getTrajectoire(arc[10], VitesseCourbure.DROITE_1, Speed.STANDARD, arc[11]);
-		clotho.getTrajectoire(arc[11], VitesseCourbure.DROITE_1, Speed.STANDARD, arc[12]);
-		clotho.getTrajectoire(arc[12], VitesseCourbure.DROITE_1, Speed.STANDARD, arc[13]);
-		clotho.getTrajectoire(arc[13], VitesseCourbure.DROITE_1, Speed.STANDARD, arc[14]);
-		clotho.getTrajectoire(arc[14], VitesseCourbure.GAUCHE_3, Speed.STANDARD, arc[15]);
+		clotho.getTrajectoire(c, VitesseClotho.COURBURE_IDENTIQUE, Speed.STANDARD, arc[0]);
+		clotho.getTrajectoire(arc[0], VitesseClotho.GAUCHE_3, Speed.STANDARD, arc[1]);
+		clotho.getTrajectoire(arc[1], VitesseClotho.COURBURE_IDENTIQUE, Speed.STANDARD, arc[2]);
+		clotho.getTrajectoire(arc[2], VitesseClotho.GAUCHE_1, Speed.STANDARD, arc[3]);
+		clotho.getTrajectoire(arc[3], VitesseClotho.COURBURE_IDENTIQUE, Speed.STANDARD, arc[4]);
+		clotho.getTrajectoire(arc[4], VitesseClotho.COURBURE_IDENTIQUE, Speed.STANDARD, arc[5]);
+		clotho.getTrajectoire(arc[5], VitesseClotho.GAUCHE_3_REBROUSSE, Speed.STANDARD, arc[6]);
+		clotho.getTrajectoire(arc[6], VitesseClotho.GAUCHE_1, Speed.STANDARD, arc[7]);
+		clotho.getTrajectoire(arc[7], VitesseClotho.GAUCHE_3, Speed.STANDARD, arc[8]);
+		clotho.getTrajectoire(arc[8], VitesseClotho.DROITE_3_REBROUSSE, Speed.STANDARD, arc[9]);
+		clotho.getTrajectoire(arc[9], VitesseClotho.DROITE_1, Speed.STANDARD, arc[10]);
+		clotho.getTrajectoire(arc[10], VitesseClotho.DROITE_1, Speed.STANDARD, arc[11]);
+		clotho.getTrajectoire(arc[11], VitesseClotho.DROITE_1, Speed.STANDARD, arc[12]);
+		clotho.getTrajectoire(arc[12], VitesseClotho.DROITE_1, Speed.STANDARD, arc[13]);
+		clotho.getTrajectoire(arc[13], VitesseClotho.DROITE_1, Speed.STANDARD, arc[14]);
+		clotho.getTrajectoire(arc[14], VitesseClotho.GAUCHE_3, Speed.STANDARD, arc[15]);
 
 		for(int a = 0; a < nbArc; a++)	
 		{
@@ -149,8 +151,8 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 
 		Cinematique c = new Cinematique(0, 1000, Math.PI/2, false, 0, Speed.STANDARD.translationalSpeed);
 		log.debug("Initial : "+c);
-		arc[0] = clotho.getTrajectoireDemiTour(c, VitesseCourbure.DEMI_TOUR_GAUCHE, Speed.STANDARD);
-		arc[1] = clotho.getTrajectoireDemiTour(arc[0].getLast(), VitesseCourbure.DEMI_TOUR_DROITE, Speed.STANDARD);
+		arc[0] = clotho.getTrajectoireDemiTour(c, VitesseDemiTour.DEMI_TOUR_GAUCHE, Speed.STANDARD);
+		arc[1] = clotho.getTrajectoireDemiTour(arc[0].getLast(), VitesseDemiTour.DEMI_TOUR_DROITE, Speed.STANDARD);
 
 		for(int a = 0; a < nbArc; a++)	
 		{
@@ -173,10 +175,10 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 
 		Cinematique c = new Cinematique(0, 1000, Math.PI/2, false, 0, Speed.STANDARD.translationalSpeed);
 		log.debug("Initial : "+c);
-		arc[0] = clotho.getTrajectoireDemiTour(c, VitesseCourbure.DEMI_TOUR_GAUCHE, Speed.STANDARD);
+		arc[0] = clotho.getTrajectoireDemiTour(c, VitesseDemiTour.DEMI_TOUR_GAUCHE, Speed.STANDARD);
 //		arc[0] = new ArcCourbeStatique(container.getService(RobotReal.class));
 //		clotho.getTrajectoire(c, VitesseCourbure.DROITE_5, Speed.STANDARD, (ArcCourbeStatique)arc[0]);
-		arc[1] = clotho.getTrajectoireRamene(arc[0].getLast(), VitesseCourbure.RAMENE_VOLANT, Speed.STANDARD);
+		arc[1] = clotho.getTrajectoireRamene(arc[0].getLast(), VitesseRameneVolant.RAMENE_VOLANT, Speed.STANDARD);
 
 		for(int a = 0; a < nbArc; a++)	
 		{

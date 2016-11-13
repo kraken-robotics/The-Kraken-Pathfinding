@@ -20,6 +20,7 @@ package pathfinding.astar.arcs;
 import java.awt.Graphics;
 
 import obstacles.types.ObstacleCircular;
+import pathfinding.astar.arcs.vitesses.VitesseCourbure;
 import graphic.Fenetre;
 import graphic.printable.Couleur;
 import graphic.printable.Layer;
