@@ -67,5 +67,11 @@ public enum GameElementNames {
 		aUnMasque = obs instanceof ObstacleMasque;
 		obstacle = obs;
 	}
+
+	public boolean isVisible(boolean sureleve)
+	{
+		// les capteurs bas les voient, les hauts non
+		return !sureleve;
+	}
 	
 }

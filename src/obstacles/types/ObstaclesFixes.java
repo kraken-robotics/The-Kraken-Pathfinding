@@ -32,14 +32,14 @@ public enum ObstaclesFixes {
 	ZONE_DEPART_ENNEMI(new ObstacleRectangular(new Vec2RO(1070/2-1500,2000-382/2),1070,382,Couleur.OBSTACLES), false, false),
 	ZONE_DEPART_A_NOUS(new ObstacleRectangular(new Vec2RO(1500-710/2,2000-382/2),710,382,Couleur.OBSTACLES), false, false),
 	
-	BAC_GAUCHE(new ObstacleRectangular(new Vec2RO(54-1500,1075),108,494,Couleur.OBSTACLES), true, false),
-	BAC_DROIT(new ObstacleRectangular(new Vec2RO(1500-54,1075),108,494,Couleur.OBSTACLES), true, false),
+	BAC_GAUCHE(new ObstacleRectangular(new Vec2RO(54-1500,1075),108,494,Couleur.OBSTACLES), false, false),
+	BAC_DROIT(new ObstacleRectangular(new Vec2RO(1500-54,1075),108,494,Couleur.OBSTACLES), false, false),
 
 	CENTRE_VILLAGE(new ObstacleCircular(new Vec2RO(0,0),200,Couleur.OBSTACLES), true, false),
 
-	SUPPORT_MODULE_GAUCHE(new ObstacleRectangular(new Vec2RO(0,500).rotateNewVector(-Math.PI/4, new Vec2RO(0,0)),140,600, -Math.PI/4,Couleur.OBSTACLES), true, false),
-	SUPPORT_MODULE_MILIEU(new ObstacleRectangular(new Vec2RO(0,500),140,600,Couleur.OBSTACLES), true, false),
-	SUPPORT_MODULE_DROITE(new ObstacleRectangular(new Vec2RO(0,500).rotateNewVector(Math.PI/4, new Vec2RO(0,0)),140,600, Math.PI/4,Couleur.OBSTACLES), true, false),
+	SUPPORT_MODULE_GAUCHE(new ObstacleRectangular(new Vec2RO(0,500).rotateNewVector(-Math.PI/4, new Vec2RO(0,0)),140,600, -Math.PI/4,Couleur.OBSTACLES), false, false),
+	SUPPORT_MODULE_MILIEU(new ObstacleRectangular(new Vec2RO(0,500),140,600,Couleur.OBSTACLES), false, false),
+	SUPPORT_MODULE_DROITE(new ObstacleRectangular(new Vec2RO(0,500).rotateNewVector(Math.PI/4, new Vec2RO(0,0)),140,600, Math.PI/4,Couleur.OBSTACLES), false, false),
 	
 	PETIT_CRATERE_HAUT_GAUCHE(new ObstacleCircular(new Vec2RO(650-1500,2000-540),125,Couleur.OBSTACLES), false, false),
 	PETIT_CRATERE_HAUT_DROITE(new ObstacleCircular(new Vec2RO(1500-650,2000-540),125,Couleur.OBSTACLES), false, false),
