@@ -18,6 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 package pathfinding.astar.arcs;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedList;
 
 import config.Config;
@@ -48,23 +49,25 @@ public class BezierComputer implements Service, Configurable
 	protected Log log;
 	protected CinemObsMM memory;
 	protected PrintBuffer buffer;
+	protected CercleArrivee cercle;
 	protected double courbureMax;
 	private ClothoidesComputer clothocomputer;
 	
-	public BezierComputer(Log log, CinemObsMM memory, PrintBuffer buffer, ClothoidesComputer clothocomputer, RobotReal robot)
+	public BezierComputer(Log log, CinemObsMM memory, PrintBuffer buffer, ClothoidesComputer clothocomputer, RobotReal robot, CercleArrivee cercle)
 	{
 		this.log = log;
 		this.memory = memory;
 		this.buffer = buffer;
 		this.clothocomputer = clothocomputer;
+		this.cercle = cercle;
 		tmp = new ArcCourbeStatique(robot);
 	}
 	
-	private Vec2RW delta = new Vec2RW();
-	private Vec2RW vecteurVitesse = new Vec2RW();
-	
+	private Vec2RW delta = new Vec2RW(), vecteurVitesse = new Vec2RW();
+//	private Vec2RW pointA = new Vec2RW(), pointB = new Vec2RW(), pointC = new Vec2RW();
+	private Cinematique debut;
 	private ArcCourbeStatique tmp;
-	
+
 	/**
 	 * Interpolation avec des courbes de Bézier quadratique. La solution est unique.
 	 * Est assuré : la continuinité de la position, de l'orientation, de la courbure, et l'arrivée à la bonne position
@@ -73,10 +76,10 @@ public class BezierComputer implements Service, Configurable
 	 * @param vitesseMax
 	 * @return
 	 */
-	public ArcCourbeDynamique interpolationQuadratique(Cinematique cinematiqueInitiale, Cinematique arrivee, Speed vitesseMax)
+	public ArcCourbeDynamique interpolationQuadratique(Cinematique cinematiqueInitiale, Vec2RO arrivee, Speed vitesseMax)
 	{
-		Cinematique debut = cinematiqueInitiale;
-		arrivee.getPosition().copy(delta);
+		debut = cinematiqueInitiale;
+		arrivee.copy(delta);
 		delta.minus(debut.getPosition());
 		vecteurVitesse.setX(Math.cos(debut.orientationGeometrique));
 		vecteurVitesse.setY(Math.sin(debut.orientationGeometrique));
@@ -109,7 +112,7 @@ public class BezierComputer implements Service, Configurable
 			prefixe.longueur += tmp.getLongueur();
 			debut = prefixe.getLast();
 
-			arrivee.getPosition().copy(delta);
+			arrivee.copy(delta);
 			delta.minus(debut.getPosition());
 			vecteurVitesse.setX(Math.cos(debut.orientationGeometrique));
 			vecteurVitesse.setY(Math.sin(debut.orientationGeometrique));
@@ -126,7 +129,8 @@ public class BezierComputer implements Service, Configurable
 		vecteurVitesse.rotate(0, -1);
 		vecteurVitesse.scalar(Math.sqrt(d/(2*debut.courbureGeometrique/1000))); // c'est les maths qui le disent
 		vecteurVitesse.plus(debut.getPosition());
-		ArcCourbeDynamique arc = constructBezierQuad(debut.getPosition(), vecteurVitesse, arrivee.getPosition(), debut.enMarcheAvant, vitesseMax, debut);
+		
+		ArcCourbeDynamique arc = constructBezierQuad(debut.getPosition(), vecteurVitesse, arrivee, debut.enMarcheAvant, vitesseMax, debut);
 		
 		if(arc == null)
 		{
@@ -145,7 +149,67 @@ public class BezierComputer implements Service, Configurable
 		}
 		return arc;
 	}
+	
+	/**
+	 * Essai d'arrêt sur cercle. Fait une interpolation quadratique classique et retire les points du cercle.
+	 * Aucune assurance sur l'orientation d'arrivée.
+	 * @param cinematiqueInitiale
+	 * @param vitesseMax
+	 * @return
+	 */
+	public ArcCourbeDynamique interpolationQuadratiqueCercle2(Cinematique cinematiqueInitiale, Speed vitesseMax)
+	{
+		ArcCourbeDynamique out = interpolationQuadratique(cinematiqueInitiale, cercle.position, vitesseMax);
+		if(out == null)
+			return null;
 
+		boolean del = false;
+		Iterator<CinematiqueObs> it = out.arcs.iterator();
+		while(it.hasNext())
+		{
+			CinematiqueObs o = it.next();
+			if(del || cercle.isInCircle(o.getPosition()))
+			{
+				del = true;
+				memory.destroyNode(o);
+				it.remove();
+			}
+		}
+		
+		if(out.getNbPoints() == 0)
+			return null;
+		
+		return out;
+	}
+	
+	/**
+	 * Une interpolation quadratique qui arrive sur un cercle
+	 * @param cinematique
+	 * @param vitesseMax
+	 * @return
+	 */
+/*	public ArcCourbeDynamique interpolationQuadratiqueCercle(Cinematique cinematiqueInitiale, Speed vitesseMax)
+	{
+		ArcCourbeDynamique prefixe = initCourbe(cinematiqueInitiale, cercle.position, vitesseMax);
+		cercle.position.copy(a_tmp);
+		a_tmp.minus(vecteurVitesse); // le point B
+		vecteurVitesse.copy(b_tmp);
+		b_tmp.minus(cinematiqueInitiale.getPosition());
+		double alpha = a_tmp.getArgument() - b_tmp.getArgument(); // une estimation seulement du résultat final
+		double sin = Math.sin(alpha);
+		double c = cinematiqueInitiale.courbureGeometrique;
+		b_tmp.scalar(1/b.norm()); // normalisation de b
+		cercle.position.copy(a_tmp);
+		a_tmp.minus(cinematiqueInitiale.getPosition());
+		double L = a_tmp.dot(b);
+		b.rotate(0,1);
+		double l = a_tmp.dot(b);
+		double r = cercle.rayon;
+		
+		return null;
+	}
+*/
+	
 	private Vec2RW a_tmp = new Vec2RW(), b_tmp = new Vec2RW(), c_tmp = new Vec2RW(), d_tmp = new Vec2RW(), acc = new Vec2RW();
 	
 	/**

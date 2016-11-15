@@ -206,8 +206,10 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 		Cinematique c = new Cinematique(0, 1000, Math.PI/2, true, -1, Speed.STANDARD.translationalSpeed);
 		Cinematique arrivee = new Cinematique(400, 1400, Math.PI/2, false, 0, Speed.STANDARD.translationalSpeed);
 		log.debug("Initial : "+c);
-		arc[0] = bezier.interpolationQuadratique(c, arrivee, Speed.STANDARD);
-
+		arc[0] = bezier.interpolationQuadratique(c, arrivee.getPosition(), Speed.STANDARD);
+		
+		Assert.assertTrue(arc[0] != null);
+		
 		for(int a = 0; a < nbArc; a++)	
 		{
 			for(int i = 0; i < arc[a].getNbPoints(); i++)
@@ -219,6 +221,33 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 		}
     }
 
+	@Test
+    public void test_bezier_quad_cercle() throws Exception
+    {
+		boolean graphicTrajectory = config.getBoolean(ConfigInfo.GRAPHIC_TRAJECTORY);
+		
+		int nbArc = 1;
+		ArcCourbeDynamique arc[] = new ArcCourbeDynamique[nbArc];
+
+		Cinematique c = new Cinematique(-200, 1000, Math.PI, true, -1, Speed.STANDARD.translationalSpeed);
+		cercle.set(GameElementNames.MINERAI_CRATERE_HAUT_GAUCHE);
+		log.debug("Initial : "+c);
+		arc[0] = bezier.interpolationQuadratiqueCercle2(c, Speed.STANDARD);
+		
+		Assert.assertTrue(arc[0] != null);
+		
+		for(int a = 0; a < nbArc; a++)	
+		{
+			for(int i = 0; i < arc[a].getNbPoints(); i++)
+			{
+				System.out.println(a+" "+i+" "+arc[a].getPoint(i));
+				if(graphicTrajectory)
+					buffer.addSupprimable(new ObstacleCircular(arc[a].getPoint(i).getPosition(), 4));
+			}
+		}
+		Assert.assertTrue(cercle.isArrived(arc[0].getLast()));
+    }
+	
 	@Test
     public void test_bezier_cub() throws Exception
     {
@@ -406,32 +435,8 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 		long avant = System.nanoTime();
 		Cinematique depart = new Cinematique(-800, 350, Math.PI/2, true, 0, Speed.STANDARD.translationalSpeed);
 		robot.setCinematique(depart);
-		cercle.set(GameElementNames.MINERAI_CRATERE_HAUT_DROITE.obstacle, Math.PI/2);
+		cercle.set(GameElementNames.MINERAI_CRATERE_HAUT_GAUCHE);
 		astar.computeNewPath(true);
-		log.debug("Temps : "+(System.nanoTime() - avant) / (1000000.));
-		iterator.reinit();
-		CinematiqueObs a = null;
-		int i = 0;
-		while(iterator.hasNext())
-		{
-			i++;
-			a = iterator.next();
-			log.debug(a);
-			robot.setCinematique(a);
-			if(graphicTrajectory)
-				Thread.sleep(100);
-		}
-		log.debug("Nb points : "+i);
-	}
-	
-	@Test
-    public void test_recherche_finit_en_arriere3() throws Exception
-    {
-		long avant = System.nanoTime();
-		Cinematique depart = new Cinematique(-800, 550, -Math.PI/2, true, 0, Speed.STANDARD.translationalSpeed);
-		robot.setCinematique(depart);
-		Cinematique c = new Cinematique(1000, 700, Math.PI, false, 0, Speed.STANDARD.translationalSpeed);
-		astar.computeNewPath(c, SensFinal.MARCHE_ARRIERE, false);
 		log.debug("Temps : "+(System.nanoTime() - avant) / (1000000.));
 		iterator.reinit();
 		CinematiqueObs a = null;
@@ -452,11 +457,10 @@ public class JUnit_AStarCourbe extends JUnit_Test {
     public void test_recherche_finit_en_arriere2() throws Exception
     {
 		long avant = System.nanoTime();
-		Cinematique depart = new Cinematique(-800, 800, Math.PI/4, true, 0, Speed.STANDARD.translationalSpeed);
-//		Cinematique depart = new Cinematique(1000, 1000, 0, true, 0, Speed.STANDARD.translationalSpeed);
+		Cinematique depart = new Cinematique(-800, 350, Math.PI/2, true, 0, Speed.STANDARD.translationalSpeed);
 		robot.setCinematique(depart);
-		Cinematique c = new Cinematique(1000, 500, -Math.PI/4, false, 0, Speed.STANDARD.translationalSpeed);
-		astar.computeNewPath(c, SensFinal.MARCHE_ARRIERE, true);
+		cercle.set(GameElementNames.MINERAI_CRATERE_HAUT_DROITE);
+		astar.computeNewPath(false);
 		log.debug("Temps : "+(System.nanoTime() - avant) / (1000000.));
 		iterator.reinit();
 		CinematiqueObs a = null;
@@ -472,7 +476,31 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 		}
 		log.debug("Nb points : "+i);
 	}
-
+	
+	@Test
+    public void test_recherche_finit_en_arriere3() throws Exception
+    {
+		long avant = System.nanoTime();
+		Cinematique depart = new Cinematique(-800, 350, Math.PI/2, true, 0, Speed.STANDARD.translationalSpeed);
+		robot.setCinematique(depart);
+		cercle.set(GameElementNames.MINERAI_CRATERE_BAS_DROITE);
+		astar.computeNewPath(true);
+		log.debug("Temps : "+(System.nanoTime() - avant) / (1000000.));
+		iterator.reinit();
+		CinematiqueObs a = null;
+		int i = 0;
+		while(iterator.hasNext())
+		{
+			i++;
+			a = iterator.next();
+			log.debug(a);
+			robot.setCinematique(a);
+			if(graphicTrajectory)
+				Thread.sleep(100);
+		}
+		log.debug("Nb points : "+i);
+	}
+	
 	@Test
     public void test_recherche_finit_en_avant() throws Exception
     {

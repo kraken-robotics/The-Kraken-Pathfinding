@@ -168,36 +168,32 @@ public class ArcManager implements Service, Configurable
 
 		if(v == VitesseBezier.BEZIER_QUAD)
 		{
-			if(useCercle)
-				cercle.updateArrivee(successeur.state.robot.getCinematique(), arrivee);
-			ArcCourbeDynamique tmp;
-			tmp = bezier.interpolationQuadratique(
-					current.state.robot.getCinematique(),
-					arrivee,
-					vitesseMax);
-			if(tmp == null)
-				return false;
-
-			successeur.cameFromArcDynamique = tmp;
-		}
-		
-		else if(v == VitesseBezier.BEZIER_CUBIQUE)
-		{
-			if(!useCercle) // l'interpolation cubique est réservée à l'arrivée sur un cercle
-				return false;
-			
-			cercle.updateArrivee(successeur.state.robot.getCinematique(), arrivee);
-			ArcCourbeDynamique tmp;
-			tmp = bezier.interpolationCubique(
-					current.state.robot.getCinematique(),
-					arrivee,
-					vitesseMax);
-			if(tmp == null)			
-				return false;
-
-//			log.debug("Interpolation cubique : succès");
-			
-			successeur.cameFromArcDynamique = tmp;
+			if(!useCercle)
+			{
+				ArcCourbeDynamique tmp;
+				tmp = bezier.interpolationQuadratique(
+						current.state.robot.getCinematique(),
+						arrivee.getPosition(),
+						vitesseMax);
+				if(tmp == null)
+					return false;
+	
+				successeur.cameFromArcDynamique = tmp;
+			}
+			else // cette interpolation est réservée à l'arrivée sur un cercle
+			{
+				if(current.state.robot.getCinematique().enMarcheAvant) // on doit arriver en marche arrière
+					return false;
+				
+				ArcCourbeDynamique tmp;
+				tmp = bezier.interpolationQuadratiqueCercle2(
+						current.state.robot.getCinematique(),
+						vitesseMax);
+				if(tmp == null)			
+					return false;
+	
+				successeur.cameFromArcDynamique = tmp;
+			}
 		}
 		
 		/**
@@ -302,7 +298,7 @@ public class ArcManager implements Service, Configurable
 
 	public synchronized Double heuristicCostCourbe(Cinematique c)
 	{
-		return dstarlite.heuristicCostCourbe(c);
+		return dstarlite.heuristicCostCourbe(c, useCercle);
 	}
 
 	public boolean isArrived(AStarCourbeNode successeur)

@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
 
+import pathfinding.astar.arcs.CercleArrivee;
 import pathfinding.dstarlite.gridspace.Direction;
 import pathfinding.dstarlite.gridspace.GridSpace;
 import pathfinding.dstarlite.gridspace.PointDirige;
@@ -55,6 +56,7 @@ public class DStarLite implements Service, Configurable
 	private RealTable table;
 	private PointGridSpaceManager pointManager;
 	private PointDirigeManager pointDManager;
+	protected CercleArrivee cercle;
 	private boolean graphicDStarLite, graphicDStarLiteFinal, graphicHeuristique;
 	private boolean shoot = false;
 	
@@ -81,7 +83,7 @@ public class DStarLite implements Service, Configurable
 	 * @param log
 	 * @param gridspace
 	 */
-	public DStarLite(Log log, GridSpace gridspace, PointGridSpaceManager pointManager, PointDirigeManager pointDManager, PrintBuffer buffer, RealTable table)
+	public DStarLite(Log log, GridSpace gridspace, PointGridSpaceManager pointManager, PointDirigeManager pointDManager, PrintBuffer buffer, RealTable table, CercleArrivee cercle)
 	{
 		this.log = log;
 		this.gridspace = gridspace;
@@ -89,6 +91,7 @@ public class DStarLite implements Service, Configurable
 		this.pointDManager = pointDManager;
 		this.buffer = buffer;
 		this.table = table;
+		this.cercle = cercle;
 		
 		obstaclesConnus = new BitSet(PointGridSpace.NB_POINTS * 8);
 		obstaclesConnus.or(gridspace.getCurrentObstacles());
@@ -487,7 +490,7 @@ public class DStarLite implements Service, Configurable
 	 * @param c
 	 * @return
 	 */
-	public synchronized Double heuristicCostCourbe(Cinematique c)
+	public synchronized Double heuristicCostCourbe(Cinematique c, boolean useCercle)
 	{
 		if(c.getPosition().isHorsTable())
 		{
@@ -521,6 +524,19 @@ public class DStarLite implements Service, Configurable
 
 		double erreurDistance = premier.rhs / 1000. * PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS; // distance en mm
 		
+		if(useCercle)
+		{
+			/*
+			 * Le cas du cercle est un peu particulier… il faut surtout veiller à l'orientation et au sens
+			 */
+/*			double erreurSens = 0;
+			if(c.enMarcheAvant)
+				erreurSens = 500;
+			return 1.1*erreurDistance + erreurSens + 20*erreurOrientation;*/
+			if(c.enMarcheAvant)
+				return 1.3*erreurDistance + 5*erreurOrientation + 400;
+		}
+		
 		if(premier.rhs == Integer.MAX_VALUE)
 		{
 //			log.debug("Inaccessible : "+c.getPosition());
@@ -528,22 +544,10 @@ public class DStarLite implements Service, Configurable
 		}
 //			throw new DStarLiteException("Heuristique : inaccessible");
 
-//		log.debug(c);
-//		log.debug("rhs : "+premier.rhs);
-//		log.debug("erreurOrientation : "+erreurOrientation+" "+c.orientationGeometrique+" "+orientationOptimale);
-//		log.debug("erreurDistance : "+erreurDistance);
-//		log.debug("Score : "+(erreurDistance + 5*erreurOrientation));
-
-		// on doit se retourner ? alors on l'encourage à tourner
-//		if(erreurOrientationReelle > Math.PI/2 && erreurDistance > 100)
-//			return 500 + 1.1*erreurDistance - Math.abs(30*c.courbureReelle);
-		
-//		log.debug(erreurDistance+" "+erreurOrientation+" "+erreurCourbure);
-		
 		// il faut toujours majorer la vraie distance, afin de ne pas chercher tous les trajets possibles…
 		// le poids de l'erreur d'orientation doit rester assez faible. Car vouloir trop coller à l'orientation, c'est risquer d'avoir une courbure impossible…
 		// on cherche une faible courbure. ça évite les trajectoires complexes
-		return 1.3*erreurDistance + 5*erreurOrientation;// + Math.abs(2*c.courbureReelle); // TODO : erreurSens
+		return 1.3*erreurDistance + 5*erreurOrientation;
 	}
 	
 	/**

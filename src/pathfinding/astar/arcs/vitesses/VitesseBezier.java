@@ -28,8 +28,7 @@ import robot.Cinematique;
 
 public enum VitesseBezier implements VitesseCourbure
 {
-	BEZIER_QUAD,
-	BEZIER_CUBIQUE;
+	BEZIER_QUAD;
 
 	@Override
 	public boolean isAcceptable(Cinematique c, DirectionStrategy directionstrategyactuelle, double courbureMax)

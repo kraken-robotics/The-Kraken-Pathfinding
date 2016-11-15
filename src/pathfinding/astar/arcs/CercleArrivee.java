@@ -28,11 +28,10 @@ import graphic.PrintBuffer;
 import graphic.printable.Couleur;
 import graphic.printable.Layer;
 import graphic.printable.Printable;
-import obstacles.types.ObstacleCircular;
 import pathfinding.SensFinal;
-import robot.Cinematique;
 import robot.CinematiqueObs;
 import robot.RobotReal;
+import table.GameElementNames;
 import utils.Log;
 import utils.Vec2RO;
 import utils.Vec2RW;
@@ -62,10 +61,10 @@ public class CercleArrivee implements Service, Configurable, Printable
 		this.buffer = buffer;
 	}
 	
-	public void set(Vec2RO position, double orientationArriveeDStarLite, double rayon, SensFinal sens)
+	private void set(Vec2RO position, double orientationArriveeDStarLite, double rayon, SensFinal sens)
 	{
 		this.position = position;
-		this.arriveeDStarLite = new Vec2RW(rayon, orientationArriveeDStarLite + Math.PI, false);
+		this.arriveeDStarLite = new Vec2RW(rayon, orientationArriveeDStarLite, false);
 		((Vec2RW)arriveeDStarLite).plus(position);
 		this.rayon = rayon;
 		this.sens = sens;
@@ -74,30 +73,15 @@ public class CercleArrivee implements Service, Configurable, Printable
 			{
 				buffer.notify();
 			}
+		log.debug("arriveeDStarLite : "+arriveeDStarLite);
 	}
 	
-	public void set(ObstacleCircular element, double orientationArriveeDStarLite)
+	public void set(GameElementNames element)
 	{
-		set(element.getPosition(), orientationArriveeDStarLite, element.radius + distance, SensFinal.MARCHE_ARRIERE);
+		set(element.obstacle.getPosition(), element.orientationArriveeDStarLite, element.obstacle.radius + distance, SensFinal.MARCHE_ARRIERE);
 	}
 
 	private Vec2RW tmp = new Vec2RW();
-	
-	/**
-	 * Fournit, pour cette cinématique, l'arrivée souhaitée
-	 * @param cinematique
-	 * @param arrivee
-	 */
-	public void updateArrivee(Cinematique robot, Cinematique arrivee)
-	{
-		Vec2RW out = arrivee.getPositionEcriture();
-		position.copy(out);
-		out.minus(robot.getPosition());
-		double d = out.norm();
-		out.scalar((d - rayon) / d);
-		arrivee.orientationGeometrique = out.getArgument();
-		out.plus(robot.getPosition());
-	}
 
 	/**
 	 * Sommes-nous arrivés ?
@@ -115,7 +99,7 @@ public class CercleArrivee implements Service, Configurable, Printable
 			diffo -= 2*Math.PI;
 		
 		// on vérifie qu'on est proche du rayon avec la bonne orientation
-		return (robot.getPosition().squaredDistance(position) - rayon * rayon) < 10 && diffo < 2 / 180 * Math.PI;
+		return (robot.getPosition().distance(position) - rayon) < 11 && Math.abs(diffo) < 5 / 180. * Math.PI;
 	}
 	
 	@Override
@@ -138,6 +122,11 @@ public class CercleArrivee implements Service, Configurable, Printable
 	public Layer getLayer()
 	{
 		return Layer.FOREGROUND;
+	}
+
+	public boolean isInCircle(Vec2RO position2)
+	{
+		return position2.squaredDistance(position) < rayon*rayon;
 	}
 
 }

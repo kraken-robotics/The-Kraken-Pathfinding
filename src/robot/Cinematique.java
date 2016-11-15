@@ -126,10 +126,10 @@ public class Cinematique implements Printable
 		if(orientationGeometrique < 0)
 			orientationGeometrique += 2*Math.PI;
 		
-		codeOrientation = (int)(orientationGeometrique / (Math.PI / 8));
+		codeOrientation = (int)(orientationGeometrique / (Math.PI / 6));
 //		System.out.println("codeOrientation : "+codeOrientation+" "+orientation);
 		
-		return ((((((int)(position.getX()) + 1500) / 10) * 200 + (int)(position.getY()) / 10) * 2 + codeSens) * 16 + codeOrientation) * 6 + codeCourbure;
+		return ((((((int)(position.getX()) + 1500) / 30) * 200 + (int)(position.getY()) / 30) * 2 + codeSens) * 16 + codeOrientation) * 6 + codeCourbure;
 	}
 	
 	@Override
