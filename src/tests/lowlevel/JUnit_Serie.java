@@ -33,6 +33,7 @@ import tests.JUnit_Test;
 public class JUnit_Serie extends JUnit_Test {
 
 	private BufferOutgoingOrder data;
+	
 	@Override
 	@Before
     public void setUp() throws Exception {
@@ -82,4 +83,11 @@ public class JUnit_Serie extends JUnit_Test {
 		} while(etat != Ticket.State.OK);
 	}
 	
+	@Test
+	public void test_actionneurs() throws Exception
+	{
+		data.baisseFilet();
+		Thread.sleep(2000);
+		data.leveFilet();
+	}
 }

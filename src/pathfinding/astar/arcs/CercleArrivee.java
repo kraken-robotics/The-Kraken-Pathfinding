@@ -114,8 +114,11 @@ public class CercleArrivee implements Service, Configurable, Printable
 	@Override
 	public void print(Graphics g, Fenetre f, RobotReal robot)
 	{
-		g.setColor(Couleur.ROUGE.couleur);
-		g.drawOval(f.XtoWindow(position.getX()-rayon), f.YtoWindow(position.getY()+rayon), f.distanceXtoWindow((int)(2*rayon)), f.distanceYtoWindow((int)(2*rayon)));
+		if(position != null)
+		{
+			g.setColor(Couleur.ROUGE.couleur);
+			g.drawOval(f.XtoWindow(position.getX()-rayon), f.YtoWindow(position.getY()+rayon), f.distanceXtoWindow((int)(2*rayon)), f.distanceYtoWindow((int)(2*rayon)));
+		}
 	}
 
 	@Override
