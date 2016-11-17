@@ -43,7 +43,7 @@ public class ObstacleMasque extends ObstacleCircular
 	@Override
 	public int hashCode()
 	{
-		return (int) (masque.hashCode());
+		return masque.hashCode();
 	}
 
 	/**

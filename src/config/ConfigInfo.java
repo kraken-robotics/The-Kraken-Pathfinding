@@ -44,7 +44,8 @@ public enum ConfigInfo {
 	/**
 	 * Paramètres des scripts
 	 */
-	DISTANCE_AU_CRATERE(10), // distance souhaitée entre l'arrière du rover et le bord du cratère
+	RAYON_CERCLE_ARRIVEE(200), // distance souhaitée entre le centre du robot et le centre du cratère
+	RAYON_CERCLE_ARRIVEE_PF(250), // distance réellement recherchée entre le centre du robot et le centre du cratère
 	
 	/**
 	 * Paramètres du log

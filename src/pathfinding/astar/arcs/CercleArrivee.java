@@ -49,7 +49,7 @@ public class CercleArrivee implements Service, Configurable, Printable
 	public Vec2RO arriveeDStarLite;
 	public SensFinal sens;
 	
-	private double distance;
+	private double rayonDefaut;
 	private boolean graphic;
 	
 	protected Log log;
@@ -78,7 +78,7 @@ public class CercleArrivee implements Service, Configurable, Printable
 	
 	public void set(GameElementNames element)
 	{
-		set(element.obstacle.getPosition(), element.orientationArriveeDStarLite, element.obstacle.radius + distance, SensFinal.MARCHE_ARRIERE);
+		set(element.obstacle.getPosition(), element.orientationArriveeDStarLite, rayonDefaut, SensFinal.MARCHE_ARRIERE);
 	}
 
 	private Vec2RW tmp = new Vec2RW();
@@ -105,7 +105,7 @@ public class CercleArrivee implements Service, Configurable, Printable
 	@Override
 	public void useConfig(Config config)
 	{
-		distance = config.getInt(ConfigInfo.DEMI_LONGUEUR_NON_DEPLOYE_ARRIERE) + config.getInt(ConfigInfo.DISTANCE_AU_CRATERE);
+		rayonDefaut = config.getInt(ConfigInfo.RAYON_CERCLE_ARRIVEE_PF);
 		graphic = config.getBoolean(ConfigInfo.GRAPHIC_CERCLE_ARRIVEE);
 		if(graphic)
 			buffer.add(this);
