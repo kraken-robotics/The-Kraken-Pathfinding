@@ -17,6 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 package graphic;
 
+import java.awt.Font;
 import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,6 +46,8 @@ public class PrintBuffer implements Service, Configurable
 	protected Log log;
 	private boolean afficheFond;
 	private boolean needRefresh = false;
+	private boolean time;
+	private long initTime = System.currentTimeMillis();
 	
 	public PrintBuffer(Log log)
 	{
@@ -128,6 +131,12 @@ public class PrintBuffer implements Service, Configurable
 			for(Printable p : elementsAffichables.get(i))
 				p.print(g, f, robot);
 		}
+		if(time)
+		{
+			g.setFont(new Font("Courier New", 1, 36));
+			g.setColor(Couleur.NOIR.couleur);
+			g.drawString("Date : "+Long.toString(System.currentTimeMillis() - initTime), f.XtoWindow(600), f.YtoWindow(1900));
+		}
 	}
 
 	/**
@@ -148,6 +157,7 @@ public class PrintBuffer implements Service, Configurable
 	public void useConfig(Config config)
 	{
 		afficheFond = config.getBoolean(ConfigInfo.GRAPHIC_BACKGROUND);
+		time = config.getBoolean(ConfigInfo.GRAPHIC_TIME);
 	}
 
 	public boolean needRefresh()
