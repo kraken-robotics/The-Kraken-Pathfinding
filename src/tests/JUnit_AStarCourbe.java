@@ -248,30 +248,6 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 		Assert.assertTrue(cercle.isArrived(arc[0].getLast()));
     }
 	
-	@Test
-    public void test_bezier_cub() throws Exception
-    {
-		boolean graphicTrajectory = config.getBoolean(ConfigInfo.GRAPHIC_TRAJECTORY);
-		
-		int nbArc = 1;
-		ArcCourbeDynamique arc[] = new ArcCourbeDynamique[nbArc];
-
-		Cinematique c = new Cinematique(0, 1000, Math.PI/2, true, -1, Speed.STANDARD.translationalSpeed);
-		Cinematique arrivee = new Cinematique(400, 1200, -Math.PI/4, true, 0, Speed.STANDARD.translationalSpeed);
-		log.debug("Initial : "+c);
-		arc[0] = bezier.interpolationCubique(c, arrivee, Speed.STANDARD);
-
-		for(int a = 0; a < nbArc; a++)	
-		{
-			for(int i = 0; i < arc[a].getNbPoints(); i++)
-			{
-				System.out.println(a+" "+i+" "+arc[a].getPoint(i));
-				if(graphicTrajectory)
-					buffer.addSupprimable(new ObstacleCircular(arc[a].getPoint(i).getPosition(), 4));
-			}
-		}
-    }
-
 	/*
 	@Test
     public void test_bench() throws Exception
