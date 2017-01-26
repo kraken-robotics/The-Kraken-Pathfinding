@@ -138,6 +138,21 @@ public class Vec2RO implements Serializable
 		return Math.atan2(y, x);
 	}
 
+	public final double getFastArgument()
+	{
+		// http://math.stackexchange.com/questions/1098487/atan2-faster-approximation
+		double a = Math.min(Math.abs(x), Math.abs(y)) / Math.max(Math.abs(x), Math.abs(y));
+		double s = a*a;
+		double r = ((-0.0464964749 * s + 0.15931422) * s - 0.327622764) * s * a + a;
+		if(Math.abs(y) > Math.abs(x))
+			r = 1.57079637 - r;
+		if(x < 0)
+			r = 3.14159274 - r;
+		if(y < 0)
+			r = -r;
+		return r;
+	}
+	
 	@Override
 	public int hashCode() {
 		return (int) Math.round((x+1500)*2000+y);

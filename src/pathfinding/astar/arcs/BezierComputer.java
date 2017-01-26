@@ -278,7 +278,7 @@ public class BezierComputer implements Service, Configurable
 			a_tmp.plus(b_tmp);
 			a_tmp.plus(c_tmp);
 			double vitesse = a_tmp.norm();
-			double orientation = a_tmp.getArgument();
+			double orientation = a_tmp.getFastArgument();
 			a_tmp.rotate(0, 1);
 			double accLongitudinale = a_tmp.dot(acc);
 			
