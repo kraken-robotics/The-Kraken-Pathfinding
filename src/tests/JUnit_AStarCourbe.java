@@ -232,7 +232,7 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 		Cinematique c = new Cinematique(-200, 1000, Math.PI, true, -1, Speed.STANDARD.translationalSpeed);
 		cercle.set(GameElementNames.MINERAI_CRATERE_HAUT_GAUCHE);
 		log.debug("Initial : "+c);
-		arc[0] = bezier.interpolationQuadratiqueCercle2(c, Speed.STANDARD);
+		arc[0] = bezier.interpolationQuadratiqueCercle(c, Speed.STANDARD);
 		
 		Assert.assertTrue(arc[0] != null);
 		

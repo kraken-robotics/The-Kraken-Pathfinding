@@ -170,7 +170,8 @@ public class DStarLite implements Service, Configurable
 			calcKey(u);
 			if(u.inOpenSet)
 			{
-				if(tmp.compare(u.cle) < 0) // la clé a augmenté
+//				if(tmp.compare(u.cle) < 0)
+				if(u.cle.lesserThan(tmp)) // la clé a augmenté
 					openset.percolateDown(u);
 				else
 					openset.percolateUp(u);
@@ -191,12 +192,12 @@ public class DStarLite implements Service, Configurable
 	private void computeShortestPath()
 	{
 		DStarLiteNode u;
-		while(!openset.isEmpty() && ((u = openset.peek()).cle.compare(calcKey(depart, tmp)) < 0 || depart.rhs > depart.g))
+		while(!openset.isEmpty() && ((u = openset.peek()).cle.lesserThan(calcKey(depart, tmp)) || depart.rhs > depart.g))
 		{
 			u.cle.copy(kold);
 //			Cle kold = u.cle.clone();
 			calcKey(u, knew);
-			if(kold.compare(knew) < 0)
+			if(kold.lesserThan(knew))
 			{
 				// la clé a augmenté
 //				log.debug("Cas 1");

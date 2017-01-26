@@ -24,7 +24,9 @@ import java.io.IOException;
 import pathfinding.dstarlite.gridspace.PointGridSpace;
 
 /**
- * Une priority queue qui permet de faire increaseKey et decreaseKey
+ * Une priority queue qui permet de faire percoler
+ * À la racine il y a le nœud de plus petite clé
+ * Exceptionnellement, les indices commencent à 1 pour simplifier les calculs.
  * @author pf
  *
  */
@@ -32,7 +34,7 @@ import pathfinding.dstarlite.gridspace.PointGridSpace;
 public class EnhancedPriorityQueue
 {
 	private DStarLiteNode[] tab = new DStarLiteNode[PointGridSpace.NB_POINTS];
-	private int firstAvailable = 0;
+	private int firstAvailable = 1;
 	
 	/**
 	 * Renvoie la racine et la supprime
@@ -40,10 +42,10 @@ public class EnhancedPriorityQueue
 	 */
 	public DStarLiteNode poll()
 	{
-		DStarLiteNode out = tab[0];
-		tab[0] = tab[--firstAvailable];
-		tab[0].indexPriorityQueue = 0;
-		percolateDown(tab[0]);
+		DStarLiteNode out = tab[1];
+		tab[1] = tab[--firstAvailable];
+		tab[1].indexPriorityQueue = 1;
+		percolateDown(tab[1]);
 		return out;
 	}
 	
@@ -53,7 +55,7 @@ public class EnhancedPriorityQueue
 	 */
 	public DStarLiteNode peek()
 	{
-		return tab[0];
+		return tab[1];
 	}
 	
 	/**
@@ -61,7 +63,7 @@ public class EnhancedPriorityQueue
 	 */
 	public void clear()
 	{
-		firstAvailable = 0;
+		firstAvailable = 1;
 	}
 	
 	/**
@@ -85,7 +87,7 @@ public class EnhancedPriorityQueue
 	 */
 	private final int filsGauche(int index)
 	{
-		return 2*index+1;
+		return 2*index;
 	}
 	
 	/**
@@ -95,7 +97,7 @@ public class EnhancedPriorityQueue
 	 */
 	private final int filsDroit(int index)
 	{
-		return 2*index+2;
+		return 2*index+1;
 	}
 	
 	/**
@@ -105,7 +107,7 @@ public class EnhancedPriorityQueue
 	 */
 	private final int pere(int index)
 	{
-		return (index-1) / 2;
+		return index >> 1;
 	}
 	
 	/**
@@ -128,11 +130,12 @@ public class EnhancedPriorityQueue
 	{
 		DStarLiteNode n = node;
 		int fg, diff;
-		while((diff = (firstAvailable - 1 - (fg = 2*n.indexPriorityQueue+1))) >= 0)
+		// diff < 0 si aucun enfant, diff = 0 si un enfant (le gauche), diff > 0 si deux enfants
+		while((diff = (firstAvailable - 1 - (fg = 2*n.indexPriorityQueue))) >= 0)
 		{
-			if(diff > 0 && tab[fg].cle.compare(tab[fg+1].cle) > 0)
+			if(diff > 0 && tab[fg].cle.greaterThan(tab[fg+1].cle))
 				fg++;
-			if(n.cle.compare(tab[fg].cle) > 0)
+			if(n.cle.greaterThan(tab[fg].cle))
 				swap(fg, n.indexPriorityQueue);
 			else
 				return;
@@ -149,7 +152,7 @@ public class EnhancedPriorityQueue
 		tab[node.indexPriorityQueue] = last;
 		last.indexPriorityQueue = node.indexPriorityQueue;
 		
-		if(node.cle.compare(last.cle) < 0) // ce qui a remplacé node est plus grand : on descend
+		if(node.cle.lesserThan(last.cle)) // ce qui a remplacé node est plus grand : on descend
 			percolateDown(last);
 		else
 			percolateUp(last);
@@ -163,7 +166,7 @@ public class EnhancedPriorityQueue
 	{
 		int p;
 		// si ce nœud n'est pas la racine et que son père est plus grand : on inverse
-		while(node.indexPriorityQueue > 0 && tab[p = pere(node.indexPriorityQueue)].cle.compare(tab[node.indexPriorityQueue].cle) > 0)
+		while(node.indexPriorityQueue > 1 && tab[p = pere(node.indexPriorityQueue)].cle.greaterThan(tab[node.indexPriorityQueue].cle))
 			swap(node.indexPriorityQueue, p);
 	}
 
@@ -173,7 +176,7 @@ public class EnhancedPriorityQueue
 	 */
 	public boolean isEmpty()
 	{
-		return firstAvailable == 0;
+		return firstAvailable == 1;
 	}
 	
 	/**

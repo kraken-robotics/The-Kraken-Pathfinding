@@ -186,7 +186,7 @@ public class ArcManager implements Service, Configurable
 					return false;
 				
 				ArcCourbeDynamique tmp;
-				tmp = bezier.interpolationQuadratiqueCercle2(
+				tmp = bezier.interpolationQuadratiqueCercle(
 						current.state.robot.getCinematique(),
 						vitesseMax);
 				if(tmp == null)			

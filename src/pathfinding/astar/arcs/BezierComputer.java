@@ -157,7 +157,7 @@ public class BezierComputer implements Service, Configurable
 	 * @param vitesseMax
 	 * @return
 	 */
-	public ArcCourbeDynamique interpolationQuadratiqueCercle2(Cinematique cinematiqueInitiale, Speed vitesseMax)
+	public ArcCourbeDynamique interpolationQuadratiqueCercle(Cinematique cinematiqueInitiale, Speed vitesseMax)
 	{
 		ArcCourbeDynamique out = interpolationQuadratique(cinematiqueInitiale, cercle.position, vitesseMax);
 		if(out == null)
@@ -210,7 +210,7 @@ public class BezierComputer implements Service, Configurable
 	}
 */
 	
-	private Vec2RW a_tmp = new Vec2RW(), b_tmp = new Vec2RW(), c_tmp = new Vec2RW(), d_tmp = new Vec2RW(), acc = new Vec2RW();
+	private Vec2RW a_tmp = new Vec2RW(), b_tmp = new Vec2RW(), c_tmp = new Vec2RW(), acc = new Vec2RW();
 	
 	/**
 	 * Construit la suite de points de la courbure de Bézier quadratique de points de contrôle A, B et C.

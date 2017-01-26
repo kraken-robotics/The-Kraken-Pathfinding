@@ -58,18 +58,30 @@ public class Cle
 		return "first = "+first+", second = "+second;
 	}
 		
+	public final boolean lesserThan(Cle autre)
+	{
+		int tmp = first - autre.first;
+		return tmp < 0 || (tmp == 0 && second - autre.second < 0);
+	}
+
+	public final boolean greaterThan(Cle autre)
+	{
+		int tmp = first - autre.first;
+		return tmp > 0 || (tmp == 0 && second - autre.second > 0);
+	}
+	
 	/**
 	 * Pour calculer a > b, on vérifie a.compare(b) > 0
 	 * @param autre
 	 * @return
 	 */
-	public final int compare(Cle autre)
+/*	public final int compare(Cle autre)
 	{
 		// Ordre lexico : on compare d'abord first, puis second
 		int tmp = first - autre.first;
 		if(tmp != 0)
 			return tmp;
 		return second - autre.second;
-	}	
+	}	*/
 	
 }
