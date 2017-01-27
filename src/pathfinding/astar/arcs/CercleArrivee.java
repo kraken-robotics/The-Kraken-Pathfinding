@@ -92,7 +92,7 @@ public class CercleArrivee implements Service, Configurable, Printable
 	{
 		position.copy(tmp);
 		tmp.minus(robot.getPosition());
-		double o = tmp.getArgument();
+		double o = tmp.getFastArgument();
 
 		double diffo = (o - robot.orientationGeometrique) % (2*Math.PI);
 		if(diffo > Math.PI)

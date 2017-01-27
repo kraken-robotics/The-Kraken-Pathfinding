@@ -147,6 +147,9 @@ public class AStarCourbe implements Service, Configurable
 		{
 			current = openset.poll();
 			
+//			if(current.getArc() != null)
+//			log.debug("Meilleur : "+current.getArc().vitesse);
+			
 			// si on a déjà fait ce point ou un point très proche…
 			// exception si c'est un point d'arrivée
 			if(!closedset.add(current) && !arcmanager.isArrived(current))
@@ -258,7 +261,7 @@ public class AStarCourbe implements Service, Configurable
 				
 				
 				opensetTmp.add(successeur);
-//				log.debug(successeur+" "+successeur.f_score);
+//				log.debug(successeur.getArc().vitesse+" "+successeur.g_score+" "+(successeur.f_score-successeur.g_score));
 			}
 			
 			// On ajoute que les meilleurs
@@ -283,7 +286,7 @@ public class AStarCourbe implements Service, Configurable
 		 */
 		memorymanager.empty();
 		cinemMemory.empty();
-		throw new PathfindingException("Timeout recherche AStarCourbe");
+		throw new PathfindingException("Plus aucun nœud à explorer !");
 	}
  	
 	private void destroy(AStarCourbeNode n)

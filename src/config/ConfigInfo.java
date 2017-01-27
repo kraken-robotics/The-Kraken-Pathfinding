@@ -45,7 +45,7 @@ public enum ConfigInfo {
 	 * Paramètres des scripts
 	 */
 	RAYON_CERCLE_ARRIVEE(200), // distance souhaitée entre le centre du robot et le centre du cratère
-	RAYON_CERCLE_ARRIVEE_PF(250), // distance réellement recherchée entre le centre du robot et le centre du cratère
+	RAYON_CERCLE_ARRIVEE_PF(230), // distance réellement recherchée entre le centre du robot et le centre du cratère
 	NB_TENTATIVES_ACTIONNEURS(3), // nombre de fois qu'on retente de bouger un actionneur s'il y a un problème
 	
 	/**

@@ -516,7 +516,7 @@ public class DStarLite implements Service, Configurable
 		
 		double orientationOptimale = getOrientationHeuristique(pos);
 		
-		// l'orientation est vérifiée modulo 2*pi : la marche avant et la marche arrière sont différenciées (ce qu'on veut, c'est progresser vers la destination)
+		// l'orientation est vérifiée modulo 2*pi : aller vers la destination ou s'en éloigner sont différenciés
 		double erreurOrientation = (c.orientationGeometrique - orientationOptimale) % (2*Math.PI);
 		if(erreurOrientation > Math.PI)
 			erreurOrientation -= 2*Math.PI;
@@ -535,9 +535,9 @@ public class DStarLite implements Service, Configurable
 				erreurSens = 500;
 			return 1.1*erreurDistance + erreurSens + 20*erreurOrientation;*/
 			if(c.enMarcheAvant)
-				return 1.3*erreurDistance + 5*erreurOrientation + 400;
+				return 1.3*erreurDistance + 5*erreurOrientation + 1800;
 		}
-		
+
 		if(premier.rhs == Integer.MAX_VALUE)
 		{
 //			log.debug("Inaccessible : "+c.getPosition());
