@@ -17,6 +17,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 package robot;
 
+import java.io.Serializable;
+
 import memory.Memorizable;
 import obstacles.types.ObstacleRobot;
 
@@ -26,8 +28,9 @@ import obstacles.types.ObstacleRobot;
  *
  */
 
-public class CinematiqueObs extends Cinematique implements Memorizable
+public class CinematiqueObs extends Cinematique implements Memorizable, Serializable
 {
+	private static final long serialVersionUID = 1L;
 	public volatile ObstacleRobot obstacle;
 	private int indiceMemory;	
 

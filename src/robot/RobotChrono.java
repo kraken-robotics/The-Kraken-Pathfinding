@@ -19,6 +19,7 @@ package robot;
 
 import pathfinding.astar.arcs.ArcCourbe;
 import utils.Log;
+import utils.Vec2RO;
 
 /**
  * Robot particulier qui fait pas bouger le robot réel, mais détermine la durée des actions
@@ -58,4 +59,14 @@ public class RobotChrono extends Robot
 		return cinematique;
 	}
 	
+	@Override
+	protected void bloque(String nom, Object... param) throws InterruptedException
+	{}
+	
+	@Override
+	public void avance(double distance)
+	{
+		cinematique.getPositionEcriture().plus(new Vec2RO(distance, cinematique.orientationReelle, true));
+	}
+
 }

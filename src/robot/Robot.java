@@ -19,6 +19,7 @@ package robot;
 
 import config.Config;
 import config.DynamicConfigurable;
+import exceptions.UnableToMoveException;
 import utils.Log;
 
 /**
@@ -38,6 +39,11 @@ public abstract class Robot implements DynamicConfigurable
     protected volatile boolean symetrie;
     protected boolean deploye = false;
 	protected Log log;
+	protected boolean filetBaisse = false;
+	protected boolean filetPlein = false;
+
+	protected abstract void bloque(String nom, Object... param) throws InterruptedException;
+	public abstract void avance(double distance) throws UnableToMoveException;
 	
 	public Robot(Log log)
 	{
@@ -72,6 +78,83 @@ public abstract class Robot implements DynamicConfigurable
 	public void setCinematique(Cinematique cinematique)
 	{
 		cinematique.copy(this.cinematique);
+	}
+	
+
+	/**
+	 * Méthode bloquante qui baisse le filet
+	 * @throws InterruptedException 
+	 */
+	public void baisseFilet() throws InterruptedException
+	{
+		bloque("baisseFilet");
+		filetBaisse = true;
+	}
+	
+	public void filetMiHauteur() throws InterruptedException
+	{
+		bloque("bougeFiletMiChemin");
+		filetBaisse = true;
+	}
+	
+	public void remonteFilet() throws InterruptedException
+	{
+		bloque("leveFilet");
+		filetBaisse = false;
+	}
+	
+	public boolean isFiletBaisse()
+	{
+		return filetBaisse;
+	}
+
+	public void ouvreFilet() throws InterruptedException
+	{
+		bloque("ouvreFilet");
+		filetPlein = false;
+	}
+
+	public void fermeFilet() throws InterruptedException
+	{
+		bloque("fermeFilet");
+//		filetPlein = false; // TODO
+	}
+	
+	public void ejectBalles() throws InterruptedException
+	{
+		bloque("ejecte", !symetrie);
+		filetPlein = false;
+	}
+
+	public void rearme() throws InterruptedException
+	{
+		bloque("rearme", !symetrie);
+	}
+	
+	public void traverseBascule() throws InterruptedException
+	{
+		bloque("traverseBascule");
+	}	
+	
+	/**
+	 * Géré par le capteur de jauge
+	 */
+	public void filetVuVide()
+	{
+		filetPlein = false;
+	}
+	
+	/**
+	 * Géré par le capteur de jauge
+	 */
+	public void filetVuPlein()
+	{
+		filetPlein = true;
+	}
+	
+	public boolean isFiletPlein()
+	{
+		return filetPlein;
 	}
 	
 }
