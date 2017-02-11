@@ -25,6 +25,7 @@ import org.junit.Test;
 
 import config.ConfigInfo;
 import graphic.PrintBuffer;
+import pathfinding.PrecomputedPaths;
 import pathfinding.SensFinal;
 import pathfinding.astar.AStarCourbe;
 import pathfinding.astar.arcs.ArcCourbeStatique;
@@ -66,6 +67,7 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 	private CheminPathfinding chemin;
 	private GridSpace gridspace;
 	private CercleArrivee cercle;
+//	private PrecomputedPaths prepaths;
 //	private ArcManager arcmanager;
 //	private DStarLite dstarlite;
 
@@ -359,6 +361,12 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 				Thread.sleep(100);
 		}
 		log.debug("Nb points : "+i);
+    }
+	
+	@Test
+    public void test_prepathsf() throws Exception
+    {
+		container.getService(PrecomputedPaths.class);
     }
 	
 	@Test

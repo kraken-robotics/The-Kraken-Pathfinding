@@ -170,8 +170,7 @@ public class AStarCourbe implements Service, Configurable
 			if(graphicTrajectory && !graphicTrajectoryAll)
 				buffer.addSupprimable(current);
 
-			// Si on est arrivé, on reconstruit le chemin
-			// On est arrivé seulement si on vient d'un arc cubique
+			// Si current est la trajectoire de secours, ça veut dire que cette trajectoire de secours est la meilleure possible, donc on a fini
 			if(current == trajetDeSecours)
 			{
 //				log.debug("On est arrivé !");

@@ -19,6 +19,7 @@ package pathfinding.astar.arcs;
 
 import graphic.PrintBuffer;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -444,12 +445,10 @@ public class ClothoidesComputer implements Service
     {
     	log.debug("Sauvegarde des points de la clothoïde unitaire");
         try {
-            java.io.File fichier_creation;
             FileOutputStream fichier;
             ObjectOutputStream oos;
 
-            fichier_creation = new java.io.File("clotho-"+S_MAX+".dat");
-            fichier_creation.createNewFile();
+            new File("clotho-"+S_MAX+".dat").createNewFile();
             fichier = new FileOutputStream("clotho-"+S_MAX+".dat");
             oos = new ObjectOutputStream(fichier);
             oos.writeObject(trajectoire);

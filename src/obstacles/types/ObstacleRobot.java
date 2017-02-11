@@ -23,6 +23,7 @@ import graphic.printable.Couleur;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
+import java.io.Serializable;
 
 import robot.RobotReal;
 import utils.Vec2RO;
@@ -34,8 +35,10 @@ import utils.Vec2RW;
  *
  */
 
-public class ObstacleRobot extends ObstacleRectangular
+public class ObstacleRobot extends ObstacleRectangular implements Serializable
 {
+	private static final long serialVersionUID = 1L;
+
 	public ObstacleRobot(RobotReal robot)
 	{
 		super(new Vec2RW());
