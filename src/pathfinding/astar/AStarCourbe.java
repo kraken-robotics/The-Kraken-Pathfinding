@@ -234,6 +234,7 @@ public class AStarCourbe implements Service, Configurable
 				successeur.g_score = current.g_score + arcmanager.distanceTo(successeur);
 			
 				// on a déjà visité un point proche?
+				// ceci est vraie seulement si l'heuristique est monotone. C'est normalement le cas.
 				if(closedset.contains(successeur))
 				{
 					destroy(successeur);
