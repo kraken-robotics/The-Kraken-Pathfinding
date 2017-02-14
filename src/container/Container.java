@@ -29,7 +29,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.Stack;
 
 import config.Config;
@@ -44,7 +46,6 @@ import obstacles.types.Obstacle;
 import pathfinding.astar.arcs.ArcCourbe;
 import serie.SerieCouchePhysique;
 import threads.ThreadName;
-import threads.ThreadPathfinding;
 import threads.ThreadService;
 import threads.ThreadShutdown;
 
@@ -67,10 +68,9 @@ public class Container implements Service, Configurable
 	private static int nbInstances = 0;
 	
 	private boolean showGraph;
-	private FileWriter fw;
 
-	private List<Class<? extends Service>> ko = new ArrayList<Class<? extends Service>>();
 	private List<DynamicConfigurable> dynaConf = new ArrayList<DynamicConfigurable>();
+	private HashMap<String, Set<String>> grapheDep = new HashMap<String, Set<String>>();
 	
 	/**
 	 * Fonction appelé automatiquement à la fin du programme.
@@ -109,7 +109,17 @@ public class Container implements Service, Configurable
 
 		if(showGraph)
 		{
+			log.warning("Sauvegarde du graphe de dépendances");
 			try {
+				FileWriter fw = new FileWriter(new File("dependances.dot"));
+				fw.write("digraph dependancesJava {\n");
+				for(String s : grapheDep.keySet())
+				{
+					fw.write(s+";\n");
+					Set<String> enf = grapheDep.get(s);
+					for(String e : enf)
+						fw.write(s+" -> "+e+";\n");
+				}
 				fw.write("}\n");
 				fw.close();
 			} catch (IOException e) {
@@ -205,17 +215,7 @@ public class Container implements Service, Configurable
 		useConfig(config);
 	
 		if(showGraph)
-		{
 			log.warning("Le graphe de dépendances va être généré !");
-			try {
-				fw = new FileWriter(new File("dependances.dot"));
-				fw.write("digraph dependancesJava {\n");
-			} catch (IOException e) {
-				log.warning(e);
-			}
-			
-			ko.add(ThreadPathfinding.class);
-		}
 		
 		Obstacle.set(log, getService(PrintBuffer.class));
 		Obstacle.useConfig(config);
@@ -236,7 +236,7 @@ public class Container implements Service, Configurable
 	 */
 	public synchronized <S extends Service> S getService(Class<S> serviceTo) throws ContainerException
 	{
-		return getServiceDisplay(null, serviceTo, new Stack<String>());
+		return getServiceRecursif(serviceTo, new Stack<String>());
 	}
 	
 	/**
@@ -249,28 +249,7 @@ public class Container implements Service, Configurable
 	{
 		if(Service.class.isAssignableFrom(serviceTo))
 			throw new ContainerException("make doit être utilisé avec des non-services");
-		return getServiceDisplay(null, serviceTo, new Stack<String>(), extraParam);
-	}
-
-	private synchronized <S> S getServiceDisplay(Class<?> serviceFrom, Class<S> serviceTo, Stack<String> stack, Object... extraParam) throws ContainerException
-	{
-		/**
-		 * On ne crée pas forcément le graphe de dépendances pour éviter une lourdeur inutile
-		 */
-		if(showGraph && !serviceTo.equals(Log.class) && !serviceTo.equals(PrintBuffer.class) && showGraph && !serviceTo.equals(Container.class) && Service.class.isAssignableFrom(serviceTo) && (serviceFrom == null || Service.class.isAssignableFrom(serviceFrom)))
-		{
-			try {
-				if(ko.contains(serviceTo))
-					fw.write(serviceTo.getSimpleName()+" [color=red, style=filled];\n");					
-				else
-					fw.write(serviceTo.getSimpleName()+";\n");
-				if(serviceFrom != null)
-					fw.write(serviceFrom.getSimpleName()+" -> "+serviceTo.getSimpleName()+";\n");
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		return getServiceRecursif(serviceTo, stack, extraParam);
+		return getServiceRecursif(serviceTo, new Stack<String>(), extraParam);
 	}
 
 	/**
@@ -332,13 +311,32 @@ public class Container implements Service, Configurable
 			
 			Class<?>[] param = constructeur.getParameterTypes();
 			
+			/*
+			 * Récupération du graphe de dépendances
+			 */
+			if(showGraph && Service.class.isAssignableFrom(classe) && !classe.equals(Log.class) && !classe.equals(PrintBuffer.class))
+			{
+				Set<String> enf = grapheDep.get(classe.getSimpleName());
+				if(enf == null)
+				{
+					enf = new HashSet<String>();
+					grapheDep.put(classe.getSimpleName(), enf);
+				}
+				for(int i = 0; i < param.length - extraParam.length; i++)
+				{
+					String fils = param[i].getSimpleName();
+					if(!param[i].equals(Log.class) && !param[i].equals(PrintBuffer.class) && !param[i].equals(Container.class) && Service.class.isAssignableFrom(param[i]))
+						enf.add(fils);
+				}				
+			}
+			
 			/**
 			 * On demande récursivement chacun de ses paramètres
 			 * On complète automatiquement avec ceux déjà donnés
 			 */
 			Object[] paramObject = new Object[param.length];
 			for(int i = 0; i < param.length - extraParam.length; i++)
-				paramObject[i] = getServiceDisplay(classe, param[i], stack);
+				paramObject[i] = getServiceRecursif(param[i], stack);
 			for(int i = 0; i < extraParam.length; i++)
 				paramObject[i + param.length - extraParam.length] = extraParam[i];
 
