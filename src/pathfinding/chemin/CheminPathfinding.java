@@ -298,12 +298,12 @@ public class CheminPathfinding implements Service, Printable, Configurable
 		return Layer.FOREGROUND;
 	}
 
-	public int minus(int indice1, int indice2)
+	public final int minus(int indice1, int indice2)
 	{
 		return (indice1 - indice2 + 256) & 0xFF;
 	}
 	
-	public int add(int indice1, int indice2)
+	public final int add(int indice1, int indice2)
 	{
 		return (indice1 + indice2) & 0xFF;
 	}

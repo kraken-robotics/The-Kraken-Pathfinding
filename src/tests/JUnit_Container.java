@@ -21,14 +21,14 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import config.Config;
+import config.Configurable;
+import config.DynamicConfigurable;
+import container.Service;
 import exceptions.ContainerException;
 import obstacles.memory.ObstaclesIteratorPresent;
 import obstacles.types.ObstacleProximity;
 import pathfinding.astar.AStarCourbe;
 import table.RealTable;
-import tests.container.A;
-import tests.container.C;
-import tests.container.D;
 import utils.Vec2RO;
 
 /**
@@ -38,6 +38,48 @@ import utils.Vec2RO;
 
 public class JUnit_Container extends JUnit_Test {
 	
+	public class A implements Service
+	{
+		public A(B b)
+		{}
+	}
+	
+	public class B implements Service
+	{
+		public B(A a)
+		{}
+	}
+
+	public class C implements Service
+	{
+		public C(B b)
+		{}
+
+		public C(A a)
+		{}
+	}
+
+	public class D implements Service, Configurable, DynamicConfigurable
+	{
+		public boolean useConfigOk = false;
+		public boolean updateConfigOk = false;
+		
+		public D()
+		{}
+		
+		@Override
+		public void updateConfig(Config config)
+		{
+			updateConfigOk = true;
+		}
+
+		@Override
+		public void useConfig(Config config)
+		{
+			useConfigOk = true;
+		}
+	}
+
 	@Test
 	public void test_instanciation() throws Exception
 	{
