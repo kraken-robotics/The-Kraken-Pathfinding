@@ -17,6 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 package threads;
 
+import container.HighPFClass;
 import exceptions.PathfindingException;
 import pathfinding.astar.AStarCourbe;
 import pathfinding.chemin.CheminPathfinding;
@@ -28,7 +29,7 @@ import utils.Log;
  *
  */
 
-public class ThreadPathfinding extends ThreadService
+public class ThreadPathfinding extends ThreadService implements HighPFClass
 {
 	protected Log log;
 	private AStarCourbe pathfinding;

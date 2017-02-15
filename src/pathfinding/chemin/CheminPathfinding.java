@@ -37,6 +37,7 @@ import utils.Log;
 import config.Config;
 import config.ConfigInfo;
 import config.Configurable;
+import container.HighPFClass;
 import container.Service;
 import exceptions.PathfindingException;
 
@@ -47,7 +48,7 @@ import exceptions.PathfindingException;
  *
  */
 
-public class CheminPathfinding implements Service, Printable, Configurable
+public class CheminPathfinding implements Service, Printable, Configurable, HighPFClass
 {
 	protected Log log;
 	private BufferOutgoingOrder out;

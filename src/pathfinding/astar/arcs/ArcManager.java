@@ -39,6 +39,7 @@ import java.util.ListIterator;
 import config.Config;
 import config.ConfigInfo;
 import config.Configurable;
+import container.HighPFClass;
 import container.Service;
 import graphic.PrintBuffer;
 import obstacles.types.ObstacleArcCourbe;
@@ -51,7 +52,7 @@ import utils.Log;
  *
  */
 
-public class ArcManager implements Service, Configurable
+public class ArcManager implements Service, Configurable, HighPFClass
 {
 	protected Log log;
 	private ClothoidesComputer clotho;

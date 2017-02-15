@@ -20,6 +20,7 @@ package threads;
 import config.Config;
 import config.ConfigInfo;
 import config.Configurable;
+import container.LowPFClass;
 import graphic.PrintBuffer;
 import obstacles.memory.ObstaclesMemory;
 import pathfinding.dstarlite.DStarLite;
@@ -32,7 +33,7 @@ import utils.Log;
  *
  */
 
-public class ThreadPeremption extends ThreadService implements Configurable
+public class ThreadPeremption extends ThreadService implements Configurable, LowPFClass
 {
 	private ObstaclesMemory memory;
 	protected Log log;

@@ -17,6 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 package pathfinding.dstarlite.gridspace;
 
+import container.LowPFClass;
 import container.Service;
 import utils.Log;
 
@@ -25,7 +26,7 @@ import utils.Log;
  * @author pf
  *
  */
-public class PointDirigeManager implements Service
+public class PointDirigeManager implements Service, LowPFClass
 {
 	private PointDirige[] mem = new PointDirige[PointGridSpace.NB_POINTS * 8];
 	private PointGridSpaceManager pm;

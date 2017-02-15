@@ -24,6 +24,7 @@ import obstacles.types.ObstacleMasque;
 import config.Config;
 import config.ConfigInfo;
 import config.Configurable;
+import container.CoreClass;
 import container.Service;
 import graphic.PrintBuffer;
 import pathfinding.dstarlite.gridspace.MasqueManager;
@@ -37,7 +38,7 @@ import utils.Log;
  *
  */
 
-public class RealTable extends Table implements Service, Configurable
+public class RealTable extends Table implements Service, Configurable, CoreClass
 {
 	private PrintBuffer buffer;
 	private boolean print;

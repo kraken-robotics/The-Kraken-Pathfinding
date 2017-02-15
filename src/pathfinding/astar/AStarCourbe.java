@@ -37,6 +37,7 @@ import pathfinding.dstarlite.gridspace.PointGridSpace;
 import config.Config;
 import config.ConfigInfo;
 import config.Configurable;
+import container.HighPFClass;
 import container.Service;
 import exceptions.PathfindingException;
 import graphic.PrintBuffer;
@@ -51,7 +52,7 @@ import utils.Log;
  *
  */
 
-public class AStarCourbe implements Service, Configurable
+public class AStarCourbe implements Service, Configurable, HighPFClass
 {
 	protected Log log;
 	private ArcManager arcmanager;

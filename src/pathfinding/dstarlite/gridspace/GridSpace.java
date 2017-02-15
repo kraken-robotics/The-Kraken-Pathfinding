@@ -37,6 +37,8 @@ import utils.Vec2RO;
 import config.Config;
 import config.ConfigInfo;
 import config.Configurable;
+import container.HighPFClass;
+import container.LowPFClass;
 import container.Service;
 
 /**
@@ -47,7 +49,7 @@ import container.Service;
  *
  */
 
-public class GridSpace implements Service, Printable, Configurable
+public class GridSpace implements Service, Printable, Configurable, LowPFClass
 {
 	protected Log log;
 	private ObstaclesIteratorPresent iteratorDStarLiteFirst;

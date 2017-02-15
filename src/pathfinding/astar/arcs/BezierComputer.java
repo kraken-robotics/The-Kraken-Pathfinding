@@ -24,6 +24,7 @@ import java.util.LinkedList;
 import config.Config;
 import config.ConfigInfo;
 import config.Configurable;
+import container.HighPFClass;
 import container.Service;
 import graphic.PrintBuffer;
 import memory.CinemObsMM;
@@ -44,7 +45,7 @@ import utils.Vec2RW;
  *
  */
 
-public class BezierComputer implements Service, Configurable
+public class BezierComputer implements Service, Configurable, HighPFClass
 {
 	protected Log log;
 	protected CinemObsMM memory;

@@ -35,6 +35,8 @@ import utils.Vec2RO;
 import config.Config;
 import config.ConfigInfo;
 import config.Configurable;
+import container.HighPFClass;
+import container.LowPFClass;
 import container.Service;
 import exceptions.PathfindingException;
 import graphic.PrintBuffer;
@@ -49,7 +51,7 @@ import graphic.printable.Couleur;
  *
  */
 
-public class DStarLite implements Service, Configurable
+public class DStarLite implements Service, Configurable, LowPFClass
 {
 	protected Log log;
 	private GridSpace gridspace;

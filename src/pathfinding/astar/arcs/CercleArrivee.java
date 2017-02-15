@@ -22,6 +22,8 @@ import java.awt.Graphics;
 import config.Config;
 import config.ConfigInfo;
 import config.Configurable;
+import container.HighPFClass;
+import container.LowPFClass;
 import container.Service;
 import graphic.Fenetre;
 import graphic.PrintBuffer;
@@ -42,7 +44,7 @@ import utils.Vec2RW;
  *
  */
 
-public class CercleArrivee implements Service, Configurable, Printable
+public class CercleArrivee implements Service, Configurable, Printable, HighPFClass, LowPFClass
 {
 	public Vec2RO position;
 	public double rayon;

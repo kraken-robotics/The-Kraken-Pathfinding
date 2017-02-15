@@ -17,6 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 package pathfinding.dstarlite.gridspace;
 
+import container.LowPFClass;
 import container.Service;
 import utils.Log;
 import utils.Vec2RO;
@@ -27,7 +28,7 @@ import utils.Vec2RO;
  *
  */
 
-public class PointGridSpaceManager implements Service
+public class PointGridSpaceManager implements Service, LowPFClass
 {
 	private static final int X_MAX = PointGridSpace.NB_POINTS_POUR_TROIS_METRES - 1;
 	private static final int Y_MAX = PointGridSpace.NB_POINTS_POUR_DEUX_METRES - 1;

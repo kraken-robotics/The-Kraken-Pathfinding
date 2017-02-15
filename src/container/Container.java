@@ -42,12 +42,25 @@ import container.Service;
 import utils.*;
 import exceptions.ContainerException;
 import graphic.PrintBuffer;
+import memory.CinemObsMM;
 import obstacles.types.Obstacle;
+import pathfinding.astar.AStarCourbe;
 import pathfinding.astar.arcs.ArcCourbe;
+import pathfinding.astar.arcs.ArcManager;
+import pathfinding.astar.arcs.BezierComputer;
+import pathfinding.astar.arcs.CercleArrivee;
+import pathfinding.astar.arcs.ClothoidesComputer;
+import pathfinding.chemin.CheminPathfinding;
+import pathfinding.dstarlite.DStarLite;
+import serie.BufferIncomingBytes;
+import serie.BufferOutgoingOrder;
 import serie.SerieCouchePhysique;
+import serie.SerieCoucheTrame;
 import threads.ThreadName;
+import threads.ThreadPathfinding;
 import threads.ThreadService;
 import threads.ThreadShutdown;
+import threads.serie.ThreadSerialOutput;
 
 /**
  * 
@@ -70,8 +83,13 @@ public class Container implements Service, Configurable
 	private boolean showGraph;
 
 	private List<DynamicConfigurable> dynaConf = new ArrayList<DynamicConfigurable>();
-	private HashMap<String, Set<String>> grapheDep = new HashMap<String, Set<String>>();
-	
+	private HashMap<Class<? extends Service>, Set<String>> grapheDep = new HashMap<Class<? extends Service>, Set<String>>();
+	private List<String> classesSerie = new ArrayList<String>();
+	private List<String> classesHighPF = new ArrayList<String>();
+	private List<String> classesLowPF = new ArrayList<String>();
+	private List<String> classesBothPF = new ArrayList<String>();
+	private List<String> classesCore = new ArrayList<String>();
+	private List<String> classesAutres = new ArrayList<String>();
 	/**
 	 * Fonction appelé automatiquement à la fin du programme.
 	 * ferme la connexion serie, termine les différents threads, et ferme le log.
@@ -110,17 +128,78 @@ public class Container implements Service, Configurable
 		if(showGraph)
 		{
 			log.warning("Sauvegarde du graphe de dépendances");
+
+			for(Class<? extends Service> classe : grapheDep.keySet())
+			{
+				if(HighPFClass.class.isAssignableFrom(classe))
+				{
+					if(LowPFClass.class.isAssignableFrom(classe))
+						classesBothPF.add(classe.getSimpleName());
+					else
+						classesHighPF.add(classe.getSimpleName());
+				}
+				else if(SerialClass.class.isAssignableFrom(classe))
+					classesSerie.add(classe.getSimpleName());
+				else if(LowPFClass.class.isAssignableFrom(classe))
+					classesLowPF.add(classe.getSimpleName());
+				else if(CoreClass.class.isAssignableFrom(classe))
+					classesCore.add(classe.getSimpleName());				
+				else
+					classesAutres.add(classe.getSimpleName());
+			}
+			
 			try {
 				FileWriter fw = new FileWriter(new File("dependances.dot"));
-				fw.write("digraph dependancesJava {\n");
-				for(String s : grapheDep.keySet())
-				{
+				fw.write("digraph dependancesJava {\n\n");
+
+				
+				fw.write("subgraph clusterPF {\n");
+				fw.write("label = \"Pathfinding\";\n");
+				for(String s : classesBothPF)					
 					fw.write(s+";\n");
-					Set<String> enf = grapheDep.get(s);
-					for(String e : enf)
-						fw.write(s+" -> "+e+";\n");
+				
+				fw.write("subgraph clusterPFCourbe {\n");
+				fw.write("label = \"PF courbe\";\n");
+				for(String s : classesHighPF)					
+					fw.write(s+";\n");
+				fw.write("}\n\n");
+				
+				fw.write("subgraph clusterPFlow {\n");
+				fw.write("label = \"PF bas niveau\";\n");
+				for(String s : classesLowPF)					
+					fw.write(s+";\n");
+				fw.write("}\n\n");
+				fw.write("}\n\n");
+				
+				fw.write("subgraph clusterSerie {\n");
+				fw.write("label = \"Série\";\n");
+				for(String s : classesSerie)					
+					fw.write(s+";\n");
+				fw.write("}\n\n");
+				
+				fw.write("subgraph clusterCore {\n");
+				fw.write("label = \"Core\";\n");
+				for(String s : classesCore)					
+					fw.write(s+";\n");
+				fw.write("}\n\n");
+				
+				for(String s : classesAutres)					
+					fw.write(s+";\n");
+				
+				fw.write("\n");
+				
+				for(Class<? extends Service> classe : grapheDep.keySet())
+				{
+					Set<String> enf = grapheDep.get(classe);
+					if(!enf.isEmpty())
+					{
+						fw.write(classe.getSimpleName()+" -> {");
+						for(String e : enf)
+							fw.write(e+" ");
+						fw.write("};\n");
+					}
 				}
-				fw.write("}\n");
+				fw.write("\n}\n");
 				fw.close();
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -320,7 +399,7 @@ public class Container implements Service, Configurable
 				if(enf == null)
 				{
 					enf = new HashSet<String>();
-					grapheDep.put(classe.getSimpleName(), enf);
+					grapheDep.put((Class<Service>) classe, enf);
 				}
 				for(int i = 0; i < param.length - extraParam.length; i++)
 				{

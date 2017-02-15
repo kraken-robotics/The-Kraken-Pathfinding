@@ -20,6 +20,7 @@ package memory;
 import config.Config;
 import config.ConfigInfo;
 import container.Container;
+import container.HighPFClass;
 import exceptions.ContainerException;
 import pathfinding.astar.arcs.ArcCourbeDynamique;
 import robot.CinematiqueObs;
@@ -33,7 +34,7 @@ import utils.Log;
  *
  */
 
-public class CinemObsMM extends MemoryManager<CinematiqueObs>
+public class CinemObsMM extends MemoryManager<CinematiqueObs> implements HighPFClass
 {
 
 	public CinemObsMM(Log log, Config config, Container container) throws ContainerException

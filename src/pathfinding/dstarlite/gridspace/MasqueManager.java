@@ -23,6 +23,7 @@ import java.util.List;
 import config.Config;
 import config.ConfigInfo;
 import config.Configurable;
+import container.LowPFClass;
 import container.Container;
 import container.Service;
 import exceptions.ContainerException;
@@ -36,7 +37,7 @@ import utils.Vec2RO;
  *
  */
 
-public class MasqueManager implements Service, Configurable
+public class MasqueManager implements Service, Configurable, LowPFClass
 {
 	private int centreMasqueEnnemi, centreMasqueCylindre;
 	private PointGridSpaceManager pointManager;

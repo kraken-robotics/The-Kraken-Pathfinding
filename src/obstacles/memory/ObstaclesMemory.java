@@ -30,6 +30,7 @@ import utils.Vec2RO;
 import config.Config;
 import config.ConfigInfo;
 import config.Configurable;
+import container.LowPFClass;
 import container.Container;
 import container.Service;
 
@@ -40,7 +41,7 @@ import container.Service;
  *
  */
 
-public class ObstaclesMemory implements Service, Configurable
+public class ObstaclesMemory implements Service, Configurable, LowPFClass
 {
     // Les obstacles mobiles, c'est-à-dire des obstacles de proximité
     private volatile LinkedList<ObstacleProximity> listObstaclesMobiles = new LinkedList<ObstacleProximity>();

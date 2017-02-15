@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import memory.CinemObsMM;
+import container.HighPFClass;
 import container.Service;
 import obstacles.types.ObstacleCircular;
 import pathfinding.astar.arcs.vitesses.VitesseClotho;
@@ -50,7 +51,7 @@ import utils.Vec2RW;
  *
  */
 
-public class ClothoidesComputer implements Service
+public class ClothoidesComputer implements Service, HighPFClass
 {
 	private Log log;
 	private CinemObsMM memory;
