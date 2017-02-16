@@ -15,7 +15,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>
 */
 
-package container;
+package container.dependances;
 
 /**
  * Interface utilisée pour la génération du graphe de dépendances
@@ -23,4 +23,4 @@ package container;
  *
  */
 
-public interface HighPFClass {}
+public interface ConfigClass {}

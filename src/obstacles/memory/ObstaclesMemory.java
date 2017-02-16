@@ -30,9 +30,9 @@ import utils.Vec2RO;
 import config.Config;
 import config.ConfigInfo;
 import config.Configurable;
-import container.LowPFClass;
 import container.Container;
 import container.Service;
+import container.dependances.LowPFClass;
 
 /**
  * Mémorise tous les obstacles mobiles qu'on a rencontré jusque là.

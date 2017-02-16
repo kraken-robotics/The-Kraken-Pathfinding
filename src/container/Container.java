@@ -39,6 +39,12 @@ import config.ConfigInfo;
 import config.Configurable;
 import config.DynamicConfigurable;
 import container.Service;
+import container.dependances.ConfigClass;
+import container.dependances.CoreClass;
+import container.dependances.GUIClass;
+import container.dependances.HighPFClass;
+import container.dependances.LowPFClass;
+import container.dependances.SerialClass;
 import utils.*;
 import exceptions.ContainerException;
 import graphic.PrintBuffer;
@@ -71,12 +77,7 @@ public class Container implements Service, Configurable
 
 	private List<DynamicConfigurable> dynaConf = new ArrayList<DynamicConfigurable>();
 	private HashMap<Class<? extends Service>, Set<String>> grapheDep = new HashMap<Class<? extends Service>, Set<String>>();
-	private List<String> classesSerie = new ArrayList<String>();
-	private List<String> classesHighPF = new ArrayList<String>();
-	private List<String> classesLowPF = new ArrayList<String>();
-	private List<String> classesBothPF = new ArrayList<String>();
-	private List<String> classesCore = new ArrayList<String>();
-	private List<String> classesAutres = new ArrayList<String>();
+	
 	/**
 	 * Fonction appelé automatiquement à la fin du programme.
 	 * ferme la connexion serie, termine les différents threads, et ferme le log.
@@ -111,16 +112,28 @@ public class Container implements Service, Configurable
 		 */
 		if(instanciedServices.containsKey(SerieCouchePhysique.class.getSimpleName()))
 			((SerieCouchePhysique)instanciedServices.get(SerieCouchePhysique.class.getSimpleName())).close();
-
+		
 		if(showGraph)
 		{
 			log.warning("Sauvegarde du graphe de dépendances");
 
+			List<String> classesSerie = new ArrayList<String>();
+			List<String> classesHighPF = new ArrayList<String>();
+			List<String> classesLowPF = new ArrayList<String>();
+			List<String> classesBothPF = new ArrayList<String>();
+			List<String> classesCore = new ArrayList<String>();
+			List<String> classesGUI = new ArrayList<String>();
+			List<String> classesConfig = new ArrayList<String>();
+			List<String> classesAutres = new ArrayList<String>();
+
 			for(Class<? extends Service> classe : grapheDep.keySet())
 			{
+				log.debug(classe.getSimpleName());
 				String nom = classe.getSimpleName();
 				if(nom.startsWith("Thread"))
 					nom+="[style=filled, fillcolor=cadetblue1]";
+				else if(nom.contains("Buffer"))
+					nom+="[style=filled, fillcolor=darkolivegreen1]";
 				if(HighPFClass.class.isAssignableFrom(classe))
 				{
 					if(LowPFClass.class.isAssignableFrom(classe))
@@ -130,8 +143,12 @@ public class Container implements Service, Configurable
 				}
 				else if(SerialClass.class.isAssignableFrom(classe))
 					classesSerie.add(nom);
+				else if(GUIClass.class.isAssignableFrom(classe))
+					classesGUI.add(nom);
 				else if(LowPFClass.class.isAssignableFrom(classe))
 					classesLowPF.add(nom);
+				else if(ConfigClass.class.isAssignableFrom(classe))
+					classesConfig.add(nom);
 				else if(CoreClass.class.isAssignableFrom(classe))
 					classesCore.add(nom);				
 				else
@@ -167,9 +184,21 @@ public class Container implements Service, Configurable
 					fw.write(s+";\n");
 				fw.write("}\n\n");
 				
+				fw.write("subgraph clusterConfig {\n");
+				fw.write("label = \"Config\";\n");
+				for(String s : classesConfig)					
+					fw.write(s+";\n");
+				fw.write("}\n\n");
+				
 				fw.write("subgraph clusterCore {\n");
 				fw.write("label = \"Core\";\n");
 				for(String s : classesCore)					
+					fw.write(s+";\n");
+				fw.write("}\n\n");
+				
+				fw.write("subgraph clusterGUI {\n");
+				fw.write("label = \"GUI\";\n");
+				for(String s : classesGUI)					
 					fw.write(s+";\n");
 				fw.write("}\n\n");
 				
@@ -290,6 +319,9 @@ public class Container implements Service, Configurable
 		Obstacle.useConfig(config);
 		ArcCourbe.useConfig(config);
 
+		if(showGraph)
+			grapheDep.put(Config.class, new HashSet<String>());
+
 		startAllThreads();
 
 	}
@@ -385,7 +417,7 @@ public class Container implements Service, Configurable
 			 */
 			if(showGraph && Service.class.isAssignableFrom(classe) && !classe.equals(Log.class) && !classe.equals(PrintBuffer.class))
 			{
-				Set<String> enf = grapheDep.get(classe.getSimpleName());
+				Set<String> enf = grapheDep.get(classe);
 				if(enf == null)
 				{
 					enf = new HashSet<String>();

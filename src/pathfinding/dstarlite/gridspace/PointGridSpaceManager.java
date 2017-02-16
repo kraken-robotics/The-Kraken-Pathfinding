@@ -17,8 +17,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 package pathfinding.dstarlite.gridspace;
 
-import container.LowPFClass;
 import container.Service;
+import container.dependances.LowPFClass;
 import utils.Log;
 import utils.Vec2RO;
 

@@ -20,7 +20,7 @@ package threads;
 import config.Config;
 import config.ConfigInfo;
 import config.Configurable;
-import container.LowPFClass;
+import container.dependances.LowPFClass;
 import graphic.PrintBuffer;
 import obstacles.memory.ObstaclesMemory;
 import pathfinding.dstarlite.DStarLite;

@@ -26,6 +26,7 @@ import config.Config;
 import config.ConfigInfo;
 import config.Configurable;
 import container.Service;
+import container.dependances.GUIClass;
 import graphic.printable.BackgroundImage;
 import robot.RobotReal;
 import utils.Log;
@@ -45,7 +46,7 @@ import java.util.ArrayList;
  *
  */
 
-public class Fenetre extends JPanel implements Service, Configurable {
+public class Fenetre extends JPanel implements Service, Configurable, GUIClass {
 
 	/**
 	 * Couleurs surtout utilisées pour le dstarlite

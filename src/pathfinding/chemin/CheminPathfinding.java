@@ -37,8 +37,8 @@ import utils.Log;
 import config.Config;
 import config.ConfigInfo;
 import config.Configurable;
-import container.HighPFClass;
 import container.Service;
+import container.dependances.HighPFClass;
 import exceptions.PathfindingException;
 
 /**

@@ -37,8 +37,8 @@ import utils.Vec2RO;
 import config.Config;
 import config.ConfigInfo;
 import config.Configurable;
-import container.LowPFClass;
 import container.Service;
+import container.dependances.LowPFClass;
 
 /**
  * La classe qui contient la grille utilisée par le pathfinding.

@@ -15,28 +15,12 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>
 */
 
-package memory;
-
-import pathfinding.astar.AStarCourbeNode;
-import utils.Log;
-import config.Config;
-import config.ConfigInfo;
-import container.Container;
-import container.dependances.HighPFClass;
-import exceptions.ContainerException;
+package container.dependances;
 
 /**
- * Memory Manager des nœuds du pathfinding courbe
+ * Interface utilisée pour la génération du graphe de dépendances
  * @author pf
  *
  */
 
-public class NodeMM extends MemoryManager<AStarCourbeNode> implements HighPFClass
-{
-
-	public NodeMM(Log log, Config config, Container container) throws ContainerException
-	{
-		super(AStarCourbeNode.class, log, container, config.getInt(ConfigInfo.NB_INSTANCES_NODE));
-	}
-
-}
+public interface SerialClass {}

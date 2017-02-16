@@ -31,8 +31,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import memory.CinemObsMM;
-import container.HighPFClass;
 import container.Service;
+import container.dependances.HighPFClass;
 import obstacles.types.ObstacleCircular;
 import pathfinding.astar.arcs.vitesses.VitesseClotho;
 import pathfinding.astar.arcs.vitesses.VitesseDemiTour;

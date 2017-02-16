@@ -20,6 +20,7 @@ package threads;
 import config.Config;
 import config.ConfigInfo;
 import config.Configurable;
+import container.dependances.GUIClass;
 import graphic.Fenetre;
 import graphic.PrintBuffer;
 import utils.Log;
@@ -30,7 +31,7 @@ import utils.Log;
  *
  */
 
-public class ThreadFenetre extends ThreadService implements Configurable
+public class ThreadFenetre extends ThreadService implements Configurable, GUIClass
 {
 
 	protected Log log;

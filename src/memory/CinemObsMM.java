@@ -20,7 +20,7 @@ package memory;
 import config.Config;
 import config.ConfigInfo;
 import container.Container;
-import container.HighPFClass;
+import container.dependances.HighPFClass;
 import exceptions.ContainerException;
 import pathfinding.astar.arcs.ArcCourbeDynamique;
 import robot.CinematiqueObs;
