@@ -60,6 +60,7 @@ public class DStarLite implements Service, Configurable, LowPFClass
 	protected CercleArrivee cercle;
 	private boolean graphicDStarLite, graphicDStarLiteFinal, graphicHeuristique;
 	private boolean shoot = false;
+	private boolean rechercheEnCours = false;
 	
 	private DStarLiteNode[] memory = new DStarLiteNode[PointGridSpace.NB_POINTS];
 
@@ -285,6 +286,7 @@ public class DStarLite implements Service, Configurable, LowPFClass
 	public void computeNewPath(Vec2RO depart, Vec2RO arrivee, boolean shoot)
 	{
 		this.shoot = shoot;
+		rechercheEnCours = true;
 		if(graphicDStarLite)
 			gridspace.reinitGraphicGrid();
 		
@@ -363,7 +365,8 @@ public class DStarLite implements Service, Configurable, LowPFClass
 	 */
 	public synchronized void updateObstaclesTable()
 	{
-		updateObstacles(table.getOldAndNewObstacles(shoot));
+		if(rechercheEnCours)
+			updateObstacles(table.getOldAndNewObstacles(shoot));
 	}
 	
 	/**
@@ -371,7 +374,8 @@ public class DStarLite implements Service, Configurable, LowPFClass
 	 */
 	public synchronized void updateObstaclesEnnemi()
 	{
-		updateObstacles(gridspace.getOldAndNewObstacles());
+		if(rechercheEnCours)
+			updateObstacles(gridspace.getOldAndNewObstacles());
 	}
 	
 	/**
