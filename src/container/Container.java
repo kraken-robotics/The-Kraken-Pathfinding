@@ -42,25 +42,12 @@ import container.Service;
 import utils.*;
 import exceptions.ContainerException;
 import graphic.PrintBuffer;
-import memory.CinemObsMM;
 import obstacles.types.Obstacle;
-import pathfinding.astar.AStarCourbe;
 import pathfinding.astar.arcs.ArcCourbe;
-import pathfinding.astar.arcs.ArcManager;
-import pathfinding.astar.arcs.BezierComputer;
-import pathfinding.astar.arcs.CercleArrivee;
-import pathfinding.astar.arcs.ClothoidesComputer;
-import pathfinding.chemin.CheminPathfinding;
-import pathfinding.dstarlite.DStarLite;
-import serie.BufferIncomingBytes;
-import serie.BufferOutgoingOrder;
 import serie.SerieCouchePhysique;
-import serie.SerieCoucheTrame;
 import threads.ThreadName;
-import threads.ThreadPathfinding;
 import threads.ThreadService;
 import threads.ThreadShutdown;
-import threads.serie.ThreadSerialOutput;
 
 /**
  * 
@@ -131,21 +118,24 @@ public class Container implements Service, Configurable
 
 			for(Class<? extends Service> classe : grapheDep.keySet())
 			{
+				String nom = classe.getSimpleName();
+				if(nom.startsWith("Thread"))
+					nom+="[style=filled, fillcolor=cadetblue1]";
 				if(HighPFClass.class.isAssignableFrom(classe))
 				{
 					if(LowPFClass.class.isAssignableFrom(classe))
-						classesBothPF.add(classe.getSimpleName());
+						classesBothPF.add(nom);
 					else
-						classesHighPF.add(classe.getSimpleName());
+						classesHighPF.add(nom);
 				}
 				else if(SerialClass.class.isAssignableFrom(classe))
-					classesSerie.add(classe.getSimpleName());
+					classesSerie.add(nom);
 				else if(LowPFClass.class.isAssignableFrom(classe))
-					classesLowPF.add(classe.getSimpleName());
+					classesLowPF.add(nom);
 				else if(CoreClass.class.isAssignableFrom(classe))
-					classesCore.add(classe.getSimpleName());				
+					classesCore.add(nom);				
 				else
-					classesAutres.add(classe.getSimpleName());
+					classesAutres.add(nom);
 			}
 			
 			try {

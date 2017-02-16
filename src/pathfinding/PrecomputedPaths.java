@@ -92,12 +92,13 @@ public class PrecomputedPaths implements Service
 				cercle.set(GameElementNames.MINERAI_CRATERE_BAS_DROITE);
 				try {
 					astar.computeNewPath(true);
+					savePath(fileName, path);
 				} catch (PathfindingException e) {
-					e.printStackTrace();
+					log.critical("Le précalcul du chemin a échoué");
 				}
-				savePath(fileName, path);
 			}
-			paths.get(start).put(script, path);
+			if(path != null)
+				paths.get(start).put(script, path);
 		}
 	}
 	
