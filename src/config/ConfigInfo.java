@@ -69,7 +69,7 @@ public enum ConfigInfo {
 	PF_MARGE_NECESSAIRE((int)(0.10/ClothoidesComputer.PRECISION_TRACE)), // combien de points de pathfinding le bas niveau doit-il toujours avoir
 	PF_MARGE_INITIALE((int)(0.15/ClothoidesComputer.PRECISION_TRACE)), // combien de points garde-t-on au début de la replanification
 	DUREE_MAX_RECHERCHE_PF(3000), // durée maximale que peut prendre le pathfinding
-	TAILLE_FAISCEAU_PF(10),
+	TAILLE_FAISCEAU_PF(10), // combien de voisins sont ajoutés à l'openset à chaque itération
 	
 	/**
 	 * Paramètres de la série
@@ -92,6 +92,10 @@ public enum ConfigInfo {
 	DUREE_PEREMPTION_OBSTACLES(3000), // pendant combien de temps va-t-on garder un obstacle de proximité
 	DISTANCE_MAX_ENTRE_MESURE_ET_OBJET(50), // quelle marge d'erreur autorise-t-on entre un objet et sa détection
 	DISTANCE_BETWEEN_PROXIMITY_OBSTACLES(50), // sous quelle distance fusionne-t-on deux obstacles de proximité ?
+	IMPRECISION_MAX_POSITION(20.), // quelle imprecision maximale sur la position du robot peut-on attendre (en mm)
+	IMPRECISION_MAX_ORIENTATION(0.1), // quelle imprecision maximale sur l'angle du robot peut-on attendre (en radians)
+	TAILLE_BUFFER_RECALAGE(5), // combien de mesures sont nécessaires pour obtenir une correction de recalage
+	PEREMPTION_CORRECTION(100), // temps maximale entre deux mesures de correction au sein d'un même buffer (en ms)
 
 	/**
 	 * Paramètres sur la gestion de la mémoire
@@ -141,7 +145,7 @@ public enum ConfigInfo {
 	DATE_DEBUT_MATCH(0, false); // date du début du match
 
 	private Object defaultValue;
-	private boolean constant;
+	public final boolean constant;
 	
 	/**
 	 * Par défaut, une valeur est constante
@@ -156,11 +160,6 @@ public enum ConfigInfo {
 	{
 		this.defaultValue = defaultValue;
 		this.constant = constant;
-	}
-	
-	boolean isConstant()
-	{
-		return constant;
 	}
 	
 	Object getDefaultValue()

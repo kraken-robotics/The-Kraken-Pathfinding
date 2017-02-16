@@ -89,6 +89,15 @@ public class Vec2RW extends Vec2RO
 		return this;
 	}
 	
+	public final void rotate(double angle, Vec2RO centreRotation)
+	{
+		double cos = Math.cos(angle);
+		double sin = Math.sin(angle);
+		double tmpx = cos*(x-centreRotation.x)-sin*(y-centreRotation.y)+centreRotation.x;
+		y = sin*(x-centreRotation.x)+cos*(y-centreRotation.y)+centreRotation.y;
+		x = tmpx;
+	}
+	
 	public final void setX(double x)
 	{
 		this.x = x;

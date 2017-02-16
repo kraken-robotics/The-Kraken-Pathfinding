@@ -175,7 +175,7 @@ public class Config implements Service, ConfigClass
 	 */
 	public void set(ConfigInfo nom, Object value)
 	{
-		if(nom.isConstant())
+		if(nom.constant)
 			log.critical("Demande d'affectation à une config constante: "+nom);
 		else
 			set(nom, value.toString());
@@ -189,7 +189,7 @@ public class Config implements Service, ConfigClass
 	{
 		log.debug("Configuration initiale");
 		for(ConfigInfo info: ConfigInfo.values())
-			if(info.isConstant())
+			if(info.constant)
 				log.debug(info+" = "+getString(info));
 	}
 	
@@ -204,7 +204,7 @@ public class Config implements Service, ConfigClass
 			{
 				if(!properties.containsKey(info.toString()))
 					properties.setProperty(info.toString(), info.getDefaultValue().toString());
-				else if(!info.isConstant())
+				else if(!info.constant)
 				{
 					System.out.println(info+" NE peut PAS être surchargé par config.ini");
 					properties.setProperty(info.toString(), info.getDefaultValue().toString());

@@ -128,7 +128,6 @@ public class Container implements Service, Configurable
 
 			for(Class<? extends Service> classe : grapheDep.keySet())
 			{
-				log.debug(classe.getSimpleName());
 				String nom = classe.getSimpleName();
 				if(nom.startsWith("Thread"))
 					nom+="[style=filled, fillcolor=cadetblue1]";
