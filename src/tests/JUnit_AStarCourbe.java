@@ -47,7 +47,7 @@ import robot.RobotReal;
 import robot.Speed;
 import table.GameElementNames;
 import threads.ThreadName;
-import threads.ThreadPathfinding;
+import threads.ThreadUpdatePathfinding;
 import utils.Vec2RO;
 
 /**
@@ -380,7 +380,7 @@ public class JUnit_AStarCourbe extends JUnit_Test {
     public void test_replanif() throws Exception
     {
 		// Ce test impose l'arrêt du thread de pathfinding pour ne pas avoir d'interférence
-		ThreadPathfinding thread = container.getService(ThreadPathfinding.class);
+		ThreadUpdatePathfinding thread = container.getService(ThreadUpdatePathfinding.class);
 		thread.interrupt();
 		thread.join(1000);
 		long avant = System.nanoTime();

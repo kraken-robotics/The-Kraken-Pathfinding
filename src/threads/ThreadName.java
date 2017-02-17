@@ -33,7 +33,7 @@ public enum ThreadName
 	CAPTEURS(ThreadCapteurs.class),
 	CONFIG(ThreadConfig.class),
 	FENETRE(ThreadFenetre.class),
-	PATHFINDING(ThreadPathfinding.class),
+	PATHFINDING(ThreadUpdatePathfinding.class),
 	PEREMPTION(ThreadPeremption.class),
 	SERIAL_INPUT_ORDRE(ThreadSerialInputCoucheOrdre.class),
 	SERIAL_INPUT_TRAME(ThreadSerialInputCoucheTrame.class),

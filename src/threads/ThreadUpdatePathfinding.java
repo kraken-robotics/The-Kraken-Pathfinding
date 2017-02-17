@@ -24,18 +24,18 @@ import pathfinding.chemin.CheminPathfinding;
 import utils.Log;
 
 /**
- * Thread qui recalcule l'itinéraire à emprunter. Surveille ObstaclesMemory.
+ * Thread qui recalcule l'itinéraire à emprunter. Surveille CheminPathfinding.
  * @author pf
  *
  */
 
-public class ThreadPathfinding extends ThreadService implements HighPFClass
+public class ThreadUpdatePathfinding extends ThreadService implements HighPFClass
 {
 	protected Log log;
 	private AStarCourbe pathfinding;
 	private CheminPathfinding chemin;
 
-	public ThreadPathfinding(Log log, AStarCourbe pathfinding, CheminPathfinding chemin)
+	public ThreadUpdatePathfinding(Log log, AStarCourbe pathfinding, CheminPathfinding chemin)
 	{
 		this.log = log;
 		this.pathfinding = pathfinding;
