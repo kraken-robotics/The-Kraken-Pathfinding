@@ -26,6 +26,7 @@ import java.util.Stack;
 import memory.NodeMM;
 import memory.CinemObsMM;
 import pathfinding.DirectionStrategy;
+import pathfinding.GameState;
 import pathfinding.RealGameState;
 import pathfinding.SensFinal;
 import pathfinding.astar.arcs.ArcCourbe;
@@ -44,6 +45,7 @@ import exceptions.PathfindingException;
 import graphic.PrintBuffer;
 import robot.Cinematique;
 import robot.CinematiqueObs;
+import robot.Robot;
 import robot.Speed;
 import utils.Log;
 
@@ -110,7 +112,6 @@ public class AStarCourbe implements Service, Configurable, HighPFClass
 		this.memorymanager = memorymanager;
 		this.realChemin = chemin;
 		this.depart = depart;
-		this.state = state;
 		this.dstarlite = dstarlite;
 		this.cinemMemory = rectMemory;
 		this.buffer = buffer;
@@ -347,9 +348,9 @@ public class AStarCourbe implements Service, Configurable, HighPFClass
 	 * @param shoot
 	 * @throws PathfindingException
 	 */
-	public void initializeNewSearch(Cinematique arrivee, boolean shoot) throws PathfindingException
+	public void initializeNewSearch(Cinematique arrivee, boolean shoot, GameState<? extends Robot> state) throws PathfindingException
 	{
-		initializeNewSearch(arrivee, SensFinal.AUCUNE_PREF, shoot);
+		initializeNewSearch(arrivee, SensFinal.AUCUNE_PREF, shoot, state);
 	}
 	
 	/**
@@ -359,7 +360,7 @@ public class AStarCourbe implements Service, Configurable, HighPFClass
 	 * @param shoot
 	 * @throws PathfindingException
 	 */
-	public void initializeNewSearch(Cinematique arrivee, SensFinal sens, boolean shoot) throws PathfindingException
+	public void initializeNewSearch(Cinematique arrivee, SensFinal sens, boolean shoot, GameState<? extends Robot> state) throws PathfindingException
 	{
 		vitesseMax = Speed.STANDARD;
 		depart.init();
@@ -381,7 +382,7 @@ public class AStarCourbe implements Service, Configurable, HighPFClass
 	 * @return
 	 * @throws PathfindingException 
 	 */
-	public void initializeNewSearchToCircle(boolean shoot) throws PathfindingException
+	public void initializeNewSearchToCircle(boolean shoot, GameState<? extends Robot> state) throws PathfindingException
 	{
 		vitesseMax = Speed.STANDARD;
 		depart.init();

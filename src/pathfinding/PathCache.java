@@ -96,10 +96,10 @@ public class PathCache implements Service
 	 * @param shoot
 	 * @throws PathfindingException
 	 */
-	public void prepareNewPathToScript(Cinematique cinematiqueInitiale, Script s, boolean shoot) throws PathfindingException
+	public void prepareNewPathToScript(Cinematique cinematiqueInitiale, Script s, boolean shoot, ChronoGameState chrono) throws PathfindingException
 	{
 		s.setUpCercleArrivee();
-		astar.initializeNewSearchToCircle(shoot);
+		astar.initializeNewSearchToCircle(shoot, chrono);
 
 		HashMap<Script, LinkedList<CinematiqueObs>> hm = paths.get(cinematiqueInitiale);
 
@@ -146,12 +146,8 @@ public class PathCache implements Service
 				log.debug(script);
 				if(path == null)
 				{
-					chrono.robot.setCinematique(start);
-					script.setUpCercleArrivee();
 					try {
-						astar.initializeNewSearchToCircle(shoot[i]);
-						astar.process(fakeChemin);
-						iterator.reinit();
+						prepareNewPathToScript(start, script, shoot[i], chrono);
 						path = fakeChemin.getPath();
 						savePath(fileName, path);
 					} catch (PathfindingException e) {

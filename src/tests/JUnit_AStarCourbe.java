@@ -26,6 +26,7 @@ import org.junit.Test;
 import config.ConfigInfo;
 import graphic.PrintBuffer;
 import pathfinding.PathCache;
+import pathfinding.RealGameState;
 import pathfinding.SensFinal;
 import pathfinding.astar.AStarCourbe;
 import pathfinding.astar.arcs.ArcCourbeStatique;
@@ -67,6 +68,7 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 	private CheminPathfinding chemin;
 	private GridSpace gridspace;
 	private CercleArrivee cercle;
+	private RealGameState state;
 //	private PrecomputedPaths prepaths;
 //	private ArcManager arcmanager;
 //	private DStarLite dstarlite;
@@ -78,6 +80,7 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 		clotho = container.getService(ClothoidesComputer.class);
 		buffer = container.getService(PrintBuffer.class);
 		astar = container.getService(AStarCourbe.class);
+		state = container.getService(RealGameState.class);
 //		dstarlite = container.getService(DStarLite.class);
 		robot = container.getService(RobotReal.class);
 		chemin = container.getService(CheminPathfinding.class);
@@ -274,7 +277,7 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 		Cinematique depart = new Cinematique(-900, 650, 0, true, 0, Speed.STANDARD.translationalSpeed);
 		robot.setCinematique(depart);
 		Cinematique c = new Cinematique(0, 1200, Math.PI, false, 0, Speed.STANDARD.translationalSpeed);
-		astar.initializeNewSearch(c, false);
+		astar.initializeNewSearch(c, false, state);
 		astar.process(chemin);
 		log.debug("Temps : "+(System.nanoTime() - avant) / (1000000.));
 		iterator.reinit();
@@ -298,7 +301,7 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 		Cinematique depart = new Cinematique(0, 1800, -Math.PI/3, true, 0, Speed.STANDARD.translationalSpeed);
 		robot.setCinematique(depart);
 		Cinematique c = new Cinematique(1000, 1200, Math.PI, false, 0, Speed.STANDARD.translationalSpeed);
-		astar.initializeNewSearch(c, true);
+		astar.initializeNewSearch(c, true, state);
 		astar.process(chemin);
 		iterator.reinit();
 		CinematiqueObs a = null, b = null;
@@ -324,7 +327,7 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 		Cinematique depart = new Cinematique(-200, 1600, -Math.PI/3+Math.PI, true, 0, Speed.STANDARD.translationalSpeed);
 		robot.setCinematique(depart);
 		Cinematique c = new Cinematique(1000, 1200, Math.PI, false, 0, Speed.STANDARD.translationalSpeed);
-		astar.initializeNewSearch(c, true);
+		astar.initializeNewSearch(c, true, state);
 		astar.process(chemin);
 		iterator.reinit();
 		CinematiqueObs a = null, b = null;
@@ -350,7 +353,7 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 		Cinematique depart = new Cinematique(0, 1800, -Math.PI/3, true, 0, Speed.STANDARD.translationalSpeed);
 		robot.setCinematique(depart);
 		Cinematique c = new Cinematique(1000, 1200, Math.PI, false, 0, Speed.STANDARD.translationalSpeed);
-		astar.initializeNewSearch(c, false);
+		astar.initializeNewSearch(c, false, state);
 		astar.process(chemin);
 		iterator.reinit();
 		CinematiqueObs a = null;
@@ -384,7 +387,7 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 		Cinematique depart = new Cinematique(-800, 300, Math.PI/2, true, 0, Speed.STANDARD.translationalSpeed);
 		robot.setCinematique(depart);
 		Cinematique c = new Cinematique(0, 1600, Math.PI, false, 0, Speed.STANDARD.translationalSpeed);
-		astar.initializeNewSearch(c, false);
+		astar.initializeNewSearch(c, false, state);
 		astar.process(chemin);
 		log.debug("Temps : "+(System.nanoTime() - avant) / (1000000.));
 		iterator.reinit();
@@ -425,7 +428,7 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 		Cinematique depart = new Cinematique(-800, 350, Math.PI/2, true, 0, Speed.STANDARD.translationalSpeed);
 		robot.setCinematique(depart);
 		cercle.set(GameElementNames.MINERAI_CRATERE_HAUT_GAUCHE);
-		astar.initializeNewSearchToCircle(true);
+		astar.initializeNewSearchToCircle(true, state);
 		astar.process(chemin);
 		log.debug("Temps : "+(System.nanoTime() - avant) / (1000000.));
 		iterator.reinit();
@@ -450,7 +453,7 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 		Cinematique depart = new Cinematique(-800, 350, Math.PI/2, true, 0, Speed.STANDARD.translationalSpeed);
 		robot.setCinematique(depart);
 		cercle.set(GameElementNames.MINERAI_CRATERE_HAUT_DROITE);
-		astar.initializeNewSearchToCircle(false);
+		astar.initializeNewSearchToCircle(false, state);
 		astar.process(chemin);
 		log.debug("Temps : "+(System.nanoTime() - avant) / (1000000.));
 		iterator.reinit();
@@ -475,7 +478,7 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 		Cinematique depart = new Cinematique(-800, 350, Math.PI/2, true, 0, Speed.STANDARD.translationalSpeed);
 		robot.setCinematique(depart);
 		cercle.set(GameElementNames.MINERAI_CRATERE_BAS_DROITE);
-		astar.initializeNewSearchToCircle(true);
+		astar.initializeNewSearchToCircle(true, state);
 		astar.process(chemin);
 		log.debug("Temps : "+(System.nanoTime() - avant) / (1000000.));
 		iterator.reinit();
@@ -500,7 +503,7 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 		Cinematique depart = new Cinematique(-400, 1200, Math.PI, true, 0, Speed.STANDARD.translationalSpeed);
 		robot.setCinematique(depart);
 		Cinematique c = new Cinematique(300, 1200, 0, false, 0, Speed.STANDARD.translationalSpeed);
-		astar.initializeNewSearch(c, SensFinal.MARCHE_AVANT, false);
+		astar.initializeNewSearch(c, SensFinal.MARCHE_AVANT, false, state);
 		astar.process(chemin);
 		log.debug("Temps : "+(System.nanoTime() - avant) / (1000000.));
 		iterator.reinit();
@@ -525,7 +528,7 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 		Cinematique depart = new Cinematique(-800, 350, 3*Math.PI/4, true, 0, Speed.STANDARD.translationalSpeed);
 		robot.setCinematique(depart);
 		Cinematique c = new Cinematique(800, 700, Math.PI, false, 0, Speed.STANDARD.translationalSpeed);
-		astar.initializeNewSearch(c, true);
+		astar.initializeNewSearch(c, true, state);
 		astar.process(chemin);
 		log.debug("Temps : "+(System.nanoTime() - avant) / (1000000.));
 		iterator.reinit();
@@ -550,7 +553,7 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 		Cinematique depart = new Cinematique(-800, 400, -Math.PI/2, true, 0, Speed.STANDARD.translationalSpeed);
 		robot.setCinematique(depart);
 		Cinematique c = new Cinematique(800, 700, Math.PI, false, 0, Speed.STANDARD.translationalSpeed);
-		astar.initializeNewSearch(c, true);
+		astar.initializeNewSearch(c, true, state);
 		astar.process(chemin);
 		log.debug("Temps : "+(System.nanoTime() - avant) / (1000000.));
 		iterator.reinit();

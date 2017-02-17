@@ -43,7 +43,6 @@ public class FakeCheminPathfinding implements Service, CheminPathfindingInterfac
 	@Override
 	public void add(LinkedList<CinematiqueObs> points) throws PathfindingException
 	{
-		log.debug("Add d'une trajectoire : "+points);
 		path = points;
 	}
 
@@ -59,7 +58,9 @@ public class FakeCheminPathfinding implements Service, CheminPathfindingInterfac
 	
 	public LinkedList<CinematiqueObs> getPath()
 	{
-		return path;
+		LinkedList<CinematiqueObs> out = path;
+		path = null;
+		return out;
 	}
 
 }
