@@ -41,6 +41,7 @@ public class MemoryManager<T extends Memorizable> implements Service {
 	protected Log log;
 	
 	private int firstAvailable;
+	private int tailleMax = 512000;
 	
 	@SuppressWarnings("unchecked")
 	public MemoryManager(Class<T> classe, Log log, Container container, int nb_instances) throws ContainerException
@@ -72,8 +73,9 @@ public class MemoryManager<T extends Memorizable> implements Service {
 		if(firstAvailable == nodes.length)
 		{
 			try {
-				if(nodes.length > 1000000) // pas plus d'un million d'objets (sert à empêcher les bugs de tout faire planter… cette condition est inutile en temps normal)
+				if(nodes.length >= tailleMax) // pas plus d'un million d'objets (sert à empêcher les bugs de tout faire planter… cette condition est inutile en temps normal)
 				{
+					log.critical("Mémoire saturée, arrêt");
 					int z = 0;
 					z = 1/z;
 				}
