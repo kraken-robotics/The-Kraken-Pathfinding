@@ -103,7 +103,9 @@ public class ObstacleRobot extends ObstacleRectangular implements Serializable
 	@Override
 	public void print(Graphics g, Fenetre f, RobotReal robot)
 	{
-		// TODO print image
+		if(!robot.isCinematiqueInitialised())
+			return;
+
 		if(coinBasDroiteRotate == null)
 			return;
 

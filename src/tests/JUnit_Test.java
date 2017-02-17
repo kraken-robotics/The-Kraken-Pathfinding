@@ -27,6 +27,8 @@ import config.Config;
 import config.ConfigInfo;
 import container.Container;
 import graphic.Fenetre;
+import robot.Cinematique;
+import robot.RobotReal;
 import threads.ThreadShutdown;
 
 /**
@@ -57,6 +59,11 @@ public abstract class JUnit_Test
 			config.set(ConfigInfo.MATCH_DEMARRE, true);
 			config.set(ConfigInfo.DATE_DEBUT_MATCH, System.currentTimeMillis());
 		}
+		/*
+		 * La position initiale du robot
+		 */
+		RobotReal r = container.getService(RobotReal.class);
+		r.setCinematique(new Cinematique(0, 800, 0, true, 0, 0));
 	}
 
 	@After
