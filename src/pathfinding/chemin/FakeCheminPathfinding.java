@@ -20,6 +20,7 @@ package pathfinding.chemin;
 import java.util.LinkedList;
 
 import container.Service;
+import container.dependances.HighPFClass;
 import exceptions.PathfindingException;
 import robot.CinematiqueObs;
 import utils.Log;
@@ -30,7 +31,7 @@ import utils.Log;
  *
  */
 
-public class FakeCheminPathfinding implements Service, CheminPathfindingInterface
+public class FakeCheminPathfinding implements Service, CheminPathfindingInterface, HighPFClass
 {
 	private LinkedList<CinematiqueObs> path;
 	protected Log log;
@@ -41,9 +42,10 @@ public class FakeCheminPathfinding implements Service, CheminPathfindingInterfac
 	}
 	
 	@Override
-	public void add(LinkedList<CinematiqueObs> points) throws PathfindingException
+	public synchronized void add(LinkedList<CinematiqueObs> points) throws PathfindingException
 	{
 		path = points;
+		notify();
 	}
 
 	@Override
@@ -56,11 +58,15 @@ public class FakeCheminPathfinding implements Service, CheminPathfindingInterfac
 		return false;
 	}
 	
+	public boolean isReady()
+	{
+		return path != null;
+	}
+	
 	public LinkedList<CinematiqueObs> getPath()
 	{
 		LinkedList<CinematiqueObs> out = path;
 		path = null;
 		return out;
 	}
-
 }

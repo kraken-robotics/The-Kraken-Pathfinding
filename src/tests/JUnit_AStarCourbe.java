@@ -418,7 +418,7 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 			if(graphicTrajectory)
 				Thread.sleep(100);
 		}
-		container.restartThread(ThreadName.PATHFINDING); // pour pas qu'il soit mécontent
+		container.restartThread(ThreadName.UPDATE_PATHFINDING); // pour pas qu'il soit mécontent
 	}
 	
 	@Test

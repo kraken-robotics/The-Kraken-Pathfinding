@@ -28,6 +28,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import container.Service;
+import container.dependances.HighPFClass;
 import exceptions.PathfindingException;
 import pathfinding.astar.AStarCourbe;
 import pathfinding.chemin.CheminPathfinding;
@@ -47,13 +48,13 @@ import utils.Log;
  *
  */
 
-public class PathCache implements Service
+public class PathCache implements Service, HighPFClass
 {
 	private Log log;
 	private AStarCourbe astar;
 	private CheminPathfinding realChemin;
 	private FakeCheminPathfinding fakeChemin;
-	public HashMap<Cinematique, HashMap<Script, LinkedList<CinematiqueObs>>> paths;
+	public HashMap<Integer, HashMap<Script, LinkedList<CinematiqueObs>>> paths;
 	
 	public PathCache(Log log, ScriptManager smanager, ChronoGameState chrono, AStarCourbe astar, IteratorCheminPathfinding iterator, CheminPathfinding realChemin, FakeCheminPathfinding fakeChemin)
 	{
@@ -61,8 +62,9 @@ public class PathCache implements Service
 		this.realChemin = realChemin;
 		this.log = log;
 		Cinematique start = new Cinematique(200, 1800, Math.PI, true, 0, Speed.STANDARD.translationalSpeed); // TODO
+		chrono.robot.setCinematique(start);
 		this.astar = astar;
-		paths = new HashMap<Cinematique, HashMap<Script, LinkedList<CinematiqueObs>>>();
+		paths = new HashMap<Integer, HashMap<Script, LinkedList<CinematiqueObs>>>();
 		if(!new File("paths/").exists())
 			new File("paths/").mkdir();
 //		loadAll(smanager, chrono, start, iterator);
@@ -96,12 +98,12 @@ public class PathCache implements Service
 	 * @param shoot
 	 * @throws PathfindingException
 	 */
-	public void prepareNewPathToScript(Cinematique cinematiqueInitiale, Script s, boolean shoot, ChronoGameState chrono) throws PathfindingException
+	public void prepareNewPathToScript(Script s, boolean shoot, ChronoGameState chrono) throws PathfindingException
 	{
 		s.setUpCercleArrivee();
 		astar.initializeNewSearchToCircle(shoot, chrono);
 
-		HashMap<Script, LinkedList<CinematiqueObs>> hm = paths.get(cinematiqueInitiale);
+		HashMap<Script, LinkedList<CinematiqueObs>> hm = paths.get(chrono.robot.getCinematique().hashCode());
 
 		if(hm != null && hm.get(s) != null)
 		{
@@ -116,20 +118,24 @@ public class PathCache implements Service
 	
 	/**
 	 * Suit le chemin précédemment préparé
+	 * @throws InterruptedException 
 	 */
-	public void followPreparedPath()
+	public void followPreparedPath() throws InterruptedException, PathfindingException
 	{
 		/*
 		 * Normalement, cette exception ne peut survenir que lors d'une replanification (donc pas là)
 		 */
-		try {
+		synchronized(fakeChemin)
+		{
+			if(!fakeChemin.isReady())
+				fakeChemin.wait();
+			if(!fakeChemin.isReady()) // échec de la recherche TODO
+				throw new PathfindingException();
 			realChemin.add(fakeChemin.getPath());
-		} catch (PathfindingException e) {
-			e.printStackTrace();
 		}
 	}
 	
-	private void loadAll(ScriptManager smanager, ChronoGameState chrono, Cinematique start, IteratorCheminPathfinding iterator)
+	private void loadAll(ScriptManager smanager, ChronoGameState chrono, IteratorCheminPathfinding iterator)
 	{
 		smanager.reinit();
 		boolean[] shoot = {true, false};
@@ -138,7 +144,7 @@ public class PathCache implements Service
 			while(smanager.hasNext())
 			{
 				Script script = smanager.next();
-				String fileName = "paths/"+start.hashCode()+"->"+script+"-s="+shoot[i]+".dat";
+				String fileName = "paths/"+chrono.robot.getCinematique().hashCode()+"->"+script+"-s="+shoot[i]+".dat";
 				LinkedList<CinematiqueObs> path = loadPath(fileName);
 				if(script instanceof ScriptDeposeMinerai)
 					continue;
@@ -147,7 +153,7 @@ public class PathCache implements Service
 				if(path == null)
 				{
 					try {
-						prepareNewPathToScript(start, script, shoot[i], chrono);
+						prepareNewPathToScript(script, shoot[i], chrono);
 						path = fakeChemin.getPath();
 						savePath(fileName, path);
 					} catch (PathfindingException e) {
@@ -160,11 +166,11 @@ public class PathCache implements Service
 				}
 				if(path != null)
 				{
-					HashMap<Script, LinkedList<CinematiqueObs>> map = paths.get(start);
+					HashMap<Script, LinkedList<CinematiqueObs>> map = paths.get(chrono.robot.getCinematique().hashCode());
 					if(map == null)
 					{
 						map = new HashMap<Script, LinkedList<CinematiqueObs>>();
-						paths.put(start, map);
+						paths.put(chrono.robot.getCinematique().hashCode(), map);
 					}
 					map.put(script, path);
 				}
