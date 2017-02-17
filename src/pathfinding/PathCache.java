@@ -30,7 +30,6 @@ import java.util.List;
 import container.Service;
 import exceptions.PathfindingException;
 import pathfinding.astar.AStarCourbe;
-import pathfinding.astar.arcs.CercleArrivee;
 import pathfinding.chemin.CheminPathfinding;
 import pathfinding.chemin.IteratorCheminPathfinding;
 import robot.Cinematique;
@@ -39,7 +38,6 @@ import robot.Speed;
 import scripts.Script;
 import scripts.ScriptDeposeMinerai;
 import scripts.ScriptManager;
-import table.GameElementNames;
 import utils.Log;
 
 /**

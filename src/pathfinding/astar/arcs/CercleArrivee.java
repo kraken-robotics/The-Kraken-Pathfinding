@@ -134,4 +134,9 @@ public class CercleArrivee implements Service, Configurable, Printable, HighPFCl
 		return position2.squaredDistance(position) < rayon*rayon;
 	}
 
+	@Override
+	public String toString()
+	{
+		return position+", rayon "+rayon+", arrivee "+arriveeDStarLite;
+	}
 }

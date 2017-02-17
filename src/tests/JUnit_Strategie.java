@@ -17,16 +17,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 package tests;
 
-import java.lang.reflect.Field;
-import java.util.Random;
-
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import capteurs.CapteursProcess;
-import capteurs.SensorsData;
-import robot.Cinematique;
 import scripts.Strategie;
 
 /**

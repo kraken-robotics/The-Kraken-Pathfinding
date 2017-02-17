@@ -35,15 +35,15 @@ public enum GameElementNames {
 	MINERAI_CRATERE_BAS_GAUCHE(new ObstacleCircular(new Vec2RO(1070-1500,2000-1870),125, Couleur.GAME_ELEMENT), 3 * Math.PI / 4),
 	MINERAI_CRATERE_BAS_DROITE(new ObstacleCircular(new Vec2RO(1500-1070,2000-1870),125, Couleur.GAME_ELEMENT), Math.PI / 4),
 
-	MINERAI_GROS_CRATERE_DROITE_1(new ObstacleCircular(new Vec2RO(-1500+125,125),125, Couleur.GAME_ELEMENT), 3 * Math.PI / 4),
-	MINERAI_GROS_CRATERE_DROITE_2(new ObstacleCircular(new Vec2RO(-1500+125,125+220),125, Couleur.GAME_ELEMENT), 3 * Math.PI / 4),
-	MINERAI_GROS_CRATERE_DROITE_3(new ObstacleCircular(new Vec2RO(-1500+125+250*0.5,150+250*0.5),125, Couleur.GAME_ELEMENT), 3 * Math.PI / 4),
-	MINERAI_GROS_CRATERE_DROITE_4(new ObstacleCircular(new Vec2RO(-1500+125+220,125),125, Couleur.GAME_ELEMENT), 3 * Math.PI / 4),
+	MINERAI_GROS_CRATERE_GAUCHE_1(new ObstacleCircular(new Vec2RO(-1500+125,125),125, Couleur.GAME_ELEMENT), Math.PI / 4),
+	MINERAI_GROS_CRATERE_GAUCHE_2(new ObstacleCircular(new Vec2RO(-1500+125,125+220),125, Couleur.GAME_ELEMENT), Math.PI / 4),
+	MINERAI_GROS_CRATERE_GAUCHE_3(new ObstacleCircular(new Vec2RO(-1500+125+250*0.5,150+250*0.5),125, Couleur.GAME_ELEMENT), Math.PI / 4),
+	MINERAI_GROS_CRATERE_GAUCHE_4(new ObstacleCircular(new Vec2RO(-1500+125+220,125),125, Couleur.GAME_ELEMENT), Math.PI / 4),
 
-	MINERAI_GROS_CRATERE_GAUCHE_1(new ObstacleCircular(new Vec2RO(1500-125,125),125, Couleur.GAME_ELEMENT), Math.PI / 4),
-	MINERAI_GROS_CRATERE_GAUCHE_2(new ObstacleCircular(new Vec2RO(1500-125,125+220),125, Couleur.GAME_ELEMENT), Math.PI / 4),
-	MINERAI_GROS_CRATERE_GAUCHE_3(new ObstacleCircular(new Vec2RO(1500-(125+250*0.5),150+250*0.5),125, Couleur.GAME_ELEMENT), Math.PI / 4),
-	MINERAI_GROS_CRATERE_GAUCHE_4(new ObstacleCircular(new Vec2RO(1500-(125+220),125),125, Couleur.GAME_ELEMENT), Math.PI / 4),
+	MINERAI_GROS_CRATERE_DROITE_1(new ObstacleCircular(new Vec2RO(1500-125,125),125, Couleur.GAME_ELEMENT), 3 * Math.PI / 4),
+	MINERAI_GROS_CRATERE_DROITE_2(new ObstacleCircular(new Vec2RO(1500-125,125+220),125, Couleur.GAME_ELEMENT), 3 * Math.PI / 4),
+	MINERAI_GROS_CRATERE_DROITE_3(new ObstacleCircular(new Vec2RO(1500-(125+250*0.5),150+250*0.5),125, Couleur.GAME_ELEMENT), 3 * Math.PI / 4),
+	MINERAI_GROS_CRATERE_DROITE_4(new ObstacleCircular(new Vec2RO(1500-(125+220),125),125, Couleur.GAME_ELEMENT), 3 * Math.PI / 4),
 
 	CYLINDRE_1_G(new ObstacleMasque(new Vec2RO(950-1500, 1800), 32, Couleur.GAME_ELEMENT, null)),
 	CYLINDRE_1_D(new ObstacleMasque(new Vec2RO(1500-950, 1800), 32, Couleur.GAME_ELEMENT, null)),
