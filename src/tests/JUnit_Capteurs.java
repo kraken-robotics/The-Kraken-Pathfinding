@@ -18,6 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 package tests;
 
 import java.lang.reflect.Field;
+import java.util.Random;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -45,7 +46,7 @@ public class JUnit_Capteurs extends JUnit_Test {
     }
 	
 	@Test
-	public void test_correction() throws Exception
+	public void test_correction_mur() throws Exception
 	{
     	Field f = CapteursProcess.class.getDeclaredField("bufferCorrection");
     	f.setAccessible(true);
@@ -55,9 +56,88 @@ public class JUnit_Capteurs extends JUnit_Test {
     	Assert.assertTrue(buffer[0] == null);
     	capteurs.updateObstaclesMobiles(new SensorsData(mesures, cinematique));
     	Assert.assertTrue(buffer[0] != null);
+    	log.debug(buffer[0]);
     	Assert.assertTrue(Math.abs(buffer[0].orientationReelle + 0.03) < 0.001);
     	Assert.assertTrue(Math.abs(buffer[0].getPosition().getX() - 18) < 0.001);
     	Assert.assertTrue(Math.abs(buffer[0].getPosition().getY()) < 0.001);
+	}
+	
+	@Test
+	public void test_correction_imprecision_pos() throws Exception
+	{
+    	Field f = CapteursProcess.class.getDeclaredField("bufferCorrection");
+    	f.setAccessible(true);
+    	Cinematique[] buffer = (Cinematique[]) f.get(capteurs);
+    	int[] mesures = {100,100,100,100,100,100,100,100,100,100,100,100};
+    	Cinematique cinematique = new Cinematique(1250,500,Math.PI/2+0.03,true,0,0);
+    	Assert.assertTrue(buffer[0] == null);
+    	capteurs.updateObstaclesMobiles(new SensorsData(mesures, cinematique));
+    	Assert.assertTrue(buffer[0] == null);
+	}
+	
+	@Test
+	public void test_correction_imprecision_angle() throws Exception
+	{
+    	Field f = CapteursProcess.class.getDeclaredField("bufferCorrection");
+    	f.setAccessible(true);
+    	Cinematique[] buffer = (Cinematique[]) f.get(capteurs);
+    	int[] mesures = {100,100,100,100,100,100,100,100,100,100,100,100};
+    	Cinematique cinematique = new Cinematique(1280,500,Math.PI/2+0.15,true,0,0);
+    	Assert.assertTrue(buffer[0] == null);
+    	capteurs.updateObstaclesMobiles(new SensorsData(mesures, cinematique));
+    	Assert.assertTrue(buffer[0] == null);
+	}
+	
+	/**
+	 * Test de robustesse face au bruit.
+	 * Ce test peut échouer, mais pas souvent (c'est un test sur données aléatoires)
+	 * @throws Exception
+	 */
+	@Test
+	public void test_correction_robustesse() throws Exception
+	{
+		Random r = new Random();
+		double ecartType = 2; 
+		
+    	Field f = CapteursProcess.class.getDeclaredField("bufferCorrection");
+    	f.setAccessible(true);
+    	Cinematique[] buffer = (Cinematique[]) f.get(capteurs);
+    	int[] mesures = new int[12];
+    	for(int k = 0; k < buffer.length; k++)
+    	{
+	    	for(int i = 0; i < 12; i++)
+	    		mesures[i] = (int)Math.round(100+r.nextGaussian()*ecartType);
+	    	Cinematique cinematique = new Cinematique(1290,500,Math.PI/2,true,0,0);
+	    	Assert.assertTrue(buffer[k] == null);
+	    	capteurs.updateObstaclesMobiles(new SensorsData(mesures, cinematique));
+	    	Assert.assertTrue(buffer[k] != null);
+    	}
+	}
+	
+	@Test
+	public void test_correction_sans_mur() throws Exception
+	{
+    	Field f = CapteursProcess.class.getDeclaredField("bufferCorrection");
+    	f.setAccessible(true);
+    	Cinematique[] buffer = (Cinematique[]) f.get(capteurs);
+    	int[] mesures = {100,100,100,100,100,100,100,100,100,100,100,100};
+    	Cinematique cinematique = new Cinematique(300,500,Math.PI/2+0.03,true,0,0);
+    	Assert.assertTrue(buffer[0] == null);
+    	capteurs.updateObstaclesMobiles(new SensorsData(mesures, cinematique));
+    	Assert.assertTrue(buffer[0] == null);
+	}
+	
+	@Test
+	public void test_correction_coin() throws Exception
+	{
+    	Field f = CapteursProcess.class.getDeclaredField("bufferCorrection");
+    	f.setAccessible(true);
+    	Cinematique[] buffer = (Cinematique[]) f.get(capteurs);
+    	int[] mesures = {150,150,150,150,150,150,150,150,150,150,150,150};
+    	Cinematique cinematique = new Cinematique(1280,70,Math.PI/4+0.03,true,0,0);
+    	Assert.assertTrue(buffer[0] == null);
+    	capteurs.updateObstaclesMobiles(new SensorsData(mesures, cinematique));
+    	Assert.assertTrue(buffer[0] == null);
 	}
 	
 	@Test
