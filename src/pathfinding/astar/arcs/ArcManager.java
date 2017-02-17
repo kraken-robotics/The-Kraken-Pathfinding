@@ -238,6 +238,12 @@ public class ArcManager implements Service, Configurable, HighPFClass
 		return true;
     }
 
+    /**
+     * Initialise l'arc manager avec les infos donnée
+     * @param directionstrategyactuelle
+     * @param sens
+     * @param arrivee
+     */
 	public void configureArcManager(DirectionStrategy directionstrategyactuelle, SensFinal sens, Cinematique arrivee)
     {
     	this.sens = sens;
@@ -246,7 +252,11 @@ public class ArcManager implements Service, Configurable, HighPFClass
     	useCercle = false;
     }
 
-    public void configureArcManager(DirectionStrategy directionstrategyactuelle)
+	/**
+	 * Initialise l'arc manager avec le cercle
+	 * @param directionstrategyactuelle
+	 */
+    public void configureArcManagerWithCircle(DirectionStrategy directionstrategyactuelle)
     {
     	sens = cercle.sens;
     	this.directionstrategyactuelle = directionstrategyactuelle;

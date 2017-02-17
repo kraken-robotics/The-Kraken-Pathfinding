@@ -69,6 +69,8 @@ public class AStarCourbe implements Service, Configurable, HighPFClass
 	private int dureeMaxPF;
 	private Speed vitesseMax;
 	private int tailleFaisceau;
+	private boolean shoot;
+	private boolean rechercheEnCours = false;
 	
 	/**
 	 * Comparateur de noeud utilisé par la priority queue
@@ -120,7 +122,7 @@ public class AStarCourbe implements Service, Configurable, HighPFClass
 	 * @return
 	 * @throws PathfindingException 
 	 */
-	protected final void process(boolean shoot) throws PathfindingException
+	public final void process() throws PathfindingException
 	{
 		trajetDeSecours = null;
 		depart.parent = null;
@@ -344,9 +346,9 @@ public class AStarCourbe implements Service, Configurable, HighPFClass
 	 * @param shoot
 	 * @throws PathfindingException
 	 */
-	public void computeNewPath(Cinematique arrivee, boolean shoot) throws PathfindingException
+	public void initializeNewSearch(Cinematique arrivee, boolean shoot) throws PathfindingException
 	{
-		computeNewPath(arrivee, SensFinal.AUCUNE_PREF, shoot);
+		initializeNewSearch(arrivee, SensFinal.AUCUNE_PREF, shoot);
 	}
 	
 	/**
@@ -356,7 +358,7 @@ public class AStarCourbe implements Service, Configurable, HighPFClass
 	 * @param shoot
 	 * @throws PathfindingException
 	 */
-	public void computeNewPath(Cinematique arrivee, SensFinal sens, boolean shoot) throws PathfindingException
+	public void initializeNewSearch(Cinematique arrivee, SensFinal sens, boolean shoot) throws PathfindingException
 	{
 		vitesseMax = Speed.STANDARD;
 		depart.init();
@@ -366,8 +368,8 @@ public class AStarCourbe implements Service, Configurable, HighPFClass
 		dstarlite.computeNewPath(depart.state.robot.getCinematique().getPosition(), arrivee.getPosition(), shoot);
 		if(graphicDStarLite)
 			dstarlite.itineraireBrut();
-
-		process(shoot);
+		rechercheEnCours = true;
+		this.shoot = shoot;
 	}
 	
 	/**
@@ -378,28 +380,35 @@ public class AStarCourbe implements Service, Configurable, HighPFClass
 	 * @return
 	 * @throws PathfindingException 
 	 */
-	public void computeNewPath(boolean shoot) throws PathfindingException
+	public void initializeNewSearchToCircle(boolean shoot) throws PathfindingException
 	{
 		vitesseMax = Speed.STANDARD;
 		depart.init();
 		state.copyAStarCourbe(depart.state);
-		arcmanager.configureArcManager(DirectionStrategy.defaultStrategy);
+		arcmanager.configureArcManagerWithCircle(DirectionStrategy.defaultStrategy);
 
 		dstarlite.computeNewPath(depart.state.robot.getCinematique().getPosition(), cercle.arriveeDStarLite, shoot);
 		if(graphicDStarLite)
 			dstarlite.itineraireBrut();
-
-		process(shoot);
+		rechercheEnCours = true;
+		this.shoot = shoot;
 	}
 	
 	/**
 	 * Replanification. On conserve la même DirectionStrategy ainsi que le même SensFinal
 	 * Par contre, si besoin est, on peut changer la politique de shootage d'éléments de jeu
+	 * S'il n'y avait aucun recherche en cours, on ignore.
 	 * @param shoot
 	 * @throws PathfindingException
 	 */
 	public synchronized void updatePath(boolean shoot) throws PathfindingException
 	{
+		if(!rechercheEnCours)
+		{
+			log.warning("updatePath appelé alors qu'aucune recherche n'est en cours !");
+			return;
+		}
+		
 		depart.init();
 		synchronized(state)
 		{
@@ -416,7 +425,17 @@ public class AStarCourbe implements Service, Configurable, HighPFClass
 			dstarlite.itineraireBrut();
 
 		vitesseMax = Speed.REPLANIF;
-		process(shoot);
+		this.shoot = shoot;
+		process();
 	}
 
+	/**
+	 * Le chemin a été entièrement parcouru.
+	 */
+	public synchronized void stopSearch()
+	{
+		rechercheEnCours = false;
+		dstarlite.stopSearch();
+	}
+	
 }

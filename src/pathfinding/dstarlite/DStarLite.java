@@ -640,5 +640,13 @@ public class DStarLite implements Service, Configurable, LowPFClass
 			return Integer.MAX_VALUE;
 		return gridspace.distanceStatique(pointDManager.get(point, dir));
 	}
+
+	/**
+	 * Le chemin a été entièrement parcouru.
+	 */
+	public synchronized void stopSearch()
+	{
+		rechercheEnCours = false;
+	}
 	
 }

@@ -23,6 +23,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -30,6 +31,7 @@ import container.Service;
 import exceptions.PathfindingException;
 import pathfinding.astar.AStarCourbe;
 import pathfinding.astar.arcs.CercleArrivee;
+import pathfinding.chemin.IteratorCheminPathfinding;
 import robot.Cinematique;
 import robot.CinematiqueObs;
 import robot.Speed;
@@ -47,13 +49,15 @@ import utils.Log;
 public class PrecomputedPaths implements Service
 {
 	private Log log;
+	private AStarCourbe astar;
 	public HashMap<Cinematique, HashMap<Script, List<CinematiqueObs>>> paths;
 	
-	public PrecomputedPaths(Log log, ScriptManager smanager, ChronoGameState chrono, AStarCourbe astar, CercleArrivee cercle)
+	public PrecomputedPaths(Log log, ScriptManager smanager, ChronoGameState chrono, AStarCourbe astar, CercleArrivee cercle, IteratorCheminPathfinding iterator)
 	{
 		this.log = log;
 		Cinematique start = new Cinematique(200, 1800, Math.PI, true, 0, Speed.STANDARD.translationalSpeed);
-		loadAll(smanager, chrono, start, astar, cercle);
+		this.astar = astar;
+		loadAll(smanager, chrono, start, cercle, iterator);
 	}
 	
 	private void savePath(String file, List<CinematiqueObs> path)
@@ -77,28 +81,55 @@ public class PrecomputedPaths implements Service
         }
 	}
 	
-	private void loadAll(ScriptManager smanager, ChronoGameState chrono, Cinematique start, AStarCourbe astar, CercleArrivee cercle)
+	public void computeNewPathToCircle(boolean shoot) throws PathfindingException
 	{
-		
+		astar.initializeNewSearchToCircle(shoot);
+		astar.process();
+	}
+	
+	public void computeNewPath(Cinematique arrivee, SensFinal sens, boolean shoot) throws PathfindingException
+	{
+		astar.initializeNewSearch(arrivee, sens, shoot);
+		astar.process();
+	}
+	
+	public void computeNewPath(Cinematique arrivee, boolean shoot) throws PathfindingException
+	{
+		astar.initializeNewSearch(arrivee, shoot);
+		astar.process();
+	}
+	
+	private void loadAll(ScriptManager smanager, ChronoGameState chrono, Cinematique start, CercleArrivee cercle, IteratorCheminPathfinding iterator)
+	{
 		smanager.reinit();
 		while(smanager.hasNext())
 		{
-			Script script = smanager.next();
-			String fileName = "paths/"+start.hashCode()+script.getClass().getSimpleName()+".dat";
-			List<CinematiqueObs> path = loadPath(fileName);
-			if(path == null)
+			boolean[] shoot = {true, false};
+			for(int i = 0; i < 2; i++)
 			{
-				chrono.robot.setCinematique(start);
-				cercle.set(GameElementNames.MINERAI_CRATERE_BAS_DROITE);
-				try {
-					astar.computeNewPath(true);
-					savePath(fileName, path);
-				} catch (PathfindingException e) {
-					log.critical("Le précalcul du chemin a échoué");
+				Script script = smanager.next();
+				String fileName = "paths/"+start.hashCode()+"->"+script.getClass().getSimpleName()+"-s="+shoot[i]+".dat";
+				List<CinematiqueObs> path = loadPath(fileName);
+				if(path == null)
+				{
+					chrono.robot.setCinematique(start);
+					cercle.set(GameElementNames.MINERAI_CRATERE_BAS_DROITE);
+					try {
+						astar.initializeNewSearchToCircle(shoot[i]);
+						astar.process();
+						iterator.reinit();
+						path = new ArrayList<CinematiqueObs>();
+						while(iterator.hasNext())
+							path.add(iterator.next());
+							
+						savePath(fileName, path);
+					} catch (PathfindingException e) {
+						log.critical("Le précalcul du chemin a échoué");
+					}
 				}
+				if(path != null)
+					paths.get(start).put(script, path);
 			}
-			if(path != null)
-				paths.get(start).put(script, path);
 		}
 	}
 	
