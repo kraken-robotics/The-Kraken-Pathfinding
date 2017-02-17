@@ -31,6 +31,7 @@ import container.Service;
 import exceptions.PathfindingException;
 import pathfinding.astar.AStarCourbe;
 import pathfinding.chemin.CheminPathfinding;
+import pathfinding.chemin.FakeCheminPathfinding;
 import pathfinding.chemin.IteratorCheminPathfinding;
 import robot.Cinematique;
 import robot.CinematiqueObs;
@@ -50,19 +51,21 @@ public class PathCache implements Service
 {
 	private Log log;
 	private AStarCourbe astar;
-	private CheminPathfinding chemin;
+	private CheminPathfinding realChemin;
+	private FakeCheminPathfinding fakeChemin;
 	public HashMap<Cinematique, HashMap<Script, LinkedList<CinematiqueObs>>> paths;
 	
-	public PathCache(Log log, ScriptManager smanager, ChronoGameState chrono, AStarCourbe astar, IteratorCheminPathfinding iterator, CheminPathfinding chemin)
+	public PathCache(Log log, ScriptManager smanager, ChronoGameState chrono, AStarCourbe astar, IteratorCheminPathfinding iterator, CheminPathfinding realChemin, FakeCheminPathfinding fakeChemin)
 	{
-		this.chemin = chemin;
+		this.fakeChemin = fakeChemin;
+		this.realChemin = realChemin;
 		this.log = log;
 		Cinematique start = new Cinematique(200, 1800, Math.PI, true, 0, Speed.STANDARD.translationalSpeed); // TODO
 		this.astar = astar;
 		paths = new HashMap<Cinematique, HashMap<Script, LinkedList<CinematiqueObs>>>();
 		if(!new File("paths/").exists())
 			new File("paths/").mkdir();
-		loadAll(smanager, chrono, start, iterator, chemin);
+//		loadAll(smanager, chrono, start, iterator);
 	}
 	
 	private void savePath(String file, List<CinematiqueObs> path)
@@ -86,7 +89,14 @@ public class PathCache implements Service
         }
 	}
 	
-	public void computeNewPathToScript(Cinematique cinematiqueInitiale, Script s, boolean shoot) throws PathfindingException
+	/**
+	 * Prépare un chemin et l'enregistre
+	 * @param cinematiqueInitiale
+	 * @param s
+	 * @param shoot
+	 * @throws PathfindingException
+	 */
+	public void prepareNewPathToScript(Cinematique cinematiqueInitiale, Script s, boolean shoot) throws PathfindingException
 	{
 		s.setUpCercleArrivee();
 		astar.initializeNewSearchToCircle(shoot);
@@ -98,13 +108,28 @@ public class PathCache implements Service
 			LinkedList<CinematiqueObs> path = new LinkedList<CinematiqueObs>();
 			// on fait une copie car la liste est modifiée par CheminPathfinding
 			path.addAll(hm.get(s));
-			chemin.add(path);
+			fakeChemin.add(path);
 		}
 		else
-			astar.process();
+			astar.process(fakeChemin);
 	}
 	
-	private void loadAll(ScriptManager smanager, ChronoGameState chrono, Cinematique start, IteratorCheminPathfinding iterator, CheminPathfinding chemin)
+	/**
+	 * Suit le chemin précédemment préparé
+	 */
+	public void followPreparedPath()
+	{
+		/*
+		 * Normalement, cette exception ne peut survenir que lors d'une replanification (donc pas là)
+		 */
+		try {
+			realChemin.add(fakeChemin.getPath());
+		} catch (PathfindingException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private void loadAll(ScriptManager smanager, ChronoGameState chrono, Cinematique start, IteratorCheminPathfinding iterator)
 	{
 		smanager.reinit();
 		boolean[] shoot = {true, false};
@@ -125,13 +150,10 @@ public class PathCache implements Service
 					script.setUpCercleArrivee();
 					try {
 						astar.initializeNewSearchToCircle(shoot[i]);
-						astar.process();
+						astar.process(fakeChemin);
 						iterator.reinit();
-						path = new LinkedList<CinematiqueObs>();
-						while(iterator.hasNext())
-							path.add(iterator.next());
+						path = fakeChemin.getPath();
 						savePath(fileName, path);
-						chemin.clear();
 					} catch (PathfindingException e) {
 						log.critical("Le précalcul du chemin a échoué");
 					}

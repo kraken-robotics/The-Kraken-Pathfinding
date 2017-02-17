@@ -48,7 +48,7 @@ import exceptions.PathfindingException;
  *
  */
 
-public class CheminPathfinding implements Service, Printable, Configurable, HighPFClass
+public class CheminPathfinding implements Service, Printable, Configurable, HighPFClass, CheminPathfindingInterface
 {
 	protected Log log;
 	private BufferOutgoingOrder out;
@@ -80,6 +80,7 @@ public class CheminPathfinding implements Service, Printable, Configurable, High
 	 * A-t-on besoin d'un chemin partiel ?
 	 * @return
 	 */
+	@Override
 	public boolean needPartial()
 	{
 		return !uptodate && minus(indexLast, indexFirst) < margeNecessaire;
@@ -167,6 +168,7 @@ public class CheminPathfinding implements Service, Printable, Configurable, High
 	 * Il sera directement envoyé à la série
 	 * @param arc
 	 */
+	@Override
 	public void add(LinkedList<CinematiqueObs> points) throws PathfindingException
 	{
 		/*
@@ -232,6 +234,7 @@ public class CheminPathfinding implements Service, Printable, Configurable, High
 	 * Doit être mise à "true" si le trajet est entièrement planifié
 	 * @param uptodate
 	 */
+	@Override
 	public void setUptodate(boolean uptodate)
 	{
 		this.uptodate = uptodate;

@@ -32,6 +32,7 @@ import pathfinding.astar.arcs.ArcCourbe;
 import pathfinding.astar.arcs.ArcManager;
 import pathfinding.astar.arcs.CercleArrivee;
 import pathfinding.chemin.CheminPathfinding;
+import pathfinding.chemin.CheminPathfindingInterface;
 import pathfinding.dstarlite.DStarLite;
 import pathfinding.dstarlite.gridspace.PointGridSpace;
 import config.Config;
@@ -62,7 +63,7 @@ public class AStarCourbe implements Service, Configurable, HighPFClass
 	private PrintBuffer buffer;
 	private AStarCourbeNode depart;
 	private AStarCourbeNode trajetDeSecours;
-	private CheminPathfinding chemin;
+	private CheminPathfinding realChemin;
 	private CinemObsMM cinemMemory;
 	private CercleArrivee cercle;
 	private boolean graphicTrajectory, graphicDStarLite, graphicTrajectoryAll;
@@ -107,7 +108,7 @@ public class AStarCourbe implements Service, Configurable, HighPFClass
 		this.arcmanager = arcmanager;
 		this.state = state;
 		this.memorymanager = memorymanager;
-		this.chemin = chemin;
+		this.realChemin = chemin;
 		this.depart = depart;
 		this.state = state;
 		this.dstarlite = dstarlite;
@@ -122,7 +123,7 @@ public class AStarCourbe implements Service, Configurable, HighPFClass
 	 * @return
 	 * @throws PathfindingException 
 	 */
-	public final void process() throws PathfindingException
+	public final void process(CheminPathfindingInterface chemin) throws PathfindingException
 	{
 		trajetDeSecours = null;
 		depart.parent = null;
@@ -178,7 +179,7 @@ public class AStarCourbe implements Service, Configurable, HighPFClass
 			{
 //				log.debug("On est arrivé !");
 				chemin.setUptodate(true);
-				partialReconstruct(current);
+				partialReconstruct(current, chemin);
 				memorymanager.empty();
 				cinemMemory.empty();
 				return;
@@ -193,7 +194,7 @@ public class AStarCourbe implements Service, Configurable, HighPFClass
 				{
 					log.debug("Utilisation du trajet de secours !");
 					chemin.setUptodate(true);
-					partialReconstruct(trajetDeSecours);
+					partialReconstruct(trajetDeSecours, chemin);
 					return;
 				}
 				throw new PathfindingException("Timeout AStarCourbe !");
@@ -209,7 +210,7 @@ public class AStarCourbe implements Service, Configurable, HighPFClass
 				if(chemin.needPartial())
 				{
 					log.debug("Reconstruction partielle demandée !");
-					partialReconstruct(current);
+					partialReconstruct(current, chemin);
 					// Il est nécessaire de copier current dans depart car current
 					// est effacé quand le memorymanager est vidé. Cette copie n'est effectuée qu'ici
 					current.copyReconstruct(depart);
@@ -305,7 +306,7 @@ public class AStarCourbe implements Service, Configurable, HighPFClass
 	 * @param last
 	 * @throws PathfindingException 
 	 */
-	private final void partialReconstruct(AStarCourbeNode best) throws PathfindingException
+	private final void partialReconstruct(AStarCourbeNode best, CheminPathfindingInterface chemin) throws PathfindingException
 	{
 		AStarCourbeNode noeudParent = best;
 		ArcCourbe arcParent = best.getArc();
@@ -415,8 +416,12 @@ public class AStarCourbe implements Service, Configurable, HighPFClass
 			state.copyAStarCourbe(depart.state);
 		}
 
+		/*
+		 * Forcément, on utilise le vrai chemin ici
+		 */
+		
 		closedset.clear();
-		depart.state.robot.setCinematique(chemin.getLastValidCinematique());
+		depart.state.robot.setCinematique(realChemin.getLastValidCinematique());
 		
 		// On met à jour le D* Lite
 		dstarlite.updateStart(depart.state.robot.getCinematique().getPosition());
@@ -426,7 +431,7 @@ public class AStarCourbe implements Service, Configurable, HighPFClass
 
 		vitesseMax = Speed.REPLANIF;
 		this.shoot = shoot;
-		process();
+		process(realChemin);
 	}
 
 	/**
