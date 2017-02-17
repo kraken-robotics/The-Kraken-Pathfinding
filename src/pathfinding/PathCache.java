@@ -46,13 +46,13 @@ import utils.Log;
  *
  */
 
-public class PrecomputedPaths implements Service
+public class PathCache implements Service
 {
 	private Log log;
 	private AStarCourbe astar;
 	public HashMap<Cinematique, HashMap<Script, List<CinematiqueObs>>> paths;
 	
-	public PrecomputedPaths(Log log, ScriptManager smanager, ChronoGameState chrono, AStarCourbe astar, CercleArrivee cercle, IteratorCheminPathfinding iterator)
+	public PathCache(Log log, ScriptManager smanager, ChronoGameState chrono, AStarCourbe astar, CercleArrivee cercle, IteratorCheminPathfinding iterator)
 	{
 		this.log = log;
 		Cinematique start = new Cinematique(200, 1800, Math.PI, true, 0, Speed.STANDARD.translationalSpeed);
@@ -102,10 +102,10 @@ public class PrecomputedPaths implements Service
 	private void loadAll(ScriptManager smanager, ChronoGameState chrono, Cinematique start, CercleArrivee cercle, IteratorCheminPathfinding iterator)
 	{
 		smanager.reinit();
-		while(smanager.hasNext())
+		boolean[] shoot = {true, false};
+		for(int i = 0; i < 2; i++)
 		{
-			boolean[] shoot = {true, false};
-			for(int i = 0; i < 2; i++)
+			while(smanager.hasNext())
 			{
 				Script script = smanager.next();
 				String fileName = "paths/"+start.hashCode()+"->"+script.getClass().getSimpleName()+"-s="+shoot[i]+".dat";

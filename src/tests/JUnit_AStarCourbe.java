@@ -25,7 +25,7 @@ import org.junit.Test;
 
 import config.ConfigInfo;
 import graphic.PrintBuffer;
-import pathfinding.PrecomputedPaths;
+import pathfinding.PathCache;
 import pathfinding.SensFinal;
 import pathfinding.astar.AStarCourbe;
 import pathfinding.astar.arcs.ArcCourbeStatique;
@@ -370,7 +370,7 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 	@Test
     public void test_prepathsf() throws Exception
     {
-		container.getService(PrecomputedPaths.class);
+		container.getService(PathCache.class);
     }
 	
 	@Test
