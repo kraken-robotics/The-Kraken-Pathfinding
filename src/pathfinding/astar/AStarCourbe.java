@@ -435,6 +435,7 @@ public class AStarCourbe implements Service, Configurable, HighPFClass
 	public synchronized void stopSearch()
 	{
 		rechercheEnCours = false;
+		buffer.clearSupprimables();
 		dstarlite.stopSearch();
 	}
 	

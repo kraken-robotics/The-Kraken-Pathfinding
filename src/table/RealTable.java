@@ -67,7 +67,7 @@ public class RealTable extends Table implements Service, Configurable, CoreClass
 		print = config.getBoolean(ConfigInfo.GRAPHIC_GAME_ELEMENTS);
 		if(print)
 			for(GameElementNames g : GameElementNames.values())
-				buffer.addSupprimable(g.obstacle);
+				buffer.add(g.obstacle);
 	}
 	
 	/**
