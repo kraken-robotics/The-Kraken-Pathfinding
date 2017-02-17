@@ -23,8 +23,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 
 import container.Service;
@@ -50,14 +50,16 @@ public class PathCache implements Service
 {
 	private Log log;
 	private AStarCourbe astar;
-	public HashMap<Cinematique, HashMap<Script, List<CinematiqueObs>>> paths;
+	private CheminPathfinding chemin;
+	public HashMap<Cinematique, HashMap<Script, LinkedList<CinematiqueObs>>> paths;
 	
 	public PathCache(Log log, ScriptManager smanager, ChronoGameState chrono, AStarCourbe astar, IteratorCheminPathfinding iterator, CheminPathfinding chemin)
 	{
+		this.chemin = chemin;
 		this.log = log;
-		Cinematique start = new Cinematique(200, 1800, Math.PI, true, 0, Speed.STANDARD.translationalSpeed);
+		Cinematique start = new Cinematique(200, 1800, Math.PI, true, 0, Speed.STANDARD.translationalSpeed); // TODO
 		this.astar = astar;
-		paths = new HashMap<Cinematique, HashMap<Script, List<CinematiqueObs>>>();
+		paths = new HashMap<Cinematique, HashMap<Script, LinkedList<CinematiqueObs>>>();
 		if(!new File("paths/").exists())
 			new File("paths/").mkdir();
 		loadAll(smanager, chrono, start, iterator, chemin);
@@ -84,22 +86,22 @@ public class PathCache implements Service
         }
 	}
 	
-	public void computeNewPathToCircle(boolean shoot) throws PathfindingException
+	public void computeNewPathToScript(Cinematique cinematiqueInitiale, Script s, boolean shoot) throws PathfindingException
 	{
+		s.setUpCercleArrivee();
 		astar.initializeNewSearchToCircle(shoot);
-		astar.process();
-	}
-	
-	public void computeNewPath(Cinematique arrivee, SensFinal sens, boolean shoot) throws PathfindingException
-	{
-		astar.initializeNewSearch(arrivee, sens, shoot);
-		astar.process();
-	}
-	
-	public void computeNewPath(Cinematique arrivee, boolean shoot) throws PathfindingException
-	{
-		astar.initializeNewSearch(arrivee, shoot);
-		astar.process();
+
+		HashMap<Script, LinkedList<CinematiqueObs>> hm = paths.get(cinematiqueInitiale);
+
+		if(hm != null && hm.get(s) != null)
+		{
+			LinkedList<CinematiqueObs> path = new LinkedList<CinematiqueObs>();
+			// on fait une copie car la liste est modifiée par CheminPathfinding
+			path.addAll(hm.get(s));
+			chemin.add(path);
+		}
+		else
+			astar.process();
 	}
 	
 	private void loadAll(ScriptManager smanager, ChronoGameState chrono, Cinematique start, IteratorCheminPathfinding iterator, CheminPathfinding chemin)
@@ -112,7 +114,7 @@ public class PathCache implements Service
 			{
 				Script script = smanager.next();
 				String fileName = "paths/"+start.hashCode()+"->"+script+"-s="+shoot[i]+".dat";
-				List<CinematiqueObs> path = loadPath(fileName);
+				LinkedList<CinematiqueObs> path = loadPath(fileName);
 				if(script instanceof ScriptDeposeMinerai)
 					continue;
 				
@@ -125,7 +127,7 @@ public class PathCache implements Service
 						astar.initializeNewSearchToCircle(shoot[i]);
 						astar.process();
 						iterator.reinit();
-						path = new ArrayList<CinematiqueObs>();
+						path = new LinkedList<CinematiqueObs>();
 						while(iterator.hasNext())
 							path.add(iterator.next());
 						savePath(fileName, path);
@@ -140,10 +142,10 @@ public class PathCache implements Service
 				}
 				if(path != null)
 				{
-					HashMap<Script, List<CinematiqueObs>> map = paths.get(start);
+					HashMap<Script, LinkedList<CinematiqueObs>> map = paths.get(start);
 					if(map == null)
 					{
-						map = new HashMap<Script, List<CinematiqueObs>>();
+						map = new HashMap<Script, LinkedList<CinematiqueObs>>();
 						paths.put(start, map);
 					}
 					map.put(script, path);
@@ -153,13 +155,13 @@ public class PathCache implements Service
 	}
 	
 	@SuppressWarnings("unchecked")
-	private List<CinematiqueObs> loadPath(String file)
+	private LinkedList<CinematiqueObs> loadPath(String file)
 	{
     	log.debug("Chargement d'une trajectoire : "+file);
         try {
             FileInputStream fichier = new FileInputStream(file);
             ObjectInputStream ois = new ObjectInputStream(fichier);
-            List<CinematiqueObs> path = (List<CinematiqueObs>) ois.readObject();
+            LinkedList<CinematiqueObs> path = (LinkedList<CinematiqueObs>) ois.readObject();
             ois.close();
             return path;
         }
