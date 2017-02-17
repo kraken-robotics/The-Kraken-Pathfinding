@@ -31,11 +31,13 @@ import container.Service;
 import exceptions.PathfindingException;
 import pathfinding.astar.AStarCourbe;
 import pathfinding.astar.arcs.CercleArrivee;
+import pathfinding.chemin.CheminPathfinding;
 import pathfinding.chemin.IteratorCheminPathfinding;
 import robot.Cinematique;
 import robot.CinematiqueObs;
 import robot.Speed;
 import scripts.Script;
+import scripts.ScriptDeposeMinerai;
 import scripts.ScriptManager;
 import table.GameElementNames;
 import utils.Log;
@@ -52,12 +54,15 @@ public class PathCache implements Service
 	private AStarCourbe astar;
 	public HashMap<Cinematique, HashMap<Script, List<CinematiqueObs>>> paths;
 	
-	public PathCache(Log log, ScriptManager smanager, ChronoGameState chrono, AStarCourbe astar, CercleArrivee cercle, IteratorCheminPathfinding iterator)
+	public PathCache(Log log, ScriptManager smanager, ChronoGameState chrono, AStarCourbe astar, IteratorCheminPathfinding iterator, CheminPathfinding chemin)
 	{
 		this.log = log;
 		Cinematique start = new Cinematique(200, 1800, Math.PI, true, 0, Speed.STANDARD.translationalSpeed);
 		this.astar = astar;
-		loadAll(smanager, chrono, start, cercle, iterator);
+		paths = new HashMap<Cinematique, HashMap<Script, List<CinematiqueObs>>>();
+		if(!new File("paths/").exists())
+			new File("paths/").mkdir();
+		loadAll(smanager, chrono, start, iterator, chemin);
 	}
 	
 	private void savePath(String file, List<CinematiqueObs> path)
@@ -77,7 +82,7 @@ public class PathCache implements Service
         }
         catch(IOException e)
         {
-            log.critical("Erreur lors de la sauvegarde des points de la clothoïde ! "+e);
+            log.critical("Erreur lors de la sauvegarde de la trajectoire ! "+e);
         }
 	}
 	
@@ -99,7 +104,7 @@ public class PathCache implements Service
 		astar.process();
 	}
 	
-	private void loadAll(ScriptManager smanager, ChronoGameState chrono, Cinematique start, CercleArrivee cercle, IteratorCheminPathfinding iterator)
+	private void loadAll(ScriptManager smanager, ChronoGameState chrono, Cinematique start, IteratorCheminPathfinding iterator, CheminPathfinding chemin)
 	{
 		smanager.reinit();
 		boolean[] shoot = {true, false};
@@ -108,12 +113,16 @@ public class PathCache implements Service
 			while(smanager.hasNext())
 			{
 				Script script = smanager.next();
-				String fileName = "paths/"+start.hashCode()+"->"+script.getClass().getSimpleName()+"-s="+shoot[i]+".dat";
+				String fileName = "paths/"+start.hashCode()+"->"+script+"-s="+shoot[i]+".dat";
 				List<CinematiqueObs> path = loadPath(fileName);
+				if(script instanceof ScriptDeposeMinerai)
+					continue;
+				
+				log.debug(script);
 				if(path == null)
 				{
 					chrono.robot.setCinematique(start);
-					cercle.set(GameElementNames.MINERAI_CRATERE_BAS_DROITE);
+					script.setUpCercleArrivee();
 					try {
 						astar.initializeNewSearchToCircle(shoot[i]);
 						astar.process();
@@ -121,14 +130,26 @@ public class PathCache implements Service
 						path = new ArrayList<CinematiqueObs>();
 						while(iterator.hasNext())
 							path.add(iterator.next());
-							
 						savePath(fileName, path);
+						chemin.clear();
 					} catch (PathfindingException e) {
 						log.critical("Le précalcul du chemin a échoué");
 					}
+					finally
+					{
+						astar.stopSearch();
+					}
 				}
 				if(path != null)
-					paths.get(start).put(script, path);
+				{
+					HashMap<Script, List<CinematiqueObs>> map = paths.get(start);
+					if(map == null)
+					{
+						map = new HashMap<Script, List<CinematiqueObs>>();
+						paths.put(start, map);
+					}
+					map.put(script, path);
+				}
 			}
 		}
 	}
@@ -151,4 +172,11 @@ public class PathCache implements Service
         return null;
 	}
 	
+	/**
+	 * Le chemin a été entièrement parcouru.
+	 */
+	public synchronized void stopSearch()
+	{
+		astar.stopSearch();
+	}
 }

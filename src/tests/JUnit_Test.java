@@ -63,7 +63,7 @@ public abstract class JUnit_Test
 		 * La position initiale du robot
 		 */
 		RobotReal r = container.getService(RobotReal.class);
-		r.setCinematique(new Cinematique(0, 800, 0, true, 0, 0));
+		r.setCinematique(new Cinematique(0, 1800, -Math.PI/3, true, 0, 0));
 	}
 
 	@After
