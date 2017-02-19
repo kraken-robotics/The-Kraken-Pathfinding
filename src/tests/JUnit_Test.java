@@ -69,8 +69,8 @@ public abstract class JUnit_Test
 	@After
 	public void tearDown() throws Exception {
 		container.getService(Fenetre.class).waitUntilExit();
-		Runtime.getRuntime().removeShutdownHook(container.getService(ThreadShutdown.class));
 		container.destructor(true);
+		Runtime.getRuntime().removeShutdownHook(container.getService(ThreadShutdown.class));
 		System.out.println("\n\n");
 	}
 

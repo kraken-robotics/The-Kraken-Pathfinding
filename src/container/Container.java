@@ -90,7 +90,7 @@ public class Container implements Service, Configurable
 		 * Il ne faut pas appeler deux fois le destructeur
 		 */
 		if(nbInstances == 0)
-			return;
+			throw new InterruptedException();
 		
 		String threadError = "";
 		// arrêt des threads
@@ -317,8 +317,8 @@ public class Container implements Service, Configurable
 		/**
 		 * Infos diverses
 		 */
-		System.out.println("System : "+System.getProperty("os.name")+" "+System.getProperty("os.version")+" "+System.getProperty("os.arch"));
-		System.out.println("Java : "+System.getProperty("java.vendor")+" "+System.getProperty("java.version")+", max memory : "+Math.round(100.*Runtime.getRuntime().maxMemory()/(1024.*1024.*1024.))/100.+"G, available processors : "+Runtime.getRuntime().availableProcessors());
+		System.out.println("Système : "+System.getProperty("os.name")+" "+System.getProperty("os.version")+" "+System.getProperty("os.arch"));
+		System.out.println("Java : "+System.getProperty("java.vendor")+" "+System.getProperty("java.version")+", mémoire max : "+Math.round(100.*Runtime.getRuntime().maxMemory()/(1024.*1024.*1024.))/100.+"G, coeurs : "+Runtime.getRuntime().availableProcessors());
 		System.out.println("Date : "+new SimpleDateFormat("E dd/MM à HH:mm").format(new Date()));
 		System.out.println();
 
