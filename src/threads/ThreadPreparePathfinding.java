@@ -47,9 +47,9 @@ public class ThreadPreparePathfinding extends ThreadService implements HighPFCla
 	{
 		Thread.currentThread().setName(getClass().getSimpleName());
 		log.debug("Démarrage de "+Thread.currentThread().getName());
-		while(true)
-		{
-			try {
+		try {
+			while(true)
+			{
 				synchronized(inst)
 				{
 					if(inst.isEmpty())
@@ -60,9 +60,9 @@ public class ThreadPreparePathfinding extends ThreadService implements HighPFCla
 				} catch (PathfindingException e) {
 					// TODO
 				}
-			} catch (InterruptedException e) {
-				log.debug("Arrêt de "+Thread.currentThread().getName());
 			}
+		} catch (InterruptedException e) {
+			log.debug("Arrêt de "+Thread.currentThread().getName());
 		}
 	}
 
