@@ -86,6 +86,12 @@ public class Container implements Service, Configurable
 	 */
 	public void destructor(boolean unitTest) throws ContainerException, InterruptedException
 	{
+		/*
+		 * Il ne faut pas appeler deux fois le destructeur
+		 */
+		if(nbInstances == 0)
+			return;
+		
 		String threadError = "";
 		// arrêt des threads
 		for(ThreadName n : ThreadName.values())
