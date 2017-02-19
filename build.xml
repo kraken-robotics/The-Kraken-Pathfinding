@@ -10,8 +10,8 @@
     <property name="target" value="1.7"/>
     <property name="source" value="1.7"/>
     <path id="JUnit 4.libraryclasspath">
-        <pathelement location="../../eclipse/plugins/org.junit_4.12.0.v201504281640/junit.jar"/>
-        <pathelement location="../../eclipse/plugins/org.hamcrest.core_1.3.0.v201303031735.jar"/>
+        <pathelement location="../../../../opt/eclipse/plugins/org.junit_4.12.0.v201504281640/junit.jar"/>
+        <pathelement location="../../../../opt/eclipse/plugins/org.hamcrest.core_1.3.0.v201303031735.jar"/>
     </path>
     <path id="moon rover.classpath">
         <pathelement location="bin"/>
@@ -56,6 +56,15 @@
         <property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter"/>
         <antcall target="build"/>
     </target>
+    <target name="JUnit_Capteurs.test_capteurs">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="tests.JUnit_Capteurs" todir="${junit.output.dir}"/>
+            <jvmarg line="-ea"/>
+            <classpath refid="moon rover.classpath"/>
+        </junit>
+    </target>
     <target name="JUnit_AStarCourbe.test_ramene">
         <mkdir dir="${junit.output.dir}"/>
         <junit fork="yes" printsummary="withOutAndErr">
@@ -85,6 +94,15 @@
         <junit fork="yes" printsummary="withOutAndErr">
             <formatter type="xml"/>
             <test name="tests.JUnit_AStarCourbe" todir="${junit.output.dir}"/>
+            <classpath refid="moon rover.classpath"/>
+        </junit>
+    </target>
+    <target name="JUnit_Strategie.test_strat">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="tests.JUnit_Strategie" todir="${junit.output.dir}"/>
+            <jvmarg line="-ea"/>
             <classpath refid="moon rover.classpath"/>
         </junit>
     </target>
@@ -232,6 +250,15 @@
             <classpath refid="moon rover.classpath"/>
         </junit>
     </target>
+    <target name="JUnit_Capteurs.test_correction">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="tests.JUnit_Capteurs" todir="${junit.output.dir}"/>
+            <jvmarg line="-ea"/>
+            <classpath refid="moon rover.classpath"/>
+        </junit>
+    </target>
     <target name="JUnit_AStarCourbe.test_replanif">
         <mkdir dir="${junit.output.dir}"/>
         <junit fork="yes" printsummary="withOutAndErr">
@@ -256,6 +283,15 @@
             <classpath refid="moon rover.classpath"/>
         </junit>
     </target>
+    <target name="JUnit_AStarCourbe.test_prepathsf">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="tests.JUnit_AStarCourbe" todir="${junit.output.dir}"/>
+            <jvmarg line="-ea"/>
+            <classpath refid="moon rover.classpath"/>
+        </junit>
+    </target>
     <target name="JUnit_CheminPF">
         <mkdir dir="${junit.output.dir}"/>
         <junit fork="yes" printsummary="withOutAndErr">
@@ -277,6 +313,15 @@
         <junit fork="yes" printsummary="withOutAndErr">
             <formatter type="xml"/>
             <test name="tests.JUnit_AStarCourbe" todir="${junit.output.dir}"/>
+            <classpath refid="moon rover.classpath"/>
+        </junit>
+    </target>
+    <target name="JUnit_Serie.test_actionneurs">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="tests.lowlevel.JUnit_Serie" todir="${junit.output.dir}"/>
+            <jvmarg line="-ea"/>
             <classpath refid="moon rover.classpath"/>
         </junit>
     </target>

@@ -125,10 +125,10 @@ public enum ConfigInfo {
 	GRAPHIC_FIXED_OBSTACLES(true), // affiche les obstacles fixes
 	GRAPHIC_GAME_ELEMENTS(true), // affiche les éléments de jeux
 	GRAPHIC_ROBOT_COLLISION(false), // affiche les obstacles du robot lors de la vérification des collisions
-	GRAPHIC_BACKGROUND_PATH("background-2017-color.png"), // affiche d'image de la table
-	GRAPHIC_ROBOT_PATH("robot_sans_roues.png"), // image du robot sans les roues
-	GRAPHIC_ROBOT_ROUE_GAUCHE_PATH("robot_roue_gauche.png"), // image de la roue gauche
-	GRAPHIC_ROBOT_ROUE_DROITE_PATH("robot_roue_droite.png"), // image de la roue droite
+	GRAPHIC_BACKGROUND_PATH("img/background-2017-color.png"), // affiche d'image de la table
+	GRAPHIC_ROBOT_PATH("img/robot_sans_roues.png"), // image du robot sans les roues
+	GRAPHIC_ROBOT_ROUE_GAUCHE_PATH("img/robot_roue_gauche.png"), // image de la roue gauche
+	GRAPHIC_ROBOT_ROUE_DROITE_PATH("img/robot_roue_droite.png"), // image de la roue droite
 	GRAPHIC_PRODUCE_GIF(false), // produit un gif ?
 	GRAPHIC_BACKGROUND(true), // affiche d'image de la table
 	GRAPHIC_SIZE_X(1000), // taille par défaut (sans image) de la fenêtre
