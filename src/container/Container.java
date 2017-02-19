@@ -124,115 +124,7 @@ public class Container implements Service, Configurable
 			((SerieCouchePhysique)instanciedServices.get(SerieCouchePhysique.class.getSimpleName())).close();
 		
 		if(showGraph)
-		{
-			log.warning("Sauvegarde du graphe de dépendances");
-
-			List<String> classesSerie = new ArrayList<String>();
-			List<String> classesHighPF = new ArrayList<String>();
-			List<String> classesLowPF = new ArrayList<String>();
-			List<String> classesBothPF = new ArrayList<String>();
-			List<String> classesCore = new ArrayList<String>();
-			List<String> classesGUI = new ArrayList<String>();
-			List<String> classesConfig = new ArrayList<String>();
-			List<String> classesAutres = new ArrayList<String>();
-
-			for(Class<? extends Service> classe : grapheDep.keySet())
-			{
-				String nom = classe.getSimpleName();
-				if(nom.startsWith("Thread"))
-					nom+="[style=filled, fillcolor=cadetblue1]";
-				else if(nom.contains("Buffer"))
-					nom+="[style=filled, fillcolor=darkolivegreen1]";
-				if(HighPFClass.class.isAssignableFrom(classe))
-				{
-					if(LowPFClass.class.isAssignableFrom(classe))
-						classesBothPF.add(nom);
-					else
-						classesHighPF.add(nom);
-				}
-				else if(SerialClass.class.isAssignableFrom(classe))
-					classesSerie.add(nom);
-				else if(GUIClass.class.isAssignableFrom(classe))
-					classesGUI.add(nom);
-				else if(LowPFClass.class.isAssignableFrom(classe))
-					classesLowPF.add(nom);
-				else if(ConfigClass.class.isAssignableFrom(classe))
-					classesConfig.add(nom);
-				else if(CoreClass.class.isAssignableFrom(classe))
-					classesCore.add(nom);				
-				else
-					classesAutres.add(nom);
-			}
-			
-			try {
-				FileWriter fw = new FileWriter(new File("dependances.dot"));
-				fw.write("digraph dependancesJava {\n\n");
-
-				
-				fw.write("subgraph clusterPF {\n");
-				fw.write("label = \"Pathfinding\";\n");
-				for(String s : classesBothPF)					
-					fw.write(s+";\n");
-				
-				fw.write("subgraph clusterPFCourbe {\n");
-				fw.write("label = \"PF courbe\";\n");
-				for(String s : classesHighPF)					
-					fw.write(s+";\n");
-				fw.write("}\n\n");
-				
-				fw.write("subgraph clusterPFlow {\n");
-				fw.write("label = \"PF bas niveau\";\n");
-				for(String s : classesLowPF)					
-					fw.write(s+";\n");
-				fw.write("}\n\n");
-				fw.write("}\n\n");
-				
-				fw.write("subgraph clusterSerie {\n");
-				fw.write("label = \"Série\";\n");
-				for(String s : classesSerie)					
-					fw.write(s+";\n");
-				fw.write("}\n\n");
-				
-				fw.write("subgraph clusterConfig {\n");
-				fw.write("label = \"Config\";\n");
-				for(String s : classesConfig)					
-					fw.write(s+";\n");
-				fw.write("}\n\n");
-				
-				fw.write("subgraph clusterCore {\n");
-				fw.write("label = \"Core\";\n");
-				for(String s : classesCore)					
-					fw.write(s+";\n");
-				fw.write("}\n\n");
-				
-				fw.write("subgraph clusterGUI {\n");
-				fw.write("label = \"GUI\";\n");
-				for(String s : classesGUI)					
-					fw.write(s+";\n");
-				fw.write("}\n\n");
-				
-				for(String s : classesAutres)					
-					fw.write(s+";\n");
-				
-				fw.write("\n");
-				
-				for(Class<? extends Service> classe : grapheDep.keySet())
-				{
-					Set<String> enf = grapheDep.get(classe);
-					if(!enf.isEmpty())
-					{
-						fw.write(classe.getSimpleName()+" -> {");
-						for(String e : enf)
-							fw.write(e+" ");
-						fw.write("};\n");
-					}
-				}
-				fw.write("\n}\n");
-				fw.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
+			saveGraph();
 		
 		// fermeture du log
 		log.debug("Fermeture du log");
@@ -258,6 +150,121 @@ public class Container implements Service, Configurable
 			}
 			else
 				System.exit(0);
+		}
+	}
+	
+	/**
+	 * Sauvegarde le graphe de dépendances.
+	 * Est appelé par de destructeur.
+	 */
+	private void saveGraph()
+	{
+		log.warning("Sauvegarde du graphe de dépendances");
+
+		List<String> classesSerie = new ArrayList<String>();
+		List<String> classesHighPF = new ArrayList<String>();
+		List<String> classesLowPF = new ArrayList<String>();
+		List<String> classesBothPF = new ArrayList<String>();
+		List<String> classesCore = new ArrayList<String>();
+		List<String> classesGUI = new ArrayList<String>();
+		List<String> classesConfig = new ArrayList<String>();
+		List<String> classesAutres = new ArrayList<String>();
+
+		for(Class<? extends Service> classe : grapheDep.keySet())
+		{
+			String nom = classe.getSimpleName();
+			if(nom.startsWith("Thread"))
+				nom+="[style=filled, fillcolor=cadetblue1]";
+			else if(nom.contains("Buffer"))
+				nom+="[style=filled, fillcolor=darkolivegreen1]";
+			if(HighPFClass.class.isAssignableFrom(classe))
+			{
+				if(LowPFClass.class.isAssignableFrom(classe))
+					classesBothPF.add(nom);
+				else
+					classesHighPF.add(nom);
+			}
+			else if(SerialClass.class.isAssignableFrom(classe))
+				classesSerie.add(nom);
+			else if(GUIClass.class.isAssignableFrom(classe))
+				classesGUI.add(nom);
+			else if(LowPFClass.class.isAssignableFrom(classe))
+				classesLowPF.add(nom);
+			else if(ConfigClass.class.isAssignableFrom(classe))
+				classesConfig.add(nom);
+			else if(CoreClass.class.isAssignableFrom(classe))
+				classesCore.add(nom);				
+			else
+				classesAutres.add(nom);
+		}
+		
+		try {
+			FileWriter fw = new FileWriter(new File("dependances.dot"));
+			fw.write("digraph dependancesJava {\n\n");
+
+			
+			fw.write("subgraph clusterPF {\n");
+			fw.write("label = \"Pathfinding\";\n");
+			for(String s : classesBothPF)					
+				fw.write(s+";\n");
+			
+			fw.write("subgraph clusterPFCourbe {\n");
+			fw.write("label = \"PF courbe\";\n");
+			for(String s : classesHighPF)					
+				fw.write(s+";\n");
+			fw.write("}\n\n");
+			
+			fw.write("subgraph clusterPFlow {\n");
+			fw.write("label = \"PF bas niveau\";\n");
+			for(String s : classesLowPF)					
+				fw.write(s+";\n");
+			fw.write("}\n\n");
+			fw.write("}\n\n");
+			
+			fw.write("subgraph clusterSerie {\n");
+			fw.write("label = \"Série\";\n");
+			for(String s : classesSerie)					
+				fw.write(s+";\n");
+			fw.write("}\n\n");
+			
+			fw.write("subgraph clusterConfig {\n");
+			fw.write("label = \"Config\";\n");
+			for(String s : classesConfig)					
+				fw.write(s+";\n");
+			fw.write("}\n\n");
+			
+			fw.write("subgraph clusterCore {\n");
+			fw.write("label = \"Core\";\n");
+			for(String s : classesCore)					
+				fw.write(s+";\n");
+			fw.write("}\n\n");
+			
+			fw.write("subgraph clusterGUI {\n");
+			fw.write("label = \"GUI\";\n");
+			for(String s : classesGUI)					
+				fw.write(s+";\n");
+			fw.write("}\n\n");
+			
+			for(String s : classesAutres)					
+				fw.write(s+";\n");
+			
+			fw.write("\n");
+			
+			for(Class<? extends Service> classe : grapheDep.keySet())
+			{
+				Set<String> enf = grapheDep.get(classe);
+				if(!enf.isEmpty())
+				{
+					fw.write(classe.getSimpleName()+" -> {");
+					for(String e : enf)
+						fw.write(e+" ");
+					fw.write("};\n");
+				}
+			}
+			fw.write("\n}\n");
+			fw.close();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 	
@@ -312,7 +319,7 @@ public class Container implements Service, Configurable
 		 */
 		System.out.println("System : "+System.getProperty("os.name")+" "+System.getProperty("os.version")+" "+System.getProperty("os.arch"));
 		System.out.println("Java : "+System.getProperty("java.vendor")+" "+System.getProperty("java.version")+", max memory : "+Math.round(100.*Runtime.getRuntime().maxMemory()/(1024.*1024.*1024.))/100.+"G, available processors : "+Runtime.getRuntime().availableProcessors());
-		System.out.println("Date : "+new SimpleDateFormat("E dd/MM à kk:mm").format(new Date()));
+		System.out.println("Date : "+new SimpleDateFormat("E dd/MM à HH:mm").format(new Date()));
 		System.out.println();
 
 		System.out.println("    Remember, with great power comes great current squared times resistance !");
