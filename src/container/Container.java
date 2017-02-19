@@ -72,7 +72,7 @@ public class Container implements Service, Configurable
 	private Config config;
 	
 	private static int nbInstances = 0;
-	
+	private Thread mainThread;
 	private boolean showGraph;
 
 	private List<DynamicConfigurable> dynaConf = new ArrayList<DynamicConfigurable>();
@@ -86,12 +86,16 @@ public class Container implements Service, Configurable
 	 */
 	public void destructor(boolean unitTest) throws ContainerException, InterruptedException
 	{
-		ThreadName threadError = null;
+		String threadError = "";
 		// arrêt des threads
 		for(ThreadName n : ThreadName.values())
 		{
 			if(!getService(n.c).isAlive())
-				threadError = n;
+			{
+				if(!threadError.isEmpty())
+					threadError += ", ";
+				threadError += n.name();
+			}
 			getService(n.c).interrupt();
 		}
 
@@ -232,14 +236,23 @@ public class Container implements Service, Configurable
 		System.out.println();
 		printMessage("outro.txt");
 		
-		if(threadError != null)
-			throw new ContainerException("Un thread a planté : "+threadError);
+		if(!threadError.isEmpty())
+			throw new ContainerException("Un ou des threads ont planté : "+threadError);
 		
 		/**
 		 * Arrête tout, même si destructor est appelé depuis un thread
 		 */
 		if(!unitTest)
-			System.exit(0);
+		{
+			if(Thread.currentThread().getId() != mainThread.getId())
+			{
+				mainThread.interrupt();
+				mainThread.join(2000);
+				Thread.sleep(200);
+			}
+			else
+				System.exit(0);
+		}
 	}
 	
 	/**
@@ -257,6 +270,7 @@ public class Container implements Service, Configurable
 
 		nbInstances++;
 		
+		mainThread =  Thread.currentThread();
 		Thread.currentThread().setName("ThreadPrincipal");
 		
 		/**
