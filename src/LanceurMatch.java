@@ -18,6 +18,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 import container.Container;
 import exceptions.ContainerException;
 import scripts.Strategie;
+import serie.BufferOutgoingOrder;
+import serie.Ticket;
 
 /**
  * Un lanceur de match
@@ -32,6 +34,22 @@ public class LanceurMatch {
 		try {
 			Container container = new Container();
 			Strategie strat = container.getService(Strategie.class);
+			BufferOutgoingOrder data = container.getService(BufferOutgoingOrder.class);
+			
+			/**
+			 * Attente du jumper
+			 */
+			Ticket.State etat;
+			do {
+				Ticket t = data.waitForJumper();
+				synchronized(t)
+				{
+					if(t.isEmpty())
+						t.wait();
+				}
+				etat = t.getAndClear();
+			} while(etat != Ticket.State.OK);
+			
 			strat.doWinMatch();
 		} catch (ContainerException e) {
 			e.printStackTrace();
