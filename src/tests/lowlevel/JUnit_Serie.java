@@ -23,6 +23,7 @@ import org.junit.Test;
 import serie.BufferOutgoingOrder;
 import serie.Ticket;
 import tests.JUnit_Test;
+import utils.Vec2RO;
 
 /**
  * Tests unitaires de la série.
@@ -83,11 +84,69 @@ public class JUnit_Serie extends JUnit_Test {
 		} while(etat != Ticket.State.OK);
 	}
 	
+	/**
+	 * Test de correction de xyo
+	 * @throws Exception
+	 */
+	@Test
+	public void test_edit_position() throws Exception
+	{
+		data.startStream();
+		Thread.sleep(1000);
+		data.correctPosition(new Vec2RO(42,24), 1);
+		Thread.sleep(1000);
+	}
+	
+	/**
+	 * Test du jumper (le HL s'arrête dès que le jumper est retiré)
+	 * @throws Exception
+	 */
+	@Test
+	public void test_jumper() throws Exception
+	{
+		Ticket t = data.waitForJumper();
+		synchronized(t)
+		{
+			if(t.isEmpty())
+				t.wait();
+		}
+	}
+	
+	/**
+	 * Test du compte à rebours de 90s (le test relou, quoi)
+	 * @throws Exception
+	 */
+	@Test
+	public void test_start_match() throws Exception
+	{
+		data.startMatchChrono();
+		Thread.sleep(100000);
+	}
+	
+	/**
+	 * Test de tous les actionneurs
+	 * @throws Exception
+	 */
 	@Test
 	public void test_actionneurs() throws Exception
 	{
 		data.baisseFilet();
 		Thread.sleep(2000);
 		data.leveFilet();
+		Thread.sleep(2000);
+		data.bougeFiletMiChemin();
+		Thread.sleep(2000);
+		data.ejecte(true);
+		Thread.sleep(2000);
+		data.rearme(true);
+		Thread.sleep(2000);
+		data.ejecte(false);
+		Thread.sleep(2000);
+		data.rearme(false);
+		Thread.sleep(2000);
+		data.ouvreFilet();
+		Thread.sleep(2000);
+		data.fermeFilet();
+		Thread.sleep(2000);
 	}
 }
