@@ -22,6 +22,7 @@ import java.awt.Graphics;
 import config.Config;
 import config.ConfigInfo;
 import config.Configurable;
+import config.DynamicConfigurable;
 import container.Service;
 import container.dependances.HighPFClass;
 import container.dependances.LowPFClass;
@@ -44,7 +45,7 @@ import utils.Vec2RW;
  *
  */
 
-public class CercleArrivee implements Service, Configurable, Printable, HighPFClass, LowPFClass
+public class CercleArrivee implements Service, Configurable, Printable, HighPFClass, LowPFClass, DynamicConfigurable
 {
 	public Vec2RO position;
 	public double rayon;
@@ -53,6 +54,7 @@ public class CercleArrivee implements Service, Configurable, Printable, HighPFCl
 	
 	private double rayonDefaut;
 	private boolean graphic;
+	private boolean symetrie = false;
 	
 	protected Log log;
 	private PrintBuffer buffer;
@@ -65,8 +67,8 @@ public class CercleArrivee implements Service, Configurable, Printable, HighPFCl
 	
 	private void set(Vec2RO position, double orientationArriveeDStarLite, double rayon, SensFinal sens)
 	{
-		this.position = position;
-		this.arriveeDStarLite = new Vec2RW(rayon, orientationArriveeDStarLite, false);
+		this.position = new Vec2RO(symetrie ? -position.getX() : position.getX(), position.getY());
+		this.arriveeDStarLite = new Vec2RW(rayon, symetrie ? Math.PI - orientationArriveeDStarLite : orientationArriveeDStarLite, false);
 		((Vec2RW)arriveeDStarLite).plus(position);
 		this.rayon = rayon;
 		this.sens = sens;
@@ -138,5 +140,11 @@ public class CercleArrivee implements Service, Configurable, Printable, HighPFCl
 	public String toString()
 	{
 		return position+", rayon "+rayon+", arrivee "+arriveeDStarLite;
+	}
+
+	@Override
+	public void updateConfig(Config config)
+	{
+		symetrie = config.getSymmetry();
 	}
 }
