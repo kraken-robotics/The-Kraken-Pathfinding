@@ -17,9 +17,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 import container.Container;
 import exceptions.ContainerException;
+import robot.RobotReal;
 import scripts.Strategie;
 import serie.BufferOutgoingOrder;
 import serie.Ticket;
+import utils.Log;
 
 /**
  * Un lanceur de match
@@ -33,23 +35,77 @@ public class LanceurMatch {
 	{
 		try {
 			Container container = new Container();
+			Log log = container.getService(Log.class);
 			Strategie strat = container.getService(Strategie.class);
 			BufferOutgoingOrder data = container.getService(BufferOutgoingOrder.class);
+			RobotReal robot = container.getService(RobotReal.class);
 			
-			/**
-			 * Attente du jumper
+			/*
+			 * Initialise les actionneurs
+			 */
+			robot.initActionneurs();
+			
+			log.debug("Actionneurs initialisés");
+			
+			/*
+			 * Demande de la couleur
 			 */
 			Ticket.State etat;
+			do {
+				Ticket t = data.demandeCouleur();
+				synchronized(t)
+				{
+					if(t.isEmpty())
+						t.wait();
+					etat = t.getAndClear();
+				}
+			} while(etat != Ticket.State.OK);
+			
+			log.debug("Couleur récupérée");
+			
+			/*
+			 * La couleur est connue : on commence le stream de position
+			 */
+			data.startStream();
+			
+			log.debug("Stream des positions et des capteurs lancé");
+			
+			/*
+			 * On attend d'avoir l'info de position
+			 */
+			synchronized(robot)
+			{
+				if(!robot.isCinematiqueInitialised())
+					robot.wait();
+			}
+			
+			log.debug("Cinématique initialisée : "+robot.getCinematique());
+			
+			/*
+			 * Attente du jumper
+			 */
 			do {
 				Ticket t = data.waitForJumper();
 				synchronized(t)
 				{
 					if(t.isEmpty())
 						t.wait();
+					etat = t.getAndClear();
 				}
-				etat = t.getAndClear();
 			} while(etat != Ticket.State.OK);
+
+			log.debug("LE MATCH COMMENCE !");
 			
+			/*
+			 * Le match a commencé !
+			 */
+			data.startMatchChrono();
+			
+			log.debug("Chrono démarré");
+			
+			/*
+			 * On appelle la stratégie
+			 */
 			strat.doWinMatch();
 		} catch (ContainerException e) {
 			e.printStackTrace();
