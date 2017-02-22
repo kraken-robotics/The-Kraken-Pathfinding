@@ -3,17 +3,17 @@
               Any modifications will be overwritten.
               To include a user specific buildfile here, simply create one in the same
               directory with the processing instruction <?eclipse.ant.import?>
-              as the first entry and export the buildfile again. --><project basedir="." default="build" name="moon rover">
+              as the first entry and export the buildfile again. --><project basedir="." default="build" name="moon-rover">
     <property environment="env"/>
     <property name="junit.output.dir" value="junit"/>
     <property name="debuglevel" value="source,lines,vars"/>
-    <property name="target" value="1.7"/>
-    <property name="source" value="1.7"/>
+    <property name="target" value="1.8"/>
+    <property name="source" value="1.8"/>
     <path id="JUnit 4.libraryclasspath">
-        <pathelement location="../../../../opt/eclipse/plugins/org.junit_4.12.0.v201504281640/junit.jar"/>
-        <pathelement location="../../../../opt/eclipse/plugins/org.hamcrest.core_1.3.0.v201303031735.jar"/>
+        <pathelement location="../../../../../usr/lib/eclipse/plugins/org.junit_4.12.0.v201504281640/junit.jar"/>
+        <pathelement location="../../../../../usr/lib/eclipse/plugins/org.hamcrest.core_1.3.0.v201303031735.jar"/>
     </path>
-    <path id="moon rover.classpath">
+    <path id="moon-rover.classpath">
         <pathelement location="bin"/>
         <pathelement location="lib/jcommon-1.0.13.jar"/>
         <pathelement location="lib/jfreechart-1.0.13.jar"/>
@@ -24,7 +24,6 @@
         <mkdir dir="bin"/>
         <copy includeemptydirs="false" todir="bin">
             <fileset dir="src">
-                <exclude name="**/*.launch"/>
                 <exclude name="**/*.java"/>
             </fileset>
         </copy>
@@ -39,290 +38,17 @@
         <echo message="${ant.project.name}: ${ant.file}"/>
         <javac debug="true" debuglevel="${debuglevel}" destdir="bin" includeantruntime="false" source="${source}" target="${target}">
             <src path="src"/>
-            <classpath refid="moon rover.classpath"/>
+            <classpath refid="moon-rover.classpath"/>
         </javac>
     </target>
     <target description="Build all projects which reference this project. Useful to propagate changes." name="build-refprojects"/>
-    <target description="copy Eclipse compiler jars to ant lib directory" name="init-eclipse-compiler">
-        <copy todir="${ant.library.dir}">
-            <fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar"/>
-        </copy>
-        <unzip dest="${ant.library.dir}">
-            <patternset includes="jdtCompilerAdapter.jar"/>
-            <fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar"/>
-        </unzip>
-    </target>
-    <target description="compile project with Eclipse compiler" name="build-eclipse-compiler">
-        <property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter"/>
-        <antcall target="build"/>
-    </target>
-    <target name="JUnit_Capteurs.test_capteurs">
-        <mkdir dir="${junit.output.dir}"/>
-        <junit fork="yes" printsummary="withOutAndErr">
-            <formatter type="xml"/>
-            <test name="tests.JUnit_Capteurs" todir="${junit.output.dir}"/>
-            <jvmarg line="-ea"/>
-            <classpath refid="moon rover.classpath"/>
-        </junit>
-    </target>
-    <target name="JUnit_AStarCourbe.test_ramene">
-        <mkdir dir="${junit.output.dir}"/>
-        <junit fork="yes" printsummary="withOutAndErr">
-            <formatter type="xml"/>
-            <test name="tests.JUnit_AStarCourbe" todir="${junit.output.dir}"/>
-            <classpath refid="moon rover.classpath"/>
-        </junit>
-    </target>
-    <target name="JUnit_OMMemory (1)">
-        <mkdir dir="${junit.output.dir}"/>
-        <junit fork="yes" printsummary="withOutAndErr">
-            <formatter type="xml"/>
-            <test name="tests.JUnit_OMMemory" todir="${junit.output.dir}"/>
-            <classpath refid="moon rover.classpath"/>
-        </junit>
-    </target>
-    <target name="JUnit_AStarCourbe.test_recherche_finit_en_arriere2">
-        <mkdir dir="${junit.output.dir}"/>
-        <junit fork="yes" printsummary="withOutAndErr">
-            <formatter type="xml"/>
-            <test name="tests.JUnit_AStarCourbe" todir="${junit.output.dir}"/>
-            <classpath refid="moon rover.classpath"/>
-        </junit>
-    </target>
-    <target name="JUnit_AStarCourbe.test_recherche_shoot_pas">
-        <mkdir dir="${junit.output.dir}"/>
-        <junit fork="yes" printsummary="withOutAndErr">
-            <formatter type="xml"/>
-            <test name="tests.JUnit_AStarCourbe" todir="${junit.output.dir}"/>
-            <classpath refid="moon rover.classpath"/>
-        </junit>
-    </target>
-    <target name="JUnit_Strategie.test_strat">
-        <mkdir dir="${junit.output.dir}"/>
-        <junit fork="yes" printsummary="withOutAndErr">
-            <formatter type="xml"/>
-            <test name="tests.JUnit_Strategie" todir="${junit.output.dir}"/>
-            <jvmarg line="-ea"/>
-            <classpath refid="moon rover.classpath"/>
-        </junit>
-    </target>
-    <target name="JUnit_Actionneurs.test_actionneurs">
-        <mkdir dir="${junit.output.dir}"/>
-        <junit fork="yes" printsummary="withOutAndErr">
-            <formatter type="xml"/>
-            <test name="tests.lowlevel.JUnit_Actionneurs" todir="${junit.output.dir}"/>
-            <classpath refid="moon rover.classpath"/>
-        </junit>
-    </target>
-    <target name="JUnit_Obstacle (1)">
-        <mkdir dir="${junit.output.dir}"/>
-        <junit fork="yes" printsummary="withOutAndErr">
-            <formatter type="xml"/>
-            <test name="tests.JUnit_Obstacle" todir="${junit.output.dir}"/>
-            <classpath refid="moon rover.classpath"/>
-        </junit>
-    </target>
-    <target name="JUnit_Math (1)">
-        <mkdir dir="${junit.output.dir}"/>
-        <junit fork="yes" printsummary="withOutAndErr">
-            <formatter type="xml"/>
-            <test name="tests.JUnit_Math" todir="${junit.output.dir}"/>
-            <classpath refid="moon rover.classpath"/>
-        </junit>
-    </target>
-    <target name="JUnit_Container (1)">
-        <mkdir dir="${junit.output.dir}"/>
-        <junit fork="yes" printsummary="withOutAndErr">
-            <formatter type="xml"/>
-            <test name="tests.JUnit_Container" todir="${junit.output.dir}"/>
-            <classpath refid="moon rover.classpath"/>
-        </junit>
-    </target>
-    <target name="JUnit_AStarCourbe.test_recherche_finit_en_avant">
-        <mkdir dir="${junit.output.dir}"/>
-        <junit fork="yes" printsummary="withOutAndErr">
-            <formatter type="xml"/>
-            <test name="tests.JUnit_AStarCourbe" todir="${junit.output.dir}"/>
-            <classpath refid="moon rover.classpath"/>
-        </junit>
-    </target>
     <target name="JUnit_AStarCourbe.test_recherche_manoeuvre">
         <mkdir dir="${junit.output.dir}"/>
         <junit fork="yes" printsummary="withOutAndErr">
             <formatter type="xml"/>
             <test name="tests.JUnit_AStarCourbe" todir="${junit.output.dir}"/>
-            <classpath refid="moon rover.classpath"/>
-        </junit>
-    </target>
-    <target name="JUnit_EPriorityQueue">
-        <mkdir dir="${junit.output.dir}"/>
-        <junit fork="yes" printsummary="withOutAndErr">
-            <formatter type="xml"/>
-            <test name="tests.JUnit_EPriorityQueue" todir="${junit.output.dir}"/>
-            <classpath refid="moon rover.classpath"/>
-        </junit>
-    </target>
-    <target name="JUnit_AStarCourbe.test_bezier_quad_cercle">
-        <mkdir dir="${junit.output.dir}"/>
-        <junit fork="yes" printsummary="withOutAndErr">
-            <formatter type="xml"/>
-            <test name="tests.JUnit_AStarCourbe" todir="${junit.output.dir}"/>
-            <classpath refid="moon rover.classpath"/>
-        </junit>
-    </target>
-    <target name="JUnit_AStarCourbe.test_recherche_shoot2">
-        <mkdir dir="${junit.output.dir}"/>
-        <junit fork="yes" printsummary="withOutAndErr">
-            <formatter type="xml"/>
-            <test name="tests.JUnit_AStarCourbe" todir="${junit.output.dir}"/>
-            <classpath refid="moon rover.classpath"/>
-        </junit>
-    </target>
-    <target name="JUnit_AStarCourbe.test_recherche_loin_arriere">
-        <mkdir dir="${junit.output.dir}"/>
-        <junit fork="yes" printsummary="withOutAndErr">
-            <formatter type="xml"/>
-            <test name="tests.JUnit_AStarCourbe" todir="${junit.output.dir}"/>
-            <classpath refid="moon rover.classpath"/>
-        </junit>
-    </target>
-    <target name="JUnit_AStarCourbe.test_demi_tour">
-        <mkdir dir="${junit.output.dir}"/>
-        <junit fork="yes" printsummary="withOutAndErr">
-            <formatter type="xml"/>
-            <test name="tests.JUnit_AStarCourbe" todir="${junit.output.dir}"/>
-            <classpath refid="moon rover.classpath"/>
-        </junit>
-    </target>
-    <target name="JUnit_AStarCourbe.test_recherche_finit_en_arriere3">
-        <mkdir dir="${junit.output.dir}"/>
-        <junit fork="yes" printsummary="withOutAndErr">
-            <formatter type="xml"/>
-            <test name="tests.JUnit_AStarCourbe" todir="${junit.output.dir}"/>
-            <classpath refid="moon rover.classpath"/>
-        </junit>
-    </target>
-    <target name="JUnit_AStarCourbe.test_bezier_quad">
-        <mkdir dir="${junit.output.dir}"/>
-        <junit fork="yes" printsummary="withOutAndErr">
-            <formatter type="xml"/>
-            <test name="tests.JUnit_AStarCourbe" todir="${junit.output.dir}"/>
-            <classpath refid="moon rover.classpath"/>
-        </junit>
-    </target>
-    <target name="JUnit_Table (1)">
-        <mkdir dir="${junit.output.dir}"/>
-        <junit fork="yes" printsummary="withOutAndErr">
-            <formatter type="xml"/>
-            <test name="tests.JUnit_Table" todir="${junit.output.dir}"/>
-            <classpath refid="moon rover.classpath"/>
-        </junit>
-    </target>
-    <target name="JUnit_GridSpace (1)">
-        <mkdir dir="${junit.output.dir}"/>
-        <junit fork="yes" printsummary="withOutAndErr">
-            <formatter type="xml"/>
-            <test name="tests.JUnit_GridSpace" todir="${junit.output.dir}"/>
-            <classpath refid="moon rover.classpath"/>
-        </junit>
-    </target>
-    <target name="JUnit_DStarLite">
-        <mkdir dir="${junit.output.dir}"/>
-        <junit fork="yes" printsummary="withOutAndErr">
-            <formatter type="xml"/>
-            <test name="tests.JUnit_DStarLite" todir="${junit.output.dir}"/>
-            <classpath refid="moon rover.classpath"/>
-        </junit>
-    </target>
-    <target name="JUnit_Config (2)">
-        <mkdir dir="${junit.output.dir}"/>
-        <junit fork="yes" printsummary="withOutAndErr">
-            <formatter type="xml"/>
-            <test name="tests.JUnit_Config" todir="${junit.output.dir}"/>
-            <classpath refid="moon rover.classpath"/>
-        </junit>
-    </target>
-    <target name="JUnit_AStarCourbe.test_recherche_finit_en_arriere">
-        <mkdir dir="${junit.output.dir}"/>
-        <junit fork="yes" printsummary="withOutAndErr">
-            <formatter type="xml"/>
-            <test name="tests.JUnit_AStarCourbe" todir="${junit.output.dir}"/>
-            <classpath refid="moon rover.classpath"/>
-        </junit>
-    </target>
-    <target name="JUnit_Capteurs.test_correction">
-        <mkdir dir="${junit.output.dir}"/>
-        <junit fork="yes" printsummary="withOutAndErr">
-            <formatter type="xml"/>
-            <test name="tests.JUnit_Capteurs" todir="${junit.output.dir}"/>
             <jvmarg line="-ea"/>
-            <classpath refid="moon rover.classpath"/>
-        </junit>
-    </target>
-    <target name="JUnit_AStarCourbe.test_replanif">
-        <mkdir dir="${junit.output.dir}"/>
-        <junit fork="yes" printsummary="withOutAndErr">
-            <formatter type="xml"/>
-            <test name="tests.JUnit_AStarCourbe" todir="${junit.output.dir}"/>
-            <classpath refid="moon rover.classpath"/>
-        </junit>
-    </target>
-    <target name="JUnit_AStarCourbe.test_bezier_cub">
-        <mkdir dir="${junit.output.dir}"/>
-        <junit fork="yes" printsummary="withOutAndErr">
-            <formatter type="xml"/>
-            <test name="tests.JUnit_AStarCourbe" todir="${junit.output.dir}"/>
-            <classpath refid="moon rover.classpath"/>
-        </junit>
-    </target>
-    <target name="JUnit_AStarCourbe.test_recherche_shoot">
-        <mkdir dir="${junit.output.dir}"/>
-        <junit fork="yes" printsummary="withOutAndErr">
-            <formatter type="xml"/>
-            <test name="tests.JUnit_AStarCourbe" todir="${junit.output.dir}"/>
-            <classpath refid="moon rover.classpath"/>
-        </junit>
-    </target>
-    <target name="JUnit_AStarCourbe.test_prepathsf">
-        <mkdir dir="${junit.output.dir}"/>
-        <junit fork="yes" printsummary="withOutAndErr">
-            <formatter type="xml"/>
-            <test name="tests.JUnit_AStarCourbe" todir="${junit.output.dir}"/>
-            <jvmarg line="-ea"/>
-            <classpath refid="moon rover.classpath"/>
-        </junit>
-    </target>
-    <target name="JUnit_CheminPF">
-        <mkdir dir="${junit.output.dir}"/>
-        <junit fork="yes" printsummary="withOutAndErr">
-            <formatter type="xml"/>
-            <test name="tests.JUnit_CheminPF" todir="${junit.output.dir}"/>
-            <classpath refid="moon rover.classpath"/>
-        </junit>
-    </target>
-    <target name="JUnit_AStarCourbe.test_clotho">
-        <mkdir dir="${junit.output.dir}"/>
-        <junit fork="yes" printsummary="withOutAndErr">
-            <formatter type="xml"/>
-            <test name="tests.JUnit_AStarCourbe" todir="${junit.output.dir}"/>
-            <classpath refid="moon rover.classpath"/>
-        </junit>
-    </target>
-    <target name="JUnit_AStarCourbe.test_recherche_loin">
-        <mkdir dir="${junit.output.dir}"/>
-        <junit fork="yes" printsummary="withOutAndErr">
-            <formatter type="xml"/>
-            <test name="tests.JUnit_AStarCourbe" todir="${junit.output.dir}"/>
-            <classpath refid="moon rover.classpath"/>
-        </junit>
-    </target>
-    <target name="JUnit_Serie.test_actionneurs">
-        <mkdir dir="${junit.output.dir}"/>
-        <junit fork="yes" printsummary="withOutAndErr">
-            <formatter type="xml"/>
-            <test name="tests.lowlevel.JUnit_Serie" todir="${junit.output.dir}"/>
-            <jvmarg line="-ea"/>
-            <classpath refid="moon rover.classpath"/>
+            <classpath refid="moon-rover.classpath"/>
         </junit>
     </target>
     <target name="junitreport">
