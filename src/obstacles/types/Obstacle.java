@@ -165,6 +165,8 @@ public abstract class Obstacle implements Printable
 	@Override
 	public Layer getLayer()
 	{
+		if(l == null)
+			return Layer.MIDDLE;
 		return l;
 	}
 

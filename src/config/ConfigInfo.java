@@ -136,7 +136,8 @@ public enum ConfigInfo {
 	GRAPHIC_ROBOT_AND_SENSORS(true), // affiche le robot et ses capteurs
 	GRAPHIC_CERCLE_ARRIVEE(false), // affiche le cercle d'arrivée
 	GRAPHIC_TIME(false), // affiche le temps écoulé
-
+	GRAPHIC_TRACE_ROBOT(true), // affiche la trace du robot
+	
 	/**
 	 * Config dynamique
 	 */

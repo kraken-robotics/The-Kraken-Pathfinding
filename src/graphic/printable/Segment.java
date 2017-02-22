@@ -17,6 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 package graphic.printable;
 
+import java.awt.Color;
 import java.awt.Graphics;
 
 import graphic.Fenetre;
@@ -33,17 +34,20 @@ public class Segment implements Printable
 {
 	private Vec2RO a, b;
 	private Layer l;
+	private Color c;
 
-	public Segment(Vec2RO a, Vec2RO b, Layer l)
+	public Segment(Vec2RO a, Vec2RO b, Layer l, Color c)
 	{
 		this.a = a;
 		this.b = b;
 		this.l = l;
+		this.c = c;
 	}
 
 	@Override
 	public void print(Graphics g, Fenetre f, RobotReal robot)
 	{
+		g.setColor(c);
 		g.drawLine(f.XtoWindow(a.getX()), f.YtoWindow(a.getY()), f.XtoWindow(b.getX()), f.YtoWindow(b.getY()));
 	}
 
