@@ -91,13 +91,13 @@ public abstract class Robot implements DynamicConfigurable
 		filetBaisse = true;
 	}
 	
-	public void filetMiHauteur() throws InterruptedException
+	public void bougeFiletMiChemin() throws InterruptedException
 	{
 		bloque("bougeFiletMiChemin");
 		filetBaisse = true;
 	}
 	
-	public void remonteFilet() throws InterruptedException
+	public void leveFilet() throws InterruptedException
 	{
 		bloque("leveFilet");
 		filetBaisse = false;
@@ -120,9 +120,9 @@ public abstract class Robot implements DynamicConfigurable
 //		filetPlein = false; // TODO
 	}
 	
-	public void ejectBalles() throws InterruptedException
+	public void ejecteBalles() throws InterruptedException
 	{
-		bloque("ejecte", !symetrie);
+		bloque("ejecteBalles", !symetrie);
 		filetPlein = false;
 	}
 

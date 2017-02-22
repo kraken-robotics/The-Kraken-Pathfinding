@@ -136,17 +136,19 @@ public class JUnit_Serie extends JUnit_Test {
 		Thread.sleep(2000);
 		data.bougeFiletMiChemin();
 		Thread.sleep(2000);
-		data.ejecte(true);
+		data.ejecteBalles(true);
 		Thread.sleep(2000);
 		data.rearme(true);
 		Thread.sleep(2000);
-		data.ejecte(false);
+		data.ejecteBalles(false);
 		Thread.sleep(2000);
 		data.rearme(false);
 		Thread.sleep(2000);
 		data.ouvreFilet();
 		Thread.sleep(2000);
 		data.fermeFilet();
+		Thread.sleep(2000);
+		data.traverseBascule();
 		Thread.sleep(2000);
 	}
 }
