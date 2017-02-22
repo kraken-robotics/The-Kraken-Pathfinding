@@ -9,21 +9,18 @@
     <property name="debuglevel" value="source,lines,vars"/>
     <property name="target" value="1.8"/>
     <property name="source" value="1.8"/>
-    <path id="JUnit 4.libraryclasspath">
-        <pathelement location="../../../../../usr/lib/eclipse/plugins/org.junit_4.12.0.v201504281640/junit.jar"/>
-        <pathelement location="../../../../../usr/lib/eclipse/plugins/org.hamcrest.core_1.3.0.v201303031735.jar"/>
-    </path>
     <path id="moon-rover.classpath">
         <pathelement location="bin"/>
         <pathelement location="lib/jcommon-1.0.13.jar"/>
         <pathelement location="lib/jfreechart-1.0.13.jar"/>
         <pathelement location="lib/RXTXcomm.jar"/>
-        <path refid="JUnit 4.libraryclasspath"/>
+        <pathelement location="lib/junit.jar"/>
     </path>
     <target name="init">
         <mkdir dir="bin"/>
         <copy includeemptydirs="false" todir="bin">
             <fileset dir="src">
+                <exclude name="**/*.launch"/>
                 <exclude name="**/*.java"/>
             </fileset>
         </copy>
@@ -50,6 +47,11 @@
             <jvmarg line="-ea"/>
             <classpath refid="moon-rover.classpath"/>
         </junit>
+    </target>
+    <target name="Replay">
+        <java classname="Replay" failonerror="true" fork="yes">
+            <classpath refid="moon-rover.classpath"/>
+        </java>
     </target>
     <target name="junitreport">
         <junitreport todir="${junit.output.dir}">
