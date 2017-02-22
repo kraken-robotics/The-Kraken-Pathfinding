@@ -53,7 +53,7 @@ public enum ConfigInfo {
 	 */
 	FAST_LOG(false), // affichage plus rapide des logs
 	AFFICHE_DEBUG(true), // affiche aussi les log.debug
-	SAUVEGARDE_FICHIER(false), // sauvegarde les logs dans un fichier externe
+	SAUVEGARDE_LOG(false), // sauvegarde les logs dans un fichier externe
 	AFFICHE_CONFIG(false), // affiche la configuration complète au lancement
 	
 	/**

@@ -22,8 +22,8 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import config.Config;
 import config.ConfigInfo;
@@ -123,7 +123,7 @@ public class Log implements Service, Configurable
 				if(sauvegarde_fichier)
 				{
 					try{
-					     writer.write(message+"\n");
+					     writer.write(date+" "+message+"\n");
 					}
 					catch(IOException e)
 					{
@@ -156,7 +156,7 @@ public class Log implements Service, Configurable
 				if(sauvegarde_fichier)
 				{
 					try{
-					     writer.write(message+"\n");
+					     writer.write(date+" "+message+"\n");
 					}
 					catch(IOException e)
 					{
@@ -195,13 +195,11 @@ public class Log implements Service, Configurable
 	public void useConfig(Config config)
 	{
 		affiche_debug = config.getBoolean(ConfigInfo.AFFICHE_DEBUG);
-		sauvegarde_fichier = config.getBoolean(ConfigInfo.SAUVEGARDE_FICHIER);
+		sauvegarde_fichier = config.getBoolean(ConfigInfo.SAUVEGARDE_LOG);
 		fastLog = config.getBoolean(ConfigInfo.FAST_LOG);
 		if(sauvegarde_fichier)
 		{
-			GregorianCalendar calendar = new GregorianCalendar();
-			String heure = calendar.get(Calendar.HOUR_OF_DAY)+":"+calendar.get(Calendar.MINUTE)+":"+calendar.get(Calendar.SECOND);
-			String file = "logs/LOG-"+heure+".txt";
+			String file = "logs/"+new SimpleDateFormat("dd-MM.HH:mm").format(new Date())+".txt";
 			try {
 				writer = new BufferedWriter(new FileWriter(file)); 
 				debug("Un fichier de sauvegarde est utilisé: "+file);
