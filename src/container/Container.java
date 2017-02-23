@@ -90,7 +90,7 @@ public class Container implements Service, Configurable
 		 * Il ne faut pas appeler deux fois le destructeur
 		 */
 		if(nbInstances == 0)
-			throw new InterruptedException();
+			return;
 		
 		String threadError = "";
 		// arrêt des threads

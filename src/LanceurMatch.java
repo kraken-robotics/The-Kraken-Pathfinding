@@ -110,7 +110,6 @@ public class LanceurMatch {
 		} catch (ContainerException e) {
 			e.printStackTrace();
 		} catch (InterruptedException e) {
-			e.printStackTrace();
 		}
 	}
 	
