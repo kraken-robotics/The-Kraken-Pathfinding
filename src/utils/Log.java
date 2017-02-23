@@ -123,7 +123,7 @@ public class Log implements Service, Configurable
 				if(sauvegarde_fichier)
 				{
 					try{
-					     writer.write(date+" "+message+"\n");
+					     writer.write(affichage+"\n");
 					}
 					catch(IOException e)
 					{
@@ -156,7 +156,7 @@ public class Log implements Service, Configurable
 				if(sauvegarde_fichier)
 				{
 					try{
-					     writer.write(date+" "+message+"\n");
+					     writer.write(affichage+"\n");
 					}
 					catch(IOException e)
 					{
