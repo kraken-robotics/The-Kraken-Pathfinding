@@ -148,7 +148,11 @@ public class Container implements Service, Configurable
 				Thread.sleep(200);
 			}
 			else
+			{
+				Runtime.getRuntime().removeShutdownHook(getService(ThreadShutdown.class));
+				Thread.sleep(200);
 				System.exit(0);
+			}
 		}
 	}
 	
@@ -349,6 +353,14 @@ public class Container implements Service, Configurable
 
 		startAllThreads();
 
+		/**
+		 * Planification du hook de fermeture
+		 */
+		try {
+			Runtime.getRuntime().addShutdownHook(getService(ThreadShutdown.class));
+		} catch (ContainerException e) {
+			log.critical(e);
+		}
 	}
 	
 	/**
@@ -528,15 +540,6 @@ public class Container implements Service, Configurable
 			} catch (ContainerException e) {
 				log.critical(e);
 			}
-		}
-		
-		/**
-		 * Planification du hook de fermeture
-		 */
-		try {
-			Runtime.getRuntime().addShutdownHook(getService(ThreadShutdown.class));
-		} catch (ContainerException e) {
-			log.critical(e);
 		}
 	}
 
