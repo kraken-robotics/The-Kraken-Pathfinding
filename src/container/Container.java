@@ -130,7 +130,7 @@ public class Container implements Service, Configurable
 		log.debug("Fermeture du log");
 		log.close();
 		nbInstances--;
-		System.out.println("Singularité évaporée.");
+		System.out.println("L'ESPAAAAAAACE !…");
 		System.out.println();
 		printMessage("outro.txt");
 		
@@ -285,7 +285,11 @@ public class Container implements Service, Configurable
 		
 		mainThread =  Thread.currentThread();
 		Thread.currentThread().setName("ThreadPrincipal");
-		
+
+		log = new Log();
+		config = new Config();
+		log.useConfig(config);
+
 		/**
 		 * Affichage d'un petit message de bienvenue
 		 */
@@ -308,7 +312,7 @@ public class Container implements Service, Configurable
 				s2 = in2.readLine();
 
 			int index2 = s2.indexOf(" ");
-			System.out.println("Version : "+s.substring(0, index)+" on "+s2.substring(index2+1)+" - ["+s.substring(index+1)+"]");
+			log.debug("Version : "+s.substring(0, index)+" on "+s2.substring(index2+1)+" - ["+s.substring(index+1)+"]");
 			in2.close();
 		} catch (IOException e1) {
 			System.out.println(e1);
@@ -317,20 +321,16 @@ public class Container implements Service, Configurable
 		/**
 		 * Infos diverses
 		 */
-		System.out.println("Système : "+System.getProperty("os.name")+" "+System.getProperty("os.version")+" "+System.getProperty("os.arch"));
-		System.out.println("Java : "+System.getProperty("java.vendor")+" "+System.getProperty("java.version")+", mémoire max : "+Math.round(100.*Runtime.getRuntime().maxMemory()/(1024.*1024.*1024.))/100.+"G, coeurs : "+Runtime.getRuntime().availableProcessors());
-		System.out.println("Date : "+new SimpleDateFormat("E dd/MM à HH:mm").format(new Date()));
-		System.out.println();
+		log.debug("Système : "+System.getProperty("os.name")+" "+System.getProperty("os.version")+" "+System.getProperty("os.arch"));
+		log.debug("Java : "+System.getProperty("java.vendor")+" "+System.getProperty("java.version")+", mémoire max : "+Math.round(100.*Runtime.getRuntime().maxMemory()/(1024.*1024.*1024.))/100.+"G, coeurs : "+Runtime.getRuntime().availableProcessors());
+		log.debug("Date : "+new SimpleDateFormat("E dd/MM à HH:mm").format(new Date()));
 
-		System.out.println("    Remember, with great power comes great current squared times resistance !");
-		System.out.println();
+		log.warning("Remember, with great power comes great current squared times resistance !");
 		
-		log = new Log();
-		config = new Config();
-		log.useConfig(config);
 		// Interdépendance entre log et config…
 		config.init(log);
-
+		dynaConf.add(log);
+		
 		instanciedServices.put(Log.class.getSimpleName(), log);
 		instanciedServices.put(Config.class.getSimpleName(), config);
 

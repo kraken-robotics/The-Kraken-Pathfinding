@@ -42,6 +42,7 @@ public class Config implements Service, ConfigClass
 	private volatile Properties properties = new Properties();
 	private Log log;
 	private boolean graphicEnable;
+	private boolean surcharged = false;
 	
 	private boolean configIniCharge = false;
 	
@@ -72,6 +73,8 @@ public class Config implements Service, ConfigClass
 		this.log = log;
 		if(getBoolean(ConfigInfo.AFFICHE_CONFIG))
 			afficheTout();
+		else
+			afficheChanged();
 	}
 	
 	/**
@@ -193,6 +196,19 @@ public class Config implements Service, ConfigClass
 				log.debug(info+" = "+getString(info));
 	}
 	
+	private synchronized void afficheChanged()
+	{
+		if(surcharged)
+		{
+			log.debug("Delta config :");
+			for(ConfigInfo info: ConfigInfo.values())
+				if(info.constant && !info.getDefaultValue().toString().equals(getString(info)))
+					log.debug(info+" = "+getString(info));
+		}
+		else
+			log.debug("Pas de surcharge de configuration");
+	}
+	
 	/**
 	 * Complète avec les valeurs par défaut le fichier de configuration
 	 */
@@ -210,7 +226,10 @@ public class Config implements Service, ConfigClass
 					properties.setProperty(info.toString(), info.getDefaultValue().toString());
 				}
 				else if(!info.getDefaultValue().equals(properties.getProperty(info.name())))
+				{
 					System.out.println(info+" surchargé par config.ini ("+info.getDefaultValue()+" -> "+properties.getProperty(info.name())+")");
+					surcharged = true;
+				}
 			}
 			for(String cle: properties.stringPropertyNames())
 			{

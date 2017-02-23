@@ -28,6 +28,7 @@ import java.util.Date;
 import config.Config;
 import config.ConfigInfo;
 import config.Configurable;
+import config.DynamicConfigurable;
 import container.Service;
 
 /**
@@ -36,8 +37,27 @@ import container.Service;
  *
  */
 
-public class Log implements Service, Configurable
+public class Log implements Service, Configurable, DynamicConfigurable
 {
+	private enum Niveau
+	{
+		DEBUG(true, " ", "\u001B[0m", System.out),
+		WARNING(false, " WARNING ", "\u001B[33m", System.out),
+		CRITICAL(false, " CRITICAL ", "\u001B[31m", System.err);
+		
+		public boolean debug;
+		public String entete, couleur;
+		public PrintStream stream;
+		
+		private Niveau(boolean debug, String entete, String couleur, PrintStream stream)
+		{
+			this.debug = debug;
+			this.entete = entete;
+			this.couleur = couleur;
+			this.stream = stream;
+		}
+	}
+	
 	// Dépendances
 	private boolean logClosed = false;
 	private BufferedWriter writer = null;
@@ -51,10 +71,13 @@ public class Log implements Service, Configurable
 	// Ecriture plus rapide sans appel à la pile d'exécution
 	private boolean fastLog = false;
 	
+	private String 	couleurDefault = "\u001B[0m";
+	
 	/**
 	 * date du démarrage
 	 */
 	private long dateInitiale;
+	private long dateDebutMatch = -1;
 	
 	public Log()
 	{
@@ -68,10 +91,7 @@ public class Log implements Service, Configurable
 	 */
 	public void debug(Object message)
 	{
-		if(fastLog)
-			ecrireFast(message, true, System.out);
-		else
-			ecrire(" ", message, true, System.out);
+		ecrire(message.toString(), Niveau.DEBUG);
 	}
 
 	/**
@@ -81,10 +101,7 @@ public class Log implements Service, Configurable
 	 */
 	public void warning(Object message)
 	{
-		if(fastLog)
-			ecrireFast(message, false, System.out);
-		else
-			ecrire(" WARNING ", message, false, System.out);
+		ecrire(message.toString(), Niveau.WARNING);
 	}
 	
 	/**
@@ -94,10 +111,7 @@ public class Log implements Service, Configurable
 	 */
 	public void critical(Object message)
 	{
-		if(fastLog)
-			ecrireFast(message, false, System.err);
-		else
-			ecrire(" CRITICAL ", message, false, System.err);
+		ecrire(message.toString(), Niveau.CRITICAL);
 	}
 
 	/**
@@ -107,67 +121,40 @@ public class Log implements Service, Configurable
 	 * @param couleur
 	 * @param ou
 	 */
-	private synchronized void ecrire(String niveau, Object message, boolean debug, PrintStream ou)
+	private synchronized void ecrire(String message, Niveau niveau)
 	{
 		if(logClosed)
 			System.out.println("WARNING * Log fermé! Message: "+message);
-		else if(!debug || affiche_debug || sauvegarde_fichier)
+		else if(!niveau.debug || affiche_debug || sauvegarde_fichier)
 		{
 			long date = System.currentTimeMillis() - dateInitiale;
-			String affichage;
-			StackTraceElement elem = Thread.currentThread().getStackTrace()[3];
-			affichage = date+niveau+elem.getClassName().substring(elem.getClassName().lastIndexOf(".")+1)+":"+elem.getLineNumber()+" > "+message;//+"\u001B[0m";
+			String tempsMatch = "";
+			if(dateDebutMatch != -1)
+				tempsMatch = " T+"+(System.currentTimeMillis() - dateDebutMatch);
 
-			if(!debug || affiche_debug)
+			String affichage;
+			if(fastLog)
+				affichage = date+tempsMatch+" > "+message;
+			else
 			{
-				if(sauvegarde_fichier)
-				{
-					try{
-					     writer.write(affichage+"\n");
-					}
-					catch(IOException e)
-					{
-						e.printStackTrace();
-					}
-				}
-//				else
-					ou.println(affichage);
+				StackTraceElement elem = Thread.currentThread().getStackTrace()[3];
+				affichage = date+tempsMatch+niveau.entete+elem.getClassName().substring(elem.getClassName().lastIndexOf(".")+1)+":"+elem.getLineNumber()+" ("+Thread.currentThread().getName()+") > "+message;
 			}
-		}
-	}
-	
-	/**
-	 * Affichage rapide
-	 * @param niveau
-	 * @param message
-	 * @param couleur
-	 * @param ou
-	 */
-	private void ecrireFast(Object message, boolean debug, PrintStream ou)
-	{
-		if(logClosed)
-			System.out.println("WARNING * Log fermé! Message: "+message);
-		else if(!debug || affiche_debug || sauvegarde_fichier)
-		{
-			long date = System.currentTimeMillis() - dateInitiale;
-			String affichage = date+" > "+message;
-			if(!debug || affiche_debug)
+			if(sauvegarde_fichier)
 			{
-				if(sauvegarde_fichier)
-				{
-					try{
-					     writer.write(affichage+"\n");
-					}
-					catch(IOException e)
-					{
-						e.printStackTrace();
-					}					
+				try{
+					// On met la couleur dans le fichier
+				     writer.write(niveau.couleur+affichage+couleurDefault+"\n");
 				}
-//				else
-					ou.println(affichage);
+				catch(IOException e)
+				{
+					e.printStackTrace();
+				}					
 			}
+			if(!niveau.debug || affiche_debug)
+				niveau.stream.println(affichage);
 		}
-	}
+	}	
 	
 	/**
 	 * Sorte de destructeur, dans lequel le fichier est sauvegardé.
@@ -225,6 +212,12 @@ public class Log implements Service, Configurable
 			}
 		}
 		debug("Service de log démarré");
+	}
+
+	@Override
+	public void updateConfig(Config config)
+	{
+		dateDebutMatch = config.getLong(ConfigInfo.DATE_DEBUT_MATCH);
 	}
 
 }

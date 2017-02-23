@@ -16,7 +16,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 */
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
@@ -45,9 +44,15 @@ public class Replay {
 		    {
 		    	String time = line.split(" ")[0];
 		    	try {
+		    		int first = -1;
+		    		if(time.startsWith("\u001B["))
+		    		{
+		    			first = time.indexOf("m");
+		    			time = time.substring(first+1);
+		    		}
 		    		long temps = Long.parseLong(time);
 		    		Thread.sleep(Math.max(0, temps+startDate - System.currentTimeMillis()));
-		    			System.out.println(line);
+		    			System.out.println(line.substring(0,first+1)+line.substring(time.length()+first+2));
 		    	}
 		    	catch(NumberFormatException e)
 		    	{
