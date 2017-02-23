@@ -260,7 +260,7 @@ public class AStarCourbe implements Service, Configurable, HighPFClass
 				if(arcmanager.isArrived(successeur) && arcmanager.isReachable(successeur, shoot)
 					&& (trajetDeSecours == null || trajetDeSecours.f_score > successeur.f_score))
 				{
-					log.debug("Arrivée trouvée !");
+//					log.debug("Arrivée trouvée !");
 					trajetDeSecours = successeur;
 				}
 				
