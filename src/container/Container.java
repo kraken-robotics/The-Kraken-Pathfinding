@@ -84,7 +84,7 @@ public class Container implements Service, Configurable
 	 * @throws InterruptedException 
 	 * @throws ContainerException 
 	 */
-	public void destructor(boolean unitTest) throws ContainerException, InterruptedException
+	public synchronized void destructor(boolean unitTest) throws ContainerException, InterruptedException
 	{
 		/*
 		 * Il ne faut pas appeler deux fois le destructeur
@@ -130,7 +130,6 @@ public class Container implements Service, Configurable
 		log.debug("Fermeture du log");
 		log.close();
 		nbInstances--;
-		System.out.println("L'ESPAAAAAAACE !…");
 		System.out.println();
 		printMessage("outro.txt");
 		
