@@ -31,7 +31,7 @@ public enum Speed
 	// vitesse standard
     STANDARD(1.),
     
-    TEST(0.5),
+    TEST(0.3),
     
     // pour décourager la marche arrière, on la met moins rapide
     MARCHE_ARRIERE(0.5),
