@@ -21,6 +21,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import serie.BufferOutgoingOrder;
+import serie.SerialProtocol.State;
 import serie.Ticket;
 import tests.JUnit_Test;
 import utils.Vec2RO;
@@ -72,16 +73,11 @@ public class JUnit_Serie extends JUnit_Test {
 	@Test
 	public void test_ask_color() throws Exception
 	{
-		Ticket.State etat;
+		State etat;
 		do {
 			Ticket t = data.demandeCouleur();
-			synchronized(t)
-			{
-				if(t.isEmpty())
-					t.wait();
-			}
-			etat = t.getAndClear();
-		} while(etat != Ticket.State.OK);
+			etat = t.attendStatus().etat;
+		} while(etat != State.OK);
 	}
 	
 	/**

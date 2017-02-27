@@ -183,6 +183,7 @@ public class CheminPathfinding implements Service, Printable, HighPFClass, Chemi
 				int tmp = indexLast;
 				for(CinematiqueObs p : points)
 					add(p);
+				// TODO tmp - 1 ? pas de minus ?
 				if(isIndexValid(tmp - 1) && chemin[tmp - 1].enMarcheAvant == points.getFirst().enMarcheAvant)
 				{
 					points.addFirst(chemin[tmp - 1]); // on renvoie ce point afin qu'il ne soit plus un point d'arrêt

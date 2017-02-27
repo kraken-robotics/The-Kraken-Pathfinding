@@ -20,6 +20,7 @@ import exceptions.ContainerException;
 import robot.RobotReal;
 import scripts.Strategie;
 import serie.BufferOutgoingOrder;
+import serie.SerialProtocol;
 import serie.Ticket;
 import utils.Log;
 
@@ -50,16 +51,11 @@ public class LanceurMatch {
 			/*
 			 * Demande de la couleur
 			 */
-			Ticket.State etat;
+			SerialProtocol.State etat;
 			do {
 				Ticket t = data.demandeCouleur();
-				synchronized(t)
-				{
-					if(t.isEmpty())
-						t.wait();
-					etat = t.getAndClear();
-				}
-			} while(etat != Ticket.State.OK);
+				etat = t.attendStatus().etat;
+			} while(etat != SerialProtocol.State.OK);
 			
 			log.debug("Couleur récupérée");
 			
@@ -86,13 +82,8 @@ public class LanceurMatch {
 			 */
 			do {
 				Ticket t = data.waitForJumper();
-				synchronized(t)
-				{
-					if(t.isEmpty())
-						t.wait();
-					etat = t.getAndClear();
-				}
-			} while(etat != Ticket.State.OK);
+				etat = t.attendStatus().etat;
+			} while(etat != SerialProtocol.State.OK);
 
 			log.debug("LE MATCH COMMENCE !");
 			
