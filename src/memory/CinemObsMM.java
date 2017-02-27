@@ -39,7 +39,8 @@ public class CinemObsMM extends MemoryManager<CinematiqueObs> implements HighPFC
 
 	public CinemObsMM(Log log, Config config, Container container) throws ContainerException
 	{
-		super(CinematiqueObs.class, log, container, config.getInt(ConfigInfo.NB_INSTANCES_OBSTACLES));
+		super(CinematiqueObs.class, log, container, config.getInt(ConfigInfo.NB_INSTANCES_OBSTACLES),
+				config.getInt(ConfigInfo.LARGEUR_NON_DEPLOYE)/2, config.getInt(ConfigInfo.DEMI_LONGUEUR_NON_DEPLOYE_ARRIERE), config.getInt(ConfigInfo.DEMI_LONGUEUR_NON_DEPLOYE_AVANT));
 	}
 
 	// TODO : optimisable : la mémoire est contigue

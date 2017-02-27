@@ -97,8 +97,9 @@ public class PathCache implements Service, HighPFClass
 	 * @param s
 	 * @param shoot
 	 * @throws PathfindingException
+	 * @throws InterruptedException 
 	 */
-	public void prepareNewPathToScript(Script s, boolean shoot, ChronoGameState chrono) throws PathfindingException
+	public void prepareNewPathToScript(Script s, boolean shoot, ChronoGameState chrono) throws PathfindingException, InterruptedException
 	{
 		s.setUpCercleArrivee();
 		astar.initializeNewSearchToCircle(shoot, chrono);
@@ -135,7 +136,7 @@ public class PathCache implements Service, HighPFClass
 		}
 	}
 	
-	private void loadAll(ScriptManager smanager, ChronoGameState chrono, IteratorCheminPathfinding iterator)
+	private void loadAll(ScriptManager smanager, ChronoGameState chrono, IteratorCheminPathfinding iterator) throws InterruptedException
 	{
 		smanager.reinit();
 		boolean[] shoot = {true, false};

@@ -160,8 +160,9 @@ public class ArcManager implements Service, Configurable, HighPFClass
 	/**
 	 * Fournit le prochain successeur. On suppose qu'il existe
 	 * @param successeur
+	 * @throws InterruptedException 
 	 */
-    public boolean next(AStarCourbeNode successeur, Speed vitesseMax)
+    public boolean next(AStarCourbeNode successeur, Speed vitesseMax) throws InterruptedException
     {
     	VitesseCourbure v = iterator.next();
 

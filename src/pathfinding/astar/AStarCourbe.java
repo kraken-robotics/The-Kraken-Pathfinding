@@ -25,6 +25,7 @@ import java.util.Stack;
 
 import memory.NodeMM;
 import memory.CinemObsMM;
+import pathfinding.ChronoGameState;
 import pathfinding.DirectionStrategy;
 import pathfinding.GameState;
 import pathfinding.RealGameState;
@@ -68,6 +69,7 @@ public class AStarCourbe implements Service, Configurable, HighPFClass
 	private CheminPathfinding realChemin;
 	private CinemObsMM cinemMemory;
 	private CercleArrivee cercle;
+	private ChronoGameState chrono;
 	private boolean graphicTrajectory, graphicDStarLite, graphicTrajectoryAll;
 	private int dureeMaxPF;
 	private Speed vitesseMax;
@@ -104,18 +106,18 @@ public class AStarCourbe implements Service, Configurable, HighPFClass
 	/**
 	 * Constructeur du AStarCourbe
 	 */
-	public AStarCourbe(Log log, DStarLite dstarlite, ArcManager arcmanager, RealGameState state, CheminPathfinding chemin, NodeMM memorymanager, CinemObsMM rectMemory, PrintBuffer buffer, AStarCourbeNode depart, CercleArrivee cercle)
+	public AStarCourbe(Log log, DStarLite dstarlite, ArcManager arcmanager, RealGameState state, CheminPathfinding chemin, NodeMM memorymanager, CinemObsMM rectMemory, PrintBuffer buffer, CercleArrivee cercle, ChronoGameState chrono)
 	{
 		this.log = log;
 		this.arcmanager = arcmanager;
 		this.state = state;
 		this.memorymanager = memorymanager;
 		this.realChemin = chemin;
-		this.depart = depart;
 		this.dstarlite = dstarlite;
 		this.cinemMemory = rectMemory;
 		this.buffer = buffer;
 		this.cercle = cercle;
+		this.chrono = chrono;
 	}
 	
 	/**
@@ -123,8 +125,9 @@ public class AStarCourbe implements Service, Configurable, HighPFClass
 	 * @param depart
 	 * @return
 	 * @throws PathfindingException 
+	 * @throws InterruptedException 
 	 */
-	public final void process(CheminPathfindingInterface chemin) throws PathfindingException
+	public final void process(CheminPathfindingInterface chemin) throws PathfindingException, InterruptedException
 	{
 		trajetDeSecours = null;
 		depart.parent = null;
@@ -340,6 +343,10 @@ public class AStarCourbe implements Service, Configurable, HighPFClass
 		graphicDStarLite = config.getBoolean(ConfigInfo.GRAPHIC_D_STAR_LITE_FINAL);
 		dureeMaxPF = config.getInt(ConfigInfo.DUREE_MAX_RECHERCHE_PF);
 		tailleFaisceau = config.getInt(ConfigInfo.TAILLE_FAISCEAU_PF);
+		int demieLargeurNonDeploye = config.getInt(ConfigInfo.LARGEUR_NON_DEPLOYE)/2;
+		int demieLongueurArriere = config.getInt(ConfigInfo.DEMI_LONGUEUR_NON_DEPLOYE_ARRIERE);
+		int demieLongueurAvant = config.getInt(ConfigInfo.DEMI_LONGUEUR_NON_DEPLOYE_AVANT);
+		this.depart = new AStarCourbeNode(chrono, demieLargeurNonDeploye, demieLongueurArriere, demieLongueurAvant);
 	}
 				
 	/**
@@ -402,8 +409,9 @@ public class AStarCourbe implements Service, Configurable, HighPFClass
 	 * S'il n'y avait aucun recherche en cours, on ignore.
 	 * @param shoot
 	 * @throws PathfindingException
+	 * @throws InterruptedException 
 	 */
-	public synchronized void updatePath(boolean shoot) throws PathfindingException
+	public synchronized void updatePath(boolean shoot) throws PathfindingException, InterruptedException
 	{
 		if(!rechercheEnCours)
 		{

@@ -44,8 +44,14 @@ public class MemoryManager<T extends Memorizable> implements Service {
 	private int tailleMax = 512000;
 	
 	@SuppressWarnings("unchecked")
-	public MemoryManager(Class<T> classe, Log log, Container container, int nb_instances) throws ContainerException
+	public MemoryManager(Class<T> classe, Log log, Container container, int nb_instances, Object... extraParam) throws ContainerException
 	{	
+		Object[] extra;
+		if(extraParam.length == 0)
+			extra = null;
+		else
+			extra = extraParam;
+		
 		this.container = container;
 		this.log = log;
 		this.nb_instances = nb_instances;
@@ -57,7 +63,7 @@ public class MemoryManager<T extends Memorizable> implements Service {
 
 		for(int i = 0; i < nb_instances; i++)
 		{
-			nodes[i] = container.make(classe);
+			nodes[i] = container.make(classe, extra);
 			nodes[i].setIndiceMemoryManager(i);
 		}
 	}
@@ -65,9 +71,10 @@ public class MemoryManager<T extends Memorizable> implements Service {
 	/**
 	 * Donne un objet disponible
 	 * @return
+	 * @throws InterruptedException 
 	 */
 	@SuppressWarnings("unchecked")
-	public synchronized T getNewNode()
+	public synchronized T getNewNode() throws InterruptedException
 	{
 		// lève une exception s'il n'y a plus de place
 		if(firstAvailable == nodes.length)
@@ -76,8 +83,7 @@ public class MemoryManager<T extends Memorizable> implements Service {
 				if(nodes.length >= tailleMax) // pas plus d'un million d'objets (sert à empêcher les bugs de tout faire planter… cette condition est inutile en temps normal)
 				{
 					log.critical("Mémoire saturée, arrêt");
-					int z = 0;
-					z = 1/z;
+					throw new InterruptedException();
 				}
 
 				log.warning("Mémoire trop petite pour les "+nodes[0].getClass().getSimpleName()+", extension (nouvelle taille : "+(nodes.length * 2)+")");

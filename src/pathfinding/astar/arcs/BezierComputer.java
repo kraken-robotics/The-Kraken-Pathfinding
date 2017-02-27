@@ -54,14 +54,13 @@ public class BezierComputer implements Service, Configurable, HighPFClass
 	protected double courbureMax;
 	private ClothoidesComputer clothocomputer;
 	
-	public BezierComputer(Log log, CinemObsMM memory, PrintBuffer buffer, ClothoidesComputer clothocomputer, RobotReal robot, CercleArrivee cercle)
+	public BezierComputer(Log log, CinemObsMM memory, PrintBuffer buffer, ClothoidesComputer clothocomputer, CercleArrivee cercle)
 	{
 		this.log = log;
 		this.memory = memory;
 		this.buffer = buffer;
 		this.clothocomputer = clothocomputer;
 		this.cercle = cercle;
-		tmp = new ArcCourbeStatique(robot);
 	}
 	
 	private Vec2RW delta = new Vec2RW(), vecteurVitesse = new Vec2RW();
@@ -76,8 +75,9 @@ public class BezierComputer implements Service, Configurable, HighPFClass
 	 * @param arrivee
 	 * @param vitesseMax
 	 * @return
+	 * @throws InterruptedException 
 	 */
-	public ArcCourbeDynamique interpolationQuadratique(Cinematique cinematiqueInitiale, Vec2RO arrivee, Speed vitesseMax)
+	public ArcCourbeDynamique interpolationQuadratique(Cinematique cinematiqueInitiale, Vec2RO arrivee, Speed vitesseMax) throws InterruptedException
 	{
 		debut = cinematiqueInitiale;
 		arrivee.copy(delta);
@@ -157,8 +157,9 @@ public class BezierComputer implements Service, Configurable, HighPFClass
 	 * @param cinematiqueInitiale
 	 * @param vitesseMax
 	 * @return
+	 * @throws InterruptedException 
 	 */
-	public ArcCourbeDynamique interpolationQuadratiqueCercle(Cinematique cinematiqueInitiale, Speed vitesseMax)
+	public ArcCourbeDynamique interpolationQuadratiqueCercle(Cinematique cinematiqueInitiale, Speed vitesseMax) throws InterruptedException
 	{
 		ArcCourbeDynamique out = interpolationQuadratique(cinematiqueInitiale, cercle.position, vitesseMax);
 		if(out == null)
@@ -220,8 +221,9 @@ public class BezierComputer implements Service, Configurable, HighPFClass
 	 * @param vecteurVitesse2
 	 * @param position2
 	 * @return
+	 * @throws InterruptedException 
 	 */
-	private ArcCourbeDynamique constructBezierQuad(Vec2RO A, Vec2RO B, Vec2RO C, boolean enMarcheAvant, Speed vitesseMax, Cinematique cinematiqueInitiale)
+	private ArcCourbeDynamique constructBezierQuad(Vec2RO A, Vec2RO B, Vec2RO C, boolean enMarcheAvant, Speed vitesseMax, Cinematique cinematiqueInitiale) throws InterruptedException
 	{
 /*		buffer.addSupprimable(new ObstacleCircular(A, 15));
 		buffer.addSupprimable(new ObstacleCircular(B, 15));
@@ -330,6 +332,11 @@ public class BezierComputer implements Service, Configurable, HighPFClass
 	public void useConfig(Config config)
 	{
 		courbureMax = config.getDouble(ConfigInfo.COURBURE_MAX);		
+		
+		int demieLargeurNonDeploye = config.getInt(ConfigInfo.LARGEUR_NON_DEPLOYE)/2;
+		int demieLongueurArriere = config.getInt(ConfigInfo.DEMI_LONGUEUR_NON_DEPLOYE_ARRIERE);
+		int demieLongueurAvant = config.getInt(ConfigInfo.DEMI_LONGUEUR_NON_DEPLOYE_AVANT);
+		tmp = new ArcCourbeStatique(demieLargeurNonDeploye, demieLongueurArriere, demieLongueurAvant);
 	}
 
 }

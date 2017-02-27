@@ -443,7 +443,13 @@ public class Container implements Service, Configurable
 				}
 			}
 			else if(classe.getConstructors().length == 0)
-				throw new ContainerException(classe.getSimpleName()+" n'a aucun constructeur !");
+			{
+				String out = "";
+				for(String s : stack)
+					out += s + " -> ";
+				out += classe.getSimpleName();
+				throw new ContainerException(classe.getSimpleName()+" n'a aucun constructeur ! "+out);
+			}
 			else
 				constructeur = (Constructor<S>) classe.getConstructors()[0];
 			
@@ -538,7 +544,7 @@ public class Container implements Service, Configurable
 			try {
 				getService(n.c).start();
 			} catch (ContainerException e) {
-				log.critical(e);
+				e.printStackTrace();
 			}
 		}
 	}

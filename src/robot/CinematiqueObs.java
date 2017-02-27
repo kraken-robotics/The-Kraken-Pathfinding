@@ -34,10 +34,10 @@ public class CinematiqueObs extends Cinematique implements Memorizable, Serializ
 	public volatile ObstacleRobot obstacle;
 	private int indiceMemory;	
 
-	public CinematiqueObs(RobotReal r)
+	public CinematiqueObs(int demieLargeurNonDeploye, int demieLongueurArriere, int demieLongueurAvant)
 	{
 		super();
-		obstacle = new ObstacleRobot(r);
+		obstacle = new ObstacleRobot(demieLargeurNonDeploye, demieLongueurArriere, demieLongueurAvant);
 	}
 	
 	public void copy(CinematiqueObs autre)

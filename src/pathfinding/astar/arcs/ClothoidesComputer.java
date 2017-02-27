@@ -244,8 +244,9 @@ public class ClothoidesComputer implements Service, HighPFClass
 	 * @param enMarcheAvant
 	 * @param vitesse
 	 * @return 
+	 * @throws InterruptedException 
 	 */
-	public final ArcCourbeDynamique getTrajectoireRamene(Cinematique cinematiqueInitiale, VitesseRameneVolant vitesseRamene, Speed vitesseMax)
+	public final ArcCourbeDynamique getTrajectoireRamene(Cinematique cinematiqueInitiale, VitesseRameneVolant vitesseRamene, Speed vitesseMax) throws InterruptedException
 	{
 		double courbure = cinematiqueInitiale.courbureGeometrique;
 		double orientation = cinematiqueInitiale.orientationGeometrique;
@@ -494,8 +495,9 @@ public class ClothoidesComputer implements Service, HighPFClass
 	 * @param vitesse
 	 * @param vitesseMax
 	 * @return
+	 * @throws InterruptedException 
 	 */
-	public final ArcCourbeDynamique getTrajectoireDemiTour(Cinematique cinematiqueInitiale, VitesseDemiTour vitesse, Speed vitesseMax)
+	public final ArcCourbeDynamique getTrajectoireDemiTour(Cinematique cinematiqueInitiale, VitesseDemiTour vitesse, Speed vitesseMax) throws InterruptedException
 	{
 		List<CinematiqueObs> trajet = getTrajectoireQuartDeTour(cinematiqueInitiale, vitesse.v, vitesseMax, false);
 		trajet.addAll(getTrajectoireQuartDeTour(trajet.get(trajet.size()-1), vitesse.v, vitesseMax, true)); // on reprend à la fin du premier quart de tour
@@ -512,8 +514,9 @@ public class ClothoidesComputer implements Service, HighPFClass
 	 * @param enMarcheAvant
 	 * @param vitesse
 	 * @return 
+	 * @throws InterruptedException 
 	 */
-	private final List<CinematiqueObs> getTrajectoireQuartDeTour(Cinematique cinematiqueInitiale, VitesseClotho vitesse, Speed vitesseMax, boolean rebrousse)
+	private final List<CinematiqueObs> getTrajectoireQuartDeTour(Cinematique cinematiqueInitiale, VitesseClotho vitesse, Speed vitesseMax, boolean rebrousse) throws InterruptedException
 	{
 		double courbure = cinematiqueInitiale.courbureGeometrique;
 		double orientation = cinematiqueInitiale.orientationGeometrique;

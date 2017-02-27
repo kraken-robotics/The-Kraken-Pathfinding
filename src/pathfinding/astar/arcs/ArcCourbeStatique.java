@@ -17,6 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 package pathfinding.astar.arcs;
 
+import obstacles.types.ObstacleRobot;
 import robot.CinematiqueObs;
 import robot.RobotReal;
 
@@ -30,10 +31,10 @@ public class ArcCourbeStatique extends ArcCourbe
 {
 	public CinematiqueObs[] arcselems = new CinematiqueObs[ClothoidesComputer.NB_POINTS];
 	
-	public ArcCourbeStatique(RobotReal r)
+	public ArcCourbeStatique(int demieLargeurNonDeploye, int demieLongueurArriere, int demieLongueurAvant)
 	{
 		for(int i = 0; i < ClothoidesComputer.NB_POINTS; i++)
-			arcselems[i] = new CinematiqueObs(r);
+			arcselems[i] = new CinematiqueObs(demieLargeurNonDeploye, demieLongueurArriere, demieLongueurAvant);
 	}
 	
 	/**

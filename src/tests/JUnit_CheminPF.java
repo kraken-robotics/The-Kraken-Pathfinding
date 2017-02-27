@@ -23,6 +23,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import config.ConfigInfo;
 import pathfinding.chemin.CheminPathfinding;
 import pathfinding.chemin.IteratorCheminPathfinding;
 import robot.CinematiqueObs;
@@ -54,7 +55,11 @@ public class JUnit_CheminPF extends JUnit_Test {
 		Assert.assertEquals(0, iterator.getIndex());
 		Assert.assertFalse(iterator.hasNext());
 		LinkedList<CinematiqueObs> l = new LinkedList<CinematiqueObs>();
-		l.add(new CinematiqueObs(container.getService(RobotReal.class)));
+		int demieLargeurNonDeploye = config.getInt(ConfigInfo.LARGEUR_NON_DEPLOYE)/2;
+		int demieLongueurArriere = config.getInt(ConfigInfo.DEMI_LONGUEUR_NON_DEPLOYE_ARRIERE);
+		int demieLongueurAvant = config.getInt(ConfigInfo.DEMI_LONGUEUR_NON_DEPLOYE_AVANT);
+
+		l.add(new CinematiqueObs(demieLargeurNonDeploye, demieLongueurArriere, demieLongueurAvant));
 		chemin.add(l);
 		Assert.assertTrue(iterator.hasNext());
 	}

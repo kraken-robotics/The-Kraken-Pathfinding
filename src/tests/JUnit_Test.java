@@ -49,7 +49,7 @@ public abstract class JUnit_Test
 	@Before
 	public void setUp() throws Exception
 	{
-		System.err.println("----- DÉBUT DU TEST "+testName.getMethodName()+" -----\n\n");
+		System.err.println("----- DÉBUT DU TEST "+testName.getMethodName()+" -----");
 
 		container = new Container();
 		config = container.getService(Config.class);

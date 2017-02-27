@@ -227,7 +227,7 @@ public class Config implements Service, ConfigClass
 				}
 				else if(!info.getDefaultValue().equals(properties.getProperty(info.name())))
 				{
-					System.out.println(info+" surchargé par config.ini ("+info.getDefaultValue()+" -> "+properties.getProperty(info.name())+")");
+//					System.out.println(info+" surchargé par config.ini ("+info.getDefaultValue()+" -> "+properties.getProperty(info.name())+")");
 					surcharged = true;
 				}
 			}
