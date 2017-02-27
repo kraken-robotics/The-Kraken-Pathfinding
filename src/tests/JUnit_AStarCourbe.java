@@ -84,7 +84,7 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 //		dstarlite = container.getService(DStarLite.class);
 		robot = container.getService(RobotReal.class);
 		chemin = container.getService(CheminPathfinding.class);
-		iterator = container.make(IteratorCheminPathfinding.class);
+		iterator = new IteratorCheminPathfinding(chemin);
 		gridspace = container.getService(GridSpace.class);
 		bezier = container.getService(BezierComputer.class);
 		cercle = container.getService(CercleArrivee.class);

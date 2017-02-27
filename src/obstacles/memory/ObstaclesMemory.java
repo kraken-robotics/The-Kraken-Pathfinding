@@ -17,7 +17,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 package obstacles.memory;
 
-import exceptions.ContainerException;
 import graphic.PrintBuffer;
 
 import java.util.Iterator;
@@ -29,7 +28,6 @@ import utils.Log;
 import utils.Vec2RO;
 import config.Config;
 import config.ConfigInfo;
-import container.Container;
 import container.Service;
 import container.dependances.LowPFClass;
 
@@ -57,13 +55,11 @@ public class ObstaclesMemory implements Service, LowPFClass
 	
 	protected Log log;
 	private PrintBuffer buffer;
-	private Container container;
 	
-	public ObstaclesMemory(Log log, PrintBuffer buffer, Container container, Config config)
+	public ObstaclesMemory(Log log, PrintBuffer buffer, Config config)
 	{
 		this.log = log;
 		this.buffer = buffer;
-		this.container = container;
 		rayonEnnemi = config.getInt(ConfigInfo.RAYON_ROBOT_ADVERSE);
 		dureeAvantPeremption = config.getInt(ConfigInfo.DUREE_PEREMPTION_OBSTACLES);
 		printProx = config.getBoolean(ConfigInfo.GRAPHIC_PROXIMITY_OBSTACLES);
@@ -77,20 +73,15 @@ public class ObstaclesMemory implements Service, LowPFClass
 
 	private synchronized ObstacleProximity add(Vec2RO position, long date, Masque masque)
 	{
-        ObstacleProximity obstacle = null;
-		try {
-			obstacle = container.make(ObstacleProximity.class, position, rayonEnnemi, date+dureeAvantPeremption, masque);
-	        listObstaclesMobiles.add(obstacle);
-	
-	        if(printProx)
-	        	buffer.addSupprimable(obstacle);
-	        if(printDStarLite)
-	        	buffer.addSupprimable(obstacle.getMasque());
-	        
-	        size++;
-		} catch (ContainerException e) {
-			log.critical(e);
-		}
+        ObstacleProximity obstacle = new ObstacleProximity(position, rayonEnnemi, date+dureeAvantPeremption, masque);
+        listObstaclesMobiles.add(obstacle);
+
+        if(printProx)
+        	buffer.addSupprimable(obstacle);
+        if(printDStarLite)
+        	buffer.addSupprimable(obstacle.getMasque());
+        
+        size++;
 		return obstacle;
 	}
 	

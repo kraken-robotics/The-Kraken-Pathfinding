@@ -38,7 +38,7 @@ public class Masque implements Printable
 	public List<PointDirige> masque = new ArrayList<PointDirige>();
 	private PointGridSpaceManager pm;
 	
-	public Masque(PointGridSpaceManager pm, ArrayList<PointDirige> masque)
+	public Masque(PointGridSpaceManager pm, List<PointDirige> masque)
 	{
 		this.pm = pm;
 		this.masque = masque;

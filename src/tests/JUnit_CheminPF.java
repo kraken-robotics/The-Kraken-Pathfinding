@@ -44,7 +44,7 @@ public class JUnit_CheminPF extends JUnit_Test {
     public void setUp() throws Exception {
         super.setUp();
         chemin = container.getService(CheminPathfinding.class);
-        iterator = container.make(IteratorCheminPathfinding.class);
+        iterator = new IteratorCheminPathfinding(chemin);
     }
 	
 	@Test
