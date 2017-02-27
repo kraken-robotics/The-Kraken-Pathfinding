@@ -639,7 +639,7 @@ public class DStarLite implements Service, LowPFClass
 	/**
 	 * Le chemin a été entièrement parcouru.
 	 */
-	public synchronized void stopSearch()
+	public synchronized void stopContinuousSearch()
 	{
 		rechercheEnCours = false;
 	}

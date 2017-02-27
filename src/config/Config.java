@@ -253,7 +253,6 @@ public class Config implements Service
 			for(ConfigInfo info: ConfigInfo.values())
 				properties.setProperty(info.toString(), info.getDefaultValue().toString());
 		}
-		System.out.println();
 	}
 		
 	/**

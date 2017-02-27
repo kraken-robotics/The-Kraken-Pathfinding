@@ -71,7 +71,6 @@ public abstract class JUnit_Test
 		container.getService(Fenetre.class).waitUntilExit();
 		container.destructor(true);
 		Runtime.getRuntime().removeShutdownHook(container.getService(ThreadShutdown.class));
-		System.out.println("\n\n");
 	}
 
 	

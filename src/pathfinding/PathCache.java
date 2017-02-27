@@ -162,7 +162,7 @@ public class PathCache implements Service, HighPFClass
 					}
 					finally
 					{
-						astar.stopSearch();
+						astar.stopContinuousSearch();
 					}
 				}
 				if(path != null)
@@ -202,6 +202,6 @@ public class PathCache implements Service, HighPFClass
 	 */
 	public synchronized void stopSearch()
 	{
-		astar.stopSearch();
+		astar.stopContinuousSearch();
 	}
 }

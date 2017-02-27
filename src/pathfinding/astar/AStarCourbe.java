@@ -438,11 +438,11 @@ public class AStarCourbe implements Service, HighPFClass
 	/**
 	 * Le chemin a été entièrement parcouru.
 	 */
-	public synchronized void stopSearch()
+	public synchronized void stopContinuousSearch()
 	{
 		rechercheEnCours = false;
 		buffer.clearSupprimables();
-		dstarlite.stopSearch();
+		dstarlite.stopContinuousSearch();
 	}
 	
 }

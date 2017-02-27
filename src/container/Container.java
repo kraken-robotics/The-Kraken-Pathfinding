@@ -128,7 +128,6 @@ public class Container implements Service
 		log.debug("Fermeture du log");
 		log.close();
 		nbInstances--;
-		System.out.println();
 		printMessage("outro.txt");
 		
 		if(!threadError.isEmpty())
@@ -278,14 +277,14 @@ public class Container implements Service
 		mainThread =  Thread.currentThread();
 		Thread.currentThread().setName("ThreadPrincipal");
 
-		log = new Log();
-		config = new Config();
-		log.useConfig(config);
-
 		/**
 		 * Affichage d'un petit message de bienvenue
 		 */
 		printMessage("intro.txt");
+
+		log = new Log();
+		config = new Config();
+		log.useConfig(config);
 		
 		/**
 		 * Affiche la version du programme (dernier commit et sa branche)
