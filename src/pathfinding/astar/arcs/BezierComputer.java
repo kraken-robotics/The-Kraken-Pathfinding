@@ -33,7 +33,6 @@ import pathfinding.astar.arcs.vitesses.VitesseClotho;
 import pathfinding.astar.arcs.vitesses.VitesseRameneVolant;
 import robot.Cinematique;
 import robot.CinematiqueObs;
-import robot.RobotReal;
 import robot.Speed;
 import utils.Log;
 import utils.Vec2RO;

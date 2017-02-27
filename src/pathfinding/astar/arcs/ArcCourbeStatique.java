@@ -17,9 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 package pathfinding.astar.arcs;
 
-import obstacles.types.ObstacleRobot;
 import robot.CinematiqueObs;
-import robot.RobotReal;
 
 /**
  * Arc courbe de longueur fixe

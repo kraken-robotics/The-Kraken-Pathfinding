@@ -118,10 +118,10 @@ public class PathCache implements Service, HighPFClass
 	}
 	
 	/**
-	 * Suit le chemin précédemment préparé
+	 * Envoie le chemin précédemment préparé
 	 * @throws InterruptedException 
 	 */
-	public void followPreparedPath() throws InterruptedException, PathfindingException
+	public void sendPreparedPath() throws InterruptedException, PathfindingException
 	{
 		/*
 		 * Normalement, cette exception ne peut survenir que lors d'une replanification (donc pas là)

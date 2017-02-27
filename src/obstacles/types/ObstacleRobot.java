@@ -25,7 +25,6 @@ import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.io.Serializable;
 
-import config.ConfigInfo;
 import robot.RobotReal;
 import utils.Vec2RO;
 import utils.Vec2RW;

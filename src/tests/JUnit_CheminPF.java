@@ -27,7 +27,6 @@ import config.ConfigInfo;
 import pathfinding.chemin.CheminPathfinding;
 import pathfinding.chemin.IteratorCheminPathfinding;
 import robot.CinematiqueObs;
-import robot.RobotReal;
 
 /**
  * Tests unitaires pour le chemin pathfinding
