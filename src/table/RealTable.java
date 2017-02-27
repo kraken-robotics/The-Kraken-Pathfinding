@@ -23,7 +23,6 @@ import java.util.List;
 import obstacles.types.ObstacleMasque;
 import config.Config;
 import config.ConfigInfo;
-import config.Configurable;
 import container.Service;
 import container.dependances.CoreClass;
 import graphic.PrintBuffer;
@@ -38,7 +37,7 @@ import utils.Log;
  *
  */
 
-public class RealTable extends Table implements Service, Configurable, CoreClass
+public class RealTable extends Table implements Service, CoreClass
 {
 	private PrintBuffer buffer;
 	private boolean print;
@@ -48,7 +47,7 @@ public class RealTable extends Table implements Service, Configurable, CoreClass
 	private BitSet newObstacles = new BitSet(PointGridSpace.NB_POINTS * 8);
 	private BitSet oldObstacles = new BitSet(PointGridSpace.NB_POINTS * 8);
 
-	public RealTable(Log log, PrintBuffer buffer, MasqueManager masquemanager)
+	public RealTable(Log log, PrintBuffer buffer, MasqueManager masquemanager, Config config)
 	{
 		super(log);
 		this.buffer = buffer;
@@ -59,11 +58,7 @@ public class RealTable extends Table implements Service, Configurable, CoreClass
 		for(GameElementNames g : GameElementNames.values())
 			if(g.aUnMasque)
 				((ObstacleMasque)g.obstacle).setMasque(masquemanager.getMasqueCylindre(g.obstacle.getPosition()));
-	}
 
-	@Override
-	public void useConfig(Config config)
-	{
 		print = config.getBoolean(ConfigInfo.GRAPHIC_GAME_ELEMENTS);
 		if(print)
 			for(GameElementNames g : GameElementNames.values())

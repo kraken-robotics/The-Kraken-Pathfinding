@@ -27,7 +27,6 @@ import java.util.Date;
 
 import config.Config;
 import config.ConfigInfo;
-import config.Configurable;
 import config.DynamicConfigurable;
 import container.Service;
 
@@ -37,7 +36,7 @@ import container.Service;
  *
  */
 
-public class Log implements Service, Configurable, DynamicConfigurable
+public class Log implements Service, DynamicConfigurable
 {
 	private enum Niveau
 	{
@@ -178,7 +177,6 @@ public class Log implements Service, Configurable, DynamicConfigurable
 		logClosed = true;
 	}
 	
-	@Override
 	public void useConfig(Config config)
 	{
 		affiche_debug = config.getBoolean(ConfigInfo.AFFICHE_DEBUG);

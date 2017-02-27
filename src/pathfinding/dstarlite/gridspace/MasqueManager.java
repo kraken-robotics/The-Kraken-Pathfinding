@@ -22,7 +22,6 @@ import java.util.List;
 
 import config.Config;
 import config.ConfigInfo;
-import config.Configurable;
 import container.Container;
 import container.Service;
 import container.dependances.LowPFClass;
@@ -37,7 +36,7 @@ import utils.Vec2RO;
  *
  */
 
-public class MasqueManager implements Service, Configurable, LowPFClass
+public class MasqueManager implements Service, LowPFClass
 {
 	private int centreMasqueEnnemi, centreMasqueCylindre;
 	private PointGridSpaceManager pointManager;
@@ -49,18 +48,14 @@ public class MasqueManager implements Service, Configurable, LowPFClass
 	private List<PointDirige> modelCylindre = new ArrayList<PointDirige>();
 	private boolean printObsCapteurs;
 	
-	public MasqueManager(Log log, PointGridSpaceManager pointManager, PointDirigeManager pointDManager, PrintBuffer buffer, Container container)
+	public MasqueManager(Log log, PointGridSpaceManager pointManager, PointDirigeManager pointDManager, PrintBuffer buffer, Container container, Config config)
 	{
 		this.log = log;
 		this.pointManager = pointManager;
 		this.pointDManager = pointDManager;
 		this.buffer = buffer;
 		this.container = container;
-	}
-	
-	@Override
-	public void useConfig(Config config)
-	{
+
 		printObsCapteurs = config.getBoolean(ConfigInfo.GRAPHIC_D_STAR_LITE);
 		int rayonRobot = config.getInt(ConfigInfo.DILATATION_ROBOT_ENNEMI_DSTARLITE); // l'obstacle du D* Lite doit être dilaté
 		int rayonEnnemi = config.getInt(ConfigInfo.RAYON_ROBOT_ADVERSE);

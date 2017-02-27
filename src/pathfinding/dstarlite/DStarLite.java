@@ -34,7 +34,6 @@ import utils.Log;
 import utils.Vec2RO;
 import config.Config;
 import config.ConfigInfo;
-import config.Configurable;
 import container.Service;
 import container.dependances.LowPFClass;
 import exceptions.PathfindingException;
@@ -50,7 +49,7 @@ import graphic.printable.Couleur;
  *
  */
 
-public class DStarLite implements Service, Configurable, LowPFClass
+public class DStarLite implements Service, LowPFClass
 {
 	protected Log log;
 	private GridSpace gridspace;
@@ -85,7 +84,7 @@ public class DStarLite implements Service, Configurable, LowPFClass
 	 * @param log
 	 * @param gridspace
 	 */
-	public DStarLite(Log log, GridSpace gridspace, PointGridSpaceManager pointManager, PointDirigeManager pointDManager, PrintBuffer buffer, RealTable table, CercleArrivee cercle)
+	public DStarLite(Log log, GridSpace gridspace, PointGridSpaceManager pointManager, PointDirigeManager pointDManager, PrintBuffer buffer, RealTable table, CercleArrivee cercle, Config config)
 	{
 		this.log = log;
 		this.gridspace = gridspace;
@@ -104,6 +103,10 @@ public class DStarLite implements Service, Configurable, LowPFClass
 		for(int x = -9; x <= 9; x++)
 			for(int y = -9; y <= 9; y++)
 				atan2map[x+9][y+9] = Math.atan2(y,x);
+
+		graphicDStarLite = config.getBoolean(ConfigInfo.GRAPHIC_D_STAR_LITE);
+		graphicDStarLiteFinal = config.getBoolean(ConfigInfo.GRAPHIC_D_STAR_LITE_FINAL);
+		graphicHeuristique = config.getBoolean(ConfigInfo.GRAPHIC_HEURISTIQUE);
 	}
 		
 	/**
@@ -312,14 +315,6 @@ public class DStarLite implements Service, Configurable, LowPFClass
 		return depart.gridpoint.distanceOctile(gridpoint);
 	}
 
-	@Override
-	public void useConfig(Config config)
-	{
-		graphicDStarLite = config.getBoolean(ConfigInfo.GRAPHIC_D_STAR_LITE);
-		graphicDStarLiteFinal = config.getBoolean(ConfigInfo.GRAPHIC_D_STAR_LITE_FINAL);
-		graphicHeuristique = config.getBoolean(ConfigInfo.GRAPHIC_HEURISTIQUE);
-	}
-	
 	/**
 	 * Met à jour la destination
 	 * @param positionArrivee

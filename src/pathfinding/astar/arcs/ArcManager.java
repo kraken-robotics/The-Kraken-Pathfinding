@@ -38,7 +38,6 @@ import java.util.ListIterator;
 
 import config.Config;
 import config.ConfigInfo;
-import config.Configurable;
 import container.Service;
 import container.dependances.HighPFClass;
 import graphic.PrintBuffer;
@@ -52,7 +51,7 @@ import utils.Log;
  *
  */
 
-public class ArcManager implements Service, Configurable, HighPFClass
+public class ArcManager implements Service, HighPFClass
 {
 	protected Log log;
 	private ClothoidesComputer clotho;
@@ -72,7 +71,7 @@ public class ArcManager implements Service, Configurable, HighPFClass
 	private List<VitesseCourbure> listeVitesse = new ArrayList<VitesseCourbure>();
 	private ListIterator<VitesseCourbure> iterator = listeVitesse.listIterator();
 	
-	public ArcManager(Log log, ClothoidesComputer clotho, Table table, PrintBuffer buffer, DStarLite dstarlite, BezierComputer bezier, CercleArrivee cercle)
+	public ArcManager(Log log, ClothoidesComputer clotho, Table table, PrintBuffer buffer, DStarLite dstarlite, BezierComputer bezier, CercleArrivee cercle, Config config)
 	{
 		this.bezier = bezier;
 		this.table = table;
@@ -90,6 +89,9 @@ public class ArcManager implements Service, Configurable, HighPFClass
 			listeVitesse.add(v);
 		for(VitesseCourbure v : VitesseRameneVolant.values())
 			listeVitesse.add(v);
+		
+		courbureMax = config.getDouble(ConfigInfo.COURBURE_MAX);
+		printObs = config.getBoolean(ConfigInfo.GRAPHIC_ROBOT_COLLISION);
 	}
 
 	private ObstacleArcCourbe obs = new ObstacleArcCourbe();
@@ -300,13 +302,6 @@ public class ArcManager implements Service, Configurable, HighPFClass
     	this.current = current;
     	iterator = listeVitesse.listIterator();
     }
-
-	@Override
-	public void useConfig(Config config)
-	{
-		courbureMax = config.getDouble(ConfigInfo.COURBURE_MAX);
-		printObs = config.getBoolean(ConfigInfo.GRAPHIC_ROBOT_COLLISION);
-	}
 
 	public synchronized Double heuristicCostCourbe(Cinematique c)
 	{

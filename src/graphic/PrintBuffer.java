@@ -24,7 +24,6 @@ import java.util.List;
 
 import config.Config;
 import config.ConfigInfo;
-import config.Configurable;
 import robot.RobotReal;
 import utils.Log;
 import container.Service;
@@ -38,7 +37,7 @@ import graphic.printable.Printable;
  *
  */
 
-public class PrintBuffer implements Service, Configurable
+public class PrintBuffer implements Service
 {	
 	private List<ArrayList<Printable>> elementsAffichablesSupprimables = new ArrayList<ArrayList<Printable>>();
 	private List<ArrayList<Printable>> elementsAffichables = new ArrayList<ArrayList<Printable>>();
@@ -49,7 +48,7 @@ public class PrintBuffer implements Service, Configurable
 	private boolean time;
 	private long initTime = System.currentTimeMillis();
 	
-	public PrintBuffer(Log log)
+	public PrintBuffer(Log log, Config config)
 	{
 		this.log = log;
 		for(int i = 0 ; i < Layer.values().length; i++)
@@ -57,6 +56,8 @@ public class PrintBuffer implements Service, Configurable
 			elementsAffichablesSupprimables.add(new ArrayList<Printable>());
 			elementsAffichables.add(new ArrayList<Printable>());
 		}
+		afficheFond = config.getBoolean(ConfigInfo.GRAPHIC_BACKGROUND);
+		time = config.getBoolean(ConfigInfo.GRAPHIC_TIME);
 	}
 
 	/**
@@ -151,13 +152,6 @@ public class PrintBuffer implements Service, Configurable
 			notify();
 			needRefresh = true;
 		}
-	}
-
-	@Override
-	public void useConfig(Config config)
-	{
-		afficheFond = config.getBoolean(ConfigInfo.GRAPHIC_BACKGROUND);
-		time = config.getBoolean(ConfigInfo.GRAPHIC_TIME);
 	}
 
 	public boolean needRefresh()

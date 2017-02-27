@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.util.Properties;
 
 import container.Service;
-import container.dependances.ConfigClass;
 import robot.RobotColor;
 import utils.Log;
 
@@ -36,7 +35,7 @@ import utils.Log;
  * @author pf
  *
  */
-public class Config implements Service, ConfigClass
+public class Config implements Service
 {	
 	private String name_config_file = "config.ini";
 	private volatile Properties properties = new Properties();

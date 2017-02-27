@@ -36,7 +36,6 @@ import utils.Log;
 import utils.Vec2RO;
 import config.Config;
 import config.ConfigInfo;
-import config.Configurable;
 import container.Service;
 import container.dependances.LowPFClass;
 
@@ -48,7 +47,7 @@ import container.dependances.LowPFClass;
  *
  */
 
-public class GridSpace implements Service, Printable, Configurable, LowPFClass
+public class GridSpace implements Service, Printable, LowPFClass
 {
 	protected Log log;
 	private ObstaclesIteratorPresent iteratorDStarLiteFirst;
@@ -70,7 +69,7 @@ public class GridSpace implements Service, Printable, Configurable, LowPFClass
 	private BitSet[] newOldObstacles = new BitSet[2];
 	private Couleur[] grid = new Couleur[PointGridSpace.NB_POINTS];
 
-	public GridSpace(Log log, ObstaclesIteratorPresent iteratorDStarLiteFirst, ObstaclesIteratorPresent iteratorDStarLiteLast, ObstaclesIteratorPresent iteratorRemoveNearby, ObstaclesMemory obstaclesMemory, PointGridSpaceManager pointManager, PrintBuffer buffer, MasqueManager masquemanager)
+	public GridSpace(Log log, ObstaclesIteratorPresent iteratorDStarLiteFirst, ObstaclesIteratorPresent iteratorDStarLiteLast, ObstaclesIteratorPresent iteratorRemoveNearby, ObstaclesMemory obstaclesMemory, PointGridSpaceManager pointManager, PrintBuffer buffer, MasqueManager masquemanager, Config config)
 	{
 		this.obstaclesMemory = obstaclesMemory;
 		this.log = log;
@@ -82,11 +81,7 @@ public class GridSpace implements Service, Printable, Configurable, LowPFClass
 		this.masquemanager = masquemanager;
 		newOldObstacles[0] = oldObstacles;
 		newOldObstacles[1] = newObstacles;
-	}
-	
-	@Override
-	public void useConfig(Config config)
-	{
+
 		distanceMinimaleEntreProximite = config.getInt(ConfigInfo.DISTANCE_BETWEEN_PROXIMITY_OBSTACLES);
 		rayonRobot = config.getInt(ConfigInfo.DILATATION_ROBOT_DSTARLITE);
 		

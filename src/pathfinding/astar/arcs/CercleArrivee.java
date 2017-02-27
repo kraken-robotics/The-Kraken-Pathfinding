@@ -21,7 +21,6 @@ import java.awt.Graphics;
 
 import config.Config;
 import config.ConfigInfo;
-import config.Configurable;
 import config.DynamicConfigurable;
 import container.Service;
 import container.dependances.HighPFClass;
@@ -45,7 +44,7 @@ import utils.Vec2RW;
  *
  */
 
-public class CercleArrivee implements Service, Configurable, Printable, HighPFClass, LowPFClass, DynamicConfigurable
+public class CercleArrivee implements Service, Printable, HighPFClass, LowPFClass, DynamicConfigurable
 {
 	public Vec2RO position;
 	public double rayon;
@@ -59,11 +58,14 @@ public class CercleArrivee implements Service, Configurable, Printable, HighPFCl
 	protected Log log;
 	private PrintBuffer buffer;
 	
-	public CercleArrivee(Log log, PrintBuffer buffer)
+	public CercleArrivee(Log log, PrintBuffer buffer, Config config)
 	{
 		this.log = log;
 		this.buffer = buffer;
-	}
+		rayonDefaut = config.getInt(ConfigInfo.RAYON_CERCLE_ARRIVEE_PF);
+		graphic = config.getBoolean(ConfigInfo.GRAPHIC_CERCLE_ARRIVEE);
+		if(graphic)
+			buffer.add(this);	}
 	
 	private void set(Vec2RO position, double orientationArriveeDStarLite, double rayon, SensFinal sens)
 	{
@@ -104,15 +106,6 @@ public class CercleArrivee implements Service, Configurable, Printable, HighPFCl
 		
 		// on vérifie qu'on est proche du rayon avec la bonne orientation
 		return (robot.getPosition().distance(position) - rayon) < 11 && Math.abs(diffo) < 5 / 180. * Math.PI;
-	}
-	
-	@Override
-	public void useConfig(Config config)
-	{
-		rayonDefaut = config.getInt(ConfigInfo.RAYON_CERCLE_ARRIVEE_PF);
-		graphic = config.getBoolean(ConfigInfo.GRAPHIC_CERCLE_ARRIVEE);
-		if(graphic)
-			buffer.add(this);
 	}
 
 	@Override

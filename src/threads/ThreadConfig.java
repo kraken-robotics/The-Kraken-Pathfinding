@@ -19,7 +19,6 @@ package threads;
 
 import config.Config;
 import container.Container;
-import container.dependances.ConfigClass;
 import utils.Log;
 
 /**
@@ -28,7 +27,7 @@ import utils.Log;
  *
  */
 
-public class ThreadConfig extends ThreadService implements ConfigClass
+public class ThreadConfig extends ThreadService
 {
 
 	protected Log log;

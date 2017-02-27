@@ -19,7 +19,6 @@ package threads;
 
 import config.Config;
 import config.ConfigInfo;
-import config.Configurable;
 import container.dependances.LowPFClass;
 import graphic.PrintBuffer;
 import obstacles.memory.ObstaclesMemory;
@@ -33,7 +32,7 @@ import utils.Log;
  *
  */
 
-public class ThreadPeremption extends ThreadService implements Configurable, LowPFClass
+public class ThreadPeremption extends ThreadService implements LowPFClass
 {
 	private ObstaclesMemory memory;
 	protected Log log;
@@ -43,12 +42,14 @@ public class ThreadPeremption extends ThreadService implements Configurable, Low
 	private int dureePeremption;
 	private boolean printProxObs;
 	
-	public ThreadPeremption(Log log, ObstaclesMemory memory, PrintBuffer buffer, DStarLite dstarlite)
+	public ThreadPeremption(Log log, ObstaclesMemory memory, PrintBuffer buffer, DStarLite dstarlite, Config config)
 	{
 		this.log = log;
 		this.memory = memory;
 		this.buffer = buffer;
 		this.dstarlite = dstarlite;
+		printProxObs = config.getBoolean(ConfigInfo.GRAPHIC_PROXIMITY_OBSTACLES);
+		dureePeremption = config.getInt(ConfigInfo.DUREE_PEREMPTION_OBSTACLES);
 	}
 	
 	@Override
@@ -83,13 +84,6 @@ public class ThreadPeremption extends ThreadService implements Configurable, Low
 		} catch (InterruptedException e) {
 			log.debug("Arrêt de "+Thread.currentThread().getName());
 		}
-	}
-
-	@Override
-	public void useConfig(Config config)
-	{
-		printProxObs = config.getBoolean(ConfigInfo.GRAPHIC_PROXIMITY_OBSTACLES);
-		dureePeremption = config.getInt(ConfigInfo.DUREE_PEREMPTION_OBSTACLES);
 	}
 
 }

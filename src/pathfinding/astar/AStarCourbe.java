@@ -39,7 +39,6 @@ import pathfinding.dstarlite.DStarLite;
 import pathfinding.dstarlite.gridspace.PointGridSpace;
 import config.Config;
 import config.ConfigInfo;
-import config.Configurable;
 import container.Service;
 import container.dependances.HighPFClass;
 import exceptions.PathfindingException;
@@ -56,7 +55,7 @@ import utils.Log;
  *
  */
 
-public class AStarCourbe implements Service, Configurable, HighPFClass
+public class AStarCourbe implements Service, HighPFClass
 {
 	protected Log log;
 	private ArcManager arcmanager;
@@ -69,7 +68,6 @@ public class AStarCourbe implements Service, Configurable, HighPFClass
 	private CheminPathfinding realChemin;
 	private CinemObsMM cinemMemory;
 	private CercleArrivee cercle;
-	private ChronoGameState chrono;
 	private boolean graphicTrajectory, graphicDStarLite, graphicTrajectoryAll;
 	private int dureeMaxPF;
 	private Speed vitesseMax;
@@ -106,7 +104,7 @@ public class AStarCourbe implements Service, Configurable, HighPFClass
 	/**
 	 * Constructeur du AStarCourbe
 	 */
-	public AStarCourbe(Log log, DStarLite dstarlite, ArcManager arcmanager, RealGameState state, CheminPathfinding chemin, NodeMM memorymanager, CinemObsMM rectMemory, PrintBuffer buffer, CercleArrivee cercle, ChronoGameState chrono)
+	public AStarCourbe(Log log, DStarLite dstarlite, ArcManager arcmanager, RealGameState state, CheminPathfinding chemin, NodeMM memorymanager, CinemObsMM rectMemory, PrintBuffer buffer, CercleArrivee cercle, ChronoGameState chrono, Config config)
 	{
 		this.log = log;
 		this.arcmanager = arcmanager;
@@ -117,7 +115,15 @@ public class AStarCourbe implements Service, Configurable, HighPFClass
 		this.cinemMemory = rectMemory;
 		this.buffer = buffer;
 		this.cercle = cercle;
-		this.chrono = chrono;
+		graphicTrajectory = config.getBoolean(ConfigInfo.GRAPHIC_TRAJECTORY);
+		graphicTrajectoryAll = config.getBoolean(ConfigInfo.GRAPHIC_TRAJECTORY_ALL);
+		graphicDStarLite = config.getBoolean(ConfigInfo.GRAPHIC_D_STAR_LITE_FINAL);
+		dureeMaxPF = config.getInt(ConfigInfo.DUREE_MAX_RECHERCHE_PF);
+		tailleFaisceau = config.getInt(ConfigInfo.TAILLE_FAISCEAU_PF);
+		int demieLargeurNonDeploye = config.getInt(ConfigInfo.LARGEUR_NON_DEPLOYE)/2;
+		int demieLongueurArriere = config.getInt(ConfigInfo.DEMI_LONGUEUR_NON_DEPLOYE_ARRIERE);
+		int demieLongueurAvant = config.getInt(ConfigInfo.DEMI_LONGUEUR_NON_DEPLOYE_AVANT);
+		this.depart = new AStarCourbeNode(chrono, demieLargeurNonDeploye, demieLongueurArriere, demieLongueurAvant);
 	}
 	
 	/**
@@ -333,20 +339,6 @@ public class AStarCourbe implements Service, Configurable, HighPFClass
 				trajectory.add(a.getPoint(i));
 		}
 		chemin.add(trajectory);
-	}
-
-	@Override
-	public void useConfig(Config config)
-	{
-		graphicTrajectory = config.getBoolean(ConfigInfo.GRAPHIC_TRAJECTORY);
-		graphicTrajectoryAll = config.getBoolean(ConfigInfo.GRAPHIC_TRAJECTORY_ALL);
-		graphicDStarLite = config.getBoolean(ConfigInfo.GRAPHIC_D_STAR_LITE_FINAL);
-		dureeMaxPF = config.getInt(ConfigInfo.DUREE_MAX_RECHERCHE_PF);
-		tailleFaisceau = config.getInt(ConfigInfo.TAILLE_FAISCEAU_PF);
-		int demieLargeurNonDeploye = config.getInt(ConfigInfo.LARGEUR_NON_DEPLOYE)/2;
-		int demieLongueurArriere = config.getInt(ConfigInfo.DEMI_LONGUEUR_NON_DEPLOYE_ARRIERE);
-		int demieLongueurAvant = config.getInt(ConfigInfo.DEMI_LONGUEUR_NON_DEPLOYE_AVANT);
-		this.depart = new AStarCourbeNode(chrono, demieLargeurNonDeploye, demieLongueurArriere, demieLongueurAvant);
 	}
 				
 	/**

@@ -19,7 +19,6 @@ package threads;
 
 import config.Config;
 import config.ConfigInfo;
-import config.Configurable;
 import container.dependances.GUIClass;
 import graphic.Fenetre;
 import graphic.PrintBuffer;
@@ -31,7 +30,7 @@ import utils.Log;
  *
  */
 
-public class ThreadFenetre extends ThreadService implements Configurable, GUIClass
+public class ThreadFenetre extends ThreadService implements GUIClass
 {
 
 	protected Log log;
@@ -41,11 +40,13 @@ public class ThreadFenetre extends ThreadService implements Configurable, GUICla
 	private boolean print;
 	private long derniereSauv = 0;
 	
-	public ThreadFenetre(Log log, Fenetre fenetre, PrintBuffer buffer)
+	public ThreadFenetre(Log log, Fenetre fenetre, PrintBuffer buffer, Config config)
 	{
 		this.log = log;
 		this.buffer = buffer;
 		this.fenetre = fenetre;
+		gif = config.getBoolean(ConfigInfo.GRAPHIC_PRODUCE_GIF);
+		print = config.getBoolean(ConfigInfo.GRAPHIC_ENABLE);
 	}
 
 	@Override
@@ -81,13 +82,6 @@ public class ThreadFenetre extends ThreadService implements Configurable, GUICla
 			if(gif)
 				fenetre.saveGif("output.gif", 200);
 		}
-	}
-
-	@Override
-	public void useConfig(Config config)
-	{
-		gif = config.getBoolean(ConfigInfo.GRAPHIC_PRODUCE_GIF);
-		print = config.getBoolean(ConfigInfo.GRAPHIC_ENABLE);
 	}
 
 }

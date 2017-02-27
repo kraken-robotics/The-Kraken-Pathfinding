@@ -23,7 +23,6 @@ import java.util.LinkedList;
 
 import config.Config;
 import config.ConfigInfo;
-import config.Configurable;
 import container.Service;
 import container.dependances.HighPFClass;
 import graphic.PrintBuffer;
@@ -44,7 +43,7 @@ import utils.Vec2RW;
  *
  */
 
-public class BezierComputer implements Service, Configurable, HighPFClass
+public class BezierComputer implements Service, HighPFClass
 {
 	protected Log log;
 	protected CinemObsMM memory;
@@ -53,13 +52,20 @@ public class BezierComputer implements Service, Configurable, HighPFClass
 	protected double courbureMax;
 	private ClothoidesComputer clothocomputer;
 	
-	public BezierComputer(Log log, CinemObsMM memory, PrintBuffer buffer, ClothoidesComputer clothocomputer, CercleArrivee cercle)
+	public BezierComputer(Log log, CinemObsMM memory, PrintBuffer buffer, ClothoidesComputer clothocomputer, CercleArrivee cercle, Config config)
 	{
 		this.log = log;
 		this.memory = memory;
 		this.buffer = buffer;
 		this.clothocomputer = clothocomputer;
 		this.cercle = cercle;
+
+		courbureMax = config.getDouble(ConfigInfo.COURBURE_MAX);		
+		
+		int demieLargeurNonDeploye = config.getInt(ConfigInfo.LARGEUR_NON_DEPLOYE)/2;
+		int demieLongueurArriere = config.getInt(ConfigInfo.DEMI_LONGUEUR_NON_DEPLOYE_ARRIERE);
+		int demieLongueurAvant = config.getInt(ConfigInfo.DEMI_LONGUEUR_NON_DEPLOYE_AVANT);
+		tmp = new ArcCourbeStatique(demieLargeurNonDeploye, demieLongueurArriere, demieLongueurAvant);
 	}
 	
 	private Vec2RW delta = new Vec2RW(), vecteurVitesse = new Vec2RW();
@@ -325,17 +331,6 @@ public class BezierComputer implements Service, Configurable, HighPFClass
 			return null;
 		
 		return new ArcCourbeDynamique(out, longueur, VitesseBezier.BEZIER_QUAD);
-	}
-
-	@Override
-	public void useConfig(Config config)
-	{
-		courbureMax = config.getDouble(ConfigInfo.COURBURE_MAX);		
-		
-		int demieLargeurNonDeploye = config.getInt(ConfigInfo.LARGEUR_NON_DEPLOYE)/2;
-		int demieLongueurArriere = config.getInt(ConfigInfo.DEMI_LONGUEUR_NON_DEPLOYE_ARRIERE);
-		int demieLongueurAvant = config.getInt(ConfigInfo.DEMI_LONGUEUR_NON_DEPLOYE_AVANT);
-		tmp = new ArcCourbeStatique(demieLargeurNonDeploye, demieLongueurArriere, demieLongueurAvant);
 	}
 
 }

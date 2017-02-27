@@ -21,7 +21,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import config.Config;
-import config.Configurable;
 import config.DynamicConfigurable;
 import container.Service;
 import exceptions.ContainerException;
@@ -59,7 +58,7 @@ public class JUnit_Container extends JUnit_Test {
 		{}
 	}
 
-	public class D implements Service, Configurable, DynamicConfigurable
+	public class D implements Service, DynamicConfigurable
 	{
 		public boolean useConfigOk = false;
 		public boolean updateConfigOk = false;
@@ -71,12 +70,6 @@ public class JUnit_Container extends JUnit_Test {
 		public void updateConfig(Config config)
 		{
 			updateConfigOk = true;
-		}
-
-		@Override
-		public void useConfig(Config config)
-		{
-			useConfigOk = true;
 		}
 	}
 

@@ -24,7 +24,6 @@ import javax.swing.*;
 
 import config.Config;
 import config.ConfigInfo;
-import config.Configurable;
 import container.Service;
 import container.dependances.GUIClass;
 import graphic.printable.BackgroundImage;
@@ -46,7 +45,7 @@ import java.util.ArrayList;
  *
  */
 
-public class Fenetre extends JPanel implements Service, Configurable, GUIClass {
+public class Fenetre extends JPanel implements Service, GUIClass {
 
 	/**
 	 * Couleurs surtout utilisées pour le dstarlite
@@ -67,11 +66,16 @@ public class Fenetre extends JPanel implements Service, Configurable, GUIClass {
 	private boolean needInit = true;
 	private String backgroundPath;
 	
-	public Fenetre(Log log, RobotReal robot, PrintBuffer buffer)
+	public Fenetre(Log log, RobotReal robot, PrintBuffer buffer, Config config)
 	{
 		this.log = log;
 		this.robot = robot;
 		this.buffer = buffer;
+
+		afficheFond = config.getBoolean(ConfigInfo.GRAPHIC_BACKGROUND);
+		backgroundPath = config.getString(ConfigInfo.GRAPHIC_BACKGROUND_PATH);
+		sizeX = config.getInt(ConfigInfo.GRAPHIC_SIZE_X);
+		sizeY = 2*sizeX/3;
 	}
 	
 	private class WindowExit extends WindowAdapter
@@ -155,15 +159,6 @@ public class Fenetre extends JPanel implements Service, Configurable, GUIClass {
         frame.getContentPane().add(this);
 		frame.pack();
 		frame.setVisible(true);
-	}
-
-	@Override
-	public void useConfig(Config config)
-	{
-		afficheFond = config.getBoolean(ConfigInfo.GRAPHIC_BACKGROUND);
-		backgroundPath = config.getString(ConfigInfo.GRAPHIC_BACKGROUND_PATH);
-		sizeX = config.getInt(ConfigInfo.GRAPHIC_SIZE_X);
-		sizeY = 2*sizeX/3;
 	}
 		
 	/**
