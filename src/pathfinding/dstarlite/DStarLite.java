@@ -176,7 +176,7 @@ public class DStarLite implements Service, LowPFClass
 			if(u.inOpenSet)
 			{
 //				if(tmp.compare(u.cle) < 0)
-				if(u.cle.lesserThan(tmp)) // la clé a augmenté
+				if(u.cle.greaterThan(tmp)) // la clé a augmenté
 					openset.percolateDown(u);
 				else
 					openset.percolateUp(u);
