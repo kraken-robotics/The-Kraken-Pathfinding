@@ -344,7 +344,7 @@ public class Container implements Service
 		try {
 			Runtime.getRuntime().addShutdownHook(getService(ThreadShutdown.class));
 		} catch (ContainerException e) {
-			log.critical(e);
+			e.printStackTrace();
 		}
 	}
 	
@@ -513,7 +513,7 @@ public class Container implements Service
 			instanciedServices.remove(n.c.getSimpleName());
 			getService(n.c).start(); // et on le redémarre
 		} catch (ContainerException e) {
-			log.critical(e);
+			e.printStackTrace();
 		}
 	}
 	

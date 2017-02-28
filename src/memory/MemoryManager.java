@@ -39,14 +39,13 @@ public class MemoryManager<T extends Memorizable> implements Service {
 
 	private T[] nodes;
 	protected Log log;
-	
+	private Object[] extra;
 	private int firstAvailable;
 	private int tailleMax = 512000;
 	
 	@SuppressWarnings("unchecked")
 	public MemoryManager(Class<T> classe, Log log, Container container, int nb_instances, Object... extraParam) throws ContainerException
 	{	
-		Object[] extra;
 		if(extraParam.length == 0)
 			extra = null;
 		else
@@ -93,7 +92,7 @@ public class MemoryManager<T extends Memorizable> implements Service {
 					newNodes[i] = nodes[i];
 				for(int i = nodes.length; i < 2 * nodes.length; i++)
 				{
-					newNodes[i] = container.make((Class<T>) nodes[0].getClass());
+					newNodes[i] = container.make((Class<T>) nodes[0].getClass(), extra);
 					newNodes[i].setIndiceMemoryManager(i);
 				}
 	
