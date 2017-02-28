@@ -49,7 +49,7 @@ public class JUnit_DStarLite extends JUnit_Test {
 	@Test
     public void test_chemin_dstarlite() throws Exception
     {
-		gridspace.addObstacleAndRemoveNearbyObstacles(new Vec2RO(100, 700));
+		gridspace.addObstacleAndRemoveNearbyObstacles(new Vec2RO(100, 1100));
 		pathfinding.computeNewPath(new Vec2RO(-800, 200), new Vec2RO(1200, 1200), false);
 		pathfinding.itineraireBrut();		
 		Thread.sleep(500);
@@ -128,15 +128,15 @@ public class JUnit_DStarLite extends JUnit_Test {
     public void test_simulation_pathfinding() throws Exception
     {
 		Vec2RO posRobot = new Vec2RO(-1100, 1300);
-		pathfinding.computeNewPath(posRobot, new Vec2RO(1100, 500), false);
+		pathfinding.computeNewPath(posRobot, new Vec2RO(600, 1100), false);
 		List<Vec2RO> chemin = pathfinding.itineraireBrut();
 		
-		int n = 15;
-		while(n+6 < chemin.size())
+		int n = 20;
+//		while(n+20 < chemin.size())
 		{
-			Thread.sleep(1000);
+			Thread.sleep(2000);
 			posRobot = chemin.get(n);
-			gridspace.addObstacleAndRemoveNearbyObstacles(chemin.get(n+6));
+			gridspace.addObstacleAndRemoveNearbyObstacles(chemin.get(n+20));
 			pathfinding.updateStart(posRobot);
 			pathfinding.updateObstaclesEnnemi();
 			chemin = pathfinding.itineraireBrut();
