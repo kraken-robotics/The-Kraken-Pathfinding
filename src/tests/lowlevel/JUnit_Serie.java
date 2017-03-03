@@ -125,7 +125,7 @@ public class JUnit_Serie extends JUnit_Test {
 	 * @throws Exception
 	 */
 	@Test
-	public void test_actionneurs() throws Exception
+	public void test_ax12() throws Exception
 	{
 		data.baisseFilet();
 		Thread.sleep(2000);
@@ -133,6 +133,11 @@ public class JUnit_Serie extends JUnit_Test {
 		Thread.sleep(2000);
 		data.bougeFiletMiChemin();
 		Thread.sleep(2000);
+	}
+
+	@Test
+	public void test_actionneurs() throws Exception
+	{
 		data.ejecteBalles(true);
 		Thread.sleep(2000);
 		data.rearme(true);
