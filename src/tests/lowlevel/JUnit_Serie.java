@@ -77,6 +77,7 @@ public class JUnit_Serie extends JUnit_Test {
 		do {
 			Ticket t = data.demandeCouleur();
 			etat = t.attendStatus().etat;
+			Thread.sleep(500);
 		} while(etat != State.OK);
 	}
 	
