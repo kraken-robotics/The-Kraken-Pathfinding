@@ -69,6 +69,7 @@ public class AStarCourbe implements Service, HighPFClass
 	private CinemObsMM cinemMemory;
 	private CercleArrivee cercle;
 	private boolean graphicTrajectory, graphicDStarLite, graphicTrajectoryAll;
+	private boolean debugPF;
 	private int dureeMaxPF;
 	private Speed vitesseMax;
 	private int tailleFaisceau;
@@ -120,6 +121,7 @@ public class AStarCourbe implements Service, HighPFClass
 		graphicDStarLite = config.getBoolean(ConfigInfo.GRAPHIC_D_STAR_LITE_FINAL);
 		dureeMaxPF = config.getInt(ConfigInfo.DUREE_MAX_RECHERCHE_PF);
 		tailleFaisceau = config.getInt(ConfigInfo.TAILLE_FAISCEAU_PF);
+		debugPF = config.getBoolean(ConfigInfo.DEBUG_PF);
 		int demieLargeurNonDeploye = config.getInt(ConfigInfo.LARGEUR_NON_DEPLOYE)/2;
 		int demieLongueurArriere = config.getInt(ConfigInfo.DEMI_LONGUEUR_NON_DEPLOYE_ARRIERE);
 		int demieLongueurAvant = config.getInt(ConfigInfo.DEMI_LONGUEUR_NON_DEPLOYE_AVANT);
@@ -333,8 +335,8 @@ public class AStarCourbe implements Service, HighPFClass
 		while(!pileTmp.isEmpty())
 		{
 			ArcCourbe a = pileTmp.pop();
-			if(graphicTrajectory)
-				log.debug(a.vitesse+" "+a.getPoint(0));
+			if(graphicTrajectory || debugPF)
+				log.debug(a.vitesse+" ("+a.getNbPoints()+" pts)");
 			for(int i = 0; i < a.getNbPoints(); i++)
 				trajectory.add(a.getPoint(i));
 		}

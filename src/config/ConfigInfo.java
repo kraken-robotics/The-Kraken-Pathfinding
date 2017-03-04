@@ -70,6 +70,7 @@ public enum ConfigInfo {
 	PF_MARGE_INITIALE((int)(0.15/ClothoidesComputer.PRECISION_TRACE)), // combien de points garde-t-on au début de la replanification
 	DUREE_MAX_RECHERCHE_PF(3000), // durée maximale que peut prendre le pathfinding
 	TAILLE_FAISCEAU_PF(10), // combien de voisins sont ajoutés à l'openset à chaque itération
+	DEBUG_PF(false), // affichage de plein d'infos
 	
 	/**
 	 * Paramètres de la série
