@@ -21,6 +21,7 @@ import java.util.LinkedList;
 
 import exceptions.PathfindingException;
 import robot.CinematiqueObs;
+import serie.Ticket;
 
 /**
  * Interface pour pouvoir interchanger le vrai chemin de pathfinding et le faux
@@ -30,7 +31,7 @@ import robot.CinematiqueObs;
 
 public interface CheminPathfindingInterface
 {
-	public void add(LinkedList<CinematiqueObs> points) throws PathfindingException;
+	public Ticket[] add(LinkedList<CinematiqueObs> points) throws PathfindingException;
 	public void setUptodate(boolean uptodate);
 	public boolean needPartial();
 }

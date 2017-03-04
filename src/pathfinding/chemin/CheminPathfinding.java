@@ -33,6 +33,7 @@ import robot.Cinematique;
 import robot.CinematiqueObs;
 import robot.RobotReal;
 import serie.BufferOutgoingOrder;
+import serie.Ticket;
 import utils.Log;
 import config.Config;
 import config.ConfigInfo;
@@ -168,8 +169,9 @@ public class CheminPathfinding implements Service, Printable, HighPFClass, Chemi
 	 * @param arc
 	 */
 	@Override
-	public void add(LinkedList<CinematiqueObs> points) throws PathfindingException
+	public Ticket[] add(LinkedList<CinematiqueObs> points) throws PathfindingException
 	{
+		Ticket[] t = null;
 		/*
 		 * En cas de replanification, si les points ajoutés ne suffisent pas pour avoir assurer la marge du bas niveau, on lance une exception
 		 */
@@ -189,7 +191,7 @@ public class CheminPathfinding implements Service, Printable, HighPFClass, Chemi
 					points.addFirst(chemin[tmp - 1]); // on renvoie ce point afin qu'il ne soit plus un point d'arrêt
 					tmp--;
 				}
-				out.envoieArcCourbe(points, tmp);
+				t = out.envoieArcCourbe(points, tmp);
 			}
 			if(graphic)
 				synchronized(buffer)
@@ -197,6 +199,7 @@ public class CheminPathfinding implements Service, Printable, HighPFClass, Chemi
 					buffer.notify();
 				}
 		}
+		return t;
 	}
 	
 	private boolean isIndexValid(int index)

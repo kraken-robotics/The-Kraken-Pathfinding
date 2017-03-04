@@ -23,6 +23,7 @@ import container.Service;
 import container.dependances.HighPFClass;
 import exceptions.PathfindingException;
 import robot.CinematiqueObs;
+import serie.Ticket;
 import utils.Log;
 
 /**
@@ -42,10 +43,11 @@ public class FakeCheminPathfinding implements Service, CheminPathfindingInterfac
 	}
 	
 	@Override
-	public synchronized void add(LinkedList<CinematiqueObs> points) throws PathfindingException
+	public synchronized Ticket[] add(LinkedList<CinematiqueObs> points) throws PathfindingException
 	{
 		path = points;
 		notify();
+		return null;
 	}
 
 	@Override
