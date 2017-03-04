@@ -90,6 +90,14 @@ public class Container implements Service
 		if(nbInstances == 0)
 			return;
 		
+		log.debug("Fermeture de la série");
+		/**
+		 * Mieux vaut écrire SerieCouchePhysique.class.getSimpleName()) que "SerieCouchePhysique",
+		 * car en cas de refactor, le premier est automatiquement ajusté
+		 */
+		if(instanciedServices.containsKey(SerieCoucheTrame.class.getSimpleName()))
+			((SerieCoucheTrame)instanciedServices.get(SerieCoucheTrame.class.getSimpleName())).close();
+
 		String threadError = "";
 		// arrêt des threads
 		for(ThreadName n : ThreadName.values())
@@ -112,15 +120,7 @@ public class Container implements Service
 			if(getService(n.c).isAlive())
 				log.critical(n.c.getSimpleName()+" encore vivant !");
 		}
-		
-		log.debug("Fermeture de la série");
-		/**
-		 * Mieux vaut écrire SerieCouchePhysique.class.getSimpleName()) que "SerieCouchePhysique",
-		 * car en cas de refactor, le premier est automatiquement ajusté
-		 */
-		if(instanciedServices.containsKey(SerieCoucheTrame.class.getSimpleName()))
-			((SerieCoucheTrame)instanciedServices.get(SerieCoucheTrame.class.getSimpleName())).close();
-		
+				
 		if(showGraph)
 			saveGraph();
 		
