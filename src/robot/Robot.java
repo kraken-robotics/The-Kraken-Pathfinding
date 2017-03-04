@@ -43,7 +43,7 @@ public abstract class Robot implements DynamicConfigurable
 	protected boolean filetPlein = false;
 
 	protected abstract void bloque(String nom, Object... param) throws InterruptedException;
-	public abstract void avance(double distance) throws UnableToMoveException, InterruptedException;
+	public abstract void avance(double distance, Speed speed) throws UnableToMoveException, InterruptedException;
 	
 	public Robot(Log log)
 	{

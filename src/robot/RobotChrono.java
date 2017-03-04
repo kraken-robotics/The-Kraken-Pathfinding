@@ -64,7 +64,7 @@ public class RobotChrono extends Robot
 	{}
 	
 	@Override
-	public void avance(double distance)
+	public void avance(double distance, Speed speed)
 	{
 		cinematique.getPositionEcriture().plus(new Vec2RO(distance, cinematique.orientationReelle, true));
 	}
