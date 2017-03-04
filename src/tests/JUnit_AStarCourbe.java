@@ -279,7 +279,7 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 		long avant = System.nanoTime();
 		Cinematique depart = new Cinematique(-900, 650, 0, true, 0, Speed.STANDARD.translationalSpeed);
 		robot.setCinematique(depart);
-		Cinematique c = new Cinematique(0, 1200, Math.PI, false, 0, Speed.STANDARD.translationalSpeed);
+		Cinematique c = new Cinematique(-400, 1200, Math.PI, false, 0, Speed.STANDARD.translationalSpeed);
 		astar.initializeNewSearch(c, false, state);
 		astar.process(chemin);
 		log.debug("Temps : "+(System.nanoTime() - avant) / (1000000.));
