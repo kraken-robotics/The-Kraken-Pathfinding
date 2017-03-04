@@ -48,7 +48,7 @@ import exceptions.ContainerException;
 import graphic.PrintBuffer;
 import obstacles.types.Obstacle;
 import pathfinding.astar.arcs.ArcCourbe;
-import serie.SerieCouchePhysique;
+import serie.SerieCoucheTrame;
 import threads.ThreadName;
 import threads.ThreadService;
 import threads.ThreadShutdown;
@@ -118,8 +118,8 @@ public class Container implements Service
 		 * Mieux vaut écrire SerieCouchePhysique.class.getSimpleName()) que "SerieCouchePhysique",
 		 * car en cas de refactor, le premier est automatiquement ajusté
 		 */
-		if(instanciedServices.containsKey(SerieCouchePhysique.class.getSimpleName()))
-			((SerieCouchePhysique)instanciedServices.get(SerieCouchePhysique.class.getSimpleName())).close();
+		if(instanciedServices.containsKey(SerieCoucheTrame.class.getSimpleName()))
+			((SerieCoucheTrame)instanciedServices.get(SerieCoucheTrame.class.getSimpleName())).close();
 		
 		if(showGraph)
 			saveGraph();
