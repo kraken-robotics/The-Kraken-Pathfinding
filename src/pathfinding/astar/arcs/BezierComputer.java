@@ -298,10 +298,18 @@ public class BezierComputer implements Service, HighPFClass
 					accLongitudinale / (vitesse * vitesse), // Frenet
 					vitesseMax.translationalSpeed); // TODO
 			
+			double deltaO = (obs.orientationGeometrique - lastOrientation) % (2 * Math.PI);
+			if(deltaO > Math.PI)
+				deltaO -= 2 * Math.PI;
+			if(deltaO < -Math.PI)
+				deltaO += 2 * Math.PI;
+			
 			// on a dépassé la courbure maximale : on arrête tout
-			if(Math.abs(obs.courbureGeometrique) > courbureMax || (!first && (Math.abs(obs.courbureGeometrique - lastCourbure) > 0.5 || Math.abs(obs.orientationGeometrique - lastOrientation) > 0.5)))
+			if(Math.abs(obs.courbureGeometrique) > courbureMax
+					|| (!first && (Math.abs(obs.courbureGeometrique - lastCourbure) > 0.5
+							|| Math.abs(deltaO) > 0.5)))
 			{
-//				log.debug("Courbure max dépassée : "+obs.courbureGeometrique+" "+Math.abs(obs.courbureGeometrique - lastCourbure)+" "+obs.orientationGeometrique+" "+orientation+" "+lastOrientation);
+//				log.debug("Courbure max dépassée : "+obs.courbureGeometrique+" "+Math.abs(obs.courbureGeometrique - lastCourbure)+" "+obs.orientationGeometrique+" "+orientation+" "+lastOrientation+" "+deltaO);
 				for(CinematiqueObs c : out)
 					memory.destroyNode(c);
 				return null;
