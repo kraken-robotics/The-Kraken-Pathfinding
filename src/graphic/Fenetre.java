@@ -184,6 +184,8 @@ public class Fenetre extends JPanel implements Service, GUIClass {
 	 */
 	public void waitUntilExit() throws InterruptedException
 	{
+		lastAffichage = 0; // on force l'affichage de la dernière image
+		repaint();
 		synchronized(exit)
 		{
 			if(!needInit && !exit.alreadyExited)
