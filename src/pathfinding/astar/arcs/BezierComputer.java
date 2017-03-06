@@ -306,7 +306,7 @@ public class BezierComputer implements Service, HighPFClass
 			
 			// on a dépassé la courbure maximale : on arrête tout
 			if(Math.abs(obs.courbureGeometrique) > courbureMax
-					|| (!first && (Math.abs(obs.courbureGeometrique - lastCourbure) > 0.5
+					|| (!first && (Math.abs(obs.courbureGeometrique - lastCourbure) > 0.3
 							|| Math.abs(deltaO) > 0.5)))
 			{
 //				log.debug("Courbure max dépassée : "+obs.courbureGeometrique+" "+Math.abs(obs.courbureGeometrique - lastCourbure)+" "+obs.orientationGeometrique+" "+orientation+" "+lastOrientation+" "+deltaO);
@@ -324,7 +324,7 @@ public class BezierComputer implements Service, HighPFClass
 		double diffOrientation = (Math.abs(cinematiqueInitiale.orientationGeometrique - lastOrientation)) % (2*Math.PI);
 		if(diffOrientation > Math.PI)
 			diffOrientation -= 2*Math.PI;
-		if(!first && (Math.abs(cinematiqueInitiale.courbureGeometrique - lastCourbure) > 0.5) || Math.abs(diffOrientation) > 0.5)
+		if(!first && (Math.abs(cinematiqueInitiale.courbureGeometrique - lastCourbure) > 0.3) || Math.abs(diffOrientation) > 0.5)
 		{
 //			log.debug("Erreur raccordement : "+cinematiqueInitiale.courbureGeometrique+" "+Math.abs(cinematiqueInitiale.courbureGeometrique - lastCourbure)+" "+cinematiqueInitiale.orientationGeometrique+" "+lastOrientation);
 			for(CinematiqueObs c : out)
