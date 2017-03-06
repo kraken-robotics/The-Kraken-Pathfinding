@@ -172,6 +172,9 @@ public class ArcManager implements Service, HighPFClass
 
 		if(v == VitesseBezier.BEZIER_QUAD)
 		{
+			if(current.getArc() == null)
+				return false;
+
 			if(!useCercle)
 			{
 				ArcCourbeDynamique tmp;
@@ -205,6 +208,9 @@ public class ArcManager implements Service, HighPFClass
 		 */
 		else if(v instanceof VitesseRameneVolant)
 		{
+			if(current.getArc() == null)
+				return false;
+
 			ArcCourbeDynamique tmp = clotho.getTrajectoireRamene(
 					successeur.state.robot.getCinematique(),
 					(VitesseRameneVolant)v,
@@ -219,6 +225,9 @@ public class ArcManager implements Service, HighPFClass
 		 */
 		else if(v instanceof VitesseDemiTour)
 		{
+			if(current.getArc() == null)
+				return false;
+
 			successeur.cameFromArcDynamique = clotho.getTrajectoireDemiTour(
 					successeur.state.robot.getCinematique(),
 					(VitesseDemiTour)v,
