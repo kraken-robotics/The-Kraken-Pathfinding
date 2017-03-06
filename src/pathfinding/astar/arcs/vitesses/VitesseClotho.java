@@ -33,30 +33,43 @@ public enum VitesseClotho implements VitesseCourbure
 	GAUCHE_1(4),
 	GAUCHE_2(9),
 	GAUCHE_3(16),
-//	GAUCHE_4(25),
-//	GAUCHE_5(36),
 	COURBURE_IDENTIQUE(0),
 	DROITE_0(-1),
 	DROITE_1(-4),
 	DROITE_2(-9),
 	DROITE_3(-16),
-//	DROITE_4(-25),
-//	DROITE_5(-36),
 	
-//	GAUCHE_3_REBROUSSE(16),
-//	DROITE_3_REBROUSSE(-16),
-	COURBURE_IDENTIQUE_REBROUSSE(0);
+	COURBURE_IDENTIQUE_AFTER_STOP(0),
+	COURBURE_IDENTIQUE_G1_AFTER_STOP(1,0),
+	COURBURE_IDENTIQUE_G3_AFTER_STOP(3,0),
+	COURBURE_IDENTIQUE_D1_AFTER_STOP(-1,0),
+	COURBURE_IDENTIQUE_D3_AFTER_STOP(-3,0),
+
+	COURBURE_IDENTIQUE_G1_REBROUSSE(1,0),
+	COURBURE_IDENTIQUE_G3_REBROUSSE(3,0),
+	COURBURE_IDENTIQUE_REBROUSSE(0,0),
+	COURBURE_IDENTIQUE_D1_REBROUSSE(-1,0),
+	COURBURE_IDENTIQUE_D3_REBROUSSE(-3,0);
 
 	public final int vitesse; // vitesse en (1/m)/m = 1/m^2
+	public final int courbureInitiale; // courbure en m^-1
 	public final int squaredRootVitesse; // sqrt(abs(vitesse))
 	public final boolean positif; // calculé à la volée pour certaine vitesse
 	public final boolean rebrousse;
+	public final boolean arret;
 	
 	private VitesseClotho(int vitesse)
 	{
-		this.rebrousse = toString().endsWith("_REBROUSSE");
+		this(0, vitesse);
+	}
+
+	private VitesseClotho(int courbureInitiale, int vitesse)
+	{
+		this.courbureInitiale = courbureInitiale;
+		rebrousse = toString().endsWith("_REBROUSSE");
+		arret = toString().endsWith("_AFTER_STOP");
 		this.vitesse = vitesse;
-		this.positif = vitesse >= 0;
+		positif = vitesse >= 0;
 		this.squaredRootVitesse = (int) Math.sqrt(Math.abs(vitesse));
 	}
 
@@ -94,5 +107,13 @@ public enum VitesseClotho implements VitesseCourbure
 
     	
     	return true;
+	}
+
+	@Override
+	public int getNbArrets() {
+		if(arret || rebrousse)
+			return 1;
+		else
+			return 0;
 	}
 }

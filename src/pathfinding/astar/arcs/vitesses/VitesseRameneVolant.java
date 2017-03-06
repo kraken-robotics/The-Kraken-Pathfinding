@@ -28,7 +28,7 @@ import robot.Cinematique;
 
 public enum VitesseRameneVolant implements VitesseCourbure
 {
-	RAMENE_VOLANT(VitesseClotho.GAUCHE_3, VitesseClotho.DROITE_3); // ramène le volant au centre
+	RAMENE_VOLANT(VitesseClotho.GAUCHE_1, VitesseClotho.DROITE_1); // ramène le volant au centre
 
 	public final VitesseClotho vitesseGauche, vitesseDroite;
 	
@@ -49,5 +49,10 @@ public enum VitesseRameneVolant implements VitesseCourbure
     	}
     	
     	return true;
+	}
+
+	@Override
+	public int getNbArrets() {
+		return 0;
 	}
 }

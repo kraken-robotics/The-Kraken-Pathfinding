@@ -184,10 +184,12 @@ public class ClothoidesComputer implements Service, HighPFClass
 		double courbure = cinematiqueInitiale.courbureGeometrique;
 		double orientation = cinematiqueInitiale.orientationGeometrique;
 		if(vitesse.rebrousse)
-		{
-			courbure = 0;
 			orientation += Math.PI;
-		}
+		
+		// on s'arrête, on peut tourner les roues
+		if(vitesse.rebrousse || vitesse.arret)
+			courbure = vitesse.courbureInitiale;
+
 		modified.vitesse = vitesse;
 		
 		boolean marcheAvant = vitesse.rebrousse ^ cinematiqueInitiale.enMarcheAvant;

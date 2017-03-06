@@ -35,4 +35,9 @@ public enum VitesseBezier implements VitesseCourbure
 	{
 		return true;
 	}
+
+	@Override
+	public int getNbArrets() {
+		return 0;
+	}
 }

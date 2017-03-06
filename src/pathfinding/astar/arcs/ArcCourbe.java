@@ -41,7 +41,7 @@ public abstract class ArcCourbe implements Printable
 {
 
 //	public ObstacleArcCourbe obstacle = new ObstacleArcCourbe();
-	protected static int tempsRebroussement;
+	protected static int tempsArret;
 	public VitesseCourbure vitesse; // utilisé pour le debug
 	
 	public abstract int getNbPoints();
@@ -52,16 +52,7 @@ public abstract class ArcCourbe implements Printable
 
 	public final double getDuree(Cinematique obs)
 	{
-		double out = getLongueur() / getVitesseTr();
-		boolean lastAvant = obs.enMarcheAvant;
-		for(int i = 0; i < getNbPoints(); i++)
-		{
-			CinematiqueObs p = getPoint(i);
-			if(p.enMarcheAvant != lastAvant)
-				out += tempsRebroussement;
-			lastAvant = p.enMarcheAvant;
-		}
-		return out;
+		return getLongueur() / getVitesseTr() + vitesse.getNbArrets() * tempsArret;
 	}
 	
 	@Override
@@ -76,7 +67,7 @@ public abstract class ArcCourbe implements Printable
 	
 	public static void useConfig(Config config)
 	{
-		tempsRebroussement = config.getInt(ConfigInfo.TEMPS_REBROUSSEMENT);
+		tempsArret = config.getInt(ConfigInfo.TEMPS_ARRET);
 	}
 
 

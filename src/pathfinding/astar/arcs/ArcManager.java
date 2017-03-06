@@ -168,7 +168,7 @@ public class ArcManager implements Service, HighPFClass
     {
     	VitesseCourbure v = iterator.next();
 
-		current.state.copyAStarCourbe(successeur.state);
+		current.state.copyAStarCourbe(successeur.state);			
 
 		if(v == VitesseBezier.BEZIER_QUAD)
 		{
@@ -229,12 +229,17 @@ public class ArcManager implements Service, HighPFClass
 		 * Si on fait une interpolation par clothoïde
 		 */
 		else if(v instanceof VitesseClotho)
+		{
+			// si le robot est arrêté (début de trajectoire), et que la vitesse n'est pas prévue pour un arrêt ou un rebroussement, on annule
+			if(current.getArc() == null && (!((VitesseClotho)v).arret && !((VitesseClotho)v).rebrousse))
+				return false;
+			
 			clotho.getTrajectoire(
 					successeur.state.robot.getCinematique(),
 					(VitesseClotho)v,
 					vitesseMax,
 					successeur.cameFromArcStatique);
-		
+		}
 		else
 			log.critical("Vitesse "+v+" inconnue ! ");
 

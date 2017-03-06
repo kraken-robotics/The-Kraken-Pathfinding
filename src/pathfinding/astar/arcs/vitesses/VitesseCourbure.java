@@ -29,4 +29,5 @@ import robot.Cinematique;
 public interface VitesseCourbure
 {
 	public boolean isAcceptable(Cinematique c, DirectionStrategy directionstrategyactuelle, double courbureMax);
+	public int getNbArrets();
 }
