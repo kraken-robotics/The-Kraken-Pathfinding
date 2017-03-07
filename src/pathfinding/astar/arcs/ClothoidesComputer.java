@@ -305,7 +305,7 @@ public class ClothoidesComputer implements Service, HighPFClass
 		if(out.isEmpty())
 			return null;
 		
-		return new ArcCourbeDynamique(out, i*PRECISION_TRACE_MM, vitesse);
+		return new ArcCourbeDynamique(out, i*PRECISION_TRACE_MM, vitesseRamene);
 	}
 	
 	/**
