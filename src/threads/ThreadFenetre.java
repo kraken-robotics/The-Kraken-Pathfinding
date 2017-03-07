@@ -19,7 +19,9 @@ package threads;
 
 import config.Config;
 import config.ConfigInfo;
+import container.Container;
 import container.dependances.GUIClass;
+import exceptions.ContainerException;
 import graphic.Fenetre;
 import graphic.PrintBuffer;
 import utils.Log;
@@ -40,13 +42,18 @@ public class ThreadFenetre extends ThreadService implements GUIClass
 	private boolean print;
 	private long derniereSauv = 0;
 	
-	public ThreadFenetre(Log log, Fenetre fenetre, PrintBuffer buffer, Config config)
+	public ThreadFenetre(Log log, Container container, PrintBuffer buffer, Config config)
 	{
 		this.log = log;
 		this.buffer = buffer;
-		this.fenetre = fenetre;
 		gif = config.getBoolean(ConfigInfo.GRAPHIC_PRODUCE_GIF);
 		print = config.getBoolean(ConfigInfo.GRAPHIC_ENABLE);
+		if(print)
+			try {
+				fenetre = container.getService(Fenetre.class);
+			} catch (ContainerException e) {
+				e.printStackTrace();
+			}
 	}
 
 	@Override

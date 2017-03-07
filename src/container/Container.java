@@ -362,6 +362,14 @@ public class Container implements Service
 		return getServiceRecursif(serviceTo, new Stack<String>());
 	}
 	
+	@SuppressWarnings("unchecked")
+	public synchronized <S extends Service> S getExistingService(Class<S> classe)
+	{
+		if(Service.class.isAssignableFrom(classe) && instanciedServices.containsKey(classe.getSimpleName()))
+			return (S) instanciedServices.get(classe.getSimpleName());
+		return null;
+	}
+	
 	/**
 	 * Aucune différence avec getService ; c'est juste que c'est fait pour les non-services aussi
 	 * @param serviceTo

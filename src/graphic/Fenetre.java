@@ -62,7 +62,7 @@ public class Fenetre extends JPanel implements Service, GUIClass {
 	private long tempsMinEntreAffichage;
 	private long lastAffichage = 0;
 	private JFrame frame;
-	private WindowExit exit = new WindowExit();
+	private WindowExit exit;
 	private ArrayList<BufferedImage> images = new ArrayList<BufferedImage>();
 	private RobotReal robot;
 	private boolean needInit = true;
@@ -99,7 +99,7 @@ public class Fenetre extends JPanel implements Service, GUIClass {
 	private void init()
 	{
 		needInit = false;
-		
+		exit = new WindowExit();	
 		if(afficheFond)
 		{
 			try {
@@ -185,7 +185,7 @@ public class Fenetre extends JPanel implements Service, GUIClass {
 	public void waitUntilExit() throws InterruptedException
 	{
 		lastAffichage = 0; // on force l'affichage de la dernière image
-		repaint();
+		refresh();
 		synchronized(exit)
 		{
 			if(!needInit && !exit.alreadyExited)
