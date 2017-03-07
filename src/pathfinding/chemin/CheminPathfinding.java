@@ -87,6 +87,24 @@ public class CheminPathfinding implements Service, Printable, HighPFClass, Chemi
 	}
 	
 	/**
+	 * Renvoie l'état (marche avant ou arrière) du prochain point qui sera parcouru
+	 * @return
+	 */
+	public boolean getNextMarcheAvant()
+	{
+		return chemin[add(indexFirst,1)].enMarcheAvant;
+	}
+	
+	/**
+	 * Donne l'indice du dernier point valide de la trajectoire (donc indexLast-1).
+	 * @return
+	 */
+	public int getIndexLast()
+	{
+		return minus(indexLast, 1);
+	}
+	
+	/**
 	 * A-t-on besoin d'un chemin partiel ?
 	 * @return
 	 */
@@ -246,6 +264,11 @@ public class CheminPathfinding implements Service, Printable, HighPFClass, Chemi
 	public boolean isUptodate()
 	{
 		return uptodate;
+	}
+	
+	public int getCurrentIndex()
+	{
+		return indexFirst;
 	}
 
 	/**
