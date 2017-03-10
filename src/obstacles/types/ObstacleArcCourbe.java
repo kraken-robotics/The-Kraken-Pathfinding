@@ -34,6 +34,8 @@ import utils.Vec2RO;
 
 public class ObstacleArcCourbe extends Obstacle
 {
+	private static final long serialVersionUID = -2425339148551754268L;
+
 	public ObstacleArcCourbe()
 	{
 		super(null);

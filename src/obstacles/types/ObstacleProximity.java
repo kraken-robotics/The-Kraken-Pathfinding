@@ -27,6 +27,7 @@ import utils.Vec2RO;
  */
 public class ObstacleProximity extends ObstacleMasque
 {
+	private static final long serialVersionUID = -3518004359091355796L;
 	private long death_date;
 	
 	public ObstacleProximity(Vec2RO position, int rad, long death_date, Masque masque)

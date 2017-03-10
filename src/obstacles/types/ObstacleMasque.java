@@ -27,6 +27,7 @@ import utils.Vec2RO;
  */
 public class ObstacleMasque extends ObstacleCircular
 {
+	private static final long serialVersionUID = -7303433427716127840L;
 	private Masque masque;
 	
 	public ObstacleMasque(Vec2RO position, int rad, Couleur couleur, Masque masque)

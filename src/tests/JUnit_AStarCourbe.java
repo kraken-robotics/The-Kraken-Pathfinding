@@ -274,7 +274,7 @@ public class JUnit_AStarCourbe extends JUnit_Test {
     public void test_recherche_manoeuvre() throws Exception
     {
 		long avant = System.nanoTime();
-		Cinematique depart = new Cinematique(-900, 650, 0, true, 0, Speed.STANDARD.translationalSpeed);
+		Cinematique depart = new Cinematique(-900, 450, -Math.PI/6, true, 0, Speed.STANDARD.translationalSpeed);
 		robot.setCinematique(depart);
 		Cinematique c = new Cinematique(-400, 1200, Math.PI, false, 0, Speed.STANDARD.translationalSpeed);
 		astar.initializeNewSearch(c, false, state);

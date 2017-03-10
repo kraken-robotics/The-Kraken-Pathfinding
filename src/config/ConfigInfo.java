@@ -140,7 +140,7 @@ public enum ConfigInfo {
 	GRAPHIC_CERCLE_ARRIVEE(false), // affiche le cercle d'arrivée
 	GRAPHIC_TIME(false), // affiche le temps écoulé
 	GRAPHIC_TRACE_ROBOT(true), // affiche la trace du robot
-	GRAPHIC_FPS_MAX(20), // le nombre de frames par seconde visé par l'affichage
+	GRAPHIC_EXTERNAL(true), // l'affichage doit-il être déporté par le serveur d'affichage ?
 	
 	/**
 	 * Config dynamique

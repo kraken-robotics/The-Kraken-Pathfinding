@@ -32,7 +32,8 @@ import utils.Vec2RO;
 public class ObstacleCircular extends Obstacle
 {
 	// le Vec2 "position" indique le centre de l'obstacle
-	
+	private static final long serialVersionUID = 5090691605874028970L;
+
 	// rayon de cet obstacle
 	public final int radius;
 	public final int squared_radius;

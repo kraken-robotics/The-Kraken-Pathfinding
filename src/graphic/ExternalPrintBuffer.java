@@ -17,38 +17,28 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 package graphic;
 
-import java.awt.Font;
 import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.List;
 
-import config.Config;
-import config.ConfigInfo;
-import robot.RobotReal;
-import utils.Log;
-import container.Service;
-import graphic.printable.Couleur;
 import graphic.printable.Layer;
 import graphic.printable.Printable;
+import robot.RobotReal;
+import utils.Log;
 
 /**
- * Buffer de ce qu'il faut afficher
+ * PrintBuffer prévu pour l'externalisation de l'affichage
  * @author pf
  *
  */
 
-public class PrintBuffer implements Service, PrintBufferInterface
-{	
+public class ExternalPrintBuffer implements PrintBufferInterface {
 	private List<ArrayList<Printable>> elementsAffichablesSupprimables = new ArrayList<ArrayList<Printable>>();
 	private List<ArrayList<Printable>> elementsAffichables = new ArrayList<ArrayList<Printable>>();
 
 	protected Log log;
-	private boolean afficheFond;
-	private boolean needRefresh = false;
-	private boolean time;
-	private long initTime = System.currentTimeMillis();
 	
-	public PrintBuffer(Log log, Config config)
+	public ExternalPrintBuffer(Log log)
 	{
 		this.log = log;
 		for(int i = 0 ; i < Layer.values().length; i++)
@@ -56,8 +46,6 @@ public class PrintBuffer implements Service, PrintBufferInterface
 			elementsAffichablesSupprimables.add(new ArrayList<Printable>());
 			elementsAffichables.add(new ArrayList<Printable>());
 		}
-		afficheFond = config.getBoolean(ConfigInfo.GRAPHIC_BACKGROUND);
-		time = config.getBoolean(ConfigInfo.GRAPHIC_TIME);
 	}
 
 	/**
@@ -69,7 +57,6 @@ public class PrintBuffer implements Service, PrintBufferInterface
 		for(int i = 0 ; i < Layer.values().length; i++)
 			elementsAffichablesSupprimables.get(i).clear();
 		notify();
-		needRefresh = true;
 	}
 
 	/**
@@ -80,7 +67,6 @@ public class PrintBuffer implements Service, PrintBufferInterface
 	{
 		elementsAffichablesSupprimables.get(o.getLayer().ordinal()).add(o);
 		notify();
-		needRefresh = true;
 	}
 
 	/**
@@ -91,7 +77,6 @@ public class PrintBuffer implements Service, PrintBufferInterface
 	{
 		elementsAffichablesSupprimables.get(l.ordinal()).add(o);
 		notify();
-		needRefresh = true;
 	}
 
 	/**
@@ -102,7 +87,6 @@ public class PrintBuffer implements Service, PrintBufferInterface
 	{
 		elementsAffichables.get(o.getLayer().ordinal()).add(o);
 		notify();
-		needRefresh = true;
 	}
 
 	/**
@@ -112,33 +96,7 @@ public class PrintBuffer implements Service, PrintBufferInterface
 	 * @param robot
 	 */
 	public synchronized void print(Graphics g, Fenetre f, RobotReal robot)
-	{
-		needRefresh = false;
-		for(int i = 0 ; i < Layer.values().length; i++)
-		{
-			if(afficheFond)
-				g.setColor(Couleur.VERT.couleur);
-			else
-				g.setColor(Couleur.NOIR.couleur);
-			
-			for(Printable p : elementsAffichablesSupprimables.get(i))
-				p.print(g, f, robot);
-
-			if(afficheFond)
-				g.setColor(Couleur.VERT.couleur);
-			else
-				g.setColor(Couleur.NOIR.couleur);
-
-			for(Printable p : elementsAffichables.get(i))
-				p.print(g, f, robot);
-		}
-		if(time)
-		{
-			g.setFont(new Font("Courier New", 1, 36));
-			g.setColor(Couleur.NOIR.couleur);
-			g.drawString("Date : "+Long.toString(System.currentTimeMillis() - initTime), f.XtoWindow(600), f.YtoWindow(1900));
-		}
-	}
+	{}
 
 	/**
 	 * Supprime un printable ajouté à la liste des supprimables
@@ -148,15 +106,13 @@ public class PrintBuffer implements Service, PrintBufferInterface
 	public synchronized void removeSupprimable(Printable o)
 	{
 		if(elementsAffichablesSupprimables.get(o.getLayer().ordinal()).remove(o))
-		{
 			notify();
-			needRefresh = true;
-		}
 	}
 
+	@Override
 	public boolean needRefresh()
 	{
-		return needRefresh;
+		return false;
 	}
-	
+
 }

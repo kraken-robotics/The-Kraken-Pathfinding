@@ -18,6 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 package pathfinding.dstarlite.gridspace;
 
 import java.awt.Graphics;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,8 +34,9 @@ import robot.RobotReal;
  *
  */
 
-public class Masque implements Printable
+public class Masque implements Printable, Serializable
 {
+	private static final long serialVersionUID = 3358374399044123020L;
 	public List<PointDirige> masque = new ArrayList<PointDirige>();
 	private PointGridSpaceManager pm;
 	

@@ -59,8 +59,6 @@ public class Fenetre extends JPanel implements Service, GUIClass {
 	
 	private boolean afficheFond;
 	private int sizeX, sizeY;
-	private long tempsMinEntreAffichage;
-	private long lastAffichage = 0;
 	private JFrame frame;
 	private WindowExit exit;
 	private ArrayList<BufferedImage> images = new ArrayList<BufferedImage>();
@@ -76,7 +74,6 @@ public class Fenetre extends JPanel implements Service, GUIClass {
 
 		afficheFond = config.getBoolean(ConfigInfo.GRAPHIC_BACKGROUND);
 		backgroundPath = config.getString(ConfigInfo.GRAPHIC_BACKGROUND_PATH);
-		tempsMinEntreAffichage = 1000/config.getInt(ConfigInfo.GRAPHIC_FPS_MAX);
 		sizeX = config.getInt(ConfigInfo.GRAPHIC_SIZE_X);
 		sizeY = 2*sizeX/3;
 	}
@@ -139,15 +136,11 @@ public class Fenetre extends JPanel implements Service, GUIClass {
 	@Override
 	public void paintComponent(Graphics g)
 	{
-		if(System.currentTimeMillis() - lastAffichage > tempsMinEntreAffichage)
-		{
-			lastAffichage = System.currentTimeMillis();
-			super.paintComponent(g);
-	
-			g.clearRect(0, 0, sizeX, sizeY);
-			
-			buffer.print(g, this, robot);
-		}
+		super.paintComponent(g);
+
+		g.clearRect(0, 0, sizeX, sizeY);
+		
+		buffer.print(g, this, robot);
 	}
 
 	/**
@@ -184,7 +177,6 @@ public class Fenetre extends JPanel implements Service, GUIClass {
 	 */
 	public void waitUntilExit() throws InterruptedException
 	{
-		lastAffichage = 0; // on force l'affichage de la dernière image
 		refresh();
 		synchronized(exit)
 		{

@@ -36,6 +36,7 @@ public class ObstacleRectangular extends Obstacle
 {
 	// Position est le centre de rotation
 	
+	private static final long serialVersionUID = 7643797598957137648L;
 	// Longueur entre le centre et un des coins
 	protected double demieDiagonale;
 	protected Vec2RW centreGeometrique;
