@@ -32,6 +32,8 @@ import utils.Vec2RO;
 
 public class Segment implements Printable
 {
+	private static final long serialVersionUID = 3703333390792149374L;
+
 	private Vec2RO a, b;
 	private Layer l;
 	private Color c;

@@ -34,6 +34,7 @@ import utils.Vec2RW;
 
 public class Cinematique implements Printable
 {
+	private static final long serialVersionUID = 1548985891767047059L;
 	protected final Vec2RW position = new Vec2RW();
 	public volatile double orientationGeometrique; // il s'agit de l'orientation qui avance. donc l'arrière du robot s'il recule
 	public volatile boolean enMarcheAvant;

@@ -27,6 +27,7 @@ import robot.CinematiqueObs;
 
 public class ArcCourbeStatique extends ArcCourbe
 {
+	private static final long serialVersionUID = 6054050539106430610L;
 	public CinematiqueObs[] arcselems = new CinematiqueObs[ClothoidesComputer.NB_POINTS];
 	
 	public ArcCourbeStatique(int demieLargeurNonDeploye, int demieLongueurArriere, int demieLongueurAvant)

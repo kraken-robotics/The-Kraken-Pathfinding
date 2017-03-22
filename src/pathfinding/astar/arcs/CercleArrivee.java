@@ -46,6 +46,7 @@ import utils.Vec2RW;
 
 public class CercleArrivee implements Service, Printable, HighPFClass, LowPFClass, DynamicConfigurable
 {
+	private static final long serialVersionUID = 6493485098619892816L;
 	public Vec2RO position;
 	public double rayon;
 	public Vec2RO arriveeDStarLite;

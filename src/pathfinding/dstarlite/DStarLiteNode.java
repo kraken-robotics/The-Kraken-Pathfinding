@@ -35,7 +35,7 @@ import utils.Vec2RW;
 
 public class DStarLiteNode implements Printable
 {
-
+	private static final long serialVersionUID = -7547278276296939944L;
 	public final PointGridSpace gridpoint;
 	public final Cle cle = new Cle();
 	public int g = Integer.MAX_VALUE, rhs = Integer.MAX_VALUE;

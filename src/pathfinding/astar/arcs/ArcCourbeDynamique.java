@@ -30,6 +30,7 @@ import robot.CinematiqueObs;
 
 public class ArcCourbeDynamique extends ArcCourbe
 {
+	private static final long serialVersionUID = 2475211956540337596L;
 	public List<CinematiqueObs> arcs;
 	public double longueur;
 	

@@ -41,7 +41,7 @@ import utils.Vec2RW;
  *
  */
 
-public abstract class Obstacle implements Printable, Serializable
+public abstract class Obstacle implements Printable
 {
 	private static final long serialVersionUID = -2508727703931042322L;
 	protected Vec2RW position;

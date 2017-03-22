@@ -37,7 +37,7 @@ import utils.Vec2RW;
 
 public class ObstacleRobot extends ObstacleRectangular implements Serializable
 {
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = -8994485842050904808L;
 
 	public ObstacleRobot(int demieLargeurNonDeploye, int demieLongueurArriere, int demieLongueurAvant)
 	{

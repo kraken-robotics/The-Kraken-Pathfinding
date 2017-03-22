@@ -18,6 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 package graphic.printable;
 
 import java.awt.Graphics;
+import java.io.Serializable;
 
 import graphic.Fenetre;
 import robot.RobotReal;
@@ -28,7 +29,7 @@ import robot.RobotReal;
  *
  */
 
-public interface Printable
+public interface Printable extends Serializable
 {
 	/**
 	 * Affiche cet objet

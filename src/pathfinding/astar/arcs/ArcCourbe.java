@@ -39,8 +39,8 @@ import robot.RobotReal;
 
 public abstract class ArcCourbe implements Printable
 {
-
-//	public ObstacleArcCourbe obstacle = new ObstacleArcCourbe();
+	private static final long serialVersionUID = -1085335717652202571L;
+	//	public ObstacleArcCourbe obstacle = new ObstacleArcCourbe();
 	protected static int tempsArret;
 	public VitesseCourbure vitesse; // utilisé pour le debug
 	

@@ -35,6 +35,7 @@ import robot.RobotReal;
 
 public class PointGridSpace implements Service, Printable
 {
+	private static final long serialVersionUID = -5975399070001506596L;
 	public static final int PRECISION = 7;
 	public static final int NB_POINTS_POUR_TROIS_METRES = (1 << PRECISION);
 	public static final int NB_POINTS_POUR_DEUX_METRES = (int) ((1 << PRECISION)*2./3.)+1;

@@ -49,6 +49,7 @@ import container.dependances.LowPFClass;
 
 public class GridSpace implements Service, Printable, LowPFClass
 {
+	private static final long serialVersionUID = 7762646033906589868L;
 	protected Log log;
 	private ObstaclesIteratorPresent iteratorDStarLiteFirst;
 	private ObstaclesIteratorPresent iteratorDStarLiteLast;
