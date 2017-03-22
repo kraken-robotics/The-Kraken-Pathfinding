@@ -172,4 +172,13 @@ public enum ConfigInfo {
 		return defaultValue;
 	}
 	
+	/**
+	 * Pour les modifications de config avant même de démarrer le service de config
+	 * @param o
+	 */
+	public void setDefaultValue(Object o)
+	{
+		defaultValue = o;
+	}
+	
 }

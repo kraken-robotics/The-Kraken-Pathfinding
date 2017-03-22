@@ -15,15 +15,13 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>
 */
 
-
-
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
+import config.ConfigInfo;
 import container.Container;
 import exceptions.ContainerException;
 import utils.Log;
@@ -37,90 +35,112 @@ import utils.Log;
 public class ClientFenetre
 {
 
-	public static void main(String[] args) throws ContainerException, InterruptedException
+	public static void main(String[] args)
 	{
-		Container container = new Container();
-		Log log = container.getService(Log.class);
-		InetAddress rpiAdresse = null;
-		boolean loop = false;
-		log.debug("Démarrage du client d'affichage");
 		try {
-			if(args.length != 0)
-			{
-				for(int i = 0; i < args.length; i++)
+			// on force l'affichage non externe
+			ConfigInfo.GRAPHIC_EXTERNAL.setDefaultValue(false);
+			Container container = new Container();
+			Log log = container.getService(Log.class);
+			InetAddress rpiAdresse = null;
+			boolean loop = false;
+			log.debug("Démarrage du client d'affichage");
+			try {
+				if(args.length != 0)
 				{
-					if(args[i].equals("-d"))
-						loop = true;
-					else if(!args[i].startsWith("-"))
+					for(int i = 0; i < args.length; i++)
 					{
-						String[] s = args[0].split(".");
-						if(s.length == 4) // une adresse ip, probablement
+						if(args[i].equals("-d"))
+							loop = true;
+						else if(!args[i].startsWith("-"))
 						{
-							byte[] addr = new byte[4];
-							for(int j = 0; j < 4; j++)
-								addr[j] = Byte.parseByte(s[j]);
-							rpiAdresse = InetAddress.getByAddress(addr);
+							String[] s = args[i].split("\\."); // on découpe avec les points
+							if(s.length == 4) // une adresse ip, probablement
+							{
+								log.debug("Recherche du serveur à partir de son adresse ip : "+args[i]);
+								byte[] addr = new byte[4];
+								for(int j = 0; j < 4; j++)
+									addr[j] = Byte.parseByte(s[j]);
+								rpiAdresse = InetAddress.getByAddress(addr);
+							}
+							else // le nom du serveur, probablement
+							{
+								log.debug("Recherche du serveur à partir de son nom : "+args[i]);
+								rpiAdresse = InetAddress.getByName(args[i]);
+							}
 						}
-						else // le nom du serveur, probablement
-							rpiAdresse = InetAddress.getByName(args[0]);
+						else
+							log.warning("Paramètre inconnu : "+args[i]);
 					}
-					else
-						log.warning("Paramètre inconnu : "+args[i]);
 				}
+				
+				if(rpiAdresse == null) // par défaut, la raspi (ip fixe)
+					rpiAdresse = InetAddress.getByAddress(new byte[]{(byte)172,24,1,1});
+			} catch (UnknownHostException e) {
+				log.critical("La recherche du serveur a échoué ! "+e);
+				return;
 			}
 			
-			if(rpiAdresse == null) // par défaut, la raspi (ip fixe)
-				rpiAdresse = InetAddress.getByAddress(new byte[]{(byte)172,24,1,1});
-		} catch (UnknownHostException e) {
-			log.critical("La recherche du serveur a échoué ! "+e);
-			return;
-		}
-		
-		Socket socket = null;
-		do {
-			
-			boolean ko;
-			log.debug("Tentative de connexion…");
-			
+			Socket socket = null;
 			do {
+				
+				boolean ko;
+				log.debug("Tentative de connexion…");
+				
+				do {
+					try {
+						socket = new Socket(rpiAdresse, 13370);
+						ko = false;
+					} catch (IOException e) {
+						Thread.sleep(500); // on attend un peu avant de réessayer
+						ko = true;
+					}
+				} while(ko);
+				
+				log.debug("Connexion réussie !");
+				ObjectInputStream in;
 				try {
-					socket = new Socket(rpiAdresse, 13370);
-					ko = false;
+					in = new ObjectInputStream(socket.getInputStream());
 				} catch (IOException e) {
-					Thread.sleep(500); // on attend un peu avant de réessayer
-					ko = true;
+					log.warning("Le serveur a coupé la connexion : "+e);
+					continue; // on relance la recherche
 				}
-			} while(ko);
-			
-			log.debug("Connexion réussie !");
-			BufferedReader in;
-			try {
-				in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-			} catch (IOException e) {
-				log.warning("Le serveur a coupé la connexion : "+e);
-				continue; // on relance la recherche
-			}
-			try {
-				log.debug(in.readLine());
-			} catch (IOException e) {
-				log.warning("Le serveur a coupé la connexion : "+e);
-			}
-			finally {
+				
 				try {
-					in.close();
+					while(true)
+					{
+						byte val = in.readByte();
+						if(val == 'B')
+						{
+							log.debug("Refresh");
+	 						log.debug("Affichage un objet : "+in.readObject());
+						}
+						else
+							log.warning("val = "+val);
+					}
 				} catch (IOException e) {
+					log.warning("Le serveur a coupé la connexion : "+e);
+				} catch (ClassNotFoundException e) {
 					e.printStackTrace();
 				}
+				finally {
+					try {
+						in.close();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+			
+			} while(loop);
+			
+			try {
+				socket.close();
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
-		
-		} while(loop);
-		
-		try {
-			socket.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		log.debug("Arrêt du client d'affichage");
+			log.debug("Arrêt du client d'affichage");
+		} catch(ContainerException | InterruptedException e)
+		{}
 	}
 
 	

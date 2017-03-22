@@ -17,16 +17,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 package graphic;
 
-import java.awt.Graphics;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
 import graphic.printable.Layer;
 import graphic.printable.Printable;
-import robot.RobotReal;
 import utils.Log;
 
 /**
@@ -115,20 +112,27 @@ public class ExternalPrintBuffer implements PrintBufferInterface {
 	 */
 	public void send(ObjectOutputStream out) throws IOException
 	{
+		int nb = 0;
+		for(int i = 1 ; i < Layer.values().length; i++)
+			nb += elementsAffichablesSupprimables.get(i).size() + elementsAffichables.get(i).size();
+		Object[] o = new Object[nb];
 		// start + background
 		out.writeByte('B');
 		
+		int j = 0;
 		// on commence à 1 et pas à 0 car l'arrière-plan a un traitement particulier (c'est le seul Printable de Layer 0)
 		for(int i = 1 ; i < Layer.values().length; i++)
 		{
 			for(Printable p : elementsAffichablesSupprimables.get(i))
-				out.writeObject(p);
+				o[j++] = p;
 
 			for(Printable p : elementsAffichables.get(i))
-				out.writeObject(p);
+				o[j++] = p;
 		}
-		out.writeByte('S'); // stop
+		out.writeObject(o);
 		out.flush(); // on force l'envoi !
 	}
 
+
+	
 }

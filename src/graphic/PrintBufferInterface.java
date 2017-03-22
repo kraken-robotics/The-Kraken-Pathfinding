@@ -17,11 +17,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 package graphic;
 
-import java.awt.Graphics;
-
 import graphic.printable.Layer;
 import graphic.printable.Printable;
-import robot.RobotReal;
 
 /**
  * Une interface qui permet de regrouper le print buffer déporté et celui qui ne l'est pas
