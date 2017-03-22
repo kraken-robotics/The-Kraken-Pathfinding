@@ -17,6 +17,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 package threads;
 
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
+
 import config.Config;
 import config.ConfigInfo;
 import container.Container;
@@ -33,13 +40,61 @@ import utils.Log;
 
 public class ThreadPrintServer extends ThreadService implements GUIClass
 {
+	
+	/**
+	 * Thread qui envoie les données au socket donné en paramètre du constructeur
+	 * @author pf
+	 *
+	 */
+	private class ThreadSocket implements GUIClass, Runnable
+	{
+	
+		protected Log log;
+		private ExternalPrintBuffer buffer;
+		private Socket socket;
+		private int nb;
+		
+		public ThreadSocket(Log log, ExternalPrintBuffer buffer, Socket socket, int nb)
+		{
+			this.log = log;
+			this.buffer = buffer;
+			this.socket = socket;
+			this.nb = nb;
+		}
+	
+		@Override
+		public void run()
+		{
+			Thread.currentThread().setName(getClass().getSimpleName()+"-"+nb);
+			log.debug("Connexion d'un client au serveur d'affichage");
+			try {
+				while(true)
+				{
+					PrintWriter out = null;
+					out = new PrintWriter(socket.getOutputStream());
+					
+					synchronized(buffer)
+					{
+						if(!buffer.needRefresh())
+							buffer.wait();
+					}
+	
+					Thread.sleep(50); // on ne met pas à jour plus souvent que toutes les 50ms
+				}
+			} catch (InterruptedException | IOException e) {
+				log.debug("Arrêt de "+Thread.currentThread().getName());
+			}
+		}
+	
+	}
 
 	protected Log log;
-	private Fenetre fenetre;
 	private ExternalPrintBuffer buffer;
 	private boolean external;
-	
-	public ThreadPrintServer(Log log, Container container, ExternalPrintBuffer buffer, Config config)
+	private int nbConnexions = 0;
+	private List<Thread> threads = new ArrayList<Thread>();
+
+	public ThreadPrintServer(Log log, ExternalPrintBuffer buffer, Config config)
 	{
 		this.log = log;
 		this.buffer = buffer;
@@ -51,6 +106,7 @@ public class ThreadPrintServer extends ThreadService implements GUIClass
 	{
 		Thread.currentThread().setName(getClass().getSimpleName());
 		log.debug("Démarrage de "+Thread.currentThread().getName());
+		ServerSocket ssocket = null;
 		try {
 			if(!external)
 			{
@@ -59,17 +115,26 @@ public class ThreadPrintServer extends ThreadService implements GUIClass
 					Thread.sleep(10000);
 			}
 			
+			ssocket = new ServerSocket(133742);
 			while(true)
 			{
-				synchronized(buffer)
-				{
-					if(!buffer.needRefresh())
-						buffer.wait();
-				}
-				fenetre.refresh();
-				Thread.sleep(50); // on ne met pas à jour plus souvent que toutes les 50ms
+				Thread t = new Thread(new ThreadSocket(log, buffer, ssocket.accept(), nbConnexions++));
+				t.start();
+				threads.add(t);
 			}
-		} catch (InterruptedException e) {
+		} catch (InterruptedException | IOException e) {
+			if(ssocket != null)
+				try {
+					ssocket.close();
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+			
+			/*
+			 * On arrête tous les threads de socket en cours
+			 */
+			for(Thread t : threads)
+				t.interrupt();
 			log.debug("Arrêt de "+Thread.currentThread().getName());
 		}
 	}
