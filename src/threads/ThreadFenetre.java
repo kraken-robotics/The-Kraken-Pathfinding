@@ -38,8 +38,7 @@ public class ThreadFenetre extends ThreadService implements GUIClass
 	protected Log log;
 	private Fenetre fenetre;
 	private PrintBuffer buffer;
-	private boolean gif;
-	private boolean print;
+	private boolean gif, print, deporte;
 	private long derniereSauv = 0;
 	
 	public ThreadFenetre(Log log, Container container, PrintBuffer buffer, Config config)
@@ -48,7 +47,8 @@ public class ThreadFenetre extends ThreadService implements GUIClass
 		this.buffer = buffer;
 		gif = config.getBoolean(ConfigInfo.GRAPHIC_PRODUCE_GIF);
 		print = config.getBoolean(ConfigInfo.GRAPHIC_ENABLE);
-		if(print)
+		deporte = config.getBoolean(ConfigInfo.GRAPHIC_EXTERNAL);
+		if(print && !deporte)
 			try {
 				fenetre = container.getService(Fenetre.class);
 			} catch (ContainerException e) {
@@ -62,9 +62,9 @@ public class ThreadFenetre extends ThreadService implements GUIClass
 		Thread.currentThread().setName(getClass().getSimpleName());
 		log.debug("Démarrage de "+Thread.currentThread().getName());
 		try {
-			if(!print)
+			if(!print || deporte)
 			{
-				log.debug(getClass().getSimpleName()+" annulé ("+ConfigInfo.GRAPHIC_ENABLE+" = "+print+")");
+				log.debug(getClass().getSimpleName()+" annulé ("+ConfigInfo.GRAPHIC_ENABLE+" = "+print+", "+ConfigInfo.GRAPHIC_EXTERNAL+" = "+deporte+")");
 				while(true)
 					Thread.sleep(10000);
 			}

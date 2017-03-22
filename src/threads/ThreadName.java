@@ -33,6 +33,7 @@ public enum ThreadName
 	CAPTEURS(ThreadCapteurs.class),
 	CONFIG(ThreadConfig.class),
 	FENETRE(ThreadFenetre.class),
+	PRINT_SERVER(ThreadPrintServer.class),
 	UPDATE_PATHFINDING(ThreadUpdatePathfinding.class),
 	PREPARE_PATHFINDING(ThreadPreparePathfinding.class),
 	PEREMPTION(ThreadPeremption.class),

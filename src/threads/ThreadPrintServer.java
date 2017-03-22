@@ -22,6 +22,7 @@ import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,7 +50,6 @@ public class ThreadPrintServer extends ThreadService implements GUIClass
 	 */
 	private class ThreadSocket implements GUIClass, Runnable
 	{
-	
 		protected Log log;
 		private ExternalPrintBuffer buffer;
 		private Socket socket;
@@ -84,17 +84,19 @@ public class ThreadPrintServer extends ThreadService implements GUIClass
 	
 	}
 
+	private boolean print, deporte;
 	protected Log log;
 	private ExternalPrintBuffer buffer;
-	private boolean external;
 	private int nbConnexions = 0;
+	private ServerSocket ssocket = null;
 	private List<Thread> threads = new ArrayList<Thread>();
 
 	public ThreadPrintServer(Log log, ExternalPrintBuffer buffer, Config config)
 	{
 		this.log = log;
 		this.buffer = buffer;
-		external = config.getBoolean(ConfigInfo.GRAPHIC_EXTERNAL);
+		print = config.getBoolean(ConfigInfo.GRAPHIC_ENABLE);
+		deporte = config.getBoolean(ConfigInfo.GRAPHIC_EXTERNAL);
 	}
 
 	@Override
@@ -102,24 +104,27 @@ public class ThreadPrintServer extends ThreadService implements GUIClass
 	{
 		Thread.currentThread().setName(getClass().getSimpleName());
 		log.debug("Démarrage de "+Thread.currentThread().getName());
-		ServerSocket ssocket = null;
 		try {
-			if(!external)
+			if(!print || !deporte)
 			{
-				log.debug(getClass().getSimpleName()+" annulé ("+ConfigInfo.GRAPHIC_EXTERNAL+" = "+external+")");
+				log.debug(getClass().getSimpleName()+" annulé ("+ConfigInfo.GRAPHIC_ENABLE+" = "+print+", "+ConfigInfo.GRAPHIC_EXTERNAL+" = "+deporte+")");
 				while(true)
 					Thread.sleep(10000);
 			}
 			
-			ssocket = new ServerSocket(133742);
+			ssocket = new ServerSocket(13370);
 			while(true)
 			{
-				Thread t = new Thread(new ThreadSocket(log, buffer, ssocket.accept(), nbConnexions++));
-				t.start();
-				threads.add(t);
+				try {
+					Thread t = new Thread(new ThreadSocket(log, buffer, ssocket.accept(), nbConnexions++));
+					t.start();
+					threads.add(t);
+				}
+				catch(SocketTimeoutException e)
+				{}
 			}
 		} catch (InterruptedException | IOException e) {
-			if(ssocket != null)
+			if(ssocket != null && !ssocket.isClosed())
 				try {
 					ssocket.close();
 				} catch (IOException e1) {
@@ -133,6 +138,21 @@ public class ThreadPrintServer extends ThreadService implements GUIClass
 				t.interrupt();
 			log.debug("Arrêt de "+Thread.currentThread().getName());
 		}
+	}
+	
+	/**
+	 * Surcharge d'interrupt car accept() y est insensible
+	 */
+	@Override
+	public void interrupt()
+	{
+		try {
+			if(ssocket != null && !ssocket.isClosed())
+			ssocket.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		super.interrupt();
 	}
 
 }

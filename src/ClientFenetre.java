@@ -15,7 +15,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>
 */
 
-package graphic;
+
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -84,7 +84,7 @@ public class ClientFenetre
 			
 			do {
 				try {
-					socket = new Socket(rpiAdresse, 133742);
+					socket = new Socket(rpiAdresse, 13370);
 					ko = false;
 				} catch (IOException e) {
 					Thread.sleep(500); // on attend un peu avant de réessayer
