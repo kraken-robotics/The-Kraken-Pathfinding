@@ -156,7 +156,7 @@ public class ArcManager implements Service, HighPFClass
 	public double distanceTo(AStarCourbeNode node)
 	{
 		node.state.robot.suitArcCourbe(node.getArc());
-		return node.getArc().getDuree(node.state.robot.getCinematique());
+		return node.getArc().getDuree();
 	}
 
 	/**

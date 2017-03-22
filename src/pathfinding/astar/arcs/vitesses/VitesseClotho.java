@@ -113,7 +113,6 @@ public enum VitesseClotho implements VitesseCourbure
 	public int getNbArrets() {
 		if(arret || rebrousse)
 			return 1;
-		else
-			return 0;
+		return 0;
 	}
 }

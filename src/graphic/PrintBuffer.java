@@ -64,6 +64,7 @@ public class PrintBuffer implements Service, PrintBufferInterface
 	 * Supprime tous les obstacles supprimables
 	 * @param c
 	 */
+	@Override
 	public synchronized void clearSupprimables()
 	{
 		for(int i = 0 ; i < Layer.values().length; i++)
@@ -76,6 +77,7 @@ public class PrintBuffer implements Service, PrintBufferInterface
 	 * Ajoute un obstacle dans la liste des supprimables
 	 * @param o
 	 */
+	@Override
 	public synchronized void addSupprimable(Printable o)
 	{
 		elementsAffichablesSupprimables.get(o.getLayer().ordinal()).add(o);
@@ -87,6 +89,7 @@ public class PrintBuffer implements Service, PrintBufferInterface
 	 * Ajoute un obstacle dans la liste des supprimables
 	 * @param o
 	 */
+	@Override
 	public synchronized void addSupprimable(Printable o, Layer l)
 	{
 		elementsAffichablesSupprimables.get(l.ordinal()).add(o);
@@ -98,6 +101,7 @@ public class PrintBuffer implements Service, PrintBufferInterface
 	 * Ajoute un obstacle
 	 * @param o
 	 */
+	@Override
 	public synchronized void add(Printable o)
 	{
 		elementsAffichables.get(o.getLayer().ordinal()).add(o);
@@ -111,6 +115,7 @@ public class PrintBuffer implements Service, PrintBufferInterface
 	 * @param f
 	 * @param robot
 	 */
+	@Override
 	public synchronized void print(Graphics g, Fenetre f, RobotReal robot)
 	{
 		needRefresh = false;
@@ -145,6 +150,7 @@ public class PrintBuffer implements Service, PrintBufferInterface
 	 * Ce n'est pas grave s'il y a une double suppression
 	 * @param o
 	 */
+	@Override
 	public synchronized void removeSupprimable(Printable o)
 	{
 		if(elementsAffichablesSupprimables.get(o.getLayer().ordinal()).remove(o))
@@ -154,6 +160,7 @@ public class PrintBuffer implements Service, PrintBufferInterface
 		}
 	}
 
+	@Override
 	public boolean needRefresh()
 	{
 		return needRefresh;

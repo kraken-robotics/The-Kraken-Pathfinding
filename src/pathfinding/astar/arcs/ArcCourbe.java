@@ -50,7 +50,7 @@ public abstract class ArcCourbe implements Printable
 	public abstract double getVitesseTr();
 	protected abstract double getLongueur();
 
-	public final double getDuree(Cinematique obs)
+	public final double getDuree()
 	{
 		return getLongueur() / getVitesseTr() + vitesse.getNbArrets() * tempsArret;
 	}

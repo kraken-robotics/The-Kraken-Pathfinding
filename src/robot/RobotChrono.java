@@ -50,7 +50,7 @@ public class RobotChrono extends Robot
 	
 	public void suitArcCourbe(ArcCourbe came_from_arc)
 	{
-		date += came_from_arc.getDuree(cinematique);
+		date += came_from_arc.getDuree();
 		came_from_arc.getLast().copy(cinematique);
 	}
 	
