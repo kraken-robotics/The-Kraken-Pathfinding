@@ -35,8 +35,6 @@ public interface PrintBufferInterface {
 	public void addSupprimable(Printable o);
 	public void addSupprimable(Printable o, Layer l);
 	public void add(Printable o);
-	public void print(Graphics g, Fenetre f, RobotReal robot);
 	public void removeSupprimable(Printable o);
-	public boolean needRefresh();
 
 }

@@ -18,6 +18,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 package graphic;
 
 import java.awt.Graphics;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -94,16 +97,6 @@ public class ExternalPrintBuffer implements PrintBufferInterface {
 	}
 
 	/**
-	 * Affiche tout
-	 * @param g
-	 * @param f
-	 * @param robot
-	 */
-	@Override
-	public synchronized void print(Graphics g, Fenetre f, RobotReal robot)
-	{}
-
-	/**
 	 * Supprime un printable ajouté à la liste des supprimables
 	 * Ce n'est pas grave s'il y a une double suppression
 	 * @param o
@@ -115,10 +108,27 @@ public class ExternalPrintBuffer implements PrintBufferInterface {
 			notify();
 	}
 
-	@Override
-	public boolean needRefresh()
+	/**
+	 * Envoie en sérialisant les objets à afficher
+	 * @param out
+	 * @throws IOException 
+	 */
+	public void send(ObjectOutputStream out) throws IOException
 	{
-		return false;
+		// start + background
+		out.writeByte('B');
+		
+		// on commence à 1 et pas à 0 car l'arrière-plan a un traitement particulier (c'est le seul Printable de Layer 0)
+		for(int i = 1 ; i < Layer.values().length; i++)
+		{
+			for(Printable p : elementsAffichablesSupprimables.get(i))
+				out.writeObject(p);
+
+			for(Printable p : elementsAffichables.get(i))
+				out.writeObject(p);
+		}
+		out.writeByte('S'); // stop
+		out.flush(); // on force l'envoi !
 	}
 
 }

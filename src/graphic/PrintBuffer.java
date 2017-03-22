@@ -115,7 +115,6 @@ public class PrintBuffer implements Service, PrintBufferInterface
 	 * @param f
 	 * @param robot
 	 */
-	@Override
 	public synchronized void print(Graphics g, Fenetre f, RobotReal robot)
 	{
 		needRefresh = false;
@@ -160,7 +159,6 @@ public class PrintBuffer implements Service, PrintBufferInterface
 		}
 	}
 
-	@Override
 	public boolean needRefresh()
 	{
 		return needRefresh;

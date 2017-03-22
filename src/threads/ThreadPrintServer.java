@@ -18,6 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 package threads;
 
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -70,16 +71,11 @@ public class ThreadPrintServer extends ThreadService implements GUIClass
 			try {
 				while(true)
 				{
-					PrintWriter out = null;
-					out = new PrintWriter(socket.getOutputStream());
+					ObjectOutputStream out = null;
+					out = new ObjectOutputStream(socket.getOutputStream());
 					
-					synchronized(buffer)
-					{
-						if(!buffer.needRefresh())
-							buffer.wait();
-					}
-	
-					Thread.sleep(50); // on ne met pas à jour plus souvent que toutes les 50ms
+					buffer.send(out);
+					Thread.sleep(200); // on met à jour toutes les 200ms
 				}
 			} catch (InterruptedException | IOException e) {
 				log.debug("Arrêt de "+Thread.currentThread().getName());
