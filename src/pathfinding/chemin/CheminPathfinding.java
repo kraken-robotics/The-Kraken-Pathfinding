@@ -342,7 +342,7 @@ public class CheminPathfinding implements Service, Printable, HighPFClass, Chemi
 	 * Utilisé pour les tests uniquement
 	 * @return
 	 */
-	public Cinematique getLastSent()
+	public Cinematique getLast()
 	{
 		return chemin[minus(indexLast,1)];
 	}
