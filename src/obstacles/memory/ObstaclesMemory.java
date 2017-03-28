@@ -17,7 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 package obstacles.memory;
 
-import graphic.PrintBuffer;
+import graphic.PrintBufferInterface;
 
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -54,9 +54,9 @@ public class ObstaclesMemory implements Service, LowPFClass
 	private final int tempsAvantSuppression = 2000;
 	
 	protected Log log;
-	private PrintBuffer buffer;
+	private PrintBufferInterface buffer;
 	
-	public ObstaclesMemory(Log log, PrintBuffer buffer, Config config)
+	public ObstaclesMemory(Log log, PrintBufferInterface buffer, Config config)
 	{
 		this.log = log;
 		this.buffer = buffer;

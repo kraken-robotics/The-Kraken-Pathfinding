@@ -20,7 +20,7 @@ package threads;
 import config.Config;
 import config.ConfigInfo;
 import container.dependances.LowPFClass;
-import graphic.PrintBuffer;
+import graphic.PrintBufferInterface;
 import obstacles.memory.ObstaclesMemory;
 import pathfinding.dstarlite.DStarLite;
 import utils.Log;
@@ -36,13 +36,13 @@ public class ThreadPeremption extends ThreadService implements LowPFClass
 {
 	private ObstaclesMemory memory;
 	protected Log log;
-	private PrintBuffer buffer;
+	private PrintBufferInterface buffer;
 	private DStarLite dstarlite;
 	
 	private int dureePeremption;
 	private boolean printProxObs;
 	
-	public ThreadPeremption(Log log, ObstaclesMemory memory, PrintBuffer buffer, DStarLite dstarlite, Config config)
+	public ThreadPeremption(Log log, ObstaclesMemory memory, PrintBufferInterface buffer, DStarLite dstarlite, Config config)
 	{
 		this.log = log;
 		this.memory = memory;

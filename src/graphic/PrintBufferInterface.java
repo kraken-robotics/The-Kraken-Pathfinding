@@ -17,6 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 package graphic;
 
+import container.Service;
 import graphic.printable.Layer;
 import graphic.printable.Printable;
 
@@ -26,7 +27,7 @@ import graphic.printable.Printable;
  *
  */
 
-public interface PrintBufferInterface {
+public interface PrintBufferInterface extends Service {
 
 	public void clearSupprimables();
 	public void addSupprimable(Printable o);

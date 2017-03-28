@@ -24,6 +24,7 @@ import java.net.UnknownHostException;
 import config.ConfigInfo;
 import container.Container;
 import exceptions.ContainerException;
+import graphic.Fenetre;
 import utils.Log;
 
 /**
@@ -41,6 +42,7 @@ public class ClientFenetre
 			// on force l'affichage non externe
 			ConfigInfo.GRAPHIC_EXTERNAL.setDefaultValue(false);
 			Container container = new Container();
+			Fenetre f = container.getService(Fenetre.class);
 			Log log = container.getService(Log.class);
 			InetAddress rpiAdresse = null;
 			boolean loop = false;
@@ -113,13 +115,17 @@ public class ClientFenetre
 						if(val == 'B')
 						{
 							log.debug("Refresh");
-	 						log.debug("Affichage un objet : "+in.readObject());
+							Object[] tab = (Object[]) in.readObject();
+							log.debug("Taille : "+tab.length);
+	 						for(Object o : tab)
+	 							log.debug(o);
 						}
 						else
 							log.warning("val = "+val);
 					}
 				} catch (IOException e) {
 					log.warning("Le serveur a coupé la connexion : "+e);
+					e.printStackTrace();
 				} catch (ClassNotFoundException e) {
 					e.printStackTrace();
 				}
@@ -138,6 +144,8 @@ public class ClientFenetre
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+			if(f != null)
+				f.waitUntilExit();
 			log.debug("Arrêt du client d'affichage");
 		} catch(ContainerException | InterruptedException e)
 		{}

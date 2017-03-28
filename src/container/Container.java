@@ -45,7 +45,9 @@ import container.dependances.LowPFClass;
 import container.dependances.SerialClass;
 import utils.*;
 import exceptions.ContainerException;
+import graphic.ExternalPrintBuffer;
 import graphic.PrintBuffer;
+import graphic.PrintBufferInterface;
 import obstacles.types.Obstacle;
 import pathfinding.astar.arcs.ArcCourbe;
 import serie.SerieCoucheTrame;
@@ -332,7 +334,12 @@ public class Container implements Service
 		if(showGraph)
 			log.warning("Le graphe de dépendances va être généré !");
 		
-		Obstacle.set(log, getService(PrintBuffer.class));
+		if(config.getBoolean(ConfigInfo.GRAPHIC_EXTERNAL))
+			instanciedServices.put(PrintBufferInterface.class.getSimpleName(), getService(ExternalPrintBuffer.class));
+		else
+			instanciedServices.put(PrintBufferInterface.class.getSimpleName(), getService(PrintBuffer.class));
+		
+		Obstacle.set(log, getService(PrintBufferInterface.class));
 		Obstacle.useConfig(config);
 		ArcCourbe.useConfig(config);
 
@@ -451,7 +458,7 @@ public class Container implements Service
 			/*
 			 * Récupération du graphe de dépendances
 			 */
-			if(showGraph && Service.class.isAssignableFrom(classe) && !classe.equals(Log.class) && !classe.equals(Config.class) && !classe.equals(PrintBuffer.class))
+			if(showGraph && Service.class.isAssignableFrom(classe) && !classe.equals(Log.class) && !classe.equals(Config.class) && !PrintBufferInterface.class.isAssignableFrom(classe))
 			{
 				Set<String> enf = grapheDep.get(classe);
 				if(enf == null)

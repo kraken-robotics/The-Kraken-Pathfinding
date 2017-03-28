@@ -26,7 +26,6 @@ import config.Config;
 import config.ConfigInfo;
 import robot.RobotReal;
 import utils.Log;
-import container.Service;
 import graphic.printable.Couleur;
 import graphic.printable.Layer;
 import graphic.printable.Printable;
@@ -37,7 +36,7 @@ import graphic.printable.Printable;
  *
  */
 
-public class PrintBuffer implements Service, PrintBufferInterface
+public class PrintBuffer implements PrintBufferInterface
 {	
 	private List<ArrayList<Printable>> elementsAffichablesSupprimables = new ArrayList<ArrayList<Printable>>();
 	private List<ArrayList<Printable>> elementsAffichables = new ArrayList<ArrayList<Printable>>();

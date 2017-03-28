@@ -25,7 +25,7 @@ import config.Config;
 import config.ConfigInfo;
 import container.Service;
 import container.dependances.HighPFClass;
-import graphic.PrintBuffer;
+import graphic.PrintBufferInterface;
 import memory.CinemObsMM;
 import pathfinding.astar.arcs.vitesses.VitesseBezier;
 import pathfinding.astar.arcs.vitesses.VitesseClotho;
@@ -47,12 +47,12 @@ public class BezierComputer implements Service, HighPFClass
 {
 	protected Log log;
 	protected CinemObsMM memory;
-	protected PrintBuffer buffer;
+	protected PrintBufferInterface buffer;
 	protected CercleArrivee cercle;
 	protected double courbureMax;
 	private ClothoidesComputer clothocomputer;
 	
-	public BezierComputer(Log log, CinemObsMM memory, PrintBuffer buffer, ClothoidesComputer clothocomputer, CercleArrivee cercle, Config config)
+	public BezierComputer(Log log, CinemObsMM memory, PrintBufferInterface buffer, ClothoidesComputer clothocomputer, CercleArrivee cercle, Config config)
 	{
 		this.log = log;
 		this.memory = memory;

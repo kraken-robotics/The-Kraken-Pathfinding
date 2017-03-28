@@ -66,11 +66,9 @@ public class ThreadPrintServer extends ThreadService implements GUIClass
 			Thread.currentThread().setName(getClass().getSimpleName()+"-"+nb);
 			log.debug("Connexion d'un client au serveur d'affichage");
 			try {
+				ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
 				while(true)
-				{
-					ObjectOutputStream out = null;
-					out = new ObjectOutputStream(socket.getOutputStream());
-					
+				{					
 					buffer.send(out);
 					Thread.sleep(200); // on met à jour toutes les 200ms
 				}

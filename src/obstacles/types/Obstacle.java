@@ -21,13 +21,12 @@ import java.awt.Color;
 import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
-import java.io.Serializable;
 
 import javax.imageio.ImageIO;
 
 import config.Config;
 import config.ConfigInfo;
-import graphic.PrintBuffer;
+import graphic.PrintBufferInterface;
 import graphic.printable.Couleur;
 import graphic.printable.Layer;
 import graphic.printable.Printable;
@@ -47,7 +46,7 @@ public abstract class Obstacle implements Printable
 	protected Vec2RW position;
 	protected int distance_dilatation;
 	protected transient static Log log;
-	protected transient static PrintBuffer buffer;
+	protected transient static PrintBufferInterface buffer;
 
 	// Pour l'affichage du robot
 	protected static Image imageRobot = null, imageRobotRoueG = null, imageRobotRoueD = null;
@@ -57,7 +56,7 @@ public abstract class Obstacle implements Printable
 	protected Layer l = null;
 	public Color c;
 	
-	public static void set(Log log, PrintBuffer buffer)
+	public static void set(Log log, PrintBufferInterface buffer)
 	{
 		Obstacle.log = log;
 		Obstacle.buffer = buffer;

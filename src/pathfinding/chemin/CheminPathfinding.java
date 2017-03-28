@@ -25,7 +25,7 @@ import obstacles.types.ObstacleCircular;
 import obstacles.types.ObstacleProximity;
 import obstacles.types.ObstacleRobot;
 import graphic.Fenetre;
-import graphic.PrintBuffer;
+import graphic.PrintBufferInterface;
 import graphic.printable.Couleur;
 import graphic.printable.Layer;
 import graphic.printable.Printable;
@@ -55,7 +55,7 @@ public class CheminPathfinding implements Service, Printable, HighPFClass, Chemi
 	private BufferOutgoingOrder out;
 	private ObstaclesIteratorPresent iterObstacles;
 	private IteratorCheminPathfinding iterChemin;	
-	private PrintBuffer buffer;
+	private PrintBufferInterface buffer;
 	
 	private volatile CinematiqueObs[] chemin = new CinematiqueObs[256];
 	private volatile ObstacleCircular[] aff = new ObstacleCircular[256];
@@ -66,7 +66,7 @@ public class CheminPathfinding implements Service, Printable, HighPFClass, Chemi
 	private int margeNecessaire, margeInitiale;
 	private boolean graphic;
 	
-	public CheminPathfinding(Log log, BufferOutgoingOrder out, ObstaclesIteratorPresent iterator, PrintBuffer buffer, Config config)
+	public CheminPathfinding(Log log, BufferOutgoingOrder out, ObstaclesIteratorPresent iterator, PrintBufferInterface buffer, Config config)
 	{
 		this.log = log;
 		this.out = out;

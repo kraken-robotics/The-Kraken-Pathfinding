@@ -37,7 +37,7 @@ import config.ConfigInfo;
 import container.Service;
 import container.dependances.LowPFClass;
 import exceptions.PathfindingException;
-import graphic.PrintBuffer;
+import graphic.PrintBufferInterface;
 import graphic.printable.Couleur;
 
 /**
@@ -68,7 +68,7 @@ public class DStarLite implements Service, LowPFClass
 	private DStarLiteNode arrivee;
 	private DStarLiteNode depart;
 	private PointGridSpace lastDepart;
-	private PrintBuffer buffer;
+	private PrintBufferInterface buffer;
 	private long nbPF = 0;
 	
 	private double[][] atan2map = new double[19][19];
@@ -84,7 +84,7 @@ public class DStarLite implements Service, LowPFClass
 	 * @param log
 	 * @param gridspace
 	 */
-	public DStarLite(Log log, GridSpace gridspace, PointGridSpaceManager pointManager, PointDirigeManager pointDManager, PrintBuffer buffer, RealTable table, CercleArrivee cercle, Config config)
+	public DStarLite(Log log, GridSpace gridspace, PointGridSpaceManager pointManager, PointDirigeManager pointDManager, PrintBufferInterface buffer, RealTable table, CercleArrivee cercle, Config config)
 	{
 		this.log = log;
 		this.gridspace = gridspace;

@@ -17,7 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 package pathfinding.astar.arcs;
 
-import graphic.PrintBuffer;
+import graphic.PrintBufferInterface;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -55,7 +55,7 @@ public class ClothoidesComputer implements Service, HighPFClass
 {
 	private Log log;
 	private CinemObsMM memory;
-	private PrintBuffer buffer;
+	private PrintBufferInterface buffer;
 	
 	private BigDecimal x, y; // utilisés dans le calcul de trajectoire
 	private static final int S_MAX = 10; // courbure max qu'on puisse gérer
@@ -70,7 +70,7 @@ public class ClothoidesComputer implements Service, HighPFClass
 //	private double distanceArriereAuRoues; // la distance entre la position du robot et ses roues directrices
 	private Vec2RO[] trajectoire = new Vec2RO[2 * INDICE_MAX - 1];
 	
-	public ClothoidesComputer(Log log, CinemObsMM memory, PrintBuffer buffer)
+	public ClothoidesComputer(Log log, CinemObsMM memory, PrintBufferInterface buffer)
 	{
 		this.memory = memory;
 		this.log = log;

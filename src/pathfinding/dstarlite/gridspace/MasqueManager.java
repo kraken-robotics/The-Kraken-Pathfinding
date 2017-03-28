@@ -24,7 +24,7 @@ import config.Config;
 import config.ConfigInfo;
 import container.Service;
 import container.dependances.LowPFClass;
-import graphic.PrintBuffer;
+import graphic.PrintBufferInterface;
 import utils.Log;
 import utils.Vec2RO;
 
@@ -39,13 +39,13 @@ public class MasqueManager implements Service, LowPFClass
 	private int centreMasqueEnnemi, centreMasqueCylindre;
 	private PointGridSpaceManager pointManager;
 	private PointDirigeManager pointDManager;
-	private PrintBuffer buffer;
+	private PrintBufferInterface buffer;
 	protected Log log;
 	private List<PointDirige> modelEnnemi = new ArrayList<PointDirige>();
 	private List<PointDirige> modelCylindre = new ArrayList<PointDirige>();
 	private boolean printObsCapteurs;
 	
-	public MasqueManager(Log log, PointGridSpaceManager pointManager, PointDirigeManager pointDManager, PrintBuffer buffer, Config config)
+	public MasqueManager(Log log, PointGridSpaceManager pointManager, PointDirigeManager pointDManager, PrintBufferInterface buffer, Config config)
 	{
 		this.log = log;
 		this.pointManager = pointManager;

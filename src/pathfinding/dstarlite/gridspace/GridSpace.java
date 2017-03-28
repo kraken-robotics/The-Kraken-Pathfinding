@@ -18,7 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 package pathfinding.dstarlite.gridspace;
 
 import graphic.Fenetre;
-import graphic.PrintBuffer;
+import graphic.PrintBufferInterface;
 import graphic.printable.Couleur;
 import graphic.printable.Layer;
 import graphic.printable.Printable;
@@ -57,7 +57,7 @@ public class GridSpace implements Service, Printable, LowPFClass
 	private ObstaclesMemory obstaclesMemory;
 	private PointGridSpaceManager pointManager;
 	private MasqueManager masquemanager;
-	private PrintBuffer buffer;
+	private PrintBufferInterface buffer;
 
 	private int distanceMinimaleEntreProximite;
 	private int rayonRobot;
@@ -70,7 +70,7 @@ public class GridSpace implements Service, Printable, LowPFClass
 	private BitSet[] newOldObstacles = new BitSet[2];
 	private Couleur[] grid = new Couleur[PointGridSpace.NB_POINTS];
 
-	public GridSpace(Log log, ObstaclesIteratorPresent iteratorDStarLiteFirst, ObstaclesIteratorPresent iteratorDStarLiteLast, ObstaclesIteratorPresent iteratorRemoveNearby, ObstaclesMemory obstaclesMemory, PointGridSpaceManager pointManager, PrintBuffer buffer, MasqueManager masquemanager, Config config)
+	public GridSpace(Log log, ObstaclesIteratorPresent iteratorDStarLiteFirst, ObstaclesIteratorPresent iteratorDStarLiteLast, ObstaclesIteratorPresent iteratorRemoveNearby, ObstaclesMemory obstaclesMemory, PointGridSpaceManager pointManager, PrintBufferInterface buffer, MasqueManager masquemanager, Config config)
 	{
 		this.obstaclesMemory = obstaclesMemory;
 		this.log = log;

@@ -42,7 +42,7 @@ import config.ConfigInfo;
 import container.Service;
 import container.dependances.HighPFClass;
 import exceptions.PathfindingException;
-import graphic.PrintBuffer;
+import graphic.PrintBufferInterface;
 import robot.Cinematique;
 import robot.CinematiqueObs;
 import robot.Robot;
@@ -62,7 +62,7 @@ public class AStarCourbe implements Service, HighPFClass
 	private DStarLite dstarlite;
 	private RealGameState state;
 	private NodeMM memorymanager;
-	private PrintBuffer buffer;
+	private PrintBufferInterface buffer;
 	private AStarCourbeNode depart;
 	private AStarCourbeNode trajetDeSecours;
 	private CheminPathfinding realChemin;
@@ -105,7 +105,7 @@ public class AStarCourbe implements Service, HighPFClass
 	/**
 	 * Constructeur du AStarCourbe
 	 */
-	public AStarCourbe(Log log, DStarLite dstarlite, ArcManager arcmanager, RealGameState state, CheminPathfinding chemin, NodeMM memorymanager, CinemObsMM rectMemory, PrintBuffer buffer, CercleArrivee cercle, ChronoGameState chrono, Config config)
+	public AStarCourbe(Log log, DStarLite dstarlite, ArcManager arcmanager, RealGameState state, CheminPathfinding chemin, NodeMM memorymanager, CinemObsMM rectMemory, PrintBufferInterface buffer, CercleArrivee cercle, ChronoGameState chrono, Config config)
 	{
 		this.log = log;
 		this.arcmanager = arcmanager;

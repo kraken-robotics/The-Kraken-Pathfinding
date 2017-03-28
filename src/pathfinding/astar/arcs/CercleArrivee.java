@@ -26,7 +26,7 @@ import container.Service;
 import container.dependances.HighPFClass;
 import container.dependances.LowPFClass;
 import graphic.Fenetre;
-import graphic.PrintBuffer;
+import graphic.PrintBufferInterface;
 import graphic.printable.Couleur;
 import graphic.printable.Layer;
 import graphic.printable.Printable;
@@ -57,9 +57,9 @@ public class CercleArrivee implements Service, Printable, HighPFClass, LowPFClas
 	private boolean symetrie = false;
 	
 	protected Log log;
-	private PrintBuffer buffer;
+	private PrintBufferInterface buffer;
 	
-	public CercleArrivee(Log log, PrintBuffer buffer, Config config)
+	public CercleArrivee(Log log, PrintBufferInterface buffer, Config config)
 	{
 		this.log = log;
 		this.buffer = buffer;

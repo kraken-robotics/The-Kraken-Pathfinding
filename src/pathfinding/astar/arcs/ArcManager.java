@@ -40,7 +40,7 @@ import config.Config;
 import config.ConfigInfo;
 import container.Service;
 import container.dependances.HighPFClass;
-import graphic.PrintBuffer;
+import graphic.PrintBufferInterface;
 import obstacles.types.ObstacleArcCourbe;
 import obstacles.types.ObstaclesFixes;
 import utils.Log;
@@ -56,7 +56,7 @@ public class ArcManager implements Service, HighPFClass
 	protected Log log;
 	private ClothoidesComputer clotho;
 	protected BezierComputer bezier;
-	private PrintBuffer buffer;
+	private PrintBufferInterface buffer;
 	private Table table;
 	private AStarCourbeNode current;
 	private DStarLite dstarlite;
@@ -71,7 +71,7 @@ public class ArcManager implements Service, HighPFClass
 	private List<VitesseCourbure> listeVitesse = new ArrayList<VitesseCourbure>();
 	private ListIterator<VitesseCourbure> iterator = listeVitesse.listIterator();
 	
-	public ArcManager(Log log, ClothoidesComputer clotho, Table table, PrintBuffer buffer, DStarLite dstarlite, BezierComputer bezier, CercleArrivee cercle, Config config)
+	public ArcManager(Log log, ClothoidesComputer clotho, Table table, PrintBufferInterface buffer, DStarLite dstarlite, BezierComputer bezier, CercleArrivee cercle, Config config)
 	{
 		this.bezier = bezier;
 		this.table = table;

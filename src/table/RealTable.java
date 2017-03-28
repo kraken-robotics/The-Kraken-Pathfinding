@@ -25,7 +25,7 @@ import config.Config;
 import config.ConfigInfo;
 import container.Service;
 import container.dependances.CoreClass;
-import graphic.PrintBuffer;
+import graphic.PrintBufferInterface;
 import pathfinding.dstarlite.gridspace.MasqueManager;
 import pathfinding.dstarlite.gridspace.PointDirige;
 import pathfinding.dstarlite.gridspace.PointGridSpace;
@@ -39,7 +39,7 @@ import utils.Log;
 
 public class RealTable extends Table implements Service, CoreClass
 {
-	private PrintBuffer buffer;
+	private PrintBufferInterface buffer;
 	private boolean print;
 	private long lastEtatTableDStarLite = 0;
 	private boolean lastShoot = true;
@@ -47,7 +47,7 @@ public class RealTable extends Table implements Service, CoreClass
 	private BitSet newObstacles = new BitSet(PointGridSpace.NB_POINTS * 8);
 	private BitSet oldObstacles = new BitSet(PointGridSpace.NB_POINTS * 8);
 
-	public RealTable(Log log, PrintBuffer buffer, MasqueManager masquemanager, Config config)
+	public RealTable(Log log, PrintBufferInterface buffer, MasqueManager masquemanager, Config config)
 	{
 		super(log);
 		this.buffer = buffer;
