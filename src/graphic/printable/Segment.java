@@ -58,5 +58,11 @@ public class Segment implements Printable, Serializable
 	{
 		return l;
 	}
+	
+	@Override
+	public String toString()
+	{
+		return "Segment entre "+a+" et "+b;
+	}
 
 }

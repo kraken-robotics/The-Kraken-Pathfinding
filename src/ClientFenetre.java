@@ -20,12 +20,14 @@ import java.io.ObjectInputStream;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.List;
 
 import config.ConfigInfo;
 import container.Container;
 import exceptions.ContainerException;
 import graphic.Fenetre;
 import graphic.PrintBuffer;
+import graphic.printable.Layer;
 import graphic.printable.Printable;
 import robot.Cinematique;
 import robot.RobotReal;
@@ -117,26 +119,28 @@ public class ClientFenetre
 				try {
 					while(true)
 					{
-						byte val = in.readByte();
-						if(val == 'B')
+						
+						log.debug("Refresh");
+						@SuppressWarnings("unchecked")
+						List<Object> tab = (List<Object>) in.readObject();
+						buffer.clearSupprimables();
+						log.debug("Taille : "+tab.size());
+						int i = 0;
+						while(i < tab.size())
 						{
-							buffer.clearSupprimables();
-							
-							log.debug("Refresh");
-							Object[] tab = (Object[]) in.readObject();
-							log.debug("Taille : "+tab.length);
-	 						for(Object o : tab)
-	 						{
-	 							if(o instanceof Cinematique)
-	 								robot.setCinematique((Cinematique)o);
-	 							else if(o instanceof Printable)
-	 								buffer.add((Printable)o);
-	 							else
-	 								log.critical("Erreur ! Objet non affichable : "+o.getClass());
-	 						}
-						}
-						else
-							log.warning("val = "+val);
+							Object o = tab.get(i++);
+							log.debug(o);
+ 							if(o instanceof Cinematique)
+ 								robot.setCinematique((Cinematique)o);
+ 							else if(o instanceof Printable)
+ 							{
+ 								Layer l = (Layer) tab.get(i++);
+ 								log.debug("Layer "+l);
+ 								buffer.addSupprimable((Printable)o, l);
+ 							}
+ 							else
+ 								log.critical("Erreur ! Objet non affichable : "+o.getClass());
+ 						}
 					}
 				} catch (IOException e) {
 					log.warning("Le serveur a coupé la connexion : "+e);

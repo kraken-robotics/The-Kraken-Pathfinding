@@ -23,8 +23,13 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import graphic.printable.Couleur;
 import graphic.printable.Layer;
 import graphic.printable.Printable;
+import obstacles.types.ObstacleCircular;
+import pathfinding.chemin.CheminPathfinding;
+import pathfinding.chemin.IteratorCheminPathfinding;
+import robot.Cinematique;
 import robot.RobotReal;
 import utils.Log;
 
@@ -38,6 +43,7 @@ public class ExternalPrintBuffer implements PrintBufferInterface {
 	private List<ArrayList<Serializable>> elementsAffichablesSupprimables = new ArrayList<ArrayList<Serializable>>();
 	private List<ArrayList<Serializable>> elementsAffichables = new ArrayList<ArrayList<Serializable>>();
 	private RobotReal robot = null;
+	private IteratorCheminPathfinding iterChemin = null;
 	
 	protected Log log;
 	
@@ -97,12 +103,15 @@ public class ExternalPrintBuffer implements PrintBufferInterface {
 	{
 		if(o instanceof RobotReal)
 		{
-			robot = ((RobotReal)o);
+			robot = ((RobotReal) o);
 			notify();
+		}
+		else if(o instanceof CheminPathfinding)
+		{
+			iterChemin = new IteratorCheminPathfinding((CheminPathfinding) o);
 		}
 		else if(o instanceof Serializable)
 		{
-//			log.debug(o.getClass());
 			list.get(l.ordinal()).add((Serializable)o);
 			notify();
 		}
@@ -125,26 +134,40 @@ public class ExternalPrintBuffer implements PrintBufferInterface {
 	 * @param out
 	 * @throws IOException 
 	 */
-	public void send(ObjectOutputStream out) throws IOException
+	public synchronized void send(ObjectOutputStream out) throws IOException
 	{
-		int nb = 1;
-		for(int i = 1 ; i < Layer.values().length; i++)
-			nb += elementsAffichablesSupprimables.get(i).size() + elementsAffichables.get(i).size();
-		Object[] o = new Object[nb];
-		// start + background
-		out.writeByte('B');
+		ArrayList<Serializable> o = new ArrayList<Serializable>();
 		
-		int j = 0;
-		o[j++] = robot.getCinematique();
+		if(robot != null)
+			o.add(robot.getCinematique());
+		
 		// on commence à 1 et pas à 0 car l'arrière-plan a un traitement particulier (c'est le seul Printable de Layer 0)
 		for(int i = 1 ; i < Layer.values().length; i++)
 		{
 			for(Serializable p : elementsAffichablesSupprimables.get(i))
-				o[j++] = p;
+			{
+				o.add(p);
+				o.add(Layer.values()[i]);
+			}
 
 			for(Serializable p : elementsAffichables.get(i))
-				o[j++] = p;
+			{
+				o.add(p);
+				o.add(Layer.values()[i]);
+			}
 		}
+		
+		if(iterChemin != null)
+		{
+			iterChemin.reinit();
+			while(iterChemin.hasNext())
+			{
+				Cinematique a = iterChemin.next();
+				o.add(new ObstacleCircular(a.getPosition(), 8, Couleur.TRAJECTOIRE));
+				o.add(Layer.MIDDLE);
+			}
+		}
+		
 		out.writeObject(o);
 		out.flush(); // on force l'envoi !
 	}
