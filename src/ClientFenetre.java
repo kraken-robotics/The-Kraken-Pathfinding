@@ -85,7 +85,10 @@ public class ClientFenetre
 				}
 				
 				if(rpiAdresse == null) // par défaut, la raspi (ip fixe)
+				{
 					rpiAdresse = InetAddress.getByAddress(new byte[]{(byte)172,24,1,1});
+					log.debug("Utilisation de l'adresse par défaut : "+rpiAdresse);
+				}
 			} catch (UnknownHostException e) {
 				log.critical("La recherche du serveur a échoué ! "+e);
 				return;
@@ -119,28 +122,29 @@ public class ClientFenetre
 				try {
 					while(true)
 					{
-						
-						log.debug("Refresh");
 						@SuppressWarnings("unchecked")
 						List<Object> tab = (List<Object>) in.readObject();
-						buffer.clearSupprimables();
-						log.debug("Taille : "+tab.size());
-						int i = 0;
-						while(i < tab.size())
+						synchronized(buffer)
 						{
-							Object o = tab.get(i++);
-							log.debug(o);
- 							if(o instanceof Cinematique)
- 								robot.setCinematique((Cinematique)o);
- 							else if(o instanceof Printable)
- 							{
- 								Layer l = (Layer) tab.get(i++);
- 								log.debug("Layer "+l);
- 								buffer.addSupprimable((Printable)o, l);
- 							}
- 							else
- 								log.critical("Erreur ! Objet non affichable : "+o.getClass());
- 						}
+							buffer.clearSupprimables();
+							int i = 0;
+							while(i < tab.size())
+							{
+								Object o = tab.get(i++);
+	 							if(o instanceof Cinematique)
+	 							{
+//	 								log.debug("Cinématique ! "+((Cinematique)o).getPosition());
+	 								robot.setCinematique((Cinematique)o);
+	 							}
+	 							else if(o instanceof Printable)
+	 							{
+	 								Layer l = (Layer) tab.get(i++);
+	 								buffer.addSupprimable((Printable)o, l);
+	 							}
+	 							else
+	 								log.critical("Erreur ! Objet non affichable : "+o.getClass());
+	 						}
+						}
 					}
 				} catch (IOException e) {
 					log.warning("Le serveur a coupé la connexion : "+e);

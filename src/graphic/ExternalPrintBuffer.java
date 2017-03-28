@@ -139,10 +139,12 @@ public class ExternalPrintBuffer implements PrintBufferInterface {
 		ArrayList<Serializable> o = new ArrayList<Serializable>();
 		
 		if(robot != null)
+		{
 			o.add(robot.getCinematique());
+//			log.debug(o.get(0));
+		}
 		
-		// on commence à 1 et pas à 0 car l'arrière-plan a un traitement particulier (c'est le seul Printable de Layer 0)
-		for(int i = 1 ; i < Layer.values().length; i++)
+		for(int i = 0 ; i < Layer.values().length; i++)
 		{
 			for(Serializable p : elementsAffichablesSupprimables.get(i))
 			{
