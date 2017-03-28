@@ -31,7 +31,6 @@ import robot.RobotReal;
 
 public class BackgroundImage implements Printable
 {
-	private static final long serialVersionUID = -6982892108671868695L;
 	private Image image;
 
 	public BackgroundImage(Image image)

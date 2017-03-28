@@ -19,6 +19,7 @@ package graphic.printable;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.io.Serializable;
 
 import graphic.Fenetre;
 import robot.RobotReal;
@@ -30,10 +31,9 @@ import utils.Vec2RO;
  *
  */
 
-public class Segment implements Printable
+public class Segment implements Printable, Serializable
 {
-	private static final long serialVersionUID = 3703333390792149374L;
-
+	private static final long serialVersionUID = 3887897521575363643L;
 	private Vec2RO a, b;
 	private Layer l;
 	private Color c;

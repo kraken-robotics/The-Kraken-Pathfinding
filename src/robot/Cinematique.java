@@ -18,6 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 package robot;
 
 import java.awt.Graphics;
+import java.io.Serializable;
 
 import graphic.Fenetre;
 import graphic.printable.Layer;
@@ -32,7 +33,7 @@ import utils.Vec2RW;
  *
  */
 
-public class Cinematique implements Printable
+public class Cinematique implements Printable, Serializable
 {
 	private static final long serialVersionUID = 1548985891767047059L;
 	protected final Vec2RW position = new Vec2RW();

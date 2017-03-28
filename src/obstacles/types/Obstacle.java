@@ -21,6 +21,7 @@ import java.awt.Color;
 import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 
 import javax.imageio.ImageIO;
 
@@ -40,13 +41,13 @@ import utils.Vec2RW;
  *
  */
 
-public abstract class Obstacle implements Printable
+public abstract class Obstacle implements Printable, Serializable
 {
 	private static final long serialVersionUID = -2508727703931042322L;
 	protected Vec2RW position;
-	protected int distance_dilatation;
-	protected transient static Log log;
-	protected transient static PrintBufferInterface buffer;
+	protected transient int distance_dilatation;
+	protected static Log log;
+	protected static PrintBufferInterface buffer;
 
 	// Pour l'affichage du robot
 	protected static Image imageRobot = null, imageRobotRoueG = null, imageRobotRoueD = null;

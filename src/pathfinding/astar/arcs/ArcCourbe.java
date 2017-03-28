@@ -27,7 +27,6 @@ import graphic.printable.Layer;
 import graphic.printable.Printable;
 import config.Config;
 import config.ConfigInfo;
-import robot.Cinematique;
 import robot.CinematiqueObs;
 import robot.RobotReal;
 
@@ -39,7 +38,6 @@ import robot.RobotReal;
 
 public abstract class ArcCourbe implements Printable
 {
-	private static final long serialVersionUID = -1085335717652202571L;
 	//	public ObstacleArcCourbe obstacle = new ObstacleArcCourbe();
 	protected static int tempsArret;
 	public VitesseCourbure vitesse; // utilisé pour le debug

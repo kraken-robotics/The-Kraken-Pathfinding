@@ -40,7 +40,6 @@ import robot.RobotReal;
 
 public class AStarCourbeNode implements Memorizable, Printable
 {
-	private static final long serialVersionUID = -7657169402141613397L;
 	public ChronoGameState state;
 	public double g_score; // distance du point de départ à ce point
 	public double f_score; // g_score + heuristique = meilleure distance qu'on peut espérer avec ce point

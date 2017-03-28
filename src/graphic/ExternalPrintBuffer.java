@@ -19,11 +19,13 @@ package graphic;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import graphic.printable.Layer;
 import graphic.printable.Printable;
+import robot.RobotReal;
 import utils.Log;
 
 /**
@@ -33,9 +35,10 @@ import utils.Log;
  */
 
 public class ExternalPrintBuffer implements PrintBufferInterface {
-	private List<ArrayList<Printable>> elementsAffichablesSupprimables = new ArrayList<ArrayList<Printable>>();
-	private List<ArrayList<Printable>> elementsAffichables = new ArrayList<ArrayList<Printable>>();
-
+	private List<ArrayList<Serializable>> elementsAffichablesSupprimables = new ArrayList<ArrayList<Serializable>>();
+	private List<ArrayList<Serializable>> elementsAffichables = new ArrayList<ArrayList<Serializable>>();
+	private RobotReal robot = null;
+	
 	protected Log log;
 	
 	public ExternalPrintBuffer(Log log)
@@ -43,8 +46,8 @@ public class ExternalPrintBuffer implements PrintBufferInterface {
 		this.log = log;
 		for(int i = 0 ; i < Layer.values().length; i++)
 		{
-			elementsAffichablesSupprimables.add(new ArrayList<Printable>());
-			elementsAffichables.add(new ArrayList<Printable>());
+			elementsAffichablesSupprimables.add(new ArrayList<Serializable>());
+			elementsAffichables.add(new ArrayList<Serializable>());
 		}
 	}
 
@@ -67,8 +70,7 @@ public class ExternalPrintBuffer implements PrintBufferInterface {
 	@Override
 	public synchronized void addSupprimable(Printable o)
 	{
-		elementsAffichablesSupprimables.get(o.getLayer().ordinal()).add(o);
-		notify();
+		addSupprimable(o, o.getLayer());
 	}
 
 	/**
@@ -78,8 +80,7 @@ public class ExternalPrintBuffer implements PrintBufferInterface {
 	@Override
 	public synchronized void addSupprimable(Printable o, Layer l)
 	{
-		elementsAffichablesSupprimables.get(l.ordinal()).add(o);
-		notify();
+		add(o, l, elementsAffichablesSupprimables);
 	}
 
 	/**
@@ -89,8 +90,22 @@ public class ExternalPrintBuffer implements PrintBufferInterface {
 	@Override
 	public synchronized void add(Printable o)
 	{
-		elementsAffichables.get(o.getLayer().ordinal()).add(o);
-		notify();
+		add(o, o.getLayer(), elementsAffichables);
+	}
+	
+	private void add(Printable o, Layer l, List<ArrayList<Serializable>> list)
+	{
+		if(o instanceof RobotReal)
+		{
+			robot = ((RobotReal)o);
+			notify();
+		}
+		else if(o instanceof Serializable)
+		{
+//			log.debug(o.getClass());
+			list.get(l.ordinal()).add((Serializable)o);
+			notify();
+		}
 	}
 
 	/**
@@ -112,7 +127,7 @@ public class ExternalPrintBuffer implements PrintBufferInterface {
 	 */
 	public void send(ObjectOutputStream out) throws IOException
 	{
-		int nb = 0;
+		int nb = 1;
 		for(int i = 1 ; i < Layer.values().length; i++)
 			nb += elementsAffichablesSupprimables.get(i).size() + elementsAffichables.get(i).size();
 		Object[] o = new Object[nb];
@@ -120,13 +135,14 @@ public class ExternalPrintBuffer implements PrintBufferInterface {
 		out.writeByte('B');
 		
 		int j = 0;
+		o[j++] = robot.getCinematique();
 		// on commence à 1 et pas à 0 car l'arrière-plan a un traitement particulier (c'est le seul Printable de Layer 0)
 		for(int i = 1 ; i < Layer.values().length; i++)
 		{
-			for(Printable p : elementsAffichablesSupprimables.get(i))
+			for(Serializable p : elementsAffichablesSupprimables.get(i))
 				o[j++] = p;
 
-			for(Printable p : elementsAffichables.get(i))
+			for(Serializable p : elementsAffichables.get(i))
 				o[j++] = p;
 		}
 		out.writeObject(o);

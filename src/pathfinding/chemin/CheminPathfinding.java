@@ -50,7 +50,6 @@ import exceptions.PathfindingException;
 
 public class CheminPathfinding implements Service, Printable, HighPFClass, CheminPathfindingInterface
 {
-	private static final long serialVersionUID = -1262030665002918292L;
 	protected Log log;
 	private BufferOutgoingOrder out;
 	private ObstaclesIteratorPresent iterObstacles;

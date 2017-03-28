@@ -25,6 +25,10 @@ import config.ConfigInfo;
 import container.Container;
 import exceptions.ContainerException;
 import graphic.Fenetre;
+import graphic.PrintBuffer;
+import graphic.printable.Printable;
+import robot.Cinematique;
+import robot.RobotReal;
 import utils.Log;
 
 /**
@@ -43,6 +47,8 @@ public class ClientFenetre
 			ConfigInfo.GRAPHIC_EXTERNAL.setDefaultValue(false);
 			Container container = new Container();
 			Fenetre f = container.getService(Fenetre.class);
+			PrintBuffer buffer = container.getService(PrintBuffer.class);
+			RobotReal robot = container.getService(RobotReal.class);
 			Log log = container.getService(Log.class);
 			InetAddress rpiAdresse = null;
 			boolean loop = false;
@@ -114,11 +120,20 @@ public class ClientFenetre
 						byte val = in.readByte();
 						if(val == 'B')
 						{
+							buffer.clearSupprimables();
+							
 							log.debug("Refresh");
 							Object[] tab = (Object[]) in.readObject();
 							log.debug("Taille : "+tab.length);
 	 						for(Object o : tab)
-	 							log.debug(o);
+	 						{
+	 							if(o instanceof Cinematique)
+	 								robot.setCinematique((Cinematique)o);
+	 							else if(o instanceof Printable)
+	 								buffer.add((Printable)o);
+	 							else
+	 								log.critical("Erreur ! Objet non affichable : "+o.getClass());
+	 						}
 						}
 						else
 							log.warning("val = "+val);
