@@ -19,7 +19,6 @@ package pathfinding;
 
 import container.Service;
 import container.dependances.HighPFClass;
-import scripts.Script;
 
 /**
  * Classe qui permet de transférer les instructions du pathfinding au thread qui s'en occupe

@@ -235,7 +235,7 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 		ArcCourbeDynamique arc[] = new ArcCourbeDynamique[nbArc];
 
 		Cinematique c = new Cinematique(-200, 1000, Math.PI, true, -1, Speed.STANDARD.translationalSpeed);
-		cercle.set(GameElementNames.MINERAI_CRATERE_HAUT_GAUCHE);
+		cercle.set(GameElementNames.MINERAI_CRATERE_HAUT_GAUCHE, 250);
 		log.debug("Initial : "+c);
 		arc[0] = bezier.interpolationQuadratiqueCercle(c, Speed.STANDARD);
 		
@@ -427,7 +427,7 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 		long avant = System.nanoTime();
 		Cinematique depart = new Cinematique(-800, 350, Math.PI/2, true, 0, Speed.STANDARD.translationalSpeed);
 		robot.setCinematique(depart);
-		cercle.set(GameElementNames.MINERAI_CRATERE_HAUT_GAUCHE);
+		cercle.set(GameElementNames.MINERAI_CRATERE_HAUT_GAUCHE, 250);
 		astar.initializeNewSearchToCircle(true, state);
 		astar.process(chemin);
 		log.debug("Temps : "+(System.nanoTime() - avant) / (1000000.));
@@ -452,7 +452,7 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 		long avant = System.nanoTime();
 		Cinematique depart = new Cinematique(-800, 350, Math.PI/2, true, 0, Speed.STANDARD.translationalSpeed);
 		robot.setCinematique(depart);
-		cercle.set(GameElementNames.MINERAI_CRATERE_HAUT_DROITE);
+		cercle.set(GameElementNames.MINERAI_CRATERE_HAUT_DROITE, 250);
 		astar.initializeNewSearchToCircle(false, state);
 		astar.process(chemin);
 		log.debug("Temps : "+(System.nanoTime() - avant) / (1000000.));
@@ -477,7 +477,7 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 		long avant = System.nanoTime();
 		Cinematique depart = new Cinematique(-800, 350, Math.PI/2, true, 0, Speed.STANDARD.translationalSpeed);
 		robot.setCinematique(depart);
-		cercle.set(GameElementNames.MINERAI_CRATERE_BAS_DROITE);
+		cercle.set(GameElementNames.MINERAI_CRATERE_BAS_DROITE, 250);
 		astar.initializeNewSearchToCircle(true, state);
 		astar.process(chemin);
 		log.debug("Temps : "+(System.nanoTime() - avant) / (1000000.));

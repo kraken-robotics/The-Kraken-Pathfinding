@@ -51,7 +51,6 @@ public class CercleArrivee implements Service, Printable, HighPFClass, LowPFClas
 	public Vec2RO arriveeDStarLite;
 	public SensFinal sens;
 	
-	private double rayonDefaut;
 	private boolean graphic;
 	private boolean symetrie = false;
 	
@@ -62,12 +61,11 @@ public class CercleArrivee implements Service, Printable, HighPFClass, LowPFClas
 	{
 		this.log = log;
 		this.buffer = buffer;
-		rayonDefaut = config.getInt(ConfigInfo.RAYON_CERCLE_ARRIVEE_PF);
 		graphic = config.getBoolean(ConfigInfo.GRAPHIC_CERCLE_ARRIVEE);
 		if(graphic)
 			buffer.add(this);	}
 	
-	private void set(Vec2RO position, double orientationArriveeDStarLite, double rayon, SensFinal sens)
+	public void set(Vec2RO position, double orientationArriveeDStarLite, double rayon, SensFinal sens)
 	{
 		this.position = new Vec2RO(symetrie ? -position.getX() : position.getX(), position.getY());
 		this.arriveeDStarLite = new Vec2RW(rayon, symetrie ? Math.PI - orientationArriveeDStarLite : orientationArriveeDStarLite, false);
@@ -82,9 +80,9 @@ public class CercleArrivee implements Service, Printable, HighPFClass, LowPFClas
 		log.debug("arriveeDStarLite : "+arriveeDStarLite);
 	}
 	
-	public void set(GameElementNames element)
+	public void set(GameElementNames element, double rayon)
 	{
-		set(element.obstacle.getPosition(), element.orientationArriveeDStarLite, rayonDefaut, SensFinal.MARCHE_ARRIERE);
+		set(element.obstacle.getPosition(), element.orientationArriveeDStarLite, rayon, SensFinal.MARCHE_ARRIERE);
 	}
 
 	private Vec2RW tmp = new Vec2RW();

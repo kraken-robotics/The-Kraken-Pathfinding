@@ -33,12 +33,9 @@ import exceptions.PathfindingException;
 import pathfinding.astar.AStarCourbe;
 import pathfinding.chemin.CheminPathfinding;
 import pathfinding.chemin.FakeCheminPathfinding;
-import pathfinding.chemin.IteratorCheminPathfinding;
 import robot.Cinematique;
 import robot.CinematiqueObs;
-import robot.RobotChrono;
 import robot.Speed;
-import scripts.Script;
 import scripts.ScriptDeposeMinerai;
 import scripts.ScriptManager;
 import utils.Log;
@@ -97,7 +94,7 @@ public class PathCache implements Service, HighPFClass
 	}
 	
 	/**
-	 * Prépare un chemin et l'enregistre
+	 * Prépare un chemin
 	 * @param cinematiqueInitiale
 	 * @param s
 	 * @param shoot
@@ -106,9 +103,15 @@ public class PathCache implements Service, HighPFClass
 	 */
 	public void prepareNewPathToScript(KeyPathCache k) throws PathfindingException, InterruptedException
 	{
-		k.s.setUpCercleArrivee();
-		astar.initializeNewSearchToCircle(k.shoot, k.chrono);
-		astar.process(fakeChemin);
+		LinkedList<CinematiqueObs> path = paths.get(k);
+		if(path == null)
+		{
+			k.s.setUpCercleArrivee();
+			astar.initializeNewSearchToCircle(k.shoot, k.chrono);
+			astar.process(fakeChemin);
+		}
+		else
+			log.debug("Utilisation d'un trajet précalculé !");
 	}
 	
 	/**
@@ -151,21 +154,28 @@ public class PathCache implements Service, HighPFClass
 						k.chrono.robot.setCinematique(start);
 						prepareNewPathToScript(k);
 						path = fakeChemin.getPath();
-//						savePath(k, path); // TODO
-						
-						// TODO : affichage à virer
-						realChemin.add(path);
+						savePath(k, path);
 					} catch (PathfindingException e) {
 						log.critical("Le précalcul du chemin a échoué : "+e);
 					}
 					finally
 					{
-						Thread.sleep(2000);
 						astar.stopContinuousSearch();
 					}
 				}
 				if(path != null)
+				{
 					paths.put(k, path);
+					// TODO : affichage à virer
+/*					realChemin.clear();
+					try {
+						realChemin.add(path);
+						Thread.sleep(2000);
+					} catch (PathfindingException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}*/
+				}
 			}
 		}
 	}
