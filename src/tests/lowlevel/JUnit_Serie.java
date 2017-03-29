@@ -152,5 +152,6 @@ public class JUnit_Serie extends JUnit_Test {
 		Thread.sleep(2000);
 		data.traverseBascule();
 		Thread.sleep(2000);
+		data.funnyAction();
 	}
 }

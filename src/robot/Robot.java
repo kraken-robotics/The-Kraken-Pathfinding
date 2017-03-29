@@ -134,7 +134,12 @@ public abstract class Robot implements DynamicConfigurable
 	public void traverseBascule() throws InterruptedException
 	{
 		bloque("traverseBascule");
-	}	
+	}
+	
+	public void funnyAction() throws InterruptedException
+	{
+		bloque("funnyAction");
+	}
 	
 	/**
 	 * Géré par le capteur de jauge
