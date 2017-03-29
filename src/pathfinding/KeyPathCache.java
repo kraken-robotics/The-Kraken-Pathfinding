@@ -25,14 +25,14 @@ import scripts.Script;
  *
  */
 
-public class Key
+public class KeyPathCache
 {
 	public Integer cinem;
 	public Script s;
 	public ChronoGameState chrono;
 	public boolean shoot;
 	
-	public Key(ChronoGameState chrono, Script s, boolean shoot)
+	public KeyPathCache(ChronoGameState chrono, Script s, boolean shoot)
 	{
 		this.chrono = chrono;
 		this.cinem = chrono.robot.getCinematique().codeForPFCache();
@@ -49,7 +49,7 @@ public class Key
 	@Override
 	public boolean equals(Object o)
 	{
-		return o instanceof Key && ((Key)o).shoot == shoot && ((Key)o).s == s && ((Key)o).cinem == cinem;
+		return o instanceof KeyPathCache && ((KeyPathCache)o).shoot == shoot && ((KeyPathCache)o).s == s && ((KeyPathCache)o).cinem == cinem;
 	}
 	
 	@Override

@@ -29,16 +29,16 @@ import scripts.Script;
 
 public class PFInstruction implements Service, HighPFClass
 {
-	private Key k;
+	private KeyPathCache k;
 
-	public void set(Key k)
+	public void set(KeyPathCache k)
 	{
 		this.k = k;
 	}
 	
-	public Key getKey()
+	public KeyPathCache getKey()
 	{
-		Key out = k;
+		KeyPathCache out = k;
 		k = null;
 		return out;
 	}
