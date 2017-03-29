@@ -27,34 +27,42 @@ import scripts.Script;
 
 public class KeyPathCache
 {
-	public Integer cinem;
 	public Script s;
-	public ChronoGameState chrono;
+	public final ChronoGameState chrono;
 	public boolean shoot;
 	
 	public KeyPathCache(ChronoGameState chrono, Script s, boolean shoot)
 	{
 		this.chrono = chrono;
-		this.cinem = chrono.robot.getCinematique().codeForPFCache();
 		this.s = s;
 		this.shoot = shoot;
 	}
 	
+	public int getCinem()
+	{
+		return chrono.robot.getCinematique().codeForPFCache();
+	}
+	
+	public KeyPathCache(ChronoGameState chrono)
+	{
+		this.chrono = chrono;
+	}
+
 	@Override
 	public int hashCode()
 	{
-		return (cinem + s.hashCode()) * 2 + (shoot ? 1 : 0);
+		return (getCinem() + s.hashCode()) * 2 + (shoot ? 1 : 0);
 	}
 	
 	@Override
 	public boolean equals(Object o)
 	{
-		return o instanceof KeyPathCache && ((KeyPathCache)o).shoot == shoot && ((KeyPathCache)o).s == s && ((KeyPathCache)o).cinem == cinem;
+		return o instanceof KeyPathCache && ((KeyPathCache)o).shoot == shoot && ((KeyPathCache)o).s == s && ((KeyPathCache)o).getCinem() == getCinem();
 	}
 	
 	@Override
 	public String toString()
 	{
-		return s+"-"+cinem+"-"+shoot;
+		return s+"-"+getCinem()+"-"+shoot;
 	}
 }

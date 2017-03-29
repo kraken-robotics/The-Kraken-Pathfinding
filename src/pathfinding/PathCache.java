@@ -36,6 +36,7 @@ import pathfinding.chemin.FakeCheminPathfinding;
 import robot.Cinematique;
 import robot.CinematiqueObs;
 import robot.Speed;
+import scripts.Script;
 import scripts.ScriptDeposeMinerai;
 import scripts.ScriptManager;
 import utils.Log;
@@ -48,6 +49,7 @@ import utils.Log;
 
 public class PathCache implements Service, HighPFClass
 {
+	public static volatile boolean precompute = false;
 	private Log log;
 	private AStarCourbe astar;
 	private CheminPathfinding realChemin;
@@ -132,69 +134,108 @@ public class PathCache implements Service, HighPFClass
 		}
 	}
 	
+	private LinkedList<CinematiqueObs> loadOrCompute(KeyPathCache k) throws InterruptedException, PathfindingException
+	{
+		LinkedList<CinematiqueObs> path;
+		try {
+			path = loadPath(k);
+		} catch (ClassNotFoundException | IOException e1) {
+			
+			if(precompute)
+			{
+				log.warning("Calcul du chemin "+k);
+				try {
+					prepareNewPathToScript(k);
+					path = fakeChemin.getPath();
+					savePath(k, path);
+				}
+				finally
+				{
+					astar.stopContinuousSearch();
+				}
+			}
+			else
+			{
+				throw new PathfindingException("Chargement du chemin "+k+" échoué : abandon.");
+			}
+		}
+		return path;
+	}
+	
 	private void loadAll(ScriptManager smanager, ChronoGameState chrono, Cinematique start) throws InterruptedException
 	{
+		Script depose = smanager.getScripts().get("DEPOSE");
 		for(int i = 0; i < 2; i++)
 		{
 			smanager.reinit();
+			KeyPathCache k = new KeyPathCache(chrono);
 			while(smanager.hasNext())
 			{
-				KeyPathCache k = new KeyPathCache(chrono, smanager.next(), i == 0);
-				LinkedList<CinematiqueObs> path = loadPath(k);
+				k.chrono.robot.setCinematique(start);
+				k.s = smanager.next();
+				k.shoot = i == 0;
 
-				// TODO
-				if(k.s instanceof ScriptDeposeMinerai)
+				if(k.s instanceof ScriptDeposeMinerai) // c'est particulier
 					continue;
 				
-				log.debug(k);
-				if(path == null)
-				{
-					try {
-						k.chrono.robot.setCinematique(start);
-						prepareNewPathToScript(k);
-						path = fakeChemin.getPath();
-						savePath(k, path);
-					} catch (PathfindingException e) {
-						log.critical("Le précalcul du chemin a échoué : "+e);
-					}
-					finally
-					{
-						astar.stopContinuousSearch();
-					}
+				log.debug(k);				
+				LinkedList<CinematiqueObs> path;
+				try {
+					path = loadOrCompute(k);
+				} catch (PathfindingException e1) {
+					log.critical(e1);
+					continue;
 				}
-				if(path != null)
+				
+				paths.put(k, path);
+				// TODO : affichage à virer
+				realChemin.clear();
+				try {
+					realChemin.add(path);
+					Thread.sleep(2000);
+				} catch (PathfindingException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			
+				// calcul du chemin retour
+				k.chrono.robot.setCinematique(path.getLast());
+				k.s = depose;
+				for(int j = 0; j < 2; j++)
 				{
-					paths.put(k, path);
+					k.shoot = j == 0;
+					LinkedList<CinematiqueObs> pathRetour;
+					try {
+						pathRetour = loadOrCompute(k);
+					} catch (PathfindingException e1) {
+						log.critical(e1);
+						continue;
+					}
+					paths.put(k, pathRetour);
 					// TODO : affichage à virer
 					realChemin.clear();
 					try {
-						realChemin.add(path);
+						realChemin.add(pathRetour);
 						Thread.sleep(2000);
 					} catch (PathfindingException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
+	
 				}
+				
 			}
 		}
 	}
 	
 	@SuppressWarnings("unchecked")
-	private LinkedList<CinematiqueObs> loadPath(KeyPathCache k)
+	private LinkedList<CinematiqueObs> loadPath(KeyPathCache k) throws ClassNotFoundException, IOException
 	{
     	log.debug("Chargement d'une trajectoire : "+k.toString());
-        try {
-            FileInputStream fichier = new FileInputStream("paths/"+k.toString()+".dat");
-            ObjectInputStream ois = new ObjectInputStream(fichier);
-            LinkedList<CinematiqueObs> path = (LinkedList<CinematiqueObs>) ois.readObject();
-            ois.close();
-            return path;
-        }
-        catch(IOException | ClassNotFoundException e)
-        {
-        	log.critical("Chargement échoué ! "+e);
-        }
-        return null;
+        FileInputStream fichier = new FileInputStream("paths/"+k.toString()+".dat");
+        ObjectInputStream ois = new ObjectInputStream(fichier);
+        LinkedList<CinematiqueObs> path = (LinkedList<CinematiqueObs>) ois.readObject();
+        ois.close();
+        return path;
 	}
 	
 	/**
