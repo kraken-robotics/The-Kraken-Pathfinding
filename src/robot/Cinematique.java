@@ -100,6 +100,25 @@ public class Cinematique implements Printable, Serializable
 		return position+", "+orientationGeometrique+"(réelle : "+orientationReelle+"), "+(enMarcheAvant ? "marche avant" : "marche arrière")+", vitesse max : "+vitesseMax+" courbure : "+courbureGeometrique+"(réelle : "+courbureReelle+")";
 	}
 	
+	/**
+	 * Renvoie un code pour le cache de pathfinding
+	 * @return
+	 */
+	public int codeForPFCache()
+	{
+		int codeOrientation;
+		
+//		System.out.println("codeCourbure : "+codeCourbure+", "+courbure);
+		orientationGeometrique = orientationGeometrique % (2*Math.PI);
+		if(orientationGeometrique < 0)
+			orientationGeometrique += 2*Math.PI;
+		
+		codeOrientation = (int)(orientationGeometrique / (Math.PI / 6));
+//		System.out.println("codeOrientation : "+codeOrientation+" "+orientation);
+		
+		return ((((int)(position.getX()) + 1500) / 30) * 200 + (int)(position.getY()) / 30) * 16 + codeOrientation;
+	}
+	
 	@Override
 	public int hashCode() // TODO
 	{

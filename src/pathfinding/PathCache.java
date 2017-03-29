@@ -36,6 +36,7 @@ import pathfinding.chemin.FakeCheminPathfinding;
 import pathfinding.chemin.IteratorCheminPathfinding;
 import robot.Cinematique;
 import robot.CinematiqueObs;
+import robot.RobotChrono;
 import robot.Speed;
 import scripts.Script;
 import scripts.ScriptDeposeMinerai;
@@ -54,9 +55,13 @@ public class PathCache implements Service, HighPFClass
 	private AStarCourbe astar;
 	private CheminPathfinding realChemin;
 	private FakeCheminPathfinding fakeChemin;
-	public HashMap<Integer, HashMap<Script, LinkedList<CinematiqueObs>>> paths;
 	
-	public PathCache(Log log, ScriptManager smanager, ChronoGameState chrono, AStarCourbe astar, IteratorCheminPathfinding iterator, CheminPathfinding realChemin, FakeCheminPathfinding fakeChemin)
+	/**
+	 * Les chemins précalculés.
+	 */
+	public HashMap<Key, LinkedList<CinematiqueObs>> paths;
+	
+	public PathCache(Log log, ScriptManager smanager, ChronoGameState chrono, AStarCourbe astar, IteratorCheminPathfinding iterator, CheminPathfinding realChemin, FakeCheminPathfinding fakeChemin) throws InterruptedException
 	{
 		this.fakeChemin = fakeChemin;
 		this.realChemin = realChemin;
@@ -64,21 +69,21 @@ public class PathCache implements Service, HighPFClass
 		Cinematique start = new Cinematique(200, 1800, Math.PI, true, 0, Speed.STANDARD.translationalSpeed); // TODO
 		chrono.robot.setCinematique(start);
 		this.astar = astar;
-		paths = new HashMap<Integer, HashMap<Script, LinkedList<CinematiqueObs>>>();
+		paths = new HashMap<Key, LinkedList<CinematiqueObs>>();
 		if(!new File("paths/").exists())
 			new File("paths/").mkdir();
-//		loadAll(smanager, chrono, start, iterator);
+		loadAll(smanager, chrono, start, iterator);
 	}
 	
-	private void savePath(String file, List<CinematiqueObs> path)
+	private void savePath(Key k, List<CinematiqueObs> path)
 	{
-    	log.debug("Sauvegarde d'une trajectoire : "+file);
+    	log.debug("Sauvegarde d'une trajectoire : "+k.toString());
         try {
             FileOutputStream fichier;
             ObjectOutputStream oos;
 
-            new File(file).createNewFile();
-            fichier = new FileOutputStream(file);
+            new File(k.toString()).createNewFile();
+            fichier = new FileOutputStream(k.toString());
             oos = new ObjectOutputStream(fichier);
             oos.writeObject(path);
             oos.flush();
@@ -99,22 +104,11 @@ public class PathCache implements Service, HighPFClass
 	 * @throws PathfindingException
 	 * @throws InterruptedException 
 	 */
-	public void prepareNewPathToScript(Script s, boolean shoot, ChronoGameState chrono) throws PathfindingException, InterruptedException
+	public void prepareNewPathToScript(Key k) throws PathfindingException, InterruptedException
 	{
-		s.setUpCercleArrivee();
-		astar.initializeNewSearchToCircle(shoot, chrono);
-
-		HashMap<Script, LinkedList<CinematiqueObs>> hm = paths.get(chrono.robot.getCinematique().hashCode());
-
-		if(hm != null && hm.get(s) != null)
-		{
-			LinkedList<CinematiqueObs> path = new LinkedList<CinematiqueObs>();
-			// on fait une copie car la liste est modifiée par CheminPathfinding
-			path.addAll(hm.get(s));
-			fakeChemin.add(path);
-		}
-		else
-			astar.process(fakeChemin);
+		k.s.setUpCercleArrivee();
+		astar.initializeNewSearchToCircle(k.shoot, k.chrono);
+		astar.process(fakeChemin);
 	}
 	
 	/**
@@ -136,27 +130,27 @@ public class PathCache implements Service, HighPFClass
 		}
 	}
 	
-	private void loadAll(ScriptManager smanager, ChronoGameState chrono, IteratorCheminPathfinding iterator) throws InterruptedException
+	private void loadAll(ScriptManager smanager, ChronoGameState chrono, Cinematique start, IteratorCheminPathfinding iterator) throws InterruptedException
 	{
 		smanager.reinit();
-		boolean[] shoot = {true, false};
 		for(int i = 0; i < 2; i++)
 		{
 			while(smanager.hasNext())
 			{
-				Script script = smanager.next();
-				String fileName = "paths/"+chrono.robot.getCinematique().hashCode()+"->"+script+"-s="+shoot[i]+".dat";
-				LinkedList<CinematiqueObs> path = loadPath(fileName);
-				if(script instanceof ScriptDeposeMinerai)
+				Key k = new Key(chrono, smanager.next(), i == 0);
+				LinkedList<CinematiqueObs> path = loadPath(k);
+
+				// TODO
+				if(k.s instanceof ScriptDeposeMinerai)
 					continue;
 				
-				log.debug(script);
+				log.debug(k.s);
 				if(path == null)
 				{
 					try {
-						prepareNewPathToScript(script, shoot[i], chrono);
+						prepareNewPathToScript(k);
 						path = fakeChemin.getPath();
-						savePath(fileName, path);
+						savePath(k, path);
 					} catch (PathfindingException e) {
 						log.critical("Le précalcul du chemin a échoué");
 					}
@@ -166,25 +160,17 @@ public class PathCache implements Service, HighPFClass
 					}
 				}
 				if(path != null)
-				{
-					HashMap<Script, LinkedList<CinematiqueObs>> map = paths.get(chrono.robot.getCinematique().hashCode());
-					if(map == null)
-					{
-						map = new HashMap<Script, LinkedList<CinematiqueObs>>();
-						paths.put(chrono.robot.getCinematique().hashCode(), map);
-					}
-					map.put(script, path);
-				}
+					paths.put(k, path);
 			}
 		}
 	}
 	
 	@SuppressWarnings("unchecked")
-	private LinkedList<CinematiqueObs> loadPath(String file)
+	private LinkedList<CinematiqueObs> loadPath(Key k)
 	{
-    	log.debug("Chargement d'une trajectoire : "+file);
+    	log.debug("Chargement d'une trajectoire : "+k.toString());
         try {
-            FileInputStream fichier = new FileInputStream(file);
+            FileInputStream fichier = new FileInputStream(k.toString());
             ObjectInputStream ois = new ObjectInputStream(fichier);
             LinkedList<CinematiqueObs> path = (LinkedList<CinematiqueObs>) ois.readObject();
             ois.close();

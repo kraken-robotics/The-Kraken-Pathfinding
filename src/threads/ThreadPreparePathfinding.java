@@ -56,7 +56,7 @@ public class ThreadPreparePathfinding extends ThreadService implements HighPFCla
 						inst.wait();					
 				}
 				try {
-					pathfinding.prepareNewPathToScript(inst.getScript(), inst.getShoot(), inst.getChronoGameState());
+					pathfinding.prepareNewPathToScript(inst.getKey());
 				} catch (PathfindingException e) {
 					// TODO
 				}

@@ -17,35 +17,44 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 package pathfinding;
 
-import container.Service;
-import container.dependances.HighPFClass;
 import scripts.Script;
 
 /**
- * Classe qui permet de transférer les instructions du pathfinding au thread qui s'en occupe
+ * Clé pour le cache du pathfinding
  * @author pf
  *
  */
 
-public class PFInstruction implements Service, HighPFClass
+public class Key
 {
-	private Key k;
-
-	public void set(Key k)
+	public Integer cinem;
+	public Script s;
+	public ChronoGameState chrono;
+	public boolean shoot;
+	
+	public Key(ChronoGameState chrono, Script s, boolean shoot)
 	{
-		this.k = k;
+		this.chrono = chrono;
+		this.cinem = chrono.robot.getCinematique().codeForPFCache();
+		this.s = s;
+		this.shoot = shoot;
 	}
 	
-	public Key getKey()
+	@Override
+	public int hashCode()
 	{
-		Key out = k;
-		k = null;
-		return out;
+		return (cinem + s.hashCode()) * 2 + (shoot ? 1 : 0);
 	}
 	
-	public boolean isEmpty()
+	@Override
+	public boolean equals(Object o)
 	{
-		return k == null;
+		return o instanceof Key && ((Key)o).shoot == shoot && ((Key)o).s == s && ((Key)o).cinem == cinem;
 	}
-
+	
+	@Override
+	public String toString()
+	{
+		return s+"-"+cinem+"-"+shoot;
+	}
 }
