@@ -79,8 +79,7 @@ public class PathCache implements Service, HighPFClass
             FileOutputStream fichier;
             ObjectOutputStream oos;
 
-            new File(k.toString()).createNewFile();
-            fichier = new FileOutputStream("paths/"+k.toString());
+            fichier = new FileOutputStream("paths/"+k.toString()+".dat");
             oos = new ObjectOutputStream(fichier);
             oos.writeObject(path);
             oos.flush();
@@ -135,9 +134,9 @@ public class PathCache implements Service, HighPFClass
 	
 	private void loadAll(ScriptManager smanager, ChronoGameState chrono, Cinematique start) throws InterruptedException
 	{
-		smanager.reinit();
 		for(int i = 0; i < 2; i++)
 		{
+			smanager.reinit();
 			while(smanager.hasNext())
 			{
 				KeyPathCache k = new KeyPathCache(chrono, smanager.next(), i == 0);
@@ -167,14 +166,14 @@ public class PathCache implements Service, HighPFClass
 				{
 					paths.put(k, path);
 					// TODO : affichage à virer
-/*					realChemin.clear();
+					realChemin.clear();
 					try {
 						realChemin.add(path);
 						Thread.sleep(2000);
 					} catch (PathfindingException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
-					}*/
+					}
 				}
 			}
 		}
@@ -185,7 +184,7 @@ public class PathCache implements Service, HighPFClass
 	{
     	log.debug("Chargement d'une trajectoire : "+k.toString());
         try {
-            FileInputStream fichier = new FileInputStream("paths/"+k.toString());
+            FileInputStream fichier = new FileInputStream("paths/"+k.toString()+".dat");
             ObjectInputStream ois = new ObjectInputStream(fichier);
             LinkedList<CinematiqueObs> path = (LinkedList<CinematiqueObs>) ois.readObject();
             ois.close();
@@ -193,7 +192,7 @@ public class PathCache implements Service, HighPFClass
         }
         catch(IOException | ClassNotFoundException e)
         {
-        	log.critical("Chargement échoué !");
+        	log.critical("Chargement échoué ! "+e);
         }
         return null;
 	}
