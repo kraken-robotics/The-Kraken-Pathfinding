@@ -51,6 +51,11 @@ public abstract class Robot implements DynamicConfigurable
 		cinematique = new Cinematique();
 	}
 
+	public int codeForPFCache()
+	{
+		return cinematique.codeForPFCache();
+	}
+	
 	/**
 	 * Copy this dans rc. this reste inchangé.
 	 * 
