@@ -65,7 +65,7 @@ public class PathCache implements Service, HighPFClass
 		this.fakeChemin = fakeChemin;
 		this.realChemin = realChemin;
 		this.log = log;
-		Cinematique start = new Cinematique(200, 1800, Math.PI, true, 0, Speed.STANDARD.translationalSpeed); // TODO
+		Cinematique start = new Cinematique(700, 1800, Math.PI, true, 0, Speed.STANDARD.translationalSpeed); // TODO
 		chrono.robot.setCinematique(start);
 		this.astar = astar;
 		paths = new HashMap<KeyPathCache, LinkedList<CinematiqueObs>>();
@@ -112,7 +112,10 @@ public class PathCache implements Service, HighPFClass
 			astar.process(fakeChemin);
 		}
 		else
+		{
 			log.debug("Utilisation d'un trajet précalculé !");
+			fakeChemin.add(path);
+		}
 	}
 	
 	/**
@@ -164,7 +167,8 @@ public class PathCache implements Service, HighPFClass
 	
 	private void loadAll(ScriptManager smanager, ChronoGameState chrono, Cinematique start) throws InterruptedException
 	{
-		Script depose = smanager.getScripts().get("DEPOSE");
+		Script depose1 = smanager.getScripts().get("DEPOSE");
+		Script depose2 = smanager.getScripts().get("DEPOSE_SIMPLE");
 		for(int i = 0; i < 2; i++)
 		{
 			smanager.reinit();
@@ -200,7 +204,7 @@ public class PathCache implements Service, HighPFClass
 			
 				// calcul du chemin retour
 				k.chrono.robot.setCinematique(path.getLast());
-				k.s = depose;
+				k.s = depose1;
 				for(int j = 0; j < 2; j++)
 				{
 					k.shoot = j == 0;
@@ -220,7 +224,28 @@ public class PathCache implements Service, HighPFClass
 					} catch (PathfindingException e) {
 						e.printStackTrace();
 					}
-	
+				}
+				
+				k.s = depose2;
+				for(int j = 0; j < 2; j++)
+				{
+					k.shoot = j == 0;
+					LinkedList<CinematiqueObs> pathRetour;
+					try {
+						pathRetour = loadOrCompute(k);
+					} catch (PathfindingException e1) {
+						log.critical(e1);
+						continue;
+					}
+					paths.put(k, pathRetour);
+					// TODO : affichage à virer
+					realChemin.clear();
+					try {
+						realChemin.add(pathRetour);
+						Thread.sleep(2000);
+					} catch (PathfindingException e) {
+						e.printStackTrace();
+					}
 				}
 				
 			}
@@ -233,8 +258,16 @@ public class PathCache implements Service, HighPFClass
     	log.debug("Chargement d'une trajectoire : "+k.toString());
         FileInputStream fichier = new FileInputStream("paths/"+k.toString()+".dat");
         ObjectInputStream ois = new ObjectInputStream(fichier);
-        LinkedList<CinematiqueObs> path = (LinkedList<CinematiqueObs>) ois.readObject();
-        ois.close();
+        LinkedList<CinematiqueObs> path;
+        try {
+        	path = (LinkedList<CinematiqueObs>) ois.readObject();
+        }
+        finally
+        {
+        	ois.close();
+        }
+        if(path == null)
+        	throw new IOException();
         return path;
 	}
 	
