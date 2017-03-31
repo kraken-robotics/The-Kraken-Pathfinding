@@ -54,13 +54,13 @@ public class JUnit_Table extends JUnit_Test {
     	long hash = f.getLong(table);
     	Table cloned_table = table.clone();
         Assert.assertTrue(hash == f.getLong(cloned_table));
-        cloned_table.setDone(GameElementNames.CYLINDRE_1_D, EtatElement.PRIS_PAR_NOUS);
+        cloned_table.setDone(GameElementNames.CYLINDRE_2_D, EtatElement.PRIS_PAR_NOUS);
         Assert.assertTrue(hash != f.getLong(cloned_table));
     	cloned_table.copy(table);
     	hash = f.getLong(table);
         Assert.assertTrue(hash == f.getLong(cloned_table));
-		Assert.assertTrue(table.isDone(GameElementNames.CYLINDRE_1_D) == EtatElement.PRIS_PAR_NOUS);
-		Assert.assertTrue(cloned_table.isDone(GameElementNames.CYLINDRE_1_D) == EtatElement.PRIS_PAR_NOUS);
+		Assert.assertTrue(table.isDone(GameElementNames.CYLINDRE_2_D) == EtatElement.PRIS_PAR_NOUS);
+		Assert.assertTrue(cloned_table.isDone(GameElementNames.CYLINDRE_2_D) == EtatElement.PRIS_PAR_NOUS);
     	Assert.assertTrue(f.getLong(table) == f.getLong(cloned_table));
     	table.setDone(GameElementNames.CYLINDRE_3_D, EtatElement.PRIS_PAR_NOUS);
     	Assert.assertTrue(f.getLong(table) != f.getLong(cloned_table));

@@ -45,8 +45,8 @@ public enum GameElementNames {
 	MINERAI_GROS_CRATERE_DROITE_3(new ObstacleCircular(new Vec2RO(1500-(125+250*0.5),150+250*0.5),125, Couleur.GAME_ELEMENT), 3 * Math.PI / 4),
 	MINERAI_GROS_CRATERE_DROITE_4(new ObstacleCircular(new Vec2RO(1500-(125+220),125),125, Couleur.GAME_ELEMENT), 3 * Math.PI / 4),
 
-	CYLINDRE_1_G(new ObstacleMasque(new Vec2RO(950-1500, 1800), 32, Couleur.GAME_ELEMENT, null)),
-	CYLINDRE_1_D(new ObstacleMasque(new Vec2RO(1500-950, 1800), 32, Couleur.GAME_ELEMENT, null)),
+//	CYLINDRE_1_G(new ObstacleMasque(new Vec2RO(950-1500, 1800), 32, Couleur.GAME_ELEMENT, null)),
+//	CYLINDRE_1_D(new ObstacleMasque(new Vec2RO(1500-950, 1800), 32, Couleur.GAME_ELEMENT, null)),
 	CYLINDRE_2_G(new ObstacleMasque(new Vec2RO(200-1500, 1400), 32, Couleur.GAME_ELEMENT, null)),
 	CYLINDRE_2_D(new ObstacleMasque(new Vec2RO(1500-200, 1400), 32, Couleur.GAME_ELEMENT, null)),
 	CYLINDRE_3_G(new ObstacleMasque(new Vec2RO(1000-1500, 1400), 32, Couleur.GAME_ELEMENT, null)),
