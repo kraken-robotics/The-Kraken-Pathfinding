@@ -50,6 +50,7 @@ public class BezierComputer implements Service, HighPFClass
 	protected PrintBufferInterface buffer;
 	protected CercleArrivee cercle;
 	protected double courbureMax;
+	private static final double deltaCourbureMax = 0.2;
 	private ClothoidesComputer clothocomputer;
 	
 	public BezierComputer(Log log, CinemObsMM memory, PrintBufferInterface buffer, ClothoidesComputer clothocomputer, CercleArrivee cercle, Config config)
@@ -306,7 +307,7 @@ public class BezierComputer implements Service, HighPFClass
 			
 			// on a dépassé la courbure maximale : on arrête tout
 			if(Math.abs(obs.courbureGeometrique) > courbureMax
-					|| (!first && (Math.abs(obs.courbureGeometrique - lastCourbure) > 0.3
+					|| (!first && (Math.abs(obs.courbureGeometrique - lastCourbure) > deltaCourbureMax
 							|| Math.abs(deltaO) > 0.5)))
 			{
 //				log.debug("Courbure max dépassée : "+obs.courbureGeometrique+" "+Math.abs(obs.courbureGeometrique - lastCourbure)+" "+obs.orientationGeometrique+" "+orientation+" "+lastOrientation+" "+deltaO);
@@ -324,7 +325,7 @@ public class BezierComputer implements Service, HighPFClass
 		double diffOrientation = (Math.abs(cinematiqueInitiale.orientationGeometrique - lastOrientation)) % (2*Math.PI);
 		if(diffOrientation > Math.PI)
 			diffOrientation -= 2*Math.PI;
-		if(!first && (Math.abs(cinematiqueInitiale.courbureGeometrique - lastCourbure) > 0.3) || Math.abs(diffOrientation) > 0.5)
+		if(!first && (Math.abs(cinematiqueInitiale.courbureGeometrique - lastCourbure) > deltaCourbureMax) || Math.abs(diffOrientation) > 0.5)
 		{
 //			log.debug("Erreur raccordement : "+cinematiqueInitiale.courbureGeometrique+" "+Math.abs(cinematiqueInitiale.courbureGeometrique - lastCourbure)+" "+cinematiqueInitiale.orientationGeometrique+" "+lastOrientation);
 			for(CinematiqueObs c : out)
