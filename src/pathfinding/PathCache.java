@@ -39,6 +39,7 @@ import robot.CinematiqueObs;
 import robot.Speed;
 import scripts.Script;
 import scripts.ScriptDeposeMinerai;
+import scripts.ScriptDeposeMineraiSimple;
 import scripts.ScriptManager;
 import utils.Log;
 
@@ -61,7 +62,7 @@ public class PathCache implements Service, HighPFClass
 	/**
 	 * Les chemins précalculés.
 	 */
-	public HashMap<KeyPathCache, LinkedList<CinematiqueObs>> paths;
+	public HashMap<String, LinkedList<CinematiqueObs>> paths;
 	
 	public PathCache(Log log, ScriptManager smanager, ChronoGameState chrono, AStarCourbe astar, CheminPathfinding realChemin, FakeCheminPathfinding fakeChemin) throws InterruptedException
 	{
@@ -71,7 +72,7 @@ public class PathCache implements Service, HighPFClass
 		Cinematique start = new Cinematique(700, 1800, Math.PI, true, 0, Speed.STANDARD.translationalSpeed); // TODO
 		chrono.robot.setCinematique(start);
 		this.astar = astar;
-		paths = new HashMap<KeyPathCache, LinkedList<CinematiqueObs>>();
+		paths = new HashMap<String, LinkedList<CinematiqueObs>>();
 		if(!new File("paths/").exists())
 			new File("paths/").mkdir();
 		loadAll(smanager, chrono, start);
@@ -107,7 +108,8 @@ public class PathCache implements Service, HighPFClass
 	 */
 	public void prepareNewPathToScript(KeyPathCache k) throws PathfindingException, InterruptedException
 	{
-		LinkedList<CinematiqueObs> path = paths.get(k);
+//		log.debug("Recherche de chemin pour "+k+" ("+paths.size()+" chemins mémorisés)");
+		LinkedList<CinematiqueObs> path = paths.get(k.toString());
 		if(path == null)
 		{
 			k.s.setUpCercleArrivee();
@@ -157,7 +159,7 @@ public class PathCache implements Service, HighPFClass
 				}
 				catch(PathfindingException e)
 				{
-					log.warning("Précalcul du chemin échoué ! "+k);
+					log.warning("Précalcul du chemin échoué ! "+k+" : "+e);
 					throw e;
 				}
 				finally
@@ -176,7 +178,8 @@ public class PathCache implements Service, HighPFClass
 	private void loadAll(ScriptManager smanager, ChronoGameState chrono, Cinematique start) throws InterruptedException
 	{
 		List<String> errors = new ArrayList<String>();
-
+		List<String> ok = new ArrayList<String>();
+		
 		Script depose1 = smanager.getScripts().get("DEPOSE");
 		Script depose2 = smanager.getScripts().get("DEPOSE_SIMPLE");
 		for(int i = 0; i < 2; i++)
@@ -189,7 +192,7 @@ public class PathCache implements Service, HighPFClass
 				k.s = smanager.next();
 				k.shoot = i == 0;
 
-				if(k.s instanceof ScriptDeposeMinerai) // c'est particulier
+				if(k.s instanceof ScriptDeposeMinerai || k.s instanceof ScriptDeposeMineraiSimple) // c'est particulier
 					continue;
 				
 //				log.debug(k);				
@@ -201,7 +204,8 @@ public class PathCache implements Service, HighPFClass
 					continue;
 				}
 				
-				paths.put(k, path);
+				ok.add(k.toString());
+				paths.put(k.toString(), path);
 				// TODO : affichage à virer
 				if(debug)
 				{
@@ -228,7 +232,8 @@ public class PathCache implements Service, HighPFClass
 						errors.add(k.toString());
 						continue;
 					}
-					paths.put(k, pathRetour);
+					ok.add(k.toString());
+					paths.put(k.toString(), pathRetour);
 					if(debug)
 					{
 						// TODO : affichage à virer
@@ -253,7 +258,8 @@ public class PathCache implements Service, HighPFClass
 						errors.add(k.toString());
 						continue;
 					}
-					paths.put(k, pathRetour);
+					ok.add(k.toString());
+					paths.put(k.toString(), pathRetour);
 					if(debug)
 					{
 						// TODO : affichage à virer
@@ -270,7 +276,16 @@ public class PathCache implements Service, HighPFClass
 			}
 		}
 		
-		String out = "Chargement/génération échouée pour : ";
+		String out = "Chargement/génération réussie pour : ";
+		for(int i = 0; i < ok.size(); i++)
+		{
+			out += ok.get(i);
+			if(i < ok.size() - 1)
+			out += ", ";
+		}
+		log.debug(out);
+		
+		out = "Chargement/génération échouée pour : ";
 		for(int i = 0; i < errors.size(); i++)
 		{
 			out += errors.get(i);

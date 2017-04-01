@@ -58,7 +58,7 @@ public class KeyPathCache
 	@Override
 	public boolean equals(Object o)
 	{
-		return o instanceof KeyPathCache && ((KeyPathCache)o).shoot == shoot && ((KeyPathCache)o).s == s && ((KeyPathCache)o).getCinem() == getCinem();
+		return o instanceof KeyPathCache && ((KeyPathCache)o).shoot == shoot && ((KeyPathCache)o).s.equals(s) && ((KeyPathCache)o).getCinem() == getCinem();
 	}
 	
 	@Override
