@@ -63,13 +63,14 @@ public enum ConfigInfo {
 	/**
 	 * Paramètres du pathfinding
 	 */
-	COURBURE_MAX(5), // quelle courbure maximale la trajectoire du robot peut-elle avoir
+	COURBURE_MAX(3), // quelle courbure maximale la trajectoire du robot peut-elle avoir
 	TEMPS_ARRET(400), // temps qu'il faut au robot pour s'arrêter et repartir (par exemple à cause d'un rebroussement)
 	PF_MARGE_NECESSAIRE((int)(0.10/ClothoidesComputer.PRECISION_TRACE)), // combien de points de pathfinding le bas niveau doit-il toujours avoir
 	PF_MARGE_INITIALE((int)(0.15/ClothoidesComputer.PRECISION_TRACE)), // combien de points garde-t-on au début de la replanification
 	DUREE_MAX_RECHERCHE_PF(3000), // durée maximale que peut prendre le pathfinding
 	TAILLE_FAISCEAU_PF(10), // combien de voisins sont ajoutés à l'openset à chaque itération
 	DEBUG_PF(false), // affichage de plein d'infos
+	EVITEMENT_SIMPLE(true), // évitement simplifié : le robot attend juste que le chemin se libère
 	
 	/**
 	 * Paramètres de la série
