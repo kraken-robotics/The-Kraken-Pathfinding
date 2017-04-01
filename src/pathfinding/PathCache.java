@@ -23,6 +23,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -54,6 +55,8 @@ public class PathCache implements Service, HighPFClass
 	private AStarCourbe astar;
 	private CheminPathfinding realChemin;
 	private FakeCheminPathfinding fakeChemin;
+		
+	private boolean debug = false;
 	
 	/**
 	 * Les chemins précalculés.
@@ -76,7 +79,7 @@ public class PathCache implements Service, HighPFClass
 	
 	private void savePath(KeyPathCache k, List<CinematiqueObs> path)
 	{
-    	log.debug("Sauvegarde d'une trajectoire : "+k.toString());
+//    	log.debug("Sauvegarde d'une trajectoire : "+k.toString());
         try {
             FileOutputStream fichier;
             ObjectOutputStream oos;
@@ -86,7 +89,7 @@ public class PathCache implements Service, HighPFClass
             oos.writeObject(path);
             oos.flush();
             oos.close();
-        	log.debug("Sauvegarde terminée");
+//        	log.debug("Sauvegarde terminée");
         }
         catch(IOException e)
         {
@@ -152,6 +155,11 @@ public class PathCache implements Service, HighPFClass
 					path = fakeChemin.getPath();
 					savePath(k, path);
 				}
+				catch(PathfindingException e)
+				{
+					log.warning("Précalcul du chemin échoué ! "+k);
+					throw e;
+				}
 				finally
 				{
 					astar.stopContinuousSearch();
@@ -167,6 +175,8 @@ public class PathCache implements Service, HighPFClass
 	
 	private void loadAll(ScriptManager smanager, ChronoGameState chrono, Cinematique start) throws InterruptedException
 	{
+		List<String> errors = new ArrayList<String>();
+
 		Script depose1 = smanager.getScripts().get("DEPOSE");
 		Script depose2 = smanager.getScripts().get("DEPOSE_SIMPLE");
 		for(int i = 0; i < 2; i++)
@@ -182,24 +192,27 @@ public class PathCache implements Service, HighPFClass
 				if(k.s instanceof ScriptDeposeMinerai) // c'est particulier
 					continue;
 				
-				log.debug(k);				
+//				log.debug(k);				
 				LinkedList<CinematiqueObs> path;
 				try {
 					path = loadOrCompute(k);
 				} catch (PathfindingException e1) {
-					log.critical(e1);
+					errors.add(k.toString());
 					continue;
 				}
 				
 				paths.put(k, path);
 				// TODO : affichage à virer
-				realChemin.clear();
-				try {
-					realChemin.add(path);
-					Thread.sleep(2000);
-				} catch (PathfindingException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+				if(debug)
+				{
+					realChemin.clear();
+					try {
+						realChemin.add(path);
+						Thread.sleep(2000);
+					} catch (PathfindingException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
 			
 				// calcul du chemin retour
@@ -212,17 +225,20 @@ public class PathCache implements Service, HighPFClass
 					try {
 						pathRetour = loadOrCompute(k);
 					} catch (PathfindingException e1) {
-						log.critical(e1);
+						errors.add(k.toString());
 						continue;
 					}
 					paths.put(k, pathRetour);
-					// TODO : affichage à virer
-					realChemin.clear();
-					try {
-						realChemin.add(pathRetour);
-						Thread.sleep(2000);
-					} catch (PathfindingException e) {
-						e.printStackTrace();
+					if(debug)
+					{
+						// TODO : affichage à virer
+						realChemin.clear();
+						try {
+							realChemin.add(pathRetour);
+							Thread.sleep(2000);
+						} catch (PathfindingException e) {
+							e.printStackTrace();
+						}
 					}
 				}
 				
@@ -234,28 +250,40 @@ public class PathCache implements Service, HighPFClass
 					try {
 						pathRetour = loadOrCompute(k);
 					} catch (PathfindingException e1) {
-						log.critical(e1);
+						errors.add(k.toString());
 						continue;
 					}
 					paths.put(k, pathRetour);
-					// TODO : affichage à virer
-					realChemin.clear();
-					try {
-						realChemin.add(pathRetour);
-						Thread.sleep(2000);
-					} catch (PathfindingException e) {
-						e.printStackTrace();
+					if(debug)
+					{
+						// TODO : affichage à virer
+						realChemin.clear();
+						try {
+							realChemin.add(pathRetour);
+							Thread.sleep(2000);
+						} catch (PathfindingException e) {
+							e.printStackTrace();
+						}
 					}
 				}
 				
 			}
 		}
+		
+		String out = "Chargement/génération échouée pour : ";
+		for(int i = 0; i < errors.size(); i++)
+		{
+			out += errors.get(i);
+			if(i < errors.size() - 1)
+			out += ", ";
+		}
+		log.critical(out);
 	}
 	
 	@SuppressWarnings("unchecked")
 	private LinkedList<CinematiqueObs> loadPath(KeyPathCache k) throws ClassNotFoundException, IOException
 	{
-    	log.debug("Chargement d'une trajectoire : "+k.toString());
+//    	log.debug("Chargement d'une trajectoire : "+k.toString());
         FileInputStream fichier = new FileInputStream("paths/"+k.toString()+".dat");
         ObjectInputStream ois = new ObjectInputStream(fichier);
         LinkedList<CinematiqueObs> path;
