@@ -20,6 +20,12 @@ package tests;
 import org.junit.Before;
 import org.junit.Test;
 
+import pathfinding.ChronoGameState;
+import pathfinding.KeyPathCache;
+import pathfinding.PathCache;
+import robot.Cinematique;
+import robot.Speed;
+import scripts.ScriptManager;
 import scripts.Strategie;
 
 /**
@@ -31,13 +37,27 @@ import scripts.Strategie;
 public class JUnit_Strategie extends JUnit_Test {
 
 	private Strategie strat;
+	private PathCache path;
+	private ChronoGameState chrono;
+	private ScriptManager sm;
 	
 	@Override
 	@Before
     public void setUp() throws Exception {
         super.setUp();
         strat = container.getService(Strategie.class);
+        path = container.getService(PathCache.class);
+        chrono = container.make(ChronoGameState.class);
+        sm = container.getService(ScriptManager.class);
     }
+	
+	@Test
+	public void test_pathcache() throws Exception
+	{
+		chrono.robot.setCinematique(new Cinematique(700, 1800, Math.PI, true, 0, Speed.STANDARD.translationalSpeed));
+		path.prepareNewPathToScript(new KeyPathCache(chrono, sm.getScripts().get("MINERAI_CRATERE_HAUT_GAUCHE"), false));
+		path.sendPreparedPath();
+	}
 	
 	@Test
 	public void test_strat() throws Exception
