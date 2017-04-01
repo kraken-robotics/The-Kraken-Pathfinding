@@ -17,7 +17,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 package robot;
 
+import exceptions.UnableToMoveException;
 import pathfinding.astar.arcs.ArcCourbe;
+import pathfinding.chemin.CheminPathfinding;
 import utils.Log;
 import utils.Vec2RO;
 
@@ -30,16 +32,18 @@ public class RobotChrono extends Robot
 {
 	// Date en millisecondes depuis le début du match.
 	protected long date = 0;
-
+	private CheminPathfinding chemin;
+	
 	/**
 	 * Constructeur clone
 	 * @param log
 	 * @param robot
 	 */
-	public RobotChrono(Log log, RobotReal robot)
+	public RobotChrono(Log log, RobotReal robot, CheminPathfinding chemin)
 	{
 		super(log);
 		robot.copy(this);
+		this.chemin = chemin;
 	}
 
 	@Override
@@ -67,6 +71,12 @@ public class RobotChrono extends Robot
 	public void avance(double distance, Speed speed)
 	{
 		cinematique.getPositionEcriture().plus(new Vec2RO(distance, cinematique.orientationReelle, true));
+	}
+	
+	@Override
+	public void followTrajectory(Speed vitesse) throws InterruptedException, UnableToMoveException
+	{
+		chemin.getLastCinematique().copy(cinematique);
 	}
 
 }

@@ -122,6 +122,7 @@ public class Cinematique implements Printable, Serializable
 	@Override
 	public int hashCode() // TODO
 	{
+		
 		// Il faut fusionner les points trop proches pour pas que le PF ne s'entête dans des coins impossibles
 		// Par contre, il ne faut pas trop fusionner sinon on ne verra pas les chemins simples et ne restera que les compliqués
 		
@@ -149,8 +150,10 @@ public class Cinematique implements Printable, Serializable
 		
 		codeOrientation = (int)(orientationGeometrique / (Math.PI / 6));
 //		System.out.println("codeOrientation : "+codeOrientation+" "+orientation);
-		
-		return ((((((int)(position.getX()) + 1500) / 30) * 200 + (int)(position.getY()) / 30) * 2 + codeSens) * 16 + codeOrientation) * 6 + codeCourbure;
+
+		return ((((((int)(position.getX()) + 1500) / 100) * 2000 + (int)(position.getY()) / 100) * 2 + codeSens) * 16 + codeOrientation) * 6 + codeCourbure;
+
+//		return ((((((int)(position.getX()) + 1500) / 30) * 200 + (int)(position.getY()) / 30) * 2 + codeSens) * 16 + codeOrientation) * 6 + codeCourbure;
 	}
 	
 	@Override

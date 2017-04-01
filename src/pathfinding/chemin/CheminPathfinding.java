@@ -346,5 +346,14 @@ public class CheminPathfinding implements Service, Printable, HighPFClass, Chemi
 	{
 		return chemin[minus(indexLast,1)].orientationReelle;
 	}
+
+	/**
+	 * Utilisé pour "followTrajectory" du robot chrono
+	 * @return
+	 */
+	public Cinematique getLastCinematique()
+	{
+		return chemin[minus(indexLast,1)];
+	}
 	
 }
