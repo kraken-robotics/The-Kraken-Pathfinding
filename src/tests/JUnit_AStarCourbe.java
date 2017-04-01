@@ -108,19 +108,19 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 		Cinematique c = new Cinematique(0, 1000, Math.PI/2, false, 0, Speed.STANDARD.translationalSpeed);
 		log.debug("Initial : "+c);
 		clotho.getTrajectoire(c, VitesseClotho.COURBURE_IDENTIQUE, Speed.STANDARD, arc[0]);
-		clotho.getTrajectoire(arc[0], VitesseClotho.GAUCHE_3, Speed.STANDARD, arc[1]);
+		clotho.getTrajectoire(arc[0], VitesseClotho.GAUCHE_2, Speed.STANDARD, arc[1]);
 		clotho.getTrajectoire(arc[1], VitesseClotho.COURBURE_IDENTIQUE, Speed.STANDARD, arc[2]);
 		clotho.getTrajectoire(arc[2], VitesseClotho.GAUCHE_1, Speed.STANDARD, arc[3]);
 		clotho.getTrajectoire(arc[3], VitesseClotho.COURBURE_IDENTIQUE, Speed.STANDARD, arc[4]);
 		clotho.getTrajectoire(arc[4], VitesseClotho.COURBURE_IDENTIQUE, Speed.STANDARD, arc[5]);
 		clotho.getTrajectoire(arc[6], VitesseClotho.GAUCHE_1, Speed.STANDARD, arc[7]);
-		clotho.getTrajectoire(arc[7], VitesseClotho.GAUCHE_3, Speed.STANDARD, arc[8]);
+		clotho.getTrajectoire(arc[7], VitesseClotho.GAUCHE_2, Speed.STANDARD, arc[8]);
 		clotho.getTrajectoire(arc[9], VitesseClotho.DROITE_1, Speed.STANDARD, arc[10]);
 		clotho.getTrajectoire(arc[10], VitesseClotho.DROITE_1, Speed.STANDARD, arc[11]);
 		clotho.getTrajectoire(arc[11], VitesseClotho.DROITE_1, Speed.STANDARD, arc[12]);
 		clotho.getTrajectoire(arc[12], VitesseClotho.DROITE_1, Speed.STANDARD, arc[13]);
 		clotho.getTrajectoire(arc[13], VitesseClotho.DROITE_1, Speed.STANDARD, arc[14]);
-		clotho.getTrajectoire(arc[14], VitesseClotho.GAUCHE_3, Speed.STANDARD, arc[15]);
+		clotho.getTrajectoire(arc[14], VitesseClotho.GAUCHE_2, Speed.STANDARD, arc[15]);
 
 		for(int a = 0; a < nbArc; a++)	
 		{
@@ -147,6 +147,7 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 				Assert.assertEquals(arc[a].vitesseCourbure.vitesse / 1000. * ClothoidesComputer.DISTANCE_ARC_COURBE + arc[a-1].arcselems[ClothoidesComputer.NB_POINTS-1].courbure, arc[a].arcselems[ClothoidesComputer.NB_POINTS-1].courbure, 0.1);
 */		}
 	
+		// TODO
 		Assert.assertEquals(0, arc[nbArc-1].arcselems[arc[nbArc-1].arcselems.length - 1].getPosition().distance(new Vec2RO(493.3109322223508,-246.049900989035)), 0.1);
     }
 

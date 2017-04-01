@@ -168,15 +168,14 @@ public class PathCache implements Service, HighPFClass
 				}
 			}
 			else
-			{
 				throw new PathfindingException("Chargement du chemin "+k+" échoué : abandon.");
-			}
 		}
 		return path;
 	}
 	
 	private void loadAll(ScriptManager smanager, ChronoGameState chrono, Cinematique start) throws InterruptedException
 	{
+		log.debug("Début du chargement des trajectoires…");
 		List<String> errors = new ArrayList<String>();
 		List<String> ok = new ArrayList<String>();
 		

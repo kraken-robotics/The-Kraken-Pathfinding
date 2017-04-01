@@ -28,8 +28,8 @@ import robot.Cinematique;
 
 public enum VitesseDemiTour implements VitesseCourbure
 {
-	DEMI_TOUR_DROITE(VitesseClotho.DROITE_3), // TODO version avec d'autres vitesses ?
-	DEMI_TOUR_GAUCHE(VitesseClotho.GAUCHE_3);
+	DEMI_TOUR_DROITE(VitesseClotho.DROITE_2), // TODO version avec d'autres vitesses ?
+	DEMI_TOUR_GAUCHE(VitesseClotho.GAUCHE_2);
 
 	public VitesseClotho v;
 	
