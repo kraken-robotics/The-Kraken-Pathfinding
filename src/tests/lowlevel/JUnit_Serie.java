@@ -21,7 +21,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import serie.BufferOutgoingOrder;
-import serie.SerialProtocol.InOrder;
 import serie.SerialProtocol.State;
 import serie.Ticket;
 import tests.JUnit_Test;
@@ -77,10 +76,8 @@ public class JUnit_Serie extends JUnit_Test {
 		State etat;
 		do {
 			Ticket t = data.demandeCouleur();
-			InOrder o = t.attendStatus();
-			log.debug(o);
-			etat = o.etat;
-			Thread.sleep(500);			
+			etat = t.attendStatus().etat;
+			Thread.sleep(500);
 		} while(etat != State.OK);
 	}
 	
