@@ -28,6 +28,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
+import config.Config;
+import config.ConfigInfo;
 import container.Service;
 import container.dependances.HighPFClass;
 import exceptions.PathfindingException;
@@ -58,14 +60,16 @@ public class PathCache implements Service, HighPFClass
 	private FakeCheminPathfinding fakeChemin;
 		
 	private boolean debug = false;
+	private boolean debugCache;
 	
 	/**
 	 * Les chemins précalculés.
 	 */
 	public HashMap<String, LinkedList<CinematiqueObs>> paths;
 	
-	public PathCache(Log log, ScriptManager smanager, ChronoGameState chrono, AStarCourbe astar, CheminPathfinding realChemin, FakeCheminPathfinding fakeChemin) throws InterruptedException
+	public PathCache(Log log, Config config, ScriptManager smanager, ChronoGameState chrono, AStarCourbe astar, CheminPathfinding realChemin, FakeCheminPathfinding fakeChemin) throws InterruptedException
 	{
+		debugCache = config.getBoolean(ConfigInfo.DEBUG_CACHE);
 		this.fakeChemin = fakeChemin;
 		this.realChemin = realChemin;
 		this.log = log;
@@ -108,7 +112,9 @@ public class PathCache implements Service, HighPFClass
 	 */
 	public void prepareNewPathToScript(KeyPathCache k) throws PathfindingException, InterruptedException
 	{
-//		log.debug("Recherche de chemin pour "+k+" ("+paths.size()+" chemins mémorisés)");
+		if(debugCache)
+			log.debug("Recherche de chemin pour "+k+" ("+paths.size()+" chemins mémorisés)");
+		
 		LinkedList<CinematiqueObs> path = paths.get(k.toString());
 		if(path == null)
 		{

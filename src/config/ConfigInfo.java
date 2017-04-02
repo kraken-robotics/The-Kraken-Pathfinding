@@ -71,6 +71,7 @@ public enum ConfigInfo {
 	TAILLE_FAISCEAU_PF(10), // combien de voisins sont ajoutés à l'openset à chaque itération
 	DEBUG_PF(false), // affichage de plein d'infos
 	EVITEMENT_SIMPLE(true), // évitement simplifié : le robot attend juste que le chemin se libère
+	DEBUG_CACHE(false), // debug du cache de chemins
 	
 	/**
 	 * Paramètres de la série
