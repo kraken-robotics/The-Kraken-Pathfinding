@@ -109,11 +109,11 @@ public class Cinematique implements Printable, Serializable
 		int codeOrientation;
 		
 //		System.out.println("codeCourbure : "+codeCourbure+", "+courbure);
-		orientationGeometrique = orientationGeometrique % (2*Math.PI);
-		if(orientationGeometrique < 0)
-			orientationGeometrique += 2*Math.PI;
+		orientationReelle = orientationReelle % (2*Math.PI);
+		if(orientationReelle < 0)
+			orientationReelle += 2*Math.PI;
 		
-		codeOrientation = (int)(orientationGeometrique / (Math.PI / 10));
+		codeOrientation = (int)(orientationReelle / (Math.PI / 10));
 //		System.out.println("codeOrientation : "+codeOrientation+" "+orientation);
 		
 		return ((((int)(position.getX()) + 1500) / 30) * 200 + (int)(position.getY()) / 30) * 20 + codeOrientation;
@@ -130,25 +130,25 @@ public class Cinematique implements Printable, Serializable
 		if(enMarcheAvant)
 			codeSens = 1;
 		int codeCourbure, codeOrientation;
-		if(courbureGeometrique < -3)
+		if(courbureReelle < -3)
 			codeCourbure = 0;
-//		else if(courbureGeometrique < -2)
+//		else if(courbureReelle < -2)
 //			codeCourbure = 1;
-		else if(courbureGeometrique < 0)
+		else if(courbureReelle < 0)
 			codeCourbure = 2;
-//		else if(courbureGeometrique < 2)
+//		else if(courbureReelle < 2)
 //			codeCourbure = 3;
-		else if(courbureGeometrique < 3)
+		else if(courbureReelle < 3)
 			codeCourbure = 4;
 		else
 			codeCourbure = 5;
 		
 //		System.out.println("codeCourbure : "+codeCourbure+", "+courbure);
-		orientationGeometrique = orientationGeometrique % (2*Math.PI);
-		if(orientationGeometrique < 0)
-			orientationGeometrique += 2*Math.PI;
+		orientationReelle = orientationReelle % (2*Math.PI);
+		if(orientationReelle < 0)
+			orientationReelle += 2*Math.PI;
 		
-		codeOrientation = (int)(orientationGeometrique / (Math.PI / 6));
+		codeOrientation = (int)(orientationReelle / (Math.PI / 6));
 //		System.out.println("codeOrientation : "+codeOrientation+" "+orientation);
 
 		return ((((((int)(position.getX()) + 1500) / 100) * 2000 + (int)(position.getY()) / 100) * 2 + codeSens) * 16 + codeOrientation) * 6 + codeCourbure;
