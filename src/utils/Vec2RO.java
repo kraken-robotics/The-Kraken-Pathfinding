@@ -31,20 +31,14 @@ public class Vec2RO implements Serializable
 	protected volatile double x;
 	protected volatile double y;
 	
-//	private static long t = System.currentTimeMillis();
-	
 	public Vec2RO(double longueur, double angle, boolean useless)
 	{
-//		if(System.currentTimeMillis() - t > 4000)
-//			Thread.dumpStack();
 		x = Math.cos(angle)*longueur;
 		y = Math.sin(angle)*longueur;
 	}
 
 	public Vec2RO(double requestedX, double requestedY)
 	{
-//		if(System.currentTimeMillis() - t > 4000)
-//			Thread.dumpStack();
 		x = requestedX;
 		y = requestedY;
 	}
