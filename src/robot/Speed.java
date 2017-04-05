@@ -26,34 +26,16 @@ package robot;
 
 public enum Speed
 {
-	// TODO fixer les valeurs
-
 	// vitesse standard
-    STANDARD(1.),
-    
-    TEST1(0.3),
-    
-    TEST2(0.5),
-    
-    TEST3(0.8),
-    
-    // pour décourager la marche arrière, on la met moins rapide
-    MARCHE_ARRIERE(0.5),
+    STANDARD,
 
+    // vitesse pour les tests
+    TEST,
+        
     // Vitesse du robot lors d'une replanification, plus lent que la vitesse standard
-    REPLANIF(0.7),
-
-    REPLANIF_MARCHE_ARRIERE(0.3);
+    REPLANIF;
 
     // en millimètre par milliseconde = mètre par seconde
-    public final double translationalSpeed;
-    
-    /**
-     * @param vitesse
-     */
-    private Speed(double translationalSpeed)
-    {
-    	this.translationalSpeed = translationalSpeed;
-    }
-   
+    public double translationalSpeed; // valeur fixée par la config
+//    public static final double coeffMarcheArriere = 0.8; // 50% de la vitesse normale
 }

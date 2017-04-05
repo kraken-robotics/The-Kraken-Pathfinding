@@ -50,6 +50,7 @@ import graphic.PrintBuffer;
 import graphic.PrintBufferInterface;
 import obstacles.types.Obstacle;
 import pathfinding.astar.arcs.ArcCourbe;
+import robot.Speed;
 import serie.SerieCoucheTrame;
 import threads.ThreadName;
 import threads.ThreadService;
@@ -288,6 +289,10 @@ public class Container implements Service
 		config = new Config();
 		log.useConfig(config);
 		
+		Speed.TEST.translationalSpeed = config.getDouble(ConfigInfo.VITESSE_ROBOT_TEST) / 1000.;
+		Speed.REPLANIF.translationalSpeed = config.getDouble(ConfigInfo.VITESSE_ROBOT_REPLANIF) / 1000.;
+		Speed.STANDARD.translationalSpeed = config.getDouble(ConfigInfo.VITESSE_ROBOT_STANDARD) / 1000.;
+
 		/**
 		 * Affiche la version du programme (dernier commit et sa branche)
 		 */

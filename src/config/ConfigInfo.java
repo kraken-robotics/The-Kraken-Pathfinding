@@ -114,7 +114,10 @@ public enum ConfigInfo {
 	DEBUG_SERIE_TRAME(false), // debug verbeux sur le contenu des trames
 	DEBUG_SERIE(false), // debug sur la série
 	GENERATE_DEPENDENCY_GRAPH(false), // génère le graphe des dépendances
-	DEBUG_VITESSE_ROBOT(500), // la vitesse pour les tests
+	VITESSE_ROBOT_TEST(300), // vitesse de test en mm/s
+	VITESSE_ROBOT_STANDARD(500), // vitesse standard en mm/s
+	VITESSE_ROBOT_REPLANIF(300), // vitesse en replanification en mm/s
+	
 	
 	/**
 	 * Interface graphique
