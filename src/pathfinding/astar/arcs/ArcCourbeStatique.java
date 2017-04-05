@@ -62,15 +62,6 @@ public class ArcCourbeStatique extends ArcCourbe
 	{
 		return arcselems[ClothoidesComputer.NB_POINTS - 1];
 	}
-	
-	@Override
-	public double getVitesseTr()
-	{
-		double v = 0;
-		for(int i = 0; i < ClothoidesComputer.NB_POINTS; i++)
-			v += arcselems[i].vitesseMax;
-		return v / (ClothoidesComputer.NB_POINTS);
-	}
 
 	@Override
 	protected double getLongueur()

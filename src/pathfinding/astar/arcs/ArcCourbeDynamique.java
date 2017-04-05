@@ -63,14 +63,5 @@ public class ArcCourbeDynamique extends ArcCourbe
 	{
 		return longueur;
 	}
-	
-	@Override
-	public double getVitesseTr()
-	{
-		double v = 0;
-		for(CinematiqueObs c : arcs)
-			v += c.vitesseMax;
-		return v / arcs.size();
-	}
 
 }

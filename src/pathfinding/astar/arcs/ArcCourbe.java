@@ -45,12 +45,11 @@ public abstract class ArcCourbe implements Printable
 	public abstract int getNbPoints();
 	public abstract CinematiqueObs getPoint(int indice);
 	public abstract CinematiqueObs getLast();
-	public abstract double getVitesseTr();
 	protected abstract double getLongueur();
 
-	public final double getDuree()
+	public final double getDuree(double translationalSpeed)
 	{
-		return getLongueur() / getVitesseTr() + vitesse.getNbArrets() * tempsArret;
+		return getLongueur() / translationalSpeed + vitesse.getNbArrets() * tempsArret;
 	}
 	
 	@Override

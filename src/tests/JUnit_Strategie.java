@@ -54,7 +54,7 @@ public class JUnit_Strategie extends JUnit_Test {
 	@Test
 	public void test_pathcache() throws Exception
 	{
-		chrono.robot.setCinematique(new Cinematique(700, 1800, Math.PI, true, 0, Speed.STANDARD.translationalSpeed));
+		chrono.robot.setCinematique(new Cinematique(700, 1800, Math.PI, true, 0));
 		path.prepareNewPathToScript(new KeyPathCache(chrono, sm.getScripts().get("MINERAI_CRATERE_HAUT_GAUCHE"), false));
 		path.sendPreparedPath();
 		chrono.robot.followTrajectory(Speed.TEST1);

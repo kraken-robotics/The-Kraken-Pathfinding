@@ -83,7 +83,7 @@ public class BezierComputer implements Service, HighPFClass
 	 * @return
 	 * @throws InterruptedException 
 	 */
-	public ArcCourbeDynamique interpolationQuadratique(Cinematique cinematiqueInitiale, Vec2RO arrivee, Speed vitesseMax) throws InterruptedException
+	public ArcCourbeDynamique interpolationQuadratique(Cinematique cinematiqueInitiale, Vec2RO arrivee) throws InterruptedException
 	{
 		debut = cinematiqueInitiale;
 		arrivee.copy(delta);
@@ -103,12 +103,12 @@ public class BezierComputer implements Service, HighPFClass
 			if(Math.abs(debut.courbureGeometrique) > 0.1)
 			{
 //				log.debug("Préfixe nécessaire !");
-				prefixe = clothocomputer.getTrajectoireRamene(debut, VitesseRameneVolant.RAMENE_VOLANT, vitesseMax);
+				prefixe = clothocomputer.getTrajectoireRamene(debut, VitesseRameneVolant.RAMENE_VOLANT);
 			}
 			if(prefixe == null)
 				prefixe = new ArcCourbeDynamique(new ArrayList<CinematiqueObs>(), 0, VitesseBezier.BEZIER_QUAD);
 				
-			clothocomputer.getTrajectoire(prefixe.getNbPoints() > 0 ? prefixe.getLast() : cinematiqueInitiale, d > 0 ? VitesseClotho.GAUCHE_1 : VitesseClotho.DROITE_1 , vitesseMax, tmp);
+			clothocomputer.getTrajectoire(prefixe.getNbPoints() > 0 ? prefixe.getLast() : cinematiqueInitiale, d > 0 ? VitesseClotho.GAUCHE_1 : VitesseClotho.DROITE_1, tmp);
 			for(CinematiqueObs c : tmp.arcselems)
 			{
 				CinematiqueObs o = memory.getNewNode();
@@ -137,7 +137,7 @@ public class BezierComputer implements Service, HighPFClass
 		vecteurVitesse.scalar(Math.sqrt(d/(2*debut.courbureGeometrique/1000))); // c'est les maths qui le disent
 		vecteurVitesse.plus(debut.getPosition());
 		
-		ArcCourbeDynamique arc = constructBezierQuad(debut.getPosition(), vecteurVitesse, arrivee, debut.enMarcheAvant, vitesseMax, debut);
+		ArcCourbeDynamique arc = constructBezierQuad(debut.getPosition(), vecteurVitesse, arrivee, debut.enMarcheAvant, debut);
 		
 		if(arc == null)
 		{
@@ -165,9 +165,9 @@ public class BezierComputer implements Service, HighPFClass
 	 * @return
 	 * @throws InterruptedException 
 	 */
-	public ArcCourbeDynamique interpolationQuadratiqueCercle(Cinematique cinematiqueInitiale, Speed vitesseMax) throws InterruptedException
+	public ArcCourbeDynamique interpolationQuadratiqueCercle(Cinematique cinematiqueInitiale) throws InterruptedException
 	{
-		ArcCourbeDynamique out = interpolationQuadratique(cinematiqueInitiale, cercle.position, vitesseMax);
+		ArcCourbeDynamique out = interpolationQuadratique(cinematiqueInitiale, cercle.position);
 		if(out == null)
 			return null;
 
@@ -229,7 +229,7 @@ public class BezierComputer implements Service, HighPFClass
 	 * @return
 	 * @throws InterruptedException 
 	 */
-	private ArcCourbeDynamique constructBezierQuad(Vec2RO A, Vec2RO B, Vec2RO C, boolean enMarcheAvant, Speed vitesseMax, Cinematique cinematiqueInitiale) throws InterruptedException
+	private ArcCourbeDynamique constructBezierQuad(Vec2RO A, Vec2RO B, Vec2RO C, boolean enMarcheAvant, Cinematique cinematiqueInitiale) throws InterruptedException
 	{
 /*		buffer.addSupprimable(new ObstacleCircular(A, 15));
 		buffer.addSupprimable(new ObstacleCircular(B, 15));
@@ -296,8 +296,7 @@ public class BezierComputer implements Service, HighPFClass
 					obs.getPosition().getY(), // y
 					orientation,
 					enMarcheAvant,
-					accLongitudinale / (vitesse * vitesse), // Frenet
-					vitesseMax.translationalSpeed); // TODO
+					accLongitudinale / (vitesse * vitesse)); // Frenet
 			
 			double deltaO = (obs.orientationGeometrique - lastOrientation) % (2 * Math.PI);
 			if(deltaO > Math.PI)

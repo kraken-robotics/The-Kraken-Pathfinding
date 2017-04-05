@@ -52,9 +52,9 @@ public class RobotChrono extends Robot
 		return date;
 	}
 	
-	public void suitArcCourbe(ArcCourbe came_from_arc)
+	public void suitArcCourbe(ArcCourbe came_from_arc, double translationalSpeed)
 	{
-		date += came_from_arc.getDuree();
+		date += came_from_arc.getDuree(translationalSpeed);
 		came_from_arc.getLast().copy(cinematique);
 	}
 	
@@ -76,6 +76,7 @@ public class RobotChrono extends Robot
 	@Override
 	public void followTrajectory(Speed vitesse) throws InterruptedException, UnableToMoveException
 	{
+		// TODO : appeler suitArcCourbe
 		chemin.getLastCinematique().copy(cinematique);
 	}
 

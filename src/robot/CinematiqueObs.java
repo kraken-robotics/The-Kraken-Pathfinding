@@ -70,9 +70,9 @@ public class CinematiqueObs extends Cinematique implements Memorizable, Serializ
 	 * @param r
 	 */
 	@Override
-	public void update(double x, double y, double orientationGeometrique, boolean enMarcheAvant, double courbure, double vitesseMax)
+	public void update(double x, double y, double orientationGeometrique, boolean enMarcheAvant, double courbure)
 	{
-		super.update(x, y, orientationGeometrique, enMarcheAvant, courbure, vitesseMax);
+		super.update(x, y, orientationGeometrique, enMarcheAvant, courbure);
 		obstacle.update(position, orientationReelle);
 	}
 

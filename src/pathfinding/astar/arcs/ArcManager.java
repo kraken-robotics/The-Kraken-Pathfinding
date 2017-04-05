@@ -153,10 +153,10 @@ public class ArcManager implements Service, HighPFClass
 	 * Ne reste plus qu'à prendre en compte la vitesse, qui dépend de la courbure.
 	 * Il faut exécuter tout ce qui se passe pendant ce trajet
 	 */
-	public double distanceTo(AStarCourbeNode node)
+	public double distanceTo(AStarCourbeNode node, Speed vitesse)
 	{
-		node.state.robot.suitArcCourbe(node.getArc());
-		return node.getArc().getDuree();
+		node.state.robot.suitArcCourbe(node.getArc(), vitesse.translationalSpeed);
+		return node.getArc().getDuree(vitesse.translationalSpeed);
 	}
 
 	/**
@@ -164,7 +164,7 @@ public class ArcManager implements Service, HighPFClass
 	 * @param successeur
 	 * @throws InterruptedException 
 	 */
-    public boolean next(AStarCourbeNode successeur, Speed vitesseMax) throws InterruptedException
+    public boolean next(AStarCourbeNode successeur) throws InterruptedException
     {
     	VitesseCourbure v = iterator.next();
 
@@ -180,8 +180,7 @@ public class ArcManager implements Service, HighPFClass
 				ArcCourbeDynamique tmp;
 				tmp = bezier.interpolationQuadratique(
 						current.state.robot.getCinematique(),
-						arrivee.getPosition(),
-						vitesseMax);
+						arrivee.getPosition());
 				if(tmp == null)
 					return false;
 	
@@ -194,8 +193,7 @@ public class ArcManager implements Service, HighPFClass
 				
 				ArcCourbeDynamique tmp;
 				tmp = bezier.interpolationQuadratiqueCercle(
-						current.state.robot.getCinematique(),
-						vitesseMax);
+						current.state.robot.getCinematique());
 				if(tmp == null)			
 					return false;
 	
@@ -213,8 +211,7 @@ public class ArcManager implements Service, HighPFClass
 
 			ArcCourbeDynamique tmp = clotho.getTrajectoireRamene(
 					successeur.state.robot.getCinematique(),
-					(VitesseRameneVolant)v,
-					vitesseMax);
+					(VitesseRameneVolant)v);
 			if(tmp == null)
 				return false;
 			successeur.cameFromArcDynamique = tmp;
@@ -230,8 +227,7 @@ public class ArcManager implements Service, HighPFClass
 
 			successeur.cameFromArcDynamique = clotho.getTrajectoireDemiTour(
 					successeur.state.robot.getCinematique(),
-					(VitesseDemiTour)v,
-					vitesseMax);
+					(VitesseDemiTour)v);
 		}
 
 		/**
@@ -246,7 +242,6 @@ public class ArcManager implements Service, HighPFClass
 			clotho.getTrajectoire(
 					successeur.state.robot.getCinematique(),
 					(VitesseClotho)v,
-					vitesseMax,
 					successeur.cameFromArcStatique);
 		}
 		else

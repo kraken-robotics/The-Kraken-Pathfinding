@@ -52,7 +52,7 @@ public class JUnit_Capteurs extends JUnit_Test {
     	f.setAccessible(true);
     	Cinematique[] buffer = (Cinematique[]) f.get(capteurs);
     	int[] mesures = {100,100,100,100,100,100,100,100,100,100,100,100};
-    	Cinematique cinematique = new Cinematique(1280,500,Math.PI/2+0.03,true,0,0);
+    	Cinematique cinematique = new Cinematique(1280,500,Math.PI/2+0.03,true,0);
     	Assert.assertTrue(buffer[0] == null);
     	capteurs.updateObstaclesMobiles(new SensorsData(150, 150, mesures, cinematique));
     	Assert.assertTrue(buffer[0] != null);
@@ -69,7 +69,7 @@ public class JUnit_Capteurs extends JUnit_Test {
     	f.setAccessible(true);
     	Cinematique[] buffer = (Cinematique[]) f.get(capteurs);
     	int[] mesures = {100,100,100,100,100,100,100,100,100,100,100,100};
-    	Cinematique cinematique = new Cinematique(1250,500,Math.PI/2+0.03,true,0,0);
+    	Cinematique cinematique = new Cinematique(1250,500,Math.PI/2+0.03,true,0);
     	Assert.assertTrue(buffer[0] == null);
     	capteurs.updateObstaclesMobiles(new SensorsData(150, 150, mesures, cinematique));
     	Assert.assertTrue(buffer[0] == null);
@@ -82,7 +82,7 @@ public class JUnit_Capteurs extends JUnit_Test {
     	f.setAccessible(true);
     	Cinematique[] buffer = (Cinematique[]) f.get(capteurs);
     	int[] mesures = {100,100,100,100,100,100,100,100,100,100,100,100};
-    	Cinematique cinematique = new Cinematique(1280,500,Math.PI/2+0.15,true,0,0);
+    	Cinematique cinematique = new Cinematique(1280,500,Math.PI/2+0.15,true,0);
     	Assert.assertTrue(buffer[0] == null);
     	capteurs.updateObstaclesMobiles(new SensorsData(150, 150, mesures, cinematique));
     	Assert.assertTrue(buffer[0] == null);
@@ -107,7 +107,7 @@ public class JUnit_Capteurs extends JUnit_Test {
     	{
 	    	for(int i = 0; i < 12; i++)
 	    		mesures[i] = (int)Math.round(100+r.nextGaussian()*ecartType);
-	    	Cinematique cinematique = new Cinematique(1290,500,Math.PI/2,true,0,0);
+	    	Cinematique cinematique = new Cinematique(1290,500,Math.PI/2,true,0);
 	    	Assert.assertTrue(buffer[k] == null);
 	    	capteurs.updateObstaclesMobiles(new SensorsData(150, 150, mesures, cinematique));
 	    	Assert.assertTrue(buffer[k] != null);
@@ -121,7 +121,7 @@ public class JUnit_Capteurs extends JUnit_Test {
     	f.setAccessible(true);
     	Cinematique[] buffer = (Cinematique[]) f.get(capteurs);
     	int[] mesures = {100,100,100,100,100,100,100,100,100,100,100,100};
-    	Cinematique cinematique = new Cinematique(300,500,Math.PI/2+0.03,true,0,0);
+    	Cinematique cinematique = new Cinematique(300,500,Math.PI/2+0.03,true,0);
     	Assert.assertTrue(buffer[0] == null);
     	capteurs.updateObstaclesMobiles(new SensorsData(150, 150, mesures, cinematique));
     	Assert.assertTrue(buffer[0] == null);
@@ -134,7 +134,7 @@ public class JUnit_Capteurs extends JUnit_Test {
     	f.setAccessible(true);
     	Cinematique[] buffer = (Cinematique[]) f.get(capteurs);
     	int[] mesures = {150,150,150,150,150,150,150,150,150,150,150,150};
-    	Cinematique cinematique = new Cinematique(1280,70,Math.PI/4+0.03,true,0,0);
+    	Cinematique cinematique = new Cinematique(1280,70,Math.PI/4+0.03,true,0);
     	Assert.assertTrue(buffer[0] == null);
     	capteurs.updateObstaclesMobiles(new SensorsData(150, 150, mesures, cinematique));
     	Assert.assertTrue(buffer[0] == null);
@@ -144,7 +144,7 @@ public class JUnit_Capteurs extends JUnit_Test {
 	public void test_capteurs() throws Exception
 	{
     	int[] mesures = {100,100,100,100,100,100,100,100,100,100,100,100};
-    	Cinematique cinematique = new Cinematique(0,0,0,true,0,0);
+    	Cinematique cinematique = new Cinematique(0,0,0,true,0);
     	capteurs.updateObstaclesMobiles(new SensorsData(150, 150, mesures, cinematique));
 	}
 

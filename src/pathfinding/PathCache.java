@@ -73,7 +73,7 @@ public class PathCache implements Service, HighPFClass
 		this.fakeChemin = fakeChemin;
 		this.realChemin = realChemin;
 		this.log = log;
-		Cinematique start = new Cinematique(700, 1800, Math.PI, true, 0, Speed.STANDARD.translationalSpeed); // TODO
+		Cinematique start = new Cinematique(700, 1800, Math.PI, true, 0); // TODO
 		chrono.robot.setCinematique(start);
 		this.astar = astar;
 		paths = new HashMap<String, LinkedList<CinematiqueObs>>();

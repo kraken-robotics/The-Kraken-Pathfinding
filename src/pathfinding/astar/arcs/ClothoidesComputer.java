@@ -149,10 +149,10 @@ public class ClothoidesComputer implements Service, HighPFClass
 		}
 	}
 	
-	public void getTrajectoire(ArcCourbe depart, VitesseClotho vitesse, Speed vitesseMax, ArcCourbeStatique modified)
+	public void getTrajectoire(ArcCourbe depart, VitesseClotho vitesse, ArcCourbeStatique modified)
 	{
 		CinematiqueObs last = depart.getLast();
-		getTrajectoire(last, vitesse, vitesseMax, modified);
+		getTrajectoire(last, vitesse, modified);
 	}
 	
 	/**
@@ -161,9 +161,9 @@ public class ClothoidesComputer implements Service, HighPFClass
 	 * @param vitesse
 	 * @param modified
 	 */
-	public final void getTrajectoire(RobotChrono robot, VitesseClotho vitesse, Speed vitesseMax, ArcCourbeStatique modified)
+	public final void getTrajectoire(RobotChrono robot, VitesseClotho vitesse, ArcCourbeStatique modified)
 	{
-		getTrajectoire(robot.getCinematique(), vitesse, vitesseMax, modified);
+		getTrajectoire(robot.getCinematique(), vitesse, modified);
 	}
 	
 	/**
@@ -177,7 +177,7 @@ public class ClothoidesComputer implements Service, HighPFClass
 	 * @param distance_mm
 	 * @return
 	 */
-	public final void getTrajectoire(Cinematique cinematiqueInitiale, VitesseClotho vitesse, Speed vitesseMax, ArcCourbeStatique modified)
+	public final void getTrajectoire(Cinematique cinematiqueInitiale, VitesseClotho vitesse, ArcCourbeStatique modified)
 	{
 //		modified.v = vitesse;
 //		log.debug(vitesse);
@@ -194,18 +194,13 @@ public class ClothoidesComputer implements Service, HighPFClass
 		
 		boolean marcheAvant = vitesse.rebrousse ^ cinematiqueInitiale.enMarcheAvant;
 
-		// Gestion de la vitesse en marche arrière
-		Speed vitesseTr = vitesseMax;
-		if(!marcheAvant)
-			vitesseTr = Speed.values()[vitesseMax.ordinal()+1];
-
 		// si la dérivée de la courbure est nulle, on est dans le cas particulier d'une trajectoire rectiligne ou circulaire
 		if(vitesse.vitesse == 0)
 		{
 			if(courbure < 0.00001 && courbure > -0.00001)
-				getTrajectoireLigneDroite(cinematiqueInitiale.getPosition(), orientation, vitesseTr, modified, marcheAvant);
+				getTrajectoireLigneDroite(cinematiqueInitiale.getPosition(), orientation, modified, marcheAvant);
 			else
-				getTrajectoireCirculaire(cinematiqueInitiale.getPosition(), orientation, courbure, vitesseTr, modified, marcheAvant);
+				getTrajectoireCirculaire(cinematiqueInitiale.getPosition(), orientation, courbure, modified, marcheAvant);
 			return;
 		}
 		
@@ -231,7 +226,7 @@ public class ClothoidesComputer implements Service, HighPFClass
 		for(int i = 0; i < NB_POINTS; i++)
 		{
 			sDepart += vitesse.squaredRootVitesse * PRECISION_TRACE;
-			computePoint(pointDepart, vitesse, sDepart, coeffMultiplicatif, i, baseOrientation, cos, sin, marcheAvant, vitesseTr, cinematiqueInitiale.getPosition(), modified.arcselems[i]);
+			computePoint(pointDepart, vitesse, sDepart, coeffMultiplicatif, i, baseOrientation, cos, sin, marcheAvant, cinematiqueInitiale.getPosition(), modified.arcselems[i]);
 		}
 
 	}
@@ -248,7 +243,7 @@ public class ClothoidesComputer implements Service, HighPFClass
 	 * @return 
 	 * @throws InterruptedException 
 	 */
-	public final ArcCourbeDynamique getTrajectoireRamene(Cinematique cinematiqueInitiale, VitesseRameneVolant vitesseRamene, Speed vitesseMax) throws InterruptedException
+	public final ArcCourbeDynamique getTrajectoireRamene(Cinematique cinematiqueInitiale, VitesseRameneVolant vitesseRamene) throws InterruptedException
 	{
 		double courbure = cinematiqueInitiale.courbureGeometrique;
 		double orientation = cinematiqueInitiale.orientationGeometrique;
@@ -260,10 +255,6 @@ public class ClothoidesComputer implements Service, HighPFClass
 			vitesse = vitesseRamene.vitesseGauche;
 		
 		boolean marcheAvant = cinematiqueInitiale.enMarcheAvant;
-		// Gestion de la vitesse en marche arrière
-		Speed vitesseTr = vitesseMax;
-		if(!marcheAvant)
-			vitesseTr = Speed.values()[vitesseMax.ordinal()+1];
 
 		double coeffMultiplicatif = 1. / vitesse.squaredRootVitesse;
 		double sDepart = courbure / vitesse.squaredRootVitesse; // sDepart peut parfaitement être négatif
@@ -298,7 +289,7 @@ public class ClothoidesComputer implements Service, HighPFClass
 				break;
 			CinematiqueObs obs = memory.getNewNode();
 			out.add(obs);
-			computePoint(pointDepart, vitesse, sDepart, coeffMultiplicatif, i, baseOrientation, cos, sin, marcheAvant, vitesseTr, cinematiqueInitiale.getPosition(), obs);
+			computePoint(pointDepart, vitesse, sDepart, coeffMultiplicatif, i, baseOrientation, cos, sin, marcheAvant, cinematiqueInitiale.getPosition(), obs);
 			i++;
 		}
 		
@@ -323,7 +314,7 @@ public class ClothoidesComputer implements Service, HighPFClass
 	 * @param positionInitiale : la position au début du mouvement
 	 * @param c
 	 */
-	private void computePoint(int pointDepart, VitesseClotho vitesse, double sDepart, double coeffMultiplicatif, int i, double baseOrientation, double cos, double sin, boolean marcheAvant, Speed vitesseTr, Vec2RO positionInitiale, CinematiqueObs c)
+	private void computePoint(int pointDepart, VitesseClotho vitesse, double sDepart, double coeffMultiplicatif, int i, double baseOrientation, double cos, double sin, boolean marcheAvant, Vec2RO positionInitiale, CinematiqueObs c)
 	{
 		trajectoire[pointDepart + vitesse.squaredRootVitesse * (i + 1)].copy(c.getPositionEcriture());
 		c.getPositionEcriture().minus(trajectoire[pointDepart])
@@ -355,7 +346,6 @@ public class ClothoidesComputer implements Service, HighPFClass
 		
 		c.enMarcheAvant = marcheAvant;
 		
-		c.vitesseMax = vitesseTr.translationalSpeed; //computeVitesseMax(vitesseTr.translationalSpeed, vitesse.vitesse);
 		c.obstacle.update(c.getPosition(), c.orientationReelle);
 	}
 
@@ -369,7 +359,7 @@ public class ClothoidesComputer implements Service, HighPFClass
 	 * @param courbure
 	 * @param modified
 	 */
-	private void getTrajectoireCirculaire(Vec2RO position, double orientation, double courbure, Speed vitesseMax, ArcCourbeStatique modified, boolean enMarcheAvant)
+	private void getTrajectoireCirculaire(Vec2RO position, double orientation, double courbure, ArcCourbeStatique modified, boolean enMarcheAvant)
 	{		
 //		log.debug("Trajectoire circulaire !");
 		// rappel = la courbure est l'inverse du rayon de courbure
@@ -405,7 +395,6 @@ public class ClothoidesComputer implements Service, HighPFClass
 				modified.arcselems[i].courbureReelle = - modified.arcselems[i].courbureGeometrique;
  			}
 
- 			modified.arcselems[i].vitesseMax = vitesseMax.translationalSpeed;
 			modified.arcselems[i].enMarcheAvant = enMarcheAvant;
 			modified.arcselems[i].obstacle.update(modified.arcselems[i].getPosition(), modified.arcselems[i].orientationReelle);
 		}
@@ -417,7 +406,7 @@ public class ClothoidesComputer implements Service, HighPFClass
 	 * @param orientation
 	 * @param modified
 	 */
-	private void getTrajectoireLigneDroite(Vec2RO position, double orientation, Speed vitesseMax, ArcCourbeStatique modified, boolean enMarcheAvant)
+	private void getTrajectoireLigneDroite(Vec2RO position, double orientation, ArcCourbeStatique modified, boolean enMarcheAvant)
 	{
 		double cos = Math.cos(orientation);
 		double sin = Math.sin(orientation);
@@ -436,7 +425,6 @@ public class ClothoidesComputer implements Service, HighPFClass
  			else
 				modified.arcselems[i].orientationReelle = modified.arcselems[i].orientationGeometrique + Math.PI;
  			
- 			modified.arcselems[i].vitesseMax = vitesseMax.translationalSpeed;
 			modified.arcselems[i].enMarcheAvant = enMarcheAvant;
 			modified.arcselems[i].obstacle.update(modified.arcselems[i].getPosition(), modified.arcselems[i].orientationReelle);
 		}
@@ -499,10 +487,10 @@ public class ClothoidesComputer implements Service, HighPFClass
 	 * @return
 	 * @throws InterruptedException 
 	 */
-	public final ArcCourbeDynamique getTrajectoireDemiTour(Cinematique cinematiqueInitiale, VitesseDemiTour vitesse, Speed vitesseMax) throws InterruptedException
+	public final ArcCourbeDynamique getTrajectoireDemiTour(Cinematique cinematiqueInitiale, VitesseDemiTour vitesse) throws InterruptedException
 	{
-		List<CinematiqueObs> trajet = getTrajectoireQuartDeTour(cinematiqueInitiale, vitesse.v, vitesseMax, false);
-		trajet.addAll(getTrajectoireQuartDeTour(trajet.get(trajet.size()-1), vitesse.v, vitesseMax, true)); // on reprend à la fin du premier quart de tour
+		List<CinematiqueObs> trajet = getTrajectoireQuartDeTour(cinematiqueInitiale, vitesse.v, false);
+		trajet.addAll(getTrajectoireQuartDeTour(trajet.get(trajet.size()-1), vitesse.v, true)); // on reprend à la fin du premier quart de tour
 		return new ArcCourbeDynamique(trajet, trajet.size()*PRECISION_TRACE_MM, vitesse); // TODO : rebrousse est faux…
 	}
 	
@@ -518,7 +506,7 @@ public class ClothoidesComputer implements Service, HighPFClass
 	 * @return 
 	 * @throws InterruptedException 
 	 */
-	private final List<CinematiqueObs> getTrajectoireQuartDeTour(Cinematique cinematiqueInitiale, VitesseClotho vitesse, Speed vitesseMax, boolean rebrousse) throws InterruptedException
+	private final List<CinematiqueObs> getTrajectoireQuartDeTour(Cinematique cinematiqueInitiale, VitesseClotho vitesse, boolean rebrousse) throws InterruptedException
 	{
 		double courbure = cinematiqueInitiale.courbureGeometrique;
 		double orientation = cinematiqueInitiale.orientationGeometrique;
@@ -537,11 +525,6 @@ public class ClothoidesComputer implements Service, HighPFClass
 			vecteurOrientationDepartRotate.rotate(0, -1);
 		
 		boolean marcheAvant = rebrousse ^ cinematiqueInitiale.enMarcheAvant;
-
-		// Gestion de la vitesse en marche arrière
-		Speed vitesseTr = vitesseMax;
-		if(!marcheAvant)
-			vitesseTr = Speed.values()[vitesseMax.ordinal()+1];
 
 		double coeffMultiplicatif = 1. / vitesse.squaredRootVitesse;
 		double sDepart = courbure / vitesse.squaredRootVitesse; // sDepart peut parfaitement être négatif
@@ -571,7 +554,7 @@ public class ClothoidesComputer implements Service, HighPFClass
 			sDepart += vitesse.squaredRootVitesse * PRECISION_TRACE;
 			CinematiqueObs obs = memory.getNewNode();
 			out.add(obs);
-			computePoint(pointDepart, vitesse, sDepart, coeffMultiplicatif, i, baseOrientation, cos, sin, marcheAvant, vitesseTr, positionInit, obs);
+			computePoint(pointDepart, vitesse, sDepart, coeffMultiplicatif, i, baseOrientation, cos, sin, marcheAvant, positionInit, obs);
 			vecteurOrientation.setX(Math.cos(obs.orientationGeometrique));
 			vecteurOrientation.setY(Math.sin(obs.orientationGeometrique));
 			i++;

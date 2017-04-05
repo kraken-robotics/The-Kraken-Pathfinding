@@ -40,13 +40,12 @@ public class Cinematique implements Printable, Serializable
 	public volatile double orientationGeometrique; // il s'agit de l'orientation qui avance. donc l'arrière du robot s'il recule
 	public volatile boolean enMarcheAvant;
 	public volatile double courbureGeometrique;
-	public volatile double vitesseMax;
 	public volatile double orientationReelle;
 	public volatile double courbureReelle;
 	
-	public Cinematique(double x, double y, double orientationGeometrique, boolean enMarcheAvant, double courbure, double vitesseMax)
+	public Cinematique(double x, double y, double orientationGeometrique, boolean enMarcheAvant, double courbure)
 	{
-		update(x,y,orientationGeometrique,enMarcheAvant, courbure, vitesseMax);
+		update(x,y,orientationGeometrique,enMarcheAvant, courbure);
 	}
 	
 	/**
@@ -57,7 +56,6 @@ public class Cinematique implements Printable, Serializable
 	{
 		enMarcheAvant = cinematique.enMarcheAvant;
 		courbureGeometrique = cinematique.courbureGeometrique;
-		vitesseMax = cinematique.vitesseMax;
 	}
 
 	/**
@@ -80,7 +78,6 @@ public class Cinematique implements Printable, Serializable
 	    	autre.enMarcheAvant = enMarcheAvant;
 	    	autre.courbureGeometrique = courbureGeometrique;
 	    	autre.courbureReelle = courbureReelle;
-	    	autre.vitesseMax = vitesseMax;
 		}
 	}
 	
@@ -97,7 +94,7 @@ public class Cinematique implements Printable, Serializable
 	@Override
 	public String toString()
 	{
-		return position+", "+orientationGeometrique+"(réelle : "+orientationReelle+"), "+(enMarcheAvant ? "marche avant" : "marche arrière")+", vitesse max : "+vitesseMax+" courbure : "+courbureGeometrique+"(réelle : "+courbureReelle+")";
+		return position+", "+orientationGeometrique+" (réelle : "+orientationReelle+"), "+(enMarcheAvant ? "marche avant" : "marche arrière")+", courbure : "+courbureGeometrique+" (réelle : "+courbureReelle+")";
 	}
 	
 	/**
@@ -162,7 +159,7 @@ public class Cinematique implements Printable, Serializable
 		return o.hashCode() == hashCode();
 	}
 
-	public void update(double x, double y, double orientationGeometrique, boolean enMarcheAvant, double courbure, double vitesseMax)
+	public void update(double x, double y, double orientationGeometrique, boolean enMarcheAvant, double courbure)
 	{
 		if(enMarcheAvant)
 		{
@@ -180,7 +177,6 @@ public class Cinematique implements Printable, Serializable
 		this.orientationGeometrique = orientationGeometrique;
 		this.enMarcheAvant = enMarcheAvant;
 		this.courbureGeometrique = courbure;
-		this.vitesseMax = vitesseMax;
 	}
 
 	@Override

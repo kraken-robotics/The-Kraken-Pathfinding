@@ -240,14 +240,14 @@ public class AStarCourbe implements Service, HighPFClass
 				successeur.cameFromArcDynamique = null;
 
 				// S'il y a un problème, on passe au suivant (interpolation cubique impossible par exemple)
-				if(!arcmanager.next(successeur, vitesseMax))
+				if(!arcmanager.next(successeur))
 				{
 					destroy(successeur);
 					continue;
 				}
 				
 				successeur.parent = current;
-				successeur.g_score = current.g_score + arcmanager.distanceTo(successeur);
+				successeur.g_score = current.g_score + arcmanager.distanceTo(successeur, vitesseMax);
 			
 				// on a déjà visité un point proche?
 				// ceci est vraie seulement si l'heuristique est monotone. C'est normalement le cas.
@@ -265,7 +265,7 @@ public class AStarCourbe implements Service, HighPFClass
 				if(heuristique == null)
 					heuristique = arcmanager.heuristicDirect(successeur.state.robot.getCinematique());
 				
-				successeur.f_score = successeur.g_score + heuristique / successeur.getArc().getVitesseTr();
+				successeur.f_score = successeur.g_score + heuristique / vitesseMax.translationalSpeed;
 				
 				// noeud d'arrivé
 				if(arcmanager.isArrived(successeur) && arcmanager.isReachable(successeur, shoot)
