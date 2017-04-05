@@ -74,6 +74,18 @@ public class RobotChrono extends Robot
 	}
 	
 	@Override
+	public void avanceVersCentre(double distance, Speed speed, Vec2RO centre) throws UnableToMoveException, InterruptedException
+	{
+		double orientationReelleDesiree = Math.atan2(centre.getY()-cinematique.position.getY(), centre.getX()-cinematique.position.getX());
+		double deltaO = (orientationReelleDesiree - cinematique.orientationReelle) % (2*Math.PI);
+		if(deltaO > Math.PI)
+			deltaO -= 2*Math.PI;
+		if(Math.abs(deltaO) > Math.PI/2)
+			orientationReelleDesiree += Math.PI;
+		cinematique.getPositionEcriture().plus(new Vec2RO(distance, orientationReelleDesiree, true));
+	}
+	
+	@Override
 	public void followTrajectory(Speed vitesse) throws InterruptedException, UnableToMoveException
 	{
 		// TODO : appeler suitArcCourbe
