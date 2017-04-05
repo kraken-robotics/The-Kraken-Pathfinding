@@ -113,14 +113,14 @@ public class Cinematique implements Printable, Serializable
 		if(orientationReelle < 0)
 			orientationReelle += 2*Math.PI;
 		
-		codeOrientation = (int)((orientationReelle + Math.PI / 20) / (Math.PI / 10));
+		codeOrientation = (int)((orientationReelle + Math.PI / 20) / (Math.PI / 10)); // le +(pi/10)/2 est utilisé afin d'avoir une tolérance sur l'orientation du robot si son orientation est "ronde" (0, pi/2, pi, -pi/2)
 //		System.out.println("codeOrientation : "+codeOrientation+" "+orientation);
 		
 		return ((((int)(position.getX()) + 1500) / 30) * 200 + (int)(position.getY()) / 30) * 20 + codeOrientation;
 	}
 	
 	@Override
-	public int hashCode() // TODO
+	public int hashCode()
 	{
 		
 		// Il faut fusionner les points trop proches pour pas que le PF ne s'entête dans des coins impossibles
@@ -151,9 +151,9 @@ public class Cinematique implements Printable, Serializable
 		codeOrientation = (int)(orientationReelle / (Math.PI / 6));
 //		System.out.println("codeOrientation : "+codeOrientation+" "+orientation);
 
-		return ((((((int)(position.getX()) + 1500) / 100) * 2000 + (int)(position.getY()) / 100) * 2 + codeSens) * 16 + codeOrientation) * 6 + codeCourbure;
+//		return ((((((int)(position.getX()) + 1500) / 100) * 2000 + (int)(position.getY()) / 100) * 2 + codeSens) * 16 + codeOrientation) * 6 + codeCourbure;
 
-//		return ((((((int)(position.getX()) + 1500) / 30) * 200 + (int)(position.getY()) / 30) * 2 + codeSens) * 16 + codeOrientation) * 6 + codeCourbure;
+		return ((((((int)(position.getX()) + 1500) / 30) * 200 + (int)(position.getY()) / 30) * 2 + codeSens) * 16 + codeOrientation) * 6 + codeCourbure;
 	}
 	
 	@Override

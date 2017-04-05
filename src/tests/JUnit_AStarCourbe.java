@@ -522,6 +522,35 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 		log.debug("Nb points : "+i);
 	}
 	
+	/**
+	 * Trajectoire avec des arcs "…_AFTER_STOP"
+	 * @throws Exception
+	 */
+	@Test
+    public void test_trajectoire_avec_arret() throws Exception
+    {
+		long avant = System.nanoTime();
+		Cinematique depart = new Cinematique(-800, 350, 3*Math.PI/4, true, 0, Speed.STANDARD.translationalSpeed);
+		robot.setCinematique(depart);
+		Cinematique c = new Cinematique(-300, 800, Math.PI, false, 0, Speed.STANDARD.translationalSpeed);
+		astar.initializeNewSearch(c, true, state);
+		astar.process(chemin);
+		log.debug("Temps : "+(System.nanoTime() - avant) / (1000000.));
+		iterator.reinit();
+		CinematiqueObs a = null;
+		int i = 0;
+		while(iterator.hasNext())
+		{
+			i++;
+			a = iterator.next();
+			log.debug(a);
+			robot.setCinematique(a);
+			if(graphicTrajectory)
+				Thread.sleep(100);
+		}
+		log.debug("Nb points : "+i);
+	}
+	
 	@Test
     public void test_recherche_loin() throws Exception
     {
