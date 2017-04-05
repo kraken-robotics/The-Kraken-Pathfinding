@@ -70,7 +70,9 @@ public class Log implements Service, DynamicConfigurable
 	// Ecriture plus rapide sans appel à la pile d'exécution
 	private boolean fastLog = false;
 	
-	private String 	couleurDefault = "\u001B[0m";
+	private boolean useColor = false;
+	
+	private String	couleurDefault = "\u001B[0m";
 	
 	/**
 	 * date du démarrage
@@ -142,9 +144,11 @@ public class Log implements Service, DynamicConfigurable
 			if(sauvegarde_fichier)
 			{
 				try{
-					// On met la couleur dans le fichier TODO
-//				     writer.write(niveau.couleur+affichage+couleurDefault+"\n");
-				     writer.write(affichage+"\n");
+					// On met la couleur dans le fichier
+					if(useColor)
+						writer.write(niveau.couleur+affichage+couleurDefault+"\n");
+					else
+						writer.write(affichage+"\n");
 				}
 				catch(IOException e)
 				{
@@ -182,6 +186,7 @@ public class Log implements Service, DynamicConfigurable
 	{
 		affiche_debug = config.getBoolean(ConfigInfo.AFFICHE_DEBUG);
 		sauvegarde_fichier = config.getBoolean(ConfigInfo.SAUVEGARDE_LOG);
+		useColor = config.getBoolean(ConfigInfo.COLORED_LOG);
 		fastLog = config.getBoolean(ConfigInfo.FAST_LOG);
 		if(sauvegarde_fichier)
 		{

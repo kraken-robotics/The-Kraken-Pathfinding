@@ -54,6 +54,7 @@ public enum ConfigInfo {
 	AFFICHE_DEBUG(true), // affiche aussi les log.debug
 	SAUVEGARDE_LOG(false), // sauvegarde les logs dans un fichier externe
 	AFFICHE_CONFIG(false), // affiche la configuration complète au lancement
+	COLORED_LOG(false), // de la couleur dans les sauvegardes de logs !
 	
 	/**
 	 * Infos sur l'ennemi
