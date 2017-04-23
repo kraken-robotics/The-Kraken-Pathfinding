@@ -110,6 +110,12 @@ public abstract class Robot implements DynamicConfigurable
 		bloque("leveFilet");
 		filetBaisse = false;
 	}
+
+	public void verrouilleFilet() throws InterruptedException
+	{
+		bloque("leveFilet");
+		filetBaisse = false;
+	}
 	
 	public boolean isFiletBaisse()
 	{
