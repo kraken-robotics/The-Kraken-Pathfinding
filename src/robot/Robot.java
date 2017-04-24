@@ -113,7 +113,7 @@ public abstract class Robot implements DynamicConfigurable
 
 	public void verrouilleFilet() throws InterruptedException
 	{
-		bloque("leveFilet");
+		bloque("verrouilleFilet");
 		filetBaisse = false;
 	}
 	
