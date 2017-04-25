@@ -117,7 +117,6 @@ public enum ConfigInfo {
 	VITESSE_ROBOT_STANDARD(500), // vitesse standard en mm/s
 	VITESSE_ROBOT_REPLANIF(300), // vitesse en replanification en mm/s
 	
-	
 	/**
 	 * Interface graphique
 	 */
