@@ -45,7 +45,7 @@ public abstract class Robot implements DynamicConfigurable
 
 	protected abstract void bloque(String nom, Object... param) throws InterruptedException;
 	public abstract void avance(double distance, Speed speed) throws UnableToMoveException, InterruptedException;
-	public abstract void avanceVersCentre(double distance, Speed speed, Vec2RO centre) throws UnableToMoveException, InterruptedException;
+	public abstract void avanceVersCentre(Speed speed, Vec2RO centre, double rayon) throws UnableToMoveException, InterruptedException;
 	public abstract void followTrajectory(Speed vitesse) throws InterruptedException, UnableToMoveException;
 	
 	public Robot(Log log)

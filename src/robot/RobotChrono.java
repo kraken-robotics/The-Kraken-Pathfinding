@@ -74,7 +74,7 @@ public class RobotChrono extends Robot
 	}
 	
 	@Override
-	public void avanceVersCentre(double distance, Speed speed, Vec2RO centre) throws UnableToMoveException, InterruptedException
+	public void avanceVersCentre(Speed speed, Vec2RO centre, double rayon) throws UnableToMoveException, InterruptedException
 	{
 		double orientationReelleDesiree = Math.atan2(centre.getY()-cinematique.position.getY(), centre.getX()-cinematique.position.getX());
 		double deltaO = (orientationReelleDesiree - cinematique.orientationReelle) % (2*Math.PI);
@@ -82,7 +82,7 @@ public class RobotChrono extends Robot
 			deltaO -= 2*Math.PI;
 		if(Math.abs(deltaO) > Math.PI/2)
 			orientationReelleDesiree += Math.PI;
-		cinematique.getPositionEcriture().plus(new Vec2RO(distance, orientationReelleDesiree, true));
+//		cinematique.getPositionEcriture().plus(new Vec2RO(distance, orientationReelleDesiree, true));
 	}
 	
 	@Override
