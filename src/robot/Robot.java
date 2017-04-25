@@ -19,6 +19,7 @@ package robot;
 
 import config.Config;
 import config.DynamicConfigurable;
+import exceptions.ActionneurException;
 import exceptions.UnableToMoveException;
 import utils.Log;
 import utils.Vec2RO;
@@ -43,7 +44,7 @@ public abstract class Robot implements DynamicConfigurable
 	protected boolean filetBaisse = false;
 	protected boolean filetPlein = false;
 
-	protected abstract void bloque(String nom, Object... param) throws InterruptedException;
+	protected abstract void bloque(String nom, Object... param) throws InterruptedException, ActionneurException;
 	public abstract void avance(double distance, Speed speed) throws UnableToMoveException, InterruptedException;
 	public abstract void avanceVersCentre(Speed speed, Vec2RO centre, double rayon) throws UnableToMoveException, InterruptedException;
 	public abstract void followTrajectory(Speed vitesse) throws InterruptedException, UnableToMoveException;
@@ -92,20 +93,21 @@ public abstract class Robot implements DynamicConfigurable
 	/**
 	 * Méthode bloquante qui baisse le filet
 	 * @throws InterruptedException 
+	 * @throws ActionneurException 
 	 */
-	public void baisseFilet() throws InterruptedException
+	public void baisseFilet() throws InterruptedException, ActionneurException
 	{
 		bloque("baisseFilet");
 		filetBaisse = true;
 	}
 	
-	public void bougeFiletMiChemin() throws InterruptedException
+	public void bougeFiletMiChemin() throws InterruptedException, ActionneurException
 	{
 		bloque("bougeFiletMiChemin");
 		filetBaisse = true;
 	}
 	
-	public void leveFilet() throws InterruptedException
+	public void leveFilet() throws InterruptedException, ActionneurException
 	{
 		bloque("leveFilet");
 		filetBaisse = false;
@@ -113,7 +115,12 @@ public abstract class Robot implements DynamicConfigurable
 
 	public void verrouilleFilet() throws InterruptedException
 	{
-		bloque("verrouilleFilet");
+		try {
+			bloque("verrouilleFilet");
+		} catch (ActionneurException e) {
+			log.critical(e);
+			// impossible
+		}
 		filetBaisse = false;
 	}
 	
@@ -124,35 +131,60 @@ public abstract class Robot implements DynamicConfigurable
 
 	public void ouvreFilet() throws InterruptedException
 	{
-		bloque("ouvreFilet");
+		try {
+			bloque("ouvreFilet");
+		} catch (ActionneurException e) {
+			log.critical(e);
+			// impossible
+		}
 		filetPlein = false;
 	}
 
 	public void fermeFilet() throws InterruptedException
 	{
-		bloque("fermeFilet");
+		try {
+			bloque("fermeFilet");
+		} catch (ActionneurException e) {
+			log.critical(e);
+			// impossible
+		}
 //		filetPlein = false; // TODO
 	}
 	
-	public void ejecteBalles() throws InterruptedException
+	public void ejecteBalles() throws InterruptedException, ActionneurException
 	{
 		bloque("ejecteBalles", !symetrie);
 		filetPlein = false;
 	}
-
-	public void rearme() throws InterruptedException
+	public void ejecteBallesAutreCote() throws InterruptedException, ActionneurException
+	{
+		bloque("ejecteBalles", symetrie);
+		filetPlein = false;
+	}
+	
+	public void rearme() throws InterruptedException, ActionneurException
 	{
 		bloque("rearme", !symetrie);
 	}
 	
-	public void traverseBascule() throws InterruptedException
+	public void rearmeAutreCote() throws InterruptedException, ActionneurException
+	{
+		bloque("rearme", symetrie);
+	}
+	
+	public void traverseBascule() throws InterruptedException, ActionneurException
 	{
 		bloque("traverseBascule");
 	}
 	
 	public void funnyAction() throws InterruptedException
 	{
-		bloque("funnyAction");
+		try {
+			bloque("funnyAction");
+		} catch (ActionneurException e) {
+			log.critical(e);
+			// impossible
+		}
 	}
 	
 	/**

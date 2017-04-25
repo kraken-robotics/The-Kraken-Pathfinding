@@ -40,7 +40,6 @@ import pathfinding.astar.arcs.vitesses.VitesseRameneVolant;
 import robot.Cinematique;
 import robot.CinematiqueObs;
 import robot.RobotChrono;
-import robot.Speed;
 import utils.Log;
 import utils.Vec2RO;
 import utils.Vec2RW;
