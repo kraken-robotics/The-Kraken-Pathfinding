@@ -17,6 +17,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 package threads;
 
+import config.Config;
+import config.ConfigInfo;
 import container.dependances.HighPFClass;
 import exceptions.PathfindingException;
 import pathfinding.astar.AStarCourbe;
@@ -34,12 +36,14 @@ public class ThreadUpdatePathfinding extends ThreadService implements HighPFClas
 	protected Log log;
 	private AStarCourbe pathfinding;
 	private CheminPathfinding chemin;
+	private boolean debugCapteurs;
 
-	public ThreadUpdatePathfinding(Log log, AStarCourbe pathfinding, CheminPathfinding chemin)
+	public ThreadUpdatePathfinding(Log log, AStarCourbe pathfinding, CheminPathfinding chemin, Config config)
 	{
 		this.log = log;
 		this.pathfinding = pathfinding;
 		this.chemin = chemin;
+		debugCapteurs = config.getBoolean(ConfigInfo.DEBUG_CAPTEURS);
 	}
 
 	@Override
@@ -53,7 +57,9 @@ public class ThreadUpdatePathfinding extends ThreadService implements HighPFClas
 				if(chemin.isUptodate())
 					chemin.wait();
 				try {
-					pathfinding.updatePath(false);
+					if(debugCapteurs)
+						log.debug("Mise à jour du chemin");
+					pathfinding.updatePath(true);
 				} catch (PathfindingException e) {
 					e.printStackTrace();
 				}
