@@ -547,7 +547,6 @@ public class DStarLite implements Service, LowPFClass
 
 		// il faut toujours majorer la vraie distance, afin de ne pas chercher tous les trajets possibles…
 		// le poids de l'erreur d'orientation doit rester assez faible. Car vouloir trop coller à l'orientation, c'est risquer d'avoir une courbure impossible…
-		// on cherche une faible courbure. ça évite les trajectoires complexes
 		return 1.3*erreurDistance + 5*erreurOrientation;
 	}
 	
