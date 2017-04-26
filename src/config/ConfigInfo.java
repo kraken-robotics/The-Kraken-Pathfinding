@@ -45,7 +45,11 @@ public enum ConfigInfo {
 	 * Paramètres des scripts
 	 */
 	RAYON_CERCLE_ARRIVEE(200), // distance souhaitée entre le centre du robot et le centre du cratère
-	
+	VITESSE_ROBOT_TEST(300), // vitesse de test en mm/s
+	VITESSE_ROBOT_STANDARD(500), // vitesse standard en mm/s
+	VITESSE_ROBOT_BASCULE(300), // vitesse pour passer la bascule en mm/s
+	VITESSE_ROBOT_REPLANIF(300), // vitesse en replanification en mm/s
+
 	/**
 	 * Paramètres du log
 	 */
@@ -113,10 +117,6 @@ public enum ConfigInfo {
 	DEBUG_SERIE_TRAME(false), // debug verbeux sur le contenu des trames
 	DEBUG_SERIE(false), // debug sur la série
 	GENERATE_DEPENDENCY_GRAPH(false), // génère le graphe des dépendances
-	VITESSE_ROBOT_TEST(300), // vitesse de test en mm/s
-	VITESSE_ROBOT_STANDARD(500), // vitesse standard en mm/s
-	VITESSE_ROBOT_BASCULE(200), // vitesse standard en mm/s
-	VITESSE_ROBOT_REPLANIF(300), // vitesse en replanification en mm/s
 	
 	/**
 	 * Interface graphique
