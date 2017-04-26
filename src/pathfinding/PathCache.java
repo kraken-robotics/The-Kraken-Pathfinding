@@ -73,7 +73,7 @@ public class PathCache implements Service, HighPFClass
 		this.fakeChemin = fakeChemin;
 		this.realChemin = realChemin;
 		this.log = log;
-		Cinematique start = new Cinematique(700, 1800, Math.PI, true, 0); // TODO
+		Cinematique start = new Cinematique(700, 1800, Math.PI, true, 0);
 		chrono.robot.setCinematique(start);
 		this.astar = astar;
 		paths = new HashMap<String, LinkedList<CinematiqueObs>>();
@@ -186,7 +186,6 @@ public class PathCache implements Service, HighPFClass
 		List<String> ok = new ArrayList<String>();
 		
 		Script depose1 = smanager.getScripts().get("DEPOSE");
-		Script depose2 = smanager.getScripts().get("DEPOSE_SIMPLE");
 		for(int i = 0; i < 2; i++)
 		{
 			smanager.reinit();
@@ -200,11 +199,14 @@ public class PathCache implements Service, HighPFClass
 				if(k.s instanceof ScriptDeposeMinerai || k.s instanceof ScriptDeposeMineraiSimple) // c'est particulier
 					continue;
 				
+				log.debug("Script : "+k.s);
+				
 //				log.debug(k);				
 				LinkedList<CinematiqueObs> path;
 				try {
 					path = loadOrCompute(k);
 				} catch (PathfindingException e1) {
+					log.warning(e1);
 					errors.add(k.toString());
 					continue;
 				}
@@ -251,33 +253,6 @@ public class PathCache implements Service, HighPFClass
 						}
 					}
 				}
-				
-				k.s = depose2;
-				for(int j = 0; j < 2; j++)
-				{
-					k.shoot = j == 0;
-					LinkedList<CinematiqueObs> pathRetour;
-					try {
-						pathRetour = loadOrCompute(k);
-					} catch (PathfindingException e1) {
-						errors.add(k.toString());
-						continue;
-					}
-					ok.add(k.toString());
-					paths.put(k.toString(), pathRetour);
-					if(debug)
-					{
-						// TODO : affichage à virer
-						realChemin.clear();
-						try {
-							realChemin.add(pathRetour);
-							Thread.sleep(2000);
-						} catch (PathfindingException e) {
-							e.printStackTrace();
-						}
-					}
-				}
-				
 			}
 		}
 		
