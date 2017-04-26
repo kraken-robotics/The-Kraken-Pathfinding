@@ -44,7 +44,6 @@ import pathfinding.dstarlite.gridspace.GridSpace;
 import robot.Cinematique;
 import robot.CinematiqueObs;
 import robot.RobotReal;
-import robot.Speed;
 import table.GameElementNames;
 import threads.ThreadName;
 import threads.ThreadUpdatePathfinding;

@@ -31,6 +31,9 @@ public enum Speed
 
     // vitesse pour les tests
     TEST,
+    
+    // vitesse pour la bascule
+    BASCULE,
         
     // Vitesse du robot lors d'une replanification, plus lent que la vitesse standard
     REPLANIF;

@@ -170,7 +170,7 @@ public class ArcManager implements Service, HighPFClass
 
 		current.state.copyAStarCourbe(successeur.state);			
 
-		if(v == VitesseBezier.BEZIER_QUAD)
+		if(v instanceof VitesseBezier)
 		{
 			if(current.getArc() == null)
 				return false;

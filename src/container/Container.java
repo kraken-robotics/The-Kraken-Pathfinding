@@ -292,6 +292,7 @@ public class Container implements Service
 		Speed.TEST.translationalSpeed = config.getDouble(ConfigInfo.VITESSE_ROBOT_TEST) / 1000.;
 		Speed.REPLANIF.translationalSpeed = config.getDouble(ConfigInfo.VITESSE_ROBOT_REPLANIF) / 1000.;
 		Speed.STANDARD.translationalSpeed = config.getDouble(ConfigInfo.VITESSE_ROBOT_STANDARD) / 1000.;
+		Speed.BASCULE.translationalSpeed = config.getDouble(ConfigInfo.VITESSE_ROBOT_BASCULE) / 1000.;
 
 		/**
 		 * Affiche la version du programme (dernier commit et sa branche)

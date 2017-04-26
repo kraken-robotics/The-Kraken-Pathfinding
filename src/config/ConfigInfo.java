@@ -115,6 +115,7 @@ public enum ConfigInfo {
 	GENERATE_DEPENDENCY_GRAPH(false), // génère le graphe des dépendances
 	VITESSE_ROBOT_TEST(300), // vitesse de test en mm/s
 	VITESSE_ROBOT_STANDARD(500), // vitesse standard en mm/s
+	VITESSE_ROBOT_BASCULE(200), // vitesse standard en mm/s
 	VITESSE_ROBOT_REPLANIF(300), // vitesse en replanification en mm/s
 	
 	/**

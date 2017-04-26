@@ -38,7 +38,6 @@ import pathfinding.chemin.CheminPathfinding;
 import pathfinding.chemin.FakeCheminPathfinding;
 import robot.Cinematique;
 import robot.CinematiqueObs;
-import robot.Speed;
 import scripts.Script;
 import scripts.ScriptDeposeMinerai;
 import scripts.ScriptDeposeMineraiSimple;
