@@ -53,9 +53,8 @@ public class ThreadUpdatePathfinding extends ThreadService implements HighPFClas
 				if(chemin.isUptodate())
 					chemin.wait();
 				try {
-					pathfinding.updatePath(false); // TODO
+					pathfinding.updatePath(false);
 				} catch (PathfindingException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
