@@ -247,7 +247,7 @@ public class CheminPathfinding implements Service, Printable, HighPFClass, Chemi
 	/**
 	 * Supprime complètement le trajet en cours
 	 */
-	public void clear()
+	public synchronized void clear()
 	{
 		/**
 		 * Parfois, le plus simple est de s'arrêter et de réfléchir sur sa vie
@@ -269,7 +269,7 @@ public class CheminPathfinding implements Service, Printable, HighPFClass, Chemi
 	 * @param uptodate
 	 */
 	@Override
-	public void setUptodate(boolean uptodate)
+	public synchronized void setUptodate(boolean uptodate)
 	{
 		boolean notif = this.uptodate != uptodate;
 		this.uptodate = uptodate;
