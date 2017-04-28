@@ -23,6 +23,7 @@ import container.dependances.HighPFClass;
 import exceptions.PathfindingException;
 import pathfinding.astar.AStarCourbe;
 import pathfinding.chemin.CheminPathfinding;
+import robot.Speed;
 import serie.BufferOutgoingOrder;
 import utils.Log;
 
@@ -60,6 +61,7 @@ public class ThreadUpdatePathfinding extends ThreadService implements HighPFClas
 				if(chemin.isUptodate())
 					chemin.wait();
 				try {
+					out.setMaxSpeed(Speed.REPLANIF.translationalSpeed);
 					if(debugCapteurs)
 						log.debug("Mise à jour du chemin");
 					pathfinding.updatePath(true);
