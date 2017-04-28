@@ -56,26 +56,29 @@ public class ThreadUpdatePathfinding extends ThreadService implements HighPFClas
 		Thread.currentThread().setName(getClass().getSimpleName());
 		log.debug("Démarrage de "+Thread.currentThread().getName());
 		try {
-			synchronized(chemin)
+			while(true)
 			{
-				if(chemin.isUptodate())
-					chemin.wait();
-				
-				// on a été prévenu que le chemin est de nouveau à jour : on peut réaugmenter la vitesse
-				if(chemin.isUptodate())
-					out.setMaxSpeed(Speed.STANDARD.translationalSpeed); // TODO et si ce n'était pas cette vitesse là ?…
-				
-				// on a été prévenu que le chemin n'est plus à jour : ralentissement et replanification
-				else
+				synchronized(chemin)
 				{
-					try {
-						out.setMaxSpeed(Speed.REPLANIF.translationalSpeed);
-						if(debugCapteurs)
-							log.debug("Mise à jour du chemin");
-						pathfinding.updatePath(true);
-					} catch (PathfindingException e) {
-						log.critical(e);
-						chemin.clear();
+					if(chemin.isUptodate())
+						chemin.wait();
+					
+					// on a été prévenu que le chemin est de nouveau à jour : on peut réaugmenter la vitesse
+					if(chemin.isUptodate())
+						out.setMaxSpeed(Speed.STANDARD.translationalSpeed); // TODO et si ce n'était pas cette vitesse là ?…
+					
+					// on a été prévenu que le chemin n'est plus à jour : ralentissement et replanification
+					else
+					{
+						try {
+							out.setMaxSpeed(Speed.REPLANIF.translationalSpeed);
+							if(debugCapteurs)
+								log.debug("Mise à jour du chemin");
+							pathfinding.updatePath(true);
+						} catch (PathfindingException e) {
+							log.critical(e);
+							chemin.clear();
+						}
 					}
 				}
 			}
