@@ -23,6 +23,7 @@ import container.dependances.HighPFClass;
 import exceptions.PathfindingException;
 import pathfinding.astar.AStarCourbe;
 import pathfinding.chemin.CheminPathfinding;
+import serie.BufferOutgoingOrder;
 import utils.Log;
 
 /**
@@ -36,13 +37,15 @@ public class ThreadUpdatePathfinding extends ThreadService implements HighPFClas
 	protected Log log;
 	private AStarCourbe pathfinding;
 	private CheminPathfinding chemin;
+	private BufferOutgoingOrder out;
 	private boolean debugCapteurs;
 
-	public ThreadUpdatePathfinding(Log log, AStarCourbe pathfinding, CheminPathfinding chemin, Config config)
+	public ThreadUpdatePathfinding(Log log, AStarCourbe pathfinding, CheminPathfinding chemin, Config config, BufferOutgoingOrder out)
 	{
 		this.log = log;
 		this.pathfinding = pathfinding;
 		this.chemin = chemin;
+		this.out = out;
 		debugCapteurs = config.getBoolean(ConfigInfo.DEBUG_CAPTEURS);
 	}
 
@@ -61,7 +64,8 @@ public class ThreadUpdatePathfinding extends ThreadService implements HighPFClas
 						log.debug("Mise à jour du chemin");
 					pathfinding.updatePath(true);
 				} catch (PathfindingException e) {
-					e.printStackTrace();
+					log.critical(e);
+					out.immobilise();
 				}
 			}
 		} catch (InterruptedException e) {

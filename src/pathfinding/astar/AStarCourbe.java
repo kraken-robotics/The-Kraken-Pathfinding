@@ -408,10 +408,7 @@ public class AStarCourbe implements Service, HighPFClass
 	public synchronized void updatePath(boolean shoot) throws PathfindingException, InterruptedException
 	{
 		if(!rechercheEnCours)
-		{
-			log.warning("updatePath appelé alors qu'aucune recherche n'est en cours !");
-			return;
-		}
+			throw new InterruptedException("updatePath appelé alors qu'aucune recherche n'est en cours !");
 		
 		depart.init();
 		synchronized(state)
