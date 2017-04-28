@@ -24,6 +24,7 @@ import obstacles.memory.ObstaclesIteratorPresent;
 import obstacles.types.ObstacleCircular;
 import obstacles.types.ObstacleProximity;
 import obstacles.types.ObstacleRobot;
+import pathfinding.astar.arcs.ClothoidesComputer;
 import graphic.Fenetre;
 import graphic.PrintBufferInterface;
 import graphic.printable.Couleur;
@@ -149,6 +150,8 @@ public class CheminPathfinding implements Service, Printable, HighPFClass, Chemi
 				ObstacleProximity o = iterObstacles.next();
 				if(o.isColliding(a))
 				{
+					if(debugCapteurs)
+						log.debug("Collision en "+iterChemin.getIndex()+". Actuel : "+indexFirst+" (soit environ "+ClothoidesComputer.PRECISION_TRACE_MM*minus(iterChemin.getIndex(), indexFirst)+" mm avant impact)");
 //					log.debug(o+" collisionne le robot en "+a);
 					return true;
 				}
