@@ -167,7 +167,7 @@ public class CheminPathfinding implements Service, Printable, HighPFClass, Chemi
 			/**
 			 * Mise à jour de lastValidIndex
 			 */
-			if(minus(current, firstPossible) >= 0) // TODO
+			if(minus(current, firstPossible) < 128)
 				lastValidIndex = firstPossible; // on reprendra d'ici
 		}
 		return false;
