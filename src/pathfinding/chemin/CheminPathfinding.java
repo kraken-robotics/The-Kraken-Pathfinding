@@ -145,7 +145,9 @@ public class CheminPathfinding implements Service, Printable, HighPFClass, Chemi
 		int firstPossible = add(indexFirst, margeInitiale);
 		while(iterChemin.hasNext())
 		{
-			ObstacleRobot a = iterChemin.next().obstacle;
+			CinematiqueObs cinem = iterChemin.next();
+			int current = iterChemin.getIndex();
+			ObstacleRobot a = cinem.obstacle;
 			iterObstacles.reinit();
 			while(iterObstacles.hasNext())
 			{
@@ -153,8 +155,11 @@ public class CheminPathfinding implements Service, Printable, HighPFClass, Chemi
 				if(o.isColliding(a))
 				{
 					if(debugCapteurs)
-						log.debug("Collision en "+iterChemin.getIndex()+". Actuel : "+indexFirst+" (soit environ "+ClothoidesComputer.PRECISION_TRACE_MM*minus(iterChemin.getIndex(), indexFirst)+" mm avant impact)");
+						log.debug("Collision en "+current+". Actuel : "+indexFirst+" (soit environ "+ClothoidesComputer.PRECISION_TRACE_MM*minus(current, indexFirst)+" mm avant impact)");
 //					log.debug(o+" collisionne le robot en "+a);
+					// au cas où, on envoie un signal de stop à cet endroit-là
+					out.makeNextObsolete(chemin[minus(current, 1)], current);
+					indexLast = current; // la suite du chemin n'existe plus
 					return true;
 				}
 			}
@@ -162,8 +167,7 @@ public class CheminPathfinding implements Service, Printable, HighPFClass, Chemi
 			/**
 			 * Mise à jour de lastValidIndex
 			 */
-			int tmp = iterChemin.getIndex();
-			if(minus(tmp, firstPossible) >= 0)
+			if(minus(current, firstPossible) >= 0) // TODO
 				lastValidIndex = firstPossible; // on reprendra d'ici
 		}
 		return false;
@@ -342,11 +346,23 @@ public class CheminPathfinding implements Service, Printable, HighPFClass, Chemi
 		return Layer.FOREGROUND;
 	}
 
+	/**
+	 * Return indice1 - indice2
+	 * @param indice1
+	 * @param indice2
+	 * @return
+	 */
 	public final int minus(int indice1, int indice2)
 	{
 		return (indice1 - indice2 + 256) & 0xFF;
 	}
 	
+	/**
+	 * Return indice1 + indice2
+	 * @param indice1
+	 * @param indice2
+	 * @return
+	 */
 	public final int add(int indice1, int indice2)
 	{
 		return (indice1 + indice2) & 0xFF;
