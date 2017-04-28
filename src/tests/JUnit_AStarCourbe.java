@@ -24,6 +24,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import config.ConfigInfo;
+import exceptions.PathfindingException;
 import graphic.PrintBuffer;
 import pathfinding.PathCache;
 import pathfinding.RealGameState;
@@ -421,6 +422,46 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 				Thread.sleep(100);
 		}
 		container.restartThread(ThreadName.UPDATE_PATHFINDING); // pour pas qu'il soit mécontent
+	}
+	
+	@Test(expected = PathfindingException.class)
+    public void test_replanif_trop_court() throws Exception
+    {
+		// Ce test impose l'arrêt du thread de pathfinding pour ne pas avoir d'interférence
+		ThreadUpdatePathfinding thread = container.getService(ThreadUpdatePathfinding.class);
+		thread.interrupt();
+		thread.join(1000);
+		long avant = System.nanoTime();
+		Cinematique depart = new Cinematique(-800, 300, Math.PI/2, true, 0);
+		robot.setCinematique(depart);
+		Cinematique c = new Cinematique(0, 1600, Math.PI, false, 0);
+		astar.initializeNewSearch(c, false, state);
+		astar.process(chemin);
+		log.debug("Temps : "+(System.nanoTime() - avant) / (1000000.));
+		iterator.reinit();
+		CinematiqueObs a = null;
+		int n = 10;
+		while(iterator.hasNext() && iterator.getIndex() < n)
+		{
+			a = iterator.next();
+			chemin.setCurrentIndex(iterator.getIndex());
+			log.debug(a);
+			robot.setCinematique(a);
+			if(graphicTrajectory)
+				Thread.sleep(100);
+		}
+		gridspace.addObstacleAndRemoveNearbyObstacles(new Vec2RO(-600, 800));
+//		gridspace.addObstacleAndRemoveNearbyObstacles(new Vec2RO(0, 1600)); // TODO
+		chemin.checkColliding();
+		avant = System.nanoTime();
+		try {
+			astar.updatePath(true);
+		}
+		catch(Exception e)
+		{
+			container.restartThread(ThreadName.UPDATE_PATHFINDING); // pour pas qu'il soit mécontent
+			throw e;
+		}
 	}
 	
 	@Test

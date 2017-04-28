@@ -155,7 +155,7 @@ public class CheminPathfinding implements Service, Printable, HighPFClass, Chemi
 				if(o.isColliding(a))
 				{
 					if(debugCapteurs)
-						log.debug("Collision en "+current+". Actuel : "+indexFirst+" (soit environ "+ClothoidesComputer.PRECISION_TRACE_MM*minus(current, indexFirst)+" mm avant impact)");
+						log.debug("Collision en "+current+". Actuel : "+indexFirst+" (soit environ "+ClothoidesComputer.PRECISION_TRACE_MM*(minus(current, indexFirst)-0.5)+" mm avant impact)");
 //					log.debug(o+" collisionne le robot en "+a);
 					// au cas où, on envoie un signal de stop à cet endroit-là
 					out.makeNextObsolete(chemin[minus(current, 1)], current);
@@ -319,7 +319,7 @@ public class CheminPathfinding implements Service, Printable, HighPFClass, Chemi
 	public Cinematique getLastValidCinematique() throws PathfindingException
 	{
 		if(lastValidIndex == -1)
-			throw new PathfindingException("Pas assez de points pour le bas niveau !");
+			throw new PathfindingException("On a vu l'obstacle trop tard, on n'a pas assez de marge. Il faut s'arrêter.");
 		
 		indexLast = lastValidIndex + 1; // on complètera à partir de ce point
 		return chemin[lastValidIndex];

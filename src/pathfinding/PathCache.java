@@ -198,7 +198,7 @@ public class PathCache implements Service, HighPFClass
 				if(k.s instanceof ScriptDeposeMinerai || k.s instanceof ScriptDeposeMineraiSimple) // c'est particulier
 					continue;
 				
-				log.debug("Script : "+k.s);
+//				log.debug("Script : "+k.s);
 				
 //				log.debug(k);				
 				LinkedList<CinematiqueObs> path;
