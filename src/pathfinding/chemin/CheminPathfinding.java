@@ -125,8 +125,10 @@ public class CheminPathfinding implements Service, Printable, HighPFClass, Chemi
 		{
 			if(debugCapteurs)
 				log.warning("Un ennemi est sur le chemin : replanification nécessaire");
+			boolean old = uptodate;
 			uptodate = false;
-			notify();
+			if(old) // on ne notifie que si avant le chemin était à jour
+				notify();
 		}
 	}
 	
@@ -255,6 +257,7 @@ public class CheminPathfinding implements Service, Printable, HighPFClass, Chemi
 			{
 				buffer.notify();
 			}
+		notify();
 	}
 	
 	/**
@@ -264,7 +267,12 @@ public class CheminPathfinding implements Service, Printable, HighPFClass, Chemi
 	@Override
 	public void setUptodate(boolean uptodate)
 	{
+		boolean notif = this.uptodate != uptodate;
 		this.uptodate = uptodate;
+		
+		// l'état a changé
+		if(notif)
+			notify();
 	}
 	
 	public boolean isUptodate()
