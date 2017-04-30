@@ -69,11 +69,11 @@ public class ThreadUpdatePathfinding extends ThreadService implements HighPFClas
 						if(debugCapteurs)
 							log.debug("Mise à jour du chemin");
 						pathfinding.updatePath(true);
+						out.setMaxSpeed(Speed.STANDARD.translationalSpeed); // TODO et si ce n'était pas cette vitesse là ?…
 					} catch (PathfindingException e) {
 						log.critical(e);
 						chemin.clear();
 					}
-					out.setMaxSpeed(Speed.STANDARD.translationalSpeed); // TODO et si ce n'était pas cette vitesse là ?…
 				}
 			}
 		} catch (InterruptedException e) {
