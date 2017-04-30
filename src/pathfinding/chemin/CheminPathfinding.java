@@ -158,7 +158,7 @@ public class CheminPathfinding implements Service, Printable, HighPFClass, Chemi
 						log.debug("Collision en "+current+". Actuel : "+indexFirst+" (soit environ "+ClothoidesComputer.PRECISION_TRACE_MM*(minus(current, indexFirst)-0.5)+" mm avant impact)");
 //					log.debug(o+" collisionne le robot en "+a);
 					// au cas où, on envoie un signal de stop à cet endroit-là
-					out.makeNextObsolete(chemin[minus(current, 1)], current);
+					out.makeNextObsolete(chemin[minus(current, 1)], minus(current, 1));
 					indexLast = current; // la suite du chemin n'existe plus
 					return true;
 				}
