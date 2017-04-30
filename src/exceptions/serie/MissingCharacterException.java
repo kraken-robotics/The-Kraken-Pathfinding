@@ -30,6 +30,12 @@ public class MissingCharacterException extends Exception
 
 	public MissingCharacterException()
 	{
-		super("Un caractère attendu n'est pas arrivé");
+		super();
 	}
+	
+	public MissingCharacterException(String s)
+	{
+		super(s);
+	}
+	
 }
