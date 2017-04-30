@@ -117,6 +117,7 @@ public enum ConfigInfo {
 	DEBUG_SERIE_TRAME(false), // debug verbeux sur le contenu des trames
 	DEBUG_SERIE(false), // debug sur la série
 	DEBUG_CAPTEURS(false), // debug verbeux sur les capteurs
+	DEBUG_REPLANIF(false), // debug verbeux sur la replanif
 	GENERATE_DEPENDENCY_GRAPH(false), // génère le graphe des dépendances
 	
 	/**

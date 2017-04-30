@@ -64,7 +64,7 @@ public class CheminPathfinding implements Service, Printable, HighPFClass, Chemi
 	private int lastValidIndex = -1; // l'indice du dernier index (-1 si aucun ne l'est, Integer.MAX_VALUE si tous le sont)
 	private boolean uptodate = true; // le chemin est-il complet
 	private int margeNecessaire, margeInitiale;
-	private boolean graphic, debugCapteurs;
+	private boolean graphic, debugCapteurs, debugReplanif;
 	
 	public CheminPathfinding(Log log, BufferOutgoingOrder out, ObstaclesIteratorPresent iterator, PrintBufferInterface buffer, Config config)
 	{
@@ -81,6 +81,8 @@ public class CheminPathfinding implements Service, Printable, HighPFClass, Chemi
 		margeInitiale = config.getInt(ConfigInfo.PF_MARGE_INITIALE);
 		graphic = config.getBoolean(ConfigInfo.GRAPHIC_TRAJECTORY_FINAL);
 		debugCapteurs = config.getBoolean(ConfigInfo.DEBUG_CAPTEURS);
+		debugReplanif = config.getBoolean(ConfigInfo.DEBUG_REPLANIF);
+		
 		if(graphic)
 			buffer.add(this);
 
