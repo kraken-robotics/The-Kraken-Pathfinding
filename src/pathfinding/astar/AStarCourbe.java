@@ -74,7 +74,7 @@ public class AStarCourbe implements Service, HighPFClass
 	private Speed vitesseMax;
 	private int tailleFaisceau;
 	private boolean shoot;
-	private boolean rechercheEnCours = false;
+	private volatile boolean rechercheEnCours = false;
 	
 	/**
 	 * Comparateur de noeud utilisé par la priority queue
@@ -198,6 +198,14 @@ public class AStarCourbe implements Service, HighPFClass
 			}
 			
 			long elapsed = System.currentTimeMillis() - debutRecherche;
+			
+			if(!rechercheEnCours)
+			{
+				chemin.setUptodate(true);
+				log.warning("La recherche de chemin a été annulée");
+				return;
+			}
+			
 			if(elapsed > dureeMaxPF) // étant donné qu'il peut continuer jusqu'à l'infini...
 			{
 				memorymanager.empty();
