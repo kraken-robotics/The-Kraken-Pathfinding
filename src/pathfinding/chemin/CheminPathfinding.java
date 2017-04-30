@@ -113,7 +113,10 @@ public class CheminPathfinding implements Service, Printable, HighPFClass, Chemi
 	@Override
 	public boolean needPartial()
 	{
-		return !uptodate && minus(indexLast, indexFirst) < margeNecessaire;
+		boolean out = !uptodate && minus(indexLast, indexFirst) < margeNecessaire;
+		if(debugReplanif && out)
+			log.warning("Replanification partielle nécessaire : "+minus(indexLast, indexFirst)+" points d'avance seulement.");
+		return out;
 	}
 	
 	/**
@@ -261,7 +264,6 @@ public class CheminPathfinding implements Service, Printable, HighPFClass, Chemi
 			{
 				buffer.notify();
 			}
-		notify();
 	}
 	
 	/**
@@ -271,11 +273,11 @@ public class CheminPathfinding implements Service, Printable, HighPFClass, Chemi
 	@Override
 	public synchronized void setUptodate(boolean uptodate)
 	{
-		boolean notif = this.uptodate != uptodate;
+		boolean notif = this.uptodate;
 		this.uptodate = uptodate;
 		
-		// l'état a changé
-		if(notif)
+		// avant on était à jour et on ne l'est plus
+		if(notif && !uptodate)
 			notify();
 	}
 	
