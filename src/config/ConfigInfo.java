@@ -62,7 +62,7 @@ public enum ConfigInfo {
 	/**
 	 * Infos sur l'ennemi
 	 */
-	RAYON_ROBOT_ADVERSE(200), // le rayon supposé du robot adverse, utilisé pour créer des obstacles de proximité
+	RAYON_ROBOT_ADVERSE(30), // le rayon supposé du robot adverse, utilisé pour créer des obstacles de proximité
 	
 	/**
 	 * Paramètres du pathfinding
