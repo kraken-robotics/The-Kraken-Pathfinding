@@ -19,7 +19,8 @@ package threads;
 
 import threads.serie.ThreadSerialInputCoucheOrdre;
 import threads.serie.ThreadSerialInputCoucheTrame;
-import threads.serie.ThreadSerialOutput;
+import threads.serie.ThreadSerialOutputBytes;
+import threads.serie.ThreadSerialOutputOrder;
 import threads.serie.ThreadSerialOutputTimeout;
 
 /**
@@ -39,7 +40,8 @@ public enum ThreadName
 	PEREMPTION(ThreadPeremption.class),
 	SERIAL_INPUT_ORDRE(ThreadSerialInputCoucheOrdre.class),
 	SERIAL_INPUT_TRAME(ThreadSerialInputCoucheTrame.class),
-	SERIAL_OUTPUT(ThreadSerialOutput.class),
+	SERIAL_OUTPUT_BYTES(ThreadSerialOutputBytes.class),
+	SERIAL_OUTPUT_ORDER(ThreadSerialOutputOrder.class),
 	SERIAL_OUTPUT_TIMEOUT(ThreadSerialOutputTimeout.class);
 	
 	public Class<? extends ThreadService> c;

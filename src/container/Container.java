@@ -475,7 +475,7 @@ public class Container implements Service
 				for(int i = 0; i < param.length - extraParam.length; i++)
 				{
 					String fils = param[i].getSimpleName();
-					if(!param[i].equals(Log.class) && !param[i].equals(PrintBuffer.class) && !param[i].equals(Config.class) && !param[i].equals(Container.class) && Service.class.isAssignableFrom(param[i]))
+					if(!param[i].equals(Log.class) && !PrintBufferInterface.class.isAssignableFrom(param[i]) && !param[i].equals(Config.class) && !param[i].equals(Container.class) && Service.class.isAssignableFrom(param[i]))
 						enf.add(fils);
 				}				
 			}
@@ -547,7 +547,8 @@ public class Container implements Service
 		{
 			try {
 				getService(n.c).start();
-			} catch (ContainerException e) {
+			} catch (ContainerException | IllegalThreadStateException e) {
+				log.critical("Erreur lors de la création de thread "+n+" : "+e);
 				e.printStackTrace();
 			}
 		}
