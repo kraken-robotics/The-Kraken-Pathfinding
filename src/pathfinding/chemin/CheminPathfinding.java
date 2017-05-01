@@ -215,19 +215,17 @@ public class CheminPathfinding implements Service, Printable, HighPFClass, Chemi
 				
 		if(!points.isEmpty())
 		{
-			synchronized(this)
+			int tmp = indexLast;
+			for(CinematiqueObs p : points)
+				add(p);
+			// TODO tmp - 1 ? pas de minus ?
+			if(isIndexValid(tmp - 1) && chemin[tmp - 1].enMarcheAvant == points.getFirst().enMarcheAvant)
 			{
-				int tmp = indexLast;
-				for(CinematiqueObs p : points)
-					add(p);
-				// TODO tmp - 1 ? pas de minus ?
-				if(isIndexValid(tmp - 1) && chemin[tmp - 1].enMarcheAvant == points.getFirst().enMarcheAvant)
-				{
-					points.addFirst(chemin[tmp - 1]); // on renvoie ce point afin qu'il ne soit plus un point d'arrêt
-					tmp--;
-				}
-				t = out.envoieArcCourbe(points, tmp);
+				points.addFirst(chemin[tmp - 1]); // on renvoie ce point afin qu'il ne soit plus un point d'arrêt
+				tmp--;
 			}
+			t = out.envoieArcCourbe(points, tmp);
+
 			if(graphic)
 				synchronized(buffer)
 				{
@@ -242,7 +240,7 @@ public class CheminPathfinding implements Service, Printable, HighPFClass, Chemi
 		return minus(index, indexFirst) < minus(indexLast, indexFirst);
 	}
 	
-	protected synchronized CinematiqueObs get(int index)
+	protected CinematiqueObs get(int index)
 	{
 		if(isIndexValid(index))
 			return chemin[index];
@@ -252,7 +250,7 @@ public class CheminPathfinding implements Service, Printable, HighPFClass, Chemi
 	/**
 	 * Supprime complètement le trajet en cours
 	 */
-	public synchronized void clear()
+	public void clear()
 	{
 		/**
 		 * Parfois, le plus simple est de s'arrêter et de réfléchir sur sa vie
