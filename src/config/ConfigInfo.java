@@ -95,9 +95,9 @@ public enum ConfigInfo {
 	/**
 	 * Paramètres du traitement des capteurs
 	 */
-	DUREE_PEREMPTION_OBSTACLES(3000), // pendant combien de temps va-t-on garder un obstacle de proximité
+	DUREE_PEREMPTION_OBSTACLES(1000), // pendant combien de temps va-t-on garder un obstacle de proximité
 	DISTANCE_MAX_ENTRE_MESURE_ET_OBJET(50), // quelle marge d'erreur autorise-t-on entre un objet et sa détection
-	DISTANCE_BETWEEN_PROXIMITY_OBSTACLES(50), // sous quelle distance fusionne-t-on deux obstacles de proximité ?
+	DISTANCE_BETWEEN_PROXIMITY_OBSTACLES(5), // sous quelle distance fusionne-t-on deux obstacles de proximité ?
 	IMPRECISION_MAX_POSITION(20.), // quelle imprecision maximale sur la position du robot peut-on attendre (en mm)
 	IMPRECISION_MAX_ORIENTATION(0.1), // quelle imprecision maximale sur l'angle du robot peut-on attendre (en radians)
 	TAILLE_BUFFER_RECALAGE(5), // combien de mesures sont nécessaires pour obtenir une correction de recalage
@@ -146,6 +146,7 @@ public enum ConfigInfo {
 	GRAPHIC_TIME(false), // affiche le temps écoulé
 	GRAPHIC_TRACE_ROBOT(true), // affiche la trace du robot
 	GRAPHIC_EXTERNAL(true), // l'affichage doit-il être déporté par le serveur d'affichage ?
+	GRAPHIC_DIFFERENTIAL(true), // sauvegarde d'une "vidéo" pour visionner les images plus tard
 	
 	/**
 	 * Config dynamique
