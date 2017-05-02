@@ -205,7 +205,7 @@ public class PathCache implements Service, HighPFClass
 				try {
 					path = loadOrCompute(k);
 				} catch (PathfindingException e1) {
-					log.warning(e1);
+//					log.warning(e1);
 					errors.add(k.toString());
 					continue;
 				}
