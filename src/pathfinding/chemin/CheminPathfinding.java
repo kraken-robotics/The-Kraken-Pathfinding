@@ -296,21 +296,15 @@ public class CheminPathfinding implements Service, Printable, HighPFClass, Chemi
 	 * Renvoie la cinématique actuelle
 	 * @param indexTrajectory
 	 */
-	public Cinematique setCurrentIndex(int indexTrajectory)
+	public synchronized Cinematique setCurrentIndex(int indexTrajectory)
 	{
-		synchronized(this)
-		{
-			indexFirst = indexTrajectory;
-		}
+		indexFirst = indexTrajectory;
 		if(graphic)
 			synchronized(buffer)
 			{
 				buffer.notify();
 			}
-		synchronized(this)
-		{
-			return chemin[indexFirst];
-		}
+		return chemin[indexFirst];
 	}
 	
 	/**

@@ -76,6 +76,7 @@ public enum ConfigInfo {
 	DEBUG_PF(false), // affichage de plein d'infos
 	EVITEMENT_SIMPLE(true), // évitement simplifié : le robot attend juste que le chemin se libère
 	DEBUG_CACHE(false), // debug du cache de chemins
+	NB_ESSAIS_PF(3), // nombre d'essais du pathfinding
 	
 	/**
 	 * Paramètres de la série

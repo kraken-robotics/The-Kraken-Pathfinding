@@ -33,11 +33,13 @@ import config.ConfigInfo;
 import container.Service;
 import container.dependances.HighPFClass;
 import exceptions.PathfindingException;
+import exceptions.UnableToMoveException;
 import pathfinding.astar.AStarCourbe;
 import pathfinding.chemin.CheminPathfinding;
 import pathfinding.chemin.FakeCheminPathfinding;
 import robot.Cinematique;
 import robot.CinematiqueObs;
+import robot.Speed;
 import scripts.Script;
 import scripts.ScriptDeposeMinerai;
 import scripts.ScriptDeposeMineraiSimple;
@@ -57,7 +59,9 @@ public class PathCache implements Service, HighPFClass
 	private AStarCourbe astar;
 	private CheminPathfinding realChemin;
 	private FakeCheminPathfinding fakeChemin;
-		
+	private RealGameState state;	
+	private int nbEssais;
+	
 	private boolean debug = false;
 	private boolean debugCache;
 	
@@ -66,9 +70,11 @@ public class PathCache implements Service, HighPFClass
 	 */
 	public HashMap<String, LinkedList<CinematiqueObs>> paths;
 	
-	public PathCache(Log log, Config config, ScriptManager smanager, ChronoGameState chrono, AStarCourbe astar, CheminPathfinding realChemin, FakeCheminPathfinding fakeChemin) throws InterruptedException
+	public PathCache(Log log, Config config, ScriptManager smanager, RealGameState state, ChronoGameState chrono, AStarCourbe astar, CheminPathfinding realChemin, FakeCheminPathfinding fakeChemin) throws InterruptedException
 	{
+		this.state = state;
 		debugCache = config.getBoolean(ConfigInfo.DEBUG_CACHE);
+		nbEssais = config.getInt(ConfigInfo.NB_ESSAIS_PF);
 		this.fakeChemin = fakeChemin;
 		this.realChemin = realChemin;
 		this.log = log;
@@ -299,5 +305,31 @@ public class PathCache implements Service, HighPFClass
 	public synchronized void stopSearch()
 	{
 		astar.stopContinuousSearch();
+	}
+
+	public void computeAndFollow(Cinematique arrivee, boolean shoot) throws PathfindingException, InterruptedException, UnableToMoveException
+	{
+		int essai = nbEssais;
+		boolean restart = false;
+		astar.initializeNewSearch(arrivee, shoot, state);
+		do {
+			restart = false;
+			try {
+				astar.process(realChemin);
+				state.robot.followTrajectory(Speed.STANDARD);
+			}
+			catch(PathfindingException | UnableToMoveException e)
+			{
+				log.warning("Il y a eu un problème de pathfinding : "+e);
+				essai--;
+				if(essai == 0)
+				{
+					log.critical("Abandon de l'objectif.");
+					throw e;
+				}
+				log.debug("On retente !");
+				restart = true;
+			}
+		} while(restart);
 	}
 }
