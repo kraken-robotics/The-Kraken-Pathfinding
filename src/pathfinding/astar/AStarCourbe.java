@@ -413,7 +413,7 @@ public class AStarCourbe implements Service, HighPFClass
 	 * @throws PathfindingException
 	 * @throws InterruptedException 
 	 */
-	public void updatePath(boolean shoot) throws PathfindingException, InterruptedException
+	public void updatePath(boolean shoot, Cinematique lastValid) throws PathfindingException, InterruptedException
 	{
 		if(!rechercheEnCours)
 			throw new InterruptedException("updatePath appelé alors qu'aucune recherche n'est en cours !");
@@ -426,7 +426,7 @@ public class AStarCourbe implements Service, HighPFClass
 		 */
 		
 		closedset.clear();
-		depart.state.robot.setCinematique(realChemin.getLastValidCinematique());
+		depart.state.robot.setCinematique(lastValid);
 		
 		// On met à jour le D* Lite
 		dstarlite.updateStart(depart.state.robot.getCinematique().getPosition());

@@ -23,6 +23,7 @@ import container.dependances.HighPFClass;
 import exceptions.PathfindingException;
 import pathfinding.astar.AStarCourbe;
 import pathfinding.chemin.CheminPathfinding;
+import robot.Cinematique;
 import robot.Speed;
 import serie.BufferOutgoingOrder;
 import utils.Log;
@@ -63,13 +64,13 @@ public class ThreadUpdatePathfinding extends ThreadService implements HighPFClas
 					if(chemin.isUptodate())
 						chemin.wait();
 				}
-				
 				// on a été prévenu que le chemin n'est plus à jour : ralentissement et replanification
 				try {
+					Cinematique lastValid = chemin.getLastValidCinematique();
 					out.setMaxSpeed(Speed.REPLANIF.translationalSpeed);
 					if(debugCapteurs)
 						log.debug("Mise à jour du chemin");
-					pathfinding.updatePath(true);
+					pathfinding.updatePath(true, lastValid);
 					out.setMaxSpeed(Speed.STANDARD.translationalSpeed); // TODO et si ce n'était pas cette vitesse là ?…
 				} catch (PathfindingException e) {
 					log.critical(e);
