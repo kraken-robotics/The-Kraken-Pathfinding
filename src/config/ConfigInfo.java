@@ -107,9 +107,9 @@ public enum ConfigInfo {
 	/**
 	 * Paramètres sur la gestion de la mémoire
 	 */
-	NB_INSTANCES_NODE(500),
+	NB_INSTANCES_NODE(2000),
 //	NB_INSTANCES_NODE(50000),	// nombre d'instances pour les nœuds du pathfinding
-	NB_INSTANCES_OBSTACLES(NB_INSTANCES_NODE.getDefaultValue()), // nombre d'instances pour les obstacles rectangulaires
+	NB_INSTANCES_OBSTACLES(5000), // nombre d'instances pour les obstacles rectangulaires
 	
 	/**
 	 * Debug

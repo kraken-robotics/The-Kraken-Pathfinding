@@ -18,6 +18,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 package memory;
 
 import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.List;
 
 import container.Container;
 import container.Service;
@@ -34,10 +36,11 @@ import utils.Log;
 
 public class MemoryManager<T extends Memorizable> implements Service {
 
-	protected int nb_instances;
+	private int initial_nb_instances;
 	private Container container;
 
-	private T[] nodes;
+	private List<T[]> nodes = new ArrayList<T[]>();
+	private Class<T> classe;
 	protected Log log;
 	private Object[] extra;
 	private int firstAvailable;
@@ -51,10 +54,11 @@ public class MemoryManager<T extends Memorizable> implements Service {
 		else
 			extra = extraParam;
 		
+		this.classe = classe;
 		this.container = container;
 		this.log = log;
-		this.nb_instances = nb_instances;
-		nodes = (T[]) Array.newInstance(classe, nb_instances);
+		initial_nb_instances = nb_instances;
+		nodes.add((T[]) Array.newInstance(classe, nb_instances));
 		firstAvailable = 0;
 
 		// on instancie une fois pour toutes les objets
@@ -62,8 +66,8 @@ public class MemoryManager<T extends Memorizable> implements Service {
 
 		for(int i = 0; i < nb_instances; i++)
 		{
-			nodes[i] = container.make(classe, extra);
-			nodes[i].setIndiceMemoryManager(i);
+			nodes.get(0)[i] = container.make(classe, extra);
+			nodes.get(0)[i].setIndiceMemoryManager(i);
 		}
 	}
 	
@@ -76,34 +80,35 @@ public class MemoryManager<T extends Memorizable> implements Service {
 	public synchronized T getNewNode() throws InterruptedException
 	{
 		// lève une exception s'il n'y a plus de place
-		if(firstAvailable == nodes.length)
+		if(firstAvailable == initial_nb_instances * nodes.size())
 		{
 			try {
-				if(nodes.length >= tailleMax) // pas plus d'un million d'objets (sert à empêcher les bugs de tout faire planter… cette condition est inutile en temps normal)
+				if(initial_nb_instances * nodes.size() >= tailleMax) // pas trop d'objets (sert à empêcher les bugs de tout faire planter… cette condition est inutile en temps normal)
 				{
-					log.critical("Mémoire saturée, arrêt");
+					log.critical("Mémoire saturée pour "+classe.getSimpleName()+", arrêt");
 					throw new InterruptedException();
 				}
 
-				log.warning("Mémoire trop petite pour les "+nodes[0].getClass().getSimpleName()+", extension (nouvelle taille : "+(nodes.length * 2)+")");
+				log.warning("Mémoire trop petite pour les "+classe.getSimpleName()+", extension (nouvelle taille : "+((nodes.size() + 1) * initial_nb_instances)+")");
 				
-				T[] newNodes = (T[]) Array.newInstance(nodes[0].getClass(), nodes.length * 2);
-				for(int i = 0; i < nodes.length; i++)
-					newNodes[i] = nodes[i];
-				for(int i = nodes.length; i < 2 * nodes.length; i++)
+				T[] newNodes = (T[]) Array.newInstance(classe, initial_nb_instances);
+
+				for(int i = 0; i < initial_nb_instances; i++)
 				{
-					newNodes[i] = container.make((Class<T>) nodes[0].getClass(), extra);
-					newNodes[i].setIndiceMemoryManager(i);
+					newNodes[i] = container.make(classe, extra);
+					newNodes[i].setIndiceMemoryManager(i + firstAvailable);
 				}
 	
-				nodes = newNodes;
+				nodes.add(newNodes);
 			} catch(ContainerException e)
 			{
 				log.critical(e);
 			}
 		}
-		return nodes[firstAvailable++];
 		
+		T out = nodes.get(firstAvailable / initial_nb_instances)[firstAvailable % initial_nb_instances];
+		firstAvailable++;
+		return out;
 	}
 
 	/**
@@ -139,14 +144,14 @@ public class MemoryManager<T extends Memorizable> implements Service {
 	
 		if(indice_state != firstAvailable)
 		{
-			T tmp1 = nodes[indice_state];
-			T tmp2 = nodes[firstAvailable];
+			T tmp1 = nodes.get(indice_state / initial_nb_instances)[indice_state % initial_nb_instances];
+			T tmp2 = nodes.get(firstAvailable / initial_nb_instances)[firstAvailable % initial_nb_instances];
 	
 			tmp1.setIndiceMemoryManager(firstAvailable);
 			tmp2.setIndiceMemoryManager(indice_state);
 	
-			nodes[firstAvailable] = tmp1;
-			nodes[indice_state] = tmp2;
+			nodes.get(firstAvailable / initial_nb_instances)[firstAvailable % initial_nb_instances] = tmp1;
+			nodes.get(indice_state / initial_nb_instances)[indice_state % initial_nb_instances] = tmp2;
 		}
 	}
 
