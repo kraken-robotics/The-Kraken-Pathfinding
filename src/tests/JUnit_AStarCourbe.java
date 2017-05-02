@@ -409,7 +409,7 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 //		gridspace.addObstacleAndRemoveNearbyObstacles(new Vec2RO(0, 1600)); // TODO
 		chemin.checkColliding();
 		avant = System.nanoTime();
-		astar.updatePath(true);
+		astar.updatePath(true, robot.getCinematique());
 		log.debug("Temps recalcul : "+(System.nanoTime() - avant) / (1000000.));
 		iterator.reinit();
 		while(iterator.hasNext())
@@ -455,7 +455,7 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 		chemin.checkColliding();
 		avant = System.nanoTime();
 		try {
-			astar.updatePath(true);
+			astar.updatePath(true, robot.getCinematique());
 		}
 		catch(Exception e)
 		{
