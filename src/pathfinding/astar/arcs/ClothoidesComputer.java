@@ -561,19 +561,4 @@ public class ClothoidesComputer implements Service, HighPFClass
 		return out;
 	}
 	
-	// TODO
-	
-	/**
-	 * Calcule la vitesse translatoire maximale pour une vitesse de courbure donnée et la vitesse de rotation des servo des roues directrices
-	 * La formule n'est pas exacte… mais ça suffit (la formule ne fonctionne plus pour des courbures très grandes)
-	 * Pour le moon-rover, il n'y aura jamais de problème
-	 * @param vitesseMaxDesiree
-	 * @param vitesseCourbure
-	 * @return
-	 */
-/*	private double computeVitesseMax(double vitesseMaxDesiree, double vitesseCourbure)
-	{
-		return Math.min(vitesseMaxDesiree, Math.abs(vitesseCourbure / VITESSE_ROT_AX12 / distanceArriereAuRoues));
-	}*/
-	
 }
