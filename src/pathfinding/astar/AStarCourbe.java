@@ -413,16 +413,13 @@ public class AStarCourbe implements Service, HighPFClass
 	 * @throws PathfindingException
 	 * @throws InterruptedException 
 	 */
-	public synchronized void updatePath(boolean shoot) throws PathfindingException, InterruptedException
+	public void updatePath(boolean shoot) throws PathfindingException, InterruptedException
 	{
 		if(!rechercheEnCours)
 			throw new InterruptedException("updatePath appelé alors qu'aucune recherche n'est en cours !");
 		
 		depart.init();
-		synchronized(state)
-		{
-			state.copyAStarCourbe(depart.state);
-		}
+		state.copyAStarCourbe(depart.state);
 
 		/*
 		 * Forcément, on utilise le vrai chemin ici
@@ -445,7 +442,7 @@ public class AStarCourbe implements Service, HighPFClass
 	/**
 	 * Le chemin a été entièrement parcouru.
 	 */
-	public synchronized void stopContinuousSearch()
+	public void stopContinuousSearch()
 	{
 		rechercheEnCours = false;
 		buffer.clearSupprimables();
