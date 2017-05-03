@@ -31,7 +31,7 @@ import serie.Ticket;
 
 public interface CheminPathfindingInterface
 {
-	public Ticket[] add(LinkedList<CinematiqueObs> points) throws PathfindingException;
+	public Ticket[] addToEnd(LinkedList<CinematiqueObs> points) throws PathfindingException;
 	public void setUptodate(boolean uptodate);
 	public boolean needPartial();
 }

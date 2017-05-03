@@ -188,7 +188,7 @@ public class CheminPathfinding implements Service, Printable, HighPFClass, Chemi
 		return indexFirst == indexLast;
 	}
 	
-	private void add(CinematiqueObs c)
+	private void addToEnd(CinematiqueObs c)
 	{
 		c.copy(chemin[indexLast]);
 		indexLast = add(indexLast, 1);
@@ -204,7 +204,7 @@ public class CheminPathfinding implements Service, Printable, HighPFClass, Chemi
 	 * @param arc
 	 */
 	@Override
-	public Ticket[] add(LinkedList<CinematiqueObs> points) throws PathfindingException
+	public Ticket[] addToEnd(LinkedList<CinematiqueObs> points) throws PathfindingException
 	{
 		Ticket[] t = null;
 		/*
@@ -217,7 +217,7 @@ public class CheminPathfinding implements Service, Printable, HighPFClass, Chemi
 		{
 			int tmp = indexLast;
 			for(CinematiqueObs p : points)
-				add(p);
+				addToEnd(p);
 			// TODO tmp - 1 ? pas de minus ?
 			if(isIndexValid(tmp - 1) && chemin[tmp - 1].enMarcheAvant == points.getFirst().enMarcheAvant)
 			{
@@ -247,6 +247,7 @@ public class CheminPathfinding implements Service, Printable, HighPFClass, Chemi
 		return null;
 	}
 
+	
 	/**
 	 * Supprime complètement le trajet en cours
 	 */
@@ -255,7 +256,6 @@ public class CheminPathfinding implements Service, Printable, HighPFClass, Chemi
 		/**
 		 * Parfois, le plus simple est de s'arrêter et de réfléchir sur sa vie
 		 */
-		out.immobilise();
 		uptodate = true;
 		indexLast = indexFirst;
 		

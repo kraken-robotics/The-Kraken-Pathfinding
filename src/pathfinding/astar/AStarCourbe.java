@@ -348,7 +348,7 @@ public class AStarCourbe implements Service, HighPFClass
 			for(int i = 0; i < a.getNbPoints(); i++)
 				trajectory.add(a.getPoint(i));
 		}
-		chemin.add(trajectory);
+		chemin.addToEnd(trajectory);
 	}
 				
 	/**

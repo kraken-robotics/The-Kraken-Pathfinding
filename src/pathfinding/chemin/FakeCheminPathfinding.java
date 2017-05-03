@@ -61,7 +61,7 @@ public class FakeCheminPathfinding implements Service, CheminPathfindingInterfac
 	}
 	
 	@Override
-	public synchronized Ticket[] add(LinkedList<CinematiqueObs> points) throws PathfindingException
+	public synchronized Ticket[] addToEnd(LinkedList<CinematiqueObs> points) throws PathfindingException
 	{
 		path = points;
 		if(print)

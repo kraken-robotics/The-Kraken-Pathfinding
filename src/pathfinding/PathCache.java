@@ -41,9 +41,6 @@ import pathfinding.chemin.FakeCheminPathfinding;
 import robot.Cinematique;
 import robot.CinematiqueObs;
 import robot.Speed;
-import scripts.Script;
-import scripts.ScriptDeposeMinerai;
-import scripts.ScriptDeposeMineraiSimple;
 import scripts.ScriptNames;
 import utils.Log;
 
@@ -145,7 +142,7 @@ public class PathCache implements Service, HighPFClass
 		else
 		{
 			log.debug("Utilisation d'un trajet précalculé !");
-			chemin.add(path);
+			chemin.addToEnd(path);
 		}
 	}
 	
@@ -164,7 +161,7 @@ public class PathCache implements Service, HighPFClass
 				fakeChemin.wait();
 			if(!fakeChemin.isReady()) // échec de la recherche TODO
 				throw new PathfindingException();
-			realChemin.add(fakeChemin.getPath());
+			realChemin.addToEnd(fakeChemin.getPath());
 		}
 	}
 	
@@ -229,8 +226,6 @@ public class PathCache implements Service, HighPFClass
 					errors.add(k.toString());
 					continue;
 				}
-				
-				log.debug(path);
 				
 				ok.add(k.toString());
 				paths.put(k.toString(), path);

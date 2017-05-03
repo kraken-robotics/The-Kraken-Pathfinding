@@ -59,7 +59,7 @@ public class JUnit_CheminPF extends JUnit_Test {
 		int demieLongueurAvant = config.getInt(ConfigInfo.DEMI_LONGUEUR_NON_DEPLOYE_AVANT);
 
 		l.add(new CinematiqueObs(demieLargeurNonDeploye, demieLongueurArriere, demieLongueurAvant));
-		chemin.add(l);
+		chemin.addToEnd(l);
 		Assert.assertTrue(iterator.hasNext());
 	}
 

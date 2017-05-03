@@ -18,7 +18,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 package pathfinding;
 
 import robot.Robot;
-import scripts.Script;
 import scripts.ScriptNames;
 
 /**

@@ -75,6 +75,7 @@ public class ThreadUpdatePathfinding extends ThreadService implements HighPFClas
 				} catch (PathfindingException e) {
 					log.critical(e);
 					chemin.clear();
+					out.immobilise();
 				}
 			}
 		} catch (InterruptedException e) {
