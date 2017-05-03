@@ -19,6 +19,7 @@ package pathfinding;
 
 import robot.Robot;
 import scripts.Script;
+import scripts.ScriptNames;
 
 /**
  * Clé pour le cache du pathfinding
@@ -28,11 +29,11 @@ import scripts.Script;
 
 public class KeyPathCache
 {
-	public Script s;
+	public ScriptNames s;
 	public final GameState<? extends Robot> chrono;
 	public boolean shoot;
 	
-	public KeyPathCache(GameState<? extends Robot> chrono, Script s, boolean shoot)
+	public KeyPathCache(GameState<? extends Robot> chrono, ScriptNames s, boolean shoot)
 	{
 		this.chrono = chrono;
 		this.s = s;

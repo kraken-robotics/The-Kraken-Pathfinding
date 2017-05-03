@@ -36,6 +36,7 @@ import exceptions.PathfindingException;
 import exceptions.UnableToMoveException;
 import pathfinding.astar.AStarCourbe;
 import pathfinding.chemin.CheminPathfinding;
+import pathfinding.chemin.CheminPathfindingInterface;
 import pathfinding.chemin.FakeCheminPathfinding;
 import robot.Cinematique;
 import robot.CinematiqueObs;
@@ -118,20 +119,33 @@ public class PathCache implements Service, HighPFClass
 	 */
 	public void prepareNewPathToScript(KeyPathCache k) throws PathfindingException, InterruptedException
 	{
+		prepareNewPathToScript(k, realChemin);
+	}
+	
+	/**
+	 * Prépare un chemin
+	 * @param cinematiqueInitiale
+	 * @param s
+	 * @param shoot
+	 * @throws PathfindingException
+	 * @throws InterruptedException 
+	 */
+	private void prepareNewPathToScript(KeyPathCache k, CheminPathfindingInterface chemin) throws PathfindingException, InterruptedException
+	{
 		if(debugCache)
 			log.debug("Recherche de chemin pour "+k+" ("+paths.size()+" chemins mémorisés)");
 		
 		LinkedList<CinematiqueObs> path = paths.get(k.toString());
 		if(path == null)
 		{
-			k.s.setUpCercleArrivee();
+			k.s.s.setUpCercleArrivee();
 			astar.initializeNewSearchToCircle(k.shoot, k.chrono);
-			astar.process(realChemin);
+			astar.process(chemin);
 		}
 		else
 		{
 			log.debug("Utilisation d'un trajet précalculé !");
-			realChemin.add(path);
+			chemin.add(path);
 		}
 	}
 	
@@ -165,7 +179,7 @@ public class PathCache implements Service, HighPFClass
 			{
 				log.warning("Calcul du chemin "+k);
 				try {
-					prepareNewPathToScript(k);
+					prepareNewPathToScript(k, fakeChemin);
 					Thread.sleep(1000); // pour montrer le chemin
 					path = fakeChemin.getPath();
 					savePath(k, path);
@@ -191,18 +205,17 @@ public class PathCache implements Service, HighPFClass
 		log.debug("Début du chargement des trajectoires…");
 		List<String> errors = new ArrayList<String>();
 		List<String> ok = new ArrayList<String>();
-		
-		Script depose1 = ScriptNames.SCRIPT_DEPOSE_MINERAI.s;
+
 		for(int i = 0; i < 2; i++)
 		{
 			KeyPathCache k = new KeyPathCache(chrono);
 			for(ScriptNames s : ScriptNames.values())
 			{
 				k.chrono.robot.setCinematique(start);
-				k.s = s.s;
+				k.s = s;
 				k.shoot = i == 0;
 
-				if(k.s instanceof ScriptDeposeMinerai || k.s instanceof ScriptDeposeMineraiSimple) // c'est particulier
+				if(k.s == ScriptNames.SCRIPT_DEPOSE_MINERAI) // c'est particulier
 					continue;
 				
 //				log.debug("Script : "+k.s);
@@ -217,12 +230,14 @@ public class PathCache implements Service, HighPFClass
 					continue;
 				}
 				
+				log.debug(path);
+				
 				ok.add(k.toString());
 				paths.put(k.toString(), path);
 			
 				// calcul du chemin retour
 				k.chrono.robot.setCinematique(path.getLast());
-				k.s = depose1;
+				k.s = ScriptNames.SCRIPT_DEPOSE_MINERAI;
 				for(int j = 0; j < 2; j++)
 				{
 					k.shoot = j == 0;
@@ -240,7 +255,7 @@ public class PathCache implements Service, HighPFClass
 		}
 		String out;
 		
-		if(!ok.isEmpty())
+/*		if(!ok.isEmpty())
 		{
 			out = "Chargement/génération réussie pour : ";
 			for(int i = 0; i < ok.size(); i++)
@@ -250,7 +265,7 @@ public class PathCache implements Service, HighPFClass
 				out += ", ";
 			}
 			log.debug(out);
-		}
+		}*/
 		
 		if(!errors.isEmpty())
 		{
