@@ -64,6 +64,7 @@ public class PathCache implements Service, HighPFClass
 	
 	private boolean debug = false;
 	private boolean debugCache;
+	private boolean simuleSerie;
 	
 	/**
 	 * Les chemins précalculés.
@@ -75,6 +76,7 @@ public class PathCache implements Service, HighPFClass
 		this.state = state;
 		debugCache = config.getBoolean(ConfigInfo.DEBUG_CACHE);
 		nbEssais = config.getInt(ConfigInfo.NB_ESSAIS_PF);
+		simuleSerie = config.getBoolean(ConfigInfo.SIMULE_SERIE);
 		this.fakeChemin = fakeChemin;
 		this.realChemin = realChemin;
 		this.log = log;
@@ -306,17 +308,41 @@ public class PathCache implements Service, HighPFClass
 	{
 		astar.stopContinuousSearch();
 	}
-
+	
+	/**
+	 * Calcule un chemin et le suit jusqu'au cercle
+	 * @param shoot
+	 * @throws PathfindingException
+	 * @throws InterruptedException
+	 * @throws UnableToMoveException
+	 */
+	public void computeAndFollowToCircle(boolean shoot) throws PathfindingException, InterruptedException, UnableToMoveException
+	{
+		computeAndFollow(null, shoot);
+	}
+	
+	/**
+	 * Calcule un chemin et le suit jusqu'à un point
+	 * @param arrivee
+	 * @param shoot
+	 * @throws PathfindingException
+	 * @throws InterruptedException
+	 * @throws UnableToMoveException
+	 */
 	public void computeAndFollow(Cinematique arrivee, boolean shoot) throws PathfindingException, InterruptedException, UnableToMoveException
 	{
 		int essai = nbEssais;
 		boolean restart = false;
-		astar.initializeNewSearch(arrivee, shoot, state);
+		if(arrivee == null)
+			astar.initializeNewSearchToCircle(shoot, state);
+		else
+			astar.initializeNewSearch(arrivee, shoot, state);
 		do {
 			restart = false;
 			try {
 				astar.process(realChemin);
-				state.robot.followTrajectory(Speed.STANDARD);
+				if(!simuleSerie)
+					state.robot.followTrajectory(Speed.STANDARD);
 			}
 			catch(PathfindingException | UnableToMoveException e)
 			{
