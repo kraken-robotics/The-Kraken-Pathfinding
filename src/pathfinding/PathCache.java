@@ -297,6 +297,11 @@ public class PathCache implements Service, HighPFClass
 		computeAndFollow(null, c.shoot, c);
 	}
 	
+	public void computeAndFollowToPoint(Cinematique arrivee, boolean shoot) throws PathfindingException, InterruptedException, UnableToMoveException
+	{
+		computeAndFollow(arrivee, shoot, null);
+	}
+	
 	/**
 	 * Calcule un chemin et le suit jusqu'à un point
 	 * @param arrivee
@@ -305,16 +310,14 @@ public class PathCache implements Service, HighPFClass
 	 * @throws InterruptedException
 	 * @throws UnableToMoveException
 	 */
-	public void computeAndFollow(Cinematique arrivee, boolean shoot, KeyPathCache c) throws PathfindingException, InterruptedException, UnableToMoveException
+	private void computeAndFollow(Cinematique arrivee, boolean shoot, KeyPathCache c) throws PathfindingException, InterruptedException, UnableToMoveException
 	{
 		int essai = nbEssais;
 		boolean restart = false;
 		do {
 			restart = false;
 			try {
-				if(arrivee == null && c == null)
-					log.debug("Arrivée nulle et KeyPathCache nul !");
-				else if(c != null)
+				if(c != null)
 					prepareNewPathToScript(c);
 				else
 				{
