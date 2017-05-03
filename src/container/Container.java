@@ -50,7 +50,9 @@ import graphic.PrintBuffer;
 import graphic.PrintBufferInterface;
 import obstacles.types.Obstacle;
 import pathfinding.astar.arcs.ArcCourbe;
+import pathfinding.astar.arcs.CercleArrivee;
 import robot.Speed;
+import scripts.Script;
 import serie.SerieCoucheTrame;
 import threads.ThreadName;
 import threads.ThreadService;
@@ -348,6 +350,7 @@ public class Container implements Service
 		Obstacle.set(log, getService(PrintBufferInterface.class));
 		Obstacle.useConfig(config);
 		ArcCourbe.useConfig(config);
+		Script.setLogCercle(log, getService(CercleArrivee.class));
 
 		startAllThreads();
 

@@ -43,7 +43,7 @@ import robot.Speed;
 import scripts.Script;
 import scripts.ScriptDeposeMinerai;
 import scripts.ScriptDeposeMineraiSimple;
-import scripts.ScriptManager;
+import scripts.ScriptNames;
 import utils.Log;
 
 /**
@@ -62,7 +62,6 @@ public class PathCache implements Service, HighPFClass
 	private RealGameState state;	
 	private int nbEssais;
 	
-	private boolean debug = false;
 	private boolean debugCache;
 	private boolean simuleSerie;
 	
@@ -71,7 +70,7 @@ public class PathCache implements Service, HighPFClass
 	 */
 	public HashMap<String, LinkedList<CinematiqueObs>> paths;
 	
-	public PathCache(Log log, Config config, ScriptManager smanager, RealGameState state, ChronoGameState chrono, AStarCourbe astar, CheminPathfinding realChemin, FakeCheminPathfinding fakeChemin) throws InterruptedException
+	public PathCache(Log log, Config config, RealGameState state, ChronoGameState chrono, AStarCourbe astar, CheminPathfinding realChemin, FakeCheminPathfinding fakeChemin) throws InterruptedException
 	{
 		this.state = state;
 		debugCache = config.getBoolean(ConfigInfo.DEBUG_CACHE);
@@ -86,7 +85,7 @@ public class PathCache implements Service, HighPFClass
 		paths = new HashMap<String, LinkedList<CinematiqueObs>>();
 		if(!new File("paths/").exists())
 			new File("paths/").mkdir();
-		loadAll(smanager, chrono, start);
+		loadAll(chrono, start);
 	}
 	
 	private void savePath(KeyPathCache k, List<CinematiqueObs> path)
@@ -187,21 +186,20 @@ public class PathCache implements Service, HighPFClass
 		return path;
 	}
 	
-	private void loadAll(ScriptManager smanager, ChronoGameState chrono, Cinematique start) throws InterruptedException
+	private void loadAll(ChronoGameState chrono, Cinematique start) throws InterruptedException
 	{
 		log.debug("Début du chargement des trajectoires…");
 		List<String> errors = new ArrayList<String>();
 		List<String> ok = new ArrayList<String>();
 		
-		Script depose1 = smanager.getScripts().get("DEPOSE");
+		Script depose1 = ScriptNames.SCRIPT_DEPOSE_MINERAI.s;
 		for(int i = 0; i < 2; i++)
 		{
-			smanager.reinit();
 			KeyPathCache k = new KeyPathCache(chrono);
-			while(smanager.hasNext())
+			for(ScriptNames s : ScriptNames.values())
 			{
 				k.chrono.robot.setCinematique(start);
-				k.s = smanager.next();
+				k.s = s.s;
 				k.shoot = i == 0;
 
 				if(k.s instanceof ScriptDeposeMinerai || k.s instanceof ScriptDeposeMineraiSimple) // c'est particulier

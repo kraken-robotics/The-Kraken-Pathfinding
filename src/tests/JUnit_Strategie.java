@@ -25,7 +25,7 @@ import pathfinding.KeyPathCache;
 import pathfinding.PathCache;
 import robot.Cinematique;
 import robot.Speed;
-import scripts.ScriptManager;
+import scripts.ScriptNames;
 import scripts.Strategie;
 
 /**
@@ -39,7 +39,6 @@ public class JUnit_Strategie extends JUnit_Test {
 	private Strategie strat;
 	private PathCache path;
 	private ChronoGameState chrono;
-	private ScriptManager sm;
 	
 	@Override
 	@Before
@@ -48,17 +47,16 @@ public class JUnit_Strategie extends JUnit_Test {
         strat = container.getService(Strategie.class);
         path = container.getService(PathCache.class);
         chrono = container.make(ChronoGameState.class);
-        sm = container.getService(ScriptManager.class);
     }
 	
 	@Test
 	public void test_pathcache() throws Exception
 	{
 		chrono.robot.setCinematique(new Cinematique(700, 1800, Math.PI, true, 0));
-		path.prepareNewPathToScript(new KeyPathCache(chrono, sm.getScripts().get("MINERAI_CRATERE_HAUT_GAUCHE"), false));
+		path.prepareNewPathToScript(new KeyPathCache(chrono, ScriptNames.SCRIPT_CRATERE_HAUT_DROITE.s, false));
 		path.sendPreparedPath();
 		chrono.robot.followTrajectory(Speed.TEST);
-		path.prepareNewPathToScript(new KeyPathCache(chrono, sm.getScripts().get("DEPOSE_SIMPLE"), false));
+		path.prepareNewPathToScript(new KeyPathCache(chrono, ScriptNames.SCRIPT_DEPOSE_MINERAI.s, false));
 		path.sendPreparedPath();
 	}
 	
