@@ -238,24 +238,31 @@ public class PathCache implements Service, HighPFClass
 				}
 			}
 		}
+		String out;
 		
-		String out = "Chargement/génération réussie pour : ";
-		for(int i = 0; i < ok.size(); i++)
+		if(!ok.isEmpty())
 		{
-			out += ok.get(i);
-			if(i < ok.size() - 1)
-			out += ", ";
+			out = "Chargement/génération réussie pour : ";
+			for(int i = 0; i < ok.size(); i++)
+			{
+				out += ok.get(i);
+				if(i < ok.size() - 1)
+				out += ", ";
+			}
+			log.debug(out);
 		}
-		log.debug(out);
 		
-		out = "Chargement/génération échouée pour : ";
-		for(int i = 0; i < errors.size(); i++)
+		if(!errors.isEmpty())
 		{
-			out += errors.get(i);
-			if(i < errors.size() - 1)
-			out += ", ";
+			out = "Chargement/génération échouée pour : ";
+			for(int i = 0; i < errors.size(); i++)
+			{
+				out += errors.get(i);
+				if(i < errors.size() - 1)
+				out += ", ";
+			}
+			log.critical(out);
 		}
-		log.critical(out);
 	}
 	
 	@SuppressWarnings("unchecked")
