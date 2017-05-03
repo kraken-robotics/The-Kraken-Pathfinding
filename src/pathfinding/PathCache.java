@@ -80,7 +80,7 @@ public class PathCache implements Service, HighPFClass
 		this.fakeChemin = fakeChemin;
 		this.realChemin = realChemin;
 		this.log = log;
-		Cinematique start = new Cinematique(550, 1905, -Math.PI, true, 0);
+		Cinematique start = new Cinematique(550, 1905, -Math.PI/2, true, 0);
 		chrono.robot.setCinematique(start);
 		this.astar = astar;
 		paths = new HashMap<String, LinkedList<CinematiqueObs>>();
@@ -127,12 +127,12 @@ public class PathCache implements Service, HighPFClass
 		{
 			k.s.setUpCercleArrivee();
 			astar.initializeNewSearchToCircle(k.shoot, k.chrono);
-			astar.process(fakeChemin);
+			astar.process(realChemin);
 		}
 		else
 		{
 			log.debug("Utilisation d'un trajet précalculé !");
-			fakeChemin.add(path);
+			realChemin.add(path);
 		}
 	}
 	
@@ -167,6 +167,7 @@ public class PathCache implements Service, HighPFClass
 				log.warning("Calcul du chemin "+k);
 				try {
 					prepareNewPathToScript(k);
+					Thread.sleep(1000); // pour montrer le chemin
 					path = fakeChemin.getPath();
 					savePath(k, path);
 				}
@@ -220,18 +221,6 @@ public class PathCache implements Service, HighPFClass
 				
 				ok.add(k.toString());
 				paths.put(k.toString(), path);
-				// TODO : affichage à virer
-				if(debug)
-				{
-					realChemin.clear();
-					try {
-						realChemin.add(path);
-						Thread.sleep(2000);
-					} catch (PathfindingException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
 			
 				// calcul du chemin retour
 				k.chrono.robot.setCinematique(path.getLast());
@@ -248,17 +237,6 @@ public class PathCache implements Service, HighPFClass
 					}
 					ok.add(k.toString());
 					paths.put(k.toString(), pathRetour);
-					if(debug)
-					{
-						// TODO : affichage à virer
-						realChemin.clear();
-						try {
-							realChemin.add(pathRetour);
-							Thread.sleep(2000);
-						} catch (PathfindingException e) {
-							e.printStackTrace();
-						}
-					}
 				}
 			}
 		}
@@ -308,17 +286,17 @@ public class PathCache implements Service, HighPFClass
 	{
 		astar.stopContinuousSearch();
 	}
-	
+		
 	/**
-	 * Calcule un chemin et le suit jusqu'au cercle
+	 * Calcule un chemin et le suit jusqu'à un script
 	 * @param shoot
 	 * @throws PathfindingException
 	 * @throws InterruptedException
 	 * @throws UnableToMoveException
 	 */
-	public void computeAndFollowToCircle(boolean shoot) throws PathfindingException, InterruptedException, UnableToMoveException
+	public void computeAndFollowToScript(KeyPathCache c) throws PathfindingException, InterruptedException, UnableToMoveException
 	{
-		computeAndFollow(null, shoot);
+		computeAndFollow(null, c.shoot, c);
 	}
 	
 	/**
@@ -329,18 +307,22 @@ public class PathCache implements Service, HighPFClass
 	 * @throws InterruptedException
 	 * @throws UnableToMoveException
 	 */
-	public void computeAndFollow(Cinematique arrivee, boolean shoot) throws PathfindingException, InterruptedException, UnableToMoveException
+	public void computeAndFollow(Cinematique arrivee, boolean shoot, KeyPathCache c) throws PathfindingException, InterruptedException, UnableToMoveException
 	{
 		int essai = nbEssais;
 		boolean restart = false;
-		if(arrivee == null)
-			astar.initializeNewSearchToCircle(shoot, state);
-		else
-			astar.initializeNewSearch(arrivee, shoot, state);
 		do {
 			restart = false;
 			try {
-				astar.process(realChemin);
+				if(arrivee == null && c == null)
+					log.debug("Arrivée nulle et KeyPathCache nul !");
+				else if(c != null)
+					prepareNewPathToScript(c);
+				else
+				{
+					astar.initializeNewSearch(arrivee, shoot, state);
+					astar.process(realChemin);
+				}
 				if(!simuleSerie)
 					state.robot.followTrajectory(Speed.STANDARD);
 			}

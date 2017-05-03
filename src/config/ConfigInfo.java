@@ -72,9 +72,8 @@ public enum ConfigInfo {
 	PF_MARGE_NECESSAIRE((int)(100/ClothoidesComputer.PRECISION_TRACE_MM)), // combien de points de pathfinding le bas niveau doit-il toujours avoir
 	PF_MARGE_INITIALE((int)(100/ClothoidesComputer.PRECISION_TRACE_MM)), // combien de points garde-t-on au début de la replanification
 	DUREE_MAX_RECHERCHE_PF(3000), // durée maximale que peut prendre le pathfinding
-	TAILLE_FAISCEAU_PF(10), // combien de voisins sont ajoutés à l'openset à chaque itération
+	TAILLE_FAISCEAU_PF(10), // combien de voisins sont ajoutés à l'openset à chaque itération // TODO
 	DEBUG_PF(false), // affichage de plein d'infos
-	EVITEMENT_SIMPLE(true), // évitement simplifié : le robot attend juste que le chemin se libère
 	DEBUG_CACHE(false), // debug du cache de chemins
 	NB_ESSAIS_PF(3), // nombre d'essais du pathfinding
 	

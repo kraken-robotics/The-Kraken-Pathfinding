@@ -17,12 +17,23 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 package pathfinding.chemin;
 
+import java.awt.Graphics;
 import java.util.LinkedList;
 
+import config.Config;
+import config.ConfigInfo;
 import container.Service;
 import container.dependances.HighPFClass;
 import exceptions.PathfindingException;
+import graphic.Fenetre;
+import graphic.PrintBuffer;
+import graphic.printable.Couleur;
+import graphic.printable.Layer;
+import graphic.printable.Printable;
+import obstacles.types.ObstacleCircular;
+import robot.Cinematique;
 import robot.CinematiqueObs;
+import robot.RobotReal;
 import serie.Ticket;
 import utils.Log;
 
@@ -32,20 +43,32 @@ import utils.Log;
  *
  */
 
-public class FakeCheminPathfinding implements Service, CheminPathfindingInterface, HighPFClass
+public class FakeCheminPathfinding implements Service, CheminPathfindingInterface, HighPFClass, Printable
 {
 	private LinkedList<CinematiqueObs> path;
 	protected Log log;
+	private PrintBuffer buffer;
+	private boolean print;
+	private ObstacleCircular[] aff = new ObstacleCircular[256];
 	
-	public FakeCheminPathfinding(Log log)
+	public FakeCheminPathfinding(Log log, Config config, PrintBuffer buffer)
 	{
 		this.log = log;
+		this.buffer = buffer;
+		print = config.getBoolean(ConfigInfo.GRAPHIC_TRAJECTORY_FINAL);
+		if(print)
+			buffer.add(this);
 	}
 	
 	@Override
 	public synchronized Ticket[] add(LinkedList<CinematiqueObs> points) throws PathfindingException
 	{
 		path = points;
+		if(print)
+			synchronized(buffer)
+			{
+				buffer.notify();
+			}
 		notify();
 		return null;
 	}
@@ -70,5 +93,24 @@ public class FakeCheminPathfinding implements Service, CheminPathfindingInterfac
 		LinkedList<CinematiqueObs> out = path;
 		path = null;
 		return out;
+	}
+	
+	@Override
+	public void print(Graphics g, Fenetre f, RobotReal robot)
+	{
+		int i = 0;
+		if(path != null)
+			for(Cinematique c : path)
+			{
+				aff[i] = new ObstacleCircular(c.getPosition(), 8, Couleur.TRAJECTOIRE);
+				buffer.addSupprimable(aff[i]);
+				i++;
+			}
+	}
+
+	@Override
+	public Layer getLayer()
+	{
+		return Layer.FOREGROUND;
 	}
 }
