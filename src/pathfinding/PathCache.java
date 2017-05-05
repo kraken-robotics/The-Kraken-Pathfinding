@@ -338,9 +338,13 @@ public class PathCache implements Service, HighPFClass
 					prepareNewPathToScript(c);
 				else
 				{
+					if(debugCache)
+						log.debug("Recherche de chemin pour "+arrivee);
 					astar.initializeNewSearch(arrivee, shoot, state);
 					astar.process(realChemin);
 				}
+				if(debugCache)
+					log.debug("On va parcourir le chemin");
 				if(!simuleSerie)
 					state.robot.followTrajectory(Speed.STANDARD);
 			}
@@ -357,5 +361,7 @@ public class PathCache implements Service, HighPFClass
 				restart = true;
 			}
 		} while(restart);
+		if(debugCache)
+			log.debug("Compute and follow a terminé normalement");
 	}
 }
