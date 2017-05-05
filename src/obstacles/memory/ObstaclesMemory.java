@@ -22,7 +22,7 @@ import graphic.PrintBufferInterface;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-import obstacles.types.ObstacleCircular;
+import obstacles.types.Obstacle;
 import obstacles.types.ObstacleProximity;
 import pathfinding.dstarlite.gridspace.Masque;
 import utils.Log;
@@ -45,7 +45,6 @@ public class ObstaclesMemory implements Service, LowPFClass
     private volatile LinkedList<ObstacleProximity> listObstaclesMobiles = new LinkedList<ObstacleProximity>();
     private volatile LinkedList<ObstacleProximity> listObstaclesMortsTot = new LinkedList<ObstacleProximity>();
     private int dureeAvantPeremption;
-	private int rayonEnnemi;
 	private volatile int size = 0;
 	private volatile int indicePremierObstacle = 0;
 	private volatile int firstNotDeadNow = 0;
@@ -61,20 +60,19 @@ public class ObstaclesMemory implements Service, LowPFClass
 	{
 		this.log = log;
 		this.buffer = buffer;
-		rayonEnnemi = config.getInt(ConfigInfo.RAYON_ROBOT_ADVERSE);
 		dureeAvantPeremption = config.getInt(ConfigInfo.DUREE_PEREMPTION_OBSTACLES);
 		printProx = config.getBoolean(ConfigInfo.GRAPHIC_PROXIMITY_OBSTACLES);
 		printDStarLite = config.getBoolean(ConfigInfo.GRAPHIC_D_STAR_LITE);
 	}
 
-	public synchronized ObstacleProximity add(Vec2RO position, Masque masque)
+	public synchronized ObstacleProximity add(Obstacle obstacle, Masque masque)
 	{
-		return add(position, System.currentTimeMillis(), masque);
+		return add(obstacle, System.currentTimeMillis(), masque);
 	}
 
-	private synchronized ObstacleProximity add(Vec2RO position, long date, Masque masque)
+	private synchronized ObstacleProximity add(Obstacle obstacleParam, long date, Masque masque)
 	{
-        ObstacleProximity obstacle = new ObstacleProximity(new ObstacleCircular(position, rayonEnnemi), date+dureeAvantPeremption, masque);
+        ObstacleProximity obstacle = new ObstacleProximity(obstacleParam, date+dureeAvantPeremption, masque);
         listObstaclesMobiles.add(obstacle);
 
         if(printProx)

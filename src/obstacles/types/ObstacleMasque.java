@@ -107,4 +107,28 @@ public class ObstacleMasque implements ObstacleInterface
 	{
 		return o.getPosition();
 	}
+
+	@Override
+	public double getTopY()
+	{
+		return o.getTopY();
+	}
+
+	@Override
+	public double getBottomY()
+	{
+		return o.getBottomY();
+	}
+
+	@Override
+	public double getLeftmostX()
+	{
+		return o.getLeftmostX();
+	}
+
+	@Override
+	public double getRightmostX()
+	{
+		return o.getRightmostX();
+	}
 }

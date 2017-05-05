@@ -34,7 +34,6 @@ public enum ConfigInfo {
 	 * Infos sur le robot
 	 */
 	DILATATION_ROBOT_DSTARLITE(60), // dilatation des obstacles dans le D* Lite. Comme c'est une heuristique, on peut prendre plus petit que la vraie valeur
-	DILATATION_ROBOT_ENNEMI_DSTARLITE(130), // dilatation du robot ennemi dans le calcul des masques
 	CENTRE_ROTATION_ROUE_X(204), // la position du centre de rotation des roues. Est utilisé pour la rotation des capteurs
 	CENTRE_ROTATION_ROUE_Y(64),
 	DEMI_LONGUEUR_NON_DEPLOYE_ARRIERE(80), // distance entre le centre du robot et le bord arrière du robot non-déployé
@@ -62,7 +61,8 @@ public enum ConfigInfo {
 	/**
 	 * Infos sur l'ennemi
 	 */
-	RAYON_ROBOT_ADVERSE(30), // le rayon supposé du robot adverse, utilisé pour créer des obstacles de proximité
+	LARGEUR_OBSTACLE_ENNEMI(60), // largeur du robot vu
+	LONGUEUR_OBSTACLE_ENNEMI(200), // longueur / profondeur du robot vu
 	
 	/**
 	 * Paramètres du pathfinding

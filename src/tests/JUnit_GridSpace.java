@@ -157,7 +157,7 @@ public class JUnit_GridSpace extends JUnit_Test {
 		Assert.assertEquals(b[1].cardinality(), 0);
 	}*/
 
-	@Test
+/*	@Test
 	public void test_masque() throws Exception
 	{
 		MasqueManager mm = container.getService(MasqueManager.class);
@@ -166,6 +166,6 @@ public class JUnit_GridSpace extends JUnit_Test {
 		
 		if(config.getBoolean(ConfigInfo.GRAPHIC_D_STAR_LITE))
 			buffer.add(m);
-	}
+	}*/
 	
 }

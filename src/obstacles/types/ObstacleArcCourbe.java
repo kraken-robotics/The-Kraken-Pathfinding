@@ -71,4 +71,40 @@ public class ObstacleArcCourbe extends Obstacle
 			o.print(g,f,robot);
 	}
 
+	@Override
+	public double getTopY()
+	{
+		double out = ombresRobot.get(0).getTopY();
+		for(ObstacleRectangular o : ombresRobot)
+			out = Math.max(out, o.getTopY());
+		return out;
+	}
+
+	@Override
+	public double getBottomY()
+	{
+		double out = ombresRobot.get(0).getBottomY();
+		for(ObstacleRectangular o : ombresRobot)
+			out = Math.min(out, o.getBottomY());
+		return out;
+	}
+
+	@Override
+	public double getLeftmostX()
+	{
+		double out = ombresRobot.get(0).getLeftmostX();
+		for(ObstacleRectangular o : ombresRobot)
+			out = Math.min(out, o.getLeftmostX());
+		return out;
+	}
+
+	@Override
+	public double getRightmostX()
+	{
+		double out = ombresRobot.get(0).getRightmostX();
+		for(ObstacleRectangular o : ombresRobot)
+			out = Math.max(out, o.getRightmostX());
+		return out;
+	}
+
 }

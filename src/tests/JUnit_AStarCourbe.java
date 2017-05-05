@@ -405,7 +405,7 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 			if(graphicTrajectory)
 				Thread.sleep(100);
 		}
-		gridspace.addObstacleAndRemoveNearbyObstacles(new Vec2RO(-400, 1300));
+		gridspace.addObstacleAndRemoveNearbyObstacles(new ObstacleCircular(new Vec2RO(-400, 1300), 200));
 //		gridspace.addObstacleAndRemoveNearbyObstacles(new Vec2RO(0, 1600)); // TODO
 		chemin.checkColliding();
 		avant = System.nanoTime();
@@ -450,7 +450,7 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 			if(graphicTrajectory)
 				Thread.sleep(100);
 		}
-		gridspace.addObstacleAndRemoveNearbyObstacles(new Vec2RO(-600, 800));
+		gridspace.addObstacleAndRemoveNearbyObstacles(new ObstacleCircular(new Vec2RO(-600, 800), 200));
 //		gridspace.addObstacleAndRemoveNearbyObstacles(new Vec2RO(0, 1600)); // TODO
 		chemin.checkColliding();
 		avant = System.nanoTime();

@@ -23,6 +23,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import exceptions.PathfindingException;
+import obstacles.types.ObstacleCircular;
 import pathfinding.dstarlite.DStarLite;
 import pathfinding.dstarlite.gridspace.GridSpace;
 import utils.Vec2RO;
@@ -49,12 +50,12 @@ public class JUnit_DStarLite extends JUnit_Test {
 	@Test
     public void test_chemin_dstarlite() throws Exception
     {
-		gridspace.addObstacleAndRemoveNearbyObstacles(new Vec2RO(100, 1100));
+		gridspace.addObstacleAndRemoveNearbyObstacles(new ObstacleCircular(new Vec2RO(100, 1100), 200));
 		pathfinding.computeNewPath(new Vec2RO(-800, 200), new Vec2RO(1200, 1200), false);
 		pathfinding.itineraireBrut();		
 		Thread.sleep(500);
 		log.debug("RECALCUL");
-		gridspace.addObstacleAndRemoveNearbyObstacles(new Vec2RO(600, 1300));
+		gridspace.addObstacleAndRemoveNearbyObstacles(new ObstacleCircular(new Vec2RO(600, 1300),200));
 		pathfinding.updateStart(new Vec2RO(600,1300));
 		pathfinding.updateObstaclesEnnemi();
 		pathfinding.itineraireBrut();
@@ -72,10 +73,10 @@ public class JUnit_DStarLite extends JUnit_Test {
 		for(int i = 0; i < nbBoucle; i++)
 		{
 			pathfinding.computeNewPath(new Vec2RO(-1000, 200), new Vec2RO(1200, 1200), false);
-			gridspace.addObstacleAndRemoveNearbyObstacles(new Vec2RO(100, 700));
+			gridspace.addObstacleAndRemoveNearbyObstacles(new ObstacleCircular(new Vec2RO(100, 700),200));
 			pathfinding.updateStart(new Vec2RO(600,1300));
 			pathfinding.updateObstaclesEnnemi();
-			gridspace.addObstacleAndRemoveNearbyObstacles(new Vec2RO(500, 1200));
+			gridspace.addObstacleAndRemoveNearbyObstacles(new ObstacleCircular(new Vec2RO(500, 1200),200));
 			pathfinding.updateStart(new Vec2RO(-800,1300));
 			pathfinding.updateObstaclesEnnemi();
 		}
@@ -86,7 +87,7 @@ public class JUnit_DStarLite extends JUnit_Test {
     public void test_exception1() throws Exception
     {
 		pathfinding.computeNewPath(new Vec2RO(-1000, 200), new Vec2RO(1200, 1200), false);
-		gridspace.addObstacleAndRemoveNearbyObstacles(new Vec2RO(1100, 1200));
+		gridspace.addObstacleAndRemoveNearbyObstacles(new ObstacleCircular(new Vec2RO(1100, 1200),200));
 		pathfinding.updateStart(new Vec2RO(-900, 1400));
 		pathfinding.updateObstaclesEnnemi();
 		pathfinding.itineraireBrut();
@@ -96,9 +97,9 @@ public class JUnit_DStarLite extends JUnit_Test {
     public void test_exception2() throws Exception
     {
 		pathfinding.computeNewPath(new Vec2RO(-1000, 300), new Vec2RO(0, 1800), false);
-		gridspace.addObstacleAndRemoveNearbyObstacles(new Vec2RO(200, 1800));
-		gridspace.addObstacleAndRemoveNearbyObstacles(new Vec2RO(200, 1600));
-		gridspace.addObstacleAndRemoveNearbyObstacles(new Vec2RO(0, 1600));
+		gridspace.addObstacleAndRemoveNearbyObstacles(new ObstacleCircular(new Vec2RO(200, 1800),200));
+		gridspace.addObstacleAndRemoveNearbyObstacles(new ObstacleCircular(new Vec2RO(200, 1600),200));
+		gridspace.addObstacleAndRemoveNearbyObstacles(new ObstacleCircular(new Vec2RO(0, 1600),200));
 		pathfinding.updateStart(new Vec2RO(-900, 300));
 		pathfinding.updateObstaclesEnnemi();
 		pathfinding.itineraireBrut();
@@ -107,7 +108,7 @@ public class JUnit_DStarLite extends JUnit_Test {
 	@Test(expected = PathfindingException.class)
     public void test_chemin_impossible() throws Exception
     {
-		gridspace.addObstacleAndRemoveNearbyObstacles(new Vec2RO(1000, 1200));
+		gridspace.addObstacleAndRemoveNearbyObstacles(new ObstacleCircular(new Vec2RO(1000, 1200),200));
 		pathfinding.computeNewPath(new Vec2RO(-1000, 400), new Vec2RO(1000, 1200), false);
 		pathfinding.itineraireBrut();
     }
@@ -116,9 +117,9 @@ public class JUnit_DStarLite extends JUnit_Test {
     public void test_ajout_proche() throws Exception
     {
 		Vec2RO posRobot = new Vec2RO(0, 1200);
-		gridspace.addObstacleAndRemoveNearbyObstacles(new Vec2RO(1000, 1200));
+		gridspace.addObstacleAndRemoveNearbyObstacles(new ObstacleCircular(new Vec2RO(1000, 1200),200));
 		pathfinding.computeNewPath(posRobot, new Vec2RO(1000, 600), false);
-		gridspace.addObstacleAndRemoveNearbyObstacles(new Vec2RO(900, 1200));
+		gridspace.addObstacleAndRemoveNearbyObstacles(new ObstacleCircular(new Vec2RO(900, 1200),200));
 		pathfinding.updateStart(new Vec2RO(-900, 1000));
 		pathfinding.updateObstaclesEnnemi();
 		pathfinding.itineraireBrut();
@@ -136,7 +137,7 @@ public class JUnit_DStarLite extends JUnit_Test {
 		{
 			Thread.sleep(2000);
 			posRobot = chemin.get(n);
-			gridspace.addObstacleAndRemoveNearbyObstacles(chemin.get(n+20));
+			gridspace.addObstacleAndRemoveNearbyObstacles(new ObstacleCircular(chemin.get(n+20), 200));
 			pathfinding.updateStart(posRobot);
 			pathfinding.updateObstaclesEnnemi();
 			chemin = pathfinding.itineraireBrut();

@@ -25,8 +25,10 @@ import config.ConfigInfo;
 import container.Service;
 import container.dependances.LowPFClass;
 import graphic.PrintBufferInterface;
+import obstacles.types.Obstacle;
 import utils.Log;
 import utils.Vec2RO;
+import utils.Vec2RW;
 
 /**
  * Création de masque
@@ -36,12 +38,12 @@ import utils.Vec2RO;
 
 public class MasqueManager implements Service, LowPFClass
 {
-	private int centreMasqueEnnemi, centreMasqueCylindre;
+	private int centreMasqueCylindre;
 	private PointGridSpaceManager pointManager;
 	private PointDirigeManager pointDManager;
 	private PrintBufferInterface buffer;
+	private int rayonRobot;
 	protected Log log;
-	private List<PointDirige> modelEnnemi = new ArrayList<PointDirige>();
 	private List<PointDirige> modelCylindre = new ArrayList<PointDirige>();
 	private boolean printObsCapteurs;
 	
@@ -53,20 +55,10 @@ public class MasqueManager implements Service, LowPFClass
 		this.buffer = buffer;
 
 		printObsCapteurs = config.getBoolean(ConfigInfo.GRAPHIC_D_STAR_LITE);
-		int rayonRobot = config.getInt(ConfigInfo.DILATATION_ROBOT_ENNEMI_DSTARLITE); // l'obstacle du D* Lite doit être dilaté
-		int rayonEnnemi = config.getInt(ConfigInfo.RAYON_ROBOT_ADVERSE);
-		int rayonPointEnnemi = (int) Math.round((rayonEnnemi + rayonRobot) / PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS);
-		int tailleMasqueEnnemi = 2*(rayonPointEnnemi+1)+1;
-		int squaredRayonPointEnnemi = rayonPointEnnemi * rayonPointEnnemi;
 
-		centreMasqueEnnemi = tailleMasqueEnnemi / 2;
-		createMasque(centreMasqueEnnemi, tailleMasqueEnnemi, squaredRayonPointEnnemi, modelEnnemi);
-
-		
-		// la dilatation du robot est différente pour l'obstacle
-		int rayonRobot2 = config.getInt(ConfigInfo.DILATATION_ROBOT_DSTARLITE);		
+		rayonRobot = config.getInt(ConfigInfo.DILATATION_ROBOT_DSTARLITE);		
 		int rayonCylindre = 32;
-		int rayonPointCylindre = (int) Math.round((rayonRobot2 + rayonCylindre) / PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS);
+		int rayonPointCylindre = (int) Math.round((rayonRobot + rayonCylindre) / PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS);
 		int tailleMasqueCylindre = 2*(rayonPointCylindre+1)+1;
 		int squaredRayonPointCylindre = rayonPointCylindre * rayonPointCylindre;
 
@@ -85,16 +77,6 @@ public class MasqueManager implements Service, LowPFClass
 						if((i2-centreMasque) * (i2-centreMasque) + (j2-centreMasque) * (j2-centreMasque) <= squaredRayonPoint)
 							model.add(pointDManager.get(i,j,d));
 					}
-	}
-
-	/**
-	 * Renvoie le masque de l'ennemi
-	 * @param position
-	 * @return
-	 */
-	public Masque getMasqueEnnemi(Vec2RO position)
-	{
-		return getMasque(position, modelEnnemi, centreMasqueEnnemi);
 	}
 
 	/**
@@ -135,5 +117,41 @@ public class MasqueManager implements Service, LowPFClass
 			buffer.addSupprimable(m);
 		
 		return m;
+	}
+
+	public Masque getMasqueEnnemi(Obstacle obstacle)
+	{
+		double xmin = obstacle.getLeftmostX() - rayonRobot;
+		double xmax = obstacle.getRightmostX() + rayonRobot;
+		double ymin = obstacle.getBottomY() - rayonRobot;
+		double ymax = obstacle.getTopY() + rayonRobot;
+		
+		int tailleMasqueX = (int) Math.round((xmax - xmin) / PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS) + 3;
+		int tailleMasqueY = (int) Math.round((ymax - ymin) / PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS) + 3;
+		
+		List<PointDirige> model = new ArrayList<PointDirige>();
+		
+		boolean[][] dedans = new boolean[tailleMasqueX][tailleMasqueY];
+		
+		Vec2RW pos = new Vec2RW();
+		
+		for(int i = 0; i < tailleMasqueX; i++)
+			for(int j = 0; j < tailleMasqueY; j++)
+			{
+//				pos.setX(x);
+				dedans[i][j] = obstacle.squaredDistance(pos) == 0;
+			}
+
+		for(int i = 0; i < tailleMasqueX; i++)
+			for(int j = 0; j < tailleMasqueY; j++)
+				if(!dedans[i][j])
+					for(Direction d : Direction.values)
+					{
+						int i2 = i + d.deltaX, j2 = j + d.deltaY;
+						if(i2 >= 0 && i2 < tailleMasqueX && j2 >= 0 && j2 < tailleMasqueY && dedans[i2][j2])
+							model.add(pointDManager.get(i,j,d));
+					}
+
+		return new Masque(pointManager, model);
 	}
 }

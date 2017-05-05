@@ -71,4 +71,12 @@ public abstract interface ObstacleInterface extends Printable, Serializable
 
 	public Vec2RO getPosition();
 
+	public double getTopY();
+	
+	public double getBottomY();
+	
+	public double getLeftmostX();
+	
+	public double getRightmostX();
+	
 }

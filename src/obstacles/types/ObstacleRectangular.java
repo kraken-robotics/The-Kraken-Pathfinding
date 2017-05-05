@@ -294,5 +294,29 @@ public class ObstacleRectangular extends Obstacle
 		}
 		g.fillPolygon(X, Y, 4);
 	}
+
+	@Override
+	public double getTopY()
+	{
+		return Math.max(Math.max(coinBasDroiteRotate.getY(), coinHautDroiteRotate.getY()), Math.max(coinHautGaucheRotate.getY(), coinBasGaucheRotate.getY()));
+	}
+
+	@Override
+	public double getBottomY()
+	{
+		return Math.min(Math.min(coinBasDroiteRotate.getY(), coinHautDroiteRotate.getY()), Math.min(coinHautGaucheRotate.getY(), coinBasGaucheRotate.getY()));
+	}
+
+	@Override
+	public double getLeftmostX()
+	{
+		return Math.min(Math.min(coinBasDroiteRotate.getX(), coinHautDroiteRotate.getX()), Math.min(coinHautGaucheRotate.getX(), coinBasGaucheRotate.getX()));
+	}
+
+	@Override
+	public double getRightmostX()
+	{
+		return Math.max(Math.max(coinBasDroiteRotate.getX(), coinHautDroiteRotate.getX()), Math.max(coinHautGaucheRotate.getX(), coinBasGaucheRotate.getX()));
+	}
 	
 }

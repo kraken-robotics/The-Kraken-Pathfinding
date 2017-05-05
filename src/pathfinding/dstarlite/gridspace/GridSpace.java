@@ -29,6 +29,7 @@ import java.util.List;
 
 import obstacles.memory.ObstaclesIteratorPresent;
 import obstacles.memory.ObstaclesMemory;
+import obstacles.types.Obstacle;
 import obstacles.types.ObstacleProximity;
 import obstacles.types.ObstaclesFixes;
 import robot.RobotReal;
@@ -237,20 +238,17 @@ public class GridSpace implements Service, Printable, LowPFClass
      * @return 
      * @return
      */
-    public ObstacleProximity addObstacleAndRemoveNearbyObstacles(Vec2RO position)
+    public ObstacleProximity addObstacleAndRemoveNearbyObstacles(Obstacle obstacle)
     {
     	iteratorRemoveNearby.reinit();
     	while(iteratorRemoveNearby.hasNext())
     	{
     		ObstacleProximity o = iteratorRemoveNearby.next();
-        	if(o.isProcheCentre(position, distanceMinimaleEntreProximite))
+        	if(o.isProcheCentre(obstacle.getPosition(), distanceMinimaleEntreProximite))
         		iteratorRemoveNearby.remove();
     	}
 
-    	Masque masque = masquemanager.getMasqueEnnemi(position);
-		ObstacleProximity o = obstaclesMemory.add(position, masque);
-		
-		return o;
+    	return obstaclesMemory.add(obstacle, masquemanager.getMasqueEnnemi(obstacle));
     }
 
 	@Override

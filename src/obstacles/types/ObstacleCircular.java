@@ -85,4 +85,27 @@ public class ObstacleCircular extends Obstacle
 			g.fillOval(f.XtoWindow(position.getX()-radius), f.YtoWindow(position.getY()+radius), f.distanceXtoWindow((radius)*2), f.distanceYtoWindow((radius)*2));
 	}
 
+	@Override
+	public double getTopY()
+	{
+		return position.getY()+radius;
+	}
+
+	@Override
+	public double getBottomY()
+	{
+		return position.getY()-radius;
+	}
+
+	@Override
+	public double getLeftmostX() 
+	{
+		return position.getX()-radius;
+	}
+
+	@Override
+	public double getRightmostX(){
+		return position.getX()+radius;
+	}
+
 }
