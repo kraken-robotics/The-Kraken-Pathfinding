@@ -347,6 +347,8 @@ public class AStarCourbe implements Service, HighPFClass
 				log.debug(a.vitesse+" ("+a.getNbPoints()+" pts)");
 			for(int i = 0; i < a.getNbPoints(); i++)
 				trajectory.add(a.getPoint(i));
+			if(trajectory.size() > 255)
+				throw new PathfindingException("Overflow du trajet !");
 		}
 		chemin.addToEnd(trajectory);
 	}
