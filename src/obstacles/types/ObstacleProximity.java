@@ -30,9 +30,9 @@ public class ObstacleProximity extends ObstacleMasque
 	private static final long serialVersionUID = -3518004359091355796L;
 	private long death_date;
 	
-	public ObstacleProximity(Vec2RO position, int rad, long death_date, Masque masque)
+	public ObstacleProximity(Obstacle o, long death_date, Masque masque)
 	{
-		super(position, rad, Couleur.OBSTACLES_PROX, masque);
+		super(o, masque);
 		this.death_date = death_date;
 	}
 	
@@ -60,7 +60,7 @@ public class ObstacleProximity extends ObstacleMasque
 	 */
 	public boolean isProcheCentre(Vec2RO position, int distance)
 	{
-		return this.position.squaredDistance(position) < distance * distance;
+		return o.squaredDistance(position) < distance * distance;
 	}
 
 	// TODO : utilisé où ?

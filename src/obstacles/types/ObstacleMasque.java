@@ -17,22 +17,28 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 package obstacles.types;
 
+import java.awt.Graphics;
+
+import graphic.Fenetre;
 import graphic.printable.Couleur;
+import graphic.printable.Layer;
 import pathfinding.dstarlite.gridspace.Masque;
+import robot.RobotReal;
 import utils.Vec2RO;
 
 /**
  * Obstacle avec un masque (c'est-à-dire utilisable par le D* Lite)
  * @author pf
  */
-public class ObstacleMasque extends ObstacleCircular
+public class ObstacleMasque implements ObstacleInterface
 {
 	private static final long serialVersionUID = -7303433427716127840L;
-	private transient Masque masque;
+	protected Obstacle o;
+	private Masque masque;
 	
-	public ObstacleMasque(Vec2RO position, int rad, Couleur couleur, Masque masque)
+	public ObstacleMasque(Obstacle o, Masque masque)
 	{
-		super(position,rad,couleur);
+		this.o = o;
 		this.masque = masque;
 	}
 
@@ -54,5 +60,52 @@ public class ObstacleMasque extends ObstacleCircular
 	public void setMasque(Masque masque)
 	{
 		this.masque = masque;
+	}
+
+	@Override
+	public void print(Graphics g, Fenetre f, RobotReal robot)
+	{
+		o.print(g, f, robot);
+	}
+
+	@Override
+	public double squaredDistance(Vec2RO position)
+	{
+		return o.squaredDistance(position);
+	}
+
+	@Override
+	public boolean isColliding(ObstacleRectangular obs)
+	{
+		return o.isColliding(obs);
+	}
+
+	@Override
+	public Layer getLayer()
+	{
+		return o.getLayer();
+	}
+
+	@Override
+	public boolean isProcheObstacle(Vec2RO position, int distance)
+	{
+		return o.isProcheObstacle(position, distance);
+	}
+
+	@Override
+	public boolean isProcheObstacle(Obstacle obs, int distance)
+	{
+		return o.isProcheObstacle(obs, distance);
+	}
+
+	@Override
+	public boolean isColliding(ObstacleArcCourbe obs) {
+		return o.isColliding(obs);
+	}
+
+	@Override
+	public Vec2RO getPosition()
+	{
+		return o.getPosition();
 	}
 }

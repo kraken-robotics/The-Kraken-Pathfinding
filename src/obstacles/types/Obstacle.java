@@ -41,7 +41,7 @@ import utils.Vec2RW;
  *
  */
 
-public abstract class Obstacle implements Printable, Serializable
+public abstract class Obstacle implements Printable, Serializable, ObstacleInterface
 {
 	private static final long serialVersionUID = -2508727703931042322L;
 	protected Vec2RW position;
@@ -113,18 +113,12 @@ public abstract class Obstacle implements Printable, Serializable
 	}
 
 	/**
-	 * Renvoie la distance au carré de l'obstacle avec cette position
-	 * @param position
-	 * @return
-	 */
-	public abstract double squaredDistance(Vec2RO position);
-	
-	/**
 	 * Renvoi "vrai" si position est à moins de distance d'un bord de l'obstacle ou à l'intérieur
 	 * @param position
 	 * @param distance
 	 * @return
 	 */
+	@Override
 	public boolean isProcheObstacle(Vec2RO position, int distance)
 	{
 		return squaredDistance(position) < distance * distance;
@@ -137,23 +131,18 @@ public abstract class Obstacle implements Printable, Serializable
 	 * @param distance
 	 * @return
 	 */
+	@Override
 	public boolean isProcheObstacle(Obstacle obs, int distance)
 	{
 		return squaredDistance(obs.position) < distance * distance;
 	}
 	
 	/**
-	 * Renvoie vrai s'il y a collision avec obs
-	 * @param obs
-	 * @return
-	 */
-	public abstract boolean isColliding(ObstacleRectangular obs);
-
-	/**
 	 * Revoie vrai s'il y a une collision avec obs
 	 * @param obs
 	 * @return
 	 */
+	@Override
 	public boolean isColliding(ObstacleArcCourbe obs)
 	{
 		for(ObstacleRectangular o : obs.ombresRobot)
@@ -172,6 +161,7 @@ public abstract class Obstacle implements Printable, Serializable
 		return l;
 	}
 
+	@Override
 	public Vec2RO getPosition()
 	{
 		return position;

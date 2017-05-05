@@ -79,9 +79,6 @@ public class JUnit_OMMemory extends JUnit_Test {
 	@Test
     public void test_iterator() throws Exception
     {
-    	Field f = Obstacle.class.getDeclaredField("position");
-    	f.setAccessible(true);
-
     	Method m = ObstaclesMemory.class.getDeclaredMethod("add", Vec2RO.class, long.class, Masque.class);
     	m.setAccessible(true);
     	
@@ -109,8 +106,8 @@ public class JUnit_OMMemory extends JUnit_Test {
 
     	Assert.assertTrue(iterator.hasNext());    	
     	ObstacleProximity o = iterator.next();    	
-    	Assert.assertTrue(((Vec2RW)f.get(o)).getX() == 1324);
-    	Assert.assertTrue(((Vec2RW)f.get(o)).getY() == 546);
+    	Assert.assertTrue(o.getPosition().getX() == 1324);
+    	Assert.assertTrue(o.getPosition().getY() == 546);
     	Assert.assertTrue(!iterator.hasNext());
     	Assert.assertEquals(2, memory.getFirstNotDeadNow());
     	m.invoke(memory, new Vec2RO(1324,546), date, mm.getMasqueEnnemi(new Vec2RO(1324,546)));

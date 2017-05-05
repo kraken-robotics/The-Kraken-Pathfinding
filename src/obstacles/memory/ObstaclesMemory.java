@@ -22,6 +22,7 @@ import graphic.PrintBufferInterface;
 import java.util.Iterator;
 import java.util.LinkedList;
 
+import obstacles.types.ObstacleCircular;
 import obstacles.types.ObstacleProximity;
 import pathfinding.dstarlite.gridspace.Masque;
 import utils.Log;
@@ -73,7 +74,7 @@ public class ObstaclesMemory implements Service, LowPFClass
 
 	private synchronized ObstacleProximity add(Vec2RO position, long date, Masque masque)
 	{
-        ObstacleProximity obstacle = new ObstacleProximity(position, rayonEnnemi, date+dureeAvantPeremption, masque);
+        ObstacleProximity obstacle = new ObstacleProximity(new ObstacleCircular(position, rayonEnnemi), date+dureeAvantPeremption, masque);
         listObstaclesMobiles.add(obstacle);
 
         if(printProx)

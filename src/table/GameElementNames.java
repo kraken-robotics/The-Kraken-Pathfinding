@@ -19,6 +19,7 @@ package table;
 
 import graphic.printable.Couleur;
 import obstacles.types.ObstacleCircular;
+import obstacles.types.ObstacleInterface;
 import obstacles.types.ObstacleMasque;
 import utils.Vec2RO;
 
@@ -47,29 +48,29 @@ public enum GameElementNames {
 
 //	CYLINDRE_1_G(new ObstacleMasque(new Vec2RO(950-1500, 1800), 32, Couleur.GAME_ELEMENT, null)),
 //	CYLINDRE_1_D(new ObstacleMasque(new Vec2RO(1500-950, 1800), 32, Couleur.GAME_ELEMENT, null)),
-	CYLINDRE_2_G(new ObstacleMasque(new Vec2RO(200-1500, 1400), 32, Couleur.GAME_ELEMENT, null)),
-	CYLINDRE_2_D(new ObstacleMasque(new Vec2RO(1500-200, 1400), 32, Couleur.GAME_ELEMENT, null)),
-	CYLINDRE_3_G(new ObstacleMasque(new Vec2RO(1000-1500, 1400), 32, Couleur.GAME_ELEMENT, null)),
-	CYLINDRE_3_D(new ObstacleMasque(new Vec2RO(1500-1000, 1400), 32, Couleur.GAME_ELEMENT, null)),
-	CYLINDRE_4_G(new ObstacleMasque(new Vec2RO(500-1500, 900), 32, Couleur.GAME_ELEMENT, null)),
-	CYLINDRE_4_D(new ObstacleMasque(new Vec2RO(1500-500, 900), 32, Couleur.GAME_ELEMENT, null)),
-	CYLINDRE_5_G(new ObstacleMasque(new Vec2RO(900-1500, 600), 32, Couleur.GAME_ELEMENT, null)),
-	CYLINDRE_5_D(new ObstacleMasque(new Vec2RO(1500-900, 600), 32, Couleur.GAME_ELEMENT, null)),
-	CYLINDRE_6_G(new ObstacleMasque(new Vec2RO(800-1500, 150), 32, Couleur.GAME_ELEMENT, null)),
-	CYLINDRE_6_D(new ObstacleMasque(new Vec2RO(1500-800, 150), 32, Couleur.GAME_ELEMENT, null));
+	CYLINDRE_2_G(new ObstacleMasque(new ObstacleCircular(new Vec2RO(200-1500, 1400), 32, Couleur.GAME_ELEMENT), null)),
+	CYLINDRE_2_D(new ObstacleMasque(new ObstacleCircular(new Vec2RO(1500-200, 1400), 32, Couleur.GAME_ELEMENT), null)),
+	CYLINDRE_3_G(new ObstacleMasque(new ObstacleCircular(new Vec2RO(1000-1500, 1400), 32, Couleur.GAME_ELEMENT), null)),
+	CYLINDRE_3_D(new ObstacleMasque(new ObstacleCircular(new Vec2RO(1500-1000, 1400), 32, Couleur.GAME_ELEMENT), null)),
+	CYLINDRE_4_G(new ObstacleMasque(new ObstacleCircular(new Vec2RO(500-1500, 900), 32, Couleur.GAME_ELEMENT), null)),
+	CYLINDRE_4_D(new ObstacleMasque(new ObstacleCircular(new Vec2RO(1500-500, 900), 32, Couleur.GAME_ELEMENT), null)),
+	CYLINDRE_5_G(new ObstacleMasque(new ObstacleCircular(new Vec2RO(900-1500, 600), 32, Couleur.GAME_ELEMENT), null)),
+	CYLINDRE_5_D(new ObstacleMasque(new ObstacleCircular(new Vec2RO(1500-900, 600), 32, Couleur.GAME_ELEMENT), null)),
+	CYLINDRE_6_G(new ObstacleMasque(new ObstacleCircular(new Vec2RO(800-1500, 150), 32, Couleur.GAME_ELEMENT), null)),
+	CYLINDRE_6_D(new ObstacleMasque(new ObstacleCircular(new Vec2RO(1500-800, 150), 32, Couleur.GAME_ELEMENT), null));
 	
-	public final ObstacleCircular obstacle; // il se trouve qu'ils sont tous circulaires…
+	public final ObstacleInterface obstacle; // il se trouve qu'ils sont tous circulaires…
 	public final boolean aUnMasque;
 	public final double orientationArriveeDStarLite;
 	
-	private GameElementNames(ObstacleCircular obs, double orientationArriveeDStarLite)
+	private GameElementNames(ObstacleInterface obs, double orientationArriveeDStarLite)
 	{
 		aUnMasque = obs instanceof ObstacleMasque;
 		obstacle = obs;
 		this.orientationArriveeDStarLite = orientationArriveeDStarLite;
 	}
 	
-	private GameElementNames(ObstacleCircular obs)
+	private GameElementNames(ObstacleInterface obs)
 	{
 		aUnMasque = obs instanceof ObstacleMasque;
 		obstacle = obs;
