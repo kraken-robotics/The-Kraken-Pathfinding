@@ -90,6 +90,7 @@ public class ThreadFenetre extends ThreadService implements GUIClass
 				fenetre.saveGif("output.gif", 200);
 		} catch (Exception e) {
 			log.debug("Arrêt inattendu de "+Thread.currentThread().getName()+" : "+e);
+			e.printStackTrace();
 		}		
 	}
 
