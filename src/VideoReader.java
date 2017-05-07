@@ -94,14 +94,18 @@ public class VideoReader {
 			RobotReal robot = container.getService(RobotReal.class);
 			Log log = container.getService(Log.class);
 			TimestampedList listes;
-			
-			if(robotBof != null)
-				buffer.add(robotBof);
-			
-			System.out.println("Fichier : "+filename);
-			System.out.println("Vitesse : "+vitesse);		
+						
+			log.debug("Fichier vidéo : "+filename);
+			log.debug("Fichier log : "+logfile);
+			log.debug("Vitesse : "+vitesse);		
 			if(debug)
-				System.out.println("Debug activé");
+				log.debug("Debug activé");
+			if(robotBof != null)
+			{
+				log.debug("RobotBof ajouté");
+				buffer.add(robotBof);
+			}
+
 			
 	        try {
 	            FileInputStream fichier = new FileInputStream(filename);
