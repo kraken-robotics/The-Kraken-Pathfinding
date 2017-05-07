@@ -96,10 +96,13 @@ public class ThreadPrintServer extends ThreadService implements GUIClass
 			Thread.currentThread().setName(getClass().getSimpleName());
 			log.debug("Démarrage de "+Thread.currentThread().getName());
 			try {
-				while(true)
-				{					
-					buffer.write();
-					Thread.sleep(200); // on met à jour toutes les 200ms
+				synchronized(buffer)
+				{
+					while(true)
+					{
+						buffer.wait(500);
+						buffer.write();
+					}
 				}
 			} catch (InterruptedException | IOException e) {
 				log.debug("Arrêt de "+Thread.currentThread().getName());
