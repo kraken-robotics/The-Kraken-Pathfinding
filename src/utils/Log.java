@@ -196,7 +196,7 @@ public class Log implements Service, DynamicConfigurable
 				StackTraceElement elem = Thread.currentThread().getStackTrace()[3];
 				affichage = date+tempsMatch+niveau.entete+elem.getClassName().substring(elem.getClassName().lastIndexOf(".")+1)+":"+elem.getLineNumber()+" ("+Thread.currentThread().getName()+") > "+message;
 			}
-			if(sauvegarde_fichier)
+			if(sauvegarde_fichier && writer != null)
 			{
 				try{
 					// On met la couleur dans le fichier
@@ -208,7 +208,7 @@ public class Log implements Service, DynamicConfigurable
 				catch(IOException e)
 				{
 					e.printStackTrace();
-				}					
+				}	
 			}
 			if(Verbose.shouldPrint(masque) && (!niveau.debug || affiche_debug))
 				niveau.stream.println(affichage);
