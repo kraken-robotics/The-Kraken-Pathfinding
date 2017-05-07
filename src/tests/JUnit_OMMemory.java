@@ -27,6 +27,7 @@ import pathfinding.RealGameState;
 import pathfinding.dstarlite.gridspace.GridSpace;
 import pathfinding.dstarlite.gridspace.Masque;
 import pathfinding.dstarlite.gridspace.MasqueManager;
+import robot.Cinematique;
 
 import java.lang.reflect.Method;
 
@@ -34,6 +35,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import capteurs.SensorsData;
+import capteurs.SensorsDataBuffer;
 import config.ConfigInfo;
 import utils.Vec2RO;
 
@@ -47,6 +50,7 @@ public class JUnit_OMMemory extends JUnit_Test {
 
 	private ObstaclesMemory memory;
 	private ObstaclesIteratorPresent iterator;
+	private SensorsDataBuffer data;
 //	private MasqueManager mm;
 	private GridSpace gridspace;
 	private RealGameState state;
@@ -58,6 +62,7 @@ public class JUnit_OMMemory extends JUnit_Test {
         state = container.getService(RealGameState.class);
 		gridspace = container.getService(GridSpace.class);
         memory = container.getService(ObstaclesMemory.class);
+        data = container.getService(SensorsDataBuffer.class);
         iterator = new ObstaclesIteratorPresent(log, memory);
 //        mm = container.getService(MasqueManager.class);
     }
@@ -72,6 +77,16 @@ public class JUnit_OMMemory extends JUnit_Test {
 		Assert.assertTrue(iterator.hasNext());
 		state.copyAStarCourbe(chrono);
 		Assert.assertTrue(chrono.iterator.hasNext());
+    }
+	
+	@Test
+    public void test_forme_obstacle() throws Exception
+    {
+		state.robot.setCinematique(new Cinematique(0, 1500, -Math.PI/2,true,0));
+		ChronoGameState chrono = container.make(ChronoGameState.class);
+		int[] sensors = {0,200,200,200,200,200,200,0,0,0,0,0};
+		data.add(new SensorsData(0,0,sensors,chrono.robot.getCinematique()));
+		Thread.sleep(5000);
     }
 
     
