@@ -54,18 +54,20 @@ public class VideoReader {
 		double vitesse = 1;
 		boolean debug = false;
 		ObstacleRectangular robotBof = null;
+		long[] breakPoints = new long[0];
+		int indexBP = 0;
 		
 		for(int i = 0; i < args.length; i++)
 		{
-			if(args[i].equals("-s"))
+			if(args[i].equals("-s")) // speed
 				vitesse = Double.parseDouble(args[++i]);
-			else if(args[i].equals("-d"))
+			else if(args[i].equals("-d")) // debug
 				debug = true;
-			else if(args[i].equals("-v"))
+			else if(args[i].equals("-v")) // video
 				filename = args[++i];
-			else if(args[i].equals("-l"))
+			else if(args[i].equals("-l")) // log
 				logfile = args[++i];
-			else if(args[i].equals("-b"))
+			else if(args[i].equals("-b")) // bof
 			{
 				// Robot bof : (630, 1320), angle = 0
 				
@@ -74,6 +76,13 @@ public class VideoReader {
 				double angle = Double.parseDouble(args[++i]);
 				
 				robotBof = new ObstacleRectangular(new Vec2RO(posX, posY), 300, 240, angle, Couleur.ROBOT_BOF);
+			}
+			else if(args[i].equals("-B")) // break
+			{
+				int nb = Integer.parseInt(args[++i]);
+				breakPoints = new long[nb];
+				for(int j = 0; j < nb; j++)
+					breakPoints[j] = Long.parseLong(args[++i]);
 			}
 		}
 		
@@ -139,11 +148,19 @@ public class VideoReader {
 	        long firstTimestamp = Math.min(nextLog, nextVid);
 
 		    int indexListe = 0;
-	        
+	        boolean stop = false;
+		    
 		    while(nextVid != Long.MAX_VALUE || nextLog != Long.MAX_VALUE)
 			{
-		    	if(System.in.available() > 0)
+	    		if(indexBP < breakPoints.length && breakPoints[indexBP] < Math.min(nextVid, nextLog))
+	    		{
+	    			indexBP++;
+	    			stop = true;
+	    		}
+		    	
+		    	if(stop || System.in.available() > 0)
 		    	{
+		    		stop = false;
 		    		while(System.in.available() > 0)
 		    			System.in.read();
 
