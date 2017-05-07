@@ -34,7 +34,6 @@ import obstacles.types.ObstacleProximity;
 import obstacles.types.ObstaclesFixes;
 import robot.RobotReal;
 import utils.Log;
-import utils.Vec2RO;
 import config.Config;
 import config.ConfigInfo;
 import container.Service;

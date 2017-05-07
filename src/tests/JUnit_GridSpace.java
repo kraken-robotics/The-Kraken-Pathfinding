@@ -21,12 +21,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import config.ConfigInfo;
-import graphic.PrintBuffer;
 import pathfinding.dstarlite.gridspace.Direction;
 import pathfinding.dstarlite.gridspace.GridSpace;
-import pathfinding.dstarlite.gridspace.Masque;
-import pathfinding.dstarlite.gridspace.MasqueManager;
 import pathfinding.dstarlite.gridspace.PointDirigeManager;
 import pathfinding.dstarlite.gridspace.PointGridSpace;
 import pathfinding.dstarlite.gridspace.PointGridSpaceManager;

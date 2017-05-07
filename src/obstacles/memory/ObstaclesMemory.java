@@ -26,7 +26,6 @@ import obstacles.types.Obstacle;
 import obstacles.types.ObstacleProximity;
 import pathfinding.dstarlite.gridspace.Masque;
 import utils.Log;
-import utils.Vec2RO;
 import config.Config;
 import config.ConfigInfo;
 import container.Service;

@@ -19,17 +19,11 @@ package tests;
 
 import obstacles.memory.ObstaclesIteratorPresent;
 import obstacles.memory.ObstaclesMemory;
-import obstacles.types.Obstacle;
 import obstacles.types.ObstacleCircular;
-import obstacles.types.ObstacleProximity;
 import pathfinding.ChronoGameState;
 import pathfinding.RealGameState;
 import pathfinding.dstarlite.gridspace.GridSpace;
-import pathfinding.dstarlite.gridspace.Masque;
-import pathfinding.dstarlite.gridspace.MasqueManager;
 import robot.Cinematique;
-
-import java.lang.reflect.Method;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -37,7 +31,6 @@ import org.junit.Test;
 
 import capteurs.SensorsData;
 import capteurs.SensorsDataBuffer;
-import config.ConfigInfo;
 import utils.Vec2RO;
 
 /**
