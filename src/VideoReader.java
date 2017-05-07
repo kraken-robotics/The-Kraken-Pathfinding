@@ -24,6 +24,7 @@ import java.util.List;
 import config.ConfigInfo;
 import container.Container;
 import exceptions.ContainerException;
+import graphic.Fenetre;
 import graphic.PrintBuffer;
 import graphic.TimestampedList;
 import graphic.printable.Layer;
@@ -74,10 +75,10 @@ public class VideoReader {
 			Log log = container.getService(Log.class);
 			TimestampedList listes;
 			
-			log.debug("Fichier : "+filename);
-			log.debug("Vitesse : "+vitesse);		
+			System.out.println("Fichier : "+filename);
+			System.out.println("Vitesse : "+vitesse);		
 			if(debug)
-				log.warning("Debug activé");
+				System.out.println("Debug activé");
 			
 	        try {
 	            FileInputStream fichier = new FileInputStream(filename);
@@ -94,6 +95,7 @@ public class VideoReader {
 	        long firstTimestamp = listes.getTimestamp(0);
 	        long initialDate = System.currentTimeMillis();
 	        
+	        Thread.sleep(1000); // le temps que la fenêtre apparaisse
 	        log.debug("Taille : "+listes.size());
 	        
 	        for(int j = 0; j < listes.size(); j++)
@@ -106,7 +108,7 @@ public class VideoReader {
 				if(delta > 0)
 					Thread.sleep(delta);
 				
-	        	log.debug("Timestamp : "+listes.getTimestamp(j));
+	        	System.out.println("Timestamp : "+listes.getTimestamp(j));
 				synchronized(buffer)
 				{
 					buffer.clearSupprimables();
@@ -116,21 +118,24 @@ public class VideoReader {
 						Serializable o = tab.get(i++);
 							if(o instanceof Cinematique)
 							{
-		//						log.debug("Cinématique ! "+((Cinematique)o).getPosition());
+								if(debug)
+									System.out.println("Cinématique robot : "+((Cinematique)o).getPosition());
 								robot.setCinematique((Cinematique)o);
 							}
 							else if(o instanceof Printable)
 							{
+								if(debug)
+									System.out.println("Ajout : "+o);
 								Layer l = (Layer) tab.get(i++);
 								buffer.addSupprimable((Printable)o, l);
 							}
 							else
-								log.critical("Erreur ! Objet non affichable : "+o.getClass());
+								System.err.println("Erreur ! Objet non affichable : "+o.getClass());
 						}
 				}
 			}
-	        while(true)
-	        	Thread.sleep(1000);
+	        System.out.println("Fin de l'enregistrement");
+			container.getExistingService(Fenetre.class).waitUntilExit();
 		} catch(InterruptedException e) {
 			
 		} catch(Exception e) {

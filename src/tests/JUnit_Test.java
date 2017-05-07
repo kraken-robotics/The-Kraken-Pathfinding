@@ -58,6 +58,7 @@ public abstract class JUnit_Test
 		container = new Container();
 		config = container.getService(Config.class);
 		log = container.getService(Log.class);
+		log.debug("Test unitaire : "+testName.getMethodName());
 		synchronized(config)
 		{
 			config.set(ConfigInfo.MATCH_DEMARRE, true);

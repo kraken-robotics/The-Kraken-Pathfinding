@@ -63,10 +63,10 @@ public class ObstacleProximity extends ObstacleMasque
 	}
 
 	// TODO : utilisé où ?
-	@Override
+/*	@Override
 	public int hashCode()
 	{
 		return (int) (super.hashCode()+(death_date & 0xFFFF));
-	}
+	}*/
 	
 }
