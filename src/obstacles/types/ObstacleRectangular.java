@@ -318,5 +318,10 @@ public class ObstacleRectangular extends Obstacle
 	{
 		return Math.max(Math.max(coinBasDroiteRotate.getX(), coinHautDroiteRotate.getX()), Math.max(coinHautGaucheRotate.getX(), coinBasGaucheRotate.getX()));
 	}
+
+	public boolean isHorsTable()
+	{
+		return coinBasDroiteRotate.isHorsTable() || coinHautDroiteRotate.isHorsTable() || coinHautGaucheRotate.isHorsTable() || coinBasGaucheRotate.isHorsTable();
+	}
 	
 }
