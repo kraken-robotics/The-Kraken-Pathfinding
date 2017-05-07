@@ -61,7 +61,7 @@ public enum ConfigInfo {
 	/**
 	 * Infos sur l'ennemi
 	 */
-	LARGEUR_OBSTACLE_ENNEMI(60), // largeur du robot vu
+	LARGEUR_OBSTACLE_ENNEMI(100), // largeur du robot vu
 	LONGUEUR_OBSTACLE_ENNEMI(200), // longueur / profondeur du robot vu
 	
 	/**
