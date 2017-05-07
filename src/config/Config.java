@@ -192,7 +192,7 @@ public class Config implements Service
 		log.debug("Configuration initiale");
 		for(ConfigInfo info: ConfigInfo.values())
 			if(info.constant)
-				log.debug(info+" = "+getString(info));
+				log.debug(info+" = "+getString(info)+(info.overridden ? " (overridden)" : ""));
 	}
 	
 	private synchronized void afficheChanged()
@@ -201,8 +201,8 @@ public class Config implements Service
 		{
 			log.debug("Delta config :");
 			for(ConfigInfo info: ConfigInfo.values())
-				if(info.constant && !info.getDefaultValue().toString().equals(getString(info)))
-					log.debug(info+" = "+getString(info));
+				if(info.constant && (info.overridden || !info.getDefaultValue().toString().equals(getString(info))))
+					log.debug(info+" = "+getString(info)+(info.overridden ? " (overridden)" : ""));
 		}
 		else
 			log.debug("Pas de surcharge de configuration");
@@ -224,6 +224,11 @@ public class Config implements Service
 					System.out.println(info+" NE peut PAS être surchargé par config.ini");
 					properties.setProperty(info.toString(), info.getDefaultValue().toString());
 				}
+				else if(info.overridden)
+				{
+					surcharged = true;
+					properties.setProperty(info.toString(), info.getDefaultValue().toString());
+				}
 				else if(!info.getDefaultValue().equals(properties.getProperty(info.name())))
 				{
 //					System.out.println(info+" surchargé par config.ini ("+info.getDefaultValue()+" -> "+properties.getProperty(info.name())+")");
@@ -232,7 +237,7 @@ public class Config implements Service
 			}
 			for(String cle: properties.stringPropertyNames())
 			{
-				if(cle.contains("#") || cle.contains(";"))
+				if(cle.contains("#"))
 				{
 					properties.remove(cle);
 					continue;

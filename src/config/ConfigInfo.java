@@ -157,6 +157,7 @@ public enum ConfigInfo {
 	DATE_DEBUT_MATCH(0, false); // date du début du match
 
 	private Object defaultValue;
+	public boolean overridden = false;
 	public final boolean constant;
 	
 	/**
@@ -186,6 +187,7 @@ public enum ConfigInfo {
 	public void setDefaultValue(Object o)
 	{
 		defaultValue = o;
+		overridden = true;
 	}
 	
 }
