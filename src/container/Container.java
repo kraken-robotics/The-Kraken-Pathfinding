@@ -81,6 +81,11 @@ public class Container implements Service
 	private List<DynamicConfigurable> dynaConf = new ArrayList<DynamicConfigurable>();
 	private HashMap<Class<? extends Service>, Set<String>> grapheDep = new HashMap<Class<? extends Service>, Set<String>>();
 	
+	public synchronized void destructor() throws ContainerException, InterruptedException
+	{
+		destructor(false);
+	}
+	
 	/**
 	 * Fonction appelé automatiquement à la fin du programme.
 	 * ferme la connexion serie, termine les différents threads, et ferme le log.
@@ -96,6 +101,7 @@ public class Container implements Service
 			return;
 		
 		log.debug("Fermeture de la série");
+		
 		/**
 		 * Mieux vaut écrire SerieCouchePhysique.class.getSimpleName()) que "SerieCouchePhysique",
 		 * car en cas de refactor, le premier est automatiquement ajusté
