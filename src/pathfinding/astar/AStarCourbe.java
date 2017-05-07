@@ -242,6 +242,8 @@ public class AStarCourbe implements Service, HighPFClass
 					// remettre en cause la trajectoire déjà calculée
 					openset.clear();
 					openset.add(depart); // et on repart !
+					opensetTmp.clear();
+					closedsetTmp.clear();
 					break;
 				}
 
