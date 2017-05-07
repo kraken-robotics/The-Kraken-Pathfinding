@@ -57,8 +57,9 @@ public class JUnit_CheminPF extends JUnit_Test {
 		int demieLargeurNonDeploye = config.getInt(ConfigInfo.LARGEUR_NON_DEPLOYE)/2;
 		int demieLongueurArriere = config.getInt(ConfigInfo.DEMI_LONGUEUR_NON_DEPLOYE_ARRIERE);
 		int demieLongueurAvant = config.getInt(ConfigInfo.DEMI_LONGUEUR_NON_DEPLOYE_AVANT);
+		int marge = config.getInt(ConfigInfo.DILATATION_OBSTACLE_ROBOT);
 
-		l.add(new CinematiqueObs(demieLargeurNonDeploye, demieLongueurArriere, demieLongueurAvant));
+		l.add(new CinematiqueObs(demieLargeurNonDeploye, demieLongueurArriere, demieLongueurAvant, marge));
 		chemin.addToEnd(l);
 		Assert.assertTrue(iterator.hasNext());
 	}

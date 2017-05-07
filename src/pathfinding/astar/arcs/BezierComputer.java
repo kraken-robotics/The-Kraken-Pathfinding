@@ -65,7 +65,8 @@ public class BezierComputer implements Service, HighPFClass
 		int demieLargeurNonDeploye = config.getInt(ConfigInfo.LARGEUR_NON_DEPLOYE)/2;
 		int demieLongueurArriere = config.getInt(ConfigInfo.DEMI_LONGUEUR_NON_DEPLOYE_ARRIERE);
 		int demieLongueurAvant = config.getInt(ConfigInfo.DEMI_LONGUEUR_NON_DEPLOYE_AVANT);
-		tmp = new ArcCourbeStatique(demieLargeurNonDeploye, demieLongueurArriere, demieLongueurAvant);
+		int marge = config.getInt(ConfigInfo.DILATATION_OBSTACLE_ROBOT);
+		tmp = new ArcCourbeStatique(demieLargeurNonDeploye, demieLongueurArriere, demieLongueurAvant, marge);
 	}
 	
 	private Vec2RW delta = new Vec2RW(), vecteurVitesse = new Vec2RW();

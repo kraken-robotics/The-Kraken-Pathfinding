@@ -29,10 +29,10 @@ public class ArcCourbeStatique extends ArcCourbe
 {
 	public CinematiqueObs[] arcselems = new CinematiqueObs[ClothoidesComputer.NB_POINTS];
 	
-	public ArcCourbeStatique(int demieLargeurNonDeploye, int demieLongueurArriere, int demieLongueurAvant)
+	public ArcCourbeStatique(int demieLargeurNonDeploye, int demieLongueurArriere, int demieLongueurAvant, int marge)
 	{
 		for(int i = 0; i < ClothoidesComputer.NB_POINTS; i++)
-			arcselems[i] = new CinematiqueObs(demieLargeurNonDeploye, demieLongueurArriere, demieLongueurAvant);
+			arcselems[i] = new CinematiqueObs(demieLargeurNonDeploye, demieLongueurArriere, demieLongueurAvant, marge);
 	}
 	
 	/**

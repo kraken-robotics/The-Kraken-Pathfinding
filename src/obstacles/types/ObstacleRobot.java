@@ -39,7 +39,17 @@ public class ObstacleRobot extends ObstacleRectangular implements Serializable
 {
 	private static final long serialVersionUID = -8994485842050904808L;
 
-	public ObstacleRobot(int demieLargeurNonDeploye, int demieLongueurArriere, int demieLongueurAvant)
+	protected Vec2RW coinBasGaucheImg;
+	protected Vec2RW coinHautGaucheImg;
+	protected Vec2RW coinBasDroiteImg;
+	protected Vec2RW coinHautDroiteImg;
+	
+	protected Vec2RW coinBasGaucheRotateImg;
+	protected Vec2RW coinHautGaucheRotateImg;
+	protected Vec2RW coinBasDroiteRotateImg;
+	protected Vec2RW coinHautDroiteRotateImg;
+
+	public ObstacleRobot(int demieLargeurNonDeploye, int demieLongueurArriere, int demieLongueurAvant, int marge)
 	{
 		super(new Vec2RW());
 		c = Couleur.ROBOT.couleur;
@@ -49,15 +59,33 @@ public class ObstacleRobot extends ObstacleRectangular implements Serializable
 		coinHautGaucheRotate = new Vec2RW();
 		coinBasDroiteRotate = new Vec2RW();
 		coinHautDroiteRotate = new Vec2RW();
-		int a = demieLargeurNonDeploye;
-		int b = demieLargeurNonDeploye;
-		int c = demieLongueurAvant;
-		int d = demieLongueurArriere;
+		coinBasGaucheRotateImg = new Vec2RW();
+		coinHautGaucheRotateImg = new Vec2RW();
+		coinBasDroiteRotateImg = new Vec2RW();
+		coinHautDroiteRotateImg = new Vec2RW();
+		
+		int a = demieLargeurNonDeploye + marge;
+		int b = demieLargeurNonDeploye + marge;
+		int c = demieLongueurAvant ;//+ marge / 2;
+		int d = demieLongueurArriere;// + marge / 2;
+		
+		int a2 = demieLargeurNonDeploye;
+		int b2 = demieLargeurNonDeploye;
+		int c2 = demieLongueurAvant;
+		int d2 = demieLongueurArriere;
+		
 		coinBasGauche = new Vec2RW(-d, -a);
 		coinHautGauche = new Vec2RW(-d, b);
 		coinBasDroite = new Vec2RW(c, -a);
 		coinHautDroite = new Vec2RW(c, b);
+		
+		coinBasGaucheImg = new Vec2RW(-d2, -a2);
+		coinHautGaucheImg = new Vec2RW(-d2, b2);
+		coinBasDroiteImg = new Vec2RW(c2, -a2);
+		coinHautDroiteImg = new Vec2RW(c2, b2);
+		
 		demieDiagonale = Math.sqrt((a+b)*(a+b)/4+(c+d)*(c+d)/4);
+		
 		centreGeometrique = new Vec2RW();
 	}	
 	/**
@@ -78,6 +106,10 @@ public class ObstacleRobot extends ObstacleRectangular implements Serializable
 		convertitVersRepereTable(coinHautGauche, coinHautGaucheRotate);
 		convertitVersRepereTable(coinBasDroite, coinBasDroiteRotate);
 		convertitVersRepereTable(coinHautDroite, coinHautDroiteRotate);
+		convertitVersRepereTable(coinBasGaucheImg, coinBasGaucheRotateImg);
+		convertitVersRepereTable(coinHautGaucheImg, coinHautGaucheRotateImg);
+		convertitVersRepereTable(coinBasDroiteImg, coinBasDroiteRotateImg);
+		convertitVersRepereTable(coinHautDroiteImg, coinHautDroiteRotateImg);
 		coinBasDroiteRotate.copy(centreGeometrique);
 		centreGeometrique = centreGeometrique.plus(coinHautGaucheRotate).scalar(0.5);
 
@@ -109,6 +141,27 @@ public class ObstacleRobot extends ObstacleRectangular implements Serializable
 		if(coinBasDroiteRotate == null)
 			return;
 
+		g.setColor(c);
+		
+		int[] X = new int[4];
+		X[0] = (int) coinBasDroiteRotate.getX();
+		X[1] = (int) coinHautDroiteRotate.getX();
+		X[2] = (int) coinHautGaucheRotate.getX();
+		X[3] = (int) coinBasGaucheRotate.getX();
+
+		int[] Y = new int[4];
+		Y[0] = (int) coinBasDroiteRotate.getY();
+		Y[1] = (int) coinHautDroiteRotate.getY();
+		Y[2] = (int) coinHautGaucheRotate.getY();
+		Y[3] = (int) coinBasGaucheRotate.getY();
+		
+		for(int i = 0; i < 4; i++)
+		{
+			X[i] = f.XtoWindow(X[i]);
+			Y[i] = f.YtoWindow(Y[i]);
+		}
+		g.fillPolygon(X, Y, 4);
+		
 		if(imageRobot != null && imageRobotRoueD != null && imageRobotRoueG != null)
 		{
 			Graphics2D g2d = (Graphics2D)g;
@@ -119,9 +172,9 @@ public class ObstacleRobot extends ObstacleRectangular implements Serializable
 			trans.translate(f.XtoWindow((int)centreRotationDroiteRotate.getX()), f.YtoWindow((int)centreRotationDroiteRotate.getY()));
 			trans.rotate(-angle-getAngleRoue(true, robot.getCinematique().courbureReelle));
 			trans.translate(f.distanceXtoWindow(-(int)centreRotationDroite.getX()), f.distanceYtoWindow((int)centreRotationDroite.getY()));
-			trans.translate(f.distanceXtoWindow((int)coinHautGauche.getX()), f.distanceYtoWindow(-(int)coinHautGauche.getY()));
-			trans.scale(1. * f.distanceXtoWindow((int)coinHautGauche.distance(coinHautDroite)) / imageRobot.getWidth(null),
-					1. * f.distanceXtoWindow((int)coinHautGauche.distance(coinBasGauche)) / imageRobot.getHeight(null));
+			trans.translate(f.distanceXtoWindow((int)coinHautGaucheImg.getX()), f.distanceYtoWindow(-(int)coinHautGaucheImg.getY()));
+			trans.scale(1. * f.distanceXtoWindow((int)coinHautGaucheImg.distance(coinHautDroiteImg)) / imageRobot.getWidth(null),
+					1. * f.distanceXtoWindow((int)coinHautGaucheImg.distance(coinBasGaucheImg)) / imageRobot.getHeight(null));
 			g2d.drawImage(imageRobotRoueD, trans, null);
 
 			Vec2RW centreRotationGaucheRotate = new Vec2RW();
@@ -131,42 +184,19 @@ public class ObstacleRobot extends ObstacleRectangular implements Serializable
 			trans.translate(f.XtoWindow((int)centreRotationGaucheRotate.getX()), f.YtoWindow((int)centreRotationGaucheRotate.getY()));
 			trans.rotate(-angle-getAngleRoue(false, robot.getCinematique().courbureReelle));
 			trans.translate(f.distanceXtoWindow(-(int)centreRotationGauche.getX()), f.distanceYtoWindow((int)centreRotationGauche.getY()));
-			trans.translate(f.distanceXtoWindow((int)coinHautGauche.getX()), f.distanceYtoWindow(-(int)coinHautGauche.getY()));
-			trans.scale(1. * f.distanceXtoWindow((int)coinHautGauche.distance(coinHautDroite)) / imageRobot.getWidth(null),
-					1. * f.distanceXtoWindow((int)coinHautGauche.distance(coinBasGauche)) / imageRobot.getHeight(null));
+			trans.translate(f.distanceXtoWindow((int)coinHautGaucheImg.getX()), f.distanceYtoWindow(-(int)coinHautGaucheImg.getY()));
+			trans.scale(1. * f.distanceXtoWindow((int)coinHautGaucheImg.distance(coinHautDroiteImg)) / imageRobot.getWidth(null),
+					1. * f.distanceXtoWindow((int)coinHautGaucheImg.distance(coinBasGaucheImg)) / imageRobot.getHeight(null));
 			g2d.drawImage(imageRobotRoueG, trans, null);
 			
 			trans = new AffineTransform();
 			trans.setTransform(new AffineTransform());
 			trans.translate(f.XtoWindow(position.getX()), f.YtoWindow(position.getY()));
 			trans.rotate(-angle);
-			trans.translate(f.distanceXtoWindow((int)coinHautGauche.getX()), f.distanceYtoWindow(-(int)coinHautGauche.getY()));
-			trans.scale(1. * f.distanceXtoWindow((int)coinHautGauche.distance(coinHautDroite)) / imageRobot.getWidth(null),
-					1. * f.distanceXtoWindow((int)coinHautGauche.distance(coinBasGauche)) / imageRobot.getHeight(null));
+			trans.translate(f.distanceXtoWindow((int)coinHautGaucheImg.getX()), f.distanceYtoWindow(-(int)coinHautGaucheImg.getY()));
+			trans.scale(1. * f.distanceXtoWindow((int)coinHautGaucheImg.distance(coinHautDroiteImg)) / imageRobot.getWidth(null),
+					1. * f.distanceXtoWindow((int)coinHautGaucheImg.distance(coinBasGaucheImg)) / imageRobot.getHeight(null));
 			g2d.drawImage(imageRobot, trans, null);
-		}
-		else
-		{
-			g.setColor(c);
-			
-			int[] X = new int[4];
-			X[0] = (int) coinBasDroiteRotate.getX();
-			X[1] = (int) coinHautDroiteRotate.getX();
-			X[2] = (int) coinHautGaucheRotate.getX();
-			X[3] = (int) coinBasGaucheRotate.getX();
-	
-			int[] Y = new int[4];
-			Y[0] = (int) coinBasDroiteRotate.getY();
-			Y[1] = (int) coinHautDroiteRotate.getY();
-			Y[2] = (int) coinHautGaucheRotate.getY();
-			Y[3] = (int) coinBasGaucheRotate.getY();
-			
-			for(int i = 0; i < 4; i++)
-			{
-				X[i] = f.XtoWindow(X[i]);
-				Y[i] = f.YtoWindow(Y[i]);
-			}
-			g.fillPolygon(X, Y, 4);
 		}
 	}
 	

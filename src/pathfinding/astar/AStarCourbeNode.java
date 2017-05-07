@@ -49,9 +49,9 @@ public class AStarCourbeNode implements Memorizable, Printable
 	private int indiceMemoryManager;
 	private boolean dead = false;
 	
-	public AStarCourbeNode(ChronoGameState state, int demieLargeurNonDeploye, int demieLongueurArriere, int demieLongueurAvant)
+	public AStarCourbeNode(ChronoGameState state, int demieLargeurNonDeploye, int demieLongueurArriere, int demieLongueurAvant, int marge)
 	{
-		cameFromArcStatique = new ArcCourbeStatique(demieLargeurNonDeploye, demieLongueurArriere, demieLongueurAvant);
+		cameFromArcStatique = new ArcCourbeStatique(demieLargeurNonDeploye, demieLongueurArriere, demieLongueurAvant, marge);
 		this.state = state;
 	}
 	

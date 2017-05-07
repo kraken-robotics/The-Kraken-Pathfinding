@@ -78,6 +78,7 @@ public class CheminPathfinding implements Service, Printable, HighPFClass, Chemi
 		int demieLargeurNonDeploye = config.getInt(ConfigInfo.LARGEUR_NON_DEPLOYE)/2;
 		int demieLongueurArriere = config.getInt(ConfigInfo.DEMI_LONGUEUR_NON_DEPLOYE_ARRIERE);
 		int demieLongueurAvant = config.getInt(ConfigInfo.DEMI_LONGUEUR_NON_DEPLOYE_AVANT);
+		int marge = config.getInt(ConfigInfo.DILATATION_OBSTACLE_ROBOT);
 		margeNecessaire = config.getInt(ConfigInfo.PF_MARGE_NECESSAIRE);
 		margeInitiale = config.getInt(ConfigInfo.PF_MARGE_INITIALE);
 		graphic = config.getBoolean(ConfigInfo.GRAPHIC_TRAJECTORY_FINAL);
@@ -86,7 +87,7 @@ public class CheminPathfinding implements Service, Printable, HighPFClass, Chemi
 			buffer.add(this);
 
 		for(int i = 0; i < chemin.length; i++)
-			chemin[i] = new CinematiqueObs(demieLargeurNonDeploye, demieLongueurArriere, demieLongueurAvant);
+			chemin[i] = new CinematiqueObs(demieLargeurNonDeploye, demieLongueurArriere, demieLongueurAvant, marge);
 	}
 	
 	/**
