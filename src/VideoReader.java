@@ -43,6 +43,23 @@ public class VideoReader {
 
 	public static void main(String[] args) throws ContainerException, InterruptedException
 	{
+		String filename = null;
+		double vitesse = 1;
+		
+		for(int i = 0; i < args.length; i++)
+		{
+			if(args[i].equals("-v"))
+				vitesse = Double.parseDouble(args[++i]);
+			else
+				filename = args[i];
+		}
+		
+		if(filename == null)
+		{
+			System.out.println("Utilisation : VideoReader fichierALire -v vitesse");
+			return;
+		}
+		
 		Container container = null;
 		try {
 			// on force l'affichage non externe
@@ -53,8 +70,12 @@ public class VideoReader {
 			RobotReal robot = container.getService(RobotReal.class);
 			Log log = container.getService(Log.class);
 			TimestampedList listes;
+			
+			log.debug("Fichier : "+filename);
+			log.debug("Vitesse : "+vitesse);			
+			
 	        try {
-	            FileInputStream fichier = new FileInputStream("test");
+	            FileInputStream fichier = new FileInputStream(filename);
 	            ObjectInputStream ois = new ObjectInputStream(fichier);
 	            listes = (TimestampedList) ois.readObject();
 	            ois.close();
@@ -73,7 +94,7 @@ public class VideoReader {
 	        for(int j = 0; j < listes.size(); j++)
 			{
 				List<Serializable> tab = listes.getListe(j);
-				long deltaT = listes.getTimestamp(j) - firstTimestamp;
+				long deltaT = (long)((listes.getTimestamp(j) - firstTimestamp) / vitesse);
 				long deltaP = System.currentTimeMillis() - initialDate;
 				long delta = deltaT - deltaP;
 	        	log.debug("Timestamp : "+deltaT);
@@ -105,7 +126,7 @@ public class VideoReader {
 			}
 		} finally {
 			if(container != null)
-			container.destructor();
+				container.destructor();
 		}
 	}
 }
