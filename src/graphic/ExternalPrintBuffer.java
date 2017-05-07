@@ -17,15 +17,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 package graphic;
 
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
-import config.Config;
-import config.ConfigInfo;
 import graphic.printable.Couleur;
 import graphic.printable.Layer;
 import graphic.printable.Printable;
@@ -49,10 +50,10 @@ public class ExternalPrintBuffer implements PrintBufferInterface {
 	private TimestampedList sauvegarde = new TimestampedList();
 	
 	protected Log log;
-	private boolean save;
 	private ObjectOutputStream file;
+	private String filename;
 	
-	public ExternalPrintBuffer(Log log, Config config)
+	public ExternalPrintBuffer(Log log)
 	{
 		this.log = log;
 		for(int i = 0 ; i < Layer.values().length; i++)
@@ -60,7 +61,7 @@ public class ExternalPrintBuffer implements PrintBufferInterface {
 			elementsAffichablesSupprimables.add(new ArrayList<Serializable>());
 			elementsAffichables.add(new ArrayList<Serializable>());
 		}
-		save = config.getBoolean(ConfigInfo.GRAPHIC_DIFFERENTIAL);
+		filename = "videos/"+new SimpleDateFormat("dd-MM.HH:mm").format(new Date())+".dat";
 	}
 
 	/**
@@ -179,12 +180,9 @@ public class ExternalPrintBuffer implements PrintBufferInterface {
 	 */
 	public synchronized void write() throws IOException
 	{
-		if(save)
-		{
-			List<Serializable> o = prepareList();
-			log.debug("Ajout de "+o.size()+" objets, date = "+System.currentTimeMillis());
-			sauvegarde.add(o);
-		}
+		List<Serializable> o = prepareList();
+//			log.debug("Ajout de "+o.size()+" objets, date = "+System.currentTimeMillis());
+		sauvegarde.add(o);
 	}
 	
 	/**
@@ -201,21 +199,36 @@ public class ExternalPrintBuffer implements PrintBufferInterface {
 	@Override
 	public synchronized void destructor()
 	{
-		if(save)
-		{
-	        try {
-	            FileOutputStream fichier = new FileOutputStream("test");
-	            file = new ObjectOutputStream(fichier);
-	            file.writeObject(sauvegarde);
-	            file.flush();
-	        	file.close();
-	        	log.debug("Sauvegarde terminée");
-	        }
-	        catch(IOException e)
-	        {
-	            log.critical("Erreur lors de la sauvegarde du buffer graphique ! "+e);
-	        }
-	    }
+        try {
+        	FileOutputStream fichier = null;
+            try {
+                fichier = new FileOutputStream(filename);
+            }
+			catch(FileNotFoundException e)
+			{
+				try {
+					Runtime.getRuntime().exec("mkdir videos");
+					try {
+						Thread.sleep(50);
+					} catch (InterruptedException e1) {
+						e1.printStackTrace();
+					}
+		            fichier = new FileOutputStream(filename);
+				} catch (FileNotFoundException e1) {
+					log.critical("Erreur (1) lors de la création du fichier : "+e1);
+					return;
+				}
+			}
+        	file = new ObjectOutputStream(fichier);
+            file.writeObject(sauvegarde);
+            file.flush();
+        	file.close();
+        	log.debug("Sauvegarde terminée");
+        }
+        catch(IOException e)
+        {
+            log.critical("Erreur lors de la sauvegarde du buffer graphique ! "+e);
+        }
 	}
 
 	
