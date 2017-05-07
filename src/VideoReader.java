@@ -124,6 +124,13 @@ public class VideoReader {
 						}
 				}
 			}
+	        while(true)
+	        	Thread.sleep(1000);
+		} catch(InterruptedException e) {
+			
+		} catch(Exception e) {
+			System.out.println(e);
+			e.printStackTrace();
 		} finally {
 			if(container != null)
 				container.destructor();
