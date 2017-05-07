@@ -73,7 +73,7 @@ public class VideoReader {
 				double posY = Double.parseDouble(args[++i]);
 				double angle = Double.parseDouble(args[++i]);
 				
-				robotBof = new ObstacleRectangular(new Vec2RO(posX, posY), 300, 240, angle, Couleur.JAUNE);
+				robotBof = new ObstacleRectangular(new Vec2RO(posX, posY), 300, 240, angle, Couleur.ROBOT_BOF);
 			}
 		}
 		

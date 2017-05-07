@@ -33,6 +33,7 @@ public enum Couleur {
 	JAUNE(new Color(200, 200, 0)),
 	ROUGE(new Color(200, 0, 0)),
 	VIOLET(new Color(200, 0, 200)),
+	ROBOT_BOF(new Color(200, 0, 200), Layer.BACKGROUND),
 	VERT(new Color(0, 200, 0)),
 	ToF_COURT(new Color(0x00, 0xB0, 0x50)),
 	ToF_LONG(new Color(0x92, 0xD0, 0x50)),

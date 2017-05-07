@@ -92,7 +92,7 @@ public class ObstaclesMemory implements Service, LowPFClass
 	{
 		if(nbTmp < indicePremierObstacle)
 		{
-			log.critical("Erreur : demande d'un vieil obstacle : "+nbTmp);
+//			log.critical("Erreur : demande d'un vieil obstacle : "+nbTmp);
 			return null;
 		}
 		return listObstaclesMobiles.get(nbTmp-indicePremierObstacle);

@@ -89,7 +89,8 @@ public class MemoryManager<T extends Memorizable> implements Service {
 					throw new InterruptedException();
 				}
 
-				log.warning("Mémoire trop petite pour les "+classe.getSimpleName()+", extension (nouvelle taille : "+((nodes.size() + 1) * initial_nb_instances)+")");
+				if(nodes.size()+1 >= 20)
+					log.warning("Mémoire trop petite pour les "+classe.getSimpleName()+", extension (nouvelle taille : "+((nodes.size() + 1) * initial_nb_instances)+")");
 				
 				T[] newNodes = (T[]) Array.newInstance(classe, initial_nb_instances);
 
