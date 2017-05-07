@@ -23,6 +23,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import capteurs.SensorsData;
+import capteurs.SensorsDataBuffer;
 import config.ConfigInfo;
 import exceptions.PathfindingException;
 import graphic.PrintBuffer;
@@ -66,6 +68,7 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 	private IteratorCheminPathfinding iterator;
 	private boolean graphicTrajectory;
 	private CheminPathfinding chemin;
+	private SensorsDataBuffer sensors;
 	private GridSpace gridspace;
 	private CercleArrivee cercle;
 	private RealGameState state;
@@ -90,6 +93,7 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 		cercle = container.getService(CercleArrivee.class);
 //		arcmanager = container.getService(ArcManager.class);
 		graphicTrajectory = config.getBoolean(ConfigInfo.GRAPHIC_TRAJECTORY_FINAL);
+        sensors = container.getService(SensorsDataBuffer.class);
 	}
 
 	@Test
@@ -292,6 +296,35 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 			a = iterator.next();
 			log.debug(a);
 			robot.setCinematique(a);
+			if(graphicTrajectory)
+				Thread.sleep(100);
+		}
+		log.debug("Nb points : "+i);
+    }
+		
+	@Test
+    public void test_recherche_shoot_avec_ennemi() throws Exception
+    {
+		Cinematique depart = new Cinematique(0, 1800, -Math.PI/3, true, 0);
+		robot.setCinematique(depart);
+		int[] data = {0,200,0,200,0,0,0,0,0,0,0,0};
+		sensors.add(new SensorsData(0,0,data,robot.getCinematique()));
+
+		Cinematique c = new Cinematique(1000, 1200, Math.PI, false, 0);
+		astar.initializeNewSearch(c, true, state);
+		astar.process(chemin);
+		iterator.reinit();
+		CinematiqueObs a = null, b = null;
+		int i = 0;
+		while(iterator.hasNext())
+		{
+			i++;
+			a = iterator.next();
+			log.debug(a);
+			robot.setCinematique(a);
+			if(b != null)
+				log.debug(a.getPosition().distance(b.getPosition()));
+			b = a;
 			if(graphicTrajectory)
 				Thread.sleep(100);
 		}
