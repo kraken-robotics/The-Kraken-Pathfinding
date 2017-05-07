@@ -125,6 +125,7 @@ public class AStarCourbe implements Service, HighPFClass
 		int demieLongueurArriere = config.getInt(ConfigInfo.DEMI_LONGUEUR_NON_DEPLOYE_ARRIERE);
 		int demieLongueurAvant = config.getInt(ConfigInfo.DEMI_LONGUEUR_NON_DEPLOYE_AVANT);
 		this.depart = new AStarCourbeNode(chrono, demieLargeurNonDeploye, demieLongueurArriere, demieLongueurAvant);
+		depart.setIndiceMemoryManager(-1);
 	}
 	
 	/**
@@ -177,7 +178,8 @@ public class AStarCourbe implements Service, HighPFClass
 			// ce calcul étant un peu lourd, on ne le fait que si le noeud a été choisi, et pas à la sélection des voisins (dans hasNext par exemple)
 			if(!arcmanager.isReachable(current, shoot))
 			{
-				destroy(current);
+				if(current != depart)
+					destroy(current);
 				continue; // collision mécanique attendue. On passe au suivant !
 			}
 			
