@@ -73,8 +73,6 @@ public enum ConfigInfo {
 	PF_MARGE_INITIALE((int)(100/ClothoidesComputer.PRECISION_TRACE_MM)), // combien de points garde-t-on au début de la replanification
 	DUREE_MAX_RECHERCHE_PF(3000), // durée maximale que peut prendre le pathfinding
 	TAILLE_FAISCEAU_PF(10), // combien de voisins sont ajoutés à l'openset à chaque itération // TODO
-	DEBUG_PF(false), // affichage de plein d'infos
-	DEBUG_CACHE(false), // debug du cache de chemins
 	NB_ESSAIS_PF(3), // nombre d'essais du pathfinding
 	
 	/**
@@ -111,13 +109,19 @@ public enum ConfigInfo {
 	NB_INSTANCES_OBSTACLES(5000), // nombre d'instances pour les obstacles rectangulaires
 	
 	/**
-	 * Debug
+	 * Verbose
 	 */
 	DEBUG_SERIE_TRAME(false), // debug verbeux sur le contenu des trames
 	DEBUG_SERIE(false), // debug sur la série
 	DEBUG_CAPTEURS(false), // debug verbeux sur les capteurs
 	DEBUG_REPLANIF(false), // debug verbeux sur la replanif
 	DEBUG_ACTIONNEURS(false), // debug verbeux sur les actionneurs
+	DEBUG_CACHE(false), // debug du cache de chemins
+	DEBUG_PF(false), // affichage de plein d'infos
+
+	/**
+	 * Graphe de dépendances
+	 */
 	GENERATE_DEPENDENCY_GRAPH(false), // génère le graphe des dépendances
 	
 	/**

@@ -36,6 +36,7 @@ import robot.RobotReal;
 import serie.BufferOutgoingOrder;
 import serie.Ticket;
 import utils.Log;
+import utils.Log.Verbose;
 import config.Config;
 import config.ConfigInfo;
 import container.Service;
@@ -64,7 +65,7 @@ public class CheminPathfinding implements Service, Printable, HighPFClass, Chemi
 	private int lastValidIndex = -1; // l'indice du dernier index (-1 si aucun ne l'est, Integer.MAX_VALUE si tous le sont)
 	private boolean uptodate = true; // le chemin est-il complet
 	private int margeNecessaire, margeInitiale;
-	private boolean graphic, debugCapteurs, debugReplanif;
+	private boolean graphic;
 	
 	public CheminPathfinding(Log log, BufferOutgoingOrder out, ObstaclesIteratorPresent iterator, PrintBufferInterface buffer, Config config)
 	{
@@ -80,8 +81,6 @@ public class CheminPathfinding implements Service, Printable, HighPFClass, Chemi
 		margeNecessaire = config.getInt(ConfigInfo.PF_MARGE_NECESSAIRE);
 		margeInitiale = config.getInt(ConfigInfo.PF_MARGE_INITIALE);
 		graphic = config.getBoolean(ConfigInfo.GRAPHIC_TRAJECTORY_FINAL);
-		debugCapteurs = config.getBoolean(ConfigInfo.DEBUG_CAPTEURS);
-		debugReplanif = config.getBoolean(ConfigInfo.DEBUG_REPLANIF);
 		
 		if(graphic)
 			buffer.add(this);
@@ -116,8 +115,8 @@ public class CheminPathfinding implements Service, Printable, HighPFClass, Chemi
 	public boolean needPartial()
 	{
 		boolean out = !uptodate && minus(indexLast, indexFirst) < margeNecessaire;
-		if(debugReplanif && out)
-			log.warning("Replanification partielle nécessaire : "+minus(indexLast, indexFirst)+" points d'avance seulement.");
+		if(out)
+			log.warning("Replanification partielle nécessaire : "+minus(indexLast, indexFirst)+" points d'avance seulement.", Verbose.REPLANIF.masque);
 		return out;
 	}
 	
@@ -128,8 +127,7 @@ public class CheminPathfinding implements Service, Printable, HighPFClass, Chemi
 	{
 		if(isColliding())
 		{
-			if(debugCapteurs)
-				log.warning("Un ennemi est sur le chemin : replanification nécessaire");
+			log.warning("Un ennemi est sur le chemin : replanification nécessaire", Verbose.CAPTEURS.masque);
 			boolean old = uptodate;
 			uptodate = false;
 			if(old) // on ne notifie que si avant le chemin était à jour
@@ -159,8 +157,7 @@ public class CheminPathfinding implements Service, Printable, HighPFClass, Chemi
 				ObstacleProximity o = iterObstacles.next();
 				if(o.isColliding(a))
 				{
-					if(debugCapteurs)
-						log.debug("Collision en "+current+". Actuel : "+indexFirst+" (soit environ "+ClothoidesComputer.PRECISION_TRACE_MM*(minus(current, indexFirst)-0.5)+" mm avant impact)");
+					log.debug("Collision en "+current+". Actuel : "+indexFirst+" (soit environ "+ClothoidesComputer.PRECISION_TRACE_MM*(minus(current, indexFirst)-0.5)+" mm avant impact)", Verbose.CAPTEURS.masque);
 //					log.debug(o+" collisionne le robot en "+a);
 					// au cas où, on envoie un signal de stop à cet endroit-là
 					out.makeNextObsolete(chemin[minus(current, 1)], minus(current, 1));

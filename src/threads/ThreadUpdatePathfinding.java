@@ -17,8 +17,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 package threads;
 
-import config.Config;
-import config.ConfigInfo;
 import container.dependances.HighPFClass;
 import exceptions.PathfindingException;
 import pathfinding.astar.AStarCourbe;
@@ -27,6 +25,7 @@ import robot.Cinematique;
 import robot.Speed;
 import serie.BufferOutgoingOrder;
 import utils.Log;
+import utils.Log.Verbose;
 
 /**
  * Thread qui recalcule l'itinéraire à emprunter. Surveille CheminPathfinding.
@@ -40,15 +39,13 @@ public class ThreadUpdatePathfinding extends ThreadService implements HighPFClas
 	private AStarCourbe pathfinding;
 	private CheminPathfinding chemin;
 	private BufferOutgoingOrder out;
-	private boolean debugCapteurs;
 
-	public ThreadUpdatePathfinding(Log log, AStarCourbe pathfinding, CheminPathfinding chemin, Config config, BufferOutgoingOrder out)
+	public ThreadUpdatePathfinding(Log log, AStarCourbe pathfinding, CheminPathfinding chemin, BufferOutgoingOrder out)
 	{
 		this.log = log;
 		this.pathfinding = pathfinding;
 		this.chemin = chemin;
 		this.out = out;
-		debugCapteurs = config.getBoolean(ConfigInfo.DEBUG_CAPTEURS);
 	}
 
 	@Override
@@ -68,8 +65,7 @@ public class ThreadUpdatePathfinding extends ThreadService implements HighPFClas
 				try {
 					Cinematique lastValid = chemin.getLastValidCinematique();
 					out.setMaxSpeed(Speed.REPLANIF.translationalSpeed);
-					if(debugCapteurs)
-						log.debug("Mise à jour du chemin");
+					log.debug("Mise à jour du chemin", Verbose.CAPTEURS.masque);
 					pathfinding.updatePath(true, lastValid);
 					out.setMaxSpeed(Speed.STANDARD.translationalSpeed); // TODO et si ce n'était pas cette vitesse là ?…
 				} catch (PathfindingException e) {

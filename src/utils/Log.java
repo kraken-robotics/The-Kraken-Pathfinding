@@ -39,6 +39,40 @@ import container.Service;
 
 public class Log implements Service, DynamicConfigurable
 {
+	public enum Verbose
+	{
+		SERIE(ConfigInfo.DEBUG_SERIE),
+		TRAME(ConfigInfo.DEBUG_SERIE_TRAME),
+		CAPTEURS(ConfigInfo.DEBUG_CAPTEURS),
+		REPLANIF(ConfigInfo.DEBUG_REPLANIF),
+		ACTIONNEURS(ConfigInfo.DEBUG_ACTIONNEURS),
+		CACHE(ConfigInfo.DEBUG_CACHE),
+		PF(ConfigInfo.DEBUG_PF);
+		
+		public final int masque;
+		public final ConfigInfo c;
+		protected boolean status;
+		
+		public static final int all = (1 << (Verbose.values().length+1)) - 1;
+		private static Verbose[] values = values();
+		
+		private Verbose(ConfigInfo c)
+		{
+			masque = 1 << ordinal();
+			this.c = c;
+		}
+		
+		public static boolean shouldPrint(int value)
+		{
+			if(value == all)
+				return true;
+			for(Verbose v : values)
+				if(v.status && (value & v.masque) != 0)
+					return true;
+			return false;
+		}
+	}
+	
 	private enum Niveau
 	{
 		DEBUG(true, " ", "\u001B[0m", System.out),
@@ -93,7 +127,27 @@ public class Log implements Service, DynamicConfigurable
 	 */
 	public void debug(Object message)
 	{
-		ecrire(message.toString(), Niveau.DEBUG);
+		ecrire(message.toString(), Niveau.DEBUG, Verbose.all);
+	}
+	
+	/**
+	 * Affichage de debug, en vert
+	 * @param message
+	 * @param objet
+	 */
+	public void debug(Object message, int masque)
+	{
+		ecrire(message.toString(), Niveau.DEBUG, masque);
+	}
+	
+	/**
+	 * Affichage de warnings, en orange
+	 * @param message
+	 * @param objet
+	 */
+	public void warning(Object message, int masque)
+	{
+		ecrire(message.toString(), Niveau.WARNING, masque);
 	}
 
 	/**
@@ -103,7 +157,7 @@ public class Log implements Service, DynamicConfigurable
 	 */
 	public void warning(Object message)
 	{
-		ecrire(message.toString(), Niveau.WARNING);
+		ecrire(message.toString(), Niveau.WARNING, Verbose.all);
 	}
 	
 	/**
@@ -113,7 +167,7 @@ public class Log implements Service, DynamicConfigurable
 	 */
 	public void critical(Object message)
 	{
-		ecrire(message.toString(), Niveau.CRITICAL);
+		ecrire(message.toString(), Niveau.CRITICAL, Verbose.all);
 	}
 
 	/**
@@ -123,7 +177,7 @@ public class Log implements Service, DynamicConfigurable
 	 * @param couleur
 	 * @param ou
 	 */
-	private synchronized void ecrire(String message, Niveau niveau)
+	private synchronized void ecrire(String message, Niveau niveau, int masque)
 	{
 		if(logClosed)
 			System.out.println("WARNING * Log fermé! Message: "+message);
@@ -156,7 +210,7 @@ public class Log implements Service, DynamicConfigurable
 					e.printStackTrace();
 				}					
 			}
-			if(!niveau.debug || affiche_debug)
+			if(Verbose.shouldPrint(masque) && (!niveau.debug || affiche_debug))
 				niveau.stream.println(affichage);
 		}
 	}	
@@ -189,6 +243,10 @@ public class Log implements Service, DynamicConfigurable
 		sauvegarde_fichier = config.getBoolean(ConfigInfo.SAUVEGARDE_LOG);
 		useColor = config.getBoolean(ConfigInfo.COLORED_LOG);
 		fastLog = config.getBoolean(ConfigInfo.FAST_LOG);
+		
+		for(Verbose v : Verbose.values())
+			v.status = config.getBoolean(v.c);
+		
 		if(sauvegarde_fichier)
 		{
 			String file = "logs/"+new SimpleDateFormat("dd-MM.HH:mm").format(new Date())+".txt";

@@ -43,6 +43,7 @@ import robot.CinematiqueObs;
 import robot.Speed;
 import scripts.ScriptNames;
 import utils.Log;
+import utils.Log.Verbose;
 
 /**
  * Service qui contient les chemins précalculés
@@ -60,7 +61,6 @@ public class PathCache implements Service, HighPFClass
 	private RealGameState state;	
 	private int nbEssais;
 	
-	private boolean debugCache;
 	private boolean simuleSerie;
 	
 	/**
@@ -71,7 +71,6 @@ public class PathCache implements Service, HighPFClass
 	public PathCache(Log log, Config config, RealGameState state, ChronoGameState chrono, AStarCourbe astar, CheminPathfinding realChemin, FakeCheminPathfinding fakeChemin) throws InterruptedException
 	{
 		this.state = state;
-		debugCache = config.getBoolean(ConfigInfo.DEBUG_CACHE);
 		nbEssais = config.getInt(ConfigInfo.NB_ESSAIS_PF);
 		simuleSerie = config.getBoolean(ConfigInfo.SIMULE_SERIE);
 		this.fakeChemin = fakeChemin;
@@ -129,8 +128,7 @@ public class PathCache implements Service, HighPFClass
 	 */
 	private void prepareNewPathToScript(KeyPathCache k, CheminPathfindingInterface chemin) throws PathfindingException, InterruptedException
 	{
-		if(debugCache)
-			log.debug("Recherche de chemin pour "+k+" ("+paths.size()+" chemins mémorisés)");
+		log.debug("Recherche de chemin pour "+k+" ("+paths.size()+" chemins mémorisés)", Verbose.CACHE.masque);
 		
 		LinkedList<CinematiqueObs> path = paths.get(k.toString());
 		if(path == null)
@@ -338,13 +336,11 @@ public class PathCache implements Service, HighPFClass
 					prepareNewPathToScript(c);
 				else
 				{
-					if(debugCache)
-						log.debug("Recherche de chemin pour "+arrivee);
+					log.debug("Recherche de chemin pour "+arrivee, Verbose.CACHE.masque);
 					astar.initializeNewSearch(arrivee, shoot, state);
 					astar.process(realChemin);
 				}
-				if(debugCache)
-					log.debug("On va parcourir le chemin");
+				log.debug("On va parcourir le chemin", Verbose.CACHE.masque);
 				if(!simuleSerie)
 					state.robot.followTrajectory(Speed.STANDARD);
 			}
@@ -361,7 +357,6 @@ public class PathCache implements Service, HighPFClass
 				restart = true;
 			}
 		} while(restart);
-		if(debugCache)
-			log.debug("Compute and follow a terminé normalement");
+		log.debug("Compute and follow a terminé normalement", Verbose.CACHE.masque);
 	}
 }
