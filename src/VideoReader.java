@@ -45,18 +45,21 @@ public class VideoReader {
 	{
 		String filename = null;
 		double vitesse = 1;
+		boolean debug = false;
 		
 		for(int i = 0; i < args.length; i++)
 		{
 			if(args[i].equals("-v"))
 				vitesse = Double.parseDouble(args[++i]);
+			else if(args[i].equals("-d"))
+				debug = true;
 			else
 				filename = args[i];
 		}
 		
 		if(filename == null)
 		{
-			System.out.println("Utilisation : VideoReader fichierALire -v vitesse");
+			System.out.println("Utilisation : VideoReader fichierALire -v vitesse -d");
 			return;
 		}
 		
@@ -72,7 +75,9 @@ public class VideoReader {
 			TimestampedList listes;
 			
 			log.debug("Fichier : "+filename);
-			log.debug("Vitesse : "+vitesse);			
+			log.debug("Vitesse : "+vitesse);		
+			if(debug)
+				log.warning("Debug activé");
 			
 	        try {
 	            FileInputStream fichier = new FileInputStream(filename);
@@ -97,11 +102,11 @@ public class VideoReader {
 				long deltaT = (long)((listes.getTimestamp(j) - firstTimestamp) / vitesse);
 				long deltaP = System.currentTimeMillis() - initialDate;
 				long delta = deltaT - deltaP;
-	        	log.debug("Timestamp : "+deltaT);
 	
 				if(delta > 0)
 					Thread.sleep(delta);
 				
+	        	log.debug("Timestamp : "+listes.getTimestamp(j));
 				synchronized(buffer)
 				{
 					buffer.clearSupprimables();

@@ -47,7 +47,7 @@ public class ExternalPrintBuffer implements PrintBufferInterface {
 	private List<ArrayList<Serializable>> elementsAffichables = new ArrayList<ArrayList<Serializable>>();
 	private RobotReal robot = null;
 	private IteratorCheminPathfinding iterChemin = null;
-	private TimestampedList sauvegarde = new TimestampedList();
+	private TimestampedList sauvegarde;
 	
 	protected Log log;
 	private ObjectOutputStream file;
@@ -56,6 +56,7 @@ public class ExternalPrintBuffer implements PrintBufferInterface {
 	public ExternalPrintBuffer(Log log)
 	{
 		this.log = log;
+		sauvegarde = new TimestampedList(log.getDateInitiale());
 		for(int i = 0 ; i < Layer.values().length; i++)
 		{
 			elementsAffichablesSupprimables.add(new ArrayList<Serializable>());

@@ -77,12 +77,12 @@ public class Log implements Service, DynamicConfigurable
 	/**
 	 * date du démarrage
 	 */
-	private long dateInitiale;
+	private long dateInitiale = System.currentTimeMillis();
 	private long dateDebutMatch = -1;
 	
-	public Log()
+	public long getDateInitiale()
 	{
-		dateInitiale = System.currentTimeMillis();
+		return dateInitiale;
 	}
 	
 	/**

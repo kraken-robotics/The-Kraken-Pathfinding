@@ -32,10 +32,16 @@ public class TimestampedList implements Serializable
 	private static final long serialVersionUID = -5167892162649965305L;
 	private List<Long> timestamps = new ArrayList<Long>();
 	private List<List<Serializable>> listes = new ArrayList<List<Serializable>>();
+	private long dateInitiale;
+	
+	public TimestampedList(long dateInitiale)
+	{
+		this.dateInitiale = dateInitiale;
+	}
 	
 	public void add(List<Serializable> o)
 	{
-		timestamps.add(System.currentTimeMillis());
+		timestamps.add(System.currentTimeMillis() - dateInitiale);
 		listes.add(o);
 	}
 	
