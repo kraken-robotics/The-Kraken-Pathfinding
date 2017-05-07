@@ -271,6 +271,7 @@ public class Container implements Service
 			fw.close();
 		} catch (IOException e) {
 			e.printStackTrace();
+			e.printStackTrace(log.getPrintWriter());
 		}
 	}
 	
@@ -371,6 +372,7 @@ public class Container implements Service
 			Runtime.getRuntime().addShutdownHook(getService(ThreadShutdown.class));
 		} catch (ContainerException e) {
 			e.printStackTrace();
+			e.printStackTrace(log.getPrintWriter());
 		}
 	}
 	
@@ -531,6 +533,7 @@ public class Container implements Service
 		} catch (IllegalAccessException | IllegalArgumentException
 				| InvocationTargetException | SecurityException | InstantiationException e) {
 			e.printStackTrace();
+			e.printStackTrace(log.getPrintWriter());
 			throw new ContainerException(e.toString()+"\nClasse demandée : "+classe.getSimpleName());
 		}
 	}
@@ -548,6 +551,7 @@ public class Container implements Service
 			getService(n.c).start(); // et on le redémarre
 		} catch (ContainerException e) {
 			e.printStackTrace();
+			e.printStackTrace(log.getPrintWriter());
 		}
 	}
 	
@@ -563,6 +567,7 @@ public class Container implements Service
 			} catch (ContainerException | IllegalThreadStateException e) {
 				log.critical("Erreur lors de la création de thread "+n+" : "+e);
 				e.printStackTrace();
+				e.printStackTrace(log.getPrintWriter());
 			}
 		}
 	}

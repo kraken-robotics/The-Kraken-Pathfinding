@@ -105,6 +105,7 @@ public class Fenetre extends JPanel implements Service, GUIClass {
 				sizeY = image.getHeight(this);
 				buffer.add(new BackgroundImage(image));
 			} catch (IOException e) {
+				e.printStackTrace(log.getPrintWriter());
 				e.printStackTrace();
 			}
 		}

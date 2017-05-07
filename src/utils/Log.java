@@ -22,6 +22,7 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -222,6 +223,14 @@ public class Log implements Service, DynamicConfigurable
 	public void updateConfig(Config config)
 	{
 		dateDebutMatch = config.getLong(ConfigInfo.DATE_DEBUT_MATCH);
+	}
+
+	public PrintWriter getPrintWriter()
+	{
+		if(sauvegarde_fichier)
+			return new PrintWriter(writer);
+		else
+			return new PrintWriter(System.err);
 	}
 
 }

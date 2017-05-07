@@ -61,6 +61,7 @@ public class ThreadConfig extends ThreadService
 		} catch (Exception e) {
 			log.debug("Arrêt inattendu de "+Thread.currentThread().getName()+" : "+e);
 			e.printStackTrace();
+			e.printStackTrace(log.getPrintWriter());
 		}
 	}
 

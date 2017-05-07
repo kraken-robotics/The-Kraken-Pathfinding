@@ -91,6 +91,7 @@ public class ThreadFenetre extends ThreadService implements GUIClass
 		} catch (Exception e) {
 			log.debug("Arrêt inattendu de "+Thread.currentThread().getName()+" : "+e);
 			e.printStackTrace();
+			e.printStackTrace(log.getPrintWriter());
 			
 		}		
 	}

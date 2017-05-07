@@ -213,6 +213,7 @@ public class ExternalPrintBuffer implements PrintBufferInterface {
 						Thread.sleep(50);
 					} catch (InterruptedException e1) {
 						e1.printStackTrace();
+						e1.printStackTrace(log.getPrintWriter());
 					}
 		            fichier = new FileOutputStream(filename);
 				} catch (FileNotFoundException e1) {

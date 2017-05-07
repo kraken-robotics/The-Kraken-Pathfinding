@@ -163,6 +163,7 @@ public class ThreadPrintServer extends ThreadService implements GUIClass
 					ssocket.close();
 				} catch (IOException e1) {
 					e1.printStackTrace();
+					e1.printStackTrace(log.getPrintWriter());
 				}
 			
 			/*
@@ -185,6 +186,7 @@ public class ThreadPrintServer extends ThreadService implements GUIClass
 			ssocket.close();
 		} catch (IOException e) {
 			e.printStackTrace();
+			e.printStackTrace(log.getPrintWriter());
 		}
 		super.interrupt();
 	}
