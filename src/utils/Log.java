@@ -201,9 +201,9 @@ public class Log implements Service, DynamicConfigurable
 				try{
 					// On met la couleur dans le fichier
 					if(useColor)
-						writer.write(niveau.couleur+affichage+couleurDefault+"\n");
+						writer.write(masque+" "+niveau.couleur+affichage+couleurDefault+"\n");
 					else
-						writer.write(affichage+"\n");
+						writer.write(masque+" "+affichage+"\n");
 				}
 				catch(IOException e)
 				{

@@ -34,6 +34,7 @@ import graphic.printable.Printable;
 import robot.Cinematique;
 import robot.RobotReal;
 import utils.Log;
+import utils.Log.Verbose;
 
 /**
  * Un lecteur de vidéo enregistrée sur le rover
@@ -171,7 +172,7 @@ public class VideoReader {
 					
 					System.out.println(nextLine);
 					
-				    nextLine = br.readLine();
+				    nextLine = getNextLine(br);
 				    if(nextLine == null)
 				    	nextLog = Long.MAX_VALUE;
 				    else
@@ -188,6 +189,29 @@ public class VideoReader {
 		} finally {
 			if(container != null)
 				container.destructor();
+		}
+	}
+	
+	private static String getNextLine(BufferedReader br) throws IOException
+	{
+		String line;
+		while((line = br.readLine()) != null)
+		{
+			if(Verbose.shouldPrint(extractMasque(line)))
+    			return line.substring(line.indexOf(" ")+1);
+		}
+		return line;
+	}
+	
+	private static int extractMasque(String line)
+	{
+		try
+		{
+			return Integer.parseInt(line.split(" ")[0]);
+		}
+		catch(NumberFormatException e)
+		{
+			return Verbose.all;
 		}
 	}
 	
