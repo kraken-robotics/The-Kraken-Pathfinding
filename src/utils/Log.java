@@ -41,25 +41,37 @@ public class Log implements Service, DynamicConfigurable
 {
 	public enum Verbose
 	{
-		SERIE(ConfigInfo.DEBUG_SERIE),
-		TRAME(ConfigInfo.DEBUG_SERIE_TRAME),
-		CAPTEURS(ConfigInfo.DEBUG_CAPTEURS),
-		REPLANIF(ConfigInfo.DEBUG_REPLANIF),
-		ACTIONNEURS(ConfigInfo.DEBUG_ACTIONNEURS),
-		CACHE(ConfigInfo.DEBUG_CACHE),
-		PF(ConfigInfo.DEBUG_PF);
+		SERIE(ConfigInfo.DEBUG_SERIE, true),
+		TRAME(ConfigInfo.DEBUG_SERIE_TRAME, false),
+		CAPTEURS(ConfigInfo.DEBUG_CAPTEURS, true),
+		REPLANIF(ConfigInfo.DEBUG_REPLANIF, true),
+		ACTIONNEURS(ConfigInfo.DEBUG_ACTIONNEURS, true),
+		CACHE(ConfigInfo.DEBUG_CACHE, true),
+		PF(ConfigInfo.DEBUG_PF, true);
 		
 		public final int masque;
 		public final ConfigInfo c;
 		protected boolean status;
+		public boolean printInFile;
 		
 		public static final int all = (1 << (Verbose.values().length+1)) - 1;
 		private static Verbose[] values = values();
 		
-		private Verbose(ConfigInfo c)
+		private Verbose(ConfigInfo c, boolean printInFile)
 		{
 			masque = 1 << ordinal();
 			this.c = c;
+			this.printInFile = printInFile;
+		}
+		
+		public static boolean shouldPrintInFile(int value)
+		{
+			if(value == all)
+				return true;
+			for(Verbose v : values)
+				if(v.printInFile && (value & v.masque) != 0)
+					return true;
+			return false;
 		}
 		
 		public static boolean shouldPrint(int value)
@@ -196,7 +208,8 @@ public class Log implements Service, DynamicConfigurable
 				StackTraceElement elem = Thread.currentThread().getStackTrace()[3];
 				affichage = date+tempsMatch+niveau.entete+elem.getClassName().substring(elem.getClassName().lastIndexOf(".")+1)+":"+elem.getLineNumber()+" ("+Thread.currentThread().getName()+") > "+message;
 			}
-			if(sauvegarde_fichier && writer != null)
+			
+			if(sauvegarde_fichier && writer != null && Verbose.shouldPrintInFile(masque))
 			{
 				try{
 					// On met la couleur dans le fichier
@@ -245,7 +258,10 @@ public class Log implements Service, DynamicConfigurable
 		fastLog = config.getBoolean(ConfigInfo.FAST_LOG);
 		
 		for(Verbose v : Verbose.values())
+		{
 			v.status = config.getBoolean(v.c);
+			v.printInFile |= v.status;
+		}
 		
 		if(sauvegarde_fichier)
 		{
