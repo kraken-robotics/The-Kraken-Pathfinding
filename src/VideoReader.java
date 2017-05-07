@@ -70,6 +70,7 @@ public class VideoReader {
 		}
 		
 		Container container = null;
+		
 		try {
 			// on force l'affichage non externe
 			ConfigInfo.GRAPHIC_EXTERNAL.setDefaultValue(false);
@@ -120,6 +121,24 @@ public class VideoReader {
 	        
 		    while(nextVid != Long.MAX_VALUE || nextLog != Long.MAX_VALUE)
 			{
+		    	if(System.in.available() > 0)
+		    	{
+		    		while(System.in.available() > 0)
+		    			System.in.read();
+
+	    			log.debug("Pause !");
+	    			long avant = System.currentTimeMillis();
+
+	    			while(System.in.available() == 0)
+	    				Thread.sleep(10);
+	    			
+		    		while(System.in.available() > 0)
+		    			System.in.read(); 
+	    			
+	    			initialDate += (System.currentTimeMillis() - avant);
+	    			log.debug("Unpause");
+		    	}
+		    	
 		    	if(nextVid < nextLog)
 		    	{
 					List<Serializable> tab = listes.getListe(indexListe);
