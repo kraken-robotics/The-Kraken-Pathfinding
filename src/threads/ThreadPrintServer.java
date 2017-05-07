@@ -78,8 +78,37 @@ public class ThreadPrintServer extends ThreadService implements GUIClass
 		}
 	
 	}
+	
+	private class ThreadDifferential implements GUIClass, Runnable
+	{
+		protected Log log;
+		private ExternalPrintBuffer buffer;
+		
+		public ThreadDifferential(Log log, ExternalPrintBuffer buffer)
+		{
+			this.log = log;
+			this.buffer = buffer;
+		}
+	
+		@Override
+		public void run()
+		{
+			Thread.currentThread().setName(getClass().getSimpleName());
+			log.debug("Démarrage de "+Thread.currentThread().getName());
+			try {
+				while(true)
+				{					
+					buffer.write();
+					Thread.sleep(200); // on met à jour toutes les 200ms
+				}
+			} catch (InterruptedException | IOException e) {
+				log.debug("Arrêt de "+Thread.currentThread().getName());
+			}
+		}
+	
+	}
 
-	private boolean print, deporte;
+	private boolean print, deporte, file;
 	protected Log log;
 	private ExternalPrintBuffer buffer;
 	private int nbConnexions = 0;
@@ -92,6 +121,13 @@ public class ThreadPrintServer extends ThreadService implements GUIClass
 		this.buffer = buffer;
 		print = config.getBoolean(ConfigInfo.GRAPHIC_ENABLE);
 		deporte = config.getBoolean(ConfigInfo.GRAPHIC_EXTERNAL);
+		file = config.getBoolean(ConfigInfo.GRAPHIC_DIFFERENTIAL);
+		if(file && print)
+		{
+			Thread t = new Thread(new ThreadDifferential(log, buffer));
+			t.start();
+			threads.add(t);
+		}
 	}
 
 	@Override

@@ -20,7 +20,6 @@ package obstacles.types;
 import java.awt.Graphics;
 
 import graphic.Fenetre;
-import graphic.printable.Couleur;
 import graphic.printable.Layer;
 import pathfinding.dstarlite.gridspace.Masque;
 import robot.RobotReal;

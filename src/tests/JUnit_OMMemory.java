@@ -19,7 +19,6 @@ package tests;
 
 import obstacles.memory.ObstaclesIteratorPresent;
 import obstacles.memory.ObstaclesMemory;
-import obstacles.types.Obstacle;
 import obstacles.types.ObstacleProximity;
 import pathfinding.ChronoGameState;
 import pathfinding.RealGameState;
@@ -27,7 +26,6 @@ import pathfinding.dstarlite.gridspace.GridSpace;
 import pathfinding.dstarlite.gridspace.Masque;
 import pathfinding.dstarlite.gridspace.MasqueManager;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 import org.junit.Assert;
@@ -36,7 +34,6 @@ import org.junit.Test;
 
 import config.ConfigInfo;
 import utils.Vec2RO;
-import utils.Vec2RW;
 
 /**
  * Tests unitaires de l'obstacle memory manager

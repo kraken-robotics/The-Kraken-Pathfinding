@@ -17,19 +17,21 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 package graphic;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import config.Config;
+import config.ConfigInfo;
 import graphic.printable.Couleur;
 import graphic.printable.Layer;
 import graphic.printable.Printable;
 import obstacles.types.ObstacleCircular;
 import pathfinding.chemin.CheminPathfinding;
 import pathfinding.chemin.IteratorCheminPathfinding;
-import robot.Cinematique;
 import robot.RobotReal;
 import utils.Log;
 
@@ -44,10 +46,13 @@ public class ExternalPrintBuffer implements PrintBufferInterface {
 	private List<ArrayList<Serializable>> elementsAffichables = new ArrayList<ArrayList<Serializable>>();
 	private RobotReal robot = null;
 	private IteratorCheminPathfinding iterChemin = null;
+	private TimestampedList sauvegarde = new TimestampedList();
 	
 	protected Log log;
+	private boolean save;
+	private ObjectOutputStream file;
 	
-	public ExternalPrintBuffer(Log log)
+	public ExternalPrintBuffer(Log log, Config config)
 	{
 		this.log = log;
 		for(int i = 0 ; i < Layer.values().length; i++)
@@ -55,6 +60,7 @@ public class ExternalPrintBuffer implements PrintBufferInterface {
 			elementsAffichablesSupprimables.add(new ArrayList<Serializable>());
 			elementsAffichables.add(new ArrayList<Serializable>());
 		}
+		save = config.getBoolean(ConfigInfo.GRAPHIC_DIFFERENTIAL);
 	}
 
 	/**
@@ -129,18 +135,13 @@ public class ExternalPrintBuffer implements PrintBufferInterface {
 			notify();
 	}
 
-	/**
-	 * Envoie en sérialisant les objets à afficher
-	 * @param out
-	 * @throws IOException 
-	 */
-	public synchronized void send(ObjectOutputStream out) throws IOException
+	private synchronized List<Serializable> prepareList()
 	{
-		ArrayList<Serializable> o = new ArrayList<Serializable>();
+		List<Serializable> o = new ArrayList<Serializable>();
 		
 		if(robot != null)
 		{
-			o.add(robot.getCinematique());
+			o.add(robot.getCinematique().clone());
 //			log.debug(o.get(0));
 		}
 		
@@ -164,16 +165,59 @@ public class ExternalPrintBuffer implements PrintBufferInterface {
 			iterChemin.reinit();
 			while(iterChemin.hasNext())
 			{
-				Cinematique a = iterChemin.next();
-				o.add(new ObstacleCircular(a.getPosition(), 8, Couleur.TRAJECTOIRE));
+				o.add(new ObstacleCircular(iterChemin.next().getPosition(), 8, Couleur.TRAJECTOIRE));
 				o.add(Layer.MIDDLE);
 			}
 		}
-		
-		out.writeObject(o);
+		return o;
+	}
+	
+	/**
+	 * Envoie en sérialisant les objets à afficher
+	 * @param out
+	 * @throws IOException 
+	 */
+	public synchronized void write() throws IOException
+	{
+		if(save)
+		{
+			List<Serializable> o = prepareList();
+			log.debug("Ajout de "+o.size()+" objets, date = "+System.currentTimeMillis());
+			sauvegarde.add(o);
+		}
+	}
+	
+	/**
+	 * Envoie en sérialisant les objets à afficher
+	 * @param out
+	 * @throws IOException 
+	 */
+	public synchronized void send(ObjectOutputStream out) throws IOException
+	{
+		out.writeObject(prepareList());
 		out.flush(); // on force l'envoi !
 	}
 
+	@Override
+	public synchronized void destructor()
+	{
+		if(save)
+		{
+	        try {
+	            FileOutputStream fichier = new FileOutputStream("test");
+	            file = new ObjectOutputStream(fichier);
+	            file.writeObject(sauvegarde);
+	            file.flush();
+	        	file.close();
+	        	log.debug("Sauvegarde terminée");
+	        }
+	        catch(IOException e)
+	        {
+	            log.critical("Erreur lors de la sauvegarde du buffer graphique ! "+e);
+	        }
+	    }
+	}
 
+	
 	
 }

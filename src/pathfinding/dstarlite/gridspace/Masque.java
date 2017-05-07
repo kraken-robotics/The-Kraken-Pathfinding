@@ -38,7 +38,7 @@ public class Masque implements Printable, Serializable
 {
 	private static final long serialVersionUID = 3358374399044123020L;
 	public List<PointDirige> masque = new ArrayList<PointDirige>();
-	private PointGridSpaceManager pm;
+	private transient PointGridSpaceManager pm;
 	
 	public Masque(PointGridSpaceManager pm, List<PointDirige> masque)
 	{
@@ -57,8 +57,6 @@ public class Masque implements Printable, Serializable
 	{
 		for(PointDirige p : masque)
 		{
-//			g.setColor(Couleur.GRIS.couleur);
-//			p.point.print(g, f, robot);
 			g.setColor(Couleur.NOIR.couleur);
 			pm.getGridPointVoisin(p).print(g, f, robot);
 		}

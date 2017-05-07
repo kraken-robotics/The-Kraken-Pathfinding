@@ -17,7 +17,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 package obstacles.types;
 
-import graphic.printable.Couleur;
 import pathfinding.dstarlite.gridspace.Masque;
 import utils.Vec2RO;
 

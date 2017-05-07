@@ -20,6 +20,7 @@ package pathfinding.dstarlite.gridspace;
 import utils.Vec2RO;
 
 import java.awt.Graphics;
+import java.io.Serializable;
 
 import container.Service;
 import graphic.Fenetre;
@@ -33,8 +34,10 @@ import robot.RobotReal;
  *
  */
 
-public class PointGridSpace implements Service, Printable
+public class PointGridSpace implements Service, Printable, Serializable
 {
+	private static final long serialVersionUID = -6588410126587155794L;
+	
 	public static final int PRECISION = 7;
 	public static final int NB_POINTS_POUR_TROIS_METRES = (1 << PRECISION);
 	public static final int NB_POINTS_POUR_DEUX_METRES = (int) ((1 << PRECISION)*2./3.)+1;

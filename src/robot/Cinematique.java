@@ -193,6 +193,16 @@ public class Cinematique implements Printable, Serializable
 		g.drawPolygon(X, Y, 3);
 	}
 	
+	/**
+	 * Doit être évité à tout prix
+	 */
+	public Cinematique clone()
+	{
+		Cinematique out = new Cinematique();
+		copy(out);
+		return out;
+	}
+	
 	@Override
 	public Layer getLayer()
 	{

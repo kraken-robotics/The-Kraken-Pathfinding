@@ -34,5 +34,6 @@ public interface PrintBufferInterface extends Service {
 	public void addSupprimable(Printable o, Layer l);
 	public void add(Printable o);
 	public void removeSupprimable(Printable o);
+	public void destructor();
 
 }

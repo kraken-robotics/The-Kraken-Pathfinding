@@ -17,23 +17,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 package obstacles.types;
 
-import java.awt.Color;
-import java.awt.Image;
-import java.io.File;
-import java.io.IOException;
 import java.io.Serializable;
-
-import javax.imageio.ImageIO;
-
-import config.Config;
-import config.ConfigInfo;
-import graphic.PrintBufferInterface;
-import graphic.printable.Couleur;
-import graphic.printable.Layer;
 import graphic.printable.Printable;
-import utils.Log;
 import utils.Vec2RO;
-import utils.Vec2RW;
 
 /**
  * Superclasse abstraite des obstacles.

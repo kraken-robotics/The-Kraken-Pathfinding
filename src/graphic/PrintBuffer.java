@@ -162,5 +162,9 @@ public class PrintBuffer implements PrintBufferInterface
 	{
 		return needRefresh;
 	}
+
+	@Override
+	public void destructor()
+	{}
 	
 }

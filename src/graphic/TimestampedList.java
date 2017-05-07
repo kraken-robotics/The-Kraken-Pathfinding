@@ -15,44 +15,43 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>
 */
 
-package pathfinding.dstarlite.gridspace;
+package graphic;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Une structure utilisée par le GridSpace
+ * Une liste de listes d'objets timestampées
  * @author pf
  *
  */
 
-public class PointDirige implements Serializable
+public class TimestampedList implements Serializable
 {
-	private static final long serialVersionUID = 7904466980326128967L;
-	public final PointGridSpace point;
-	public final Direction dir;
+	private static final long serialVersionUID = -5167892162649965305L;
+	private List<Long> timestamps = new ArrayList<Long>();
+	private List<List<Serializable>> listes = new ArrayList<List<Serializable>>();
 	
-	PointDirige(PointGridSpace point, Direction dir)
+	public void add(List<Serializable> o)
 	{
-		this.point = point;
-		this.dir = dir;
+		timestamps.add(System.currentTimeMillis());
+		listes.add(o);
 	}
 	
-	@Override
-	public int hashCode()
+	public long getTimestamp(int index)
 	{
-		return (point.hashcode << 3) + dir.ordinal();
+		return timestamps.get(index);
 	}
 	
-	@Override
-	public boolean equals(Object d)
+	public List<Serializable> getListe(int index)
 	{
-		return d instanceof PointDirige && hashCode() == ((PointDirige)d).hashCode();
+		return listes.get(index);
 	}
 	
-	@Override
-	public String toString()
+	public int size()
 	{
-		return point+" "+dir;
+		return timestamps.size();
 	}
-
+	
 }

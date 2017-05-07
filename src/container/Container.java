@@ -109,6 +109,10 @@ public class Container implements Service
 		if(instanciedServices.containsKey(SerieCoucheTrame.class.getSimpleName()))
 			((SerieCoucheTrame)instanciedServices.get(SerieCoucheTrame.class.getSimpleName())).close();
 
+		// On appelle le destructeur du PrintBuffer
+		if(instanciedServices.containsKey(PrintBufferInterface.class.getSimpleName()))
+			((PrintBufferInterface)instanciedServices.get(PrintBufferInterface.class.getSimpleName())).destructor();
+		
 		String threadError = "";
 		// arrêt des threads
 		for(ThreadName n : ThreadName.values())
