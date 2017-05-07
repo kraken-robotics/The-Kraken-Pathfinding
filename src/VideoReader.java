@@ -15,7 +15,9 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>
 */
 
+import java.io.BufferedReader;
 import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
@@ -44,23 +46,25 @@ public class VideoReader {
 
 	public static void main(String[] args) throws ContainerException, InterruptedException
 	{
-		String filename = null;
+		String filename = null, logfile = null;
 		double vitesse = 1;
 		boolean debug = false;
 		
 		for(int i = 0; i < args.length; i++)
 		{
-			if(args[i].equals("-v"))
+			if(args[i].equals("-s"))
 				vitesse = Double.parseDouble(args[++i]);
 			else if(args[i].equals("-d"))
 				debug = true;
-			else
-				filename = args[i];
+			else if(args[i].equals("-v"))
+				filename = args[++i];
+			else if(args[i].equals("-l"))
+				logfile = args[++i];
 		}
 		
 		if(filename == null)
 		{
-			System.out.println("Utilisation : VideoReader fichierALire -v vitesse -d");
+			System.out.println("Utilisation : VideoReader -v fichierVideoALire -l fichierLogALire -v speed -d");
 			return;
 		}
 		
@@ -92,47 +96,87 @@ public class VideoReader {
 	        	return;
 	        }
 	        
-	        long firstTimestamp = listes.getTimestamp(0);
 	        long initialDate = System.currentTimeMillis();
 	        
 	        Thread.sleep(1000); // le temps que la fenêtre apparaisse
 	        log.debug("Taille : "+listes.size());
 	        
-	        for(int j = 0; j < listes.size(); j++)
+	        BufferedReader br = null;
+	        long nextLog = Long.MAX_VALUE;
+	        String nextLine = null;
+	        
+	        if(logfile != null)
+	        {
+	        	br = new BufferedReader(new FileReader(logfile));	        
+			    nextLine = br.readLine();
+			    nextLog = getTimestampLog(nextLine);
+	        }
+	        
+		    long nextVid = listes.getTimestamp(0);
+	        long firstTimestamp = Math.min(nextLog, nextVid);
+
+		    int indexListe = 0;
+	        
+		    while(nextVid != Long.MAX_VALUE || nextLog != Long.MAX_VALUE)
 			{
-				List<Serializable> tab = listes.getListe(j);
-				long deltaT = (long)((listes.getTimestamp(j) - firstTimestamp) / vitesse);
-				long deltaP = System.currentTimeMillis() - initialDate;
-				long delta = deltaT - deltaP;
-	
-				if(delta > 0)
-					Thread.sleep(delta);
-				
-	        	System.out.println("Timestamp : "+listes.getTimestamp(j));
-				synchronized(buffer)
-				{
-					buffer.clearSupprimables();
-					int i = 0;
-					while(i < tab.size())
+		    	if(nextVid < nextLog)
+		    	{
+					List<Serializable> tab = listes.getListe(indexListe);
+					long deltaT = (long)((nextVid - firstTimestamp) / vitesse);
+					long deltaP = System.currentTimeMillis() - initialDate;
+					long delta = deltaT - deltaP;
+		
+					if(delta > 0)
+						Thread.sleep(delta);
+					
+					synchronized(buffer)
 					{
-						Serializable o = tab.get(i++);
-							if(o instanceof Cinematique)
-							{
-								if(debug)
-									System.out.println("Cinématique robot : "+((Cinematique)o).getPosition());
-								robot.setCinematique((Cinematique)o);
+						buffer.clearSupprimables();
+						int i = 0;
+						while(i < tab.size())
+						{
+							Serializable o = tab.get(i++);
+								if(o instanceof Cinematique)
+								{
+									if(debug)
+										System.out.println("Cinématique robot : "+((Cinematique)o).getPosition());
+									robot.setCinematique((Cinematique)o);
+								}
+								else if(o instanceof Printable)
+								{
+									if(debug)
+										System.out.println("Ajout : "+o);
+									Layer l = (Layer) tab.get(i++);
+									buffer.addSupprimable((Printable)o, l);
+								}
+								else
+									System.err.println("Erreur ! Objet non affichable : "+o.getClass());
 							}
-							else if(o instanceof Printable)
-							{
-								if(debug)
-									System.out.println("Ajout : "+o);
-								Layer l = (Layer) tab.get(i++);
-								buffer.addSupprimable((Printable)o, l);
-							}
-							else
-								System.err.println("Erreur ! Objet non affichable : "+o.getClass());
-						}
-				}
+					}
+					
+					indexListe++;
+					if(indexListe < listes.size())
+						nextVid = listes.getTimestamp(indexListe);
+					else
+						nextVid = Long.MAX_VALUE;
+		    	}
+		    	else
+		    	{
+					long deltaT = (long)((nextLog - firstTimestamp) / vitesse);
+					long deltaP = System.currentTimeMillis() - initialDate;
+					long delta = deltaT - deltaP;
+					
+					if(delta > 0)
+						Thread.sleep(delta);
+					
+					System.out.println(nextLine);
+					
+				    nextLine = br.readLine();
+				    if(nextLine == null)
+				    	nextLog = Long.MAX_VALUE;
+				    else
+				    	nextLog = getTimestampLog(nextLine);
+		    	}
 			}
 	        System.out.println("Fin de l'enregistrement");
 			container.getExistingService(Fenetre.class).waitUntilExit();
@@ -146,4 +190,23 @@ public class VideoReader {
 				container.destructor();
 		}
 	}
+	
+	private static long getTimestampLog(String line)
+	{
+    	String time = line.split(" ")[0];
+    	try {
+    		int first = -1;
+    		if(time.startsWith("\u001B["))
+    		{
+    			first = time.indexOf("m");
+    			time = time.substring(first+1);
+    		}
+    		return Long.parseLong(time);
+    	}
+    	catch(NumberFormatException e)
+    	{
+    		return -1;
+    	}
+	}
+	
 }
