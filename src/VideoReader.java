@@ -29,12 +29,15 @@ import exceptions.ContainerException;
 import graphic.Fenetre;
 import graphic.PrintBuffer;
 import graphic.TimestampedList;
+import graphic.printable.Couleur;
 import graphic.printable.Layer;
 import graphic.printable.Printable;
+import obstacles.types.ObstacleRectangular;
 import robot.Cinematique;
 import robot.RobotReal;
 import utils.Log;
 import utils.Log.Verbose;
+import utils.Vec2RO;
 
 /**
  * Un lecteur de vidéo enregistrée sur le rover
@@ -50,6 +53,7 @@ public class VideoReader {
 		String filename = null, logfile = null;
 		double vitesse = 1;
 		boolean debug = false;
+		ObstacleRectangular robotBof = null;
 		
 		for(int i = 0; i < args.length; i++)
 		{
@@ -61,11 +65,21 @@ public class VideoReader {
 				filename = args[++i];
 			else if(args[i].equals("-l"))
 				logfile = args[++i];
+			else if(args[i].equals("-b"))
+			{
+				// Robot bof : (630, 1320), angle = 0
+				
+				double posX = Double.parseDouble(args[++i]);
+				double posY = Double.parseDouble(args[++i]);
+				double angle = Double.parseDouble(args[++i]);
+				
+				robotBof = new ObstacleRectangular(new Vec2RO(posX, posY), 300, 240, angle, Couleur.JAUNE);
+			}
 		}
 		
 		if(filename == null)
 		{
-			System.out.println("Utilisation : VideoReader -v fichierVideoALire -l fichierLogALire -v speed -d");
+			System.out.println("Utilisation : VideoReader -v fichierVideoALire -l fichierLogALire -v speed -d -b posX posY angle");
 			return;
 		}
 		
@@ -80,6 +94,9 @@ public class VideoReader {
 			RobotReal robot = container.getService(RobotReal.class);
 			Log log = container.getService(Log.class);
 			TimestampedList listes;
+			
+			if(robotBof != null)
+				buffer.add(robotBof);
 			
 			System.out.println("Fichier : "+filename);
 			System.out.println("Vitesse : "+vitesse);		
