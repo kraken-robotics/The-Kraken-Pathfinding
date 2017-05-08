@@ -30,6 +30,7 @@ import graphic.PrintBufferInterface;
 import graphic.printable.Couleur;
 import graphic.printable.Layer;
 import graphic.printable.Printable;
+import graphic.printable.Segment;
 import robot.Cinematique;
 import robot.CinematiqueObs;
 import robot.RobotReal;
@@ -37,6 +38,7 @@ import serie.BufferOutgoingOrder;
 import serie.Ticket;
 import utils.Log;
 import utils.Log.Verbose;
+import utils.Vec2RO;
 import config.Config;
 import config.ConfigInfo;
 import container.Service;
@@ -60,6 +62,7 @@ public class CheminPathfinding implements Service, Printable, HighPFClass, Chemi
 	
 	private volatile CinematiqueObs[] chemin = new CinematiqueObs[256];
 	private volatile ObstacleCircular[] aff = new ObstacleCircular[256];
+	private volatile Segment[] affSeg = new Segment[256];
 	protected int indexFirst = 0; // indice du point en cours
 	protected int indexLast = 0; // indice du prochain point de la trajectoire (donc indexLast - 1 est l'index du dernier point accessible)
 	private int lastValidIndex = -1; // l'indice du dernier index (-1 si aucun ne l'est, Integer.MAX_VALUE si tous le sont)
@@ -142,7 +145,7 @@ public class CheminPathfinding implements Service, Printable, HighPFClass, Chemi
 	 * On suppose qu'il n'y a pas de collision avec les autres éléments
 	 * @return
 	 */
-	private boolean isColliding()
+	private synchronized boolean isColliding()
 	{
 		iterChemin.reinit();
 		lastValidIndex = -1; // reste à -1 à moins d'avoir assez de points pour le bas niveau
@@ -230,6 +233,12 @@ public class CheminPathfinding implements Service, Printable, HighPFClass, Chemi
 					buffer.notify();
 				}
 		}
+		
+		iterChemin.reinit();
+		log.debug("Affichage du chemin actuel : ", Verbose.REPLANIF.masque);
+		while(iterChemin.hasNext())
+			log.debug(iterChemin.getIndex()+" : "+iterChemin.next(), Verbose.REPLANIF.masque);
+		
 		return t;
 	}
 	
@@ -326,10 +335,18 @@ public class CheminPathfinding implements Service, Printable, HighPFClass, Chemi
 //			if(aff[i] != null)
 //				buffer.removeSupprimable(aff[i]);
 		iterChemin.reinit();
+		Vec2RO last = null;
 		while(iterChemin.hasNext())
 		{
 			Cinematique a = iterChemin.next();
+			if(last != null)
+			{
+				affSeg[iterChemin.getIndex()] = new Segment(last, a.getPosition(), Couleur.TRAJECTOIRE.l, Couleur.TRAJECTOIRE.couleur);
+				buffer.addSupprimable(affSeg[iterChemin.getIndex()]);
+			}
+			
 			aff[iterChemin.getIndex()] = new ObstacleCircular(a.getPosition(), 8, Couleur.TRAJECTOIRE);
+			last = a.getPosition();
 			buffer.addSupprimable(aff[iterChemin.getIndex()]);
 		}
 	}
