@@ -19,6 +19,8 @@ package tests;
 
 import obstacles.types.ObstacleCircular;
 
+import java.util.Random;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -326,6 +328,36 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 			if(b != null)
 				log.debug(a.getPosition().distance(b.getPosition()));
 			b = a;
+			if(graphicTrajectory)
+				Thread.sleep(100);
+		}
+		log.debug("Nb points : "+i);
+    }
+	
+	@Test
+    public void test_recherche_shoot_avec_ennemi_difficile() throws Exception
+    {
+		Cinematique depart = new Cinematique(0, 1800, -Math.PI/3+0.1, true, 0);
+		robot.setCinematique(depart);
+		int[] data = {0,400,0,500,0,0,0,0,0,0,0,0};
+
+		Cinematique c = new Cinematique(1000, 1200, Math.PI, false, 0);
+		astar.initializeNewSearch(c, true, state);
+		astar.process(chemin);
+		iterator.reinit();
+		CinematiqueObs a = null;
+		int i = 0;
+		Random r = new Random();
+		while(iterator.hasNext())
+		{
+			if(r.nextInt(10) == 0)
+				sensors.add(new SensorsData(0,0,data,robot.getCinematique()));
+
+			i++;
+			a = iterator.next();
+			log.debug("Robot en "+iterator.getIndex()+" : "+a);
+			robot.setCinematique(a);
+			chemin.setCurrentIndex(iterator.getIndex());
 			if(graphicTrajectory)
 				Thread.sleep(100);
 		}

@@ -118,13 +118,11 @@ public class CheminPathfinding implements Service, HighPFClass, CheminPathfindin
 	 */
 	public synchronized void checkColliding()
 	{
-		if(isColliding())
+		if(!empty && isColliding())
 		{
-			log.warning("Un ennemi est sur le chemin : replanification nécessaire", Verbose.CAPTEURS.masque);
-			boolean old = uptodate;
+			log.warning("Un ennemi est sur le chemin : replanification nécessaire", Verbose.REPLANIF.masque);
 			uptodate = false;
-			if(old) // on ne notifie que si avant le chemin était à jour
-				notify();
+			notify();
 		}
 	}
 	
@@ -165,6 +163,7 @@ public class CheminPathfinding implements Service, HighPFClass, CheminPathfindin
 						// on a assez de marge, on va faire de la replanification à la volée
 						indexLast = minus(current, margeAvantCollision);
 						out.makeNextObsolete(chemin[minus(indexLast,1)], minus(indexLast,1));
+						log.debug("On raccourcit la trajectoire. IndexLast = "+indexLast, Verbose.REPLANIF.masque);
 						needRestart = true;
 					}
 					return true;

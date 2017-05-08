@@ -240,15 +240,15 @@ public class AStarCourbe implements Service, HighPFClass
 					if(cinemRestart != null) // il faut partir d'un autre point
 					{
 						depart.init();
-						depart.state.robot.setCinematique(cinemRestart);						
+						depart.state.robot.setCinematique(cinemRestart);
 					}
 					else
 					{
 						log.debug("Reconstruction partielle demandée !");
-						partialReconstruct(current, chemin);
+						depart.state.robot.setCinematique(partialReconstruct(current, chemin, 2));
+
 						// Il est nécessaire de copier current dans depart car current
 						// est effacé quand le memorymanager est vidé. Cette copie n'est effectuée qu'ici
-						current.copyReconstruct(depart);
 					}
 					
 					memorymanager.empty();
@@ -339,13 +339,18 @@ public class AStarCourbe implements Service, HighPFClass
 		memorymanager.destroyNode(n);
 	}
 	
+	private final Cinematique partialReconstruct(AStarCourbeNode best, CheminPathfindingInterface chemin) throws PathfindingException
+	{
+		return partialReconstruct(best, chemin, 500);
+	}
+	
 	/**
 	 * Reconstruit le chemin. Il peut reconstruire le chemin même si celui-ci n'est pas fini.
 	 * @param best
 	 * @param last
 	 * @throws PathfindingException 
 	 */
-	private final void partialReconstruct(AStarCourbeNode best, CheminPathfindingInterface chemin) throws PathfindingException
+	private final Cinematique partialReconstruct(AStarCourbeNode best, CheminPathfindingInterface chemin, int profondeurMax) throws PathfindingException
 	{
 		AStarCourbeNode noeudParent = best;
 		ArcCourbe arcParent = best.getArc();
@@ -359,16 +364,21 @@ public class AStarCourbe implements Service, HighPFClass
 		trajectory.clear();
 
 		// chemin.add fait des copies des points
-		while(!pileTmp.isEmpty())
+		while(!pileTmp.isEmpty() && profondeurMax > 0)
 		{
 			ArcCourbe a = pileTmp.pop();
-				log.debug(a.vitesse+" ("+a.getNbPoints()+" pts)", Verbose.PF.masque);
+			log.debug(a.vitesse+" ("+a.getNbPoints()+" pts)", Verbose.PF.masque);
 			for(int i = 0; i < a.getNbPoints(); i++)
 				trajectory.add(a.getPoint(i));
 			if(trajectory.size() > 255)
 				throw new PathfindingException("Overflow du trajet !");
+			profondeurMax--;
 		}
+		
+		pileTmp.clear();
 		chemin.addToEnd(trajectory);
+		
+		return trajectory.getLast();
 	}
 				
 	/**
@@ -437,6 +447,8 @@ public class AStarCourbe implements Service, HighPFClass
 	{
 		if(!rechercheEnCours)
 			throw new InterruptedException("updatePath appelé alors qu'aucune recherche n'est en cours !");
+		
+		log.debug("Replanification lancée", Verbose.REPLANIF.masque);
 		
 		depart.init();
 		state.copyAStarCourbe(depart.state);
