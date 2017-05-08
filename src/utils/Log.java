@@ -47,7 +47,8 @@ public class Log implements Service, DynamicConfigurable
 		REPLANIF(ConfigInfo.DEBUG_REPLANIF, true),
 		ACTIONNEURS(ConfigInfo.DEBUG_ACTIONNEURS, true),
 		CACHE(ConfigInfo.DEBUG_CACHE, true),
-		PF(ConfigInfo.DEBUG_PF, true);
+		PF(ConfigInfo.DEBUG_PF, true),
+		DEBUG(ConfigInfo.DEBUG_DEBUG, true);
 		
 		public final int masque;
 		public final ConfigInfo c;
@@ -87,17 +88,15 @@ public class Log implements Service, DynamicConfigurable
 	
 	private enum Niveau
 	{
-		DEBUG(true, " ", "\u001B[0m", System.out),
-		WARNING(false, " WARNING ", "\u001B[33m", System.out),
-		CRITICAL(false, " CRITICAL ", "\u001B[31m", System.err);
+		DEBUG(" ", "\u001B[0m", System.out),
+		WARNING(" WARNING ", "\u001B[33m", System.out),
+		CRITICAL(" CRITICAL ", "\u001B[31m", System.err);
 		
-		public boolean debug;
 		public String entete, couleur;
 		public PrintStream stream;
 		
-		private Niveau(boolean debug, String entete, String couleur, PrintStream stream)
+		private Niveau(String entete, String couleur, PrintStream stream)
 		{
-			this.debug = debug;
 			this.entete = entete;
 			this.couleur = couleur;
 			this.stream = stream;
@@ -107,9 +106,6 @@ public class Log implements Service, DynamicConfigurable
 	// Dépendances
 	private boolean logClosed = false;
 	private BufferedWriter writer = null;
-
-	// Ne pas afficher les messages de bug permet d'économiser du temps CPU
-	private boolean affiche_debug = true;
 	
 	// Sauvegarder les logs dans un fichier
 	private boolean sauvegarde_fichier = false;
@@ -139,7 +135,7 @@ public class Log implements Service, DynamicConfigurable
 	 */
 	public void debug(Object message)
 	{
-		ecrire(message.toString(), Niveau.DEBUG, Verbose.all);
+		ecrire(message.toString(), Niveau.DEBUG, Verbose.DEBUG.masque);
 	}
 	
 	/**
@@ -149,7 +145,7 @@ public class Log implements Service, DynamicConfigurable
 	 */
 	public void debug(Object message, int masque)
 	{
-		ecrire(message.toString(), Niveau.DEBUG, masque);
+		ecrire(message.toString(), Niveau.DEBUG, masque | Verbose.DEBUG.masque);
 	}
 	
 	/**
@@ -193,7 +189,7 @@ public class Log implements Service, DynamicConfigurable
 	{
 		if(logClosed)
 			System.out.println("WARNING * Log fermé! Message: "+message);
-		else if(!niveau.debug || affiche_debug || sauvegarde_fichier)
+		else
 		{
 			long date = System.currentTimeMillis() - dateInitiale;
 			String tempsMatch = "";
@@ -223,7 +219,7 @@ public class Log implements Service, DynamicConfigurable
 					e.printStackTrace();
 				}	
 			}
-			if(Verbose.shouldPrint(masque) && (!niveau.debug || affiche_debug))
+			if(Verbose.shouldPrint(masque))
 				niveau.stream.println(affichage);
 		}
 	}	
@@ -252,7 +248,6 @@ public class Log implements Service, DynamicConfigurable
 	
 	public void useConfig(Config config)
 	{
-		affiche_debug = config.getBoolean(ConfigInfo.AFFICHE_DEBUG);
 		sauvegarde_fichier = config.getBoolean(ConfigInfo.SAUVEGARDE_LOG);
 		useColor = config.getBoolean(ConfigInfo.COLORED_LOG);
 		fastLog = config.getBoolean(ConfigInfo.FAST_LOG);

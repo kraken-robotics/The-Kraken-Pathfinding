@@ -54,7 +54,6 @@ public enum ConfigInfo {
 	 * Paramètres du log
 	 */
 	FAST_LOG(false), // affichage plus rapide des logs
-	AFFICHE_DEBUG(true), // affiche aussi les log.debug
 	SAUVEGARDE_LOG(false), // sauvegarde les logs dans un fichier externe
 	AFFICHE_CONFIG(false), // affiche la configuration complète au lancement
 	COLORED_LOG(false), // de la couleur dans les sauvegardes de logs !
@@ -119,6 +118,7 @@ public enum ConfigInfo {
 	DEBUG_ACTIONNEURS(false), // debug verbeux sur les actionneurs
 	DEBUG_CACHE(false), // debug du cache de chemins
 	DEBUG_PF(false), // affichage de plein d'infos
+	DEBUG_DEBUG(false), // affichage des messages "debug"
 
 	/**
 	 * Graphe de dépendances
