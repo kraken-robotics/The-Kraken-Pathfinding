@@ -104,14 +104,14 @@ public class VideoReader {
 			Log log = container.getService(Log.class);
 			TimestampedList listes;
 						
-			log.debug("Fichier vidéo : "+filename);
-			log.debug("Fichier log : "+logfile);
-			log.debug("Vitesse : "+vitesse);		
+			special("Fichier vidéo : "+filename);
+			special("Fichier log : "+logfile);
+			special("Vitesse : "+vitesse);		
 			if(debug)
-				log.debug("Debug activé");
+				special("Debug activé");
 			if(robotBof != null)
 			{
-				log.debug("RobotBof ajouté");
+				special("RobotBof ajouté");
 				buffer.add(robotBof);
 			}
 
@@ -130,8 +130,7 @@ public class VideoReader {
 	        
 	        long initialDate = System.currentTimeMillis();
 	        
-	        Thread.sleep(1000); // le temps que la fenêtre apparaisse
-	        log.debug("Taille : "+listes.size());
+	        Thread.sleep(500); // le temps que la fenêtre apparaisse
 	        
 	        BufferedReader br = null;
 	        long nextLog = Long.MAX_VALUE;
@@ -164,7 +163,7 @@ public class VideoReader {
 		    		while(System.in.available() > 0)
 		    			System.in.read();
 
-	    			log.debug("Pause !");
+		    		special("Pause !");
 	    			long avant = System.currentTimeMillis();
 
 	    			while(System.in.available() == 0)
@@ -174,7 +173,7 @@ public class VideoReader {
 		    			System.in.read(); 
 	    			
 	    			initialDate += (System.currentTimeMillis() - avant);
-	    			log.debug("Unpause");
+	    			special("Unpause");
 		    	}
 		    	
 		    	if(nextVid < nextLog)
@@ -236,7 +235,7 @@ public class VideoReader {
 				    	nextLog = getTimestampLog(nextLine);
 		    	}
 			}
-	        System.out.println("Fin de l'enregistrement");
+	        special("Fin de l'enregistrement");
 			container.getExistingService(Fenetre.class).waitUntilExit();
 		} catch(InterruptedException e) {
 			
@@ -247,6 +246,11 @@ public class VideoReader {
 			if(container != null)
 				container.destructor();
 		}
+	}
+	
+	private static void special(Object o)
+	{
+		System.out.println("	\u001B[34m"+o+"\u001B[0m");
 	}
 	
 	private static String getNextLine(BufferedReader br) throws IOException
