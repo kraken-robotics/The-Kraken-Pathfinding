@@ -62,17 +62,22 @@ public class ThreadUpdatePathfinding extends ThreadService implements HighPFClas
 						chemin.wait();
 				}
 				// on a été prévenu que le chemin n'est plus à jour : ralentissement et replanification
-				try {
-					Cinematique lastValid = chemin.getLastValidCinematique();
-					out.setMaxSpeed(Speed.REPLANIF.translationalSpeed);
-					log.debug("Mise à jour du chemin", Verbose.CAPTEURS.masque);
-					pathfinding.updatePath(true, lastValid);
-					out.setMaxSpeed(Speed.STANDARD.translationalSpeed); // TODO et si ce n'était pas cette vitesse là ?…
-				} catch (PathfindingException e) {
-					log.critical(e);
-					chemin.clear();
-					out.immobilise();
+				if(!chemin.needStop())
+				{
+					try {
+						Cinematique lastValid = chemin.getLastValidCinematique();
+						out.setMaxSpeed(Speed.REPLANIF.translationalSpeed);
+						log.debug("Mise à jour du chemin", Verbose.CAPTEURS.masque);
+						pathfinding.updatePath(true, lastValid);
+						out.setMaxSpeed(Speed.STANDARD.translationalSpeed); // TODO et si ce n'était pas cette vitesse là ?…
+					} catch (PathfindingException e) {
+						log.critical(e);
+						chemin.clear();
+						out.immobilise();
+					}
 				}
+				else
+					log.debug("On s'arrête pour replanifier", Verbose.REPLANIF.masque);
 			}
 		} catch (InterruptedException e) {
 			log.debug("Arrêt de "+Thread.currentThread().getName());

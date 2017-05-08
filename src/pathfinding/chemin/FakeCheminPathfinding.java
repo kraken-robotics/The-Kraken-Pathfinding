@@ -109,12 +109,6 @@ public class FakeCheminPathfinding implements Service, CheminPathfindingInterfac
 	}
 
 	@Override
-	public Cinematique needRestart()
-	{
-		return null;
-	}
-
-	@Override
 	public boolean aAssezDeMarge()
 	{
 		return true;
@@ -124,5 +118,11 @@ public class FakeCheminPathfinding implements Service, CheminPathfindingInterfac
 	public boolean needStop()
 	{
 		return false;
+	}
+
+	@Override
+	public Cinematique getLastValidCinematique()
+	{
+		return null;
 	}
 }

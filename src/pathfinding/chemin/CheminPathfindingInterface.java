@@ -34,7 +34,7 @@ public interface CheminPathfindingInterface
 {
 	public Ticket[] addToEnd(LinkedList<CinematiqueObs> points) throws PathfindingException;
 	public void setUptodate();
-	public Cinematique needRestart();
 	public boolean aAssezDeMarge();
 	public boolean needStop();
+	public Cinematique getLastValidCinematique();
 }

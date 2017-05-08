@@ -232,23 +232,23 @@ public class AStarCourbe implements Service, HighPFClass
 					throw new PathfindingException("On a vu l'obstacle trop tard, on n'a pas assez de marge. Il faut s'arrêter.");
 
 				// On vérifie *très* régulièremet s'il ne faut pas fournir un chemin partiel
-				Cinematique cinemRestart = chemin.needRestart();
+				Cinematique cinemRestart = chemin.getLastValidCinematique();
 				boolean assezDeMarge = chemin.aAssezDeMarge();
 				
 				if(cinemRestart != null || !assezDeMarge)
 				{
-					if(!assezDeMarge)
+					if(cinemRestart != null) // il faut partir d'un autre point
+					{
+						depart.init();
+						depart.state.robot.setCinematique(cinemRestart);						
+					}
+					else
 					{
 						log.debug("Reconstruction partielle demandée !");
 						partialReconstruct(current, chemin);
 						// Il est nécessaire de copier current dans depart car current
 						// est effacé quand le memorymanager est vidé. Cette copie n'est effectuée qu'ici
 						current.copyReconstruct(depart);
-					}
-					else // il faut repartir d'un autre point
-					{
-						depart.init();
-						depart.state.robot.setCinematique(cinemRestart);						
 					}
 					
 					memorymanager.empty();

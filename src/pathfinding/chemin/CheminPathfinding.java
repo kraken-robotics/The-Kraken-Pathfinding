@@ -63,6 +63,7 @@ public class CheminPathfinding implements Service, HighPFClass, CheminPathfindin
 	protected volatile int indexLast = 0; // indice du prochain point de la trajectoire (donc indexLast - 1 est l'index du dernier point accessible)
 	private volatile boolean uptodate = true; // le chemin est-il complet
 	private volatile boolean empty = false;
+	private volatile boolean needRestart = false; // faut-il recalculer d'un autre point ?
 	private int margeNecessaire, margeInitiale, margeAvantCollision;
 	private boolean graphic;
 	
@@ -97,30 +98,19 @@ public class CheminPathfinding implements Service, HighPFClass, CheminPathfindin
 		return chemin[add(indexFirst,1)].enMarcheAvant;
 	}
 	
-	/**
-	 * Retourne une cinématique non-nulle si le PF doit recommencer son calcul de ce point 
-	 * @return
-	 */
-	@Override
-	public Cinematique needRestart()
-	{
-		if(uptodate)
-			return null;
-		return null; // TODO
-	}
-	
 	@Override
 	public boolean needStop()
 	{
-		return !uptodate && isEmpty();
+		return !uptodate && empty;
 	}
 	
 	@Override
 	public boolean aAssezDeMarge()
 	{
-		log.warning("Replanification partielle nécessaire : "+minus(indexLast, indexFirst)+" points d'avance seulement.", Verbose.REPLANIF.masque);
-
-		return !uptodate && minus(indexLast, indexFirst) < margeNecessaire;
+		boolean out = uptodate || minus(indexLast, indexFirst) >= margeNecessaire;
+		if(!out)
+			log.warning("Replanification partielle nécessaire : "+minus(indexLast, indexFirst)+" points d'avance seulement.", Verbose.REPLANIF.masque);
+		return out;
 	}
 	
 	/**
@@ -175,6 +165,7 @@ public class CheminPathfinding implements Service, HighPFClass, CheminPathfindin
 						// on a assez de marge, on va faire de la replanification à la volée
 						indexLast = minus(current, margeAvantCollision);
 						out.makeNextObsolete(chemin[minus(indexLast,1)], minus(indexLast,1));
+						needRestart = true;
 					}
 					return true;
 				}
@@ -187,6 +178,7 @@ public class CheminPathfinding implements Service, HighPFClass, CheminPathfindin
 			if(current == firstPossible)
 				assezDeMargeDepuisDepart = true;
 		}
+		needRestart = false;
 		return false;
 	}
 	
@@ -318,11 +310,11 @@ public class CheminPathfinding implements Service, HighPFClass, CheminPathfindin
 	 * Un "checkColliding" doit être fait avant !
 	 * @return
 	 */
-	public Cinematique getLastValidCinematique() throws PathfindingException
+	public Cinematique getLastValidCinematique()
 	{
-		if(isEmpty())
-			throw new PathfindingException("On a vu l'obstacle trop tard, on n'a pas assez de marge. Il faut s'arrêter.");
-		return chemin[minus(indexLast,1)];
+		if(!uptodate && needRestart)
+			return chemin[minus(indexLast,1)];
+		return null;
 	}
 
 	private void updateAffichage()
