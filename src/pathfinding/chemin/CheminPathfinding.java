@@ -59,9 +59,10 @@ public class CheminPathfinding implements Service, HighPFClass, CheminPathfindin
 	private volatile CinematiqueObs[] chemin = new CinematiqueObs[256];
 	private volatile ObstacleCircular[] aff = new ObstacleCircular[256];
 	private volatile Segment[] affSeg = new Segment[256];
-	protected int indexFirst = 0; // indice du point en cours
-	protected int indexLast = 0; // indice du prochain point de la trajectoire (donc indexLast - 1 est l'index du dernier point accessible)
-	private boolean uptodate = true; // le chemin est-il complet
+	protected volatile int indexFirst = 0; // indice du point en cours
+	protected volatile int indexLast = 0; // indice du prochain point de la trajectoire (donc indexLast - 1 est l'index du dernier point accessible)
+	private volatile boolean uptodate = true; // le chemin est-il complet
+	private volatile boolean empty = false;
 	private int margeNecessaire, margeInitiale, margeAvantCollision;
 	private boolean graphic;
 	
@@ -97,16 +98,29 @@ public class CheminPathfinding implements Service, HighPFClass, CheminPathfindin
 	}
 	
 	/**
-	 * A-t-on besoin d'un chemin partiel ?
+	 * Retourne une cinématique non-nulle si le PF doit recommencer son calcul de ce point 
 	 * @return
 	 */
 	@Override
-	public boolean needPartial()
+	public Cinematique needRestart()
 	{
-		boolean out = !uptodate && minus(indexLast, indexFirst) < margeNecessaire;
-		if(out)
-			log.warning("Replanification partielle nécessaire : "+minus(indexLast, indexFirst)+" points d'avance seulement.", Verbose.REPLANIF.masque);
-		return out;
+		if(uptodate)
+			return null;
+		return null; // TODO
+	}
+	
+	@Override
+	public boolean needStop()
+	{
+		return !uptodate && isEmpty();
+	}
+	
+	@Override
+	public boolean aAssezDeMarge()
+	{
+		log.warning("Replanification partielle nécessaire : "+minus(indexLast, indexFirst)+" points d'avance seulement.", Verbose.REPLANIF.masque);
+
+		return !uptodate && minus(indexLast, indexFirst) < margeNecessaire;
 	}
 	
 	/**
@@ -152,7 +166,10 @@ public class CheminPathfinding implements Service, HighPFClass, CheminPathfindin
 
 					// on n'a pas assez de marge !
 					if(nbMarge < margeAvantCollision)
+					{
 						indexLast = indexFirst;
+						empty = true;
+					}
 					else
 					{
 						// on a assez de marge, on va faire de la replanification à la volée
@@ -175,20 +192,18 @@ public class CheminPathfinding implements Service, HighPFClass, CheminPathfindin
 	
 	/**
 	 * Le chemin est-il vide ?
-	 * TODO inutilisé ?
 	 * @return
 	 */
 	public synchronized boolean isEmpty()
 	{
-		// vu que le robot avance, il peut être possible que indexLast passe en-deçà d'indexFirst
-		return minus(indexFirst, indexLast) <= 5;
+		return empty;
 	}
 	
 	private void addToEnd(CinematiqueObs c)
 	{
 		c.copy(chemin[indexLast]);
 		indexLast = add(indexLast, 1);
-		
+		empty = false;
 		// si on revient au début, c'est qu'il y a un problème ou que le buffer est sous-dimensionné
 		if(indexLast == indexFirst)
 			log.critical("Buffer trop petit !");
@@ -236,12 +251,12 @@ public class CheminPathfinding implements Service, HighPFClass, CheminPathfindin
 	
 	private boolean isIndexValid(int index)
 	{
-		return minus(index, indexFirst) < minus(indexLast, indexFirst);
+		return !empty && minus(index, indexFirst) < minus(indexLast, indexFirst);
 	}
 	
 	protected CinematiqueObs get(int index)
 	{
-		if(isIndexValid(index))
+		if(isIndexValid(index) && !empty)
 			return chemin[index];
 		return null;
 	}
@@ -256,6 +271,7 @@ public class CheminPathfinding implements Service, HighPFClass, CheminPathfindin
 		 */
 		uptodate = true;
 		indexLast = indexFirst;
+		empty = true;
 		
 		if(graphic)
 			updateAffichage();
@@ -266,14 +282,10 @@ public class CheminPathfinding implements Service, HighPFClass, CheminPathfindin
 	 * @param uptodate
 	 */
 	@Override
-	public synchronized void setUptodate(boolean uptodate)
+	public synchronized void setUptodate()
 	{
-		boolean notif = this.uptodate;
-		this.uptodate = uptodate;
-		
-		// avant on était à jour et on ne l'est plus
-		if(notif && !uptodate)
-			notify();
+		uptodate = true;
+
 	}
 	
 	public boolean isUptodate()
@@ -294,6 +306,8 @@ public class CheminPathfinding implements Service, HighPFClass, CheminPathfindin
 	public synchronized Cinematique setCurrentIndex(int indexTrajectory)
 	{
 		indexFirst = indexTrajectory;
+		if(empty)
+			indexLast = indexFirst;
 		if(graphic)
 			updateAffichage();
 		return chemin[indexFirst];
@@ -308,7 +322,6 @@ public class CheminPathfinding implements Service, HighPFClass, CheminPathfindin
 	{
 		if(isEmpty())
 			throw new PathfindingException("On a vu l'obstacle trop tard, on n'a pas assez de marge. Il faut s'arrêter.");
-		
 		return chemin[minus(indexLast,1)];
 	}
 

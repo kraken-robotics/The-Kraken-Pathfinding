@@ -20,6 +20,7 @@ package pathfinding.chemin;
 import java.util.LinkedList;
 
 import exceptions.PathfindingException;
+import robot.Cinematique;
 import robot.CinematiqueObs;
 import serie.Ticket;
 
@@ -32,6 +33,8 @@ import serie.Ticket;
 public interface CheminPathfindingInterface
 {
 	public Ticket[] addToEnd(LinkedList<CinematiqueObs> points) throws PathfindingException;
-	public void setUptodate(boolean uptodate);
-	public boolean needPartial();
+	public void setUptodate();
+	public Cinematique needRestart();
+	public boolean aAssezDeMarge();
+	public boolean needStop();
 }

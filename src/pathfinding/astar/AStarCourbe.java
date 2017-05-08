@@ -192,7 +192,7 @@ public class AStarCourbe implements Service, HighPFClass
 			if(current == trajetDeSecours)
 			{
 //				log.debug("On est arrivé !");
-				chemin.setUptodate(true);
+				chemin.setUptodate();
 				partialReconstruct(current, chemin);
 				memorymanager.empty();
 				cinemMemory.empty();
@@ -203,7 +203,7 @@ public class AStarCourbe implements Service, HighPFClass
 			
 			if(!rechercheEnCours)
 			{
-				chemin.setUptodate(true);
+				chemin.setUptodate();
 				log.warning("La recherche de chemin a été annulée");
 				return;
 			}
@@ -215,7 +215,7 @@ public class AStarCourbe implements Service, HighPFClass
 				if(trajetDeSecours != null) // si on a un trajet de secours, on l'utilise
 				{
 					log.debug("Utilisation du trajet de secours !");
-					chemin.setUptodate(true);
+					chemin.setUptodate();
 					partialReconstruct(trajetDeSecours, chemin);
 					return;
 				}
@@ -228,14 +228,29 @@ public class AStarCourbe implements Service, HighPFClass
 			arcmanager.reinitIterator(current);
 			while(arcmanager.hasNext())
 			{
+				if(chemin.needStop())
+					throw new PathfindingException("On a vu l'obstacle trop tard, on n'a pas assez de marge. Il faut s'arrêter.");
+
 				// On vérifie *très* régulièremet s'il ne faut pas fournir un chemin partiel
-				if(chemin.needPartial())
+				Cinematique cinemRestart = chemin.needRestart();
+				boolean assezDeMarge = chemin.aAssezDeMarge();
+				
+				if(cinemRestart != null || !assezDeMarge)
 				{
-					log.debug("Reconstruction partielle demandée !");
-					partialReconstruct(current, chemin);
-					// Il est nécessaire de copier current dans depart car current
-					// est effacé quand le memorymanager est vidé. Cette copie n'est effectuée qu'ici
-					current.copyReconstruct(depart);
+					if(!assezDeMarge)
+					{
+						log.debug("Reconstruction partielle demandée !");
+						partialReconstruct(current, chemin);
+						// Il est nécessaire de copier current dans depart car current
+						// est effacé quand le memorymanager est vidé. Cette copie n'est effectuée qu'ici
+						current.copyReconstruct(depart);
+					}
+					else // il faut repartir d'un autre point
+					{
+						depart.init();
+						depart.state.robot.setCinematique(cinemRestart);						
+					}
+					
 					memorymanager.empty();
 					cinemMemory.empty();
 					closedset.clear();

@@ -74,15 +74,9 @@ public class FakeCheminPathfinding implements Service, CheminPathfindingInterfac
 	}
 
 	@Override
-	public void setUptodate(boolean uptodate)
+	public void setUptodate()
 	{}
 
-	@Override
-	public boolean needPartial()
-	{
-		return false;
-	}
-	
 	public boolean isReady()
 	{
 		return path != null;
@@ -112,5 +106,23 @@ public class FakeCheminPathfinding implements Service, CheminPathfindingInterfac
 	public Layer getLayer()
 	{
 		return Layer.FOREGROUND;
+	}
+
+	@Override
+	public Cinematique needRestart()
+	{
+		return null;
+	}
+
+	@Override
+	public boolean aAssezDeMarge()
+	{
+		return true;
+	}
+
+	@Override
+	public boolean needStop()
+	{
+		return false;
 	}
 }
