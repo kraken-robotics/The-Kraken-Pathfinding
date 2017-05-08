@@ -331,12 +331,10 @@ public class CheminPathfinding implements Service, Printable, HighPFClass, Chemi
 	@Override
 	public void print(Graphics g, Fenetre f, RobotReal robot)
 	{
-//		for(int i = 0; i < 256; i++)
-//			if(aff[i] != null)
-//				buffer.removeSupprimable(aff[i]);
 		iterChemin.reinit();
 		Vec2RO last = null;
-		for(int i = 0; i < 255; i++)
+		
+		for(int i = 0; i < 256; i++)
 		{
 			if(aff[i] != null)
 				buffer.removeSupprimable(aff[i]);
