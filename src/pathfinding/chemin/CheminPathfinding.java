@@ -17,7 +17,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 package pathfinding.chemin;
 
-import java.awt.Graphics;
 import java.util.LinkedList;
 
 import obstacles.memory.ObstaclesIteratorPresent;
@@ -25,15 +24,11 @@ import obstacles.types.ObstacleCircular;
 import obstacles.types.ObstacleProximity;
 import obstacles.types.ObstacleRobot;
 import pathfinding.astar.arcs.ClothoidesComputer;
-import graphic.Fenetre;
 import graphic.PrintBufferInterface;
 import graphic.printable.Couleur;
-import graphic.printable.Layer;
-import graphic.printable.Printable;
 import graphic.printable.Segment;
 import robot.Cinematique;
 import robot.CinematiqueObs;
-import robot.RobotReal;
 import serie.BufferOutgoingOrder;
 import serie.Ticket;
 import utils.Log;
@@ -52,12 +47,13 @@ import exceptions.PathfindingException;
  *
  */
 
-public class CheminPathfinding implements Service, Printable, HighPFClass, CheminPathfindingInterface
+public class CheminPathfinding implements Service, HighPFClass, CheminPathfindingInterface
 {
 	protected Log log;
 	private BufferOutgoingOrder out;
 	private ObstaclesIteratorPresent iterObstacles;
 	private IteratorCheminPathfinding iterChemin;	
+	private IteratorCheminPathfinding iterCheminPrint;
 	private PrintBufferInterface buffer;
 	
 	private volatile CinematiqueObs[] chemin = new CinematiqueObs[256];
@@ -76,6 +72,7 @@ public class CheminPathfinding implements Service, Printable, HighPFClass, Chemi
 		this.out = out;
 		this.iterObstacles = iterator;
 		iterChemin = new IteratorCheminPathfinding(this);
+		iterCheminPrint = new IteratorCheminPathfinding(this);
 		this.buffer = buffer;
 
 		int demieLargeurNonDeploye = config.getInt(ConfigInfo.LARGEUR_NON_DEPLOYE)/2;
@@ -85,9 +82,6 @@ public class CheminPathfinding implements Service, Printable, HighPFClass, Chemi
 		margeNecessaire = config.getInt(ConfigInfo.PF_MARGE_NECESSAIRE);
 		margeInitiale = config.getInt(ConfigInfo.PF_MARGE_INITIALE);
 		graphic = config.getBoolean(ConfigInfo.GRAPHIC_TRAJECTORY_FINAL);
-		
-		if(graphic)
-			buffer.add(this);
 
 		for(int i = 0; i < chemin.length; i++)
 			chemin[i] = new CinematiqueObs(demieLargeurNonDeploye, demieLongueurArriere, demieLongueurAvant, marge);
@@ -228,10 +222,7 @@ public class CheminPathfinding implements Service, Printable, HighPFClass, Chemi
 			t = out.envoieArcCourbe(points, tmp);
 
 			if(graphic)
-				synchronized(buffer)
-				{
-					buffer.notify();
-				}
+				updateAffichage();
 		}
 		
 		iterChemin.reinit();
@@ -267,10 +258,7 @@ public class CheminPathfinding implements Service, Printable, HighPFClass, Chemi
 		indexLast = indexFirst;
 		
 		if(graphic)
-			synchronized(buffer)
-			{
-				buffer.notify();
-			}
+			updateAffichage();
 	}
 	
 	/**
@@ -307,10 +295,7 @@ public class CheminPathfinding implements Service, Printable, HighPFClass, Chemi
 	{
 		indexFirst = indexTrajectory;
 		if(graphic)
-			synchronized(buffer)
-			{
-				buffer.notify();
-			}
+			updateAffichage();
 		return chemin[indexFirst];
 	}
 	
@@ -328,41 +313,38 @@ public class CheminPathfinding implements Service, Printable, HighPFClass, Chemi
 		return chemin[lastValidIndex];
 	}
 
-	@Override
-	public void print(Graphics g, Fenetre f, RobotReal robot)
+	private void updateAffichage()
 	{
-		iterChemin.reinit();
-		Vec2RO last = null;
-		
-		for(int i = 0; i < 256; i++)
+		synchronized(buffer)
 		{
-			if(aff[i] != null)
-				buffer.removeSupprimable(aff[i]);
-			if(affSeg[i] != null)
-				buffer.removeSupprimable(affSeg[i]);
-		}
+			iterCheminPrint.reinit();
+			Vec2RO last = null;
 			
-		while(iterChemin.hasNext())
-		{
-			Cinematique a = iterChemin.next();
-			if(last != null)
+			for(int i = 0; i < 256; i++)
 			{
-				affSeg[iterChemin.getIndex()] = new Segment(last, a.getPosition(), Couleur.TRAJECTOIRE);
-				buffer.addSupprimable(affSeg[iterChemin.getIndex()]);
+				if(aff[i] != null)
+					buffer.removeSupprimable(aff[i]);
+				if(affSeg[i] != null)
+					buffer.removeSupprimable(affSeg[i]);
 			}
-			
-			aff[iterChemin.getIndex()] = new ObstacleCircular(a.getPosition(), 8, Couleur.TRAJECTOIRE);
-			last = a.getPosition();
-			buffer.addSupprimable(aff[iterChemin.getIndex()]);
+				
+			while(iterCheminPrint.hasNext())
+			{
+				Cinematique a = iterCheminPrint.next();
+				if(last != null)
+				{
+					affSeg[iterCheminPrint.getIndex()] = new Segment(last, a.getPosition(), Couleur.TRAJECTOIRE);
+					buffer.addSupprimable(affSeg[iterCheminPrint.getIndex()]);
+				}
+				
+				aff[iterCheminPrint.getIndex()] = new ObstacleCircular(a.getPosition(), 8, Couleur.TRAJECTOIRE);
+				last = a.getPosition();
+				buffer.addSupprimable(aff[iterCheminPrint.getIndex()]);
+			}
+			buffer.notify();
 		}
 	}
-
-	@Override
-	public Layer getLayer()
-	{
-		return Layer.FOREGROUND;
-	}
-
+	
 	/**
 	 * Return indice1 - indice2
 	 * @param indice1
