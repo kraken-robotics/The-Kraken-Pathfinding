@@ -56,6 +56,7 @@ public class VideoReader {
 		ObstacleRectangular robotBof = null;
 		long[] breakPoints = new long[0];
 		int indexBP = 0;
+		boolean stopOnWarning = false, stopOnCritical = false;
 		
 		for(int i = 0; i < args.length; i++)
 		{
@@ -65,6 +66,10 @@ public class VideoReader {
 				debug = true;
 			else if(args[i].equals("-v")) // video
 				filename = args[++i];
+			else if(args[i].equals("-w")) // warning
+				stopOnWarning = true;
+			else if(args[i].equals("-c")) // critical
+				stopOnCritical = true;
 			else if(args[i].equals("-l")) // log
 				logfile = args[++i];
 			else if(args[i].equals("-b")) // bof
@@ -225,6 +230,9 @@ public class VideoReader {
 					
 					if(delta > 0)
 						Thread.sleep(delta);
+					
+					if((stopOnWarning && nextLine.contains("WARNING")) || stopOnCritical && nextLine.contains("CRITICAL"))
+						stop = true;
 					
 					System.out.println(nextLine);
 					
