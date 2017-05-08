@@ -336,6 +336,14 @@ public class CheminPathfinding implements Service, Printable, HighPFClass, Chemi
 //				buffer.removeSupprimable(aff[i]);
 		iterChemin.reinit();
 		Vec2RO last = null;
+		for(int i = 0; i < 255; i++)
+		{
+			if(aff[i] != null)
+				buffer.removeSupprimable(aff[i]);
+			if(affSeg[i] != null)
+				buffer.removeSupprimable(affSeg[i]);
+		}
+			
 		while(iterChemin.hasNext())
 		{
 			Cinematique a = iterChemin.next();
