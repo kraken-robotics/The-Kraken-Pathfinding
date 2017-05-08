@@ -61,9 +61,8 @@ public class CheminPathfinding implements Service, HighPFClass, CheminPathfindin
 	private volatile Segment[] affSeg = new Segment[256];
 	protected int indexFirst = 0; // indice du point en cours
 	protected int indexLast = 0; // indice du prochain point de la trajectoire (donc indexLast - 1 est l'index du dernier point accessible)
-	private int lastValidIndex = -1; // l'indice du dernier index (-1 si aucun ne l'est, Integer.MAX_VALUE si tous le sont)
 	private boolean uptodate = true; // le chemin est-il complet
-	private int margeNecessaire, margeInitiale;
+	private int margeNecessaire, margeInitiale, margeAvantCollision;
 	private boolean graphic;
 	
 	public CheminPathfinding(Log log, BufferOutgoingOrder out, ObstaclesIteratorPresent iterator, PrintBufferInterface buffer, Config config)
@@ -80,6 +79,7 @@ public class CheminPathfinding implements Service, HighPFClass, CheminPathfindin
 		int demieLongueurAvant = config.getInt(ConfigInfo.DEMI_LONGUEUR_NON_DEPLOYE_AVANT);
 		int marge = config.getInt(ConfigInfo.DILATATION_OBSTACLE_ROBOT);
 		margeNecessaire = config.getInt(ConfigInfo.PF_MARGE_NECESSAIRE);
+		margeAvantCollision = config.getInt(ConfigInfo.PF_MARGE_NECESSAIRE);
 		margeInitiale = config.getInt(ConfigInfo.PF_MARGE_INITIALE);
 		graphic = config.getBoolean(ConfigInfo.GRAPHIC_TRAJECTORY_FINAL);
 
@@ -94,15 +94,6 @@ public class CheminPathfinding implements Service, HighPFClass, CheminPathfindin
 	public boolean getNextMarcheAvant()
 	{
 		return chemin[add(indexFirst,1)].enMarcheAvant;
-	}
-	
-	/**
-	 * Donne l'indice du dernier point valide de la trajectoire (donc indexLast-1).
-	 * @return
-	 */
-	public int getIndexLast()
-	{
-		return minus(indexLast, 1);
 	}
 	
 	/**
@@ -142,8 +133,10 @@ public class CheminPathfinding implements Service, HighPFClass, CheminPathfindin
 	private synchronized boolean isColliding()
 	{
 		iterChemin.reinit();
-		lastValidIndex = -1; // reste à -1 à moins d'avoir assez de points pour le bas niveau
-		int firstPossible = add(indexFirst, margeInitiale);
+		boolean assezDeMargeDepuisDepart = false;
+		int nbMarge = 0;
+		int firstPossible = add(indexFirst, margeInitiale); // le premier point qu'on pourrait accepter
+		
 		while(iterChemin.hasNext())
 		{
 			CinematiqueObs cinem = iterChemin.next();
@@ -155,20 +148,27 @@ public class CheminPathfinding implements Service, HighPFClass, CheminPathfindin
 				ObstacleProximity o = iterObstacles.next();
 				if(o.isColliding(a))
 				{
-					log.debug("Collision en "+current+". Actuel : "+indexFirst+" (soit environ "+ClothoidesComputer.PRECISION_TRACE_MM*(minus(current, indexFirst)-0.5)+" mm avant impact)", Verbose.CAPTEURS.masque);
-//					log.debug(o+" collisionne le robot en "+a);
-					// au cas où, on envoie un signal de stop à cet endroit-là
-					out.makeNextObsolete(chemin[minus(current, 1)], minus(current, 1));
-					indexLast = current; // la suite du chemin n'existe plus
+					log.debug("Collision en "+current+". Actuel : "+indexFirst+" (soit environ "+ClothoidesComputer.PRECISION_TRACE_MM*(minus(current, indexFirst)-0.5)+" mm avant impact)", Verbose.CAPTEURS.masque | Verbose.REPLANIF.masque);
+
+					// on n'a pas assez de marge !
+					if(nbMarge < margeAvantCollision)
+						indexLast = indexFirst;
+					else
+					{
+						// on a assez de marge, on va faire de la replanification à la volée
+						indexLast = minus(current, margeAvantCollision);
+						out.makeNextObsolete(chemin[minus(indexLast,1)], minus(indexLast,1));
+					}
 					return true;
 				}
 			}
 			
-			/**
-			 * Mise à jour de lastValidIndex
-			 */
-			if(minus(current, firstPossible) < 128)
-				lastValidIndex = firstPossible; // on reprendra d'ici
+			// on a pu aller jusqu'à firstPossible sans rencontrer d'obstacle : on peut replanifier
+			if(assezDeMargeDepuisDepart)
+				nbMarge++;
+			
+			if(current == firstPossible)
+				assezDeMargeDepuisDepart = true;
 		}
 		return false;
 	}
@@ -180,7 +180,8 @@ public class CheminPathfinding implements Service, HighPFClass, CheminPathfindin
 	 */
 	public synchronized boolean isEmpty()
 	{
-		return indexFirst == indexLast;
+		// vu que le robot avance, il peut être possible que indexLast passe en-deçà d'indexFirst
+		return minus(indexFirst, indexLast) <= 5;
 	}
 	
 	private void addToEnd(CinematiqueObs c)
@@ -210,25 +211,25 @@ public class CheminPathfinding implements Service, HighPFClass, CheminPathfindin
 				
 		if(!points.isEmpty())
 		{
-			int tmp = indexLast;
+			int tmp = minus(indexLast,1); // index du dernier point envoyé
 			for(CinematiqueObs p : points)
 				addToEnd(p);
-			// TODO tmp - 1 ? pas de minus ?
-			if(isIndexValid(tmp - 1) && chemin[tmp - 1].enMarcheAvant == points.getFirst().enMarcheAvant)
-			{
-				points.addFirst(chemin[tmp - 1]); // on renvoie ce point afin qu'il ne soit plus un point d'arrêt
-				tmp--;
-			}
+
+			if(isIndexValid(tmp))
+				points.addFirst(chemin[tmp]); // on renvoie ce point afin qu'il ne soit plus un point d'arrêt
+			else
+				tmp = add(tmp, 1); // on ne le renvoie pas
+
 			t = out.envoieArcCourbe(points, tmp);
 
 			if(graphic)
 				updateAffichage();
 		}
 		
-		iterChemin.reinit();
+		iterCheminPrint.reinit();
 		log.debug("Affichage du chemin actuel : ", Verbose.REPLANIF.masque);
-		while(iterChemin.hasNext())
-			log.debug(iterChemin.getIndex()+" : "+iterChemin.next(), Verbose.REPLANIF.masque);
+		while(iterCheminPrint.hasNext())
+			log.debug(iterCheminPrint.getIndex()+" : "+iterCheminPrint.next(), Verbose.REPLANIF.masque);
 		
 		return t;
 	}
@@ -244,7 +245,6 @@ public class CheminPathfinding implements Service, HighPFClass, CheminPathfindin
 			return chemin[index];
 		return null;
 	}
-
 	
 	/**
 	 * Supprime complètement le trajet en cours
@@ -306,11 +306,10 @@ public class CheminPathfinding implements Service, HighPFClass, CheminPathfindin
 	 */
 	public Cinematique getLastValidCinematique() throws PathfindingException
 	{
-		if(lastValidIndex == -1)
+		if(isEmpty())
 			throw new PathfindingException("On a vu l'obstacle trop tard, on n'a pas assez de marge. Il faut s'arrêter.");
 		
-		indexLast = lastValidIndex + 1; // on complètera à partir de ce point
-		return chemin[lastValidIndex];
+		return chemin[minus(indexLast,1)];
 	}
 
 	private void updateAffichage()
@@ -323,9 +322,15 @@ public class CheminPathfinding implements Service, HighPFClass, CheminPathfindin
 			for(int i = 0; i < 256; i++)
 			{
 				if(aff[i] != null)
+				{
 					buffer.removeSupprimable(aff[i]);
+					aff[i] = null;
+				}
 				if(affSeg[i] != null)
+				{
 					buffer.removeSupprimable(affSeg[i]);
+					affSeg[i] = null;
+				}
 			}
 				
 			while(iterCheminPrint.hasNext())

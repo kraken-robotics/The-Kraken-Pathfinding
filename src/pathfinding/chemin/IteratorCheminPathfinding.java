@@ -60,7 +60,7 @@ public class IteratorCheminPathfinding implements Iterator<CinematiqueObs>
 	@Override
 	public void remove()
 	{
-		chemin.indexFirst = chemin.add(chemin.indexFirst, 1);
+		throw new UnsupportedOperationException();
 	}
 
 	public int getIndex()
