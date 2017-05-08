@@ -61,6 +61,8 @@ public class CheminPathfinding implements Service, Printable, HighPFClass, Chemi
 	private PrintBufferInterface buffer;
 	
 	private volatile CinematiqueObs[] chemin = new CinematiqueObs[256];
+	private volatile ObstacleCircular[] aff = new ObstacleCircular[256];
+	private volatile Segment[] affSeg = new Segment[256];
 	protected int indexFirst = 0; // indice du point en cours
 	protected int indexLast = 0; // indice du prochain point de la trajectoire (donc indexLast - 1 est l'index du dernier point accessible)
 	private int lastValidIndex = -1; // l'indice du dernier index (-1 si aucun ne l'est, Integer.MAX_VALUE si tous le sont)
@@ -334,15 +336,26 @@ public class CheminPathfinding implements Service, Printable, HighPFClass, Chemi
 //				buffer.removeSupprimable(aff[i]);
 		iterChemin.reinit();
 		Vec2RO last = null;
+		for(int i = 0; i < 255; i++)
+		{
+			if(aff[i] != null)
+				buffer.removeSupprimable(aff[i]);
+			if(affSeg[i] != null)
+				buffer.removeSupprimable(affSeg[i]);
+		}
 			
 		while(iterChemin.hasNext())
 		{
 			Cinematique a = iterChemin.next();
 			if(last != null)
-				new Segment(last, a.getPosition(), Couleur.TRAJECTOIRE.l, Couleur.TRAJECTOIRE.couleur).print(g, f, robot);;
+			{
+				affSeg[iterChemin.getIndex()] = new Segment(last, a.getPosition(), Couleur.TRAJECTOIRE);
+				buffer.addSupprimable(affSeg[iterChemin.getIndex()]);
+			}
 			
-			new ObstacleCircular(a.getPosition(), 8, Couleur.TRAJECTOIRE).print(g, f, robot);;
+			aff[iterChemin.getIndex()] = new ObstacleCircular(a.getPosition(), 8, Couleur.TRAJECTOIRE);
 			last = a.getPosition();
+			buffer.addSupprimable(aff[iterChemin.getIndex()]);
 		}
 	}
 

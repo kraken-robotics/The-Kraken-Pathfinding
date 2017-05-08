@@ -306,7 +306,7 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 	@Test
     public void test_recherche_shoot_avec_ennemi() throws Exception
     {
-		Cinematique depart = new Cinematique(0, 1800, -Math.PI/3, true, 0);
+		Cinematique depart = new Cinematique(0, 1800, -Math.PI/3+0.1, true, 0);
 		robot.setCinematique(depart);
 		int[] data = {0,200,0,200,0,0,0,0,0,0,0,0};
 		sensors.add(new SensorsData(0,0,data,robot.getCinematique()));
@@ -434,7 +434,8 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 		{
 			a = iterator.next();
 			chemin.setCurrentIndex(iterator.getIndex());
-			log.debug(a);
+//			log.debug("Robot en "+iterator.getIndex());
+//			log.debug(a);
 			robot.setCinematique(a);
 			if(graphicTrajectory)
 				Thread.sleep(100);
@@ -443,14 +444,15 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 //		gridspace.addObstacleAndRemoveNearbyObstacles(new Vec2RO(0, 1600)); // TODO
 		chemin.checkColliding();
 		avant = System.nanoTime();
-		astar.updatePath(true, robot.getCinematique());
+		astar.updatePath(true, chemin.getLastValidCinematique());
 		log.debug("Temps recalcul : "+(System.nanoTime() - avant) / (1000000.));
 		iterator.reinit();
 		while(iterator.hasNext())
 		{
 			a = iterator.next();
 			chemin.setCurrentIndex(iterator.getIndex());
-			log.debug(a);
+//			log.debug("Robot en "+iterator.getIndex());
+//			log.debug(a);
 			robot.setCinematique(a);
 			if(graphicTrajectory)
 				Thread.sleep(100);

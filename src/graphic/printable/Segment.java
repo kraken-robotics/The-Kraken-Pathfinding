@@ -38,6 +38,14 @@ public class Segment implements Printable, Serializable
 	private Layer l;
 	private Color c;
 
+	public Segment(Vec2RO a, Vec2RO b, Couleur c)
+	{
+		this.a = a;
+		this.b = b;
+		this.l = c.l;
+		this.c = c.couleur;
+	}
+	
 	public Segment(Vec2RO a, Vec2RO b, Layer l, Color c)
 	{
 		this.a = a;
