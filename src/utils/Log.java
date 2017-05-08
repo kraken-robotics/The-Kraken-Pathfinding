@@ -145,7 +145,9 @@ public class Log implements Service, DynamicConfigurable
 	 */
 	public void debug(Object message, int masque)
 	{
-		ecrire(message.toString(), Niveau.DEBUG, masque | Verbose.DEBUG.masque);
+		if(masque == 0)
+			masque = Verbose.DEBUG.masque;
+		ecrire(message.toString(), Niveau.DEBUG, masque);
 	}
 	
 	/**
