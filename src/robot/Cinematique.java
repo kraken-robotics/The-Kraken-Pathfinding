@@ -19,6 +19,8 @@ package robot;
 
 import java.awt.Graphics;
 import java.io.Serializable;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 
 import graphic.Fenetre;
 import graphic.printable.Layer;
@@ -42,6 +44,7 @@ public class Cinematique implements Printable, Serializable
 	public volatile double courbureGeometrique;
 	public volatile double orientationReelle;
 	public volatile double courbureReelle;
+	private static NumberFormat formatter = new DecimalFormat("#0.000");
 	
 	public Cinematique(double x, double y, double orientationGeometrique, boolean enMarcheAvant, double courbure)
 	{
@@ -94,7 +97,7 @@ public class Cinematique implements Printable, Serializable
 	@Override
 	public String toString()
 	{
-		return position+", "+orientationGeometrique+" (réelle : "+orientationReelle+"), "+(enMarcheAvant ? "marche avant" : "marche arrière")+", courbure : "+courbureGeometrique+" (réelle : "+courbureReelle+")";
+		return position+", "+formatter.format(orientationReelle)+", "+(enMarcheAvant ? "marche avant" : "marche arrière")+", courbure : "+formatter.format(courbureReelle);
 	}
 	
 	/**

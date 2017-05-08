@@ -164,11 +164,15 @@ public class VideoReader {
 		    	
 		    	if(stop || System.in.available() > 0)
 		    	{
+		    		if(stop)
+		    			special("Auto-pause !");
+		    		else
+			    		special("Pause !");
+
 		    		stop = false;
 		    		while(System.in.available() > 0)
 		    			System.in.read();
 
-		    		special("Pause !");
 	    			long avant = System.currentTimeMillis();
 
 	    			while(System.in.available() == 0)

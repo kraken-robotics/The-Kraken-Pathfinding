@@ -18,6 +18,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 package utils;
 
 import java.io.Serializable;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 
 /**
  * Vecteur en lecture seule
@@ -30,6 +32,7 @@ public class Vec2RO implements Serializable
 	private static final long serialVersionUID = 1L;
 	protected volatile double x;
 	protected volatile double y;
+	private static NumberFormat formatter = new DecimalFormat("#0.00");
 	
 	public Vec2RO(double longueur, double angle, boolean useless)
 	{
@@ -86,7 +89,7 @@ public class Vec2RO implements Serializable
 	@Override
 	public final String toString()
 	{
-		return "("+x+","+y+")";
+		return "("+formatter.format(x)+","+formatter.format(y)+")";
 	}
 	
 	public final boolean equals(Vec2RO other)
