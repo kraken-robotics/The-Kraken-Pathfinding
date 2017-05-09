@@ -314,7 +314,7 @@ public class ArcManager implements Service, HighPFClass
 
 	public synchronized Double heuristicCostCourbe(Cinematique c)
 	{
-		return dstarlite.heuristicCostCourbe(c, useCercle);
+		return dstarlite.heuristicCostCourbe(c/*, useCercle*/);
 	}
 
 	public boolean isArrived(AStarCourbeNode successeur)

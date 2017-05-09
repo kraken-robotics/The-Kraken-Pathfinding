@@ -492,7 +492,7 @@ public class DStarLite implements Service, LowPFClass
 	 * @param c
 	 * @return
 	 */
-	public synchronized Double heuristicCostCourbe(Cinematique c, boolean useCercle)
+	public synchronized Double heuristicCostCourbe(Cinematique c/*, boolean useCercle*/)
 	{
 		if(c.getPosition().isHorsTable())
 		{
