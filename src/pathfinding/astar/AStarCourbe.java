@@ -145,7 +145,7 @@ public class AStarCourbe implements Service, HighPFClass
 		Double heuristique;
 		heuristique = arcmanager.heuristicCostCourbe((depart.state.robot).getCinematique());
 
-		if(heuristique == Integer.MAX_VALUE)
+		if(heuristique == null)
 			throw new PathfindingException("Aucun chemin trouvé par le D* Lite !");
 
 		depart.f_score = heuristique / Speed.STANDARD.translationalSpeed;
