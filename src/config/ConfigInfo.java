@@ -106,8 +106,8 @@ public enum ConfigInfo {
 	/**
 	 * Paramètres sur la gestion de la mémoire
 	 */
-	NB_INSTANCES_NODE(2000),
-	NB_INSTANCES_OBSTACLES(5000), // nombre d'instances pour les obstacles rectangulaires
+	NB_INSTANCES_NODE(20000),
+	NB_INSTANCES_OBSTACLES(50000), // nombre d'instances pour les obstacles rectangulaires
 	
 	/**
 	 * Verbose

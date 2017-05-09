@@ -44,7 +44,7 @@ public class MemoryManager<T extends Memorizable> implements Service {
 	protected Log log;
 	private Object[] extra;
 	private int firstAvailable;
-	private int tailleMax = 512000;
+	private int tailleMax = 1 << 24;
 	
 	@SuppressWarnings("unchecked")
 	public MemoryManager(Class<T> classe, Log log, Container container, int nb_instances, Object... extraParam) throws ContainerException
