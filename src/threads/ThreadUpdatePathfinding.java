@@ -69,7 +69,7 @@ public class ThreadUpdatePathfinding extends ThreadService implements HighPFClas
 					Cinematique lastValid = chemin.getLastValidCinematique();
 					out.setMaxSpeed(Speed.REPLANIF.translationalSpeed);
 					log.debug("Mise à jour du chemin", Verbose.CAPTEURS.masque);
-					pathfinding.updatePath(true, lastValid);
+					pathfinding.updatePath(lastValid);
 					out.setMaxSpeed(Speed.STANDARD.translationalSpeed); // TODO et si ce n'était pas cette vitesse là ?…
 				} catch (PathfindingException e) {
 					log.critical(e);

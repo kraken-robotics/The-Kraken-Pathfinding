@@ -160,13 +160,10 @@ public class AStarCourbe implements Service, HighPFClass
 		{
 			current = openset.poll();
 
-			
 			if(chemin.needStop())
 				throw new PathfindingException("On a vu l'obstacle trop tard, on n'a pas assez de marge. Il faut s'arrêter.");
 
-			// TODO sortir ça de la boucle while
-			
-			// On vérifie *très* régulièremet s'il ne faut pas fournir un chemin partiel
+			// On vérifie régulièremet s'il ne faut pas fournir un chemin partiel
 			Cinematique cinemRestart = chemin.getLastValidCinematique();
 			boolean assezDeMarge = chemin.aAssezDeMarge();
 			
@@ -176,10 +173,8 @@ public class AStarCourbe implements Service, HighPFClass
 				{
 					log.debug("Reconstruction partielle demandée !");
 					depart.state.robot.setCinematique(partialReconstruct(current, chemin, 2));
-					if(!chemin.aAssezDeMarge())
+					if(!chemin.aAssezDeMarge()) // toujours pas assez de marge : on doit arrêter
 						throw new PathfindingException("Pas assez de marge même après envoi.");
-					// Il est nécessaire de copier current dans depart car current
-					// est effacé quand le memorymanager est vidé. Cette copie n'est effectuée qu'ici
 				}
 				else // il faut partir d'un autre point
 				{
@@ -187,10 +182,6 @@ public class AStarCourbe implements Service, HighPFClass
 					depart.init();
 					depart.state.robot.setCinematique(cinemRestart);
 				}
-				
-
-//				if(graphicDStarLite)
-//					dstarlite.itineraireBrut();
 
 				trajetDeSecours = null;
 				depart.parent = null;
@@ -206,8 +197,6 @@ public class AStarCourbe implements Service, HighPFClass
 				memorymanager.empty();
 				cinemMemory.empty();
 				closedset.clear();
-				// En faisant "openset.clear()", il force le pathfinding a continuer sur sa lancée sans
-				// remettre en cause la trajectoire déjà calculée
 				openset.clear();
 				current = depart;
 			}
@@ -456,7 +445,7 @@ public class AStarCourbe implements Service, HighPFClass
 	 * @throws PathfindingException
 	 * @throws InterruptedException 
 	 */
-	public void updatePath(boolean shoot, Cinematique lastValid) throws PathfindingException, InterruptedException
+	public void updatePath(Cinematique lastValid) throws PathfindingException, InterruptedException
 	{
 		if(!rechercheEnCours)
 			throw new InterruptedException("updatePath appelé alors qu'aucune recherche n'est en cours !");
@@ -480,7 +469,6 @@ public class AStarCourbe implements Service, HighPFClass
 			dstarlite.itineraireBrut();
 
 		vitesseMax = Speed.REPLANIF;
-		this.shoot = shoot;
 		process(realChemin);
 	}
 
