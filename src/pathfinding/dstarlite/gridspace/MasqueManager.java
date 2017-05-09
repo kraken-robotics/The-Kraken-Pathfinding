@@ -46,7 +46,11 @@ public class MasqueManager implements Service, LowPFClass
 	protected Log log;
 	private List<PointDirige> modelCylindre = new ArrayList<PointDirige>();
 	private boolean printObsCapteurs;
-	
+	private List<PointDirige> model = new ArrayList<PointDirige>();
+	private boolean[][] dedans = new boolean[200][200];
+	private Vec2RW pos = new Vec2RW(), coinbasgaucheVec2 = new Vec2RW();
+	private Vec2RO deltaDilatation;
+
 	public MasqueManager(Log log, PointGridSpaceManager pointManager, PointDirigeManager pointDManager, PrintBufferInterface buffer, Config config)
 	{
 		this.log = log;
@@ -57,6 +61,7 @@ public class MasqueManager implements Service, LowPFClass
 		printObsCapteurs = config.getBoolean(ConfigInfo.GRAPHIC_D_STAR_LITE);
 
 		rayonRobot = config.getInt(ConfigInfo.DILATATION_ROBOT_DSTARLITE);		
+		deltaDilatation = new Vec2RO(-rayonRobot, -rayonRobot);
 		int rayonCylindre = 32;
 		int rayonPointCylindre = (int) Math.round((rayonRobot + rayonCylindre) / PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS);
 		int tailleMasqueCylindre = 2*(rayonPointCylindre+1)+1;
@@ -86,7 +91,7 @@ public class MasqueManager implements Service, LowPFClass
 	 */
 	public Masque getMasqueCylindre(Vec2RO position)
 	{
-		return getMasque(position, modelCylindre, centreMasqueCylindre);
+		return getMasque(position, modelCylindre, centreMasqueCylindre, centreMasqueCylindre);
 	}
 
 	/**
@@ -96,14 +101,14 @@ public class MasqueManager implements Service, LowPFClass
 	 * @param centreMasque
 	 * @return
 	 */
-	private Masque getMasque(Vec2RO position, List<PointDirige> model, int centreMasque)
+	private Masque getMasque(Vec2RO position, List<PointDirige> model, int centreMasqueX, int centreMasqueY)
 	{
 		PointGridSpace p = pointManager.get(position);
 		List<PointDirige> out = new ArrayList<PointDirige>();
 		
 		for(PointDirige c : model)
 		{
-			PointDirige point = pointDManager.get(pointManager.get(c.point.x + p.x - centreMasque, c.point.y + p.y - centreMasque), c.dir);
+			PointDirige point = pointDManager.get(pointManager.get(c.point.x + p.x - centreMasqueX, c.point.y + p.y - centreMasqueY), c.dir);
 			if(point != null)
 			{
 				PointGridSpace voisin = pointManager.getGridPointVoisin(point);
@@ -126,20 +131,32 @@ public class MasqueManager implements Service, LowPFClass
 		double ymin = obstacle.getBottomY() - rayonRobot;
 		double ymax = obstacle.getTopY() + rayonRobot;
 		
+		coinbasgaucheVec2.setX(xmin);
+		coinbasgaucheVec2.setY(ymin);
+		
 		int tailleMasqueX = (int) Math.round((xmax - xmin) / PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS) + 3;
 		int tailleMasqueY = (int) Math.round((ymax - ymin) / PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS) + 3;
+				
+		model.clear();
 		
-		List<PointDirige> model = new ArrayList<PointDirige>();
-		
-		boolean[][] dedans = new boolean[tailleMasqueX][tailleMasqueY];
-		
-		Vec2RW pos = new Vec2RW();
+		log.debug("Obstacle en : "+obstacle.getPosition()+", tailleMasque : "+tailleMasqueX+", "+tailleMasqueY);
 		
 		for(int i = 0; i < tailleMasqueX; i++)
 			for(int j = 0; j < tailleMasqueY; j++)
 			{
-//				pos.setX(x);
-				dedans[i][j] = obstacle.squaredDistance(pos) == 0;
+				PointGridSpace p = pointManager.get(i, j);
+				if(p == null) // life is too short for this shit
+					dedans[i][j] = false;
+				else
+				{
+					p.computeVec2(pos);
+					pos.setX(pos.getX()+1500);
+					log.debug(pos+" "+obstacle.getPosition()+" "+deltaDilatation);
+					pos.plus(obstacle.getPosition());
+					pos.plus(deltaDilatation);
+					dedans[i][j] = obstacle.squaredDistance(pos) < rayonRobot * rayonRobot;
+					log.debug("On test le point "+pos+" : "+dedans[i][j]);
+				}
 			}
 
 		for(int i = 0; i < tailleMasqueX; i++)
@@ -152,6 +169,9 @@ public class MasqueManager implements Service, LowPFClass
 							model.add(pointDManager.get(i,j,d));
 					}
 
-		return new Masque(pointManager, model);
+		if(printObsCapteurs)
+			buffer.addSupprimable(m);
+
+		return getMasque(obstacle.getPosition(), model, tailleMasqueX/2, tailleMasqueY/2);
 	}
 }

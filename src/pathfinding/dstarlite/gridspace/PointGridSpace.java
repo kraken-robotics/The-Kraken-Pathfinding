@@ -18,6 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 package pathfinding.dstarlite.gridspace;
 
 import utils.Vec2RO;
+import utils.Vec2RW;
 
 import java.awt.Graphics;
 import java.io.Serializable;
@@ -86,9 +87,17 @@ public class PointGridSpace implements Service, Printable, Serializable
 		return 1000 * Math.max(dx, dy) + 414 * Math.min(dx, dy);
 	}
 
+	public final void computeVec2(Vec2RW v)
+	{
+		v.setX(((x * DISTANCE_ENTRE_DEUX_POINTS_1024) >> 10) - 1500);
+		v.setY((y * DISTANCE_ENTRE_DEUX_POINTS_1024) >> 10);
+	}
+	
 	public final Vec2RO computeVec2()
 	{
-		return new Vec2RO(((x * DISTANCE_ENTRE_DEUX_POINTS_1024) >> 10) - 1500, (y * DISTANCE_ENTRE_DEUX_POINTS_1024) >> 10);
+		Vec2RW out = new Vec2RW();
+		computeVec2(out);
+		return out;
 	}
 
 	@Override
