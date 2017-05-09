@@ -339,7 +339,7 @@ public class JUnit_AStarCourbe extends JUnit_Test {
     {
 		Cinematique depart = new Cinematique(0, 1800, -Math.PI/3+0.1, true, 0);
 		robot.setCinematique(depart);
-		int[] data = {0,400,0,500,0,0,0,0,0,0,0,0};
+		int[] data = {0,400,0,0,0,0,0,0,0,0,0,0};
 
 		Cinematique c = new Cinematique(1000, 1200, Math.PI, false, 0);
 		astar.initializeNewSearch(c, true, state);
