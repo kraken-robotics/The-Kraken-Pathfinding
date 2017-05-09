@@ -212,6 +212,8 @@ public class CheminPathfinding implements Service, HighPFClass, CheminPathfindin
 		/*
 		 * En cas de replanification, si les points ajoutés ne suffisent pas pour avoir assurer la marge du bas niveau, on lance une exception
 		 */
+		log.debug("Ajout de "+points.size()+" points. Marge : "+minus(add(indexLast, points.size()), indexFirst)+". First : "+indexFirst+", last = "+indexLast);
+		
 		if(!uptodate && minus(add(indexLast, points.size()), indexFirst) < margeNecessaire)
 			throw new PathfindingException("Pas assez de points pour le bas niveau");
 				
@@ -311,7 +313,7 @@ public class CheminPathfinding implements Service, HighPFClass, CheminPathfindin
 	 */
 	public Cinematique getLastValidCinematique()
 	{
-		if(!uptodate && needRestart)
+		if(!uptodate && needRestart && !empty)
 			return chemin[minus(indexLast,1)];
 		return null;
 	}
