@@ -159,7 +159,59 @@ public class AStarCourbe implements Service, HighPFClass
 		do
 		{
 			current = openset.poll();
+
 			
+			if(chemin.needStop())
+				throw new PathfindingException("On a vu l'obstacle trop tard, on n'a pas assez de marge. Il faut s'arrêter.");
+
+			// TODO sortir ça de la boucle while
+			
+			// On vérifie *très* régulièremet s'il ne faut pas fournir un chemin partiel
+			Cinematique cinemRestart = chemin.getLastValidCinematique();
+			boolean assezDeMarge = chemin.aAssezDeMarge();
+			
+			if(cinemRestart != null || !assezDeMarge)
+			{
+				if(!assezDeMarge)
+				{
+					log.debug("Reconstruction partielle demandée !");
+					depart.state.robot.setCinematique(partialReconstruct(current, chemin, 2));
+					if(!chemin.aAssezDeMarge())
+						throw new PathfindingException("Pas assez de marge même après envoi.");
+					// Il est nécessaire de copier current dans depart car current
+					// est effacé quand le memorymanager est vidé. Cette copie n'est effectuée qu'ici
+				}
+				else // il faut partir d'un autre point
+				{
+					log.debug("On reprend la recherche à partir de "+cinemRestart, Verbose.REPLANIF.masque);
+					depart.init();
+					depart.state.robot.setCinematique(cinemRestart);
+				}
+				
+
+//				if(graphicDStarLite)
+//					dstarlite.itineraireBrut();
+
+				trajetDeSecours = null;
+				depart.parent = null;
+				depart.cameFromArcDynamique = null;
+				depart.g_score = 0;
+				heuristique = arcmanager.heuristicCostCourbe((depart.state.robot).getCinematique());
+
+				if(heuristique == null)
+					throw new PathfindingException("Aucun chemin trouvé par le D* Lite !");
+
+				depart.f_score = heuristique / Speed.STANDARD.translationalSpeed;
+				
+				memorymanager.empty();
+				cinemMemory.empty();
+				closedset.clear();
+				// En faisant "openset.clear()", il force le pathfinding a continuer sur sa lancée sans
+				// remettre en cause la trajectoire déjà calculée
+				openset.clear();
+				current = depart;
+			}
+						
 //			if(current.getArc() != null)
 //			log.debug("Meilleur : "+current.getArc().vitesse);
 			
@@ -224,60 +276,6 @@ public class AStarCourbe implements Service, HighPFClass
 			arcmanager.reinitIterator(current);
 			while(arcmanager.hasNext())
 			{
-				if(chemin.needStop())
-					throw new PathfindingException("On a vu l'obstacle trop tard, on n'a pas assez de marge. Il faut s'arrêter.");
-
-				// TODO sortir ça de la boucle while
-				
-				// On vérifie *très* régulièremet s'il ne faut pas fournir un chemin partiel
-				Cinematique cinemRestart = chemin.getLastValidCinematique();
-				boolean assezDeMarge = chemin.aAssezDeMarge();
-				
-				if(cinemRestart != null || !assezDeMarge)
-				{
-					if(!assezDeMarge)
-					{
-						log.debug("Reconstruction partielle demandée !");
-						depart.state.robot.setCinematique(partialReconstruct(current, chemin, 2));
-						if(!chemin.aAssezDeMarge())
-							throw new PathfindingException("Pas assez de marge même après envoi.");
-						// Il est nécessaire de copier current dans depart car current
-						// est effacé quand le memorymanager est vidé. Cette copie n'est effectuée qu'ici
-					}
-					else // il faut partir d'un autre point
-					{
-						log.debug("On reprend la recherche à partir de "+cinemRestart, Verbose.REPLANIF.masque);
-						depart.init();
-						depart.state.robot.setCinematique(cinemRestart);
-					}
-					
-
-//					if(graphicDStarLite)
-//						dstarlite.itineraireBrut();
-
-					trajetDeSecours = null;
-					depart.parent = null;
-					depart.cameFromArcDynamique = null;
-					depart.g_score = 0;
-					heuristique = arcmanager.heuristicCostCourbe((depart.state.robot).getCinematique());
-
-					if(heuristique == Integer.MAX_VALUE)
-						throw new PathfindingException("Aucun chemin trouvé par le D* Lite !");
-
-					depart.f_score = heuristique / Speed.STANDARD.translationalSpeed;
-					
-					memorymanager.empty();
-					cinemMemory.empty();
-					closedset.clear();
-					// En faisant "openset.clear()", il force le pathfinding a continuer sur sa lancée sans
-					// remettre en cause la trajectoire déjà calculée
-					openset.clear();
-					openset.add(depart); // et on repart !
-					opensetTmp.clear();
-					closedsetTmp.clear();
-					break;
-				}
-
 				successeur = memorymanager.getNewNode();
 				successeur.cameFromArcDynamique = null;
 
