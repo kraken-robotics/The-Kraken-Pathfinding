@@ -145,12 +145,8 @@ public class AStarCourbe implements Service, HighPFClass
 		Double heuristique;
 		heuristique = arcmanager.heuristicCostCourbe((depart.state.robot).getCinematique());
 
-		// Il faut bien mettre quelque chose…
-		if(heuristique == null)
-			heuristique = arcmanager.heuristicDirect(depart.state.robot.getCinematique());
-		
-		else if(heuristique == Integer.MAX_VALUE)
-			throw new PathfindingException("Le dstarlite dit qu'aucun chemin n'est possible…");
+		if(heuristique == Integer.MAX_VALUE)
+			throw new PathfindingException("Aucun chemin trouvé par le D* Lite !");
 
 		depart.f_score = heuristique / Speed.STANDARD.translationalSpeed;
 		openset.clear();
@@ -254,6 +250,21 @@ public class AStarCourbe implements Service, HighPFClass
 						depart.init();
 						depart.state.robot.setCinematique(cinemRestart);
 					}
+					
+
+//					if(graphicDStarLite)
+//						dstarlite.itineraireBrut();
+
+					trajetDeSecours = null;
+					depart.parent = null;
+					depart.cameFromArcDynamique = null;
+					depart.g_score = 0;
+					heuristique = arcmanager.heuristicCostCourbe((depart.state.robot).getCinematique());
+
+					if(heuristique == Integer.MAX_VALUE)
+						throw new PathfindingException("Aucun chemin trouvé par le D* Lite !");
+
+					depart.f_score = heuristique / Speed.STANDARD.translationalSpeed;
 					
 					memorymanager.empty();
 					cinemMemory.empty();

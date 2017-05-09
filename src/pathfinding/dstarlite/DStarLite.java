@@ -495,7 +495,7 @@ public class DStarLite implements Service, LowPFClass
 	{
 		if(c.getPosition().isHorsTable())
 		{
-//			log.debug("Hors table !");
+//			log.debug("Hors table ! "+c);
 			return null;
 		}
 		
@@ -503,7 +503,7 @@ public class DStarLite implements Service, LowPFClass
 		
 		if(gridspace.isInGrilleStatique(pos)) // si on est dans un obstacle, D* Lite va chercher partout une solution… qui n'existe pas
 		{
-//			log.debug("Dans un obstacle");
+//			log.debug("Dans un obstacle : "+pos);
 			return null;
 		}
 
