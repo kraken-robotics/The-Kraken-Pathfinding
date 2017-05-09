@@ -177,7 +177,6 @@ public class CheminPathfinding implements Service, HighPFClass, CheminPathfindin
 			if(current == firstPossible)
 				assezDeMargeDepuisDepart = true;
 		}
-		needRestart = false;
 		return false;
 	}
 	
@@ -314,7 +313,10 @@ public class CheminPathfinding implements Service, HighPFClass, CheminPathfindin
 	public Cinematique getLastValidCinematique()
 	{
 		if(!uptodate && needRestart && !empty)
+		{
+			needRestart = false; // la demande est partie
 			return chemin[minus(indexLast,1)];
+		}
 		return null;
 	}
 
