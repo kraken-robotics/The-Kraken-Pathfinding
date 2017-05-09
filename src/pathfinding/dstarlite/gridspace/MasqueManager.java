@@ -46,10 +46,8 @@ public class MasqueManager implements Service, LowPFClass
 	protected Log log;
 	private List<PointDirige> modelCylindre = new ArrayList<PointDirige>();
 	private boolean printObsCapteurs;
-	private List<PointDirige> model = new ArrayList<PointDirige>();
 	private boolean[][] dedans = new boolean[200][200];
 	private Vec2RW pos = new Vec2RW(), coinbasgaucheVec2 = new Vec2RW();
-	private Vec2RO deltaDilatation;
 
 	public MasqueManager(Log log, PointGridSpaceManager pointManager, PointDirigeManager pointDManager, PrintBufferInterface buffer, Config config)
 	{
@@ -61,7 +59,6 @@ public class MasqueManager implements Service, LowPFClass
 		printObsCapteurs = config.getBoolean(ConfigInfo.GRAPHIC_D_STAR_LITE);
 
 		rayonRobot = config.getInt(ConfigInfo.DILATATION_ROBOT_DSTARLITE);		
-		deltaDilatation = new Vec2RO(-rayonRobot, -rayonRobot);
 		int rayonCylindre = 32;
 		int rayonPointCylindre = (int) Math.round((rayonRobot + rayonCylindre) / PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS);
 		int tailleMasqueCylindre = 2*(rayonPointCylindre+1)+1;
@@ -134,44 +131,39 @@ public class MasqueManager implements Service, LowPFClass
 		coinbasgaucheVec2.setX(xmin);
 		coinbasgaucheVec2.setY(ymin);
 		
+		int y = (int) Math.round(ymin / PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS) - 1;
+		int x = (int) Math.round((xmin + 1500) / PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS) - 1;
+
 		int tailleMasqueX = (int) Math.round((xmax - xmin) / PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS) + 3;
 		int tailleMasqueY = (int) Math.round((ymax - ymin) / PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS) + 3;
 				
-		model.clear();
-		
-		log.debug("Obstacle en : "+obstacle.getPosition()+", tailleMasque : "+tailleMasqueX+", "+tailleMasqueY);
+		List<PointDirige> model = new ArrayList<PointDirige>();
 		
 		for(int i = 0; i < tailleMasqueX; i++)
 			for(int j = 0; j < tailleMasqueY; j++)
 			{
-				PointGridSpace p = pointManager.get(i, j);
-				if(p == null) // life is too short for this shit
-					dedans[i][j] = false;
-				else
-				{
-					p.computeVec2(pos);
-					pos.setX(pos.getX()+1500);
-					log.debug(pos+" "+obstacle.getPosition()+" "+deltaDilatation);
-					pos.plus(obstacle.getPosition());
-					pos.plus(deltaDilatation);
-					dedans[i][j] = obstacle.squaredDistance(pos) < rayonRobot * rayonRobot;
-					log.debug("On test le point "+pos+" : "+dedans[i][j]);
-				}
+				if(!pointManager.isValid(x+i, y+j)) // life is too short for this shit
+					continue;
+
+				PointGridSpace p = pointManager.get(x+i, y+j);
+				p.computeVec2(pos);
+				dedans[i][j] = obstacle.squaredDistance(pos) < rayonRobot * rayonRobot;
 			}
 
 		for(int i = 0; i < tailleMasqueX; i++)
 			for(int j = 0; j < tailleMasqueY; j++)
-				if(!dedans[i][j])
+				if(pointManager.isValid(x+i, y+j) && !dedans[i][j])
 					for(Direction d : Direction.values)
 					{
 						int i2 = i + d.deltaX, j2 = j + d.deltaY;
 						if(i2 >= 0 && i2 < tailleMasqueX && j2 >= 0 && j2 < tailleMasqueY && dedans[i2][j2])
-							model.add(pointDManager.get(i,j,d));
+							model.add(pointDManager.get(i+x,j+y,d));
 					}
 
+		Masque m = new Masque(pointManager, model);
 		if(printObsCapteurs)
 			buffer.addSupprimable(m);
 
-		return getMasque(obstacle.getPosition(), model, tailleMasqueX/2, tailleMasqueY/2);
+		return m;
 	}
 }

@@ -57,6 +57,11 @@ public class PointGridSpaceManager implements Service, LowPFClass
 		return get(index(x,y));
 	}
 	
+	public boolean isValid(int x, int y)
+	{
+		return !(x < 0 || x > X_MAX || y < 0 || y > Y_MAX);
+	}
+	
 	/**
 	 * Renvoie l'indice du gridpoint le plus proche de cette position
 	 * @param p
