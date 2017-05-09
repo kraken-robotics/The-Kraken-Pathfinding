@@ -337,7 +337,7 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 	@Test
     public void test_recherche_shoot_avec_ennemi_difficile() throws Exception
     {
-		Cinematique depart = new Cinematique(0, 1800, -Math.PI/3+0.1, true, 0);
+		Cinematique depart = new Cinematique(0, 1800, -Math.PI/3, true, 0);
 		robot.setCinematique(depart);
 		int[] data = {0,400,0,0,0,0,0,0,0,0,0,0};
 
@@ -367,9 +367,9 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 	@Test
     public void test_recherche_shoot_cercle_avec_ennemi_difficile() throws Exception
     {
-		Cinematique depart = new Cinematique(0, 1800, -Math.PI/3+0.1, true, 0);
+		Cinematique depart = new Cinematique(0, 1800, -Math.PI/3, true, 0);
 		robot.setCinematique(depart);
-		int[] data = {0,400,0,0,0,0,0,0,0,0,0,0};
+		int[] data = {0,400,0,0,0,0,0,400,0,0,0,0};
 		cercle.set(GameElementNames.MINERAI_CRATERE_HAUT_GAUCHE, 250);
 		astar.initializeNewSearchToCircle(true, state);
 		astar.process(chemin);
