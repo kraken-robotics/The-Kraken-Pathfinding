@@ -436,7 +436,7 @@ public class DStarLite implements Service, LowPFClass
 	 * Utilisé pour l'affichage et le debug
 	 * @return
 	 */
-	public synchronized List<Vec2RO> itineraireBrut() throws PathfindingException
+	public synchronized List<Vec2RO> itineraireBrut()
 	{
 		List<Vec2RO> trajet = new ArrayList<Vec2RO>();
 
@@ -448,7 +448,8 @@ public class DStarLite implements Service, LowPFClass
 		int nbMax = 500;
 		
 		if(depart.rhs == Integer.MAX_VALUE)
-			throw new PathfindingException("rhs infini : pas de chemin");
+			return null;
+//			log.critical("rhs infini : pas de chemin");
 		
 		while(!node.equals(arrivee) && --nbMax>0)
 		{
@@ -476,7 +477,8 @@ public class DStarLite implements Service, LowPFClass
 			node = min;
 		}
 		if(nbMax < 0)
-			throw new PathfindingException("Erreur : on aurait dû trouver un chemin… et non.");
+			return null;
+//			throw new PathfindingException("Erreur : on aurait dû trouver un chemin… et non.");
 
 		trajet.add(arrivee.gridpoint.computeVec2());
 //		log.debug("Arrivée : "+arrivee.gridpoint.computeVec2());
