@@ -36,7 +36,6 @@ import config.Config;
 import config.ConfigInfo;
 import container.Service;
 import container.dependances.LowPFClass;
-import exceptions.PathfindingException;
 import graphic.PrintBufferInterface;
 import graphic.printable.Couleur;
 
@@ -526,7 +525,7 @@ public class DStarLite implements Service, LowPFClass
 		erreurOrientation = Math.abs(erreurOrientation);
 
 		double erreurDistance = premier.rhs / 1000. * PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS; // distance en mm
-		
+		/*
 		if(useCercle)
 		{
 			/*
@@ -536,9 +535,9 @@ public class DStarLite implements Service, LowPFClass
 			if(c.enMarcheAvant)
 				erreurSens = 500;
 			return 1.1*erreurDistance + erreurSens + 20*erreurOrientation;*/
-			if(c.enMarcheAvant)
+/*			if(c.enMarcheAvant)
 				return 1.3*erreurDistance + 5*erreurOrientation + 1800;
-		}
+		}*/
 
 		if(premier.rhs == Integer.MAX_VALUE)
 		{
