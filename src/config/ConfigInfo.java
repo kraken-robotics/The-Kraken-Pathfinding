@@ -70,8 +70,8 @@ public enum ConfigInfo {
 	COURBURE_MAX(3), // quelle courbure maximale la trajectoire du robot peut-elle avoir
 	TEMPS_ARRET(800), // temps qu'il faut au robot pour s'arrêter et repartir (par exemple à cause d'un rebroussement)
 	PF_MARGE_AVANT_COLLISION((int)(50/ClothoidesComputer.PRECISION_TRACE_MM)), // combien de points de pathfinding retire-t-on avant la collision
-	PF_MARGE_NECESSAIRE((int)(80/ClothoidesComputer.PRECISION_TRACE_MM)), // combien de points de pathfinding le bas niveau doit-il toujours avoir
-	PF_MARGE_INITIALE((int)(120/ClothoidesComputer.PRECISION_TRACE_MM)), // combien de points garde-t-on au début de la replanification
+	PF_MARGE_NECESSAIRE((int)(50/ClothoidesComputer.PRECISION_TRACE_MM)), // combien de points de pathfinding le bas niveau doit-il toujours avoir
+	PF_MARGE_INITIALE((int)(100/ClothoidesComputer.PRECISION_TRACE_MM)), // combien de points garde-t-on au début de la replanification
 	DUREE_MAX_RECHERCHE_PF(3000), // durée maximale que peut prendre le pathfinding
 	TAILLE_FAISCEAU_PF(10), // combien de voisins sont ajoutés à l'openset à chaque itération // TODO
 	NB_ESSAIS_PF(3), // nombre d'essais du pathfinding
