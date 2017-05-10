@@ -248,6 +248,7 @@ public class VideoReader {
 		    	}
 			}
 	        special("Fin de l'enregistrement");
+	        br.close();
 			container.getExistingService(Fenetre.class).waitUntilExit();
 		} catch(InterruptedException e) {
 			

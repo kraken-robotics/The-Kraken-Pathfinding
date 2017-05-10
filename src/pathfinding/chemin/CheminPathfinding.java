@@ -310,6 +310,7 @@ public class CheminPathfinding implements Service, HighPFClass, CheminPathfindin
 	 * Un "checkColliding" doit être fait avant !
 	 * @return
 	 */
+	@Override
 	public Cinematique getLastValidCinematique()
 	{
 		if(!uptodate && needRestart && !empty)

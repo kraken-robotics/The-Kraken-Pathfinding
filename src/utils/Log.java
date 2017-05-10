@@ -300,8 +300,7 @@ public class Log implements Service, DynamicConfigurable
 	{
 		if(sauvegarde_fichier)
 			return new PrintWriter(writer);
-		else
-			return new PrintWriter(System.err);
+		return new PrintWriter(System.err);
 	}
 
 }

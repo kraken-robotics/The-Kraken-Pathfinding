@@ -199,6 +199,7 @@ public class Cinematique implements Printable, Serializable
 	/**
 	 * Doit être évité à tout prix
 	 */
+	@Override
 	public Cinematique clone()
 	{
 		Cinematique out = new Cinematique();
