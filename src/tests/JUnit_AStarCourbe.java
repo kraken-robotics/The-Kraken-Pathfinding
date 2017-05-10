@@ -317,17 +317,13 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 		astar.initializeNewSearch(c, true, state);
 		astar.process(chemin);
 		iterator.reinit();
-		CinematiqueObs a = null, b = null;
+		CinematiqueObs a = null;
 		int i = 0;
 		while(iterator.hasNext())
 		{
 			i++;
 			a = iterator.next();
-			log.debug(a);
 			robot.setCinematique(a);
-			if(b != null)
-				log.debug(a.getPosition().distance(b.getPosition()));
-			b = a;
 			if(graphicTrajectory)
 				Thread.sleep(100);
 		}
@@ -381,6 +377,8 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 		{
 			if(r.nextInt(10) == 0)
 				sensors.add(new SensorsData(0,0,data,robot.getCinematique()));
+			else
+				sensors.add(new SensorsData(robot.getCinematique()));
 
 			i++;
 			a = iterator.next();
