@@ -71,7 +71,8 @@ public class RealTable extends Table implements Service, CoreClass
 	@Override
 	public synchronized boolean setDone(GameElementNames id, EtatElement done)
 	{
-		log.debug("Changement état de "+id+" : "+done);
+		if(done.hash > isDone(id).hash)
+			log.debug("Changement état de "+id+" : "+done);
 		if(print && done.hash > EtatElement.INDEMNE.hash)
 			buffer.removeSupprimable(id.obstacle);
 		return super.setDone(id, done);
