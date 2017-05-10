@@ -139,12 +139,13 @@ public class CheminPathfinding implements Service, HighPFClass, CheminPathfindin
 		int nbMarge = 0;
 		int firstPossible = add(indexFirst, margeInitiale); // le premier point qu'on pourrait accepter
 		
+		iterObstacles.save();
 		while(iterChemin.hasNext())
 		{
 			CinematiqueObs cinem = iterChemin.next();
 			int current = iterChemin.getIndex();
 			ObstacleRobot a = cinem.obstacle;
-			iterObstacles.reinit();
+			iterObstacles.load();
 			while(iterObstacles.hasNext())
 			{
 				ObstacleProximity o = iterObstacles.next();
@@ -166,6 +167,9 @@ public class CheminPathfinding implements Service, HighPFClass, CheminPathfindin
 						log.debug("On raccourcit la trajectoire. IndexLast = "+indexLast, Verbose.REPLANIF.masque);
 						needRestart = true;
 					}
+					// on va jusqu'au bout de l'itérateur
+					while(iterObstacles.hasNext())
+						iterObstacles.next();
 					return true;
 				}
 			}
