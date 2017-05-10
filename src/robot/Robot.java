@@ -97,14 +97,14 @@ public abstract class Robot implements DynamicConfigurable
 	 */
 	public void baisseFilet() throws InterruptedException, ActionneurException
 	{
-		bloque("baisseFilet");
 		filetBaisse = true;
+		bloque("baisseFilet");
 	}
 	
 	public void bougeFiletMiChemin() throws InterruptedException, ActionneurException
 	{
-		bloque("bougeFiletMiChemin");
 		filetBaisse = true;
+		bloque("bougeFiletMiChemin");
 	}
 	
 	public void leveFilet() throws InterruptedException, ActionneurException
