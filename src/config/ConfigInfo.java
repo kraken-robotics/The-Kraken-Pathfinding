@@ -89,7 +89,7 @@ public enum ConfigInfo {
 	 * Paramètres bas niveau des capteurs
 	 */
 	SENSORS_SEND_PERIOD(20), // période d'envoi des infos des capteurs (ms)
-	SENSORS_PRESCALER(5), // sur combien de trames a-t-on les infos des capteurs
+	SENSORS_PRESCALER(2), // sur combien de trames a-t-on les infos des capteurs
 	
 	/**
 	 * Paramètres du traitement des capteurs
