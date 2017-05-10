@@ -29,7 +29,7 @@ import pathfinding.dstarlite.DStarLite;
 import robot.Cinematique;
 import robot.Speed;
 import table.GameElementNames;
-import table.Table;
+import table.RealTable;
 import table.EtatElement;
 
 import java.util.ArrayList;
@@ -57,7 +57,7 @@ public class ArcManager implements Service, HighPFClass
 	private ClothoidesComputer clotho;
 	protected BezierComputer bezier;
 	private PrintBufferInterface buffer;
-	private Table table;
+	private RealTable table;
 	private AStarCourbeNode current;
 	private DStarLite dstarlite;
 	private double courbureMax;
@@ -71,7 +71,7 @@ public class ArcManager implements Service, HighPFClass
 	private List<VitesseCourbure> listeVitesse = new ArrayList<VitesseCourbure>();
 	private ListIterator<VitesseCourbure> iterator = listeVitesse.listIterator();
 	
-	public ArcManager(Log log, ClothoidesComputer clotho, Table table, PrintBufferInterface buffer, DStarLite dstarlite, BezierComputer bezier, CercleArrivee cercle, Config config)
+	public ArcManager(Log log, ClothoidesComputer clotho, RealTable table, PrintBufferInterface buffer, DStarLite dstarlite, BezierComputer bezier, CercleArrivee cercle, Config config)
 	{
 		this.bezier = bezier;
 		this.table = table;
