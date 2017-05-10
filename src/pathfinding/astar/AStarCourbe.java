@@ -245,7 +245,7 @@ public class AStarCourbe implements Service, HighPFClass
 				return;
 			}
 			
-			if(elapsed > dureeMaxPF) // étant donné qu'il peut continuer jusqu'à l'infini...
+			if(!chemin.isReplanif() && elapsed > dureeMaxPF) // étant donné qu'il peut continuer jusqu'à l'infini...
 			{
 				memorymanager.empty();
 				cinemMemory.empty();

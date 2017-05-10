@@ -403,5 +403,11 @@ public class CheminPathfinding implements Service, HighPFClass, CheminPathfindin
 	{
 		return chemin[minus(indexLast,1)];
 	}
+
+	@Override
+	public boolean isReplanif()
+	{
+		return !uptodate;
+	}
 	
 }

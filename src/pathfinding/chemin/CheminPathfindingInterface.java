@@ -36,5 +36,6 @@ public interface CheminPathfindingInterface
 	public void setUptodate();
 	public boolean aAssezDeMarge();
 	public boolean needStop();
+	public boolean isReplanif();
 	public Cinematique getLastValidCinematique();
 }
