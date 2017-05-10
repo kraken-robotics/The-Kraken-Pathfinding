@@ -62,7 +62,7 @@ public class RealTable extends Table implements Service, CoreClass
 		print = config.getBoolean(ConfigInfo.GRAPHIC_GAME_ELEMENTS);
 		if(print)
 			for(GameElementNames g : GameElementNames.values())
-				buffer.add(g.obstacle);
+				buffer.addSupprimable(g.obstacle);
 	}
 	
 	/**
@@ -71,6 +71,7 @@ public class RealTable extends Table implements Service, CoreClass
 	@Override
 	public synchronized boolean setDone(GameElementNames id, EtatElement done)
 	{
+		log.debug("Changement état de "+id+" : "+done);
 		if(print && done.hash > EtatElement.INDEMNE.hash)
 			buffer.removeSupprimable(id.obstacle);
 		return super.setDone(id, done);
