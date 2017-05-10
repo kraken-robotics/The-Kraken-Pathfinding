@@ -134,10 +134,7 @@ public class MemoryManager<T extends Memorizable> implements Service {
 		 * S'il est déjà détruit, on lève une exception
 		 */
 		if(indice_state >= firstAvailable)
-		{
-			int z = 0;
-			z = 1 / z;
-		}
+			log.critical("Objet déjà détruit ! "+indice_state+" > "+firstAvailable);
 
 		// On inverse dans le Vector les deux objets,
 		// de manière à avoir toujours un Vector trié.

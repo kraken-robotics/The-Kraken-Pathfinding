@@ -120,7 +120,6 @@ public class CheminPathfinding implements Service, HighPFClass, CheminPathfindin
 	{
 		if(!empty && isColliding())
 		{
-			log.warning("Un ennemi est sur le chemin : replanification nécessaire", Verbose.REPLANIF.masque);
 			uptodate = false;
 			notify();
 		}
@@ -156,11 +155,13 @@ public class CheminPathfinding implements Service, HighPFClass, CheminPathfindin
 					// on n'a pas assez de marge !
 					if(nbMarge < margeAvantCollision)
 					{
+						log.warning("Pas assez de marge !", Verbose.REPLANIF.masque);
 						indexLast = indexFirst;
 						empty = true;
 					}
 					else
 					{
+						log.warning("Replanification nécessaire", Verbose.REPLANIF.masque);
 						// on a assez de marge, on va faire de la replanification à la volée
 						indexLast = minus(current, margeAvantCollision);
 						out.makeNextObsolete(chemin[minus(indexLast,1)], minus(indexLast,1));
@@ -237,11 +238,11 @@ public class CheminPathfinding implements Service, HighPFClass, CheminPathfindin
 				updateAffichage();
 		}
 		
-		iterCheminPrint.reinit();
+/*		iterCheminPrint.reinit();
 		log.debug("Affichage du chemin actuel : ", Verbose.REPLANIF.masque);
 		while(iterCheminPrint.hasNext())
 			log.debug(iterCheminPrint.getIndex()+" : "+iterCheminPrint.next(), Verbose.REPLANIF.masque);
-		
+		*/
 		return t;
 	}
 	
