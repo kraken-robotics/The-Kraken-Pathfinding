@@ -17,7 +17,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 package pathfinding.chemin;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 
 import obstacles.memory.ObstaclesIteratorPresent;
 import obstacles.types.ObstacleCircular;
@@ -55,6 +58,7 @@ public class CheminPathfinding implements Service, HighPFClass, CheminPathfindin
 	private IteratorCheminPathfinding iterChemin;	
 	private IteratorCheminPathfinding iterCheminPrint;
 	private PrintBufferInterface buffer;
+	private List<Ticket> tickets = new ArrayList<Ticket>();
 	
 	private volatile CinematiqueObs[] chemin = new CinematiqueObs[256];
 	private volatile ObstacleCircular[] aff = new ObstacleCircular[256];
@@ -185,11 +189,16 @@ public class CheminPathfinding implements Service, HighPFClass, CheminPathfindin
 		return false;
 	}
 	
+	public synchronized boolean isArrived()
+	{
+		return uptodate && minus(indexLast, indexFirst) < 2;
+	}
+	
 	/**
 	 * Le chemin est-il vide ?
 	 * @return
 	 */
-	public synchronized boolean isEmpty()
+	public boolean isEmpty()
 	{
 		return empty;
 	}
@@ -203,6 +212,16 @@ public class CheminPathfinding implements Service, HighPFClass, CheminPathfindin
 		if(indexLast == indexFirst)
 			log.critical("Buffer trop petit !");
 	}
+	
+	public void waitTrajectoryTickets() throws InterruptedException
+	{
+		Iterator<Ticket> iter = tickets.iterator();
+		while(iter.hasNext())
+		{
+			iter.next().attendStatus();
+			iter.remove();
+		}
+	}
 
 	/**
 	 * Ajoute un arc au chemin
@@ -210,9 +229,8 @@ public class CheminPathfinding implements Service, HighPFClass, CheminPathfindin
 	 * @param arc
 	 */
 	@Override
-	public Ticket[] addToEnd(LinkedList<CinematiqueObs> points) throws PathfindingException
+	public void addToEnd(LinkedList<CinematiqueObs> points) throws PathfindingException
 	{
-		Ticket[] t = null;
 		/*
 		 * En cas de replanification, si les points ajoutés ne suffisent pas pour avoir assurer la marge du bas niveau, on lance une exception
 		 */
@@ -232,7 +250,9 @@ public class CheminPathfinding implements Service, HighPFClass, CheminPathfindin
 			else
 				tmp = add(tmp, 1); // on ne le renvoie pas
 
-			t = out.envoieArcCourbe(points, tmp);
+			Ticket[] ts = out.envoieArcCourbe(points, tmp);
+			for(Ticket t : ts)
+				tickets.add(t);
 
 			if(graphic)
 				updateAffichage();
@@ -243,7 +263,6 @@ public class CheminPathfinding implements Service, HighPFClass, CheminPathfindin
 		while(iterCheminPrint.hasNext())
 			log.debug(iterCheminPrint.getIndex()+" : "+iterCheminPrint.next(), Verbose.REPLANIF.masque);
 		*/
-		return t;
 	}
 	
 	private boolean isIndexValid(int index)

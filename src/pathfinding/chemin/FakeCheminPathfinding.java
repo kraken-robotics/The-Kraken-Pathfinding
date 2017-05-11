@@ -18,7 +18,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 package pathfinding.chemin;
 
 import java.awt.Graphics;
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 
 import config.Config;
 import config.ConfigInfo;
@@ -61,7 +63,7 @@ public class FakeCheminPathfinding implements Service, CheminPathfindingInterfac
 	}
 	
 	@Override
-	public synchronized Ticket[] addToEnd(LinkedList<CinematiqueObs> points) throws PathfindingException
+	public synchronized void addToEnd(LinkedList<CinematiqueObs> points) throws PathfindingException
 	{
 		path = points;
 		if(print)
@@ -70,7 +72,6 @@ public class FakeCheminPathfinding implements Service, CheminPathfindingInterfac
 				buffer.notify();
 			}
 		notify();
-		return null;
 	}
 
 	@Override
