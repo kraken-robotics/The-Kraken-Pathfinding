@@ -427,7 +427,8 @@ public class BezierComputer implements Service, HighPFClass
 		
 		Vec2RW delta = a.minusNewVector(c);
 					
-		double angle = (2*(new Vec2RO(ux, uy).getFastArgument() - new Vec2RO(vx, vy).getFastArgument())) % (2*Math.PI);
+		// on n'utilise pas getFastArgument ici car la précision est cruciale pour arriver correctement sur le cercle
+		double angle = (2*(new Vec2RO(ux, uy).getArgument() - new Vec2RO(vx, vy).getArgument())) % (2*Math.PI);
 		if(angle > Math.PI)
 			angle -= 2*Math.PI;
 		else if(angle < -Math.PI)

@@ -105,7 +105,7 @@ public class CercleArrivee implements Service, Printable, HighPFClass, LowPFClas
 			diffo += 2*Math.PI;
 		
 		// on vérifie qu'on est proche du rayon avec la bonne orientation
-		return Math.abs(diffo) < 1 / 180. * Math.PI && (robot.getPosition().distance(position) - rayon) < 5;
+		return Math.abs(diffo) < 1 / 180. * Math.PI && (robot.getPosition().distance(position) - rayon) < 2;
 	}
 
 	@Override
