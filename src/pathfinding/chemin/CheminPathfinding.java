@@ -193,7 +193,8 @@ public class CheminPathfinding implements Service, HighPFClass, CheminPathfindin
 	
 	public synchronized boolean isArrived()
 	{
-		return uptodate && minus(indexLast, indexFirst) < 2;
+		log.debug("Test isArrived : "+uptodate+" "+indexFirst+" "+indexLast, Verbose.REPLANIF.masque);
+		return uptodate && indexFirst == indexLast;
 	}
 	
 	/**
