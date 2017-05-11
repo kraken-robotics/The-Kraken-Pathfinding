@@ -210,6 +210,8 @@ public class AStarCourbe implements Service, HighPFClass
 			{
 				if(graphicTrajectory || graphicTrajectoryAll)
 					current.setDead();
+				if(current != depart)
+					destroy(current);
 				continue;
 			}
 
