@@ -84,9 +84,9 @@ public class CheminPathfinding implements Service, HighPFClass, CheminPathfindin
 		int demieLongueurArriere = config.getInt(ConfigInfo.DEMI_LONGUEUR_NON_DEPLOYE_ARRIERE);
 		int demieLongueurAvant = config.getInt(ConfigInfo.DEMI_LONGUEUR_NON_DEPLOYE_AVANT);
 		int marge = config.getInt(ConfigInfo.DILATATION_OBSTACLE_ROBOT);
-		margeNecessaire = config.getInt(ConfigInfo.PF_MARGE_NECESSAIRE);
-		margeAvantCollision = config.getInt(ConfigInfo.PF_MARGE_AVANT_COLLISION);
-		margeInitiale = config.getInt(ConfigInfo.PF_MARGE_INITIALE);
+		margeNecessaire = (int)(config.getDouble(ConfigInfo.PF_MARGE_NECESSAIRE)/ClothoidesComputer.PRECISION_TRACE_MM);
+		margeAvantCollision = (int)(config.getInt(ConfigInfo.PF_MARGE_AVANT_COLLISION)/ClothoidesComputer.PRECISION_TRACE_MM);
+		margeInitiale = (int)(config.getInt(ConfigInfo.PF_MARGE_INITIALE)/ClothoidesComputer.PRECISION_TRACE_MM);
 		graphic = config.getBoolean(ConfigInfo.GRAPHIC_TRAJECTORY_FINAL);
 
 		for(int i = 0; i < chemin.length; i++)
