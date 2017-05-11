@@ -73,7 +73,7 @@ public enum ConfigInfo {
 	PF_MARGE_NECESSAIRE(50), // combien de mm le bas niveau doit-il toujours avoir
 	PF_MARGE_INITIALE(100), // combien de mm garde-t-on obligatoirement au début de la replanification
 	DUREE_MAX_RECHERCHE_PF(3000), // durée maximale que peut prendre le pathfinding
-	TAILLE_FAISCEAU_PF(20), // combien de voisins sont ajoutés à l'openset à chaque itération
+	TAILLE_FAISCEAU_PF(20), // combien de voisins sont ajoutés à l'openset à chaque itération. CONFIG IGNORÉE !
 	NB_ESSAIS_PF(3), // nombre d'essais du pathfinding
 	
 	/**

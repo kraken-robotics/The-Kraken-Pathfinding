@@ -72,7 +72,7 @@ public class AStarCourbe implements Service, HighPFClass
 	private boolean graphicTrajectory, graphicDStarLite, graphicTrajectoryAll;
 	private int dureeMaxPF;
 	private Speed vitesseMax;
-	private int tailleFaisceau;
+//	private int tailleFaisceau;
 	private boolean shoot;
 	private volatile boolean rechercheEnCours = false;
 	
@@ -99,8 +99,8 @@ public class AStarCourbe implements Service, HighPFClass
 	private Stack<ArcCourbe> pileTmp = new Stack<ArcCourbe>();
 	private LinkedList<CinematiqueObs> trajectory = new LinkedList<CinematiqueObs>();
 
-	private HashSet<AStarCourbeNode> closedsetTmp = new HashSet<AStarCourbeNode>();
-	private final PriorityQueue<AStarCourbeNode> opensetTmp = new PriorityQueue<AStarCourbeNode>(100, new AStarCourbeNodeComparator());
+//	private HashSet<AStarCourbeNode> closedsetTmp = new HashSet<AStarCourbeNode>();
+//	private final PriorityQueue<AStarCourbeNode> opensetTmp = new PriorityQueue<AStarCourbeNode>(100, new AStarCourbeNodeComparator());
 	
 	/**
 	 * Constructeur du AStarCourbe
@@ -120,7 +120,7 @@ public class AStarCourbe implements Service, HighPFClass
 		graphicTrajectoryAll = config.getBoolean(ConfigInfo.GRAPHIC_TRAJECTORY_ALL);
 		graphicDStarLite = config.getBoolean(ConfigInfo.GRAPHIC_D_STAR_LITE_FINAL);
 		dureeMaxPF = config.getInt(ConfigInfo.DUREE_MAX_RECHERCHE_PF);
-		tailleFaisceau = config.getInt(ConfigInfo.TAILLE_FAISCEAU_PF);
+//		tailleFaisceau = config.getInt(ConfigInfo.TAILLE_FAISCEAU_PF);
 		int demieLargeurNonDeploye = config.getInt(ConfigInfo.LARGEUR_NON_DEPLOYE)/2;
 		int demieLongueurArriere = config.getInt(ConfigInfo.DEMI_LONGUEUR_NON_DEPLOYE_ARRIERE);
 		int demieLongueurAvant = config.getInt(ConfigInfo.DEMI_LONGUEUR_NON_DEPLOYE_AVANT);
@@ -272,8 +272,8 @@ public class AStarCourbe implements Service, HighPFClass
 			}
 
 			// On parcourt les voisins de current
-			opensetTmp.clear();
-			closedsetTmp.clear();
+//			opensetTmp.clear();
+//			closedsetTmp.clear();
 			arcmanager.reinitIterator(current);
 			while(arcmanager.hasNext())
 			{
@@ -312,17 +312,19 @@ public class AStarCourbe implements Service, HighPFClass
 				if(arcmanager.isArrived(successeur) && arcmanager.isReachable(successeur, shoot)
 					&& (trajetDeSecours == null || trajetDeSecours.f_score > successeur.f_score))
 				{
+					if(trajetDeSecours != null)
+						destroy(trajetDeSecours);
 //					log.debug("Arrivée trouvée !");
 					trajetDeSecours = successeur;
 				}
 				
-				
-				opensetTmp.add(successeur);
+				openset.add(successeur);
+//				opensetTmp.add(successeur);
 //				log.debug(successeur.getArc().vitesse+" "+successeur.g_score+" "+(successeur.f_score-successeur.g_score));
 			}
 			
 			// On ajoute que les meilleurs
-			int nbAjoutes = 0;
+/*			int nbAjoutes = 0;
 			while(nbAjoutes < tailleFaisceau)
 			{
 				AStarCourbeNode n = opensetTmp.poll();
@@ -334,7 +336,7 @@ public class AStarCourbe implements Service, HighPFClass
 					openset.add(n);
 					nbAjoutes++;
 				}
-			}
+			}*/
 
 		} while(!openset.isEmpty());
 		
