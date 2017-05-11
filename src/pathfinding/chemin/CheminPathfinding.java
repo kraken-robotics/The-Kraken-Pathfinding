@@ -120,9 +120,9 @@ public class CheminPathfinding implements Service, HighPFClass, CheminPathfindin
 	/**
 	 * Y a-t-il une collision avec un obstacle de proximité ?
 	 */
-	public synchronized void checkColliding()
+	public synchronized void checkColliding(boolean all)
 	{
-		if(!empty && isColliding())
+		if(!empty && isColliding(all))
 		{
 			uptodate = false;
 			notify();
@@ -135,13 +135,15 @@ public class CheminPathfinding implements Service, HighPFClass, CheminPathfindin
 	 * On suppose qu'il n'y a pas de collision avec les autres éléments
 	 * @return
 	 */
-	private synchronized boolean isColliding()
+	private synchronized boolean isColliding(boolean all)
 	{
 		iterChemin.reinit();
 		boolean assezDeMargeDepuisDepart = false;
 		int nbMarge = 0;
 		int firstPossible = add(indexFirst, margeInitiale); // le premier point qu'on pourrait accepter
 		
+		if(all)
+			iterObstacles.reinit();
 		iterObstacles.save();
 		while(iterChemin.hasNext())
 		{
@@ -256,6 +258,8 @@ public class CheminPathfinding implements Service, HighPFClass, CheminPathfindin
 
 			if(graphic)
 				updateAffichage();
+
+			checkColliding(true); // on vérifie que les points ajoutés ne collisionnent pas
 		}
 		
 /*		iterCheminPrint.reinit();
