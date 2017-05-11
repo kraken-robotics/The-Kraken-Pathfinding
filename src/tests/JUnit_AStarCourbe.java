@@ -236,7 +236,7 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 		}
     }
 
-	@Test
+/*	@Test
     public void test_bezier_quad_cercle() throws Exception
     {
 		boolean graphicTrajectory = config.getBoolean(ConfigInfo.GRAPHIC_TRAJECTORY);
@@ -261,7 +261,7 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 			}
 		}
 		Assert.assertTrue(cercle.isArrived(arc[0].getLast()));
-    }
+    }*/
 	
 	/*
 	@Test
@@ -367,7 +367,38 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 		robot.setCinematique(depart);
 		int[] data = {0,400,0,0,0,0,0,400,0,0,0,0};
 		cercle.set(GameElementNames.MINERAI_CRATERE_HAUT_GAUCHE, 250);
-		astar.initializeNewSearchToCircle(true, state);
+		astar.initializeNewSearchToCircle(false, state);
+		astar.process(chemin);
+		iterator.reinit();
+		CinematiqueObs a = null;
+		int i = 0;
+		Random r = new Random();
+		while(iterator.hasNext())
+		{
+			if(r.nextInt(10) == 0)
+				sensors.add(new SensorsData(0,0,data,robot.getCinematique()));
+			else
+				sensors.add(new SensorsData(robot.getCinematique()));
+
+			i++;
+			a = iterator.next();
+			log.debug("Robot en "+iterator.getIndex()+" : "+a);
+			robot.setCinematique(a);
+			chemin.setCurrentIndex(iterator.getIndex());
+			if(graphicTrajectory)
+				Thread.sleep(100);
+		}
+		log.debug("Nb points : "+i);
+    }
+	
+	@Test
+    public void test_recherche_shoot_cercle_avec_ennemi_difficile2() throws Exception
+    {
+		Cinematique depart = new Cinematique(-800, 350, Math.PI/2, true, 0);
+		robot.setCinematique(depart);
+		int[] data = {0,400,0,0,0,0,0,400,0,0,0,0};
+		cercle.set(GameElementNames.MINERAI_CRATERE_HAUT_DROITE, 250);
+		astar.initializeNewSearchToCircle(false, state);
 		astar.process(chemin);
 		iterator.reinit();
 		CinematiqueObs a = null;
@@ -500,8 +531,7 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 				Thread.sleep(100);
 		}
 		gridspace.addObstacleAndRemoveNearbyObstacles(new ObstacleCircular(new Vec2RO(-400, 1300), 200));
-//		gridspace.addObstacleAndRemoveNearbyObstacles(new Vec2RO(0, 1600)); // TODO
-		chemin.checkColliding();
+		chemin.checkColliding(true);
 		avant = System.nanoTime();
 		astar.updatePath(chemin.getLastValidCinematique());
 		log.debug("Temps recalcul : "+(System.nanoTime() - avant) / (1000000.));
@@ -545,9 +575,9 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 			if(graphicTrajectory)
 				Thread.sleep(100);
 		}
-		gridspace.addObstacleAndRemoveNearbyObstacles(new ObstacleCircular(new Vec2RO(-600, 800), 200));
-//		gridspace.addObstacleAndRemoveNearbyObstacles(new Vec2RO(0, 1600)); // TODO
-		chemin.checkColliding();
+//		gridspace.addObstacleAndRemoveNearbyObstacles(new ObstacleCircular(new Vec2RO(-600, 800), 200));
+		gridspace.addObstacleAndRemoveNearbyObstacles(new ObstacleCircular(new Vec2RO(0, 1600),200));
+		chemin.checkColliding(true);
 		avant = System.nanoTime();
 		try {
 			astar.updatePath(robot.getCinematique());
@@ -565,7 +595,7 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 		long avant = System.nanoTime();
 		Cinematique depart = new Cinematique(-800, 350, Math.PI/2, true, 0);
 		robot.setCinematique(depart);
-		cercle.set(GameElementNames.MINERAI_CRATERE_HAUT_GAUCHE, 250);
+		cercle.set(GameElementNames.MINERAI_CRATERE_HAUT_GAUCHE, 200);
 		astar.initializeNewSearchToCircle(true, state);
 		astar.process(chemin);
 		log.debug("Temps : "+(System.nanoTime() - avant) / (1000000.));
