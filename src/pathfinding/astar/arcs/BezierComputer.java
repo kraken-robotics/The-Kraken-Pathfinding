@@ -169,6 +169,7 @@ public class BezierComputer implements Service, HighPFClass
 	 * @return
 	 * @throws InterruptedException 
 	 */
+	@Deprecated
 	public ArcCourbeDynamique interpolationQuadratiqueCercle(Cinematique cinematiqueInitiale) throws InterruptedException
 	{
 		ArcCourbeDynamique out = interpolationQuadratique(cinematiqueInitiale, cercle.position);
