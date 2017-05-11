@@ -360,4 +360,9 @@ public class ArcManager implements Service, HighPFClass
 	{
 		return 3*cinematique.getPosition().distanceFast(arrivee.getPosition());
 	}
+
+	public boolean isToCircle()
+	{
+		return useCercle;
+	}
 }
