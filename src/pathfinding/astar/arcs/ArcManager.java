@@ -41,6 +41,7 @@ import config.ConfigInfo;
 import container.Service;
 import container.dependances.HighPFClass;
 import graphic.PrintBufferInterface;
+import obstacles.memory.ObstaclesIteratorPresent;
 import obstacles.types.ObstacleArcCourbe;
 import obstacles.types.ObstaclesFixes;
 import utils.Log;
@@ -60,6 +61,7 @@ public class ArcManager implements Service, HighPFClass
 	private RealTable table;
 	private AStarCourbeNode current;
 	private DStarLite dstarlite;
+	private ObstaclesIteratorPresent obstaclesProxIterator;
 	private double courbureMax;
 	private boolean printObs;
 	private boolean useCercle;
@@ -71,8 +73,9 @@ public class ArcManager implements Service, HighPFClass
 	private List<VitesseCourbure> listeVitesse = new ArrayList<VitesseCourbure>();
 	private ListIterator<VitesseCourbure> iterator = listeVitesse.listIterator();
 	
-	public ArcManager(Log log, ClothoidesComputer clotho, RealTable table, PrintBufferInterface buffer, DStarLite dstarlite, BezierComputer bezier, CercleArrivee cercle, Config config)
+	public ArcManager(Log log, ClothoidesComputer clotho, RealTable table, PrintBufferInterface buffer, DStarLite dstarlite, BezierComputer bezier, CercleArrivee cercle, Config config, ObstaclesIteratorPresent obstaclesProxIterator)
 	{
+		this.obstaclesProxIterator = obstaclesProxIterator;
 		this.bezier = bezier;
 		this.table = table;
 		this.log = log;
@@ -127,13 +130,22 @@ public class ArcManager implements Service, HighPFClass
     		}
 
     	// Collision avec un obstacle de proximité ?
+    	
+    	obstaclesProxIterator.reinit();
+    	while(obstaclesProxIterator.hasNext())
+           	if(obstaclesProxIterator.next().isColliding(obs))
+    		{
+//				log.debug("Collision avec un obstacle de proximité.");
+    			return false;
+    		}
+    	/*
     	node.state.iterator.reinit();
     	while(node.state.iterator.hasNext())
            	if(node.state.iterator.next().isColliding(obs))
     		{
 //				log.debug("Collision avec un obstacle de proximité.");
     			return false;
-    		}
+    		}*/
     	
     	// On vérifie si on collisionne un élément de jeu (sauf si on shoot)
     	if(!shoot)

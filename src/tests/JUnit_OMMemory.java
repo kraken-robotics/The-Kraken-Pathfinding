@@ -63,13 +63,13 @@ public class JUnit_OMMemory extends JUnit_Test {
 	@Test
     public void test_obstacle() throws Exception
     {
-		ChronoGameState chrono = container.make(ChronoGameState.class);
+//		ChronoGameState chrono = container.make(ChronoGameState.class);
 		iterator.reinit();
 		Assert.assertTrue(!iterator.hasNext());
 		gridspace.addObstacleAndRemoveNearbyObstacles(new ObstacleCircular(new Vec2RO(-400, 1300),200));
 		Assert.assertTrue(iterator.hasNext());
-		state.copyAStarCourbe(chrono);
-		Assert.assertTrue(chrono.iterator.hasNext());
+//		state.copyAStarCourbe(chrono);
+//		Assert.assertTrue(chrono.iterator.hasNext());
     }
 	
 	@Test

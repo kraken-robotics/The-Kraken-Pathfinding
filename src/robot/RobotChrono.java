@@ -76,7 +76,7 @@ public class RobotChrono extends Robot
 	@Override
 	public void followTrajectory(Speed vitesse) throws InterruptedException, UnableToMoveException
 	{
-		// TODO : appeler suitArcCourbe
+		// ne mets pas à jour la date, c'est normal
 		chemin.getLastCinematique().copy(cinematique);
 	}
 

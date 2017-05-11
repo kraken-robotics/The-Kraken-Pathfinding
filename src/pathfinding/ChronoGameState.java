@@ -32,12 +32,12 @@ import table.Table;
 
 public class ChronoGameState extends GameState<RobotChrono>
 {
-    public final ObstaclesIteratorFutur iterator;
+//    public final ObstaclesIteratorFutur iterator;
 
-    public ChronoGameState(RobotChrono robot, ObstaclesIteratorFutur iterator, Table table)
+    public ChronoGameState(RobotChrono robot, /*ObstaclesIteratorFutur iterator,*/ Table table)
     {
     	this.robot = robot;
-    	this.iterator = iterator;
+//    	this.iterator = iterator;
     	this.table = table;
     }
     
@@ -52,7 +52,6 @@ public class ChronoGameState extends GameState<RobotChrono>
     {
     	table.copy(modified.table);
         robot.copy(modified.robot);
-        iterator.copy(modified.iterator, robot.getTempsDepuisDebutMatch());
-        // Table a été copié par gridspace
+//        iterator.copy(modified.iterator, robot.getTempsDepuisDebutMatch());
     }
 }
