@@ -159,7 +159,7 @@ public class CheminPathfinding implements Service, HighPFClass, CheminPathfindin
 					log.debug("Collision en "+current+". Actuel : "+indexFirst+" (soit environ "+ClothoidesComputer.PRECISION_TRACE_MM*(minus(current, indexFirst)-0.5)+" mm avant impact)", Verbose.CAPTEURS.masque | Verbose.REPLANIF.masque);
 
 					// on n'a pas assez de marge !
-					if(nbMarge < margeAvantCollision)
+					if(!assezDeMargeDepuisDepart)
 					{
 						log.warning("Pas assez de marge !", Verbose.REPLANIF.masque);
 						indexLast = indexFirst;
@@ -169,7 +169,7 @@ public class CheminPathfinding implements Service, HighPFClass, CheminPathfindin
 					{
 						log.warning("Replanification nécessaire", Verbose.REPLANIF.masque);
 						// on a assez de marge, on va faire de la replanification à la volée
-						indexLast = minus(current, margeAvantCollision);
+						indexLast = minus(current, Math.min(nbMarge, margeAvantCollision));
 						out.makeNextObsolete(chemin[minus(indexLast,1)], minus(indexLast,1));
 						log.debug("On raccourcit la trajectoire. IndexLast = "+indexLast, Verbose.REPLANIF.masque);
 						needRestart = true;
