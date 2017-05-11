@@ -172,10 +172,11 @@ public class ArcManager implements Service, HighPFClass
 
 		if(v instanceof VitesseBezier)
 		{
+			// TODO que signifie cette condition ?
 			if(current.getArc() == null)
 				return false;
 
-			if(!useCercle)
+			if(v == VitesseBezier.BEZIER_QUAD && !useCercle)
 			{
 				ArcCourbeDynamique tmp;
 				tmp = bezier.interpolationQuadratique(
@@ -186,7 +187,21 @@ public class ArcManager implements Service, HighPFClass
 	
 				successeur.cameFromArcDynamique = tmp;
 			}
-			else // cette interpolation est réservée à l'arrivée sur un cercle
+			
+			else if(v == VitesseBezier.CIRCULAIRE_VERS_CERCLE && useCercle)
+			{
+				ArcCourbeDynamique tmp;
+				tmp = bezier.trajectoireCirculaireVersCentre(current.state.robot.getCinematique());
+				if(tmp == null)
+					return false;
+				
+				successeur.cameFromArcDynamique = tmp;
+			}
+			
+			else
+				return false;
+			
+/*			else // cette interpolation est réservée à l'arrivée sur un cercle
 			{
 				if(current.state.robot.getCinematique().enMarcheAvant) // on doit arriver en marche arrière
 					return false;
@@ -198,7 +213,7 @@ public class ArcManager implements Service, HighPFClass
 					return false;
 	
 				successeur.cameFromArcDynamique = tmp;
-			}
+			}*/
 		}
 		
 		/**

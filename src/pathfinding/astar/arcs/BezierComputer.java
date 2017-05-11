@@ -25,6 +25,8 @@ import config.Config;
 import config.ConfigInfo;
 import container.Service;
 import container.dependances.HighPFClass;
+import exceptions.PathfindingException;
+import exceptions.UnableToMoveException;
 import graphic.PrintBufferInterface;
 import memory.CinemObsMM;
 import pathfinding.astar.arcs.vitesses.VitesseBezier;
@@ -32,6 +34,8 @@ import pathfinding.astar.arcs.vitesses.VitesseClotho;
 import pathfinding.astar.arcs.vitesses.VitesseRameneVolant;
 import robot.Cinematique;
 import robot.CinematiqueObs;
+import robot.Speed;
+import serie.Ticket;
 import utils.Log;
 import utils.Vec2RO;
 import utils.Vec2RW;
@@ -341,4 +345,172 @@ public class BezierComputer implements Service, HighPFClass
 		return new ArcCourbeDynamique(out, longueur, VitesseBezier.BEZIER_QUAD);
 	}
 
+	public ArcCourbeDynamique trajectoireCirculaireVersCentre(Cinematique cinematique) throws InterruptedException
+	{
+		Vec2RO centre = cercle.position;
+		double rayon = cercle.rayon;
+		
+		double orientationReelleDesiree = Math.atan2(centre.getY()-cinematique.getPosition().getY(), centre.getX()-cinematique.getPosition().getX());
+		double deltaO = (orientationReelleDesiree - cinematique.orientationReelle) % (2*Math.PI);
+		if(deltaO > Math.PI)
+			deltaO -= 2*Math.PI;
+	
+	//	log.debug("deltaO = "+deltaO);
+		boolean enAvant = Math.abs(deltaO) < Math.PI/2;
+	//	log.debug("enAvant = "+enAvant);
+		
+		// on regarde maintenant modulo PI pour savoir si on est aligné
+		deltaO = deltaO % Math.PI;
+		if(deltaO > Math.PI/2)
+			deltaO -= Math.PI;
+		
+		if(Math.abs(deltaO) < 0.001) // on est presque aligné
+		{
+//			log.debug("Presque aligné : "+deltaO);
+			double distance = cinematique.getPosition().distanceFast(centre) - rayon;
+			if(!enAvant)
+				distance = -distance;
+			return avanceVersCentreLineaire(distance, centre, cinematique);
+		}
+			
+		double cos = Math.cos(cinematique.orientationReelle);
+		double sin = Math.sin(cinematique.orientationReelle);
+		if(!enAvant)
+		{
+			cos = -cos;
+			sin = -sin;
+		}
+		
+		Vec2RO a = cinematique.getPosition(), bp = centre;		
+		// le symétrique du centre bp
+		Vec2RO ap = new Vec2RO(cinematique.getPosition().getX()-rayon*cos, cinematique.getPosition().getY()-rayon*sin);
+		Vec2RO d = bp.plusNewVector(ap).scalar(0.5); // le milieu entre ap et bp, sur l'axe de symétrie
+		Vec2RW u = bp.minusNewVector(ap);
+		double n = u.norm();
+		double ux = -u.getY() / n;
+		double uy = u.getX() / n;
+		double vx = -sin;
+		double vy = cos;
+		
+	//	log.debug(ap+" "+a+" "+d+" "+bp);
+		
+		double alpha = (uy * (d.getX() - a.getX()) + ux * (a.getY() - d.getY())) / (vx * uy - vy * ux);
+		Vec2RO c = new Vec2RO(a.getX() + alpha * vx, a.getY() + alpha * vy);
+		if(alpha > 0)
+		{
+			ux = -ux;
+			uy = -uy;
+			vx = -vx;
+			vy = -vy;
+		}
+	
+		double rayonTraj = c.distance(a);
+		double courbure = 1000. / rayonTraj; // la courbure est en m^-1
+		
+		if(courbure > courbureMax)
+		{
+			return null;
+/*			
+			double distance = cinematique.getPosition().distanceFast(centre) - rayon;
+			if(!enAvant)
+				distance = -distance;
+			return avanceVersCentreLineaire(distance, centre, cinematique);*/
+		}
+		
+		Vec2RW delta = a.minusNewVector(c);
+					
+		double angle = (2*(new Vec2RO(ux, uy).getFastArgument() - new Vec2RO(vx, vy).getFastArgument())) % (2*Math.PI);
+		if(angle > Math.PI)
+			angle -= 2*Math.PI;
+	//		double angle = 2*Math.acos(ux * vx + uy * vy); // angle total
+		double longueur = angle * rayonTraj;
+	//		log.debug("Angle : "+angle);
+	
+		int nbPoints = (int) Math.round(Math.abs(longueur) / ClothoidesComputer.PRECISION_TRACE_MM);
+		
+		cos = Math.cos(angle);
+		sin = Math.sin(angle);
+					
+		delta.rotate(Math.cos(angle), Math.sin(angle)); // le tout dernier point, B
+		
+	//		log.debug("B : "+delta.plusNewVector(c));
+		
+		double anglePas = -angle/nbPoints;
+	
+		if(angle < 0)
+			courbure = -courbure;
+		
+		cos = Math.cos(anglePas);
+		sin = Math.sin(anglePas);
+		
+	//		log.debug("nbPoints = "+nbPoints);
+		
+		
+		LinkedList<CinematiqueObs> out = new LinkedList<CinematiqueObs>();
+		
+		for(int i = nbPoints - 1; i >= 0; i--)
+		{
+			double orientation = cinematique.orientationReelle;
+			if(!enAvant)
+				orientation += Math.PI; // l'orientation géométrique
+			orientation -= (i+1)*anglePas;
+			CinematiqueObs obs = memory.getNewNode();
+			obs.update(delta.getX() + c.getX(), delta.getY() + c.getY(), orientation, enAvant, courbure);
+			out.addFirst(obs);
+			delta.rotate(cos, sin);
+		}
+		
+		if(out.isEmpty())
+			return null;
+
+		return new ArcCourbeDynamique(out, longueur, VitesseBezier.CIRCULAIRE_VERS_CERCLE);
+	}
+	
+	private ArcCourbeDynamique avanceVersCentreLineaire(double distance, Vec2RO centre, Cinematique cinematique) throws InterruptedException
+	{
+//		log.debug("Appel à avanceVersCentreLineaire");
+		double orientationReelleDesiree = Math.atan2(centre.getY()-cinematique.getPosition().getY(), centre.getX()-cinematique.getPosition().getX());
+		double deltaO = (orientationReelleDesiree - cinematique.orientationReelle) % (2*Math.PI);
+		if(deltaO > Math.PI)
+			deltaO -= 2*Math.PI;
+		if(Math.abs(deltaO) > Math.PI/2)
+			orientationReelleDesiree += Math.PI;
+		LinkedList<CinematiqueObs> out = new LinkedList<CinematiqueObs>();
+		double cos = Math.cos(orientationReelleDesiree);
+		double sin = Math.sin(orientationReelleDesiree);
+		int nbPoint = (int) Math.round(Math.abs(distance) / ClothoidesComputer.PRECISION_TRACE_MM);
+		double xFinal = cinematique.getPosition().getX()+distance*cos;
+		double yFinal = cinematique.getPosition().getY()+distance*sin;
+		boolean marcheAvant = distance > 0;
+		double orientationGeometrique = marcheAvant ? orientationReelleDesiree : -orientationReelleDesiree;
+		
+		if(nbPoint == 0)
+		{
+			// Le point est vraiment tout proche
+			CinematiqueObs obs = memory.getNewNode();
+			obs.update(xFinal, yFinal, orientationGeometrique, marcheAvant, 0);
+			out.add(obs);
+			return new ArcCourbeDynamique(out, distance, VitesseBezier.CIRCULAIRE_VERS_CERCLE);
+		}
+		
+		
+		double deltaX = ClothoidesComputer.PRECISION_TRACE_MM * cos;
+		double deltaY = ClothoidesComputer.PRECISION_TRACE_MM * sin;
+		if(distance < 0)
+		{
+			deltaX = -deltaX;
+			deltaY = -deltaY;
+		}
+		for(int i = 0; i < nbPoint; i++)
+		{
+			CinematiqueObs obs = memory.getNewNode();
+			obs.update(xFinal - i * deltaX, yFinal - i * deltaY, orientationGeometrique, marcheAvant, 0);
+			out.addFirst(obs);
+		}
+		
+		if(out.isEmpty())
+			return null;
+
+		return new ArcCourbeDynamique(out, distance, VitesseBezier.CIRCULAIRE_VERS_CERCLE);
+	}
 }

@@ -28,8 +28,16 @@ import robot.Cinematique;
 
 public enum VitesseBezier implements VitesseCourbure
 {
-	BEZIER_QUAD;
+	BEZIER_QUAD(0),
+	CIRCULAIRE_VERS_CERCLE(1);
 
+	private final int nbArrets;
+	
+	private VitesseBezier(int nbArrets)
+	{
+		this.nbArrets = nbArrets;
+	}
+	
 	@Override
 	public boolean isAcceptable(Cinematique c, DirectionStrategy directionstrategyactuelle, double courbureMax)
 	{
@@ -38,6 +46,6 @@ public enum VitesseBezier implements VitesseCourbure
 
 	@Override
 	public int getNbArrets() {
-		return 0;
+		return nbArrets;
 	}
 }
