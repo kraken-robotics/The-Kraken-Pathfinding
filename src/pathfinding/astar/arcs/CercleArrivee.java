@@ -103,7 +103,7 @@ public class CercleArrivee implements Service, Printable, HighPFClass, LowPFClas
 			diffo -= 2*Math.PI;
 		
 		// on vérifie qu'on est proche du rayon avec la bonne orientation
-		return (robot.getPosition().distance(position) - rayon) < 11 && Math.abs(diffo) < 10 / 180. * Math.PI; // TODO mesurer la tolérance
+		return (robot.getPosition().distance(position) - rayon) < 2 && Math.abs(diffo) < 1 / 180. * Math.PI;
 	}
 
 	@Override
