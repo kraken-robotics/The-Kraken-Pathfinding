@@ -112,6 +112,8 @@ public class Cinematique implements Printable, Serializable
 		orientationReelle = orientationReelle % (2*Math.PI);
 		if(orientationReelle < 0)
 			orientationReelle += 2*Math.PI;
+		else if(orientationReelle > 2*Math.PI)
+			orientationReelle -= 2*Math.PI;
 		
 		codeOrientation = (int)((orientationReelle + Math.PI / 20) / (Math.PI / 10)); // le +(pi/10)/2 est utilisé afin d'avoir une tolérance sur l'orientation du robot si son orientation est "ronde" (0, pi/2, pi, -pi/2)
 //		System.out.println("codeOrientation : "+codeOrientation+" "+orientation);
@@ -147,6 +149,8 @@ public class Cinematique implements Printable, Serializable
 		orientationReelle = orientationReelle % (2*Math.PI);
 		if(orientationReelle < 0)
 			orientationReelle += 2*Math.PI;
+		else if(orientationReelle > 2*Math.PI)
+			orientationReelle -= 2*Math.PI;
 		
 		codeOrientation = (int)(orientationReelle / (Math.PI / 6));
 //		System.out.println("codeOrientation : "+codeOrientation+" "+orientation);

@@ -306,7 +306,7 @@ public class BezierComputer implements Service, HighPFClass
 			double deltaO = (obs.orientationGeometrique - lastOrientation) % (2 * Math.PI);
 			if(deltaO > Math.PI)
 				deltaO -= 2 * Math.PI;
-			if(deltaO < -Math.PI)
+			else if(deltaO < -Math.PI)
 				deltaO += 2 * Math.PI;
 			
 			// on a dépassé la courbure maximale : on arrête tout
@@ -329,6 +329,9 @@ public class BezierComputer implements Service, HighPFClass
 		double diffOrientation = (Math.abs(cinematiqueInitiale.orientationGeometrique - lastOrientation)) % (2*Math.PI);
 		if(diffOrientation > Math.PI)
 			diffOrientation -= 2*Math.PI;
+		else if(diffOrientation < -Math.PI)
+			diffOrientation += 2*Math.PI;
+		
 		if(!first && (Math.abs(cinematiqueInitiale.courbureGeometrique - lastCourbure) > deltaCourbureMax) || Math.abs(diffOrientation) > 0.5)
 		{
 //			log.debug("Erreur raccordement : "+cinematiqueInitiale.courbureGeometrique+" "+Math.abs(cinematiqueInitiale.courbureGeometrique - lastCourbure)+" "+cinematiqueInitiale.orientationGeometrique+" "+lastOrientation);
@@ -355,6 +358,8 @@ public class BezierComputer implements Service, HighPFClass
 		double deltaO = (orientationReelleDesiree - cinematique.orientationReelle) % (2*Math.PI);
 		if(deltaO > Math.PI)
 			deltaO -= 2*Math.PI;
+		else if(deltaO < -Math.PI)
+			deltaO += 2*Math.PI;
 	
 	//	log.debug("deltaO = "+deltaO);
 		boolean enAvant = Math.abs(deltaO) < Math.PI/2;
@@ -364,6 +369,8 @@ public class BezierComputer implements Service, HighPFClass
 		deltaO = deltaO % Math.PI;
 		if(deltaO > Math.PI/2)
 			deltaO -= Math.PI;
+		if(deltaO < -Math.PI/2)
+			deltaO += Math.PI;
 		
 		if(Math.abs(deltaO) < 0.001) // on est presque aligné
 		{
@@ -423,6 +430,9 @@ public class BezierComputer implements Service, HighPFClass
 		double angle = (2*(new Vec2RO(ux, uy).getFastArgument() - new Vec2RO(vx, vy).getFastArgument())) % (2*Math.PI);
 		if(angle > Math.PI)
 			angle -= 2*Math.PI;
+		else if(angle < -Math.PI)
+			angle += 2*Math.PI;
+		
 	//		double angle = 2*Math.acos(ux * vx + uy * vy); // angle total
 		double longueur = angle * rayonTraj;
 	//		log.debug("Angle : "+angle);
@@ -474,6 +484,9 @@ public class BezierComputer implements Service, HighPFClass
 		double deltaO = (orientationReelleDesiree - cinematique.orientationReelle) % (2*Math.PI);
 		if(deltaO > Math.PI)
 			deltaO -= 2*Math.PI;
+		else if(deltaO < -Math.PI)
+			deltaO += 2*Math.PI;
+		
 		if(Math.abs(deltaO) > Math.PI/2)
 			orientationReelleDesiree += Math.PI;
 		LinkedList<CinematiqueObs> out = new LinkedList<CinematiqueObs>();
