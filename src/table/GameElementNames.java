@@ -17,6 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 package table;
 
+import capteurs.CapteursRobot;
 import graphic.printable.Couleur;
 import obstacles.types.ObstacleCircular;
 import obstacles.types.ObstacleInterface;
@@ -61,10 +62,12 @@ public enum GameElementNames {
 	
 	public final ObstacleInterface obstacle; // il se trouve qu'ils sont tous circulaires…
 	public final boolean aUnMasque;
+	public final boolean cylindre;
 	public final double orientationArriveeDStarLite;
 	
 	private GameElementNames(ObstacleInterface obs, double orientationArriveeDStarLite)
 	{
+		cylindre = toString().startsWith("CYLINDRE");
 		aUnMasque = obs instanceof ObstacleMasque;
 		obstacle = obs;
 		this.orientationArriveeDStarLite = orientationArriveeDStarLite;
@@ -72,13 +75,17 @@ public enum GameElementNames {
 	
 	private GameElementNames(ObstacleInterface obs)
 	{
+		cylindre = toString().startsWith("CYLINDRE");
 		aUnMasque = obs instanceof ObstacleMasque;
 		obstacle = obs;
 		orientationArriveeDStarLite = 0;
 	}
 
-	public boolean isVisible(boolean sureleve)
+	public boolean isVisible(CapteursRobot c, boolean sureleve)
 	{
+		// cas particulier
+		if(c == CapteursRobot.ToF_LONG_AVANT && cylindre)
+			return true;
 		// les capteurs bas les voient, les hauts non
 		return !sureleve;
 	}
