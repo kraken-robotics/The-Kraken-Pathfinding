@@ -79,6 +79,8 @@ public class ThreadUpdatePathfinding extends ThreadService implements HighPFClas
 			}
 		} catch (InterruptedException e) {
 			log.debug("Arrêt de "+Thread.currentThread().getName());
+			e.printStackTrace();
+			e.printStackTrace(log.getPrintWriter());
 		} catch (Exception e) {
 			log.critical("Exception inattendue dans "+Thread.currentThread().getName()+" : "+e);
 			e.printStackTrace();
