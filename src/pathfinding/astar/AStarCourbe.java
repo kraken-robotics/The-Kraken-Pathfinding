@@ -165,6 +165,8 @@ public class AStarCourbe implements Service, HighPFClass
 		{
 			current = openset.poll();
 
+			log.debug(current, Verbose.PF.masque);
+			
 			if(chemin.needStop())
 				throw new PathfindingException("On a vu l'obstacle trop tard, on n'a pas assez de marge. Il faut s'arrêter.");
 
@@ -228,6 +230,7 @@ public class AStarCourbe implements Service, HighPFClass
 			// ce calcul étant un peu lourd, on ne le fait que si le noeud a été choisi, et pas à la sélection des voisins (dans hasNext par exemple)
 			if(!arcmanager.isReachable(current, shoot))
 			{
+				log.debug("Collision", Verbose.PF.masque);
 				if(current != depart)
 					destroy(current);
 				continue; // collision mécanique attendue. On passe au suivant !
@@ -317,6 +320,8 @@ public class AStarCourbe implements Service, HighPFClass
 //					log.debug("Arrivée trouvée !");
 					trajetDeSecours = successeur;
 				}
+				
+				log.debug("Ajout d'un voisin", Verbose.PF.masque);
 				
 				openset.add(successeur);
 //				opensetTmp.add(successeur);
