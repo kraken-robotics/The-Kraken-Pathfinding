@@ -336,7 +336,7 @@ public class PathCache implements Service, HighPFClass
 					prepareNewPathToScript(c);
 				else
 				{
-					log.debug("Recherche de chemin pour "+arrivee, Verbose.CACHE.masque);
+					log.debug("Recherche de chemin pour "+arrivee+" depuis "+state.robot.getCinematique(), Verbose.CACHE.masque);
 					astar.initializeNewSearch(arrivee, shoot, state);
 					astar.process(realChemin);
 				}
