@@ -32,6 +32,9 @@ public enum ObstaclesFixes {
 	ZONE_DEPART_ENNEMI(new ObstacleRectangular(new Vec2RO(1070/2-1500,2000-382/2),1070,382,Couleur.OBSTACLES), false, false),
 	ZONE_DEPART_A_NOUS(new ObstacleRectangular(new Vec2RO(1500-710/2,2000-382/2),710,382,Couleur.OBSTACLES), false, false),
 	
+	TASSEAU_DROITE(new ObstacleRectangular(new Vec2RO(1500-710/2,2000-360-11),710,22,Couleur.OBSTACLES), true, false),
+	TASSEAU_GAUCHE(new ObstacleRectangular(new Vec2RO(-1500+710/2,2000-360-11),710,22,Couleur.OBSTACLES), true, false),
+	
 	BAC_GAUCHE(new ObstacleRectangular(new Vec2RO(54-1500,1075),108,494,Couleur.OBSTACLES), false, false),
 	BAC_DROIT(new ObstacleRectangular(new Vec2RO(1500-54,1075),108,494,Couleur.OBSTACLES), false, false),
 
