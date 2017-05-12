@@ -133,17 +133,15 @@ public class PathCache implements Service, HighPFClass
 		log.debug("Recherche de chemin pour "+k+" ("+paths.size()+" chemins mémorisés)", Verbose.CACHE.masque);
 		
 		LinkedList<CinematiqueObs> path = paths.get(k.toString());
+		
+		k.s.s.setUpCercleArrivee();
+		astar.initializeNewSearchToCircle(k.shoot, k.chrono);
+
 		if(path == null)
-		{
-			k.s.s.setUpCercleArrivee();
-			astar.initializeNewSearchToCircle(k.shoot, k.chrono);
 			astar.process(chemin);
-		}
 		else
-		{
 			log.debug("Utilisation d'un trajet précalculé !");
 			chemin.addToEnd(path);
-		}
 	}
 	
 	/**

@@ -462,7 +462,7 @@ public class AStarCourbe implements Service, HighPFClass
 	public void updatePath(Cinematique lastValid) throws PathfindingException, InterruptedException
 	{
 		if(!rechercheEnCours)
-			throw new InterruptedException("updatePath appelé alors qu'aucune recherche n'est en cours !");
+			throw new PathfindingException("updatePath appelé alors qu'aucune recherche n'est en cours !");
 		
 		log.debug("Replanification lancée", Verbose.REPLANIF.masque);
 		
