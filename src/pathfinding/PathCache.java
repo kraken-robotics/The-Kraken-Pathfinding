@@ -128,10 +128,7 @@ public class PathCache implements Service, HighPFClass
 		astar.initializeNewSearchToCircle(k.shoot, k.chrono);
 
 		if(path == null)
-		{
-			k.s.s.setUpCercleArrivee();
 			inst.set(k);
-		}
 		else
 		{
 			log.debug("Utilisation d'un trajet précalculé !");
@@ -283,23 +280,6 @@ public class PathCache implements Service, HighPFClass
         	throw new IOException();
         return path;
 	}
-		
-	/**
-	 * Calcule un chemin et le suit jusqu'à un script
-	 * @param shoot
-	 * @throws PathfindingException
-	 * @throws InterruptedException
-	 * @throws UnableToMoveException
-	 */
-	public void computeAndFollowToScript(KeyPathCache c) throws PathfindingException, InterruptedException, UnableToMoveException
-	{
-		computeAndFollow(null, c.shoot, c);
-	}
-	
-	public void computeAndFollowToPoint(Cinematique arrivee, boolean shoot) throws PathfindingException, InterruptedException, UnableToMoveException
-	{
-		computeAndFollow(arrivee, shoot, null);
-	}
 	
 	/**
 	 * Calcule un chemin et le suit jusqu'à un point
@@ -309,7 +289,7 @@ public class PathCache implements Service, HighPFClass
 	 * @throws InterruptedException
 	 * @throws UnableToMoveException
 	 */
-	private void computeAndFollow(Cinematique arrivee, boolean shoot, KeyPathCache c) throws PathfindingException, InterruptedException, UnableToMoveException
+	public void computeAndFollow(boolean shoot, KeyPathCache c) throws PathfindingException, InterruptedException, UnableToMoveException
 	{
 		try {
 			int essai = nbEssais;
@@ -317,14 +297,13 @@ public class PathCache implements Service, HighPFClass
 			do {
 				restart = false;
 				try {
-					if(c != null)
-						prepareNewPathToScript(c);
-					else
+					synchronized(inst)
 					{
-						log.debug("Recherche de chemin pour "+arrivee+" depuis "+state.robot.getCinematique(), Verbose.CACHE.masque);
-						astar.initializeNewSearch(arrivee, shoot, state);
-						astar.process(realChemin);
+						if((!inst.isSearching() && !inst.isDone()) || inst.isEmpty()) // pas commencé, pas fini
+							inst.set(c);
 					}
+					waitPathfinding();
+					sendPreparedPath();
 					log.debug("On va parcourir le chemin", Verbose.CACHE.masque);
 					if(!simuleSerie)
 						state.robot.followTrajectory(Speed.STANDARD);
@@ -335,13 +314,18 @@ public class PathCache implements Service, HighPFClass
 					essai--;
 					if(essai == 0)
 					{
-						log.critical("Abandon de l'objectif.");
-						throw e;
+						log.warning("Il y a eu un problème de pathfinding : "+e);
+						essai--;
+						if(essai == 0)
+						{
+							log.critical("Abandon de l'objectif.");
+							throw e;
+						}
+						log.debug("On retente !");
+						ObstacleRobot.setMarge(false);
+						Thread.sleep(dureePeremption);
+						restart = true;
 					}
-					log.debug("On retente !");
-					ObstacleRobot.setMarge(false);
-					Thread.sleep(dureePeremption);
-					restart = true;
 				}
 			} while(restart);
 			log.debug("Compute and follow a terminé normalement", Verbose.CACHE.masque);

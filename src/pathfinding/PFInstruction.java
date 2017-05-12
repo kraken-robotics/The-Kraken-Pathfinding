@@ -33,18 +33,20 @@ public class PFInstruction implements Service, HighPFClass
 {
 	private volatile KeyPathCache k;
 	private volatile PathfindingException e;
-	private volatile boolean done;
+	private volatile boolean done; // la recherche est-elle finie ?
+	private volatile boolean isSearching; // une recherche est-elle en cours ?
 	
-	public void set(KeyPathCache k)
+	public synchronized void set(KeyPathCache k)
 	{
 		done = false;
 		this.k = k;
 		notifyAll();
 	}
 	
-	public void setDone()
+	public synchronized void setDone()
 	{
 		this.done = true;
+		this.isSearching = false;
 		notifyAll();
 	}
 	
@@ -68,12 +70,18 @@ public class PFInstruction implements Service, HighPFClass
 	{
 		KeyPathCache out = k;
 		k = null;
+		isSearching = true;
 		return out;
 	}
 	
 	public boolean isDone()
 	{
 		return done;
+	}
+	
+	public boolean isSearching()
+	{
+		return isSearching;
 	}
 	
 	public boolean isEmpty()

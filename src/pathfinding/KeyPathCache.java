@@ -61,18 +61,24 @@ public class KeyPathCache
 	@Override
 	public int hashCode()
 	{
-		return (getCinem() + s.hashCode()) * 2 + (shoot ? 1 : 0);
+		if(s != null)
+			return (getCinem() + s.hashCode()) * 2 + (shoot ? 1 : 0);
+		return ((getCinem() << 10) + arrivee.hashCode()) * 2 + (shoot ? 1 : 0);
 	}
 	
 	@Override
 	public boolean equals(Object o)
 	{
-		return o instanceof KeyPathCache && ((KeyPathCache)o).shoot == shoot && ((KeyPathCache)o).s.equals(s) && ((KeyPathCache)o).getCinem() == getCinem();
+		if(s != null)
+			return o instanceof KeyPathCache && ((KeyPathCache)o).shoot == shoot && ((KeyPathCache)o).s.equals(s) && ((KeyPathCache)o).getCinem() == getCinem();
+		return o instanceof KeyPathCache && ((KeyPathCache)o).shoot == shoot && ((KeyPathCache)o).arrivee.hashCode() == arrivee.hashCode() && ((KeyPathCache)o).getCinem() == getCinem();
 	}
 	
 	@Override
 	public String toString()
 	{
-		return s+"-"+getCinem()+"-"+shoot;
+		if(s != null)
+			return s+"-"+getCinem()+"-"+shoot;
+		return arrivee.hashCode()+"-"+getCinem()+"-"+shoot;
 	}
 }
