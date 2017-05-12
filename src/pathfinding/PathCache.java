@@ -59,6 +59,7 @@ public class PathCache implements Service, HighPFClass
 	private CheminPathfinding realChemin;
 	private FakeCheminPathfinding fakeChemin;
 	private RealGameState state;	
+	private int dureePeremption;
 	private int nbEssais;
 	
 	private boolean simuleSerie;
@@ -73,6 +74,7 @@ public class PathCache implements Service, HighPFClass
 		this.state = state;
 		nbEssais = config.getInt(ConfigInfo.NB_ESSAIS_PF);
 		simuleSerie = config.getBoolean(ConfigInfo.SIMULE_SERIE);
+		dureePeremption = config.getInt(ConfigInfo.DUREE_PEREMPTION_OBSTACLES);
 		this.fakeChemin = fakeChemin;
 		this.realChemin = realChemin;
 		this.log = log;
@@ -354,6 +356,7 @@ public class PathCache implements Service, HighPFClass
 					throw e;
 				}
 				log.debug("On retente !");
+				Thread.sleep(dureePeremption);
 				restart = true;
 			}
 		} while(restart);
