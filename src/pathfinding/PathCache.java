@@ -61,6 +61,7 @@ public class PathCache implements Service, HighPFClass
 	private FakeCheminPathfinding fakeChemin;
 	private RealGameState state;	
 	private int dureePeremption;
+	private PFInstruction inst;
 	private int nbEssais;
 	
 	private boolean simuleSerie;
@@ -70,9 +71,10 @@ public class PathCache implements Service, HighPFClass
 	 */
 	public HashMap<String, LinkedList<CinematiqueObs>> paths;
 	
-	public PathCache(Log log, Config config, RealGameState state, ChronoGameState chrono, AStarCourbe astar, CheminPathfinding realChemin, FakeCheminPathfinding fakeChemin) throws InterruptedException
+	public PathCache(Log log, Config config, RealGameState state, ChronoGameState chrono, AStarCourbe astar, CheminPathfinding realChemin, FakeCheminPathfinding fakeChemin, PFInstruction inst) throws InterruptedException
 	{
 		this.state = state;
+		this.inst = inst;
 		nbEssais = config.getInt(ConfigInfo.NB_ESSAIS_PF);
 		simuleSerie = config.getBoolean(ConfigInfo.SIMULE_SERIE);
 		dureePeremption = config.getInt(ConfigInfo.DUREE_PEREMPTION_OBSTACLES);
@@ -107,7 +109,7 @@ public class PathCache implements Service, HighPFClass
             log.critical("Erreur lors de la sauvegarde de la trajectoire ! "+e);
         }
 	}
-	
+
 	/**
 	 * Prépare un chemin
 	 * @param cinematiqueInitiale
@@ -116,20 +118,7 @@ public class PathCache implements Service, HighPFClass
 	 * @throws PathfindingException
 	 * @throws InterruptedException 
 	 */
-	public void prepareNewPathToScript(KeyPathCache k) throws PathfindingException, InterruptedException
-	{
-		prepareNewPathToScript(k, realChemin);
-	}
-	
-	/**
-	 * Prépare un chemin
-	 * @param cinematiqueInitiale
-	 * @param s
-	 * @param shoot
-	 * @throws PathfindingException
-	 * @throws InterruptedException 
-	 */
-	private void prepareNewPathToScript(KeyPathCache k, CheminPathfindingInterface chemin) throws PathfindingException, InterruptedException
+	public void prepareNewPathToScript(KeyPathCache k)
 	{
 		log.debug("Recherche de chemin pour "+k+" ("+paths.size()+" chemins mémorisés)", Verbose.CACHE.masque);
 		
@@ -139,31 +128,34 @@ public class PathCache implements Service, HighPFClass
 		astar.initializeNewSearchToCircle(k.shoot, k.chrono);
 
 		if(path == null)
-			astar.process(chemin);
+		{
+			k.s.s.setUpCercleArrivee();
+			inst.set(k);
+		}
 		else
 		{
 			log.debug("Utilisation d'un trajet précalculé !");
-			chemin.addToEnd(path);
+			fakeChemin.addToEnd(path);
 		}
+	}
+	
+	private void waitPathfinding() throws InterruptedException, PathfindingException
+	{
+		synchronized(inst)
+		{
+			while(!inst.isDone())
+				inst.wait();
+		}
+		inst.throwException();
 	}
 	
 	/**
 	 * Envoie le chemin précédemment préparé
 	 * @throws InterruptedException 
 	 */
-	public void sendPreparedPath() throws InterruptedException, PathfindingException
+	public void sendPreparedPath() throws PathfindingException
 	{
-		/*
-		 * Normalement, cette exception ne peut survenir que lors d'une replanification (donc pas là)
-		 */
-		synchronized(fakeChemin)
-		{
-			if(!fakeChemin.isReady())
-				fakeChemin.wait();
-			if(!fakeChemin.isReady()) // échec de la recherche TODO
-				throw new PathfindingException();
-			realChemin.addToEnd(fakeChemin.getPath());
-		}
+		realChemin.addToEnd(fakeChemin.getPath());
 	}
 	
 	private LinkedList<CinematiqueObs> loadOrCompute(KeyPathCache k) throws InterruptedException, PathfindingException
@@ -177,7 +169,8 @@ public class PathCache implements Service, HighPFClass
 			{
 				log.warning("Calcul du chemin "+k);
 				try {
-					prepareNewPathToScript(k, fakeChemin);
+					prepareNewPathToScript(k);
+					waitPathfinding();
 					Thread.sleep(1000); // pour montrer le chemin
 					path = fakeChemin.getPath();
 					savePath(k, path);
@@ -186,10 +179,6 @@ public class PathCache implements Service, HighPFClass
 				{
 					log.warning("Précalcul du chemin échoué ! "+k+" : "+e);
 					throw e;
-				}
-				finally
-				{
-					astar.stopContinuousSearch();
 				}
 			}
 			else
@@ -293,14 +282,6 @@ public class PathCache implements Service, HighPFClass
         if(path == null)
         	throw new IOException();
         return path;
-	}
-	
-	/**
-	 * Le chemin a été entièrement parcouru.
-	 */
-	public synchronized void stopSearch()
-	{
-		astar.stopContinuousSearch();
 	}
 		
 	/**

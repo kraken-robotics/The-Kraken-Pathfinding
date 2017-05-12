@@ -19,8 +19,11 @@ package threads;
 
 import container.dependances.HighPFClass;
 import exceptions.PathfindingException;
+import pathfinding.KeyPathCache;
 import pathfinding.PFInstruction;
 import pathfinding.PathCache;
+import pathfinding.astar.AStarCourbe;
+import pathfinding.chemin.FakeCheminPathfinding;
 import utils.Log;
 
 /**
@@ -32,13 +35,15 @@ import utils.Log;
 public class ThreadPreparePathfinding extends ThreadService implements HighPFClass
 {
 	protected Log log;
-	private PathCache pathfinding;
+	private AStarCourbe astar;
 	private PFInstruction inst;
+	private FakeCheminPathfinding fakeChemin;
 
-	public ThreadPreparePathfinding(Log log, PathCache pathfinding, PFInstruction inst)
+	public ThreadPreparePathfinding(Log log, AStarCourbe astar, PFInstruction inst, FakeCheminPathfinding fakeChemin)
 	{
+		this.fakeChemin = fakeChemin;
 		this.log = log;
-		this.pathfinding = pathfinding;
+		this.astar = astar;
 		this.inst = inst;
 	}
 
@@ -52,13 +57,22 @@ public class ThreadPreparePathfinding extends ThreadService implements HighPFCla
 			{
 				synchronized(inst)
 				{
-					if(inst.isEmpty())
-						inst.wait();					
+					while(inst.isEmpty())
+						inst.wait();	
 				}
 				try {
-					pathfinding.prepareNewPathToScript(inst.getKey());
+					KeyPathCache k = inst.getKey();
+					if(k.s != null)
+					{
+						k.s.s.setUpCercleArrivee();
+						astar.initializeNewSearchToCircle(k.shoot, k.chrono);
+					}
+					else
+						astar.initializeNewSearch(k.arrivee, k.shoot, k.chrono);
+					astar.process(fakeChemin);
+					inst.setDone();
 				} catch (PathfindingException e) {
-					// TODO
+					inst.setException(e);
 				}
 			}
 		} catch (InterruptedException e) {

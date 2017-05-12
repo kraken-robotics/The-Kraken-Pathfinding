@@ -60,7 +60,7 @@ public class FakeCheminPathfinding implements Service, CheminPathfindingInterfac
 	}
 	
 	@Override
-	public synchronized void addToEnd(LinkedList<CinematiqueObs> points) throws PathfindingException
+	public synchronized void addToEnd(LinkedList<CinematiqueObs> points)
 	{
 		path = points;
 		if(print)
@@ -74,11 +74,6 @@ public class FakeCheminPathfinding implements Service, CheminPathfindingInterfac
 	@Override
 	public void setUptodate()
 	{}
-
-	public boolean isReady()
-	{
-		return path != null;
-	}
 	
 	public LinkedList<CinematiqueObs> getPath()
 	{

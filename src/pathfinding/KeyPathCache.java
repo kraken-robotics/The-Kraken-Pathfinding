@@ -17,6 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 package pathfinding;
 
+import robot.Cinematique;
 import robot.Robot;
 import scripts.ScriptNames;
 
@@ -29,6 +30,7 @@ import scripts.ScriptNames;
 public class KeyPathCache
 {
 	public ScriptNames s;
+	public Cinematique arrivee;
 	public final GameState<? extends Robot> chrono;
 	public boolean shoot;
 	
@@ -36,6 +38,13 @@ public class KeyPathCache
 	{
 		this.chrono = chrono;
 		this.s = s;
+		this.shoot = shoot;
+	}
+	
+	public KeyPathCache(GameState<? extends Robot> chrono, Cinematique arrivee, boolean shoot)
+	{
+		this.chrono = chrono;
+		this.arrivee = arrivee;
 		this.shoot = shoot;
 	}
 	

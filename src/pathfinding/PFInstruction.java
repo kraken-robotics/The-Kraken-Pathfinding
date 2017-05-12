@@ -19,20 +19,49 @@ package pathfinding;
 
 import container.Service;
 import container.dependances.HighPFClass;
+import exceptions.PathfindingException;
 
 /**
  * Classe qui permet de transférer les instructions du pathfinding au thread qui s'en occupe
+ * Cette classe notifie à la fois le thread qui fait le pathfinding (et qui attend les instructions) et le thread
+ * qui demande le pathfinding (et qui attend la notification de fin de recherche)
  * @author pf
  *
  */
 
 public class PFInstruction implements Service, HighPFClass
 {
-	private KeyPathCache k;
-
+	private volatile KeyPathCache k;
+	private volatile PathfindingException e;
+	private volatile boolean done;
+	
 	public void set(KeyPathCache k)
 	{
+		done = false;
 		this.k = k;
+		notifyAll();
+	}
+	
+	public void setDone()
+	{
+		this.done = true;
+		notifyAll();
+	}
+	
+	public void setException(PathfindingException e)
+	{
+		this.e = e;
+		setDone();
+	}
+	
+	public void throwException() throws PathfindingException
+	{
+		if(e != null)
+		{
+			PathfindingException tmp = e;
+			e = null;
+			throw tmp;
+		}
 	}
 	
 	public KeyPathCache getKey()
@@ -40,6 +69,11 @@ public class PFInstruction implements Service, HighPFClass
 		KeyPathCache out = k;
 		k = null;
 		return out;
+	}
+	
+	public boolean isDone()
+	{
+		return done;
 	}
 	
 	public boolean isEmpty()
