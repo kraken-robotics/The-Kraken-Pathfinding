@@ -17,7 +17,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 package pathfinding;
 
-import obstacles.memory.ObstaclesIteratorFutur;
 import robot.RobotChrono;
 import table.Table;
 

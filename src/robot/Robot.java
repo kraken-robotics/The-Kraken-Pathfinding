@@ -22,7 +22,6 @@ import config.DynamicConfigurable;
 import exceptions.ActionneurException;
 import exceptions.UnableToMoveException;
 import utils.Log;
-import utils.Vec2RO;
 
 /**
  * Classe abstraite du robot, dont héritent RobotVrai et RobotChrono

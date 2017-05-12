@@ -17,7 +17,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 package config;
 
-import pathfinding.astar.arcs.ClothoidesComputer;
 import robot.RobotColor;
 
 /**

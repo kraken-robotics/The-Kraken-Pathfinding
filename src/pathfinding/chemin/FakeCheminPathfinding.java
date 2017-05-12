@@ -18,9 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 package pathfinding.chemin;
 
 import java.awt.Graphics;
-import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
 
 import config.Config;
 import config.ConfigInfo;
@@ -36,7 +34,6 @@ import obstacles.types.ObstacleCircular;
 import robot.Cinematique;
 import robot.CinematiqueObs;
 import robot.RobotReal;
-import serie.Ticket;
 import utils.Log;
 
 /**

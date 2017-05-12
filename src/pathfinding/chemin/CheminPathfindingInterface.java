@@ -22,7 +22,6 @@ import java.util.LinkedList;
 import exceptions.PathfindingException;
 import robot.Cinematique;
 import robot.CinematiqueObs;
-import serie.Ticket;
 
 /**
  * Interface pour pouvoir interchanger le vrai chemin de pathfinding et le faux
