@@ -374,6 +374,8 @@ public class ArcManager implements Service, HighPFClass
     		}
     	if(!disabledObstaclesFixes.isEmpty())
     		dstarlite.disableObstaclesFixes(obs.getPosition());
+    	else
+    		dstarlite.disableObstaclesFixes(null);
 	}
 
 	public boolean isToCircle()
