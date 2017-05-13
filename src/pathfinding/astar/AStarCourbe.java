@@ -145,14 +145,6 @@ public class AStarCourbe implements Service, HighPFClass
 		depart.cameFromArcDynamique = null;
 		depart.g_score = 0;
 
-		if(suppObsFixes)
-		{
-			CinematiqueObs obsDepart = cinemMemory.getNewNode();
-			Cinematique cinemDepart = depart.state.robot.getCinematique();
-			obsDepart.update(cinemDepart.getPosition().getX(), cinemDepart.getPosition().getY(), cinemDepart.courbureGeometrique, cinemDepart.enMarcheAvant, cinemDepart.courbureGeometrique);
-			arcmanager.disableObstaclesFixes(obsDepart);
-		}
-
 		Double heuristique = arcmanager.heuristicCostCourbe((depart.state.robot).getCinematique());
 		
 		if(heuristique == null)
@@ -420,8 +412,9 @@ public class AStarCourbe implements Service, HighPFClass
 	 * @param arrivee
 	 * @param shoot
 	 * @throws PathfindingException
+	 * @throws InterruptedException 
 	 */
-	public void initializeNewSearch(Cinematique arrivee, boolean shoot, GameState<? extends Robot> state) throws PathfindingException
+	public void initializeNewSearch(Cinematique arrivee, boolean shoot, GameState<? extends Robot> state) throws PathfindingException, InterruptedException
 	{
 		initializeNewSearch(arrivee, SensFinal.AUCUNE_PREF, shoot, state);
 	}
@@ -432,14 +425,23 @@ public class AStarCourbe implements Service, HighPFClass
 	 * @param sens
 	 * @param shoot
 	 * @throws PathfindingException
+	 * @throws InterruptedException 
 	 */
-	public void initializeNewSearch(Cinematique arrivee, SensFinal sens, boolean shoot, GameState<? extends Robot> state) throws PathfindingException
+	public void initializeNewSearch(Cinematique arrivee, SensFinal sens, boolean shoot, GameState<? extends Robot> state) throws PathfindingException, InterruptedException
 	{
 		vitesseMax = Speed.STANDARD;
 		depart.init();
 		state.copyAStarCourbe(depart.state);
 		arcmanager.configureArcManager(DirectionStrategy.defaultStrategy, sens, arrivee);
 
+		if(suppObsFixes)
+		{
+			CinematiqueObs obsDepart = cinemMemory.getNewNode();
+			Cinematique cinemDepart = depart.state.robot.getCinematique();
+			obsDepart.update(cinemDepart.getPosition().getX(), cinemDepart.getPosition().getY(), cinemDepart.courbureGeometrique, cinemDepart.enMarcheAvant, cinemDepart.courbureGeometrique);
+			arcmanager.disableObstaclesFixes(obsDepart);
+		}
+		
 		dstarlite.computeNewPath(depart.state.robot.getCinematique().getPosition(), arrivee.getPosition(), shoot);
 		if(graphicDStarLite)
 			dstarlite.itineraireBrut();
@@ -454,14 +456,23 @@ public class AStarCourbe implements Service, HighPFClass
 	 * @param shoot_game_element
 	 * @return
 	 * @throws PathfindingException 
+	 * @throws InterruptedException 
 	 */
-	public void initializeNewSearchToCircle(boolean shoot, GameState<? extends Robot> state) throws PathfindingException
+	public void initializeNewSearchToCircle(boolean shoot, GameState<? extends Robot> state) throws PathfindingException, InterruptedException
 	{
 		vitesseMax = Speed.STANDARD;
 		depart.init();
 		state.copyAStarCourbe(depart.state);
 		arcmanager.configureArcManagerWithCircle(DirectionStrategy.defaultStrategy);
 
+		if(suppObsFixes)
+		{
+			CinematiqueObs obsDepart = cinemMemory.getNewNode();
+			Cinematique cinemDepart = depart.state.robot.getCinematique();
+			obsDepart.update(cinemDepart.getPosition().getX(), cinemDepart.getPosition().getY(), cinemDepart.courbureGeometrique, cinemDepart.enMarcheAvant, cinemDepart.courbureGeometrique);
+			arcmanager.disableObstaclesFixes(obsDepart);
+		}
+		
 		dstarlite.computeNewPath(depart.state.robot.getCinematique().getPosition(), cercle.arriveeDStarLite, shoot);
 		if(graphicDStarLite)
 			dstarlite.itineraireBrut();
@@ -493,6 +504,14 @@ public class AStarCourbe implements Service, HighPFClass
 		
 		closedset.clear();
 		depart.state.robot.setCinematique(lastValid);
+		
+		if(suppObsFixes)
+		{
+			CinematiqueObs obsDepart = cinemMemory.getNewNode();
+			Cinematique cinemDepart = depart.state.robot.getCinematique();
+			obsDepart.update(cinemDepart.getPosition().getX(), cinemDepart.getPosition().getY(), cinemDepart.courbureGeometrique, cinemDepart.enMarcheAvant, cinemDepart.courbureGeometrique);
+			arcmanager.disableObstaclesFixes(obsDepart);
+		}
 		
 		// On met à jour le D* Lite
 		dstarlite.updateStart(depart.state.robot.getCinematique().getPosition());

@@ -297,7 +297,7 @@ public class GridSpace implements Service, Printable, LowPFClass
 		grilleStatiqueModif.or(grilleStatique);
 		if(position != null)
 			for(int i = 0; i < PointGridSpace.NB_POINTS; i++)
-				if(pointManager.get(i).computeVec2().distanceFast(position) < rayonRobotObstaclesFixes)
+				if(grilleStatiqueModif.get(i) && pointManager.get(i).computeVec2().distanceFast(position) < rayonRobotObstaclesFixes)
 					grilleStatiqueModif.clear(i);
 	}
 	
