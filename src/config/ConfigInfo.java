@@ -40,6 +40,7 @@ public enum ConfigInfo {
 	LARGEUR_NON_DEPLOYE(228), // distance entre le bord gauche et le bord droit du robot non-déployé
 	DILATATION_OBSTACLE_ROBOT(30), // la dilatation du robot dans l'A*. S'ajoute à gauche et à droite
 	RAYON_ROBOT_SUPPRESSION_OBSTACLES_FIXES(300), // dans quel rayon supprime-t-on les obstacles fixes si on est dedans
+	SUPPRESSION_AUTO_OBSTACLES_FIXES(true), // si on démarre dans un obstacle fixe, est-ce qu'on le vire ?
 	
 	/**
 	 * Paramètres des scripts

@@ -74,6 +74,7 @@ public class AStarCourbe implements Service, HighPFClass
 	private Speed vitesseMax;
 //	private int tailleFaisceau;
 	private boolean shoot;
+	private boolean suppObsFixes;
 	private volatile boolean rechercheEnCours = false;
 	
 	/**
@@ -125,6 +126,7 @@ public class AStarCourbe implements Service, HighPFClass
 		int demieLongueurArriere = config.getInt(ConfigInfo.DEMI_LONGUEUR_NON_DEPLOYE_ARRIERE);
 		int demieLongueurAvant = config.getInt(ConfigInfo.DEMI_LONGUEUR_NON_DEPLOYE_AVANT);
 		int marge = config.getInt(ConfigInfo.DILATATION_OBSTACLE_ROBOT);
+		suppObsFixes = config.getBoolean(ConfigInfo.SUPPRESSION_AUTO_OBSTACLES_FIXES);
 		this.depart = new AStarCourbeNode(chrono, demieLargeurNonDeploye, demieLongueurArriere, demieLongueurAvant, marge);
 		depart.setIndiceMemoryManager(-1);
 	}
@@ -143,10 +145,13 @@ public class AStarCourbe implements Service, HighPFClass
 		depart.cameFromArcDynamique = null;
 		depart.g_score = 0;
 
-		CinematiqueObs obsDepart = cinemMemory.getNewNode();
-		Cinematique cinemDepart = depart.state.robot.getCinematique();
-		obsDepart.update(cinemDepart.getPosition().getX(), cinemDepart.getPosition().getY(), cinemDepart.courbureGeometrique, cinemDepart.enMarcheAvant, cinemDepart.courbureGeometrique);
-		arcmanager.disableObstaclesFixes(obsDepart);
+		if(suppObsFixes)
+		{
+			CinematiqueObs obsDepart = cinemMemory.getNewNode();
+			Cinematique cinemDepart = depart.state.robot.getCinematique();
+			obsDepart.update(cinemDepart.getPosition().getX(), cinemDepart.getPosition().getY(), cinemDepart.courbureGeometrique, cinemDepart.enMarcheAvant, cinemDepart.courbureGeometrique);
+			arcmanager.disableObstaclesFixes(obsDepart);
+		}
 
 		Double heuristique = arcmanager.heuristicCostCourbe((depart.state.robot).getCinematique());
 		
@@ -192,11 +197,13 @@ public class AStarCourbe implements Service, HighPFClass
 					depart.init();
 					depart.state.robot.setCinematique(cinemRestart);
 				}
-
-				obsDepart = cinemMemory.getNewNode();
-				cinemDepart = depart.state.robot.getCinematique();
-				obsDepart.update(cinemDepart.getPosition().getX(), cinemDepart.getPosition().getY(), cinemDepart.courbureGeometrique, cinemDepart.enMarcheAvant, cinemDepart.courbureGeometrique);
-				arcmanager.disableObstaclesFixes(obsDepart);
+				if(suppObsFixes)
+				{
+					CinematiqueObs obsDepart = cinemMemory.getNewNode();
+					Cinematique cinemDepart = depart.state.robot.getCinematique();
+					obsDepart.update(cinemDepart.getPosition().getX(), cinemDepart.getPosition().getY(), cinemDepart.courbureGeometrique, cinemDepart.enMarcheAvant, cinemDepart.courbureGeometrique);
+					arcmanager.disableObstaclesFixes(obsDepart);
+				}
 				
 				trajetDeSecours = null;
 				depart.parent = null;
