@@ -323,18 +323,13 @@ public class PathCache implements Service, HighPFClass
 					essai--;
 					if(essai == 0)
 					{
-						log.warning("Il y a eu un problème de pathfinding : "+e);
-						essai--;
-						if(essai == 0)
-						{
-							log.critical("Abandon de l'objectif.");
-							throw e;
-						}
-						log.debug("On retente !");
-						ObstacleRobot.setMarge(false);
-						Thread.sleep(dureePeremption);
-						restart = true;
+						log.critical("Abandon de l'objectif.");
+						throw e;
 					}
+					log.debug("On retente !");
+					ObstacleRobot.setMarge(false);
+					Thread.sleep(dureePeremption);
+					restart = true;
 				}
 			} while(restart);
 			log.debug("Compute and follow a terminé normalement", Verbose.CACHE.masque);

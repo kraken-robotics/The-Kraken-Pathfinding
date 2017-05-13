@@ -60,6 +60,7 @@ public class ThreadPreparePathfinding extends ThreadService implements HighPFCla
 					inst.beginSearch();
 				}
 				try {
+					fakeChemin.clear();
 					astar.process(fakeChemin);
 					inst.setDone();
 				} catch (PathfindingException e) {

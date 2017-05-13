@@ -123,4 +123,9 @@ public class FakeCheminPathfinding implements Service, CheminPathfindingInterfac
 	{
 		return false;
 	}
+
+	public void clear()
+	{
+		path = null;
+	}
 }

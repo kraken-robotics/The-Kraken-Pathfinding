@@ -24,7 +24,6 @@ import pathfinding.ChronoGameState;
 import pathfinding.KeyPathCache;
 import pathfinding.PathCache;
 import robot.Cinematique;
-import robot.Speed;
 import scripts.ScriptNames;
 import scripts.Strategie;
 import tests.JUnit_Test;

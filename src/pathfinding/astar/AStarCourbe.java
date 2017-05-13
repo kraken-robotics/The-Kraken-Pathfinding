@@ -140,7 +140,7 @@ public class AStarCourbe implements Service, HighPFClass
 	 * @throws InterruptedException 
 	 * @throws MemoryManagerException 
 	 */
-	public final void process(CheminPathfindingInterface chemin) throws PathfindingException, MemoryManagerException
+	public final synchronized void process(CheminPathfindingInterface chemin) throws PathfindingException, MemoryManagerException
 	{
 		trajetDeSecours = null;
 		depart.parent = null;
