@@ -140,8 +140,10 @@ public class PathCache implements Service, HighPFClass
 		if(path == null)
 			astar.process(chemin);
 		else
+		{
 			log.debug("Utilisation d'un trajet précalculé !");
 			chemin.addToEnd(path);
+		}
 	}
 	
 	/**
