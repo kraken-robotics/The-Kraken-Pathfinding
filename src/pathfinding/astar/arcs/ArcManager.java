@@ -27,6 +27,7 @@ import pathfinding.astar.arcs.vitesses.VitesseRameneVolant;
 import pathfinding.astar.arcs.vitesses.VitesseCourbure;
 import pathfinding.dstarlite.DStarLite;
 import robot.Cinematique;
+import robot.CinematiqueObs;
 import robot.Speed;
 import table.GameElementNames;
 import table.RealTable;
@@ -72,6 +73,7 @@ public class ArcManager implements Service, HighPFClass
 	private CercleArrivee cercle;
 	private List<VitesseCourbure> listeVitesse = new ArrayList<VitesseCourbure>();
 	private ListIterator<VitesseCourbure> iterator = listeVitesse.listIterator();
+	private List<ObstaclesFixes> disabledObstaclesFixes = new ArrayList<ObstaclesFixes>();
 	
 	public ArcManager(Log log, ClothoidesComputer clotho, RealTable table, PrintBufferInterface buffer, DStarLite dstarlite, BezierComputer bezier, CercleArrivee cercle, Config config, ObstaclesIteratorPresent obstaclesProxIterator)
 	{
@@ -123,7 +125,7 @@ public class ArcManager implements Service, HighPFClass
 		
 		// Collision avec un obstacle fixe?
     	for(ObstaclesFixes o: ObstaclesFixes.values())
-    		if(o.getObstacle().isColliding(obs))
+    		if(!disabledObstaclesFixes.contains(o) && o.getObstacle().isColliding(obs))
     		{
 //				log.debug("Collision avec "+o);
     			return false;
@@ -359,6 +361,19 @@ public class ArcManager implements Service, HighPFClass
 	public double heuristicDirect(Cinematique cinematique)
 	{
 		return 3*cinematique.getPosition().distanceFast(arrivee.getPosition());
+	}
+	
+	public void disableObstaclesFixes(CinematiqueObs obs)
+	{
+		disabledObstaclesFixes.clear();
+    	for(ObstaclesFixes o: ObstaclesFixes.values())
+    		if(o.getObstacle().isColliding(obs.obstacle))
+    		{
+    			log.warning("Désactivation de l'obstacle fixe :"+o);
+    			disabledObstaclesFixes.add(o);
+    		}
+    	if(!disabledObstaclesFixes.isEmpty())
+    		dstarlite.disableObstaclesFixes(obs.getPosition());
 	}
 
 	public boolean isToCircle()

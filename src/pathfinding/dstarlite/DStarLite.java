@@ -643,5 +643,10 @@ public class DStarLite implements Service, LowPFClass
 	{
 		rechercheEnCours = false;
 	}
+
+	public void disableObstaclesFixes(Vec2RO position)
+	{
+		gridspace.disableObstaclesFixes(position);
+	}
 	
 }

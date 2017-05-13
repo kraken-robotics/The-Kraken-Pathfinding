@@ -142,9 +142,14 @@ public class AStarCourbe implements Service, HighPFClass
 		depart.parent = null;
 		depart.cameFromArcDynamique = null;
 		depart.g_score = 0;
-		Double heuristique;
-		heuristique = arcmanager.heuristicCostCourbe((depart.state.robot).getCinematique());
 
+		CinematiqueObs obsDepart = cinemMemory.getNewNode();
+		Cinematique cinemDepart = depart.state.robot.getCinematique();
+		obsDepart.update(cinemDepart.getPosition().getX(), cinemDepart.getPosition().getY(), cinemDepart.courbureGeometrique, cinemDepart.enMarcheAvant, cinemDepart.courbureGeometrique);
+		arcmanager.disableObstaclesFixes(obsDepart);
+
+		Double heuristique = arcmanager.heuristicCostCourbe((depart.state.robot).getCinematique());
+		
 		if(heuristique == null)
 		{
 			if(arcmanager.isToCircle()) // peut-être y a-t-il un autre bout du cercle qui n'a pas de problème d'heuristique
@@ -188,6 +193,11 @@ public class AStarCourbe implements Service, HighPFClass
 					depart.state.robot.setCinematique(cinemRestart);
 				}
 
+				obsDepart = cinemMemory.getNewNode();
+				cinemDepart = depart.state.robot.getCinematique();
+				obsDepart.update(cinemDepart.getPosition().getX(), cinemDepart.getPosition().getY(), cinemDepart.courbureGeometrique, cinemDepart.enMarcheAvant, cinemDepart.courbureGeometrique);
+				arcmanager.disableObstaclesFixes(obsDepart);
+				
 				trajetDeSecours = null;
 				depart.parent = null;
 				depart.cameFromArcDynamique = null;
@@ -208,6 +218,7 @@ public class AStarCourbe implements Service, HighPFClass
 				cinemMemory.empty();
 				closedset.clear();
 				openset.clear();
+
 				current = depart;
 			}
 						

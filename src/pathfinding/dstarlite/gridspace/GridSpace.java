@@ -34,6 +34,7 @@ import obstacles.types.ObstacleProximity;
 import obstacles.types.ObstaclesFixes;
 import robot.RobotReal;
 import utils.Log;
+import utils.Vec2RO;
 import config.Config;
 import config.ConfigInfo;
 import container.Service;
@@ -59,10 +60,11 @@ public class GridSpace implements Service, Printable, LowPFClass
 	private PrintBufferInterface buffer;
 
 	private int distanceMinimaleEntreProximite;
-	private int rayonRobot;
+	private int rayonRobot, rayonRobotObstaclesFixes;
 	
 	// cette grille est constante, c'est-à-dire qu'elle ne contient que les obstacles fixes
 	private BitSet grilleStatique = new BitSet(PointGridSpace.NB_POINTS);
+	private BitSet grilleStatiqueModif = new BitSet(PointGridSpace.NB_POINTS);
 	private BitSet newObstacles = new BitSet(PointGridSpace.NB_POINTS * 8);
 	private BitSet oldObstacles = new BitSet(PointGridSpace.NB_POINTS * 8);
 	private BitSet intersect = new BitSet(PointGridSpace.NB_POINTS * 8);
@@ -84,6 +86,7 @@ public class GridSpace implements Service, Printable, LowPFClass
 
 		distanceMinimaleEntreProximite = config.getInt(ConfigInfo.DISTANCE_BETWEEN_PROXIMITY_OBSTACLES);
 		rayonRobot = config.getInt(ConfigInfo.DILATATION_ROBOT_DSTARLITE);
+		rayonRobotObstaclesFixes = config.getInt(ConfigInfo.RAYON_ROBOT_SUPPRESSION_OBSTACLES_FIXES);
 		
 		// on ajoute les obstacles fixes une fois pour toute si c'est demandé
 		if(config.getBoolean(ConfigInfo.GRAPHIC_FIXED_OBSTACLES))
@@ -143,14 +146,14 @@ public class GridSpace implements Service, Printable, LowPFClass
 	{
 		// s'il y a un obstacle statique
 		PointGridSpace voisin = pointManager.getGridPointVoisin(point);
-		if(grilleStatique.get(point.point.hashcode) || voisin == null || grilleStatique.get(voisin.hashcode))
+		if(grilleStatiqueModif.get(point.point.hashcode) || voisin == null || grilleStatiqueModif.get(voisin.hashcode))
 			return Integer.MAX_VALUE;
 		return point.dir.distance;
 	}
 	
 	public boolean isInGrilleStatique(PointGridSpace p)
 	{
-		return grilleStatique.get(p.hashcode);
+		return grilleStatiqueModif.get(p.hashcode);
 	}
 
 	/**
@@ -282,6 +285,16 @@ public class GridSpace implements Service, Printable, LowPFClass
 	public Layer getLayer()
 	{
 		return Layer.MIDDLE;
+	}
+
+	public void disableObstaclesFixes(Vec2RO position)
+	{
+		// on initialise comme la grille statique classique
+		grilleStatiqueModif.clear();
+		grilleStatiqueModif.or(grilleStatique);
+		for(int i = 0; i < PointGridSpace.NB_POINTS; i++)
+			if(pointManager.get(i).computeVec2().distanceFast(position) < rayonRobotObstaclesFixes)
+				grilleStatiqueModif.clear(i);
 	}
 	
 }
