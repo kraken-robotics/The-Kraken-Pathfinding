@@ -150,7 +150,7 @@ public class ArcManager implements Service, HighPFClass
     	// On vérifie si on collisionne un élément de jeu (sauf si on shoot)
     	if(!shoot)
 			for(GameElementNames g : GameElementNames.values())
-				if(table.isDone(g) == EtatElement.INDEMNE && g.obstacle.isColliding(obs))
+				if(table.isDone(g).hash <= EtatElement.PRIS_PAR_ENNEMI.hash && g.obstacle.isColliding(obs))
 	    		{
 	//    			log.debug("Collision avec "+g);
 	    			return false;
