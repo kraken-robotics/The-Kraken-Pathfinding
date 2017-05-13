@@ -101,8 +101,11 @@ public class VideoReader {
 		
 		try {
 			// on force l'affichage non externe
+			ConfigInfo.GRAPHIC_ENABLE.setDefaultValue(true);
 			ConfigInfo.GRAPHIC_EXTERNAL.setDefaultValue(false);
 			ConfigInfo.GRAPHIC_DIFFERENTIAL.setDefaultValue(false);
+			ConfigInfo.SIMULE_SERIE.setDefaultValue(true);
+			
 			container = new Container();
 			PrintBuffer buffer = container.getService(PrintBuffer.class);
 			RobotReal robot = container.getService(RobotReal.class);
