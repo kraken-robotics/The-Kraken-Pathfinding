@@ -25,6 +25,7 @@ import config.DynamicConfigurable;
 import container.Service;
 import exceptions.ContainerException;
 import obstacles.memory.ObstaclesIteratorPresent;
+import obstacles.types.ObstacleCircular;
 import obstacles.types.ObstacleProximity;
 import pathfinding.astar.AStarCourbe;
 import table.RealTable;
@@ -129,7 +130,7 @@ public class JUnit_Container extends JUnit_Test {
 	@Test
 	public void test_extra_param() throws Exception
 	{
-		container.make(ObstacleProximity.class, new Vec2RO(100, 200), 10, System.currentTimeMillis(), null);
+		container.make(ObstacleProximity.class, new ObstacleCircular(new Vec2RO(100, 200), 10), System.currentTimeMillis(), null);
 	}
 
 

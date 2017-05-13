@@ -15,7 +15,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>
 */
 
-package tests;
+package tests.lowlevel;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -27,6 +27,7 @@ import robot.Cinematique;
 import robot.Speed;
 import scripts.ScriptNames;
 import scripts.Strategie;
+import tests.JUnit_Test;
 
 /**
  * Tests unitaires pour les capteurs

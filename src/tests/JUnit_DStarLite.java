@@ -19,10 +19,10 @@ package tests;
 
 import java.util.List;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import exceptions.PathfindingException;
 import obstacles.types.ObstacleCircular;
 import pathfinding.dstarlite.DStarLite;
 import pathfinding.dstarlite.gridspace.GridSpace;
@@ -83,17 +83,17 @@ public class JUnit_DStarLite extends JUnit_Test {
 		log.debug("En moyenne : "+((System.currentTimeMillis() - dateAvant)/(3.*nbBoucle)));
     }
 	
-	@Test(expected = PathfindingException.class)
+	@Test
     public void test_exception1() throws Exception
     {
 		pathfinding.computeNewPath(new Vec2RO(-1000, 200), new Vec2RO(1200, 1200), false);
 		gridspace.addObstacleAndRemoveNearbyObstacles(new ObstacleCircular(new Vec2RO(1100, 1200),200));
 		pathfinding.updateStart(new Vec2RO(-900, 1400));
 		pathfinding.updateObstaclesEnnemi();
-		pathfinding.itineraireBrut();
+		Assert.assertEquals(null,pathfinding.itineraireBrut());
     }
 
-	@Test(expected = PathfindingException.class)
+	@Test
     public void test_exception2() throws Exception
     {
 		pathfinding.computeNewPath(new Vec2RO(-1000, 300), new Vec2RO(0, 1800), false);
@@ -102,15 +102,15 @@ public class JUnit_DStarLite extends JUnit_Test {
 		gridspace.addObstacleAndRemoveNearbyObstacles(new ObstacleCircular(new Vec2RO(0, 1600),200));
 		pathfinding.updateStart(new Vec2RO(-900, 300));
 		pathfinding.updateObstaclesEnnemi();
-		pathfinding.itineraireBrut();
+		Assert.assertEquals(null,pathfinding.itineraireBrut());
     }
 
-	@Test(expected = PathfindingException.class)
+	@Test
     public void test_chemin_impossible() throws Exception
     {
 		gridspace.addObstacleAndRemoveNearbyObstacles(new ObstacleCircular(new Vec2RO(1000, 1200),200));
 		pathfinding.computeNewPath(new Vec2RO(-1000, 400), new Vec2RO(1000, 1200), false);
-		pathfinding.itineraireBrut();
+		Assert.assertEquals(null,pathfinding.itineraireBrut());
     }
 	
 	@Test
