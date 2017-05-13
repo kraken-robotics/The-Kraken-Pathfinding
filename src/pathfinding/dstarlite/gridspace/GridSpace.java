@@ -110,6 +110,9 @@ public class GridSpace implements Service, Printable, LowPFClass
 				}
 		}
 
+		grilleStatiqueModif.clear();
+		grilleStatiqueModif.or(grilleStatique);
+		
 		// l'affichage du d* lite est géré par le gridspace
 		if(config.getBoolean(ConfigInfo.GRAPHIC_D_STAR_LITE) || config.getBoolean(ConfigInfo.GRAPHIC_D_STAR_LITE_FINAL))
 		{
