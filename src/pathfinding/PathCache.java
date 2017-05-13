@@ -147,7 +147,7 @@ public class PathCache implements Service, HighPFClass
 	 * @throws InterruptedException
 	 * @throws PathfindingException
 	 */
-	private void waitPathfinding() throws InterruptedException, PathfindingException
+	public void waitPathfinding() throws InterruptedException, PathfindingException
 	{
 		synchronized(inst)
 		{

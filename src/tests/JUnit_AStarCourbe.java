@@ -45,6 +45,7 @@ import pathfinding.astar.arcs.vitesses.VitesseClotho;
 import pathfinding.astar.arcs.vitesses.VitesseDemiTour;
 import pathfinding.astar.arcs.vitesses.VitesseRameneVolant;
 import pathfinding.chemin.CheminPathfinding;
+import pathfinding.chemin.FakeCheminPathfinding;
 import pathfinding.chemin.IteratorCheminPathfinding;
 import pathfinding.dstarlite.gridspace.GridSpace;
 import robot.Cinematique;
@@ -71,6 +72,7 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 	private IteratorCheminPathfinding iterator;
 	private boolean graphicTrajectory;
 	private CheminPathfinding chemin;
+	private FakeCheminPathfinding fakeChemin;
 	private SensorsDataBuffer sensors;
 	private GridSpace gridspace;
 	private CercleArrivee cercle;
@@ -99,6 +101,7 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 		graphicTrajectory = config.getBoolean(ConfigInfo.GRAPHIC_TRAJECTORY_FINAL);
         sensors = container.getService(SensorsDataBuffer.class);
         pathcache = container.getService(PathCache.class);
+        fakeChemin = container.getService(FakeCheminPathfinding.class);
 	}
 
 	@Test
@@ -367,8 +370,11 @@ public class JUnit_AStarCourbe extends JUnit_Test {
 		int[] data = {0,400,0,0,0,0,0,0,0,0,0,0};
 
 		Cinematique c = new Cinematique(1000, 1200, Math.PI, false, 0);
-		astar.initializeNewSearch(c, true, state);
-		astar.process(chemin);
+		pathcache.prepareNewPath(new KeyPathCache(state, c, true));
+		pathcache.waitPathfinding();
+		chemin.addToEnd(fakeChemin.getPath());
+//		astar.initializeNewSearch(c, true, state);
+//		astar.process(chemin);
 		iterator.reinit();
 		CinematiqueObs a = null;
 		int i = 0;
