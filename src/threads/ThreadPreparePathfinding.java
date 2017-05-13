@@ -19,7 +19,6 @@ package threads;
 
 import container.dependances.HighPFClass;
 import exceptions.PathfindingException;
-import pathfinding.KeyPathCache;
 import pathfinding.PFInstruction;
 import pathfinding.astar.AStarCourbe;
 import pathfinding.chemin.FakeCheminPathfinding;
@@ -56,18 +55,11 @@ public class ThreadPreparePathfinding extends ThreadService implements HighPFCla
 			{
 				synchronized(inst)
 				{
-					while(inst.isEmpty())
+					while(!inst.hasRequest())
 						inst.wait();	
+					inst.beginSearch();
 				}
 				try {
-					KeyPathCache k = inst.getKey();
-					if(k.s != null)
-					{
-						k.s.s.setUpCercleArrivee();
-						astar.initializeNewSearchToCircle(k.shoot, k.chrono);
-					}
-					else
-						astar.initializeNewSearch(k.arrivee, k.shoot, k.chrono);
 					astar.process(fakeChemin);
 					inst.setDone();
 				} catch (PathfindingException e) {

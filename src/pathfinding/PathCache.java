@@ -133,7 +133,7 @@ public class PathCache implements Service, HighPFClass
 			astar.initializeNewSearch(k.arrivee, k.shoot, k.chrono);
 
 		if(path == null)
-			inst.set(k);
+			inst.searchRequest();
 		else
 		{
 			log.debug("Utilisation d'un trajet précalculé !");
@@ -143,6 +143,7 @@ public class PathCache implements Service, HighPFClass
 	
 	/**
 	 * On attend la fin de la recherche. On suppose qu'elle est démarrée !
+	 * Lance les exceptions s'il y en a
 	 * @throws InterruptedException
 	 * @throws PathfindingException
 	 */
@@ -154,15 +155,6 @@ public class PathCache implements Service, HighPFClass
 				inst.wait();
 		}
 		inst.throwException();
-	}
-	
-	/**
-	 * Envoie le chemin précédemment préparé
-	 * @throws InterruptedException 
-	 */
-	public void sendPreparedPath() throws PathfindingException
-	{
-		realChemin.addToEnd(fakeChemin.getPath());
 	}
 	
 	private LinkedList<CinematiqueObs> loadOrCompute(KeyPathCache k) throws MemoryManagerException, PathfindingException, InterruptedException
@@ -291,6 +283,12 @@ public class PathCache implements Service, HighPFClass
         return path;
 	}
 	
+	public void computeAndFollow(KeyPathCache c) throws PathfindingException, InterruptedException, UnableToMoveException, MemoryManagerException
+	{
+		prepareNewPath(c);
+		follow();
+	}
+	
 	/**
 	 * Calcule un chemin et le suit jusqu'à un point
 	 * @param arrivee
@@ -299,7 +297,7 @@ public class PathCache implements Service, HighPFClass
 	 * @throws InterruptedException
 	 * @throws UnableToMoveException
 	 */
-	public void computeAndFollow(KeyPathCache c) throws PathfindingException, InterruptedException, UnableToMoveException
+	public void follow() throws PathfindingException, InterruptedException, UnableToMoveException
 	{
 		try {
 			int essai = nbEssais;
@@ -307,13 +305,14 @@ public class PathCache implements Service, HighPFClass
 			do {
 				restart = false;
 				try {
+					// il est parfaitement possible que la recherche soit déjà faite
 					synchronized(inst)
 					{
-						if((!inst.isSearching() && !inst.isDone()) || inst.isEmpty()) // pas commencé, pas fini
-							inst.set(c);
+						if(!inst.isSearching() && !inst.isDone() && !inst.hasRequest()) // pas commencé, pas fini
+							inst.searchRequest();
 					}
 					waitPathfinding();
-					sendPreparedPath();
+					realChemin.addToEnd(fakeChemin.getPath());
 					log.debug("On va parcourir le chemin", Verbose.CACHE.masque);
 					if(!simuleSerie)
 						state.robot.followTrajectory(Speed.STANDARD);

@@ -31,33 +31,38 @@ import exceptions.PathfindingException;
 
 public class PFInstruction implements Service, HighPFClass
 {
-	private volatile KeyPathCache k;
 	private volatile PathfindingException e;
-	private volatile boolean done; // la recherche est-elle finie ?
-	private volatile boolean isSearching; // une recherche est-elle en cours ?
+	private volatile boolean done = false; // la recherche est-elle finie ?
+	private volatile boolean isSearching = false; // une recherche est-elle en cours ?
+	private volatile boolean request = false; // y a-t-il une requête ?
 	
-	public synchronized void set(KeyPathCache k)
+	public synchronized void searchRequest()
 	{
-		done = false;
-		this.k = k;
+		request = true;
 		notifyAll();
+	}
+	
+	public synchronized boolean hasRequest()
+	{
+		return request;
 	}
 	
 	public synchronized void setDone()
 	{
-		this.done = true;
-		this.isSearching = false;
+		done = true;
+		isSearching = false;
 		notifyAll();
 	}
 	
-	public void setException(PathfindingException e)
+	public synchronized void setException(PathfindingException e)
 	{
 		this.e = e;
 		setDone();
 	}
 	
-	public void throwException() throws PathfindingException
+	public synchronized void throwException() throws PathfindingException
 	{
+		done = false;
 		if(e != null)
 		{
 			PathfindingException tmp = e;
@@ -66,12 +71,10 @@ public class PFInstruction implements Service, HighPFClass
 		}
 	}
 	
-	public KeyPathCache getKey()
+	public synchronized void beginSearch()
 	{
-		KeyPathCache out = k;
-		k = null;
 		isSearching = true;
-		return out;
+		request = false;
 	}
 	
 	public boolean isDone()
@@ -82,11 +85,6 @@ public class PFInstruction implements Service, HighPFClass
 	public boolean isSearching()
 	{
 		return isSearching;
-	}
-	
-	public boolean isEmpty()
-	{
-		return k == null;
 	}
 
 }
