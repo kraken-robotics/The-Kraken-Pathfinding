@@ -32,12 +32,12 @@ import config.Config;
 import config.ConfigInfo;
 import container.Service;
 import container.dependances.HighPFClass;
+import exceptions.MemoryManagerException;
 import exceptions.PathfindingException;
 import exceptions.UnableToMoveException;
 import obstacles.types.ObstacleRobot;
 import pathfinding.astar.AStarCourbe;
 import pathfinding.chemin.CheminPathfinding;
-import pathfinding.chemin.CheminPathfindingInterface;
 import pathfinding.chemin.FakeCheminPathfinding;
 import robot.Cinematique;
 import robot.CinematiqueObs;
@@ -71,7 +71,7 @@ public class PathCache implements Service, HighPFClass
 	 */
 	public HashMap<String, LinkedList<CinematiqueObs>> paths;
 	
-	public PathCache(Log log, Config config, RealGameState state, ChronoGameState chrono, AStarCourbe astar, CheminPathfinding realChemin, FakeCheminPathfinding fakeChemin, PFInstruction inst) throws InterruptedException
+	public PathCache(Log log, Config config, RealGameState state, ChronoGameState chrono, AStarCourbe astar, CheminPathfinding realChemin, FakeCheminPathfinding fakeChemin, PFInstruction inst) throws MemoryManagerException, InterruptedException
 	{
 		this.state = state;
 		this.inst = inst;
@@ -118,14 +118,19 @@ public class PathCache implements Service, HighPFClass
 	 * @throws PathfindingException
 	 * @throws InterruptedException 
 	 */
-	public void prepareNewPathToScript(KeyPathCache k)
+	public void prepareNewPath(KeyPathCache k) throws PathfindingException, MemoryManagerException
 	{
 		log.debug("Recherche de chemin pour "+k+" ("+paths.size()+" chemins mémorisés)", Verbose.CACHE.masque);
 		
 		LinkedList<CinematiqueObs> path = paths.get(k.toString());
 		
-		k.s.s.setUpCercleArrivee();
-		astar.initializeNewSearchToCircle(k.shoot, k.chrono);
+		if(k.s != null)
+		{
+			k.s.s.setUpCercleArrivee();
+			astar.initializeNewSearchToCircle(k.shoot, k.chrono);
+		}
+		else
+			astar.initializeNewSearch(k.arrivee, k.shoot, k.chrono);
 
 		if(path == null)
 			inst.set(k);
@@ -136,6 +141,11 @@ public class PathCache implements Service, HighPFClass
 		}
 	}
 	
+	/**
+	 * On attend la fin de la recherche. On suppose qu'elle est démarrée !
+	 * @throws InterruptedException
+	 * @throws PathfindingException
+	 */
 	private void waitPathfinding() throws InterruptedException, PathfindingException
 	{
 		synchronized(inst)
@@ -155,7 +165,7 @@ public class PathCache implements Service, HighPFClass
 		realChemin.addToEnd(fakeChemin.getPath());
 	}
 	
-	private LinkedList<CinematiqueObs> loadOrCompute(KeyPathCache k) throws InterruptedException, PathfindingException
+	private LinkedList<CinematiqueObs> loadOrCompute(KeyPathCache k) throws MemoryManagerException, PathfindingException, InterruptedException
 	{
 		LinkedList<CinematiqueObs> path;
 		try {
@@ -166,7 +176,7 @@ public class PathCache implements Service, HighPFClass
 			{
 				log.warning("Calcul du chemin "+k);
 				try {
-					prepareNewPathToScript(k);
+					prepareNewPath(k);
 					waitPathfinding();
 					Thread.sleep(1000); // pour montrer le chemin
 					path = fakeChemin.getPath();
@@ -184,7 +194,7 @@ public class PathCache implements Service, HighPFClass
 		return path;
 	}
 	
-	private void loadAll(ChronoGameState chrono, Cinematique start) throws InterruptedException
+	private void loadAll(ChronoGameState chrono, Cinematique start) throws MemoryManagerException, InterruptedException
 	{
 		log.debug("Début du chargement des trajectoires…");
 		List<String> errors = new ArrayList<String>();
@@ -289,7 +299,7 @@ public class PathCache implements Service, HighPFClass
 	 * @throws InterruptedException
 	 * @throws UnableToMoveException
 	 */
-	public void computeAndFollow(boolean shoot, KeyPathCache c) throws PathfindingException, InterruptedException, UnableToMoveException
+	public void computeAndFollow(KeyPathCache c) throws PathfindingException, InterruptedException, UnableToMoveException
 	{
 		try {
 			int essai = nbEssais;

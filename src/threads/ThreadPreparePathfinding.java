@@ -21,7 +21,6 @@ import container.dependances.HighPFClass;
 import exceptions.PathfindingException;
 import pathfinding.KeyPathCache;
 import pathfinding.PFInstruction;
-import pathfinding.PathCache;
 import pathfinding.astar.AStarCourbe;
 import pathfinding.chemin.FakeCheminPathfinding;
 import utils.Log;

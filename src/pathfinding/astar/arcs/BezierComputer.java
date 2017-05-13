@@ -25,6 +25,7 @@ import config.Config;
 import config.ConfigInfo;
 import container.Service;
 import container.dependances.HighPFClass;
+import exceptions.MemoryManagerException;
 import graphic.PrintBufferInterface;
 import memory.CinemObsMM;
 import pathfinding.astar.arcs.vitesses.VitesseBezier;
@@ -81,9 +82,10 @@ public class BezierComputer implements Service, HighPFClass
 	 * @param arrivee
 	 * @param vitesseMax
 	 * @return
+	 * @throws MemoryManagerException 
 	 * @throws InterruptedException 
 	 */
-	public ArcCourbeDynamique interpolationQuadratique(Cinematique cinematiqueInitiale, Vec2RO arrivee) throws InterruptedException
+	public ArcCourbeDynamique interpolationQuadratique(Cinematique cinematiqueInitiale, Vec2RO arrivee) throws MemoryManagerException
 	{
 		debut = cinematiqueInitiale;
 		arrivee.copy(delta);
@@ -166,7 +168,7 @@ public class BezierComputer implements Service, HighPFClass
 	 * @throws InterruptedException 
 	 */
 	@Deprecated
-	public ArcCourbeDynamique interpolationQuadratiqueCercle(Cinematique cinematiqueInitiale) throws InterruptedException
+	public ArcCourbeDynamique interpolationQuadratiqueCercle(Cinematique cinematiqueInitiale) throws MemoryManagerException
 	{
 		ArcCourbeDynamique out = interpolationQuadratique(cinematiqueInitiale, cercle.position);
 		if(out == null)
@@ -230,7 +232,7 @@ public class BezierComputer implements Service, HighPFClass
 	 * @return
 	 * @throws InterruptedException 
 	 */
-	private ArcCourbeDynamique constructBezierQuad(Vec2RO A, Vec2RO B, Vec2RO C, boolean enMarcheAvant, Cinematique cinematiqueInitiale) throws InterruptedException
+	private ArcCourbeDynamique constructBezierQuad(Vec2RO A, Vec2RO B, Vec2RO C, boolean enMarcheAvant, Cinematique cinematiqueInitiale) throws MemoryManagerException
 	{
 /*		buffer.addSupprimable(new ObstacleCircular(A, 15));
 		buffer.addSupprimable(new ObstacleCircular(B, 15));
@@ -345,7 +347,7 @@ public class BezierComputer implements Service, HighPFClass
 		return new ArcCourbeDynamique(out, longueur, VitesseBezier.BEZIER_QUAD);
 	}
 
-	public ArcCourbeDynamique trajectoireCirculaireVersCentre(Cinematique cinematique) throws InterruptedException
+	public ArcCourbeDynamique trajectoireCirculaireVersCentre(Cinematique cinematique) throws MemoryManagerException
 	{
 		Vec2RO centre = cercle.position;
 		double rayon = cercle.rayon;
@@ -474,7 +476,7 @@ public class BezierComputer implements Service, HighPFClass
 		return new ArcCourbeDynamique(out, longueur, VitesseBezier.CIRCULAIRE_VERS_CERCLE);
 	}
 	
-	private ArcCourbeDynamique avanceVersCentreLineaire(double distance, Vec2RO centre, Cinematique cinematique) throws InterruptedException
+	private ArcCourbeDynamique avanceVersCentreLineaire(double distance, Vec2RO centre, Cinematique cinematique) throws MemoryManagerException
 	{
 //		log.debug("Appel à avanceVersCentreLineaire");
 		double orientationReelleDesiree = Math.atan2(centre.getY()-cinematique.getPosition().getY(), centre.getX()-cinematique.getPosition().getX());

@@ -33,6 +33,7 @@ import java.util.List;
 import memory.CinemObsMM;
 import container.Service;
 import container.dependances.HighPFClass;
+import exceptions.MemoryManagerException;
 import obstacles.types.ObstacleCircular;
 import pathfinding.astar.arcs.vitesses.VitesseClotho;
 import pathfinding.astar.arcs.vitesses.VitesseDemiTour;
@@ -242,7 +243,7 @@ public class ClothoidesComputer implements Service, HighPFClass
 	 * @return 
 	 * @throws InterruptedException 
 	 */
-	public final ArcCourbeDynamique getTrajectoireRamene(Cinematique cinematiqueInitiale, VitesseRameneVolant vitesseRamene) throws InterruptedException
+	public final ArcCourbeDynamique getTrajectoireRamene(Cinematique cinematiqueInitiale, VitesseRameneVolant vitesseRamene) throws MemoryManagerException
 	{
 		double courbure = cinematiqueInitiale.courbureGeometrique;
 		double orientation = cinematiqueInitiale.orientationGeometrique;
@@ -486,7 +487,7 @@ public class ClothoidesComputer implements Service, HighPFClass
 	 * @return
 	 * @throws InterruptedException 
 	 */
-	public final ArcCourbeDynamique getTrajectoireDemiTour(Cinematique cinematiqueInitiale, VitesseDemiTour vitesse) throws InterruptedException
+	public final ArcCourbeDynamique getTrajectoireDemiTour(Cinematique cinematiqueInitiale, VitesseDemiTour vitesse) throws MemoryManagerException
 	{
 		List<CinematiqueObs> trajet = getTrajectoireQuartDeTour(cinematiqueInitiale, vitesse.v, false);
 		trajet.addAll(getTrajectoireQuartDeTour(trajet.get(trajet.size()-1), vitesse.v, true)); // on reprend à la fin du premier quart de tour
@@ -505,7 +506,7 @@ public class ClothoidesComputer implements Service, HighPFClass
 	 * @return 
 	 * @throws InterruptedException 
 	 */
-	private final List<CinematiqueObs> getTrajectoireQuartDeTour(Cinematique cinematiqueInitiale, VitesseClotho vitesse, boolean rebrousse) throws InterruptedException
+	private final List<CinematiqueObs> getTrajectoireQuartDeTour(Cinematique cinematiqueInitiale, VitesseClotho vitesse, boolean rebrousse) throws MemoryManagerException
 	{
 		double courbure = cinematiqueInitiale.courbureGeometrique;
 		double orientation = cinematiqueInitiale.orientationGeometrique;

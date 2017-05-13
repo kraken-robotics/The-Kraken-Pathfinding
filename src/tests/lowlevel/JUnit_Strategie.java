@@ -54,10 +54,10 @@ public class JUnit_Strategie extends JUnit_Test {
 	public void test_pathcache() throws Exception
 	{
 		chrono.robot.setCinematique(new Cinematique(700, 1800, Math.PI, true, 0));
-		path.prepareNewPathToScript(new KeyPathCache(chrono, ScriptNames.SCRIPT_CRATERE_HAUT_DROITE, false));
+		path.prepareNewPath(new KeyPathCache(chrono, ScriptNames.SCRIPT_CRATERE_HAUT_DROITE, false));
 		path.sendPreparedPath();
 		chrono.robot.followTrajectory(Speed.TEST);
-		path.prepareNewPathToScript(new KeyPathCache(chrono, ScriptNames.SCRIPT_DEPOSE_MINERAI, false));
+		path.prepareNewPath(new KeyPathCache(chrono, ScriptNames.SCRIPT_DEPOSE_MINERAI, false));
 		path.sendPreparedPath();
 	}
 	

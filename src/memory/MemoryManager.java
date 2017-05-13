@@ -24,6 +24,7 @@ import java.util.List;
 import container.Container;
 import container.Service;
 import exceptions.ContainerException;
+import exceptions.MemoryManagerException;
 import utils.Log;
 
 /**
@@ -77,7 +78,7 @@ public class MemoryManager<T extends Memorizable> implements Service {
 	 * @throws InterruptedException 
 	 */
 	@SuppressWarnings("unchecked")
-	public synchronized T getNewNode() throws InterruptedException
+	public synchronized T getNewNode() throws MemoryManagerException
 	{
 		// lève une exception s'il n'y a plus de place
 		if(firstAvailable == initial_nb_instances * nodes.size())
@@ -86,7 +87,7 @@ public class MemoryManager<T extends Memorizable> implements Service {
 				if(initial_nb_instances * nodes.size() >= tailleMax) // pas trop d'objets (sert à empêcher les bugs de tout faire planter… cette condition est inutile en temps normal)
 				{
 					log.critical("Mémoire saturée pour "+classe.getSimpleName()+", arrêt");
-					throw new InterruptedException();
+					throw new MemoryManagerException();
 				}
 
 				if(nodes.size()+1 >= 20)

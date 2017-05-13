@@ -41,6 +41,7 @@ import config.Config;
 import config.ConfigInfo;
 import container.Service;
 import container.dependances.HighPFClass;
+import exceptions.MemoryManagerException;
 import graphic.PrintBufferInterface;
 import obstacles.memory.ObstaclesIteratorPresent;
 import obstacles.types.ObstacleArcCourbe;
@@ -178,7 +179,7 @@ public class ArcManager implements Service, HighPFClass
 	 * @param successeur
 	 * @throws InterruptedException 
 	 */
-    public boolean next(AStarCourbeNode successeur) throws InterruptedException
+    public boolean next(AStarCourbeNode successeur) throws MemoryManagerException
     {
     	VitesseCourbure v = iterator.next();
 

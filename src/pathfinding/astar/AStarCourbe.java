@@ -41,6 +41,7 @@ import config.Config;
 import config.ConfigInfo;
 import container.Service;
 import container.dependances.HighPFClass;
+import exceptions.MemoryManagerException;
 import exceptions.PathfindingException;
 import graphic.PrintBufferInterface;
 import robot.Cinematique;
@@ -137,8 +138,9 @@ public class AStarCourbe implements Service, HighPFClass
 	 * @return
 	 * @throws PathfindingException 
 	 * @throws InterruptedException 
+	 * @throws MemoryManagerException 
 	 */
-	public final void process(CheminPathfindingInterface chemin) throws PathfindingException, InterruptedException
+	public final void process(CheminPathfindingInterface chemin) throws PathfindingException, MemoryManagerException
 	{
 		trajetDeSecours = null;
 		depart.parent = null;
@@ -414,7 +416,7 @@ public class AStarCourbe implements Service, HighPFClass
 	 * @throws PathfindingException
 	 * @throws InterruptedException 
 	 */
-	public void initializeNewSearch(Cinematique arrivee, boolean shoot, GameState<? extends Robot> state) throws PathfindingException, InterruptedException
+	public void initializeNewSearch(Cinematique arrivee, boolean shoot, GameState<? extends Robot> state) throws PathfindingException, MemoryManagerException
 	{
 		initializeNewSearch(arrivee, SensFinal.AUCUNE_PREF, shoot, state);
 	}
@@ -427,7 +429,7 @@ public class AStarCourbe implements Service, HighPFClass
 	 * @throws PathfindingException
 	 * @throws InterruptedException 
 	 */
-	public void initializeNewSearch(Cinematique arrivee, SensFinal sens, boolean shoot, GameState<? extends Robot> state) throws PathfindingException, InterruptedException
+	public void initializeNewSearch(Cinematique arrivee, SensFinal sens, boolean shoot, GameState<? extends Robot> state) throws PathfindingException, MemoryManagerException
 	{
 		vitesseMax = Speed.STANDARD;
 		depart.init();
@@ -458,7 +460,7 @@ public class AStarCourbe implements Service, HighPFClass
 	 * @throws PathfindingException 
 	 * @throws InterruptedException 
 	 */
-	public void initializeNewSearchToCircle(boolean shoot, GameState<? extends Robot> state) throws PathfindingException, InterruptedException
+	public void initializeNewSearchToCircle(boolean shoot, GameState<? extends Robot> state) throws PathfindingException, MemoryManagerException
 	{
 		vitesseMax = Speed.STANDARD;
 		depart.init();
@@ -488,7 +490,7 @@ public class AStarCourbe implements Service, HighPFClass
 	 * @throws PathfindingException
 	 * @throws InterruptedException 
 	 */
-	public void updatePath(Cinematique lastValid) throws PathfindingException, InterruptedException
+	public void updatePath(Cinematique lastValid) throws PathfindingException, MemoryManagerException
 	{
 		if(!rechercheEnCours)
 			throw new PathfindingException("updatePath appelé alors qu'aucune recherche n'est en cours !");

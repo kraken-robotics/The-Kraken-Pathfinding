@@ -24,7 +24,6 @@ import config.Config;
 import config.ConfigInfo;
 import container.Service;
 import container.dependances.HighPFClass;
-import exceptions.PathfindingException;
 import graphic.Fenetre;
 import graphic.PrintBuffer;
 import graphic.printable.Couleur;
