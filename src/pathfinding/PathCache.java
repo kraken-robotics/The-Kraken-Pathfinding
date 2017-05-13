@@ -34,6 +34,7 @@ import container.Service;
 import container.dependances.HighPFClass;
 import exceptions.PathfindingException;
 import exceptions.UnableToMoveException;
+import obstacles.types.ObstacleRobot;
 import pathfinding.astar.AStarCourbe;
 import pathfinding.chemin.CheminPathfinding;
 import pathfinding.chemin.CheminPathfindingInterface;
@@ -329,37 +330,42 @@ public class PathCache implements Service, HighPFClass
 	 */
 	private void computeAndFollow(Cinematique arrivee, boolean shoot, KeyPathCache c) throws PathfindingException, InterruptedException, UnableToMoveException
 	{
-		int essai = nbEssais;
-		boolean restart = false;
-		do {
-			restart = false;
-			try {
-				if(c != null)
-					prepareNewPathToScript(c);
-				else
-				{
-					log.debug("Recherche de chemin pour "+arrivee+" depuis "+state.robot.getCinematique(), Verbose.CACHE.masque);
-					astar.initializeNewSearch(arrivee, shoot, state);
-					astar.process(realChemin);
+		try {
+			int essai = nbEssais;
+			boolean restart = false;
+			do {
+				restart = false;
+				try {
+					if(c != null)
+						prepareNewPathToScript(c);
+					else
+					{
+						log.debug("Recherche de chemin pour "+arrivee+" depuis "+state.robot.getCinematique(), Verbose.CACHE.masque);
+						astar.initializeNewSearch(arrivee, shoot, state);
+						astar.process(realChemin);
+					}
+					log.debug("On va parcourir le chemin", Verbose.CACHE.masque);
+					if(!simuleSerie)
+						state.robot.followTrajectory(Speed.STANDARD);
 				}
-				log.debug("On va parcourir le chemin", Verbose.CACHE.masque);
-				if(!simuleSerie)
-					state.robot.followTrajectory(Speed.STANDARD);
-			}
-			catch(PathfindingException | UnableToMoveException e)
-			{
-				log.warning("Il y a eu un problème de pathfinding : "+e);
-				essai--;
-				if(essai == 0)
+				catch(PathfindingException | UnableToMoveException e)
 				{
-					log.critical("Abandon de l'objectif.");
-					throw e;
+					log.warning("Il y a eu un problème de pathfinding : "+e);
+					essai--;
+					if(essai == 0)
+					{
+						log.critical("Abandon de l'objectif.");
+						throw e;
+					}
+					log.debug("On retente !");
+					ObstacleRobot.setMarge(false);
+					Thread.sleep(dureePeremption);
+					restart = true;
 				}
-				log.debug("On retente !");
-				Thread.sleep(dureePeremption);
-				restart = true;
-			}
-		} while(restart);
-		log.debug("Compute and follow a terminé normalement", Verbose.CACHE.masque);
+			} while(restart);
+			log.debug("Compute and follow a terminé normalement", Verbose.CACHE.masque);
+		} finally {
+			ObstacleRobot.setMarge(true);
+		}
 	}
 }
