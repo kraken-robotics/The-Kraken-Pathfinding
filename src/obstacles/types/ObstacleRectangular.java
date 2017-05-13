@@ -43,10 +43,10 @@ public class ObstacleRectangular extends Obstacle
 	
 	// calcul des positions des coins
 	// ces coins sont dans le repère de l'obstacle !
-	public Vec2RW coinBasGauche;
-	public Vec2RW coinHautGauche;
-	public Vec2RW coinBasDroite;
-	public Vec2RW coinHautDroite;
+	protected Vec2RW coinBasGauche;
+	protected Vec2RW coinHautGauche;
+	protected Vec2RW coinBasDroite;
+	protected Vec2RW coinHautDroite;
 
 	// ces coins sont dans le repère de la table
 	protected Vec2RW coinBasGaucheRotate;
@@ -54,7 +54,7 @@ public class ObstacleRectangular extends Obstacle
 	protected Vec2RW coinBasDroiteRotate;
 	protected Vec2RW coinHautDroiteRotate;
 
-	private Vec2RW in = new Vec2RW();
+	protected Vec2RW in = new Vec2RW();
 
 	protected double angle, cos, sin;
 
@@ -64,7 +64,7 @@ public class ObstacleRectangular extends Obstacle
 		this.l = c.l;
 		this.c = c.couleur;
 	}
-
+	
 	public ObstacleRectangular(Vec2RO position, int sizeX, int sizeY, Couleur c)
 	{
 		this(position, sizeX, sizeY, 0);
@@ -165,7 +165,7 @@ public class ObstacleRectangular extends Obstacle
 	 * @return
 	 */
 	@Override
-	public final boolean isColliding(ObstacleRectangular r)
+	public boolean isColliding(ObstacleRectangular r)
 	{
 		// Calcul simple permettant de vérifier les cas absurdes où les obstacles sont loin l'un de l'autre
 		if(centreGeometrique.squaredDistance(r.centreGeometrique) >= (demieDiagonale+r.demieDiagonale)*(demieDiagonale+r.demieDiagonale))
@@ -190,7 +190,7 @@ public class ObstacleRectangular extends Obstacle
 	 * @param d2
 	 * @return
 	 */
-	private final boolean testeSeparation(double a, double b, double a2, double b2, double c2, double d2)
+	protected final boolean testeSeparation(double a, double b, double a2, double b2, double c2, double d2)
 	{
 		double min1 = Math.min(a,b);
 		double max1 = Math.max(a,b);

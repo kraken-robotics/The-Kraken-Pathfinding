@@ -39,6 +39,8 @@ public class ObstacleRobot extends ObstacleRectangular implements Serializable
 {
 	private static final long serialVersionUID = -8994485842050904808L;
 
+	protected static boolean withMarge = true;
+		
 	protected Vec2RW coinBasGaucheImg;
 	protected Vec2RW coinHautGaucheImg;
 	protected Vec2RW coinBasDroiteImg;
@@ -48,6 +50,8 @@ public class ObstacleRobot extends ObstacleRectangular implements Serializable
 	protected Vec2RW coinHautGaucheRotateImg;
 	protected Vec2RW coinBasDroiteRotateImg;
 	protected Vec2RW coinHautDroiteRotateImg;
+	
+	protected double demieDiagonaleImg;
 
 	public ObstacleRobot(int demieLargeurNonDeploye, int demieLongueurArriere, int demieLongueurAvant, int marge)
 	{
@@ -85,9 +89,15 @@ public class ObstacleRobot extends ObstacleRectangular implements Serializable
 		coinHautDroiteImg = new Vec2RW(c2, b2);
 		
 		demieDiagonale = Math.sqrt((a+b)*(a+b)/4+(c+d)*(c+d)/4);
-		
+		demieDiagonaleImg = Math.sqrt((a2+b2)*(a2+b2)/4+(c2+d2)*(c2+d2)/4);
 		centreGeometrique = new Vec2RW();
-	}	
+	}
+	
+	public static void setMarge(boolean withMarge)
+	{
+		ObstacleRobot.withMarge = withMarge;
+	}
+	
 	/**
 	 * Mise à jour de l'obstacle
 	 * @param position
@@ -199,6 +209,84 @@ public class ObstacleRobot extends ObstacleRectangular implements Serializable
 			g2d.drawImage(imageRobot, trans, null);
 		}
 	}
+	
+	@Override
+	public double getDemieDiagonale()
+	{
+		if(withMarge)
+			return super.getDemieDiagonale();
+		else
+			return demieDiagonaleImg;
+	}
+	
+	@Override
+	public double squaredDistance(Vec2RO v)
+	{
+		if(withMarge)
+			return super.squaredDistance(v);
+		
+		convertitVersRepereObstacle(v, in);
+
+//		log.debug("in = : "+in);
+		/*		
+		 *  Schéma de la situation :
+		 *
+		 * 		 												  y
+		 * 			4	|		3		|		2					    ^
+		 * 		____________________________________				    |
+		 * 				|				|
+		 * 			5	|	obstacle	|		1
+		 * 		____________________________________
+		 * 		
+		 * 			6	|		7		|		8
+		 */		
+		
+		// si le point fourni est dans les quarts de plan n°2,4,6 ou 8
+		if(in.getX() < coinBasGaucheImg.getX() && in.getY() < coinBasGaucheImg.getY())
+			return in.squaredDistance(coinBasGaucheImg);
+		
+		else if(in.getX() < coinHautGaucheImg.getX() && in.getY() > coinHautGaucheImg.getY())
+			return in.squaredDistance(coinHautGaucheImg);
+		
+		else if(in.getX() > coinBasDroiteImg.getX() && in.getY() < coinBasDroiteImg.getY())
+			return in.squaredDistance(coinBasDroiteImg);
+
+		else if(in.getX() > coinHautDroiteImg.getX() && in.getY() > coinHautDroiteImg.getY())
+			return in.squaredDistance(coinHautDroiteImg);
+
+		// Si le point fourni est dans les demi-bandes n°1,3,5,ou 7
+		if(in.getX() > coinHautDroiteImg.getX())
+			return (in.getX() - coinHautDroiteImg.getX())*(in.getX() - coinHautDroiteImg.getX());
+		
+		else if(in.getX() < coinBasGaucheImg.getX())
+			return (in.getX() - coinBasGaucheImg.getX())*(in.getX() - coinBasGaucheImg.getX());
+
+		else if(in.getY() > coinHautDroiteImg.getY())
+			return (in.getY() - coinHautDroiteImg.getY())*(in.getY() - coinHautDroiteImg.getY());
+		
+		else if(in.getY() < coinBasGaucheImg.getY())
+			return (in.getY() - coinBasGaucheImg.getY())*(in.getY() - coinBasGaucheImg.getY());
+
+		// Sinon, on est dans l'obstacle
+		return 0;
+	}
+	
+	@Override
+	public final boolean isColliding(ObstacleRectangular r)
+	{
+		if(withMarge)
+			return super.isColliding(r);
+		
+		// Calcul simple permettant de vérifier les cas absurdes où les obstacles sont loin l'un de l'autre
+		if(centreGeometrique.squaredDistance(r.centreGeometrique) >= (demieDiagonale+r.demieDiagonale)*(demieDiagonale+r.demieDiagonale))
+			return false;
+		// Il faut tester les quatres axes
+		return !testeSeparation(coinBasGaucheImg.getX(), coinBasDroiteImg.getX(), getXConvertiVersRepereObstacle(r.coinBasGaucheRotate), getXConvertiVersRepereObstacle(r.coinHautGaucheRotate), getXConvertiVersRepereObstacle(r.coinBasDroiteRotate), getXConvertiVersRepereObstacle(r.coinHautDroiteRotate))
+				&& !testeSeparation(coinBasGaucheImg.getY(), coinHautGaucheImg.getY(), getYConvertiVersRepereObstacle(r.coinBasGaucheRotate), getYConvertiVersRepereObstacle(r.coinHautGaucheRotate), getYConvertiVersRepereObstacle(r.coinBasDroiteRotate), getYConvertiVersRepereObstacle(r.coinHautDroiteRotate))
+				&& !testeSeparation(r.coinBasGauche.getX(), r.coinBasDroite.getX(), r.getXConvertiVersRepereObstacle(coinBasGaucheRotateImg), r.getXConvertiVersRepereObstacle(coinHautGaucheRotateImg), r.getXConvertiVersRepereObstacle(coinBasDroiteRotateImg), r.getXConvertiVersRepereObstacle(coinHautDroiteRotateImg))
+				&& !testeSeparation(r.coinBasGauche.getY(), r.coinHautGauche.getY(), r.getYConvertiVersRepereObstacle(coinBasGaucheRotateImg), r.getYConvertiVersRepereObstacle(coinHautGaucheRotateImg), r.getYConvertiVersRepereObstacle(coinBasDroiteRotateImg), r.getYConvertiVersRepereObstacle(coinHautDroiteRotateImg));
+	}
+
 	
 	/**
 	 * Met à jour cet obstacle
