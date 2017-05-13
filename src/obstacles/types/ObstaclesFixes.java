@@ -68,12 +68,14 @@ public enum ObstaclesFixes {
 
     private final Obstacle obstacle;
     private final boolean[] visible = new boolean[2];
+    public final boolean bordure;
     
     private ObstaclesFixes(Obstacle obstacle, boolean visibleBas, boolean visibleHaut)
     {
     	this.obstacle = obstacle;
     	visible[0] = visibleBas;
     	visible[1] = visibleHaut;
+    	bordure = name().startsWith("BORD_");
     }
 
     public Obstacle getObstacle()
