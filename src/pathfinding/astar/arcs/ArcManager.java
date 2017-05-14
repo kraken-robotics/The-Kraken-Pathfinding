@@ -370,7 +370,7 @@ public class ArcManager implements Service, HighPFClass
     	for(ObstaclesFixes o: ObstaclesFixes.values())
     		if(!o.bordure && o.getObstacle().isColliding(obs.obstacle))
     		{
-    			log.warning("Désactivation de l'obstacle fixe : "+o);
+    			log.warning("Désactivation de l'obstacle fixe : "+o+". Obs : "+obs);
     			disabledObstaclesFixes.add(o);
     		}
     	if(!disabledObstaclesFixes.isEmpty())

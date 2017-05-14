@@ -71,7 +71,8 @@ public enum ConfigInfo {
 	COURBURE_MAX(3), // quelle courbure maximale la trajectoire du robot peut-elle avoir
 	TEMPS_ARRET(800), // temps qu'il faut au robot pour s'arrêter et repartir (par exemple à cause d'un rebroussement)
 	PF_MARGE_AVANT_COLLISION(100), // combien de mm laisse-t-on au plus % avant la collision
-	PF_MARGE_NECESSAIRE(50), // combien de mm le bas niveau doit-il toujours avoir
+	PF_MARGE_NECESSAIRE(40), // combien de mm le bas niveau DOIT-il toujours avoir
+	PF_MARGE_PREFERABLE(60), // combien de mm le bas niveau devrait-il toujours avoir
 	PF_MARGE_INITIALE(100), // combien de mm garde-t-on obligatoirement au début de la replanification
 	DUREE_MAX_RECHERCHE_PF(3000), // durée maximale que peut prendre le pathfinding
 	TAILLE_FAISCEAU_PF(20), // combien de voisins sont ajoutés à l'openset à chaque itération. CONFIG IGNORÉE !

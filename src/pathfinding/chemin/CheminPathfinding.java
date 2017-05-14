@@ -68,7 +68,7 @@ public class CheminPathfinding implements Service, HighPFClass, CheminPathfindin
 	private volatile boolean uptodate = true; // le chemin est-il complet
 	private volatile boolean empty = false;
 	private volatile boolean needRestart = false; // faut-il recalculer d'un autre point ?
-	private int margeNecessaire, margeInitiale, margeAvantCollision;
+	private int margeNecessaire, margeInitiale, margeAvantCollision, margePreferable;
 	private boolean graphic;
 	
 	public CheminPathfinding(Log log, BufferOutgoingOrder out, ObstaclesIteratorPresent iterator, PrintBufferInterface buffer, Config config)
@@ -85,6 +85,7 @@ public class CheminPathfinding implements Service, HighPFClass, CheminPathfindin
 		int demieLongueurAvant = config.getInt(ConfigInfo.DEMI_LONGUEUR_NON_DEPLOYE_AVANT);
 		int marge = config.getInt(ConfigInfo.DILATATION_OBSTACLE_ROBOT);
 		margeNecessaire = (int)(config.getDouble(ConfigInfo.PF_MARGE_NECESSAIRE)/ClothoidesComputer.PRECISION_TRACE_MM);
+		margePreferable = (int)(config.getDouble(ConfigInfo.PF_MARGE_PREFERABLE)/ClothoidesComputer.PRECISION_TRACE_MM);
 		margeAvantCollision = (int)(config.getInt(ConfigInfo.PF_MARGE_AVANT_COLLISION)/ClothoidesComputer.PRECISION_TRACE_MM);
 		margeInitiale = (int)(config.getInt(ConfigInfo.PF_MARGE_INITIALE)/ClothoidesComputer.PRECISION_TRACE_MM);
 		graphic = config.getBoolean(ConfigInfo.GRAPHIC_TRAJECTORY_FINAL);
@@ -105,13 +106,13 @@ public class CheminPathfinding implements Service, HighPFClass, CheminPathfindin
 	@Override
 	public boolean needStop()
 	{
-		return !uptodate && empty;
+		return !uptodate && (empty || minus(indexLast, indexFirst) < margeNecessaire);
 	}
 	
 	@Override
 	public boolean aAssezDeMarge()
 	{
-		boolean out = uptodate || minus(indexLast, indexFirst) >= margeNecessaire;
+		boolean out = uptodate || minus(indexLast, indexFirst) >= margePreferable;
 		if(!out)
 			log.warning("Replanification partielle nécessaire : "+minus(indexLast, indexFirst)+" points d'avance seulement.", Verbose.REPLANIF.masque);
 		return out;
@@ -239,7 +240,7 @@ public class CheminPathfinding implements Service, HighPFClass, CheminPathfindin
 		 */
 		log.debug("Ajout de "+points.size()+" points. Marge : "+minus(add(indexLast, points.size()), indexFirst)+". First : "+indexFirst+", last = "+indexLast);
 		
-		if(!uptodate && minus(add(indexLast, points.size()), indexFirst) < margeNecessaire)
+		if(!uptodate && minus(add(indexLast, points.size()), indexFirst) < margePreferable)
 			throw new PathfindingException("Pas assez de points pour le bas niveau");
 				
 		if(!points.isEmpty())
