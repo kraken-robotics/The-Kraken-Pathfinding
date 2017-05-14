@@ -77,7 +77,7 @@ public class CercleArrivee implements Service, Printable, HighPFClass, LowPFClas
 			{
 				buffer.notify();
 			}
-		log.debug("arriveeDStarLite : "+arriveeDStarLite);
+//		log.debug("arriveeDStarLite : "+arriveeDStarLite);
 	}
 	
 	public void set(GameElementNames element, double rayon)

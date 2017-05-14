@@ -32,13 +32,14 @@ import exceptions.PathfindingException;
 public class PFInstruction implements Service, HighPFClass
 {
 	private volatile PathfindingException e = null;
-	private volatile boolean done = true; // la recherche est-elle finie ?
+	private volatile boolean done = false; // la recherche est-elle finie ?
 	private volatile boolean isSearching = false; // une recherche est-elle en cours ?
 	private volatile boolean request = false; // y a-t-il une requête ?
 	
 	public synchronized void searchRequest()
 	{
 		request = true;
+		done = false;
 		notifyAll();
 	}
 	

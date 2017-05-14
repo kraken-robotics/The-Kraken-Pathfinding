@@ -23,6 +23,7 @@ import pathfinding.PFInstruction;
 import pathfinding.astar.AStarCourbe;
 import pathfinding.chemin.FakeCheminPathfinding;
 import utils.Log;
+import utils.Log.Verbose;
 
 /**
  * Thread qui calcule le prochain pathfinding pendant que le robot fait un script
@@ -57,14 +58,16 @@ public class ThreadPreparePathfinding extends ThreadService implements HighPFCla
 				{
 					while(!inst.hasRequest())
 						inst.wait();	
-					log.debug("Préparation du prochain trajet en cours…");
+					log.debug("Préparation du prochain trajet en cours…", Verbose.PF.masque);
 					inst.beginSearch();
 				}
 				try {
 					fakeChemin.clear();
 					astar.process(fakeChemin);
+					log.debug("Prochain trajet préparé.", Verbose.PF.masque);
 					inst.setDone();
 				} catch (PathfindingException e) {
+					log.warning("Exception dans la préparation du pathfinding ! "+e, Verbose.PF.masque);
 					inst.setException(e);
 				}
 			}
