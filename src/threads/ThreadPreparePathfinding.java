@@ -57,6 +57,7 @@ public class ThreadPreparePathfinding extends ThreadService implements HighPFCla
 				{
 					while(!inst.hasRequest())
 						inst.wait();	
+					log.debug("Préparation du prochain trajet en cours…");
 					inst.beginSearch();
 				}
 				try {

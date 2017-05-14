@@ -138,6 +138,7 @@ public class PathCache implements Service, HighPFClass
 		else
 		{
 			log.debug("Utilisation d'un trajet précalculé !");
+			inst.setDone();
 			fakeChemin.addToEnd(path);
 		}
 	}
@@ -154,8 +155,8 @@ public class PathCache implements Service, HighPFClass
 		{
 			while(!inst.isDone())
 				inst.wait();
+			inst.throwException();
 		}
-		inst.throwException();
 	}
 	
 	private LinkedList<CinematiqueObs> loadOrCompute(KeyPathCache k) throws MemoryManagerException, PathfindingException, InterruptedException
