@@ -76,6 +76,7 @@ public enum ConfigInfo {
 	DUREE_MAX_RECHERCHE_PF(3000), // durée maximale que peut prendre le pathfinding
 	TAILLE_FAISCEAU_PF(20), // combien de voisins sont ajoutés à l'openset à chaque itération. CONFIG IGNORÉE !
 	NB_ESSAIS_PF(2), // nombre d'essais du pathfinding
+	ALLOW_PRECOMPUTED_PATH(true), // autorise-t-on l'utilisation de chemins précalculés
 	
 	/**
 	 * Paramètres de la série

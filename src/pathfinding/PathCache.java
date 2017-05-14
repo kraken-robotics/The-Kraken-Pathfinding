@@ -87,7 +87,8 @@ public class PathCache implements Service, HighPFClass
 		paths = new HashMap<String, LinkedList<CinematiqueObs>>();
 		if(!new File("paths/").exists())
 			new File("paths/").mkdir();
-		loadAll(chrono, start);
+		if(config.getBoolean(ConfigInfo.ALLOW_PRECOMPUTED_PATH))
+			loadAll(chrono, start);
 	}
 	
 	private void savePath(KeyPathCache k, List<CinematiqueObs> path)
