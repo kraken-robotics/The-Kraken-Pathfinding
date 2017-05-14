@@ -366,12 +366,11 @@ public class ArcManager implements Service, HighPFClass
 	
 	public void disableObstaclesFixes(CinematiqueObs obs)
 	{
-		log.debug(obs.obstacle);
 		disabledObstaclesFixes.clear();
     	for(ObstaclesFixes o: ObstaclesFixes.values())
     		if(!o.bordure && o.getObstacle().isColliding(obs.obstacle))
     		{
-    			log.warning("Désactivation de l'obstacle fixe :"+o);
+    			log.warning("Désactivation de l'obstacle fixe : "+o);
     			disabledObstaclesFixes.add(o);
     		}
     	if(!disabledObstaclesFixes.isEmpty())

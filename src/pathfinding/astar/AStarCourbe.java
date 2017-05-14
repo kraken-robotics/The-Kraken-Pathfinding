@@ -195,7 +195,7 @@ public class AStarCourbe implements Service, HighPFClass
 				{
 					CinematiqueObs obsDepart = cinemMemory.getNewNode();
 					Cinematique cinemDepart = depart.state.robot.getCinematique();
-					obsDepart.update(cinemDepart.getPosition().getX(), cinemDepart.getPosition().getY(), cinemDepart.courbureGeometrique, cinemDepart.enMarcheAvant, cinemDepart.courbureGeometrique);
+					obsDepart.update(cinemDepart.getPosition().getX(), cinemDepart.getPosition().getY(), cinemDepart.orientationGeometrique, cinemDepart.enMarcheAvant, cinemDepart.courbureGeometrique);
 					arcmanager.disableObstaclesFixes(obsDepart);
 				}
 				
@@ -471,7 +471,7 @@ public class AStarCourbe implements Service, HighPFClass
 		{
 			CinematiqueObs obsDepart = cinemMemory.getNewNode();
 			Cinematique cinemDepart = depart.state.robot.getCinematique();
-			obsDepart.update(cinemDepart.getPosition().getX(), cinemDepart.getPosition().getY(), cinemDepart.courbureGeometrique, cinemDepart.enMarcheAvant, cinemDepart.courbureGeometrique);
+			obsDepart.update(cinemDepart.getPosition().getX(), cinemDepart.getPosition().getY(), cinemDepart.orientationGeometrique, cinemDepart.enMarcheAvant, cinemDepart.courbureGeometrique);
 			arcmanager.disableObstaclesFixes(obsDepart);
 		}
 		
@@ -511,7 +511,7 @@ public class AStarCourbe implements Service, HighPFClass
 		{
 			CinematiqueObs obsDepart = cinemMemory.getNewNode();
 			Cinematique cinemDepart = depart.state.robot.getCinematique();
-			obsDepart.update(cinemDepart.getPosition().getX(), cinemDepart.getPosition().getY(), cinemDepart.courbureGeometrique, cinemDepart.enMarcheAvant, cinemDepart.courbureGeometrique);
+			obsDepart.update(cinemDepart.getPosition().getX(), cinemDepart.getPosition().getY(), cinemDepart.orientationGeometrique, cinemDepart.enMarcheAvant, cinemDepart.courbureGeometrique);
 			arcmanager.disableObstaclesFixes(obsDepart);
 		}
 		
