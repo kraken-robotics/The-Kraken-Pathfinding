@@ -98,6 +98,15 @@ public class CheminPathfinding implements Service, HighPFClass, CheminPathfindin
 	 * Renvoie l'état (marche avant ou arrière) du prochain point qui sera parcouru
 	 * @return
 	 */
+	public boolean getCurrentMarcheAvant()
+	{
+		return chemin[indexFirst].enMarcheAvant;
+	}
+	
+	/**
+	 * Renvoie l'état (marche avant ou arrière) du prochain point qui sera parcouru
+	 * @return
+	 */
 	public boolean getNextMarcheAvant()
 	{
 		return chemin[add(indexFirst,1)].enMarcheAvant;
