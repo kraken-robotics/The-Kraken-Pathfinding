@@ -43,7 +43,8 @@ public enum Couleur
 	ROBOT(new Color(0x94, 0xEB, 0x2A), Layer.FOREGROUND),
 	GAME_ELEMENT(new Color(0x26, 0xCB, 0xAF, 150), Layer.FOREGROUND),
 	HEURISTIQUE(new Color(0xFF, 0xD7, 0x00, 180), Layer.FOREGROUND),
-	CINEMATIQUE(new Color(0xFF, 0x14, 0x93, 180), Layer.FOREGROUND);
+	CINEMATIQUE(new Color(0xFF, 0x14, 0x93, 180), Layer.FOREGROUND),
+	SCAN(new Color(0x80, 0x00, 0x80));
 
 	public final Color couleur;
 	public final Layer l;
