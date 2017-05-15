@@ -143,7 +143,7 @@ public enum ConfigInfo
 													// dedans
 	SUPPRESSION_AUTO_OBSTACLES_FIXES(true), // si on démarre dans un obstacle
 											// fixe, est-ce qu'on le vire ?
-	ENABLE_SCAN(false), // scan-t-on autour du robot s'il est coincé ?
+	ENABLE_SCAN(true), // scan-t-on autour du robot s'il est coincé ?
 
 	/**
 	 * Paramètres sur la gestion de la mémoire
