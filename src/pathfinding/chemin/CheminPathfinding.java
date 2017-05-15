@@ -17,11 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 package pathfinding.chemin;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.List;
-
 import obstacles.memory.ObstaclesIteratorPresent;
 import obstacles.types.ObstacleCircular;
 import obstacles.types.ObstacleProximity;
@@ -341,7 +337,9 @@ public class CheminPathfinding implements Service, HighPFClass, CheminPathfindin
 			indexLast = indexFirst;
 		if(graphic)
 			updateAffichage();
-		return chemin[indexFirst];
+		if(isIndexValid(indexFirst))
+			return chemin[indexFirst];
+		return null;
 	}
 	
 	/**

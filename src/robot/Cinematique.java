@@ -71,7 +71,7 @@ public class Cinematique implements Printable, Serializable
 	 * Copie this dans autre
 	 * @param autre
 	 */
-	public void copy(Cinematique autre)
+	public synchronized void copy(Cinematique autre)
 	{
 		synchronized(autre)
 		{
@@ -165,25 +165,53 @@ public class Cinematique implements Printable, Serializable
 	{
 		return o.hashCode() == hashCode();
 	}
+	
+	/**
+	 * Met à jour la cinématique à partir d'info réelle
+	 * @param x
+	 * @param y
+	 * @param orientationGeometrique
+	 * @param enMarcheAvant
+	 * @param courbure
+	 */
+	public void updateReel(double x, double y, double orientationReelle, boolean enMarcheAvant, double courbureReelle)
+	{
+		if(enMarcheAvant)
+		{
+			orientationGeometrique = orientationReelle;
+			courbureGeometrique = courbureReelle;
+		}
+		else
+		{
+			orientationGeometrique = orientationReelle + Math.PI;
+			courbureGeometrique = - courbureReelle;
+		}
+		
+		position.setX(x);
+		position.setY(y);
+		this.orientationReelle = orientationReelle;
+		this.enMarcheAvant = enMarcheAvant;
+		this.courbureReelle = courbureReelle;
+	}
 
-	public void update(double x, double y, double orientationGeometrique, boolean enMarcheAvant, double courbure)
+	public void update(double x, double y, double orientationGeometrique, boolean enMarcheAvant, double courbureGeometrique)
 	{
 		if(enMarcheAvant)
 		{
 			orientationReelle = orientationGeometrique;
-			courbureReelle = courbure;
+			courbureReelle = courbureGeometrique;
 		}
 		else
 		{
 			orientationReelle = orientationGeometrique + Math.PI;
-			courbureReelle = - courbure;
+			courbureReelle = - courbureGeometrique;
 		}
 		
 		position.setX(x);
 		position.setY(y);
 		this.orientationGeometrique = orientationGeometrique;
 		this.enMarcheAvant = enMarcheAvant;
-		this.courbureGeometrique = courbure;
+		this.courbureGeometrique = courbureGeometrique;
 	}
 
 	@Override
