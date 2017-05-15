@@ -58,7 +58,7 @@ public class CheminPathfinding implements Service, HighPFClass, CheminPathfindin
 	private IteratorCheminPathfinding iterChemin;	
 	private IteratorCheminPathfinding iterCheminPrint;
 	private PrintBufferInterface buffer;
-	private List<Ticket> tickets = new ArrayList<Ticket>();
+	private LinkedList<Ticket> tickets = new LinkedList<Ticket>();
 	
 	private volatile CinematiqueObs[] chemin = new CinematiqueObs[256];
 	private volatile ObstacleCircular[] aff = new ObstacleCircular[256];
@@ -228,11 +228,11 @@ public class CheminPathfinding implements Service, HighPFClass, CheminPathfindin
 	
 	public void waitTrajectoryTickets() throws InterruptedException
 	{
-		Iterator<Ticket> iter = tickets.iterator();
-		while(iter.hasNext())
+		while(!tickets.isEmpty())
 		{
-			iter.next().attendStatus();
-			iter.remove();
+			Ticket first = tickets.getFirst();
+			first.attendStatus();
+			tickets.removeFirst();
 		}
 	}
 
