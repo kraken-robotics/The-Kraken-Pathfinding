@@ -39,8 +39,6 @@ public enum ConfigInfo {
 	DEMI_LONGUEUR_NON_DEPLOYE_AVANT(332-80), // distance entre le centre du robot et le bord avant du robot non-déployé
 	LARGEUR_NON_DEPLOYE(228), // distance entre le bord gauche et le bord droit du robot non-déployé
 	DILATATION_OBSTACLE_ROBOT(30), // la dilatation du robot dans l'A*. S'ajoute à gauche et à droite
-	RAYON_ROBOT_SUPPRESSION_OBSTACLES_FIXES(300), // dans quel rayon supprime-t-on les obstacles fixes si on est dedans
-	SUPPRESSION_AUTO_OBSTACLES_FIXES(true), // si on démarre dans un obstacle fixe, est-ce qu'on le vire ?
 	
 	/**
 	 * Paramètres des scripts
@@ -105,6 +103,9 @@ public enum ConfigInfo {
 	TAILLE_BUFFER_RECALAGE(5), // combien de mesures sont nécessaires pour obtenir une correction de recalage
 	PEREMPTION_CORRECTION(100), // temps maximale entre deux mesures de correction au sein d'un même buffer (en ms)
 	ENABLE_CORRECTION(true), // la correction de position et d'orientation est-elle activée ?
+	RAYON_ROBOT_SUPPRESSION_OBSTACLES_FIXES(300), // dans quel rayon supprime-t-on les obstacles fixes si on est dedans
+	SUPPRESSION_AUTO_OBSTACLES_FIXES(true), // si on démarre dans un obstacle fixe, est-ce qu'on le vire ?
+	ENABLE_SCAN(false), // scan-t-on autour du robot s'il est coincé ?
 	
 	/**
 	 * Paramètres sur la gestion de la mémoire

@@ -215,8 +215,7 @@ public class ObstacleRobot extends ObstacleRectangular implements Serializable
 	{
 		if(withMarge)
 			return super.getDemieDiagonale();
-		else
-			return demieDiagonaleImg;
+		return demieDiagonaleImg;
 	}
 	
 	@Override
