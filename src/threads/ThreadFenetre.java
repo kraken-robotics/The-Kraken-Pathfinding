@@ -1,19 +1,16 @@
 /*
-Copyright (C) 2013-2017 Pierre-François Gimenez
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>
-*/
+ * Copyright (C) 2013-2017 Pierre-François Gimenez
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>
+ */
 
 package threads;
 
@@ -28,6 +25,7 @@ import utils.Log;
 
 /**
  * S'occupe de la mise à jour graphique
+ * 
  * @author pf
  *
  */
@@ -40,7 +38,7 @@ public class ThreadFenetre extends ThreadService implements GUIClass
 	private PrintBuffer buffer;
 	private boolean gif, print, deporte;
 	private long derniereSauv = 0;
-	
+
 	public ThreadFenetre(Log log, Container container, PrintBuffer buffer, Config config)
 	{
 		this.log = log;
@@ -49,9 +47,12 @@ public class ThreadFenetre extends ThreadService implements GUIClass
 		print = config.getBoolean(ConfigInfo.GRAPHIC_ENABLE);
 		deporte = config.getBoolean(ConfigInfo.GRAPHIC_EXTERNAL);
 		if(print && !deporte)
-			try {
+			try
+			{
 				fenetre = container.getService(Fenetre.class);
-			} catch (ContainerException e) {
+			}
+			catch(ContainerException e)
+			{
 				e.printStackTrace();
 			}
 	}
@@ -60,15 +61,16 @@ public class ThreadFenetre extends ThreadService implements GUIClass
 	public void run()
 	{
 		Thread.currentThread().setName(getClass().getSimpleName());
-		log.debug("Démarrage de "+Thread.currentThread().getName());
-		try {
+		log.debug("Démarrage de " + Thread.currentThread().getName());
+		try
+		{
 			if(!print || deporte)
 			{
-				log.debug(getClass().getSimpleName()+" annulé ("+ConfigInfo.GRAPHIC_ENABLE+" = "+print+", "+ConfigInfo.GRAPHIC_EXTERNAL+" = "+deporte+")");
+				log.debug(getClass().getSimpleName() + " annulé (" + ConfigInfo.GRAPHIC_ENABLE + " = " + print + ", " + ConfigInfo.GRAPHIC_EXTERNAL + " = " + deporte + ")");
 				while(true)
 					Thread.sleep(10000);
 			}
-			
+
 			while(true)
 			{
 				synchronized(buffer)
@@ -82,18 +84,23 @@ public class ThreadFenetre extends ThreadService implements GUIClass
 					fenetre.saveImage();
 					derniereSauv = System.currentTimeMillis();
 				}
-				Thread.sleep(50); // on ne met pas à jour plus souvent que toutes les 50ms
+				Thread.sleep(50); // on ne met pas à jour plus souvent que
+									// toutes les 50ms
 			}
-		} catch (InterruptedException e) {
-			log.debug("Arrêt de "+Thread.currentThread().getName());
+		}
+		catch(InterruptedException e)
+		{
+			log.debug("Arrêt de " + Thread.currentThread().getName());
 			if(gif)
 				fenetre.saveGif("output.gif", 200);
-		} catch (Exception e) {
-			log.debug("Arrêt inattendu de "+Thread.currentThread().getName()+" : "+e);
+		}
+		catch(Exception e)
+		{
+			log.debug("Arrêt inattendu de " + Thread.currentThread().getName() + " : " + e);
 			e.printStackTrace();
 			e.printStackTrace(log.getPrintWriter());
-			
-		}		
+
+		}
 	}
 
 }

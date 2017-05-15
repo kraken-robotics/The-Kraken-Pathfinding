@@ -1,19 +1,16 @@
 /*
-Copyright (C) 2013-2017 Pierre-François Gimenez
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>
-*/
+ * Copyright (C) 2013-2017 Pierre-François Gimenez
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>
+ */
 
 package obstacles.types;
 
@@ -22,9 +19,7 @@ import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
-
 import javax.imageio.ImageIO;
-
 import config.Config;
 import config.ConfigInfo;
 import graphic.PrintBufferInterface;
@@ -37,6 +32,7 @@ import utils.Vec2RW;
 
 /**
  * Superclasse abstraite des obstacles.
+ * 
  * @author pf
  *
  */
@@ -53,16 +49,16 @@ public abstract class Obstacle implements Printable, Serializable, ObstacleInter
 	protected static Image imageRobot = null, imageRobotRoueG = null, imageRobotRoueD = null;
 	protected static int L, d;
 	protected static Vec2RO centreRotationGauche, centreRotationDroite;
-    protected static boolean printAllObstacles = false;
+	protected static boolean printAllObstacles = false;
 	protected Layer l = null;
 	public Color c;
-	
+
 	public static void set(Log log, PrintBufferInterface buffer)
 	{
 		Obstacle.log = log;
 		Obstacle.buffer = buffer;
 	}
-	
+
 	public static void useConfig(Config config)
 	{
 		printAllObstacles = config.getBoolean(ConfigInfo.GRAPHIC_ALL_OBSTACLES);
@@ -72,11 +68,14 @@ public abstract class Obstacle implements Printable, Serializable, ObstacleInter
 			d = config.getInt(ConfigInfo.CENTRE_ROTATION_ROUE_Y);
 			centreRotationGauche = new Vec2RO(L, d);
 			centreRotationDroite = new Vec2RO(L, -d);
-			try {
+			try
+			{
 				imageRobot = ImageIO.read(new File(config.getString(ConfigInfo.GRAPHIC_ROBOT_PATH)));
 				imageRobotRoueG = ImageIO.read(new File(config.getString(ConfigInfo.GRAPHIC_ROBOT_ROUE_GAUCHE_PATH)));
 				imageRobotRoueD = ImageIO.read(new File(config.getString(ConfigInfo.GRAPHIC_ROBOT_ROUE_DROITE_PATH)));
-			} catch (IOException e) {
+			}
+			catch(IOException e)
+			{
 				log.warning(e);
 			}
 		}
@@ -88,9 +87,10 @@ public abstract class Obstacle implements Printable, Serializable, ObstacleInter
 		this.l = c.l;
 		this.c = c.couleur;
 	}
-	
+
 	/**
 	 * Constructeur. La position est celle du centre de rotation de l'obstacle
+	 * 
 	 * @param position
 	 */
 	public Obstacle(Vec2RO position)
@@ -105,15 +105,17 @@ public abstract class Obstacle implements Printable, Serializable, ObstacleInter
 		else
 			this.position = null;
 	}
-	
+
 	@Override
 	public String toString()
 	{
-		return "Obstacle en "+position;
+		return "Obstacle en " + position;
 	}
 
 	/**
-	 * Renvoi "vrai" si position est à moins de distance d'un bord de l'obstacle ou à l'intérieur
+	 * Renvoi "vrai" si position est à moins de distance d'un bord de l'obstacle
+	 * ou à l'intérieur
+	 * 
 	 * @param position
 	 * @param distance
 	 * @return
@@ -125,8 +127,10 @@ public abstract class Obstacle implements Printable, Serializable, ObstacleInter
 	}
 
 	/**
-	 * Renvoi "vrai" si le centre de obs est à moins de distance d'un bord de l'obstacle ou à l'intérieur
+	 * Renvoi "vrai" si le centre de obs est à moins de distance d'un bord de
+	 * l'obstacle ou à l'intérieur
 	 * Ce n'est pas pareil que vérifier une collision !
+	 * 
 	 * @param position
 	 * @param distance
 	 * @return
@@ -136,9 +140,10 @@ public abstract class Obstacle implements Printable, Serializable, ObstacleInter
 	{
 		return squaredDistance(obs.position) < distance * distance;
 	}
-	
+
 	/**
 	 * Revoie vrai s'il y a une collision avec obs
+	 * 
 	 * @param obs
 	 * @return
 	 */
@@ -152,7 +157,7 @@ public abstract class Obstacle implements Printable, Serializable, ObstacleInter
 		}
 		return false;
 	}
-	
+
 	@Override
 	public Layer getLayer()
 	{

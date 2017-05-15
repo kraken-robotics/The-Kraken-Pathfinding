@@ -1,26 +1,22 @@
 /*
-Copyright (C) 2013-2017 Pierre-François Gimenez
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>
-*/
+ * Copyright (C) 2013-2017 Pierre-François Gimenez
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>
+ */
 
 package memory;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
-
 import container.Container;
 import container.Service;
 import exceptions.ContainerException;
@@ -29,13 +25,17 @@ import utils.Log;
 
 /**
  * Classe qui fournit des objets
- * Quand on a besoin de beaucoup d'objets, car l'instanciation d'un objet est long.
- * Du coup on réutilise les mêmes objets sans devoir en créer tout le temps de nouveaux.
+ * Quand on a besoin de beaucoup d'objets, car l'instanciation d'un objet est
+ * long.
+ * Du coup on réutilise les mêmes objets sans devoir en créer tout le temps de
+ * nouveaux.
+ * 
  * @author pf
  *
  */
 
-public class MemoryManager<T extends Memorizable> implements Service {
+public class MemoryManager<T extends Memorizable> implements Service
+{
 
 	private int initial_nb_instances;
 	private Container container;
@@ -46,15 +46,15 @@ public class MemoryManager<T extends Memorizable> implements Service {
 	private Object[] extra;
 	private int firstAvailable;
 	private int tailleMax = 1 << 24;
-	
+
 	@SuppressWarnings("unchecked")
 	public MemoryManager(Class<T> classe, Log log, Container container, int nb_instances, Object... extraParam) throws ContainerException
-	{	
+	{
 		if(extraParam.length == 0)
 			extra = null;
 		else
 			extra = extraParam;
-		
+
 		this.classe = classe;
 		this.container = container;
 		this.log = log;
@@ -63,7 +63,7 @@ public class MemoryManager<T extends Memorizable> implements Service {
 		firstAvailable = 0;
 
 		// on instancie une fois pour toutes les objets
-		log.debug("Instanciation de "+nb_instances+" "+classe.getSimpleName()+"…");
+		log.debug("Instanciation de " + nb_instances + " " + classe.getSimpleName() + "…");
 
 		for(int i = 0; i < nb_instances; i++)
 		{
@@ -71,11 +71,12 @@ public class MemoryManager<T extends Memorizable> implements Service {
 			nodes.get(0)[i].setIndiceMemoryManager(i);
 		}
 	}
-	
+
 	/**
 	 * Donne un objet disponible
+	 * 
 	 * @return
-	 * @throws InterruptedException 
+	 * @throws InterruptedException
 	 */
 	@SuppressWarnings("unchecked")
 	public synchronized T getNewNode() throws MemoryManagerException
@@ -83,16 +84,34 @@ public class MemoryManager<T extends Memorizable> implements Service {
 		// lève une exception s'il n'y a plus de place
 		if(firstAvailable == initial_nb_instances * nodes.size())
 		{
-			try {
-				if(initial_nb_instances * nodes.size() >= tailleMax) // pas trop d'objets (sert à empêcher les bugs de tout faire planter… cette condition est inutile en temps normal)
+			try
+			{
+				if(initial_nb_instances * nodes.size() >= tailleMax) // pas trop
+																		// d'objets
+																		// (sert
+																		// à
+																		// empêcher
+																		// les
+																		// bugs
+																		// de
+																		// tout
+																		// faire
+																		// planter…
+																		// cette
+																		// condition
+																		// est
+																		// inutile
+																		// en
+																		// temps
+																		// normal)
 				{
-					log.critical("Mémoire saturée pour "+classe.getSimpleName()+", arrêt");
+					log.critical("Mémoire saturée pour " + classe.getSimpleName() + ", arrêt");
 					throw new MemoryManagerException();
 				}
 
-				if(nodes.size()+1 >= 20)
-					log.warning("Mémoire trop petite pour les "+classe.getSimpleName()+", extension (nouvelle taille : "+((nodes.size() + 1) * initial_nb_instances)+")");
-				
+				if(nodes.size() + 1 >= 20)
+					log.warning("Mémoire trop petite pour les " + classe.getSimpleName() + ", extension (nouvelle taille : " + ((nodes.size() + 1) * initial_nb_instances) + ")");
+
 				T[] newNodes = (T[]) Array.newInstance(classe, initial_nb_instances);
 
 				for(int i = 0; i < initial_nb_instances; i++)
@@ -100,14 +119,15 @@ public class MemoryManager<T extends Memorizable> implements Service {
 					newNodes[i] = container.make(classe, extra);
 					newNodes[i].setIndiceMemoryManager(i + firstAvailable);
 				}
-	
+
 				nodes.add(newNodes);
-			} catch(ContainerException e)
+			}
+			catch(ContainerException e)
 			{
 				log.critical(e);
 			}
 		}
-		
+
 		T out = nodes.get(firstAvailable / initial_nb_instances)[firstAvailable % initial_nb_instances];
 		firstAvailable++;
 		return out;
@@ -115,20 +135,22 @@ public class MemoryManager<T extends Memorizable> implements Service {
 
 	/**
 	 * Signale que tous les objets sont disponibles. Très rapide.
+	 * 
 	 * @param id_astar
 	 */
 	public synchronized void empty()
 	{
 		firstAvailable = 0;
 	}
-	
+
 	/**
 	 * Signale qu'un objet est de nouveau disponible
+	 * 
 	 * @param objet
 	 */
 	public synchronized void destroyNode(T objet)
 	{
-		
+
 		int indice_state = objet.getIndiceMemoryManager();
 
 		/**
@@ -136,22 +158,22 @@ public class MemoryManager<T extends Memorizable> implements Service {
 		 */
 		if(indice_state >= firstAvailable)
 		{
-			log.critical("Objet déjà détruit ! "+indice_state+" > "+firstAvailable);
+			log.critical("Objet déjà détruit ! " + indice_state + " > " + firstAvailable);
 			new Exception().printStackTrace(log.getPrintWriter());
 		}
 
 		// On inverse dans le Vector les deux objets,
 		// de manière à avoir toujours un Vector trié.
 		firstAvailable--;
-	
+
 		if(indice_state != firstAvailable)
 		{
 			T tmp1 = nodes.get(indice_state / initial_nb_instances)[indice_state % initial_nb_instances];
 			T tmp2 = nodes.get(firstAvailable / initial_nb_instances)[firstAvailable % initial_nb_instances];
-	
+
 			tmp1.setIndiceMemoryManager(firstAvailable);
 			tmp2.setIndiceMemoryManager(indice_state);
-	
+
 			nodes.get(firstAvailable / initial_nb_instances)[firstAvailable % initial_nb_instances] = tmp1;
 			nodes.get(indice_state / initial_nb_instances)[indice_state % initial_nb_instances] = tmp2;
 		}
@@ -164,5 +186,5 @@ public class MemoryManager<T extends Memorizable> implements Service {
 	{
 		return firstAvailable;
 	}
-	
+
 }

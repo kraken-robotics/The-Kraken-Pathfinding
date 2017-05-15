@@ -1,19 +1,16 @@
 /*
-Copyright (C) 2013-2017 Pierre-François Gimenez
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>
-*/
+ * Copyright (C) 2013-2017 Pierre-François Gimenez
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>
+ */
 
 package graphic.printable;
 
@@ -21,11 +18,13 @@ import java.awt.Color;
 
 /**
  * Quelques couleurs prédéfinies
+ * 
  * @author pf
  *
  */
 
-public enum Couleur {
+public enum Couleur
+{
 	BLANC(new Color(255, 255, 255)),
 	NOIR(new Color(0, 0, 0)),
 	GRIS(new Color(50, 50, 50, 200)),
@@ -45,7 +44,7 @@ public enum Couleur {
 	GAME_ELEMENT(new Color(0x26, 0xCB, 0xAF, 150), Layer.FOREGROUND),
 	HEURISTIQUE(new Color(0xFF, 0xD7, 0x00, 180), Layer.FOREGROUND),
 	CINEMATIQUE(new Color(0xFF, 0x14, 0x93, 180), Layer.FOREGROUND);
-	
+
 	public final Color couleur;
 	public final Layer l;
 

@@ -1,24 +1,20 @@
 /*
-Copyright (C) 2013-2017 Pierre-François Gimenez
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>
-*/
+ * Copyright (C) 2013-2017 Pierre-François Gimenez
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>
+ */
 
 package pathfinding.astar.arcs;
 
 import java.awt.Graphics;
-
 import config.Config;
 import config.ConfigInfo;
 import config.DynamicConfigurable;
@@ -39,7 +35,9 @@ import utils.Vec2RO;
 import utils.Vec2RW;
 
 /**
- * Cercle d'arrivée du pathfinding. Utilisé pour se coller aux cratères en marche arrière
+ * Cercle d'arrivée du pathfinding. Utilisé pour se coller aux cratères en
+ * marche arrière
+ * 
  * @author pf
  *
  */
@@ -50,26 +48,27 @@ public class CercleArrivee implements Service, Printable, HighPFClass, LowPFClas
 	public double rayon;
 	public Vec2RO arriveeDStarLite;
 	public SensFinal sens;
-	
+
 	private boolean graphic;
 	private boolean symetrie = false;
-	
+
 	protected Log log;
 	private PrintBufferInterface buffer;
-	
+
 	public CercleArrivee(Log log, PrintBufferInterface buffer, Config config)
 	{
 		this.log = log;
 		this.buffer = buffer;
 		graphic = config.getBoolean(ConfigInfo.GRAPHIC_CERCLE_ARRIVEE);
 		if(graphic)
-			buffer.add(this);	}
-	
+			buffer.add(this);
+	}
+
 	public void set(Vec2RO position, double orientationArriveeDStarLite, double rayon, SensFinal sens)
 	{
 		this.position = new Vec2RO(symetrie ? -position.getX() : position.getX(), position.getY());
 		this.arriveeDStarLite = new Vec2RW(rayon, symetrie ? Math.PI - orientationArriveeDStarLite : orientationArriveeDStarLite, false);
-		((Vec2RW)arriveeDStarLite).plus(position);
+		((Vec2RW) arriveeDStarLite).plus(position);
 		this.rayon = rayon;
 		this.sens = sens;
 		if(graphic)
@@ -77,9 +76,9 @@ public class CercleArrivee implements Service, Printable, HighPFClass, LowPFClas
 			{
 				buffer.notify();
 			}
-//		log.debug("arriveeDStarLite : "+arriveeDStarLite);
+		// log.debug("arriveeDStarLite : "+arriveeDStarLite);
 	}
-	
+
 	public void set(GameElementNames element, double rayon)
 	{
 		set(element.obstacle.getPosition(), element.orientationArriveeDStarLite, rayon, SensFinal.MARCHE_ARRIERE);
@@ -89,6 +88,7 @@ public class CercleArrivee implements Service, Printable, HighPFClass, LowPFClas
 
 	/**
 	 * Sommes-nous arrivés ?
+	 * 
 	 * @param last
 	 * @return
 	 */
@@ -98,12 +98,12 @@ public class CercleArrivee implements Service, Printable, HighPFClass, LowPFClas
 		tmp.minus(robot.getPosition());
 		double o = tmp.getFastArgument();
 
-		double diffo = (o - robot.orientationGeometrique) % (2*Math.PI);
+		double diffo = (o - robot.orientationGeometrique) % (2 * Math.PI);
 		if(diffo > Math.PI)
-			diffo -= 2*Math.PI;
+			diffo -= 2 * Math.PI;
 		else if(diffo < -Math.PI)
-			diffo += 2*Math.PI;
-		
+			diffo += 2 * Math.PI;
+
 		// on vérifie qu'on est proche du rayon avec la bonne orientation
 		return Math.abs(diffo) < 1 / 180. * Math.PI && (robot.getPosition().distance(position) - rayon) < 2;
 	}
@@ -114,7 +114,7 @@ public class CercleArrivee implements Service, Printable, HighPFClass, LowPFClas
 		if(position != null)
 		{
 			g.setColor(Couleur.ROUGE.couleur);
-			g.drawOval(f.XtoWindow(position.getX()-rayon), f.YtoWindow(position.getY()+rayon), f.distanceXtoWindow((int)(2*rayon)), f.distanceYtoWindow((int)(2*rayon)));
+			g.drawOval(f.XtoWindow(position.getX() - rayon), f.YtoWindow(position.getY() + rayon), f.distanceXtoWindow((int) (2 * rayon)), f.distanceYtoWindow((int) (2 * rayon)));
 		}
 	}
 
@@ -126,13 +126,13 @@ public class CercleArrivee implements Service, Printable, HighPFClass, LowPFClas
 
 	public boolean isInCircle(Vec2RO position2)
 	{
-		return position2.squaredDistance(position) < rayon*rayon;
+		return position2.squaredDistance(position) < rayon * rayon;
 	}
 
 	@Override
 	public String toString()
 	{
-		return position+", rayon "+rayon+", arrivee "+arriveeDStarLite;
+		return position + ", rayon " + rayon + ", arrivee " + arriveeDStarLite;
 	}
 
 	@Override

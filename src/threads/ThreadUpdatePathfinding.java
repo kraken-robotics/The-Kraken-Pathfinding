@@ -1,19 +1,16 @@
 /*
-Copyright (C) 2013-2017 Pierre-François Gimenez
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>
-*/
+ * Copyright (C) 2013-2017 Pierre-François Gimenez
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>
+ */
 
 package threads;
 
@@ -29,6 +26,7 @@ import utils.Log.Verbose;
 
 /**
  * Thread qui recalcule l'itinéraire à emprunter. Surveille CheminPathfinding.
+ * 
  * @author pf
  *
  */
@@ -52,8 +50,9 @@ public class ThreadUpdatePathfinding extends ThreadService implements HighPFClas
 	public void run()
 	{
 		Thread.currentThread().setName(getClass().getSimpleName());
-		log.debug("Démarrage de "+Thread.currentThread().getName());
-		try {
+		log.debug("Démarrage de " + Thread.currentThread().getName());
+		try
+		{
 			while(true)
 			{
 				synchronized(chemin)
@@ -61,9 +60,11 @@ public class ThreadUpdatePathfinding extends ThreadService implements HighPFClas
 					if(chemin.isUptodate())
 						chemin.wait();
 				}
-				
-				// on a été prévenu que le chemin n'est plus à jour : ralentissement et replanification
-				try {
+
+				// on a été prévenu que le chemin n'est plus à jour
+				// : ralentissement et replanification
+				try
+				{
 					if(chemin.needStop())
 						throw new PathfindingException("Trajectoire vide");
 					Cinematique lastValid = chemin.getLastValidCinematique();
@@ -71,19 +72,26 @@ public class ThreadUpdatePathfinding extends ThreadService implements HighPFClas
 					log.debug("Mise à jour du chemin", Verbose.CAPTEURS.masque);
 					pathfinding.updatePath(lastValid);
 					out.setMaxSpeed(Speed.STANDARD, chemin.getCurrentMarcheAvant());
-				} catch (PathfindingException e) {
+				}
+				catch(PathfindingException e)
+				{
 					log.critical(e);
 					chemin.clear();
 					out.immobilise();
 				}
 			}
-		} catch (InterruptedException e) {
-			log.debug("Arrêt de "+Thread.currentThread().getName());
-		} catch (Exception e) {
-			log.critical("Exception inattendue dans "+Thread.currentThread().getName()+" : "+e);
+		}
+		catch(InterruptedException e)
+		{
+			log.debug("Arrêt de " + Thread.currentThread().getName());
+		}
+		catch(Exception e)
+		{
+			log.critical("Exception inattendue dans " + Thread.currentThread().getName() + " : " + e);
 			e.printStackTrace();
 			e.printStackTrace(log.getPrintWriter());
-			try {
+			try
+			{
 				while(true)
 				{
 					synchronized(chemin)
@@ -94,8 +102,10 @@ public class ThreadUpdatePathfinding extends ThreadService implements HighPFClas
 					chemin.clear();
 					out.immobilise();
 				}
-			} catch (InterruptedException e1) {
-				log.debug("Arrêt de "+Thread.currentThread().getName()+" après une exception inattendue récupérée");
+			}
+			catch(InterruptedException e1)
+			{
+				log.debug("Arrêt de " + Thread.currentThread().getName() + " après une exception inattendue récupérée");
 			}
 		}
 	}
