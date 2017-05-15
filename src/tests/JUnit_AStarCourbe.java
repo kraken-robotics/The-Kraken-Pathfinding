@@ -600,8 +600,9 @@ public class JUnit_AStarCourbe extends JUnit_Test
 		Cinematique depart = new Cinematique(0, 1800, -Math.PI / 3, true, 0);
 		Cinematique c = new Cinematique(1000, 1200, Math.PI, false, 0);
 		robot.setCinematique(depart);
-		pathcache.prepareNewPath(new KeyPathCache(state, c, false));
-		pathcache.follow();
+		KeyPathCache k = new KeyPathCache(state, c, false);
+		pathcache.prepareNewPath(k);
+		pathcache.follow(k);
 	}
 
 	@Test(expected = PathfindingException.class)
@@ -610,8 +611,9 @@ public class JUnit_AStarCourbe extends JUnit_Test
 		Cinematique depart = new Cinematique(0, 1800, -Math.PI / 3, true, 0);
 		Cinematique c = new Cinematique(100, 200, Math.PI, false, 0);
 		robot.setCinematique(depart);
-		pathcache.prepareNewPath(new KeyPathCache(state, c, true));
-		pathcache.follow();
+		KeyPathCache k = new KeyPathCache(state, c, false);
+		pathcache.prepareNewPath(k);
+		pathcache.follow(k);
 	}
 
 	@Test

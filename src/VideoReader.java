@@ -90,7 +90,12 @@ public class VideoReader
 
 		if(filename == null)
 		{
-			System.out.println("Utilisation : VideoReader -v fichierVideoALire -l fichierLogALire -v speed -d -b posX posY angle");
+			System.out.println("Utilisation : VideoReader -v videoFile -l logFile [-s speed] [-w] [-c] [-b posX posY angle] [-B n ...]");
+			System.out.println("-w : autostop on warning ");
+			System.out.println("-c : autostop on critical ");
+			System.out.println("-b : add robot bof© ");
+			System.out.println("-B n t1 t2 … tn: add n breakpoints at timestamps t1,… tn ");
+			System.out.println("-s : set reading speed");
 			return;
 		}
 

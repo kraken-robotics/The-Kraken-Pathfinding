@@ -313,7 +313,7 @@ public class PathCache implements Service, HighPFClass
 	public void computeAndFollow(KeyPathCache c) throws PathfindingException, InterruptedException, UnableToMoveException, MemoryManagerException
 	{
 		prepareNewPath(c);
-		follow();
+		follow(c);
 	}
 
 	/**
@@ -324,8 +324,9 @@ public class PathCache implements Service, HighPFClass
 	 * @throws PathfindingException
 	 * @throws InterruptedException
 	 * @throws UnableToMoveException
+	 * @throws MemoryManagerException 
 	 */
-	public void follow() throws PathfindingException, InterruptedException, UnableToMoveException
+	public void follow(KeyPathCache k) throws PathfindingException, InterruptedException, UnableToMoveException, MemoryManagerException
 	{
 		try
 		{
@@ -344,7 +345,16 @@ public class PathCache implements Service, HighPFClass
 																						// commencé,
 																						// pas
 																						// fini
+						{
+							if(k.s != null)
+							{
+								k.s.s.setUpCercleArrivee();
+								astar.initializeNewSearchToCircle(k.shoot, k.chrono);
+							}
+							else
+								astar.initializeNewSearch(k.arrivee, k.shoot, k.chrono);
 							inst.searchRequest();
+						}
 					}
 					waitPathfinding();
 					realChemin.addToEnd(fakeChemin.getPath());
