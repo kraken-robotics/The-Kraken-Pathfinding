@@ -19,6 +19,7 @@ import org.junit.Test;
 import utils.Vec2RO;
 import obstacles.types.ObstacleCircular;
 import obstacles.types.ObstacleRectangular;
+import obstacles.types.ObstacleRobot;
 import obstacles.types.ObstaclesFixes;
 
 /**
@@ -48,6 +49,17 @@ public class JUnit_Obstacle extends JUnit_Test
 		Assert.assertTrue(o.squaredDistance(new Vec2RO(-16, 0)) > 0);
 		Assert.assertTrue(o.squaredDistance(new Vec2RO(0, 7)) > 0);
 		Assert.assertTrue(o.squaredDistance(new Vec2RO(0, -7)) > 0);
+	}
+	
+	@Test
+	public void test_collision_marge_obstacle_robot() throws Exception
+	{
+		ObstacleRobot o = new ObstacleRobot(50, 50, 100, 50);
+		o.update(new Vec2RO(0,0), 0);
+		ObstacleRobot.setMarge(true);
+		Assert.assertTrue(o.squaredDistance(new Vec2RO(0, 60)) == 0);
+		ObstacleRobot.setMarge(false);
+		Assert.assertTrue(o.squaredDistance(new Vec2RO(0, 60)) > 0);
 	}
 
 	@Test
