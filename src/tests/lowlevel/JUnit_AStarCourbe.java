@@ -12,7 +12,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>
  */
 
-package tests;
+package tests.lowlevel;
 
 import obstacles.types.ObstacleCircular;
 import java.util.Random;
@@ -46,6 +46,7 @@ import robot.Cinematique;
 import robot.CinematiqueObs;
 import robot.RobotReal;
 import table.GameElementNames;
+import tests.JUnit_Test;
 import threads.ThreadName;
 import threads.ThreadUpdatePathfinding;
 import utils.Vec2RO;

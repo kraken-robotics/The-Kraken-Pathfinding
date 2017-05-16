@@ -19,6 +19,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import config.ConfigInfo;
+import pathfinding.PFInstruction;
 import pathfinding.chemin.CheminPathfinding;
 import pathfinding.chemin.IteratorCheminPathfinding;
 import robot.CinematiqueObs;
@@ -35,6 +36,7 @@ public class JUnit_CheminPF extends JUnit_Test
 
 	private CheminPathfinding chemin;
 	private IteratorCheminPathfinding iterator;
+	private PFInstruction inst;
 
 	@Override
 	@Before
@@ -43,6 +45,7 @@ public class JUnit_CheminPF extends JUnit_Test
 		super.setUp();
 		chemin = container.getService(CheminPathfinding.class);
 		iterator = new IteratorCheminPathfinding(chemin);
+		inst = container.getService(PFInstruction.class);
 	}
 
 	@Test
@@ -57,9 +60,43 @@ public class JUnit_CheminPF extends JUnit_Test
 		int demieLongueurAvant = config.getInt(ConfigInfo.DEMI_LONGUEUR_NON_DEPLOYE_AVANT);
 		int marge = config.getInt(ConfigInfo.DILATATION_OBSTACLE_ROBOT);
 
+		Assert.assertTrue(!iterator.hasNext());
 		l.add(new CinematiqueObs(demieLargeurNonDeploye, demieLongueurArriere, demieLongueurAvant, marge));
 		chemin.addToEnd(l);
 		Assert.assertTrue(iterator.hasNext());
+		chemin.clear();
+		Assert.assertTrue(!iterator.hasNext());
 	}
 
+	@Test
+	public void pathfinding_instruction() throws Exception
+	{
+		synchronized(inst)
+		{
+			Assert.assertTrue(!inst.isDone());
+			Assert.assertTrue(!inst.isSearching());
+			Assert.assertTrue(!inst.hasRequest());
+
+			inst.searchRequest();
+			Assert.assertTrue(!inst.isDone());
+			Assert.assertTrue(!inst.isSearching());
+			Assert.assertTrue(inst.hasRequest());
+			
+			inst.beginSearch();
+			Assert.assertTrue(!inst.isDone());
+			Assert.assertTrue(inst.isSearching());
+			Assert.assertTrue(!inst.hasRequest());
+			
+			inst.setDone();
+			Assert.assertTrue(inst.isDone());
+			Assert.assertTrue(!inst.isSearching());
+			Assert.assertTrue(!inst.hasRequest());
+			
+			inst.throwException();
+			Assert.assertTrue(!inst.isDone());
+			Assert.assertTrue(!inst.isSearching());
+			Assert.assertTrue(!inst.hasRequest());	
+		}
+	}
+	
 }
