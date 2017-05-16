@@ -67,8 +67,6 @@ public class PathCache implements Service, HighPFClass
 	private PFInstruction inst;
 	private CapteursProcess capteurs;
 	private int nbEssais;
-	private double L;
-	private int sleepScan;
 	private boolean enableScan;
 	private boolean simuleSerie;
 
@@ -86,8 +84,6 @@ public class PathCache implements Service, HighPFClass
 		nbEssais = config.getInt(ConfigInfo.NB_ESSAIS_PF);
 		simuleSerie = config.getBoolean(ConfigInfo.SIMULE_SERIE);
 		dureePeremption = config.getInt(ConfigInfo.DUREE_PEREMPTION_OBSTACLES);
-		L = config.getInt(ConfigInfo.CENTRE_ROTATION_ROUE_X);
-		sleepScan = 2 * config.getInt(ConfigInfo.SENSORS_SEND_PERIOD) * config.getInt(ConfigInfo.SENSORS_PRESCALER);
 		enableScan = config.getBoolean(ConfigInfo.ENABLE_SCAN);
 		this.fakeChemin = fakeChemin;
 		this.realChemin = realChemin;
@@ -376,8 +372,18 @@ public class PathCache implements Service, HighPFClass
 					}
 					log.debug("On retente !");
 					ObstacleRobot.setMarge(false);
+					
 					if(enableScan)
-						scan();
+					{
+						log.debug("Début du scan", Verbose.CAPTEURS.masque);
+						capteurs.startScan();
+						Ticket t = out.doScan();
+						InOrder o = t.attendStatus();
+						if(o.etat == State.KO)
+							log.critical("Erreur lors du scan : "+o);
+						capteurs.endScan();
+						log.debug("Scan fini", Verbose.CAPTEURS.masque);
+					}
 					else
 						Thread.sleep(dureePeremption);
 					restart = true;
@@ -389,27 +395,5 @@ public class PathCache implements Service, HighPFClass
 		{
 			ObstacleRobot.setMarge(true);
 		}
-	}
-
-	private void scan() throws InterruptedException
-	{
-		log.debug("Début du scan", Verbose.CAPTEURS.masque);
-		capteurs.startScan();
-		int nbMesures = 10;
-		double deltaAngle = Math.PI / (2. * nbMesures);
-		double angle = -Math.PI / 4;
-		// on scan de -pi/4 à pi/4
-		for(int i = 0; i <= nbMesures; i++)
-		{
-			double courbure = L / Math.tan(angle);
-			Ticket t = out.setDirectionRoues(courbure);
-			InOrder o = t.attendStatus();
-			if(o.etat == State.KO)
-				log.critical("Erreur lors du scan : "+o);
-			Thread.sleep(sleepScan);
-			angle += deltaAngle;
-		}
-		capteurs.endScan();
-		log.debug("Scan fini", Verbose.CAPTEURS.masque);
 	}
 }
