@@ -20,6 +20,7 @@ import java.util.LinkedList;
 import java.util.PriorityQueue;
 import java.util.Stack;
 import memory.NodeMM;
+import obstacles.types.ObstacleRobot;
 import memory.CinemObsMM;
 import pathfinding.ChronoGameState;
 import pathfinding.DirectionStrategy;
@@ -144,6 +145,7 @@ public class AStarCourbe implements Service, HighPFClass
 	 */
 	public final synchronized void process(CheminPathfindingInterface chemin) throws PathfindingException, MemoryManagerException
 	{
+		log.debug("Recherche de chemin. Marge obstacle robot : "+ObstacleRobot.getMarge(), Verbose.PF.masque);
 		trajetDeSecours = null;
 		depart.parent = null;
 		depart.cameFromArcDynamique = null;

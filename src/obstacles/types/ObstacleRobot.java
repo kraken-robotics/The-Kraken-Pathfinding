@@ -288,4 +288,9 @@ public class ObstacleRobot extends ObstacleRectangular implements Serializable
 		obstacle.update(position, angle);
 	}
 
+	public static boolean getMarge()
+	{
+		return withMarge;
+	}
+
 }
