@@ -41,6 +41,9 @@ import robot.CinematiqueObs;
 import robot.Speed;
 import scripts.ScriptNames;
 import serie.BufferOutgoingOrder;
+import serie.SerialProtocol.InOrder;
+import serie.SerialProtocol.State;
+import serie.Ticket;
 import utils.Log;
 import utils.Log.Verbose;
 
@@ -84,7 +87,7 @@ public class PathCache implements Service, HighPFClass
 		simuleSerie = config.getBoolean(ConfigInfo.SIMULE_SERIE);
 		dureePeremption = config.getInt(ConfigInfo.DUREE_PEREMPTION_OBSTACLES);
 		L = config.getInt(ConfigInfo.CENTRE_ROTATION_ROUE_X);
-		sleepScan = 3 * config.getInt(ConfigInfo.SENSORS_SEND_PERIOD) * config.getInt(ConfigInfo.SENSORS_PRESCALER);
+		sleepScan = 2 * config.getInt(ConfigInfo.SENSORS_SEND_PERIOD) * config.getInt(ConfigInfo.SENSORS_PRESCALER);
 		enableScan = config.getBoolean(ConfigInfo.ENABLE_SCAN);
 		this.fakeChemin = fakeChemin;
 		this.realChemin = realChemin;
@@ -399,9 +402,12 @@ public class PathCache implements Service, HighPFClass
 		for(int i = 0; i <= nbMesures; i++)
 		{
 			double courbure = L / Math.tan(angle);
-			out.setDirectionRoues(courbure);
-			angle += deltaAngle;
+			Ticket t = out.setDirectionRoues(courbure);
+			InOrder o = t.attendStatus();
+			if(o.etat == State.KO)
+				log.critical("Erreur lors du scan : "+o);
 			Thread.sleep(sleepScan);
+			angle += deltaAngle;
 		}
 		capteurs.endScan();
 		log.debug("Scan fini", Verbose.CAPTEURS.masque);
