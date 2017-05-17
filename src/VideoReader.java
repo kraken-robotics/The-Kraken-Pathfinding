@@ -30,9 +30,9 @@ import graphic.printable.Couleur;
 import graphic.printable.Layer;
 import graphic.printable.Printable;
 import obstacles.types.ObstacleRectangular;
+import robot.AnglesRoues;
 import robot.Cinematique;
 import robot.RobotReal;
-import robot.RobotReal.AnglesRoues;
 import utils.Log;
 import utils.Log.Verbose;
 import utils.Vec2RO;
@@ -176,7 +176,7 @@ public class VideoReader
 			}
 			catch(IOException | ClassNotFoundException e)
 			{
-				log.critical("Chargement échoué !");
+				log.critical("Chargement échoué ! "+e);
 				return;
 			}
 
