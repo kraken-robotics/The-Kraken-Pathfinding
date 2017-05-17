@@ -36,10 +36,10 @@ public abstract class Robot implements DynamicConfigurable
 
 	protected Cinematique cinematique;
 	protected volatile boolean symetrie;
-	protected boolean deploye = false;
 	protected Log log;
-	protected boolean filetBaisse = false;
-	protected boolean filetPlein = false;
+	protected volatile boolean filetBaisse = false;
+	protected volatile boolean filetPlein = false;
+	protected volatile boolean filetPeutEtrePlein = false;
 
 	protected abstract void bloque(String nom, Object... param) throws InterruptedException, ActionneurException;
 
@@ -123,7 +123,6 @@ public abstract class Robot implements DynamicConfigurable
 			log.critical(e);
 			// impossible
 		}
-		filetBaisse = false;
 	}
 
 	public boolean isFiletBaisse()
@@ -142,7 +141,7 @@ public abstract class Robot implements DynamicConfigurable
 			log.critical(e);
 			// impossible
 		}
-		filetPlein = false;
+		setFiletVideSur();
 	}
 
 	public void fermeFilet() throws InterruptedException
@@ -156,19 +155,19 @@ public abstract class Robot implements DynamicConfigurable
 			log.critical(e);
 			// impossible
 		}
-		// filetPlein = false; // TODO
+		filetPeutEtrePlein = true;
 	}
 
 	public void ejecteBalles() throws InterruptedException, ActionneurException
 	{
 		bloque("ejecteBalles", !symetrie);
-		filetPlein = false;
+		setFiletVideSur();
 	}
 
 	public void ejecteBallesAutreCote() throws InterruptedException, ActionneurException
 	{
 		bloque("ejecteBalles", symetrie);
-		filetPlein = false;
+		setFiletVideSur();
 	}
 
 	public void rearme() throws InterruptedException, ActionneurException
@@ -200,6 +199,15 @@ public abstract class Robot implements DynamicConfigurable
 	}
 
 	/**
+	 * On est sûr que le filet est vide
+	 */
+	public void setFiletVideSur()
+	{
+		filetPeutEtrePlein = false;
+		filetPlein = false;
+	}
+	
+	/**
 	 * Géré par le capteur de jauge
 	 */
 	public void filetVuVide()
@@ -215,6 +223,11 @@ public abstract class Robot implements DynamicConfigurable
 		filetPlein = true;
 	}
 
+	public boolean isFiletPeutEtrePlein()
+	{
+		return filetPeutEtrePlein;
+	}
+	
 	public boolean isFiletPlein()
 	{
 		return filetPlein;
