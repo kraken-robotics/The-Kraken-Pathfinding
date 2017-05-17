@@ -32,6 +32,7 @@ import container.dependances.HighPFClass;
 import exceptions.MemoryManagerException;
 import exceptions.PathfindingException;
 import exceptions.UnableToMoveException;
+import obstacles.memory.ObstaclesIteratorPresent;
 import obstacles.types.ObstacleRobot;
 import pathfinding.astar.AStarCourbe;
 import pathfinding.chemin.CheminPathfinding;
@@ -46,6 +47,7 @@ import serie.SerialProtocol.State;
 import serie.Ticket;
 import utils.Log;
 import utils.Log.Verbose;
+import utils.Vec2RO;
 
 /**
  * Service qui contient les chemins précalculés
@@ -62,6 +64,7 @@ public class PathCache implements Service, HighPFClass
 	private CheminPathfinding realChemin;
 	private FakeCheminPathfinding fakeChemin;
 	private BufferOutgoingOrder out;
+	private ObstaclesIteratorPresent iteratorObstacles;
 	private RealGameState state;
 	private int dureePeremption;
 	private PFInstruction inst;
@@ -69,14 +72,17 @@ public class PathCache implements Service, HighPFClass
 	private int nbEssais;
 	private boolean enableScan;
 	private boolean simuleSerie;
+	private double rayonRobot;
+	private double longueurAvantRobot;
 
 	/**
 	 * Les chemins précalculés.
 	 */
 	public HashMap<String, LinkedList<CinematiqueObs>> paths;
 
-	public PathCache(Log log, Config config, BufferOutgoingOrder out, CapteursProcess capteurs, RealGameState state, ChronoGameState chrono, AStarCourbe astar, CheminPathfinding realChemin, FakeCheminPathfinding fakeChemin, PFInstruction inst) throws MemoryManagerException, InterruptedException
+	public PathCache(Log log, Config config, ObstaclesIteratorPresent iteratorObstacles, BufferOutgoingOrder out, CapteursProcess capteurs, RealGameState state, ChronoGameState chrono, AStarCourbe astar, CheminPathfinding realChemin, FakeCheminPathfinding fakeChemin, PFInstruction inst) throws MemoryManagerException, InterruptedException
 	{
+		this.iteratorObstacles = iteratorObstacles;
 		this.capteurs = capteurs;
 		this.out = out;
 		this.state = state;
@@ -85,6 +91,8 @@ public class PathCache implements Service, HighPFClass
 		simuleSerie = config.getBoolean(ConfigInfo.SIMULE_SERIE);
 		dureePeremption = config.getInt(ConfigInfo.DUREE_PEREMPTION_OBSTACLES);
 		enableScan = config.getBoolean(ConfigInfo.ENABLE_SCAN);
+		rayonRobot = config.getDouble(ConfigInfo.RAYON_ROBOT_SUPPRESSION_OBSTACLES_FIXES);
+		longueurAvantRobot = config.getDouble(ConfigInfo.DEMI_LONGUEUR_NON_DEPLOYE_AVANT);
 		this.fakeChemin = fakeChemin;
 		this.realChemin = realChemin;
 		this.log = log;
@@ -376,7 +384,7 @@ public class PathCache implements Service, HighPFClass
 					log.debug("On retente !");
 					ObstacleRobot.setMarge(false);
 					
-					if(enableScan)
+					if(enableScan && isScanNecessary())
 					{
 						log.debug("Début du scan", Verbose.CAPTEURS.masque);
 						capteurs.startScan();
@@ -398,5 +406,19 @@ public class PathCache implements Service, HighPFClass
 		{
 			ObstacleRobot.setMarge(true);
 		}
+	}
+	
+	/**
+	 * Le scan est-il nécessaire ? Cette méthode vérifie s'il y a un obstacle de proximité devant le robot
+	 * @return
+	 */
+	private boolean isScanNecessary()
+	{
+		Vec2RO posDevant = state.robot.getCinematique().getPosition().plusNewVector(new Vec2RO(longueurAvantRobot + 250, state.robot.getCinematique().orientationReelle, false));
+		iteratorObstacles.reinit();
+		while(iteratorObstacles.hasNext())
+			if(iteratorObstacles.next().squaredDistance(posDevant) < rayonRobot * rayonRobot)
+				return true;
+		return false;
 	}
 }
