@@ -147,6 +147,7 @@ public class ExternalPrintBuffer implements PrintBufferInterface
 		if(robot != null)
 		{
 			o.add(robot.getCinematique().clone());
+			o.add(robot.getAngles());
 			// log.debug(o.get(0));
 		}
 

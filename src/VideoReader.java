@@ -32,6 +32,7 @@ import graphic.printable.Printable;
 import obstacles.types.ObstacleRectangular;
 import robot.Cinematique;
 import robot.RobotReal;
+import robot.RobotReal.AnglesRoues;
 import utils.Log;
 import utils.Log.Verbose;
 import utils.Vec2RO;
@@ -126,7 +127,7 @@ public class VideoReader
 			System.out.println("-c : autostop on critical ");
 			System.out.println("-b : add robot bof© ");
 			System.out.println("-B n t1 t2 … tn: add n breakpoints at timestamps t1,… tn ");
-			System.out.println("-s : set reading speed");
+			System.out.println("-s speed : set reading speed. 2 is twice as fast, 0.5 twice as slow");
 			System.out.println("-withsprite : affiche le sprite du robot et des capteurs");
 			System.out.println("-vcapt : verbose capteurs");
 			System.out.println("-vact : verbose actionneurs");
@@ -270,6 +271,12 @@ public class VideoReader
 								if(debug)
 									System.out.println("Cinématique robot : " + ((Cinematique) o).getPosition());
 								robot.setCinematique((Cinematique) o);
+							}
+							else if(o instanceof AnglesRoues)
+							{
+								if(debug)
+									System.out.println("Angles des roues du robot : " + ((AnglesRoues) o).angleRoueGauche + ", " + ((AnglesRoues) o).angleRoueDroite);
+								robot.setAngleRoues(((AnglesRoues) o).angleRoueGauche, ((AnglesRoues) o).angleRoueDroite);
 							}
 							else if(o instanceof Printable)
 							{

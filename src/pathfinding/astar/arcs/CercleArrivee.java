@@ -28,7 +28,6 @@ import graphic.printable.Layer;
 import graphic.printable.Printable;
 import pathfinding.SensFinal;
 import robot.Cinematique;
-import robot.CinematiqueObs;
 import robot.RobotReal;
 import table.GameElementNames;
 import utils.Log;
