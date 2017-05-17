@@ -55,6 +55,16 @@ public class VideoReader
 		int indexBP = 0;
 		boolean stopOnWarning = false, stopOnCritical = false;
 
+		ConfigInfo.DEBUG_CAPTEURS.setDefaultValue(false);
+		ConfigInfo.DEBUG_ACTIONNEURS.setDefaultValue(false);
+		ConfigInfo.DEBUG_CACHE.setDefaultValue(false);
+		ConfigInfo.DEBUG_DEBUG.setDefaultValue(false);
+		ConfigInfo.DEBUG_PF.setDefaultValue(false);
+		ConfigInfo.DEBUG_REPLANIF.setDefaultValue(false);
+		ConfigInfo.DEBUG_SERIE.setDefaultValue(false);
+		ConfigInfo.DEBUG_SERIE_TRAME.setDefaultValue(false);
+
+		
 		for(int i = 0; i < args.length; i++)
 		{
 			if(args[i].equals("-s")) // speed
@@ -69,6 +79,20 @@ public class VideoReader
 				stopOnCritical = true;
 			else if(args[i].equals("-l")) // log
 				logfile = args[++i];
+			else if(args[i].equals("-vcapt")) // verbose capteurs
+				ConfigInfo.DEBUG_CAPTEURS.setDefaultValue(true);
+			else if(args[i].equals("-vact")) // verbose capteurs
+				ConfigInfo.DEBUG_ACTIONNEURS.setDefaultValue(true);
+			else if(args[i].equals("-vcache")) // verbose capteurs
+				ConfigInfo.DEBUG_CACHE.setDefaultValue(true);
+			else if(args[i].equals("-vdebug")) // verbose capteurs
+				ConfigInfo.DEBUG_DEBUG.setDefaultValue(true);
+			else if(args[i].equals("-vpf")) // verbose capteurs
+				ConfigInfo.DEBUG_PF.setDefaultValue(true);
+			else if(args[i].equals("-vreplanif")) // verbose capteurs
+				ConfigInfo.DEBUG_REPLANIF.setDefaultValue(true);
+			else if(args[i].equals("-vserie")) // verbose capteurs
+				ConfigInfo.DEBUG_SERIE.setDefaultValue(true);
 			else if(args[i].equals("-b")) // bof
 			{
 				// Robot bof : (630, 1320), angle = 0
@@ -96,6 +120,13 @@ public class VideoReader
 			System.out.println("-b : add robot bof© ");
 			System.out.println("-B n t1 t2 … tn: add n breakpoints at timestamps t1,… tn ");
 			System.out.println("-s : set reading speed");
+			System.out.println("-vcapt : verbose capteurs");
+			System.out.println("-vact : verbose actionneurs");
+			System.out.println("-vcache : verbose cache PF");
+			System.out.println("-vdebug : verbose debug général");
+			System.out.println("-vpf : verbose pathfinding");
+			System.out.println("-vreplanif : verbose de la replanification à la volée");
+			System.out.println("-vserie : verbose de la série");
 			return;
 		}
 
