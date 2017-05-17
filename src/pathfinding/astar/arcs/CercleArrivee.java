@@ -27,6 +27,7 @@ import graphic.printable.Couleur;
 import graphic.printable.Layer;
 import graphic.printable.Printable;
 import pathfinding.SensFinal;
+import robot.Cinematique;
 import robot.CinematiqueObs;
 import robot.RobotReal;
 import table.GameElementNames;
@@ -92,7 +93,7 @@ public class CercleArrivee implements Service, Printable, HighPFClass, LowPFClas
 	 * @param last
 	 * @return
 	 */
-	public boolean isArrived(CinematiqueObs robot)
+	public boolean isArrived(Cinematique robot)
 	{
 		position.copy(tmp);
 		tmp.minus(robot.getPosition());

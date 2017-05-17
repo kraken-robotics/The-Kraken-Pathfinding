@@ -555,6 +555,11 @@ public class AStarCourbe implements Service, HighPFClass
 		vitesseMax = Speed.REPLANIF;
 		process(realChemin);
 	}
+	
+	public boolean isArrived()
+	{
+		return arcmanager.isArrived(state.robot.getCinematique());
+	}
 
 	/**
 	 * Le chemin a été entièrement parcouru.

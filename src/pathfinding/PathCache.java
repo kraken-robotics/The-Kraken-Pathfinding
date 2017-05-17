@@ -360,6 +360,9 @@ public class PathCache implements Service, HighPFClass
 					log.debug("On va parcourir le chemin", Verbose.CACHE.masque);
 					if(!simuleSerie)
 						state.robot.followTrajectory(Speed.STANDARD);
+					
+					if(!astar.isArrived())
+						throw new UnableToMoveException("Le robot est arrivé au mauvais endroit !");
 				}
 				catch(PathfindingException | UnableToMoveException e)
 				{

@@ -352,9 +352,14 @@ public class ArcManager implements Service, HighPFClass
 
 	public boolean isArrived(AStarCourbeNode successeur)
 	{
+		return successeur.getArc() != null && isArrived(successeur.getArc().getLast());
+	}
+	
+	public boolean isArrived(Cinematique successeur)
+	{
 		if(useCercle)
-			return cercle.isArrived(successeur.getArc().getLast());
-		return successeur.getArc() != null && successeur.getArc().getLast().getPosition().squaredDistance(arrivee.getPosition()) < 25 && sens.isOK(successeur.getArc().getLast().enMarcheAvant);
+			return cercle.isArrived(successeur);
+		return successeur.getPosition().squaredDistance(arrivee.getPosition()) < 25 && sens.isOK(successeur.enMarcheAvant);
 	}
 
 	/**
