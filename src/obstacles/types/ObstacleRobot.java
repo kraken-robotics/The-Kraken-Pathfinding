@@ -129,7 +129,7 @@ public class ObstacleRobot extends ObstacleRectangular implements Serializable
 		return this;
 	}
 
-	private double getAngleRoue(boolean roueDroite, double courbure)
+/*	private double getAngleRoue(boolean roueDroite, double courbure)
 	{
 		if(Math.abs(courbure) < 0.01)
 			return 0;
@@ -137,7 +137,7 @@ public class ObstacleRobot extends ObstacleRectangular implements Serializable
 		if(roueDroite)
 			return Math.signum(courbure) * Math.atan2(L, Math.abs(d + R));
 		return Math.signum(courbure) * Math.atan2(L, Math.abs(R - d));
-	}
+	}*/
 
 	@Override
 	public void print(Graphics g, Fenetre f, RobotReal robot)
@@ -177,7 +177,7 @@ public class ObstacleRobot extends ObstacleRectangular implements Serializable
 			AffineTransform trans = new AffineTransform();
 			trans.setTransform(new AffineTransform());
 			trans.translate(f.XtoWindow((int) centreRotationDroiteRotate.getX()), f.YtoWindow((int) centreRotationDroiteRotate.getY()));
-			trans.rotate(-angle - getAngleRoue(true, robot.getCinematique().courbureReelle));
+			trans.rotate(-angle - robot.getAngleRoueDroite());
 			trans.translate(f.distanceXtoWindow(-(int) centreRotationDroite.getX()), f.distanceYtoWindow((int) centreRotationDroite.getY()));
 			trans.translate(f.distanceXtoWindow((int) coinHautGaucheImg.getX()), f.distanceYtoWindow(-(int) coinHautGaucheImg.getY()));
 			trans.scale(1. * f.distanceXtoWindow((int) coinHautGaucheImg.distance(coinHautDroiteImg)) / imageRobot.getWidth(null), 1. * f.distanceXtoWindow((int) coinHautGaucheImg.distance(coinBasGaucheImg)) / imageRobot.getHeight(null));
@@ -188,7 +188,7 @@ public class ObstacleRobot extends ObstacleRectangular implements Serializable
 			trans = new AffineTransform();
 			trans.setTransform(new AffineTransform());
 			trans.translate(f.XtoWindow((int) centreRotationGaucheRotate.getX()), f.YtoWindow((int) centreRotationGaucheRotate.getY()));
-			trans.rotate(-angle - getAngleRoue(false, robot.getCinematique().courbureReelle));
+			trans.rotate(-angle - robot.getAngleRoueGauche());
 			trans.translate(f.distanceXtoWindow(-(int) centreRotationGauche.getX()), f.distanceYtoWindow((int) centreRotationGauche.getY()));
 			trans.translate(f.distanceXtoWindow((int) coinHautGaucheImg.getX()), f.distanceYtoWindow(-(int) coinHautGaucheImg.getY()));
 			trans.scale(1. * f.distanceXtoWindow((int) coinHautGaucheImg.distance(coinHautDroiteImg)) / imageRobot.getWidth(null), 1. * f.distanceXtoWindow((int) coinHautGaucheImg.distance(coinBasGaucheImg)) / imageRobot.getHeight(null));
