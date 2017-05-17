@@ -67,7 +67,7 @@ public class VideoReader
 		ConfigInfo.DEBUG_SERIE.setDefaultValue(false);
 		ConfigInfo.DEBUG_SERIE_TRAME.setDefaultValue(false);
 		ConfigInfo.GRAPHIC_ROBOT_AND_SENSORS.setDefaultValue(false);
-
+		ConfigInfo.GRAPHIC_PRODUCE_GIF.setDefaultValue(false);
 		
 		for(int i = 0; i < args.length; i++)
 		{
@@ -99,6 +99,8 @@ public class VideoReader
 				ConfigInfo.DEBUG_REPLANIF.setDefaultValue(true);
 			else if(args[i].equals("-vserie")) // verbose capteurs
 				ConfigInfo.DEBUG_SERIE.setDefaultValue(true);
+			else if(args[i].equals("-gif")) // verbose capteurs
+				ConfigInfo.GRAPHIC_PRODUCE_GIF.setDefaultValue(true);
 			else if(args[i].equals("-b")) // bof
 			{
 				// Robot bof : (630, 1320), angle = 0
@@ -136,6 +138,7 @@ public class VideoReader
 			System.out.println("-vpf : verbose pathfinding");
 			System.out.println("-vreplanif : verbose de la replanification à la volée");
 			System.out.println("-vserie : verbose de la série");
+			System.out.println("-gif : produce a gif");
 			return;
 		}
 
