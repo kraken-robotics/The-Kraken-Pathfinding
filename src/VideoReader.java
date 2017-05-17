@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Scanner;
 import config.ConfigInfo;
 import container.Container;
 import exceptions.ContainerException;
@@ -54,7 +55,8 @@ public class VideoReader
 		long[] breakPoints = new long[0];
 		int indexBP = 0;
 		boolean stopOnWarning = false, stopOnCritical = false;
-
+		boolean frameToFrame = false;
+		
 		ConfigInfo.DEBUG_CAPTEURS.setDefaultValue(false);
 		ConfigInfo.DEBUG_ACTIONNEURS.setDefaultValue(false);
 		ConfigInfo.DEBUG_CACHE.setDefaultValue(false);
@@ -63,6 +65,7 @@ public class VideoReader
 		ConfigInfo.DEBUG_REPLANIF.setDefaultValue(false);
 		ConfigInfo.DEBUG_SERIE.setDefaultValue(false);
 		ConfigInfo.DEBUG_SERIE_TRAME.setDefaultValue(false);
+		ConfigInfo.GRAPHIC_ROBOT_AND_SENSORS.setDefaultValue(false);
 
 		
 		for(int i = 0; i < args.length; i++)
@@ -79,6 +82,8 @@ public class VideoReader
 				stopOnCritical = true;
 			else if(args[i].equals("-l")) // log
 				logfile = args[++i];
+			else if(args[i].equals("-withsprite")) // pas de sprite du robot
+				ConfigInfo.GRAPHIC_ROBOT_AND_SENSORS.setDefaultValue(true);
 			else if(args[i].equals("-vcapt")) // verbose capteurs
 				ConfigInfo.DEBUG_CAPTEURS.setDefaultValue(true);
 			else if(args[i].equals("-vact")) // verbose capteurs
@@ -110,6 +115,8 @@ public class VideoReader
 				for(int j = 0; j < nb; j++)
 					breakPoints[j] = Long.parseLong(args[++i]);
 			}
+			else
+				System.err.println("Option inconnue ! " + args[i]);
 		}
 
 		if(filename == null)
@@ -120,6 +127,7 @@ public class VideoReader
 			System.out.println("-b : add robot bof© ");
 			System.out.println("-B n t1 t2 … tn: add n breakpoints at timestamps t1,… tn ");
 			System.out.println("-s : set reading speed");
+			System.out.println("-withsprite : affiche le sprite du robot et des capteurs");
 			System.out.println("-vcapt : verbose capteurs");
 			System.out.println("-vact : verbose actionneurs");
 			System.out.println("-vcache : verbose cache PF");
@@ -130,6 +138,7 @@ public class VideoReader
 			return;
 		}
 
+		Scanner sc = new Scanner(System.in);
 		Container container = null;
 
 		try
@@ -195,16 +204,18 @@ public class VideoReader
 			{
 				if(indexBP < breakPoints.length && breakPoints[indexBP] < Math.min(nextVid, nextLog))
 				{
+					if(!frameToFrame)
+						special("Breakpoint : "+breakPoints[indexBP]);
 					indexBP++;
 					stop = true;
 				}
 
-				if(stop || System.in.available() > 0)
+				if(frameToFrame || stop || System.in.available() > 0)
 				{
 					if(stop)
 						special("Auto-pause !");
-					else
-						special("Pause !");
+					else if(!frameToFrame)
+						special("Pause ! Enter \"ftf\" to enter the frame-to-frame mode");
 
 					stop = false;
 					while(System.in.available() > 0)
@@ -212,14 +223,29 @@ public class VideoReader
 
 					long avant = System.currentTimeMillis();
 
-					while(System.in.available() == 0)
+					String l = sc.nextLine();
+					if(!frameToFrame && l.equals("ftf"))
+					{
+						frameToFrame = true;
+						special("Entre \"normal\" to resume the normal (non-frame-to-frame) mode");
+					}
+					else if(frameToFrame && l.equals("normal"))
+					{
+						special("Normal mode resumed");
+						frameToFrame = false;
+					}
+					
+/*					while(System.in.available() == 0)
 						Thread.sleep(10);
 
 					while(System.in.available() > 0)
 						System.in.read();
-
+*/
 					initialDate += (System.currentTimeMillis() - avant);
-					special("Unpause");
+					if(frameToFrame)
+						special("Frame suivante");
+					else
+						special("Unpause");
 				}
 
 				if(nextVid < nextLog)
@@ -301,6 +327,7 @@ public class VideoReader
 		{
 			if(container != null)
 				container.destructor();
+			sc.close();
 		}
 	}
 
@@ -313,11 +340,10 @@ public class VideoReader
 	{
 		String line;
 		while((line = br.readLine()) != null)
-		{
 			if(Verbose.shouldPrint(extractMasque(line)))
 				return line.substring(line.indexOf(" ") + 1);
-		}
-		return line;
+
+		return null;
 	}
 
 	private static int extractMasque(String line)
