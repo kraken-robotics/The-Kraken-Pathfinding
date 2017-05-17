@@ -143,6 +143,20 @@ public abstract class Robot implements DynamicConfigurable
 		}
 		setFiletVideSur();
 	}
+	
+	public void fermeFiletForce() throws InterruptedException
+	{
+		try
+		{
+			bloque("fermeFiletForce");
+		}
+		catch(ActionneurException e)
+		{
+			log.critical(e);
+			// impossible
+		}
+		filetPeutEtrePlein = true;
+	}
 
 	public void fermeFilet() throws InterruptedException
 	{
