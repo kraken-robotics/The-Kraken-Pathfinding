@@ -556,9 +556,9 @@ public class AStarCourbe implements Service, HighPFClass
 		process(realChemin);
 	}
 	
-	public boolean isArrived()
+	public boolean isArrivedAsser()
 	{
-		return arcmanager.isArrived(state.robot.getCinematique());
+		return arcmanager.isArrivedAsser(state.robot.getCinematique());
 	}
 
 	/**

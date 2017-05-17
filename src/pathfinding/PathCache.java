@@ -361,7 +361,7 @@ public class PathCache implements Service, HighPFClass
 					if(!simuleSerie)
 						state.robot.followTrajectory(Speed.STANDARD);
 					
-					if(!astar.isArrived())
+					if(!astar.isArrivedAsser())
 						throw new UnableToMoveException("Le robot est arrivé au mauvais endroit !");
 				}
 				catch(PathfindingException | UnableToMoveException e)

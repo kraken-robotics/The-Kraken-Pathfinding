@@ -52,6 +52,7 @@ public class CercleArrivee implements Service, Printable, HighPFClass, LowPFClas
 
 	private boolean graphic;
 	private boolean symetrie = false;
+	private double erreurMaxPosition, erreurMaxAngle;
 
 	protected Log log;
 	private PrintBufferInterface buffer;
@@ -61,6 +62,8 @@ public class CercleArrivee implements Service, Printable, HighPFClass, LowPFClas
 		this.log = log;
 		this.buffer = buffer;
 		graphic = config.getBoolean(ConfigInfo.GRAPHIC_CERCLE_ARRIVEE);
+		erreurMaxPosition = config.getDouble(ConfigInfo.ERREUR_MAX_POSITION_CRATERE);
+		erreurMaxAngle = config.getDouble(ConfigInfo.ERREUR_MAX_ANGLE_CRATERE);
 		if(graphic)
 			buffer.add(this);
 	}
@@ -87,13 +90,23 @@ public class CercleArrivee implements Service, Printable, HighPFClass, LowPFClas
 
 	private Vec2RW tmp = new Vec2RW();
 
+	public boolean isArrivedAsser(Cinematique robot)
+	{
+		return isArrived(robot, erreurMaxAngle, erreurMaxPosition);
+	}
+	
+	public boolean isArrivedPF(Cinematique robot)
+	{
+		return isArrived(robot, 1, 5);
+	}
+	
 	/**
 	 * Sommes-nous arrivés ?
 	 * 
 	 * @param last
 	 * @return
 	 */
-	public boolean isArrived(Cinematique robot)
+	private boolean isArrived(Cinematique robot, double erreurMaxAngle, double erreurMaxPosition)
 	{
 		position.copy(tmp);
 		tmp.minus(robot.getPosition());
@@ -106,7 +119,7 @@ public class CercleArrivee implements Service, Printable, HighPFClass, LowPFClas
 			diffo += 2 * Math.PI;
 
 		// on vérifie qu'on est proche du rayon avec la bonne orientation
-		return Math.abs(diffo) < 1 / 180. * Math.PI && (robot.getPosition().distance(position) - rayon) < 2;
+		return Math.abs(diffo) < erreurMaxAngle / 180. * Math.PI && (robot.getPosition().distance(position) - rayon) < erreurMaxPosition;
 	}
 
 	@Override
