@@ -167,9 +167,9 @@ public class Container implements Service
 			{
 				Runtime.getRuntime().removeShutdownHook(getService(ThreadShutdown.class));
 				Thread.sleep(200);
+				System.exit(errorCode);
 			}
 		}
-		System.exit(errorCode);
 	}
 
 	/**
