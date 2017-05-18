@@ -29,6 +29,7 @@ import graphic.TimestampedList;
 import graphic.printable.Couleur;
 import graphic.printable.Layer;
 import graphic.printable.Printable;
+import graphic.printable.Vector;
 import obstacles.types.ObstacleRectangular;
 import robot.AnglesRoues;
 import robot.Cinematique;
@@ -58,6 +59,15 @@ public class VideoReader
 		boolean stopOnWarning = false, stopOnCritical = false;
 		boolean frameToFrame = false;
 		
+		// on force l'affichage non externe
+		ConfigInfo.GRAPHIC_ENABLE.setDefaultValue(true);
+		ConfigInfo.GRAPHIC_EXTERNAL.setDefaultValue(false);
+		ConfigInfo.GRAPHIC_DIFFERENTIAL.setDefaultValue(false);
+		ConfigInfo.GRAPHIC_ROBOT_AND_SENSORS.setDefaultValue(false);
+		ConfigInfo.GRAPHIC_PRODUCE_GIF.setDefaultValue(false);
+
+		ConfigInfo.SIMULE_SERIE.setDefaultValue(true);
+		
 		ConfigInfo.DEBUG_CAPTEURS.setDefaultValue(false);
 		ConfigInfo.DEBUG_ACTIONNEURS.setDefaultValue(false);
 		ConfigInfo.DEBUG_CACHE.setDefaultValue(false);
@@ -66,8 +76,7 @@ public class VideoReader
 		ConfigInfo.DEBUG_REPLANIF.setDefaultValue(false);
 		ConfigInfo.DEBUG_SERIE.setDefaultValue(false);
 		ConfigInfo.DEBUG_SERIE_TRAME.setDefaultValue(false);
-		ConfigInfo.GRAPHIC_ROBOT_AND_SENSORS.setDefaultValue(false);
-		ConfigInfo.GRAPHIC_PRODUCE_GIF.setDefaultValue(false);
+		
 		
 		for(int i = 0; i < args.length; i++)
 		{
@@ -147,12 +156,6 @@ public class VideoReader
 
 		try
 		{
-			// on force l'affichage non externe
-			ConfigInfo.GRAPHIC_ENABLE.setDefaultValue(true);
-			ConfigInfo.GRAPHIC_EXTERNAL.setDefaultValue(false);
-			ConfigInfo.GRAPHIC_DIFFERENTIAL.setDefaultValue(false);
-			ConfigInfo.SIMULE_SERIE.setDefaultValue(true);
-
 			container = new Container();
 			PrintBuffer buffer = container.getService(PrintBuffer.class);
 			RobotReal robot = container.getService(RobotReal.class);
@@ -280,6 +283,10 @@ public class VideoReader
 								if(debug)
 									System.out.println("Angles des roues du robot : " + ((AnglesRoues) o).angleRoueGauche + ", " + ((AnglesRoues) o).angleRoueDroite);
 								robot.setAngleRoues(((AnglesRoues) o).angleRoueGauche, ((AnglesRoues) o).angleRoueDroite);
+							}
+							else if(o instanceof Vector)
+							{
+								robot.setVector((Vector) o);
 							}
 							else if(o instanceof Printable)
 							{

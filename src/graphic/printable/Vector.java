@@ -16,54 +16,72 @@ package graphic.printable;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Polygon;
+import java.awt.geom.AffineTransform;
 import java.io.Serializable;
 import graphic.Fenetre;
 import robot.RobotReal;
 import utils.Vec2RO;
+import utils.Vec2RW;
 
 /**
- * Un segment affichable
+ * Un vecteur affichable
  * 
  * @author pf
  *
  */
 
-public class Segment implements Printable, Serializable
+public class Vector implements Printable, Serializable
 {
 	private static final long serialVersionUID = 3887897521575363643L;
 	private Vec2RO a, b;
+	private double orientation;
 	private Layer l;
-	private Color c;
-
-	public Segment(Vec2RO a, Vec2RO b, Couleur c)
+	private Couleur c;
+	private AffineTransform tx = new AffineTransform();
+	private Polygon arrowHead = new Polygon();  
+	
+	public Vector(Vec2RO pos, double orientation, Couleur c)
 	{
-		this.a = a;
-		this.b = b;
+		a = pos;
+		b = new Vec2RW(50, orientation, true).plus(a);
+		this.orientation = orientation;
 		this.l = c.l;
-		this.c = c.couleur;
+		this.c = c;
+		arrowHead.addPoint(0,5);
+		arrowHead.addPoint(-5,-5);
+		arrowHead.addPoint(5,-5);
 	}
 	
-	@Override
-	public Segment clone()
+	public void update(Vec2RO pos, double orientation)
 	{
-		return new Segment(a.clone(), b.clone(), l, c);
-	}
-
-	public Segment(Vec2RO a, Vec2RO b, Layer l, Color c)
-	{
-		this.a = a;
-		this.b = b;
-		this.l = l;
-		this.c = c;
+		a = pos;
+		b = new Vec2RW(50, orientation, true).plus(a);
+		this.orientation = orientation;
 	}
 
 	@Override
 	public void print(Graphics g, Fenetre f, RobotReal robot)
 	{
-		g.setColor(c);
+		g.setColor(c.couleur);
 		g.drawLine(f.XtoWindow(a.getX()), f.YtoWindow(a.getY()), f.XtoWindow(b.getX()), f.YtoWindow(b.getY()));
+	    tx.setToIdentity();
+	    tx.translate(f.XtoWindow(b.getX()), f.YtoWindow(b.getY()));
+	    tx.rotate((-orientation-Math.PI/2d));  
+
+	    Graphics2D g2d = (Graphics2D) g.create();
+	    g2d.setTransform(tx);   
+	    g2d.fill(arrowHead);
+	    g2d.dispose();
 	}
 
+	@Override
+	public Vector clone()
+	{
+		return new Vector(a.clone(), orientation, c);
+	}
+	
 	@Override
 	public Layer getLayer()
 	{
@@ -73,7 +91,7 @@ public class Segment implements Printable, Serializable
 	@Override
 	public String toString()
 	{
-		return "Segment entre " + a + " et " + b;
+		return "Vecteur entre " + a + " et " + b;
 	}
 
 }

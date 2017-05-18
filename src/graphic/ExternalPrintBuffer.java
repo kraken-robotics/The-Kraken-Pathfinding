@@ -26,6 +26,7 @@ import java.util.List;
 import graphic.printable.Couleur;
 import graphic.printable.Layer;
 import graphic.printable.Printable;
+import graphic.printable.Segment;
 import obstacles.types.ObstacleCircular;
 import pathfinding.chemin.CheminPathfinding;
 import pathfinding.chemin.IteratorCheminPathfinding;
@@ -148,6 +149,7 @@ public class ExternalPrintBuffer implements PrintBufferInterface
 		{
 			o.add(robot.getCinematique().clone());
 			o.add(robot.getAngles());
+			o.add(robot.getVector());
 			// log.debug(o.get(0));
 		}
 
@@ -155,13 +157,19 @@ public class ExternalPrintBuffer implements PrintBufferInterface
 		{
 			for(Serializable p : elementsAffichablesSupprimables.get(i))
 			{
-				o.add(p);
+				if(p instanceof Segment)
+					o.add(((Segment)p).clone());
+				else
+					o.add(p);
 				o.add(Layer.values()[i]);
 			}
 
 			for(Serializable p : elementsAffichables.get(i))
 			{
-				o.add(p);
+				if(p instanceof Segment)
+					o.add(((Segment)p).clone());
+				else
+					o.add(p);
 				o.add(Layer.values()[i]);
 			}
 		}
