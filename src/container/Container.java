@@ -82,7 +82,7 @@ public class Container implements Service
 
 	public synchronized void destructor() throws ContainerException, InterruptedException
 	{
-		destructor(false);
+		destructor(false, 0);
 	}
 
 	/**
@@ -93,7 +93,7 @@ public class Container implements Service
 	 * @throws InterruptedException
 	 * @throws ContainerException
 	 */
-	public synchronized void destructor(boolean unitTest) throws ContainerException, InterruptedException
+	public synchronized void destructor(boolean unitTest, int errorCode) throws ContainerException, InterruptedException
 	{
 		/*
 		 * Il ne faut pas appeler deux fois le destructeur
@@ -167,9 +167,9 @@ public class Container implements Service
 			{
 				Runtime.getRuntime().removeShutdownHook(getService(ThreadShutdown.class));
 				Thread.sleep(200);
-				System.exit(0);
 			}
 		}
+		System.exit(errorCode);
 	}
 
 	/**

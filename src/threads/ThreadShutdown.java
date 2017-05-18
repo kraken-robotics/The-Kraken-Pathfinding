@@ -44,7 +44,7 @@ public class ThreadShutdown extends Thread implements Service
 		log.debug("Appel à " + Thread.currentThread().getName());
 		try
 		{
-			container.destructor(false);
+			container.destructor(false, 1);
 		}
 		catch(ContainerException | InterruptedException e)
 		{
