@@ -31,6 +31,7 @@ import robot.Cinematique;
 import robot.RobotReal;
 import table.GameElementNames;
 import utils.Log;
+import utils.Log.Verbose;
 import utils.Vec2RO;
 import utils.Vec2RW;
 
@@ -91,12 +92,12 @@ public class CercleArrivee implements Service, Printable, HighPFClass, LowPFClas
 
 	public boolean isArrivedAsser(Cinematique robot)
 	{
-		return isArrived(robot, erreurMaxAngle, erreurMaxPosition);
+		return isArrived(robot, erreurMaxAngle, erreurMaxPosition, Math.abs((robot.getPosition().distanceFast(position) - rayon)) < 40);
 	}
 	
 	public boolean isArrivedPF(Cinematique robot)
 	{
-		return isArrived(robot, 1, 5);
+		return isArrived(robot, 1, 5, false);
 	}
 	
 	/**
@@ -105,7 +106,7 @@ public class CercleArrivee implements Service, Printable, HighPFClass, LowPFClas
 	 * @param last
 	 * @return
 	 */
-	private boolean isArrived(Cinematique robot, double erreurMaxAngle, double erreurMaxPosition)
+	private boolean isArrived(Cinematique robot, double erreurMaxAngle, double erreurMaxPosition, boolean verbose)
 	{
 		position.copy(tmp);
 		tmp.minus(robot.getPosition());
@@ -117,8 +118,15 @@ public class CercleArrivee implements Service, Printable, HighPFClass, LowPFClas
 		else if(diffo < -Math.PI)
 			diffo += 2 * Math.PI;
 
+		double deltaDist = robot.getPosition().distance(position) - rayon;
+		
+		boolean out = Math.abs(diffo) < erreurMaxAngle / 180. * Math.PI && Math.abs(deltaDist) < erreurMaxPosition;
+		
+		if(verbose)
+			log.debug("Arrivée sur cercle ? " + out + ". Delta orientation : " + diffo + ", delta distance : " + deltaDist, Verbose.ACTIONNEURS.masque);
+		
 		// on vérifie qu'on est proche du rayon avec la bonne orientation
-		return Math.abs(diffo) < erreurMaxAngle / 180. * Math.PI && (robot.getPosition().distance(position) - rayon) < erreurMaxPosition;
+		return out;
 	}
 
 	@Override
