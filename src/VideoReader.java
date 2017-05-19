@@ -260,9 +260,7 @@ public class VideoReader
 						System.in.read();
 */
 					initialDate += (System.currentTimeMillis() - avant);
-					if(frameToFrame)
-						special("Frame suivante");
-					else
+					if(!frameToFrame)
 						special("Unpause");
 				}
 
