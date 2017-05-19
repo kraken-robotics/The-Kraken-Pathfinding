@@ -108,8 +108,11 @@ public class VideoReader
 				ConfigInfo.DEBUG_REPLANIF.setDefaultValue(true);
 			else if(args[i].equals("-vserie")) // verbose capteurs
 				ConfigInfo.DEBUG_SERIE.setDefaultValue(true);
-			else if(args[i].equals("-gif")) // verbose capteurs
+			else if(args[i].equals("-gif")) // génération d'un gif
+			{
 				ConfigInfo.GRAPHIC_PRODUCE_GIF.setDefaultValue(true);
+				ConfigInfo.GIF_FILENAME.setDefaultValue(args[++i]);
+			}
 			else if(args[i].equals("-b")) // bof
 			{
 				// Robot bof : (630, 1320), angle = 0
@@ -147,7 +150,7 @@ public class VideoReader
 			System.out.println("-vpf : verbose pathfinding");
 			System.out.println("-vreplanif : verbose de la replanification à la volée");
 			System.out.println("-vserie : verbose de la série");
-			System.out.println("-gif : produce a gif");
+			System.out.println("-gif filename : produce a gif");
 			return;
 		}
 

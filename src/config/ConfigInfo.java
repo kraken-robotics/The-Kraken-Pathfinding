@@ -200,6 +200,7 @@ public enum ConfigInfo
 																	// roue
 																	// droite
 	GRAPHIC_PRODUCE_GIF(false), // produit un gif ?
+	GIF_FILENAME("output.gif"), // le nom du fichier du gif généré
 	GRAPHIC_BACKGROUND(true), // affiche d'image de la table
 	GRAPHIC_SIZE_X(1000), // taille par défaut (sans image) de la fenêtre
 	GRAPHIC_ALL_OBSTACLES(false), // affiche absolument tous les obstacles créés
