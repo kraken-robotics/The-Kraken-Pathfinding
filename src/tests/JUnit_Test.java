@@ -21,10 +21,13 @@ import org.junit.runner.JUnitCore;
 import org.junit.runner.Request;
 import org.junit.runner.Result;
 import org.junit.After;
+import org.junit.Assert;
+
 import utils.Log;
 import config.Config;
 import config.ConfigInfo;
 import container.Container;
+import container.Container.ErrorCode;
 import graphic.Fenetre;
 import robot.Cinematique;
 import robot.RobotReal;
@@ -77,7 +80,7 @@ public abstract class JUnit_Test
 		Fenetre f = container.getExistingService(Fenetre.class);
 		if(f != null)
 			f.waitUntilExit();
-		container.destructor();
+		Assert.assertEquals(ErrorCode.NO_ERROR, container.destructor());
 	}
 
 	/**
