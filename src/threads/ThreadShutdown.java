@@ -16,6 +16,7 @@ package threads;
 
 import utils.Log;
 import container.Container;
+import container.Container.ErrorCode;
 import container.Service;
 import exceptions.ContainerException;
 
@@ -40,15 +41,18 @@ public class ThreadShutdown extends Thread implements Service
 	@Override
 	public void run()
 	{
-		Thread.currentThread().setName(getClass().getSimpleName());
-		log.debug("Appel à " + Thread.currentThread().getName());
-		try
-		{
-			container.destructor(false, 1);
-		}
-		catch(ContainerException | InterruptedException e)
-		{
-			System.out.println(e);
+		try {
+			Thread.currentThread().setName(getClass().getSimpleName());
+			if(!container.isShutdownInProgress())
+			{
+				log.debug("Appel prématuré à " + Thread.currentThread().getName());
+				container.interruptWithCodeError(ErrorCode.TERMINATION_SIGNAL);
+				// c'est le thread principal qui va terminer ce thread
+				while(true)
+					Thread.sleep(100);
+			}
+			// si l'arrêt a déjà était fait, ce thread ne fait rien
+		} catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
 		}
 	}

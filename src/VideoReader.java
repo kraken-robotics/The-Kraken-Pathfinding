@@ -34,6 +34,7 @@ import obstacles.types.ObstacleRectangular;
 import robot.AnglesRoues;
 import robot.Cinematique;
 import robot.RobotReal;
+import threads.ThreadShutdown;
 import utils.Log;
 import utils.Log.Verbose;
 import utils.Vec2RO;
@@ -48,7 +49,7 @@ import utils.Vec2RO;
 public class VideoReader
 {
 
-	public static void main(String[] args) throws ContainerException, InterruptedException
+	public static void main(String[] args)
 	{
 		String filename = null, logfile = null;
 		double vitesse = 1;
@@ -210,6 +211,8 @@ public class VideoReader
 			int indexListe = 0;
 			boolean stop = false;
 
+			special("At any point, type \"stop\" to stop the VideoReader.");
+			
 			while(nextVid != Long.MAX_VALUE || nextLog != Long.MAX_VALUE)
 			{
 				if(indexBP < breakPoints.length && breakPoints[indexBP] < Math.min(nextVid, nextLog))
@@ -238,6 +241,11 @@ public class VideoReader
 					{
 						frameToFrame = true;
 						special("Entre \"normal\" to resume the normal (non-frame-to-frame) mode");
+					}
+					else if(l.equals("stop"))
+					{
+						br.close();
+						throw new InterruptedException();
 					}
 					else if(frameToFrame && l.equals("normal"))
 					{
@@ -334,20 +342,19 @@ public class VideoReader
 			br.close();
 			container.getExistingService(Fenetre.class).waitUntilExit();
 		}
-		catch(InterruptedException e)
-		{
-
-		}
 		catch(Exception e)
-		{
-			System.out.println(e);
-			e.printStackTrace();
-		}
+		{}
 		finally
 		{
-			if(container != null)
-				container.destructor();
-			sc.close();
+			try
+			{
+				sc.close();
+				System.exit(container.destructor().code);
+			}
+			catch(Exception e)
+			{
+				e.printStackTrace();
+			}
 		}
 	}
 

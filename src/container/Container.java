@@ -75,16 +75,35 @@ public class Container implements Service
 
 	private static int nbInstances = 0;
 	private Thread mainThread;
+	private ErrorCode errorCode = ErrorCode.NO_ERROR;
+	private boolean shutdown = false;
 	private boolean showGraph;
 
 	private List<DynamicConfigurable> dynaConf = new ArrayList<DynamicConfigurable>();
 	private HashMap<Class<? extends Service>, Set<String>> grapheDep = new HashMap<Class<? extends Service>, Set<String>>();
-
-	public synchronized void destructor() throws ContainerException, InterruptedException
+	
+	public boolean isShutdownInProgress()
 	{
-		destructor(false, 0);
+		return shutdown;
 	}
-
+	
+	public enum ErrorCode
+	{
+		NO_ERROR(0),
+		END_OF_MATCH(0),
+		LL_TIMEOUT(1),
+		EMERGENCY_STOP(2),
+		TERMINATION_SIGNAL(3),
+		DOUBLE_DESTRUCTOR(4);
+		
+		public final int code;
+		
+		private ErrorCode(int code)
+		{
+			this.code = code;
+		}
+	}
+	
 	/**
 	 * Fonction appelé automatiquement à la fin du programme.
 	 * ferme la connexion serie, termine les différents threads, et ferme le
@@ -93,14 +112,18 @@ public class Container implements Service
 	 * @throws InterruptedException
 	 * @throws ContainerException
 	 */
-	public synchronized void destructor(boolean unitTest, int errorCode) throws ContainerException, InterruptedException
+	public synchronized ErrorCode destructor() throws ContainerException, InterruptedException
 	{
+		if(Thread.currentThread().getId() != mainThread.getId())
+			throw new ContainerException("Le destructor de container doit être appelé depuis le thread principal !");
+	
 		/*
 		 * Il ne faut pas appeler deux fois le destructeur
 		 */
 		if(nbInstances == 0)
-			return;
+			return ErrorCode.DOUBLE_DESTRUCTOR;
 
+		shutdown = true;
 		log.debug("Fermeture de la série");
 
 		/**
@@ -128,48 +151,41 @@ public class Container implements Service
 			getService(n.c).interrupt();
 		}
 
+		if(!threadError.isEmpty())
+			log.critical("Un ou des threads ont planté : " + threadError);
+		
 		for(ThreadName n : ThreadName.values())
 		{
-			if(n == ThreadName.FENETRE && config.getBoolean(ConfigInfo.GRAPHIC_PRODUCE_GIF))
-				getService(n.c).join(120000); // spécialement pour lui qui
-												// enregistre un gif…
-			else
-				getService(n.c).join(10000); // on attend un peu que le thread
-												// s'arrête
+			try {
+				if(n == ThreadName.FENETRE && config.getBoolean(ConfigInfo.GRAPHIC_PRODUCE_GIF))
+					getService(n.c).join(120000); // spécialement pour lui qui
+													// enregistre un gif…
+				else
+					getService(n.c).join(10000); // on attend un peu que le thread
+													// s'arrête
+			}
+			catch(InterruptedException e)
+			{
+				e.printStackTrace(log.getPrintWriter());
+			}
 			if(getService(n.c).isAlive())
 				log.critical(n.c.getSimpleName() + " encore vivant !");
 		}
+		
+		getService(ThreadShutdown.class).interrupt();
 
 		if(showGraph)
 			saveGraph();
 
 		// fermeture du log
+		log.debug("Code d'erreur : " + errorCode);
 		log.debug("Fermeture du log");
 		log.close();
 		nbInstances--;
 		printMessage("outro.txt");
 
-		if(!threadError.isEmpty())
-			throw new ContainerException("Un ou des threads ont planté : " + threadError);
-
-		/**
-		 * Arrête tout, même si destructor est appelé depuis un thread
-		 */
-		if(!unitTest)
-		{
-			if(Thread.currentThread().getId() != mainThread.getId())
-			{
-				mainThread.interrupt();
-				mainThread.join(2000);
-				Thread.sleep(200);
-			}
-			else
-			{
-				Runtime.getRuntime().removeShutdownHook(getService(ThreadShutdown.class));
-				Thread.sleep(200);
-				System.exit(errorCode);
-			}
-		}
+		Thread.sleep(50);
+		return errorCode;
 	}
 
 	/**
@@ -359,6 +375,21 @@ public class Container implements Service
 
 		// Le container est aussi un service
 		instanciedServices.put(getClass().getSimpleName(), this);
+		
+		/**
+		 * Planification du hook de fermeture
+		 */
+		try
+		{
+			log.debug("Mise en place du hook d'arrêt");
+			Runtime.getRuntime().addShutdownHook(getService(ThreadShutdown.class));
+		}
+		catch(ContainerException e)
+		{
+			e.printStackTrace();
+			e.printStackTrace(log.getPrintWriter());
+		}
+		
 		showGraph = config.getBoolean(ConfigInfo.GENERATE_DEPENDENCY_GRAPH);
 
 		if(showGraph)
@@ -373,21 +404,8 @@ public class Container implements Service
 		Obstacle.useConfig(config);
 		ArcCourbe.useConfig(config);
 		Script.setLogCercle(log, getService(CercleArrivee.class));
-
+		
 		startAllThreads();
-
-		/**
-		 * Planification du hook de fermeture
-		 */
-		try
-		{
-			Runtime.getRuntime().addShutdownHook(getService(ThreadShutdown.class));
-		}
-		catch(ContainerException e)
-		{
-			e.printStackTrace();
-			e.printStackTrace(log.getPrintWriter());
-		}
 	}
 
 	/**
@@ -639,6 +657,12 @@ public class Container implements Service
 			System.err.println(e); // peut-être que log n'est pas encore
 									// démarré…
 		}
+	}
+
+	public void interruptWithCodeError(ErrorCode code)
+	{
+		errorCode = code;
+		mainThread.interrupt();
 	}
 
 }
