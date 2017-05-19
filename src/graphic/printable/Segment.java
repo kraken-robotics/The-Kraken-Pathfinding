@@ -76,4 +76,10 @@ public class Segment implements Printable, Serializable
 		return "Segment entre " + a + " et " + b;
 	}
 
+	public void setColor(Couleur c)
+	{
+		this.l = c.l;
+		this.c = c.couleur;
+	}
+
 }

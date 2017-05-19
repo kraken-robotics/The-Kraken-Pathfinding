@@ -357,7 +357,15 @@ public class CheminPathfinding implements Service, HighPFClass, CheminPathfindin
 		if(empty)
 			indexLast = indexFirst;
 		if(graphic)
+		{
+			if(affSeg[indexFirst] != null)
+			{
+				Segment s = affSeg[indexFirst].clone();
+				s.setColor(Couleur.JAUNE);
+				buffer.add(s); // on sauvegarde à jamais les segments parcourus
+			}
 			updateAffichage();
+		}
 		if(isIndexValid(indexFirst))
 			return chemin[indexFirst];
 		return null;
