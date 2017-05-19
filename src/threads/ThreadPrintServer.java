@@ -76,6 +76,7 @@ public class ThreadPrintServer extends ThreadService implements GUIClass
 			catch(InterruptedException | IOException e)
 			{
 				log.debug("Arrêt de " + Thread.currentThread().getName());
+				Thread.currentThread().interrupt();
 			}
 		}
 
@@ -111,6 +112,7 @@ public class ThreadPrintServer extends ThreadService implements GUIClass
 			catch(InterruptedException | IOException e)
 			{
 				log.debug("Arrêt de " + Thread.currentThread().getName());
+				Thread.currentThread().interrupt();
 			}
 		}
 

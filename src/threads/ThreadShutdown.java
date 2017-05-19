@@ -49,6 +49,7 @@ public class ThreadShutdown extends Thread implements Service
 		catch(ContainerException | InterruptedException e)
 		{
 			System.out.println(e);
+			Thread.currentThread().interrupt();
 		}
 	}
 }
