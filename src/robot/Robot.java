@@ -39,7 +39,6 @@ public abstract class Robot implements DynamicConfigurable
 	protected Log log;
 	protected volatile boolean filetBaisse = false;
 	protected volatile boolean filetPlein = false;
-	protected volatile boolean filetPeutEtrePlein = false;
 
 	protected abstract void bloque(String nom, Object... param) throws InterruptedException, ActionneurException;
 
@@ -141,7 +140,7 @@ public abstract class Robot implements DynamicConfigurable
 			log.critical(e);
 			// impossible
 		}
-		setFiletVideSur();
+		setFiletPlein(false);
 	}
 	
 	public void fermeFiletForce() throws InterruptedException
@@ -155,7 +154,6 @@ public abstract class Robot implements DynamicConfigurable
 			log.critical(e);
 			// impossible
 		}
-		filetPeutEtrePlein = true;
 	}
 
 	public void fermeFilet() throws InterruptedException
@@ -169,19 +167,18 @@ public abstract class Robot implements DynamicConfigurable
 			log.critical(e);
 			// impossible
 		}
-		filetPeutEtrePlein = true;
 	}
 
 	public void ejecteBalles() throws InterruptedException, ActionneurException
 	{
 		bloque("ejecteBalles", !symetrie);
-		setFiletVideSur();
+		setFiletPlein(false);
 	}
 
 	public void ejecteBallesAutreCote() throws InterruptedException, ActionneurException
 	{
 		bloque("ejecteBalles", symetrie);
-		setFiletVideSur();
+		setFiletPlein(false);
 	}
 
 	public void rearme() throws InterruptedException, ActionneurException
@@ -215,31 +212,9 @@ public abstract class Robot implements DynamicConfigurable
 	/**
 	 * On est sûr que le filet est vide
 	 */
-	public void setFiletVideSur()
+	public void setFiletPlein(boolean etat)
 	{
-		filetPeutEtrePlein = false;
-		filetPlein = false;
-	}
-	
-	/**
-	 * Géré par le capteur de jauge
-	 */
-	public void filetVuVide()
-	{
-		filetPlein = false;
-	}
-
-	/**
-	 * Géré par le capteur de jauge
-	 */
-	public void filetVuPlein()
-	{
-		filetPlein = true;
-	}
-
-	public boolean isFiletPeutEtrePlein()
-	{
-		return filetPeutEtrePlein;
+		filetPlein = etat;
 	}
 	
 	public boolean isFiletPlein()
