@@ -31,7 +31,6 @@ import container.Container.ErrorCode;
 import graphic.Fenetre;
 import robot.Cinematique;
 import robot.RobotReal;
-import threads.ThreadShutdown;
 import threads.serie.ThreadSerialInputCoucheOrdre;
 
 /**

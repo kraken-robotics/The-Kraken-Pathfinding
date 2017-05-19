@@ -212,7 +212,8 @@ public enum ConfigInfo
 							// d'affichage ?
 	GRAPHIC_DIFFERENTIAL(true), // sauvegarde d'une "vidéo" pour visionner les
 								// images plus tard
-
+	GRAPHIC_ZOOM(0), // zoom de la fenêtre. Si 0, aucun zoom. Sinon, zoom + focus sur le robot
+	
 	/**
 	 * Config dynamique
 	 */

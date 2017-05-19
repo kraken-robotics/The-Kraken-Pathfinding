@@ -38,7 +38,7 @@ public class BackgroundImage implements Printable
 	@Override
 	public void print(Graphics g, Fenetre f, RobotReal robot)
 	{
-		g.drawImage(image, 0, 0, f);
+		g.drawImage(image, f.XtoWindow(-1500), f.YtoWindow(2000), f.distanceXtoWindow(3000), f.distanceYtoWindow(2000), f);
 	}
 
 	@Override

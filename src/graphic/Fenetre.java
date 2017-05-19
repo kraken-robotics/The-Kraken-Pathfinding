@@ -25,6 +25,8 @@ import container.dependances.GUIClass;
 import graphic.printable.BackgroundImage;
 import robot.RobotReal;
 import utils.Log;
+import utils.Vec2RO;
+import utils.Vec2RW;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -62,7 +64,12 @@ public class Fenetre extends JPanel implements Service, GUIClass
 	private ArrayList<BufferedImage> images = new ArrayList<BufferedImage>();
 	private RobotReal robot;
 	private boolean needInit = true;
+	private double zoom;
+	private Vec2RO deltaBasGauche, deltaHautDroite;
 	private String backgroundPath;
+	private Vec2RW coinBasGaucheEcran = new Vec2RW(-1500, 0);
+	private Vec2RW coinHautDroiteEcran = new Vec2RW(1500, 2000);
+
 
 	public Fenetre(Log log, RobotReal robot, PrintBuffer buffer, Config config)
 	{
@@ -72,6 +79,15 @@ public class Fenetre extends JPanel implements Service, GUIClass
 
 		afficheFond = config.getBoolean(ConfigInfo.GRAPHIC_BACKGROUND);
 		backgroundPath = config.getString(ConfigInfo.GRAPHIC_BACKGROUND_PATH);
+		zoom = config.getDouble(ConfigInfo.GRAPHIC_ZOOM);
+		if(zoom != 0)
+		{
+			double deltaX, deltaY;
+			deltaX = 1500 / zoom;
+			deltaY = 1000 / zoom;
+			deltaBasGauche = new Vec2RO(-deltaX, -deltaY);
+			deltaHautDroite = new Vec2RO(deltaX, deltaY);
+		}
 		sizeX = config.getInt(ConfigInfo.GRAPHIC_SIZE_X);
 		sizeY = 2 * sizeX / 3;
 	}
@@ -118,22 +134,22 @@ public class Fenetre extends JPanel implements Service, GUIClass
 
 	public int distanceXtoWindow(int dist)
 	{
-		return dist * sizeX / 3000;
+		return (int) (dist * sizeX / (coinHautDroiteEcran.getX() - coinBasGaucheEcran.getX()));
 	}
 
 	public int distanceYtoWindow(int dist)
 	{
-		return dist * sizeY / 2000;
+		return (int) (dist * sizeY / (coinHautDroiteEcran.getY() - coinBasGaucheEcran.getY()));
 	}
 
 	public int XtoWindow(double x)
 	{
-		return (int) ((x + 1500) * sizeX / 3000);
+		return (int) ((x - coinBasGaucheEcran.getX()) * sizeX / (coinHautDroiteEcran.getX() - coinBasGaucheEcran.getX()));
 	}
 
 	public int YtoWindow(double y)
 	{
-		return (int) ((2000 - y) * sizeY / 2000);
+		return (int) ((coinHautDroiteEcran.getY() - y) * sizeY / (coinHautDroiteEcran.getY() - coinBasGaucheEcran.getY()));
 	}
 
 	@Override
@@ -142,8 +158,27 @@ public class Fenetre extends JPanel implements Service, GUIClass
 		super.paintComponent(g);
 
 		g.clearRect(0, 0, sizeX, sizeY);
+		if(zoom != 0 && robot.isCinematiqueInitialised())
+		{
+			Vec2RO positionRobot = robot.getCinematique().getPosition();
+			Vec2RO currentCenter = positionRobot;
+//			Vec2RO currentCenter = new Vec2RO((int)(positionRobot.getX() / petitDeltaX) * petitDeltaX, (int)(positionRobot.getY() / petitDeltaY) * petitDeltaY);
 
+			currentCenter.copy(coinBasGaucheEcran);
+			coinBasGaucheEcran.plus(deltaBasGauche);
+			currentCenter.copy(coinHautDroiteEcran);
+			coinHautDroiteEcran.plus(deltaHautDroite);
+		}
 		buffer.print(g, this, robot);
+		g.clearRect(XtoWindow(-4500), YtoWindow(4000), distanceXtoWindow(3*3000), distanceYtoWindow(2000));
+		g.clearRect(XtoWindow(-4500), YtoWindow(2000), distanceXtoWindow(3000), distanceYtoWindow(2000));
+		g.clearRect(XtoWindow(-4500), YtoWindow(0000), distanceXtoWindow(3*3000), distanceYtoWindow(2000));
+		g.clearRect(XtoWindow(1500), YtoWindow(2000), distanceXtoWindow(3000), distanceYtoWindow(2000));
+
+		g.clearRect(-sizeX, -sizeY, 3*sizeX, sizeY);
+		g.clearRect(-sizeX, 0, sizeX, sizeY);
+		g.clearRect(-sizeX, sizeY, 3*sizeX, sizeY);
+		g.clearRect(sizeX, 0, sizeX, sizeY);
 	}
 
 	/**

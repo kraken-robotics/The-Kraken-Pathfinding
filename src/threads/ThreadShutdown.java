@@ -18,7 +18,6 @@ import utils.Log;
 import container.Container;
 import container.Container.ErrorCode;
 import container.Service;
-import exceptions.ContainerException;
 
 /**
  * Thread qui sera exécuté à la fin du programme
