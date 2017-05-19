@@ -59,10 +59,11 @@ public class IteratorCheminPathfinding implements Iterator<CinematiqueObs>
 	{
 		throw new UnsupportedOperationException();
 	}
-
+	
 	public int getIndex()
 	{
-		return index;
+		// l'index du dernier objet qu'on a donné est index-1
+		return chemin.minus(index,1);
 	}
 
 }
