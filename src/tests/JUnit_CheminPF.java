@@ -52,7 +52,7 @@ public class JUnit_CheminPF extends JUnit_Test
 	public void test_iterator() throws Exception
 	{
 		iterator.reinit();
-		Assert.assertEquals(0, iterator.getIndex());
+		Assert.assertEquals(255, iterator.getIndex());
 		Assert.assertFalse(iterator.hasNext());
 		LinkedList<CinematiqueObs> l = new LinkedList<CinematiqueObs>();
 		int demieLargeurNonDeploye = config.getInt(ConfigInfo.LARGEUR_NON_DEPLOYE) / 2;
