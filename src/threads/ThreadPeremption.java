@@ -86,6 +86,7 @@ public class ThreadPeremption extends ThreadService implements LowPFClass
 		catch(InterruptedException e)
 		{
 			log.debug("Arrêt de " + Thread.currentThread().getName());
+			Thread.currentThread().interrupt();
 		}
 		catch(Exception e)
 		{

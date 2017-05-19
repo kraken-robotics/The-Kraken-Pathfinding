@@ -184,6 +184,7 @@ public class ThreadPrintServer extends ThreadService implements GUIClass
 			for(Thread t : threads)
 				t.interrupt();
 			log.debug("Arrêt de " + Thread.currentThread().getName());
+			Thread.currentThread().interrupt();
 		}
 	}
 

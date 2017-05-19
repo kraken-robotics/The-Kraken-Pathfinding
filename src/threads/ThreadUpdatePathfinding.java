@@ -84,6 +84,7 @@ public class ThreadUpdatePathfinding extends ThreadService implements HighPFClas
 		catch(InterruptedException e)
 		{
 			log.debug("Arrêt de " + Thread.currentThread().getName());
+			Thread.currentThread().interrupt();
 		}
 		catch(Exception e)
 		{
@@ -106,6 +107,7 @@ public class ThreadUpdatePathfinding extends ThreadService implements HighPFClas
 			catch(InterruptedException e1)
 			{
 				log.debug("Arrêt de " + Thread.currentThread().getName() + " après une exception inattendue récupérée");
+				Thread.currentThread().interrupt();
 			}
 		}
 	}
