@@ -59,6 +59,7 @@ public class VideoReader
 		boolean frameToFrame = false;
 		long dateSkip = -1;
 		boolean skipdone = false;
+		long nextStopFTF = 0;
 		
 		// on force l'affichage non externe
 		ConfigInfo.GRAPHIC_ENABLE.setDefaultValue(true);
@@ -252,24 +253,32 @@ public class VideoReader
 					indexBP++;
 					stop = true;
 				}
+				
+				if(frameToFrame && nextStopFTF < Math.min(nextVid, nextLog))
+					stop = true;
 
-				if(frameToFrame || stop || System.in.available() > 0)
+				if(stop || System.in.available() > 0)
 				{
-					if(stop)
-						special("Auto-pause !");
-					else if(!frameToFrame)
-						special("Pause ! Enter \"ftf\" to enter the frame-to-frame mode");
-
+					if(!frameToFrame)
+					{						
+						if(stop)
+							special("Auto-pause !");
+						else
+							special("Pause ! Enter \"ftf\" to enter the frame-to-frame mode");
+					}
+					
 					stop = false;
 					while(System.in.available() > 0)
 						System.in.read();
 
 					long avant = System.currentTimeMillis();
+					nextStopFTF = Math.min(nextVid, nextLog) + 5;
 
 					String l = sc.nextLine();
 					if(!frameToFrame && l.equals("ftf"))
 					{
 						frameToFrame = true;
+						nextStopFTF = Math.min(nextVid, nextLog) + 5;
 						special("Entre \"normal\" to resume the normal (non-frame-to-frame) mode");
 					}
 					else if(l.equals("stop"))
