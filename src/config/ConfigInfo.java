@@ -160,10 +160,11 @@ public enum ConfigInfo
 	 */
 	DEBUG_SERIE_TRAME(false), // debug verbeux sur le contenu des trames
 	DEBUG_SERIE(false), // debug sur la série
+	DEBUG_CORRECTION(false), // debug sur la correction d'odo
 	DEBUG_CAPTEURS(false), // debug verbeux sur les capteurs
 	DEBUG_REPLANIF(false), // debug verbeux sur la replanif
-	DEBUG_ACTIONNEURS(false), // debug verbeux sur les actionneurs
-	DEBUG_CACHE(false), // debug du cache de chemins
+	DEBUG_SCRIPTS(false), // debug verbeux sur les scripts
+	DEBUG_ASSER(false), // debug de l'asser
 	DEBUG_PF(false), // affichage de plein d'infos
 	DEBUG_DEBUG(false), // affichage des messages "debug"
 

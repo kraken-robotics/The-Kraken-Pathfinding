@@ -138,7 +138,7 @@ public class PathCache implements Service, HighPFClass
 	 */
 	public void prepareNewPath(KeyPathCache k) throws PathfindingException, MemoryManagerException
 	{
-		log.debug("Recherche de chemin pour " + k + " (" + paths.size() + " chemins mémorisés)", Verbose.CACHE.masque);
+		log.debug("Recherche de chemin pour " + k + " (" + paths.size() + " chemins mémorisés)");
 
 		LinkedList<CinematiqueObs> path = paths.get(k.toString());
 
@@ -365,7 +365,7 @@ public class PathCache implements Service, HighPFClass
 					}
 					waitPathfinding();
 					realChemin.addToEnd(fakeChemin.getPath());
-					log.debug("On va parcourir le chemin", Verbose.CACHE.masque);
+					log.debug("On va parcourir le chemin");
 					if(!simuleSerie)
 						state.robot.followTrajectory(Speed.STANDARD);
 					
@@ -400,7 +400,7 @@ public class PathCache implements Service, HighPFClass
 					restart = true;
 				}
 			} while(restart);
-			log.debug("Compute and follow a terminé normalement", Verbose.CACHE.masque);
+//			log.debug("Compute and follow a terminé normalement", Verbose.CACHE.masque);
 		}
 		finally
 		{

@@ -40,11 +40,12 @@ public class Log implements Service, DynamicConfigurable
 	public enum Verbose
 	{
 		SERIE(ConfigInfo.DEBUG_SERIE, true),
+		CORRECTION(ConfigInfo.DEBUG_CORRECTION, false),
 		TRAME(ConfigInfo.DEBUG_SERIE_TRAME, false),
 		CAPTEURS(ConfigInfo.DEBUG_CAPTEURS, true),
+		ASSER(ConfigInfo.DEBUG_ASSER, true),
 		REPLANIF(ConfigInfo.DEBUG_REPLANIF, true),
-		ACTIONNEURS(ConfigInfo.DEBUG_ACTIONNEURS, true),
-		CACHE(ConfigInfo.DEBUG_CACHE, true),
+		SCRIPTS(ConfigInfo.DEBUG_SCRIPTS, true),
 		PF(ConfigInfo.DEBUG_PF, true),
 		DEBUG(ConfigInfo.DEBUG_DEBUG, true);
 

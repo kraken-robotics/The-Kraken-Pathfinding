@@ -69,7 +69,7 @@ public class ThreadUpdatePathfinding extends ThreadService implements HighPFClas
 						throw new PathfindingException("Trajectoire vide");
 					Cinematique lastValid = chemin.getLastValidCinematique();
 					out.setMaxSpeed(Speed.REPLANIF, chemin.getCurrentMarcheAvant());
-					log.debug("Mise à jour du chemin", Verbose.CAPTEURS.masque);
+					log.debug("Mise à jour du chemin", Verbose.REPLANIF.masque);
 					pathfinding.updatePath(lastValid);
 					out.setMaxSpeed(Speed.STANDARD, chemin.getCurrentMarcheAvant());
 				}

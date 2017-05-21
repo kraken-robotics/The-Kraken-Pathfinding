@@ -69,10 +69,11 @@ public class VideoReader
 		ConfigInfo.SIMULE_SERIE.setDefaultValue(true);
 		
 		ConfigInfo.DEBUG_CAPTEURS.setDefaultValue(false);
-		ConfigInfo.DEBUG_ACTIONNEURS.setDefaultValue(false);
-		ConfigInfo.DEBUG_CACHE.setDefaultValue(false);
+		ConfigInfo.DEBUG_SCRIPTS.setDefaultValue(false);
+		ConfigInfo.DEBUG_ASSER.setDefaultValue(false);
 		ConfigInfo.DEBUG_DEBUG.setDefaultValue(false);
 		ConfigInfo.DEBUG_PF.setDefaultValue(false);
+		ConfigInfo.DEBUG_CORRECTION.setDefaultValue(false);		
 		ConfigInfo.DEBUG_REPLANIF.setDefaultValue(false);
 		ConfigInfo.DEBUG_SERIE.setDefaultValue(false);
 		ConfigInfo.DEBUG_SERIE_TRAME.setDefaultValue(false);
@@ -95,18 +96,20 @@ public class VideoReader
 				ConfigInfo.GRAPHIC_ROBOT_AND_SENSORS.setDefaultValue(true);
 			else if(args[i].equals("-vcapt")) // verbose capteurs
 				ConfigInfo.DEBUG_CAPTEURS.setDefaultValue(true);
-			else if(args[i].equals("-vact")) // verbose capteurs
-				ConfigInfo.DEBUG_ACTIONNEURS.setDefaultValue(true);
-			else if(args[i].equals("-vcache")) // verbose capteurs
-				ConfigInfo.DEBUG_CACHE.setDefaultValue(true);
+			else if(args[i].equals("-vscripts")) // verbose scripts
+				ConfigInfo.DEBUG_SCRIPTS.setDefaultValue(true);
+			else if(args[i].equals("-vasser")) // verbose asser
+				ConfigInfo.DEBUG_ASSER.setDefaultValue(true);
 			else if(args[i].equals("-vdebug")) // verbose capteurs
 				ConfigInfo.DEBUG_DEBUG.setDefaultValue(true);
-			else if(args[i].equals("-vpf")) // verbose capteurs
+			else if(args[i].equals("-vpf")) // verbose pf
 				ConfigInfo.DEBUG_PF.setDefaultValue(true);
-			else if(args[i].equals("-vreplanif")) // verbose capteurs
+			else if(args[i].equals("-vreplanif")) // verbose replanif
 				ConfigInfo.DEBUG_REPLANIF.setDefaultValue(true);
-			else if(args[i].equals("-vserie")) // verbose capteurs
+			else if(args[i].equals("-vserie")) // verbose série
 				ConfigInfo.DEBUG_SERIE.setDefaultValue(true);
+			else if(args[i].equals("-vcorr")) // verbose correction
+				ConfigInfo.DEBUG_CORRECTION.setDefaultValue(true);
 			else if(args[i].equals("-gif")) // génération d'un gif
 			{
 				ConfigInfo.GRAPHIC_PRODUCE_GIF.setDefaultValue(true);
@@ -145,12 +148,13 @@ public class VideoReader
 			System.out.println("-s speed : set reading speed. 2 is twice as fast, 0.5 twice as slow");
 			System.out.println("-withsprite : affiche le sprite du robot et des capteurs");
 			System.out.println("-vcapt : verbose capteurs");
-			System.out.println("-vact : verbose actionneurs");
-			System.out.println("-vcache : verbose cache PF");
+			System.out.println("-vscripts : verbose scripts");
+			System.out.println("-vasser : verbose pour asser");
 			System.out.println("-vdebug : verbose debug général");
 			System.out.println("-vpf : verbose pathfinding");
 			System.out.println("-vreplanif : verbose de la replanification à la volée");
 			System.out.println("-vserie : verbose de la série");
+			System.out.println("-vcorr : verbose de la correction d'odométrie");
 			System.out.println("-gif filename : produce a gif");
 			return;
 		}

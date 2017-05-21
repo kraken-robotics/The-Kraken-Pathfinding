@@ -136,7 +136,7 @@ public class CercleArrivee implements Service, Printable, HighPFClass, LowPFClas
 		boolean out = diffo <= angleMax && diffo >= angleMin;
 		
 		if(verbose)
-			log.debug("Arrivée sur cercle ? " + out + ". Delta orientation : " + diffo + ", delta distance : " + deltaDist, Verbose.ACTIONNEURS.masque);
+			log.debug("Arrivée sur cercle ? " + out + ". Delta orientation : " + diffo + ", delta distance : " + deltaDist, Verbose.SCRIPTS.masque);
 		
 		return out;
 	}

@@ -171,7 +171,7 @@ public class CheminPathfinding implements Service, HighPFClass, CheminPathfindin
 				ObstacleProximity o = iterObstacles.next();
 				if(o.isColliding(a))
 				{
-					log.debug("Collision en " + current + ". Actuel : " + indexFirst + " (soit environ " + ClothoidesComputer.PRECISION_TRACE_MM * (minus(current, indexFirst) - 0.5) + " mm avant impact)", Verbose.CAPTEURS.masque | Verbose.REPLANIF.masque);
+					log.debug("Collision en " + current + ". Actuel : " + indexFirst + " (soit environ " + ClothoidesComputer.PRECISION_TRACE_MM * (minus(current, indexFirst) - 0.5) + " mm avant impact)", Verbose.REPLANIF.masque);
 
 					// on n'a pas assez de marge !
 					if(!assezDeMargeDepuisDepart)
