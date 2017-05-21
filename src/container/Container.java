@@ -662,6 +662,7 @@ public class Container implements Service
 
 	public void interruptWithCodeError(ErrorCode code)
 	{
+		log.warning("Demande d'interruption avec le code : "+code);
 		errorCode = code;
 		mainThread.interrupt();
 	}
