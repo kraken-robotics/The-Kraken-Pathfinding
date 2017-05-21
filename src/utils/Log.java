@@ -102,10 +102,10 @@ public class Log implements Service, DynamicConfigurable
 		}
 	}
 
-	// Dépendances
 	private boolean logClosed = false;
 	private BufferedWriter writer = null;
-
+	private String file;
+	
 	// Sauvegarder les logs dans un fichier
 	private boolean sauvegarde_fichier = false;
 
@@ -247,6 +247,7 @@ public class Log implements Service, DynamicConfigurable
 					writer.flush();
 					writer.close();
 				}
+				Runtime.getRuntime().exec("cp "+file+" logs/last.txt");
 			}
 			catch(IOException e)
 			{
@@ -270,7 +271,7 @@ public class Log implements Service, DynamicConfigurable
 
 		if(sauvegarde_fichier)
 		{
-			String file = "logs/" + new SimpleDateFormat("dd-MM.HH:mm").format(new Date()) + ".txt";
+			file = "logs/" + new SimpleDateFormat("dd-MM.HH:mm").format(new Date()) + ".txt";
 			try
 			{
 				writer = new BufferedWriter(new FileWriter(file));

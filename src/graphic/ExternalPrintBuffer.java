@@ -248,6 +248,8 @@ public class ExternalPrintBuffer implements PrintBufferInterface
 			file.writeObject(sauvegarde);
 			file.flush();
 			file.close();
+			Runtime.getRuntime().exec("cp "+filename+" videos/last.vid");
+
 			log.debug("Sauvegarde terminée");
 		}
 		catch(IOException e)
