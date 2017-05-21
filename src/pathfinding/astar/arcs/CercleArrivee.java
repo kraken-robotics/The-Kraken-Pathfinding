@@ -95,7 +95,7 @@ public class CercleArrivee implements Service, Printable, HighPFClass, LowPFClas
 
 	public boolean isAlmostArrived(Cinematique robot)
 	{
-		return isArrived(robot, -10, 10, 240, 260, false);
+		return isArrived(robot, -10, 10, 140, 260, false);
 	}
 
 	
