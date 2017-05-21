@@ -453,10 +453,10 @@ public class PathCache implements Service, HighPFClass
 	 */
 	private boolean isScanNecessary()
 	{
-		Vec2RO posDevant = state.robot.getCinematique().getPosition().plusNewVector(new Vec2RO(longueurAvantRobot + 250, state.robot.getCinematique().orientationReelle, false));
+		Vec2RO posDevant = state.robot.getCinematique().getPosition().plusNewVector(new Vec2RO(longueurAvantRobot + 80, state.robot.getCinematique().orientationReelle, false));
 		iteratorObstacles.reinit();
 		while(iteratorObstacles.hasNext())
-			if(iteratorObstacles.next().squaredDistance(posDevant) < rayonRobot * rayonRobot)
+			if(iteratorObstacles.next().squaredDistance(posDevant) < 180 * 180)
 				return true;
 		return false;
 	}
