@@ -225,7 +225,7 @@ public class PathCache implements Service, HighPFClass
 				k.s = s;
 				k.shoot = i == 0;
 
-				if(k.s == ScriptNames.SCRIPT_DEPOSE_MINERAI) // c'est
+				if(k.s == ScriptNames.SCRIPT_DEPOSE_MINERAI_DROITE) // c'est
 																// particulier
 					continue;
 
@@ -247,9 +247,28 @@ public class PathCache implements Service, HighPFClass
 				ok.add(k.toString());
 				paths.put(k.toString(), path);
 
-				// calcul du chemin retour
+				// calcul du chemin retour 1
 				k.chrono.robot.setCinematique(path.getLast());
-				k.s = ScriptNames.SCRIPT_DEPOSE_MINERAI;
+				k.s = ScriptNames.SCRIPT_DEPOSE_MINERAI_DROITE;
+				for(int j = 0; j < 2; j++)
+				{
+					k.shoot = j == 0;
+					LinkedList<CinematiqueObs> pathRetour;
+					try
+					{
+						pathRetour = loadOrCompute(k);
+					}
+					catch(PathfindingException e1)
+					{
+						errors.add(k.toString());
+						continue;
+					}
+					ok.add(k.toString());
+					paths.put(k.toString(), pathRetour);
+				}
+				
+				// calcul du chemin retour 1
+				k.s = ScriptNames.SCRIPT_DEPOSE_MINERAI_GAUCHE;
 				for(int j = 0; j < 2; j++)
 				{
 					k.shoot = j == 0;

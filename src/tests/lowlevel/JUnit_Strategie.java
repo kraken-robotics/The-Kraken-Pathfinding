@@ -53,7 +53,7 @@ public class JUnit_Strategie extends JUnit_Test
 	{
 		chrono.robot.setCinematique(new Cinematique(700, 1800, Math.PI, true, 0));
 		path.computeAndFollow(new KeyPathCache(chrono, ScriptNames.SCRIPT_CRATERE_HAUT_DROITE, false));
-		path.computeAndFollow(new KeyPathCache(chrono, ScriptNames.SCRIPT_DEPOSE_MINERAI, false));
+		path.computeAndFollow(new KeyPathCache(chrono, ScriptNames.SCRIPT_DEPOSE_MINERAI_DROITE, false));
 	}
 
 	@Test
