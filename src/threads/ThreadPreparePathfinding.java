@@ -64,7 +64,7 @@ public class ThreadPreparePathfinding extends ThreadService implements HighPFCla
 				try
 				{
 					fakeChemin.clear();
-					astar.process(fakeChemin);
+					astar.process(fakeChemin, false);
 					log.debug("Prochain trajet préparé.", Verbose.PF.masque);
 					inst.setDone();
 				}

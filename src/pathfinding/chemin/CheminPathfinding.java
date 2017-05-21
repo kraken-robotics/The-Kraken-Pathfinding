@@ -117,9 +117,9 @@ public class CheminPathfinding implements Service, HighPFClass, CheminPathfindin
 	@Override
 	public boolean needStop()
 	{
-		return !uptodate && (empty || minus(indexLast, indexFirst) < margeNecessaire);
+		return empty || minus(indexLast, indexFirst) < margeNecessaire;
 	}
-
+	
 	@Override
 	public boolean aAssezDeMarge()
 	{
@@ -306,7 +306,7 @@ public class CheminPathfinding implements Service, HighPFClass, CheminPathfindin
 			return chemin[index];
 		return null;
 	}
-
+	
 	/**
 	 * Supprime complètement le trajet en cours
 	 */
@@ -468,12 +468,6 @@ public class CheminPathfinding implements Service, HighPFClass, CheminPathfindin
 	public Cinematique getLastCinematique()
 	{
 		return chemin[minus(indexLast, 1)];
-	}
-
-	@Override
-	public boolean isReplanif()
-	{
-		return !uptodate;
 	}
 
 }

@@ -143,7 +143,7 @@ public class AStarCourbe implements Service, HighPFClass
 	 * @throws InterruptedException
 	 * @throws MemoryManagerException
 	 */
-	public final synchronized void process(CheminPathfindingInterface chemin) throws PathfindingException, MemoryManagerException
+	public final synchronized void process(CheminPathfindingInterface chemin, boolean replanif) throws PathfindingException, MemoryManagerException
 	{
 		log.debug("Recherche de chemin. Marge obstacle robot : "+ObstacleRobot.getMarge(), Verbose.PF.masque);
 		trajetDeSecours = null;
@@ -175,7 +175,10 @@ public class AStarCourbe implements Service, HighPFClass
 		{
 			current = openset.poll();
 
-			if(chemin.needStop())
+			/**
+			 * needStop ne concerne que la replanif
+			 */
+			if(replanif && chemin.needStop())
 				throw new PathfindingException("On a vu l'obstacle trop tard, on n'a pas assez de marge. Il faut s'arrêter.");
 
 			// On vérifie régulièremet s'il ne faut pas fournir un chemin
@@ -282,7 +285,7 @@ public class AStarCourbe implements Service, HighPFClass
 				return;
 			}
 
-			if(!chemin.isReplanif() && elapsed > dureeMaxPF) // étant donné
+			if(!replanif && elapsed > dureeMaxPF) // étant donné
 																// qu'il peut
 																// continuer
 																// jusqu'à
@@ -553,7 +556,7 @@ public class AStarCourbe implements Service, HighPFClass
 			dstarlite.itineraireBrut();
 
 		vitesseMax = Speed.REPLANIF;
-		process(realChemin);
+		process(realChemin, true);
 	}
 	
 	public boolean isArrivedAsser()

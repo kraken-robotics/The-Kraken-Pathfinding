@@ -115,12 +115,6 @@ public class FakeCheminPathfinding implements Service, CheminPathfindingInterfac
 		return null;
 	}
 
-	@Override
-	public boolean isReplanif()
-	{
-		return false;
-	}
-
 	public void clear()
 	{
 		path = null;
