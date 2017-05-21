@@ -168,6 +168,7 @@ public class Container implements Service
 			{
 				e.printStackTrace(log.getPrintWriter());
 			}
+			Thread.sleep(100);
 			if(getService(n.c).isAlive())
 				log.critical(n.c.getSimpleName() + " encore vivant !");
 		}

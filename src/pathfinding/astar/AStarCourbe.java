@@ -564,16 +564,9 @@ public class AStarCourbe implements Service, HighPFClass
 		return arcmanager.isArrivedAsser(state.robot.getCinematique());
 	}
 
-	/**
-	 * Le chemin a été entièrement parcouru.
-	 */
-	/*
-	 * public void stopContinuousSearch()
-	 * {
-	 * rechercheEnCours = false;
-	 * buffer.clearSupprimables();
-	 * dstarlite.stopContinuousSearch();
-	 * }
-	 */
+	public boolean isAlmostArrived()
+	{
+		return arcmanager.isAlmostArrived(state.robot.getCinematique());
+	}
 
 }

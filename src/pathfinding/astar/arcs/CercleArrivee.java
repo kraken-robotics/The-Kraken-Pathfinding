@@ -93,6 +93,12 @@ public class CercleArrivee implements Service, Printable, HighPFClass, LowPFClas
 
 	private Vec2RW tmp = new Vec2RW();
 
+	public boolean isAlmostArrived(Cinematique robot)
+	{
+		return isArrived(robot, -10, 10, 240, 260, false);
+	}
+
+	
 	public boolean isArrivedAsser(Cinematique robot)
 	{
 		return isArrived(robot, angleMin, angleMax, distanceMin, distanceMax, Math.abs((robot.getPosition().distanceFast(position) - rayon)) < 40);
@@ -173,4 +179,5 @@ public class CercleArrivee implements Service, Printable, HighPFClass, LowPFClas
 	{
 		symetrie = config.getSymmetry();
 	}
+
 }

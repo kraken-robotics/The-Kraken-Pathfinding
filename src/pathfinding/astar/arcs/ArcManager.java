@@ -362,6 +362,19 @@ public class ArcManager implements Service, HighPFClass
 		return successeur.getPosition().squaredDistance(arrivee.getPosition()) < 5 && sens.isOK(successeur.enMarcheAvant);
 	}
 
+	/**
+	 * Permet de savoir si on peut s'ajuster sur un cercle
+	 * @param cinematique
+	 * @return
+	 */
+	public boolean isAlmostArrived(Cinematique cinematique)
+	{
+		if(useCercle)
+			return cercle.isAlmostArrived(cinematique);
+		return false;
+	}
+
+	
 	public boolean isArrivedAsser(Cinematique successeur)
 	{
 		if(useCercle)
@@ -399,4 +412,5 @@ public class ArcManager implements Service, HighPFClass
 	{
 		return useCercle;
 	}
+
 }
