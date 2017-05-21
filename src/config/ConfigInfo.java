@@ -59,9 +59,10 @@ public enum ConfigInfo
 	VITESSE_ROBOT_STANDARD(500), // vitesse standard en mm/s
 	VITESSE_ROBOT_BASCULE(300), // vitesse pour passer la bascule en mm/s
 	VITESSE_ROBOT_REPLANIF(200), // vitesse en replanification en mm/s
-	ERREUR_MAX_POSITION_CRATERE(10), // erreur maximale sur la position pour ramasser un cratère
-	ERREUR_MAX_ANGLE_CRATERE(10), // erreur maximale sur l'angle pour ramasser un cratère. EN DEGRÉS !
-	
+	DISTANCE_MAX_CRATERE(205), // distance maximale pour ramasser un cratère
+	DISTANCE_MIN_CRATERE(195), // distance minimale pour ramasser un cratère
+	ANGLE_MAX_CRATERE(6.5), // l'angle maximale pour ramasser un cratère (EN DEGRÉS)
+	ANGLE_MIN_CRATERE(0.5), // l'angle minimale pour ramasser un cratère (EN DEGRÉS)
 	/**
 	 * Paramètres du log
 	 */

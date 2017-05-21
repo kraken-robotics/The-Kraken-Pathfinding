@@ -52,7 +52,7 @@ public class CercleArrivee implements Service, Printable, HighPFClass, LowPFClas
 
 	private boolean graphic;
 	private boolean symetrie = false;
-	private double erreurMaxPosition, erreurMaxAngle;
+	private double distanceMax, distanceMin, angleMax, angleMin;
 
 	protected Log log;
 	private PrintBufferInterface buffer;
@@ -62,8 +62,11 @@ public class CercleArrivee implements Service, Printable, HighPFClass, LowPFClas
 		this.log = log;
 		this.buffer = buffer;
 		graphic = config.getBoolean(ConfigInfo.GRAPHIC_CERCLE_ARRIVEE);
-		erreurMaxPosition = config.getDouble(ConfigInfo.ERREUR_MAX_POSITION_CRATERE);
-		erreurMaxAngle = config.getDouble(ConfigInfo.ERREUR_MAX_ANGLE_CRATERE);
+		distanceMax = config.getDouble(ConfigInfo.DISTANCE_MAX_CRATERE);
+		distanceMin = config.getDouble(ConfigInfo.DISTANCE_MIN_CRATERE);
+		angleMax = config.getDouble(ConfigInfo.ANGLE_MAX_CRATERE);
+		angleMin = config.getDouble(ConfigInfo.ANGLE_MIN_CRATERE);
+		
 		if(graphic)
 			buffer.add(this);
 	}
@@ -92,12 +95,12 @@ public class CercleArrivee implements Service, Printable, HighPFClass, LowPFClas
 
 	public boolean isArrivedAsser(Cinematique robot)
 	{
-		return isArrived(robot, erreurMaxAngle, erreurMaxPosition, Math.abs((robot.getPosition().distanceFast(position) - rayon)) < 40);
+		return isArrived(robot, angleMin, angleMax, distanceMin, distanceMax, Math.abs((robot.getPosition().distanceFast(position) - rayon)) < 40);
 	}
 	
 	public boolean isArrivedPF(Cinematique robot)
 	{
-		return isArrived(robot, 1, 5, false);
+		return isArrived(robot, -1, 1, 195, 205, false);
 	}
 	
 	/**
@@ -106,26 +109,35 @@ public class CercleArrivee implements Service, Printable, HighPFClass, LowPFClas
 	 * @param last
 	 * @return
 	 */
-	private boolean isArrived(Cinematique robot, double erreurMaxAngle, double erreurMaxPosition, boolean verbose)
+	private boolean isArrived(Cinematique robot, double angleMin, double angleMax, double distanceMin, double distanceMax, boolean verbose)
 	{
+		double deltaDist = robot.getPosition().distance(position);
+		// on vérifie la distance au cratère
+		if(deltaDist > distanceMax || deltaDist < distanceMin)
+		{
+			if(verbose)
+				log.debug("Mauvaise distance au cratère : "+deltaDist);
+			return false;
+		}
+		
 		position.copy(tmp);
 		tmp.minus(robot.getPosition());
-		double o = tmp.getFastArgument();
+		double o = tmp.getArgument();
 
 		double diffo = (o - robot.orientationGeometrique) % (2 * Math.PI);
 		if(diffo > Math.PI)
 			diffo -= 2 * Math.PI;
 		else if(diffo < -Math.PI)
 			diffo += 2 * Math.PI;
-
-		double deltaDist = robot.getPosition().distance(position) - rayon;
 		
-		boolean out = Math.abs(diffo) < erreurMaxAngle / 180. * Math.PI && Math.abs(deltaDist) < erreurMaxPosition;
+		diffo *= 180. / Math.PI;
+		
+		// on vérifie qu'on a la bonne orientation
+		boolean out = diffo <= angleMax && diffo >= angleMin;
 		
 		if(verbose)
 			log.debug("Arrivée sur cercle ? " + out + ". Delta orientation : " + diffo + ", delta distance : " + deltaDist, Verbose.ACTIONNEURS.masque);
 		
-		// on vérifie qu'on est proche du rayon avec la bonne orientation
 		return out;
 	}
 
