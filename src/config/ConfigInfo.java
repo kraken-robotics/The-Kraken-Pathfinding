@@ -61,8 +61,8 @@ public enum ConfigInfo
 	VITESSE_ROBOT_REPLANIF(200), // vitesse en replanification en mm/s
 	DISTANCE_MAX_CRATERE(205), // distance maximale pour ramasser un cratère
 	DISTANCE_MIN_CRATERE(195), // distance minimale pour ramasser un cratère
-	ANGLE_MAX_CRATERE(6.5), // l'angle maximale pour ramasser un cratère (EN DEGRÉS)
-	ANGLE_MIN_CRATERE(0.5), // l'angle minimale pour ramasser un cratère (EN DEGRÉS)
+	ANGLE_MAX_CRATERE(3), // l'angle maximale pour ramasser un cratère (EN DEGRÉS)
+	ANGLE_MIN_CRATERE(-3), // l'angle minimale pour ramasser un cratère (EN DEGRÉS)
 	/**
 	 * Paramètres du log
 	 */
