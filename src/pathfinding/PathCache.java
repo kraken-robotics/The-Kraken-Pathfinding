@@ -225,8 +225,8 @@ public class PathCache implements Service, HighPFClass
 				k.s = s;
 				k.shoot = i == 0;
 
-				if(k.s == ScriptNames.SCRIPT_DEPOSE_MINERAI_DROITE) // c'est
-																// particulier
+				if(k.s == ScriptNames.SCRIPT_DEPOSE_MINERAI_DROITE
+						|| k.s == ScriptNames.SCRIPT_DEPOSE_MINERAI_GAUCHE) // c'est particulier
 					continue;
 
 				// log.debug("Script : "+k.s);
