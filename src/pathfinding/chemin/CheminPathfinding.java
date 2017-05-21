@@ -63,7 +63,7 @@ public class CheminPathfinding implements Service, HighPFClass, CheminPathfindin
 											// est l'index du dernier point
 											// accessible)
 	private volatile boolean uptodate = true; // le chemin est-il complet
-	private volatile boolean empty = false;
+	private volatile boolean empty = true;
 	private volatile boolean needRestart = false; // faut-il recalculer d'un
 													// autre point ?
 	private int margeNecessaire, margeInitiale, margeAvantCollision, margePreferable;
