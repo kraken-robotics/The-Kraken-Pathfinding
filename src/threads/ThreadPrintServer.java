@@ -133,7 +133,7 @@ public class ThreadPrintServer extends ThreadService implements GUIClass
 		deporte = config.getBoolean(ConfigInfo.GRAPHIC_EXTERNAL);
 		file = config.getBoolean(ConfigInfo.GRAPHIC_DIFFERENTIAL);
 		try {
-			Runtime.getRuntime().exec("rm videos/last.vid");
+			Runtime.getRuntime().exec("rm videos/last.dat");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
