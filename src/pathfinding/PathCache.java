@@ -75,7 +75,6 @@ public class PathCache implements Service, HighPFClass
 	private int nbEssais;
 	private boolean enableScan;
 	private boolean simuleSerie;
-	private double rayonRobot;
 	private double longueurAvantRobot;
 
 	/**
@@ -95,7 +94,6 @@ public class PathCache implements Service, HighPFClass
 		simuleSerie = config.getBoolean(ConfigInfo.SIMULE_SERIE);
 		dureePeremption = config.getInt(ConfigInfo.DUREE_PEREMPTION_OBSTACLES);
 		enableScan = config.getBoolean(ConfigInfo.ENABLE_SCAN);
-		rayonRobot = config.getDouble(ConfigInfo.RAYON_ROBOT_SUPPRESSION_OBSTACLES_FIXES);
 		longueurAvantRobot = config.getDouble(ConfigInfo.DEMI_LONGUEUR_NON_DEPLOYE_AVANT);
 		this.fakeChemin = fakeChemin;
 		this.realChemin = realChemin;
