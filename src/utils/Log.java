@@ -122,6 +122,15 @@ public class Log implements Service, DynamicConfigurable
 	private long dateInitiale = System.currentTimeMillis();
 	private long dateDebutMatch = -1;
 
+	public Log()
+	{
+		try {
+			Runtime.getRuntime().exec("rm logs/last.txt");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	public long getDateInitiale()
 	{
 		return dateInitiale;
@@ -268,7 +277,7 @@ public class Log implements Service, DynamicConfigurable
 			v.status = config.getBoolean(v.c);
 			v.printInFile |= v.status;
 		}
-
+		
 		if(sauvegarde_fichier)
 		{
 			file = "logs/" + new SimpleDateFormat("dd-MM.HH:mm").format(new Date()) + ".txt";

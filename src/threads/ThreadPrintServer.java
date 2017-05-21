@@ -132,6 +132,12 @@ public class ThreadPrintServer extends ThreadService implements GUIClass
 		print = config.getBoolean(ConfigInfo.GRAPHIC_ENABLE);
 		deporte = config.getBoolean(ConfigInfo.GRAPHIC_EXTERNAL);
 		file = config.getBoolean(ConfigInfo.GRAPHIC_DIFFERENTIAL);
+		try {
+			Runtime.getRuntime().exec("rm videos/last.vid");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 		if(file && print)
 		{
 			Thread t = new Thread(new ThreadDifferential(log, buffer));
