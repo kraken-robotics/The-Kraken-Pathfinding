@@ -15,8 +15,6 @@
 package pathfinding.astar.arcs;
 
 import java.awt.Graphics;
-import java.util.ArrayList;
-import java.util.List;
 
 import config.Config;
 import config.ConfigInfo;
@@ -56,7 +54,7 @@ public class CercleArrivee implements Service, Printable, HighPFClass, LowPFClas
 	private boolean graphic;
 	private boolean symetrie = false;
 	private double distanceMax, distanceMin, angleMax, angleMin;
-	public List<Double> anglesAttaquesPossibles = new ArrayList<Double>();
+	public Double[] anglesAttaquePossibles;
 	
 	protected Log log;
 	private PrintBufferInterface buffer;
@@ -75,11 +73,9 @@ public class CercleArrivee implements Service, Printable, HighPFClass, LowPFClas
 			buffer.add(this);
 	}
 
-	public void set(Vec2RO position, double orientationArriveeDStarLite, double rayon, SensFinal sens, List<Double> anglesAttaquesPossibles)
-	{
-		this.anglesAttaquesPossibles.clear();
-		if(anglesAttaquesPossibles != null)
-			this.anglesAttaquesPossibles.addAll(anglesAttaquesPossibles);
+	public void set(Vec2RO position, double orientationArriveeDStarLite, double rayon, SensFinal sens, Double[] anglesAttaquesPossibles)
+	{		
+		this.anglesAttaquePossibles = anglesAttaquesPossibles;
 		
 		this.position = new Vec2RO(symetrie ? -position.getX() : position.getX(), position.getY());
 		this.arriveeDStarLite = new Vec2RW(rayon, symetrie ? Math.PI - orientationArriveeDStarLite : orientationArriveeDStarLite, false);
@@ -134,10 +130,16 @@ public class CercleArrivee implements Service, Printable, HighPFClass, LowPFClas
 			return false;
 		}
 		
-		boolean accepted = anglesAttaquesPossibles.isEmpty();
+		robot.orientationGeometrique %= 2 * Math.PI;
+		if(robot.orientationGeometrique > Math.PI)
+			robot.orientationGeometrique -= 2 * Math.PI;
+		else if(robot.orientationGeometrique < -Math.PI)
+			robot.orientationGeometrique += 2 * Math.PI;
+		
+		boolean accepted = anglesAttaquePossibles == null;
 
-		for(int i = 0; i < anglesAttaquesPossibles.size() / 2; i++)
-			if(robot.orientationGeometrique >= anglesAttaquesPossibles.get(2 * i) && robot.orientationGeometrique <= anglesAttaquesPossibles.get(2 * i + 1))
+		for(int i = 0; i < anglesAttaquePossibles.length / 2; i++)
+			if(robot.orientationGeometrique >= anglesAttaquePossibles[2 * i] && robot.orientationGeometrique <= anglesAttaquePossibles[2 * i + 1])
 			{
 				accepted = true;
 				break;
