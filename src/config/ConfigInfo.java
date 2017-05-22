@@ -59,10 +59,7 @@ public enum ConfigInfo
 	VITESSE_ROBOT_STANDARD(500), // vitesse standard en mm/s
 	VITESSE_ROBOT_BASCULE(300), // vitesse pour passer la bascule en mm/s
 	VITESSE_ROBOT_REPLANIF(200), // vitesse en replanification en mm/s
-	DISTANCE_MAX_CRATERE(5), // distance maximale au rayon pour ramasser un cratère
-	DISTANCE_MIN_CRATERE(-5), // distance minimale au rayon pour ramasser un cratère
-	ANGLE_MAX_CRATERE(3), // l'angle maximale pour ramasser un cratère (EN DEGRÉS)
-	ANGLE_MIN_CRATERE(-3), // l'angle minimale pour ramasser un cratère (EN DEGRÉS)
+
 	/**
 	 * Paramètres du log
 	 */

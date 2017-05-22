@@ -93,12 +93,6 @@ public class RobotChrono extends Robot
 	{
 		return true;
 	}
-
-	@Override
-	public boolean isAlmostArrived()
-	{
-		return true;
-	}
 	
 	public Ticket traverseBascule() throws InterruptedException, ActionneurException
 	{

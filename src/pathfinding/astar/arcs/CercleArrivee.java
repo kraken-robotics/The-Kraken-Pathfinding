@@ -18,7 +18,6 @@ import java.awt.Graphics;
 
 import config.Config;
 import config.ConfigInfo;
-import config.DynamicConfigurable;
 import container.Service;
 import container.dependances.HighPFClass;
 import container.dependances.LowPFClass;
@@ -63,19 +62,19 @@ public class CercleArrivee implements Service, Printable, HighPFClass, LowPFClas
 		this.log = log;
 		this.buffer = buffer;
 		graphic = config.getBoolean(ConfigInfo.GRAPHIC_CERCLE_ARRIVEE);
-		distanceMax = config.getDouble(ConfigInfo.DISTANCE_MAX_CRATERE);
-		distanceMin = config.getDouble(ConfigInfo.DISTANCE_MIN_CRATERE);
-		angleMax = config.getDouble(ConfigInfo.ANGLE_MAX_CRATERE);
-		angleMin = config.getDouble(ConfigInfo.ANGLE_MIN_CRATERE);
-		
+
 		if(graphic)
 			buffer.add(this);
 	}
 
-	public void set(Vec2RO position, double orientationArriveeDStarLite, double rayon, SensFinal sens, Double[] anglesAttaquesPossibles)
+	public void set(Vec2RO position, double orientationArriveeDStarLite, double rayon, SensFinal sens, Double[] anglesAttaquesPossibles, double distanceMax, double distanceMin, double angleMax, double angleMin)
 	{		
 		this.anglesAttaquePossibles = anglesAttaquesPossibles;
-		
+		this.distanceMax = distanceMax;
+		this.distanceMin = distanceMin;
+		this.angleMax = angleMax;
+		this.angleMin = angleMin;
+
 		this.position = new Vec2RO(position.getX(), position.getY());
 		this.arriveeDStarLite = new Vec2RW(rayon, orientationArriveeDStarLite, false);
 		((Vec2RW) arriveeDStarLite).plus(position);
@@ -89,17 +88,12 @@ public class CercleArrivee implements Service, Printable, HighPFClass, LowPFClas
 		// log.debug("arriveeDStarLite : "+arriveeDStarLite);
 	}
 
-	public void set(GameElementNames element, double rayon)
+	public void set(GameElementNames element, double rayon, double distanceMax, double distanceMin, double angleMax, double angleMin)
 	{
-		set(element.obstacle.getPosition(), element.orientationArriveeDStarLite, rayon, SensFinal.MARCHE_ARRIERE, null);
+		set(element.obstacle.getPosition(), element.orientationArriveeDStarLite, rayon, SensFinal.MARCHE_ARRIERE, null, distanceMax, distanceMin, angleMax, angleMin);
 	}
 
 	private Vec2RW tmp = new Vec2RW();
-
-	public boolean isAlmostArrived(Cinematique robot)
-	{
-		return isArrived(robot, -10, 10, rayon - 60, rayon + 60, false);
-	}
 
 	public boolean isArrivedAsser(Cinematique robot)
 	{

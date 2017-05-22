@@ -225,8 +225,6 @@ public abstract class Robot implements DynamicConfigurable
 
 	public abstract boolean isArrivedAsser();
 
-	public abstract boolean isAlmostArrived();
-
 	public Cinematique getCinematique()
 	{
 		return cinematique;

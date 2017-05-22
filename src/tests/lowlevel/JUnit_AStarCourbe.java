@@ -434,7 +434,7 @@ public class JUnit_AStarCourbe extends JUnit_Test
 				Thread.sleep(100);
 		}
 		log.debug("Nb points : " + i);
-		cercle.set(GameElementNames.MINERAI_CRATERE_HAUT_GAUCHE, 250);
+		cercle.set(GameElementNames.MINERAI_CRATERE_HAUT_GAUCHE, 250, 30, -30, 10, -10);
 		astar.initializeNewSearchToCircle(false, state);
 		astar.process(chemin,false);
 		iterator.reinit();
@@ -486,7 +486,7 @@ public class JUnit_AStarCourbe extends JUnit_Test
 		Cinematique depart = new Cinematique(0, 1900, -Math.PI / 3, true, 0);
 		robot.setCinematique(depart);
 		int[] data = { 0, 400, 0, 0, 0, 0, 0, 400, 0, 0, 0, 0 };
-		cercle.set(GameElementNames.MINERAI_CRATERE_HAUT_GAUCHE, 300);
+		cercle.set(GameElementNames.MINERAI_CRATERE_HAUT_GAUCHE, 300, 30, -30, 10, -10);
 		astar.initializeNewSearchToCircle(false, state);
 		astar.process(chemin,false);
 		iterator.reinit();
@@ -517,7 +517,7 @@ public class JUnit_AStarCourbe extends JUnit_Test
 		Cinematique depart = new Cinematique(-800, 350, Math.PI / 2, true, 0);
 		robot.setCinematique(depart);
 		int[] data = { 0, 400, 0, 0, 0, 0, 0, 400, 0, 0, 0, 0 };
-		cercle.set(GameElementNames.MINERAI_CRATERE_HAUT_DROITE, 250);
+		cercle.set(GameElementNames.MINERAI_CRATERE_HAUT_DROITE, 250, 30, -30, 10, -10);
 		astar.initializeNewSearchToCircle(false, state);
 		astar.process(chemin,false);
 		iterator.reinit();
@@ -772,7 +772,7 @@ public class JUnit_AStarCourbe extends JUnit_Test
 		long avant = System.nanoTime();
 		Cinematique depart = new Cinematique(-800, 350, Math.PI / 2, true, 0);
 		robot.setCinematique(depart);
-		cercle.set(GameElementNames.MINERAI_CRATERE_HAUT_GAUCHE, 200);
+		cercle.set(GameElementNames.MINERAI_CRATERE_HAUT_GAUCHE, 200, 30, -30, 10, -10);
 		astar.initializeNewSearchToCircle(true, state);
 		astar.process(chemin,false);
 		log.debug("Temps : " + (System.nanoTime() - avant) / (1000000.));
@@ -797,7 +797,7 @@ public class JUnit_AStarCourbe extends JUnit_Test
 		long avant = System.nanoTime();
 		Cinematique depart = new Cinematique(-800, 350, Math.PI / 2, true, 0);
 		robot.setCinematique(depart);
-		cercle.set(GameElementNames.MINERAI_CRATERE_HAUT_DROITE, 250);
+		cercle.set(GameElementNames.MINERAI_CRATERE_HAUT_DROITE, 250, 30, -30, 10, -10);
 		astar.initializeNewSearchToCircle(false, state);
 		astar.process(chemin,false);
 		log.debug("Temps : " + (System.nanoTime() - avant) / (1000000.));
@@ -822,7 +822,7 @@ public class JUnit_AStarCourbe extends JUnit_Test
 		long avant = System.nanoTime();
 		Cinematique depart = new Cinematique(-800, 350, Math.PI / 2, true, 0);
 		robot.setCinematique(depart);
-		cercle.set(GameElementNames.MINERAI_CRATERE_BAS_DROITE, 250);
+		cercle.set(GameElementNames.MINERAI_CRATERE_BAS_DROITE, 250, 30, -30, 10, -10);
 		astar.initializeNewSearchToCircle(true, state);
 		astar.process(chemin,false);
 		log.debug("Temps : " + (System.nanoTime() - avant) / (1000000.));

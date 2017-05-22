@@ -361,18 +361,6 @@ public class ArcManager implements Service, HighPFClass
 			return cercle.isArrivedPF(successeur);
 		return successeur.getPosition().squaredDistance(arrivee.getPosition()) < 5 && sens.isOK(successeur.enMarcheAvant);
 	}
-
-	/**
-	 * Permet de savoir si on peut s'ajuster sur un cercle
-	 * @param cinematique
-	 * @return
-	 */
-	public boolean isAlmostArrived(Cinematique cinematique)
-	{
-		if(useCercle)
-			return cercle.isAlmostArrived(cinematique);
-		return cinematique.getPosition().squaredDistance(arrivee.getPosition()) < 25 && sens.isOK(cinematique.enMarcheAvant);
-	}
 	
 	public boolean isArrivedAsser(Cinematique successeur)
 	{
