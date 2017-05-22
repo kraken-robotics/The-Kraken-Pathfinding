@@ -121,7 +121,10 @@ public class Container implements Service
 		 * Il ne faut pas appeler deux fois le destructeur
 		 */
 		if(nbInstances == 0)
+		{
+			log.critical("Double appel au destructor !");
 			return ErrorCode.DOUBLE_DESTRUCTOR;
+		}
 
 		shutdown = true;
 

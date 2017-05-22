@@ -250,7 +250,7 @@ public class ExternalPrintBuffer implements PrintBufferInterface
 			file.close();
 			Runtime.getRuntime().exec("cp "+filename+" videos/last.dat");
 
-			log.debug("Sauvegarde terminée");
+			log.debug("Sauvegarde de la vidéo terminée");
 		}
 		catch(IOException e)
 		{
