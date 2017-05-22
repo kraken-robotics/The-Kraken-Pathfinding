@@ -215,6 +215,8 @@ public class ExternalPrintBuffer implements PrintBufferInterface
 	@Override
 	public synchronized void destructor()
 	{
+		log.debug("Sauvegarde de la vidéo en cours… ÇA PEUT PRENDRE DU TEMPS !");
+
 		try
 		{
 			FileOutputStream fichier = null;
