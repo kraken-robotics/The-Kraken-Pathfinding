@@ -558,5 +558,10 @@ public class AStarCourbe implements Service, HighPFClass
 		vitesseMax = Speed.REPLANIF;
 		process(realChemin, true);
 	}
+	
+	public boolean isAlmostArrived()
+	{
+		return arcmanager.isAlmostArrived(state.robot.getCinematique());
+	}
 
 }

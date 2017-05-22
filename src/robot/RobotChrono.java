@@ -75,7 +75,7 @@ public class RobotChrono extends Robot
 	}
 	
 	// TODO
-	public void avanceToCircle(Speed speed, double rayon) throws InterruptedException, UnableToMoveException, MemoryManagerException
+	public void avanceToCircle(Speed speed) throws InterruptedException, UnableToMoveException, MemoryManagerException
 	{}
 
 

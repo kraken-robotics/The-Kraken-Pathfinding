@@ -371,9 +371,8 @@ public class ArcManager implements Service, HighPFClass
 	{
 		if(useCercle)
 			return cercle.isAlmostArrived(cinematique);
-		return false;
+		return cinematique.getPosition().squaredDistance(arrivee.getPosition()) < 25 && sens.isOK(cinematique.enMarcheAvant);
 	}
-
 	
 	public boolean isArrivedAsser(Cinematique successeur)
 	{

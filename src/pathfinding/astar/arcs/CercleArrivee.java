@@ -99,18 +99,17 @@ public class CercleArrivee implements Service, Printable, HighPFClass, LowPFClas
 
 	public boolean isAlmostArrived(Cinematique robot)
 	{
-		return isArrived(robot, -10, 10, 140, 260, false);
+		return isArrived(robot, -10, 10, rayon - 60, rayon + 60, false);
 	}
 
-	
 	public boolean isArrivedAsser(Cinematique robot)
 	{
-		return isArrived(robot, angleMin, angleMax, distanceMin, distanceMax, Math.abs((robot.getPosition().distanceFast(position) - rayon)) < 40);
+		return isArrived(robot, angleMin, angleMax, rayon+distanceMin, rayon+distanceMax, Math.abs((robot.getPosition().distanceFast(position) - rayon)) < 40);
 	}
 	
 	public boolean isArrivedPF(Cinematique robot)
 	{
-		return isArrived(robot, -1, 1, 195, 205, false);
+		return isArrived(robot, -1, 1, rayon - 5, rayon + 5, false);
 	}
 	
 	/**

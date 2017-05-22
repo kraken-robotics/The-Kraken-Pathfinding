@@ -45,7 +45,7 @@ public abstract class Robot implements DynamicConfigurable
 
 	public abstract void avance(double distance, Speed speed) throws UnableToMoveException, InterruptedException;
 
-	public abstract void avanceToCircle(Speed speed, double rayon) throws InterruptedException, UnableToMoveException, MemoryManagerException;
+	public abstract void avanceToCircle(Speed speed) throws InterruptedException, UnableToMoveException, MemoryManagerException;
 	
 	public abstract void followTrajectory(Speed vitesse) throws InterruptedException, UnableToMoveException;
 
