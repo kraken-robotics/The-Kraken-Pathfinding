@@ -19,6 +19,7 @@ import config.DynamicConfigurable;
 import exceptions.ActionneurException;
 import exceptions.MemoryManagerException;
 import exceptions.UnableToMoveException;
+import serie.Ticket;
 import utils.Log;
 
 /**
@@ -194,10 +195,7 @@ public abstract class Robot implements DynamicConfigurable
 		bloque("rearme", symetrie);
 	}
 
-	public void traverseBascule() throws InterruptedException, ActionneurException
-	{
-		bloque("traverseBascule");
-	}
+	public abstract Ticket traverseBascule() throws InterruptedException, ActionneurException;
 
 	public void funnyAction() throws InterruptedException
 	{
@@ -228,5 +226,10 @@ public abstract class Robot implements DynamicConfigurable
 	public abstract boolean isArrivedAsser();
 
 	public abstract boolean isAlmostArrived();
+
+	public Cinematique getCinematique()
+	{
+		return cinematique;
+	}
 
 }
