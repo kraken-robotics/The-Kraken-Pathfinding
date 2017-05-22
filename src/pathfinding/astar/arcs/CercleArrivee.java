@@ -15,6 +15,9 @@
 package pathfinding.astar.arcs;
 
 import java.awt.Graphics;
+import java.util.ArrayList;
+import java.util.List;
+
 import config.Config;
 import config.ConfigInfo;
 import config.DynamicConfigurable;
@@ -53,7 +56,8 @@ public class CercleArrivee implements Service, Printable, HighPFClass, LowPFClas
 	private boolean graphic;
 	private boolean symetrie = false;
 	private double distanceMax, distanceMin, angleMax, angleMin;
-
+	public List<Double> anglesAttaquesPossibles = new ArrayList<Double>();
+	
 	protected Log log;
 	private PrintBufferInterface buffer;
 
@@ -71,8 +75,12 @@ public class CercleArrivee implements Service, Printable, HighPFClass, LowPFClas
 			buffer.add(this);
 	}
 
-	public void set(Vec2RO position, double orientationArriveeDStarLite, double rayon, SensFinal sens)
+	public void set(Vec2RO position, double orientationArriveeDStarLite, double rayon, SensFinal sens, List<Double> anglesAttaquesPossibles)
 	{
+		this.anglesAttaquesPossibles.clear();
+		if(anglesAttaquesPossibles != null)
+			this.anglesAttaquesPossibles.addAll(anglesAttaquesPossibles);
+		
 		this.position = new Vec2RO(symetrie ? -position.getX() : position.getX(), position.getY());
 		this.arriveeDStarLite = new Vec2RW(rayon, symetrie ? Math.PI - orientationArriveeDStarLite : orientationArriveeDStarLite, false);
 		((Vec2RW) arriveeDStarLite).plus(position);
@@ -88,7 +96,7 @@ public class CercleArrivee implements Service, Printable, HighPFClass, LowPFClas
 
 	public void set(GameElementNames element, double rayon)
 	{
-		set(element.obstacle.getPosition(), element.orientationArriveeDStarLite, rayon, SensFinal.MARCHE_ARRIERE);
+		set(element.obstacle.getPosition(), element.orientationArriveeDStarLite, rayon, SensFinal.MARCHE_ARRIERE, null);
 	}
 
 	private Vec2RW tmp = new Vec2RW();
@@ -123,6 +131,22 @@ public class CercleArrivee implements Service, Printable, HighPFClass, LowPFClas
 		{
 			if(verbose)
 				log.debug("Mauvaise distance au cratère : "+deltaDist);
+			return false;
+		}
+		
+		boolean accepted = anglesAttaquesPossibles.isEmpty();
+
+		for(int i = 0; i < anglesAttaquesPossibles.size() / 2; i++)
+			if(robot.orientationGeometrique >= anglesAttaquesPossibles.get(2 * i) && robot.orientationGeometrique <= anglesAttaquesPossibles.get(2 * i + 1))
+			{
+				accepted = true;
+				break;
+			}
+		
+		if(!accepted)
+		{
+			if(verbose)
+				log.debug("L'orientation " + robot.orientationGeometrique + " n'est pas autorisée pour arriver sur le cratère !");
 			return false;
 		}
 		
