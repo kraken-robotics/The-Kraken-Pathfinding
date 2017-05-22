@@ -173,7 +173,6 @@ public class AStarCourbe implements Service, HighPFClass
 		AStarCourbeNode current, successeur;
 		do
 		{
-			Thread.yield();
 			current = openset.poll();
 
 			/**
