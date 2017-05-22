@@ -97,7 +97,7 @@ public class CercleArrivee implements Service, Printable, HighPFClass, LowPFClas
 
 	public boolean isArrivedAsser(Cinematique robot)
 	{
-		return isArrived(robot, angleMin, angleMax, rayon+distanceMin, rayon+distanceMax, Math.abs((robot.getPosition().distanceFast(position) - rayon)) < 40);
+		return isArrived(robot, angleMin, angleMax, rayon+distanceMin, rayon+distanceMax, true);
 	}
 	
 	public boolean isArrivedPF(Cinematique robot)
