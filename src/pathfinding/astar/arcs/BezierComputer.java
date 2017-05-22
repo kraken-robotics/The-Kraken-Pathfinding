@@ -368,8 +368,13 @@ public class BezierComputer implements Service, HighPFClass
 
 	public ArcCourbeDynamique trajectoireCirculaireVersCentre(Cinematique cinematique) throws MemoryManagerException
 	{
+		return trajectoireCirculaireVersCentre(cinematique, cercle.rayon);
+	}
+	
+	public ArcCourbeDynamique trajectoireCirculaireVersCentre(Cinematique cinematique, double rayonP) throws MemoryManagerException
+	{
 		Vec2RO centre = cercle.position;
-		double rayon = cercle.rayon;
+		double rayon = rayonP;
 
 		double orientationReelleDesiree = Math.atan2(centre.getY() - cinematique.getPosition().getY(), centre.getX() - cinematique.getPosition().getX());
 		double deltaO = (orientationReelleDesiree - cinematique.orientationReelle) % (2 * Math.PI);

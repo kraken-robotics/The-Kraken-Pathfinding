@@ -35,8 +35,6 @@ import exceptions.UnableToMoveException;
 import obstacles.memory.ObstaclesIteratorPresent;
 import obstacles.types.ObstacleRobot;
 import pathfinding.astar.AStarCourbe;
-import pathfinding.astar.arcs.ArcCourbeDynamique;
-import pathfinding.astar.arcs.BezierComputer;
 import pathfinding.chemin.CheminPathfinding;
 import pathfinding.chemin.FakeCheminPathfinding;
 import robot.Cinematique;
@@ -71,7 +69,6 @@ public class PathCache implements Service, HighPFClass
 	private int dureePeremption;
 	private PFInstruction inst;
 	private CapteursProcess capteurs;
-	private BezierComputer bezier;
 	private int nbEssais;
 	private boolean enableScan;
 	private boolean simuleSerie;
@@ -82,14 +79,13 @@ public class PathCache implements Service, HighPFClass
 	 */
 	public HashMap<String, LinkedList<CinematiqueObs>> paths;
 
-	public PathCache(Log log, Config config, ObstaclesIteratorPresent iteratorObstacles, BufferOutgoingOrder out, CapteursProcess capteurs, RealGameState state, ChronoGameState chrono, AStarCourbe astar, CheminPathfinding realChemin, FakeCheminPathfinding fakeChemin, PFInstruction inst, BezierComputer bezier) throws MemoryManagerException, InterruptedException
+	public PathCache(Log log, Config config, ObstaclesIteratorPresent iteratorObstacles, BufferOutgoingOrder out, CapteursProcess capteurs, RealGameState state, ChronoGameState chrono, AStarCourbe astar, CheminPathfinding realChemin, FakeCheminPathfinding fakeChemin, PFInstruction inst) throws MemoryManagerException, InterruptedException
 	{
 		this.iteratorObstacles = iteratorObstacles;
 		this.capteurs = capteurs;
 		this.out = out;
 		this.state = state;
 		this.inst = inst;
-		this.bezier = bezier;
 		nbEssais = config.getInt(ConfigInfo.NB_ESSAIS_PF);
 		simuleSerie = config.getBoolean(ConfigInfo.SIMULE_SERIE);
 		dureePeremption = config.getInt(ConfigInfo.DUREE_PEREMPTION_OBSTACLES);
@@ -389,25 +385,6 @@ public class PathCache implements Service, HighPFClass
 					log.debug("On va parcourir le chemin");
 					if(!simuleSerie)
 						state.robot.followTrajectory(Speed.STANDARD);
-					
-					if(!astar.isArrivedAsser())
-					{
-						if(astar.isAlmostArrived())
-						{
-							ArcCourbeDynamique arc = bezier.trajectoireCirculaireVersCentre(state.robot.getCinematique());
-							if(arc == null)
-								throw new UnableToMoveException("Le robot est arrivé au mauvais endroit et aucune correction n'est possible !");
-							LinkedList<CinematiqueObs> out = new LinkedList<CinematiqueObs>();
-							for(CinematiqueObs o : arc.arcs)
-								out.add(o);
-							realChemin.addToEnd(out);
-							state.robot.followTrajectory(Speed.STANDARD);
-							if(!astar.isArrivedAsser())
-								throw new UnableToMoveException("Le robot est encore arrivé au mauvais endroit !");
-						}
-						else
-							throw new UnableToMoveException("Le robot est arrivé au mauvais endroit ! (et de loin)");
-					}
 				}
 				catch(PathfindingException | UnableToMoveException e)
 				{

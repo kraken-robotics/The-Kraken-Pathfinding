@@ -461,7 +461,7 @@ public class JUnit_AStarCourbe extends JUnit_Test
 		Cinematique depart = new Cinematique(0, 1800, -Math.PI / 3, true, 0);
 		robot.setCinematique(depart);
 		int[] data = { 0, 400, 0, 0, 0, 0, 0, 400, 0, 0, 0, 0 };
-		cercle.set(GameElementNames.MINERAI_CRATERE_HAUT_GAUCHE, 250);
+		cercle.set(GameElementNames.MINERAI_CRATERE_HAUT_GAUCHE, 300);
 		astar.initializeNewSearchToCircle(false, state);
 		astar.process(chemin,false);
 		iterator.reinit();

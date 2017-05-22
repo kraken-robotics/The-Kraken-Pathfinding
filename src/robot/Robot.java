@@ -17,6 +17,7 @@ package robot;
 import config.Config;
 import config.DynamicConfigurable;
 import exceptions.ActionneurException;
+import exceptions.MemoryManagerException;
 import exceptions.UnableToMoveException;
 import utils.Log;
 
@@ -44,6 +45,8 @@ public abstract class Robot implements DynamicConfigurable
 
 	public abstract void avance(double distance, Speed speed) throws UnableToMoveException, InterruptedException;
 
+	public abstract void avanceToCircle(Speed speed, double rayon) throws InterruptedException, UnableToMoveException, MemoryManagerException;
+	
 	public abstract void followTrajectory(Speed vitesse) throws InterruptedException, UnableToMoveException;
 
 	public Robot(Log log)
@@ -221,5 +224,9 @@ public abstract class Robot implements DynamicConfigurable
 	{
 		return filetPlein;
 	}
+
+	public abstract boolean isArrivedAsser();
+
+	public abstract boolean isAlmostArrived();
 
 }

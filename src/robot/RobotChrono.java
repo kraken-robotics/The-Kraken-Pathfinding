@@ -14,6 +14,7 @@
 
 package robot;
 
+import exceptions.MemoryManagerException;
 import exceptions.UnableToMoveException;
 import pathfinding.astar.arcs.ArcCourbe;
 import pathfinding.chemin.CheminPathfinding;
@@ -72,12 +73,29 @@ public class RobotChrono extends Robot
 	{
 		cinematique.getPositionEcriture().plus(new Vec2RO(distance, cinematique.orientationReelle, true));
 	}
+	
+	// TODO
+	public void avanceToCircle(Speed speed, double rayon) throws InterruptedException, UnableToMoveException, MemoryManagerException
+	{}
+
 
 	@Override
 	public void followTrajectory(Speed vitesse) throws InterruptedException, UnableToMoveException
 	{
 		// ne mets pas à jour la date, c'est normal
 		chemin.getLastCinematique().copy(cinematique);
+	}
+
+	@Override
+	public boolean isArrivedAsser()
+	{
+		return true;
+	}
+
+	@Override
+	public boolean isAlmostArrived()
+	{
+		return true;
 	}
 
 }
