@@ -17,7 +17,6 @@ package memory;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
-import container.Container;
 import container.Service;
 import exceptions.ContainerException;
 import exceptions.MemoryManagerException;
@@ -34,40 +33,37 @@ import utils.Log;
  *
  */
 
-public class MemoryManager<T extends Memorizable> implements Service
+public abstract class MemoryManager<T extends Memorizable> implements Service
 {
 
 	private int initial_nb_instances;
-	private Container container;
 
 	private List<T[]> nodes = new ArrayList<T[]>();
 	private Class<T> classe;
 	protected Log log;
-	private Object[] extra;
 	private int firstAvailable;
 	private int tailleMax = 1 << 24;
 
-	@SuppressWarnings("unchecked")
-	public MemoryManager(Class<T> classe, Log log, Container container, int nb_instances, Object... extraParam) throws ContainerException
+	protected abstract T make();
+	
+	public MemoryManager(Class<T> classe, Log log) throws ContainerException
 	{
-		if(extraParam.length == 0)
-			extra = null;
-		else
-			extra = extraParam;
-
 		this.classe = classe;
-		this.container = container;
 		this.log = log;
+	}
+	
+	@SuppressWarnings("unchecked")
+	protected void init(int nb_instances)
+	{
 		initial_nb_instances = nb_instances;
 		nodes.add((T[]) Array.newInstance(classe, nb_instances));
 		firstAvailable = 0;
-
 		// on instancie une fois pour toutes les objets
 		log.debug("Instanciation de " + nb_instances + " " + classe.getSimpleName() + "…");
 
 		for(int i = 0; i < nb_instances; i++)
 		{
-			nodes.get(0)[i] = container.make(classe, extra);
+			nodes.get(0)[i] = make();
 			nodes.get(0)[i].setIndiceMemoryManager(i);
 		}
 	}
@@ -84,48 +80,41 @@ public class MemoryManager<T extends Memorizable> implements Service
 		// lève une exception s'il n'y a plus de place
 		if(firstAvailable == initial_nb_instances * nodes.size())
 		{
-			try
+			if(initial_nb_instances * nodes.size() >= tailleMax) // pas trop
+																	// d'objets
+																	// (sert
+																	// à
+																	// empêcher
+																	// les
+																	// bugs
+																	// de
+																	// tout
+																	// faire
+																	// planter…
+																	// cette
+																	// condition
+																	// est
+																	// inutile
+																	// en
+																	// temps
+																	// normal)
 			{
-				if(initial_nb_instances * nodes.size() >= tailleMax) // pas trop
-																		// d'objets
-																		// (sert
-																		// à
-																		// empêcher
-																		// les
-																		// bugs
-																		// de
-																		// tout
-																		// faire
-																		// planter…
-																		// cette
-																		// condition
-																		// est
-																		// inutile
-																		// en
-																		// temps
-																		// normal)
-				{
-					log.critical("Mémoire saturée pour " + classe.getSimpleName() + ", arrêt");
-					throw new MemoryManagerException();
-				}
-
-				if(nodes.size() + 1 >= 20)
-					log.warning("Mémoire trop petite pour les " + classe.getSimpleName() + ", extension (nouvelle taille : " + ((nodes.size() + 1) * initial_nb_instances) + ")");
-
-				T[] newNodes = (T[]) Array.newInstance(classe, initial_nb_instances);
-
-				for(int i = 0; i < initial_nb_instances; i++)
-				{
-					newNodes[i] = container.make(classe, extra);
-					newNodes[i].setIndiceMemoryManager(i + firstAvailable);
-				}
-
-				nodes.add(newNodes);
+				log.critical("Mémoire saturée pour " + classe.getSimpleName() + ", arrêt");
+				throw new MemoryManagerException();
 			}
-			catch(ContainerException e)
+
+			if(nodes.size() + 1 >= 20)
+				log.warning("Mémoire trop petite pour les " + classe.getSimpleName() + ", extension (nouvelle taille : " + ((nodes.size() + 1) * initial_nb_instances) + ")");
+
+			T[] newNodes = (T[]) Array.newInstance(classe, initial_nb_instances);
+
+			for(int i = 0; i < initial_nb_instances; i++)
 			{
-				log.critical(e);
+				newNodes[i] = make();//container.make(classe, extra);
+				newNodes[i].setIndiceMemoryManager(i + firstAvailable);
 			}
+
+			nodes.add(newNodes);
 		}
 
 		T out = nodes.get(firstAvailable / initial_nb_instances)[firstAvailable % initial_nb_instances];

@@ -16,7 +16,6 @@ package memory;
 
 import config.Config;
 import config.ConfigInfo;
-import container.Container;
 import container.dependances.HighPFClass;
 import exceptions.ContainerException;
 import pathfinding.astar.arcs.ArcCourbeDynamique;
@@ -36,12 +35,24 @@ import utils.Log;
 
 public class CinemObsMM extends MemoryManager<CinematiqueObs> implements HighPFClass
 {
-
-	public CinemObsMM(Log log, Config config, Container container) throws ContainerException
+	private int largeur, longueur_arriere, longueur_avant, marge;
+	
+	public CinemObsMM(Log log, Config config) throws ContainerException
 	{
-		super(CinematiqueObs.class, log, container, config.getInt(ConfigInfo.NB_INSTANCES_OBSTACLES), config.getInt(ConfigInfo.LARGEUR_NON_DEPLOYE) / 2, config.getInt(ConfigInfo.DEMI_LONGUEUR_NON_DEPLOYE_ARRIERE), config.getInt(ConfigInfo.DEMI_LONGUEUR_NON_DEPLOYE_AVANT), config.getInt(ConfigInfo.DILATATION_OBSTACLE_ROBOT));
+		super(CinematiqueObs.class, log);
+		largeur = config.getInt(ConfigInfo.LARGEUR_NON_DEPLOYE) / 2;
+		longueur_arriere = config.getInt(ConfigInfo.DEMI_LONGUEUR_NON_DEPLOYE_ARRIERE);
+		longueur_avant = config.getInt(ConfigInfo.DEMI_LONGUEUR_NON_DEPLOYE_AVANT);
+		marge = config.getInt(ConfigInfo.DILATATION_OBSTACLE_ROBOT);
+		init(config.getInt(ConfigInfo.NB_INSTANCES_OBSTACLES));
 	}
 
+	@Override
+	protected final CinematiqueObs make()
+	{
+		return new CinematiqueObs(largeur, longueur_arriere, longueur_avant, marge);
+	}
+	
 	// TODO : optimisable : la mémoire est contigue
 	public void destroyNode(ArcCourbeDynamique arc)
 	{
