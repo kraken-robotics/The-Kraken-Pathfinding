@@ -104,8 +104,10 @@ public class ThreadPrintServer extends ThreadService implements GUIClass
 				{
 					while(true)
 					{
+						long avant = System.currentTimeMillis();
 						buffer.wait(500);
 						buffer.write();
+						log.debug("Temps merde : "+(System.currentTimeMillis()-avant));
 					}
 				}
 			}
