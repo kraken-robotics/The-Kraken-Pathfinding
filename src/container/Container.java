@@ -91,7 +91,6 @@ public class Container implements Service
 	{
 		NO_ERROR(0),
 		END_OF_MATCH(0),
-		LL_TIMEOUT(1),
 		EMERGENCY_STOP(2),
 		TERMINATION_SIGNAL(3),
 		DOUBLE_DESTRUCTOR(4);
