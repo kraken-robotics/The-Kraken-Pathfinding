@@ -77,12 +77,10 @@ public class ThreadUpdatePathfinding extends ThreadService implements HighPFClas
 				{
 					log.critical(e);
 					if(!chemin.isEmpty())
-					{
-						chemin.clear();
 						out.immobilise();
-					}
 					else
 						log.debug("Robot déjà à l'arrêt", Verbose.REPLANIF.masque);
+					chemin.clear();
 				}
 			}
 		}
