@@ -45,6 +45,7 @@ import pathfinding.dstarlite.gridspace.GridSpace;
 import robot.Cinematique;
 import robot.CinematiqueObs;
 import robot.RobotReal;
+import scripts.ScriptNames;
 import table.GameElementNames;
 import tests.JUnit_Test;
 import threads.ThreadName;
@@ -456,9 +457,33 @@ public class JUnit_AStarCourbe extends JUnit_Test
 	}
 
 	@Test
+	public void test_recherche_depose() throws Exception
+	{
+		Cinematique depart = new Cinematique(200, 1400, Math.PI/2, true, 0);
+		robot.setCinematique(depart);
+		ScriptNames.SCRIPT_DEPOSE_MINERAI_DROITE.s.setUpCercleArrivee();
+		astar.initializeNewSearchToCircle(true, state);
+		astar.process(chemin,false);
+		iterator.reinit();
+		CinematiqueObs a = null;
+		int i = 0;
+		while(iterator.hasNext())
+		{
+			i++;
+			a = iterator.next();
+			log.debug("Robot en " + iterator.getIndex() + " : " + a);
+			robot.setCinematique(a);
+			chemin.setCurrentIndex(iterator.getIndex());
+			if(graphicTrajectory)
+				Thread.sleep(100);
+		}
+		log.debug("Nb points : " + i);
+	}
+	
+	@Test
 	public void test_recherche_shoot_cercle_avec_ennemi_difficile() throws Exception
 	{
-		Cinematique depart = new Cinematique(0, 1800, -Math.PI / 3, true, 0);
+		Cinematique depart = new Cinematique(0, 1900, -Math.PI / 3, true, 0);
 		robot.setCinematique(depart);
 		int[] data = { 0, 400, 0, 0, 0, 0, 0, 400, 0, 0, 0, 0 };
 		cercle.set(GameElementNames.MINERAI_CRATERE_HAUT_GAUCHE, 300);
