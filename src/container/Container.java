@@ -124,7 +124,6 @@ public class Container implements Service
 			return ErrorCode.DOUBLE_DESTRUCTOR;
 
 		shutdown = true;
-		log.debug("Fermeture de la série");
 
 		/**
 		 * Mieux vaut écrire SerieCouchePhysique.class.getSimpleName()) que
@@ -138,41 +137,38 @@ public class Container implements Service
 		if(instanciedServices.containsKey(PrintBufferInterface.class.getSimpleName()))
 			((PrintBufferInterface) instanciedServices.get(PrintBufferInterface.class.getSimpleName())).destructor();
 
-		String threadError = "";
 		// arrêt des threads
 		for(ThreadName n : ThreadName.values())
-		{
-			if(!getService(n.c).isAlive())
-			{
-				if(!threadError.isEmpty())
-					threadError += ", ";
-				threadError += n.name();
-			}
-			getService(n.c).interrupt();
-		}
+			if(getService(n.c).isAlive())
+				getService(n.c).interrupt();
 
-		if(!threadError.isEmpty())
-			log.critical("Un ou des threads ont planté : " + threadError);
-		
 		for(ThreadName n : ThreadName.values())
 		{
 			try {
 				if(n == ThreadName.FENETRE && config.getBoolean(ConfigInfo.GRAPHIC_PRODUCE_GIF))
+				{
+					log.debug("Attente de "+n);
 					getService(n.c).join(120000); // spécialement pour lui qui
 													// enregistre un gif…
+				}
 				else
-					getService(n.c).join(10000); // on attend un peu que le thread
+				{
+					log.debug("Attente de "+n);
+					getService(n.c).join(1000); // on attend un peu que le thread
 													// s'arrête
+				}
 			}
 			catch(InterruptedException e)
 			{
 				e.printStackTrace(log.getPrintWriter());
 			}
-			Thread.sleep(100);
+		}
+
+		Thread.sleep(100);
+		for(ThreadName n : ThreadName.values())
 			if(getService(n.c).isAlive())
 				log.critical(n.c.getSimpleName() + " encore vivant !");
-		}
-		
+
 		getService(ThreadShutdown.class).interrupt();
 
 		if(showGraph)
