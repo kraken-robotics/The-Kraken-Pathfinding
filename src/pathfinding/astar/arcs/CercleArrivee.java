@@ -130,25 +130,26 @@ public class CercleArrivee implements Service, Printable, HighPFClass, LowPFClas
 			return false;
 		}
 		
-		robot.orientationGeometrique %= 2 * Math.PI;
-		if(robot.orientationGeometrique > Math.PI)
-			robot.orientationGeometrique -= 2 * Math.PI;
-		else if(robot.orientationGeometrique < -Math.PI)
-			robot.orientationGeometrique += 2 * Math.PI;
+		robot.orientationReelle %= 2 * Math.PI;
+		if(robot.orientationReelle > Math.PI)
+			robot.orientationReelle -= 2 * Math.PI;
+		else if(robot.orientationReelle < -Math.PI)
+			robot.orientationReelle += 2 * Math.PI;
 		
 		boolean accepted = anglesAttaquePossibles == null;
 
-		for(int i = 0; i < anglesAttaquePossibles.length / 2; i++)
-			if(robot.orientationGeometrique >= anglesAttaquePossibles[2 * i] && robot.orientationGeometrique <= anglesAttaquePossibles[2 * i + 1])
-			{
-				accepted = true;
-				break;
-			}
+		if(!accepted)
+			for(int i = 0; i < anglesAttaquePossibles.length / 2; i++)
+				if(robot.orientationReelle >= anglesAttaquePossibles[2 * i] && robot.orientationReelle <= anglesAttaquePossibles[2 * i + 1])
+				{
+					accepted = true;
+					break;
+				}
 		
 		if(!accepted)
 		{
 			if(verbose)
-				log.debug("L'orientation " + robot.orientationGeometrique + " n'est pas autorisée pour arriver sur le cratère !");
+				log.debug("L'orientation " + robot.orientationReelle + " n'est pas autorisée pour arriver sur le cratère !");
 			return false;
 		}
 		
