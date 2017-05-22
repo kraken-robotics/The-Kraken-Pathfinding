@@ -44,7 +44,7 @@ import utils.Vec2RW;
  *
  */
 
-public class CercleArrivee implements Service, Printable, HighPFClass, LowPFClass, DynamicConfigurable
+public class CercleArrivee implements Service, Printable, HighPFClass, LowPFClass
 {
 	public Vec2RO position;
 	public double rayon;
@@ -52,7 +52,6 @@ public class CercleArrivee implements Service, Printable, HighPFClass, LowPFClas
 	public SensFinal sens;
 
 	private boolean graphic;
-	private boolean symetrie = false;
 	private double distanceMax, distanceMin, angleMax, angleMin;
 	public Double[] anglesAttaquePossibles;
 	
@@ -77,8 +76,8 @@ public class CercleArrivee implements Service, Printable, HighPFClass, LowPFClas
 	{		
 		this.anglesAttaquePossibles = anglesAttaquesPossibles;
 		
-		this.position = new Vec2RO(symetrie ? -position.getX() : position.getX(), position.getY());
-		this.arriveeDStarLite = new Vec2RW(rayon, symetrie ? Math.PI - orientationArriveeDStarLite : orientationArriveeDStarLite, false);
+		this.position = new Vec2RO(position.getX(), position.getY());
+		this.arriveeDStarLite = new Vec2RW(rayon, orientationArriveeDStarLite, false);
 		((Vec2RW) arriveeDStarLite).plus(position);
 		this.rayon = rayon;
 		this.sens = sens;
@@ -199,11 +198,4 @@ public class CercleArrivee implements Service, Printable, HighPFClass, LowPFClas
 	{
 		return position + ", rayon " + rayon + ", arrivee " + arriveeDStarLite;
 	}
-
-	@Override
-	public void updateConfig(Config config)
-	{
-		symetrie = config.getSymmetry();
-	}
-
 }
