@@ -505,7 +505,7 @@ public class BezierComputer implements Service, HighPFClass
 		return new ArcCourbeDynamique(out, longueur, VitesseBezier.CIRCULAIRE_VERS_CERCLE);
 	}
 
-	private ArcCourbeDynamique avanceVersCentreLineaire(double distance, Vec2RO centre, Cinematique cinematique) throws MemoryManagerException
+	public ArcCourbeDynamique avanceVersCentreLineaire(double distance, Vec2RO centre, Cinematique cinematique) throws MemoryManagerException
 	{
 		// log.debug("Appel à avanceVersCentreLineaire");
 		double orientationReelleDesiree = Math.atan2(centre.getY() - cinematique.getPosition().getY(), centre.getX() - cinematique.getPosition().getX());

@@ -142,8 +142,14 @@ public class PathCache implements Service, HighPFClass
 
 		if(k.s != null)
 		{
-			k.s.s.setUpCercleArrivee();
-			astar.initializeNewSearchToCircle(k.shoot, k.chrono);
+			Cinematique arrivee = k.s.s.getPointEntree();
+			if(arrivee != null)
+				astar.initializeNewSearch(arrivee, k.shoot, k.chrono);
+			else
+			{
+				k.s.s.setUpCercleArrivee();
+				astar.initializeNewSearchToCircle(k.shoot, k.chrono);
+			}
 		}
 		else
 			astar.initializeNewSearch(k.arrivee, k.shoot, k.chrono);
@@ -372,8 +378,14 @@ public class PathCache implements Service, HighPFClass
 						{
 							if(k.s != null)
 							{
-								k.s.s.setUpCercleArrivee();
-								astar.initializeNewSearchToCircle(k.shoot, k.chrono);
+								Cinematique arrivee = k.s.s.getPointEntree();
+								if(arrivee != null)
+									astar.initializeNewSearch(arrivee, k.shoot, k.chrono);
+								else
+								{
+									k.s.s.setUpCercleArrivee();
+									astar.initializeNewSearchToCircle(k.shoot, k.chrono);
+								}
 							}
 							else
 								astar.initializeNewSearch(k.arrivee, k.shoot, k.chrono);
