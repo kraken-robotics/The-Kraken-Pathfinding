@@ -45,14 +45,14 @@ import utils.Vec2RW;
 
 public class CercleArrivee implements Service, Printable, HighPFClass, LowPFClass
 {
-	public Vec2RO position;
-	public double rayon;
-	public Vec2RO arriveeDStarLite;
-	public SensFinal sens;
+	public volatile Vec2RO position;
+	public volatile double rayon;
+	public volatile Vec2RO arriveeDStarLite;
+	public volatile SensFinal sens;
 
 	private boolean graphic;
-	private double distanceMax, distanceMin, angleMax, angleMin;
-	public Double[] anglesAttaquePossibles;
+	private volatile double distanceMax, distanceMin, angleMax, angleMin;
+	public volatile Double[] anglesAttaquePossibles;
 	
 	protected Log log;
 	private PrintBufferInterface buffer;
@@ -97,7 +97,7 @@ public class CercleArrivee implements Service, Printable, HighPFClass, LowPFClas
 
 	public boolean isArrivedAsser(Cinematique robot)
 	{
-		return isArrived(robot, angleMin, angleMax, rayon+distanceMin, rayon+distanceMax, true);
+		return isArrived(robot, angleMin, angleMax, rayon + distanceMin, rayon + distanceMax, true);
 	}
 	
 	public boolean isArrivedPF(Cinematique robot)
