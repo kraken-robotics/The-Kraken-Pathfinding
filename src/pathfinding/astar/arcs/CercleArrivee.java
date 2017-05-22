@@ -118,7 +118,7 @@ public class CercleArrivee implements Service, Printable, HighPFClass, LowPFClas
 		if(deltaDist > distanceMax || deltaDist < distanceMin)
 		{
 			if(verbose)
-				log.debug("Mauvaise distance au cratère : "+deltaDist);
+				log.warning("Mauvaise distance au cratère : "+deltaDist);
 			return false;
 		}
 		
@@ -141,7 +141,7 @@ public class CercleArrivee implements Service, Printable, HighPFClass, LowPFClas
 		if(!accepted)
 		{
 			if(verbose)
-				log.debug("L'orientation " + robot.orientationReelle + " n'est pas autorisée pour arriver sur le cratère !");
+				log.warning("L'orientation " + robot.orientationReelle + " n'est pas autorisée pour arriver sur le cratère !");
 			return false;
 		}
 		
