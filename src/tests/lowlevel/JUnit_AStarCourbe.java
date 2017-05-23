@@ -45,6 +45,7 @@ import pathfinding.dstarlite.gridspace.GridSpace;
 import robot.Cinematique;
 import robot.CinematiqueObs;
 import robot.RobotReal;
+import robot.Speed;
 import scripts.ScriptNames;
 import table.GameElementNames;
 import tests.JUnit_Test;
@@ -630,7 +631,7 @@ public class JUnit_AStarCourbe extends JUnit_Test
 		robot.setCinematique(depart);
 		KeyPathCache k = new KeyPathCache(state, c, false);
 		pathcache.prepareNewPath(k);
-		pathcache.follow(k);
+		pathcache.follow(k, Speed.STANDARD);
 	}
 
 	@Test(expected = PathfindingException.class)
@@ -641,7 +642,7 @@ public class JUnit_AStarCourbe extends JUnit_Test
 		robot.setCinematique(depart);
 		KeyPathCache k = new KeyPathCache(state, c, false);
 		pathcache.prepareNewPath(k);
-		pathcache.follow(k);
+		pathcache.follow(k, Speed.STANDARD);
 	}
 
 	@Test

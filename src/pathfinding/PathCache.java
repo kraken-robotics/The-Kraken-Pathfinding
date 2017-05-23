@@ -340,10 +340,10 @@ public class PathCache implements Service, HighPFClass
 		return path;
 	}
 
-	public void computeAndFollow(KeyPathCache c) throws PathfindingException, InterruptedException, UnableToMoveException, MemoryManagerException
+	public void computeAndFollow(KeyPathCache c, Speed s) throws PathfindingException, InterruptedException, UnableToMoveException, MemoryManagerException
 	{
 		prepareNewPath(c);
-		follow(c);
+		follow(c, s);
 	}
 
 	/**
@@ -356,7 +356,7 @@ public class PathCache implements Service, HighPFClass
 	 * @throws UnableToMoveException
 	 * @throws MemoryManagerException 
 	 */
-	public void follow(KeyPathCache k) throws PathfindingException, InterruptedException, UnableToMoveException, MemoryManagerException
+	public void follow(KeyPathCache k, Speed s) throws PathfindingException, InterruptedException, UnableToMoveException, MemoryManagerException
 	{
 		try
 		{
@@ -396,7 +396,7 @@ public class PathCache implements Service, HighPFClass
 					realChemin.addToEnd(fakeChemin.getPath());
 					log.debug("On va parcourir le chemin");
 					if(!simuleSerie)
-						state.robot.followTrajectory(Speed.STANDARD);
+						state.robot.followTrajectory(s);
 					if(!astar.isArrivedAsser())
 						throw new UnableToMoveException("On est arrivé bien trop loin de là où on devait !");
 				}
