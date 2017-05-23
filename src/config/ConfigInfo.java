@@ -223,7 +223,7 @@ public enum ConfigInfo
 
 	private Object defaultValue;
 	public boolean overridden = false;
-	public boolean uptodate;
+	public volatile boolean uptodate;
 	public final boolean constant;
 
 	/**

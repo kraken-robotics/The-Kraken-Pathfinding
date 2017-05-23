@@ -191,6 +191,7 @@ public class Config implements Service
 		// On notifie avant d'affecter la valeur.
 		// En fait, ça n'a pas d'importance car le mutex sur la config est
 		// activé…
+		nom.uptodate = true;
 		if(value.compareTo(properties.getProperty(nom.toString())) != 0)
 			notify();
 		log.debug(nom + " = " + value + " (ancienne valeur: " + properties.getProperty(nom.toString()) + ")");
