@@ -664,6 +664,28 @@ public class JUnit_AStarCourbe extends JUnit_Test
 		}
 		log.debug("Nb points : " + i);
 	}
+	
+	@Test
+	public void test_recherche_depose2() throws Exception
+	{
+		Cinematique depart = new Cinematique(0, 1600, Math.PI, true, 0);
+		robot.setCinematique(depart);
+		astar.initializeNewSearch(ScriptNames.SCRIPT_DEPOSE_MINERAI_DROITE.s.getPointEntree(), false, state);
+		astar.process(chemin,false);
+		iterator.reinit();
+		CinematiqueObs a = null;
+		int i = 0;
+		while(iterator.hasNext())
+		{
+			i++;
+			a = iterator.next();
+			log.debug(a);
+			robot.setCinematique(a);
+			if(graphicTrajectory)
+				Thread.sleep(100);
+		}
+		log.debug("Nb points : " + i);
+	}
 
 	@Test
 	public void test_prepathsf() throws Exception
