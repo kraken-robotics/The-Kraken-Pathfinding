@@ -41,7 +41,6 @@ public class Config implements Service
 	private Log log;
 	private boolean graphicEnable;
 	private boolean surcharged = false;
-
 	private boolean configIniCharge = false;
 
 	public Config()
