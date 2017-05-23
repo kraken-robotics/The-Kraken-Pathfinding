@@ -569,7 +569,9 @@ public class AStarCourbe implements Service, HighPFClass, DynamicConfigurable
 	@Override
 	public void updateConfig(Config config)
 	{
-		symetrie = config.getSymmetry();
+		Boolean sym = config.getSymmetry();
+		if(sym != null)
+			symetrie = sym;
 	}
 
 }

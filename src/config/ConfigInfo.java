@@ -223,6 +223,7 @@ public enum ConfigInfo
 
 	private Object defaultValue;
 	public boolean overridden = false;
+	public boolean uptodate;
 	public final boolean constant;
 
 	/**
@@ -237,6 +238,7 @@ public enum ConfigInfo
 
 	private ConfigInfo(Object defaultValue, boolean constant)
 	{
+		uptodate = constant;
 		this.defaultValue = defaultValue;
 		this.constant = constant;
 	}

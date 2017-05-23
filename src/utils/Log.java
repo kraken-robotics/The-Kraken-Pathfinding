@@ -320,7 +320,9 @@ public class Log implements Service, DynamicConfigurable
 	@Override
 	public void updateConfig(Config config)
 	{
-		dateDebutMatch = config.getLong(ConfigInfo.DATE_DEBUT_MATCH);
+		Long date = config.getLong(ConfigInfo.DATE_DEBUT_MATCH);
+		if(date != null)
+			dateDebutMatch = date; 
 	}
 
 	public PrintWriter getPrintWriter()

@@ -81,9 +81,12 @@ public class Config implements Service
 	 * @return
 	 * @throws NumberFormatException
 	 */
-	public int getInt(ConfigInfo nom) throws NumberFormatException
+	public Integer getInt(ConfigInfo nom) throws NumberFormatException
 	{
-		return Integer.parseInt(getString(nom));
+		String s = getString(nom);
+		if(s != null)
+			return Integer.parseInt(s);
+		return null;
 	}
 
 	/**
@@ -93,9 +96,12 @@ public class Config implements Service
 	 * @return
 	 * @throws NumberFormatException
 	 */
-	public short getShort(ConfigInfo nom) throws NumberFormatException
+	public Short getShort(ConfigInfo nom) throws NumberFormatException
 	{
-		return Short.parseShort(getString(nom));
+		String s = getString(nom);
+		if(s != null)
+			return Short.parseShort(s);
+		return null;
 	}
 
 	/**
@@ -105,9 +111,12 @@ public class Config implements Service
 	 * @return
 	 * @throws NumberFormatException
 	 */
-	public byte getByte(ConfigInfo nom) throws NumberFormatException
+	public Byte getByte(ConfigInfo nom) throws NumberFormatException
 	{
-		return Byte.parseByte(getString(nom));
+		String s = getString(nom);
+		if(s != null)
+			return Byte.parseByte(s);
+		return null;
 	}
 
 	/**
@@ -117,9 +126,12 @@ public class Config implements Service
 	 * @return
 	 * @throws NumberFormatException
 	 */
-	public long getLong(ConfigInfo nom) throws NumberFormatException
+	public Long getLong(ConfigInfo nom) throws NumberFormatException
 	{
-		return Long.parseLong(getString(nom));
+		String s = getString(nom);
+		if(s != null)
+			return Long.parseLong(s);
+		return null;
 	}
 
 	/**
@@ -128,13 +140,16 @@ public class Config implements Service
 	 * @param nom
 	 * @return
 	 */
-	public boolean getBoolean(ConfigInfo nom)
+	public Boolean getBoolean(ConfigInfo nom)
 	{
+		String s = getString(nom);
+		if(s == null)
+			return null;
+		
 		// le booléen GRAPHIC_ENABLE peut désactiver tout ce qui est graphique
 		if(nom.name().startsWith("GRAPHIC_"))
-			return graphicEnable && Boolean.parseBoolean(getString(nom));
-
-		return Boolean.parseBoolean(getString(nom));
+			return graphicEnable && Boolean.parseBoolean(s);
+		return Boolean.parseBoolean(s);
 	}
 
 	/**
@@ -144,9 +159,12 @@ public class Config implements Service
 	 * @return
 	 * @throws NumberFormatException
 	 */
-	public double getDouble(ConfigInfo nom) throws NumberFormatException
+	public Double getDouble(ConfigInfo nom) throws NumberFormatException
 	{
-		return Double.parseDouble(getString(nom));
+		String s = getString(nom);
+		if(s != null)
+			return Double.parseDouble(s);
+		return null;
 	}
 
 	/**
@@ -157,7 +175,9 @@ public class Config implements Service
 	 */
 	public synchronized String getString(ConfigInfo nom)
 	{
-		return properties.getProperty(nom.toString());
+		if(nom.uptodate)
+			return properties.getProperty(nom.toString());
+		return null;
 	}
 
 	/**
@@ -275,9 +295,12 @@ public class Config implements Service
 	 * 
 	 * @return
 	 */
-	public boolean getSymmetry()
+	public Boolean getSymmetry()
 	{
-		return RobotColor.parse(getString(ConfigInfo.COULEUR)).symmetry;
+		String s = getString(ConfigInfo.COULEUR);
+		if(s != null)
+			return RobotColor.parse(s).symmetry;
+		return null;
 	}
 
 }

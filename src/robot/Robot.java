@@ -77,7 +77,9 @@ public abstract class Robot implements DynamicConfigurable
 	@Override
 	public synchronized void updateConfig(Config config)
 	{
-		symetrie = config.getSymmetry();
+		Boolean sym = config.getSymmetry();
+		if(sym != null)
+			symetrie = sym;
 	}
 
 	@Override
