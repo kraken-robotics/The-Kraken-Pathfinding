@@ -30,8 +30,8 @@ import utils.Vec2RO;
 
 public enum GameElementNames
 {
-	MINERAI_CRATERE_HAUT_GAUCHE(new ObstacleCircular(new Vec2RO(650 - 1500, 2000 - 550), 125, Couleur.GAME_ELEMENT), -Math.PI / 2, new Double[]{-Math.PI, 0., 2.6, Math.PI}),
-	MINERAI_CRATERE_HAUT_DROITE(new ObstacleCircular(new Vec2RO(1500 - 650, 2000 - 550), 125, Couleur.GAME_ELEMENT), -Math.PI / 2, new Double[]{-Math.PI, 0.54}),
+	MINERAI_CRATERE_HAUT_GAUCHE(new ObstacleCircular(new Vec2RO(650 - 1500, 2000 - 560), 125, Couleur.GAME_ELEMENT), -Math.PI / 2, new Double[]{-Math.PI, 0., 2.6, Math.PI}),
+	MINERAI_CRATERE_HAUT_DROITE(new ObstacleCircular(new Vec2RO(1500 - 650, 2000 - 560), 125, Couleur.GAME_ELEMENT), -Math.PI / 2, new Double[]{-Math.PI, 0.54}),
 
 	MINERAI_CRATERE_BAS_GAUCHE(new ObstacleCircular(new Vec2RO(1070 - 1500, 2000 - 1870), 125, Couleur.GAME_ELEMENT), 3 * Math.PI / 4, null),
 	MINERAI_CRATERE_BAS_DROITE(new ObstacleCircular(new Vec2RO(1500 - 1070, 2000 - 1870), 125, Couleur.GAME_ELEMENT), Math.PI / 4, null),
