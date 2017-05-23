@@ -41,8 +41,8 @@
         <mkdir dir="${junit.output.dir}"/>
         <junit fork="yes" printsummary="withOutAndErr" haltonfailure="no" failureproperty="test.failed">
             <formatter type="xml"/>
+            <formatter type="plain" usefile="false" />
             <test name="tests.JUnit_Capteurs" todir="${junit.output.dir}"/>
-<!--            <test name="tests.JUnit_AStarCourbe" todir="${junit.output.dir}"/>-->
             <test name="tests.JUnit_CheminPF" todir="${junit.output.dir}"/>
             <test name="tests.JUnit_Config" todir="${junit.output.dir}"/>
             <test name="tests.JUnit_Container" todir="${junit.output.dir}"/>
