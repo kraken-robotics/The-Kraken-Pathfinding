@@ -15,7 +15,6 @@
 package tests;
 
 import java.lang.reflect.Field;
-import java.util.Random;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
