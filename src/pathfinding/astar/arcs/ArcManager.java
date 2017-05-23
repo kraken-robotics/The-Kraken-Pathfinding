@@ -132,6 +132,7 @@ public class ArcManager implements Service, HighPFClass
 
 		// Collision avec un obstacle de proximité ?
 
+		try {
 		obstaclesProxIterator.reinit();
 		while(obstaclesProxIterator.hasNext())
 			if(obstaclesProxIterator.next().isColliding(obs))
@@ -139,6 +140,10 @@ public class ArcManager implements Service, HighPFClass
 				// log.debug("Collision avec un obstacle de proximité.");
 				return false;
 			}
+		} catch(NullPointerException e)
+		{
+			log.critical(e);
+		}
 		/*
 		 * node.state.iterator.reinit();
 		 * while(node.state.iterator.hasNext())
