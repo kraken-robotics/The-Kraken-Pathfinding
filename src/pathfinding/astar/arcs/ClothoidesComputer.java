@@ -166,7 +166,8 @@ public class ClothoidesComputer implements Service, HighPFClass
 	public void getTrajectoire(ArcCourbe depart, VitesseClotho vitesse, ArcCourbeStatique modified)
 	{
 		CinematiqueObs last = depart.getLast();
-		getTrajectoire(last, vitesse, modified);
+		modified.vitesse = vitesse;
+		getTrajectoire(last, vitesse, modified.arcselems);
 	}
 
 	/**
@@ -179,7 +180,8 @@ public class ClothoidesComputer implements Service, HighPFClass
 	 */
 	public final void getTrajectoire(RobotChrono robot, VitesseClotho vitesse, ArcCourbeStatique modified)
 	{
-		getTrajectoire(robot.getCinematique(), vitesse, modified);
+		modified.vitesse = vitesse;
+		getTrajectoire(robot.getCinematique(), vitesse, modified.arcselems);
 	}
 
 	/**
@@ -195,7 +197,7 @@ public class ClothoidesComputer implements Service, HighPFClass
 	 * @param distance_mm
 	 * @return
 	 */
-	public final void getTrajectoire(Cinematique cinematiqueInitiale, VitesseClotho vitesse, ArcCourbeStatique modified)
+	public final void getTrajectoire(Cinematique cinematiqueInitiale, VitesseClotho vitesse, CinematiqueObs[] arcselems)
 	{
 		// modified.v = vitesse;
 		// log.debug(vitesse);
@@ -208,8 +210,6 @@ public class ClothoidesComputer implements Service, HighPFClass
 		if(vitesse.rebrousse || vitesse.arret)
 			courbure = vitesse.courbureInitiale;
 
-		modified.vitesse = vitesse;
-
 		boolean marcheAvant = vitesse.rebrousse ^ cinematiqueInitiale.enMarcheAvant;
 
 		// si la dérivée de la courbure est nulle, on est dans le cas
@@ -217,9 +217,9 @@ public class ClothoidesComputer implements Service, HighPFClass
 		if(vitesse.vitesse == 0)
 		{
 			if(courbure < 0.00001 && courbure > -0.00001)
-				getTrajectoireLigneDroite(cinematiqueInitiale.getPosition(), orientation, modified, marcheAvant);
+				getTrajectoireLigneDroite(cinematiqueInitiale.getPosition(), orientation, arcselems, marcheAvant);
 			else
-				getTrajectoireCirculaire(cinematiqueInitiale.getPosition(), orientation, courbure, modified, marcheAvant);
+				getTrajectoireCirculaire(cinematiqueInitiale.getPosition(), orientation, courbure, arcselems, marcheAvant);
 			return;
 		}
 
@@ -258,7 +258,7 @@ public class ClothoidesComputer implements Service, HighPFClass
 		for(int i = 0; i < NB_POINTS; i++)
 		{
 			sDepart += vitesse.squaredRootVitesse * PRECISION_TRACE;
-			computePoint(pointDepart, vitesse, sDepart, coeffMultiplicatif, i, baseOrientation, cos, sin, marcheAvant, cinematiqueInitiale.getPosition(), modified.arcselems[i]);
+			computePoint(pointDepart, vitesse, sDepart, coeffMultiplicatif, i, baseOrientation, cos, sin, marcheAvant, cinematiqueInitiale.getPosition(), arcselems[i]);
 		}
 
 	}
@@ -406,7 +406,7 @@ public class ClothoidesComputer implements Service, HighPFClass
 	 * @param courbure
 	 * @param modified
 	 */
-	private void getTrajectoireCirculaire(Vec2RO position, double orientation, double courbure, ArcCourbeStatique modified, boolean enMarcheAvant)
+	private void getTrajectoireCirculaire(Vec2RO position, double orientation, double courbure, CinematiqueObs[] arcselems, boolean enMarcheAvant)
 	{
 		// log.debug("Trajectoire circulaire !");
 		// rappel = la courbure est l'inverse du rayon de courbure
@@ -428,24 +428,24 @@ public class ClothoidesComputer implements Service, HighPFClass
 		for(int i = 0; i < NB_POINTS; i++)
 		{
 			delta.rotate(cos, sin);
-			centreCercle.copy(modified.arcselems[i].getPositionEcriture());
-			modified.arcselems[i].getPositionEcriture().minus(delta);
-			modified.arcselems[i].orientationGeometrique = orientation + angle * (i + 1);
-			modified.arcselems[i].courbureGeometrique = courbure;
+			centreCercle.copy(arcselems[i].getPositionEcriture());
+			arcselems[i].getPositionEcriture().minus(delta);
+			arcselems[i].orientationGeometrique = orientation + angle * (i + 1);
+			arcselems[i].courbureGeometrique = courbure;
 
 			if(enMarcheAvant)
 			{
-				modified.arcselems[i].orientationReelle = modified.arcselems[i].orientationGeometrique;
-				modified.arcselems[i].courbureReelle = modified.arcselems[i].courbureGeometrique;
+				arcselems[i].orientationReelle = arcselems[i].orientationGeometrique;
+				arcselems[i].courbureReelle = arcselems[i].courbureGeometrique;
 			}
 			else
 			{
-				modified.arcselems[i].orientationReelle = modified.arcselems[i].orientationGeometrique + Math.PI;
-				modified.arcselems[i].courbureReelle = -modified.arcselems[i].courbureGeometrique;
+				arcselems[i].orientationReelle = arcselems[i].orientationGeometrique + Math.PI;
+				arcselems[i].courbureReelle = -arcselems[i].courbureGeometrique;
 			}
 
-			modified.arcselems[i].enMarcheAvant = enMarcheAvant;
-			modified.arcselems[i].obstacle.update(modified.arcselems[i].getPosition(), modified.arcselems[i].orientationReelle);
+			arcselems[i].enMarcheAvant = enMarcheAvant;
+			arcselems[i].obstacle.update(arcselems[i].getPosition(), arcselems[i].orientationReelle);
 		}
 	}
 
@@ -456,7 +456,7 @@ public class ClothoidesComputer implements Service, HighPFClass
 	 * @param orientation
 	 * @param modified
 	 */
-	private void getTrajectoireLigneDroite(Vec2RO position, double orientation, ArcCourbeStatique modified, boolean enMarcheAvant)
+	private void getTrajectoireLigneDroite(Vec2RO position, double orientation, CinematiqueObs[] arcselems, boolean enMarcheAvant)
 	{
 		double cos = Math.cos(orientation);
 		double sin = Math.sin(orientation);
@@ -464,19 +464,19 @@ public class ClothoidesComputer implements Service, HighPFClass
 		for(int i = 0; i < NB_POINTS; i++)
 		{
 			double distance = (i + 1) * PRECISION_TRACE_MM;
-			modified.arcselems[i].getPositionEcriture().setX(position.getX() + distance * cos);
-			modified.arcselems[i].getPositionEcriture().setY(position.getY() + distance * sin);
-			modified.arcselems[i].orientationGeometrique = orientation;
-			modified.arcselems[i].courbureGeometrique = 0;
-			modified.arcselems[i].courbureReelle = 0;
+			arcselems[i].getPositionEcriture().setX(position.getX() + distance * cos);
+			arcselems[i].getPositionEcriture().setY(position.getY() + distance * sin);
+			arcselems[i].orientationGeometrique = orientation;
+			arcselems[i].courbureGeometrique = 0;
+			arcselems[i].courbureReelle = 0;
 
 			if(enMarcheAvant)
-				modified.arcselems[i].orientationReelle = modified.arcselems[i].orientationGeometrique;
+				arcselems[i].orientationReelle = arcselems[i].orientationGeometrique;
 			else
-				modified.arcselems[i].orientationReelle = modified.arcselems[i].orientationGeometrique + Math.PI;
+				arcselems[i].orientationReelle = arcselems[i].orientationGeometrique + Math.PI;
 
-			modified.arcselems[i].enMarcheAvant = enMarcheAvant;
-			modified.arcselems[i].obstacle.update(modified.arcselems[i].getPosition(), modified.arcselems[i].orientationReelle);
+			arcselems[i].enMarcheAvant = enMarcheAvant;
+			arcselems[i].obstacle.update(arcselems[i].getPosition(), arcselems[i].orientationReelle);
 		}
 	}
 

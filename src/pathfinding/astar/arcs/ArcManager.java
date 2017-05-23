@@ -190,53 +190,47 @@ public class ArcManager implements Service, HighPFClass
 	public boolean next(AStarCourbeNode successeur) throws MemoryManagerException
 	{
 		VitesseCourbure v = iterator.next();
-
 		current.state.copyAStarCourbe(successeur.state);
 
+		if(v instanceof VitesseClotho)
+		{
+			successeur.cameFromArcStatique.vitesse = v;
+			return getArcClotho(successeur.state.robot.getCinematique(), (VitesseClotho) v, successeur.cameFromArcStatique.arcselems);
+		}
+		else
+		{
+			successeur.cameFromArcDynamique = getArc(successeur.state.robot.getCinematique(), v);
+			return successeur.cameFromArcDynamique != null;
+		}
+	}
+
+	public boolean getArcClotho(Cinematique successeur, VitesseClotho v, CinematiqueObs[] arcselems) throws MemoryManagerException
+	{
+		// si le robot est arrêté (début de trajectoire), et que la vitesse
+		// n'est pas prévue pour un arrêt ou un rebroussement, on annule
+		if(current.getArc() == null && (!((VitesseClotho) v).arret && !((VitesseClotho) v).rebrousse))
+			return false;
+
+		clotho.getTrajectoire(successeur, (VitesseClotho) v, arcselems);
+		return true;
+	}
+
+	public ArcCourbeDynamique getArc(Cinematique successeur, VitesseCourbure v) throws MemoryManagerException
+	{
 		if(v instanceof VitesseBezier)
 		{
 			// TODO que signifie cette condition ?
 			if(current.getArc() == null)
-				return false;
+				return null;
 
 			if(v == VitesseBezier.BEZIER_QUAD && !useCercle)
-			{
-				ArcCourbeDynamique tmp;
-				tmp = bezier.interpolationQuadratique(current.state.robot.getCinematique(), arrivee.getPosition());
-				if(tmp == null)
-					return false;
-
-				successeur.cameFromArcDynamique = tmp;
-			}
+				return bezier.interpolationQuadratique(current.state.robot.getCinematique(), arrivee.getPosition());
 
 			else if(v == VitesseBezier.CIRCULAIRE_VERS_CERCLE && useCercle)
-			{
-				ArcCourbeDynamique tmp;
-				tmp = bezier.trajectoireCirculaireVersCentre(current.state.robot.getCinematique());
-				if(tmp == null)
-					return false;
-
-				successeur.cameFromArcDynamique = tmp;
-			}
+				return bezier.trajectoireCirculaireVersCentre(current.state.robot.getCinematique());
 
 			else
-				return false;
-
-			/*
-			 * else // cette interpolation est réservée à l'arrivée sur un
-			 * cercle
-			 * {
-			 * if(current.state.robot.getCinematique().enMarcheAvant) // on doit
-			 * arriver en marche arrière
-			 * return false;
-			 * ArcCourbeDynamique tmp;
-			 * tmp = bezier.interpolationQuadratiqueCercle(
-			 * current.state.robot.getCinematique());
-			 * if(tmp == null)
-			 * return false;
-			 * successeur.cameFromArcDynamique = tmp;
-			 * }
-			 */
+				return null;
 		}
 
 		/**
@@ -245,12 +239,9 @@ public class ArcManager implements Service, HighPFClass
 		else if(v instanceof VitesseRameneVolant)
 		{
 			if(current.getArc() == null)
-				return false;
+				return null;
 
-			ArcCourbeDynamique tmp = clotho.getTrajectoireRamene(successeur.state.robot.getCinematique(), (VitesseRameneVolant) v);
-			if(tmp == null)
-				return false;
-			successeur.cameFromArcDynamique = tmp;
+			return clotho.getTrajectoireRamene(successeur, (VitesseRameneVolant) v);
 		}
 
 		/**
@@ -259,27 +250,14 @@ public class ArcManager implements Service, HighPFClass
 		else if(v instanceof VitesseDemiTour)
 		{
 			if(current.getArc() == null)
-				return false;
+				return null;
 
-			successeur.cameFromArcDynamique = clotho.getTrajectoireDemiTour(successeur.state.robot.getCinematique(), (VitesseDemiTour) v);
-		}
-
-		/**
-		 * Si on fait une interpolation par clothoïde
-		 */
-		else if(v instanceof VitesseClotho)
-		{
-			// si le robot est arrêté (début de trajectoire), et que la vitesse
-			// n'est pas prévue pour un arrêt ou un rebroussement, on annule
-			if(current.getArc() == null && (!((VitesseClotho) v).arret && !((VitesseClotho) v).rebrousse))
-				return false;
-
-			clotho.getTrajectoire(successeur.state.robot.getCinematique(), (VitesseClotho) v, successeur.cameFromArcStatique);
+			return clotho.getTrajectoireDemiTour(successeur, (VitesseDemiTour) v);
 		}
 		else
 			log.critical("Vitesse " + v + " inconnue ! ");
 
-		return true;
+		return null;
 	}
 
 	/**
