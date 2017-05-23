@@ -65,6 +65,8 @@ public class BezierComputer implements Service, HighPFClass
 		int demieLongueurAvant = config.getInt(ConfigInfo.DEMI_LONGUEUR_NON_DEPLOYE_AVANT);
 		int marge = config.getInt(ConfigInfo.DILATATION_OBSTACLE_ROBOT);
 		tmp = new ArcCourbeStatique(demieLargeurNonDeploye, demieLongueurArriere, demieLongueurAvant, marge);
+		for(int i = 0; i < pointsAvancer.length; i++)
+			pointsAvancer[i] = new CinematiqueObs(demieLargeurNonDeploye, demieLongueurArriere, demieLongueurAvant, marge);
 	}
 
 	private Vec2RW delta = new Vec2RW(), vecteurVitesse = new Vec2RW();
@@ -397,10 +399,15 @@ public class BezierComputer implements Service, HighPFClass
 		if(Math.abs(deltaO) < 0.001) // on est presque aligné
 		{
 			// log.debug("Presque aligné : "+deltaO);
-			double distance = cinematique.getPosition().distanceFast(centre) - rayon;
+			double distance = cinematique.getPosition().distance(centre) - rayon;
 			if(!enAvant)
 				distance = -distance;
-			return avanceVersCentreLineaire(distance, centre, cinematique);
+			
+			LinkedList<CinematiqueObs> out = avance(distance, cinematique);
+			if(out.isEmpty())
+				return null;
+
+			return new ArcCourbeDynamique(out, distance, VitesseBezier.CIRCULAIRE_VERS_CERCLE);
 		}
 
 		double cos = Math.cos(cinematique.orientationReelle);
@@ -504,54 +511,39 @@ public class BezierComputer implements Service, HighPFClass
 
 		return new ArcCourbeDynamique(out, longueur, VitesseBezier.CIRCULAIRE_VERS_CERCLE);
 	}
+	
+	private CinematiqueObs[] pointsAvancer = new CinematiqueObs[256];
 
-	public ArcCourbeDynamique avanceVersCentreLineaire(double distance, Vec2RO centre, Cinematique cinematique) throws MemoryManagerException
+	public LinkedList<CinematiqueObs> avance(double distance, Cinematique cinematique) throws MemoryManagerException
 	{
-		// log.debug("Appel à avanceVersCentreLineaire");
-		double orientationReelleDesiree = Math.atan2(centre.getY() - cinematique.getPosition().getY(), centre.getX() - cinematique.getPosition().getX());
-		double deltaO = (orientationReelleDesiree - cinematique.orientationReelle) % (2 * Math.PI);
-		if(deltaO > Math.PI)
-			deltaO -= 2 * Math.PI;
-		else if(deltaO < -Math.PI)
-			deltaO += 2 * Math.PI;
-
-		if(Math.abs(deltaO) > Math.PI / 2)
-			orientationReelleDesiree += Math.PI;
 		LinkedList<CinematiqueObs> out = new LinkedList<CinematiqueObs>();
-		double cos = Math.cos(orientationReelleDesiree);
-		double sin = Math.sin(orientationReelleDesiree);
+		double cos = Math.cos(cinematique.orientationReelle);
+		double sin = Math.sin(cinematique.orientationReelle);
 		int nbPoint = (int) Math.round(Math.abs(distance) / ClothoidesComputer.PRECISION_TRACE_MM);
 		double xFinal = cinematique.getPosition().getX() + distance * cos;
 		double yFinal = cinematique.getPosition().getY() + distance * sin;
 		boolean marcheAvant = distance > 0;
-		double orientationGeometrique = marcheAvant ? orientationReelleDesiree : -orientationReelleDesiree;
-
 		if(nbPoint == 0)
 		{
 			// Le point est vraiment tout proche
-			CinematiqueObs obs = memory.getNewNode();
-			obs.update(xFinal, yFinal, orientationGeometrique, marcheAvant, 0);
-			out.add(obs);
-			return new ArcCourbeDynamique(out, distance, VitesseBezier.CIRCULAIRE_VERS_CERCLE);
+			pointsAvancer[0].updateReel(xFinal, yFinal, cinematique.orientationReelle, marcheAvant, 0);
+			out.add(pointsAvancer[0]);
 		}
-
-		double deltaX = ClothoidesComputer.PRECISION_TRACE_MM * cos;
-		double deltaY = ClothoidesComputer.PRECISION_TRACE_MM * sin;
-		if(distance < 0)
+		else
 		{
-			deltaX = -deltaX;
-			deltaY = -deltaY;
+			double deltaX = ClothoidesComputer.PRECISION_TRACE_MM * cos;
+			double deltaY = ClothoidesComputer.PRECISION_TRACE_MM * sin;
+			if(distance < 0)
+			{
+				deltaX = -deltaX;
+				deltaY = -deltaY;
+			}
+			for(int i = 0; i < nbPoint; i++)
+				pointsAvancer[nbPoint - i - 1].updateReel(xFinal - i * deltaX, yFinal - i * deltaY, cinematique.orientationReelle, marcheAvant, 0);
+			for(int i = 0; i < nbPoint; i++)
+				out.add(pointsAvancer[i]);
 		}
-		for(int i = 0; i < nbPoint; i++)
-		{
-			CinematiqueObs obs = memory.getNewNode();
-			obs.update(xFinal - i * deltaX, yFinal - i * deltaY, orientationGeometrique, marcheAvant, 0);
-			out.addFirst(obs);
-		}
-
-		if(out.isEmpty())
-			return null;
-
-		return new ArcCourbeDynamique(out, distance, VitesseBezier.CIRCULAIRE_VERS_CERCLE);
+		
+		return out;
 	}
 }
