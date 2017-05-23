@@ -36,6 +36,7 @@ import pathfinding.dstarlite.DStarLite;
 import pathfinding.dstarlite.gridspace.PointGridSpace;
 import config.Config;
 import config.ConfigInfo;
+import config.DynamicConfigurable;
 import container.Service;
 import container.dependances.HighPFClass;
 import exceptions.MemoryManagerException;
@@ -56,9 +57,10 @@ import utils.Log.Verbose;
  *
  */
 
-public class AStarCourbe implements Service, HighPFClass
+public class AStarCourbe implements Service, HighPFClass, DynamicConfigurable
 {
 	protected Log log;
+	private boolean symetrie;
 	private ArcManager arcmanager;
 	private DStarLite dstarlite;
 	private RealGameState state;
@@ -207,7 +209,7 @@ public class AStarCourbe implements Service, HighPFClass
 					CinematiqueObs obsDepart = cinemMemory.getNewNode();
 					Cinematique cinemDepart = depart.state.robot.getCinematique();
 					obsDepart.updateReel(cinemDepart.getPosition().getX(), cinemDepart.getPosition().getY(), cinemDepart.orientationReelle, cinemDepart.enMarcheAvant, cinemDepart.courbureReelle);
-					arcmanager.disableObstaclesFixes(obsDepart);
+					arcmanager.disableObstaclesFixes(symetrie, obsDepart);
 				}
 
 				trajetDeSecours = null;
@@ -471,7 +473,7 @@ public class AStarCourbe implements Service, HighPFClass
 			CinematiqueObs obsDepart = cinemMemory.getNewNode();
 			Cinematique cinemDepart = depart.state.robot.getCinematique();
 			obsDepart.updateReel(cinemDepart.getPosition().getX(), cinemDepart.getPosition().getY(), cinemDepart.orientationReelle, cinemDepart.enMarcheAvant, cinemDepart.courbureReelle);
-			arcmanager.disableObstaclesFixes(obsDepart);
+			arcmanager.disableObstaclesFixes(symetrie, obsDepart);
 		}
 
 		dstarlite.computeNewPath(depart.state.robot.getCinematique().getPosition(), arrivee.getPosition(), shoot);
@@ -503,7 +505,7 @@ public class AStarCourbe implements Service, HighPFClass
 			CinematiqueObs obsDepart = cinemMemory.getNewNode();
 			Cinematique cinemDepart = depart.state.robot.getCinematique();
 			obsDepart.updateReel(cinemDepart.getPosition().getX(), cinemDepart.getPosition().getY(), cinemDepart.orientationReelle, cinemDepart.enMarcheAvant, cinemDepart.courbureReelle);
-			arcmanager.disableObstaclesFixes(obsDepart);
+			arcmanager.disableObstaclesFixes(symetrie, obsDepart);
 		}
 
 		dstarlite.computeNewPath(depart.state.robot.getCinematique().getPosition(), cercle.arriveeDStarLite, shoot);
@@ -546,7 +548,7 @@ public class AStarCourbe implements Service, HighPFClass
 			CinematiqueObs obsDepart = cinemMemory.getNewNode();
 			Cinematique cinemDepart = depart.state.robot.getCinematique();
 			obsDepart.updateReel(cinemDepart.getPosition().getX(), cinemDepart.getPosition().getY(), cinemDepart.orientationReelle, cinemDepart.enMarcheAvant, cinemDepart.courbureReelle);
-			arcmanager.disableObstaclesFixes(obsDepart);
+			arcmanager.disableObstaclesFixes(symetrie, obsDepart);
 		}
 
 		// On met à jour le D* Lite
@@ -562,6 +564,12 @@ public class AStarCourbe implements Service, HighPFClass
 	public boolean isArrivedAsser()
 	{
 		return arcmanager.isArrivedAsser(state.robot.getCinematique());
+	}
+
+	@Override
+	public void updateConfig(Config config)
+	{
+		symetrie = config.getSymmetry();
 	}
 
 }

@@ -380,9 +380,13 @@ public class ArcManager implements Service, HighPFClass
 		return 3 * cinematique.getPosition().distanceFast(arrivee.getPosition());
 	}
 
-	public void disableObstaclesFixes(CinematiqueObs obs)
+	public void disableObstaclesFixes(boolean symetrie, CinematiqueObs obs)
 	{
 		disabledObstaclesFixes.clear();
+		if(symetrie)
+			disabledObstaclesFixes.add(ObstaclesFixes.ZONE_DEPART_GAUCHE_CENTRE);
+		else
+			disabledObstaclesFixes.add(ObstaclesFixes.ZONE_DEPART_DROITE_CENTRE);
 		for(ObstaclesFixes o : ObstaclesFixes.values())
 			if(!o.bordure && o.getObstacle().isColliding(obs.obstacle))
 			{

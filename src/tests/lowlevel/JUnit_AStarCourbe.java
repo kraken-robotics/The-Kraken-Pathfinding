@@ -599,6 +599,7 @@ public class JUnit_AStarCourbe extends JUnit_Test
 	{
 		Cinematique depart = new Cinematique(-200, 1600, -Math.PI / 3 + Math.PI, true, 0);
 		robot.setCinematique(depart);
+		Thread.sleep(100);
 		Cinematique c = new Cinematique(1000, 1200, Math.PI, false, 0);
 		astar.initializeNewSearch(c, true, state);
 		astar.process(chemin,false);

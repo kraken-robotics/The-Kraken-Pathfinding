@@ -28,12 +28,13 @@ import utils.Vec2RO;
 
 public enum ObstaclesFixes
 {
-	// TODO visibilité à mettre à jour selon le robot / les capteurs
-	ZONE_DEPART_ENNEMI(new ObstacleRectangular(new Vec2RO(1070 / 2 - 1500, 2000 - 360 / 2), 1070, 360, Couleur.OBSTACLES), false, false),
+	BASCULE_GAUCHE(new ObstacleRectangular(new Vec2RO(-(1140 - 350 / 2), 2000 - 360 / 2), 350, 360, Couleur.OBSTACLES), true, false),
+	ZONE_DEPART_GAUCHE_GAUCHE(new ObstacleRectangular(new Vec2RO(-(1500 - 360 / 2), 2000 - 360 / 2), 360, 360, Couleur.OBSTACLES), true, false),
+	ZONE_DEPART_GAUCHE_CENTRE(new ObstacleRectangular(new Vec2RO(-(790 - 360 / 2), 2000 - 360 / 2), 360, 360, Couleur.OBSTACLES), true, false),
 	
-	// CECI EST UN HACK. Vu qu'on n'est pas censé voir d'ennemis sur notre zone de départ, mettre ces obstacles en visibles permettent d'ignorer ce qu'on y voit
-	BASCULE(new ObstacleRectangular(new Vec2RO(1140 - 350 / 2, 2000 - 360 / 2), 350, 360, Couleur.OBSTACLES), true, true),
-	ZONE_DEPART_A_NOUS(new ObstacleRectangular(new Vec2RO(1500 - 360 / 2, 2000 - 360 / 2), 360, 360, Couleur.OBSTACLES), true, true),
+	BASCULE_DROITE(new ObstacleRectangular(new Vec2RO(1140 - 350 / 2, 2000 - 360 / 2), 350, 360, Couleur.OBSTACLES), true, false),
+	ZONE_DEPART_DROITE_DROITE(new ObstacleRectangular(new Vec2RO(1500 - 360 / 2, 2000 - 360 / 2), 360, 360, Couleur.OBSTACLES), true, false),
+	ZONE_DEPART_DROITE_CENTRE(new ObstacleRectangular(new Vec2RO(790 - 360 / 2, 2000 - 360 / 2), 360, 360, Couleur.OBSTACLES), true, false),
 
 	TASSEAU_DROITE(new ObstacleRectangular(new Vec2RO(1500 - 710 / 2, 2000 - 360 - 11), 710, 22, Couleur.OBSTACLES), true, false),
 	TASSEAU_GAUCHE(new ObstacleRectangular(new Vec2RO(-1500 + 710 / 2, 2000 - 360 - 11), 710, 22, Couleur.OBSTACLES), true, false),
