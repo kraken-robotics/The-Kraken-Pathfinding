@@ -384,18 +384,24 @@ public class ArcManager implements Service, HighPFClass
 	{
 		disabledObstaclesFixes.clear();
 		ObstaclesFixes depart;
+		boolean vide = true;
 		if(symetrie)
 			depart = ObstaclesFixes.ZONE_DEPART_GAUCHE_CENTRE;
 		else
 			depart = ObstaclesFixes.ZONE_DEPART_DROITE_CENTRE;
-		disabledObstaclesFixes.add(depart);
+		
 		for(ObstaclesFixes o : ObstaclesFixes.values())
 			if(!o.bordure && o.getObstacle().isColliding(obs.obstacle))
 			{
+				vide = false;
 				log.warning("Désactivation de l'obstacle fixe : " + o + ". Obs : " + obs);
 				disabledObstaclesFixes.add(o);
 			}
-		if(!disabledObstaclesFixes.isEmpty())
+		
+		if(!disabledObstaclesFixes.contains(depart))
+			disabledObstaclesFixes.add(depart);
+		
+		if(!vide)
 			dstarlite.disableObstaclesFixes(obs.getPosition(), depart.getObstacle());
 		else
 			dstarlite.disableObstaclesFixes(null, depart.getObstacle());
