@@ -125,7 +125,7 @@ public enum ConfigInfo
 	DISTANCE_BETWEEN_PROXIMITY_OBSTACLES(5), // sous quelle distance
 												// fusionne-t-on deux obstacles
 												// de proximité ?
-	IMPRECISION_MAX_POSITION(20.), // quelle imprecision maximale sur la
+	IMPRECISION_MAX_POSITION(50.), // quelle imprecision maximale sur la
 									// position du robot peut-on attendre (en
 									// mm)
 	IMPRECISION_MAX_ORIENTATION(0.1), // quelle imprecision maximale sur l'angle
