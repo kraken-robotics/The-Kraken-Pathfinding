@@ -34,6 +34,7 @@ import container.Service;
 import container.dependances.LowPFClass;
 import graphic.PrintBufferInterface;
 import graphic.printable.Couleur;
+import obstacles.types.Obstacle;
 
 /**
  * Recherche de chemin avec replanification rapide.
@@ -676,9 +677,9 @@ public class DStarLite implements Service, LowPFClass
 		rechercheEnCours = false;
 	}
 
-	public void disableObstaclesFixes(Vec2RO position)
+	public void disableObstaclesFixes(Vec2RO position, Obstacle obstacle)
 	{
-		gridspace.disableObstaclesFixes(position);
+		gridspace.disableObstaclesFixes(position, obstacle);
 	}
 
 }

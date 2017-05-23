@@ -292,15 +292,14 @@ public class GridSpace implements Service, Printable, LowPFClass
 		return Layer.MIDDLE;
 	}
 
-	public void disableObstaclesFixes(Vec2RO position)
+	public void disableObstaclesFixes(Vec2RO position, Obstacle obstacle)
 	{
 		// on initialise comme la grille statique classique
 		grilleStatiqueModif.clear();
 		grilleStatiqueModif.or(grilleStatique);
-		if(position != null)
-			for(int i = 0; i < PointGridSpace.NB_POINTS; i++)
-				if(grilleStatiqueModif.get(i) && pointManager.get(i).computeVec2().distanceFast(position) < rayonRobotObstaclesFixes)
-					grilleStatiqueModif.clear(i);
+		for(int i = 0; i < PointGridSpace.NB_POINTS; i++)
+			if(grilleStatiqueModif.get(i) && ((position != null && pointManager.get(i).computeVec2().distanceFast(position) < rayonRobotObstaclesFixes) || obstacle.squaredDistance(pointManager.get(i).computeVec2()) == 0))
+				grilleStatiqueModif.clear(i);
 	}
 
 }

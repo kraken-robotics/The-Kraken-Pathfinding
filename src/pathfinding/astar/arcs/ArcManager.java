@@ -383,10 +383,12 @@ public class ArcManager implements Service, HighPFClass
 	public void disableObstaclesFixes(boolean symetrie, CinematiqueObs obs)
 	{
 		disabledObstaclesFixes.clear();
+		ObstaclesFixes depart;
 		if(symetrie)
-			disabledObstaclesFixes.add(ObstaclesFixes.ZONE_DEPART_GAUCHE_CENTRE);
+			depart = ObstaclesFixes.ZONE_DEPART_GAUCHE_CENTRE;
 		else
-			disabledObstaclesFixes.add(ObstaclesFixes.ZONE_DEPART_DROITE_CENTRE);
+			depart = ObstaclesFixes.ZONE_DEPART_DROITE_CENTRE;
+		disabledObstaclesFixes.add(depart);
 		for(ObstaclesFixes o : ObstaclesFixes.values())
 			if(!o.bordure && o.getObstacle().isColliding(obs.obstacle))
 			{
@@ -394,9 +396,9 @@ public class ArcManager implements Service, HighPFClass
 				disabledObstaclesFixes.add(o);
 			}
 		if(!disabledObstaclesFixes.isEmpty())
-			dstarlite.disableObstaclesFixes(obs.getPosition());
+			dstarlite.disableObstaclesFixes(obs.getPosition(), depart.getObstacle());
 		else
-			dstarlite.disableObstaclesFixes(null);
+			dstarlite.disableObstaclesFixes(null, depart.getObstacle());
 	}
 
 	public boolean isToCircle()
