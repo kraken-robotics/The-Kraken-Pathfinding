@@ -89,11 +89,11 @@ public enum ConfigInfo
 								// avoir
 	PF_MARGE_INITIALE(100), // combien de mm garde-t-on obligatoirement au début
 							// de la replanification
-	DUREE_MAX_RECHERCHE_PF(3000), // durée maximale que peut prendre le
+	DUREE_MAX_RECHERCHE_PF(6000), // durée maximale que peut prendre le
 									// pathfinding
 	TAILLE_FAISCEAU_PF(20), // combien de voisins sont ajoutés à l'openset à
 							// chaque itération. CONFIG IGNORÉE !
-	NB_ESSAIS_PF(3), // nombre d'essais du pathfinding
+	NB_ESSAIS_PF(5), // nombre d'essais du pathfinding
 	ALLOW_PRECOMPUTED_PATH(true), // autorise-t-on l'utilisation de chemins
 									// précalculés
 
