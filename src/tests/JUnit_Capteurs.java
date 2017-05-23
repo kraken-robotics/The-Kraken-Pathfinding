@@ -43,7 +43,7 @@ public class JUnit_Capteurs extends JUnit_Test
 		capteurs = container.getService(CapteursProcess.class);
 	}
 
-	@Test
+/*	@Test
 	public void test_correction_mur() throws Exception
 	{
 		Field f = CapteursProcess.class.getDeclaredField("bufferCorrection");
@@ -58,7 +58,7 @@ public class JUnit_Capteurs extends JUnit_Test
 		Assert.assertTrue(Math.abs(buffer[0].orientationReelle + 0.03) < 0.001);
 		Assert.assertTrue(Math.abs(buffer[0].getPosition().getX() - 18) < 0.001);
 		Assert.assertTrue(Math.abs(buffer[0].getPosition().getY()) < 0.001);
-	}
+	}*/
 
 	@Test
 	public void test_correction_imprecision_pos() throws Exception
@@ -93,7 +93,7 @@ public class JUnit_Capteurs extends JUnit_Test
 	 * 
 	 * @throws Exception
 	 */
-	@Test
+/*	@Test
 	public void test_correction_robustesse() throws Exception
 	{
 		Random r = new Random();
@@ -112,7 +112,7 @@ public class JUnit_Capteurs extends JUnit_Test
 			capteurs.updateObstaclesMobiles(new SensorsData(150, 150, mesures, cinematique));
 			Assert.assertTrue(buffer[k] != null);
 		}
-	}
+	}*/
 
 	@Test
 	public void test_correction_sans_mur() throws Exception
