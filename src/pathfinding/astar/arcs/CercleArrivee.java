@@ -97,12 +97,12 @@ public class CercleArrivee implements Service, Printable, HighPFClass, LowPFClas
 
 	public boolean isArrivedAsser(Cinematique robot)
 	{
-		return isArrived(robot, angleMin, angleMax, rayon + distanceMin, rayon + distanceMax, true);
+		return isArrived(robot, angleMin, angleMax, rayon + distanceMin, rayon + distanceMax, true, false);
 	}
 	
 	public boolean isArrivedPF(Cinematique robot)
 	{
-		return isArrived(robot, -1, 1, rayon - 5, rayon + 5, false);
+		return isArrived(robot, -1, 1, rayon - 5, rayon + 5, false, true);
 	}
 	
 	/**
@@ -111,7 +111,7 @@ public class CercleArrivee implements Service, Printable, HighPFClass, LowPFClas
 	 * @param last
 	 * @return
 	 */
-	private boolean isArrived(Cinematique robot, double angleMin, double angleMax, double distanceMin, double distanceMax, boolean verbose)
+	private boolean isArrived(Cinematique robot, double angleMin, double angleMax, double distanceMin, double distanceMax, boolean verbose, boolean checkAuthorizedAngle)
 	{
 		double deltaDist = robot.getPosition().distance(position);
 		// on vérifie la distance au cratère
@@ -128,7 +128,7 @@ public class CercleArrivee implements Service, Printable, HighPFClass, LowPFClas
 		else if(robot.orientationReelle < -Math.PI)
 			robot.orientationReelle += 2 * Math.PI;
 		
-		boolean accepted = anglesAttaquePossibles == null;
+		boolean accepted = anglesAttaquePossibles == null || !checkAuthorizedAngle;
 
 		if(!accepted)
 			for(int i = 0; i < anglesAttaquePossibles.length / 2; i++)
