@@ -100,11 +100,11 @@ public class ThreadPrintServer extends ThreadService implements GUIClass
 			log.debug("Démarrage de " + Thread.currentThread().getName());
 			try
 			{
-				synchronized(buffer)
+				while(true)
 				{
-					while(true)
+					Thread.sleep(100);
+					synchronized(buffer)
 					{
-						Thread.sleep(100);
 						buffer.wait(400);
 						buffer.write();
 					}
