@@ -149,7 +149,7 @@ public class CercleArrivee implements Service, Printable, HighPFClass, LowPFClas
 		tmp.minus(robot.getPosition());
 		double o = tmp.getArgument();
 
-		double diffo = (o - robot.orientationGeometrique) % (2 * Math.PI);
+		double diffo = (o - robot.orientationReelle + Math.PI) % (2 * Math.PI);
 		if(diffo > Math.PI)
 			diffo -= 2 * Math.PI;
 		else if(diffo < -Math.PI)
