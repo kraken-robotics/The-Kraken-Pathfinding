@@ -199,19 +199,6 @@ public abstract class Robot implements DynamicConfigurable
 
 	public abstract Ticket traverseBascule() throws InterruptedException, ActionneurException;
 
-	public void funnyAction() throws InterruptedException
-	{
-		try
-		{
-			bloque("funnyAction");
-		}
-		catch(ActionneurException e)
-		{
-			log.critical(e);
-			// impossible
-		}
-	}
-
 	/**
 	 * On est sûr que le filet est vide
 	 */

@@ -131,7 +131,7 @@ public enum ConfigInfo
 	IMPRECISION_MAX_ORIENTATION(0.1), // quelle imprecision maximale sur l'angle
 										// du robot peut-on attendre (en
 										// radians)
-	TAILLE_BUFFER_RECALAGE(20), // combien de mesures sont nécessaires pour
+	TAILLE_BUFFER_RECALAGE(50), // combien de mesures sont nécessaires pour
 								// obtenir une correction de recalage
 	PEREMPTION_CORRECTION(100), // temps maximal entre deux mesures de
 								// correction au sein d'un même buffer (en ms)

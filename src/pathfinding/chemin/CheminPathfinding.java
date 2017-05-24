@@ -215,7 +215,7 @@ public class CheminPathfinding implements Service, HighPFClass, CheminPathfindin
 	 * 
 	 * @return
 	 */
-	public boolean isEmpty()
+	public synchronized boolean isEmpty()
 	{
 		return empty;
 	}
