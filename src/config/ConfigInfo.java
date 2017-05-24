@@ -89,7 +89,7 @@ public enum ConfigInfo
 								// avoir
 	PF_MARGE_INITIALE(100), // combien de mm garde-t-on obligatoirement au début
 							// de la replanification
-	DUREE_MAX_RECHERCHE_PF(6000), // durée maximale que peut prendre le
+	DUREE_MAX_RECHERCHE_PF(10000), // durée maximale que peut prendre le
 									// pathfinding
 	TAILLE_FAISCEAU_PF(20), // combien de voisins sont ajoutés à l'openset à
 							// chaque itération. CONFIG IGNORÉE !
