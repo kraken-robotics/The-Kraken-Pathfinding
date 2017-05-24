@@ -397,6 +397,8 @@ public class PathCache implements Service, HighPFClass
 					log.debug("On va parcourir le chemin");
 					if(!simuleSerie)
 						state.robot.followTrajectory(s);
+					else
+						state.robot.setCinematique(realChemin.getLastCinematique());
 					if(!astar.isArrivedAsser())
 						throw new UnableToMoveException("On est arrivé bien trop loin de là où on devait !");
 				}
