@@ -173,6 +173,8 @@ public class CercleArrivee implements Service, Printable, HighPFClass, LowPFClas
 		{
 			g.setColor(Couleur.ROUGE.couleur);
 			g.drawOval(f.XtoWindow(position.getX() - rayon), f.YtoWindow(position.getY() + rayon), f.distanceXtoWindow((int) (2 * rayon)), f.distanceYtoWindow((int) (2 * rayon)));
+			int r = 20;
+			g.fillOval(f.XtoWindow(arriveeDStarLite.getX() - r), f.YtoWindow(arriveeDStarLite.getY() + r), f.distanceXtoWindow((int) (2*r)), f.distanceYtoWindow((int) (2*r)));
 		}
 	}
 
