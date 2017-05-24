@@ -76,10 +76,10 @@ public class ThreadUpdatePathfinding extends ThreadService implements HighPFClas
 				catch(PathfindingException e)
 				{
 					log.critical(e);
-					if(!chemin.isEmpty())
-						out.immobilise();
-					else
-						log.debug("Robot déjà à l'arrêt", Verbose.REPLANIF.masque);
+//					if(!chemin.isEmpty())
+					out.immobilise();
+//					else
+//						log.debug("Robot déjà à l'arrêt", Verbose.REPLANIF.masque);
 					chemin.clear();
 				}
 			}
