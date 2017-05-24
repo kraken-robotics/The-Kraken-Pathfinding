@@ -120,8 +120,7 @@ public class JUnit_AStarCourbe extends JUnit_Test
 
 		Cinematique c = new Cinematique(0, 1000, Math.PI / 2, false, 0);
 		log.debug("Initial : " + c);
-		arc[0].vitesse = VitesseClotho.COURBURE_IDENTIQUE;
-		clotho.getTrajectoire(c, VitesseClotho.COURBURE_IDENTIQUE, arc[0].arcselems);
+		clotho.getTrajectoire(c, VitesseClotho.COURBURE_IDENTIQUE, arc[0]);
 		clotho.getTrajectoire(arc[0], VitesseClotho.GAUCHE_2, arc[1]);
 		clotho.getTrajectoire(arc[1], VitesseClotho.COURBURE_IDENTIQUE, arc[2]);
 		clotho.getTrajectoire(arc[2], VitesseClotho.GAUCHE_1, arc[3]);

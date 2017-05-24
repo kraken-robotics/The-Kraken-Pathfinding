@@ -113,8 +113,7 @@ public class BezierComputer implements Service, HighPFClass
 			if(prefixe == null)
 				prefixe = new ArcCourbeDynamique(new ArrayList<CinematiqueObs>(), 0, VitesseBezier.BEZIER_QUAD);
 
-			tmp.vitesse = d > 0 ? VitesseClotho.GAUCHE_1 : VitesseClotho.DROITE_1;
-			clothocomputer.getTrajectoire(prefixe.getNbPoints() > 0 ? prefixe.getLast() : cinematiqueInitiale, d > 0 ? VitesseClotho.GAUCHE_1 : VitesseClotho.DROITE_1, tmp.arcselems);
+			clothocomputer.getTrajectoire(prefixe.getNbPoints() > 0 ? prefixe.getLast() : cinematiqueInitiale, d > 0 ? VitesseClotho.GAUCHE_1 : VitesseClotho.DROITE_1, tmp);
 			for(CinematiqueObs c : tmp.arcselems)
 			{
 				CinematiqueObs o = memory.getNewNode();
