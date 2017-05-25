@@ -96,6 +96,7 @@ public enum ConfigInfo
 	NB_ESSAIS_PF(5), // nombre d'essais du pathfinding
 	ALLOW_PRECOMPUTED_PATH(true), // autorise-t-on l'utilisation de chemins
 									// précalculés
+	SAVE_FOUND_PATH(true), // sauvegarde tous les trajets calculés en match
 
 	/**
 	 * Paramètres de la série
