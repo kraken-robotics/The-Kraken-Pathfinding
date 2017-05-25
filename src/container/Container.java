@@ -183,7 +183,7 @@ public class Container implements Service
 		nbInstances--;
 		printMessage("outro.txt");
 
-		Thread.sleep(50);
+		Thread.sleep(300);
 		return errorCode;
 	}
 
@@ -648,7 +648,6 @@ public class Container implements Service
 
 			while((line = reader.readLine()) != null)
 				System.out.println(line);
-
 			reader.close();
 		}
 		catch(IOException e)

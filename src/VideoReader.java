@@ -57,6 +57,8 @@ public class VideoReader
 		int indexBP = 0;
 		boolean stopOnWarning = false, stopOnCritical = false;
 		boolean frameToFrame = false;
+		long dateSkip = -1;
+		boolean skipdone = false;
 		
 		// on force l'affichage non externe
 		ConfigInfo.GRAPHIC_ENABLE.setDefaultValue(true);
@@ -82,6 +84,8 @@ public class VideoReader
 		{
 			if(args[i].equals("-s")) // speed
 				vitesse = Double.parseDouble(args[++i]);
+			else if(args[i].equals("-S")) // skip
+				dateSkip = Long.parseLong(args[++i]);
 			else if(args[i].equals("-d")) // debug
 				debug = true;
 			else if(args[i].equals("-v")) // video
@@ -138,11 +142,12 @@ public class VideoReader
 				System.err.println("Option inconnue ! " + args[i]);
 		}
 
-		if(filename == null)
+		if(filename == null && logfile == null)
 		{
 			System.out.println("Utilisation : VideoReader -v videoFile -l logFile [-s speed] [-w] [-c] [-b posX posY angle] [-B n ...]");
 			System.out.println("-w : autostop on warning ");
 			System.out.println("-c : autostop on critical ");
+			System.out.println("-S date : start at this date");
 			System.out.println("-b : add robot bof© ");
 			System.out.println("-B n t1 t2 … tn: add n breakpoints at timestamps t1,… tn ");
 			System.out.println("-s speed : set reading speed. 2 is twice as fast, 0.5 twice as slow");
@@ -161,39 +166,54 @@ public class VideoReader
 
 		Scanner sc = new Scanner(System.in);
 		Container container = null;
+		if(filename == null)
+			ConfigInfo.GRAPHIC_ENABLE.setDefaultValue(false);
 
 		try
 		{
 			container = new Container();
-			PrintBuffer buffer = container.getService(PrintBuffer.class);
+			
+			PrintBuffer buffer = null;
+			if(filename != null)
+				buffer = container.getService(PrintBuffer.class);
 			RobotReal robot = container.getService(RobotReal.class);
 			Log log = container.getService(Log.class);
-			TimestampedList listes;
+			TimestampedList listes = null;
 
 			special("Fichier vidéo : " + filename);
 			special("Fichier log : " + logfile);
 			special("Vitesse : " + vitesse);
+			if(dateSkip != -1)
+				special("Skip to : " + dateSkip);
 			if(debug)
 				special("Debug activé");
 			if(robotBof != null)
 			{
-				special("RobotBof ajouté");
-				buffer.add(robotBof);
+				if(filename != null)
+					special("RobotBof pas ajoutable : pas de vidéo");
+				else
+				{
+					special("RobotBof ajouté");
+					buffer.add(robotBof);
+				}
 			}
 
-			try
+			if(filename != null)
 			{
-				FileInputStream fichier = new FileInputStream(filename);
-				ObjectInputStream ois = new ObjectInputStream(fichier);
-				listes = (TimestampedList) ois.readObject();
-				ois.close();
+				try
+				{
+					FileInputStream fichier = new FileInputStream(filename);
+					ObjectInputStream ois = new ObjectInputStream(fichier);
+					listes = (TimestampedList) ois.readObject();
+					ois.close();
+				}
+				catch(IOException | ClassNotFoundException e)
+				{
+					log.critical("Chargement échoué ! "+e);
+					return;
+				}
 			}
-			catch(IOException | ClassNotFoundException e)
-			{
-				log.critical("Chargement échoué ! "+e);
-				return;
-			}
-
+			
 			long initialDate = System.currentTimeMillis();
 
 			Thread.sleep(500); // le temps que la fenêtre apparaisse
@@ -209,7 +229,13 @@ public class VideoReader
 				nextLog = getTimestampLog(nextLine);
 			}
 
-			long nextVid = listes.getTimestamp(0);
+			long nextVid;
+
+			if(listes == null)
+				nextVid = Long.MAX_VALUE;
+			else
+				nextVid = listes.getTimestamp(0);
+
 			long firstTimestamp = Math.min(nextLog, nextVid);
 
 			int indexListe = 0;
@@ -268,6 +294,12 @@ public class VideoReader
 						special("Unpause");
 				}
 
+				if(!skipdone && Math.min(nextVid, nextLog) > dateSkip)
+				{
+					skipdone = true;
+					initialDate -= dateSkip;
+				}
+				
 				if(nextVid < nextLog)
 				{
 					List<Serializable> tab = listes.getListe(indexListe);
@@ -275,7 +307,7 @@ public class VideoReader
 					long deltaP = System.currentTimeMillis() - initialDate;
 					long delta = deltaT - deltaP;
 
-					if(delta > 0)
+					if(delta > 0 && dateSkip < nextVid)
 						Thread.sleep(delta);
 
 					synchronized(buffer)
@@ -325,10 +357,10 @@ public class VideoReader
 					long deltaP = System.currentTimeMillis() - initialDate;
 					long delta = deltaT - deltaP;
 
-					if(delta > 0)
+					if(delta > 0 && dateSkip < nextLog)
 						Thread.sleep(delta);
 
-					if((stopOnWarning && nextLine.contains("WARNING")) || stopOnCritical && nextLine.contains("CRITICAL"))
+					if(skipdone && ((stopOnWarning && nextLine.contains("WARNING")) || stopOnCritical && nextLine.contains("CRITICAL")))
 						stop = true;
 
 					System.out.println(nextLine);
