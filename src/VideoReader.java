@@ -296,6 +296,7 @@ public class VideoReader
 
 				if(!skipdone && Math.min(nextVid, nextLog) > dateSkip)
 				{
+					stop = true;
 					skipdone = true;
 					initialDate -= dateSkip;
 				}

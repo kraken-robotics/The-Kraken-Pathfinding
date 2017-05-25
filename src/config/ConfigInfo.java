@@ -93,7 +93,7 @@ public enum ConfigInfo
 									// pathfinding
 	TAILLE_FAISCEAU_PF(20), // combien de voisins sont ajoutés à l'openset à
 							// chaque itération. CONFIG IGNORÉE !
-	NB_ESSAIS_PF(5), // nombre d'essais du pathfinding
+	NB_ESSAIS_PF(100), // nombre d'essais du pathfinding
 	ALLOW_PRECOMPUTED_PATH(true), // autorise-t-on l'utilisation de chemins
 									// précalculés
 	SAVE_FOUND_PATH(true), // sauvegarde tous les trajets calculés en match
