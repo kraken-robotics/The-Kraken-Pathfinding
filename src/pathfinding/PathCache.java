@@ -108,7 +108,7 @@ public class PathCache implements Service, HighPFClass
 
 	private void savePath(KeyPathCache k, List<CinematiqueObs> path)
 	{
-		// log.debug("Sauvegarde d'une trajectoire : "+k.toString());
+		log.debug("Sauvegarde d'une trajectoire : "+k.toString());
 		try
 		{
 			FileOutputStream fichier;
@@ -193,17 +193,17 @@ public class PathCache implements Service, HighPFClass
 		File f = new File("./paths/");
 		List<String> names = new ArrayList<String>(Arrays.asList(f.list()));
 		for(String s : names)
-			loadPath(s);
+			loadPath("./paths/",s);
 	}
 
 	@SuppressWarnings("unchecked")
-	private void loadPath(String nom)
+	private void loadPath(String prefix, String nom)
 	{
 		log.debug("Chargement d'une trajectoire : "+nom);
 		ObjectInputStream ois = null;
 		try
 		{
-			FileInputStream fichier = new FileInputStream(nom);
+			FileInputStream fichier = new FileInputStream(prefix+nom);
 			ois = new ObjectInputStream(fichier);
 			paths.put(nom, (LinkedList<CinematiqueObs>) ois.readObject());
 		}
@@ -276,10 +276,15 @@ public class PathCache implements Service, HighPFClass
 					}
 					waitPathfinding();
 					LinkedList<CinematiqueObs> path = fakeChemin.getPath();
-					iteratorObstacles.reinit();	
-					// on sauvegarde que si y'a aucun obstacle
-					if(saveOnTheFly && !iteratorObstacles.hasNext())
-						savePath(k, path);
+
+					if(saveOnTheFly && !paths.containsKey(k.toString()+".dat"))
+					{
+						iteratorObstacles.reinit();	
+						// on sauvegarde que si y'a aucun obstacle
+						if(saveOnTheFly && !iteratorObstacles.hasNext())
+							savePath(k, path);
+					}
+					
 					realChemin.addToEnd(path);
 					log.debug("On va parcourir le chemin");
 					if(!simuleSerie)
