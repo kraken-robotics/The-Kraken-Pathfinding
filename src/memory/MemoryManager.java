@@ -149,6 +149,7 @@ public abstract class MemoryManager<T extends Memorizable> implements Service
 		{
 			log.critical("Objet déjà détruit ! " + indice_state + " > " + firstAvailable);
 			new Exception().printStackTrace(log.getPrintWriter());
+			return;
 		}
 
 		// On inverse dans le Vector les deux objets,
