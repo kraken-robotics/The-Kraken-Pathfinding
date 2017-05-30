@@ -41,8 +41,9 @@
     <target description="Build all projects which reference this project. Useful to propagate changes." name="build-refprojects"/>
     <target name="kraken.tests">
         <mkdir dir="${junit.output.dir}"/>
-        <junit fork="yes" printsummary="withOutAndErr">
-            <formatter type="xml"/>
+        <junit fork="yes" printsummary="withOutAndErr" haltonfailure="no" failureproperty="test.failed">
+	    <formatter type="xml"/>
+	    <formatter type="plain" usefile="false" />
             <test name="kraken.tests.JUnit_AStarCourbe" todir="${junit.output.dir}"/>
             <test name="kraken.tests.JUnit_CheminPF" todir="${junit.output.dir}"/>
             <test name="kraken.tests.JUnit_Config" todir="${junit.output.dir}"/>
@@ -56,6 +57,7 @@
             <test name="kraken.tests.JUnit_Table" todir="${junit.output.dir}"/>
             <classpath refid="Kraken.classpath"/>
         </junit>
+        <fail message="Test failure detected, check test results." if="test.failed" />
     </target>
   <target name="doc" depends="init" description="generate documentation">
     <javadoc sourcepath="src" destdir="docs"/>
