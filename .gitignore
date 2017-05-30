@@ -1,2 +1,12 @@
-/bin
-/bin1/
+*~
+config.ini
+logs/
+junit/
+videos/
+.classpath
+.cproject
+.project
+.settings
+project.properties
+*.class
+bin/
