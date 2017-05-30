@@ -51,7 +51,7 @@ public abstract class JUnit_Test
 	{
 		System.out.println("----- DÉBUT DU TEST " + testName.getMethodName() + " -----");
 
-		container = new Container();
+		container = new Container(null);
 		config = container.getService(Config.class);
 		log = container.getService(Log.class);
 		log.debug("Test unitaire : " + testName.getMethodName());

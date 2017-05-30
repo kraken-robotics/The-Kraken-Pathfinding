@@ -43,6 +43,7 @@ import kraken.graphic.ExternalPrintBuffer;
 import kraken.graphic.PrintBuffer;
 import kraken.graphic.PrintBufferInterface;
 import kraken.obstacles.types.Obstacle;
+import kraken.obstacles.types.ObstaclesFixes;
 import kraken.pathfinding.astar.arcs.ArcCourbe;
 import kraken.robot.Speed;
 import kraken.threads.ThreadName;
@@ -290,7 +291,7 @@ public class Container implements Service
 	 * @throws ContainerException si un autre container est déjà instancié
 	 * @throws InterruptedException
 	 */
-	public Container() throws ContainerException, InterruptedException
+	public Container(List<Obstacle> fixedObstacles) throws ContainerException, InterruptedException
 	{
 		/**
 		 * On vérifie qu'il y ait un seul container à la fois
@@ -388,7 +389,7 @@ public class Container implements Service
 		Obstacle.set(log, getService(PrintBufferInterface.class));
 		Obstacle.useConfig(config);
 		ArcCourbe.useConfig(config);
-		
+		getService(ObstaclesFixes.class).addAll(fixedObstacles);
 		startAllThreads();
 	}
 

@@ -169,7 +169,7 @@ public class VideoReader
 
 		try
 		{
-			container = new Container();
+			container = new Container(null);
 			
 			PrintBuffer buffer = null;
 			if(filename != null)

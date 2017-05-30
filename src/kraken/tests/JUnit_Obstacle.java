@@ -127,11 +127,4 @@ public class JUnit_Obstacle extends JUnit_Test
 		Assert.assertTrue(o.isColliding(new ObstacleRectangular(new Vec2RO(900, 1100), 60, 60, 0)));
 	}
 
-	@Test
-	public void test_collision_robot_bord() throws Exception
-	{
-		ObstacleRectangular o = new ObstacleRectangular(new Vec2RO(1320, 250), 250, 360, Math.PI / 6);
-		Assert.assertTrue(ObstaclesFixes.BORD_DROITE.getObstacle().isColliding(o));
-	}
-
 }

@@ -24,6 +24,7 @@ import kraken.container.dependances.HighPFClass;
 import kraken.exceptions.MemoryManagerException;
 import kraken.graphic.PrintBufferInterface;
 import kraken.obstacles.memory.ObstaclesIteratorPresent;
+import kraken.obstacles.types.Obstacle;
 import kraken.obstacles.types.ObstacleArcCourbe;
 import kraken.obstacles.types.ObstaclesFixes;
 import kraken.pathfinding.DirectionStrategy;
@@ -63,7 +64,8 @@ public class ArcManager implements Service, HighPFClass
 	private double courbureMax;
 	private boolean printObs;
 	private boolean useCercle;
-
+	private ObstaclesFixes fixes;
+	
 	private DirectionStrategy directionstrategyactuelle;
 	private SensFinal sens;
 	private Cinematique arrivee = new Cinematique();
@@ -72,8 +74,9 @@ public class ArcManager implements Service, HighPFClass
 	private ListIterator<VitesseCourbure> iterator = listeVitesse.listIterator();
 	private List<ObstaclesFixes> disabledObstaclesFixes = new ArrayList<ObstaclesFixes>();
 
-	public ArcManager(Log log, ClothoidesComputer clotho, RealTable table, PrintBufferInterface buffer, DStarLite dstarlite, BezierComputer bezier, CercleArrivee cercle, Config config, ObstaclesIteratorPresent obstaclesProxIterator)
+	public ArcManager(Log log, ObstaclesFixes fixes, ClothoidesComputer clotho, RealTable table, PrintBufferInterface buffer, DStarLite dstarlite, BezierComputer bezier, CercleArrivee cercle, Config config, ObstaclesIteratorPresent obstaclesProxIterator)
 	{
+		this.fixes = fixes;
 		this.obstaclesProxIterator = obstaclesProxIterator;
 		this.bezier = bezier;
 		this.table = table;
@@ -123,8 +126,8 @@ public class ArcManager implements Service, HighPFClass
 			buffer.addSupprimable(obs);
 
 		// Collision avec un obstacle fixe?
-		for(ObstaclesFixes o : ObstaclesFixes.values())
-			if(!disabledObstaclesFixes.contains(o) && o.getObstacle().isColliding(obs))
+		for(Obstacle o : fixes.getObstacles())
+			if(!disabledObstaclesFixes.contains(o) && o.isColliding(obs))
 			{
 				// log.debug("Collision avec "+o);
 				return false;
@@ -385,7 +388,7 @@ public class ArcManager implements Service, HighPFClass
 		return 3 * cinematique.getPosition().distanceFast(arrivee.getPosition());
 	}
 
-	public void disableObstaclesFixes(boolean symetrie, CinematiqueObs obs)
+/*	public void disableObstaclesFixes(boolean symetrie, CinematiqueObs obs)
 	{
 		disabledObstaclesFixes.clear();
 		ObstaclesFixes depart;
@@ -410,7 +413,7 @@ public class ArcManager implements Service, HighPFClass
 			dstarlite.disableObstaclesFixes(obs.getPosition(), depart.getObstacle());
 		else
 			dstarlite.disableObstaclesFixes(null, depart.getObstacle());
-	}
+	}*/
 
 	public boolean isToCircle()
 	{

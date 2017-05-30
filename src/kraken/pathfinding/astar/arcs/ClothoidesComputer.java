@@ -33,6 +33,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.math.BigDecimal;
@@ -515,15 +516,15 @@ public class ClothoidesComputer implements Service, HighPFClass
 		log.debug("Chargement des points de la clothoïde");
 		try
 		{
-			FileInputStream fichier = new FileInputStream("clotho-" + S_MAX + ".dat");
+			InputStream fichier = getClass().getClassLoader().getResourceAsStream("kraken/clotho-"+S_MAX+".dat");
 			ObjectInputStream ois = new ObjectInputStream(fichier);
 			trajectoire = (Vec2RO[]) ois.readObject();
 			ois.close();
 			return true;
 		}
-		catch(IOException | ClassNotFoundException e)
+		catch(IOException | ClassNotFoundException | NullPointerException e)
 		{
-			log.critical("Chargement échoué !");
+			log.critical("Chargement échoué ! "+e);
 		}
 		return false;
 	}

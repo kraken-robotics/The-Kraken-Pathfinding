@@ -50,6 +50,7 @@ public class GridSpace implements Service, Printable, LowPFClass
 	private ObstaclesIteratorPresent iteratorDStarLiteLast;
 	private ObstaclesIteratorPresent iteratorRemoveNearby;
 	private ObstaclesMemory obstaclesMemory;
+	private ObstaclesFixes fixes;
 	private PointGridSpaceManager pointManager;
 	private MasqueManager masquemanager;
 	private PrintBufferInterface buffer;
@@ -67,8 +68,9 @@ public class GridSpace implements Service, Printable, LowPFClass
 	private BitSet[] newOldObstacles = new BitSet[2];
 	private Couleur[] grid = new Couleur[PointGridSpace.NB_POINTS];
 
-	public GridSpace(Log log, ObstaclesIteratorPresent iteratorDStarLiteFirst, ObstaclesIteratorPresent iteratorDStarLiteLast, ObstaclesIteratorPresent iteratorRemoveNearby, ObstaclesMemory obstaclesMemory, PointGridSpaceManager pointManager, PrintBufferInterface buffer, MasqueManager masquemanager, Config config)
+	public GridSpace(Log log, ObstaclesFixes fixes, ObstaclesIteratorPresent iteratorDStarLiteFirst, ObstaclesIteratorPresent iteratorDStarLiteLast, ObstaclesIteratorPresent iteratorRemoveNearby, ObstaclesMemory obstaclesMemory, PointGridSpaceManager pointManager, PrintBufferInterface buffer, MasqueManager masquemanager, Config config)
 	{
+		this.fixes = fixes;
 		this.obstaclesMemory = obstaclesMemory;
 		this.log = log;
 		this.pointManager = pointManager;
@@ -86,8 +88,8 @@ public class GridSpace implements Service, Printable, LowPFClass
 
 		// on ajoute les obstacles fixes une fois pour toute si c'est demandé
 		if(config.getBoolean(ConfigInfo.GRAPHIC_FIXED_OBSTACLES))
-			for(ObstaclesFixes o : ObstaclesFixes.values())
-				buffer.add(o.getObstacle());
+			for(Obstacle o : fixes.getObstacles())
+				buffer.add(o);
 
 		log.debug("Grille statique initialisée");
 
@@ -96,8 +98,8 @@ public class GridSpace implements Service, Printable, LowPFClass
 
 		for(int i = 0; i < PointGridSpace.NB_POINTS; i++)
 		{
-			for(ObstaclesFixes o : ObstaclesFixes.values())
-				if(o.getObstacle().squaredDistance(pointManager.get(i).computeVec2()) <= (int) (distance))
+			for(Obstacle o : fixes.getObstacles())
+				if(o.squaredDistance(pointManager.get(i).computeVec2()) <= (int) (distance))
 				{
 					// Pour le D* Lite, il faut dilater les obstacles du rayon
 					// du robot

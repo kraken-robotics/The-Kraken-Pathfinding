@@ -48,7 +48,7 @@ public class ClientFenetre
 			{
 				// on force l'affichage non externe
 				ConfigInfo.GRAPHIC_EXTERNAL.setDefaultValue(false);
-				container = new Container();
+				container = new Container(null);
 				Fenetre f = container.getService(Fenetre.class);
 				PrintBuffer buffer = container.getService(PrintBuffer.class);
 				Log log = container.getService(Log.class);

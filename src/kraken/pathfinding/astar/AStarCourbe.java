@@ -199,14 +199,14 @@ public class AStarCourbe implements Service, HighPFClass
 					log.debug("On reprend la recherche à partir de " + cinemRestart, Verbose.REPLANIF.masque);
 					depart.init();
 					depart.state.robot.setCinematique(cinemRestart);
-				}
+				}/*
 				if(suppObsFixes)
 				{
 					CinematiqueObs obsDepart = cinemMemory.getNewNode();
 					Cinematique cinemDepart = depart.state.robot.getCinematique();
 					obsDepart.updateReel(cinemDepart.getPosition().getX(), cinemDepart.getPosition().getY(), cinemDepart.orientationReelle, cinemDepart.enMarcheAvant, cinemDepart.courbureReelle);
 					arcmanager.disableObstaclesFixes(symetrie, obsDepart);
-				}
+				}*/
 
 				trajetDeSecours = null;
 				depart.parent = null;
@@ -463,14 +463,14 @@ public class AStarCourbe implements Service, HighPFClass
 		depart.init();
 		state.copyAStarCourbe(depart.state);
 		arcmanager.configureArcManager(DirectionStrategy.defaultStrategy, sens, arrivee);
-
+/*
 		if(suppObsFixes)
 		{
 			CinematiqueObs obsDepart = cinemMemory.getNewNode();
 			Cinematique cinemDepart = depart.state.robot.getCinematique();
 			obsDepart.updateReel(cinemDepart.getPosition().getX(), cinemDepart.getPosition().getY(), cinemDepart.orientationReelle, cinemDepart.enMarcheAvant, cinemDepart.courbureReelle);
 			arcmanager.disableObstaclesFixes(symetrie, obsDepart);
-		}
+		}*/
 
 		dstarlite.computeNewPath(depart.state.robot.getCinematique().getPosition(), arrivee.getPosition(), shoot);
 		if(graphicDStarLite)
@@ -495,14 +495,14 @@ public class AStarCourbe implements Service, HighPFClass
 		depart.init();
 		state.copyAStarCourbe(depart.state);
 		arcmanager.configureArcManagerWithCircle(DirectionStrategy.defaultStrategy);
-
+/*
 		if(suppObsFixes)
 		{
 			CinematiqueObs obsDepart = cinemMemory.getNewNode();
 			Cinematique cinemDepart = depart.state.robot.getCinematique();
 			obsDepart.updateReel(cinemDepart.getPosition().getX(), cinemDepart.getPosition().getY(), cinemDepart.orientationReelle, cinemDepart.enMarcheAvant, cinemDepart.courbureReelle);
 			arcmanager.disableObstaclesFixes(symetrie, obsDepart);
-		}
+		}*/
 
 		dstarlite.computeNewPath(depart.state.robot.getCinematique().getPosition(), cercle.arriveeDStarLite, shoot);
 		if(graphicDStarLite)
@@ -539,13 +539,13 @@ public class AStarCourbe implements Service, HighPFClass
 		closedset.clear();
 		depart.state.robot.setCinematique(lastValid);
 
-		if(suppObsFixes)
+/*		if(suppObsFixes)
 		{
 			CinematiqueObs obsDepart = cinemMemory.getNewNode();
 			Cinematique cinemDepart = depart.state.robot.getCinematique();
 			obsDepart.updateReel(cinemDepart.getPosition().getX(), cinemDepart.getPosition().getY(), cinemDepart.orientationReelle, cinemDepart.enMarcheAvant, cinemDepart.courbureReelle);
 			arcmanager.disableObstaclesFixes(symetrie, obsDepart);
-		}
+		}*/
 
 		// On met à jour le D* Lite
 		dstarlite.updateStart(depart.state.robot.getCinematique().getPosition());
