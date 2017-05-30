@@ -28,8 +28,6 @@ import config.ConfigInfo;
 import container.Container;
 import graphic.Fenetre;
 import robot.Cinematique;
-import robot.RobotReal;
-import threads.serie.ThreadSerialInputCoucheOrdre;
 
 /**
  * Classe mère de tous les tests.
@@ -58,17 +56,6 @@ public abstract class JUnit_Test
 		config = container.getService(Config.class);
 		log = container.getService(Log.class);
 		log.debug("Test unitaire : " + testName.getMethodName());
-		synchronized(config)
-		{
-			config.set(ConfigInfo.MATCH_DEMARRE, true);
-			config.set(ConfigInfo.DATE_DEBUT_MATCH, System.currentTimeMillis());
-			ThreadSerialInputCoucheOrdre.capteursOn = true;
-		}
-		/*
-		 * La position initiale du robot
-		 */
-		RobotReal r = container.getService(RobotReal.class);
-		r.setCinematique(new Cinematique(0, 1800, -Math.PI / 3, true, 0));
 	}
 
 	@After

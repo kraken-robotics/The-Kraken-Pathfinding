@@ -18,7 +18,6 @@ import java.awt.Graphics;
 import graphic.Fenetre;
 import graphic.printable.Layer;
 import pathfinding.dstarlite.gridspace.Masque;
-import robot.RobotReal;
 import utils.Vec2RO;
 
 /**
@@ -61,9 +60,9 @@ public class ObstacleMasque implements ObstacleInterface
 	}
 
 	@Override
-	public void print(Graphics g, Fenetre f, RobotReal robot)
+	public void print(Graphics g, Fenetre f)
 	{
-		o.print(g, f, robot);
+		o.print(g, f);
 	}
 
 	@Override

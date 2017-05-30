@@ -16,7 +16,6 @@ package pathfinding;
 
 import robot.Cinematique;
 import robot.Robot;
-import scripts.ScriptNames;
 
 /**
  * Clé pour le cache du pathfinding
@@ -27,15 +26,13 @@ import scripts.ScriptNames;
 
 public class KeyPathCache
 {
-	public ScriptNames s;
 	public Cinematique arrivee;
 	public final GameState<? extends Robot> chrono;
 	public boolean shoot;
 
-	public KeyPathCache(GameState<? extends Robot> chrono, ScriptNames s, boolean shoot)
+	public KeyPathCache(GameState<? extends Robot> chrono, boolean shoot)
 	{
 		this.chrono = chrono;
-		this.s = s;
 		this.shoot = shoot;
 	}
 
@@ -59,24 +56,18 @@ public class KeyPathCache
 	@Override
 	public int hashCode()
 	{
-		if(s != null)
-			return (getCinem() + s.hashCode()) * 2 + (shoot ? 1 : 0);
 		return ((getCinem() << 10) + arrivee.hashCode()) * 2 + (shoot ? 1 : 0);
 	}
 
 	@Override
 	public boolean equals(Object o)
 	{
-		if(s != null)
-			return o instanceof KeyPathCache && ((KeyPathCache) o).shoot == shoot && ((KeyPathCache) o).s.equals(s) && ((KeyPathCache) o).getCinem() == getCinem();
 		return o instanceof KeyPathCache && ((KeyPathCache) o).shoot == shoot && ((KeyPathCache) o).arrivee.hashCode() == arrivee.hashCode() && ((KeyPathCache) o).getCinem() == getCinem();
 	}
 
 	@Override
 	public String toString()
 	{
-		if(s != null)
-			return s + "-" + getCinem() + "-" + shoot;
 		return arrivee.hashCode() + "-" + getCinem() + "-" + shoot;
 	}
 }

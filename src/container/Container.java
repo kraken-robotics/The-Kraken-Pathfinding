@@ -32,7 +32,6 @@ import java.util.Set;
 import java.util.Stack;
 import config.Config;
 import config.ConfigInfo;
-import config.DynamicConfigurable;
 import container.Service;
 import container.dependances.CoreClass;
 import container.dependances.GUIClass;
@@ -46,10 +45,7 @@ import graphic.PrintBuffer;
 import graphic.PrintBufferInterface;
 import obstacles.types.Obstacle;
 import pathfinding.astar.arcs.ArcCourbe;
-import pathfinding.astar.arcs.CercleArrivee;
 import robot.Speed;
-import scripts.Script;
-import serie.SerieCoucheTrame;
 import threads.ThreadName;
 import threads.ThreadService;
 import threads.ThreadShutdown;
@@ -79,7 +75,6 @@ public class Container implements Service
 	private boolean shutdown = false;
 	private boolean showGraph;
 
-	private List<DynamicConfigurable> dynaConf = new ArrayList<DynamicConfigurable>();
 	private HashMap<Class<? extends Service>, Set<String>> grapheDep = new HashMap<Class<? extends Service>, Set<String>>();
 	
 	public boolean isShutdownInProgress()
@@ -126,14 +121,6 @@ public class Container implements Service
 		}
 
 		shutdown = true;
-
-		/**
-		 * Mieux vaut écrire SerieCouchePhysique.class.getSimpleName()) que
-		 * "SerieCouchePhysique",
-		 * car en cas de refactor, le premier est automatiquement ajusté
-		 */
-		if(instanciedServices.containsKey(SerieCoucheTrame.class.getSimpleName()))
-			((SerieCoucheTrame) instanciedServices.get(SerieCoucheTrame.class.getSimpleName())).close();
 
 		// On appelle le destructeur du PrintBuffer
 		if(instanciedServices.containsKey(PrintBufferInterface.class.getSimpleName()))
@@ -367,7 +354,6 @@ public class Container implements Service
 
 		// Interdépendance entre log et config…
 		config.init(log);
-		dynaConf.add(log);
 
 		instanciedServices.put(Log.class.getSimpleName(), log);
 		instanciedServices.put(Config.class.getSimpleName(), config);
@@ -402,7 +388,6 @@ public class Container implements Service
 		Obstacle.set(log, getService(PrintBufferInterface.class));
 		Obstacle.useConfig(config);
 		ArcCourbe.useConfig(config);
-		Script.setLogCercle(log, getService(CercleArrivee.class));
 		
 		startAllThreads();
 	}
@@ -552,19 +537,6 @@ public class Container implements Service
 			if(Service.class.isAssignableFrom(classe))
 				instanciedServices.put(classe.getSimpleName(), (Service) s);
 
-			/**
-			 * Mise à jour de la config
-			 */
-			if(DynamicConfigurable.class.isAssignableFrom(classe))
-			{
-				synchronized(dynaConf)
-				{
-					dynaConf.add((DynamicConfigurable) s);
-				}
-				if(config != null)
-					((DynamicConfigurable) s).updateConfig(config);
-			}
-
 			// Mise à jour de la pile
 			stack.pop();
 
@@ -615,21 +587,6 @@ public class Container implements Service
 				e.printStackTrace();
 				e.printStackTrace(log.getPrintWriter());
 			}
-		}
-	}
-
-	/**
-	 * Mise à jour de la config pour tous les services démarrés
-	 * 
-	 * @param s
-	 * @return
-	 */
-	public void updateConfigForAll()
-	{
-		synchronized(dynaConf)
-		{
-			for(DynamicConfigurable s : dynaConf)
-				s.updateConfig(config);
 		}
 	}
 

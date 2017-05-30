@@ -25,8 +25,6 @@ import graphic.Fenetre;
 import graphic.PrintBuffer;
 import graphic.printable.Layer;
 import graphic.printable.Printable;
-import robot.Cinematique;
-import robot.RobotReal;
 import utils.Log;
 
 /**
@@ -52,7 +50,6 @@ public class ClientFenetre
 				container = new Container();
 				Fenetre f = container.getService(Fenetre.class);
 				PrintBuffer buffer = container.getService(PrintBuffer.class);
-				RobotReal robot = container.getService(RobotReal.class);
 				Log log = container.getService(Log.class);
 				InetAddress rpiAdresse = null;
 				boolean loop = false;
@@ -149,13 +146,13 @@ public class ClientFenetre
 								while(i < tab.size())
 								{
 									Object o = tab.get(i++);
-									if(o instanceof Cinematique)
+/*									if(o instanceof Cinematique)
 									{
 										// log.debug("Cinématique !
 										// "+((Cinematique)o).getPosition());
 										robot.setCinematique((Cinematique) o);
 									}
-									else if(o instanceof Printable)
+									else */if(o instanceof Printable)
 									{
 										Layer l = (Layer) tab.get(i++);
 										buffer.addSupprimable((Printable) o, l);

@@ -22,7 +22,6 @@ import graphic.Fenetre;
 import graphic.printable.Couleur;
 import graphic.printable.Layer;
 import graphic.printable.Printable;
-import robot.RobotReal;
 
 /**
  * Le masque d'un obstacle de proximité
@@ -50,12 +49,12 @@ public class Masque implements Printable, Serializable
 	}
 
 	@Override
-	public void print(Graphics g, Fenetre f, RobotReal robot)
+	public void print(Graphics g, Fenetre f)
 	{
 		for(PointDirige p : masque)
 		{
 			g.setColor(Couleur.NOIR.couleur);
-			pm.getGridPointVoisin(p).print(g, f, robot);
+			pm.getGridPointVoisin(p).print(g, f);
 		}
 	}
 

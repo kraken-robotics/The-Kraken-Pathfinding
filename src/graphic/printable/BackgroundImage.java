@@ -17,7 +17,6 @@ package graphic.printable;
 import java.awt.Graphics;
 import java.awt.Image;
 import graphic.Fenetre;
-import robot.RobotReal;
 
 /**
  * Image de fond
@@ -36,7 +35,7 @@ public class BackgroundImage implements Printable
 	}
 
 	@Override
-	public void print(Graphics g, Fenetre f, RobotReal robot)
+	public void print(Graphics g, Fenetre f)
 	{
 		g.drawImage(image, f.XtoWindow(-1500), f.YtoWindow(2000), f.distanceXtoWindow(3000), f.distanceYtoWindow(2000), f);
 	}

@@ -25,7 +25,6 @@ import pathfinding.ChronoGameState;
 import pathfinding.astar.arcs.ArcCourbe;
 import pathfinding.astar.arcs.ArcCourbeStatique;
 import pathfinding.astar.arcs.ArcCourbeDynamique;
-import robot.RobotReal;
 
 /**
  * Un nœud de l'A* courbe
@@ -107,12 +106,12 @@ public class AStarCourbeNode implements Memorizable, Printable
 	}
 
 	@Override
-	public void print(Graphics g, Fenetre f, RobotReal robot)
+	public void print(Graphics g, Fenetre f)
 	{
 		ArcCourbe a = getArc();
 		if(a != null)
 		{
-			a.print(g, f, robot);
+			a.print(g, f);
 			double h = f_score;
 			double seuil = 5000;
 			if(h > seuil)
@@ -123,7 +122,7 @@ public class AStarCourbeNode implements Memorizable, Printable
 			else
 				g.setColor(new Color((int) (h * 255 / seuil), 0, (int) (255 - h * 255 / seuil)));
 
-			a.getLast().print(g, f, robot);
+			a.getLast().print(g, f);
 		}
 	}
 

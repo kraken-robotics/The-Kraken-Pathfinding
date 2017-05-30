@@ -17,7 +17,6 @@ package obstacles.types;
 import java.awt.Graphics;
 import graphic.Fenetre;
 import graphic.printable.Couleur;
-import robot.RobotReal;
 import utils.Vec2RO;
 import utils.Vec2RW;
 
@@ -276,7 +275,7 @@ public class ObstacleRectangular extends Obstacle
 	}
 
 	@Override
-	public void print(Graphics g, Fenetre f, RobotReal robot)
+	public void print(Graphics g, Fenetre f)
 	{
 		if(coinBasDroiteRotate == null)
 			return;

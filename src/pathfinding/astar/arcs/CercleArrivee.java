@@ -28,7 +28,6 @@ import graphic.printable.Layer;
 import graphic.printable.Printable;
 import pathfinding.SensFinal;
 import robot.Cinematique;
-import robot.RobotReal;
 import table.GameElementNames;
 import utils.Log;
 import utils.Log.Verbose;
@@ -167,7 +166,7 @@ public class CercleArrivee implements Service, Printable, HighPFClass, LowPFClas
 	}
 
 	@Override
-	public void print(Graphics g, Fenetre f, RobotReal robot)
+	public void print(Graphics g, Fenetre f)
 	{
 		if(position != null)
 		{

@@ -28,11 +28,7 @@ import graphic.TimestampedList;
 import graphic.printable.Couleur;
 import graphic.printable.Layer;
 import graphic.printable.Printable;
-import graphic.printable.Vector;
 import obstacles.types.ObstacleRectangular;
-import robot.AnglesRoues;
-import robot.Cinematique;
-import robot.RobotReal;
 import utils.Log;
 import utils.Log.Verbose;
 import utils.Vec2RO;
@@ -177,7 +173,6 @@ public class VideoReader
 			PrintBuffer buffer = null;
 			if(filename != null)
 				buffer = container.getService(PrintBuffer.class);
-			RobotReal robot = container.getService(RobotReal.class);
 			Log log = container.getService(Log.class);
 			TimestampedList listes = null;
 
@@ -327,23 +322,7 @@ public class VideoReader
 						while(i < tab.size())
 						{
 							Serializable o = tab.get(i++);
-							if(o instanceof Cinematique)
-							{
-								if(debug)
-									System.out.println("Cinématique robot : " + ((Cinematique) o).getPosition());
-								robot.setCinematique((Cinematique) o);
-							}
-							else if(o instanceof AnglesRoues)
-							{
-								if(debug)
-									System.out.println("Angles des roues du robot : " + ((AnglesRoues) o).angleRoueGauche + ", " + ((AnglesRoues) o).angleRoueDroite);
-								robot.setAngleRoues(((AnglesRoues) o).angleRoueGauche, ((AnglesRoues) o).angleRoueDroite);
-							}
-							else if(o instanceof Vector)
-							{
-								robot.setVector((Vector) o);
-							}
-							else if(o instanceof Printable)
+							if(o instanceof Printable)
 							{
 								if(debug)
 									System.out.println("Ajout : " + o);

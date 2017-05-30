@@ -14,7 +14,6 @@
 
 package config;
 
-import robot.RobotColor;
 
 /**
  * Informations accessibles par la config
@@ -212,15 +211,7 @@ public enum ConfigInfo
 							// d'affichage ?
 	GRAPHIC_DIFFERENTIAL(true), // sauvegarde d'une "vidéo" pour visionner les
 								// images plus tard
-	GRAPHIC_ZOOM(0), // zoom de la fenêtre. Si 0, aucun zoom. Sinon, zoom + focus sur le robot
-	
-	/**
-	 * Config dynamique
-	 */
-	COULEUR(RobotColor.getCouleurSansSymetrie(), false), // quelle est la
-															// couleur du robot
-	MATCH_DEMARRE(false, false), // le match a-t-il démarré
-	DATE_DEBUT_MATCH(0, false); // date du début du match
+	GRAPHIC_ZOOM(0); // zoom de la fenêtre. Si 0, aucun zoom. Sinon, zoom + focus sur le robot
 
 	private Object defaultValue;
 	public boolean overridden = false;

@@ -25,7 +25,6 @@ import memory.CinemObsMM;
 import pathfinding.ChronoGameState;
 import pathfinding.DirectionStrategy;
 import pathfinding.GameState;
-import pathfinding.RealGameState;
 import pathfinding.SensFinal;
 import pathfinding.astar.arcs.ArcCourbe;
 import pathfinding.astar.arcs.ArcManager;
@@ -36,7 +35,6 @@ import pathfinding.dstarlite.DStarLite;
 import pathfinding.dstarlite.gridspace.PointGridSpace;
 import config.Config;
 import config.ConfigInfo;
-import config.DynamicConfigurable;
 import container.Service;
 import container.dependances.HighPFClass;
 import exceptions.MemoryManagerException;
@@ -57,13 +55,12 @@ import utils.Log.Verbose;
  *
  */
 
-public class AStarCourbe implements Service, HighPFClass, DynamicConfigurable
+public class AStarCourbe implements Service, HighPFClass
 {
 	protected Log log;
 	private boolean symetrie;
 	private ArcManager arcmanager;
 	private DStarLite dstarlite;
-	private RealGameState state;
 	private NodeMM memorymanager;
 	private PrintBufferInterface buffer;
 	private AStarCourbeNode depart;
@@ -111,11 +108,10 @@ public class AStarCourbe implements Service, HighPFClass, DynamicConfigurable
 	/**
 	 * Constructeur du AStarCourbe
 	 */
-	public AStarCourbe(Log log, DStarLite dstarlite, ArcManager arcmanager, RealGameState state, CheminPathfinding chemin, NodeMM memorymanager, CinemObsMM rectMemory, PrintBufferInterface buffer, CercleArrivee cercle, ChronoGameState chrono, Config config)
+	public AStarCourbe(Log log, DStarLite dstarlite, ArcManager arcmanager, CheminPathfinding chemin, NodeMM memorymanager, CinemObsMM rectMemory, PrintBufferInterface buffer, CercleArrivee cercle, ChronoGameState chrono, Config config)
 	{
 		this.log = log;
 		this.arcmanager = arcmanager;
-		this.state = state;
 		this.memorymanager = memorymanager;
 		this.realChemin = chemin;
 		this.dstarlite = dstarlite;
@@ -534,7 +530,7 @@ public class AStarCourbe implements Service, HighPFClass, DynamicConfigurable
 		log.debug("Replanification lancée", Verbose.REPLANIF.masque);
 
 		depart.init();
-		state.copyAStarCourbe(depart.state);
+// TODO		state.copyAStarCourbe(depart.state);
 
 		/*
 		 * Forcément, on utilise le vrai chemin ici
@@ -561,17 +557,9 @@ public class AStarCourbe implements Service, HighPFClass, DynamicConfigurable
 		process(realChemin, true);
 	}
 	
-	public boolean isArrivedAsser()
+/*	public boolean isArrivedAsser()
 	{
 		return arcmanager.isArrivedAsser(state.robot.getCinematique());
-	}
-
-	@Override
-	public void updateConfig(Config config)
-	{
-		Boolean sym = config.getSymmetry();
-		if(sym != null)
-			symetrie = sym;
-	}
+	}*/
 
 }

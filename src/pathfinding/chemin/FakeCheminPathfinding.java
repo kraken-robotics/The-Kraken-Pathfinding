@@ -28,7 +28,6 @@ import graphic.printable.Printable;
 import obstacles.types.ObstacleCircular;
 import robot.Cinematique;
 import robot.CinematiqueObs;
-import robot.RobotReal;
 import utils.Log;
 
 /**
@@ -79,7 +78,7 @@ public class FakeCheminPathfinding implements Service, CheminPathfindingInterfac
 	}
 
 	@Override
-	public void print(Graphics g, Fenetre f, RobotReal robot)
+	public void print(Graphics g, Fenetre f)
 	{
 		int i = 0;
 		if(path != null)

@@ -16,7 +16,6 @@ package graphic.printable;
 
 import java.awt.Graphics;
 import graphic.Fenetre;
-import robot.RobotReal;
 
 /**
  * Élément affichable
@@ -32,7 +31,7 @@ public interface Printable
 	 * 
 	 * @param g
 	 */
-	public void print(Graphics g, Fenetre f, RobotReal robot);
+	public void print(Graphics g, Fenetre f);
 
 	/**
 	 * Récupère le layer sur lequel afficher l'objet

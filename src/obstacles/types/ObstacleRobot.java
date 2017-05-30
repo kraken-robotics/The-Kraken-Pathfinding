@@ -20,7 +20,6 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.io.Serializable;
-import robot.RobotReal;
 import utils.Vec2RO;
 import utils.Vec2RW;
 
@@ -140,9 +139,9 @@ public class ObstacleRobot extends ObstacleRectangular implements Serializable
 	}*/
 
 	@Override
-	public void print(Graphics g, Fenetre f, RobotReal robot)
+	public void print(Graphics g, Fenetre f)
 	{
-		if(!robot.isCinematiqueInitialised())
+/*		if(!robot.isCinematiqueInitialised())
 			return;
 
 		if(coinBasDroiteRotate == null)
@@ -201,7 +200,7 @@ public class ObstacleRobot extends ObstacleRectangular implements Serializable
 			trans.translate(f.distanceXtoWindow((int) coinHautGaucheImg.getX()), f.distanceYtoWindow(-(int) coinHautGaucheImg.getY()));
 			trans.scale(1. * f.distanceXtoWindow((int) coinHautGaucheImg.distance(coinHautDroiteImg)) / imageRobot.getWidth(null), 1. * f.distanceXtoWindow((int) coinHautGaucheImg.distance(coinBasGaucheImg)) / imageRobot.getHeight(null));
 			g2d.drawImage(imageRobot, trans, null);
-		}
+		}*/
 	}
 
 	@Override

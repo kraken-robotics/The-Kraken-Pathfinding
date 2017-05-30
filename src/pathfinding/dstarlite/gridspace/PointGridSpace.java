@@ -22,7 +22,6 @@ import container.Service;
 import graphic.Fenetre;
 import graphic.printable.Layer;
 import graphic.printable.Printable;
-import robot.RobotReal;
 
 /**
  * Un point du gridspace
@@ -101,7 +100,7 @@ public class PointGridSpace implements Service, Printable, Serializable
 	}
 
 	@Override
-	public void print(Graphics g, Fenetre f, RobotReal robot)
+	public void print(Graphics g, Fenetre f)
 	{
 		Vec2RO p = computeVec2();
 		g.fillOval(f.XtoWindow(p.getX()) - f.distanceXtoWindow((int) DISTANCE_ENTRE_DEUX_POINTS) / 2, f.YtoWindow(p.getY()) - f.distanceYtoWindow((int) DISTANCE_ENTRE_DEUX_POINTS) / 2, f.distanceXtoWindow((int) (DISTANCE_ENTRE_DEUX_POINTS * 0.7)), f.distanceYtoWindow((int) (DISTANCE_ENTRE_DEUX_POINTS * 0.7)));

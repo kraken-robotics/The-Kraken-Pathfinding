@@ -15,9 +15,7 @@
 package tests;
 
 import org.junit.Test;
-import org.junit.Assert;
 import config.ConfigInfo;
-import robot.RobotColor;
 
 /**
  * Tests unitaires pour la configuration... juste épique.
@@ -34,21 +32,6 @@ public class JUnit_Config extends JUnit_Test
 	{
 		for(ConfigInfo c : ConfigInfo.values())
 			config.getString(c);
-	}
-
-	@Test
-	public void test_set1() throws Exception
-	{
-		Assert.assertTrue(config.getSymmetry() == null);
-		config.set(ConfigInfo.COULEUR, RobotColor.BLEU);
-		Assert.assertTrue(config.getSymmetry() == true);
-	}
-
-	@Test
-	public void test_set2() throws Exception
-	{
-		config.set(ConfigInfo.DATE_DEBUT_MATCH, 42);
-		Assert.assertTrue(config.getInt(ConfigInfo.DATE_DEBUT_MATCH) == 42);
 	}
 
 }

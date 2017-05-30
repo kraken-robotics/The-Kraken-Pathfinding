@@ -18,7 +18,6 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.io.Serializable;
 import graphic.Fenetre;
-import robot.RobotReal;
 import utils.Vec2RO;
 
 /**
@@ -58,7 +57,7 @@ public class Segment implements Printable, Serializable
 	}
 
 	@Override
-	public void print(Graphics g, Fenetre f, RobotReal robot)
+	public void print(Graphics g, Fenetre f)
 	{
 		g.setColor(c);
 		g.drawLine(f.XtoWindow(a.getX()), f.YtoWindow(a.getY()), f.XtoWindow(b.getX()), f.YtoWindow(b.getY()));

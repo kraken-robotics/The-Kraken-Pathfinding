@@ -30,7 +30,6 @@ import graphic.printable.Segment;
 import obstacles.types.ObstacleCircular;
 import pathfinding.chemin.CheminPathfinding;
 import pathfinding.chemin.IteratorCheminPathfinding;
-import robot.RobotReal;
 import utils.Log;
 
 /**
@@ -44,7 +43,6 @@ public class ExternalPrintBuffer implements PrintBufferInterface
 {
 	private List<ArrayList<Serializable>> elementsAffichablesSupprimables = new ArrayList<ArrayList<Serializable>>();
 	private List<ArrayList<Serializable>> elementsAffichables = new ArrayList<ArrayList<Serializable>>();
-	private RobotReal robot = null;
 	private IteratorCheminPathfinding iterChemin = null;
 	private TimestampedList sauvegarde;
 
@@ -112,12 +110,7 @@ public class ExternalPrintBuffer implements PrintBufferInterface
 
 	private void add(Printable o, Layer l, List<ArrayList<Serializable>> list)
 	{
-		if(o instanceof RobotReal)
-		{
-			robot = ((RobotReal) o);
-			notify();
-		}
-		else if(o instanceof CheminPathfinding)
+		if(o instanceof CheminPathfinding)
 		{
 			iterChemin = new IteratorCheminPathfinding((CheminPathfinding) o);
 		}
@@ -144,15 +137,7 @@ public class ExternalPrintBuffer implements PrintBufferInterface
 	private synchronized List<Serializable> prepareList()
 	{
 		List<Serializable> o = new ArrayList<Serializable>();
-
-		if(robot != null)
-		{
-			o.add(robot.getCinematique().clone());
-			o.add(robot.getAngles());
-			o.add(robot.getVector());
-			// log.debug(o.get(0));
-		}
-
+		
 		for(int i = 0; i < Layer.values().length; i++)
 		{
 			for(Serializable p : elementsAffichablesSupprimables.get(i))

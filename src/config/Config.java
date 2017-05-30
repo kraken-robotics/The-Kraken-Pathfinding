@@ -18,7 +18,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
 import container.Service;
-import robot.RobotColor;
 import utils.Log;
 
 /**
@@ -290,18 +289,4 @@ public class Config implements Service
 				properties.setProperty(info.toString(), info.getDefaultValue().toString());
 		}
 	}
-
-	/**
-	 * Récupère la symétrie
-	 * 
-	 * @return
-	 */
-	public Boolean getSymmetry()
-	{
-		String s = getString(ConfigInfo.COULEUR);
-		if(s != null)
-			return RobotColor.parse(s).symmetry;
-		return null;
-	}
-
 }

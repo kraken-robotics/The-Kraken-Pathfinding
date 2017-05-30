@@ -17,7 +17,6 @@ package tests;
 import org.junit.Assert;
 import org.junit.Test;
 import config.Config;
-import config.DynamicConfigurable;
 import container.Service;
 import exceptions.ContainerException;
 import obstacles.memory.ObstaclesIteratorPresent;
@@ -57,19 +56,13 @@ public class JUnit_Container extends JUnit_Test
 		{}
 	}
 
-	public class D implements Service, DynamicConfigurable
+	public class D implements Service
 	{
 		public boolean useConfigOk = false;
 		public boolean updateConfigOk = false;
 
 		public D()
 		{}
-
-		@Override
-		public void updateConfig(Config config)
-		{
-			updateConfigOk = true;
-		}
 	}
 
 	@Test

@@ -14,12 +14,6 @@
 
 package threads;
 
-import threads.serie.ThreadSerialInputCoucheOrdre;
-import threads.serie.ThreadSerialInputCoucheTrame;
-import threads.serie.ThreadSerialOutputBytes;
-import threads.serie.ThreadSerialOutputOrder;
-import threads.serie.ThreadSerialOutputTimeout;
-
 /**
  * Tous les threads à instancier au début du match. Utilisé par le container
  * 
@@ -29,18 +23,11 @@ import threads.serie.ThreadSerialOutputTimeout;
 
 public enum ThreadName
 {
-	CAPTEURS(ThreadCapteurs.class),
-	CONFIG(ThreadConfig.class),
 	FENETRE(ThreadFenetre.class),
 	PRINT_SERVER(ThreadPrintServer.class),
 	UPDATE_PATHFINDING(ThreadUpdatePathfinding.class),
 	PREPARE_PATHFINDING(ThreadPreparePathfinding.class),
-	PEREMPTION(ThreadPeremption.class),
-	SERIAL_INPUT_ORDRE(ThreadSerialInputCoucheOrdre.class),
-	SERIAL_INPUT_TRAME(ThreadSerialInputCoucheTrame.class),
-	SERIAL_OUTPUT_BYTES(ThreadSerialOutputBytes.class),
-	SERIAL_OUTPUT_ORDER(ThreadSerialOutputOrder.class),
-	SERIAL_OUTPUT_TIMEOUT(ThreadSerialOutputTimeout.class);
+	PEREMPTION(ThreadPeremption.class);
 
 	public Class<? extends ThreadService> c;
 

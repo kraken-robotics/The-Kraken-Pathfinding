@@ -24,7 +24,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import config.Config;
 import config.ConfigInfo;
-import config.DynamicConfigurable;
 import container.Service;
 
 /**
@@ -35,7 +34,7 @@ import container.Service;
  *
  */
 
-public class Log implements Service, DynamicConfigurable
+public class Log implements Service
 {
 	public enum Verbose
 	{
@@ -315,14 +314,6 @@ public class Log implements Service, DynamicConfigurable
 			}
 		}
 		debug("Service de log démarré");
-	}
-
-	@Override
-	public void updateConfig(Config config)
-	{
-		Long date = config.getLong(ConfigInfo.DATE_DEBUT_MATCH);
-		if(date != null)
-			dateDebutMatch = date; 
 	}
 
 	public PrintWriter getPrintWriter()

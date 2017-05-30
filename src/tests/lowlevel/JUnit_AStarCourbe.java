@@ -19,14 +19,11 @@ import java.util.Random;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import capteurs.SensorsData;
-import capteurs.SensorsDataBuffer;
 import config.ConfigInfo;
 import exceptions.PathfindingException;
 import graphic.PrintBuffer;
 import pathfinding.KeyPathCache;
 import pathfinding.PathCache;
-import pathfinding.RealGameState;
 import pathfinding.SensFinal;
 import pathfinding.astar.AStarCourbe;
 import pathfinding.astar.arcs.ArcCourbeStatique;
@@ -44,9 +41,7 @@ import pathfinding.chemin.IteratorCheminPathfinding;
 import pathfinding.dstarlite.gridspace.GridSpace;
 import robot.Cinematique;
 import robot.CinematiqueObs;
-import robot.RobotReal;
 import robot.Speed;
-import scripts.ScriptNames;
 import table.GameElementNames;
 import tests.JUnit_Test;
 import threads.ThreadName;
@@ -67,15 +62,12 @@ public class JUnit_AStarCourbe extends JUnit_Test
 	private ClothoidesComputer clotho;
 	protected BezierComputer bezier;
 	private PrintBuffer buffer;
-	private RobotReal robot;
 	private IteratorCheminPathfinding iterator;
 	private boolean graphicTrajectory;
 	private CheminPathfinding chemin;
 	private FakeCheminPathfinding fakeChemin;
-	private SensorsDataBuffer sensors;
 	private GridSpace gridspace;
 	private CercleArrivee cercle;
-	private RealGameState state;
 	private PathCache pathcache;
 	// private PrecomputedPaths prepaths;
 	// private ArcManager arcmanager;
@@ -89,9 +81,7 @@ public class JUnit_AStarCourbe extends JUnit_Test
 		clotho = container.getService(ClothoidesComputer.class);
 		buffer = container.getService(PrintBuffer.class);
 		astar = container.getService(AStarCourbe.class);
-		state = container.getService(RealGameState.class);
 		// dstarlite = container.getService(DStarLite.class);
-		robot = container.getService(RobotReal.class);
 		chemin = container.getService(CheminPathfinding.class);
 		iterator = new IteratorCheminPathfinding(chemin);
 		gridspace = container.getService(GridSpace.class);
@@ -99,7 +89,6 @@ public class JUnit_AStarCourbe extends JUnit_Test
 		cercle = container.getService(CercleArrivee.class);
 		// arcmanager = container.getService(ArcManager.class);
 		graphicTrajectory = config.getBoolean(ConfigInfo.GRAPHIC_TRAJECTORY_FINAL);
-		sensors = container.getService(SensorsDataBuffer.class);
 		pathcache = container.getService(PathCache.class);
 		fakeChemin = container.getService(FakeCheminPathfinding.class);
 	}
@@ -298,7 +287,7 @@ public class JUnit_AStarCourbe extends JUnit_Test
 	 * log.debug("Temps : "+(System.nanoTime() - avant) / (nbmax * 1000000.));
 	 * }
 	 */
-	@Test
+/*	@Test
 	public void test_recherche_manoeuvre() throws Exception
 	{
 		long avant = System.nanoTime();
@@ -890,11 +879,6 @@ public class JUnit_AStarCourbe extends JUnit_Test
 		log.debug("Nb points : " + i);
 	}
 
-	/**
-	 * Trajectoire avec des arcs "…_AFTER_STOP"
-	 * 
-	 * @throws Exception
-	 */
 	@Test
 	public void test_trajectoire_avec_arret() throws Exception
 	{
@@ -969,5 +953,5 @@ public class JUnit_AStarCourbe extends JUnit_Test
 		}
 		log.debug("Nb points : " + i);
 	}
-
+*/
 }

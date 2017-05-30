@@ -14,12 +14,10 @@
 
 package robot;
 
-import exceptions.ActionneurException;
 import exceptions.MemoryManagerException;
 import exceptions.UnableToMoveException;
 import pathfinding.astar.arcs.ArcCourbe;
 import pathfinding.chemin.CheminPathfinding;
-import serie.Ticket;
 import utils.Log;
 import utils.Vec2RO;
 
@@ -42,10 +40,9 @@ public class RobotChrono extends Robot
 	 * @param log
 	 * @param robot
 	 */
-	public RobotChrono(Log log, RobotReal robot, CheminPathfinding chemin)
+	public RobotChrono(Log log, CheminPathfinding chemin)
 	{
 		super(log);
-		robot.copy(this);
 		this.chemin = chemin;
 	}
 
@@ -92,11 +89,6 @@ public class RobotChrono extends Robot
 	public boolean isArrivedAsser()
 	{
 		return true;
-	}
-	
-	public Ticket traverseBascule() throws InterruptedException, ActionneurException
-	{
-		return null;
 	}
 
 

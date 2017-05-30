@@ -20,7 +20,6 @@ import java.awt.Polygon;
 import java.awt.geom.AffineTransform;
 import java.io.Serializable;
 import graphic.Fenetre;
-import robot.RobotReal;
 import utils.Vec2RO;
 import utils.Vec2RW;
 
@@ -61,7 +60,7 @@ public class Vector implements Printable, Serializable
 	}
 
 	@Override
-	public void print(Graphics g, Fenetre f, RobotReal robot)
+	public void print(Graphics g, Fenetre f)
 	{
 		g.setColor(c.couleur);
 		g.drawLine(f.XtoWindow(a.getX()), f.YtoWindow(a.getY()), f.XtoWindow(b.getX()), f.YtoWindow(b.getY()));

@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 import config.Config;
 import config.ConfigInfo;
-import robot.RobotReal;
 import utils.Log;
 import graphic.printable.Couleur;
 import graphic.printable.Layer;
@@ -116,7 +115,7 @@ public class PrintBuffer implements PrintBufferInterface
 	 * @param f
 	 * @param robot
 	 */
-	public synchronized void print(Graphics g, Fenetre f, RobotReal robot)
+	public synchronized void print(Graphics g, Fenetre f)
 	{
 		needRefresh = false;
 		for(int i = 0; i < Layer.values().length; i++)
@@ -127,7 +126,7 @@ public class PrintBuffer implements PrintBufferInterface
 				g.setColor(Couleur.NOIR.couleur);
 
 			for(Printable p : elementsAffichablesSupprimables.get(i))
-				p.print(g, f, robot);
+				p.print(g, f);
 
 			if(afficheFond)
 				g.setColor(Couleur.VERT.couleur);
@@ -135,7 +134,7 @@ public class PrintBuffer implements PrintBufferInterface
 				g.setColor(Couleur.NOIR.couleur);
 
 			for(Printable p : elementsAffichables.get(i))
-				p.print(g, f, robot);
+				p.print(g, f);
 		}
 		if(time)
 		{

@@ -18,7 +18,6 @@ import pathfinding.ChronoGameState;
 import pathfinding.astar.AStarCourbeNode;
 import pathfinding.chemin.CheminPathfinding;
 import robot.RobotChrono;
-import robot.RobotReal;
 import table.Table;
 import utils.Log;
 import config.Config;
@@ -37,13 +36,11 @@ public class NodeMM extends MemoryManager<AStarCourbeNode> implements HighPFClas
 {
 	private int largeur, longueur_arriere, longueur_avant, marge;
 	private Log log;
-	private RobotReal robot;
 	private CheminPathfinding chemin;
 	
-	public NodeMM(Log log, Config config, RobotReal robot, CheminPathfinding chemin) throws ContainerException
+	public NodeMM(Log log, Config config, CheminPathfinding chemin) throws ContainerException
 	{
 		super(AStarCourbeNode.class, log);
-		this.robot = robot;
 		this.chemin = chemin;
 		largeur = config.getInt(ConfigInfo.LARGEUR_NON_DEPLOYE) / 2;
 		longueur_arriere = config.getInt(ConfigInfo.DEMI_LONGUEUR_NON_DEPLOYE_ARRIERE);
@@ -55,7 +52,7 @@ public class NodeMM extends MemoryManager<AStarCourbeNode> implements HighPFClas
 	@Override
 	protected final AStarCourbeNode make()
 	{
-		return new AStarCourbeNode(new ChronoGameState(new RobotChrono(log, robot, chemin), new Table(log)), largeur, longueur_arriere, longueur_avant, marge);
+		return new AStarCourbeNode(new ChronoGameState(new RobotChrono(log, chemin), new Table(log)), largeur, longueur_arriere, longueur_avant, marge);
 	}
 
 }

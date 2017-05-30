@@ -19,8 +19,6 @@ import exceptions.PathfindingException;
 import pathfinding.astar.AStarCourbe;
 import pathfinding.chemin.CheminPathfinding;
 import robot.Cinematique;
-import robot.Speed;
-import serie.BufferOutgoingOrder;
 import utils.Log;
 import utils.Log.Verbose;
 
@@ -36,14 +34,12 @@ public class ThreadUpdatePathfinding extends ThreadService implements HighPFClas
 	protected Log log;
 	private AStarCourbe pathfinding;
 	private CheminPathfinding chemin;
-	private BufferOutgoingOrder out;
 
-	public ThreadUpdatePathfinding(Log log, AStarCourbe pathfinding, CheminPathfinding chemin, BufferOutgoingOrder out)
+	public ThreadUpdatePathfinding(Log log, AStarCourbe pathfinding, CheminPathfinding chemin)
 	{
 		this.log = log;
 		this.pathfinding = pathfinding;
 		this.chemin = chemin;
-		this.out = out;
 	}
 
 	@Override
@@ -68,16 +64,13 @@ public class ThreadUpdatePathfinding extends ThreadService implements HighPFClas
 					if(chemin.needStop())
 						throw new PathfindingException("Trajectoire vide");
 					Cinematique lastValid = chemin.getLastValidCinematique();
-					out.setMaxSpeed(Speed.REPLANIF, chemin.getCurrentMarcheAvant());
 					log.debug("Mise à jour du chemin", Verbose.REPLANIF.masque);
 					pathfinding.updatePath(lastValid);
-					out.setMaxSpeed(Speed.STANDARD, chemin.getCurrentMarcheAvant());
 				}
 				catch(PathfindingException e)
 				{
 					log.critical(e);
 //					if(!chemin.isEmpty())
-					out.immobilise();
 //					else
 //						log.debug("Robot déjà à l'arrêt", Verbose.REPLANIF.masque);
 					chemin.clear();
@@ -104,7 +97,6 @@ public class ThreadUpdatePathfinding extends ThreadService implements HighPFClas
 							chemin.wait();
 					}
 					chemin.clear();
-					out.immobilise();
 				}
 			}
 			catch(InterruptedException e1)

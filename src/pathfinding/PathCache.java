@@ -25,7 +25,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import capteurs.CapteursProcess;
 import config.Config;
 import config.ConfigInfo;
 import container.Service;
@@ -41,10 +40,6 @@ import pathfinding.chemin.FakeCheminPathfinding;
 import robot.Cinematique;
 import robot.CinematiqueObs;
 import robot.Speed;
-import serie.BufferOutgoingOrder;
-import serie.SerialProtocol.InOrder;
-import serie.SerialProtocol.State;
-import serie.Ticket;
 import utils.Log;
 import utils.Log.Verbose;
 import utils.Vec2RO;
@@ -63,12 +58,9 @@ public class PathCache implements Service, HighPFClass
 	private AStarCourbe astar;
 	private CheminPathfinding realChemin;
 	private FakeCheminPathfinding fakeChemin;
-	private BufferOutgoingOrder out;
 	private ObstaclesIteratorPresent iteratorObstacles;
-	private RealGameState state;
 	private int dureePeremption;
 	private PFInstruction inst;
-	private CapteursProcess capteurs;
 	private int nbEssais;
 	private boolean saveOnTheFly;
 	private boolean enableScan;
@@ -80,12 +72,9 @@ public class PathCache implements Service, HighPFClass
 	 */
 	public HashMap<String, LinkedList<CinematiqueObs>> paths;
 
-	public PathCache(Log log, Config config, ObstaclesIteratorPresent iteratorObstacles, BufferOutgoingOrder out, CapteursProcess capteurs, RealGameState state, ChronoGameState chrono, AStarCourbe astar, CheminPathfinding realChemin, FakeCheminPathfinding fakeChemin, PFInstruction inst) throws MemoryManagerException, InterruptedException
+	public PathCache(Log log, Config config, ObstaclesIteratorPresent iteratorObstacles, ChronoGameState chrono, AStarCourbe astar, CheminPathfinding realChemin, FakeCheminPathfinding fakeChemin, PFInstruction inst) throws MemoryManagerException, InterruptedException
 	{
 		this.iteratorObstacles = iteratorObstacles;
-		this.capteurs = capteurs;
-		this.out = out;
-		this.state = state;
 		this.inst = inst;
 		nbEssais = config.getInt(ConfigInfo.NB_ESSAIS_PF);
 		saveOnTheFly = config.getBoolean(ConfigInfo.SAVE_FOUND_PATH);
@@ -146,19 +135,7 @@ public class PathCache implements Service, HighPFClass
 		if(!iteratorObstacles.hasNext());
 			path = paths.get(k.toString()+".dat");
 
-		if(k.s != null)
-		{
-			Cinematique arrivee = k.s.s.getPointEntree();
-			if(arrivee != null)
-				astar.initializeNewSearch(arrivee, k.shoot, k.chrono);
-			else
-			{
-				k.s.s.setUpCercleArrivee();
-				astar.initializeNewSearchToCircle(k.shoot, k.chrono);
-			}
-		}
-		else
-			astar.initializeNewSearch(k.arrivee, k.shoot, k.chrono);
+		astar.initializeNewSearch(k.arrivee, k.shoot, k.chrono);
 
 		if(path == null)
 			inst.searchRequest();
@@ -258,19 +235,7 @@ public class PathCache implements Service, HighPFClass
 																						// pas
 																						// fini
 						{
-							if(k.s != null)
-							{
-								Cinematique arrivee = k.s.s.getPointEntree();
-								if(arrivee != null)
-									astar.initializeNewSearch(arrivee, k.shoot, k.chrono);
-								else
-								{
-									k.s.s.setUpCercleArrivee();
-									astar.initializeNewSearchToCircle(k.shoot, k.chrono);
-								}
-							}
-							else
-								astar.initializeNewSearch(k.arrivee, k.shoot, k.chrono);
+							astar.initializeNewSearch(k.arrivee, k.shoot, k.chrono);
 							inst.searchRequest();
 						}
 					}
@@ -287,14 +252,14 @@ public class PathCache implements Service, HighPFClass
 					
 					realChemin.addToEnd(path);
 					log.debug("On va parcourir le chemin");
-					if(!simuleSerie)
-						state.robot.followTrajectory(s);
-					else
-						state.robot.setCinematique(realChemin.getLastCinematique());
-					if(!astar.isArrivedAsser())
-						throw new UnableToMoveException("On est arrivé bien trop loin de là où on devait !");
+//					if(!simuleSerie)
+//						state.robot.followTrajectory(s);
+//					else
+//						state.robot.setCinematique(realChemin.getLastCinematique());
+//					if(!astar.isArrivedAsser())
+//						throw new UnableToMoveException("On est arrivé bien trop loin de là où on devait !");
 				}
-				catch(PathfindingException | UnableToMoveException e)
+				catch(PathfindingException e)
 				{
 					log.warning("Il y a eu un problème de pathfinding : " + e);
 					essai--;
@@ -305,20 +270,8 @@ public class PathCache implements Service, HighPFClass
 					}
 					log.debug("On retente !");
 					ObstacleRobot.setMarge(false);
-					
-					if(enableScan && isScanNecessary())
-					{
-						log.debug("Début du scan", Verbose.CAPTEURS.masque);
-						capteurs.startScan();
-						Ticket t = out.doScan();
-						InOrder o = t.attendStatus();
-						if(o.etat == State.KO)
-							log.critical("Erreur lors du scan : "+o);
-						capteurs.endScan();
-						log.debug("Scan fini", Verbose.CAPTEURS.masque);
-					}
-					else
-						Thread.sleep(dureePeremption);
+
+					Thread.sleep(dureePeremption);
 					restart = true;
 				}
 			} while(restart);
@@ -330,17 +283,4 @@ public class PathCache implements Service, HighPFClass
 		}
 	}
 	
-	/**
-	 * Le scan est-il nécessaire ? Cette méthode vérifie s'il y a un obstacle de proximité devant le robot
-	 * @return
-	 */
-	private boolean isScanNecessary()
-	{
-		Vec2RO posDevant = state.robot.getCinematique().getPosition().plusNewVector(new Vec2RO(longueurAvantRobot + 80, state.robot.getCinematique().orientationReelle, false));
-		iteratorObstacles.reinit();
-		while(iteratorObstacles.hasNext())
-			if(iteratorObstacles.next().squaredDistance(posDevant) < 180 * 180)
-				return true;
-		return false;
-	}
 }

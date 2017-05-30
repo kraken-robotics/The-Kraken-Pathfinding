@@ -14,7 +14,6 @@
 
 package table;
 
-import capteurs.CapteursRobot;
 import graphic.printable.Couleur;
 import obstacles.types.ObstacleCircular;
 import obstacles.types.ObstacleInterface;
@@ -84,15 +83,6 @@ public enum GameElementNames
 		aUnMasque = obs instanceof ObstacleMasque;
 		obstacle = obs;
 		orientationArriveeDStarLite = 0;
-	}
-
-	public boolean isVisible(CapteursRobot c, boolean sureleve)
-	{
-		// cas particulier
-		if(c == CapteursRobot.ToF_LONG_AVANT && cylindre)
-			return true;
-		// les capteurs bas les voient, les hauts non
-		return !sureleve;
 	}
 
 }

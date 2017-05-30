@@ -18,7 +18,6 @@ import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.List;
 import graphic.Fenetre;
-import robot.RobotReal;
 import utils.Vec2RO;
 
 /**
@@ -63,10 +62,10 @@ public class ObstacleArcCourbe extends Obstacle
 	}
 
 	@Override
-	public void print(Graphics g, Fenetre f, RobotReal robot)
+	public void print(Graphics g, Fenetre f)
 	{
 		for(ObstacleRectangular o : ombresRobot)
-			o.print(g, f, robot);
+			o.print(g, f);
 	}
 
 	@Override

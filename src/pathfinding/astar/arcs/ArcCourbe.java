@@ -24,7 +24,6 @@ import graphic.printable.Printable;
 import config.Config;
 import config.ConfigInfo;
 import robot.CinematiqueObs;
-import robot.RobotReal;
 
 /**
  * Un arc de trajectoire courbe. Juste une succession de points.
@@ -68,10 +67,10 @@ public abstract class ArcCourbe implements Printable
 	}
 
 	@Override
-	public void print(Graphics g, Fenetre f, RobotReal robot)
+	public void print(Graphics g, Fenetre f)
 	{
 		for(int i = 0; i < getNbPoints(); i++)
-			new ObstacleCircular(getPoint(i).getPosition(), 4, Couleur.TRAJECTOIRE).print(g, f, robot);
+			new ObstacleCircular(getPoint(i).getPosition(), 4, Couleur.TRAJECTOIRE).print(g, f);
 	}
 
 	@Override

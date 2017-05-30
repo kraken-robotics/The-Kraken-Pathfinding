@@ -245,7 +245,7 @@ public class Cinematique implements Printable, Serializable
 	}
 
 	@Override
-	public void print(Graphics g, Fenetre f, RobotReal robot)
+	public void print(Graphics g, Fenetre f)
 	{
 		double n = PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS / 2;
 		Vec2RW point1 = new Vec2RW(n, 0), point2 = new Vec2RW(-n / 2, n / 2), point3 = new Vec2RW(-n / 2, -n / 2);

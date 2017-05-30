@@ -25,8 +25,6 @@ import graphic.printable.Couleur;
 import graphic.printable.Segment;
 import robot.Cinematique;
 import robot.CinematiqueObs;
-import serie.BufferOutgoingOrder;
-import serie.Ticket;
 import utils.Log;
 import utils.Log.Verbose;
 import utils.Vec2RO;
@@ -47,12 +45,10 @@ import exceptions.PathfindingException;
 public class CheminPathfinding implements Service, HighPFClass, CheminPathfindingInterface
 {
 	protected Log log;
-	private BufferOutgoingOrder out;
 	private ObstaclesIteratorPresent iterObstacles;
 	private IteratorCheminPathfinding iterChemin;
 	private IteratorCheminPathfinding iterCheminPrint;
 	private PrintBufferInterface buffer;
-	private LinkedList<Ticket> tickets = new LinkedList<Ticket>();
 
 	private volatile CinematiqueObs[] chemin = new CinematiqueObs[256];
 	private volatile ObstacleCircular[] aff = new ObstacleCircular[256];
@@ -69,10 +65,9 @@ public class CheminPathfinding implements Service, HighPFClass, CheminPathfindin
 	private int margeNecessaire, margeInitiale, margeAvantCollision, margePreferable;
 	private boolean graphic;
 
-	public CheminPathfinding(Log log, BufferOutgoingOrder out, ObstaclesIteratorPresent iterator, PrintBufferInterface buffer, Config config)
+	public CheminPathfinding(Log log, ObstaclesIteratorPresent iterator, PrintBufferInterface buffer, Config config)
 	{
 		this.log = log;
-		this.out = out;
 		this.iterObstacles = iterator;
 		iterChemin = new IteratorCheminPathfinding(this);
 		iterCheminPrint = new IteratorCheminPathfinding(this);
@@ -182,7 +177,7 @@ public class CheminPathfinding implements Service, HighPFClass, CheminPathfindin
 						// on a assez de marge, on va faire de la
 						// replanification à la volée
 						indexLast = minus(current, Math.min(nbMarge, margeAvantCollision));
-						out.makeNextObsolete(chemin[minus(indexLast, 1)], minus(indexLast, 1));
+//						out.makeNextObsolete(chemin[minus(indexLast, 1)], minus(indexLast, 1));
 						log.debug("On raccourcit la trajectoire. IndexLast = " + indexLast, Verbose.REPLANIF.masque);
 						needRestart = true;
 					}
@@ -231,15 +226,6 @@ public class CheminPathfinding implements Service, HighPFClass, CheminPathfindin
 			log.critical("Buffer trop petit !");
 	}
 
-	public void waitTrajectoryTickets() throws InterruptedException
-	{
-		while(!tickets.isEmpty())
-		{
-			Ticket first = tickets.getFirst();
-			first.attendStatus();
-			tickets.removeFirst();
-		}
-	}
 
 	/**
 	 * Ajoute un arc au chemin
@@ -270,10 +256,6 @@ public class CheminPathfinding implements Service, HighPFClass, CheminPathfindin
 												// ne soit plus un point d'arrêt
 			else
 				tmp = add(tmp, 1); // on ne le renvoie pas
-
-			Ticket[] ts = out.envoieArcCourbe(points, tmp);
-			for(Ticket t : ts)
-				tickets.add(t);
 
 			if(graphic)
 				updateAffichage();

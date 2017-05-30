@@ -14,12 +14,9 @@
 
 package robot;
 
-import config.Config;
-import config.DynamicConfigurable;
 import exceptions.ActionneurException;
 import exceptions.MemoryManagerException;
 import exceptions.UnableToMoveException;
-import serie.Ticket;
 import utils.Log;
 
 /**
@@ -28,7 +25,7 @@ import utils.Log;
  * @author pf
  */
 
-public abstract class Robot implements DynamicConfigurable
+public abstract class Robot
 {
 	/*
 	 * DÉPLACEMENT HAUT NIVEAU
@@ -72,14 +69,6 @@ public abstract class Robot implements DynamicConfigurable
 		// pas besoin de copier symétrie car elle ne change pas en cours de
 		// match
 		rc.date = getTempsDepuisDebutMatch();
-	}
-
-	@Override
-	public synchronized void updateConfig(Config config)
-	{
-		Boolean sym = config.getSymmetry();
-		if(sym != null)
-			symetrie = sym;
 	}
 
 	@Override
@@ -197,7 +186,6 @@ public abstract class Robot implements DynamicConfigurable
 		bloque("rearme", symetrie);
 	}
 
-	public abstract Ticket traverseBascule() throws InterruptedException, ActionneurException;
 
 	/**
 	 * On est sûr que le filet est vide

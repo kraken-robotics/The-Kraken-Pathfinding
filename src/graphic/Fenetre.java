@@ -23,7 +23,6 @@ import config.ConfigInfo;
 import container.Service;
 import container.dependances.GUIClass;
 import graphic.printable.BackgroundImage;
-import robot.RobotReal;
 import utils.Log;
 import utils.Vec2RO;
 import utils.Vec2RW;
@@ -62,7 +61,6 @@ public class Fenetre extends JPanel implements Service, GUIClass
 	private JFrame frame;
 	private WindowExit exit;
 	private ArrayList<BufferedImage> images = new ArrayList<BufferedImage>();
-	private RobotReal robot;
 	private boolean needInit = true;
 	private double zoom;
 	private Vec2RO deltaBasGauche, deltaHautDroite;
@@ -71,10 +69,9 @@ public class Fenetre extends JPanel implements Service, GUIClass
 	private Vec2RW coinHautDroiteEcran = new Vec2RW(1500, 2000);
 
 
-	public Fenetre(Log log, RobotReal robot, PrintBuffer buffer, Config config)
+	public Fenetre(Log log, PrintBuffer buffer, Config config)
 	{
 		this.log = log;
-		this.robot = robot;
 		this.buffer = buffer;
 
 		afficheFond = config.getBoolean(ConfigInfo.GRAPHIC_BACKGROUND);
@@ -158,7 +155,7 @@ public class Fenetre extends JPanel implements Service, GUIClass
 		super.paintComponent(g);
 
 		g.clearRect(0, 0, sizeX, sizeY);
-		if(zoom != 0 && robot.isCinematiqueInitialised())
+		/*if(zoom != 0 && robot.isCinematiqueInitialised())
 		{
 			Vec2RO positionRobot = robot.getCinematique().getPosition();
 			Vec2RO currentCenter = positionRobot;
@@ -168,8 +165,8 @@ public class Fenetre extends JPanel implements Service, GUIClass
 			coinBasGaucheEcran.plus(deltaBasGauche);
 			currentCenter.copy(coinHautDroiteEcran);
 			coinHautDroiteEcran.plus(deltaHautDroite);
-		}
-		buffer.print(g, this, robot);
+		}*/
+		buffer.print(g, this);
 		g.clearRect(XtoWindow(-4500), YtoWindow(4000), distanceXtoWindow(3*3000), distanceYtoWindow(2000));
 		g.clearRect(XtoWindow(-4500), YtoWindow(2000), distanceXtoWindow(3000), distanceYtoWindow(2000));
 		g.clearRect(XtoWindow(-4500), YtoWindow(0000), distanceXtoWindow(3*3000), distanceYtoWindow(2000));

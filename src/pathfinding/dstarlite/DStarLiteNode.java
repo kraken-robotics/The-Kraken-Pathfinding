@@ -20,7 +20,6 @@ import graphic.printable.Couleur;
 import graphic.printable.Layer;
 import graphic.printable.Printable;
 import pathfinding.dstarlite.gridspace.PointGridSpace;
-import robot.RobotReal;
 import utils.Vec2RW;
 
 /**
@@ -88,7 +87,7 @@ public class DStarLiteNode implements Printable
 	}
 
 	@Override
-	public void print(Graphics g, Fenetre f, RobotReal robot)
+	public void print(Graphics g, Fenetre f)
 	{
 		g.setColor(Couleur.HEURISTIQUE.couleur);
 		if(heuristiqueOrientation != null)

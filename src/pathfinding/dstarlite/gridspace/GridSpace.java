@@ -27,7 +27,6 @@ import obstacles.memory.ObstaclesMemory;
 import obstacles.types.Obstacle;
 import obstacles.types.ObstacleProximity;
 import obstacles.types.ObstaclesFixes;
-import robot.RobotReal;
 import utils.Log;
 import utils.Vec2RO;
 import config.Config;
@@ -259,13 +258,13 @@ public class GridSpace implements Service, Printable, LowPFClass
 	}
 
 	@Override
-	public void print(Graphics g, Fenetre f, RobotReal robot)
+	public void print(Graphics g, Fenetre f)
 	{
 		for(int i = 0; i < PointGridSpace.NB_POINTS; i++)
 			if(grid[i] != null)
 			{
 				g.setColor(grid[i].couleur);
-				pointManager.get(i).print(g, f, robot);
+				pointManager.get(i).print(g, f);
 			}
 		g.setColor(Couleur.NOIR.couleur);
 	}
