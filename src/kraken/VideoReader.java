@@ -21,7 +21,7 @@ import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Scanner;
-import kraken.config.ConfigInfo;
+import kraken.config.ConfigInfoKraken;
 import kraken.container.Container;
 import kraken.graphic.Fenetre;
 import kraken.graphic.PrintBuffer;
@@ -59,24 +59,24 @@ public class VideoReader
 		long nextStopFTF = 0;
 		
 		// on force l'affichage non externe
-		ConfigInfo.GRAPHIC_ENABLE.setDefaultValue(true);
-		ConfigInfo.GRAPHIC_EXTERNAL.setDefaultValue(false);
-		ConfigInfo.GRAPHIC_DIFFERENTIAL.setDefaultValue(false);
-		ConfigInfo.GRAPHIC_ROBOT_AND_SENSORS.setDefaultValue(false);
-		ConfigInfo.GRAPHIC_PRODUCE_GIF.setDefaultValue(false);
-		ConfigInfo.GRAPHIC_ZOOM.setDefaultValue(0);
+		ConfigInfoKraken.GRAPHIC_ENABLE.setDefaultValue(true);
+		ConfigInfoKraken.GRAPHIC_EXTERNAL.setDefaultValue(false);
+		ConfigInfoKraken.GRAPHIC_DIFFERENTIAL.setDefaultValue(false);
+		ConfigInfoKraken.GRAPHIC_ROBOT_AND_SENSORS.setDefaultValue(false);
+		ConfigInfoKraken.GRAPHIC_PRODUCE_GIF.setDefaultValue(false);
+		ConfigInfoKraken.GRAPHIC_ZOOM.setDefaultValue(0);
 
-		ConfigInfo.SIMULE_SERIE.setDefaultValue(true);
+		ConfigInfoKraken.SIMULE_SERIE.setDefaultValue(true);
 		
-		ConfigInfo.DEBUG_CAPTEURS.setDefaultValue(false);
-		ConfigInfo.DEBUG_SCRIPTS.setDefaultValue(false);
-		ConfigInfo.DEBUG_ASSER.setDefaultValue(false);
-		ConfigInfo.DEBUG_DEBUG.setDefaultValue(false);
-		ConfigInfo.DEBUG_PF.setDefaultValue(false);
-		ConfigInfo.DEBUG_CORRECTION.setDefaultValue(false);		
-		ConfigInfo.DEBUG_REPLANIF.setDefaultValue(false);
-		ConfigInfo.DEBUG_SERIE.setDefaultValue(false);
-		ConfigInfo.DEBUG_SERIE_TRAME.setDefaultValue(false);
+		ConfigInfoKraken.DEBUG_CAPTEURS.setDefaultValue(false);
+		ConfigInfoKraken.DEBUG_SCRIPTS.setDefaultValue(false);
+		ConfigInfoKraken.DEBUG_ASSER.setDefaultValue(false);
+		ConfigInfoKraken.DEBUG_DEBUG.setDefaultValue(false);
+		ConfigInfoKraken.DEBUG_PF.setDefaultValue(false);
+		ConfigInfoKraken.DEBUG_CORRECTION.setDefaultValue(false);		
+		ConfigInfoKraken.DEBUG_REPLANIF.setDefaultValue(false);
+		ConfigInfoKraken.DEBUG_SERIE.setDefaultValue(false);
+		ConfigInfoKraken.DEBUG_SERIE_TRAME.setDefaultValue(false);
 		
 		for(int i = 0; i < args.length; i++)
 		{
@@ -95,30 +95,30 @@ public class VideoReader
 			else if(args[i].equals("-l")) // log
 				logfile = args[++i];
 			else if(args[i].equals("-withsprite")) // pas de sprite du robot
-				ConfigInfo.GRAPHIC_ROBOT_AND_SENSORS.setDefaultValue(true);
+				ConfigInfoKraken.GRAPHIC_ROBOT_AND_SENSORS.setDefaultValue(true);
 			else if(args[i].equals("-vcapt")) // verbose capteurs
-				ConfigInfo.DEBUG_CAPTEURS.setDefaultValue(true);
+				ConfigInfoKraken.DEBUG_CAPTEURS.setDefaultValue(true);
 			else if(args[i].equals("-vscripts")) // verbose scripts
-				ConfigInfo.DEBUG_SCRIPTS.setDefaultValue(true);
+				ConfigInfoKraken.DEBUG_SCRIPTS.setDefaultValue(true);
 			else if(args[i].equals("-vasser")) // verbose asser
-				ConfigInfo.DEBUG_ASSER.setDefaultValue(true);
+				ConfigInfoKraken.DEBUG_ASSER.setDefaultValue(true);
 			else if(args[i].equals("-vdebug")) // verbose capteurs
-				ConfigInfo.DEBUG_DEBUG.setDefaultValue(true);
+				ConfigInfoKraken.DEBUG_DEBUG.setDefaultValue(true);
 			else if(args[i].equals("-vpf")) // verbose pf
-				ConfigInfo.DEBUG_PF.setDefaultValue(true);
+				ConfigInfoKraken.DEBUG_PF.setDefaultValue(true);
 			else if(args[i].equals("-vreplanif")) // verbose replanif
-				ConfigInfo.DEBUG_REPLANIF.setDefaultValue(true);
+				ConfigInfoKraken.DEBUG_REPLANIF.setDefaultValue(true);
 			else if(args[i].equals("-vserie")) // verbose série
-				ConfigInfo.DEBUG_SERIE.setDefaultValue(true);
+				ConfigInfoKraken.DEBUG_SERIE.setDefaultValue(true);
 			else if(args[i].equals("-vcorr")) // verbose correction
-				ConfigInfo.DEBUG_CORRECTION.setDefaultValue(true);
+				ConfigInfoKraken.DEBUG_CORRECTION.setDefaultValue(true);
 			else if(args[i].equals("-gif")) // génération d'un gif
 			{
-				ConfigInfo.GRAPHIC_PRODUCE_GIF.setDefaultValue(true);
-				ConfigInfo.GIF_FILENAME.setDefaultValue(args[++i]);
+				ConfigInfoKraken.GRAPHIC_PRODUCE_GIF.setDefaultValue(true);
+				ConfigInfoKraken.GIF_FILENAME.setDefaultValue(args[++i]);
 			}
 			else if(args[i].equals("-zoom")) // récupère le zoom
-				ConfigInfo.GRAPHIC_ZOOM.setDefaultValue(Double.parseDouble(args[++i]));
+				ConfigInfoKraken.GRAPHIC_ZOOM.setDefaultValue(Double.parseDouble(args[++i]));
 			else if(args[i].equals("-b")) // bof
 			{
 				// Robot bof : (630, 1320), angle = 0
@@ -165,7 +165,7 @@ public class VideoReader
 		Scanner sc = new Scanner(System.in);
 		Container container = null;
 		if(filename == null)
-			ConfigInfo.GRAPHIC_ENABLE.setDefaultValue(false);
+			ConfigInfoKraken.GRAPHIC_ENABLE.setDefaultValue(false);
 
 		try
 		{

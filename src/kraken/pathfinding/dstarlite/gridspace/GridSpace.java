@@ -14,8 +14,8 @@
 
 package kraken.pathfinding.dstarlite.gridspace;
 
-import kraken.config.Config;
-import kraken.config.ConfigInfo;
+import config.Config;
+import kraken.config.ConfigInfoKraken;
 import kraken.container.Service;
 import kraken.container.dependances.LowPFClass;
 import kraken.graphic.Fenetre;
@@ -82,12 +82,12 @@ public class GridSpace implements Service, Printable, LowPFClass
 		newOldObstacles[0] = oldObstacles;
 		newOldObstacles[1] = newObstacles;
 
-		distanceMinimaleEntreProximite = config.getInt(ConfigInfo.DISTANCE_BETWEEN_PROXIMITY_OBSTACLES);
-		rayonRobot = config.getInt(ConfigInfo.DILATATION_ROBOT_DSTARLITE);
-		rayonRobotObstaclesFixes = config.getInt(ConfigInfo.RAYON_ROBOT_SUPPRESSION_OBSTACLES_FIXES);
+		distanceMinimaleEntreProximite = config.getInt(ConfigInfoKraken.DISTANCE_BETWEEN_PROXIMITY_OBSTACLES);
+		rayonRobot = config.getInt(ConfigInfoKraken.DILATATION_ROBOT_DSTARLITE);
+		rayonRobotObstaclesFixes = config.getInt(ConfigInfoKraken.RAYON_ROBOT_SUPPRESSION_OBSTACLES_FIXES);
 
 		// on ajoute les obstacles fixes une fois pour toute si c'est demandé
-		if(config.getBoolean(ConfigInfo.GRAPHIC_FIXED_OBSTACLES))
+		if(config.getBoolean(ConfigInfoKraken.GRAPHIC_FIXED_OBSTACLES))
 			for(Obstacle o : fixes.getObstacles())
 				buffer.add(o);
 
@@ -112,7 +112,7 @@ public class GridSpace implements Service, Printable, LowPFClass
 		grilleStatiqueModif.or(grilleStatique);
 
 		// l'affichage du d* lite est géré par le gridspace
-		if(config.getBoolean(ConfigInfo.GRAPHIC_D_STAR_LITE) || config.getBoolean(ConfigInfo.GRAPHIC_D_STAR_LITE_FINAL))
+		if(config.getBoolean(ConfigInfoKraken.GRAPHIC_D_STAR_LITE) || config.getBoolean(ConfigInfoKraken.GRAPHIC_D_STAR_LITE_FINAL))
 		{
 			buffer.add(this);
 			reinitGraphicGrid();

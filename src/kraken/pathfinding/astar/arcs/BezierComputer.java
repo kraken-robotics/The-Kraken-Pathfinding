@@ -17,8 +17,8 @@ package kraken.pathfinding.astar.arcs;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
-import kraken.config.Config;
-import kraken.config.ConfigInfo;
+import config.Config;
+import kraken.config.ConfigInfoKraken;
 import kraken.container.Service;
 import kraken.container.dependances.HighPFClass;
 import kraken.exceptions.MemoryManagerException;
@@ -58,12 +58,12 @@ public class BezierComputer implements Service, HighPFClass
 		this.clothocomputer = clothocomputer;
 		this.cercle = cercle;
 
-		courbureMax = config.getDouble(ConfigInfo.COURBURE_MAX);
+		courbureMax = config.getDouble(ConfigInfoKraken.COURBURE_MAX);
 
-		int demieLargeurNonDeploye = config.getInt(ConfigInfo.LARGEUR_NON_DEPLOYE) / 2;
-		int demieLongueurArriere = config.getInt(ConfigInfo.DEMI_LONGUEUR_NON_DEPLOYE_ARRIERE);
-		int demieLongueurAvant = config.getInt(ConfigInfo.DEMI_LONGUEUR_NON_DEPLOYE_AVANT);
-		int marge = config.getInt(ConfigInfo.DILATATION_OBSTACLE_ROBOT);
+		int demieLargeurNonDeploye = config.getInt(ConfigInfoKraken.LARGEUR_NON_DEPLOYE) / 2;
+		int demieLongueurArriere = config.getInt(ConfigInfoKraken.DEMI_LONGUEUR_NON_DEPLOYE_ARRIERE);
+		int demieLongueurAvant = config.getInt(ConfigInfoKraken.DEMI_LONGUEUR_NON_DEPLOYE_AVANT);
+		int marge = config.getInt(ConfigInfoKraken.DILATATION_OBSTACLE_ROBOT);
 		tmp = new ArcCourbeStatique(demieLargeurNonDeploye, demieLongueurArriere, demieLongueurAvant, marge);
 		for(int i = 0; i < pointsAvancer.length; i++)
 			pointsAvancer[i] = new CinematiqueObs(demieLargeurNonDeploye, demieLongueurArriere, demieLongueurAvant, marge);

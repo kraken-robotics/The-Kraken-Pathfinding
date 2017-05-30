@@ -21,8 +21,8 @@ import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
-import kraken.config.Config;
-import kraken.config.ConfigInfo;
+import config.Config;
+import kraken.config.ConfigInfoKraken;
 import kraken.container.dependances.GUIClass;
 import kraken.graphic.ExternalPrintBuffer;
 import kraken.utils.Log;
@@ -130,9 +130,9 @@ public class ThreadPrintServer extends ThreadService implements GUIClass
 	{
 		this.log = log;
 		this.buffer = buffer;
-		print = config.getBoolean(ConfigInfo.GRAPHIC_ENABLE);
-		deporte = config.getBoolean(ConfigInfo.GRAPHIC_EXTERNAL);
-		file = config.getBoolean(ConfigInfo.GRAPHIC_DIFFERENTIAL);
+		print = config.getBoolean(ConfigInfoKraken.GRAPHIC_ENABLE);
+		deporte = config.getBoolean(ConfigInfoKraken.GRAPHIC_EXTERNAL);
+		file = config.getBoolean(ConfigInfoKraken.GRAPHIC_DIFFERENTIAL);
 		try {
 			Runtime.getRuntime().exec("rm videos/last.dat");
 		} catch (IOException e) {
@@ -156,7 +156,7 @@ public class ThreadPrintServer extends ThreadService implements GUIClass
 		{
 			if(!print || !deporte)
 			{
-				log.debug(getClass().getSimpleName() + " annulé (" + ConfigInfo.GRAPHIC_ENABLE + " = " + print + ", " + ConfigInfo.GRAPHIC_EXTERNAL + " = " + deporte + ")");
+				log.debug(getClass().getSimpleName() + " annulé (" + ConfigInfoKraken.GRAPHIC_ENABLE + " = " + print + ", " + ConfigInfoKraken.GRAPHIC_EXTERNAL + " = " + deporte + ")");
 				while(true)
 					Thread.sleep(10000);
 			}

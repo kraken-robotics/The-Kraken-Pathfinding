@@ -14,8 +14,8 @@
 
 package kraken.obstacles.memory;
 
-import kraken.config.Config;
-import kraken.config.ConfigInfo;
+import config.Config;
+import kraken.config.ConfigInfoKraken;
 import kraken.container.Service;
 import kraken.container.dependances.LowPFClass;
 import kraken.graphic.PrintBufferInterface;
@@ -55,9 +55,9 @@ public class ObstaclesMemory implements Service, LowPFClass
 	{
 		this.log = log;
 		this.buffer = buffer;
-		dureeAvantPeremption = config.getInt(ConfigInfo.DUREE_PEREMPTION_OBSTACLES);
-		printProx = config.getBoolean(ConfigInfo.GRAPHIC_PROXIMITY_OBSTACLES);
-		printDStarLite = config.getBoolean(ConfigInfo.GRAPHIC_D_STAR_LITE);
+		dureeAvantPeremption = config.getInt(ConfigInfoKraken.DUREE_PEREMPTION_OBSTACLES);
+		printProx = config.getBoolean(ConfigInfoKraken.GRAPHIC_PROXIMITY_OBSTACLES);
+		printDStarLite = config.getBoolean(ConfigInfoKraken.GRAPHIC_D_STAR_LITE);
 	}
 
 	public synchronized ObstacleProximity add(Obstacle obstacle, Masque masque)

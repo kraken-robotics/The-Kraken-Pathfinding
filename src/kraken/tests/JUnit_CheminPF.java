@@ -18,7 +18,7 @@ import java.util.LinkedList;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import kraken.config.ConfigInfo;
+import kraken.config.ConfigInfoKraken;
 import kraken.pathfinding.PFInstruction;
 import kraken.pathfinding.chemin.CheminPathfinding;
 import kraken.pathfinding.chemin.IteratorCheminPathfinding;
@@ -55,10 +55,10 @@ public class JUnit_CheminPF extends JUnit_Test
 		Assert.assertEquals(255, iterator.getIndex());
 		Assert.assertFalse(iterator.hasNext());
 		LinkedList<CinematiqueObs> l = new LinkedList<CinematiqueObs>();
-		int demieLargeurNonDeploye = config.getInt(ConfigInfo.LARGEUR_NON_DEPLOYE) / 2;
-		int demieLongueurArriere = config.getInt(ConfigInfo.DEMI_LONGUEUR_NON_DEPLOYE_ARRIERE);
-		int demieLongueurAvant = config.getInt(ConfigInfo.DEMI_LONGUEUR_NON_DEPLOYE_AVANT);
-		int marge = config.getInt(ConfigInfo.DILATATION_OBSTACLE_ROBOT);
+		int demieLargeurNonDeploye = config.getInt(ConfigInfoKraken.LARGEUR_NON_DEPLOYE) / 2;
+		int demieLongueurArriere = config.getInt(ConfigInfoKraken.DEMI_LONGUEUR_NON_DEPLOYE_ARRIERE);
+		int demieLongueurAvant = config.getInt(ConfigInfoKraken.DEMI_LONGUEUR_NON_DEPLOYE_AVANT);
+		int marge = config.getInt(ConfigInfoKraken.DILATATION_OBSTACLE_ROBOT);
 
 		Assert.assertTrue(!iterator.hasNext());
 		l.add(new CinematiqueObs(demieLargeurNonDeploye, demieLongueurArriere, demieLongueurAvant, marge));

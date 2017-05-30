@@ -22,8 +22,8 @@ import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import kraken.config.Config;
-import kraken.config.ConfigInfo;
+import config.Config;
+import kraken.config.ConfigInfoKraken;
 import kraken.container.Service;
 
 /**
@@ -38,25 +38,25 @@ public class Log implements Service
 {
 	public enum Verbose
 	{
-		SERIE(ConfigInfo.DEBUG_SERIE, true),
-		CORRECTION(ConfigInfo.DEBUG_CORRECTION, false),
-		TRAME(ConfigInfo.DEBUG_SERIE_TRAME, false),
-		CAPTEURS(ConfigInfo.DEBUG_CAPTEURS, true),
-		ASSER(ConfigInfo.DEBUG_ASSER, true),
-		REPLANIF(ConfigInfo.DEBUG_REPLANIF, true),
-		SCRIPTS(ConfigInfo.DEBUG_SCRIPTS, true),
-		PF(ConfigInfo.DEBUG_PF, true),
-		DEBUG(ConfigInfo.DEBUG_DEBUG, true);
+		SERIE(ConfigInfoKraken.DEBUG_SERIE, true),
+		CORRECTION(ConfigInfoKraken.DEBUG_CORRECTION, false),
+		TRAME(ConfigInfoKraken.DEBUG_SERIE_TRAME, false),
+		CAPTEURS(ConfigInfoKraken.DEBUG_CAPTEURS, true),
+		ASSER(ConfigInfoKraken.DEBUG_ASSER, true),
+		REPLANIF(ConfigInfoKraken.DEBUG_REPLANIF, true),
+		SCRIPTS(ConfigInfoKraken.DEBUG_SCRIPTS, true),
+		PF(ConfigInfoKraken.DEBUG_PF, true),
+		DEBUG(ConfigInfoKraken.DEBUG_DEBUG, true);
 
 		public final int masque;
-		public final ConfigInfo c;
+		public final ConfigInfoKraken c;
 		protected boolean status;
 		public boolean printInFile;
 
 		public static final int all = (1 << (Verbose.values().length + 1)) - 1;
 		private static Verbose[] values = values();
 
-		private Verbose(ConfigInfo c, boolean printInFile)
+		private Verbose(ConfigInfoKraken c, boolean printInFile)
 		{
 			masque = 1 << ordinal();
 			this.c = c;
@@ -101,6 +101,7 @@ public class Log implements Service
 		}
 	}
 
+	private boolean enable;
 	private boolean logClosed = false;
 	private BufferedWriter writer = null;
 	private String file;
@@ -203,6 +204,8 @@ public class Log implements Service
 	 */
 	private synchronized void ecrire(String message, Niveau niveau, int masque)
 	{
+		if(!enable)
+			return;
 		if(logClosed)
 			System.out.println("WARNING * Log fermé! Message: " + message);
 		else
@@ -267,9 +270,10 @@ public class Log implements Service
 
 	public void useConfig(Config config)
 	{
-		sauvegarde_fichier = config.getBoolean(ConfigInfo.SAUVEGARDE_LOG);
-		useColor = config.getBoolean(ConfigInfo.COLORED_LOG);
-		fastLog = config.getBoolean(ConfigInfo.FAST_LOG);
+		enable = config.getBoolean(ConfigInfoKraken.ENABLE_LOG);
+		sauvegarde_fichier = config.getBoolean(ConfigInfoKraken.SAUVEGARDE_LOG);
+		useColor = config.getBoolean(ConfigInfoKraken.COLORED_LOG);
+		fastLog = config.getBoolean(ConfigInfoKraken.FAST_LOG);
 
 		for(Verbose v : Verbose.values())
 		{

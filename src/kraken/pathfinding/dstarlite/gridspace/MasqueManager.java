@@ -16,8 +16,8 @@ package kraken.pathfinding.dstarlite.gridspace;
 
 import java.util.ArrayList;
 import java.util.List;
-import kraken.config.Config;
-import kraken.config.ConfigInfo;
+import config.Config;
+import kraken.config.ConfigInfoKraken;
 import kraken.container.Service;
 import kraken.container.dependances.LowPFClass;
 import kraken.graphic.PrintBufferInterface;
@@ -53,9 +53,9 @@ public class MasqueManager implements Service, LowPFClass
 		this.pointDManager = pointDManager;
 		this.buffer = buffer;
 
-		printObsCapteurs = config.getBoolean(ConfigInfo.GRAPHIC_D_STAR_LITE);
+		printObsCapteurs = config.getBoolean(ConfigInfoKraken.GRAPHIC_D_STAR_LITE);
 
-		rayonRobot = config.getInt(ConfigInfo.DILATATION_ROBOT_DSTARLITE);
+		rayonRobot = config.getInt(ConfigInfoKraken.DILATATION_ROBOT_DSTARLITE);
 		int rayonCylindre = 32;
 		int rayonPointCylindre = (int) Math.round((rayonRobot + rayonCylindre) / PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS);
 		int tailleMasqueCylindre = 2 * (rayonPointCylindre + 1) + 1;

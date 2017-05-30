@@ -27,7 +27,9 @@ package kraken.config;
  *
  */
 
-public enum ConfigInfo
+import config.ConfigInfo;
+
+public enum ConfigInfoKraken implements ConfigInfo
 {
 	/**
 	 * Infos sur le robot
@@ -62,6 +64,7 @@ public enum ConfigInfo
 	/**
 	 * Paramètres du log
 	 */
+	ENABLE_LOG(false), // désactivation du log
 	FAST_LOG(false), // affichage plus rapide des logs
 	SAUVEGARDE_LOG(false), // sauvegarde les logs dans un fichier externe
 	AFFICHE_CONFIG(false), // affiche la configuration complète au lancement
@@ -216,26 +219,18 @@ public enum ConfigInfo
 	private Object defaultValue;
 	public boolean overridden = false;
 	public volatile boolean uptodate;
-	public final boolean constant;
 
 	/**
 	 * Par défaut, une valeur est constante
 	 * 
 	 * @param defaultValue
 	 */
-	private ConfigInfo(Object defaultValue)
+	private ConfigInfoKraken(Object defaultValue)
 	{
-		this(defaultValue, true);
-	}
-
-	private ConfigInfo(Object defaultValue, boolean constant)
-	{
-		uptodate = constant;
 		this.defaultValue = defaultValue;
-		this.constant = constant;
 	}
 
-	Object getDefaultValue()
+	public Object getDefaultValue()
 	{
 		return defaultValue;
 	}
@@ -250,6 +245,12 @@ public enum ConfigInfo
 	{
 		defaultValue = o;
 		overridden = true;
+	}
+
+	@Override
+	public boolean isMutable()
+	{
+		return !overridden;
 	}
 
 }

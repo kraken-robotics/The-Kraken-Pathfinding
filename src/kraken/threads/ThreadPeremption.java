@@ -14,8 +14,8 @@
 
 package kraken.threads;
 
-import kraken.config.Config;
-import kraken.config.ConfigInfo;
+import config.Config;
+import kraken.config.ConfigInfoKraken;
 import kraken.container.dependances.LowPFClass;
 import kraken.graphic.PrintBufferInterface;
 import kraken.obstacles.memory.ObstaclesMemory;
@@ -46,8 +46,8 @@ public class ThreadPeremption extends ThreadService implements LowPFClass
 		this.memory = memory;
 		this.buffer = buffer;
 		this.dstarlite = dstarlite;
-		printProxObs = config.getBoolean(ConfigInfo.GRAPHIC_PROXIMITY_OBSTACLES);
-		dureePeremption = config.getInt(ConfigInfo.DUREE_PEREMPTION_OBSTACLES);
+		printProxObs = config.getBoolean(ConfigInfoKraken.GRAPHIC_PROXIMITY_OBSTACLES);
+		dureePeremption = config.getInt(ConfigInfoKraken.DUREE_PEREMPTION_OBSTACLES);
 	}
 
 	@Override

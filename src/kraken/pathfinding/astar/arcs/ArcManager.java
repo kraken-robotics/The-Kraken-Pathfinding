@@ -17,8 +17,8 @@ package kraken.pathfinding.astar.arcs;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
-import kraken.config.Config;
-import kraken.config.ConfigInfo;
+import config.Config;
+import kraken.config.ConfigInfoKraken;
 import kraken.container.Service;
 import kraken.container.dependances.HighPFClass;
 import kraken.exceptions.MemoryManagerException;
@@ -95,8 +95,8 @@ public class ArcManager implements Service, HighPFClass
 		for(VitesseCourbure v : VitesseRameneVolant.values())
 			listeVitesse.add(v);
 
-		courbureMax = config.getDouble(ConfigInfo.COURBURE_MAX);
-		printObs = config.getBoolean(ConfigInfo.GRAPHIC_ROBOT_COLLISION);
+		courbureMax = config.getDouble(ConfigInfoKraken.COURBURE_MAX);
+		printObs = config.getBoolean(ConfigInfoKraken.GRAPHIC_ROBOT_COLLISION);
 	}
 
 	private ObstacleArcCourbe obs = new ObstacleArcCourbe();

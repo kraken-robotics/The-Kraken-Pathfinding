@@ -18,8 +18,8 @@ import javax.imageio.ImageIO;
 import javax.imageio.stream.FileImageOutputStream;
 import javax.imageio.stream.ImageOutputStream;
 import javax.swing.*;
-import kraken.config.Config;
-import kraken.config.ConfigInfo;
+import config.Config;
+import kraken.config.ConfigInfoKraken;
 import kraken.container.Service;
 import kraken.container.dependances.GUIClass;
 import kraken.graphic.printable.BackgroundImage;
@@ -74,9 +74,9 @@ public class Fenetre extends JPanel implements Service, GUIClass
 		this.log = log;
 		this.buffer = buffer;
 
-		afficheFond = config.getBoolean(ConfigInfo.GRAPHIC_BACKGROUND);
-		backgroundPath = config.getString(ConfigInfo.GRAPHIC_BACKGROUND_PATH);
-		zoom = config.getDouble(ConfigInfo.GRAPHIC_ZOOM);
+		afficheFond = config.getBoolean(ConfigInfoKraken.GRAPHIC_BACKGROUND);
+		backgroundPath = config.getString(ConfigInfoKraken.GRAPHIC_BACKGROUND_PATH);
+		zoom = config.getDouble(ConfigInfoKraken.GRAPHIC_ZOOM);
 		if(zoom != 0)
 		{
 			double deltaX, deltaY;
@@ -85,7 +85,7 @@ public class Fenetre extends JPanel implements Service, GUIClass
 			deltaBasGauche = new Vec2RO(-deltaX, -deltaY);
 			deltaHautDroite = new Vec2RO(deltaX, deltaY);
 		}
-		sizeX = config.getInt(ConfigInfo.GRAPHIC_SIZE_X);
+		sizeX = config.getInt(ConfigInfoKraken.GRAPHIC_SIZE_X);
 		sizeY = 2 * sizeX / 3;
 	}
 

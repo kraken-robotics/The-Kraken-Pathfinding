@@ -15,7 +15,7 @@
 package kraken.tests;
 
 import org.junit.Test;
-import kraken.config.ConfigInfo;
+import kraken.config.ConfigInfoKraken;
 
 /**
  * Tests unitaires pour la configuration... juste épique.
@@ -30,7 +30,7 @@ public class JUnit_Config extends JUnit_Test
 	@Test
 	public void test_get() throws Exception
 	{
-		for(ConfigInfo c : ConfigInfo.values())
+		for(ConfigInfoKraken c : ConfigInfoKraken.values())
 			config.getString(c);
 	}
 

@@ -14,8 +14,8 @@
 
 package kraken.threads;
 
-import kraken.config.Config;
-import kraken.config.ConfigInfo;
+import config.Config;
+import kraken.config.ConfigInfoKraken;
 import kraken.container.Container;
 import kraken.container.dependances.GUIClass;
 import kraken.exceptions.ContainerException;
@@ -44,10 +44,10 @@ public class ThreadFenetre extends ThreadService implements GUIClass
 	{
 		this.log = log;
 		this.buffer = buffer;
-		gif = config.getBoolean(ConfigInfo.GRAPHIC_PRODUCE_GIF);
-		print = config.getBoolean(ConfigInfo.GRAPHIC_ENABLE);
-		deporte = config.getBoolean(ConfigInfo.GRAPHIC_EXTERNAL);
-		giffile = config.getString(ConfigInfo.GIF_FILENAME);
+		gif = config.getBoolean(ConfigInfoKraken.GRAPHIC_PRODUCE_GIF);
+		print = config.getBoolean(ConfigInfoKraken.GRAPHIC_ENABLE);
+		deporte = config.getBoolean(ConfigInfoKraken.GRAPHIC_EXTERNAL);
+		giffile = config.getString(ConfigInfoKraken.GIF_FILENAME);
 		if(print && !deporte)
 			try
 			{
@@ -68,7 +68,7 @@ public class ThreadFenetre extends ThreadService implements GUIClass
 		{
 			if(!print || deporte)
 			{
-				log.debug(getClass().getSimpleName() + " annulé (" + ConfigInfo.GRAPHIC_ENABLE + " = " + print + ", " + ConfigInfo.GRAPHIC_EXTERNAL + " = " + deporte + ")");
+				log.debug(getClass().getSimpleName() + " annulé (" + ConfigInfoKraken.GRAPHIC_ENABLE + " = " + print + ", " + ConfigInfoKraken.GRAPHIC_EXTERNAL + " = " + deporte + ")");
 				while(true)
 					Thread.sleep(10000);
 			}

@@ -21,7 +21,7 @@ public class ObstaclesFixes implements Service {
     private List<Obstacle> obstacles = new ArrayList<Obstacle>();
     protected Log log;
     
-    private ObstaclesFixes(Log log)
+    public ObstaclesFixes(Log log)
     {
     	this.log = log;
     }

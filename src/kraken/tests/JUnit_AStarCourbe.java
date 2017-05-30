@@ -18,7 +18,7 @@ import java.util.Random;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import kraken.config.ConfigInfo;
+import kraken.config.ConfigInfoKraken;
 import kraken.exceptions.PathfindingException;
 import kraken.graphic.PrintBuffer;
 import kraken.obstacles.types.ObstacleCircular;
@@ -87,7 +87,7 @@ public class JUnit_AStarCourbe extends JUnit_Test
 		bezier = container.getService(BezierComputer.class);
 		cercle = container.getService(CercleArrivee.class);
 		// arcmanager = container.getService(ArcManager.class);
-		graphicTrajectory = config.getBoolean(ConfigInfo.GRAPHIC_TRAJECTORY_FINAL);
+		graphicTrajectory = config.getBoolean(ConfigInfoKraken.GRAPHIC_TRAJECTORY_FINAL);
 		pathcache = container.getService(PathCache.class);
 		fakeChemin = container.getService(FakeCheminPathfinding.class);
 	}
@@ -95,12 +95,12 @@ public class JUnit_AStarCourbe extends JUnit_Test
 	@Test
 	public void test_clotho() throws Exception
 	{
-		int demieLargeurNonDeploye = config.getInt(ConfigInfo.LARGEUR_NON_DEPLOYE) / 2;
-		int demieLongueurArriere = config.getInt(ConfigInfo.DEMI_LONGUEUR_NON_DEPLOYE_ARRIERE);
-		int demieLongueurAvant = config.getInt(ConfigInfo.DEMI_LONGUEUR_NON_DEPLOYE_AVANT);
-		int marge = config.getInt(ConfigInfo.DILATATION_OBSTACLE_ROBOT);
+		int demieLargeurNonDeploye = config.getInt(ConfigInfoKraken.LARGEUR_NON_DEPLOYE) / 2;
+		int demieLongueurArriere = config.getInt(ConfigInfoKraken.DEMI_LONGUEUR_NON_DEPLOYE_ARRIERE);
+		int demieLongueurAvant = config.getInt(ConfigInfoKraken.DEMI_LONGUEUR_NON_DEPLOYE_AVANT);
+		int marge = config.getInt(ConfigInfoKraken.DILATATION_OBSTACLE_ROBOT);
 
-		boolean graphicTrajectory = config.getBoolean(ConfigInfo.GRAPHIC_TRAJECTORY);
+		boolean graphicTrajectory = config.getBoolean(ConfigInfoKraken.GRAPHIC_TRAJECTORY);
 		int nbArc = 16;
 		ArcCourbeStatique arc[] = new ArcCourbeStatique[nbArc];
 		for(int i = 0; i < nbArc; i++)
@@ -167,7 +167,7 @@ public class JUnit_AStarCourbe extends JUnit_Test
 	@Test
 	public void test_demi_tour() throws Exception
 	{
-		boolean graphicTrajectory = config.getBoolean(ConfigInfo.GRAPHIC_TRAJECTORY);
+		boolean graphicTrajectory = config.getBoolean(ConfigInfoKraken.GRAPHIC_TRAJECTORY);
 
 		int nbArc = 2;
 		ArcCourbeDynamique arc[] = new ArcCourbeDynamique[nbArc];
@@ -191,7 +191,7 @@ public class JUnit_AStarCourbe extends JUnit_Test
 	@Test
 	public void test_ramene() throws Exception
 	{
-		boolean graphicTrajectory = config.getBoolean(ConfigInfo.GRAPHIC_TRAJECTORY);
+		boolean graphicTrajectory = config.getBoolean(ConfigInfoKraken.GRAPHIC_TRAJECTORY);
 
 		int nbArc = 2;
 		ArcCourbe arc[] = new ArcCourbe[nbArc];
@@ -219,7 +219,7 @@ public class JUnit_AStarCourbe extends JUnit_Test
 	@Test
 	public void test_bezier_quad() throws Exception
 	{
-		boolean graphicTrajectory = config.getBoolean(ConfigInfo.GRAPHIC_TRAJECTORY);
+		boolean graphicTrajectory = config.getBoolean(ConfigInfoKraken.GRAPHIC_TRAJECTORY);
 
 		int nbArc = 1;
 		ArcCourbeDynamique arc[] = new ArcCourbeDynamique[nbArc];

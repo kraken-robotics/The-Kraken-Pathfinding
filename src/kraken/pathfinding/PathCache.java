@@ -25,8 +25,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import kraken.config.Config;
-import kraken.config.ConfigInfo;
+import config.Config;
+import kraken.config.ConfigInfoKraken;
 import kraken.container.Service;
 import kraken.container.dependances.HighPFClass;
 import kraken.exceptions.MemoryManagerException;
@@ -76,12 +76,12 @@ public class PathCache implements Service, HighPFClass
 	{
 		this.iteratorObstacles = iteratorObstacles;
 		this.inst = inst;
-		nbEssais = config.getInt(ConfigInfo.NB_ESSAIS_PF);
-		saveOnTheFly = config.getBoolean(ConfigInfo.SAVE_FOUND_PATH);
-		simuleSerie = config.getBoolean(ConfigInfo.SIMULE_SERIE);
-		dureePeremption = config.getInt(ConfigInfo.DUREE_PEREMPTION_OBSTACLES);
-		enableScan = config.getBoolean(ConfigInfo.ENABLE_SCAN);
-		longueurAvantRobot = config.getDouble(ConfigInfo.DEMI_LONGUEUR_NON_DEPLOYE_AVANT);
+		nbEssais = config.getInt(ConfigInfoKraken.NB_ESSAIS_PF);
+		saveOnTheFly = config.getBoolean(ConfigInfoKraken.SAVE_FOUND_PATH);
+		simuleSerie = config.getBoolean(ConfigInfoKraken.SIMULE_SERIE);
+		dureePeremption = config.getInt(ConfigInfoKraken.DUREE_PEREMPTION_OBSTACLES);
+		enableScan = config.getBoolean(ConfigInfoKraken.ENABLE_SCAN);
+		longueurAvantRobot = config.getDouble(ConfigInfoKraken.DEMI_LONGUEUR_NON_DEPLOYE_AVANT);
 		this.fakeChemin = fakeChemin;
 		this.realChemin = realChemin;
 		this.log = log;
@@ -91,7 +91,7 @@ public class PathCache implements Service, HighPFClass
 		paths = new HashMap<String, LinkedList<CinematiqueObs>>();
 		if(!new File("paths/").exists())
 			new File("paths/").mkdir();
-		if(config.getBoolean(ConfigInfo.ALLOW_PRECOMPUTED_PATH))
+		if(config.getBoolean(ConfigInfoKraken.ALLOW_PRECOMPUTED_PATH))
 			loadAll(chrono, start);
 	}
 

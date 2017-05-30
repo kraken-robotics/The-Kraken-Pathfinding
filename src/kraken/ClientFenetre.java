@@ -19,7 +19,7 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.List;
-import kraken.config.ConfigInfo;
+import kraken.config.ConfigInfoKraken;
 import kraken.container.Container;
 import kraken.exceptions.ContainerException;
 import kraken.graphic.Fenetre;
@@ -47,7 +47,7 @@ public class ClientFenetre
 			try
 			{
 				// on force l'affichage non externe
-				ConfigInfo.GRAPHIC_EXTERNAL.setDefaultValue(false);
+				ConfigInfoKraken.GRAPHIC_EXTERNAL.setDefaultValue(false);
 				container = new Container(null);
 				Fenetre f = container.getService(Fenetre.class);
 				PrintBuffer buffer = container.getService(PrintBuffer.class);

@@ -15,8 +15,8 @@
 package kraken.pathfinding.astar.arcs;
 
 import java.awt.Graphics;
-import kraken.config.Config;
-import kraken.config.ConfigInfo;
+import config.Config;
+import kraken.config.ConfigInfoKraken;
 import kraken.graphic.Fenetre;
 import kraken.graphic.printable.Couleur;
 import kraken.graphic.printable.Layer;
@@ -63,7 +63,7 @@ public abstract class ArcCourbe implements Printable
 
 	public static void useConfig(Config config)
 	{
-		tempsArret = config.getInt(ConfigInfo.TEMPS_ARRET);
+		tempsArret = config.getInt(ConfigInfoKraken.TEMPS_ARRET);
 	}
 
 	@Override

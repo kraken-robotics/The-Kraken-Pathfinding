@@ -16,8 +16,8 @@ package kraken.pathfinding.chemin;
 
 import java.awt.Graphics;
 import java.util.LinkedList;
-import kraken.config.Config;
-import kraken.config.ConfigInfo;
+import config.Config;
+import kraken.config.ConfigInfoKraken;
 import kraken.container.Service;
 import kraken.container.dependances.HighPFClass;
 import kraken.graphic.Fenetre;
@@ -49,7 +49,7 @@ public class FakeCheminPathfinding implements Service, CheminPathfindingInterfac
 	{
 		this.log = log;
 		this.buffer = buffer;
-		print = config.getBoolean(ConfigInfo.GRAPHIC_TRAJECTORY_FINAL);
+		print = config.getBoolean(ConfigInfoKraken.GRAPHIC_TRAJECTORY_FINAL);
 		if(print)
 			buffer.add(this);
 	}

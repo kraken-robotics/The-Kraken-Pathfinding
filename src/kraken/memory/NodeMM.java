@@ -14,8 +14,8 @@
 
 package kraken.memory;
 
-import kraken.config.Config;
-import kraken.config.ConfigInfo;
+import config.Config;
+import kraken.config.ConfigInfoKraken;
 import kraken.container.dependances.HighPFClass;
 import kraken.exceptions.ContainerException;
 import kraken.pathfinding.ChronoGameState;
@@ -42,11 +42,11 @@ public class NodeMM extends MemoryManager<AStarCourbeNode> implements HighPFClas
 	{
 		super(AStarCourbeNode.class, log);
 		this.chemin = chemin;
-		largeur = config.getInt(ConfigInfo.LARGEUR_NON_DEPLOYE) / 2;
-		longueur_arriere = config.getInt(ConfigInfo.DEMI_LONGUEUR_NON_DEPLOYE_ARRIERE);
-		longueur_avant = config.getInt(ConfigInfo.DEMI_LONGUEUR_NON_DEPLOYE_AVANT);
-		marge = config.getInt(ConfigInfo.DILATATION_OBSTACLE_ROBOT);
-		init(config.getInt(ConfigInfo.NB_INSTANCES_NODE));
+		largeur = config.getInt(ConfigInfoKraken.LARGEUR_NON_DEPLOYE) / 2;
+		longueur_arriere = config.getInt(ConfigInfoKraken.DEMI_LONGUEUR_NON_DEPLOYE_ARRIERE);
+		longueur_avant = config.getInt(ConfigInfoKraken.DEMI_LONGUEUR_NON_DEPLOYE_AVANT);
+		marge = config.getInt(ConfigInfoKraken.DILATATION_OBSTACLE_ROBOT);
+		init(config.getInt(ConfigInfoKraken.NB_INSTANCES_NODE));
 	}
 
 	@Override

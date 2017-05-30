@@ -15,8 +15,8 @@
 package kraken.pathfinding.chemin;
 
 import java.util.LinkedList;
-import kraken.config.Config;
-import kraken.config.ConfigInfo;
+import config.Config;
+import kraken.config.ConfigInfoKraken;
 import kraken.container.Service;
 import kraken.container.dependances.HighPFClass;
 import kraken.exceptions.PathfindingException;
@@ -73,15 +73,15 @@ public class CheminPathfinding implements Service, HighPFClass, CheminPathfindin
 		iterCheminPrint = new IteratorCheminPathfinding(this);
 		this.buffer = buffer;
 
-		int demieLargeurNonDeploye = config.getInt(ConfigInfo.LARGEUR_NON_DEPLOYE) / 2;
-		int demieLongueurArriere = config.getInt(ConfigInfo.DEMI_LONGUEUR_NON_DEPLOYE_ARRIERE);
-		int demieLongueurAvant = config.getInt(ConfigInfo.DEMI_LONGUEUR_NON_DEPLOYE_AVANT);
-		int marge = config.getInt(ConfigInfo.DILATATION_OBSTACLE_ROBOT);
-		margeNecessaire = (int) (config.getDouble(ConfigInfo.PF_MARGE_NECESSAIRE) / ClothoidesComputer.PRECISION_TRACE_MM);
-		margePreferable = (int) (config.getDouble(ConfigInfo.PF_MARGE_PREFERABLE) / ClothoidesComputer.PRECISION_TRACE_MM);
-		margeAvantCollision = (int) (config.getInt(ConfigInfo.PF_MARGE_AVANT_COLLISION) / ClothoidesComputer.PRECISION_TRACE_MM);
-		margeInitiale = (int) (config.getInt(ConfigInfo.PF_MARGE_INITIALE) / ClothoidesComputer.PRECISION_TRACE_MM);
-		graphic = config.getBoolean(ConfigInfo.GRAPHIC_TRAJECTORY_FINAL);
+		int demieLargeurNonDeploye = config.getInt(ConfigInfoKraken.LARGEUR_NON_DEPLOYE) / 2;
+		int demieLongueurArriere = config.getInt(ConfigInfoKraken.DEMI_LONGUEUR_NON_DEPLOYE_ARRIERE);
+		int demieLongueurAvant = config.getInt(ConfigInfoKraken.DEMI_LONGUEUR_NON_DEPLOYE_AVANT);
+		int marge = config.getInt(ConfigInfoKraken.DILATATION_OBSTACLE_ROBOT);
+		margeNecessaire = (int) (config.getDouble(ConfigInfoKraken.PF_MARGE_NECESSAIRE) / ClothoidesComputer.PRECISION_TRACE_MM);
+		margePreferable = (int) (config.getDouble(ConfigInfoKraken.PF_MARGE_PREFERABLE) / ClothoidesComputer.PRECISION_TRACE_MM);
+		margeAvantCollision = (int) (config.getInt(ConfigInfoKraken.PF_MARGE_AVANT_COLLISION) / ClothoidesComputer.PRECISION_TRACE_MM);
+		margeInitiale = (int) (config.getInt(ConfigInfoKraken.PF_MARGE_INITIALE) / ClothoidesComputer.PRECISION_TRACE_MM);
+		graphic = config.getBoolean(ConfigInfoKraken.GRAPHIC_TRAJECTORY_FINAL);
 
 		for(int i = 0; i < chemin.length; i++)
 			chemin[i] = new CinematiqueObs(demieLargeurNonDeploye, demieLongueurArriere, demieLongueurAvant, marge);

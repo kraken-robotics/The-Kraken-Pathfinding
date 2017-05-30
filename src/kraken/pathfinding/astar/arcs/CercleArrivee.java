@@ -15,8 +15,8 @@
 package kraken.pathfinding.astar.arcs;
 
 import java.awt.Graphics;
-import kraken.config.Config;
-import kraken.config.ConfigInfo;
+import config.Config;
+import kraken.config.ConfigInfoKraken;
 import kraken.container.Service;
 import kraken.container.dependances.HighPFClass;
 import kraken.container.dependances.LowPFClass;
@@ -59,7 +59,7 @@ public class CercleArrivee implements Service, Printable, HighPFClass, LowPFClas
 	{
 		this.log = log;
 		this.buffer = buffer;
-		graphic = config.getBoolean(ConfigInfo.GRAPHIC_CERCLE_ARRIVEE);
+		graphic = config.getBoolean(ConfigInfoKraken.GRAPHIC_CERCLE_ARRIVEE);
 
 		if(graphic)
 			buffer.add(this);

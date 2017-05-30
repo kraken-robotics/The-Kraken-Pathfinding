@@ -16,7 +16,7 @@ package kraken.tests;
 
 import org.junit.Assert;
 import org.junit.Test;
-import kraken.config.Config;
+import config.Config;
 import kraken.container.Service;
 import kraken.exceptions.ContainerException;
 import kraken.obstacles.memory.ObstaclesIteratorPresent;
@@ -119,15 +119,6 @@ public class JUnit_Container extends JUnit_Test
 	{
 		// Config est un service, c'est le même object
 		Assert.assertTrue(container.getService(Config.class) == container.getService(Config.class));
-		// ObstaclesIteratorPresent n'est pas un service : deux objets
-		// différents
-		Assert.assertTrue(container.make(ObstaclesIteratorPresent.class) != container.make(ObstaclesIteratorPresent.class));
-	}
-
-	@Test
-	public void test_extra_param() throws Exception
-	{
-		container.make(ObstacleProximity.class, new ObstacleCircular(new Vec2RO(100, 200), 10), System.currentTimeMillis(), null);
 	}
 
 }

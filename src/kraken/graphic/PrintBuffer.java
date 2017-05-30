@@ -18,8 +18,8 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.List;
-import kraken.config.Config;
-import kraken.config.ConfigInfo;
+import config.Config;
+import kraken.config.ConfigInfoKraken;
 import kraken.graphic.printable.Couleur;
 import kraken.graphic.printable.Layer;
 import kraken.graphic.printable.Printable;
@@ -51,8 +51,8 @@ public class PrintBuffer implements PrintBufferInterface
 			elementsAffichablesSupprimables.add(new ArrayList<Printable>());
 			elementsAffichables.add(new ArrayList<Printable>());
 		}
-		afficheFond = config.getBoolean(ConfigInfo.GRAPHIC_BACKGROUND);
-		time = config.getBoolean(ConfigInfo.GRAPHIC_TIME);
+		afficheFond = config.getBoolean(ConfigInfoKraken.GRAPHIC_BACKGROUND);
+		time = config.getBoolean(ConfigInfoKraken.GRAPHIC_TIME);
 	}
 
 	/**

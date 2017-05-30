@@ -16,8 +16,8 @@ package kraken.table;
 
 import java.util.BitSet;
 import java.util.List;
-import kraken.config.Config;
-import kraken.config.ConfigInfo;
+import config.Config;
+import kraken.config.ConfigInfoKraken;
 import kraken.container.Service;
 import kraken.container.dependances.CoreClass;
 import kraken.graphic.PrintBufferInterface;
@@ -56,7 +56,7 @@ public class RealTable extends Table implements Service, CoreClass
 			if(g.aUnMasque)
 				((ObstacleMasque) g.obstacle).setMasque(masquemanager.getMasqueCylindre(g.obstacle.getPosition()));
 
-		print = config.getBoolean(ConfigInfo.GRAPHIC_GAME_ELEMENTS);
+		print = config.getBoolean(ConfigInfoKraken.GRAPHIC_GAME_ELEMENTS);
 		if(print)
 			for(GameElementNames g : GameElementNames.values())
 				buffer.addSupprimable(g.obstacle);

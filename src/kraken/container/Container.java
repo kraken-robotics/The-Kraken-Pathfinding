@@ -30,8 +30,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.Stack;
-import kraken.config.Config;
-import kraken.config.ConfigInfo;
+import config.Config;
+import kraken.config.ConfigInfoKraken;
 import kraken.container.Service;
 import kraken.container.dependances.CoreClass;
 import kraken.container.dependances.GUIClass;
@@ -65,7 +65,7 @@ public class Container implements Service
 {
 	// liste des services déjà instanciés. Contient au moins Config et Log. Les
 	// autres services appelables seront présents quand ils auront été appelés
-	private HashMap<String, Service> instanciedServices = new HashMap<String, Service>();
+	private HashMap<String, Object> instanciedServices = new HashMap<String, Object>();
 
 	private Log log;
 	private Config config;
@@ -135,7 +135,7 @@ public class Container implements Service
 		for(ThreadName n : ThreadName.values())
 		{
 			try {
-				if(n == ThreadName.FENETRE && config.getBoolean(ConfigInfo.GRAPHIC_PRODUCE_GIF))
+				if(n == ThreadName.FENETRE && config.getBoolean(ConfigInfoKraken.GRAPHIC_PRODUCE_GIF))
 				{
 					log.debug("Attente de "+n);
 					getService(n.c).join(120000); // spécialement pour lui qui
@@ -310,13 +310,16 @@ public class Container implements Service
 		printMessage("intro.txt");
 
 		log = new Log();
-		config = new Config();
+		
+		config = new Config(ConfigInfoKraken.values(), "kraken.conf", true);
+		instanciedServices.put(Config.class.getSimpleName(), config);
+
 		log.useConfig(config);
 
-		Speed.TEST.translationalSpeed = config.getDouble(ConfigInfo.VITESSE_ROBOT_TEST) / 1000.;
-		Speed.REPLANIF.translationalSpeed = config.getDouble(ConfigInfo.VITESSE_ROBOT_REPLANIF) / 1000.;
-		Speed.STANDARD.translationalSpeed = config.getDouble(ConfigInfo.VITESSE_ROBOT_STANDARD) / 1000.;
-		Speed.BASCULE.translationalSpeed = config.getDouble(ConfigInfo.VITESSE_ROBOT_BASCULE) / 1000.;
+		Speed.TEST.translationalSpeed = config.getDouble(ConfigInfoKraken.VITESSE_ROBOT_TEST) / 1000.;
+		Speed.REPLANIF.translationalSpeed = config.getDouble(ConfigInfoKraken.VITESSE_ROBOT_REPLANIF) / 1000.;
+		Speed.STANDARD.translationalSpeed = config.getDouble(ConfigInfoKraken.VITESSE_ROBOT_STANDARD) / 1000.;
+		Speed.BASCULE.translationalSpeed = config.getDouble(ConfigInfoKraken.VITESSE_ROBOT_BASCULE) / 1000.;
 
 		/**
 		 * Affiche la version du programme (dernier commit et sa branche)
@@ -353,11 +356,7 @@ public class Container implements Service
 
 		log.warning("Remember, with great power comes great current squared times resistance !");
 
-		// Interdépendance entre log et config…
-		config.init(log);
-
 		instanciedServices.put(Log.class.getSimpleName(), log);
-		instanciedServices.put(Config.class.getSimpleName(), config);
 
 		// Le container est aussi un service
 		instanciedServices.put(getClass().getSimpleName(), this);
@@ -376,12 +375,12 @@ public class Container implements Service
 			e.printStackTrace(log.getPrintWriter());
 		}
 		
-		showGraph = config.getBoolean(ConfigInfo.GENERATE_DEPENDENCY_GRAPH);
+		showGraph = config.getBoolean(ConfigInfoKraken.GENERATE_DEPENDENCY_GRAPH);
 
 		if(showGraph)
 			log.warning("Le graphe de dépendances va être généré !");
 
-		if(config.getBoolean(ConfigInfo.GRAPHIC_EXTERNAL))
+		if(config.getBoolean(ConfigInfoKraken.GRAPHIC_EXTERNAL))
 			instanciedServices.put(PrintBufferInterface.class.getSimpleName(), getService(ExternalPrintBuffer.class));
 		else
 			instanciedServices.put(PrintBufferInterface.class.getSimpleName(), getService(PrintBuffer.class));
@@ -389,7 +388,8 @@ public class Container implements Service
 		Obstacle.set(log, getService(PrintBufferInterface.class));
 		Obstacle.useConfig(config);
 		ArcCourbe.useConfig(config);
-		getService(ObstaclesFixes.class).addAll(fixedObstacles);
+		if(fixedObstacles != null)
+			getService(ObstaclesFixes.class).addAll(fixedObstacles);
 		startAllThreads();
 	}
 
@@ -404,32 +404,17 @@ public class Container implements Service
 	 * @throws ContainerException
 	 * @throws InterruptedException
 	 */
-	public synchronized <S extends Service> S getService(Class<S> serviceTo) throws ContainerException
+	public synchronized <S> S getService(Class<S> serviceTo) throws ContainerException
 	{
 		return getServiceRecursif(serviceTo, new Stack<String>());
 	}
 
 	@SuppressWarnings("unchecked")
-	public synchronized <S extends Service> S getExistingService(Class<S> classe)
+	public synchronized <S> S getExistingService(Class<S> classe)
 	{
-		if(Service.class.isAssignableFrom(classe) && instanciedServices.containsKey(classe.getSimpleName()))
+		if(instanciedServices.containsKey(classe.getSimpleName()))
 			return (S) instanciedServices.get(classe.getSimpleName());
 		return null;
-	}
-
-	/**
-	 * Aucune différence avec getService ; c'est juste que c'est fait pour les
-	 * non-services aussi
-	 * 
-	 * @param serviceTo
-	 * @return
-	 * @throws ContainerException
-	 */
-	public synchronized <S> S make(Class<S> serviceTo, Object... extraParam) throws ContainerException
-	{
-		if(Service.class.isAssignableFrom(serviceTo))
-			throw new ContainerException("make doit être utilisé avec des non-services");
-		return getServiceRecursif(serviceTo, new Stack<String>(), extraParam);
 	}
 
 	/**
@@ -448,7 +433,7 @@ public class Container implements Service
 			/**
 			 * Si l'objet existe déjà et que c'est un Service, on le renvoie
 			 */
-			if(Service.class.isAssignableFrom(classe) && instanciedServices.containsKey(classe.getSimpleName()))
+			if(instanciedServices.containsKey(classe.getSimpleName()))
 				return (S) instanciedServices.get(classe.getSimpleName());
 
 			/**
@@ -493,7 +478,7 @@ public class Container implements Service
 				String out = "";
 				for(String s : stack)
 					out += s + " -> ";
-				out += classe.getSimpleName();
+				out += " ? ";
 				throw new ContainerException(classe.getSimpleName() + " n'a aucun constructeur ! " + out);
 			}
 			else
@@ -535,8 +520,8 @@ public class Container implements Service
 			 */
 			S s = constructeur.newInstance(paramObject);
 
-			if(Service.class.isAssignableFrom(classe))
-				instanciedServices.put(classe.getSimpleName(), (Service) s);
+//			if(Service.class.isAssignableFrom(classe))
+//				instanciedServices.put(classe.getSimpleName(), (Service) s);
 
 			// Mise à jour de la pile
 			stack.pop();

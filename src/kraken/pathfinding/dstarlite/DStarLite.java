@@ -17,8 +17,8 @@ package kraken.pathfinding.dstarlite;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
-import kraken.config.Config;
-import kraken.config.ConfigInfo;
+import config.Config;
+import kraken.config.ConfigInfoKraken;
 import kraken.container.Service;
 import kraken.container.dependances.LowPFClass;
 import kraken.graphic.PrintBufferInterface;
@@ -103,9 +103,9 @@ public class DStarLite implements Service, LowPFClass
 			for(int y = -9; y <= 9; y++)
 				atan2map[x + 9][y + 9] = Math.atan2(y, x);
 
-		graphicDStarLite = config.getBoolean(ConfigInfo.GRAPHIC_D_STAR_LITE);
-		graphicDStarLiteFinal = config.getBoolean(ConfigInfo.GRAPHIC_D_STAR_LITE_FINAL);
-		graphicHeuristique = config.getBoolean(ConfigInfo.GRAPHIC_HEURISTIQUE);
+		graphicDStarLite = config.getBoolean(ConfigInfoKraken.GRAPHIC_D_STAR_LITE);
+		graphicDStarLiteFinal = config.getBoolean(ConfigInfoKraken.GRAPHIC_D_STAR_LITE_FINAL);
+		graphicHeuristique = config.getBoolean(ConfigInfoKraken.GRAPHIC_HEURISTIQUE);
 	}
 
 	/**

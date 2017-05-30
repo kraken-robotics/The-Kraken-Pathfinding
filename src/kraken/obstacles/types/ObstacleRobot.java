@@ -15,8 +15,6 @@
 package kraken.obstacles.types;
 
 import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.geom.AffineTransform;
 import java.io.Serializable;
 import kraken.graphic.Fenetre;
 import kraken.graphic.printable.Couleur;
