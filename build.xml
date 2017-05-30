@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-    <project basedir="." default="build" name="moonrover">
+    <project basedir="." default="build" name="Kraken">
     <property environment="env"/>
     <property name="debuglevel" value="source,lines,vars"/>
     <property name="target" value="1.7"/>
@@ -9,9 +9,8 @@
         <pathelement location="lib/junit.jar"/>
         <pathelement location="lib/hamcrest-core-1.3.jar"/>
     </path>
-    <path id="moonrover.classpath">
+    <path id="Kraken.classpath">
         <pathelement location="bin"/>
-        <pathelement location="lib/RXTXcomm.jar"/>
         <pathelement location="lib/junit.jar"/>
         <pathelement location="lib/hamcrest-core-1.3.jar"/>
     </path>
@@ -27,37 +26,37 @@
         <delete dir="bin"/>
     </target>
     <target depends="clean" name="cleanall"/>
-    <target depends="build-subprojects,build-project" name="build"/>
+    <target depends="build-subprojects,build-project" name="build">
+	    <jar destfile="kraken.jar" basedir="bin"/>
+    	<jar destfile="kraken-sources.jar" basedir="src"/>
+    </target>
     <target name="build-subprojects"/>
     <target depends="init" name="build-project">
         <echo message="${ant.project.name}: ${ant.file}"/>
         <javac debug="true" debuglevel="${debuglevel}" destdir="bin" includeantruntime="false" source="${source}" target="${target}">
             <src path="src"/>
-            <classpath refid="moonrover.classpath"/>
+            <classpath refid="Kraken.classpath"/>
         </javac>
     </target>
     <target description="Build all projects which reference this project. Useful to propagate changes." name="build-refprojects"/>
-    <target name="tests">
+    <target name="kraken.tests">
         <mkdir dir="${junit.output.dir}"/>
-        <junit fork="yes" printsummary="withOutAndErr" haltonfailure="no" failureproperty="test.failed">
+        <junit fork="yes" printsummary="withOutAndErr">
             <formatter type="xml"/>
-            <formatter type="plain" usefile="false" />
-            <test name="tests.JUnit_Capteurs" todir="${junit.output.dir}"/>
-            <test name="tests.JUnit_CheminPF" todir="${junit.output.dir}"/>
-            <test name="tests.JUnit_Config" todir="${junit.output.dir}"/>
-            <test name="tests.JUnit_Container" todir="${junit.output.dir}"/>
-            <test name="tests.JUnit_DStarLite" todir="${junit.output.dir}"/>
-            <test name="tests.JUnit_EPriorityQueue" todir="${junit.output.dir}"/>
-            <test name="tests.JUnit_GridSpace" todir="${junit.output.dir}"/>
-            <test name="tests.JUnit_Math" todir="${junit.output.dir}"/>
-            <test name="tests.JUnit_Obstacle" todir="${junit.output.dir}"/>
-            <test name="tests.JUnit_OMMemory" todir="${junit.output.dir}"/>
-            <test name="tests.JUnit_Table" todir="${junit.output.dir}"/>
-            <classpath refid="moonrover.classpath"/>
+            <test name="kraken.tests.JUnit_AStarCourbe" todir="${junit.output.dir}"/>
+            <test name="kraken.tests.JUnit_CheminPF" todir="${junit.output.dir}"/>
+            <test name="kraken.tests.JUnit_Config" todir="${junit.output.dir}"/>
+            <test name="kraken.tests.JUnit_Container" todir="${junit.output.dir}"/>
+            <test name="kraken.tests.JUnit_DStarLite" todir="${junit.output.dir}"/>
+            <test name="kraken.tests.JUnit_EPriorityQueue" todir="${junit.output.dir}"/>
+            <test name="kraken.tests.JUnit_GridSpace" todir="${junit.output.dir}"/>
+            <test name="kraken.tests.JUnit_Math" todir="${junit.output.dir}"/>
+            <test name="kraken.tests.JUnit_OMMemory" todir="${junit.output.dir}"/>
+            <test name="kraken.tests.JUnit_Obstacle" todir="${junit.output.dir}"/>
+            <test name="kraken.tests.JUnit_Table" todir="${junit.output.dir}"/>
+            <classpath refid="Kraken.classpath"/>
         </junit>
-        <fail message="Test failure detected, check test results." if="test.failed" />
     </target>
-  <!-- Generate javadocs for current project into ${doc.dir} -->
   <target name="doc" depends="init" description="generate documentation">
     <javadoc sourcepath="src" destdir="docs"/>
   </target>

@@ -12,7 +12,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>
  */
 
-package kraken.tests.lowlevel;
+package kraken.tests;
 
 import java.util.Random;
 import org.junit.Assert;
@@ -43,7 +43,6 @@ import kraken.robot.Cinematique;
 import kraken.robot.CinematiqueObs;
 import kraken.robot.Speed;
 import kraken.table.GameElementNames;
-import kraken.tests.JUnit_Test;
 import kraken.threads.ThreadName;
 import kraken.threads.ThreadUpdatePathfinding;
 import kraken.utils.Vec2RO;

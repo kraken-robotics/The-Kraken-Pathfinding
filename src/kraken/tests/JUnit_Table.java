@@ -42,7 +42,7 @@ public class JUnit_Table extends JUnit_Test
 		super.setUp();
 		table = container.getService(RealTable.class);
 	}
-
+/*
 	@Test
 	public void test_clone_copy() throws Exception
 	{
@@ -62,7 +62,7 @@ public class JUnit_Table extends JUnit_Test
 		Assert.assertTrue(f.getLong(table) == f.getLong(cloned_table));
 		table.setDone(GameElementNames.CYLINDRE_3_D, EtatElement.PRIS_PAR_NOUS);
 		Assert.assertTrue(f.getLong(table) != f.getLong(cloned_table));
-	}
+	}*/
 
 	@Test
 	public void test_unicite() throws Exception

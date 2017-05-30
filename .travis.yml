@@ -1,0 +1,9 @@
+language : java
+script :
+    - ant
+    - timeout 180 ant kraken.tests
+    - ant doc
+jdk :
+    - oraclejdk8
+branches:
+    only : master
