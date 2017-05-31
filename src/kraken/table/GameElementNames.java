@@ -14,11 +14,8 @@
 
 package kraken.table;
 
-import kraken.graphic.printable.Couleur;
-import kraken.obstacles.types.ObstacleCircular;
 import kraken.obstacles.types.ObstacleInterface;
 import kraken.obstacles.types.ObstacleMasque;
-import kraken.utils.Vec2RO;
 
 /**
  * Enumérations contenant tous les éléments de jeux

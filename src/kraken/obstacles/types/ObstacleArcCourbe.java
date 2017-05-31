@@ -17,7 +17,7 @@ package kraken.obstacles.types;
 import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.List;
-import kraken.graphic.Fenetre;
+import graphic.Fenetre;
 import kraken.utils.Vec2RO;
 
 /**

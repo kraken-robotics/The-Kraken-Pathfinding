@@ -17,14 +17,12 @@ package kraken.pathfinding.chemin;
 import java.awt.Graphics;
 import java.util.LinkedList;
 import config.Config;
+import graphic.Fenetre;
+import graphic.PrintBuffer;
+import graphic.printable.Layer;
+import graphic.printable.Printable;
 import kraken.config.ConfigInfoKraken;
-import kraken.container.Service;
-import kraken.container.dependances.HighPFClass;
-import kraken.graphic.Fenetre;
-import kraken.graphic.PrintBuffer;
-import kraken.graphic.printable.Couleur;
-import kraken.graphic.printable.Layer;
-import kraken.graphic.printable.Printable;
+import kraken.graphic.Couleur;
 import kraken.obstacles.types.ObstacleCircular;
 import kraken.robot.Cinematique;
 import kraken.robot.CinematiqueObs;
@@ -37,7 +35,7 @@ import kraken.utils.Log;
  *
  */
 
-public class FakeCheminPathfinding implements Service, CheminPathfindingInterface, HighPFClass, Printable
+public class FakeCheminPathfinding implements CheminPathfindingInterface, Printable
 {
 	private LinkedList<CinematiqueObs> path;
 	protected Log log;

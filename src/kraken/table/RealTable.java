@@ -17,10 +17,8 @@ package kraken.table;
 import java.util.BitSet;
 import java.util.List;
 import config.Config;
+import graphic.PrintBufferInterface;
 import kraken.config.ConfigInfoKraken;
-import kraken.container.Service;
-import kraken.container.dependances.CoreClass;
-import kraken.graphic.PrintBufferInterface;
 import kraken.obstacles.types.ObstacleMasque;
 import kraken.pathfinding.dstarlite.gridspace.MasqueManager;
 import kraken.pathfinding.dstarlite.gridspace.PointDirige;
@@ -34,7 +32,7 @@ import kraken.utils.Log;
  *
  */
 
-public class RealTable extends Table implements Service, CoreClass
+public class RealTable extends Table
 {
 	private PrintBufferInterface buffer;
 	private boolean print;

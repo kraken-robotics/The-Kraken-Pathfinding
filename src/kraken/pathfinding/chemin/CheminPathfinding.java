@@ -16,13 +16,11 @@ package kraken.pathfinding.chemin;
 
 import java.util.LinkedList;
 import config.Config;
+import graphic.PrintBufferInterface;
+import graphic.printable.Segment;
 import kraken.config.ConfigInfoKraken;
-import kraken.container.Service;
-import kraken.container.dependances.HighPFClass;
 import kraken.exceptions.PathfindingException;
-import kraken.graphic.PrintBufferInterface;
-import kraken.graphic.printable.Couleur;
-import kraken.graphic.printable.Segment;
+import kraken.graphic.Couleur;
 import kraken.obstacles.memory.ObstaclesIteratorPresent;
 import kraken.obstacles.types.ObstacleCircular;
 import kraken.obstacles.types.ObstacleProximity;
@@ -42,7 +40,7 @@ import kraken.utils.Log.Verbose;
  *
  */
 
-public class CheminPathfinding implements Service, HighPFClass, CheminPathfindingInterface
+public class CheminPathfinding implements CheminPathfindingInterface
 {
 	protected Log log;
 	private ObstaclesIteratorPresent iterObstacles;
@@ -339,7 +337,7 @@ public class CheminPathfinding implements Service, HighPFClass, CheminPathfindin
 			if(affSeg[indexFirst] != null)
 			{
 				Segment s = affSeg[indexFirst].clone();
-				s.setColor(Couleur.JAUNE);
+				s.setColor(Couleur.JAUNE.l, Couleur.JAUNE.couleur);
 				buffer.add(s); // on sauvegarde à jamais les segments parcourus
 			}
 			updateAffichage();
@@ -392,7 +390,7 @@ public class CheminPathfinding implements Service, HighPFClass, CheminPathfindin
 				Cinematique a = iterCheminPrint.next();
 				if(last != null)
 				{
-					affSeg[iterCheminPrint.getIndex()] = new Segment(last, a.getPosition(), Couleur.TRAJECTOIRE);
+					affSeg[iterCheminPrint.getIndex()] = new Segment(last, a.getPosition(), Couleur.TRAJECTOIRE.l, Couleur.TRAJECTOIRE.couleur);
 					buffer.addSupprimable(affSeg[iterCheminPrint.getIndex()]);
 				}
 

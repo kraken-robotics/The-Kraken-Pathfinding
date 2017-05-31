@@ -14,8 +14,6 @@
 
 package kraken.pathfinding.dstarlite.gridspace;
 
-import kraken.container.Service;
-import kraken.container.dependances.LowPFClass;
 import kraken.utils.Log;
 import kraken.utils.Vec2RO;
 
@@ -26,7 +24,7 @@ import kraken.utils.Vec2RO;
  *
  */
 
-public class PointGridSpaceManager implements Service, LowPFClass
+public class PointGridSpaceManager
 {
 	private static final int X_MAX = PointGridSpace.NB_POINTS_POUR_TROIS_METRES - 1;
 	private static final int Y_MAX = PointGridSpace.NB_POINTS_POUR_DEUX_METRES - 1;

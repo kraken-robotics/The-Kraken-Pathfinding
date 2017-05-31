@@ -20,12 +20,10 @@ import java.util.LinkedList;
 import java.util.PriorityQueue;
 import java.util.Stack;
 import config.Config;
+import graphic.PrintBufferInterface;
 import kraken.config.ConfigInfoKraken;
-import kraken.container.Service;
-import kraken.container.dependances.HighPFClass;
 import kraken.exceptions.MemoryManagerException;
 import kraken.exceptions.PathfindingException;
-import kraken.graphic.PrintBufferInterface;
 import kraken.memory.CinemObsMM;
 import kraken.memory.NodeMM;
 import kraken.obstacles.types.ObstacleRobot;
@@ -55,7 +53,7 @@ import kraken.utils.Log.Verbose;
  *
  */
 
-public class AStarCourbe implements Service, HighPFClass
+public class AStarCourbe
 {
 	protected Log log;
 	private boolean symetrie;

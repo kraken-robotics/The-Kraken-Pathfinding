@@ -7,7 +7,6 @@ package kraken.obstacles.types;
 import java.util.ArrayList;
 import java.util.List;
 
-import kraken.container.Service;
 import kraken.utils.Log;
 
 /**
@@ -16,7 +15,8 @@ import kraken.utils.Log;
  *
  */
 
-public class ObstaclesFixes implements Service {
+public class ObstaclesFixes
+{
 
     private List<Obstacle> obstacles = new ArrayList<Obstacle>();
     protected Log log;

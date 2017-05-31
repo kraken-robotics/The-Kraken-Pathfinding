@@ -16,8 +16,6 @@ package kraken.memory;
 
 import config.Config;
 import kraken.config.ConfigInfoKraken;
-import kraken.container.dependances.HighPFClass;
-import kraken.exceptions.ContainerException;
 import kraken.pathfinding.astar.arcs.ArcCourbeDynamique;
 import kraken.robot.CinematiqueObs;
 import kraken.utils.Log;
@@ -33,11 +31,11 @@ import kraken.utils.Log;
  *
  */
 
-public class CinemObsMM extends MemoryManager<CinematiqueObs> implements HighPFClass
+public class CinemObsMM extends MemoryManager<CinematiqueObs>
 {
 	private int largeur, longueur_arriere, longueur_avant, marge;
 	
-	public CinemObsMM(Log log, Config config) throws ContainerException
+	public CinemObsMM(Log log, Config config)
 	{
 		super(CinematiqueObs.class, log);
 		largeur = config.getInt(ConfigInfoKraken.LARGEUR_NON_DEPLOYE) / 2;

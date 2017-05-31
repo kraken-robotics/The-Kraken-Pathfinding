@@ -14,7 +14,6 @@
 
 package kraken.threads;
 
-import kraken.container.dependances.HighPFClass;
 import kraken.exceptions.PathfindingException;
 import kraken.pathfinding.PFInstruction;
 import kraken.pathfinding.astar.AStarCourbe;
@@ -30,7 +29,7 @@ import kraken.utils.Log.Verbose;
  *
  */
 
-public class ThreadPreparePathfinding extends ThreadService implements HighPFClass
+public class ThreadPreparePathfinding extends Thread
 {
 	protected Log log;
 	private AStarCourbe astar;

@@ -15,14 +15,12 @@
 package kraken.pathfinding.dstarlite.gridspace;
 
 import config.Config;
+import graphic.Fenetre;
+import graphic.PrintBufferInterface;
+import graphic.printable.Layer;
+import graphic.printable.Printable;
 import kraken.config.ConfigInfoKraken;
-import kraken.container.Service;
-import kraken.container.dependances.LowPFClass;
-import kraken.graphic.Fenetre;
-import kraken.graphic.PrintBufferInterface;
-import kraken.graphic.printable.Couleur;
-import kraken.graphic.printable.Layer;
-import kraken.graphic.printable.Printable;
+import kraken.graphic.Couleur;
 import kraken.obstacles.memory.ObstaclesIteratorPresent;
 import kraken.obstacles.memory.ObstaclesMemory;
 import kraken.obstacles.types.Obstacle;
@@ -43,7 +41,7 @@ import java.util.List;
  *
  */
 
-public class GridSpace implements Service, Printable, LowPFClass
+public class GridSpace implements Printable
 {
 	protected Log log;
 	private ObstaclesIteratorPresent iteratorDStarLiteFirst;

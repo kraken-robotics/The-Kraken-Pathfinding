@@ -29,9 +29,9 @@ public enum ThreadName
 	PREPARE_PATHFINDING(ThreadPreparePathfinding.class),
 	PEREMPTION(ThreadPeremption.class);
 
-	public Class<? extends ThreadService> c;
+	public Class<? extends Thread> c;
 
-	private ThreadName(Class<? extends ThreadService> c)
+	private ThreadName(Class<? extends Thread> c)
 	{
 		this.c = c;
 	}

@@ -15,12 +15,11 @@
 package kraken.threads;
 
 import config.Config;
+import graphic.Fenetre;
+import graphic.PrintBuffer;
+import injector.InjectorException;
 import kraken.config.ConfigInfoKraken;
 import kraken.container.Container;
-import kraken.container.dependances.GUIClass;
-import kraken.exceptions.ContainerException;
-import kraken.graphic.Fenetre;
-import kraken.graphic.PrintBuffer;
 import kraken.utils.Log;
 
 /**
@@ -30,7 +29,7 @@ import kraken.utils.Log;
  *
  */
 
-public class ThreadFenetre extends ThreadService implements GUIClass
+public class ThreadFenetre extends Thread
 {
 
 	protected Log log;
@@ -53,7 +52,7 @@ public class ThreadFenetre extends ThreadService implements GUIClass
 			{
 				fenetre = container.getService(Fenetre.class);
 			}
-			catch(ContainerException e)
+			catch(InjectorException e)
 			{
 				e.printStackTrace();
 			}

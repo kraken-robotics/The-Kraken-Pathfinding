@@ -16,8 +16,6 @@ package kraken.memory;
 
 import config.Config;
 import kraken.config.ConfigInfoKraken;
-import kraken.container.dependances.HighPFClass;
-import kraken.exceptions.ContainerException;
 import kraken.pathfinding.ChronoGameState;
 import kraken.pathfinding.astar.AStarCourbeNode;
 import kraken.pathfinding.chemin.CheminPathfinding;
@@ -32,13 +30,13 @@ import kraken.utils.Log;
  *
  */
 
-public class NodeMM extends MemoryManager<AStarCourbeNode> implements HighPFClass
+public class NodeMM extends MemoryManager<AStarCourbeNode>
 {
 	private int largeur, longueur_arriere, longueur_avant, marge;
 	private Log log;
 	private CheminPathfinding chemin;
 	
-	public NodeMM(Log log, Config config, CheminPathfinding chemin) throws ContainerException
+	public NodeMM(Log log, Config config, CheminPathfinding chemin)
 	{
 		super(AStarCourbeNode.class, log);
 		this.chemin = chemin;

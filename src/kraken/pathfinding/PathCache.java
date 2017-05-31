@@ -27,8 +27,6 @@ import java.util.LinkedList;
 import java.util.List;
 import config.Config;
 import kraken.config.ConfigInfoKraken;
-import kraken.container.Service;
-import kraken.container.dependances.HighPFClass;
 import kraken.exceptions.MemoryManagerException;
 import kraken.exceptions.PathfindingException;
 import kraken.exceptions.UnableToMoveException;
@@ -51,7 +49,7 @@ import kraken.utils.Log.Verbose;
  *
  */
 
-public class PathCache implements Service, HighPFClass
+public class PathCache
 {
 	public static volatile boolean precompute = false;
 	private Log log;

@@ -14,8 +14,6 @@
 
 package kraken.pathfinding;
 
-import kraken.container.Service;
-import kraken.container.dependances.HighPFClass;
 import kraken.exceptions.PathfindingException;
 
 /**
@@ -30,7 +28,7 @@ import kraken.exceptions.PathfindingException;
  *
  */
 
-public class PFInstruction implements Service, HighPFClass
+public class PFInstruction
 {
 	private volatile PathfindingException e = null;
 	private volatile boolean done = false; // la recherche est-elle finie ?

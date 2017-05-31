@@ -17,10 +17,8 @@ package kraken.pathfinding.dstarlite.gridspace;
 import java.util.ArrayList;
 import java.util.List;
 import config.Config;
+import graphic.PrintBufferInterface;
 import kraken.config.ConfigInfoKraken;
-import kraken.container.Service;
-import kraken.container.dependances.LowPFClass;
-import kraken.graphic.PrintBufferInterface;
 import kraken.obstacles.types.Obstacle;
 import kraken.utils.Log;
 import kraken.utils.Vec2RO;
@@ -33,7 +31,7 @@ import kraken.utils.Vec2RW;
  *
  */
 
-public class MasqueManager implements Service, LowPFClass
+public class MasqueManager
 {
 	private int centreMasqueCylindre;
 	private PointGridSpaceManager pointManager;

@@ -17,6 +17,7 @@ package kraken.utils;
 import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import graphic.Position;
 
 /**
  * Vecteur en lecture seule
@@ -25,13 +26,14 @@ import java.text.NumberFormat;
  *
  */
 
-public class Vec2RO implements Serializable
+public class Vec2RO implements Serializable, Position
 {
 	private static final long serialVersionUID = 1L;
 	protected volatile double x;
 	protected volatile double y;
 	private static NumberFormat formatter = new DecimalFormat("#0.00");
 
+	@SuppressWarnings("unused")
 	public Vec2RO(double longueur, double angle, boolean useless)
 	{
 		x = Math.cos(angle) * longueur;

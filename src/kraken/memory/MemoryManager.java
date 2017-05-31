@@ -17,8 +17,6 @@ package kraken.memory;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
-import kraken.container.Service;
-import kraken.exceptions.ContainerException;
 import kraken.exceptions.MemoryManagerException;
 import kraken.utils.Log;
 
@@ -33,7 +31,7 @@ import kraken.utils.Log;
  *
  */
 
-public abstract class MemoryManager<T extends Memorizable> implements Service
+public abstract class MemoryManager<T extends Memorizable>
 {
 
 	private int initial_nb_instances;
@@ -46,7 +44,7 @@ public abstract class MemoryManager<T extends Memorizable> implements Service
 
 	protected abstract T make();
 	
-	public MemoryManager(Class<T> classe, Log log) throws ContainerException
+	public MemoryManager(Class<T> classe, Log log)
 	{
 		this.classe = classe;
 		this.log = log;

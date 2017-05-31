@@ -14,40 +14,19 @@
 
 package kraken.container;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.Stack;
 import config.Config;
+import graphic.ExternalPrintBuffer;
+import graphic.PrintBuffer;
+import graphic.PrintBufferInterface;
+import injector.Injector;
+import injector.InjectorException;
 import kraken.config.ConfigInfoKraken;
-import kraken.container.Service;
-import kraken.container.dependances.CoreClass;
-import kraken.container.dependances.GUIClass;
-import kraken.container.dependances.HighPFClass;
-import kraken.container.dependances.LowPFClass;
-import kraken.container.dependances.SerialClass;
-import kraken.exceptions.ContainerException;
-import kraken.graphic.ExternalPrintBuffer;
-import kraken.graphic.PrintBuffer;
-import kraken.graphic.PrintBufferInterface;
 import kraken.obstacles.types.Obstacle;
 import kraken.obstacles.types.ObstaclesFixes;
 import kraken.pathfinding.astar.arcs.ArcCourbe;
 import kraken.robot.Speed;
 import kraken.threads.ThreadName;
-import kraken.threads.ThreadService;
 import kraken.threads.ThreadShutdown;
 import kraken.utils.*;
 
@@ -61,14 +40,12 @@ import kraken.utils.*;
  * 
  * @author pf
  */
-public class Container implements Service
+public class Container
 {
-	// liste des services déjà instanciés. Contient au moins Config et Log. Les
-	// autres services appelables seront présents quand ils auront été appelés
-	private HashMap<String, Object> instanciedServices = new HashMap<String, Object>();
 
 	private Log log;
 	private Config config;
+	private Injector injector;
 
 	private static int nbInstances = 0;
 	private Thread mainThread;
@@ -76,8 +53,6 @@ public class Container implements Service
 	private boolean shutdown = false;
 	private boolean showGraph;
 
-	private HashMap<Class<? extends Service>, Set<String>> grapheDep = new HashMap<Class<? extends Service>, Set<String>>();
-	
 	public boolean isShutdownInProgress()
 	{
 		return shutdown;
@@ -106,11 +81,15 @@ public class Container implements Service
 	 * 
 	 * @throws InterruptedException
 	 * @throws ContainerException
+	 * @throws InjectorException 
 	 */
-	public synchronized ErrorCode destructor() throws ContainerException, InterruptedException
+	public synchronized ErrorCode destructor() throws InterruptedException, InjectorException
 	{
 		if(Thread.currentThread().getId() != mainThread.getId())
-			throw new ContainerException("Le destructor de container doit être appelé depuis le thread principal !");
+		{
+			log.critical("Le destructor de container doit être appelé depuis le thread principal !");
+			return ErrorCode.DOUBLE_DESTRUCTOR;
+		}
 	
 		/*
 		 * Il ne faut pas appeler deux fois le destructeur
@@ -123,9 +102,10 @@ public class Container implements Service
 
 		shutdown = true;
 
+		PrintBufferInterface buffer = injector.getExistingService(PrintBufferInterface.class);
 		// On appelle le destructeur du PrintBuffer
-		if(instanciedServices.containsKey(PrintBufferInterface.class.getSimpleName()))
-			((PrintBufferInterface) instanciedServices.get(PrintBufferInterface.class.getSimpleName())).destructor();
+		if(buffer != null)
+			buffer.destructor();
 
 		// arrêt des threads
 		for(ThreadName n : ThreadName.values())
@@ -156,132 +136,22 @@ public class Container implements Service
 
 		Thread.sleep(100);
 		for(ThreadName n : ThreadName.values())
-			if(getService(n.c).isAlive())
+			if(injector.getService(n.c).isAlive())
 				log.critical(n.c.getSimpleName() + " encore vivant !");
 
-		getService(ThreadShutdown.class).interrupt();
+		injector.getService(ThreadShutdown.class).interrupt();
 
 		if(showGraph)
-			saveGraph();
+			injector.saveGraph("dependances.dot");
 
 		// fermeture du log
 		log.debug("Code d'erreur : " + errorCode);
 		log.debug("Fermeture du log");
 		log.close();
 		nbInstances--;
-		printMessage("outro.txt");
 
 		Thread.sleep(300);
 		return errorCode;
-	}
-
-	/**
-	 * Sauvegarde le graphe de dépendances.
-	 * Est appelé par de destructeur.
-	 */
-	private void saveGraph()
-	{
-		log.warning("Sauvegarde du graphe de dépendances");
-
-		List<String> classesSerie = new ArrayList<String>();
-		List<String> classesHighPF = new ArrayList<String>();
-		List<String> classesLowPF = new ArrayList<String>();
-		List<String> classesBothPF = new ArrayList<String>();
-		List<String> classesCore = new ArrayList<String>();
-		List<String> classesGUI = new ArrayList<String>();
-		List<String> classesAutres = new ArrayList<String>();
-
-		for(Class<? extends Service> classe : grapheDep.keySet())
-		{
-			String nom = classe.getSimpleName();
-			if(nom.startsWith("Thread"))
-				nom += "[style=filled, fillcolor=cadetblue1]";
-			else if(nom.contains("Buffer"))
-				nom += "[style=filled, fillcolor=darkolivegreen1]";
-			if(HighPFClass.class.isAssignableFrom(classe))
-			{
-				if(LowPFClass.class.isAssignableFrom(classe))
-					classesBothPF.add(nom);
-				else
-					classesHighPF.add(nom);
-			}
-			else if(SerialClass.class.isAssignableFrom(classe))
-				classesSerie.add(nom);
-			else if(GUIClass.class.isAssignableFrom(classe))
-				classesGUI.add(nom);
-			else if(LowPFClass.class.isAssignableFrom(classe))
-				classesLowPF.add(nom);
-			else if(CoreClass.class.isAssignableFrom(classe))
-				classesCore.add(nom);
-			else
-				classesAutres.add(nom);
-		}
-
-		try
-		{
-			FileWriter fw = new FileWriter(new File("dependances.dot"));
-			fw.write("digraph dependancesJava {\n\n");
-
-			fw.write("subgraph clusterPF {\n");
-			fw.write("label = \"Pathfinding\";\n");
-			for(String s : classesBothPF)
-				fw.write(s + ";\n");
-
-			fw.write("subgraph clusterPFCourbe {\n");
-			fw.write("label = \"PF courbe\";\n");
-			for(String s : classesHighPF)
-				fw.write(s + ";\n");
-			fw.write("}\n\n");
-
-			fw.write("subgraph clusterPFlow {\n");
-			fw.write("label = \"PF bas niveau\";\n");
-			for(String s : classesLowPF)
-				fw.write(s + ";\n");
-			fw.write("}\n\n");
-			fw.write("}\n\n");
-
-			fw.write("subgraph clusterSerie {\n");
-			fw.write("label = \"Série\";\n");
-			for(String s : classesSerie)
-				fw.write(s + ";\n");
-			fw.write("}\n\n");
-
-			fw.write("subgraph clusterCore {\n");
-			fw.write("label = \"Core\";\n");
-			for(String s : classesCore)
-				fw.write(s + ";\n");
-			fw.write("}\n\n");
-
-			fw.write("subgraph clusterGUI {\n");
-			fw.write("label = \"GUI\";\n");
-			for(String s : classesGUI)
-				fw.write(s + ";\n");
-			fw.write("}\n\n");
-
-			for(String s : classesAutres)
-				fw.write(s + ";\n");
-
-			fw.write("\n");
-
-			for(Class<? extends Service> classe : grapheDep.keySet())
-			{
-				Set<String> enf = grapheDep.get(classe);
-				if(!enf.isEmpty())
-				{
-					fw.write(classe.getSimpleName() + " -> {");
-					for(String e : enf)
-						fw.write(e + " ");
-					fw.write("};\n");
-				}
-			}
-			fw.write("\n}\n");
-			fw.close();
-		}
-		catch(IOException e)
-		{
-			e.printStackTrace();
-			e.printStackTrace(log.getPrintWriter());
-		}
 	}
 
 	/**
@@ -290,29 +160,30 @@ public class Container implements Service
 	 * 
 	 * @throws ContainerException si un autre container est déjà instancié
 	 * @throws InterruptedException
+	 * @throws InjectorException 
 	 */
-	public Container(List<Obstacle> fixedObstacles) throws ContainerException, InterruptedException
+	public Container(List<Obstacle> fixedObstacles) throws InterruptedException, InjectorException
 	{
 		/**
 		 * On vérifie qu'il y ait un seul container à la fois
 		 */
 		if(nbInstances != 0)
-			throw new ContainerException("Un autre container existe déjà! Annulation du constructeur.");
+		{
+			log.critical("Un autre container existe déjà! Annulation du constructeur.");
+			int z = 0;
+			z = 1/z;
+			return;
+		}
 
 		nbInstances++;
 
+		injector = new Injector();
 		mainThread = Thread.currentThread();
 		Thread.currentThread().setName("ThreadPrincipal");
 
-		/**
-		 * Affichage d'un petit message de bienvenue
-		 */
-		printMessage("intro.txt");
-
-		log = new Log();
-		
+		log = injector.getService(Log.class);
 		config = new Config(ConfigInfoKraken.values(), "kraken.conf", true);
-		instanciedServices.put(Config.class.getSimpleName(), config);
+		injector.addService(Config.class, config);
 
 		log.useConfig(config);
 
@@ -321,45 +192,7 @@ public class Container implements Service
 		Speed.STANDARD.translationalSpeed = config.getDouble(ConfigInfoKraken.VITESSE_ROBOT_STANDARD) / 1000.;
 		Speed.BASCULE.translationalSpeed = config.getDouble(ConfigInfoKraken.VITESSE_ROBOT_BASCULE) / 1000.;
 
-		/**
-		 * Affiche la version du programme (dernier commit et sa branche)
-		 */
-		try
-		{
-			Process p = Runtime.getRuntime().exec("git log -1 --oneline");
-			Process p2 = Runtime.getRuntime().exec("git branch");
-			BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()));
-			BufferedReader in2 = new BufferedReader(new InputStreamReader(p2.getInputStream()));
-			String s = in.readLine();
-			int index = s.indexOf(" ");
-			in.close();
-			String s2 = in2.readLine();
-
-			while(!s2.contains("*"))
-				s2 = in2.readLine();
-
-			int index2 = s2.indexOf(" ");
-			log.debug("Version : " + s.substring(0, index) + " on " + s2.substring(index2 + 1) + " - [" + s.substring(index + 1) + "]");
-			in2.close();
-		}
-		catch(IOException e1)
-		{
-			System.out.println(e1);
-		}
-
-		/**
-		 * Infos diverses
-		 */
-		log.debug("Système : " + System.getProperty("os.name") + " " + System.getProperty("os.version") + " " + System.getProperty("os.arch"));
-		log.debug("Java : " + System.getProperty("java.vendor") + " " + System.getProperty("java.version") + ", mémoire max : " + Math.round(100. * Runtime.getRuntime().maxMemory() / (1024. * 1024. * 1024.)) / 100. + "G, coeurs : " + Runtime.getRuntime().availableProcessors());
-		log.debug("Date : " + new SimpleDateFormat("E dd/MM à HH:mm").format(new Date()));
-
-		log.warning("Remember, with great power comes great current squared times resistance !");
-
-		instanciedServices.put(Log.class.getSimpleName(), log);
-
-		// Le container est aussi un service
-		instanciedServices.put(getClass().getSimpleName(), this);
+		injector.addService(Container.class, this);
 		
 		/**
 		 * Planification du hook de fermeture
@@ -369,7 +202,7 @@ public class Container implements Service
 			log.debug("Mise en place du hook d'arrêt");
 			Runtime.getRuntime().addShutdownHook(getService(ThreadShutdown.class));
 		}
-		catch(ContainerException e)
+		catch(InjectorException e)
 		{
 			e.printStackTrace();
 			e.printStackTrace(log.getPrintWriter());
@@ -381,9 +214,9 @@ public class Container implements Service
 			log.warning("Le graphe de dépendances va être généré !");
 
 		if(config.getBoolean(ConfigInfoKraken.GRAPHIC_EXTERNAL))
-			instanciedServices.put(PrintBufferInterface.class.getSimpleName(), getService(ExternalPrintBuffer.class));
+			injector.addService(PrintBufferInterface.class, injector.getService(ExternalPrintBuffer.class));
 		else
-			instanciedServices.put(PrintBufferInterface.class.getSimpleName(), getService(PrintBuffer.class));
+			injector.addService(PrintBufferInterface.class, injector.getService(PrintBuffer.class));
 
 		Obstacle.set(log, getService(PrintBufferInterface.class));
 		Obstacle.useConfig(config);
@@ -402,154 +235,33 @@ public class Container implements Service
 	 * @param classe
 	 * @return un objet de cette classe
 	 * @throws ContainerException
+	 * @throws InjectorException 
 	 * @throws InterruptedException
 	 */
-	public synchronized <S> S getService(Class<S> serviceTo) throws ContainerException
+	public synchronized <S> S getService(Class<S> serviceTo) throws InjectorException
 	{
-		return getServiceRecursif(serviceTo, new Stack<String>());
+		return injector.getService(serviceTo);
 	}
 
-	@SuppressWarnings("unchecked")
 	public synchronized <S> S getExistingService(Class<S> classe)
 	{
-		if(instanciedServices.containsKey(classe.getSimpleName()))
-			return (S) instanciedServices.get(classe.getSimpleName());
-		return null;
-	}
-
-	/**
-	 * Méthode récursive qui fait tout le boulot
-	 * 
-	 * @param classe
-	 * @return
-	 * @throws ContainerException
-	 * @throws InterruptedException
-	 */
-	@SuppressWarnings("unchecked")
-	private synchronized <S> S getServiceRecursif(Class<S> classe, Stack<String> stack, Object... extraParam) throws ContainerException
-	{
-		try
-		{
-			/**
-			 * Si l'objet existe déjà et que c'est un Service, on le renvoie
-			 */
-			if(instanciedServices.containsKey(classe.getSimpleName()))
-				return (S) instanciedServices.get(classe.getSimpleName());
-
-			/**
-			 * Détection de dépendances circulaires
-			 */
-			if(stack.contains(classe.getSimpleName()))
-			{
-				// Dépendance circulaire détectée !
-				String out = "Dépendance circulaire détectée : ";
-				for(String s : stack)
-					out += s + " -> ";
-				out += classe.getSimpleName();
-				throw new ContainerException(out);
-			}
-
-			// Pas de dépendance circulaire
-
-			// On met à jour la pile
-			stack.push(classe.getSimpleName());
-
-			/**
-			 * Récupération du constructeur et de ses paramètres
-			 * On suppose qu'il n'y a chaque fois qu'un seul constructeur pour
-			 * cette classe
-			 */
-			Constructor<S> constructeur;
-
-			if(classe.getConstructors().length > 1)
-			{
-				try
-				{
-					// Plus d'un constructeur ? On prend celui par défaut
-					constructeur = classe.getConstructor();
-				}
-				catch(Exception e)
-				{
-					throw new ContainerException(classe.getSimpleName() + " a plusieurs constructeurs et aucun constructeur par défaut !");
-				}
-			}
-			else if(classe.getConstructors().length == 0)
-			{
-				String out = "";
-				for(String s : stack)
-					out += s + " -> ";
-				out += " ? ";
-				throw new ContainerException(classe.getSimpleName() + " n'a aucun constructeur ! " + out);
-			}
-			else
-				constructeur = (Constructor<S>) classe.getConstructors()[0];
-
-			Class<?>[] param = constructeur.getParameterTypes();
-
-			/*
-			 * Récupération du graphe de dépendances
-			 */
-			if(showGraph && Service.class.isAssignableFrom(classe) && !classe.equals(Log.class) && !classe.equals(Config.class) && !PrintBufferInterface.class.isAssignableFrom(classe))
-			{
-				Set<String> enf = grapheDep.get(classe);
-				if(enf == null)
-				{
-					enf = new HashSet<String>();
-					grapheDep.put((Class<Service>) classe, enf);
-				}
-				for(int i = 0; i < param.length - extraParam.length; i++)
-				{
-					String fils = param[i].getSimpleName();
-					if(!param[i].equals(Log.class) && !PrintBufferInterface.class.isAssignableFrom(param[i]) && !param[i].equals(Config.class) && !param[i].equals(Container.class) && Service.class.isAssignableFrom(param[i]))
-						enf.add(fils);
-				}
-			}
-
-			/**
-			 * On demande récursivement chacun de ses paramètres
-			 * On complète automatiquement avec ceux déjà donnés
-			 */
-			Object[] paramObject = new Object[param.length];
-			for(int i = 0; i < param.length - extraParam.length; i++)
-				paramObject[i] = getServiceRecursif(param[i], stack);
-			for(int i = 0; i < extraParam.length; i++)
-				paramObject[i + param.length - extraParam.length] = extraParam[i];
-
-			/**
-			 * Instanciation et sauvegarde
-			 */
-			S s = constructeur.newInstance(paramObject);
-
-//			if(Service.class.isAssignableFrom(classe))
-//				instanciedServices.put(classe.getSimpleName(), (Service) s);
-
-			// Mise à jour de la pile
-			stack.pop();
-
-			return s;
-		}
-		catch(IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException | InstantiationException e)
-		{
-			e.printStackTrace();
-			e.printStackTrace(log.getPrintWriter());
-			throw new ContainerException(e.toString() + "\nClasse demandée : " + classe.getSimpleName());
-		}
+		return injector.getExistingService(classe);
 	}
 
 	public void restartThread(ThreadName n) throws InterruptedException
 	{
 		try
 		{
-			ThreadService t = getService(n.c);
+			Thread t = injector.getService(n.c);
 			if(t.isAlive()) // s'il est encore en vie, on le tue
 			{
 				t.interrupt();
 				t.join(1000);
 			}
-			instanciedServices.remove(n.c.getSimpleName());
-			getService(n.c).start(); // et on le redémarre
+			injector.removeService(n.c);
+			injector.getService(n.c).start(); // et on le redémarre
 		}
-		catch(ContainerException e)
+		catch(InjectorException e)
 		{
 			e.printStackTrace();
 			e.printStackTrace(log.getPrintWriter());
@@ -565,38 +277,14 @@ public class Container implements Service
 		{
 			try
 			{
-				getService(n.c).start();
+				injector.getService(n.c).start();
 			}
-			catch(ContainerException | IllegalThreadStateException e)
+			catch(InjectorException | IllegalThreadStateException e)
 			{
 				log.critical("Erreur lors de la création de thread " + n + " : " + e);
 				e.printStackTrace();
 				e.printStackTrace(log.getPrintWriter());
 			}
-		}
-	}
-
-	/**
-	 * Affichage d'un fichier
-	 * 
-	 * @param filename
-	 */
-	private void printMessage(String filename)
-	{
-		BufferedReader reader;
-		try
-		{
-			reader = new BufferedReader(new FileReader(filename));
-			String line;
-
-			while((line = reader.readLine()) != null)
-				System.out.println(line);
-			reader.close();
-		}
-		catch(IOException e)
-		{
-			System.err.println(e); // peut-être que log n'est pas encore
-									// démarré…
 		}
 	}
 

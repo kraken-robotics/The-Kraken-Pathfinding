@@ -15,9 +15,8 @@
 package kraken.threads;
 
 import config.Config;
+import graphic.PrintBufferInterface;
 import kraken.config.ConfigInfoKraken;
-import kraken.container.dependances.LowPFClass;
-import kraken.graphic.PrintBufferInterface;
 import kraken.obstacles.memory.ObstaclesMemory;
 import kraken.pathfinding.dstarlite.DStarLite;
 import kraken.utils.Log;
@@ -30,7 +29,7 @@ import kraken.utils.Log;
  *
  */
 
-public class ThreadPeremption extends ThreadService implements LowPFClass
+public class ThreadPeremption extends Thread
 {
 	private ObstaclesMemory memory;
 	protected Log log;

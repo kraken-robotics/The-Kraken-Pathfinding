@@ -15,8 +15,8 @@
 package kraken.obstacles.types;
 
 import java.awt.Graphics;
-import kraken.graphic.Fenetre;
-import kraken.graphic.printable.Couleur;
+import graphic.Fenetre;
+import kraken.graphic.Couleur;
 import kraken.utils.Vec2RO;
 import kraken.utils.Vec2RW;
 

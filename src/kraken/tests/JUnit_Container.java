@@ -17,8 +17,7 @@ package kraken.tests;
 import org.junit.Assert;
 import org.junit.Test;
 import config.Config;
-import kraken.container.Service;
-import kraken.exceptions.ContainerException;
+import injector.InjectorException;
 import kraken.obstacles.memory.ObstaclesIteratorPresent;
 import kraken.obstacles.types.ObstacleCircular;
 import kraken.obstacles.types.ObstacleProximity;
@@ -35,19 +34,19 @@ import kraken.utils.Vec2RO;
 public class JUnit_Container extends JUnit_Test
 {
 
-	public class A implements Service
+	public class A
 	{
 		public A(B b)
 		{}
 	}
 
-	public class B implements Service
+	public class B
 	{
 		public B(A a)
 		{}
 	}
 
-	public class C implements Service
+	public class C
 	{
 		public C(B b)
 		{}
@@ -56,7 +55,7 @@ public class JUnit_Container extends JUnit_Test
 		{}
 	}
 
-	public class D implements Service
+	public class D
 	{
 		public boolean useConfigOk = false;
 		public boolean updateConfigOk = false;
@@ -78,7 +77,7 @@ public class JUnit_Container extends JUnit_Test
 	 * 
 	 * @throws Exception
 	 */
-	@Test(expected = ContainerException.class)
+	@Test(expected = InjectorException.class)
 	public void test_dependance_circulaire() throws Exception
 	{
 		container.getService(A.class);
@@ -90,7 +89,7 @@ public class JUnit_Container extends JUnit_Test
 	 * 
 	 * @throws Exception
 	 */
-	@Test(expected = ContainerException.class)
+	@Test(expected = InjectorException.class)
 	public void test_multi_constructeur() throws Exception
 	{
 		container.getService(C.class);

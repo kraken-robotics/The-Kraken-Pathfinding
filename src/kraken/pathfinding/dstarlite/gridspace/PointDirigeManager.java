@@ -14,8 +14,6 @@
 
 package kraken.pathfinding.dstarlite.gridspace;
 
-import kraken.container.Service;
-import kraken.container.dependances.LowPFClass;
 import kraken.utils.Log;
 
 /**
@@ -24,7 +22,7 @@ import kraken.utils.Log;
  * @author pf
  *
  */
-public class PointDirigeManager implements Service, LowPFClass
+public class PointDirigeManager
 {
 	private PointDirige[] mem = new PointDirige[PointGridSpace.NB_POINTS * 8];
 	private PointGridSpaceManager pm;

@@ -18,10 +18,10 @@ import java.awt.Graphics;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import kraken.graphic.Fenetre;
-import kraken.graphic.printable.Couleur;
-import kraken.graphic.printable.Layer;
-import kraken.graphic.printable.Printable;
+import graphic.Fenetre;
+import graphic.printable.Layer;
+import graphic.printable.Printable;
+import kraken.graphic.Couleur;
 
 /**
  * Le masque d'un obstacle de proximité

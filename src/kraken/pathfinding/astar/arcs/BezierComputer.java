@@ -18,11 +18,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import config.Config;
+import graphic.PrintBufferInterface;
 import kraken.config.ConfigInfoKraken;
-import kraken.container.Service;
-import kraken.container.dependances.HighPFClass;
 import kraken.exceptions.MemoryManagerException;
-import kraken.graphic.PrintBufferInterface;
 import kraken.memory.CinemObsMM;
 import kraken.pathfinding.astar.arcs.vitesses.VitesseBezier;
 import kraken.pathfinding.astar.arcs.vitesses.VitesseClotho;
@@ -40,7 +38,7 @@ import kraken.utils.Vec2RW;
  *
  */
 
-public class BezierComputer implements Service, HighPFClass
+public class BezierComputer
 {
 	protected Log log;
 	protected CinemObsMM memory;

@@ -16,10 +16,10 @@ package kraken.pathfinding.astar;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import kraken.graphic.Fenetre;
-import kraken.graphic.printable.Couleur;
-import kraken.graphic.printable.Layer;
-import kraken.graphic.printable.Printable;
+import graphic.Fenetre;
+import graphic.printable.Layer;
+import graphic.printable.Printable;
+import kraken.graphic.Couleur;
 import kraken.memory.Memorizable;
 import kraken.pathfinding.ChronoGameState;
 import kraken.pathfinding.astar.arcs.ArcCourbe;

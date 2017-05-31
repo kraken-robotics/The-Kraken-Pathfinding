@@ -15,7 +15,6 @@
 package kraken.threads;
 
 import kraken.container.Container;
-import kraken.container.Service;
 import kraken.container.Container.ErrorCode;
 import kraken.utils.Log;
 
@@ -26,7 +25,7 @@ import kraken.utils.Log;
  *
  */
 
-public class ThreadShutdown extends Thread implements Service
+public class ThreadShutdown extends Thread
 {
 	protected Container container;
 	protected Log log;

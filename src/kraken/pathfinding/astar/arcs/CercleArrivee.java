@@ -16,15 +16,12 @@ package kraken.pathfinding.astar.arcs;
 
 import java.awt.Graphics;
 import config.Config;
+import graphic.Fenetre;
+import graphic.PrintBufferInterface;
+import graphic.printable.Layer;
+import graphic.printable.Printable;
 import kraken.config.ConfigInfoKraken;
-import kraken.container.Service;
-import kraken.container.dependances.HighPFClass;
-import kraken.container.dependances.LowPFClass;
-import kraken.graphic.Fenetre;
-import kraken.graphic.PrintBufferInterface;
-import kraken.graphic.printable.Couleur;
-import kraken.graphic.printable.Layer;
-import kraken.graphic.printable.Printable;
+import kraken.graphic.Couleur;
 import kraken.pathfinding.SensFinal;
 import kraken.robot.Cinematique;
 import kraken.table.GameElementNames;
@@ -41,7 +38,7 @@ import kraken.utils.Log.Verbose;
  *
  */
 
-public class CercleArrivee implements Service, Printable, HighPFClass, LowPFClass
+public class CercleArrivee implements Printable
 {
 	public volatile Vec2RO position;
 	public volatile double rayon;

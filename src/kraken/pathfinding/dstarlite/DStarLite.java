@@ -18,11 +18,9 @@ import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
 import config.Config;
+import graphic.PrintBufferInterface;
 import kraken.config.ConfigInfoKraken;
-import kraken.container.Service;
-import kraken.container.dependances.LowPFClass;
-import kraken.graphic.PrintBufferInterface;
-import kraken.graphic.printable.Couleur;
+import kraken.graphic.Couleur;
 import kraken.obstacles.types.Obstacle;
 import kraken.pathfinding.astar.arcs.CercleArrivee;
 import kraken.pathfinding.dstarlite.gridspace.Direction;
@@ -47,7 +45,7 @@ import kraken.utils.Vec2RO;
  *
  */
 
-public class DStarLite implements Service, LowPFClass
+public class DStarLite
 {
 	protected Log log;
 	private GridSpace gridspace;

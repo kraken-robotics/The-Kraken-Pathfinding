@@ -14,10 +14,7 @@
 
 package kraken.pathfinding.astar.arcs;
 
-import kraken.container.Service;
-import kraken.container.dependances.HighPFClass;
 import kraken.exceptions.MemoryManagerException;
-import kraken.graphic.PrintBufferInterface;
 import kraken.memory.CinemObsMM;
 import kraken.obstacles.types.ObstacleCircular;
 import kraken.pathfinding.astar.arcs.vitesses.VitesseClotho;
@@ -40,6 +37,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
+import graphic.PrintBufferInterface;
 
 /**
  * Classe qui s'occupe de tous les calculs concernant les clothoïdes
@@ -48,7 +46,7 @@ import java.util.List;
  *
  */
 
-public class ClothoidesComputer implements Service, HighPFClass
+public class ClothoidesComputer
 {
 	private Log log;
 	private CinemObsMM memory;
@@ -524,7 +522,17 @@ public class ClothoidesComputer implements Service, HighPFClass
 		}
 		catch(IOException | ClassNotFoundException | NullPointerException e)
 		{
-			log.critical("Chargement échoué ! "+e);
+			try {
+				FileInputStream fichier = new FileInputStream("clotho-" + S_MAX + ".dat");
+				ObjectInputStream ois = new ObjectInputStream(fichier);
+				trajectoire = (Vec2RO[]) ois.readObject();
+				ois.close();
+				return true;
+			}
+			catch(IOException | ClassNotFoundException e1)
+			{
+				log.critical("Chargement échoué ! "+e+" "+e1);
+			}
 		}
 		return false;
 	}

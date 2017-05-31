@@ -16,10 +16,9 @@ package kraken.pathfinding.dstarlite.gridspace;
 
 import java.awt.Graphics;
 import java.io.Serializable;
-import kraken.container.Service;
-import kraken.graphic.Fenetre;
-import kraken.graphic.printable.Layer;
-import kraken.graphic.printable.Printable;
+import graphic.Fenetre;
+import graphic.printable.Layer;
+import graphic.printable.Printable;
 import kraken.utils.Vec2RO;
 import kraken.utils.Vec2RW;
 
@@ -30,7 +29,7 @@ import kraken.utils.Vec2RW;
  *
  */
 
-public class PointGridSpace implements Service, Printable, Serializable
+public class PointGridSpace implements Printable, Serializable
 {
 	private static final long serialVersionUID = -6588410126587155794L;
 

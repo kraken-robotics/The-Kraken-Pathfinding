@@ -11,6 +11,9 @@
     </path>
     <path id="Kraken.classpath">
         <pathelement location="bin"/>
+        <pathelement location="lib/config.jar"/>
+        <pathelement location="lib/injector.jar"/>
+        <pathelement location="lib/graphic.jar"/>
         <pathelement location="lib/junit.jar"/>
         <pathelement location="lib/hamcrest-core-1.3.jar"/>
     </path>

@@ -15,7 +15,7 @@
 package kraken.obstacles.types;
 
 import java.io.Serializable;
-import kraken.graphic.printable.Printable;
+import graphic.printable.Printable;
 import kraken.utils.Vec2RO;
 
 /**

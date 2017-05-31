@@ -24,7 +24,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import config.Config;
 import kraken.config.ConfigInfoKraken;
-import kraken.container.Service;
 
 /**
  * Service de log, affiche à l'écran des informations avec différents niveaux de
@@ -34,7 +33,7 @@ import kraken.container.Service;
  *
  */
 
-public class Log implements Service
+public class Log
 {
 	public enum Verbose
 	{

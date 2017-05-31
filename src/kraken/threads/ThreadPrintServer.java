@@ -22,9 +22,8 @@ import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
 import config.Config;
+import graphic.ExternalPrintBuffer;
 import kraken.config.ConfigInfoKraken;
-import kraken.container.dependances.GUIClass;
-import kraken.graphic.ExternalPrintBuffer;
 import kraken.utils.Log;
 
 /**
@@ -34,7 +33,7 @@ import kraken.utils.Log;
  *
  */
 
-public class ThreadPrintServer extends ThreadService implements GUIClass
+public class ThreadPrintServer extends Thread
 {
 
 	/**
@@ -44,7 +43,7 @@ public class ThreadPrintServer extends ThreadService implements GUIClass
 	 * @author pf
 	 *
 	 */
-	private class ThreadSocket implements GUIClass, Runnable
+	private class ThreadSocket implements Runnable
 	{
 		protected Log log;
 		private ExternalPrintBuffer buffer;
@@ -82,7 +81,7 @@ public class ThreadPrintServer extends ThreadService implements GUIClass
 
 	}
 
-	private class ThreadDifferential implements GUIClass, Runnable
+	private class ThreadDifferential implements Runnable
 	{
 		protected Log log;
 		private ExternalPrintBuffer buffer;

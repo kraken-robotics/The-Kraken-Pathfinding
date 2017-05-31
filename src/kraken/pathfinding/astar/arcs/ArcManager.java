@@ -18,11 +18,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 import config.Config;
+import graphic.PrintBufferInterface;
 import kraken.config.ConfigInfoKraken;
-import kraken.container.Service;
-import kraken.container.dependances.HighPFClass;
 import kraken.exceptions.MemoryManagerException;
-import kraken.graphic.PrintBufferInterface;
 import kraken.obstacles.memory.ObstaclesIteratorPresent;
 import kraken.obstacles.types.Obstacle;
 import kraken.obstacles.types.ObstacleArcCourbe;
@@ -51,7 +49,7 @@ import kraken.utils.Log;
  *
  */
 
-public class ArcManager implements Service, HighPFClass
+public class ArcManager
 {
 	protected Log log;
 	private ClothoidesComputer clotho;

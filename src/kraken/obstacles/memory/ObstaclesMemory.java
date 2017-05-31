@@ -15,10 +15,8 @@
 package kraken.obstacles.memory;
 
 import config.Config;
+import graphic.PrintBufferInterface;
 import kraken.config.ConfigInfoKraken;
-import kraken.container.Service;
-import kraken.container.dependances.LowPFClass;
-import kraken.graphic.PrintBufferInterface;
 import kraken.obstacles.types.Obstacle;
 import kraken.obstacles.types.ObstacleProximity;
 import kraken.pathfinding.dstarlite.gridspace.Masque;
@@ -34,7 +32,7 @@ import java.util.LinkedList;
  *
  */
 
-public class ObstaclesMemory implements Service, LowPFClass
+public class ObstaclesMemory
 {
 	// Les obstacles mobiles, c'est-à-dire des obstacles de proximité
 	private volatile LinkedList<ObstacleProximity> listObstaclesMobiles = new LinkedList<ObstacleProximity>();

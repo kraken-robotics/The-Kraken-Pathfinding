@@ -15,8 +15,8 @@
 package kraken.obstacles.types;
 
 import java.awt.Graphics;
-import kraken.graphic.Fenetre;
-import kraken.graphic.printable.Layer;
+import graphic.Fenetre;
+import graphic.printable.Layer;
 import kraken.pathfinding.dstarlite.gridspace.Masque;
 import kraken.utils.Vec2RO;
 
