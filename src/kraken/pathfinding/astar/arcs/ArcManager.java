@@ -52,7 +52,8 @@ public class ArcManager
 {
 	protected Log log;
 	private ClothoidesComputer clotho;
-	protected BezierComputer bezier;
+	private BezierComputer bezier;
+	private CircleComputer circlecomputer;
 	private PrintBufferInterface buffer;
 	private AStarCourbeNode current;
 	private DStarLite dstarlite;
@@ -69,8 +70,9 @@ public class ArcManager
 	private ListIterator<VitesseCourbure> iterator = listeVitesse.listIterator();
 	private List<ObstaclesFixes> disabledObstaclesFixes = new ArrayList<ObstaclesFixes>();
 
-	public ArcManager(Log log, ObstaclesFixes fixes, ClothoidesComputer clotho, PrintBufferInterface buffer, DStarLite dstarlite, BezierComputer bezier, CercleArrivee cercle, Config config, DynamicObstacles dynamicObs)
+	public ArcManager(Log log, ObstaclesFixes fixes, ClothoidesComputer clotho, CircleComputer circlecomputer, PrintBufferInterface buffer, DStarLite dstarlite, BezierComputer bezier, CercleArrivee cercle, Config config, DynamicObstacles dynamicObs)
 	{
+		this.circlecomputer = circlecomputer;
 		this.fixes = fixes;
 		this.dynamicObs = dynamicObs;
 		this.bezier = bezier;
@@ -200,7 +202,7 @@ public class ArcManager
 			else if(v == VitesseBezier.CIRCULAIRE_VERS_CERCLE && useCercle)
 			{
 				ArcCourbeDynamique tmp;
-				tmp = bezier.trajectoireCirculaireVersCentre(current.robot.getCinematique());
+				tmp = circlecomputer.trajectoireCirculaireVersCentre(current.robot.getCinematique());
 				if(tmp == null)
 					return false;
 
