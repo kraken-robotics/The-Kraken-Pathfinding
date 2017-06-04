@@ -15,6 +15,7 @@
 package kraken.pathfinding.astar.arcs;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import config.Config;
@@ -22,8 +23,11 @@ import graphic.PrintBufferInterface;
 import kraken.config.ConfigInfoKraken;
 import kraken.exceptions.MemoryManagerException;
 import kraken.obstacles.memory.ObstaclesIteratorPresent;
+import kraken.graphic.PrintBufferInterface;
+import kraken.obstacles.memory.DynamicObstacles;
 import kraken.obstacles.types.Obstacle;
 import kraken.obstacles.types.ObstacleArcCourbe;
+import kraken.obstacles.types.ObstacleMasque;
 import kraken.obstacles.types.ObstaclesFixes;
 import kraken.pathfinding.DirectionStrategy;
 import kraken.pathfinding.SensFinal;
@@ -53,7 +57,7 @@ public class ArcManager
 	private PrintBufferInterface buffer;
 	private AStarCourbeNode current;
 	private DStarLite dstarlite;
-	private ObstaclesIteratorPresent obstaclesProxIterator;
+	private DynamicObstacles dynamicObs;
 	private double courbureMax;
 	private boolean printObs;
 	private boolean useCercle;
@@ -67,10 +71,10 @@ public class ArcManager
 	private ListIterator<VitesseCourbure> iterator = listeVitesse.listIterator();
 	private List<ObstaclesFixes> disabledObstaclesFixes = new ArrayList<ObstaclesFixes>();
 
-	public ArcManager(Log log, ObstaclesFixes fixes, ClothoidesComputer clotho, PrintBufferInterface buffer, DStarLite dstarlite, BezierComputer bezier, CercleArrivee cercle, Config config, ObstaclesIteratorPresent obstaclesProxIterator)
+	public ArcManager(Log log, ObstaclesFixes fixes, ClothoidesComputer clotho, PrintBufferInterface buffer, DStarLite dstarlite, BezierComputer bezier, CercleArrivee cercle, Config config, DynamicObstacles dynamicObs)
 	{
 		this.fixes = fixes;
-		this.obstaclesProxIterator = obstaclesProxIterator;
+		this.dynamicObs = dynamicObs;
 		this.bezier = bezier;
 		this.log = log;
 		this.clotho = clotho;
@@ -128,13 +132,13 @@ public class ArcManager
 		// Collision avec un obstacle de proximité ?
 
 		try {
-		obstaclesProxIterator.reinit();
-		while(obstaclesProxIterator.hasNext())
-			if(obstaclesProxIterator.next().isColliding(obs))
-			{
-				// log.debug("Collision avec un obstacle de proximité.");
-				return false;
-			}
+			Iterator<ObstacleMasque> iter = dynamicObs.getFutureDynamicObstacles(0); // TODO date !
+			while(iter.hasNext())
+				if(iter.next().isColliding(obs))
+				{
+					// log.debug("Collision avec un obstacle de proximité.");
+					return false;
+				}
 		} catch(NullPointerException e)
 		{
 			log.critical(e);

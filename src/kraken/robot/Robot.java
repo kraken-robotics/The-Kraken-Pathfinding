@@ -14,9 +14,7 @@
 
 package kraken.robot;
 
-import kraken.exceptions.ActionneurException;
 import kraken.exceptions.MemoryManagerException;
-import kraken.exceptions.UnableToMoveException;
 import kraken.utils.Log;
 
 /**
@@ -34,18 +32,9 @@ public abstract class Robot
 	public abstract long getTempsDepuisDebutMatch();
 
 	protected Cinematique cinematique;
-	protected volatile boolean symetrie;
 	protected Log log;
-	protected volatile boolean filetBaisse = false;
-	protected volatile boolean filetPlein = false;
 
-	protected abstract void bloque(String nom, Object... param) throws InterruptedException, ActionneurException;
-
-	public abstract void avance(double distance, Speed speed) throws UnableToMoveException, InterruptedException, MemoryManagerException;
-
-	public abstract void avanceToCircle(Speed speed) throws InterruptedException, UnableToMoveException, MemoryManagerException;
-	
-	public abstract void followTrajectory(Speed vitesse) throws InterruptedException, UnableToMoveException;
+	public abstract void avance(double distance, Speed speed) throws InterruptedException, MemoryManagerException;
 
 	public Robot(Log log)
 	{
@@ -81,127 +70,7 @@ public abstract class Robot
 	{
 		cinematique.copy(this.cinematique);
 	}
-
-	/**
-	 * Méthode bloquante qui baisse le filet
-	 * 
-	 * @throws InterruptedException
-	 * @throws ActionneurException
-	 */
-	public void baisseFilet() throws InterruptedException, ActionneurException
-	{
-		filetBaisse = true;
-		bloque("baisseFilet");
-	}
-
-	public void bougeFiletMiChemin() throws InterruptedException, ActionneurException
-	{
-		filetBaisse = true;
-		bloque("bougeFiletMiChemin");
-	}
-
-	public void leveFilet() throws InterruptedException, ActionneurException
-	{
-		bloque("leveFilet");
-		filetBaisse = false;
-	}
-
-	public void verrouilleFilet() throws InterruptedException
-	{
-		try
-		{
-			bloque("verrouilleFilet");
-		}
-		catch(ActionneurException e)
-		{
-			log.critical(e);
-			// impossible
-		}
-	}
-
-	public boolean isFiletBaisse()
-	{
-		return filetBaisse;
-	}
-
-	public void ouvreFilet() throws InterruptedException
-	{
-		try
-		{
-			bloque("ouvreFilet");
-		}
-		catch(ActionneurException e)
-		{
-			log.critical(e);
-			// impossible
-		}
-		setFiletPlein(false);
-	}
 	
-	public void fermeFiletForce() throws InterruptedException
-	{
-		try
-		{
-			bloque("fermeFiletForce");
-		}
-		catch(ActionneurException e)
-		{
-			log.critical(e);
-			// impossible
-		}
-	}
-
-	public void fermeFilet() throws InterruptedException
-	{
-		try
-		{
-			bloque("fermeFilet");
-		}
-		catch(ActionneurException e)
-		{
-			log.critical(e);
-			// impossible
-		}
-	}
-
-	public void ejecteBalles() throws InterruptedException, ActionneurException
-	{
-		bloque("ejecteBalles", !symetrie);
-		setFiletPlein(false);
-	}
-
-	public void ejecteBallesAutreCote() throws InterruptedException, ActionneurException
-	{
-		bloque("ejecteBalles", symetrie);
-		setFiletPlein(false);
-	}
-
-	public void rearme() throws InterruptedException, ActionneurException
-	{
-		bloque("rearme", !symetrie);
-	}
-
-	public void rearmeAutreCote() throws InterruptedException, ActionneurException
-	{
-		bloque("rearme", symetrie);
-	}
-
-
-	/**
-	 * On est sûr que le filet est vide
-	 */
-	public void setFiletPlein(boolean etat)
-	{
-		filetPlein = etat;
-	}
-	
-	public boolean isFiletPlein()
-	{
-		return filetPlein;
-	}
-
-	public abstract boolean isArrivedAsser();
-
 	public Cinematique getCinematique()
 	{
 		return cinematique;

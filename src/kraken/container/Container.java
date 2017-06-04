@@ -105,44 +105,7 @@ public class Container
 		if(buffer != null)
 			buffer.destructor();
 
-<<<<<<< 315a733b3624cced60f75a48eb5bda7109bf01f0
-		// arrêt des threads
-		for(ThreadName n : ThreadName.values())
-			if(getService(n.c).isAlive())
-				getService(n.c).interrupt();
-
-		for(ThreadName n : ThreadName.values())
-		{
-			try {
-				if(n == ThreadName.FENETRE && config.getBoolean(ConfigInfoKraken.GRAPHIC_PRODUCE_GIF))
-				{
-					log.debug("Attente de "+n);
-					getService(n.c).join(120000); // spécialement pour lui qui
-													// enregistre un gif…
-				}
-				else
-				{
-					log.debug("Attente de "+n);
-					getService(n.c).join(1000); // on attend un peu que le thread
-													// s'arrête
-				}
-			}
-			catch(InterruptedException e)
-			{
-				e.printStackTrace(log.getPrintWriter());
-			}
-		}
-
-		Thread.sleep(100);
-		for(ThreadName n : ThreadName.values())
-			if(injector.getService(n.c).isAlive())
-				log.critical(n.c.getSimpleName() + " encore vivant !");
-
-		injector.getService(ThreadShutdown.class).interrupt();
-
-=======
->>>>>>> Threads removing
-		if(showGraph)
+		nf(showGraph)
 			injector.saveGraph("dependances.dot");
 
 		// fermeture du log
@@ -195,25 +158,7 @@ public class Container
 
 		injector.addService(Container.class, this);
 		
-<<<<<<< 315a733b3624cced60f75a48eb5bda7109bf01f0
-		/**
-		 * Planification du hook de fermeture
-		 */
-		try
-		{
-			log.debug("Mise en place du hook d'arrêt");
-			Runtime.getRuntime().addShutdownHook(getService(ThreadShutdown.class));
-		}
-		catch(InjectorException e)
-		{
-			e.printStackTrace();
-			e.printStackTrace(log.getPrintWriter());
-		}
-		
 		showGraph = config.getBoolean(ConfigInfoKraken.GENERATE_DEPENDENCY_GRAPH);
-=======
-		showGraph = config.getBoolean(ConfigInfo.GENERATE_DEPENDENCY_GRAPH);
->>>>>>> Threads removing
 
 		if(showGraph)
 			log.warning("Le graphe de dépendances va être généré !");
@@ -226,13 +171,8 @@ public class Container
 		Obstacle.set(log, getService(PrintBufferInterface.class));
 		Obstacle.useConfig(config);
 		ArcCourbe.useConfig(config);
-<<<<<<< 315a733b3624cced60f75a48eb5bda7109bf01f0
 		if(fixedObstacles != null)
 			getService(ObstaclesFixes.class).addAll(fixedObstacles);
-		startAllThreads();
-=======
-		getService(ObstaclesFixes.class).addAll(fixedObstacles);
->>>>>>> Threads removing
 	}
 
 	/**
@@ -255,70 +195,6 @@ public class Container
 	public synchronized <S> S getExistingService(Class<S> classe)
 	{
 		return injector.getExistingService(classe);
-	}
-
-<<<<<<< 315a733b3624cced60f75a48eb5bda7109bf01f0
-	public void restartThread(ThreadName n) throws InterruptedException
-	{
-		try
-		{
-			Thread t = injector.getService(n.c);
-			if(t.isAlive()) // s'il est encore en vie, on le tue
-			{
-				t.interrupt();
-				t.join(1000);
-			}
-			injector.removeService(n.c);
-			injector.getService(n.c).start(); // et on le redémarre
-		}
-		catch(InjectorException e)
-		{
-			e.printStackTrace();
-			e.printStackTrace(log.getPrintWriter());
-		}
-	}
-
-	/**
-	 * Démarrage de tous les threads
-	 */
-	private void startAllThreads() throws InterruptedException
-	{
-		for(ThreadName n : ThreadName.values())
-		{
-			try
-			{
-				injector.getService(n.c).start();
-			}
-			catch(InjectorException | IllegalThreadStateException e)
-			{
-				log.critical("Erreur lors de la création de thread " + n + " : " + e);
-				e.printStackTrace();
-				e.printStackTrace(log.getPrintWriter());
-			}
-=======
-	/**
-	 * Affichage d'un fichier
-	 * 
-	 * @param filename
-	 */
-	private void printMessage(String filename)
-	{
-		BufferedReader reader;
-		try
-		{
-			reader = new BufferedReader(new FileReader(filename));
-			String line;
-
-			while((line = reader.readLine()) != null)
-				System.out.println(line);
-			reader.close();
-		}
-		catch(IOException e)
-		{
-			System.err.println(e); // peut-être que log n'est pas encore
-									// démarré…
->>>>>>> Threads removing
-		}
 	}
 
 	public void interruptWithCodeError(ErrorCode code)

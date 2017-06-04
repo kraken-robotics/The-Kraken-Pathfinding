@@ -21,7 +21,6 @@ import graphic.PrintBufferInterface;
 import kraken.config.ConfigInfoKraken;
 import kraken.obstacles.types.Obstacle;
 import kraken.utils.Log;
-import kraken.utils.Vec2RO;
 import kraken.utils.Vec2RW;
 
 /**
@@ -33,13 +32,11 @@ import kraken.utils.Vec2RW;
 
 public class MasqueManager
 {
-	private int centreMasqueCylindre;
 	private PointGridSpaceManager pointManager;
 	private PointDirigeManager pointDManager;
 	private PrintBufferInterface buffer;
 	private int rayonRobot;
 	protected Log log;
-	private List<PointDirige> modelCylindre = new ArrayList<PointDirige>();
 	private boolean printObsCapteurs;
 	private boolean[][] dedans = new boolean[200][200];
 	private Vec2RW pos = new Vec2RW(), coinbasgaucheVec2 = new Vec2RW();
@@ -54,72 +51,9 @@ public class MasqueManager
 		printObsCapteurs = config.getBoolean(ConfigInfoKraken.GRAPHIC_D_STAR_LITE);
 
 		rayonRobot = config.getInt(ConfigInfoKraken.DILATATION_ROBOT_DSTARLITE);
-		int rayonCylindre = 32;
-		int rayonPointCylindre = (int) Math.round((rayonRobot + rayonCylindre) / PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS);
-		int tailleMasqueCylindre = 2 * (rayonPointCylindre + 1) + 1;
-		int squaredRayonPointCylindre = rayonPointCylindre * rayonPointCylindre;
-
-		centreMasqueCylindre = tailleMasqueCylindre / 2;
-		createMasque(centreMasqueCylindre, tailleMasqueCylindre, squaredRayonPointCylindre, modelCylindre);
 	}
 
-	private void createMasque(int centreMasque, int tailleMasque, int squaredRayonPoint, List<PointDirige> model)
-	{
-		for(int i = 0; i < tailleMasque; i++)
-			for(int j = 0; j < tailleMasque; j++)
-				if((i - centreMasque) * (i - centreMasque) + (j - centreMasque) * (j - centreMasque) > squaredRayonPoint)
-					for(Direction d : Direction.values)
-					{
-						int i2 = i + d.deltaX, j2 = j + d.deltaY;
-						if((i2 - centreMasque) * (i2 - centreMasque) + (j2 - centreMasque) * (j2 - centreMasque) <= squaredRayonPoint)
-							model.add(pointDManager.get(i, j, d));
-					}
-	}
-
-	/**
-	 * Renvoie le masque d'un cylindre
-	 * 
-	 * @param position
-	 * @return
-	 */
-	public Masque getMasqueCylindre(Vec2RO position)
-	{
-		return getMasque(position, modelCylindre, centreMasqueCylindre, centreMasqueCylindre);
-	}
-
-	/**
-	 * Renvoie un masque
-	 * 
-	 * @param position
-	 * @param model
-	 * @param centreMasque
-	 * @return
-	 */
-	private Masque getMasque(Vec2RO position, List<PointDirige> model, int centreMasqueX, int centreMasqueY)
-	{
-		PointGridSpace p = pointManager.get(position);
-		List<PointDirige> out = new ArrayList<PointDirige>();
-
-		for(PointDirige c : model)
-		{
-			PointDirige point = pointDManager.get(pointManager.get(c.point.x + p.x - centreMasqueX, c.point.y + p.y - centreMasqueY), c.dir);
-			if(point != null)
-			{
-				PointGridSpace voisin = pointManager.getGridPointVoisin(point);
-				if(voisin != null) // on vérifie que les deux points sont bien
-									// dans la table
-					out.add(point);
-			}
-		}
-
-		Masque m = new Masque(pointManager, out);
-		if(printObsCapteurs)
-			buffer.addSupprimable(m);
-
-		return m;
-	}
-
-	public Masque getMasqueEnnemi(Obstacle obstacle)
+	public Masque getMasque(Obstacle obstacle)
 	{
 		double xmin = obstacle.getLeftmostX() - rayonRobot;
 		double xmax = obstacle.getRightmostX() + rayonRobot;

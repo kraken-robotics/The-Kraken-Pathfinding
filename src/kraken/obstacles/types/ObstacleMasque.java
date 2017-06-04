@@ -18,6 +18,7 @@ import java.awt.Graphics;
 import graphic.Fenetre;
 import graphic.printable.Layer;
 import kraken.pathfinding.dstarlite.gridspace.Masque;
+import kraken.pathfinding.dstarlite.gridspace.MasqueManager;
 import kraken.utils.Vec2RO;
 
 /**
@@ -28,13 +29,14 @@ import kraken.utils.Vec2RO;
 public class ObstacleMasque implements ObstacleInterface
 {
 	private static final long serialVersionUID = -7303433427716127840L;
+	private static MasqueManager mm;
 	protected Obstacle o;
 	private Masque masque;
-
-	public ObstacleMasque(Obstacle o, Masque masque)
+	
+	public ObstacleMasque(Obstacle o)
 	{
 		this.o = o;
-		this.masque = masque;
+		masque = mm.getMasque(o);
 	}
 
 	public Masque getMasque()

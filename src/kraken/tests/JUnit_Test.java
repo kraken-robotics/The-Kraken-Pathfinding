@@ -21,11 +21,12 @@ import org.junit.runner.JUnitCore;
 import org.junit.runner.Request;
 import org.junit.runner.Result;
 import org.junit.After;
-import config.Config;
 import graphic.Fenetre;
 import kraken.config.ConfigInfoKraken;
 import kraken.container.Container;
 import kraken.robot.Cinematique;
+import kraken.config.Config;
+import kraken.container.Container;
 import kraken.utils.Log;
 
 /**

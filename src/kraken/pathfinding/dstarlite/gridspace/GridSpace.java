@@ -14,7 +14,6 @@
 
 package kraken.pathfinding.dstarlite.gridspace;
 
-import config.Config;
 import graphic.Fenetre;
 import graphic.PrintBufferInterface;
 import graphic.printable.Layer;
@@ -23,13 +22,24 @@ import kraken.config.ConfigInfoKraken;
 import kraken.graphic.Couleur;
 import kraken.obstacles.memory.ObstaclesIteratorPresent;
 import kraken.obstacles.memory.ObstaclesMemory;
+import kraken.config.Config;
+import kraken.config.ConfigInfo;
+import kraken.container.Service;
+import kraken.container.dependances.LowPFClass;
+import kraken.graphic.Fenetre;
+import kraken.graphic.PrintBufferInterface;
+import kraken.graphic.printable.Couleur;
+import kraken.graphic.printable.Layer;
+import kraken.graphic.printable.Printable;
+import kraken.obstacles.memory.DynamicObstacles;
 import kraken.obstacles.types.Obstacle;
-import kraken.obstacles.types.ObstacleProximity;
+import kraken.obstacles.types.ObstacleMasque;
 import kraken.obstacles.types.ObstaclesFixes;
 import kraken.utils.Log;
 import kraken.utils.Vec2RO;
 import java.awt.Graphics;
 import java.util.BitSet;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -44,14 +54,11 @@ import java.util.List;
 public class GridSpace implements Printable
 {
 	protected Log log;
-	private ObstaclesIteratorPresent iteratorDStarLiteFirst;
-	private ObstaclesIteratorPresent iteratorDStarLiteLast;
-	private ObstaclesIteratorPresent iteratorRemoveNearby;
-	private ObstaclesMemory obstaclesMemory;
+	private DynamicObstacles dynamicObs;
 	private PointGridSpaceManager pointManager;
 	private MasqueManager masquemanager;
 	private PrintBufferInterface buffer;
-
+	private Iterator<ObstacleMasque> iteratorDStarLiteFirst, iteratorDStarLiteLast;
 	private int distanceMinimaleEntreProximite;
 	private int rayonRobot, rayonRobotObstaclesFixes;
 
@@ -65,14 +72,11 @@ public class GridSpace implements Printable
 	private BitSet[] newOldObstacles = new BitSet[2];
 	private Couleur[] grid = new Couleur[PointGridSpace.NB_POINTS];
 
-	public GridSpace(Log log, ObstaclesFixes fixes, ObstaclesIteratorPresent iteratorDStarLiteFirst, ObstaclesIteratorPresent iteratorDStarLiteLast, ObstaclesIteratorPresent iteratorRemoveNearby, ObstaclesMemory obstaclesMemory, PointGridSpaceManager pointManager, PrintBufferInterface buffer, MasqueManager masquemanager, Config config)
+	public GridSpace(Log log, ObstaclesFixes fixes, DynamicObstacles dynamicObs, PointGridSpaceManager pointManager, PrintBufferInterface buffer, MasqueManager masquemanager, Config config)
 	{
-		this.obstaclesMemory = obstaclesMemory;
+		this.dynamicObs = dynamicObs;
 		this.log = log;
 		this.pointManager = pointManager;
-		this.iteratorDStarLiteFirst = iteratorDStarLiteFirst;
-		this.iteratorDStarLiteLast = iteratorDStarLiteLast;
-		this.iteratorRemoveNearby = iteratorRemoveNearby;
 		this.buffer = buffer;
 		this.masquemanager = masquemanager;
 		newOldObstacles[0] = oldObstacles;
@@ -161,8 +165,8 @@ public class GridSpace implements Printable
 	 */
 	public BitSet getCurrentObstacles()
 	{
-		iteratorDStarLiteFirst.reinit();
-		iteratorDStarLiteLast.reinit();
+		iteratorDStarLiteFirst = dynamicObs.getCurrentDynamicObstacles();
+		iteratorDStarLiteLast = dynamicObs.getCurrentDynamicObstacles();
 		newObstacles.clear();
 
 		while(iteratorDStarLiteLast.hasNext())
@@ -183,7 +187,7 @@ public class GridSpace implements Printable
 	 */
 	public BitSet[] getOldAndNewObstacles()
 	{
-		synchronized(obstaclesMemory)
+/*		synchronized(obstaclesMemory)
 		{
 			oldObstacles.clear();
 			newObstacles.clear();
@@ -215,7 +219,7 @@ public class GridSpace implements Printable
 					if(distanceStatique(p) != Integer.MAX_VALUE)
 						newObstacles.set(p.hashCode());
 			}
-
+*/
 			/**
 			 * On ne va pas enlever un point pour le remettre juste après…
 			 */
@@ -227,32 +231,7 @@ public class GridSpace implements Printable
 			oldObstacles.andNot(intersect);
 
 			return newOldObstacles;
-		}
-	}
-
-	/**
-	 * Appelé par le thread des capteurs par l'intermédiaire de la classe
-	 * capteurs
-	 * Ajoute l'obstacle à la mémoire et dans le gridspace
-	 * Supprime les obstacles mobiles proches
-	 * Ça allège le nombre d'obstacles.
-	 * Utilisé par les capteurs
-	 * 
-	 * @param position
-	 * @return
-	 * @return
-	 */
-	public ObstacleProximity addObstacleAndRemoveNearbyObstacles(Obstacle obstacle)
-	{
-		iteratorRemoveNearby.reinit();
-		while(iteratorRemoveNearby.hasNext())
-		{
-			ObstacleProximity o = iteratorRemoveNearby.next();
-			if(o.isProcheCentre(obstacle.getPosition(), distanceMinimaleEntreProximite))
-				iteratorRemoveNearby.remove();
-		}
-
-		return obstaclesMemory.add(obstacle, masquemanager.getMasqueEnnemi(obstacle));
+//		}
 	}
 
 	@Override

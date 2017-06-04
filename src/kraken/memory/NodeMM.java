@@ -20,7 +20,6 @@ import kraken.pathfinding.ChronoGameState;
 import kraken.container.dependances.HighPFClass;
 import kraken.exceptions.ContainerException;
 import kraken.pathfinding.astar.AStarCourbeNode;
-import kraken.pathfinding.chemin.CheminPathfinding;
 import kraken.robot.RobotChrono;
 import kraken.utils.Log;
 
@@ -35,12 +34,10 @@ public class NodeMM extends MemoryManager<AStarCourbeNode>
 {
 	private int largeur, longueur_arriere, longueur_avant, marge;
 	private Log log;
-	private CheminPathfinding chemin;
 	
-	public NodeMM(Log log, Config config, CheminPathfinding chemin)
+	public NodeMM(Log log, Config config)
 	{
 		super(AStarCourbeNode.class, log);
-		this.chemin = chemin;
 		largeur = config.getInt(ConfigInfoKraken.LARGEUR_NON_DEPLOYE) / 2;
 		longueur_arriere = config.getInt(ConfigInfoKraken.DEMI_LONGUEUR_NON_DEPLOYE_ARRIERE);
 		longueur_avant = config.getInt(ConfigInfoKraken.DEMI_LONGUEUR_NON_DEPLOYE_AVANT);
@@ -51,7 +48,7 @@ public class NodeMM extends MemoryManager<AStarCourbeNode>
 	@Override
 	protected final AStarCourbeNode make()
 	{
-		return new AStarCourbeNode(new RobotChrono(log, chemin), largeur, longueur_arriere, longueur_avant, marge);
+		return new AStarCourbeNode(new RobotChrono(log), largeur, longueur_arriere, longueur_avant, marge);
 	}
 
 }

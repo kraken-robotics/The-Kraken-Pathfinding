@@ -19,7 +19,6 @@ import org.junit.Test;
 import kraken.obstacles.types.ObstacleCircular;
 import kraken.obstacles.types.ObstacleRectangular;
 import kraken.obstacles.types.ObstacleRobot;
-import kraken.obstacles.types.ObstaclesFixes;
 import kraken.utils.Vec2RO;
 
 /**

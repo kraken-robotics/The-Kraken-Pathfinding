@@ -16,11 +16,12 @@ package kraken.tests;
 
 import org.junit.Assert;
 import org.junit.Test;
-import config.Config;
 import injector.InjectorException;
 import kraken.obstacles.memory.ObstaclesIteratorPresent;
+import kraken.config.Config;
+import kraken.container.Service;
+import kraken.exceptions.ContainerException;
 import kraken.obstacles.types.ObstacleCircular;
-import kraken.obstacles.types.ObstacleProximity;
 import kraken.pathfinding.astar.AStarCourbe;
 import kraken.pathfinding.dstarlite.gridspace.GridSpace;
 import kraken.utils.Vec2RO;
@@ -119,5 +120,4 @@ public class JUnit_Container extends JUnit_Test
 		// Config est un service, c'est le même object
 		Assert.assertTrue(container.getService(Config.class) == container.getService(Config.class));
 	}
-
 }

@@ -26,19 +26,16 @@ import kraken.exceptions.MemoryManagerException;
 import kraken.exceptions.PathfindingException;
 import kraken.memory.CinemObsMM;
 import kraken.memory.NodeMM;
-import kraken.obstacles.types.ObstacleRobot;
 import kraken.pathfinding.DirectionStrategy;
 import kraken.pathfinding.SensFinal;
 import kraken.pathfinding.astar.arcs.ArcCourbe;
 import kraken.pathfinding.astar.arcs.ArcManager;
 import kraken.pathfinding.astar.arcs.CercleArrivee;
-import kraken.pathfinding.chemin.CheminPathfinding;
 import kraken.pathfinding.chemin.CheminPathfindingInterface;
 import kraken.pathfinding.dstarlite.DStarLite;
 import kraken.pathfinding.dstarlite.gridspace.PointGridSpace;
 import kraken.robot.Cinematique;
 import kraken.robot.CinematiqueObs;
-import kraken.robot.Robot;
 import kraken.robot.RobotChrono;
 import kraken.robot.Speed;
 import kraken.utils.Log;
@@ -55,21 +52,18 @@ import kraken.utils.Log.Verbose;
 public class AStarCourbe
 {
 	protected Log log;
-	private boolean symetrie;
 	private ArcManager arcmanager;
 	private DStarLite dstarlite;
 	private NodeMM memorymanager;
 	private PrintBufferInterface buffer;
 	private AStarCourbeNode depart;
 	private AStarCourbeNode trajetDeSecours;
-	private CheminPathfinding realChemin;
 	private CinemObsMM cinemMemory;
 	private CercleArrivee cercle;
 	private boolean graphicTrajectory, graphicDStarLite, graphicTrajectoryAll;
 	private int dureeMaxPF;
 	private Speed vitesseMax;
 	// private int tailleFaisceau;
-	private boolean suppObsFixes;
 	private volatile boolean rechercheEnCours = false;
 
 	/**
@@ -104,12 +98,11 @@ public class AStarCourbe
 	/**
 	 * Constructeur du AStarCourbe
 	 */
-	public AStarCourbe(Log log, DStarLite dstarlite, ArcManager arcmanager, CheminPathfinding chemin, NodeMM memorymanager, CinemObsMM rectMemory, PrintBufferInterface buffer, CercleArrivee cercle, RobotChrono chrono, Config config)
+	public AStarCourbe(Log log, DStarLite dstarlite, ArcManager arcmanager, NodeMM memorymanager, CinemObsMM rectMemory, PrintBufferInterface buffer, CercleArrivee cercle, RobotChrono chrono, Config config)
 	{
 		this.log = log;
 		this.arcmanager = arcmanager;
 		this.memorymanager = memorymanager;
-		this.realChemin = chemin;
 		this.dstarlite = dstarlite;
 		this.cinemMemory = rectMemory;
 		this.buffer = buffer;
@@ -123,7 +116,6 @@ public class AStarCourbe
 		int demieLongueurArriere = config.getInt(ConfigInfoKraken.DEMI_LONGUEUR_NON_DEPLOYE_ARRIERE);
 		int demieLongueurAvant = config.getInt(ConfigInfoKraken.DEMI_LONGUEUR_NON_DEPLOYE_AVANT);
 		int marge = config.getInt(ConfigInfoKraken.DILATATION_OBSTACLE_ROBOT);
-		suppObsFixes = config.getBoolean(ConfigInfoKraken.SUPPRESSION_AUTO_OBSTACLES_FIXES);
 		this.depart = new AStarCourbeNode(chrono, demieLargeurNonDeploye, demieLongueurArriere, demieLongueurAvant, marge);
 		depart.setIndiceMemoryManager(-1);
 	}
@@ -139,7 +131,7 @@ public class AStarCourbe
 	 */
 	public final synchronized void process(CheminPathfindingInterface chemin, boolean replanif) throws PathfindingException, MemoryManagerException
 	{
-		log.debug("Recherche de chemin. Marge obstacle robot : "+ObstacleRobot.getMarge(), Verbose.PF.masque);
+		log.debug("Recherche de chemin.", Verbose.PF.masque);
 		trajetDeSecours = null;
 		depart.parent = null;
 		depart.cameFromArcDynamique = null;
@@ -548,7 +540,7 @@ public class AStarCourbe
 			dstarlite.itineraireBrut();
 
 		vitesseMax = Speed.REPLANIF;
-		process(realChemin, true);
+//		process(realChemin, true);
 	}
 	
 /*	public boolean isArrivedAsser()

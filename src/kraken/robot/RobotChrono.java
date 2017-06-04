@@ -14,10 +14,7 @@
 
 package kraken.robot;
 
-import kraken.exceptions.MemoryManagerException;
-import kraken.exceptions.UnableToMoveException;
 import kraken.pathfinding.astar.arcs.ArcCourbe;
-import kraken.pathfinding.chemin.CheminPathfinding;
 import kraken.utils.Log;
 import kraken.utils.Vec2RO;
 
@@ -32,7 +29,6 @@ public class RobotChrono extends Robot
 {
 	// Date en millisecondes depuis le début du match.
 	protected long date = 0;
-	private CheminPathfinding chemin;
 
 	/**
 	 * Constructeur clone
@@ -40,10 +36,9 @@ public class RobotChrono extends Robot
 	 * @param log
 	 * @param robot
 	 */
-	public RobotChrono(Log log, CheminPathfinding chemin)
+	public RobotChrono(Log log)
 	{
 		super(log);
-		this.chemin = chemin;
 	}
 
 	@Override
@@ -64,31 +59,9 @@ public class RobotChrono extends Robot
 	}
 
 	@Override
-	protected void bloque(String nom, Object... param) throws InterruptedException
-	{}
-
-	@Override
 	public void avance(double distance, Speed speed)
 	{
 		cinematique.getPositionEcriture().plus(new Vec2RO(distance, cinematique.orientationReelle, true));
-	}
-	
-	// TODO
-	public void avanceToCircle(Speed speed) throws InterruptedException, UnableToMoveException, MemoryManagerException
-	{}
-
-
-	@Override
-	public void followTrajectory(Speed vitesse) throws InterruptedException, UnableToMoveException
-	{
-		// ne mets pas à jour la date, c'est normal
-		chemin.getLastCinematique().copy(cinematique);
-	}
-
-	@Override
-	public boolean isArrivedAsser()
-	{
-		return true;
 	}
 
 

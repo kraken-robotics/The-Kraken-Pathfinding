@@ -44,7 +44,7 @@ public class JUnit_DStarLite extends JUnit_Test
 		pathfinding = container.getService(DStarLite.class);
 		gridspace = container.getService(GridSpace.class);
 	}
-
+/*
 	@Test
 	public void test_chemin_dstarlite() throws Exception
 	{
@@ -90,7 +90,7 @@ public class JUnit_DStarLite extends JUnit_Test
 		pathfinding.updateObstaclesEnnemi();
 		Assert.assertEquals(null, pathfinding.itineraireBrut());
 	}
-	
+	*/
 // ne fonctionne plus car la valeur de DISTANCE_BETWEEN_PROXIMITY_OBSTACLES a changé
 /*	@Test
 	public void test_exception2() throws Exception
@@ -103,7 +103,7 @@ public class JUnit_DStarLite extends JUnit_Test
 		pathfinding.updateObstaclesEnnemi();
 		Assert.assertEquals(null, pathfinding.itineraireBrut());
 	}*/
-
+/*
 	@Test
 	public void test_chemin_impossible() throws Exception
 	{
@@ -141,5 +141,5 @@ public class JUnit_DStarLite extends JUnit_Test
 			pathfinding.updateObstaclesEnnemi();
 			chemin = pathfinding.itineraireBrut();
 		}
-	}
+	}*/
 }
