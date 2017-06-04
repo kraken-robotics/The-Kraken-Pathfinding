@@ -7,6 +7,6 @@ videos/
 .cproject
 .project
 .settings
-project.properties
+*.properties
 *.class
 bin/
