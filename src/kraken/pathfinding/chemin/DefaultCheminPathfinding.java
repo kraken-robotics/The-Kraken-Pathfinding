@@ -35,7 +35,7 @@ import kraken.utils.Log;
  *
  */
 
-public class FakeCheminPathfinding implements CheminPathfindingInterface, Printable
+public class DefaultCheminPathfinding implements CheminPathfindingInterface, Printable
 {
 	private LinkedList<CinematiqueObs> path;
 	protected Log log;
@@ -43,7 +43,7 @@ public class FakeCheminPathfinding implements CheminPathfindingInterface, Printa
 	private boolean print;
 	private ObstacleCircular[] aff = new ObstacleCircular[256];
 
-	public FakeCheminPathfinding(Log log, Config config, PrintBuffer buffer)
+	public DefaultCheminPathfinding(Log log, Config config, PrintBuffer buffer)
 	{
 		this.log = log;
 		this.buffer = buffer;

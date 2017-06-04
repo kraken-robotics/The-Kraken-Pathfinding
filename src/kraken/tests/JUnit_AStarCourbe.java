@@ -33,7 +33,7 @@ import kraken.pathfinding.astar.arcs.ClothoidesComputer;
 import kraken.pathfinding.astar.arcs.vitesses.VitesseClotho;
 import kraken.pathfinding.astar.arcs.vitesses.VitesseDemiTour;
 import kraken.pathfinding.astar.arcs.vitesses.VitesseRameneVolant;
-import kraken.pathfinding.chemin.FakeCheminPathfinding;
+import kraken.pathfinding.chemin.DefaultCheminPathfinding;
 import kraken.pathfinding.dstarlite.gridspace.GridSpace;
 import kraken.robot.Cinematique;
 import kraken.robot.CinematiqueObs;
@@ -55,7 +55,7 @@ public class JUnit_AStarCourbe extends JUnit_Test
 	protected BezierComputer bezier;
 	private PrintBuffer buffer;
 	private boolean graphicTrajectory;
-	private FakeCheminPathfinding fakeChemin;
+	private DefaultCheminPathfinding fakeChemin;
 	private GridSpace gridspace;
 	private CercleArrivee cercle;
 	// private PrecomputedPaths prepaths;
@@ -76,7 +76,7 @@ public class JUnit_AStarCourbe extends JUnit_Test
 		cercle = container.getService(CercleArrivee.class);
 		// arcmanager = container.getService(ArcManager.class);
 		graphicTrajectory = config.getBoolean(ConfigInfoKraken.GRAPHIC_TRAJECTORY_FINAL);
-		fakeChemin = container.getService(FakeCheminPathfinding.class);
+		fakeChemin = container.getService(DefaultCheminPathfinding.class);
 	}
 
 	@Test
