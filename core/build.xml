@@ -63,6 +63,6 @@
         <fail message="Test failure detected, check test results." if="test.failed" />
     </target>
   <target name="doc" depends="init" description="generate documentation">
-    <javadoc sourcepath="src" destdir="docs"/>
+	  <javadoc sourcepath="src" destdir="../docs"/>
   </target>
 </project>

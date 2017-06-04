@@ -1,8 +1,9 @@
 language : java
 script :
+    - cd core
     - ant
-    - timeout 180 ant kraken.tests
-    - ant doc
+    - cd ../examples/example-1
+    - ant
 jdk :
     - oraclejdk8
 branches:
