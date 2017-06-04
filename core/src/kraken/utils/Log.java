@@ -14,7 +14,7 @@ import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import config.Config;
-import kraken.config.ConfigInfoKraken;
+import kraken.ConfigInfoKraken;
 
 /**
  * Service de log, affiche à l'écran des informations avec différents niveaux de

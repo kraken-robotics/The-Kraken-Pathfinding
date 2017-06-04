@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import config.Config;
 import graphic.PrintBufferInterface;
-import kraken.config.ConfigInfoKraken;
+import kraken.ConfigInfoKraken;
 import kraken.obstacles.types.Obstacle;
 import kraken.utils.Log;
 import kraken.utils.Vec2RW;

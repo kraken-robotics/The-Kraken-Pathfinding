@@ -8,7 +8,7 @@ package kraken.obstacles.types;
 
 import java.awt.Graphics;
 import graphic.Fenetre;
-import kraken.graphic.Couleur;
+import kraken.Couleur;
 import kraken.utils.Vec2RO;
 
 /**

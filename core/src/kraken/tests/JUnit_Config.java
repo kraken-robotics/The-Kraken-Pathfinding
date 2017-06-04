@@ -6,7 +6,7 @@
 package kraken.tests;
 
 import org.junit.Test;
-import kraken.config.ConfigInfoKraken;
+import kraken.ConfigInfoKraken;
 
 /**
  * Tests unitaires pour la configuration... juste épique.

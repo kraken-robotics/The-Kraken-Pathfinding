@@ -7,7 +7,7 @@
 package kraken.memory;
 
 import config.Config;
-import kraken.config.ConfigInfoKraken;
+import kraken.ConfigInfoKraken;
 import kraken.pathfinding.astar.arcs.ArcCourbeDynamique;
 import kraken.robot.CinematiqueObs;
 import kraken.utils.Log;

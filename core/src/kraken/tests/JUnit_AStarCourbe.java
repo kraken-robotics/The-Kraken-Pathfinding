@@ -10,7 +10,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import graphic.PrintBuffer;
-import kraken.config.ConfigInfoKraken;
+import kraken.ConfigInfoKraken;
 import kraken.exceptions.PathfindingException;
 import kraken.obstacles.types.ObstacleCircular;
 import kraken.pathfinding.astar.AStarCourbe;

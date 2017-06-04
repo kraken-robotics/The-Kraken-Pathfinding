@@ -10,7 +10,7 @@ import java.awt.Graphics;
 import graphic.Fenetre;
 import graphic.printable.Layer;
 import graphic.printable.Printable;
-import kraken.graphic.Couleur;
+import kraken.Couleur;
 import kraken.memory.Memorizable;
 import kraken.pathfinding.astar.arcs.ArcCourbe;
 import kraken.pathfinding.astar.arcs.ArcCourbeDynamique;

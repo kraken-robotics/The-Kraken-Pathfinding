@@ -4,7 +4,7 @@
  */
 
 
-package kraken.graphic;
+package kraken;
 
 import java.awt.Color;
 import graphic.printable.Layer;

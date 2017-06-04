@@ -6,16 +6,13 @@
 package kraken.pathfinding.astar.arcs;
 
 import java.awt.Graphics;
-import kraken.config.Config;
-import kraken.config.ConfigInfo;
-import kraken.container.Service;
-import kraken.container.dependances.HighPFClass;
-import kraken.container.dependances.LowPFClass;
-import kraken.graphic.Fenetre;
-import kraken.graphic.PrintBufferInterface;
-import kraken.graphic.printable.Couleur;
-import kraken.graphic.printable.Layer;
-import kraken.graphic.printable.Printable;
+import config.Config;
+import graphic.Fenetre;
+import graphic.PrintBufferInterface;
+import graphic.printable.Layer;
+import graphic.printable.Printable;
+import kraken.ConfigInfoKraken;
+import kraken.Couleur;
 import kraken.robot.Cinematique;
 import kraken.utils.Log;
 import kraken.utils.Vec2RO;

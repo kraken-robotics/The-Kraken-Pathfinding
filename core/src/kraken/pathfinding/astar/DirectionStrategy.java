@@ -3,7 +3,7 @@
  * Distributed under the MIT License.
  */
 
-package kraken.pathfinding;
+package kraken.pathfinding.astar;
 
 /**
  * Énumération des différentes stratégies de déplacement pour les trajectoires

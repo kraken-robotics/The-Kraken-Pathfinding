@@ -6,7 +6,7 @@
 package kraken.obstacles.types;
 
 import java.io.Serializable;
-import kraken.graphic.Couleur;
+import kraken.Couleur;
 import kraken.utils.Vec2RO;
 import kraken.utils.Vec2RW;
 

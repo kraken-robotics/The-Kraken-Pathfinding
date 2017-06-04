@@ -7,8 +7,8 @@ package kraken.pathfinding.astar.arcs;
 
 import java.util.LinkedList;
 
-import kraken.config.Config;
-import kraken.config.ConfigInfo;
+import config.Config;
+import kraken.ConfigInfoKraken;
 import kraken.exceptions.MemoryManagerException;
 import kraken.memory.CinemObsMM;
 import kraken.pathfinding.astar.arcs.vitesses.VitesseBezier;

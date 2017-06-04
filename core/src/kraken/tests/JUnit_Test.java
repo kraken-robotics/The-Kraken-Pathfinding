@@ -13,7 +13,7 @@ import org.junit.runner.Request;
 import org.junit.runner.Result;
 import org.junit.After;
 import graphic.Fenetre;
-import kraken.container.Container;
+import kraken.Kraken;
 import kraken.utils.Log;
 
 /**
@@ -27,7 +27,7 @@ import kraken.utils.Log;
 
 public abstract class JUnit_Test
 {
-	protected Container container;
+	protected Kraken container;
 	protected Config config;
 	protected Log log;
 
@@ -39,7 +39,7 @@ public abstract class JUnit_Test
 	{
 		System.out.println("----- DÉBUT DU TEST " + testName.getMethodName() + " -----");
 
-		container = new Container(null);
+		container = new Kraken(null);
 		config = container.getService(Config.class);
 		log = container.getService(Log.class);
 		log.debug("Test unitaire : " + testName.getMethodName());

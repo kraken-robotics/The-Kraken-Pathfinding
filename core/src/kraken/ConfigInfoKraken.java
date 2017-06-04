@@ -3,7 +3,7 @@
  * Distributed under the MIT License.
  */
 
-package kraken.config;
+package kraken;
 
 
 /**

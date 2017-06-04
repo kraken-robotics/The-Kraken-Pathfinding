@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import config.Config;
-import kraken.config.ConfigInfoKraken;
+import kraken.ConfigInfoKraken;
 import kraken.exceptions.MemoryManagerException;
 import kraken.memory.CinemObsMM;
 import kraken.pathfinding.astar.arcs.vitesses.VitesseBezier;

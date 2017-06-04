@@ -12,7 +12,7 @@ import java.util.List;
 import graphic.Fenetre;
 import graphic.printable.Layer;
 import graphic.printable.Printable;
-import kraken.graphic.Couleur;
+import kraken.Couleur;
 
 /**
  * Le masque d'un obstacle de proximité

@@ -3,7 +3,7 @@
  * Distributed under the MIT License.
  */
 
-package kraken.obstacles.memory;
+package kraken.obstacles.container;
 
 import java.util.ArrayList;
 import java.util.Iterator;

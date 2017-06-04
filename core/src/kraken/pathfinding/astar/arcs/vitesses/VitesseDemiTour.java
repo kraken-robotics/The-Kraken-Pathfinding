@@ -5,7 +5,7 @@
 
 package kraken.pathfinding.astar.arcs.vitesses;
 
-import kraken.pathfinding.DirectionStrategy;
+import kraken.pathfinding.astar.DirectionStrategy;
 import kraken.robot.Cinematique;
 
 /**

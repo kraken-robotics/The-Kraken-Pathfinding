@@ -3,11 +3,11 @@
  * Distributed under the MIT License.
  */
 
-package kraken.obstacles.types;
+package kraken.obstacles.container;
 
 import java.util.ArrayList;
 import java.util.List;
-
+import kraken.obstacles.types.Obstacle;
 import kraken.utils.Log;
 
 /**

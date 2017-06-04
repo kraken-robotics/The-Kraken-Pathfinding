@@ -3,7 +3,7 @@
  * Distributed under the MIT License.
  */
 
-package kraken.container;
+package kraken;
 
 import java.util.List;
 import config.Config;
@@ -12,9 +12,8 @@ import graphic.PrintBuffer;
 import graphic.PrintBufferInterface;
 import injector.Injector;
 import injector.InjectorException;
-import kraken.config.ConfigInfoKraken;
+import kraken.obstacles.container.ObstaclesFixes;
 import kraken.obstacles.types.Obstacle;
-import kraken.obstacles.types.ObstaclesFixes;
 import kraken.pathfinding.astar.arcs.ArcCourbe;
 import kraken.utils.*;
 
@@ -28,7 +27,7 @@ import kraken.utils.*;
  * 
  * @author pf
  */
-public class Container
+public class Kraken
 {
 
 	private Log log;
@@ -71,7 +70,7 @@ public class Container
 	 * @throws ContainerException
 	 * @throws InjectorException 
 	 */
-	public synchronized ErrorCode destructor() throws InterruptedException, InjectorException
+	public synchronized ErrorCode destructor()
 	{
 		if(Thread.currentThread().getId() != mainThread.getId())
 		{
@@ -104,7 +103,6 @@ public class Container
 		log.close();
 		nbInstances--;
 
-		Thread.sleep(300);
 		return errorCode;
 	}
 
@@ -116,7 +114,7 @@ public class Container
 	 * @throws InterruptedException
 	 * @throws InjectorException 
 	 */
-	public Container(List<Obstacle> fixedObstacles) throws InterruptedException, InjectorException
+	public Kraken(List<Obstacle> fixedObstacles)
 	{
 		/**
 		 * On vérifie qu'il y ait un seul container à la fois
@@ -135,34 +133,35 @@ public class Container
 		mainThread = Thread.currentThread();
 		Thread.currentThread().setName("ThreadPrincipal");
 
-		log = injector.getService(Log.class);
-		config = new Config(ConfigInfoKraken.values(), "kraken.conf", true);
-		injector.addService(Config.class, config);
-
-		log.useConfig(config);
-
-		Speed.TEST.translationalSpeed = config.getDouble(ConfigInfoKraken.VITESSE_ROBOT_TEST) / 1000.;
-		Speed.REPLANIF.translationalSpeed = config.getDouble(ConfigInfoKraken.VITESSE_ROBOT_REPLANIF) / 1000.;
-		Speed.STANDARD.translationalSpeed = config.getDouble(ConfigInfoKraken.VITESSE_ROBOT_STANDARD) / 1000.;
-		Speed.BASCULE.translationalSpeed = config.getDouble(ConfigInfoKraken.VITESSE_ROBOT_BASCULE) / 1000.;
-
-		injector.addService(Container.class, this);
-		
-		showGraph = config.getBoolean(ConfigInfoKraken.GENERATE_DEPENDENCY_GRAPH);
-
-		if(showGraph)
-			log.warning("Le graphe de dépendances va être généré !");
-
-		if(config.getBoolean(ConfigInfoKraken.GRAPHIC_EXTERNAL))
-			injector.addService(PrintBufferInterface.class, injector.getService(ExternalPrintBuffer.class));
-		else
-			injector.addService(PrintBufferInterface.class, injector.getService(PrintBuffer.class));
-
-		Obstacle.set(log, getService(PrintBufferInterface.class));
-		Obstacle.useConfig(config);
-		ArcCourbe.useConfig(config);
-		if(fixedObstacles != null)
-			getService(ObstaclesFixes.class).addAll(fixedObstacles);
+		try {
+			log = injector.getService(Log.class);
+			config = new Config(ConfigInfoKraken.values(), "kraken.conf", true);
+			injector.addService(Config.class, config);
+	
+			log.useConfig(config);
+	
+			injector.addService(Kraken.class, this);
+			
+			showGraph = config.getBoolean(ConfigInfoKraken.GENERATE_DEPENDENCY_GRAPH);
+	
+			if(showGraph)
+				log.warning("Le graphe de dépendances va être généré !");
+	
+			if(config.getBoolean(ConfigInfoKraken.GRAPHIC_EXTERNAL))
+				injector.addService(PrintBufferInterface.class, injector.getService(ExternalPrintBuffer.class));
+			else
+				injector.addService(PrintBufferInterface.class, injector.getService(PrintBuffer.class));
+	
+			Obstacle.set(log, getService(PrintBufferInterface.class));
+			Obstacle.useConfig(config);
+			ArcCourbe.useConfig(config);
+			if(fixedObstacles != null)
+				getService(ObstaclesFixes.class).addAll(fixedObstacles);
+		}
+		catch(InjectorException e)
+		{
+			System.err.println("Fatal error : "+e);
+		}
 	}
 
 	/**
@@ -177,9 +176,16 @@ public class Container
 	 * @throws InjectorException 
 	 * @throws InterruptedException
 	 */
-	public synchronized <S> S getService(Class<S> serviceTo) throws InjectorException
+	public synchronized <S> S getService(Class<S> serviceTo)
 	{
-		return injector.getService(serviceTo);
+		try {
+			return injector.getService(serviceTo);
+		}
+		catch(InjectorException e)
+		{
+			System.err.println("Fatal error : "+e);
+			return null;
+		}
 	}
 
 	public synchronized <S> S getExistingService(Class<S> classe)

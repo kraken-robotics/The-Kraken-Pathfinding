@@ -7,10 +7,10 @@
 package kraken.memory;
 
 import config.Config;
-import kraken.config.ConfigInfoKraken;
 import kraken.pathfinding.ChronoGameState;
 import kraken.container.dependances.HighPFClass;
 import kraken.exceptions.ContainerException;
+import kraken.ConfigInfoKraken;
 import kraken.pathfinding.astar.AStarCourbeNode;
 import kraken.robot.RobotState;
 import kraken.utils.Log;
