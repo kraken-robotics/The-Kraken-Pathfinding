@@ -30,8 +30,10 @@
     </target>
     <target depends="clean" name="cleanall"/>
     <target depends="build-subprojects,build-project" name="build">
-	    <jar destfile="kraken.jar" basedir="bin"/>
-    	<jar destfile="kraken-sources.jar" basedir="src"/>
+	    <jar destfile="kraken.jar">
+		<fileset dir="bin" />
+		<fileset dir="src" />
+	    </jar>
     </target>
     <target name="build-subprojects"/>
     <target depends="init" name="build-project">
