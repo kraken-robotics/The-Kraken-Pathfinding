@@ -26,8 +26,6 @@ import kraken.obstacles.types.Obstacle;
 import kraken.obstacles.types.ObstaclesFixes;
 import kraken.pathfinding.astar.arcs.ArcCourbe;
 import kraken.robot.Speed;
-import kraken.threads.ThreadName;
-import kraken.threads.ThreadShutdown;
 import kraken.utils.*;
 
 /**
@@ -107,6 +105,7 @@ public class Container
 		if(buffer != null)
 			buffer.destructor();
 
+<<<<<<< 315a733b3624cced60f75a48eb5bda7109bf01f0
 		// arrêt des threads
 		for(ThreadName n : ThreadName.values())
 			if(getService(n.c).isAlive())
@@ -141,6 +140,8 @@ public class Container
 
 		injector.getService(ThreadShutdown.class).interrupt();
 
+=======
+>>>>>>> Threads removing
 		if(showGraph)
 			injector.saveGraph("dependances.dot");
 
@@ -194,6 +195,7 @@ public class Container
 
 		injector.addService(Container.class, this);
 		
+<<<<<<< 315a733b3624cced60f75a48eb5bda7109bf01f0
 		/**
 		 * Planification du hook de fermeture
 		 */
@@ -209,6 +211,9 @@ public class Container
 		}
 		
 		showGraph = config.getBoolean(ConfigInfoKraken.GENERATE_DEPENDENCY_GRAPH);
+=======
+		showGraph = config.getBoolean(ConfigInfo.GENERATE_DEPENDENCY_GRAPH);
+>>>>>>> Threads removing
 
 		if(showGraph)
 			log.warning("Le graphe de dépendances va être généré !");
@@ -221,9 +226,13 @@ public class Container
 		Obstacle.set(log, getService(PrintBufferInterface.class));
 		Obstacle.useConfig(config);
 		ArcCourbe.useConfig(config);
+<<<<<<< 315a733b3624cced60f75a48eb5bda7109bf01f0
 		if(fixedObstacles != null)
 			getService(ObstaclesFixes.class).addAll(fixedObstacles);
 		startAllThreads();
+=======
+		getService(ObstaclesFixes.class).addAll(fixedObstacles);
+>>>>>>> Threads removing
 	}
 
 	/**
@@ -248,6 +257,7 @@ public class Container
 		return injector.getExistingService(classe);
 	}
 
+<<<<<<< 315a733b3624cced60f75a48eb5bda7109bf01f0
 	public void restartThread(ThreadName n) throws InterruptedException
 	{
 		try
@@ -285,6 +295,29 @@ public class Container
 				e.printStackTrace();
 				e.printStackTrace(log.getPrintWriter());
 			}
+=======
+	/**
+	 * Affichage d'un fichier
+	 * 
+	 * @param filename
+	 */
+	private void printMessage(String filename)
+	{
+		BufferedReader reader;
+		try
+		{
+			reader = new BufferedReader(new FileReader(filename));
+			String line;
+
+			while((line = reader.readLine()) != null)
+				System.out.println(line);
+			reader.close();
+		}
+		catch(IOException e)
+		{
+			System.err.println(e); // peut-être que log n'est pas encore
+									// démarré…
+>>>>>>> Threads removing
 		}
 	}
 

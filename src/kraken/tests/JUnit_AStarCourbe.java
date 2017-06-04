@@ -43,8 +43,6 @@ import kraken.robot.Cinematique;
 import kraken.robot.CinematiqueObs;
 import kraken.robot.Speed;
 import kraken.table.GameElementNames;
-import kraken.threads.ThreadName;
-import kraken.threads.ThreadUpdatePathfinding;
 import kraken.utils.Vec2RO;
 
 /**
