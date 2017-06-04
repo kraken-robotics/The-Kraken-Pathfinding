@@ -1,6 +1,8 @@
 /*
  * Copyright (C) 2013-2017 Pierre-François Gimenez
+ * Distributed under the MIT License.
  */
+
 
 /**
  * Interface for dynamic obstacles.
