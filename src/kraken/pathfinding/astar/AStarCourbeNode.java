@@ -24,7 +24,7 @@ import kraken.memory.Memorizable;
 import kraken.pathfinding.astar.arcs.ArcCourbe;
 import kraken.pathfinding.astar.arcs.ArcCourbeDynamique;
 import kraken.pathfinding.astar.arcs.ArcCourbeStatique;
-import kraken.robot.RobotChrono;
+import kraken.robot.RobotState;
 
 /**
  * Un nœud de l'A* courbe
@@ -35,7 +35,7 @@ import kraken.robot.RobotChrono;
 
 public class AStarCourbeNode implements Memorizable, Printable
 {
-	public RobotChrono robot;
+	public RobotState robot;
 	public double g_score; // distance du point de départ à ce point
 	public double f_score; // g_score + heuristique = meilleure distance qu'on
 							// peut espérer avec ce point
@@ -45,7 +45,7 @@ public class AStarCourbeNode implements Memorizable, Printable
 	private int indiceMemoryManager;
 	private boolean dead = false;
 
-	public AStarCourbeNode(RobotChrono robot, int demieLargeurNonDeploye, int demieLongueurArriere, int demieLongueurAvant, int marge)
+	public AStarCourbeNode(RobotState robot, int demieLargeurNonDeploye, int demieLongueurArriere, int demieLongueurAvant, int marge)
 	{
 		cameFromArcStatique = new ArcCourbeStatique(demieLargeurNonDeploye, demieLongueurArriere, demieLongueurAvant, marge);
 		this.robot = robot;

@@ -14,33 +14,58 @@
 
 package kraken.robot;
 
-import kraken.exceptions.MemoryManagerException;
+import kraken.pathfinding.astar.arcs.ArcCourbe;
 import kraken.utils.Log;
+import kraken.utils.Vec2RO;
 
 /**
- * Classe abstraite du robot, dont héritent RobotVrai et RobotChrono
+ * Robot particulier qui fait pas bouger le robot réel, mais détermine la durée
+ * des actions
  * 
  * @author pf
  */
 
-public abstract class Robot
+public class RobotState
 {
-	/*
-	 * DÉPLACEMENT HAUT NIVEAU
-	 */
-
-	public abstract long getTempsDepuisDebutMatch();
-
 	protected Cinematique cinematique;
 	protected Log log;
 
-	public abstract void avance(double distance, Speed speed) throws InterruptedException, MemoryManagerException;
+	// Date en millisecondes depuis le début du match.
+	protected long date = 0;
 
-	public Robot(Log log)
+	/**
+	 * Constructeur clone
+	 * 
+	 * @param log
+	 * @param robot
+	 */
+	public RobotState(Log log)
 	{
 		this.log = log;
 		cinematique = new Cinematique();
 	}
+
+	public long getTempsDepuisDebutMatch()
+	{
+		return date;
+	}
+
+	public void suitArcCourbe(ArcCourbe came_from_arc, double translationalSpeed)
+	{
+		date += came_from_arc.getDuree(translationalSpeed);
+		came_from_arc.getLast().copy(cinematique);
+	}
+
+	public Cinematique getCinematique()
+	{
+		return cinematique;
+	}
+
+	public void avance(double distance, Speed speed)
+	{
+		cinematique.getPositionEcriture().plus(new Vec2RO(distance, cinematique.orientationReelle, true));
+	}
+
 
 	public int codeForPFCache()
 	{
@@ -52,7 +77,7 @@ public abstract class Robot
 	 * 
 	 * @param rc
 	 */
-	public final void copy(RobotChrono rc)
+	public final void copy(RobotState rc)
 	{
 		cinematique.copy(rc.cinematique);
 		// pas besoin de copier symétrie car elle ne change pas en cours de
@@ -69,11 +94,6 @@ public abstract class Robot
 	public void setCinematique(Cinematique cinematique)
 	{
 		cinematique.copy(this.cinematique);
-	}
-	
-	public Cinematique getCinematique()
-	{
-		return cinematique;
 	}
 
 }

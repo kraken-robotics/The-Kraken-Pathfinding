@@ -22,7 +22,7 @@ import kraken.pathfinding.astar.arcs.vitesses.VitesseDemiTour;
 import kraken.pathfinding.astar.arcs.vitesses.VitesseRameneVolant;
 import kraken.robot.Cinematique;
 import kraken.robot.CinematiqueObs;
-import kraken.robot.RobotChrono;
+import kraken.robot.RobotState;
 import kraken.utils.Log;
 import kraken.utils.Vec2RO;
 import kraken.utils.Vec2RW;
@@ -175,7 +175,7 @@ public class ClothoidesComputer
 	 * @param vitesse
 	 * @param modified
 	 */
-	public final void getTrajectoire(RobotChrono robot, VitesseClotho vitesse, ArcCourbeStatique modified)
+	public final void getTrajectoire(RobotState robot, VitesseClotho vitesse, ArcCourbeStatique modified)
 	{
 		getTrajectoire(robot.getCinematique(), vitesse, modified);
 	}

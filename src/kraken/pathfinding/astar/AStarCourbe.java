@@ -36,7 +36,7 @@ import kraken.pathfinding.dstarlite.DStarLite;
 import kraken.pathfinding.dstarlite.gridspace.PointGridSpace;
 import kraken.robot.Cinematique;
 import kraken.robot.CinematiqueObs;
-import kraken.robot.RobotChrono;
+import kraken.robot.RobotState;
 import kraken.robot.Speed;
 import kraken.utils.Log;
 import kraken.utils.Log.Verbose;
@@ -98,7 +98,7 @@ public class AStarCourbe
 	/**
 	 * Constructeur du AStarCourbe
 	 */
-	public AStarCourbe(Log log, DStarLite dstarlite, ArcManager arcmanager, NodeMM memorymanager, CinemObsMM rectMemory, PrintBufferInterface buffer, CercleArrivee cercle, RobotChrono chrono, Config config)
+	public AStarCourbe(Log log, DStarLite dstarlite, ArcManager arcmanager, NodeMM memorymanager, CinemObsMM rectMemory, PrintBufferInterface buffer, CercleArrivee cercle, RobotState chrono, Config config)
 	{
 		this.log = log;
 		this.arcmanager = arcmanager;
@@ -431,7 +431,7 @@ public class AStarCourbe
 	 * @throws PathfindingException
 	 * @throws InterruptedException
 	 */
-	public void initializeNewSearch(Cinematique arrivee, RobotChrono robot) throws PathfindingException, MemoryManagerException
+	public void initializeNewSearch(Cinematique arrivee, RobotState robot) throws PathfindingException, MemoryManagerException
 	{
 		initializeNewSearch(arrivee, SensFinal.AUCUNE_PREF, robot);
 	}
@@ -445,7 +445,7 @@ public class AStarCourbe
 	 * @throws PathfindingException
 	 * @throws InterruptedException
 	 */
-	public void initializeNewSearch(Cinematique arrivee, SensFinal sens, RobotChrono robot) throws PathfindingException, MemoryManagerException
+	public void initializeNewSearch(Cinematique arrivee, SensFinal sens, RobotState robot) throws PathfindingException, MemoryManagerException
 	{
 		vitesseMax = Speed.STANDARD;
 		depart.init();
@@ -476,7 +476,7 @@ public class AStarCourbe
 	 * @throws PathfindingException
 	 * @throws InterruptedException
 	 */
-	public void initializeNewSearchToCircle(RobotChrono robot) throws PathfindingException, MemoryManagerException
+	public void initializeNewSearchToCircle(RobotState robot) throws PathfindingException, MemoryManagerException
 	{
 		vitesseMax = Speed.STANDARD;
 		depart.init();

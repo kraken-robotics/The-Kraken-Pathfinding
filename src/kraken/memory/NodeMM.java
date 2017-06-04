@@ -20,7 +20,7 @@ import kraken.pathfinding.ChronoGameState;
 import kraken.container.dependances.HighPFClass;
 import kraken.exceptions.ContainerException;
 import kraken.pathfinding.astar.AStarCourbeNode;
-import kraken.robot.RobotChrono;
+import kraken.robot.RobotState;
 import kraken.utils.Log;
 
 /**
@@ -48,7 +48,7 @@ public class NodeMM extends MemoryManager<AStarCourbeNode>
 	@Override
 	protected final AStarCourbeNode make()
 	{
-		return new AStarCourbeNode(new RobotChrono(log), largeur, longueur_arriere, longueur_avant, marge);
+		return new AStarCourbeNode(new RobotState(log), largeur, longueur_arriere, longueur_avant, marge);
 	}
 
 }
