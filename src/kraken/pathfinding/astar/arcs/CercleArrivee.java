@@ -24,7 +24,6 @@ import kraken.config.ConfigInfoKraken;
 import kraken.graphic.Couleur;
 import kraken.pathfinding.SensFinal;
 import kraken.robot.Cinematique;
-import kraken.table.GameElementNames;
 import kraken.utils.Log;
 import kraken.utils.Vec2RO;
 import kraken.utils.Vec2RW;
@@ -81,11 +80,6 @@ public class CercleArrivee implements Printable
 				buffer.notify();
 			}
 		// log.debug("arriveeDStarLite : "+arriveeDStarLite);
-	}
-
-	public void set(GameElementNames element, double rayon, double distanceMax, double distanceMin, double angleMax, double angleMin)
-	{
-		set(element.obstacle.getPosition(), element.orientationArriveeDStarLite, rayon, SensFinal.MARCHE_ARRIERE, null, distanceMax, distanceMin, angleMax, angleMin);
 	}
 
 	private Vec2RW tmp = new Vec2RW();

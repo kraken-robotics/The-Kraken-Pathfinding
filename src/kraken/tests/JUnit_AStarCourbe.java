@@ -22,8 +22,6 @@ import graphic.PrintBuffer;
 import kraken.config.ConfigInfoKraken;
 import kraken.exceptions.PathfindingException;
 import kraken.obstacles.types.ObstacleCircular;
-import kraken.pathfinding.KeyPathCache;
-import kraken.pathfinding.PathCache;
 import kraken.pathfinding.SensFinal;
 import kraken.pathfinding.astar.AStarCourbe;
 import kraken.pathfinding.astar.arcs.ArcCourbe;
@@ -42,7 +40,6 @@ import kraken.pathfinding.dstarlite.gridspace.GridSpace;
 import kraken.robot.Cinematique;
 import kraken.robot.CinematiqueObs;
 import kraken.robot.Speed;
-import kraken.table.GameElementNames;
 import kraken.utils.Vec2RO;
 
 /**
@@ -65,7 +62,6 @@ public class JUnit_AStarCourbe extends JUnit_Test
 	private FakeCheminPathfinding fakeChemin;
 	private GridSpace gridspace;
 	private CercleArrivee cercle;
-	private PathCache pathcache;
 	// private PrecomputedPaths prepaths;
 	// private ArcManager arcmanager;
 	// private DStarLite dstarlite;
@@ -86,7 +82,6 @@ public class JUnit_AStarCourbe extends JUnit_Test
 		cercle = container.getService(CercleArrivee.class);
 		// arcmanager = container.getService(ArcManager.class);
 		graphicTrajectory = config.getBoolean(ConfigInfoKraken.GRAPHIC_TRAJECTORY_FINAL);
-		pathcache = container.getService(PathCache.class);
 		fakeChemin = container.getService(FakeCheminPathfinding.class);
 	}
 

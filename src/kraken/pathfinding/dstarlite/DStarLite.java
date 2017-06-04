@@ -30,7 +30,6 @@ import kraken.pathfinding.dstarlite.gridspace.PointDirigeManager;
 import kraken.pathfinding.dstarlite.gridspace.PointGridSpace;
 import kraken.pathfinding.dstarlite.gridspace.PointGridSpaceManager;
 import kraken.robot.Cinematique;
-import kraken.table.RealTable;
 import kraken.utils.Log;
 import kraken.utils.Vec2RO;
 
@@ -49,12 +48,10 @@ public class DStarLite
 {
 	protected Log log;
 	private GridSpace gridspace;
-	private RealTable table;
 	private PointGridSpaceManager pointManager;
 	private PointDirigeManager pointDManager;
 	protected CercleArrivee cercle;
 	private boolean graphicDStarLite, graphicDStarLiteFinal, graphicHeuristique;
-	private boolean shoot = false;
 	private boolean rechercheEnCours = false;
 
 	private DStarLiteNode[] memory = new DStarLiteNode[PointGridSpace.NB_POINTS];
@@ -81,14 +78,13 @@ public class DStarLite
 	 * @param log
 	 * @param gridspace
 	 */
-	public DStarLite(Log log, GridSpace gridspace, PointGridSpaceManager pointManager, PointDirigeManager pointDManager, PrintBufferInterface buffer, RealTable table, CercleArrivee cercle, Config config)
+	public DStarLite(Log log, GridSpace gridspace, PointGridSpaceManager pointManager, PointDirigeManager pointDManager, PrintBufferInterface buffer, CercleArrivee cercle, Config config)
 	{
 		this.log = log;
 		this.gridspace = gridspace;
 		this.pointManager = pointManager;
 		this.pointDManager = pointDManager;
 		this.buffer = buffer;
-		this.table = table;
 		this.cercle = cercle;
 
 		obstaclesConnus = new BitSet(PointGridSpace.NB_POINTS * 8);
@@ -286,16 +282,14 @@ public class DStarLite
 	 * @param arrivee (un Vec2)
 	 * @param depart (un Vec2)
 	 */
-	public void computeNewPath(Vec2RO depart, Vec2RO arrivee, boolean shoot)
+	public void computeNewPath(Vec2RO depart, Vec2RO arrivee)
 	{
-		this.shoot = shoot;
 		rechercheEnCours = true;
 		if(graphicDStarLite)
 			gridspace.reinitGraphicGrid();
 
 		updateGoalAndStart(depart, arrivee);
 		updateObstaclesEnnemi();
-		updateObstaclesTable();
 
 		if(graphicDStarLite)
 		{
@@ -356,15 +350,6 @@ public class DStarLite
 		lastDepart = depart.gridpoint;
 
 		computeShortestPath();
-	}
-
-	/**
-	 * Met à jour les obstacles des éléments de jeux
-	 */
-	public synchronized void updateObstaclesTable()
-	{
-		if(rechercheEnCours)
-			updateObstacles(table.getOldAndNewObstacles(shoot));
 	}
 
 	/**

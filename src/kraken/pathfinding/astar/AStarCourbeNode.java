@@ -21,10 +21,10 @@ import graphic.printable.Layer;
 import graphic.printable.Printable;
 import kraken.graphic.Couleur;
 import kraken.memory.Memorizable;
-import kraken.pathfinding.ChronoGameState;
 import kraken.pathfinding.astar.arcs.ArcCourbe;
 import kraken.pathfinding.astar.arcs.ArcCourbeDynamique;
 import kraken.pathfinding.astar.arcs.ArcCourbeStatique;
+import kraken.robot.RobotChrono;
 
 /**
  * Un nœud de l'A* courbe
@@ -35,7 +35,7 @@ import kraken.pathfinding.astar.arcs.ArcCourbeStatique;
 
 public class AStarCourbeNode implements Memorizable, Printable
 {
-	public ChronoGameState state;
+	public RobotChrono robot;
 	public double g_score; // distance du point de départ à ce point
 	public double f_score; // g_score + heuristique = meilleure distance qu'on
 							// peut espérer avec ce point
@@ -45,10 +45,10 @@ public class AStarCourbeNode implements Memorizable, Printable
 	private int indiceMemoryManager;
 	private boolean dead = false;
 
-	public AStarCourbeNode(ChronoGameState state, int demieLargeurNonDeploye, int demieLongueurArriere, int demieLongueurAvant, int marge)
+	public AStarCourbeNode(RobotChrono robot, int demieLargeurNonDeploye, int demieLongueurArriere, int demieLongueurAvant, int marge)
 	{
 		cameFromArcStatique = new ArcCourbeStatique(demieLargeurNonDeploye, demieLongueurArriere, demieLongueurAvant, marge);
-		this.state = state;
+		this.robot = robot;
 	}
 
 	public ArcCourbe getArc()
@@ -75,7 +75,7 @@ public class AStarCourbeNode implements Memorizable, Printable
 	@Override
 	public int hashCode()
 	{
-		return state.robot.getCinematique().hashCode();
+		return robot.getCinematique().hashCode();
 	}
 
 	@Override
@@ -101,7 +101,7 @@ public class AStarCourbeNode implements Memorizable, Printable
 		modified.cameFromArcDynamique = null;
 		modified.g_score = g_score;
 		modified.f_score = f_score;
-		state.copyAStarCourbe(modified.state);
+		robot.copy(modified.robot);
 		modified.parent = null;
 	}
 

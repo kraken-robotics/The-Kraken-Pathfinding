@@ -48,7 +48,6 @@ public class GridSpace implements Printable
 	private ObstaclesIteratorPresent iteratorDStarLiteLast;
 	private ObstaclesIteratorPresent iteratorRemoveNearby;
 	private ObstaclesMemory obstaclesMemory;
-	private ObstaclesFixes fixes;
 	private PointGridSpaceManager pointManager;
 	private MasqueManager masquemanager;
 	private PrintBufferInterface buffer;
@@ -68,7 +67,6 @@ public class GridSpace implements Printable
 
 	public GridSpace(Log log, ObstaclesFixes fixes, ObstaclesIteratorPresent iteratorDStarLiteFirst, ObstaclesIteratorPresent iteratorDStarLiteLast, ObstaclesIteratorPresent iteratorRemoveNearby, ObstaclesMemory obstaclesMemory, PointGridSpaceManager pointManager, PrintBufferInterface buffer, MasqueManager masquemanager, Config config)
 	{
-		this.fixes = fixes;
 		this.obstaclesMemory = obstaclesMemory;
 		this.log = log;
 		this.pointManager = pointManager;

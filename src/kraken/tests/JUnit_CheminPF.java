@@ -36,7 +36,6 @@ public class JUnit_CheminPF extends JUnit_Test
 
 	private CheminPathfinding chemin;
 	private IteratorCheminPathfinding iterator;
-	private PFInstruction inst;
 
 	@Override
 	@Before
@@ -45,7 +44,6 @@ public class JUnit_CheminPF extends JUnit_Test
 		super.setUp();
 		chemin = container.getService(CheminPathfinding.class);
 		iterator = new IteratorCheminPathfinding(chemin);
-		inst = container.getService(PFInstruction.class);
 	}
 
 	@Test
@@ -66,37 +64,5 @@ public class JUnit_CheminPF extends JUnit_Test
 		Assert.assertTrue(iterator.hasNext());
 		chemin.clear();
 		Assert.assertTrue(!iterator.hasNext());
-	}
-
-	@Test
-	public void pathfinding_instruction() throws Exception
-	{
-		synchronized(inst)
-		{
-			Assert.assertTrue(!inst.isDone());
-			Assert.assertTrue(!inst.isSearching());
-			Assert.assertTrue(!inst.hasRequest());
-
-			inst.searchRequest();
-			Assert.assertTrue(!inst.isDone());
-			Assert.assertTrue(!inst.isSearching());
-			Assert.assertTrue(inst.hasRequest());
-			
-			inst.beginSearch();
-			Assert.assertTrue(!inst.isDone());
-			Assert.assertTrue(inst.isSearching());
-			Assert.assertTrue(!inst.hasRequest());
-			
-			inst.setDone();
-			Assert.assertTrue(inst.isDone());
-			Assert.assertTrue(!inst.isSearching());
-			Assert.assertTrue(!inst.hasRequest());
-			
-			inst.throwException();
-			Assert.assertTrue(!inst.isDone());
-			Assert.assertTrue(!inst.isSearching());
-			Assert.assertTrue(!inst.hasRequest());	
-		}
-	}
-	
+	}	
 }

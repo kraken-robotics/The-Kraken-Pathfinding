@@ -22,7 +22,7 @@ import kraken.obstacles.memory.ObstaclesIteratorPresent;
 import kraken.obstacles.types.ObstacleCircular;
 import kraken.obstacles.types.ObstacleProximity;
 import kraken.pathfinding.astar.AStarCourbe;
-import kraken.table.RealTable;
+import kraken.pathfinding.dstarlite.gridspace.GridSpace;
 import kraken.utils.Vec2RO;
 
 /**
@@ -67,7 +67,7 @@ public class JUnit_Container extends JUnit_Test
 	@Test
 	public void test_instanciation() throws Exception
 	{
-		container.getService(RealTable.class);
+		container.getService(GridSpace.class);
 		container.getService(AStarCourbe.class);
 	}
 

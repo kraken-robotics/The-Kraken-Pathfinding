@@ -27,7 +27,6 @@ import kraken.utils.Log;
 import kraken.utils.Vec2RO;
 import kraken.utils.Vec2RW;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;

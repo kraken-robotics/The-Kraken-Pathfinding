@@ -27,9 +27,7 @@ import kraken.exceptions.PathfindingException;
 import kraken.memory.CinemObsMM;
 import kraken.memory.NodeMM;
 import kraken.obstacles.types.ObstacleRobot;
-import kraken.pathfinding.ChronoGameState;
 import kraken.pathfinding.DirectionStrategy;
-import kraken.pathfinding.GameState;
 import kraken.pathfinding.SensFinal;
 import kraken.pathfinding.astar.arcs.ArcCourbe;
 import kraken.pathfinding.astar.arcs.ArcManager;
@@ -41,6 +39,7 @@ import kraken.pathfinding.dstarlite.gridspace.PointGridSpace;
 import kraken.robot.Cinematique;
 import kraken.robot.CinematiqueObs;
 import kraken.robot.Robot;
+import kraken.robot.RobotChrono;
 import kraken.robot.Speed;
 import kraken.utils.Log;
 import kraken.utils.Log.Verbose;
@@ -70,7 +69,6 @@ public class AStarCourbe
 	private int dureeMaxPF;
 	private Speed vitesseMax;
 	// private int tailleFaisceau;
-	private boolean shoot;
 	private boolean suppObsFixes;
 	private volatile boolean rechercheEnCours = false;
 
@@ -106,7 +104,7 @@ public class AStarCourbe
 	/**
 	 * Constructeur du AStarCourbe
 	 */
-	public AStarCourbe(Log log, DStarLite dstarlite, ArcManager arcmanager, CheminPathfinding chemin, NodeMM memorymanager, CinemObsMM rectMemory, PrintBufferInterface buffer, CercleArrivee cercle, ChronoGameState chrono, Config config)
+	public AStarCourbe(Log log, DStarLite dstarlite, ArcManager arcmanager, CheminPathfinding chemin, NodeMM memorymanager, CinemObsMM rectMemory, PrintBufferInterface buffer, CercleArrivee cercle, RobotChrono chrono, Config config)
 	{
 		this.log = log;
 		this.arcmanager = arcmanager;
@@ -147,14 +145,14 @@ public class AStarCourbe
 		depart.cameFromArcDynamique = null;
 		depart.g_score = 0;
 
-		Double heuristique = arcmanager.heuristicCostCourbe((depart.state.robot).getCinematique());
+		Double heuristique = arcmanager.heuristicCostCourbe((depart.robot).getCinematique());
 
 		if(heuristique == null)
 		{
 			if(arcmanager.isToCircle()) // peut-être y a-t-il un autre bout du
 										// cercle qui n'a pas de problème
 										// d'heuristique
-				heuristique = arcmanager.heuristicDirect((depart.state.robot).getCinematique());
+				heuristique = arcmanager.heuristicDirect((depart.robot).getCinematique());
 			else
 				throw new PathfindingException("Aucun chemin trouvé par le D* Lite !");
 		}
@@ -187,7 +185,7 @@ public class AStarCourbe
 				if(!assezDeMarge)
 				{
 					log.debug("Reconstruction partielle demandée !");
-					depart.state.robot.setCinematique(partialReconstruct(current, chemin, 2));
+					depart.robot.setCinematique(partialReconstruct(current, chemin, 2));
 					if(!chemin.aAssezDeMarge()) // toujours pas assez de marge
 												// : on doit arrêter
 						throw new PathfindingException("Pas assez de marge même après envoi.");
@@ -196,7 +194,7 @@ public class AStarCourbe
 				{
 					log.debug("On reprend la recherche à partir de " + cinemRestart, Verbose.REPLANIF.masque);
 					depart.init();
-					depart.state.robot.setCinematique(cinemRestart);
+					depart.robot.setCinematique(cinemRestart);
 				}/*
 				if(suppObsFixes)
 				{
@@ -210,14 +208,14 @@ public class AStarCourbe
 				depart.parent = null;
 				depart.cameFromArcDynamique = null;
 				depart.g_score = 0;
-				heuristique = arcmanager.heuristicCostCourbe((depart.state.robot).getCinematique());
+				heuristique = arcmanager.heuristicCostCourbe((depart.robot).getCinematique());
 
 				if(heuristique == null)
 				{
 					if(arcmanager.isToCircle()) // peut-être y a-t-il un autre
 												// bout du cercle qui n'a pas de
 												// problème d'heuristique
-						heuristique = arcmanager.heuristicDirect((depart.state.robot).getCinematique());
+						heuristique = arcmanager.heuristicDirect((depart.robot).getCinematique());
 					else
 						throw new PathfindingException("Aucun chemin trouvé par le D* Lite !");
 				}
@@ -249,7 +247,7 @@ public class AStarCourbe
 			// ce calcul étant un peu lourd, on ne le fait que si le noeud a été
 			// choisi, et pas à la sélection des voisins (dans hasNext par
 			// exemple)
-			if(!arcmanager.isReachable(current, shoot))
+			if(!arcmanager.isReachable(current))
 			{
 				if(current != depart)
 					destroy(current);
@@ -333,14 +331,14 @@ public class AStarCourbe
 				if(graphicTrajectoryAll)
 					buffer.addSupprimable(successeur);
 
-				heuristique = arcmanager.heuristicCostCourbe(successeur.state.robot.getCinematique());
+				heuristique = arcmanager.heuristicCostCourbe(successeur.robot.getCinematique());
 				if(heuristique == null)
-					heuristique = arcmanager.heuristicDirect(successeur.state.robot.getCinematique());
+					heuristique = arcmanager.heuristicDirect(successeur.robot.getCinematique());
 
 				successeur.f_score = successeur.g_score + heuristique / vitesseMax.translationalSpeed;
 
 				// noeud d'arrivé
-				if(arcmanager.isArrived(successeur) && arcmanager.isReachable(successeur, shoot) && (trajetDeSecours == null || trajetDeSecours.f_score > successeur.f_score))
+				if(arcmanager.isArrived(successeur) && arcmanager.isReachable(successeur) && (trajetDeSecours == null || trajetDeSecours.f_score > successeur.f_score))
 				{
 					if(trajetDeSecours != null)
 						destroy(trajetDeSecours);
@@ -441,9 +439,9 @@ public class AStarCourbe
 	 * @throws PathfindingException
 	 * @throws InterruptedException
 	 */
-	public void initializeNewSearch(Cinematique arrivee, boolean shoot, GameState<? extends Robot> state) throws PathfindingException, MemoryManagerException
+	public void initializeNewSearch(Cinematique arrivee, RobotChrono robot) throws PathfindingException, MemoryManagerException
 	{
-		initializeNewSearch(arrivee, SensFinal.AUCUNE_PREF, shoot, state);
+		initializeNewSearch(arrivee, SensFinal.AUCUNE_PREF, robot);
 	}
 
 	/**
@@ -455,11 +453,11 @@ public class AStarCourbe
 	 * @throws PathfindingException
 	 * @throws InterruptedException
 	 */
-	public void initializeNewSearch(Cinematique arrivee, SensFinal sens, boolean shoot, GameState<? extends Robot> state) throws PathfindingException, MemoryManagerException
+	public void initializeNewSearch(Cinematique arrivee, SensFinal sens, RobotChrono robot) throws PathfindingException, MemoryManagerException
 	{
 		vitesseMax = Speed.STANDARD;
 		depart.init();
-		state.copyAStarCourbe(depart.state);
+		robot.copy(depart.robot);
 		arcmanager.configureArcManager(DirectionStrategy.defaultStrategy, sens, arrivee);
 /*
 		if(suppObsFixes)
@@ -470,11 +468,10 @@ public class AStarCourbe
 			arcmanager.disableObstaclesFixes(symetrie, obsDepart);
 		}*/
 
-		dstarlite.computeNewPath(depart.state.robot.getCinematique().getPosition(), arrivee.getPosition(), shoot);
+		dstarlite.computeNewPath(depart.robot.getCinematique().getPosition(), arrivee.getPosition());
 		if(graphicDStarLite)
 			dstarlite.itineraireBrut();
 		rechercheEnCours = true;
-		this.shoot = shoot;
 	}
 
 	/**
@@ -487,11 +484,11 @@ public class AStarCourbe
 	 * @throws PathfindingException
 	 * @throws InterruptedException
 	 */
-	public void initializeNewSearchToCircle(boolean shoot, GameState<? extends Robot> state) throws PathfindingException, MemoryManagerException
+	public void initializeNewSearchToCircle(RobotChrono robot) throws PathfindingException, MemoryManagerException
 	{
 		vitesseMax = Speed.STANDARD;
 		depart.init();
-		state.copyAStarCourbe(depart.state);
+		robot.copy(depart.robot);
 		arcmanager.configureArcManagerWithCircle(DirectionStrategy.defaultStrategy);
 /*
 		if(suppObsFixes)
@@ -502,11 +499,10 @@ public class AStarCourbe
 			arcmanager.disableObstaclesFixes(symetrie, obsDepart);
 		}*/
 
-		dstarlite.computeNewPath(depart.state.robot.getCinematique().getPosition(), cercle.arriveeDStarLite, shoot);
+		dstarlite.computeNewPath(depart.robot.getCinematique().getPosition(), cercle.arriveeDStarLite);
 		if(graphicDStarLite)
 			dstarlite.itineraireBrut();
 		rechercheEnCours = true;
-		this.shoot = shoot;
 	}
 
 	/**
@@ -535,7 +531,7 @@ public class AStarCourbe
 		 */
 
 		closedset.clear();
-		depart.state.robot.setCinematique(lastValid);
+		depart.robot.setCinematique(lastValid);
 
 /*		if(suppObsFixes)
 		{
@@ -546,7 +542,7 @@ public class AStarCourbe
 		}*/
 
 		// On met à jour le D* Lite
-		dstarlite.updateStart(depart.state.robot.getCinematique().getPosition());
+		dstarlite.updateStart(depart.robot.getCinematique().getPosition());
 		dstarlite.updateObstaclesEnnemi();
 		if(graphicDStarLite)
 			dstarlite.itineraireBrut();

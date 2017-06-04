@@ -35,11 +35,7 @@ import kraken.pathfinding.astar.arcs.vitesses.VitesseDemiTour;
 import kraken.pathfinding.astar.arcs.vitesses.VitesseRameneVolant;
 import kraken.pathfinding.dstarlite.DStarLite;
 import kraken.robot.Cinematique;
-import kraken.robot.CinematiqueObs;
 import kraken.robot.Speed;
-import kraken.table.EtatElement;
-import kraken.table.GameElementNames;
-import kraken.table.RealTable;
 import kraken.utils.Log;
 
 /**
@@ -55,7 +51,6 @@ public class ArcManager
 	private ClothoidesComputer clotho;
 	protected BezierComputer bezier;
 	private PrintBufferInterface buffer;
-	private RealTable table;
 	private AStarCourbeNode current;
 	private DStarLite dstarlite;
 	private ObstaclesIteratorPresent obstaclesProxIterator;
@@ -72,12 +67,11 @@ public class ArcManager
 	private ListIterator<VitesseCourbure> iterator = listeVitesse.listIterator();
 	private List<ObstaclesFixes> disabledObstaclesFixes = new ArrayList<ObstaclesFixes>();
 
-	public ArcManager(Log log, ObstaclesFixes fixes, ClothoidesComputer clotho, RealTable table, PrintBufferInterface buffer, DStarLite dstarlite, BezierComputer bezier, CercleArrivee cercle, Config config, ObstaclesIteratorPresent obstaclesProxIterator)
+	public ArcManager(Log log, ObstaclesFixes fixes, ClothoidesComputer clotho, PrintBufferInterface buffer, DStarLite dstarlite, BezierComputer bezier, CercleArrivee cercle, Config config, ObstaclesIteratorPresent obstaclesProxIterator)
 	{
 		this.fixes = fixes;
 		this.obstaclesProxIterator = obstaclesProxIterator;
 		this.bezier = bezier;
-		this.table = table;
 		this.log = log;
 		this.clotho = clotho;
 		this.buffer = buffer;
@@ -106,7 +100,7 @@ public class ArcManager
 	 * @return
 	 * @throws FinMatchException
 	 */
-	public boolean isReachable(AStarCourbeNode node, boolean shoot)
+	public boolean isReachable(AStarCourbeNode node)
 	{
 		// le tout premier nœud n'a pas de parent
 		if(node.parent == null)
@@ -155,15 +149,6 @@ public class ArcManager
 		 * }
 		 */
 
-		// On vérifie si on collisionne un élément de jeu (sauf si on shoot)
-		if(!shoot)
-			for(GameElementNames g : GameElementNames.values())
-				if(table.isDone(g).hash <= EtatElement.PRIS_PAR_ENNEMI.hash && g.obstacle.isColliding(obs))
-				{
-					// log.debug("Collision avec "+g);
-					return false;
-				}
-
 		return true;
 	}
 
@@ -178,7 +163,7 @@ public class ArcManager
 	 */
 	public double distanceTo(AStarCourbeNode node, Speed vitesse)
 	{
-		node.state.robot.suitArcCourbe(node.getArc(), vitesse.translationalSpeed);
+		node.robot.suitArcCourbe(node.getArc(), vitesse.translationalSpeed);
 		return node.getArc().getDuree(vitesse.translationalSpeed);
 	}
 
@@ -192,7 +177,7 @@ public class ArcManager
 	{
 		VitesseCourbure v = iterator.next();
 
-		current.state.copyAStarCourbe(successeur.state);
+		current.robot.copy(successeur.robot);
 
 		if(v instanceof VitesseBezier)
 		{
@@ -203,7 +188,7 @@ public class ArcManager
 			if(v == VitesseBezier.BEZIER_QUAD && !useCercle)
 			{
 				ArcCourbeDynamique tmp;
-				tmp = bezier.interpolationQuadratique(current.state.robot.getCinematique(), arrivee.getPosition());
+				tmp = bezier.interpolationQuadratique(current.robot.getCinematique(), arrivee.getPosition());
 				if(tmp == null)
 					return false;
 
@@ -213,7 +198,7 @@ public class ArcManager
 			else if(v == VitesseBezier.CIRCULAIRE_VERS_CERCLE && useCercle)
 			{
 				ArcCourbeDynamique tmp;
-				tmp = bezier.trajectoireCirculaireVersCentre(current.state.robot.getCinematique());
+				tmp = bezier.trajectoireCirculaireVersCentre(current.robot.getCinematique());
 				if(tmp == null)
 					return false;
 
@@ -248,7 +233,7 @@ public class ArcManager
 			if(current.getArc() == null)
 				return false;
 
-			ArcCourbeDynamique tmp = clotho.getTrajectoireRamene(successeur.state.robot.getCinematique(), (VitesseRameneVolant) v);
+			ArcCourbeDynamique tmp = clotho.getTrajectoireRamene(successeur.robot.getCinematique(), (VitesseRameneVolant) v);
 			if(tmp == null)
 				return false;
 			successeur.cameFromArcDynamique = tmp;
@@ -262,7 +247,7 @@ public class ArcManager
 			if(current.getArc() == null)
 				return false;
 
-			successeur.cameFromArcDynamique = clotho.getTrajectoireDemiTour(successeur.state.robot.getCinematique(), (VitesseDemiTour) v);
+			successeur.cameFromArcDynamique = clotho.getTrajectoireDemiTour(successeur.robot.getCinematique(), (VitesseDemiTour) v);
 		}
 
 		/**
@@ -275,7 +260,7 @@ public class ArcManager
 			if(current.getArc() == null && (!((VitesseClotho) v).arret && !((VitesseClotho) v).rebrousse))
 				return false;
 
-			clotho.getTrajectoire(successeur.state.robot.getCinematique(), (VitesseClotho) v, successeur.cameFromArcStatique);
+			clotho.getTrajectoire(successeur.robot.getCinematique(), (VitesseClotho) v, successeur.cameFromArcStatique);
 		}
 		else
 			log.critical("Vitesse " + v + " inconnue ! ");
@@ -318,7 +303,7 @@ public class ArcManager
 	 */
 	private final boolean acceptable(VitesseCourbure vitesse)
 	{
-		return vitesse.isAcceptable(current.state.robot.getCinematique(), directionstrategyactuelle, courbureMax);
+		return vitesse.isAcceptable(current.robot.getCinematique(), directionstrategyactuelle, courbureMax);
 	}
 
 	/**

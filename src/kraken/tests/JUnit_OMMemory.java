@@ -20,7 +20,6 @@ import org.junit.Test;
 import kraken.obstacles.memory.ObstaclesIteratorPresent;
 import kraken.obstacles.memory.ObstaclesMemory;
 import kraken.obstacles.types.ObstacleCircular;
-import kraken.pathfinding.ChronoGameState;
 import kraken.pathfinding.dstarlite.gridspace.GridSpace;
 import kraken.robot.Cinematique;
 import kraken.utils.Vec2RO;
