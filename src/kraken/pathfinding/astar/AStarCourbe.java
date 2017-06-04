@@ -34,7 +34,6 @@ import kraken.pathfinding.chemin.CheminPathfindingInterface;
 import kraken.pathfinding.dstarlite.DStarLite;
 import kraken.pathfinding.dstarlite.gridspace.PointGridSpace;
 import kraken.robot.Cinematique;
-import kraken.robot.CinematiqueObs;
 import kraken.robot.DefaultSpeed;
 import kraken.robot.ItineraryPoint;
 import kraken.robot.RobotState;
@@ -116,8 +115,7 @@ public class AStarCourbe
 		int demieLargeurNonDeploye = config.getInt(ConfigInfoKraken.LARGEUR_NON_DEPLOYE) / 2;
 		int demieLongueurArriere = config.getInt(ConfigInfoKraken.DEMI_LONGUEUR_NON_DEPLOYE_ARRIERE);
 		int demieLongueurAvant = config.getInt(ConfigInfoKraken.DEMI_LONGUEUR_NON_DEPLOYE_AVANT);
-		int marge = config.getInt(ConfigInfoKraken.DILATATION_OBSTACLE_ROBOT);
-		this.depart = new AStarCourbeNode(chrono, demieLargeurNonDeploye, demieLongueurArriere, demieLongueurAvant, marge);
+		this.depart = new AStarCourbeNode(chrono, demieLargeurNonDeploye, demieLongueurArriere, demieLongueurAvant);
 		depart.setIndiceMemoryManager(-1);
 	}
 

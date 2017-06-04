@@ -63,6 +63,7 @@ public class RobotState
 
 	public void avance(double distance, Speed speed)
 	{
+		// TODO update date
 		cinematique.getPositionEcriture().plus(new Vec2RO(distance, cinematique.orientationReelle, true));
 	}
 

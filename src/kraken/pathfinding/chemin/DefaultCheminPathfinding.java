@@ -25,7 +25,6 @@ import kraken.config.ConfigInfoKraken;
 import kraken.graphic.Couleur;
 import kraken.obstacles.types.ObstacleCircular;
 import kraken.robot.Cinematique;
-import kraken.robot.CinematiqueObs;
 import kraken.robot.ItineraryPoint;
 import kraken.utils.Log;
 import kraken.utils.Vec2RO;

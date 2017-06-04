@@ -33,7 +33,7 @@ import kraken.utils.Log;
 
 public class CinemObsMM extends MemoryManager<CinematiqueObs>
 {
-	private int largeur, longueur_arriere, longueur_avant, marge;
+	private int largeur, longueur_arriere, longueur_avant;
 	
 	public CinemObsMM(Log log, Config config)
 	{
@@ -41,14 +41,13 @@ public class CinemObsMM extends MemoryManager<CinematiqueObs>
 		largeur = config.getInt(ConfigInfoKraken.LARGEUR_NON_DEPLOYE) / 2;
 		longueur_arriere = config.getInt(ConfigInfoKraken.DEMI_LONGUEUR_NON_DEPLOYE_ARRIERE);
 		longueur_avant = config.getInt(ConfigInfoKraken.DEMI_LONGUEUR_NON_DEPLOYE_AVANT);
-		marge = config.getInt(ConfigInfoKraken.DILATATION_OBSTACLE_ROBOT);
 		init(config.getInt(ConfigInfoKraken.NB_INSTANCES_OBSTACLES));
 	}
 
 	@Override
 	protected final CinematiqueObs make()
 	{
-		return new CinematiqueObs(largeur, longueur_arriere, longueur_avant, marge);
+		return new CinematiqueObs(largeur, longueur_arriere, longueur_avant);
 	}
 	
 	// TODO : optimisable : la mémoire est contigue

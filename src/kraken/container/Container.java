@@ -25,7 +25,6 @@ import kraken.config.ConfigInfoKraken;
 import kraken.obstacles.types.Obstacle;
 import kraken.obstacles.types.ObstaclesFixes;
 import kraken.pathfinding.astar.arcs.ArcCourbe;
-import kraken.robot.Speed;
 import kraken.utils.*;
 
 /**

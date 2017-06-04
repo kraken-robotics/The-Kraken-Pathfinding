@@ -48,8 +48,6 @@ public enum ConfigInfoKraken implements ConfigInfo
 												// robot non-déployé
 	LARGEUR_NON_DEPLOYE(228), // distance entre le bord gauche et le bord droit
 								// du robot non-déployé
-	DILATATION_OBSTACLE_ROBOT(30), // la dilatation du robot dans l'A*. S'ajoute
-									// à gauche et à droite
 
 	/**
 	 * Paramètres des scripts

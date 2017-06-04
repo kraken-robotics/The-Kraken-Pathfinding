@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import config.Config;
-import graphic.PrintBufferInterface;
 import kraken.config.ConfigInfoKraken;
 import kraken.exceptions.MemoryManagerException;
 import kraken.memory.CinemObsMM;
@@ -59,8 +58,7 @@ public class BezierComputer
 		int demieLargeurNonDeploye = config.getInt(ConfigInfoKraken.LARGEUR_NON_DEPLOYE) / 2;
 		int demieLongueurArriere = config.getInt(ConfigInfoKraken.DEMI_LONGUEUR_NON_DEPLOYE_ARRIERE);
 		int demieLongueurAvant = config.getInt(ConfigInfoKraken.DEMI_LONGUEUR_NON_DEPLOYE_AVANT);
-		int marge = config.getInt(ConfigInfoKraken.DILATATION_OBSTACLE_ROBOT);
-		tmp = new ArcCourbeStatique(demieLargeurNonDeploye, demieLongueurArriere, demieLongueurAvant, marge);
+		tmp = new ArcCourbeStatique(demieLargeurNonDeploye, demieLongueurArriere, demieLongueurAvant);
 	}
 
 	private Vec2RW delta = new Vec2RW(), vecteurVitesse = new Vec2RW();
