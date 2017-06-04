@@ -26,7 +26,9 @@ import kraken.graphic.Couleur;
 import kraken.obstacles.types.ObstacleCircular;
 import kraken.robot.Cinematique;
 import kraken.robot.CinematiqueObs;
+import kraken.robot.ItineraryPoint;
 import kraken.utils.Log;
+import kraken.utils.Vec2RO;
 
 /**
  * Faux chemin, sert à la prévision d'itinéraire
@@ -37,7 +39,7 @@ import kraken.utils.Log;
 
 public class DefaultCheminPathfinding implements CheminPathfindingInterface, Printable
 {
-	private LinkedList<CinematiqueObs> path;
+	private LinkedList<ItineraryPoint> path;
 	protected Log log;
 	private PrintBuffer buffer;
 	private boolean print;
@@ -53,7 +55,7 @@ public class DefaultCheminPathfinding implements CheminPathfindingInterface, Pri
 	}
 
 	@Override
-	public synchronized void addToEnd(LinkedList<CinematiqueObs> points)
+	public synchronized void addToEnd(LinkedList<ItineraryPoint> points)
 	{
 		path = points;
 		if(print)
@@ -68,9 +70,9 @@ public class DefaultCheminPathfinding implements CheminPathfindingInterface, Pri
 	public void setUptodate()
 	{}
 
-	public LinkedList<CinematiqueObs> getPath()
+	public LinkedList<ItineraryPoint> getPath()
 	{
-		LinkedList<CinematiqueObs> out = path;
+		LinkedList<ItineraryPoint> out = path;
 		path = null;
 		return out;
 	}
@@ -80,9 +82,9 @@ public class DefaultCheminPathfinding implements CheminPathfindingInterface, Pri
 	{
 		int i = 0;
 		if(path != null)
-			for(Cinematique c : path)
+			for(ItineraryPoint c : path)
 			{
-				aff[i] = new ObstacleCircular(c.getPosition(), 8, Couleur.TRAJECTOIRE);
+				aff[i] = new ObstacleCircular(x, y, 8, Couleur.TRAJECTOIRE);
 				buffer.addSupprimable(aff[i]);
 				i++;
 			}

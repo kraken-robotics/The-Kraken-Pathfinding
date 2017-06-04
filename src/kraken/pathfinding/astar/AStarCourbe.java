@@ -36,6 +36,7 @@ import kraken.pathfinding.dstarlite.gridspace.PointGridSpace;
 import kraken.robot.Cinematique;
 import kraken.robot.CinematiqueObs;
 import kraken.robot.DefaultSpeed;
+import kraken.robot.ItineraryPoint;
 import kraken.robot.RobotState;
 import kraken.robot.Speed;
 import kraken.utils.Log;
@@ -88,7 +89,7 @@ public class AStarCourbe
 	private final HashSet<AStarCourbeNode> closedset = new HashSet<AStarCourbeNode>();
 	private final PriorityQueue<AStarCourbeNode> openset = new PriorityQueue<AStarCourbeNode>(PointGridSpace.NB_POINTS, new AStarCourbeNodeComparator());
 	private Stack<ArcCourbe> pileTmp = new Stack<ArcCourbe>();
-	private LinkedList<CinematiqueObs> trajectory = new LinkedList<CinematiqueObs>();
+	private LinkedList<ItineraryPoint> trajectory = new LinkedList<ItineraryPoint>();
 
 	// private HashSet<AStarCourbeNode> closedsetTmp = new
 	// HashSet<AStarCourbeNode>();
@@ -405,13 +406,17 @@ public class AStarCourbe
 		}
 		trajectory.clear();
 
+		Cinematique last = null;
 		// chemin.add fait des copies des points
 		while(!pileTmp.isEmpty() && profondeurMax > 0)
 		{
 			ArcCourbe a = pileTmp.pop();
 			log.debug(a.vitesse + " (" + a.getNbPoints() + " pts)", Verbose.PF.masque);
 			for(int i = 0; i < a.getNbPoints(); i++)
-				trajectory.add(a.getPoint(i));
+			{
+				last = a.getPoint(i);
+				trajectory.add(new ItineraryPoint(last));
+			}
 			if(trajectory.size() > 255)
 				throw new PathfindingException("Overflow du trajet !");
 			profondeurMax--;
@@ -420,7 +425,7 @@ public class AStarCourbe
 		pileTmp.clear();
 		chemin.addToEnd(trajectory);
 
-		return trajectory.getLast();
+		return last;
 	}
 
 	/**

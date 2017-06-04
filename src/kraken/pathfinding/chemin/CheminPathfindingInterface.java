@@ -17,7 +17,7 @@ package kraken.pathfinding.chemin;
 import java.util.LinkedList;
 import kraken.exceptions.PathfindingException;
 import kraken.robot.Cinematique;
-import kraken.robot.CinematiqueObs;
+import kraken.robot.ItineraryPoint;
 
 /**
  * Interface pour pouvoir interchanger le vrai chemin de pathfinding et le faux
@@ -28,7 +28,7 @@ import kraken.robot.CinematiqueObs;
 
 public interface CheminPathfindingInterface
 {
-	public void addToEnd(LinkedList<CinematiqueObs> points) throws PathfindingException;
+	public void addToEnd(LinkedList<ItineraryPoint> points) throws PathfindingException;
 
 	public void setUptodate();
 
