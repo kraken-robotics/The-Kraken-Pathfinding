@@ -36,6 +36,7 @@ import kraken.pathfinding.dstarlite.DStarLite;
 import kraken.pathfinding.dstarlite.gridspace.PointGridSpace;
 import kraken.robot.Cinematique;
 import kraken.robot.CinematiqueObs;
+import kraken.robot.DefaultSpeed;
 import kraken.robot.RobotState;
 import kraken.robot.Speed;
 import kraken.utils.Log;
@@ -149,7 +150,7 @@ public class AStarCourbe
 				throw new PathfindingException("Aucun chemin trouvé par le D* Lite !");
 		}
 
-		depart.f_score = heuristique / Speed.STANDARD.translationalSpeed;
+		depart.f_score = heuristique / vitesseMax.getMaxForwardSpeed(0);
 		openset.clear();
 		openset.add(depart); // Les nœuds à évaluer
 		closedset.clear();
@@ -212,7 +213,7 @@ public class AStarCourbe
 						throw new PathfindingException("Aucun chemin trouvé par le D* Lite !");
 				}
 
-				depart.f_score = heuristique / Speed.STANDARD.translationalSpeed;
+				depart.f_score = heuristique / vitesseMax.getMaxForwardSpeed(0);
 
 				memorymanager.empty();
 				cinemMemory.empty();
@@ -327,7 +328,7 @@ public class AStarCourbe
 				if(heuristique == null)
 					heuristique = arcmanager.heuristicDirect(successeur.robot.getCinematique());
 
-				successeur.f_score = successeur.g_score + heuristique / vitesseMax.translationalSpeed;
+				successeur.f_score = successeur.g_score + heuristique / vitesseMax.getMaxForwardSpeed(0);
 
 				// noeud d'arrivé
 				if(arcmanager.isArrived(successeur) && arcmanager.isReachable(successeur) && (trajetDeSecours == null || trajetDeSecours.f_score > successeur.f_score))
@@ -447,7 +448,7 @@ public class AStarCourbe
 	 */
 	public void initializeNewSearch(Cinematique arrivee, SensFinal sens, RobotState robot) throws PathfindingException, MemoryManagerException
 	{
-		vitesseMax = Speed.STANDARD;
+		vitesseMax = DefaultSpeed.STANDARD;
 		depart.init();
 		robot.copy(depart.robot);
 		arcmanager.configureArcManager(DirectionStrategy.defaultStrategy, sens, arrivee);
@@ -478,7 +479,7 @@ public class AStarCourbe
 	 */
 	public void initializeNewSearchToCircle(RobotState robot) throws PathfindingException, MemoryManagerException
 	{
-		vitesseMax = Speed.STANDARD;
+		vitesseMax = DefaultSpeed.STANDARD;
 		depart.init();
 		robot.copy(depart.robot);
 		arcmanager.configureArcManagerWithCircle(DirectionStrategy.defaultStrategy);
@@ -539,7 +540,6 @@ public class AStarCourbe
 		if(graphicDStarLite)
 			dstarlite.itineraireBrut();
 
-		vitesseMax = Speed.REPLANIF;
 //		process(realChemin, true);
 	}
 	

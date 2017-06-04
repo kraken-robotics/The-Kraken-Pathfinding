@@ -167,8 +167,8 @@ public class ArcManager
 	 */
 	public double distanceTo(AStarCourbeNode node, Speed vitesse)
 	{
-		node.robot.suitArcCourbe(node.getArc(), vitesse.translationalSpeed);
-		return node.getArc().getDuree(vitesse.translationalSpeed);
+		node.robot.suitArcCourbe(node.getArc(), vitesse.getMaxForwardSpeed(0));
+		return node.getArc().getDuree(vitesse.getMaxForwardSpeed(0));
 	}
 
 	/**

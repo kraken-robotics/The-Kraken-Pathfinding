@@ -21,23 +21,9 @@ package kraken.robot;
  *
  */
 
-public enum Speed
+public interface Speed
 {
-	// vitesse standard
-	STANDARD,
-
-	// vitesse pour les tests
-	TEST,
-
-	// vitesse pour la bascule
-	BASCULE,
-
-	// Vitesse du robot lors d'une replanification, plus lent que la vitesse
-	// standard
-	REPLANIF;
-
-	// en millimètre par milliseconde = mètre par seconde
-	public double translationalSpeed; // valeur fixée par la config
-	// public static final double coeffMarcheArriere = 0.8; // 50% de la vitesse
-	// normale
+	public double getMaxForwardSpeed(double curvature);
+	
+	public double getMaxBackwardSpeed(double curvature);	
 }
