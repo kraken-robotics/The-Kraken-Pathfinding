@@ -30,7 +30,6 @@ import kraken.obstacles.types.ObstacleArcCourbe;
 import kraken.obstacles.types.ObstacleMasque;
 import kraken.obstacles.types.ObstaclesFixes;
 import kraken.pathfinding.DirectionStrategy;
-import kraken.pathfinding.SensFinal;
 import kraken.pathfinding.astar.AStarCourbeNode;
 import kraken.pathfinding.astar.arcs.vitesses.VitesseBezier;
 import kraken.pathfinding.astar.arcs.vitesses.VitesseClotho;
@@ -64,7 +63,6 @@ public class ArcManager
 	private ObstaclesFixes fixes;
 	
 	private DirectionStrategy directionstrategyactuelle;
-	private SensFinal sens;
 	private Cinematique arrivee = new Cinematique();
 	private CercleArrivee cercle;
 	private List<VitesseCourbure> listeVitesse = new ArrayList<VitesseCourbure>();
@@ -279,9 +277,8 @@ public class ArcManager
 	 * @param sens
 	 * @param arrivee
 	 */
-	public void configureArcManager(DirectionStrategy directionstrategyactuelle, SensFinal sens, Cinematique arrivee)
+	public void configureArcManager(DirectionStrategy directionstrategyactuelle, Cinematique arrivee)
 	{
-		this.sens = sens;
 		this.directionstrategyactuelle = directionstrategyactuelle;
 		arrivee.copy(this.arrivee);
 		useCercle = false;
@@ -294,7 +291,6 @@ public class ArcManager
 	 */
 	public void configureArcManagerWithCircle(DirectionStrategy directionstrategyactuelle)
 	{
-		sens = cercle.sens;
 		this.directionstrategyactuelle = directionstrategyactuelle;
 		useCercle = true;
 	}
@@ -354,14 +350,14 @@ public class ArcManager
 	{
 		if(useCercle)
 			return cercle.isArrivedPF(successeur);
-		return successeur.getPosition().squaredDistance(arrivee.getPosition()) < 5 && sens.isOK(successeur.enMarcheAvant);
+		return successeur.getPosition().squaredDistance(arrivee.getPosition()) < 5;
 	}
 	
 	public boolean isArrivedAsser(Cinematique successeur)
 	{
 		if(useCercle)
 			return cercle.isArrivedAsser(successeur);
-		return successeur.getPosition().squaredDistance(arrivee.getPosition()) < 25 && sens.isOK(successeur.enMarcheAvant);
+		return successeur.getPosition().squaredDistance(arrivee.getPosition()) < 25;
 	}
 	
 	/**

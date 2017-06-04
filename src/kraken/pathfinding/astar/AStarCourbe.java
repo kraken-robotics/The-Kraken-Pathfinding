@@ -27,7 +27,6 @@ import kraken.exceptions.PathfindingException;
 import kraken.memory.CinemObsMM;
 import kraken.memory.NodeMM;
 import kraken.pathfinding.DirectionStrategy;
-import kraken.pathfinding.SensFinal;
 import kraken.pathfinding.astar.arcs.ArcCourbe;
 import kraken.pathfinding.astar.arcs.ArcManager;
 import kraken.pathfinding.astar.arcs.CercleArrivee;
@@ -425,19 +424,6 @@ public class AStarCourbe
 	}
 
 	/**
-	 * Valeurs par défaut : DirectionStrategy.FASTEST
-	 * 
-	 * @param arrivee
-	 * @param shoot
-	 * @throws PathfindingException
-	 * @throws InterruptedException
-	 */
-	public void initializeNewSearch(Cinematique arrivee, RobotState robot) throws PathfindingException, MemoryManagerException
-	{
-		initializeNewSearch(arrivee, SensFinal.AUCUNE_PREF, robot);
-	}
-
-	/**
 	 * Calcul de chemin classique
 	 * 
 	 * @param arrivee
@@ -446,12 +432,12 @@ public class AStarCourbe
 	 * @throws PathfindingException
 	 * @throws InterruptedException
 	 */
-	public void initializeNewSearch(Cinematique arrivee, SensFinal sens, RobotState robot) throws PathfindingException, MemoryManagerException
+	public void initializeNewSearch(Cinematique arrivee, RobotState robot) throws PathfindingException, MemoryManagerException
 	{
 		vitesseMax = DefaultSpeed.STANDARD;
 		depart.init();
 		robot.copy(depart.robot);
-		arcmanager.configureArcManager(DirectionStrategy.defaultStrategy, sens, arrivee);
+		arcmanager.configureArcManager(DirectionStrategy.defaultStrategy, arrivee);
 /*
 		if(suppObsFixes)
 		{

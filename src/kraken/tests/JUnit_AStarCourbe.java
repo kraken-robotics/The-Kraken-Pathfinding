@@ -22,7 +22,6 @@ import graphic.PrintBuffer;
 import kraken.config.ConfigInfoKraken;
 import kraken.exceptions.PathfindingException;
 import kraken.obstacles.types.ObstacleCircular;
-import kraken.pathfinding.SensFinal;
 import kraken.pathfinding.astar.AStarCourbe;
 import kraken.pathfinding.astar.arcs.ArcCourbe;
 import kraken.pathfinding.astar.arcs.ArcCourbeDynamique;

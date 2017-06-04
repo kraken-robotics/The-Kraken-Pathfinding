@@ -15,14 +15,16 @@
 package kraken.pathfinding.astar.arcs;
 
 import java.awt.Graphics;
-import config.Config;
-import graphic.Fenetre;
-import graphic.PrintBufferInterface;
-import graphic.printable.Layer;
-import graphic.printable.Printable;
-import kraken.config.ConfigInfoKraken;
-import kraken.graphic.Couleur;
-import kraken.pathfinding.SensFinal;
+import kraken.config.Config;
+import kraken.config.ConfigInfo;
+import kraken.container.Service;
+import kraken.container.dependances.HighPFClass;
+import kraken.container.dependances.LowPFClass;
+import kraken.graphic.Fenetre;
+import kraken.graphic.PrintBufferInterface;
+import kraken.graphic.printable.Couleur;
+import kraken.graphic.printable.Layer;
+import kraken.graphic.printable.Printable;
 import kraken.robot.Cinematique;
 import kraken.utils.Log;
 import kraken.utils.Vec2RO;
@@ -42,7 +44,6 @@ public class CercleArrivee implements Printable
 	public volatile Vec2RO position;
 	public volatile double rayon;
 	public volatile Vec2RO arriveeDStarLite;
-	public volatile SensFinal sens;
 
 	private boolean graphic;
 	private volatile double distanceMax, distanceMin, angleMax, angleMin;
@@ -61,7 +62,7 @@ public class CercleArrivee implements Printable
 			buffer.add(this);
 	}
 
-	public void set(Vec2RO position, double orientationArriveeDStarLite, double rayon, SensFinal sens, Double[] anglesAttaquesPossibles, double distanceMax, double distanceMin, double angleMax, double angleMin)
+	public void set(Vec2RO position, double orientationArriveeDStarLite, double rayon, Double[] anglesAttaquesPossibles, double distanceMax, double distanceMin, double angleMax, double angleMin)
 	{		
 		this.anglesAttaquePossibles = anglesAttaquesPossibles;
 		this.distanceMax = distanceMax;
@@ -73,7 +74,6 @@ public class CercleArrivee implements Printable
 		this.arriveeDStarLite = new Vec2RW(rayon, orientationArriveeDStarLite, false);
 		((Vec2RW) arriveeDStarLite).plus(position);
 		this.rayon = rayon;
-		this.sens = sens;
 		if(graphic)
 			synchronized(buffer)
 			{
