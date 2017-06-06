@@ -2,8 +2,8 @@
     <project basedir="." default="build" name="Kraken">
     <property environment="env"/>
     <property name="debuglevel" value="source,lines,vars"/>
-    <property name="target" value="1.7"/>
-    <property name="source" value="1.7"/>
+    <property name="target" value="1.8"/>
+    <property name="source" value="1.8"/>
     <property name="junit.output.dir" value="junit"/>
     <path id="JUnit 4.libraryclasspath">
         <pathelement location="lib/junit.jar"/>
@@ -33,6 +33,7 @@
 	    <jar destfile="kraken.jar">
 		<fileset dir="bin" />
 		<fileset dir="src" />
+   		<zipgroupfileset dir="lib" />
 	    </jar>
     </target>
     <target name="build-subprojects"/>
