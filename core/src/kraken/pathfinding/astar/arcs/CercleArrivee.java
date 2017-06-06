@@ -94,8 +94,6 @@ public class CercleArrivee implements Printable
 		// on vérifie la distance au cratère
 		if(deltaDist > distanceMax || deltaDist < distanceMin)
 		{
-			if(verbose)
-				log.warning("Mauvaise distance au cratère : "+deltaDist, Verbose.SCRIPTS.masque);
 			return false;
 		}
 		
@@ -117,8 +115,6 @@ public class CercleArrivee implements Printable
 		
 		if(!accepted)
 		{
-			if(verbose)
-				log.warning("L'orientation " + robot.orientationReelle + " n'est pas autorisée pour arriver sur le cratère !", Verbose.SCRIPTS.masque);
 			return false;
 		}
 		
@@ -136,9 +132,6 @@ public class CercleArrivee implements Printable
 		
 		// on vérifie qu'on a la bonne orientation
 		boolean out = diffo <= angleMax && diffo >= angleMin;
-		
-		if(verbose)
-			log.debug("Arrivée sur cercle ? " + out + ". Delta orientation : " + diffo + ", delta distance : " + deltaDist, Verbose.SCRIPTS.masque);
 		
 		return out;
 	}

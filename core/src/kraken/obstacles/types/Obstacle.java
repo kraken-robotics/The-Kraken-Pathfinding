@@ -7,11 +7,7 @@
 package kraken.obstacles.types;
 
 import java.awt.Color;
-import java.awt.Image;
-import java.io.File;
-import java.io.IOException;
 import java.io.Serializable;
-import javax.imageio.ImageIO;
 import config.Config;
 import graphic.PrintBufferInterface;
 import graphic.printable.Layer;
@@ -38,9 +34,6 @@ public abstract class Obstacle implements Printable, Serializable, ObstacleInter
 	protected static PrintBufferInterface buffer;
 
 	// Pour l'affichage du robot
-	protected static Image imageRobot = null, imageRobotRoueG = null, imageRobotRoueD = null;
-	protected static int L, d;
-	protected static Vec2RO centreRotationGauche, centreRotationDroite;
 	protected static boolean printAllObstacles = false;
 	protected Layer l = null;
 	public Color c;
@@ -54,23 +47,6 @@ public abstract class Obstacle implements Printable, Serializable, ObstacleInter
 	public static void useConfig(Config config)
 	{
 		printAllObstacles = config.getBoolean(ConfigInfoKraken.GRAPHIC_ALL_OBSTACLES);
-		if(imageRobot == null && config.getBoolean(ConfigInfoKraken.GRAPHIC_ROBOT_AND_SENSORS))
-		{
-			L = config.getInt(ConfigInfoKraken.CENTRE_ROTATION_ROUE_X);
-			d = config.getInt(ConfigInfoKraken.CENTRE_ROTATION_ROUE_Y);
-			centreRotationGauche = new Vec2RO(L, d);
-			centreRotationDroite = new Vec2RO(L, -d);
-			try
-			{
-				imageRobot = ImageIO.read(new File(config.getString(ConfigInfoKraken.GRAPHIC_ROBOT_PATH)));
-				imageRobotRoueG = ImageIO.read(new File(config.getString(ConfigInfoKraken.GRAPHIC_ROBOT_ROUE_GAUCHE_PATH)));
-				imageRobotRoueD = ImageIO.read(new File(config.getString(ConfigInfoKraken.GRAPHIC_ROBOT_ROUE_DROITE_PATH)));
-			}
-			catch(IOException e)
-			{
-				log.warning(e);
-			}
-		}
 	}
 
 	public Obstacle(Vec2RO position, Couleur c)

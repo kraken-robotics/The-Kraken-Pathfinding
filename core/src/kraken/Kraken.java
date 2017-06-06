@@ -30,13 +30,11 @@ import kraken.utils.*;
  */
 public class Kraken
 {
-
 	private Log log;
 	private Config config;
 	private Injector injector;
 
 	private static int nbInstances = 0;
-	private boolean showGraph;
 
 	/**
 	 * Fonction appelé automatiquement à la fin du programme.
@@ -99,11 +97,6 @@ public class Kraken
 			log.useConfig(config);
 	
 			injector.addService(Kraken.class, this);
-			
-			showGraph = config.getBoolean(ConfigInfoKraken.GENERATE_DEPENDENCY_GRAPH);
-	
-			if(showGraph)
-				log.warning("Le graphe de dépendances va être généré !");
 	
 			if(config.getBoolean(ConfigInfoKraken.GRAPHIC_EXTERNAL))
 				injector.addService(PrintBufferInterface.class, injector.getService(ExternalPrintBuffer.class));

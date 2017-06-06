@@ -28,13 +28,7 @@ public class Log
 {
 	public enum Verbose
 	{
-		SERIE(ConfigInfoKraken.DEBUG_SERIE, true),
-		CORRECTION(ConfigInfoKraken.DEBUG_CORRECTION, false),
-		TRAME(ConfigInfoKraken.DEBUG_SERIE_TRAME, false),
-		CAPTEURS(ConfigInfoKraken.DEBUG_CAPTEURS, true),
-		ASSER(ConfigInfoKraken.DEBUG_ASSER, true),
 		REPLANIF(ConfigInfoKraken.DEBUG_REPLANIF, true),
-		SCRIPTS(ConfigInfoKraken.DEBUG_SCRIPTS, true),
 		PF(ConfigInfoKraken.DEBUG_PF, true),
 		DEBUG(ConfigInfoKraken.DEBUG_DEBUG, true);
 
