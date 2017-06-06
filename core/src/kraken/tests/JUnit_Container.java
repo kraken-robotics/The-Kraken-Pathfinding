@@ -15,7 +15,7 @@ import kraken.exceptions.ContainerException;
 import kraken.obstacles.types.ObstacleCircular;
 import kraken.pathfinding.astar.AStarCourbe;
 import kraken.pathfinding.dstarlite.gridspace.GridSpace;
-import kraken.utils.Vec2RO;
+import kraken.utils.XY;
 
 /**
  * Tests unitaires pour l'injector

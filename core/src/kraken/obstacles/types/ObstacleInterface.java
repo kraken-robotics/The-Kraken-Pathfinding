@@ -8,7 +8,7 @@ package kraken.obstacles.types;
 
 import java.io.Serializable;
 import graphic.printable.Printable;
-import kraken.utils.Vec2RO;
+import kraken.utils.XY;
 
 /**
  * Superclasse abstraite des obstacles.
@@ -25,7 +25,7 @@ public abstract interface ObstacleInterface extends Printable, Serializable
 	 * @param position
 	 * @return
 	 */
-	public double squaredDistance(Vec2RO position);
+	public double squaredDistance(XY position);
 
 	/**
 	 * Renvoi "vrai" si position est à moins de distance d'un bord de l'obstacle
@@ -35,7 +35,7 @@ public abstract interface ObstacleInterface extends Printable, Serializable
 	 * @param distance
 	 * @return
 	 */
-	public boolean isProcheObstacle(Vec2RO position, int distance);
+	public boolean isProcheObstacle(XY position, int distance);
 
 	/**
 	 * Renvoi "vrai" si le centre de obs est à moins de distance d'un bord de
@@ -64,7 +64,7 @@ public abstract interface ObstacleInterface extends Printable, Serializable
 	 */
 	public boolean isColliding(ObstacleArcCourbe obs);
 
-	public Vec2RO getPosition();
+	public XY getPosition();
 
 	public double getTopY();
 

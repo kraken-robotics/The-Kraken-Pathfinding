@@ -15,8 +15,8 @@ import kraken.robot.Cinematique;
 import kraken.robot.CinematiqueObs;
 import kraken.robot.RobotState;
 import kraken.utils.Log;
-import kraken.utils.Vec2RO;
-import kraken.utils.Vec2RW;
+import kraken.utils.XY;
+import kraken.utils.XY_RW;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -68,7 +68,7 @@ public class ClothoidesComputer
 
 	// private double distanceArriereAuRoues; // la distance entre la position
 	// du robot et ses roues directrices
-	private Vec2RO[] trajectoire = new Vec2RO[2 * INDICE_MAX - 1];
+	private XY[] trajectoire = new XY[2 * INDICE_MAX - 1];
 
 	public ClothoidesComputer(Log log, CinemObsMM memory, PrintBufferInterface buffer)
 	{
@@ -143,12 +143,12 @@ public class ClothoidesComputer
 		for(int s = 0; s < 2 * INDICE_MAX - 1; s++)
 		{
 			calculeXY(new BigDecimal((s - INDICE_MAX + 1) * PRECISION_TRACE).setScale(15, RoundingMode.HALF_EVEN));
-			trajectoire[s] = new Vec2RO(x.doubleValue(), y.doubleValue());
-			trajectoire[2 * INDICE_MAX - 2 - s] = new Vec2RO(-x.doubleValue(), -y.doubleValue());
+			trajectoire[s] = new XY(x.doubleValue(), y.doubleValue());
+			trajectoire[2 * INDICE_MAX - 2 - s] = new XY(-x.doubleValue(), -y.doubleValue());
 			System.out.println((s - INDICE_MAX + 1) * PRECISION_TRACE + " " + trajectoire[s]);
 
-			buffer.addSupprimable(new ObstacleCircular(new Vec2RO(x.doubleValue(), 1000 + y.doubleValue()), 5));
-			buffer.addSupprimable(new ObstacleCircular(new Vec2RO(-x.doubleValue(), 1000 - y.doubleValue()), 5));
+			buffer.addSupprimable(new ObstacleCircular(new XY(x.doubleValue(), 1000 + y.doubleValue()), 5));
+			buffer.addSupprimable(new ObstacleCircular(new XY(-x.doubleValue(), 1000 - y.doubleValue()), 5));
 		}
 	}
 
@@ -352,7 +352,7 @@ public class ClothoidesComputer
 	 * @param positionInitiale : la position au début du mouvement
 	 * @param c
 	 */
-	private void computePoint(int pointDepart, VitesseClotho vitesse, double sDepart, double coeffMultiplicatif, int i, double baseOrientation, double cos, double sin, boolean marcheAvant, Vec2RO positionInitiale, CinematiqueObs c)
+	private void computePoint(int pointDepart, VitesseClotho vitesse, double sDepart, double coeffMultiplicatif, int i, double baseOrientation, double cos, double sin, boolean marcheAvant, XY positionInitiale, CinematiqueObs c)
 	{
 		trajectoire[pointDepart + vitesse.squaredRootVitesse * (i + 1)].copy(c.getPositionEcriture());
 		c.getPositionEcriture().minus(trajectoire[pointDepart]).scalar(coeffMultiplicatif).Ysym(!vitesse.positif).rotate(cos, sin).plus(positionInitiale);
@@ -383,8 +383,8 @@ public class ClothoidesComputer
 		c.obstacle.update(c.getPosition(), c.orientationReelle);
 	}
 
-	private Vec2RW delta = new Vec2RW();
-	private Vec2RW centreCercle = new Vec2RW();
+	private XY_RW delta = new XY_RW();
+	private XY_RW centreCercle = new XY_RW();
 
 	/**
 	 * Calcule la trajectoire dans le cas particulier d'une trajectoire
@@ -395,7 +395,7 @@ public class ClothoidesComputer
 	 * @param courbure
 	 * @param modified
 	 */
-	private void getTrajectoireCirculaire(Vec2RO position, double orientation, double courbure, ArcCourbeStatique modified, boolean enMarcheAvant)
+	private void getTrajectoireCirculaire(XY position, double orientation, double courbure, ArcCourbeStatique modified, boolean enMarcheAvant)
 	{
 		// log.debug("Trajectoire circulaire !");
 		// rappel = la courbure est l'inverse du rayon de courbure
@@ -445,7 +445,7 @@ public class ClothoidesComputer
 	 * @param orientation
 	 * @param modified
 	 */
-	private void getTrajectoireLigneDroite(Vec2RO position, double orientation, ArcCourbeStatique modified, boolean enMarcheAvant)
+	private void getTrajectoireLigneDroite(XY position, double orientation, ArcCourbeStatique modified, boolean enMarcheAvant)
 	{
 		double cos = Math.cos(orientation);
 		double sin = Math.sin(orientation);
@@ -506,7 +506,7 @@ public class ClothoidesComputer
 		{
 			InputStream fichier = getClass().getClassLoader().getResourceAsStream("kraken/clotho-"+S_MAX+".dat");
 			ObjectInputStream ois = new ObjectInputStream(fichier);
-			trajectoire = (Vec2RO[]) ois.readObject();
+			trajectoire = (XY[]) ois.readObject();
 			ois.close();
 			return true;
 		}
@@ -515,7 +515,7 @@ public class ClothoidesComputer
 			try {
 				FileInputStream fichier = new FileInputStream("clotho-" + S_MAX + ".dat");
 				ObjectInputStream ois = new ObjectInputStream(fichier);
-				trajectoire = (Vec2RO[]) ois.readObject();
+				trajectoire = (XY[]) ois.readObject();
 				ois.close();
 				return true;
 			}
@@ -527,9 +527,9 @@ public class ClothoidesComputer
 		return false;
 	}
 
-	private Vec2RW vecteurOrientationDepart = new Vec2RW();
-	private Vec2RW vecteurOrientationDepartRotate = new Vec2RW();
-	private Vec2RW vecteurOrientation = new Vec2RW();
+	private XY_RW vecteurOrientationDepart = new XY_RW();
+	private XY_RW vecteurOrientationDepartRotate = new XY_RW();
+	private XY_RW vecteurOrientation = new XY_RW();
 
 	/**
 	 * Construit un arc courbe qui fait faire un demi-tour au robot
@@ -627,7 +627,7 @@ public class ClothoidesComputer
 		int i = 0;
 
 		List<CinematiqueObs> out = new ArrayList<CinematiqueObs>();
-		Vec2RO positionInit = cinematiqueInitiale.getPosition();
+		XY positionInit = cinematiqueInitiale.getPosition();
 		do
 		{
 			sDepart += vitesse.squaredRootVitesse * PRECISION_TRACE;

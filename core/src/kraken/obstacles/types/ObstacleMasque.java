@@ -10,7 +10,7 @@ import graphic.Fenetre;
 import graphic.printable.Layer;
 import kraken.pathfinding.dstarlite.gridspace.Masque;
 import kraken.pathfinding.dstarlite.gridspace.MasqueManager;
-import kraken.utils.Vec2RO;
+import kraken.utils.XY;
 
 /**
  * Obstacle avec un masque (c'est-à-dire utilisable par le D* Lite)
@@ -59,7 +59,7 @@ public class ObstacleMasque implements ObstacleInterface
 	}
 
 	@Override
-	public double squaredDistance(Vec2RO position)
+	public double squaredDistance(XY position)
 	{
 		return o.squaredDistance(position);
 	}
@@ -77,7 +77,7 @@ public class ObstacleMasque implements ObstacleInterface
 	}
 
 	@Override
-	public boolean isProcheObstacle(Vec2RO position, int distance)
+	public boolean isProcheObstacle(XY position, int distance)
 	{
 		return o.isProcheObstacle(position, distance);
 	}
@@ -95,7 +95,7 @@ public class ObstacleMasque implements ObstacleInterface
 	}
 
 	@Override
-	public Vec2RO getPosition()
+	public XY getPosition()
 	{
 		return o.getPosition();
 	}

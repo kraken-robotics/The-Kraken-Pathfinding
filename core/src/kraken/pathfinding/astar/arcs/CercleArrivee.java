@@ -15,8 +15,8 @@ import kraken.ConfigInfoKraken;
 import kraken.Couleur;
 import kraken.robot.Cinematique;
 import kraken.utils.Log;
-import kraken.utils.Vec2RO;
-import kraken.utils.Vec2RW;
+import kraken.utils.XY;
+import kraken.utils.XY_RW;
 import kraken.utils.Log.Verbose;
 
 /**
@@ -29,9 +29,9 @@ import kraken.utils.Log.Verbose;
 
 public class CercleArrivee implements Printable
 {
-	public volatile Vec2RO position;
+	public volatile XY position;
 	public volatile double rayon;
-	public volatile Vec2RO arriveeDStarLite;
+	public volatile XY arriveeDStarLite;
 
 	private boolean graphic;
 	private volatile double distanceMax, distanceMin, angleMax, angleMin;
@@ -50,7 +50,7 @@ public class CercleArrivee implements Printable
 			buffer.add(this);
 	}
 
-	public void set(Vec2RO position, double orientationArriveeDStarLite, double rayon, Double[] anglesAttaquesPossibles, double distanceMax, double distanceMin, double angleMax, double angleMin)
+	public void set(XY position, double orientationArriveeDStarLite, double rayon, Double[] anglesAttaquesPossibles, double distanceMax, double distanceMin, double angleMax, double angleMin)
 	{		
 		this.anglesAttaquePossibles = anglesAttaquesPossibles;
 		this.distanceMax = distanceMax;
@@ -58,9 +58,9 @@ public class CercleArrivee implements Printable
 		this.angleMax = angleMax;
 		this.angleMin = angleMin;
 
-		this.position = new Vec2RO(position.getX(), position.getY());
-		this.arriveeDStarLite = new Vec2RW(rayon, orientationArriveeDStarLite, false);
-		((Vec2RW) arriveeDStarLite).plus(position);
+		this.position = new XY(position.getX(), position.getY());
+		this.arriveeDStarLite = new XY_RW(rayon, orientationArriveeDStarLite, false);
+		((XY_RW) arriveeDStarLite).plus(position);
 		this.rayon = rayon;
 		if(graphic)
 			synchronized(buffer)
@@ -70,7 +70,7 @@ public class CercleArrivee implements Printable
 		// log.debug("arriveeDStarLite : "+arriveeDStarLite);
 	}
 
-	private Vec2RW tmp = new Vec2RW();
+	private XY_RW tmp = new XY_RW();
 
 	public boolean isArrivedAsser(Cinematique robot)
 	{
@@ -154,7 +154,7 @@ public class CercleArrivee implements Printable
 		return Layer.FOREGROUND;
 	}
 
-	public boolean isInCircle(Vec2RO position2)
+	public boolean isInCircle(XY position2)
 	{
 		return position2.squaredDistance(position) < rayon * rayon;
 	}

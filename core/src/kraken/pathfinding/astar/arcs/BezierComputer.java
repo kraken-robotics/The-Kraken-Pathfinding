@@ -18,8 +18,8 @@ import kraken.pathfinding.astar.arcs.vitesses.VitesseRameneVolant;
 import kraken.robot.Cinematique;
 import kraken.robot.CinematiqueObs;
 import kraken.utils.Log;
-import kraken.utils.Vec2RO;
-import kraken.utils.Vec2RW;
+import kraken.utils.XY;
+import kraken.utils.XY_RW;
 
 /**
  * Classe qui s'occupe des calculs sur les courbes de Bézier
@@ -52,7 +52,7 @@ public class BezierComputer
 		tmp = new ArcCourbeStatique(demieLargeurNonDeploye, demieLongueurArriere, demieLongueurAvant);
 	}
 
-	private Vec2RW delta = new Vec2RW(), vecteurVitesse = new Vec2RW();
+	private XY_RW delta = new XY_RW(), vecteurVitesse = new XY_RW();
 	// private Vec2RW pointA = new Vec2RW(), pointB = new Vec2RW(), pointC = new
 	// Vec2RW();
 	private Cinematique debut;
@@ -71,7 +71,7 @@ public class BezierComputer
 	 * @throws MemoryManagerException
 	 * @throws InterruptedException
 	 */
-	public ArcCourbeDynamique interpolationQuadratique(Cinematique cinematiqueInitiale, Vec2RO arrivee) throws MemoryManagerException
+	public ArcCourbeDynamique interpolationQuadratique(Cinematique cinematiqueInitiale, XY arrivee) throws MemoryManagerException
 	{
 		debut = cinematiqueInitiale;
 		arrivee.copy(delta);
@@ -218,7 +218,7 @@ public class BezierComputer
 	 * }
 	 */
 
-	private Vec2RW a_tmp = new Vec2RW(), b_tmp = new Vec2RW(), c_tmp = new Vec2RW(), acc = new Vec2RW();
+	private XY_RW a_tmp = new XY_RW(), b_tmp = new XY_RW(), c_tmp = new XY_RW(), acc = new XY_RW();
 
 	/**
 	 * Construit la suite de points de la courbure de Bézier quadratique de
@@ -231,7 +231,7 @@ public class BezierComputer
 	 * @return
 	 * @throws InterruptedException
 	 */
-	private ArcCourbeDynamique constructBezierQuad(Vec2RO A, Vec2RO B, Vec2RO C, boolean enMarcheAvant, Cinematique cinematiqueInitiale) throws MemoryManagerException
+	private ArcCourbeDynamique constructBezierQuad(XY A, XY B, XY C, boolean enMarcheAvant, Cinematique cinematiqueInitiale) throws MemoryManagerException
 	{
 		/*
 		 * buffer.addSupprimable(new ObstacleCircular(A, 15));
@@ -241,7 +241,7 @@ public class BezierComputer
 
 		double t = 1;
 		LinkedList<CinematiqueObs> out = new LinkedList<CinematiqueObs>();
-		Vec2RO lastPos = null;
+		XY lastPos = null;
 		double longueur = 0;
 
 		// l'accélération est constante pour une courbe quadratique

@@ -11,7 +11,7 @@ import graphic.printable.Layer;
 import graphic.printable.Printable;
 import kraken.Couleur;
 import kraken.pathfinding.dstarlite.gridspace.PointGridSpace;
-import kraken.utils.Vec2RW;
+import kraken.utils.XY_RW;
 
 /**
  * Un nœud du D* Lite.
@@ -84,7 +84,7 @@ public class DStarLiteNode implements Printable
 		if(heuristiqueOrientation != null)
 		{
 			double n = PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS / 2;
-			Vec2RW point1 = new Vec2RW(n, 0), point2 = new Vec2RW(-n / 2, n / 2), point3 = new Vec2RW(-n / 2, -n / 2);
+			XY_RW point1 = new XY_RW(n, 0), point2 = new XY_RW(-n / 2, n / 2), point3 = new XY_RW(-n / 2, -n / 2);
 			point1.rotate(heuristiqueOrientation).plus(gridpoint.computeVec2());
 			point2.rotate(heuristiqueOrientation).plus(gridpoint.computeVec2());
 			point3.rotate(heuristiqueOrientation).plus(gridpoint.computeVec2());

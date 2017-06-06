@@ -12,54 +12,54 @@ package kraken.utils;
  *
  */
 
-public class Vec2RW extends Vec2RO
+public class XY_RW extends XY
 {
 	private static final long serialVersionUID = 1L;
 
-	public Vec2RW()
+	public XY_RW()
 	{
 		super(0, 0);
 	}
 
-	public Vec2RW(double longueur, double angle, boolean useless)
+	public XY_RW(double longueur, double angle, boolean useless)
 	{
 		super(longueur, angle, useless);
 	}
 
-	public Vec2RW(double requestedX, double requestedY)
+	public XY_RW(double requestedX, double requestedY)
 	{
 		super(requestedX, requestedY);
 	}
 
-	public final Vec2RW plus(Vec2RO other)
+	public final XY_RW plus(XY other)
 	{
 		x += other.x;
 		y += other.y;
 		return this;
 	}
 
-	public final Vec2RW minus(Vec2RO other)
+	public final XY_RW minus(XY other)
 	{
 		x -= other.x;
 		y -= other.y;
 		return this;
 	}
 
-	public final Vec2RW scalar(double d)
+	public final XY_RW scalar(double d)
 	{
 		x = d * x;
 		y = d * y;
 		return this;
 	}
 
-	public final Vec2RW Ysym(boolean symetrie)
+	public final XY_RW Ysym(boolean symetrie)
 	{
 		if(symetrie)
 			y = -y;
 		return this;
 	}
 
-	public final Vec2RW rotate(double angle)
+	public final XY_RW rotate(double angle)
 	{
 		double cos = Math.cos(angle);
 		double sin = Math.sin(angle);
@@ -69,7 +69,7 @@ public class Vec2RW extends Vec2RO
 		return this;
 	}
 
-	public final Vec2RW rotate(double cos, double sin)
+	public final XY_RW rotate(double cos, double sin)
 	{
 		double old_x = x;
 		x = cos * x - sin * y;
@@ -77,7 +77,7 @@ public class Vec2RW extends Vec2RO
 		return this;
 	}
 
-	public final void rotate(double angle, Vec2RO centreRotation)
+	public final void rotate(double angle, XY centreRotation)
 	{
 		double cos = Math.cos(angle);
 		double sin = Math.sin(angle);

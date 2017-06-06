@@ -29,6 +29,8 @@ import kraken.pathfinding.dstarlite.DStarLite;
 import kraken.robot.Cinematique;
 import kraken.robot.Speed;
 import kraken.utils.Log;
+import kraken.utils.XY;
+import kraken.utils.XY_RW;
 
 /**
  * Réalise des calculs pour l'A* courbe.
@@ -53,7 +55,7 @@ public class ArcManager
 	private ObstaclesFixes fixes;
 	
 	private DirectionStrategy directionstrategyactuelle;
-	private Cinematique arrivee = new Cinematique();
+	private XY_RW arrivee = new XY_RW();
 	private CercleArrivee cercle;
 	private List<VitesseCourbure> listeVitesse = new ArrayList<VitesseCourbure>();
 	private ListIterator<VitesseCourbure> iterator = listeVitesse.listIterator();
@@ -181,7 +183,7 @@ public class ArcManager
 			if(v == VitesseBezier.BEZIER_QUAD && !useCercle)
 			{
 				ArcCourbeDynamique tmp;
-				tmp = bezier.interpolationQuadratique(current.robot.getCinematique(), arrivee.getPosition());
+				tmp = bezier.interpolationQuadratique(current.robot.getCinematique(), arrivee);
 				if(tmp == null)
 					return false;
 
@@ -268,7 +270,7 @@ public class ArcManager
 	 * @param sens
 	 * @param arrivee
 	 */
-	public void configureArcManager(DirectionStrategy directionstrategyactuelle, Cinematique arrivee)
+	public void configureArcManager(DirectionStrategy directionstrategyactuelle, XY arrivee)
 	{
 		this.directionstrategyactuelle = directionstrategyactuelle;
 		arrivee.copy(this.arrivee);
@@ -341,14 +343,14 @@ public class ArcManager
 	{
 		if(useCercle)
 			return cercle.isArrivedPF(successeur);
-		return successeur.getPosition().squaredDistance(arrivee.getPosition()) < 5;
+		return successeur.getPosition().squaredDistance(arrivee) < 5;
 	}
 	
 	public boolean isArrivedAsser(Cinematique successeur)
 	{
 		if(useCercle)
 			return cercle.isArrivedAsser(successeur);
-		return successeur.getPosition().squaredDistance(arrivee.getPosition()) < 25;
+		return successeur.getPosition().squaredDistance(arrivee) < 25;
 	}
 	
 	/**
@@ -359,7 +361,7 @@ public class ArcManager
 	 */
 	public double heuristicDirect(Cinematique cinematique)
 	{
-		return 3 * cinematique.getPosition().distanceFast(arrivee.getPosition());
+		return 3 * cinematique.getPosition().distanceFast(arrivee);
 	}
 
 /*	public void disableObstaclesFixes(boolean symetrie, CinematiqueObs obs)

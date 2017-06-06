@@ -39,7 +39,7 @@ public class NodeMM extends MemoryManager<AStarCourbeNode>
 	@Override
 	protected final AStarCourbeNode make()
 	{
-		return new AStarCourbeNode(new RobotState(log), largeur, longueur_arriere, longueur_avant);
+		return new AStarCourbeNode(new RobotState(), largeur, longueur_arriere, longueur_avant);
 	}
 
 }

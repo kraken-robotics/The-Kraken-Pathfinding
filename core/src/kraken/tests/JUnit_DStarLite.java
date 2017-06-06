@@ -12,7 +12,7 @@ import org.junit.Test;
 import kraken.obstacles.types.ObstacleCircular;
 import kraken.pathfinding.dstarlite.DStarLite;
 import kraken.pathfinding.dstarlite.gridspace.GridSpace;
-import kraken.utils.Vec2RO;
+import kraken.utils.XY;
 
 /**
  * Tests unitaires de la recherche de chemin.

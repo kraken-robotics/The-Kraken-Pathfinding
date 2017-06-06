@@ -22,7 +22,7 @@ import kraken.pathfinding.dstarlite.gridspace.PointGridSpace;
 import kraken.pathfinding.dstarlite.gridspace.PointGridSpaceManager;
 import kraken.robot.Cinematique;
 import kraken.utils.Log;
-import kraken.utils.Vec2RO;
+import kraken.utils.XY;
 
 /**
  * Recherche de chemin avec replanification rapide.
@@ -273,7 +273,7 @@ public class DStarLite
 	 * @param arrivee (un Vec2)
 	 * @param depart (un Vec2)
 	 */
-	public void computeNewPath(Vec2RO depart, Vec2RO arrivee)
+	public void computeNewPath(XY depart, XY arrivee)
 	{
 		rechercheEnCours = true;
 		if(graphicDStarLite)
@@ -306,7 +306,7 @@ public class DStarLite
 	 * 
 	 * @param positionArrivee
 	 */
-	public synchronized void updateGoalAndStart(Vec2RO positionRobot, Vec2RO positionArrivee)
+	public synchronized void updateGoalAndStart(XY positionRobot, XY positionArrivee)
 	{
 		nbPF++;
 		km = 0;
@@ -324,7 +324,7 @@ public class DStarLite
 		computeShortestPath();
 	}
 
-	public synchronized void updateStart(Vec2RO positionRobot)
+	public synchronized void updateStart(XY positionRobot)
 	{
 		updateStart(pointManager.get(positionRobot));
 	}
@@ -417,9 +417,9 @@ public class DStarLite
 	 * 
 	 * @return
 	 */
-	public synchronized List<Vec2RO> itineraireBrut()
+	public synchronized List<XY> itineraireBrut()
 	{
-		List<Vec2RO> trajet = new ArrayList<Vec2RO>();
+		List<XY> trajet = new ArrayList<XY>();
 
 		// log.debug("depart : "+depart.gridpoint.computeVec2());
 		DStarLiteNode node = depart;
@@ -651,7 +651,7 @@ public class DStarLite
 		rechercheEnCours = false;
 	}
 
-	public void disableObstaclesFixes(Vec2RO position, Obstacle obstacle)
+	public void disableObstaclesFixes(XY position, Obstacle obstacle)
 	{
 		gridspace.disableObstaclesFixes(position, obstacle);
 	}

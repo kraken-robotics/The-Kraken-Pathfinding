@@ -10,7 +10,7 @@ import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.List;
 import graphic.Fenetre;
-import kraken.utils.Vec2RO;
+import kraken.utils.XY;
 
 /**
  * Obstacle d'un arc de trajectoire courbe
@@ -32,7 +32,7 @@ public class ObstacleArcCourbe extends Obstacle
 	public List<ObstacleRectangular> ombresRobot = new ArrayList<ObstacleRectangular>();
 
 	@Override
-	public double squaredDistance(Vec2RO position)
+	public double squaredDistance(XY position)
 	{
 		double min = Double.MAX_VALUE;
 		for(ObstacleRectangular o : ombresRobot)

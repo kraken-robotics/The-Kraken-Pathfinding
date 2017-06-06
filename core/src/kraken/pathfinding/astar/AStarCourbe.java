@@ -30,6 +30,8 @@ import kraken.robot.RobotState;
 import kraken.robot.Speed;
 import kraken.utils.Log;
 import kraken.utils.Log.Verbose;
+import kraken.utils.XY;
+import kraken.utils.XYO;
 
 /**
  * A* qui utilise le D* Lite comme heuristique pour fournir une trajectoire
@@ -118,7 +120,7 @@ public class AStarCourbe
 	 * @throws InterruptedException
 	 * @throws MemoryManagerException
 	 */
-	public final synchronized void process(CheminPathfindingInterface chemin, boolean replanif) throws PathfindingException, MemoryManagerException
+	public final synchronized void process(CheminPathfindingInterface chemin, boolean replanif) throws PathfindingException
 	{
 		log.debug("Recherche de chemin.", Verbose.PF.masque);
 		trajetDeSecours = null;
@@ -285,17 +287,22 @@ public class AStarCourbe
 			arcmanager.reinitIterator(current);
 			while(arcmanager.hasNext())
 			{
-				successeur = memorymanager.getNewNode();
-				successeur.cameFromArcDynamique = null;
-
-				// S'il y a un problème, on passe au suivant (interpolation
-				// cubique impossible par exemple)
-				if(!arcmanager.next(successeur))
-				{
-					destroy(successeur);
-					continue;
+				try {
+					successeur = memorymanager.getNewNode();
+					successeur.cameFromArcDynamique = null;
+	
+					// S'il y a un problème, on passe au suivant (interpolation
+					// cubique impossible par exemple)
+					if(!arcmanager.next(successeur))
+					{
+						destroy(successeur);
+						continue;
+					}
 				}
-
+				catch(MemoryManagerException e)
+				{
+					throw new PathfindingException("Internal fatal error !");
+				}
 				successeur.parent = current;
 				successeur.g_score = current.g_score + arcmanager.distanceTo(successeur, vitesseMax);
 
@@ -425,12 +432,12 @@ public class AStarCourbe
 	 * @throws PathfindingException
 	 * @throws InterruptedException
 	 */
-	public void initializeNewSearch(Cinematique arrivee, RobotState robot) throws PathfindingException, MemoryManagerException
+	public void initializeNewSearch(XYO start, XY arrival) throws PathfindingException
 	{
 		vitesseMax = DefaultSpeed.STANDARD;
 		depart.init();
-		robot.copy(depart.robot);
-		arcmanager.configureArcManager(DirectionStrategy.defaultStrategy, arrivee);
+		depart.robot.setCinematique(new Cinematique(start));
+		arcmanager.configureArcManager(DirectionStrategy.defaultStrategy, arrival);
 /*
 		if(suppObsFixes)
 		{
@@ -440,7 +447,7 @@ public class AStarCourbe
 			arcmanager.disableObstaclesFixes(symetrie, obsDepart);
 		}*/
 
-		dstarlite.computeNewPath(depart.robot.getCinematique().getPosition(), arrivee.getPosition());
+		dstarlite.computeNewPath(depart.robot.getCinematique().getPosition(), arrival);
 		if(graphicDStarLite)
 			dstarlite.itineraireBrut();
 		rechercheEnCours = true;
@@ -456,12 +463,12 @@ public class AStarCourbe
 	 * @throws PathfindingException
 	 * @throws InterruptedException
 	 */
-	public void initializeNewSearchToCircle(RobotState robot) throws PathfindingException, MemoryManagerException
+/*	public void initializeNewSearchToCircle(RobotState robot) throws PathfindingException, MemoryManagerException
 	{
 		vitesseMax = DefaultSpeed.STANDARD;
 		depart.init();
 		robot.copy(depart.robot);
-		arcmanager.configureArcManagerWithCircle(DirectionStrategy.defaultStrategy);
+		arcmanager.configureArcManagerWithCircle(DirectionStrategy.defaultStrategy);*/
 /*
 		if(suppObsFixes)
 		{
@@ -470,13 +477,13 @@ public class AStarCourbe
 			obsDepart.updateReel(cinemDepart.getPosition().getX(), cinemDepart.getPosition().getY(), cinemDepart.orientationReelle, cinemDepart.enMarcheAvant, cinemDepart.courbureReelle);
 			arcmanager.disableObstaclesFixes(symetrie, obsDepart);
 		}*/
-
+/*
 		dstarlite.computeNewPath(depart.robot.getCinematique().getPosition(), cercle.arriveeDStarLite);
 		if(graphicDStarLite)
 			dstarlite.itineraireBrut();
 		rechercheEnCours = true;
 	}
-
+*/
 	/**
 	 * Replanification. On conserve la même DirectionStrategy ainsi que le même
 	 * SensFinal
@@ -488,7 +495,7 @@ public class AStarCourbe
 	 * @throws PathfindingException
 	 * @throws InterruptedException
 	 */
-	public void updatePath(Cinematique lastValid) throws PathfindingException, MemoryManagerException
+	public void updatePath(Cinematique lastValid) throws PathfindingException
 	{
 		if(!rechercheEnCours)
 			throw new PathfindingException("updatePath appelé alors qu'aucune recherche n'est en cours !");

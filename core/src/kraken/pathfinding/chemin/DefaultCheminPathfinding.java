@@ -18,7 +18,7 @@ import kraken.obstacles.types.ObstacleCircular;
 import kraken.robot.Cinematique;
 import kraken.robot.ItineraryPoint;
 import kraken.utils.Log;
-import kraken.utils.Vec2RO;
+import kraken.utils.XY;
 
 /**
  * Faux chemin, sert à la prévision d'itinéraire
@@ -74,7 +74,7 @@ public class DefaultCheminPathfinding implements CheminPathfindingInterface, Pri
 		if(path != null)
 			for(ItineraryPoint c : path)
 			{
-				aff[i] = new ObstacleCircular(x, y, 8, Couleur.TRAJECTOIRE);
+				aff[i] = new ObstacleCircular(new XY(c.x, c.y), 8, Couleur.TRAJECTOIRE);
 				buffer.addSupprimable(aff[i]);
 				i++;
 			}

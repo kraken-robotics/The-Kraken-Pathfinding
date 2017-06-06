@@ -14,8 +14,8 @@ import kraken.memory.CinemObsMM;
 import kraken.pathfinding.astar.arcs.vitesses.VitesseBezier;
 import kraken.robot.Cinematique;
 import kraken.robot.CinematiqueObs;
-import kraken.utils.Vec2RO;
-import kraken.utils.Vec2RW;
+import kraken.utils.XY;
+import kraken.utils.XY_RW;
 
 /**
  * Some circle computer
@@ -51,7 +51,7 @@ public class CircleComputer {
 	
 	public ArcCourbeDynamique trajectoireCirculaireVersCentre(Cinematique cinematique, double rayonP) throws MemoryManagerException
 	{
-		Vec2RO centre = cercle.position;
+		XY centre = cercle.position;
 		double rayon = rayonP;
 
 		double orientationReelleDesiree = Math.atan2(centre.getY() - cinematique.getPosition().getY(), centre.getX() - cinematique.getPosition().getX());
@@ -94,13 +94,13 @@ public class CircleComputer {
 			sin = -sin;
 		}
 
-		Vec2RO a = cinematique.getPosition(), bp = centre;
+		XY a = cinematique.getPosition(), bp = centre;
 		// le symétrique du centre bp
-		Vec2RO ap = new Vec2RO(cinematique.getPosition().getX() - rayon * cos, cinematique.getPosition().getY() - rayon * sin);
-		Vec2RO d = bp.plusNewVector(ap).scalar(0.5); // le milieu entre ap et
+		XY ap = new XY(cinematique.getPosition().getX() - rayon * cos, cinematique.getPosition().getY() - rayon * sin);
+		XY d = bp.plusNewVector(ap).scalar(0.5); // le milieu entre ap et
 														// bp, sur l'axe de
 														// symétrie
-		Vec2RW u = bp.minusNewVector(ap);
+		XY_RW u = bp.minusNewVector(ap);
 		double n = u.norm();
 		double ux = -u.getY() / n;
 		double uy = u.getX() / n;
@@ -110,7 +110,7 @@ public class CircleComputer {
 		// log.debug(ap+" "+a+" "+d+" "+bp);
 
 		double alpha = (uy * (d.getX() - a.getX()) + ux * (a.getY() - d.getY())) / (vx * uy - vy * ux);
-		Vec2RO c = new Vec2RO(a.getX() + alpha * vx, a.getY() + alpha * vy);
+		XY c = new XY(a.getX() + alpha * vx, a.getY() + alpha * vy);
 		if(alpha > 0)
 		{
 			ux = -ux;
@@ -134,11 +134,11 @@ public class CircleComputer {
 			 */
 		}
 
-		Vec2RW delta = a.minusNewVector(c);
+		XY_RW delta = a.minusNewVector(c);
 
 		// on n'utilise pas getFastArgument ici car la précision est cruciale
 		// pour arriver correctement sur le cercle
-		double angle = (2 * (new Vec2RO(ux, uy).getArgument() - new Vec2RO(vx, vy).getArgument())) % (2 * Math.PI);
+		double angle = (2 * (new XY(ux, uy).getArgument() - new XY(vx, vy).getArgument())) % (2 * Math.PI);
 		if(angle > Math.PI)
 			angle -= 2 * Math.PI;
 		else if(angle < -Math.PI)

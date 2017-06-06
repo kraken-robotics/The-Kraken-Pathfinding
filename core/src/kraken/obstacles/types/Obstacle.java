@@ -15,8 +15,8 @@ import graphic.printable.Printable;
 import kraken.ConfigInfoKraken;
 import kraken.Couleur;
 import kraken.utils.Log;
-import kraken.utils.Vec2RO;
-import kraken.utils.Vec2RW;
+import kraken.utils.XY;
+import kraken.utils.XY_RW;
 
 /**
  * Superclasse abstraite des obstacles.
@@ -28,7 +28,7 @@ import kraken.utils.Vec2RW;
 public abstract class Obstacle implements Printable, Serializable, ObstacleInterface
 {
 	private static final long serialVersionUID = -2508727703931042322L;
-	protected Vec2RW position;
+	protected XY_RW position;
 	protected transient int distance_dilatation;
 	protected static Log log;
 	protected static PrintBufferInterface buffer;
@@ -49,7 +49,7 @@ public abstract class Obstacle implements Printable, Serializable, ObstacleInter
 		printAllObstacles = config.getBoolean(ConfigInfoKraken.GRAPHIC_ALL_OBSTACLES);
 	}
 
-	public Obstacle(Vec2RO position, Couleur c)
+	public Obstacle(XY position, Couleur c)
 	{
 		this(position);
 		this.l = c.l;
@@ -61,7 +61,7 @@ public abstract class Obstacle implements Printable, Serializable, ObstacleInter
 	 * 
 	 * @param position
 	 */
-	public Obstacle(Vec2RO position)
+	public Obstacle(XY position)
 	{
 		l = Layer.MIDDLE;
 		if(position != null)
@@ -89,7 +89,7 @@ public abstract class Obstacle implements Printable, Serializable, ObstacleInter
 	 * @return
 	 */
 	@Override
-	public boolean isProcheObstacle(Vec2RO position, int distance)
+	public boolean isProcheObstacle(XY position, int distance)
 	{
 		return squaredDistance(position) < distance * distance;
 	}
@@ -135,7 +135,7 @@ public abstract class Obstacle implements Printable, Serializable, ObstacleInter
 	}
 
 	@Override
-	public Vec2RO getPosition()
+	public XY getPosition()
 	{
 		return position;
 	}

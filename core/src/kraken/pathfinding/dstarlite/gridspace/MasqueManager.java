@@ -12,7 +12,7 @@ import graphic.PrintBufferInterface;
 import kraken.ConfigInfoKraken;
 import kraken.obstacles.types.Obstacle;
 import kraken.utils.Log;
-import kraken.utils.Vec2RW;
+import kraken.utils.XY_RW;
 
 /**
  * Création de masque
@@ -30,7 +30,7 @@ public class MasqueManager
 	protected Log log;
 	private boolean printObsCapteurs;
 	private boolean[][] dedans = new boolean[200][200];
-	private Vec2RW pos = new Vec2RW(), coinbasgaucheVec2 = new Vec2RW();
+	private XY_RW pos = new XY_RW(), coinbasgaucheVec2 = new XY_RW();
 
 	public MasqueManager(Log log, PointGridSpaceManager pointManager, PointDirigeManager pointDManager, PrintBufferInterface buffer, Config config)
 	{

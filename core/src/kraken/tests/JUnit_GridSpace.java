@@ -13,7 +13,7 @@ import kraken.pathfinding.dstarlite.gridspace.GridSpace;
 import kraken.pathfinding.dstarlite.gridspace.PointDirigeManager;
 import kraken.pathfinding.dstarlite.gridspace.PointGridSpace;
 import kraken.pathfinding.dstarlite.gridspace.PointGridSpaceManager;
-import kraken.utils.Vec2RO;
+import kraken.utils.XY;
 
 /**
  * Tests unitaires de GridSpace
@@ -46,14 +46,14 @@ public class JUnit_GridSpace extends JUnit_Test
 		log.debug(pointManager.get(0).computeVec2());
 		log.debug(pointManager.get(64).computeVec2());
 		log.debug(pointManager.get(63).computeVec2());
-		Assert.assertTrue(pointManager.get(0).computeVec2().equals(new Vec2RO(-1500, 0)));
+		Assert.assertTrue(pointManager.get(0).computeVec2().equals(new XY(-1500, 0)));
 	}
 
 	@Test
 	public void test_distance() throws Exception
 	{
-		Assert.assertEquals(1414, gridspace.distanceStatique(pointDManager.get(pointManager.get(new Vec2RO(0, 1000)), Direction.NE)));
-		Assert.assertEquals(1000, gridspace.distanceStatique(pointDManager.get(pointManager.get(new Vec2RO(0, 1000)), Direction.N)));
+		Assert.assertEquals(1414, gridspace.distanceStatique(pointDManager.get(pointManager.get(new XY(0, 1000)), Direction.NE)));
+		Assert.assertEquals(1000, gridspace.distanceStatique(pointDManager.get(pointManager.get(new XY(0, 1000)), Direction.N)));
 		Assert.assertEquals(Integer.MAX_VALUE, gridspace.distanceStatique(pointDManager.get(pointManager.get(1), Direction.E)));
 	}
 

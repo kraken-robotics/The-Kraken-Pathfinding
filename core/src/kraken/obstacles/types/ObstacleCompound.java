@@ -8,8 +8,8 @@ package kraken.obstacles.types;
 
 import java.awt.Graphics;
 
-import kraken.graphic.Fenetre;
-import kraken.utils.Vec2RO;
+import graphic.Fenetre;
+import kraken.utils.XY;
 
 /**
  * A compound obstacle
@@ -27,7 +27,7 @@ public class ObstacleCompound extends Obstacle
 
 	public ObstacleCompound(Obstacle... obs)
 	{
-		super(new Vec2RO(0,0)); // TODO
+		super(new XY(0,0)); // TODO
 		this.obs = obs;
 	}
 
@@ -90,7 +90,7 @@ public class ObstacleCompound extends Obstacle
 	 * l'obstacle
 	 */
 	@Override
-	public double squaredDistance(Vec2RO v)
+	public double squaredDistance(XY v)
 	{
 		double min = Double.MAX_VALUE;
 		for(Obstacle o : obs)

@@ -28,7 +28,7 @@ import kraken.pathfinding.dstarlite.gridspace.GridSpace;
 import kraken.robot.Cinematique;
 import kraken.robot.CinematiqueObs;
 import kraken.robot.Speed;
-import kraken.utils.Vec2RO;
+import kraken.utils.XY;
 
 /**
  * Tests unitaires de la recherche de chemin courbe
@@ -137,7 +137,7 @@ public class JUnit_AStarCourbe extends JUnit_Test
 			 */ }
 
 		log.debug(arc[nbArc - 1].arcselems[arc[nbArc - 1].arcselems.length - 1].getPosition());
-		Assert.assertEquals(0, arc[nbArc - 1].arcselems[arc[nbArc - 1].arcselems.length - 1].getPosition().distance(new Vec2RO(-469.90, 1643.03)), 0.1);
+		Assert.assertEquals(0, arc[nbArc - 1].arcselems[arc[nbArc - 1].arcselems.length - 1].getPosition().distance(new XY(-469.90, 1643.03)), 0.1);
 	}
 
 	@Test

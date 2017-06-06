@@ -6,7 +6,7 @@
 package kraken.pathfinding.dstarlite.gridspace;
 
 import kraken.utils.Log;
-import kraken.utils.Vec2RO;
+import kraken.utils.XY;
 
 /**
  * S'occupe de gérer les PointGridSpace
@@ -56,7 +56,7 @@ public class PointGridSpaceManager
 	 * @param p
 	 * @return
 	 */
-	public PointGridSpace get(Vec2RO p)
+	public PointGridSpace get(XY p)
 	{
 		int y = (int) Math.round(p.getY() / PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS);
 		int x = (int) Math.round((p.getX() + 1500) / PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS);

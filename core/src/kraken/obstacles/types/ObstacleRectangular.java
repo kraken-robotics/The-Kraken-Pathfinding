@@ -8,8 +8,8 @@ package kraken.obstacles.types;
 import java.awt.Graphics;
 import graphic.Fenetre;
 import kraken.Couleur;
-import kraken.utils.Vec2RO;
-import kraken.utils.Vec2RW;
+import kraken.utils.XY;
+import kraken.utils.XY_RW;
 
 /**
  * Rectangle ayant subi une rotation.
@@ -27,40 +27,40 @@ public class ObstacleRectangular extends Obstacle
 	private static final long serialVersionUID = 7643797598957137648L;
 	// Longueur entre le centre et un des coins
 	protected double demieDiagonale;
-	protected Vec2RW centreGeometrique;
+	protected XY_RW centreGeometrique;
 
 	// calcul des positions des coins
 	// ces coins sont dans le repère de l'obstacle !
-	protected Vec2RW coinBasGauche;
-	protected Vec2RW coinHautGauche;
-	protected Vec2RW coinBasDroite;
-	protected Vec2RW coinHautDroite;
+	protected XY_RW coinBasGauche;
+	protected XY_RW coinHautGauche;
+	protected XY_RW coinBasDroite;
+	protected XY_RW coinHautDroite;
 
 	// ces coins sont dans le repère de la table
-	protected Vec2RW coinBasGaucheRotate;
-	protected Vec2RW coinHautGaucheRotate;
-	protected Vec2RW coinBasDroiteRotate;
-	protected Vec2RW coinHautDroiteRotate;
+	protected XY_RW coinBasGaucheRotate;
+	protected XY_RW coinHautGaucheRotate;
+	protected XY_RW coinBasDroiteRotate;
+	protected XY_RW coinHautDroiteRotate;
 
-	protected Vec2RW in = new Vec2RW();
+	protected XY_RW in = new XY_RW();
 
 	protected double angle, cos, sin;
 
-	public ObstacleRectangular(Vec2RO position, int sizeX, int sizeY, double angle, Couleur c)
+	public ObstacleRectangular(XY position, int sizeX, int sizeY, double angle, Couleur c)
 	{
 		this(position, sizeX, sizeY, angle);
 		this.l = c.l;
 		this.c = c.couleur;
 	}
 
-	public ObstacleRectangular(Vec2RO position, int sizeX, int sizeY, Couleur c)
+	public ObstacleRectangular(XY position, int sizeX, int sizeY, Couleur c)
 	{
 		this(position, sizeX, sizeY, 0);
 		this.l = c.l;
 		this.c = c.couleur;
 	}
 
-	protected ObstacleRectangular(Vec2RW pos)
+	protected ObstacleRectangular(XY_RW pos)
 	{
 		super(pos);
 	}
@@ -79,20 +79,20 @@ public class ObstacleRectangular extends Obstacle
 	 * @param sizeY
 	 * @param angle
 	 */
-	public ObstacleRectangular(Vec2RO position, int sizeX, int sizeY, double angle)
+	public ObstacleRectangular(XY position, int sizeX, int sizeY, double angle)
 	{
 		super(position);
 		this.angle = angle;
 		cos = Math.cos(angle);
 		sin = Math.sin(angle);
-		coinBasGauche = new Vec2RW(-sizeX / 2, -sizeY / 2);
-		coinHautGauche = new Vec2RW(-sizeX / 2, sizeY / 2);
-		coinBasDroite = new Vec2RW(sizeX / 2, -sizeY / 2);
-		coinHautDroite = new Vec2RW(sizeX / 2, sizeY / 2);
-		coinBasGaucheRotate = new Vec2RW();
-		coinHautGaucheRotate = new Vec2RW();
-		coinBasDroiteRotate = new Vec2RW();
-		coinHautDroiteRotate = new Vec2RW();
+		coinBasGauche = new XY_RW(-sizeX / 2, -sizeY / 2);
+		coinHautGauche = new XY_RW(-sizeX / 2, sizeY / 2);
+		coinBasDroite = new XY_RW(sizeX / 2, -sizeY / 2);
+		coinHautDroite = new XY_RW(sizeX / 2, sizeY / 2);
+		coinBasGaucheRotate = new XY_RW();
+		coinHautGaucheRotate = new XY_RW();
+		coinBasDroiteRotate = new XY_RW();
+		coinHautDroiteRotate = new XY_RW();
 		convertitVersRepereTable(coinBasGauche, coinBasGaucheRotate);
 		convertitVersRepereTable(coinHautGauche, coinHautGaucheRotate);
 		convertitVersRepereTable(coinBasDroite, coinBasDroiteRotate);
@@ -111,7 +111,7 @@ public class ObstacleRectangular extends Obstacle
 	 * @param point
 	 * @return
 	 */
-	protected void convertitVersRepereObstacle(Vec2RO point, Vec2RW out)
+	protected void convertitVersRepereObstacle(XY point, XY_RW out)
 	{
 		out.setX(cos * (point.getX() - position.getX()) + sin * (point.getY() - position.getY()));
 		out.setY(-sin * (point.getX() - position.getX()) + cos * (point.getY() - position.getY()));
@@ -124,7 +124,7 @@ public class ObstacleRectangular extends Obstacle
 	 * @param point
 	 * @return
 	 */
-	protected void convertitVersRepereTable(Vec2RO point, Vec2RW out)
+	protected void convertitVersRepereTable(XY point, XY_RW out)
 	{
 		out.setX(cos * point.getX() - sin * point.getY() + position.getX());
 		out.setY(sin * point.getX() + cos * point.getY() + position.getY());
@@ -136,7 +136,7 @@ public class ObstacleRectangular extends Obstacle
 	 * @param point
 	 * @return
 	 */
-	protected double getXConvertiVersRepereObstacle(Vec2RO point)
+	protected double getXConvertiVersRepereObstacle(XY point)
 	{
 		return cos * (point.getX() - position.getX()) + sin * (point.getY() - position.getY());
 	}
@@ -147,7 +147,7 @@ public class ObstacleRectangular extends Obstacle
 	 * @param point
 	 * @return
 	 */
-	protected double getYConvertiVersRepereObstacle(Vec2RO point)
+	protected double getYConvertiVersRepereObstacle(XY point)
 	{
 		return -sin * (point.getX() - position.getX()) + cos * (point.getY() - position.getY());
 	}
@@ -214,7 +214,7 @@ public class ObstacleRectangular extends Obstacle
 	 * l'obstacle
 	 */
 	@Override
-	public double squaredDistance(Vec2RO v)
+	public double squaredDistance(XY v)
 	{
 		convertitVersRepereObstacle(v, in);
 

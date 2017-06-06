@@ -13,8 +13,9 @@ import graphic.Fenetre;
 import graphic.printable.Layer;
 import graphic.printable.Printable;
 import kraken.pathfinding.dstarlite.gridspace.PointGridSpace;
-import kraken.utils.Vec2RO;
-import kraken.utils.Vec2RW;
+import kraken.utils.XY;
+import kraken.utils.XYO;
+import kraken.utils.XY_RW;
 
 /**
  * Une structure qui regroupe des infos de cinématique
@@ -26,7 +27,7 @@ import kraken.utils.Vec2RW;
 public class Cinematique implements Printable, Serializable
 {
 	private static final long serialVersionUID = 1548985891767047059L;
-	protected final Vec2RW position = new Vec2RW();
+	protected final XY_RW position = new XY_RW();
 	public volatile double orientationGeometrique; // il s'agit de l'orientation
 													// qui avance. donc
 													// l'arrière du robot s'il
@@ -37,6 +38,11 @@ public class Cinematique implements Printable, Serializable
 	public volatile double courbureReelle;
 	private static NumberFormat formatter = new DecimalFormat("#0.000");
 
+	public Cinematique(XYO xyo)
+	{
+		updateReel(xyo.position.getX(), xyo.position.getY(), xyo.orientation, true, 0);
+	}
+	
 	public Cinematique(double x, double y, double orientationGeometrique, boolean enMarcheAvant, double courbure)
 	{
 		update(x, y, orientationGeometrique, enMarcheAvant, courbure);
@@ -77,12 +83,12 @@ public class Cinematique implements Printable, Serializable
 		}
 	}
 
-	public final Vec2RO getPosition()
+	public final XY getPosition()
 	{
 		return position;
 	}
 
-	public final Vec2RW getPositionEcriture()
+	public final XY_RW getPositionEcriture()
 	{
 		return position;
 	}
@@ -239,7 +245,7 @@ public class Cinematique implements Printable, Serializable
 	public void print(Graphics g, Fenetre f)
 	{
 		double n = PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS / 2;
-		Vec2RW point1 = new Vec2RW(n, 0), point2 = new Vec2RW(-n / 2, n / 2), point3 = new Vec2RW(-n / 2, -n / 2);
+		XY_RW point1 = new XY_RW(n, 0), point2 = new XY_RW(-n / 2, n / 2), point3 = new XY_RW(-n / 2, -n / 2);
 		point1.rotate(orientationGeometrique).plus(position);
 		point2.rotate(orientationGeometrique).plus(position);
 		point3.rotate(orientationGeometrique).plus(position);

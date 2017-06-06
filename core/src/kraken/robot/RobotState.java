@@ -7,7 +7,7 @@ package kraken.robot;
 
 import kraken.pathfinding.astar.arcs.ArcCourbe;
 import kraken.utils.Log;
-import kraken.utils.Vec2RO;
+import kraken.utils.XY;
 
 /**
  * Robot particulier qui fait pas bouger le robot réel, mais détermine la durée
@@ -18,23 +18,10 @@ import kraken.utils.Vec2RO;
 
 public class RobotState
 {
-	protected Cinematique cinematique;
-	protected Log log;
+	protected Cinematique cinematique = new Cinematique();
 
 	// Date en millisecondes depuis le début du match.
 	protected long date = 0;
-
-	/**
-	 * Constructeur clone
-	 * 
-	 * @param log
-	 * @param robot
-	 */
-	public RobotState(Log log)
-	{
-		this.log = log;
-		cinematique = new Cinematique();
-	}
 
 	public long getTempsDepuisDebutMatch()
 	{
@@ -55,7 +42,7 @@ public class RobotState
 	public void avance(double distance, Speed speed)
 	{
 		// TODO update date
-		cinematique.getPositionEcriture().plus(new Vec2RO(distance, cinematique.orientationReelle, true));
+		cinematique.getPositionEcriture().plus(new XY(distance, cinematique.orientationReelle, true));
 	}
 
 

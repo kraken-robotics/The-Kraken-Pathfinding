@@ -9,7 +9,7 @@ package kraken.obstacles.types;
 import java.awt.Graphics;
 import graphic.Fenetre;
 import kraken.Couleur;
-import kraken.utils.Vec2RO;
+import kraken.utils.XY;
 
 /**
  * Obstacle circulaire
@@ -26,14 +26,14 @@ public class ObstacleCircular extends Obstacle
 	public final int radius;
 	public final int squared_radius;
 
-	public ObstacleCircular(Vec2RO position, int rad)
+	public ObstacleCircular(XY position, int rad)
 	{
 		super(position);
 		this.radius = rad;
 		squared_radius = rad * rad;
 	}
 
-	public ObstacleCircular(Vec2RO position, int rad, Couleur c)
+	public ObstacleCircular(XY position, int rad, Couleur c)
 	{
 		super(position, c);
 		this.radius = rad;
@@ -47,7 +47,7 @@ public class ObstacleCircular extends Obstacle
 	}
 
 	@Override
-	public double squaredDistance(Vec2RO position)
+	public double squaredDistance(XY position)
 	{
 		double out = Math.max(0, position.distance(this.position) - radius);
 		return out * out;

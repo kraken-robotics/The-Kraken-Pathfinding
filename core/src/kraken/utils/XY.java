@@ -17,7 +17,7 @@ import graphic.Position;
  *
  */
 
-public class Vec2RO implements Serializable, Position
+public class XY implements Serializable, Position
 {
 	private static final long serialVersionUID = 1L;
 	protected volatile double x;
@@ -25,52 +25,52 @@ public class Vec2RO implements Serializable, Position
 	private static NumberFormat formatter = new DecimalFormat("#0.00");
 
 	@SuppressWarnings("unused")
-	public Vec2RO(double longueur, double angle, boolean useless)
+	public XY(double longueur, double angle, boolean useless)
 	{
 		x = Math.cos(angle) * longueur;
 		y = Math.sin(angle) * longueur;
 	}
 
-	public Vec2RO(double requestedX, double requestedY)
+	public XY(double requestedX, double requestedY)
 	{
 		x = requestedX;
 		y = requestedY;
 	}
 
-	public final double dot(Vec2RO other)
+	public final double dot(XY other)
 	{
 		return x * other.x + y * other.y;
 	}
 
-	public final Vec2RW plusNewVector(Vec2RO other)
+	public final XY_RW plusNewVector(XY other)
 	{
-		return new Vec2RW(x + other.x, y + other.y);
+		return new XY_RW(x + other.x, y + other.y);
 	}
 
-	public final Vec2RW minusNewVector(Vec2RO other)
+	public final XY_RW minusNewVector(XY other)
 	{
-		return new Vec2RW(x - other.x, y - other.y);
+		return new XY_RW(x - other.x, y - other.y);
 	}
 
 	@Override
-	public final Vec2RW clone()
+	public final XY_RW clone()
 	{
-		return new Vec2RW(this.x, this.y);
+		return new XY_RW(this.x, this.y);
 	}
 
-	public final double squaredDistance(Vec2RO other)
+	public final double squaredDistance(XY other)
 	{
 		double tmp_x = x - other.x, tmp_y = y - other.y;
 		return tmp_x * tmp_x + tmp_y * tmp_y;
 	}
 
-	public final double distance(Vec2RO other)
+	public final double distance(XY other)
 	{
 		return Math.sqrt((x - other.x) * (x - other.x) + (y - other.y) * (y - other.y));
 	}
 
 	// Renvoie une approximation de la distance. Très rapide
-	public final double distanceFast(Vec2RO other)
+	public final double distanceFast(XY other)
 	{
 		double dx = Math.abs(x - other.x);
 		double dy = Math.abs(y - other.y);
@@ -83,7 +83,7 @@ public class Vec2RO implements Serializable, Position
 		return "(" + formatter.format(x) + "," + formatter.format(y) + ")";
 	}
 
-	public final boolean equals(Vec2RO other)
+	public final boolean equals(XY other)
 	{
 		return x == other.x && y == other.y;
 	}
@@ -95,10 +95,10 @@ public class Vec2RO implements Serializable, Position
 			return true;
 		else if(obj == null)
 			return false;
-		else if(!(obj instanceof Vec2RO))
+		else if(!(obj instanceof XY))
 			return false;
 
-		Vec2RO other = (Vec2RO) obj;
+		XY other = (XY) obj;
 		if(x != other.x || (y != other.y))
 			return false;
 		return true;
@@ -109,17 +109,17 @@ public class Vec2RO implements Serializable, Position
 	 * 
 	 * @param other
 	 */
-	public final void copy(Vec2RW other)
+	public final void copy(XY_RW other)
 	{
 		other.x = x;
 		other.y = y;
 	}
 
-	public final Vec2RW rotateNewVector(double angle, Vec2RO centreRotation)
+	public final XY_RW rotateNewVector(double angle, XY centreRotation)
 	{
 		double cos = Math.cos(angle);
 		double sin = Math.sin(angle);
-		return new Vec2RW(cos * (x - centreRotation.x) - sin * (y - centreRotation.y) + centreRotation.x, sin * (x - centreRotation.x) + cos * (y - centreRotation.y) + centreRotation.y);
+		return new XY_RW(cos * (x - centreRotation.x) - sin * (y - centreRotation.y) + centreRotation.x, sin * (x - centreRotation.x) + cos * (y - centreRotation.y) + centreRotation.y);
 	}
 
 	public final double getArgument()

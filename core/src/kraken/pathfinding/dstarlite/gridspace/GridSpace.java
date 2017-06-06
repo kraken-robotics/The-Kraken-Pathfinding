@@ -16,7 +16,7 @@ import kraken.obstacles.container.ObstaclesFixes;
 import kraken.obstacles.types.Obstacle;
 import kraken.obstacles.types.ObstacleMasque;
 import kraken.utils.Log;
-import kraken.utils.Vec2RO;
+import kraken.utils.XY;
 import java.awt.Graphics;
 import java.util.BitSet;
 import java.util.Iterator;
@@ -248,7 +248,7 @@ public class GridSpace implements Printable
 		return Layer.MIDDLE;
 	}
 
-	public void disableObstaclesFixes(Vec2RO position, Obstacle obstacle)
+	public void disableObstaclesFixes(XY position, Obstacle obstacle)
 	{
 		// on initialise comme la grille statique classique
 		grilleStatiqueModif.clear();

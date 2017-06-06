@@ -7,8 +7,8 @@ package kraken.obstacles.types;
 
 import java.io.Serializable;
 import kraken.Couleur;
-import kraken.utils.Vec2RO;
-import kraken.utils.Vec2RW;
+import kraken.utils.XY;
+import kraken.utils.XY_RW;
 
 /**
  * Obstacle rectangulaire de notre robot
@@ -23,27 +23,27 @@ public class ObstacleRobot extends ObstacleRectangular implements Serializable
 
 	public ObstacleRobot(int demieLargeurNonDeploye, int demieLongueurArriere, int demieLongueurAvant)
 	{
-		super(new Vec2RW());
+		super(new XY_RW());
 		c = Couleur.ROBOT.couleur;
 		l = Couleur.ROBOT.l;
-		centreGeometrique = new Vec2RW();
-		coinBasGaucheRotate = new Vec2RW();
-		coinHautGaucheRotate = new Vec2RW();
-		coinBasDroiteRotate = new Vec2RW();
-		coinHautDroiteRotate = new Vec2RW();
+		centreGeometrique = new XY_RW();
+		coinBasGaucheRotate = new XY_RW();
+		coinHautGaucheRotate = new XY_RW();
+		coinBasDroiteRotate = new XY_RW();
+		coinHautDroiteRotate = new XY_RW();
 
 		int a = demieLargeurNonDeploye;
 		int b = demieLargeurNonDeploye;
 		int c = demieLongueurAvant;
 		int d = demieLongueurArriere;
 
-		coinBasGauche = new Vec2RW(-d, -a);
-		coinHautGauche = new Vec2RW(-d, b);
-		coinBasDroite = new Vec2RW(c, -a);
-		coinHautDroite = new Vec2RW(c, b);
+		coinBasGauche = new XY_RW(-d, -a);
+		coinHautGauche = new XY_RW(-d, b);
+		coinBasDroite = new XY_RW(c, -a);
+		coinHautDroite = new XY_RW(c, b);
 
 		demieDiagonale = Math.sqrt((a + b) * (a + b) / 4 + (c + d) * (c + d) / 4);
-		centreGeometrique = new Vec2RW();
+		centreGeometrique = new XY_RW();
 	}
 
 	/**
@@ -54,7 +54,7 @@ public class ObstacleRobot extends ObstacleRectangular implements Serializable
 	 * @param robot
 	 * @return
 	 */
-	public ObstacleRectangular update(Vec2RO position, double orientation)
+	public ObstacleRectangular update(XY position, double orientation)
 	{
 		position.copy(this.position);
 		this.angle = orientation;

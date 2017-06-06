@@ -10,8 +10,8 @@ import java.io.Serializable;
 import graphic.Fenetre;
 import graphic.printable.Layer;
 import graphic.printable.Printable;
-import kraken.utils.Vec2RO;
-import kraken.utils.Vec2RW;
+import kraken.utils.XY;
+import kraken.utils.XY_RW;
 
 /**
  * Un point du gridspace
@@ -76,15 +76,15 @@ public class PointGridSpace implements Printable, Serializable
 		return 1000 * Math.max(dx, dy) + 414 * Math.min(dx, dy);
 	}
 
-	public final void computeVec2(Vec2RW v)
+	public final void computeVec2(XY_RW v)
 	{
 		v.setX(((x * DISTANCE_ENTRE_DEUX_POINTS_1024) >> 10) - 1500);
 		v.setY((y * DISTANCE_ENTRE_DEUX_POINTS_1024) >> 10);
 	}
 
-	public final Vec2RO computeVec2()
+	public final XY computeVec2()
 	{
-		Vec2RW out = new Vec2RW();
+		XY_RW out = new XY_RW();
 		computeVec2(out);
 		return out;
 	}
@@ -92,7 +92,7 @@ public class PointGridSpace implements Printable, Serializable
 	@Override
 	public void print(Graphics g, Fenetre f)
 	{
-		Vec2RO p = computeVec2();
+		XY p = computeVec2();
 		g.fillOval(f.XtoWindow(p.getX()) - f.distanceXtoWindow((int) DISTANCE_ENTRE_DEUX_POINTS) / 2, f.YtoWindow(p.getY()) - f.distanceYtoWindow((int) DISTANCE_ENTRE_DEUX_POINTS) / 2, f.distanceXtoWindow((int) (DISTANCE_ENTRE_DEUX_POINTS * 0.7)), f.distanceYtoWindow((int) (DISTANCE_ENTRE_DEUX_POINTS * 0.7)));
 	}
 
