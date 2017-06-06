@@ -4,7 +4,10 @@
  */
 
 import kraken.Kraken;
+import kraken.exceptions.PathfindingException;
 import kraken.pathfinding.astar.AStarCourbe;
+import kraken.utils.XY;
+import kraken.utils.XYO;
 
 
 /**
@@ -20,5 +23,14 @@ public class Example1
 	{
 		Kraken kraken = new Kraken(null);
 		AStarCourbe astar = kraken.getAStar();
+		try
+		{
+			astar.initializeNewSearch(new XYO(0, 0, 0), new XY(1000, 1000));
+		}
+		catch(PathfindingException e)
+		{
+			System.out.println(e);
+			e.printStackTrace();
+		}
 	}
 }

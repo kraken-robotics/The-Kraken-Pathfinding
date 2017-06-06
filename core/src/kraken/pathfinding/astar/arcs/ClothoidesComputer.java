@@ -504,7 +504,7 @@ public class ClothoidesComputer
 		log.debug("Chargement des points de la clothoïde");
 		try
 		{
-			InputStream fichier = getClass().getClassLoader().getResourceAsStream("kraken/clotho-"+S_MAX+".dat");
+			InputStream fichier = getClass().getClassLoader().getResourceAsStream("clotho-"+S_MAX+".dat");
 			ObjectInputStream ois = new ObjectInputStream(fichier);
 			trajectoire = (XY[]) ois.readObject();
 			ois.close();
