@@ -1,8 +1,6 @@
 *~
 config.ini
-logs/
 junit/
-videos/
 .classpath
 .cproject
 .project
@@ -10,3 +8,4 @@ videos/
 *.properties
 *.class
 bin/
+*.jar
