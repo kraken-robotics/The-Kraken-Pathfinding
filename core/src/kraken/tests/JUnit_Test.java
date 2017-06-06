@@ -11,8 +11,10 @@ import org.junit.rules.TestName;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Request;
 import org.junit.runner.Result;
+import java.lang.reflect.Method;
 import org.junit.After;
 import graphic.Fenetre;
+import injector.Injector;
 import kraken.Kraken;
 import kraken.utils.Log;
 
@@ -27,9 +29,10 @@ import kraken.utils.Log;
 
 public abstract class JUnit_Test
 {
-	protected Kraken container;
 	protected Config config;
 	protected Log log;
+	protected Injector injector;
+	protected Kraken kraken;
 
 	@Rule
 	public TestName testName = new TestName();
@@ -39,19 +42,23 @@ public abstract class JUnit_Test
 	{
 		System.out.println("----- DÉBUT DU TEST " + testName.getMethodName() + " -----");
 
-		container = new Kraken(null);
-		config = container.getService(Config.class);
-		log = container.getService(Log.class);
+		kraken = new Kraken(null);
+		
+		Method m = Kraken.class.getDeclaredMethod("getInjector");
+		m.setAccessible(true);
+		injector = (Injector) m.invoke(kraken);
+		config = injector.getService(Config.class);
+		log = injector.getService(Log.class);
 		log.debug("Test unitaire : " + testName.getMethodName());
 	}
 
 	@After
 	public void tearDown() throws Exception
 	{
-		Fenetre f = container.getExistingService(Fenetre.class);
+		Fenetre f = injector.getExistingService(Fenetre.class);
 		if(f != null)
 			f.waitUntilExit();
-		container.destructor();
+		kraken.destructor();
 	}
 
 	/**

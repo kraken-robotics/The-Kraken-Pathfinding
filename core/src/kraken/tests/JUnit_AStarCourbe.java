@@ -57,16 +57,16 @@ public class JUnit_AStarCourbe extends JUnit_Test
 	public void setUp() throws Exception
 	{
 		super.setUp();
-		clotho = container.getService(ClothoidesComputer.class);
-		buffer = container.getService(PrintBuffer.class);
-		astar = container.getService(AStarCourbe.class);
-		// dstarlite = container.getService(DStarLite.class);
-		gridspace = container.getService(GridSpace.class);
-		bezier = container.getService(BezierComputer.class);
-		cercle = container.getService(CercleArrivee.class);
-		// arcmanager = container.getService(ArcManager.class);
+		clotho = injector.getService(ClothoidesComputer.class);
+		buffer = injector.getService(PrintBuffer.class);
+		astar = injector.getService(AStarCourbe.class);
+		// dstarlite = injector.getService(DStarLite.class);
+		gridspace = injector.getService(GridSpace.class);
+		bezier = injector.getService(BezierComputer.class);
+		cercle = injector.getService(CercleArrivee.class);
+		// arcmanager = injector.getService(ArcManager.class);
 		graphicTrajectory = config.getBoolean(ConfigInfoKraken.GRAPHIC_TRAJECTORY_FINAL);
-		fakeChemin = container.getService(DefaultCheminPathfinding.class);
+		fakeChemin = injector.getService(DefaultCheminPathfinding.class);
 	}
 
 	@Test
@@ -176,7 +176,7 @@ public class JUnit_AStarCourbe extends JUnit_Test
 		log.debug("Initial : " + c);
 		arc[0] = clotho.getTrajectoireDemiTour(c, VitesseDemiTour.DEMI_TOUR_GAUCHE);
 		// arc[0] = new
-		// ArcCourbeStatique(container.getService(RobotReal.class));
+		// ArcCourbeStatique(injector.getService(RobotReal.class));
 		// clotho.getTrajectoire(c, VitesseCourbure.DROITE_5,
 		// (ArcCourbeStatique)arc[0]);
 		arc[1] = clotho.getTrajectoireRamene(arc[0].getLast(), VitesseRameneVolant.RAMENE_VOLANT);
@@ -656,7 +656,7 @@ public class JUnit_AStarCourbe extends JUnit_Test
 	@Test
 	public void test_prepathsf() throws Exception
 	{
-		container.getService(PathCache.class);
+		injector.getService(PathCache.class);
 	}
 
 	@Test
@@ -664,7 +664,7 @@ public class JUnit_AStarCourbe extends JUnit_Test
 	{
 		// Ce test impose l'arrêt du thread de pathfinding pour ne pas avoir
 		// d'interférence
-		ThreadUpdatePathfinding thread = container.getService(ThreadUpdatePathfinding.class);
+		ThreadUpdatePathfinding thread = injector.getService(ThreadUpdatePathfinding.class);
 		thread.interrupt();
 		thread.join(1000);
 		long avant = System.nanoTime();
@@ -703,7 +703,7 @@ public class JUnit_AStarCourbe extends JUnit_Test
 			if(graphicTrajectory)
 				Thread.sleep(100);
 		}
-		container.restartThread(ThreadName.UPDATE_PATHFINDING); // pour pas
+		injector.restartThread(ThreadName.UPDATE_PATHFINDING); // pour pas
 																// qu'il soit
 																// mécontent
 	}
@@ -713,7 +713,7 @@ public class JUnit_AStarCourbe extends JUnit_Test
 	{
 		// Ce test impose l'arrêt du thread de pathfinding pour ne pas avoir
 		// d'interférence
-		ThreadUpdatePathfinding thread = container.getService(ThreadUpdatePathfinding.class);
+		ThreadUpdatePathfinding thread = injector.getService(ThreadUpdatePathfinding.class);
 		thread.interrupt();
 		thread.join(1000);
 		long avant = System.nanoTime();
@@ -746,7 +746,7 @@ public class JUnit_AStarCourbe extends JUnit_Test
 		}
 		catch(Exception e)
 		{
-			container.restartThread(ThreadName.UPDATE_PATHFINDING); // pour pas
+			injector.restartThread(ThreadName.UPDATE_PATHFINDING); // pour pas
 																	// qu'il
 																	// soit
 																	// mécontent

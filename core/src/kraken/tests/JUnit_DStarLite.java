@@ -32,8 +32,8 @@ public class JUnit_DStarLite extends JUnit_Test
 	public void setUp() throws Exception
 	{
 		super.setUp();
-		pathfinding = container.getService(DStarLite.class);
-		gridspace = container.getService(GridSpace.class);
+		pathfinding = injector.getService(DStarLite.class);
+		gridspace = injector.getService(GridSpace.class);
 	}
 /*
 	@Test

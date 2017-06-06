@@ -34,9 +34,9 @@ public class JUnit_GridSpace extends JUnit_Test
 	public void setUp() throws Exception
 	{
 		super.setUp();
-		gridspace = container.getService(GridSpace.class);
-		pointManager = container.getService(PointGridSpaceManager.class);
-		pointDManager = container.getService(PointDirigeManager.class);
+		gridspace = injector.getService(GridSpace.class);
+		pointManager = injector.getService(PointGridSpaceManager.class);
+		pointDManager = injector.getService(PointDirigeManager.class);
 
 	}
 
@@ -153,8 +153,8 @@ public class JUnit_GridSpace extends JUnit_Test
 	 * @Test
 	 * public void test_masque() throws Exception
 	 * {
-	 * MasqueManager mm = container.getService(MasqueManager.class);
-	 * PrintBuffer buffer = container.getService(PrintBuffer.class);
+	 * MasqueManager mm = injector.getService(MasqueManager.class);
+	 * PrintBuffer buffer = injector.getService(PrintBuffer.class);
 	 * Masque m = mm.getMasqueEnnemi(new Vec2RO(0, 1000));
 	 * if(config.getBoolean(ConfigInfo.GRAPHIC_D_STAR_LITE))
 	 * buffer.add(m);

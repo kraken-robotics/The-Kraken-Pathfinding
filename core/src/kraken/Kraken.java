@@ -14,6 +14,7 @@ import injector.Injector;
 import injector.InjectorException;
 import kraken.obstacles.container.ObstaclesFixes;
 import kraken.obstacles.types.Obstacle;
+import kraken.pathfinding.astar.AStarCourbe;
 import kraken.pathfinding.astar.arcs.ArcCourbe;
 import kraken.utils.*;
 
@@ -35,32 +36,8 @@ public class Kraken
 	private Injector injector;
 
 	private static int nbInstances = 0;
-	private Thread mainThread;
-	private ErrorCode errorCode = ErrorCode.NO_ERROR;
-	private boolean shutdown = false;
 	private boolean showGraph;
 
-	public boolean isShutdownInProgress()
-	{
-		return shutdown;
-	}
-	
-	public enum ErrorCode
-	{
-		NO_ERROR(0),
-		END_OF_MATCH(0),
-		EMERGENCY_STOP(2),
-		TERMINATION_SIGNAL(3),
-		DOUBLE_DESTRUCTOR(4);
-		
-		public final int code;
-		
-		private ErrorCode(int code)
-		{
-			this.code = code;
-		}
-	}
-	
 	/**
 	 * Fonction appelé automatiquement à la fin du programme.
 	 * ferme la connexion serie, termine les différents threads, et ferme le
@@ -70,40 +47,23 @@ public class Kraken
 	 * @throws ContainerException
 	 * @throws InjectorException 
 	 */
-	public synchronized ErrorCode destructor()
-	{
-		if(Thread.currentThread().getId() != mainThread.getId())
-		{
-			log.critical("Le destructor de container doit être appelé depuis le thread principal !");
-			return ErrorCode.DOUBLE_DESTRUCTOR;
-		}
-	
+	public synchronized void destructor()
+	{	
 		/*
 		 * Il ne faut pas appeler deux fois le destructeur
 		 */
 		if(nbInstances == 0)
-		{
-			log.critical("Double appel au destructor !");
-			return ErrorCode.DOUBLE_DESTRUCTOR;
-		}
-
-		shutdown = true;
+			return;
 
 		PrintBufferInterface buffer = injector.getExistingService(PrintBufferInterface.class);
 		// On appelle le destructeur du PrintBuffer
 		if(buffer != null)
 			buffer.destructor();
 
-		nf(showGraph)
-			injector.saveGraph("dependances.dot");
-
 		// fermeture du log
-		log.debug("Code d'erreur : " + errorCode);
 		log.debug("Fermeture du log");
 		log.close();
 		nbInstances--;
-
-		return errorCode;
 	}
 
 	/**
@@ -130,8 +90,6 @@ public class Kraken
 		nbInstances++;
 
 		injector = new Injector();
-		mainThread = Thread.currentThread();
-		Thread.currentThread().setName("ThreadPrincipal");
 
 		try {
 			log = injector.getService(Log.class);
@@ -152,11 +110,11 @@ public class Kraken
 			else
 				injector.addService(PrintBufferInterface.class, injector.getService(PrintBuffer.class));
 	
-			Obstacle.set(log, getService(PrintBufferInterface.class));
+			Obstacle.set(log, injector.getService(PrintBufferInterface.class));
 			Obstacle.useConfig(config);
 			ArcCourbe.useConfig(config);
 			if(fixedObstacles != null)
-				getService(ObstaclesFixes.class).addAll(fixedObstacles);
+				injector.getService(ObstaclesFixes.class).addAll(fixedObstacles);
 		}
 		catch(InjectorException e)
 		{
@@ -164,40 +122,21 @@ public class Kraken
 		}
 	}
 
-	/**
-	 * Créé un object de la classe demandée, ou le récupère s'il a déjà été créé
-	 * S'occupe automatiquement des dépendances
-	 * Toutes les classes demandées doivent implémenter Service ; c'est juste
-	 * une sécurité.
-	 * 
-	 * @param classe
-	 * @return un objet de cette classe
-	 * @throws ContainerException
-	 * @throws InjectorException 
-	 * @throws InterruptedException
-	 */
-	public synchronized <S> S getService(Class<S> serviceTo)
+	public AStarCourbe getAStar()
 	{
-		try {
-			return injector.getService(serviceTo);
+		try
+		{
+			return injector.getService(AStarCourbe.class);
 		}
 		catch(InjectorException e)
 		{
-			System.err.println("Fatal error : "+e);
+			e.printStackTrace();
 			return null;
 		}
 	}
-
-	public synchronized <S> S getExistingService(Class<S> classe)
+	
+	protected Injector getInjector()
 	{
-		return injector.getExistingService(classe);
+		return injector;
 	}
-
-	public void interruptWithCodeError(ErrorCode code)
-	{
-		log.warning("Demande d'interruption avec le code : "+code);
-		errorCode = code;
-		mainThread.interrupt();
-	}
-
 }

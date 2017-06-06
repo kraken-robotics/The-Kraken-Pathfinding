@@ -18,7 +18,7 @@ import kraken.pathfinding.dstarlite.gridspace.GridSpace;
 import kraken.utils.Vec2RO;
 
 /**
- * Tests unitaires pour le container
+ * Tests unitaires pour l'injector
  * 
  * @author pf
  */
@@ -59,8 +59,8 @@ public class JUnit_Container extends JUnit_Test
 	@Test
 	public void test_instanciation() throws Exception
 	{
-		container.getService(GridSpace.class);
-		container.getService(AStarCourbe.class);
+		injector.getService(GridSpace.class);
+		injector.getService(AStarCourbe.class);
 	}
 
 	/**
@@ -72,7 +72,7 @@ public class JUnit_Container extends JUnit_Test
 	@Test(expected = InjectorException.class)
 	public void test_dependance_circulaire() throws Exception
 	{
-		container.getService(A.class);
+		injector.getService(A.class);
 	}
 
 	/**
@@ -84,7 +84,7 @@ public class JUnit_Container extends JUnit_Test
 	@Test(expected = InjectorException.class)
 	public void test_multi_constructeur() throws Exception
 	{
-		container.getService(C.class);
+		injector.getService(C.class);
 	}
 
 	/**
@@ -94,13 +94,13 @@ public class JUnit_Container extends JUnit_Test
 	 */
 	public void test_config() throws Exception
 	{
-		D d = container.getService(D.class);
+		D d = injector.getService(D.class);
 		Assert.assertTrue(d.updateConfigOk);
 		Assert.assertTrue(d.useConfigOk);
 	}
 
 	/**
-	 * Test vérifiant que le système de containers se comporte bien si on
+	 * Test vérifiant que le système de injectors se comporte bien si on
 	 * appelle deux fois le meme service
 	 * 
 	 * @throws Exception
@@ -109,6 +109,6 @@ public class JUnit_Container extends JUnit_Test
 	public void test_doublon() throws Exception
 	{
 		// Config est un service, c'est le même object
-		Assert.assertTrue(container.getService(Config.class) == container.getService(Config.class));
+		Assert.assertTrue(injector.getService(Config.class) == injector.getService(Config.class));
 	}
 }

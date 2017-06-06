@@ -4,6 +4,7 @@
  */
 
 import kraken.Kraken;
+import kraken.pathfinding.astar.AStarCourbe;
 
 
 /**
@@ -18,5 +19,6 @@ public class Example1
 	public static void main(String[] args)
 	{
 		Kraken kraken = new Kraken(null);
+		AStarCourbe astar = kraken.getAStar();
 	}
 }
