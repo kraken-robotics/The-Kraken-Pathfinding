@@ -12,6 +12,8 @@ import graphic.PrintBuffer;
 import graphic.PrintBufferInterface;
 import injector.Injector;
 import injector.InjectorException;
+import kraken.obstacles.container.DynamicObstacles;
+import kraken.obstacles.container.EmptyDynamicObstacles;
 import kraken.obstacles.container.ObstaclesFixes;
 import kraken.obstacles.types.Obstacle;
 import kraken.pathfinding.astar.AStarCourbe;
@@ -40,10 +42,6 @@ public class Kraken
 	 * Fonction appelé automatiquement à la fin du programme.
 	 * ferme la connexion serie, termine les différents threads, et ferme le
 	 * log.
-	 * 
-	 * @throws InterruptedException
-	 * @throws ContainerException
-	 * @throws InjectorException 
 	 */
 	public synchronized void destructor()
 	{	
@@ -63,16 +61,17 @@ public class Kraken
 		log.close();
 		nbInstances--;
 	}
-
+	
+	public Kraken(List<Obstacle> fixedObstacles)
+	{
+		this(fixedObstacles, new EmptyDynamicObstacles());
+	}
+	
 	/**
 	 * Instancie le gestionnaire de dépendances et quelques services critiques
 	 * (log et config qui sont interdépendants)
-	 * 
-	 * @throws ContainerException si un autre container est déjà instancié
-	 * @throws InterruptedException
-	 * @throws InjectorException 
 	 */
-	public Kraken(List<Obstacle> fixedObstacles)
+	public Kraken(List<Obstacle> fixedObstacles, DynamicObstacles dynObs)
 	{
 		/**
 		 * On vérifie qu'il y ait un seul container à la fois
@@ -93,6 +92,7 @@ public class Kraken
 			log = injector.getService(Log.class);
 			config = new Config(ConfigInfoKraken.values(), "kraken.conf", true);
 			injector.addService(Config.class, config);
+			injector.addService(DynamicObstacles.class, dynObs);
 	
 			log.useConfig(config);
 	
