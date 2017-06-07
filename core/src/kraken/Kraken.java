@@ -89,7 +89,7 @@ public class Kraken
 
 		try {
 			log = injector.getService(Log.class);
-			config = new Config(ConfigInfoKraken.values(), "kraken.conf", true);
+			config = new Config(ConfigInfoKraken.values(), "kraken.conf", false);
 			injector.addService(Config.class, config);
 			injector.addService(DynamicObstacles.class, dynObs);
 	
@@ -107,9 +107,9 @@ public class Kraken
 			}
 			else
 			{
-				injector.addService(PrintBufferInterface.class, null);
-				injector.getService(PrintBufferInterface.class);
 				ConfigInfoKraken.unsetGraphic();
+				config.reload();
+				injector.addService(PrintBufferInterface.class, null);
 			}
 	
 			Obstacle.set(log, injector.getService(PrintBufferInterface.class));
