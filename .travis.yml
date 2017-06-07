@@ -1,6 +1,7 @@
 language : java
 script :
     - cd core && ant
+    - cd ../tests && ant
     - cd ../examples/example-1 && ant
     - java -cp bin/:../../core/kraken.jar Example1
 jdk : oraclejdk8

@@ -3,8 +3,6 @@
  * Distributed under the MIT License.
  */
 
-package kraken.tests;
-
 import java.util.Random;
 import org.junit.Assert;
 import org.junit.Before;

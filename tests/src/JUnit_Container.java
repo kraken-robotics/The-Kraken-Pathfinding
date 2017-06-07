@@ -3,8 +3,6 @@
  * Distributed under the MIT License.
  */
 
-package kraken.tests;
-
 import org.junit.Assert;
 import org.junit.Test;
 import injector.InjectorException;

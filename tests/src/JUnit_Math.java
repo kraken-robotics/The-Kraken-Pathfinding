@@ -3,8 +3,6 @@
  * Distributed under the MIT License.
  */
 
-package kraken.tests;
-
 import org.junit.Test;
 import kraken.utils.XY_RW;
 import org.junit.Assert;
