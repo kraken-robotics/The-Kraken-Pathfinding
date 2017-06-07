@@ -34,4 +34,10 @@ public class ItineraryPoint
 		}
 	}
 	
+	@Override
+	public String toString()
+	{
+		return "("+x+","+y+"), orientation = "+orientation+", curvature = "+courbure;
+	}
+	
 }

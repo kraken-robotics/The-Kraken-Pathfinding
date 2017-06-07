@@ -13,17 +13,17 @@ package kraken.exceptions;
  *
  */
 
-public class MemoryManagerException extends Exception
+public class MemoryPoolException extends Exception
 {
 
 	private static final long serialVersionUID = -960091158805232282L;
 
-	public MemoryManagerException()
+	public MemoryPoolException()
 	{
 		super();
 	}
 
-	public MemoryManagerException(String m)
+	public MemoryPoolException(String m)
 	{
 		super(m);
 	}

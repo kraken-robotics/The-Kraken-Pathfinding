@@ -22,12 +22,11 @@ import kraken.utils.Log;
  *
  */
 
-public class NodeMM extends MemoryManager<AStarCourbeNode>
+public class NodePool extends MemoryPool<AStarCourbeNode>
 {
 	private int largeur, longueur_arriere, longueur_avant;
-	private Log log;
-	
-	public NodeMM(Log log, Config config)
+
+	public NodePool(Log log, Config config)
 	{
 		super(AStarCourbeNode.class, log);
 		largeur = config.getInt(ConfigInfoKraken.LARGEUR_NON_DEPLOYE) / 2;
@@ -37,9 +36,10 @@ public class NodeMM extends MemoryManager<AStarCourbeNode>
 	}
 
 	@Override
-	protected final AStarCourbeNode make()
+	protected final void make(AStarCourbeNode[] nodes)
 	{
-		return new AStarCourbeNode(new RobotState(), largeur, longueur_arriere, longueur_avant);
+		for(int i = 0; i < nodes.length; i++)
+			nodes[i] = new AStarCourbeNode(new RobotState(), largeur, longueur_arriere, longueur_avant);
 	}
 
 }

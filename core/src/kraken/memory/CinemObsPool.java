@@ -8,6 +8,7 @@ package kraken.memory;
 
 import config.Config;
 import kraken.ConfigInfoKraken;
+import kraken.exceptions.MemoryPoolException;
 import kraken.pathfinding.astar.arcs.ArcCourbeDynamique;
 import kraken.robot.CinematiqueObs;
 import kraken.utils.Log;
@@ -23,11 +24,11 @@ import kraken.utils.Log;
  *
  */
 
-public class CinemObsMM extends MemoryManager<CinematiqueObs>
+public class CinemObsPool extends MemoryPool<CinematiqueObs>
 {
 	private int largeur, longueur_arriere, longueur_avant;
 	
-	public CinemObsMM(Log log, Config config)
+	public CinemObsPool(Log log, Config config)
 	{
 		super(CinematiqueObs.class, log);
 		largeur = config.getInt(ConfigInfoKraken.LARGEUR_NON_DEPLOYE) / 2;
@@ -37,16 +38,24 @@ public class CinemObsMM extends MemoryManager<CinematiqueObs>
 	}
 
 	@Override
-	protected final CinematiqueObs make()
+	protected final void make(CinematiqueObs[] nodes)
 	{
-		return new CinematiqueObs(largeur, longueur_arriere, longueur_avant);
+		for(int i = 0; i < nodes.length; i++)
+			nodes[i] = new CinematiqueObs(largeur, longueur_arriere, longueur_avant);
 	}
 	
-	// TODO : optimisable : la mémoire est contigue
-	public void destroyNode(ArcCourbeDynamique arc)
+	// TODO : optimisable : la mémoire est probablement contigue
+	public final void destroyNode(ArcCourbeDynamique arc)
 	{
 		for(int i = 0; i < arc.getNbPoints(); i++)
-			destroyNode(arc.getPoint(i));
+			try
+			{
+				destroyNode(arc.getPoint(i));
+			}
+			catch(MemoryPoolException e)
+			{
+				e.printStackTrace();
+			}
 	}
 
 }

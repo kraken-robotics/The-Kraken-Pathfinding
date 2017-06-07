@@ -3,9 +3,11 @@
  * Distributed under the MIT License.
  */
 
+import java.util.LinkedList;
 import kraken.Kraken;
 import kraken.exceptions.PathfindingException;
 import kraken.pathfinding.astar.AStarCourbe;
+import kraken.robot.ItineraryPoint;
 import kraken.utils.XY;
 import kraken.utils.XYO;
 
@@ -26,6 +28,9 @@ public class Example1
 		try
 		{
 			astar.initializeNewSearch(new XYO(0, 0, 0), new XY(1000, 1000));
+			LinkedList<ItineraryPoint> path = astar.process();
+			for(ItineraryPoint p : path)
+				System.out.println(p);
 		}
 		catch(PathfindingException e)
 		{

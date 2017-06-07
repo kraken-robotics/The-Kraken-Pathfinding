@@ -9,7 +9,7 @@ package kraken.memory;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
-import kraken.exceptions.MemoryManagerException;
+import kraken.exceptions.MemoryPoolException;
 import kraken.utils.Log;
 
 /**
@@ -23,7 +23,7 @@ import kraken.utils.Log;
  *
  */
 
-public abstract class MemoryManager<T extends Memorizable>
+public abstract class MemoryPool<T extends Memorizable>
 {
 
 	private int initial_nb_instances;
@@ -34,9 +34,9 @@ public abstract class MemoryManager<T extends Memorizable>
 	private int firstAvailable;
 	private int tailleMax = 1 << 24;
 
-	protected abstract T make();
+	protected abstract void make(T[] nodes);
 	
-	public MemoryManager(Class<T> classe, Log log)
+	public MemoryPool(Class<T> classe, Log log)
 	{
 		this.classe = classe;
 		this.log = log;
@@ -51,11 +51,9 @@ public abstract class MemoryManager<T extends Memorizable>
 		// on instancie une fois pour toutes les objets
 		log.debug("Instanciation de " + nb_instances + " " + classe.getSimpleName() + "…");
 
+		make(nodes.get(0));
 		for(int i = 0; i < nb_instances; i++)
-		{
-			nodes.get(0)[i] = make();
 			nodes.get(0)[i].setIndiceMemoryManager(i);
-		}
 	}
 
 	/**
@@ -65,7 +63,7 @@ public abstract class MemoryManager<T extends Memorizable>
 	 * @throws InterruptedException
 	 */
 	@SuppressWarnings("unchecked")
-	public synchronized T getNewNode() throws MemoryManagerException
+	public synchronized T getNewNode() throws MemoryPoolException
 	{
 		// lève une exception s'il n'y a plus de place
 		if(firstAvailable == initial_nb_instances * nodes.size())
@@ -90,7 +88,7 @@ public abstract class MemoryManager<T extends Memorizable>
 																	// normal)
 			{
 				log.critical("Mémoire saturée pour " + classe.getSimpleName() + ", arrêt");
-				throw new MemoryManagerException();
+				throw new MemoryPoolException();
 			}
 
 			if(nodes.size() + 1 >= 20)
@@ -98,11 +96,10 @@ public abstract class MemoryManager<T extends Memorizable>
 
 			T[] newNodes = (T[]) Array.newInstance(classe, initial_nb_instances);
 
+			make(newNodes);
+			
 			for(int i = 0; i < initial_nb_instances; i++)
-			{
-				newNodes[i] = make();//container.make(classe, extra);
 				newNodes[i].setIndiceMemoryManager(i + firstAvailable);
-			}
 
 			nodes.add(newNodes);
 		}
@@ -126,8 +123,9 @@ public abstract class MemoryManager<T extends Memorizable>
 	 * Signale qu'un objet est de nouveau disponible
 	 * 
 	 * @param objet
+	 * @throws MemoryPoolException 
 	 */
-	public synchronized void destroyNode(T objet)
+	public synchronized void destroyNode(T objet) throws MemoryPoolException
 	{
 
 		int indice_state = objet.getIndiceMemoryManager();
@@ -138,8 +136,7 @@ public abstract class MemoryManager<T extends Memorizable>
 		if(indice_state >= firstAvailable)
 		{
 			log.critical("Objet déjà détruit ! " + indice_state + " > " + firstAvailable);
-			new Exception().printStackTrace(log.getPrintWriter());
-			return;
+			throw new MemoryPoolException("Objet déjà détruit ! " + indice_state + " > " + firstAvailable);
 		}
 
 		// On inverse dans le Vector les deux objets,

@@ -112,6 +112,13 @@ public enum ConfigInfoKraken implements ConfigInfo
 	public boolean overridden = false;
 	public volatile boolean uptodate;
 
+	public static void unsetGraphic()
+	{
+		for(ConfigInfoKraken c : values())
+			if(c.toString().startsWith("GRAPHIC_"))
+				c.setDefaultValue(false);
+	}
+	
 	/**
 	 * Par défaut, une valeur est constante
 	 * 

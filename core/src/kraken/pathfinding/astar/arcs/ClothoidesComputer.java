@@ -5,8 +5,8 @@
 
 package kraken.pathfinding.astar.arcs;
 
-import kraken.exceptions.MemoryManagerException;
-import kraken.memory.CinemObsMM;
+import kraken.exceptions.MemoryPoolException;
+import kraken.memory.CinemObsPool;
 import kraken.obstacles.types.ObstacleCircular;
 import kraken.pathfinding.astar.arcs.vitesses.VitesseClotho;
 import kraken.pathfinding.astar.arcs.vitesses.VitesseDemiTour;
@@ -39,7 +39,7 @@ import graphic.PrintBufferInterface;
 public class ClothoidesComputer
 {
 	private Log log;
-	private CinemObsMM memory;
+	private CinemObsPool memory;
 	private PrintBufferInterface buffer;
 
 	private BigDecimal x, y; // utilisés dans le calcul de trajectoire
@@ -70,7 +70,7 @@ public class ClothoidesComputer
 	// du robot et ses roues directrices
 	private XY[] trajectoire = new XY[2 * INDICE_MAX - 1];
 
-	public ClothoidesComputer(Log log, CinemObsMM memory, PrintBufferInterface buffer)
+	public ClothoidesComputer(Log log, CinemObsPool memory, PrintBufferInterface buffer)
 	{
 		this.memory = memory;
 		this.log = log;
@@ -265,7 +265,7 @@ public class ClothoidesComputer
 	 * @return
 	 * @throws InterruptedException
 	 */
-	public final ArcCourbeDynamique getTrajectoireRamene(Cinematique cinematiqueInitiale, VitesseRameneVolant vitesseRamene) throws MemoryManagerException
+	public final ArcCourbeDynamique getTrajectoireRamene(Cinematique cinematiqueInitiale, VitesseRameneVolant vitesseRamene) throws MemoryPoolException
 	{
 		double courbure = cinematiqueInitiale.courbureGeometrique;
 		double orientation = cinematiqueInitiale.orientationGeometrique;
@@ -540,7 +540,7 @@ public class ClothoidesComputer
 	 * @return
 	 * @throws InterruptedException
 	 */
-	public final ArcCourbeDynamique getTrajectoireDemiTour(Cinematique cinematiqueInitiale, VitesseDemiTour vitesse) throws MemoryManagerException
+	public final ArcCourbeDynamique getTrajectoireDemiTour(Cinematique cinematiqueInitiale, VitesseDemiTour vitesse) throws MemoryPoolException
 	{
 		List<CinematiqueObs> trajet = getTrajectoireQuartDeTour(cinematiqueInitiale, vitesse.v, false);
 		trajet.addAll(getTrajectoireQuartDeTour(trajet.get(trajet.size() - 1), vitesse.v, true)); // on
@@ -572,7 +572,7 @@ public class ClothoidesComputer
 	 * @return
 	 * @throws InterruptedException
 	 */
-	private final List<CinematiqueObs> getTrajectoireQuartDeTour(Cinematique cinematiqueInitiale, VitesseClotho vitesse, boolean rebrousse) throws MemoryManagerException
+	private final List<CinematiqueObs> getTrajectoireQuartDeTour(Cinematique cinematiqueInitiale, VitesseClotho vitesse, boolean rebrousse) throws MemoryPoolException
 	{
 		double courbure = cinematiqueInitiale.courbureGeometrique;
 		double orientation = cinematiqueInitiale.orientationGeometrique;

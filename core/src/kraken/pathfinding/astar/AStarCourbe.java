@@ -13,14 +13,15 @@ import java.util.Stack;
 import config.Config;
 import graphic.PrintBufferInterface;
 import kraken.ConfigInfoKraken;
-import kraken.exceptions.MemoryManagerException;
+import kraken.exceptions.MemoryPoolException;
 import kraken.exceptions.PathfindingException;
-import kraken.memory.CinemObsMM;
-import kraken.memory.NodeMM;
+import kraken.memory.CinemObsPool;
+import kraken.memory.NodePool;
 import kraken.pathfinding.astar.arcs.ArcCourbe;
 import kraken.pathfinding.astar.arcs.ArcManager;
 import kraken.pathfinding.astar.arcs.CercleArrivee;
 import kraken.pathfinding.chemin.CheminPathfindingInterface;
+import kraken.pathfinding.chemin.DefaultCheminPathfinding;
 import kraken.pathfinding.dstarlite.DStarLite;
 import kraken.pathfinding.dstarlite.gridspace.PointGridSpace;
 import kraken.robot.Cinematique;
@@ -46,11 +47,12 @@ public class AStarCourbe
 	protected Log log;
 	private ArcManager arcmanager;
 	private DStarLite dstarlite;
-	private NodeMM memorymanager;
+	private NodePool memorymanager;
 	private PrintBufferInterface buffer;
 	private AStarCourbeNode depart;
 	private AStarCourbeNode trajetDeSecours;
-	private CinemObsMM cinemMemory;
+	private CinemObsPool cinemMemory;
+	private DefaultCheminPathfinding defaultChemin;
 	private CercleArrivee cercle;
 	private boolean graphicTrajectory, graphicDStarLite, graphicTrajectoryAll;
 	private int dureeMaxPF;
@@ -90,8 +92,9 @@ public class AStarCourbe
 	/**
 	 * Constructeur du AStarCourbe
 	 */
-	public AStarCourbe(Log log, DStarLite dstarlite, ArcManager arcmanager, NodeMM memorymanager, CinemObsMM rectMemory, PrintBufferInterface buffer, CercleArrivee cercle, RobotState chrono, Config config)
+	public AStarCourbe(Log log, DefaultCheminPathfinding defaultChemin, DStarLite dstarlite, ArcManager arcmanager, NodePool memorymanager, CinemObsPool rectMemory, PrintBufferInterface buffer, CercleArrivee cercle, RobotState chrono, Config config)
 	{
+		this.defaultChemin = defaultChemin;
 		this.log = log;
 		this.arcmanager = arcmanager;
 		this.memorymanager = memorymanager;
@@ -111,6 +114,12 @@ public class AStarCourbe
 		depart.setIndiceMemoryManager(-1);
 	}
 
+	public LinkedList<ItineraryPoint> process() throws PathfindingException
+	{
+		process(defaultChemin, false);
+		return defaultChemin.getPath();
+	}
+	
 	/**
 	 * Le calcul du AStarCourbe
 	 * 
@@ -118,9 +127,9 @@ public class AStarCourbe
 	 * @return
 	 * @throws PathfindingException
 	 * @throws InterruptedException
-	 * @throws MemoryManagerException
+	 * @throws MemoryPoolException
 	 */
-	public final synchronized void process(CheminPathfindingInterface chemin, boolean replanif) throws PathfindingException
+	private final synchronized void process(CheminPathfindingInterface chemin, boolean replanif) throws PathfindingException
 	{
 		log.debug("Recherche de chemin.", Verbose.PF.masque);
 		trajetDeSecours = null;
@@ -299,7 +308,7 @@ public class AStarCourbe
 						continue;
 					}
 				}
-				catch(MemoryManagerException e)
+				catch(MemoryPoolException e)
 				{
 					throw new PathfindingException("Internal fatal error !");
 				}
@@ -372,7 +381,14 @@ public class AStarCourbe
 	{
 		if(n.cameFromArcDynamique != null)
 			cinemMemory.destroyNode(n.cameFromArcDynamique);
-		memorymanager.destroyNode(n);
+		try
+		{
+			memorymanager.destroyNode(n);
+		}
+		catch(MemoryPoolException e)
+		{
+			e.printStackTrace();
+		}
 	}
 
 	private final Cinematique partialReconstruct(AStarCourbeNode best, CheminPathfindingInterface chemin) throws PathfindingException

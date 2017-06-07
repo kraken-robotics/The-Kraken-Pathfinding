@@ -7,8 +7,7 @@ package kraken;
 
 import java.util.List;
 import config.Config;
-import graphic.ExternalPrintBuffer;
-import graphic.PrintBuffer;
+import graphic.Fenetre;
 import graphic.PrintBufferInterface;
 import injector.Injector;
 import injector.InjectorException;
@@ -98,10 +97,20 @@ public class Kraken
 	
 			injector.addService(Kraken.class, this);
 	
-			if(config.getBoolean(ConfigInfoKraken.GRAPHIC_EXTERNAL))
-				injector.addService(PrintBufferInterface.class, injector.getService(ExternalPrintBuffer.class));
+			if(config.getBoolean(ConfigInfoKraken.GRAPHIC_ENABLE))
+			{
+				Fenetre f = injector.getService(Fenetre.class);
+//				if(config.getBoolean(ConfigInfoKraken.GRAPHIC_EXTERNAL))
+//					injector.addService(PrintBufferInterface.class, f.getBu);
+//				else
+					injector.addService(PrintBufferInterface.class, f.getPrintBuffer());
+			}
 			else
-				injector.addService(PrintBufferInterface.class, injector.getService(PrintBuffer.class));
+			{
+				injector.addService(PrintBufferInterface.class, null);
+				injector.getService(PrintBufferInterface.class);
+				ConfigInfoKraken.unsetGraphic();
+			}
 	
 			Obstacle.set(log, injector.getService(PrintBufferInterface.class));
 			Obstacle.useConfig(config);

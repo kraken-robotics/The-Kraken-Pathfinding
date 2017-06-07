@@ -12,7 +12,7 @@ import java.util.ListIterator;
 import config.Config;
 import graphic.PrintBufferInterface;
 import kraken.ConfigInfoKraken;
-import kraken.exceptions.MemoryManagerException;
+import kraken.exceptions.MemoryPoolException;
 import kraken.obstacles.container.DynamicObstacles;
 import kraken.obstacles.container.ObstaclesFixes;
 import kraken.obstacles.types.Obstacle;
@@ -168,7 +168,7 @@ public class ArcManager
 	 * @param successeur
 	 * @throws InterruptedException
 	 */
-	public boolean next(AStarCourbeNode successeur) throws MemoryManagerException
+	public boolean next(AStarCourbeNode successeur) throws MemoryPoolException
 	{
 		VitesseCourbure v = iterator.next();
 

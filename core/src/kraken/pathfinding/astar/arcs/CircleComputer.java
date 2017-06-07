@@ -9,8 +9,8 @@ import java.util.LinkedList;
 
 import config.Config;
 import kraken.ConfigInfoKraken;
-import kraken.exceptions.MemoryManagerException;
-import kraken.memory.CinemObsMM;
+import kraken.exceptions.MemoryPoolException;
+import kraken.memory.CinemObsPool;
 import kraken.pathfinding.astar.arcs.vitesses.VitesseBezier;
 import kraken.robot.Cinematique;
 import kraken.robot.CinematiqueObs;
@@ -28,9 +28,9 @@ public class CircleComputer {
 	private CercleArrivee cercle;
 	private CinematiqueObs[] pointsAvancer = new CinematiqueObs[256];
 	private double courbureMax;
-	private CinemObsMM memory;
+	private CinemObsPool memory;
 	
-	public CircleComputer(Config config, CercleArrivee cercle, CinemObsMM memory)
+	public CircleComputer(Config config, CercleArrivee cercle, CinemObsPool memory)
 	{
 		this.cercle = cercle;
 		this.memory = memory;
@@ -44,12 +44,12 @@ public class CircleComputer {
 
 	}
 	
-	public ArcCourbeDynamique trajectoireCirculaireVersCentre(Cinematique cinematique) throws MemoryManagerException
+	public ArcCourbeDynamique trajectoireCirculaireVersCentre(Cinematique cinematique) throws MemoryPoolException
 	{
 		return trajectoireCirculaireVersCentre(cinematique, cercle.rayon);
 	}
 	
-	public ArcCourbeDynamique trajectoireCirculaireVersCentre(Cinematique cinematique, double rayonP) throws MemoryManagerException
+	public ArcCourbeDynamique trajectoireCirculaireVersCentre(Cinematique cinematique, double rayonP) throws MemoryPoolException
 	{
 		XY centre = cercle.position;
 		double rayon = rayonP;
@@ -188,7 +188,7 @@ public class CircleComputer {
 		return new ArcCourbeDynamique(out, longueur, VitesseBezier.CIRCULAIRE_VERS_CERCLE);
 	}
 
-	public LinkedList<CinematiqueObs> avance(double distance, Cinematique cinematique) throws MemoryManagerException
+	public LinkedList<CinematiqueObs> avance(double distance, Cinematique cinematique) throws MemoryPoolException
 	{
 		LinkedList<CinematiqueObs> out = new LinkedList<CinematiqueObs>();
 		double cos = Math.cos(cinematique.orientationReelle);

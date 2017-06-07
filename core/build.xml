@@ -30,9 +30,13 @@
     </target>
     <target depends="clean" name="cleanall"/>
     <target depends="build-subprojects,build-project" name="build">
-        <jar destfile="kraken.jar">
-        <fileset dir="bin" />
-        <fileset dir="src" />
+        <jar destfile="kraken.jar" duplicate="preserve">
+        <fileset dir="bin" >
+	    <exclude name="**/kraken/tests"/>
+    	</fileset>
+	<fileset dir="src" >
+	    <exclude name="**/kraken/tests"/>
+    	</fileset>
         <fileset dir="data" />
         <zipgroupfileset dir="lib" >
             <exclude name="**/hamcrest-core-1.3.jar"/>
