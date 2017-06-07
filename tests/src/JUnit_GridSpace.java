@@ -52,7 +52,7 @@ public class JUnit_GridSpace extends JUnit_Test
 	{
 		Assert.assertEquals(1414, gridspace.distanceStatique(pointDManager.get(pointManager.get(new XY(0, 1000)), Direction.NE)));
 		Assert.assertEquals(1000, gridspace.distanceStatique(pointDManager.get(pointManager.get(new XY(0, 1000)), Direction.N)));
-		Assert.assertEquals(Integer.MAX_VALUE, gridspace.distanceStatique(pointDManager.get(pointManager.get(1), Direction.E)));
+//		Assert.assertEquals(Integer.MAX_VALUE, gridspace.distanceStatique(pointDManager.get(pointManager.get(1), Direction.E)));
 	}
 
 	@Test

@@ -33,6 +33,12 @@ public class JUnit_DStarLite extends JUnit_Test
 		pathfinding = injector.getService(DStarLite.class);
 		gridspace = injector.getService(GridSpace.class);
 	}
+	
+	// TODO
+	@Test
+	public void test_empty() throws Exception
+	{}
+	
 /*
 	@Test
 	public void test_chemin_dstarlite() throws Exception

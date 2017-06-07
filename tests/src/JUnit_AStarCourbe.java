@@ -7,7 +7,7 @@ import java.util.Random;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import graphic.PrintBuffer;
+import graphic.PrintBufferInterface;
 import kraken.ConfigInfoKraken;
 import kraken.exceptions.PathfindingException;
 import kraken.obstacles.types.ObstacleCircular;
@@ -41,7 +41,7 @@ public class JUnit_AStarCourbe extends JUnit_Test
 	private AStarCourbe astar;
 	private ClothoidesComputer clotho;
 	protected BezierComputer bezier;
-	private PrintBuffer buffer;
+	private PrintBufferInterface buffer;
 	private boolean graphicTrajectory;
 	private DefaultCheminPathfinding fakeChemin;
 	private GridSpace gridspace;
@@ -56,7 +56,7 @@ public class JUnit_AStarCourbe extends JUnit_Test
 	{
 		super.setUp();
 		clotho = injector.getService(ClothoidesComputer.class);
-		buffer = injector.getService(PrintBuffer.class);
+		buffer = injector.getService(PrintBufferInterface.class);
 		astar = injector.getService(AStarCourbe.class);
 		// dstarlite = injector.getService(DStarLite.class);
 		gridspace = injector.getService(GridSpace.class);

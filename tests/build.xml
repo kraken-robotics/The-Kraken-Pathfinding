@@ -41,7 +41,6 @@
             <test name="JUnit_GridSpace" todir="${junit.output.dir}"/>
             <test name="JUnit_Math" todir="${junit.output.dir}"/>
             <test name="JUnit_Obstacle" todir="${junit.output.dir}"/>
-            <test name="JUnit_Table" todir="${junit.output.dir}"/>
             <classpath refid="Kraken.classpath"/>
         </junit>
         <fail message="Test failure detected, check test results." if="test.failed" />
