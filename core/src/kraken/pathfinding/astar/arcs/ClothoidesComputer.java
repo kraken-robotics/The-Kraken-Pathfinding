@@ -18,6 +18,7 @@ import kraken.utils.Log;
 import kraken.utils.XY;
 import kraken.utils.XY_RW;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;

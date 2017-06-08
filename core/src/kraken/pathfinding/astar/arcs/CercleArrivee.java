@@ -6,6 +6,7 @@
 package kraken.pathfinding.astar.arcs;
 
 import java.awt.Graphics;
+
 import config.Config;
 import graphic.Fenetre;
 import graphic.PrintBufferInterface;

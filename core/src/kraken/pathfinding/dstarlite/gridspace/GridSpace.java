@@ -5,6 +5,7 @@
 
 package kraken.pathfinding.dstarlite.gridspace;
 
+import config.Config;
 import graphic.Fenetre;
 import graphic.PrintBufferInterface;
 import graphic.printable.Layer;

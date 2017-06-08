@@ -107,8 +107,6 @@ public class ObstacleCompound extends Obstacle
 	{
 		// TODO
 	}
-
-	// TODO
 	
 	@Override
 	public double getTopY()

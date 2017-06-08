@@ -11,6 +11,7 @@ import org.junit.runner.Request;
 import org.junit.runner.Result;
 import java.lang.reflect.Method;
 import org.junit.After;
+import config.Config;
 import graphic.Fenetre;
 import injector.Injector;
 import kraken.Kraken;

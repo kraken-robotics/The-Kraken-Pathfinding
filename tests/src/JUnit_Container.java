@@ -5,11 +5,8 @@
 
 import org.junit.Assert;
 import org.junit.Test;
+import config.Config;
 import injector.InjectorException;
-import kraken.obstacles.memory.ObstaclesIteratorPresent;
-import kraken.config.Config;
-import kraken.container.Service;
-import kraken.exceptions.ContainerException;
 import kraken.obstacles.types.ObstacleCircular;
 import kraken.pathfinding.astar.AStarCourbe;
 import kraken.pathfinding.dstarlite.gridspace.GridSpace;

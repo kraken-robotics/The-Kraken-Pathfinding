@@ -34,7 +34,6 @@ public class CircleComputer {
 	{
 		this.cercle = cercle;
 		this.memory = memory;
-		courbureMax = config.getDouble(ConfigInfo.COURBURE_MAX);
 		courbureMax = config.getDouble(ConfigInfoKraken.COURBURE_MAX);
 		int demieLargeurNonDeploye = config.getInt(ConfigInfoKraken.LARGEUR_NON_DEPLOYE) / 2;
 		int demieLongueurArriere = config.getInt(ConfigInfoKraken.DEMI_LONGUEUR_NON_DEPLOYE_ARRIERE);
