@@ -9,7 +9,6 @@ package kraken.memory;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
-import kraken.exceptions.MemoryPoolException;
 import kraken.utils.Log;
 
 /**
@@ -63,33 +62,15 @@ public abstract class MemoryPool<T extends Memorizable>
 	 * @throws InterruptedException
 	 */
 	@SuppressWarnings("unchecked")
-	public synchronized T getNewNode() throws MemoryPoolException
+	public synchronized T getNewNode()
 	{
 		// lève une exception s'il n'y a plus de place
 		if(firstAvailable == initial_nb_instances * nodes.size())
 		{
-			if(initial_nb_instances * nodes.size() >= tailleMax) // pas trop
-																	// d'objets
-																	// (sert
-																	// à
-																	// empêcher
-																	// les
-																	// bugs
-																	// de
-																	// tout
-																	// faire
-																	// planter…
-																	// cette
-																	// condition
-																	// est
-																	// inutile
-																	// en
-																	// temps
-																	// normal)
-			{
-				log.critical("Mémoire saturée pour " + classe.getSimpleName() + ", arrêt");
-				throw new MemoryPoolException();
-			}
+			/**
+			 * Probablement une erreur
+			 */
+			assert initial_nb_instances * nodes.size() < tailleMax : "Mémoire saturée pour " + classe.getSimpleName();
 
 			if(nodes.size() + 1 >= 20)
 				log.warning("Mémoire trop petite pour les " + classe.getSimpleName() + ", extension (nouvelle taille : " + ((nodes.size() + 1) * initial_nb_instances) + ")");
@@ -125,19 +106,17 @@ public abstract class MemoryPool<T extends Memorizable>
 	 * @param objet
 	 * @throws MemoryPoolException 
 	 */
-	public synchronized void destroyNode(T objet) throws MemoryPoolException
+	public synchronized void destroyNode(T objet)
 	{
 
 		int indice_state = objet.getIndiceMemoryManager();
 
 		/**
-		 * S'il est déjà détruit, on lève une exception
+		 * Invariant: l'objet ne doit pas être déjà détruit
 		 */
+		assert indice_state < firstAvailable : "Objet déjà détruit ! " + indice_state + " >= " + firstAvailable;
 		if(indice_state >= firstAvailable)
-		{
-			log.critical("Objet déjà détruit ! " + indice_state + " > " + firstAvailable);
-			throw new MemoryPoolException("Objet déjà détruit ! " + indice_state + " > " + firstAvailable);
-		}
+			return;
 
 		// On inverse dans le Vector les deux objets,
 		// de manière à avoir toujours un Vector trié.

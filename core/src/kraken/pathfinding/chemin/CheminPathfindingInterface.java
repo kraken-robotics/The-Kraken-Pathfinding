@@ -6,7 +6,6 @@
 package kraken.pathfinding.chemin;
 
 import java.util.LinkedList;
-import kraken.exceptions.PathfindingException;
 import kraken.robot.Cinematique;
 import kraken.robot.ItineraryPoint;
 
@@ -19,7 +18,7 @@ import kraken.robot.ItineraryPoint;
 
 public interface CheminPathfindingInterface
 {
-	public void addToEnd(LinkedList<ItineraryPoint> points) throws PathfindingException;
+	public void addToEnd(LinkedList<ItineraryPoint> points);
 
 	public void setUptodate();
 

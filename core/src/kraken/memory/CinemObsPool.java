@@ -8,7 +8,6 @@ package kraken.memory;
 
 import config.Config;
 import kraken.ConfigInfoKraken;
-import kraken.exceptions.MemoryPoolException;
 import kraken.pathfinding.astar.arcs.ArcCourbeDynamique;
 import kraken.robot.CinematiqueObs;
 import kraken.utils.Log;
@@ -48,14 +47,7 @@ public class CinemObsPool extends MemoryPool<CinematiqueObs>
 	public final void destroyNode(ArcCourbeDynamique arc)
 	{
 		for(int i = 0; i < arc.getNbPoints(); i++)
-			try
-			{
-				destroyNode(arc.getPoint(i));
-			}
-			catch(MemoryPoolException e)
-			{
-				e.printStackTrace();
-			}
+			destroyNode(arc.getPoint(i));
 	}
 
 }

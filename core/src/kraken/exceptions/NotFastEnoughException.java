@@ -6,23 +6,23 @@
 package kraken.exceptions;
 
 /**
- * Exception levée par le pathfinding
+ * Exception thrown when no path is found
  * 
  * @author pf
  *
  */
 
-public abstract class PathfindingException extends Exception
+public class NotFastEnoughException extends NoPathException
 {
 
 	private static final long serialVersionUID = -960091158805232282L;
 
-	public PathfindingException()
+	public NotFastEnoughException()
 	{
 		super();
 	}
 
-	public PathfindingException(String m)
+	public NotFastEnoughException(String m)
 	{
 		super(m);
 	}

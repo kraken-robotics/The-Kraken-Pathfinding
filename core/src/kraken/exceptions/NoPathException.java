@@ -6,23 +6,23 @@
 package kraken.exceptions;
 
 /**
- * Exception levée par le D* Lite
+ * Exception thrown when no path is found
  * 
  * @author pf
  *
  */
 
-public class DStarLiteException extends Exception
+public class NoPathException extends PathfindingException
 {
 
 	private static final long serialVersionUID = -960091158805232282L;
 
-	public DStarLiteException()
+	public NoPathException()
 	{
 		super();
 	}
 
-	public DStarLiteException(String m)
+	public NoPathException(String m)
 	{
 		super(m);
 	}

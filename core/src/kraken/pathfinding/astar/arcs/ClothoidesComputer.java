@@ -5,7 +5,6 @@
 
 package kraken.pathfinding.astar.arcs;
 
-import kraken.exceptions.MemoryPoolException;
 import kraken.memory.CinemObsPool;
 import kraken.obstacles.types.ObstacleCircular;
 import kraken.pathfinding.astar.arcs.vitesses.VitesseClotho;
@@ -266,7 +265,7 @@ public class ClothoidesComputer
 	 * @return
 	 * @throws InterruptedException
 	 */
-	public final ArcCourbeDynamique getTrajectoireRamene(Cinematique cinematiqueInitiale, VitesseRameneVolant vitesseRamene) throws MemoryPoolException
+	public final ArcCourbeDynamique getTrajectoireRamene(Cinematique cinematiqueInitiale, VitesseRameneVolant vitesseRamene)
 	{
 		double courbure = cinematiqueInitiale.courbureGeometrique;
 		double orientation = cinematiqueInitiale.orientationGeometrique;
@@ -541,7 +540,7 @@ public class ClothoidesComputer
 	 * @return
 	 * @throws InterruptedException
 	 */
-	public final ArcCourbeDynamique getTrajectoireDemiTour(Cinematique cinematiqueInitiale, VitesseDemiTour vitesse) throws MemoryPoolException
+	public final ArcCourbeDynamique getTrajectoireDemiTour(Cinematique cinematiqueInitiale, VitesseDemiTour vitesse)
 	{
 		List<CinematiqueObs> trajet = getTrajectoireQuartDeTour(cinematiqueInitiale, vitesse.v, false);
 		trajet.addAll(getTrajectoireQuartDeTour(trajet.get(trajet.size() - 1), vitesse.v, true)); // on
@@ -573,7 +572,7 @@ public class ClothoidesComputer
 	 * @return
 	 * @throws InterruptedException
 	 */
-	private final List<CinematiqueObs> getTrajectoireQuartDeTour(Cinematique cinematiqueInitiale, VitesseClotho vitesse, boolean rebrousse) throws MemoryPoolException
+	private final List<CinematiqueObs> getTrajectoireQuartDeTour(Cinematique cinematiqueInitiale, VitesseClotho vitesse, boolean rebrousse)
 	{
 		double courbure = cinematiqueInitiale.courbureGeometrique;
 		double orientation = cinematiqueInitiale.orientationGeometrique;

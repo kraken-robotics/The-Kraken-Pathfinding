@@ -13,8 +13,11 @@ import java.util.Stack;
 import config.Config;
 import graphic.AbstractPrintBuffer;
 import kraken.ConfigInfoKraken;
-import kraken.exceptions.MemoryPoolException;
+import kraken.exceptions.NoPathException;
+import kraken.exceptions.NotFastEnoughException;
+import kraken.exceptions.NotInitializedPathfindingException;
 import kraken.exceptions.PathfindingException;
+import kraken.exceptions.TimeoutException;
 import kraken.memory.CinemObsPool;
 import kraken.memory.NodePool;
 import kraken.pathfinding.astar.arcs.ArcCourbe;
@@ -131,6 +134,9 @@ public class AStarCourbe
 	 */
 	private final synchronized void process(CheminPathfindingInterface chemin, boolean replanif) throws PathfindingException
 	{
+		if(!rechercheEnCours)
+			throw new NotInitializedPathfindingException("updatePath appelé alors qu'aucune recherche n'est en cours !");
+
 		log.debug("Recherche de chemin.", Verbose.PF.masque);
 		trajetDeSecours = null;
 		depart.parent = null;
@@ -146,7 +152,7 @@ public class AStarCourbe
 										// d'heuristique
 				heuristique = arcmanager.heuristicDirect((depart.robot).getCinematique());
 			else
-				throw new PathfindingException("Aucun chemin trouvé par le D* Lite !");
+				throw new NoPathException("Aucun chemin trouvé par le D* Lite !");
 		}
 
 		depart.f_score = heuristique / vitesseMax.getMaxForwardSpeed(0);
@@ -165,7 +171,7 @@ public class AStarCourbe
 			 * needStop ne concerne que la replanif
 			 */
 			if(replanif && chemin.needStop())
-				throw new PathfindingException("On a vu l'obstacle trop tard, on n'a pas assez de marge. Il faut s'arrêter.");
+				throw new NotFastEnoughException("On a vu l'obstacle trop tard, on n'a pas assez de marge. Il faut s'arrêter.");
 
 			// On vérifie régulièremet s'il ne faut pas fournir un chemin
 			// partiel
@@ -180,7 +186,7 @@ public class AStarCourbe
 					depart.robot.setCinematique(partialReconstruct(current, chemin, 2));
 					if(!chemin.aAssezDeMarge()) // toujours pas assez de marge
 												// : on doit arrêter
-						throw new PathfindingException("Pas assez de marge même après envoi.");
+						throw new NotFastEnoughException("Pas assez de marge même après envoi.");
 				}
 				else // il faut partir d'un autre point
 				{
@@ -209,7 +215,7 @@ public class AStarCourbe
 												// problème d'heuristique
 						heuristique = arcmanager.heuristicDirect((depart.robot).getCinematique());
 					else
-						throw new PathfindingException("Aucun chemin trouvé par le D* Lite !");
+						throw new NoPathException("Aucun chemin trouvé par le D* Lite !");
 				}
 
 				depart.f_score = heuristique / vitesseMax.getMaxForwardSpeed(0);
@@ -287,7 +293,7 @@ public class AStarCourbe
 					partialReconstruct(trajetDeSecours, chemin);
 					return;
 				}
-				throw new PathfindingException("Timeout AStarCourbe !");
+				throw new TimeoutException("Timeout AStarCourbe !");
 			}
 
 			// On parcourt les voisins de current
@@ -296,21 +302,15 @@ public class AStarCourbe
 			arcmanager.reinitIterator(current);
 			while(arcmanager.hasNext())
 			{
-				try {
-					successeur = memorymanager.getNewNode();
-					successeur.cameFromArcDynamique = null;
-	
-					// S'il y a un problème, on passe au suivant (interpolation
-					// cubique impossible par exemple)
-					if(!arcmanager.next(successeur))
-					{
-						destroy(successeur);
-						continue;
-					}
-				}
-				catch(MemoryPoolException e)
+				successeur = memorymanager.getNewNode();
+				successeur.cameFromArcDynamique = null;
+
+				// S'il y a un problème, on passe au suivant (interpolation
+				// cubique impossible par exemple)
+				if(!arcmanager.next(successeur))
 				{
-					throw new PathfindingException("Internal fatal error !");
+					destroy(successeur);
+					continue;
 				}
 				successeur.parent = current;
 				successeur.g_score = current.g_score + arcmanager.distanceTo(successeur, vitesseMax);
@@ -374,24 +374,17 @@ public class AStarCourbe
 		 */
 		memorymanager.empty();
 		cinemMemory.empty();
-		throw new PathfindingException("Plus aucun nœud à explorer !");
+		throw new NoPathException("Plus aucun nœud à explorer !");
 	}
 
 	private void destroy(AStarCourbeNode n)
 	{
 		if(n.cameFromArcDynamique != null)
 			cinemMemory.destroyNode(n.cameFromArcDynamique);
-		try
-		{
-			memorymanager.destroyNode(n);
-		}
-		catch(MemoryPoolException e)
-		{
-			e.printStackTrace();
-		}
+		memorymanager.destroyNode(n);
 	}
 
-	private final Cinematique partialReconstruct(AStarCourbeNode best, CheminPathfindingInterface chemin) throws PathfindingException
+	private final Cinematique partialReconstruct(AStarCourbeNode best, CheminPathfindingInterface chemin)
 	{
 		return partialReconstruct(best, chemin, 500);
 	}
@@ -404,7 +397,7 @@ public class AStarCourbe
 	 * @param last
 	 * @throws PathfindingException
 	 */
-	private final Cinematique partialReconstruct(AStarCourbeNode best, CheminPathfindingInterface chemin, int profondeurMax) throws PathfindingException
+	private final Cinematique partialReconstruct(AStarCourbeNode best, CheminPathfindingInterface chemin, int profondeurMax)
 	{
 		AStarCourbeNode noeudParent = best;
 		ArcCourbe arcParent = best.getArc();
@@ -428,8 +421,7 @@ public class AStarCourbe
 				last = a.getPoint(i);
 				trajectory.add(new ItineraryPoint(last));
 			}
-			if(trajectory.size() > 255)
-				throw new PathfindingException("Overflow du trajet !");
+			assert trajectory.size() < 255 : "Overflow du trajet";
 			profondeurMax--;
 		}
 
@@ -448,7 +440,7 @@ public class AStarCourbe
 	 * @throws PathfindingException
 	 * @throws InterruptedException
 	 */
-	public void initializeNewSearch(XYO start, XY arrival) throws PathfindingException
+	public void initializeNewSearch(XYO start, XY arrival)
 	{
 		vitesseMax = DefaultSpeed.STANDARD;
 		depart.init();
@@ -511,10 +503,10 @@ public class AStarCourbe
 	 * @throws PathfindingException
 	 * @throws InterruptedException
 	 */
-	public void updatePath(Cinematique lastValid) throws PathfindingException
+	public void updatePath(Cinematique lastValid) throws NotInitializedPathfindingException
 	{
 		if(!rechercheEnCours)
-			throw new PathfindingException("updatePath appelé alors qu'aucune recherche n'est en cours !");
+			throw new NotInitializedPathfindingException("updatePath appelé alors qu'aucune recherche n'est en cours !");
 
 		log.debug("Replanification lancée", Verbose.REPLANIF.masque);
 

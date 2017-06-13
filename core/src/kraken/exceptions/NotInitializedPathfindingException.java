@@ -3,27 +3,26 @@
  * Distributed under the MIT License.
  */
 
-
 package kraken.exceptions;
 
 /**
- * Exception levée par le memory manager
+ * Exception thrown when the pathfinding isn't initialized
  * 
  * @author pf
  *
  */
 
-public class MemoryPoolException extends Exception
+public class NotInitializedPathfindingException extends PathfindingException
 {
 
 	private static final long serialVersionUID = -960091158805232282L;
 
-	public MemoryPoolException()
+	public NotInitializedPathfindingException()
 	{
 		super();
 	}
 
-	public MemoryPoolException(String m)
+	public NotInitializedPathfindingException(String m)
 	{
 		super(m);
 	}

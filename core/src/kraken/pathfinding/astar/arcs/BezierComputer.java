@@ -10,7 +10,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import config.Config;
 import kraken.ConfigInfoKraken;
-import kraken.exceptions.MemoryPoolException;
 import kraken.memory.CinemObsPool;
 import kraken.pathfinding.astar.arcs.vitesses.VitesseBezier;
 import kraken.pathfinding.astar.arcs.vitesses.VitesseClotho;
@@ -71,7 +70,7 @@ public class BezierComputer
 	 * @throws MemoryPoolException
 	 * @throws InterruptedException
 	 */
-	public ArcCourbeDynamique interpolationQuadratique(Cinematique cinematiqueInitiale, XY arrivee) throws MemoryPoolException
+	public ArcCourbeDynamique interpolationQuadratique(Cinematique cinematiqueInitiale, XY arrivee)
 	{
 		debut = cinematiqueInitiale;
 		arrivee.copy(delta);
@@ -161,7 +160,7 @@ public class BezierComputer
 	 * @throws InterruptedException
 	 */
 	@Deprecated
-	public ArcCourbeDynamique interpolationQuadratiqueCercle(Cinematique cinematiqueInitiale) throws MemoryPoolException
+	public ArcCourbeDynamique interpolationQuadratiqueCercle(Cinematique cinematiqueInitiale)
 	{
 		ArcCourbeDynamique out = interpolationQuadratique(cinematiqueInitiale, cercle.position);
 		if(out == null)
@@ -231,7 +230,7 @@ public class BezierComputer
 	 * @return
 	 * @throws InterruptedException
 	 */
-	private ArcCourbeDynamique constructBezierQuad(XY A, XY B, XY C, boolean enMarcheAvant, Cinematique cinematiqueInitiale) throws MemoryPoolException
+	private ArcCourbeDynamique constructBezierQuad(XY A, XY B, XY C, boolean enMarcheAvant, Cinematique cinematiqueInitiale)
 	{
 		/*
 		 * buffer.addSupprimable(new ObstacleCircular(A, 15));

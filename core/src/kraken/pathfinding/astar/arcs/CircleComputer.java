@@ -9,7 +9,6 @@ import java.util.LinkedList;
 
 import config.Config;
 import kraken.ConfigInfoKraken;
-import kraken.exceptions.MemoryPoolException;
 import kraken.memory.CinemObsPool;
 import kraken.pathfinding.astar.arcs.vitesses.VitesseBezier;
 import kraken.robot.Cinematique;
@@ -43,12 +42,12 @@ public class CircleComputer {
 
 	}
 	
-	public ArcCourbeDynamique trajectoireCirculaireVersCentre(Cinematique cinematique) throws MemoryPoolException
+	public ArcCourbeDynamique trajectoireCirculaireVersCentre(Cinematique cinematique)
 	{
 		return trajectoireCirculaireVersCentre(cinematique, cercle.rayon);
 	}
 	
-	public ArcCourbeDynamique trajectoireCirculaireVersCentre(Cinematique cinematique, double rayonP) throws MemoryPoolException
+	public ArcCourbeDynamique trajectoireCirculaireVersCentre(Cinematique cinematique, double rayonP)
 	{
 		XY centre = cercle.position;
 		double rayon = rayonP;
@@ -187,7 +186,7 @@ public class CircleComputer {
 		return new ArcCourbeDynamique(out, longueur, VitesseBezier.CIRCULAIRE_VERS_CERCLE);
 	}
 
-	public LinkedList<CinematiqueObs> avance(double distance, Cinematique cinematique) throws MemoryPoolException
+	public LinkedList<CinematiqueObs> avance(double distance, Cinematique cinematique)
 	{
 		LinkedList<CinematiqueObs> out = new LinkedList<CinematiqueObs>();
 		double cos = Math.cos(cinematique.orientationReelle);
