@@ -9,7 +9,7 @@ import java.awt.Graphics;
 
 import config.Config;
 import graphic.Fenetre;
-import graphic.PrintBufferInterface;
+import graphic.AbstractPrintBuffer;
 import graphic.printable.Layer;
 import graphic.printable.Printable;
 import kraken.ConfigInfoKraken;
@@ -18,7 +18,6 @@ import kraken.robot.Cinematique;
 import kraken.utils.Log;
 import kraken.utils.XY;
 import kraken.utils.XY_RW;
-import kraken.utils.Log.Verbose;
 
 /**
  * Cercle d'arrivée du pathfinding. Utilisé pour se coller aux cratères en
@@ -30,6 +29,7 @@ import kraken.utils.Log.Verbose;
 
 public class CercleArrivee implements Printable
 {
+	private static final long serialVersionUID = 990702816093466277L;
 	public volatile XY position;
 	public volatile double rayon;
 	public volatile XY arriveeDStarLite;
@@ -39,9 +39,9 @@ public class CercleArrivee implements Printable
 	public volatile Double[] anglesAttaquePossibles;
 	
 	protected Log log;
-	private PrintBufferInterface buffer;
+	private AbstractPrintBuffer buffer;
 
-	public CercleArrivee(Log log, PrintBufferInterface buffer, Config config)
+	public CercleArrivee(Log log, AbstractPrintBuffer buffer, Config config)
 	{
 		this.log = log;
 		this.buffer = buffer;
@@ -150,9 +150,9 @@ public class CercleArrivee implements Printable
 	}
 
 	@Override
-	public Layer getLayer()
+	public int getLayer()
 	{
-		return Layer.FOREGROUND;
+		return Layer.FOREGROUND.ordinal();
 	}
 
 	public boolean isInCircle(XY position2)

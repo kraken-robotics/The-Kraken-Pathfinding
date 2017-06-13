@@ -16,6 +16,7 @@ import kraken.robot.CinematiqueObs;
 
 public class ArcCourbeStatique extends ArcCourbe
 {
+	private static final long serialVersionUID = -5599092863248049576L;
 	public CinematiqueObs[] arcselems = new CinematiqueObs[ClothoidesComputer.NB_POINTS];
 
 	public ArcCourbeStatique(int demieLargeurNonDeploye, int demieLongueurArriere, int demieLongueurAvant)

@@ -9,7 +9,7 @@ package kraken.obstacles.types;
 import java.awt.Color;
 import java.io.Serializable;
 import config.Config;
-import graphic.PrintBufferInterface;
+import graphic.AbstractPrintBuffer;
 import graphic.printable.Layer;
 import graphic.printable.Printable;
 import kraken.ConfigInfoKraken;
@@ -31,14 +31,14 @@ public abstract class Obstacle implements Printable, Serializable, ObstacleInter
 	protected XY_RW position;
 	protected transient int distance_dilatation;
 	protected static Log log;
-	protected static PrintBufferInterface buffer;
+	protected static AbstractPrintBuffer buffer;
 
 	// Pour l'affichage du robot
 	protected static boolean printAllObstacles = false;
 	protected Layer l = null;
 	public Color c;
 
-	public static void set(Log log, PrintBufferInterface buffer)
+	public static void set(Log log, AbstractPrintBuffer buffer)
 	{
 		Obstacle.log = log;
 		Obstacle.buffer = buffer;
@@ -127,11 +127,11 @@ public abstract class Obstacle implements Printable, Serializable, ObstacleInter
 	}
 
 	@Override
-	public Layer getLayer()
+	public int getLayer()
 	{
 		if(l == null)
-			return Layer.MIDDLE;
-		return l;
+			return Layer.MIDDLE.ordinal();
+		return l.ordinal();
 	}
 
 	@Override

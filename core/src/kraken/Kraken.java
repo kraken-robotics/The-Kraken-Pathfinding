@@ -8,7 +8,7 @@ package kraken;
 import java.util.List;
 import config.Config;
 import graphic.Fenetre;
-import graphic.PrintBufferInterface;
+import graphic.AbstractPrintBuffer;
 import injector.Injector;
 import injector.InjectorException;
 import kraken.obstacles.container.DynamicObstacles;
@@ -50,7 +50,7 @@ public class Kraken
 		if(nbInstances == 0)
 			return;
 
-		PrintBufferInterface buffer = injector.getExistingService(PrintBufferInterface.class);
+		AbstractPrintBuffer buffer = injector.getExistingService(AbstractPrintBuffer.class);
 		// On appelle le destructeur du PrintBuffer
 		if(buffer != null)
 			buffer.destructor();
@@ -103,16 +103,16 @@ public class Kraken
 //				if(config.getBoolean(ConfigInfoKraken.GRAPHIC_EXTERNAL))
 //					injector.addService(PrintBufferInterface.class, f.getBu);
 //				else
-					injector.addService(PrintBufferInterface.class, f.getPrintBuffer());
+					injector.addService(AbstractPrintBuffer.class, f.getPrintBuffer());
 			}
 			else
 			{
 				ConfigInfoKraken.unsetGraphic();
 				config.reload();
-				injector.addService(PrintBufferInterface.class, null);
+				injector.addService(AbstractPrintBuffer.class, null);
 			}
 	
-			Obstacle.set(log, injector.getService(PrintBufferInterface.class));
+			Obstacle.set(log, injector.getService(AbstractPrintBuffer.class));
 			Obstacle.useConfig(config);
 			ArcCourbe.useConfig(config);
 			if(fixedObstacles != null)

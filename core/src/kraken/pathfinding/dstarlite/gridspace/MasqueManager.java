@@ -8,7 +8,7 @@ package kraken.pathfinding.dstarlite.gridspace;
 import java.util.ArrayList;
 import java.util.List;
 import config.Config;
-import graphic.PrintBufferInterface;
+import graphic.AbstractPrintBuffer;
 import kraken.ConfigInfoKraken;
 import kraken.obstacles.types.Obstacle;
 import kraken.utils.Log;
@@ -25,14 +25,14 @@ public class MasqueManager
 {
 	private PointGridSpaceManager pointManager;
 	private PointDirigeManager pointDManager;
-	private PrintBufferInterface buffer;
+	private AbstractPrintBuffer buffer;
 	private int rayonRobot;
 	protected Log log;
 	private boolean printObsCapteurs;
 	private boolean[][] dedans = new boolean[200][200];
 	private XY_RW pos = new XY_RW(), coinbasgaucheVec2 = new XY_RW();
 
-	public MasqueManager(Log log, PointGridSpaceManager pointManager, PointDirigeManager pointDManager, PrintBufferInterface buffer, Config config)
+	public MasqueManager(Log log, PointGridSpaceManager pointManager, PointDirigeManager pointDManager, AbstractPrintBuffer buffer, Config config)
 	{
 		this.log = log;
 		this.pointManager = pointManager;

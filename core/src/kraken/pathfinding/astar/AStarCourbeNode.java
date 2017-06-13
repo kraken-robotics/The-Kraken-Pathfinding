@@ -8,7 +8,6 @@ package kraken.pathfinding.astar;
 import java.awt.Color;
 import java.awt.Graphics;
 import graphic.Fenetre;
-import graphic.printable.Layer;
 import graphic.printable.Printable;
 import kraken.Couleur;
 import kraken.memory.Memorizable;
@@ -26,6 +25,7 @@ import kraken.robot.RobotState;
 
 public class AStarCourbeNode implements Memorizable, Printable
 {
+	private static final long serialVersionUID = -2120732124823178009L;
 	public RobotState robot;
 	public double g_score; // distance du point de départ à ce point
 	public double f_score; // g_score + heuristique = meilleure distance qu'on
@@ -118,9 +118,9 @@ public class AStarCourbeNode implements Memorizable, Printable
 	}
 
 	@Override
-	public Layer getLayer()
+	public int getLayer()
 	{
-		return Couleur.TRAJECTOIRE.l;
+		return Couleur.TRAJECTOIRE.l.ordinal();
 	}
 
 	public void setDead()

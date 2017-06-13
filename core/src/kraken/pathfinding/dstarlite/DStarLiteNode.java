@@ -7,7 +7,6 @@ package kraken.pathfinding.dstarlite;
 
 import java.awt.Graphics;
 import graphic.Fenetre;
-import graphic.printable.Layer;
 import graphic.printable.Printable;
 import kraken.Couleur;
 import kraken.pathfinding.dstarlite.gridspace.PointGridSpace;
@@ -22,6 +21,7 @@ import kraken.utils.XY_RW;
 
 public class DStarLiteNode implements Printable
 {
+	private static final long serialVersionUID = -6800876007134374180L;
 	public final PointGridSpace gridpoint;
 	public final Cle cle = new Cle();
 	public int g = Integer.MAX_VALUE, rhs = Integer.MAX_VALUE;
@@ -96,9 +96,9 @@ public class DStarLiteNode implements Printable
 	}
 
 	@Override
-	public Layer getLayer()
+	public int getLayer()
 	{
-		return Couleur.HEURISTIQUE.l;
+		return Couleur.HEURISTIQUE.l.ordinal();
 	}
 
 }

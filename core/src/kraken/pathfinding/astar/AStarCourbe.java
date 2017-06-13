@@ -11,7 +11,7 @@ import java.util.LinkedList;
 import java.util.PriorityQueue;
 import java.util.Stack;
 import config.Config;
-import graphic.PrintBufferInterface;
+import graphic.AbstractPrintBuffer;
 import kraken.ConfigInfoKraken;
 import kraken.exceptions.MemoryPoolException;
 import kraken.exceptions.PathfindingException;
@@ -48,7 +48,7 @@ public class AStarCourbe
 	private ArcManager arcmanager;
 	private DStarLite dstarlite;
 	private NodePool memorymanager;
-	private PrintBufferInterface buffer;
+	private AbstractPrintBuffer buffer;
 	private AStarCourbeNode depart;
 	private AStarCourbeNode trajetDeSecours;
 	private CinemObsPool cinemMemory;
@@ -92,7 +92,7 @@ public class AStarCourbe
 	/**
 	 * Constructeur du AStarCourbe
 	 */
-	public AStarCourbe(Log log, DefaultCheminPathfinding defaultChemin, DStarLite dstarlite, ArcManager arcmanager, NodePool memorymanager, CinemObsPool rectMemory, PrintBufferInterface buffer, CercleArrivee cercle, RobotState chrono, Config config)
+	public AStarCourbe(Log log, DefaultCheminPathfinding defaultChemin, DStarLite dstarlite, ArcManager arcmanager, NodePool memorymanager, CinemObsPool rectMemory, AbstractPrintBuffer buffer, CercleArrivee cercle, RobotState chrono, Config config)
 	{
 		this.defaultChemin = defaultChemin;
 		this.log = log;

@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
 import config.Config;
-import graphic.PrintBufferInterface;
+import graphic.AbstractPrintBuffer;
 import kraken.ConfigInfoKraken;
 import kraken.Couleur;
 import kraken.obstacles.types.Obstacle;
@@ -52,7 +52,7 @@ public class DStarLite
 	private DStarLiteNode arrivee;
 	private DStarLiteNode depart;
 	private PointGridSpace lastDepart;
-	private PrintBufferInterface buffer;
+	private AbstractPrintBuffer buffer;
 	private long nbPF = 0;
 
 	private double[][] atan2map = new double[19][19];
@@ -69,7 +69,7 @@ public class DStarLite
 	 * @param log
 	 * @param gridspace
 	 */
-	public DStarLite(Log log, GridSpace gridspace, PointGridSpaceManager pointManager, PointDirigeManager pointDManager, PrintBufferInterface buffer, CercleArrivee cercle, Config config)
+	public DStarLite(Log log, GridSpace gridspace, PointGridSpaceManager pointManager, PointDirigeManager pointDManager, AbstractPrintBuffer buffer, CercleArrivee cercle, Config config)
 	{
 		this.log = log;
 		this.gridspace = gridspace;

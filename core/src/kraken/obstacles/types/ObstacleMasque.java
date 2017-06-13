@@ -7,7 +7,6 @@ package kraken.obstacles.types;
 
 import java.awt.Graphics;
 import graphic.Fenetre;
-import graphic.printable.Layer;
 import kraken.pathfinding.dstarlite.gridspace.Masque;
 import kraken.pathfinding.dstarlite.gridspace.MasqueManager;
 import kraken.utils.XY;
@@ -71,7 +70,7 @@ public class ObstacleMasque implements ObstacleInterface
 	}
 
 	@Override
-	public Layer getLayer()
+	public int getLayer()
 	{
 		return o.getLayer();
 	}

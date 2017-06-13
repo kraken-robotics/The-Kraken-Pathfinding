@@ -8,7 +8,6 @@ package kraken.pathfinding.astar.arcs;
 import java.awt.Graphics;
 import config.Config;
 import graphic.Fenetre;
-import graphic.printable.Layer;
 import graphic.printable.Printable;
 import kraken.ConfigInfoKraken;
 import kraken.Couleur;
@@ -25,6 +24,7 @@ import kraken.robot.CinematiqueObs;
 
 public abstract class ArcCourbe implements Printable
 {
+	private static final long serialVersionUID = 1268198325807123306L;
 	// public ObstacleArcCourbe obstacle = new ObstacleArcCourbe();
 	protected static int tempsArret;
 	public VitesseCourbure vitesse; // utilisé pour le debug
@@ -65,9 +65,9 @@ public abstract class ArcCourbe implements Printable
 	}
 
 	@Override
-	public Layer getLayer()
+	public int getLayer()
 	{
-		return Couleur.TRAJECTOIRE.l;
+		return Couleur.TRAJECTOIRE.l.ordinal();
 	}
 
 }

@@ -18,6 +18,7 @@ import kraken.robot.CinematiqueObs;
 
 public class ArcCourbeDynamique extends ArcCourbe
 {
+	private static final long serialVersionUID = 2188028584717495182L;
 	public List<CinematiqueObs> arcs;
 	public double longueur;
 

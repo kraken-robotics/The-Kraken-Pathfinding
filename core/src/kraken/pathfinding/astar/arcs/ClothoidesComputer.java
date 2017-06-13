@@ -28,7 +28,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
-import graphic.PrintBufferInterface;
+import graphic.AbstractPrintBuffer;
 
 /**
  * Classe qui s'occupe de tous les calculs concernant les clothoïdes
@@ -41,7 +41,7 @@ public class ClothoidesComputer
 {
 	private Log log;
 	private CinemObsPool memory;
-	private PrintBufferInterface buffer;
+	private AbstractPrintBuffer buffer;
 
 	private BigDecimal x, y; // utilisés dans le calcul de trajectoire
 	private static final int S_MAX = 10; // courbure max qu'on puisse gérer
@@ -71,7 +71,7 @@ public class ClothoidesComputer
 	// du robot et ses roues directrices
 	private XY[] trajectoire = new XY[2 * INDICE_MAX - 1];
 
-	public ClothoidesComputer(Log log, CinemObsPool memory, PrintBufferInterface buffer)
+	public ClothoidesComputer(Log log, CinemObsPool memory, AbstractPrintBuffer buffer)
 	{
 		this.memory = memory;
 		this.log = log;

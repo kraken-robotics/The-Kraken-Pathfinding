@@ -10,7 +10,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import config.Config;
-import graphic.PrintBufferInterface;
+import graphic.AbstractPrintBuffer;
 import kraken.ConfigInfoKraken;
 import kraken.exceptions.MemoryPoolException;
 import kraken.obstacles.container.DynamicObstacles;
@@ -45,7 +45,7 @@ public class ArcManager
 	private ClothoidesComputer clotho;
 	private BezierComputer bezier;
 	private CircleComputer circlecomputer;
-	private PrintBufferInterface buffer;
+	private AbstractPrintBuffer buffer;
 	private AStarCourbeNode current;
 	private DStarLite dstarlite;
 	private DynamicObstacles dynamicObs;
@@ -61,7 +61,7 @@ public class ArcManager
 	private ListIterator<VitesseCourbure> iterator = listeVitesse.listIterator();
 	private List<ObstaclesFixes> disabledObstaclesFixes = new ArrayList<ObstaclesFixes>();
 
-	public ArcManager(Log log, ObstaclesFixes fixes, ClothoidesComputer clotho, CircleComputer circlecomputer, PrintBufferInterface buffer, DStarLite dstarlite, BezierComputer bezier, CercleArrivee cercle, Config config, DynamicObstacles dynamicObs)
+	public ArcManager(Log log, ObstaclesFixes fixes, ClothoidesComputer clotho, CircleComputer circlecomputer, AbstractPrintBuffer buffer, DStarLite dstarlite, BezierComputer bezier, CercleArrivee cercle, Config config, DynamicObstacles dynamicObs)
 	{
 		this.circlecomputer = circlecomputer;
 		this.fixes = fixes;

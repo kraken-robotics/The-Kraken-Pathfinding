@@ -9,7 +9,7 @@ import java.awt.Graphics;
 import java.util.LinkedList;
 import config.Config;
 import graphic.Fenetre;
-import graphic.PrintBufferInterface;
+import graphic.AbstractPrintBuffer;
 import graphic.printable.Layer;
 import graphic.printable.Printable;
 import kraken.ConfigInfoKraken;
@@ -29,13 +29,14 @@ import kraken.utils.XY;
 
 public class DefaultCheminPathfinding implements CheminPathfindingInterface, Printable
 {
+	private static final long serialVersionUID = -9020733512144987231L;
 	private LinkedList<ItineraryPoint> path;
 	protected Log log;
-	private PrintBufferInterface buffer;
+	private AbstractPrintBuffer buffer;
 	private boolean print;
 	private ObstacleCircular[] aff = new ObstacleCircular[256];
 
-	public DefaultCheminPathfinding(Log log, Config config, PrintBufferInterface buffer)
+	public DefaultCheminPathfinding(Log log, Config config, AbstractPrintBuffer buffer)
 	{
 		this.log = log;
 		this.buffer = buffer;
@@ -81,9 +82,9 @@ public class DefaultCheminPathfinding implements CheminPathfindingInterface, Pri
 	}
 
 	@Override
-	public Layer getLayer()
+	public int getLayer()
 	{
-		return Layer.FOREGROUND;
+		return Layer.FOREGROUND.ordinal();
 	}
 
 	@Override

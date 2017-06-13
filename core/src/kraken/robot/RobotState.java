@@ -6,7 +6,6 @@
 package kraken.robot;
 
 import kraken.pathfinding.astar.arcs.ArcCourbe;
-import kraken.utils.Log;
 import kraken.utils.XY;
 
 /**

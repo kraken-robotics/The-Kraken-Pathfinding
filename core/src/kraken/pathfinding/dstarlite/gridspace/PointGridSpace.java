@@ -103,9 +103,9 @@ public class PointGridSpace implements Printable, Serializable
 	}
 
 	@Override
-	public Layer getLayer()
+	public int getLayer()
 	{
-		return Layer.FOREGROUND;
+		return Layer.FOREGROUND.ordinal();
 	}
 
 }

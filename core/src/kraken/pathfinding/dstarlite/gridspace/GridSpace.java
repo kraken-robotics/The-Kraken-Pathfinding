@@ -7,7 +7,7 @@ package kraken.pathfinding.dstarlite.gridspace;
 
 import config.Config;
 import graphic.Fenetre;
-import graphic.PrintBufferInterface;
+import graphic.AbstractPrintBuffer;
 import graphic.printable.Layer;
 import graphic.printable.Printable;
 import kraken.ConfigInfoKraken;
@@ -34,11 +34,12 @@ import java.util.List;
 
 public class GridSpace implements Printable
 {
+	private static final long serialVersionUID = 3849267693380819201L;
 	protected Log log;
 	private DynamicObstacles dynamicObs;
 	private PointGridSpaceManager pointManager;
 	private MasqueManager masquemanager;
-	private PrintBufferInterface buffer;
+	private AbstractPrintBuffer buffer;
 	private Iterator<ObstacleMasque> iteratorDStarLiteFirst, iteratorDStarLiteLast;
 	private int distanceMinimaleEntreProximite;
 	private int rayonRobot, rayonRobotObstaclesFixes;
@@ -53,7 +54,7 @@ public class GridSpace implements Printable
 	private BitSet[] newOldObstacles = new BitSet[2];
 	private Couleur[] grid = new Couleur[PointGridSpace.NB_POINTS];
 
-	public GridSpace(Log log, ObstaclesFixes fixes, DynamicObstacles dynamicObs, PointGridSpaceManager pointManager, PrintBufferInterface buffer, MasqueManager masquemanager, Config config)
+	public GridSpace(Log log, ObstaclesFixes fixes, DynamicObstacles dynamicObs, PointGridSpaceManager pointManager, AbstractPrintBuffer buffer, MasqueManager masquemanager, Config config)
 	{
 		this.dynamicObs = dynamicObs;
 		this.log = log;
@@ -244,9 +245,9 @@ public class GridSpace implements Printable
 	}
 
 	@Override
-	public Layer getLayer()
+	public int getLayer()
 	{
-		return Layer.MIDDLE;
+		return Layer.MIDDLE.ordinal();
 	}
 
 	public void disableObstaclesFixes(XY position, Obstacle obstacle)
