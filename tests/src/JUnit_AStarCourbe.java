@@ -215,6 +215,13 @@ public class JUnit_AStarCourbe extends JUnit_Test
 			}
 		}
 	}
+	
+	// TODO déplacer dans le fichier approprié
+	@Test(expected = AssertionError.class)
+	public void test_assert() throws Exception
+	{
+		assert false;
+	}
 
 	/*
 	 * @Test
