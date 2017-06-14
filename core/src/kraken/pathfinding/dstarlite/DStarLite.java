@@ -298,7 +298,7 @@ public class DStarLite
 	 */
 	private final int distanceHeuristique(PointGridSpace gridpoint)
 	{
-		return depart.gridpoint.distanceOctile(gridpoint);
+		return depart.gridpoint.distanceOctile(gridpoint); // TODO *1.2
 	}
 
 	/**
