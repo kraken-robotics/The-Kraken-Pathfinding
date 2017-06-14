@@ -7,11 +7,17 @@ A tentacular pathfinding library for nonholonomic robotic vehicles
 
 A presentation is available here (in french !) : https://intechsenpai.github.io/moon-rover/.
 
-## Downloading the last stable version
+### Why Java ?
+
+For legacy reasons, mainly.
+
+## Getting Kraken
+
+### Downloading the last stable version
 
 _There is no stable version yet._
 
-## Getting the so
+### Getting the source
 
 If you want the latest stable version, clone this repository :
 
@@ -22,7 +28,7 @@ If you want the latest **experimental** version, clone this repository :
     $ git clone https://github.com/PFGimenez/The-Kraken-Pathfinding.git --depth 1
 
 
-## Compiling
+### Compiling
 
 You will need a JDK and `ant` (package `ant` or `apache-ant`) :
     
@@ -34,7 +40,7 @@ The file ```kraken.jar```, containing the compiled code .class and the sources .
 
 Examples are available in the directory ```examples```.
 
-## Unit testing
+### Unit testing
 
 You can easily run the tests :
 
@@ -43,12 +49,14 @@ You can easily run the tests :
 
 ## Contributing
 
+### How to help ?
+
 Feel free to contribute to Kraken ! There are two easy ways of helping me :
 
 - submit an issue containing your ideas ;
 - create a pull request.
 
-## Bug report
+### Bug report
 
 Bug report are done with issues. Please be careful to respect those few points :
 
