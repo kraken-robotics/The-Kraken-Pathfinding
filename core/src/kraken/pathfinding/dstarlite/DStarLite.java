@@ -131,9 +131,8 @@ public class DStarLite
 
 		DStarLiteNode out = memory[gridpoint.hashcode];
 
-		if(out.nbPF != nbPF)
-			return null;
-
+		out.update(nbPF);
+		updateStart(out);
 		return out;
 	}
 
@@ -329,18 +328,26 @@ public class DStarLite
 		updateStart(pointManager.get(positionRobot));
 	}
 
+	private synchronized final void updateStart(PointGridSpace p)
+	{
+		updateStart(getFromMemory(p));
+	}
 	/**
 	 * Met à jour la position actuelle du robot
 	 * 
 	 * @param positionRobot
 	 */
-	private synchronized void updateStart(PointGridSpace p)
+	private synchronized final void updateStart(DStarLiteNode p)
 	{
-		depart = getFromMemory(p);
-		km += distanceHeuristique(lastDepart);
-		lastDepart = depart.gridpoint;
-
-		computeShortestPath();
+		// p is inconsistent iff p is in the open set
+		if(p.inOpenSet)
+		{
+			depart = p;
+			km += distanceHeuristique(lastDepart);
+			lastDepart = depart.gridpoint;
+	
+			computeShortestPath();
+		}
 	}
 
 	/**
