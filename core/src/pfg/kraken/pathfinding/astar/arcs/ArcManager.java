@@ -43,26 +43,24 @@ public class ArcManager
 	protected Log log;
 	private ClothoidesComputer clotho;
 	private BezierComputer bezier;
-	private CircleComputer circlecomputer;
+//	private CircleComputer circlecomputer;
 	private AbstractPrintBuffer buffer;
 	private AStarCourbeNode current;
 	private DStarLite dstarlite;
 	private DynamicObstacles dynamicObs;
 	private double courbureMax;
 	private boolean printObs;
-	private boolean useCercle;
 	private ObstaclesFixes fixes;
 	
 	private DirectionStrategy directionstrategyactuelle;
 	private XY_RW arrivee = new XY_RW();
-	private CercleArrivee cercle;
 	private List<VitesseCourbure> listeVitesse = new ArrayList<VitesseCourbure>();
 	private ListIterator<VitesseCourbure> iterator = listeVitesse.listIterator();
 	private List<ObstaclesFixes> disabledObstaclesFixes = new ArrayList<ObstaclesFixes>();
 
-	public ArcManager(Log log, ObstaclesFixes fixes, ClothoidesComputer clotho, CircleComputer circlecomputer, AbstractPrintBuffer buffer, DStarLite dstarlite, BezierComputer bezier, CercleArrivee cercle, Config config, DynamicObstacles dynamicObs)
+	public ArcManager(Log log, ObstaclesFixes fixes, ClothoidesComputer clotho, AbstractPrintBuffer buffer, DStarLite dstarlite, BezierComputer bezier, Config config, DynamicObstacles dynamicObs)
 	{
-		this.circlecomputer = circlecomputer;
+//		this.circlecomputer = circlecomputer;
 		this.fixes = fixes;
 		this.dynamicObs = dynamicObs;
 		this.bezier = bezier;
@@ -70,7 +68,6 @@ public class ArcManager
 		this.clotho = clotho;
 		this.buffer = buffer;
 		this.dstarlite = dstarlite;
-		this.cercle = cercle;
 
 		for(VitesseCourbure v : VitesseClotho.values())
 			listeVitesse.add(v);
@@ -179,7 +176,7 @@ public class ArcManager
 			if(current.getArc() == null)
 				return false;
 
-			if(v == VitesseBezier.BEZIER_QUAD && !useCercle)
+			if(v == VitesseBezier.BEZIER_QUAD)
 			{
 				ArcCourbeDynamique tmp;
 				tmp = bezier.interpolationQuadratique(current.robot.getCinematique(), arrivee);
@@ -189,7 +186,7 @@ public class ArcManager
 				successeur.cameFromArcDynamique = tmp;
 			}
 
-			else if(v == VitesseBezier.CIRCULAIRE_VERS_CERCLE && useCercle)
+/*			else if(v == VitesseBezier.CIRCULAIRE_VERS_CERCLE && useCercle)
 			{
 				ArcCourbeDynamique tmp;
 				tmp = circlecomputer.trajectoireCirculaireVersCentre(current.robot.getCinematique());
@@ -197,7 +194,7 @@ public class ArcManager
 					return false;
 
 				successeur.cameFromArcDynamique = tmp;
-			}
+			}*/
 
 			else
 				return false;
@@ -273,7 +270,6 @@ public class ArcManager
 	{
 		this.directionstrategyactuelle = directionstrategyactuelle;
 		arrivee.copy(this.arrivee);
-		useCercle = false;
 	}
 
 	/**
@@ -284,7 +280,6 @@ public class ArcManager
 	public void configureArcManagerWithCircle(DirectionStrategy directionstrategyactuelle)
 	{
 		this.directionstrategyactuelle = directionstrategyactuelle;
-		useCercle = true;
 	}
 
 	/**
@@ -340,15 +335,11 @@ public class ArcManager
 	
 	public boolean isArrivedPF(Cinematique successeur)
 	{
-		if(useCercle)
-			return cercle.isArrivedPF(successeur);
 		return successeur.getPosition().squaredDistance(arrivee) < 5;
 	}
 	
 	public boolean isArrivedAsser(Cinematique successeur)
 	{
-		if(useCercle)
-			return cercle.isArrivedAsser(successeur);
 		return successeur.getPosition().squaredDistance(arrivee) < 25;
 	}
 	
@@ -389,10 +380,5 @@ public class ArcManager
 		else
 			dstarlite.disableObstaclesFixes(null, depart.getObstacle());
 	}*/
-
-	public boolean isToCircle()
-	{
-		return useCercle;
-	}
 
 }

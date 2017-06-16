@@ -6,7 +6,6 @@
 package pfg.kraken.pathfinding.astar.arcs;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.LinkedList;
 import config.Config;
 import pfg.kraken.ConfigInfoKraken;
@@ -31,17 +30,15 @@ public class BezierComputer
 {
 	protected Log log;
 	private CinemObsPool memory;
-	private CercleArrivee cercle;
 	private double courbureMax;
 	private static final double deltaCourbureMax = 0.2;
 	private ClothoidesComputer clothocomputer;
 
-	public BezierComputer(Log log, CinemObsPool memory, ClothoidesComputer clothocomputer, CercleArrivee cercle, Config config)
+	public BezierComputer(Log log, CinemObsPool memory, ClothoidesComputer clothocomputer, Config config)
 	{
 		this.log = log;
 		this.memory = memory;
 		this.clothocomputer = clothocomputer;
-		this.cercle = cercle;
 
 		courbureMax = config.getDouble(ConfigInfoKraken.COURBURE_MAX);
 
@@ -147,42 +144,6 @@ public class BezierComputer
 			return prefixe;
 		}
 		return arc;
-	}
-
-	/**
-	 * Essai d'arrêt sur cercle. Fait une interpolation quadratique classique et
-	 * retire les points du cercle.
-	 * Aucune assurance sur l'orientation d'arrivée.
-	 * 
-	 * @param cinematiqueInitiale
-	 * @param vitesseMax
-	 * @return
-	 * @throws InterruptedException
-	 */
-	@Deprecated
-	public ArcCourbeDynamique interpolationQuadratiqueCercle(Cinematique cinematiqueInitiale)
-	{
-		ArcCourbeDynamique out = interpolationQuadratique(cinematiqueInitiale, cercle.position);
-		if(out == null)
-			return null;
-
-		boolean del = false;
-		Iterator<CinematiqueObs> it = out.arcs.iterator();
-		while(it.hasNext())
-		{
-			CinematiqueObs o = it.next();
-			if(del || cercle.isInCircle(o.getPosition()))
-			{
-				del = true;
-				memory.destroyNode(o);
-				it.remove();
-			}
-		}
-
-		if(out.getNbPoints() == 0)
-			return null;
-
-		return out;
 	}
 
 	/**

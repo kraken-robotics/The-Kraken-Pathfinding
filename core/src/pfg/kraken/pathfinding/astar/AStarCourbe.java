@@ -22,7 +22,6 @@ import pfg.kraken.memory.CinemObsPool;
 import pfg.kraken.memory.NodePool;
 import pfg.kraken.pathfinding.astar.arcs.ArcCourbe;
 import pfg.kraken.pathfinding.astar.arcs.ArcManager;
-import pfg.kraken.pathfinding.astar.arcs.CercleArrivee;
 import pfg.kraken.pathfinding.chemin.CheminPathfindingInterface;
 import pfg.kraken.pathfinding.chemin.DefaultCheminPathfinding;
 import pfg.kraken.pathfinding.dstarlite.DStarLite;
@@ -56,7 +55,6 @@ public class AStarCourbe
 	private AStarCourbeNode trajetDeSecours;
 	private CinemObsPool cinemMemory;
 	private DefaultCheminPathfinding defaultChemin;
-	private CercleArrivee cercle;
 	private boolean graphicTrajectory, graphicDStarLite, graphicTrajectoryAll;
 	private int dureeMaxPF;
 	private Speed vitesseMax;
@@ -95,7 +93,7 @@ public class AStarCourbe
 	/**
 	 * Constructeur du AStarCourbe
 	 */
-	public AStarCourbe(Log log, DefaultCheminPathfinding defaultChemin, DStarLite dstarlite, ArcManager arcmanager, NodePool memorymanager, CinemObsPool rectMemory, AbstractPrintBuffer buffer, CercleArrivee cercle, RobotState chrono, Config config)
+	public AStarCourbe(Log log, DefaultCheminPathfinding defaultChemin, DStarLite dstarlite, ArcManager arcmanager, NodePool memorymanager, CinemObsPool rectMemory, AbstractPrintBuffer buffer, RobotState chrono, Config config)
 	{
 		this.defaultChemin = defaultChemin;
 		this.log = log;
@@ -104,7 +102,6 @@ public class AStarCourbe
 		this.dstarlite = dstarlite;
 		this.cinemMemory = rectMemory;
 		this.buffer = buffer;
-		this.cercle = cercle;
 		graphicTrajectory = config.getBoolean(ConfigInfoKraken.GRAPHIC_TRAJECTORY);
 		graphicTrajectoryAll = config.getBoolean(ConfigInfoKraken.GRAPHIC_TRAJECTORY_ALL);
 		graphicDStarLite = config.getBoolean(ConfigInfoKraken.GRAPHIC_D_STAR_LITE_FINAL);
@@ -147,12 +144,7 @@ public class AStarCourbe
 
 		if(heuristique == null)
 		{
-			if(arcmanager.isToCircle()) // peut-être y a-t-il un autre bout du
-										// cercle qui n'a pas de problème
-										// d'heuristique
-				heuristique = arcmanager.heuristicDirect((depart.robot).getCinematique());
-			else
-				throw new NoPathException("Aucun chemin trouvé par le D* Lite !");
+			throw new NoPathException("Aucun chemin trouvé par le D* Lite !");
 		}
 
 		depart.f_score = heuristique / vitesseMax.getMaxForwardSpeed(0);
@@ -210,12 +202,7 @@ public class AStarCourbe
 
 				if(heuristique == null)
 				{
-					if(arcmanager.isToCircle()) // peut-être y a-t-il un autre
-												// bout du cercle qui n'a pas de
-												// problème d'heuristique
-						heuristique = arcmanager.heuristicDirect((depart.robot).getCinematique());
-					else
-						throw new NoPathException("Aucun chemin trouvé par le D* Lite !");
+					throw new NoPathException("Aucun chemin trouvé par le D* Lite !");
 				}
 
 				depart.f_score = heuristique / vitesseMax.getMaxForwardSpeed(0);

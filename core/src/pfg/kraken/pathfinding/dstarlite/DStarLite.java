@@ -13,7 +13,6 @@ import graphic.AbstractPrintBuffer;
 import pfg.kraken.ConfigInfoKraken;
 import pfg.kraken.Couleur;
 import pfg.kraken.obstacles.types.Obstacle;
-import pfg.kraken.pathfinding.astar.arcs.CercleArrivee;
 import pfg.kraken.pathfinding.dstarlite.gridspace.Direction;
 import pfg.kraken.pathfinding.dstarlite.gridspace.GridSpace;
 import pfg.kraken.pathfinding.dstarlite.gridspace.PointDirige;
@@ -41,7 +40,6 @@ public class DStarLite
 	private GridSpace gridspace;
 	private PointGridSpaceManager pointManager;
 	private PointDirigeManager pointDManager;
-	protected CercleArrivee cercle;
 	private boolean graphicDStarLite, graphicDStarLiteFinal, graphicHeuristique;
 	private boolean rechercheEnCours = false;
 
@@ -69,14 +67,13 @@ public class DStarLite
 	 * @param log
 	 * @param gridspace
 	 */
-	public DStarLite(Log log, GridSpace gridspace, PointGridSpaceManager pointManager, PointDirigeManager pointDManager, AbstractPrintBuffer buffer, CercleArrivee cercle, Config config)
+	public DStarLite(Log log, GridSpace gridspace, PointGridSpaceManager pointManager, PointDirigeManager pointDManager, AbstractPrintBuffer buffer, Config config)
 	{
 		this.log = log;
 		this.gridspace = gridspace;
 		this.pointManager = pointManager;
 		this.pointDManager = pointDManager;
 		this.buffer = buffer;
-		this.cercle = cercle;
 
 		obstaclesConnus = new BitSet(PointGridSpace.NB_POINTS * 8);
 		obstaclesConnus.or(gridspace.getCurrentObstacles());

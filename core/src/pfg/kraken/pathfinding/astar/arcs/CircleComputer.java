@@ -24,14 +24,12 @@ import pfg.kraken.utils.XY_RW;
 
 public class CircleComputer {
 
-	private CercleArrivee cercle;
 	private CinematiqueObs[] pointsAvancer = new CinematiqueObs[256];
 	private double courbureMax;
 	private CinemObsPool memory;
 	
-	public CircleComputer(Config config, CercleArrivee cercle, CinemObsPool memory)
+	public CircleComputer(Config config, CinemObsPool memory)
 	{
-		this.cercle = cercle;
 		this.memory = memory;
 		courbureMax = config.getDouble(ConfigInfoKraken.COURBURE_MAX);
 		int demieLargeurNonDeploye = config.getInt(ConfigInfoKraken.LARGEUR_NON_DEPLOYE) / 2;
@@ -42,14 +40,8 @@ public class CircleComputer {
 
 	}
 	
-	public ArcCourbeDynamique trajectoireCirculaireVersCentre(Cinematique cinematique)
+	public ArcCourbeDynamique trajectoireCirculaireVersCentre(Cinematique cinematique, double rayonP, XY centre)
 	{
-		return trajectoireCirculaireVersCentre(cinematique, cercle.rayon);
-	}
-	
-	public ArcCourbeDynamique trajectoireCirculaireVersCentre(Cinematique cinematique, double rayonP)
-	{
-		XY centre = cercle.position;
 		double rayon = rayonP;
 
 		double orientationReelleDesiree = Math.atan2(centre.getY() - cinematique.getPosition().getY(), centre.getX() - cinematique.getPosition().getX());
