@@ -6,12 +6,12 @@
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import kraken.pathfinding.dstarlite.gridspace.Direction;
-import kraken.pathfinding.dstarlite.gridspace.GridSpace;
-import kraken.pathfinding.dstarlite.gridspace.PointDirigeManager;
-import kraken.pathfinding.dstarlite.gridspace.PointGridSpace;
-import kraken.pathfinding.dstarlite.gridspace.PointGridSpaceManager;
-import kraken.utils.XY;
+import pfg.kraken.pathfinding.dstarlite.gridspace.Direction;
+import pfg.kraken.pathfinding.dstarlite.gridspace.GridSpace;
+import pfg.kraken.pathfinding.dstarlite.gridspace.PointDirigeManager;
+import pfg.kraken.pathfinding.dstarlite.gridspace.PointGridSpace;
+import pfg.kraken.pathfinding.dstarlite.gridspace.PointGridSpaceManager;
+import pfg.kraken.utils.XY;
 
 /**
  * Tests unitaires de GridSpace

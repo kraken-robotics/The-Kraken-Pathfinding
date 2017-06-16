@@ -7,8 +7,8 @@ import java.util.Random;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import kraken.pathfinding.dstarlite.DStarLiteNode;
-import kraken.pathfinding.dstarlite.EnhancedPriorityQueue;
+import pfg.kraken.pathfinding.dstarlite.DStarLiteNode;
+import pfg.kraken.pathfinding.dstarlite.EnhancedPriorityQueue;
 
 /**
  * Tests unitaires de l'Enhanced Priority Queue

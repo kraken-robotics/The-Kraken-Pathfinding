@@ -4,7 +4,7 @@
  */
 
 import org.junit.Test;
-import kraken.utils.XY_RW;
+import pfg.kraken.utils.XY_RW;
 import org.junit.Assert;
 
 /**

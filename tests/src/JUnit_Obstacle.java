@@ -5,10 +5,10 @@
 
 import org.junit.Assert;
 import org.junit.Test;
-import kraken.obstacles.types.ObstacleCircular;
-import kraken.obstacles.types.ObstacleRectangular;
-import kraken.obstacles.types.ObstacleRobot;
-import kraken.utils.XY;
+import pfg.kraken.obstacles.types.ObstacleCircular;
+import pfg.kraken.obstacles.types.ObstacleRectangular;
+import pfg.kraken.obstacles.types.ObstacleRobot;
+import pfg.kraken.utils.XY;
 
 /**
  * Test unitaire des obstacles

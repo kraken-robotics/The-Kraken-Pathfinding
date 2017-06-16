@@ -4,7 +4,7 @@
  */
 
 import org.junit.Test;
-import kraken.ConfigInfoKraken;
+import pfg.kraken.ConfigInfoKraken;
 
 /**
  * Tests unitaires pour la configuration... juste épique.

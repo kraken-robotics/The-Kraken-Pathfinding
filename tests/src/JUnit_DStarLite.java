@@ -7,10 +7,10 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import kraken.obstacles.types.ObstacleCircular;
-import kraken.pathfinding.dstarlite.DStarLite;
-import kraken.pathfinding.dstarlite.gridspace.GridSpace;
-import kraken.utils.XY;
+import pfg.kraken.obstacles.types.ObstacleCircular;
+import pfg.kraken.pathfinding.dstarlite.DStarLite;
+import pfg.kraken.pathfinding.dstarlite.gridspace.GridSpace;
+import pfg.kraken.utils.XY;
 
 /**
  * Tests unitaires de la recherche de chemin.

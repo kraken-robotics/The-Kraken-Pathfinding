@@ -4,12 +4,12 @@
  */
 
 import java.util.LinkedList;
-import kraken.Kraken;
-import kraken.exceptions.PathfindingException;
-import kraken.pathfinding.astar.AStarCourbe;
-import kraken.robot.ItineraryPoint;
-import kraken.utils.XY;
-import kraken.utils.XYO;
+import pfg.kraken.Kraken;
+import pfg.kraken.exceptions.PathfindingException;
+import pfg.kraken.pathfinding.astar.AStarCourbe;
+import pfg.kraken.robot.ItineraryPoint;
+import pfg.kraken.utils.XY;
+import pfg.kraken.utils.XYO;
 
 
 /**

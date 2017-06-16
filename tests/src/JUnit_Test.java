@@ -14,8 +14,8 @@ import org.junit.After;
 import config.Config;
 import graphic.Fenetre;
 import injector.Injector;
-import kraken.Kraken;
-import kraken.utils.Log;
+import pfg.kraken.Kraken;
+import pfg.kraken.utils.Log;
 
 /**
  * Classe mère de tous les tests.

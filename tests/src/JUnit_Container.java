@@ -7,10 +7,10 @@ import org.junit.Assert;
 import org.junit.Test;
 import config.Config;
 import injector.InjectorException;
-import kraken.obstacles.types.ObstacleCircular;
-import kraken.pathfinding.astar.AStarCourbe;
-import kraken.pathfinding.dstarlite.gridspace.GridSpace;
-import kraken.utils.XY;
+import pfg.kraken.obstacles.types.ObstacleCircular;
+import pfg.kraken.pathfinding.astar.AStarCourbe;
+import pfg.kraken.pathfinding.dstarlite.gridspace.GridSpace;
+import pfg.kraken.utils.XY;
 
 /**
  * Tests unitaires pour l'injector
