@@ -8,7 +8,7 @@ package pfg.kraken.obstacles.container;
 import java.util.Collections;
 import java.util.Iterator;
 
-import pfg.kraken.obstacles.types.ObstacleMasque;
+import pfg.kraken.obstacles.types.Obstacle;
 
 /**
  * An empty dynamical obstacles manager
@@ -19,13 +19,13 @@ import pfg.kraken.obstacles.types.ObstacleMasque;
 public class EmptyDynamicObstacles implements DynamicObstacles
 {
 	@Override
-	public Iterator<ObstacleMasque> getFutureDynamicObstacles(long date)
+	public Iterator<Obstacle> getFutureDynamicObstacles(long date)
 	{
 		return getCurrentDynamicObstacles();
 	}
 
 	@Override
-	public Iterator<ObstacleMasque> getCurrentDynamicObstacles()
+	public Iterator<Obstacle> getCurrentDynamicObstacles()
 	{
 		return Collections.emptyIterator();
 	}

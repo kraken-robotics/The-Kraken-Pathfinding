@@ -24,7 +24,6 @@ public class XY implements Serializable, Position
 	protected volatile double y;
 	private static NumberFormat formatter = new DecimalFormat("#0.00");
 
-	@SuppressWarnings("unused")
 	public XY(double longueur, double angle, boolean useless)
 	{
 		x = Math.cos(angle) * longueur;

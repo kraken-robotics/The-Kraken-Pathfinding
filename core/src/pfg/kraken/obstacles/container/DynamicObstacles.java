@@ -13,11 +13,11 @@ package pfg.kraken.obstacles.container;
 
 import java.util.Iterator;
 
-import pfg.kraken.obstacles.types.ObstacleMasque;
+import pfg.kraken.obstacles.types.Obstacle;
 
 public interface DynamicObstacles
 {
-	public Iterator<ObstacleMasque> getFutureDynamicObstacles(long date);
+	public Iterator<Obstacle> getFutureDynamicObstacles(long date);
 
-	public Iterator<ObstacleMasque> getCurrentDynamicObstacles();
+	public Iterator<Obstacle> getCurrentDynamicObstacles();
 }

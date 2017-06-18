@@ -10,7 +10,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import pfg.kraken.obstacles.types.Obstacle;
-import pfg.kraken.obstacles.types.ObstacleMasque;
 
 /**
  * A default dynamical obstacles manager
@@ -20,17 +19,17 @@ import pfg.kraken.obstacles.types.ObstacleMasque;
 
 public class DefaultDynamicObstacles implements DynamicObstacles
 {
-	private List<ObstacleMasque> obsList = new ArrayList<ObstacleMasque>();
+	private List<Obstacle> obsList = new ArrayList<Obstacle>();
 	
 	@Override
-	public Iterator<ObstacleMasque> getFutureDynamicObstacles(long date)
+	public Iterator<Obstacle> getFutureDynamicObstacles(long date)
 	{
 		return getCurrentDynamicObstacles();
 	}
 
 	public void add(Obstacle obs)
 	{
-		obsList.add(new ObstacleMasque(obs));
+		obsList.add(obs);
 	}
 	
 	public void clear()
@@ -39,7 +38,7 @@ public class DefaultDynamicObstacles implements DynamicObstacles
 	}
 	
 	@Override
-	public Iterator<ObstacleMasque> getCurrentDynamicObstacles()
+	public Iterator<Obstacle> getCurrentDynamicObstacles()
 	{
 		return obsList.iterator();
 	}

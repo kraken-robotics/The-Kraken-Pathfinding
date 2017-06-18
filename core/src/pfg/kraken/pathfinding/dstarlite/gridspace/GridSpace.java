@@ -15,7 +15,6 @@ import pfg.kraken.Couleur;
 import pfg.kraken.obstacles.container.DynamicObstacles;
 import pfg.kraken.obstacles.container.ObstaclesFixes;
 import pfg.kraken.obstacles.types.Obstacle;
-import pfg.kraken.obstacles.types.ObstacleMasque;
 import pfg.kraken.utils.Log;
 import pfg.kraken.utils.XY;
 
@@ -39,9 +38,7 @@ public class GridSpace implements Printable
 	protected Log log;
 	private DynamicObstacles dynamicObs;
 	private PointGridSpaceManager pointManager;
-	private MasqueManager masquemanager;
 	private AbstractPrintBuffer buffer;
-	private Iterator<ObstacleMasque> iteratorDStarLiteFirst, iteratorDStarLiteLast;
 	private int distanceMinimaleEntreProximite;
 	private int rayonRobot, rayonRobotObstaclesFixes;
 
@@ -55,13 +52,12 @@ public class GridSpace implements Printable
 	private BitSet[] newOldObstacles = new BitSet[2];
 	private Couleur[] grid = new Couleur[PointGridSpace.NB_POINTS];
 
-	public GridSpace(Log log, ObstaclesFixes fixes, DynamicObstacles dynamicObs, PointGridSpaceManager pointManager, AbstractPrintBuffer buffer, MasqueManager masquemanager, Config config)
+	public GridSpace(Log log, ObstaclesFixes fixes, DynamicObstacles dynamicObs, PointGridSpaceManager pointManager, AbstractPrintBuffer buffer, Config config)
 	{
 		this.dynamicObs = dynamicObs;
 		this.log = log;
 		this.pointManager = pointManager;
 		this.buffer = buffer;
-		this.masquemanager = masquemanager;
 		newOldObstacles[0] = oldObstacles;
 		newOldObstacles[1] = newObstacles;
 
@@ -146,7 +142,7 @@ public class GridSpace implements Printable
 	 * 
 	 * @return
 	 */
-	public BitSet getCurrentObstacles()
+/*	public BitSet getCurrentObstacles()
 	{
 		iteratorDStarLiteFirst = dynamicObs.getCurrentDynamicObstacles();
 		iteratorDStarLiteLast = dynamicObs.getCurrentDynamicObstacles();
@@ -162,7 +158,7 @@ public class GridSpace implements Printable
 		}
 
 		return newObstacles;
-	}
+	}*/
 
 	/**
 	 * Retourne les obstacles à supprimer (indice 0) et ceux à ajouter (indice

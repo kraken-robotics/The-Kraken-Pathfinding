@@ -16,7 +16,6 @@ import pfg.kraken.obstacles.container.DynamicObstacles;
 import pfg.kraken.obstacles.container.ObstaclesFixes;
 import pfg.kraken.obstacles.types.Obstacle;
 import pfg.kraken.obstacles.types.ObstacleArcCourbe;
-import pfg.kraken.obstacles.types.ObstacleMasque;
 import pfg.kraken.pathfinding.astar.AStarCourbeNode;
 import pfg.kraken.pathfinding.astar.DirectionStrategy;
 import pfg.kraken.pathfinding.astar.arcs.vitesses.VitesseBezier;
@@ -119,7 +118,7 @@ public class ArcManager
 		// Collision avec un obstacle de proximité ?
 
 		try {
-			Iterator<ObstacleMasque> iter = dynamicObs.getFutureDynamicObstacles(0); // TODO date !
+			Iterator<Obstacle> iter = dynamicObs.getFutureDynamicObstacles(0); // TODO date !
 			while(iter.hasNext())
 				if(iter.next().isColliding(obs))
 				{

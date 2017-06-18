@@ -76,7 +76,7 @@ public class DStarLite
 		this.buffer = buffer;
 
 		obstaclesConnus = new BitSet(PointGridSpace.NB_POINTS * 8);
-		obstaclesConnus.or(gridspace.getCurrentObstacles());
+//		obstaclesConnus.or(gridspace.getCurrentObstacles());
 
 		for(int i = 0; i < PointGridSpace.NB_POINTS; i++)
 			memory[i] = new DStarLiteNode(pointManager.get(i));
