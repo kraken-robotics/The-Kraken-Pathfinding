@@ -12,7 +12,6 @@ import java.text.NumberFormat;
 import graphic.Fenetre;
 import graphic.printable.Layer;
 import graphic.printable.Printable;
-import pfg.kraken.pathfinding.dstarlite.gridspace.PointGridSpace;
 import pfg.kraken.utils.XY;
 import pfg.kraken.utils.XYO;
 import pfg.kraken.utils.XY_RW;
@@ -244,7 +243,7 @@ public class Cinematique implements Printable, Serializable
 	@Override
 	public void print(Graphics g, Fenetre f)
 	{
-		double n = PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS / 2;
+		double n = 50;
 		XY_RW point1 = new XY_RW(n, 0), point2 = new XY_RW(-n / 2, n / 2), point3 = new XY_RW(-n / 2, -n / 2);
 		point1.rotate(orientationGeometrique).plus(position);
 		point2.rotate(orientationGeometrique).plus(position);

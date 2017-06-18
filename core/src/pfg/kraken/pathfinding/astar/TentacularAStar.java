@@ -25,7 +25,6 @@ import pfg.kraken.pathfinding.astar.tentacles.TentacleManager;
 import pfg.kraken.pathfinding.chemin.CheminPathfindingInterface;
 import pfg.kraken.pathfinding.chemin.DefaultCheminPathfinding;
 import pfg.kraken.pathfinding.dstarlite.DStarLite;
-import pfg.kraken.pathfinding.dstarlite.gridspace.PointGridSpace;
 import pfg.kraken.robot.Cinematique;
 import pfg.kraken.robot.DefaultSpeed;
 import pfg.kraken.robot.ItineraryPoint;
@@ -81,7 +80,7 @@ public class TentacularAStar
 	}
 
 	private final HashSet<AStarNode> closedset = new HashSet<AStarNode>();
-	private final PriorityQueue<AStarNode> openset = new PriorityQueue<AStarNode>(PointGridSpace.NB_POINTS, new AStarCourbeNodeComparator());
+	private final PriorityQueue<AStarNode> openset = new PriorityQueue<AStarNode>(5000, new AStarCourbeNodeComparator());
 	private Stack<Tentacle> pileTmp = new Stack<Tentacle>();
 	private LinkedList<ItineraryPoint> trajectory = new LinkedList<ItineraryPoint>();
 
@@ -517,7 +516,7 @@ public class TentacularAStar
 
 		// On met à jour le D* Lite
 		dstarlite.updateStart(depart.robot.getCinematique().getPosition());
-		dstarlite.updateObstaclesEnnemi();
+		dstarlite.updateObstacles();
 		if(graphicDStarLite)
 			dstarlite.itineraireBrut();
 

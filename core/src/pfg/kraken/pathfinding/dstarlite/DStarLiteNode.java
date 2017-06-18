@@ -9,8 +9,7 @@ import java.awt.Graphics;
 import graphic.Fenetre;
 import graphic.printable.Printable;
 import pfg.kraken.Couleur;
-import pfg.kraken.pathfinding.dstarlite.gridspace.PointGridSpace;
-import pfg.kraken.utils.XY_RW;
+import pfg.kraken.pathfinding.dstarlite.navmesh.NavmeshNode;
 
 /**
  * Un nœud du D* Lite.
@@ -22,7 +21,7 @@ import pfg.kraken.utils.XY_RW;
 public class DStarLiteNode implements Printable
 {
 	private static final long serialVersionUID = -6800876007134374180L;
-	public final PointGridSpace gridpoint;
+	public final NavmeshNode gridpoint;
 	public final Cle cle = new Cle();
 	public int g = Integer.MAX_VALUE, rhs = Integer.MAX_VALUE;
 	public Double heuristiqueOrientation = null;
@@ -34,7 +33,7 @@ public class DStarLiteNode implements Printable
 	public boolean inOpenSet = false;
 	public long nbPF = 0;
 
-	public DStarLiteNode(PointGridSpace gridpoint)
+	public DStarLiteNode(NavmeshNode gridpoint)
 	{
 		this.gridpoint = gridpoint;
 	}
@@ -42,21 +41,19 @@ public class DStarLiteNode implements Printable
 	@Override
 	public final int hashCode()
 	{
-		return gridpoint.hashcode;
+		return gridpoint.nb;
 	}
 
 	@Override
 	public final boolean equals(Object o)
 	{
-		return gridpoint.hashcode == o.hashCode();
+		return gridpoint.nb == o.hashCode();
 	}
 
 	@Override
 	public String toString()
 	{
-		int x = gridpoint.x;
-		int y = gridpoint.y;
-		return x + " " + y + " (" + cle + ")";
+		return gridpoint + " (" + cle + ")";
 	}
 
 	/**
@@ -81,9 +78,9 @@ public class DStarLiteNode implements Printable
 	public void print(Graphics g, Fenetre f)
 	{
 		g.setColor(Couleur.HEURISTIQUE.couleur);
-		if(heuristiqueOrientation != null)
+/*		if(heuristiqueOrientation != null)
 		{
-			double n = PointGridSpace.DISTANCE_ENTRE_DEUX_POINTS / 2;
+			double n = NavmeshNode.DISTANCE_ENTRE_DEUX_POINTS / 2;
 			XY_RW point1 = new XY_RW(n, 0), point2 = new XY_RW(-n / 2, n / 2), point3 = new XY_RW(-n / 2, -n / 2);
 			point1.rotate(heuristiqueOrientation).plus(gridpoint.computeVec2());
 			point2.rotate(heuristiqueOrientation).plus(gridpoint.computeVec2());
@@ -92,7 +89,7 @@ public class DStarLiteNode implements Printable
 			int[] Y = { f.YtoWindow((int) point1.getY()), f.YtoWindow((int) point2.getY()), f.YtoWindow((int) point3.getY()) };
 
 			g.drawPolygon(X, Y, 3);
-		}
+		}*/
 	}
 
 	@Override

@@ -9,8 +9,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import pfg.kraken.pathfinding.dstarlite.gridspace.PointGridSpace;
-
 /**
  * Une priority queue qui permet de faire percoler
  * À la racine il y a le nœud de plus petite clé
@@ -22,10 +20,15 @@ import pfg.kraken.pathfinding.dstarlite.gridspace.PointGridSpace;
 
 public class EnhancedPriorityQueue
 {
-	private DStarLiteNode[] tab = new DStarLiteNode[PointGridSpace.NB_POINTS];
+	private DStarLiteNode[] tab;
 	private int firstAvailable = 1;
 	private DStarLiteNode lastInserted = null;
 
+	EnhancedPriorityQueue(int size)
+	{
+		tab = new DStarLiteNode[size];
+	}
+	
 	/**
 	 * Renvoie la racine et la supprime
 	 * 

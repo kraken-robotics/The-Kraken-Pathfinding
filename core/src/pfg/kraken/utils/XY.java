@@ -171,4 +171,12 @@ public class XY implements Serializable, Position
 	{
 		return Math.sqrt(x * x + y * y);
 	}
+	
+	public final int distanceOctile(XY other)
+	{
+		double dx = Math.abs(x - other.x);
+		double dy = Math.abs(y - other.y);
+		return (int) (1000 * Math.max(dx, dy) + 414 * Math.min(dx, dy));
+	}
+
 }
