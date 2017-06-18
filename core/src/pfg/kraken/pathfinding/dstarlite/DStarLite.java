@@ -10,9 +10,6 @@ import java.util.List;
 import config.Config;
 import graphic.AbstractPrintBuffer;
 import pfg.kraken.ConfigInfoKraken;
-import pfg.kraken.pathfinding.dstarlite.navmesh.Navmesh;
-import pfg.kraken.pathfinding.dstarlite.navmesh.NavmeshEdge;
-import pfg.kraken.pathfinding.dstarlite.navmesh.NavmeshNode;
 import pfg.kraken.robot.Cinematique;
 import pfg.kraken.utils.Log;
 import pfg.kraken.utils.XY;
@@ -31,7 +28,7 @@ import pfg.kraken.utils.XY;
 public class DStarLite
 {
 	protected Log log;
-	private Navmesh gridspace;
+	private Navmesh navmesh;
 	private boolean graphicDStarLite, graphicDStarLiteFinal, graphicHeuristique;
 	private boolean rechercheEnCours = false;
 
@@ -55,17 +52,17 @@ public class DStarLite
 	 * @param log
 	 * @param gridspace
 	 */
-	public DStarLite(Log log, Navmesh gridspace, AbstractPrintBuffer buffer, Config config)
+	public DStarLite(Log log, Navmesh navmesh, AbstractPrintBuffer buffer, Config config)
 	{
 		this.log = log;
-		this.gridspace = gridspace;
+		this.navmesh = navmesh;
 		this.buffer = buffer;
-		int nbPoints = gridspace.getNodeNb();
+		int nbPoints = navmesh.nodes.length;
 		openset = new EnhancedPriorityQueue(nbPoints);
 		
 		memory = new DStarLiteNode[nbPoints];
 		for(int i = 0; i < nbPoints; i++)
-			memory[i] = new DStarLiteNode(gridspace.getNode(i));
+			memory[i] = new DStarLiteNode(navmesh.nodes[i]);
 
 		graphicDStarLite = config.getBoolean(ConfigInfoKraken.GRAPHIC_D_STAR_LITE);
 		graphicDStarLiteFinal = config.getBoolean(ConfigInfoKraken.GRAPHIC_D_STAR_LITE_FINAL);
@@ -293,10 +290,10 @@ public class DStarLite
 		nbPF++;
 		km = 0;
 
-		depart = getFromMemory(gridspace.getNearest(positionRobot));
+		depart = getFromMemory(navmesh.getNearest(positionRobot));
 		lastDepart = depart.gridpoint;
 
-		this.arrivee = getFromMemory(gridspace.getNearest(positionArrivee));
+		this.arrivee = getFromMemory(navmesh.getNearest(positionArrivee));
 		this.arrivee.rhs = 0;
 		this.arrivee.cle.set(distanceHeuristique(this.arrivee.gridpoint), 0);
 
@@ -308,7 +305,7 @@ public class DStarLite
 
 	public synchronized void updateStart(XY positionRobot)
 	{
-		updateStart(gridspace.getNearest(positionRobot));
+		updateStart(navmesh.getNearest(positionRobot));
 	}
 
 	private synchronized final void updateStart(NavmeshNode p)
@@ -338,9 +335,7 @@ public class DStarLite
 	 */
 	public synchronized void updateObstacles()
 	{
-		NavmeshEdge[] edges = gridspace.getEdges();
-		
-		for(NavmeshEdge e: edges)
+		for(NavmeshEdge e: navmesh.edges)
 		{
 			if(!e.hasChanged())
 				continue;
@@ -451,7 +446,7 @@ public class DStarLite
 			return null;
 		}
 
-		NavmeshNode pos = gridspace.getNearest(c.getPosition());
+		NavmeshNode pos = navmesh.getNearest(c.getPosition());
 
 		updateStart(pos);
 		DStarLiteNode premier = getFromMemoryUpdated(pos);

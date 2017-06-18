@@ -3,7 +3,7 @@
  * Distributed under the MIT License.
  */
 
-package pfg.kraken.pathfinding.dstarlite.navmesh;
+package pfg.kraken.pathfinding.dstarlite;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -18,13 +18,13 @@ import pfg.kraken.obstacles.types.Obstacle;
  *
  */
 
-public class NavmeshEdge implements Serializable
+class NavmeshEdge implements Serializable
 {
 	private static final long serialVersionUID = 7904466980326128967L;
-	public final int distance;
-	public boolean lastConsultedState = false;
-	public final NavmeshNode[] points = new NavmeshNode[2];
-	public final List<Obstacle> obstructingObstacle = new ArrayList<Obstacle>();
+	final int distance;
+	private boolean lastConsultedState = false;
+	final NavmeshNode[] points = new NavmeshNode[2];
+	final List<Obstacle> obstructingObstacle = new ArrayList<Obstacle>();
 	
 	NavmeshEdge(NavmeshNode p1, NavmeshNode p2)
 	{

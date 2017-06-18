@@ -3,7 +3,7 @@
  * Distributed under the MIT License.
  */
 
-package pfg.kraken.pathfinding.dstarlite.navmesh;
+package pfg.kraken.pathfinding.dstarlite;
 
 import graphic.Fenetre;
 import graphic.printable.Layer;
@@ -26,12 +26,14 @@ public class Navmesh implements Printable
 {
 	private static final long serialVersionUID = 3849267693380819201L;
 	protected Log log;
-	private NavmeshNode[] nodes;
-	private NavmeshEdge[] edges;
+	final NavmeshNode[] nodes;
+	final NavmeshEdge[] edges;
 
 	public Navmesh(Log log)
 	{
 		this.log = log;
+		nodes = new NavmeshNode[0];
+		edges = new NavmeshEdge[0];
 	}
 	
 	@Override
@@ -46,16 +48,6 @@ public class Navmesh implements Printable
 		return Layer.MIDDLE.ordinal();
 	}
 
-	public NavmeshEdge[] getEdges()
-	{
-		return edges;
-	}
-	
-	public int getNodeNb()
-	{
-		return nodes.length;
-	}
-	
 	public double getDistance(NavmeshNode n1, NavmeshNode n2)
 	{
 		return 0;
@@ -64,11 +56,6 @@ public class Navmesh implements Printable
 	public NavmeshNode getNearest(XY position)
 	{
 		return null;
-	}
-
-	public NavmeshNode getNode(int i)
-	{
-		return nodes[i];
 	}
 
 }

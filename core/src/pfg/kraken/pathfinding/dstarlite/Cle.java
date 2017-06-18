@@ -12,7 +12,7 @@ package pfg.kraken.pathfinding.dstarlite;
  *
  */
 
-public class Cle
+class Cle
 {
 	// Quand un nœud est consistent, first = vraie distance + heuristique,
 	// second = vraie distance
@@ -60,22 +60,5 @@ public class Cle
 		int tmp = first - autre.first;
 		return tmp > 0 || (tmp == 0 && second - autre.second > 0);
 	}
-
-	/**
-	 * Pour calculer a > b, on vérifie a.compare(b) > 0
-	 * 
-	 * @param autre
-	 * @return
-	 */
-	/*
-	 * public final int compare(Cle autre)
-	 * {
-	 * // Ordre lexico : on compare d'abord first, puis second
-	 * int tmp = first - autre.first;
-	 * if(tmp != 0)
-	 * return tmp;
-	 * return second - autre.second;
-	 * }
-	 */
 
 }

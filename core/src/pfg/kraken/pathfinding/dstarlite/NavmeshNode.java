@@ -3,7 +3,7 @@
  * Distributed under the MIT License.
  */
 
-package pfg.kraken.pathfinding.dstarlite.navmesh;
+package pfg.kraken.pathfinding.dstarlite;
 
 import java.awt.Graphics;
 import java.io.Serializable;
@@ -13,13 +13,13 @@ import graphic.printable.Printable;
 import pfg.kraken.utils.XY;
 
 /**
- * Un point du gridspace
+ * Un point du navmesh
  * 
  * @author pf
  *
  */
 
-public class NavmeshNode implements Printable, Serializable
+class NavmeshNode implements Printable, Serializable
 {
 	private static final long serialVersionUID = -6588410126587155794L;
 
@@ -27,9 +27,9 @@ public class NavmeshNode implements Printable, Serializable
 	 * Attention ! Le repère de ce x,y est celui pour lequel x et y sont
 	 * toujours positifs
 	 */
-	public final int nb;
-	public final XY position;
-	public NavmeshEdge[] edges = null;
+	final int nb;
+	final XY position;
+	final NavmeshEdge[] edges = null;
 
 	/**
 	 * Construit à partir du hashCode
@@ -40,11 +40,6 @@ public class NavmeshNode implements Printable, Serializable
 	{
 		this.position = position;
 		this.nb = nb;
-	}
-	
-	public void setEdges(NavmeshEdge[] edges)
-	{
-		this.edges = edges;
 	}
 
 	@Override
