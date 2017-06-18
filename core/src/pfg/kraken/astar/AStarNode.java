@@ -3,17 +3,17 @@
  * Distributed under the MIT License.
  */
 
-package pfg.kraken.pathfinding.astar;
+package pfg.kraken.astar;
 
 import java.awt.Color;
 import java.awt.Graphics;
 import graphic.Fenetre;
 import graphic.printable.Printable;
 import pfg.kraken.Couleur;
+import pfg.kraken.astar.tentacles.DynamicTentacle;
+import pfg.kraken.astar.tentacles.StaticTentacle;
+import pfg.kraken.astar.tentacles.Tentacle;
 import pfg.kraken.memory.Memorizable;
-import pfg.kraken.pathfinding.astar.tentacles.Tentacle;
-import pfg.kraken.pathfinding.astar.tentacles.DynamicTentacle;
-import pfg.kraken.pathfinding.astar.tentacles.StaticTentacle;
 import pfg.kraken.robot.RobotState;
 
 /**

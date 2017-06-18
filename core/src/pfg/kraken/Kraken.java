@@ -11,12 +11,12 @@ import graphic.Fenetre;
 import graphic.AbstractPrintBuffer;
 import injector.Injector;
 import injector.InjectorException;
+import pfg.kraken.astar.TentacularAStar;
+import pfg.kraken.astar.tentacles.Tentacle;
 import pfg.kraken.obstacles.container.DynamicObstacles;
 import pfg.kraken.obstacles.container.EmptyDynamicObstacles;
 import pfg.kraken.obstacles.container.StaticObstacles;
 import pfg.kraken.obstacles.types.Obstacle;
-import pfg.kraken.pathfinding.astar.TentacularAStar;
-import pfg.kraken.pathfinding.astar.tentacles.Tentacle;
 import pfg.kraken.utils.*;
 
 /**

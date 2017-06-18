@@ -8,7 +8,7 @@ package pfg.kraken.memory;
 
 import config.Config;
 import pfg.kraken.ConfigInfoKraken;
-import pfg.kraken.pathfinding.astar.tentacles.DynamicTentacle;
+import pfg.kraken.astar.tentacles.DynamicTentacle;
 import pfg.kraken.robot.CinematiqueObs;
 import pfg.kraken.utils.Log;
 

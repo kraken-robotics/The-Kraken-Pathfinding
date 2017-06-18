@@ -3,7 +3,7 @@
  * Distributed under the MIT License.
  */
 
-package pfg.kraken.pathfinding.dstarlite;
+package pfg.kraken.dstarlite;
 
 /**
  * Clé utilisée dans le D* lite.

@@ -8,7 +8,7 @@ package pfg.kraken.memory;
 
 import config.Config;
 import pfg.kraken.ConfigInfoKraken;
-import pfg.kraken.pathfinding.astar.AStarNode;
+import pfg.kraken.astar.AStarNode;
 import pfg.kraken.robot.RobotState;
 import pfg.kraken.utils.Log;
 

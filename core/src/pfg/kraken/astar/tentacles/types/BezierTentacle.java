@@ -3,9 +3,9 @@
  * Distributed under the MIT License.
  */
 
-package pfg.kraken.pathfinding.astar.tentacles.types;
+package pfg.kraken.astar.tentacles.types;
 
-import pfg.kraken.pathfinding.astar.DirectionStrategy;
+import pfg.kraken.astar.DirectionStrategy;
 import pfg.kraken.robot.Cinematique;
 
 /**

@@ -3,7 +3,7 @@
  * Distributed under the MIT License.
  */
 
-package pfg.kraken.pathfinding.astar;
+package pfg.kraken.astar;
 
 /**
  * Énumération des différentes stratégies de déplacement pour les trajectoires

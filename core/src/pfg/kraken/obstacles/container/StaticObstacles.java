@@ -38,4 +38,12 @@ public class StaticObstacles
     	return obstacles;
     }
 
+    public int hashCode()
+    {
+    	int out = 0;
+    	for(Obstacle o : obstacles)
+    		out += o.hashCode();
+    	return out;
+    }
+    
 }

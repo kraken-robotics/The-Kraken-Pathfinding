@@ -3,7 +3,7 @@
  * Distributed under the MIT License.
  */
 
-package pfg.kraken.pathfinding.dstarlite;
+package pfg.kraken.dstarlite;
 
 import java.awt.Graphics;
 import java.io.Serializable;

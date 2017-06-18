@@ -3,7 +3,7 @@
  * Distributed under the MIT License.
  */
 
-package pfg.kraken.pathfinding.astar.tentacles;
+package pfg.kraken.astar.tentacles;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -17,11 +17,11 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import graphic.AbstractPrintBuffer;
+import pfg.kraken.astar.tentacles.types.ClothoTentacle;
+import pfg.kraken.astar.tentacles.types.StraightingTentacle;
+import pfg.kraken.astar.tentacles.types.TurnoverTentacle;
 import pfg.kraken.memory.CinemObsPool;
 import pfg.kraken.obstacles.types.CircularObstacle;
-import pfg.kraken.pathfinding.astar.tentacles.types.ClothoTentacle;
-import pfg.kraken.pathfinding.astar.tentacles.types.TurnoverTentacle;
-import pfg.kraken.pathfinding.astar.tentacles.types.StraightingTentacle;
 import pfg.kraken.robot.Cinematique;
 import pfg.kraken.robot.CinematiqueObs;
 import pfg.kraken.robot.RobotState;
@@ -152,7 +152,7 @@ public class ClothoidesComputer
 		}
 	}
 
-	public void getTrajectoire(Tentacle depart, ClothoTentacle vitesse, StaticTentacle modified)
+	void getTrajectoire(Tentacle depart, ClothoTentacle vitesse, StaticTentacle modified)
 	{
 		CinematiqueObs last = depart.getLast();
 		getTrajectoire(last, vitesse, modified);
@@ -166,7 +166,7 @@ public class ClothoidesComputer
 	 * @param vitesse
 	 * @param modified
 	 */
-	public final void getTrajectoire(RobotState robot, ClothoTentacle vitesse, StaticTentacle modified)
+	final void getTrajectoire(RobotState robot, ClothoTentacle vitesse, StaticTentacle modified)
 	{
 		getTrajectoire(robot.getCinematique(), vitesse, modified);
 	}
@@ -184,7 +184,7 @@ public class ClothoidesComputer
 	 * @param distance_mm
 	 * @return
 	 */
-	public final void getTrajectoire(Cinematique cinematiqueInitiale, ClothoTentacle vitesse, StaticTentacle modified)
+	final void getTrajectoire(Cinematique cinematiqueInitiale, ClothoTentacle vitesse, StaticTentacle modified)
 	{
 		// modified.v = vitesse;
 		// log.debug(vitesse);
@@ -265,7 +265,7 @@ public class ClothoidesComputer
 	 * @return
 	 * @throws InterruptedException
 	 */
-	public final DynamicTentacle getTrajectoireRamene(Cinematique cinematiqueInitiale, StraightingTentacle vitesseRamene)
+	final DynamicTentacle getTrajectoireRamene(Cinematique cinematiqueInitiale, StraightingTentacle vitesseRamene)
 	{
 		double courbure = cinematiqueInitiale.courbureGeometrique;
 		double orientation = cinematiqueInitiale.orientationGeometrique;
@@ -540,7 +540,7 @@ public class ClothoidesComputer
 	 * @return
 	 * @throws InterruptedException
 	 */
-	public final DynamicTentacle getTrajectoireDemiTour(Cinematique cinematiqueInitiale, TurnoverTentacle vitesse)
+	final DynamicTentacle getTrajectoireDemiTour(Cinematique cinematiqueInitiale, TurnoverTentacle vitesse)
 	{
 		List<CinematiqueObs> trajet = getTrajectoireQuartDeTour(cinematiqueInitiale, vitesse.v, false);
 		trajet.addAll(getTrajectoireQuartDeTour(trajet.get(trajet.size() - 1), vitesse.v, true)); // on

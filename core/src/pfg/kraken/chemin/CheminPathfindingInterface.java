@@ -3,7 +3,7 @@
  * Distributed under the MIT License.
  */
 
-package pfg.kraken.pathfinding.chemin;
+package pfg.kraken.chemin;
 
 import java.util.LinkedList;
 

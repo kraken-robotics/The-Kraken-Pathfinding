@@ -3,7 +3,7 @@
  * Distributed under the MIT License.
  */
 
-package pfg.kraken.pathfinding.astar.tentacles;
+package pfg.kraken.astar.tentacles;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -12,18 +12,18 @@ import java.util.ListIterator;
 import config.Config;
 import graphic.AbstractPrintBuffer;
 import pfg.kraken.ConfigInfoKraken;
+import pfg.kraken.astar.AStarNode;
+import pfg.kraken.astar.DirectionStrategy;
+import pfg.kraken.astar.tentacles.types.BezierTentacle;
+import pfg.kraken.astar.tentacles.types.ClothoTentacle;
+import pfg.kraken.astar.tentacles.types.StraightingTentacle;
+import pfg.kraken.astar.tentacles.types.TentacleType;
+import pfg.kraken.astar.tentacles.types.TurnoverTentacle;
+import pfg.kraken.dstarlite.DStarLite;
 import pfg.kraken.obstacles.container.DynamicObstacles;
 import pfg.kraken.obstacles.container.StaticObstacles;
 import pfg.kraken.obstacles.types.Obstacle;
 import pfg.kraken.obstacles.types.TentacleObstacle;
-import pfg.kraken.pathfinding.astar.AStarNode;
-import pfg.kraken.pathfinding.astar.DirectionStrategy;
-import pfg.kraken.pathfinding.astar.tentacles.types.BezierTentacle;
-import pfg.kraken.pathfinding.astar.tentacles.types.ClothoTentacle;
-import pfg.kraken.pathfinding.astar.tentacles.types.TentacleType;
-import pfg.kraken.pathfinding.astar.tentacles.types.TurnoverTentacle;
-import pfg.kraken.pathfinding.astar.tentacles.types.StraightingTentacle;
-import pfg.kraken.pathfinding.dstarlite.DStarLite;
 import pfg.kraken.robot.Cinematique;
 import pfg.kraken.robot.Speed;
 import pfg.kraken.utils.Log;
@@ -55,7 +55,7 @@ public class TentacleManager
 	private XY_RW arrivee = new XY_RW();
 	private List<TentacleType> listeVitesse = new ArrayList<TentacleType>();
 	private ListIterator<TentacleType> iterator = listeVitesse.listIterator();
-	private List<StaticObstacles> disabledObstaclesFixes = new ArrayList<StaticObstacles>();
+//	private List<StaticObstacles> disabledObstaclesFixes = new ArrayList<StaticObstacles>();
 
 	public TentacleManager(Log log, StaticObstacles fixes, ClothoidesComputer clotho, AbstractPrintBuffer buffer, DStarLite dstarlite, BezierComputer bezier, Config config, DynamicObstacles dynamicObs)
 	{
@@ -109,7 +109,7 @@ public class TentacleManager
 
 		// Collision avec un obstacle fixe?
 		for(Obstacle o : fixes.getObstacles())
-			if(!disabledObstaclesFixes.contains(o) && o.isColliding(obs))
+			if(/*!disabledObstaclesFixes.contains(o) && */o.isColliding(obs))
 			{
 				// log.debug("Collision avec "+o);
 				return false;

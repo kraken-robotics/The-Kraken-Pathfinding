@@ -3,7 +3,7 @@
  * Distributed under the MIT License.
  */
 
-package pfg.kraken.pathfinding.astar;
+package pfg.kraken.astar;
 
 import java.util.Comparator;
 import java.util.HashSet;
@@ -13,6 +13,11 @@ import java.util.Stack;
 import config.Config;
 import graphic.AbstractPrintBuffer;
 import pfg.kraken.ConfigInfoKraken;
+import pfg.kraken.astar.tentacles.Tentacle;
+import pfg.kraken.astar.tentacles.TentacleManager;
+import pfg.kraken.chemin.CheminPathfindingInterface;
+import pfg.kraken.chemin.DefaultCheminPathfinding;
+import pfg.kraken.dstarlite.DStarLite;
 import pfg.kraken.exceptions.NoPathException;
 import pfg.kraken.exceptions.NotFastEnoughException;
 import pfg.kraken.exceptions.NotInitializedPathfindingException;
@@ -20,11 +25,6 @@ import pfg.kraken.exceptions.PathfindingException;
 import pfg.kraken.exceptions.TimeoutException;
 import pfg.kraken.memory.CinemObsPool;
 import pfg.kraken.memory.NodePool;
-import pfg.kraken.pathfinding.astar.tentacles.Tentacle;
-import pfg.kraken.pathfinding.astar.tentacles.TentacleManager;
-import pfg.kraken.pathfinding.chemin.CheminPathfindingInterface;
-import pfg.kraken.pathfinding.chemin.DefaultCheminPathfinding;
-import pfg.kraken.pathfinding.dstarlite.DStarLite;
 import pfg.kraken.robot.Cinematique;
 import pfg.kraken.robot.DefaultSpeed;
 import pfg.kraken.robot.ItineraryPoint;

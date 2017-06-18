@@ -3,16 +3,16 @@
  * Distributed under the MIT License.
  */
 
-package pfg.kraken.pathfinding.astar.tentacles;
+package pfg.kraken.astar.tentacles;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 import config.Config;
 import pfg.kraken.ConfigInfoKraken;
+import pfg.kraken.astar.tentacles.types.BezierTentacle;
+import pfg.kraken.astar.tentacles.types.ClothoTentacle;
+import pfg.kraken.astar.tentacles.types.StraightingTentacle;
 import pfg.kraken.memory.CinemObsPool;
-import pfg.kraken.pathfinding.astar.tentacles.types.BezierTentacle;
-import pfg.kraken.pathfinding.astar.tentacles.types.ClothoTentacle;
-import pfg.kraken.pathfinding.astar.tentacles.types.StraightingTentacle;
 import pfg.kraken.robot.Cinematique;
 import pfg.kraken.robot.CinematiqueObs;
 import pfg.kraken.utils.Log;
@@ -67,7 +67,7 @@ public class BezierComputer
 	 * @throws MemoryPoolException
 	 * @throws InterruptedException
 	 */
-	public DynamicTentacle interpolationQuadratique(Cinematique cinematiqueInitiale, XY arrivee)
+	DynamicTentacle interpolationQuadratique(Cinematique cinematiqueInitiale, XY arrivee)
 	{
 		debut = cinematiqueInitiale;
 		arrivee.copy(delta);

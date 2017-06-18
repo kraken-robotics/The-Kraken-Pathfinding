@@ -3,11 +3,11 @@
  * Distributed under the MIT License.
  */
 
-package pfg.kraken.pathfinding.astar.tentacles;
+package pfg.kraken.astar.tentacles;
 
 import java.util.List;
 
-import pfg.kraken.pathfinding.astar.tentacles.types.TentacleType;
+import pfg.kraken.astar.tentacles.types.TentacleType;
 import pfg.kraken.robot.CinematiqueObs;
 
 /**

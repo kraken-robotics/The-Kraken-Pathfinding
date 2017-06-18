@@ -5,7 +5,7 @@
 
 package pfg.kraken.robot;
 
-import pfg.kraken.pathfinding.astar.tentacles.Tentacle;
+import pfg.kraken.astar.tentacles.Tentacle;
 import pfg.kraken.utils.XY;
 
 /**
