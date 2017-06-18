@@ -20,22 +20,22 @@ import pfg.kraken.utils.XY;
  *
  */
 
-public class ObstacleArcCourbe extends Obstacle
+public class TentacleObstacle extends Obstacle
 {
 	private static final long serialVersionUID = -2425339148551754268L;
 
-	public ObstacleArcCourbe()
+	public TentacleObstacle()
 	{
 		super(null);
 	}
 
-	public List<ObstacleRectangular> ombresRobot = new ArrayList<ObstacleRectangular>();
+	public List<RectangularObstacle> ombresRobot = new ArrayList<RectangularObstacle>();
 
 	@Override
 	public double squaredDistance(XY position)
 	{
 		double min = Double.MAX_VALUE;
-		for(ObstacleRectangular o : ombresRobot)
+		for(RectangularObstacle o : ombresRobot)
 		{
 			min = Math.min(min, o.squaredDistance(position));
 			if(min == 0)
@@ -45,9 +45,9 @@ public class ObstacleArcCourbe extends Obstacle
 	}
 
 	@Override
-	public boolean isColliding(ObstacleRectangular obs)
+	public boolean isColliding(RectangularObstacle obs)
 	{
-		for(ObstacleRectangular o : ombresRobot)
+		for(RectangularObstacle o : ombresRobot)
 			if(obs.isColliding(o))
 				return true;
 		return false;
@@ -56,7 +56,7 @@ public class ObstacleArcCourbe extends Obstacle
 	@Override
 	public void print(Graphics g, Fenetre f)
 	{
-		for(ObstacleRectangular o : ombresRobot)
+		for(RectangularObstacle o : ombresRobot)
 			o.print(g, f);
 	}
 
@@ -64,7 +64,7 @@ public class ObstacleArcCourbe extends Obstacle
 	public double getTopY()
 	{
 		double out = ombresRobot.get(0).getTopY();
-		for(ObstacleRectangular o : ombresRobot)
+		for(RectangularObstacle o : ombresRobot)
 			out = Math.max(out, o.getTopY());
 		return out;
 	}
@@ -73,7 +73,7 @@ public class ObstacleArcCourbe extends Obstacle
 	public double getBottomY()
 	{
 		double out = ombresRobot.get(0).getBottomY();
-		for(ObstacleRectangular o : ombresRobot)
+		for(RectangularObstacle o : ombresRobot)
 			out = Math.min(out, o.getBottomY());
 		return out;
 	}
@@ -82,7 +82,7 @@ public class ObstacleArcCourbe extends Obstacle
 	public double getLeftmostX()
 	{
 		double out = ombresRobot.get(0).getLeftmostX();
-		for(ObstacleRectangular o : ombresRobot)
+		for(RectangularObstacle o : ombresRobot)
 			out = Math.min(out, o.getLeftmostX());
 		return out;
 	}
@@ -91,7 +91,7 @@ public class ObstacleArcCourbe extends Obstacle
 	public double getRightmostX()
 	{
 		double out = ombresRobot.get(0).getRightmostX();
-		for(ObstacleRectangular o : ombresRobot)
+		for(RectangularObstacle o : ombresRobot)
 			out = Math.max(out, o.getRightmostX());
 		return out;
 	}

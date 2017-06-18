@@ -18,7 +18,7 @@ import pfg.kraken.utils.XY_RW;
  *
  */
 
-public class ObstacleRobot extends ObstacleRectangular implements Serializable
+public class ObstacleRobot extends RectangularObstacle implements Serializable
 {
 	private static final long serialVersionUID = -8994485842050904808L;
 
@@ -55,7 +55,7 @@ public class ObstacleRobot extends ObstacleRectangular implements Serializable
 	 * @param robot
 	 * @return
 	 */
-	public ObstacleRectangular update(XY position, double orientation)
+	public RectangularObstacle update(XY position, double orientation)
 	{
 		position.copy(this.position);
 		this.angle = orientation;

@@ -116,9 +116,9 @@ public abstract class Obstacle implements Printable, Serializable, ObstacleInter
 	 * @return
 	 */
 	@Override
-	public boolean isColliding(ObstacleArcCourbe obs)
+	public boolean isColliding(TentacleObstacle obs)
 	{
-		for(ObstacleRectangular o : obs.ombresRobot)
+		for(RectangularObstacle o : obs.ombresRobot)
 		{
 			if(isColliding(o))
 				return true;

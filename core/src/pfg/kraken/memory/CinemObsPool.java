@@ -8,7 +8,7 @@ package pfg.kraken.memory;
 
 import config.Config;
 import pfg.kraken.ConfigInfoKraken;
-import pfg.kraken.pathfinding.astar.arcs.ArcCourbeDynamique;
+import pfg.kraken.pathfinding.astar.tentacles.DynamicTentacle;
 import pfg.kraken.robot.CinematiqueObs;
 import pfg.kraken.utils.Log;
 
@@ -44,7 +44,7 @@ public class CinemObsPool extends MemoryPool<CinematiqueObs>
 	}
 	
 	// TODO : optimisable : la mémoire est probablement contigue
-	public final void destroyNode(ArcCourbeDynamique arc)
+	public final void destroyNode(DynamicTentacle arc)
 	{
 		for(int i = 0; i < arc.getNbPoints(); i++)
 			destroyNode(arc.getPoint(i));

@@ -13,10 +13,10 @@ import injector.Injector;
 import injector.InjectorException;
 import pfg.kraken.obstacles.container.DynamicObstacles;
 import pfg.kraken.obstacles.container.EmptyDynamicObstacles;
-import pfg.kraken.obstacles.container.ObstaclesFixes;
+import pfg.kraken.obstacles.container.StaticObstacles;
 import pfg.kraken.obstacles.types.Obstacle;
-import pfg.kraken.pathfinding.astar.AStarCourbe;
-import pfg.kraken.pathfinding.astar.arcs.ArcCourbe;
+import pfg.kraken.pathfinding.astar.TentacularAStar;
+import pfg.kraken.pathfinding.astar.tentacles.Tentacle;
 import pfg.kraken.utils.*;
 
 /**
@@ -114,9 +114,9 @@ public class Kraken
 	
 			Obstacle.set(log, injector.getService(AbstractPrintBuffer.class));
 			Obstacle.useConfig(config);
-			ArcCourbe.useConfig(config);
+			Tentacle.useConfig(config);
 			if(fixedObstacles != null)
-				injector.getService(ObstaclesFixes.class).addAll(fixedObstacles);
+				injector.getService(StaticObstacles.class).addAll(fixedObstacles);
 		}
 		catch(InjectorException e)
 		{
@@ -124,11 +124,11 @@ public class Kraken
 		}
 	}
 
-	public AStarCourbe getAStar()
+	public TentacularAStar getAStar()
 	{
 		try
 		{
-			return injector.getService(AStarCourbe.class);
+			return injector.getService(TentacularAStar.class);
 		}
 		catch(InjectorException e)
 		{

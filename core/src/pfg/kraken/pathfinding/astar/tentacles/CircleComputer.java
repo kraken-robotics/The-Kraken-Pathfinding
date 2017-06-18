@@ -3,14 +3,14 @@
  * Distributed under the MIT License.
  */
 
-package pfg.kraken.pathfinding.astar.arcs;
+package pfg.kraken.pathfinding.astar.tentacles;
 
 import java.util.LinkedList;
 
 import config.Config;
 import pfg.kraken.ConfigInfoKraken;
 import pfg.kraken.memory.CinemObsPool;
-import pfg.kraken.pathfinding.astar.arcs.vitesses.VitesseBezier;
+import pfg.kraken.pathfinding.astar.tentacles.types.BezierTentacle;
 import pfg.kraken.robot.Cinematique;
 import pfg.kraken.robot.CinematiqueObs;
 import pfg.kraken.utils.XY;
@@ -40,7 +40,7 @@ public class CircleComputer {
 
 	}
 	
-	public ArcCourbeDynamique trajectoireCirculaireVersCentre(Cinematique cinematique, double rayonP, XY centre)
+	public DynamicTentacle trajectoireCirculaireVersCentre(Cinematique cinematique, double rayonP, XY centre)
 	{
 		double rayon = rayonP;
 
@@ -73,7 +73,7 @@ public class CircleComputer {
 			if(out.isEmpty())
 				return null;
 
-			return new ArcCourbeDynamique(out, distance, VitesseBezier.CIRCULAIRE_VERS_CERCLE);
+			return new DynamicTentacle(out, distance, BezierTentacle.CIRCULAIRE_VERS_CERCLE);
 		}
 
 		double cos = Math.cos(cinematique.orientationReelle);
@@ -175,7 +175,7 @@ public class CircleComputer {
 		if(out.isEmpty())
 			return null;
 
-		return new ArcCourbeDynamique(out, longueur, VitesseBezier.CIRCULAIRE_VERS_CERCLE);
+		return new DynamicTentacle(out, longueur, BezierTentacle.CIRCULAIRE_VERS_CERCLE);
 	}
 
 	public LinkedList<CinematiqueObs> avance(double distance, Cinematique cinematique)

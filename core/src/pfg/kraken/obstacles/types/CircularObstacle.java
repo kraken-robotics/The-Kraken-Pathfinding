@@ -17,7 +17,7 @@ import pfg.kraken.utils.XY;
  * @author pf
  *
  */
-public class ObstacleCircular extends Obstacle
+public class CircularObstacle extends Obstacle
 {
 	// le Vec2 "position" indique le centre de l'obstacle
 	private static final long serialVersionUID = 5090691605874028970L;
@@ -26,14 +26,14 @@ public class ObstacleCircular extends Obstacle
 	public final int radius;
 	public final int squared_radius;
 
-	public ObstacleCircular(XY position, int rad)
+	public CircularObstacle(XY position, int rad)
 	{
 		super(position);
 		this.radius = rad;
 		squared_radius = rad * rad;
 	}
 
-	public ObstacleCircular(XY position, int rad, Couleur c)
+	public CircularObstacle(XY position, int rad, Couleur c)
 	{
 		super(position, c);
 		this.radius = rad;
@@ -54,7 +54,7 @@ public class ObstacleCircular extends Obstacle
 	}
 
 	@Override
-	public boolean isColliding(ObstacleRectangular o)
+	public boolean isColliding(RectangularObstacle o)
 	{
 		// Calcul simple permettant de vérifier les cas absurdes où les
 		// obstacles sont loin l'un de l'autre

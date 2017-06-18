@@ -20,7 +20,7 @@ import pfg.kraken.utils.XY_RW;
  *
  */
 
-public class ObstacleRectangular extends Obstacle
+public class RectangularObstacle extends Obstacle
 {
 	// Position est le centre de rotation
 
@@ -46,21 +46,21 @@ public class ObstacleRectangular extends Obstacle
 
 	protected double angle, cos, sin;
 
-	public ObstacleRectangular(XY position, int sizeX, int sizeY, double angle, Couleur c)
+	public RectangularObstacle(XY position, int sizeX, int sizeY, double angle, Couleur c)
 	{
 		this(position, sizeX, sizeY, angle);
 		this.l = c.l;
 		this.c = c.couleur;
 	}
 
-	public ObstacleRectangular(XY position, int sizeX, int sizeY, Couleur c)
+	public RectangularObstacle(XY position, int sizeX, int sizeY, Couleur c)
 	{
 		this(position, sizeX, sizeY, 0);
 		this.l = c.l;
 		this.c = c.couleur;
 	}
 
-	protected ObstacleRectangular(XY_RW pos)
+	protected RectangularObstacle(XY_RW pos)
 	{
 		super(pos);
 	}
@@ -79,7 +79,7 @@ public class ObstacleRectangular extends Obstacle
 	 * @param sizeY
 	 * @param angle
 	 */
-	public ObstacleRectangular(XY position, int sizeX, int sizeY, double angle)
+	public RectangularObstacle(XY position, int sizeX, int sizeY, double angle)
 	{
 		super(position);
 		this.angle = angle;
@@ -162,7 +162,7 @@ public class ObstacleRectangular extends Obstacle
 	 * @return
 	 */
 	@Override
-	public boolean isColliding(ObstacleRectangular r)
+	public boolean isColliding(RectangularObstacle r)
 	{
 		// Calcul simple permettant de vérifier les cas absurdes où les
 		// obstacles sont loin l'un de l'autre

@@ -3,7 +3,7 @@
  * Distributed under the MIT License.
  */
 
-package pfg.kraken.pathfinding.astar.arcs;
+package pfg.kraken.pathfinding.astar.tentacles;
 
 import pfg.kraken.robot.CinematiqueObs;
 
@@ -14,12 +14,12 @@ import pfg.kraken.robot.CinematiqueObs;
  *
  */
 
-public class ArcCourbeStatique extends ArcCourbe
+public class StaticTentacle extends Tentacle
 {
 	private static final long serialVersionUID = -5599092863248049576L;
 	public CinematiqueObs[] arcselems = new CinematiqueObs[ClothoidesComputer.NB_POINTS];
 
-	public ArcCourbeStatique(int demieLargeurNonDeploye, int demieLongueurArriere, int demieLongueurAvant)
+	public StaticTentacle(int demieLargeurNonDeploye, int demieLongueurArriere, int demieLongueurAvant)
 	{
 		for(int i = 0; i < ClothoidesComputer.NB_POINTS; i++)
 			arcselems[i] = new CinematiqueObs(demieLargeurNonDeploye, demieLongueurArriere, demieLongueurAvant);
@@ -30,7 +30,7 @@ public class ArcCourbeStatique extends ArcCourbe
 	 * 
 	 * @param arcCourbe
 	 */
-	public void copy(ArcCourbeStatique arcCourbe)
+	public void copy(StaticTentacle arcCourbe)
 	{
 		for(int i = 0; i < arcselems.length; i++)
 			arcselems[i].copy(arcCourbe.arcselems[i]);

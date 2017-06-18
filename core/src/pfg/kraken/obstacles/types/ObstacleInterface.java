@@ -54,7 +54,7 @@ public abstract interface ObstacleInterface extends Printable, Serializable
 	 * @param obs
 	 * @return
 	 */
-	public abstract boolean isColliding(ObstacleRectangular obs);
+	public abstract boolean isColliding(RectangularObstacle obs);
 
 	/**
 	 * Revoie vrai s'il y a une collision avec obs
@@ -62,7 +62,7 @@ public abstract interface ObstacleInterface extends Printable, Serializable
 	 * @param obs
 	 * @return
 	 */
-	public boolean isColliding(ObstacleArcCourbe obs);
+	public boolean isColliding(TentacleObstacle obs);
 
 	public XY getPosition();
 

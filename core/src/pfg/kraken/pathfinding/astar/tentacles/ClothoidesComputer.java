@@ -3,7 +3,7 @@
  * Distributed under the MIT License.
  */
 
-package pfg.kraken.pathfinding.astar.arcs;
+package pfg.kraken.pathfinding.astar.tentacles;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -18,10 +18,10 @@ import java.util.ArrayList;
 import java.util.List;
 import graphic.AbstractPrintBuffer;
 import pfg.kraken.memory.CinemObsPool;
-import pfg.kraken.obstacles.types.ObstacleCircular;
-import pfg.kraken.pathfinding.astar.arcs.vitesses.VitesseClotho;
-import pfg.kraken.pathfinding.astar.arcs.vitesses.VitesseDemiTour;
-import pfg.kraken.pathfinding.astar.arcs.vitesses.VitesseRameneVolant;
+import pfg.kraken.obstacles.types.CircularObstacle;
+import pfg.kraken.pathfinding.astar.tentacles.types.ClothoTentacle;
+import pfg.kraken.pathfinding.astar.tentacles.types.TurnoverTentacle;
+import pfg.kraken.pathfinding.astar.tentacles.types.StraightingTentacle;
 import pfg.kraken.robot.Cinematique;
 import pfg.kraken.robot.CinematiqueObs;
 import pfg.kraken.robot.RobotState;
@@ -147,12 +147,12 @@ public class ClothoidesComputer
 			trajectoire[2 * INDICE_MAX - 2 - s] = new XY(-x.doubleValue(), -y.doubleValue());
 			System.out.println((s - INDICE_MAX + 1) * PRECISION_TRACE + " " + trajectoire[s]);
 
-			buffer.addSupprimable(new ObstacleCircular(new XY(x.doubleValue(), 1000 + y.doubleValue()), 5));
-			buffer.addSupprimable(new ObstacleCircular(new XY(-x.doubleValue(), 1000 - y.doubleValue()), 5));
+			buffer.addSupprimable(new CircularObstacle(new XY(x.doubleValue(), 1000 + y.doubleValue()), 5));
+			buffer.addSupprimable(new CircularObstacle(new XY(-x.doubleValue(), 1000 - y.doubleValue()), 5));
 		}
 	}
 
-	public void getTrajectoire(ArcCourbe depart, VitesseClotho vitesse, ArcCourbeStatique modified)
+	public void getTrajectoire(Tentacle depart, ClothoTentacle vitesse, StaticTentacle modified)
 	{
 		CinematiqueObs last = depart.getLast();
 		getTrajectoire(last, vitesse, modified);
@@ -166,7 +166,7 @@ public class ClothoidesComputer
 	 * @param vitesse
 	 * @param modified
 	 */
-	public final void getTrajectoire(RobotState robot, VitesseClotho vitesse, ArcCourbeStatique modified)
+	public final void getTrajectoire(RobotState robot, ClothoTentacle vitesse, StaticTentacle modified)
 	{
 		getTrajectoire(robot.getCinematique(), vitesse, modified);
 	}
@@ -184,7 +184,7 @@ public class ClothoidesComputer
 	 * @param distance_mm
 	 * @return
 	 */
-	public final void getTrajectoire(Cinematique cinematiqueInitiale, VitesseClotho vitesse, ArcCourbeStatique modified)
+	public final void getTrajectoire(Cinematique cinematiqueInitiale, ClothoTentacle vitesse, StaticTentacle modified)
 	{
 		// modified.v = vitesse;
 		// log.debug(vitesse);
@@ -265,12 +265,12 @@ public class ClothoidesComputer
 	 * @return
 	 * @throws InterruptedException
 	 */
-	public final ArcCourbeDynamique getTrajectoireRamene(Cinematique cinematiqueInitiale, VitesseRameneVolant vitesseRamene)
+	public final DynamicTentacle getTrajectoireRamene(Cinematique cinematiqueInitiale, StraightingTentacle vitesseRamene)
 	{
 		double courbure = cinematiqueInitiale.courbureGeometrique;
 		double orientation = cinematiqueInitiale.orientationGeometrique;
 
-		VitesseClotho vitesse;
+		ClothoTentacle vitesse;
 		if(courbure > 0)
 			vitesse = vitesseRamene.vitesseDroite;
 		else
@@ -333,7 +333,7 @@ public class ClothoidesComputer
 		if(out.isEmpty())
 			return null;
 
-		return new ArcCourbeDynamique(out, i * PRECISION_TRACE_MM, vitesseRamene);
+		return new DynamicTentacle(out, i * PRECISION_TRACE_MM, vitesseRamene);
 	}
 
 	/**
@@ -352,7 +352,7 @@ public class ClothoidesComputer
 	 * @param positionInitiale : la position au début du mouvement
 	 * @param c
 	 */
-	private void computePoint(int pointDepart, VitesseClotho vitesse, double sDepart, double coeffMultiplicatif, int i, double baseOrientation, double cos, double sin, boolean marcheAvant, XY positionInitiale, CinematiqueObs c)
+	private void computePoint(int pointDepart, ClothoTentacle vitesse, double sDepart, double coeffMultiplicatif, int i, double baseOrientation, double cos, double sin, boolean marcheAvant, XY positionInitiale, CinematiqueObs c)
 	{
 		trajectoire[pointDepart + vitesse.squaredRootVitesse * (i + 1)].copy(c.getPositionEcriture());
 		c.getPositionEcriture().minus(trajectoire[pointDepart]).scalar(coeffMultiplicatif).Ysym(!vitesse.positif).rotate(cos, sin).plus(positionInitiale);
@@ -395,7 +395,7 @@ public class ClothoidesComputer
 	 * @param courbure
 	 * @param modified
 	 */
-	private void getTrajectoireCirculaire(XY position, double orientation, double courbure, ArcCourbeStatique modified, boolean enMarcheAvant)
+	private void getTrajectoireCirculaire(XY position, double orientation, double courbure, StaticTentacle modified, boolean enMarcheAvant)
 	{
 		// log.debug("Trajectoire circulaire !");
 		// rappel = la courbure est l'inverse du rayon de courbure
@@ -445,7 +445,7 @@ public class ClothoidesComputer
 	 * @param orientation
 	 * @param modified
 	 */
-	private void getTrajectoireLigneDroite(XY position, double orientation, ArcCourbeStatique modified, boolean enMarcheAvant)
+	private void getTrajectoireLigneDroite(XY position, double orientation, StaticTentacle modified, boolean enMarcheAvant)
 	{
 		double cos = Math.cos(orientation);
 		double sin = Math.sin(orientation);
@@ -540,7 +540,7 @@ public class ClothoidesComputer
 	 * @return
 	 * @throws InterruptedException
 	 */
-	public final ArcCourbeDynamique getTrajectoireDemiTour(Cinematique cinematiqueInitiale, VitesseDemiTour vitesse)
+	public final DynamicTentacle getTrajectoireDemiTour(Cinematique cinematiqueInitiale, TurnoverTentacle vitesse)
 	{
 		List<CinematiqueObs> trajet = getTrajectoireQuartDeTour(cinematiqueInitiale, vitesse.v, false);
 		trajet.addAll(getTrajectoireQuartDeTour(trajet.get(trajet.size() - 1), vitesse.v, true)); // on
@@ -553,7 +553,7 @@ public class ClothoidesComputer
 																									// quart
 																									// de
 																									// tour
-		return new ArcCourbeDynamique(trajet, trajet.size() * PRECISION_TRACE_MM, vitesse); // TODO :
+		return new DynamicTentacle(trajet, trajet.size() * PRECISION_TRACE_MM, vitesse); // TODO :
 																							// rebrousse
 																							// est
 																							// faux…
@@ -572,7 +572,7 @@ public class ClothoidesComputer
 	 * @return
 	 * @throws InterruptedException
 	 */
-	private final List<CinematiqueObs> getTrajectoireQuartDeTour(Cinematique cinematiqueInitiale, VitesseClotho vitesse, boolean rebrousse)
+	private final List<CinematiqueObs> getTrajectoireQuartDeTour(Cinematique cinematiqueInitiale, ClothoTentacle vitesse, boolean rebrousse)
 	{
 		double courbure = cinematiqueInitiale.courbureGeometrique;
 		double orientation = cinematiqueInitiale.orientationGeometrique;

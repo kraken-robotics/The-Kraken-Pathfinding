@@ -13,7 +13,7 @@ import graphic.printable.Printable;
 import pfg.kraken.ConfigInfoKraken;
 import pfg.kraken.Couleur;
 import pfg.kraken.obstacles.container.DynamicObstacles;
-import pfg.kraken.obstacles.container.ObstaclesFixes;
+import pfg.kraken.obstacles.container.StaticObstacles;
 import pfg.kraken.obstacles.types.Obstacle;
 import pfg.kraken.utils.Log;
 import pfg.kraken.utils.XY;
@@ -52,7 +52,7 @@ public class GridSpace implements Printable
 	private BitSet[] newOldObstacles = new BitSet[2];
 	private Couleur[] grid = new Couleur[PointGridSpace.NB_POINTS];
 
-	public GridSpace(Log log, ObstaclesFixes fixes, DynamicObstacles dynamicObs, PointGridSpaceManager pointManager, AbstractPrintBuffer buffer, Config config)
+	public GridSpace(Log log, StaticObstacles fixes, DynamicObstacles dynamicObs, PointGridSpaceManager pointManager, AbstractPrintBuffer buffer, Config config)
 	{
 		this.dynamicObs = dynamicObs;
 		this.log = log;

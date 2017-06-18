@@ -3,7 +3,7 @@
  * Distributed under the MIT License.
  */
 
-package pfg.kraken.pathfinding.astar.arcs;
+package pfg.kraken.pathfinding.astar.tentacles;
 
 import java.awt.Graphics;
 import config.Config;
@@ -11,8 +11,8 @@ import graphic.Fenetre;
 import graphic.printable.Printable;
 import pfg.kraken.ConfigInfoKraken;
 import pfg.kraken.Couleur;
-import pfg.kraken.obstacles.types.ObstacleCircular;
-import pfg.kraken.pathfinding.astar.arcs.vitesses.VitesseCourbure;
+import pfg.kraken.obstacles.types.CircularObstacle;
+import pfg.kraken.pathfinding.astar.tentacles.types.TentacleType;
 import pfg.kraken.robot.CinematiqueObs;
 
 /**
@@ -22,12 +22,12 @@ import pfg.kraken.robot.CinematiqueObs;
  *
  */
 
-public abstract class ArcCourbe implements Printable
+public abstract class Tentacle implements Printable
 {
 	private static final long serialVersionUID = 1268198325807123306L;
 	// public ObstacleArcCourbe obstacle = new ObstacleArcCourbe();
 	protected static int tempsArret;
-	public VitesseCourbure vitesse; // utilisé pour le debug
+	public TentacleType vitesse; // utilisé pour le debug
 
 	public abstract int getNbPoints();
 
@@ -61,7 +61,7 @@ public abstract class ArcCourbe implements Printable
 	public void print(Graphics g, Fenetre f)
 	{
 		for(int i = 0; i < getNbPoints(); i++)
-			new ObstacleCircular(getPoint(i).getPosition(), 4, Couleur.TRAJECTOIRE).print(g, f);
+			new CircularObstacle(getPoint(i).getPosition(), 4, Couleur.TRAJECTOIRE).print(g, f);
 	}
 
 	@Override

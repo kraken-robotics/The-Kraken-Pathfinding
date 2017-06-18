@@ -11,9 +11,9 @@ import graphic.Fenetre;
 import graphic.printable.Printable;
 import pfg.kraken.Couleur;
 import pfg.kraken.memory.Memorizable;
-import pfg.kraken.pathfinding.astar.arcs.ArcCourbe;
-import pfg.kraken.pathfinding.astar.arcs.ArcCourbeDynamique;
-import pfg.kraken.pathfinding.astar.arcs.ArcCourbeStatique;
+import pfg.kraken.pathfinding.astar.tentacles.Tentacle;
+import pfg.kraken.pathfinding.astar.tentacles.DynamicTentacle;
+import pfg.kraken.pathfinding.astar.tentacles.StaticTentacle;
 import pfg.kraken.robot.RobotState;
 
 /**
@@ -23,26 +23,26 @@ import pfg.kraken.robot.RobotState;
  *
  */
 
-public class AStarCourbeNode implements Memorizable, Printable
+public class AStarNode implements Memorizable, Printable
 {
 	private static final long serialVersionUID = -2120732124823178009L;
 	public RobotState robot;
 	public double g_score; // distance du point de départ à ce point
 	public double f_score; // g_score + heuristique = meilleure distance qu'on
 							// peut espérer avec ce point
-	public AStarCourbeNode parent;
-	public final ArcCourbeStatique cameFromArcStatique;
-	public ArcCourbeDynamique cameFromArcDynamique = null;
+	public AStarNode parent;
+	public final StaticTentacle cameFromArcStatique;
+	public DynamicTentacle cameFromArcDynamique = null;
 	private int indiceMemoryManager;
 	private boolean dead = false;
 
-	public AStarCourbeNode(RobotState robot, int demieLargeurNonDeploye, int demieLongueurArriere, int demieLongueurAvant)
+	public AStarNode(RobotState robot, int demieLargeurNonDeploye, int demieLongueurArriere, int demieLongueurAvant)
 	{
-		cameFromArcStatique = new ArcCourbeStatique(demieLargeurNonDeploye, demieLongueurArriere, demieLongueurAvant);
+		cameFromArcStatique = new StaticTentacle(demieLargeurNonDeploye, demieLongueurArriere, demieLongueurAvant);
 		this.robot = robot;
 	}
 
-	public ArcCourbe getArc()
+	public Tentacle getArc()
 	{
 		if(parent == null)
 			return null;
@@ -87,7 +87,7 @@ public class AStarCourbeNode implements Memorizable, Printable
 	 * 
 	 * @param modified
 	 */
-	public void copyReconstruct(AStarCourbeNode modified)
+	public void copyReconstruct(AStarNode modified)
 	{
 		modified.cameFromArcDynamique = null;
 		modified.g_score = g_score;
@@ -99,7 +99,7 @@ public class AStarCourbeNode implements Memorizable, Printable
 	@Override
 	public void print(Graphics g, Fenetre f)
 	{
-		ArcCourbe a = getArc();
+		Tentacle a = getArc();
 		if(a != null)
 		{
 			a.print(g, f);

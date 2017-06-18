@@ -3,11 +3,11 @@
  * Distributed under the MIT License.
  */
 
-package pfg.kraken.pathfinding.astar.arcs;
+package pfg.kraken.pathfinding.astar.tentacles;
 
 import java.util.List;
 
-import pfg.kraken.pathfinding.astar.arcs.vitesses.VitesseCourbure;
+import pfg.kraken.pathfinding.astar.tentacles.types.TentacleType;
 import pfg.kraken.robot.CinematiqueObs;
 
 /**
@@ -17,13 +17,13 @@ import pfg.kraken.robot.CinematiqueObs;
  *
  */
 
-public class ArcCourbeDynamique extends ArcCourbe
+public class DynamicTentacle extends Tentacle
 {
 	private static final long serialVersionUID = 2188028584717495182L;
 	public List<CinematiqueObs> arcs;
 	public double longueur;
 
-	public ArcCourbeDynamique(List<CinematiqueObs> arcs, double longueur, VitesseCourbure v)
+	public DynamicTentacle(List<CinematiqueObs> arcs, double longueur, TentacleType v)
 	{
 		vitesse = v;
 		this.arcs = arcs;

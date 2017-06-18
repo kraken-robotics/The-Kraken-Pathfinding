@@ -3,7 +3,7 @@
  * Distributed under the MIT License.
  */
 
-package pfg.kraken.pathfinding.astar.arcs.vitesses;
+package pfg.kraken.pathfinding.astar.tentacles.types;
 
 import pfg.kraken.pathfinding.astar.DirectionStrategy;
 import pfg.kraken.robot.Cinematique;
@@ -15,14 +15,14 @@ import pfg.kraken.robot.Cinematique;
  *
  */
 
-public enum VitesseBezier implements VitesseCourbure
+public enum BezierTentacle implements TentacleType
 {
 	BEZIER_QUAD(0),
 	CIRCULAIRE_VERS_CERCLE(1);
 
 	private final int nbArrets;
 
-	private VitesseBezier(int nbArrets)
+	private BezierTentacle(int nbArrets)
 	{
 		this.nbArrets = nbArrets;
 	}

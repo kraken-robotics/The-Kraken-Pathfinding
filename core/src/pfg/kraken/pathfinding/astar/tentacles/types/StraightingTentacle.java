@@ -3,7 +3,7 @@
  * Distributed under the MIT License.
  */
 
-package pfg.kraken.pathfinding.astar.arcs.vitesses;
+package pfg.kraken.pathfinding.astar.tentacles.types;
 
 import pfg.kraken.pathfinding.astar.DirectionStrategy;
 import pfg.kraken.robot.Cinematique;
@@ -15,15 +15,15 @@ import pfg.kraken.robot.Cinematique;
  *
  */
 
-public enum VitesseRameneVolant implements VitesseCourbure
+public enum StraightingTentacle implements TentacleType
 {
-	RAMENE_VOLANT(VitesseClotho.GAUCHE_1, VitesseClotho.DROITE_1); // ramène le
+	RAMENE_VOLANT(ClothoTentacle.GAUCHE_1, ClothoTentacle.DROITE_1); // ramène le
 																	// volant au
 																	// centre
 
-	public final VitesseClotho vitesseGauche, vitesseDroite;
+	public final ClothoTentacle vitesseGauche, vitesseDroite;
 
-	private VitesseRameneVolant(VitesseClotho vitesseGauche, VitesseClotho vitesseDroite)
+	private StraightingTentacle(ClothoTentacle vitesseGauche, ClothoTentacle vitesseDroite)
 	{
 		this.vitesseDroite = vitesseDroite;
 		this.vitesseGauche = vitesseGauche;

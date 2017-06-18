@@ -3,16 +3,16 @@
  * Distributed under the MIT License.
  */
 
-package pfg.kraken.pathfinding.astar.arcs;
+package pfg.kraken.pathfinding.astar.tentacles;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 import config.Config;
 import pfg.kraken.ConfigInfoKraken;
 import pfg.kraken.memory.CinemObsPool;
-import pfg.kraken.pathfinding.astar.arcs.vitesses.VitesseBezier;
-import pfg.kraken.pathfinding.astar.arcs.vitesses.VitesseClotho;
-import pfg.kraken.pathfinding.astar.arcs.vitesses.VitesseRameneVolant;
+import pfg.kraken.pathfinding.astar.tentacles.types.BezierTentacle;
+import pfg.kraken.pathfinding.astar.tentacles.types.ClothoTentacle;
+import pfg.kraken.pathfinding.astar.tentacles.types.StraightingTentacle;
 import pfg.kraken.robot.Cinematique;
 import pfg.kraken.robot.CinematiqueObs;
 import pfg.kraken.utils.Log;
@@ -45,14 +45,14 @@ public class BezierComputer
 		int demieLargeurNonDeploye = config.getInt(ConfigInfoKraken.LARGEUR_NON_DEPLOYE) / 2;
 		int demieLongueurArriere = config.getInt(ConfigInfoKraken.DEMI_LONGUEUR_NON_DEPLOYE_ARRIERE);
 		int demieLongueurAvant = config.getInt(ConfigInfoKraken.DEMI_LONGUEUR_NON_DEPLOYE_AVANT);
-		tmp = new ArcCourbeStatique(demieLargeurNonDeploye, demieLongueurArriere, demieLongueurAvant);
+		tmp = new StaticTentacle(demieLargeurNonDeploye, demieLongueurArriere, demieLongueurAvant);
 	}
 
 	private XY_RW delta = new XY_RW(), vecteurVitesse = new XY_RW();
 	// private Vec2RW pointA = new Vec2RW(), pointB = new Vec2RW(), pointC = new
 	// Vec2RW();
 	private Cinematique debut;
-	private ArcCourbeStatique tmp;
+	private StaticTentacle tmp;
 
 	/**
 	 * Interpolation avec des courbes de Bézier quadratique. La solution est
@@ -67,7 +67,7 @@ public class BezierComputer
 	 * @throws MemoryPoolException
 	 * @throws InterruptedException
 	 */
-	public ArcCourbeDynamique interpolationQuadratique(Cinematique cinematiqueInitiale, XY arrivee)
+	public DynamicTentacle interpolationQuadratique(Cinematique cinematiqueInitiale, XY arrivee)
 	{
 		debut = cinematiqueInitiale;
 		arrivee.copy(delta);
@@ -78,7 +78,7 @@ public class BezierComputer
 
 		double d = vecteurVitesse.dot(delta);
 
-		ArcCourbeDynamique prefixe = null;
+		DynamicTentacle prefixe = null;
 
 		// il faut absolument que la courbure ait déjà le bon signe
 		// si la courbure est nulle, il faut aussi annuler
@@ -87,12 +87,12 @@ public class BezierComputer
 			if(Math.abs(debut.courbureGeometrique) > 0.1)
 			{
 				// log.debug("Préfixe nécessaire !");
-				prefixe = clothocomputer.getTrajectoireRamene(debut, VitesseRameneVolant.RAMENE_VOLANT);
+				prefixe = clothocomputer.getTrajectoireRamene(debut, StraightingTentacle.RAMENE_VOLANT);
 			}
 			if(prefixe == null)
-				prefixe = new ArcCourbeDynamique(new ArrayList<CinematiqueObs>(), 0, VitesseBezier.BEZIER_QUAD);
+				prefixe = new DynamicTentacle(new ArrayList<CinematiqueObs>(), 0, BezierTentacle.BEZIER_QUAD);
 
-			clothocomputer.getTrajectoire(prefixe.getNbPoints() > 0 ? prefixe.getLast() : cinematiqueInitiale, d > 0 ? VitesseClotho.GAUCHE_1 : VitesseClotho.DROITE_1, tmp);
+			clothocomputer.getTrajectoire(prefixe.getNbPoints() > 0 ? prefixe.getLast() : cinematiqueInitiale, d > 0 ? ClothoTentacle.GAUCHE_1 : ClothoTentacle.DROITE_1, tmp);
 			for(CinematiqueObs c : tmp.arcselems)
 			{
 				CinematiqueObs o = memory.getNewNode();
@@ -126,7 +126,7 @@ public class BezierComputer
 																						// disent
 		vecteurVitesse.plus(debut.getPosition());
 
-		ArcCourbeDynamique arc = constructBezierQuad(debut.getPosition(), vecteurVitesse, arrivee, debut.enMarcheAvant, debut);
+		DynamicTentacle arc = constructBezierQuad(debut.getPosition(), vecteurVitesse, arrivee, debut.enMarcheAvant, debut);
 
 		if(arc == null)
 		{
@@ -140,7 +140,7 @@ public class BezierComputer
 		{
 			prefixe.arcs.addAll(arc.arcs);
 			prefixe.longueur += arc.longueur;
-			prefixe.vitesse = VitesseBezier.BEZIER_QUAD;
+			prefixe.vitesse = BezierTentacle.BEZIER_QUAD;
 			return prefixe;
 		}
 		return arc;
@@ -191,7 +191,7 @@ public class BezierComputer
 	 * @return
 	 * @throws InterruptedException
 	 */
-	private ArcCourbeDynamique constructBezierQuad(XY A, XY B, XY C, boolean enMarcheAvant, Cinematique cinematiqueInitiale)
+	private DynamicTentacle constructBezierQuad(XY A, XY B, XY C, boolean enMarcheAvant, Cinematique cinematiqueInitiale)
 	{
 		/*
 		 * buffer.addSupprimable(new ObstacleCircular(A, 15));
@@ -308,7 +308,7 @@ public class BezierComputer
 		if(out.isEmpty())
 			return null;
 
-		return new ArcCourbeDynamique(out, longueur, VitesseBezier.BEZIER_QUAD);
+		return new DynamicTentacle(out, longueur, BezierTentacle.BEZIER_QUAD);
 	}
 
 	

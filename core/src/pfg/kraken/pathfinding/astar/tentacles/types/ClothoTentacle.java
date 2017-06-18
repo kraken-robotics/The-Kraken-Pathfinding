@@ -3,10 +3,10 @@
  * Distributed under the MIT License.
  */
 
-package pfg.kraken.pathfinding.astar.arcs.vitesses;
+package pfg.kraken.pathfinding.astar.tentacles.types;
 
 import pfg.kraken.pathfinding.astar.DirectionStrategy;
-import pfg.kraken.pathfinding.astar.arcs.ClothoidesComputer;
+import pfg.kraken.pathfinding.astar.tentacles.ClothoidesComputer;
 import pfg.kraken.robot.Cinematique;
 
 /**
@@ -16,7 +16,7 @@ import pfg.kraken.robot.Cinematique;
  *
  */
 
-public enum VitesseClotho implements VitesseCourbure
+public enum ClothoTentacle implements TentacleType
 {
 	COURBURE_IDENTIQUE(0),
 	GAUCHE_0(1),
@@ -45,12 +45,12 @@ public enum VitesseClotho implements VitesseCourbure
 	public final boolean rebrousse;
 	public final boolean arret;
 
-	private VitesseClotho(int vitesse)
+	private ClothoTentacle(int vitesse)
 	{
 		this(0, vitesse);
 	}
 
-	private VitesseClotho(int courbureInitiale, int vitesse)
+	private ClothoTentacle(int courbureInitiale, int vitesse)
 	{
 		this.courbureInitiale = courbureInitiale;
 		rebrousse = toString().endsWith("_REBROUSSE");

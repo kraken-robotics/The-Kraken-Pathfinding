@@ -3,7 +3,7 @@
  * Distributed under the MIT License.
  */
 
-package pfg.kraken.pathfinding.astar.arcs.vitesses;
+package pfg.kraken.pathfinding.astar.tentacles.types;
 
 import pfg.kraken.pathfinding.astar.DirectionStrategy;
 import pfg.kraken.robot.Cinematique;
@@ -15,15 +15,15 @@ import pfg.kraken.robot.Cinematique;
  *
  */
 
-public enum VitesseDemiTour implements VitesseCourbure
+public enum TurnoverTentacle implements TentacleType
 {
-	DEMI_TOUR_DROITE(VitesseClotho.DROITE_2), // TODO version avec d'autres
+	DEMI_TOUR_DROITE(ClothoTentacle.DROITE_2), // TODO version avec d'autres
 												// vitesses ?
-	DEMI_TOUR_GAUCHE(VitesseClotho.GAUCHE_2);
+	DEMI_TOUR_GAUCHE(ClothoTentacle.GAUCHE_2);
 
-	public VitesseClotho v;
+	public ClothoTentacle v;
 
-	private VitesseDemiTour(VitesseClotho v)
+	private TurnoverTentacle(ClothoTentacle v)
 	{
 		this.v = v;
 	}

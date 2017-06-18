@@ -8,7 +8,7 @@ package pfg.kraken.memory;
 
 import config.Config;
 import pfg.kraken.ConfigInfoKraken;
-import pfg.kraken.pathfinding.astar.AStarCourbeNode;
+import pfg.kraken.pathfinding.astar.AStarNode;
 import pfg.kraken.robot.RobotState;
 import pfg.kraken.utils.Log;
 
@@ -19,13 +19,13 @@ import pfg.kraken.utils.Log;
  *
  */
 
-public class NodePool extends MemoryPool<AStarCourbeNode>
+public class NodePool extends MemoryPool<AStarNode>
 {
 	private int largeur, longueur_arriere, longueur_avant;
 
 	public NodePool(Log log, Config config)
 	{
-		super(AStarCourbeNode.class, log);
+		super(AStarNode.class, log);
 		largeur = config.getInt(ConfigInfoKraken.LARGEUR_NON_DEPLOYE) / 2;
 		longueur_arriere = config.getInt(ConfigInfoKraken.DEMI_LONGUEUR_NON_DEPLOYE_ARRIERE);
 		longueur_avant = config.getInt(ConfigInfoKraken.DEMI_LONGUEUR_NON_DEPLOYE_AVANT);
@@ -33,10 +33,10 @@ public class NodePool extends MemoryPool<AStarCourbeNode>
 	}
 
 	@Override
-	protected final void make(AStarCourbeNode[] nodes)
+	protected final void make(AStarNode[] nodes)
 	{
 		for(int i = 0; i < nodes.length; i++)
-			nodes[i] = new AStarCourbeNode(new RobotState(), largeur, longueur_arriere, longueur_avant);
+			nodes[i] = new AStarNode(new RobotState(), largeur, longueur_arriere, longueur_avant);
 	}
 
 }

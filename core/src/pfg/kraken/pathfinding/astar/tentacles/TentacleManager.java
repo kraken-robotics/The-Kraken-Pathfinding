@@ -3,7 +3,7 @@
  * Distributed under the MIT License.
  */
 
-package pfg.kraken.pathfinding.astar.arcs;
+package pfg.kraken.pathfinding.astar.tentacles;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -13,16 +13,16 @@ import config.Config;
 import graphic.AbstractPrintBuffer;
 import pfg.kraken.ConfigInfoKraken;
 import pfg.kraken.obstacles.container.DynamicObstacles;
-import pfg.kraken.obstacles.container.ObstaclesFixes;
+import pfg.kraken.obstacles.container.StaticObstacles;
 import pfg.kraken.obstacles.types.Obstacle;
-import pfg.kraken.obstacles.types.ObstacleArcCourbe;
-import pfg.kraken.pathfinding.astar.AStarCourbeNode;
+import pfg.kraken.obstacles.types.TentacleObstacle;
+import pfg.kraken.pathfinding.astar.AStarNode;
 import pfg.kraken.pathfinding.astar.DirectionStrategy;
-import pfg.kraken.pathfinding.astar.arcs.vitesses.VitesseBezier;
-import pfg.kraken.pathfinding.astar.arcs.vitesses.VitesseClotho;
-import pfg.kraken.pathfinding.astar.arcs.vitesses.VitesseCourbure;
-import pfg.kraken.pathfinding.astar.arcs.vitesses.VitesseDemiTour;
-import pfg.kraken.pathfinding.astar.arcs.vitesses.VitesseRameneVolant;
+import pfg.kraken.pathfinding.astar.tentacles.types.BezierTentacle;
+import pfg.kraken.pathfinding.astar.tentacles.types.ClothoTentacle;
+import pfg.kraken.pathfinding.astar.tentacles.types.TentacleType;
+import pfg.kraken.pathfinding.astar.tentacles.types.TurnoverTentacle;
+import pfg.kraken.pathfinding.astar.tentacles.types.StraightingTentacle;
 import pfg.kraken.pathfinding.dstarlite.DStarLite;
 import pfg.kraken.robot.Cinematique;
 import pfg.kraken.robot.Speed;
@@ -37,27 +37,27 @@ import pfg.kraken.utils.XY_RW;
  *
  */
 
-public class ArcManager
+public class TentacleManager
 {
 	protected Log log;
 	private ClothoidesComputer clotho;
 	private BezierComputer bezier;
 //	private CircleComputer circlecomputer;
 	private AbstractPrintBuffer buffer;
-	private AStarCourbeNode current;
+	private AStarNode current;
 	private DStarLite dstarlite;
 	private DynamicObstacles dynamicObs;
 	private double courbureMax;
 	private boolean printObs;
-	private ObstaclesFixes fixes;
+	private StaticObstacles fixes;
 	
 	private DirectionStrategy directionstrategyactuelle;
 	private XY_RW arrivee = new XY_RW();
-	private List<VitesseCourbure> listeVitesse = new ArrayList<VitesseCourbure>();
-	private ListIterator<VitesseCourbure> iterator = listeVitesse.listIterator();
-	private List<ObstaclesFixes> disabledObstaclesFixes = new ArrayList<ObstaclesFixes>();
+	private List<TentacleType> listeVitesse = new ArrayList<TentacleType>();
+	private ListIterator<TentacleType> iterator = listeVitesse.listIterator();
+	private List<StaticObstacles> disabledObstaclesFixes = new ArrayList<StaticObstacles>();
 
-	public ArcManager(Log log, ObstaclesFixes fixes, ClothoidesComputer clotho, AbstractPrintBuffer buffer, DStarLite dstarlite, BezierComputer bezier, Config config, DynamicObstacles dynamicObs)
+	public TentacleManager(Log log, StaticObstacles fixes, ClothoidesComputer clotho, AbstractPrintBuffer buffer, DStarLite dstarlite, BezierComputer bezier, Config config, DynamicObstacles dynamicObs)
 	{
 //		this.circlecomputer = circlecomputer;
 		this.fixes = fixes;
@@ -68,20 +68,20 @@ public class ArcManager
 		this.buffer = buffer;
 		this.dstarlite = dstarlite;
 
-		for(VitesseCourbure v : VitesseClotho.values())
+		for(TentacleType v : ClothoTentacle.values())
 			listeVitesse.add(v);
-		for(VitesseCourbure v : VitesseBezier.values())
+		for(TentacleType v : BezierTentacle.values())
 			listeVitesse.add(v);
-		for(VitesseCourbure v : VitesseDemiTour.values())
+		for(TentacleType v : TurnoverTentacle.values())
 			listeVitesse.add(v);
-		for(VitesseCourbure v : VitesseRameneVolant.values())
+		for(TentacleType v : StraightingTentacle.values())
 			listeVitesse.add(v);
 
 		courbureMax = config.getDouble(ConfigInfoKraken.COURBURE_MAX);
 		printObs = config.getBoolean(ConfigInfoKraken.GRAPHIC_ROBOT_COLLISION);
 	}
 
-	private ObstacleArcCourbe obs = new ObstacleArcCourbe();
+	private TentacleObstacle obs = new TentacleObstacle();
 
 	/**
 	 * Retourne faux si un obstacle est sur la route
@@ -90,7 +90,7 @@ public class ArcManager
 	 * @return
 	 * @throws FinMatchException
 	 */
-	public boolean isReachable(AStarCourbeNode node)
+	public boolean isReachable(AStarNode node)
 	{
 		// le tout premier nœud n'a pas de parent
 		if(node.parent == null)
@@ -151,7 +151,7 @@ public class ArcManager
 	 * courbure.
 	 * Il faut exécuter tout ce qui se passe pendant ce trajet
 	 */
-	public double distanceTo(AStarCourbeNode node, Speed vitesse)
+	public double distanceTo(AStarNode node, Speed vitesse)
 	{
 		node.robot.suitArcCourbe(node.getArc(), vitesse.getMaxForwardSpeed(0));
 		return node.getArc().getDuree(vitesse.getMaxForwardSpeed(0));
@@ -163,21 +163,21 @@ public class ArcManager
 	 * @param successeur
 	 * @throws InterruptedException
 	 */
-	public boolean next(AStarCourbeNode successeur)
+	public boolean next(AStarNode successeur)
 	{
-		VitesseCourbure v = iterator.next();
+		TentacleType v = iterator.next();
 
 		current.robot.copy(successeur.robot);
 
-		if(v instanceof VitesseBezier)
+		if(v instanceof BezierTentacle)
 		{
 			// TODO que signifie cette condition ?
 			if(current.getArc() == null)
 				return false;
 
-			if(v == VitesseBezier.BEZIER_QUAD)
+			if(v == BezierTentacle.BEZIER_QUAD)
 			{
-				ArcCourbeDynamique tmp;
+				DynamicTentacle tmp;
 				tmp = bezier.interpolationQuadratique(current.robot.getCinematique(), arrivee);
 				if(tmp == null)
 					return false;
@@ -218,12 +218,12 @@ public class ArcManager
 		/**
 		 * Si on veut ramener le volant au milieu
 		 */
-		else if(v instanceof VitesseRameneVolant)
+		else if(v instanceof StraightingTentacle)
 		{
 			if(current.getArc() == null)
 				return false;
 
-			ArcCourbeDynamique tmp = clotho.getTrajectoireRamene(successeur.robot.getCinematique(), (VitesseRameneVolant) v);
+			DynamicTentacle tmp = clotho.getTrajectoireRamene(successeur.robot.getCinematique(), (StraightingTentacle) v);
 			if(tmp == null)
 				return false;
 			successeur.cameFromArcDynamique = tmp;
@@ -232,25 +232,25 @@ public class ArcManager
 		/**
 		 * Si on veut faire un demi-tour
 		 */
-		else if(v instanceof VitesseDemiTour)
+		else if(v instanceof TurnoverTentacle)
 		{
 			if(current.getArc() == null)
 				return false;
 
-			successeur.cameFromArcDynamique = clotho.getTrajectoireDemiTour(successeur.robot.getCinematique(), (VitesseDemiTour) v);
+			successeur.cameFromArcDynamique = clotho.getTrajectoireDemiTour(successeur.robot.getCinematique(), (TurnoverTentacle) v);
 		}
 
 		/**
 		 * Si on fait une interpolation par clothoïde
 		 */
-		else if(v instanceof VitesseClotho)
+		else if(v instanceof ClothoTentacle)
 		{
 			// si le robot est arrêté (début de trajectoire), et que la vitesse
 			// n'est pas prévue pour un arrêt ou un rebroussement, on annule
-			if(current.getArc() == null && (!((VitesseClotho) v).arret && !((VitesseClotho) v).rebrousse))
+			if(current.getArc() == null && (!((ClothoTentacle) v).arret && !((ClothoTentacle) v).rebrousse))
 				return false;
 
-			clotho.getTrajectoire(successeur.robot.getCinematique(), (VitesseClotho) v, successeur.cameFromArcStatique);
+			clotho.getTrajectoire(successeur.robot.getCinematique(), (ClothoTentacle) v, successeur.cameFromArcStatique);
 		}
 		else
 			log.critical("Vitesse " + v + " inconnue ! ");
@@ -287,7 +287,7 @@ public class ArcManager
 	 * @param vitesse
 	 * @return
 	 */
-	private final boolean acceptable(VitesseCourbure vitesse)
+	private final boolean acceptable(TentacleType vitesse)
 	{
 		return vitesse.isAcceptable(current.robot.getCinematique(), directionstrategyactuelle, courbureMax);
 	}
@@ -316,7 +316,7 @@ public class ArcManager
 	 * @param current
 	 * @param directionstrategyactuelle
 	 */
-	public void reinitIterator(AStarCourbeNode current)
+	public void reinitIterator(AStarNode current)
 	{
 		this.current = current;
 		iterator = listeVitesse.listIterator();
@@ -327,7 +327,7 @@ public class ArcManager
 		return dstarlite.heuristicCostCourbe(c/* , useCercle */);
 	}
 
-	public boolean isArrived(AStarCourbeNode successeur)
+	public boolean isArrived(AStarNode successeur)
 	{
 		return successeur.getArc() != null && isArrivedPF(successeur.getArc().getLast());
 	}

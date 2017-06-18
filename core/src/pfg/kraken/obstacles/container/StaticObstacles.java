@@ -17,13 +17,13 @@ import pfg.kraken.utils.Log;
  *
  */
 
-public class ObstaclesFixes
+public class StaticObstacles
 {
 
     private List<Obstacle> obstacles = new ArrayList<Obstacle>();
     protected Log log;
     
-    public ObstaclesFixes(Log log)
+    public StaticObstacles(Log log)
     {
     	this.log = log;
     }

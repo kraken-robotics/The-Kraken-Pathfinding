@@ -18,14 +18,14 @@ import pfg.kraken.utils.XY;
  *
  */
 
-public class ObstacleCompound extends Obstacle
+public class CompoundObstacle extends Obstacle
 {
 	// Position est le centre de rotation
 
 	private static final long serialVersionUID = 7643797598957137648L;
 	private Obstacle[] obs;
 
-	public ObstacleCompound(Obstacle... obs)
+	public CompoundObstacle(Obstacle... obs)
 	{
 		super(new XY(0,0)); // TODO
 		this.obs = obs;
@@ -42,7 +42,7 @@ public class ObstacleCompound extends Obstacle
 	 * @return
 	 */
 	@Override
-	public boolean isColliding(ObstacleRectangular r)
+	public boolean isColliding(RectangularObstacle r)
 	{
 		for(Obstacle o : obs)
 			if(o.isColliding(r))

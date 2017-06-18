@@ -20,8 +20,8 @@ import pfg.kraken.exceptions.PathfindingException;
 import pfg.kraken.exceptions.TimeoutException;
 import pfg.kraken.memory.CinemObsPool;
 import pfg.kraken.memory.NodePool;
-import pfg.kraken.pathfinding.astar.arcs.ArcCourbe;
-import pfg.kraken.pathfinding.astar.arcs.ArcManager;
+import pfg.kraken.pathfinding.astar.tentacles.Tentacle;
+import pfg.kraken.pathfinding.astar.tentacles.TentacleManager;
 import pfg.kraken.pathfinding.chemin.CheminPathfindingInterface;
 import pfg.kraken.pathfinding.chemin.DefaultCheminPathfinding;
 import pfg.kraken.pathfinding.dstarlite.DStarLite;
@@ -44,15 +44,15 @@ import pfg.kraken.utils.Log.Verbose;
  *
  */
 
-public class AStarCourbe
+public class TentacularAStar
 {
 	protected Log log;
-	private ArcManager arcmanager;
+	private TentacleManager arcmanager;
 	private DStarLite dstarlite;
 	private NodePool memorymanager;
 	private AbstractPrintBuffer buffer;
-	private AStarCourbeNode depart;
-	private AStarCourbeNode trajetDeSecours;
+	private AStarNode depart;
+	private AStarNode trajetDeSecours;
 	private CinemObsPool cinemMemory;
 	private DefaultCheminPathfinding defaultChemin;
 	private boolean graphicTrajectory, graphicDStarLite, graphicTrajectoryAll;
@@ -67,10 +67,10 @@ public class AStarCourbe
 	 * @author pf
 	 *
 	 */
-	private class AStarCourbeNodeComparator implements Comparator<AStarCourbeNode>
+	private class AStarCourbeNodeComparator implements Comparator<AStarNode>
 	{
 		@Override
-		public int compare(AStarCourbeNode arg0, AStarCourbeNode arg1)
+		public int compare(AStarNode arg0, AStarNode arg1)
 		{
 			// Ordre lexico : on compare d'abord first, puis second
 			int tmp = (int) (arg0.f_score - arg1.f_score);
@@ -80,9 +80,9 @@ public class AStarCourbe
 		}
 	}
 
-	private final HashSet<AStarCourbeNode> closedset = new HashSet<AStarCourbeNode>();
-	private final PriorityQueue<AStarCourbeNode> openset = new PriorityQueue<AStarCourbeNode>(PointGridSpace.NB_POINTS, new AStarCourbeNodeComparator());
-	private Stack<ArcCourbe> pileTmp = new Stack<ArcCourbe>();
+	private final HashSet<AStarNode> closedset = new HashSet<AStarNode>();
+	private final PriorityQueue<AStarNode> openset = new PriorityQueue<AStarNode>(PointGridSpace.NB_POINTS, new AStarCourbeNodeComparator());
+	private Stack<Tentacle> pileTmp = new Stack<Tentacle>();
 	private LinkedList<ItineraryPoint> trajectory = new LinkedList<ItineraryPoint>();
 
 	// private HashSet<AStarCourbeNode> closedsetTmp = new
@@ -93,7 +93,7 @@ public class AStarCourbe
 	/**
 	 * Constructeur du AStarCourbe
 	 */
-	public AStarCourbe(Log log, DefaultCheminPathfinding defaultChemin, DStarLite dstarlite, ArcManager arcmanager, NodePool memorymanager, CinemObsPool rectMemory, AbstractPrintBuffer buffer, RobotState chrono, Config config)
+	public TentacularAStar(Log log, DefaultCheminPathfinding defaultChemin, DStarLite dstarlite, TentacleManager arcmanager, NodePool memorymanager, CinemObsPool rectMemory, AbstractPrintBuffer buffer, RobotState chrono, Config config)
 	{
 		this.defaultChemin = defaultChemin;
 		this.log = log;
@@ -110,7 +110,7 @@ public class AStarCourbe
 		int demieLargeurNonDeploye = config.getInt(ConfigInfoKraken.LARGEUR_NON_DEPLOYE) / 2;
 		int demieLongueurArriere = config.getInt(ConfigInfoKraken.DEMI_LONGUEUR_NON_DEPLOYE_ARRIERE);
 		int demieLongueurAvant = config.getInt(ConfigInfoKraken.DEMI_LONGUEUR_NON_DEPLOYE_AVANT);
-		this.depart = new AStarCourbeNode(chrono, demieLargeurNonDeploye, demieLongueurArriere, demieLongueurAvant);
+		this.depart = new AStarNode(chrono, demieLargeurNonDeploye, demieLongueurArriere, demieLongueurAvant);
 		depart.setIndiceMemoryManager(-1);
 	}
 
@@ -154,7 +154,7 @@ public class AStarCourbe
 
 		long debutRecherche = System.currentTimeMillis();
 
-		AStarCourbeNode current, successeur;
+		AStarNode current, successeur;
 		do
 		{
 			current = openset.poll();
@@ -364,14 +364,14 @@ public class AStarCourbe
 		throw new NoPathException("Plus aucun nœud à explorer !");
 	}
 
-	private void destroy(AStarCourbeNode n)
+	private void destroy(AStarNode n)
 	{
 		if(n.cameFromArcDynamique != null)
 			cinemMemory.destroyNode(n.cameFromArcDynamique);
 		memorymanager.destroyNode(n);
 	}
 
-	private final Cinematique partialReconstruct(AStarCourbeNode best, CheminPathfindingInterface chemin)
+	private final Cinematique partialReconstruct(AStarNode best, CheminPathfindingInterface chemin)
 	{
 		return partialReconstruct(best, chemin, 500);
 	}
@@ -384,10 +384,10 @@ public class AStarCourbe
 	 * @param last
 	 * @throws PathfindingException
 	 */
-	private final Cinematique partialReconstruct(AStarCourbeNode best, CheminPathfindingInterface chemin, int profondeurMax)
+	private final Cinematique partialReconstruct(AStarNode best, CheminPathfindingInterface chemin, int profondeurMax)
 	{
-		AStarCourbeNode noeudParent = best;
-		ArcCourbe arcParent = best.getArc();
+		AStarNode noeudParent = best;
+		Tentacle arcParent = best.getArc();
 
 		while(noeudParent.parent != null)
 		{
@@ -401,7 +401,7 @@ public class AStarCourbe
 		// chemin.add fait des copies des points
 		while(!pileTmp.isEmpty() && profondeurMax > 0)
 		{
-			ArcCourbe a = pileTmp.pop();
+			Tentacle a = pileTmp.pop();
 			log.debug(a.vitesse + " (" + a.getNbPoints() + " pts)", Verbose.PF.masque);
 			for(int i = 0; i < a.getNbPoints(); i++)
 			{

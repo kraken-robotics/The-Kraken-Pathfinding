@@ -5,7 +5,7 @@
 
 package pfg.kraken.robot;
 
-import pfg.kraken.pathfinding.astar.arcs.ArcCourbe;
+import pfg.kraken.pathfinding.astar.tentacles.Tentacle;
 import pfg.kraken.utils.XY;
 
 /**
@@ -27,7 +27,7 @@ public class RobotState
 		return date;
 	}
 
-	public void suitArcCourbe(ArcCourbe came_from_arc, double translationalSpeed)
+	public void suitArcCourbe(Tentacle came_from_arc, double translationalSpeed)
 	{
 		date += came_from_arc.getDuree(translationalSpeed);
 		came_from_arc.getLast().copy(cinematique);
