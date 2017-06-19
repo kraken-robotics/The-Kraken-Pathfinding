@@ -8,17 +8,16 @@ package pfg.kraken.dstarlite;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
-import pfg.kraken.obstacles.types.Obstacle;
+import pfg.kraken.obstacles.Obstacle;
 
 /**
- * Une structure utilisée par le GridSpace
+ * A node in the navmesh
  * 
  * @author pf
  *
  */
 
-class NavmeshEdge implements Serializable
+public class NavmeshEdge implements Serializable
 {
 	private static final long serialVersionUID = 7904466980326128967L;
 	final int distance;

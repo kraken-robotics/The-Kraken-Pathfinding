@@ -10,19 +10,18 @@ import org.junit.Test;
 import graphic.AbstractPrintBuffer;
 import pfg.kraken.ConfigInfoKraken;
 import pfg.kraken.exceptions.PathfindingException;
-import pfg.kraken.obstacles.types.ObstacleCircular;
-import pfg.kraken.pathfinding.astar.AStarCourbe;
-import pfg.kraken.pathfinding.astar.arcs.ArcCourbe;
-import pfg.kraken.pathfinding.astar.arcs.ArcCourbeDynamique;
-import pfg.kraken.pathfinding.astar.arcs.ArcCourbeStatique;
-import pfg.kraken.pathfinding.astar.arcs.BezierComputer;
-import pfg.kraken.pathfinding.astar.arcs.CercleArrivee;
-import pfg.kraken.pathfinding.astar.arcs.ClothoidesComputer;
-import pfg.kraken.pathfinding.astar.arcs.vitesses.VitesseClotho;
-import pfg.kraken.pathfinding.astar.arcs.vitesses.VitesseDemiTour;
-import pfg.kraken.pathfinding.astar.arcs.vitesses.VitesseRameneVolant;
-import pfg.kraken.pathfinding.chemin.DefaultCheminPathfinding;
-import pfg.kraken.pathfinding.dstarlite.gridspace.GridSpace;
+import pfg.kraken.obstacles.types.CircularObstacle;
+import pfg.kraken.astar.TentacularAStar;
+import pfg.kraken.astar.tentacles.ArcCourbe;
+import pfg.kraken.astar.tentacles.ArcCourbeDynamique;
+import pfg.kraken.astar.tentacles.ArcCourbeStatique;
+import pfg.kraken.astar.tentacles.BezierComputer;
+import pfg.kraken.astar.tentacles.ClothoidesComputer;
+import pfg.kraken.astar.tentacles.types.VitesseClotho;
+import pfg.kraken.astar.tentacles.types.VitesseDemiTour;
+import pfg.kraken.astar.tentacles.types.VitesseRameneVolant;
+import pfg.kraken.chemin.DefaultCheminPathfinding;
+import pfg.kraken.dstarlite.gridspace.GridSpace;
 import pfg.kraken.robot.Cinematique;
 import pfg.kraken.robot.CinematiqueObs;
 import pfg.kraken.robot.Speed;
@@ -35,10 +34,10 @@ import pfg.kraken.utils.XY;
  *
  */
 
-public class JUnit_AStarCourbe extends JUnit_Test
+public class JUnit_TentacularAStar extends JUnit_Test
 {
 
-	private AStarCourbe astar;
+	private TentacularAStar astar;
 	private ClothoidesComputer clotho;
 	protected BezierComputer bezier;
 	private AbstractPrintBuffer buffer;
@@ -57,7 +56,7 @@ public class JUnit_AStarCourbe extends JUnit_Test
 		super.setUp();
 		clotho = injector.getService(ClothoidesComputer.class);
 		buffer = injector.getService(AbstractPrintBuffer.class);
-		astar = injector.getService(AStarCourbe.class);
+		astar = injector.getService(TentacularAStar.class);
 		// dstarlite = injector.getService(DStarLite.class);
 		gridspace = injector.getService(GridSpace.class);
 		bezier = injector.getService(BezierComputer.class);
@@ -114,7 +113,7 @@ public class JUnit_AStarCourbe extends JUnit_Test
 				 */
 				System.out.println(a + " " + i + " " + arc[a].arcselems[i]);
 				if(graphicTrajectory)
-					buffer.addSupprimable(new ObstacleCircular(arc[a].getPoint(i).getPosition(), 4));
+					buffer.addSupprimable(new CircularObstacle(arc[a].getPoint(i).getPosition(), 4));
 			}
 			if(a == 0)
 			{
@@ -157,7 +156,7 @@ public class JUnit_AStarCourbe extends JUnit_Test
 			{
 				System.out.println(a + " " + i + " " + arc[a].getPoint(i));
 				if(graphicTrajectory)
-					buffer.addSupprimable(new ObstacleCircular(arc[a].getPoint(i).getPosition(), 4));
+					buffer.addSupprimable(new CircularObstacle(arc[a].getPoint(i).getPosition(), 4));
 			}
 		}
 	}
@@ -185,7 +184,7 @@ public class JUnit_AStarCourbe extends JUnit_Test
 			{
 				System.out.println(a + " " + i + " " + arc[a].getPoint(i));
 				if(graphicTrajectory)
-					buffer.addSupprimable(new ObstacleCircular(arc[a].getPoint(i).getPosition(), 4));
+					buffer.addSupprimable(new CircularObstacle(arc[a].getPoint(i).getPosition(), 4));
 			}
 		}
 	}
@@ -211,7 +210,7 @@ public class JUnit_AStarCourbe extends JUnit_Test
 			{
 				System.out.println(a + " " + i + " " + arc[a].getPoint(i));
 				if(graphicTrajectory)
-					buffer.addSupprimable(new ObstacleCircular(arc[a].getPoint(i).getPosition(), 4));
+					buffer.addSupprimable(new CircularObstacle(arc[a].getPoint(i).getPosition(), 4));
 			}
 		}
 	}
@@ -243,7 +242,7 @@ public class JUnit_AStarCourbe extends JUnit_Test
 	 * System.out.println(a+" "+i+" "+arc[a].getPoint(i));
 	 * if(graphicTrajectory)
 	 * buffer.addSupprimable(new
-	 * ObstacleCircular(arc[a].getPoint(i).getPosition(), 4));
+	 * CircularObstacle(arc[a].getPoint(i).getPosition(), 4));
 	 * }
 	 * }
 	 * Assert.assertTrue(cercle.isArrived(arc[0].getLast()));
@@ -692,7 +691,7 @@ public class JUnit_AStarCourbe extends JUnit_Test
 			if(graphicTrajectory)
 				Thread.sleep(100);
 		}
-		gridspace.addObstacleAndRemoveNearbyObstacles(new ObstacleCircular(new Vec2RO(-400, 1300), 200));
+		gridspace.addObstacleAndRemoveNearbyObstacles(new CircularObstacle(new Vec2RO(-400, 1300), 200));
 		chemin.checkColliding(true);
 		avant = System.nanoTime();
 		astar.updatePath(chemin.getLastValidCinematique());
@@ -741,8 +740,8 @@ public class JUnit_AStarCourbe extends JUnit_Test
 				Thread.sleep(100);
 		}
 		// gridspace.addObstacleAndRemoveNearbyObstacles(new
-		// ObstacleCircular(new Vec2RO(-600, 800), 200));
-		gridspace.addObstacleAndRemoveNearbyObstacles(new ObstacleCircular(new Vec2RO(0, 1600), 200));
+		// CircularObstacle(new Vec2RO(-600, 800), 200));
+		gridspace.addObstacleAndRemoveNearbyObstacles(new CircularObstacle(new Vec2RO(0, 1600), 200));
 		chemin.checkColliding(true);
 		avant = System.nanoTime();
 		try

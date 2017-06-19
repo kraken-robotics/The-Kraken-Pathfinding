@@ -19,6 +19,6 @@ import pfg.kraken.robot.Cinematique;
 public interface TentacleType
 {
 	public boolean isAcceptable(Cinematique c, DirectionStrategy directionstrategyactuelle, double courbureMax);
-	public Tentacle compute();
+//	public Tentacle compute();
 	public int getNbArrets();
 }

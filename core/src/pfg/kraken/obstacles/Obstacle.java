@@ -4,14 +4,14 @@
  */
 
 
-package pfg.kraken.obstacles.types;
+package pfg.kraken.obstacles;
 
 import java.awt.Color;
 import java.io.Serializable;
-import config.Config;
-import graphic.AbstractPrintBuffer;
-import graphic.printable.Layer;
-import graphic.printable.Printable;
+import pfg.config.Config;
+import pfg.graphic.AbstractPrintBuffer;
+import pfg.graphic.printable.Layer;
+import pfg.graphic.printable.Printable;
 import pfg.kraken.ConfigInfoKraken;
 import pfg.kraken.Couleur;
 import pfg.kraken.utils.Log;
@@ -25,7 +25,7 @@ import pfg.kraken.utils.XY_RW;
  *
  */
 
-public abstract class Obstacle implements Printable, Serializable, ObstacleInterface
+public abstract class Obstacle implements Printable, Serializable
 {
 	private static final long serialVersionUID = -2508727703931042322L;
 	protected XY_RW position;
@@ -88,7 +88,6 @@ public abstract class Obstacle implements Printable, Serializable, ObstacleInter
 	 * @param distance
 	 * @return
 	 */
-	@Override
 	public boolean isProcheObstacle(XY position, int distance)
 	{
 		return squaredDistance(position) < distance * distance;
@@ -103,7 +102,6 @@ public abstract class Obstacle implements Printable, Serializable, ObstacleInter
 	 * @param distance
 	 * @return
 	 */
-	@Override
 	public boolean isProcheObstacle(Obstacle obs, int distance)
 	{
 		return squaredDistance(obs.position) < distance * distance;
@@ -115,7 +113,6 @@ public abstract class Obstacle implements Printable, Serializable, ObstacleInter
 	 * @param obs
 	 * @return
 	 */
-	@Override
 	public boolean isColliding(TentacleObstacle obs)
 	{
 		for(RectangularObstacle o : obs.ombresRobot)
@@ -134,10 +131,21 @@ public abstract class Obstacle implements Printable, Serializable, ObstacleInter
 		return l.ordinal();
 	}
 
-	@Override
 	public XY getPosition()
 	{
 		return position;
 	}
+
+	public abstract double squaredDistance(XY position);
+	
+	public abstract XY[] getExpandedConvexHull(double expansion);
+	
+	/**
+	 * Renvoie vrai s'il y a collision avec obs
+	 * 
+	 * @param obs
+	 * @return
+	 */
+	public abstract boolean isColliding(RectangularObstacle obs);
 
 }

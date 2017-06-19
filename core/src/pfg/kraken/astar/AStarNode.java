@@ -7,8 +7,8 @@ package pfg.kraken.astar;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import graphic.Fenetre;
-import graphic.printable.Printable;
+import pfg.graphic.Fenetre;
+import pfg.graphic.printable.Printable;
 import pfg.kraken.Couleur;
 import pfg.kraken.astar.tentacles.DynamicTentacle;
 import pfg.kraken.astar.tentacles.StaticTentacle;

@@ -7,9 +7,11 @@ package pfg.kraken.dstarlite;
 
 import java.awt.Graphics;
 import java.io.Serializable;
-import graphic.Fenetre;
-import graphic.printable.Layer;
-import graphic.printable.Printable;
+import java.util.ArrayList;
+import java.util.List;
+import pfg.graphic.Fenetre;
+import pfg.graphic.printable.Layer;
+import pfg.graphic.printable.Printable;
 import pfg.kraken.utils.XY;
 
 /**
@@ -19,7 +21,7 @@ import pfg.kraken.utils.XY;
  *
  */
 
-class NavmeshNode implements Printable, Serializable
+public class NavmeshNode implements Printable, Serializable
 {
 	private static final long serialVersionUID = -6588410126587155794L;
 

@@ -7,9 +7,8 @@ import org.junit.Assert;
 import org.junit.Test;
 import config.Config;
 import injector.InjectorException;
-import pfg.kraken.obstacles.types.ObstacleCircular;
-import pfg.kraken.pathfinding.astar.AStarCourbe;
-import pfg.kraken.pathfinding.dstarlite.gridspace.GridSpace;
+import pfg.kraken.astar.TentacularAStar;
+import pfg.kraken.dstarlite.Navmesh;
 import pfg.kraken.utils.XY;
 
 /**
@@ -54,8 +53,8 @@ public class JUnit_Container extends JUnit_Test
 	@Test
 	public void test_instanciation() throws Exception
 	{
-		injector.getService(GridSpace.class);
-		injector.getService(AStarCourbe.class);
+		injector.getService(Navmesh.class);
+		injector.getService(TentacularAStar.class);
 	}
 
 	/**

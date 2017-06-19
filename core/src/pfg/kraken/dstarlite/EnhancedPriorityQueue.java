@@ -18,7 +18,7 @@ import java.io.IOException;
  *
  */
 
-class EnhancedPriorityQueue
+public class EnhancedPriorityQueue
 {
 	private DStarLiteNode[] tab;
 	private int firstAvailable = 1;

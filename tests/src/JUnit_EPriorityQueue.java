@@ -7,8 +7,8 @@ import java.util.Random;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import pfg.kraken.pathfinding.dstarlite.DStarLiteNode;
-import pfg.kraken.pathfinding.dstarlite.EnhancedPriorityQueue;
+import pfg.kraken.dstarlite.DStarLiteNode;
+import pfg.kraken.dstarlite.EnhancedPriorityQueue;
 
 /**
  * Tests unitaires de l'Enhanced Priority Queue
@@ -27,7 +27,7 @@ public class JUnit_EPriorityQueue extends JUnit_Test
 	public void setUp() throws Exception
 	{
 		super.setUp();
-		file = new EnhancedPriorityQueue();
+		file = new EnhancedPriorityQueue(10);
 	}
 
 	@Test

@@ -4,12 +4,12 @@
  */
 
 
-package pfg.kraken.obstacles.types;
+package pfg.kraken.obstacles;
 
 import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.List;
-import graphic.Fenetre;
+import pfg.graphic.Fenetre;
 import pfg.kraken.utils.XY;
 
 /**
@@ -61,39 +61,9 @@ public class TentacleObstacle extends Obstacle
 	}
 
 	@Override
-	public double getTopY()
+	public XY[] getExpandedConvexHull(double expansion)
 	{
-		double out = ombresRobot.get(0).getTopY();
-		for(RectangularObstacle o : ombresRobot)
-			out = Math.max(out, o.getTopY());
-		return out;
-	}
-
-	@Override
-	public double getBottomY()
-	{
-		double out = ombresRobot.get(0).getBottomY();
-		for(RectangularObstacle o : ombresRobot)
-			out = Math.min(out, o.getBottomY());
-		return out;
-	}
-
-	@Override
-	public double getLeftmostX()
-	{
-		double out = ombresRobot.get(0).getLeftmostX();
-		for(RectangularObstacle o : ombresRobot)
-			out = Math.min(out, o.getLeftmostX());
-		return out;
-	}
-
-	@Override
-	public double getRightmostX()
-	{
-		double out = ombresRobot.get(0).getRightmostX();
-		for(RectangularObstacle o : ombresRobot)
-			out = Math.max(out, o.getRightmostX());
-		return out;
+		return null; // TODO
 	}
 
 }

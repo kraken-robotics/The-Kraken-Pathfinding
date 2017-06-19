@@ -7,8 +7,8 @@ package pfg.kraken.dstarlite;
 
 import java.util.ArrayList;
 import java.util.List;
-import config.Config;
-import graphic.AbstractPrintBuffer;
+import pfg.config.Config;
+import pfg.graphic.AbstractPrintBuffer;
 import pfg.kraken.ConfigInfoKraken;
 import pfg.kraken.robot.Cinematique;
 import pfg.kraken.utils.Log;

@@ -13,7 +13,7 @@ import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import config.Config;
+import pfg.config.Config;
 import pfg.kraken.ConfigInfoKraken;
 
 /**

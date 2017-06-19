@@ -7,19 +7,19 @@ package pfg.kraken;
 
 import java.util.ArrayList;
 import java.util.List;
-import config.Config;
-import graphic.Fenetre;
-import graphic.AbstractPrintBuffer;
-import injector.Injector;
-import injector.InjectorException;
+import pfg.config.Config;
+import pfg.graphic.Fenetre;
+import pfg.graphic.AbstractPrintBuffer;
+import pfg.injector.Injector;
+import pfg.injector.InjectorException;
 import pfg.kraken.astar.TentacularAStar;
 import pfg.kraken.astar.tentacles.Tentacle;
 import pfg.kraken.astar.tentacles.TentacleManager;
 import pfg.kraken.astar.tentacles.types.*;
+import pfg.kraken.obstacles.Obstacle;
 import pfg.kraken.obstacles.container.DynamicObstacles;
 import pfg.kraken.obstacles.container.EmptyDynamicObstacles;
 import pfg.kraken.obstacles.container.StaticObstacles;
-import pfg.kraken.obstacles.types.Obstacle;
 import pfg.kraken.utils.*;
 
 /**

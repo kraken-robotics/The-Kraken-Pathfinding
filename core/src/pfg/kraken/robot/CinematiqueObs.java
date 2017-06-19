@@ -8,7 +8,7 @@ package pfg.kraken.robot;
 import java.io.Serializable;
 
 import pfg.kraken.memory.Memorizable;
-import pfg.kraken.obstacles.types.ObstacleRobot;
+import pfg.kraken.obstacles.ObstacleRobot;
 
 /**
  * Une cinématique + un obstacle associé

@@ -7,7 +7,7 @@ package pfg.kraken.astar.tentacles;
 
 import java.util.LinkedList;
 
-import config.Config;
+import pfg.config.Config;
 import pfg.kraken.ConfigInfoKraken;
 import pfg.kraken.astar.tentacles.types.BezierTentacle;
 import pfg.kraken.memory.CinemObsPool;

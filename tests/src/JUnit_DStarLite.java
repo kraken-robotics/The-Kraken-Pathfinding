@@ -7,9 +7,9 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import pfg.kraken.obstacles.types.ObstacleCircular;
-import pfg.kraken.pathfinding.dstarlite.DStarLite;
-import pfg.kraken.pathfinding.dstarlite.gridspace.GridSpace;
+import pfg.kraken.obstacles.types.CircularObstacle;
+import pfg.kraken.dstarlite.DStarLite;
+import pfg.kraken.dstarlite.Navmesh;
 import pfg.kraken.utils.XY;
 
 /**
@@ -23,7 +23,7 @@ public class JUnit_DStarLite extends JUnit_Test
 {
 
 	private DStarLite pathfinding;
-	private GridSpace gridspace;
+	private Navmesh gridspace;
 
 	@Override
 	@Before
@@ -31,7 +31,7 @@ public class JUnit_DStarLite extends JUnit_Test
 	{
 		super.setUp();
 		pathfinding = injector.getService(DStarLite.class);
-		gridspace = injector.getService(GridSpace.class);
+		gridspace = injector.getService(Navmesh.class);
 	}
 	
 	// TODO

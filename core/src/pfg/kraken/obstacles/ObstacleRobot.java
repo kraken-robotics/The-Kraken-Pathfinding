@@ -3,7 +3,7 @@
  * Distributed under the MIT License.
  */
 
-package pfg.kraken.obstacles.types;
+package pfg.kraken.obstacles;
 
 import java.io.Serializable;
 

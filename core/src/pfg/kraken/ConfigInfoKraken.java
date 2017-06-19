@@ -18,7 +18,7 @@ package pfg.kraken;
  *
  */
 
-import config.ConfigInfo;
+import pfg.config.ConfigInfo;
 
 public enum ConfigInfoKraken implements ConfigInfo
 {

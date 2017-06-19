@@ -4,10 +4,10 @@
  */
 
 
-package pfg.kraken.obstacles.types;
+package pfg.kraken.obstacles;
 
 import java.awt.Graphics;
-import graphic.Fenetre;
+import pfg.graphic.Fenetre;
 import pfg.kraken.Couleur;
 import pfg.kraken.utils.XY;
 
@@ -73,29 +73,11 @@ public class CircularObstacle extends Obstacle
 		else
 			g.fillOval(f.XtoWindow(position.getX() - radius), f.YtoWindow(position.getY() + radius), f.distanceXtoWindow((radius) * 2), f.distanceYtoWindow((radius) * 2));
 	}
-
+	
 	@Override
-	public double getTopY()
+	public XY[] getExpandedConvexHull(double expansion)
 	{
-		return position.getY() + radius;
-	}
-
-	@Override
-	public double getBottomY()
-	{
-		return position.getY() - radius;
-	}
-
-	@Override
-	public double getLeftmostX()
-	{
-		return position.getX() - radius;
-	}
-
-	@Override
-	public double getRightmostX()
-	{
-		return position.getX() + radius;
+		return null; // TODO
 	}
 
 }

@@ -6,8 +6,8 @@
 package pfg.kraken.dstarlite;
 
 import java.awt.Graphics;
-import graphic.Fenetre;
-import graphic.printable.Printable;
+import pfg.graphic.Fenetre;
+import pfg.graphic.printable.Printable;
 import pfg.kraken.Couleur;
 
 /**

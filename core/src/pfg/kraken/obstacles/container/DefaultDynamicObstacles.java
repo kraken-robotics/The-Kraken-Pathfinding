@@ -8,8 +8,7 @@ package pfg.kraken.obstacles.container;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-import pfg.kraken.obstacles.types.Obstacle;
+import pfg.kraken.obstacles.Obstacle;
 
 /**
  * A default dynamical obstacles manager

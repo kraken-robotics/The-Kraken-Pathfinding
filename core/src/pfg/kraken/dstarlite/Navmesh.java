@@ -5,11 +5,14 @@
 
 package pfg.kraken.dstarlite;
 
-import graphic.Fenetre;
-import graphic.printable.Layer;
-import graphic.printable.Printable;
+import pfg.config.Config;
+import pfg.graphic.Fenetre;
+import pfg.graphic.printable.Layer;
+import pfg.graphic.printable.Printable;
 import pfg.kraken.utils.Log;
 import pfg.kraken.utils.XY;
+import pfg.kraken.ConfigInfoKraken;
+import pfg.kraken.obstacles.Obstacle;
 import pfg.kraken.obstacles.container.StaticObstacles;
 
 import java.awt.Graphics;

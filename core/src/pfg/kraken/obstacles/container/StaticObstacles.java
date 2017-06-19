@@ -7,8 +7,7 @@ package pfg.kraken.obstacles.container;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import pfg.kraken.obstacles.types.Obstacle;
+import pfg.kraken.obstacles.Obstacle;
 import pfg.kraken.utils.Log;
 
 /**

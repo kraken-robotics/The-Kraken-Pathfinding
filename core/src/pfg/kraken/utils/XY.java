@@ -8,7 +8,7 @@ package pfg.kraken.utils;
 import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import graphic.Position;
+import pfg.graphic.Position;
 
 /**
  * Vecteur en lecture seule

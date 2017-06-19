@@ -6,7 +6,7 @@
 import java.util.LinkedList;
 import pfg.kraken.Kraken;
 import pfg.kraken.exceptions.PathfindingException;
-import pfg.kraken.pathfinding.astar.AStarCourbe;
+import pfg.kraken.astar.TentacularAStar;
 import pfg.kraken.robot.ItineraryPoint;
 import pfg.kraken.utils.XY;
 import pfg.kraken.utils.XYO;
@@ -24,7 +24,7 @@ public class Example1
 	public static void main(String[] args)
 	{
 		Kraken kraken = new Kraken(null);
-		AStarCourbe astar = kraken.getAStar();
+		TentacularAStar astar = kraken.getAStar();
 		try
 		{
 			astar.initializeNewSearch(new XYO(0, 0, 0), new XY(1000, 1000));

@@ -6,13 +6,13 @@
 package pfg.kraken.astar.tentacles;
 
 import java.awt.Graphics;
-import config.Config;
-import graphic.Fenetre;
-import graphic.printable.Printable;
+import pfg.config.Config;
+import pfg.graphic.Fenetre;
+import pfg.graphic.printable.Printable;
 import pfg.kraken.ConfigInfoKraken;
 import pfg.kraken.Couleur;
 import pfg.kraken.astar.tentacles.types.TentacleType;
-import pfg.kraken.obstacles.types.CircularObstacle;
+import pfg.kraken.obstacles.CircularObstacle;
 import pfg.kraken.robot.CinematiqueObs;
 
 /**

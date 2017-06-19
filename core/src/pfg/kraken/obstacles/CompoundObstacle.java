@@ -4,11 +4,11 @@
  */
 
 
-package pfg.kraken.obstacles.types;
+package pfg.kraken.obstacles;
 
 import java.awt.Graphics;
 
-import graphic.Fenetre;
+import pfg.graphic.Fenetre;
 import pfg.kraken.utils.XY;
 
 /**
@@ -49,32 +49,7 @@ public class CompoundObstacle extends Obstacle
 				return true;
 		return false;
 	}
-
-	/**
-	 * Teste la séparation à partir des projections.
-	 * Vérifie simplement si a et b sont bien séparés de a2, b2, c2 et d2,
-	 * c'est-à-dire s'il existe x tel que a < x, b < x et
-	 * a2 > x, b2 > x, c2 > x, d2 > x
-	 * 
-	 * @param a
-	 * @param b
-	 * @param a2
-	 * @param b2
-	 * @param c2
-	 * @param d2
-	 * @return
-	 */
-	protected final boolean testeSeparation(double a, double b, double a2, double b2, double c2, double d2)
-	{
-		double min1 = Math.min(a, b);
-		double max1 = Math.max(a, b);
-
-		double min2 = Math.min(Math.min(a2, b2), Math.min(c2, d2));
-		double max2 = Math.max(Math.max(a2, b2), Math.max(c2, d2));
-
-		return min1 > max2 || min2 > max1; // vrai s'il y a une séparation
-	}
-
+	
 	@Override
 	public String toString()
 	{
@@ -109,38 +84,9 @@ public class CompoundObstacle extends Obstacle
 	}
 	
 	@Override
-	public double getTopY()
+	public XY[] getExpandedConvexHull(double expansion)
 	{
-		double max = Double.MIN_VALUE;
-		for(Obstacle o : obs)
-			max = Math.max(max, o.getTopY());
-		return max;
+		return null; // TODO
 	}
 
-	@Override
-	public double getBottomY()
-	{
-		double min = Double.MAX_VALUE;
-		for(Obstacle o : obs)
-			min = Math.min(min, o.getBottomY());
-		return min;
-	}
-
-	@Override
-	public double getLeftmostX()
-	{
-		double min = Double.MAX_VALUE;
-		for(Obstacle o : obs)
-			min = Math.min(min, o.getLeftmostX());
-		return min;
-	}
-
-	@Override
-	public double getRightmostX()
-	{
-		double max = Double.MIN_VALUE;
-		for(Obstacle o : obs)
-			max = Math.max(max, o.getRightmostX());
-		return max;
-	}
 }

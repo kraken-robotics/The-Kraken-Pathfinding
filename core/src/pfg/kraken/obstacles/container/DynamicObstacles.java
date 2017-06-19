@@ -12,8 +12,7 @@
 package pfg.kraken.obstacles.container;
 
 import java.util.Iterator;
-
-import pfg.kraken.obstacles.types.Obstacle;
+import pfg.kraken.obstacles.Obstacle;
 
 public interface DynamicObstacles
 {

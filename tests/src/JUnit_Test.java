@@ -12,7 +12,7 @@ import org.junit.runner.Result;
 import java.lang.reflect.Method;
 import org.junit.After;
 import config.Config;
-import graphic.Fenetre;
+import pfg.graphic.Fenetre;
 import injector.Injector;
 import pfg.kraken.Kraken;
 import pfg.kraken.utils.Log;

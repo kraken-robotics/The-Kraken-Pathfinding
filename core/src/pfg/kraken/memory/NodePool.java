@@ -6,7 +6,7 @@
 
 package pfg.kraken.memory;
 
-import config.Config;
+import pfg.config.Config;
 import pfg.kraken.ConfigInfoKraken;
 import pfg.kraken.astar.AStarNode;
 import pfg.kraken.robot.RobotState;

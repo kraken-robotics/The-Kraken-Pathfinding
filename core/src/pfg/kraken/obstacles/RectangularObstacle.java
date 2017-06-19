@@ -3,10 +3,10 @@
  * Distributed under the MIT License.
  */
 
-package pfg.kraken.obstacles.types;
+package pfg.kraken.obstacles;
 
 import java.awt.Graphics;
-import graphic.Fenetre;
+import pfg.graphic.Fenetre;
 import pfg.kraken.Couleur;
 import pfg.kraken.utils.XY;
 import pfg.kraken.utils.XY_RW;
@@ -188,7 +188,7 @@ public class RectangularObstacle extends Obstacle
 	 * @param d2
 	 * @return
 	 */
-	protected final boolean testeSeparation(double a, double b, double a2, double b2, double c2, double d2)
+	private final boolean testeSeparation(double a, double b, double a2, double b2, double c2, double d2)
 	{
 		double min1 = Math.min(a, b);
 		double max1 = Math.max(a, b);
@@ -293,34 +293,11 @@ public class RectangularObstacle extends Obstacle
 		}
 		g.fillPolygon(X, Y, 4);
 	}
-
+	
 	@Override
-	public double getTopY()
+	public XY[] getExpandedConvexHull(double expansion)
 	{
-		return Math.max(Math.max(coinBasDroiteRotate.getY(), coinHautDroiteRotate.getY()), Math.max(coinHautGaucheRotate.getY(), coinBasGaucheRotate.getY()));
-	}
-
-	@Override
-	public double getBottomY()
-	{
-		return Math.min(Math.min(coinBasDroiteRotate.getY(), coinHautDroiteRotate.getY()), Math.min(coinHautGaucheRotate.getY(), coinBasGaucheRotate.getY()));
-	}
-
-	@Override
-	public double getLeftmostX()
-	{
-		return Math.min(Math.min(coinBasDroiteRotate.getX(), coinHautDroiteRotate.getX()), Math.min(coinHautGaucheRotate.getX(), coinBasGaucheRotate.getX()));
-	}
-
-	@Override
-	public double getRightmostX()
-	{
-		return Math.max(Math.max(coinBasDroiteRotate.getX(), coinHautDroiteRotate.getX()), Math.max(coinHautGaucheRotate.getX(), coinBasGaucheRotate.getX()));
-	}
-
-	public boolean isHorsTable()
-	{
-		return coinBasDroiteRotate.isHorsTable() || coinHautDroiteRotate.isHorsTable() || coinHautGaucheRotate.isHorsTable() || coinBasGaucheRotate.isHorsTable();
+		return null; // TODO
 	}
 
 }
