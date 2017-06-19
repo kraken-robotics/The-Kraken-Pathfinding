@@ -22,6 +22,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * La classe qui contient la grille utilisée par le pathfinding.
@@ -38,10 +40,12 @@ public class Navmesh implements Printable
 	protected Log log;
 	final NavmeshNode[] nodes;
 	final NavmeshEdge[] edges;
+	private int expansion;
 
-	public Navmesh(Log log, StaticObstacles obs)
+	public Navmesh(Log log, Config config, StaticObstacles obs)
 	{
 		this.log = log;
+		expansion = config.getInt(ConfigInfoKraken.DILATATION_ROBOT_DSTARLITE);
 		Object[] o = loadNavMesh(obs, "navmesh"+obs.hashCode()+".krk");
 		nodes = (NavmeshNode[]) o[0];
 		edges = (NavmeshEdge[]) o[1];
@@ -90,10 +94,77 @@ public class Navmesh implements Printable
 	}
 
 	
-	public Object[] generateNavMesh(StaticObstacles obs)
+	private Object[] generateNavMesh(StaticObstacles obs)
 	{
-		// TODO !
+		List<Obstacle> obsList = obs.getObstacles();
+		List<NavmeshNode> nodesList = new ArrayList<NavmeshNode>();
+		for(Obstacle o : obsList)
+		{
+			XY[] hull = o.getExpandedConvexHull(expansion);
+			for(XY pos : hull)
+				nodesList.add(new NavmeshNode(pos));
+		}
+		addSteinerPoints(nodesList, obsList);
+		triangulate(nodesList, obsList);
 		return null;
+	}
+	
+	private void addSteinerPoints(List<NavmeshNode> nodesList, List<Obstacle> obsList)
+	{
+	}
+	
+	private boolean isCircumscribed(XY pointA, XY pointB, XY pointC, XY pointD)
+	{
+		double a = pointA.getX() - pointD.getX();
+		double b = pointA.getY() - pointD.getY();
+		double c = (pointA.getX() * pointA.getX() - pointD.getX() * pointD.getX()) + (pointA.getY() * pointA.getY() - pointD.getY() * pointD.getY());
+
+		double d = pointB.getX() - pointD.getX();
+		double e = pointB.getY() - pointD.getY();
+		double f = (pointB.getX() * pointB.getX() - pointD.getX() * pointD.getX()) + (pointB.getY() * pointB.getY() - pointD.getY() * pointD.getY());
+		
+		double g = pointC.getX() - pointD.getX();
+		double h = pointC.getY() - pointD.getY();
+		double i = (pointC.getX() * pointC.getX() - pointD.getX() * pointD.getX()) + (pointC.getY() * pointC.getY() - pointD.getY() * pointD.getY());
+
+		return (a * e * i + d * h * c + g * b * f) - (g * e * c + a * h * f + d * b * i) > 0;
+	}
+	
+	/**
+	 * This is not the fastest algorithm… but it is enough for an off-line computation
+	 * @param nodesList
+	 * @param obsList
+	 */
+	private void triangulate(List<NavmeshNode> nodesList, List<Obstacle> obsList)
+	{
+		/*
+		 * No triangulation possible (nor needed)
+		 */
+		if(nodesList.size() < 3)
+			return;
+		
+		// Initial triangle
+		List<NavmeshTriangle> triangles = new ArrayList<NavmeshTriangle>();
+		triangles.add(new NavmeshTriangle(nodesList.get(0), nodesList.get(1), nodesList.get(2)));
+
+		for(int index = 3; index < nodesList.size(); index++)
+		{
+			NavmeshNode nextNode = nodesList.get(index);
+			boolean handled = false;
+			for(NavmeshTriangle t : triangles)
+				if(t.isInside(nextNode.position))
+				{
+					// the point is in the triangle t
+					// TODO
+					handled = true;
+					break;
+				}
+			
+			if(!handled)
+			{
+				// the point isn't in any triangle
+			}
+		}
 	}
 	
 	@Override

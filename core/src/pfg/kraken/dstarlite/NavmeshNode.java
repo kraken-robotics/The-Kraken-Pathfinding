@@ -31,17 +31,19 @@ public class NavmeshNode implements Printable, Serializable
 	 */
 	final int nb;
 	final XY position;
-	final NavmeshEdge[] edges = null;
+	List<NavmeshEdge> edges = new ArrayList<NavmeshEdge>();
+	List<NavmeshNode> neighbours = new ArrayList<NavmeshNode>();
+	private static int nbStatic = 0;
 
 	/**
 	 * Construit à partir du hashCode
 	 * 
 	 * @param i
 	 */
-	NavmeshNode(XY position, int nb)
+	NavmeshNode(XY position)
 	{
 		this.position = position;
-		this.nb = nb;
+		this.nb = nbStatic++;
 	}
 
 	@Override
@@ -74,7 +76,19 @@ public class NavmeshNode implements Printable, Serializable
 		return Layer.FOREGROUND.ordinal();
 	}
 
-	public NavmeshNode[] getNeighbourhood() {
+	public void updateNeighbours()
+	{
+		for(NavmeshEdge e : edges)
+		{
+			if(e.points[0] == this)
+				neighbours.add(e.points[1]);
+			else
+				neighbours.add(e.points[0]);
+		}	
+	}
+	
+	public NavmeshNode[] getNeighbourhood()
+	{
 		// TODO Auto-generated method stub
 		return null;
 	}
