@@ -353,6 +353,11 @@ public class TentacleManager
 		return 3 * cinematique.getPosition().distanceFast(arrivee);
 	}
 
+	public void setTentacle(List<TentacleType> tentacleTypesUsed)
+	{
+		// TODO Auto-generated method stub
+	}
+
 /*	public void disableObstaclesFixes(boolean symetrie, CinematiqueObs obs)
 	{
 		disabledObstaclesFixes.clear();

@@ -3,7 +3,7 @@
  * Distributed under the MIT License.
  */
 
-package pfg.kraken.chemin;
+package pfg.kraken.astar;
 
 import java.awt.Graphics;
 import java.util.LinkedList;

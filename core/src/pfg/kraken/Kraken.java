@@ -5,6 +5,7 @@
 
 package pfg.kraken;
 
+import java.util.ArrayList;
 import java.util.List;
 import config.Config;
 import graphic.Fenetre;
@@ -13,6 +14,8 @@ import injector.Injector;
 import injector.InjectorException;
 import pfg.kraken.astar.TentacularAStar;
 import pfg.kraken.astar.tentacles.Tentacle;
+import pfg.kraken.astar.tentacles.TentacleManager;
+import pfg.kraken.astar.tentacles.types.*;
 import pfg.kraken.obstacles.container.DynamicObstacles;
 import pfg.kraken.obstacles.container.EmptyDynamicObstacles;
 import pfg.kraken.obstacles.container.StaticObstacles;
@@ -34,6 +37,7 @@ public class Kraken
 	private Log log;
 	private Config config;
 	private Injector injector;
+	private TentacularAStar astar;
 
 	private static int nbInstances = 0;
 
@@ -63,15 +67,15 @@ public class Kraken
 	
 	public Kraken(List<Obstacle> fixedObstacles)
 	{
-		this(fixedObstacles, new EmptyDynamicObstacles());
+		this(fixedObstacles, new EmptyDynamicObstacles(), null);
 	}
 	
 	/**
 	 * Instancie le gestionnaire de dépendances et quelques services critiques
 	 * (log et config qui sont interdépendants)
 	 */
-	public Kraken(List<Obstacle> fixedObstacles, DynamicObstacles dynObs)
-	{
+	public Kraken(List<Obstacle> fixedObstacles, DynamicObstacles dynObs, TentacleType tentacleTypes)
+	{	
 		/**
 		 * On vérifie qu'il y ait un seul container à la fois
 		 */
@@ -85,6 +89,20 @@ public class Kraken
 
 		nbInstances++;
 
+		List<TentacleType> tentacleTypesUsed = new ArrayList<TentacleType>();
+		
+		if(tentacleTypes == null)
+		{
+			for(BezierTentacle t : BezierTentacle.values())
+				tentacleTypesUsed.add(t);
+			for(ClothoTentacle t : ClothoTentacle.values())
+				tentacleTypesUsed.add(t);
+			for(TurnoverTentacle t : TurnoverTentacle.values())
+				tentacleTypesUsed.add(t);
+			for(StraightingTentacle t : StraightingTentacle.values())
+				tentacleTypesUsed.add(t);
+		}
+		
 		injector = new Injector();
 
 		try {
@@ -117,6 +135,9 @@ public class Kraken
 			Tentacle.useConfig(config);
 			if(fixedObstacles != null)
 				injector.getService(StaticObstacles.class).addAll(fixedObstacles);
+			injector.getService(TentacleManager.class).setTentacle(tentacleTypesUsed);
+			astar = injector.getService(TentacularAStar.class);
+			
 		}
 		catch(InjectorException e)
 		{
@@ -126,15 +147,7 @@ public class Kraken
 
 	public TentacularAStar getAStar()
 	{
-		try
-		{
-			return injector.getService(TentacularAStar.class);
-		}
-		catch(InjectorException e)
-		{
-			e.printStackTrace();
-			return null;
-		}
+		return astar;
 	}
 	
 	protected Injector getInjector()

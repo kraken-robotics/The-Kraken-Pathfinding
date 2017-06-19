@@ -15,8 +15,6 @@ import graphic.AbstractPrintBuffer;
 import pfg.kraken.ConfigInfoKraken;
 import pfg.kraken.astar.tentacles.Tentacle;
 import pfg.kraken.astar.tentacles.TentacleManager;
-import pfg.kraken.chemin.CheminPathfindingInterface;
-import pfg.kraken.chemin.DefaultCheminPathfinding;
 import pfg.kraken.dstarlite.DStarLite;
 import pfg.kraken.exceptions.NoPathException;
 import pfg.kraken.exceptions.NotFastEnoughException;
