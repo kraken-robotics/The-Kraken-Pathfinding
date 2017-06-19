@@ -7,6 +7,8 @@ A tentacular pathfinding library for nonholonomic robotic vehicles
 
 A presentation is available here (in french !) : https://intechsenpai.github.io/moon-rover/.
 
+Kraken finds a trajectory followable by a car-like vehicle in the form of a list of points.
+
 ### Why Java ?
 
 For legacy reasons, mainly.
@@ -46,6 +48,10 @@ You can easily run the tests :
 
     $ cd The-Kraken-Pathfinding/tests
     $ ant
+
+## Great, I have a trajectory. How do I follow it ?
+
+Getting the trajectory is only half of the work, because you won't go far if you can't follow it. Different control algorithm exists ; I will expand soonly (?) this question.
 
 ## Contributing
 
