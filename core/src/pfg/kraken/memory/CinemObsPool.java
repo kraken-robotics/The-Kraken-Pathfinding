@@ -10,7 +10,7 @@ import pfg.config.Config;
 import pfg.kraken.ConfigInfoKraken;
 import pfg.kraken.astar.tentacles.DynamicTentacle;
 import pfg.kraken.robot.CinematiqueObs;
-import pfg.kraken.utils.Log;
+import pfg.log.Log;
 
 /**
  * Classe qui fournit des objets CinematiqueObs

@@ -10,7 +10,7 @@ import pfg.config.Config;
 import pfg.kraken.ConfigInfoKraken;
 import pfg.kraken.astar.AStarNode;
 import pfg.kraken.robot.RobotState;
-import pfg.kraken.utils.Log;
+import pfg.log.Log;
 
 /**
  * Memory Manager des nœuds du pathfinding courbe

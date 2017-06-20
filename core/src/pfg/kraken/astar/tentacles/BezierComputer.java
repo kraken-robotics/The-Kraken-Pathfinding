@@ -15,9 +15,9 @@ import pfg.kraken.astar.tentacles.types.StraightingTentacle;
 import pfg.kraken.memory.CinemObsPool;
 import pfg.kraken.robot.Cinematique;
 import pfg.kraken.robot.CinematiqueObs;
-import pfg.kraken.utils.Log;
 import pfg.kraken.utils.XY;
 import pfg.kraken.utils.XY_RW;
+import pfg.log.Log;
 
 /**
  * Classe qui s'occupe des calculs sur les courbes de Bézier

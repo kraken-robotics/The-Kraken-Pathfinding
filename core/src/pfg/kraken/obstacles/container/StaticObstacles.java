@@ -8,7 +8,6 @@ package pfg.kraken.obstacles.container;
 import java.util.ArrayList;
 import java.util.List;
 import pfg.kraken.obstacles.Obstacle;
-import pfg.kraken.utils.Log;
 
 /**
  * Classe qui contient les obstacles fixes
@@ -20,12 +19,6 @@ public class StaticObstacles
 {
 
     private List<Obstacle> obstacles = new ArrayList<Obstacle>();
-    protected Log log;
-    
-    public StaticObstacles(Log log)
-    {
-    	this.log = log;
-    }
 
     public boolean addAll(List<Obstacle> o)
     {

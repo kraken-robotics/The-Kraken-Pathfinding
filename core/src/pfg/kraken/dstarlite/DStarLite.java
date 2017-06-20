@@ -11,8 +11,8 @@ import pfg.config.Config;
 import pfg.graphic.AbstractPrintBuffer;
 import pfg.kraken.ConfigInfoKraken;
 import pfg.kraken.robot.Cinematique;
-import pfg.kraken.utils.Log;
 import pfg.kraken.utils.XY;
+import pfg.log.Log;
 
 /**
  * Recherche de chemin avec replanification rapide.

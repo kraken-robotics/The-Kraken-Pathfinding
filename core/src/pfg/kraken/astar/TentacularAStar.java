@@ -13,6 +13,8 @@ import java.util.Stack;
 import pfg.config.Config;
 import pfg.graphic.AbstractPrintBuffer;
 import pfg.kraken.ConfigInfoKraken;
+import pfg.kraken.LogCategoryKraken;
+import pfg.kraken.SeverityCategoryKraken;
 import pfg.kraken.astar.tentacles.Tentacle;
 import pfg.kraken.astar.tentacles.TentacleManager;
 import pfg.kraken.dstarlite.DStarLite;
@@ -28,10 +30,9 @@ import pfg.kraken.robot.DefaultSpeed;
 import pfg.kraken.robot.ItineraryPoint;
 import pfg.kraken.robot.RobotState;
 import pfg.kraken.robot.Speed;
-import pfg.kraken.utils.Log;
+import pfg.log.Log;
 import pfg.kraken.utils.XY;
 import pfg.kraken.utils.XYO;
-import pfg.kraken.utils.Log.Verbose;
 
 /**
  * A* qui utilise le D* Lite comme heuristique pour fournir une trajectoire
@@ -131,7 +132,7 @@ public class TentacularAStar
 		if(!rechercheEnCours)
 			throw new NotInitializedPathfindingException("updatePath appelé alors qu'aucune recherche n'est en cours !");
 
-		log.debug("Recherche de chemin.", Verbose.PF.masque);
+		log.write("Recherche de chemin.", LogCategoryKraken.PF);
 		trajetDeSecours = null;
 		depart.parent = null;
 		depart.cameFromArcDynamique = null;
@@ -171,7 +172,7 @@ public class TentacularAStar
 			{
 				if(!assezDeMarge)
 				{
-					log.debug("Reconstruction partielle demandée !");
+					log.write("Reconstruction partielle demandée !", LogCategoryKraken.PF);
 					depart.robot.setCinematique(partialReconstruct(current, chemin, 2));
 					if(!chemin.aAssezDeMarge()) // toujours pas assez de marge
 												// : on doit arrêter
@@ -179,7 +180,7 @@ public class TentacularAStar
 				}
 				else // il faut partir d'un autre point
 				{
-					log.debug("On reprend la recherche à partir de " + cinemRestart, Verbose.REPLANIF.masque);
+					log.write("On reprend la recherche à partir de " + cinemRestart, LogCategoryKraken.REPLANIF);
 					depart.init();
 					depart.robot.setCinematique(cinemRestart);
 				}/*
@@ -257,7 +258,7 @@ public class TentacularAStar
 			if(!rechercheEnCours)
 			{
 				chemin.setUptodate();
-				log.warning("La recherche de chemin a été annulée");
+				log.write("La recherche de chemin a été annulée", SeverityCategoryKraken.WARNING, LogCategoryKraken.PF);
 				return;
 			}
 
@@ -272,7 +273,7 @@ public class TentacularAStar
 				if(trajetDeSecours != null) // si on a un trajet de secours, on
 											// l'utilise
 				{
-					log.debug("Utilisation du trajet de secours !");
+					log.write("Utilisation du trajet de secours !", LogCategoryKraken.PF);
 					chemin.setUptodate();
 					partialReconstruct(trajetDeSecours, chemin);
 					return;
@@ -399,7 +400,7 @@ public class TentacularAStar
 		while(!pileTmp.isEmpty() && profondeurMax > 0)
 		{
 			Tentacle a = pileTmp.pop();
-			log.debug(a.vitesse + " (" + a.getNbPoints() + " pts)", Verbose.PF.masque);
+			log.write(a.vitesse + " (" + a.getNbPoints() + " pts)", LogCategoryKraken.PF);
 			for(int i = 0; i < a.getNbPoints(); i++)
 			{
 				last = a.getPoint(i);
@@ -492,7 +493,7 @@ public class TentacularAStar
 		if(!rechercheEnCours)
 			throw new NotInitializedPathfindingException("updatePath appelé alors qu'aucune recherche n'est en cours !");
 
-		log.debug("Replanification lancée", Verbose.REPLANIF.masque);
+		log.write("Replanification lancée", LogCategoryKraken.REPLANIF);
 
 		depart.init();
 // TODO		state.copyAStarCourbe(depart.state);

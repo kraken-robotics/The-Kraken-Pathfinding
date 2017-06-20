@@ -17,7 +17,7 @@ import pfg.kraken.Couleur;
 import pfg.kraken.obstacles.CircularObstacle;
 import pfg.kraken.robot.Cinematique;
 import pfg.kraken.robot.ItineraryPoint;
-import pfg.kraken.utils.Log;
+import pfg.log.Log;
 import pfg.kraken.utils.XY;
 
 /**

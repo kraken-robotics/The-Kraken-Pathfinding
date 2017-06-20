@@ -9,8 +9,10 @@ package pfg.kraken.memory;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
+import pfg.kraken.LogCategoryKraken;
+import pfg.kraken.SeverityCategoryKraken;
+import pfg.log.Log;
 
-import pfg.kraken.utils.Log;
 
 /**
  * Classe qui fournit des objets
@@ -49,7 +51,7 @@ public abstract class MemoryPool<T extends Memorizable>
 		nodes.add((T[]) Array.newInstance(classe, nb_instances));
 		firstAvailable = 0;
 		// on instancie une fois pour toutes les objets
-		log.debug("Instanciation de " + nb_instances + " " + classe.getSimpleName() + "…");
+		log.write("Instanciation de " + nb_instances + " " + classe.getSimpleName() + "…", LogCategoryKraken.PF);
 
 		make(nodes.get(0));
 		for(int i = 0; i < nb_instances; i++)
@@ -74,7 +76,7 @@ public abstract class MemoryPool<T extends Memorizable>
 			assert initial_nb_instances * nodes.size() < tailleMax : "Mémoire saturée pour " + classe.getSimpleName();
 
 			if(nodes.size() + 1 >= 20)
-				log.warning("Mémoire trop petite pour les " + classe.getSimpleName() + ", extension (nouvelle taille : " + ((nodes.size() + 1) * initial_nb_instances) + ")");
+				log.write("Mémoire trop petite pour les " + classe.getSimpleName() + ", extension (nouvelle taille : " + ((nodes.size() + 1) * initial_nb_instances) + ")", SeverityCategoryKraken.WARNING, LogCategoryKraken.PF);
 
 			T[] newNodes = (T[]) Array.newInstance(classe, initial_nb_instances);
 

@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import pfg.config.Config;
 import pfg.graphic.Fenetre;
+import pfg.log.Log;
 import pfg.graphic.AbstractPrintBuffer;
 import pfg.injector.Injector;
 import pfg.injector.InjectorException;
@@ -20,7 +21,6 @@ import pfg.kraken.obstacles.Obstacle;
 import pfg.kraken.obstacles.container.DynamicObstacles;
 import pfg.kraken.obstacles.container.EmptyDynamicObstacles;
 import pfg.kraken.obstacles.container.StaticObstacles;
-import pfg.kraken.utils.*;
 
 /**
  * 
@@ -54,7 +54,6 @@ public class Kraken
 			buffer.destructor();
 
 		// fermeture du log
-		log.debug("Fermeture du log");
 		log.close();
 		instance = null;
 	}
@@ -96,8 +95,10 @@ public class Kraken
 		injector = new Injector();
 
 		try {
-			log = injector.getService(Log.class);
+			log = new Log(SeverityCategoryKraken.INFO);
 			config = new Config(ConfigInfoKraken.values(), "kraken.conf", false);
+			
+			injector.addService(Log.class, log);
 			injector.addService(Config.class, config);
 			injector.addService(DynamicObstacles.class, dynObs);
 	

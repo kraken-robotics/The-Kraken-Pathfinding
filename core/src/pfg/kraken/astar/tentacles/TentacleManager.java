@@ -12,6 +12,8 @@ import java.util.ListIterator;
 import pfg.config.Config;
 import pfg.graphic.AbstractPrintBuffer;
 import pfg.kraken.ConfigInfoKraken;
+import pfg.kraken.LogCategoryKraken;
+import pfg.kraken.SeverityCategoryKraken;
 import pfg.kraken.astar.AStarNode;
 import pfg.kraken.astar.DirectionStrategy;
 import pfg.kraken.astar.tentacles.types.BezierTentacle;
@@ -26,9 +28,9 @@ import pfg.kraken.obstacles.container.DynamicObstacles;
 import pfg.kraken.obstacles.container.StaticObstacles;
 import pfg.kraken.robot.Cinematique;
 import pfg.kraken.robot.Speed;
-import pfg.kraken.utils.Log;
 import pfg.kraken.utils.XY;
 import pfg.kraken.utils.XY_RW;
+import pfg.log.Log;
 
 /**
  * Réalise des calculs pour l'A* courbe.
@@ -127,7 +129,7 @@ public class TentacleManager
 				}
 		} catch(NullPointerException e)
 		{
-			log.critical(e);
+			log.write(e.toString(), SeverityCategoryKraken.CRITICAL, LogCategoryKraken.PF);
 		}
 		/*
 		 * node.state.iterator.reinit();
@@ -253,7 +255,7 @@ public class TentacleManager
 			clotho.getTrajectoire(successeur.robot.getCinematique(), (ClothoTentacle) v, successeur.cameFromArcStatique);
 		}
 		else
-			log.critical("Vitesse " + v + " inconnue ! ");
+			assert false;
 
 		return true;
 	}

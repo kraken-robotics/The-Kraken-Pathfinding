@@ -14,9 +14,9 @@ import pfg.graphic.printable.Layer;
 import pfg.graphic.printable.Printable;
 import pfg.kraken.ConfigInfoKraken;
 import pfg.kraken.Couleur;
-import pfg.kraken.utils.Log;
 import pfg.kraken.utils.XY;
 import pfg.kraken.utils.XY_RW;
+import pfg.log.Log;
 
 /**
  * Superclasse abstraite des obstacles.

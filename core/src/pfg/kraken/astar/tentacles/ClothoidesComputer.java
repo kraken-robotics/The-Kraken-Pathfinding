@@ -17,6 +17,8 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import pfg.graphic.AbstractPrintBuffer;
+import pfg.kraken.LogCategoryKraken;
+import pfg.kraken.SeverityCategoryKraken;
 import pfg.kraken.astar.tentacles.types.ClothoTentacle;
 import pfg.kraken.astar.tentacles.types.StraightingTentacle;
 import pfg.kraken.astar.tentacles.types.TurnoverTentacle;
@@ -25,9 +27,9 @@ import pfg.kraken.obstacles.CircularObstacle;
 import pfg.kraken.robot.Cinematique;
 import pfg.kraken.robot.CinematiqueObs;
 import pfg.kraken.robot.RobotState;
-import pfg.kraken.utils.Log;
 import pfg.kraken.utils.XY;
 import pfg.kraken.utils.XY_RW;
+import pfg.log.Log;
 
 /**
  * Classe qui s'occupe de tous les calculs concernant les clothoïdes
@@ -230,7 +232,7 @@ public class ClothoidesComputer
 																						// arrondi
 
 		if(pointDepart < 0 || pointDepart >= trajectoire.length)
-			log.critical("Sorti de la clothoïde précalculée !");
+			log.write("Sorti de la clothoïde précalculée !", SeverityCategoryKraken.CRITICAL, LogCategoryKraken.PF);
 
 		double orientationClothoDepart = sDepart * sDepart; // orientation au
 															// départ
@@ -296,7 +298,7 @@ public class ClothoidesComputer
 																						// arrondi
 
 		if(pointDepart < 0 || pointDepart >= trajectoire.length)
-			log.critical("Sorti de la clothoïde précalculée !");
+			log.write("Sorti de la clothoïde précalculée !", SeverityCategoryKraken.CRITICAL, LogCategoryKraken.PF);
 
 		double orientationClothoDepart = sDepart * sDepart; // orientation au
 															// départ
@@ -474,7 +476,7 @@ public class ClothoidesComputer
 	 */
 	private void sauvegardePoints()
 	{
-		log.debug("Sauvegarde des points de la clothoïde unitaire");
+		log.write("Sauvegarde des points de la clothoïde unitaire", LogCategoryKraken.PF);
 		try
 		{
 			FileOutputStream fichier;
@@ -486,11 +488,10 @@ public class ClothoidesComputer
 			oos.writeObject(trajectoire);
 			oos.flush();
 			oos.close();
-			log.debug("Sauvegarde terminée");
 		}
 		catch(IOException e)
 		{
-			log.critical("Erreur lors de la sauvegarde des points de la clothoïde ! " + e);
+			log.write("Erreur lors de la sauvegarde des points de la clothoïde ! " + e, SeverityCategoryKraken.CRITICAL, LogCategoryKraken.PF);
 		}
 	}
 
@@ -501,7 +502,7 @@ public class ClothoidesComputer
 	 */
 	private boolean chargePoints()
 	{
-		log.debug("Chargement des points de la clothoïde");
+		log.write("Chargement des points de la clothoïde",LogCategoryKraken.PF);
 		try
 		{
 			InputStream fichier = getClass().getClassLoader().getResourceAsStream("clotho-"+S_MAX+".dat");
@@ -521,7 +522,7 @@ public class ClothoidesComputer
 			}
 			catch(IOException | ClassNotFoundException e1)
 			{
-				log.critical("Chargement échoué ! "+e+" "+e1);
+				log.write("Chargement échoué ! "+e+" "+e1, SeverityCategoryKraken.CRITICAL, LogCategoryKraken.PF);
 			}
 		}
 		return false;
@@ -609,8 +610,10 @@ public class ClothoidesComputer
 																						// un
 																						// arrondi
 
-		if(pointDepart < 0 || pointDepart >= trajectoire.length)
-			log.critical("Sorti de la clothoïde précalculée !");
+		// TODO
+		assert pointDepart >= 0 && pointDepart < trajectoire.length;
+//		if(pointDepart < 0 || pointDepart >= trajectoire.length)
+//			log.critical("Sorti de la clothoïde précalculée !", SeverityCategoryKraken.CRITICAL, LogCategoryKraken.PF);
 
 		double orientationClothoDepart = sDepart * sDepart; // orientation au
 															// départ

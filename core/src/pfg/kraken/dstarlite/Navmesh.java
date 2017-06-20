@@ -9,9 +9,11 @@ import pfg.config.Config;
 import pfg.graphic.Fenetre;
 import pfg.graphic.printable.Layer;
 import pfg.graphic.printable.Printable;
-import pfg.kraken.utils.Log;
 import pfg.kraken.utils.XY;
+import pfg.log.Log;
 import pfg.kraken.ConfigInfoKraken;
+import pfg.kraken.LogCategoryKraken;
+import pfg.kraken.SeverityCategoryKraken;
 import pfg.kraken.obstacles.Obstacle;
 import pfg.kraken.obstacles.container.StaticObstacles;
 
@@ -53,7 +55,7 @@ public class Navmesh implements Printable
 	
 	private Object[] loadNavMesh(StaticObstacles obs, String filename)
 	{
-		log.debug("D* NavMesh loading…");
+		log.write("D* NavMesh loading…", LogCategoryKraken.PF);
 		try
 		{
 			FileInputStream fichier = new FileInputStream(filename);
@@ -65,7 +67,7 @@ public class Navmesh implements Printable
 		catch(IOException | ClassNotFoundException | NullPointerException e)
 		{
 			assert false;
-			log.warning("The navmesh can't be loaded : generation of a new one.");
+			log.write("The navmesh can't be loaded : generation of a new one.", SeverityCategoryKraken.WARNING, LogCategoryKraken.PF);
 			Object[] o = generateNavMesh(obs);
 			saveNavMesh(o, filename);
 			return o;
@@ -85,11 +87,11 @@ public class Navmesh implements Printable
 			oos.writeObject(o);
 			oos.flush();
 			oos.close();
-			log.debug("Navmesh saved into "+filename);
+			log.write("Navmesh saved into "+filename, LogCategoryKraken.PF);
 		}
 		catch(IOException e)
 		{
-			log.critical("Error during navmesh save ! " + e);
+			log.write("Error during navmesh save ! " + e, SeverityCategoryKraken.CRITICAL, LogCategoryKraken.PF);
 		}
 	}
 
