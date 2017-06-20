@@ -23,7 +23,7 @@ public class Example1
 
 	public static void main(String[] args)
 	{
-		Kraken kraken = new Kraken(null);
+		Kraken kraken = Kraken.getKraken(null);
 		TentacularAStar astar = kraken.getAStar();
 		try
 		{
