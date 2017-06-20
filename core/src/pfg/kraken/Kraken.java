@@ -39,7 +39,7 @@ public class Kraken
 	private Injector injector;
 	private TentacularAStar astar;
 
-	private static int nbInstances = 0;
+	private static Kraken instance;
 
 	/**
 	 * Fonction appelé automatiquement à la fin du programme.
@@ -48,12 +48,6 @@ public class Kraken
 	 */
 	public synchronized void destructor()
 	{	
-		/*
-		 * Il ne faut pas appeler deux fois le destructeur
-		 */
-		if(nbInstances == 0)
-			return;
-
 		AbstractPrintBuffer buffer = injector.getExistingService(AbstractPrintBuffer.class);
 		// On appelle le destructeur du PrintBuffer
 		if(buffer != null)
@@ -62,33 +56,29 @@ public class Kraken
 		// fermeture du log
 		log.debug("Fermeture du log");
 		log.close();
-		nbInstances--;
+		instance = null;
 	}
 	
-	public Kraken(List<Obstacle> fixedObstacles)
+	public static Kraken getKraken(List<Obstacle> fixedObstacles)
 	{
-		this(fixedObstacles, new EmptyDynamicObstacles(), null);
+		if(instance == null)
+			instance = new Kraken(fixedObstacles, new EmptyDynamicObstacles(), null);
+		return instance;
+	}
+	
+	public static Kraken getKraken(List<Obstacle> fixedObstacles, DynamicObstacles dynObs, TentacleType tentacleTypes)
+	{
+		if(instance == null)
+			instance = new Kraken(fixedObstacles, dynObs, tentacleTypes);
+		return instance;
 	}
 	
 	/**
 	 * Instancie le gestionnaire de dépendances et quelques services critiques
 	 * (log et config qui sont interdépendants)
 	 */
-	public Kraken(List<Obstacle> fixedObstacles, DynamicObstacles dynObs, TentacleType tentacleTypes)
+	private Kraken(List<Obstacle> fixedObstacles, DynamicObstacles dynObs, TentacleType tentacleTypes)
 	{	
-		/**
-		 * On vérifie qu'il y ait un seul container à la fois
-		 */
-		if(nbInstances != 0)
-		{
-			log.critical("Un autre container existe déjà! Annulation du constructeur.");
-			int z = 0;
-			z = 1/z;
-			return;
-		}
-
-		nbInstances++;
-
 		List<TentacleType> tentacleTypesUsed = new ArrayList<TentacleType>();
 		
 		if(tentacleTypes == null)
@@ -141,7 +131,7 @@ public class Kraken
 		}
 		catch(InjectorException e)
 		{
-			System.err.println("Fatal error : "+e);
+			throw new RuntimeException("Fatal error : "+e);
 		}
 	}
 
@@ -150,6 +140,10 @@ public class Kraken
 		return astar;
 	}
 	
+	/**
+	 * Used by the unit tests
+	 * @return
+	 */
 	protected Injector getInjector()
 	{
 		return injector;
