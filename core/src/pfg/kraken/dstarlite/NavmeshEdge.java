@@ -23,7 +23,48 @@ public class NavmeshEdge implements Serializable
 	final int distance;
 	private boolean lastConsultedState = false;
 	final NavmeshNode[] points = new NavmeshNode[2];
+	final transient NavmeshTriangle[] triangles = new NavmeshTriangle[2]; // transient because it is used only at the building of the navmesh
 	final List<Obstacle> obstructingObstacle = new ArrayList<Obstacle>();
+	
+	boolean checkTriangle(int expected)
+	{
+		if(expected == 0 && (triangles[0] != null || triangles[1] != null))
+			return false;
+		if(expected == 1)
+		{
+			if(triangles[0] == null || triangles[1] != null)
+				return false;
+			boolean ok = false;
+			for(int i = 0; i < 3; i++)
+				if(triangles[0].edges[i] == this)
+				{
+					ok = true;
+					break;
+				}
+			assert ok;
+			return true;
+		}
+		if(expected == 2)
+		{
+			if(triangles[0] == null || triangles[1] == null)
+				return false;
+			boolean ok;
+			for(int j = 0; j < 2; j++)
+			{
+				ok = false;
+				for(int i = 0; i < 3; i++)
+					if(triangles[j].edges[i] == this)
+					{
+						ok = true;
+						break;
+					}
+				assert ok;
+			}
+			return true;
+		}
+		else
+			return false;
+	}
 	
 	NavmeshEdge(NavmeshNode p1, NavmeshNode p2)
 	{
@@ -32,6 +73,28 @@ public class NavmeshEdge implements Serializable
 		distance = (int) (1000 * p1.position.distance(p2.position));
 	}
 
+	public void addTriangle(NavmeshTriangle tr)
+	{
+		if(triangles[0] == null)
+			triangles[0] = tr;
+		else
+		{
+			assert triangles[1] == null;
+			triangles[1] = tr;
+		}
+	}
+	
+	public void replaceTriangle(NavmeshTriangle oldTr, NavmeshTriangle newTr)
+	{
+		if(triangles[0] == oldTr)
+			triangles[0] = newTr;
+		else
+		{
+			assert triangles[1] == oldTr;
+			triangles[1] = newTr;
+		}
+	}
+	
 	/**
 	 * Add an obstacle
 	 * @param o

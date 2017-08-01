@@ -6,7 +6,6 @@
 package pfg.kraken.astar.tentacles.types;
 
 import pfg.kraken.astar.DirectionStrategy;
-import pfg.kraken.astar.tentacles.Tentacle;
 import pfg.kraken.robot.Cinematique;
 
 /**

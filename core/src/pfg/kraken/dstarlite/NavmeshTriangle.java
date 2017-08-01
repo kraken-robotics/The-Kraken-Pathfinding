@@ -17,17 +17,84 @@ import pfg.kraken.utils.XY_RW;
 public class NavmeshTriangle
 {
 	NavmeshNode[] points = new NavmeshNode[3];
+	NavmeshEdge[] edges = new NavmeshEdge[3];
 	
-	NavmeshTriangle(NavmeshNode a, NavmeshNode b, NavmeshNode c)
+	NavmeshTriangle(NavmeshEdge a, NavmeshEdge b, NavmeshEdge c)
 	{
-		setPoints(a, b, c);
+		setEdges(a, b, c);
 	}
 	
-	void setPoints(NavmeshNode a, NavmeshNode b, NavmeshNode c)
+	/**
+	 * Returns true iff a, b and c are counterclockwise.
+	 * Uses a cross product
+	 * @param a
+	 * @param b
+	 * @param c
+	 * @return
+	 */
+	private boolean checkCounterclockwise(NavmeshNode a, NavmeshNode b, NavmeshNode c)
 	{
-		points[0] = a;
-		points[1] = b;
-		points[2] = c;
+		return crossProduct(a,b,c) >= 0;
+	}
+	
+	/**
+	 * Check if the point i isn't in the edge i
+	 * @return
+	 */
+	private boolean checkDuality()
+	{
+		for(int i = 0; i < 3; i++)
+			for(int j = 0; j < 2; j++)
+				if(edges[i].points[j] == points[i])
+					return false;
+		return true;
+	}
+	
+	/**
+	 * Return the triangle area
+	 * @return
+	 */
+	public double getArea()
+	{
+		assert checkCounterclockwise(points[0],points[1],points[2]);
+		return crossProduct(points[0],points[1],points[2]) / 2;
+	}
+	
+	private double crossProduct(NavmeshNode a, NavmeshNode b, NavmeshNode c)
+	{
+		return (b.position.getX() - a.position.getX()) * (c.position.getY() - a.position.getY()) - (b.position.getY() - a.position.getY()) * (c.position.getX() - a.position.getX());
+	}
+	
+	void setEdges(NavmeshEdge a, NavmeshEdge b, NavmeshEdge c)
+	{
+		if(!checkCounterclockwise(a.points[0],b.points[0],c.points[0]))
+		{
+			NavmeshEdge tmp = a;
+			a = b;
+			b = tmp;
+		}
+		edges[0] = a;
+		edges[1] = b;
+		edges[2] = c;
+		
+		if(a.points[0] == b.points[0] || a.points[1] == b.points[0])
+			points[0] = b.points[1];
+		else
+			points[0] = b.points[0];
+		
+		if(b.points[0] == c.points[0] || b.points[1] == c.points[0])
+			points[1] = c.points[1];
+		else
+			points[1] = c.points[0];
+		
+		if(c.points[0] == b.points[0] || c.points[1] == b.points[0])
+			points[2] = b.points[1];
+		else
+			points[2] = b.points[0];
+		
+		assert checkDuality();
+		assert checkCounterclockwise(points[0],points[1],points[2]);
+		assert checkCounterclockwise(edges[0].points[0],edges[1].points[0],edges[2].points[0]);
 	}
 	
 	private XY_RW v0 = new XY_RW(), v1 = new XY_RW(), v2 = new XY_RW();
@@ -39,6 +106,8 @@ public class NavmeshTriangle
 	 */
 	public boolean isInside(XY position)
 	{
+		assert checkCounterclockwise(points[0],points[1],points[2]);
+		
 		// Compute vectors     
 		points[2].position.copy(v0);
 		v0.minus(points[0].position);

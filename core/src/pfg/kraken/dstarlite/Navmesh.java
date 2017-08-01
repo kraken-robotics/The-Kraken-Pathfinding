@@ -43,6 +43,7 @@ public class Navmesh implements Printable
 	final NavmeshNode[] nodes;
 	final NavmeshEdge[] edges;
 	private int expansion;
+	private List<NavmeshEdge> needFlipCheck = new ArrayList<NavmeshEdge>();
 
 	public Navmesh(Log log, Config config, StaticObstacles obs)
 	{
@@ -111,6 +112,7 @@ public class Navmesh implements Printable
 		return null;
 	}
 	
+	// TODO : ou juste ajouter des points au milieu des plus grands triangles
 	private void addSteinerPoints(List<NavmeshNode> nodesList, List<Obstacle> obsList)
 	{
 	}
@@ -134,6 +136,7 @@ public class Navmesh implements Printable
 	
 	/**
 	 * This is not the fastest algorithm… but it is enough for an off-line computation
+	 * This is a Delaunay triangulation.
 	 * @param nodesList
 	 * @param obsList
 	 */
@@ -147,17 +150,65 @@ public class Navmesh implements Printable
 		
 		// Initial triangle
 		List<NavmeshTriangle> triangles = new ArrayList<NavmeshTriangle>();
-		triangles.add(new NavmeshTriangle(nodesList.get(0), nodesList.get(1), nodesList.get(2)));
+		List<NavmeshEdge> edgesInProgress = new ArrayList<NavmeshEdge>();
+		edgesInProgress.add(new NavmeshEdge(nodesList.get(0), nodesList.get(1)));
+		edgesInProgress.add(new NavmeshEdge(nodesList.get(1), nodesList.get(2)));
+		edgesInProgress.add(new NavmeshEdge(nodesList.get(2), nodesList.get(0)));
+		triangles.add(new NavmeshTriangle(edgesInProgress.get(0), edgesInProgress.get(1), edgesInProgress.get(2)));
 
+		for(int i = 0; i < 3; i++)
+		{
+			edgesInProgress.get(i).addTriangle(triangles.get(0));
+			edgesInProgress.get(i).checkTriangle(1);
+		}
+		
+		// We add the points one by one
 		for(int index = 3; index < nodesList.size(); index++)
 		{
 			NavmeshNode nextNode = nodesList.get(index);
 			boolean handled = false;
+			
+			// first we check if this point is in a triangle
 			for(NavmeshTriangle t : triangles)
 				if(t.isInside(nextNode.position))
 				{
-					// the point is in the triangle t
-					// TODO
+					assert needFlipCheck.isEmpty();
+
+					for(int i = 0; i < 3; i++)
+						needFlipCheck.add(t.edges[i]);
+					
+					// We divide this triangle into three triangles
+					NavmeshEdge[] e = new NavmeshEdge[3];
+					e[0] = new NavmeshEdge(nextNode, t.points[0]);
+					e[1] = new NavmeshEdge(nextNode, t.points[1]);
+					e[2] = new NavmeshEdge(nextNode, t.points[2]);
+
+					edgesInProgress.add(e[0]);
+					edgesInProgress.add(e[1]);
+					edgesInProgress.add(e[2]);
+
+					NavmeshTriangle tr1 = new NavmeshTriangle(e[0], e[1], t.edges[2]);
+					t.edges[2].replaceTriangle(t, tr1);
+					NavmeshTriangle tr2 = new NavmeshTriangle(e[0], e[2], t.edges[1]);
+					t.edges[1].replaceTriangle(t, tr2);
+					t.setEdges(e[1], e[2], t.edges[0]);
+					
+					e[0].addTriangle(tr1);
+					e[0].addTriangle(tr2);
+					e[1].addTriangle(tr1);
+					e[1].addTriangle(t);
+					e[2].addTriangle(tr2);
+					e[2].addTriangle(t);
+					
+					assert e[0].checkTriangle(2);
+					assert e[1].checkTriangle(2);
+					assert e[2].checkTriangle(2);
+					
+					triangles.add(tr1);
+					triangles.add(tr2);
+					
+					flip();
+					
 					handled = true;
 					break;
 				}
@@ -169,6 +220,15 @@ public class Navmesh implements Printable
 		}
 	}
 	
+	private void flip()
+	{
+		while(!needFlipCheck.isEmpty())
+		{
+			// TODO
+		}
+		
+	}
+
 	@Override
 	public void print(Graphics g, Fenetre f)
 	{
