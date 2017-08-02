@@ -31,7 +31,7 @@ public class Navmesh implements Printable
 	
 	private static final long serialVersionUID = 3849267693380819201L;
 	protected Log log;
-	public TriangulatedMesh en;
+	public TriangulatedMesh mesh;
 	
 	public Navmesh(Log log, Config config, StaticObstacles obs)
 	{
@@ -39,15 +39,15 @@ public class Navmesh implements Printable
 		String filename = "navmesh-"+obs.hashCode()+".krk";
 		try {
 			log.write("D* NavMesh loading…", LogCategoryKraken.PF);
-			en = TriangulatedMesh.loadNavMesh(filename);
+			mesh = TriangulatedMesh.loadNavMesh(filename);
 		}
 		catch(IOException | ClassNotFoundException | NullPointerException e)
 		{
 			log.write("The navmesh can't be loaded : generation of a new one.", SeverityCategoryKraken.WARNING, LogCategoryKraken.PF);
 			NavmeshComputer computer = new NavmeshComputer(log, config);
-			en = computer.generateNavMesh(obs);
+			mesh = computer.generateNavMesh(obs);
 			try {
-				en.saveNavMesh(filename);
+				mesh.saveNavMesh(filename);
 				log.write("Navmesh saved into "+filename, LogCategoryKraken.PF);
 			}
 			catch(IOException e1)
@@ -55,6 +55,12 @@ public class Navmesh implements Printable
 				log.write("Error during navmesh save ! " + e, SeverityCategoryKraken.CRITICAL, LogCategoryKraken.PF);
 			}
 		}
+	}
+	
+	@Override
+	public String toString()
+	{
+		return mesh.toString();
 	}
 	
 	@Override

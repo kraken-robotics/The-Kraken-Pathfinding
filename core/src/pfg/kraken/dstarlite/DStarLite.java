@@ -60,12 +60,12 @@ public class DStarLite
 		this.log = log;
 		this.navmesh = navmesh;
 		this.buffer = buffer;
-		int nbPoints = navmesh.en.nodes.length;
+		int nbPoints = navmesh.mesh.nodes.length;
 		openset = new EnhancedPriorityQueue(nbPoints);
 		
 		memory = new DStarLiteNode[nbPoints];
 		for(int i = 0; i < nbPoints; i++)
-			memory[i] = new DStarLiteNode(navmesh.en.nodes[i]);
+			memory[i] = new DStarLiteNode(navmesh.mesh.nodes[i]);
 
 		graphicDStarLite = config.getBoolean(ConfigInfoKraken.GRAPHIC_D_STAR_LITE);
 		graphicDStarLiteFinal = config.getBoolean(ConfigInfoKraken.GRAPHIC_D_STAR_LITE_FINAL);
@@ -338,7 +338,7 @@ public class DStarLite
 	 */
 	public synchronized void updateObstacles()
 	{
-		for(NavmeshEdge e: navmesh.en.edges)
+		for(NavmeshEdge e: navmesh.mesh.edges)
 		{
 			if(!e.hasChanged())
 				continue;

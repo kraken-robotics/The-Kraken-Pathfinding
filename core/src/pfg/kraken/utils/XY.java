@@ -7,6 +7,7 @@ package pfg.kraken.utils;
 
 import java.io.Serializable;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import pfg.graphic.Position;
 
@@ -22,7 +23,14 @@ public class XY implements Serializable, Position
 	private static final long serialVersionUID = 1L;
 	protected volatile double x;
 	protected volatile double y;
-	private static NumberFormat formatter = new DecimalFormat("#0.00");
+	private static DecimalFormatSymbols symbols = new DecimalFormatSymbols();
+	private static NumberFormat formatter;
+	
+	static
+	{
+		symbols.setDecimalSeparator('.');
+		formatter = new DecimalFormat("#0.00", symbols);
+	}
 
 	public XY(double longueur, double angle, boolean useless)
 	{

@@ -54,4 +54,13 @@ public class TriangulatedMesh implements Serializable
 		oos.flush();
 		oos.close();
 	}
+	
+	@Override
+	public String toString()
+	{
+		String out = "Triangulated mesh : \n";
+		for(int i = 0; i < triangles.length; i++)
+			out += triangles[i].toString()+"\n";
+		return out;
+	}
 }

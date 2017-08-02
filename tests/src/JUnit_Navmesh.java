@@ -11,6 +11,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import pfg.kraken.Couleur;
+import pfg.kraken.LogCategoryKraken;
 import pfg.kraken.dstarlite.navmesh.Navmesh;
 import pfg.kraken.obstacles.Obstacle;
 import pfg.kraken.obstacles.RectangularObstacle;
@@ -38,9 +39,9 @@ public class JUnit_Navmesh extends JUnit_Test
 	{
 		super.setUpWith(null);
 		navmesh = injector.getService(Navmesh.class);
-		Assert.assertTrue(navmesh.en.edges.length == 0);
-		Assert.assertTrue(navmesh.en.nodes.length == 0);
-		Assert.assertTrue(navmesh.en.triangles.length == 0);
+		Assert.assertTrue(navmesh.mesh.edges.length == 0);
+		Assert.assertTrue(navmesh.mesh.nodes.length == 0);
+		Assert.assertTrue(navmesh.mesh.triangles.length == 0);
 	}
 	
 	@Test
@@ -50,5 +51,6 @@ public class JUnit_Navmesh extends JUnit_Test
 		obs.add(new RectangularObstacle(new XY_RW(0,0), 100, 100, Couleur.NOIR));
 		super.setUpWith(obs);
 		navmesh = injector.getService(Navmesh.class);
+		log.write(navmesh, LogCategoryKraken.TEST);
 	}
 }

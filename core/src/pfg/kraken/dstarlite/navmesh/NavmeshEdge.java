@@ -94,6 +94,9 @@ public class NavmeshEdge implements Serializable
 
 	public void addTriangle(NavmeshTriangle tr)
 	{
+		if(triangles[0] == tr || triangles[1] == tr)
+			return;
+		
 		if(triangles[0] == null)
 			triangles[0] = tr;
 		else
@@ -108,6 +111,9 @@ public class NavmeshEdge implements Serializable
 
 	public void removeTriangle(NavmeshTriangle tr)
 	{
+		if(triangles[0] != tr && triangles[1] != tr)
+			return;
+		
 		if(triangles[0] == tr)
 		{
 			triangles[0] = triangles[1];
@@ -172,7 +178,21 @@ public class NavmeshEdge implements Serializable
 	{
 		return "Edge between "+points[0]+" and "+points[1];
 	}
+	
+	public String shortString() 
+	{
+		return points[0].position+" -- "+points[1].position;
+	}
 
+	/**
+	 * Returns true iff D is (strictly) in the circumcircle of A, B and C.
+	 * In that case, a flip is needed 
+	 * @param pointA
+	 * @param pointB
+	 * @param pointC
+	 * @param pointD
+	 * @return
+	 */
 	private static boolean isCircumscribed(XY pointA, XY pointB, XY pointC, XY pointD)
 	{
 		double a = pointA.getX() - pointD.getX();
@@ -208,20 +228,42 @@ public class NavmeshEdge implements Serializable
 				edgeIn1 = j;
 		}
 		
+		System.out.println("Triangle 0 : "+triangles[0]);
+		System.out.println("Triangle 1 : "+triangles[1]);
+		
 		NavmeshNode alpha = triangles[0].points[edgeIn0];
-		NavmeshNode beta = triangles[0].points[(edgeIn0 + 1) % 3];
-		NavmeshNode gamma = triangles[0].points[(edgeIn0 + 2) % 3];
+		NavmeshNode beta = triangles[0].points[(edgeIn0 + 1) % 3]; // a node of this edge
+		NavmeshNode gamma = triangles[0].points[(edgeIn0 + 2) % 3]; // the other node of this edge
 		NavmeshNode delta = triangles[1].points[edgeIn1];
 
+		System.out.println(alpha+"\n"+beta+"\n"+gamma+"\n"+delta);
+		System.out.println(this);
 		
 		if(!isCircumscribed(alpha.position, beta.position, gamma.position, delta.position))
 			return false;
 		
+		System.out.println("Flip is necessary");
+		
 		points[0] = alpha;
 		points[1] = delta;
-			
+		
+		NavmeshEdge tmp = triangles[0].edges[(edgeIn0 + 1) % 3];
+		triangles[1].edges[(edgeIn1 + 1) % 3].removeTriangle(triangles[1]);
+
+		assert triangles[0] != triangles[1];
+		assert this != triangles[1].edges[(edgeIn1 + 2) % 3];
+		
+		System.out.println("Edges : ");
+		System.out.println(triangles[1].edges[(edgeIn1 + 1) % 3]);
+		System.out.println(this);
+		System.out.println(triangles[0].edges[(edgeIn0 + 2) % 3]);
+		
 		triangles[0].setEdges(triangles[1].edges[(edgeIn1 + 1) % 3], this, triangles[0].edges[(edgeIn0 + 2) % 3]);
-		triangles[1].setEdges(triangles[0].edges[(edgeIn0 + 1) % 3], this, triangles[1].edges[(edgeIn0 + 2) % 3]);
+		
+		assert this != triangles[1].edges[(edgeIn1 + 2) % 3];
+		System.out.println(triangles[1].edges[(edgeIn1 + 2) % 3]);
+		
+		triangles[1].setEdges(tmp, this, triangles[1].edges[(edgeIn1 + 2) % 3]);
 		
 		return true;
 	}

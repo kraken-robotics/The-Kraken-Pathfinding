@@ -35,16 +35,18 @@ public class NavmeshTriangle implements Serializable
 	 * @param c
 	 * @return
 	 */
-	private boolean checkCounterclockwise(NavmeshNode a, NavmeshNode b, NavmeshNode c)
+	boolean checkCounterclockwise(NavmeshNode a, NavmeshNode b, NavmeshNode c)
 	{
-		return crossProduct(a,b,c) >= 0;
+		if(a == b || a == c || b == c)
+			return false;
+		return crossProduct(a.position, b.position, c.position) >= 0;
 	}
 	
 	/**
 	 * Check if the point i isn't in the edge i
 	 * @return
 	 */
-	private boolean checkDuality()
+	boolean checkDuality()
 	{
 		for(int i = 0; i < 3; i++)
 			for(int j = 0; j < 2; j++)
@@ -59,17 +61,48 @@ public class NavmeshTriangle implements Serializable
 	 */
 	public double getArea()
 	{
-		assert checkCounterclockwise(points[0],points[1],points[2]);
-		return crossProduct(points[0],points[1],points[2]) / 2;
+		assert checkCounterclockwise(points[0],points[1],points[2]) : this;
+		return crossProduct(points[0].position, points[1].position, points[2].position) / 2;
 	}
 	
-	private double crossProduct(NavmeshNode a, NavmeshNode b, NavmeshNode c)
+	/**
+	 * Well… a cross product.
+	 * @param a
+	 * @param b
+	 * @param c
+	 * @return
+	 */
+	private double crossProduct(XY a, XY b, XY c)
 	{
-		return (b.position.getX() - a.position.getX()) * (c.position.getY() - a.position.getY()) - (b.position.getY() - a.position.getY()) * (c.position.getX() - a.position.getX());
+		return (b.getX() - a.getX()) * (c.getY() - a.getY()) - (b.getY() - a.getY()) * (c.getX() - a.getX());
+	}
+	
+	private boolean checkTriangle(NavmeshEdge a, NavmeshEdge b, NavmeshEdge c)
+	{
+		NavmeshEdge[] e = new NavmeshEdge[3];
+		e[0] = a;
+		e[1] = b;
+		e[2] = c;
+		for(int i = 0; i < 3; i++)
+			for(int j = 0; j < 2; j++)
+			{
+				int nb = 0;
+				for(int i2 = 0; i2 < 3; i2++)
+					for(int j2 = 0; j2 < 2; j2++)
+						if(e[i].points[j] == e[i2].points[j2])
+							nb++;
+				assert nb == 2; // each point can be found in two edge ends
+			}
+		for(int i = 0; i < 3; i++)
+			assert e[0].points[0] != e[0].points[1]; // each edge connects two different points
+		
+		return true;
 	}
 	
 	void setEdges(NavmeshEdge a, NavmeshEdge b, NavmeshEdge c)
 	{
+		assert checkTriangle(a, b, c);
+		
 		for(int i = 0; i < 3; i++)
 			if(edges[i] != null)
 				edges[i].removeTriangle(this);
@@ -97,17 +130,29 @@ public class NavmeshTriangle implements Serializable
 		else
 			points[2] = b.points[0];
 
+/*		correctCounterclockwiseness();
+				
+		assert checkDuality() : this;
+		assert checkCounterclockwise(points[0],points[1],points[2]) : this;*/
+	}
+	
+	void correctCounterclockwiseness()
+	{
 		if(!checkCounterclockwise(points[0],points[1],points[2]))
 		{
 			NavmeshNode tmp = points[0];
 			points[0] = points[1];
 			points[1] = tmp;
+			
+			NavmeshEdge tmp2 = edges[0];
+			edges[0] = edges[1];
+			edges[1] = tmp2;
 		}
-				
-		assert checkDuality();
-		assert checkCounterclockwise(points[0],points[1],points[2]);
+		
+		assert checkDuality() : this;
+		assert checkCounterclockwise(points[0],points[1],points[2]) : this;
 	}
-	
+
 	private XY_RW v0 = new XY_RW(), v1 = new XY_RW(), v2 = new XY_RW();
 	
 	/**
@@ -117,7 +162,7 @@ public class NavmeshTriangle implements Serializable
 	 */
 	public boolean isInside(XY position)
 	{
-		assert checkCounterclockwise(points[0],points[1],points[2]);
+		assert checkCounterclockwise(points[0],points[1],points[2]) : this;
 		
 		// Compute vectors     
 		points[2].position.copy(v0);
@@ -143,5 +188,10 @@ public class NavmeshTriangle implements Serializable
 
 		// Check if point is in triangle
 		return (u >= 0) && (v >= 0) && (u + v < 1);
+	}
+	
+	public String toString()
+	{
+		return "Triangle with points "+points[0].position+", "+points[1].position+", "+points[2].position+" and edges "+edges[0].shortString()+", "+edges[1].shortString()+", "+edges[2].shortString();
 	}
 }
