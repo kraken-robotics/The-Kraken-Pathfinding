@@ -52,7 +52,7 @@ public class NavmeshComputer
 			for(XY pos : hull)
 				nodesList.add(new NavmeshNode(pos));
 			
-			log.write(nodesList, LogCategoryKraken.TEST);
+//			log.write(nodesList, LogCategoryKraken.TEST);
 		}
 
 		/*
@@ -72,7 +72,7 @@ public class NavmeshComputer
 		edgesInProgress.add(new NavmeshEdge(nodesList.get(2), nodesList.get(0)));
 		triangles.add(new NavmeshTriangle(edgesInProgress.get(0), edgesInProgress.get(1), edgesInProgress.get(2)));
 
-		log.write("First triangle : "+triangles.get(0), LogCategoryKraken.TEST);
+//		log.write("First triangle : "+triangles.get(0), LogCategoryKraken.TEST);
 
 		
 		// We add the points one by one
@@ -136,7 +136,7 @@ public class NavmeshComputer
 		XY c = enclosingTriangle.points[2].position;
 		XY d = a.plusNewVector(b).plus(c).scalar(1./3.);
 		NavmeshNode newNode = new NavmeshNode(d);
-		log.write("New center node : "+newNode+" within "+enclosingTriangle, LogCategoryKraken.TEST);
+//		log.write("New center node : "+newNode+" within "+enclosingTriangle, LogCategoryKraken.TEST);
 		nodesList.add(newNode);
 		addInsideNode(newNode, enclosingTriangle);
 	}
@@ -187,7 +187,7 @@ public class NavmeshComputer
 		assert best.checkTriangle(2) : best;
 		assert needFlipCheck.isEmpty() : needFlipCheck;
 		
-		log.write("A new triangle has been created from an outer point", LogCategoryKraken.TEST);
+//		log.write("A new triangle has been created from an outer point", LogCategoryKraken.TEST);
 		needFlipCheck.add(best);
 		flip();
 	}
@@ -210,16 +210,23 @@ public class NavmeshComputer
 		edgesInProgress.add(e[1]);
 		edgesInProgress.add(e[2]);
 		
+		assert t.checkDuality() : t;
+		assert t.checkCounterclockwise() : t;
+		
 		NavmeshEdge tedges1 = t.edges[1];
 		NavmeshEdge tedges2 = t.edges[2];
-		t.setEdges(e[1], e[2], t.edges[0]);
-		NavmeshTriangle tr1 = new NavmeshTriangle(e[0], e[1], tedges2);
+		t.setEdges(e[2], e[1], t.edges[0]);
+		NavmeshTriangle tr1 = new NavmeshTriangle(e[1], e[0], tedges2);
 		NavmeshTriangle tr2 = new NavmeshTriangle(e[0], e[2], tedges1);
 
 		
 		assert e[0].checkTriangle(2) : e[0];
 		assert e[1].checkTriangle(2) : e[1];
 		assert e[2].checkTriangle(2) : e[2];
+		
+		assert tr1.checkCounterclockwise() : tr1;
+		assert tr2.checkCounterclockwise() : tr2;
+		assert t.checkCounterclockwise() : t;
 		
 		triangles.add(tr1);
 		triangles.add(tr2);
@@ -229,7 +236,6 @@ public class NavmeshComputer
 
 	private boolean checkDelaunay()
 	{
-		log.write("Delaunay check", LogCategoryKraken.TEST);
 		for(NavmeshEdge e : edgesInProgress)
 			assert !e.flipIfNecessary() : e;
 		return true;

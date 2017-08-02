@@ -219,51 +219,36 @@ public class NavmeshEdge implements Serializable
 		if(nbTriangles < 2)
 			return false;
 				
+		NavmeshTriangle tr0 = triangles[0];
+		NavmeshTriangle tr1 = triangles[1];
+		
 		int edgeIn0 = -1, edgeIn1 = -1;
 		for(int j = 0; j < 3; j++)
 		{
-			if(triangles[0].edges[j] == this)
+			if(tr0.edges[j] == this)
 				edgeIn0 = j;
-			if(triangles[1].edges[j] == this)
+			if(tr1.edges[j] == this)
 				edgeIn1 = j;
 		}
 		
-		System.out.println("Triangle 0 : "+triangles[0]);
-		System.out.println("Triangle 1 : "+triangles[1]);
-		
-		NavmeshNode alpha = triangles[0].points[edgeIn0];
-		NavmeshNode beta = triangles[0].points[(edgeIn0 + 1) % 3]; // a node of this edge
-		NavmeshNode gamma = triangles[0].points[(edgeIn0 + 2) % 3]; // the other node of this edge
-		NavmeshNode delta = triangles[1].points[edgeIn1];
+		NavmeshNode alpha = tr0.points[edgeIn0];
+		NavmeshNode beta = tr0.points[(edgeIn0 + 1) % 3]; // a node of this edge
+		NavmeshNode gamma = tr0.points[(edgeIn0 + 2) % 3]; // the other node of this edge
+		NavmeshNode delta = tr1.points[edgeIn1];
 
-		System.out.println(alpha+"\n"+beta+"\n"+gamma+"\n"+delta);
-		System.out.println(this);
-		
 		if(!isCircumscribed(alpha.position, beta.position, gamma.position, delta.position))
 			return false;
 		
-		System.out.println("Flip is necessary");
+		// Flip
 		
 		points[0] = alpha;
 		points[1] = delta;
 		
-		NavmeshEdge tmp = triangles[0].edges[(edgeIn0 + 1) % 3];
-		triangles[1].edges[(edgeIn1 + 1) % 3].removeTriangle(triangles[1]);
+		NavmeshEdge tmp = tr0.edges[(edgeIn0 + 1) % 3];
+		tr1.edges[(edgeIn1 + 1) % 3].removeTriangle(tr1);
 
-		assert triangles[0] != triangles[1];
-		assert this != triangles[1].edges[(edgeIn1 + 2) % 3];
-		
-		System.out.println("Edges : ");
-		System.out.println(triangles[1].edges[(edgeIn1 + 1) % 3]);
-		System.out.println(this);
-		System.out.println(triangles[0].edges[(edgeIn0 + 2) % 3]);
-		
-		triangles[0].setEdges(triangles[1].edges[(edgeIn1 + 1) % 3], this, triangles[0].edges[(edgeIn0 + 2) % 3]);
-		
-		assert this != triangles[1].edges[(edgeIn1 + 2) % 3];
-		System.out.println(triangles[1].edges[(edgeIn1 + 2) % 3]);
-		
-		triangles[1].setEdges(tmp, this, triangles[1].edges[(edgeIn1 + 2) % 3]);
+		tr0.setEdges(tr1.edges[(edgeIn1 + 1) % 3], this, tr0.edges[(edgeIn0 + 2) % 3]);
+		tr1.setEdges(tmp, this, tr1.edges[(edgeIn1 + 2) % 3]);
 		
 		return true;
 	}

@@ -38,7 +38,7 @@ public enum ConfigInfoKraken implements ConfigInfo
 								// du robot non-déployé
 
 	
-	LARGEST_TRIANGLE_AREA_IN_NAVWESH(500),
+	LARGEST_TRIANGLE_AREA_IN_NAVWESH(4000),
 
 	/**
 	 * Paramètres du log

@@ -46,14 +46,14 @@ public class Navmesh implements Printable
 			log.write("The navmesh can't be loaded : generation of a new one.", SeverityCategoryKraken.WARNING, LogCategoryKraken.PF);
 			NavmeshComputer computer = new NavmeshComputer(log, config);
 			mesh = computer.generateNavMesh(obs);
-			try {
+/*			try {
 				mesh.saveNavMesh(filename);
 				log.write("Navmesh saved into "+filename, LogCategoryKraken.PF);
 			}
 			catch(IOException e1)
 			{
 				log.write("Error during navmesh save ! " + e, SeverityCategoryKraken.CRITICAL, LogCategoryKraken.PF);
-			}
+			}*/
 		}
 	}
 	
