@@ -3,7 +3,7 @@
  * Distributed under the MIT License.
  */
 
-package pfg.kraken.dstarlite;
+package pfg.kraken.dstarlite.navmesh;
 
 import pfg.kraken.utils.XY;
 import pfg.kraken.utils.XY_RW;
@@ -67,12 +67,14 @@ public class NavmeshTriangle
 	
 	void setEdges(NavmeshEdge a, NavmeshEdge b, NavmeshEdge c)
 	{
-		if(!checkCounterclockwise(a.points[0],b.points[0],c.points[0]))
-		{
-			NavmeshEdge tmp = a;
-			a = b;
-			b = tmp;
-		}
+		edges[0].removeTriangle(this);
+		edges[1].removeTriangle(this);
+		edges[2].removeTriangle(this);
+		
+		a.addTriangle(this);
+		b.addTriangle(this);
+		c.addTriangle(this);
+
 		edges[0] = a;
 		edges[1] = b;
 		edges[2] = c;
@@ -91,10 +93,16 @@ public class NavmeshTriangle
 			points[2] = b.points[1];
 		else
 			points[2] = b.points[0];
-		
+
+		if(!checkCounterclockwise(points[0],points[1],points[2]))
+		{
+			NavmeshNode tmp = points[0];
+			points[0] = points[1];
+			points[1] = tmp;
+		}
+				
 		assert checkDuality();
 		assert checkCounterclockwise(points[0],points[1],points[2]);
-		assert checkCounterclockwise(edges[0].points[0],edges[1].points[0],edges[2].points[0]);
 	}
 	
 	private XY_RW v0 = new XY_RW(), v1 = new XY_RW(), v2 = new XY_RW();

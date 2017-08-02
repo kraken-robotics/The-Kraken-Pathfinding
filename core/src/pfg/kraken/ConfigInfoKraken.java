@@ -37,6 +37,8 @@ public enum ConfigInfoKraken implements ConfigInfo
 	LARGEUR_NON_DEPLOYE(228), // distance entre le bord gauche et le bord droit
 								// du robot non-déployé
 
+	
+	LARGEST_TRIANGLE_AREA_IN_NAVWESH(500),
 
 	/**
 	 * Paramètres du log

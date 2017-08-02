@@ -9,6 +9,7 @@ import java.awt.Graphics;
 import pfg.graphic.Fenetre;
 import pfg.graphic.printable.Printable;
 import pfg.kraken.Couleur;
+import pfg.kraken.dstarlite.navmesh.NavmeshNode;
 
 /**
  * Un nœud du D* Lite.

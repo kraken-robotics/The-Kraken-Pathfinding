@@ -10,6 +10,9 @@ import java.util.List;
 import pfg.config.Config;
 import pfg.graphic.AbstractPrintBuffer;
 import pfg.kraken.ConfigInfoKraken;
+import pfg.kraken.dstarlite.navmesh.Navmesh;
+import pfg.kraken.dstarlite.navmesh.NavmeshEdge;
+import pfg.kraken.dstarlite.navmesh.NavmeshNode;
 import pfg.kraken.robot.Cinematique;
 import pfg.kraken.utils.XY;
 import pfg.log.Log;
@@ -57,12 +60,12 @@ public class DStarLite
 		this.log = log;
 		this.navmesh = navmesh;
 		this.buffer = buffer;
-		int nbPoints = navmesh.nodes.length;
+		int nbPoints = navmesh.en.nodes.length;
 		openset = new EnhancedPriorityQueue(nbPoints);
 		
 		memory = new DStarLiteNode[nbPoints];
 		for(int i = 0; i < nbPoints; i++)
-			memory[i] = new DStarLiteNode(navmesh.nodes[i]);
+			memory[i] = new DStarLiteNode(navmesh.en.nodes[i]);
 
 		graphicDStarLite = config.getBoolean(ConfigInfoKraken.GRAPHIC_D_STAR_LITE);
 		graphicDStarLiteFinal = config.getBoolean(ConfigInfoKraken.GRAPHIC_D_STAR_LITE_FINAL);
@@ -335,7 +338,7 @@ public class DStarLite
 	 */
 	public synchronized void updateObstacles()
 	{
-		for(NavmeshEdge e: navmesh.edges)
+		for(NavmeshEdge e: navmesh.en.edges)
 		{
 			if(!e.hasChanged())
 				continue;

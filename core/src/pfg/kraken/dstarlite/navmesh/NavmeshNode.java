@@ -3,7 +3,7 @@
  * Distributed under the MIT License.
  */
 
-package pfg.kraken.dstarlite;
+package pfg.kraken.dstarlite.navmesh;
 
 import java.awt.Graphics;
 import java.io.Serializable;
@@ -15,7 +15,7 @@ import pfg.graphic.printable.Printable;
 import pfg.kraken.utils.XY;
 
 /**
- * Un point du navmesh
+ * A node of the navmesh
  * 
  * @author pf
  *
@@ -25,12 +25,8 @@ public class NavmeshNode implements Printable, Serializable
 {
 	private static final long serialVersionUID = -6588410126587155794L;
 
-	/**
-	 * Attention ! Le repère de ce x,y est celui pour lequel x et y sont
-	 * toujours positifs
-	 */
-	final int nb;
-	final XY position;
+	public final int nb; // index in memory pool
+	public final XY position;
 	List<NavmeshEdge> edges = new ArrayList<NavmeshEdge>();
 	List<NavmeshNode> neighbours = new ArrayList<NavmeshNode>();
 	private static int nbStatic = 0;
@@ -83,7 +79,10 @@ public class NavmeshNode implements Printable, Serializable
 			if(e.points[0] == this)
 				neighbours.add(e.points[1]);
 			else
+			{
+				assert e.points[1] == this;
 				neighbours.add(e.points[0]);
+			}
 		}	
 	}
 	
@@ -92,5 +91,4 @@ public class NavmeshNode implements Printable, Serializable
 		// TODO Auto-generated method stub
 		return null;
 	}
-
 }
