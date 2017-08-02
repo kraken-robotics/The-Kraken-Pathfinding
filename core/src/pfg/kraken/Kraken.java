@@ -11,6 +11,7 @@ import pfg.config.Config;
 import pfg.graphic.Fenetre;
 import pfg.log.Log;
 import pfg.graphic.AbstractPrintBuffer;
+import pfg.graphic.DebugTool;
 import pfg.injector.Injector;
 import pfg.injector.InjectorException;
 import pfg.kraken.astar.TentacularAStar;
@@ -95,14 +96,13 @@ public class Kraken
 		injector = new Injector();
 
 		try {
-			log = new Log(SeverityCategoryKraken.INFO);
+			DebugTool debug = new DebugTool();
+			log = debug.getLog(SeverityCategoryKraken.INFO);
 			config = new Config(ConfigInfoKraken.values(), "kraken.conf", false);
 			
 			injector.addService(Log.class, log);
 			injector.addService(Config.class, config);
 			injector.addService(DynamicObstacles.class, dynObs);
-	
-			log.useConfig(config);
 	
 			injector.addService(Kraken.class, this);
 	

@@ -3,28 +3,25 @@
  * Distributed under the MIT License.
  */
 
-import java.util.Random;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import graphic.AbstractPrintBuffer;
+import pfg.graphic.AbstractPrintBuffer;
 import pfg.kraken.ConfigInfoKraken;
-import pfg.kraken.exceptions.PathfindingException;
-import pfg.kraken.obstacles.types.CircularObstacle;
+import pfg.kraken.LogCategoryKraken;
+import pfg.kraken.obstacles.CircularObstacle;
+import pfg.kraken.astar.DefaultCheminPathfinding;
 import pfg.kraken.astar.TentacularAStar;
-import pfg.kraken.astar.tentacles.ArcCourbe;
-import pfg.kraken.astar.tentacles.ArcCourbeDynamique;
-import pfg.kraken.astar.tentacles.ArcCourbeStatique;
 import pfg.kraken.astar.tentacles.BezierComputer;
 import pfg.kraken.astar.tentacles.ClothoidesComputer;
-import pfg.kraken.astar.tentacles.types.VitesseClotho;
-import pfg.kraken.astar.tentacles.types.VitesseDemiTour;
-import pfg.kraken.astar.tentacles.types.VitesseRameneVolant;
-import pfg.kraken.chemin.DefaultCheminPathfinding;
-import pfg.kraken.dstarlite.gridspace.GridSpace;
+import pfg.kraken.astar.tentacles.DynamicTentacle;
+import pfg.kraken.astar.tentacles.StaticTentacle;
+import pfg.kraken.astar.tentacles.Tentacle;
+import pfg.kraken.astar.tentacles.types.ClothoTentacle;
+import pfg.kraken.astar.tentacles.types.StraightingTentacle;
+import pfg.kraken.astar.tentacles.types.TurnoverTentacle;
+import pfg.kraken.dstarlite.navmesh.Navmesh;
 import pfg.kraken.robot.Cinematique;
-import pfg.kraken.robot.CinematiqueObs;
-import pfg.kraken.robot.Speed;
 import pfg.kraken.utils.XY;
 
 /**
@@ -43,8 +40,7 @@ public class JUnit_TentacularAStar extends JUnit_Test
 	private AbstractPrintBuffer buffer;
 	private boolean graphicTrajectory;
 	private DefaultCheminPathfinding fakeChemin;
-	private GridSpace gridspace;
-	private CercleArrivee cercle;
+	private Navmesh navmesh;
 	// private PrecomputedPaths prepaths;
 	// private ArcManager arcmanager;
 	// private DStarLite dstarlite;
@@ -58,9 +54,8 @@ public class JUnit_TentacularAStar extends JUnit_Test
 		buffer = injector.getService(AbstractPrintBuffer.class);
 		astar = injector.getService(TentacularAStar.class);
 		// dstarlite = injector.getService(DStarLite.class);
-		gridspace = injector.getService(GridSpace.class);
+		navmesh = injector.getService(Navmesh.class);
 		bezier = injector.getService(BezierComputer.class);
-		cercle = injector.getService(CercleArrivee.class);
 		// arcmanager = injector.getService(ArcManager.class);
 		graphicTrajectory = config.getBoolean(ConfigInfoKraken.GRAPHIC_TRAJECTORY_FINAL);
 		fakeChemin = injector.getService(DefaultCheminPathfinding.class);
@@ -75,28 +70,28 @@ public class JUnit_TentacularAStar extends JUnit_Test
 
 		boolean graphicTrajectory = config.getBoolean(ConfigInfoKraken.GRAPHIC_TRAJECTORY);
 		int nbArc = 16;
-		ArcCourbeStatique arc[] = new ArcCourbeStatique[nbArc];
+		StaticTentacle arc[] = new StaticTentacle[nbArc];
 		for(int i = 0; i < nbArc; i++)
-			arc[i] = new ArcCourbeStatique(demieLargeurNonDeploye, demieLongueurArriere, demieLongueurAvant);
+			arc[i] = new StaticTentacle(demieLargeurNonDeploye, demieLongueurArriere, demieLongueurAvant);
 
 		Cinematique c = new Cinematique(0, 1000, Math.PI / 2, false, 0);
-		log.debug("Initial : " + c);
-		clotho.getTrajectoire(c, VitesseClotho.COURBURE_IDENTIQUE, arc[0]);
-		clotho.getTrajectoire(arc[0], VitesseClotho.GAUCHE_2, arc[1]);
-		clotho.getTrajectoire(arc[1], VitesseClotho.COURBURE_IDENTIQUE, arc[2]);
-		clotho.getTrajectoire(arc[2], VitesseClotho.GAUCHE_1, arc[3]);
-		clotho.getTrajectoire(arc[3], VitesseClotho.COURBURE_IDENTIQUE, arc[4]);
-		clotho.getTrajectoire(arc[4], VitesseClotho.COURBURE_IDENTIQUE, arc[5]);
-		clotho.getTrajectoire(arc[5], VitesseClotho.COURBURE_IDENTIQUE, arc[6]);
-		clotho.getTrajectoire(arc[6], VitesseClotho.GAUCHE_1, arc[7]);
-		clotho.getTrajectoire(arc[7], VitesseClotho.GAUCHE_2, arc[8]);
-		clotho.getTrajectoire(arc[8], VitesseClotho.GAUCHE_2, arc[9]);
-		clotho.getTrajectoire(arc[9], VitesseClotho.DROITE_1, arc[10]);
-		clotho.getTrajectoire(arc[10], VitesseClotho.DROITE_1, arc[11]);
-		clotho.getTrajectoire(arc[11], VitesseClotho.DROITE_1, arc[12]);
-		clotho.getTrajectoire(arc[12], VitesseClotho.DROITE_1, arc[13]);
-		clotho.getTrajectoire(arc[13], VitesseClotho.DROITE_1, arc[14]);
-		clotho.getTrajectoire(arc[14], VitesseClotho.GAUCHE_2, arc[15]);
+		log.write("Initial : " + c, LogCategoryKraken.TEST);
+		clotho.getTrajectoire(c, ClothoTentacle.COURBURE_IDENTIQUE, arc[0]);
+		clotho.getTrajectoire(arc[0], ClothoTentacle.GAUCHE_2, arc[1]);
+		clotho.getTrajectoire(arc[1], ClothoTentacle.COURBURE_IDENTIQUE, arc[2]);
+		clotho.getTrajectoire(arc[2], ClothoTentacle.GAUCHE_1, arc[3]);
+		clotho.getTrajectoire(arc[3], ClothoTentacle.COURBURE_IDENTIQUE, arc[4]);
+		clotho.getTrajectoire(arc[4], ClothoTentacle.COURBURE_IDENTIQUE, arc[5]);
+		clotho.getTrajectoire(arc[5], ClothoTentacle.COURBURE_IDENTIQUE, arc[6]);
+		clotho.getTrajectoire(arc[6], ClothoTentacle.GAUCHE_1, arc[7]);
+		clotho.getTrajectoire(arc[7], ClothoTentacle.GAUCHE_2, arc[8]);
+		clotho.getTrajectoire(arc[8], ClothoTentacle.GAUCHE_2, arc[9]);
+		clotho.getTrajectoire(arc[9], ClothoTentacle.DROITE_1, arc[10]);
+		clotho.getTrajectoire(arc[10], ClothoTentacle.DROITE_1, arc[11]);
+		clotho.getTrajectoire(arc[11], ClothoTentacle.DROITE_1, arc[12]);
+		clotho.getTrajectoire(arc[12], ClothoTentacle.DROITE_1, arc[13]);
+		clotho.getTrajectoire(arc[13], ClothoTentacle.DROITE_1, arc[14]);
+		clotho.getTrajectoire(arc[14], ClothoTentacle.GAUCHE_2, arc[15]);
 
 		for(int a = 0; a < nbArc; a++)
 		{
@@ -133,7 +128,7 @@ public class JUnit_TentacularAStar extends JUnit_Test
 			 * arc[a].arcselems[ClothoidesComputer.NB_POINTS-1].courbure, 0.1);
 			 */ }
 
-		log.debug(arc[nbArc - 1].arcselems[arc[nbArc - 1].arcselems.length - 1].getPosition());
+		log.write(arc[nbArc - 1].arcselems[arc[nbArc - 1].arcselems.length - 1].getPosition(), LogCategoryKraken.TEST);
 		Assert.assertEquals(0, arc[nbArc - 1].arcselems[arc[nbArc - 1].arcselems.length - 1].getPosition().distance(new XY(-469.90, 1643.03)), 0.1);
 	}
 
@@ -143,12 +138,12 @@ public class JUnit_TentacularAStar extends JUnit_Test
 		boolean graphicTrajectory = config.getBoolean(ConfigInfoKraken.GRAPHIC_TRAJECTORY);
 
 		int nbArc = 2;
-		ArcCourbeDynamique arc[] = new ArcCourbeDynamique[nbArc];
+		DynamicTentacle arc[] = new DynamicTentacle[nbArc];
 
 		Cinematique c = new Cinematique(0, 1000, Math.PI / 2, false, 0);
-		log.debug("Initial : " + c);
-		arc[0] = clotho.getTrajectoireDemiTour(c, VitesseDemiTour.DEMI_TOUR_GAUCHE);
-		arc[1] = clotho.getTrajectoireDemiTour(arc[0].getLast(), VitesseDemiTour.DEMI_TOUR_DROITE);
+		log.write("Initial : " + c, LogCategoryKraken.TEST);
+		arc[0] = clotho.getTrajectoireDemiTour(c, TurnoverTentacle.DEMI_TOUR_GAUCHE);
+		arc[1] = clotho.getTrajectoireDemiTour(arc[0].getLast(), TurnoverTentacle.DEMI_TOUR_DROITE);
 
 		for(int a = 0; a < nbArc; a++)
 		{
@@ -167,16 +162,16 @@ public class JUnit_TentacularAStar extends JUnit_Test
 		boolean graphicTrajectory = config.getBoolean(ConfigInfoKraken.GRAPHIC_TRAJECTORY);
 
 		int nbArc = 2;
-		ArcCourbe arc[] = new ArcCourbe[nbArc];
+		Tentacle arc[] = new Tentacle[nbArc];
 
 		Cinematique c = new Cinematique(0, 1000, Math.PI / 2, false, 0);
-		log.debug("Initial : " + c);
-		arc[0] = clotho.getTrajectoireDemiTour(c, VitesseDemiTour.DEMI_TOUR_GAUCHE);
+		log.write("Initial : " + c, LogCategoryKraken.TEST);
+		arc[0] = clotho.getTrajectoireDemiTour(c, TurnoverTentacle.DEMI_TOUR_GAUCHE);
 		// arc[0] = new
-		// ArcCourbeStatique(injector.getService(RobotReal.class));
+		// StaticTentacle(injector.getService(RobotReal.class));
 		// clotho.getTrajectoire(c, VitesseCourbure.DROITE_5,
-		// (ArcCourbeStatique)arc[0]);
-		arc[1] = clotho.getTrajectoireRamene(arc[0].getLast(), VitesseRameneVolant.RAMENE_VOLANT);
+		// (StaticTentacle)arc[0]);
+		arc[1] = clotho.getTrajectoireRamene(arc[0].getLast(), StraightingTentacle.RAMENE_VOLANT);
 
 		for(int a = 0; a < nbArc; a++)
 		{
@@ -195,11 +190,11 @@ public class JUnit_TentacularAStar extends JUnit_Test
 		boolean graphicTrajectory = config.getBoolean(ConfigInfoKraken.GRAPHIC_TRAJECTORY);
 
 		int nbArc = 1;
-		ArcCourbeDynamique arc[] = new ArcCourbeDynamique[nbArc];
+		DynamicTentacle arc[] = new DynamicTentacle[nbArc];
 
 		Cinematique c = new Cinematique(0, 1000, Math.PI / 2, true, -1);
 		Cinematique arrivee = new Cinematique(400, 1400, Math.PI / 2, false, 0);
-		log.debug("Initial : " + c);
+		log.write("Initial : " + c, LogCategoryKraken.TEST);
 		arc[0] = bezier.interpolationQuadratique(c, arrivee.getPosition());
 
 		Assert.assertTrue(arc[0] != null);
@@ -229,10 +224,10 @@ public class JUnit_TentacularAStar extends JUnit_Test
 	 * boolean graphicTrajectory =
 	 * config.getBoolean(ConfigInfo.GRAPHIC_TRAJECTORY);
 	 * int nbArc = 1;
-	 * ArcCourbeDynamique arc[] = new ArcCourbeDynamique[nbArc];
+	 * DynamicTentacle arc[] = new DynamicTentacle[nbArc];
 	 * Cinematique c = new Cinematique(-200, 1000, Math.PI, true, -1);
 	 * cercle.set(GameElementNames.MINERAI_CRATERE_HAUT_GAUCHE, 250);
-	 * log.debug("Initial : "+c);
+	 * log.write("Initial : "+c);
 	 * arc[0] = bezier.interpolationQuadratiqueCercle(c);
 	 * Assert.assertTrue(arc[0] != null);
 	 * for(int a = 0; a < nbArc; a++)
@@ -263,7 +258,7 @@ public class JUnit_TentacularAStar extends JUnit_Test
 	 * astar.computeNewPath(c, false);
 	 * chemin.clear();
 	 * }
-	 * log.debug("Temps : "+(System.nanoTime() - avant) / (nbmax * 1000000.));
+	 * log.write("Temps : "+(System.nanoTime() - avant) / (nbmax * 1000000.));
 	 * }
 	 */
 /*	@Test
@@ -275,7 +270,7 @@ public class JUnit_TentacularAStar extends JUnit_Test
 		Cinematique c = new Cinematique(-400, 1200, Math.PI, false, 0);
 		astar.initializeNewSearch(c, false, state);
 		astar.process(chemin,false);
-		log.debug("Temps : " + (System.nanoTime() - avant) / (1000000.));
+		log.write("Temps : " + (System.nanoTime() - avant) / (1000000.));
 		iterator.reinit();
 		CinematiqueObs a = null;
 		int i = 0;
@@ -283,12 +278,12 @@ public class JUnit_TentacularAStar extends JUnit_Test
 		{
 			i++;
 			a = iterator.next();
-			log.debug(a);
+			log.write(a);
 			robot.setCinematique(a);
 			if(graphicTrajectory)
 				Thread.sleep(100);
 		}
-		log.debug("Nb points : " + i);
+		log.write("Nb points : " + i);
 	}
 
 	@Test
@@ -313,7 +308,7 @@ public class JUnit_TentacularAStar extends JUnit_Test
 			if(graphicTrajectory)
 				Thread.sleep(100);
 		}
-		log.debug("Nb points : " + i);
+		log.write("Nb points : " + i);
 	}
 
 	@Test
@@ -331,15 +326,15 @@ public class JUnit_TentacularAStar extends JUnit_Test
 		{
 			i++;
 			a = iterator.next();
-			log.debug(a);
+			log.write(a);
 			robot.setCinematique(a);
 			if(b != null)
-				log.debug(a.getPosition().distance(b.getPosition()));
+				log.write(a.getPosition().distance(b.getPosition()));
 			b = a;
 			if(graphicTrajectory)
 				Thread.sleep(100);
 		}
-		log.debug("Nb points : " + i);
+		log.write("Nb points : " + i);
 	}
 
 	@Test
@@ -366,13 +361,13 @@ public class JUnit_TentacularAStar extends JUnit_Test
 
 			i++;
 			a = iterator.next();
-			log.debug("Robot en " + iterator.getIndex() + " : " + a);
+			log.write("Robot en " + iterator.getIndex() + " : " + a);
 			robot.setCinematique(a);
 			chemin.setCurrentIndex(iterator.getIndex());
 			if(graphicTrajectory)
 				Thread.sleep(100);
 		}
-		log.debug("Nb points : " + i);
+		log.write("Nb points : " + i);
 	}
 
 	@Test
@@ -396,13 +391,13 @@ public class JUnit_TentacularAStar extends JUnit_Test
 
 			i++;
 			a = iterator.next();
-			log.debug("Robot en " + iterator.getIndex() + " : " + a);
+			log.write("Robot en " + iterator.getIndex() + " : " + a);
 			robot.setCinematique(a);
 			chemin.setCurrentIndex(iterator.getIndex());
 			if(graphicTrajectory)
 				Thread.sleep(100);
 		}
-		log.debug("Nb points : " + i);
+		log.write("Nb points : " + i);
 		cercle.set(GameElementNames.MINERAI_CRATERE_HAUT_GAUCHE, 250, 30, -30, 10, -10);
 		astar.initializeNewSearchToCircle(false, state);
 		astar.process(chemin,false);
@@ -416,13 +411,13 @@ public class JUnit_TentacularAStar extends JUnit_Test
 
 			i++;
 			a = iterator.next();
-			log.debug("Robot en " + iterator.getIndex() + " : " + a);
+			log.write("Robot en " + iterator.getIndex() + " : " + a);
 			robot.setCinematique(a);
 			chemin.setCurrentIndex(iterator.getIndex());
 			if(graphicTrajectory)
 				Thread.sleep(100);
 		}
-		log.debug("Nb points : " + i);
+		log.write("Nb points : " + i);
 	}
 
 	@Test
@@ -440,13 +435,13 @@ public class JUnit_TentacularAStar extends JUnit_Test
 		{
 			i++;
 			a = iterator.next();
-			log.debug("Robot en " + iterator.getIndex() + " : " + a);
+			log.write("Robot en " + iterator.getIndex() + " : " + a);
 			robot.setCinematique(a);
 			chemin.setCurrentIndex(iterator.getIndex());
 			if(graphicTrajectory)
 				Thread.sleep(100);
 		}
-		log.debug("Nb points : " + i);
+		log.write("Nb points : " + i);
 	}
 	
 	@Test
@@ -471,13 +466,13 @@ public class JUnit_TentacularAStar extends JUnit_Test
 
 			i++;
 			a = iterator.next();
-			log.debug("Robot en " + iterator.getIndex() + " : " + a);
+			log.write("Robot en " + iterator.getIndex() + " : " + a);
 			robot.setCinematique(a);
 			chemin.setCurrentIndex(iterator.getIndex());
 			if(graphicTrajectory)
 				Thread.sleep(100);
 		}
-		log.debug("Nb points : " + i);
+		log.write("Nb points : " + i);
 	}
 
 	@Test
@@ -502,13 +497,13 @@ public class JUnit_TentacularAStar extends JUnit_Test
 
 			i++;
 			a = iterator.next();
-			log.debug("Robot en " + iterator.getIndex() + " : " + a);
+			log.write("Robot en " + iterator.getIndex() + " : " + a);
 			robot.setCinematique(a);
 			chemin.setCurrentIndex(iterator.getIndex());
 			if(graphicTrajectory)
 				Thread.sleep(100);
 		}
-		log.debug("Nb points : " + i);
+		log.write("Nb points : " + i);
 	}
 
 	@Test
@@ -526,15 +521,15 @@ public class JUnit_TentacularAStar extends JUnit_Test
 		{
 			i++;
 			a = iterator.next();
-			log.debug(a);
+			log.write(a);
 			robot.setCinematique(a);
 			if(b != null)
-				log.debug(a.getPosition().distance(b.getPosition()));
+				log.write(a.getPosition().distance(b.getPosition()));
 			b = a;
 			if(graphicTrajectory)
 				Thread.sleep(100);
 		}
-		log.debug("Nb points : " + i);
+		log.write("Nb points : " + i);
 	}
 
 	@Test
@@ -552,15 +547,15 @@ public class JUnit_TentacularAStar extends JUnit_Test
 		{
 			i++;
 			a = iterator.next();
-			log.debug(a);
+			log.write(a);
 			robot.setCinematique(a);
 			if(b != null)
-				log.debug(a.getPosition().distance(b.getPosition()));
+				log.write(a.getPosition().distance(b.getPosition()));
 			b = a;
 			if(graphicTrajectory)
 				Thread.sleep(100);
 		}
-		log.debug("Nb points : " + i);
+		log.write("Nb points : " + i);
 	}
 
 	@Test
@@ -579,15 +574,15 @@ public class JUnit_TentacularAStar extends JUnit_Test
 		{
 			i++;
 			a = iterator.next();
-			log.debug(a);
+			log.write(a);
 			robot.setCinematique(a);
 			if(b != null)
-				log.debug(a.getPosition().distance(b.getPosition()));
+				log.write(a.getPosition().distance(b.getPosition()));
 			b = a;
 			if(graphicTrajectory)
 				Thread.sleep(100);
 		}
-		log.debug("Nb points : " + i);
+		log.write("Nb points : " + i);
 	}
 
 	@Test
@@ -627,12 +622,12 @@ public class JUnit_TentacularAStar extends JUnit_Test
 		{
 			i++;
 			a = iterator.next();
-			log.debug(a);
+			log.write(a);
 			robot.setCinematique(a);
 			if(graphicTrajectory)
 				Thread.sleep(100);
 		}
-		log.debug("Nb points : " + i);
+		log.write("Nb points : " + i);
 	}
 	
 	@Test
@@ -649,12 +644,12 @@ public class JUnit_TentacularAStar extends JUnit_Test
 		{
 			i++;
 			a = iterator.next();
-			log.debug(a);
+			log.write(a);
 			robot.setCinematique(a);
 			if(graphicTrajectory)
 				Thread.sleep(100);
 		}
-		log.debug("Nb points : " + i);
+		log.write("Nb points : " + i);
 	}
 
 	@Test
@@ -677,7 +672,7 @@ public class JUnit_TentacularAStar extends JUnit_Test
 		Cinematique c = new Cinematique(0, 1600, Math.PI, false, 0);
 		astar.initializeNewSearch(c, false, state);
 		astar.process(chemin,false);
-		log.debug("Temps : " + (System.nanoTime() - avant) / (1000000.));
+		log.write("Temps : " + (System.nanoTime() - avant) / (1000000.));
 		iterator.reinit();
 		CinematiqueObs a = null;
 		int n = 10;
@@ -685,8 +680,8 @@ public class JUnit_TentacularAStar extends JUnit_Test
 		{
 			a = iterator.next();
 			chemin.setCurrentIndex(iterator.getIndex());
-			// log.debug("Robot en "+iterator.getIndex());
-			// log.debug(a);
+			// log.write("Robot en "+iterator.getIndex());
+			// log.write(a);
 			robot.setCinematique(a);
 			if(graphicTrajectory)
 				Thread.sleep(100);
@@ -695,14 +690,14 @@ public class JUnit_TentacularAStar extends JUnit_Test
 		chemin.checkColliding(true);
 		avant = System.nanoTime();
 		astar.updatePath(chemin.getLastValidCinematique());
-		log.debug("Temps recalcul : " + (System.nanoTime() - avant) / (1000000.));
+		log.write("Temps recalcul : " + (System.nanoTime() - avant) / (1000000.));
 		iterator.reinit();
 		while(iterator.hasNext())
 		{
 			a = iterator.next();
 			chemin.setCurrentIndex(iterator.getIndex());
-			// log.debug("Robot en "+iterator.getIndex());
-			// log.debug(a);
+			// log.write("Robot en "+iterator.getIndex());
+			// log.write(a);
 			robot.setCinematique(a);
 			if(graphicTrajectory)
 				Thread.sleep(100);
@@ -726,7 +721,7 @@ public class JUnit_TentacularAStar extends JUnit_Test
 		Cinematique c = new Cinematique(0, 1600, Math.PI, false, 0);
 		astar.initializeNewSearch(c, false, state);
 		astar.process(chemin,false);
-		log.debug("Temps : " + (System.nanoTime() - avant) / (1000000.));
+		log.write("Temps : " + (System.nanoTime() - avant) / (1000000.));
 		iterator.reinit();
 		CinematiqueObs a = null;
 		int n = 10;
@@ -734,7 +729,7 @@ public class JUnit_TentacularAStar extends JUnit_Test
 		{
 			a = iterator.next();
 			chemin.setCurrentIndex(iterator.getIndex());
-			log.debug(a);
+			log.write(a);
 			robot.setCinematique(a);
 			if(graphicTrajectory)
 				Thread.sleep(100);
@@ -767,7 +762,7 @@ public class JUnit_TentacularAStar extends JUnit_Test
 		cercle.set(GameElementNames.MINERAI_CRATERE_HAUT_GAUCHE, 200, 30, -30, 10, -10);
 		astar.initializeNewSearchToCircle(true, state);
 		astar.process(chemin,false);
-		log.debug("Temps : " + (System.nanoTime() - avant) / (1000000.));
+		log.write("Temps : " + (System.nanoTime() - avant) / (1000000.));
 		iterator.reinit();
 		CinematiqueObs a = null;
 		int i = 0;
@@ -775,12 +770,12 @@ public class JUnit_TentacularAStar extends JUnit_Test
 		{
 			i++;
 			a = iterator.next();
-			log.debug(a);
+			log.write(a);
 			robot.setCinematique(a);
 			if(graphicTrajectory)
 				Thread.sleep(100);
 		}
-		log.debug("Nb points : " + i);
+		log.write("Nb points : " + i);
 	}
 
 	@Test
@@ -792,7 +787,7 @@ public class JUnit_TentacularAStar extends JUnit_Test
 		cercle.set(GameElementNames.MINERAI_CRATERE_HAUT_DROITE, 250, 30, -30, 10, -10);
 		astar.initializeNewSearchToCircle(false, state);
 		astar.process(chemin,false);
-		log.debug("Temps : " + (System.nanoTime() - avant) / (1000000.));
+		log.write("Temps : " + (System.nanoTime() - avant) / (1000000.));
 		iterator.reinit();
 		CinematiqueObs a = null;
 		int i = 0;
@@ -800,12 +795,12 @@ public class JUnit_TentacularAStar extends JUnit_Test
 		{
 			i++;
 			a = iterator.next();
-			log.debug(a);
+			log.write(a);
 			robot.setCinematique(a);
 			if(graphicTrajectory)
 				Thread.sleep(100);
 		}
-		log.debug("Nb points : " + i);
+		log.write("Nb points : " + i);
 	}
 
 	@Test
@@ -817,7 +812,7 @@ public class JUnit_TentacularAStar extends JUnit_Test
 		cercle.set(GameElementNames.MINERAI_CRATERE_BAS_DROITE, 250, 30, -30, 10, -10);
 		astar.initializeNewSearchToCircle(true, state);
 		astar.process(chemin,false);
-		log.debug("Temps : " + (System.nanoTime() - avant) / (1000000.));
+		log.write("Temps : " + (System.nanoTime() - avant) / (1000000.));
 		iterator.reinit();
 		CinematiqueObs a = null;
 		int i = 0;
@@ -825,12 +820,12 @@ public class JUnit_TentacularAStar extends JUnit_Test
 		{
 			i++;
 			a = iterator.next();
-			log.debug(a);
+			log.write(a);
 			robot.setCinematique(a);
 			if(graphicTrajectory)
 				Thread.sleep(100);
 		}
-		log.debug("Nb points : " + i);
+		log.write("Nb points : " + i);
 	}
 
 	@Test
@@ -842,7 +837,7 @@ public class JUnit_TentacularAStar extends JUnit_Test
 		Cinematique c = new Cinematique(300, 1200, 0, false, 0);
 		astar.initializeNewSearch(c, SensFinal.MARCHE_AVANT, false, state);
 		astar.process(chemin,false);
-		log.debug("Temps : " + (System.nanoTime() - avant) / (1000000.));
+		log.write("Temps : " + (System.nanoTime() - avant) / (1000000.));
 		iterator.reinit();
 		CinematiqueObs a = null;
 		int i = 0;
@@ -850,12 +845,12 @@ public class JUnit_TentacularAStar extends JUnit_Test
 		{
 			i++;
 			a = iterator.next();
-			log.debug(a);
+			log.write(a);
 			robot.setCinematique(a);
 			if(graphicTrajectory)
 				Thread.sleep(100);
 		}
-		log.debug("Nb points : " + i);
+		log.write("Nb points : " + i);
 	}
 
 	@Test
@@ -867,7 +862,7 @@ public class JUnit_TentacularAStar extends JUnit_Test
 		Cinematique c = new Cinematique(-300, 800, Math.PI, false, 0);
 		astar.initializeNewSearch(c, true, state);
 		astar.process(chemin,false);
-		log.debug("Temps : " + (System.nanoTime() - avant) / (1000000.));
+		log.write("Temps : " + (System.nanoTime() - avant) / (1000000.));
 		iterator.reinit();
 		CinematiqueObs a = null;
 		int i = 0;
@@ -875,12 +870,12 @@ public class JUnit_TentacularAStar extends JUnit_Test
 		{
 			i++;
 			a = iterator.next();
-			log.debug(a);
+			log.write(a);
 			robot.setCinematique(a);
 			if(graphicTrajectory)
 				Thread.sleep(100);
 		}
-		log.debug("Nb points : " + i);
+		log.write("Nb points : " + i);
 	}
 
 	@Test
@@ -892,7 +887,7 @@ public class JUnit_TentacularAStar extends JUnit_Test
 		Cinematique c = new Cinematique(800, 700, Math.PI, false, 0);
 		astar.initializeNewSearch(c, true, state);
 		astar.process(chemin,false);
-		log.debug("Temps : " + (System.nanoTime() - avant) / (1000000.));
+		log.write("Temps : " + (System.nanoTime() - avant) / (1000000.));
 		iterator.reinit();
 		CinematiqueObs a = null;
 		int i = 0;
@@ -900,12 +895,12 @@ public class JUnit_TentacularAStar extends JUnit_Test
 		{
 			i++;
 			a = iterator.next();
-			log.debug(a);
+			log.write(a);
 			robot.setCinematique(a);
 			if(graphicTrajectory)
 				Thread.sleep(100);
 		}
-		log.debug("Nb points : " + i);
+		log.write("Nb points : " + i);
 	}
 
 	@Test
@@ -917,7 +912,7 @@ public class JUnit_TentacularAStar extends JUnit_Test
 		Cinematique c = new Cinematique(800, 700, Math.PI, false, 0);
 		astar.initializeNewSearch(c, true, state);
 		astar.process(chemin,false);
-		log.debug("Temps : " + (System.nanoTime() - avant) / (1000000.));
+		log.write("Temps : " + (System.nanoTime() - avant) / (1000000.));
 		iterator.reinit();
 		CinematiqueObs a = null;
 		int i = 0;
@@ -925,12 +920,12 @@ public class JUnit_TentacularAStar extends JUnit_Test
 		{
 			i++;
 			a = iterator.next();
-			log.debug(a);
+			log.write(a);
 			robot.setCinematique(a);
 			if(graphicTrajectory)
 				Thread.sleep(100);
 		}
-		log.debug("Nb points : " + i);
+		log.write("Nb points : " + i);
 	}
 */
 }

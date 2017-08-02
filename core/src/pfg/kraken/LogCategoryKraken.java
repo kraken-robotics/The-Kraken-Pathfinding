@@ -16,7 +16,8 @@ import pfg.log.LogCategory;
 public enum LogCategoryKraken implements LogCategory
 {
 	PF,
-	REPLANIF;
+	REPLANIF,
+	TEST;
 
 	@Override
 	public int getMask()

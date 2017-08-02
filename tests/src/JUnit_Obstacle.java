@@ -3,13 +3,6 @@
  * Distributed under the MIT License.
  */
 
-import org.junit.Assert;
-import org.junit.Test;
-import pfg.kraken.obstacles.types.CircularObstacle;
-import pfg.kraken.obstacles.types.RectangularObstacle;
-import pfg.kraken.obstacles.types.ObstacleRobot;
-import pfg.kraken.utils.XY;
-
 /**
  * Test unitaire des obstacles
  * 
@@ -19,7 +12,7 @@ import pfg.kraken.utils.XY;
 
 public class JUnit_Obstacle extends JUnit_Test
 {
-
+/*
 	@Test
 	public void test_collision_cercle() throws Exception
 	{
@@ -65,7 +58,7 @@ public class JUnit_Obstacle extends JUnit_Test
 		Assert.assertTrue(!o.isProcheObstacle(new XY(0, 8), 5));
 		Assert.assertTrue(!o.isProcheObstacle(new XY(0, -8), 5));
 	}
-
+*/
 	// Obsolète
 	/*
 	 * @Test
@@ -82,7 +75,7 @@ public class JUnit_Obstacle extends JUnit_Test
 	 * new Vec2(-20,30), 0));
 	 * }
 	 */
-
+/*
 	@Test
 	public void test_is_dans_obstacle_rectangle() throws Exception
 	{
@@ -111,5 +104,5 @@ public class JUnit_Obstacle extends JUnit_Test
 		Assert.assertTrue(!o.isColliding(new RectangularObstacle(new XY(900, 1100), 40, 40, 0)));
 		Assert.assertTrue(o.isColliding(new RectangularObstacle(new XY(900, 1100), 60, 60, 0)));
 	}
-
+*/
 }

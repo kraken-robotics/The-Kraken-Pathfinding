@@ -5,6 +5,8 @@
 
 package pfg.kraken.dstarlite.navmesh;
 
+import java.io.Serializable;
+
 import pfg.kraken.utils.XY;
 import pfg.kraken.utils.XY_RW;
 
@@ -14,8 +16,9 @@ import pfg.kraken.utils.XY_RW;
  *
  */
 
-public class NavmeshTriangle
+public class NavmeshTriangle implements Serializable
 {
+	private static final long serialVersionUID = 1L;
 	NavmeshNode[] points = new NavmeshNode[3];
 	NavmeshEdge[] edges = new NavmeshEdge[3];
 	
@@ -67,9 +70,9 @@ public class NavmeshTriangle
 	
 	void setEdges(NavmeshEdge a, NavmeshEdge b, NavmeshEdge c)
 	{
-		edges[0].removeTriangle(this);
-		edges[1].removeTriangle(this);
-		edges[2].removeTriangle(this);
+		for(int i = 0; i < 3; i++)
+			if(edges[i] != null)
+				edges[i].removeTriangle(this);
 		
 		a.addTriangle(this);
 		b.addTriangle(this);

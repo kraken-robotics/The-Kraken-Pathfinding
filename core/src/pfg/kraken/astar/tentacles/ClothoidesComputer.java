@@ -42,7 +42,6 @@ public class ClothoidesComputer
 {
 	private Log log;
 	private CinemObsPool memory;
-	private AbstractPrintBuffer buffer;
 
 	private BigDecimal x, y; // utilisés dans le calcul de trajectoire
 	private static final int S_MAX = 10; // courbure max qu'on puisse gérer
@@ -76,10 +75,9 @@ public class ClothoidesComputer
 	{
 		this.memory = memory;
 		this.log = log;
-		this.buffer = buffer;
 		if(!chargePoints()) // le calcul est un peu long, donc on le sauvegarde
 		{
-			init();
+			init(buffer);
 			sauvegardePoints();
 		}
 	}
@@ -140,7 +138,7 @@ public class ClothoidesComputer
 	/**
 	 * Calcule, une fois pour toutes, les points de la clothoïde unitaire
 	 */
-	private void init()
+	private void init(AbstractPrintBuffer buffer)
 	{
 		for(int s = 0; s < 2 * INDICE_MAX - 1; s++)
 		{
@@ -148,13 +146,15 @@ public class ClothoidesComputer
 			trajectoire[s] = new XY(x.doubleValue(), y.doubleValue());
 			trajectoire[2 * INDICE_MAX - 2 - s] = new XY(-x.doubleValue(), -y.doubleValue());
 			System.out.println((s - INDICE_MAX + 1) * PRECISION_TRACE + " " + trajectoire[s]);
-
-			buffer.addSupprimable(new CircularObstacle(new XY(x.doubleValue(), 1000 + y.doubleValue()), 5));
-			buffer.addSupprimable(new CircularObstacle(new XY(-x.doubleValue(), 1000 - y.doubleValue()), 5));
+			if(buffer != null)
+			{
+				buffer.addSupprimable(new CircularObstacle(new XY(x.doubleValue(), 1000 + y.doubleValue()), 5));
+				buffer.addSupprimable(new CircularObstacle(new XY(-x.doubleValue(), 1000 - y.doubleValue()), 5));
+			}
 		}
 	}
 
-	void getTrajectoire(Tentacle depart, ClothoTentacle vitesse, StaticTentacle modified)
+	public void getTrajectoire(Tentacle depart, ClothoTentacle vitesse, StaticTentacle modified)
 	{
 		CinematiqueObs last = depart.getLast();
 		getTrajectoire(last, vitesse, modified);
@@ -186,7 +186,7 @@ public class ClothoidesComputer
 	 * @param distance_mm
 	 * @return
 	 */
-	final void getTrajectoire(Cinematique cinematiqueInitiale, ClothoTentacle vitesse, StaticTentacle modified)
+	public final void getTrajectoire(Cinematique cinematiqueInitiale, ClothoTentacle vitesse, StaticTentacle modified)
 	{
 		// modified.v = vitesse;
 		// log.debug(vitesse);
@@ -267,7 +267,7 @@ public class ClothoidesComputer
 	 * @return
 	 * @throws InterruptedException
 	 */
-	final DynamicTentacle getTrajectoireRamene(Cinematique cinematiqueInitiale, StraightingTentacle vitesseRamene)
+	public final DynamicTentacle getTrajectoireRamene(Cinematique cinematiqueInitiale, StraightingTentacle vitesseRamene)
 	{
 		double courbure = cinematiqueInitiale.courbureGeometrique;
 		double orientation = cinematiqueInitiale.orientationGeometrique;
@@ -541,7 +541,7 @@ public class ClothoidesComputer
 	 * @return
 	 * @throws InterruptedException
 	 */
-	final DynamicTentacle getTrajectoireDemiTour(Cinematique cinematiqueInitiale, TurnoverTentacle vitesse)
+	public final DynamicTentacle getTrajectoireDemiTour(Cinematique cinematiqueInitiale, TurnoverTentacle vitesse)
 	{
 		List<CinematiqueObs> trajet = getTrajectoireQuartDeTour(cinematiqueInitiale, vitesse.v, false);
 		trajet.addAll(getTrajectoireQuartDeTour(trajet.get(trajet.size() - 1), vitesse.v, true)); // on

@@ -3,14 +3,10 @@
  * Distributed under the MIT License.
  */
 
-import java.util.List;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import pfg.kraken.obstacles.types.CircularObstacle;
 import pfg.kraken.dstarlite.DStarLite;
-import pfg.kraken.dstarlite.Navmesh;
-import pfg.kraken.utils.XY;
+import pfg.kraken.dstarlite.navmesh.Navmesh;
 
 /**
  * Tests unitaires de la recherche de chemin.

@@ -24,8 +24,8 @@ public class NavmeshEdge implements Serializable
 	final int distance;
 	private boolean lastConsultedState = false;
 	public final NavmeshNode[] points = new NavmeshNode[2];
-	final transient NavmeshTriangle[] triangles = new NavmeshTriangle[2]; // transient because it is used only at the building of the navmesh
-	transient int nbTriangles = 0;
+	final NavmeshTriangle[] triangles = new NavmeshTriangle[2]; // transient because it is used only at the building of the navmesh
+	int nbTriangles = 0;
 	final List<Obstacle> obstructingObstacle = new ArrayList<Obstacle>();
 	
 	private boolean checkNbTriangles()

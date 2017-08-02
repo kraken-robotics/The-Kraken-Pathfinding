@@ -3,19 +3,24 @@
  * Distributed under the MIT License.
  */
 
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.TestName;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Request;
 import org.junit.runner.Result;
 import java.lang.reflect.Method;
+import java.util.List;
+
 import org.junit.After;
-import config.Config;
+import org.junit.Before;
+
+import pfg.config.Config;
 import pfg.graphic.Fenetre;
-import injector.Injector;
+import pfg.injector.Injector;
 import pfg.kraken.Kraken;
-import pfg.kraken.utils.Log;
+import pfg.kraken.LogCategoryKraken;
+import pfg.kraken.obstacles.Obstacle;
+import pfg.log.Log;
 
 /**
  * Classe mère de tous les tests.
@@ -41,14 +46,28 @@ public abstract class JUnit_Test
 	{
 		System.out.println("----- DÉBUT DU TEST " + testName.getMethodName() + " -----");
 
-		kraken = new Kraken(null);
+		kraken = Kraken.getKraken(null); // TODO
 		
 		Method m = Kraken.class.getDeclaredMethod("getInjector");
 		m.setAccessible(true);
 		injector = (Injector) m.invoke(kraken);
 		config = injector.getService(Config.class);
 		log = injector.getService(Log.class);
-		log.debug("Test unitaire : " + testName.getMethodName());
+		log.write("Test unitaire : " + testName.getMethodName(), LogCategoryKraken.TEST);
+	}
+	
+	public void setUpWith(List<Obstacle> fixedObstacles) throws Exception
+	{
+		System.out.println("----- DÉBUT DU TEST " + testName.getMethodName() + " -----");
+
+		kraken = Kraken.getKraken(fixedObstacles);
+		
+		Method m = Kraken.class.getDeclaredMethod("getInjector");
+		m.setAccessible(true);
+		injector = (Injector) m.invoke(kraken);
+		config = injector.getService(Config.class);
+		log = injector.getService(Log.class);
+		log.write("Test unitaire : " + testName.getMethodName(), LogCategoryKraken.TEST);
 	}
 
 	@After

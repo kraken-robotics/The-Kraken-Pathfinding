@@ -5,11 +5,11 @@
 
 import org.junit.Assert;
 import org.junit.Test;
-import config.Config;
-import injector.InjectorException;
+
+import pfg.config.Config;
+import pfg.injector.InjectorException;
 import pfg.kraken.astar.TentacularAStar;
-import pfg.kraken.dstarlite.Navmesh;
-import pfg.kraken.utils.XY;
+import pfg.kraken.dstarlite.navmesh.Navmesh;
 
 /**
  * Tests unitaires pour l'injector

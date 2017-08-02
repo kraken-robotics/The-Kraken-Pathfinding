@@ -67,7 +67,7 @@ public class BezierComputer
 	 * @throws MemoryPoolException
 	 * @throws InterruptedException
 	 */
-	DynamicTentacle interpolationQuadratique(Cinematique cinematiqueInitiale, XY arrivee)
+	public DynamicTentacle interpolationQuadratique(Cinematique cinematiqueInitiale, XY arrivee)
 	{
 		debut = cinematiqueInitiale;
 		arrivee.copy(delta);

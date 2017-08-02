@@ -11,6 +11,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 
 /**
  * The mesh itself
@@ -18,8 +19,9 @@ import java.io.ObjectOutputStream;
  *
  */
 
-public class TriangulatedMesh
+public class TriangulatedMesh implements Serializable
 {
+	private static final long serialVersionUID = 5706228066190218520L;
 	public final NavmeshNode[] nodes;
 	public final NavmeshEdge[] edges;
 	public final NavmeshTriangle[] triangles;

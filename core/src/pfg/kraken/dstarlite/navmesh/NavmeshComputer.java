@@ -172,7 +172,7 @@ public class NavmeshComputer
 		e[0] = new NavmeshEdge(nextNode, best.points[0]);
 		e[1] = new NavmeshEdge(nextNode, best.points[1]);
 		
-		NavmeshTriangle t = new NavmeshTriangle(e[0], e[2], best);
+		NavmeshTriangle t = new NavmeshTriangle(e[0], e[1], best);
 		triangles.add(t);
 		
 		assert e[0].checkTriangle(1);

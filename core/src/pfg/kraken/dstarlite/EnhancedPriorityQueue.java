@@ -24,7 +24,7 @@ public class EnhancedPriorityQueue
 	private int firstAvailable = 1;
 	private DStarLiteNode lastInserted = null;
 
-	EnhancedPriorityQueue(int size)
+	public EnhancedPriorityQueue(int size)
 	{
 		tab = new DStarLiteNode[size];
 	}
