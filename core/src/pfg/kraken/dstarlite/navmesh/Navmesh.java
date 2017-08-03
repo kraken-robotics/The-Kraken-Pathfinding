@@ -61,11 +61,6 @@ public class Navmesh
 	{
 		return mesh.toString();
 	}
-
-	public double getDistance(NavmeshNode n1, NavmeshNode n2)
-	{
-		return 0;
-	}
 	
 	public NavmeshNode getNearest(XY position)
 	{

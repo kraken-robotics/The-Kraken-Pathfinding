@@ -12,6 +12,7 @@ import java.util.List;
 import pfg.graphic.Fenetre;
 import pfg.graphic.printable.Layer;
 import pfg.graphic.printable.Printable;
+import pfg.kraken.obstacles.Obstacle;
 import pfg.kraken.utils.XY;
 
 /**
@@ -25,6 +26,7 @@ public class NavmeshNode implements Printable, Serializable
 {
 	private static final long serialVersionUID = -6588410126587155794L;
 
+	public final Obstacle origin;
 	public final int nb; // index in memory pool
 	public final XY position;
 	List<NavmeshEdge> edges = new ArrayList<NavmeshEdge>();
@@ -40,6 +42,14 @@ public class NavmeshNode implements Printable, Serializable
 	{
 		this.position = position;
 		this.nb = nbStatic++;
+		origin = null;
+	}
+	
+	NavmeshNode(XY position, Obstacle origin)
+	{
+		this.position = position;
+		this.nb = nbStatic++;
+		this.origin = origin;
 	}
 
 	@Override

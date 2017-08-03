@@ -33,7 +33,7 @@ public class NavmeshEdge implements Serializable, Printable
 	final NavmeshTriangle[] triangles = new NavmeshTriangle[2]; // transient because it is used only at the building of the navmesh
 	int nbTriangles = 0;
 	private boolean highlight = false;
-	final boolean constrained; // can this edge be flipped ?
+	boolean constrained = false; // can this edge be flipped ?
 	final List<Obstacle> obstructingObstacles = new ArrayList<Obstacle>();
 	
 	private boolean checkNbTriangles()
@@ -93,9 +93,8 @@ public class NavmeshEdge implements Serializable, Printable
 			return false;
 	}
 	
-	NavmeshEdge(NavmeshNode p1, NavmeshNode p2, boolean constrained)
+	NavmeshEdge(NavmeshNode p1, NavmeshNode p2)
 	{
-		this.constrained = constrained;
 		assert p1 != p2;
 		points[0] = p1;
 		points[1] = p2;
@@ -231,7 +230,9 @@ public class NavmeshEdge implements Serializable, Printable
 	 */
 	public boolean flipIfNecessary()
 	{
-		assert !constrained; // TODO
+		if(points[0].origin != null && points[0].origin == points[1].origin)
+			constrained = true;
+
 		if(nbTriangles < 2 || constrained)
 			return false;
 				
@@ -251,8 +252,12 @@ public class NavmeshEdge implements Serializable, Printable
 		NavmeshNode beta = tr0.points[(edgeIn0 + 1) % 3]; // a node of this edge
 		NavmeshNode gamma = tr0.points[(edgeIn0 + 2) % 3]; // the other node of this edge
 		NavmeshNode delta = tr1.points[edgeIn1];
-
-		if(!isCircumscribed(alpha.position, beta.position, gamma.position, delta.position))
+		
+		if(alpha.origin != null && alpha.origin == delta.origin)
+			constrained = true;
+		
+		// This edge is about to become constrained
+		if(!constrained && !isCircumscribed(alpha.position, beta.position, gamma.position, delta.position))
 			return false;
 		
 		// Flip
