@@ -11,7 +11,6 @@ import java.util.List;
 
 import pfg.config.Config;
 import pfg.kraken.ConfigInfoKraken;
-import pfg.kraken.LogCategoryKraken;
 import pfg.kraken.obstacles.Obstacle;
 import pfg.kraken.obstacles.container.StaticObstacles;
 import pfg.kraken.utils.XY;
@@ -178,6 +177,9 @@ public class NavmeshComputer
 		NavmeshEdge[] e = new NavmeshEdge[2];
 		e[0] = new NavmeshEdge(nextNode, best.points[0]);
 		e[1] = new NavmeshEdge(nextNode, best.points[1]);
+		
+		edgesInProgress.add(e[0]);
+		edgesInProgress.add(e[1]);
 		
 		NavmeshTriangle t = new NavmeshTriangle(e[0], e[1], best);
 		triangles.add(t);
