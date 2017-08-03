@@ -32,7 +32,7 @@ public class Navmesh
 	public Navmesh(Log log, Config config, StaticObstacles obs, AbstractPrintBuffer buffer)
 	{
 		this.log = log;
-		String filename = "navmesh-"+obs.hashCode()+"-"+config.getInt(ConfigInfoKraken.LARGEST_TRIANGLE_AREA_IN_NAVWESH)+".krk";
+		String filename = "navmesh-"+obs.hashCode()+"-"+config.getInt(ConfigInfoKraken.LARGEST_TRIANGLE_AREA_IN_NAVMESH)+".krk";
 		try {
 			log.write("D* NavMesh loading…", LogCategoryKraken.PF);
 			mesh = TriangulatedMesh.loadNavMesh(filename);

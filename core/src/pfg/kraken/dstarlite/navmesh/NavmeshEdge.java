@@ -163,9 +163,16 @@ public class NavmeshEdge implements Serializable, Printable
 	 */
 	public void addObstacle(Obstacle o)
 	{
-		// TODO
+		assert !obstructingObstacles.contains(o);
+		obstructingObstacles.add(o);
 	}
-	
+
+	public void removeObstacle(Obstacle o)
+	{
+		assert obstructingObstacles.contains(o);
+		obstructingObstacles.remove(o);
+	}
+
 	public boolean hasChanged()
 	{
 		boolean out = wasPreviouslyBlocked != isBlocked();
@@ -228,9 +235,9 @@ public class NavmeshEdge implements Serializable, Printable
 	 * A constrained edge cannot flip
 	 * @return
 	 */
-	public boolean flipIfNecessary()
+	public boolean flipIfNecessary(boolean flipToBeConstraint)
 	{
-		if(points[0].origin != null && points[0].origin == points[1].origin)
+		if(points[0].neighbourInConvexHull == points[1] || points[1].neighbourInConvexHull == points[0])
 			constrained = true;
 
 		if(nbTriangles < 2 || constrained)
@@ -253,7 +260,8 @@ public class NavmeshEdge implements Serializable, Printable
 		NavmeshNode gamma = tr0.points[(edgeIn0 + 2) % 3]; // the other node of this edge
 		NavmeshNode delta = tr1.points[edgeIn1];
 		
-		if(alpha.origin != null && alpha.origin == delta.origin)
+		// this must be done on convex hull only
+		if(flipToBeConstraint && (alpha.neighbourInConvexHull == delta || delta.neighbourInConvexHull == alpha))
 			constrained = true;
 		
 		// This edge is about to become constrained

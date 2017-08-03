@@ -58,8 +58,8 @@ public class NavmeshComputer
 	{
 		this.log = log;
 		expansion = config.getInt(ConfigInfoKraken.DILATATION_ROBOT_DSTARLITE);
-		largestAllowedArea = config.getInt(ConfigInfoKraken.LARGEST_TRIANGLE_AREA_IN_NAVWESH);
-		longestAllowedLength = config.getInt(ConfigInfoKraken.LONGEST_EDGE_IN_NAVWESH);
+		largestAllowedArea = config.getInt(ConfigInfoKraken.LARGEST_TRIANGLE_AREA_IN_NAVMESH);
+		longestAllowedLength = config.getInt(ConfigInfoKraken.LONGEST_EDGE_IN_NAVMESH);
 	}
 	
 	public TriangulatedMesh generateNavMesh(StaticObstacles obs)
@@ -69,10 +69,23 @@ public class NavmeshComputer
 		for(Obstacle o : obsList)
 		{
 			XY[] hull = o.getExpandedConvexHull(expansion, longestAllowedLength);
-			for(XY pos : hull)
-				nodesList.add(new NavmeshNode(pos)); // TODO
-			
-//			log.write(nodesList, LogCategoryKraken.TEST);
+			assert hull.length >= 3;
+			NavmeshNode first = null;
+			NavmeshNode last = null;
+			for(int i = 0; i < hull.length; i++)
+			{
+				if(i == 0)
+				{
+					last = first = new NavmeshNode(hull[i]);
+					nodesList.add(first);					
+				}
+				else
+				{
+					last = new NavmeshNode(hull[i], last);
+					nodesList.add(last);
+				}
+			}
+			first.neighbourInConvexHull = last;
 		}
 
 		/*
@@ -98,17 +111,21 @@ public class NavmeshComputer
 //		log.write("First triangle : "+triangles.get(0), LogCategoryKraken.TEST);
 
 		
+		// No flip until the constraints have been added !
+		
 		// We add the points one by one
 		for(int index = 3; index < nodesList.size(); index++)
 		{
 			NavmeshNode nextNode = nodesList.get(index);
-			addNewNode(nextNode);
-			assert needFlipCheck.isEmpty();
+			addNewNodeInitialization(nextNode);
 		}
 		
-//		for(NavmeshEdge e : edgesInProgress)
-//			e.flipIfNecessary();
-		
+		/**
+		 * Flip and add the constraints
+		 */
+		for(NavmeshEdge e : edgesInProgress)
+			e.flipIfNecessary(true);
+
 		// We add other points in order to avoir long edges
 		NavmeshEdge longestEdge = edgesInProgress.peek();
 		while(longestEdge.length > longestAllowedLength)
@@ -163,7 +180,24 @@ public class NavmeshComputer
 		XY a = edge.points[0].position;
 		XY b = edge.points[1].position;
 		XY c = a.plusNewVector(b).scalar(0.5);
-		NavmeshNode newNode = new NavmeshNode(c);
+		// if we split a constrained edge, make the new edges constrained
+		
+		NavmeshNode first = null, second = null;
+		if(edge.points[0].neighbourInConvexHull == edge.points[1])
+		{
+			first = edge.points[1];
+			second = edge.points[0];
+		}
+		else if(edge.points[1].neighbourInConvexHull == edge.points[0])
+		{
+			first = edge.points[0];
+			second = edge.points[1];
+		}
+		
+		NavmeshNode newNode = new NavmeshNode(c, first);
+		if(second != null)
+			second.neighbourInConvexHull = newNode;
+		
 		nodesList.add(newNode);
 		
 		NavmeshTriangle tr0 = edge.triangles[0];
@@ -171,6 +205,9 @@ public class NavmeshComputer
 		
 		edge.points[1].edges.remove(edge);
 		NavmeshEdge newEdge = new NavmeshEdge(newNode, edge.points[1]);
+		if(edge.constrained)
+			newEdge.constrained = true;
+		
 		edgesInProgress.add(newEdge);
 		
 		edge.points[1] = newNode;
@@ -179,6 +216,7 @@ public class NavmeshComputer
 		edgesInProgress.add(edge);
 
 		newNode.edges.add(edge);
+
 		addEdgeNode(newNode, edge, newEdge, tr0);
 		
 		if(edge.nbTriangles == 2)
@@ -200,6 +238,7 @@ public class NavmeshComputer
 //		log.write("New center node : "+newNode+" within "+enclosingTriangle, LogCategoryKraken.TEST);
 		nodesList.add(newNode);
 		addInsideNode(newNode, enclosingTriangle);
+		flip();
 	}
 	
 	/**
@@ -207,20 +246,22 @@ public class NavmeshComputer
 	 * There must be at least one triangle.
 	 * @param nextNode
 	 */
-	private void addNewNode(NavmeshNode nextNode)
+	private void addNewNodeInitialization(NavmeshNode nextNode)
 	{
 		assert !edgesInProgress.isEmpty();
 		assert !triangles.isEmpty();
-		
+		System.out.println("Ajout de "+nextNode);
 		// first we check if this point is in a triangle
 		for(NavmeshTriangle t : triangles)
 			if(t.isInside(nextNode.position))
 			{
+				triangles.remove(t);
 				addInsideNode(nextNode, t);
+				needFlipCheck.clear();
 				return;
 			}
 		
-		// The point is outside the navwesh. We create a new triangle with the closest external edge
+		// The point is outside the navmesh. We create a new triangle with the closest external edge
 		NavmeshEdge best = null;
 		double distance = 0;
 		for(NavmeshEdge e : edgesInProgress)
@@ -250,10 +291,6 @@ public class NavmeshComputer
 		assert e[1].checkTriangle(1) : e[1];
 		assert best.checkTriangle(2) : best;
 		assert needFlipCheck.isEmpty() : needFlipCheck;
-		
-//		log.write("A new triangle has been created from an outer point", LogCategoryKraken.TEST);
-		needFlipCheck.add(best);
-		flip();
 	}
 
 	private void addInsideNode(NavmeshNode nextNode, NavmeshTriangle t)
@@ -297,8 +334,6 @@ public class NavmeshComputer
 		
 		triangles.add(tr1);
 		triangles.add(tr2);
-		
-		flip();
 	}
 	
 	private void addEdgeNode(NavmeshNode nextNode, NavmeshEdge originalEdge, NavmeshEdge newEdge, NavmeshTriangle tr)
@@ -350,7 +385,7 @@ public class NavmeshComputer
 	private boolean checkDelaunay()
 	{
 		for(NavmeshEdge e : edgesInProgress)
-			assert !e.flipIfNecessary() : e;
+			assert !e.flipIfNecessary(false) : e;
 		return true;
 	}
 	
@@ -359,7 +394,7 @@ public class NavmeshComputer
 		while(!needFlipCheck.isEmpty())
 		{
 			NavmeshEdge e = needFlipCheck.removeFirst();
-			if(e.flipIfNecessary())
+			if(e.flipIfNecessary(false))
 			{
 				// the areas have changed
 				triangles.remove(e.triangles[0]);
