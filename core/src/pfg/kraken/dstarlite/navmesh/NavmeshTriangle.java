@@ -5,8 +5,13 @@
 
 package pfg.kraken.dstarlite.navmesh;
 
+import java.awt.Graphics;
 import java.io.Serializable;
 
+import pfg.graphic.Fenetre;
+import pfg.graphic.printable.Layer;
+import pfg.graphic.printable.Printable;
+import pfg.kraken.Couleur;
 import pfg.kraken.utils.XY;
 import pfg.kraken.utils.XY_RW;
 
@@ -16,7 +21,7 @@ import pfg.kraken.utils.XY_RW;
  *
  */
 
-public class NavmeshTriangle implements Serializable
+public class NavmeshTriangle implements Serializable, Printable
 {
 	private static final long serialVersionUID = 1L;
 	NavmeshNode[] points = new NavmeshNode[3];
@@ -198,5 +203,20 @@ public class NavmeshTriangle implements Serializable
 	public String toString()
 	{
 		return "Triangle with points "+points[0].position+", "+points[1].position+", "+points[2].position+" and edges "+edges[0].shortString()+", "+edges[1].shortString()+", "+edges[2].shortString();
+	}
+
+	@Override
+	public void print(Graphics g, Fenetre f)
+	{
+		g.setColor(Couleur.NAVMESH_TRIANGLE.couleur);
+		g.fillPolygon(new int[]{f.XtoWindow(points[0].position.getX()), f.XtoWindow(points[1].position.getX()), f.XtoWindow(points[2].position.getX())},
+				new int[]{f.YtoWindow(points[0].position.getY()), f.YtoWindow(points[1].position.getY()), f.YtoWindow(points[2].position.getY())},
+				3);
+	}
+
+	@Override
+	public int getLayer()
+	{
+		return Layer.BACKGROUND.ordinal();
 	}
 }

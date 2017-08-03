@@ -6,37 +6,33 @@
 package pfg.kraken.dstarlite.navmesh;
 
 import pfg.config.Config;
-import pfg.graphic.Fenetre;
-import pfg.graphic.printable.Layer;
-import pfg.graphic.printable.Printable;
+import pfg.graphic.AbstractPrintBuffer;
 import pfg.kraken.utils.XY;
 import pfg.log.Log;
+import pfg.kraken.ConfigInfoKraken;
 import pfg.kraken.LogCategoryKraken;
 import pfg.kraken.SeverityCategoryKraken;
 import pfg.kraken.obstacles.container.StaticObstacles;
 
-import java.awt.Graphics;
 import java.io.IOException;
 
 /**
  * A navmesh, used by the D* Lite.
- * It can load and save a navmesh. If necessary, it generate a new one
+ * It can load and save a navmesh. If necessary, it generate a new one.
  * 
  * @author pf
  *
  */
 
-public class Navmesh implements Printable
+public class Navmesh
 {
-	
-	private static final long serialVersionUID = 3849267693380819201L;
 	protected Log log;
 	public TriangulatedMesh mesh;
 	
-	public Navmesh(Log log, Config config, StaticObstacles obs)
+	public Navmesh(Log log, Config config, StaticObstacles obs, AbstractPrintBuffer buffer)
 	{
 		this.log = log;
-		String filename = "navmesh-"+obs.hashCode()+".krk";
+		String filename = "navmesh-"+obs.hashCode()+"-"+config.getInt(ConfigInfoKraken.LARGEST_TRIANGLE_AREA_IN_NAVWESH)+".krk";
 		try {
 			log.write("D* NavMesh loading…", LogCategoryKraken.PF);
 			mesh = TriangulatedMesh.loadNavMesh(filename);
@@ -55,24 +51,15 @@ public class Navmesh implements Printable
 				log.write("Error during navmesh save ! " + e, SeverityCategoryKraken.CRITICAL, LogCategoryKraken.PF);
 			}*/
 		}
+		assert mesh != null;
+		if(config.getBoolean(ConfigInfoKraken.GRAPHIC_NAVMESH))
+			mesh.addToBuffer(buffer);
 	}
 	
 	@Override
 	public String toString()
 	{
 		return mesh.toString();
-	}
-	
-	@Override
-	public void print(Graphics g, Fenetre f)
-	{
-		// TODO
-	}
-
-	@Override
-	public int getLayer()
-	{
-		return Layer.MIDDLE.ordinal();
 	}
 
 	public double getDistance(NavmeshNode n1, NavmeshNode n2)

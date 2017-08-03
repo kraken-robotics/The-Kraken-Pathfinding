@@ -36,9 +36,8 @@ public enum ConfigInfoKraken implements ConfigInfo
 												// robot non-déployé
 	LARGEUR_NON_DEPLOYE(228), // distance entre le bord gauche et le bord droit
 								// du robot non-déployé
-
 	
-	LARGEST_TRIANGLE_AREA_IN_NAVWESH(4000),
+	LARGEST_TRIANGLE_AREA_IN_NAVWESH(50000),
 
 	/**
 	 * Paramètres du log
@@ -107,8 +106,9 @@ public enum ConfigInfoKraken implements ConfigInfo
 	GRAPHIC_TRACE_ROBOT(true), // affiche la trace du robot
 	GRAPHIC_EXTERNAL(true), // l'affichage doit-il être déporté par le serveur
 							// d'affichage ?
-	GRAPHIC_DIFFERENTIAL(true); // sauvegarde d'une "vidéo" pour visionner les
+	GRAPHIC_DIFFERENTIAL(true), // sauvegarde d'une "vidéo" pour visionner les
 								// images plus tard
+	GRAPHIC_NAVMESH(false); // show the navmesh ?
 
 	private Object defaultValue;
 	public boolean overridden = false;

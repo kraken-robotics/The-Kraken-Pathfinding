@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import pfg.config.Config;
 import pfg.graphic.Fenetre;
+import pfg.graphic.Vec2RO;
 import pfg.log.Log;
 import pfg.graphic.AbstractPrintBuffer;
 import pfg.graphic.DebugTool;
@@ -99,7 +100,7 @@ public class Kraken
 			DebugTool debug = new DebugTool();
 			log = debug.getLog(SeverityCategoryKraken.INFO);
 			config = new Config(ConfigInfoKraken.values(), "kraken.conf", false);
-			
+
 			injector.addService(Log.class, log);
 			injector.addService(Config.class, config);
 			injector.addService(DynamicObstacles.class, dynObs);
@@ -108,7 +109,8 @@ public class Kraken
 	
 			if(config.getBoolean(ConfigInfoKraken.GRAPHIC_ENABLE))
 			{
-				Fenetre f = injector.getService(Fenetre.class);
+				Fenetre f = debug.getFenetre(new Vec2RO(0, 1000));
+				injector.addService(Fenetre.class, f);
 //				if(config.getBoolean(ConfigInfoKraken.GRAPHIC_EXTERNAL))
 //					injector.addService(PrintBufferInterface.class, f.getBu);
 //				else

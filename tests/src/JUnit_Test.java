@@ -37,6 +37,7 @@ public abstract class JUnit_Test
 	protected Log log;
 	protected Injector injector;
 	protected Kraken kraken;
+	protected Fenetre f;
 
 	@Rule
 	public TestName testName = new TestName();
@@ -53,6 +54,7 @@ public abstract class JUnit_Test
 		injector = (Injector) m.invoke(kraken);
 		config = injector.getService(Config.class);
 		log = injector.getService(Log.class);
+		f = injector.getExistingService(Fenetre.class);
 		log.write("Test unitaire : " + testName.getMethodName(), LogCategoryKraken.TEST);
 	}
 	
@@ -67,6 +69,7 @@ public abstract class JUnit_Test
 		injector = (Injector) m.invoke(kraken);
 		config = injector.getService(Config.class);
 		log = injector.getService(Log.class);
+		f = injector.getExistingService(Fenetre.class);
 		log.write("Test unitaire : " + testName.getMethodName(), LogCategoryKraken.TEST);
 	}
 
