@@ -138,7 +138,7 @@ public abstract class Obstacle implements Printable, Serializable
 
 	public abstract double squaredDistance(XY position);
 	
-	public abstract XY[] getExpandedConvexHull(double expansion);
+	public abstract XY[] getExpandedConvexHull(double expansion, double longestAllowedLength);
 	
 	/**
 	 * Renvoie vrai s'il y a collision avec obs

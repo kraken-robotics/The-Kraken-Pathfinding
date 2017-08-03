@@ -43,13 +43,14 @@ public class NavmeshComputer
 	private List<NavmeshNode> nodesList = new ArrayList<NavmeshNode>();
 
 	private int expansion;
-	private double largestAllowedArea;
+	private int largestAllowedArea, longestAllowedLength;
 	
 	public NavmeshComputer(Log log, Config config)
 	{
 		this.log = log;
 		expansion = config.getInt(ConfigInfoKraken.DILATATION_ROBOT_DSTARLITE);
 		largestAllowedArea = config.getInt(ConfigInfoKraken.LARGEST_TRIANGLE_AREA_IN_NAVWESH);
+		longestAllowedLength = config.getInt(ConfigInfoKraken.LONGEST_EDGE_IN_NAVWESH);
 	}
 	
 	public TriangulatedMesh generateNavMesh(StaticObstacles obs)
@@ -58,7 +59,7 @@ public class NavmeshComputer
 		
 		for(Obstacle o : obsList)
 		{
-			XY[] hull = o.getExpandedConvexHull(expansion);
+			XY[] hull = o.getExpandedConvexHull(expansion, longestAllowedLength);
 			for(XY pos : hull)
 				nodesList.add(new NavmeshNode(pos));
 			
@@ -103,6 +104,8 @@ public class NavmeshComputer
 			largestTriangle = triangles.peek();
 		}
 
+//		addMiddleEdgePoint(edgesInProgress.get(0));
+		
 		NavmeshNode[] n = new NavmeshNode[nodesList.size()];
 		for(int i = 0; i < n.length; i++)
 		{
@@ -125,6 +128,30 @@ public class NavmeshComputer
 			t[i] = triangles.poll();
 		
 		return new TriangulatedMesh(n, e, t);
+	}
+	
+	private void addMiddleEdgePoint(NavmeshEdge edge)
+	{
+		assert needFlipCheck.isEmpty();
+		assert edge.nbTriangles > 0;
+		XY a = edge.points[0].position;
+		XY b = edge.points[1].position;
+		XY c = a.plusNewVector(b).scalar(0.5);
+		NavmeshNode newNode = new NavmeshNode(c);
+		nodesList.add(newNode);
+		
+		edge.points[1].edges.remove(edge);
+		NavmeshEdge newEdge = new NavmeshEdge(newNode, edge.points[1], false);
+		edgesInProgress.add(newEdge);
+		
+		edge.points[1] = newNode;
+		newNode.edges.add(edge);
+		addEdgeNode(newNode, edge, newEdge, edge.triangles[0]);
+		
+		if(edge.nbTriangles == 2)
+			addEdgeNode(newNode, edge, newEdge, edge.triangles[1]);
+		
+		flip();
 	}
 	
 	private void addCenterPoint(NavmeshTriangle enclosingTriangle)
@@ -234,6 +261,52 @@ public class NavmeshComputer
 		triangles.add(tr2);
 		
 		flip();
+	}
+	
+	private void addEdgeNode(NavmeshNode nextNode, NavmeshEdge originalEdge, NavmeshEdge newEdge, NavmeshTriangle tr)
+	{
+		int indexEdge = -1;
+		for(int i = 0; i < 3; i++)
+			if(tr.edges[i] == originalEdge)
+				indexEdge = i;
+		
+		assert indexEdge != -1;
+		
+		triangles.remove(tr);
+		NavmeshEdge transversalEdge = new NavmeshEdge(nextNode, tr.points[indexEdge], false);
+
+		edgesInProgress.add(transversalEdge);
+		
+		NavmeshEdge edgeNextToNewEdge, edgeNextToOriginalEdge;
+		
+		if(tr.edges[(indexEdge + 1) % 3].isAdjacent(newEdge))
+		{
+			edgeNextToNewEdge = tr.edges[(indexEdge + 1) % 3];
+			edgeNextToOriginalEdge = tr.edges[(indexEdge + 2) % 3];
+		}
+		else
+		{
+			edgeNextToNewEdge = tr.edges[(indexEdge + 2) % 3];
+			edgeNextToOriginalEdge = tr.edges[(indexEdge + 1) % 3];
+		}
+		
+		originalEdge.removeTriangle(tr);
+		edgeNextToOriginalEdge.removeTriangle(tr);
+		NavmeshTriangle tr1 = new NavmeshTriangle(transversalEdge, originalEdge, edgeNextToOriginalEdge);
+		tr.setEdges(transversalEdge, newEdge, edgeNextToNewEdge);
+		
+		transversalEdge.addTriangle(tr1);
+		transversalEdge.addTriangle(tr);
+		newEdge.addTriangle(tr);
+
+		triangles.add(tr1);
+		triangles.add(tr);
+
+		needFlipCheck.add(transversalEdge);
+		needFlipCheck.add(originalEdge);
+		needFlipCheck.add(newEdge);
+		needFlipCheck.add(edgeNextToOriginalEdge);
+		needFlipCheck.add(edgeNextToNewEdge);		
 	}
 
 	private boolean checkDelaunay()

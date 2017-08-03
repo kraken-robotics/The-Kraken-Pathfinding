@@ -84,7 +84,7 @@ public class CompoundObstacle extends Obstacle
 	}
 	
 	@Override
-	public XY[] getExpandedConvexHull(double expansion)
+	public XY[] getExpandedConvexHull(double expansion, double longestAllowedLength)
 	{
 		return null; // TODO
 	}

@@ -295,7 +295,7 @@ public class RectangularObstacle extends Obstacle
 	}
 	
 	@Override
-	public XY[] getExpandedConvexHull(double expansion)
+	public XY[] getExpandedConvexHull(double expansion, double longestAllowedLength)
 	{
 		// TODO
 		return new XY[] {coinBasDroiteRotate, coinHautDroiteRotate, coinHautGaucheRotate, coinBasGaucheRotate};

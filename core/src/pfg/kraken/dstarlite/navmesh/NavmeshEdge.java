@@ -27,7 +27,7 @@ import pfg.kraken.utils.XY;
 public class NavmeshEdge implements Serializable, Printable
 {
 	private static final long serialVersionUID = 7904466980326128967L;
-	final int distance;
+	final int length;
 	private boolean wasPreviouslyBlocked = false;
 	public final NavmeshNode[] points = new NavmeshNode[2];
 	final NavmeshTriangle[] triangles = new NavmeshTriangle[2]; // transient because it is used only at the building of the navmesh
@@ -101,7 +101,7 @@ public class NavmeshEdge implements Serializable, Printable
 		points[1] = p2;
 		p1.edges.add(this);
 		p2.edges.add(this);
-		distance = (int) (1000 * p1.position.distance(p2.position));
+		length = (int) (1000 * p1.position.distance(p2.position));
 	}
 	
 	public void addTriangle(NavmeshTriangle tr)
@@ -287,7 +287,7 @@ public class NavmeshEdge implements Serializable, Printable
 	{
 		if(!obstructingObstacles.isEmpty())
 			return Integer.MAX_VALUE;
-		return distance;
+		return length;
 	}
 
 	public boolean isBlocked()
@@ -318,7 +318,14 @@ public class NavmeshEdge implements Serializable, Printable
 		highlight = state;
 	}
 	
-	
+	public boolean isAdjacent(NavmeshEdge other)
+	{
+		for(int i = 0; i < 2; i++)
+			for(int j = 0; j < 2; j++)
+				if(points[i] == other.points[j])
+					return true;
+		return false;
+	}
 	
 //	new Segment(e.points[0].position, e.points[1].position, Layer.BACKGROUND, Couleur.NAVMESH.couleur)
 }
