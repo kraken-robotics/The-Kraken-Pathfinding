@@ -72,23 +72,36 @@ public class NavmeshNode implements Printable, Serializable
 		return Layer.FOREGROUND.ordinal();
 	}
 
-	public void updateNeighbours()
+	void updateNeighbours()
 	{
 		for(NavmeshEdge e : edges)
 		{
 			if(e.points[0] == this)
+			{
+				assert !neighbours.contains(e.points[1]);
 				neighbours.add(e.points[1]);
+			}
 			else
 			{
 				assert e.points[1] == this;
+				assert !neighbours.contains(e.points[0]);
 				neighbours.add(e.points[0]);
 			}
 		}	
 	}
 	
-	public NavmeshNode[] getNeighbourhood()
+	public int getNbNeighbours()
 	{
-		// TODO Auto-generated method stub
-		return null;
+		return edges.size();
+	}
+
+	public NavmeshEdge getNeighbourEdge(int index)
+	{
+		return edges.get(index);
+	}
+	
+	public NavmeshNode getNeighbour(int index)
+	{
+		return neighbours.get(index);
 	}
 }

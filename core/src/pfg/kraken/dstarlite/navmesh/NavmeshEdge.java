@@ -5,9 +5,15 @@
 
 package pfg.kraken.dstarlite.navmesh;
 
+import java.awt.Graphics;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
+import pfg.graphic.Fenetre;
+import pfg.graphic.printable.Layer;
+import pfg.graphic.printable.Printable;
+import pfg.kraken.Couleur;
 import pfg.kraken.obstacles.Obstacle;
 import pfg.kraken.utils.XY;
 
@@ -18,15 +24,17 @@ import pfg.kraken.utils.XY;
  *
  */
 
-public class NavmeshEdge implements Serializable
+public class NavmeshEdge implements Serializable, Printable
 {
 	private static final long serialVersionUID = 7904466980326128967L;
 	final int distance;
-	private boolean lastConsultedState = false;
+	private boolean wasPreviouslyBlocked = false;
 	public final NavmeshNode[] points = new NavmeshNode[2];
 	final NavmeshTriangle[] triangles = new NavmeshTriangle[2]; // transient because it is used only at the building of the navmesh
 	int nbTriangles = 0;
-	final List<Obstacle> obstructingObstacle = new ArrayList<Obstacle>();
+	private boolean highlight = false;
+	final boolean constrained; // can this edge be flipped ?
+	final List<Obstacle> obstructingObstacles = new ArrayList<Obstacle>();
 	
 	private boolean checkNbTriangles()
 	{
@@ -85,13 +93,17 @@ public class NavmeshEdge implements Serializable
 			return false;
 	}
 	
-	NavmeshEdge(NavmeshNode p1, NavmeshNode p2)
+	NavmeshEdge(NavmeshNode p1, NavmeshNode p2, boolean constrained)
 	{
+		this.constrained = constrained;
+		assert p1 != p2;
 		points[0] = p1;
 		points[1] = p2;
+		p1.edges.add(this);
+		p2.edges.add(this);
 		distance = (int) (1000 * p1.position.distance(p2.position));
 	}
-
+	
 	public void addTriangle(NavmeshTriangle tr)
 	{
 		if(triangles[0] == tr || triangles[1] == tr)
@@ -152,12 +164,9 @@ public class NavmeshEdge implements Serializable
 	
 	public boolean hasChanged()
 	{
-		return lastConsultedState == obstructingObstacle.isEmpty();
-	}
-	
-	public boolean isBlocked()
-	{
-		return lastConsultedState = !obstructingObstacle.isEmpty();
+		boolean out = wasPreviouslyBlocked != isBlocked();
+		wasPreviouslyBlocked = isBlocked();
+		return out;
 	}
 	
 	@Override
@@ -170,7 +179,7 @@ public class NavmeshEdge implements Serializable
 	@Override
 	public boolean equals(Object d)
 	{
-		return d instanceof NavmeshEdge && hashCode() == ((NavmeshEdge) d).hashCode();
+		return d == this;
 	}
 
 	@Override
@@ -212,11 +221,12 @@ public class NavmeshEdge implements Serializable
 	
 	/**
 	 * Returns true iff a flip is done
+	 * A constrained edge cannot flip
 	 * @return
 	 */
 	public boolean flipIfNecessary()
 	{
-		if(nbTriangles < 2)
+		if(nbTriangles < 2 || constrained)
 			return false;
 				
 		NavmeshTriangle tr0 = triangles[0];
@@ -241,8 +251,18 @@ public class NavmeshEdge implements Serializable
 		
 		// Flip
 		
+		points[0].edges.remove(this);
+		assert !points[0].edges.contains(this);
+		points[1].edges.remove(this);
+		assert !points[1].edges.contains(this);
+		
 		points[0] = alpha;
 		points[1] = delta;
+		
+		if(!points[0].edges.contains(this))
+			points[0].edges.add(this);
+		if(!points[1].edges.contains(this))
+			points[1].edges.add(this);
 		
 		NavmeshEdge tmp = tr0.edges[(edgeIn0 + 1) % 3];
 		tr1.edges[(edgeIn1 + 1) % 3].removeTriangle(tr1);
@@ -258,4 +278,47 @@ public class NavmeshEdge implements Serializable
 		return (nextNode.position.distance(points[0].position) + nextNode.position.distance(points[1].position)) / 2.;
 	}
 
+	/**
+	 * Returns the distance of the edge.
+	 * If the edge is blocked, returns infinity
+	 * @return
+	 */
+	public int getDistance()
+	{
+		if(!obstructingObstacles.isEmpty())
+			return Integer.MAX_VALUE;
+		return distance;
+	}
+
+	public boolean isBlocked()
+	{
+		return !obstructingObstacles.isEmpty();
+	}
+
+	@Override
+	public void print(Graphics g, Fenetre f)
+	{
+		if(highlight)
+			g.setColor(Couleur.ROUGE.couleur);
+		else if(isBlocked())
+			g.setColor(Couleur.NAVMESH_BLOCKED.couleur);
+		else
+			g.setColor(Couleur.NAVMESH.couleur);
+		g.drawLine(f.XtoWindow(points[0].position.getX()), f.YtoWindow(points[0].position.getY()), f.XtoWindow(points[1].position.getX()), f.YtoWindow(points[1].position.getY()));
+	}
+
+	@Override
+	public int getLayer()
+	{
+		return Layer.BACKGROUND.ordinal();
+	}
+
+	public void highlight(boolean state)
+	{
+		highlight = state;
+	}
+	
+	
+	
+//	new Segment(e.points[0].position, e.points[1].position, Layer.BACKGROUND, Couleur.NAVMESH.couleur)
 }

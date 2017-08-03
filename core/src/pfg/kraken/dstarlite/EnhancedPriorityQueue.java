@@ -26,7 +26,7 @@ public class EnhancedPriorityQueue
 
 	public EnhancedPriorityQueue(int size)
 	{
-		tab = new DStarLiteNode[size];
+		tab = new DStarLiteNode[size+1]; // +1 because index starts at 1 
 	}
 	
 	/**

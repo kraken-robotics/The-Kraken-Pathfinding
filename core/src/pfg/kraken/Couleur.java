@@ -39,6 +39,7 @@ public enum Couleur
 	CINEMATIQUE(new Color(0xFF, 0x14, 0x93, 180), Layer.FOREGROUND),
 	SCAN(new Color(0x80, 0x00, 0x80)),
 	NAVMESH(new Color(0x80, 0x00, 0x80)),
+	NAVMESH_BLOCKED(new Color(0x40, 0x40, 0x40)),
 	NAVMESH_TRIANGLE(new Color(0x80, 0x00, 0x80, 10));
 
 	public final Color couleur;

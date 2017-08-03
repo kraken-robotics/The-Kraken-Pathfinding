@@ -3,10 +3,20 @@
  * Distributed under the MIT License.
  */
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
+
+import pfg.kraken.Couleur;
+import pfg.kraken.LogCategoryKraken;
 import pfg.kraken.dstarlite.DStarLite;
 import pfg.kraken.dstarlite.navmesh.Navmesh;
+import pfg.kraken.obstacles.Obstacle;
+import pfg.kraken.obstacles.RectangularObstacle;
+import pfg.kraken.utils.XY;
+import pfg.kraken.utils.XY_RW;
 
 /**
  * Tests unitaires de la recherche de chemin.
@@ -25,16 +35,21 @@ public class JUnit_DStarLite extends JUnit_Test
 	@Before
 	public void setUp() throws Exception
 	{
-		super.setUp();
+		List<Obstacle> obs = new ArrayList<Obstacle>();
+		obs.add(new RectangularObstacle(new XY_RW(0,1000), 2000, 2000, Couleur.NOIR));
+		super.setUpWith(obs);
 		pathfinding = injector.getService(DStarLite.class);
 		gridspace = injector.getService(Navmesh.class);
 	}
 	
-	// TODO
 	@Test
-	public void test_empty() throws Exception
-	{}
-	
+	public void test_chemin_dstarlite_statique() throws Exception
+	{
+		pathfinding.computeNewPath(new XY(-800, 200), new XY(1200, 1200));
+		List<XY> l = pathfinding.itineraireBrut();
+		for(XY pos : l)
+			log.write(pos, LogCategoryKraken.TEST);
+	}	
 /*
 	@Test
 	public void test_chemin_dstarlite() throws Exception

@@ -21,7 +21,7 @@ import pfg.kraken.dstarlite.navmesh.NavmeshNode;
 public class DStarLiteNode implements Printable
 {
 	private static final long serialVersionUID = -6800876007134374180L;
-	public final NavmeshNode gridpoint;
+	public final NavmeshNode node;
 	public final Cle cle = new Cle();
 	public int g = Integer.MAX_VALUE, rhs = Integer.MAX_VALUE;
 	public Double heuristiqueOrientation = null;
@@ -35,25 +35,25 @@ public class DStarLiteNode implements Printable
 
 	public DStarLiteNode(NavmeshNode gridpoint)
 	{
-		this.gridpoint = gridpoint;
+		this.node = gridpoint;
 	}
 
 	@Override
 	public final int hashCode()
 	{
-		return gridpoint.nb;
+		return node.nb;
 	}
 
 	@Override
 	public final boolean equals(Object o)
 	{
-		return gridpoint.nb == o.hashCode();
+		return node.nb == o.hashCode();
 	}
 
 	@Override
 	public String toString()
 	{
-		return gridpoint + " (" + cle + ")";
+		return node + " (" + cle + ")";
 	}
 
 	/**

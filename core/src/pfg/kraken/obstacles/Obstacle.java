@@ -148,4 +148,16 @@ public abstract class Obstacle implements Printable, Serializable
 	 */
 	public abstract boolean isColliding(RectangularObstacle obs);
 
+	/**
+	 * Is there a collision between this obstacle and this line ?
+	 * @param pointA
+	 * @param pointB
+	 * @return
+	 */
+	public boolean isColliding(XY pointA, XY pointB)
+	{
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }

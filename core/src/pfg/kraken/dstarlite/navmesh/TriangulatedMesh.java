@@ -14,9 +14,6 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 import pfg.graphic.AbstractPrintBuffer;
-import pfg.graphic.printable.Layer;
-import pfg.graphic.printable.Segment;
-import pfg.kraken.Couleur;
 
 /**
  * The mesh itself
@@ -74,6 +71,6 @@ public class TriangulatedMesh implements Serializable
 		for(NavmeshTriangle t : triangles)
 			buffer.add(t);
 		for(NavmeshEdge e : edges)
-			buffer.add(new Segment(e.points[0].position, e.points[1].position, Layer.BACKGROUND, Couleur.NAVMESH.couleur));
+			buffer.add(e);
 	}
 }

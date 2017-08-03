@@ -58,7 +58,7 @@ public class NavmeshComputer
 		 * No possible triangulation (nor needed)
 		 */
 		if(nodesList.size() < 3)
-			return new TriangulatedMesh(new NavmeshNode[0], new NavmeshEdge[0], new NavmeshTriangle[0]);
+			return new TriangulatedMesh(new NavmeshNode[] {new NavmeshNode(new XY(0,0))}, new NavmeshEdge[0], new NavmeshTriangle[0]);
 
 		/*
 		 * This is not the fastest algorithm… but it is enough for an off-line computation
@@ -66,9 +66,9 @@ public class NavmeshComputer
 		 */
 		
 		// Initial triangle
-		edgesInProgress.add(new NavmeshEdge(nodesList.get(0), nodesList.get(1)));
-		edgesInProgress.add(new NavmeshEdge(nodesList.get(1), nodesList.get(2)));
-		edgesInProgress.add(new NavmeshEdge(nodesList.get(2), nodesList.get(0)));
+		edgesInProgress.add(new NavmeshEdge(nodesList.get(0), nodesList.get(1), false));
+		edgesInProgress.add(new NavmeshEdge(nodesList.get(1), nodesList.get(2), false));
+		edgesInProgress.add(new NavmeshEdge(nodesList.get(2), nodesList.get(0), false));
 		triangles.add(new NavmeshTriangle(edgesInProgress.get(0), edgesInProgress.get(1), edgesInProgress.get(2)));
 
 //		log.write("First triangle : "+triangles.get(0), LogCategoryKraken.TEST);
@@ -92,16 +92,22 @@ public class NavmeshComputer
 			largestArea = largestTriangle.getArea();
 		}
 
-		for(NavmeshEdge e : edgesInProgress)
-			e.hasChanged(); // TODO ??
-		
 		NavmeshNode[] n = new NavmeshNode[nodesList.size()];
 		for(int i = 0; i < n.length; i++)
+		{
 			n[i] = nodesList.get(i);
+			n[i].updateNeighbours();
+		}
 		
 		NavmeshEdge[] e = new NavmeshEdge[edgesInProgress.size()];
 		for(int i = 0; i < e.length; i++)
+		{
 			e[i] = edgesInProgress.get(i);
+			for(Obstacle o : obsList)
+				if(o.isColliding(e[i].points[0].position, e[i].points[1].position))
+					e[i].obstructingObstacles.add(o);
+			e[i].hasChanged();
+		}
 
 		NavmeshTriangle[] t = new NavmeshTriangle[triangles.size()];
 		for(int i = 0; i < t.length; i++)
@@ -175,8 +181,8 @@ public class NavmeshComputer
 		assert best != null;
 		
 		NavmeshEdge[] e = new NavmeshEdge[2];
-		e[0] = new NavmeshEdge(nextNode, best.points[0]);
-		e[1] = new NavmeshEdge(nextNode, best.points[1]);
+		e[0] = new NavmeshEdge(nextNode, best.points[0], false);
+		e[1] = new NavmeshEdge(nextNode, best.points[1], false);
 		
 		edgesInProgress.add(e[0]);
 		edgesInProgress.add(e[1]);
@@ -204,9 +210,9 @@ public class NavmeshComputer
 		
 		// We divide this triangle into three triangles
 		NavmeshEdge[] e = new NavmeshEdge[3];
-		e[0] = new NavmeshEdge(nextNode, t.points[0]);
-		e[1] = new NavmeshEdge(nextNode, t.points[1]);
-		e[2] = new NavmeshEdge(nextNode, t.points[2]);
+		e[0] = new NavmeshEdge(nextNode, t.points[0], false);
+		e[1] = new NavmeshEdge(nextNode, t.points[1], false);
+		e[2] = new NavmeshEdge(nextNode, t.points[2], false);
 
 		edgesInProgress.add(e[0]);
 		edgesInProgress.add(e[1]);
@@ -253,7 +259,7 @@ public class NavmeshComputer
 				// We add the four external edges
 				for(int i = 0; i < 2; i++)
 					for(int j = 0; j < 3; j++)
-						if(e.triangles[i].edges[j] != e)
+						if(e.triangles[i].edges[j] != e && needFlipCheck.contains(o))
 							needFlipCheck.add(e.triangles[i].edges[j]);
 			}
 		}

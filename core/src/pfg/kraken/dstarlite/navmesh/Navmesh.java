@@ -69,7 +69,19 @@ public class Navmesh
 	
 	public NavmeshNode getNearest(XY position)
 	{
-		return null;
+		NavmeshNode bestNode = null;
+		double smallestDistance = 0;
+		for(NavmeshNode n : mesh.nodes)
+		{
+			double candidateDistance = position.distance(n.position);
+			if(bestNode == null || candidateDistance < smallestDistance)
+			{
+				bestNode = n;
+				smallestDistance = candidateDistance;
+			}
+		}
+		assert bestNode != null;
+		return bestNode;
 	}
 
 }
