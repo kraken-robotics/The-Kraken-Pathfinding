@@ -27,7 +27,7 @@ import pfg.kraken.utils.XY;
 public class NavmeshEdge implements Serializable, Printable
 {
 	private static final long serialVersionUID = 7904466980326128967L;
-	final int length;
+	int length;
 	private boolean wasPreviouslyBlocked = false;
 	public final NavmeshNode[] points = new NavmeshNode[2];
 	final NavmeshTriangle[] triangles = new NavmeshTriangle[2]; // transient because it is used only at the building of the navmesh
@@ -101,7 +101,12 @@ public class NavmeshEdge implements Serializable, Printable
 		points[1] = p2;
 		p1.edges.add(this);
 		p2.edges.add(this);
-		length = (int) (1000 * p1.position.distance(p2.position));
+		updateLength();
+	}
+	
+	public void updateLength()
+	{
+		length = (int) (1000 * points[0].position.distance(points[1].position));
 	}
 	
 	public void addTriangle(NavmeshTriangle tr)
@@ -226,6 +231,7 @@ public class NavmeshEdge implements Serializable, Printable
 	 */
 	public boolean flipIfNecessary()
 	{
+		assert !constrained; // TODO
 		if(nbTriangles < 2 || constrained)
 			return false;
 				
@@ -258,6 +264,7 @@ public class NavmeshEdge implements Serializable, Printable
 		
 		points[0] = alpha;
 		points[1] = delta;
+		updateLength();
 		
 		if(!points[0].edges.contains(this))
 			points[0].edges.add(this);
