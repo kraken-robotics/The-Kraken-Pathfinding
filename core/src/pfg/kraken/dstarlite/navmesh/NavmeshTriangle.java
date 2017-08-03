@@ -26,6 +26,7 @@ public class NavmeshTriangle implements Serializable, Printable
 	private static final long serialVersionUID = 1L;
 	NavmeshNode[] points = new NavmeshNode[3];
 	NavmeshEdge[] edges = new NavmeshEdge[3];
+	int area;
 	
 	NavmeshTriangle(NavmeshEdge a, NavmeshEdge b, NavmeshEdge c)
 	{
@@ -69,10 +70,10 @@ public class NavmeshTriangle implements Serializable, Printable
 	 * Return the triangle area
 	 * @return
 	 */
-	public double getArea()
+	private void updateArea()
 	{
 		assert checkCounterclockwise() : this;
-		return crossProduct(points[0].position, points[1].position, points[2].position) / 2;
+		area = (int) crossProduct(points[0].position, points[1].position, points[2].position) / 2;
 	}
 	
 	/**
@@ -141,7 +142,8 @@ public class NavmeshTriangle implements Serializable, Printable
 			points[2] = b.points[0];
 
 		correctCounterclockwiseness();
-				
+
+		updateArea();
 		assert checkDuality() : this;
 		assert checkCounterclockwise() : this;
 	}
@@ -213,10 +215,17 @@ public class NavmeshTriangle implements Serializable, Printable
 				new int[]{f.YtoWindow(points[0].position.getY()), f.YtoWindow(points[1].position.getY()), f.YtoWindow(points[2].position.getY())},
 				3);
 	}
+	
+	@Override
+	public boolean equals(Object o)
+	{
+		return o == this;
+	}
 
 	@Override
 	public int getLayer()
 	{
 		return Layer.BACKGROUND.ordinal();
 	}
+
 }

@@ -6,8 +6,10 @@
 package pfg.kraken.dstarlite.navmesh;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.PriorityQueue;
 
 import pfg.config.Config;
 import pfg.kraken.ConfigInfoKraken;
@@ -24,10 +26,19 @@ import pfg.log.Log;
 
 public class NavmeshComputer
 {
+	public class NavmeshTriangleComparator implements Comparator<NavmeshTriangle>
+	{
+		@Override
+		public int compare(NavmeshTriangle o1, NavmeshTriangle o2)
+		{
+			return o2.area - o1.area;
+		}
+	}
+	
 	protected Log log;
 
 	private LinkedList<NavmeshEdge> needFlipCheck = new LinkedList<NavmeshEdge>();
-	private List<NavmeshTriangle> triangles = new ArrayList<NavmeshTriangle>();
+	private PriorityQueue<NavmeshTriangle> triangles = new PriorityQueue<NavmeshTriangle>(1000, new NavmeshTriangleComparator());
 	private List<NavmeshEdge> edgesInProgress = new ArrayList<NavmeshEdge>();
 	private List<NavmeshNode> nodesList = new ArrayList<NavmeshNode>();
 
@@ -83,13 +94,13 @@ public class NavmeshComputer
 		}
 		
 		// We add other points in order to avoid large triangle
-		NavmeshTriangle largestTriangle = getLargestTriangle();
-		double largestArea = largestTriangle.getArea();
-		while(largestArea > largestAllowedArea)
+		NavmeshTriangle largestTriangle = triangles.peek();
+//		for(int i = 0; i < 1; i++)
+		while(largestTriangle.area > largestAllowedArea)
 		{
+			triangles.poll();
 			addCenterPoint(largestTriangle);
-			largestTriangle = getLargestTriangle();
-			largestArea = largestTriangle.getArea();
+			largestTriangle = triangles.peek();
 		}
 
 		NavmeshNode[] n = new NavmeshNode[nodesList.size()];
@@ -111,31 +122,13 @@ public class NavmeshComputer
 
 		NavmeshTriangle[] t = new NavmeshTriangle[triangles.size()];
 		for(int i = 0; i < t.length; i++)
-			t[i] = triangles.get(i);
+			t[i] = triangles.poll();
 		
 		return new TriangulatedMesh(n, e, t);
 	}
 	
-	private NavmeshTriangle getLargestTriangle()
-	{
-		assert !triangles.isEmpty();
-		NavmeshTriangle out = triangles.get(0);
-		double largestArea = out.getArea();
-		for(NavmeshTriangle t : triangles)
-		{
-			double candidateArea = t.getArea();
-			if(candidateArea > largestArea)
-			{
-				largestArea = candidateArea;
-				out = t;
-			}
-		}
-		return out;
-	}
-	
 	private void addCenterPoint(NavmeshTriangle enclosingTriangle)
 	{
-		assert triangles.contains(enclosingTriangle) : enclosingTriangle+" not in "+triangles;
 		XY a = enclosingTriangle.points[0].position;
 		XY b = enclosingTriangle.points[1].position;
 		XY c = enclosingTriangle.points[2].position;
@@ -224,6 +217,7 @@ public class NavmeshComputer
 		NavmeshEdge tedges1 = t.edges[1];
 		NavmeshEdge tedges2 = t.edges[2];
 		t.setEdges(e[2], e[1], t.edges[0]);
+		triangles.add(t);
 		NavmeshTriangle tr1 = new NavmeshTriangle(e[1], e[0], tedges2);
 		NavmeshTriangle tr2 = new NavmeshTriangle(e[0], e[2], tedges1);
 
@@ -256,10 +250,15 @@ public class NavmeshComputer
 			NavmeshEdge e = needFlipCheck.removeFirst();
 			if(e.flipIfNecessary())
 			{
+				// the areas have changed
+				triangles.remove(e.triangles[0]);
+				triangles.remove(e.triangles[1]);
+				triangles.add(e.triangles[0]);
+				triangles.add(e.triangles[1]);
 				// We add the four external edges
 				for(int i = 0; i < 2; i++)
 					for(int j = 0; j < 3; j++)
-						if(e.triangles[i].edges[j] != e && needFlipCheck.contains(o))
+						if(e.triangles[i].edges[j] != e && !needFlipCheck.contains(e.triangles[i].edges[j]))
 							needFlipCheck.add(e.triangles[i].edges[j]);
 			}
 		}

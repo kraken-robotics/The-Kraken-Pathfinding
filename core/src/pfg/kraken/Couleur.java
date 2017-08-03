@@ -40,7 +40,7 @@ public enum Couleur
 	SCAN(new Color(0x80, 0x00, 0x80)),
 	NAVMESH(new Color(0x80, 0x00, 0x80)),
 	NAVMESH_BLOCKED(new Color(0x40, 0x40, 0x40)),
-	NAVMESH_TRIANGLE(new Color(0x80, 0x00, 0x80, 10));
+	NAVMESH_TRIANGLE(new Color(NAVMESH.couleur.getRed(), NAVMESH.couleur.getGreen(), NAVMESH.couleur.getBlue(), 10));
 
 	public final Color couleur;
 	public final Layer l;
