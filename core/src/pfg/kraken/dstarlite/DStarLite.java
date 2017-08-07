@@ -459,11 +459,12 @@ public class DStarLite
 																 * useCercle
 																 */)
 	{
-		if(c.getPosition().isHorsTable())
+		// TODO
+/*		if(c.getPosition().isHorsTable())
 		{
 			// log.debug("Hors table ! "+c);
 			return null;
-		}
+		}*/
 
 		NavmeshNode pos = navmesh.getNearest(c.getPosition());
 

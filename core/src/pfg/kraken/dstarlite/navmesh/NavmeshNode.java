@@ -101,6 +101,7 @@ public class NavmeshNode implements Printable, Serializable
 	
 	public int getNbNeighbours()
 	{
+		assert neighbours.size() == edges.size();
 		return edges.size();
 	}
 

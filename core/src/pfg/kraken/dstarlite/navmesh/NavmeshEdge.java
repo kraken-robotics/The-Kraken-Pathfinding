@@ -16,6 +16,7 @@ import pfg.graphic.printable.Printable;
 import pfg.kraken.Couleur;
 import pfg.kraken.obstacles.Obstacle;
 import pfg.kraken.utils.XY;
+import pfg.kraken.utils.XY_RW;
 
 /**
  * An edge of the navmesh
@@ -293,9 +294,50 @@ public class NavmeshEdge implements Serializable, Printable
 		return true;
 	}
 
+	private transient XY_RW tmp = new XY_RW(), tmp2 = new XY_RW();
+	
+	/**
+	 * Returns the distance between the node and the edge
+	 * @param nextNode
+	 * @return
+	 */
 	double distanceToPoint(NavmeshNode nextNode)
 	{
-		return (nextNode.position.distance(points[0].position) + nextNode.position.distance(points[1].position)) / 2.;
+		// First, we need to check if the node projection lies in the edge
+		points[1].position.copy(tmp);
+		tmp.minus(points[0].position);
+		nextNode.position.copy(tmp2);
+		tmp2.minus(points[0].position);
+		boolean check = tmp.dot(tmp2) > 0;
+		if(check)
+		{
+			nextNode.position.copy(tmp2);
+			tmp2.minus(points[1].position);
+			check = tmp.dot(tmp2) < 0;
+			if(check)
+			{
+				// distance from a point to a line
+				double tmpY = tmp.getY();
+				tmp.setY(tmp.getX());
+				tmp.setX(-tmpY);
+				return Math.abs(tmp2.dot(tmp)) / tmp.norm();
+			}
+			// the closest point of nextNode in the edge in points[1]
+			return nextNode.position.distance(points[1].position);
+		}
+		// the closest point of nextNode in the edge in points[0]
+		return nextNode.position.distance(points[0].position);
+	}
+	
+	/**
+	 * Used for breaking tie
+	 * @param nextNode
+	 * @return
+	 */
+	double distanceToPointTie(NavmeshNode nextNode)
+	{
+		// the closest point of nextNode in the edge in points[0]
+		return nextNode.position.distance(points[0].position) + nextNode.position.distance(points[1].position);
 	}
 
 	/**

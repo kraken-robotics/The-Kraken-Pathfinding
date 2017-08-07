@@ -165,11 +165,6 @@ public class XY implements Serializable, Position
 		return y;
 	}
 
-	public boolean isHorsTable()
-	{
-		return x < -1500 || x > 1500 || y < 0 || y > 2000;
-	}
-
 	/**
 	 * La norme du vecteur
 	 * 
@@ -180,6 +175,11 @@ public class XY implements Serializable, Position
 		return Math.sqrt(x * x + y * y);
 	}
 	
+	/**
+	 * The distance is in μm !
+	 * @param other
+	 * @return
+	 */
 	public final int distanceOctile(XY other)
 	{
 		double dx = Math.abs(x - other.x);

@@ -263,15 +263,17 @@ public class NavmeshComputer
 		
 		// The point is outside the navmesh. We create a new triangle with the closest external edge
 		NavmeshEdge best = null;
-		double distance = 0;
+		double distance = 0, distanceTie = 0;
 		for(NavmeshEdge e : edgesInProgress)
 			if(e.getNbTriangles() == 1) // we want an external edge (it participates in only one triangle)
 			{
 				double distanceCandidate = e.distanceToPoint(nextNode);
-				if(best == null || distanceCandidate < distance)
+				double distanceCandidateTie = e.distanceToPointTie(nextNode);
+				if(best == null || distanceCandidate < distance || (distanceCandidate == distance && distanceCandidateTie < distanceTie))
 				{
 					best = e;
 					distance = distanceCandidate;
+					distanceTie = distanceCandidateTie;
 				}
 			}
 		
