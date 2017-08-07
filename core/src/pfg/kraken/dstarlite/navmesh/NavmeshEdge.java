@@ -236,7 +236,7 @@ public class NavmeshEdge implements Serializable, Printable
 	 * A constrained edge cannot flip
 	 * @return
 	 */
-	public boolean flipIfNecessary(boolean flipToBeConstraint)
+	public boolean flipIfNecessary()
 	{
 		if(points[0].neighbourInConvexHull == points[1] || points[1].neighbourInConvexHull == points[0])
 			constrained = true;
@@ -262,7 +262,7 @@ public class NavmeshEdge implements Serializable, Printable
 		NavmeshNode delta = tr1.points[edgeIn1];
 		
 		// this must be done on convex hull only
-		if(flipToBeConstraint && (alpha.neighbourInConvexHull == delta || delta.neighbourInConvexHull == alpha))
+		if(alpha.neighbourInConvexHull == delta || delta.neighbourInConvexHull == alpha)
 			constrained = true;
 		
 		// This edge is about to become constrained

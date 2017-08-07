@@ -109,22 +109,16 @@ public class NavmeshComputer
 		triangles.add(new NavmeshTriangle(e1, e2, e3));
 
 //		log.write("First triangle : "+triangles.get(0), LogCategoryKraken.TEST);
-
-		
-		// No flip until the constraints have been added !
 		
 		// We add the points one by one
 		for(int index = 3; index < nodesList.size(); index++)
-		{
-			NavmeshNode nextNode = nodesList.get(index);
-			addNewNodeInitialization(nextNode);
-		}
+			addNewNodeInitialization(nodesList.get(index));
 		
 		/**
 		 * Flip and add the constraints
 		 */
 		for(NavmeshEdge e : edgesInProgress)
-			e.flipIfNecessary(true);
+			e.flipIfNecessary();		
 
 		// We add other points in order to avoir long edges
 		NavmeshEdge longestEdge = edgesInProgress.peek();
@@ -250,14 +244,14 @@ public class NavmeshComputer
 	{
 		assert !edgesInProgress.isEmpty();
 		assert !triangles.isEmpty();
-		System.out.println("Ajout de "+nextNode);
+//		System.out.println("Ajout de "+nextNode);
 		// first we check if this point is in a triangle
 		for(NavmeshTriangle t : triangles)
 			if(t.isInside(nextNode.position))
 			{
 				triangles.remove(t);
 				addInsideNode(nextNode, t);
-				needFlipCheck.clear();
+				flip();
 				return;
 			}
 		
@@ -292,7 +286,9 @@ public class NavmeshComputer
 		assert e[0].checkTriangle(1) : e[0];
 		assert e[1].checkTriangle(1) : e[1];
 		assert best.checkTriangle(2) : best;
-		assert needFlipCheck.isEmpty() : needFlipCheck;
+		needFlipCheck.add(best);
+		
+		flip();
 	}
 
 	private void addInsideNode(NavmeshNode nextNode, NavmeshTriangle t)
@@ -387,7 +383,7 @@ public class NavmeshComputer
 	private boolean checkDelaunay()
 	{
 		for(NavmeshEdge e : edgesInProgress)
-			assert !e.flipIfNecessary(false) : e;
+			assert !e.flipIfNecessary() : e;
 		return true;
 	}
 	
@@ -396,7 +392,7 @@ public class NavmeshComputer
 		while(!needFlipCheck.isEmpty())
 		{
 			NavmeshEdge e = needFlipCheck.removeFirst();
-			if(e.flipIfNecessary(false))
+			if(e.flipIfNecessary())
 			{
 				// the areas have changed
 				triangles.remove(e.triangles[0]);
