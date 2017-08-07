@@ -72,5 +72,7 @@ public class TriangulatedMesh implements Serializable
 			buffer.add(t);
 		for(NavmeshEdge e : edges)
 			buffer.add(e);
+		for(NavmeshNode n : nodes)
+			buffer.add(n);
 	}
 }
