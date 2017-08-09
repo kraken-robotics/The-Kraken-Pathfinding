@@ -80,6 +80,7 @@ public class Kraken
 	 */
 	private Kraken(List<Obstacle> fixedObstacles, DynamicObstacles dynObs, TentacleType tentacleTypes)
 	{	
+		assert instance == null;
 		List<TentacleType> tentacleTypesUsed = new ArrayList<TentacleType>();
 		
 		if(tentacleTypes == null)
