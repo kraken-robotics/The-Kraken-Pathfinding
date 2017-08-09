@@ -1,4 +1,7 @@
+<img align="right" src="https://raw.githubusercontent.com/PFGimenez/The-Kraken-Pathfinding/master/logo.png">
+
 # The Kraken Pathfinding
+
 A tentacular pathfinding library for nonholonomic robotic vehicles 
 
 ## What is Kraken ?
