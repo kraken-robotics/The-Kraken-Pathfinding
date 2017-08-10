@@ -47,7 +47,7 @@ public class JUnit_Navmesh extends JUnit_Test
 	public void test_simple() throws Exception
 	{
 		List<Obstacle> obs = new ArrayList<Obstacle>();
-		obs.add(new RectangularObstacle(new XY_RW(0,1000), 2000, 2000, Couleur.NOIR));
+		obs.add(new RectangularObstacle(new XY_RW(0,1000), 2000, 2000, Couleur.NOIR.couleur, Couleur.NOIR.l));
 		super.setUpWith(obs);
 		navmesh = injector.getService(Navmesh.class);
 //		log.write(navmesh, LogCategoryKraken.TEST);
