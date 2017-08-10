@@ -75,7 +75,7 @@ public class DefaultCheminPathfinding implements CheminPathfindingInterface, Pri
 		if(path != null)
 			for(ItineraryPoint c : path)
 			{
-				aff[i] = new CircularObstacle(new XY(c.x, c.y), 8, Couleur.TRAJECTOIRE);
+				aff[i] = new CircularObstacle(new XY(c.x, c.y), 8, Couleur.TRAJECTOIRE.couleur, Couleur.TRAJECTOIRE.l);
 				buffer.addSupprimable(aff[i]);
 				i++;
 			}

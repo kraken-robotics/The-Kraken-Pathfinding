@@ -6,9 +6,10 @@
 
 package pfg.kraken.obstacles;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import pfg.graphic.Fenetre;
-import pfg.kraken.Couleur;
+import pfg.graphic.printable.Layer;
 import pfg.kraken.utils.XY;
 
 /**
@@ -33,9 +34,9 @@ public class CircularObstacle extends Obstacle
 		squared_radius = rad * rad;
 	}
 
-	public CircularObstacle(XY position, int rad, Couleur c)
+	public CircularObstacle(XY position, int rad, Color c, Layer l)
 	{
-		super(position, c);
+		super(position, c, l);
 		this.radius = rad;
 		squared_radius = rad * rad;
 	}

@@ -5,9 +5,10 @@
 
 package pfg.kraken.obstacles;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import pfg.graphic.Fenetre;
-import pfg.kraken.Couleur;
+import pfg.graphic.printable.Layer;
 import pfg.kraken.utils.XY;
 import pfg.kraken.utils.XY_RW;
 
@@ -46,18 +47,18 @@ public class RectangularObstacle extends Obstacle
 
 	protected double angle, cos, sin;
 
-	public RectangularObstacle(XY position, int sizeX, int sizeY, double angle, Couleur c)
+	public RectangularObstacle(XY position, int sizeX, int sizeY, double angle, Color c, Layer l)
 	{
 		this(position, sizeX, sizeY, angle);
-		this.l = c.l;
-		this.c = c.couleur;
+		this.l = l;
+		this.c = c;
 	}
 
-	public RectangularObstacle(XY position, int sizeX, int sizeY, Couleur c)
+	public RectangularObstacle(XY position, int sizeX, int sizeY, Color c, Layer l)
 	{
 		this(position, sizeX, sizeY, 0);
-		this.l = c.l;
-		this.c = c.couleur;
+		this.l = l;
+		this.c = c;
 	}
 
 	protected RectangularObstacle(XY_RW pos)

@@ -61,7 +61,7 @@ public abstract class Tentacle implements Printable
 	public void print(Graphics g, Fenetre f)
 	{
 		for(int i = 0; i < getNbPoints(); i++)
-			new CircularObstacle(getPoint(i).getPosition(), 4, Couleur.TRAJECTOIRE).print(g, f);
+			new CircularObstacle(getPoint(i).getPosition(), 4, Couleur.TRAJECTOIRE.couleur, Couleur.TRAJECTOIRE.l).print(g, f);
 	}
 
 	@Override

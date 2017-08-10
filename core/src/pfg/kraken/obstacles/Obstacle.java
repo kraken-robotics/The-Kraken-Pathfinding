@@ -13,7 +13,6 @@ import pfg.graphic.AbstractPrintBuffer;
 import pfg.graphic.printable.Layer;
 import pfg.graphic.printable.Printable;
 import pfg.kraken.ConfigInfoKraken;
-import pfg.kraken.Couleur;
 import pfg.kraken.utils.XY;
 import pfg.kraken.utils.XY_RW;
 import pfg.log.Log;
@@ -49,11 +48,11 @@ public abstract class Obstacle implements Printable, Serializable
 		printAllObstacles = config.getBoolean(ConfigInfoKraken.GRAPHIC_ALL_OBSTACLES);
 	}
 
-	public Obstacle(XY position, Couleur c)
+	public Obstacle(XY position, Color c, Layer l)
 	{
 		this(position);
-		this.l = c.l;
-		this.c = c.couleur;
+		this.l = l;
+		this.c = c;
 	}
 
 	/**
