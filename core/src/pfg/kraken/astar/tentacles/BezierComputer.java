@@ -16,6 +16,7 @@ import pfg.kraken.memory.CinemObsPool;
 import pfg.kraken.robot.Cinematique;
 import pfg.kraken.robot.CinematiqueObs;
 import pfg.kraken.utils.XY;
+import pfg.kraken.utils.XYO;
 import pfg.kraken.utils.XY_RW;
 import pfg.log.Log;
 
@@ -54,6 +55,34 @@ public class BezierComputer
 	private Cinematique debut;
 	private StaticTentacle tmp;
 
+	
+	private XY_RW tmpPoint = new XY_RW();
+	
+	/**
+	 * Interpolation
+	 * @param cinematiqueInitiale
+	 * @param arrivee
+	 * @return
+	 */
+	public DynamicTentacle interpolationQuadratiqueXYO2XYO(Cinematique cinematiqueInitiale, XYO arrivee)
+	{
+		XY a = cinematiqueInitiale.getPosition();
+		XY c = arrivee.position; 
+		double ux = Math.cos(cinematiqueInitiale.orientationGeometrique);
+		double uy = Math.sin(cinematiqueInitiale.orientationGeometrique);
+		double vx = Math.cos(arrivee.orientation);
+		double vy = Math.sin(arrivee.orientation);
+
+		if(Math.abs(vx*uy - vx*uy) < 0.1)
+			return null;
+		
+		double gamma = (a.getX()*vy - a.getY()*ux - (c.getX()*uy - c.getY()*ux)) / (vx*uy - vx*uy);
+		tmpPoint.setX(arrivee.position.getX() + gamma * vx);
+		tmpPoint.setY(arrivee.position.getY() + gamma * vy);
+		
+		return constructBezierQuad(a, tmpPoint, c, cinematiqueInitiale.enMarcheAvant, cinematiqueInitiale);
+	}
+	
 	/**
 	 * Interpolation avec des courbes de Bézier quadratique. La solution est
 	 * unique.
