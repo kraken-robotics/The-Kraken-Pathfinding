@@ -22,7 +22,7 @@ public class ObstacleRobot extends RectangularObstacle implements Serializable
 {
 	private static final long serialVersionUID = -8994485842050904808L;
 
-	public ObstacleRobot(int demieLargeurNonDeploye, int demieLongueurArriere, int demieLongueurAvant)
+	public ObstacleRobot(int demieLargeurGauche, int demieLargeurDroite, int demieLongueurArriere, int demieLongueurAvant)
 	{
 		super(new XY_RW());
 		c = Couleur.ROBOT.couleur;
@@ -33,8 +33,8 @@ public class ObstacleRobot extends RectangularObstacle implements Serializable
 		coinBasDroiteRotate = new XY_RW();
 		coinHautDroiteRotate = new XY_RW();
 
-		int a = demieLargeurNonDeploye;
-		int b = demieLargeurNonDeploye;
+		int a = demieLargeurDroite;
+		int b = demieLargeurGauche;
 		int c = demieLongueurAvant;
 		int d = demieLongueurArriere;
 

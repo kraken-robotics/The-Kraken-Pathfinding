@@ -26,7 +26,7 @@ public class CinematiqueObs extends Cinematique implements Memorizable, Serializ
 	public CinematiqueObs(int demieLargeurNonDeploye, int demieLongueurArriere, int demieLongueurAvant)
 	{
 		super();
-		obstacle = new ObstacleRobot(demieLargeurNonDeploye, demieLongueurArriere, demieLongueurAvant);
+		obstacle = new ObstacleRobot(demieLargeurNonDeploye, demieLargeurNonDeploye, demieLongueurArriere, demieLongueurAvant);
 	}
 
 	public void copy(CinematiqueObs autre)
