@@ -12,7 +12,7 @@ package pfg.kraken.robot;
  *
  */
 
-public interface Speed
+public interface KrakenSpeed
 {
 	public double getMaxForwardSpeed(double curvature);
 	

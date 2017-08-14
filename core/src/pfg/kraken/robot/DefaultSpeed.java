@@ -11,7 +11,7 @@ package pfg.kraken.robot;
  *
  */
 
-public enum DefaultSpeed implements Speed
+public enum DefaultSpeed implements KrakenSpeed
 {
 	STANDARD(1.);
 

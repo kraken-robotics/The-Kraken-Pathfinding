@@ -29,7 +29,7 @@ import pfg.kraken.robot.Cinematique;
 import pfg.kraken.robot.DefaultSpeed;
 import pfg.kraken.robot.ItineraryPoint;
 import pfg.kraken.robot.RobotState;
-import pfg.kraken.robot.Speed;
+import pfg.kraken.robot.KrakenSpeed;
 import pfg.log.Log;
 import pfg.kraken.utils.XY;
 import pfg.kraken.utils.XYO;
@@ -55,7 +55,7 @@ public class TentacularAStar
 	private DefaultCheminPathfinding defaultChemin;
 	private boolean graphicTrajectory, graphicDStarLite, graphicTrajectoryAll;
 	private int dureeMaxPF;
-	private Speed vitesseMax;
+	private KrakenSpeed vitesseMax;
 	// private int tailleFaisceau;
 	private volatile boolean rechercheEnCours = false;
 

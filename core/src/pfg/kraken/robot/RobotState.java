@@ -38,7 +38,7 @@ public class RobotState
 		return cinematique;
 	}
 
-	public void avance(double distance, Speed speed)
+	public void avance(double distance, KrakenSpeed speed)
 	{
 		// TODO update date
 		cinematique.getPositionEcriture().plus(new XY(distance, cinematique.orientationReelle, true));

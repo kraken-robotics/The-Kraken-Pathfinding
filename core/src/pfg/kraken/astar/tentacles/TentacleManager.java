@@ -27,7 +27,7 @@ import pfg.kraken.obstacles.TentacleObstacle;
 import pfg.kraken.obstacles.container.DynamicObstacles;
 import pfg.kraken.obstacles.container.StaticObstacles;
 import pfg.kraken.robot.Cinematique;
-import pfg.kraken.robot.Speed;
+import pfg.kraken.robot.KrakenSpeed;
 import pfg.kraken.utils.XY;
 import pfg.kraken.utils.XY_RW;
 import pfg.log.Log;
@@ -153,7 +153,7 @@ public class TentacleManager
 	 * courbure.
 	 * Il faut exécuter tout ce qui se passe pendant ce trajet
 	 */
-	public double distanceTo(AStarNode node, Speed vitesse)
+	public double distanceTo(AStarNode node, KrakenSpeed vitesse)
 	{
 		node.robot.suitArcCourbe(node.getArc(), vitesse.getMaxForwardSpeed(0));
 		return node.getArc().getDuree(vitesse.getMaxForwardSpeed(0));
