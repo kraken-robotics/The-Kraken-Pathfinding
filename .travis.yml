@@ -1,4 +1,6 @@
 language : java
+install :
+    - cd core && ./compile-lib.sh
 script :
     - cd core && ant
 #    - cd ../tests && ant
