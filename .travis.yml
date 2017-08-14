@@ -1,8 +1,9 @@
 language : java
 install :
-    - cd core && ./compile-lib.sh
+    - cd core
+    - ./compile-lib.sh
 script :
-    - cd core && ant
+    - ant
 #    - cd ../tests && ant
     - cd ../examples/example-1 && ant
     - java -cp bin/:../../core/kraken.jar Example1
