@@ -64,7 +64,7 @@ public class BezierComputer
 	 * @param arrivee
 	 * @return
 	 */
-	public DynamicTentacle interpolationQuadratiqueXYO2XYO(Cinematique cinematiqueInitiale, XYO arrivee)
+	public DynamicTentacle quadraticInterpolationXYO2XYO(Cinematique cinematiqueInitiale, XYO arrivee)
 	{
 		XY a = cinematiqueInitiale.getPosition();
 		XY c = arrivee.position; 
@@ -96,7 +96,7 @@ public class BezierComputer
 	 * @throws MemoryPoolException
 	 * @throws InterruptedException
 	 */
-	public DynamicTentacle interpolationQuadratique(Cinematique cinematiqueInitiale, XY arrivee)
+	public DynamicTentacle quadraticInterpolationXYOC2XY(Cinematique cinematiqueInitiale, XY arrivee)
 	{
 		debut = cinematiqueInitiale;
 		arrivee.copy(delta);

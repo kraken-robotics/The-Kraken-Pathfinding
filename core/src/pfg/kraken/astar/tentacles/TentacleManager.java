@@ -180,7 +180,7 @@ public class TentacleManager
 			if(v == BezierTentacle.BEZIER_QUAD)
 			{
 				DynamicTentacle tmp;
-				tmp = bezier.interpolationQuadratique(current.robot.getCinematique(), arrivee);
+				tmp = bezier.quadraticInterpolationXYOC2XY(current.robot.getCinematique(), arrivee);
 				if(tmp == null)
 					return false;
 
