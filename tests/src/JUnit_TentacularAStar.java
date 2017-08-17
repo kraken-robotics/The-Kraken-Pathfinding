@@ -6,7 +6,7 @@
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import pfg.graphic.AbstractPrintBuffer;
+import pfg.graphic.PrintBuffer;
 import pfg.kraken.ConfigInfoKraken;
 import pfg.kraken.LogCategoryKraken;
 import pfg.kraken.obstacles.CircularObstacle;
@@ -37,7 +37,7 @@ public class JUnit_TentacularAStar extends JUnit_Test
 	private TentacularAStar astar;
 	private ClothoidesComputer clotho;
 	protected BezierComputer bezier;
-	private AbstractPrintBuffer buffer;
+	private PrintBuffer buffer;
 	private boolean graphicTrajectory;
 	private DefaultCheminPathfinding fakeChemin;
 	private Navmesh navmesh;
@@ -51,7 +51,7 @@ public class JUnit_TentacularAStar extends JUnit_Test
 	{
 		super.setUp();
 		clotho = injector.getService(ClothoidesComputer.class);
-		buffer = injector.getService(AbstractPrintBuffer.class);
+		buffer = injector.getService(PrintBuffer.class);
 		astar = injector.getService(TentacularAStar.class);
 		// dstarlite = injector.getService(DStarLite.class);
 		navmesh = injector.getService(Navmesh.class);
@@ -195,7 +195,7 @@ public class JUnit_TentacularAStar extends JUnit_Test
 		Cinematique c = new Cinematique(0, 1000, Math.PI / 2, true, -1);
 		Cinematique arrivee = new Cinematique(400, 1400, Math.PI / 2, false, 0);
 		log.write("Initial : " + c, LogCategoryKraken.TEST);
-		arc[0] = bezier.interpolationQuadratique(c, arrivee.getPosition());
+		arc[0] = bezier.quadraticInterpolationXYOC2XY(c, arrivee.getPosition());
 
 		Assert.assertTrue(arc[0] != null);
 
