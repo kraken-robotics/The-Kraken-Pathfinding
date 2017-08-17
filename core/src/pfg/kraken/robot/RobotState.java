@@ -6,7 +6,6 @@
 package pfg.kraken.robot;
 
 import pfg.kraken.astar.tentacles.Tentacle;
-import pfg.kraken.utils.XY;
 
 /**
  * Robot particulier qui fait pas bouger le robot réel, mais détermine la durée
@@ -38,18 +37,6 @@ public class RobotState
 		return cinematique;
 	}
 
-	public void avance(double distance, KrakenSpeed speed)
-	{
-		// TODO update date
-		cinematique.getPositionEcriture().plus(new XY(distance, cinematique.orientationReelle, true));
-	}
-
-
-	public int codeForPFCache()
-	{
-		return cinematique.codeForPFCache();
-	}
-
 	/**
 	 * Copy this dans rc. this reste inchangé.
 	 * 
@@ -58,15 +45,7 @@ public class RobotState
 	public final void copy(RobotState rc)
 	{
 		cinematique.copy(rc.cinematique);
-		// pas besoin de copier symétrie car elle ne change pas en cours de
-		// match
 		rc.date = getTempsDepuisDebutMatch();
-	}
-
-	@Override
-	public String toString()
-	{
-		return cinematique.toString();
 	}
 
 	public void setCinematique(Cinematique cinematique)

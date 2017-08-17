@@ -6,7 +6,7 @@
 package pfg.kraken.dstarlite.navmesh;
 
 import pfg.config.Config;
-import pfg.graphic.AbstractPrintBuffer;
+import pfg.graphic.PrintBuffer;
 import pfg.kraken.utils.XY;
 import pfg.log.Log;
 import pfg.kraken.ConfigInfoKraken;
@@ -29,7 +29,7 @@ public class Navmesh
 	protected Log log;
 	public TriangulatedMesh mesh;
 	
-	public Navmesh(Log log, Config config, StaticObstacles obs, AbstractPrintBuffer buffer)
+	public Navmesh(Log log, Config config, StaticObstacles obs, PrintBuffer buffer)
 	{
 		this.log = log;
 		String filename = "navmesh-"+obs.hashCode()+"-"+config.getInt(ConfigInfoKraken.LARGEST_TRIANGLE_AREA_IN_NAVMESH)+".krk";

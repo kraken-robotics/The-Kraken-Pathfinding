@@ -7,6 +7,8 @@ package pfg.kraken.astar;
 
 import java.awt.Color;
 import java.awt.Graphics;
+
+import pfg.graphic.AffichageDebug;
 import pfg.graphic.Fenetre;
 import pfg.graphic.printable.Printable;
 import pfg.kraken.Couleur;
@@ -97,12 +99,12 @@ public class AStarNode implements Memorizable, Printable
 	}
 
 	@Override
-	public void print(Graphics g, Fenetre f)
+	public void print(Graphics g, Fenetre f, AffichageDebug aff)
 	{
 		Tentacle a = getArc();
 		if(a != null)
 		{
-			a.print(g, f);
+			a.print(g, f, aff);
 			double h = f_score;
 			double seuil = 5000;
 			if(h > seuil)
@@ -113,7 +115,7 @@ public class AStarNode implements Memorizable, Printable
 			else
 				g.setColor(new Color((int) (h * 255 / seuil), 0, (int) (255 - h * 255 / seuil)));
 
-			a.getLast().print(g, f);
+			a.getLast().print(g, f, aff);
 		}
 	}
 

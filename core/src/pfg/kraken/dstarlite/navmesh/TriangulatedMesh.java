@@ -13,7 +13,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
-import pfg.graphic.AbstractPrintBuffer;
+import pfg.graphic.PrintBuffer;
 
 /**
  * The mesh itself
@@ -66,7 +66,7 @@ public class TriangulatedMesh implements Serializable
 		return out;
 	}
 
-	public void addToBuffer(AbstractPrintBuffer buffer)
+	public void addToBuffer(PrintBuffer buffer)
 	{
 		for(NavmeshTriangle t : triangles)
 			buffer.add(t);

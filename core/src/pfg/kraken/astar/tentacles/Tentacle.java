@@ -7,6 +7,7 @@ package pfg.kraken.astar.tentacles;
 
 import java.awt.Graphics;
 import pfg.config.Config;
+import pfg.graphic.AffichageDebug;
 import pfg.graphic.Fenetre;
 import pfg.graphic.printable.Printable;
 import pfg.kraken.ConfigInfoKraken;
@@ -58,10 +59,10 @@ public abstract class Tentacle implements Printable
 	}
 
 	@Override
-	public void print(Graphics g, Fenetre f)
+	public void print(Graphics g, Fenetre f, AffichageDebug a)
 	{
 		for(int i = 0; i < getNbPoints(); i++)
-			new CircularObstacle(getPoint(i).getPosition(), 4, Couleur.TRAJECTOIRE.couleur, Couleur.TRAJECTOIRE.l).print(g, f);
+			new CircularObstacle(getPoint(i).getPosition(), 4, Couleur.TRAJECTOIRE.couleur, Couleur.TRAJECTOIRE.l).print(g, f, a);
 	}
 
 	@Override

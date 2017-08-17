@@ -8,8 +8,9 @@ package pfg.kraken.astar;
 import java.awt.Graphics;
 import java.util.LinkedList;
 import pfg.config.Config;
+import pfg.graphic.AffichageDebug;
 import pfg.graphic.Fenetre;
-import pfg.graphic.AbstractPrintBuffer;
+import pfg.graphic.PrintBuffer;
 import pfg.graphic.printable.Layer;
 import pfg.graphic.printable.Printable;
 import pfg.kraken.ConfigInfoKraken;
@@ -32,11 +33,11 @@ public class DefaultCheminPathfinding implements CheminPathfindingInterface, Pri
 	private static final long serialVersionUID = -9020733512144987231L;
 	private LinkedList<ItineraryPoint> path;
 	protected Log log;
-	private AbstractPrintBuffer buffer;
+	private PrintBuffer buffer;
 	private boolean print;
 	private CircularObstacle[] aff = new CircularObstacle[256];
 
-	public DefaultCheminPathfinding(Log log, Config config, AbstractPrintBuffer buffer)
+	public DefaultCheminPathfinding(Log log, Config config, PrintBuffer buffer)
 	{
 		this.log = log;
 		this.buffer = buffer;
@@ -69,7 +70,7 @@ public class DefaultCheminPathfinding implements CheminPathfindingInterface, Pri
 	}
 
 	@Override
-	public void print(Graphics g, Fenetre f)
+	public void print(Graphics g, Fenetre f, AffichageDebug a)
 	{
 		int i = 0;
 		if(path != null)

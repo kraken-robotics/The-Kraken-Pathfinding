@@ -10,7 +10,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import pfg.config.Config;
-import pfg.graphic.AbstractPrintBuffer;
+import pfg.graphic.PrintBuffer;
 import pfg.kraken.ConfigInfoKraken;
 import pfg.kraken.LogCategoryKraken;
 import pfg.kraken.SeverityCategoryKraken;
@@ -45,7 +45,7 @@ public class TentacleManager
 	private ClothoidesComputer clotho;
 	private BezierComputer bezier;
 //	private CircleComputer circlecomputer;
-	private AbstractPrintBuffer buffer;
+	private PrintBuffer buffer;
 	private AStarNode current;
 	private DStarLite dstarlite;
 	private DynamicObstacles dynamicObs;
@@ -59,7 +59,7 @@ public class TentacleManager
 	private ListIterator<TentacleType> iterator = listeVitesse.listIterator();
 //	private List<StaticObstacles> disabledObstaclesFixes = new ArrayList<StaticObstacles>();
 
-	public TentacleManager(Log log, StaticObstacles fixes, ClothoidesComputer clotho, AbstractPrintBuffer buffer, DStarLite dstarlite, BezierComputer bezier, Config config, DynamicObstacles dynamicObs)
+	public TentacleManager(Log log, StaticObstacles fixes, ClothoidesComputer clotho, PrintBuffer buffer, DStarLite dstarlite, BezierComputer bezier, Config config, DynamicObstacles dynamicObs)
 	{
 //		this.circlecomputer = circlecomputer;
 		this.fixes = fixes;

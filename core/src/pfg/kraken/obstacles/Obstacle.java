@@ -9,7 +9,7 @@ package pfg.kraken.obstacles;
 import java.awt.Color;
 import java.io.Serializable;
 import pfg.config.Config;
-import pfg.graphic.AbstractPrintBuffer;
+import pfg.graphic.PrintBuffer;
 import pfg.graphic.printable.Layer;
 import pfg.graphic.printable.Printable;
 import pfg.kraken.ConfigInfoKraken;
@@ -30,14 +30,14 @@ public abstract class Obstacle implements Printable, Serializable
 	protected XY_RW position;
 	protected transient int distance_dilatation;
 	protected static Log log;
-	protected static AbstractPrintBuffer buffer;
+	protected static PrintBuffer buffer;
 
 	// Pour l'affichage du robot
 	protected static boolean printAllObstacles = false;
 	protected Layer l = null;
 	public Color c;
 
-	public static void set(Log log, AbstractPrintBuffer buffer)
+	public static void set(Log log, PrintBuffer buffer)
 	{
 		Obstacle.log = log;
 		Obstacle.buffer = buffer;

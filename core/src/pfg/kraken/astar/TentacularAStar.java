@@ -11,7 +11,7 @@ import java.util.LinkedList;
 import java.util.PriorityQueue;
 import java.util.Stack;
 import pfg.config.Config;
-import pfg.graphic.AbstractPrintBuffer;
+import pfg.graphic.PrintBuffer;
 import pfg.kraken.ConfigInfoKraken;
 import pfg.kraken.LogCategoryKraken;
 import pfg.kraken.SeverityCategoryKraken;
@@ -48,7 +48,7 @@ public class TentacularAStar
 	private TentacleManager arcmanager;
 	private DStarLite dstarlite;
 	private NodePool memorymanager;
-	private AbstractPrintBuffer buffer;
+	private PrintBuffer buffer;
 	private AStarNode depart;
 	private AStarNode trajetDeSecours;
 	private CinemObsPool cinemMemory;
@@ -91,7 +91,7 @@ public class TentacularAStar
 	/**
 	 * Constructeur du AStarCourbe
 	 */
-	public TentacularAStar(Log log, DefaultCheminPathfinding defaultChemin, DStarLite dstarlite, TentacleManager arcmanager, NodePool memorymanager, CinemObsPool rectMemory, AbstractPrintBuffer buffer, RobotState chrono, Config config)
+	public TentacularAStar(Log log, DefaultCheminPathfinding defaultChemin, DStarLite dstarlite, TentacleManager arcmanager, NodePool memorymanager, CinemObsPool rectMemory, PrintBuffer buffer, RobotState chrono, Config config)
 	{
 		this.defaultChemin = defaultChemin;
 		this.log = log;

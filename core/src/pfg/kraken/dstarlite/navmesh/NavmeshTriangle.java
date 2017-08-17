@@ -8,6 +8,7 @@ package pfg.kraken.dstarlite.navmesh;
 import java.awt.Graphics;
 import java.io.Serializable;
 
+import pfg.graphic.AffichageDebug;
 import pfg.graphic.Fenetre;
 import pfg.graphic.printable.Layer;
 import pfg.graphic.printable.Printable;
@@ -208,7 +209,7 @@ public class NavmeshTriangle implements Serializable, Printable
 	}
 
 	@Override
-	public void print(Graphics g, Fenetre f)
+	public void print(Graphics g, Fenetre f, AffichageDebug a)
 	{
 		g.setColor(Couleur.NAVMESH_TRIANGLE.couleur);
 		g.fillPolygon(new int[]{f.XtoWindow(points[0].position.getX()), f.XtoWindow(points[1].position.getX()), f.XtoWindow(points[2].position.getX())},

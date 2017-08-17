@@ -11,7 +11,7 @@ import pfg.config.Config;
 import pfg.graphic.Fenetre;
 import pfg.graphic.Vec2RO;
 import pfg.log.Log;
-import pfg.graphic.AbstractPrintBuffer;
+import pfg.graphic.PrintBuffer;
 import pfg.graphic.DebugTool;
 import pfg.injector.Injector;
 import pfg.injector.InjectorException;
@@ -50,7 +50,7 @@ public class Kraken
 	 */
 	public synchronized void destructor()
 	{	
-		AbstractPrintBuffer buffer = injector.getExistingService(AbstractPrintBuffer.class);
+		PrintBuffer buffer = injector.getExistingService(PrintBuffer.class);
 		// On appelle le destructeur du PrintBuffer
 		if(buffer != null)
 			buffer.destructor();
@@ -115,16 +115,16 @@ public class Kraken
 //				if(config.getBoolean(ConfigInfoKraken.GRAPHIC_EXTERNAL))
 //					injector.addService(PrintBufferInterface.class, f.getBu);
 //				else
-					injector.addService(AbstractPrintBuffer.class, f.getPrintBuffer());
+					injector.addService(PrintBuffer.class, f.getPrintBuffer());
 			}
 			else
 			{
 				ConfigInfoKraken.unsetGraphic();
 				config.reload();
-				injector.addService(AbstractPrintBuffer.class, null);
+				injector.addService(PrintBuffer.class, null);
 			}
 	
-			Obstacle.set(log, injector.getService(AbstractPrintBuffer.class));
+			Obstacle.set(log, injector.getService(PrintBuffer.class));
 			Obstacle.useConfig(config);
 			Tentacle.useConfig(config);
 			if(fixedObstacles != null)

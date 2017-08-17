@@ -8,7 +8,7 @@ package pfg.kraken.dstarlite;
 import java.util.ArrayList;
 import java.util.List;
 import pfg.config.Config;
-import pfg.graphic.AbstractPrintBuffer;
+import pfg.graphic.PrintBuffer;
 import pfg.kraken.ConfigInfoKraken;
 import pfg.kraken.LogCategoryKraken;
 import pfg.kraken.dstarlite.navmesh.Navmesh;
@@ -43,7 +43,7 @@ public class DStarLite
 	private DStarLiteNode arrivee;
 	private DStarLiteNode depart;
 	private NavmeshNode lastDepart;
-	private AbstractPrintBuffer buffer;
+	private PrintBuffer buffer;
 	private long nbPF = 0;
 
 	private Cle knew = new Cle();
@@ -56,7 +56,7 @@ public class DStarLite
 	 * @param log
 	 * @param gridspace
 	 */
-	public DStarLite(Log log, Navmesh navmesh, AbstractPrintBuffer buffer, Config config)
+	public DStarLite(Log log, Navmesh navmesh, PrintBuffer buffer, Config config)
 	{
 		this.log = log;
 		this.navmesh = navmesh;
