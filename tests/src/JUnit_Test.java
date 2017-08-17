@@ -78,7 +78,7 @@ public abstract class JUnit_Test
 	{
 		Fenetre f = injector.getExistingService(Fenetre.class);
 		if(f != null)
-			f.waitUntilExit();
+			f.waitUntilExit(5000);
 		kraken.destructor();
 	}
 
