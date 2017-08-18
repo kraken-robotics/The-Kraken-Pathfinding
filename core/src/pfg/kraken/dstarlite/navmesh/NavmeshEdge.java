@@ -10,7 +10,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import pfg.graphic.AffichageDebug;
+import pfg.graphic.Chart;
 import pfg.graphic.Fenetre;
 import pfg.graphic.printable.Layer;
 import pfg.graphic.printable.Printable;
@@ -359,7 +359,7 @@ public class NavmeshEdge implements Serializable, Printable
 	}
 
 	@Override
-	public void print(Graphics g, Fenetre f, AffichageDebug a)
+	public void print(Graphics g, Fenetre f, Chart a)
 	{
 		if(highlight)
 			g.setColor(Couleur.ROUGE.couleur);

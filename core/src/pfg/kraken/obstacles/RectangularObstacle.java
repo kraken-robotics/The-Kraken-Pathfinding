@@ -8,7 +8,7 @@ package pfg.kraken.obstacles;
 import java.awt.Color;
 import java.awt.Graphics;
 
-import pfg.graphic.AffichageDebug;
+import pfg.graphic.Chart;
 import pfg.graphic.Fenetre;
 import pfg.graphic.printable.Layer;
 import pfg.kraken.utils.XY;
@@ -269,7 +269,7 @@ public class RectangularObstacle extends Obstacle
 	}
 
 	@Override
-	public void print(Graphics g, Fenetre f, AffichageDebug a)
+	public void print(Graphics g, Fenetre f, Chart a)
 	{
 		if(coinBasDroiteRotate == null)
 			return;

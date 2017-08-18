@@ -8,7 +8,7 @@ package pfg.kraken.astar;
 import java.awt.Graphics;
 import java.util.LinkedList;
 import pfg.config.Config;
-import pfg.graphic.AffichageDebug;
+import pfg.graphic.Chart;
 import pfg.graphic.Fenetre;
 import pfg.graphic.PrintBuffer;
 import pfg.graphic.printable.Layer;
@@ -70,7 +70,7 @@ public class DefaultCheminPathfinding implements CheminPathfindingInterface, Pri
 	}
 
 	@Override
-	public void print(Graphics g, Fenetre f, AffichageDebug a)
+	public void print(Graphics g, Fenetre f, Chart a)
 	{
 		int i = 0;
 		if(path != null)

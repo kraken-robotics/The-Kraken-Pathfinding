@@ -10,7 +10,7 @@ import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.List;
 
-import pfg.graphic.AffichageDebug;
+import pfg.graphic.Chart;
 import pfg.graphic.Fenetre;
 import pfg.kraken.utils.XY;
 
@@ -56,7 +56,7 @@ public class TentacleObstacle extends Obstacle
 	}
 
 	@Override
-	public void print(Graphics g, Fenetre f, AffichageDebug a)
+	public void print(Graphics g, Fenetre f, Chart a)
 	{
 		for(RectangularObstacle o : ombresRobot)
 			o.print(g, f, a);
