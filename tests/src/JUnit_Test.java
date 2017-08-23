@@ -15,7 +15,7 @@ import org.junit.After;
 import org.junit.Before;
 
 import pfg.config.Config;
-import pfg.graphic.Fenetre;
+import pfg.graphic.WindowFrame;
 import pfg.injector.Injector;
 import pfg.kraken.Kraken;
 import pfg.kraken.LogCategoryKraken;
@@ -37,7 +37,7 @@ public abstract class JUnit_Test
 	protected Log log;
 	protected Injector injector;
 	protected Kraken kraken;
-	protected Fenetre f;
+	protected WindowFrame f;
 
 	@Rule
 	public TestName testName = new TestName();
@@ -54,7 +54,7 @@ public abstract class JUnit_Test
 		injector = (Injector) m.invoke(kraken);
 		config = injector.getService(Config.class);
 		log = injector.getService(Log.class);
-		f = injector.getExistingService(Fenetre.class);
+		f = injector.getExistingService(WindowFrame.class);
 		log.write("Test unitaire : " + testName.getMethodName(), LogCategoryKraken.TEST);
 	}
 	
@@ -69,14 +69,13 @@ public abstract class JUnit_Test
 		injector = (Injector) m.invoke(kraken);
 		config = injector.getService(Config.class);
 		log = injector.getService(Log.class);
-		f = injector.getExistingService(Fenetre.class);
+		f = injector.getExistingService(WindowFrame.class);
 		log.write("Test unitaire : " + testName.getMethodName(), LogCategoryKraken.TEST);
 	}
 
 	@After
 	public void tearDown() throws Exception
 	{
-		Fenetre f = injector.getExistingService(Fenetre.class);
 		if(f != null)
 			f.waitUntilExit(5000);
 		kraken.destructor();

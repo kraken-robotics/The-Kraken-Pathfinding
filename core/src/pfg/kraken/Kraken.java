@@ -8,8 +8,8 @@ package pfg.kraken;
 import java.util.ArrayList;
 import java.util.List;
 import pfg.config.Config;
-import pfg.graphic.Fenetre;
 import pfg.graphic.Vec2RO;
+import pfg.graphic.WindowFrame;
 import pfg.log.Log;
 import pfg.graphic.PrintBuffer;
 import pfg.graphic.DebugTool;
@@ -98,8 +98,8 @@ public class Kraken
 		injector = new Injector();
 
 		try {
-			DebugTool debug = new DebugTool();
-			log = debug.getLog(SeverityCategoryKraken.INFO);
+			DebugTool debug = new DebugTool("graphic-kraken.conf", SeverityCategoryKraken.INFO);
+			log = debug.getLog();
 			config = new Config(ConfigInfoKraken.values(), "kraken.conf", false);
 
 			injector.addService(Log.class, log);
@@ -110,8 +110,8 @@ public class Kraken
 	
 			if(config.getBoolean(ConfigInfoKraken.GRAPHIC_ENABLE))
 			{
-				Fenetre f = debug.getFenetre(new Vec2RO(0, 1000));
-				injector.addService(Fenetre.class, f);
+				WindowFrame f = debug.getWindowFrame(new Vec2RO(0, 1000));
+				injector.addService(WindowFrame.class, f);
 //				if(config.getBoolean(ConfigInfoKraken.GRAPHIC_EXTERNAL))
 //					injector.addService(PrintBufferInterface.class, f.getBu);
 //				else

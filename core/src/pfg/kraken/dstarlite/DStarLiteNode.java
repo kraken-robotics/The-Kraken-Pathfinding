@@ -8,7 +8,7 @@ package pfg.kraken.dstarlite;
 import java.awt.Graphics;
 
 import pfg.graphic.Chart;
-import pfg.graphic.Fenetre;
+import pfg.graphic.GraphicPanel;
 import pfg.graphic.printable.Printable;
 import pfg.kraken.Couleur;
 import pfg.kraken.dstarlite.navmesh.NavmeshNode;
@@ -77,7 +77,7 @@ public class DStarLiteNode implements Printable
 	}
 
 	@Override
-	public void print(Graphics g, Fenetre f, Chart a)
+	public void print(Graphics g, GraphicPanel f, Chart a)
 	{
 		g.setColor(Couleur.HEURISTIQUE.couleur);
 /*		if(heuristiqueOrientation != null)

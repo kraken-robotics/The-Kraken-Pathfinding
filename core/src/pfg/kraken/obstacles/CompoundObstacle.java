@@ -9,7 +9,7 @@ package pfg.kraken.obstacles;
 import java.awt.Graphics;
 
 import pfg.graphic.Chart;
-import pfg.graphic.Fenetre;
+import pfg.graphic.GraphicPanel;
 import pfg.kraken.utils.XY;
 
 /**
@@ -79,7 +79,7 @@ public class CompoundObstacle extends Obstacle
 	}
 
 	@Override
-	public void print(Graphics g, Fenetre f, Chart a)
+	public void print(Graphics g, GraphicPanel f, Chart a)
 	{
 		// TODO
 	}

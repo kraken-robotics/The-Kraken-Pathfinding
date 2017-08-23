@@ -10,7 +10,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 
 import pfg.graphic.Chart;
-import pfg.graphic.Fenetre;
+import pfg.graphic.GraphicPanel;
 import pfg.graphic.printable.Layer;
 import pfg.kraken.utils.XY;
 
@@ -67,7 +67,7 @@ public class CircularObstacle extends Obstacle
 	}
 
 	@Override
-	public void print(Graphics g, Fenetre f, Chart a)
+	public void print(Graphics g, GraphicPanel f, Chart a)
 	{
 		if(c != null)
 			g.setColor(c);

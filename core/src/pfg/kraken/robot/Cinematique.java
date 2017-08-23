@@ -11,7 +11,7 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
 import pfg.graphic.Chart;
-import pfg.graphic.Fenetre;
+import pfg.graphic.GraphicPanel;
 import pfg.graphic.printable.Layer;
 import pfg.graphic.printable.Printable;
 import pfg.kraken.utils.XY;
@@ -243,7 +243,7 @@ public class Cinematique implements Printable, Serializable
 	}
 
 	@Override
-	public void print(Graphics g, Fenetre f, Chart a)
+	public void print(Graphics g, GraphicPanel f, Chart a)
 	{
 		double n = 50;
 		XY_RW point1 = new XY_RW(n, 0), point2 = new XY_RW(-n / 2, n / 2), point3 = new XY_RW(-n / 2, -n / 2);

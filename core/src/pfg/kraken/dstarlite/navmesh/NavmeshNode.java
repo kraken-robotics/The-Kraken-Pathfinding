@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import pfg.graphic.Chart;
-import pfg.graphic.Fenetre;
+import pfg.graphic.GraphicPanel;
 import pfg.graphic.printable.Layer;
 import pfg.graphic.printable.Printable;
 import pfg.kraken.utils.XY;
@@ -66,7 +66,7 @@ public class NavmeshNode implements Printable, Serializable
 	}
 	
 	@Override
-	public void print(Graphics g, Fenetre f, Chart a)
+	public void print(Graphics g, GraphicPanel f, Chart a)
 	{
 		int rayon = 25;
 		g.fillOval(f.XtoWindow(position.getX()) - f.distanceXtoWindow(rayon) / 2, f.YtoWindow(position.getY()) - f.distanceYtoWindow(rayon) / 2, f.distanceXtoWindow((int) (rayon)), f.distanceYtoWindow((int) (rayon)));

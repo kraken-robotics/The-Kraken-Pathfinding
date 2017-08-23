@@ -9,7 +9,7 @@ import java.awt.Graphics;
 import java.util.LinkedList;
 import pfg.config.Config;
 import pfg.graphic.Chart;
-import pfg.graphic.Fenetre;
+import pfg.graphic.GraphicPanel;
 import pfg.graphic.PrintBuffer;
 import pfg.graphic.printable.Layer;
 import pfg.graphic.printable.Printable;
@@ -70,7 +70,7 @@ public class DefaultCheminPathfinding implements CheminPathfindingInterface, Pri
 	}
 
 	@Override
-	public void print(Graphics g, Fenetre f, Chart a)
+	public void print(Graphics g, GraphicPanel f, Chart a)
 	{
 		int i = 0;
 		if(path != null)
