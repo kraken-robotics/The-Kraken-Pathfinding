@@ -9,3 +9,4 @@ junit/
 *.class
 bin/
 *.jar
+logs/

@@ -1,4 +1,4 @@
-<img align="right" src="https://raw.githubusercontent.com/PFGimenez/The-Kraken-Pathfinding/master/logo.png">
+<img align="right" src="https://raw.githubusercontent.com/PFGimenez/The-Kraken-Pathfinding/master/resources/logo.png">
 
 # The Kraken Pathfinding
 
