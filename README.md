@@ -8,9 +8,25 @@ A tentacular pathfinding library for nonholonomic robotic vehicles
 
 **Kraken isn't usable yet. Please come back in Fall 2017 in you are interested.**
 
-A presentation is available here (in french !) : https://intechsenpai.github.io/moon-rover/.
+A short presentation is available here (in french !) : https://intechsenpai.github.io/moon-rover/.
 
 Kraken finds a trajectory followable by a car-like vehicle in the form of a list of points.
+
+### Features
+
+The trajectory created by Kraken has several geometric properties, making it suitable for robotic vehicles, namely :
+
+- position continuity (G0 continuity) ;
+- orientation continuity (G1 continuity) ;
+- curvature piecewise continuity (piecewise G2 continuity) ;
+- handles forward and backward movement.
+
+Currently, Kraken finds a trajectory between from a position and an orientation to a position. Which means that, for example, you can't force the orientation at the end point.
+
+Planned features :
+
+- allow orientation piecewise continuity to exploit the full potential of vehicle capable of rotating on themselves.
+- allow a constraint on the arrival orientation
 
 ### Why Java ?
 
