@@ -10,7 +10,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import pfg.kraken.Couleur;
+import pfg.kraken.ColorKraken;
 import pfg.kraken.dstarlite.navmesh.Navmesh;
 import pfg.kraken.obstacles.Obstacle;
 import pfg.kraken.obstacles.RectangularObstacle;
@@ -47,7 +47,7 @@ public class JUnit_Navmesh extends JUnit_Test
 	public void test_simple() throws Exception
 	{
 		List<Obstacle> obs = new ArrayList<Obstacle>();
-		obs.add(new RectangularObstacle(new XY_RW(0,1000), 2000, 2000, Couleur.NOIR.couleur, Couleur.NOIR.l));
+		obs.add(new RectangularObstacle(new XY_RW(0,1000), 2000, 2000, ColorKraken.BLACK.color, ColorKraken.BLACK.layer));
 		super.setUpWith(obs);
 		navmesh = injector.getService(Navmesh.class);
 //		log.write(navmesh, LogCategoryKraken.TEST);

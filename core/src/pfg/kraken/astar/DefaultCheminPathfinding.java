@@ -14,7 +14,7 @@ import pfg.graphic.PrintBuffer;
 import pfg.graphic.printable.Layer;
 import pfg.graphic.printable.Printable;
 import pfg.kraken.ConfigInfoKraken;
-import pfg.kraken.Couleur;
+import pfg.kraken.ColorKraken;
 import pfg.kraken.obstacles.CircularObstacle;
 import pfg.kraken.robot.Cinematique;
 import pfg.kraken.robot.ItineraryPoint;
@@ -76,7 +76,7 @@ public class DefaultCheminPathfinding implements CheminPathfindingInterface, Pri
 		if(path != null)
 			for(ItineraryPoint c : path)
 			{
-				aff[i] = new CircularObstacle(new XY(c.x, c.y), 8, Couleur.TRAJECTOIRE.couleur, Couleur.TRAJECTOIRE.l);
+				aff[i] = new CircularObstacle(new XY(c.x, c.y), 8, ColorKraken.TRAJECTOIRE.color, ColorKraken.TRAJECTOIRE.layer);
 				buffer.addSupprimable(aff[i]);
 				i++;
 			}

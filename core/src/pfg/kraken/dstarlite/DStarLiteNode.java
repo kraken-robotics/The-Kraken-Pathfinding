@@ -10,7 +10,7 @@ import java.awt.Graphics;
 import pfg.graphic.Chart;
 import pfg.graphic.GraphicPanel;
 import pfg.graphic.printable.Printable;
-import pfg.kraken.Couleur;
+import pfg.kraken.ColorKraken;
 import pfg.kraken.dstarlite.navmesh.NavmeshNode;
 
 /**
@@ -79,7 +79,7 @@ public class DStarLiteNode implements Printable
 	@Override
 	public void print(Graphics g, GraphicPanel f, Chart a)
 	{
-		g.setColor(Couleur.HEURISTIQUE.couleur);
+		g.setColor(ColorKraken.HEURISTIQUE.color);
 /*		if(heuristiqueOrientation != null)
 		{
 			double n = NavmeshNode.DISTANCE_ENTRE_DEUX_POINTS / 2;
@@ -97,7 +97,7 @@ public class DStarLiteNode implements Printable
 	@Override
 	public int getLayer()
 	{
-		return Couleur.HEURISTIQUE.l.ordinal();
+		return ColorKraken.HEURISTIQUE.layer.ordinal();
 	}
 
 }

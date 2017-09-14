@@ -11,7 +11,7 @@ import java.awt.Graphics;
 import pfg.graphic.Chart;
 import pfg.graphic.GraphicPanel;
 import pfg.graphic.printable.Printable;
-import pfg.kraken.Couleur;
+import pfg.kraken.ColorKraken;
 import pfg.kraken.astar.tentacles.DynamicTentacle;
 import pfg.kraken.astar.tentacles.StaticTentacle;
 import pfg.kraken.astar.tentacles.Tentacle;
@@ -111,7 +111,7 @@ public class AStarNode implements Memorizable, Printable
 				h = seuil;
 
 			if(dead)
-				g.setColor(Couleur.BLANC.couleur);
+				g.setColor(ColorKraken.WHITE.color);
 			else
 				g.setColor(new Color((int) (h * 255 / seuil), 0, (int) (255 - h * 255 / seuil)));
 
@@ -122,7 +122,7 @@ public class AStarNode implements Memorizable, Printable
 	@Override
 	public int getLayer()
 	{
-		return Couleur.TRAJECTOIRE.l.ordinal();
+		return ColorKraken.TRAJECTOIRE.layer.ordinal();
 	}
 
 	public void setDead()

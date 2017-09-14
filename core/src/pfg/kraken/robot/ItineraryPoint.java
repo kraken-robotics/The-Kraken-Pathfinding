@@ -13,10 +13,25 @@ package pfg.kraken.robot;
 
 public class ItineraryPoint
 {
+	/**
+	 * The desired orientation
+	 */
 	public final double orientation;
+	
+	/**
+	 * The desired position (x)
+	 */
 	public final double x;
+	
+	/**
+	 * The desired position (y)
+	 */
 	public final double y;
-	public final double courbure;
+	
+	/**
+	 * The desired curvature
+	 */
+	public final double curvature;
 
 	public ItineraryPoint(Cinematique c)
 	{
@@ -25,19 +40,19 @@ public class ItineraryPoint
 		if(c.enMarcheAvant)
 		{
 			orientation = c.orientationGeometrique;
-			courbure = c.courbureGeometrique;
+			curvature = c.courbureGeometrique;
 		}
 		else
 		{
 			orientation = c.orientationGeometrique + Math.PI;
-			courbure = -c.courbureGeometrique;
+			curvature = -c.courbureGeometrique;
 		}
 	}
 	
 	@Override
 	public String toString()
 	{
-		return "("+x+","+y+"), orientation = "+orientation+", curvature = "+courbure;
+		return "("+x+","+y+"), orientation = "+orientation+", curvature = "+curvature;
 	}
 	
 }

@@ -7,7 +7,7 @@ package pfg.kraken.obstacles;
 
 import java.io.Serializable;
 
-import pfg.kraken.Couleur;
+import pfg.kraken.ColorKraken;
 import pfg.kraken.utils.XY;
 import pfg.kraken.utils.XY_RW;
 
@@ -25,8 +25,8 @@ public class ObstacleRobot extends RectangularObstacle implements Serializable
 	public ObstacleRobot(int demieLargeurGauche, int demieLargeurDroite, int demieLongueurArriere, int demieLongueurAvant)
 	{
 		super(new XY_RW());
-		c = Couleur.ROBOT.couleur;
-		l = Couleur.ROBOT.l;
+		c = ColorKraken.ROBOT.color;
+		l = ColorKraken.ROBOT.layer;
 		centreGeometrique = new XY_RW();
 		coinBasGaucheRotate = new XY_RW();
 		coinHautGaucheRotate = new XY_RW();

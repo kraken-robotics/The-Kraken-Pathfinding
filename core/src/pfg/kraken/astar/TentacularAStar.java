@@ -112,7 +112,7 @@ public class TentacularAStar
 		depart.setIndiceMemoryManager(-1);
 	}
 
-	public LinkedList<ItineraryPoint> process() throws PathfindingException
+	public LinkedList<ItineraryPoint> search() throws PathfindingException
 	{
 		process(defaultChemin, false);
 		return defaultChemin.getPath();

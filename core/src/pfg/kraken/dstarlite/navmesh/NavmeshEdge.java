@@ -14,7 +14,7 @@ import pfg.graphic.Chart;
 import pfg.graphic.GraphicPanel;
 import pfg.graphic.printable.Layer;
 import pfg.graphic.printable.Printable;
-import pfg.kraken.Couleur;
+import pfg.kraken.ColorKraken;
 import pfg.kraken.obstacles.Obstacle;
 import pfg.kraken.utils.XY;
 import pfg.kraken.utils.XY_RW;
@@ -362,11 +362,11 @@ public class NavmeshEdge implements Serializable, Printable
 	public void print(Graphics g, GraphicPanel f, Chart a)
 	{
 		if(highlight)
-			g.setColor(Couleur.ROUGE.couleur);
+			g.setColor(ColorKraken.RED.color);
 		else if(isBlocked())
-			g.setColor(Couleur.NAVMESH_BLOCKED.couleur);
+			g.setColor(ColorKraken.NAVMESH_BLOCKED.color);
 		else
-			g.setColor(Couleur.NAVMESH.couleur);
+			g.setColor(ColorKraken.NAVMESH.color);
 		g.drawLine(f.XtoWindow(points[0].position.getX()), f.YtoWindow(points[0].position.getY()), f.XtoWindow(points[1].position.getX()), f.YtoWindow(points[1].position.getY()));
 	}
 

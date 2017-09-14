@@ -25,14 +25,9 @@ import pfg.kraken.obstacles.container.EmptyDynamicObstacles;
 import pfg.kraken.obstacles.container.StaticObstacles;
 
 /**
- * 
- * Gestionnaire de la durée de vie des objets dans le code.
- * Permet à n'importe quelle classe implémentant l'interface "Service"
- * d'appeller d'autres instances de services via son constructeur.
- * Une classe implémentant Service n'est instanciée que par la classe
- * "Container"
- * 
+ * The manager of the tentacular pathfinder.
  * @author pf
+ *
  */
 public class Kraken
 {
@@ -44,22 +39,29 @@ public class Kraken
 	private static Kraken instance;
 
 	/**
-	 * Fonction appelé automatiquement à la fin du programme.
-	 * ferme la connexion serie, termine les différents threads, et ferme le
-	 * log.
+	 * Call this function if you want to create a new Kraken.
+	 * The graphic interface is stopped.
 	 */
 	public synchronized void destructor()
 	{	
-		PrintBuffer buffer = injector.getExistingService(PrintBuffer.class);
-		// On appelle le destructeur du PrintBuffer
-		if(buffer != null)
-			buffer.destructor();
-
-		// fermeture du log
-		log.close();
-		instance = null;
+		if(instance != null)
+		{
+			PrintBuffer buffer = injector.getExistingService(PrintBuffer.class);
+			// On appelle le destructeur du PrintBuffer
+			if(buffer != null)
+				buffer.destructor();
+	
+			// fermeture du log
+			log.close();
+			instance = null;
+		}
 	}
 	
+	/**
+	 * Get Kraken with permanent obstacles. Note that Kraken won't be able to deal with dynamic obstacles.
+	 * @param fixedObstacles : a list of fixed/permanent obstacles
+	 * @return the instance of Kraken
+	 */
 	public static Kraken getKraken(List<Obstacle> fixedObstacles)
 	{
 		if(instance == null)
@@ -67,8 +69,16 @@ public class Kraken
 		return instance;
 	}
 	
-	public static Kraken getKraken(List<Obstacle> fixedObstacles, DynamicObstacles dynObs, TentacleType tentacleTypes)
+	/**
+	 * Get Kraken with :
+	 * @param fixedObstacles : a list of fixed/permanent obstacles
+	 * @param dynObs : a dynamic/temporary obstacles manager that implements the DynamicObstacles interface
+	 * @param tentacleTypes : 
+	 * @return
+	 */
+	protected static Kraken getKraken(List<Obstacle> fixedObstacles, DynamicObstacles dynObs, TentacleType tentacleTypes)
 	{
+		// TODO : pas encore disponible
 		if(instance == null)
 			instance = new Kraken(fixedObstacles, dynObs, tentacleTypes);
 		return instance;
@@ -139,6 +149,19 @@ public class Kraken
 		}
 	}
 
+	/**
+	 * Returns the WindowFrame. If the graphic display is disabled, returns null.
+	 * @return
+	 */
+	public WindowFrame getWindowFrame()
+	{
+		return injector.getExistingService(WindowFrame.class);
+	}
+	
+	/**
+	 * Return the tentacular pathfinder
+	 * @return
+	 */
 	public TentacularAStar getAStar()
 	{
 		return astar;

@@ -259,7 +259,7 @@ public class ClothoidesComputer
 	 * 
 	 * @param position
 	 * @param orientation
-	 * @param courbure
+	 * @param curvature
 	 * @param vitesseTr
 	 * @param modified
 	 * @param enMarcheAvant
@@ -565,7 +565,7 @@ public class ClothoidesComputer
 	 * 
 	 * @param position
 	 * @param orientation
-	 * @param courbure
+	 * @param curvature
 	 * @param vitesseTr
 	 * @param modified
 	 * @param enMarcheAvant

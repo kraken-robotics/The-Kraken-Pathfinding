@@ -200,7 +200,7 @@ public class Cinematique implements Printable, Serializable
 	 * @param y
 	 * @param orientationGeometrique
 	 * @param enMarcheAvant
-	 * @param courbure
+	 * @param curvature
 	 */
 	public void updateReel(double x, double y, double orientationReelle, boolean enMarcheAvant, double courbureReelle)
 	{
