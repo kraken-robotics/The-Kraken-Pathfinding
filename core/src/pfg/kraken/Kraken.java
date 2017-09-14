@@ -175,4 +175,9 @@ public class Kraken
 	{
 		return injector;
 	}
+
+	public PrintBuffer getPrintBuffer()
+	{
+		return injector.getExistingService(PrintBuffer.class);
+	}
 }

@@ -3,11 +3,15 @@
  * Distributed under the MIT License.
  */
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import pfg.graphic.PrintBuffer;
 import pfg.graphic.WindowFrame;
+import pfg.graphic.printable.Layer;
+import pfg.graphic.printable.PrintablePoint;
 import pfg.kraken.ColorKraken;
 import pfg.kraken.Kraken;
 import pfg.kraken.exceptions.PathfindingException;
@@ -46,6 +50,7 @@ public class Example1
 		 * The graphic display (optional)
 		 */
 		WindowFrame frame = kraken.getWindowFrame();
+		PrintBuffer printBuffer = kraken.getPrintBuffer();
 		
 		/*
 		 * The pathfinder itself.
@@ -73,7 +78,10 @@ public class Example1
 			 * For this example, we just print the trajectory points
 			 */
 			for(ItineraryPoint p : path)
+			{
+				printBuffer.add(new PrintablePoint(p.x, p.y, Layer.FOREGROUND, Color.BLACK));
 				System.out.println(p);
+			}
 			
 			/*
 			 * Refresh the window frame.
