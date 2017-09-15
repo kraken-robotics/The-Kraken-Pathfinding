@@ -43,8 +43,9 @@ public class Example1
 		
 		/*
 		 * Getting Kraken (a singleton).
+		 * We restrain the search domain to the rectangle -1500 < x < 1500, 0 < y < 2000
 		 */
-		Kraken kraken = Kraken.getKraken(obs);
+		Kraken kraken = Kraken.getKraken(obs, new XY(-1500,0), new XY(1500, 2000));
 		
 		/*
 		 * The graphic display (optional)
