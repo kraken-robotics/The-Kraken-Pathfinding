@@ -20,6 +20,7 @@ import pfg.injector.Injector;
 import pfg.kraken.Kraken;
 import pfg.kraken.LogCategoryKraken;
 import pfg.kraken.obstacles.Obstacle;
+import pfg.kraken.utils.XY;
 import pfg.log.Log;
 
 /**
@@ -47,7 +48,7 @@ public abstract class JUnit_Test
 	{
 		System.out.println("----- DÉBUT DU TEST " + testName.getMethodName() + " -----");
 
-		kraken = Kraken.getKraken(null); // TODO
+		kraken = Kraken.getKraken(null, new XY(-1500, 0), new XY(1500, 2000)); // TODO
 		
 		Method m = Kraken.class.getDeclaredMethod("getInjector");
 		m.setAccessible(true);
@@ -62,7 +63,7 @@ public abstract class JUnit_Test
 	{
 		System.out.println("----- DÉBUT DU TEST " + testName.getMethodName() + " -----");
 
-		kraken = Kraken.getKraken(fixedObstacles);
+		kraken = Kraken.getKraken(fixedObstacles, new XY(-1500, 0), new XY(1500, 2000));
 		
 		Method m = Kraken.class.getDeclaredMethod("getInjector");
 		m.setAccessible(true);
