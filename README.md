@@ -23,6 +23,8 @@ The trajectory created by Kraken has several geometric properties, making it sui
 
 Currently, Kraken finds a trajectory between from a position and an orientation to a position. Which means that, for example, you can't force the orientation at the end point.
 
+![Trajectory example](https://raw.githubusercontent.com/PFGimenez/The-Kraken-Pathfinding/master/resources/example.png)
+
 ### Roadmap
 
 A roadmap is available in the wiki of the project : https://github.com/PFGimenez/The-Kraken-Pathfinding/wiki/Roadmap
