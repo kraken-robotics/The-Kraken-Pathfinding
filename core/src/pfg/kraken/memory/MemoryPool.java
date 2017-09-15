@@ -10,7 +10,6 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import pfg.kraken.LogCategoryKraken;
-import pfg.kraken.SeverityCategoryKraken;
 import pfg.log.Log;
 
 
