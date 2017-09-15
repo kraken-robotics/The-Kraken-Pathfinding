@@ -40,13 +40,14 @@ public class Example1
 		 */
 		List<Obstacle> obs = new ArrayList<Obstacle>();
 		obs.add(new RectangularObstacle(new XY_RW(400,200), 200, 200, ColorKraken.BLACK.color, ColorKraken.BLACK.layer));
+//		obs.add(new RectangularObstacle(new XY_RW(-800,1200), 100, 200, ColorKraken.BLACK.color, ColorKraken.BLACK.layer));
 		
 		/*
 		 * Getting Kraken (a singleton).
 		 * We restrain the search domain to the rectangle -1500 < x < 1500, 0 < y < 2000
 		 */
 		Kraken kraken = Kraken.getKraken(obs, new XY(-1500,0), new XY(1500, 2000));
-		
+
 		/*
 		 * The graphic display (optional)
 		 */

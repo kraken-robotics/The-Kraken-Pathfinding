@@ -4,13 +4,16 @@
  */
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import pfg.config.ConfigInfo;
 import pfg.kraken.ColorKraken;
+import pfg.kraken.ConfigInfoKraken;
 import pfg.kraken.dstarlite.navmesh.Navmesh;
 import pfg.kraken.obstacles.Obstacle;
 import pfg.kraken.obstacles.RectangularObstacle;
@@ -49,6 +52,7 @@ public class JUnit_Navmesh extends JUnit_Test
 		List<Obstacle> obs = new ArrayList<Obstacle>();
 		obs.add(new RectangularObstacle(new XY_RW(0,1000), 2000, 2000, ColorKraken.BLACK.color, ColorKraken.BLACK.layer));
 		super.setUpWith(obs);
+		config.override(ConfigInfoKraken.GRAPHIC_NAVMESH, true);
 		navmesh = injector.getService(Navmesh.class);
 //		log.write(navmesh, LogCategoryKraken.TEST);
 		f.refresh();

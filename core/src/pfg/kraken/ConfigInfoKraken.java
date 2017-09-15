@@ -6,6 +6,9 @@
 package pfg.kraken;
 
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Informations accessibles par la config
  * Les informations de config.ini surchargent celles-ci
@@ -106,14 +109,15 @@ public enum ConfigInfoKraken implements ConfigInfo
 	GRAPHIC_NAVMESH(false); // show the navmesh ?
 
 	private Object defaultValue;
-	public boolean overridden = false;
 	public volatile boolean uptodate;
 
-	public static void unsetGraphic()
+	public static List<ConfigInfo> getGraphicConfigInfo()
 	{
+		List<ConfigInfo> out = new ArrayList<ConfigInfo>();
 		for(ConfigInfoKraken c : values())
 			if(c.toString().startsWith("GRAPHIC_"))
-				c.setDefaultValue(false);
+				out.add(c);
+		return out;
 	}
 	
 	/**
@@ -130,23 +134,4 @@ public enum ConfigInfoKraken implements ConfigInfo
 	{
 		return defaultValue;
 	}
-
-	/**
-	 * Pour les modifications de config avant même de démarrer le service de
-	 * config
-	 * 
-	 * @param o
-	 */
-	public void setDefaultValue(Object o)
-	{
-		defaultValue = o;
-		overridden = true;
-	}
-
-	@Override
-	public boolean isMutable()
-	{
-		return !overridden;
-	}
-
 }

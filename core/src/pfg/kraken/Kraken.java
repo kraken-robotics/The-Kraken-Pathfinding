@@ -38,7 +38,11 @@ public class Kraken
 	private Log log;
 	private Config config;
 	private Injector injector;
-	private TentacularAStar astar;
+	private List<TentacleType> tentacleTypesUsed;
+	private boolean overrideConfigPossible = false;
+	private XY bottomLeftCorner, topRightCorner;
+	private List<Obstacle> fixedObstacles;
+	private DynamicObstacles dynObs;
 
 	private static Kraken instance;
 
@@ -50,6 +54,7 @@ public class Kraken
 	{	
 		if(instance != null)
 		{
+			overrideConfigPossible = false;
 			PrintBuffer buffer = injector.getExistingService(PrintBuffer.class);
 			// On appelle le destructeur du PrintBuffer
 			if(buffer != null)
@@ -95,8 +100,13 @@ public class Kraken
 	private Kraken(List<Obstacle> fixedObstacles, DynamicObstacles dynObs, TentacleType tentacleTypes, XY bottomLeftCorner, XY topRightCorner)
 	{	
 		assert instance == null;
-		List<TentacleType> tentacleTypesUsed = new ArrayList<TentacleType>();
+		overrideConfigPossible = true;
+		this.bottomLeftCorner = bottomLeftCorner;
+		this.topRightCorner = topRightCorner;
+		this.dynObs = dynObs;
+		this.fixedObstacles = fixedObstacles;
 		
+		tentacleTypesUsed = new ArrayList<TentacleType>();
 		if(tentacleTypes == null)
 		{
 			for(BezierTentacle t : BezierTentacle.values())
@@ -110,51 +120,7 @@ public class Kraken
 		}
 		
 		injector = new Injector();
-
-		try {
-			HashMap<ConfigInfo, Object> override = new HashMap<ConfigInfo, Object>();
-			override.put(ConfigInfoGraphic.SIZE_X_WITH_UNITARY_ZOOM, (int) (topRightCorner.getX() - bottomLeftCorner.getX()));
-			override.put(ConfigInfoGraphic.SIZE_Y_WITH_UNITARY_ZOOM, (int) (topRightCorner.getY() - bottomLeftCorner.getY()));
-			
-			DebugTool debug = new DebugTool("graphic-kraken.conf", override, SeverityCategoryKraken.INFO);
-			log = debug.getLog();
-			config = new Config(ConfigInfoKraken.values(), "kraken.conf", false);
-
-			injector.addService(Log.class, log);
-			injector.addService(Config.class, config);
-			injector.addService(DynamicObstacles.class, dynObs);
-	
-			injector.addService(Kraken.class, this);
-	
-			if(config.getBoolean(ConfigInfoKraken.GRAPHIC_ENABLE))
-			{
-				WindowFrame f = debug.getWindowFrame(new Vec2RO((topRightCorner.getX() + bottomLeftCorner.getX()) / 2, (topRightCorner.getY() + bottomLeftCorner.getY()) / 2));
-				injector.addService(WindowFrame.class, f);
-//				if(config.getBoolean(ConfigInfoKraken.GRAPHIC_EXTERNAL))
-//					injector.addService(PrintBufferInterface.class, f.getBu);
-//				else
-					injector.addService(PrintBuffer.class, f.getPrintBuffer());
-			}
-			else
-			{
-				ConfigInfoKraken.unsetGraphic();
-				config.reload();
-				injector.addService(PrintBuffer.class, null);
-			}
-	
-			Obstacle.set(log, injector.getService(PrintBuffer.class));
-			Obstacle.useConfig(config);
-			Tentacle.useConfig(config);
-			if(fixedObstacles != null)
-				injector.getService(StaticObstacles.class).addAll(fixedObstacles);
-			injector.getService(TentacleManager.class).setTentacle(tentacleTypesUsed);
-			astar = injector.getService(TentacularAStar.class);
-			
-		}
-		catch(InjectorException e)
-		{
-			throw new RuntimeException("Fatal error : "+e);
-		}
+		config = new Config(ConfigInfoKraken.values(), "kraken.conf", false);
 	}
 
 	/**
@@ -172,9 +138,70 @@ public class Kraken
 	 */
 	public TentacularAStar getAStar()
 	{
-		return astar;
+		try {
+			TentacularAStar aStar = injector.getExistingService(TentacularAStar.class);
+			if(aStar == null)
+			{
+				overrideConfigPossible = false;
+
+				
+				HashMap<ConfigInfo, Object> overrideGraphic = new HashMap<ConfigInfo, Object>();
+				overrideGraphic.put(ConfigInfoGraphic.SIZE_X_WITH_UNITARY_ZOOM, (int) (topRightCorner.getX() - bottomLeftCorner.getX()));
+				overrideGraphic.put(ConfigInfoGraphic.SIZE_Y_WITH_UNITARY_ZOOM, (int) (topRightCorner.getY() - bottomLeftCorner.getY()));
+				
+				DebugTool debug = new DebugTool("graphic-kraken.conf", overrideGraphic, SeverityCategoryKraken.INFO);
+				log = debug.getLog();
+
+				injector.addService(Log.class, log);
+				injector.addService(Config.class, config);
+				injector.addService(DynamicObstacles.class, dynObs);
+		
+				injector.addService(Kraken.class, this);
+		
+				if(config.getBoolean(ConfigInfoKraken.GRAPHIC_ENABLE))
+				{
+					WindowFrame f = debug.getWindowFrame(new Vec2RO((topRightCorner.getX() + bottomLeftCorner.getX()) / 2, (topRightCorner.getY() + bottomLeftCorner.getY()) / 2));
+					injector.addService(WindowFrame.class, f);
+//					if(config.getBoolean(ConfigInfoKraken.GRAPHIC_EXTERNAL))
+//						injector.addService(PrintBufferInterface.class, f.getBu);
+//					else
+						injector.addService(PrintBuffer.class, f.getPrintBuffer());
+				}
+				else
+				{
+					HashMap<ConfigInfo, Object> override = new HashMap<ConfigInfo, Object>();
+					List<ConfigInfo> graphicConf = ConfigInfoKraken.getGraphicConfigInfo();
+					for(ConfigInfo c : graphicConf)
+						override.put(c, false);
+					config.override(override);
+					injector.addService(PrintBuffer.class, null);
+				}
+		
+				Obstacle.set(log, injector.getService(PrintBuffer.class));
+				Obstacle.useConfig(config);
+				Tentacle.useConfig(config);
+				if(fixedObstacles != null)
+					injector.getService(StaticObstacles.class).addAll(fixedObstacles);
+				injector.getService(TentacleManager.class).setTentacle(tentacleTypesUsed);	
+			}
+			return injector.getService(TentacularAStar.class);
+		} catch (InjectorException e) {
+			throw new RuntimeException("Fatal error : "+e);
+		}
 	}
 	
+	public void overrideConfig(ConfigInfoKraken key, Object newValue)
+	{
+		if(overrideConfigPossible)
+			config.override(key, newValue);
+	}
+
+	public void overrideConfig(HashMap<ConfigInfo, Object> override)
+	{
+		if(overrideConfigPossible)
+			config.override(override);
+	}
+
 	/**
 	 * Used by the unit tests
 	 * @return
