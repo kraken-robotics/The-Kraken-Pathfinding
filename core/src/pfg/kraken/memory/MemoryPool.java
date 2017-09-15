@@ -51,7 +51,7 @@ public abstract class MemoryPool<T extends Memorizable>
 		nodes.add((T[]) Array.newInstance(classe, nb_instances));
 		firstAvailable = 0;
 		// on instancie une fois pour toutes les objets
-		log.write("Instanciation de " + nb_instances + " " + classe.getSimpleName() + "…", LogCategoryKraken.PF);
+		log.write("Memory pool initialization (" + nb_instances + " instances of " + classe.getSimpleName() + ")", LogCategoryKraken.PF);
 
 		make(nodes.get(0));
 		for(int i = 0; i < nb_instances; i++)
@@ -75,8 +75,8 @@ public abstract class MemoryPool<T extends Memorizable>
 			 */
 			assert initial_nb_instances * nodes.size() < tailleMax : "Mémoire saturée pour " + classe.getSimpleName();
 
-			if(nodes.size() + 1 >= 20)
-				log.write("Mémoire trop petite pour les " + classe.getSimpleName() + ", extension (nouvelle taille : " + ((nodes.size() + 1) * initial_nb_instances) + ")", SeverityCategoryKraken.WARNING, LogCategoryKraken.PF);
+//			if(nodes.size() + 1 >= 20)
+//				log.write("Mémoire trop petite pour les " + classe.getSimpleName() + ", extension (nouvelle taille : " + ((nodes.size() + 1) * initial_nb_instances) + ")", SeverityCategoryKraken.WARNING, LogCategoryKraken.PF);
 
 			T[] newNodes = (T[]) Array.newInstance(classe, initial_nb_instances);
 

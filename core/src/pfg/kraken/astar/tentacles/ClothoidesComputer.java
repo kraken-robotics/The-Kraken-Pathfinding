@@ -502,7 +502,7 @@ public class ClothoidesComputer
 	 */
 	private boolean chargePoints()
 	{
-		log.write("Chargement des points de la clothoïde",LogCategoryKraken.PF);
+		log.write("Clothoid points loaded.",LogCategoryKraken.PF);
 		try
 		{
 			InputStream fichier = getClass().getClassLoader().getResourceAsStream("clotho-"+S_MAX+".dat");
