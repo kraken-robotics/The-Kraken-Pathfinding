@@ -53,6 +53,13 @@ public class Example1
 		PrintBuffer printBuffer = kraken.getPrintBuffer();
 		
 		/*
+		 * The obstacles are printed
+		 */
+		for(Obstacle o : obs)
+			printBuffer.add(o);
+		frame.refresh();
+		
+		/*
 		 * The pathfinder itself.
 		 */
 		TentacularAStar astar = kraken.getAStar();
@@ -67,7 +74,7 @@ public class Example1
 			/*
 			 * We search a new path from the point (0,0) with orientation 0 to the point (1000, 1000).
 			 */
-			astar.initializeNewSearch(new XYO(0, 0, 0), new XY(1000, 1000));
+			astar.initializeNewSearch(new XYO(0, 200, 0), new XY(1000, 1000));
 			
 			/*
 			 * The pathfinder returns a list of ItineraryPoint, which contains all the cinematic information that described follow the path
