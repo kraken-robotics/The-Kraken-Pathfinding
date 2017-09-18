@@ -30,6 +30,7 @@ public class NavmeshEdge implements Serializable, Printable
 {
 	private static final long serialVersionUID = 7904466980326128967L;
 	int length;
+	private double orientation;
 	private boolean wasPreviouslyBlocked = false;
 	public final NavmeshNode[] points = new NavmeshNode[2];
 	final NavmeshTriangle[] triangles = new NavmeshTriangle[2]; // transient because it is used only at the building of the navmesh
@@ -103,8 +104,14 @@ public class NavmeshEdge implements Serializable, Printable
 		p1.edges.add(this);
 		p2.edges.add(this);
 		updateLength();
+		updateOrientation();
 	}
 	
+	private void updateOrientation()
+	{
+		orientation = Math.atan2(points[1].position.getY() - points[0].position.getY(), points[1].position.getX() - points[0].position.getX());
+	}
+
 	public void updateLength()
 	{
 		length = (int) (1000 * points[0].position.distance(points[1].position));
@@ -280,6 +287,7 @@ public class NavmeshEdge implements Serializable, Printable
 		points[0] = alpha;
 		points[1] = delta;
 		updateLength();
+		updateOrientation();
 		
 		if(!points[0].edges.contains(this))
 			points[0].edges.add(this);
@@ -388,6 +396,14 @@ public class NavmeshEdge implements Serializable, Printable
 				if(points[i] == other.points[j])
 					return true;
 		return false;
+	}
+
+	public Double getOrientation(NavmeshNode origin)
+	{
+		if(origin == points[0])
+			return orientation;
+		assert origin == points[1];
+		return orientation + Math.PI;
 	}
 	
 //	new Segment(e.points[0].position, e.points[1].position, Layer.BACKGROUND, Couleur.NAVMESH.couleur)

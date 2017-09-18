@@ -12,6 +12,7 @@ import pfg.graphic.GraphicPanel;
 import pfg.graphic.printable.Printable;
 import pfg.kraken.ColorKraken;
 import pfg.kraken.dstarlite.navmesh.NavmeshNode;
+import pfg.kraken.utils.XY_RW;
 
 /**
  * Un nœud du D* Lite.
@@ -80,18 +81,18 @@ public class DStarLiteNode implements Printable
 	public void print(Graphics g, GraphicPanel f, Chart a)
 	{
 		g.setColor(ColorKraken.HEURISTIQUE.color);
-/*		if(heuristiqueOrientation != null)
+		if(heuristiqueOrientation != null)
 		{
-			double n = NavmeshNode.DISTANCE_ENTRE_DEUX_POINTS / 2;
+			double n = 100 / 2;
 			XY_RW point1 = new XY_RW(n, 0), point2 = new XY_RW(-n / 2, n / 2), point3 = new XY_RW(-n / 2, -n / 2);
-			point1.rotate(heuristiqueOrientation).plus(gridpoint.computeVec2());
-			point2.rotate(heuristiqueOrientation).plus(gridpoint.computeVec2());
-			point3.rotate(heuristiqueOrientation).plus(gridpoint.computeVec2());
+			point1.rotate(heuristiqueOrientation).plus(node.position);
+			point2.rotate(heuristiqueOrientation).plus(node.position);
+			point3.rotate(heuristiqueOrientation).plus(node.position);
 			int[] X = { f.XtoWindow((int) point1.getX()), f.XtoWindow((int) point2.getX()), f.XtoWindow((int) point3.getX()) };
 			int[] Y = { f.YtoWindow((int) point1.getY()), f.YtoWindow((int) point2.getY()), f.YtoWindow((int) point3.getY()) };
 
 			g.drawPolygon(X, Y, 3);
-		}*/
+		}
 	}
 
 	@Override

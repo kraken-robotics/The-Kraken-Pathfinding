@@ -69,7 +69,7 @@ public class DStarLite
 			memory[i] = new DStarLiteNode(navmesh.mesh.nodes[i]);
 
 		graphicDStarLite = config.getBoolean(ConfigInfoKraken.GRAPHIC_D_STAR_LITE);
-		graphicHeuristique = config.getBoolean(ConfigInfoKraken.GRAPHIC_HEURISTIQUE);
+		graphicHeuristique = config.getBoolean(ConfigInfoKraken.GRAPHIC_HEURISTIC);
 	}
 
 	/**
@@ -468,14 +468,25 @@ public class DStarLite
 
 		NavmeshNode pos = navmesh.getNearest(c.getPosition());
 
-		updateStart(pos);
-		DStarLiteNode premier = getFromMemoryUpdated(pos);
-
 		// si on est arrivé… on est arrivé.
 		if(pos.equals(arrivee.node))
 			return 0.;
 
-		double orientationOptimale = getOrientationHeuristique(pos);
+		/*
+		 * S'occupe de la mise à jour
+		 */
+		DStarLiteNode premier = getFromMemoryUpdated(pos);
+
+		if(premier.rhs == Integer.MAX_VALUE)
+		{
+			// log.debug("Inaccessible : "+c.getPosition());
+			return null;
+		}
+		
+		double erreurDistance = premier.rhs / 1000.;
+
+
+		double orientationOptimale = getOrientationHeuristique(premier);
 
 		// l'orientation est vérifiée modulo 2*pi : aller vers la destination ou
 		// s'en éloigner sont différenciés
@@ -485,7 +496,6 @@ public class DStarLite
 
 		erreurOrientation = Math.abs(erreurOrientation);
 
-		double erreurDistance = premier.rhs / 1000.;
 		/*
 		 * if(useCercle)
 		 * {
@@ -505,13 +515,7 @@ public class DStarLite
 		 * }
 		 */
 
-		if(premier.rhs == Integer.MAX_VALUE)
-		{
-			// log.debug("Inaccessible : "+c.getPosition());
-			return null;
-		}
 		// throw new DStarLiteException("Heuristique : inaccessible");
-
 		// il faut toujours majorer la vraie distance, afin de ne pas chercher
 		// tous les trajets possibles…
 		// le poids de l'erreur d'orientation doit rester assez faible. Car
@@ -526,43 +530,52 @@ public class DStarLite
 	 * @param p
 	 * @return
 	 */
-	private double getOrientationHeuristique(NavmeshNode p)
+	private double getOrientationHeuristique(DStarLiteNode n)
 	{
 		// réutilisation de la dernière valeur si possible
-		DStarLiteNode n = getFromMemoryUpdated(p);
 		if(n != null && n.heuristiqueOrientation != null)
 			return n.heuristiqueOrientation;
 
-		updateStart(p); // on met à jour
-		double directionX = 0;
-		double directionY = 0;
-
-		n = getFromMemoryUpdated(p);
-
-		int score = n.rhs;
-
-//		NavmeshNode[] neighbours = p.getNeighbourhood();
-/*		for(NavmeshNode voisin : neighbours)
+		int nbVoisins = n.node.getNbNeighbours();
+		assert nbVoisins >= 2; // un nœud a forcément au moins deux voisins
+		int bestVoisin = 0;
+		int bestVoisinDistance = add(getFromMemory(n.node.getNeighbour(0)).rhs, n.node.getNeighbourEdge(0).getDistance());
+		int secondBestVoisin = 1;
+		int secondBestVoisinDistance = add(getFromMemory(n.node.getNeighbour(1)).rhs, n.node.getNeighbourEdge(1).getDistance());
+		
+		if(secondBestVoisinDistance < bestVoisinDistance)
 		{
-			// TODO : vérifier si ce cas arrive souvent
-			int scoreVoisin = voisin.rhs;
-			// ce devrait être équivalent
-			double s = Math.signum(score - scoreVoisin);
-			// TODO
-			directionX += s * d.deltaX;
-			directionY += s * d.deltaY;
-			n.heuristiqueOrientation = atan2map[(int) directionX + 9][(int) directionY + 9];
-		}*/
-
-		if(directionX == 0 && directionY == 0) // si on a aucune info, on
-												// utilise une heuristique plus
-												// simple (trajet à vol
-												// d'oiseau)
-		{
-			directionX = arrivee.node.position.getX() - p.position.getX();
-			directionY = arrivee.node.position.getY() - p.position.getY();
-			n.heuristiqueOrientation = Math.atan2(directionY, directionX);
+			bestVoisin = 1;
+			secondBestVoisin = 0;
+			int tmp = secondBestVoisinDistance;
+			secondBestVoisinDistance = bestVoisinDistance;
+			bestVoisinDistance = tmp;
 		}
+		
+		for(int i = 2; i < nbVoisins; i++)
+		{
+			NavmeshNode voisin = n.node.getNeighbour(i);
+			int candidatDistance = add(getFromMemory(voisin).rhs, n.node.getNeighbourEdge(i).getDistance());
+			assert candidatDistance >= 0 : "Distance négative ! "+candidatDistance;
+			
+			if(candidatDistance < bestVoisinDistance)
+			{
+				secondBestVoisin = bestVoisin;
+				secondBestVoisinDistance = bestVoisinDistance;
+				bestVoisin = i;
+				bestVoisinDistance = candidatDistance;
+			}
+			else if(candidatDistance < secondBestVoisinDistance)
+			{
+				secondBestVoisin = i;
+				secondBestVoisinDistance = candidatDistance; 
+			}
+		}
+		assert bestVoisinDistance != Integer.MAX_VALUE;
+		assert secondBestVoisinDistance != Integer.MAX_VALUE;
+		
+		// TODO : moyenne pondérée des deux ?
+		n.heuristiqueOrientation = n.node.getNeighbourEdge(bestVoisin).getOrientation(n.node);// + n.node.getNeighbourEdge(secondBestVoisin).getOrientation(n.node)) / 2;
 
 		if(graphicHeuristique)
 			buffer.addSupprimable(n);
