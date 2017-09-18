@@ -68,4 +68,13 @@ public class TentacleObstacle extends Obstacle
 		return null; // TODO
 	}
 
+	@Override
+	public boolean isInObstacle(XY pos)
+	{
+		for(RectangularObstacle o : ombresRobot)
+			if(o.isInObstacle(pos))
+				return true;
+		return false;
+	}
+
 }

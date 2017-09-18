@@ -128,6 +128,8 @@ public abstract class Obstacle implements Printable, Serializable
 		}
 		return false;
 	}
+	
+	public abstract boolean isInObstacle(XY pos);
 
 	@Override
 	public int getLayer()
@@ -146,7 +148,6 @@ public abstract class Obstacle implements Printable, Serializable
 	
 	/**
 	 * The expanded convex hull of the obstacle.
-	 * The order is important ! Two adjacent points must be adjacent in the array.
 	 * @param expansion
 	 * @param longestAllowedLength
 	 * @return

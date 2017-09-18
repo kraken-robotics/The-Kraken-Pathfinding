@@ -305,8 +305,20 @@ public class RectangularObstacle extends Obstacle
 	@Override
 	public XY[] getExpandedConvexHull(double expansion, double longestAllowedLength)
 	{
-		// TODO
-		return new XY[] {coinBasDroiteRotate, coinHautDroiteRotate, coinHautGaucheRotate, coinBasGaucheRotate};
+		double coeff = expansion / demieDiagonale;
+		return new XY[] {coinBasDroiteRotate.minusNewVector(centreGeometrique).scalar(coeff).plus(coinBasDroiteRotate),
+				coinHautDroiteRotate.minusNewVector(centreGeometrique).scalar(coeff).plus(coinHautDroiteRotate),
+				coinHautGaucheRotate.minusNewVector(centreGeometrique).scalar(coeff).plus(coinHautGaucheRotate),
+				coinBasGaucheRotate.minusNewVector(centreGeometrique).scalar(coeff).plus(coinBasGaucheRotate)};
+	}
+
+	@Override
+	public boolean isInObstacle(XY pos)
+	{
+		convertitVersRepereObstacle(pos, in);
+		if(in.getX() >= coinBasGauche.getX() && in.getX() <= coinHautDroite.getX() && in.getY() >= coinBasGauche.getY() && in.getY() <= coinHautDroite.getY())
+			return true;
+		return false;
 	}
 
 }

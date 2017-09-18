@@ -13,6 +13,7 @@ import pfg.graphic.Chart;
 import pfg.graphic.GraphicPanel;
 import pfg.graphic.printable.Layer;
 import pfg.kraken.utils.XY;
+import pfg.kraken.utils.XY_RW;
 
 /**
  * Obstacle circulaire
@@ -80,7 +81,21 @@ public class CircularObstacle extends Obstacle
 	@Override
 	public XY[] getExpandedConvexHull(double expansion, double longestAllowedLength)
 	{
-		return null; // TODO
+		int nbPoints = (int) Math.ceil(2 * Math.PI * (radius + expansion) / longestAllowedLength);
+		if(nbPoints < 3)
+			nbPoints = 3;
+
+		XY[] out = new XY[nbPoints];
+		
+		for(int i = 0; i < nbPoints; i++)
+			out[i] = new XY_RW(expansion + radius, i * 2 * Math.PI / nbPoints, true).plus(position);
+		return out;
+	}
+
+	@Override
+	public boolean isInObstacle(XY pos)
+	{
+		return pos.distance(position) <= radius;
 	}
 
 }

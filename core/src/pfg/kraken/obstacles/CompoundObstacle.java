@@ -90,4 +90,14 @@ public class CompoundObstacle extends Obstacle
 		return null; // TODO
 	}
 
+
+	@Override
+	public boolean isInObstacle(XY pos)
+	{
+		for(Obstacle o : obs)
+			if(o.isInObstacle(pos))
+				return true;
+		return false;
+	}
+
 }
