@@ -5,6 +5,7 @@
 
 package pfg.kraken.dstarlite.navmesh;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -68,6 +69,7 @@ public class NavmeshNode implements Printable, Serializable
 	@Override
 	public void print(Graphics g, GraphicPanel f, Chart a)
 	{
+		g.setColor(Color.BLACK);
 		int rayon = 15;
 		g.fillOval(f.XtoWindow(position.getX()) - f.distanceXtoWindow(rayon) / 2, f.YtoWindow(position.getY()) - f.distanceYtoWindow(rayon) / 2, f.distanceXtoWindow((int) (rayon)), f.distanceYtoWindow((int) (rayon)));
 	}

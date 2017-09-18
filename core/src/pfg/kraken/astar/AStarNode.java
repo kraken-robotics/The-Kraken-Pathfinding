@@ -105,15 +105,7 @@ public class AStarNode implements Memorizable, Printable
 		if(a != null)
 		{
 			a.print(g, f, aff);
-			double h = f_score;
-			double seuil = 5000;
-			if(h > seuil)
-				h = seuil;
-
-			if(dead)
-				g.setColor(ColorKraken.WHITE.color);
-			else
-				g.setColor(new Color((int) (h * 255 / seuil), 0, (int) (255 - h * 255 / seuil)));
+			g.setColor(Color.RED);
 
 			a.getLast().print(g, f, aff);
 		}

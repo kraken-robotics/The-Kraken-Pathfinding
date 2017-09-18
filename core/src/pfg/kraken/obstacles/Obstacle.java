@@ -36,6 +36,7 @@ public abstract class Obstacle implements Printable, Serializable
 	protected static boolean printAllObstacles = false;
 	protected Layer l = null;
 	public Color c;
+	public Color cTransparent;
 
 	public static void set(Log log, PrintBuffer buffer)
 	{
@@ -48,11 +49,17 @@ public abstract class Obstacle implements Printable, Serializable
 		printAllObstacles = config.getBoolean(ConfigInfoKraken.GRAPHIC_ALL_OBSTACLES);
 	}
 
+	protected void setColor(Color c)
+	{
+		this.c = c;
+		cTransparent = new Color(c.getRed(), c.getGreen(), c.getBlue(), 30);
+	}
+	
 	public Obstacle(XY position, Color c, Layer l)
 	{
 		this(position);
 		this.l = l;
-		this.c = c;
+		setColor(c);
 	}
 
 	/**

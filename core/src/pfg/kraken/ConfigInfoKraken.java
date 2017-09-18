@@ -92,7 +92,6 @@ public enum ConfigInfoKraken implements ConfigInfo
 	GRAPHIC_TRAJECTORY_ALL(false), // affiche TOUTES les trajectoires
 									// temporaires
 	GRAPHIC_TRAJECTORY_FINAL(true), // affiche les trajectoires
-	GRAPHIC_FIXED_OBSTACLES(true), // affiche les obstacles fixes
 	GRAPHIC_ROBOT_COLLISION(false), // affiche les obstacles du robot lors de la
 									// vérification des collisions
 	GRAPHIC_ALL_OBSTACLES(false), // affiche absolument tous les obstacles créés

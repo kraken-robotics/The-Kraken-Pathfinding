@@ -83,7 +83,7 @@ public class DStarLiteNode implements Printable
 		g.setColor(ColorKraken.HEURISTIQUE.color);
 		if(heuristiqueOrientation != null)
 		{
-			double n = 100 / 2;
+			double n = 40;
 			XY_RW point1 = new XY_RW(n, 0), point2 = new XY_RW(-n / 2, n / 2), point3 = new XY_RW(-n / 2, -n / 2);
 			point1.rotate(heuristiqueOrientation).plus(node.position);
 			point2.rotate(heuristiqueOrientation).plus(node.position);

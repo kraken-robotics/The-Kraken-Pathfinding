@@ -53,14 +53,14 @@ public class RectangularObstacle extends Obstacle
 	{
 		this(position, sizeX, sizeY, angle);
 		this.l = l;
-		this.c = c;
+		setColor(c);
 	}
 
 	public RectangularObstacle(XY position, int sizeX, int sizeY, Color c, Layer l)
 	{
 		this(position, sizeX, sizeY, 0);
 		this.l = l;
-		this.c = c;
+		setColor(c);
 	}
 
 	protected RectangularObstacle(XY_RW pos)
@@ -294,6 +294,11 @@ public class RectangularObstacle extends Obstacle
 			X[i] = f.XtoWindow(X[i]);
 			Y[i] = f.YtoWindow(Y[i]);
 		}
+		g.drawPolygon(X, Y, 4);
+		
+		if(cTransparent != null)
+			g.setColor(cTransparent);
+		
 		g.fillPolygon(X, Y, 4);
 	}
 	

@@ -245,7 +245,7 @@ public class Cinematique implements Printable, Serializable
 	@Override
 	public void print(Graphics g, GraphicPanel f, Chart a)
 	{
-		double n = 50;
+		double n = 40;
 		XY_RW point1 = new XY_RW(n, 0), point2 = new XY_RW(-n / 2, n / 2), point3 = new XY_RW(-n / 2, -n / 2);
 		point1.rotate(orientationGeometrique).plus(position);
 		point2.rotate(orientationGeometrique).plus(position);

@@ -10,6 +10,7 @@ import pfg.config.Config;
 import pfg.graphic.Chart;
 import pfg.graphic.GraphicPanel;
 import pfg.graphic.printable.Printable;
+import pfg.graphic.printable.PrintablePoint;
 import pfg.kraken.ConfigInfoKraken;
 import pfg.kraken.ColorKraken;
 import pfg.kraken.astar.tentacles.types.TentacleType;
@@ -62,7 +63,7 @@ public abstract class Tentacle implements Printable
 	public void print(Graphics g, GraphicPanel f, Chart a)
 	{
 		for(int i = 0; i < getNbPoints(); i++)
-			new CircularObstacle(getPoint(i).getPosition(), 4, ColorKraken.TRAJECTOIRE.color, ColorKraken.TRAJECTOIRE.layer).print(g, f, a);
+			new PrintablePoint(getPoint(i).getPosition().getX(), getPoint(i).getPosition().getY(), ColorKraken.TRAJECTOIRE.layer, ColorKraken.TRAJECTOIRE.color).print(g, f, a);
 	}
 
 	@Override
