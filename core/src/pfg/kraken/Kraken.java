@@ -35,13 +35,11 @@ import pfg.kraken.utils.XY;
  */
 public class Kraken
 {
-	private Log log;
 	private Config config;
 	private Injector injector;
 	private List<TentacleType> tentacleTypesUsed;
-	private boolean overrideConfigPossible = false;
+	private boolean overrideConfigPossible = false, initialized = false;
 	private XY bottomLeftCorner, topRightCorner;
-	private List<Obstacle> fixedObstacles;
 	private DynamicObstacles dynObs;
 
 	private static Kraken instance;
@@ -61,7 +59,9 @@ public class Kraken
 				buffer.destructor();
 	
 			// fermeture du log
-			log.close();
+			Log log = injector.getExistingService(Log.class);
+			if(log != null)
+				log.close();
 			instance = null;
 		}
 	}
@@ -71,10 +71,10 @@ public class Kraken
 	 * @param fixedObstacles : a list of fixed/permanent obstacles
 	 * @return the instance of Kraken
 	 */
-	public static Kraken getKraken(List<Obstacle> fixedObstacles, XY bottomLeftCorner, XY topRightCorner)
+	public static Kraken getKraken(List<Obstacle> fixedObstacles, XY bottomLeftCorner, XY topRightCorner, String configprofile)
 	{
 		if(instance == null)
-			instance = new Kraken(fixedObstacles, new EmptyDynamicObstacles(), null, bottomLeftCorner, topRightCorner);
+			instance = new Kraken(fixedObstacles, new EmptyDynamicObstacles(), null, bottomLeftCorner, topRightCorner, configprofile);
 		return instance;
 	}
 	
@@ -85,11 +85,11 @@ public class Kraken
 	 * @param tentacleTypes : 
 	 * @return
 	 */
-	protected static Kraken getKraken(List<Obstacle> fixedObstacles, DynamicObstacles dynObs, TentacleType tentacleTypes, XY bottomLeftCorner, XY topRightCorner)
+	protected static Kraken getKraken(List<Obstacle> fixedObstacles, DynamicObstacles dynObs, TentacleType tentacleTypes, XY bottomLeftCorner, XY topRightCorner, String configprofile)
 	{
 		// TODO : pas encore disponible
 		if(instance == null)
-			instance = new Kraken(fixedObstacles, dynObs, tentacleTypes, bottomLeftCorner, topRightCorner);
+			instance = new Kraken(fixedObstacles, dynObs, tentacleTypes, bottomLeftCorner, topRightCorner, configprofile);
 		return instance;
 	}
 	
@@ -97,14 +97,13 @@ public class Kraken
 	 * Instancie le gestionnaire de dépendances et quelques services critiques
 	 * (log et config qui sont interdépendants)
 	 */
-	private Kraken(List<Obstacle> fixedObstacles, DynamicObstacles dynObs, TentacleType tentacleTypes, XY bottomLeftCorner, XY topRightCorner)
+	private Kraken(List<Obstacle> fixedObstacles, DynamicObstacles dynObs, TentacleType tentacleTypes, XY bottomLeftCorner, XY topRightCorner, String configprofile)
 	{	
 		assert instance == null;
 		overrideConfigPossible = true;
 		this.bottomLeftCorner = bottomLeftCorner;
 		this.topRightCorner = topRightCorner;
 		this.dynObs = dynObs;
-		this.fixedObstacles = fixedObstacles;
 		
 		tentacleTypesUsed = new ArrayList<TentacleType>();
 		if(tentacleTypes == null)
@@ -133,29 +132,38 @@ public class Kraken
 	}
 	
 	/**
-	 * Return the tentacular pathfinder
+	 * Initialize Kraken
 	 * @return
 	 */
-	public TentacularAStar getAStar()
+	public void initialize()
 	{
 		try {
-			TentacularAStar aStar = injector.getExistingService(TentacularAStar.class);
-			if(aStar == null)
+			if(!initialized)
 			{
+				initialized = true;
 				overrideConfigPossible = false;
 
-				
+				/*
+				 * Override the graphic config
+				 */
 				HashMap<ConfigInfo, Object> overrideGraphic = new HashMap<ConfigInfo, Object>();
 				overrideGraphic.put(ConfigInfoGraphic.SIZE_X_WITH_UNITARY_ZOOM, (int) (topRightCorner.getX() - bottomLeftCorner.getX()));
 				overrideGraphic.put(ConfigInfoGraphic.SIZE_Y_WITH_UNITARY_ZOOM, (int) (topRightCorner.getY() - bottomLeftCorner.getY()));
+				overrideGraphic.put(ConfigInfoGraphic.BACKGROUND_PATH, config.getString(ConfigInfoKraken.BACKGROUND_PATH));
+				overrideGraphic.put(ConfigInfoGraphic.SIZE_X_WINDOW, config.getInt(ConfigInfoKraken.SIZE_X_WINDOW));
+				overrideGraphic.put(ConfigInfoGraphic.SIZE_Y_WINDOW, config.getInt(ConfigInfoKraken.SIZE_Y_WINDOW));
+				overrideGraphic.put(ConfigInfoGraphic.GRAPHIC_SERVER_PORT_NUMBER, config.getInt(ConfigInfoKraken.GRAPHIC_SERVER_PORT_NUMBER));
+				overrideGraphic.put(ConfigInfoGraphic.CONSOLE_NB_ROWS, config.getInt(ConfigInfoKraken.CONSOLE_NB_ROWS));
+				overrideGraphic.put(ConfigInfoGraphic.CONSOLE_NB_COLUMNS, config.getInt(ConfigInfoKraken.CONSOLE_NB_COLUMNS));
+				overrideGraphic.put(ConfigInfoGraphic.FAST_LOG, config.getBoolean(ConfigInfoKraken.FAST_LOG));
+				overrideGraphic.put(ConfigInfoGraphic.STDOUT_LOG, config.getBoolean(ConfigInfoKraken.STDOUT_LOG));
 				
-				DebugTool debug = new DebugTool("graphic-kraken.conf", overrideGraphic, SeverityCategoryKraken.INFO);
-				log = debug.getLog();
+				DebugTool debug = new DebugTool(null, null, overrideGraphic, SeverityCategoryKraken.INFO);
+				Log log = debug.getLog();
 
 				injector.addService(Log.class, log);
 				injector.addService(Config.class, config);
-				injector.addService(DynamicObstacles.class, dynObs);
-		
+				injector.addService(DynamicObstacles.class, dynObs);		
 				injector.addService(Kraken.class, this);
 		
 				if(config.getBoolean(ConfigInfoKraken.GRAPHIC_ENABLE))
@@ -180,14 +188,21 @@ public class Kraken
 				Obstacle.set(log, injector.getService(PrintBuffer.class));
 				Obstacle.useConfig(config);
 				Tentacle.useConfig(config);
-				if(fixedObstacles != null)
-					injector.getService(StaticObstacles.class).addAll(fixedObstacles);
 				injector.getService(TentacleManager.class).setTentacle(tentacleTypesUsed);	
+				injector.getService(TentacularAStar.class);
 			}
-			return injector.getService(TentacularAStar.class);
 		} catch (InjectorException e) {
 			throw new RuntimeException("Fatal error : "+e);
 		}
+	}
+	
+	/**
+	 * Return the tentacular pathfinder
+	 * @return
+	 */
+	public TentacularAStar getAStar()
+	{
+		return injector.getExistingService(TentacularAStar.class);
 	}
 	
 	public void overrideConfig(ConfigInfoKraken key, Object newValue)

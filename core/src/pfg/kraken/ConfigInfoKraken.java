@@ -44,14 +44,6 @@ public enum ConfigInfoKraken implements ConfigInfo
 	LONGEST_EDGE_IN_NAVMESH(2000000000), // in μm
 
 	/**
-	 * Paramètres du log
-	 */
-	ENABLE_LOG(false), // désactivation du log
-	FAST_LOG(false), // affichage plus rapide des logs
-	SAUVEGARDE_LOG(false), // sauvegarde les logs dans un fichier externe
-	COLORED_LOG(false), // de la couleur dans les sauvegardes de logs !
-
-	/**
 	 * Paramètres du pathfinding
 	 */
 	COURBURE_MAX(3), // quelle courbure maximale la trajectoire du robot
@@ -106,7 +98,24 @@ public enum ConfigInfoKraken implements ConfigInfo
 									// vérification des collisions
 	GRAPHIC_ALL_OBSTACLES(false), // affiche absolument tous les obstacles créés
 	GRAPHIC_ROBOT_AND_SENSORS(true), // affiche le robot et ses capteurs
-	GRAPHIC_NAVMESH(false); // show the navmesh ?
+	GRAPHIC_NAVMESH(false), // show the navmesh ?
+
+	CONSOLE_NB_ROWS(40), // nombre de lignes dans la console affichée
+	CONSOLE_NB_COLUMNS(40), // nombre de colonnes dans la console affichée
+	
+	BACKGROUND_PATH(""), // background path ; empty if none	
+	GRAPHIC_SERVER_PORT_NUMBER(13370), // port number of the graphic server
+	SIZE_X_WINDOW(900), // taille par défaut (sans image) de la fenêtre
+	SIZE_Y_WINDOW(600), // taille par défaut (sans image) de la fenêtre
+	
+	/**
+	 * Paramètres du log
+	 */
+	ENABLE_LOG(false), // désactivation du log
+	SAUVEGARDE_LOG(false), // sauvegarde les logs dans un fichier externe
+	COLORED_LOG(false), // de la couleur dans les sauvegardes de logs !
+	FAST_LOG(false), // log rapide, sans reflection
+	STDOUT_LOG(false); // log into the stdout
 
 	private Object defaultValue;
 	public volatile boolean uptodate;

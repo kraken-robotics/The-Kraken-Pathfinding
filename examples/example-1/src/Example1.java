@@ -13,6 +13,7 @@ import pfg.graphic.WindowFrame;
 import pfg.graphic.printable.Layer;
 import pfg.graphic.printable.PrintablePoint;
 import pfg.kraken.ColorKraken;
+import pfg.kraken.ConfigInfoKraken;
 import pfg.kraken.Kraken;
 import pfg.kraken.exceptions.PathfindingException;
 import pfg.kraken.obstacles.Obstacle;
@@ -40,14 +41,22 @@ public class Example1
 		 */
 		List<Obstacle> obs = new ArrayList<Obstacle>();
 		obs.add(new RectangularObstacle(new XY_RW(400,200), 200, 200, ColorKraken.BLACK.color, ColorKraken.BLACK.layer));
-//		obs.add(new RectangularObstacle(new XY_RW(-800,1200), 100, 200, ColorKraken.BLACK.color, ColorKraken.BLACK.layer));
+		obs.add(new RectangularObstacle(new XY_RW(-800,1200), 100, 200, ColorKraken.BLACK.color, ColorKraken.BLACK.layer));
+		obs.add(new RectangularObstacle(new XY_RW(-1000,300), 500, 500, ColorKraken.BLACK.color, ColorKraken.BLACK.layer));
+//		obs.add(new RectangularObstacle(new XY_RW(200,1600), 800, 300, ColorKraken.BLACK.color, ColorKraken.BLACK.layer));
 		
 		/*
 		 * Getting Kraken (a singleton).
 		 * We restrain the search domain to the rectangle -1500 < x < 1500, 0 < y < 2000
+		 * You can alternatively use the "detailed" profile to display the underneath pathfinder.
 		 */
-		Kraken kraken = Kraken.getKraken(obs, new XY(-1500,0), new XY(1500, 2000));
+		Kraken kraken = Kraken.getKraken(obs, new XY(-1500,0), new XY(1500, 2000), "trajectory");
 
+		/*
+		 * The configuration can still be overriden before the initialization
+		 */
+		kraken.initialize();
+		
 		/*
 		 * The graphic display (optional)
 		 */
