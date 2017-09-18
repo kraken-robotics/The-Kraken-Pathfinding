@@ -119,7 +119,15 @@ public class Kraken
 		}
 		
 		injector = new Injector();
-		config = new Config(ConfigInfoKraken.values(), "kraken.conf", false);
+		config = new Config(ConfigInfoKraken.values(), "kraken.conf", configprofile, false);
+		try {
+			StaticObstacles so = injector.getService(StaticObstacles.class); 
+			if(fixedObstacles != null)
+				so.addAll(fixedObstacles);
+			so.setCorners(bottomLeftCorner, topRightCorner);
+		} catch (InjectorException e) {
+			throw new RuntimeException("Fatal error : "+e);
+		}
 	}
 
 	/**

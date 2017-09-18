@@ -66,6 +66,26 @@ public class NavmeshComputer
 	{
 		List<Obstacle> obsList = obs.getObstacles();
 		
+		XY bottomLeftCorner = obs.getBottomLeftCorner();
+		XY topRightCorner = obs.getTopRightCorner();
+		XY bottomRightCorner = new XY(topRightCorner.getX(), bottomLeftCorner.getY());
+		XY topLeftCorner = new XY(bottomLeftCorner.getX(), topRightCorner.getY());
+		
+		NavmeshNode bl = new NavmeshNode(bottomLeftCorner);
+		NavmeshNode tr = new NavmeshNode(topRightCorner);
+		NavmeshNode br = new NavmeshNode(bottomRightCorner);
+		NavmeshNode tl = new NavmeshNode(topLeftCorner);
+		
+		tl.neighbourInConvexHull = bl;
+		tr.neighbourInConvexHull = tl;
+		br.neighbourInConvexHull = tr;
+		bl.neighbourInConvexHull = bl;
+		
+		nodesList.add(tl);
+		nodesList.add(tr);
+		nodesList.add(br);
+		nodesList.add(bl);
+		
 		for(Obstacle o : obsList)
 		{
 			XY[] hull = o.getExpandedConvexHull(expansion, longestAllowedLength);

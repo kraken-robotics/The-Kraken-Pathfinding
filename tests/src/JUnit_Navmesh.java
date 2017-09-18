@@ -41,9 +41,9 @@ public class JUnit_Navmesh extends JUnit_Test
 	{
 		super.setUpWith(null);
 		navmesh = injector.getService(Navmesh.class);
-		Assert.assertTrue(navmesh.mesh.edges.length == 0);
-		Assert.assertTrue(navmesh.mesh.nodes.length == 0);
-		Assert.assertTrue(navmesh.mesh.triangles.length == 0);
+		Assert.assertNotEquals(0, navmesh.mesh.edges.length);
+		Assert.assertNotEquals(0, navmesh.mesh.nodes.length);
+		Assert.assertNotEquals(0, navmesh.mesh.triangles.length);
 	}
 	
 	@Test
