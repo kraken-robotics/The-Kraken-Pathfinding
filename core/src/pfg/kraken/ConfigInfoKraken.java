@@ -40,8 +40,8 @@ public enum ConfigInfoKraken implements ConfigInfo
 	LARGEUR_NON_DEPLOYE(228), // distance entre le bord gauche et le bord droit
 								// du robot non-déployé
 	
-	LARGEST_TRIANGLE_AREA_IN_NAVMESH(5000), // in mm²
-	LONGEST_EDGE_IN_NAVMESH(2000000000), // in μm
+	LARGEST_TRIANGLE_AREA_IN_NAVMESH(20000), // in mm²
+	LONGEST_EDGE_IN_NAVMESH(100000000), // in μm
 
 	/**
 	 * Paramètres du pathfinding
@@ -88,7 +88,6 @@ public enum ConfigInfoKraken implements ConfigInfo
 	GRAPHIC_ENABLE(false), // désactive tout affichage si faux (empêche le
 							// thread d'affichage de se lancer)
 	GRAPHIC_D_STAR_LITE(false), // affiche les calculs du D* Lite
-	GRAPHIC_D_STAR_LITE_FINAL(false), // affiche l'itinéraire final du D* Lite
 	GRAPHIC_TRAJECTORY(false), // affiche les trajectoires temporaires
 	GRAPHIC_TRAJECTORY_ALL(false), // affiche TOUTES les trajectoires
 									// temporaires

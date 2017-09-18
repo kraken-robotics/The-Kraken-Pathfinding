@@ -32,8 +32,8 @@ public enum ColorKraken
 	GAME_ELEMENT(new Color(0x26, 0xCB, 0xAF, 150), Layer.FOREGROUND),
 	HEURISTIQUE(new Color(0xFF, 0xD7, 0x00, 180), Layer.FOREGROUND),
 	CINEMATIQUE(new Color(0xFF, 0x14, 0x93, 180), Layer.FOREGROUND),
-	NAVMESH(new Color(0x00, 0xB0, 0x50)),
-	NAVMESH_BLOCKED(new Color(0x40, 0x40, 0x40)),
+	NAVMESH(new Color(0x00, 0xB0, 0x50, 80)),
+	NAVMESH_BLOCKED(new Color(0x40, 0x40, 0x40, 80)),
 	NAVMESH_TRIANGLE(new Color(NAVMESH.color.getRed(), NAVMESH.color.getGreen(), NAVMESH.color.getBlue(), 10));
 
 	public final Color color;

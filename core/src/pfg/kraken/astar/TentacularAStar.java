@@ -102,7 +102,7 @@ public class TentacularAStar
 		this.buffer = buffer;
 		graphicTrajectory = config.getBoolean(ConfigInfoKraken.GRAPHIC_TRAJECTORY);
 		graphicTrajectoryAll = config.getBoolean(ConfigInfoKraken.GRAPHIC_TRAJECTORY_ALL);
-		graphicDStarLite = config.getBoolean(ConfigInfoKraken.GRAPHIC_D_STAR_LITE_FINAL);
+		graphicDStarLite = config.getBoolean(ConfigInfoKraken.GRAPHIC_D_STAR_LITE);
 		dureeMaxPF = config.getInt(ConfigInfoKraken.DUREE_MAX_RECHERCHE_PF);
 		// tailleFaisceau = config.getInt(ConfigInfo.TAILLE_FAISCEAU_PF);
 		int demieLargeurNonDeploye = config.getInt(ConfigInfoKraken.LARGEUR_NON_DEPLOYE) / 2;

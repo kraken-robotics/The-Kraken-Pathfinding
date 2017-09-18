@@ -33,7 +33,7 @@ public class DStarLite
 {
 	protected Log log;
 	private Navmesh navmesh;
-	private boolean graphicDStarLite, graphicDStarLiteFinal, graphicHeuristique;
+	private boolean graphicDStarLite, graphicHeuristique;
 	private boolean rechercheEnCours = false;
 
 	private DStarLiteNode[] memory;
@@ -69,7 +69,6 @@ public class DStarLite
 			memory[i] = new DStarLiteNode(navmesh.mesh.nodes[i]);
 
 		graphicDStarLite = config.getBoolean(ConfigInfoKraken.GRAPHIC_D_STAR_LITE);
-		graphicDStarLiteFinal = config.getBoolean(ConfigInfoKraken.GRAPHIC_D_STAR_LITE_FINAL);
 		graphicHeuristique = config.getBoolean(ConfigInfoKraken.GRAPHIC_HEURISTIQUE);
 	}
 
@@ -400,7 +399,7 @@ public class DStarLite
 		int nbMax = 500;
 
 		assert depart.rhs != Integer.MAX_VALUE;
-		log.write("Length : "+depart.rhs, LogCategoryKraken.TEST);
+//		log.write("Length : "+depart.rhs, LogCategoryKraken.TEST);
 		if(depart.rhs == Integer.MAX_VALUE)
 			return null;
 		// log.critical("rhs infini : pas de chemin");
@@ -430,7 +429,8 @@ public class DStarLite
 					indexMin = i;
 				}
 			}
-			node.node.getNeighbourEdge(indexMin).highlight(true);
+			if(graphicDStarLite)
+				node.node.getNeighbourEdge(indexMin).highlight(true);
 			node = min;
 		}
 		assert nbMax >= 0;

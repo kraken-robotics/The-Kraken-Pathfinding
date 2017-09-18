@@ -211,10 +211,10 @@ public class NavmeshTriangle implements Serializable, Printable
 	@Override
 	public void print(Graphics g, GraphicPanel f, Chart a)
 	{
-		g.setColor(ColorKraken.NAVMESH_TRIANGLE.color);
-		g.fillPolygon(new int[]{f.XtoWindow(points[0].position.getX()), f.XtoWindow(points[1].position.getX()), f.XtoWindow(points[2].position.getX())},
-				new int[]{f.YtoWindow(points[0].position.getY()), f.YtoWindow(points[1].position.getY()), f.YtoWindow(points[2].position.getY())},
-				3);
+//		g.setColor(ColorKraken.NAVMESH_TRIANGLE.color);
+//		g.fillPolygon(new int[]{f.XtoWindow(points[0].position.getX()), f.XtoWindow(points[1].position.getX()), f.XtoWindow(points[2].position.getX())},
+//				new int[]{f.YtoWindow(points[0].position.getY()), f.YtoWindow(points[1].position.getY()), f.YtoWindow(points[2].position.getY())},
+//				3);
 	}
 	
 	@Override
