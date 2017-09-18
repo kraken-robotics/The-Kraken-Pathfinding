@@ -28,8 +28,8 @@ public class NavmeshNode implements Printable, Serializable
 {
 	private static final long serialVersionUID = -6588410126587155794L;
 
-	public NavmeshNode neighbourInConvexHull;
-	public final int nb; // index in memory pool
+//	public NavmeshNode neighbourInConvexHull;
+	public int nb; // index in memory pool
 	public final XY position;
 	List<NavmeshEdge> edges = new ArrayList<NavmeshEdge>();
 	List<NavmeshNode> neighbours = new ArrayList<NavmeshNode>();
@@ -44,15 +44,15 @@ public class NavmeshNode implements Printable, Serializable
 	{
 		this.position = position;
 		this.nb = nbStatic++;
-		neighbourInConvexHull = null;
+//		neighbourInConvexHull = null;
 	}
 	
-	NavmeshNode(XY position, NavmeshNode neighbourInConvexHull)
+/*	NavmeshNode(XY position, NavmeshNode neighbourInConvexHull)
 	{
 		this.position = position;
 		this.nb = nbStatic++;
 		this.neighbourInConvexHull = neighbourInConvexHull;
-	}
+	}*/
 
 	@Override
 	public int hashCode()
@@ -88,6 +88,7 @@ public class NavmeshNode implements Printable, Serializable
 
 	void updateNeighbours()
 	{
+		neighbours.clear();
 		for(NavmeshEdge e : edges)
 		{
 			if(e.points[0] == this)

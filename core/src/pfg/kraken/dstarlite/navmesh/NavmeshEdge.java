@@ -36,7 +36,7 @@ public class NavmeshEdge implements Serializable, Printable
 	final NavmeshTriangle[] triangles = new NavmeshTriangle[2]; // transient because it is used only at the building of the navmesh
 	int nbTriangles = 0;
 	private boolean highlight = false;
-	boolean constrained = false; // can this edge be flipped ?
+//	boolean constrained = false; // can this edge be flipped ?
 	final List<Obstacle> obstructingObstacles = new ArrayList<Obstacle>();
 	
 	private boolean checkNbTriangles()
@@ -103,17 +103,12 @@ public class NavmeshEdge implements Serializable, Printable
 		points[1] = p2;
 		p1.edges.add(this);
 		p2.edges.add(this);
-		updateLength();
-		updateOrientation();
+		update();
 	}
 	
-	private void updateOrientation()
+	public void update()
 	{
 		orientation = Math.atan2(points[1].position.getY() - points[0].position.getY(), points[1].position.getX() - points[0].position.getX());
-	}
-
-	public void updateLength()
-	{
 		length = (int) (1000 * points[0].position.distance(points[1].position));
 	}
 	
@@ -192,8 +187,7 @@ public class NavmeshEdge implements Serializable, Printable
 	@Override
 	public int hashCode()
 	{
-		// TODO : on peut trouver mieux ? est-ce beaucoup utilisé ?
-		return points[0].nb * points[1].nb;
+		return (8 * points[0].nb + 7) * (8 * points[1].nb + 7);
 	}
 
 	@Override
@@ -246,10 +240,10 @@ public class NavmeshEdge implements Serializable, Printable
 	 */
 	public boolean flipIfNecessary()
 	{
-		if(points[0].neighbourInConvexHull == points[1] || points[1].neighbourInConvexHull == points[0])
-			constrained = true;
+//		if(points[0].neighbourInConvexHull == points[1] || points[1].neighbourInConvexHull == points[0])
+//			constrained = true;
 
-		if(nbTriangles < 2 || constrained)
+		if(nbTriangles < 2)// || constrained)
 			return false;
 				
 		NavmeshTriangle tr0 = triangles[0];
@@ -270,11 +264,11 @@ public class NavmeshEdge implements Serializable, Printable
 		NavmeshNode delta = tr1.points[edgeIn1];
 		
 		// this must be done on convex hull only
-		if(alpha.neighbourInConvexHull == delta || delta.neighbourInConvexHull == alpha)
-			constrained = true;
+//		if(alpha.neighbourInConvexHull == delta || delta.neighbourInConvexHull == alpha)
+//			constrained = true;
 		
-		// This edge is about to become constrained
-		if(!constrained && !isCircumscribed(alpha.position, beta.position, gamma.position, delta.position))
+//		// This edge is about to become constrained
+		if(/*!constrained && */!isCircumscribed(alpha.position, beta.position, gamma.position, delta.position))
 			return false;
 		
 		// Flip
@@ -286,8 +280,7 @@ public class NavmeshEdge implements Serializable, Printable
 		
 		points[0] = alpha;
 		points[1] = delta;
-		updateLength();
-		updateOrientation();
+		update();
 		
 		if(!points[0].edges.contains(this))
 			points[0].edges.add(this);

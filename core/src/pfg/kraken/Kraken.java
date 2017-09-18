@@ -126,7 +126,7 @@ public class Kraken
 				so.addAll(fixedObstacles);
 			so.setCorners(bottomLeftCorner, topRightCorner);
 		} catch (InjectorException e) {
-			throw new RuntimeException("Fatal error : "+e);
+			throw new RuntimeException("Fatal error", e);
 		}
 	}
 
@@ -200,7 +200,7 @@ public class Kraken
 				injector.getService(TentacularAStar.class);
 			}
 		} catch (InjectorException e) {
-			throw new RuntimeException("Fatal error : "+e);
+			throw new RuntimeException("Fatal error", e);
 		}
 	}
 	

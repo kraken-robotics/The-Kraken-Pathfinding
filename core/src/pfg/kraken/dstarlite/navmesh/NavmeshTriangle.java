@@ -103,7 +103,7 @@ public class NavmeshTriangle implements Serializable, Printable
 					for(int j2 = 0; j2 < 2; j2++)
 						if(e[i].points[j] == e[i2].points[j2])
 							nb++;
-				assert nb == 2 : a.shortString()+" "+b.shortString()+" "+c.shortString(); // each point can be found in two edge ends
+				assert nb == 2 : a.shortString()+" and "+b.shortString()+" and "+c.shortString(); // each point can be found in two edge ends
 			}
 		for(int i = 0; i < 3; i++)
 			assert e[i].points[0] != e[i].points[1] : e[i].shortString(); // each edge connects two different points

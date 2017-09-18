@@ -99,7 +99,7 @@ public enum ConfigInfoKraken implements ConfigInfo
 	GRAPHIC_NAVMESH(false), // show the navmesh ?
 
 	CONSOLE_NB_ROWS(40), // nombre de lignes dans la console affichée
-	CONSOLE_NB_COLUMNS(40), // nombre de colonnes dans la console affichée
+	CONSOLE_NB_COLUMNS(20), // nombre de colonnes dans la console affichée
 	
 	BACKGROUND_PATH(""), // background path ; empty if none	
 	GRAPHIC_SERVER_PORT_NUMBER(13370), // port number of the graphic server
