@@ -90,11 +90,6 @@ public class XY implements Serializable, Position
 		return "(" + formatter.format(x) + "," + formatter.format(y) + ")";
 	}
 
-	public final boolean equals(XY other)
-	{
-		return x == other.x && y == other.y;
-	}
-
 	@Override
 	public final boolean equals(Object obj)
 	{
@@ -109,6 +104,38 @@ public class XY implements Serializable, Position
 		if(x != other.x || (y != other.y))
 			return false;
 		return true;
+	}
+	
+	/**
+	 * Returns true iff the segment (pointA1, pointA2) intersects the segment (pointB1, pointB2)
+	 * @param pointA1
+	 * @param pointA2
+	 * @param pointB1
+	 * @param pointB2
+	 * @return
+	 */
+	public static boolean segmentIntersection(XY pointA1, XY pointA2, XY pointB1, XY pointB2)
+	{
+		// Source : https://stackoverflow.com/questions/3746274/line-intersection-with-aabb-rectangle
+		
+	    XY b = pointA2.minusNewVector(pointA1);
+	    XY d = pointB2.minusNewVector(pointB1);
+	    double bDotDPerp = b.getX() * d.getY() - b.getY() * d.getX();
+
+	    // if b dot d == 0, it means the lines are parallel so have infinite intersection points
+	    if (bDotDPerp == 0)
+	        return false;
+
+	    XY c = pointB1.minusNewVector(pointA1);
+	    double t = (c.getX() * d.getY() - c.getY() * d.getX()) / bDotDPerp;
+	    if (t < 0 || t > 1)
+	        return false;
+
+	    double u = (c.getX() * b.getY() - c.getY() * b.getX()) / bDotDPerp;
+	    if (u < 0 || u > 1)
+	        return false;
+
+	    return true;
 	}
 
 	/**
@@ -173,6 +200,11 @@ public class XY implements Serializable, Position
 	public double norm()
 	{
 		return Math.sqrt(x * x + y * y);
+	}
+	
+	public double squaredNorm()
+	{
+		return x * x + y * y;
 	}
 	
 	/**

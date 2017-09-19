@@ -88,19 +88,23 @@ public class NavmeshComputer
 		nodesList.add(br);
 		nodesList.add(bl);
 		
+		// Used to check if there are duplicate points
+		List<XY> addedPoints = new ArrayList<XY>();
+		
 		for(Obstacle o : obsList)
 		{
-			XY[] hull = o.getExpandedConvexHull(expansion, longestAllowedLength / 1000.);
+			XY[] hull = o.getExpandedConvexHull(expansion * 1.1, longestAllowedLength / 1000.);
 			assert hull.length >= 3;
 			NavmeshNode n = null;
 			for(int i = 0; i < hull.length; i++)
 			{
 				// On n'inclut pas les nœuds en dehors du rectangle
-				if(hull[i].getX() >= bottomLeftCorner.getX() && hull[i].getX() <= topRightCorner.getX()
+				if(!addedPoints.contains(hull[i]) && hull[i].getX() >= bottomLeftCorner.getX() && hull[i].getX() <= topRightCorner.getX()
 						&& hull[i].getY() >= bottomLeftCorner.getY() && hull[i].getY() <= topRightCorner.getY())
 				{
 					n = new NavmeshNode(hull[i]);
-					nodesList.add(n);					
+					nodesList.add(n);
+					addedPoints.add(hull[i]);
 				}
 			}
 //			first.neighbourInConvexHull = last;
@@ -130,7 +134,7 @@ public class NavmeshComputer
 		// We add the points one by one
 		for(int index = 4; index < nodesList.size(); index++)
 			addNewNodeInitialization(nodesList.get(index));
-		
+		System.out.println("Tout ajouté");
 		/**
 		 * Flip the edges (unnecessary)
 		 */
@@ -161,44 +165,95 @@ public class NavmeshComputer
 		}
 		
 		assert edgesInProgress.peek().length <= longestAllowedLength : edgesInProgress.peek().length + " > " + longestAllowedLength;
-
+try {
 		// Suppression des nœuds à l'intérieur d'obstacle
-		Iterator<NavmeshNode> iter = nodesList.iterator();
-		while(iter.hasNext())
+		Iterator<NavmeshNode> iterN = nodesList.iterator();
+		while(iterN.hasNext())
 		{
-			NavmeshNode node = iter.next();
+			NavmeshNode node = iterN.next();
 			for(Obstacle o : obsList)
-				if(o.isInObstacle(node.position))
+				if(o.squaredDistance(node.position) < expansion * expansion)
 				{
-					node.updateNeighbours();
-					int nbVoisins = node.getNbNeighbours();
+					System.out.println("nbVoisins : "+node.getNbNeighbours());
 					
-					// On retire toutes les arêtes qui en partent					
-					for(int i = 0; i < nbVoisins; i++)
+					// On retire toutes les arêtes qui en partent
+					boolean fliped;
+					do {
+						fliped = false;
+						for(int i = 0; i < node.getNbNeighbours(); i++)
+						{
+							NavmeshEdge edge = node.getNeighbourEdge(i);
+							System.out.println(i+" "+edge);
+	
+							if(edge.forceFlip()) // flip a marché
+							{
+								System.out.println("Flip forcé !");
+								edgesInProgress.remove(edge);
+								edgesInProgress.add(edge);
+								fliped = true;
+								break;
+							}
+						}
+					} while(fliped);
+					
+					// On retire toutes les arêtes qui restent
+					for(int i = 0; i < node.getNbNeighbours(); i++)
 					{
-						edgesInProgress.remove(node.getNeighbourEdge(i));
-						node.getNeighbour(i).edges.remove(node.getNeighbourEdge(i));
+						NavmeshEdge edge = node.getNeighbourEdge(i);
+						System.out.println("Suppression finale : "+node.getNbNeighbours()+" "+edge);
+
+						edgesInProgress.remove(edge);
+						node.getNeighbour(i).removeEdge(edge);
 						// Il n'existe plus pour ses voisins
-						node.getNeighbour(i).updateNeighbours();
 					}
-					iter.remove();
+					
+					// TODO recréer des triangles à la place de ceux qui disparaissent
+					
+					iterN.remove();
 					break;
 				}
 		}
-		
+} catch(AssertionError e){e.printStackTrace();}
+
 		// Suppression des arêtes qui coupent des obstacles
-		// TODO
+		LinkedList<NavmeshEdge> needDestruction = new LinkedList<NavmeshEdge>();
+		for(NavmeshEdge e : edgesInProgress)
+			for(Obstacle o : obsList)
+				if(o.isColliding(e.points[0].position, e.points[1].position))
+					needDestruction.add(e);
 		
+		/*
+		 * On ne veut garder que des nœuds qui ont au moins deux voisins.
+		 * Retirer ces nœuds retire des arêtes, ce qui peut entraîner une réaction en chaîne
+		 * (une chaîne de nœuds sera détruite par exemple) 
+		 */
+		while(!needDestruction.isEmpty())
+		{
+			NavmeshEdge e = needDestruction.poll();
+			if(edgesInProgress.remove(e)) // on vérifie que l'arête n'a pas déjà été traitée
+			{
+				for(int i = 0; i < 2; i++)
+				{
+					e.points[i].removeEdge(e);
+					int nbVoisins = e.points[i].getNbNeighbours(); 
+					// If the node isn't connected anymore
+					if(nbVoisins == 0)
+						nodesList.remove(e.points[i]);
+					else if(nbVoisins == 1)
+						needDestruction.add(e.points[i].getNeighbourEdge(0));
+				}
+			}
+		}
 
 		// Si on a supprimé l'arête d'un triangle, on supprime ce triangle, et on retire ce triangle de ses autres côtés
-		Iterator<NavmeshTriangle> iter2 = triangles.iterator();
-		while(iter2.hasNext())
+		Iterator<NavmeshTriangle> iterT = triangles.iterator();
+		while(iterT.hasNext())
 		{
-			NavmeshTriangle triangle = iter2.next();
+			NavmeshTriangle triangle = iterT.next();
 			for(int i = 0; i < 3; i++)
 				if(!edgesInProgress.contains(triangle.edges[i]))
 				{
-					iter2.remove();
+					iterT.remove();
 					for(int j = 0; j < 3; j++)
 						triangle.edges[j].removeTriangle(triangle);
 					break;
@@ -211,7 +266,6 @@ public class NavmeshComputer
 		for(int i = 0; i < n.length; i++)
 		{
 			n[i] = nodesList.get(i);
-			n[i].updateNeighbours();
 			n[i].nb = i; // since we deleted some nodes, the numbers may not be adjoining anymore
 		}
 
@@ -219,7 +273,10 @@ public class NavmeshComputer
 
 		NavmeshEdge[] e = new NavmeshEdge[edgesInProgress.size()];
 		for(int i = 0; i < e.length; i++)
+		{
 			e[i] = edgesInProgress.poll();
+			e[i].updateOrientation();
+		}
 		
 		NavmeshTriangle[] t = new NavmeshTriangle[triangles.size()];
 		for(int i = 0; i < t.length; i++)
@@ -268,7 +325,8 @@ public class NavmeshComputer
 		NavmeshTriangle tr0 = edge.triangles[0];
 		NavmeshTriangle tr1 = edge.triangles[1];
 		
-		edge.points[1].edges.remove(edge);
+		
+		edge.points[1].removeEdge(edge);
 		NavmeshEdge newEdge = new NavmeshEdge(newNode, edge.points[1]);
 //		if(edge.constrained)
 //			newEdge.constrained = true;
@@ -281,7 +339,7 @@ public class NavmeshComputer
 		
 		edgesInProgress.add(edge);
 
-		newNode.edges.add(edge);
+		newNode.addEdge(edge);
 
 		addEdgeNode(newNode, edge, newEdge, tr0);
 		
@@ -314,6 +372,7 @@ public class NavmeshComputer
 	 */
 	private void addNewNodeInitialization(NavmeshNode nextNode)
 	{
+		System.out.println("Ajout");
 		assert !edgesInProgress.isEmpty();
 		assert !triangles.isEmpty();
 
@@ -369,6 +428,7 @@ public class NavmeshComputer
 
 	private void addInsideNode(NavmeshNode nextNode, NavmeshTriangle t)
 	{
+		System.out.println("Add inside");
 		assert t.isInside(nextNode.position);
 		assert needFlipCheck.isEmpty();
 
@@ -408,6 +468,7 @@ public class NavmeshComputer
 		
 		triangles.add(tr1);
 		triangles.add(tr2);
+		System.out.println("Fin add inside");
 	}
 	
 	private void addEdgeNode(NavmeshNode nextNode, NavmeshEdge originalEdge, NavmeshEdge newEdge, NavmeshTriangle tr)
@@ -467,6 +528,7 @@ public class NavmeshComputer
 	
 	private void flip()
 	{
+		System.out.println("Flip");
 		while(!needFlipCheck.isEmpty())
 		{
 			NavmeshEdge e = needFlipCheck.removeFirst();
@@ -487,8 +549,9 @@ public class NavmeshComputer
 					for(int j = 0; j < 3; j++)
 						needFlipCheck.add(e.triangles[i].edges[j]);
 			}
+			assert !e.flipIfNecessary();
 		}
-
+		System.out.println("Fin flip");
 		// All triangles should be Delaunay
 		assert checkDelaunay();
 	}
@@ -497,7 +560,6 @@ public class NavmeshComputer
 	{
 		for(NavmeshNode n : nodesList)
 		{
-			n.updateNeighbours();
 			int nbVoisins = n.getNbNeighbours();
 			for(int i = 0; i < nbVoisins; i++)
 				if(!nodesList.contains(n.getNeighbour(i)) || !edgesInProgress.contains(n.getNeighbourEdge(i)))
@@ -512,7 +574,6 @@ public class NavmeshComputer
 		}
 		return true;
 	}
-
 	
 	private String checkTrianglesAndEdges()
 	{

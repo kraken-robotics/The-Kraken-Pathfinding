@@ -320,5 +320,16 @@ public class RectangularObstacle extends Obstacle
 			return true;
 		return false;
 	}
+	
+	@Override
+	public boolean isColliding(XY pointA, XY pointB)
+	{
+		if(XY.segmentIntersection(pointA, pointB, coinBasGaucheRotate, coinHautGaucheRotate)
+				|| XY.segmentIntersection(pointA, pointB, coinHautGaucheRotate, coinHautDroiteRotate)
+				|| XY.segmentIntersection(pointA, pointB, coinHautDroiteRotate, coinBasDroiteRotate)
+				|| XY.segmentIntersection(pointA, pointB, coinBasDroiteRotate, coinBasGaucheRotate))
+			return true;
+		return false;
+	}
 
 }

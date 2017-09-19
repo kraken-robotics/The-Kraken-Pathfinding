@@ -168,10 +168,6 @@ public abstract class Obstacle implements Printable, Serializable
 	 * @param pointB
 	 * @return
 	 */
-	public boolean isColliding(XY pointA, XY pointB)
-	{
-		// TODO Auto-generated method stub
-		return false;
-	}
+	public abstract boolean isColliding(XY pointA, XY pointB);
 
 }

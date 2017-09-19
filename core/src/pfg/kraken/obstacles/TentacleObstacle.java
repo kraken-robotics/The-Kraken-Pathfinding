@@ -76,5 +76,14 @@ public class TentacleObstacle extends Obstacle
 				return true;
 		return false;
 	}
+	
+	@Override
+	public boolean isColliding(XY pointA, XY pointB)
+	{
+		for(RectangularObstacle o : ombresRobot)
+			if(o.isColliding(pointA, pointB))
+				return true;
+		return false;
+	}
 
 }

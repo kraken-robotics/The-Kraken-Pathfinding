@@ -99,5 +99,14 @@ public class CompoundObstacle extends Obstacle
 				return true;
 		return false;
 	}
+	
+	@Override
+	public boolean isColliding(XY pointA, XY pointB)
+	{
+		for(Obstacle o : obs)
+			if(o.isColliding(pointA, pointB))
+				return true;
+		return false;
+	}
 
 }

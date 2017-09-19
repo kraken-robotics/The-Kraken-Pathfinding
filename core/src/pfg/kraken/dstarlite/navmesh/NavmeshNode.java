@@ -31,10 +31,24 @@ public class NavmeshNode implements Printable, Serializable
 //	public NavmeshNode neighbourInConvexHull;
 	public int nb; // index in memory pool
 	public final XY position;
-	List<NavmeshEdge> edges = new ArrayList<NavmeshEdge>();
+	private List<NavmeshEdge> edges = new ArrayList<NavmeshEdge>();
 	List<NavmeshNode> neighbours = new ArrayList<NavmeshNode>();
 	private static int nbStatic = 0;
 
+	public void addEdge(NavmeshEdge e)
+	{
+		assert !edges.contains(e) : "Can't add an edge already added";
+		edges.add(e);
+		updateNeighbours();
+	}
+	
+	public void removeEdge(NavmeshEdge e)
+	{
+		assert edges.contains(e) : "Can't remove an edge already removed";
+		edges.remove(e);
+		updateNeighbours();
+	}
+	
 	/**
 	 * Construit à partir du hashCode
 	 * 
@@ -86,20 +100,20 @@ public class NavmeshNode implements Printable, Serializable
 		return Layer.FOREGROUND.ordinal();
 	}
 
-	void updateNeighbours()
+	private void updateNeighbours()
 	{
 		neighbours.clear();
 		for(NavmeshEdge e : edges)
 		{
 			if(e.points[0] == this)
 			{
-				assert !neighbours.contains(e.points[1]);
+				assert !neighbours.contains(e.points[1]) : "Double edge !";
 				neighbours.add(e.points[1]);
 			}
 			else
 			{
 				assert e.points[1] == this;
-				assert !neighbours.contains(e.points[0]);
+				assert !neighbours.contains(e.points[0]) : "Double edge !";
 				neighbours.add(e.points[0]);
 			}
 		}	
@@ -107,6 +121,7 @@ public class NavmeshNode implements Printable, Serializable
 	
 	public int getNbNeighbours()
 	{
+		updateNeighbours();
 		assert neighbours.size() == edges.size();
 		return edges.size();
 	}

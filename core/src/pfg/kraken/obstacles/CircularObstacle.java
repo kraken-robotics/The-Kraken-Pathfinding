@@ -103,4 +103,37 @@ public class CircularObstacle extends Obstacle
 		return pos.distance(position) <= radius;
 	}
 
+	@Override
+	public boolean isColliding(XY pointA, XY pointB)
+	{
+    	// Ceci peut être le cas pour certain élément de jeu dont il ne faut pas vérifier les collisions
+    	if(radius < 0)
+    		return false;
+    	/**
+    	 * Ce code a été honteusement pompé sur http://openclassrooms.com/courses/theorie-des-collisions/formes-plus-complexes
+    	 */
+    	
+    	if (!isCollidingLine(pointA, pointB))
+	        return false;  // si on ne touche pas la droite, on ne touchera jamais le segment
+    	
+    	double pscal1 = pointB.minusNewVector(pointA).dot(position.minusNewVector(pointA));
+    	double pscal2 = pointA.minusNewVector(pointB).dot(position.minusNewVector(pointB));
+	    if (pscal1>=0 && pscal2>=0)
+	       return true;
+	    
+	    // dernière possibilité, A ou B dans le cercle
+	    return isInObstacle(pointA) || isInObstacle(pointB);
+	}
+	
+	private boolean isCollidingLine(XY pointA, XY pointB)
+	{
+		XY C = position;
+		XY_RW AB = pointB.minusNewVector(pointA);
+		XY_RW AC = C.minusNewVector(pointA);
+	    double numerateur = Math.abs(AB.getX()*AC.getY() - AB.getY()*AC.getX());
+	    double denominateur = AB.squaredNorm();
+	    double CI = numerateur*numerateur / denominateur;
+	    return CI < radius*radius;
+	}
+
 }

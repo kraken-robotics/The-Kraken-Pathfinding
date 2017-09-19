@@ -101,14 +101,18 @@ public class NavmeshEdge implements Serializable, Printable
 		assert p1 != p2;
 		points[0] = p1;
 		points[1] = p2;
-		p1.edges.add(this);
-		p2.edges.add(this);
+		p1.addEdge(this);
+		p2.addEdge(this);
 		update();
+	}
+	
+	public void updateOrientation()
+	{
+		orientation = Math.atan2(points[1].position.getY() - points[0].position.getY(), points[1].position.getX() - points[0].position.getX());		
 	}
 	
 	public void update()
 	{
-		orientation = Math.atan2(points[1].position.getY() - points[0].position.getY(), points[1].position.getX() - points[0].position.getX());
 		length = (int) (1000 * points[0].position.distance(points[1].position));
 	}
 	
@@ -240,6 +244,16 @@ public class NavmeshEdge implements Serializable, Printable
 	 */
 	public boolean flipIfNecessary()
 	{
+		return flip(false);
+	}
+	
+	public boolean forceFlip()
+	{
+		return flip(true);
+	}
+	
+	private boolean flip(boolean force)
+	{
 //		if(points[0].neighbourInConvexHull == points[1] || points[1].neighbourInConvexHull == points[0])
 //			constrained = true;
 
@@ -258,34 +272,38 @@ public class NavmeshEdge implements Serializable, Printable
 				edgeIn1 = j;
 		}
 		
+		// beta et gemma sont les points communs
 		NavmeshNode alpha = tr0.points[edgeIn0];
 		NavmeshNode beta = tr0.points[(edgeIn0 + 1) % 3]; // a node of this edge
 		NavmeshNode gamma = tr0.points[(edgeIn0 + 2) % 3]; // the other node of this edge
 		NavmeshNode delta = tr1.points[edgeIn1];
 		
+		// On vérifie la convexité des deux triangles (nécessaire seulement si on force)
+		if(!XY.segmentIntersection(alpha.position, delta.position, beta.position, gamma.position))
+			return false;
+		
+		// Une conséquence de la convexité
+		assert !alpha.neighbours.contains(delta) : alpha+" is already a neighbour of "+delta;
+			
 		// this must be done on convex hull only
 //		if(alpha.neighbourInConvexHull == delta || delta.neighbourInConvexHull == alpha)
 //			constrained = true;
 		
 //		// This edge is about to become constrained
-		if(/*!constrained && */!isCircumscribed(alpha.position, beta.position, gamma.position, delta.position))
+		if(!force && /*!constrained && */!isCircumscribed(alpha.position, beta.position, gamma.position, delta.position))
 			return false;
 		
 		// Flip
 		
-		points[0].edges.remove(this);
-		assert !points[0].edges.contains(this);
-		points[1].edges.remove(this);
-		assert !points[1].edges.contains(this);
+		points[0].removeEdge(this);
+		points[1].removeEdge(this);
 		
 		points[0] = alpha;
 		points[1] = delta;
 		update();
 		
-		if(!points[0].edges.contains(this))
-			points[0].edges.add(this);
-		if(!points[1].edges.contains(this))
-			points[1].edges.add(this);
+		points[0].addEdge(this);
+		points[1].addEdge(this);
 		
 		NavmeshEdge tmp = tr0.edges[(edgeIn0 + 1) % 3];
 		tr1.edges[(edgeIn1 + 1) % 3].removeTriangle(tr1);
@@ -391,7 +409,7 @@ public class NavmeshEdge implements Serializable, Printable
 		return false;
 	}
 
-	public Double getOrientation(NavmeshNode origin)
+	public double getOrientation(NavmeshNode origin)
 	{
 		if(origin == points[0])
 			return orientation;
