@@ -166,6 +166,11 @@ public class NavmeshComputer
 		
 		assert edgesInProgress.peek().length <= longestAllowedLength : edgesInProgress.peek().length + " > " + longestAllowedLength;
 
+		assert ((s = checkCrossingEdges()) == null) : s;
+		assert ((s = checkNodeInTriangle()) == null) : s;
+		assert ((s = checkNodeIncludedInEdge()) == null) : s;
+		
+		try {
 		// Suppression des nœuds à l'intérieur d'obstacle
 		Iterator<NavmeshNode> iterN = nodesList.iterator();
 		while(iterN.hasNext())
@@ -183,41 +188,48 @@ public class NavmeshComputer
 							NavmeshEdge edge = node.getNeighbourEdge(i);
 	
 							assert checkAll();
+							assert ((s = checkCrossingEdges()) == null) : s+", fliped edge : "+edge;
 							if(edge.forceFlip()) // flip a marché
 							{
 								edgesInProgress.remove(edge);
 								edgesInProgress.add(edge);
+								needFlipCheck.add(edge);
 								fliped = true;
-								assert ((s = checkCrossingEdges()) == null) : s+", fliped edge : "+edge;
-								assert ((s = checkNodeInTriangle()) == null) : s+", fliped edge : "+edge;
-								
+								assert checkAll();
+								assert ((s = checkCrossingEdges()) == null) : s+", fliped edge : "+edge+", node to remove : "+node;
+								assert ((s = checkNodeInTriangle()) == null) : s+", fliped edge : "+edge+", node to remove : "+node;
+								assert ((s = checkNodeIncludedInEdge()) == null) : s;
+
 								break;
 							}
 						}
 					} while(fliped);
-					
-
 					
 					int nbVoisins = node.getNbNeighbours();
 					assert nbVoisins <= 4 : "Nb voisins : "+nbVoisins;
 					
 					NavmeshEdge[][] edges = null;
 					
+					// TODO trouver les conditions exactes
+					
 					// Première étape : on prépare les arêtes des futurs triangles
 					if(nbVoisins == 3)
 					{
 						edges = new NavmeshEdge[1][3];
+						// edges[0] can contain "null" value if the neighbours of node don't form a triangle
 						edges[0] = getEdges(new NavmeshNode[] {node.getNeighbour(0), node.getNeighbour(1), node.getNeighbour(2)});
 					}
 					else if(nbVoisins == 4)
 					{
 						edges = new NavmeshEdge[2][3];
-						edges[0] = getEdges(new NavmeshNode[] {node.getNeighbour(0), node.getNeighbour(1), node.getNeighbour(2)});
 						NavmeshNode premier = node.getNeighbour(3);
 						for(int i = 0; i < 3; i++)
 							if(!premier.isNeighbourOf(node.getNeighbour(i)))
 							{
-								edges[1] = getEdges(new NavmeshNode[] {premier, node.getNeighbour((i+1) % 3), node.getNeighbour((i+2) % 3)});
+								NavmeshEdge newEdge = new NavmeshEdge(premier, node.getNeighbour(i));
+								edgesInProgress.add(newEdge);
+								edges[0] = getEdges(new NavmeshNode[] {premier, node.getNeighbour(i), node.getNeighbour((i+1) % 3)});
+								edges[1] = getEdges(new NavmeshNode[] {premier, node.getNeighbour(i), node.getNeighbour((i+2) % 3)});
 								break;
 							}
 						assert edges[1] != null;
@@ -240,13 +252,26 @@ public class NavmeshComputer
 
 					// Troisième étape : on construit le ou les triangles
 					if(edges != null)
+					{
+						System.out.println(nbVoisins);
+
 						for(int i = 0; i < edges.length; i++)
-							triangles.add(new NavmeshTriangle(edges[i][0], edges[i][1], edges[i][2]));
-											
+						{
+							if(edges[i][0] != null && edges[i][1] != null && edges[i][2] != null)
+							{
+								for(int j = 0; j < 3; j++)
+									needFlipCheck.add(edges[i][j]);
+								triangles.add(new NavmeshTriangle(edges[i][0], edges[i][1], edges[i][2]));
+							}
+						}
+					}
+					assert ((s = checkNodeInTriangle()) == null) : s;
+			
+					flip();
+					assert checkDelaunay();
 					break;
 				}
 		}
-
 		// Suppression des arêtes qui coupent des obstacles
 		LinkedList<NavmeshEdge> needDestruction = new LinkedList<NavmeshEdge>();
 		for(NavmeshEdge e : edgesInProgress)
@@ -291,7 +316,8 @@ public class NavmeshComputer
 					break;
 				}
 		}
-	
+		}catch(AssertionError e){e.printStackTrace();}
+
 		assert ((s = checkTrianglesAndEdges()) == null) : s;
 
 		NavmeshNode[] n = new NavmeshNode[nodesList.size()];
@@ -411,6 +437,16 @@ public class NavmeshComputer
 				if(n != t.points[0] && n != t.points[1] && n != t.points[2] && t.isInside(n.position))
 					return "There is a node inside a triangle ! "+n+" "+t;
 		return null;
+	}
+	
+	private String checkNodeIncludedInEdge()
+	{
+		for(NavmeshEdge e : edgesInProgress)
+			for(NavmeshNode n : nodesList)
+				if(e.points[0] != n && e.points[1] != n && e.containsNode(n))
+					return "A node is included in an edge : "+e+" "+n;
+		return null;
+
 	}
 	
 	private String checkCrossingEdges()

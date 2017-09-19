@@ -13,13 +13,12 @@ import pfg.graphic.GraphicPanel;
 import pfg.graphic.PrintBuffer;
 import pfg.graphic.printable.Layer;
 import pfg.graphic.printable.Printable;
+import pfg.graphic.printable.PrintablePoint;
 import pfg.kraken.ConfigInfoKraken;
 import pfg.kraken.ColorKraken;
-import pfg.kraken.obstacles.CircularObstacle;
 import pfg.kraken.robot.Cinematique;
 import pfg.kraken.robot.ItineraryPoint;
 import pfg.log.Log;
-import pfg.kraken.utils.XY;
 
 /**
  * Faux chemin, sert à la prévision d'itinéraire
@@ -35,7 +34,7 @@ public class DefaultCheminPathfinding implements CheminPathfindingInterface, Pri
 	protected Log log;
 	private PrintBuffer buffer;
 	private boolean print;
-	private CircularObstacle[] aff = new CircularObstacle[256];
+	private PrintablePoint[] aff = new PrintablePoint[256];
 
 	public DefaultCheminPathfinding(Log log, Config config, PrintBuffer buffer)
 	{
@@ -76,7 +75,7 @@ public class DefaultCheminPathfinding implements CheminPathfindingInterface, Pri
 		if(path != null)
 			for(ItineraryPoint c : path)
 			{
-				aff[i] = new CircularObstacle(new XY(c.x, c.y), 8, ColorKraken.TRAJECTOIRE.color, ColorKraken.TRAJECTOIRE.layer);
+				aff[i] = new PrintablePoint(c.x, c.y, ColorKraken.TRAJECTOIRE.layer, ColorKraken.TRAJECTOIRE.color);
 				buffer.addSupprimable(aff[i]);
 				i++;
 			}
