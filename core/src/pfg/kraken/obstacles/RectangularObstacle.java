@@ -12,6 +12,7 @@ import pfg.graphic.Chart;
 import pfg.graphic.GraphicPanel;
 import pfg.graphic.printable.Layer;
 import pfg.kraken.utils.XY;
+import pfg.kraken.utils.XY.IntersectionStatus;
 import pfg.kraken.utils.XY_RW;
 
 /**
@@ -324,10 +325,10 @@ public class RectangularObstacle extends Obstacle
 	@Override
 	public boolean isColliding(XY pointA, XY pointB)
 	{
-		if(XY.segmentIntersection(pointA, pointB, coinBasGaucheRotate, coinHautGaucheRotate)
-				|| XY.segmentIntersection(pointA, pointB, coinHautGaucheRotate, coinHautDroiteRotate)
-				|| XY.segmentIntersection(pointA, pointB, coinHautDroiteRotate, coinBasDroiteRotate)
-				|| XY.segmentIntersection(pointA, pointB, coinBasDroiteRotate, coinBasGaucheRotate))
+		if(XY.segmentIntersection(pointA, pointB, coinBasGaucheRotate, coinHautGaucheRotate) == IntersectionStatus.INTERSECTION
+				|| XY.segmentIntersection(pointA, pointB, coinHautGaucheRotate, coinHautDroiteRotate) == IntersectionStatus.INTERSECTION
+				|| XY.segmentIntersection(pointA, pointB, coinHautDroiteRotate, coinBasDroiteRotate) == IntersectionStatus.INTERSECTION
+				|| XY.segmentIntersection(pointA, pointB, coinBasDroiteRotate, coinBasGaucheRotate) == IntersectionStatus.INTERSECTION)
 			return true;
 		return false;
 	}

@@ -17,6 +17,7 @@ import pfg.kraken.ConfigInfoKraken;
 import pfg.kraken.obstacles.Obstacle;
 import pfg.kraken.obstacles.container.StaticObstacles;
 import pfg.kraken.utils.XY;
+import pfg.kraken.utils.XY.IntersectionStatus;
 import pfg.log.Log;
 
 /**
@@ -78,11 +79,6 @@ public class NavmeshComputer
 		NavmeshNode br = new NavmeshNode(bottomRightCorner);
 		NavmeshNode tl = new NavmeshNode(topLeftCorner);
 		
-/*		tl.neighbourInConvexHull = bl;
-		tr.neighbourInConvexHull = tl;
-		br.neighbourInConvexHull = tr;
-		bl.neighbourInConvexHull = bl;*/
-		
 		nodesList.add(tl);
 		nodesList.add(tr);
 		nodesList.add(br);
@@ -107,7 +103,6 @@ public class NavmeshComputer
 					addedPoints.add(hull[i]);
 				}
 			}
-//			first.neighbourInConvexHull = last;
 		}
 
 		/*
@@ -129,18 +124,12 @@ public class NavmeshComputer
 		triangles.add(new NavmeshTriangle(e1, e2, e3));
 		triangles.add(new NavmeshTriangle(e3, e4, e5));
 		
-//		log.write("First triangle : "+triangles.get(0), LogCategoryKraken.TEST);
-		
 		// We add the points one by one
 		for(int index = 4; index < nodesList.size(); index++)
 			addNewNodeInitialization(nodesList.get(index));
 		System.out.println("Tout ajouté");
-		/**
-		 * Flip the edges (unnecessary)
-		 */
+		
 		assert checkDelaunay();
-//		for(NavmeshEdge e : edgesInProgress)
-//			e.flipIfNecessary();		
 
 		// We add other points in order to avoir long edges
 		NavmeshEdge longestEdge = edgesInProgress.peek();
@@ -192,8 +181,8 @@ public class NavmeshComputer
 								edgesInProgress.remove(edge);
 								edgesInProgress.add(edge);
 								fliped = true;
-								assert ((s = checkCrossingEdges()) == null) : s;
-								assert ((s = checkNodeInTriangle()) == null) : s;
+								assert ((s = checkCrossingEdges()) == null) : s+", fliped edge : "+edge;
+								assert ((s = checkNodeInTriangle()) == null) : s+", fliped edge : "+edge;
 								
 								break;
 							}
@@ -423,8 +412,9 @@ public class NavmeshComputer
 				if(e1 != e2 && e1.points[0] != e2.points[0] && e1.points[0] != e2.points[1]
 						&& e1.points[1] != e2.points[0] && e1.points[1] != e2.points[1]
 								&& XY.segmentIntersection(e1.points[0].position, e1.points[1].position,
-										e2.points[0].position, e2.points[1].position))
-					return "Two edges intersect ! "+e1+" and "+e2;
+										e2.points[0].position, e2.points[1].position) != IntersectionStatus.NO_INTERSECTION)
+					return "Two edges intersect ! "+e1+" and "+e2+" "+XY.segmentIntersection(e1.points[0].position, e1.points[1].position,
+							e2.points[0].position, e2.points[1].position);
 		return null;
 	}
 
@@ -436,34 +426,30 @@ public class NavmeshComputer
 		XY a = edge.points[0].position;
 		XY b = edge.points[1].position;
 		XY c = a.plusNewVector(b).scalar(0.5);
-		// if we split a constrained edge, make the new edges constrained
 		
-/*		NavmeshNode first = null, second = null;
-		if(edge.points[0].neighbourInConvexHull == edge.points[1])
-		{
-			first = edge.points[1];
-			second = edge.points[0];
-		}
-		else if(edge.points[1].neighbourInConvexHull == edge.points[0])
-		{
-			first = edge.points[0];
-			second = edge.points[1];
-		}*/
+		NavmeshNode newNode = new NavmeshNode(c);
 		
-		NavmeshNode newNode = new NavmeshNode(c/*, first*/);
-//		if(second != null)
-//			second.neighbourInConvexHull = newNode;
-		
-		nodesList.add(newNode);
+		addPointInEdge(newNode, edge);
+	}
+	
+	/**
+	 * Add a node (already created) within an edge
+	 * @param newNode
+	 * @param edge
+	 */
+	private void addPointInEdge(NavmeshNode newNode, NavmeshEdge edge)
+	{		
+		// Il ne faut pas que ce soit sur
+		assert !newNode.position.equals(edge.points[0].position);
+		assert !newNode.position.equals(edge.points[1].position);
 		
 		NavmeshTriangle tr0 = edge.triangles[0];
 		NavmeshTriangle tr1 = edge.triangles[1];
-		
+
+		nodesList.add(newNode);
 		
 		edge.points[1].removeEdge(edge);
 		NavmeshEdge newEdge = new NavmeshEdge(newNode, edge.points[1]);
-//		if(edge.constrained)
-//			newEdge.constrained = true;
 		
 		edgesInProgress.add(newEdge);
 
@@ -512,14 +498,37 @@ public class NavmeshComputer
 
 //		System.out.println("Ajout de "+nextNode);
 		// first we check if this point is in a triangle
+		
+		int nbTr = 0;
+		NavmeshTriangle[] tr = new NavmeshTriangle[2];
 		for(NavmeshTriangle t : triangles)
 			if(t.isInside(nextNode.position))
+				tr[nbTr++] = t;
+		
+		assert nbTr <= 2 : "A node is inside "+nbTr+" triangles !";
+		
+		if(nbTr > 0)
+		{
+			if(nbTr == 1)
 			{
-				triangles.remove(t);
-				addInsideNode(nextNode, t);
-				flip();
-				return;
+				triangles.remove(tr[0]);
+				addInsideNode(nextNode, tr[0]);
 			}
+			else
+			{
+				// Le point est sur une arête. On utilise l'autre procédure qui s'occupe de ça
+				for(NavmeshEdge e0 : tr[0].edges)
+					for(NavmeshEdge e1 : tr[1].edges)
+						if(e0 == e1)
+						{
+							edgesInProgress.remove(e0);
+							addPointInEdge(nextNode, e0);
+							break;
+						}
+			}
+			flip();
+			return;
+		}		
 		
 		// All points must be within the initial rectangle
 		assert false : "The node "+nextNode+" is outside the initial rectangle !";

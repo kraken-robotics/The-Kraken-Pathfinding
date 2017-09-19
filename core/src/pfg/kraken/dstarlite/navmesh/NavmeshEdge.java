@@ -17,6 +17,7 @@ import pfg.graphic.printable.Printable;
 import pfg.kraken.ColorKraken;
 import pfg.kraken.obstacles.Obstacle;
 import pfg.kraken.utils.XY;
+import pfg.kraken.utils.XY.IntersectionStatus;
 import pfg.kraken.utils.XY_RW;
 
 /**
@@ -33,10 +34,9 @@ public class NavmeshEdge implements Serializable, Printable
 	private double orientation;
 	private boolean wasPreviouslyBlocked = false;
 	public final NavmeshNode[] points = new NavmeshNode[2];
-	final NavmeshTriangle[] triangles = new NavmeshTriangle[2]; // transient because it is used only at the building of the navmesh
+	final NavmeshTriangle[] triangles = new NavmeshTriangle[2]; // TODO transient because it is used only at the building of the navmesh
 	int nbTriangles = 0;
 	private boolean highlight = false;
-//	boolean constrained = false; // can this edge be flipped ?
 	final List<Obstacle> obstructingObstacles = new ArrayList<Obstacle>();
 	
 	private boolean checkNbTriangles()
@@ -255,10 +255,7 @@ public class NavmeshEdge implements Serializable, Printable
 	
 	private boolean flip(boolean force)
 	{
-//		if(points[0].neighbourInConvexHull == points[1] || points[1].neighbourInConvexHull == points[0])
-//			constrained = true;
-
-		if(nbTriangles < 2)// || constrained)
+		if(nbTriangles < 2)
 			return false;
 				
 		NavmeshTriangle tr0 = triangles[0];
@@ -273,25 +270,24 @@ public class NavmeshEdge implements Serializable, Printable
 				edgeIn1 = j;
 		}
 		
-		// beta et gemma sont les points communs
+		// beta et gamma sont les points communs
 		NavmeshNode alpha = tr0.points[edgeIn0];
 		NavmeshNode beta = tr0.points[(edgeIn0 + 1) % 3]; // a node of this edge
 		NavmeshNode gamma = tr0.points[(edgeIn0 + 2) % 3]; // the other node of this edge
 		NavmeshNode delta = tr1.points[edgeIn1];
+//		System.out.println(alpha+" "+beta+" "+gamma+" "+delta);
 		
 		// On vérifie la convexité des deux triangles (nécessaire seulement si on force)
-		if(!XY.segmentIntersection(alpha.position, delta.position, beta.position, gamma.position))
+		// On refuse aussi les cas où l'intersection n'est pas stricte (trois points alignés)
+		// Ce dernier cas n'est pas rare du tout car il y a souvent plusieurs points sur une même arête
+		if(XY.segmentIntersection(alpha.position, delta.position, beta.position, gamma.position) != IntersectionStatus.INTERSECTION)
 			return false;
 		
 		// Une conséquence de la convexité
 		assert !alpha.neighbours.contains(delta) : alpha+" is already a neighbour of "+delta;
 			
-		// this must be done on convex hull only
-//		if(alpha.neighbourInConvexHull == delta || delta.neighbourInConvexHull == alpha)
-//			constrained = true;
-		
-//		// This edge is about to become constrained
-		if(!force && /*!constrained && */!isCircumscribed(alpha.position, beta.position, gamma.position, delta.position))
+		// force override the circumscribed check
+		if(!force && !isCircumscribed(alpha.position, beta.position, gamma.position, delta.position))
 			return false;
 		
 		// Flip
@@ -417,6 +413,4 @@ public class NavmeshEdge implements Serializable, Printable
 		assert origin == points[1];
 		return orientation + Math.PI;
 	}
-	
-//	new Segment(e.points[0].position, e.points[1].position, Layer.BACKGROUND, Couleur.NAVMESH.couleur)
 }
