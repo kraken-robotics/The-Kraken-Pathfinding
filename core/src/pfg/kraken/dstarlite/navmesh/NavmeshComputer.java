@@ -48,10 +48,10 @@ public class NavmeshComputer
 	
 	protected Log log;
 
-	private LinkedList<NavmeshEdge> needFlipCheck = new LinkedList<NavmeshEdge>();
-	private PriorityQueue<NavmeshTriangle> triangles = new PriorityQueue<NavmeshTriangle>(1000, new NavmeshTriangleComparator());
-	private PriorityQueue<NavmeshEdge> edgesInProgress = new PriorityQueue<NavmeshEdge>(1000, new NavmeshEdgeComparator());
-	private List<NavmeshNode> nodesList = new ArrayList<NavmeshNode>();
+	private LinkedList<NavmeshEdge> needFlipCheck;
+	private PriorityQueue<NavmeshTriangle> triangles;
+	private PriorityQueue<NavmeshEdge> edgesInProgress;
+	private List<NavmeshNode> nodesList;
 
 	private int expansion;
 	private int largestAllowedArea, longestAllowedLength;
@@ -66,6 +66,11 @@ public class NavmeshComputer
 	
 	public TriangulatedMesh generateNavMesh(StaticObstacles obs)
 	{
+		needFlipCheck = new LinkedList<NavmeshEdge>();
+		triangles = new PriorityQueue<NavmeshTriangle>(1000, new NavmeshTriangleComparator());
+		edgesInProgress = new PriorityQueue<NavmeshEdge>(1000, new NavmeshEdgeComparator());
+		 nodesList = new ArrayList<NavmeshNode>();
+
 		List<Obstacle> obsList = obs.getObstacles();
 		String s;
 		
@@ -79,16 +84,21 @@ public class NavmeshComputer
 		NavmeshNode br = new NavmeshNode(bottomRightCorner);
 		NavmeshNode tl = new NavmeshNode(topLeftCorner);
 		
+		// TODO traiter comme un rectangle !
+		
 		nodesList.add(tl);
 		nodesList.add(tr);
 		nodesList.add(br);
 		nodesList.add(bl);
-		
+
 		// Used to check if there are duplicate points
 		List<XY> addedPoints = new ArrayList<XY>();
+		for(NavmeshNode n : nodesList)
+			addedPoints.add(n.position);
 		
 		for(Obstacle o : obsList)
 		{
+			// TODO : ajouter des points !
 			XY[] hull = o.getExpandedConvexHull(expansion * 1.1, longestAllowedLength / 1000.);
 			assert hull.length >= 3;
 			NavmeshNode n = null;
@@ -105,6 +115,8 @@ public class NavmeshComputer
 			}
 		}
 
+		assert ((s = checkNoDuplicate()) == null) : s;
+		
 		/*
 		 * This is not the fastest algorithm… but it is enough for an off-line computation
 		 * This is a Delaunay triangulation.
@@ -127,7 +139,6 @@ public class NavmeshComputer
 		// We add the points one by one
 		for(int index = 4; index < nodesList.size(); index++)
 			addNewNodeInitialization(nodesList.get(index));
-		System.out.println("Tout ajouté");
 		
 		assert checkDelaunay();
 
@@ -163,8 +174,6 @@ public class NavmeshComputer
 			for(Obstacle o : obsList)
 				if(o.squaredDistance(node.position) < expansion * expansion)
 				{
-					System.out.println("nbVoisins : "+node.getNbNeighbours());
-					
 					// On flippe le plus d'arêtes possible
 					boolean fliped;
 					do {
@@ -172,12 +181,10 @@ public class NavmeshComputer
 						for(int i = 0; i < node.getNbNeighbours(); i++)
 						{
 							NavmeshEdge edge = node.getNeighbourEdge(i);
-							System.out.println(i+" "+edge);
 	
 							assert checkAll();
 							if(edge.forceFlip()) // flip a marché
 							{
-								System.out.println("Flip forcé !");
 								edgesInProgress.remove(edge);
 								edgesInProgress.add(edge);
 								fliped = true;
@@ -213,6 +220,7 @@ public class NavmeshComputer
 								edges[1] = getEdges(new NavmeshNode[] {premier, node.getNeighbour((i+1) % 3), node.getNeighbour((i+2) % 3)});
 								break;
 							}
+						assert edges[1] != null;
 					}
 					
 					// Seconde étape : on retire toutes les arêtes qui restent ainsi que le nœud
@@ -306,7 +314,7 @@ public class NavmeshComputer
 		for(int i = 0; i < t.length; i++)
 			t[i] = triangles.poll();
 		
-		return new TriangulatedMesh(n, e, t);
+		return new TriangulatedMesh(n, e, t, obs.hashCode());
 	}
 	
 	/**
@@ -428,7 +436,8 @@ public class NavmeshComputer
 		XY c = a.plusNewVector(b).scalar(0.5);
 		
 		NavmeshNode newNode = new NavmeshNode(c);
-		
+		nodesList.add(newNode);
+
 		addPointInEdge(newNode, edge);
 	}
 	
@@ -445,8 +454,6 @@ public class NavmeshComputer
 		
 		NavmeshTriangle tr0 = edge.triangles[0];
 		NavmeshTriangle tr1 = edge.triangles[1];
-
-		nodesList.add(newNode);
 		
 		edge.points[1].removeEdge(edge);
 		NavmeshEdge newEdge = new NavmeshEdge(newNode, edge.points[1]);
@@ -492,39 +499,44 @@ public class NavmeshComputer
 	 */
 	private void addNewNodeInitialization(NavmeshNode nextNode)
 	{
-		System.out.println("Ajout");
 		assert !edgesInProgress.isEmpty();
 		assert !triangles.isEmpty();
 
-//		System.out.println("Ajout de "+nextNode);
 		// first we check if this point is in a triangle
-		
-		int nbTr = 0;
-		NavmeshTriangle[] tr = new NavmeshTriangle[2];
+				
+		NavmeshTriangle tr = null;
+		NavmeshEdge edge = null;
 		for(NavmeshTriangle t : triangles)
 			if(t.isInside(nextNode.position))
-				tr[nbTr++] = t;
-		
-		assert nbTr <= 2 : "A node is inside "+nbTr+" triangles !";
-		
-		if(nbTr > 0)
-		{
-			if(nbTr == 1)
 			{
-				triangles.remove(tr[0]);
-				addInsideNode(nextNode, tr[0]);
+				tr = t;
+				for(NavmeshEdge e : t.edges)
+					if(e.containsNode(nextNode))
+					{
+						assert edge == null : "The node "+nextNode+" belongs to "+edge+" and "+e+" "+tr;
+						edge = e;
+					}
+				break;
+			}
+		
+		if(tr != null)
+		{
+			if(edge == null)
+			{
+				// The node is (strictly) inside a triangle
+				triangles.remove(tr);
+				addInsideNode(nextNode, tr);
+				String s;
+				assert ((s = checkNoDuplicate()) == null) : s+", nextNode = "+nextNode;
 			}
 			else
 			{
+				// TODO ne pas compter les triangles mais voir si le point est sur une arête !
 				// Le point est sur une arête. On utilise l'autre procédure qui s'occupe de ça
-				for(NavmeshEdge e0 : tr[0].edges)
-					for(NavmeshEdge e1 : tr[1].edges)
-						if(e0 == e1)
-						{
-							edgesInProgress.remove(e0);
-							addPointInEdge(nextNode, e0);
-							break;
-						}
+				edgesInProgress.remove(edge);
+				addPointInEdge(nextNode, edge);
+				String s;
+				assert ((s = checkNoDuplicate()) == null) : s+", nextNode = "+nextNode;
 			}
 			flip();
 			return;
@@ -568,10 +580,25 @@ public class NavmeshComputer
 		
 		flip();
 	}
+	
+	private String checkNoDuplicate()
+	{
+		for(int i = 0; i < nodesList.size(); i++)
+			for(int j = 0; j < nodesList.size(); j++)
+				if(i != j)
+				{
+					NavmeshNode n1 = nodesList.get(i);
+					NavmeshNode n2 = nodesList.get(j);
+					if(n1 == n2)
+						return "Duplicated node : "+n1;
+					if(n1.position.equals(n2.position))
+						return "Duplicated position : "+n1.position;
+				}
+		return null;
+	}
 
 	private void addInsideNode(NavmeshNode nextNode, NavmeshTriangle t)
 	{
-		System.out.println("Add inside");
 		assert t.isInside(nextNode.position);
 		assert needFlipCheck.isEmpty();
 
@@ -611,7 +638,6 @@ public class NavmeshComputer
 		
 		triangles.add(tr1);
 		triangles.add(tr2);
-		System.out.println("Fin add inside");
 	}
 	
 	private void addEdgeNode(NavmeshNode nextNode, NavmeshEdge originalEdge, NavmeshEdge newEdge, NavmeshTriangle tr)
@@ -671,7 +697,6 @@ public class NavmeshComputer
 	
 	private void flip()
 	{
-		System.out.println("Flip");
 		while(!needFlipCheck.isEmpty())
 		{
 			NavmeshEdge e = needFlipCheck.removeFirst();
@@ -694,7 +719,6 @@ public class NavmeshComputer
 			}
 			assert !e.flipIfNecessary();
 		}
-		System.out.println("Fin flip");
 		// All triangles should be Delaunay
 		String s;
 		assert ((s = checkCrossingEdges()) == null) : s;
@@ -732,5 +756,18 @@ public class NavmeshComputer
 				if(!triangles.contains(e.triangles[i]))
 					return e.toString();
 		return null;
+	}
+
+	public boolean checkNavmesh(TriangulatedMesh mesh)
+	{
+		for(NavmeshEdge e : mesh.edges)
+			if(e.length > longestAllowedLength)
+				return false;
+
+		for(NavmeshTriangle t : mesh.triangles)
+			if(t.area > largestAllowedArea)
+				return false;
+
+		return true;
 	}
 }

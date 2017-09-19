@@ -413,4 +413,30 @@ public class NavmeshEdge implements Serializable, Printable
 		assert origin == points[1];
 		return orientation + Math.PI;
 	}
+
+	/**
+	 * Returns true iff the node is inside the edge
+	 * @param nextNode
+	 * @return
+	 */
+	public boolean containsNode(NavmeshNode nextNode)
+	{
+		// A-----B----C (arête : AC, nœud : B)
+		XY_RW ab = nextNode.position.minusNewVector(points[0].position);
+		XY_RW ac = points[1].position.minusNewVector(points[0].position);
+		
+		// vérification de l'alignement
+		if(ab.getX() * ac.getY() - ab.getY() * ac.getX() != 0)
+			return false;
+		
+		// on vérifie que B n'est pas à gauche de A
+		if(ab.dot(ac) < 0)
+			return false;
+		
+		// on vérifie que B n'est pas à droite de C
+		if(ab.dot(ac) > ac.dot(ac))
+			return false;
+
+		return true;
+	}
 }

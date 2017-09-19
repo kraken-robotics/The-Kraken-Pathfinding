@@ -138,13 +138,12 @@ public class XY implements Serializable, Position
 
 	    if(t < 0 || t > 1)
 	        return IntersectionStatus.NO_INTERSECTION;
-	    if(t == 0 || t == 1)
-	    	return IntersectionStatus.ON_THE_LINE;
 
 	    double u = (c.getX() * b.getY() - c.getY() * b.getX()) / bDotDPerp;
 	    if(u < 0 || u > 1)
 	        return IntersectionStatus.NO_INTERSECTION;
-	    if(u == 0 || u == 1)
+
+	    if(u == 0 || u == 1 || t == 0 || t == 1)
 	    	return IntersectionStatus.ON_THE_LINE;
 
 	    return IntersectionStatus.INTERSECTION;

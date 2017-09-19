@@ -24,15 +24,17 @@ import pfg.graphic.PrintBuffer;
 public class TriangulatedMesh implements Serializable
 {
 	private static final long serialVersionUID = 5706228066190218520L;
+	public final int obsHashCode;
 	public final NavmeshNode[] nodes;
 	public final NavmeshEdge[] edges;
 	public final NavmeshTriangle[] triangles;
 	
-	public TriangulatedMesh(NavmeshNode[] nodes, NavmeshEdge[] edges, NavmeshTriangle[] triangles)
+	public TriangulatedMesh(NavmeshNode[] nodes, NavmeshEdge[] edges, NavmeshTriangle[] triangles, int obsHashCode)
 	{
 		this.nodes = nodes;
 		this.edges = edges;
 		this.triangles = triangles;
+		this.obsHashCode = obsHashCode;
 	}
 
 	public static TriangulatedMesh loadNavMesh(String filename) throws IOException, ClassNotFoundException

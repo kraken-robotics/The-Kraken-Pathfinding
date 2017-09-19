@@ -29,18 +29,19 @@ public class Navmesh
 	protected Log log;
 	public TriangulatedMesh mesh;
 	
-	public Navmesh(Log log, Config config, StaticObstacles obs, PrintBuffer buffer)
+	public Navmesh(Log log, Config config, StaticObstacles obs, PrintBuffer buffer, NavmeshComputer computer)
 	{
 		this.log = log;
-		String filename = "navmesh-"+obs.hashCode()+"-"+config.getInt(ConfigInfoKraken.LARGEST_TRIANGLE_AREA_IN_NAVMESH)+".krk";
+		String filename = "navmesh.krk";
 		try {
 			log.write("D* NavMesh loading…", LogCategoryKraken.PF);
 			mesh = TriangulatedMesh.loadNavMesh(filename);
+			if(mesh.obsHashCode != obs.hashCode() || !computer.checkNavmesh(mesh))
+				throw new NullPointerException(); // l'objectif est juste d'entrer dans le catch ci-dessous…
 		}
 		catch(IOException | ClassNotFoundException | NullPointerException e)
 		{
 			log.write("The navmesh can't be loaded : generation of a new one.", SeverityCategoryKraken.WARNING, LogCategoryKraken.PF);
-			NavmeshComputer computer = new NavmeshComputer(log, config);
 			mesh = computer.generateNavMesh(obs);
 /*			try {
 				mesh.saveNavMesh(filename);
