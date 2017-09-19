@@ -135,4 +135,9 @@ public class NavmeshNode implements Printable, Serializable
 	{
 		return neighbours.get(index);
 	}
+	
+	public boolean isNeighbourOf(NavmeshNode other)
+	{
+		return neighbours.contains(other);
+	}
 }

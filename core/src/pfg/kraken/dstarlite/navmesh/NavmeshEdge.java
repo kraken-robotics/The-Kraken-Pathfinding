@@ -118,6 +118,7 @@ public class NavmeshEdge implements Serializable, Printable
 	
 	public void addTriangle(NavmeshTriangle tr)
 	{
+		assert nbTriangles < 2 : "Il y a déjà "+nbTriangles+" triangles !";
 		if(triangles[0] == tr || triangles[1] == tr)
 			return;
 		

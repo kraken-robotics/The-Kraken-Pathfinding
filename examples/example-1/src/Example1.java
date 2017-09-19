@@ -5,6 +5,7 @@
 
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -53,12 +54,7 @@ public class Example1
 		 * We restrain the search domain to the rectangle -1500 < x < 1500, 0 < y < 2000
 		 * You can alternatively use the "detailed" profile to display the underneath pathfinder.
 		 */
-		Kraken kraken = Kraken.getKraken(obs, new XY(-1500,0), new XY(1500, 2000), "detailed");
-
-		/*
-		 * The configuration can still be overriden before the initialization
-		 */
-		kraken.initialize();
+		Kraken kraken = Kraken.getKraken(obs, new XY(-1500,0), new XY(1500, 2000), Arrays.asList("detailed"));
 		
 		/*
 		 * The graphic display (optional)

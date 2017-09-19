@@ -176,7 +176,7 @@ try {
 				{
 					System.out.println("nbVoisins : "+node.getNbNeighbours());
 					
-					// On retire toutes les arêtes qui en partent
+					// On flippe le plus d'arêtes possible
 					boolean fliped;
 					do {
 						fliped = false;
@@ -196,20 +196,52 @@ try {
 						}
 					} while(fliped);
 					
-					// On retire toutes les arêtes qui restent
-					for(int i = 0; i < node.getNbNeighbours(); i++)
-					{
-						NavmeshEdge edge = node.getNeighbourEdge(i);
-						System.out.println("Suppression finale : "+node.getNbNeighbours()+" "+edge);
 
-						edgesInProgress.remove(edge);
-						node.getNeighbour(i).removeEdge(edge);
-						// Il n'existe plus pour ses voisins
+					
+					int nbVoisins = node.getNbNeighbours();
+					assert nbVoisins <= 4 : "Nb voisins : "+nbVoisins;
+					
+					NavmeshEdge[][] edges = null;
+					
+					// Première étape : on prépare les arêtes des futurs triangles
+					if(nbVoisins == 3)
+					{
+						edges = new NavmeshEdge[1][3];
+						edges[0] = getEdges(new NavmeshNode[] {node.getNeighbour(0), node.getNeighbour(1), node.getNeighbour(2)});
+					}
+					else if(nbVoisins == 4)
+					{
+						edges = new NavmeshEdge[2][3];
+						edges[0] = getEdges(new NavmeshNode[] {node.getNeighbour(0), node.getNeighbour(1), node.getNeighbour(2)});
+						NavmeshNode premier = node.getNeighbour(3);
+						for(int i = 0; i < 3; i++)
+							if(!premier.isNeighbourOf(node.getNeighbour(i)))
+							{
+								edges[1] = getEdges(new NavmeshNode[] {premier, node.getNeighbour((i+1) % 3), node.getNeighbour((i+2) % 3)});
+								break;
+							}
 					}
 					
-					// TODO recréer des triangles à la place de ceux qui disparaissent
+					// Seconde étape : on retire toutes les arêtes qui restent ainsi que le nœud
+					for(int i = 0; i < nbVoisins; i++)
+					{
+						NavmeshEdge edge = node.getNeighbourEdge(i);
+						edgesInProgress.remove(edge);
+						for(int j = 0; j < edge.nbTriangles; j++)
+							if(triangles.remove(edge.triangles[j]))
+								for(int k = 0; k < edge.triangles[j].edges.length; k++)
+									if(edge.triangles[j].edges[k] != edge) // on itère sur ses triangles, donc il ne faut pas les modifier
+										edge.triangles[j].edges[k].removeTriangle(edge.triangles[j]);
+						node.getNeighbour(i).removeEdge(edge);
+					}
 					
 					iterN.remove();
+
+					// Troisième étape : on construit le ou les triangles
+					if(edges != null)
+						for(int i = 0; i < edges.length; i++)
+							triangles.add(new NavmeshTriangle(edges[i][0], edges[i][1], edges[i][2]));
+											
 					break;
 				}
 		}
@@ -283,6 +315,27 @@ try {
 			t[i] = triangles.poll();
 		
 		return new TriangulatedMesh(n, e, t);
+	}
+	
+	/**
+	 * A partir de trois points qui forment un triangle, retourne les trois arêtes de ce triangle
+	 * @return
+	 */
+	private NavmeshEdge[] getEdges(NavmeshNode[] nodes)
+	{
+		NavmeshEdge[] edges = new NavmeshEdge[3];
+		for(int i = 0; i < 3; i++)
+			for(int j = 0; j < nodes[i].getNbNeighbours(); j++)
+			{
+				NavmeshEdge candidat = nodes[i].getNeighbourEdge(j);
+				NavmeshNode voisinCherche = nodes[(i+1) % 3];
+				if(candidat.points[0] == voisinCherche || candidat.points[1] == voisinCherche)
+				{
+					edges[i] = candidat;
+					break;
+				}
+			}
+		return edges;
 	}
 	
 	private String checkLongestEdge()

@@ -38,7 +38,7 @@ public class Kraken
 	private Config config;
 	private Injector injector;
 	private List<TentacleType> tentacleTypesUsed;
-	private boolean overrideConfigPossible = false, initialized = false;
+	private boolean initialized = false;
 	private XY bottomLeftCorner, topRightCorner;
 	private DynamicObstacles dynObs;
 
@@ -52,7 +52,6 @@ public class Kraken
 	{	
 		if(instance != null)
 		{
-			overrideConfigPossible = false;
 			PrintBuffer buffer = injector.getExistingService(PrintBuffer.class);
 			// On appelle le destructeur du PrintBuffer
 			if(buffer != null)
@@ -71,10 +70,10 @@ public class Kraken
 	 * @param fixedObstacles : a list of fixed/permanent obstacles
 	 * @return the instance of Kraken
 	 */
-	public static Kraken getKraken(List<Obstacle> fixedObstacles, XY bottomLeftCorner, XY topRightCorner, String configprofile)
+	public static Kraken getKraken(List<Obstacle> fixedObstacles, XY bottomLeftCorner, XY topRightCorner, List<String> profiles)
 	{
 		if(instance == null)
-			instance = new Kraken(fixedObstacles, new EmptyDynamicObstacles(), null, bottomLeftCorner, topRightCorner, configprofile);
+			instance = new Kraken(fixedObstacles, new EmptyDynamicObstacles(), null, bottomLeftCorner, topRightCorner, profiles);
 		return instance;
 	}
 	
@@ -85,7 +84,7 @@ public class Kraken
 	 * @param tentacleTypes : 
 	 * @return
 	 */
-	protected static Kraken getKraken(List<Obstacle> fixedObstacles, DynamicObstacles dynObs, TentacleType tentacleTypes, XY bottomLeftCorner, XY topRightCorner, String configprofile)
+	protected static Kraken getKraken(List<Obstacle> fixedObstacles, DynamicObstacles dynObs, TentacleType tentacleTypes, XY bottomLeftCorner, XY topRightCorner, List<String> configprofile)
 	{
 		// TODO : pas encore disponible
 		if(instance == null)
@@ -97,10 +96,9 @@ public class Kraken
 	 * Instancie le gestionnaire de dépendances et quelques services critiques
 	 * (log et config qui sont interdépendants)
 	 */
-	private Kraken(List<Obstacle> fixedObstacles, DynamicObstacles dynObs, TentacleType tentacleTypes, XY bottomLeftCorner, XY topRightCorner, String configprofile)
+	private Kraken(List<Obstacle> fixedObstacles, DynamicObstacles dynObs, TentacleType tentacleTypes, XY bottomLeftCorner, XY topRightCorner, List<String> configprofile)
 	{	
 		assert instance == null;
-		overrideConfigPossible = true;
 		this.bottomLeftCorner = bottomLeftCorner;
 		this.topRightCorner = topRightCorner;
 		this.dynObs = dynObs;
@@ -128,6 +126,7 @@ public class Kraken
 		} catch (InjectorException e) {
 			throw new RuntimeException("Fatal error", e);
 		}
+		initialize();
 	}
 
 	/**
@@ -143,13 +142,12 @@ public class Kraken
 	 * Initialize Kraken
 	 * @return
 	 */
-	public void initialize()
+	private void initialize()
 	{
 		try {
 			if(!initialized)
 			{
 				initialized = true;
-				overrideConfigPossible = false;
 
 				/*
 				 * Override the graphic config
@@ -211,18 +209,6 @@ public class Kraken
 	public TentacularAStar getAStar()
 	{
 		return injector.getExistingService(TentacularAStar.class);
-	}
-	
-	public void overrideConfig(ConfigInfoKraken key, Object newValue)
-	{
-		if(overrideConfigPossible)
-			config.override(key, newValue);
-	}
-
-	public void overrideConfig(HashMap<ConfigInfo, Object> override)
-	{
-		if(overrideConfigPossible)
-			config.override(override);
 	}
 
 	/**
