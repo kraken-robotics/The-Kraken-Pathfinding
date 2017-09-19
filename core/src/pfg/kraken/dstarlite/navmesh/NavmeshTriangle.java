@@ -14,7 +14,6 @@ import pfg.graphic.printable.Layer;
 import pfg.graphic.printable.Printable;
 import pfg.kraken.ColorKraken;
 import pfg.kraken.utils.XY;
-import pfg.kraken.utils.XY_RW;
 
 /**
  * A triangle of the navmesh
@@ -113,6 +112,9 @@ public class NavmeshTriangle implements Serializable, Printable
 	
 	void setEdges(NavmeshEdge a, NavmeshEdge b, NavmeshEdge c)
 	{
+		assert a != null;
+		assert b != null;
+		assert c != null;
 		assert checkTriangle(a, b, c);
 		
 		for(int i = 0; i < 3; i++)
@@ -165,42 +167,26 @@ public class NavmeshTriangle implements Serializable, Printable
 		assert checkDuality() : this;
 		assert checkCounterclockwise() : this;
 	}
-
-	private XY_RW v0 = new XY_RW(), v1 = new XY_RW(), v2 = new XY_RW();
 	
+	private double sign(XY p1, XY p2, XY p3)
+	{
+	    return (p1.getX() - p3.getX()) * (p2.getY() - p3.getY()) - (p2.getX() - p3.getX()) * (p1.getY() - p3.getY());
+	}
+
 	/**
-	 * Use the barycentric method. Source : http://www.blackpawn.com/texts/pointinpoly/default.html
+	 * Source : https://stackoverflow.com/questions/2049582/how-to-determine-if-a-point-is-in-a-2d-triangle
 	 * @param position
 	 * @return
 	 */
 	public boolean isInside(XY position)
 	{
-		assert checkCounterclockwise() : this;
-		
-		// Compute vectors     
-		points[2].position.copy(v0);
-		v0.minus(points[0].position);
-		
-		points[1].position.copy(v1);
-		v1.minus(points[0].position);
-		
-		position.copy(v2);
-		v2.minus(points[0].position);
+	    boolean b1, b2, b3;
 
-		// Compute dot products
-		double dot00 = v0.dot(v0);
-		double dot01 = v0.dot(v1);
-		double dot02 = v0.dot(v2);
-		double dot11 = v1.dot(v1);
-		double dot12 = v1.dot(v2);
+	    b1 = sign(position, points[0].position, points[1].position) < 0.0;
+	    b2 = sign(position, points[1].position, points[2].position) < 0.0;
+	    b3 = sign(position, points[2].position, points[0].position) < 0.0;
 
-		// Compute barycentric coordinates
-		double invDenom = 1 / (dot00 * dot11 - dot01 * dot01);
-		double u = (dot11 * dot02 - dot01 * dot12) * invDenom;
-		double v = (dot00 * dot12 - dot01 * dot02) * invDenom;
-
-		// Check if point is in triangle
-		return (u >= 0) && (v >= 0) && (u + v < 1);
+	    return ((b1 == b2) && (b2 == b3));
 	}
 	
 	public String toString()
