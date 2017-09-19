@@ -28,7 +28,7 @@ public enum ConfigInfoKraken implements ConfigInfo
 	/**
 	 * Infos sur le robot
 	 */
-	DILATATION_ROBOT_DSTARLITE(60), // dilatation des obstacles dans le D* Lite.
+	DILATATION_ROBOT_DSTARLITE(100), // dilatation des obstacles dans le D* Lite.
 									// Comme c'est une heuristique, on peut
 									// prendre plus petit que la vraie valeur
 	DEMI_LONGUEUR_NON_DEPLOYE_ARRIERE(80), // distance entre le centre du robot
@@ -41,7 +41,7 @@ public enum ConfigInfoKraken implements ConfigInfo
 								// du robot non-déployé
 	
 	LARGEST_TRIANGLE_AREA_IN_NAVMESH(20000), // in mm²
-	LONGEST_EDGE_IN_NAVMESH(100000000), // in μm
+	LONGEST_EDGE_IN_NAVMESH(200000), // in μm
 
 	/**
 	 * Paramètres du pathfinding

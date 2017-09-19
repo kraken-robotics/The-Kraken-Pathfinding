@@ -72,10 +72,15 @@ public class CircularObstacle extends Obstacle
 	{
 		if(c != null)
 			g.setColor(c);
-		if(radius <= 0)
-			g.fillOval(f.XtoWindow(position.getX()) - 5, f.YtoWindow(position.getY()) - 5, 10, 10);
-		else
-			g.fillOval(f.XtoWindow(position.getX() - radius), f.YtoWindow(position.getY() + radius), f.distanceXtoWindow((radius) * 2), f.distanceYtoWindow((radius) * 2));
+//		if(radius <= 0)
+//			g.fillOval(f.XtoWindow(position.getX()) - 5, f.YtoWindow(position.getY()) - 5, 10, 10);
+//		else
+		g.drawOval(f.XtoWindow(position.getX() - radius), f.YtoWindow(position.getY() + radius), f.distanceXtoWindow((radius) * 2), f.distanceYtoWindow((radius) * 2));
+		
+		if(cTransparent != null)
+			g.setColor(cTransparent);
+		
+		g.fillOval(f.XtoWindow(position.getX() - radius), f.YtoWindow(position.getY() + radius), f.distanceXtoWindow((radius) * 2), f.distanceYtoWindow((radius) * 2));		
 	}
 	
 	@Override

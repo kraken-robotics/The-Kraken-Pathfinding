@@ -66,6 +66,7 @@ public class NavmeshComputer
 	public TriangulatedMesh generateNavMesh(StaticObstacles obs)
 	{
 		List<Obstacle> obsList = obs.getObstacles();
+		String s;
 		
 		XY bottomLeftCorner = obs.getBottomLeftCorner();
 		XY topRightCorner = obs.getTopRightCorner();
@@ -89,7 +90,7 @@ public class NavmeshComputer
 		
 		for(Obstacle o : obsList)
 		{
-			XY[] hull = o.getExpandedConvexHull(expansion, longestAllowedLength);
+			XY[] hull = o.getExpandedConvexHull(expansion, longestAllowedLength / 1000.);
 			assert hull.length >= 3;
 			NavmeshNode n = null;
 			for(int i = 0; i < hull.length; i++)
@@ -110,24 +111,30 @@ public class NavmeshComputer
 		 * This is a Delaunay triangulation.
 		 */
 		
-		// Initial triangle
-		NavmeshEdge e1 = new NavmeshEdge(nodesList.get(0), nodesList.get(1));
+		// Initial triangles
+		NavmeshEdge e1 = new NavmeshEdge(tl, tr);
 		edgesInProgress.add(e1);
-		NavmeshEdge e2 = new NavmeshEdge(nodesList.get(1), nodesList.get(2));
+		NavmeshEdge e2 = new NavmeshEdge(tr, br);
 		edgesInProgress.add(e2);
-		NavmeshEdge e3 = new NavmeshEdge(nodesList.get(2), nodesList.get(0));
+		NavmeshEdge e3 = new NavmeshEdge(br, tl);
 		edgesInProgress.add(e3);
+		NavmeshEdge e4 = new NavmeshEdge(br, bl);
+		edgesInProgress.add(e4);
+		NavmeshEdge e5 = new NavmeshEdge(bl, tl);
+		edgesInProgress.add(e5);
 		triangles.add(new NavmeshTriangle(e1, e2, e3));
-
+		triangles.add(new NavmeshTriangle(e3, e4, e5));
+		
 //		log.write("First triangle : "+triangles.get(0), LogCategoryKraken.TEST);
 		
 		// We add the points one by one
-		for(int index = 3; index < nodesList.size(); index++)
+		for(int index = 4; index < nodesList.size(); index++)
 			addNewNodeInitialization(nodesList.get(index));
 		
 		/**
 		 * Flip the edges (unnecessary)
 		 */
+		assert checkDelaunay();
 //		for(NavmeshEdge e : edgesInProgress)
 //			e.flipIfNecessary();		
 
@@ -135,12 +142,14 @@ public class NavmeshComputer
 		NavmeshEdge longestEdge = edgesInProgress.peek();
 		while(longestEdge.length > longestAllowedLength)
 		{
+			assert ((s = checkLongestEdge()) == null) : s;
 			edgesInProgress.poll();
+			assert ((s = checkLongestEdge()) == null) : s;
 			addMiddleEdgePoint(longestEdge);
 			longestEdge = edgesInProgress.peek();
 		}
 		
-		assert edgesInProgress.peek().length <= longestAllowedLength;
+		assert edgesInProgress.peek().length <= longestAllowedLength : edgesInProgress.peek().length + " > " + longestAllowedLength;
 		
 		// We add other points in order to avoid large triangle
 		NavmeshTriangle largestTriangle = triangles.peek();
@@ -150,7 +159,7 @@ public class NavmeshComputer
 			addCenterPoint(largestTriangle);
 			largestTriangle = triangles.peek();
 		}
-		/*
+		
 		assert edgesInProgress.peek().length <= longestAllowedLength : edgesInProgress.peek().length + " > " + longestAllowedLength;
 
 		// Suppression des nœuds à l'intérieur d'obstacle
@@ -196,9 +205,8 @@ public class NavmeshComputer
 				}
 		}
 	
-		String s;
 		assert ((s = checkTrianglesAndEdges()) == null) : s;
-		*/
+
 		NavmeshNode[] n = new NavmeshNode[nodesList.size()];
 		for(int i = 0; i < n.length; i++)
 		{
@@ -220,6 +228,15 @@ public class NavmeshComputer
 		return new TriangulatedMesh(n, e, t);
 	}
 	
+	private String checkLongestEdge()
+	{
+		int longestEdge = edgesInProgress.peek().length;
+		for(NavmeshEdge e : edgesInProgress)
+			if(e.length > longestEdge)
+				return e.toString()+" : "+e.length+" > "+longestEdge;
+		return null;
+	}
+
 	private void addMiddleEdgePoint(NavmeshEdge edge)
 	{
 		assert needFlipCheck.isEmpty();
@@ -257,8 +274,9 @@ public class NavmeshComputer
 //			newEdge.constrained = true;
 		
 		edgesInProgress.add(newEdge);
-		
+
 		edge.points[1] = newNode;
+		assert !edgesInProgress.contains(edge);
 		edge.update();
 		
 		edgesInProgress.add(edge);
@@ -309,6 +327,9 @@ public class NavmeshComputer
 				flip();
 				return;
 			}
+		
+		// All points must be within the initial rectangle
+		assert false : "The node "+nextNode+" is outside the initial rectangle !";
 		
 		// The point is outside the navmesh. We create a new triangle with the closest external edge
 		NavmeshEdge best = null;
@@ -404,7 +425,9 @@ public class NavmeshComputer
 		
 		NavmeshEdge transversalEdge = new NavmeshEdge(nextNode, tr.points[indexEdge]);
 
+		String s;
 		edgesInProgress.add(transversalEdge);
+		assert ((s = checkLongestEdge()) == null) : s;
 		
 		NavmeshEdge edgeNextToNewEdge, edgeNextToOriginalEdge;
 		
@@ -452,8 +475,13 @@ public class NavmeshComputer
 				// the areas have changed
 				triangles.remove(e.triangles[0]);
 				triangles.remove(e.triangles[1]);
-				triangles.add(e.triangles[0]);
+				triangles.add(e.triangles[0]);				
 				triangles.add(e.triangles[1]);
+				
+				// the length has changed
+				edgesInProgress.remove(e);
+				edgesInProgress.add(e);
+				
 				// We add the four external edges
 				for(int i = 0; i < 2; i++)
 					for(int j = 0; j < 3; j++)
