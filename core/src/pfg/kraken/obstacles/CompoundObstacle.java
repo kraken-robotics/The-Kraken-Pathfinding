@@ -7,6 +7,8 @@
 package pfg.kraken.obstacles;
 
 import java.awt.Graphics;
+import java.util.ArrayList;
+import java.util.List;
 
 import pfg.graphic.Chart;
 import pfg.graphic.GraphicPanel;
@@ -81,13 +83,29 @@ public class CompoundObstacle extends Obstacle
 	@Override
 	public void print(Graphics g, GraphicPanel f, Chart a)
 	{
-		// TODO
+		for(Obstacle o : obs)
+			o.print(g, f, a);
 	}
 	
 	@Override
 	public XY[] getExpandedConvexHull(double expansion, double longestAllowedLength)
 	{
-		return null; // TODO
+		List<XY[]> points = new ArrayList<XY[]>();
+		int nbPoints = 0;
+		for(Obstacle o : obs)
+		{
+			XY[] tmp = o.getExpandedConvexHull(expansion, longestAllowedLength);
+			points.add(tmp);
+			nbPoints += tmp.length;
+		}
+		XY[] out = new XY[nbPoints];
+		
+		int i = 0;
+		for(XY[] array : points)
+			for(int j = 0; j < array.length; j++)
+				out[i++] = array[j];
+		assert i == nbPoints;
+		return out;
 	}
 
 

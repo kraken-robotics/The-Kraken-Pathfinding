@@ -330,7 +330,9 @@ public class RectangularObstacle extends Obstacle
 				|| XY.segmentIntersection(pointA, pointB, coinHautDroiteRotate, coinBasDroiteRotate) == IntersectionStatus.INTERSECTION
 				|| XY.segmentIntersection(pointA, pointB, coinBasDroiteRotate, coinBasGaucheRotate) == IntersectionStatus.INTERSECTION)
 			return true;
-		return false;
+
+	    // dernière possibilité, A ou B dans le cercle
+	    return isInObstacle(pointA) || isInObstacle(pointB);
 	}
 
 }

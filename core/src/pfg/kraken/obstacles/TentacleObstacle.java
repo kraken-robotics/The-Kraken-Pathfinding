@@ -65,7 +65,7 @@ public class TentacleObstacle extends Obstacle
 	@Override
 	public XY[] getExpandedConvexHull(double expansion, double longestAllowedLength)
 	{
-		return null; // TODO
+		return null; // TODO unused
 	}
 
 	@Override
