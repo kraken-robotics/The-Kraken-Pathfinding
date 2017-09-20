@@ -70,7 +70,7 @@ public class Kraken
 	 * @param fixedObstacles : a list of fixed/permanent obstacles
 	 * @return the instance of Kraken
 	 */
-	public static Kraken getKraken(List<Obstacle> fixedObstacles, XY bottomLeftCorner, XY topRightCorner, List<String> profiles)
+	public static Kraken getKraken(List<Obstacle> fixedObstacles, XY bottomLeftCorner, XY topRightCorner, String...profiles)
 	{
 		if(instance == null)
 			instance = new Kraken(fixedObstacles, new EmptyDynamicObstacles(), null, bottomLeftCorner, topRightCorner, profiles);
@@ -84,7 +84,7 @@ public class Kraken
 	 * @param tentacleTypes : 
 	 * @return
 	 */
-	protected static Kraken getKraken(List<Obstacle> fixedObstacles, DynamicObstacles dynObs, TentacleType tentacleTypes, XY bottomLeftCorner, XY topRightCorner, List<String> configprofile)
+	protected static Kraken getKraken(List<Obstacle> fixedObstacles, DynamicObstacles dynObs, TentacleType tentacleTypes, XY bottomLeftCorner, XY topRightCorner, String...configprofile)
 	{
 		// TODO : pas encore disponible
 		if(instance == null)
@@ -96,7 +96,7 @@ public class Kraken
 	 * Instancie le gestionnaire de dépendances et quelques services critiques
 	 * (log et config qui sont interdépendants)
 	 */
-	private Kraken(List<Obstacle> fixedObstacles, DynamicObstacles dynObs, TentacleType tentacleTypes, XY bottomLeftCorner, XY topRightCorner, List<String> configprofile)
+	private Kraken(List<Obstacle> fixedObstacles, DynamicObstacles dynObs, TentacleType tentacleTypes, XY bottomLeftCorner, XY topRightCorner, String...configprofile)
 	{	
 		assert instance == null;
 		this.bottomLeftCorner = bottomLeftCorner;
@@ -117,7 +117,7 @@ public class Kraken
 		}
 		
 		injector = new Injector();
-		config = new Config(ConfigInfoKraken.values(), "kraken.conf", configprofile, false);
+		config = new Config(ConfigInfoKraken.values(), false, "kraken.conf", configprofile);
 		try {
 			StaticObstacles so = injector.getService(StaticObstacles.class); 
 			if(fixedObstacles != null)
@@ -164,22 +164,22 @@ public class Kraken
 				overrideGraphic.put(ConfigInfoGraphic.FAST_LOG, config.getBoolean(ConfigInfoKraken.FAST_LOG));
 				overrideGraphic.put(ConfigInfoGraphic.STDOUT_LOG, config.getBoolean(ConfigInfoKraken.STDOUT_LOG));
 				
-				DebugTool debug = new DebugTool(null, null, overrideGraphic, SeverityCategoryKraken.INFO);
+				DebugTool debug = new DebugTool(overrideGraphic, SeverityCategoryKraken.INFO, null);
 				Log log = debug.getLog();
 
-				injector.addService(Log.class, log);
-				injector.addService(Config.class, config);
+				injector.addService(log);
+				injector.addService(config);
 				injector.addService(DynamicObstacles.class, dynObs);		
-				injector.addService(Kraken.class, this);
+				injector.addService(this);
 		
 				if(config.getBoolean(ConfigInfoKraken.GRAPHIC_ENABLE))
 				{
 					WindowFrame f = debug.getWindowFrame(new Vec2RO((topRightCorner.getX() + bottomLeftCorner.getX()) / 2, (topRightCorner.getY() + bottomLeftCorner.getY()) / 2));
-					injector.addService(WindowFrame.class, f);
+					injector.addService(f);
 //					if(config.getBoolean(ConfigInfoKraken.GRAPHIC_EXTERNAL))
 //						injector.addService(PrintBufferInterface.class, f.getBu);
 //					else
-						injector.addService(PrintBuffer.class, f.getPrintBuffer());
+						injector.addService(f.getPrintBuffer());
 				}
 				else
 				{

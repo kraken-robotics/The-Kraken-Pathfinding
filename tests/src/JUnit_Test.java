@@ -9,7 +9,6 @@ import org.junit.runner.JUnitCore;
 import org.junit.runner.Request;
 import org.junit.runner.Result;
 import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.util.List;
 
 import org.junit.After;
@@ -49,7 +48,7 @@ public abstract class JUnit_Test
 	{
 		System.out.println("----- DÉBUT DU TEST " + testName.getMethodName() + " -----");
 
-		kraken = Kraken.getKraken(null, new XY(-1500, 0), new XY(1500, 2000), Arrays.asList("test")); // TODO
+		kraken = Kraken.getKraken(null, new XY(-1500, 0), new XY(1500, 2000), "test"); // TODO
 		
 		Method m = Kraken.class.getDeclaredMethod("getInjector");
 		m.setAccessible(true);
@@ -64,7 +63,7 @@ public abstract class JUnit_Test
 	{
 		System.out.println("----- DÉBUT DU TEST " + testName.getMethodName() + " -----");
 
-		kraken = Kraken.getKraken(fixedObstacles, new XY(-1500, 0), new XY(1500, 2000), Arrays.asList("test"));
+		kraken = Kraken.getKraken(fixedObstacles, new XY(-1500, 0), new XY(1500, 2000), "test");
 		Method m = Kraken.class.getDeclaredMethod("getInjector");
 		m.setAccessible(true);
 		injector = (Injector) m.invoke(kraken);
