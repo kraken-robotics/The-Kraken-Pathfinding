@@ -5,7 +5,6 @@
 
 import java.awt.Color;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -39,10 +38,11 @@ public class Example1
 	{
 		/*
 		 * The list of fixed, permanent obstacles
+		 * Obstacles partially outside the search domain and colliding obstacles are OK 
 		 */
 		List<Obstacle> obs = new ArrayList<Obstacle>();
-		obs.add(new RectangularObstacle(new XY_RW(400,200), 200, 200, ColorKraken.BLACK.color, ColorKraken.BLACK.layer));
-		obs.add(new RectangularObstacle(new XY_RW(400,400), 200, 200, ColorKraken.BLACK.color, ColorKraken.BLACK.layer));
+		obs.add(new RectangularObstacle(new XY_RW(800,200), 200, 200, ColorKraken.BLACK.color, ColorKraken.BLACK.layer));
+		obs.add(new RectangularObstacle(new XY_RW(800,300), 200, 200, ColorKraken.BLACK.color, ColorKraken.BLACK.layer));
 		obs.add(new RectangularObstacle(new XY_RW(-800,1200), 100, 200, ColorKraken.BLACK.color, ColorKraken.BLACK.layer));
 		obs.add(new RectangularObstacle(new XY_RW(-1000,300), 500, 500, ColorKraken.BLACK.color, ColorKraken.BLACK.layer));
 		obs.add(new RectangularObstacle(new XY_RW(200,1600), 800, 300, ColorKraken.BLACK.color, ColorKraken.BLACK.layer));
@@ -52,9 +52,9 @@ public class Example1
 		/*
 		 * Getting Kraken (a singleton).
 		 * We restrain the search domain to the rectangle -1500 < x < 1500, 0 < y < 2000
-		 * You can alternatively use the "detailed" profile to display the underneath pathfinder.
+		 * You can add the "detailed" profile to display the underneath pathfinder.
 		 */
-		Kraken kraken = Kraken.getKraken(obs, new XY(-1500,0), new XY(1500, 2000), "trajectory");
+		Kraken kraken = Kraken.getKraken(obs, new XY(-1500,0), new XY(1500, 2000), "trajectory", "detailed");
 		
 		/*
 		 * The graphic display (optional)
@@ -96,7 +96,7 @@ public class Example1
 			 */
 			for(ItineraryPoint p : path)
 			{
-				printBuffer.add(new PrintablePoint(p.x, p.y, Layer.FOREGROUND, Color.BLACK));
+				printBuffer.add(new PrintablePoint(p.x, p.y, 5, Layer.FOREGROUND, Color.BLACK));
 				System.out.println(p);
 			}
 			

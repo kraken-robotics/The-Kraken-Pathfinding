@@ -106,13 +106,6 @@ public class XY implements Serializable, Position
 		return true;
 	}
 	
-	public enum IntersectionStatus
-	{
-		NO_INTERSECTION,
-		ON_THE_LINE,
-		INTERSECTION;
-	}
-	
 	/**
 	 * Returns true iff the segment (pointA1, pointA2) intersects the segment (pointB1, pointB2)
 	 * @param pointA1
@@ -121,7 +114,7 @@ public class XY implements Serializable, Position
 	 * @param pointB2
 	 * @return
 	 */
-	public static IntersectionStatus segmentIntersection(XY pointA1, XY pointA2, XY pointB1, XY pointB2)
+	public static boolean segmentIntersection(XY pointA1, XY pointA2, XY pointB1, XY pointB2)
 	{
 		// Source : https://stackoverflow.com/questions/3746274/line-intersection-with-aabb-rectangle
 		
@@ -131,22 +124,18 @@ public class XY implements Serializable, Position
 
 	    // if b dot d == 0, it means the lines are parallel so have infinite intersection points
 	    if(bDotDPerp == 0)
-	        return IntersectionStatus.NO_INTERSECTION;
+	        return false;
 
 	    XY c = pointB1.minusNewVector(pointA1);
 	    double t = (c.getX() * d.getY() - c.getY() * d.getX()) / bDotDPerp;
-
 	    if(t < 0 || t > 1)
-	        return IntersectionStatus.NO_INTERSECTION;
+	        return false;
 
 	    double u = (c.getX() * b.getY() - c.getY() * b.getX()) / bDotDPerp;
 	    if(u < 0 || u > 1)
-	        return IntersectionStatus.NO_INTERSECTION;
+	        return false;
 
-	    if(u == 0 || u == 1 || t == 0 || t == 1)
-	    	return IntersectionStatus.ON_THE_LINE;
-
-	    return IntersectionStatus.INTERSECTION;
+	    return true;
 	}
 
 	/**

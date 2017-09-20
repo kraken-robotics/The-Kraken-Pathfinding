@@ -7,12 +7,13 @@ package pfg.kraken.obstacles;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.util.ArrayList;
+import java.util.List;
 
 import pfg.graphic.Chart;
 import pfg.graphic.GraphicPanel;
 import pfg.graphic.printable.Layer;
 import pfg.kraken.utils.XY;
-import pfg.kraken.utils.XY.IntersectionStatus;
 import pfg.kraken.utils.XY_RW;
 
 /**
@@ -307,10 +308,31 @@ public class RectangularObstacle extends Obstacle
 	public XY[] getExpandedConvexHull(double expansion, double longestAllowedLength)
 	{
 		double coeff = expansion / demieDiagonale;
-		return new XY[] {coinBasDroiteRotate.minusNewVector(centreGeometrique).scalar(coeff).plus(coinBasDroiteRotate),
+		XY[] coins = new XY[] {coinBasDroiteRotate.minusNewVector(centreGeometrique).scalar(coeff).plus(coinBasDroiteRotate),
 				coinHautDroiteRotate.minusNewVector(centreGeometrique).scalar(coeff).plus(coinHautDroiteRotate),
 				coinHautGaucheRotate.minusNewVector(centreGeometrique).scalar(coeff).plus(coinHautGaucheRotate),
 				coinBasGaucheRotate.minusNewVector(centreGeometrique).scalar(coeff).plus(coinBasGaucheRotate)};
+		List<XY> points = new ArrayList<XY>();
+		
+		
+		for(int i = 0; i < 4; i++)
+			points.add(coins[i]);
+		
+		int nbTotalPoints = 0;
+		for(int i = 0; i < 4; i++)
+		{
+			XY pointA = coins[i];
+			XY pointB = coins[(i+1)%4];
+			double distance = pointA.distance(pointB);
+			int nbPoints = (int) Math.ceil(distance / longestAllowedLength);
+			double delta = distance / nbPoints;
+			for(int j = 1; j < nbPoints; j++)
+				points.add(pointB.minusNewVector(pointA).scalar((j * delta) / distance).plus(pointA));
+			nbTotalPoints += nbPoints;
+		}
+		XY[] out = new XY[nbTotalPoints];
+		points.toArray(out);
+		return out;
 	}
 
 	@Override
@@ -325,10 +347,10 @@ public class RectangularObstacle extends Obstacle
 	@Override
 	public boolean isColliding(XY pointA, XY pointB)
 	{
-		if(XY.segmentIntersection(pointA, pointB, coinBasGaucheRotate, coinHautGaucheRotate) == IntersectionStatus.INTERSECTION
-				|| XY.segmentIntersection(pointA, pointB, coinHautGaucheRotate, coinHautDroiteRotate) == IntersectionStatus.INTERSECTION
-				|| XY.segmentIntersection(pointA, pointB, coinHautDroiteRotate, coinBasDroiteRotate) == IntersectionStatus.INTERSECTION
-				|| XY.segmentIntersection(pointA, pointB, coinBasDroiteRotate, coinBasGaucheRotate) == IntersectionStatus.INTERSECTION)
+		if(XY.segmentIntersection(pointA, pointB, coinBasGaucheRotate, coinHautGaucheRotate)
+				|| XY.segmentIntersection(pointA, pointB, coinHautGaucheRotate, coinHautDroiteRotate)
+				|| XY.segmentIntersection(pointA, pointB, coinHautDroiteRotate, coinBasDroiteRotate)
+				|| XY.segmentIntersection(pointA, pointB, coinBasDroiteRotate, coinBasGaucheRotate))
 			return true;
 
 	    // dernière possibilité, A ou B dans le cercle

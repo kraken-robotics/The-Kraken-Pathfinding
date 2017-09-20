@@ -43,8 +43,14 @@ public class NavmeshTriangle implements Serializable, Printable
 	 */
 	boolean checkCounterclockwise()
 	{
-		return crossProduct(points[0].position, points[1].position, points[2].position) >= 0;
+		return checkCounterclockwise(points[0].position, points[1].position, points[2].position);
 	}
+	
+	static boolean checkCounterclockwise(XY pointA, XY pointB, XY pointC)
+	{
+		return crossProduct(pointA, pointB, pointC) >= 0;
+	}
+
 	
 	boolean checkPoints()
 	{
@@ -83,7 +89,7 @@ public class NavmeshTriangle implements Serializable, Printable
 	 * @param c
 	 * @return
 	 */
-	private double crossProduct(XY a, XY b, XY c)
+	private static double crossProduct(XY a, XY b, XY c)
 	{
 		return (b.getX() - a.getX()) * (c.getY() - a.getY()) - (b.getY() - a.getY()) * (c.getX() - a.getX());
 	}
@@ -168,7 +174,7 @@ public class NavmeshTriangle implements Serializable, Printable
 		assert checkCounterclockwise() : this;
 	}
 	
-	private double sign(XY p1, XY p2, XY p3)
+	private static double sign(XY p1, XY p2, XY p3)
 	{
 	    return (p1.getX() - p3.getX()) * (p2.getY() - p3.getY()) - (p2.getX() - p3.getX()) * (p1.getY() - p3.getY());
 	}
@@ -178,15 +184,20 @@ public class NavmeshTriangle implements Serializable, Printable
 	 * @param position
 	 * @return
 	 */
-	public boolean isInside(XY position)
+	public static boolean isInside(XY position, XY p1, XY p2, XY p3)
 	{
 	    boolean b1, b2, b3;
 
-	    b1 = sign(position, points[0].position, points[1].position) < 0.0;
-	    b2 = sign(position, points[1].position, points[2].position) < 0.0;
-	    b3 = sign(position, points[2].position, points[0].position) < 0.0;
+	    b1 = sign(position, p1, p2) < 0;
+	    b2 = sign(position, p2, p3) < 0;
+	    b3 = sign(position, p3, p1) < 0;
 
 	    return ((b1 == b2) && (b2 == b3));
+	}
+	
+	public boolean isInside(XY position)
+	{
+		return NavmeshTriangle.isInside(position, points[0].position, points[1].position, points[2].position);
 	}
 	
 	public String toString()

@@ -17,7 +17,6 @@ import pfg.graphic.printable.Printable;
 import pfg.kraken.ColorKraken;
 import pfg.kraken.obstacles.Obstacle;
 import pfg.kraken.utils.XY;
-import pfg.kraken.utils.XY.IntersectionStatus;
 import pfg.kraken.utils.XY_RW;
 
 /**
@@ -223,6 +222,7 @@ public class NavmeshEdge implements Serializable, Printable
 	 */
 	private static boolean isCircumscribed(XY pointA, XY pointB, XY pointC, XY pointD)
 	{
+		assert NavmeshTriangle.checkCounterclockwise(pointA, pointB, pointC);
 		double a = pointA.getX() - pointD.getX();
 		double b = pointA.getY() - pointD.getY();
 		double c = (pointA.getX() * pointA.getX() - pointD.getX() * pointD.getX()) + (pointA.getY() * pointA.getY() - pointD.getY() * pointD.getY());
@@ -235,7 +235,7 @@ public class NavmeshEdge implements Serializable, Printable
 		double h = pointC.getY() - pointD.getY();
 		double i = (pointC.getX() * pointC.getX() - pointD.getX() * pointD.getX()) + (pointC.getY() * pointC.getY() - pointD.getY() * pointD.getY());
 
-		return (a * e * i + d * h * c + g * b * f) - (g * e * c + a * h * f + d * b * i) > 0;
+		return (a * e * i + d * h * c + g * b * f) - (g * e * c + a * h * f + d * b * i) > 0.1; // pour ajouter un peu plus de robustesse
 	}
 	
 	/**
@@ -269,26 +269,39 @@ public class NavmeshEdge implements Serializable, Printable
 			if(tr1.edges[j] == this)
 				edgeIn1 = j;
 		}
-		
+				
 		// beta et gamma sont les points communs
 		NavmeshNode alpha = tr0.points[edgeIn0];
 		NavmeshNode beta = tr0.points[(edgeIn0 + 1) % 3]; // a node of this edge
 		NavmeshNode gamma = tr0.points[(edgeIn0 + 2) % 3]; // the other node of this edge
 		NavmeshNode delta = tr1.points[edgeIn1];
-//		System.out.println(alpha+" "+beta+" "+gamma+" "+delta);
 		
+/*		System.out.println("Les quatre points sont : ");
+		System.out.println(alpha);
+		System.out.println(beta);
+		System.out.println(gamma);
+		System.out.println(delta);*/
+
 		// On vérifie la convexité des deux triangles (nécessaire seulement si on force)
 		// On refuse aussi les cas où l'intersection n'est pas stricte (trois points alignés)
 		// Ce dernier cas n'est pas rare du tout car il y a souvent plusieurs points sur une même arête
-		if(XY.segmentIntersection(alpha.position, delta.position, beta.position, gamma.position) != IntersectionStatus.INTERSECTION)
+		if(NavmeshEdge.containsNode(beta.position, alpha.position, gamma.position) ||
+				NavmeshEdge.containsNode(beta.position, delta.position, gamma.position) ||
+				NavmeshEdge.containsNode(alpha.position, beta.position, delta.position) ||
+				NavmeshEdge.containsNode(alpha.position, gamma.position, delta.position) ||
+				!XY.segmentIntersection(alpha.position, delta.position, beta.position, gamma.position))
 			return false;
 		
 		// Une conséquence de la convexité
 		assert !alpha.neighbours.contains(delta) : alpha+" is already a neighbour of "+delta;
-			
-		// force override the circumscribed check
-		if(!force && !isCircumscribed(alpha.position, beta.position, gamma.position, delta.position))
-			return false;
+					
+		// force overrides the circumscribed check
+		if(!force)
+		{
+			if(!isCircumscribed(alpha.position, beta.position, gamma.position, delta.position))
+				return false;
+			assert !isCircumscribed(alpha.position, beta.position, delta.position, gamma.position);
+		}
 		
 		// Flip
 		
@@ -307,7 +320,6 @@ public class NavmeshEdge implements Serializable, Printable
 
 		tr0.setEdges(tr1.edges[(edgeIn1 + 1) % 3], this, tr0.edges[(edgeIn0 + 2) % 3]);
 		tr1.setEdges(tmp, this, tr1.edges[(edgeIn1 + 2) % 3]);
-		
 		return true;
 	}
 
@@ -419,11 +431,11 @@ public class NavmeshEdge implements Serializable, Printable
 	 * @param nextNode
 	 * @return
 	 */
-	public boolean containsNode(NavmeshNode nextNode)
+	public static boolean containsNode(XY pointA, XY pointB, XY pointC)
 	{
 		// A-----B----C (arête : AC, nœud : B)
-		XY_RW ab = nextNode.position.minusNewVector(points[0].position);
-		XY_RW ac = points[1].position.minusNewVector(points[0].position);
+		XY_RW ab = pointB.minusNewVector(pointA);
+		XY_RW ac = pointC.minusNewVector(pointA);
 		
 		// vérification de l'alignement
 		if(ab.getX() * ac.getY() - ab.getY() * ac.getX() != 0)
@@ -438,5 +450,10 @@ public class NavmeshEdge implements Serializable, Printable
 			return false;
 
 		return true;
+	}
+	
+	public boolean containsNode(NavmeshNode nextNode)
+	{
+		return containsNode(points[0].position, nextNode.position, points[1].position);
 	}
 }
