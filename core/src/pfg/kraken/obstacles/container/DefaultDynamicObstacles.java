@@ -6,6 +6,7 @@
 package pfg.kraken.obstacles.container;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import pfg.kraken.obstacles.Obstacle;
@@ -30,7 +31,12 @@ public class DefaultDynamicObstacles implements DynamicObstacles
 	{
 		obsList.add(obs);
 	}
-	
+
+	public void addAll(Collection<Obstacle> obs)
+	{
+		obsList.addAll(obs);
+	}
+
 	public void clear()
 	{
 		obsList.clear();

@@ -29,10 +29,10 @@ import pfg.kraken.utils.XY_RW;
 public class NavmeshEdge implements Serializable, Printable
 {
 	private static final long serialVersionUID = 7904466980326128967L;
-	int length;
+	int length_um;
+	int length_mm;
 	int nb;
 	private double orientation;
-	private boolean wasPreviouslyBlocked = false;
 	public transient NavmeshNode[] points = new NavmeshNode[2];
 	public final int[] pointsNb = new int[2];
 	final transient NavmeshTriangle[] triangles = new NavmeshTriangle[2]; // transient because it is used only at the building of the navmesh
@@ -127,7 +127,8 @@ public class NavmeshEdge implements Serializable, Printable
 	
 	public void update()
 	{
-		length = (int) (1000 * points[0].position.distance(points[1].position));
+		length_um = (int) (1000 * points[0].position.distance(points[1].position));
+		length_mm = length_um/1000;
 	}
 	
 	public void addTriangle(NavmeshTriangle tr)
@@ -180,27 +181,20 @@ public class NavmeshEdge implements Serializable, Printable
 	}
 	
 	/**
-	 * Add an obstacle
-	 * @param o
-	 * @return
+	 * Update the "blocked" state
+	 * @param currentList
 	 */
-	public void addObstacle(Obstacle o)
+	public void updateState(List<Obstacle> currentList)
 	{
-		assert !obstructingObstacles.contains(o);
-		obstructingObstacles.add(o);
-	}
-
-	public void removeObstacle(Obstacle o)
-	{
-		assert obstructingObstacles.contains(o);
-		obstructingObstacles.remove(o);
-	}
-
-	public boolean hasChanged()
-	{
-		boolean out = wasPreviouslyBlocked != isBlocked();
-		wasPreviouslyBlocked = isBlocked();
-		return out;
+		// Add the new obstacles that collide the edge  
+		for(Obstacle o : currentList)
+			if(!obstructingObstacles.contains(o) && o.isColliding(points[0].position, points[1].position))
+				obstructingObstacles.add(o);
+		
+		// Remove the obstacles that are *absent* from the list or the obstacles that moved (not colliding anymore)
+		for(Obstacle o : obstructingObstacles)
+			if(!currentList.contains(o) || !o.isColliding(points[0].position, points[1].position))
+				obstructingObstacles.remove(o);
 	}
 	
 	@Override
@@ -393,7 +387,12 @@ public class NavmeshEdge implements Serializable, Printable
 	{
 		if(!obstructingObstacles.isEmpty())
 			return Integer.MAX_VALUE;
-		return length;
+		return length_mm;
+	}
+	
+	public int getUnblockedDistance()
+	{
+		return length_mm;
 	}
 
 	public boolean isBlocked()
@@ -471,4 +470,5 @@ public class NavmeshEdge implements Serializable, Printable
 	{
 		return containsNode(points[0].position, nextNode.position, points[1].position);
 	}
+
 }

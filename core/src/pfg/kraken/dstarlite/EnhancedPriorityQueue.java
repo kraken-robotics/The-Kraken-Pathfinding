@@ -22,7 +22,7 @@ public class EnhancedPriorityQueue
 {
 	private DStarLiteNode[] tab;
 	private int firstAvailable = 1;
-	private DStarLiteNode lastInserted = null;
+//	private DStarLiteNode lastInserted = null;
 
 	public EnhancedPriorityQueue(int size)
 	{
@@ -36,13 +36,13 @@ public class EnhancedPriorityQueue
 	 */
 	public DStarLiteNode poll()
 	{
-		if(tab[1] == null || (lastInserted != null && tab[1].cle.greaterThan(lastInserted.cle)))
+/*		if(tab[1] == null || (lastInserted != null && tab[1].cle.greaterThan(lastInserted.cle)))
 		{
 			DStarLiteNode tmp = lastInserted;
 			lastInserted = null;
 			return tmp;
 		}
-		else
+		else*/
 		{
 			DStarLiteNode out = tab[1];
 			tab[1] = tab[--firstAvailable];
@@ -59,8 +59,8 @@ public class EnhancedPriorityQueue
 	 */
 	public DStarLiteNode peek()
 	{
-		if(tab[1] == null || (lastInserted != null && tab[1].cle.greaterThan(lastInserted.cle)))
-			return lastInserted;
+//		if(tab[1] == null || (lastInserted != null && tab[1].cle.greaterThan(lastInserted.cle)))
+//			return lastInserted;
 		return tab[1];
 	}
 
@@ -70,7 +70,7 @@ public class EnhancedPriorityQueue
 	public void clear()
 	{
 		firstAvailable = 1;
-		lastInserted = null;
+//		lastInserted = null;
 	}
 
 	/**
@@ -128,9 +128,10 @@ public class EnhancedPriorityQueue
 	 */
 	public void add(DStarLiteNode node)
 	{
-		DStarLiteNode tmp = lastInserted;
-		lastInserted = node;
-		if(tmp != null)
+//		DStarLiteNode tmp = lastInserted;
+//		lastInserted = node;
+		DStarLiteNode tmp = node;
+//		if(tmp != null)
 		{
 			tab[firstAvailable] = tmp;
 			tmp.indexPriorityQueue = firstAvailable;
@@ -146,9 +147,9 @@ public class EnhancedPriorityQueue
 	 */
 	public void percolateDown(DStarLiteNode node)
 	{
-		if(lastInserted == node)
-			add(null); // pour ajouter lastInserted dans le tas (fait automatique le percolateUp)
-		else
+//		if(lastInserted == node)
+//			add(null); // pour ajouter lastInserted dans le tas (fait automatique le percolateUp)
+//		else
 		{
 			DStarLiteNode n = node;
 			int fg, diff;
@@ -173,9 +174,9 @@ public class EnhancedPriorityQueue
 	 */
 	public void remove(DStarLiteNode node)
 	{
-		if(lastInserted == node)
-			lastInserted = null;
-		else
+//		if(lastInserted == node)
+//			lastInserted = null;
+//		else
 		{
 			DStarLiteNode last = tab[--firstAvailable];
 			tab[node.indexPriorityQueue] = last;
@@ -196,9 +197,9 @@ public class EnhancedPriorityQueue
 	 */
 	public void percolateUp(DStarLiteNode node)
 	{
-		if(lastInserted == node)
-			add(null); // pour ajouter lastInserted dans le tas (fait automatique le percolateUp)
-		else
+//		if(lastInserted == node)
+//			add(null); // pour ajouter lastInserted dans le tas (fait automatique le percolateUp)
+//		else
 		{
 			int p;
 			// si ce nœud n'est pas la racine et que son père est plus grand : on
@@ -208,6 +209,16 @@ public class EnhancedPriorityQueue
 		}
 	}
 
+	public boolean contains(DStarLiteNode node)
+	{
+//		if(lastInserted == node)
+//			return true;
+		for(int i = 1; i < firstAvailable; i++)
+			if(tab[i] == node)
+				return true;
+		return false;
+	}
+	
 	/**
 	 * Renvoie "true" si la file est vide
 	 * 
@@ -215,7 +226,7 @@ public class EnhancedPriorityQueue
 	 */
 	public boolean isEmpty()
 	{
-		return firstAvailable == 1 && lastInserted == null;
+		return firstAvailable == 1;// && lastInserted == null;
 	}
 
 	/**

@@ -84,11 +84,10 @@ public class Kraken
 	 * @param tentacleTypes : 
 	 * @return
 	 */
-	protected static Kraken getKraken(List<Obstacle> fixedObstacles, DynamicObstacles dynObs, TentacleType tentacleTypes, XY bottomLeftCorner, XY topRightCorner, String...configprofile)
+	public static Kraken getKraken(List<Obstacle> fixedObstacles, DynamicObstacles dynObs, XY bottomLeftCorner, XY topRightCorner, String...configprofile)
 	{
-		// TODO : pas encore disponible
 		if(instance == null)
-			instance = new Kraken(fixedObstacles, dynObs, tentacleTypes, bottomLeftCorner, topRightCorner, configprofile);
+			instance = new Kraken(fixedObstacles, dynObs, null, bottomLeftCorner, topRightCorner, configprofile);
 		return instance;
 	}
 	

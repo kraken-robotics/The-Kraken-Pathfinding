@@ -41,6 +41,11 @@ public class DStarLiteNode implements Printable
 		this.node = gridpoint;
 	}
 
+	public boolean isConsistent()
+	{
+		return rhs == g;
+	}
+	
 	@Override
 	public final int hashCode()
 	{

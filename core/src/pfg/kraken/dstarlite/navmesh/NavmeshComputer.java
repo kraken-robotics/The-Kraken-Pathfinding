@@ -42,7 +42,7 @@ public class NavmeshComputer
 		@Override
 		public int compare(NavmeshEdge o1, NavmeshEdge o2)
 		{
-			return o2.length - o1.length;
+			return o2.length_um - o1.length_um;
 		}
 	}
 	
@@ -164,7 +164,7 @@ public class NavmeshComputer
 		assert checkDelaunay();
 		// We add other points in order to avoir long edges
 		NavmeshEdge longestEdge = edgesInProgress.peek();
-		while(longestEdge.length > longestAllowedLength)
+		while(longestEdge.length_um > longestAllowedLength)
 		{
 			assert ((s = checkLongestEdge()) == null) : s;
 			edgesInProgress.poll();
@@ -173,7 +173,7 @@ public class NavmeshComputer
 			longestEdge = edgesInProgress.peek();
 		}
 		
-		assert edgesInProgress.peek().length <= longestAllowedLength : edgesInProgress.peek().length + " > " + longestAllowedLength;
+		assert edgesInProgress.peek().length_um <= longestAllowedLength : edgesInProgress.peek().length_um + " > " + longestAllowedLength;
 		
 		// We add other points in order to avoid large triangle
 		NavmeshTriangle largestTriangle = triangles.peek();
@@ -184,7 +184,7 @@ public class NavmeshComputer
 			largestTriangle = triangles.peek();
 		}
 		
-		assert edgesInProgress.peek().length <= longestAllowedLength : edgesInProgress.peek().length + " > " + longestAllowedLength;
+		assert edgesInProgress.peek().length_um <= longestAllowedLength : edgesInProgress.peek().length_um + " > " + longestAllowedLength;
 
 		assert ((s = checkCrossingEdges()) == null) : s;
 		assert ((s = checkNodeInTriangle()) == null) : s;
@@ -433,10 +433,10 @@ public class NavmeshComputer
 	
 	private String checkLongestEdge()
 	{
-		int longestEdge = edgesInProgress.peek().length;
+		int longestEdge = edgesInProgress.peek().length_um;
 		for(NavmeshEdge e : edgesInProgress)
-			if(e.length > longestEdge)
-				return e.toString()+" : "+e.length+" > "+longestEdge;
+			if(e.length_um > longestEdge)
+				return e.toString()+" : "+e.length_um+" > "+longestEdge;
 		return null;
 	}
 	
@@ -863,7 +863,7 @@ public class NavmeshComputer
 	public boolean checkNavmesh(TriangulatedMesh mesh)
 	{
 		for(NavmeshEdge e : mesh.edges)
-			if(e.length > longestAllowedLength)
+			if(e.length_um > longestAllowedLength)
 				return false;
 
 		for(NavmeshTriangle t : mesh.triangles)

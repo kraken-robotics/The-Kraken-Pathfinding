@@ -38,12 +38,18 @@ public class ItineraryPoint implements Printable
 	public final double y;
 	
 	/**
+	 * If the robot need to go forward
+	 */
+	public final boolean goingForward;
+	
+	/**
 	 * The desired curvature
 	 */
 	public final double curvature;
 
 	public ItineraryPoint(Cinematique c)
 	{
+		goingForward = c.enMarcheAvant;
 		x = c.getPosition().getX();
 		y = c.getPosition().getY();
 		if(c.enMarcheAvant)
@@ -61,14 +67,18 @@ public class ItineraryPoint implements Printable
 	@Override
 	public String toString()
 	{
-		return "("+x+","+y+"), orientation = "+orientation+", curvature = "+curvature;
+		return "("+x+","+y+"), orientation = "+orientation+", curvature = "+curvature+" going "+(goingForward ? "forward" : "backward");
 	}
 
 	@Override
 	public void print(Graphics g, GraphicPanel f, Chart a)
 	{
 		int taille = 5;
-		g.setColor(Color.BLACK);
+		if(goingForward)
+			g.setColor(Color.BLACK);
+		else
+			g.setColor(Color.LIGHT_GRAY);
+			
 		g.fillOval(f.XtoWindow(x)-taille/2, f.YtoWindow(y)-taille/2, taille, taille);
 		double directionLigne = orientation + Math.PI / 2;
 		double longueur = curvature * 10;

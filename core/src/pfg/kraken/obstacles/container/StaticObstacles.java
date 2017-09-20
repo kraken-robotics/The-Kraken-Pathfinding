@@ -54,5 +54,11 @@ public class StaticObstacles
 	{
 		return topRightCorner;
 	}
+	
+	public boolean isInsideSearchDomain(XY point)
+	{
+		return point.getX() >= bottomLeftCorner.getX() && point.getX() <= topRightCorner.getX()
+				&& point.getY() >= bottomLeftCorner.getY() && point.getY() <= topRightCorner.getY();
+	}
     
 }

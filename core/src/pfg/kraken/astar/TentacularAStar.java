@@ -421,10 +421,9 @@ public class TentacularAStar
 	 * @param arrivee
 	 * @param sens
 	 * @param shoot
-	 * @throws PathfindingException
-	 * @throws InterruptedException
+	 * @throws NoPathException 
 	 */
-	public void initializeNewSearch(XYO start, XY arrival)
+	public void initializeNewSearch(XYO start, XY arrival) throws NoPathException
 	{
 		vitesseMax = DefaultSpeed.STANDARD;
 		depart.init();
@@ -439,7 +438,8 @@ public class TentacularAStar
 			arcmanager.disableObstaclesFixes(symetrie, obsDepart);
 		}*/
 
-		dstarlite.computeNewPath(depart.robot.getCinematique().getPosition(), arrival);
+		if(!dstarlite.computeNewPath(depart.robot.getCinematique().getPosition(), arrival))
+			throw new NoPathException("No path found by D* Lite !");
 		if(graphicDStarLite)
 			dstarlite.itineraireBrut();
 		rechercheEnCours = true;

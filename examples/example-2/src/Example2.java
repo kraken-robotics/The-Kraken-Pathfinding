@@ -4,39 +4,33 @@
  */
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 import pfg.graphic.PrintBuffer;
 import pfg.graphic.WindowFrame;
 import pfg.kraken.ColorKraken;
 import pfg.kraken.Kraken;
-import pfg.kraken.exceptions.PathfindingException;
 import pfg.kraken.obstacles.CircularObstacle;
 import pfg.kraken.obstacles.Obstacle;
 import pfg.kraken.obstacles.RectangularObstacle;
+import pfg.kraken.obstacles.container.DefaultDynamicObstacles;
 import pfg.kraken.astar.TentacularAStar;
-import pfg.kraken.robot.ItineraryPoint;
 import pfg.kraken.utils.XY;
 import pfg.kraken.utils.XYO;
 import pfg.kraken.utils.XY_RW;
 
 
 /**
- * Minimalist example code
+ * Having fun with dynamic obstacles
  * @author pf
  *
  */
 
-public class Example1
+public class Example2
 {
 
 	public static void main(String[] args)
 	{
-		/*
-		 * The list of fixed, permanent obstacles
-		 * Obstacles partially outside the search domain and colliding obstacles are OK 
-		 */
 		List<Obstacle> obs = new ArrayList<Obstacle>();
 		obs.add(new RectangularObstacle(new XY_RW(800,200), 200, 200, ColorKraken.BLACK.color, ColorKraken.BLACK.layer));
 		obs.add(new RectangularObstacle(new XY_RW(800,300), 200, 200, ColorKraken.BLACK.color, ColorKraken.BLACK.layer));
@@ -47,15 +41,12 @@ public class Example1
 		obs.add(new CircularObstacle(new XY_RW(500,600), 100, ColorKraken.BLACK.color, ColorKraken.BLACK.layer));
 		
 		/*
-		 * Getting Kraken (a singleton).
-		 * We restrain the search domain to the rectangle -1500 < x < 1500, 0 < y < 2000
-		 * You can add the "detailed" profile to display the underneath pathfinder.
+		 * The list of dynamic obstacles.
+		 * "DefaultDynamicObstacles" is the default manager ; you can use a manager of your own if you want/need to
 		 */
-		Kraken kraken = Kraken.getKraken(obs, new XY(-1500,0), new XY(1500, 2000), "trajectory"/*, "detailed"*/);
-		
-		/*
-		 * The graphic display (optional)
-		 */
+		DefaultDynamicObstacles obsDyn = new DefaultDynamicObstacles();
+
+		Kraken kraken = Kraken.getKraken(obs, obsDyn, new XY(-1500,0), new XY(1500, 2000), "trajectory", "detailed");
 		WindowFrame frame = kraken.getWindowFrame();
 		PrintBuffer printBuffer = kraken.getPrintBuffer();
 		
@@ -66,43 +57,45 @@ public class Example1
 			printBuffer.add(o);
 		frame.refresh();
 		
-		/*
-		 * The pathfinder itself.
-		 */
+		Obstacle newObs = new CircularObstacle(new XY_RW(200,600), 100, ColorKraken.BLUE.color, ColorKraken.BLACK.layer);
+		printBuffer.addSupprimable(newObs);
+		obsDyn.add(newObs);
+
+
 		TentacularAStar astar = kraken.getAStar();
 		try
 		{
-			/*
-			 * The pathfinding is split in two steps :
-			 * - the initialization
-			 * - the actual path searching
-			 */
-			
-			/*
-			 * We search a new path from the point (0,0) with orientation 0 to the point (1000, 1000).
-			 */
 			astar.initializeNewSearch(new XYO(0, 200, 0), new XY(1000, 1000));
+//			LinkedList<ItineraryPoint> path = astar.search();
 			
 			/*
-			 * The pathfinder returns a list of ItineraryPoint, which contains all the cinematic information that described follow the path
+			 * We have the first trajectory
 			 */
-			LinkedList<ItineraryPoint> path = astar.search();
-			
-			/*
-			 * For this example, we just print the trajectory points
-			 */
-			for(ItineraryPoint p : path)
+/*			for(ItineraryPoint p : path)
 			{
-				printBuffer.add(p);
+				printBuffer.addSupprimable(p);
 				System.out.println(p);
-			}
+			}*/
 			
 			/*
 			 * Refresh the window frame.
 			 */
 			frame.refresh();
+			
+			/*
+			 * Just a sleep to see clearly the different steps
+			 */
+/*			try
+			{
+				Thread.sleep(3000);
+			}
+			catch(InterruptedException e)
+			{
+				e.printStackTrace();
+			}*/
+			
 		}
-		catch(PathfindingException e)
+		catch(/*Pathfinding*/Exception e)
 		{
 			/*
 			 * This exception is thrown when no path is found
