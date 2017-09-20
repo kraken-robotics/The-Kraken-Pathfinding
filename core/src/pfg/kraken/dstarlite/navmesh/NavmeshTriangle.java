@@ -24,13 +24,45 @@ import pfg.kraken.utils.XY;
 public class NavmeshTriangle implements Serializable, Printable
 {
 	private static final long serialVersionUID = 1L;
-	NavmeshNode[] points = new NavmeshNode[3];
-	NavmeshEdge[] edges = new NavmeshEdge[3];
+	transient NavmeshNode[] points = new NavmeshNode[3];
+	transient NavmeshEdge[] edges = new NavmeshEdge[3];
+	int[] edgesNb = new int[3];
 	int area;
 	
 	NavmeshTriangle(NavmeshEdge a, NavmeshEdge b, NavmeshEdge c)
 	{
 		setEdges(a, b, c);
+	}
+	
+	public void prepareToSave()
+	{
+		for(int i = 0; i < 3; i++)
+			edgesNb[i] = edges[i].nb;
+	}
+	
+	public void loadFromSave(NavmeshEdge[] allEdges)
+	{
+		points = new NavmeshNode[3];
+		NavmeshEdge a = allEdges[edgesNb[0]], b = allEdges[edgesNb[1]], c = allEdges[edgesNb[2]];
+		edges = new NavmeshEdge[3];
+		edges[0] = a;
+		edges[1] = b;
+		edges[2] = c;
+		
+		if(a.points[0] == b.points[0] || a.points[1] == b.points[0])
+			points[0] = b.points[1];
+		else
+			points[0] = b.points[0];
+		
+		if(b.points[0] == c.points[0] || b.points[1] == c.points[0])
+			points[1] = c.points[1];
+		else
+			points[1] = c.points[0];
+		
+		if(c.points[0] == b.points[0] || c.points[1] == b.points[0])
+			points[2] = b.points[1];
+		else
+			points[2] = b.points[0];
 	}
 	
 	/**

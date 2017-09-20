@@ -31,10 +31,26 @@ public class NavmeshNode implements Printable, Serializable
 //	public NavmeshNode neighbourInConvexHull;
 	public int nb; // index in memory pool
 	public final XY position;
-	private List<NavmeshEdge> edges = new ArrayList<NavmeshEdge>();
-	List<NavmeshNode> neighbours = new ArrayList<NavmeshNode>();
+	private transient List<NavmeshEdge> edges = new ArrayList<NavmeshEdge>();
+	private List<Integer> edgesNb = new ArrayList<Integer>();
+	transient List<NavmeshNode> neighbours = new ArrayList<NavmeshNode>();
 	private static int nbStatic = 0;
 
+	public void prepareToSave()
+	{
+		for(NavmeshEdge e : edges)
+			edgesNb.add(e.nb);
+	}
+	
+	public void loadFromSave(NavmeshEdge[] allEdges)
+	{
+		edges = new ArrayList<NavmeshEdge>();
+		neighbours = new ArrayList<NavmeshNode>();
+		for(Integer nb : edgesNb)
+			edges.add(allEdges[nb]);
+		updateNeighbours();
+	}
+	
 	public void addEdge(NavmeshEdge e)
 	{
 		assert !edges.contains(e) : "Can't add an edge already added";

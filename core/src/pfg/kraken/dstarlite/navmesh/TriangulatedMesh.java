@@ -31,6 +31,7 @@ public class TriangulatedMesh implements Serializable
 	
 	public TriangulatedMesh(NavmeshNode[] nodes, NavmeshEdge[] edges, NavmeshTriangle[] triangles, int obsHashCode)
 	{
+		System.out.println("hash code = "+obsHashCode);
 		this.nodes = nodes;
 		this.edges = edges;
 		this.triangles = triangles;
@@ -43,6 +44,12 @@ public class TriangulatedMesh implements Serializable
 		ObjectInputStream ois = new ObjectInputStream(fichier);
 		TriangulatedMesh o = (TriangulatedMesh) ois.readObject();
 		ois.close();
+		for(NavmeshEdge e : o.edges)
+			e.loadFromSave(o.nodes);
+		for(NavmeshNode n : o.nodes)
+			n.loadFromSave(o.edges);		
+		for(NavmeshTriangle t : o.triangles)
+			t.loadFromSave(o.edges);
 		return o;
 	}
 

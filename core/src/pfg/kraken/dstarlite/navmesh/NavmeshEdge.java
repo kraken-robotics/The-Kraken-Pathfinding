@@ -30,13 +30,28 @@ public class NavmeshEdge implements Serializable, Printable
 {
 	private static final long serialVersionUID = 7904466980326128967L;
 	int length;
+	int nb;
 	private double orientation;
 	private boolean wasPreviouslyBlocked = false;
-	public final NavmeshNode[] points = new NavmeshNode[2];
-	final NavmeshTriangle[] triangles = new NavmeshTriangle[2]; // TODO transient because it is used only at the building of the navmesh
+	public transient NavmeshNode[] points = new NavmeshNode[2];
+	public final int[] pointsNb = new int[2];
+	final transient NavmeshTriangle[] triangles = new NavmeshTriangle[2]; // transient because it is used only at the building of the navmesh
 	int nbTriangles = 0;
 	private boolean highlight = false;
 	final List<Obstacle> obstructingObstacles = new ArrayList<Obstacle>();
+	
+	public void prepareToSave()
+	{
+		pointsNb[0] = points[0].nb;
+		pointsNb[1] = points[1].nb;
+	}
+	
+	public void loadFromSave(NavmeshNode[] allNodes)
+	{
+		points = new NavmeshNode[2];
+		points[0] = allNodes[pointsNb[0]];
+		points[1] = allNodes[pointsNb[1]];
+	}
 	
 	private boolean checkNbTriangles()
 	{

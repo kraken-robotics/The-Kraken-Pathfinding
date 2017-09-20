@@ -390,12 +390,22 @@ public class NavmeshComputer
 		for(int i = 0; i < e.length; i++)
 		{
 			e[i] = edgesInProgress.poll();
+			e[i].nb = i;
 			e[i].updateOrientation();
 		}
 		
+		for(int i = 0; i < n.length; i++)
+			n[i].prepareToSave();
+
+		for(int i = 0; i < e.length; i++)
+			e[i].prepareToSave();
+		
 		NavmeshTriangle[] t = new NavmeshTriangle[triangles.size()];
 		for(int i = 0; i < t.length; i++)
+		{
 			t[i] = triangles.poll();
+			t[i].prepareToSave();
+		}
 		
 		return new TriangulatedMesh(n, e, t, obs.hashCode());
 	}
