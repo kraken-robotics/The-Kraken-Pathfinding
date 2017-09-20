@@ -3,15 +3,12 @@
  * Distributed under the MIT License.
  */
 
-import java.awt.Color;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
 import pfg.graphic.PrintBuffer;
 import pfg.graphic.WindowFrame;
-import pfg.graphic.printable.Layer;
-import pfg.graphic.printable.PrintablePoint;
 import pfg.kraken.ColorKraken;
 import pfg.kraken.Kraken;
 import pfg.kraken.exceptions.PathfindingException;
@@ -96,7 +93,7 @@ public class Example1
 			 */
 			for(ItineraryPoint p : path)
 			{
-				printBuffer.add(new PrintablePoint(p.x, p.y, 5, Layer.FOREGROUND, Color.BLACK));
+				printBuffer.add(p);
 				System.out.println(p);
 			}
 			

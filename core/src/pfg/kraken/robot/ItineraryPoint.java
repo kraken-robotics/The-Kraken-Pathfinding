@@ -5,14 +5,23 @@
 
 package pfg.kraken.robot;
 
+import java.awt.Color;
+import java.awt.Graphics;
+import pfg.graphic.Chart;
+import pfg.graphic.GraphicPanel;
+import pfg.graphic.printable.Layer;
+import pfg.graphic.printable.Printable;
+
 /**
  * A point of the itinerary computed by Kraken
  * @author pf
  *
  */
 
-public class ItineraryPoint
+public class ItineraryPoint implements Printable
 {
+	private static final long serialVersionUID = 1L;
+
 	/**
 	 * The desired orientation
 	 */
@@ -53,6 +62,25 @@ public class ItineraryPoint
 	public String toString()
 	{
 		return "("+x+","+y+"), orientation = "+orientation+", curvature = "+curvature;
+	}
+
+	@Override
+	public void print(Graphics g, GraphicPanel f, Chart a)
+	{
+		int taille = 5;
+		g.setColor(Color.BLACK);
+		g.fillOval(f.XtoWindow(x)-taille/2, f.YtoWindow(y)-taille/2, taille, taille);
+		double directionLigne = orientation + Math.PI / 2;
+		double longueur = curvature * 10;
+		int deltaX = (int) (longueur * Math.cos(directionLigne));
+		int deltaY = (int) (longueur * Math.sin(directionLigne));
+		g.drawLine(f.XtoWindow(x), f.YtoWindow(y), f.XtoWindow(x)+deltaX, f.YtoWindow(y)-deltaY);
+	}
+
+	@Override
+	public int getLayer()
+	{
+		return Layer.FOREGROUND.ordinal();
 	}
 	
 }
