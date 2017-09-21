@@ -37,7 +37,7 @@ public class DStarLite
 {
 	protected Log log;
 	private Navmesh navmesh;
-	private boolean graphicDStarLite, graphicHeuristique;
+	private boolean graphicHeuristique;
 	private DynamicObstacles dynObs;
 	private StaticObstacles statObs;
 	private List<Obstacle> previousObstacles = new ArrayList<Obstacle>(), newObstacles = new ArrayList<Obstacle>();
@@ -80,7 +80,7 @@ public class DStarLite
 		for(int i = 0; i < nbPoints; i++)
 			memory[i] = new DStarLiteNode(navmesh.mesh.nodes[i]);
 
-		graphicDStarLite = config.getBoolean(ConfigInfoKraken.GRAPHIC_D_STAR_LITE);
+//		graphicDStarLite = config.getBoolean(ConfigInfoKraken.GRAPHIC_D_STAR_LITE);
 		graphicHeuristique = config.getBoolean(ConfigInfoKraken.GRAPHIC_HEURISTIC);
 	}
 
@@ -155,14 +155,16 @@ public class DStarLite
 	 * Renvoie true ssi un chemin a été trouvé
 	 * @return
 	 */
-	private boolean computeShortestPath()
+	private void updateHeuristic()
 	{
 		overconsistentExpansion.clear();
 		underconsistentExpansion.clear();
 		DStarLiteNode u;
 		String str;
-		while(!openset.isEmpty() && ((u = openset.peek()).cle.lesserThan(calcKey(depart, tmp)) || depart.rhs > depart.g))
+		// on traite tous les nœuds une fois pour toute
+		while(!openset.isEmpty())
 		{
+			u = openset.peek();
 			assert ((str = checkExpansion(u)) == null) : str;
 			assert ((str = checkInvariantRhs()) == null) : str;
 			assert ((str = checkInvariantOpenset()) == null) : str;
@@ -242,32 +244,10 @@ public class DStarLite
 //			System.out.println("Arrivee : "+arrivee);
 
 		}
-		// Avec la version optimisée du D* lite, le départ peut être non-consistent.
-		// Il faut vérifier rhs ici
-		return depart.rhs != Integer.MAX_VALUE;
-	}
-
-	/**
-	 * D* lite must expand, at most, each node twice : at most once if is overconsistent
-	 * and at most once if it is underconsistent
-	 * @return
-	 */
-	private String checkExpansion(DStarLiteNode u)	
-	{
-		assert !u.isConsistent() : u.g+" "+u.rhs;
-		if(u.g > u.rhs)
-		{
-			if(overconsistentExpansion.contains(u))
-				return "A overconsistent node has been expanded twice : "+u;
-			overconsistentExpansion.add(u);
-		}
-		else
-		{
-			if(underconsistentExpansion.contains(u))
-				return "A underconsistent node has been expanded twice : "+u;
-			underconsistentExpansion.add(u);
-		}
-		return null;
+		
+		for(int i = 0; i < memory.length; i++)
+			if(memory[i].nbPF == nbPF) // ceux qui ne sont pas à jour auront de toute façon une heuristique nulle
+				updateOrientationHeuristic(memory[i]);
 	}
 
 	/**
@@ -280,7 +260,8 @@ public class DStarLite
 	{
 		updateGoalAndStart(depart, arrivee);
 		updateObstacles();
-		return computeShortestPath();
+		updateHeuristic();
+		return this.depart.rhs != Integer.MAX_VALUE;
 	}
 
 	/**
@@ -314,8 +295,6 @@ public class DStarLite
 		openset.clear();
 		openset.add(arrivee);
 		arrivee.inOpenSet = true;
-
-		System.out.println("Chemin pour commencer : "+computeShortestPath());
 	}
 
 	public synchronized void updateStart(XY positionRobot)
@@ -330,15 +309,11 @@ public class DStarLite
 	 */
 	private synchronized final void updateStart(DStarLiteNode p)
 	{
-		// p is inconsistent iff p is in the open set
-//		if(p.inOpenSet)
-//		{
-			depart = p;
-			km += distanceHeuristique(lastDepart);
-			lastDepart = depart.node;
-	
-			computeShortestPath();
-//		}
+		depart = p;
+		km += distanceHeuristique(lastDepart);
+		lastDepart = depart.node;
+
+		updateHeuristic();
 	}
 
 	/**
@@ -364,7 +339,6 @@ public class DStarLite
 
 			if(!e.isBlocked())
 			{
-				System.out.println("NOOON");
 				for(int k = 0; k < 2; k++)
 				{
 					DStarLiteNode u = getFromMemory(e.points[k]);
@@ -376,7 +350,6 @@ public class DStarLite
 			}
 			else
 			{
-				System.out.println("OK");
 				for(int k = 0; k < 2; k++)
 				{
 					DStarLiteNode u = getFromMemory(e.points[k]);
@@ -386,7 +359,6 @@ public class DStarLite
 					// ajout d'obstacle
 					if(u.rhs == add(e.getUnblockedDistance(), v.g) && !u.equals(arrivee))
 					{
-						System.out.println("Ici");
 						u.rhs = Integer.MAX_VALUE;
 						int nbNeighbours = u.node.getNbNeighbours();
 						for(int i = 0; i < nbNeighbours; i++)
@@ -435,11 +407,6 @@ public class DStarLite
 		
 		while(!node.equals(arrivee))
 		{
-			System.out.println("Meilleur : ");
-			System.out.println(node);
-			System.out.println("Voisins : ");
-			for(int i = 0; i < node.node.getNbNeighbours(); i++)
-				System.out.println(getFromMemory(node.node.getNeighbour(i)));
 			// Le noeud de départ peut exceptionnellement être inconsistent
 			assert node == depart || node.isConsistent() : "A node in the path is not consistent !";
 			assert !trajet.contains(node.node.position) : "Cyclic path !";
@@ -465,8 +432,7 @@ public class DStarLite
 			
 			assert min.g < node.g : "The distance to the goal increased !";
 
-			if(graphicDStarLite)
-				node.node.getNeighbourEdge(indexMin).highlight(true);
+			node.node.getNeighbourEdge(indexMin).highlight(true);
 			node = min;
 		}
 		
@@ -475,6 +441,147 @@ public class DStarLite
 		return trajet;
 
 	}
+
+	/**
+	 * Renvoie l'heuristique au A* courbe.
+	 * L'heuristique est une distance en mm
+	 * 
+	 * @param c
+	 * @return
+	 */
+	public synchronized Double heuristicCostCourbe(Cinematique c)
+	{
+		if(!statObs.isInsideSearchDomain(c.getPosition()))
+			return null;
+		NavmeshNode pos = navmesh.getNearest(c.getPosition());
+		
+		// si on est arrivé… on est arrivé.
+		if(pos.equals(arrivee.node))
+			return 0.;
+
+		DStarLiteNode premier = getFromMemory(pos);
+		
+		if(premier.heuristiqueOrientation == null)
+			return null;
+		
+		double erreurDistance = premier.rhs / 1000.;
+		
+		double orientationOptimale = premier.heuristiqueOrientation;
+
+		// l'orientation est vérifiée modulo 2*pi : aller vers la destination ou
+		// s'en éloigner sont différenciés
+		double erreurOrientation = (c.orientationGeometrique - orientationOptimale) % (2 * Math.PI);
+		if(erreurOrientation > Math.PI)
+			erreurOrientation -= 2 * Math.PI;
+
+		erreurOrientation = Math.abs(erreurOrientation);
+
+		// il faut toujours majorer la vraie distance, afin de ne pas chercher
+		// tous les trajets possibles…
+		// le poids de l'erreur d'orientation doit rester assez faible. Car
+		// vouloir trop coller à l'orientation, c'est risquer d'avoir une
+		// courbure impossible…
+		return 1.3 * erreurDistance + 5 * erreurOrientation;		
+	}
+
+	/**
+	 * Renvoie l'indice du meilleur voisin, i.e. le plus proche de l'arrivée
+	 * @param node
+	 * @return
+	 */
+	private int getBestVoisin(NavmeshNode node)
+	{
+		int nbVoisins = node.getNbNeighbours();
+		assert nbVoisins > 0; // un nœud a forcément au moins un voisin
+		int bestVoisin = 0;
+		int bestVoisinDistance = add(getFromMemory(node.getNeighbour(0)).rhs, node.getNeighbourEdge(0).getDistance());
+		
+		for(int i = 1; i < nbVoisins; i++)
+		{
+			NavmeshNode voisin = node.getNeighbour(i);
+			int candidatDistance = add(getFromMemory(voisin).rhs, node.getNeighbourEdge(i).getDistance());
+			assert candidatDistance >= 0 : "Distance négative ! "+candidatDistance;
+			if(candidatDistance < bestVoisinDistance)
+			{
+				bestVoisin = i;
+				bestVoisinDistance = candidatDistance;
+			}
+		}
+		assert bestVoisinDistance != Integer.MAX_VALUE;
+		return bestVoisin;
+	}
+	
+	/**
+	 * Fournit une heuristique de l'orientation à prendre en ce point
+	 * 
+	 * @param p
+	 * @return
+	 */
+	private void updateOrientationHeuristic(DStarLiteNode n)
+	{
+		if(n == arrivee) // cas particulier
+			n.heuristiqueOrientation = null;
+		else if(n.rhs == Integer.MAX_VALUE) // pas de chemin
+			n.heuristiqueOrientation = null;
+		else
+		{
+			int nbBestVoisin = getBestVoisin(n.node);
+			NavmeshNode bestVoisin = n.node.getNeighbour(nbBestVoisin); 
+			if(bestVoisin.equals(arrivee.node))
+				n.heuristiqueOrientation = n.node.getNeighbourEdge(nbBestVoisin).getOrientation(n.node);
+			else
+			{
+				int nbBestVoisinDuVoisin = getBestVoisin(bestVoisin);
+				double angle1 = n.node.getNeighbourEdge(nbBestVoisin).getOrientation(n.node);
+				double angle2 = bestVoisin.getNeighbourEdge(nbBestVoisinDuVoisin).getOrientation(bestVoisin);
+				double diff = (( angle1 - angle2 + 3 * Math.PI ) % (2 * Math.PI)) - Math.PI;
+				double mean = (2 * Math.PI + angle2 + (diff / 2 )) % (2 * Math.PI);
+				n.heuristiqueOrientation = mean;
+			}
+			if(graphicHeuristique)
+				buffer.addSupprimable(n);
+		}
+	}
+
+	/**
+	 * Somme en faisant attention aux valeurs infinies
+	 * 
+	 * @param a
+	 * @param b
+	 * @return
+	 */
+	private final int add(int a, int b)
+	{
+		if(a == Integer.MAX_VALUE || b == Integer.MAX_VALUE)
+			return Integer.MAX_VALUE;
+		return a + b;
+	}
+	
+	/* Assertions below */
+
+	/**
+	 * D* lite must expand, at most, each node twice : at most once if is overconsistent
+	 * and at most once if it is underconsistent
+	 * @return
+	 */
+	private String checkExpansion(DStarLiteNode u)	
+	{
+		assert !u.isConsistent() : u.g+" "+u.rhs;
+		if(u.g > u.rhs)
+		{
+			if(overconsistentExpansion.contains(u))
+				return "An overconsistent node has been expanded twice : "+u;
+			overconsistentExpansion.add(u);
+		}
+		else
+		{
+			if(underconsistentExpansion.contains(u))
+				return "An underconsistent node has been expanded twice : "+u;
+			underconsistentExpansion.add(u);
+		}
+		return null;
+	}
+
 	
 	public String checkKey()
 	{
@@ -534,130 +641,4 @@ public class DStarLite
 		return null;
 	}
 	
-
-
-	/**
-	 * Renvoie l'heuristique au A* courbe.
-	 * L'heuristique est une distance en mm
-	 * 
-	 * @param c
-	 * @return
-	 */
-	public synchronized Double heuristicCostCourbe(Cinematique c)
-	{
-		if(!statObs.isInsideSearchDomain(c.getPosition()))
-			return null;
-
-		NavmeshNode pos = navmesh.getNearest(c.getPosition());
-
-		// si on est arrivé… on est arrivé.
-		if(pos.equals(arrivee.node))
-			return 0.;
-
-		/*
-		 * S'occupe de la mise à jour
-		 */
-		DStarLiteNode premier = getFromMemory(pos);
-		assert premier != null;
-		updateStart(premier);
-		
-		if(premier.rhs == Integer.MAX_VALUE)
-		{
-			// log.debug("Inaccessible : "+c.getPosition());
-			return null;
-		}
-		
-		double erreurDistance = premier.rhs / 1000.;
-
-		double orientationOptimale = getOrientationHeuristique(premier);
-
-		// l'orientation est vérifiée modulo 2*pi : aller vers la destination ou
-		// s'en éloigner sont différenciés
-		double erreurOrientation = (c.orientationGeometrique - orientationOptimale) % (2 * Math.PI);
-		if(erreurOrientation > Math.PI)
-			erreurOrientation -= 2 * Math.PI;
-
-		erreurOrientation = Math.abs(erreurOrientation);
-
-		// il faut toujours majorer la vraie distance, afin de ne pas chercher
-		// tous les trajets possibles…
-		// le poids de l'erreur d'orientation doit rester assez faible. Car
-		// vouloir trop coller à l'orientation, c'est risquer d'avoir une
-		// courbure impossible…
-		return 1.3 * erreurDistance + 5 * erreurOrientation;
-	}
-
-	/**
-	 * Renvoie l'indice du meilleur voisin, i.e. le plus proche de l'arrivée
-	 * @param node
-	 * @return
-	 */
-	private int getBestVoisin(NavmeshNode node)
-	{
-		int nbVoisins = node.getNbNeighbours();
-		assert nbVoisins > 0; // un nœud a forcément au moins un voisin
-		int bestVoisin = 0;
-		int bestVoisinDistance = add(getFromMemory(node.getNeighbour(0)).rhs, node.getNeighbourEdge(0).getDistance());
-		
-		for(int i = 1; i < nbVoisins; i++)
-		{
-			NavmeshNode voisin = node.getNeighbour(i);
-			int candidatDistance = add(getFromMemory(voisin).rhs, node.getNeighbourEdge(i).getDistance());
-			assert candidatDistance >= 0 : "Distance négative ! "+candidatDistance;
-			if(candidatDistance < bestVoisinDistance)
-			{
-				bestVoisin = i;
-				bestVoisinDistance = candidatDistance;
-			}
-		}
-		assert bestVoisinDistance != Integer.MAX_VALUE;
-		return bestVoisin;
-	}
-	
-	/**
-	 * Fournit une heuristique de l'orientation à prendre en ce point
-	 * 
-	 * @param p
-	 * @return
-	 */
-	private double getOrientationHeuristique(DStarLiteNode n)
-	{
-		// réutilisation de la dernière valeur si possible
-		if(n.heuristiqueOrientation != null)
-			return n.heuristiqueOrientation;
-		
-		assert !n.node.equals(arrivee.node);
-		
-		int nbBestVoisin = getBestVoisin(n.node);
-		NavmeshNode bestVoisin = n.node.getNeighbour(nbBestVoisin); 
-		if(bestVoisin.equals(arrivee.node))
-			n.heuristiqueOrientation = n.node.getNeighbourEdge(nbBestVoisin).getOrientation(n.node);
-		else
-		{
-			int nbBestVoisinDuVoisin = getBestVoisin(bestVoisin);
-			double angle1 = n.node.getNeighbourEdge(nbBestVoisin).getOrientation(n.node);
-			double angle2 = bestVoisin.getNeighbourEdge(nbBestVoisinDuVoisin).getOrientation(bestVoisin);
-			double diff = (( angle1 - angle2 + 3 * Math.PI ) % (2 * Math.PI)) - Math.PI;
-			double mean = (2 * Math.PI + angle2 + (diff / 2 )) % (2 * Math.PI);
-			n.heuristiqueOrientation = mean;
-		}
-		if(graphicHeuristique)
-			buffer.addSupprimable(n);
-
-		return n.heuristiqueOrientation;
-	}
-
-	/**
-	 * Somme en faisant attention aux valeurs infinies
-	 * 
-	 * @param a
-	 * @param b
-	 * @return
-	 */
-	private final int add(int a, int b)
-	{
-		if(a == Integer.MAX_VALUE || b == Integer.MAX_VALUE)
-			return Integer.MAX_VALUE;
-		return a + b;
-	}
 }

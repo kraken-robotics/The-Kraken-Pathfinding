@@ -102,7 +102,7 @@ public class TentacularAStar
 		this.buffer = buffer;
 		graphicTrajectory = config.getBoolean(ConfigInfoKraken.GRAPHIC_TRAJECTORY);
 		graphicTrajectoryAll = config.getBoolean(ConfigInfoKraken.GRAPHIC_TRAJECTORY_ALL);
-		graphicDStarLite = config.getBoolean(ConfigInfoKraken.GRAPHIC_D_STAR_LITE);
+//		graphicDStarLite = config.getBoolean(ConfigInfoKraken.GRAPHIC_D_STAR_LITE);
 		dureeMaxPF = config.getInt(ConfigInfoKraken.DUREE_MAX_RECHERCHE_PF);
 		// tailleFaisceau = config.getInt(ConfigInfo.TAILLE_FAISCEAU_PF);
 		int demieLargeurNonDeploye = config.getInt(ConfigInfoKraken.LARGEUR_NON_DEPLOYE) / 2;
@@ -440,8 +440,8 @@ public class TentacularAStar
 
 		if(!dstarlite.computeNewPath(depart.robot.getCinematique().getPosition(), arrival))
 			throw new NoPathException("No path found by D* Lite !");
-		if(graphicDStarLite)
-			dstarlite.itineraireBrut();
+//		if(graphicDStarLite)
+//			dstarlite.itineraireBrut();
 		rechercheEnCours = true;
 	}
 
@@ -516,8 +516,6 @@ public class TentacularAStar
 		// On met à jour le D* Lite
 		dstarlite.updateStart(depart.robot.getCinematique().getPosition());
 		dstarlite.updateObstacles();
-		if(graphicDStarLite)
-			dstarlite.itineraireBrut();
 
 //		process(realChemin, true);
 	}
