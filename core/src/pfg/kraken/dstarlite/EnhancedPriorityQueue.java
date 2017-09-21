@@ -24,6 +24,15 @@ public class EnhancedPriorityQueue
 	private int firstAvailable = 1;
 //	private DStarLiteNode lastInserted = null;
 
+	public boolean check()
+	{
+		// Tout nœud doit avoir une clé plus grande ou égale que celle de son père
+		for(int i = 2; i < firstAvailable; i++)			
+			if(tab[i].cle.lesserThan(tab[pere(i)].cle))
+				return false;
+		return true;
+	}
+	
 	public EnhancedPriorityQueue(int size)
 	{
 		tab = new DStarLiteNode[size+1]; // +1 because index starts at 1 
@@ -43,11 +52,13 @@ public class EnhancedPriorityQueue
 			return tmp;
 		}
 		else*/
+		assert firstAvailable > 1;
 		{
 			DStarLiteNode out = tab[1];
 			tab[1] = tab[--firstAvailable];
 			tab[1].indexPriorityQueue = 1;
 			percolateDown(tab[1]);
+			assert check();
 			return out;
 		}
 	}
@@ -59,6 +70,7 @@ public class EnhancedPriorityQueue
 	 */
 	public DStarLiteNode peek()
 	{
+		assert firstAvailable > 1;
 //		if(tab[1] == null || (lastInserted != null && tab[1].cle.greaterThan(lastInserted.cle)))
 //			return lastInserted;
 		return tab[1];
@@ -137,6 +149,7 @@ public class EnhancedPriorityQueue
 			tmp.indexPriorityQueue = firstAvailable;
 			firstAvailable++;
 			percolateUp(tmp);			
+			assert check();
 		}
 	}
 
@@ -174,6 +187,7 @@ public class EnhancedPriorityQueue
 	 */
 	public void remove(DStarLiteNode node)
 	{
+		assert firstAvailable > 1;
 //		if(lastInserted == node)
 //			lastInserted = null;
 //		else
@@ -187,6 +201,7 @@ public class EnhancedPriorityQueue
 				percolateDown(last);
 			else
 				percolateUp(last);
+			assert check();
 		}
 	}
 
