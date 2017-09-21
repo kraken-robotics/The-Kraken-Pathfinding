@@ -218,8 +218,8 @@ public class TentacularAStar
 			// exception si c'est un point d'arrivée
 			if(!closedset.add(current) && !arcmanager.isArrived(current))
 			{
-				if(graphicTrajectory || graphicTrajectoryAll)
-					current.setDead();
+//				if(graphicTrajectory || graphicTrajectoryAll)
+//					current.setDead();
 				if(current != depart)
 					destroy(current);
 				continue;
@@ -236,8 +236,8 @@ public class TentacularAStar
 			}
 
 			// affichage
-			if(graphicTrajectory && !graphicTrajectoryAll)
-				buffer.addSupprimable(current);
+//			if(graphicTrajectory && !graphicTrajectoryAll)
+//				buffer.addSupprimable(current);
 
 			// Si current est la trajectoire de secours, ça veut dire que cette
 			// trajectoire de secours est la meilleure possible, donc on a fini
@@ -308,8 +308,8 @@ public class TentacularAStar
 				}
 
 				// affichage
-				if(graphicTrajectoryAll)
-					buffer.addSupprimable(successeur);
+//				if(graphicTrajectoryAll)
+//					buffer.addSupprimable(successeur);
 
 				heuristique = arcmanager.heuristicCostCourbe(successeur.robot.getCinematique());
 				if(heuristique == null)

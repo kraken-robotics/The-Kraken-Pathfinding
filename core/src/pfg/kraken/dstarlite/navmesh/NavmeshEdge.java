@@ -13,7 +13,6 @@ import java.util.List;
 
 import pfg.graphic.Chart;
 import pfg.graphic.GraphicPanel;
-import pfg.graphic.printable.Layer;
 import pfg.graphic.printable.Printable;
 import pfg.kraken.ColorKraken;
 import pfg.kraken.obstacles.Obstacle;
@@ -414,12 +413,6 @@ public class NavmeshEdge implements Serializable, Printable
 		else
 			g.setColor(ColorKraken.NAVMESH.color);
 		g.drawLine(f.XtoWindow(points[0].position.getX()), f.YtoWindow(points[0].position.getY()), f.XtoWindow(points[1].position.getX()), f.YtoWindow(points[1].position.getY()));
-	}
-
-	@Override
-	public int getLayer()
-	{
-		return Layer.BACKGROUND.ordinal();
 	}
 
 	public void highlight(boolean state)

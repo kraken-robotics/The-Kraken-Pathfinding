@@ -12,7 +12,6 @@ import java.text.NumberFormat;
 
 import pfg.graphic.Chart;
 import pfg.graphic.GraphicPanel;
-import pfg.graphic.printable.Layer;
 import pfg.graphic.printable.Printable;
 import pfg.kraken.utils.XY;
 import pfg.kraken.utils.XYO;
@@ -266,11 +265,4 @@ public class Cinematique implements Printable, Serializable
 		copy(out);
 		return out;
 	}
-
-	@Override
-	public int getLayer()
-	{
-		return Layer.FOREGROUND.ordinal();
-	}
-
 }

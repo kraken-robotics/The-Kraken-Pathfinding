@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.ListIterator;
 import pfg.config.Config;
 import pfg.graphic.PrintBuffer;
+import pfg.graphic.printable.Layer;
+import pfg.kraken.ColorKraken;
 import pfg.kraken.ConfigInfoKraken;
 import pfg.kraken.LogCategoryKraken;
 import pfg.kraken.SeverityCategoryKraken;
@@ -107,7 +109,7 @@ public class TentacleManager
 			obs.ombresRobot.add(node.getArc().getPoint(i).obstacle);
 
 		if(printObs)
-			buffer.addSupprimable(obs);
+			buffer.addSupprimable(obs, ColorKraken.ROBOT.color, Layer.MIDDLE.layer);
 
 		// Collision avec un obstacle fixe?
 		for(Obstacle o : fixes.getObstacles())

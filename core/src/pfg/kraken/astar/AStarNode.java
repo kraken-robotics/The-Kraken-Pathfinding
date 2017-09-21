@@ -11,7 +11,6 @@ import java.awt.Graphics;
 import pfg.graphic.Chart;
 import pfg.graphic.GraphicPanel;
 import pfg.graphic.printable.Printable;
-import pfg.kraken.ColorKraken;
 import pfg.kraken.astar.tentacles.DynamicTentacle;
 import pfg.kraken.astar.tentacles.StaticTentacle;
 import pfg.kraken.astar.tentacles.Tentacle;
@@ -36,7 +35,6 @@ public class AStarNode implements Memorizable, Printable
 	public final StaticTentacle cameFromArcStatique;
 	public DynamicTentacle cameFromArcDynamique = null;
 	private int indiceMemoryManager;
-	private boolean dead = false;
 
 	public AStarNode(RobotState robot, int demieLargeurNonDeploye, int demieLongueurArriere, int demieLongueurAvant)
 	{
@@ -109,16 +107,5 @@ public class AStarNode implements Memorizable, Printable
 
 			a.getLast().print(g, f, aff);
 		}
-	}
-
-	@Override
-	public int getLayer()
-	{
-		return ColorKraken.TRAJECTOIRE.layer.ordinal();
-	}
-
-	public void setDead()
-	{
-		dead = true;
 	}
 }

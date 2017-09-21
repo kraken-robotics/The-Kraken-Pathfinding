@@ -28,9 +28,9 @@ public class CompoundObstacle extends Obstacle
 	private static final long serialVersionUID = 7643797598957137648L;
 	private Obstacle[] obs;
 
-	public CompoundObstacle(Obstacle... obs)
+	public CompoundObstacle(XY rotationCenter, Obstacle... obs)
 	{
-		super(new XY(0,0)); // TODO
+		super(rotationCenter);
 		this.obs = obs;
 	}
 

@@ -6,13 +6,9 @@
 
 package pfg.kraken.obstacles;
 
-import java.awt.Color;
 import java.io.Serializable;
-import pfg.config.Config;
 import pfg.graphic.PrintBuffer;
-import pfg.graphic.printable.Layer;
 import pfg.graphic.printable.Printable;
-import pfg.kraken.ConfigInfoKraken;
 import pfg.kraken.utils.XY;
 import pfg.kraken.utils.XY_RW;
 import pfg.log.Log;
@@ -34,9 +30,6 @@ public abstract class Obstacle implements Printable, Serializable
 
 	// Pour l'affichage du robot
 	protected static boolean printAllObstacles = false;
-	protected Layer l = null;
-	public Color c;
-	public Color cTransparent;
 
 	public static void set(Log log, PrintBuffer buffer)
 	{
@@ -44,24 +37,7 @@ public abstract class Obstacle implements Printable, Serializable
 		Obstacle.buffer = buffer;
 	}
 
-	public static void useConfig(Config config)
-	{
-		printAllObstacles = config.getBoolean(ConfigInfoKraken.GRAPHIC_ALL_OBSTACLES);
-	}
-
-	protected void setColor(Color c)
-	{
-		this.c = c;
-		cTransparent = new Color(c.getRed(), c.getGreen(), c.getBlue(), 30);
-	}
 	
-	public Obstacle(XY position, Color c, Layer l)
-	{
-		this(position);
-		this.l = l;
-		setColor(c);
-	}
-
 	/**
 	 * Constructeur. La position est celle du centre de rotation de l'obstacle
 	 * 
@@ -69,13 +45,8 @@ public abstract class Obstacle implements Printable, Serializable
 	 */
 	public Obstacle(XY position)
 	{
-		l = Layer.MIDDLE;
 		if(position != null)
-		{
 			this.position = position.clone();
-			if(printAllObstacles)
-				buffer.addSupprimable(this);
-		}
 		else
 			this.position = null;
 	}
@@ -130,14 +101,6 @@ public abstract class Obstacle implements Printable, Serializable
 	}
 	
 	public abstract boolean isInObstacle(XY pos);
-
-	@Override
-	public int getLayer()
-	{
-		if(l == null)
-			return Layer.MIDDLE.ordinal();
-		return l.ordinal();
-	}
 
 	public XY getPosition()
 	{

@@ -155,6 +155,7 @@ public class Kraken
 				overrideGraphic.put(ConfigInfoGraphic.SIZE_X_WITH_UNITARY_ZOOM, (int) (topRightCorner.getX() - bottomLeftCorner.getX()));
 				overrideGraphic.put(ConfigInfoGraphic.SIZE_Y_WITH_UNITARY_ZOOM, (int) (topRightCorner.getY() - bottomLeftCorner.getY()));
 				overrideGraphic.put(ConfigInfoGraphic.BACKGROUND_PATH, config.getString(ConfigInfoKraken.BACKGROUND_PATH));
+				overrideGraphic.put(ConfigInfoGraphic.DISPLAY_GRID, config.getBoolean(ConfigInfoKraken.DISPLAY_GRID));
 				overrideGraphic.put(ConfigInfoGraphic.SIZE_X_WINDOW, config.getInt(ConfigInfoKraken.SIZE_X_WINDOW));
 				overrideGraphic.put(ConfigInfoGraphic.SIZE_Y_WINDOW, config.getInt(ConfigInfoKraken.SIZE_Y_WINDOW));
 				overrideGraphic.put(ConfigInfoGraphic.GRAPHIC_SERVER_PORT_NUMBER, config.getInt(ConfigInfoKraken.GRAPHIC_SERVER_PORT_NUMBER));
@@ -191,7 +192,6 @@ public class Kraken
 				}
 		
 				Obstacle.set(log, injector.getService(PrintBuffer.class));
-				Obstacle.useConfig(config);
 				Tentacle.useConfig(config);
 				injector.getService(TentacleManager.class).setTentacle(tentacleTypesUsed);	
 				injector.getService(TentacularAStar.class);

@@ -10,7 +10,6 @@ import java.awt.Graphics;
 import pfg.graphic.Chart;
 import pfg.graphic.GraphicPanel;
 import pfg.graphic.printable.Printable;
-import pfg.kraken.ColorKraken;
 import pfg.kraken.dstarlite.navmesh.NavmeshNode;
 import pfg.kraken.utils.XY_RW;
 
@@ -85,7 +84,6 @@ public class DStarLiteNode implements Printable
 	@Override
 	public void print(Graphics g, GraphicPanel f, Chart a)
 	{
-		g.setColor(ColorKraken.HEURISTIQUE.color);
 		if(heuristiqueOrientation != null)
 		{
 			double n = 40;
@@ -99,11 +97,4 @@ public class DStarLiteNode implements Printable
 			g.drawPolygon(X, Y, 3);
 		}
 	}
-
-	@Override
-	public int getLayer()
-	{
-		return ColorKraken.HEURISTIQUE.layer.ordinal();
-	}
-
 }

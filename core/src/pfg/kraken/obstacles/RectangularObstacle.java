@@ -12,7 +12,6 @@ import java.util.List;
 
 import pfg.graphic.Chart;
 import pfg.graphic.GraphicPanel;
-import pfg.graphic.printable.Layer;
 import pfg.kraken.utils.XY;
 import pfg.kraken.utils.XY_RW;
 
@@ -51,18 +50,9 @@ public class RectangularObstacle extends Obstacle
 
 	protected double angle, cos, sin;
 
-	public RectangularObstacle(XY position, int sizeX, int sizeY, double angle, Color c, Layer l)
-	{
-		this(position, sizeX, sizeY, angle);
-		this.l = l;
-		setColor(c);
-	}
-
-	public RectangularObstacle(XY position, int sizeX, int sizeY, Color c, Layer l)
+	public RectangularObstacle(XY position, int sizeX, int sizeY)
 	{
 		this(position, sizeX, sizeY, 0);
-		this.l = l;
-		setColor(c);
 	}
 
 	protected RectangularObstacle(XY_RW pos)
@@ -276,9 +266,6 @@ public class RectangularObstacle extends Obstacle
 		if(coinBasDroiteRotate == null)
 			return;
 
-		if(c != null)
-			g.setColor(c);
-
 		int[] X = new int[4];
 		X[0] = (int) coinBasDroiteRotate.getX();
 		X[1] = (int) coinHautDroiteRotate.getX();
@@ -298,8 +285,9 @@ public class RectangularObstacle extends Obstacle
 		}
 		g.drawPolygon(X, Y, 4);
 		
-		if(cTransparent != null)
-			g.setColor(cTransparent);
+		Color c = g.getColor();
+		Color cTransparent = new Color(c.getRed(), c.getGreen(), c.getBlue(), 30);
+		g.setColor(cTransparent);
 		
 		g.fillPolygon(X, Y, 4);
 	}

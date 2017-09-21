@@ -101,6 +101,7 @@ public enum ConfigInfoKraken implements ConfigInfo
 	CONSOLE_NB_ROWS(40), // nombre de lignes dans la console affichée
 	CONSOLE_NB_COLUMNS(20), // nombre de colonnes dans la console affichée
 	
+	DISPLAY_GRID(true),
 	BACKGROUND_PATH(""), // background path ; empty if none	
 	GRAPHIC_SERVER_PORT_NUMBER(13370), // port number of the graphic server
 	SIZE_X_WINDOW(900), // taille par défaut (sans image) de la fenêtre

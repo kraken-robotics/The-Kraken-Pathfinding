@@ -5,11 +5,9 @@
 
 package pfg.kraken.robot;
 
-import java.awt.Color;
 import java.awt.Graphics;
 import pfg.graphic.Chart;
 import pfg.graphic.GraphicPanel;
-import pfg.graphic.printable.Layer;
 import pfg.graphic.printable.Printable;
 
 /**
@@ -74,11 +72,6 @@ public class ItineraryPoint implements Printable
 	public void print(Graphics g, GraphicPanel f, Chart a)
 	{
 		int taille = 5;
-		if(goingForward)
-			g.setColor(Color.BLACK);
-		else
-			g.setColor(Color.LIGHT_GRAY);
-			
 		g.fillOval(f.XtoWindow(x)-taille/2, f.YtoWindow(y)-taille/2, taille, taille);
 		double directionLigne = orientation + Math.PI / 2;
 		double longueur = curvature * 10;
@@ -87,10 +80,4 @@ public class ItineraryPoint implements Printable
 		g.drawLine(f.XtoWindow(x), f.YtoWindow(y), f.XtoWindow(x)+deltaX, f.YtoWindow(y)-deltaY);
 	}
 
-	@Override
-	public int getLayer()
-	{
-		return Layer.FOREGROUND.ordinal();
-	}
-	
 }

@@ -16,7 +16,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
-import pfg.graphic.PrintBuffer;
 import pfg.kraken.LogCategoryKraken;
 import pfg.kraken.SeverityCategoryKraken;
 import pfg.kraken.astar.tentacles.types.ClothoTentacle;
@@ -70,13 +69,13 @@ public class ClothoidesComputer
 	// du robot et ses roues directrices
 	private XY[] trajectoire = new XY[2 * INDICE_MAX - 1];
 
-	public ClothoidesComputer(Log log, CinemObsPool memory, PrintBuffer buffer)
+	public ClothoidesComputer(Log log, CinemObsPool memory)
 	{
 		this.memory = memory;
 		this.log = log;
 		if(!chargePoints()) // le calcul est un peu long, donc on le sauvegarde
 		{
-			init(buffer);
+			init();
 			sauvegardePoints();
 		}
 	}
@@ -137,7 +136,7 @@ public class ClothoidesComputer
 	/**
 	 * Calcule, une fois pour toutes, les points de la clothoïde unitaire
 	 */
-	private void init(PrintBuffer buffer)
+	private void init()
 	{
 		log.write("Computation of the unitary clothoid, please wait. This computation is made once and for all.", LogCategoryKraken.PF);
 		for(int s = 0; s < 2 * INDICE_MAX - 1; s++)

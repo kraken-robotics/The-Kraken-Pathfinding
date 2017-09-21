@@ -10,9 +10,7 @@ import java.io.Serializable;
 
 import pfg.graphic.Chart;
 import pfg.graphic.GraphicPanel;
-import pfg.graphic.printable.Layer;
 import pfg.graphic.printable.Printable;
-import pfg.kraken.ColorKraken;
 import pfg.kraken.utils.XY;
 
 /**
@@ -240,7 +238,6 @@ public class NavmeshTriangle implements Serializable, Printable
 	@Override
 	public void print(Graphics g, GraphicPanel f, Chart a)
 	{
-		g.setColor(ColorKraken.NAVMESH_TRIANGLE.color);
 		g.fillPolygon(new int[]{f.XtoWindow(points[0].position.getX()), f.XtoWindow(points[1].position.getX()), f.XtoWindow(points[2].position.getX())},
 				new int[]{f.YtoWindow(points[0].position.getY()), f.YtoWindow(points[1].position.getY()), f.YtoWindow(points[2].position.getY())},
 				3);
@@ -250,12 +247,6 @@ public class NavmeshTriangle implements Serializable, Printable
 	public boolean equals(Object o)
 	{
 		return o == this;
-	}
-
-	@Override
-	public int getLayer()
-	{
-		return Layer.BACKGROUND.ordinal();
 	}
 
 }

@@ -10,6 +10,8 @@ import java.util.Iterator;
 import java.util.List;
 import pfg.config.Config;
 import pfg.graphic.PrintBuffer;
+import pfg.graphic.printable.Layer;
+import pfg.kraken.ColorKraken;
 import pfg.kraken.ConfigInfoKraken;
 import pfg.kraken.dstarlite.navmesh.Navmesh;
 import pfg.kraken.dstarlite.navmesh.NavmeshEdge;
@@ -539,7 +541,7 @@ public class DStarLite
 				n.heuristiqueOrientation = mean;
 			}
 			if(graphicHeuristique)
-				buffer.addSupprimable(n);
+				buffer.addSupprimable(n, ColorKraken.HEURISTIQUE.color, Layer.MIDDLE.layer);
 		}
 	}
 

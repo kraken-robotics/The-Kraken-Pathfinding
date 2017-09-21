@@ -11,7 +11,6 @@ import java.awt.Graphics;
 
 import pfg.graphic.Chart;
 import pfg.graphic.GraphicPanel;
-import pfg.graphic.printable.Layer;
 import pfg.kraken.utils.XY;
 import pfg.kraken.utils.XY_RW;
 
@@ -33,13 +32,6 @@ public class CircularObstacle extends Obstacle
 	public CircularObstacle(XY position, int rad)
 	{
 		super(position);
-		this.radius = rad;
-		squared_radius = rad * rad;
-	}
-
-	public CircularObstacle(XY position, int rad, Color c, Layer l)
-	{
-		super(position, c, l);
 		this.radius = rad;
 		squared_radius = rad * rad;
 	}
@@ -70,15 +62,14 @@ public class CircularObstacle extends Obstacle
 	@Override
 	public void print(Graphics g, GraphicPanel f, Chart a)
 	{
-		if(c != null)
-			g.setColor(c);
 //		if(radius <= 0)
 //			g.fillOval(f.XtoWindow(position.getX()) - 5, f.YtoWindow(position.getY()) - 5, 10, 10);
 //		else
 		g.drawOval(f.XtoWindow(position.getX() - radius), f.YtoWindow(position.getY() + radius), f.distanceXtoWindow((radius) * 2), f.distanceYtoWindow((radius) * 2));
 		
-		if(cTransparent != null)
-			g.setColor(cTransparent);
+		Color c = g.getColor();
+		Color cTransparent = new Color(c.getRed(), c.getGreen(), c.getBlue(), 30);
+		g.setColor(cTransparent);
 		
 		g.fillOval(f.XtoWindow(position.getX() - radius), f.YtoWindow(position.getY() + radius), f.distanceXtoWindow((radius) * 2), f.distanceYtoWindow((radius) * 2));		
 	}

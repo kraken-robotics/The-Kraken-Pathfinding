@@ -3,10 +3,13 @@
  * Distributed under the MIT License.
  */
 
+import java.awt.Color;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import pfg.graphic.PrintBuffer;
+import pfg.graphic.printable.Layer;
+import pfg.graphic.printable.PrintablePoint;
 import pfg.kraken.ConfigInfoKraken;
 import pfg.kraken.LogCategoryKraken;
 import pfg.kraken.obstacles.CircularObstacle;
@@ -108,7 +111,7 @@ public class JUnit_TentacularAStar extends JUnit_Test
 				 */
 				System.out.println(a + " " + i + " " + arc[a].arcselems[i]);
 				if(graphicTrajectory)
-					buffer.addSupprimable(new CircularObstacle(arc[a].getPoint(i).getPosition(), 4));
+					buffer.addSupprimable(new PrintablePoint(arc[a].getPoint(i).getPosition()), Color.BLACK, Layer.FOREGROUND.layer);
 			}
 			if(a == 0)
 			{
@@ -151,7 +154,7 @@ public class JUnit_TentacularAStar extends JUnit_Test
 			{
 				System.out.println(a + " " + i + " " + arc[a].getPoint(i));
 				if(graphicTrajectory)
-					buffer.addSupprimable(new CircularObstacle(arc[a].getPoint(i).getPosition(), 4));
+					buffer.addSupprimable(new PrintablePoint(arc[a].getPoint(i).getPosition()), Color.BLACK, Layer.FOREGROUND.layer);
 			}
 		}
 	}
@@ -179,7 +182,7 @@ public class JUnit_TentacularAStar extends JUnit_Test
 			{
 				System.out.println(a + " " + i + " " + arc[a].getPoint(i));
 				if(graphicTrajectory)
-					buffer.addSupprimable(new CircularObstacle(arc[a].getPoint(i).getPosition(), 4));
+					buffer.addSupprimable(new PrintablePoint(arc[a].getPoint(i).getPosition()), Color.BLACK, Layer.FOREGROUND.layer);
 			}
 		}
 	}
@@ -205,7 +208,7 @@ public class JUnit_TentacularAStar extends JUnit_Test
 			{
 				System.out.println(a + " " + i + " " + arc[a].getPoint(i));
 				if(graphicTrajectory)
-					buffer.addSupprimable(new CircularObstacle(arc[a].getPoint(i).getPosition(), 4));
+					buffer.addSupprimable(new PrintablePoint(arc[a].getPoint(i).getPosition()), Color.BLACK, Layer.FOREGROUND.layer);
 			}
 		}
 	}

@@ -3,13 +3,14 @@
  * Distributed under the MIT License.
  */
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
 import pfg.graphic.PrintBuffer;
 import pfg.graphic.WindowFrame;
-import pfg.kraken.ColorKraken;
+import pfg.graphic.printable.Layer;
 import pfg.kraken.Kraken;
 import pfg.kraken.exceptions.PathfindingException;
 import pfg.kraken.obstacles.CircularObstacle;
@@ -38,20 +39,20 @@ public class Example1
 		 * Obstacles partially outside the search domain and colliding obstacles are OK 
 		 */
 		List<Obstacle> obs = new ArrayList<Obstacle>();
-		obs.add(new RectangularObstacle(new XY_RW(800,200), 200, 200, ColorKraken.BLACK.color, ColorKraken.BLACK.layer));
-		obs.add(new RectangularObstacle(new XY_RW(800,300), 200, 200, ColorKraken.BLACK.color, ColorKraken.BLACK.layer));
-		obs.add(new RectangularObstacle(new XY_RW(-800,1200), 100, 200, ColorKraken.BLACK.color, ColorKraken.BLACK.layer));
-		obs.add(new RectangularObstacle(new XY_RW(-1000,300), 500, 500, ColorKraken.BLACK.color, ColorKraken.BLACK.layer));
-		obs.add(new RectangularObstacle(new XY_RW(200,1600), 800, 300, ColorKraken.BLACK.color, ColorKraken.BLACK.layer));
-		obs.add(new RectangularObstacle(new XY_RW(1450,700), 300, 100, ColorKraken.BLACK.color, ColorKraken.BLACK.layer));
-		obs.add(new CircularObstacle(new XY_RW(500,600), 100, ColorKraken.BLACK.color, ColorKraken.BLACK.layer));
+		obs.add(new RectangularObstacle(new XY_RW(800,200), 200, 200));
+		obs.add(new RectangularObstacle(new XY_RW(800,300), 200, 200));
+		obs.add(new RectangularObstacle(new XY_RW(-800,1200), 100, 200));
+		obs.add(new RectangularObstacle(new XY_RW(-1000,300), 500, 500));
+		obs.add(new RectangularObstacle(new XY_RW(200,1600), 800, 300));
+		obs.add(new RectangularObstacle(new XY_RW(1450,700), 300, 100));
+		obs.add(new CircularObstacle(new XY_RW(500,600), 100));
 		
 		/*
 		 * Getting Kraken (a singleton).
 		 * We restrain the search domain to the rectangle -1500 < x < 1500, 0 < y < 2000
 		 * You can add the "detailed" profile to display the underneath pathfinder.
 		 */
-		Kraken kraken = Kraken.getKraken(obs, new XY(-1500,0), new XY(1500, 2000), "trajectory"/*, "detailed"*/);
+		Kraken kraken = Kraken.getKraken(obs, new XY(-1500,0), new XY(1500, 2000), "trajectory", "detailed");
 		
 		/*
 		 * The graphic display (optional)
@@ -63,7 +64,7 @@ public class Example1
 		 * The obstacles are printed
 		 */
 		for(Obstacle o : obs)
-			printBuffer.add(o);
+			printBuffer.add(o, Color.BLACK, Layer.MIDDLE.layer);
 		frame.refresh();
 		
 		/*
@@ -93,7 +94,7 @@ public class Example1
 			 */
 			for(ItineraryPoint p : path)
 			{
-				printBuffer.add(p);
+				printBuffer.add(p, Color.BLACK, Layer.FOREGROUND.layer);
 				System.out.println(p);
 			}
 			
