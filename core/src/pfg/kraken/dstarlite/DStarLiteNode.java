@@ -41,7 +41,7 @@ public class DStarLiteNode implements Printable
 		this.node = gridpoint;
 	}
 
-	public boolean isConsistent()
+	public final boolean isConsistent()
 	{
 		return rhs == g;
 	}
@@ -61,7 +61,7 @@ public class DStarLiteNode implements Printable
 	@Override
 	public String toString()
 	{
-		return node + " (" + cle + ")";
+		return node + " (" + cle + "), inOpenSet : "+inOpenSet+", rhs = "+rhs+", g = "+g;
 	}
 
 	/**
@@ -70,7 +70,7 @@ public class DStarLiteNode implements Printable
 	 * 
 	 * @param nbPF
 	 */
-	public void update(long nbPF)
+	public final void update(long nbPF)
 	{
 		if(this.nbPF != nbPF)
 		{

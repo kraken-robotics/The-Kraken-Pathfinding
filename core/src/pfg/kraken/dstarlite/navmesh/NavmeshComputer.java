@@ -42,7 +42,7 @@ public class NavmeshComputer
 		@Override
 		public int compare(NavmeshEdge o1, NavmeshEdge o2)
 		{
-			return o2.length_um - o1.length_um;
+			return o2.length - o1.length;
 		}
 	}
 	
@@ -164,7 +164,7 @@ public class NavmeshComputer
 		assert checkDelaunay();
 		// We add other points in order to avoir long edges
 		NavmeshEdge longestEdge = edgesInProgress.peek();
-		while(longestEdge.length_um > longestAllowedLength)
+		while(longestEdge.length > longestAllowedLength)
 		{
 			assert ((s = checkLongestEdge()) == null) : s;
 			edgesInProgress.poll();
@@ -173,7 +173,7 @@ public class NavmeshComputer
 			longestEdge = edgesInProgress.peek();
 		}
 		
-		assert edgesInProgress.peek().length_um <= longestAllowedLength : edgesInProgress.peek().length_um + " > " + longestAllowedLength;
+		assert edgesInProgress.peek().length <= longestAllowedLength : edgesInProgress.peek().length + " > " + longestAllowedLength;
 		
 		// We add other points in order to avoid large triangle
 		NavmeshTriangle largestTriangle = triangles.peek();
@@ -184,7 +184,7 @@ public class NavmeshComputer
 			largestTriangle = triangles.peek();
 		}
 		
-		assert edgesInProgress.peek().length_um <= longestAllowedLength : edgesInProgress.peek().length_um + " > " + longestAllowedLength;
+		assert edgesInProgress.peek().length <= longestAllowedLength : edgesInProgress.peek().length + " > " + longestAllowedLength;
 
 		assert ((s = checkCrossingEdges()) == null) : s;
 		assert ((s = checkNodeInTriangle()) == null) : s;
@@ -349,6 +349,7 @@ public class NavmeshComputer
 				for(int i = 0; i < 2; i++)
 				{
 					e.points[i].removeEdge(e);
+					e.points[i].updateNeighbours();
 					int nbVoisins = e.points[i].getNbNeighbours(); 
 					// If the node isn't connected anymore
 					if(nbVoisins == 0)
@@ -433,10 +434,10 @@ public class NavmeshComputer
 	
 	private String checkLongestEdge()
 	{
-		int longestEdge = edgesInProgress.peek().length_um;
+		int longestEdge = edgesInProgress.peek().length;
 		for(NavmeshEdge e : edgesInProgress)
-			if(e.length_um > longestEdge)
-				return e.toString()+" : "+e.length_um+" > "+longestEdge;
+			if(e.length > longestEdge)
+				return e.toString()+" : "+e.length+" > "+longestEdge;
 		return null;
 	}
 	
@@ -481,9 +482,12 @@ public class NavmeshComputer
 	private String checkEdgesInNodes()
 	{
 		for(NavmeshNode n : nodesList)
+		{
+			n.updateNeighbours();
 			for(int i = 0; i < n.getNbNeighbours(); i++)
 				if(!edgesInProgress.contains(n.getNeighbourEdge(i)))
 					return "A node has an unknown edge : "+n+" "+n.getNeighbourEdge(i);
+		}
 		return null;
 	}
 	
@@ -831,6 +835,7 @@ public class NavmeshComputer
 	{
 		for(NavmeshNode n : nodesList)
 		{
+			n.updateNeighbours();
 			int nbVoisins = n.getNbNeighbours();
 			for(int i = 0; i < nbVoisins; i++)
 				if(!nodesList.contains(n.getNeighbour(i)) || !edgesInProgress.contains(n.getNeighbourEdge(i)))
@@ -863,7 +868,7 @@ public class NavmeshComputer
 	public boolean checkNavmesh(TriangulatedMesh mesh)
 	{
 		for(NavmeshEdge e : mesh.edges)
-			if(e.length_um > longestAllowedLength)
+			if(e.length > longestAllowedLength)
 				return false;
 
 		for(NavmeshTriangle t : mesh.triangles)

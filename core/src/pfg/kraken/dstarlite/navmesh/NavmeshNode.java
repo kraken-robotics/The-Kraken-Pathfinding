@@ -116,7 +116,7 @@ public class NavmeshNode implements Printable, Serializable
 		return Layer.FOREGROUND.ordinal();
 	}
 
-	private void updateNeighbours()
+	public void updateNeighbours()
 	{
 		neighbours.clear();
 		for(NavmeshEdge e : edges)
@@ -137,7 +137,7 @@ public class NavmeshNode implements Printable, Serializable
 	
 	public int getNbNeighbours()
 	{
-		updateNeighbours();
+//		updateNeighbours();
 		assert neighbours.size() == edges.size();
 		return edges.size();
 	}

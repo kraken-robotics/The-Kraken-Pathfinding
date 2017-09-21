@@ -49,6 +49,11 @@ public class Cle
 		return "first = " + first + ", second = " + second;
 	}
 
+	public final boolean isEqualsTo(Cle autre)
+	{
+		return first == autre.first && second == autre.second;
+	}
+	
 	public final boolean lesserThan(Cle autre)
 	{
 		int tmp = first - autre.first;

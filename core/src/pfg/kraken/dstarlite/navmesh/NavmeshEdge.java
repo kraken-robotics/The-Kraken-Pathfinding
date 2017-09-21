@@ -29,8 +29,7 @@ import pfg.kraken.utils.XY_RW;
 public class NavmeshEdge implements Serializable, Printable
 {
 	private static final long serialVersionUID = 7904466980326128967L;
-	int length_um;
-	int length_mm;
+	int length;
 	int nb;
 	private double orientation;
 	public transient NavmeshNode[] points = new NavmeshNode[2];
@@ -51,6 +50,7 @@ public class NavmeshEdge implements Serializable, Printable
 		points = new NavmeshNode[2];
 		points[0] = allNodes[pointsNb[0]];
 		points[1] = allNodes[pointsNb[1]];
+		assert length == (int) (1000 * points[0].position.distance(points[1].position));
 	}
 	
 	private boolean checkNbTriangles()
@@ -127,8 +127,7 @@ public class NavmeshEdge implements Serializable, Printable
 	
 	public void update()
 	{
-		length_um = (int) (1000 * points[0].position.distance(points[1].position));
-		length_mm = length_um/1000;
+		length = (int) (1000 * points[0].position.distance(points[1].position));
 	}
 	
 	public void addTriangle(NavmeshTriangle tr)
@@ -387,12 +386,12 @@ public class NavmeshEdge implements Serializable, Printable
 	{
 		if(!obstructingObstacles.isEmpty())
 			return Integer.MAX_VALUE;
-		return length_mm;
+		return length;
 	}
 	
 	public int getUnblockedDistance()
 	{
-		return length_mm;
+		return length;
 	}
 
 	public boolean isBlocked()

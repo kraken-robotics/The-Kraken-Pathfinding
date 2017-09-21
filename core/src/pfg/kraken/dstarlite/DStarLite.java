@@ -27,6 +27,7 @@ import pfg.log.Log;
  * En fait utilisé comme heuristique par l'AStarCourbe
  * N'est utilisé qu'avec le "vrai" robot et ne peut pas prendre en compte la
  * disparition prochaine d'obstacle
+ * TRAVAILLE EN μm !
  * 
  * @author pf
  *
@@ -40,6 +41,9 @@ public class DStarLite
 	private DynamicObstacles dynObs;
 	private StaticObstacles statObs;
 	private List<Obstacle> previousObstacles = new ArrayList<Obstacle>(), newObstacles = new ArrayList<Obstacle>();
+
+	private List<DStarLiteNode> overconsistentExpansion = new ArrayList<DStarLiteNode>(); 
+	private List<DStarLiteNode> underconsistentExpansion = new ArrayList<DStarLiteNode>(); 
 	
 	private DStarLiteNode[] memory;
 
@@ -112,8 +116,14 @@ public class DStarLite
 		return out;
 	}
 
+	/**
+	 * Met à jour l'openset selon la cohérence de u
+	 * afin de conserver l'invariant : consistent <=> in openset
+	 * @param u
+	 */
 	private final void updateVertex(DStarLiteNode u)
 	{
+//		System.out.println("UpdateVertex of "+u);
 		if(!u.isConsistent())
 		{
 			u.cle.copy(tmp);
@@ -131,7 +141,6 @@ public class DStarLite
 				assert !openset.contains(u);
 				u.inOpenSet = true;
 				openset.add(u);
-				assert openset.contains(u);
 			}
 		}
 		else if(u.inOpenSet)
@@ -139,7 +148,6 @@ public class DStarLite
 			assert openset.contains(u);
 			openset.remove(u);
 			u.inOpenSet = false;
-			assert !openset.contains(u);
 		}
 	}
 
@@ -149,12 +157,16 @@ public class DStarLite
 	 */
 	private boolean computeShortestPath()
 	{
+		overconsistentExpansion.clear();
+		underconsistentExpansion.clear();
 		DStarLiteNode u;
 		String str;
 		while(!openset.isEmpty() && ((u = openset.peek()).cle.lesserThan(calcKey(depart, tmp)) || depart.rhs > depart.g))
 		{
+			assert checkExpansion(u);
 			assert ((str = checkInvariantRhs()) == null) : str;
 			assert ((str = checkInvariantOpenset()) == null) : str;
+			assert ((str = checkKey()) == null) : str;
 
 			u.cle.copy(kold);
 			calcKey(u, knew);
@@ -198,7 +210,7 @@ public class DStarLite
 						int nbNeighbours2 = n.getNbNeighbours();
 						for(int j = 0; j < nbNeighbours2; j++)
 						{
-							NavmeshNode n2 = n.getNeighbour(i);
+							NavmeshNode n2 = n.getNeighbour(j);
 							DStarLiteNode s2 = getFromMemory(n2);
 
 							s.rhs = Math.min(s.rhs, add(n.getNeighbourEdge(j).getDistance(), s2.g));
@@ -226,10 +238,36 @@ public class DStarLite
 				// u.inOpenSet = false;
 				updateVertex(u);
 			}
+//			System.out.println("Depart : "+depart);
+//			System.out.println("Arrivee : "+arrivee);
 
 		}
-		
-		return arrivee.g != Integer.MAX_VALUE;
+		// Avec la version optimisée du D* lite, le départ peut être non-consistent.
+		// Il faut vérifier rhs ici
+		return depart.rhs != Integer.MAX_VALUE;
+	}
+
+	/**
+	 * D* lite must expand, at most, each node twice : at most once if is overconsistent
+	 * and at most once if it is underconsistent
+	 * @return
+	 */
+	private boolean checkExpansion(DStarLiteNode u)	
+	{
+		assert !u.isConsistent() : u.g+" "+u.rhs;
+		if(u.g > u.rhs)
+		{
+			if(overconsistentExpansion.contains(u))
+				return false;
+			overconsistentExpansion.add(u);
+		}
+		else
+		{
+			if(underconsistentExpansion.contains(u))
+				return false;
+			underconsistentExpansion.add(u);
+		}
+		return true;
 	}
 
 	/**
@@ -241,18 +279,19 @@ public class DStarLite
 	public boolean computeNewPath(XY depart, XY arrivee)
 	{
 		updateGoalAndStart(depart, arrivee);
-		return updateObstacles();
+		updateObstacles();
+		return computeShortestPath();
 	}
 
 	/**
-	 * Heuristique (distance octile) entre le point de départ et ce gridpoint
+	 * Heuristique (distance octile) entre le point de départ et ce gridpoint en μm
 	 * 
 	 * @param gridpoint
 	 * @return
 	 */
 	private final int distanceHeuristique(NavmeshNode gridpoint)
 	{
-		return (int) (depart.node.position.distanceOctile(gridpoint.position) * 1.2);
+		return (int) (depart.node.position.distanceOctile(gridpoint.position));
 	}
 
 	/**
@@ -268,15 +307,15 @@ public class DStarLite
 		depart = getFromMemory(navmesh.getNearest(positionRobot));
 		lastDepart = depart.node;
 
-		this.arrivee = getFromMemory(navmesh.getNearest(positionArrivee));
-		this.arrivee.rhs = 0;
-		this.arrivee.cle.set(distanceHeuristique(this.arrivee.node), 0);
+		arrivee = getFromMemory(navmesh.getNearest(positionArrivee));
+		arrivee.rhs = 0;
+		arrivee.cle.set(distanceHeuristique(this.arrivee.node), 0);
 
 		openset.clear();
-		openset.add(this.arrivee);
-		this.arrivee.inOpenSet = true;
+		openset.add(arrivee);
+		arrivee.inOpenSet = true;
 
-		computeShortestPath();
+		System.out.println("Chemin pour commencer : "+computeShortestPath());
 	}
 
 	public synchronized void updateStart(XY positionRobot)
@@ -292,20 +331,20 @@ public class DStarLite
 	private synchronized final void updateStart(DStarLiteNode p)
 	{
 		// p is inconsistent iff p is in the open set
-		if(p.inOpenSet)
-		{
+//		if(p.inOpenSet)
+//		{
 			depart = p;
 			km += distanceHeuristique(lastDepart);
 			lastDepart = depart.node;
 	
 			computeShortestPath();
-		}
+//		}
 	}
 
 	/**
 	 * Met à jour le pathfinding
 	 */
-	public synchronized boolean updateObstacles()
+	public synchronized void updateObstacles()
 	{
 		Iterator<Obstacle> iter = dynObs.getCurrentDynamicObstacles();		
 		while(iter.hasNext())
@@ -325,9 +364,9 @@ public class DStarLite
 
 			if(!e.isBlocked())
 			{
+				System.out.println("NOOON");
 				for(int k = 0; k < 2; k++)
 				{
-					// Disparition d'un obstacle : le coût baisse
 					DStarLiteNode u = getFromMemory(e.points[k]);
 					DStarLiteNode v = getFromMemory(e.points[(k+1)%2]);
 	
@@ -337,9 +376,9 @@ public class DStarLite
 			}
 			else
 			{
+				System.out.println("OK");
 				for(int k = 0; k < 2; k++)
 				{
-					// Ajout d'un obstacle : le coût augmente
 					DStarLiteNode u = getFromMemory(e.points[k]);
 					DStarLiteNode v = getFromMemory(e.points[(k+1)%2]);
 	
@@ -347,12 +386,13 @@ public class DStarLite
 					// ajout d'obstacle
 					if(u.rhs == add(e.getUnblockedDistance(), v.g) && !u.equals(arrivee))
 					{
+						System.out.println("Ici");
 						u.rhs = Integer.MAX_VALUE;
 						int nbNeighbours = u.node.getNbNeighbours();
 						for(int i = 0; i < nbNeighbours; i++)
 						{
-							NavmeshNode n = u.node.getNeighbour(i);
-							u.rhs = Math.min(u.rhs, add(u.node.getNeighbourEdge(i).getDistance(), getFromMemory(n).g));
+							NavmeshNode s = u.node.getNeighbour(i);
+							u.rhs = Math.min(u.rhs, add(u.node.getNeighbourEdge(i).getDistance(), getFromMemory(s).g));
 						}
 					}
 					updateVertex(u);
@@ -370,8 +410,6 @@ public class DStarLite
 		String str;
 		assert ((str = checkInvariantRhs()) == null) : str;
 		assert ((str = checkInvariantOpenset()) == null) : str;
-
-		return computeShortestPath();
 	}
 
 	/**
@@ -391,9 +429,19 @@ public class DStarLite
 		if(depart.rhs == Integer.MAX_VALUE)
 			return null;
 
+		String str;
+		assert ((str = checkInvariantRhs()) == null) : str;
+		assert ((str = checkInvariantOpenset()) == null) : str;
+		
 		while(!node.equals(arrivee))
 		{
-			assert node.isConsistent() : "A node in the path is not consistent !";
+			System.out.println("Meilleur : ");
+			System.out.println(node);
+			System.out.println("Voisins : ");
+			for(int i = 0; i < node.node.getNbNeighbours(); i++)
+				System.out.println(getFromMemory(node.node.getNeighbour(i)));
+			// Le noeud de départ peut exceptionnellement être inconsistent
+			assert node == depart || node.isConsistent() : "A node in the path is not consistent !";
 			assert !trajet.contains(node.node.position) : "Cyclic path !";
 
 			trajet.add(node.node.position);
@@ -414,7 +462,9 @@ public class DStarLite
 					indexMin = i;
 				}
 			}
-			assert indexMin != -1;
+			
+			assert min.g < node.g : "The distance to the goal increased !";
+
 			if(graphicDStarLite)
 				node.node.getNeighbourEdge(indexMin).highlight(true);
 			node = min;
@@ -424,6 +474,17 @@ public class DStarLite
 
 		return trajet;
 
+	}
+	
+	public String checkKey()
+	{
+		for(int i = 0; i < memory.length; i++)
+		{
+			DStarLiteNode n = getFromMemory(memory[i].node);
+			if(n.inOpenSet && !n.cle.isEqualsTo(calcKey(n, tmp)))
+				return "A key is wrong ! "+n.cle+" "+tmp;
+		}
+		return null;
 	}
 	
 	public String checkInvariantOpenset()
@@ -507,7 +568,6 @@ public class DStarLite
 		}
 		
 		double erreurDistance = premier.rhs / 1000.;
-
 
 		double orientationOptimale = getOrientationHeuristique(premier);
 

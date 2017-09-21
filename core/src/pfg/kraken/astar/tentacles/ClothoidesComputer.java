@@ -23,7 +23,6 @@ import pfg.kraken.astar.tentacles.types.ClothoTentacle;
 import pfg.kraken.astar.tentacles.types.StraightingTentacle;
 import pfg.kraken.astar.tentacles.types.TurnoverTentacle;
 import pfg.kraken.memory.CinemObsPool;
-import pfg.kraken.obstacles.CircularObstacle;
 import pfg.kraken.robot.Cinematique;
 import pfg.kraken.robot.CinematiqueObs;
 import pfg.kraken.robot.RobotState;
@@ -140,17 +139,12 @@ public class ClothoidesComputer
 	 */
 	private void init(PrintBuffer buffer)
 	{
+		log.write("Computation of the unitary clothoid, please wait. This computation is made once and for all.", LogCategoryKraken.PF);
 		for(int s = 0; s < 2 * INDICE_MAX - 1; s++)
 		{
 			calculeXY(new BigDecimal((s - INDICE_MAX + 1) * PRECISION_TRACE).setScale(15, RoundingMode.HALF_EVEN));
 			trajectoire[s] = new XY(x.doubleValue(), y.doubleValue());
 			trajectoire[2 * INDICE_MAX - 2 - s] = new XY(-x.doubleValue(), -y.doubleValue());
-			System.out.println((s - INDICE_MAX + 1) * PRECISION_TRACE + " " + trajectoire[s]);
-			if(buffer != null)
-			{
-				buffer.addSupprimable(new CircularObstacle(new XY(x.doubleValue(), 1000 + y.doubleValue()), 5));
-				buffer.addSupprimable(new CircularObstacle(new XY(-x.doubleValue(), 1000 - y.doubleValue()), 5));
-			}
 		}
 	}
 
