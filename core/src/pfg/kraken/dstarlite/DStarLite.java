@@ -163,10 +163,10 @@ public class DStarLite
 		String str;
 		while(!openset.isEmpty() && ((u = openset.peek()).cle.lesserThan(calcKey(depart, tmp)) || depart.rhs > depart.g))
 		{
-			assert checkExpansion(u);
+			assert ((str = checkExpansion(u)) == null) : str;
 			assert ((str = checkInvariantRhs()) == null) : str;
 			assert ((str = checkInvariantOpenset()) == null) : str;
-			assert ((str = checkKey()) == null) : str;
+//			assert ((str = checkKey()) == null) : str;
 
 			u.cle.copy(kold);
 			calcKey(u, knew);
@@ -252,22 +252,22 @@ public class DStarLite
 	 * and at most once if it is underconsistent
 	 * @return
 	 */
-	private boolean checkExpansion(DStarLiteNode u)	
+	private String checkExpansion(DStarLiteNode u)	
 	{
 		assert !u.isConsistent() : u.g+" "+u.rhs;
 		if(u.g > u.rhs)
 		{
 			if(overconsistentExpansion.contains(u))
-				return false;
+				return "A overconsistent node has been expanded twice : "+u;
 			overconsistentExpansion.add(u);
 		}
 		else
 		{
 			if(underconsistentExpansion.contains(u))
-				return false;
+				return "A underconsistent node has been expanded twice : "+u;
 			underconsistentExpansion.add(u);
 		}
-		return true;
+		return null;
 	}
 
 	/**
