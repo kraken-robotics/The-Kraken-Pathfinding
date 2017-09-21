@@ -51,7 +51,7 @@ public class JUnit_DStarLite extends JUnit_Test
 	public void test_chemin_dstarlite_statique() throws Exception
 	{
 		pathfinding.computeNewPath(new XY(-800, 200), new XY(1200, 1200));
-		List<XY> l = pathfinding.itineraireBrut();
+		List<XY> l = pathfinding.itineraireBrut(new XY(-800, 200));
 		for(XY pos : l)
 			log.write(pos, LogCategoryKraken.TEST);
 	}	

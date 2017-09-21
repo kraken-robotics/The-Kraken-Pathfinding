@@ -514,7 +514,6 @@ public class TentacularAStar
 		}*/
 
 		// On met à jour le D* Lite
-		dstarlite.updateStart(depart.robot.getCinematique().getPosition());
 		dstarlite.updateObstacles();
 
 //		process(realChemin, true);

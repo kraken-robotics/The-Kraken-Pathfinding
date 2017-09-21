@@ -50,10 +50,7 @@ public class DStarLite
 	private DStarLiteNode[] memory;
 
 	private EnhancedPriorityQueue openset;
-	private int km;
 	private DStarLiteNode arrivee;
-	private DStarLiteNode depart;
-	private NavmeshNode lastDepart;
 	private PrintBuffer buffer;
 	private long nbPF = 0;
 
@@ -82,7 +79,6 @@ public class DStarLite
 		for(int i = 0; i < nbPoints; i++)
 			memory[i] = new DStarLiteNode(navmesh.mesh.nodes[i]);
 
-//		graphicDStarLite = config.getBoolean(ConfigInfoKraken.GRAPHIC_D_STAR_LITE);
 		graphicHeuristique = config.getBoolean(ConfigInfoKraken.GRAPHIC_HEURISTIC);
 	}
 
@@ -106,7 +102,7 @@ public class DStarLite
 	 */
 	private final Cle calcKey(DStarLiteNode s, Cle copy)
 	{
-		copy.set(add(add(Math.min(s.g, s.rhs), distanceHeuristique(s.node)), km), Math.min(s.g, s.rhs));
+		copy.set(Math.min(s.g, s.rhs), Math.min(s.g, s.rhs));
 		return copy;
 	}
 
@@ -125,7 +121,6 @@ public class DStarLite
 	 */
 	private final void updateVertex(DStarLiteNode u)
 	{
-//		System.out.println("UpdateVertex of "+u);
 		if(!u.isConsistent())
 		{
 			u.cle.copy(tmp);
@@ -170,7 +165,7 @@ public class DStarLite
 			assert ((str = checkExpansion(u)) == null) : str;
 			assert ((str = checkInvariantRhs()) == null) : str;
 			assert ((str = checkInvariantOpenset()) == null) : str;
-//			assert ((str = checkKey()) == null) : str;
+			assert ((str = checkKey()) == null) : str;
 
 			u.cle.copy(kold);
 			calcKey(u, knew);
@@ -236,14 +231,8 @@ public class DStarLite
 					}
 				}
 
-				// de toute façon, comme u sera forcément retiré de la liste
-				// dans updateVertex… autant le faire efficacement ici
-				// openset.poll();
-				// u.inOpenSet = false;
 				updateVertex(u);
 			}
-//			System.out.println("Depart : "+depart);
-//			System.out.println("Arrivee : "+arrivee);
 
 		}
 		
@@ -260,21 +249,10 @@ public class DStarLite
 	 */
 	public boolean computeNewPath(XY depart, XY arrivee)
 	{
-		updateGoalAndStart(depart, arrivee);
+		changeGoal(arrivee);
 		updateObstacles();
 		updateHeuristic();
-		return this.depart.rhs != Integer.MAX_VALUE;
-	}
-
-	/**
-	 * Heuristique (distance octile) entre le point de départ et ce gridpoint en μm
-	 * 
-	 * @param gridpoint
-	 * @return
-	 */
-	private final int distanceHeuristique(NavmeshNode gridpoint)
-	{
-		return (int) (depart.node.position.distanceOctile(gridpoint.position));
+		return getFromMemory(navmesh.getNearest(depart)).rhs != Integer.MAX_VALUE;
 	}
 
 	/**
@@ -282,40 +260,17 @@ public class DStarLite
 	 * 
 	 * @param positionArrivee
 	 */
-	public synchronized void updateGoalAndStart(XY positionRobot, XY positionArrivee)
+	public synchronized void changeGoal(XY positionArrivee)
 	{
 		nbPF++;
-		km = 0;
-
-		depart = getFromMemory(navmesh.getNearest(positionRobot));
-		lastDepart = depart.node;
 
 		arrivee = getFromMemory(navmesh.getNearest(positionArrivee));
 		arrivee.rhs = 0;
-		arrivee.cle.set(distanceHeuristique(this.arrivee.node), 0);
+		arrivee.cle.set(0, 0);
 
 		openset.clear();
 		openset.add(arrivee);
 		arrivee.inOpenSet = true;
-	}
-
-	public synchronized void updateStart(XY positionRobot)
-	{
-		updateStart(getFromMemory(navmesh.getNearest(positionRobot)));
-	}
-
-	/**
-	 * Met à jour la position actuelle du robot
-	 * 
-	 * @param positionRobot
-	 */
-	private synchronized final void updateStart(DStarLiteNode p)
-	{
-		depart = p;
-		km += distanceHeuristique(lastDepart);
-		lastDepart = depart.node;
-
-		updateHeuristic();
 	}
 
 	/**
@@ -391,17 +346,15 @@ public class DStarLite
 	 * 
 	 * @return
 	 */
-	public synchronized List<XY> itineraireBrut()
+	public synchronized List<XY> itineraireBrut(XY depart)
 	{
 		List<XY> trajet = new ArrayList<XY>();
 
-		DStarLiteNode node = depart;
+		DStarLiteNode node = getFromMemory(navmesh.getNearest(depart));
 		DStarLiteNode min = null;
 		int coutMin;
 
-		assert depart.rhs != Integer.MAX_VALUE;
-		if(depart.rhs == Integer.MAX_VALUE)
-			return null;
+		assert node.rhs != Integer.MAX_VALUE;
 
 		String str;
 		assert ((str = checkInvariantRhs()) == null) : str;
@@ -410,7 +363,7 @@ public class DStarLite
 		while(!node.equals(arrivee))
 		{
 			// Le noeud de départ peut exceptionnellement être inconsistent
-			assert node == depart || node.isConsistent() : "A node in the path is not consistent !";
+			assert node.isConsistent() : "A node in the path is not consistent !";
 			assert !trajet.contains(node.node.position) : "Cyclic path !";
 
 			trajet.add(node.node.position);
