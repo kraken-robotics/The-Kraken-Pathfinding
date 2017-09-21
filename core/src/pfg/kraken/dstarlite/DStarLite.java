@@ -104,22 +104,6 @@ public class DStarLite
 		return copy;
 	}
 
-	/**
-	 * Récupère un nœud dans la mémoire. Ce nœud doit être à jour.
-	 * 
-	 * @param gridpoint
-	 * @return
-	 */
-	private DStarLiteNode getFromMemoryUpdated(NavmeshNode gridpoint)
-	{
-		DStarLiteNode out = memory[gridpoint.nb];
-
-		out.update(nbPF);
-		updateStart(out);
-//		assert !out.inOpenSet;
-		return out;
-	}
-
 	private DStarLiteNode getFromMemory(NavmeshNode gridpoint)
 	{
 		DStarLiteNode out = memory[gridpoint.nb];
@@ -446,17 +430,18 @@ public class DStarLite
 	{
 		for(int i = 0; i < memory.length; i++)
 		{
-			if(memory[i].inOpenSet != openset.contains(memory[i]))
+			DStarLiteNode n = getFromMemory(memory[i].node);
+			if(n.inOpenSet != openset.contains(n))
 			{
-				if(memory[i].inOpenSet)
+				if(n.inOpenSet)
 					return "inOpenSet = true mais n'y appartient pas !";
 				else
 					return "inOpenSet = false mais y appartient !";
 			}
-			if(memory[i].inOpenSet && memory[i].isConsistent())
-				return "Node "+memory[i]+" in the openset but consistent !";
-			if(!memory[i].inOpenSet && !memory[i].isConsistent())
-				return "Node "+memory[i]+" not in the openset but inconsistent !";
+			if(n.inOpenSet && n.isConsistent())
+				return "Node "+n+" in the openset but consistent !";
+			if(!n.inOpenSet && !n.isConsistent())
+				return "Node "+n+" not in the openset but inconsistent !";
 		}
 		return null;
 	}
@@ -465,7 +450,8 @@ public class DStarLite
 	{
 		for(int i = 0; i < memory.length; i++)
 		{
-			if(memory[i] == arrivee)
+			DStarLiteNode n = getFromMemory(memory[i].node);
+			if(n == arrivee)
 			{
 				if(arrivee.rhs != 0)
 					return "rhs de l'arrivée non nul ! "+arrivee.rhs;
@@ -473,15 +459,15 @@ public class DStarLite
 			else
 			{
 				int best = Integer.MAX_VALUE;
-				NavmeshNode s = memory[i].node;
+				NavmeshNode s = n.node;
 				for(int j = 0; j < s.getNbNeighbours(); j++)
 				{
-					int candidat = add(memory[s.getNeighbour(j).nb].g, s.getNeighbourEdge(j).getDistance());
+					int candidat = add(getFromMemory(s.getNeighbour(j)).g, s.getNeighbourEdge(j).getDistance());
 					if(candidat < best)
 						best = candidat;
 				}
-				if(memory[i].rhs != best)
-					return "rhs invariant broken ! rhs = "+memory[i].rhs+", min = "+best+" "+memory[i];
+				if(n.rhs != best)
+					return "rhs invariant broken ! rhs = "+n.rhs+", min = "+best+" "+n;
 			}
 		}
 		return null;
@@ -510,8 +496,9 @@ public class DStarLite
 		/*
 		 * S'occupe de la mise à jour
 		 */
-		DStarLiteNode premier = getFromMemoryUpdated(pos);
+		DStarLiteNode premier = getFromMemory(pos);
 		assert premier != null;
+		updateStart(premier);
 		
 		if(premier.rhs == Integer.MAX_VALUE)
 		{
