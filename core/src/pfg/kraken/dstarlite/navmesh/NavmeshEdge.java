@@ -8,6 +8,7 @@ package pfg.kraken.dstarlite.navmesh;
 import java.awt.Graphics;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import pfg.graphic.Chart;
@@ -191,9 +192,13 @@ public class NavmeshEdge implements Serializable, Printable
 				obstructingObstacles.add(o);
 		
 		// Remove the obstacles that are *absent* from the list or the obstacles that moved (not colliding anymore)
-		for(Obstacle o : obstructingObstacles)
+		Iterator<Obstacle> iter = obstructingObstacles.iterator();
+		while(iter.hasNext())
+		{
+			Obstacle o = iter.next();
 			if(!currentList.contains(o) || !o.isColliding(points[0].position, points[1].position))
-				obstructingObstacles.remove(o);
+				iter.remove();
+		}
 	}
 	
 	@Override
