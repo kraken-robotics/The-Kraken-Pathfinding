@@ -141,17 +141,12 @@ public class Kraken
 				 * Override the graphic config
 				 */
 				HashMap<ConfigInfo, Object> overrideGraphic = new HashMap<ConfigInfo, Object>();
+				for(ConfigInfoGraphic infoG : ConfigInfoGraphic.values())
+					for(ConfigInfoKraken infoK : ConfigInfoKraken.values())
+						if(infoG.toString().equals(infoK.toString()))
+							overrideGraphic.put(infoG, config.getObject(infoK));
 				overrideGraphic.put(ConfigInfoGraphic.SIZE_X_WITH_UNITARY_ZOOM, (int) (topRightCorner.getX() - bottomLeftCorner.getX()));
 				overrideGraphic.put(ConfigInfoGraphic.SIZE_Y_WITH_UNITARY_ZOOM, (int) (topRightCorner.getY() - bottomLeftCorner.getY()));
-				overrideGraphic.put(ConfigInfoGraphic.BACKGROUND_PATH, config.getString(ConfigInfoKraken.BACKGROUND_PATH));
-				overrideGraphic.put(ConfigInfoGraphic.DISPLAY_GRID, config.getBoolean(ConfigInfoKraken.DISPLAY_GRID));
-				overrideGraphic.put(ConfigInfoGraphic.SIZE_X_WINDOW, config.getInt(ConfigInfoKraken.SIZE_X_WINDOW));
-				overrideGraphic.put(ConfigInfoGraphic.SIZE_Y_WINDOW, config.getInt(ConfigInfoKraken.SIZE_Y_WINDOW));
-				overrideGraphic.put(ConfigInfoGraphic.GRAPHIC_SERVER_PORT_NUMBER, config.getInt(ConfigInfoKraken.GRAPHIC_SERVER_PORT_NUMBER));
-				overrideGraphic.put(ConfigInfoGraphic.CONSOLE_NB_ROWS, config.getInt(ConfigInfoKraken.CONSOLE_NB_ROWS));
-				overrideGraphic.put(ConfigInfoGraphic.CONSOLE_NB_COLUMNS, config.getInt(ConfigInfoKraken.CONSOLE_NB_COLUMNS));
-				overrideGraphic.put(ConfigInfoGraphic.FAST_LOG, config.getBoolean(ConfigInfoKraken.FAST_LOG));
-				overrideGraphic.put(ConfigInfoGraphic.STDOUT_LOG, config.getBoolean(ConfigInfoKraken.STDOUT_LOG));
 				
 				DebugTool debug = new DebugTool(overrideGraphic, SeverityCategoryKraken.INFO, null);
 				Log log = debug.getLog();

@@ -48,13 +48,6 @@ public enum ConfigInfoKraken implements ConfigInfo
 	/**
 	 * Paramètres du traitement des capteurs
 	 */
-	DISTANCE_BETWEEN_PROXIMITY_OBSTACLES(5), // sous quelle distance
-												// fusionne-t-on deux obstacles
-												// de proximité ?
-	RAYON_ROBOT_SUPPRESSION_OBSTACLES_FIXES(300), // dans quel rayon
-													// supprime-t-on les
-													// obstacles fixes si on est
-													// dedans
 	SUPPRESSION_AUTO_OBSTACLES_FIXES(true), // si on démarre dans un obstacle
 											// fixe, est-ce qu'on le vire ?
 
@@ -63,15 +56,7 @@ public enum ConfigInfoKraken implements ConfigInfo
 	 */
 	NB_INSTANCES_NODE(20000),
 	NB_INSTANCES_OBSTACLES(50000), // nombre d'instances pour les obstacles
-									// rectangulaires
-
-	/**
-	 * Verbose
-	 */
-	DEBUG_REPLANIF(false), // debug verbeux sur la replanif
-	DEBUG_PF(false), // affichage de plein d'infos
-	DEBUG_DEBUG(false), // affichage des messages "debug"
-
+			
 	/**
 	 * Interface graphique
 	 */
@@ -81,11 +66,10 @@ public enum ConfigInfoKraken implements ConfigInfo
 							// thread d'affichage de se lancer)
 	GRAPHIC_D_STAR_LITE(false), // affiche les calculs du D* Lite
 	GRAPHIC_TENTACLES(false), // affiche les trajectoires temporaires
-	GRAPHIC_TRAJECTORY_FINAL(true), // affiche les trajectoires
+//	GRAPHIC_TRAJECTORY_FINAL(true), // affiche les trajectoires
 	GRAPHIC_ROBOT_COLLISION(false), // affiche les obstacles du robot lors de la
 									// vérification des collisions
-	GRAPHIC_ALL_OBSTACLES(false), // affiche absolument tous les obstacles créés
-	GRAPHIC_ROBOT_AND_SENSORS(true), // affiche le robot et ses capteurs
+//	GRAPHIC_ROBOT_AND_SENSORS(true), // affiche le robot et ses capteurs
 	GRAPHIC_NAVMESH(false), // show the navmesh ?
 
 	ALLOW_BACKWARD_MOTION(true), // allow the pathfinding to find a path with backward motion by default
@@ -102,9 +86,9 @@ public enum ConfigInfoKraken implements ConfigInfo
 	/**
 	 * Paramètres du log
 	 */
-	ENABLE_LOG(false), // désactivation du log
-	SAUVEGARDE_LOG(false), // sauvegarde les logs dans un fichier externe
-	COLORED_LOG(false), // de la couleur dans les sauvegardes de logs !
+//	ENABLE_LOG(false), // désactivation du log
+	SAVE_LOG(false), // sauvegarde les logs dans un fichier externe
+//	COLORED_LOG(false), // de la couleur dans les sauvegardes de logs !
 	FAST_LOG(false), // log rapide, sans reflection
 	STDOUT_LOG(false); // log into the stdout
 
