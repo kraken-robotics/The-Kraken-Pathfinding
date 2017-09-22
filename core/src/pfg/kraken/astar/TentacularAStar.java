@@ -55,6 +55,7 @@ public class TentacularAStar
 	private DefaultCheminPathfinding defaultChemin;
 	private boolean graphicTrajectory, graphicDStarLite, graphicTrajectoryAll;
 	private int dureeMaxPF;
+	private DirectionStrategy defaultStrategy;
 	private KrakenSpeed vitesseMax;
 	// private int tailleFaisceau;
 	private volatile boolean rechercheEnCours = false;
@@ -108,6 +109,10 @@ public class TentacularAStar
 		int demieLargeurNonDeploye = config.getInt(ConfigInfoKraken.LARGEUR_NON_DEPLOYE) / 2;
 		int demieLongueurArriere = config.getInt(ConfigInfoKraken.DEMI_LONGUEUR_NON_DEPLOYE_ARRIERE);
 		int demieLongueurAvant = config.getInt(ConfigInfoKraken.DEMI_LONGUEUR_NON_DEPLOYE_AVANT);
+		if(config.getBoolean(ConfigInfoKraken.ALLOW_BACKWARD_MOTION))
+			defaultStrategy = DirectionStrategy.FASTEST;
+		else
+			defaultStrategy = DirectionStrategy.FORCE_FORWARD_MOTION;
 		this.depart = new AStarNode(chrono, demieLargeurNonDeploye, demieLongueurArriere, demieLongueurAvant);
 		depart.setIndiceMemoryManager(-1);
 	}
@@ -414,6 +419,11 @@ public class TentacularAStar
 
 		return last;
 	}
+	
+	public void initializeNewSearch(XYO start, XY arrival) throws NoPathException
+	{
+		initializeNewSearch(start, arrival, defaultStrategy);
+	}
 
 	/**
 	 * Calcul de chemin classique
@@ -423,12 +433,12 @@ public class TentacularAStar
 	 * @param shoot
 	 * @throws NoPathException 
 	 */
-	public void initializeNewSearch(XYO start, XY arrival) throws NoPathException
+	public void initializeNewSearch(XYO start, XY arrival, DirectionStrategy directionstrategy) throws NoPathException
 	{
 		vitesseMax = DefaultSpeed.STANDARD;
 		depart.init();
 		depart.robot.setCinematique(new Cinematique(start));
-		arcmanager.configureArcManager(DirectionStrategy.defaultStrategy, arrival);
+		arcmanager.configureArcManager(directionstrategy, arrival);
 /*
 		if(suppObsFixes)
 		{

@@ -21,8 +21,6 @@ public enum DirectionStrategy
 
 	public final boolean marcheAvantPossible, marcheArrierePossible;
 
-	public static final DirectionStrategy defaultStrategy = FASTEST;
-
 	/**
 	 * Cette direction est-elle possible pour cette stratégie ?
 	 * 
