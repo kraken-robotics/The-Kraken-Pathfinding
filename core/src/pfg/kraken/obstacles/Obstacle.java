@@ -66,22 +66,6 @@ public abstract class Obstacle implements Printable, Serializable
 	{
 		return squaredDistance(obs.position) < distance * distance;
 	}
-
-	/**
-	 * Revoie vrai s'il y a une collision avec obs
-	 * 
-	 * @param obs
-	 * @return
-	 */
-	public boolean isColliding(TentacleObstacle obs)
-	{
-		for(RectangularObstacle o : obs.ombresRobot)
-		{
-			if(isColliding(o))
-				return true;
-		}
-		return false;
-	}
 	
 	public abstract boolean isInObstacle(XY pos);
 

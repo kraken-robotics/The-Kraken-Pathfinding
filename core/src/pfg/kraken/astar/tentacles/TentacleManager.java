@@ -22,7 +22,7 @@ import pfg.kraken.astar.tentacles.types.TentacleType;
 import pfg.kraken.astar.tentacles.types.TurnoverTentacle;
 import pfg.kraken.dstarlite.DStarLite;
 import pfg.kraken.obstacles.Obstacle;
-import pfg.kraken.obstacles.TentacleObstacle;
+import pfg.kraken.obstacles.RectangularObstacle;
 import pfg.kraken.obstacles.container.DynamicObstacles;
 import pfg.kraken.obstacles.container.StaticObstacles;
 import pfg.kraken.robot.Cinematique;
@@ -78,7 +78,7 @@ public class TentacleManager
 		courbureMax = config.getDouble(ConfigInfoKraken.COURBURE_MAX);
 	}
 
-	private TentacleObstacle obs = new TentacleObstacle();
+	private List<RectangularObstacle> ombresRobot = new ArrayList<RectangularObstacle>();
 
 	/**
 	 * Retourne faux si un obstacle est sur la route
@@ -97,28 +97,33 @@ public class TentacleManager
 		 * On agrège les obstacles en un seul pour simplifier l'écriture des
 		 * calculs
 		 */
-		obs.ombresRobot.clear();
+		ombresRobot.clear();
 		for(int i = 0; i < node.getArc().getNbPoints(); i++)
-			obs.ombresRobot.add(node.getArc().getPoint(i).obstacle);
+			ombresRobot.add(node.getArc().getPoint(i).obstacle);
 
 		// Collision avec un obstacle fixe?
 		for(Obstacle o : fixes.getObstacles())
-			if(/*!disabledObstaclesFixes.contains(o) && */o.isColliding(obs))
-			{
-				// log.debug("Collision avec "+o);
-				return false;
-			}
+			for(RectangularObstacle obs : ombresRobot)
+				if(/*!disabledObstaclesFixes.contains(o) && */o.isColliding(obs))
+				{
+					// log.debug("Collision avec "+o);
+					return false;
+				}
 
 		// Collision avec un obstacle de proximité ?
 
 		try {
 			Iterator<Obstacle> iter = dynamicObs.getFutureDynamicObstacles(0); // TODO date !
 			while(iter.hasNext())
-				if(iter.next().isColliding(obs))
-				{
-					// log.debug("Collision avec un obstacle de proximité.");
-					return false;
-				}
+			{
+				Obstacle n = iter.next();
+				for(RectangularObstacle obs : ombresRobot)
+					if(n.isColliding(obs))
+					{
+						// log.debug("Collision avec un obstacle de proximité.");
+						return false;
+					}
+			}
 		} catch(NullPointerException e)
 		{
 			log.write(e.toString(), SeverityCategoryKraken.CRITICAL, LogCategoryKraken.PF);
