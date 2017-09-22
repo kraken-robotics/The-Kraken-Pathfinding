@@ -88,16 +88,31 @@ public class Example2
 			{
 				e.printStackTrace();
 			}
-			
+
+			// Let's clear the previous trajectory
 			printBuffer.clearSupprimables();
 
-			Obstacle newObs = new CircularObstacle(new XY_RW(-200,600), 200);
-			printBuffer.addSupprimable(newObs, Color.BLUE, Layer.MIDDLE.layer);
-			obsDyn.add(newObs);
+			// We add a dynamic obstacle
+			Obstacle newObs1 = new CircularObstacle(new XY_RW(-200,600), 200);
+			Obstacle newObs2 = new RectangularObstacle(new XY_RW(1200,1500), 100, 100);
+			Obstacle newObs3 = new CircularObstacle(new XY_RW(0,1200), 100);
+			Obstacle newObs4 = new CircularObstacle(new XY_RW(-900,600), 400);
+			printBuffer.addSupprimable(newObs1, Color.BLUE, Layer.MIDDLE.layer);
+			printBuffer.addSupprimable(newObs2, Color.BLUE, Layer.MIDDLE.layer);
+			printBuffer.addSupprimable(newObs3, Color.BLUE, Layer.MIDDLE.layer);
+			printBuffer.addSupprimable(newObs4, Color.BLUE, Layer.MIDDLE.layer);
+			obsDyn.add(newObs1);
+			obsDyn.add(newObs2);
+			obsDyn.add(newObs3);
+			obsDyn.add(newObs4);
 			
+			// Just as before
 			astar.initializeNewSearch(new XYO(0, 200, 0), new XY(1000, 1000));
 			path = astar.search();
 			
+			/*
+			 * This time, the trajectory avoids the new obstacle
+			 */
 			for(ItineraryPoint p : path)
 			{
 				printBuffer.addSupprimable(p, Color.BLACK, Layer.FOREGROUND.layer);
@@ -114,11 +129,15 @@ public class Example2
 				e.printStackTrace();
 			}
 			
+			// Let's remove the dynamic obstacle
 			obsDyn.clear();
 			printBuffer.clearSupprimables();
 			astar.initializeNewSearch(new XYO(0, 200, 0), new XY(1000, 1000));
 			path = astar.search();
 			
+			/*
+			 * It finds the same trajectory as before, when there wasn't any dynamic obstacle
+			 */
 			for(ItineraryPoint p : path)
 			{
 				printBuffer.addSupprimable(p, Color.BLACK, Layer.FOREGROUND.layer);

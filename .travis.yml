@@ -5,8 +5,10 @@ install :
 script :
     - ant
 #    - cd ../tests && ant
-#    - cd ../examples/example-1 && ant
-#    - java -cp bin/:../../core/kraken.jar Example1
+    - cd ../examples/ && ant
+    - java -cp bin/:../core/kraken.jar:../core/lib Example1
+    - java -cp bin/:../core/kraken.jar:../core/lib Example2
+    - java -cp bin/:../core/kraken.jar:../core/lib Example3
 jdk : oraclejdk8
 branches:
     only : master
