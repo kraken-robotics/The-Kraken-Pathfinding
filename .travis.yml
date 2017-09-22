@@ -7,9 +7,9 @@ script :
 #    - cd ../tests && ant
     - cd ../examples/ && ant
     - rm kraken.conf
-    - java -cp bin/:../core/kraken.jar:../core/lib Example1
-    - java -cp bin/:../core/kraken.jar:../core/lib Example2
-    - java -cp bin/:../core/kraken.jar:../core/lib Example3
+    - java -ea -cp bin/:../core/kraken.jar:../core/lib Example1
+    - java -ea -cp bin/:../core/kraken.jar:../core/lib Example2
+    - java -ea -cp bin/:../core/kraken.jar:../core/lib Example3
 jdk : oraclejdk8
 branches:
     only : master

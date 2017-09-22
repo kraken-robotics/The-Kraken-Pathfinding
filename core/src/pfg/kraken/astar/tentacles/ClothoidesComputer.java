@@ -476,7 +476,7 @@ public class ClothoidesComputer
 			ObjectOutputStream oos;
 
 			new File("clotho-" + S_MAX + ".dat").createNewFile();
-			fichier = new FileOutputStream("clotho-" + S_MAX + ".dat");
+			fichier = new FileOutputStream("clotho-" + S_MAX + ".krk");
 			oos = new ObjectOutputStream(fichier);
 			oos.writeObject(trajectoire);
 			oos.flush();
@@ -498,7 +498,7 @@ public class ClothoidesComputer
 		log.write("Clothoid points loaded.",LogCategoryKraken.PF);
 		try
 		{
-			InputStream fichier = getClass().getClassLoader().getResourceAsStream("clotho-"+S_MAX+".dat");
+			InputStream fichier = getClass().getResourceAsStream("/clotho-"+S_MAX+".krk");
 			ObjectInputStream ois = new ObjectInputStream(fichier);
 			trajectoire = (XY[]) ois.readObject();
 			ois.close();
@@ -507,7 +507,7 @@ public class ClothoidesComputer
 		catch(IOException | ClassNotFoundException | NullPointerException e)
 		{
 			try {
-				FileInputStream fichier = new FileInputStream("clotho-" + S_MAX + ".dat");
+				FileInputStream fichier = new FileInputStream("clotho-" + S_MAX + ".krk");
 				ObjectInputStream ois = new ObjectInputStream(fichier);
 				trajectoire = (XY[]) ois.readObject();
 				ois.close();
