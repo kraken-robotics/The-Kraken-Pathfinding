@@ -16,7 +16,6 @@ import pfg.kraken.obstacles.CircularObstacle;
 import pfg.kraken.obstacles.Obstacle;
 import pfg.kraken.obstacles.RectangularObstacle;
 import pfg.kraken.astar.DirectionStrategy;
-import pfg.kraken.astar.TentacularAStar;
 import pfg.kraken.robot.ItineraryPoint;
 import pfg.kraken.utils.XY;
 import pfg.kraken.utils.XYO;
@@ -47,7 +46,7 @@ public class Example3
 		obs.add(new RectangularObstacle(new XY_RW(1450,700), 300, 100));
 		obs.add(new CircularObstacle(new XY_RW(500,600), 100));
 
-		RectangularObstacle robot = new RectangularObstacle(250, 80, 110, 110, 0); 
+		RectangularObstacle robot = new RectangularObstacle(250, 80, 110, 110); 
 
 		Kraken kraken = new Kraken(robot, obs, new XY(-1500,0), new XY(1500, 2000), "trajectory", "detailed");
 		PrintBuffer printBuffer = kraken.getPrintBuffer();
@@ -55,20 +54,18 @@ public class Example3
 			printBuffer.add(o, Color.BLACK, Layer.MIDDLE.layer);
 		printBuffer.refresh();
 
-		RectangularObstacle secondRobot = new RectangularObstacle(20, 20, 20, 20, 0); 
+		RectangularObstacle secondRobot = new RectangularObstacle(20, 20, 20, 20); 
 		Kraken krakenSecondRobot = new Kraken(secondRobot, obs, new XY(-1500,0), new XY(1500, 2000), "trajectory", "detailed");
 
-		TentacularAStar astar = kraken.getAStar();
-		TentacularAStar astar2 = krakenSecondRobot.getAStar();
 		try
 		{
 			/*
 			 * You can force the direction. By default, the pathfinding can move the vehicle backward and forward.
 			 * In example 1, the path makes the vehicle going backward. Let's force a forward motion.
 			 */
-			astar.initializeNewSearch(new XYO(0, 200, 0), new XY(1000, 1000), DirectionStrategy.FORCE_FORWARD_MOTION);
+			kraken.initializeNewSearch(new XYO(0, 200, 0), new XY(1000, 1000), DirectionStrategy.FORCE_FORWARD_MOTION);
 			
-			LinkedList<ItineraryPoint> path = astar.search();
+			LinkedList<ItineraryPoint> path = kraken.search();
 			
 			for(ItineraryPoint p : path)
 			{
@@ -78,8 +75,8 @@ public class Example3
 			
 			printBuffer.refresh();
 			
-			astar2.initializeNewSearch(new XYO(0, 800, 0), new XY(1000, 1000), DirectionStrategy.FORCE_FORWARD_MOTION);
-			path = astar2.search();
+			krakenSecondRobot.initializeNewSearch(new XYO(0, 800, 0), new XY(1000, 1000), DirectionStrategy.FORCE_FORWARD_MOTION);
+			path = krakenSecondRobot.search();
 			
 			for(ItineraryPoint p : path)
 			{

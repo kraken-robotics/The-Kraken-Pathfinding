@@ -7,6 +7,7 @@ package pfg.kraken;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import pfg.config.Config;
 import pfg.config.ConfigInfo;
@@ -18,15 +19,20 @@ import pfg.graphic.ConfigInfoGraphic;
 import pfg.graphic.DebugTool;
 import pfg.injector.Injector;
 import pfg.injector.InjectorException;
+import pfg.kraken.astar.DirectionStrategy;
 import pfg.kraken.astar.TentacularAStar;
 import pfg.kraken.astar.tentacles.TentacleManager;
 import pfg.kraken.astar.tentacles.types.*;
+import pfg.kraken.exceptions.NoPathException;
+import pfg.kraken.exceptions.PathfindingException;
 import pfg.kraken.obstacles.Obstacle;
 import pfg.kraken.obstacles.RectangularObstacle;
 import pfg.kraken.obstacles.container.DynamicObstacles;
 import pfg.kraken.obstacles.container.EmptyDynamicObstacles;
 import pfg.kraken.obstacles.container.StaticObstacles;
+import pfg.kraken.robot.ItineraryPoint;
 import pfg.kraken.utils.XY;
+import pfg.kraken.utils.XYO;
 
 /**
  * The manager of the tentacular pathfinder.
@@ -41,6 +47,7 @@ public class Kraken
 	private boolean initialized = false;
 	private XY bottomLeftCorner, topRightCorner;
 	private DynamicObstacles dynObs;
+	private TentacularAStar astar;
 	private static WindowFrame f; // one display for all the instances
 
 	/**
@@ -172,22 +179,28 @@ public class Kraken
 				}
 		
 				injector.getService(TentacleManager.class).setTentacle(tentacleTypesUsed);	
-				injector.getService(TentacularAStar.class);
+				astar = injector.getService(TentacularAStar.class);
 			}
 		} catch (InjectorException e) {
 			throw new RuntimeException("Fatal error", e);
 		}
 	}
 	
-	/**
-	 * Return the tentacular pathfinder
-	 * @return
-	 */
-	public TentacularAStar getAStar()
+	public void initializeNewSearch(XYO start, XY arrival, DirectionStrategy directionstrategy) throws NoPathException
 	{
-		return injector.getExistingService(TentacularAStar.class);
+		astar.initializeNewSearch(start, arrival, directionstrategy);
+	}
+	
+	public void initializeNewSearch(XYO start, XY arrival) throws NoPathException
+	{
+		astar.initializeNewSearch(start, arrival);
 	}
 
+	public LinkedList<ItineraryPoint> search() throws PathfindingException
+	{
+		return astar.search();
+	}
+	
 	/**
 	 * Used by the unit tests
 	 * @return

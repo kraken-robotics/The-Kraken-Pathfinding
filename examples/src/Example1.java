@@ -15,7 +15,6 @@ import pfg.kraken.exceptions.PathfindingException;
 import pfg.kraken.obstacles.CircularObstacle;
 import pfg.kraken.obstacles.Obstacle;
 import pfg.kraken.obstacles.RectangularObstacle;
-import pfg.kraken.astar.TentacularAStar;
 import pfg.kraken.robot.ItineraryPoint;
 import pfg.kraken.utils.XY;
 import pfg.kraken.utils.XYO;
@@ -57,7 +56,7 @@ public class Example1
 		 * - the distance to the right side
 		 * - an tilt angle
 		 */
-		RectangularObstacle robot = new RectangularObstacle(250, 80, 110, 110, 0); 
+		RectangularObstacle robot = new RectangularObstacle(250, 80, 110, 110); 
 		
 		/*
 		 * Constructing Kraken
@@ -77,11 +76,6 @@ public class Example1
 		for(Obstacle o : obs)
 			printBuffer.add(o, Color.BLACK, Layer.MIDDLE.layer);
 		printBuffer.refresh();
-		
-		/*
-		 * The pathfinder itself.
-		 */
-		TentacularAStar astar = kraken.getAStar();
 		try
 		{
 			/*
@@ -93,12 +87,12 @@ public class Example1
 			/*
 			 * We search a new path from the point (0,0) with orientation 0 to the point (1000, 1000).
 			 */
-			astar.initializeNewSearch(new XYO(0, 200, 0), new XY(1000, 1000));
+			kraken.initializeNewSearch(new XYO(0, 200, 0), new XY(1000, 1000));
 			
 			/*
 			 * The pathfinder returns a list of ItineraryPoint, which contains all the cinematic information that described follow the path
 			 */
-			LinkedList<ItineraryPoint> path = astar.search();
+			LinkedList<ItineraryPoint> path = kraken.search();
 			
 			/*
 			 * For this example, we just print the trajectory points

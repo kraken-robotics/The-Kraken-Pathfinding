@@ -74,6 +74,11 @@ public class RectangularObstacle extends Obstacle
 		this(position, sizeX / 2, sizeX / 2, sizeY / 2, sizeY / 2, angle);
 	}
 
+	public RectangularObstacle(int distanceToFront, int distanceToBack, int distanceToLeft, int distanceToRight)
+	{
+		this(distanceToFront, distanceToBack, distanceToLeft, distanceToRight, 0);
+	}
+
 	public RectangularObstacle(int distanceToFront, int distanceToBack, int distanceToLeft, int distanceToRight, double tiltAngle)
 	{
 		this(new XY(0,0), distanceToBack, distanceToFront, distanceToLeft, distanceToRight, tiltAngle);

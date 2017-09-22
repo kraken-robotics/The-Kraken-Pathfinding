@@ -16,7 +16,6 @@ import pfg.kraken.obstacles.Obstacle;
 import pfg.kraken.obstacles.RectangularObstacle;
 import pfg.kraken.obstacles.container.DefaultDynamicObstacles;
 import pfg.kraken.robot.ItineraryPoint;
-import pfg.kraken.astar.TentacularAStar;
 import pfg.kraken.exceptions.PathfindingException;
 import pfg.kraken.utils.XY;
 import pfg.kraken.utils.XYO;
@@ -43,7 +42,7 @@ public class Example2
 		obs.add(new RectangularObstacle(new XY_RW(1450,700), 300, 100));
 		obs.add(new CircularObstacle(new XY_RW(500,600), 100));
 		
-		RectangularObstacle robot = new RectangularObstacle(250, 80, 110, 110, 0); 
+		RectangularObstacle robot = new RectangularObstacle(250, 80, 110, 110); 
 
 		/*
 		 * The list of dynamic obstacles.
@@ -61,11 +60,10 @@ public class Example2
 			printBuffer.add(o, Color.BLACK, Layer.MIDDLE.layer);
 		printBuffer.refresh();
 
-		TentacularAStar astar = kraken.getAStar();
 		try
 		{
-			astar.initializeNewSearch(new XYO(0, 200, 0), new XY(1000, 1000));
-			LinkedList<ItineraryPoint> path = astar.search();
+			kraken.initializeNewSearch(new XYO(0, 200, 0), new XY(1000, 1000));
+			LinkedList<ItineraryPoint> path = kraken.search();
 			
 			/*
 			 * We have the first trajectory
@@ -107,8 +105,8 @@ public class Example2
 			obsDyn.add(newObs4);
 			
 			// Just as before
-			astar.initializeNewSearch(new XYO(0, 200, 0), new XY(1000, 1000));
-			path = astar.search();
+			kraken.initializeNewSearch(new XYO(0, 200, 0), new XY(1000, 1000));
+			path = kraken.search();
 			
 			/*
 			 * This time, the trajectory avoids the new obstacle
@@ -132,8 +130,8 @@ public class Example2
 			// Let's remove the dynamic obstacle
 			obsDyn.clear();
 			printBuffer.clearSupprimables();
-			astar.initializeNewSearch(new XYO(0, 200, 0), new XY(1000, 1000));
-			path = astar.search();
+			kraken.initializeNewSearch(new XYO(0, 200, 0), new XY(1000, 1000));
+			path = kraken.search();
 			
 			/*
 			 * It finds the same trajectory as before, when there wasn't any dynamic obstacle
