@@ -138,7 +138,7 @@ public class ClothoidesComputer
 	 */
 	private void init()
 	{
-		log.write("Computation of the unitary clothoid, please wait. This computation is made once and for all.", LogCategoryKraken.PF);
+		log.write("Computation of the unitary clothoid, please wait (it should take at most one minute). This computation is made once and for all.", LogCategoryKraken.PF);
 		for(int s = 0; s < 2 * INDICE_MAX - 1; s++)
 		{
 			calculeXY(new BigDecimal((s - INDICE_MAX + 1) * PRECISION_TRACE).setScale(15, RoundingMode.HALF_EVEN));
@@ -515,7 +515,7 @@ public class ClothoidesComputer
 			}
 			catch(IOException | ClassNotFoundException e1)
 			{
-				log.write("Chargement échoué ! "+e+" "+e1, SeverityCategoryKraken.CRITICAL, LogCategoryKraken.PF);
+				log.write("Chargement échoué ! "+e1.getMessage(), SeverityCategoryKraken.CRITICAL, LogCategoryKraken.PF);
 			}
 		}
 		return false;

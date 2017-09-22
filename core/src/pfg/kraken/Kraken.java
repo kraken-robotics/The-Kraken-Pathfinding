@@ -19,7 +19,6 @@ import pfg.graphic.DebugTool;
 import pfg.injector.Injector;
 import pfg.injector.InjectorException;
 import pfg.kraken.astar.TentacularAStar;
-import pfg.kraken.astar.tentacles.Tentacle;
 import pfg.kraken.astar.tentacles.TentacleManager;
 import pfg.kraken.astar.tentacles.types.*;
 import pfg.kraken.obstacles.Obstacle;
@@ -42,8 +41,7 @@ public class Kraken
 	private boolean initialized = false;
 	private XY bottomLeftCorner, topRightCorner;
 	private DynamicObstacles dynObs;
-
-	private static Kraken instance;
+	private static WindowFrame f; // one display for all the instances
 
 	/**
 	 * Call this function if you want to create a new Kraken.
@@ -51,19 +49,15 @@ public class Kraken
 	 */
 	public synchronized void destructor()
 	{	
-		if(instance != null)
-		{
-			PrintBuffer buffer = injector.getExistingService(PrintBuffer.class);
-			// On appelle le destructeur du PrintBuffer
-			if(buffer != null)
-				buffer.destructor();
-	
-			// fermeture du log
-			Log log = injector.getExistingService(Log.class);
-			if(log != null)
-				log.close();
-			instance = null;
-		}
+		PrintBuffer buffer = injector.getExistingService(PrintBuffer.class);
+		// On appelle le destructeur du PrintBuffer
+		if(buffer != null)
+			buffer.destructor();
+
+		// fermeture du log
+		Log log = injector.getExistingService(Log.class);
+		if(log != null)
+			log.close();
 	}
 	
 	/**
@@ -71,11 +65,9 @@ public class Kraken
 	 * @param fixedObstacles : a list of fixed/permanent obstacles
 	 * @return the instance of Kraken
 	 */
-	public static Kraken getKraken(RectangularObstacle vehicleTemplate, List<Obstacle> fixedObstacles, XY bottomLeftCorner, XY topRightCorner, String...profiles)
+	public Kraken(RectangularObstacle vehicleTemplate, List<Obstacle> fixedObstacles, XY bottomLeftCorner, XY topRightCorner, String...profiles)
 	{
-		if(instance == null)
-			instance = new Kraken(vehicleTemplate, fixedObstacles, new EmptyDynamicObstacles(), null, bottomLeftCorner, topRightCorner, profiles);
-		return instance;
+		this(vehicleTemplate, fixedObstacles, new EmptyDynamicObstacles(), null, bottomLeftCorner, topRightCorner, profiles);
 	}
 	
 	/**
@@ -85,11 +77,9 @@ public class Kraken
 	 * @param tentacleTypes : 
 	 * @return
 	 */
-	public static Kraken getKraken(RectangularObstacle vehicleTemplate, List<Obstacle> fixedObstacles, DynamicObstacles dynObs, XY bottomLeftCorner, XY topRightCorner, String...configprofile)
+	public Kraken(RectangularObstacle vehicleTemplate, List<Obstacle> fixedObstacles, DynamicObstacles dynObs, XY bottomLeftCorner, XY topRightCorner, String...configprofile)
 	{
-		if(instance == null)
-			instance = new Kraken(vehicleTemplate, fixedObstacles, dynObs, null, bottomLeftCorner, topRightCorner, configprofile);
-		return instance;
+		this(vehicleTemplate, fixedObstacles, dynObs, null, bottomLeftCorner, topRightCorner, configprofile);
 	}
 	
 	/**
@@ -98,7 +88,6 @@ public class Kraken
 	 */
 	private Kraken(RectangularObstacle vehicleTemplate, List<Obstacle> fixedObstacles, DynamicObstacles dynObs, TentacleType tentacleTypes, XY bottomLeftCorner, XY topRightCorner, String...configprofile)
 	{	
-		assert instance == null;
 		this.bottomLeftCorner = bottomLeftCorner;
 		this.topRightCorner = topRightCorner;
 		this.dynObs = dynObs;
@@ -167,7 +156,8 @@ public class Kraken
 		
 				if(config.getBoolean(ConfigInfoKraken.GRAPHIC_ENABLE))
 				{
-					WindowFrame f = debug.getWindowFrame(new Vec2RO((topRightCorner.getX() + bottomLeftCorner.getX()) / 2, (topRightCorner.getY() + bottomLeftCorner.getY()) / 2));
+					if(f == null)
+						f = debug.getWindowFrame(new Vec2RO((topRightCorner.getX() + bottomLeftCorner.getX()) / 2, (topRightCorner.getY() + bottomLeftCorner.getY()) / 2));
 					injector.addService(f);
 					injector.addService(f.getPrintBuffer());
 				}
@@ -181,7 +171,6 @@ public class Kraken
 					config.override(override);
 				}
 		
-				Tentacle.useConfig(config);
 				injector.getService(TentacleManager.class).setTentacle(tentacleTypesUsed);	
 				injector.getService(TentacularAStar.class);
 			}

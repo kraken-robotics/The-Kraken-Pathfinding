@@ -51,7 +51,7 @@ public class Example2
 		 */
 		DefaultDynamicObstacles obsDyn = new DefaultDynamicObstacles();
 
-		Kraken kraken = Kraken.getKraken(robot, obs, obsDyn, new XY(-1500,0), new XY(1500, 2000), "trajectory", "detailed");
+		Kraken kraken = new Kraken(robot, obs, obsDyn, new XY(-1500,0), new XY(1500, 2000), "trajectory", "detailed");
 		PrintBuffer printBuffer = kraken.getPrintBuffer();
 		
 		/*

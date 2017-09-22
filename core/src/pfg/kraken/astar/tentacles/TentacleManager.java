@@ -48,6 +48,7 @@ public class TentacleManager
 	private DStarLite dstarlite;
 	private DynamicObstacles dynamicObs;
 	private double courbureMax;
+	private int tempsArret;
 	private StaticObstacles fixes;
 	
 	private DirectionStrategy directionstrategyactuelle;
@@ -76,6 +77,7 @@ public class TentacleManager
 			listeVitesse.add(v);
 
 		courbureMax = config.getDouble(ConfigInfoKraken.COURBURE_MAX);
+		tempsArret = config.getInt(ConfigInfoKraken.TEMPS_ARRET);
 	}
 
 	private List<RectangularObstacle> ombresRobot = new ArrayList<RectangularObstacle>();
@@ -152,8 +154,8 @@ public class TentacleManager
 	 */
 	public double distanceTo(AStarNode node, KrakenSpeed vitesse)
 	{
-		node.robot.suitArcCourbe(node.getArc(), vitesse.getMaxForwardSpeed(0));
-		return node.getArc().getDuree(vitesse.getMaxForwardSpeed(0));
+		node.robot.suitArcCourbe(node.getArc(), vitesse.getMaxForwardSpeed(0), tempsArret);
+		return node.getArc().getDuree(vitesse.getMaxForwardSpeed(0), tempsArret);
 	}
 
 	/**

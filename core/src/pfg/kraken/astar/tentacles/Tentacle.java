@@ -6,12 +6,10 @@
 package pfg.kraken.astar.tentacles;
 
 import java.awt.Graphics;
-import pfg.config.Config;
 import pfg.graphic.Chart;
 import pfg.graphic.GraphicPanel;
 import pfg.graphic.printable.Printable;
 import pfg.graphic.printable.PrintablePoint;
-import pfg.kraken.ConfigInfoKraken;
 import pfg.kraken.astar.tentacles.types.TentacleType;
 import pfg.kraken.robot.CinematiqueObs;
 
@@ -26,7 +24,6 @@ public abstract class Tentacle implements Printable
 {
 	private static final long serialVersionUID = 1268198325807123306L;
 	// public ObstacleArcCourbe obstacle = new ObstacleArcCourbe();
-	protected static int tempsArret;
 	public TentacleType vitesse; // utilisé pour le debug
 
 	public abstract int getNbPoints();
@@ -37,7 +34,7 @@ public abstract class Tentacle implements Printable
 
 	protected abstract double getLongueur();
 
-	public final double getDuree(double translationalSpeed)
+	public final double getDuree(double translationalSpeed, int tempsArret)
 	{
 		return getLongueur() / translationalSpeed + vitesse.getNbArrets() * tempsArret;
 	}
@@ -50,11 +47,6 @@ public abstract class Tentacle implements Printable
 			out += getPoint(i) + "\n";
 		out += getLast();
 		return out;
-	}
-
-	public static void useConfig(Config config)
-	{
-		tempsArret = config.getInt(ConfigInfoKraken.TEMPS_ARRET);
 	}
 
 	@Override

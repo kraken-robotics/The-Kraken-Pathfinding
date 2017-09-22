@@ -50,7 +50,7 @@ public abstract class JUnit_Test
 		System.out.println("----- DÉBUT DU TEST " + testName.getMethodName() + " -----");
 		RectangularObstacle robot = new RectangularObstacle(250, 80, 110, 110, 0); 
 
-		kraken = Kraken.getKraken(robot, null, new XY(-1500, 0), new XY(1500, 2000), "test"); // TODO
+		kraken = new Kraken(robot, null, new XY(-1500, 0), new XY(1500, 2000), "test"); // TODO
 		
 		Method m = Kraken.class.getDeclaredMethod("getInjector");
 		m.setAccessible(true);
@@ -66,7 +66,7 @@ public abstract class JUnit_Test
 		System.out.println("----- DÉBUT DU TEST " + testName.getMethodName() + " -----");
 		RectangularObstacle robot = new RectangularObstacle(250, 80, 110, 110, 0); 
 
-		kraken = Kraken.getKraken(robot, fixedObstacles, new XY(-1500, 0), new XY(1500, 2000), "test");
+		kraken = new Kraken(robot, fixedObstacles, new XY(-1500, 0), new XY(1500, 2000), "test");
 		Method m = Kraken.class.getDeclaredMethod("getInjector");
 		m.setAccessible(true);
 		injector = (Injector) m.invoke(kraken);

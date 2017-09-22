@@ -49,13 +49,17 @@ public class Example3
 
 		RectangularObstacle robot = new RectangularObstacle(250, 80, 110, 110, 0); 
 
-		Kraken kraken = Kraken.getKraken(robot, obs, new XY(-1500,0), new XY(1500, 2000), "trajectory", "detailed");
+		Kraken kraken = new Kraken(robot, obs, new XY(-1500,0), new XY(1500, 2000), "trajectory", "detailed");
 		PrintBuffer printBuffer = kraken.getPrintBuffer();
 		for(Obstacle o : obs)
 			printBuffer.add(o, Color.BLACK, Layer.MIDDLE.layer);
 		printBuffer.refresh();
-		
+
+		RectangularObstacle secondRobot = new RectangularObstacle(20, 20, 20, 20, 0); 
+		Kraken krakenSecondRobot = new Kraken(secondRobot, obs, new XY(-1500,0), new XY(1500, 2000), "trajectory", "detailed");
+
 		TentacularAStar astar = kraken.getAStar();
+		TentacularAStar astar2 = krakenSecondRobot.getAStar();
 		try
 		{
 			/*
@@ -73,6 +77,18 @@ public class Example3
 			}
 			
 			printBuffer.refresh();
+			
+			astar2.initializeNewSearch(new XYO(0, 800, 0), new XY(1000, 1000), DirectionStrategy.FORCE_FORWARD_MOTION);
+			path = astar2.search();
+			
+			for(ItineraryPoint p : path)
+			{
+				printBuffer.add(p, Color.BLACK, Layer.FOREGROUND.layer);
+				System.out.println(p);
+			}
+			
+			printBuffer.refresh();
+
 		}
 		catch(PathfindingException e)
 		{
