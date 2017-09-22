@@ -135,6 +135,25 @@ public class NavmeshComputer
 				}
 			}
 		}
+		
+		Iterator<NavmeshNode> iter = nodesList.iterator();
+		for(int i = 0; i < 4; i++)
+		{
+			assert iter.hasNext();
+			iter.next(); // on ne touche pas aux quatre coins !
+		}
+		while(iter.hasNext())
+		{
+			NavmeshNode node = iter.next();
+			for(Obstacle o : obsList)
+			{
+				if(o.squaredDistance(node.position) < expansion * expansion)
+				{
+					iter.remove();
+					break;
+				}
+			}
+		}
 
 		assert ((s = checkNoDuplicate()) == null) : s;
 		
@@ -160,8 +179,20 @@ public class NavmeshComputer
 		// We add the points one by one
 		for(int index = 4; index < nodesList.size(); index++)
 			addNewNodeInitialization(nodesList.get(index));
-		
+				
 		assert checkDelaunay();
+		
+		// We add other points in order to avoid large triangle
+		NavmeshTriangle largestTriangle = triangles.peek();
+		while(largestTriangle.area > largestAllowedArea)
+		{
+			triangles.poll();
+			addCenterPoint(largestTriangle);
+			largestTriangle = triangles.peek();
+		}
+		
+		assert triangles.peek().area <= largestAllowedArea : triangles.peek().area + " > " + largestAllowedArea;
+		
 		// We add other points in order to avoir long edges
 		NavmeshEdge longestEdge = edgesInProgress.peek();
 		while(longestEdge.length > longestAllowedLength)
@@ -174,17 +205,8 @@ public class NavmeshComputer
 		}
 		
 		assert edgesInProgress.peek().length <= longestAllowedLength : edgesInProgress.peek().length + " > " + longestAllowedLength;
-		
-		// We add other points in order to avoid large triangle
-		NavmeshTriangle largestTriangle = triangles.peek();
-		while(largestTriangle.area > largestAllowedArea)
-		{
-			triangles.poll();
-			addCenterPoint(largestTriangle);
-			largestTriangle = triangles.peek();
-		}
-		
-		assert edgesInProgress.peek().length <= longestAllowedLength : edgesInProgress.peek().length + " > " + longestAllowedLength;
+		assert triangles.peek().area <= largestAllowedArea : triangles.peek().area + " > " + largestAllowedArea;
+
 
 		assert ((s = checkCrossingEdges()) == null) : s;
 		assert ((s = checkNodeInTriangle()) == null) : s;
@@ -541,13 +563,21 @@ public class NavmeshComputer
 		XY a = edge.points[0].position;
 		XY b = edge.points[1].position;
 		XY c = a.plusNewVector(b).scalar(0.5);
-		
+		assert checkNew(c);
 		NavmeshNode newNode = new NavmeshNode(c);
 		nodesList.add(newNode);
 
 		addPointInEdge(newNode, edge);
 	}
 	
+	private boolean checkNew(XY c)
+	{
+		for(NavmeshNode n : nodesList)
+			if(n.position.equals(c))
+				return false;
+		return true;
+	}
+
 	/**
 	 * Add a node (already created) within an edge
 	 * @param newNode

@@ -121,7 +121,7 @@ public class ExampleEurobot2017
 			/*
 			 * We search a new path from the point (0,0) with orientation 0 to the point (1000, 1000).
 			 */
-			astar.initializeNewSearch(new XYO(0, 200, 0), new XY(1000, 1000));
+			astar.initializeNewSearch(new XYO(-850, 400, Math.PI/2), new XY(850, 400));
 			
 			/*
 			 * The pathfinder returns a list of ItineraryPoint, which contains all the cinematic information that described follow the path
