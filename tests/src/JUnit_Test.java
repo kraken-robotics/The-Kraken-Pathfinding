@@ -20,6 +20,7 @@ import pfg.injector.Injector;
 import pfg.kraken.Kraken;
 import pfg.kraken.LogCategoryKraken;
 import pfg.kraken.obstacles.Obstacle;
+import pfg.kraken.obstacles.RectangularObstacle;
 import pfg.kraken.utils.XY;
 import pfg.log.Log;
 
@@ -47,8 +48,9 @@ public abstract class JUnit_Test
 	public void setUp() throws Exception
 	{
 		System.out.println("----- DÉBUT DU TEST " + testName.getMethodName() + " -----");
+		RectangularObstacle robot = new RectangularObstacle(250, 80, 110, 110, 0); 
 
-		kraken = Kraken.getKraken(null, new XY(-1500, 0), new XY(1500, 2000), "test"); // TODO
+		kraken = Kraken.getKraken(robot, null, new XY(-1500, 0), new XY(1500, 2000), "test"); // TODO
 		
 		Method m = Kraken.class.getDeclaredMethod("getInjector");
 		m.setAccessible(true);
@@ -62,8 +64,9 @@ public abstract class JUnit_Test
 	public void setUpWith(List<Obstacle> fixedObstacles) throws Exception
 	{
 		System.out.println("----- DÉBUT DU TEST " + testName.getMethodName() + " -----");
+		RectangularObstacle robot = new RectangularObstacle(250, 80, 110, 110, 0); 
 
-		kraken = Kraken.getKraken(fixedObstacles, new XY(-1500, 0), new XY(1500, 2000), "test");
+		kraken = Kraken.getKraken(robot, fixedObstacles, new XY(-1500, 0), new XY(1500, 2000), "test");
 		Method m = Kraken.class.getDeclaredMethod("getInjector");
 		m.setAccessible(true);
 		injector = (Injector) m.invoke(kraken);

@@ -55,11 +55,6 @@ public class RectangularObstacle extends Obstacle
 		this(position, sizeX, sizeY, 0);
 	}
 
-	protected RectangularObstacle(XY_RW pos)
-	{
-		super(pos);
-	}
-
 	/**
 	 * Cet angle est celui par lequel le rectangle a été tourné.
 	 * C'est donc l'opposé de l'angle par lequel on va tourner les points afin
@@ -79,9 +74,9 @@ public class RectangularObstacle extends Obstacle
 		this(position, sizeX / 2, sizeX / 2, sizeY / 2, sizeY / 2, angle);
 	}
 
-	public RectangularObstacle(int distanceToFront, int distanceToBack, int distanceToLeft, int distanceToRight)
+	public RectangularObstacle(int distanceToFront, int distanceToBack, int distanceToLeft, int distanceToRight, double tiltAngle)
 	{
-		this(new XY(0,0), distanceToBack, distanceToFront, distanceToLeft, distanceToRight, 0);
+		this(new XY(0,0), distanceToBack, distanceToFront, distanceToLeft, distanceToRight, tiltAngle);
 	}
 	
 	public RectangularObstacle(XY position, int sizeLeftX, int sizeRightX, int sizeUpY, int sizeDownY, double angle)
@@ -283,9 +278,6 @@ public class RectangularObstacle extends Obstacle
 	@Override
 	public void print(Graphics g, GraphicPanel f, Chart a)
 	{
-		if(coinBasDroiteRotate == null)
-			return;
-
 		int[] X = new int[4];
 		X[0] = (int) coinBasDroiteRotate.getX();
 		X[1] = (int) coinHautDroiteRotate.getX();
@@ -389,12 +381,6 @@ public class RectangularObstacle extends Obstacle
 		convertitVersRepereTable(coinHautDroite, coinHautDroiteRotate);
 		coinBasDroiteRotate.copy(centreGeometrique);
 		centreGeometrique = centreGeometrique.plus(coinHautGaucheRotate).scalar(0.5);
-
-		if(printAllObstacles)
-			synchronized(buffer)
-			{
-				buffer.notify();
-			}
 
 		return this;
 	}

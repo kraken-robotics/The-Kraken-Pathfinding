@@ -10,9 +10,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import pfg.config.Config;
-import pfg.graphic.PrintBuffer;
-import pfg.graphic.printable.Layer;
-import pfg.kraken.ColorKraken;
 import pfg.kraken.ConfigInfoKraken;
 import pfg.kraken.LogCategoryKraken;
 import pfg.kraken.SeverityCategoryKraken;
@@ -47,12 +44,10 @@ public class TentacleManager
 	private ClothoidesComputer clotho;
 	private BezierComputer bezier;
 //	private CircleComputer circlecomputer;
-	private PrintBuffer buffer;
 	private AStarNode current;
 	private DStarLite dstarlite;
 	private DynamicObstacles dynamicObs;
 	private double courbureMax;
-	private boolean printObs;
 	private StaticObstacles fixes;
 	
 	private DirectionStrategy directionstrategyactuelle;
@@ -61,7 +56,7 @@ public class TentacleManager
 	private ListIterator<TentacleType> iterator = listeVitesse.listIterator();
 //	private List<StaticObstacles> disabledObstaclesFixes = new ArrayList<StaticObstacles>();
 
-	public TentacleManager(Log log, StaticObstacles fixes, ClothoidesComputer clotho, PrintBuffer buffer, DStarLite dstarlite, BezierComputer bezier, Config config, DynamicObstacles dynamicObs)
+	public TentacleManager(Log log, StaticObstacles fixes, ClothoidesComputer clotho, DStarLite dstarlite, BezierComputer bezier, Config config, DynamicObstacles dynamicObs)
 	{
 //		this.circlecomputer = circlecomputer;
 		this.fixes = fixes;
@@ -69,7 +64,6 @@ public class TentacleManager
 		this.bezier = bezier;
 		this.log = log;
 		this.clotho = clotho;
-		this.buffer = buffer;
 		this.dstarlite = dstarlite;
 
 		for(TentacleType v : ClothoTentacle.values())
@@ -82,7 +76,6 @@ public class TentacleManager
 			listeVitesse.add(v);
 
 		courbureMax = config.getDouble(ConfigInfoKraken.COURBURE_MAX);
-		printObs = config.getBoolean(ConfigInfoKraken.GRAPHIC_ROBOT_COLLISION);
 	}
 
 	private TentacleObstacle obs = new TentacleObstacle();
@@ -107,9 +100,6 @@ public class TentacleManager
 		obs.ombresRobot.clear();
 		for(int i = 0; i < node.getArc().getNbPoints(); i++)
 			obs.ombresRobot.add(node.getArc().getPoint(i).obstacle);
-
-		if(printObs)
-			buffer.addSupprimable(obs, ColorKraken.ROBOT.color, Layer.MIDDLE.layer);
 
 		// Collision avec un obstacle fixe?
 		for(Obstacle o : fixes.getObstacles())

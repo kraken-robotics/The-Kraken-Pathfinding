@@ -181,7 +181,6 @@ public class Kraken
 					config.override(override);
 				}
 		
-				Obstacle.set(log, injector.getService(PrintBuffer.class));
 				Tentacle.useConfig(config);
 				injector.getService(TentacleManager.class).setTentacle(tentacleTypesUsed);	
 				injector.getService(TentacularAStar.class);

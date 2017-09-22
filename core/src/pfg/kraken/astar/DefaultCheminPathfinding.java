@@ -41,8 +41,8 @@ public class DefaultCheminPathfinding implements CheminPathfindingInterface, Pri
 		this.log = log;
 		this.buffer = buffer;
 		print = config.getBoolean(ConfigInfoKraken.GRAPHIC_TRAJECTORY_FINAL);
-		if(print)
-			buffer.add(this, null, Layer.FOREGROUND.layer);
+//		if(print)
+//			buffer.add(this, Color.BLACK, Layer.FOREGROUND.layer);
 	}
 
 	@Override

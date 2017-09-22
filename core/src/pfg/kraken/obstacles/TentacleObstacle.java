@@ -28,7 +28,7 @@ public class TentacleObstacle extends Obstacle
 
 	public TentacleObstacle()
 	{
-		super(null);
+		super(new XY(0,0));
 	}
 
 	public List<RectangularObstacle> ombresRobot = new ArrayList<RectangularObstacle>();

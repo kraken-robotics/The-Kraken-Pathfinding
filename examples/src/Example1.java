@@ -46,7 +46,18 @@ public class Example1
 		obs.add(new RectangularObstacle(new XY_RW(1450,700), 300, 100));
 		obs.add(new CircularObstacle(new XY_RW(500,600), 100));
 		
-		RectangularObstacle robot = new RectangularObstacle(250, 80, 110, 110); 
+		/*
+		 * The shape of the robot. It must fit into a rectangular obstacle (for collision check performance).
+		 * All the measure are done from the rotation center (which doesn't need to be the geometric center of the rectangle)
+		 * 
+		 * The parameters are :
+		 * - the distance to the front
+		 * - the distance to the back
+		 * - the distance to the left side
+		 * - the distance to the right side
+		 * - an tilt angle
+		 */
+		RectangularObstacle robot = new RectangularObstacle(250, 80, 110, 110, 0); 
 		
 		/*
 		 * Getting Kraken (a singleton).

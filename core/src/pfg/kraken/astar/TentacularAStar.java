@@ -14,6 +14,7 @@ import java.util.Stack;
 import pfg.config.Config;
 import pfg.graphic.PrintBuffer;
 import pfg.graphic.printable.Layer;
+import pfg.kraken.ColorKraken;
 import pfg.kraken.ConfigInfoKraken;
 import pfg.kraken.LogCategoryKraken;
 import pfg.kraken.SeverityCategoryKraken;
@@ -29,6 +30,7 @@ import pfg.kraken.memory.CinemObsPool;
 import pfg.kraken.memory.NodePool;
 import pfg.kraken.obstacles.RectangularObstacle;
 import pfg.kraken.robot.Cinematique;
+import pfg.kraken.robot.CinematiqueObs;
 import pfg.kraken.robot.DefaultSpeed;
 import pfg.kraken.robot.ItineraryPoint;
 import pfg.kraken.robot.RobotState;
@@ -60,6 +62,7 @@ public class TentacularAStar
 	private int dureeMaxPF;
 	private DirectionStrategy defaultStrategy;
 	private KrakenSpeed vitesseMax;
+	private boolean printObstacles;
 	// private int tailleFaisceau;
 	private volatile boolean rechercheEnCours = false;
 
@@ -105,6 +108,7 @@ public class TentacularAStar
 		this.cinemMemory = rectMemory;
 		this.buffer = buffer;
 		graphicTrajectory = config.getBoolean(ConfigInfoKraken.GRAPHIC_TENTACLES);
+		printObstacles = config.getBoolean(ConfigInfoKraken.GRAPHIC_ROBOT_COLLISION);
 //		graphicDStarLite = config.getBoolean(ConfigInfoKraken.GRAPHIC_D_STAR_LITE);
 		dureeMaxPF = config.getInt(ConfigInfoKraken.DUREE_MAX_RECHERCHE_PF);
 		// tailleFaisceau = config.getInt(ConfigInfo.TAILLE_FAISCEAU_PF);
@@ -241,7 +245,7 @@ public class TentacularAStar
 
 			// affichage
 			if(graphicTrajectory)
-				buffer.addSupprimable(current, Color.DARK_GRAY, Layer.MIDDLE.layer);
+				buffer.addSupprimable(current, Color.RED, Layer.MIDDLE.layer);
 
 			// Si current est la trajectoire de secours, ça veut dire que cette
 			// trajectoire de secours est la meilleure possible, donc on a fini
@@ -397,7 +401,7 @@ public class TentacularAStar
 		}
 		trajectory.clear();
 
-		Cinematique last = null;
+		CinematiqueObs last = null;
 		// chemin.add fait des copies des points
 		while(!pileTmp.isEmpty() && profondeurMax > 0)
 		{
@@ -406,6 +410,8 @@ public class TentacularAStar
 			for(int i = 0; i < a.getNbPoints(); i++)
 			{
 				last = a.getPoint(i);
+				if(printObstacles)
+					buffer.addSupprimable(last.obstacle.clone(), ColorKraken.ROBOT.color, Layer.BACKGROUND.layer);
 				trajectory.add(new ItineraryPoint(last));
 			}
 			assert trajectory.size() < 255 : "Overflow du trajet";

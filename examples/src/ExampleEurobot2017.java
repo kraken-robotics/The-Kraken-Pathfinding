@@ -84,7 +84,7 @@ public class ExampleEurobot2017
 		obs.add(new CircularObstacle(new XY(800 - 1500, 150), 32));
 		obs.add(new CircularObstacle(new XY(1500 - 800, 150), 32));
 
-		RectangularObstacle robot = new RectangularObstacle(250, 80, 110, 110); 
+		RectangularObstacle robot = new RectangularObstacle(250, 80, 110, 110, 0); 
 
 		/*
 		 * Getting Kraken (a singleton).

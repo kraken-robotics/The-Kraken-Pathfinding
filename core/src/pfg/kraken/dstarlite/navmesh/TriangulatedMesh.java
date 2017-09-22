@@ -82,7 +82,7 @@ public class TriangulatedMesh implements Serializable
 		for(NavmeshTriangle t : triangles)
 			buffer.add(t, ColorKraken.NAVMESH_TRIANGLE.color, Layer.BACKGROUND.layer);
 		for(NavmeshEdge e : edges)
-			buffer.add(e, null, Layer.BACKGROUND.layer);
+			buffer.add(e, ColorKraken.NAVMESH.color, Layer.BACKGROUND.layer);
 		for(NavmeshNode n : nodes)
 			buffer.add(n, Color.BLACK, Layer.BACKGROUND.layer);
 	}

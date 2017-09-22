@@ -13,6 +13,7 @@ import pfg.graphic.printable.PrintablePoint;
 import pfg.kraken.ConfigInfoKraken;
 import pfg.kraken.LogCategoryKraken;
 import pfg.kraken.obstacles.CircularObstacle;
+import pfg.kraken.obstacles.RectangularObstacle;
 import pfg.kraken.astar.DefaultCheminPathfinding;
 import pfg.kraken.astar.TentacularAStar;
 import pfg.kraken.astar.tentacles.BezierComputer;
@@ -67,15 +68,11 @@ public class JUnit_TentacularAStar extends JUnit_Test
 	@Test
 	public void test_clotho() throws Exception
 	{
-		int demieLargeurNonDeploye = config.getInt(ConfigInfoKraken.LARGEUR_NON_DEPLOYE) / 2;
-		int demieLongueurArriere = config.getInt(ConfigInfoKraken.DEMI_LONGUEUR_NON_DEPLOYE_ARRIERE);
-		int demieLongueurAvant = config.getInt(ConfigInfoKraken.DEMI_LONGUEUR_NON_DEPLOYE_AVANT);
-
 		boolean graphicTrajectory = config.getBoolean(ConfigInfoKraken.GRAPHIC_TENTACLES);
 		int nbArc = 16;
 		StaticTentacle arc[] = new StaticTentacle[nbArc];
 		for(int i = 0; i < nbArc; i++)
-			arc[i] = new StaticTentacle(demieLargeurNonDeploye, demieLongueurArriere, demieLongueurAvant);
+			arc[i] = new StaticTentacle(injector.getService(RectangularObstacle.class));
 
 		Cinematique c = new Cinematique(0, 1000, Math.PI / 2, false, 0);
 		log.write("Initial : " + c, LogCategoryKraken.TEST);

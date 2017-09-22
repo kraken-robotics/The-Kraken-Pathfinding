@@ -7,11 +7,9 @@
 package pfg.kraken.obstacles;
 
 import java.io.Serializable;
-import pfg.graphic.PrintBuffer;
 import pfg.graphic.printable.Printable;
 import pfg.kraken.utils.XY;
 import pfg.kraken.utils.XY_RW;
-import pfg.log.Log;
 
 /**
  * Superclasse abstraite des obstacles.
@@ -25,18 +23,6 @@ public abstract class Obstacle implements Printable, Serializable
 	private static final long serialVersionUID = -2508727703931042322L;
 	protected XY_RW position;
 	protected transient int distance_dilatation;
-	protected static Log log;
-	protected static PrintBuffer buffer;
-
-	// Pour l'affichage du robot
-	protected static boolean printAllObstacles = false;
-
-	public static void set(Log log, PrintBuffer buffer)
-	{
-		Obstacle.log = log;
-		Obstacle.buffer = buffer;
-	}
-
 	
 	/**
 	 * Constructeur. La position est celle du centre de rotation de l'obstacle
@@ -45,10 +31,7 @@ public abstract class Obstacle implements Printable, Serializable
 	 */
 	public Obstacle(XY position)
 	{
-		if(position != null)
-			this.position = position.clone();
-		else
-			this.position = null;
+		this.position = position.clone();
 	}
 
 	@Override

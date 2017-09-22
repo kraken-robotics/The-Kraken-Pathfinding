@@ -410,8 +410,6 @@ public class NavmeshEdge implements Serializable, Printable
 			g.setColor(ColorKraken.RED.color);
 		else if(isBlocked())
 			g.setColor(ColorKraken.NAVMESH_BLOCKED.color);
-		else
-			g.setColor(ColorKraken.NAVMESH.color);
 		g.drawLine(f.XtoWindow(points[0].position.getX()), f.YtoWindow(points[0].position.getY()), f.XtoWindow(points[1].position.getX()), f.YtoWindow(points[1].position.getY()));
 	}
 

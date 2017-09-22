@@ -5,7 +5,6 @@
 
 package pfg.kraken.astar;
 
-import java.awt.Color;
 import java.awt.Graphics;
 
 import pfg.graphic.Chart;
@@ -102,11 +101,6 @@ public class AStarNode implements Memorizable, Printable
 	{
 		Tentacle a = getArc();
 		if(a != null)
-		{
 			a.print(g, f, aff);
-			g.setColor(Color.RED);
-
-			a.getLast().print(g, f, aff);
-		}
 	}
 }

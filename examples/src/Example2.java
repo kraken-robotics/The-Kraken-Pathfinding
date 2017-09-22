@@ -43,7 +43,7 @@ public class Example2
 		obs.add(new RectangularObstacle(new XY_RW(1450,700), 300, 100));
 		obs.add(new CircularObstacle(new XY_RW(500,600), 100));
 		
-		RectangularObstacle robot = new RectangularObstacle(250, 80, 110, 110); 
+		RectangularObstacle robot = new RectangularObstacle(250, 80, 110, 110, 0); 
 
 		/*
 		 * The list of dynamic obstacles.
