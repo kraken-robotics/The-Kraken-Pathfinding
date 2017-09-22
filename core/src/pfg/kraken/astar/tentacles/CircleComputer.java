@@ -11,6 +11,7 @@ import pfg.config.Config;
 import pfg.kraken.ConfigInfoKraken;
 import pfg.kraken.astar.tentacles.types.BezierTentacle;
 import pfg.kraken.memory.CinemObsPool;
+import pfg.kraken.obstacles.RectangularObstacle;
 import pfg.kraken.robot.Cinematique;
 import pfg.kraken.robot.CinematiqueObs;
 import pfg.kraken.utils.XY;
@@ -28,15 +29,12 @@ public class CircleComputer {
 	private double courbureMax;
 	private CinemObsPool memory;
 	
-	public CircleComputer(Config config, CinemObsPool memory)
+	public CircleComputer(Config config, CinemObsPool memory, RectangularObstacle vehicleTemplate)
 	{
 		this.memory = memory;
 		courbureMax = config.getDouble(ConfigInfoKraken.COURBURE_MAX);
-		int demieLargeurNonDeploye = config.getInt(ConfigInfoKraken.LARGEUR_NON_DEPLOYE) / 2;
-		int demieLongueurArriere = config.getInt(ConfigInfoKraken.DEMI_LONGUEUR_NON_DEPLOYE_ARRIERE);
-		int demieLongueurAvant = config.getInt(ConfigInfoKraken.DEMI_LONGUEUR_NON_DEPLOYE_AVANT);
 		for(int i = 0; i < pointsAvancer.length; i++)
-			pointsAvancer[i] = new CinematiqueObs(demieLargeurNonDeploye, demieLongueurArriere, demieLongueurAvant);
+			pointsAvancer[i] = new CinematiqueObs(vehicleTemplate);
 
 	}
 	

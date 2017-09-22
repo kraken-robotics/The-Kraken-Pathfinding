@@ -13,6 +13,7 @@ import pfg.kraken.astar.tentacles.types.BezierTentacle;
 import pfg.kraken.astar.tentacles.types.ClothoTentacle;
 import pfg.kraken.astar.tentacles.types.StraightingTentacle;
 import pfg.kraken.memory.CinemObsPool;
+import pfg.kraken.obstacles.RectangularObstacle;
 import pfg.kraken.robot.Cinematique;
 import pfg.kraken.robot.CinematiqueObs;
 import pfg.kraken.utils.XY;
@@ -35,7 +36,7 @@ public class BezierComputer
 	private static final double deltaCourbureMax = 0.2;
 	private ClothoidesComputer clothocomputer;
 
-	public BezierComputer(Log log, CinemObsPool memory, ClothoidesComputer clothocomputer, Config config)
+	public BezierComputer(Log log, CinemObsPool memory, ClothoidesComputer clothocomputer, Config config, RectangularObstacle vehicleTemplate)
 	{
 		this.log = log;
 		this.memory = memory;
@@ -43,10 +44,7 @@ public class BezierComputer
 
 		courbureMax = config.getDouble(ConfigInfoKraken.COURBURE_MAX);
 
-		int demieLargeurNonDeploye = config.getInt(ConfigInfoKraken.LARGEUR_NON_DEPLOYE) / 2;
-		int demieLongueurArriere = config.getInt(ConfigInfoKraken.DEMI_LONGUEUR_NON_DEPLOYE_ARRIERE);
-		int demieLongueurAvant = config.getInt(ConfigInfoKraken.DEMI_LONGUEUR_NON_DEPLOYE_AVANT);
-		tmp = new StaticTentacle(demieLargeurNonDeploye, demieLongueurArriere, demieLongueurAvant);
+		tmp = new StaticTentacle(vehicleTemplate);
 	}
 
 	private XY_RW delta = new XY_RW(), vecteurVitesse = new XY_RW();

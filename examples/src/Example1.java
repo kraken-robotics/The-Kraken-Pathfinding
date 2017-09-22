@@ -46,12 +46,14 @@ public class Example1
 		obs.add(new RectangularObstacle(new XY_RW(1450,700), 300, 100));
 		obs.add(new CircularObstacle(new XY_RW(500,600), 100));
 		
+		RectangularObstacle robot = new RectangularObstacle(250, 80, 110, 110); 
+		
 		/*
 		 * Getting Kraken (a singleton).
 		 * We restrain the search domain to the rectangle -1500 < x < 1500, 0 < y < 2000
 		 * You can add the "detailed" profile to display the underneath pathfinder.
 		 */
-		Kraken kraken = Kraken.getKraken(obs, new XY(-1500,0), new XY(1500, 2000), "trajectory", "detailed");
+		Kraken kraken = Kraken.getKraken(robot, obs, new XY(-1500,0), new XY(1500, 2000), "trajectory", "detailed");
 		
 		/*
 		 * The graphic display (optional)

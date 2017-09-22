@@ -47,7 +47,9 @@ public class Example3
 		obs.add(new RectangularObstacle(new XY_RW(1450,700), 300, 100));
 		obs.add(new CircularObstacle(new XY_RW(500,600), 100));
 
-		Kraken kraken = Kraken.getKraken(obs, new XY(-1500,0), new XY(1500, 2000), "trajectory", "detailed");
+		RectangularObstacle robot = new RectangularObstacle(250, 80, 110, 110); 
+
+		Kraken kraken = Kraken.getKraken(robot, obs, new XY(-1500,0), new XY(1500, 2000), "trajectory", "detailed");
 		PrintBuffer printBuffer = kraken.getPrintBuffer();
 		for(Obstacle o : obs)
 			printBuffer.add(o, Color.BLACK, Layer.MIDDLE.layer);

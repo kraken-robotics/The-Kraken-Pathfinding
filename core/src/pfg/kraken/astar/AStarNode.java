@@ -15,6 +15,7 @@ import pfg.kraken.astar.tentacles.DynamicTentacle;
 import pfg.kraken.astar.tentacles.StaticTentacle;
 import pfg.kraken.astar.tentacles.Tentacle;
 import pfg.kraken.memory.Memorizable;
+import pfg.kraken.obstacles.RectangularObstacle;
 import pfg.kraken.robot.RobotState;
 
 /**
@@ -36,9 +37,9 @@ public class AStarNode implements Memorizable, Printable
 	public DynamicTentacle cameFromArcDynamique = null;
 	private int indiceMemoryManager;
 
-	public AStarNode(RobotState robot, int demieLargeurNonDeploye, int demieLongueurArriere, int demieLongueurAvant)
+	public AStarNode(RobotState robot, RectangularObstacle vehicleTemplate)
 	{
-		cameFromArcStatique = new StaticTentacle(demieLargeurNonDeploye, demieLongueurArriere, demieLongueurAvant);
+		cameFromArcStatique = new StaticTentacle(vehicleTemplate);
 		this.robot = robot;
 	}
 

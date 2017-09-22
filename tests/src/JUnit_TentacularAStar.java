@@ -71,7 +71,7 @@ public class JUnit_TentacularAStar extends JUnit_Test
 		int demieLongueurArriere = config.getInt(ConfigInfoKraken.DEMI_LONGUEUR_NON_DEPLOYE_ARRIERE);
 		int demieLongueurAvant = config.getInt(ConfigInfoKraken.DEMI_LONGUEUR_NON_DEPLOYE_AVANT);
 
-		boolean graphicTrajectory = config.getBoolean(ConfigInfoKraken.GRAPHIC_TRAJECTORY);
+		boolean graphicTrajectory = config.getBoolean(ConfigInfoKraken.GRAPHIC_TENTACLES);
 		int nbArc = 16;
 		StaticTentacle arc[] = new StaticTentacle[nbArc];
 		for(int i = 0; i < nbArc; i++)
@@ -138,7 +138,7 @@ public class JUnit_TentacularAStar extends JUnit_Test
 	@Test
 	public void test_demi_tour() throws Exception
 	{
-		boolean graphicTrajectory = config.getBoolean(ConfigInfoKraken.GRAPHIC_TRAJECTORY);
+		boolean graphicTrajectory = config.getBoolean(ConfigInfoKraken.GRAPHIC_TENTACLES);
 
 		int nbArc = 2;
 		DynamicTentacle arc[] = new DynamicTentacle[nbArc];
@@ -162,7 +162,7 @@ public class JUnit_TentacularAStar extends JUnit_Test
 	@Test
 	public void test_ramene() throws Exception
 	{
-		boolean graphicTrajectory = config.getBoolean(ConfigInfoKraken.GRAPHIC_TRAJECTORY);
+		boolean graphicTrajectory = config.getBoolean(ConfigInfoKraken.GRAPHIC_TENTACLES);
 
 		int nbArc = 2;
 		Tentacle arc[] = new Tentacle[nbArc];
@@ -190,7 +190,7 @@ public class JUnit_TentacularAStar extends JUnit_Test
 	@Test
 	public void test_bezier_quad() throws Exception
 	{
-		boolean graphicTrajectory = config.getBoolean(ConfigInfoKraken.GRAPHIC_TRAJECTORY);
+		boolean graphicTrajectory = config.getBoolean(ConfigInfoKraken.GRAPHIC_TENTACLES);
 
 		int nbArc = 1;
 		DynamicTentacle arc[] = new DynamicTentacle[nbArc];

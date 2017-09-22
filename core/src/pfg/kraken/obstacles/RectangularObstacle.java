@@ -76,14 +76,29 @@ public class RectangularObstacle extends Obstacle
 	 */
 	public RectangularObstacle(XY position, int sizeX, int sizeY, double angle)
 	{
+		this(position, sizeX / 2, sizeX / 2, sizeY / 2, sizeY / 2, angle);
+	}
+
+	public RectangularObstacle(int distanceToFront, int distanceToBack, int distanceToLeft, int distanceToRight)
+	{
+		this(new XY(0,0), distanceToBack, distanceToFront, distanceToLeft, distanceToRight, 0);
+	}
+	
+	public RectangularObstacle(XY position, int sizeLeftX, int sizeRightX, int sizeUpY, int sizeDownY, double angle)
+	{
+		this(position, new XY(sizeRightX, sizeUpY), new XY_RW(-sizeLeftX, -sizeDownY), angle);
+	}
+
+	public RectangularObstacle(XY position, XY topRightCorner, XY bottomLeftCorner, double angle)
+	{
 		super(position);
 		this.angle = angle;
 		cos = Math.cos(angle);
 		sin = Math.sin(angle);
-		coinBasGauche = new XY_RW(-sizeX / 2, -sizeY / 2);
-		coinHautGauche = new XY_RW(-sizeX / 2, sizeY / 2);
-		coinBasDroite = new XY_RW(sizeX / 2, -sizeY / 2);
-		coinHautDroite = new XY_RW(sizeX / 2, sizeY / 2);
+		coinBasGauche = bottomLeftCorner.clone();
+		coinHautGauche = new XY_RW(bottomLeftCorner.getX(), topRightCorner.getY());
+		coinBasDroite = new XY_RW(topRightCorner.getX(), bottomLeftCorner.getY());
+		coinHautDroite = topRightCorner.clone();
 		coinBasGaucheRotate = new XY_RW();
 		coinHautGaucheRotate = new XY_RW();
 		coinBasDroiteRotate = new XY_RW();
@@ -93,9 +108,14 @@ public class RectangularObstacle extends Obstacle
 		convertitVersRepereTable(coinBasDroite, coinBasDroiteRotate);
 		convertitVersRepereTable(coinHautDroite, coinHautDroiteRotate);
 		centreGeometrique = position.clone();
-		demieDiagonale = Math.sqrt(sizeY * sizeY / 4 + sizeX * sizeX / 4);
+		demieDiagonale = topRightCorner.distance(bottomLeftCorner) / 2;
 	}
 
+	public RectangularObstacle clone()
+	{
+		return new RectangularObstacle(position, (int)(coinBasDroite.getX() - coinBasGauche.getX()), (int)(coinHautDroite.getY() - coinBasDroite.getY()), angle);
+	}
+	
 	/**
 	 * Effectue la rotation d'un point, ce qui équivaut à la rotation de cet
 	 * obstacle,
@@ -343,6 +363,40 @@ public class RectangularObstacle extends Obstacle
 
 	    // dernière possibilité, A ou B dans le cercle
 	    return isInObstacle(pointA) || isInObstacle(pointB);
+	}
+	
+
+	/**
+	 * Met à jour cet obstacle
+	 * 
+	 * @param obstacle
+	 */
+	public void copy(RectangularObstacle obstacle)
+	{
+		obstacle.update(position, angle);
+	}
+	
+	public RectangularObstacle update(XY position, double orientation)
+	{
+		position.copy(this.position);
+		this.angle = orientation;
+		cos = Math.cos(angle);
+		sin = Math.sin(angle);
+		this.angle = orientation;
+		convertitVersRepereTable(coinBasGauche, coinBasGaucheRotate);
+		convertitVersRepereTable(coinHautGauche, coinHautGaucheRotate);
+		convertitVersRepereTable(coinBasDroite, coinBasDroiteRotate);
+		convertitVersRepereTable(coinHautDroite, coinHautDroiteRotate);
+		coinBasDroiteRotate.copy(centreGeometrique);
+		centreGeometrique = centreGeometrique.plus(coinHautGaucheRotate).scalar(0.5);
+
+		if(printAllObstacles)
+			synchronized(buffer)
+			{
+				buffer.notify();
+			}
+
+		return this;
 	}
 
 }

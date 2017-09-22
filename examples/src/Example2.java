@@ -43,13 +43,15 @@ public class Example2
 		obs.add(new RectangularObstacle(new XY_RW(1450,700), 300, 100));
 		obs.add(new CircularObstacle(new XY_RW(500,600), 100));
 		
+		RectangularObstacle robot = new RectangularObstacle(250, 80, 110, 110); 
+
 		/*
 		 * The list of dynamic obstacles.
 		 * "DefaultDynamicObstacles" is the default manager ; you can use a manager of your own if you want/need to
 		 */
 		DefaultDynamicObstacles obsDyn = new DefaultDynamicObstacles();
 
-		Kraken kraken = Kraken.getKraken(obs, obsDyn, new XY(-1500,0), new XY(1500, 2000), "trajectory", "detailed");
+		Kraken kraken = Kraken.getKraken(robot, obs, obsDyn, new XY(-1500,0), new XY(1500, 2000), "trajectory", "detailed");
 		PrintBuffer printBuffer = kraken.getPrintBuffer();
 		
 		/*

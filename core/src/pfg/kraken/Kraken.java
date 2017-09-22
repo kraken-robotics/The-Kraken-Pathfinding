@@ -23,6 +23,7 @@ import pfg.kraken.astar.tentacles.Tentacle;
 import pfg.kraken.astar.tentacles.TentacleManager;
 import pfg.kraken.astar.tentacles.types.*;
 import pfg.kraken.obstacles.Obstacle;
+import pfg.kraken.obstacles.RectangularObstacle;
 import pfg.kraken.obstacles.container.DynamicObstacles;
 import pfg.kraken.obstacles.container.EmptyDynamicObstacles;
 import pfg.kraken.obstacles.container.StaticObstacles;
@@ -70,10 +71,10 @@ public class Kraken
 	 * @param fixedObstacles : a list of fixed/permanent obstacles
 	 * @return the instance of Kraken
 	 */
-	public static Kraken getKraken(List<Obstacle> fixedObstacles, XY bottomLeftCorner, XY topRightCorner, String...profiles)
+	public static Kraken getKraken(RectangularObstacle vehicleTemplate, List<Obstacle> fixedObstacles, XY bottomLeftCorner, XY topRightCorner, String...profiles)
 	{
 		if(instance == null)
-			instance = new Kraken(fixedObstacles, new EmptyDynamicObstacles(), null, bottomLeftCorner, topRightCorner, profiles);
+			instance = new Kraken(vehicleTemplate, fixedObstacles, new EmptyDynamicObstacles(), null, bottomLeftCorner, topRightCorner, profiles);
 		return instance;
 	}
 	
@@ -84,10 +85,10 @@ public class Kraken
 	 * @param tentacleTypes : 
 	 * @return
 	 */
-	public static Kraken getKraken(List<Obstacle> fixedObstacles, DynamicObstacles dynObs, XY bottomLeftCorner, XY topRightCorner, String...configprofile)
+	public static Kraken getKraken(RectangularObstacle vehicleTemplate, List<Obstacle> fixedObstacles, DynamicObstacles dynObs, XY bottomLeftCorner, XY topRightCorner, String...configprofile)
 	{
 		if(instance == null)
-			instance = new Kraken(fixedObstacles, dynObs, null, bottomLeftCorner, topRightCorner, configprofile);
+			instance = new Kraken(vehicleTemplate, fixedObstacles, dynObs, null, bottomLeftCorner, topRightCorner, configprofile);
 		return instance;
 	}
 	
@@ -95,7 +96,7 @@ public class Kraken
 	 * Instancie le gestionnaire de dépendances et quelques services critiques
 	 * (log et config qui sont interdépendants)
 	 */
-	private Kraken(List<Obstacle> fixedObstacles, DynamicObstacles dynObs, TentacleType tentacleTypes, XY bottomLeftCorner, XY topRightCorner, String...configprofile)
+	private Kraken(RectangularObstacle vehicleTemplate, List<Obstacle> fixedObstacles, DynamicObstacles dynObs, TentacleType tentacleTypes, XY bottomLeftCorner, XY topRightCorner, String...configprofile)
 	{	
 		assert instance == null;
 		this.bottomLeftCorner = bottomLeftCorner;
@@ -118,6 +119,7 @@ public class Kraken
 		injector = new Injector();
 		config = new Config(ConfigInfoKraken.values(), false, "kraken.conf", configprofile);
 		try {
+			injector.addService(RectangularObstacle.class, vehicleTemplate);
 			StaticObstacles so = injector.getService(StaticObstacles.class); 
 			if(fixedObstacles != null)
 				so.addAll(fixedObstacles);

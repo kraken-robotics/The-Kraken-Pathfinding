@@ -31,14 +31,6 @@ public enum ConfigInfoKraken implements ConfigInfo
 	DILATATION_ROBOT_DSTARLITE(100), // dilatation des obstacles dans le D* Lite.
 									// Comme c'est une heuristique, on peut
 									// prendre plus petit que la vraie valeur
-	DEMI_LONGUEUR_NON_DEPLOYE_ARRIERE(80), // distance entre le centre du robot
-											// et le bord arrière du robot
-											// non-déployé
-	DEMI_LONGUEUR_NON_DEPLOYE_AVANT(332 - 80), // distance entre le centre du
-												// robot et le bord avant du
-												// robot non-déployé
-	LARGEUR_NON_DEPLOYE(228), // distance entre le bord gauche et le bord droit
-								// du robot non-déployé
 	
 	LARGEST_TRIANGLE_AREA_IN_NAVMESH(20000), // in mm²
 	LONGEST_EDGE_IN_NAVMESH(200000), // in μm
@@ -88,9 +80,7 @@ public enum ConfigInfoKraken implements ConfigInfo
 	GRAPHIC_ENABLE(false), // désactive tout affichage si faux (empêche le
 							// thread d'affichage de se lancer)
 	GRAPHIC_D_STAR_LITE(false), // affiche les calculs du D* Lite
-	GRAPHIC_TRAJECTORY(false), // affiche les trajectoires temporaires
-	GRAPHIC_TRAJECTORY_ALL(false), // affiche TOUTES les trajectoires
-									// temporaires
+	GRAPHIC_TENTACLES(false), // affiche les trajectoires temporaires
 	GRAPHIC_TRAJECTORY_FINAL(true), // affiche les trajectoires
 	GRAPHIC_ROBOT_COLLISION(false), // affiche les obstacles du robot lors de la
 									// vérification des collisions

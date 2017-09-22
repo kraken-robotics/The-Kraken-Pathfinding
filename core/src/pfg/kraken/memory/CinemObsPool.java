@@ -9,6 +9,7 @@ package pfg.kraken.memory;
 import pfg.config.Config;
 import pfg.kraken.ConfigInfoKraken;
 import pfg.kraken.astar.tentacles.DynamicTentacle;
+import pfg.kraken.obstacles.RectangularObstacle;
 import pfg.kraken.robot.CinematiqueObs;
 import pfg.log.Log;
 
@@ -25,14 +26,12 @@ import pfg.log.Log;
 
 public class CinemObsPool extends MemoryPool<CinematiqueObs>
 {
-	private int largeur, longueur_arriere, longueur_avant;
+	private RectangularObstacle vehicleTemplate;
 	
-	public CinemObsPool(Log log, Config config)
+	public CinemObsPool(Log log, Config config, RectangularObstacle vehicleTemplate)
 	{
 		super(CinematiqueObs.class, log);
-		largeur = config.getInt(ConfigInfoKraken.LARGEUR_NON_DEPLOYE) / 2;
-		longueur_arriere = config.getInt(ConfigInfoKraken.DEMI_LONGUEUR_NON_DEPLOYE_ARRIERE);
-		longueur_avant = config.getInt(ConfigInfoKraken.DEMI_LONGUEUR_NON_DEPLOYE_AVANT);
+		this.vehicleTemplate = vehicleTemplate;
 		init(config.getInt(ConfigInfoKraken.NB_INSTANCES_OBSTACLES));
 	}
 
@@ -40,7 +39,7 @@ public class CinemObsPool extends MemoryPool<CinematiqueObs>
 	protected final void make(CinematiqueObs[] nodes)
 	{
 		for(int i = 0; i < nodes.length; i++)
-			nodes[i] = new CinematiqueObs(largeur, longueur_arriere, longueur_avant);
+			nodes[i] = new CinematiqueObs(vehicleTemplate);
 	}
 	
 	// TODO : optimisable : la mémoire est probablement contigue

@@ -9,6 +9,7 @@ package pfg.kraken.memory;
 import pfg.config.Config;
 import pfg.kraken.ConfigInfoKraken;
 import pfg.kraken.astar.AStarNode;
+import pfg.kraken.obstacles.RectangularObstacle;
 import pfg.kraken.robot.RobotState;
 import pfg.log.Log;
 
@@ -21,14 +22,12 @@ import pfg.log.Log;
 
 public class NodePool extends MemoryPool<AStarNode>
 {
-	private int largeur, longueur_arriere, longueur_avant;
+	private RectangularObstacle vehicleTemplate;
 
-	public NodePool(Log log, Config config)
+	public NodePool(Log log, Config config, RectangularObstacle vehicleTemplate)
 	{
 		super(AStarNode.class, log);
-		largeur = config.getInt(ConfigInfoKraken.LARGEUR_NON_DEPLOYE) / 2;
-		longueur_arriere = config.getInt(ConfigInfoKraken.DEMI_LONGUEUR_NON_DEPLOYE_ARRIERE);
-		longueur_avant = config.getInt(ConfigInfoKraken.DEMI_LONGUEUR_NON_DEPLOYE_AVANT);
+		this.vehicleTemplate = vehicleTemplate;
 		init(config.getInt(ConfigInfoKraken.NB_INSTANCES_NODE));
 	}
 
@@ -36,7 +35,7 @@ public class NodePool extends MemoryPool<AStarNode>
 	protected final void make(AStarNode[] nodes)
 	{
 		for(int i = 0; i < nodes.length; i++)
-			nodes[i] = new AStarNode(new RobotState(), largeur, longueur_arriere, longueur_avant);
+			nodes[i] = new AStarNode(new RobotState(), vehicleTemplate);
 	}
 
 }

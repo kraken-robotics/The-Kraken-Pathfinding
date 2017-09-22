@@ -5,6 +5,7 @@
 
 package pfg.kraken.astar;
 
+import java.awt.Color;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -12,6 +13,7 @@ import java.util.PriorityQueue;
 import java.util.Stack;
 import pfg.config.Config;
 import pfg.graphic.PrintBuffer;
+import pfg.graphic.printable.Layer;
 import pfg.kraken.ConfigInfoKraken;
 import pfg.kraken.LogCategoryKraken;
 import pfg.kraken.SeverityCategoryKraken;
@@ -25,6 +27,7 @@ import pfg.kraken.exceptions.PathfindingException;
 import pfg.kraken.exceptions.TimeoutException;
 import pfg.kraken.memory.CinemObsPool;
 import pfg.kraken.memory.NodePool;
+import pfg.kraken.obstacles.RectangularObstacle;
 import pfg.kraken.robot.Cinematique;
 import pfg.kraken.robot.DefaultSpeed;
 import pfg.kraken.robot.ItineraryPoint;
@@ -53,7 +56,7 @@ public class TentacularAStar
 	private AStarNode trajetDeSecours;
 	private CinemObsPool cinemMemory;
 	private DefaultCheminPathfinding defaultChemin;
-	private boolean graphicTrajectory, graphicDStarLite, graphicTrajectoryAll;
+	private boolean graphicTrajectory;
 	private int dureeMaxPF;
 	private DirectionStrategy defaultStrategy;
 	private KrakenSpeed vitesseMax;
@@ -92,7 +95,7 @@ public class TentacularAStar
 	/**
 	 * Constructeur du AStarCourbe
 	 */
-	public TentacularAStar(Log log, DefaultCheminPathfinding defaultChemin, DStarLite dstarlite, TentacleManager arcmanager, NodePool memorymanager, CinemObsPool rectMemory, PrintBuffer buffer, RobotState chrono, Config config)
+	public TentacularAStar(Log log, DefaultCheminPathfinding defaultChemin, DStarLite dstarlite, TentacleManager arcmanager, NodePool memorymanager, CinemObsPool rectMemory, PrintBuffer buffer, RobotState chrono, Config config, RectangularObstacle vehicleTemplate)
 	{
 		this.defaultChemin = defaultChemin;
 		this.log = log;
@@ -101,19 +104,15 @@ public class TentacularAStar
 		this.dstarlite = dstarlite;
 		this.cinemMemory = rectMemory;
 		this.buffer = buffer;
-		graphicTrajectory = config.getBoolean(ConfigInfoKraken.GRAPHIC_TRAJECTORY);
-		graphicTrajectoryAll = config.getBoolean(ConfigInfoKraken.GRAPHIC_TRAJECTORY_ALL);
+		graphicTrajectory = config.getBoolean(ConfigInfoKraken.GRAPHIC_TENTACLES);
 //		graphicDStarLite = config.getBoolean(ConfigInfoKraken.GRAPHIC_D_STAR_LITE);
 		dureeMaxPF = config.getInt(ConfigInfoKraken.DUREE_MAX_RECHERCHE_PF);
 		// tailleFaisceau = config.getInt(ConfigInfo.TAILLE_FAISCEAU_PF);
-		int demieLargeurNonDeploye = config.getInt(ConfigInfoKraken.LARGEUR_NON_DEPLOYE) / 2;
-		int demieLongueurArriere = config.getInt(ConfigInfoKraken.DEMI_LONGUEUR_NON_DEPLOYE_ARRIERE);
-		int demieLongueurAvant = config.getInt(ConfigInfoKraken.DEMI_LONGUEUR_NON_DEPLOYE_AVANT);
 		if(config.getBoolean(ConfigInfoKraken.ALLOW_BACKWARD_MOTION))
 			defaultStrategy = DirectionStrategy.FASTEST;
 		else
 			defaultStrategy = DirectionStrategy.FORCE_FORWARD_MOTION;
-		this.depart = new AStarNode(chrono, demieLargeurNonDeploye, demieLongueurArriere, demieLongueurAvant);
+		this.depart = new AStarNode(chrono, vehicleTemplate);
 		depart.setIndiceMemoryManager(-1);
 	}
 
@@ -241,8 +240,8 @@ public class TentacularAStar
 			}
 
 			// affichage
-//			if(graphicTrajectory && !graphicTrajectoryAll)
-//				buffer.addSupprimable(current);
+			if(graphicTrajectory)
+				buffer.addSupprimable(current, Color.DARK_GRAY, Layer.MIDDLE.layer);
 
 			// Si current est la trajectoire de secours, ça veut dire que cette
 			// trajectoire de secours est la meilleure possible, donc on a fini

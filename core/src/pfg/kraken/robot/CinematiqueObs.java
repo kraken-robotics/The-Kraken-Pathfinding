@@ -8,7 +8,7 @@ package pfg.kraken.robot;
 import java.io.Serializable;
 
 import pfg.kraken.memory.Memorizable;
-import pfg.kraken.obstacles.ObstacleRobot;
+import pfg.kraken.obstacles.RectangularObstacle;
 
 /**
  * Une cinématique + un obstacle associé
@@ -20,13 +20,13 @@ import pfg.kraken.obstacles.ObstacleRobot;
 public class CinematiqueObs extends Cinematique implements Memorizable, Serializable
 {
 	private static final long serialVersionUID = 1L;
-	public volatile ObstacleRobot obstacle;
+	public volatile RectangularObstacle obstacle;
 	private int indiceMemory;
 
-	public CinematiqueObs(int demieLargeurNonDeploye, int demieLongueurArriere, int demieLongueurAvant)
+	public CinematiqueObs(RectangularObstacle vehicleTemplate)
 	{
 		super();
-		obstacle = new ObstacleRobot(demieLargeurNonDeploye, demieLargeurNonDeploye, demieLongueurArriere, demieLongueurAvant);
+		obstacle = vehicleTemplate.clone();
 	}
 
 	public void copy(CinematiqueObs autre)

@@ -132,5 +132,5 @@ public abstract class Obstacle implements Printable, Serializable
 	 * @return
 	 */
 	public abstract boolean isColliding(XY pointA, XY pointB);
-
+	
 }

@@ -5,6 +5,7 @@
 
 package pfg.kraken.astar.tentacles;
 
+import pfg.kraken.obstacles.RectangularObstacle;
 import pfg.kraken.robot.CinematiqueObs;
 
 /**
@@ -19,10 +20,10 @@ public class StaticTentacle extends Tentacle
 	private static final long serialVersionUID = -5599092863248049576L;
 	public CinematiqueObs[] arcselems = new CinematiqueObs[ClothoidesComputer.NB_POINTS];
 
-	public StaticTentacle(int demieLargeurNonDeploye, int demieLongueurArriere, int demieLongueurAvant)
+	public StaticTentacle(RectangularObstacle vehicleTemplate)
 	{
 		for(int i = 0; i < ClothoidesComputer.NB_POINTS; i++)
-			arcselems[i] = new CinematiqueObs(demieLargeurNonDeploye, demieLongueurArriere, demieLongueurAvant);
+			arcselems[i] = new CinematiqueObs(vehicleTemplate);
 	}
 
 	/**
