@@ -9,7 +9,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import pfg.graphic.PrintBuffer;
-import pfg.graphic.WindowFrame;
 import pfg.graphic.printable.Layer;
 import pfg.kraken.Kraken;
 import pfg.kraken.exceptions.PathfindingException;
@@ -85,7 +84,6 @@ public class ExampleEurobot2017
 		obs.add(new CircularObstacle(new XY(800 - 1500, 150), 32));
 		obs.add(new CircularObstacle(new XY(1500 - 800, 150), 32));
 
-		
 		/*
 		 * Getting Kraken (a singleton).
 		 * We restrain the search domain to the rectangle -1500 < x < 1500, 0 < y < 2000
@@ -96,7 +94,6 @@ public class ExampleEurobot2017
 		/*
 		 * The graphic display (optional)
 		 */
-		WindowFrame frame = kraken.getWindowFrame();
 		PrintBuffer printBuffer = kraken.getPrintBuffer();
 		
 		/*
@@ -104,7 +101,7 @@ public class ExampleEurobot2017
 		 */
 		for(Obstacle o : obs)
 			printBuffer.add(o, Color.BLACK, Layer.MIDDLE.layer);
-		frame.refresh();
+		printBuffer.refresh();
 		
 		/*
 		 * The pathfinder itself.
@@ -140,7 +137,7 @@ public class ExampleEurobot2017
 			/*
 			 * Refresh the window frame.
 			 */
-			frame.refresh();
+			printBuffer.refresh();
 		}
 		catch(PathfindingException e)
 		{

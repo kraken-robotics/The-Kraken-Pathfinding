@@ -127,15 +127,6 @@ public class Kraken
 		}
 		initialize();
 	}
-
-	/**
-	 * Returns the WindowFrame. If the graphic display is disabled, returns null.
-	 * @return
-	 */
-	public WindowFrame getWindowFrame()
-	{
-		return injector.getExistingService(WindowFrame.class);
-	}
 	
 	/**
 	 * Initialize Kraken
@@ -176,19 +167,16 @@ public class Kraken
 				{
 					WindowFrame f = debug.getWindowFrame(new Vec2RO((topRightCorner.getX() + bottomLeftCorner.getX()) / 2, (topRightCorner.getY() + bottomLeftCorner.getY()) / 2));
 					injector.addService(f);
-//					if(config.getBoolean(ConfigInfoKraken.GRAPHIC_EXTERNAL))
-//						injector.addService(PrintBufferInterface.class, f.getBu);
-//					else
-						injector.addService(f.getPrintBuffer());
+					injector.addService(f.getPrintBuffer());
 				}
 				else
 				{
+					injector.addService(PrintBuffer.class, new PrintBufferPlaceholder());
 					HashMap<ConfigInfo, Object> override = new HashMap<ConfigInfo, Object>();
 					List<ConfigInfo> graphicConf = ConfigInfoKraken.getGraphicConfigInfo();
 					for(ConfigInfo c : graphicConf)
 						override.put(c, false);
 					config.override(override);
-					injector.addService(PrintBuffer.class, null);
 				}
 		
 				Obstacle.set(log, injector.getService(PrintBuffer.class));

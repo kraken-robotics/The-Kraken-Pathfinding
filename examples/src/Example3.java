@@ -9,7 +9,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import pfg.graphic.PrintBuffer;
-import pfg.graphic.WindowFrame;
 import pfg.graphic.printable.Layer;
 import pfg.kraken.Kraken;
 import pfg.kraken.exceptions.PathfindingException;
@@ -49,11 +48,10 @@ public class Example3
 		obs.add(new CircularObstacle(new XY_RW(500,600), 100));
 
 		Kraken kraken = Kraken.getKraken(obs, new XY(-1500,0), new XY(1500, 2000), "trajectory", "detailed");
-		WindowFrame frame = kraken.getWindowFrame();
 		PrintBuffer printBuffer = kraken.getPrintBuffer();
 		for(Obstacle o : obs)
 			printBuffer.add(o, Color.BLACK, Layer.MIDDLE.layer);
-		frame.refresh();
+		printBuffer.refresh();
 		
 		TentacularAStar astar = kraken.getAStar();
 		try
@@ -72,7 +70,7 @@ public class Example3
 				System.out.println(p);
 			}
 			
-			frame.refresh();
+			printBuffer.refresh();
 		}
 		catch(PathfindingException e)
 		{

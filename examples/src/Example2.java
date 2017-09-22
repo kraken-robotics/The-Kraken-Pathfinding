@@ -9,7 +9,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import pfg.graphic.PrintBuffer;
-import pfg.graphic.WindowFrame;
 import pfg.graphic.printable.Layer;
 import pfg.kraken.Kraken;
 import pfg.kraken.obstacles.CircularObstacle;
@@ -51,7 +50,6 @@ public class Example2
 		DefaultDynamicObstacles obsDyn = new DefaultDynamicObstacles();
 
 		Kraken kraken = Kraken.getKraken(obs, obsDyn, new XY(-1500,0), new XY(1500, 2000), "trajectory", "detailed");
-		WindowFrame frame = kraken.getWindowFrame();
 		PrintBuffer printBuffer = kraken.getPrintBuffer();
 		
 		/*
@@ -59,7 +57,7 @@ public class Example2
 		 */
 		for(Obstacle o : obs)
 			printBuffer.add(o, Color.BLACK, Layer.MIDDLE.layer);
-		frame.refresh();
+		printBuffer.refresh();
 
 		TentacularAStar astar = kraken.getAStar();
 		try
@@ -75,7 +73,7 @@ public class Example2
 				printBuffer.addSupprimable(p, Color.BLACK, Layer.FOREGROUND.layer);
 				System.out.println(p);
 			}
-			frame.refresh();
+			printBuffer.refresh();
 			
 			/*
 			 * Just a sleep to see clearly the different steps
@@ -118,7 +116,7 @@ public class Example2
 				printBuffer.addSupprimable(p, Color.BLACK, Layer.FOREGROUND.layer);
 				System.out.println(p);
 			}
-			frame.refresh();
+			printBuffer.refresh();
 			
 			try
 			{
@@ -143,7 +141,7 @@ public class Example2
 				printBuffer.addSupprimable(p, Color.BLACK, Layer.FOREGROUND.layer);
 				System.out.println(p);
 			}
-			frame.refresh();
+			printBuffer.refresh();
 		}
 		catch(PathfindingException e)
 		{

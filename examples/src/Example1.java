@@ -9,7 +9,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import pfg.graphic.PrintBuffer;
-import pfg.graphic.WindowFrame;
 import pfg.graphic.printable.Layer;
 import pfg.kraken.Kraken;
 import pfg.kraken.exceptions.PathfindingException;
@@ -57,7 +56,6 @@ public class Example1
 		/*
 		 * The graphic display (optional)
 		 */
-		WindowFrame frame = kraken.getWindowFrame();
 		PrintBuffer printBuffer = kraken.getPrintBuffer();
 		
 		/*
@@ -65,7 +63,7 @@ public class Example1
 		 */
 		for(Obstacle o : obs)
 			printBuffer.add(o, Color.BLACK, Layer.MIDDLE.layer);
-		frame.refresh();
+		printBuffer.refresh();
 		
 		/*
 		 * The pathfinder itself.
@@ -101,7 +99,7 @@ public class Example1
 			/*
 			 * Refresh the window frame.
 			 */
-			frame.refresh();
+			printBuffer.refresh();
 		}
 		catch(PathfindingException e)
 		{
