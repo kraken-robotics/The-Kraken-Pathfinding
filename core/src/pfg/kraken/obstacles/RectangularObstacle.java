@@ -35,10 +35,10 @@ public class RectangularObstacle extends Obstacle
 
 	// calcul des positions des coins
 	// ces coins sont dans le repère de l'obstacle !
-	protected XY_RW coinBasGauche;
-	protected XY_RW coinHautGauche;
-	protected XY_RW coinBasDroite;
-	protected XY_RW coinHautDroite;
+	protected XY coinBasGauche;
+	protected XY coinHautGauche;
+	protected XY coinBasDroite;
+	protected XY coinHautDroite;
 
 	// ces coins sont dans le repère de la table
 	protected XY_RW coinBasGaucheRotate;
@@ -86,18 +86,19 @@ public class RectangularObstacle extends Obstacle
 	
 	public RectangularObstacle(XY position, int sizeLeftX, int sizeRightX, int sizeUpY, int sizeDownY, double angle)
 	{
-		this(position, new XY(sizeRightX, sizeUpY), new XY_RW(-sizeLeftX, -sizeDownY), angle);
+		this(position, new XY(sizeRightX, sizeUpY), new XY(-sizeLeftX, -sizeDownY), angle);
 	}
 
-	public RectangularObstacle(XY position, XY topRightCorner, XY bottomLeftCorner, double angle)
+	private RectangularObstacle(XY position, XY topRightCorner, XY bottomLeftCorner, double angle)
 	{
+		// topRightCorner et bottomLeftCorner sont dans le repère de l'obstacle !
 		super(position);
 		this.angle = angle;
 		cos = Math.cos(angle);
 		sin = Math.sin(angle);
 		coinBasGauche = bottomLeftCorner.clone();
-		coinHautGauche = new XY_RW(bottomLeftCorner.getX(), topRightCorner.getY());
-		coinBasDroite = new XY_RW(topRightCorner.getX(), bottomLeftCorner.getY());
+		coinHautGauche = new XY(bottomLeftCorner.getX(), topRightCorner.getY());
+		coinBasDroite = new XY(topRightCorner.getX(), bottomLeftCorner.getY());
 		coinHautDroite = topRightCorner.clone();
 		coinBasGaucheRotate = new XY_RW();
 		coinHautGaucheRotate = new XY_RW();
@@ -107,13 +108,13 @@ public class RectangularObstacle extends Obstacle
 		convertitVersRepereTable(coinHautGauche, coinHautGaucheRotate);
 		convertitVersRepereTable(coinBasDroite, coinBasDroiteRotate);
 		convertitVersRepereTable(coinHautDroite, coinHautDroiteRotate);
-		centreGeometrique = position.clone();
+		centreGeometrique = coinBasDroiteRotate.plusNewVector(coinHautGaucheRotate).scalar(0.5);
 		demieDiagonale = topRightCorner.distance(bottomLeftCorner) / 2;
 	}
 
 	public RectangularObstacle clone()
 	{
-		return new RectangularObstacle(position, (int)(coinBasDroite.getX() - coinBasGauche.getX()), (int)(coinHautDroite.getY() - coinBasDroite.getY()), angle);
+		return new RectangularObstacle(position, coinHautDroite, coinBasGauche, angle);
 	}
 	
 	/**
@@ -233,42 +234,28 @@ public class RectangularObstacle extends Obstacle
 	{
 		convertitVersRepereObstacle(v, in);
 
-		// log.debug("in = : "+in);
-		/*
-		 * Schéma de la situation :
-		 * y
-		 * 4 | 3 | 2 ^
-		 * ____________________________________ |
-		 * | |
-		 * 5 | obstacle | 1
-		 * ____________________________________
-		 * 6 | 7 | 8
-		 */
-
-		// si le point fourni est dans les quarts de plan n°2,4,6 ou 8
 		if(in.getX() < coinBasGauche.getX() && in.getY() < coinBasGauche.getY())
 			return in.squaredDistance(coinBasGauche);
 
-		else if(in.getX() < coinHautGauche.getX() && in.getY() > coinHautGauche.getY())
+		if(in.getX() < coinHautGauche.getX() && in.getY() > coinHautGauche.getY())
 			return in.squaredDistance(coinHautGauche);
 
-		else if(in.getX() > coinBasDroite.getX() && in.getY() < coinBasDroite.getY())
+		if(in.getX() > coinBasDroite.getX() && in.getY() < coinBasDroite.getY())
 			return in.squaredDistance(coinBasDroite);
 
-		else if(in.getX() > coinHautDroite.getX() && in.getY() > coinHautDroite.getY())
+		if(in.getX() > coinHautDroite.getX() && in.getY() > coinHautDroite.getY())
 			return in.squaredDistance(coinHautDroite);
 
-		// Si le point fourni est dans les demi-bandes n°1,3,5,ou 7
 		if(in.getX() > coinHautDroite.getX())
 			return (in.getX() - coinHautDroite.getX()) * (in.getX() - coinHautDroite.getX());
 
-		else if(in.getX() < coinBasGauche.getX())
+		if(in.getX() < coinBasGauche.getX())
 			return (in.getX() - coinBasGauche.getX()) * (in.getX() - coinBasGauche.getX());
 
-		else if(in.getY() > coinHautDroite.getY())
+		if(in.getY() > coinHautDroite.getY())
 			return (in.getY() - coinHautDroite.getY()) * (in.getY() - coinHautDroite.getY());
 
-		else if(in.getY() < coinBasGauche.getY())
+		if(in.getY() < coinBasGauche.getY())
 			return (in.getY() - coinBasGauche.getY()) * (in.getY() - coinBasGauche.getY());
 
 		// Sinon, on est dans l'obstacle
@@ -379,7 +366,6 @@ public class RectangularObstacle extends Obstacle
 		this.angle = orientation;
 		cos = Math.cos(angle);
 		sin = Math.sin(angle);
-		this.angle = orientation;
 		convertitVersRepereTable(coinBasGauche, coinBasGaucheRotate);
 		convertitVersRepereTable(coinHautGauche, coinHautGaucheRotate);
 		convertitVersRepereTable(coinBasDroite, coinBasDroiteRotate);

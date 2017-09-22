@@ -32,6 +32,7 @@ public class CircularObstacle extends Obstacle
 	public CircularObstacle(XY position, int rad)
 	{
 		super(position);
+		assert rad > 0;
 		this.radius = rad;
 		squared_radius = rad * rad;
 	}
@@ -56,7 +57,7 @@ public class CircularObstacle extends Obstacle
 		// obstacles sont loin l'un de l'autre
 		if(position.squaredDistance(o.centreGeometrique) >= (radius + o.getDemieDiagonale()) * (radius + o.getDemieDiagonale()))
 			return false;
-		return o.squaredDistance(position) < radius * radius;
+		return o.squaredDistance(position) < squared_radius;
 	}
 
 	@Override
@@ -91,15 +92,12 @@ public class CircularObstacle extends Obstacle
 	@Override
 	public boolean isInObstacle(XY pos)
 	{
-		return pos.distance(position) <= radius;
+		return pos.squaredDistance(position) <= squared_radius;
 	}
 
 	@Override
 	public boolean isColliding(XY pointA, XY pointB)
 	{
-    	// Ceci peut être le cas pour certain élément de jeu dont il ne faut pas vérifier les collisions
-    	if(radius < 0)
-    		return false;
     	/**
     	 * Ce code a été honteusement pompé sur http://openclassrooms.com/courses/theorie-des-collisions/formes-plus-complexes
     	 */
@@ -124,7 +122,7 @@ public class CircularObstacle extends Obstacle
 	    double numerateur = Math.abs(AB.getX()*AC.getY() - AB.getY()*AC.getX());
 	    double denominateur = AB.squaredNorm();
 	    double CI = numerateur*numerateur / denominateur;
-	    return CI < radius*radius;
+	    return CI < squared_radius;
 	}
 
 }

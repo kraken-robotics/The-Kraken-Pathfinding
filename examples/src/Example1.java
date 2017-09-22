@@ -54,7 +54,6 @@ public class Example1
 		 * - the distance to the back
 		 * - the distance to the left side
 		 * - the distance to the right side
-		 * - an tilt angle
 		 */
 		RectangularObstacle robot = new RectangularObstacle(250, 80, 110, 110); 
 		
@@ -100,6 +99,7 @@ public class Example1
 			for(ItineraryPoint p : path)
 			{
 				printBuffer.add(p, Color.BLACK, Layer.FOREGROUND.layer);
+				System.out.println("Here is the trajectory :");
 				System.out.println(p);
 			}
 			

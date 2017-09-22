@@ -22,7 +22,6 @@ public abstract class Obstacle implements Printable, Serializable
 {
 	private static final long serialVersionUID = -2508727703931042322L;
 	protected XY_RW position;
-	protected transient int distance_dilatation;
 	
 	/**
 	 * Constructeur. La position est celle du centre de rotation de l'obstacle
@@ -62,16 +61,16 @@ public abstract class Obstacle implements Printable, Serializable
 	 * @param distance
 	 * @return
 	 */
-	public boolean isProcheObstacle(Obstacle obs, int distance)
+/*	public boolean isProcheObstacle(Obstacle obs, int distance)
 	{
 		return squaredDistance(obs.position) < distance * distance;
-	}
+	}*/
 	
 	public abstract boolean isInObstacle(XY pos);
 
-	public XY getPosition()
+	public int hashCode()
 	{
-		return position;
+		return position.hashCode();
 	}
 
 	public abstract double squaredDistance(XY position);

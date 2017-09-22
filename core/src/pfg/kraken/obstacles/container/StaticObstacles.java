@@ -35,7 +35,7 @@ public class StaticObstacles
     {
     	int out = 0;
     	for(Obstacle o : obstacles)
-    		out += o.getPosition().hashCode() + o.getClass().getName().hashCode();
+    		out += o.hashCode() + o.getClass().getName().hashCode();
     	return out;
     }
 

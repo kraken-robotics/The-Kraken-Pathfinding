@@ -32,6 +32,7 @@ public class XY implements Serializable, Position
 		formatter = new DecimalFormat("#0.00", symbols);
 	}
 
+	@SuppressWarnings("unused")
 	public XY(double longueur, double angle, boolean useless)
 	{
 		x = Math.cos(angle) * longueur;
