@@ -40,4 +40,7 @@ public class PrintBufferPlaceholder extends PrintBuffer
 	{
 		return true;
 	}
+	
+	public void refresh()
+	{}
 }
