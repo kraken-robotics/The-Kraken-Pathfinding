@@ -6,10 +6,6 @@ A tentacular pathfinding library for nonholonomic robotic vehicles
 
 ## What is Kraken ?
 
-**Kraken isn't usable yet. Please come back in Fall 2017 in you are interested.**
-
-A short presentation is available here (in french !) : https://intechsenpai.github.io/moon-rover/.
-
 Kraken finds a trajectory followable by a car-like vehicle in the form of a list of points.
 
 ### Features
@@ -37,17 +33,17 @@ For legacy reasons, mainly.
 
 ### Downloading the last stable version
 
-_There is no stable version yet._
+You can download the .jar file here : https://github.com/PFGimenez/The-Kraken-Pathfinding/releases/download/v1.0.0/kraken.jar
 
 ### Getting the source
 
 If you want the latest stable version, clone this repository :
 
-_(no stable version yet)_
+    $ git clone https://github.com/PFGimenez/The-Kraken-Pathfinding.git
 
 If you want the latest **experimental** version, clone this repository :
 
-    $ git clone https://github.com/PFGimenez/The-Kraken-Pathfinding.git --depth 1
+    $ git clone -b v1.1 --single-branch https://github.com/PFGimenez/The-Kraken-Pathfinding.git
 
 
 ### Compiling
@@ -55,8 +51,8 @@ If you want the latest **experimental** version, clone this repository :
 You will need a JDK and `ant` (package `ant` or `apache-ant`) :
     
     $ cd The-Kraken-Pathfinding/core
-    $ ant
-    
+    $ ./compile-lib.sh
+    $ ant    
 
 The file ```kraken.jar```, containing the compiled code .class and the sources .java along with the dependencies .jar, will be created.
 
@@ -71,7 +67,7 @@ You can easily run the tests :
 
 ## Great, I have a trajectory. How do I follow it ?
 
-Getting the trajectory is only half of the work, because you won't go far if you can't follow it. Different control algorithm exists ; I will expand soonly (?) this question.
+Getting the trajectory is only half of the work, because you won't go far if you can't follow it. Different control algorithms exist ; I will expand soon (?) this question.
 
 ## Contributing
 
