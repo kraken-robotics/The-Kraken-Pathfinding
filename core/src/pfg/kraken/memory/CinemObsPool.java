@@ -32,7 +32,7 @@ public class CinemObsPool extends MemoryPool<CinematiqueObs>
 	{
 		super(CinematiqueObs.class, log);
 		this.vehicleTemplate = vehicleTemplate;
-		init(config.getInt(ConfigInfoKraken.NB_INSTANCES_OBSTACLES));
+		init(config.getInt(ConfigInfoKraken.OBSTACLES_MEMORY_POOL_SIZE));
 	}
 
 	@Override

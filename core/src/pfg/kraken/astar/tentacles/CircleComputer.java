@@ -32,7 +32,7 @@ public class CircleComputer {
 	public CircleComputer(Config config, CinemObsPool memory, RectangularObstacle vehicleTemplate)
 	{
 		this.memory = memory;
-		courbureMax = config.getDouble(ConfigInfoKraken.COURBURE_MAX);
+		courbureMax = config.getDouble(ConfigInfoKraken.MAX_CURVATURE);
 		for(int i = 0; i < pointsAvancer.length; i++)
 			pointsAvancer[i] = new CinematiqueObs(vehicleTemplate);
 

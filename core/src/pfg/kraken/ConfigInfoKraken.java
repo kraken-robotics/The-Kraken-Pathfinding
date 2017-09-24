@@ -26,36 +26,36 @@ import pfg.config.ConfigInfo;
 public enum ConfigInfoKraken implements ConfigInfo
 {
 	/**
-	 * Infos sur le robot
+	 * Config du navmesh
 	 */
-	DILATATION_ROBOT_DSTARLITE(100), // dilatation des obstacles dans le D* Lite.
+	NAVMESH_OBSTACLE_DILATATION(100), // dilatation des obstacles dans le D* Lite.
 									// Comme c'est une heuristique, on peut
 									// prendre plus petit que la vraie valeur
-	
 	LARGEST_TRIANGLE_AREA_IN_NAVMESH(20000), // in mm²
-	LONGEST_EDGE_IN_NAVMESH(200000), // in μm
-
+	LONGEST_EDGE_IN_NAVMESH(200), // in mm
+	NAVMESH_FILENAME("navmesh.krk"), // the filename of the navmesh
+	
 	/**
-	 * Paramètres du pathfinding
+	 * Research parameter
 	 */
-	COURBURE_MAX(3), // quelle courbure maximale la trajectoire du robot
+	MAX_CURVATURE(3), // quelle courbure maximale la trajectoire du robot
 						// peut-elle avoir
-	TEMPS_ARRET(800), // temps qu'il faut au robot pour s'arrêter et repartir
+	STOP_DURATION(800), // temps qu'il faut au robot pour s'arrêter et repartir
 						// (par exemple à cause d'un rebroussement)
-	DUREE_MAX_RECHERCHE_PF(10000), // durée maximale que peut prendre le
+	SEARCH_TIMEOUT(10000), // durée maximale que peut prendre le
 									// pathfinding
 
 	/**
 	 * Paramètres du traitement des capteurs
 	 */
-	SUPPRESSION_AUTO_OBSTACLES_FIXES(true), // si on démarre dans un obstacle
+//	SUPPRESSION_AUTO_OBSTACLES_FIXES(true), // si on démarre dans un obstacle
 											// fixe, est-ce qu'on le vire ?
 
 	/**
 	 * Paramètres sur la gestion de la mémoire
 	 */
-	NB_INSTANCES_NODE(20000),
-	NB_INSTANCES_OBSTACLES(50000), // nombre d'instances pour les obstacles
+	NODE_MEMORY_POOL_SIZE(20000),
+	OBSTACLES_MEMORY_POOL_SIZE(50000), // nombre d'instances pour les obstacles
 			
 	/**
 	 * Interface graphique
@@ -84,11 +84,9 @@ public enum ConfigInfoKraken implements ConfigInfo
 	SIZE_Y_WINDOW(600), // taille par défaut (sans image) de la fenêtre
 	
 	/**
-	 * Paramètres du log
+	 * Log parameters
 	 */
-//	ENABLE_LOG(false), // désactivation du log
 	SAVE_LOG(false), // sauvegarde les logs dans un fichier externe
-//	COLORED_LOG(false), // de la couleur dans les sauvegardes de logs !
 	FAST_LOG(false), // log rapide, sans reflection
 	STDOUT_LOG(false); // log into the stdout
 

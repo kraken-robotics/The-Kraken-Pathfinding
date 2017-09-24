@@ -5,15 +5,7 @@
 
 package pfg.kraken.astar;
 
-import java.awt.Color;
-import java.awt.Graphics;
 import java.util.LinkedList;
-import pfg.config.Config;
-import pfg.graphic.GraphicPanel;
-import pfg.graphic.PrintBuffer;
-import pfg.graphic.printable.Layer;
-import pfg.graphic.printable.Printable;
-import pfg.graphic.printable.PrintablePoint;
 import pfg.kraken.robot.Cinematique;
 import pfg.kraken.robot.ItineraryPoint;
 import pfg.log.Log;
@@ -25,34 +17,20 @@ import pfg.log.Log;
  *
  */
 
-public class DefaultCheminPathfinding implements CheminPathfindingInterface, Printable
+public class DefaultCheminPathfinding implements CheminPathfindingInterface
 {
-	private static final long serialVersionUID = -9020733512144987231L;
 	private LinkedList<ItineraryPoint> path;
 	protected Log log;
-	private PrintBuffer buffer;
-	private boolean print;
-	private PrintablePoint[] aff = new PrintablePoint[256];
-
-	public DefaultCheminPathfinding(Log log, Config config, PrintBuffer buffer)
+	
+	public DefaultCheminPathfinding(Log log)
 	{
 		this.log = log;
-		this.buffer = buffer;
-//		print = config.getBoolean(ConfigInfoKraken.GRAPHIC_TRAJECTORY_FINAL);
-//		if(print)
-//			buffer.add(this, Color.BLACK, Layer.FOREGROUND.layer);
 	}
 
 	@Override
 	public synchronized void addToEnd(LinkedList<ItineraryPoint> points)
 	{
 		path = points;
-		if(print)
-			synchronized(buffer)
-			{
-				buffer.notify();
-			}
-		notify();
 	}
 
 	@Override
@@ -64,19 +42,6 @@ public class DefaultCheminPathfinding implements CheminPathfindingInterface, Pri
 		LinkedList<ItineraryPoint> out = path;
 		path = null;
 		return out;
-	}
-
-	@Override
-	public void print(Graphics g, GraphicPanel f)
-	{
-		int i = 0;
-		if(path != null)
-			for(ItineraryPoint c : path)
-			{
-				aff[i] = new PrintablePoint(c.x, c.y);
-				buffer.addTemporaryPrintable(aff[i], Color.BLACK, Layer.FOREGROUND.layer);
-				i++;
-			}
 	}
 
 	@Override

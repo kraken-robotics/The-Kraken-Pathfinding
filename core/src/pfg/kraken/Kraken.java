@@ -21,7 +21,6 @@ import pfg.injector.Injector;
 import pfg.injector.InjectorException;
 import pfg.kraken.astar.DirectionStrategy;
 import pfg.kraken.astar.TentacularAStar;
-import pfg.kraken.astar.tentacles.TentacleManager;
 import pfg.kraken.astar.tentacles.types.*;
 import pfg.kraken.exceptions.NoPathException;
 import pfg.kraken.exceptions.PathfindingException;
@@ -168,7 +167,7 @@ public class Kraken
 					config.override(override);
 				}
 		
-				injector.getService(TentacleManager.class).setTentacle(tentacleTypesUsed);	
+//				injector.getService(TentacleManager.class).setTentacle(tentacleTypesUsed);	
 				astar = injector.getService(TentacularAStar.class);
 			}
 		} catch (InjectorException e) {

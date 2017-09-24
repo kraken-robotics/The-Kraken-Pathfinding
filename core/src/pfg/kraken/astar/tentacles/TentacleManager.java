@@ -76,8 +76,8 @@ public class TentacleManager
 		for(TentacleType v : StraightingTentacle.values())
 			listeVitesse.add(v);
 
-		courbureMax = config.getDouble(ConfigInfoKraken.COURBURE_MAX);
-		tempsArret = config.getInt(ConfigInfoKraken.TEMPS_ARRET);
+		courbureMax = config.getDouble(ConfigInfoKraken.MAX_CURVATURE);
+		tempsArret = config.getInt(ConfigInfoKraken.STOP_DURATION);
 	}
 
 	private List<RectangularObstacle> ombresRobot = new ArrayList<RectangularObstacle>();
@@ -354,10 +354,10 @@ public class TentacleManager
 		return 3 * cinematique.getPosition().distanceFast(arrivee);
 	}
 
-	public void setTentacle(List<TentacleType> tentacleTypesUsed)
+/*	public void setTentacle(List<TentacleType> tentacleTypesUsed)
 	{
 		// TODO Auto-generated method stub
-	}
+	}*/
 
 /*	public void disableObstaclesFixes(boolean symetrie, CinematiqueObs obs)
 	{

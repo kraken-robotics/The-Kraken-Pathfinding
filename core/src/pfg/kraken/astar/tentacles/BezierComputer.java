@@ -42,7 +42,7 @@ public class BezierComputer
 		this.memory = memory;
 		this.clothocomputer = clothocomputer;
 
-		courbureMax = config.getDouble(ConfigInfoKraken.COURBURE_MAX);
+		courbureMax = config.getDouble(ConfigInfoKraken.MAX_CURVATURE);
 
 		tmp = new StaticTentacle(vehicleTemplate);
 	}

@@ -59,9 +59,9 @@ public class NavmeshComputer
 	public NavmeshComputer(Log log, Config config)
 	{
 		this.log = log;
-		expansion = config.getInt(ConfigInfoKraken.DILATATION_ROBOT_DSTARLITE);
+		expansion = config.getInt(ConfigInfoKraken.NAVMESH_OBSTACLE_DILATATION);
 		largestAllowedArea = config.getInt(ConfigInfoKraken.LARGEST_TRIANGLE_AREA_IN_NAVMESH);
-		longestAllowedLength = config.getInt(ConfigInfoKraken.LONGEST_EDGE_IN_NAVMESH);
+		longestAllowedLength = config.getInt(ConfigInfoKraken.LONGEST_EDGE_IN_NAVMESH)*1000; // converting mm to µm
 	}
 	
 	public TriangulatedMesh generateNavMesh(StaticObstacles obs)

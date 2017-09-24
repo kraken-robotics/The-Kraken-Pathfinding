@@ -5,7 +5,6 @@
 
 import java.awt.Color;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 import pfg.graphic.PrintBuffer;
@@ -50,7 +49,7 @@ public class Example2
 		 */
 		DefaultDynamicObstacles obsDyn = new DefaultDynamicObstacles();
 
-		Kraken kraken = new Kraken(robot, obs, obsDyn, new XY(-1500,0), new XY(1500, 2000), "trajectory", "detailed");
+		Kraken kraken = new Kraken(robot, obs, obsDyn, new XY(-1500,0), new XY(1500, 2000), "trajectory"/*, "detailed"*/);
 		PrintBuffer printBuffer = kraken.getPrintBuffer();
 		
 		/*
@@ -63,7 +62,7 @@ public class Example2
 		try
 		{
 			kraken.initializeNewSearch(new XYO(0, 200, 0), new XY(1000, 1000));
-			LinkedList<ItineraryPoint> path = kraken.search();
+			List<ItineraryPoint> path = kraken.search();
 			
 			/*
 			 * We have the first trajectory

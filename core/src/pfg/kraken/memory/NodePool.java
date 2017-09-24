@@ -28,7 +28,7 @@ public class NodePool extends MemoryPool<AStarNode>
 	{
 		super(AStarNode.class, log);
 		this.vehicleTemplate = vehicleTemplate;
-		init(config.getInt(ConfigInfoKraken.NB_INSTANCES_NODE));
+		init(config.getInt(ConfigInfoKraken.NODE_MEMORY_POOL_SIZE));
 	}
 
 	@Override

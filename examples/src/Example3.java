@@ -5,7 +5,6 @@
 
 import java.awt.Color;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 import pfg.graphic.PrintBuffer;
@@ -33,10 +32,6 @@ public class Example3
 
 	public static void main(String[] args)
 	{
-		/*
-		 * The list of fixed, permanent obstacles
-		 * Obstacles partially outside the search domain and colliding obstacles are OK 
-		 */
 		List<Obstacle> obs = new ArrayList<Obstacle>();
 		obs.add(new RectangularObstacle(new XY_RW(800,200), 200, 200));
 		obs.add(new RectangularObstacle(new XY_RW(800,300), 200, 200));
@@ -48,24 +43,27 @@ public class Example3
 
 		RectangularObstacle robot = new RectangularObstacle(250, 80, 110, 110); 
 
-		Kraken kraken = new Kraken(robot, obs, new XY(-1500,0), new XY(1500, 2000), "trajectory", "detailed");
+		Kraken kraken = new Kraken(robot, obs, new XY(-1500,0), new XY(1500, 2000), "trajectory"/*, "detailed"*/);
 		PrintBuffer printBuffer = kraken.getPrintBuffer();
 		for(Obstacle o : obs)
 			printBuffer.addPrintable(o, Color.BLACK, Layer.MIDDLE.layer);
 		printBuffer.refresh();
 
+		/*
+		 * You can perfectly use two instances of Kraken (for example if two robots have different size)
+		 */
 		RectangularObstacle secondRobot = new RectangularObstacle(20, 20, 20, 20); 
-		Kraken krakenSecondRobot = new Kraken(secondRobot, obs, new XY(-1500,0), new XY(1500, 2000), "trajectory", "detailed");
+		Kraken krakenSecondRobot = new Kraken(secondRobot, obs, new XY(-1500,0), new XY(1500, 2000), "trajectory"/*, "detailed"*/);
 
 		try
 		{
 			/*
-			 * You can force the direction. By default, the pathfinding can move the vehicle backward and forward.
+			 * You can force the moving direction. By default, the pathfinding can move the vehicle backward and forward.
 			 * In example 1, the path makes the vehicle going backward. Let's force a forward motion.
 			 */
 			kraken.initializeNewSearch(new XYO(0, 200, 0), new XY(1000, 1000), DirectionStrategy.FORCE_FORWARD_MOTION);
 			
-			LinkedList<ItineraryPoint> path = kraken.search();
+			List<ItineraryPoint> path = kraken.search();
 			
 			for(ItineraryPoint p : path)
 			{
@@ -75,12 +73,15 @@ public class Example3
 			
 			printBuffer.refresh();
 			
-			krakenSecondRobot.initializeNewSearch(new XYO(0, 800, 0), new XY(1000, 1000), DirectionStrategy.FORCE_FORWARD_MOTION);
+			/*
+			 * The second robot is smaller, so it can take a different path (blue trajectory)
+			 */
+			krakenSecondRobot.initializeNewSearch(new XYO(0, 200, 0), new XY(1000, 1000), DirectionStrategy.FORCE_FORWARD_MOTION);
 			path = krakenSecondRobot.search();
 			
 			for(ItineraryPoint p : path)
 			{
-				printBuffer.addPrintable(p, Color.BLACK, Layer.FOREGROUND.layer);
+				printBuffer.addPrintable(p, Color.BLUE, Layer.FOREGROUND.layer);
 				System.out.println(p);
 			}
 			

@@ -110,7 +110,7 @@ public class TentacularAStar
 		graphicTrajectory = config.getBoolean(ConfigInfoKraken.GRAPHIC_TENTACLES);
 		printObstacles = config.getBoolean(ConfigInfoKraken.GRAPHIC_ROBOT_COLLISION);
 //		graphicDStarLite = config.getBoolean(ConfigInfoKraken.GRAPHIC_D_STAR_LITE);
-		dureeMaxPF = config.getInt(ConfigInfoKraken.DUREE_MAX_RECHERCHE_PF);
+		dureeMaxPF = config.getInt(ConfigInfoKraken.SEARCH_TIMEOUT);
 		// tailleFaisceau = config.getInt(ConfigInfo.TAILLE_FAISCEAU_PF);
 		if(config.getBoolean(ConfigInfoKraken.ALLOW_BACKWARD_MOTION))
 			defaultStrategy = DirectionStrategy.FASTEST;
