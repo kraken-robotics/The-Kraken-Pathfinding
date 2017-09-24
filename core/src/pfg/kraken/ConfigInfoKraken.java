@@ -38,6 +38,7 @@ public enum ConfigInfoKraken implements ConfigInfo
 	/**
 	 * Research parameter
 	 */
+	MAX_LATERAL_ACCELERATION(3), // maximal lateral acceleration, in m/s²
 	MAX_CURVATURE(3), // quelle courbure maximale la trajectoire du robot
 						// peut-elle avoir
 	STOP_DURATION(800), // temps qu'il faut au robot pour s'arrêter et repartir

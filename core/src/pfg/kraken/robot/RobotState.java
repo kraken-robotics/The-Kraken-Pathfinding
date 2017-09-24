@@ -26,9 +26,9 @@ public class RobotState
 		return date;
 	}
 
-	public void suitArcCourbe(Tentacle came_from_arc, double translationalSpeed, int tempsArret)
+	public void suitArcCourbe(Tentacle came_from_arc, double duration)
 	{
-		date += came_from_arc.getDuree(translationalSpeed, tempsArret);
+		date += duration;
 		came_from_arc.getLast().copy(cinematique);
 	}
 

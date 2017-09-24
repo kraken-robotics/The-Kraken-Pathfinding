@@ -55,10 +55,4 @@ public class StaticTentacle extends Tentacle
 		return arcselems[ClothoidesComputer.NB_POINTS - 1];
 	}
 
-	@Override
-	protected double getLongueur()
-	{
-		return ClothoidesComputer.DISTANCE_ARC_COURBE;
-	}
-
 }

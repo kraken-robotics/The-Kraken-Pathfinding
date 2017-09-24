@@ -31,10 +31,8 @@ import pfg.kraken.memory.NodePool;
 import pfg.kraken.obstacles.RectangularObstacle;
 import pfg.kraken.robot.Cinematique;
 import pfg.kraken.robot.CinematiqueObs;
-import pfg.kraken.robot.DefaultSpeed;
 import pfg.kraken.robot.ItineraryPoint;
 import pfg.kraken.robot.RobotState;
-import pfg.kraken.robot.KrakenSpeed;
 import pfg.log.Log;
 import pfg.kraken.utils.XY;
 import pfg.kraken.utils.XYO;
@@ -61,7 +59,7 @@ public class TentacularAStar
 	private boolean graphicTrajectory;
 	private int dureeMaxPF;
 	private DirectionStrategy defaultStrategy;
-	private KrakenSpeed vitesseMax;
+	private double vitesseMax;
 	private boolean printObstacles;
 	// private int tailleFaisceau;
 	private volatile boolean rechercheEnCours = false;
@@ -153,7 +151,7 @@ public class TentacularAStar
 			throw new NoPathException("No path found by D* Lite !");
 		}
 
-		depart.f_score = heuristique / vitesseMax.getMaxForwardSpeed(0);
+		depart.f_score = heuristique / vitesseMax;
 		openset.clear();
 		openset.add(depart); // Les nœuds à évaluer
 		closedset.clear();
@@ -209,7 +207,7 @@ public class TentacularAStar
 				if(heuristique == null)
 					throw new NoPathException("No path found by the D* Lite");
 
-				depart.f_score = heuristique / vitesseMax.getMaxForwardSpeed(0);
+				depart.f_score = heuristique / vitesseMax;
 
 				memorymanager.empty();
 				cinemMemory.empty();
@@ -323,7 +321,7 @@ public class TentacularAStar
 				if(heuristique == null)
 					heuristique = arcmanager.heuristicDirect(successeur.robot.getCinematique());
 
-				successeur.f_score = successeur.g_score + heuristique / vitesseMax.getMaxForwardSpeed(0);
+				successeur.f_score = successeur.g_score + heuristique / vitesseMax;
 
 				// noeud d'arrivé
 				if(arcmanager.isArrived(successeur) && arcmanager.isReachable(successeur) && (trajetDeSecours == null || trajetDeSecours.f_score > successeur.f_score))
@@ -407,6 +405,7 @@ public class TentacularAStar
 		{
 			Tentacle a = pileTmp.pop();
 //			log.write(a.vitesse + " (" + a.getNbPoints() + " pts)", LogCategoryKraken.PF);
+			System.out.println(a.vitesse);
 			for(int i = 0; i < a.getNbPoints(); i++)
 			{
 				last = a.getPoint(i);
@@ -430,6 +429,11 @@ public class TentacularAStar
 		initializeNewSearch(start, arrival, defaultStrategy);
 	}
 
+	public void initializeNewSearch(XYO start, XY arrival, DirectionStrategy directionstrategy) throws NoPathException
+	{
+		initializeNewSearch(start, arrival, directionstrategy, 1.);
+	}
+	
 	/**
 	 * Calcul de chemin classique
 	 * 
@@ -438,9 +442,9 @@ public class TentacularAStar
 	 * @param shoot
 	 * @throws NoPathException 
 	 */
-	public void initializeNewSearch(XYO start, XY arrival, DirectionStrategy directionstrategy) throws NoPathException
+	public void initializeNewSearch(XYO start, XY arrival, DirectionStrategy directionstrategy, double maxSpeed) throws NoPathException
 	{
-		vitesseMax = DefaultSpeed.STANDARD;
+		vitesseMax = maxSpeed;
 		depart.init();
 		depart.robot.setCinematique(new Cinematique(start));
 		arcmanager.configureArcManager(directionstrategy, arrival);

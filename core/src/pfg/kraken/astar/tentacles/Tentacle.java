@@ -31,11 +31,13 @@ public abstract class Tentacle implements Printable
 
 	public abstract CinematiqueObs getLast();
 
-	protected abstract double getLongueur();
-
 	public final double getDuree(double translationalSpeed, int tempsArret)
 	{
-		return getLongueur() / translationalSpeed + vitesse.getNbArrets() * tempsArret;
+		int nb = getNbPoints();
+		double out = 0;
+		for(int i = 0; i < nb; i++)
+			out += ClothoidesComputer.PRECISION_TRACE_MM / Math.max(getPoint(i).maxSpeed, translationalSpeed);
+		return out + vitesse.getNbArrets() * tempsArret;
 	}
 
 	@Override

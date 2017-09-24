@@ -22,16 +22,29 @@ public class CinematiqueObs extends Cinematique implements Memorizable, Serializ
 	private static final long serialVersionUID = 1L;
 	public volatile RectangularObstacle obstacle;
 	private int indiceMemory;
+	public volatile double maxSpeed; // in mm/s
 
+	protected static double[] maxSpeedLUT;
+
+	static
+	{
+		maxSpeedLUT = new double[100];
+		maxSpeedLUT[0] = Double.MAX_VALUE;
+		for(int i = 1; i < 100; i++)
+			maxSpeedLUT[i] = Math.sqrt(10. / i);
+	}
+	
 	public CinematiqueObs(RectangularObstacle vehicleTemplate)
 	{
 		super();
 		obstacle = vehicleTemplate.clone();
+		maxSpeed = -1;
 	}
 
 	public void copy(CinematiqueObs autre)
 	{
 		super.copy(autre);
+		autre.maxSpeed = maxSpeed;
 		obstacle.copy(autre.obstacle);
 	}
 
@@ -59,17 +72,17 @@ public class CinematiqueObs extends Cinematique implements Memorizable, Serializ
 	 * @param obstacle
 	 * @param r
 	 */
-	@Override
-	public void update(double x, double y, double orientationGeometrique, boolean enMarcheAvant, double courbure)
+	public void update(double x, double y, double orientationGeometrique, boolean enMarcheAvant, double courbure, double rootedMaxAcceleration)
 	{
 		super.update(x, y, orientationGeometrique, enMarcheAvant, courbure);
+		maxSpeed = rootedMaxAcceleration * maxSpeedLUT[(int) Math.round(Math.abs(10*courbure))];
 		obstacle.update(position, orientationReelle);
 	}
 	
-	@Override
-	public void updateReel(double x, double y, double orientationReelle, boolean enMarcheAvant, double courbure)
+	public void updateReel(double x, double y, double orientationReelle, boolean enMarcheAvant, double courbure, double rootedMaxAcceleration)
 	{
 		super.updateReel(x, y, orientationReelle, enMarcheAvant, courbure);
+		maxSpeed = rootedMaxAcceleration * maxSpeedLUT[(int) Math.round(Math.abs(10*courbure))];
 		obstacle.update(position, orientationReelle);
 	}
 

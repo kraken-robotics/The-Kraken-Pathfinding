@@ -33,6 +33,7 @@ public class BezierComputer
 	protected Log log;
 	private CinemObsPool memory;
 	private double courbureMax;
+	private double rootedMaxAcceleration;
 	private static final double deltaCourbureMax = 0.2;
 	private ClothoidesComputer clothocomputer;
 
@@ -43,6 +44,7 @@ public class BezierComputer
 		this.clothocomputer = clothocomputer;
 
 		courbureMax = config.getDouble(ConfigInfoKraken.MAX_CURVATURE);
+		rootedMaxAcceleration = Math.sqrt(config.getDouble(ConfigInfoKraken.MAX_LATERAL_ACCELERATION));
 
 		tmp = new StaticTentacle(vehicleTemplate);
 	}
@@ -117,7 +119,7 @@ public class BezierComputer
 				prefixe = clothocomputer.getTrajectoireRamene(debut, StraightingTentacle.RAMENE_VOLANT);
 			}
 			if(prefixe == null)
-				prefixe = new DynamicTentacle(new ArrayList<CinematiqueObs>(), 0, BezierTentacle.BEZIER_QUAD);
+				prefixe = new DynamicTentacle(new ArrayList<CinematiqueObs>(), BezierTentacle.BEZIER_QUAD);
 
 			clothocomputer.getTrajectoire(prefixe.getNbPoints() > 0 ? prefixe.getLast() : cinematiqueInitiale, d > 0 ? ClothoTentacle.GAUCHE_1 : ClothoTentacle.DROITE_1, tmp);
 			for(CinematiqueObs c : tmp.arcselems)
@@ -127,7 +129,6 @@ public class BezierComputer
 				prefixe.arcs.add(o);
 			}
 
-			prefixe.longueur += tmp.getLongueur();
 			debut = prefixe.getLast();
 
 			arrivee.copy(delta);
@@ -166,7 +167,6 @@ public class BezierComputer
 		if(prefixe != null)
 		{
 			prefixe.arcs.addAll(arc.arcs);
-			prefixe.longueur += arc.longueur;
 			prefixe.vitesse = BezierTentacle.BEZIER_QUAD;
 			return prefixe;
 		}
@@ -206,7 +206,7 @@ public class BezierComputer
 	 */
 
 	private XY_RW a_tmp = new XY_RW(), b_tmp = new XY_RW(), c_tmp = new XY_RW(), acc = new XY_RW();
-
+	private XY_RW tmpPos = new XY_RW();
 	/**
 	 * Construit la suite de points de la courbure de Bézier quadratique de
 	 * points de contrôle A, B et C.
@@ -228,8 +228,6 @@ public class BezierComputer
 
 		double t = 1;
 		LinkedList<CinematiqueObs> out = new LinkedList<CinematiqueObs>();
-		XY lastPos = null;
-		double longueur = 0;
 
 		// l'accélération est constante pour une courbe quadratique
 		A.copy(a_tmp);
@@ -257,15 +255,10 @@ public class BezierComputer
 			C.copy(c_tmp);
 			c_tmp.scalar(t * t);
 
-			a_tmp.copy(obs.getPositionEcriture());
-			obs.getPositionEcriture().plus(b_tmp);
-			obs.getPositionEcriture().plus(c_tmp);
+			a_tmp.copy(tmpPos);
+			tmpPos.plus(b_tmp);
+			tmpPos.plus(c_tmp);
 			out.addFirst(obs);
-
-			if(lastPos != null)
-				longueur += lastPos.distanceFast(obs.getPosition());
-
-			lastPos = obs.getPosition();
 
 			// Évalution de la vitesse en t
 			A.copy(a_tmp);
@@ -282,9 +275,9 @@ public class BezierComputer
 			a_tmp.rotate(0, 1);
 			double accLongitudinale = a_tmp.dot(acc);
 
-			obs.update(obs.getPosition().getX(), // x
-					obs.getPosition().getY(), // y
-					orientation, enMarcheAvant, accLongitudinale / (vitesse * vitesse)); // Frenet
+			obs.update(tmpPos.getX(), // x
+					tmpPos.getY(), // y
+					orientation, enMarcheAvant, accLongitudinale / (vitesse * vitesse), rootedMaxAcceleration); // Frenet
 
 			double deltaO = (obs.orientationGeometrique - lastOrientation) % (2 * Math.PI);
 			if(deltaO > Math.PI)
@@ -335,7 +328,7 @@ public class BezierComputer
 		if(out.isEmpty())
 			return null;
 
-		return new DynamicTentacle(out, longueur, BezierTentacle.BEZIER_QUAD);
+		return new DynamicTentacle(out, BezierTentacle.BEZIER_QUAD);
 	}
 
 	

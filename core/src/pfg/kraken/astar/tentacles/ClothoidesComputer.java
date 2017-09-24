@@ -16,6 +16,8 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
+import pfg.config.Config;
+import pfg.kraken.ConfigInfoKraken;
 import pfg.kraken.LogCategoryKraken;
 import pfg.kraken.SeverityCategoryKraken;
 import pfg.kraken.astar.tentacles.types.ClothoTentacle;
@@ -40,7 +42,8 @@ public class ClothoidesComputer
 {
 	private Log log;
 	private CinemObsPool memory;
-
+	private double rootedMaxAcceleration;
+	
 	private BigDecimal x, y; // utilisés dans le calcul de trajectoire
 	private static final int S_MAX = 10; // courbure max qu'on puisse gérer
 	public static final double PRECISION_TRACE = 0.02; // précision du tracé, en
@@ -69,10 +72,11 @@ public class ClothoidesComputer
 	// du robot et ses roues directrices
 	private XY[] trajectoire = new XY[2 * INDICE_MAX - 1];
 
-	public ClothoidesComputer(Log log, CinemObsPool memory)
+	public ClothoidesComputer(Log log, Config config, CinemObsPool memory)
 	{
 		this.memory = memory;
 		this.log = log;
+		rootedMaxAcceleration = Math.sqrt(config.getDouble(ConfigInfoKraken.MAX_LATERAL_ACCELERATION));
 		if(!chargePoints()) // le calcul est un peu long, donc on le sauvegarde
 		{
 			init();
@@ -328,9 +332,11 @@ public class ClothoidesComputer
 		if(out.isEmpty())
 			return null;
 
-		return new DynamicTentacle(out, i * PRECISION_TRACE_MM, vitesseRamene);
+		return new DynamicTentacle(out, vitesseRamene);
 	}
 
+	private XY_RW tmp = new XY_RW();
+	
 	/**
 	 * Calcul un point à partir de ces quelques paramètres
 	 * 
@@ -345,37 +351,23 @@ public class ClothoidesComputer
 	 * @param marcheAvant : si le trajet est fait en marche avant
 	 * @param vitesseTr : la vitesse translatoire souhaitée
 	 * @param positionInitiale : la position au début du mouvement
-	 * @param c
+	 * @param c : la cinématique modifiée
 	 */
 	private void computePoint(int pointDepart, ClothoTentacle vitesse, double sDepart, double coeffMultiplicatif, int i, double baseOrientation, double cos, double sin, boolean marcheAvant, XY positionInitiale, CinematiqueObs c)
 	{
-		trajectoire[pointDepart + vitesse.squaredRootVitesse * (i + 1)].copy(c.getPositionEcriture());
-		c.getPositionEcriture().minus(trajectoire[pointDepart]).scalar(coeffMultiplicatif).Ysym(!vitesse.positif).rotate(cos, sin).plus(positionInitiale);
-
+		trajectoire[pointDepart + vitesse.squaredRootVitesse * (i + 1)].copy(tmp);
+		tmp.minus(trajectoire[pointDepart]).scalar(coeffMultiplicatif).Ysym(!vitesse.positif).rotate(cos, sin).plus(positionInitiale);
+		
 		double orientationClotho = sDepart * sDepart;
 		if(!vitesse.positif)
 			orientationClotho = -orientationClotho;
 
-		c.orientationGeometrique = baseOrientation + orientationClotho;
-		c.courbureGeometrique = sDepart * vitesse.squaredRootVitesse;
+		double courbure = sDepart * vitesse.squaredRootVitesse;
 
 		if(!vitesse.positif)
-			c.courbureGeometrique = -c.courbureGeometrique;
+			courbure = -courbure;
 
-		if(marcheAvant)
-		{
-			c.orientationReelle = c.orientationGeometrique;
-			c.courbureReelle = c.courbureGeometrique;
-		}
-		else
-		{
-			c.orientationReelle = c.orientationGeometrique + Math.PI;
-			c.courbureReelle = -c.courbureGeometrique;
-		}
-
-		c.enMarcheAvant = marcheAvant;
-
-		c.obstacle.update(c.getPosition(), c.orientationReelle);
+		c.update(tmp.getX(), tmp.getY(), baseOrientation + orientationClotho, marcheAvant, courbure, rootedMaxAcceleration);
 	}
 
 	private XY_RW delta = new XY_RW();
@@ -412,24 +404,9 @@ public class ClothoidesComputer
 		for(int i = 0; i < NB_POINTS; i++)
 		{
 			delta.rotate(cos, sin);
-			centreCercle.copy(modified.arcselems[i].getPositionEcriture());
-			modified.arcselems[i].getPositionEcriture().minus(delta);
-			modified.arcselems[i].orientationGeometrique = orientation + angle * (i + 1);
-			modified.arcselems[i].courbureGeometrique = courbure;
-
-			if(enMarcheAvant)
-			{
-				modified.arcselems[i].orientationReelle = modified.arcselems[i].orientationGeometrique;
-				modified.arcselems[i].courbureReelle = modified.arcselems[i].courbureGeometrique;
-			}
-			else
-			{
-				modified.arcselems[i].orientationReelle = modified.arcselems[i].orientationGeometrique + Math.PI;
-				modified.arcselems[i].courbureReelle = -modified.arcselems[i].courbureGeometrique;
-			}
-
-			modified.arcselems[i].enMarcheAvant = enMarcheAvant;
-			modified.arcselems[i].obstacle.update(modified.arcselems[i].getPosition(), modified.arcselems[i].orientationReelle);
+			centreCercle.copy(tmp);
+			tmp.minus(delta);			
+			modified.arcselems[i].update(tmp.getX(), tmp.getY(), orientation + angle * (i + 1), enMarcheAvant, courbure, rootedMaxAcceleration);
 		}
 	}
 
@@ -448,19 +425,9 @@ public class ClothoidesComputer
 		for(int i = 0; i < NB_POINTS; i++)
 		{
 			double distance = (i + 1) * PRECISION_TRACE_MM;
-			modified.arcselems[i].getPositionEcriture().setX(position.getX() + distance * cos);
-			modified.arcselems[i].getPositionEcriture().setY(position.getY() + distance * sin);
-			modified.arcselems[i].orientationGeometrique = orientation;
-			modified.arcselems[i].courbureGeometrique = 0;
-			modified.arcselems[i].courbureReelle = 0;
-
-			if(enMarcheAvant)
-				modified.arcselems[i].orientationReelle = modified.arcselems[i].orientationGeometrique;
-			else
-				modified.arcselems[i].orientationReelle = modified.arcselems[i].orientationGeometrique + Math.PI;
-
-			modified.arcselems[i].enMarcheAvant = enMarcheAvant;
-			modified.arcselems[i].obstacle.update(modified.arcselems[i].getPosition(), modified.arcselems[i].orientationReelle);
+			tmp.setX(position.getX() + distance * cos);
+			tmp.setY(position.getY() + distance * sin);
+			modified.arcselems[i].update(tmp.getX(), tmp.getY(), orientation, enMarcheAvant, 0, rootedMaxAcceleration);
 		}
 	}
 
@@ -547,7 +514,7 @@ public class ClothoidesComputer
 																									// quart
 																									// de
 																									// tour
-		return new DynamicTentacle(trajet, trajet.size() * PRECISION_TRACE_MM, vitesse); // TODO :
+		return new DynamicTentacle(trajet, vitesse); // TODO :
 																							// rebrousse
 																							// est
 																							// faux…
