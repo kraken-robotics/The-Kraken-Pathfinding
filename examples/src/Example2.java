@@ -57,7 +57,7 @@ public class Example2
 		 * The obstacles are printed
 		 */
 		for(Obstacle o : obs)
-			printBuffer.add(o, Color.BLACK, Layer.MIDDLE.layer);
+			printBuffer.addPrintable(o, Color.BLACK, Layer.MIDDLE.layer);
 		printBuffer.refresh();
 
 		try
@@ -70,7 +70,7 @@ public class Example2
 			 */
 			for(ItineraryPoint p : path)
 			{
-				printBuffer.addSupprimable(p, Color.BLACK, Layer.FOREGROUND.layer);
+				printBuffer.addTemporaryPrintable(p, Color.BLACK, Layer.FOREGROUND.layer);
 				System.out.println(p);
 			}
 			printBuffer.refresh();
@@ -88,17 +88,17 @@ public class Example2
 			}
 
 			// Let's clear the previous trajectory
-			printBuffer.clearSupprimables();
+			printBuffer.clearTemporaryPrintables();
 
 			// We add a dynamic obstacle
 			Obstacle newObs1 = new CircularObstacle(new XY_RW(-200,600), 200);
 			Obstacle newObs2 = new RectangularObstacle(new XY_RW(1200,1500), 100, 100);
 			Obstacle newObs3 = new CircularObstacle(new XY_RW(0,1200), 100);
 			Obstacle newObs4 = new CircularObstacle(new XY_RW(-900,600), 400);
-			printBuffer.addSupprimable(newObs1, Color.BLUE, Layer.MIDDLE.layer);
-			printBuffer.addSupprimable(newObs2, Color.BLUE, Layer.MIDDLE.layer);
-			printBuffer.addSupprimable(newObs3, Color.BLUE, Layer.MIDDLE.layer);
-			printBuffer.addSupprimable(newObs4, Color.BLUE, Layer.MIDDLE.layer);
+			printBuffer.addTemporaryPrintable(newObs1, Color.BLUE, Layer.MIDDLE.layer);
+			printBuffer.addTemporaryPrintable(newObs2, Color.BLUE, Layer.MIDDLE.layer);
+			printBuffer.addTemporaryPrintable(newObs3, Color.BLUE, Layer.MIDDLE.layer);
+			printBuffer.addTemporaryPrintable(newObs4, Color.BLUE, Layer.MIDDLE.layer);
 			obsDyn.add(newObs1);
 			obsDyn.add(newObs2);
 			obsDyn.add(newObs3);
@@ -113,7 +113,7 @@ public class Example2
 			 */
 			for(ItineraryPoint p : path)
 			{
-				printBuffer.addSupprimable(p, Color.BLACK, Layer.FOREGROUND.layer);
+				printBuffer.addTemporaryPrintable(p, Color.BLACK, Layer.FOREGROUND.layer);
 				System.out.println(p);
 			}
 			printBuffer.refresh();
@@ -129,7 +129,7 @@ public class Example2
 			
 			// Let's remove the dynamic obstacle
 			obsDyn.clear();
-			printBuffer.clearSupprimables();
+			printBuffer.clearTemporaryPrintables();
 			kraken.initializeNewSearch(new XYO(0, 200, 0), new XY(1000, 1000));
 			path = kraken.search();
 			
@@ -138,7 +138,7 @@ public class Example2
 			 */
 			for(ItineraryPoint p : path)
 			{
-				printBuffer.addSupprimable(p, Color.BLACK, Layer.FOREGROUND.layer);
+				printBuffer.addTemporaryPrintable(p, Color.BLACK, Layer.FOREGROUND.layer);
 				System.out.println(p);
 			}
 			printBuffer.refresh();

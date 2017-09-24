@@ -9,13 +9,11 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.util.LinkedList;
 import pfg.config.Config;
-import pfg.graphic.Chart;
 import pfg.graphic.GraphicPanel;
 import pfg.graphic.PrintBuffer;
 import pfg.graphic.printable.Layer;
 import pfg.graphic.printable.Printable;
 import pfg.graphic.printable.PrintablePoint;
-import pfg.kraken.ConfigInfoKraken;
 import pfg.kraken.robot.Cinematique;
 import pfg.kraken.robot.ItineraryPoint;
 import pfg.log.Log;
@@ -69,14 +67,14 @@ public class DefaultCheminPathfinding implements CheminPathfindingInterface, Pri
 	}
 
 	@Override
-	public void print(Graphics g, GraphicPanel f, Chart a)
+	public void print(Graphics g, GraphicPanel f)
 	{
 		int i = 0;
 		if(path != null)
 			for(ItineraryPoint c : path)
 			{
 				aff[i] = new PrintablePoint(c.x, c.y);
-				buffer.addSupprimable(aff[i], Color.BLACK, Layer.FOREGROUND.layer);
+				buffer.addTemporaryPrintable(aff[i], Color.BLACK, Layer.FOREGROUND.layer);
 				i++;
 			}
 	}

@@ -10,7 +10,6 @@ import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.List;
 
-import pfg.graphic.Chart;
 import pfg.graphic.GraphicPanel;
 import pfg.kraken.utils.XY;
 
@@ -81,10 +80,10 @@ public class CompoundObstacle extends Obstacle
 	}
 
 	@Override
-	public void print(Graphics g, GraphicPanel f, Chart a)
+	public void print(Graphics g, GraphicPanel f)
 	{
 		for(Obstacle o : obs)
-			o.print(g, f, a);
+			o.print(g, f);
 	}
 	
 	@Override

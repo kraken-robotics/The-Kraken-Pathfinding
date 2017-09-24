@@ -101,7 +101,7 @@ public class ExampleEurobot2017
 		 * The obstacles are printed
 		 */
 		for(Obstacle o : obs)
-			printBuffer.add(o, Color.BLACK, Layer.MIDDLE.layer);
+			printBuffer.addPrintable(o, Color.BLACK, Layer.MIDDLE.layer);
 		printBuffer.refresh();
 		try
 		{
@@ -126,7 +126,7 @@ public class ExampleEurobot2017
 			 */
 			for(ItineraryPoint p : path)
 			{
-				printBuffer.add(p, Color.BLACK, Layer.FOREGROUND.layer);
+				printBuffer.addPrintable(p, Color.BLACK, Layer.FOREGROUND.layer);
 				System.out.println(p);
 			}
 			

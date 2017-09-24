@@ -51,7 +51,7 @@ public class Example3
 		Kraken kraken = new Kraken(robot, obs, new XY(-1500,0), new XY(1500, 2000), "trajectory", "detailed");
 		PrintBuffer printBuffer = kraken.getPrintBuffer();
 		for(Obstacle o : obs)
-			printBuffer.add(o, Color.BLACK, Layer.MIDDLE.layer);
+			printBuffer.addPrintable(o, Color.BLACK, Layer.MIDDLE.layer);
 		printBuffer.refresh();
 
 		RectangularObstacle secondRobot = new RectangularObstacle(20, 20, 20, 20); 
@@ -69,7 +69,7 @@ public class Example3
 			
 			for(ItineraryPoint p : path)
 			{
-				printBuffer.add(p, Color.BLACK, Layer.FOREGROUND.layer);
+				printBuffer.addPrintable(p, Color.BLACK, Layer.FOREGROUND.layer);
 				System.out.println(p);
 			}
 			
@@ -80,7 +80,7 @@ public class Example3
 			
 			for(ItineraryPoint p : path)
 			{
-				printBuffer.add(p, Color.BLACK, Layer.FOREGROUND.layer);
+				printBuffer.addPrintable(p, Color.BLACK, Layer.FOREGROUND.layer);
 				System.out.println(p);
 			}
 			

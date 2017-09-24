@@ -56,11 +56,6 @@ public class Kraken
 	 */
 	public synchronized void destructor()
 	{	
-		PrintBuffer buffer = injector.getExistingService(PrintBuffer.class);
-		// On appelle le destructeur du PrintBuffer
-		if(buffer != null)
-			buffer.destructor();
-
 		// fermeture du log
 		Log log = injector.getExistingService(Log.class);
 		if(log != null)

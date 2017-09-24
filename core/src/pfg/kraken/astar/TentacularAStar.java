@@ -245,7 +245,7 @@ public class TentacularAStar
 
 			// affichage
 			if(graphicTrajectory)
-				buffer.addSupprimable(current, Color.RED, Layer.MIDDLE.layer);
+				buffer.addTemporaryPrintable(current, Color.RED, Layer.MIDDLE.layer);
 
 			// Si current est la trajectoire de secours, ça veut dire que cette
 			// trajectoire de secours est la meilleure possible, donc on a fini
@@ -411,7 +411,7 @@ public class TentacularAStar
 			{
 				last = a.getPoint(i);
 				if(printObstacles)
-					buffer.addSupprimable(last.obstacle.clone(), ColorKraken.ROBOT.color, Layer.BACKGROUND.layer);
+					buffer.addTemporaryPrintable(last.obstacle.clone(), ColorKraken.ROBOT.color, Layer.BACKGROUND.layer);
 				trajectory.add(new ItineraryPoint(last));
 			}
 			assert trajectory.size() < 255 : "Overflow du trajet";

@@ -61,7 +61,6 @@ public class JUnit_TentacularAStar extends JUnit_Test
 		navmesh = injector.getService(Navmesh.class);
 		bezier = injector.getService(BezierComputer.class);
 		// arcmanager = injector.getService(ArcManager.class);
-		graphicTrajectory = config.getBoolean(ConfigInfoKraken.GRAPHIC_TRAJECTORY_FINAL);
 		fakeChemin = injector.getService(DefaultCheminPathfinding.class);
 	}
 
@@ -108,7 +107,7 @@ public class JUnit_TentacularAStar extends JUnit_Test
 				 */
 				System.out.println(a + " " + i + " " + arc[a].arcselems[i]);
 				if(graphicTrajectory)
-					buffer.addSupprimable(new PrintablePoint(arc[a].getPoint(i).getPosition()), Color.BLACK, Layer.FOREGROUND.layer);
+					buffer.addTemporaryPrintable(new PrintablePoint(arc[a].getPoint(i).getPosition()), Color.BLACK, Layer.FOREGROUND.layer);
 			}
 			if(a == 0)
 			{
@@ -151,7 +150,7 @@ public class JUnit_TentacularAStar extends JUnit_Test
 			{
 				System.out.println(a + " " + i + " " + arc[a].getPoint(i));
 				if(graphicTrajectory)
-					buffer.addSupprimable(new PrintablePoint(arc[a].getPoint(i).getPosition()), Color.BLACK, Layer.FOREGROUND.layer);
+					buffer.addTemporaryPrintable(new PrintablePoint(arc[a].getPoint(i).getPosition()), Color.BLACK, Layer.FOREGROUND.layer);
 			}
 		}
 	}
@@ -179,7 +178,7 @@ public class JUnit_TentacularAStar extends JUnit_Test
 			{
 				System.out.println(a + " " + i + " " + arc[a].getPoint(i));
 				if(graphicTrajectory)
-					buffer.addSupprimable(new PrintablePoint(arc[a].getPoint(i).getPosition()), Color.BLACK, Layer.FOREGROUND.layer);
+					buffer.addTemporaryPrintable(new PrintablePoint(arc[a].getPoint(i).getPosition()), Color.BLACK, Layer.FOREGROUND.layer);
 			}
 		}
 	}
@@ -205,7 +204,7 @@ public class JUnit_TentacularAStar extends JUnit_Test
 			{
 				System.out.println(a + " " + i + " " + arc[a].getPoint(i));
 				if(graphicTrajectory)
-					buffer.addSupprimable(new PrintablePoint(arc[a].getPoint(i).getPosition()), Color.BLACK, Layer.FOREGROUND.layer);
+					buffer.addTemporaryPrintable(new PrintablePoint(arc[a].getPoint(i).getPosition()), Color.BLACK, Layer.FOREGROUND.layer);
 			}
 		}
 	}

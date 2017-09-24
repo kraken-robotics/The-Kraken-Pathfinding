@@ -73,7 +73,7 @@ public class Example1
 		 * The obstacles are printed
 		 */
 		for(Obstacle o : obs)
-			printBuffer.add(o, Color.BLACK, Layer.MIDDLE.layer);
+			printBuffer.addPrintable(o, Color.BLACK, Layer.MIDDLE.layer);
 		printBuffer.refresh();
 		try
 		{
@@ -98,11 +98,11 @@ public class Example1
 			 */
 			for(ItineraryPoint p : path)
 			{
-				printBuffer.add(p, Color.BLACK, Layer.FOREGROUND.layer);
+				printBuffer.addPrintable(p, Color.BLACK, Layer.FOREGROUND.layer);
 				System.out.println("Here is the trajectory :");
 				System.out.println(p);
 			}
-			
+
 			/*
 			 * Refresh the window frame.
 			 */

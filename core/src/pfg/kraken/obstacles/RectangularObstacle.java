@@ -10,7 +10,6 @@ import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.List;
 
-import pfg.graphic.Chart;
 import pfg.graphic.GraphicPanel;
 import pfg.kraken.utils.XY;
 import pfg.kraken.utils.XY_RW;
@@ -268,7 +267,7 @@ public class RectangularObstacle extends Obstacle
 	}
 
 	@Override
-	public void print(Graphics g, GraphicPanel f, Chart a)
+	public void print(Graphics g, GraphicPanel f)
 	{
 		int[] X = new int[4];
 		X[0] = (int) coinBasDroiteRotate.getX();

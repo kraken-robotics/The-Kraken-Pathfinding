@@ -9,7 +9,6 @@ package pfg.kraken.obstacles;
 import java.awt.Color;
 import java.awt.Graphics;
 
-import pfg.graphic.Chart;
 import pfg.graphic.GraphicPanel;
 import pfg.kraken.utils.XY;
 import pfg.kraken.utils.XY_RW;
@@ -61,7 +60,7 @@ public class CircularObstacle extends Obstacle
 	}
 
 	@Override
-	public void print(Graphics g, GraphicPanel f, Chart a)
+	public void print(Graphics g, GraphicPanel f)
 	{
 //		if(radius <= 0)
 //			g.fillOval(f.XtoWindow(position.getX()) - 5, f.YtoWindow(position.getY()) - 5, 10, 10);

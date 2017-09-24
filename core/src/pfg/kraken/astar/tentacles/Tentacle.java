@@ -6,7 +6,6 @@
 package pfg.kraken.astar.tentacles;
 
 import java.awt.Graphics;
-import pfg.graphic.Chart;
 import pfg.graphic.GraphicPanel;
 import pfg.graphic.printable.Printable;
 import pfg.graphic.printable.PrintablePoint;
@@ -50,10 +49,10 @@ public abstract class Tentacle implements Printable
 	}
 
 	@Override
-	public void print(Graphics g, GraphicPanel f, Chart a)
+	public void print(Graphics g, GraphicPanel f)
 	{
 		for(int i = 0; i < getNbPoints(); i++)
-			new PrintablePoint(getPoint(i).getPosition().getX(), getPoint(i).getPosition().getY()).print(g, f, a);
+			new PrintablePoint(getPoint(i).getPosition().getX(), getPoint(i).getPosition().getY()).print(g, f);
 	}
 
 }

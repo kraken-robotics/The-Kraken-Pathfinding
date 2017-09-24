@@ -6,7 +6,6 @@
 package pfg.kraken.robot;
 
 import java.awt.Graphics;
-import pfg.graphic.Chart;
 import pfg.graphic.GraphicPanel;
 import pfg.graphic.printable.Printable;
 
@@ -69,7 +68,7 @@ public class ItineraryPoint implements Printable
 	}
 
 	@Override
-	public void print(Graphics g, GraphicPanel f, Chart a)
+	public void print(Graphics g, GraphicPanel f)
 	{
 		int taille = 5;
 		g.fillOval(f.XtoWindow(x)-taille/2, f.YtoWindow(y)-taille/2, taille, taille);

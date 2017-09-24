@@ -494,7 +494,7 @@ public class DStarLite
 				n.heuristiqueOrientation = mean;
 			}
 			if(graphicHeuristique)
-				buffer.addSupprimable(n, ColorKraken.HEURISTIQUE.color, Layer.MIDDLE.layer);
+				buffer.addTemporaryPrintable(n, ColorKraken.HEURISTIQUE.color, Layer.MIDDLE.layer);
 		}
 	}
 

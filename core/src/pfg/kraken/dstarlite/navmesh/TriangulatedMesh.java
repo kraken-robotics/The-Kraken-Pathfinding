@@ -80,10 +80,10 @@ public class TriangulatedMesh implements Serializable
 	public void addToBuffer(PrintBuffer buffer)
 	{
 		for(NavmeshTriangle t : triangles)
-			buffer.add(t, ColorKraken.NAVMESH_TRIANGLE.color, Layer.BACKGROUND.layer);
+			buffer.addPrintable(t, ColorKraken.NAVMESH_TRIANGLE.color, Layer.BACKGROUND.layer);
 		for(NavmeshEdge e : edges)
-			buffer.add(e, ColorKraken.NAVMESH.color, Layer.BACKGROUND.layer);
+			buffer.addPrintable(e, ColorKraken.NAVMESH.color, Layer.BACKGROUND.layer);
 		for(NavmeshNode n : nodes)
-			buffer.add(n, Color.BLACK, Layer.BACKGROUND.layer);
+			buffer.addPrintable(n, Color.BLACK, Layer.BACKGROUND.layer);
 	}
 }
