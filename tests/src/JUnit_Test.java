@@ -81,7 +81,6 @@ public abstract class JUnit_Test
 	{
 		if(f != null)
 			f.waitUntilExit(5000);
-		kraken.destructor();
 	}
 
 	/**
