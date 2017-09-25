@@ -14,7 +14,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
-import pfg.graphic.PrintBuffer;
+import pfg.graphic.GraphicDisplay;
 import pfg.graphic.printable.Layer;
 import pfg.kraken.ColorKraken;
 
@@ -77,7 +77,7 @@ public class TriangulatedMesh implements Serializable
 		return out;
 	}
 
-	public void addToBuffer(PrintBuffer buffer)
+	public void addToBuffer(GraphicDisplay buffer)
 	{
 		for(NavmeshTriangle t : triangles)
 			buffer.addPrintable(t, ColorKraken.NAVMESH_TRIANGLE.color, Layer.BACKGROUND.layer);

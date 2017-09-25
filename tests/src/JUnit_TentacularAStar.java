@@ -7,7 +7,7 @@ import java.awt.Color;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import pfg.graphic.PrintBuffer;
+import pfg.graphic.GraphicDisplay;
 import pfg.graphic.printable.Layer;
 import pfg.graphic.printable.PrintablePoint;
 import pfg.kraken.ConfigInfoKraken;
@@ -41,7 +41,7 @@ public class JUnit_TentacularAStar extends JUnit_Test
 	private TentacularAStar astar;
 	private ClothoidesComputer clotho;
 	protected BezierComputer bezier;
-	private PrintBuffer buffer;
+	private GraphicDisplay buffer;
 	private boolean graphicTrajectory;
 	private DefaultCheminPathfinding fakeChemin;
 	private Navmesh navmesh;
@@ -55,7 +55,7 @@ public class JUnit_TentacularAStar extends JUnit_Test
 	{
 		super.setUp();
 		clotho = injector.getService(ClothoidesComputer.class);
-		buffer = injector.getService(PrintBuffer.class);
+		buffer = injector.getService(GraphicDisplay.class);
 		astar = injector.getService(TentacularAStar.class);
 		// dstarlite = injector.getService(DStarLite.class);
 		navmesh = injector.getService(Navmesh.class);

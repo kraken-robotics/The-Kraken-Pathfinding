@@ -7,7 +7,7 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
-import pfg.graphic.PrintBuffer;
+import pfg.graphic.GraphicDisplay;
 import pfg.graphic.printable.Layer;
 import pfg.kraken.Kraken;
 import pfg.kraken.exceptions.PathfindingException;
@@ -44,10 +44,10 @@ public class Example3
 		RectangularObstacle robot = new RectangularObstacle(250, 80, 110, 110); 
 
 		Kraken kraken = new Kraken(robot, obs, new XY(-1500,0), new XY(1500, 2000), "trajectory"/*, "detailed"*/);
-		PrintBuffer printBuffer = kraken.getPrintBuffer();
+		GraphicDisplay display = kraken.getGraphicDisplay();
 		for(Obstacle o : obs)
-			printBuffer.addPrintable(o, Color.BLACK, Layer.MIDDLE.layer);
-		printBuffer.refresh();
+			display.addPrintable(o, Color.BLACK, Layer.MIDDLE.layer);
+		display.refresh();
 
 		/*
 		 * You can perfectly use two instances of Kraken (for example if two robots have different size)
@@ -67,11 +67,11 @@ public class Example3
 			
 			for(ItineraryPoint p : path)
 			{
-				printBuffer.addPrintable(p, Color.BLACK, Layer.FOREGROUND.layer);
+				display.addPrintable(p, Color.BLACK, Layer.FOREGROUND.layer);
 				System.out.println(p);
 			}
 			
-			printBuffer.refresh();
+			display.refresh();
 			
 			/*
 			 * The second robot is smaller, so it can take a different path (blue trajectory)
@@ -81,20 +81,16 @@ public class Example3
 			
 			for(ItineraryPoint p : path)
 			{
-				printBuffer.addPrintable(p, Color.BLUE, Layer.FOREGROUND.layer);
+				display.addPrintable(p, Color.BLUE, Layer.FOREGROUND.layer);
 				System.out.println(p);
 			}
 			
-			printBuffer.refresh();
+			display.refresh();
 
 		}
 		catch(PathfindingException e)
 		{
 			e.printStackTrace();
-		}
-		finally 
-		{
-			kraken.destructor();
 		}
 	}
 }

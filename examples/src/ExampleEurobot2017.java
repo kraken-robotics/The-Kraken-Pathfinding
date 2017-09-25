@@ -7,7 +7,7 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
-import pfg.graphic.PrintBuffer;
+import pfg.graphic.GraphicDisplay;
 import pfg.graphic.printable.Layer;
 import pfg.kraken.Kraken;
 import pfg.kraken.exceptions.PathfindingException;
@@ -86,10 +86,10 @@ public class ExampleEurobot2017
 		Kraken kraken = new Kraken(robot, obs, new XY(-1500,0), new XY(1500, 2000), "trajectory", "eurobot2017");
 		
 
-		PrintBuffer printBuffer = kraken.getPrintBuffer();
+		GraphicDisplay display = kraken.getGraphicDisplay();
 		for(Obstacle o : obs)
-			printBuffer.addPrintable(o, Color.BLACK, Layer.MIDDLE.layer);
-		printBuffer.refresh();
+			display.addPrintable(o, Color.BLACK, Layer.MIDDLE.layer);
+		display.refresh();
 		
 		try
 		{
@@ -98,18 +98,14 @@ public class ExampleEurobot2017
 			List<ItineraryPoint> path = kraken.search();
 			
 			for(ItineraryPoint p : path)
-				printBuffer.addPrintable(p, Color.BLACK, Layer.FOREGROUND.layer);
+				display.addPrintable(p, Color.BLACK, Layer.FOREGROUND.layer);
 			
-			printBuffer.refresh();
+			display.refresh();
 		}
 		catch(PathfindingException e)
 		{
 			// Impossible
 			e.printStackTrace();
-		}
-		finally 
-		{
-			kraken.destructor();
 		}
 	}
 }

@@ -14,7 +14,7 @@ import pfg.config.ConfigInfo;
 import pfg.graphic.Vec2RO;
 import pfg.graphic.WindowFrame;
 import pfg.log.Log;
-import pfg.graphic.PrintBuffer;
+import pfg.graphic.GraphicDisplay;
 import pfg.graphic.ConfigInfoGraphic;
 import pfg.graphic.DebugTool;
 import pfg.injector.Injector;
@@ -48,23 +48,14 @@ public class Kraken
 	private DynamicObstacles dynObs;
 	private TentacularAStar astar;
 	private static WindowFrame f; // one display for all the instances
-
-	/**
-	 * Call this function if you want to create a new Kraken.
-	 * The graphic interface is stopped.
-	 */
-	public synchronized void destructor()
-	{	
-		// fermeture du log
-		Log log = injector.getExistingService(Log.class);
-		if(log != null)
-			log.close();
-	}
 	
 	/**
-	 * Get Kraken with permanent obstacles. Note that Kraken won't be able to deal with dynamic obstacles.
+	 * Get Kraken with :
+	 * @param vehicleTemplate : the shape of the vehicle
 	 * @param fixedObstacles : a list of fixed/permanent obstacles
-	 * @return the instance of Kraken
+	 * @param bottomLeftCorner : the bottom left corner of the search domain
+	 * @param topRightCorner : the top right corner of the search domain
+	 * @param configprofile : the config profiles
 	 */
 	public Kraken(RectangularObstacle vehicleTemplate, List<Obstacle> fixedObstacles, XY bottomLeftCorner, XY topRightCorner, String...profiles)
 	{
@@ -73,10 +64,12 @@ public class Kraken
 	
 	/**
 	 * Get Kraken with :
+	 * @param vehicleTemplate : the shape of the vehicle
 	 * @param fixedObstacles : a list of fixed/permanent obstacles
 	 * @param dynObs : a dynamic/temporary obstacles manager that implements the DynamicObstacles interface
-	 * @param tentacleTypes : 
-	 * @return
+	 * @param bottomLeftCorner : the bottom left corner of the search domain
+	 * @param topRightCorner : the top right corner of the search domain
+	 * @param configprofile : the config profiles
 	 */
 	public Kraken(RectangularObstacle vehicleTemplate, List<Obstacle> fixedObstacles, DynamicObstacles dynObs, XY bottomLeftCorner, XY topRightCorner, String...configprofile)
 	{
@@ -159,7 +152,7 @@ public class Kraken
 				}
 				else
 				{
-					injector.addService(PrintBuffer.class, new PrintBufferPlaceholder());
+					injector.addService(GraphicDisplay.class, new GraphicDisplayPlaceholder());
 					HashMap<ConfigInfo, Object> override = new HashMap<ConfigInfo, Object>();
 					List<ConfigInfo> graphicConf = ConfigInfoKraken.getGraphicConfigInfo();
 					for(ConfigInfo c : graphicConf)
@@ -175,16 +168,38 @@ public class Kraken
 		}
 	}
 	
+	/**
+	 * Initialize a new search from :
+	 * - a position and an orientation, to
+	 * - a position
+	 * @param start
+	 * @param arrival
+	 * @param directionstrategy
+	 * @throws NoPathException
+	 */
 	public void initializeNewSearch(XYO start, XY arrival, DirectionStrategy directionstrategy) throws NoPathException
 	{
 		astar.initializeNewSearch(start, arrival, directionstrategy);
 	}
 	
+	/**
+	 * Initialize a new search from :
+	 * - a position and an orientation, to
+	 * - a position
+	 * @param start
+	 * @param arrival
+	 * @throws NoPathException
+	 */
 	public void initializeNewSearch(XYO start, XY arrival) throws NoPathException
 	{
 		astar.initializeNewSearch(start, arrival);
 	}
 
+	/**
+	 * Start the search. You must have called "initializeNewSearch" before the search.
+	 * @return
+	 * @throws PathfindingException
+	 */
 	public LinkedList<ItineraryPoint> search() throws PathfindingException
 	{
 		return astar.search();
@@ -199,8 +214,12 @@ public class Kraken
 		return injector;
 	}
 
-	public PrintBuffer getPrintBuffer()
+	/**
+	 * Get the graphic display
+	 * @return
+	 */
+	public GraphicDisplay getGraphicDisplay()
 	{
-		return injector.getExistingService(PrintBuffer.class);
+		return injector.getExistingService(GraphicDisplay.class);
 	}
 }

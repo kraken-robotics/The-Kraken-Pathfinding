@@ -7,7 +7,7 @@ package pfg.kraken;
 
 import java.awt.Color;
 
-import pfg.graphic.PrintBuffer;
+import pfg.graphic.GraphicDisplay;
 import pfg.graphic.printable.Plottable;
 import pfg.graphic.printable.Printable;
 
@@ -17,7 +17,7 @@ import pfg.graphic.printable.Printable;
  *
  */
 
-public class PrintBufferPlaceholder extends PrintBuffer
+public class GraphicDisplayPlaceholder extends GraphicDisplay
 {
 	public synchronized void clearTemporaryPrintables()
 	{}

@@ -7,7 +7,7 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
-import pfg.graphic.PrintBuffer;
+import pfg.graphic.GraphicDisplay;
 import pfg.graphic.printable.Layer;
 import pfg.kraken.Kraken;
 import pfg.kraken.exceptions.PathfindingException;
@@ -72,14 +72,14 @@ public class Example1
 		/*
 		 * The graphic display (optional)
 		 */
-		PrintBuffer printBuffer = kraken.getPrintBuffer();
+		GraphicDisplay display = kraken.getGraphicDisplay();
 		
 		/*
 		 * The obstacles are printed
 		 */
 		for(Obstacle o : obs)
-			printBuffer.addPrintable(o, Color.BLACK, Layer.MIDDLE.layer);
-		printBuffer.refresh();
+			display.addPrintable(o, Color.BLACK, Layer.MIDDLE.layer);
+		display.refresh();
 		try
 		{
 			/*
@@ -105,14 +105,14 @@ public class Example1
 			System.out.println("Here is the trajectory :");
 			for(ItineraryPoint p : path)
 			{
-				printBuffer.addPrintable(p, Color.BLACK, Layer.FOREGROUND.layer);
+				display.addPrintable(p, Color.BLACK, Layer.FOREGROUND.layer);
 				System.out.println(p);
 			}
 
 			/*
 			 * Refresh the window frame.
 			 */
-			printBuffer.refresh();
+			display.refresh();
 		}
 		catch(PathfindingException e)
 		{
@@ -120,13 +120,6 @@ public class Example1
 			 * This exception is thrown when no path is found
 			 */
 			e.printStackTrace();
-		}
-		finally 
-		{
-			/*
-			 * You are expected to destroy Kraken properly
-			 */
-			kraken.destructor();
 		}
 	}
 }
