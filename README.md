@@ -2,7 +2,7 @@
 
 # The Kraken Pathfinding
 
-A tentacular pathfinding library for nonholonomic robotic vehicles 
+A tentacle-based pathfinding library for nonholonomic robotic vehicles 
 
 ## What is Kraken ?
 
@@ -17,7 +17,7 @@ The trajectory created by Kraken has several geometric properties, making it sui
 - curvature piecewise continuity (piecewise G2 continuity) ;
 - handles forward and backward movement.
 
-Currently, Kraken finds a trajectory between from a position and an orientation to a position. Which means that, for example, you can't force the orientation at the end point.
+Currently, Kraken finds a trajectory between from a position and an orientation to a position. Which means that, for example, you can't force the orientation at the end point. A next version will expand the possibilities.
 
 ![Trajectory example](https://raw.githubusercontent.com/PFGimenez/The-Kraken-Pathfinding/master/resources/example.png)
 
@@ -35,7 +35,7 @@ For legacy reasons, mainly.
 
 You can download the .jar file here : https://github.com/PFGimenez/The-Kraken-Pathfinding/releases/download/v1.0.0/kraken.jar
 
-### Getting the source
+### Getting the source [![Build Status](https://travis-ci.org/PFGimenez/The-Kraken-Pathfinding.svg?branch=master)](https://travis-ci.org/PFGimenez/The-Kraken-Pathfinding)
 
 If you want the latest stable version, clone this repository :
 
