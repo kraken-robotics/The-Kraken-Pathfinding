@@ -71,7 +71,7 @@ Getting the trajectory is only half of the work, because you won't go far if you
 
 First, recall that the [curvature](https://en.wikipedia.org/wiki/Curvature#Curvature_of_plane_curves) of a curve _C_ at the point _P_ is the inverse of the radius of curvature at _P_, i.e. the inverse of the radius of the circle that "fits" the best _C_ at _P_.
 
-![Samson control algorithm figure](https://raw.githubusercontent.com/PFGimenez/The-Kraken-Pathfinding/master/resources/asser-samson.png)
+<img align="right" src="https://raw.githubusercontent.com/PFGimenez/The-Kraken-Pathfinding/master/resources/asser-samson.png">
 
 Let _R_ be the vehicle and _R'_ its orthogonal projection to the curve and denote _θ(R)_ the orientation of the robot, _θ(R')_ the orientation setpoint at _R'_, _κ(R')_ the curvature setpoint at _R'_ and _d_ the algebric distance between _R_ and _R'_ (_d > 0_ if the robot is on the left of the curve, _d < 0_ otherwise).
 
@@ -99,6 +99,6 @@ Bug report are done with issues. Please be careful to respect those few points:
 - describe your problem as best as possible. If you can post a minimal code that triggers the bug, it will be much easier for me ;
 - attach any relevant file.
 
-## Bibliography:
+## Bibliography
 
 [1] Samson, C. (1995). Control of chained systems application to path following and time-varying point-stabilization of mobile robots. IEEE transactions on Automatic Control, 40(1), 64-77.
