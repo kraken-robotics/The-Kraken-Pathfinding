@@ -101,7 +101,8 @@ public class Cinematique implements Printable, Serializable
 	@Override
 	public int hashCode()
 	{
-
+		// TODO faire quelque chose de propre…
+		
 		// Il faut fusionner les points trop proches pour pas que le PF ne
 		// s'entête dans des coins impossibles
 		// Par contre, il ne faut pas trop fusionner sinon on ne verra pas les

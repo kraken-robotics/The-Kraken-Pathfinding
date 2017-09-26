@@ -20,6 +20,7 @@ import pfg.kraken.utils.XY;
 import pfg.kraken.utils.XYO;
 import pfg.kraken.utils.XY_RW;
 import pfg.log.Log;
+import static pfg.kraken.astar.tentacles.Tentacle.*;
 
 /**
  * Classe qui s'occupe des calculs sur les courbes de Bézier
@@ -303,7 +304,7 @@ public class BezierComputer
 			lastOrientation = obs.orientationGeometrique;
 			lastCourbure = obs.courbureGeometrique;
 			first = false;
-			t -= ClothoidesComputer.PRECISION_TRACE_MM / vitesse;
+			t -= PRECISION_TRACE_MM / vitesse;
 		}
 
 		double diffOrientation = (Math.abs(cinematiqueInitiale.orientationGeometrique - lastOrientation)) % (2 * Math.PI);
@@ -324,7 +325,7 @@ public class BezierComputer
 			return null;
 		}
 
-		if(out.getFirst().getPosition().distanceFast(cinematiqueInitiale.getPosition()) < ClothoidesComputer.PRECISION_TRACE_MM / 2)
+		if(out.getFirst().getPosition().distanceFast(cinematiqueInitiale.getPosition()) < PRECISION_TRACE_MM / 2)
 			memory.destroyNode(out.removeFirst());
 
 		if(out.isEmpty())

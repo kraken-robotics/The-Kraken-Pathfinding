@@ -30,6 +30,7 @@ import pfg.kraken.robot.RobotState;
 import pfg.kraken.utils.XY;
 import pfg.kraken.utils.XY_RW;
 import pfg.log.Log;
+import static pfg.kraken.astar.tentacles.Tentacle.*;
 
 /**
  * Classe qui s'occupe de tous les calculs concernant les clothoïdes
@@ -46,25 +47,8 @@ public class ClothoidesComputer
 	
 	private BigDecimal x, y; // utilisés dans le calcul de trajectoire
 	private static final int S_MAX = 10; // courbure max qu'on puisse gérer
-	public static final double PRECISION_TRACE = 0.02; // précision du tracé, en
-														// m (distance entre
-														// deux points
-														// consécutifs). Plus le
-														// tracé est précis,
-														// plus on couvre de
-														// point une même
-														// distance
-	public static final double PRECISION_TRACE_MM = PRECISION_TRACE * 1000; // précision
-																			// du
-																			// tracé,
-																			// en
-																			// mm
 	private static final int INDICE_MAX = (int) (S_MAX / PRECISION_TRACE);
-	public static final int NB_POINTS = 3; // nombre de points dans un arc
-	public static final double DISTANCE_ARC_COURBE = PRECISION_TRACE_MM * NB_POINTS; // en
-																						// mm
-	public static final double DISTANCE_ARC_COURBE_M = PRECISION_TRACE * NB_POINTS; // en
-																					// m
+
 	// private static final double VITESSE_ROT_AX12 = 4; // en rad / s. Valeur
 	// du constructeur : 5
 

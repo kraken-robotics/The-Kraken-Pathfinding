@@ -6,8 +6,8 @@
 package pfg.kraken.astar.tentacles.types;
 
 import pfg.kraken.astar.DirectionStrategy;
-import pfg.kraken.astar.tentacles.ClothoidesComputer;
 import pfg.kraken.robot.Cinematique;
+import static pfg.kraken.astar.tentacles.Tentacle.*;
 
 /**
  * Arc de clothoïde de longueur constante
@@ -88,7 +88,7 @@ public enum ClothoTentacle implements TentacleType
 			return false;
 		}
 
-		double courbureFuture = c.courbureGeometrique + vitesse * ClothoidesComputer.DISTANCE_ARC_COURBE_M;
+		double courbureFuture = c.courbureGeometrique + vitesse * DISTANCE_ARC_COURBE_M;
 		if(!(courbureFuture >= -courbureMax && courbureFuture <= courbureMax))
 		{
 			// log.debug(vitesse+" n'est acceptable (courbure trop grande");
