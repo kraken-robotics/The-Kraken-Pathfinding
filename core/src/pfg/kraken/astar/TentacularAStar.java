@@ -61,6 +61,7 @@ public class TentacularAStar
 	private double vitesseMax;
 	private boolean printObstacles;
 	private double defaultSpeed;
+	private int nbExpandedNodes;
 	// private int tailleFaisceau;
 	private volatile boolean rechercheEnCours = false;
 
@@ -144,7 +145,8 @@ public class TentacularAStar
 		depart.parent = null;
 		depart.cameFromArcDynamique = null;
 		depart.g_score = 0;
-
+		nbExpandedNodes = 0;
+		
 		Double heuristique = arcmanager.heuristicCostCourbe((depart.robot).getCinematique());
 
 		assert heuristique != null : "Null heuristic !"; // l'heuristique est vérifiée à l'initialisation
@@ -160,7 +162,8 @@ public class TentacularAStar
 		do
 		{
 			current = openset.poll();
-
+			nbExpandedNodes++;
+			
 			/**
 			 * needStop ne concerne que la replanif
 			 */
@@ -380,6 +383,8 @@ public class TentacularAStar
 		}
 		trajectory.clear();
 
+		System.out.println("Path duration : "+best.robot.getDate());
+		System.out.println("Number of expanded nodes : "+nbExpandedNodes);
 		CinematiqueObs last = null;
 		// chemin.add fait des copies des points
 		while(!pileTmp.isEmpty() && profondeurMax > 0)

@@ -238,22 +238,12 @@ public class TentacleManager
 
 	public synchronized Double heuristicCostCourbe(Cinematique c)
 	{
-		return dstarlite.heuristicCostCourbe(c/* , useCercle */);
+		return dstarlite.heuristicCostCourbe(c);
 	}
 
 	public boolean isArrived(AStarNode successeur)
 	{
-		return successeur.getArc() != null && isArrivedPF(successeur.getArc().getLast());
-	}
-	
-	public boolean isArrivedPF(Cinematique successeur)
-	{
-		return successeur.getPosition().squaredDistance(arrivee.getPosition()) < 5;
-	}
-	
-	public boolean isArrivedAsser(Cinematique successeur)
-	{
-		return successeur.getPosition().squaredDistance(arrivee.getPosition()) < 25;
+		return successeur.getArc() != null && successeur.getArc().getLast().getPosition().squaredDistance(arrivee.getPosition()) < 5;
 	}
 	
 	/**
