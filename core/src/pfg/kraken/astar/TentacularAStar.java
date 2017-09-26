@@ -5,7 +5,6 @@
 
 package pfg.kraken.astar;
 
-import java.awt.Color;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -241,8 +240,8 @@ public class TentacularAStar
 			}
 
 			// affichage
-			if(graphicTrajectory)
-				buffer.addTemporaryPrintable(current, Color.RED, Layer.MIDDLE.layer);
+			if(graphicTrajectory && current.getArc() != null)
+				buffer.addTemporaryPrintable(current, current.getArc().vitesse.getColor(), Layer.MIDDLE.layer);
 
 			// Si current est la trajectoire de secours, ça veut dire que cette
 			// trajectoire de secours est la meilleure possible, donc on a fini

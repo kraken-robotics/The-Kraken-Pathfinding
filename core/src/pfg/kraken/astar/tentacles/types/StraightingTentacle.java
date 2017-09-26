@@ -5,6 +5,8 @@
 
 package pfg.kraken.astar.tentacles.types;
 
+import java.awt.Color;
+
 import pfg.kraken.astar.DirectionStrategy;
 import pfg.kraken.robot.Cinematique;
 
@@ -47,5 +49,11 @@ public enum StraightingTentacle implements TentacleType
 	public int getNbArrets()
 	{
 		return 0;
+	}
+
+	@Override
+	public Color getColor()
+	{
+		return Color.GRAY;
 	}
 }

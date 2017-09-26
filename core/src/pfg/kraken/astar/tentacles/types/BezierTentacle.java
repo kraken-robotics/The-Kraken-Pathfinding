@@ -5,6 +5,8 @@
 
 package pfg.kraken.astar.tentacles.types;
 
+import java.awt.Color;
+
 import pfg.kraken.astar.DirectionStrategy;
 import pfg.kraken.robot.Cinematique;
 
@@ -26,7 +28,7 @@ public enum BezierTentacle implements TentacleType
 	{
 		this.nbArrets = nbArrets;
 	}
-
+	
 	@Override
 	public boolean isAcceptable(Cinematique c, DirectionStrategy directionstrategyactuelle, double courbureMax)
 	{
@@ -37,5 +39,10 @@ public enum BezierTentacle implements TentacleType
 	public int getNbArrets()
 	{
 		return nbArrets;
+	}
+
+	@Override
+	public Color getColor() {
+		return Color.GREEN;
 	}
 }

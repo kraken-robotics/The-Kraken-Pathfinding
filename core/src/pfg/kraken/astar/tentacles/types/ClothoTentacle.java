@@ -9,6 +9,8 @@ import pfg.kraken.astar.DirectionStrategy;
 import pfg.kraken.robot.Cinematique;
 import static pfg.kraken.astar.tentacles.Tentacle.*;
 
+import java.awt.Color;
+
 /**
  * Arc de clothoïde de longueur constante
  * 
@@ -104,5 +106,13 @@ public enum ClothoTentacle implements TentacleType
 		if(arret || rebrousse)
 			return 1;
 		return 0;
+	}
+
+	@Override
+	public Color getColor()
+	{
+		if(arret || rebrousse)
+			return Color.GREEN;
+		return Color.RED;
 	}
 }
