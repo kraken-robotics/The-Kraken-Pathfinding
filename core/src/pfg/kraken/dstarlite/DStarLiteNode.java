@@ -23,6 +23,7 @@ public class DStarLiteNode implements Printable
 {
 	private static final long serialVersionUID = -6800876007134374180L;
 	public final NavmeshNode node;
+	public int bestVoisin;
 	public final Cle cle = new Cle();
 	public int g = Integer.MAX_VALUE, rhs = Integer.MAX_VALUE;
 	public Double heuristiqueOrientation = null;

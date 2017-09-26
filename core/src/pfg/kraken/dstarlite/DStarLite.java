@@ -42,6 +42,7 @@ public class DStarLite
 	private boolean graphicHeuristique;
 	private DynamicObstacles dynObs;
 	private StaticObstacles statObs;
+	private XY positionArrivee;
 	private List<Obstacle> previousObstacles = new ArrayList<Obstacle>(), newObstacles = new ArrayList<Obstacle>();
 
 	private List<DStarLiteNode> overconsistentExpansion = new ArrayList<DStarLiteNode>(); 
@@ -238,7 +239,11 @@ public class DStarLite
 		
 		for(int i = 0; i < memory.length; i++)
 			if(memory[i].nbPF == nbPF) // ceux qui ne sont pas à jour auront de toute façon une heuristique nulle
+			{
+				if(memory[i] != arrivee && memory[i].rhs != Integer.MAX_VALUE)
+					memory[i].bestVoisin = getBestVoisin(memory[i].node);
 				updateOrientationHeuristic(memory[i]);
+			}
 	}
 
 	/**
@@ -264,6 +269,7 @@ public class DStarLite
 	{
 		nbPF++;
 
+		this.positionArrivee = positionArrivee;
 		arrivee = getFromMemory(navmesh.getNearest(positionArrivee));
 		arrivee.rhs = 0;
 		arrivee.cle.set(0, 0);
@@ -416,10 +422,14 @@ public class DStarLite
 
 		DStarLiteNode premier = getFromMemory(pos);
 		
+		if(premier == arrivee)
+			return c.getPosition().distanceFast(positionArrivee);
+		
 		if(premier.heuristiqueOrientation == null)
 			return null;
 		
-		double erreurDistance = premier.rhs / 1000.;
+		NavmeshNode voisin = pos.getNeighbour(premier.bestVoisin);
+		double erreurDistance = c.getPosition().distanceFast(voisin.position) + (memory[voisin.nb].rhs) / 1000. + arrivee.node.position.distanceFast(positionArrivee);
 		
 		double orientationOptimale = premier.heuristiqueOrientation;
 
@@ -438,7 +448,7 @@ public class DStarLite
 		// courbure impossible…
 		return 1.3 * erreurDistance + 5 * erreurOrientation;		
 	}
-
+	
 	/**
 	 * Renvoie l'indice du meilleur voisin, i.e. le plus proche de l'arrivée
 	 * @param node
@@ -480,13 +490,13 @@ public class DStarLite
 			n.heuristiqueOrientation = null;
 		else
 		{
-			int nbBestVoisin = getBestVoisin(n.node);
+			int nbBestVoisin = n.bestVoisin;
 			NavmeshNode bestVoisin = n.node.getNeighbour(nbBestVoisin); 
 			if(bestVoisin.equals(arrivee.node))
 				n.heuristiqueOrientation = n.node.getNeighbourEdge(nbBestVoisin).getOrientation(n.node);
 			else
 			{
-				int nbBestVoisinDuVoisin = getBestVoisin(bestVoisin);
+				int nbBestVoisinDuVoisin = memory[bestVoisin.nb].bestVoisin; //getBestVoisin(bestVoisin);
 				double angle1 = n.node.getNeighbourEdge(nbBestVoisin).getOrientation(n.node);
 				double angle2 = bestVoisin.getNeighbourEdge(nbBestVoisinDuVoisin).getOrientation(bestVoisin);
 				double diff = (( angle1 - angle2 + 3 * Math.PI ) % (2 * Math.PI)) - Math.PI;
