@@ -54,6 +54,7 @@ public class AStarNode implements Memorizable, Printable
 	{
 		g_score = Double.MAX_VALUE;
 		f_score = Double.MAX_VALUE;
+		robot.initDate();
 	}
 
 	@Override

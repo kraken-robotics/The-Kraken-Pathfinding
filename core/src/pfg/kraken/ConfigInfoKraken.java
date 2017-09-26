@@ -60,6 +60,7 @@ public enum ConfigInfoKraken implements ConfigInfo
 	/**
 	 * Interface graphique
 	 */
+	ENABLE_CONSOLE(true), // enable the console
 	GRAPHIC_HEURISTIC(false), // affichage des orientations heuristiques
 								// données par le D* Lite
 	GRAPHIC_ENABLE(false), // désactive tout affichage si faux (empêche le

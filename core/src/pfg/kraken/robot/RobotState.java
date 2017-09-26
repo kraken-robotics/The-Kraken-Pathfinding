@@ -21,6 +21,11 @@ public class RobotState
 	// Date en millisecondes depuis le début du match.
 	protected long date = 0;
 
+	public void initDate()
+	{
+		date = 0;
+	}
+	
 	public long getTempsDepuisDebutMatch()
 	{
 		return date;
