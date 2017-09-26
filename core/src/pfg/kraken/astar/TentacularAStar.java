@@ -148,10 +148,7 @@ public class TentacularAStar
 
 		Double heuristique = arcmanager.heuristicCostCourbe((depart.robot).getCinematique());
 
-		if(heuristique == null)
-		{
-			throw new NoPathException("No path found by D* Lite !");
-		}
+		assert heuristique != null : "Null heuristic !"; // l'heuristique est vérifiée à l'initialisation
 
 		depart.f_score = heuristique / vitesseMax;
 		openset.clear();
@@ -321,7 +318,11 @@ public class TentacularAStar
 
 				heuristique = arcmanager.heuristicCostCourbe(successeur.robot.getCinematique());
 				if(heuristique == null)
-					heuristique = arcmanager.heuristicDirect(successeur.robot.getCinematique());
+				{
+//					heuristique = arcmanager.heuristicDirect(successeur.robot.getCinematique());
+					destroy(successeur);
+					continue;
+				}
 
 				successeur.f_score = successeur.g_score + heuristique / vitesseMax;
 
@@ -415,7 +416,7 @@ public class TentacularAStar
 					buffer.addTemporaryPrintable(last.obstacle.clone(), ColorKraken.ROBOT.color, Layer.BACKGROUND.layer);
 				trajectory.add(new ItineraryPoint(last));
 			}
-			assert trajectory.size() < 255 : "Overflow du trajet";
+//			assert trajectory.size() < 255 : "Overflow du trajet";
 			profondeurMax--;
 		}
 
