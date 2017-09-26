@@ -53,4 +53,9 @@ public class RobotState
 		cinematique.copy(this.cinematique);
 	}
 
+	public long getDate()
+	{
+		return date;
+	}
+
 }

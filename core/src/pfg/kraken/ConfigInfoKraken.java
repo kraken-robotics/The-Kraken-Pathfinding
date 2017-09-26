@@ -36,9 +36,9 @@ public enum ConfigInfoKraken implements ConfigInfo
 	NAVMESH_FILENAME("navmesh.krk"), // the filename of the navmesh
 	
 	/**
-	 * Research parameter
+	 * Research and mechanical parameter
 	 */
-	MAX_CURVATURE_DERIVATIVE(10), // maximal curvature derivative, in m⁻²
+	MAX_CURVATURE_DERIVATIVE(5), // maximal curvature derivative, in m⁻¹s⁻¹
 	MAX_LATERAL_ACCELERATION(3), // maximal lateral acceleration, in m/s²
 	DEFAULT_MAX_SPEED(1), // in m/s (or mm/ms)
 	MAX_CURVATURE(5), // in m⁻¹

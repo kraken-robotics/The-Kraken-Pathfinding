@@ -63,6 +63,13 @@ public class ClothoidesComputer implements TentacleComputer
 		this.memory = memory;
 		this.log = log;
 		rootedMaxAcceleration = Math.sqrt(config.getDouble(ConfigInfoKraken.MAX_LATERAL_ACCELERATION));
+		for(ClothoTentacle t : ClothoTentacle.values())
+		{
+			if(t.vitesse == 0)
+				t.maxSpeed = Double.MAX_VALUE;
+			else
+				t.maxSpeed = config.getDouble(ConfigInfoKraken.MAX_CURVATURE_DERIVATIVE) / Math.abs(t.vitesse);
+		}
 		if(!chargePoints()) // le calcul est un peu long, donc on le sauvegarde
 		{
 			init();
@@ -354,6 +361,7 @@ public class ClothoidesComputer implements TentacleComputer
 			courbure = -courbure;
 
 		c.update(tmp.getX(), tmp.getY(), baseOrientation + orientationClotho, marcheAvant, courbure, rootedMaxAcceleration);
+		c.maxSpeed = Math.min(c.maxSpeed, vitesse.maxSpeed);
 	}
 
 	private XY_RW delta = new XY_RW();

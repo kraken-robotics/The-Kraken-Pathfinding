@@ -29,6 +29,8 @@ public enum ClothoTentacle implements TentacleType
 	DROITE_1(-4),
 	GAUCHE_2(9),
 	DROITE_2(-9),
+	GAUCHE_3(16),
+	DROITE_3(-16),
 
 	COURBURE_IDENTIQUE_AFTER_STOP(0),
 	COURBURE_IDENTIQUE_G1_AFTER_STOP(1, 0),
@@ -48,6 +50,7 @@ public enum ClothoTentacle implements TentacleType
 	public final boolean positif; // calculé à la volée pour certaine vitesse
 	public final boolean rebrousse;
 	public final boolean arret;
+	public double maxSpeed; // en m.s⁻¹
 
 	private ClothoTentacle(int vitesse)
 	{

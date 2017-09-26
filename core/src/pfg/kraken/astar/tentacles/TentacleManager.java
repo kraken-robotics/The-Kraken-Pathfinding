@@ -20,7 +20,6 @@ import pfg.kraken.astar.DirectionStrategy;
 import pfg.kraken.astar.tentacles.types.TentacleType;
 import pfg.kraken.dstarlite.DStarLite;
 import pfg.kraken.obstacles.Obstacle;
-import pfg.kraken.obstacles.RectangularObstacle;
 import pfg.kraken.obstacles.container.DynamicObstacles;
 import pfg.kraken.obstacles.container.StaticObstacles;
 import pfg.kraken.robot.Cinematique;
@@ -73,7 +72,6 @@ public class TentacleManager
 		coins[3] = new XY(coins[2].getX(), coins[0].getY());
 	}
 
-	private List<RectangularObstacle> ombresRobot = new ArrayList<RectangularObstacle>();
 	private XY[] coins = new XY[4];
 	
 	/**
@@ -89,24 +87,18 @@ public class TentacleManager
 		if(node.parent == null)
 			return true;
 
-		/**
-		 * On agrège les obstacles en un seul pour simplifier l'écriture des
-		 * calculs
-		 */
-		ombresRobot.clear();
-		for(int i = 0; i < node.getArc().getNbPoints(); i++)
-			ombresRobot.add(node.getArc().getPoint(i).obstacle);
-
+		int nbOmbres = node.getArc().getNbPoints();
+		
 		// On vérifie la collision avec les murs
-		for(RectangularObstacle obs : ombresRobot)
+		for(int j = 0; j < nbOmbres; j++)
 			for(int i = 0; i < 4; i++)
-				if(obs.isColliding(coins[i], coins[(i+1)&3]))
+				if(node.getArc().getPoint(j).obstacle.isColliding(coins[i], coins[(i+1)&3]))
 					return false;
 		
 		// Collision avec un obstacle fixe?
 		for(Obstacle o : fixes.getObstacles())
-			for(RectangularObstacle obs : ombresRobot)
-				if(/*!disabledObstaclesFixes.contains(o) && */o.isColliding(obs))
+			for(int i = 0; i < nbOmbres; i++)
+				if(/*!disabledObstaclesFixes.contains(o) && */o.isColliding(node.getArc().getPoint(i).obstacle))
 				{
 					// log.debug("Collision avec "+o);
 					return false;
@@ -119,8 +111,8 @@ public class TentacleManager
 			while(iter.hasNext())
 			{
 				Obstacle n = iter.next();
-				for(RectangularObstacle obs : ombresRobot)
-					if(n.isColliding(obs))
+				for(int i = 0; i < nbOmbres; i++)
+					if(n.isColliding(node.getArc().getPoint(i).obstacle))
 					{
 						// log.debug("Collision avec un obstacle de proximité.");
 						return false;
