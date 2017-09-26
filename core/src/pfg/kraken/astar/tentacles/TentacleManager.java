@@ -70,10 +70,12 @@ public class TentacleManager
 			listeVitesse.add(v);
 		for(TentacleType v : BezierTentacle.values())
 			listeVitesse.add(v);
-		for(TentacleType v : TurnoverTentacle.values())
-			listeVitesse.add(v);
-		for(TentacleType v : StraightingTentacle.values())
-			listeVitesse.add(v);
+//		for(TentacleType v : TurnoverTentacle.values())
+//			listeVitesse.add(v);
+		
+		// TODO les StraightingTentacle seront fonctionnellement remplacés par le lissage en postprocess
+//		for(TentacleType v : StraightingTentacle.values())
+//			listeVitesse.add(v);
 
 		courbureMax = config.getDouble(ConfigInfoKraken.MAX_CURVATURE);
 		tempsArret = config.getInt(ConfigInfoKraken.STOP_DURATION);
@@ -301,6 +303,9 @@ public class TentacleManager
 	 */
 	private final boolean acceptable(TentacleType vitesse)
 	{
+		// TODO faire du tri avec une heuristique ! exemple :
+		// - voir si le dernier point est dans un obstacle ou pas
+		// - voir si l'orientation heuristique préconise certains mouvement (ne pas faire de marche arrière, voire tourner à gauche / à droite)
 		return vitesse.isAcceptable(current.robot.getCinematique(), directionstrategyactuelle, courbureMax);
 	}
 

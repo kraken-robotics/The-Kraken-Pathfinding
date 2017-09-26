@@ -260,7 +260,7 @@ public class DStarLite
 	 * 
 	 * @param positionArrivee
 	 */
-	public synchronized void changeGoal(XY positionArrivee)
+	private synchronized void changeGoal(XY positionArrivee)
 	{
 		nbPF++;
 
@@ -537,8 +537,7 @@ public class DStarLite
 		return null;
 	}
 
-	
-	public String checkKey()
+	private String checkKey()
 	{
 		for(int i = 0; i < memory.length; i++)
 		{
@@ -549,7 +548,7 @@ public class DStarLite
 		return null;
 	}
 	
-	public String checkInvariantOpenset()
+	private String checkInvariantOpenset()
 	{
 		for(int i = 0; i < memory.length; i++)
 		{
@@ -569,7 +568,7 @@ public class DStarLite
 		return null;
 	}
 	
-	public String checkInvariantRhs()
+	private String checkInvariantRhs()
 	{
 		for(int i = 0; i < memory.length; i++)
 		{
