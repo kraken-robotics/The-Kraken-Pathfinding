@@ -11,3 +11,7 @@ bin/
 *.jar
 logs/
 videos/
+core/config/
+core/dependency-injector/
+core/graphic-toolbox/
+clotho*.krk
