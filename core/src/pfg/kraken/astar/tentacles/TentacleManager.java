@@ -77,6 +77,10 @@ public class TentacleManager
 
 		courbureMax = config.getDouble(ConfigInfoKraken.MAX_CURVATURE);
 		tempsArret = config.getInt(ConfigInfoKraken.STOP_DURATION);
+		coins[0] = fixes.getBottomLeftCorner();
+		coins[2] = fixes.getTopRightCorner();
+		coins[1] = new XY(coins[0].getX(), coins[2].getY());
+		coins[3] = new XY(coins[2].getX(), coins[0].getY());
 	}
 
 	private List<RectangularObstacle> ombresRobot = new ArrayList<RectangularObstacle>();
@@ -103,6 +107,12 @@ public class TentacleManager
 		for(int i = 0; i < node.getArc().getNbPoints(); i++)
 			ombresRobot.add(node.getArc().getPoint(i).obstacle);
 
+		// On vérifie la collision avec les murs
+		for(RectangularObstacle obs : ombresRobot)
+			for(int i = 0; i < 4; i++)
+				if(obs.isColliding(coins[i], coins[(i+1)&3]))
+					return false;
+		
 		// Collision avec un obstacle fixe?
 		for(Obstacle o : fixes.getObstacles())
 			for(RectangularObstacle obs : ombresRobot)
