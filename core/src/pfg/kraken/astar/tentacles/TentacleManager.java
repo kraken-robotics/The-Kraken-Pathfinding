@@ -10,16 +10,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import pfg.config.Config;
+import pfg.injector.Injector;
+import pfg.injector.InjectorException;
 import pfg.kraken.ConfigInfoKraken;
 import pfg.kraken.LogCategoryKraken;
 import pfg.kraken.SeverityCategoryKraken;
 import pfg.kraken.astar.AStarNode;
 import pfg.kraken.astar.DirectionStrategy;
-import pfg.kraken.astar.tentacles.types.BezierTentacle;
-import pfg.kraken.astar.tentacles.types.ClothoTentacle;
-import pfg.kraken.astar.tentacles.types.StraightingTentacle;
 import pfg.kraken.astar.tentacles.types.TentacleType;
-import pfg.kraken.astar.tentacles.types.TurnoverTentacle;
 import pfg.kraken.dstarlite.DStarLite;
 import pfg.kraken.obstacles.Obstacle;
 import pfg.kraken.obstacles.RectangularObstacle;
@@ -27,7 +25,6 @@ import pfg.kraken.obstacles.container.DynamicObstacles;
 import pfg.kraken.obstacles.container.StaticObstacles;
 import pfg.kraken.robot.Cinematique;
 import pfg.kraken.utils.XY;
-import pfg.kraken.utils.XY_RW;
 import pfg.log.Log;
 
 /**
@@ -40,43 +37,34 @@ import pfg.log.Log;
 public class TentacleManager
 {
 	protected Log log;
-	private ClothoidesComputer clotho;
-	private BezierComputer bezier;
-//	private CircleComputer circlecomputer;
 	private AStarNode current;
 	private DStarLite dstarlite;
 	private DynamicObstacles dynamicObs;
 	private double courbureMax;
 	private int tempsArret;
+	private Injector injector;
 	private StaticObstacles fixes;
 	
 	private DirectionStrategy directionstrategyactuelle;
-	private XY_RW arrivee = new XY_RW();
-	private List<TentacleType> listeVitesse = new ArrayList<TentacleType>();
-	private ListIterator<TentacleType> iterator = listeVitesse.listIterator();
+	private Cinematique arrivee = new Cinematique();
+//	private ResearchProfileManager profiles;
+	private List<TentacleType> currentProfile = new ArrayList<TentacleType>();
+	private ListIterator<TentacleType> iterator = currentProfile.listIterator();
 //	private List<StaticObstacles> disabledObstaclesFixes = new ArrayList<StaticObstacles>();
 
-	public TentacleManager(Log log, StaticObstacles fixes, ClothoidesComputer clotho, DStarLite dstarlite, BezierComputer bezier, Config config, DynamicObstacles dynamicObs)
+	public TentacleManager(Log log, StaticObstacles fixes, DStarLite dstarlite, Config config, DynamicObstacles dynamicObs, Injector injector, ResearchProfileManager profiles) throws InjectorException
 	{
-//		this.circlecomputer = circlecomputer;
+		this.injector = injector;
 		this.fixes = fixes;
 		this.dynamicObs = dynamicObs;
-		this.bezier = bezier;
 		this.log = log;
-		this.clotho = clotho;
 		this.dstarlite = dstarlite;
 
-		for(TentacleType v : ClothoTentacle.values())
-			listeVitesse.add(v);
-		for(TentacleType v : BezierTentacle.values())
-			listeVitesse.add(v);
-//		for(TentacleType v : TurnoverTentacle.values())
-//			listeVitesse.add(v);
+//		this.profiles = profiles;
+		this.currentProfile = profiles.getProfile(0);
+		for(TentacleType t : currentProfile)
+			injector.getService(t.getComputer());
 		
-		// TODO les StraightingTentacle seront fonctionnellement remplacés par le lissage en postprocess
-//		for(TentacleType v : StraightingTentacle.values())
-//			listeVitesse.add(v);
-
 		courbureMax = config.getDouble(ConfigInfoKraken.MAX_CURVATURE);
 		tempsArret = config.getInt(ConfigInfoKraken.STOP_DURATION);
 		coins[0] = fixes.getBottomLeftCorner();
@@ -180,96 +168,8 @@ public class TentacleManager
 	public boolean next(AStarNode successeur)
 	{
 		TentacleType v = iterator.next();
-
 		current.robot.copy(successeur.robot);
-
-		if(v instanceof BezierTentacle)
-		{
-			// TODO que signifie cette condition ?
-			if(current.getArc() == null)
-				return false;
-
-			if(v == BezierTentacle.BEZIER_QUAD)
-			{
-				DynamicTentacle tmp;
-				tmp = bezier.quadraticInterpolationXYOC2XY(current.robot.getCinematique(), arrivee);
-				if(tmp == null)
-					return false;
-
-				successeur.cameFromArcDynamique = tmp;
-			}
-
-/*			else if(v == VitesseBezier.CIRCULAIRE_VERS_CERCLE && useCercle)
-			{
-				ArcCourbeDynamique tmp;
-				tmp = circlecomputer.trajectoireCirculaireVersCentre(current.robot.getCinematique());
-				if(tmp == null)
-					return false;
-
-				successeur.cameFromArcDynamique = tmp;
-			}*/
-
-			else
-				return false;
-
-			/*
-			 * else // cette interpolation est réservée à l'arrivée sur un
-			 * cercle
-			 * {
-			 * if(current.state.robot.getCinematique().enMarcheAvant) // on doit
-			 * arriver en marche arrière
-			 * return false;
-			 * ArcCourbeDynamique tmp;
-			 * tmp = bezier.interpolationQuadratiqueCercle(
-			 * current.state.robot.getCinematique());
-			 * if(tmp == null)
-			 * return false;
-			 * successeur.cameFromArcDynamique = tmp;
-			 * }
-			 */
-		}
-
-		/**
-		 * Si on veut ramener le volant au milieu
-		 */
-		else if(v instanceof StraightingTentacle)
-		{
-			if(current.getArc() == null)
-				return false;
-
-			DynamicTentacle tmp = clotho.getTrajectoireRamene(successeur.robot.getCinematique(), (StraightingTentacle) v);
-			if(tmp == null)
-				return false;
-			successeur.cameFromArcDynamique = tmp;
-		}
-
-		/**
-		 * Si on veut faire un demi-tour
-		 */
-		else if(v instanceof TurnoverTentacle)
-		{
-			if(current.getArc() == null)
-				return false;
-
-			successeur.cameFromArcDynamique = clotho.getTrajectoireDemiTour(successeur.robot.getCinematique(), (TurnoverTentacle) v);
-		}
-
-		/**
-		 * Si on fait une interpolation par clothoïde
-		 */
-		else if(v instanceof ClothoTentacle)
-		{
-			// si le robot est arrêté (début de trajectoire), et que la vitesse
-			// n'est pas prévue pour un arrêt ou un rebroussement, on annule
-			if(current.getArc() == null && (!((ClothoTentacle) v).arret && !((ClothoTentacle) v).rebrousse))
-				return false;
-
-			clotho.getTrajectoire(successeur.robot.getCinematique(), (ClothoTentacle) v, successeur.cameFromArcStatique);
-		}
-		else
-			assert false;
-
-		return true;
+		return injector.getExistingService(v.getComputer()).compute(successeur, v, arrivee, successeur);
 	}
 
 	/**
@@ -279,12 +179,17 @@ public class TentacleManager
 	 * @param sens
 	 * @param arrivee
 	 */
-	public void configureArcManager(DirectionStrategy directionstrategyactuelle, XY arrivee)
+	public void configureArcManager(DirectionStrategy directionstrategyactuelle, Cinematique arrivee)
 	{
 		this.directionstrategyactuelle = directionstrategyactuelle;
 		arrivee.copy(this.arrivee);
 	}
 
+	public void configureArcManager(DirectionStrategy directionstrategyactuelle, XY arrivee)
+	{
+		this.directionstrategyactuelle = directionstrategyactuelle;
+		this.arrivee.updateReel(arrivee.getX(), arrivee.getY(), 0, true, 0);
+	}
 	/**
 	 * Initialise l'arc manager avec le cercle
 	 * 
@@ -336,7 +241,7 @@ public class TentacleManager
 	public void reinitIterator(AStarNode current)
 	{
 		this.current = current;
-		iterator = listeVitesse.listIterator();
+		iterator = currentProfile.listIterator();
 	}
 
 	public synchronized Double heuristicCostCourbe(Cinematique c)
@@ -351,12 +256,12 @@ public class TentacleManager
 	
 	public boolean isArrivedPF(Cinematique successeur)
 	{
-		return successeur.getPosition().squaredDistance(arrivee) < 5;
+		return successeur.getPosition().squaredDistance(arrivee.getPosition()) < 5;
 	}
 	
 	public boolean isArrivedAsser(Cinematique successeur)
 	{
-		return successeur.getPosition().squaredDistance(arrivee) < 25;
+		return successeur.getPosition().squaredDistance(arrivee.getPosition()) < 25;
 	}
 	
 	/**
@@ -365,10 +270,10 @@ public class TentacleManager
 	 * @param cinematique
 	 * @return
 	 */
-	public double heuristicDirect(Cinematique cinematique)
+/*	public double heuristicDirect(Cinematique cinematique)
 	{
 		return 3 * cinematique.getPosition().distanceFast(arrivee);
-	}
+	}*/
 
 /*	public void setTentacle(List<TentacleType> tentacleTypesUsed)
 	{

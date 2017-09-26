@@ -9,9 +9,11 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import pfg.config.Config;
 import pfg.kraken.ConfigInfoKraken;
+import pfg.kraken.astar.AStarNode;
 import pfg.kraken.astar.tentacles.types.BezierTentacle;
 import pfg.kraken.astar.tentacles.types.ClothoTentacle;
 import pfg.kraken.astar.tentacles.types.StraightingTentacle;
+import pfg.kraken.astar.tentacles.types.TentacleType;
 import pfg.kraken.memory.CinemObsPool;
 import pfg.kraken.obstacles.RectangularObstacle;
 import pfg.kraken.robot.Cinematique;
@@ -29,7 +31,7 @@ import static pfg.kraken.astar.tentacles.Tentacle.*;
  *
  */
 
-public class BezierComputer
+public class BezierComputer implements TentacleComputer
 {
 	protected Log log;
 	private CinemObsPool memory;
@@ -332,6 +334,23 @@ public class BezierComputer
 			return null;
 
 		return new DynamicTentacle(out, BezierTentacle.BEZIER_QUAD);
+	}
+
+	@Override
+	public boolean compute(AStarNode current, TentacleType tentacleType, Cinematique arrival, AStarNode modified)
+	{
+		assert tentacleType instanceof BezierTentacle : tentacleType;
+		if(tentacleType == BezierTentacle.BEZIER_QUAD)
+		{
+			DynamicTentacle t = quadraticInterpolationXYOC2XY(current.robot.getCinematique(), arrival.getPosition());
+			if(t == null)
+				return false;
+			modified.cameFromArcDynamique = t;
+			return true;
+		}
+		
+		assert false;
+		return false;
 	}
 
 	

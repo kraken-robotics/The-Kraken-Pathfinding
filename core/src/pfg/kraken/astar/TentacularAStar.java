@@ -407,7 +407,7 @@ public class TentacularAStar
 		{
 			Tentacle a = pileTmp.pop();
 //			log.write(a.vitesse + " (" + a.getNbPoints() + " pts)", LogCategoryKraken.PF);
-			System.out.println(a.vitesse);
+//			System.out.println(a.vitesse);
 			for(int i = 0; i < a.getNbPoints(); i++)
 			{
 				last = a.getPoint(i);

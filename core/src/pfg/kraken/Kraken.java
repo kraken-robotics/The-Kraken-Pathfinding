@@ -21,6 +21,7 @@ import pfg.injector.Injector;
 import pfg.injector.InjectorException;
 import pfg.kraken.astar.DirectionStrategy;
 import pfg.kraken.astar.TentacularAStar;
+import pfg.kraken.astar.tentacles.ResearchProfileManager;
 import pfg.kraken.astar.tentacles.types.*;
 import pfg.kraken.exceptions.NoPathException;
 import pfg.kraken.exceptions.PathfindingException;
@@ -42,7 +43,6 @@ public class Kraken
 {
 	private Config config;
 	private Injector injector;
-	private List<TentacleType> tentacleTypesUsed;
 	private boolean initialized = false;
 	private XY bottomLeftCorner, topRightCorner;
 	private DynamicObstacles dynObs;
@@ -59,7 +59,7 @@ public class Kraken
 	 */
 	public Kraken(RectangularObstacle vehicleTemplate, List<Obstacle> fixedObstacles, XY bottomLeftCorner, XY topRightCorner, String...profiles)
 	{
-		this(vehicleTemplate, fixedObstacles, new EmptyDynamicObstacles(), null, bottomLeftCorner, topRightCorner, profiles);
+		this(vehicleTemplate, fixedObstacles, new EmptyDynamicObstacles(), bottomLeftCorner, topRightCorner, profiles);
 	}
 	
 	/**
@@ -71,38 +71,44 @@ public class Kraken
 	 * @param topRightCorner : the top right corner of the search domain
 	 * @param configprofile : the config profiles
 	 */
-	public Kraken(RectangularObstacle vehicleTemplate, List<Obstacle> fixedObstacles, DynamicObstacles dynObs, XY bottomLeftCorner, XY topRightCorner, String...configprofile)
+/*	public Kraken(RectangularObstacle vehicleTemplate, List<Obstacle> fixedObstacles, DynamicObstacles dynObs, XY bottomLeftCorner, XY topRightCorner, String...configprofile)
 	{
-		this(vehicleTemplate, fixedObstacles, dynObs, null, bottomLeftCorner, topRightCorner, configprofile);
-	}
+		this(vehicleTemplate, fixedObstacles, dynObs, bottomLeftCorner, topRightCorner, configprofile);
+	}*/
 	
 	/**
-	 * Instancie le gestionnaire de dépendances et quelques services critiques
-	 * (log et config qui sont interdépendants)
+	 * Get Kraken with :
+	 * @param vehicleTemplate : the shape of the vehicle
+	 * @param fixedObstacles : a list of fixed/permanent obstacles
+	 * @param dynObs : a dynamic/temporary obstacles manager that implements the DynamicObstacles interface
+	 * @param bottomLeftCorner : the bottom left corner of the search domain
+	 * @param topRightCorner : the top right corner of the search domain
+	 * @param configprofile : the config profiles
 	 */
-	private Kraken(RectangularObstacle vehicleTemplate, List<Obstacle> fixedObstacles, DynamicObstacles dynObs, TentacleType tentacleTypes, XY bottomLeftCorner, XY topRightCorner, String...configprofile)
+	public Kraken(RectangularObstacle vehicleTemplate, List<Obstacle> fixedObstacles, DynamicObstacles dynObs, XY bottomLeftCorner, XY topRightCorner, String...configprofile)
 	{	
 		this.bottomLeftCorner = bottomLeftCorner;
 		this.topRightCorner = topRightCorner;
 		this.dynObs = dynObs;
 		
-		tentacleTypesUsed = new ArrayList<TentacleType>();
-		if(tentacleTypes == null)
-		{
-			for(BezierTentacle t : BezierTentacle.values())
-				tentacleTypesUsed.add(t);
-			for(ClothoTentacle t : ClothoTentacle.values())
-				tentacleTypesUsed.add(t);
-			for(TurnoverTentacle t : TurnoverTentacle.values())
+		List<TentacleType> tentacleTypesUsed = new ArrayList<TentacleType>();
+		for(BezierTentacle t : BezierTentacle.values())
+			tentacleTypesUsed.add(t);
+		for(ClothoTentacle t : ClothoTentacle.values())
+			tentacleTypesUsed.add(t);
+/*			for(TurnoverTentacle t : TurnoverTentacle.values())
 				tentacleTypesUsed.add(t);
 			for(StraightingTentacle t : StraightingTentacle.values())
-				tentacleTypesUsed.add(t);
-		}
+				tentacleTypesUsed.add(t);*/
 		
 		injector = new Injector();
 		config = new Config(ConfigInfoKraken.values(), false, "kraken.conf", configprofile);
+		injector.addService(RectangularObstacle.class, vehicleTemplate);
+		
 		try {
-			injector.addService(RectangularObstacle.class, vehicleTemplate);
+			ResearchProfileManager profiles = injector.getService(ResearchProfileManager.class);
+			profiles.addProfile(tentacleTypesUsed);
+			
 			StaticObstacles so = injector.getService(StaticObstacles.class); 
 			if(fixedObstacles != null)
 				so.addAll(fixedObstacles);
@@ -142,7 +148,8 @@ public class Kraken
 				injector.addService(config);
 				injector.addService(DynamicObstacles.class, dynObs);		
 				injector.addService(this);
-		
+				injector.addService(injector);
+
 				if(config.getBoolean(ConfigInfoKraken.GRAPHIC_ENABLE))
 				{
 					if(f == null)

@@ -6,6 +6,8 @@
 package pfg.kraken.astar.tentacles.types;
 
 import pfg.kraken.astar.DirectionStrategy;
+import pfg.kraken.astar.tentacles.ClothoidesComputer;
+import pfg.kraken.astar.tentacles.TentacleComputer;
 import pfg.kraken.robot.Cinematique;
 import static pfg.kraken.astar.tentacles.Tentacle.*;
 
@@ -115,4 +117,11 @@ public enum ClothoTentacle implements TentacleType
 			return Color.GREEN;
 		return Color.RED;
 	}
+	
+	@Override
+	public Class<? extends TentacleComputer> getComputer()
+	{
+		return ClothoidesComputer.class;
+	}
+
 }

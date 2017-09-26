@@ -8,6 +8,8 @@ package pfg.kraken.astar.tentacles.types;
 import java.awt.Color;
 
 import pfg.kraken.astar.DirectionStrategy;
+import pfg.kraken.astar.tentacles.BezierComputer;
+import pfg.kraken.astar.tentacles.TentacleComputer;
 import pfg.kraken.robot.Cinematique;
 
 /**
@@ -19,8 +21,7 @@ import pfg.kraken.robot.Cinematique;
 
 public enum BezierTentacle implements TentacleType
 {
-	BEZIER_QUAD(0),
-	CIRCULAIRE_VERS_CERCLE(1);
+	BEZIER_QUAD(0);
 
 	private final int nbArrets;
 
@@ -44,5 +45,11 @@ public enum BezierTentacle implements TentacleType
 	@Override
 	public Color getColor() {
 		return Color.GREEN;
+	}
+
+	@Override
+	public Class<? extends TentacleComputer> getComputer()
+	{
+		return BezierComputer.class;
 	}
 }

@@ -20,8 +20,10 @@ import pfg.config.Config;
 import pfg.kraken.ConfigInfoKraken;
 import pfg.kraken.LogCategoryKraken;
 import pfg.kraken.SeverityCategoryKraken;
+import pfg.kraken.astar.AStarNode;
 import pfg.kraken.astar.tentacles.types.ClothoTentacle;
 import pfg.kraken.astar.tentacles.types.StraightingTentacle;
+import pfg.kraken.astar.tentacles.types.TentacleType;
 import pfg.kraken.astar.tentacles.types.TurnoverTentacle;
 import pfg.kraken.memory.CinemObsPool;
 import pfg.kraken.robot.Cinematique;
@@ -39,7 +41,7 @@ import static pfg.kraken.astar.tentacles.Tentacle.*;
  *
  */
 
-public class ClothoidesComputer
+public class ClothoidesComputer implements TentacleComputer
 {
 	private Log log;
 	private CinemObsPool memory;
@@ -586,6 +588,20 @@ public class ClothoidesComputer
 			i++;
 		} while(vecteurOrientation.dot(vecteurOrientationDepart) >= 0 || vecteurOrientation.dot(vecteurOrientationDepartRotate) <= 0);
 		return out;
+	}
+
+	@Override
+	public boolean compute(AStarNode current, TentacleType tentacleType, Cinematique arrival, AStarNode modified)
+	{
+		assert tentacleType instanceof ClothoTentacle : tentacleType;
+		
+		// si le robot est arrêté (début de trajectoire), et que la vitesse
+		// n'est pas prévue pour un arrêt ou un rebroussement, on annule
+		if(current.getArc() == null && (!((ClothoTentacle) tentacleType).arret && !((ClothoTentacle) tentacleType).rebrousse))
+			return false;
+
+		getTrajectoire(current.robot.getCinematique(), (ClothoTentacle) tentacleType, modified.cameFromArcStatique);
+		return true;
 	}
 
 }
