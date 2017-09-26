@@ -61,6 +61,7 @@ public class TentacularAStar
 	private DirectionStrategy defaultStrategy;
 	private double vitesseMax;
 	private boolean printObstacles;
+	private double defaultSpeed;
 	// private int tailleFaisceau;
 	private volatile boolean rechercheEnCours = false;
 
@@ -114,6 +115,7 @@ public class TentacularAStar
 			defaultStrategy = DirectionStrategy.FASTEST;
 		else
 			defaultStrategy = DirectionStrategy.FORCE_FORWARD_MOTION;
+		defaultSpeed = config.getDouble(ConfigInfoKraken.DEFAULT_MAX_SPEED);
 		this.depart = new AStarNode(chrono, vehicleTemplate);
 		depart.setIndiceMemoryManager(-1);
 	}
@@ -431,7 +433,7 @@ public class TentacularAStar
 
 	public void initializeNewSearch(XYO start, XY arrival, DirectionStrategy directionstrategy) throws NoPathException
 	{
-		initializeNewSearch(start, arrival, directionstrategy, 1.);
+		initializeNewSearch(start, arrival, directionstrategy, defaultSpeed);
 	}
 	
 	/**

@@ -36,7 +36,10 @@ public abstract class Tentacle implements Printable
 		int nb = getNbPoints();
 		double out = 0;
 		for(int i = 0; i < nb; i++)
-			out += ClothoidesComputer.PRECISION_TRACE_MM / Math.max(getPoint(i).maxSpeed, translationalSpeed);
+		{
+			getPoint(i).maxSpeed = Math.min(getPoint(i).maxSpeed, translationalSpeed);
+			out += ClothoidesComputer.PRECISION_TRACE_MM / getPoint(i).maxSpeed;
+		}
 		return out + vitesse.getNbArrets() * tempsArret;
 	}
 

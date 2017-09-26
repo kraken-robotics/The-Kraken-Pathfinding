@@ -80,7 +80,8 @@ public class TentacleManager
 	}
 
 	private List<RectangularObstacle> ombresRobot = new ArrayList<RectangularObstacle>();
-
+	private XY[] coins = new XY[4];
+	
 	/**
 	 * Retourne faux si un obstacle est sur la route
 	 * 
