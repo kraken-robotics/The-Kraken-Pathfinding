@@ -111,8 +111,8 @@ public class JUnit_TentacularAStar extends JUnit_Test
 			}
 			if(a == 0)
 			{
-				Assert.assertEquals(arc[0].arcselems[ClothoidesComputer.NB_POINTS - 1].getPositionEcriture().getX(), 0, 0.1);
-				Assert.assertEquals(arc[0].arcselems[ClothoidesComputer.NB_POINTS - 1].getPositionEcriture().getY(), 1000 + (int) ClothoidesComputer.DISTANCE_ARC_COURBE, 0.1);
+				Assert.assertEquals(arc[0].arcselems[ClothoidesComputer.NB_POINTS - 1].getPosition().getX(), 0, 0.1);
+				Assert.assertEquals(arc[0].arcselems[ClothoidesComputer.NB_POINTS - 1].getPosition().getY(), 1000 + (int) ClothoidesComputer.DISTANCE_ARC_COURBE, 0.1);
 			}
 			/*
 			 * else if(arc[a].arcselems[0].enMarcheAvant !=

@@ -275,18 +275,16 @@ public class BezierComputer
 			a_tmp.rotate(0, 1);
 			double accLongitudinale = a_tmp.dot(acc);
 
-			obs.update(tmpPos.getX(), // x
-					tmpPos.getY(), // y
-					orientation, enMarcheAvant, accLongitudinale / (vitesse * vitesse), rootedMaxAcceleration); // Frenet
-
-			double deltaO = (obs.orientationGeometrique - lastOrientation) % (2 * Math.PI);
+			double courbure =  accLongitudinale / (vitesse * vitesse);
+			
+			double deltaO = (orientation - lastOrientation) % (2 * Math.PI);
 			if(deltaO > Math.PI)
 				deltaO -= 2 * Math.PI;
 			else if(deltaO < -Math.PI)
 				deltaO += 2 * Math.PI;
 
 			// on a dépassé la courbure maximale : on arrête tout
-			if(Math.abs(obs.courbureGeometrique) > courbureMax || (!first && (Math.abs(obs.courbureGeometrique - lastCourbure) > deltaCourbureMax || Math.abs(deltaO) > 0.5)))
+			if(Math.abs(courbure) > courbureMax || (!first && (Math.abs(courbure - lastCourbure) > deltaCourbureMax || Math.abs(deltaO) > 0.5)))
 			{
 				// log.debug("Courbure max dépassée :
 				// "+obs.courbureGeometrique+"
@@ -297,6 +295,10 @@ public class BezierComputer
 					memory.destroyNode(c);
 				return null;
 			}
+
+			obs.update(tmpPos.getX(), // x
+					tmpPos.getY(), // y
+					orientation, enMarcheAvant, courbure, rootedMaxAcceleration); // Frenet
 
 			lastOrientation = obs.orientationGeometrique;
 			lastCourbure = obs.courbureGeometrique;

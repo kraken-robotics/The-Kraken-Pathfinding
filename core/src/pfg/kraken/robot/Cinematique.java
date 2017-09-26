@@ -42,10 +42,10 @@ public class Cinematique implements Printable, Serializable
 		updateReel(xyo.position.getX(), xyo.position.getY(), xyo.orientation, true, 0);
 	}
 	
-/*	public Cinematique(double x, double y, double orientationGeometrique, boolean enMarcheAvant, double courbure)
+	public Cinematique(double x, double y, double orientationGeometrique, boolean enMarcheAvant, double courbure)
 	{
 		update(x, y, orientationGeometrique, enMarcheAvant, courbure);
-	}*/
+	}
 
 	/**
 	 * Constructeur par copie
@@ -157,7 +157,7 @@ public class Cinematique implements Printable, Serializable
 	 * @param enMarcheAvant
 	 * @param curvature
 	 */
-	protected void updateReel(double x, double y, double orientationReelle, boolean enMarcheAvant, double courbureReelle)
+	public void updateReel(double x, double y, double orientationReelle, boolean enMarcheAvant, double courbureReelle)
 	{
 		if(enMarcheAvant)
 		{
