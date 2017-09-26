@@ -26,11 +26,6 @@ public class RobotState
 		date = 0;
 	}
 	
-	public long getTempsDepuisDebutMatch()
-	{
-		return date;
-	}
-
 	public void suitArcCourbe(Tentacle came_from_arc, double duration)
 	{
 		date += duration;
@@ -50,7 +45,7 @@ public class RobotState
 	public final void copy(RobotState rc)
 	{
 		cinematique.copy(rc.cinematique);
-		rc.date = getTempsDepuisDebutMatch();
+		rc.date = date;
 	}
 
 	public void setCinematique(Cinematique cinematique)

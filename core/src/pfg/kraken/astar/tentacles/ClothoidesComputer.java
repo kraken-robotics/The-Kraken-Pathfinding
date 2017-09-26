@@ -597,8 +597,9 @@ public class ClothoidesComputer implements TentacleComputer
 		
 		// si le robot est arrêté (début de trajectoire), et que la vitesse
 		// n'est pas prévue pour un arrêt ou un rebroussement, on annule
-		if(current.getArc() == null && (!((ClothoTentacle) tentacleType).arret && !((ClothoTentacle) tentacleType).rebrousse))
-			return false;
+		// cette idée, plus appliquée, permettait d'avoir les premiers centimètres de la trajectoire à courbure constante
+//		if(current.getArc() == null && (!((ClothoTentacle) tentacleType).arret && !((ClothoTentacle) tentacleType).rebrousse))
+//			return false;
 
 		getTrajectoire(current.robot.getCinematique(), (ClothoTentacle) tentacleType, modified.cameFromArcStatique);
 		return true;

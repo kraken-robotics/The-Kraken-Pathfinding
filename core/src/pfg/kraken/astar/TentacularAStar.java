@@ -335,28 +335,7 @@ public class TentacularAStar
 				}
 
 				openset.add(successeur);
-				// opensetTmp.add(successeur);
-				// log.debug(successeur.getArc().vitesse+"
-				// "+successeur.g_score+"
-				// "+(successeur.f_score-successeur.g_score));
 			}
-
-			// On ajoute que les meilleurs
-			/*
-			 * int nbAjoutes = 0;
-			 * while(nbAjoutes < tailleFaisceau)
-			 * {
-			 * AStarCourbeNode n = opensetTmp.poll();
-			 * if(n == null) // pas assez de nœuds ? Tant pis
-			 * break;
-			 * if(closedsetTmp.add(n)) // on vérifie que ce hash n'est pas déjà
-			 * utilisé
-			 * {
-			 * openset.add(n);
-			 * nbAjoutes++;
-			 * }
-			 * }
-			 */
 
 		} while(!openset.isEmpty());
 

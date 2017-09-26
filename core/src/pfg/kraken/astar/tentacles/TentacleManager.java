@@ -169,7 +169,7 @@ public class TentacleManager
 	{
 		TentacleType v = iterator.next();
 		current.robot.copy(successeur.robot);
-		return injector.getExistingService(v.getComputer()).compute(successeur, v, arrivee, successeur);
+		return injector.getExistingService(v.getComputer()).compute(current, v, arrivee, successeur);
 	}
 
 	/**
