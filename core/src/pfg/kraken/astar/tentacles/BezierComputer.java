@@ -37,7 +37,7 @@ public class BezierComputer implements TentacleComputer
 	private CinemObsPool memory;
 	private double courbureMax;
 	private double rootedMaxAcceleration;
-	private static final double deltaCourbureMax = 0.2;
+	private double deltaCourbureMax;
 	private ClothoidesComputer clothocomputer;
 
 	public BezierComputer(Log log, CinemObsPool memory, ClothoidesComputer clothocomputer, Config config, RectangularObstacle vehicleTemplate)
@@ -48,7 +48,8 @@ public class BezierComputer implements TentacleComputer
 
 		courbureMax = config.getDouble(ConfigInfoKraken.MAX_CURVATURE);
 		rootedMaxAcceleration = Math.sqrt(config.getDouble(ConfigInfoKraken.MAX_LATERAL_ACCELERATION));
-
+		deltaCourbureMax = config.getDouble(ConfigInfoKraken.MAX_CURVATURE_DERIVATIVE) * PRECISION_TRACE;
+		
 		tmp = new StaticTentacle(vehicleTemplate);
 	}
 
