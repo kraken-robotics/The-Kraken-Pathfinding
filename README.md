@@ -99,6 +99,14 @@ Bug report are done with issues. Please be careful to respect those few points:
 - describe your problem as best as possible. If you can post a minimal code that triggers the bug, it will be much easier for me ;
 - attach any relevant file.
 
+## License
+
+This project is licensed under the [MIT license](https://raw.githubusercontent.com/PFGimenez/The-Kraken-Pathfinding/master/LICENSE), which is very permissive. I'd love to know the projects that use Kraken ; please keep me posted !
+
+## Acknowledgements
+
+I would like to thank the [INTech robotics club](https://github.com/Club-INTech) that taught me all I know about robotics and greatly influenced the developpement of Kraken.
+
 ## Bibliography
 
 [1] Samson, C. (1995). Control of chained systems application to path following and time-varying point-stabilization of mobile robots. IEEE transactions on Automatic Control, 40(1), 64-77.
