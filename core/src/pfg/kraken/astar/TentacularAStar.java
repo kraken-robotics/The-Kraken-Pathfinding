@@ -5,9 +5,12 @@
 
 package pfg.kraken.astar;
 
+import java.awt.Color;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Stack;
 import pfg.config.Config;
@@ -62,6 +65,7 @@ public class TentacularAStar
 	private boolean printObstacles;
 	private double defaultSpeed;
 	private int nbExpandedNodes;
+	private boolean debugMode;
 	// private int tailleFaisceau;
 	private volatile boolean rechercheEnCours = false;
 
@@ -88,7 +92,8 @@ public class TentacularAStar
 	private final PriorityQueue<AStarNode> openset = new PriorityQueue<AStarNode>(5000, new AStarCourbeNodeComparator());
 	private Stack<Tentacle> pileTmp = new Stack<Tentacle>();
 	private LinkedList<ItineraryPoint> trajectory = new LinkedList<ItineraryPoint>();
-
+	private List<AStarNode> outTentacles = new ArrayList<AStarNode>();
+	
 	// private HashSet<AStarCourbeNode> closedsetTmp = new
 	// HashSet<AStarCourbeNode>();
 	// private final PriorityQueue<AStarCourbeNode> opensetTmp = new
@@ -108,8 +113,12 @@ public class TentacularAStar
 		this.buffer = buffer;
 		graphicTrajectory = config.getBoolean(ConfigInfoKraken.GRAPHIC_TENTACLES);
 		printObstacles = config.getBoolean(ConfigInfoKraken.GRAPHIC_ROBOT_COLLISION);
+		debugMode = config.getBoolean(ConfigInfoKraken.ENABLE_DEBUG_MODE);
 //		graphicDStarLite = config.getBoolean(ConfigInfoKraken.GRAPHIC_D_STAR_LITE);
-		dureeMaxPF = config.getInt(ConfigInfoKraken.SEARCH_TIMEOUT);
+		if(debugMode)
+			dureeMaxPF = Integer.MAX_VALUE;
+		else
+			dureeMaxPF = config.getInt(ConfigInfoKraken.SEARCH_TIMEOUT);
 		// tailleFaisceau = config.getInt(ConfigInfo.TAILLE_FAISCEAU_PF);
 		if(config.getBoolean(ConfigInfoKraken.ALLOW_BACKWARD_MOTION))
 			defaultStrategy = DirectionStrategy.FASTEST;
@@ -290,6 +299,8 @@ public class TentacularAStar
 			// opensetTmp.clear();
 			// closedsetTmp.clear();
 			arcmanager.reinitIterator(current);
+			if(debugMode)
+				outTentacles.clear();
 			while(arcmanager.hasNext())
 			{
 				successeur = memorymanager.getNewNode();
@@ -336,8 +347,26 @@ public class TentacularAStar
 					// log.debug("Arrivée trouvée !");
 					trajetDeSecours = successeur;
 				}
+				if(debugMode)
+				{
+					outTentacles.add(successeur);
+					buffer.addTemporaryPrintable(successeur, Color.BLUE, Layer.FOREGROUND.layer);
+				}
 
 				openset.add(successeur);
+			}
+			
+			if(debugMode)
+			{
+				buffer.refresh();
+				try {
+					Thread.sleep(200);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				for(AStarNode n : outTentacles)
+					buffer.removePrintable(n);
+				buffer.refresh();
 			}
 
 		} while(!openset.isEmpty());
@@ -383,8 +412,11 @@ public class TentacularAStar
 		}
 		trajectory.clear();
 
-		System.out.println("Path duration : "+best.robot.getDate());
-		System.out.println("Number of expanded nodes : "+nbExpandedNodes);
+		if(debugMode)
+		{
+			System.out.println("Path duration : "+best.robot.getDate());
+			System.out.println("Number of expanded nodes : "+nbExpandedNodes);
+		}
 		CinematiqueObs last = null;
 		// chemin.add fait des copies des points
 		while(!pileTmp.isEmpty() && profondeurMax > 0)

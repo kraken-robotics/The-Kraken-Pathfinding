@@ -52,6 +52,8 @@ public enum ConfigInfoKraken implements ConfigInfo
 //	SUPPRESSION_AUTO_OBSTACLES_FIXES(true), // si on démarre dans un obstacle
 											// fixe, est-ce qu'on le vire ?
 
+	ENABLE_DEBUG_MODE(false), // enable the debug mode
+	
 	/**
 	 * Paramètres sur la gestion de la mémoire
 	 */
@@ -81,7 +83,6 @@ public enum ConfigInfoKraken implements ConfigInfo
 	
 	DISPLAY_GRID(true),
 	BACKGROUND_PATH(""), // background path ; empty if none	
-	GRAPHIC_SERVER_PORT_NUMBER(13370), // port number of the graphic server
 	SIZE_X_WINDOW(900), // taille par défaut (sans image) de la fenêtre
 	SIZE_Y_WINDOW(600), // taille par défaut (sans image) de la fenêtre
 	
