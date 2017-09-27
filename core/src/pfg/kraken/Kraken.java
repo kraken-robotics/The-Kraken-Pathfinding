@@ -47,7 +47,6 @@ public class Kraken
 	private XY bottomLeftCorner, topRightCorner;
 	private DynamicObstacles dynObs;
 	private TentacularAStar astar;
-	private static WindowFrame f; // one display for all the instances
 	
 	/**
 	 * Get Kraken with :
@@ -141,7 +140,7 @@ public class Kraken
 				overrideGraphic.put(ConfigInfoGraphic.SIZE_X_WITH_UNITARY_ZOOM, (int) (topRightCorner.getX() - bottomLeftCorner.getX()));
 				overrideGraphic.put(ConfigInfoGraphic.SIZE_Y_WITH_UNITARY_ZOOM, (int) (topRightCorner.getY() - bottomLeftCorner.getY()));
 				
-				DebugTool debug = new DebugTool(overrideGraphic, SeverityCategoryKraken.INFO, null);
+				DebugTool debug = DebugTool.getDebugTool(overrideGraphic, SeverityCategoryKraken.INFO, null);
 				Log log = debug.getLog();
 
 				injector.addService(log);
@@ -152,8 +151,7 @@ public class Kraken
 
 				if(config.getBoolean(ConfigInfoKraken.GRAPHIC_ENABLE))
 				{
-					if(f == null)
-						f = debug.getWindowFrame(new Vec2RO((topRightCorner.getX() + bottomLeftCorner.getX()) / 2, (topRightCorner.getY() + bottomLeftCorner.getY()) / 2));
+					WindowFrame f = debug.getWindowFrame(new Vec2RO((topRightCorner.getX() + bottomLeftCorner.getX()) / 2, (topRightCorner.getY() + bottomLeftCorner.getY()) / 2));
 					injector.addService(f);
 					injector.addService(f.getPrintBuffer());
 				}
