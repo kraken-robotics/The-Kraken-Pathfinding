@@ -14,7 +14,7 @@ import pfg.kraken.robot.Cinematique;
 
 /**
  * Arc de clothoïde qui fait un demi-tour
- * 
+ * FIXME UNUSED
  * @author pf
  *
  */

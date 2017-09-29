@@ -23,6 +23,12 @@ import java.util.List;
 
 import pfg.config.ConfigInfo;
 
+/**
+ * The configuration keys
+ * @author pf
+ *
+ */
+
 public enum ConfigInfoKraken implements ConfigInfo
 {
 	/**
@@ -42,7 +48,7 @@ public enum ConfigInfoKraken implements ConfigInfo
 	MAX_LATERAL_ACCELERATION(3), // maximal lateral acceleration, in m/s²
 	DEFAULT_MAX_SPEED(1), // in m/s (or mm/ms)
 	MAX_CURVATURE(5), // in m⁻¹
-	STOP_DURATION(800), // temps qu'il faut au robot pour s'arrêter et repartir
+	STOP_DURATION(80000), // temps qu'il faut au robot pour s'arrêter et repartir
 						// (par exemple à cause d'un rebroussement) in ms
 	SEARCH_TIMEOUT(10000), // in ms
 

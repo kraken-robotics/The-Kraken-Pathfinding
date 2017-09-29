@@ -54,16 +54,12 @@ public class BezierComputer implements TentacleComputer
 	}
 
 	private XY_RW delta = new XY_RW(), vecteurVitesse = new XY_RW();
-	// private Vec2RW pointA = new Vec2RW(), pointB = new Vec2RW(), pointC = new
-	// Vec2RW();
 	private Cinematique debut;
 	private StaticTentacle tmp;
-
-	
 	private XY_RW tmpPoint = new XY_RW();
 	
 	/**
-	 * Interpolation
+	 * Interpolation de XYO à XYO
 	 * @param cinematiqueInitiale
 	 * @param arrivee
 	 * @return
@@ -123,7 +119,7 @@ public class BezierComputer implements TentacleComputer
 				prefixe = clothocomputer.getTrajectoireRamene(debut, StraightingTentacle.RAMENE_VOLANT);
 			}
 			if(prefixe == null)
-				prefixe = new DynamicTentacle(new ArrayList<CinematiqueObs>(), BezierTentacle.BEZIER_QUAD);
+				prefixe = new DynamicTentacle(new ArrayList<CinematiqueObs>(), BezierTentacle.BEZIER_XYOC_TO_XY);
 
 			clothocomputer.getTrajectoire(prefixe.getNbPoints() > 0 ? prefixe.getLast() : cinematiqueInitiale, d > 0 ? ClothoTentacle.GAUCHE_1 : ClothoTentacle.DROITE_1, tmp);
 			for(CinematiqueObs c : tmp.arcselems)
@@ -150,12 +146,7 @@ public class BezierComputer implements TentacleComputer
 		}
 
 		vecteurVitesse.rotate(0, -1);
-		vecteurVitesse.scalar(Math.sqrt(d / (2 * debut.courbureGeometrique / 1000))); // c'est
-																						// les
-																						// maths
-																						// qui
-																						// le
-																						// disent
+		vecteurVitesse.scalar(Math.sqrt(d / (2 * debut.courbureGeometrique / 1000))); // c'est les maths qui le disent
 		vecteurVitesse.plus(debut.getPosition());
 
 		DynamicTentacle arc = constructBezierQuad(debut.getPosition(), vecteurVitesse, arrivee, debut.enMarcheAvant, debut);
@@ -171,43 +162,11 @@ public class BezierComputer implements TentacleComputer
 		if(prefixe != null)
 		{
 			prefixe.arcs.addAll(arc.arcs);
-			prefixe.vitesse = BezierTentacle.BEZIER_QUAD;
+			prefixe.vitesse = BezierTentacle.BEZIER_XYOC_TO_XY;
 			return prefixe;
 		}
 		return arc;
 	}
-
-	/**
-	 * Une interpolation quadratique qui arrive sur un cercle
-	 * 
-	 * @param cinematique
-	 * @param vitesseMax
-	 * @return
-	 */
-	/*
-	 * public ArcCourbeDynamique interpolationQuadratiqueCercle(Cinematique
-	 * cinematiqueInitiale, Speed vitesseMax)
-	 * {
-	 * ArcCourbeDynamique prefixe = initCourbe(cinematiqueInitiale,
-	 * cercle.position, vitesseMax);
-	 * cercle.position.copy(a_tmp);
-	 * a_tmp.minus(vecteurVitesse); // le point B
-	 * vecteurVitesse.copy(b_tmp);
-	 * b_tmp.minus(cinematiqueInitiale.getPosition());
-	 * double alpha = a_tmp.getArgument() - b_tmp.getArgument(); // une
-	 * estimation seulement du résultat final
-	 * double sin = Math.sin(alpha);
-	 * double c = cinematiqueInitiale.courbureGeometrique;
-	 * b_tmp.scalar(1/b.norm()); // normalisation de b
-	 * cercle.position.copy(a_tmp);
-	 * a_tmp.minus(cinematiqueInitiale.getPosition());
-	 * double L = a_tmp.dot(b);
-	 * b.rotate(0,1);
-	 * double l = a_tmp.dot(b);
-	 * double r = cercle.rayon;
-	 * return null;
-	 * }
-	 */
 
 	private XY_RW a_tmp = new XY_RW(), b_tmp = new XY_RW(), c_tmp = new XY_RW(), acc = new XY_RW();
 	private XY_RW tmpPos = new XY_RW();
@@ -224,12 +183,6 @@ public class BezierComputer implements TentacleComputer
 	 */
 	private DynamicTentacle constructBezierQuad(XY A, XY B, XY C, boolean enMarcheAvant, Cinematique cinematiqueInitiale)
 	{
-		/*
-		 * buffer.addSupprimable(new ObstacleCircular(A, 15));
-		 * buffer.addSupprimable(new ObstacleCircular(B, 15));
-		 * buffer.addSupprimable(new ObstacleCircular(C, 15));
-		 */
-
 		double t = 1;
 		LinkedList<CinematiqueObs> out = new LinkedList<CinematiqueObs>();
 
@@ -334,14 +287,14 @@ public class BezierComputer implements TentacleComputer
 		if(out.isEmpty())
 			return null;
 
-		return new DynamicTentacle(out, BezierTentacle.BEZIER_QUAD);
+		return new DynamicTentacle(out, BezierTentacle.BEZIER_XYOC_TO_XY);
 	}
 
 	@Override
 	public boolean compute(AStarNode current, TentacleType tentacleType, Cinematique arrival, AStarNode modified)
 	{
 		assert tentacleType instanceof BezierTentacle : tentacleType;
-		if(tentacleType == BezierTentacle.BEZIER_QUAD)
+		if(tentacleType == BezierTentacle.BEZIER_XYOC_TO_XY)
 		{
 			DynamicTentacle t = quadraticInterpolationXYOC2XY(current.robot.getCinematique(), arrival.getPosition());
 			if(t == null)

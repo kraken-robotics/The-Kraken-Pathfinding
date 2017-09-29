@@ -14,7 +14,7 @@ import pfg.kraken.robot.Cinematique;
 
 /**
  * Arc de clothoïde qui ramène le volant au centre
- * 
+ * FIXME UNUSED
  * @author pf
  *
  */

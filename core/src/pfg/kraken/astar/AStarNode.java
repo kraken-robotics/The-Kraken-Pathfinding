@@ -17,7 +17,7 @@ import pfg.kraken.obstacles.RectangularObstacle;
 import pfg.kraken.robot.RobotState;
 
 /**
- * Un nœud de l'A* courbe
+ * A node of the A*.
  * 
  * @author pf
  *
@@ -26,13 +26,25 @@ import pfg.kraken.robot.RobotState;
 public class AStarNode implements Memorizable, Printable
 {
 	private static final long serialVersionUID = -2120732124823178009L;
-	public RobotState robot;
+	public RobotState robot; // the cinematic state + the duration since the beginning of the search
 	public double g_score; // distance du point de départ à ce point
 	public double f_score; // g_score + heuristique = meilleure distance qu'on
 							// peut espérer avec ce point
-	public AStarNode parent;
-	public final StaticTentacle cameFromArcStatique;
+	public AStarNode parent; // the parent of this node (used for reconstruction when a path is found)
+	
+	/*
+	 * If a node has a parent, then we must have the arc between the parent and the node
+	 * There are two types of tentacles : fixed-length and random-length.
+	 * The fixed-length tentacle is always instantiated (for performance reason)
+	 * 
+	 * To know with arc to look, checkout the getArc() method
+	 */
+	public final StaticTentacle cameFromArcStatique; 
 	public DynamicTentacle cameFromArcDynamique = null;
+	
+	/*
+	 * Used by the memory pool
+	 */
 	private int indiceMemoryManager;
 
 	public AStarNode(RobotState robot, RectangularObstacle vehicleTemplate)
@@ -50,6 +62,9 @@ public class AStarNode implements Memorizable, Printable
 		return cameFromArcStatique;
 	}
 
+	/**
+	 * Initialisation for the A* (only used for the start point)
+	 */
 	public void init()
 	{
 		g_score = Double.MAX_VALUE;
@@ -69,31 +84,22 @@ public class AStarNode implements Memorizable, Printable
 		return robot.getCinematique().hashCode();
 	}
 
+	/**
+	 * Used by the memory pool
+	 */
 	@Override
 	public void setIndiceMemoryManager(int indice)
 	{
 		indiceMemoryManager = indice;
 	}
 
+	/**
+	 * Used by the memory pool
+	 */
 	@Override
 	public int getIndiceMemoryManager()
 	{
 		return indiceMemoryManager;
-	}
-
-	/**
-	 * Cette copy n'est utilisée qu'à une seule occasion, quand on reconstruit
-	 * partiellement le chemin
-	 * 
-	 * @param modified
-	 */
-	public void copyReconstruct(AStarNode modified)
-	{
-		modified.cameFromArcDynamique = null;
-		modified.g_score = g_score;
-		modified.f_score = f_score;
-		robot.copy(modified.robot);
-		modified.parent = null;
 	}
 
 	@Override

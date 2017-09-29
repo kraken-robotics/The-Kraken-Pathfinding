@@ -24,7 +24,6 @@ import pfg.kraken.astar.AStarNode;
 import pfg.kraken.astar.tentacles.types.ClothoTentacle;
 import pfg.kraken.astar.tentacles.types.StraightingTentacle;
 import pfg.kraken.astar.tentacles.types.TentacleType;
-import pfg.kraken.astar.tentacles.types.TurnoverTentacle;
 import pfg.kraken.memory.CinemObsPool;
 import pfg.kraken.robot.Cinematique;
 import pfg.kraken.robot.CinematiqueObs;
@@ -50,12 +49,6 @@ public class ClothoidesComputer implements TentacleComputer
 	private BigDecimal x, y; // utilisés dans le calcul de trajectoire
 	private static final int S_MAX = 10; // courbure max qu'on puisse gérer
 	private static final int INDICE_MAX = (int) (S_MAX / PRECISION_TRACE);
-
-	// private static final double VITESSE_ROT_AX12 = 4; // en rad / s. Valeur
-	// du constructeur : 5
-
-	// private double distanceArriereAuRoues; // la distance entre la position
-	// du robot et ses roues directrices
 	private XY[] trajectoire = new XY[2 * INDICE_MAX - 1];
 
 	public ClothoidesComputer(Log log, Config config, CinemObsPool memory)
@@ -481,11 +474,11 @@ public class ClothoidesComputer implements TentacleComputer
 		}
 		return false;
 	}
-
+/*
 	private XY_RW vecteurOrientationDepart = new XY_RW();
 	private XY_RW vecteurOrientationDepartRotate = new XY_RW();
 	private XY_RW vecteurOrientation = new XY_RW();
-
+*/
 	/**
 	 * Construit un arc courbe qui fait faire un demi-tour au robot
 	 * 
@@ -495,7 +488,7 @@ public class ClothoidesComputer implements TentacleComputer
 	 * @return
 	 * @throws InterruptedException
 	 */
-	public final DynamicTentacle getTrajectoireDemiTour(Cinematique cinematiqueInitiale, TurnoverTentacle vitesse)
+/*	public final DynamicTentacle getTrajectoireDemiTour(Cinematique cinematiqueInitiale, TurnoverTentacle vitesse)
 	{
 		List<CinematiqueObs> trajet = getTrajectoireQuartDeTour(cinematiqueInitiale, vitesse.v, false);
 		trajet.addAll(getTrajectoireQuartDeTour(trajet.get(trajet.size() - 1), vitesse.v, true)); // on
@@ -512,7 +505,7 @@ public class ClothoidesComputer implements TentacleComputer
 																							// rebrousse
 																							// est
 																							// faux…
-	}
+	}*/
 
 	/**
 	 * Construit un arc courbe qui fait un quart de tour au robot
@@ -527,7 +520,7 @@ public class ClothoidesComputer implements TentacleComputer
 	 * @return
 	 * @throws InterruptedException
 	 */
-	private final List<CinematiqueObs> getTrajectoireQuartDeTour(Cinematique cinematiqueInitiale, ClothoTentacle vitesse, boolean rebrousse)
+/*	private final List<CinematiqueObs> getTrajectoireQuartDeTour(Cinematique cinematiqueInitiale, ClothoTentacle vitesse, boolean rebrousse)
 	{
 		double courbure = cinematiqueInitiale.courbureGeometrique;
 		double orientation = cinematiqueInitiale.orientationGeometrique;
@@ -596,7 +589,7 @@ public class ClothoidesComputer implements TentacleComputer
 			i++;
 		} while(vecteurOrientation.dot(vecteurOrientationDepart) >= 0 || vecteurOrientation.dot(vecteurOrientationDepartRotate) <= 0);
 		return out;
-	}
+	}*/
 
 	@Override
 	public boolean compute(AStarNode current, TentacleType tentacleType, Cinematique arrival, AStarNode modified)

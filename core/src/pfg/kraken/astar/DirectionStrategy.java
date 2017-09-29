@@ -19,7 +19,7 @@ public enum DirectionStrategy
 	FORCE_BACK_MOTION(false, true), // forcer la marche arrière
 	FORCE_FORWARD_MOTION(true, false); // forcer la marche avant
 
-	public final boolean marcheAvantPossible, marcheArrierePossible;
+	private final boolean marcheAvantPossible, marcheArrierePossible;
 
 	/**
 	 * Cette direction est-elle possible pour cette stratégie ?

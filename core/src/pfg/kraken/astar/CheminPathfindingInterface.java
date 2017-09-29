@@ -12,7 +12,7 @@ import pfg.kraken.robot.ItineraryPoint;
 
 /**
  * Interface pour pouvoir interchanger le vrai chemin de pathfinding et le faux
- * 
+ * FIXME UNUSED FOR THE MOMENT
  * @author pf
  *
  */

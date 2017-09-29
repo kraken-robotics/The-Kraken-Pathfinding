@@ -12,7 +12,7 @@ import pfg.log.Log;
 
 /**
  * Faux chemin, sert à la prévision d'itinéraire
- * 
+ * FIXME UNUSED FOR THE MOMENT
  * @author pf
  *
  */

@@ -35,7 +35,8 @@ import pfg.kraken.utils.XY;
 import pfg.kraken.utils.XYO;
 
 /**
- * The manager of the tentacular pathfinder.
+ * The manager of the tentacle pathfinder.
+ * TentacularAStar wrapper.
  * @author pf
  *
  */
@@ -43,9 +44,6 @@ public class Kraken
 {
 	private Config config;
 	private Injector injector;
-	private boolean initialized = false;
-	private XY bottomLeftCorner, topRightCorner;
-	private DynamicObstacles dynObs;
 	private TentacularAStar astar;
 	
 	/**
@@ -86,10 +84,6 @@ public class Kraken
 	 */
 	public Kraken(RectangularObstacle vehicleTemplate, List<Obstacle> fixedObstacles, DynamicObstacles dynObs, XY bottomLeftCorner, XY topRightCorner, String...configprofile)
 	{	
-		this.bottomLeftCorner = bottomLeftCorner;
-		this.topRightCorner = topRightCorner;
-		this.dynObs = dynObs;
-		
 		List<TentacleType> tentacleTypesUsed = new ArrayList<TentacleType>();
 		for(BezierTentacle t : BezierTentacle.values())
 			tentacleTypesUsed.add(t);
@@ -112,62 +106,45 @@ public class Kraken
 			if(fixedObstacles != null)
 				so.addAll(fixedObstacles);
 			so.setCorners(bottomLeftCorner, topRightCorner);
-		} catch (InjectorException e) {
-			throw new RuntimeException("Fatal error", e);
-		}
-		initialize();
-	}
-	
-	/**
-	 * Initialize Kraken
-	 * @return
-	 */
-	private void initialize()
-	{
-		try {
-			if(!initialized)
+
+
+			/*
+			 * Override the graphic config
+			 */
+			HashMap<ConfigInfo, Object> overrideGraphic = new HashMap<ConfigInfo, Object>();
+			for(ConfigInfoGraphic infoG : ConfigInfoGraphic.values())
+				for(ConfigInfoKraken infoK : ConfigInfoKraken.values())
+					if(infoG.toString().equals(infoK.toString()))
+						overrideGraphic.put(infoG, config.getObject(infoK));
+			overrideGraphic.put(ConfigInfoGraphic.SIZE_X_WITH_UNITARY_ZOOM, (int) (topRightCorner.getX() - bottomLeftCorner.getX()));
+			overrideGraphic.put(ConfigInfoGraphic.SIZE_Y_WITH_UNITARY_ZOOM, (int) (topRightCorner.getY() - bottomLeftCorner.getY()));
+			
+			Log log = Log.getLog(SeverityCategoryKraken.INFO);
+
+			injector.addService(log);
+			injector.addService(config);
+			injector.addService(DynamicObstacles.class, dynObs);		
+			injector.addService(this);
+			injector.addService(injector);
+
+			if(config.getBoolean(ConfigInfoKraken.GRAPHIC_ENABLE))
 			{
-				initialized = true;
-
-				/*
-				 * Override the graphic config
-				 */
-				HashMap<ConfigInfo, Object> overrideGraphic = new HashMap<ConfigInfo, Object>();
-				for(ConfigInfoGraphic infoG : ConfigInfoGraphic.values())
-					for(ConfigInfoKraken infoK : ConfigInfoKraken.values())
-						if(infoG.toString().equals(infoK.toString()))
-							overrideGraphic.put(infoG, config.getObject(infoK));
-				overrideGraphic.put(ConfigInfoGraphic.SIZE_X_WITH_UNITARY_ZOOM, (int) (topRightCorner.getX() - bottomLeftCorner.getX()));
-				overrideGraphic.put(ConfigInfoGraphic.SIZE_Y_WITH_UNITARY_ZOOM, (int) (topRightCorner.getY() - bottomLeftCorner.getY()));
-				
-				DebugTool debug = DebugTool.getDebugTool(overrideGraphic, SeverityCategoryKraken.INFO, null);
-				Log log = debug.getLog();
-
-				injector.addService(log);
-				injector.addService(config);
-				injector.addService(DynamicObstacles.class, dynObs);		
-				injector.addService(this);
-				injector.addService(injector);
-
-				if(config.getBoolean(ConfigInfoKraken.GRAPHIC_ENABLE))
-				{
-					WindowFrame f = debug.getWindowFrame(new Vec2RO((topRightCorner.getX() + bottomLeftCorner.getX()) / 2, (topRightCorner.getY() + bottomLeftCorner.getY()) / 2));
-					injector.addService(f);
-					injector.addService(f.getPrintBuffer());
-				}
-				else
-				{
-					injector.addService(GraphicDisplay.class, new GraphicDisplayPlaceholder());
-					HashMap<ConfigInfo, Object> override = new HashMap<ConfigInfo, Object>();
-					List<ConfigInfo> graphicConf = ConfigInfoKraken.getGraphicConfigInfo();
-					for(ConfigInfo c : graphicConf)
-						override.put(c, false);
-					config.override(override);
-				}
-		
-//				injector.getService(TentacleManager.class).setTentacle(tentacleTypesUsed);	
-				astar = injector.getService(TentacularAStar.class);
+				DebugTool debug = DebugTool.getDebugTool(overrideGraphic, new Vec2RO((topRightCorner.getX() + bottomLeftCorner.getX()) / 2, (topRightCorner.getY() + bottomLeftCorner.getY()) / 2), SeverityCategoryKraken.INFO, null);
+				WindowFrame f = debug.getWindowFrame();
+				injector.addService(f.getPrintBuffer());
 			}
+			else
+			{
+				injector.addService(GraphicDisplay.class, new GraphicDisplayPlaceholder());
+				HashMap<ConfigInfo, Object> override = new HashMap<ConfigInfo, Object>();
+				List<ConfigInfo> graphicConf = ConfigInfoKraken.getGraphicConfigInfo();
+				for(ConfigInfo c : graphicConf)
+					override.put(c, false);
+				config.override(override);
+			}
+	
+//				injector.getService(TentacleManager.class).setTentacle(tentacleTypesUsed);	
+			astar = injector.getService(TentacularAStar.class);
 		} catch (InjectorException e) {
 			throw new RuntimeException("Fatal error", e);
 		}

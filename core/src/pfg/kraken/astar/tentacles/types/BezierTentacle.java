@@ -21,7 +21,7 @@ import pfg.kraken.robot.Cinematique;
 
 public enum BezierTentacle implements TentacleType
 {
-	BEZIER_QUAD(0);
+	BEZIER_XYOC_TO_XY(0);
 
 	private final int nbArrets;
 
