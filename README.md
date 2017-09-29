@@ -33,7 +33,7 @@ For legacy reasons, mainly.
 
 ### Downloading the last stable version
 
-You can download the .jar file here: https://github.com/PFGimenez/The-Kraken-Pathfinding/releases/download/v1.0.1/kraken.jar
+You can download the .jar file here: https://github.com/PFGimenez/The-Kraken-Pathfinding/releases/download/v1.1.0/kraken.jar
 
 ### Getting the source [![Build Status](https://travis-ci.org/PFGimenez/The-Kraken-Pathfinding.svg?branch=master)](https://travis-ci.org/PFGimenez/The-Kraken-Pathfinding)
 
@@ -43,7 +43,7 @@ If you want the latest stable version, clone this repository:
 
 If you want the latest **experimental** version, clone this repository:
 
-    $ git clone -b v1.1 --single-branch https://github.com/PFGimenez/The-Kraken-Pathfinding.git
+    $ git clone -b v1.2 --single-branch https://github.com/PFGimenez/The-Kraken-Pathfinding.git
 
 
 ### Compiling
