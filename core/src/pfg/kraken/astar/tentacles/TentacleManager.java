@@ -146,7 +146,7 @@ public class TentacleManager
 	 */
 	public double distanceTo(AStarNode node, double vitesseMax)
 	{
-		double duration = node.getArc().getDuree(vitesseMax, tempsArret);
+		double duration = node.getArc().getDuree(vitesseMax, tempsArret, node.parent.parent == null);
 		node.robot.suitArcCourbe(node.getArc(), duration);
 		return duration;
 	}

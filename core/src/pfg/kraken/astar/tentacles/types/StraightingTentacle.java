@@ -48,7 +48,7 @@ public enum StraightingTentacle implements TentacleType
 	}
 
 	@Override
-	public int getNbArrets()
+	public int getNbArrets(boolean firstMove)
 	{
 		return 0;
 	}

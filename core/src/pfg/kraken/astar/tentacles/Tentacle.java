@@ -50,7 +50,7 @@ public abstract class Tentacle implements Printable
 
 	public abstract CinematiqueObs getLast();
 
-	public final double getDuree(double translationalSpeed, int tempsArret)
+	public final double getDuree(double translationalSpeed, int tempsArret, boolean firstMove)
 	{
 		int nb = getNbPoints();
 		double out = 0;
@@ -60,8 +60,8 @@ public abstract class Tentacle implements Printable
 			assert getPoint(i).maxSpeed > 0;
 			out += PRECISION_TRACE_MM / getPoint(i).maxSpeed;
 		}
-		assert vitesse.getNbArrets() >= 0;
-		return out + vitesse.getNbArrets() * tempsArret;
+		assert vitesse.getNbArrets(firstMove) >= 0;
+		return out + vitesse.getNbArrets(firstMove) * tempsArret;
 	}
 
 	@Override

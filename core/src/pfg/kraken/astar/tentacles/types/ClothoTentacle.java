@@ -106,8 +106,10 @@ public enum ClothoTentacle implements TentacleType
 	}
 
 	@Override
-	public int getNbArrets()
+	public int getNbArrets(boolean firstMove)
 	{
+		if(firstMove)
+			return 0;
 		if(arret || rebrousse)
 			return 1;
 		return 0;

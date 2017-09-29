@@ -131,7 +131,7 @@ public class JUnit_TentacularAStar extends JUnit_Test
 		Assert.assertEquals(0, arc[nbArc - 1].arcselems[arc[nbArc - 1].arcselems.length - 1].getPosition().distance(new XY(-469.90, 1643.03)), 0.1);
 	}
 
-	@Test
+/*	@Test
 	public void test_demi_tour() throws Exception
 	{
 		boolean graphicTrajectory = config.getBoolean(ConfigInfoKraken.GRAPHIC_TENTACLES);
@@ -153,9 +153,9 @@ public class JUnit_TentacularAStar extends JUnit_Test
 					buffer.addTemporaryPrintable(new PrintablePoint(arc[a].getPoint(i).getPosition()), Color.BLACK, Layer.FOREGROUND.layer);
 			}
 		}
-	}
+	}*/
 
-	@Test
+/*	@Test
 	public void test_ramene() throws Exception
 	{
 		boolean graphicTrajectory = config.getBoolean(ConfigInfoKraken.GRAPHIC_TENTACLES);
@@ -181,7 +181,7 @@ public class JUnit_TentacularAStar extends JUnit_Test
 					buffer.addTemporaryPrintable(new PrintablePoint(arc[a].getPoint(i).getPosition()), Color.BLACK, Layer.FOREGROUND.layer);
 			}
 		}
-	}
+	}*/
 
 	@Test
 	public void test_bezier_quad() throws Exception

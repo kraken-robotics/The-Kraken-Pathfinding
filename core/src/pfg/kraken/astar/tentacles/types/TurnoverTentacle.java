@@ -43,7 +43,7 @@ public enum TurnoverTentacle implements TentacleType
 	}
 
 	@Override
-	public int getNbArrets()
+	public int getNbArrets(boolean firstMove)
 	{
 		return 1;
 	}

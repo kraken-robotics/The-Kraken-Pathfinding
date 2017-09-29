@@ -23,6 +23,6 @@ public interface TentacleType
 	public Class<? extends TentacleComputer> getComputer();
 	public boolean isAcceptable(Cinematique c, DirectionStrategy directionstrategyactuelle, double courbureMax);
 //	public Tentacle compute();
-	public int getNbArrets();
+	public int getNbArrets(boolean firstMove);
 	public Color getColor();
 }

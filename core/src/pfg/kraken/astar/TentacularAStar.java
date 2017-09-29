@@ -360,7 +360,8 @@ public class TentacularAStar
 			{
 				// On crée "successeur", pour l'instant vite
 				successeur = memorymanager.getNewNode();
-				assert successeur.cameFromArcDynamique == null;
+//				assert successeur.cameFromArcDynamique == null;
+				successeur.cameFromArcDynamique = null;
 
 				// S'il y a un problème, on passe au suivant (interpolation impossible par exemple)
 				if(!arcmanager.next(successeur))
@@ -371,6 +372,11 @@ public class TentacularAStar
 				
 				// successeur a été mis à jour par "next"
 				
+				successeur.parent = current;
+				successeur.g_score = current.g_score + arcmanager.distanceTo(successeur, vitesseMax); // ici la distance est une durée
+
+				// successeur est complètement mis à jour après appel à "distanceTo"
+				
 				// on a déjà visité un point proche?
 				// ceci est vraie seulement si l'heuristique est monotone. C'est
 				// normalement le cas.
@@ -379,9 +385,6 @@ public class TentacularAStar
 					destroy(successeur);
 					continue;
 				}
-				
-				successeur.parent = current;
-				successeur.g_score = current.g_score + arcmanager.distanceTo(successeur, vitesseMax); // ici la distance est une durée
 
 				heuristique = arcmanager.heuristicCostCourbe(successeur.robot.getCinematique());
 				if(heuristique == null)
@@ -433,7 +436,7 @@ public class TentacularAStar
 		 */
 		memorymanager.empty();
 		cinemMemory.empty();
-		throw new NoPathException("All the space has been searched and no path has been found.");
+		throw new NoPathException("All the space has been searched and no path has been found ("+nbExpandedNodes+" expanded nodes)");
 	}
 
 	private void destroy(AStarNode n)

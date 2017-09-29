@@ -37,8 +37,9 @@ public enum BezierTentacle implements TentacleType
 	}
 
 	@Override
-	public int getNbArrets()
+	public int getNbArrets(boolean firstMove)
 	{
+		// TODO : utiliser firstMove
 		return nbArrets;
 	}
 
