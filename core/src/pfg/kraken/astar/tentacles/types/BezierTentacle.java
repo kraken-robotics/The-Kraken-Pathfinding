@@ -5,7 +5,11 @@
 
 package pfg.kraken.astar.tentacles.types;
 
+import java.awt.Color;
+
 import pfg.kraken.astar.DirectionStrategy;
+import pfg.kraken.astar.tentacles.BezierComputer;
+import pfg.kraken.astar.tentacles.TentacleComputer;
 import pfg.kraken.robot.Cinematique;
 
 /**
@@ -17,8 +21,7 @@ import pfg.kraken.robot.Cinematique;
 
 public enum BezierTentacle implements TentacleType
 {
-	BEZIER_QUAD(0),
-	CIRCULAIRE_VERS_CERCLE(1);
+	BEZIER_XYOC_TO_XY(0);
 
 	private final int nbArrets;
 
@@ -26,7 +29,7 @@ public enum BezierTentacle implements TentacleType
 	{
 		this.nbArrets = nbArrets;
 	}
-
+	
 	@Override
 	public boolean isAcceptable(Cinematique c, DirectionStrategy directionstrategyactuelle, double courbureMax)
 	{
@@ -34,8 +37,20 @@ public enum BezierTentacle implements TentacleType
 	}
 
 	@Override
-	public int getNbArrets()
+	public int getNbArrets(boolean firstMove)
 	{
+		// TODO : utiliser firstMove
 		return nbArrets;
+	}
+
+	@Override
+	public Color getColor() {
+		return Color.GREEN;
+	}
+
+	@Override
+	public Class<? extends TentacleComputer> getComputer()
+	{
+		return BezierComputer.class;
 	}
 }

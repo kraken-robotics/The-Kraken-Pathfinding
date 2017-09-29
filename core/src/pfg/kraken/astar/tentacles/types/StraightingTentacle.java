@@ -5,12 +5,16 @@
 
 package pfg.kraken.astar.tentacles.types;
 
+import java.awt.Color;
+
 import pfg.kraken.astar.DirectionStrategy;
+import pfg.kraken.astar.tentacles.ClothoidesComputer;
+import pfg.kraken.astar.tentacles.TentacleComputer;
 import pfg.kraken.robot.Cinematique;
 
 /**
  * Arc de clothoïde qui ramène le volant au centre
- * 
+ * FIXME UNUSED
  * @author pf
  *
  */
@@ -44,8 +48,20 @@ public enum StraightingTentacle implements TentacleType
 	}
 
 	@Override
-	public int getNbArrets()
+	public int getNbArrets(boolean firstMove)
 	{
 		return 0;
+	}
+
+	@Override
+	public Color getColor()
+	{
+		return Color.GRAY;
+	}
+
+	@Override
+	public Class<? extends TentacleComputer> getComputer()
+	{
+		return ClothoidesComputer.class;
 	}
 }

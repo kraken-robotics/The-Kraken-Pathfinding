@@ -12,7 +12,6 @@ import pfg.graphic.printable.Layer;
 import pfg.graphic.printable.PrintablePoint;
 import pfg.kraken.ConfigInfoKraken;
 import pfg.kraken.LogCategoryKraken;
-import pfg.kraken.obstacles.CircularObstacle;
 import pfg.kraken.obstacles.RectangularObstacle;
 import pfg.kraken.astar.DefaultCheminPathfinding;
 import pfg.kraken.astar.TentacularAStar;
@@ -27,6 +26,7 @@ import pfg.kraken.astar.tentacles.types.TurnoverTentacle;
 import pfg.kraken.dstarlite.navmesh.Navmesh;
 import pfg.kraken.robot.Cinematique;
 import pfg.kraken.utils.XY;
+import static pfg.kraken.astar.tentacles.Tentacle.*;
 
 /**
  * Tests unitaires de la recherche de chemin courbe
@@ -95,7 +95,7 @@ public class JUnit_TentacularAStar extends JUnit_Test
 		for(int a = 0; a < nbArc; a++)
 		{
 			// System.out.println("arc "+arc[a].v+" avec "+arc[a].arcselems[0]);
-			for(int i = 0; i < ClothoidesComputer.NB_POINTS; i++)
+			for(int i = 0; i < NB_POINTS; i++)
 			{
 				/*
 				 * if(i > 0)
@@ -111,8 +111,8 @@ public class JUnit_TentacularAStar extends JUnit_Test
 			}
 			if(a == 0)
 			{
-				Assert.assertEquals(arc[0].arcselems[ClothoidesComputer.NB_POINTS - 1].getPositionEcriture().getX(), 0, 0.1);
-				Assert.assertEquals(arc[0].arcselems[ClothoidesComputer.NB_POINTS - 1].getPositionEcriture().getY(), 1000 + (int) ClothoidesComputer.DISTANCE_ARC_COURBE, 0.1);
+				Assert.assertEquals(arc[0].arcselems[NB_POINTS - 1].getPosition().getX(), 0, 0.1);
+				Assert.assertEquals(arc[0].arcselems[NB_POINTS - 1].getPosition().getY(), 1000 + (int) DISTANCE_ARC_COURBE, 0.1);
 			}
 			/*
 			 * else if(arc[a].arcselems[0].enMarcheAvant !=
@@ -131,7 +131,7 @@ public class JUnit_TentacularAStar extends JUnit_Test
 		Assert.assertEquals(0, arc[nbArc - 1].arcselems[arc[nbArc - 1].arcselems.length - 1].getPosition().distance(new XY(-469.90, 1643.03)), 0.1);
 	}
 
-	@Test
+/*	@Test
 	public void test_demi_tour() throws Exception
 	{
 		boolean graphicTrajectory = config.getBoolean(ConfigInfoKraken.GRAPHIC_TENTACLES);
@@ -153,9 +153,9 @@ public class JUnit_TentacularAStar extends JUnit_Test
 					buffer.addTemporaryPrintable(new PrintablePoint(arc[a].getPoint(i).getPosition()), Color.BLACK, Layer.FOREGROUND.layer);
 			}
 		}
-	}
+	}*/
 
-	@Test
+/*	@Test
 	public void test_ramene() throws Exception
 	{
 		boolean graphicTrajectory = config.getBoolean(ConfigInfoKraken.GRAPHIC_TENTACLES);
@@ -181,7 +181,7 @@ public class JUnit_TentacularAStar extends JUnit_Test
 					buffer.addTemporaryPrintable(new PrintablePoint(arc[a].getPoint(i).getPosition()), Color.BLACK, Layer.FOREGROUND.layer);
 			}
 		}
-	}
+	}*/
 
 	@Test
 	public void test_bezier_quad() throws Exception

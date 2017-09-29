@@ -43,10 +43,16 @@ public class ItineraryPoint implements Printable
 	 * The desired curvature
 	 */
 	public final double curvature;
+	
+	/**
+	 * The maximal speed
+	 */
+	public final double maxSpeed;
 
-	public ItineraryPoint(Cinematique c)
+	public ItineraryPoint(CinematiqueObs c)
 	{
 		goingForward = c.enMarcheAvant;
+		maxSpeed = c.maxSpeed;
 		x = c.getPosition().getX();
 		y = c.getPosition().getY();
 		if(c.enMarcheAvant)
@@ -64,7 +70,7 @@ public class ItineraryPoint implements Printable
 	@Override
 	public String toString()
 	{
-		return "("+x+","+y+"), orientation = "+orientation+", curvature = "+curvature+" going "+(goingForward ? "forward" : "backward");
+		return "("+x+","+y+"), orientation = "+orientation+", curvature = "+curvature+" going "+(goingForward ? "forward" : "backward")+", max speed = "+maxSpeed;
 	}
 
 	@Override

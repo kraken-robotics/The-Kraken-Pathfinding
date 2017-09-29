@@ -7,7 +7,11 @@ package pfg.kraken.astar.tentacles.types;
 
 import pfg.kraken.astar.DirectionStrategy;
 import pfg.kraken.astar.tentacles.ClothoidesComputer;
+import pfg.kraken.astar.tentacles.TentacleComputer;
 import pfg.kraken.robot.Cinematique;
+import static pfg.kraken.astar.tentacles.Tentacle.*;
+
+import java.awt.Color;
 
 /**
  * Arc de clothoïde de longueur constante
@@ -25,6 +29,8 @@ public enum ClothoTentacle implements TentacleType
 	DROITE_1(-4),
 	GAUCHE_2(9),
 	DROITE_2(-9),
+	GAUCHE_3(16),
+	DROITE_3(-16),
 
 	COURBURE_IDENTIQUE_AFTER_STOP(0),
 	COURBURE_IDENTIQUE_G1_AFTER_STOP(1, 0),
@@ -44,6 +50,7 @@ public enum ClothoTentacle implements TentacleType
 	public final boolean positif; // calculé à la volée pour certaine vitesse
 	public final boolean rebrousse;
 	public final boolean arret;
+	public double maxSpeed; // en m.s⁻¹
 
 	private ClothoTentacle(int vitesse)
 	{
@@ -88,7 +95,7 @@ public enum ClothoTentacle implements TentacleType
 			return false;
 		}
 
-		double courbureFuture = c.courbureGeometrique + vitesse * ClothoidesComputer.DISTANCE_ARC_COURBE_M;
+		double courbureFuture = c.courbureGeometrique + vitesse * DISTANCE_ARC_COURBE_M;
 		if(!(courbureFuture >= -courbureMax && courbureFuture <= courbureMax))
 		{
 			// log.debug(vitesse+" n'est acceptable (courbure trop grande");
@@ -99,10 +106,27 @@ public enum ClothoTentacle implements TentacleType
 	}
 
 	@Override
-	public int getNbArrets()
+	public int getNbArrets(boolean firstMove)
 	{
+		if(firstMove)
+			return 0;
 		if(arret || rebrousse)
 			return 1;
 		return 0;
 	}
+
+	@Override
+	public Color getColor()
+	{
+		if(arret || rebrousse)
+			return Color.GREEN;
+		return Color.RED;
+	}
+	
+	@Override
+	public Class<? extends TentacleComputer> getComputer()
+	{
+		return ClothoidesComputer.class;
+	}
+
 }

@@ -21,6 +21,25 @@ import pfg.kraken.robot.CinematiqueObs;
 
 public abstract class Tentacle implements Printable
 {
+	public static final double PRECISION_TRACE = 0.02; // précision du tracé, en
+														// m (distance entre
+														// deux points
+														// consécutifs). Plus le
+														// tracé est précis,
+														// plus on couvre de
+														// point une même
+														// distance
+	public static final double PRECISION_TRACE_MM = PRECISION_TRACE * 1000; // précision
+																			// du
+																			// tracé,
+																			// en
+																			// mm
+	public static final int NB_POINTS = 5; // nombre de points dans un arc
+	public static final double DISTANCE_ARC_COURBE = PRECISION_TRACE_MM * NB_POINTS; // en
+																						// mm
+	public static final double DISTANCE_ARC_COURBE_M = PRECISION_TRACE * NB_POINTS; // en
+																					// m
+	
 	private static final long serialVersionUID = 1268198325807123306L;
 	// public ObstacleArcCourbe obstacle = new ObstacleArcCourbe();
 	public TentacleType vitesse; // utilisé pour le debug
@@ -31,11 +50,18 @@ public abstract class Tentacle implements Printable
 
 	public abstract CinematiqueObs getLast();
 
-	protected abstract double getLongueur();
-
-	public final double getDuree(double translationalSpeed, int tempsArret)
+	public final double getDuree(double translationalSpeed, int tempsArret, boolean firstMove)
 	{
-		return getLongueur() / translationalSpeed + vitesse.getNbArrets() * tempsArret;
+		int nb = getNbPoints();
+		double out = 0;
+		for(int i = 0; i < nb; i++)
+		{
+			getPoint(i).maxSpeed = Math.min(getPoint(i).maxSpeed, translationalSpeed);
+			assert getPoint(i).maxSpeed > 0;
+			out += PRECISION_TRACE_MM / getPoint(i).maxSpeed;
+		}
+		assert vitesse.getNbArrets(firstMove) >= 0;
+		return out + vitesse.getNbArrets(firstMove) * tempsArret;
 	}
 
 	@Override

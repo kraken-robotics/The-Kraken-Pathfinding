@@ -23,6 +23,12 @@ import java.util.List;
 
 import pfg.config.ConfigInfo;
 
+/**
+ * The configuration keys
+ * @author pf
+ *
+ */
+
 public enum ConfigInfoKraken implements ConfigInfo
 {
 	/**
@@ -36,14 +42,15 @@ public enum ConfigInfoKraken implements ConfigInfo
 	NAVMESH_FILENAME("navmesh.krk"), // the filename of the navmesh
 	
 	/**
-	 * Research parameter
+	 * Research and mechanical parameter
 	 */
-	MAX_CURVATURE(3), // quelle courbure maximale la trajectoire du robot
-						// peut-elle avoir
+	MAX_CURVATURE_DERIVATIVE(5), // maximal curvature derivative, in m⁻¹s⁻¹
+	MAX_LATERAL_ACCELERATION(3), // maximal lateral acceleration, in m/s²
+	DEFAULT_MAX_SPEED(1), // in m/s (or mm/ms)
+	MAX_CURVATURE(5), // in m⁻¹
 	STOP_DURATION(800), // temps qu'il faut au robot pour s'arrêter et repartir
-						// (par exemple à cause d'un rebroussement)
-	SEARCH_TIMEOUT(10000), // durée maximale que peut prendre le
-									// pathfinding
+						// (par exemple à cause d'un rebroussement) in ms
+	SEARCH_TIMEOUT(10000), // in ms
 
 	/**
 	 * Paramètres du traitement des capteurs
@@ -51,6 +58,8 @@ public enum ConfigInfoKraken implements ConfigInfo
 //	SUPPRESSION_AUTO_OBSTACLES_FIXES(true), // si on démarre dans un obstacle
 											// fixe, est-ce qu'on le vire ?
 
+	ENABLE_DEBUG_MODE(false), // enable the debug mode
+	
 	/**
 	 * Paramètres sur la gestion de la mémoire
 	 */
@@ -60,6 +69,7 @@ public enum ConfigInfoKraken implements ConfigInfo
 	/**
 	 * Interface graphique
 	 */
+	ENABLE_CONSOLE(true), // enable the console
 	GRAPHIC_HEURISTIC(false), // affichage des orientations heuristiques
 								// données par le D* Lite
 	GRAPHIC_ENABLE(false), // désactive tout affichage si faux (empêche le
@@ -79,7 +89,6 @@ public enum ConfigInfoKraken implements ConfigInfo
 	
 	DISPLAY_GRID(true),
 	BACKGROUND_PATH(""), // background path ; empty if none	
-	GRAPHIC_SERVER_PORT_NUMBER(13370), // port number of the graphic server
 	SIZE_X_WINDOW(900), // taille par défaut (sans image) de la fenêtre
 	SIZE_Y_WINDOW(600), // taille par défaut (sans image) de la fenêtre
 	

@@ -71,7 +71,7 @@ public class Navmesh
 		double smallestDistance = 0;
 		for(NavmeshNode n : mesh.nodes)
 		{
-			double candidateDistance = position.distance(n.position);
+			double candidateDistance = position.squaredDistance(n.position);
 			if(bestNode == null || candidateDistance < smallestDistance)
 			{
 				bestNode = n;

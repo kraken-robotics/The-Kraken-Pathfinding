@@ -18,7 +18,6 @@ import pfg.kraken.robot.ItineraryPoint;
 import pfg.kraken.exceptions.PathfindingException;
 import pfg.kraken.utils.XY;
 import pfg.kraken.utils.XYO;
-import pfg.kraken.utils.XY_RW;
 
 
 /**
@@ -33,13 +32,13 @@ public class Example2
 	public static void main(String[] args)
 	{
 		List<Obstacle> obs = new ArrayList<Obstacle>();
-		obs.add(new RectangularObstacle(new XY_RW(800,200), 200, 200));
-		obs.add(new RectangularObstacle(new XY_RW(800,300), 200, 200));
-		obs.add(new RectangularObstacle(new XY_RW(-800,1200), 100, 200));
-		obs.add(new RectangularObstacle(new XY_RW(-1000,300), 500, 500));
-		obs.add(new RectangularObstacle(new XY_RW(200,1600), 800, 300));
-		obs.add(new RectangularObstacle(new XY_RW(1450,700), 300, 100));
-		obs.add(new CircularObstacle(new XY_RW(500,600), 100));
+		obs.add(new RectangularObstacle(new XY(800,200), 200, 200));
+		obs.add(new RectangularObstacle(new XY(800,300), 200, 200));
+		obs.add(new RectangularObstacle(new XY(-800,1200), 100, 200));
+		obs.add(new RectangularObstacle(new XY(-1000,300), 500, 500));
+		obs.add(new RectangularObstacle(new XY(200,1600), 800, 300));
+		obs.add(new RectangularObstacle(new XY(1450,700), 300, 100));
+		obs.add(new CircularObstacle(new XY(500,600), 100));
 		
 		RectangularObstacle robot = new RectangularObstacle(250, 80, 110, 110); 
 
@@ -90,10 +89,10 @@ public class Example2
 			display.clearTemporaryPrintables();
 
 			// We add a dynamic obstacle
-			Obstacle newObs1 = new CircularObstacle(new XY_RW(-200,600), 200);
-			Obstacle newObs2 = new RectangularObstacle(new XY_RW(1200,1500), 100, 100);
-			Obstacle newObs3 = new CircularObstacle(new XY_RW(0,1200), 100);
-			Obstacle newObs4 = new CircularObstacle(new XY_RW(-900,600), 400);
+			Obstacle newObs1 = new CircularObstacle(new XY(-200,600), 200);
+			Obstacle newObs2 = new RectangularObstacle(new XY(1200,1500), 100, 100);
+			Obstacle newObs3 = new CircularObstacle(new XY(0,1200), 100);
+			Obstacle newObs4 = new CircularObstacle(new XY(-900,600), 400);
 			display.addTemporaryPrintable(newObs1, Color.BLUE, Layer.MIDDLE.layer);
 			display.addTemporaryPrintable(newObs2, Color.BLUE, Layer.MIDDLE.layer);
 			display.addTemporaryPrintable(newObs3, Color.BLUE, Layer.MIDDLE.layer);

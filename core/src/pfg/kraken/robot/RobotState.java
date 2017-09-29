@@ -21,14 +21,14 @@ public class RobotState
 	// Date en millisecondes depuis le début du match.
 	protected long date = 0;
 
-	public long getTempsDepuisDebutMatch()
+	public void initDate()
 	{
-		return date;
+		date = 0;
 	}
-
-	public void suitArcCourbe(Tentacle came_from_arc, double translationalSpeed, int tempsArret)
+	
+	public void suitArcCourbe(Tentacle came_from_arc, double duration)
 	{
-		date += came_from_arc.getDuree(translationalSpeed, tempsArret);
+		date += duration;
 		came_from_arc.getLast().copy(cinematique);
 	}
 
@@ -45,12 +45,17 @@ public class RobotState
 	public final void copy(RobotState rc)
 	{
 		cinematique.copy(rc.cinematique);
-		rc.date = getTempsDepuisDebutMatch();
+		rc.date = date;
 	}
 
 	public void setCinematique(Cinematique cinematique)
 	{
 		cinematique.copy(this.cinematique);
+	}
+
+	public long getDate()
+	{
+		return date;
 	}
 
 }

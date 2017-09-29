@@ -21,13 +21,11 @@ public class DynamicTentacle extends Tentacle
 {
 	private static final long serialVersionUID = 2188028584717495182L;
 	public List<CinematiqueObs> arcs;
-	public double longueur;
 
-	public DynamicTentacle(List<CinematiqueObs> arcs, double longueur, TentacleType v)
+	public DynamicTentacle(List<CinematiqueObs> arcs, TentacleType v)
 	{
 		vitesse = v;
 		this.arcs = arcs;
-		this.longueur = longueur;
 	}
 
 	@Override
@@ -47,11 +45,4 @@ public class DynamicTentacle extends Tentacle
 	{
 		return arcs.get(arcs.size() - 1);
 	}
-
-	@Override
-	public double getLongueur()
-	{
-		return longueur;
-	}
-
 }

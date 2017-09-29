@@ -36,7 +36,7 @@ public class Cinematique implements Printable, Serializable
 	public volatile double orientationReelle;
 	public volatile double courbureReelle;
 	private static NumberFormat formatter = new DecimalFormat("#0.000");
-
+	
 	public Cinematique(XYO xyo)
 	{
 		updateReel(xyo.position.getX(), xyo.position.getY(), xyo.orientation, true, 0);
@@ -52,11 +52,11 @@ public class Cinematique implements Printable, Serializable
 	 * 
 	 * @param cinematique
 	 */
-	public Cinematique(Cinematique cinematique)
+/*	public Cinematique(Cinematique cinematique)
 	{
 		enMarcheAvant = cinematique.enMarcheAvant;
 		courbureGeometrique = cinematique.courbureGeometrique;
-	}
+	}*/
 
 	/**
 	 * Cinématique vide
@@ -87,10 +87,10 @@ public class Cinematique implements Printable, Serializable
 		return position;
 	}
 
-	public final XY_RW getPositionEcriture()
+/*	public final XY_RW getPositionEcriture()
 	{
 		return position;
-	}
+	}*/
 
 	@Override
 	public String toString()
@@ -98,53 +98,11 @@ public class Cinematique implements Printable, Serializable
 		return position + ", " + formatter.format(orientationReelle) + ", " + (enMarcheAvant ? "marche avant" : "marche arrière") + ", courbure : " + formatter.format(courbureReelle);
 	}
 
-	/**
-	 * Renvoie un code pour le cache de pathfinding
-	 * 
-	 * @return
-	 */
-	public int codeForPFCache()
-	{
-		int codeOrientation;
-
-		// System.out.println("codeCourbure : "+codeCourbure+", "+courbure);
-		orientationReelle = orientationReelle % (2 * Math.PI);
-		if(orientationReelle < 0)
-			orientationReelle += 2 * Math.PI;
-		else if(orientationReelle > 2 * Math.PI)
-			orientationReelle -= 2 * Math.PI;
-
-		codeOrientation = (int) ((orientationReelle + Math.PI / 80) / (Math.PI / 40)); // le
-																						// +(pi/10)/2
-																						// est
-																						// utilisé
-																						// afin
-																						// d'avoir
-																						// une
-																						// tolérance
-																						// sur
-																						// l'orientation
-																						// du
-																						// robot
-																						// si
-																						// son
-																						// orientation
-																						// est
-																						// "ronde"
-																						// (0,
-																						// pi/2,
-																						// pi,
-																						// -pi/2)
-		// System.out.println("codeOrientation : "+codeOrientation+"
-		// "+orientation);
-
-		return ((((int) (position.getX()) + 1500) / 10) * 200 + (int) (position.getY()) / 10) * 40 + codeOrientation;
-	}
-
 	@Override
 	public int hashCode()
 	{
-
+		// TODO faire quelque chose de propre…
+		
 		// Il faut fusionner les points trop proches pour pas que le PF ne
 		// s'entête dans des coins impossibles
 		// Par contre, il ne faut pas trop fusionner sinon on ne verra pas les
@@ -220,7 +178,7 @@ public class Cinematique implements Printable, Serializable
 		this.courbureReelle = courbureReelle;
 	}
 
-	public void update(double x, double y, double orientationGeometrique, boolean enMarcheAvant, double courbureGeometrique)
+	protected void update(double x, double y, double orientationGeometrique, boolean enMarcheAvant, double courbureGeometrique)
 	{
 		if(enMarcheAvant)
 		{

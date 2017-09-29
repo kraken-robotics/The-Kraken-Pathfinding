@@ -18,7 +18,6 @@ import pfg.kraken.astar.DirectionStrategy;
 import pfg.kraken.robot.ItineraryPoint;
 import pfg.kraken.utils.XY;
 import pfg.kraken.utils.XYO;
-import pfg.kraken.utils.XY_RW;
 
 
 /**
@@ -33,13 +32,13 @@ public class Example3
 	public static void main(String[] args)
 	{
 		List<Obstacle> obs = new ArrayList<Obstacle>();
-		obs.add(new RectangularObstacle(new XY_RW(800,200), 200, 200));
-		obs.add(new RectangularObstacle(new XY_RW(800,300), 200, 200));
-		obs.add(new RectangularObstacle(new XY_RW(-800,1200), 100, 200));
-		obs.add(new RectangularObstacle(new XY_RW(-1000,300), 500, 500));
-		obs.add(new RectangularObstacle(new XY_RW(200,1600), 800, 300));
-		obs.add(new RectangularObstacle(new XY_RW(1450,700), 300, 100));
-		obs.add(new CircularObstacle(new XY_RW(500,600), 100));
+		obs.add(new RectangularObstacle(new XY(800,200), 200, 200));
+		obs.add(new RectangularObstacle(new XY(800,300), 200, 200));
+		obs.add(new RectangularObstacle(new XY(-800,1200), 100, 200));
+		obs.add(new RectangularObstacle(new XY(-1000,300), 500, 500));
+		obs.add(new RectangularObstacle(new XY(200,1600), 800, 300));
+		obs.add(new RectangularObstacle(new XY(1450,700), 300, 100));
+		obs.add(new CircularObstacle(new XY(500,600), 100));
 
 		RectangularObstacle robot = new RectangularObstacle(250, 80, 110, 110); 
 
