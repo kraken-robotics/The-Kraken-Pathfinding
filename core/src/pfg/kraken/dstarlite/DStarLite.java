@@ -238,12 +238,13 @@ public class DStarLite
 		}
 		
 		for(int i = 0; i < memory.length; i++)
-			if(memory[i].nbPF == nbPF) // ceux qui ne sont pas à jour auront de toute façon une heuristique nulle
-			{
+			if(memory[i].nbPF == nbPF) // on met d'abord à jour tous les meilleurs voisins
 				if(memory[i] != arrivee && memory[i].rhs != Integer.MAX_VALUE)
 					memory[i].bestVoisin = getBestVoisin(memory[i].node);
+
+		for(int i = 0; i < memory.length; i++)
+			if(memory[i].nbPF == nbPF) // ceux qui ne sont pas à jour auront de toute façon une heuristique nulle
 				updateOrientationHeuristic(memory[i]);
-			}
 	}
 
 	/**
@@ -491,6 +492,7 @@ public class DStarLite
 		else
 		{
 			int nbBestVoisin = n.bestVoisin;
+			assert nbBestVoisin == getBestVoisin(n.node);
 			NavmeshNode bestVoisin = n.node.getNeighbour(nbBestVoisin); 
 			if(bestVoisin.equals(arrivee.node))
 				n.heuristiqueOrientation = n.node.getNeighbourEdge(nbBestVoisin).getOrientation(n.node);
