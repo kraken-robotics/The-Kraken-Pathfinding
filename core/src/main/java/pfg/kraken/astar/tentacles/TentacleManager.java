@@ -8,7 +8,6 @@ package pfg.kraken.astar.tentacles;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 import pfg.config.Config;
 import pfg.injector.Injector;
 import pfg.injector.InjectorException;
@@ -19,6 +18,7 @@ import pfg.kraken.astar.AStarNode;
 import pfg.kraken.astar.DirectionStrategy;
 import pfg.kraken.astar.tentacles.types.TentacleType;
 import pfg.kraken.dstarlite.DStarLite;
+import pfg.kraken.memory.NodePool;
 import pfg.kraken.obstacles.Obstacle;
 import pfg.kraken.obstacles.container.DynamicObstacles;
 import pfg.kraken.obstacles.container.StaticObstacles;
@@ -33,33 +33,34 @@ import pfg.graphic.log.Log;
  *
  */
 
-public class TentacleManager
+public class TentacleManager implements Iterator<AStarNode>
 {
 	protected Log log;
-	private AStarNode current;
 	private DStarLite dstarlite;
 	private DynamicObstacles dynamicObs;
 	private double courbureMax;
 	private int tempsArret;
 	private Injector injector;
 	private StaticObstacles fixes;
-	
+	private NodePool memorymanager;
+
 	private DirectionStrategy directionstrategyactuelle;
 	private Cinematique arrivee = new Cinematique();
 //	private ResearchProfileManager profiles;
 	private List<TentacleType> currentProfile = new ArrayList<TentacleType>();
-	private ListIterator<TentacleType> iterator = currentProfile.listIterator();
+	private Iterator<AStarNode> successeursIter;
+	private List<AStarNode> successeurs = new ArrayList<AStarNode>();
 //	private List<StaticObstacles> disabledObstaclesFixes = new ArrayList<StaticObstacles>();
 
-	public TentacleManager(Log log, StaticObstacles fixes, DStarLite dstarlite, Config config, DynamicObstacles dynamicObs, Injector injector, ResearchProfileManager profiles) throws InjectorException
+	public TentacleManager(Log log, StaticObstacles fixes, DStarLite dstarlite, Config config, DynamicObstacles dynamicObs, Injector injector, ResearchProfileManager profiles, NodePool memorymanager) throws InjectorException
 	{
 		this.injector = injector;
 		this.fixes = fixes;
 		this.dynamicObs = dynamicObs;
 		this.log = log;
 		this.dstarlite = dstarlite;
-
-//		this.profiles = profiles;
+		this.memorymanager = memorymanager;
+		
 		this.currentProfile = profiles.getProfile(0);
 		for(TentacleType t : currentProfile)
 			injector.getService(t.getComputer());
@@ -152,16 +153,12 @@ public class TentacleManager
 	}
 
 	/**
-	 * Fournit le prochain successeur. On suppose qu'il existe
-	 * 
-	 * @param successeur
-	 * @throws InterruptedException
+	 * Fournit le prochain successeur
 	 */
-	public boolean next(AStarNode successeur)
+	@Override
+	public AStarNode next()
 	{
-		TentacleType v = iterator.next();
-		current.robot.copy(successeur.robot);
-		return injector.getExistingService(v.getComputer()).compute(current, v, arrivee, successeur);
+		return successeursIter.next();
 	}
 
 	/**
@@ -198,7 +195,7 @@ public class TentacleManager
 	 * @param vitesse
 	 * @return
 	 */
-	private final boolean acceptable(TentacleType vitesse)
+	private final boolean acceptable(AStarNode current, TentacleType vitesse)
 	{
 		// TODO faire du tri avec une heuristique ! exemple :
 		// - voir si le dernier point est dans un obstacle ou pas
@@ -213,15 +210,10 @@ public class TentacleManager
 	 * 
 	 * @return
 	 */
+	@Override
 	public boolean hasNext()
 	{
-		while(iterator.hasNext())
-			if(acceptable(iterator.next()))
-			{
-				iterator.previous();
-				return true;
-			}
-		return false;
+		return successeursIter.hasNext();
 	}
 
 	/**
@@ -230,10 +222,24 @@ public class TentacleManager
 	 * @param current
 	 * @param directionstrategyactuelle
 	 */
-	public void reinitIterator(AStarNode current)
+	public void computeTentacles(AStarNode current)
 	{
-		this.current = current;
-		iterator = currentProfile.listIterator();
+		successeurs.clear();
+		for(TentacleType v : currentProfile)
+		{
+			if(acceptable(current, v))
+			{
+				AStarNode successeur = memorymanager.getNewNode();
+//				assert successeur.cameFromArcDynamique == null;
+				successeur.cameFromArcDynamique = null;
+				successeur.parent = current;
+				
+				current.robot.copy(successeur.robot);
+				if(injector.getExistingService(v.getComputer()).compute(current, v, arrivee, successeur))
+					successeurs.add(successeur);
+			}
+		}
+		successeursIter = successeurs.iterator();
 	}
 
 	public synchronized Double heuristicCostCourbe(Cinematique c)
@@ -245,48 +251,4 @@ public class TentacleManager
 	{
 		return successeur.getArc() != null && successeur.getArc().getLast().getPosition().squaredDistance(arrivee.getPosition()) < 5;
 	}
-	
-	/**
-	 * heuristique de secours
-	 * 
-	 * @param cinematique
-	 * @return
-	 */
-/*	public double heuristicDirect(Cinematique cinematique)
-	{
-		return 3 * cinematique.getPosition().distanceFast(arrivee);
-	}*/
-
-/*	public void setTentacle(List<TentacleType> tentacleTypesUsed)
-	{
-		// TODO Auto-generated method stub
-	}*/
-
-/*	public void disableObstaclesFixes(boolean symetrie, CinematiqueObs obs)
-	{
-		disabledObstaclesFixes.clear();
-		ObstaclesFixes depart;
-		boolean vide = true;
-		if(symetrie)
-			depart = ObstaclesFixes.ZONE_DEPART_GAUCHE_CENTRE;
-		else
-			depart = ObstaclesFixes.ZONE_DEPART_DROITE_CENTRE;
-		
-		for(ObstaclesFixes o : ObstaclesFixes.values())
-			if(!o.bordure && o.getObstacle().isColliding(obs.obstacle))
-			{
-				vide = false;
-				log.warning("Désactivation de l'obstacle fixe : " + o + ". Obs : " + obs);
-				disabledObstaclesFixes.add(o);
-			}
-		
-		if(!disabledObstaclesFixes.contains(depart))
-			disabledObstaclesFixes.add(depart);
-		
-		if(!vide)
-			dstarlite.disableObstaclesFixes(obs.getPosition(), depart.getObstacle());
-		else
-			dstarlite.disableObstaclesFixes(null, depart.getObstacle());
-	}*/
-
 }

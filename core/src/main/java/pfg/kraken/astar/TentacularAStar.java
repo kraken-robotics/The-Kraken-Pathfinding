@@ -352,27 +352,16 @@ public class TentacularAStar
 			}
 
 			// On parcourt les voisins de current
-			arcmanager.reinitIterator(current);
+			arcmanager.computeTentacles(current);
 			if(debugMode)
 				outTentacles.clear();
 			
 			while(arcmanager.hasNext())
 			{
-				// On crée "successeur", pour l'instant vite
-				successeur = memorymanager.getNewNode();
-//				assert successeur.cameFromArcDynamique == null;
-				successeur.cameFromArcDynamique = null;
+				successeur = arcmanager.next();
 
-				// S'il y a un problème, on passe au suivant (interpolation impossible par exemple)
-				if(!arcmanager.next(successeur))
-				{
-					destroy(successeur);
-					continue;
-				}
-				
 				// successeur a été mis à jour par "next"
 				
-				successeur.parent = current;
 				successeur.g_score = current.g_score + arcmanager.distanceTo(successeur, vitesseMax); // ici la distance est une durée
 
 				// successeur est complètement mis à jour après appel à "distanceTo"
