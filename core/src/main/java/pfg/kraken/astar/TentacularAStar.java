@@ -236,7 +236,7 @@ public class TentacularAStar
 
 		long debutRecherche = System.currentTimeMillis();
 
-		AStarNode current, successeur;
+		AStarNode current;
 		do
 		{
 			current = openset.poll();
@@ -356,13 +356,9 @@ public class TentacularAStar
 			if(debugMode)
 				outTentacles.clear();
 			
-			while(arcmanager.hasNext())
+			for(AStarNode successeur : arcmanager)
 			{
-				successeur = arcmanager.next();
-
-				// successeur a été mis à jour par "next"
-				
-				successeur.g_score = current.g_score + arcmanager.distanceTo(successeur, vitesseMax); // ici la distance est une durée
+				successeur.g_score = current.g_score + arcmanager.travelTimeTo(successeur, vitesseMax); // ici la distance est une durée
 
 				// successeur est complètement mis à jour après appel à "distanceTo"
 				
@@ -507,7 +503,7 @@ public class TentacularAStar
 		vitesseMax = maxSpeed;
 		depart.init();
 		depart.robot.setCinematique(new Cinematique(start));
-		arcmanager.configureArcManager(directionstrategy, arrival);
+		arcmanager.configure(directionstrategy, arrival);
 
 		/*
 		 * dstarlite.computeNewPath updates the heuristic.

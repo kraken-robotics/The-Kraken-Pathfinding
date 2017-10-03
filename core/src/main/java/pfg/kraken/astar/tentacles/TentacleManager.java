@@ -33,7 +33,7 @@ import pfg.graphic.log.Log;
  *
  */
 
-public class TentacleManager implements Iterator<AStarNode>
+public class TentacleManager implements Iterable<AStarNode>
 {
 	protected Log log;
 	private DStarLite dstarlite;
@@ -137,28 +137,13 @@ public class TentacleManager implements Iterator<AStarNode>
 	}
 
 	/**
-	 * Renvoie la distance entre deux points. Et par distance, j'entends
-	 * "durée".
-	 * Heureusement, les longueurs des arcs de clothoïdes qu'on considère sont
-	 * égales.
-	 * Ne reste plus qu'à prendre en compte la vitesse, qui dépend de la
-	 * courbure.
-	 * Il faut exécuter tout ce qui se passe pendant ce trajet
+	 * Returns the travel time
 	 */
-	public double distanceTo(AStarNode node, double vitesseMax)
+	public double travelTimeTo(AStarNode node, double vitesseMax)
 	{
 		double duration = node.getArc().getDuree(vitesseMax, tempsArret, node.parent.parent == null);
 		node.robot.suitArcCourbe(node.getArc(), duration);
 		return duration;
-	}
-
-	/**
-	 * Fournit le prochain successeur
-	 */
-	@Override
-	public AStarNode next()
-	{
-		return successeursIter.next();
 	}
 
 	/**
@@ -168,13 +153,13 @@ public class TentacleManager implements Iterator<AStarNode>
 	 * @param sens
 	 * @param arrivee
 	 */
-	public void configureArcManager(DirectionStrategy directionstrategyactuelle, Cinematique arrivee)
+	public void configure(DirectionStrategy directionstrategyactuelle, Cinematique arrivee)
 	{
 		this.directionstrategyactuelle = directionstrategyactuelle;
 		arrivee.copy(this.arrivee);
 	}
 
-	public void configureArcManager(DirectionStrategy directionstrategyactuelle, XY arrivee)
+	public void configure(DirectionStrategy directionstrategyactuelle, XY arrivee)
 	{
 		this.directionstrategyactuelle = directionstrategyactuelle;
 		this.arrivee.updateReel(arrivee.getX(), arrivee.getY(), 0, true, 0);
@@ -190,33 +175,6 @@ public class TentacleManager implements Iterator<AStarNode>
 	}
 
 	/**
-	 * Renvoie "true" si cette vitesse est acceptable par rapport à "current".
-	 * 
-	 * @param vitesse
-	 * @return
-	 */
-	private final boolean acceptable(AStarNode current, TentacleType vitesse)
-	{
-		// TODO faire du tri avec une heuristique ! exemple :
-		// - voir si le dernier point est dans un obstacle ou pas
-		// - voir si l'orientation heuristique préconise certains mouvement (ne pas faire de marche arrière, voire tourner à gauche / à droite)
-		return vitesse.isAcceptable(current.robot.getCinematique(), directionstrategyactuelle, courbureMax);
-	}
-
-	/**
-	 * Y a-t-il encore une vitesse possible ?
-	 * On vérifie ici si certaines vitesses sont interdites (à cause de la
-	 * courbure trop grande ou du rebroussement)
-	 * 
-	 * @return
-	 */
-	@Override
-	public boolean hasNext()
-	{
-		return successeursIter.hasNext();
-	}
-
-	/**
 	 * Réinitialise l'itérateur à partir d'un nouvel état
 	 * 
 	 * @param current
@@ -227,10 +185,10 @@ public class TentacleManager implements Iterator<AStarNode>
 		successeurs.clear();
 		for(TentacleType v : currentProfile)
 		{
-			if(acceptable(current, v))
+			if(v.isAcceptable(current.robot.getCinematique(), directionstrategyactuelle, courbureMax))
 			{
 				AStarNode successeur = memorymanager.getNewNode();
-//				assert successeur.cameFromArcDynamique == null;
+				assert successeur.cameFromArcDynamique == null;
 				successeur.cameFromArcDynamique = null;
 				successeur.parent = current;
 				
@@ -250,5 +208,11 @@ public class TentacleManager implements Iterator<AStarNode>
 	public boolean isArrived(AStarNode successeur)
 	{
 		return successeur.getArc() != null && successeur.getArc().getLast().getPosition().squaredDistance(arrivee.getPosition()) < 5;
+	}
+
+	@Override
+	public Iterator<AStarNode> iterator()
+	{
+		return successeursIter;
 	}
 }
