@@ -49,11 +49,10 @@ public class JUnit_TentacularAStar extends JUnit_Test
 	// private ArcManager arcmanager;
 	// private DStarLite dstarlite;
 
-	@Override
 	@Before
 	public void setUp() throws Exception
 	{
-		super.setUp();
+		super.setUpStandard();
 		clotho = injector.getService(ClothoidesComputer.class);
 		buffer = injector.getService(GraphicDisplay.class);
 		astar = injector.getService(TentacularAStar.class);
@@ -207,13 +206,6 @@ public class JUnit_TentacularAStar extends JUnit_Test
 					buffer.addTemporaryPrintable(new PrintablePoint(arc[a].getPoint(i).getPosition()), Color.BLACK, Layer.FOREGROUND.layer);
 			}
 		}
-	}
-	
-	// TODO déplacer dans le fichier approprié
-	@Test(expected = AssertionError.class)
-	public void test_assert() throws Exception
-	{
-		assert false;
 	}
 
 	/*

@@ -22,12 +22,11 @@ public class JUnit_EPriorityQueue extends JUnit_Test
 
 	private EnhancedPriorityQueue file;
 
-	@Override
 	@Before
 	public void setUp() throws Exception
 	{
-		super.setUp();
-		file = new EnhancedPriorityQueue(10);
+		super.setUpWith(null, "default");
+		file = new EnhancedPriorityQueue(500);
 	}
 
 	@Test
@@ -72,13 +71,11 @@ public class JUnit_EPriorityQueue extends JUnit_Test
 			n[i].cle.set(r.nextInt(10), r.nextInt(10));
 			file.add(n[i]);
 		}
-		// file.print(0);
 		file.poll();
 		file.poll();
 		file.poll();
 		file.poll();
 		file.poll();
-		// file.print(1);
 	}
 
 }

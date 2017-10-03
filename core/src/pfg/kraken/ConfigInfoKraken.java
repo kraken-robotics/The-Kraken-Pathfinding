@@ -81,7 +81,7 @@ public enum ConfigInfoKraken implements ConfigInfo
 									// vérification des collisions
 //	GRAPHIC_ROBOT_AND_SENSORS(true), // affiche le robot et ses capteurs
 	GRAPHIC_NAVMESH(false), // show the navmesh ?
-
+	REFRESH_FREQUENCY(5), // in Hertz, 0 to disable
 	ALLOW_BACKWARD_MOTION(true), // allow the pathfinding to find a path with backward motion by default
 	
 	CONSOLE_NB_ROWS(40), // nombre de lignes dans la console affichée
