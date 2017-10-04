@@ -8,7 +8,7 @@ package pfg.kraken.dstarlite.navmesh;
 import pfg.config.Config;
 import pfg.graphic.GraphicDisplay;
 import pfg.kraken.utils.XY;
-import pfg.log.Log;
+import pfg.graphic.log.Log;
 import pfg.kraken.ConfigInfoKraken;
 import pfg.kraken.LogCategoryKraken;
 import pfg.kraken.SeverityCategoryKraken;

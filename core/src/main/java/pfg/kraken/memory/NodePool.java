@@ -11,7 +11,7 @@ import pfg.kraken.ConfigInfoKraken;
 import pfg.kraken.astar.AStarNode;
 import pfg.kraken.obstacles.RectangularObstacle;
 import pfg.kraken.robot.RobotState;
-import pfg.log.Log;
+import pfg.graphic.log.Log;
 
 /**
  * Memory Manager des nœuds du pathfinding courbe

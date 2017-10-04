@@ -13,7 +13,7 @@ import pfg.config.Config;
 import pfg.config.ConfigInfo;
 import pfg.graphic.Vec2RO;
 import pfg.graphic.WindowFrame;
-import pfg.log.Log;
+import pfg.graphic.log.Log;
 import pfg.graphic.GraphicDisplay;
 import pfg.graphic.ConfigInfoGraphic;
 import pfg.graphic.DebugTool;

@@ -18,7 +18,7 @@ import pfg.kraken.obstacles.Obstacle;
 import pfg.kraken.obstacles.RectangularObstacle;
 import pfg.kraken.obstacles.container.StaticObstacles;
 import pfg.kraken.utils.XY;
-import pfg.log.Log;
+import pfg.graphic.log.Log;
 
 /**
  * A navmesh computer

@@ -11,7 +11,7 @@ import pfg.kraken.ConfigInfoKraken;
 import pfg.kraken.astar.tentacles.DynamicTentacle;
 import pfg.kraken.obstacles.RectangularObstacle;
 import pfg.kraken.robot.CinematiqueObs;
-import pfg.log.Log;
+import pfg.graphic.log.Log;
 
 /**
  * Classe qui fournit des objets CinematiqueObs

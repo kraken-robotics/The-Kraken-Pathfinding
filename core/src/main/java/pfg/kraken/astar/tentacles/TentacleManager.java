@@ -24,7 +24,7 @@ import pfg.kraken.obstacles.container.DynamicObstacles;
 import pfg.kraken.obstacles.container.StaticObstacles;
 import pfg.kraken.robot.Cinematique;
 import pfg.kraken.utils.XY;
-import pfg.log.Log;
+import pfg.graphic.log.Log;
 
 /**
  * Réalise des calculs pour l'A* courbe.
