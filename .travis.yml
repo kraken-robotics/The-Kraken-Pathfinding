@@ -1,15 +1,11 @@
 language : java
 install :
-    - cd core
-    - ./compile-lib.sh
+    - ./install_dependencies.sh
 script :
+    - cd core
+    - mvn install
+    - cd ../examples
     - ant
-#    - cd ../tests && ant
-    - cd ../examples/ && ant
-    - rm kraken.conf
-    - java -ea -cp bin/:../core/kraken.jar:../core/lib Example1
-    - java -ea -cp bin/:../core/kraken.jar:../core/lib Example2
-    - java -ea -cp bin/:../core/kraken.jar:../core/lib Example3
 jdk : oraclejdk8
 notifications:
     slack: intech-sudparis:Z3xKQEmZT2a9BFBqouokQ6J7

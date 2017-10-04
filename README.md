@@ -48,13 +48,12 @@ If you want the latest **experimental** version, clone this repository:
 
 ### Compiling
 
-You will need a JDK and `ant` (package `ant` or `apache-ant`):
+You will need a JDK and maven:
     
     $ cd The-Kraken-Pathfinding/core
-    $ ./compile-lib.sh
-    $ ant
-
-The file ```kraken.jar```, containing the compiled code .class and the sources .java along with the dependencies .jar, will be created.
+    $ ./install_dependencies.sh
+    $ cd core
+    $ mvn install
 
 Examples are available in the directory ```examples```.
 

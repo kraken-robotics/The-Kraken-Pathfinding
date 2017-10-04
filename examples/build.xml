@@ -6,7 +6,12 @@
     <property name="source" value="1.8"/>
     <path id="Kraken.classpath">
         <pathelement location="bin"/>
-	<pathelement location="../core/kraken.jar"/>
+        <pathelement location="${user.home}/.m2/repository/pfg/injector/dependency-injector/1.1/dependency-injector-1.1.jar"/>
+        <pathelement location="${user.home}/.m2/repository/pfg/config/config/1.2/config-1.2.jar"/>
+        <pathelement location="${user.home}/.m2/repository/org/jfree/jcommon/1.0.23/jcommon-1.0.23.jar"/>
+        <pathelement location="${user.home}/.m2/repository/org/jfree/jfreechart/1.0.19/jfreechart-1.0.19.jar"/>
+        <pathelement location="${user.home}/.m2/repository/pfg/graphic/graphic-toolbox/1.0/graphic-toolbox-1.0.jar"/>
+        <pathelement location="${user.home}/.m2/repository/pfg/kraken/kraken/1.1.1/kraken-1.1.1.jar"/>
     </path>
     <target name="init">
         <mkdir dir="bin"/>
