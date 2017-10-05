@@ -80,24 +80,6 @@ In practice, if the robot has a small orientation error, one can approximate _d_
 
 This control algorithm has been successfully used with Kraken in the [INTech Senpaï Moon-Rover project (french !)](https://intechsenpai.github.io/moon-rover/).
 
-## Contributing
-
-### How to help ?
-
-Feel free to contribute to Kraken ! There are two easy ways of helping me:
-
-- submit an issue containing your ideas ;
-- create a pull request.
-
-### Bug report
-
-Bug report are done with issues. Please be careful to respect those few points:
-
-- check if the bug hasn't be reported yet ;
-- indicate the version of Kraken you use ;
-- describe your problem as best as possible. If you can post a minimal code that triggers the bug, it will be much easier for me ;
-- attach any relevant file.
-
 ## License
 
 This project is licensed under the [MIT license](https://raw.githubusercontent.com/PFGimenez/The-Kraken-Pathfinding/master/LICENSE), which is very permissive. I'd love to know the projects that use Kraken ; please keep me posted !
