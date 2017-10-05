@@ -130,18 +130,6 @@ public class Kraken
 				so.addAll(fixedObstacles);
 			so.setCorners(bottomLeftCorner, topRightCorner);
 
-
-			/*
-			 * Override the graphic config
-			 */
-			HashMap<ConfigInfo, Object> overrideGraphic = new HashMap<ConfigInfo, Object>();
-			for(ConfigInfoGraphic infoG : ConfigInfoGraphic.values())
-				for(ConfigInfoKraken infoK : ConfigInfoKraken.values())
-					if(infoG.toString().equals(infoK.toString()))
-						overrideGraphic.put(infoG, config.getObject(infoK));
-			overrideGraphic.put(ConfigInfoGraphic.SIZE_X_WITH_UNITARY_ZOOM, (int) (topRightCorner.getX() - bottomLeftCorner.getX()));
-			overrideGraphic.put(ConfigInfoGraphic.SIZE_Y_WITH_UNITARY_ZOOM, (int) (topRightCorner.getY() - bottomLeftCorner.getY()));
-			
 			Log log = Log.getLog(SeverityCategoryKraken.INFO);
 
 			injector.addService(log);
@@ -152,9 +140,23 @@ public class Kraken
 
 			if(config.getBoolean(ConfigInfoKraken.GRAPHIC_ENABLE))
 			{
+				/*
+				 * Override the graphic config
+				 */
+				HashMap<ConfigInfo, Object> overrideGraphic = new HashMap<ConfigInfo, Object>();
+				for(ConfigInfoGraphic infoG : ConfigInfoGraphic.values())
+					for(ConfigInfoKraken infoK : ConfigInfoKraken.values())
+						if(infoG.toString().equals(infoK.toString()))
+							overrideGraphic.put(infoG, config.getObject(infoK));
+				overrideGraphic.put(ConfigInfoGraphic.SIZE_X_WITH_UNITARY_ZOOM, (int) (topRightCorner.getX() - bottomLeftCorner.getX()));
+				overrideGraphic.put(ConfigInfoGraphic.SIZE_Y_WITH_UNITARY_ZOOM, (int) (topRightCorner.getY() - bottomLeftCorner.getY()));
+				
 				DebugTool debug = DebugTool.getDebugTool(overrideGraphic, new Vec2RO((topRightCorner.getX() + bottomLeftCorner.getX()) / 2, (topRightCorner.getY() + bottomLeftCorner.getY()) / 2), SeverityCategoryKraken.INFO, null);
 				WindowFrame f = debug.getWindowFrame();
 				injector.addService(f.getPrintBuffer());
+				
+				if(config.getBoolean(ConfigInfoKraken.GRAPHIC_SERVER))
+					debug.startPrintServer();
 			}
 			else
 			{

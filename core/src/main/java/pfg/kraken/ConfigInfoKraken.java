@@ -77,6 +77,7 @@ public enum ConfigInfoKraken implements ConfigInfo
 								// données par le D* Lite
 	GRAPHIC_ENABLE(false), // désactive tout affichage si faux (empêche le
 							// thread d'affichage de se lancer)
+	GRAPHIC_SERVER(false), // active le serveur d'affichage
 	GRAPHIC_D_STAR_LITE(false), // affiche les calculs du D* Lite
 	GRAPHIC_TENTACLES(false), // affiche les trajectoires temporaires
 //	GRAPHIC_TRAJECTORY_FINAL(true), // affiche les trajectoires
