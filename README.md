@@ -1,5 +1,10 @@
 <img align="right" src="https://raw.githubusercontent.com/PFGimenez/The-Kraken-Pathfinding/master/resources/logo.png">
 
+[![GitHub version](https://badge.fury.io/gh/PFGimenez%2FThe-Kraken-Pathfinding.svg)](https://github.com/PFGimenez/The-Kraken-Pathfinding)
+[![Build Status](https://travis-ci.org/PFGimenez/The-Kraken-Pathfinding.svg?branch=master)](https://travis-ci.org/PFGimenez/The-Kraken-Pathfinding)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+
+
 # The Kraken Pathfinding
 
 A tentacle-based pathfinding library for nonholonomic robotic vehicles 
@@ -35,7 +40,7 @@ For legacy reasons, mainly.
 
 You can download the .jar file here: https://github.com/PFGimenez/The-Kraken-Pathfinding/releases/download/v1.1.0/kraken.jar
 
-### Getting the source [![Build Status](https://travis-ci.org/PFGimenez/The-Kraken-Pathfinding.svg?branch=master)](https://travis-ci.org/PFGimenez/The-Kraken-Pathfinding)
+### Getting the source
 
 If you want the latest stable version, clone this repository:
 
