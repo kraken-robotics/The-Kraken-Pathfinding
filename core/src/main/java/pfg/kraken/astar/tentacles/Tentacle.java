@@ -50,14 +50,56 @@ public abstract class Tentacle implements Printable
 
 	public abstract CinematiqueObs getLast();
 
-	public final double getDuree(double translationalSpeed, int tempsArret, boolean firstMove)
+	public final double getDuree(Tentacle tentacleParent, double translationalSpeed, int tempsArret, double maxAcceleration)
 	{
+		boolean firstMove = tentacleParent == null;
+/*		int nb = getNbPoints();
+		double out = 0;
+		
+		double firstMaxSpeed = Math.min(getPoint(0).maxSpeed, translationalSpeed);
+		
+		// premier mouvement : vitesse nulle (on est arrêté)
+		double lastPossibleSpeed = 0;
+		if(!firstMove)
+			lastPossibleSpeed = tentacleParent.getPoint(tentacleParent.getNbPoints()-1).possibleSpeed;
+
+		// prend en compte l'écart entre la vitesse max et la vitesse possible
+		double deltaDuration = 0;
+		
+		if(lastPossibleSpeed >= firstMaxSpeed)
+		{
+			// le temps est perdu dans l'arc précédent car il doit anticiper la vitesse basse
+			// on ne le met PAS à jour car peut-être que l'arc précédent sera au final utilisé avec un autre arc suivant
+			if(lastPossibleSpeed > firstMaxSpeed)
+			{
+				
+				firstMaxSpeed -= maxAcceleration;
+			}
+			
+			// l'arc courant est construit classiquement
+			for(int i = 0; i < nb; i++)
+			{
+				getPoint(i).maxSpeed = Math.min(getPoint(i).maxSpeed, translationalSpeed);
+				assert getPoint(i).maxSpeed > 0;
+				out += PRECISION_TRACE_MM / getPoint(i).maxSpeed;
+			}
+
+		}
+		else if(lastPossibleSpeed < firstMaxSpeed)
+		{
+			// le temps est perdu dans l'arc courant qui doit accélérer
+			// on MET à jour l'arc car son ancêtre ne pourra pas changer
+			
+		}
+		assert vitesse.getNbArrets(firstMove) >= 0;
+		return out + vitesse.getNbArrets(firstMove) * tempsArret + deltaDuration;*/
+		
 		int nb = getNbPoints();
 		double out = 0;
 		for(int i = 0; i < nb; i++)
 		{
 			getPoint(i).maxSpeed = Math.min(getPoint(i).maxSpeed, translationalSpeed);
-			assert getPoint(i).maxSpeed > 0;
+			assert getPoint(i).maxSpeed > 0 : "Negative speed : "+getPoint(i).maxSpeed;
 			out += PRECISION_TRACE_MM / getPoint(i).maxSpeed;
 		}
 		assert vitesse.getNbArrets(firstMove) >= 0;

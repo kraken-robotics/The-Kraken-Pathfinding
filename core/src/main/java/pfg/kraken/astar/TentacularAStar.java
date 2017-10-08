@@ -105,11 +105,6 @@ public class TentacularAStar
 	private DirectionStrategy defaultStrategy;
 	
 	/*
-	 * The current max speed
-	 */
-	private double vitesseMax;
-	
-	/*
 	 * The default max speed
 	 */
 	private double defaultSpeed;
@@ -229,7 +224,7 @@ public class TentacularAStar
 
 		assert heuristique != null : "Null heuristic !"; // l'heuristique est vérifiée à l'initialisation
 
-		depart.f_score = heuristique / vitesseMax;
+		depart.f_score = heuristique;
 		openset.clear();
 		openset.add(depart); // Les nœuds à évaluer
 		closedset.clear();
@@ -358,10 +353,8 @@ public class TentacularAStar
 			
 			for(AStarNode successeur : arcmanager)
 			{
-				successeur.g_score = current.g_score + arcmanager.travelTimeTo(successeur, vitesseMax); // ici la distance est une durée
+				successeur.g_score += current.g_score; // successeur.g_score contient déjà la distance entre current et successeur
 
-				// successeur est complètement mis à jour après appel à "distanceTo"
-				
 				// on a déjà visité un point proche?
 				// ceci est vraie seulement si l'heuristique est monotone. C'est
 				// normalement le cas.
@@ -379,7 +372,7 @@ public class TentacularAStar
 					continue;
 				}
 
-				successeur.f_score = successeur.g_score + heuristique / vitesseMax;
+				successeur.f_score = successeur.g_score + heuristique;
 
 				// est qu'on est tombé sur l'arrivée ? alors ça fait un trajet de secours
 				// s'il y a déjà un trajet de secours, on prend le meilleur
@@ -500,10 +493,9 @@ public class TentacularAStar
 	 */
 	public void initializeNewSearch(XYO start, XY arrival, DirectionStrategy directionstrategy, double maxSpeed) throws NoPathException
 	{
-		vitesseMax = maxSpeed;
 		depart.init();
 		depart.robot.setCinematique(new Cinematique(start));
-		arcmanager.configure(directionstrategy, arrival);
+		arcmanager.configure(directionstrategy, maxSpeed, arrival);
 
 		/*
 		 * dstarlite.computeNewPath updates the heuristic.

@@ -38,7 +38,7 @@ public class TentacleManager implements Iterable<AStarNode>
 	protected Log log;
 	private DStarLite dstarlite;
 	private DynamicObstacles dynamicObs;
-	private double courbureMax;
+	private double courbureMax, maxLinearAcceleration, vitesseMax;
 	private int tempsArret;
 	private Injector injector;
 	private StaticObstacles fixes;
@@ -66,6 +66,7 @@ public class TentacleManager implements Iterable<AStarNode>
 			injector.getService(t.getComputer());
 		
 		courbureMax = config.getDouble(ConfigInfoKraken.MAX_CURVATURE);
+		maxLinearAcceleration = config.getDouble(ConfigInfoKraken.MAX_LINEAR_ACCELERATION);
 		tempsArret = config.getInt(ConfigInfoKraken.STOP_DURATION);
 		coins[0] = fixes.getBottomLeftCorner();
 		coins[2] = fixes.getTopRightCorner();
@@ -137,41 +138,24 @@ public class TentacleManager implements Iterable<AStarNode>
 	}
 
 	/**
-	 * Returns the travel time
-	 */
-	public double travelTimeTo(AStarNode node, double vitesseMax)
-	{
-		double duration = node.getArc().getDuree(vitesseMax, tempsArret, node.parent.parent == null);
-		node.robot.suitArcCourbe(node.getArc(), duration);
-		return duration;
-	}
-
-	/**
 	 * Initialise l'arc manager avec les infos donnée
 	 * 
 	 * @param directionstrategyactuelle
 	 * @param sens
 	 * @param arrivee
 	 */
-	public void configure(DirectionStrategy directionstrategyactuelle, Cinematique arrivee)
+	public void configure(DirectionStrategy directionstrategyactuelle, double vitesseMax, Cinematique arrivee)
 	{
+		this.vitesseMax = vitesseMax;
 		this.directionstrategyactuelle = directionstrategyactuelle;
 		arrivee.copy(this.arrivee);
 	}
 
-	public void configure(DirectionStrategy directionstrategyactuelle, XY arrivee)
+	public void configure(DirectionStrategy directionstrategyactuelle, double vitesseMax, XY arrivee)
 	{
+		this.vitesseMax = vitesseMax;
 		this.directionstrategyactuelle = directionstrategyactuelle;
 		this.arrivee.updateReel(arrivee.getX(), arrivee.getY(), 0, true, 0);
-	}
-	/**
-	 * Initialise l'arc manager avec le cercle
-	 * 
-	 * @param directionstrategyactuelle
-	 */
-	public void configureArcManagerWithCircle(DirectionStrategy directionstrategyactuelle)
-	{
-		this.directionstrategyactuelle = directionstrategyactuelle;
 	}
 
 	/**
@@ -188,13 +172,19 @@ public class TentacleManager implements Iterable<AStarNode>
 			if(v.isAcceptable(current.robot.getCinematique(), directionstrategyactuelle, courbureMax))
 			{
 				AStarNode successeur = memorymanager.getNewNode();
-				assert successeur.cameFromArcDynamique == null;
+//				assert successeur.cameFromArcDynamique == null;
 				successeur.cameFromArcDynamique = null;
 				successeur.parent = current;
 				
 				current.robot.copy(successeur.robot);
 				if(injector.getExistingService(v.getComputer()).compute(current, v, arrivee, successeur))
+				{
+					// Compute the travel time
+					double duration = successeur.getArc().getDuree(successeur.parent.getArc(), vitesseMax, tempsArret, maxLinearAcceleration);
+					successeur.robot.suitArcCourbe(successeur.getArc(), duration);
+					successeur.g_score = duration;
 					successeurs.add(successeur);
+				}
 			}
 		}
 		successeursIter = successeurs.iterator();
@@ -202,7 +192,9 @@ public class TentacleManager implements Iterable<AStarNode>
 
 	public synchronized Double heuristicCostCourbe(Cinematique c)
 	{
-		return dstarlite.heuristicCostCourbe(c);
+		if(dstarlite.heuristicCostCourbe(c) == null)
+			return null;
+		return dstarlite.heuristicCostCourbe(c) / vitesseMax;
 	}
 
 	public boolean isArrived(AStarNode successeur)
