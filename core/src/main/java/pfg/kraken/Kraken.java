@@ -98,6 +98,16 @@ public class Kraken
 		config = new Config(ConfigInfoKraken.values(), false, "kraken.conf", configprofile);
 		injector.addService(RectangularObstacle.class, vehicleTemplate);
 		
+		/*
+		 * We adjust the maximal curvature in order to never be under the minimal speed
+		 */
+		double minSpeed = config.getDouble(ConfigInfoKraken.MINIMAL_SPEED);
+		if(minSpeed > 0)
+		{
+			double maxLateralAcc = config.getDouble(ConfigInfoKraken.MAX_LATERAL_ACCELERATION);
+			config.override(ConfigInfoKraken.MAX_CURVATURE, Math.min(config.getDouble(ConfigInfoKraken.MAX_CURVATURE), maxLateralAcc / (minSpeed * minSpeed)));
+		}
+		
 		try {
 			ResearchProfileManager profiles = injector.getService(ResearchProfileManager.class);
 			profiles.addProfile(tentacleTypesUsed);
