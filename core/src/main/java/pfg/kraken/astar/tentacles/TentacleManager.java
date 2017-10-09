@@ -25,6 +25,7 @@ import pfg.kraken.obstacles.container.StaticObstacles;
 import pfg.kraken.robot.Cinematique;
 import pfg.kraken.utils.XY;
 import pfg.graphic.log.Log;
+import static pfg.kraken.astar.tentacles.Tentacle.*;
 
 /**
  * Réalise des calculs pour l'A* courbe.
@@ -43,7 +44,8 @@ public class TentacleManager implements Iterable<AStarNode>
 	private Injector injector;
 	private StaticObstacles fixes;
 	private NodePool memorymanager;
-
+	private double deltaSpeedFromStop;
+	
 	private DirectionStrategy directionstrategyactuelle;
 	private Cinematique arrivee = new Cinematique();
 //	private ResearchProfileManager profiles;
@@ -67,6 +69,7 @@ public class TentacleManager implements Iterable<AStarNode>
 		
 		courbureMax = config.getDouble(ConfigInfoKraken.MAX_CURVATURE);
 		maxLinearAcceleration = config.getDouble(ConfigInfoKraken.MAX_LINEAR_ACCELERATION);
+		deltaSpeedFromStop = Math.sqrt(2 * PRECISION_TRACE * maxLinearAcceleration);
 		tempsArret = config.getInt(ConfigInfoKraken.STOP_DURATION);
 		coins[0] = fixes.getBottomLeftCorner();
 		coins[2] = fixes.getTopRightCorner();
@@ -180,7 +183,7 @@ public class TentacleManager implements Iterable<AStarNode>
 				if(injector.getExistingService(v.getComputer()).compute(current, v, arrivee, successeur))
 				{
 					// Compute the travel time
-					double duration = successeur.getArc().getDuree(successeur.parent.getArc(), vitesseMax, tempsArret, maxLinearAcceleration);
+					double duration = successeur.getArc().getDuree(successeur.parent.getArc(), vitesseMax, tempsArret, maxLinearAcceleration, deltaSpeedFromStop);
 					successeur.robot.suitArcCourbe(successeur.getArc(), duration);
 					successeur.g_score = duration;
 					successeurs.add(successeur);
