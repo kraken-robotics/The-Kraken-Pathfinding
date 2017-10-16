@@ -15,6 +15,7 @@
   <properties>
       <maven.compiler.source>1.8</maven.compiler.source>
       <maven.compiler.target>1.8</maven.compiler.target>
+      <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
   <dependencies>
@@ -22,19 +23,19 @@
     <dependency>
       <groupId>pfg.injector</groupId>
       <artifactId>dependency-injector</artifactId>
-      <version>1.1</version>
+      <version>[1.1,)</version>
     </dependency>
 
     <dependency>
       <groupId>pfg.config</groupId>
       <artifactId>config</artifactId>
-      <version>1.2</version>
+      <version>[1.3,)</version>
     </dependency>
 
     <dependency>
       <groupId>pfg.graphic</groupId>
       <artifactId>graphic-toolbox</artifactId>
-      <version>1.0</version>
+      <version>[1.0,)</version>
     </dependency>
 
     <dependency>
