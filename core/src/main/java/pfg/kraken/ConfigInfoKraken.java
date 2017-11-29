@@ -53,7 +53,8 @@ public enum ConfigInfoKraken implements ConfigInfo
 	STOP_DURATION(800), // temps qu'il faut au robot pour s'arrêter et repartir
 						// (par exemple à cause d'un rebroussement) in ms
 	SEARCH_TIMEOUT(10000), // in ms
-
+	THREAD_NUMBER(1), // the number of threads for the tentacle computing. Recommended value for highest performance : nb cores + 1
+	
 	/**
 	 * Paramètres du traitement des capteurs
 	 */
