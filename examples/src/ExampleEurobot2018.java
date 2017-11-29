@@ -45,6 +45,9 @@ public class ExampleEurobot2018
 		obs.add(new RectangularObstacle(new XY(1300, 1675), 400, 650));
 		obs.add(new RectangularObstacle(new XY(-1300, 1675), 400, 650));
 
+		obs.add(new RectangularObstacle(new XY(1100-560/2, 2000-180/2), 560, 180));
+		obs.add(new RectangularObstacle(new XY(-1100+560/2, 2000-180/2), 560, 180));
+		
 		XY[] centers = new XY[]{new XY(-650,1460), new XY(650,1460), new XY(-400, 500), new XY(400, 500), new XY(-1200, 810), new XY(1200, 810)};
 		
 		for(XY c : centers)
