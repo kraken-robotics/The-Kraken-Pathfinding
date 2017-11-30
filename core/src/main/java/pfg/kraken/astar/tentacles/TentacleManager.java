@@ -17,7 +17,6 @@ import pfg.kraken.SeverityCategoryKraken;
 import pfg.kraken.astar.AStarNode;
 import pfg.kraken.astar.DirectionStrategy;
 import pfg.kraken.astar.tentacles.types.TentacleType;
-import pfg.kraken.astar.thread.TentacleComputedBuffer;
 import pfg.kraken.astar.thread.TentacleQueryBuffer;
 import pfg.kraken.astar.thread.TentacleTask;
 import pfg.kraken.astar.thread.TentacleThread;
@@ -37,13 +36,12 @@ import pfg.graphic.log.Log;
  *
  */
 
-public class TentacleManager implements Iterable<AStarNode>, Iterator<AStarNode>
+public class TentacleManager implements Iterable<AStarNode>
 {
 	protected Log log;
 	private DStarLite dstarlite;
 	private DynamicObstacles dynamicObs;
 	private TentacleQueryBuffer bufferInput;
-	private TentacleComputedBuffer bufferOutput;
 	
 	private double courbureMax, vitesseMax;
 	private Injector injector;
@@ -54,13 +52,13 @@ public class TentacleManager implements Iterable<AStarNode>, Iterator<AStarNode>
 	private Cinematique arrivee = new Cinematique();
 //	private ResearchProfileManager profiles;
 	private List<TentacleType> currentProfile = new ArrayList<TentacleType>();
-	private List<AStarNode> successeurs = new ArrayList<AStarNode>();
 //	private List<StaticObstacles> disabledObstaclesFixes = new ArrayList<StaticObstacles>();
-
-	public TentacleManager(Log log, StaticObstacles fixes, DStarLite dstarlite, Config config, TentacleQueryBuffer bufferInput, TentacleComputedBuffer bufferOutput, DynamicObstacles dynamicObs, Injector injector, ResearchProfileManager profiles, NodePool memorymanager) throws InjectorException
+	private List<TentacleTask> tasks = new ArrayList<TentacleTask>();
+	private List<AStarNode> successeurs = new ArrayList<AStarNode>();
+	
+	public TentacleManager(Log log, StaticObstacles fixes, DStarLite dstarlite, Config config, TentacleQueryBuffer bufferInput, DynamicObstacles dynamicObs, Injector injector, ResearchProfileManager profiles, NodePool memorymanager) throws InjectorException
 	{
 		this.bufferInput = bufferInput;
-		this.bufferOutput = bufferOutput;
 		this.injector = injector;
 		this.fixes = fixes;
 		this.dynamicObs = dynamicObs;
@@ -76,7 +74,7 @@ public class TentacleManager implements Iterable<AStarNode>, Iterator<AStarNode>
 		threads = new TentacleThread[nbThreads];
 		for(int i = 0; i < nbThreads; i++)
 		{
-			threads[i] = new TentacleThread(log, config, bufferInput, bufferOutput, memorymanager);
+			threads[i] = new TentacleThread(log, config, bufferInput, memorymanager);
 			if(nbThreads != 1)
 				threads[i].start();
 		}
@@ -182,25 +180,55 @@ public class TentacleManager implements Iterable<AStarNode>, Iterator<AStarNode>
 	{
 		successeurs.clear();
 		assert bufferInput.isEmpty();
+		int index = 0;
 		for(TentacleType v : currentProfile)
 		{
 			if(v.isAcceptable(current.robot.getCinematique(), directionstrategyactuelle, courbureMax))
 			{
-				TentacleTask tt = new TentacleTask();
+				if(tasks.size() <= index)
+					tasks.add(new TentacleTask(tasks.size()));
+				
+				TentacleTask tt = tasks.get(index);
 				tt.arrivee = arrivee;
 				tt.current = current;
 				tt.v = v;
 				tt.computer = injector.getExistingService(v.getComputer());
 				tt.vitesseMax = vitesseMax;
+				tt.done = false;
 				
 				if(threads.length == 1)
 				{
-					AStarNode node = threads[0].compute(tt);
-					if(node != null)
-						bufferOutput.add(node);
+					threads[0].compute(tt);
+					assert tt.done;
+					if(tt.successeur != null)
+						successeurs.add(tt.successeur);
 				}
 				else
 					bufferInput.add(tt);
+				
+				index++;
+			}
+		}
+		
+		if(threads.length > 1)
+		{
+			/**
+			 * On attend que tous les calculs soient faits
+			 */
+			for(int i = 0; i < index; i++)
+			{
+				TentacleTask tt = tasks.get(i);
+				synchronized(tt)
+				{
+					if(!tt.done)
+						try {
+							tt.wait();
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+					if(tt.successeur != null)
+						successeurs.add(tt.successeur);
+				}
 			}
 		}
 	}
@@ -220,36 +248,7 @@ public class TentacleManager implements Iterable<AStarNode>, Iterator<AStarNode>
 	@Override
 	public Iterator<AStarNode> iterator()
 	{
-		return this;
-	}
-
-	@Override
-	public boolean hasNext()
-	{
-		return !bufferInput.isEmpty() || !bufferOutput.isEmpty();
-	}
-	
-	@Override
-	public AStarNode next()
-	{
-		if(bufferOutput.isEmpty())
-		{
-			synchronized(bufferOutput)
-			{
-				if(bufferOutput.isEmpty())
-				{
-					try {
-						bufferOutput.wait();
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-						return null;
-					}
-				}
-			}
-		}
-
-		assert !bufferOutput.isEmpty();
-		return bufferOutput.poll();
+		return successeurs.iterator();
 	}
 
 	public void stopThreads()

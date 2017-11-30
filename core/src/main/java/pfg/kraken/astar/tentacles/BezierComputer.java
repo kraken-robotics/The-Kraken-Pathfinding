@@ -291,7 +291,7 @@ public class BezierComputer implements TentacleComputer
 	}
 
 	@Override
-	public boolean compute(AStarNode current, TentacleType tentacleType, Cinematique arrival, AStarNode modified)
+	public synchronized boolean compute(AStarNode current, TentacleType tentacleType, Cinematique arrival, AStarNode modified)
 	{
 		assert tentacleType instanceof BezierTentacle : tentacleType;
 		if(tentacleType == BezierTentacle.BEZIER_XYOC_TO_XY)

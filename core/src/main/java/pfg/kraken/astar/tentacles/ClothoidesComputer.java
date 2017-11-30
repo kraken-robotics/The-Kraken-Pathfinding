@@ -592,7 +592,7 @@ public class ClothoidesComputer implements TentacleComputer
 	}*/
 
 	@Override
-	public boolean compute(AStarNode current, TentacleType tentacleType, Cinematique arrival, AStarNode modified)
+	public synchronized boolean compute(AStarNode current, TentacleType tentacleType, Cinematique arrival, AStarNode modified)
 	{
 		assert tentacleType instanceof ClothoTentacle : tentacleType;
 		

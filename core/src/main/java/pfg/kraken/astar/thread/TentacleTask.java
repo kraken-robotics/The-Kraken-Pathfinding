@@ -18,10 +18,16 @@ import pfg.kraken.robot.Cinematique;
 
 public class TentacleTask {
 
-	public AStarNode current;
-	public TentacleType v;
-	public Cinematique arrivee;
-	public TentacleComputer computer;
-	public double vitesseMax;
+	public volatile AStarNode current, successeur;
+	public volatile TentacleType v;
+	public volatile Cinematique arrivee;
+	public volatile TentacleComputer computer;
+	public volatile double vitesseMax;
+	public volatile boolean done;
+	public final int index;
 	
+	public TentacleTask(int index)
+	{
+		this.index = index;
+	}
 }

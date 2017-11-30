@@ -43,8 +43,9 @@ public class TentacleQueryBuffer
 	 */
 	public synchronized void add(TentacleTask liste)
 	{
+//		System.out.println("Ajout !");
 		buffer.add(liste);
-		notifyAll();
+		notify();
 	}
 
 	/**
@@ -54,6 +55,8 @@ public class TentacleQueryBuffer
 	 */
 	public synchronized TentacleTask poll()
 	{
+//		System.out.println("Récupération de "+buffer.peek().index+", encore "+(buffer.size()-1));
+		assert !buffer.isEmpty();
 		return buffer.poll();
 	}
 }

@@ -10,7 +10,6 @@ import static pfg.kraken.astar.tentacles.Tentacle.PRECISION_TRACE;
 import pfg.config.Config;
 import pfg.graphic.log.Log;
 import pfg.kraken.ConfigInfoKraken;
-import pfg.kraken.astar.AStarNode;
 import pfg.kraken.memory.NodePool;
 
 /**
@@ -24,17 +23,15 @@ public class TentacleThread extends Thread
 {
 	protected Log log;
 	private TentacleQueryBuffer bufferInput;
-	private TentacleComputedBuffer bufferOutput;
 	private NodePool memorymanager;
 	private double maxLinearAcceleration;
 	private int tempsArret;
 	private double deltaSpeedFromStop;
 
-	public TentacleThread(Log log, Config config, TentacleQueryBuffer bufferInput, TentacleComputedBuffer bufferOutput, NodePool memorymanager)
+	public TentacleThread(Log log, Config config, TentacleQueryBuffer bufferInput, NodePool memorymanager)
 	{
 		this.log = log;
 		this.bufferInput = bufferInput;
-		this.bufferOutput = bufferOutput;
 		this.memorymanager = memorymanager;
 		maxLinearAcceleration = config.getDouble(ConfigInfoKraken.MAX_LINEAR_ACCELERATION);
 		deltaSpeedFromStop = Math.sqrt(2 * PRECISION_TRACE * maxLinearAcceleration);
@@ -65,9 +62,7 @@ public class TentacleThread extends Thread
 					} while(task == null);
 				}
 				
-				AStarNode successeur = compute(task);
-				if(successeur != null)
-					bufferOutput.add(successeur);
+				compute(task);
 			}
 		}
 		catch(InterruptedException e)
@@ -81,22 +76,31 @@ public class TentacleThread extends Thread
 		}
 	}
 
-	public AStarNode compute(TentacleTask task)
+	public void compute(TentacleTask task)
 	{
-		AStarNode successeur = memorymanager.getNewNode();
-//		assert successeur.cameFromArcDynamique == null;
-		successeur.cameFromArcDynamique = null;
-		successeur.parent = task.current;
-		
-		task.current.robot.copy(successeur.robot);
-		if(task.computer.compute(task.current, task.v, task.arrivee, successeur))
+		synchronized(task)
 		{
-			// Compute the travel time
-			double duration = successeur.getArc().getDuree(successeur.parent.getArc(), task.vitesseMax, tempsArret, maxLinearAcceleration, deltaSpeedFromStop);
-			successeur.robot.suitArcCourbe(successeur.getArc(), duration);
-			successeur.g_score = duration;
-			return successeur;
+			task.successeur = memorymanager.getNewNode();
+	//		assert successeur.cameFromArcDynamique == null;
+			task.successeur.cameFromArcDynamique = null;
+			task.successeur.parent = task.current;
+			
+			task.current.robot.copy(task.successeur.robot);
+			if(task.computer.compute(task.current, task.v, task.arrivee, task.successeur))
+			{
+				// Compute the travel time
+				double duration = task.successeur.getArc().getDuree(task.successeur.parent.getArc(), task.vitesseMax, tempsArret, maxLinearAcceleration, deltaSpeedFromStop);
+				task.successeur.robot.suitArcCourbe(task.successeur.getArc(), duration);
+				task.successeur.g_score = duration;
+			}
+			else
+			{
+				memorymanager.destroyNode(task.successeur);
+				task.successeur = null;
+			}
+//			System.out.println("Traité : "+task.index);
+			task.done = true;
+			task.notify();
 		}
-		return null;
 	}
 }
