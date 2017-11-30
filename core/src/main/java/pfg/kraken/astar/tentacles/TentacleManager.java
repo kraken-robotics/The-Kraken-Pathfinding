@@ -251,4 +251,11 @@ public class TentacleManager implements Iterable<AStarNode>, Iterator<AStarNode>
 		assert !bufferOutput.isEmpty();
 		return bufferOutput.poll();
 	}
+
+	public void stopThreads()
+	{
+		if(threads.length > 1)
+		for(int i = 0; i < threads.length; i++)
+			threads[i].interrupt();
+	}
 }
