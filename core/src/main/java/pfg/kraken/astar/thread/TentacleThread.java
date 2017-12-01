@@ -7,9 +7,13 @@ package pfg.kraken.astar.thread;
 
 import static pfg.kraken.astar.tentacles.Tentacle.PRECISION_TRACE;
 
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
+
 import pfg.config.Config;
 import pfg.graphic.log.Log;
 import pfg.kraken.ConfigInfoKraken;
+import pfg.kraken.astar.AStarNode;
 import pfg.kraken.memory.NodePool;
 
 /**
@@ -22,18 +26,19 @@ import pfg.kraken.memory.NodePool;
 public class TentacleThread extends Thread
 {
 	protected Log log;
-	private TentacleQueryBuffer bufferInput;
 	private NodePool memorymanager;
 	private double maxLinearAcceleration;
 	private int tempsArret;
 	private double deltaSpeedFromStop;
 	private static int nbStatic = 0;
 	private int nb;
+	public final Queue<TentacleTask> buffer = new ConcurrentLinkedQueue<TentacleTask>();
+	public final Queue<AStarNode> successeurs = new ConcurrentLinkedQueue<AStarNode>();
+	public volatile boolean done;
 	
-	public TentacleThread(Log log, Config config, TentacleQueryBuffer bufferInput, NodePool memorymanager)
+	public TentacleThread(Log log, Config config, NodePool memorymanager)
 	{
 		this.log = log;
-		this.bufferInput = bufferInput;
 		this.memorymanager = memorymanager;
 		maxLinearAcceleration = config.getDouble(ConfigInfoKraken.MAX_LINEAR_ACCELERATION);
 		deltaSpeedFromStop = Math.sqrt(2 * PRECISION_TRACE * maxLinearAcceleration);
@@ -45,26 +50,19 @@ public class TentacleThread extends Thread
 	public void run()
 	{
 		Thread.currentThread().setName(getClass().getSimpleName());
-		TentacleTask task;
 		try
 		{
 			while(true)
 			{
-				synchronized(bufferInput)
+				synchronized(this)
 				{
-					task = null;
-					do {
-						// wait only if necessary
-						if(bufferInput.isEmpty())
-							bufferInput.wait();
-						
-						// other process are awakened : there might be no task left
-						if(!bufferInput.isEmpty())
-							task = bufferInput.poll();
-					} while(task == null);
+					if(buffer.isEmpty())
+						wait();
+					while(!buffer.isEmpty())
+						compute(buffer.poll());
+					done = true;
+					notify();
 				}
-				
-				compute(task);
 			}
 		}
 		catch(InterruptedException e)
@@ -94,15 +92,13 @@ public class TentacleThread extends Thread
 				double duration = task.successeur.getArc().getDuree(task.successeur.parent.getArc(), task.vitesseMax, tempsArret, maxLinearAcceleration, deltaSpeedFromStop);
 				task.successeur.robot.suitArcCourbe(task.successeur.getArc(), duration);
 				task.successeur.g_score = duration;
+				successeurs.add(task.successeur);
 			}
 			else
 			{
 				memorymanager.destroyNode(task.successeur);
 				task.successeur = null;
 			}
-//			System.out.println("Traité : "+task.index);
-			task.done = true;
-			task.notify();
 		}
 	}
 }

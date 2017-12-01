@@ -23,11 +23,4 @@ public class TentacleTask {
 	public volatile Cinematique arrivee;
 	public volatile TentacleComputer computer;
 	public volatile double vitesseMax;
-	public volatile boolean done;
-	public final int index;
-	
-	public TentacleTask(int index)
-	{
-		this.index = index;
-	}
 }

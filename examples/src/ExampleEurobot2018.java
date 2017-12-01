@@ -71,7 +71,7 @@ public class ExampleEurobot2018
 		
 		try
 		{
-			kraken.initializeNewSearch(new XYO(-850, 400, Math.PI/2), new XY(900, 1200));
+			kraken.initializeNewSearch(new XYO(-1100, 200, Math.PI/2), new XY(900, 1500));
 			
 			List<ItineraryPoint> path = kraken.search();
 			
