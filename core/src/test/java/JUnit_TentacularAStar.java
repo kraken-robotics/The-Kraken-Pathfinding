@@ -74,22 +74,22 @@ public class JUnit_TentacularAStar extends JUnit_Test
 
 		Cinematique c = new Cinematique(0, 1000, Math.PI / 2, false, 0);
 		log.write("Initial : " + c, LogCategoryKraken.TEST);
-		clotho.getTrajectoire(c, ClothoTentacle.COURBURE_IDENTIQUE, arc[0]);
-		clotho.getTrajectoire(arc[0], ClothoTentacle.GAUCHE_2, arc[1]);
-		clotho.getTrajectoire(arc[1], ClothoTentacle.COURBURE_IDENTIQUE, arc[2]);
-		clotho.getTrajectoire(arc[2], ClothoTentacle.GAUCHE_1, arc[3]);
-		clotho.getTrajectoire(arc[3], ClothoTentacle.COURBURE_IDENTIQUE, arc[4]);
-		clotho.getTrajectoire(arc[4], ClothoTentacle.COURBURE_IDENTIQUE, arc[5]);
-		clotho.getTrajectoire(arc[5], ClothoTentacle.COURBURE_IDENTIQUE, arc[6]);
-		clotho.getTrajectoire(arc[6], ClothoTentacle.GAUCHE_1, arc[7]);
-		clotho.getTrajectoire(arc[7], ClothoTentacle.GAUCHE_2, arc[8]);
-		clotho.getTrajectoire(arc[8], ClothoTentacle.GAUCHE_2, arc[9]);
-		clotho.getTrajectoire(arc[9], ClothoTentacle.DROITE_1, arc[10]);
-		clotho.getTrajectoire(arc[10], ClothoTentacle.DROITE_1, arc[11]);
-		clotho.getTrajectoire(arc[11], ClothoTentacle.DROITE_1, arc[12]);
-		clotho.getTrajectoire(arc[12], ClothoTentacle.DROITE_1, arc[13]);
-		clotho.getTrajectoire(arc[13], ClothoTentacle.DROITE_1, arc[14]);
-		clotho.getTrajectoire(arc[14], ClothoTentacle.GAUCHE_2, arc[15]);
+		clotho.getTrajectoire(c, ClothoTentacle.COURBURE_IDENTIQUE, arc[0], 0);
+		clotho.getTrajectoire(arc[0], ClothoTentacle.GAUCHE_2, arc[1], 0);
+		clotho.getTrajectoire(arc[1], ClothoTentacle.COURBURE_IDENTIQUE, arc[2], 0);
+		clotho.getTrajectoire(arc[2], ClothoTentacle.GAUCHE_1, arc[3], 0);
+		clotho.getTrajectoire(arc[3], ClothoTentacle.COURBURE_IDENTIQUE, arc[4], 0);
+		clotho.getTrajectoire(arc[4], ClothoTentacle.COURBURE_IDENTIQUE, arc[5], 0);
+		clotho.getTrajectoire(arc[5], ClothoTentacle.COURBURE_IDENTIQUE, arc[6], 0);
+		clotho.getTrajectoire(arc[6], ClothoTentacle.GAUCHE_1, arc[7], 0);
+		clotho.getTrajectoire(arc[7], ClothoTentacle.GAUCHE_2, arc[8], 0);
+		clotho.getTrajectoire(arc[8], ClothoTentacle.GAUCHE_2, arc[9], 0);
+		clotho.getTrajectoire(arc[9], ClothoTentacle.DROITE_1, arc[10], 0);
+		clotho.getTrajectoire(arc[10], ClothoTentacle.DROITE_1, arc[11], 0);
+		clotho.getTrajectoire(arc[11], ClothoTentacle.DROITE_1, arc[12], 0);
+		clotho.getTrajectoire(arc[12], ClothoTentacle.DROITE_1, arc[13], 0);
+		clotho.getTrajectoire(arc[13], ClothoTentacle.DROITE_1, arc[14], 0);
+		clotho.getTrajectoire(arc[14], ClothoTentacle.GAUCHE_2, arc[15], 0);
 
 		for(int a = 0; a < nbArc; a++)
 		{
@@ -193,7 +193,7 @@ public class JUnit_TentacularAStar extends JUnit_Test
 		Cinematique c = new Cinematique(0, 1000, Math.PI / 2, true, -1);
 		Cinematique arrivee = new Cinematique(400, 1400, Math.PI / 2, false, 0);
 		log.write("Initial : " + c, LogCategoryKraken.TEST);
-		arc[0] = bezier.quadraticInterpolationXYOC2XY(c, arrivee.getPosition());
+		arc[0] = bezier.quadraticInterpolationXYOC2XY(c, arrivee.getPosition(), 0);
 
 		Assert.assertTrue(arc[0] != null);
 
