@@ -132,10 +132,10 @@ public class TentacularAStar
 		public final int compare(AStarNode arg0, AStarNode arg1)
 		{
 			// Ordre lexico : on compare d'abord first, puis second
-			int tmp = (int) (arg0.f_score - arg1.f_score);
+			int tmp = (arg0.f_score - arg1.f_score);
 			if(tmp != 0)
 				return tmp;
-			return (int) (arg0.g_score - arg1.g_score);
+			return arg0.g_score - arg1.g_score;
 		}
 	}
 
@@ -220,7 +220,7 @@ public class TentacularAStar
 		depart.g_score = 0;
 		nbExpandedNodes = 0;
 		
-		Double heuristique = arcmanager.heuristicCostCourbe((depart.robot).getCinematique());
+		Integer heuristique = arcmanager.heuristicCostCourbe((depart.robot).getCinematique());
 
 		assert heuristique != null : "Null heuristic !"; // l'heuristique est vérifiée à l'initialisation
 

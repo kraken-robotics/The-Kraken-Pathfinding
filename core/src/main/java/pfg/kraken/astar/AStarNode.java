@@ -27,8 +27,8 @@ public class AStarNode implements Memorizable, Printable
 {
 	private static final long serialVersionUID = -2120732124823178009L;
 	public RobotState robot; // the cinematic state + the duration since the beginning of the search
-	public double g_score; // distance du point de départ à ce point
-	public double f_score; // g_score + heuristique = meilleure distance qu'on
+	public int g_score; // distance du point de départ à ce point
+	public int f_score; // g_score + heuristique = meilleure distance qu'on
 							// peut espérer avec ce point
 	public AStarNode parent; // the parent of this node (used for reconstruction when a path is found)
 	
@@ -67,8 +67,8 @@ public class AStarNode implements Memorizable, Printable
 	 */
 	public void init()
 	{
-		g_score = Double.MAX_VALUE;
-		f_score = Double.MAX_VALUE;
+		g_score = Integer.MAX_VALUE;
+		f_score = Integer.MAX_VALUE;
 		robot.initDate();
 	}
 

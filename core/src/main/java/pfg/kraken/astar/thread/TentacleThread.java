@@ -89,7 +89,7 @@ public class TentacleThread extends Thread
 			if(task.computer.compute(task.current, task.v, task.arrivee, task.successeur, nb))
 			{
 				// Compute the travel time
-				double duration = task.successeur.getArc().getDuree(task.successeur.parent.getArc(), task.vitesseMax, tempsArret, maxLinearAcceleration, deltaSpeedFromStop);
+				int duration = (int) (1000*task.successeur.getArc().getDuree(task.successeur.parent.getArc(), task.vitesseMax, tempsArret, maxLinearAcceleration, deltaSpeedFromStop));
 				task.successeur.robot.suitArcCourbe(task.successeur.getArc(), duration);
 				task.successeur.g_score = duration;
 				successeurs.add(task.successeur);

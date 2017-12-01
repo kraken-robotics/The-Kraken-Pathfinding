@@ -234,11 +234,11 @@ public class TentacleManager implements Iterable<AStarNode>
 		}
 	}
 
-	public synchronized Double heuristicCostCourbe(Cinematique c)
+	public synchronized Integer heuristicCostCourbe(Cinematique c)
 	{
 		if(dstarlite.heuristicCostCourbe(c) == null)
 			return null;
-		return dstarlite.heuristicCostCourbe(c) / vitesseMax;
+		return (int) (1000.*(dstarlite.heuristicCostCourbe(c) / vitesseMax));
 	}
 
 	public boolean isArrived(AStarNode successeur)
