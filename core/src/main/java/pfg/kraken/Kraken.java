@@ -22,6 +22,7 @@ import pfg.injector.InjectorException;
 import pfg.kraken.astar.DirectionStrategy;
 import pfg.kraken.astar.TentacularAStar;
 import pfg.kraken.astar.tentacles.ResearchProfileManager;
+import pfg.kraken.astar.tentacles.TentacleManager;
 import pfg.kraken.astar.tentacles.types.*;
 import pfg.kraken.exceptions.NoPathException;
 import pfg.kraken.exceptions.PathfindingException;
@@ -45,6 +46,7 @@ public class Kraken
 	private Config config;
 	private Injector injector;
 	private TentacularAStar astar;
+	private boolean stopped = false;
 	
 	/**
 	 * Get Kraken with :
@@ -72,6 +74,17 @@ public class Kraken
 	{
 		this(vehicleTemplate, fixedObstacles, dynObs, bottomLeftCorner, topRightCorner, configprofile);
 	}*/
+	
+	/**
+	 * Stop Kraken
+	 */
+	public void stop()
+	{
+		TentacleManager tm = injector.getExistingService(TentacleManager.class);
+		if(tm != null)
+			tm.stopThreads();
+		stopped = true;
+	}
 	
 	/**
 	 * Get Kraken with :
@@ -117,18 +130,6 @@ public class Kraken
 				so.addAll(fixedObstacles);
 			so.setCorners(bottomLeftCorner, topRightCorner);
 
-
-			/*
-			 * Override the graphic config
-			 */
-			HashMap<ConfigInfo, Object> overrideGraphic = new HashMap<ConfigInfo, Object>();
-			for(ConfigInfoGraphic infoG : ConfigInfoGraphic.values())
-				for(ConfigInfoKraken infoK : ConfigInfoKraken.values())
-					if(infoG.toString().equals(infoK.toString()))
-						overrideGraphic.put(infoG, config.getObject(infoK));
-			overrideGraphic.put(ConfigInfoGraphic.SIZE_X_WITH_UNITARY_ZOOM, (int) (topRightCorner.getX() - bottomLeftCorner.getX()));
-			overrideGraphic.put(ConfigInfoGraphic.SIZE_Y_WITH_UNITARY_ZOOM, (int) (topRightCorner.getY() - bottomLeftCorner.getY()));
-			
 			Log log = Log.getLog(SeverityCategoryKraken.INFO);
 
 			injector.addService(log);
@@ -139,9 +140,23 @@ public class Kraken
 
 			if(config.getBoolean(ConfigInfoKraken.GRAPHIC_ENABLE))
 			{
+				/*
+				 * Override the graphic config
+				 */
+				HashMap<ConfigInfo, Object> overrideGraphic = new HashMap<ConfigInfo, Object>();
+				for(ConfigInfoGraphic infoG : ConfigInfoGraphic.values())
+					for(ConfigInfoKraken infoK : ConfigInfoKraken.values())
+						if(infoG.toString().equals(infoK.toString()))
+							overrideGraphic.put(infoG, config.getObject(infoK));
+				overrideGraphic.put(ConfigInfoGraphic.SIZE_X_WITH_UNITARY_ZOOM, (int) (topRightCorner.getX() - bottomLeftCorner.getX()));
+				overrideGraphic.put(ConfigInfoGraphic.SIZE_Y_WITH_UNITARY_ZOOM, (int) (topRightCorner.getY() - bottomLeftCorner.getY()));
+				
 				DebugTool debug = DebugTool.getDebugTool(overrideGraphic, new Vec2RO((topRightCorner.getX() + bottomLeftCorner.getX()) / 2, (topRightCorner.getY() + bottomLeftCorner.getY()) / 2), SeverityCategoryKraken.INFO, null);
 				WindowFrame f = debug.getWindowFrame();
 				injector.addService(f.getPrintBuffer());
+				
+				if(config.getBoolean(ConfigInfoKraken.GRAPHIC_SERVER))
+					debug.startPrintServer();
 			}
 			else
 			{
@@ -171,7 +186,10 @@ public class Kraken
 	 */
 	public void initializeNewSearch(XYO start, XY arrival, DirectionStrategy directionstrategy) throws NoPathException
 	{
-		astar.initializeNewSearch(start, arrival, directionstrategy);
+		if(!stopped)
+			astar.initializeNewSearch(start, arrival, directionstrategy);
+		else
+			throw new RuntimeException("Kraken is stopped !");
 	}
 	
 	/**
@@ -184,7 +202,10 @@ public class Kraken
 	 */
 	public void initializeNewSearch(XYO start, XY arrival) throws NoPathException
 	{
-		astar.initializeNewSearch(start, arrival);
+		if(!stopped)
+			astar.initializeNewSearch(start, arrival);
+		else
+			throw new RuntimeException("Kraken is stopped !");
 	}
 
 	/**
@@ -194,7 +215,10 @@ public class Kraken
 	 */
 	public LinkedList<ItineraryPoint> search() throws PathfindingException
 	{
-		return astar.search();
+		if(!stopped)
+			return astar.search();
+		else
+			throw new RuntimeException("Kraken is stopped !");
 	}
 	
 	/**

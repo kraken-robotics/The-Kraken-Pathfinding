@@ -53,7 +53,8 @@ public enum ConfigInfoKraken implements ConfigInfo
 	STOP_DURATION(800), // temps qu'il faut au robot pour s'arrêter et repartir
 						// (par exemple à cause d'un rebroussement) in ms
 	SEARCH_TIMEOUT(10000), // in ms
-
+	THREAD_NUMBER(1), // the number of threads for the tentacle computing. Recommended value for highest performance : nb cores + 1
+	
 	/**
 	 * Paramètres du traitement des capteurs
 	 */
@@ -76,6 +77,7 @@ public enum ConfigInfoKraken implements ConfigInfo
 								// données par le D* Lite
 	GRAPHIC_ENABLE(false), // désactive tout affichage si faux (empêche le
 							// thread d'affichage de se lancer)
+	GRAPHIC_SERVER(false), // active le serveur d'affichage
 	GRAPHIC_D_STAR_LITE(false), // affiche les calculs du D* Lite
 	GRAPHIC_TENTACLES(false), // affiche les trajectoires temporaires
 //	GRAPHIC_TRAJECTORY_FINAL(true), // affiche les trajectoires

@@ -19,6 +19,8 @@ import pfg.kraken.SeverityCategoryKraken;
 import pfg.kraken.astar.AStarNode;
 import pfg.kraken.astar.DirectionStrategy;
 import pfg.kraken.astar.tentacles.types.TentacleType;
+import pfg.kraken.astar.thread.TentacleTask;
+import pfg.kraken.astar.thread.TentacleThread;
 import pfg.kraken.dstarlite.DStarLite;
 import pfg.kraken.memory.NodePool;
 import pfg.kraken.obstacles.Obstacle;
@@ -31,7 +33,6 @@ import pfg.kraken.utils.XY;
 import pfg.graphic.GraphicDisplay;
 import pfg.graphic.log.Log;
 import pfg.graphic.printable.Layer;
-
 import static pfg.kraken.astar.tentacles.Tentacle.*;
 
 /**
@@ -47,22 +48,21 @@ public class TentacleManager implements Iterable<AStarNode>
 	private DStarLite dstarlite;
 	private DynamicObstacles dynamicObs;
 	private double courbureMax, maxLinearAcceleration, vitesseMax;
-	private int tempsArret;
 	private boolean printObstacles;
 	private Injector injector;
 	private StaticObstacles fixes;
-	private NodePool memorymanager;
 	private double deltaSpeedFromStop;
 	private GraphicDisplay buffer;
+	private TentacleThread[] threads;
 	
 	private DirectionStrategy directionstrategyactuelle;
 	private Cinematique arrivee = new Cinematique();
 //	private ResearchProfileManager profiles;
 	private List<TentacleType> currentProfile = new ArrayList<TentacleType>();
-	private Iterator<AStarNode> successeursIter;
-	private List<AStarNode> successeurs = new ArrayList<AStarNode>();
 //	private List<StaticObstacles> disabledObstaclesFixes = new ArrayList<StaticObstacles>();
-
+	private List<TentacleTask> tasks = new ArrayList<TentacleTask>();
+	private List<AStarNode> successeurs = new ArrayList<AStarNode>();
+	
 	public TentacleManager(Log log, StaticObstacles fixes, DStarLite dstarlite, Config config, DynamicObstacles dynamicObs, Injector injector, ResearchProfileManager profiles, NodePool memorymanager, GraphicDisplay buffer) throws InjectorException
 	{
 		this.injector = injector;
@@ -70,18 +70,28 @@ public class TentacleManager implements Iterable<AStarNode>
 		this.dynamicObs = dynamicObs;
 		this.log = log;
 		this.dstarlite = dstarlite;
-		this.memorymanager = memorymanager;
+		this.buffer = buffer;
 		
 		this.currentProfile = profiles.getProfile(0);
+		
+		for(int i = 0; i < currentProfile.size(); i++)
+			tasks.add(new TentacleTask());
+		
 		for(TentacleType t : currentProfile)
 			injector.getService(t.getComputer());
 		
-
 		printObstacles = config.getBoolean(ConfigInfoKraken.GRAPHIC_ROBOT_COLLISION);
+		int nbThreads = config.getInt(ConfigInfoKraken.THREAD_NUMBER);
+		
+		threads = new TentacleThread[nbThreads];
+		for(int i = 0; i < nbThreads; i++)
+		{
+			threads[i] = new TentacleThread(log, config, memorymanager);
+			if(nbThreads != 1)
+				threads[i].start();
+		}
+		
 		courbureMax = config.getDouble(ConfigInfoKraken.MAX_CURVATURE);
-		maxLinearAcceleration = config.getDouble(ConfigInfoKraken.MAX_LINEAR_ACCELERATION);
-		deltaSpeedFromStop = Math.sqrt(2 * PRECISION_TRACE * maxLinearAcceleration);
-		tempsArret = config.getInt(ConfigInfoKraken.STOP_DURATION);
 		coins[0] = fixes.getBottomLeftCorner();
 		coins[2] = fixes.getTopRightCorner();
 		coins[1] = new XY(coins[0].getX(), coins[2].getY());
@@ -230,34 +240,65 @@ public class TentacleManager implements Iterable<AStarNode>
 	public void computeTentacles(AStarNode current)
 	{
 		successeurs.clear();
+		int index = 0;
+		
 		for(TentacleType v : currentProfile)
 		{
 			if(v.isAcceptable(current.robot.getCinematique(), directionstrategyactuelle, courbureMax))
 			{
-				AStarNode successeur = memorymanager.getNewNode();
-//				assert successeur.cameFromArcDynamique == null;
-				successeur.cameFromArcDynamique = null;
-				successeur.parent = current;
+				assert tasks.size() > index;
+				TentacleTask tt = tasks.get(index++);
+				tt.arrivee = arrivee;
+				tt.current = current;
+				tt.v = v;
+				tt.computer = injector.getExistingService(v.getComputer());
+				tt.vitesseMax = vitesseMax;
 				
-				current.robot.copy(successeur.robot);
-				if(injector.getExistingService(v.getComputer()).compute(current, v, arrivee, successeur))
+				if(threads.length == 1)
 				{
-					// Compute the travel time
-					double duration = successeur.getArc().getDuree(successeur.parent.getArc(), vitesseMax, tempsArret, maxLinearAcceleration, deltaSpeedFromStop);
-					successeur.robot.suitArcCourbe(successeur.getArc(), duration);
-					successeur.g_score = duration;
-					successeurs.add(successeur);
+					threads[0].compute(tt);
+					if(tt.successeur != null)
+						successeurs.add(tt.successeur);
+				}
+				else
+				{
+					threads[index % threads.length].buffer.add(tt);
+					threads[index % threads.length].done = false;
 				}
 			}
 		}
-		successeursIter = successeurs.iterator();
+		
+		if(threads.length > 1)
+		{
+			for(int i = 0; i < threads.length; i++)
+				synchronized(threads[i])
+				{
+					threads[i].notify();
+				}
+			
+			for(int i = 0; i < threads.length; i++)
+			{
+				synchronized(threads[i])
+				{
+					if(!threads[i].done)
+						try {
+							threads[i].wait();
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+					assert threads[i].buffer.isEmpty();
+				}
+				successeurs.addAll(threads[i].successeurs);
+				threads[i].successeurs.clear();
+			}
+		}
 	}
 
-	public synchronized Double heuristicCostCourbe(Cinematique c)
+	public synchronized Integer heuristicCostCourbe(Cinematique c)
 	{
 		if(dstarlite.heuristicCostCourbe(c) == null)
 			return null;
-		return dstarlite.heuristicCostCourbe(c) / vitesseMax;
+		return (int) (1000.*(dstarlite.heuristicCostCourbe(c) / vitesseMax));
 	}
 
 	public boolean isArrived(AStarNode successeur)
@@ -268,6 +309,13 @@ public class TentacleManager implements Iterable<AStarNode>
 	@Override
 	public Iterator<AStarNode> iterator()
 	{
-		return successeursIter;
+		return successeurs.iterator();
+	}
+
+	public void stopThreads()
+	{
+		if(threads.length > 1)
+		for(int i = 0; i < threads.length; i++)
+			threads[i].interrupt();
 	}
 }

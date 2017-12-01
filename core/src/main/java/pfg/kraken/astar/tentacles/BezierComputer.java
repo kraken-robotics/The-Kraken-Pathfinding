@@ -96,7 +96,7 @@ public class BezierComputer implements TentacleComputer
 	 * @throws MemoryPoolException
 	 * @throws InterruptedException
 	 */
-	public DynamicTentacle quadraticInterpolationXYOC2XY(Cinematique cinematiqueInitiale, XY arrivee)
+	public DynamicTentacle quadraticInterpolationXYOC2XY(Cinematique cinematiqueInitiale, XY arrivee, int indexThread)
 	{
 		debut = cinematiqueInitiale;
 		arrivee.copy(delta);
@@ -116,12 +116,12 @@ public class BezierComputer implements TentacleComputer
 			if(Math.abs(debut.courbureGeometrique) > 0.1)
 			{
 				// log.debug("Préfixe nécessaire !");
-				prefixe = clothocomputer.getTrajectoireRamene(debut, StraightingTentacle.RAMENE_VOLANT);
+				prefixe = clothocomputer.getTrajectoireRamene(debut, StraightingTentacle.RAMENE_VOLANT, indexThread);
 			}
 			if(prefixe == null)
 				prefixe = new DynamicTentacle(new ArrayList<CinematiqueObs>(), BezierTentacle.BEZIER_XYOC_TO_XY);
 
-			clothocomputer.getTrajectoire(prefixe.getNbPoints() > 0 ? prefixe.getLast() : cinematiqueInitiale, d > 0 ? ClothoTentacle.GAUCHE_1 : ClothoTentacle.DROITE_1, tmp);
+			clothocomputer.getTrajectoire(prefixe.getNbPoints() > 0 ? prefixe.getLast() : cinematiqueInitiale, d > 0 ? ClothoTentacle.GAUCHE_1 : ClothoTentacle.DROITE_1, tmp, indexThread);
 			for(CinematiqueObs c : tmp.arcselems)
 			{
 				CinematiqueObs o = memory.getNewNode();
@@ -291,12 +291,12 @@ public class BezierComputer implements TentacleComputer
 	}
 
 	@Override
-	public boolean compute(AStarNode current, TentacleType tentacleType, Cinematique arrival, AStarNode modified)
+	public boolean compute(AStarNode current, TentacleType tentacleType, Cinematique arrival, AStarNode modified, int indexThread)
 	{
 		assert tentacleType instanceof BezierTentacle : tentacleType;
 		if(tentacleType == BezierTentacle.BEZIER_XYOC_TO_XY)
 		{
-			DynamicTentacle t = quadraticInterpolationXYOC2XY(current.robot.getCinematique(), arrival.getPosition());
+			DynamicTentacle t = quadraticInterpolationXYOC2XY(current.robot.getCinematique(), arrival.getPosition(), indexThread);
 			if(t == null)
 				return false;
 			modified.cameFromArcDynamique = t;
