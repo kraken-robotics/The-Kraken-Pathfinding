@@ -17,5 +17,5 @@ import pfg.kraken.robot.Cinematique;
 
 public interface TentacleComputer
 {
-	public boolean compute(AStarNode current, TentacleType tentacleType, Cinematique arrival, AStarNode modified);
+	public boolean compute(AStarNode current, TentacleType tentacleType, Cinematique arrival, AStarNode modified, int indexThread);
 }

@@ -56,6 +56,18 @@ public class ClothoidesComputer implements TentacleComputer
 		this.memory = memory;
 		this.log = log;
 		rootedMaxAcceleration = Math.sqrt(config.getDouble(ConfigInfoKraken.MAX_LATERAL_ACCELERATION));
+		int indexThreadMax = config.getInt(ConfigInfoKraken.THREAD_NUMBER);
+		tmp = new XY_RW[indexThreadMax];
+		delta = new XY_RW[indexThreadMax];
+		centreCercle = new XY_RW[indexThreadMax];
+		
+		for(int i = 0; i < indexThreadMax; i++)
+		{
+			tmp[i] = new XY_RW();
+			delta[i] = new XY_RW();
+			centreCercle[i] = new XY_RW();
+		}
+		
 		for(ClothoTentacle t : ClothoTentacle.values())
 		{
 			if(t.vitesse == 0)
@@ -137,10 +149,10 @@ public class ClothoidesComputer implements TentacleComputer
 		}
 	}
 
-	public void getTrajectoire(Tentacle depart, ClothoTentacle vitesse, StaticTentacle modified)
+	public void getTrajectoire(Tentacle depart, ClothoTentacle vitesse, StaticTentacle modified, int indexThread)
 	{
 		CinematiqueObs last = depart.getLast();
-		getTrajectoire(last, vitesse, modified);
+		getTrajectoire(last, vitesse, modified, indexThread);
 	}
 
 	/**
@@ -151,9 +163,9 @@ public class ClothoidesComputer implements TentacleComputer
 	 * @param vitesse
 	 * @param modified
 	 */
-	final void getTrajectoire(RobotState robot, ClothoTentacle vitesse, StaticTentacle modified)
+	final void getTrajectoire(RobotState robot, ClothoTentacle vitesse, StaticTentacle modified, int indexThread)
 	{
-		getTrajectoire(robot.getCinematique(), vitesse, modified);
+		getTrajectoire(robot.getCinematique(), vitesse, modified, indexThread);
 	}
 
 	/**
@@ -169,7 +181,7 @@ public class ClothoidesComputer implements TentacleComputer
 	 * @param distance_mm
 	 * @return
 	 */
-	public final void getTrajectoire(Cinematique cinematiqueInitiale, ClothoTentacle vitesse, StaticTentacle modified)
+	public final void getTrajectoire(Cinematique cinematiqueInitiale, ClothoTentacle vitesse, StaticTentacle modified, int indexThread)
 	{
 		// modified.v = vitesse;
 		// log.debug(vitesse);
@@ -191,9 +203,9 @@ public class ClothoidesComputer implements TentacleComputer
 		if(vitesse.vitesse == 0)
 		{
 			if(courbure < 0.00001 && courbure > -0.00001)
-				getTrajectoireLigneDroite(cinematiqueInitiale.getPosition(), orientation, modified, marcheAvant);
+				getTrajectoireLigneDroite(cinematiqueInitiale.getPosition(), orientation, modified, marcheAvant, indexThread);
 			else
-				getTrajectoireCirculaire(cinematiqueInitiale.getPosition(), orientation, courbure, modified, marcheAvant);
+				getTrajectoireCirculaire(cinematiqueInitiale.getPosition(), orientation, courbure, modified, marcheAvant, indexThread);
 			return;
 		}
 
@@ -232,7 +244,7 @@ public class ClothoidesComputer implements TentacleComputer
 		for(int i = 0; i < NB_POINTS; i++)
 		{
 			sDepart += vitesse.squaredRootVitesse * PRECISION_TRACE;
-			computePoint(pointDepart, vitesse, sDepart, coeffMultiplicatif, i, baseOrientation, cos, sin, marcheAvant, cinematiqueInitiale.getPosition(), modified.arcselems[i]);
+			computePoint(pointDepart, vitesse, sDepart, coeffMultiplicatif, i, baseOrientation, cos, sin, marcheAvant, cinematiqueInitiale.getPosition(), modified.arcselems[i], indexThread);
 		}
 
 	}
@@ -250,7 +262,7 @@ public class ClothoidesComputer implements TentacleComputer
 	 * @return
 	 * @throws InterruptedException
 	 */
-	public final DynamicTentacle getTrajectoireRamene(Cinematique cinematiqueInitiale, StraightingTentacle vitesseRamene)
+	public final DynamicTentacle getTrajectoireRamene(Cinematique cinematiqueInitiale, StraightingTentacle vitesseRamene, int indexThread)
 	{
 		double courbure = cinematiqueInitiale.courbureGeometrique;
 		double orientation = cinematiqueInitiale.orientationGeometrique;
@@ -311,7 +323,7 @@ public class ClothoidesComputer implements TentacleComputer
 				break;
 			CinematiqueObs obs = memory.getNewNode();
 			out.add(obs);
-			computePoint(pointDepart, vitesse, sDepart, coeffMultiplicatif, i, baseOrientation, cos, sin, marcheAvant, cinematiqueInitiale.getPosition(), obs);
+			computePoint(pointDepart, vitesse, sDepart, coeffMultiplicatif, i, baseOrientation, cos, sin, marcheAvant, cinematiqueInitiale.getPosition(), obs, indexThread);
 			i++;
 		}
 
@@ -321,7 +333,7 @@ public class ClothoidesComputer implements TentacleComputer
 		return new DynamicTentacle(out, vitesseRamene);
 	}
 
-	private XY_RW tmp = new XY_RW();
+	private XY_RW[] tmp;// = new XY_RW();
 	
 	/**
 	 * Calcul un point à partir de ces quelques paramètres
@@ -339,10 +351,10 @@ public class ClothoidesComputer implements TentacleComputer
 	 * @param positionInitiale : la position au début du mouvement
 	 * @param c : la cinématique modifiée
 	 */
-	private void computePoint(int pointDepart, ClothoTentacle vitesse, double sDepart, double coeffMultiplicatif, int i, double baseOrientation, double cos, double sin, boolean marcheAvant, XY positionInitiale, CinematiqueObs c)
+	private void computePoint(int pointDepart, ClothoTentacle vitesse, double sDepart, double coeffMultiplicatif, int i, double baseOrientation, double cos, double sin, boolean marcheAvant, XY positionInitiale, CinematiqueObs c, int indexThread)
 	{
-		trajectoire[pointDepart + vitesse.squaredRootVitesse * (i + 1)].copy(tmp);
-		tmp.minus(trajectoire[pointDepart]).scalar(coeffMultiplicatif).Ysym(!vitesse.positif).rotate(cos, sin).plus(positionInitiale);
+		trajectoire[pointDepart + vitesse.squaredRootVitesse * (i + 1)].copy(tmp[indexThread]);
+		tmp[indexThread].minus(trajectoire[pointDepart]).scalar(coeffMultiplicatif).Ysym(!vitesse.positif).rotate(cos, sin).plus(positionInitiale);
 		
 		double orientationClotho = sDepart * sDepart;
 		if(!vitesse.positif)
@@ -353,12 +365,12 @@ public class ClothoidesComputer implements TentacleComputer
 		if(!vitesse.positif)
 			courbure = -courbure;
 
-		c.update(tmp.getX(), tmp.getY(), baseOrientation + orientationClotho, marcheAvant, courbure, rootedMaxAcceleration);
+		c.update(tmp[indexThread].getX(), tmp[indexThread].getY(), baseOrientation + orientationClotho, marcheAvant, courbure, rootedMaxAcceleration);
 		c.maxSpeed = Math.min(c.maxSpeed, vitesse.maxSpeed);
 	}
 
-	private XY_RW delta = new XY_RW();
-	private XY_RW centreCercle = new XY_RW();
+	private XY_RW[] delta;// = new XY_RW();
+	private XY_RW[] centreCercle;// = new XY_RW();
 
 	/**
 	 * Calcule la trajectoire dans le cas particulier d'une trajectoire
@@ -369,17 +381,17 @@ public class ClothoidesComputer implements TentacleComputer
 	 * @param courbure
 	 * @param modified
 	 */
-	private void getTrajectoireCirculaire(XY position, double orientation, double courbure, StaticTentacle modified, boolean enMarcheAvant)
+	private void getTrajectoireCirculaire(XY position, double orientation, double courbure, StaticTentacle modified, boolean enMarcheAvant, int indexThread)
 	{
 		// log.debug("Trajectoire circulaire !");
 		// rappel = la courbure est l'inverse du rayon de courbure
 		// le facteur 1000 vient du fait que la courbure est en mètre^-1
 		double rayonCourbure = 1000. / courbure;
-		delta.setX(Math.cos(orientation + Math.PI / 2) * rayonCourbure);
-		delta.setY(Math.sin(orientation + Math.PI / 2) * rayonCourbure);
+		delta[indexThread].setX(Math.cos(orientation + Math.PI / 2) * rayonCourbure);
+		delta[indexThread].setY(Math.sin(orientation + Math.PI / 2) * rayonCourbure);
 
-		centreCercle.setX(position.getX() + delta.getX());
-		centreCercle.setY(position.getY() + delta.getY());
+		centreCercle[indexThread].setX(position.getX() + delta[indexThread].getX());
+		centreCercle[indexThread].setY(position.getY() + delta[indexThread].getY());
 
 		double angle = PRECISION_TRACE * courbure; // périmètre = angle * rayon
 
@@ -390,10 +402,10 @@ public class ClothoidesComputer implements TentacleComputer
 
 		for(int i = 0; i < NB_POINTS; i++)
 		{
-			delta.rotate(cos, sin);
-			centreCercle.copy(tmp);
-			tmp.minus(delta);			
-			modified.arcselems[i].update(tmp.getX(), tmp.getY(), orientation + angle * (i + 1), enMarcheAvant, courbure, rootedMaxAcceleration);
+			delta[indexThread].rotate(cos, sin);
+			centreCercle[indexThread].copy(tmp[indexThread]);
+			tmp[indexThread].minus(delta[indexThread]);			
+			modified.arcselems[i].update(tmp[indexThread].getX(), tmp[indexThread].getY(), orientation + angle * (i + 1), enMarcheAvant, courbure, rootedMaxAcceleration);
 		}
 	}
 
@@ -404,7 +416,7 @@ public class ClothoidesComputer implements TentacleComputer
 	 * @param orientation
 	 * @param modified
 	 */
-	private void getTrajectoireLigneDroite(XY position, double orientation, StaticTentacle modified, boolean enMarcheAvant)
+	private void getTrajectoireLigneDroite(XY position, double orientation, StaticTentacle modified, boolean enMarcheAvant, int indexThread)
 	{
 		double cos = Math.cos(orientation);
 		double sin = Math.sin(orientation);
@@ -412,9 +424,9 @@ public class ClothoidesComputer implements TentacleComputer
 		for(int i = 0; i < NB_POINTS; i++)
 		{
 			double distance = (i + 1) * PRECISION_TRACE_MM;
-			tmp.setX(position.getX() + distance * cos);
-			tmp.setY(position.getY() + distance * sin);
-			modified.arcselems[i].update(tmp.getX(), tmp.getY(), orientation, enMarcheAvant, 0, rootedMaxAcceleration);
+			tmp[indexThread].setX(position.getX() + distance * cos);
+			tmp[indexThread].setY(position.getY() + distance * sin);
+			modified.arcselems[i].update(tmp[indexThread].getX(), tmp[indexThread].getY(), orientation, enMarcheAvant, 0, rootedMaxAcceleration);
 		}
 	}
 
@@ -592,7 +604,7 @@ public class ClothoidesComputer implements TentacleComputer
 	}*/
 
 	@Override
-	public synchronized boolean compute(AStarNode current, TentacleType tentacleType, Cinematique arrival, AStarNode modified)
+	public boolean compute(AStarNode current, TentacleType tentacleType, Cinematique arrival, AStarNode modified, int indexThread)
 	{
 		assert tentacleType instanceof ClothoTentacle : tentacleType;
 		
@@ -602,7 +614,7 @@ public class ClothoidesComputer implements TentacleComputer
 //		if(current.getArc() == null && (!((ClothoTentacle) tentacleType).arret && !((ClothoTentacle) tentacleType).rebrousse))
 //			return false;
 
-		getTrajectoire(current.robot.getCinematique(), (ClothoTentacle) tentacleType, modified.cameFromArcStatique);
+		getTrajectoire(current.robot.getCinematique(), (ClothoTentacle) tentacleType, modified.cameFromArcStatique, indexThread);
 		return true;
 	}
 

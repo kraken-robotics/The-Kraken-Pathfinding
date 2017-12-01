@@ -27,7 +27,9 @@ public class TentacleThread extends Thread
 	private double maxLinearAcceleration;
 	private int tempsArret;
 	private double deltaSpeedFromStop;
-
+	private static int nbStatic = 0;
+	private int nb;
+	
 	public TentacleThread(Log log, Config config, TentacleQueryBuffer bufferInput, NodePool memorymanager)
 	{
 		this.log = log;
@@ -36,7 +38,7 @@ public class TentacleThread extends Thread
 		maxLinearAcceleration = config.getDouble(ConfigInfoKraken.MAX_LINEAR_ACCELERATION);
 		deltaSpeedFromStop = Math.sqrt(2 * PRECISION_TRACE * maxLinearAcceleration);
 		tempsArret = config.getInt(ConfigInfoKraken.STOP_DURATION);
-
+		nb = nbStatic++;
 	}
 
 	@Override
@@ -86,7 +88,7 @@ public class TentacleThread extends Thread
 			task.successeur.parent = task.current;
 			
 			task.current.robot.copy(task.successeur.robot);
-			if(task.computer.compute(task.current, task.v, task.arrivee, task.successeur))
+			if(task.computer.compute(task.current, task.v, task.arrivee, task.successeur, nb))
 			{
 				// Compute the travel time
 				double duration = task.successeur.getArc().getDuree(task.successeur.parent.getArc(), task.vitesseMax, tempsArret, maxLinearAcceleration, deltaSpeedFromStop);
