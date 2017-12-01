@@ -41,7 +41,7 @@ public abstract class Tentacle implements Printable
 																					// m
 	
 	private static final long serialVersionUID = 1268198325807123306L;
-	// public ObstacleArcCourbe obstacle = new ObstacleArcCourbe();
+
 	public TentacleType vitesse; // utilisé pour le debug
 
 	public abstract int getNbPoints();
@@ -52,11 +52,14 @@ public abstract class Tentacle implements Printable
 
 	public final double getDuree(Tentacle tentacleParent, double translationalSpeed, int tempsArret, double maxAcceleration, double deltaSpeedFromStop)
 	{
-		boolean firstMove = tentacleParent == null;
+		boolean firstMove = tentacleParent == null; // le premier mouvement est particulier : on est déjà arrêté !
 		boolean beginWithStop = getPoint(0).stop;
 		int nb = getNbPoints();
 		double out = 0;
 		
+		/*
+		 * The maximum speed at the first point
+		 */
 		double firstMaxSpeed = Math.min(getPoint(0).maxSpeed, translationalSpeed);
 		
 		// premier mouvement : vitesse nulle (on est arrêté)
@@ -82,34 +85,13 @@ public abstract class Tentacle implements Printable
 		
 		if(lastPossibleSpeed >= firstMaxSpeed)
 		{
-			// le temps est perdu dans l'arc précédent car il doit anticiper la vitesse basse
-			// on ne le met PAS à jour car peut-être que l'arc précédent sera au final utilisé avec un autre arc suivant
-/*			if(lastPossibleSpeed > firstMaxSpeed)
-			{
-				int nextIndex = tentacleParent.getNbPoints()-1;
-				double nextSpeed = tentacleParent.getPoint(nextIndex).possibleSpeed;
-				double currentSpeed = firstMaxSpeed + maxAcceleration * PRECISION_TRACE / nextSpeed;
-				while(currentSpeed < nextSpeed)
-				{
-					double deltaTemps = (-currentSpeed + Math.sqrt(currentSpeed * currentSpeed - 4*PRECISION_TRACE*maxAcceleration/2)) / maxAcceleration;
-					deltaDuration += deltaTemps;
-					currentSpeed += deltaTemps * maxAcceleration;
-					nextIndex--;
-					assert nextIndex >= 0;
-					// TODO : attention à ce qu'on ne sorte pas du tentacule parent !
-					nextSpeed = tentacleParent.getPoint(nextIndex).possibleSpeed;
-					currentSpeed += maxAcceleration * PRECISION_TRACE / nextSpeed;
-				}
-			}*/
-			
-			// l'arc courant est construit classiquement
+			// l'arc courant est construit classiquement (ce cas est géré à la reconstruction de la trajectoire)
 			for(int i = 0; i < nb; i++)
 			{
 				getPoint(i).maxSpeed = Math.min(getPoint(i).maxSpeed, translationalSpeed);
 				getPoint(i).possibleSpeed = getPoint(i).maxSpeed;
 				out += PRECISION_TRACE_MM / getPoint(i).maxSpeed;
 			}
-
 		}
 		else if(lastPossibleSpeed < firstMaxSpeed)
 		{

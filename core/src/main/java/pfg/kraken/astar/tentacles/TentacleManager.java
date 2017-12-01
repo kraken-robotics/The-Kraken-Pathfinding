@@ -7,10 +7,12 @@ package pfg.kraken.astar.tentacles;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import pfg.config.Config;
 import pfg.injector.Injector;
 import pfg.injector.InjectorException;
+import pfg.kraken.ColorKraken;
 import pfg.kraken.ConfigInfoKraken;
 import pfg.kraken.LogCategoryKraken;
 import pfg.kraken.SeverityCategoryKraken;
@@ -23,8 +25,13 @@ import pfg.kraken.obstacles.Obstacle;
 import pfg.kraken.obstacles.container.DynamicObstacles;
 import pfg.kraken.obstacles.container.StaticObstacles;
 import pfg.kraken.robot.Cinematique;
+import pfg.kraken.robot.CinematiqueObs;
+import pfg.kraken.robot.ItineraryPoint;
 import pfg.kraken.utils.XY;
+import pfg.graphic.GraphicDisplay;
 import pfg.graphic.log.Log;
+import pfg.graphic.printable.Layer;
+
 import static pfg.kraken.astar.tentacles.Tentacle.*;
 
 /**
@@ -41,10 +48,12 @@ public class TentacleManager implements Iterable<AStarNode>
 	private DynamicObstacles dynamicObs;
 	private double courbureMax, maxLinearAcceleration, vitesseMax;
 	private int tempsArret;
+	private boolean printObstacles;
 	private Injector injector;
 	private StaticObstacles fixes;
 	private NodePool memorymanager;
 	private double deltaSpeedFromStop;
+	private GraphicDisplay buffer;
 	
 	private DirectionStrategy directionstrategyactuelle;
 	private Cinematique arrivee = new Cinematique();
@@ -54,7 +63,7 @@ public class TentacleManager implements Iterable<AStarNode>
 	private List<AStarNode> successeurs = new ArrayList<AStarNode>();
 //	private List<StaticObstacles> disabledObstaclesFixes = new ArrayList<StaticObstacles>();
 
-	public TentacleManager(Log log, StaticObstacles fixes, DStarLite dstarlite, Config config, DynamicObstacles dynamicObs, Injector injector, ResearchProfileManager profiles, NodePool memorymanager) throws InjectorException
+	public TentacleManager(Log log, StaticObstacles fixes, DStarLite dstarlite, Config config, DynamicObstacles dynamicObs, Injector injector, ResearchProfileManager profiles, NodePool memorymanager, GraphicDisplay buffer) throws InjectorException
 	{
 		this.injector = injector;
 		this.fixes = fixes;
@@ -67,6 +76,8 @@ public class TentacleManager implements Iterable<AStarNode>
 		for(TentacleType t : currentProfile)
 			injector.getService(t.getComputer());
 		
+
+		printObstacles = config.getBoolean(ConfigInfoKraken.GRAPHIC_ROBOT_COLLISION);
 		courbureMax = config.getDouble(ConfigInfoKraken.MAX_CURVATURE);
 		maxLinearAcceleration = config.getDouble(ConfigInfoKraken.MAX_LINEAR_ACCELERATION);
 		deltaSpeedFromStop = Math.sqrt(2 * PRECISION_TRACE * maxLinearAcceleration);
@@ -161,6 +172,55 @@ public class TentacleManager implements Iterable<AStarNode>
 		this.arrivee.updateReel(arrivee.getX(), arrivee.getY(), 0, true, 0);
 	}
 
+	public void reconstruct(LinkedList<ItineraryPoint> trajectory, AStarNode best)
+	{
+		AStarNode noeudParent = best;
+		Tentacle arcParent = best.getArc();
+		
+		CinematiqueObs current;
+		boolean lastStop = true;
+		double lastPossibleSpeed = 0;
+
+		while(noeudParent.parent != null)
+		{
+			for(int i = arcParent.getNbPoints() - 1; i >= 0; i--)
+			{
+				current = arcParent.getPoint(i);
+				if(printObstacles)
+					buffer.addTemporaryPrintable(current.obstacle.clone(), ColorKraken.ROBOT.color, Layer.BACKGROUND.layer);
+				
+				// vitesse maximale du robot à ce point
+				double maxSpeed = current.possibleSpeed;
+				double currentSpeed = lastPossibleSpeed;
+				
+				if(lastStop)
+					current.possibleSpeed = 0;
+				else if(currentSpeed < maxSpeed)
+				{
+					double deltaVitesse;
+					if(currentSpeed < 0.1)
+						deltaVitesse = deltaSpeedFromStop;
+					else
+						deltaVitesse = 2 * maxLinearAcceleration * PRECISION_TRACE / currentSpeed;
+
+					currentSpeed += deltaVitesse;
+					currentSpeed = Math.min(currentSpeed, maxSpeed);
+					current.possibleSpeed = currentSpeed;
+				}
+				
+				trajectory.addFirst(new ItineraryPoint(current, lastStop));
+				
+				// stop : on va devoir s'arrêter
+				lastPossibleSpeed = current.possibleSpeed;
+				lastStop = current.stop;
+			}
+			
+			noeudParent = noeudParent.parent;
+			arcParent = noeudParent.getArc();
+		}
+
+	}
+	
 	/**
 	 * Réinitialise l'itérateur à partir d'un nouvel état
 	 * 

@@ -15,10 +15,8 @@ import java.util.PriorityQueue;
 import pfg.config.Config;
 import pfg.graphic.GraphicDisplay;
 import pfg.graphic.printable.Layer;
-import pfg.kraken.ColorKraken;
 import pfg.kraken.ConfigInfoKraken;
 import pfg.kraken.LogCategoryKraken;
-import pfg.kraken.astar.tentacles.Tentacle;
 import pfg.kraken.astar.tentacles.TentacleManager;
 import pfg.kraken.dstarlite.DStarLite;
 import pfg.kraken.exceptions.NoPathException;
@@ -28,7 +26,6 @@ import pfg.kraken.memory.CinemObsPool;
 import pfg.kraken.memory.NodePool;
 import pfg.kraken.obstacles.RectangularObstacle;
 import pfg.kraken.robot.Cinematique;
-import pfg.kraken.robot.CinematiqueObs;
 import pfg.kraken.robot.ItineraryPoint;
 import pfg.kraken.robot.RobotState;
 import pfg.graphic.log.Log;
@@ -91,7 +88,6 @@ public class TentacularAStar
 	 * Graphic parameters
 	 */
 	private boolean graphicTrajectory;
-	private boolean printObstacles;
 
 	/*
 	 * Duration before timeout
@@ -176,7 +172,6 @@ public class TentacularAStar
 		this.cinemMemory = rectMemory;
 		this.buffer = buffer;
 		graphicTrajectory = config.getBoolean(ConfigInfoKraken.GRAPHIC_TENTACLES);
-		printObstacles = config.getBoolean(ConfigInfoKraken.GRAPHIC_ROBOT_COLLISION);
 		debugMode = config.getBoolean(ConfigInfoKraken.ENABLE_DEBUG_MODE);
 		if(debugMode)
 			dureeMaxPF = Integer.MAX_VALUE;
@@ -433,36 +428,16 @@ public class TentacularAStar
 	 */
 	private final void partialReconstruct(AStarNode best, CheminPathfindingInterface chemin)
 	{
-		AStarNode noeudParent = best;
-		Tentacle arcParent = best.getArc();
-
-		trajectory.clear();
-		
 		if(debugMode)
 		{
 			System.out.println("Path duration : "+best.robot.getDate());
 			System.out.println("Number of expanded nodes : "+nbExpandedNodes);
 		}
-		CinematiqueObs last = null;
-		boolean lastStop = true;
 
-		while(noeudParent.parent != null)
-		{
-			Tentacle a = arcParent;
+		trajectory.clear();
 
-			for(int i = a.getNbPoints() - 1; i >= 0; i--)
-			{
-				last = a.getPoint(i);
-				if(printObstacles)
-					buffer.addTemporaryPrintable(last.obstacle.clone(), ColorKraken.ROBOT.color, Layer.BACKGROUND.layer);
-				trajectory.addFirst(new ItineraryPoint(last, lastStop));
-				lastStop = last.stop;
-			}
-			
-			noeudParent = noeudParent.parent;
-			arcParent = noeudParent.getArc();
-		}
-
+		arcmanager.reconstruct(trajectory, best);
+		
 		chemin.addToEnd(trajectory);
 		log.write("Research completed.", LogCategoryKraken.PF);
 
