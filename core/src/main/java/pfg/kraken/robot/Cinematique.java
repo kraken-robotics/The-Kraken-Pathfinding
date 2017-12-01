@@ -35,6 +35,7 @@ public class Cinematique implements Printable, Serializable
 	public volatile double courbureGeometrique;
 	public volatile double orientationReelle;
 	public volatile double courbureReelle;
+	public volatile boolean stop;
 	private static NumberFormat formatter = new DecimalFormat("#0.000");
 	
 	public Cinematique(XYO xyo)
@@ -42,9 +43,9 @@ public class Cinematique implements Printable, Serializable
 		updateReel(xyo.position.getX(), xyo.position.getY(), xyo.orientation, true, 0);
 	}
 	
-	public Cinematique(double x, double y, double orientationGeometrique, boolean enMarcheAvant, double courbure)
+	public Cinematique(double x, double y, double orientationGeometrique, boolean enMarcheAvant, double courbure, boolean stop)
 	{
-		update(x, y, orientationGeometrique, enMarcheAvant, courbure);
+		update(x, y, orientationGeometrique, enMarcheAvant, courbure, stop);
 	}
 
 	/**
@@ -178,7 +179,7 @@ public class Cinematique implements Printable, Serializable
 		this.courbureReelle = courbureReelle;
 	}
 
-	protected void update(double x, double y, double orientationGeometrique, boolean enMarcheAvant, double courbureGeometrique)
+	protected void update(double x, double y, double orientationGeometrique, boolean enMarcheAvant, double courbureGeometrique, boolean stop)
 	{
 		if(enMarcheAvant)
 		{
@@ -193,6 +194,7 @@ public class Cinematique implements Printable, Serializable
 
 		position.setX(x);
 		position.setY(y);
+		this.stop = stop;
 		this.orientationGeometrique = orientationGeometrique;
 		this.enMarcheAvant = enMarcheAvant;
 		this.courbureGeometrique = courbureGeometrique;

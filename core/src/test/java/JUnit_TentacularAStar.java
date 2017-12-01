@@ -72,7 +72,7 @@ public class JUnit_TentacularAStar extends JUnit_Test
 		for(int i = 0; i < nbArc; i++)
 			arc[i] = new StaticTentacle(injector.getService(RectangularObstacle.class));
 
-		Cinematique c = new Cinematique(0, 1000, Math.PI / 2, false, 0);
+		Cinematique c = new Cinematique(0, 1000, Math.PI / 2, false, 0, false);
 		log.write("Initial : " + c, LogCategoryKraken.TEST);
 		clotho.getTrajectoire(c, ClothoTentacle.COURBURE_IDENTIQUE, arc[0]);
 		clotho.getTrajectoire(arc[0], ClothoTentacle.GAUCHE_2, arc[1]);
@@ -190,8 +190,8 @@ public class JUnit_TentacularAStar extends JUnit_Test
 		int nbArc = 1;
 		DynamicTentacle arc[] = new DynamicTentacle[nbArc];
 
-		Cinematique c = new Cinematique(0, 1000, Math.PI / 2, true, -1);
-		Cinematique arrivee = new Cinematique(400, 1400, Math.PI / 2, false, 0);
+		Cinematique c = new Cinematique(0, 1000, Math.PI / 2, true, -1, false);
+		Cinematique arrivee = new Cinematique(400, 1400, Math.PI / 2, false, 0, false);
 		log.write("Initial : " + c, LogCategoryKraken.TEST);
 		arc[0] = bezier.quadraticInterpolationXYOC2XY(c, arrivee.getPosition());
 

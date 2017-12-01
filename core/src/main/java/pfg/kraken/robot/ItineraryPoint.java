@@ -20,6 +20,11 @@ public class ItineraryPoint implements Printable
 	private static final long serialVersionUID = 1L;
 
 	/**
+	 * The robot should stop at this point
+	 */
+	public final boolean stop;
+	
+	/**
 	 * The desired orientation
 	 */
 	public final double orientation;
@@ -54,13 +59,14 @@ public class ItineraryPoint implements Printable
 	 */
 	public final double possibleSpeed;
 
-	public ItineraryPoint(CinematiqueObs c)
+	public ItineraryPoint(CinematiqueObs c, boolean stop)
 	{
 		goingForward = c.enMarcheAvant;
 		maxSpeed = c.maxSpeed;
 		possibleSpeed = c.possibleSpeed;
 		x = c.getPosition().getX();
 		y = c.getPosition().getY();
+		this.stop = stop;
 		if(c.enMarcheAvant)
 		{
 			orientation = c.orientationGeometrique;
@@ -76,7 +82,7 @@ public class ItineraryPoint implements Printable
 	@Override
 	public String toString()
 	{
-		return "("+x+","+y+"), orientation = "+orientation+", curvature = "+curvature+" going "+(goingForward ? "forward" : "backward")+", max speed = "+maxSpeed+", possible speed = "+possibleSpeed;
+		return "("+x+","+y+"), orientation = "+orientation+", curvature = "+curvature+" going "+(goingForward ? "forward" : "backward")+", max speed = "+maxSpeed+", possible speed = "+possibleSpeed+(stop ? ", ending with a stop":"");
 	}
 
 	@Override

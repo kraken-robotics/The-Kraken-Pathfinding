@@ -179,7 +179,7 @@ public class ClothoidesComputer implements TentacleComputer
 			orientation += Math.PI;
 
 		// on s'arrête, on peut tourner les roues
-		if(vitesse.rebrousse || vitesse.arret)
+		if(vitesse.arret)
 			courbure = vitesse.courbureInitiale;
 
 		modified.vitesse = vitesse;
@@ -191,9 +191,9 @@ public class ClothoidesComputer implements TentacleComputer
 		if(vitesse.vitesse == 0)
 		{
 			if(courbure < 0.00001 && courbure > -0.00001)
-				getTrajectoireLigneDroite(cinematiqueInitiale.getPosition(), orientation, modified, marcheAvant);
+				getTrajectoireLigneDroite(cinematiqueInitiale.getPosition(), orientation, modified, marcheAvant, vitesse);
 			else
-				getTrajectoireCirculaire(cinematiqueInitiale.getPosition(), orientation, courbure, modified, marcheAvant);
+				getTrajectoireCirculaire(cinematiqueInitiale.getPosition(), orientation, courbure, modified, marcheAvant, vitesse);
 			return;
 		}
 
@@ -353,7 +353,7 @@ public class ClothoidesComputer implements TentacleComputer
 		if(!vitesse.positif)
 			courbure = -courbure;
 
-		c.update(tmp.getX(), tmp.getY(), baseOrientation + orientationClotho, marcheAvant, courbure, rootedMaxAcceleration);
+		c.update(tmp.getX(), tmp.getY(), baseOrientation + orientationClotho, marcheAvant, courbure, rootedMaxAcceleration, i == 0 && vitesse.arret);
 		c.maxSpeed = Math.min(c.maxSpeed, vitesse.maxSpeed);
 	}
 
@@ -369,7 +369,7 @@ public class ClothoidesComputer implements TentacleComputer
 	 * @param courbure
 	 * @param modified
 	 */
-	private void getTrajectoireCirculaire(XY position, double orientation, double courbure, StaticTentacle modified, boolean enMarcheAvant)
+	private void getTrajectoireCirculaire(XY position, double orientation, double courbure, StaticTentacle modified, boolean enMarcheAvant, ClothoTentacle vitesse)
 	{
 		// log.debug("Trajectoire circulaire !");
 		// rappel = la courbure est l'inverse du rayon de courbure
@@ -393,7 +393,7 @@ public class ClothoidesComputer implements TentacleComputer
 			delta.rotate(cos, sin);
 			centreCercle.copy(tmp);
 			tmp.minus(delta);			
-			modified.arcselems[i].update(tmp.getX(), tmp.getY(), orientation + angle * (i + 1), enMarcheAvant, courbure, rootedMaxAcceleration);
+			modified.arcselems[i].update(tmp.getX(), tmp.getY(), orientation + angle * (i + 1), enMarcheAvant, courbure, rootedMaxAcceleration, i == 0 && vitesse.arret);
 		}
 	}
 
@@ -403,8 +403,9 @@ public class ClothoidesComputer implements TentacleComputer
 	 * @param position
 	 * @param orientation
 	 * @param modified
+	 * @param vitesse 
 	 */
-	private void getTrajectoireLigneDroite(XY position, double orientation, StaticTentacle modified, boolean enMarcheAvant)
+	private void getTrajectoireLigneDroite(XY position, double orientation, StaticTentacle modified, boolean enMarcheAvant, ClothoTentacle vitesse)
 	{
 		double cos = Math.cos(orientation);
 		double sin = Math.sin(orientation);
@@ -414,7 +415,7 @@ public class ClothoidesComputer implements TentacleComputer
 			double distance = (i + 1) * PRECISION_TRACE_MM;
 			tmp.setX(position.getX() + distance * cos);
 			tmp.setY(position.getY() + distance * sin);
-			modified.arcselems[i].update(tmp.getX(), tmp.getY(), orientation, enMarcheAvant, 0, rootedMaxAcceleration);
+			modified.arcselems[i].update(tmp.getX(), tmp.getY(), orientation, enMarcheAvant, 0, rootedMaxAcceleration, i == 0 && vitesse.arret);
 		}
 	}
 

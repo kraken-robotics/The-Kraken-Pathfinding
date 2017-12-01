@@ -73,9 +73,9 @@ public class CinematiqueObs extends Cinematique implements Memorizable, Serializ
 	 * @param obstacle
 	 * @param r
 	 */
-	public void update(double x, double y, double orientationGeometrique, boolean enMarcheAvant, double courbure, double rootedMaxAcceleration)
+	public void update(double x, double y, double orientationGeometrique, boolean enMarcheAvant, double courbure, double rootedMaxAcceleration, boolean stop)
 	{
-		super.update(x, y, orientationGeometrique, enMarcheAvant, courbure);
+		super.update(x, y, orientationGeometrique, enMarcheAvant, courbure, stop);
 		maxSpeed = rootedMaxAcceleration * maxSpeedLUT[(int) Math.round(Math.abs(10*courbure))];
 		obstacle.update(position, orientationReelle);
 	}

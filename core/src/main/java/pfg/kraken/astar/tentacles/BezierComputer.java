@@ -255,7 +255,7 @@ public class BezierComputer implements TentacleComputer
 
 			obs.update(tmpPos.getX(), // x
 					tmpPos.getY(), // y
-					orientation, enMarcheAvant, courbure, rootedMaxAcceleration); // Frenet
+					orientation, enMarcheAvant, courbure, rootedMaxAcceleration, false); // Frenet
 
 			lastOrientation = obs.orientationGeometrique;
 			lastCourbure = obs.courbureGeometrique;

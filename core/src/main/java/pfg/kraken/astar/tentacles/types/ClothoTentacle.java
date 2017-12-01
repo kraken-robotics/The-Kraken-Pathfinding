@@ -61,7 +61,7 @@ public enum ClothoTentacle implements TentacleType
 	{
 		this.courbureInitiale = courbureInitiale;
 		rebrousse = toString().endsWith("_REBROUSSE");
-		arret = toString().endsWith("_AFTER_STOP");
+		arret = toString().endsWith("_AFTER_STOP") || rebrousse;
 		this.vitesse = vitesse;
 		positif = vitesse >= 0;
 		this.squaredRootVitesse = (int) Math.sqrt(Math.abs(vitesse));
@@ -110,7 +110,7 @@ public enum ClothoTentacle implements TentacleType
 	{
 		if(firstMove)
 			return 0;
-		if(arret || rebrousse)
+		if(arret)
 			return 1;
 		return 0;
 	}
@@ -118,7 +118,7 @@ public enum ClothoTentacle implements TentacleType
 	@Override
 	public Color getColor()
 	{
-		if(arret || rebrousse)
+		if(arret)
 			return Color.GREEN;
 		return Color.RED;
 	}

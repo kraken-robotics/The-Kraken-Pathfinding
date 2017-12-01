@@ -12,7 +12,6 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.PriorityQueue;
-import java.util.Stack;
 import pfg.config.Config;
 import pfg.graphic.GraphicDisplay;
 import pfg.graphic.printable.Layer;
@@ -152,7 +151,7 @@ public class TentacularAStar
 	/*
 	 * Only used for the reconstruction
 	 */
-	private Stack<Tentacle> pileTmp = new Stack<Tentacle>();
+//	private Stack<Tentacle> pileTmp = new Stack<Tentacle>();
 	
 	/*
 	 * Only used for the reconstruction
@@ -432,45 +431,42 @@ public class TentacularAStar
 	 * @param last
 	 * @throws PathfindingException
 	 */
-	private final Cinematique partialReconstruct(AStarNode best, CheminPathfindingInterface chemin)
+	private final void partialReconstruct(AStarNode best, CheminPathfindingInterface chemin)
 	{
 		AStarNode noeudParent = best;
 		Tentacle arcParent = best.getArc();
 
-		while(noeudParent.parent != null)
-		{
-			pileTmp.push(arcParent);
-			noeudParent = noeudParent.parent;
-			arcParent = noeudParent.getArc();
-		}
 		trajectory.clear();
-
+		
 		if(debugMode)
 		{
 			System.out.println("Path duration : "+best.robot.getDate());
 			System.out.println("Number of expanded nodes : "+nbExpandedNodes);
 		}
 		CinematiqueObs last = null;
+		boolean lastStop = true;
 
-		while(!pileTmp.isEmpty())
+		while(noeudParent.parent != null)
 		{
-			Tentacle a = pileTmp.pop();
-//			log.write(a.vitesse + " (" + a.getNbPoints() + " pts)", LogCategoryKraken.PF);
-//			System.out.println(a.vitesse);
-			for(int i = 0; i < a.getNbPoints(); i++)
+			Tentacle a = arcParent;
+
+			for(int i = a.getNbPoints() - 1; i >= 0; i--)
 			{
 				last = a.getPoint(i);
 				if(printObstacles)
 					buffer.addTemporaryPrintable(last.obstacle.clone(), ColorKraken.ROBOT.color, Layer.BACKGROUND.layer);
-				trajectory.add(new ItineraryPoint(last));
+				trajectory.addFirst(new ItineraryPoint(last, lastStop));
+				lastStop = last.stop;
 			}
+			
+			noeudParent = noeudParent.parent;
+			arcParent = noeudParent.getArc();
 		}
 
-		pileTmp.clear();
 		chemin.addToEnd(trajectory);
 		log.write("Research completed.", LogCategoryKraken.PF);
 
-		return last;
+//		return last;
 	}
 	
 	public void initializeNewSearch(XYO start, XY arrival) throws NoPathException
