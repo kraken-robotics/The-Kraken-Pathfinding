@@ -231,27 +231,6 @@ public class TentacleManager implements Iterable<AStarNode>
 				successeurs.addAll(threads[i].successeurs);
 				threads[i].successeurs.clear();
 			}
-			
-			
-			
-			/**
-			 * On attend que tous les calculs soient faits
-			 */
-/*			for(int i = 0; i < index; i++)
-			{
-				TentacleTask tt = tasks.get(i);
-				synchronized(tt)
-				{
-					if(!tt.done)
-						try {
-							tt.wait();
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
-					if(tt.successeur != null)
-						successeurs.add(tt.successeur);
-				}
-			}*/
 		}
 	}
 
