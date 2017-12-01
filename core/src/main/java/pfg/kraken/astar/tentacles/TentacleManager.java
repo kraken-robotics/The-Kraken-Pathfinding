@@ -66,6 +66,10 @@ public class TentacleManager implements Iterable<AStarNode>
 		this.dstarlite = dstarlite;
 		
 		this.currentProfile = profiles.getProfile(0);
+		
+		for(int i = 0; i < currentProfile.size(); i++)
+			tasks.add(new TentacleTask(i));
+		
 		for(TentacleType t : currentProfile)
 			injector.getService(t.getComputer());
 		
@@ -181,33 +185,32 @@ public class TentacleManager implements Iterable<AStarNode>
 		successeurs.clear();
 		assert bufferInput.isEmpty();
 		int index = 0;
-		for(TentacleType v : currentProfile)
+		synchronized(bufferInput)
 		{
-			if(v.isAcceptable(current.robot.getCinematique(), directionstrategyactuelle, courbureMax))
+			for(TentacleType v : currentProfile)
 			{
-				if(tasks.size() <= index)
-					tasks.add(new TentacleTask(tasks.size()));
-				
-				TentacleTask tt = tasks.get(index);
-				tt.arrivee = arrivee;
-				tt.current = current;
-				tt.v = v;
-				tt.computer = injector.getExistingService(v.getComputer());
-				tt.vitesseMax = vitesseMax;
-				tt.done = false;
-				
-				if(threads.length == 1)
+				if(v.isAcceptable(current.robot.getCinematique(), directionstrategyactuelle, courbureMax))
 				{
-					threads[0].compute(tt);
-					assert tt.done;
-					if(tt.successeur != null)
-						successeurs.add(tt.successeur);
+					TentacleTask tt = tasks.get(index++);
+					tt.arrivee = arrivee;
+					tt.current = current;
+					tt.v = v;
+					tt.computer = injector.getExistingService(v.getComputer());
+					tt.vitesseMax = vitesseMax;
+					tt.done = false;
+					
+					if(threads.length == 1)
+					{
+						threads[0].compute(tt);
+						assert tt.done;
+						if(tt.successeur != null)
+							successeurs.add(tt.successeur);
+					}
+					else
+						bufferInput.add(tt);
 				}
-				else
-					bufferInput.add(tt);
-				
-				index++;
 			}
+			bufferInput.notifyAll();
 		}
 		
 		if(threads.length > 1)

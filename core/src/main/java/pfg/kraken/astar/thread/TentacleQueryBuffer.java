@@ -18,7 +18,7 @@ import pfg.graphic.log.Log;
 
 public class TentacleQueryBuffer
 {
-	protected Log log;	
+	protected Log log;
 	private Queue<TentacleTask> buffer = new ConcurrentLinkedQueue<TentacleTask>();
 	
 	public TentacleQueryBuffer(Log log)
@@ -31,7 +31,7 @@ public class TentacleQueryBuffer
 	 * 
 	 * @return
 	 */
-	public synchronized boolean isEmpty()
+	public boolean isEmpty()
 	{
 		return buffer.isEmpty();
 	}
@@ -41,11 +41,10 @@ public class TentacleQueryBuffer
 	 * 
 	 * @param elem
 	 */
-	public synchronized void add(TentacleTask liste)
+	public void add(TentacleTask liste)
 	{
 //		System.out.println("Ajout !");
 		buffer.add(liste);
-		notify();
 	}
 
 	/**
@@ -53,7 +52,7 @@ public class TentacleQueryBuffer
 	 * 
 	 * @return
 	 */
-	public synchronized TentacleTask poll()
+	public TentacleTask poll()
 	{
 //		System.out.println("Récupération de "+buffer.peek().index+", encore "+(buffer.size()-1));
 		assert !buffer.isEmpty();
