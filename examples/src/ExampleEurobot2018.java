@@ -76,7 +76,10 @@ public class ExampleEurobot2018
 			List<ItineraryPoint> path = kraken.search();
 			
 			for(ItineraryPoint p : path)
+			{
 				display.addPrintable(p, Color.BLACK, Layer.FOREGROUND.layer);
+				System.out.println(p);
+			}
 			
 			display.refresh();
 		}

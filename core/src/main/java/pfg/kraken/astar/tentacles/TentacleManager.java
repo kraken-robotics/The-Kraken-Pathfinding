@@ -80,6 +80,9 @@ public class TentacleManager implements Iterable<AStarNode>
 		for(TentacleType t : currentProfile)
 			injector.getService(t.getComputer());
 		
+		maxLinearAcceleration = config.getDouble(ConfigInfoKraken.MAX_LINEAR_ACCELERATION);
+		deltaSpeedFromStop = Math.sqrt(2 * PRECISION_TRACE * maxLinearAcceleration);
+
 		printObstacles = config.getBoolean(ConfigInfoKraken.GRAPHIC_ROBOT_COLLISION);
 		int nbThreads = config.getInt(ConfigInfoKraken.THREAD_NUMBER);
 		
