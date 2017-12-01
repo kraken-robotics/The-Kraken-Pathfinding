@@ -53,6 +53,7 @@ public abstract class Tentacle implements Printable
 	public final double getDuree(Tentacle tentacleParent, double translationalSpeed, int tempsArret, double maxAcceleration, double deltaSpeedFromStop)
 	{
 		boolean firstMove = tentacleParent == null;
+		boolean beginWithStop = getPoint(0).stop;
 		int nb = getNbPoints();
 		double out = 0;
 		
@@ -60,7 +61,7 @@ public abstract class Tentacle implements Printable
 		
 		// premier mouvement : vitesse nulle (on est arrêté)
 		double lastPossibleSpeed = 0;
-		if(!firstMove)
+		if(!firstMove && !beginWithStop)
 			lastPossibleSpeed = tentacleParent.getLast().possibleSpeed;
 
 		// prend en compte l'écart entre la vitesse max et la vitesse possible
