@@ -89,7 +89,7 @@ public class TentacleManager implements Iterable<AStarNode>
 		threads = new TentacleThread[nbThreads];
 		for(int i = 0; i < nbThreads; i++)
 		{
-			threads[i] = new TentacleThread(log, config, memorymanager);
+			threads[i] = new TentacleThread(log, config, memorymanager, i);
 			if(nbThreads != 1)
 				threads[i].start();
 		}

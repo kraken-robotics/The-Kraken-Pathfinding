@@ -30,20 +30,18 @@ public class TentacleThread extends Thread
 	private double maxLinearAcceleration;
 	private int tempsArret;
 	private double deltaSpeedFromStop;
-	private static int nbStatic = 0;
 	private int nb;
 	public final Queue<TentacleTask> buffer = new ConcurrentLinkedQueue<TentacleTask>();
 	public final Queue<AStarNode> successeurs = new ConcurrentLinkedQueue<AStarNode>();
 	public volatile boolean done;
 	
-	public TentacleThread(Log log, Config config, NodePool memorymanager)
+	public TentacleThread(Log log, Config config, NodePool memorymanager, int nb)
 	{
 		this.log = log;
 		this.memorymanager = memorymanager;
 		maxLinearAcceleration = config.getDouble(ConfigInfoKraken.MAX_LINEAR_ACCELERATION);
 		deltaSpeedFromStop = Math.sqrt(2 * PRECISION_TRACE * maxLinearAcceleration);
 		tempsArret = config.getInt(ConfigInfoKraken.STOP_DURATION);
-		nb = nbStatic++;
 	}
 
 	@Override
