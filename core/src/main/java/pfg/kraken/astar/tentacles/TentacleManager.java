@@ -21,6 +21,7 @@ import pfg.kraken.LogCategoryKraken;
 import pfg.kraken.SeverityCategoryKraken;
 import pfg.kraken.astar.AStarNode;
 import pfg.kraken.astar.DirectionStrategy;
+import pfg.kraken.astar.ResearchMode;
 import pfg.kraken.astar.tentacles.types.TentacleType;
 import pfg.kraken.astar.thread.TentacleTask;
 import pfg.kraken.astar.thread.TentacleThread;
@@ -33,6 +34,7 @@ import pfg.kraken.robot.Cinematique;
 import pfg.kraken.robot.CinematiqueObs;
 import pfg.kraken.robot.ItineraryPoint;
 import pfg.kraken.utils.XY;
+import pfg.kraken.utils.XYO;
 import pfg.graphic.GraphicDisplay;
 import pfg.log.Log;
 import pfg.graphic.printable.Layer;
@@ -57,6 +59,7 @@ public class TentacleManager implements Iterator<AStarNode>
 	private double deltaSpeedFromStop;
 	private GraphicDisplay display;
 	private TentacleThread[] threads;
+	private ResearchMode mode;
 	
 	private DirectionStrategy directionstrategyactuelle;
 	private Cinematique arrivee = new Cinematique();
@@ -177,18 +180,19 @@ public class TentacleManager implements Iterator<AStarNode>
 	 * @param sens
 	 * @param arrivee
 	 */
-	public void configure(DirectionStrategy directionstrategyactuelle, double vitesseMax, Cinematique arrivee)
+/*	public void configure(DirectionStrategy directionstrategyactuelle, double vitesseMax, Cinematique arrivee)
 	{
 		this.vitesseMax = vitesseMax;
 		this.directionstrategyactuelle = directionstrategyactuelle;
 		arrivee.copy(this.arrivee);
-	}
+	}*/
 
-	public void configure(DirectionStrategy directionstrategyactuelle, double vitesseMax, XY arrivee)
+	public void configure(DirectionStrategy directionstrategyactuelle, double vitesseMax, XYO arrivee, ResearchMode mode)
 	{
 		this.vitesseMax = vitesseMax;
 		this.directionstrategyactuelle = directionstrategyactuelle;
-		this.arrivee.updateReel(arrivee.getX(), arrivee.getY(), 0, true, 0);
+		this.mode = mode;
+		this.arrivee.updateReel(arrivee.position.getX(), arrivee.position.getY(), arrivee.orientation, true, 0);
 	}
 
 	public void reconstruct(LinkedList<ItineraryPoint> trajectory, AStarNode best)

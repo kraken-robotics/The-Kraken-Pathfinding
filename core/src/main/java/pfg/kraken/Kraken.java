@@ -22,6 +22,7 @@ import pfg.graphic.DebugTool;
 import pfg.injector.Injector;
 import pfg.injector.InjectorException;
 import pfg.kraken.astar.DirectionStrategy;
+import pfg.kraken.astar.ResearchMode;
 import pfg.kraken.astar.TentacularAStar;
 import pfg.kraken.astar.tentacles.ResearchProfileManager;
 import pfg.kraken.astar.tentacles.TentacleManager;
@@ -207,7 +208,41 @@ public class Kraken
 	public void initializeNewSearch(XYO start, XY arrival, DirectionStrategy directionstrategy) throws NoPathException
 	{
 		if(!stopped)
-			astar.initializeNewSearch(start, arrival, directionstrategy);
+			astar.initializeNewSearch(start, new XYO(arrival.clone(), 0), directionstrategy, ResearchMode.XYO2XY);
+		else
+			throw new RuntimeException("Kraken is stopped !");
+	}
+	
+	/**
+	 * Initialize a new search from :
+	 * - a position and an orientation, to
+	 * - a position and an orientation
+	 * @param start
+	 * @param arrival
+	 * @param directionstrategy
+	 * @throws NoPathException
+	 */
+	public void initializeNewSearch(XYO start, XYO arrival, DirectionStrategy directionstrategy) throws NoPathException
+	{
+		if(!stopped)
+			astar.initializeNewSearch(start, arrival, directionstrategy, ResearchMode.XYO2XYO);
+		else
+			throw new RuntimeException("Kraken is stopped !");
+	}
+	
+	/**
+	 * Initialize a new search from :
+	 * - a position and an orientation, to
+	 * - a position and an orientation
+	 * Use the default direction strategy
+	 * @param start
+	 * @param arrival
+	 * @throws NoPathException
+	 */
+	public void initializeNewSearch(XYO start, XYO arrival) throws NoPathException
+	{
+		if(!stopped)
+			astar.initializeNewSearch(start, arrival);
 		else
 			throw new RuntimeException("Kraken is stopped !");
 	}
@@ -216,6 +251,7 @@ public class Kraken
 	 * Initialize a new search from :
 	 * - a position and an orientation, to
 	 * - a position
+	 * Use the default direction strategy
 	 * @param start
 	 * @param arrival
 	 * @throws NoPathException
