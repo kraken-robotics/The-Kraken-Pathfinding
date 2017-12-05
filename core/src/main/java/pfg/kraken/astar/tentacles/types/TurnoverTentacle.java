@@ -8,6 +8,7 @@ package pfg.kraken.astar.tentacles.types;
 import java.awt.Color;
 
 import pfg.kraken.astar.DirectionStrategy;
+import pfg.kraken.astar.ResearchMode;
 import pfg.kraken.astar.tentacles.ClothoidesComputer;
 import pfg.kraken.astar.tentacles.TentacleComputer;
 import pfg.kraken.robot.Cinematique;
@@ -58,6 +59,12 @@ public enum TurnoverTentacle implements TentacleType
 	public Class<? extends TentacleComputer> getComputer()
 	{
 		return ClothoidesComputer.class;
+	}
+
+	@Override
+	public boolean usableFor(ResearchMode mode)
+	{
+		return false;
 	}
 
 }

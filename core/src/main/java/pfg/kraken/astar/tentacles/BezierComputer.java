@@ -342,6 +342,14 @@ public class BezierComputer implements TentacleComputer
 			modified.cameFromArcDynamique = t;
 			return true;
 		}
+		else if(tentacleType == BezierTentacle.BEZIER_XYOC_TO_XYO)
+		{
+			DynamicTentacle t = cubicInterpolationXYOC2XYO(current.robot.getCinematique(), arrival, indexThread);
+			if(t == null)
+				return false;
+			modified.cameFromArcDynamique = t;
+			return true;
+		}
 		
 		assert false;
 		return false;

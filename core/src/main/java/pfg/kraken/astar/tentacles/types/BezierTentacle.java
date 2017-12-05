@@ -8,6 +8,7 @@ package pfg.kraken.astar.tentacles.types;
 import java.awt.Color;
 
 import pfg.kraken.astar.DirectionStrategy;
+import pfg.kraken.astar.ResearchMode;
 import pfg.kraken.astar.tentacles.BezierComputer;
 import pfg.kraken.astar.tentacles.TentacleComputer;
 import pfg.kraken.robot.Cinematique;
@@ -21,12 +22,15 @@ import pfg.kraken.robot.Cinematique;
 
 public enum BezierTentacle implements TentacleType
 {
-	BEZIER_XYOC_TO_XY(0);
+	BEZIER_XYOC_TO_XY(0, ResearchMode.XYO2XY),
+	BEZIER_XYOC_TO_XYO(0, ResearchMode.XYO2XYO);
 
 	private final int nbArrets;
+	private final ResearchMode mode;
 
-	private BezierTentacle(int nbArrets)
+	private BezierTentacle(int nbArrets, ResearchMode mode)
 	{
+		this.mode = mode;
 		this.nbArrets = nbArrets;
 	}
 	
@@ -52,5 +56,11 @@ public enum BezierTentacle implements TentacleType
 	public Class<? extends TentacleComputer> getComputer()
 	{
 		return BezierComputer.class;
+	}
+
+	@Override
+	public boolean usableFor(ResearchMode mode)
+	{
+		return mode == this.mode;
 	}
 }

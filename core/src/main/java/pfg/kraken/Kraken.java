@@ -106,10 +106,10 @@ public class Kraken
 			tentacleTypesUsed.add(t);
 		for(ClothoTentacle t : ClothoTentacle.values())
 			tentacleTypesUsed.add(t);
-/*			for(TurnoverTentacle t : TurnoverTentacle.values())
-				tentacleTypesUsed.add(t);
-			for(StraightingTentacle t : StraightingTentacle.values())
-				tentacleTypesUsed.add(t);*/
+		for(TurnoverTentacle t : TurnoverTentacle.values())
+			tentacleTypesUsed.add(t);
+		for(StraightingTentacle t : StraightingTentacle.values())
+			tentacleTypesUsed.add(t);
 		
 		injector = new Injector();
 		config = new Config(ConfigInfoKraken.values(), isJUnitTest(), "kraken.conf", configprofile);
@@ -127,7 +127,15 @@ public class Kraken
 		
 		try {
 			ResearchProfileManager profiles = injector.getService(ResearchProfileManager.class);
-			profiles.addProfile(tentacleTypesUsed);
+			
+			for(ResearchMode m : ResearchMode.values())
+			{
+				List<TentacleType> tentacles = new ArrayList<TentacleType>();
+				for(TentacleType t : tentacleTypesUsed)
+					if(t.usableFor(m))
+						tentacles.add(t);
+				profiles.addProfile(tentacles);
+			}
 			
 			StaticObstacles so = injector.getService(StaticObstacles.class); 
 			if(fixedObstacles != null)

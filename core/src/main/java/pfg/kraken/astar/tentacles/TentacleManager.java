@@ -64,6 +64,7 @@ public class TentacleManager implements Iterator<AStarNode>
 	private DirectionStrategy directionstrategyactuelle;
 	private Cinematique arrivee = new Cinematique();
 //	private ResearchProfileManager profiles;
+	private ResearchProfileManager profiles;
 	private List<TentacleType> currentProfile = new ArrayList<TentacleType>();
 //	private List<StaticObstacles> disabledObstaclesFixes = new ArrayList<StaticObstacles>();
 	private List<TentacleTask> tasks = new ArrayList<TentacleTask>();
@@ -80,14 +81,18 @@ public class TentacleManager implements Iterator<AStarNode>
 		this.log = log;
 		this.dstarlite = dstarlite;
 		this.display = display;
+		this.profiles = profiles;
 		
-		this.currentProfile = profiles.getProfile(0);
+		int maxSize = 0;
+		for(List<TentacleType> p : profiles)
+		{
+			maxSize = Math.max(maxSize, p.size());
+			for(TentacleType t : p)
+				injector.getService(t.getComputer());
+		}
 		
-		for(int i = 0; i < currentProfile.size(); i++)
+		for(int i = 0; i < maxSize; i++)
 			tasks.add(new TentacleTask());
-		
-		for(TentacleType t : currentProfile)
-			injector.getService(t.getComputer());
 		
 		maxLinearAcceleration = config.getDouble(ConfigInfoKraken.MAX_LINEAR_ACCELERATION);
 		deltaSpeedFromStop = Math.sqrt(2 * PRECISION_TRACE * maxLinearAcceleration);
@@ -180,18 +185,12 @@ public class TentacleManager implements Iterator<AStarNode>
 	 * @param sens
 	 * @param arrivee
 	 */
-/*	public void configure(DirectionStrategy directionstrategyactuelle, double vitesseMax, Cinematique arrivee)
-	{
-		this.vitesseMax = vitesseMax;
-		this.directionstrategyactuelle = directionstrategyactuelle;
-		arrivee.copy(this.arrivee);
-	}*/
-
 	public void configure(DirectionStrategy directionstrategyactuelle, double vitesseMax, XYO arrivee, ResearchMode mode)
 	{
 		this.vitesseMax = vitesseMax;
 		this.directionstrategyactuelle = directionstrategyactuelle;
 		this.mode = mode;
+		currentProfile = profiles.getProfile(mode.ordinal()); // on récupère les tentacules qui correspondent à ce mode
 		this.arrivee.updateReel(arrivee.position.getX(), arrivee.position.getY(), arrivee.orientation, true, 0);
 	}
 
@@ -314,7 +313,16 @@ public class TentacleManager implements Iterator<AStarNode>
 
 	public boolean isArrived(AStarNode successeur)
 	{
-		return successeur.getArc() != null && successeur.getArc().getLast().getPosition().squaredDistance(arrivee.getPosition()) < 5;
+		if(mode == ResearchMode.XYO2XY)
+			return successeur.getArc() != null && successeur.getArc().getLast().getPosition().squaredDistance(arrivee.getPosition()) < 5;
+		else if(mode == ResearchMode.XYO2XY)
+			return successeur.getArc() != null && successeur.getArc().getLast().getPosition().squaredDistance(arrivee.getPosition()) < 5
+			&& XYO.angleDifference(successeur.getArc().getLast().orientationReelle, arrivee.orientationReelle) < 0.05;
+		else
+		{
+			assert false;
+			return successeur.getArc() != null && successeur.getArc().getLast().getPosition().squaredDistance(arrivee.getPosition()) < 5;
+		}
 	}
 
 	public void stopThreads()

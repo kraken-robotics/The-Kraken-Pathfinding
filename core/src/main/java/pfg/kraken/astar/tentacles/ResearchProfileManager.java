@@ -6,6 +6,7 @@
 package pfg.kraken.astar.tentacles;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import pfg.kraken.astar.tentacles.types.TentacleType;
 
@@ -15,7 +16,7 @@ import pfg.kraken.astar.tentacles.types.TentacleType;
  *
  */
 
-public class ResearchProfileManager
+public class ResearchProfileManager implements Iterable<List<TentacleType>>
 {
 	List<List<TentacleType>> profiles = new ArrayList<List<TentacleType>>();
 	
@@ -28,5 +29,11 @@ public class ResearchProfileManager
 	public List<TentacleType> getProfile(int index)
 	{
 		return profiles.get(index);
+	}
+
+	@Override
+	public Iterator<List<TentacleType>> iterator()
+	{
+		return profiles.iterator();
 	}
 }
