@@ -3,6 +3,8 @@
  * Distributed under the MIT License.
  */
 
+package pfg.kraken;
+
 import java.awt.Color;
 import org.junit.Assert;
 import org.junit.Before;
@@ -35,7 +37,7 @@ import static pfg.kraken.astar.tentacles.Tentacle.*;
  *
  */
 
-public class JUnit_TentacularAStar extends JUnit_Test
+public class Test_TentacularAStar extends JUnit_Test
 {
 
 	private TentacularAStar astar;

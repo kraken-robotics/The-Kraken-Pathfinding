@@ -3,6 +3,8 @@
  * Distributed under the MIT License.
  */
 
+package pfg.kraken;
+
 /**
  * Test unitaire des obstacles
  * 
@@ -10,7 +12,7 @@
  *
  */
 
-public class JUnit_Obstacle extends JUnit_Test
+public class Test_Obstacle extends JUnit_Test
 {
 /*
 	@Test

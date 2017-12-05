@@ -3,6 +3,8 @@
  * Distributed under the MIT License.
  */
 
+package pfg.kraken;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,7 +13,6 @@ import org.junit.Test;
 
 import pfg.kraken.LogCategoryKraken;
 import pfg.kraken.dstarlite.DStarLite;
-import pfg.kraken.dstarlite.navmesh.Navmesh;
 import pfg.kraken.obstacles.Obstacle;
 import pfg.kraken.obstacles.RectangularObstacle;
 import pfg.kraken.utils.XY;
@@ -24,11 +25,10 @@ import pfg.kraken.utils.XY_RW;
  *
  */
 
-public class JUnit_DStarLite extends JUnit_Test
+public class Test_DStarLite extends JUnit_Test
 {
 
 	private DStarLite pathfinding;
-	private Navmesh gridspace;
 
 	@Before
 	public void setUp() throws Exception
@@ -43,7 +43,6 @@ public class JUnit_DStarLite extends JUnit_Test
 		obs.add(new RectangularObstacle(new XY_RW(-1000,1900), 200, 200));
 		super.setUpWith(obs, "graphic");
 		pathfinding = injector.getService(DStarLite.class);
-		gridspace = injector.getService(Navmesh.class);
 	}
 	
 	@Test

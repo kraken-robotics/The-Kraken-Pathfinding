@@ -3,6 +3,8 @@
  * Distributed under the MIT License.
  */
 
+package pfg.kraken;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,7 +25,7 @@ import pfg.kraken.utils.XY_RW;
  *
  */
 
-public class JUnit_Navmesh extends JUnit_Test
+public class Test_Navmesh extends JUnit_Test
 {
 	private Navmesh navmesh;
 	

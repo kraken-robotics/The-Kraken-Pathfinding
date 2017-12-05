@@ -361,7 +361,7 @@ public class DStarLite
 		DStarLiteNode min = null;
 		int coutMin;
 
-		assert node.rhs != Integer.MAX_VALUE;
+		assert node.rhs != Integer.MAX_VALUE : "No path found !";
 
 		String str;
 		assert ((str = checkInvariantRhs()) == null) : str;

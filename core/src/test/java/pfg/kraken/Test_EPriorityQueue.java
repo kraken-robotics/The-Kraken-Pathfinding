@@ -3,6 +3,8 @@
  * Distributed under the MIT License.
  */
 
+package pfg.kraken;
+
 import java.util.Random;
 import org.junit.Assert;
 import org.junit.Before;
@@ -17,7 +19,7 @@ import pfg.kraken.dstarlite.EnhancedPriorityQueue;
  *
  */
 
-public class JUnit_EPriorityQueue extends JUnit_Test
+public class Test_EPriorityQueue extends JUnit_Test
 {
 
 	private EnhancedPriorityQueue file;

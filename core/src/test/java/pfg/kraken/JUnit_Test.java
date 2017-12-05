@@ -3,11 +3,16 @@
  * Distributed under the MIT License.
  */
 
+package pfg.kraken;
+
 import org.junit.Rule;
 import org.junit.rules.TestName;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Request;
 import org.junit.runner.Result;
+
+import junit.framework.TestCase;
+
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +21,6 @@ import org.junit.After;
 
 import pfg.config.Config;
 import pfg.graphic.GraphicDisplay;
-import pfg.graphic.WindowFrame;
 import pfg.injector.Injector;
 import pfg.kraken.ConfigInfoKraken;
 import pfg.kraken.Kraken;
@@ -36,7 +40,7 @@ import pfg.graphic.log.Log;
  *
  */
 
-public abstract class JUnit_Test
+public abstract class JUnit_Test extends TestCase
 {
 	protected Config config;
 	protected Log log;
@@ -44,6 +48,11 @@ public abstract class JUnit_Test
 	protected Kraken kraken;
 	protected GraphicDisplay display;
 
+/*	public JUnit_Test(String name)
+	{
+		super(name);
+	}*/
+	
 	@Rule
 	public TestName testName = new TestName();
 
@@ -131,7 +140,7 @@ public abstract class JUnit_Test
 		if(config.getBoolean(ConfigInfoKraken.GRAPHIC_ENABLE))
 			Thread.sleep(5000);
 	}
-
+	
 	/**
 	 * Lanceur d'une seule méthode de test
 	 * 

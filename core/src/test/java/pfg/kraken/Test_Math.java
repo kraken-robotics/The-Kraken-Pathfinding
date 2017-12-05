@@ -3,9 +3,12 @@
  * Distributed under the MIT License.
  */
 
+package pfg.kraken;
+
 import org.junit.Test;
 import pfg.kraken.utils.XY_RW;
 import org.junit.Assert;
+import org.junit.Before;
 
 /**
  * Tests unitaires pour Vec2RW
@@ -14,9 +17,14 @@ import org.junit.Assert;
  *
  */
 
-public class JUnit_Math extends JUnit_Test
+public class Test_Math extends JUnit_Test
 {
-
+	@Before
+	public void setUp() throws Exception
+	{
+		super.setUpWith(null, "default");
+	}
+	
 	@Test
 	public void test_Vec2() throws Exception
 	{
