@@ -54,7 +54,7 @@ public class Test_TentacularAStar extends JUnit_Test
 	@Before
 	public void setUp() throws Exception
 	{
-		super.setUpStandard();
+		super.setUpStandard("default");
 		clotho = injector.getService(ClothoidesComputer.class);
 		buffer = injector.getService(GraphicDisplay.class);
 		astar = injector.getService(TentacularAStar.class);

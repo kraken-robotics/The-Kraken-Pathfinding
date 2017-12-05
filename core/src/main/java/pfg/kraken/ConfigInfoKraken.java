@@ -95,6 +95,9 @@ public enum ConfigInfoKraken implements ConfigInfo
 	BACKGROUND_PATH(""), // background path ; empty if none	
 	SIZE_X_WINDOW(900), // taille par défaut (sans image) de la fenêtre
 	SIZE_Y_WINDOW(600), // taille par défaut (sans image) de la fenêtre
+	SIZE_X_WITH_UNITARY_ZOOM(50), // taille en mm de la zone à afficher (sur l'axe X)
+	SIZE_Y_WITH_UNITARY_ZOOM(50), // taille en mm de la zone à afficher (sur l'axe Y)
+	GRAPHIC_SERVER_PORT_NUMBER(13370), // port number of the graphic server
 	
 	/**
 	 * Log parameters

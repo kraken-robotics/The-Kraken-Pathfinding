@@ -79,7 +79,7 @@ public class BezierComputer implements TentacleComputer
 	 * @param arrivee
 	 * @return
 	 */
-	public DynamicTentacle quadraticInterpolationXYO2XYO(Cinematique cinematiqueInitiale, XYO arrivee)
+	public DynamicTentacle quadraticInterpolationXYO2XYO(Cinematique cinematiqueInitiale, XYO arrivee, int indexThread)
 	{
 		XY a = cinematiqueInitiale.getPosition();
 		XY c = arrivee.position; 

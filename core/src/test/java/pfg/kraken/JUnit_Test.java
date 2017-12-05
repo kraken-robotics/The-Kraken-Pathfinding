@@ -11,8 +11,6 @@ import org.junit.runner.JUnitCore;
 import org.junit.runner.Request;
 import org.junit.runner.Result;
 
-import junit.framework.TestCase;
-
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,18 +38,13 @@ import pfg.graphic.log.Log;
  *
  */
 
-public abstract class JUnit_Test extends TestCase
+public abstract class JUnit_Test
 {
 	protected Config config;
 	protected Log log;
 	protected Injector injector;
 	protected Kraken kraken;
 	protected GraphicDisplay display;
-
-/*	public JUnit_Test(String name)
-	{
-		super(name);
-	}*/
 	
 	@Rule
 	public TestName testName = new TestName();
