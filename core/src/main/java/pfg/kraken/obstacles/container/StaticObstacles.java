@@ -21,9 +21,9 @@ public class StaticObstacles
 	private XY bottomLeftCorner, topRightCorner;
     private List<Obstacle> obstacles = new ArrayList<Obstacle>();
 
-    public boolean addAll(List<Obstacle> o)
+    public boolean add(Obstacle o)
     {
-    	return obstacles.addAll(o);
+    	return obstacles.add(o);
     }
     
     public List<Obstacle> getObstacles()

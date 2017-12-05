@@ -56,7 +56,7 @@ public class Kraken
 	 * @param topRightCorner : the top right corner of the search domain
 	 * @param configprofile : the config profiles
 	 */
-	public Kraken(RectangularObstacle vehicleTemplate, List<Obstacle> fixedObstacles, XY bottomLeftCorner, XY topRightCorner, String...profiles)
+	public Kraken(RectangularObstacle vehicleTemplate, Iterable<Obstacle> fixedObstacles, XY bottomLeftCorner, XY topRightCorner, String...profiles)
 	{
 		this(vehicleTemplate, fixedObstacles, new EmptyDynamicObstacles(), bottomLeftCorner, topRightCorner, profiles);
 	}
@@ -95,7 +95,7 @@ public class Kraken
 	 * @param topRightCorner : the top right corner of the search domain
 	 * @param configprofile : the config profiles
 	 */
-	public Kraken(RectangularObstacle vehicleTemplate, List<Obstacle> fixedObstacles, DynamicObstacles dynObs, XY bottomLeftCorner, XY topRightCorner, String...configprofile)
+	public Kraken(RectangularObstacle vehicleTemplate, Iterable<Obstacle> fixedObstacles, DynamicObstacles dynObs, XY bottomLeftCorner, XY topRightCorner, String...configprofile)
 	{	
 		List<TentacleType> tentacleTypesUsed = new ArrayList<TentacleType>();
 		for(BezierTentacle t : BezierTentacle.values())
@@ -127,7 +127,8 @@ public class Kraken
 			
 			StaticObstacles so = injector.getService(StaticObstacles.class); 
 			if(fixedObstacles != null)
-				so.addAll(fixedObstacles);
+				for(Obstacle o : fixedObstacles)
+					so.add(o);
 			so.setCorners(bottomLeftCorner, topRightCorner);
 
 			Log log = Log.getLog(SeverityCategoryKraken.INFO);
