@@ -40,5 +40,4 @@ public class CinemObsPool extends MemoryPool<CinematiqueObs>
 		for(int i = 0; i < nodes.length; i++)
 			nodes[i] = new CinematiqueObs(vehicleTemplate);
 	}
-
 }
