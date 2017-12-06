@@ -22,8 +22,7 @@ import pfg.kraken.robot.Cinematique;
 
 public enum TurnoverTentacle implements TentacleType
 {
-	DEMI_TOUR_DROITE(ClothoTentacle.DROITE_2), // TODO version avec d'autres
-												// vitesses ?
+	DEMI_TOUR_DROITE(ClothoTentacle.DROITE_2),
 	DEMI_TOUR_GAUCHE(ClothoTentacle.GAUCHE_2);
 
 	public ClothoTentacle v;

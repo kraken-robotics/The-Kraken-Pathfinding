@@ -27,7 +27,6 @@ import pfg.kraken.astar.tentacles.types.TentacleType;
 import pfg.kraken.memory.CinemObsPool;
 import pfg.kraken.robot.Cinematique;
 import pfg.kraken.robot.CinematiqueObs;
-import pfg.kraken.robot.RobotState;
 import pfg.kraken.utils.XY;
 import pfg.kraken.utils.XY_RW;
 import pfg.log.Log;
@@ -54,7 +53,10 @@ public class ClothoidesComputer implements TentacleComputer
 	private static final int S_MAX = 10; // courbure max qu'on puisse gérer
 	private static final int INDICE_MAX = (int) (S_MAX / PRECISION_TRACE);
 	private XY[] trajectoire = new XY[2 * INDICE_MAX - 1];
-
+	private XY_RW[] tmp;
+	private XY_RW[] delta;
+	private XY_RW[] centreCercle;
+	
 	public ClothoidesComputer(Log log, Config config, CinemObsPool memory)
 	{
 		this.memory = memory;
@@ -168,10 +170,10 @@ public class ClothoidesComputer implements TentacleComputer
 	 * @param vitesse
 	 * @param modified
 	 */
-	final void getTrajectoire(RobotState robot, ClothoTentacle vitesse, StaticTentacle modified, int indexThread)
+/*	private final void getTrajectoire(RobotState robot, ClothoTentacle vitesse, StaticTentacle modified, int indexThread)
 	{
 		getTrajectoire(robot.getCinematique(), vitesse, modified, indexThread);
-	}
+	}*/
 
 	/**
 	 * ATTENTION ! La courbure est en m^-1 et pas en mm^-1
@@ -337,8 +339,6 @@ public class ClothoidesComputer implements TentacleComputer
 
 		return new DynamicTentacle(out, vitesseRamene);
 	}
-
-	private XY_RW[] tmp;
 	
 	/**
 	 * Calcul un point à partir de ces quelques paramètres
@@ -373,9 +373,6 @@ public class ClothoidesComputer implements TentacleComputer
 		c.update(tmp[indexThread].getX(), tmp[indexThread].getY(), baseOrientation + orientationClotho, marcheAvant, courbure, rootedMaxAcceleration, i == 0 && vitesse.arret);
 		c.maxSpeed = Math.min(c.maxSpeed, vitesse.maxSpeed);
 	}
-
-	private XY_RW[] delta;
-	private XY_RW[] centreCercle;
 
 	/**
 	 * Calcule la trajectoire dans le cas particulier d'une trajectoire
@@ -519,7 +516,7 @@ public class ClothoidesComputer implements TentacleComputer
 																									// quart
 																									// de
 																									// tour
-		return new DynamicTentacle(trajet, vitesse); // TODO :
+		return new DynamicTentacle(trajet, vitesse);
 																							// rebrousse
 																							// est
 																							// faux…
@@ -575,7 +572,7 @@ public class ClothoidesComputer implements TentacleComputer
 																						// un
 																						// arrondi
 
-		// TODO
+		
 		assert pointDepart >= 0 && pointDepart < trajectoire.length;
 //		if(pointDepart < 0 || pointDepart >= trajectoire.length)
 //			log.critical("Sorti de la clothoïde précalculée !", SeverityCategoryKraken.CRITICAL, LogCategoryKraken.PF);

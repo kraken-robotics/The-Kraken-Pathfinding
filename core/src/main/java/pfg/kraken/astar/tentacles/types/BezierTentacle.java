@@ -22,16 +22,14 @@ import pfg.kraken.robot.Cinematique;
 
 public enum BezierTentacle implements TentacleType
 {
-	BEZIER_XYOC_TO_XY(0, ResearchMode.XYO2XY),
-	BEZIER_XYOC_TO_XYO(0, ResearchMode.XYO2XYO);
+	BEZIER_XYOC_TO_XY(ResearchMode.XYO2XY),
+	BEZIER_XYOC_TO_XYO(ResearchMode.XYO2XYO);
 
-	private final int nbArrets;
 	private final ResearchMode mode;
 
-	private BezierTentacle(int nbArrets, ResearchMode mode)
+	private BezierTentacle(ResearchMode mode)
 	{
 		this.mode = mode;
-		this.nbArrets = nbArrets;
 	}
 	
 	@Override
@@ -43,8 +41,7 @@ public enum BezierTentacle implements TentacleType
 	@Override
 	public int getNbArrets(boolean firstMove)
 	{
-		// TODO : utiliser firstMove
-		return nbArrets;
+		return 0;
 	}
 
 	@Override

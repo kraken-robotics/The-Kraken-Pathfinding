@@ -257,7 +257,7 @@ public class NavmeshComputer
 					System.out.println(nbVoisins);*/
 /*					NavmeshEdge[][] edges = null;
 					
-					// TODO trouver les conditions exactes
+					// OLDTODO trouver les conditions exactes
 					
 					// Première étape : on prépare les arêtes des futurs triangles
 					if(nbVoisins == 3)
