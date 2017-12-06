@@ -11,7 +11,7 @@
         <pathelement location="${user.home}/.m2/repository/org/jfree/jcommon/1.0.23/jcommon-1.0.23.jar"/>
         <pathelement location="${user.home}/.m2/repository/org/jfree/jfreechart/1.0.19/jfreechart-1.0.19.jar"/>
         <pathelement location="${user.home}/.m2/repository/pfg/graphic/graphic-toolbox/1.0/graphic-toolbox-1.0.jar"/>
-        <pathelement location="${user.home}/.m2/repository/pfg/kraken/kraken/1.2.0/kraken-1.2.0.jar"/>
+        <pathelement location="${user.home}/.m2/repository/pfg/kraken/kraken/1.2.1/kraken-1.2.1.jar"/>
     </path>
     <target name="init">
         <mkdir dir="bin"/>

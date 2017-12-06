@@ -1,5 +1,9 @@
 # Unreleased
 
+# v1.2.1
+- add unit tests
+- bugfix multithreading
+
 # v1.2.0
 - add multithreaded tentacle computation (significant speed-up). Corresponding configuration key is THREAD_NUMBER.
 
