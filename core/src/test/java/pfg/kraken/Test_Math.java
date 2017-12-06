@@ -22,7 +22,7 @@ public class Test_Math extends JUnit_Test
 	@Before
 	public void setUp() throws Exception
 	{
-		super.setUpWith(null, "default");
+		super.setUpWith(null, "default", "empty");
 	}
 	
 	@Test

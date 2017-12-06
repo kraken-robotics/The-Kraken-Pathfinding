@@ -12,7 +12,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import pfg.kraken.ConfigInfoKraken;
 import pfg.kraken.dstarlite.navmesh.Navmesh;
 import pfg.kraken.obstacles.Obstacle;
 import pfg.kraken.obstacles.RectangularObstacle;
@@ -36,7 +35,7 @@ public class Test_Navmesh extends JUnit_Test
 	@Test
 	public void test_empty() throws Exception
 	{
-		super.setUpWith(null, "default");
+		super.setUpWith(null, "default", "graphic", "navmesh", "empty");
 		navmesh = injector.getService(Navmesh.class);
 		Assert.assertNotEquals(0, navmesh.mesh.edges.length);
 		Assert.assertNotEquals(0, navmesh.mesh.nodes.length);
@@ -48,8 +47,7 @@ public class Test_Navmesh extends JUnit_Test
 	{
 		List<Obstacle> obs = new ArrayList<Obstacle>();
 		obs.add(new RectangularObstacle(new XY_RW(0,1000), 2000, 2000));
-		super.setUpWith(obs, "graphic");
-		config.override(ConfigInfoKraken.GRAPHIC_NAVMESH, true);
+		super.setUpWith(obs, "default", "graphic", "navmesh");
 		navmesh = injector.getService(Navmesh.class);
 	}
 }

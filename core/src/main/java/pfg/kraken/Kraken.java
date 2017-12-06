@@ -110,7 +110,7 @@ public class Kraken
 				tentacleTypesUsed.add(t);*/
 		
 		injector = new Injector();
-		config = new Config(ConfigInfoKraken.values(), false, "kraken.conf", configprofile);
+		config = new Config(ConfigInfoKraken.values(), isJUnitTest(), "kraken.conf", configprofile);
 		injector.addService(RectangularObstacle.class, vehicleTemplate);
 		
 		/*

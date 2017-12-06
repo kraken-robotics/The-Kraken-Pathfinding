@@ -27,7 +27,7 @@ public class Test_EPriorityQueue extends JUnit_Test
 	@Before
 	public void setUp() throws Exception
 	{
-		super.setUpWith(null, "default");
+		super.setUpWith(null, "default", "empty");
 		file = new EnhancedPriorityQueue(500);
 	}
 

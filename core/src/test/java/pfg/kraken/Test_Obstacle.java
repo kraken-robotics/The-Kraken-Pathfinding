@@ -5,6 +5,14 @@
 
 package pfg.kraken;
 
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+
+import pfg.kraken.obstacles.CircularObstacle;
+import pfg.kraken.obstacles.RectangularObstacle;
+import pfg.kraken.utils.XY;
+
 /**
  * Test unitaire des obstacles
  * 
@@ -14,7 +22,12 @@ package pfg.kraken;
 
 public class Test_Obstacle extends JUnit_Test
 {
-/*
+	@Before
+	public void setUp() throws Exception
+	{
+		super.setUpWith(null, "default");
+	}
+
 	@Test
 	public void test_collision_cercle() throws Exception
 	{
@@ -32,14 +45,6 @@ public class Test_Obstacle extends JUnit_Test
 		Assert.assertTrue(o.squaredDistance(new XY(-16, 0)) > 0);
 		Assert.assertTrue(o.squaredDistance(new XY(0, 7)) > 0);
 		Assert.assertTrue(o.squaredDistance(new XY(0, -7)) > 0);
-	}
-	
-	@Test
-	public void test_collision_marge_obstacle_robot() throws Exception
-	{
-		ObstacleRobot o = new ObstacleRobot(50, 50, 100);
-		o.update(new XY(0,0), 0);
-		Assert.assertTrue(o.squaredDistance(new XY(0, 60)) > 0);
 	}
 
 	@Test
@@ -60,24 +65,7 @@ public class Test_Obstacle extends JUnit_Test
 		Assert.assertTrue(!o.isProcheObstacle(new XY(0, 8), 5));
 		Assert.assertTrue(!o.isProcheObstacle(new XY(0, -8), 5));
 	}
-*/
-	// Obsolète
-	/*
-	 * @Test
-	 * public void test_collision_segment_cercle() throws Exception
-	 * {
-	 * CircularObstacle o = new CircularObstacle(new Vec2(0, 50), 30);
-	 * Assert.assertTrue(!o.obstacle_proximite_dans_segment(new Vec2(-100,0),
-	 * new Vec2(100,0), 0));
-	 * Assert.assertTrue(o.obstacle_proximite_dans_segment(new Vec2(-100,30),
-	 * new Vec2(100,30), 0));
-	 * Assert.assertTrue(!o.obstacle_proximite_dans_segment(new Vec2(-500,30),
-	 * new Vec2(-400,30), 0));
-	 * Assert.assertTrue(o.obstacle_proximite_dans_segment(new Vec2(-100,30),
-	 * new Vec2(-20,30), 0));
-	 * }
-	 */
-/*
+
 	@Test
 	public void test_is_dans_obstacle_rectangle() throws Exception
 	{
@@ -106,5 +94,5 @@ public class Test_Obstacle extends JUnit_Test
 		Assert.assertTrue(!o.isColliding(new RectangularObstacle(new XY(900, 1100), 40, 40, 0)));
 		Assert.assertTrue(o.isColliding(new RectangularObstacle(new XY(900, 1100), 60, 60, 0)));
 	}
-*/
+
 }

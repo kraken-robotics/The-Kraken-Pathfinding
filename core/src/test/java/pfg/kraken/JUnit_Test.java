@@ -131,7 +131,10 @@ public abstract class JUnit_Test
 	public void tearDown() throws Exception
 	{
 		if(config.getBoolean(ConfigInfoKraken.GRAPHIC_ENABLE))
-			Thread.sleep(5000);
+		{
+			display.refresh();
+			Thread.sleep(3000);
+		}
 	}
 	
 	/**
