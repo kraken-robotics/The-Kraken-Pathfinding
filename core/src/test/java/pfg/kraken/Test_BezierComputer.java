@@ -64,7 +64,7 @@ public class Test_BezierComputer extends JUnit_Test
 	@Test
 	public void test_xyoc_2_xyo() throws Exception
 	{
-		Cinematique c = new Cinematique(0, 1000, Math.PI / 2, true, -1, false);
+		Cinematique c = new Cinematique(0, 1000, Math.PI / 2, true, -3, false);
 		Cinematique arrivee = new Cinematique(900, 1500, 0, false, 0, false);
 		log.write("Initial : " + c, LogCategoryKraken.TEST);
 		DynamicTentacle arc = bezier.cubicInterpolationXYOC2XYO(c, arrivee, 0);

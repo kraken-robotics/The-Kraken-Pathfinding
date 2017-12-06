@@ -101,6 +101,10 @@ public class Kraken
 	 */
 	public Kraken(RectangularObstacle vehicleTemplate, Iterable<Obstacle> fixedObstacles, DynamicObstacles dynObs, XY bottomLeftCorner, XY topRightCorner, String...configprofile)
 	{	
+		injector = new Injector();
+		config = new Config(ConfigInfoKraken.values(), isJUnitTest(), "kraken.conf", configprofile);
+		injector.addService(RectangularObstacle.class, vehicleTemplate);
+		
 		List<TentacleType> tentacleTypesUsed = new ArrayList<TentacleType>();
 		for(BezierTentacle t : BezierTentacle.values())
 			tentacleTypesUsed.add(t);
@@ -110,10 +114,9 @@ public class Kraken
 			tentacleTypesUsed.add(t);
 		for(StraightingTentacle t : StraightingTentacle.values())
 			tentacleTypesUsed.add(t);
-		
-		injector = new Injector();
-		config = new Config(ConfigInfoKraken.values(), isJUnitTest(), "kraken.conf", configprofile);
-		injector.addService(RectangularObstacle.class, vehicleTemplate);
+		if(config.getBoolean(ConfigInfoKraken.ALLOW_SPINNING))
+			for(SpinTentacle t : SpinTentacle.values())
+				tentacleTypesUsed.add(t);
 		
 		/*
 		 * We adjust the maximal curvature in order to never be under the minimal speed

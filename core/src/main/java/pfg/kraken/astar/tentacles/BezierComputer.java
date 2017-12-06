@@ -521,7 +521,7 @@ public class BezierComputer implements TentacleComputer
 			a_tmp[indexThread].rotate(0, 1);
 			double accLongitudinale = a_tmp[indexThread].dot(acc[indexThread]);
 
-			double courbure =  accLongitudinale / (vitesse * vitesse);
+			double courbure = accLongitudinale / (vitesse * vitesse);
 
 			double deltaCourbure = Math.abs(courbure - lastCourbure);
 			
