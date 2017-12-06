@@ -43,9 +43,7 @@ public class Test_BezierComputer extends JUnit_Test
 		
 		display.addTemporaryPrintable(arc, Color.BLACK, Layer.FOREGROUND.layer);
 		for(int i = 0; i < arc.getNbPoints(); i++)
-		{
 			System.out.println(i + " " + arc.getPoint(i));
-		}
 	}
 
 }

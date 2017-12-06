@@ -34,14 +34,13 @@ public class Test_DStarLite extends JUnit_Test
 	public void setUp() throws Exception
 	{
 		List<Obstacle> obs = new ArrayList<Obstacle>();
-		obs.add(new RectangularObstacle(new XY_RW(0,1000), 2000, 2000));
 		obs.add(new RectangularObstacle(new XY_RW(50,1050), 500, 500));
 		obs.add(new RectangularObstacle(new XY_RW(400,200), 200, 200));
 		obs.add(new RectangularObstacle(new XY_RW(-1000,1050), 200, 200));
 		obs.add(new RectangularObstacle(new XY_RW(100,410), 200, 200));
 		obs.add(new RectangularObstacle(new XY_RW(-600,300), 200, 200));
 		obs.add(new RectangularObstacle(new XY_RW(-1000,1900), 200, 200));
-		super.setUpWith(obs, "default", "graphic");
+		super.setUpWith(obs, "default", "graphic", "navmesh", "dstarlite");
 		pathfinding = injector.getService(DStarLite.class);
 	}
 	
