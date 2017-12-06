@@ -124,13 +124,20 @@ public class BezierComputer implements TentacleComputer
 		double vy = Math.sin(arrivee.orientation);
 
 		// Les orientations sont parallèles : on ne peut pas calculer leur intersection
-		if(Math.abs(vy*ux - vx*uy) < 0.1)
+		if(Math.abs(vx*uy - vy*ux) < 0.1)
 			return null;
 		
 		double gamma = (a.getX()*vy - a.getY()*ux - (c.getX()*uy - c.getY()*ux)) / (vy*ux - vx*uy);
-		// TODO vérifie le signe aussi ! sinon on va arriver dans le mauvais sens
-		pointB[indexThread].setX(arrivee.position.getX() + gamma * vx);
-		pointB[indexThread].setY(arrivee.position.getY() + gamma * vy);
+		// on va arriver dans le mauvais sens
+		if(gamma < 0)
+			return null;
+
+		pointB[indexThread].setX(arrivee.position.getX() - gamma * vx);
+		pointB[indexThread].setY(arrivee.position.getY() - gamma * vy);
+
+		// on part du mauvais sens
+		if((pointB[indexThread].getX() - a.getX()) * ux + (pointB[indexThread].getY() - a.getY()) * uy <= 0)
+			return null;
 		
 		return constructBezierQuad(cinematiqueInitiale.getPosition(), pointB[indexThread], arrivee.position, cinematiqueInitiale.enMarcheAvant, cinematiqueInitiale, indexThread);
 	}
@@ -151,26 +158,51 @@ public class BezierComputer implements TentacleComputer
 		double vy = Math.sin(arrivee.orientationGeometrique);
 
 		// Il faut vérifier que le cosinus soit positif et non-nul
-		double cos = vy*ux - vx*uy;
-		if(cos < 0.1)
+		double cos = vx*uy - vy*ux;
+
+		// Les orientations sont parallèles : on ne peut pas calculer leur intersection
+		if(Math.abs(cos) < 0.1)
+		{
+			System.out.println("Cos neg : "+cos);
 			return null;
+		}
 		
+		System.out.println("cos = "+cos);
 		// gamma = distance BD
 		double gamma = (a.getX()*vy - a.getY()*ux - (d.getX()*uy - d.getY()*ux)) / (vy*ux - vx*uy);
-		pointB[indexThread].setX(arrivee.getPosition().getX() + gamma * vx);
-		pointB[indexThread].setY(arrivee.getPosition().getY() + gamma * vy);
+		System.out.println("Gamma = "+gamma);
+		pointB[indexThread].setX(arrivee.getPosition().getX() - gamma * vx);
+		pointB[indexThread].setY(arrivee.getPosition().getY() - gamma * vy);
+		
+		System.out.println("Point b :"+pointB[indexThread]);
+		
+		// on part du mauvais sens
+		if((pointB[indexThread].getX() - a.getX()) * ux + (pointB[indexThread].getY() - a.getY()) * uy <= 0)
+			return null;
 
 		double distanceAB = a.distance(pointB[indexThread]);
+		// TODO : vérifier formule
+		double courbureDepart = Math.abs(cinematiqueInitiale.courbureGeometrique) / 1000.;
 		
-		// on vérifie que C est entre B et D
-		if(Math.abs(cinematiqueInitiale.courbureGeometrique) * distanceAB >= 2*gamma*cos)
-			return null;
-		
-		double distanceBC = Math.abs(cinematiqueInitiale.courbureGeometrique) * distanceAB / (2*gamma*cos);
+		System.out.println(courbureDepart+" "+distanceAB+" "+(2*gamma*cos));
 
-		pointC[indexThread].setX(pointB[indexThread].getX() - distanceBC * vx);
-		pointC[indexThread].setY(pointB[indexThread].getY() - distanceBC * vy);
+		// on vérifie que C est entre B et D
+		if(courbureDepart * distanceAB >= 2*gamma*cos)
+		{
+			System.out.println("C pas entre B et D");
+			return null;
+		}
 		
+		double distanceBC = courbureDepart * distanceAB / (2*gamma*cos);
+		
+		// si C est après D : on n'arrivera pas avec la bonne orientation
+		if(distanceBC >= gamma)
+			return null;
+
+		pointC[indexThread].setX(pointB[indexThread].getX() + distanceBC * vx);
+		pointC[indexThread].setY(pointB[indexThread].getY() + distanceBC * vy);
+		System.out.println("point c : "+pointC[indexThread]);
+		pointC[indexThread].setX(200);
 		return constructBezierCubique(a, pointB[indexThread], pointC[indexThread], d, cinematiqueInitiale.enMarcheAvant, cinematiqueInitiale, indexThread);
 	}
 	
@@ -295,15 +327,31 @@ public class BezierComputer implements TentacleComputer
 			
 			double accLongitudinale = tmp_acc[indexThread].dot(acc[indexThread]);
 			
-			obs.update(
+			double courbure = accLongitudinale / (vitesse * vitesse); // Frenet
+
+			double deltaCourbure = Math.abs(courbure - lastCourbure);
+			
+			// on a dépassé la courbure maximale : on arrête tout
+			if(Math.abs(courbure) > courbureMax)
+			{
+				System.out.println("Courbure : "+courbure+" >? "+courbureMax);
+				for(CinematiqueObs c : out)
+					memory.destroyNode(c);
+				return null;
+			}
+			
+			double maxSpeed = maxCurvatureDerivative * PRECISION_TRACE / deltaCourbure;
+			
+			obs.updateWithMaxSpeed(
 					tmpPoint3[indexThread].getX(), // x
 					tmpPoint3[indexThread].getY(), // y
 					orientation,
 					enMarcheAvant,
-					accLongitudinale / (vitesse * vitesse), // Frenet
+					courbure,
 					rootedMaxAcceleration,
+					maxSpeed,
 					false);
-			
+			/*
 			// on a dépassé la courbure maximale : on arrête tout
 			if(Math.abs(obs.courbureGeometrique) > courbureMax || (!first && (Math.abs(obs.courbureGeometrique - lastCourbure) > 0.5 || Math.abs(obs.orientationGeometrique - lastOrientation) > 0.5)))
 			{
@@ -311,7 +359,7 @@ public class BezierComputer implements TentacleComputer
 				for(CinematiqueObs c : out)
 					memory.destroyNode(c);
 				return null;
-			}
+			}*/
 
 			lastOrientation = obs.orientationGeometrique;
 			lastCourbure = obs.courbureGeometrique;
@@ -325,7 +373,7 @@ public class BezierComputer implements TentacleComputer
 			diffOrientation -= 2*Math.PI;
 		if(!first && (Math.abs(cinematiqueInitiale.courbureGeometrique - lastCourbure) > 0.5) || Math.abs(diffOrientation) > 0.5)
 		{
-//			log.debug("Erreur raccordement : "+cinematiqueInitiale.courbureGeometrique+" "+Math.abs(cinematiqueInitiale.courbureGeometrique - lastCourbure)+" "+cinematiqueInitiale.orientationGeometrique+" "+lastOrientation);
+			System.out.println("Erreur raccordement : "+cinematiqueInitiale.courbureGeometrique+" "+Math.abs(cinematiqueInitiale.courbureGeometrique - lastCourbure)+" "+cinematiqueInitiale.orientationGeometrique+" "+lastOrientation);
 			for(CinematiqueObs c : out)
 				memory.destroyNode(c);
 			return null;
@@ -529,9 +577,10 @@ public class BezierComputer implements TentacleComputer
 		else if(diffOrientation < -Math.PI)
 			diffOrientation += 2 * Math.PI;
 
-		if(!first && (Math.abs(cinematiqueInitiale.courbureGeometrique - lastCourbure) > 0.3) || Math.abs(diffOrientation) > 0.5)
+		// TODO : STOP si trop grande différence de courbure
+		
+		if(!first && /*(Math.abs(cinematiqueInitiale.courbureGeometrique - lastCourbure) > 0.3) || */Math.abs(diffOrientation) > 0.5)
 		{
-//			System.out.println("Delta fin : "+Math.abs(cinematiqueInitiale.courbureGeometrique - lastCourbure)+" >? "+0.3);
 			// log.debug("Erreur raccordement :
 			// "+cinematiqueInitiale.courbureGeometrique+"
 			// "+Math.abs(cinematiqueInitiale.courbureGeometrique -
