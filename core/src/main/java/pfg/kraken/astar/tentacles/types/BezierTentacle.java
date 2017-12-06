@@ -23,7 +23,8 @@ import pfg.kraken.robot.Cinematique;
 public enum BezierTentacle implements TentacleType
 {
 	BEZIER_XYOC_TO_XY(ResearchMode.XYO2XY),
-	BEZIER_XYOC_TO_XYO(ResearchMode.XYO2XYO);
+	BEZIER_XYOC_TO_XYO(ResearchMode.XYO2XYO),
+	BEZIER_XYO_TO_XYO(ResearchMode.XYO2XYO);
 
 	private final ResearchMode mode;
 

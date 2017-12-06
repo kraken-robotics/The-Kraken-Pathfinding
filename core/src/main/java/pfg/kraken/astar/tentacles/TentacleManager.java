@@ -315,7 +315,7 @@ public class TentacleManager implements Iterator<AStarNode>
 	{
 		if(mode == ResearchMode.XYO2XY)
 			return successeur.getArc() != null && successeur.getArc().getLast().getPosition().squaredDistance(arrivee.getPosition()) < 5;
-		else if(mode == ResearchMode.XYO2XY)
+		else if(mode == ResearchMode.XYO2XYO)
 			return successeur.getArc() != null && successeur.getArc().getLast().getPosition().squaredDistance(arrivee.getPosition()) < 5
 			&& XYO.angleDifference(successeur.getArc().getLast().orientationReelle, arrivee.orientationReelle) < 0.05;
 		else

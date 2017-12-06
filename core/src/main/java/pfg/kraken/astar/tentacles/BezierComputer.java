@@ -19,7 +19,6 @@ import pfg.kraken.obstacles.RectangularObstacle;
 import pfg.kraken.robot.Cinematique;
 import pfg.kraken.robot.CinematiqueObs;
 import pfg.kraken.utils.XY;
-import pfg.kraken.utils.XYO;
 import pfg.kraken.utils.XY_RW;
 import pfg.log.Log;
 import static pfg.kraken.astar.tentacles.Tentacle.*;
@@ -114,14 +113,14 @@ public class BezierComputer implements TentacleComputer
 	 * @param arrivee
 	 * @return
 	 */
-	public DynamicTentacle quadraticInterpolationXYO2XYO(Cinematique cinematiqueInitiale, XYO arrivee, int indexThread)
+	public DynamicTentacle quadraticInterpolationXYO2XYO(Cinematique cinematiqueInitiale, Cinematique arrivee, int indexThread)
 	{
 		XY a = cinematiqueInitiale.getPosition();
-		XY c = arrivee.position; 
+		XY c = arrivee.getPosition(); 
 		double ux = Math.cos(cinematiqueInitiale.orientationGeometrique);
 		double uy = Math.sin(cinematiqueInitiale.orientationGeometrique);
-		double vx = Math.cos(arrivee.orientation);
-		double vy = Math.sin(arrivee.orientation);
+		double vx = Math.cos(arrivee.orientationGeometrique);
+		double vy = Math.sin(arrivee.orientationGeometrique);
 
 		// Les orientations sont parallèles : on ne peut pas calculer leur intersection
 		if(Math.abs(vx*uy - vy*ux) < 0.1)
@@ -132,14 +131,14 @@ public class BezierComputer implements TentacleComputer
 		if(gamma < 0)
 			return null;
 
-		pointB[indexThread].setX(arrivee.position.getX() - gamma * vx);
-		pointB[indexThread].setY(arrivee.position.getY() - gamma * vy);
+		pointB[indexThread].setX(arrivee.getPosition().getX() - gamma * vx);
+		pointB[indexThread].setY(arrivee.getPosition().getY() - gamma * vy);
 
 		// on part du mauvais sens
 		if((pointB[indexThread].getX() - a.getX()) * ux + (pointB[indexThread].getY() - a.getY()) * uy <= 0)
 			return null;
 		
-		return constructBezierQuad(cinematiqueInitiale.getPosition(), pointB[indexThread], arrivee.position, cinematiqueInitiale.enMarcheAvant, cinematiqueInitiale, indexThread);
+		return constructBezierQuad(cinematiqueInitiale.getPosition(), pointB[indexThread], arrivee.getPosition(), cinematiqueInitiale.enMarcheAvant, cinematiqueInitiale, indexThread);
 	}
 	
 	/**
@@ -150,6 +149,7 @@ public class BezierComputer implements TentacleComputer
 	 */
 	public DynamicTentacle cubicInterpolationXYOC2XYO(Cinematique cinematiqueInitiale, Cinematique arrivee, int indexThread)
 	{
+		// TODO orientation arrivée : réelle, pas géométrique
 		XY a = cinematiqueInitiale.getPosition();
 		XY d = arrivee.getPosition(); 
 		double ux = Math.cos(cinematiqueInitiale.orientationGeometrique);
@@ -615,6 +615,14 @@ public class BezierComputer implements TentacleComputer
 		else if(tentacleType == BezierTentacle.BEZIER_XYOC_TO_XYO)
 		{
 			DynamicTentacle t = cubicInterpolationXYOC2XYO(current.robot.getCinematique(), arrival, indexThread);
+			if(t == null)
+				return false;
+			modified.cameFromArcDynamique = t;
+			return true;
+		}
+		else if(tentacleType == BezierTentacle.BEZIER_XYO_TO_XYO)
+		{
+			DynamicTentacle t = quadraticInterpolationXYO2XYO(current.robot.getCinematique(), arrival, indexThread);
 			if(t == null)
 				return false;
 			modified.cameFromArcDynamique = t;
