@@ -37,7 +37,7 @@ public class BezierComputer implements TentacleComputer
 	private CinemObsPool memory;
 	private double courbureMax;
 	private double rootedMaxAcceleration;
-	private double deltaCourbureMax;
+	private double maxCurvatureDerivative;
 	private ClothoidesComputer clothocomputer;
 
 	public BezierComputer(Log log, CinemObsPool memory, ClothoidesComputer clothocomputer, Config config, RectangularObstacle vehicleTemplate)
@@ -48,7 +48,7 @@ public class BezierComputer implements TentacleComputer
 
 		courbureMax = config.getDouble(ConfigInfoKraken.MAX_CURVATURE);
 		rootedMaxAcceleration = Math.sqrt(config.getDouble(ConfigInfoKraken.MAX_LATERAL_ACCELERATION));
-		deltaCourbureMax = config.getDouble(ConfigInfoKraken.MAX_CURVATURE_DERIVATIVE) / config.getDouble(ConfigInfoKraken.DEFAULT_MAX_SPEED) * PRECISION_TRACE;
+		maxCurvatureDerivative = config.getDouble(ConfigInfoKraken.MAX_CURVATURE_DERIVATIVE);
 		
 		int indexThreadMax = config.getInt(ConfigInfoKraken.THREAD_NUMBER);
 		tmp = new StaticTentacle[indexThreadMax];
@@ -178,7 +178,6 @@ public class BezierComputer implements TentacleComputer
 		vecteurVitesse[indexThread].plus(debut[indexThread].getPosition());
 
 		DynamicTentacle arc = constructBezierQuad(debut[indexThread].getPosition(), vecteurVitesse[indexThread], arrivee, debut[indexThread].enMarcheAvant, debut[indexThread]);
-
 		if(arc == null)
 		{
 			if(prefixe != null)
@@ -268,22 +267,22 @@ public class BezierComputer implements TentacleComputer
 			else if(deltaO < -Math.PI)
 				deltaO += 2 * Math.PI;
 
+			double deltaCourbure = Math.abs(courbure - lastCourbure);
+			
 			// on a dépassé la courbure maximale : on arrête tout
-			if(Math.abs(courbure) > courbureMax || (!first && (Math.abs(courbure - lastCourbure) > deltaCourbureMax || Math.abs(deltaO) > 0.5)))
+			if(Math.abs(courbure) > courbureMax || (!first && Math.abs(deltaO) > 0.5))
 			{
-				// log.debug("Courbure max dépassée :
-				// "+obs.courbureGeometrique+"
-				// "+Math.abs(obs.courbureGeometrique - lastCourbure)+"
-				// "+obs.orientationGeometrique+" "+orientation+"
-				// "+lastOrientation+" "+deltaO);
+				System.out.println("Courbure : "+courbure+" >? "+courbureMax);
 				for(CinematiqueObs c : out)
 					memory.destroyNode(c);
 				return null;
 			}
+			
+			double maxSpeed = maxCurvatureDerivative * PRECISION_TRACE / deltaCourbure;
 
-			obs.update(tmpPos.getX(), // x
+			obs.updateWithMaxSpeed(tmpPos.getX(), // x
 					tmpPos.getY(), // y
-					orientation, enMarcheAvant, courbure, rootedMaxAcceleration, false); // Frenet
+					orientation, enMarcheAvant, courbure, rootedMaxAcceleration, maxSpeed, false);
 
 			lastOrientation = obs.orientationGeometrique;
 			lastCourbure = obs.courbureGeometrique;
@@ -297,8 +296,9 @@ public class BezierComputer implements TentacleComputer
 		else if(diffOrientation < -Math.PI)
 			diffOrientation += 2 * Math.PI;
 
-		if(!first && (Math.abs(cinematiqueInitiale.courbureGeometrique - lastCourbure) > deltaCourbureMax) || Math.abs(diffOrientation) > 0.5)
+		if(!first && (Math.abs(cinematiqueInitiale.courbureGeometrique - lastCourbure) > 0.3) || Math.abs(diffOrientation) > 0.5)
 		{
+			System.out.println("Delta fin : "+Math.abs(cinematiqueInitiale.courbureGeometrique - lastCourbure)+" >? "+0.3);
 			// log.debug("Erreur raccordement :
 			// "+cinematiqueInitiale.courbureGeometrique+"
 			// "+Math.abs(cinematiqueInitiale.courbureGeometrique -

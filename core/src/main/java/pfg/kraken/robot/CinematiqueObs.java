@@ -35,6 +35,11 @@ public class CinematiqueObs extends Cinematique implements Memorizable, Serializ
 			maxSpeedLUT[i] = Math.sqrt(10. / i);
 	}
 	
+	public String toString()
+	{
+		return super.toString()+", maxSpeed = "+maxSpeed;
+	}
+	
 	public CinematiqueObs(RectangularObstacle vehicleTemplate)
 	{
 		super();
@@ -79,6 +84,14 @@ public class CinematiqueObs extends Cinematique implements Memorizable, Serializ
 		maxSpeed = rootedMaxAcceleration * maxSpeedLUT[(int) Math.round(Math.abs(10*courbure))];
 		obstacle.update(position, orientationReelle);
 	}
+	
+	public void updateWithMaxSpeed(double x, double y, double orientationGeometrique, boolean enMarcheAvant, double courbure, double rootedMaxAcceleration, double maxSpeed, boolean stop)
+	{
+		super.update(x, y, orientationGeometrique, enMarcheAvant, courbure, stop);
+		this.maxSpeed = Math.min(maxSpeed, rootedMaxAcceleration * maxSpeedLUT[(int) Math.round(Math.abs(10*courbure))]);
+		obstacle.update(position, orientationReelle);
+	}
+	
 	
 	public void updateReel(double x, double y, double orientationReelle, boolean enMarcheAvant, double courbure, double rootedMaxAcceleration)
 	{
