@@ -44,9 +44,6 @@ public class Example3
 
 		Kraken kraken = new Kraken(robot, obs, new XY(-1500,0), new XY(1500, 2000), "trajectory"/*, "detailed"*/);
 		GraphicDisplay display = kraken.getGraphicDisplay();
-		for(Obstacle o : obs)
-			display.addPrintable(o, Color.BLACK, Layer.MIDDLE.layer);
-		display.refresh();
 
 		/*
 		 * You can perfectly use two instances of Kraken (for example if two robots have different size)
@@ -64,6 +61,7 @@ public class Example3
 			
 			List<ItineraryPoint> path = kraken.search();
 			
+			System.out.println("\nBlack robot search :");
 			for(ItineraryPoint p : path)
 			{
 				display.addPrintable(p, Color.BLACK, Layer.FOREGROUND.layer);
@@ -78,6 +76,7 @@ public class Example3
 			krakenSecondRobot.initializeNewSearch(new XYO(0, 200, 0), new XY(1000, 1000), DirectionStrategy.FORCE_FORWARD_MOTION);
 			path = krakenSecondRobot.search();
 			
+			System.out.println("\nBlue robot search :");
 			for(ItineraryPoint p : path)
 			{
 				display.addPrintable(p, Color.BLUE, Layer.FOREGROUND.layer);

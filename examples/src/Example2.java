@@ -50,13 +50,6 @@ public class Example2
 
 		Kraken kraken = new Kraken(robot, obs, obsDyn, new XY(-1500,0), new XY(1500, 2000), "trajectory"/*, "detailed"*/);
 		GraphicDisplay display = kraken.getGraphicDisplay();
-		
-		/*
-		 * The obstacles are printed
-		 */
-		for(Obstacle o : obs)
-			display.addPrintable(o, Color.BLACK, Layer.MIDDLE.layer);
-		display.refresh();
 
 		try
 		{
@@ -66,6 +59,7 @@ public class Example2
 			/*
 			 * We have the first trajectory
 			 */
+			System.out.println("\nFirst search :");
 			for(ItineraryPoint p : path)
 			{
 				display.addTemporaryPrintable(p, Color.BLACK, Layer.FOREGROUND.layer);
@@ -109,6 +103,7 @@ public class Example2
 			/*
 			 * This time, the trajectory avoids the new obstacle
 			 */
+			System.out.println("\nSecond search :");
 			for(ItineraryPoint p : path)
 			{
 				display.addTemporaryPrintable(p, Color.BLACK, Layer.FOREGROUND.layer);
@@ -134,6 +129,7 @@ public class Example2
 			/*
 			 * It finds the same trajectory as before, when there wasn't any dynamic obstacle
 			 */
+			System.out.println("\nThird search :");
 			for(ItineraryPoint p : path)
 			{
 				display.addTemporaryPrintable(p, Color.BLACK, Layer.FOREGROUND.layer);

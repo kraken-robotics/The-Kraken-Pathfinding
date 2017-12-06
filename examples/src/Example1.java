@@ -73,13 +73,7 @@ public class Example1
 		 * The graphic display (optional)
 		 */
 		GraphicDisplay display = kraken.getGraphicDisplay();
-		
-		/*
-		 * The obstacles are printed
-		 */
-		for(Obstacle o : obs)
-			display.addPrintable(o, Color.BLACK, Layer.MIDDLE.layer);
-		display.refresh();
+
 		try
 		{
 			/*
