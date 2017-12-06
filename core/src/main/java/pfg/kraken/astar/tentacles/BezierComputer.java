@@ -126,7 +126,7 @@ public class BezierComputer implements TentacleComputer
 		if(Math.abs(vx*uy - vy*ux) < 0.1)
 			return null;
 		
-		double gamma = (a.getX()*vy - a.getY()*ux - (c.getX()*uy - c.getY()*ux)) / (vy*ux - vx*uy);
+		double gamma = (a.getX()*uy - a.getY()*ux + c.getY()*ux - c.getX()*uy) / (ux*vy - uy*vx);
 		// on va arriver dans le mauvais sens
 		if(gamma < 0)
 			return null;
@@ -169,7 +169,7 @@ public class BezierComputer implements TentacleComputer
 		
 		System.out.println("cos = "+cos);
 		// gamma = distance BD
-		double gamma = (a.getX()*vy - a.getY()*ux - (d.getX()*uy - d.getY()*ux)) / (vy*ux - vx*uy);
+		double gamma = (a.getX()*uy - a.getY()*ux + d.getY()*ux - d.getX()*uy) / (ux*vy - uy*vx);
 		System.out.println("Gamma = "+gamma);
 		pointB[indexThread].setX(arrivee.getPosition().getX() - gamma * vx);
 		pointB[indexThread].setY(arrivee.getPosition().getY() - gamma * vy);
