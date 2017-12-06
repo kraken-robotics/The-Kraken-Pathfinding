@@ -102,7 +102,7 @@ public abstract class JUnit_Test
 
 		RectangularObstacle robot = new RectangularObstacle(250, 80, 110, 110);
 
-		Kraken kraken = new Kraken(robot, obs, new XY(-1500,0), new XY(1500, 2000), profiles);
+		kraken = new Kraken(robot, obs, new XY(-1500,0), new XY(1500, 2000), profiles);
 		init(kraken);
 	}
 	
@@ -135,6 +135,8 @@ public abstract class JUnit_Test
 			display.refresh();
 			Thread.sleep(1000);
 		}
+		if(kraken != null)
+			kraken.stop();
 	}
 	
 	/**
