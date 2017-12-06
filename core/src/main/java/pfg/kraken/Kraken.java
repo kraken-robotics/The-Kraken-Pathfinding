@@ -5,6 +5,7 @@
 
 package pfg.kraken;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -14,6 +15,7 @@ import pfg.config.ConfigInfo;
 import pfg.graphic.Vec2RO;
 import pfg.graphic.WindowFrame;
 import pfg.graphic.log.Log;
+import pfg.graphic.printable.Layer;
 import pfg.graphic.GraphicDisplay;
 import pfg.graphic.ConfigInfoGraphic;
 import pfg.graphic.DebugTool;
@@ -158,6 +160,13 @@ public class Kraken
 				
 				if(config.getBoolean(ConfigInfoKraken.GRAPHIC_SERVER))
 					debug.startPrintServer();
+				
+				if(fixedObstacles != null && config.getBoolean(ConfigInfoKraken.GRAPHIC_FIXED_OBSTACLES))
+				{
+					GraphicDisplay display = injector.getExistingService(GraphicDisplay.class);
+					for(Obstacle o : fixedObstacles)
+						display.addPrintable(o, Color.BLACK, Layer.MIDDLE.layer);
+				}
 			}
 			else
 			{
@@ -174,6 +183,15 @@ public class Kraken
 		} catch (InjectorException e) {
 			throw new RuntimeException("Fatal error", e);
 		}
+	}
+	
+	private boolean isJUnitTest()
+	{
+	    StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+	    for (StackTraceElement element : stackTrace)
+	        if (element.getClassName().startsWith("org.junit."))
+	            return true;
+	    return false;
 	}
 	
 	/**

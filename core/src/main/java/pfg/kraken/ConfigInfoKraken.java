@@ -80,6 +80,7 @@ public enum ConfigInfoKraken implements ConfigInfo
 	GRAPHIC_SERVER(false), // active le serveur d'affichage
 	GRAPHIC_D_STAR_LITE(false), // affiche les calculs du D* Lite
 	GRAPHIC_TENTACLES(false), // affiche les trajectoires temporaires
+	GRAPHIC_FIXED_OBSTACLES(false), // affiche les obstacles fixes
 //	GRAPHIC_TRAJECTORY_FINAL(true), // affiche les trajectoires
 	GRAPHIC_ROBOT_COLLISION(false), // affiche les obstacles du robot lors de la
 									// vérification des collisions
