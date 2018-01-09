@@ -46,7 +46,11 @@ public class ClothoidesComputer implements TentacleComputer
 	private CinemObsPool memory;
 	private double rootedMaxAcceleration;
 	
-	private BigDecimal x, y; // utilisés dans le calcul de trajectoire
+	private class PosBigDecimal
+	{
+		private BigDecimal x, y; // utilisés dans le calcul de trajectoire
+	}
+	
 	private static final int S_MAX = 10; // courbure max qu'on puisse gérer
 	private static final int INDICE_MAX = (int) (S_MAX / PRECISION_TRACE);
 	private XY[] trajectoire = new XY[2 * INDICE_MAX - 1];
@@ -88,16 +92,16 @@ public class ClothoidesComputer implements TentacleComputer
 	 * 
 	 * @param s
 	 */
-	private void calculeXY(BigDecimal sparam)
+	private void calculeXY(BigDecimal sparam, PosBigDecimal out)
 	{
 		BigDecimal s = sparam;
-		x = s;
+		out.x = s;
 		BigDecimal factorielle = new BigDecimal(1).setScale(15, RoundingMode.HALF_EVEN);
 		BigDecimal b2 = new BigDecimal(1).setScale(15, RoundingMode.HALF_EVEN);
 		BigDecimal s2 = s.multiply(s);
 		BigDecimal b = b2;
 		s = s.multiply(s2);
-		y = s.divide(b.multiply(new BigDecimal(3).setScale(15, RoundingMode.HALF_EVEN)), RoundingMode.HALF_EVEN);
+		out.y = s.divide(b.multiply(new BigDecimal(3).setScale(15, RoundingMode.HALF_EVEN)), RoundingMode.HALF_EVEN);
 		BigDecimal seuil = new BigDecimal(0.000000000001).setScale(15, RoundingMode.HALF_EVEN);
 		BigDecimal tmp;
 
@@ -111,9 +115,9 @@ public class ClothoidesComputer implements TentacleComputer
 			tmp = s.divide(factorielle.multiply(b).multiply(new BigDecimal(4 * i + 1).setScale(15, RoundingMode.HALF_EVEN)), RoundingMode.HALF_EVEN);
 
 			if((i & 1) == 0)
-				x = x.add(tmp);
+				out.x = out.x.add(tmp);
 			else
-				x = x.subtract(tmp);
+				out.x = out.x.subtract(tmp);
 
 			factorielle = factorielle.multiply(new BigDecimal(2 * i + 1).setScale(15, RoundingMode.HALF_EVEN));
 
@@ -122,17 +126,17 @@ public class ClothoidesComputer implements TentacleComputer
 			tmp = s.divide(factorielle.multiply(b).multiply(new BigDecimal(4 * i + 3).setScale(15, RoundingMode.HALF_EVEN)), RoundingMode.HALF_EVEN);
 
 			if((i & 1) == 0)
-				y = y.add(tmp);
+				out.y = out.y.add(tmp);
 			else
-				y = y.subtract(tmp);
+				out.y = out.y.subtract(tmp);
 
 			i++;
 		} while(tmp.abs().compareTo(seuil) > 0);
 		// On fait en sorte que tourner à gauche ait une courbure positive
-		y = y.multiply(new BigDecimal(1000)); // On considère que x et y sont en
+		out.y = out.y.multiply(new BigDecimal(1000)); // On considère que x et y sont en
 												// millimètre et que la courbure
 												// est en mètre^-1
-		x = x.multiply(new BigDecimal(1000));
+		out.x = out.x.multiply(new BigDecimal(1000));
 	}
 
 	/**
@@ -140,12 +144,13 @@ public class ClothoidesComputer implements TentacleComputer
 	 */
 	private void init()
 	{
+		PosBigDecimal out = new PosBigDecimal();
 		log.write("Computation of the unitary clothoid, please wait (it should take at most one minute). This computation is made once and for all.", LogCategoryKraken.PF);
 		for(int s = 0; s < 2 * INDICE_MAX - 1; s++)
 		{
-			calculeXY(new BigDecimal((s - INDICE_MAX + 1) * PRECISION_TRACE).setScale(15, RoundingMode.HALF_EVEN));
-			trajectoire[s] = new XY(x.doubleValue(), y.doubleValue());
-			trajectoire[2 * INDICE_MAX - 2 - s] = new XY(-x.doubleValue(), -y.doubleValue());
+			calculeXY(new BigDecimal((s - INDICE_MAX + 1) * PRECISION_TRACE).setScale(15, RoundingMode.HALF_EVEN), out);
+			trajectoire[s] = new XY(out.x.doubleValue(), out.y.doubleValue());
+			trajectoire[2 * INDICE_MAX - 2 - s] = new XY(-out.x.doubleValue(), -out.y.doubleValue());
 		}
 	}
 
@@ -333,7 +338,7 @@ public class ClothoidesComputer implements TentacleComputer
 		return new DynamicTentacle(out, vitesseRamene);
 	}
 
-	private XY_RW[] tmp;// = new XY_RW();
+	private XY_RW[] tmp;
 	
 	/**
 	 * Calcul un point à partir de ces quelques paramètres
@@ -369,8 +374,8 @@ public class ClothoidesComputer implements TentacleComputer
 		c.maxSpeed = Math.min(c.maxSpeed, vitesse.maxSpeed);
 	}
 
-	private XY_RW[] delta;// = new XY_RW();
-	private XY_RW[] centreCercle;// = new XY_RW();
+	private XY_RW[] delta;
+	private XY_RW[] centreCercle;
 
 	/**
 	 * Calcule la trajectoire dans le cas particulier d'une trajectoire
@@ -605,7 +610,7 @@ public class ClothoidesComputer implements TentacleComputer
 	}*/
 
 	@Override
-	public boolean compute(AStarNode current, TentacleType tentacleType, Cinematique arrival, AStarNode modified, int indexThread)
+	public boolean compute(final AStarNode current, TentacleType tentacleType, Cinematique arrival, AStarNode modified, int indexThread)
 	{
 		assert tentacleType instanceof ClothoTentacle : tentacleType;
 		

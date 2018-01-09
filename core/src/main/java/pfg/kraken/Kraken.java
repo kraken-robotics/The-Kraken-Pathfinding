@@ -49,6 +49,7 @@ public class Kraken
 	private Injector injector;
 	private TentacularAStar astar;
 	private boolean stopped = false;
+	private static final String version = "1.2.1";
 	
 	/**
 	 * Get Kraken with :
@@ -256,5 +257,10 @@ public class Kraken
 	public GraphicDisplay getGraphicDisplay()
 	{
 		return injector.getExistingService(GraphicDisplay.class);
+	}
+	
+	public static String getVersion()
+	{
+		return version;
 	}
 }

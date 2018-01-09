@@ -18,7 +18,7 @@ import pfg.kraken.robot.CinematiqueObs;
 public class StaticTentacle extends Tentacle
 {
 	private static final long serialVersionUID = -5599092863248049576L;
-	public CinematiqueObs[] arcselems = new CinematiqueObs[NB_POINTS];
+	public final CinematiqueObs[] arcselems = new CinematiqueObs[NB_POINTS];
 
 	public StaticTentacle(RectangularObstacle vehicleTemplate)
 	{
@@ -31,11 +31,11 @@ public class StaticTentacle extends Tentacle
 	 * 
 	 * @param arcCourbe
 	 */
-	public void copy(StaticTentacle arcCourbe)
+/*	public void copy(StaticTentacle arcCourbe)
 	{
 		for(int i = 0; i < arcselems.length; i++)
 			arcselems[i].copy(arcCourbe.arcselems[i]);
-	}
+	}*/
 
 	@Override
 	public int getNbPoints()

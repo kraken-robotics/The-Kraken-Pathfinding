@@ -272,7 +272,7 @@ public class BezierComputer implements TentacleComputer
 			// on a dépassé la courbure maximale : on arrête tout
 			if(Math.abs(courbure) > courbureMax || (!first && Math.abs(deltaO) > 0.5))
 			{
-				System.out.println("Courbure : "+courbure+" >? "+courbureMax);
+//				System.out.println("Courbure : "+courbure+" >? "+courbureMax);
 				for(CinematiqueObs c : out)
 					memory.destroyNode(c);
 				return null;
@@ -298,7 +298,7 @@ public class BezierComputer implements TentacleComputer
 
 		if(!first && (Math.abs(cinematiqueInitiale.courbureGeometrique - lastCourbure) > 0.3) || Math.abs(diffOrientation) > 0.5)
 		{
-			System.out.println("Delta fin : "+Math.abs(cinematiqueInitiale.courbureGeometrique - lastCourbure)+" >? "+0.3);
+//			System.out.println("Delta fin : "+Math.abs(cinematiqueInitiale.courbureGeometrique - lastCourbure)+" >? "+0.3);
 			// log.debug("Erreur raccordement :
 			// "+cinematiqueInitiale.courbureGeometrique+"
 			// "+Math.abs(cinematiqueInitiale.courbureGeometrique -

@@ -45,7 +45,7 @@ public class AStarNode implements Memorizable, Printable
 	/*
 	 * Used by the memory pool
 	 */
-	private int indiceMemoryManager;
+	private volatile int indiceMemoryManager;
 
 	public AStarNode(RobotState robot, RectangularObstacle vehicleTemplate)
 	{

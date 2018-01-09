@@ -39,6 +39,7 @@ public class TentacleThread extends Thread
 	{
 		this.log = log;
 		this.memorymanager = memorymanager;
+		this.nb = nb;
 		maxLinearAcceleration = config.getDouble(ConfigInfoKraken.MAX_LINEAR_ACCELERATION);
 		deltaSpeedFromStop = Math.sqrt(2 * PRECISION_TRACE * maxLinearAcceleration);
 		tempsArret = config.getInt(ConfigInfoKraken.STOP_DURATION);
@@ -47,7 +48,7 @@ public class TentacleThread extends Thread
 	@Override
 	public void run()
 	{
-		Thread.currentThread().setName(getClass().getSimpleName());
+		Thread.currentThread().setName(getClass().getSimpleName()+"-"+nb);
 		try
 		{
 			while(true)
@@ -76,10 +77,10 @@ public class TentacleThread extends Thread
 
 	public void compute(TentacleTask task)
 	{
-		synchronized(task)
-		{
+//		synchronized(task)
+//		{
 			task.successeur = memorymanager.getNewNode();
-	//		assert successeur.cameFromArcDynamique == null;
+			assert task.successeur.cameFromArcDynamique == null;
 			task.successeur.cameFromArcDynamique = null;
 			task.successeur.parent = task.current;
 			
@@ -97,6 +98,6 @@ public class TentacleThread extends Thread
 				memorymanager.destroyNode(task.successeur);
 				task.successeur = null;
 			}
-		}
+//		}
 	}
 }

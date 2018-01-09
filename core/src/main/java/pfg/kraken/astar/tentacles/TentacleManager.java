@@ -276,6 +276,7 @@ public class TentacleManager implements Iterable<AStarNode>
 			for(int i = 0; i < threads.length; i++)
 				synchronized(threads[i])
 				{
+					// on lance les calculs
 					threads[i].notify();
 				}
 			
@@ -283,6 +284,7 @@ public class TentacleManager implements Iterable<AStarNode>
 			{
 				synchronized(threads[i])
 				{
+					// on attend la fin des calculs
 					if(!threads[i].done)
 						try {
 							threads[i].wait();
@@ -318,7 +320,7 @@ public class TentacleManager implements Iterable<AStarNode>
 	public void stopThreads()
 	{
 		if(threads.length > 1)
-		for(int i = 0; i < threads.length; i++)
-			threads[i].interrupt();
+			for(int i = 0; i < threads.length; i++)
+				threads[i].interrupt();
 	}
 }

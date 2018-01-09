@@ -21,11 +21,12 @@ public class CinematiqueObs extends Cinematique implements Memorizable, Serializ
 {
 	private static final long serialVersionUID = 1L;
 	public volatile RectangularObstacle obstacle;
-	private int indiceMemory;
 	public volatile double maxSpeed; // in m/s
 	public volatile double possibleSpeed; // in m/s
 
 	protected static double[] maxSpeedLUT;
+
+	private volatile int indiceMemory;
 
 	static
 	{

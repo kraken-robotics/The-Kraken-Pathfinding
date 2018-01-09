@@ -19,7 +19,7 @@ public class RobotState
 	protected Cinematique cinematique = new Cinematique();
 
 	// Date en millisecondes depuis le début du match.
-	protected long date = 0;
+	protected volatile long date = 0;
 
 	public void initDate()
 	{
