@@ -93,6 +93,7 @@ public class Example3
 		finally
 		{
 			kraken.stop();
+			krakenSecondRobot.stop();
 		}
 	}
 }
