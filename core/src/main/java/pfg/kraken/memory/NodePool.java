@@ -23,10 +23,12 @@ import pfg.graphic.log.Log;
 public class NodePool extends MemoryPool<AStarNode>
 {
 	private RectangularObstacle vehicleTemplate;
+	private CinemObsPool pool;
 
-	public NodePool(Log log, Config config, RectangularObstacle vehicleTemplate)
+	public NodePool(Log log, Config config, RectangularObstacle vehicleTemplate, CinemObsPool pool)
 	{
 		super(AStarNode.class, log);
+		this.pool = pool;
 		this.vehicleTemplate = vehicleTemplate;
 		init(config.getInt(ConfigInfoKraken.NODE_MEMORY_POOL_SIZE));
 	}
@@ -38,4 +40,15 @@ public class NodePool extends MemoryPool<AStarNode>
 			nodes[i] = new AStarNode(new RobotState(), vehicleTemplate);
 	}
 
+	@Override
+	public synchronized AStarNode getNewNode()
+	{
+		AStarNode out = super.getNewNode();
+		if(out.cameFromArcDynamique != null)
+		{
+			pool.destroyNode(out.cameFromArcDynamique);
+			out.cameFromArcDynamique = null;
+		}
+		return out;
+	}
 }

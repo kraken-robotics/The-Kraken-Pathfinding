@@ -413,8 +413,8 @@ public class TentacularAStar
 
 	private void destroy(AStarNode n)
 	{
-		if(n.cameFromArcDynamique != null)
-			cinemMemory.destroyNode(n.cameFromArcDynamique);
+//		if(n.cameFromArcDynamique != null)
+//			cinemMemory.destroyNode(n.cameFromArcDynamique);
 		memorymanager.destroyNode(n);
 	}
 
