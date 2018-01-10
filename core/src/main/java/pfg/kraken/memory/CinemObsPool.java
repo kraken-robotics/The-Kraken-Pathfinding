@@ -42,11 +42,16 @@ public class CinemObsPool extends MemoryPool<CinematiqueObs>
 			nodes[i] = new CinematiqueObs(vehicleTemplate);
 	}
 	
-	// TODO : optimisable : la mémoire est probablement contigue
 	public final void destroyNode(DynamicTentacle arc)
 	{
 		for(int i = 0; i < arc.getNbPoints(); i++)
 			destroyNode(arc.getPoint(i));
+	}
+
+	final void destroyNode(DynamicTentacle arc, boolean check)
+	{
+		for(int i = 0; i < arc.getNbPoints(); i++)
+			destroyNode(arc.getPoint(i), check);
 	}
 
 }

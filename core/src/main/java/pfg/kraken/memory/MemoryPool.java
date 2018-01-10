@@ -106,13 +106,23 @@ public abstract class MemoryPool<T extends Memorizable>
 	 */
 	public synchronized void destroyNode(T objet)
 	{
+		destroyNode(objet, true);
+	}
+
+	/**
+	 * Dans certains cas, on sait que la suppression est redondante. Auquel cas, on désactive la vérification
+	 * @param objet
+	 * @param check
+	 */
+	synchronized void destroyNode(T objet, boolean check)
+	{
 
 		int indice_state = objet.getIndiceMemoryManager();
 
 		/**
 		 * Invariant: l'objet ne doit pas être déjà détruit
 		 */
-		assert indice_state < firstAvailable : "Instance of "+classe.getSimpleName()+" already destroyed ! " + indice_state + " >= " + firstAvailable;
+		assert !check || indice_state < firstAvailable : "Instance of "+classe.getSimpleName()+" already destroyed ! " + indice_state + " >= " + firstAvailable;
 		if(indice_state >= firstAvailable)
 			return;
 
