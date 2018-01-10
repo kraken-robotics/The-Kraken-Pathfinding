@@ -282,7 +282,7 @@ public class TentacularAStar
 			{
 				// we skip this point
 				if(current != depart)
-					destroy(current);
+					memorymanager.destroyNode(current);
 				continue;
 			}
 
@@ -292,7 +292,7 @@ public class TentacularAStar
 			if(!arcmanager.isReachable(current))
 			{
 				if(current != depart)
-					destroy(current);
+					memorymanager.destroyNode(current);
 				continue; // collision mécanique attendue. On passe au suivant !
 			}
 
@@ -354,7 +354,7 @@ public class TentacularAStar
 				// normalement le cas.
 				if(closedset.contains(successeur))
 				{
-					destroy(successeur);
+					memorymanager.destroyNode(successeur);
 					continue;
 				}
 
@@ -362,7 +362,7 @@ public class TentacularAStar
 				if(heuristique == null)
 				{
 					// Point inaccessible
-					destroy(successeur);
+					memorymanager.destroyNode(successeur);
 					continue;
 				}
 
@@ -374,7 +374,7 @@ public class TentacularAStar
 				{
 					// on détruit l'ancien trajet
 					if(trajetDeSecours != null)
-						destroy(trajetDeSecours);
+						memorymanager.destroyNode(trajetDeSecours);
 
 					trajetDeSecours = successeur;
 				}
@@ -410,14 +410,7 @@ public class TentacularAStar
 		cinemMemory.empty();
 		throw new NoPathException("All the space has been searched and no path has been found ("+nbExpandedNodes+" expanded nodes)");
 	}
-
-	private void destroy(AStarNode n)
-	{
-//		if(n.cameFromArcDynamique != null)
-//			cinemMemory.destroyNode(n.cameFromArcDynamique);
-		memorymanager.destroyNode(n);
-	}
-
+	
 	/**
 	 * Reconstruit le chemin. Il peut reconstruire le chemin même si celui-ci
 	 * n'est pas fini.

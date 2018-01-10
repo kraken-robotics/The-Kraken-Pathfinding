@@ -201,7 +201,7 @@ public class ClothoidesComputer implements TentacleComputer
 
 		modified.vitesse = vitesse;
 
-		boolean marcheAvant = vitesse.rebrousse ^ cinematiqueInitiale.enMarcheAvant;
+		boolean marcheAvant = vitesse.rebrousse != cinematiqueInitiale.enMarcheAvant;
 
 		// si la dérivée de la courbure est nulle, on est dans le cas
 		// particulier d'une trajectoire rectiligne ou circulaire
@@ -556,7 +556,7 @@ public class ClothoidesComputer implements TentacleComputer
 		else
 			vecteurOrientationDepartRotate.rotate(0, -1);
 
-		boolean marcheAvant = rebrousse ^ cinematiqueInitiale.enMarcheAvant;
+		boolean marcheAvant = rebrousse != cinematiqueInitiale.enMarcheAvant;
 
 		double coeffMultiplicatif = 1. / vitesse.squaredRootVitesse;
 		double sDepart = courbure / vitesse.squaredRootVitesse; // sDepart peut

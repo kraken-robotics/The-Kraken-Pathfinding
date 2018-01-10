@@ -133,7 +133,7 @@ public abstract class JUnit_Test
 		if(config.getBoolean(ConfigInfoKraken.GRAPHIC_ENABLE))
 		{
 			display.refresh();
-			Thread.sleep(3000);
+			Thread.sleep(1000);
 		}
 	}
 	

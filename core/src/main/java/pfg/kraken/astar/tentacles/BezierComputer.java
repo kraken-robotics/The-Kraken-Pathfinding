@@ -150,18 +150,19 @@ public class BezierComputer implements TentacleComputer
 		DynamicTentacle prefixe = null;
 
 		// il faut absolument que la courbure ait déjà le bon signe
-		// si la courbure est nulle, il faut aussi annuler
-		if(Math.abs(debut[indexThread].courbureGeometrique) < 0.1 || debut[indexThread].courbureGeometrique >= 0 ^ d >= 0)
+		// si la courbure est non nulle, il faut aussi annuler
+		if(Math.abs(debut[indexThread].courbureGeometrique) < 0.1 || (debut[indexThread].courbureGeometrique >= 0 != d >= 0))
 		{
+			// Première partie du préfixe (optionnelle) : on annule la courbure
 			if(Math.abs(debut[indexThread].courbureGeometrique) > 0.1)
-			{
-				// log.debug("Préfixe nécessaire !");
 				prefixe = clothocomputer.getTrajectoireRamene(debut[indexThread], StraightingTentacle.RAMENE_VOLANT, indexThread);
-			}
 			if(prefixe == null)
 				prefixe = new DynamicTentacle(new ArrayList<CinematiqueObs>(), BezierTentacle.BEZIER_XYOC_TO_XY);
 
+			// Seconde partie du préfixe : on tourne un peu dans le bon sens afin d'une une courbure correcte
 			clothocomputer.getTrajectoire(prefixe.getNbPoints() > 0 ? prefixe.getLast() : cinematiqueInitiale, d > 0 ? ClothoTentacle.GAUCHE_1 : ClothoTentacle.DROITE_1, tmp[indexThread], indexThread);
+			
+			// Cette seconde partie est créée dans un arc statique. On copie ça dans le préfixe.
 			for(CinematiqueObs c : tmp[indexThread].arcselems)
 			{
 				CinematiqueObs o = memory.getNewNode();
@@ -169,7 +170,7 @@ public class BezierComputer implements TentacleComputer
 				prefixe.arcs.add(o);
 			}
 
-			debut[indexThread] = prefixe.getLast();
+			prefixe.getLast().copy(debut[indexThread]);
 
 			arrivee.copy(delta[indexThread]);
 			delta[indexThread].minus(debut[indexThread].getPosition());
@@ -179,9 +180,10 @@ public class BezierComputer implements TentacleComputer
 			d = vecteurVitesse[indexThread].dot(delta[indexThread]);
 		}
 
-		if(Math.abs(debut[indexThread].courbureGeometrique) < 0.1 || debut[indexThread].courbureGeometrique >= 0 ^ d >= 0)
+		// il est possible que le prefixe fait que bien que la courbure soit dans le sens voulu, l'objectif ait changé de côté…
+		if(Math.abs(debut[indexThread].courbureGeometrique) < 0.1 || (debut[indexThread].courbureGeometrique >= 0 != d >= 0))
 		{
-			memory.destroyNode(prefixe);
+			memory.destroy(prefixe.arcs);
 			return null;
 		}
 
@@ -190,10 +192,12 @@ public class BezierComputer implements TentacleComputer
 		vecteurVitesse[indexThread].plus(debut[indexThread].getPosition());
 
 		DynamicTentacle arc = constructBezierQuad(debut[indexThread].getPosition(), vecteurVitesse[indexThread], arrivee, debut[indexThread].enMarcheAvant, debut[indexThread], indexThread);
+		
+		// la construction a échoué
 		if(arc == null)
 		{
 			if(prefixe != null)
-				memory.destroyNode(prefixe);
+				memory.destroy(prefixe.arcs);
 			return null;
 		}
 
@@ -282,9 +286,7 @@ public class BezierComputer implements TentacleComputer
 			// on a dépassé la courbure maximale : on arrête tout
 			if(Math.abs(courbure) > courbureMax || (!first && Math.abs(deltaO) > 0.5))
 			{
-//				System.out.println("Courbure : "+courbure+" >? "+courbureMax);
-				for(CinematiqueObs c : out)
-					memory.destroyNode(c);
+				memory.destroy(out);
 				return null;
 			}
 			
@@ -314,8 +316,7 @@ public class BezierComputer implements TentacleComputer
 			// "+Math.abs(cinematiqueInitiale.courbureGeometrique -
 			// lastCourbure)+" "+cinematiqueInitiale.orientationGeometrique+"
 			// "+lastOrientation);
-			for(CinematiqueObs c : out)
-				memory.destroyNode(c);
+			memory.destroy(out);
 			return null;
 		}
 

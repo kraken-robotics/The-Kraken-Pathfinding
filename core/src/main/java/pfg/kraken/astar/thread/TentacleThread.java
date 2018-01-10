@@ -75,29 +75,26 @@ public class TentacleThread extends Thread
 		}
 	}
 
-	public void compute(TentacleTask task)
+	public AStarNode compute(TentacleTask task)
 	{
-//		synchronized(task)
-//		{
-			task.successeur = memorymanager.getNewNode();
-			assert task.successeur.cameFromArcDynamique == null;
-			task.successeur.cameFromArcDynamique = null;
-			task.successeur.parent = task.current;
-			
-			task.current.robot.copy(task.successeur.robot);
-			if(task.computer.compute(task.current, task.v, task.arrivee, task.successeur, nb))
-			{
-				// Compute the travel time
-				int duration = (int) (1000*task.successeur.getArc().getDuree(task.successeur.parent.getArc(), task.vitesseMax, tempsArret, maxLinearAcceleration, deltaSpeedFromStop));
-				task.successeur.robot.suitArcCourbe(task.successeur.getArc(), duration);
-				task.successeur.g_score = duration;
-				successeurs.add(task.successeur);
-			}
-			else
-			{
-				memorymanager.destroyNode(task.successeur);
-				task.successeur = null;
-			}
-//		}
+		AStarNode successeur = memorymanager.getNewNode();
+		assert successeur.cameFromArcDynamique == null;
+		successeur.parent = task.current;
+		
+		task.current.robot.copy(successeur.robot);
+		if(task.computer.compute(task.current, task.v, task.arrivee, successeur, nb))
+		{
+			// Compute the travel time
+			int duration = (int) (1000*successeur.getArc().getDuree(successeur.parent.getArc(), task.vitesseMax, tempsArret, maxLinearAcceleration, deltaSpeedFromStop));
+			successeur.robot.suitArcCourbe(successeur.getArc(), duration);
+			successeur.g_score = duration;
+			successeurs.add(successeur);
+			return successeur;
+		}
+		else
+		{
+			memorymanager.destroyNode(successeur);
+			return null;
+		}
 	}
 }

@@ -259,9 +259,9 @@ public class TentacleManager implements Iterable<AStarNode>
 				
 				if(threads.length == 1)
 				{
-					threads[0].compute(tt);
-					if(tt.successeur != null)
-						successeurs.add(tt.successeur);
+					AStarNode successeur = threads[0].compute(tt);
+					if(successeur != null)
+						successeurs.add(successeur);
 				}
 				else
 				{

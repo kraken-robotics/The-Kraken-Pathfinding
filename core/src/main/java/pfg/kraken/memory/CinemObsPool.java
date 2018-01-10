@@ -8,7 +8,6 @@ package pfg.kraken.memory;
 
 import pfg.config.Config;
 import pfg.kraken.ConfigInfoKraken;
-import pfg.kraken.astar.tentacles.DynamicTentacle;
 import pfg.kraken.obstacles.RectangularObstacle;
 import pfg.kraken.robot.CinematiqueObs;
 import pfg.graphic.log.Log;
@@ -40,18 +39,6 @@ public class CinemObsPool extends MemoryPool<CinematiqueObs>
 	{
 		for(int i = 0; i < nodes.length; i++)
 			nodes[i] = new CinematiqueObs(vehicleTemplate);
-	}
-	
-	public final void destroyNode(DynamicTentacle arc)
-	{
-		for(int i = 0; i < arc.getNbPoints(); i++)
-			destroyNode(arc.getPoint(i));
-	}
-
-	final void destroyNode(DynamicTentacle arc, boolean check)
-	{
-		for(int i = 0; i < arc.getNbPoints(); i++)
-			destroyNode(arc.getPoint(i), check);
 	}
 
 }

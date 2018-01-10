@@ -116,34 +116,44 @@ public abstract class MemoryPool<T extends Memorizable>
 	 */
 	synchronized void destroyNode(T objet, boolean check)
 	{
-
-		int indice_state = objet.getIndiceMemoryManager();
+		int indexObject = objet.getIndiceMemoryManager();
 
 		/**
 		 * Invariant: l'objet ne doit pas être déjà détruit
 		 */
-		assert !check || indice_state < firstAvailable : "Instance of "+classe.getSimpleName()+" already destroyed ! " + indice_state + " >= " + firstAvailable;
-		if(indice_state >= firstAvailable)
+		assert !check || indexObject < firstAvailable : "Instance of "+classe.getSimpleName()+" already destroyed ! " + indexObject + " >= " + firstAvailable;
+		if(indexObject >= firstAvailable)
 			return;
 
-		
 		// On inverse dans le Vector les deux objets,
 		// de manière à avoir toujours un Vector trié.
 		firstAvailable--;
 
-		if(indice_state != firstAvailable)
+		if(indexObject != firstAvailable)
 		{
-			T tmp1 = nodes.get(indice_state / initialNbInstances)[indice_state % initialNbInstances];
+			T tmp1 = nodes.get(indexObject / initialNbInstances)[indexObject % initialNbInstances];
 			T tmp2 = nodes.get(firstAvailable / initialNbInstances)[firstAvailable % initialNbInstances];
 
 			tmp1.setIndiceMemoryManager(firstAvailable);
-			tmp2.setIndiceMemoryManager(indice_state);
+			tmp2.setIndiceMemoryManager(indexObject);
 
 			nodes.get(firstAvailable / initialNbInstances)[firstAvailable % initialNbInstances] = tmp1;
-			nodes.get(indice_state / initialNbInstances)[indice_state % initialNbInstances] = tmp2;
+			nodes.get(indexObject / initialNbInstances)[indexObject % initialNbInstances] = tmp2;
 		}
 	}
 
+	public synchronized final void destroy(Iterable<T> c)
+	{
+		for(T o : c)
+			destroyNode(o);
+	}
+	
+	synchronized final void destroy(Iterable<T> c, boolean check)
+	{
+		for(T o : c)
+			destroyNode(o, check);
+	}
+	
 	/**
 	 * Retourne le nombre d'élément utilisé
 	 */

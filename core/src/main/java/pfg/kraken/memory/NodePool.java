@@ -46,7 +46,7 @@ public class NodePool extends MemoryPool<AStarNode>
 		AStarNode out = super.getNewNode();
 		if(out.cameFromArcDynamique != null)
 		{
-			pool.destroyNode(out.cameFromArcDynamique, false);
+			pool.destroy(out.cameFromArcDynamique.arcs, false);
 			out.cameFromArcDynamique = null;
 		}
 		return out;

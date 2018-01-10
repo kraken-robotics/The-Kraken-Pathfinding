@@ -18,7 +18,7 @@ import pfg.kraken.robot.Cinematique;
 
 public class TentacleTask {
 
-	public volatile AStarNode current, successeur;
+	public volatile AStarNode current;
 	public volatile TentacleType v;
 	public volatile Cinematique arrivee;
 	public volatile TentacleComputer computer;
