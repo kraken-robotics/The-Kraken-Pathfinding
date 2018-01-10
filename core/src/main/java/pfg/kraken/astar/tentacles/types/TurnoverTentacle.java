@@ -54,10 +54,16 @@ public enum TurnoverTentacle implements TentacleType
 		return Color.GRAY;
 	}
 
+	private ClothoidesComputer computer;
+	
 	@Override
-	public Class<? extends TentacleComputer> getComputer()
+	public TentacleComputer getComputer()
 	{
-		return ClothoidesComputer.class;
+		return computer;
 	}
 
+	public void setComputer(ClothoidesComputer computer) 
+	{
+		this.computer = computer;
+	}
 }

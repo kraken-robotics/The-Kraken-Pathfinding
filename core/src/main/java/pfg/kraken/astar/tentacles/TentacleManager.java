@@ -10,7 +10,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import pfg.config.Config;
-import pfg.injector.Injector;
 import pfg.injector.InjectorException;
 import pfg.kraken.ColorKraken;
 import pfg.kraken.ConfigInfoKraken;
@@ -49,7 +48,6 @@ public class TentacleManager implements Iterable<AStarNode>
 	private DynamicObstacles dynamicObs;
 	private double courbureMax, maxLinearAcceleration, vitesseMax;
 	private boolean printObstacles;
-	private Injector injector;
 	private StaticObstacles fixes;
 	private double deltaSpeedFromStop;
 	private GraphicDisplay buffer;
@@ -63,9 +61,8 @@ public class TentacleManager implements Iterable<AStarNode>
 	private List<TentacleTask> tasks = new ArrayList<TentacleTask>();
 	private List<AStarNode> successeurs = new ArrayList<AStarNode>();
 	
-	public TentacleManager(Log log, StaticObstacles fixes, DStarLite dstarlite, Config config, DynamicObstacles dynamicObs, Injector injector, ResearchProfileManager profiles, NodePool memorymanager, GraphicDisplay buffer) throws InjectorException
+	public TentacleManager(Log log, StaticObstacles fixes, DStarLite dstarlite, Config config, DynamicObstacles dynamicObs, ResearchProfileManager profiles, NodePool memorymanager, GraphicDisplay buffer) throws InjectorException
 	{
-		this.injector = injector;
 		this.fixes = fixes;
 		this.dynamicObs = dynamicObs;
 		this.log = log;
@@ -77,8 +74,8 @@ public class TentacleManager implements Iterable<AStarNode>
 		for(int i = 0; i < currentProfile.size(); i++)
 			tasks.add(new TentacleTask());
 		
-		for(TentacleType t : currentProfile)
-			injector.getService(t.getComputer());
+//		for(TentacleType t : currentProfile)
+//			injector.getService(t.getComputer());
 		
 		maxLinearAcceleration = config.getDouble(ConfigInfoKraken.MAX_LINEAR_ACCELERATION);
 		deltaSpeedFromStop = Math.sqrt(2 * PRECISION_TRACE * maxLinearAcceleration);
@@ -254,7 +251,7 @@ public class TentacleManager implements Iterable<AStarNode>
 				tt.arrivee = arrivee;
 				tt.current = current;
 				tt.v = v;
-				tt.computer = injector.getExistingService(v.getComputer());
+				tt.computer = v.getComputer();
 				tt.vitesseMax = vitesseMax;
 				
 				if(threads.length == 1)

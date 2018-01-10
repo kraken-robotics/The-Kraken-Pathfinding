@@ -20,7 +20,7 @@ import pfg.kraken.robot.Cinematique;
 
 public interface TentacleType
 {
-	public Class<? extends TentacleComputer> getComputer();
+	public TentacleComputer getComputer();
 	public boolean isAcceptable(Cinematique c, DirectionStrategy directionstrategyactuelle, double courbureMax);
 	public int getNbArrets(boolean firstMove);
 	public Color getColor();

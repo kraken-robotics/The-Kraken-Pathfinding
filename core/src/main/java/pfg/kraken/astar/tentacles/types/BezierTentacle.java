@@ -48,9 +48,16 @@ public enum BezierTentacle implements TentacleType
 		return Color.GREEN;
 	}
 
+	private BezierComputer computer;
+	
 	@Override
-	public Class<? extends TentacleComputer> getComputer()
+	public TentacleComputer getComputer()
 	{
-		return BezierComputer.class;
+		return computer;
+	}
+
+	public void setComputer(BezierComputer computer) 
+	{
+		this.computer = computer;
 	}
 }
