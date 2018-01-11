@@ -48,6 +48,16 @@ public class AStarNode implements Memorizable, Printable
 	 */
 	private volatile int indiceMemoryManager;
 
+	/**
+	 * Dummy node
+	 */
+	public AStarNode()
+	{
+		cameFromArcStatique = null;
+		robot = null;
+		state = null;
+	}
+	
 	public AStarNode(RobotState robot, RectangularObstacle vehicleTemplate)
 	{
 		cameFromArcStatique = new StaticTentacle(vehicleTemplate);

@@ -9,6 +9,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+
 import pfg.config.Config;
 import pfg.injector.InjectorException;
 import pfg.kraken.ColorKraken;
@@ -41,7 +44,7 @@ import static pfg.kraken.astar.tentacles.Tentacle.*;
  *
  */
 
-public class TentacleManager implements Iterable<AStarNode>
+public class TentacleManager implements Iterator<AStarNode>
 {
 	protected Log log;
 	private DStarLite dstarlite;
@@ -50,7 +53,7 @@ public class TentacleManager implements Iterable<AStarNode>
 	private boolean printObstacles;
 	private StaticObstacles fixes;
 	private double deltaSpeedFromStop;
-	private GraphicDisplay buffer;
+	private GraphicDisplay display;
 	private TentacleThread[] threads;
 	
 	private DirectionStrategy directionstrategyactuelle;
@@ -59,15 +62,18 @@ public class TentacleManager implements Iterable<AStarNode>
 	private List<TentacleType> currentProfile = new ArrayList<TentacleType>();
 //	private List<StaticObstacles> disabledObstaclesFixes = new ArrayList<StaticObstacles>();
 	private List<TentacleTask> tasks = new ArrayList<TentacleTask>();
-	private List<AStarNode> successeurs = new ArrayList<AStarNode>();
+	private BlockingQueue<AStarNode> successeurs = new LinkedBlockingQueue<AStarNode>();
+	private BlockingQueue<TentacleTask> buffer = new LinkedBlockingQueue<TentacleTask>();
 	
-	public TentacleManager(Log log, StaticObstacles fixes, DStarLite dstarlite, Config config, DynamicObstacles dynamicObs, ResearchProfileManager profiles, NodePool memorymanager, GraphicDisplay buffer) throws InjectorException
+	private int nbLeft;
+	
+	public TentacleManager(Log log, StaticObstacles fixes, DStarLite dstarlite, Config config, DynamicObstacles dynamicObs, ResearchProfileManager profiles, NodePool memorymanager, GraphicDisplay display) throws InjectorException
 	{
 		this.fixes = fixes;
 		this.dynamicObs = dynamicObs;
 		this.log = log;
 		this.dstarlite = dstarlite;
-		this.buffer = buffer;
+		this.display = display;
 		
 		this.currentProfile = profiles.getProfile(0);
 		
@@ -86,7 +92,7 @@ public class TentacleManager implements Iterable<AStarNode>
 		threads = new TentacleThread[nbThreads];
 		for(int i = 0; i < nbThreads; i++)
 		{
-			threads[i] = new TentacleThread(log, config, memorymanager, i);
+			threads[i] = new TentacleThread(log, config, memorymanager, i, successeurs, buffer);
 			if(nbThreads != 1)
 				threads[i].start();
 		}
@@ -197,7 +203,7 @@ public class TentacleManager implements Iterable<AStarNode>
 			{
 				current = arcParent.getPoint(i);
 				if(printObstacles)
-					buffer.addTemporaryPrintable(current.obstacle.clone(), ColorKraken.ROBOT.color, Layer.BACKGROUND.layer);
+					display.addTemporaryPrintable(current.obstacle.clone(), ColorKraken.ROBOT.color, Layer.BACKGROUND.layer);
 				
 				// vitesse maximale du robot à ce point
 				double maxSpeed = current.possibleSpeed;
@@ -241,11 +247,13 @@ public class TentacleManager implements Iterable<AStarNode>
 	{
 		successeurs.clear();
 		int index = 0;
-		
+		assert nbLeft == 0;
+
 		for(TentacleType v : currentProfile)
 		{
 			if(v.isAcceptable(current.robot.getCinematique(), directionstrategyactuelle, courbureMax))
 			{
+				nbLeft++;
 				assert tasks.size() > index;
 				TentacleTask tt = tasks.get(index++);
 				tt.arrivee = arrivee;
@@ -254,19 +262,13 @@ public class TentacleManager implements Iterable<AStarNode>
 				tt.computer = v.getComputer();
 				tt.vitesseMax = vitesseMax;
 				
-				if(threads.length == 1)
-				{
-					AStarNode successeur = threads[0].compute(tt);
-					if(successeur != null)
-						successeurs.add(successeur);
-				}
+				if(threads.length == 1) // no multithreading in this case
+					threads[0].compute(tt);
 				else
-				{
-					threads[index % threads.length].buffer.add(tt);
-					threads[index % threads.length].done = false;
-				}
+					buffer.add(tt);
 			}
 		}
+		/*
 		
 		if(threads.length > 1)
 		{
@@ -293,7 +295,7 @@ public class TentacleManager implements Iterable<AStarNode>
 				successeurs.addAll(threads[i].successeurs);
 				threads[i].successeurs.clear();
 			}
-		}
+		}*/
 	}
 
 	public synchronized Integer heuristicCostCourbe(Cinematique c)
@@ -308,16 +310,39 @@ public class TentacleManager implements Iterable<AStarNode>
 		return successeur.getArc() != null && successeur.getArc().getLast().getPosition().squaredDistance(arrivee.getPosition()) < 5;
 	}
 
-	@Override
-	public Iterator<AStarNode> iterator()
-	{
-		return successeurs.iterator();
-	}
-
 	public void stopThreads()
 	{
 		if(threads.length > 1)
 			for(int i = 0; i < threads.length; i++)
 				threads[i].interrupt();
+	}
+
+	private AStarNode next;
+	
+	@Override
+	public boolean hasNext()
+	{
+		assert threads.length > 1 || successeurs.size() == nbLeft : successeurs.size() + " " + nbLeft; // s'il n'y a qu'un seul thread, alors tous les successeurs sont dans la liste
+		if(nbLeft == 0)
+		{
+			assert successeurs.isEmpty();
+			return false;
+		}
+		try {
+			do {
+				next = successeurs.take();
+				nbLeft--;
+			} while(nbLeft > 0 && next == TentacleThread.dummy);
+			return next != TentacleThread.dummy;
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	@Override
+	public AStarNode next()
+	{
+		return next;
 	}
 }

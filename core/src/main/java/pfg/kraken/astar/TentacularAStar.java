@@ -365,12 +365,13 @@ public class TentacularAStar
 			arcmanager.computeTentacles(current);
 			if(debugMode)
 				outTentacles.clear();
-			
-			for(AStarNode successeur : arcmanager)
+
+			while(arcmanager.hasNext())
 			{
+				AStarNode successeur = arcmanager.next();
 				assert successeur.getArc().getNbPoints() > 0;
 				assert successeur.getArc().getPoint(0).getPosition().distanceFast(current.robot.getCinematique().getPosition()) < 35 : successeur.getArc()+" "+current.robot.getCinematique().getPosition()+" "+successeur.getArc().getPoint(0).getPosition().distanceFast(current.robot.getCinematique().getPosition());
-				assert successeur.getState() == MemPoolState.NEXT;
+				assert successeur.getState() == MemPoolState.NEXT : successeur.getState();
 				successeur.g_score += current.g_score; // successeur.g_score contient déjà la distance entre current et successeur
 
 				// on a déjà visité un point proche?

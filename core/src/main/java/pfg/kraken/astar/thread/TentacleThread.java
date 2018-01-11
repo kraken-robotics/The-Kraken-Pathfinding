@@ -7,8 +7,7 @@ package pfg.kraken.astar.thread;
 
 import static pfg.kraken.astar.tentacles.Tentacle.PRECISION_TRACE;
 
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.BlockingQueue;
 
 import pfg.config.Config;
 import pfg.graphic.log.Log;
@@ -31,13 +30,15 @@ public class TentacleThread extends Thread
 	private int tempsArret;
 	private double deltaSpeedFromStop;
 	private int nb;
-	public final Queue<TentacleTask> buffer = new ConcurrentLinkedQueue<TentacleTask>();
-	public final Queue<AStarNode> successeurs = new ConcurrentLinkedQueue<AStarNode>();
-	public volatile boolean done;
+	public final BlockingQueue<TentacleTask> buffer;
+	public final BlockingQueue<AStarNode> successeurs;
+	public final static AStarNode dummy = new AStarNode();
 	
-	public TentacleThread(Log log, Config config, NodePool memorymanager, int nb)
+	public TentacleThread(Log log, Config config, NodePool memorymanager, int nb, BlockingQueue<AStarNode> successeurs, BlockingQueue<TentacleTask> buffer)
 	{
 		this.log = log;
+		this.buffer = buffer;
+		this.successeurs = successeurs;
 		this.memorymanager = memorymanager;
 		this.nb = nb;
 		maxLinearAcceleration = config.getDouble(ConfigInfoKraken.MAX_LINEAR_ACCELERATION);
@@ -52,17 +53,7 @@ public class TentacleThread extends Thread
 		try
 		{
 			while(true)
-			{
-				synchronized(this)
-				{
-					if(buffer.isEmpty())
-						wait();
-					while(!buffer.isEmpty())
-						compute(buffer.poll());
-					done = true;
-					notify();
-				}
-			}
+				compute(buffer.take());
 		}
 		catch(InterruptedException e)
 		{
@@ -75,7 +66,7 @@ public class TentacleThread extends Thread
 		}
 	}
 
-	public AStarNode compute(TentacleTask task)
+	public void compute(TentacleTask task)
 	{
 		AStarNode successeur = memorymanager.getNewNode();
 		assert successeur.cameFromArcDynamique == null;
@@ -89,12 +80,11 @@ public class TentacleThread extends Thread
 			successeur.robot.suitArcCourbe(successeur.getArc(), duration);
 			successeur.g_score = duration;
 			successeurs.add(successeur);
-			return successeur;
 		}
 		else
 		{
+			successeurs.add(dummy);
 			memorymanager.destroyNode(successeur);
-			return null;
 		}
 	}
 }
