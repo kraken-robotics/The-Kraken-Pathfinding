@@ -44,11 +44,18 @@ public class NodePool extends MemoryPool<AStarNode>
 	public synchronized AStarNode getNewNode()
 	{
 		AStarNode out = super.getNewNode();
-		if(out.cameFromArcDynamique != null)
-		{
-			pool.destroy(out.cameFromArcDynamique.arcs, false);
-			out.cameFromArcDynamique = null;
-		}
+		out.cameFromArcDynamique = null;
 		return out;
+	}
+	
+	@Override
+	public synchronized void destroyNode(AStarNode objet)
+	{
+		if(objet.cameFromArcDynamique != null)
+		{
+			pool.destroy(objet.cameFromArcDynamique.arcs, false);
+			objet.cameFromArcDynamique = null;
+		}
+		super.destroyNode(objet);
 	}
 }

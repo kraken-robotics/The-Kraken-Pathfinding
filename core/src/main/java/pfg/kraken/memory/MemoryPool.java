@@ -78,8 +78,9 @@ public abstract class MemoryPool<T extends Memorizable>
 			nodes.add(newNodes);
 		}
 
+		String s;
 		T out = nodes.get(firstAvailable / initialNbInstances)[firstAvailable % initialNbInstances];
-		assert checkStateNew(out);
+		assert (s = checkStateNew(out)) == null : s;
 		firstAvailable++;
 
 		return out;
@@ -96,7 +97,7 @@ public abstract class MemoryPool<T extends Memorizable>
 		firstAvailable = 0;
 	}
 
-	public boolean checkEmpty()
+	private boolean checkEmpty()
 	{
 		MemPoolState s;
 		int nbCurrent = 0;
@@ -109,6 +110,8 @@ public abstract class MemoryPool<T extends Memorizable>
 				nbCurrent++;
 				assert nbCurrent <= 1 : nbCurrent; // au plus un nœud "current"
 			}
+			// now they are free
+			nodes.get(i / initialNbInstances)[i % initialNbInstances].setState(MemPoolState.FREE);
 		}
 		for(int i = firstAvailable; i < initialNbInstances * nodes.size() - 1; i++)
 		{
@@ -139,7 +142,8 @@ public abstract class MemoryPool<T extends Memorizable>
 		int indexObject = objet.getIndiceMemoryManager();
 
 		assert indexObject >= 0;
-		assert checkStateDestroy(objet);
+		String s;
+		assert (s = checkStateDestroy(objet)) == null : s;
 		
 		/**
 		 * Invariant: l'objet ne doit pas être déjà détruit
@@ -165,16 +169,16 @@ public abstract class MemoryPool<T extends Memorizable>
 		}
 	}
 
-	private boolean checkStateDestroy(T objet)
+	private String checkStateDestroy(T objet)
 	{
-		boolean out = objet.getState() == MemPoolState.CURRENT || objet.getState() == MemPoolState.NEXT;
+		String out = objet.getState() == MemPoolState.CURRENT || objet.getState() == MemPoolState.NEXT ? null : objet.getState().toString();
 		objet.setState(MemPoolState.FREE);
 		return out;
 	}
 	
-	private boolean checkStateNew(T objet)
+	private String checkStateNew(T objet)
 	{
-		boolean out = objet.getState() == MemPoolState.FREE;
+		String out = objet.getState() == MemPoolState.FREE ? null : objet.getState().toString();
 		objet.setState(MemPoolState.NEXT);
 		return out;
 	}
