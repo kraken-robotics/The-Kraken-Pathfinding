@@ -138,7 +138,7 @@ public class BezierComputer implements TentacleComputer
 	 */
 	public DynamicTentacle quadraticInterpolationXYOC2XY(Cinematique cinematiqueInitiale, XY arrivee, int indexThread)
 	{
-		debut[indexThread] = cinematiqueInitiale;
+		cinematiqueInitiale.copy(debut[indexThread]);
 		arrivee.copy(delta[indexThread]);
 		delta[indexThread].minus(debut[indexThread].getPosition());
 		vecteurVitesse[indexThread].setX(Math.cos(debut[indexThread].orientationGeometrique));
