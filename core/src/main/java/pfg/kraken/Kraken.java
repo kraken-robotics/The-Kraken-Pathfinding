@@ -23,8 +23,6 @@ import pfg.injector.Injector;
 import pfg.injector.InjectorException;
 import pfg.kraken.astar.DirectionStrategy;
 import pfg.kraken.astar.TentacularAStar;
-import pfg.kraken.astar.tentacles.BezierComputer;
-import pfg.kraken.astar.tentacles.ClothoidesComputer;
 import pfg.kraken.astar.tentacles.ResearchProfileManager;
 import pfg.kraken.astar.tentacles.TentacleManager;
 import pfg.kraken.astar.tentacles.types.*;
@@ -102,20 +100,33 @@ public class Kraken
 	 */
 	public Kraken(RectangularObstacle vehicleTemplate, Iterable<Obstacle> fixedObstacles, DynamicObstacles dynObs, XY bottomLeftCorner, XY topRightCorner, String...configprofile)
 	{	
+		List<TentacleType> tentacleTypesUsed = new ArrayList<TentacleType>();
+		for(BezierTentacle t : BezierTentacle.values())
+			tentacleTypesUsed.add(t);
+		for(ClothoTentacle t : ClothoTentacle.values())
+			tentacleTypesUsed.add(t);
+/*			for(TurnoverTentacle t : TurnoverTentacle.values())
+				tentacleTypesUsed.add(t);
+			for(StraightingTentacle t : StraightingTentacle.values())
+				tentacleTypesUsed.add(t);*/
+		
+		injector = new Injector();
+		config = new Config(ConfigInfoKraken.values(), isJUnitTest(), "kraken.conf", configprofile);
+		injector.addService(RectangularObstacle.class, vehicleTemplate);
+		
+		/*
+		 * We adjust the maximal curvature in order to never be under the minimal speed
+		 */
+		double minSpeed = config.getDouble(ConfigInfoKraken.MINIMAL_SPEED);
+		if(minSpeed > 0)
+		{
+			double maxLateralAcc = config.getDouble(ConfigInfoKraken.MAX_LATERAL_ACCELERATION);
+			config.override(ConfigInfoKraken.MAX_CURVATURE, Math.min(config.getDouble(ConfigInfoKraken.MAX_CURVATURE), maxLateralAcc / (minSpeed * minSpeed)));
+		}
+		
 		try {
-			injector = new Injector();
-			config = new Config(ConfigInfoKraken.values(), isJUnitTest(), "kraken.conf", configprofile);
-			injector.addService(RectangularObstacle.class, vehicleTemplate);
-			
-			/*
-			 * We adjust the maximal curvature in order to never be under the minimal speed
-			 */
-			double minSpeed = config.getDouble(ConfigInfoKraken.MINIMAL_SPEED);
-			if(minSpeed > 0)
-			{
-				double maxLateralAcc = config.getDouble(ConfigInfoKraken.MAX_LATERAL_ACCELERATION);
-				config.override(ConfigInfoKraken.MAX_CURVATURE, Math.min(config.getDouble(ConfigInfoKraken.MAX_CURVATURE), maxLateralAcc / (minSpeed * minSpeed)));
-			}
+			ResearchProfileManager profiles = injector.getService(ResearchProfileManager.class);
+			profiles.addProfile(tentacleTypesUsed);
 			
 			StaticObstacles so = injector.getService(StaticObstacles.class); 
 			if(fixedObstacles != null)
@@ -130,23 +141,6 @@ public class Kraken
 			injector.addService(DynamicObstacles.class, dynObs);		
 			injector.addService(this);
 			injector.addService(injector);
-
-
-			
-			List<TentacleType> tentacleTypesUsed = new ArrayList<TentacleType>();
-			for(BezierTentacle t : BezierTentacle.values())
-			{
-				tentacleTypesUsed.add(t);
-				t.setComputer(injector.getService(BezierComputer.class));
-			}
-			for(ClothoTentacle t : ClothoTentacle.values())
-			{
-				tentacleTypesUsed.add(t);
-				t.setComputer(injector.getService(ClothoidesComputer.class));
-			}
-
-			ResearchProfileManager profiles = injector.getService(ResearchProfileManager.class);
-			profiles.addProfile(tentacleTypesUsed);
 
 			if(config.getBoolean(ConfigInfoKraken.GRAPHIC_ENABLE))
 			{

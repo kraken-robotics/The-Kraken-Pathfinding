@@ -13,6 +13,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import pfg.config.Config;
+import pfg.injector.Injector;
 import pfg.injector.InjectorException;
 import pfg.kraken.ColorKraken;
 import pfg.kraken.ConfigInfoKraken;
@@ -51,6 +52,7 @@ public class TentacleManager implements Iterator<AStarNode>
 	private DynamicObstacles dynamicObs;
 	private double courbureMax, maxLinearAcceleration, vitesseMax;
 	private boolean printObstacles;
+	private Injector injector;
 	private StaticObstacles fixes;
 	private double deltaSpeedFromStop;
 	private GraphicDisplay display;
@@ -67,8 +69,9 @@ public class TentacleManager implements Iterator<AStarNode>
 	
 	private int nbLeft;
 	
-	public TentacleManager(Log log, StaticObstacles fixes, DStarLite dstarlite, Config config, DynamicObstacles dynamicObs, ResearchProfileManager profiles, NodePool memorymanager, GraphicDisplay display) throws InjectorException
+	public TentacleManager(Log log, StaticObstacles fixes, DStarLite dstarlite, Config config, DynamicObstacles dynamicObs, Injector injector, ResearchProfileManager profiles, NodePool memorymanager, GraphicDisplay display) throws InjectorException
 	{
+		this.injector = injector;
 		this.fixes = fixes;
 		this.dynamicObs = dynamicObs;
 		this.log = log;
@@ -80,8 +83,8 @@ public class TentacleManager implements Iterator<AStarNode>
 		for(int i = 0; i < currentProfile.size(); i++)
 			tasks.add(new TentacleTask());
 		
-//		for(TentacleType t : currentProfile)
-//			injector.getService(t.getComputer());
+		for(TentacleType t : currentProfile)
+			injector.getService(t.getComputer());
 		
 		maxLinearAcceleration = config.getDouble(ConfigInfoKraken.MAX_LINEAR_ACCELERATION);
 		deltaSpeedFromStop = Math.sqrt(2 * PRECISION_TRACE * maxLinearAcceleration);
@@ -259,7 +262,7 @@ public class TentacleManager implements Iterator<AStarNode>
 				tt.arrivee = arrivee;
 				tt.current = current;
 				tt.v = v;
-				tt.computer = v.getComputer();
+				tt.computer = injector.getExistingService(v.getComputer());
 				tt.vitesseMax = vitesseMax;
 				
 				if(threads.length == 1) // no multithreading in this case
