@@ -401,13 +401,11 @@ public class TentacularAStar
 					// on détruit l'ancien trajet
 					if(trajetDeSecours != null)
 					{
-						assert trajetDeSecours.getState() == MemPoolState.STANDBY && setState(trajetDeSecours, MemPoolState.CURRENT);
+						assert trajetDeSecours.getState() == MemPoolState.WAITING && setState(trajetDeSecours, MemPoolState.CURRENT) : trajetDeSecours.getState();
 						memorymanager.destroyNode(trajetDeSecours);
 					}
 
 					trajetDeSecours = successeur;
-					assert setState(trajetDeSecours, MemPoolState.STANDBY);
-					continue;
 				}
 				
 				if(debugMode)

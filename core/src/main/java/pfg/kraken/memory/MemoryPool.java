@@ -79,7 +79,7 @@ public abstract class MemoryPool<T extends Memorizable>
 		}
 
 		T out = nodes.get(firstAvailable / initialNbInstances)[firstAvailable % initialNbInstances];
-		checkStateNew(out);
+		assert checkStateNew(out);
 		firstAvailable++;
 
 		return out;
