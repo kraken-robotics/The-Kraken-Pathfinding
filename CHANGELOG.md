@@ -1,6 +1,10 @@
 # Unreleased
-- API : add getVersion() to Kraken
 
+# v1.2.2
+- API : add getVersion() to Kraken
+- Bugfix multithreading
+- Dozen new sanity checks
+- New multithreading architecture
 
 # v1.2.1
 - Unit tests : introduction
