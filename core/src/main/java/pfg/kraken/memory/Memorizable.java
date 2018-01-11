@@ -28,4 +28,8 @@ public interface Memorizable
 	 * @return
 	 */
 	public int getIndiceMemoryManager();
+	
+	public void setState(MemPoolState state);
+	
+	public MemPoolState getState();
 }

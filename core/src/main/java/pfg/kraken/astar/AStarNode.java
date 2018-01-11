@@ -12,6 +12,7 @@ import pfg.graphic.printable.Printable;
 import pfg.kraken.astar.tentacles.DynamicTentacle;
 import pfg.kraken.astar.tentacles.StaticTentacle;
 import pfg.kraken.astar.tentacles.Tentacle;
+import pfg.kraken.memory.MemPoolState;
 import pfg.kraken.memory.Memorizable;
 import pfg.kraken.obstacles.RectangularObstacle;
 import pfg.kraken.robot.RobotState;
@@ -59,6 +60,7 @@ public class AStarNode implements Memorizable, Printable
 			return null;
 		if(cameFromArcDynamique != null)
 			return cameFromArcDynamique;
+		assert cameFromArcStatique != null;
 		return cameFromArcStatique;
 	}
 
@@ -108,5 +110,19 @@ public class AStarNode implements Memorizable, Printable
 		Tentacle a = getArc();
 		if(a != null)
 			a.print(g, f);
+	}
+	
+	private volatile MemPoolState state = MemPoolState.FREE;
+	
+	@Override
+	public void setState(MemPoolState state)
+	{
+		this.state = state;
+	}
+	
+	@Override
+	public MemPoolState getState()
+	{
+		return state;
 	}
 }

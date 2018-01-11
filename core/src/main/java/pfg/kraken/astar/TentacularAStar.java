@@ -23,6 +23,7 @@ import pfg.kraken.exceptions.NoPathException;
 import pfg.kraken.exceptions.PathfindingException;
 import pfg.kraken.exceptions.TimeoutException;
 import pfg.kraken.memory.CinemObsPool;
+import pfg.kraken.memory.MemPoolState;
 import pfg.kraken.memory.NodePool;
 import pfg.kraken.obstacles.RectangularObstacle;
 import pfg.kraken.robot.Cinematique;
@@ -137,7 +138,7 @@ public class TentacularAStar
 	/*
 	 * The set of processed nodes
 	 */
-	private final HashSet<AStarNode> closedset = new HashSet<AStarNode>();
+	private final HashSet<Integer> closedset = new HashSet<Integer>();
 	
 	/*
 	 * The set of nodes that need to be processed
@@ -220,6 +221,7 @@ public class TentacularAStar
 
 		depart.f_score = heuristique;
 		openset.clear();
+		assert setState(depart, MemPoolState.WAITING);
 		openset.add(depart); // Les nœuds à évaluer
 		closedset.clear();
 
@@ -229,6 +231,12 @@ public class TentacularAStar
 		do
 		{
 			current = openset.poll();
+
+			assert current.parent != null || current == depart;
+			assert current == depart || current.parent == depart || current.parent.getArc() != null : current == depart ? "Départ" : current.parent.getArc();
+			assert current.parent == null || current.parent.getState() == MemPoolState.STANDBY;
+			assert current.getState() == MemPoolState.WAITING && setState(current, MemPoolState.CURRENT) : current.getState();
+			
 			nbExpandedNodes++;
 			
 			// FIXME : this part is currently disable
@@ -278,11 +286,14 @@ public class TentacularAStar
 
 			// si on a déjà fait ce point ou un point très proche…
 			// exception si c'est un point d'arrivée
-			if(!closedset.add(current) && !arcmanager.isArrived(current))
+			if(!closedset.add(current.hashCode()) && !arcmanager.isArrived(current))
 			{
 				// we skip this point
 				if(current != depart)
+				{
 					memorymanager.destroyNode(current);
+					assert current.getState() == MemPoolState.FREE;
+				}
 				continue;
 			}
 
@@ -292,13 +303,23 @@ public class TentacularAStar
 			if(!arcmanager.isReachable(current))
 			{
 				if(current != depart)
+				{
 					memorymanager.destroyNode(current);
+					assert current.getState() == MemPoolState.FREE;
+				}
 				continue; // collision mécanique attendue. On passe au suivant !
 			}
 
 			// affichage
 			if(graphicTrajectory && current.getArc() != null)
+			{
 				buffer.addTemporaryPrintable(current, current.getArc().vitesse.getColor(), Layer.MIDDLE.layer);
+				if(current.parent != null)
+				{
+					buffer.addTemporaryPrintable(current.parent, Color.ORANGE, Layer.FOREGROUND.layer);
+					assert current.parent == depart || current.parent.getArc().getNbPoints() > 0;
+				}
+			}
 
 			// Si current est la trajectoire de secours, ça veut dire que cette
 			// trajectoire de secours est la meilleure possible, donc on a fini
@@ -347,12 +368,15 @@ public class TentacularAStar
 			
 			for(AStarNode successeur : arcmanager)
 			{
+				assert successeur.getArc().getNbPoints() > 0;
+				assert successeur.getArc().getPoint(0).getPosition().distanceFast(current.robot.getCinematique().getPosition()) < 35 : successeur.getArc()+" "+current.robot.getCinematique().getPosition()+" "+successeur.getArc().getPoint(0).getPosition().distanceFast(current.robot.getCinematique().getPosition());
+				assert successeur.getState() == MemPoolState.NEXT;
 				successeur.g_score += current.g_score; // successeur.g_score contient déjà la distance entre current et successeur
 
 				// on a déjà visité un point proche?
 				// ceci est vraie seulement si l'heuristique est monotone. C'est
 				// normalement le cas.
-				if(closedset.contains(successeur))
+				if(closedset.contains(successeur.hashCode()))
 				{
 					memorymanager.destroyNode(successeur);
 					continue;
@@ -370,13 +394,19 @@ public class TentacularAStar
 
 				// est qu'on est tombé sur l'arrivée ? alors ça fait un trajet de secours
 				// s'il y a déjà un trajet de secours, on prend le meilleur
+				// TODO
 				if(arcmanager.isArrived(successeur) && arcmanager.isReachable(successeur) && (trajetDeSecours == null || trajetDeSecours.f_score > successeur.f_score))
 				{
 					// on détruit l'ancien trajet
 					if(trajetDeSecours != null)
+					{
+						assert trajetDeSecours.getState() == MemPoolState.STANDBY && setState(trajetDeSecours, MemPoolState.CURRENT);
 						memorymanager.destroyNode(trajetDeSecours);
+					}
 
 					trajetDeSecours = successeur;
+					assert setState(trajetDeSecours, MemPoolState.STANDBY);
+					continue;
 				}
 				
 				if(debugMode)
@@ -386,6 +416,7 @@ public class TentacularAStar
 				}
 
 				openset.add(successeur);
+				assert setState(successeur, MemPoolState.WAITING);
 			}
 			
 			if(debugMode)
@@ -401,6 +432,7 @@ public class TentacularAStar
 				buffer.refresh();
 			}
 
+			assert setState(current, MemPoolState.STANDBY);
 		} while(!openset.isEmpty());
 
 		/**
@@ -511,4 +543,10 @@ public class TentacularAStar
 
 //		process(realChemin, true);
 	}*/
+	
+	private boolean setState(AStarNode node, MemPoolState state)
+	{
+		node.setState(state);
+		return true;
+	}
 }

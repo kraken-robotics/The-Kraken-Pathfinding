@@ -7,6 +7,7 @@ package pfg.kraken.robot;
 
 import java.io.Serializable;
 
+import pfg.kraken.memory.MemPoolState;
 import pfg.kraken.memory.Memorizable;
 import pfg.kraken.obstacles.RectangularObstacle;
 
@@ -101,4 +102,17 @@ public class CinematiqueObs extends Cinematique implements Memorizable, Serializ
 		obstacle.update(position, orientationReelle);
 	}
 
+	private volatile MemPoolState state = MemPoolState.FREE;
+	
+	@Override
+	public void setState(MemPoolState state)
+	{
+		this.state = state;
+	}
+	
+	@Override
+	public MemPoolState getState()
+	{
+		return state;
+	}
 }

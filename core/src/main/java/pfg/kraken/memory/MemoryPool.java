@@ -14,12 +14,7 @@ import pfg.graphic.log.Log;
 
 
 /**
- * Classe qui fournit des objets
- * Quand on a besoin de beaucoup d'objets, car l'instanciation d'un objet est
- * long.
- * Du coup on réutilise les mêmes objets sans devoir en créer tout le temps de
- * nouveaux.
- * 
+ * A memory pool
  * @author pf
  *
  */
@@ -84,7 +79,9 @@ public abstract class MemoryPool<T extends Memorizable>
 		}
 
 		T out = nodes.get(firstAvailable / initialNbInstances)[firstAvailable % initialNbInstances];
+		checkStateNew(out);
 		firstAvailable++;
+
 		return out;
 	}
 
@@ -95,7 +92,30 @@ public abstract class MemoryPool<T extends Memorizable>
 	 */
 	public synchronized void empty()
 	{
+		assert checkEmpty();
 		firstAvailable = 0;
+	}
+
+	public boolean checkEmpty()
+	{
+		MemPoolState s;
+		int nbCurrent = 0;
+		for(int i = 0; i < firstAvailable; i++)
+		{
+			s = nodes.get(i / initialNbInstances)[i % initialNbInstances].getState();
+			assert s != MemPoolState.FREE : classe+" "+s + " "+i+"/"+firstAvailable;
+			if(s == MemPoolState.CURRENT)
+			{
+				nbCurrent++;
+				assert nbCurrent <= 1 : nbCurrent; // au plus un nœud "current"
+			}
+		}
+		for(int i = firstAvailable; i < initialNbInstances * nodes.size() - 1; i++)
+		{
+			s = nodes.get(i / initialNbInstances)[i % initialNbInstances].getState();
+			assert s == MemPoolState.FREE : classe+" "+s;
+		}
+		return true;
 	}
 
 	/**
@@ -118,6 +138,9 @@ public abstract class MemoryPool<T extends Memorizable>
 	{
 		int indexObject = objet.getIndiceMemoryManager();
 
+		assert indexObject >= 0;
+		assert checkStateDestroy(objet);
+		
 		/**
 		 * Invariant: l'objet ne doit pas être déjà détruit
 		 */
@@ -140,6 +163,20 @@ public abstract class MemoryPool<T extends Memorizable>
 			nodes.get(firstAvailable / initialNbInstances)[firstAvailable % initialNbInstances] = tmp1;
 			nodes.get(indexObject / initialNbInstances)[indexObject % initialNbInstances] = tmp2;
 		}
+	}
+
+	private boolean checkStateDestroy(T objet)
+	{
+		boolean out = objet.getState() == MemPoolState.CURRENT || objet.getState() == MemPoolState.NEXT;
+		objet.setState(MemPoolState.FREE);
+		return out;
+	}
+	
+	private boolean checkStateNew(T objet)
+	{
+		boolean out = objet.getState() == MemPoolState.FREE;
+		objet.setState(MemPoolState.NEXT);
+		return out;
 	}
 
 	public synchronized final void destroy(Iterable<T> c)
