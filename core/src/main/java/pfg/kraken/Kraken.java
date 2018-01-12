@@ -50,7 +50,7 @@ public class Kraken
 	private Injector injector;
 	private TentacularAStar astar;
 	private boolean stopped = false;
-	private static final String version = "1.2.2";
+	private static final String version = "1.3.0";
 	
 	/**
 	 * Get Kraken with :
