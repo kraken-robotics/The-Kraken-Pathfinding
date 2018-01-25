@@ -1,6 +1,4 @@
 language : java
-install :
-    - ./install_dependencies.sh
 script :
     - cd core
     - sed s/GRAPHIC_ENABLE\ =\ true// src/test/resources/kraken.conf -i
@@ -8,6 +6,8 @@ script :
     - cd ../examples
     - ant
 jdk : oraclejdk8
+branches :
+    except: mvn-repo
 notifications:
     slack: intech-sudparis:Z3xKQEmZT2a9BFBqouokQ6J7
     on_success: change

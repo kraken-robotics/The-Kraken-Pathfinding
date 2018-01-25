@@ -36,34 +36,39 @@ For legacy reasons, mainly.
 
 ## Getting Kraken
 
-### Downloading the last stable version
+### Maven installation
 
-You can download the .jar file here: https://github.com/PFGimenez/The-Kraken-Pathfinding/releases/download/v1.1.2/kraken.jar
+If you want to use this library in one of your maven project, add this to your pom.xml :
 
-### Getting the source
+    <repositories>
+        <repository>
+            <id>kraken-pfg-mvn-repo</id>
+            <url>https://raw.githubusercontent.com/PFGimenez/The-Kraken-Pathfinding/mvn-repo/</url>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
+        </repository>
+    </repositories>
 
-If you want the latest version, clone this repository:
+and
 
-    $ git clone https://github.com/PFGimenez/The-Kraken-Pathfinding.git
+    <dependency>
+        <groupId>pfg.kraken</groupId>
+        <artifactId>kraken</artifactId>
+        <version>[1.3.0,)</version>
+    </dependency>
 
 
-### Compiling
+### Manual compilation
 
-You will need a JDK and maven:
-    
+If you want the latest version:
+
+    $ git clone https://github.com/PFGimenez/The-Kraken-Pathfinding.git --depth 1
     $ cd The-Kraken-Pathfinding/core
-    $ ./install_dependencies.sh
-    $ cd core
     $ mvn install
 
 Examples are available in the directory ```examples```.
-
-### Unit testing
-
-You can easily run the tests:
-
-    $ cd The-Kraken-Pathfinding/tests
-    $ ant
 
 ## Great, I have a trajectory. How do I follow it ?
 
