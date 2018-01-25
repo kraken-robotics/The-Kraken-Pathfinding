@@ -56,7 +56,7 @@ and
     <dependency>
         <groupId>pfg.kraken</groupId>
         <artifactId>kraken</artifactId>
-        <version>[1.3.0,)</version>
+        <version>[1.2.2,)</version>
     </dependency>
 
 
@@ -70,7 +70,7 @@ If you want the latest version:
 
 Examples are available in the directory ```examples```.
 
-## Great, I have a trajectory. How do I follow it ?
+## Great, I have a trajectory. How do my robot follow it ?
 
 Getting the trajectory is only half of the work, because you won't go far if your robot can't follow it. Different control algorithms exist; in this section the Samson control algorithm [1] is presented.
 
