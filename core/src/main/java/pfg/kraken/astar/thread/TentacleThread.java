@@ -10,7 +10,7 @@ import static pfg.kraken.astar.tentacles.Tentacle.PRECISION_TRACE;
 import java.util.concurrent.BlockingQueue;
 
 import pfg.config.Config;
-import pfg.graphic.log.Log;
+import pfg.log.Log;
 import pfg.kraken.ConfigInfoKraken;
 import pfg.kraken.astar.AStarNode;
 import pfg.kraken.memory.NodePool;

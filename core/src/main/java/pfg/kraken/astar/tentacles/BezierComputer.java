@@ -21,7 +21,7 @@ import pfg.kraken.robot.CinematiqueObs;
 import pfg.kraken.utils.XY;
 import pfg.kraken.utils.XYO;
 import pfg.kraken.utils.XY_RW;
-import pfg.graphic.log.Log;
+import pfg.log.Log;
 import static pfg.kraken.astar.tentacles.Tentacle.*;
 
 /**

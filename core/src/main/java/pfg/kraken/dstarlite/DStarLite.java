@@ -21,7 +21,7 @@ import pfg.kraken.obstacles.container.DynamicObstacles;
 import pfg.kraken.obstacles.container.StaticObstacles;
 import pfg.kraken.robot.Cinematique;
 import pfg.kraken.utils.XY;
-import pfg.graphic.log.Log;
+import pfg.log.Log;
 
 /**
  * Recherche de chemin avec replanification rapide.

@@ -14,7 +14,7 @@ import pfg.config.Config;
 import pfg.config.ConfigInfo;
 import pfg.graphic.Vec2RO;
 import pfg.graphic.WindowFrame;
-import pfg.graphic.log.Log;
+import pfg.log.Log;
 import pfg.graphic.printable.Layer;
 import pfg.graphic.GraphicDisplay;
 import pfg.graphic.ConfigInfoGraphic;
@@ -134,7 +134,7 @@ public class Kraken
 					so.add(o);
 			so.setCorners(bottomLeftCorner, topRightCorner);
 
-			Log log = Log.getLog(SeverityCategoryKraken.INFO);
+			Log log = new Log(SeverityCategoryKraken.INFO, "log.conf", "kraken");
 
 			injector.addService(log);
 			injector.addService(config);

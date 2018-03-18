@@ -5,7 +5,7 @@
 
 package pfg.kraken;
 
-import pfg.graphic.log.SeverityCategory;
+import pfg.log.Severity;
 
 /**
  * The severity category of Kraken
@@ -13,7 +13,7 @@ import pfg.graphic.log.SeverityCategory;
  *
  */
 
-public enum SeverityCategoryKraken implements SeverityCategory
+public enum SeverityCategoryKraken implements Severity
 {
 	INFO, WARNING, CRITICAL;
 }

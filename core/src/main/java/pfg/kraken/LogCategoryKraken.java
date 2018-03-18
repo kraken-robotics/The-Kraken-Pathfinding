@@ -5,7 +5,7 @@
 
 package pfg.kraken;
 
-import pfg.graphic.log.LogCategory;
+import pfg.log.LogCategory;
 
 /**
  * The log categories of Kraken

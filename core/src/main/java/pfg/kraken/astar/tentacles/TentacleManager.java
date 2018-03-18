@@ -34,7 +34,7 @@ import pfg.kraken.robot.CinematiqueObs;
 import pfg.kraken.robot.ItineraryPoint;
 import pfg.kraken.utils.XY;
 import pfg.graphic.GraphicDisplay;
-import pfg.graphic.log.Log;
+import pfg.log.Log;
 import pfg.graphic.printable.Layer;
 import static pfg.kraken.astar.tentacles.Tentacle.*;
 

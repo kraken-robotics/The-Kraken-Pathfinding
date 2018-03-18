@@ -8,7 +8,7 @@ package pfg.kraken.astar;
 import java.util.LinkedList;
 import pfg.kraken.robot.Cinematique;
 import pfg.kraken.robot.ItineraryPoint;
-import pfg.graphic.log.Log;
+import pfg.log.Log;
 
 /**
  * Faux chemin, sert à la prévision d'itinéraire

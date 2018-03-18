@@ -10,7 +10,7 @@ import pfg.config.Config;
 import pfg.kraken.ConfigInfoKraken;
 import pfg.kraken.obstacles.RectangularObstacle;
 import pfg.kraken.robot.CinematiqueObs;
-import pfg.graphic.log.Log;
+import pfg.log.Log;
 
 /**
  * Classe qui fournit des objets CinematiqueObs

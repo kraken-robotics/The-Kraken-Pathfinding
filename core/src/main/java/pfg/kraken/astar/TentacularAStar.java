@@ -29,7 +29,7 @@ import pfg.kraken.obstacles.RectangularObstacle;
 import pfg.kraken.robot.Cinematique;
 import pfg.kraken.robot.ItineraryPoint;
 import pfg.kraken.robot.RobotState;
-import pfg.graphic.log.Log;
+import pfg.log.Log;
 import pfg.kraken.utils.XY;
 import pfg.kraken.utils.XYO;
 
