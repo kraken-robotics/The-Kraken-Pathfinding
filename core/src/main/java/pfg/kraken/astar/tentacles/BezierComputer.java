@@ -126,13 +126,13 @@ public class BezierComputer implements TentacleComputer
 		if(Math.abs(vx*uy - vy*ux) < 0.1)
 			return null;
 		
-		double gamma = (a.getX()*uy - a.getY()*ux + c.getY()*ux - c.getX()*uy) / (ux*vy - uy*vx);
+		double distanceBC = (a.getX()*uy - a.getY()*ux + c.getY()*ux - c.getX()*uy) / (ux*vy - uy*vx);
 		// on va arriver dans le mauvais sens
-		if(gamma < 0)
+		if(distanceBC < 0)
 			return null;
 
-		pointB[indexThread].setX(arrivee.getPosition().getX() - gamma * vx);
-		pointB[indexThread].setY(arrivee.getPosition().getY() - gamma * vy);
+		pointB[indexThread].setX(arrivee.getPosition().getX() - distanceBC * vx);
+		pointB[indexThread].setY(arrivee.getPosition().getY() - distanceBC * vy);
 
 		// on part du mauvais sens
 		if((pointB[indexThread].getX() - a.getX()) * ux + (pointB[indexThread].getY() - a.getY()) * uy <= 0)
@@ -157,52 +157,42 @@ public class BezierComputer implements TentacleComputer
 		double vx = Math.cos(arrivee.orientationGeometrique);
 		double vy = Math.sin(arrivee.orientationGeometrique);
 
-		// Il faut vérifier que le cosinus soit positif et non-nul
-		double cos = vx*uy - vy*ux;
-
+		// TODO : vérifier que D est bien du côté de la courbure actuelle
+		
 		// Les orientations sont parallèles : on ne peut pas calculer leur intersection
-		if(Math.abs(cos) < 0.1)
-		{
-			System.out.println("Cos neg : "+cos);
+		if(Math.abs(ux*vy - uy*vx) < 0.1)
 			return null;
-		}
-		
-		System.out.println("cos = "+cos);
-		// gamma = distance BD
-		double gamma = (a.getX()*uy - a.getY()*ux + d.getY()*ux - d.getX()*uy) / (ux*vy - uy*vx);
-		System.out.println("Gamma = "+gamma);
-		pointB[indexThread].setX(arrivee.getPosition().getX() - gamma * vx);
-		pointB[indexThread].setY(arrivee.getPosition().getY() - gamma * vy);
-		
-		System.out.println("Point b :"+pointB[indexThread]);
+
+		double distanceBD = (a.getX()*uy - a.getY()*ux + d.getY()*ux - d.getX()*uy) / (ux*vy - uy*vx);
+
+		pointB[indexThread].setX(arrivee.getPosition().getX() - distanceBD * vx);
+		pointB[indexThread].setY(arrivee.getPosition().getY() - distanceBD * vy);
 		
 		// on part du mauvais sens
 		if((pointB[indexThread].getX() - a.getX()) * ux + (pointB[indexThread].getY() - a.getY()) * uy <= 0)
 			return null;
 
-		double distanceAB = a.distance(pointB[indexThread]);
-		// TODO : vérifier formule
-		double courbureDepart = Math.abs(cinematiqueInitiale.courbureGeometrique) / 1000.;
+		double sin = ux*vy - uy*vx;
 		
-		System.out.println(courbureDepart+" "+distanceAB+" "+(2*gamma*cos));
-
-		// on vérifie que C est entre B et D
+		double distanceAB = a.distance(pointB[indexThread]);
+		double courbureDepart = cinematiqueInitiale.courbureGeometrique / 1000.;
+		
+/*		// on vérifie que C est entre B et D
 		if(courbureDepart * distanceAB >= 2*gamma*cos)
 		{
 			System.out.println("C pas entre B et D");
 			return null;
-		}
+		}*/
 		
-		double distanceBC = courbureDepart * distanceAB / (2*gamma*cos);
-		
+		double distanceBC = 1.5 * courbureDepart * distanceAB * distanceAB / sin;
+
 		// si C est après D : on n'arrivera pas avec la bonne orientation
-		if(distanceBC >= gamma)
+		if(distanceBC >= distanceBD)
 			return null;
 
 		pointC[indexThread].setX(pointB[indexThread].getX() + distanceBC * vx);
 		pointC[indexThread].setY(pointB[indexThread].getY() + distanceBC * vy);
-		System.out.println("point c : "+pointC[indexThread]);
-		pointC[indexThread].setX(200);
+
 		return constructBezierCubique(a, pointB[indexThread], pointC[indexThread], d, cinematiqueInitiale.enMarcheAvant, cinematiqueInitiale, indexThread);
 	}
 	

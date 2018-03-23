@@ -12,7 +12,9 @@ import org.junit.Test;
 import pfg.graphic.printable.Layer;
 import pfg.kraken.astar.tentacles.BezierComputer;
 import pfg.kraken.astar.tentacles.DynamicTentacle;
+import pfg.kraken.obstacles.CircularObstacle;
 import pfg.kraken.robot.Cinematique;
+import pfg.kraken.utils.XY;
 
 /**
  * Test unitaire de BezierComputer
@@ -34,7 +36,8 @@ public class Test_BezierComputer extends JUnit_Test
 	@Test
 	public void test_xyoc_2_xy() throws Exception
 	{
-		Cinematique c = new Cinematique(0, 1000, Math.PI / 2, true, -1, false);
+		double courbureInitiale = -1;
+		Cinematique c = new Cinematique(0, 1000, Math.PI / 2, true, courbureInitiale, false);
 		Cinematique arrivee = new Cinematique(400, 1700, Math.PI / 2, false, 0, false);
 		log.write("Initial : " + c, LogCategoryKraken.TEST);
 		DynamicTentacle arc = bezier.quadraticInterpolationXYOC2XY(c, arrivee.getPosition(), 0);
@@ -44,6 +47,9 @@ public class Test_BezierComputer extends JUnit_Test
 		display.addTemporaryPrintable(arc, Color.BLACK, Layer.FOREGROUND.layer);
 		for(int i = 0; i < arc.getNbPoints(); i++)
 			System.out.println(i + " " + arc.getPoint(i));
+		
+		int rayonCourbure = (int) Math.round(1000. / courbureInitiale);
+		display.addPrintable(new CircularObstacle(new XY(-rayonCourbure, 1000), Math.abs(rayonCourbure)), Color.GRAY, Layer.FOREGROUND.layer);
 	}
 	
 	@Test
@@ -64,8 +70,9 @@ public class Test_BezierComputer extends JUnit_Test
 	@Test
 	public void test_xyoc_2_xyo() throws Exception
 	{
-		Cinematique c = new Cinematique(0, 1000, Math.PI / 2, true, -3, false);
-		Cinematique arrivee = new Cinematique(900, 1500, 0, false, 0, false);
+		double courbureInitiale = -2;
+		Cinematique c = new Cinematique(0, 1000, Math.PI / 2, true, courbureInitiale, false);
+		Cinematique arrivee = new Cinematique(1300, 1500, 0, false, 0, false);
 		log.write("Initial : " + c, LogCategoryKraken.TEST);
 		DynamicTentacle arc = bezier.cubicInterpolationXYOC2XYO(c, arrivee, 0);
 
@@ -74,5 +81,8 @@ public class Test_BezierComputer extends JUnit_Test
 		display.addTemporaryPrintable(arc, Color.BLACK, Layer.FOREGROUND.layer);
 		for(int i = 0; i < arc.getNbPoints(); i++)
 			System.out.println(i + " " + arc.getPoint(i));
+
+		int rayonCourbure = (int) Math.round(1000. / courbureInitiale);
+		display.addPrintable(new CircularObstacle(new XY(-rayonCourbure, 1000), Math.abs(rayonCourbure)), Color.GRAY, Layer.FOREGROUND.layer);
 	}
 }
