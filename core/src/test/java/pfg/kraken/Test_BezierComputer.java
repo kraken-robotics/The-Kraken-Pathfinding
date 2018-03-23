@@ -36,9 +36,9 @@ public class Test_BezierComputer extends JUnit_Test
 	@Test
 	public void test_xyoc_2_xy() throws Exception
 	{
-		double courbureInitiale = -1;
+		double courbureInitiale = -3;
 		Cinematique c = new Cinematique(0, 1000, Math.PI / 2, true, courbureInitiale, false);
-		Cinematique arrivee = new Cinematique(400, 1700, Math.PI / 2, false, 0, false);
+		Cinematique arrivee = new Cinematique(1100, 1700, Math.PI / 2, false, 0, false);
 		log.write("Initial : " + c, LogCategoryKraken.TEST);
 		DynamicTentacle arc = bezier.quadraticInterpolationXYOC2XY(c, arrivee.getPosition(), 0);
 
@@ -56,7 +56,7 @@ public class Test_BezierComputer extends JUnit_Test
 	public void test_xyo_2_xyo() throws Exception
 	{
 		Cinematique c = new Cinematique(0, 1000, Math.PI / 2, true, 0, false);
-		Cinematique arrivee = new Cinematique(200, 1500, 0, false, 0, false);
+		Cinematique arrivee = new Cinematique(400, 1500, 0, false, 0, false);
 		log.write("Initial : " + c, LogCategoryKraken.TEST);
 		DynamicTentacle arc = bezier.quadraticInterpolationXYO2XYO(c, arrivee, 0);
 
@@ -70,9 +70,9 @@ public class Test_BezierComputer extends JUnit_Test
 	@Test
 	public void test_xyoc_2_xyo() throws Exception
 	{
-		double courbureInitiale = -2;
+		double courbureInitiale = -1;
 		Cinematique c = new Cinematique(0, 1000, Math.PI / 2, true, courbureInitiale, false);
-		Cinematique arrivee = new Cinematique(1300, 1500, 0, false, 0, false);
+		Cinematique arrivee = new Cinematique(1000, 1500, 0, false, 0, false);
 		log.write("Initial : " + c, LogCategoryKraken.TEST);
 		DynamicTentacle arc = bezier.cubicInterpolationXYOC2XYO(c, arrivee, 0);
 
