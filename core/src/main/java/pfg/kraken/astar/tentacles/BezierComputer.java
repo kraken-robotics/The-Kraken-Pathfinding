@@ -58,7 +58,7 @@ public class BezierComputer implements TentacleComputer
 		c_tmp = new XY_RW[indexThreadMax];
 		d_tmp = new XY_RW[indexThreadMax];
 		acc = new XY_RW[indexThreadMax];
-		tmp_acc = new XY_RW[indexThreadMax];
+		vit = new XY_RW[indexThreadMax];
 		tmpPos = new XY_RW[indexThreadMax];
 		pointB = new XY_RW[indexThreadMax];
 		pointC = new XY_RW[indexThreadMax];
@@ -68,7 +68,7 @@ public class BezierComputer implements TentacleComputer
 		c_tmp = new XY_RW[indexThreadMax];
 		d_tmp = new XY_RW[indexThreadMax];
 		acc = new XY_RW[indexThreadMax];
-		tmp_acc = new XY_RW[indexThreadMax];
+		vit = new XY_RW[indexThreadMax];
 		tmpPos = new XY_RW[indexThreadMax];
 		debut = new Cinematique[indexThreadMax];
 		
@@ -82,7 +82,7 @@ public class BezierComputer implements TentacleComputer
 			c_tmp[i] = new XY_RW();
 			d_tmp[i] = new XY_RW();
 			acc[i] = new XY_RW();
-			tmp_acc[i] = new XY_RW();
+			vit[i] = new XY_RW();
 			tmpPos[i] = new XY_RW();
 			pointB[i] = new XY_RW();
 			pointC[i] = new XY_RW();
@@ -92,7 +92,7 @@ public class BezierComputer implements TentacleComputer
 			c_tmp[i] = new XY_RW();
 			d_tmp[i] = new XY_RW();
 			acc[i] = new XY_RW();
-			tmp_acc[i] = new XY_RW();
+			vit[i] = new XY_RW();
 			tmpPos[i] = new XY_RW();
 			debut[i] = new Cinematique();
 		}
@@ -105,7 +105,7 @@ public class BezierComputer implements TentacleComputer
 
 	private XY_RW[] pointB, pointC, tmpPoint3;
 	private Cinematique[] debut;
-	private XY_RW[] a_tmp, b_tmp, c_tmp, d_tmp, acc, tmp_acc, tmpPos;
+	private XY_RW[] a_tmp, b_tmp, c_tmp, d_tmp, acc, vit, tmpPos;
 
 	/**
 	 * Interpolation de XYO à XYO
@@ -292,13 +292,12 @@ public class BezierComputer implements TentacleComputer
 			D.copy(d_tmp[indexThread]);
 			d_tmp[indexThread].scalar(3*t*t);
 
-			a_tmp[indexThread].copy(tmp_acc[indexThread]);
-			tmp_acc[indexThread].plus(b_tmp[indexThread]);
-			tmp_acc[indexThread].plus(c_tmp[indexThread]);
-			tmp_acc[indexThread].plus(d_tmp[indexThread]);
-			double vitesse = tmp_acc[indexThread].norm();
-			double orientation = tmp_acc[indexThread].getArgument();
-			tmp_acc[indexThread].rotate(0, 1);
+			a_tmp[indexThread].copy(vit[indexThread]);
+			vit[indexThread].plus(b_tmp[indexThread]);
+			vit[indexThread].plus(c_tmp[indexThread]);
+			vit[indexThread].plus(d_tmp[indexThread]);
+			double vitesse = vit[indexThread].norm();
+			double orientation = vit[indexThread].getArgument();
 			
 			// Évalutation de l'accélération en t
 			A.copy(a_tmp[indexThread]);
@@ -315,9 +314,7 @@ public class BezierComputer implements TentacleComputer
 			acc[indexThread].plus(c_tmp[indexThread]);
 			acc[indexThread].plus(d_tmp[indexThread]);
 			
-			double accLongitudinale = tmp_acc[indexThread].dot(acc[indexThread]);
-			
-			double courbure = accLongitudinale / (vitesse * vitesse); // Frenet
+			double courbure = 1000*(vit[indexThread].getX() * acc[indexThread].getY() - vit[indexThread].getY() * acc[indexThread].getX()) / (vitesse * vitesse * vitesse);
 
 			double deltaCourbure = Math.abs(courbure - lastCourbure);
 			
@@ -497,22 +494,23 @@ public class BezierComputer implements TentacleComputer
 			out.addFirst(obs);
 
 			// Évalution de la vitesse en t
-			A.copy(a_tmp[indexThread]);
-			a_tmp[indexThread].scalar(-2 * (1 - t));
+			A.copy(vit[indexThread]);
+			vit[indexThread].scalar(-2 * (1 - t));
 			B.copy(b_tmp[indexThread]);
 			b_tmp[indexThread].scalar(2 * (1 - 2 * t));
 			C.copy(c_tmp[indexThread]);
 			c_tmp[indexThread].scalar(2 * t);
 
-			a_tmp[indexThread].plus(b_tmp[indexThread]);
-			a_tmp[indexThread].plus(c_tmp[indexThread]);
-			double vitesse = a_tmp[indexThread].norm();
-			double orientation = a_tmp[indexThread].getFastArgument();
-			a_tmp[indexThread].rotate(0, 1);
-			double accLongitudinale = a_tmp[indexThread].dot(acc[indexThread]);
+			vit[indexThread].plus(b_tmp[indexThread]);
+			vit[indexThread].plus(c_tmp[indexThread]);
+			
+			// a_tmp contient le vecteur vitesse
+			double vitesse = vit[indexThread].norm();
 
-			double courbure = accLongitudinale / (vitesse * vitesse);
+			double courbure = 1000*(vit[indexThread].getX() * acc[indexThread].getY() - vit[indexThread].getY() * acc[indexThread].getX()) / (vitesse * vitesse * vitesse);
 
+			double orientation = vit[indexThread].getFastArgument();
+			
 			double deltaCourbure = Math.abs(courbure - lastCourbure);
 			
 			// on a dépassé la courbure maximale : on arrête tout
