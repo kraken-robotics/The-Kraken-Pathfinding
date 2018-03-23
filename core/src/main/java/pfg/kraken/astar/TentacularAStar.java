@@ -370,7 +370,14 @@ public class TentacularAStar
 			{
 				AStarNode successeur = arcmanager.next();
 				assert successeur.getArc().getNbPoints() > 0;
-				assert successeur.getArc().getPoint(0).getPosition().distanceFast(current.robot.getCinematique().getPosition()) < 35 : successeur.getArc()+" "+current.robot.getCinematique().getPosition()+" "+successeur.getArc().getPoint(0).getPosition().distanceFast(current.robot.getCinematique().getPosition());
+				
+				// Il y a une trop grande distance
+				if(successeur.getArc().getPoint(0).getPosition().distanceFast(current.robot.getCinematique().getPosition()) > 35)
+				{
+					assert false : "Distance entre deux points trop élevée : " + successeur.getArc()+" "+current.robot.getCinematique().getPosition()+" "+successeur.getArc().getPoint(0).getPosition().distanceFast(current.robot.getCinematique().getPosition());
+					memorymanager.destroyNode(successeur);
+					continue;
+				}
 				assert successeur.getState() == MemPoolState.NEXT : successeur.getState();
 				successeur.g_score += current.g_score; // successeur.g_score contient déjà la distance entre current et successeur
 

@@ -195,64 +195,7 @@ public class BezierComputer implements TentacleComputer
 
 		return constructBezierCubique(a, pointB[indexThread], pointC[indexThread], d, cinematiqueInitiale.enMarcheAvant, cinematiqueInitiale, indexThread);
 	}
-	
-/*
-	public DynamicTentacle interpolationCubique(Cinematique cinematiqueInitiale, Cinematique arrivee, Speed vitesseMax)
-	{
-		double[] abtab = {100, 50, 200, 500};
-		for(double ab : abtab)
-		{
-			b.setX(Math.cos(cinematiqueInitiale.orientationGeometrique));
-			b.setY(Math.sin(cinematiqueInitiale.orientationGeometrique));
-			b.scalar(ab);
-			b.plus(cinematiqueInitiale.getPosition()); // la position de b, avec un degré de liberté
-	
-			double d = cinematiqueInitiale.courbureGeometrique/1000*ab*ab*3/2.; // maths
-			bp.setX(Math.cos(cinematiqueInitiale.orientationGeometrique));
-			bp.setY(Math.sin(cinematiqueInitiale.orientationGeometrique));
-			bp.rotate(0, 1);
-			bp.scalar(d);
-			bp.plus(b);
-			
-			c.setX(Math.cos(arrivee.orientationGeometrique));
-			c.setY(Math.sin(arrivee.orientationGeometrique));
-			c.scalar(-100);
-			c.plus(arrivee.getPosition());
-			
-			double da = arrivee.getPosition().getX() - c.getX();
-			double dd = arrivee.getPosition().getY() - c.getY();
-			double db = b.getX() - cinematiqueInitiale.getPosition().getX();
-			double de = b.getY() - cinematiqueInitiale.getPosition().getY();
-			double dc = bp.getX() - arrivee.getPosition().getX();
-			double df = bp.getY() - arrivee.getPosition().getY();
-			
-			double alpha, beta;
-			
-			if(da != 0)
-			{
-				alpha = (- df + dc*dd/da) / (de - dd * db / da);
-				beta = (alpha*db + dc / da);
-			}
-			else
-			{
-				alpha = (- dc + df*da/dd) / (db - da * de / dd);
-				beta = (alpha*de + df / dd);
-			}
-			
-			b.copy(c);
-			c.minus(cinematiqueInitiale.getPosition());
-			c.scalar(alpha);
-			c.plus(bp);
-			
-			if(beta >= 0)
-				continue; // pas de solution
 
-			return constructBezierCubique(cinematiqueInitiale.getPosition(), b, c, arrivee.getPosition(), cinematiqueInitiale.enMarcheAvant, vitesseMax, cinematiqueInitiale);
-		}
-		return null;
-	}
-	*/
-	
 	private DynamicTentacle constructBezierCubique(XY A, XY B, XY C, XY D, boolean enMarcheAvant, Cinematique cinematiqueInitiale, int indexThread)
 	{
 		double t = 1;
@@ -266,15 +209,21 @@ public class BezierComputer implements TentacleComputer
 		{
 			CinematiqueObs obs = memory.getNewNode();
 			
+			double tm = 1-t;
+			double tm2 = tm * tm;
+			double tm3 = tm * tm * tm;
+			double t2 = t * t;
+			double t3 = t * t * t;
+			
 			// Évaluation de la position en t
 			A.copy(a_tmp[indexThread]);
-			a_tmp[indexThread].scalar((1-t)*(1-t)*(1-t));
+			a_tmp[indexThread].scalar(tm3);
 			B.copy(b_tmp[indexThread]);
-			b_tmp[indexThread].scalar(3*(1-t)*(1-t)*t);
+			b_tmp[indexThread].scalar(3*tm2*t);
 			C.copy(c_tmp[indexThread]);
-			c_tmp[indexThread].scalar(3*(1-t)*t*t);
+			c_tmp[indexThread].scalar(3*tm*t2);
 			D.copy(d_tmp[indexThread]);
-			d_tmp[indexThread].scalar(t*t*t);
+			d_tmp[indexThread].scalar(t3);
 			
 			a_tmp[indexThread].copy(tmpPoint3[indexThread]);
 			tmpPoint3[indexThread].plus(b_tmp[indexThread]);
@@ -284,28 +233,28 @@ public class BezierComputer implements TentacleComputer
 			
 			// Évalution de la vitesse en t
 			A.copy(a_tmp[indexThread]);
-			a_tmp[indexThread].scalar(-3*(1-t)*(1-t));
+			a_tmp[indexThread].scalar(-3*tm2);
 			B.copy(b_tmp[indexThread]);
-			b_tmp[indexThread].scalar(3*(-2*(1-t)*t+(1-t)*(1-t)));
+			b_tmp[indexThread].scalar(-6*tm*t+3*tm2);
 			C.copy(c_tmp[indexThread]);
-			c_tmp[indexThread].scalar(3*(-t*t+2*(1-t)*t));
+			c_tmp[indexThread].scalar(-3*t2+6*tm*t);
 			D.copy(d_tmp[indexThread]);
-			d_tmp[indexThread].scalar(3*t*t);
+			d_tmp[indexThread].scalar(3*t2);
 
 			a_tmp[indexThread].copy(vit[indexThread]);
 			vit[indexThread].plus(b_tmp[indexThread]);
 			vit[indexThread].plus(c_tmp[indexThread]);
 			vit[indexThread].plus(d_tmp[indexThread]);
 			double vitesse = vit[indexThread].norm();
-			double orientation = vit[indexThread].getArgument();
+			double orientation = vit[indexThread].getFastArgument();
 			
 			// Évalutation de l'accélération en t
 			A.copy(a_tmp[indexThread]);
-			a_tmp[indexThread].scalar(6*(1-t));
+			a_tmp[indexThread].scalar(6*tm);
 			B.copy(b_tmp[indexThread]);
-			b_tmp[indexThread].scalar(3*(2*t-4*(1-t)));
+			b_tmp[indexThread].scalar(6*t-12*tm);
 			C.copy(c_tmp[indexThread]);
-			c_tmp[indexThread].scalar(3*(-4*t+2*(1-t)));
+			c_tmp[indexThread].scalar(-12*t+6*tm);
 			D.copy(d_tmp[indexThread]);
 			d_tmp[indexThread].scalar(6*t);
 			
@@ -321,7 +270,7 @@ public class BezierComputer implements TentacleComputer
 			// on a dépassé la courbure maximale : on arrête tout
 			if(Math.abs(courbure) > courbureMax)
 			{
-				System.out.println("Courbure : "+courbure+" >? "+courbureMax);
+//				System.out.println("Courbure : "+courbure+" >? "+courbureMax);
 				for(CinematiqueObs c : out)
 					memory.destroyNode(c);
 				return null;
@@ -346,6 +295,13 @@ public class BezierComputer implements TentacleComputer
 
 		if(out.getFirst().getPosition().distanceFast(cinematiqueInitiale.getPosition()) < PRECISION_TRACE_MM/2)
 			memory.destroyNode(out.removeFirst());
+		
+		if(out.getFirst().getPosition().distanceFast(cinematiqueInitiale.getPosition()) > 32)
+		{
+			for(CinematiqueObs c : out)
+				memory.destroyNode(c);
+			return null;
+		}
 		
 		if(out.isEmpty())
 			return null;
@@ -480,13 +436,17 @@ public class BezierComputer implements TentacleComputer
 		{
 			CinematiqueObs obs = memory.getNewNode();
 
+			double tm = 1-t;
+			double tm2 = tm * tm;
+			double t2 = t * t;
+
 			// Évaluation de la position en t
 			A.copy(a_tmp[indexThread]);
-			a_tmp[indexThread].scalar((1 - t) * (1 - t));
+			a_tmp[indexThread].scalar(tm2);
 			B.copy(b_tmp[indexThread]);
-			b_tmp[indexThread].scalar(2 * (1 - t) * t);
+			b_tmp[indexThread].scalar(2 * tm * t);
 			C.copy(c_tmp[indexThread]);
-			c_tmp[indexThread].scalar(t * t);
+			c_tmp[indexThread].scalar(t2);
 
 			a_tmp[indexThread].copy(tmpPos[indexThread]);
 			tmpPos[indexThread].plus(b_tmp[indexThread]);
@@ -495,9 +455,9 @@ public class BezierComputer implements TentacleComputer
 
 			// Évalution de la vitesse en t
 			A.copy(vit[indexThread]);
-			vit[indexThread].scalar(-2 * (1 - t));
+			vit[indexThread].scalar(-2 * tm);
 			B.copy(b_tmp[indexThread]);
-			b_tmp[indexThread].scalar(2 * (1 - 2 * t));
+			b_tmp[indexThread].scalar(2 - 4 * t);
 			C.copy(c_tmp[indexThread]);
 			c_tmp[indexThread].scalar(2 * t);
 

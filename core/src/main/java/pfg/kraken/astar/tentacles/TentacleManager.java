@@ -347,8 +347,8 @@ public class TentacleManager implements Iterator<AStarNode>
 			do {
 				next = successeurs.take();
 				nbLeft--;
-			} while(nbLeft > 0 && next == TentacleThread.dummy);
-			return next != TentacleThread.dummy;
+			} while(nbLeft > 0 && next == TentacleThread.placeholder);
+			return next != TentacleThread.placeholder;
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 			return false;

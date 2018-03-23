@@ -32,7 +32,7 @@ public class TentacleThread extends Thread
 	private int nb;
 	public final BlockingQueue<TentacleTask> buffer;
 	public final BlockingQueue<AStarNode> successeurs;
-	public final static AStarNode dummy = new AStarNode();
+	public final static AStarNode placeholder = new AStarNode();
 	
 	public TentacleThread(Log log, Config config, NodePool memorymanager, int nb, BlockingQueue<AStarNode> successeurs, BlockingQueue<TentacleTask> buffer)
 	{
@@ -83,7 +83,7 @@ public class TentacleThread extends Thread
 		}
 		else
 		{
-			successeurs.add(dummy);
+			successeurs.add(placeholder);
 			memorymanager.destroyNode(successeur);
 		}
 	}
