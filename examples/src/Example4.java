@@ -41,7 +41,7 @@ public class Example4
 		
 		RectangularObstacle robot = new RectangularObstacle(250, 80, 110, 110); 
 		
-		Kraken kraken = new Kraken(robot, obs, new XY(-1500,0), new XY(1500, 2000), "trajectory", "spinning-robot"/*, "detailed"*/);
+		Kraken kraken = new Kraken(robot, obs, new XY(-1500,0), new XY(1500, 2000), "kraken-examples.conf", "trajectory", "spinning-robot"/*, "detailed"*/);
 
 		GraphicDisplay display = kraken.getGraphicDisplay();
 

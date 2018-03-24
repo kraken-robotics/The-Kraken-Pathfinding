@@ -102,7 +102,7 @@ public abstract class JUnit_Test
 
 		RectangularObstacle robot = new RectangularObstacle(250, 80, 110, 110);
 
-		kraken = new Kraken(robot, obs, new XY(-1500,0), new XY(1500, 2000), profiles);
+		kraken = new Kraken(robot, obs, new XY(-1500,0), new XY(1500, 2000), "kraken-test.conf", profiles);
 		init(kraken);
 	}
 	
@@ -123,7 +123,7 @@ public abstract class JUnit_Test
 		System.out.println("----- TEST START : " + testName.getMethodName() + " -----");
 		RectangularObstacle robot = new RectangularObstacle(250, 80, 110, 110, 0); 
 
-		kraken = new Kraken(robot, fixedObstacles, new XY(-1500, 0), new XY(1500, 2000), profiles);
+		kraken = new Kraken(robot, fixedObstacles, new XY(-1500, 0), new XY(1500, 2000), "kraken-test.conf", profiles);
 		init(kraken);
 	}
 

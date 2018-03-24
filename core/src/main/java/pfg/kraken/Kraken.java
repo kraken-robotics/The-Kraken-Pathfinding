@@ -60,9 +60,9 @@ public class Kraken
 	 * @param topRightCorner : the top right corner of the search domain
 	 * @param configprofile : the config profiles
 	 */
-	public Kraken(RectangularObstacle vehicleTemplate, Iterable<Obstacle> fixedObstacles, XY bottomLeftCorner, XY topRightCorner, String...profiles)
+	public Kraken(RectangularObstacle vehicleTemplate, Iterable<Obstacle> fixedObstacles, XY bottomLeftCorner, XY topRightCorner, String configfile, String...profiles)
 	{
-		this(vehicleTemplate, fixedObstacles, new EmptyDynamicObstacles(), bottomLeftCorner, topRightCorner, profiles);
+		this(vehicleTemplate, fixedObstacles, new EmptyDynamicObstacles(), bottomLeftCorner, topRightCorner, configfile, profiles);
 	}
 	
 	/**
@@ -99,10 +99,10 @@ public class Kraken
 	 * @param topRightCorner : the top right corner of the search domain
 	 * @param configprofile : the config profiles
 	 */
-	public Kraken(RectangularObstacle vehicleTemplate, Iterable<Obstacle> fixedObstacles, DynamicObstacles dynObs, XY bottomLeftCorner, XY topRightCorner, String...configprofile)
+	public Kraken(RectangularObstacle vehicleTemplate, Iterable<Obstacle> fixedObstacles, DynamicObstacles dynObs, XY bottomLeftCorner, XY topRightCorner, String configfile, String...configprofile)
 	{	
 		injector = new Injector();
-		config = new Config(ConfigInfoKraken.values(), isJUnitTest(), "kraken.conf", configprofile);
+		config = new Config(ConfigInfoKraken.values(), isJUnitTest(), configfile, configprofile);
 		injector.addService(RectangularObstacle.class, vehicleTemplate);
 		
 		List<TentacleType> tentacleTypesUsed = new ArrayList<TentacleType>();
@@ -146,7 +146,7 @@ public class Kraken
 					so.add(o);
 			so.setCorners(bottomLeftCorner, topRightCorner);
 
-			Log log = new Log(SeverityCategoryKraken.INFO, "log.conf", "kraken");
+			Log log = new Log(SeverityCategoryKraken.INFO, configfile, "log");
 
 			injector.addService(log);
 			injector.addService(config);
