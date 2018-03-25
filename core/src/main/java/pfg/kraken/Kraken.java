@@ -13,7 +13,6 @@ import java.util.List;
 import pfg.config.Config;
 import pfg.config.ConfigInfo;
 import pfg.graphic.Vec2RO;
-import pfg.graphic.WindowFrame;
 import pfg.log.Log;
 import pfg.graphic.printable.Layer;
 import pfg.graphic.GraphicDisplay;
@@ -146,7 +145,7 @@ public class Kraken
 					so.add(o);
 			so.setCorners(bottomLeftCorner, topRightCorner);
 
-			Log log = new Log(SeverityCategoryKraken.INFO, configfile, "log");
+			Log log = new Log(SeverityCategoryKraken.INFO, configfile, configprofile);
 
 			injector.addService(log);
 			injector.addService(config);
@@ -154,23 +153,18 @@ public class Kraken
 			injector.addService(this);
 			injector.addService(injector);
 
+			/*
+			 * Override the graphic config
+			 */
+			HashMap<ConfigInfo, Object> overrideGraphic = new HashMap<ConfigInfo, Object>();
+			overrideGraphic.put(ConfigInfoGraphic.SIZE_X_WITH_UNITARY_ZOOM, (int) (topRightCorner.getX() - bottomLeftCorner.getX()));
+			overrideGraphic.put(ConfigInfoGraphic.SIZE_Y_WITH_UNITARY_ZOOM, (int) (topRightCorner.getY() - bottomLeftCorner.getY()));
+			
+			DebugTool debug = DebugTool.getDebugTool(overrideGraphic, new Vec2RO((topRightCorner.getX() + bottomLeftCorner.getX()) / 2, (topRightCorner.getY() + bottomLeftCorner.getY()) / 2), SeverityCategoryKraken.INFO, configfile, configprofile);
+			injector.addService(debug.getGraphicDisplay());
+			
 			if(config.getBoolean(ConfigInfoKraken.GRAPHIC_ENABLE))
 			{
-				/*
-				 * Override the graphic config
-				 */
-				HashMap<ConfigInfo, Object> overrideGraphic = new HashMap<ConfigInfo, Object>();
-				for(ConfigInfoGraphic infoG : ConfigInfoGraphic.values())
-					for(ConfigInfoKraken infoK : ConfigInfoKraken.values())
-						if(infoG.toString().equals(infoK.toString()))
-							overrideGraphic.put(infoG, config.getObject(infoK));
-				overrideGraphic.put(ConfigInfoGraphic.SIZE_X_WITH_UNITARY_ZOOM, (int) (topRightCorner.getX() - bottomLeftCorner.getX()));
-				overrideGraphic.put(ConfigInfoGraphic.SIZE_Y_WITH_UNITARY_ZOOM, (int) (topRightCorner.getY() - bottomLeftCorner.getY()));
-				
-				DebugTool debug = DebugTool.getDebugTool(overrideGraphic, new Vec2RO((topRightCorner.getX() + bottomLeftCorner.getX()) / 2, (topRightCorner.getY() + bottomLeftCorner.getY()) / 2), SeverityCategoryKraken.INFO, configfile, "graphic");
-				WindowFrame f = debug.getWindowFrame();
-				injector.addService(f.getPrintBuffer());
-				
 				if(config.getBoolean(ConfigInfoKraken.GRAPHIC_SERVER))
 					debug.startPrintServer();
 				
@@ -181,7 +175,7 @@ public class Kraken
 						display.addPrintable(o, Color.BLACK, Layer.MIDDLE.layer);
 				}
 			}
-			else
+/*			else
 			{
 				injector.addService(GraphicDisplay.class, new GraphicDisplayPlaceholder());
 				HashMap<ConfigInfo, Object> override = new HashMap<ConfigInfo, Object>();
@@ -189,7 +183,7 @@ public class Kraken
 				for(ConfigInfo c : graphicConf)
 					override.put(c, false);
 				config.override(override);
-			}
+			}*/
 	
 //				injector.getService(TentacleManager.class).setTentacle(tentacleTypesUsed);	
 			astar = injector.getService(TentacularAStar.class);
