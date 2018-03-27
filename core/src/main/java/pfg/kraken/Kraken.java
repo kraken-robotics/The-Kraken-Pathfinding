@@ -304,4 +304,12 @@ public class Kraken
 	{
 		return version;
 	}
+	
+	/**
+	 * Print the values overridden by the configuration file
+	 */
+	public void displayOverriddenConfigValues()
+	{
+		config.printChangedValues();
+	}
 }

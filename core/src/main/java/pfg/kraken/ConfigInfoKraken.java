@@ -90,23 +90,11 @@ public enum ConfigInfoKraken implements ConfigInfo
 	REFRESH_FREQUENCY(5), // in Hertz, 0 to disable
 	ALLOW_BACKWARD_MOTION(true), // allow the pathfinding to find a path with backward motion by default
 	
-	CONSOLE_NB_ROWS(40), // nombre de lignes dans la console affichée
-	CONSOLE_NB_COLUMNS(20), // nombre de colonnes dans la console affichée
-	
-	DISPLAY_GRID(true),
-	BACKGROUND_PATH(""), // background path ; empty if none	
-	SIZE_X_WINDOW(900), // taille par défaut (sans image) de la fenêtre
-	SIZE_Y_WINDOW(600), // taille par défaut (sans image) de la fenêtre
-	SIZE_X_WITH_UNITARY_ZOOM(50), // taille en mm de la zone à afficher (sur l'axe X)
-	SIZE_Y_WITH_UNITARY_ZOOM(50), // taille en mm de la zone à afficher (sur l'axe Y)
-	GRAPHIC_SERVER_PORT_NUMBER(13370), // port number of the graphic server
-	
-	/**
-	 * Log parameters
-	 */
-	SAVE_LOG(false), // sauvegarde les logs dans un fichier externe
-	FAST_LOG(false), // log rapide, sans reflection
-	STDOUT_LOG(false); // log into the stdout
+//	SIZE_X_WINDOW(900), // taille par défaut (sans image) de la fenêtre
+//	SIZE_Y_WINDOW(600), // taille par défaut (sans image) de la fenêtre
+//	SIZE_X_WITH_UNITARY_ZOOM(50), // taille en mm de la zone à afficher (sur l'axe X)
+//	SIZE_Y_WITH_UNITARY_ZOOM(50), // taille en mm de la zone à afficher (sur l'axe Y)
+	GRAPHIC_SERVER_PORT_NUMBER(13370); // port number of the graphic server
 
 	private Object defaultValue;
 	public volatile boolean uptodate;
