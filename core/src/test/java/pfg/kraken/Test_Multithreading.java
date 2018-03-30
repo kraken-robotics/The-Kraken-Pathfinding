@@ -78,10 +78,6 @@ public class Test_Multithreading extends JUnit_Test
 		{
 			e.printStackTrace();
 		}
-		finally
-		{
-			kraken.stop();
-		}
 	}
 
 }

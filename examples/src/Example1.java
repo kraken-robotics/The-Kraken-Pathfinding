@@ -115,12 +115,5 @@ public class Example1
 			 */
 			e.printStackTrace();
 		}
-		finally
-		{
-			/*
-			 * You *must* stop Kraken
-			 */
-			kraken.stop();
-		}
 	}
 }

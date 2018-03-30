@@ -144,9 +144,5 @@ public class Example2
 			 */
 			e.printStackTrace();
 		}
-		finally
-		{
-			kraken.stop();
-		}
 	}
 }

@@ -13,7 +13,6 @@ import pfg.config.Config;
 import pfg.log.Log;
 import pfg.kraken.ConfigInfoKraken;
 import pfg.kraken.astar.AStarNode;
-import pfg.kraken.astar.tentacles.TentacleManager;
 import pfg.kraken.memory.NodePool;
 
 /**
@@ -34,19 +33,18 @@ public class TentacleThread extends Thread
 	public final BlockingQueue<TentacleTask> buffer;
 	public final BlockingQueue<AStarNode> successeurs;
 	public final static AStarNode placeholder = new AStarNode();
-	private TentacleManager tentacles;
 	
-	public TentacleThread(Log log, Config config, NodePool memorymanager, int nb, BlockingQueue<AStarNode> successeurs, BlockingQueue<TentacleTask> buffer, TentacleManager tentacles)
+	public TentacleThread(Log log, Config config, NodePool memorymanager, int nb, BlockingQueue<AStarNode> successeurs, BlockingQueue<TentacleTask> buffer)
 	{
 		this.log = log;
 		this.buffer = buffer;
 		this.successeurs = successeurs;
 		this.memorymanager = memorymanager;
-		this.tentacles = tentacles;
 		this.nb = nb;
 		maxLinearAcceleration = config.getDouble(ConfigInfoKraken.MAX_LINEAR_ACCELERATION);
 		deltaSpeedFromStop = Math.sqrt(2 * PRECISION_TRACE * maxLinearAcceleration);
 		tempsArret = config.getInt(ConfigInfoKraken.STOP_DURATION);
+		setDaemon(true);
 	}
 
 	@Override

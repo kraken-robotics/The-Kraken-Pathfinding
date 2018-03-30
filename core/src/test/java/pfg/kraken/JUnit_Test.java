@@ -135,8 +135,6 @@ public abstract class JUnit_Test
 			display.refresh();
 			Thread.sleep(1000);
 		}
-		if(kraken != null)
-			kraken.stop();
 	}
 	
 	/**

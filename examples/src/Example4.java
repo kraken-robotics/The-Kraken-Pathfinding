@@ -67,9 +67,5 @@ public class Example4
 		{
 			e.printStackTrace();
 		}
-		finally
-		{
-			kraken.stop();
-		}
 	}
 }

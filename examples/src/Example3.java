@@ -90,10 +90,5 @@ public class Example3
 		{
 			e.printStackTrace();
 		}
-		finally
-		{
-			kraken.stop();
-			krakenSecondRobot.stop();
-		}
 	}
 }

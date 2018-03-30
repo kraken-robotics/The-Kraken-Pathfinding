@@ -24,7 +24,6 @@ import pfg.kraken.astar.DirectionStrategy;
 import pfg.kraken.astar.ResearchMode;
 import pfg.kraken.astar.TentacularAStar;
 import pfg.kraken.astar.tentacles.ResearchProfileManager;
-import pfg.kraken.astar.tentacles.TentacleManager;
 import pfg.kraken.astar.tentacles.types.*;
 import pfg.kraken.exceptions.NoPathException;
 import pfg.kraken.exceptions.PathfindingException;
@@ -48,7 +47,6 @@ public class Kraken
 	private Config config;
 	private Injector injector;
 	private TentacularAStar astar;
-	private boolean stopped = false;
 	private static final String version = "1.3.0";
 	
 	/**
@@ -77,17 +75,6 @@ public class Kraken
 	{
 		this(vehicleTemplate, fixedObstacles, dynObs, bottomLeftCorner, topRightCorner, configprofile);
 	}*/
-	
-	/**
-	 * Stop Kraken
-	 */
-	public void stop()
-	{
-		TentacleManager tm = injector.getExistingService(TentacleManager.class);
-		if(tm != null)
-			tm.stopThreads();
-		stopped = true;
-	}
 	
 	/**
 	 * Get Kraken with :
@@ -212,10 +199,7 @@ public class Kraken
 	 */
 	public void initializeNewSearch(XYO start, XY arrival, DirectionStrategy directionstrategy) throws NoPathException
 	{
-		if(!stopped)
-			astar.initializeNewSearch(start, new XYO(arrival.clone(), 0), directionstrategy, ResearchMode.XYO2XY);
-		else
-			throw new RuntimeException("Kraken is stopped !");
+		astar.initializeNewSearch(start, new XYO(arrival.clone(), 0), directionstrategy, ResearchMode.XYO2XY);
 	}
 	
 	/**
@@ -229,10 +213,7 @@ public class Kraken
 	 */
 	public void initializeNewSearch(XYO start, XYO arrival, DirectionStrategy directionstrategy) throws NoPathException
 	{
-		if(!stopped)
-			astar.initializeNewSearch(start, arrival, directionstrategy, ResearchMode.XYO2XYO);
-		else
-			throw new RuntimeException("Kraken is stopped !");
+		astar.initializeNewSearch(start, arrival, directionstrategy, ResearchMode.XYO2XYO);
 	}
 	
 	/**
@@ -246,10 +227,7 @@ public class Kraken
 	 */
 	public void initializeNewSearch(XYO start, XYO arrival) throws NoPathException
 	{
-		if(!stopped)
-			astar.initializeNewSearch(start, arrival);
-		else
-			throw new RuntimeException("Kraken is stopped !");
+		astar.initializeNewSearch(start, arrival);
 	}
 	
 	/**
@@ -263,10 +241,7 @@ public class Kraken
 	 */
 	public void initializeNewSearch(XYO start, XY arrival) throws NoPathException
 	{
-		if(!stopped)
-			astar.initializeNewSearch(start, arrival);
-		else
-			throw new RuntimeException("Kraken is stopped !");
+		astar.initializeNewSearch(start, arrival);
 	}
 
 	/**
@@ -276,10 +251,7 @@ public class Kraken
 	 */
 	public LinkedList<ItineraryPoint> search() throws PathfindingException
 	{
-		if(!stopped)
-			return astar.search();
-		else
-			throw new RuntimeException("Kraken is stopped !");
+		return astar.search();
 	}
 	
 	/**

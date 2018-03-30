@@ -84,9 +84,5 @@ public class ExampleEurobot2018
 			// Impossible
 			e.printStackTrace();
 		}
-		finally
-		{
-			kraken.stop();
-		}
 	}
 }
