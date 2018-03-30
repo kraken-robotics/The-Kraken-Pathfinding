@@ -267,7 +267,6 @@ public class ClothoidesComputer implements TentacleComputer
 	 * @param enMarcheAvant
 	 * @param vitesse
 	 * @return
-	 * @throws InterruptedException
 	 */
 	public final DynamicTentacle getTrajectoireRamene(Cinematique cinematiqueInitiale, StraightingTentacle vitesseRamene, int indexThread)
 	{
@@ -501,7 +500,6 @@ public class ClothoidesComputer implements TentacleComputer
 	 * @param vitesse
 	 * @param vitesseMax
 	 * @return
-	 * @throws InterruptedException
 	 */
 /*	public final DynamicTentacle getTrajectoireDemiTour(Cinematique cinematiqueInitiale, TurnoverTentacle vitesse)
 	{
@@ -533,7 +531,6 @@ public class ClothoidesComputer implements TentacleComputer
 	 * @param enMarcheAvant
 	 * @param vitesse
 	 * @return
-	 * @throws InterruptedException
 	 */
 /*	private final List<CinematiqueObs> getTrajectoireQuartDeTour(Cinematique cinematiqueInitiale, ClothoTentacle vitesse, boolean rebrousse)
 	{

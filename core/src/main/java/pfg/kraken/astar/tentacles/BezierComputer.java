@@ -322,8 +322,6 @@ public class BezierComputer implements TentacleComputer
 	 * @param arrivee
 	 * @param vitesseMax
 	 * @return
-	 * @throws MemoryPoolException
-	 * @throws InterruptedException
 	 */
 	public DynamicTentacle quadraticInterpolationXYOC2XY(Cinematique cinematiqueInitiale, XY arrivee, int indexThread)
 	{
@@ -413,7 +411,6 @@ public class BezierComputer implements TentacleComputer
 	 * @param vecteurVitesse2
 	 * @param position2
 	 * @return
-	 * @throws InterruptedException
 	 */
 	private DynamicTentacle constructBezierQuad(XY A, XY B, XY C, boolean enMarcheAvant, Cinematique cinematiqueInitiale, int indexThread)
 	{

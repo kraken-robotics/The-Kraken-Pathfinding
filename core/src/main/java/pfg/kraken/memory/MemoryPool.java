@@ -56,7 +56,6 @@ public abstract class MemoryPool<T extends Memorizable>
 	 * Donne un objet disponible
 	 * 
 	 * @return
-	 * @throws InterruptedException
 	 */
 	@SuppressWarnings("unchecked")
 	public synchronized T getNewNode()
