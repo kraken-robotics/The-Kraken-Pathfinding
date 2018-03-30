@@ -83,14 +83,7 @@ public class TentacleThread extends Thread
 			successeur.robot.suitArcCourbe(successeur.getArc(), duration);
 			successeur.g_score = duration;
 			
-			// Check the obstacles
-			if(tentacles.isReachable(successeur))
-				successeurs.add(successeur);
-			else
-			{
-				successeurs.add(placeholder);
-				memorymanager.destroyNode(successeur);
-			}
+			successeurs.add(successeur);
 		}
 		else
 		{

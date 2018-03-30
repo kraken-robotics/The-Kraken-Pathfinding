@@ -298,8 +298,8 @@ public class TentacularAStar
 
 			// ce calcul étant un peu lourd, on ne le fait que si le noeud a été
 			// choisi, et pas à la sélection des voisins (dans hasNext par
-			// exemple)
-/*			if(!arcmanager.isReachable(current))
+			// exemple) (expérimentalement vérifié sur pc et raspi)
+			if(!arcmanager.isReachable(current))
 			{
 				if(current != depart)
 				{
@@ -308,7 +308,7 @@ public class TentacularAStar
 				}
 				continue; // collision mécanique attendue. On passe au suivant !
 			}
-*/
+
 			// affichage
 			if(graphicTrajectory && current.getArc() != null)
 			{
