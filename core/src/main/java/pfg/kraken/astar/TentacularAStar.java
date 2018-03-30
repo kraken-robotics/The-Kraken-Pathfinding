@@ -430,7 +430,7 @@ public class TentacularAStar
 				try {
 					Thread.sleep(200);
 				} catch (InterruptedException e) {
-					e.printStackTrace();
+					Thread.currentThread().interrupt();
 				}
 				for(AStarNode n : outTentacles)
 					buffer.removePrintable(n);
