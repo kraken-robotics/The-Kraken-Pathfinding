@@ -476,15 +476,15 @@ public class TentacularAStar
 	
 	public void initializeNewSearch(XYO start, XY arrival) throws NoPathException
 	{
-		initializeNewSearch(start, new XYO(arrival.clone(), 0), defaultStrategy, ResearchMode.XYO2XY);
+		initializeNewSearch(new Cinematique(start), new Cinematique(new XYO(arrival.clone(), 0)), defaultStrategy, "XY");
 	}
 
 	public void initializeNewSearch(XYO start, XYO arrival) throws NoPathException
 	{
-		initializeNewSearch(start, arrival, defaultStrategy, ResearchMode.XYO2XYO);
+		initializeNewSearch(new Cinematique(start), new Cinematique(arrival), defaultStrategy, "XYO");
 	}
 
-	public void initializeNewSearch(XYO start, XYO arrival, DirectionStrategy directionstrategy, ResearchMode mode) throws NoPathException
+	public void initializeNewSearch(Cinematique start, Cinematique arrival, DirectionStrategy directionstrategy, String mode) throws NoPathException
 	{
 		initializeNewSearch(start, arrival, directionstrategy, mode, defaultSpeed);
 	}
@@ -497,17 +497,17 @@ public class TentacularAStar
 	 * @param shoot
 	 * @throws NoPathException 
 	 */
-	public void initializeNewSearch(XYO start, XYO arrival, DirectionStrategy directionstrategy, ResearchMode mode, double maxSpeed) throws NoPathException
+	public void initializeNewSearch(Cinematique start, Cinematique arrival, DirectionStrategy directionstrategy, String mode, double maxSpeed) throws NoPathException
 	{
 		depart.init();
-		depart.robot.setCinematique(new Cinematique(start));
+		depart.robot.setCinematique(start);
 		arcmanager.configure(directionstrategy, maxSpeed, arrival, mode);
 
 		/*
 		 * dstarlite.computeNewPath updates the heuristic.
 		 * It returns false if there is no path between start and arrival
 		 */
-		if(!dstarlite.computeNewPath(depart.robot.getCinematique().getPosition(), arrival.position))
+		if(!dstarlite.computeNewPath(depart.robot.getCinematique().getPosition(), arrival.getPosition()))
 			throw new NoPathException("No path found by D* Lite !");
 	}
 

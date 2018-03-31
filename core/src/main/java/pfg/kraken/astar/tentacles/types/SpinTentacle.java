@@ -7,7 +7,6 @@ package pfg.kraken.astar.tentacles.types;
 
 import java.awt.Color;
 import pfg.kraken.astar.DirectionStrategy;
-import pfg.kraken.astar.ResearchMode;
 import pfg.kraken.astar.tentacles.SpinComputer;
 import pfg.kraken.astar.tentacles.TentacleComputer;
 import pfg.kraken.robot.Cinematique;
@@ -56,11 +55,11 @@ public enum SpinTentacle implements TentacleType
 	{
 		return Color.ORANGE;
 	}
-
+	
 	@Override
-	public boolean usableFor(ResearchMode mode)
+	public double getComputationalCost()
 	{
-		return true;
+		return 0.3;
 	}
 
 }

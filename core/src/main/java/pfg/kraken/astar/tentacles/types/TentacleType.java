@@ -8,7 +8,6 @@ package pfg.kraken.astar.tentacles.types;
 import java.awt.Color;
 
 import pfg.kraken.astar.DirectionStrategy;
-import pfg.kraken.astar.ResearchMode;
 import pfg.kraken.astar.tentacles.TentacleComputer;
 import pfg.kraken.robot.Cinematique;
 
@@ -24,6 +23,6 @@ public interface TentacleType
 	public Class<? extends TentacleComputer> getComputer();
 	public boolean isAcceptable(Cinematique c, DirectionStrategy directionstrategyactuelle, double courbureMax);
 	public int getNbArrets(boolean firstMove);
+	public double getComputationalCost();
 	public Color getColor();
-	public boolean usableFor(ResearchMode mode);
 }

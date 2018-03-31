@@ -1,8 +1,9 @@
 # Unreleased
-- New research mode : aim either at XY or XYO
+- New default research mode : aim either at XY or XYO
+- Possibility to add customised research mode
 - Add cubic Bezier curves
 - Add example 4
-- Allow spinning movement (config key : *ALLOW_SPINNING*)
+- API : "stop()" isn't necessary anymore
 
 # v1.2.2
 - API : add getVersion() to Kraken

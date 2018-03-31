@@ -8,7 +8,6 @@ package pfg.kraken.astar.tentacles.types;
 import java.awt.Color;
 
 import pfg.kraken.astar.DirectionStrategy;
-import pfg.kraken.astar.ResearchMode;
 import pfg.kraken.astar.tentacles.BezierComputer;
 import pfg.kraken.astar.tentacles.TentacleComputer;
 import pfg.kraken.robot.Cinematique;
@@ -22,15 +21,16 @@ import pfg.kraken.robot.Cinematique;
 
 public enum BezierTentacle implements TentacleType
 {
-	BEZIER_XYOC_TO_XY(ResearchMode.XYO2XY),
-	BEZIER_XYOC_TO_XYO(ResearchMode.XYO2XYO),
-	BEZIER_XYO_TO_XYO(ResearchMode.XYO2XYO);
+	BEZIER_XYOC_TO_XY(2),
+	BEZIER_XYOC_TO_XYO(3),
+	BEZIER_XYO_TO_XYO(2);
 
-	private final ResearchMode mode;
+	// order est l'ordre du polynôme de Bézier correspondant (quadratique = 2, etc.)
+	private int order;
 
-	private BezierTentacle(ResearchMode mode)
+	private BezierTentacle(int order)
 	{
-		this.mode = mode;
+		this.order = order;
 	}
 	
 	@Override
@@ -57,8 +57,9 @@ public enum BezierTentacle implements TentacleType
 	}
 
 	@Override
-	public boolean usableFor(ResearchMode mode)
+	public double getComputationalCost()
 	{
-		return mode == this.mode;
+		return order * (order + 1) / 2;
 	}
+
 }
