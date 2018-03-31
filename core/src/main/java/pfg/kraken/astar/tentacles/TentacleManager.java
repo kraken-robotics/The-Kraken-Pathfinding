@@ -11,7 +11,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
-
 import pfg.config.Config;
 import pfg.injector.Injector;
 import pfg.injector.InjectorException;
@@ -63,7 +62,7 @@ public class TentacleManager implements Iterator<AStarNode>
 	private DirectionStrategy directionstrategyactuelle;
 	private Cinematique arrivee = new Cinematique();
 	private ResearchProfileManager profiles;
-	private List<List<TentacleType>> currentProfile;
+	private List<TentacleType> currentProfile;
 //	private List<StaticObstacles> disabledObstaclesFixes = new ArrayList<StaticObstacles>();
 	private List<TentacleTask> tasks = new ArrayList<TentacleTask>();
 	private BlockingQueue<AStarNode> successeurs = new LinkedBlockingQueue<AStarNode>();
@@ -108,12 +107,9 @@ public class TentacleManager implements Iterator<AStarNode>
 	public void updateProfiles(String mode)
 	{
 		try {
-			List<List<TentacleType>> profile = profiles.getProfile(mode);
-			for(List<TentacleType> p : profile)
-			{
-				for(TentacleType t : p)
-					injector.getService(t.getComputer());
-			}
+			List<TentacleType> profile = profiles.getProfile(mode);
+			for(TentacleType t : profile)
+				injector.getService(t.getComputer());
 		}catch(UnknownModeException e)
 		{
 			assert false : e;
@@ -265,58 +261,29 @@ public class TentacleManager implements Iterator<AStarNode>
 		int index = 0;
 		assert nbLeft == 0;
 
+		/*
+		 * On-line Largest Processing Time Rule algorithm
+		 */
 		
-		for(List<TentacleType> l : currentProfile)
+		for(TentacleType v : currentProfile)
 		{
-			
-			for(TentacleType v : l)
+			if(v.isAcceptable(current.robot.getCinematique(), directionstrategyactuelle, courbureMax))
 			{
-				if(v.isAcceptable(current.robot.getCinematique(), directionstrategyactuelle, courbureMax))
-				{
-					nbLeft++;
-					assert tasks.size() > index;
-					TentacleTask tt = tasks.get(index++);
-					tt.arrivee = arrivee;
-					tt.current = current;
-					tt.v = v;
-					tt.computer = injector.getExistingService(v.getComputer());
-					tt.vitesseMax = vitesseMax;
-					
-					if(threads.length == 1) // no multithreading in this case
-						threads[0].compute(tt);
-					else
-						buffer.add(tt);
-				}
+				nbLeft++;
+				assert tasks.size() > index;
+				TentacleTask tt = tasks.get(index++);
+				tt.arrivee = arrivee;
+				tt.current = current;
+				tt.v = v;
+				tt.computer = injector.getExistingService(v.getComputer());
+				tt.vitesseMax = vitesseMax;
+				
+				if(threads.length == 1) // no multithreading in this case
+					threads[0].compute(tt);
+				else
+					buffer.add(tt);
 			}
 		}
-		/*
-		
-		if(threads.length > 1)
-		{
-			for(int i = 0; i < threads.length; i++)
-				synchronized(threads[i])
-				{
-					// on lance les calculs
-					threads[i].notify();
-				}
-			
-			for(int i = 0; i < threads.length; i++)
-			{
-				synchronized(threads[i])
-				{
-					// on attend la fin des calculs
-					if(!threads[i].done)
-						try {
-							threads[i].wait();
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
-					assert threads[i].buffer.isEmpty();
-				}
-				successeurs.addAll(threads[i].successeurs);
-				threads[i].successeurs.clear();
-			}
-		}*/
 	}
 
 	public synchronized Integer heuristicCostCourbe(Cinematique c)
