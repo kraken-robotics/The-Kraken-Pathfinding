@@ -155,7 +155,8 @@ public class TentacleManager implements Iterator<AStarNode>
 		// Collision avec un obstacle de proximité ?
 
 		try {
-			Iterator<Obstacle> iter = dynamicObs.getFutureDynamicObstacles(0); // TODO date !
+			Iterator<Obstacle> iter = dynamicObs.getCurrentDynamicObstacles();
+			// TODO : utiliser getFutureDynamicObstacles
 			while(iter.hasNext())
 			{
 				Obstacle n = iter.next();

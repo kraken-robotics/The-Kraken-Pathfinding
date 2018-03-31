@@ -21,11 +21,11 @@ public class DefaultDynamicObstacles implements DynamicObstacles
 {
 	private List<Obstacle> obsList = new ArrayList<Obstacle>();
 	
-	@Override
+/*	@Override
 	public Iterator<Obstacle> getFutureDynamicObstacles(long date)
 	{
 		return getCurrentDynamicObstacles();
-	}
+	}*/
 
 	public void add(Obstacle obs)
 	{

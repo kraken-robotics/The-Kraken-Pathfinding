@@ -17,11 +17,11 @@ import pfg.kraken.obstacles.Obstacle;
 
 public class EmptyDynamicObstacles implements DynamicObstacles
 {
-	@Override
+/*	@Override
 	public Iterator<Obstacle> getFutureDynamicObstacles(long date)
 	{
 		return getCurrentDynamicObstacles();
-	}
+	}*/
 
 	@Override
 	public Iterator<Obstacle> getCurrentDynamicObstacles()

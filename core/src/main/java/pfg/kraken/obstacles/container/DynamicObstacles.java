@@ -22,7 +22,7 @@ import pfg.kraken.obstacles.Obstacle;
 
 public interface DynamicObstacles
 {
-	public Iterator<Obstacle> getFutureDynamicObstacles(long date);
+//	public Iterator<Obstacle> getFutureDynamicObstacles(long date);
 
 	public Iterator<Obstacle> getCurrentDynamicObstacles();
 }
