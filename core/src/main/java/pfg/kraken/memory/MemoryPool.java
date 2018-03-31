@@ -105,13 +105,11 @@ public abstract class MemoryPool<T extends Memorizable>
 			s = nodes.get(i / initialNbInstances)[i % initialNbInstances].getState();
 			assert s != MemPoolState.FREE : classe+" "+s + " "+i+"/"+firstAvailable;
 			if(s == MemPoolState.CURRENT)
-			{
 				nbCurrent++;
-				assert nbCurrent <= 1 : nbCurrent; // au plus un nœud "current"
-			}
 			// now they are free
 			nodes.get(i / initialNbInstances)[i % initialNbInstances].setState(MemPoolState.FREE);
 		}
+		assert nbCurrent <= 1 : nbCurrent; // au plus un nœud "current"
 		for(int i = firstAvailable; i < initialNbInstances * nodes.size() - 1; i++)
 		{
 			s = nodes.get(i / initialNbInstances)[i % initialNbInstances].getState();
@@ -197,7 +195,7 @@ public abstract class MemoryPool<T extends Memorizable>
 	/**
 	 * Retourne le nombre d'élément utilisé
 	 */
-	public synchronized int getSize()
+	public synchronized int getCurrentlyUsedObjectsNumber()
 	{
 		return firstAvailable;
 	}

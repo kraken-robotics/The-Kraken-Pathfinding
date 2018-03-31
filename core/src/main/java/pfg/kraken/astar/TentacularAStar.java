@@ -404,12 +404,10 @@ public class TentacularAStar
 				// TODO
 				if(arcmanager.isArrived(successeur) && arcmanager.isReachable(successeur) && (trajetDeSecours == null || trajetDeSecours.f_score > successeur.f_score))
 				{
-					// on détruit l'ancien trajet
-					if(trajetDeSecours != null)
-					{
-						assert trajetDeSecours.getState() == MemPoolState.WAITING && setState(trajetDeSecours, MemPoolState.CURRENT) : trajetDeSecours.getState();
-						memorymanager.destroyNode(trajetDeSecours);
-					}
+					/*
+					 * Cela ne sert à rien de détruire l'ancien trajet de secours (qui est être dans l'openset)
+					 * C'est juste qu'on garde le meilleur dans un coin.
+					 */
 
 					trajetDeSecours = successeur;
 				}
@@ -552,6 +550,14 @@ public class TentacularAStar
 		dstarlite.updateObstacles();
 
 //		process(realChemin, true);
+	}*/
+	
+/*	private String checkOpenSet()
+	{
+		for(AStarNode n : openset)
+			if(n.getState() != MemPoolState.WAITING)
+				return n.getIndiceMemoryManager()+" "+n.getState();
+		return null;
 	}*/
 	
 	private boolean setState(AStarNode node, MemPoolState state)

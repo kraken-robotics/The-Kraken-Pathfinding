@@ -53,7 +53,7 @@ public class NodePool extends MemoryPool<AStarNode>
 	{
 		if(objet.cameFromArcDynamique != null)
 		{
-			pool.destroy(objet.cameFromArcDynamique.arcs, false);
+			pool.destroy(objet.cameFromArcDynamique.arcs, /*false*/ true);
 			objet.cameFromArcDynamique = null;
 		}
 		super.destroyNode(objet);

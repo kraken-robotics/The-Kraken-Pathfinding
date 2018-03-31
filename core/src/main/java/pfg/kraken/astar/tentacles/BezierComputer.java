@@ -207,8 +207,6 @@ public class BezierComputer implements TentacleComputer
 		
 		while(t > 0)
 		{
-			CinematiqueObs obs = memory.getNewNode();
-			
 			double tm = 1-t;
 			double tm2 = tm * tm;
 			double tm3 = tm * tm * tm;
@@ -229,7 +227,6 @@ public class BezierComputer implements TentacleComputer
 			tmpPoint3[indexThread].plus(b_tmp[indexThread]);
 			tmpPoint3[indexThread].plus(c_tmp[indexThread]);
 			tmpPoint3[indexThread].plus(d_tmp[indexThread]);
-			out.addFirst(obs);
 			
 			// Évalution de la vitesse en t
 			A.copy(a_tmp[indexThread]);
@@ -280,6 +277,8 @@ public class BezierComputer implements TentacleComputer
 			
 			t -= PRECISION_TRACE_MM / vitesse;
 			
+			CinematiqueObs obs = memory.getNewNode();
+			out.addFirst(obs);
 			obs.updateWithMaxSpeed(
 					tmpPoint3[indexThread].getX(), // x
 					tmpPoint3[indexThread].getY(), // y
