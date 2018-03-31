@@ -190,6 +190,7 @@ public class TentacularAStar
 
 	public LinkedList<ItineraryPoint> search() throws PathfindingException
 	{
+		defaultChemin.clear();
 		search(defaultChemin, false);
 		return defaultChemin.getPath();
 	}

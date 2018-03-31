@@ -39,9 +39,7 @@ public class DefaultCheminPathfinding implements CheminPathfindingInterface
 
 	public LinkedList<ItineraryPoint> getPath()
 	{
-		LinkedList<ItineraryPoint> out = path;
-		path = null;
-		return out;
+		return path;
 	}
 
 	@Override
