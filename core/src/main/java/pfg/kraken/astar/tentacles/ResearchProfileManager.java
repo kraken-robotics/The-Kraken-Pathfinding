@@ -6,6 +6,7 @@
 package pfg.kraken.astar.tentacles;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +28,28 @@ public class ResearchProfileManager// implements Iterable<List<TentacleType>>
 	
 	private int nbThread;
 	
+	/**
+	 * Un thread et sa charge théorique
+	 * @author pf
+	 *
+	 */
+	private class ThreadLoad
+	{
+		public List<TentacleType> tasks = new ArrayList<TentacleType>();
+		private double load = 0;
+		
+		public void addTask(TentacleType t)
+		{
+			load += t.getComputationalCost();
+			tasks.add(t);
+		}
+		
+		public double getLoad()
+		{
+			return load;
+		}
+	}
+	
 	public ResearchProfileManager(Config config)
 	{
 		this.nbThread = config.getInt(ConfigInfoKraken.THREAD_NUMBER);
@@ -35,17 +58,29 @@ public class ResearchProfileManager// implements Iterable<List<TentacleType>>
 	public int addProfile(String mode, List<TentacleType> p, EndOfTrajectoryCheck end)
 	{
 		List<List<TentacleType>> distribution = new ArrayList<List<TentacleType>>();
-
-		for(int i = 0; i < nbThread; i++)
-			distribution.add(new ArrayList<TentacleType>());
 		
-		// TODO : problem "Multiprocessor scheduling"
-		int index = 0;
+		List<ThreadLoad> loads = new ArrayList<ThreadLoad>();
+
+		/**
+		 * L'objectif est répartir la charge entre les différents threads de manière à minimiser la charge maximale
+		 * Une heuristique qui marche : place la prochaine charge sur le thread le moins chargé (algorithme LPT)
+		 * Pas super optimisé, mais ce n'est fait qu'une seule fois…
+		 */
+		
+		for(int i = 0; i < nbThread; i++)
+		{
+			ThreadLoad l = new ThreadLoad();
+			loads.add(l);
+			distribution.add(l.tasks);
+		}
+		
+		// On trie les tâches de la plus coûteuse à la moins coûteuse
+		p.sort(Comparator.comparing(TentacleType::getComputationalCost).reversed());
+		
 		for(TentacleType t : p)
 		{
-			distribution.get(index).add(t);
-			index++;
-			index %= nbThread;
+			loads.sort(Comparator.comparing(ThreadLoad::getLoad));
+			loads.get(0).addTask(t); // on ajoute la tâche au thread le moins chargé
 		}
 		
 		profiles.put(mode, distribution);
