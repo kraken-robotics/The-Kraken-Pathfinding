@@ -32,7 +32,7 @@ public class TentacleThread extends Thread
 	private int nb;
 	public final BlockingQueue<TentacleTask> buffer;
 	public final BlockingQueue<AStarNode> successeurs;
-	public final static AStarNode dummy = new AStarNode();
+	public final static AStarNode placeholder = new AStarNode();
 	
 	public TentacleThread(Log log, Config config, NodePool memorymanager, int nb, BlockingQueue<AStarNode> successeurs, BlockingQueue<TentacleTask> buffer)
 	{
@@ -44,6 +44,7 @@ public class TentacleThread extends Thread
 		maxLinearAcceleration = config.getDouble(ConfigInfoKraken.MAX_LINEAR_ACCELERATION);
 		deltaSpeedFromStop = Math.sqrt(2 * PRECISION_TRACE * maxLinearAcceleration);
 		tempsArret = config.getInt(ConfigInfoKraken.STOP_DURATION);
+		setDaemon(true);
 	}
 
 	@Override
@@ -79,11 +80,12 @@ public class TentacleThread extends Thread
 			int duration = (int) (1000*successeur.getArc().getDuree(successeur.parent.getArc(), task.vitesseMax, tempsArret, maxLinearAcceleration, deltaSpeedFromStop));
 			successeur.robot.suitArcCourbe(successeur.getArc(), duration);
 			successeur.g_score = duration;
+			
 			successeurs.add(successeur);
 		}
 		else
 		{
-			successeurs.add(dummy);
+			successeurs.add(placeholder);
 			memorymanager.destroyNode(successeur);
 		}
 	}

@@ -1,5 +1,13 @@
 # Unreleased
 
+# v1.3.0
+- New default research mode : aim either at XY or XYO
+- Possibility to add customised research mode
+- On the fly load balance
+- Add cubic Bezier curves
+- Add example 4
+- API : "stop()" isn't necessary anymore
+
 # v1.2.2
 - API : add getVersion() to Kraken
 - Bugfix multithreading
@@ -8,14 +16,13 @@
 
 # v1.2.1
 - Unit tests : introduction
-- bugfix multithreading
+- Bugfix multithreading
 
 # v1.2.0
-- add multithreaded tentacle computation (significant speed-up). Corresponding configuration key is *THREAD_NUMBER*.
+- Add multithreaded tentacle computation (significant speed-up). Corresponding configuration key is *THREAD_NUMBER*.
 
 # v1.1.2
-
-- add a changelog.
-- add in configuration the *MINIMAL_SPEED* key. The maximal curvature is limited in order to generate paths that satisfy this minimal speed.
-- taking into account the maximal linear acceleration (config key: *MAX_LINEAR_ACCELERATION*).
-- add a "stop" attribute in ItineraryPoint structure.
+- Add a changelog.
+- Add in configuration the *MINIMAL_SPEED* key. The maximal curvature is limited in order to generate paths that satisfy this minimal speed.
+- Taking into account the maximal linear acceleration (config key: *MAX_LINEAR_ACCELERATION*).
+- Add a "stop" attribute in ItineraryPoint structure.

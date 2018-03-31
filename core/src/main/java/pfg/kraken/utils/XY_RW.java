@@ -71,6 +71,7 @@ public class XY_RW extends XY
 
 	public final XY_RW rotate(double cos, double sin)
 	{
+		assert Math.abs(1 - cos*cos - sin*sin)< 0.01 : "Bad parameters for \"rotate\" : "+cos+" "+sin;
 		double old_x = x;
 		x = cos * x - sin * y;
 		y = sin * old_x + cos * y;

@@ -42,14 +42,14 @@ public class Example3
 
 		RectangularObstacle robot = new RectangularObstacle(250, 80, 110, 110); 
 
-		Kraken kraken = new Kraken(robot, obs, new XY(-1500,0), new XY(1500, 2000), "trajectory"/*, "detailed"*/);
+		Kraken kraken = new Kraken(robot, obs, new XY(-1500,0), new XY(1500, 2000), "kraken-examples.conf", "trajectory"/*, "detailed"*/);
 		GraphicDisplay display = kraken.getGraphicDisplay();
 
 		/*
 		 * You can perfectly use two instances of Kraken (for example if two robots have different size)
 		 */
 		RectangularObstacle secondRobot = new RectangularObstacle(20, 20, 20, 20); 
-		Kraken krakenSecondRobot = new Kraken(secondRobot, obs, new XY(-1500,0), new XY(1500, 2000), "trajectory"/*, "detailed"*/);
+		Kraken krakenSecondRobot = new Kraken(secondRobot, obs, new XY(-1500,0), new XY(1500, 2000), "kraken-examples.conf", "trajectory"/*, "detailed"*/);
 
 		try
 		{
@@ -89,11 +89,6 @@ public class Example3
 		catch(PathfindingException e)
 		{
 			e.printStackTrace();
-		}
-		finally
-		{
-			kraken.stop();
-			krakenSecondRobot.stop();
 		}
 	}
 }

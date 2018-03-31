@@ -31,10 +31,10 @@ public class CinematiqueObs extends Cinematique implements Memorizable, Serializ
 
 	static
 	{
-		maxSpeedLUT = new double[100];
+		maxSpeedLUT = new double[500];
 		maxSpeedLUT[0] = Double.MAX_VALUE;
-		for(int i = 1; i < 100; i++)
-			maxSpeedLUT[i] = Math.sqrt(10. / i);
+		for(int i = 1; i < 500; i++)
+			maxSpeedLUT[i] = Math.sqrt(50. / i);
 	}
 	
 	public String toString()

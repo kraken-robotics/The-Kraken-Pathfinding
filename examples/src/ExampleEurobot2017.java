@@ -83,13 +83,13 @@ public class ExampleEurobot2017
 
 		RectangularObstacle robot = new RectangularObstacle(250, 80, 110, 110);
 
-		Kraken kraken = new Kraken(robot, obs, new XY(-1500,0), new XY(1500, 2000), "trajectory", "eurobot2017");
+		Kraken kraken = new Kraken(robot, obs, new XY(-1500,0), new XY(1500, 2000), "kraken-examples.conf", "trajectory", "eurobot2017");
 
 		GraphicDisplay display = kraken.getGraphicDisplay();
 		
 		try
 		{
-			kraken.initializeNewSearch(new XYO(-850, 400, Math.PI/2), new XY(850, 400));
+			kraken.initializeNewSearch(new XYO(-850, 400, Math.PI/2), new XYO(850, 400, -Math.PI/2));
 			
 			List<ItineraryPoint> path = kraken.search();
 			
@@ -105,10 +105,6 @@ public class ExampleEurobot2017
 		{
 			// Impossible
 			e.printStackTrace();
-		}
-		finally
-		{
-			kraken.stop();
 		}
 	}
 }

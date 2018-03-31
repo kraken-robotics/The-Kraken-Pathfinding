@@ -129,4 +129,10 @@ public enum ClothoTentacle implements TentacleType
 		return ClothoidesComputer.class;
 	}
 
+	@Override
+	public double getComputationalCost()
+	{
+		return 1;
+	}
+
 }

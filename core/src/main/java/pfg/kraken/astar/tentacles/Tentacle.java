@@ -127,7 +127,7 @@ public abstract class Tentacle implements Printable
 	@Override
 	public String toString()
 	{
-		String out = getClass().getSimpleName() + " :\n";
+		String out = getClass().getSimpleName() + " (" + vitesse + ") with " + getNbPoints() + " points:\n";
 		for(int i = 0; i < getNbPoints() - 1; i++)
 			out += getPoint(i) + "\n";
 		out += getLast();

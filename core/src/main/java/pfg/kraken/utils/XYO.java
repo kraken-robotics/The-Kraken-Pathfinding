@@ -40,4 +40,14 @@ public class XYO implements Serializable
 	{
 		position.copy(other);
 	}
+	
+	public static double angleDifference(double angle1, double angle2)
+	{
+		double deltaO = (angle1 - angle2) % (2 * Math.PI);
+		if(deltaO > Math.PI)
+			deltaO -= 2 * Math.PI;
+		else if(deltaO < -Math.PI)
+			deltaO += 2 * Math.PI;
+		return deltaO;
+	}
 }

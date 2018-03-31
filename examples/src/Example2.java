@@ -48,7 +48,7 @@ public class Example2
 		 */
 		DefaultDynamicObstacles obsDyn = new DefaultDynamicObstacles();
 
-		Kraken kraken = new Kraken(robot, obs, obsDyn, new XY(-1500,0), new XY(1500, 2000), "trajectory"/*, "detailed"*/);
+		Kraken kraken = new Kraken(robot, obs, obsDyn, new XY(-1500,0), new XY(1500, 2000), "kraken-examples.conf", "trajectory"/*, "detailed"*/);
 		GraphicDisplay display = kraken.getGraphicDisplay();
 
 		try
@@ -143,10 +143,6 @@ public class Example2
 			 * This exception is thrown when no path is found
 			 */
 			e.printStackTrace();
-		}
-		finally
-		{
-			kraken.stop();
 		}
 	}
 }

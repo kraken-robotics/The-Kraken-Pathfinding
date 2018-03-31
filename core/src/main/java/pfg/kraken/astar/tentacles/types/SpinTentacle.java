@@ -6,33 +6,38 @@
 package pfg.kraken.astar.tentacles.types;
 
 import java.awt.Color;
-
 import pfg.kraken.astar.DirectionStrategy;
-import pfg.kraken.astar.tentacles.BezierComputer;
+import pfg.kraken.astar.tentacles.SpinComputer;
 import pfg.kraken.astar.tentacles.TentacleComputer;
 import pfg.kraken.robot.Cinematique;
 
 /**
- * Interpolation par courbe de Bézier
+ * Arc où le robot tourne sur lui-même
  * 
  * @author pf
  *
  */
 
-public enum BezierTentacle implements TentacleType
+public enum SpinTentacle implements TentacleType
 {
-	BEZIER_XYOC_TO_XY(2),
-	BEZIER_XYOC_TO_XYO(3),
-	BEZIER_XYO_TO_XYO(2);
+	UP(Math.PI/2),
+	DOWN(-Math.PI/2),
+	RIGHT(Math.PI),
+	LEFT(0);
 
-	// order est l'ordre du polynôme de Bézier correspondant (quadratique = 2, etc.)
-	private int order;
-
-	private BezierTentacle(int order)
-	{
-		this.order = order;
-	}
+	public final double angle;
 	
+	private SpinTentacle(double angle)
+	{
+		this.angle = angle;
+	}
+
+	@Override
+	public Class<? extends TentacleComputer> getComputer()
+	{
+		return SpinComputer.class;
+	}
+
 	@Override
 	public boolean isAcceptable(Cinematique c, DirectionStrategy directionstrategyactuelle, double courbureMax)
 	{
@@ -42,24 +47,19 @@ public enum BezierTentacle implements TentacleType
 	@Override
 	public int getNbArrets(boolean firstMove)
 	{
-		return 0;
+		return 1;
 	}
 
 	@Override
-	public Color getColor() {
-		return Color.GREEN;
-	}
-
-	@Override
-	public Class<? extends TentacleComputer> getComputer()
+	public Color getColor()
 	{
-		return BezierComputer.class;
+		return Color.ORANGE;
 	}
-
+	
 	@Override
 	public double getComputationalCost()
 	{
-		return order * (order + 1) / 2;
+		return 0.3;
 	}
 
 }

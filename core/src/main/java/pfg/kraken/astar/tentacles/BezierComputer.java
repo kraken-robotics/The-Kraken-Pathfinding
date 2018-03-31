@@ -19,7 +19,6 @@ import pfg.kraken.obstacles.RectangularObstacle;
 import pfg.kraken.robot.Cinematique;
 import pfg.kraken.robot.CinematiqueObs;
 import pfg.kraken.utils.XY;
-import pfg.kraken.utils.XYO;
 import pfg.kraken.utils.XY_RW;
 import pfg.log.Log;
 import static pfg.kraken.astar.tentacles.Tentacle.*;
@@ -54,11 +53,22 @@ public class BezierComputer implements TentacleComputer
 		tmp = new StaticTentacle[indexThreadMax];
 		delta = new XY_RW[indexThreadMax];
 		vecteurVitesse = new XY_RW[indexThreadMax];
-		tmpPoint = new XY_RW[indexThreadMax];
 		a_tmp = new XY_RW[indexThreadMax];
 		b_tmp = new XY_RW[indexThreadMax];
 		c_tmp = new XY_RW[indexThreadMax];
+		d_tmp = new XY_RW[indexThreadMax];
 		acc = new XY_RW[indexThreadMax];
+		vit = new XY_RW[indexThreadMax];
+		tmpPos = new XY_RW[indexThreadMax];
+		pointB = new XY_RW[indexThreadMax];
+		pointC = new XY_RW[indexThreadMax];
+		tmpPoint3 = new XY_RW[indexThreadMax];
+		a_tmp = new XY_RW[indexThreadMax];
+		b_tmp = new XY_RW[indexThreadMax];
+		c_tmp = new XY_RW[indexThreadMax];
+		d_tmp = new XY_RW[indexThreadMax];
+		acc = new XY_RW[indexThreadMax];
+		vit = new XY_RW[indexThreadMax];
 		tmpPos = new XY_RW[indexThreadMax];
 		debut = new Cinematique[indexThreadMax];
 		
@@ -67,23 +77,35 @@ public class BezierComputer implements TentacleComputer
 			tmp[i] = new StaticTentacle(vehicleTemplate);
 			delta[i] = new XY_RW();
 			vecteurVitesse[i] = new XY_RW();
-			tmpPoint[i] = new XY_RW();
 			a_tmp[i] = new XY_RW();
 			b_tmp[i] = new XY_RW();
 			c_tmp[i] = new XY_RW();
+			d_tmp[i] = new XY_RW();
 			acc[i] = new XY_RW();
+			vit[i] = new XY_RW();
+			tmpPos[i] = new XY_RW();
+			pointB[i] = new XY_RW();
+			pointC[i] = new XY_RW();
+			tmpPoint3[i] = new XY_RW();
+			a_tmp[i] = new XY_RW();
+			b_tmp[i] = new XY_RW();
+			c_tmp[i] = new XY_RW();
+			d_tmp[i] = new XY_RW();
+			acc[i] = new XY_RW();
+			vit[i] = new XY_RW();
 			tmpPos[i] = new XY_RW();
 			debut[i] = new Cinematique();
 		}
+		
 
 	}
 
 	private XY_RW[] delta, vecteurVitesse;
-	private Cinematique[] debut;
 	private StaticTentacle[] tmp;
-	private XY_RW[] tmpPoint;
-	private XY_RW[] a_tmp, b_tmp, c_tmp, acc;
-	private XY_RW[] tmpPos;
+
+	private XY_RW[] pointB, pointC, tmpPoint3;
+	private Cinematique[] debut;
+	private XY_RW[] a_tmp, b_tmp, c_tmp, d_tmp, acc, vit, tmpPos;
 
 	/**
 	 * Interpolation de XYO à XYO
@@ -91,24 +113,32 @@ public class BezierComputer implements TentacleComputer
 	 * @param arrivee
 	 * @return
 	 */
-	public DynamicTentacle quadraticInterpolationXYO2XYO(Cinematique cinematiqueInitiale, XYO arrivee, int indexThread)
+	public DynamicTentacle quadraticInterpolationXYO2XYO(Cinematique cinematiqueInitiale, Cinematique arrivee, int indexThread)
 	{
 		XY a = cinematiqueInitiale.getPosition();
-		XY c = arrivee.position; 
+		XY c = arrivee.getPosition(); 
 		double ux = Math.cos(cinematiqueInitiale.orientationGeometrique);
 		double uy = Math.sin(cinematiqueInitiale.orientationGeometrique);
-		double vx = Math.cos(arrivee.orientation);
-		double vy = Math.sin(arrivee.orientation);
+		double vx = Math.cos(arrivee.orientationGeometrique);
+		double vy = Math.sin(arrivee.orientationGeometrique);
 
 		// Les orientations sont parallèles : on ne peut pas calculer leur intersection
-		if(Math.abs(vx*uy - vx*uy) < 0.1)
+		if(Math.abs(vx*uy - vy*ux) < 0.1)
 			return null;
 		
-		double gamma = (a.getX()*vy - a.getY()*ux - (c.getX()*uy - c.getY()*ux)) / (vx*uy - vx*uy);
-		tmpPoint[indexThread].setX(arrivee.position.getX() + gamma * vx);
-		tmpPoint[indexThread].setY(arrivee.position.getY() + gamma * vy);
+		double distanceBC = (a.getX()*uy - a.getY()*ux + c.getY()*ux - c.getX()*uy) / (ux*vy - uy*vx);
+		// on va arriver dans le mauvais sens
+		if(distanceBC < 0)
+			return null;
+
+		pointB[indexThread].setX(arrivee.getPosition().getX() - distanceBC * vx);
+		pointB[indexThread].setY(arrivee.getPosition().getY() - distanceBC * vy);
+
+		// on part du mauvais sens
+		if((pointB[indexThread].getX() - a.getX()) * ux + (pointB[indexThread].getY() - a.getY()) * uy <= 0)
+			return null;
 		
-		return constructBezierQuad(a, tmpPoint[indexThread], c, cinematiqueInitiale.enMarcheAvant, cinematiqueInitiale, indexThread);
+		return constructBezierQuad(cinematiqueInitiale.getPosition(), pointB[indexThread], arrivee.getPosition(), cinematiqueInitiale.enMarcheAvant, cinematiqueInitiale, indexThread);
 	}
 	
 	/**
@@ -119,8 +149,166 @@ public class BezierComputer implements TentacleComputer
 	 */
 	public DynamicTentacle cubicInterpolationXYOC2XYO(Cinematique cinematiqueInitiale, Cinematique arrivee, int indexThread)
 	{
-		// TODO
-		return null;
+		// TODO orientation arrivée : réelle, pas géométrique
+		XY a = cinematiqueInitiale.getPosition();
+		XY d = arrivee.getPosition(); 
+		double ux = Math.cos(cinematiqueInitiale.orientationGeometrique);
+		double uy = Math.sin(cinematiqueInitiale.orientationGeometrique);
+		double vx = Math.cos(arrivee.orientationGeometrique);
+		double vy = Math.sin(arrivee.orientationGeometrique);
+
+		// TODO : vérifier que D est bien du côté de la courbure actuelle
+		
+		// Les orientations sont parallèles : on ne peut pas calculer leur intersection
+		if(Math.abs(ux*vy - uy*vx) < 0.1)
+			return null;
+
+		double distanceBD = (a.getX()*uy - a.getY()*ux + d.getY()*ux - d.getX()*uy) / (ux*vy - uy*vx);
+
+		pointB[indexThread].setX(arrivee.getPosition().getX() - distanceBD * vx);
+		pointB[indexThread].setY(arrivee.getPosition().getY() - distanceBD * vy);
+		
+		// on part du mauvais sens
+		if((pointB[indexThread].getX() - a.getX()) * ux + (pointB[indexThread].getY() - a.getY()) * uy <= 0)
+			return null;
+
+		double sin = ux*vy - uy*vx;
+		
+		double distanceAB = a.distance(pointB[indexThread]);
+		double courbureDepart = cinematiqueInitiale.courbureGeometrique / 1000.;
+		
+/*		// on vérifie que C est entre B et D
+		if(courbureDepart * distanceAB >= 2*gamma*cos)
+		{
+			System.out.println("C pas entre B et D");
+			return null;
+		}*/
+		
+		double distanceBC = 1.5 * courbureDepart * distanceAB * distanceAB / sin;
+
+		// si C est après D : on n'arrivera pas avec la bonne orientation
+		if(distanceBC >= distanceBD)
+			return null;
+
+		pointC[indexThread].setX(pointB[indexThread].getX() + distanceBC * vx);
+		pointC[indexThread].setY(pointB[indexThread].getY() + distanceBC * vy);
+
+		return constructBezierCubique(a, pointB[indexThread], pointC[indexThread], d, cinematiqueInitiale.enMarcheAvant, cinematiqueInitiale, indexThread);
+	}
+
+	private DynamicTentacle constructBezierCubique(XY A, XY B, XY C, XY D, boolean enMarcheAvant, Cinematique cinematiqueInitiale, int indexThread)
+	{
+		double t = 1;
+		LinkedList<CinematiqueObs> out = new LinkedList<CinematiqueObs>();
+//		boolean first = true;
+		double lastCourbure = 0;
+//		double lastOrientation = 0;
+		
+		
+		while(t > 0)
+		{
+			double tm = 1-t;
+			double tm2 = tm * tm;
+			double tm3 = tm * tm * tm;
+			double t2 = t * t;
+			double t3 = t * t * t;
+			
+			// Évaluation de la position en t
+			A.copy(a_tmp[indexThread]);
+			a_tmp[indexThread].scalar(tm3);
+			B.copy(b_tmp[indexThread]);
+			b_tmp[indexThread].scalar(3*tm2*t);
+			C.copy(c_tmp[indexThread]);
+			c_tmp[indexThread].scalar(3*tm*t2);
+			D.copy(d_tmp[indexThread]);
+			d_tmp[indexThread].scalar(t3);
+			
+			a_tmp[indexThread].copy(tmpPoint3[indexThread]);
+			tmpPoint3[indexThread].plus(b_tmp[indexThread]);
+			tmpPoint3[indexThread].plus(c_tmp[indexThread]);
+			tmpPoint3[indexThread].plus(d_tmp[indexThread]);
+			
+			// Évalution de la vitesse en t
+			A.copy(a_tmp[indexThread]);
+			a_tmp[indexThread].scalar(-3*tm2);
+			B.copy(b_tmp[indexThread]);
+			b_tmp[indexThread].scalar(-6*tm*t+3*tm2);
+			C.copy(c_tmp[indexThread]);
+			c_tmp[indexThread].scalar(-3*t2+6*tm*t);
+			D.copy(d_tmp[indexThread]);
+			d_tmp[indexThread].scalar(3*t2);
+
+			a_tmp[indexThread].copy(vit[indexThread]);
+			vit[indexThread].plus(b_tmp[indexThread]);
+			vit[indexThread].plus(c_tmp[indexThread]);
+			vit[indexThread].plus(d_tmp[indexThread]);
+			double vitesse = vit[indexThread].norm();
+			double orientation = vit[indexThread].getFastArgument();
+			
+			// Évalutation de l'accélération en t
+			A.copy(a_tmp[indexThread]);
+			a_tmp[indexThread].scalar(6*tm);
+			B.copy(b_tmp[indexThread]);
+			b_tmp[indexThread].scalar(6*t-12*tm);
+			C.copy(c_tmp[indexThread]);
+			c_tmp[indexThread].scalar(-12*t+6*tm);
+			D.copy(d_tmp[indexThread]);
+			d_tmp[indexThread].scalar(6*t);
+			
+			a_tmp[indexThread].copy(acc[indexThread]);
+			acc[indexThread].plus(b_tmp[indexThread]);
+			acc[indexThread].plus(c_tmp[indexThread]);
+			acc[indexThread].plus(d_tmp[indexThread]);
+			
+			double courbure = 1000*(vit[indexThread].getX() * acc[indexThread].getY() - vit[indexThread].getY() * acc[indexThread].getX()) / (vitesse * vitesse * vitesse);
+
+			double deltaCourbure = Math.abs(courbure - lastCourbure);
+			
+			// on a dépassé la courbure maximale : on arrête tout
+			if(Math.abs(courbure) > courbureMax)
+			{
+//				System.out.println("Courbure : "+courbure+" >? "+courbureMax);
+				for(CinematiqueObs c : out)
+					memory.destroyNode(c);
+				return null;
+			}
+			
+			double maxSpeed = maxCurvatureDerivative * PRECISION_TRACE / deltaCourbure;
+			
+			t -= PRECISION_TRACE_MM / vitesse;
+			
+			CinematiqueObs obs = memory.getNewNode();
+			out.addFirst(obs);
+			obs.updateWithMaxSpeed(
+					tmpPoint3[indexThread].getX(), // x
+					tmpPoint3[indexThread].getY(), // y
+					orientation,
+					enMarcheAvant,
+					courbure,
+					rootedMaxAcceleration,
+					maxSpeed,
+					false);
+			
+			lastCourbure = obs.courbureGeometrique;
+		}
+
+		if(out.getFirst().getPosition().distanceFast(cinematiqueInitiale.getPosition()) < PRECISION_TRACE_MM/2)
+			memory.destroyNode(out.removeFirst());
+		
+		if(out.getFirst().getPosition().distanceFast(cinematiqueInitiale.getPosition()) > 32)
+		{
+			for(CinematiqueObs c : out)
+				memory.destroyNode(c);
+			return null;
+		}
+		
+		if(out.isEmpty())
+			return null;
+
+		if(Math.abs(cinematiqueInitiale.courbureGeometrique - lastCourbure) > 0.3)
+			out.getFirst().stop = true;
+		
+		return new DynamicTentacle(out, BezierTentacle.BEZIER_XYOC_TO_XYO);
 	}
 	
 	/**
@@ -133,16 +321,16 @@ public class BezierComputer implements TentacleComputer
 	 * @param arrivee
 	 * @param vitesseMax
 	 * @return
-	 * @throws MemoryPoolException
-	 * @throws InterruptedException
 	 */
 	public DynamicTentacle quadraticInterpolationXYOC2XY(Cinematique cinematiqueInitiale, XY arrivee, int indexThread)
 	{
 		cinematiqueInitiale.copy(debut[indexThread]);
+		Cinematique firstCinematique = debut[indexThread];
+
 		arrivee.copy(delta[indexThread]);
-		delta[indexThread].minus(debut[indexThread].getPosition());
-		vecteurVitesse[indexThread].setX(Math.cos(debut[indexThread].orientationGeometrique));
-		vecteurVitesse[indexThread].setY(Math.sin(debut[indexThread].orientationGeometrique));
+		delta[indexThread].minus(firstCinematique.getPosition());
+		vecteurVitesse[indexThread].setX(Math.cos(firstCinematique.orientationGeometrique));
+		vecteurVitesse[indexThread].setY(Math.sin(firstCinematique.orientationGeometrique));
 		vecteurVitesse[indexThread].rotate(0, 1); // orthogonal à la vitesse
 
 		double d = vecteurVitesse[indexThread].dot(delta[indexThread]);
@@ -150,12 +338,15 @@ public class BezierComputer implements TentacleComputer
 		DynamicTentacle prefixe = null;
 
 		// il faut absolument que la courbure ait déjà le bon signe
-		// si la courbure est non nulle, il faut aussi annuler
-		if(Math.abs(debut[indexThread].courbureGeometrique) < 0.1 || (debut[indexThread].courbureGeometrique >= 0 != d >= 0))
+		// si la courbure est nulle, il faut aussi annuler
+		if(Math.abs(firstCinematique.courbureGeometrique) < 0.1 || firstCinematique.courbureGeometrique >= 0 ^ d >= 0)
 		{
-			// Première partie du préfixe (optionnelle) : on annule la courbure
-			if(Math.abs(debut[indexThread].courbureGeometrique) > 0.1)
-				prefixe = clothocomputer.getTrajectoireRamene(debut[indexThread], StraightingTentacle.RAMENE_VOLANT, indexThread);
+			if(Math.abs(firstCinematique.courbureGeometrique) > 0.1)
+			{
+				// log.debug("Préfixe nécessaire !");
+				prefixe = clothocomputer.getTrajectoireRamene(firstCinematique, StraightingTentacle.RAMENE_VOLANT, indexThread);
+			}
+
 			if(prefixe == null)
 				prefixe = new DynamicTentacle(new ArrayList<CinematiqueObs>(), BezierTentacle.BEZIER_XYOC_TO_XY);
 
@@ -173,9 +364,9 @@ public class BezierComputer implements TentacleComputer
 			prefixe.getLast().copy(debut[indexThread]);
 
 			arrivee.copy(delta[indexThread]);
-			delta[indexThread].minus(debut[indexThread].getPosition());
-			vecteurVitesse[indexThread].setX(Math.cos(debut[indexThread].orientationGeometrique));
-			vecteurVitesse[indexThread].setY(Math.sin(debut[indexThread].orientationGeometrique));
+			delta[indexThread].minus(firstCinematique.getPosition());
+			vecteurVitesse[indexThread].setX(Math.cos(firstCinematique.orientationGeometrique));
+			vecteurVitesse[indexThread].setY(Math.sin(firstCinematique.orientationGeometrique));
 			vecteurVitesse[indexThread].rotate(0, 1); // orthogonal à la vitesse
 			d = vecteurVitesse[indexThread].dot(delta[indexThread]);
 		}
@@ -188,12 +379,11 @@ public class BezierComputer implements TentacleComputer
 		}
 
 		vecteurVitesse[indexThread].rotate(0, -1);
-		vecteurVitesse[indexThread].scalar(Math.sqrt(d / (2 * debut[indexThread].courbureGeometrique / 1000))); // c'est les maths qui le disent
-		vecteurVitesse[indexThread].plus(debut[indexThread].getPosition());
+		vecteurVitesse[indexThread].scalar(Math.sqrt(d / (2 * firstCinematique.courbureGeometrique / 1000))); // c'est les maths qui le disent
+		vecteurVitesse[indexThread].plus(firstCinematique.getPosition());
 
 		DynamicTentacle arc = constructBezierQuad(debut[indexThread].getPosition(), vecteurVitesse[indexThread], arrivee, debut[indexThread].enMarcheAvant, debut[indexThread], indexThread);
-		
-		// la construction a échoué
+
 		if(arc == null)
 		{
 			if(prefixe != null)
@@ -210,7 +400,7 @@ public class BezierComputer implements TentacleComputer
 		}
 		return arc;
 	}
-
+	
 	/**
 	 * Construit la suite de points de la courbure de Bézier quadratique de
 	 * points de contrôle A, B et C.
@@ -220,7 +410,6 @@ public class BezierComputer implements TentacleComputer
 	 * @param vecteurVitesse2
 	 * @param position2
 	 * @return
-	 * @throws InterruptedException
 	 */
 	private DynamicTentacle constructBezierQuad(XY A, XY B, XY C, boolean enMarcheAvant, Cinematique cinematiqueInitiale, int indexThread)
 	{
@@ -237,21 +426,23 @@ public class BezierComputer implements TentacleComputer
 		a_tmp[indexThread].copy(acc[indexThread]);
 		acc[indexThread].plus(b_tmp[indexThread]);
 		acc[indexThread].plus(c_tmp[indexThread]);
-		boolean first = true;
 		double lastCourbure = 0;
-		double lastOrientation = 0;
 
 		while(t > 0)
 		{
 			CinematiqueObs obs = memory.getNewNode();
 
+			double tm = 1-t;
+			double tm2 = tm * tm;
+			double t2 = t * t;
+
 			// Évaluation de la position en t
 			A.copy(a_tmp[indexThread]);
-			a_tmp[indexThread].scalar((1 - t) * (1 - t));
+			a_tmp[indexThread].scalar(tm2);
 			B.copy(b_tmp[indexThread]);
-			b_tmp[indexThread].scalar(2 * (1 - t) * t);
+			b_tmp[indexThread].scalar(2 * tm * t);
 			C.copy(c_tmp[indexThread]);
-			c_tmp[indexThread].scalar(t * t);
+			c_tmp[indexThread].scalar(t2);
 
 			a_tmp[indexThread].copy(tmpPos[indexThread]);
 			tmpPos[indexThread].plus(b_tmp[indexThread]);
@@ -259,32 +450,27 @@ public class BezierComputer implements TentacleComputer
 			out.addFirst(obs);
 
 			// Évalution de la vitesse en t
-			A.copy(a_tmp[indexThread]);
-			a_tmp[indexThread].scalar(-2 * (1 - t));
+			A.copy(vit[indexThread]);
+			vit[indexThread].scalar(-2 * tm);
 			B.copy(b_tmp[indexThread]);
-			b_tmp[indexThread].scalar(2 * (1 - 2 * t));
+			b_tmp[indexThread].scalar(2 - 4 * t);
 			C.copy(c_tmp[indexThread]);
 			c_tmp[indexThread].scalar(2 * t);
 
-			a_tmp[indexThread].plus(b_tmp[indexThread]);
-			a_tmp[indexThread].plus(c_tmp[indexThread]);
-			double vitesse = a_tmp[indexThread].norm();
-			double orientation = a_tmp[indexThread].getFastArgument();
-			a_tmp[indexThread].rotate(0, 1);
-			double accLongitudinale = a_tmp[indexThread].dot(acc[indexThread]);
-
-			double courbure =  accLongitudinale / (vitesse * vitesse);
+			vit[indexThread].plus(b_tmp[indexThread]);
+			vit[indexThread].plus(c_tmp[indexThread]);
 			
-			double deltaO = (orientation - lastOrientation) % (2 * Math.PI);
-			if(deltaO > Math.PI)
-				deltaO -= 2 * Math.PI;
-			else if(deltaO < -Math.PI)
-				deltaO += 2 * Math.PI;
+			// a_tmp contient le vecteur vitesse
+			double vitesse = vit[indexThread].norm();
 
+			double courbure = 1000*(vit[indexThread].getX() * acc[indexThread].getY() - vit[indexThread].getY() * acc[indexThread].getX()) / (vitesse * vitesse * vitesse);
+
+			double orientation = vit[indexThread].getFastArgument();
+			
 			double deltaCourbure = Math.abs(courbure - lastCourbure);
 			
 			// on a dépassé la courbure maximale : on arrête tout
-			if(Math.abs(courbure) > courbureMax || (!first && Math.abs(deltaO) > 0.5))
+			if(Math.abs(courbure) > courbureMax)
 			{
 				memory.destroy(out);
 				return null;
@@ -292,40 +478,24 @@ public class BezierComputer implements TentacleComputer
 			
 			double maxSpeed = maxCurvatureDerivative * PRECISION_TRACE / deltaCourbure;
 
+			t -= PRECISION_TRACE_MM / vitesse;
+			
 			obs.updateWithMaxSpeed(tmpPos[indexThread].getX(), // x
 					tmpPos[indexThread].getY(), // y
 					orientation, enMarcheAvant, courbure, rootedMaxAcceleration, maxSpeed, false);
-
-			lastOrientation = obs.orientationGeometrique;
+			
 			lastCourbure = obs.courbureGeometrique;
-			first = false;
-			t -= PRECISION_TRACE_MM / vitesse;
 		}
-
-		double diffOrientation = (Math.abs(cinematiqueInitiale.orientationGeometrique - lastOrientation)) % (2 * Math.PI);
-		if(diffOrientation > Math.PI)
-			diffOrientation -= 2 * Math.PI;
-		else if(diffOrientation < -Math.PI)
-			diffOrientation += 2 * Math.PI;
-
-		if(!first && (Math.abs(cinematiqueInitiale.courbureGeometrique - lastCourbure) > 0.3) || Math.abs(diffOrientation) > 0.5)
-		{
-//			System.out.println("Delta fin : "+Math.abs(cinematiqueInitiale.courbureGeometrique - lastCourbure)+" >? "+0.3);
-			// log.debug("Erreur raccordement :
-			// "+cinematiqueInitiale.courbureGeometrique+"
-			// "+Math.abs(cinematiqueInitiale.courbureGeometrique -
-			// lastCourbure)+" "+cinematiqueInitiale.orientationGeometrique+"
-			// "+lastOrientation);
-			memory.destroy(out);
-			return null;
-		}
-
+		
 		if(out.getFirst().getPosition().distanceFast(cinematiqueInitiale.getPosition()) < PRECISION_TRACE_MM / 2)
 			memory.destroyNode(out.removeFirst());
 
 		if(out.isEmpty())
 			return null;
 
+		if(Math.abs(cinematiqueInitiale.courbureGeometrique - lastCourbure) > 0.3)
+			out.getFirst().stop = true;
+		
 		return new DynamicTentacle(out, BezierTentacle.BEZIER_XYOC_TO_XY);
 	}
 
@@ -339,6 +509,22 @@ public class BezierComputer implements TentacleComputer
 			if(t == null)
 				return false;
 			assert modified.cameFromArcDynamique == null;
+			modified.cameFromArcDynamique = t;
+			return true;
+		}
+		else if(tentacleType == BezierTentacle.BEZIER_XYOC_TO_XYO)
+		{
+			DynamicTentacle t = cubicInterpolationXYOC2XYO(current.robot.getCinematique(), arrival, indexThread);
+			if(t == null)
+				return false;
+			modified.cameFromArcDynamique = t;
+			return true;
+		}
+		else if(tentacleType == BezierTentacle.BEZIER_XYO_TO_XYO)
+		{
+			DynamicTentacle t = quadraticInterpolationXYO2XYO(current.robot.getCinematique(), arrival, indexThread);
+			if(t == null)
+				return false;
 			modified.cameFromArcDynamique = t;
 			return true;
 		}

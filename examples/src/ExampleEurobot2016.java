@@ -54,7 +54,7 @@ public class ExampleEurobot2016
 
 		RectangularObstacle robot = new RectangularObstacle(250, 80, 110, 110);
 
-		Kraken kraken = new Kraken(robot, obs, new XY(-1500,0), new XY(1500, 2000), "trajectory", "eurobot2016");
+		Kraken kraken = new Kraken(robot, obs, new XY(-1500,0), new XY(1500, 2000), "kraken-examples.conf", "trajectory", "eurobot2016");
 		
 		GraphicDisplay display = kraken.getGraphicDisplay();
 		
@@ -76,10 +76,6 @@ public class ExampleEurobot2016
 		{
 			// Impossible
 			e.printStackTrace();
-		}
-		finally
-		{
-			kraken.stop();
 		}
 	}
 }

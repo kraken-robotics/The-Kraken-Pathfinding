@@ -68,7 +68,7 @@ public class Test_Multithreading extends JUnit_Test
 				display.addPrintable(p, Color.BLACK, Layer.FOREGROUND.layer);
 				System.out.println(p);
 				if(previous != null)
-					Assert.assertTrue((previous.x - p.x) * (previous.x - p.x) + (previous.y - p.y) * (previous.y - p.y) <= 21*21);
+					Assert.assertTrue((previous.x - p.x) * (previous.x - p.x) + (previous.y - p.y) * (previous.y - p.y) <= 27*27);
 				previous = p;
 			}
 
@@ -77,10 +77,6 @@ public class Test_Multithreading extends JUnit_Test
 		catch(PathfindingException e)
 		{
 			e.printStackTrace();
-		}
-		finally
-		{
-			kraken.stop();
 		}
 	}
 

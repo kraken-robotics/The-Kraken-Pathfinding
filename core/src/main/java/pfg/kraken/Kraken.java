@@ -13,7 +13,6 @@ import java.util.List;
 import pfg.config.Config;
 import pfg.config.ConfigInfo;
 import pfg.graphic.Vec2RO;
-import pfg.graphic.WindowFrame;
 import pfg.log.Log;
 import pfg.graphic.printable.Layer;
 import pfg.graphic.GraphicDisplay;
@@ -23,6 +22,9 @@ import pfg.injector.Injector;
 import pfg.injector.InjectorException;
 import pfg.kraken.astar.DirectionStrategy;
 import pfg.kraken.astar.TentacularAStar;
+import pfg.kraken.astar.tentacles.EndOfTrajectoryCheck;
+import pfg.kraken.astar.tentacles.EndWithXY;
+import pfg.kraken.astar.tentacles.EndWithXYO;
 import pfg.kraken.astar.tentacles.ResearchProfileManager;
 import pfg.kraken.astar.tentacles.TentacleManager;
 import pfg.kraken.astar.tentacles.types.*;
@@ -33,6 +35,7 @@ import pfg.kraken.obstacles.RectangularObstacle;
 import pfg.kraken.obstacles.container.DynamicObstacles;
 import pfg.kraken.obstacles.container.EmptyDynamicObstacles;
 import pfg.kraken.obstacles.container.StaticObstacles;
+import pfg.kraken.robot.Cinematique;
 import pfg.kraken.robot.ItineraryPoint;
 import pfg.kraken.utils.XY;
 import pfg.kraken.utils.XYO;
@@ -48,8 +51,9 @@ public class Kraken
 	private Config config;
 	private Injector injector;
 	private TentacularAStar astar;
-	private boolean stopped = false;
-	private static final String version = "1.2.2";
+	private ResearchProfileManager profiles;
+	private TentacleManager tentaclemanager;
+	private static final String version = "1.3.0";
 	
 	/**
 	 * Get Kraken with :
@@ -59,9 +63,9 @@ public class Kraken
 	 * @param topRightCorner : the top right corner of the search domain
 	 * @param configprofile : the config profiles
 	 */
-	public Kraken(RectangularObstacle vehicleTemplate, Iterable<Obstacle> fixedObstacles, XY bottomLeftCorner, XY topRightCorner, String...profiles)
+	public Kraken(RectangularObstacle vehicleTemplate, Iterable<Obstacle> fixedObstacles, XY bottomLeftCorner, XY topRightCorner, String configfile, String...profiles)
 	{
-		this(vehicleTemplate, fixedObstacles, new EmptyDynamicObstacles(), bottomLeftCorner, topRightCorner, profiles);
+		this(vehicleTemplate, fixedObstacles, new EmptyDynamicObstacles(), bottomLeftCorner, topRightCorner, configfile, profiles);
 	}
 	
 	/**
@@ -79,17 +83,6 @@ public class Kraken
 	}*/
 	
 	/**
-	 * Stop Kraken
-	 */
-	public void stop()
-	{
-		TentacleManager tm = injector.getExistingService(TentacleManager.class);
-		if(tm != null)
-			tm.stopThreads();
-		stopped = true;
-	}
-	
-	/**
 	 * Get Kraken with :
 	 * @param vehicleTemplate : the shape of the vehicle
 	 * @param fixedObstacles : a list of fixed/permanent obstacles
@@ -98,20 +91,10 @@ public class Kraken
 	 * @param topRightCorner : the top right corner of the search domain
 	 * @param configprofile : the config profiles
 	 */
-	public Kraken(RectangularObstacle vehicleTemplate, Iterable<Obstacle> fixedObstacles, DynamicObstacles dynObs, XY bottomLeftCorner, XY topRightCorner, String...configprofile)
+	public Kraken(RectangularObstacle vehicleTemplate, Iterable<Obstacle> fixedObstacles, DynamicObstacles dynObs, XY bottomLeftCorner, XY topRightCorner, String configfile, String...configprofile)
 	{	
-		List<TentacleType> tentacleTypesUsed = new ArrayList<TentacleType>();
-		for(BezierTentacle t : BezierTentacle.values())
-			tentacleTypesUsed.add(t);
-		for(ClothoTentacle t : ClothoTentacle.values())
-			tentacleTypesUsed.add(t);
-/*			for(TurnoverTentacle t : TurnoverTentacle.values())
-				tentacleTypesUsed.add(t);
-			for(StraightingTentacle t : StraightingTentacle.values())
-				tentacleTypesUsed.add(t);*/
-		
 		injector = new Injector();
-		config = new Config(ConfigInfoKraken.values(), isJUnitTest(), "kraken.conf", configprofile);
+		config = new Config(ConfigInfoKraken.values(), isJUnitTest(), configfile, configprofile);
 		injector.addService(RectangularObstacle.class, vehicleTemplate);
 		
 		/*
@@ -125,16 +108,13 @@ public class Kraken
 		}
 		
 		try {
-			ResearchProfileManager profiles = injector.getService(ResearchProfileManager.class);
-			profiles.addProfile(tentacleTypesUsed);
-			
 			StaticObstacles so = injector.getService(StaticObstacles.class); 
 			if(fixedObstacles != null)
 				for(Obstacle o : fixedObstacles)
 					so.add(o);
 			so.setCorners(bottomLeftCorner, topRightCorner);
 
-			Log log = new Log(SeverityCategoryKraken.INFO, "log.conf", "kraken");
+			Log log = new Log(SeverityCategoryKraken.INFO, configfile, configprofile);
 
 			injector.addService(log);
 			injector.addService(config);
@@ -142,23 +122,18 @@ public class Kraken
 			injector.addService(this);
 			injector.addService(injector);
 
+			/*
+			 * Override the graphic config
+			 */
+			HashMap<ConfigInfo, Object> overrideGraphic = new HashMap<ConfigInfo, Object>();
+			overrideGraphic.put(ConfigInfoGraphic.SIZE_X_WITH_UNITARY_ZOOM, (int) (topRightCorner.getX() - bottomLeftCorner.getX()));
+			overrideGraphic.put(ConfigInfoGraphic.SIZE_Y_WITH_UNITARY_ZOOM, (int) (topRightCorner.getY() - bottomLeftCorner.getY()));
+			
+			DebugTool debug = DebugTool.getDebugTool(overrideGraphic, new Vec2RO((topRightCorner.getX() + bottomLeftCorner.getX()) / 2, (topRightCorner.getY() + bottomLeftCorner.getY()) / 2), SeverityCategoryKraken.INFO, configfile, configprofile);
+			injector.addService(debug.getGraphicDisplay());
+			
 			if(config.getBoolean(ConfigInfoKraken.GRAPHIC_ENABLE))
 			{
-				/*
-				 * Override the graphic config
-				 */
-				HashMap<ConfigInfo, Object> overrideGraphic = new HashMap<ConfigInfo, Object>();
-				for(ConfigInfoGraphic infoG : ConfigInfoGraphic.values())
-					for(ConfigInfoKraken infoK : ConfigInfoKraken.values())
-						if(infoG.toString().equals(infoK.toString()))
-							overrideGraphic.put(infoG, config.getObject(infoK));
-				overrideGraphic.put(ConfigInfoGraphic.SIZE_X_WITH_UNITARY_ZOOM, (int) (topRightCorner.getX() - bottomLeftCorner.getX()));
-				overrideGraphic.put(ConfigInfoGraphic.SIZE_Y_WITH_UNITARY_ZOOM, (int) (topRightCorner.getY() - bottomLeftCorner.getY()));
-				
-				DebugTool debug = DebugTool.getDebugTool(overrideGraphic, new Vec2RO((topRightCorner.getX() + bottomLeftCorner.getX()) / 2, (topRightCorner.getY() + bottomLeftCorner.getY()) / 2), SeverityCategoryKraken.INFO, null);
-				WindowFrame f = debug.getWindowFrame();
-				injector.addService(f.getPrintBuffer());
-				
 				if(config.getBoolean(ConfigInfoKraken.GRAPHIC_SERVER))
 					debug.startPrintServer();
 				
@@ -169,18 +144,24 @@ public class Kraken
 						display.addPrintable(o, Color.BLACK, Layer.MIDDLE.layer);
 				}
 			}
-			else
-			{
-				injector.addService(GraphicDisplay.class, new GraphicDisplayPlaceholder());
-				HashMap<ConfigInfo, Object> override = new HashMap<ConfigInfo, Object>();
-				List<ConfigInfo> graphicConf = ConfigInfoKraken.getGraphicConfigInfo();
-				for(ConfigInfo c : graphicConf)
-					override.put(c, false);
-				config.override(override);
-			}
-	
-//				injector.getService(TentacleManager.class).setTentacle(tentacleTypesUsed);	
+
+
 			astar = injector.getService(TentacularAStar.class);
+			tentaclemanager = injector.getService(TentacleManager.class);
+			profiles = injector.getService(ResearchProfileManager.class);			
+
+			List<TentacleType> tentaclesXY = new ArrayList<TentacleType>();
+			for(ClothoTentacle t : ClothoTentacle.values())
+				tentaclesXY.add(t);
+			tentaclesXY.add(BezierTentacle.BEZIER_XYOC_TO_XY);
+			addMode("XY", tentaclesXY, new EndWithXY());
+			
+			List<TentacleType> tentaclesXYO = new ArrayList<TentacleType>();
+			for(ClothoTentacle t : ClothoTentacle.values())
+				tentaclesXYO.add(t);
+			tentaclesXYO.add(BezierTentacle.BEZIER_XYO_TO_XYO);
+			tentaclesXYO.add(BezierTentacle.BEZIER_XYOC_TO_XYO);
+			addMode("XYO", tentaclesXYO, new EndWithXYO());
 		} catch (InjectorException e) {
 			throw new RuntimeException("Fatal error", e);
 		}
@@ -206,26 +187,63 @@ public class Kraken
 	 */
 	public void initializeNewSearch(XYO start, XY arrival, DirectionStrategy directionstrategy) throws NoPathException
 	{
-		if(!stopped)
-			astar.initializeNewSearch(start, arrival, directionstrategy);
-		else
-			throw new RuntimeException("Kraken is stopped !");
+		astar.initializeNewSearch(new Cinematique(start), new Cinematique(new XYO(arrival.clone(), 0)), directionstrategy, "XY");
+	}
+	
+	/**
+	 * Initialize a new search from :
+	 * - a position and an orientation, to
+	 * - a position and an orientation
+	 * @param start
+	 * @param arrival
+	 * @param directionstrategy
+	 * @throws NoPathException
+	 */
+	public void initializeNewSearch(XYO start, XYO arrival, DirectionStrategy directionstrategy) throws NoPathException
+	{
+		astar.initializeNewSearch(new Cinematique(start), new Cinematique(arrival), directionstrategy, "XYO");
+	}
+	
+	/**
+	 * Initialize a new search from :
+	 * - a position and an orientation, to
+	 * - a position and an orientation
+	 * @param start
+	 * @param arrival
+	 * @param directionstrategy
+	 * @throws NoPathException
+	 */
+	public void initializeNewSearch(Cinematique start, Cinematique arrival, DirectionStrategy directionstrategy, String mode) throws NoPathException
+	{
+		astar.initializeNewSearch(start, arrival, directionstrategy, mode);
+	}
+	
+	/**
+	 * Initialize a new search from :
+	 * - a position and an orientation, to
+	 * - a position and an orientation
+	 * Use the default direction strategy
+	 * @param start
+	 * @param arrival
+	 * @throws NoPathException
+	 */
+	public void initializeNewSearch(XYO start, XYO arrival) throws NoPathException
+	{
+		astar.initializeNewSearch(start, arrival);
 	}
 	
 	/**
 	 * Initialize a new search from :
 	 * - a position and an orientation, to
 	 * - a position
+	 * Use the default direction strategy
 	 * @param start
 	 * @param arrival
 	 * @throws NoPathException
 	 */
 	public void initializeNewSearch(XYO start, XY arrival) throws NoPathException
 	{
-		if(!stopped)
-			astar.initializeNewSearch(start, arrival);
-		else
-			throw new RuntimeException("Kraken is stopped !");
+		astar.initializeNewSearch(start, arrival);
 	}
 
 	/**
@@ -235,10 +253,7 @@ public class Kraken
 	 */
 	public LinkedList<ItineraryPoint> search() throws PathfindingException
 	{
-		if(!stopped)
-			return astar.search();
-		else
-			throw new RuntimeException("Kraken is stopped !");
+		return astar.search();
 	}
 	
 	/**
@@ -262,5 +277,19 @@ public class Kraken
 	public static String getVersion()
 	{
 		return version;
+	}
+	
+	public void addMode(String name, List<TentacleType> tentacles, EndOfTrajectoryCheck end)
+	{
+		profiles.addProfile(name, tentacles, end);
+		tentaclemanager.updateProfiles(name);
+	}
+	
+	/**
+	 * Print the values overridden by the configuration file
+	 */
+	public void displayOverriddenConfigValues()
+	{
+		config.printChangedValues();
 	}
 }

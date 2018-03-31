@@ -200,7 +200,6 @@ public class TentacularAStar
 	 * @param depart
 	 * @return
 	 * @throws PathfindingException
-	 * @throws InterruptedException
 	 * @throws MemoryPoolException
 	 */
 	private final synchronized void search(CheminPathfindingInterface chemin, boolean replanif) throws PathfindingException
@@ -299,7 +298,7 @@ public class TentacularAStar
 
 			// ce calcul étant un peu lourd, on ne le fait que si le noeud a été
 			// choisi, et pas à la sélection des voisins (dans hasNext par
-			// exemple)
+			// exemple) (expérimentalement vérifié sur pc et raspi)
 			if(!arcmanager.isReachable(current))
 			{
 				if(current != depart)
@@ -370,7 +369,14 @@ public class TentacularAStar
 			{
 				AStarNode successeur = arcmanager.next();
 				assert successeur.getArc().getNbPoints() > 0;
-				assert successeur.getArc().getPoint(0).getPosition().distanceFast(current.robot.getCinematique().getPosition()) < 35 : successeur.getArc()+" "+current.robot.getCinematique().getPosition()+" "+successeur.getArc().getPoint(0).getPosition().distanceFast(current.robot.getCinematique().getPosition());
+				
+				// Il y a une trop grande distance
+				if(successeur.getArc().getPoint(0).getPosition().distanceFast(current.robot.getCinematique().getPosition()) > 35)
+				{
+					assert false : "Distance entre deux points trop élevée : " + successeur.getArc()+" "+current.robot.getCinematique().getPosition()+" "+successeur.getArc().getPoint(0).getPosition().distanceFast(current.robot.getCinematique().getPosition());
+					memorymanager.destroyNode(successeur);
+					continue;
+				}
 				assert successeur.getState() == MemPoolState.NEXT : successeur.getState();
 				successeur.g_score += current.g_score; // successeur.g_score contient déjà la distance entre current et successeur
 
@@ -398,12 +404,10 @@ public class TentacularAStar
 				// TODO
 				if(arcmanager.isArrived(successeur) && arcmanager.isReachable(successeur) && (trajetDeSecours == null || trajetDeSecours.f_score > successeur.f_score))
 				{
-					// on détruit l'ancien trajet
-					if(trajetDeSecours != null)
-					{
-						assert trajetDeSecours.getState() == MemPoolState.WAITING && setState(trajetDeSecours, MemPoolState.CURRENT) : trajetDeSecours.getState();
-						memorymanager.destroyNode(trajetDeSecours);
-					}
+					/*
+					 * Cela ne sert à rien de détruire l'ancien trajet de secours (qui est être dans l'openset)
+					 * C'est juste qu'on garde le meilleur dans un coin.
+					 */
 
 					trajetDeSecours = successeur;
 				}
@@ -424,7 +428,7 @@ public class TentacularAStar
 				try {
 					Thread.sleep(200);
 				} catch (InterruptedException e) {
-					e.printStackTrace();
+					Thread.currentThread().interrupt();
 				}
 				for(AStarNode n : outTentacles)
 					buffer.removePrintable(n);
@@ -470,12 +474,17 @@ public class TentacularAStar
 	
 	public void initializeNewSearch(XYO start, XY arrival) throws NoPathException
 	{
-		initializeNewSearch(start, arrival, defaultStrategy);
+		initializeNewSearch(new Cinematique(start), new Cinematique(new XYO(arrival.clone(), 0)), defaultStrategy, "XY");
 	}
 
-	public void initializeNewSearch(XYO start, XY arrival, DirectionStrategy directionstrategy) throws NoPathException
+	public void initializeNewSearch(XYO start, XYO arrival) throws NoPathException
 	{
-		initializeNewSearch(start, arrival, directionstrategy, defaultSpeed);
+		initializeNewSearch(new Cinematique(start), new Cinematique(arrival), defaultStrategy, "XYO");
+	}
+
+	public void initializeNewSearch(Cinematique start, Cinematique arrival, DirectionStrategy directionstrategy, String mode) throws NoPathException
+	{
+		initializeNewSearch(start, arrival, directionstrategy, mode, defaultSpeed);
 	}
 	
 	/**
@@ -486,17 +495,17 @@ public class TentacularAStar
 	 * @param shoot
 	 * @throws NoPathException 
 	 */
-	public void initializeNewSearch(XYO start, XY arrival, DirectionStrategy directionstrategy, double maxSpeed) throws NoPathException
+	public void initializeNewSearch(Cinematique start, Cinematique arrival, DirectionStrategy directionstrategy, String mode, double maxSpeed) throws NoPathException
 	{
 		depart.init();
-		depart.robot.setCinematique(new Cinematique(start));
-		arcmanager.configure(directionstrategy, maxSpeed, arrival);
+		depart.robot.setCinematique(start);
+		arcmanager.configure(directionstrategy, maxSpeed, arrival, mode);
 
 		/*
 		 * dstarlite.computeNewPath updates the heuristic.
 		 * It returns false if there is no path between start and arrival
 		 */
-		if(!dstarlite.computeNewPath(depart.robot.getCinematique().getPosition(), arrival))
+		if(!dstarlite.computeNewPath(depart.robot.getCinematique().getPosition(), arrival.getPosition()))
 			throw new NoPathException("No path found by D* Lite !");
 	}
 
@@ -541,6 +550,14 @@ public class TentacularAStar
 		dstarlite.updateObstacles();
 
 //		process(realChemin, true);
+	}*/
+	
+/*	private String checkOpenSet()
+	{
+		for(AStarNode n : openset)
+			if(n.getState() != MemPoolState.WAITING)
+				return n.getIndiceMemoryManager()+" "+n.getState();
+		return null;
 	}*/
 	
 	private boolean setState(AStarNode node, MemPoolState state)

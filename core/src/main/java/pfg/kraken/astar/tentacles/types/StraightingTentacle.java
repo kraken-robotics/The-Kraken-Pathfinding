@@ -64,4 +64,11 @@ public enum StraightingTentacle implements TentacleType
 	{
 		return ClothoidesComputer.class;
 	}
+	
+	@Override
+	public double getComputationalCost()
+	{
+		return 1;
+	}
+
 }
