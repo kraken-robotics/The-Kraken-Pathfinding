@@ -7,7 +7,7 @@
 
 # The Kraken Pathfinding
 
-A tentacle-based pathfinding library for nonholonomic robotic vehicles 
+A multithreaded tentacle-based pathfinding library for holonomic and nonholonomic robotic vehicles 
 
 ## What is Kraken ?
 
@@ -15,14 +15,19 @@ Kraken finds a trajectory followable by a car-like vehicle in the form of a list
 
 ### Features
 
-The trajectory created by Kraken has several geometric properties, making it suitable for robotic vehicles, namely:
+The trajectory created by Kraken has several properties, making it suitable for robotic vehicles, namely:
 
-- position continuity (G0 continuity) ;
-- orientation continuity (G1 continuity) ;
-- curvature piecewise continuity (piecewise G2 continuity) ;
-- handles forward and backward movement.
+- position continuity (G0 continuity), orientation continuity (G1 continuity) and curvature piecewise continuity (piecewise G2 continuity);
+- handles forward and backward movement;
+- takes into account the limited linear acceleration and deceleration;
+- limits the radial acceleration.
 
-Currently, Kraken finds a trajectory between from a position and an orientation to a position. Which means that, for example, you can't force the orientation at the end point. A next version will expand the possibilities.
+Kraken has two default modes:
+
+- find a path given a start position, a start orientation and an end position;
+- find a path given a start position, a start orientation, an end position and an end orientation.
+
+You can easily add new modes that suit your need.
 
 ![Trajectory example](https://raw.githubusercontent.com/PFGimenez/The-Kraken-Pathfinding/master/resources/example.png)
 
@@ -88,7 +93,7 @@ This control algorithm has been successfully used with Kraken in the [INTech Sen
 
 ## License
 
-This project is licensed under the [MIT license](https://raw.githubusercontent.com/PFGimenez/The-Kraken-Pathfinding/master/LICENSE), which is very permissive. I'd love to know the projects that use Kraken ; please keep me posted !
+This project is licensed under the [MIT license](https://raw.githubusercontent.com/PFGimenez/The-Kraken-Pathfinding/master/LICENSE), which is very permissive. I'd love to know the projects that use Kraken; please keep me posted !
 
 ## Acknowledgements
 
