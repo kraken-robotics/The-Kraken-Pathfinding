@@ -100,9 +100,9 @@ public class Kraken
 			tentacleTypesUsed.add(t);
 		for(StraightingTentacle t : StraightingTentacle.values())
 			tentacleTypesUsed.add(t);
-		if(config.getBoolean(ConfigInfoKraken.ALLOW_SPINNING))
+/*		if(config.getBoolean(ConfigInfoKraken.ALLOW_SPINNING))
 			for(SpinTentacle t : SpinTentacle.values())
-				tentacleTypesUsed.add(t);
+				tentacleTypesUsed.add(t);*/
 		
 		/*
 		 * We adjust the maximal curvature in order to never be under the minimal speed
