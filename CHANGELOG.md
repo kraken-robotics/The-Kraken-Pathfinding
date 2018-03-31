@@ -1,6 +1,9 @@
 # Unreleased
+
+# v1.3.0
 - New default research mode : aim either at XY or XYO
 - Possibility to add customised research mode
+- On the fly load balance
 - Add cubic Bezier curves
 - Add example 4
 - API : "stop()" isn't necessary anymore
