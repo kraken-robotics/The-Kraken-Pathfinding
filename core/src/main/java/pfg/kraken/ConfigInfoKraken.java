@@ -56,12 +56,6 @@ public enum ConfigInfoKraken implements ConfigInfo
 	THREAD_NUMBER(1), // the number of threads for the tentacle computing. Recommended value for highest performance : nb cores + 1
 //	ALLOW_SPINNING(false), // can the robot spin ?
 	
-	/**
-	 * Paramètres du traitement des capteurs
-	 */
-//	SUPPRESSION_AUTO_OBSTACLES_FIXES(true), // si on démarre dans un obstacle
-											// fixe, est-ce qu'on le vire ?
-
 	ENABLE_DEBUG_MODE(false), // enable the debug mode
 	
 	/**
@@ -73,7 +67,6 @@ public enum ConfigInfoKraken implements ConfigInfo
 	/**
 	 * Interface graphique
 	 */
-	ENABLE_CONSOLE(true), // enable the console
 	GRAPHIC_HEURISTIC(false), // affichage des orientations heuristiques
 								// données par le D* Lite
 	GRAPHIC_ENABLE(false), // désactive tout affichage si faux (empêche le
@@ -82,19 +75,12 @@ public enum ConfigInfoKraken implements ConfigInfo
 	GRAPHIC_D_STAR_LITE(false), // affiche les calculs du D* Lite
 	GRAPHIC_TENTACLES(false), // affiche les trajectoires temporaires
 	GRAPHIC_FIXED_OBSTACLES(false), // affiche les obstacles fixes
-//	GRAPHIC_TRAJECTORY_FINAL(true), // affiche les trajectoires
 	GRAPHIC_ROBOT_COLLISION(false), // affiche les obstacles du robot lors de la
 									// vérification des collisions
 //	GRAPHIC_ROBOT_AND_SENSORS(true), // affiche le robot et ses capteurs
 	GRAPHIC_NAVMESH(false), // show the navmesh ?
-	REFRESH_FREQUENCY(5), // in Hertz, 0 to disable
-	ALLOW_BACKWARD_MOTION(true), // allow the pathfinding to find a path with backward motion by default
-	
-//	SIZE_X_WINDOW(900), // taille par défaut (sans image) de la fenêtre
-//	SIZE_Y_WINDOW(600), // taille par défaut (sans image) de la fenêtre
-//	SIZE_X_WITH_UNITARY_ZOOM(50), // taille en mm de la zone à afficher (sur l'axe X)
-//	SIZE_Y_WITH_UNITARY_ZOOM(50), // taille en mm de la zone à afficher (sur l'axe Y)
-	GRAPHIC_SERVER_PORT_NUMBER(13370); // port number of the graphic server
+
+	ALLOW_BACKWARD_MOTION(true); // allow the pathfinding to find a path with backward motion by default
 
 	private Object defaultValue;
 	public volatile boolean uptodate;
