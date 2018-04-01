@@ -57,7 +57,7 @@ public class Example3
 			 * You can force the moving direction. By default, the pathfinding can move the vehicle backward and forward.
 			 * In example 1, the path makes the vehicle going backward. Let's force a forward motion.
 			 */
-			kraken.initializeNewSearch(new XYO(0, 200, 0), new XY(1000, 1000), DirectionStrategy.FORCE_FORWARD_MOTION);
+			kraken.initializeNewSearch(new XYO(0, 200, 0), new XY(1000, 1000), DirectionStrategy.FORCE_FORWARD_MOTION, 1);
 			
 			List<ItineraryPoint> path = kraken.search();
 			
@@ -72,8 +72,9 @@ public class Example3
 			
 			/*
 			 * The second robot is smaller, so it can take a different path (blue trajectory)
+			 * Furthermore, this path should be taken fast.
 			 */
-			krakenSecondRobot.initializeNewSearch(new XYO(0, 200, 0), new XY(1000, 1000), DirectionStrategy.FORCE_FORWARD_MOTION);
+			krakenSecondRobot.initializeNewSearch(new XYO(0, 200, 0), new XY(1000, 1000), DirectionStrategy.FORCE_FORWARD_MOTION, 3);
 			path = krakenSecondRobot.search();
 			
 			System.out.println("\nBlue robot search :");
