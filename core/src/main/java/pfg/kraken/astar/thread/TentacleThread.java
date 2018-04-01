@@ -45,6 +45,7 @@ public class TentacleThread extends Thread
 		deltaSpeedFromStop = Math.sqrt(2 * PRECISION_TRACE * maxLinearAcceleration);
 		tempsArret = config.getInt(ConfigInfoKraken.STOP_DURATION);
 		setDaemon(true);
+		setPriority(Thread.MAX_PRIORITY);
 	}
 
 	@Override
