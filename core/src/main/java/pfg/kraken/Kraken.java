@@ -185,9 +185,9 @@ public class Kraken
 	 * @param directionstrategy
 	 * @throws NoPathException
 	 */
-	public void initializeNewSearch(XYO start, XY arrival, DirectionStrategy directionstrategy) throws NoPathException
+	public void initializeNewSearch(XYO start, XY arrival, DirectionStrategy directionstrategy, double maxSpeed) throws NoPathException
 	{
-		astar.initializeNewSearch(new Cinematique(start), new Cinematique(new XYO(arrival.clone(), 0)), directionstrategy, "XY");
+		astar.initializeNewSearch(new Cinematique(start), new Cinematique(new XYO(arrival.clone(), 0)), directionstrategy, "XY", maxSpeed);
 	}
 	
 	/**
@@ -199,9 +199,9 @@ public class Kraken
 	 * @param directionstrategy
 	 * @throws NoPathException
 	 */
-	public void initializeNewSearch(XYO start, XYO arrival, DirectionStrategy directionstrategy) throws NoPathException
+	public void initializeNewSearch(XYO start, XYO arrival, DirectionStrategy directionstrategy, double maxSpeed) throws NoPathException
 	{
-		astar.initializeNewSearch(new Cinematique(start), new Cinematique(arrival), directionstrategy, "XYO");
+		astar.initializeNewSearch(new Cinematique(start), new Cinematique(arrival), directionstrategy, "XYO", maxSpeed);
 	}
 	
 	/**
@@ -213,9 +213,9 @@ public class Kraken
 	 * @param directionstrategy
 	 * @throws NoPathException
 	 */
-	public void initializeNewSearch(Cinematique start, Cinematique arrival, DirectionStrategy directionstrategy, String mode) throws NoPathException
+	public void initializeNewSearch(Cinematique start, Cinematique arrival, DirectionStrategy directionstrategy, String mode, double maxSpeed) throws NoPathException
 	{
-		astar.initializeNewSearch(start, arrival, directionstrategy, mode);
+		astar.initializeNewSearch(start, arrival, directionstrategy, mode, maxSpeed);
 	}
 	
 	/**
