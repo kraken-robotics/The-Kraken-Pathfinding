@@ -67,6 +67,7 @@ public class TentacleManager implements Iterator<AStarNode>
 	private List<TentacleTask> tasks = new ArrayList<TentacleTask>();
 	private BlockingQueue<AStarNode> successeurs = new LinkedBlockingQueue<AStarNode>();
 	private BlockingQueue<TentacleTask> buffer = new LinkedBlockingQueue<TentacleTask>();
+	private List<Obstacle> currentObstacles = new ArrayList<Obstacle>();
 	
 	private int nbLeft;
 	
@@ -155,11 +156,12 @@ public class TentacleManager implements Iterator<AStarNode>
 		// Collision avec un obstacle de proximité ?
 
 		try {
-			Iterator<Obstacle> iter = dynamicObs.getCurrentDynamicObstacles();
+//			Iterator<Obstacle> iter = dynamicObs.getCurrentDynamicObstacles();
 			// TODO : utiliser getFutureDynamicObstacles
-			while(iter.hasNext())
+			for(Obstacle n : currentObstacles)
+//			while(iter.hasNext())
 			{
-				Obstacle n = iter.next();
+//				Obstacle n = iter.next();
 				for(int i = 0; i < nbOmbres; i++)
 					if(n.isColliding(node.getArc().getPoint(i).obstacle))
 					{
@@ -199,6 +201,12 @@ public class TentacleManager implements Iterator<AStarNode>
 		this.end = profiles.getEndCheck(mode);
 		currentProfile = profiles.getProfile(mode); // on récupère les tentacules qui correspondent à ce mode
 		arrivee.copy(this.arrivee);
+		
+		// on récupère les obstacles courants une fois pour toutes
+		currentObstacles.clear();
+		Iterator<Obstacle> iter = dynamicObs.getCurrentDynamicObstacles();
+		while(iter.hasNext())
+			currentObstacles.add(iter.next());
 	}
 
 	public void reconstruct(LinkedList<ItineraryPoint> trajectory, AStarNode best)
