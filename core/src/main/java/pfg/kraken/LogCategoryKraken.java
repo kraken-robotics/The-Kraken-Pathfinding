@@ -24,6 +24,12 @@ public enum LogCategoryKraken implements LogCategory
 	{
 		return 1 << ordinal();
 	}
+
+	@Override
+	public boolean shouldPrint()
+	{
+		return true;
+	}
 	
 	
 }
