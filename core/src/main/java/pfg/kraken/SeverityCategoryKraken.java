@@ -15,5 +15,17 @@ import pfg.log.Severity;
 
 public enum SeverityCategoryKraken implements Severity
 {
-	INFO, WARNING, CRITICAL;
+	INFO(false), WARNING(true), CRITICAL(true);
+
+	public final boolean always;
+	
+	private SeverityCategoryKraken(boolean always)
+	{
+		this.always = always;
+	}
+	
+	@Override
+	public boolean alwaysPrint() {
+		return always;
+	}
 }
