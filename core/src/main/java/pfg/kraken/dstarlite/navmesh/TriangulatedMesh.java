@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
@@ -42,8 +43,10 @@ public class TriangulatedMesh implements Serializable
 
 	public static TriangulatedMesh loadNavMesh(String filename) throws IOException, ClassNotFoundException
 	{
-		FileInputStream fichier = new FileInputStream(filename);
-		ObjectInputStream ois = new ObjectInputStream(fichier);
+		InputStream is = TriangulatedMesh.class.getResourceAsStream(filename);
+		if(is == null)
+			is = new FileInputStream(filename);
+		ObjectInputStream ois = new ObjectInputStream(is);
 		TriangulatedMesh o = (TriangulatedMesh) ois.readObject();
 		ois.close();
 		for(NavmeshEdge e : o.edges)
