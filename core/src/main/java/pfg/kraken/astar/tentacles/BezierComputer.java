@@ -294,16 +294,16 @@ public class BezierComputer implements TentacleComputer
 
 		if(out.getFirst().getPosition().distanceFast(cinematiqueInitiale.getPosition()) < PRECISION_TRACE_MM/2)
 			memory.destroyNode(out.removeFirst());
-		
+
+		if(out.isEmpty())
+			return null;
+
 		if(out.getFirst().getPosition().distanceFast(cinematiqueInitiale.getPosition()) > 32)
 		{
 			for(CinematiqueObs c : out)
 				memory.destroyNode(c);
 			return null;
 		}
-		
-		if(out.isEmpty())
-			return null;
 
 		if(Math.abs(cinematiqueInitiale.courbureGeometrique - lastCourbure) > 0.3)
 			out.getFirst().stop = true;
