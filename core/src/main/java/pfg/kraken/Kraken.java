@@ -22,9 +22,9 @@ import pfg.injector.Injector;
 import pfg.injector.InjectorException;
 import pfg.kraken.astar.DirectionStrategy;
 import pfg.kraken.astar.TentacularAStar;
-import pfg.kraken.astar.tentacles.EndOfTrajectoryCheck;
 import pfg.kraken.astar.tentacles.EndWithXY;
 import pfg.kraken.astar.tentacles.EndWithXYO;
+import pfg.kraken.astar.tentacles.ResearchProfile;
 import pfg.kraken.astar.tentacles.ResearchProfileManager;
 import pfg.kraken.astar.tentacles.TentacleManager;
 import pfg.kraken.astar.tentacles.types.*;
@@ -154,14 +154,14 @@ public class Kraken
 			for(ClothoTentacle t : ClothoTentacle.values())
 				tentaclesXY.add(t);
 			tentaclesXY.add(BezierTentacle.BEZIER_XYOC_TO_XY);
-			addMode("XY", tentaclesXY, new EndWithXY());
+			addMode(new ResearchProfile(tentaclesXY, "XY", 1.3, 5, new EndWithXY()));
 			
 			List<TentacleType> tentaclesXYO = new ArrayList<TentacleType>();
 			for(ClothoTentacle t : ClothoTentacle.values())
 				tentaclesXYO.add(t);
 			tentaclesXYO.add(BezierTentacle.BEZIER_XYO_TO_XYO);
-			tentaclesXYO.add(BezierTentacle.BEZIER_XYOC_TO_XYO);
-			addMode("XYO", tentaclesXYO, new EndWithXYO());
+//			tentaclesXYO.add(BezierTentacle.BEZIER_XYOC_TO_XYO);
+			addMode(new ResearchProfile(tentaclesXYO, "XYO", 1.3, 0, new EndWithXYO()));
 		} catch (InjectorException e) {
 			throw new RuntimeException("Fatal error", e);
 		}
@@ -279,10 +279,10 @@ public class Kraken
 		return version;
 	}
 	
-	public void addMode(String name, List<TentacleType> tentacles, EndOfTrajectoryCheck end)
+	public void addMode(ResearchProfile p)
 	{
-		profiles.addProfile(name, tentacles, end);
-		tentaclemanager.updateProfiles(name);
+		profiles.addProfile(p);
+		tentaclemanager.updateProfiles(p);
 	}
 	
 	/**

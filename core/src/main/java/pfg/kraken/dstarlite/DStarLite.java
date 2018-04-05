@@ -411,7 +411,7 @@ public class DStarLite
 	 * @param c
 	 * @return
 	 */
-	public synchronized Double heuristicCostCourbe(Cinematique c)
+	public synchronized Double heuristicCostCourbe(Cinematique c, double coeffDistanceError, double coeffAngleError)
 	{
 		if(!statObs.isInsideSearchDomain(c.getPosition()))
 			return null;
@@ -432,22 +432,25 @@ public class DStarLite
 		NavmeshNode voisin = pos.getNeighbour(premier.bestVoisin);
 		double erreurDistance = c.getPosition().distanceFast(voisin.position) + (memory[voisin.nb].rhs) / 1000. + arrivee.node.position.distanceFast(positionArrivee);
 		
-		double orientationOptimale = premier.heuristiqueOrientation;
-
-		// l'orientation est vérifiée modulo 2*pi : aller vers la destination ou
-		// s'en éloigner sont différenciés
-		double erreurOrientation = (c.orientationGeometrique - orientationOptimale) % (2 * Math.PI);
-		if(erreurOrientation > Math.PI)
-			erreurOrientation -= 2 * Math.PI;
-
-		erreurOrientation = Math.abs(erreurOrientation);
-
+		double erreurOrientation = 0;
+		if(coeffAngleError > 0)
+		{
+			double orientationOptimale = premier.heuristiqueOrientation;
+	
+			// l'orientation est vérifiée modulo 2*pi : aller vers la destination ou
+			// s'en éloigner sont différenciés
+			erreurOrientation = (c.orientationGeometrique - orientationOptimale) % (2 * Math.PI);
+			if(erreurOrientation > Math.PI)
+				erreurOrientation -= 2 * Math.PI;
+	
+			erreurOrientation = Math.abs(erreurOrientation);
+		}
 		// il faut toujours majorer la vraie distance, afin de ne pas chercher
 		// tous les trajets possibles…
 		// le poids de l'erreur d'orientation doit rester assez faible. Car
 		// vouloir trop coller à l'orientation, c'est risquer d'avoir une
 		// courbure impossible…
-		return 1.3 * erreurDistance + 5 * erreurOrientation;		
+		return coeffDistanceError * erreurDistance + coeffAngleError * erreurOrientation;		
 	}
 	
 	/**

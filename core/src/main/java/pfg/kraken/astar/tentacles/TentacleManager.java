@@ -57,12 +57,11 @@ public class TentacleManager implements Iterator<AStarNode>
 	private double deltaSpeedFromStop;
 	private GraphicDisplay display;
 	private TentacleThread[] threads;
-	private EndOfTrajectoryCheck end;
+	private ResearchProfile currentProfile;
 	
 	private DirectionStrategy directionstrategyactuelle;
 	private Cinematique arrivee = new Cinematique();
 	private ResearchProfileManager profiles;
-	private List<TentacleType> currentProfile;
 //	private List<StaticObstacles> disabledObstaclesFixes = new ArrayList<StaticObstacles>();
 	private List<TentacleTask> tasks = new ArrayList<TentacleTask>();
 	private BlockingQueue<AStarNode> successeurs = new LinkedBlockingQueue<AStarNode>();
@@ -105,17 +104,13 @@ public class TentacleManager implements Iterator<AStarNode>
 		coins[3] = new XY(coins[2].getX(), coins[0].getY());
 	}
 
-	public void updateProfiles(String mode)
+	public void updateProfiles(ResearchProfile mode)
 	{
 		try {
-			List<TentacleType> profile = profiles.getProfile(mode);
+			List<TentacleType> profile = mode.tentacles;
 			for(TentacleType t : profile)
 				injector.getService(t.getComputer());
-		}catch(UnknownModeException e)
-		{
-			assert false : e;
-		}
-		catch(InjectorException e)
+		} catch(InjectorException e)
 		{
 			e.printStackTrace();
 		}
@@ -198,8 +193,7 @@ public class TentacleManager implements Iterator<AStarNode>
 	{
 		this.vitesseMax = vitesseMax;
 		this.directionstrategyactuelle = directionstrategyactuelle;
-		this.end = profiles.getEndCheck(mode);
-		currentProfile = profiles.getProfile(mode); // on récupère les tentacules qui correspondent à ce mode
+		currentProfile = profiles.getProfile(mode);
 		arrivee.copy(this.arrivee);
 		
 		// on récupère les obstacles courants une fois pour toutes
@@ -274,7 +268,7 @@ public class TentacleManager implements Iterator<AStarNode>
 		 * On-line Largest Processing Time Rule algorithm
 		 */
 		
-		for(TentacleType v : currentProfile)
+		for(TentacleType v : currentProfile.tentacles)
 		{
 			if(v.isAcceptable(current.robot.getCinematique(), directionstrategyactuelle, courbureMax))
 			{
@@ -297,7 +291,7 @@ public class TentacleManager implements Iterator<AStarNode>
 
 	public synchronized Integer heuristicCostCourbe(Cinematique c)
 	{
-		Double h = dstarlite.heuristicCostCourbe(c);
+		Double h = dstarlite.heuristicCostCourbe(c, currentProfile.coeffDistanceError, currentProfile.coeffAngleError);
 		if(h == null)
 			return null;
 		return (int) (1000.*(h / vitesseMax));
@@ -305,7 +299,7 @@ public class TentacleManager implements Iterator<AStarNode>
 
 	public boolean isArrived(AStarNode successeur)
 	{
-		return successeur.getArc() != null && end.isArrived(arrivee, successeur.getArc().getLast());
+		return successeur.getArc() != null && currentProfile.end.isArrived(arrivee, successeur.getArc().getLast());
 	}
 
 	public void stopThreads()

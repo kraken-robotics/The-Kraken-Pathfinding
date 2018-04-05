@@ -7,7 +7,6 @@ package pfg.kraken.astar.tentacles;
 
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import pfg.kraken.astar.tentacles.types.TentacleType;
 import pfg.kraken.exceptions.UnknownModeException;
@@ -18,40 +17,24 @@ import pfg.kraken.exceptions.UnknownModeException;
  *
  */
 
-public class ResearchProfileManager// implements Iterable<List<TentacleType>>
+public class ResearchProfileManager
 {
-	Map<String, List<TentacleType>> profiles = new HashMap<String, List<TentacleType>>();
-	Map<String, EndOfTrajectoryCheck> ends = new HashMap<String, EndOfTrajectoryCheck>();
+	Map<String, ResearchProfile> profiles = new HashMap<String, ResearchProfile>();
 
-	public int addProfile(String mode, List<TentacleType> p, EndOfTrajectoryCheck end)
+	public int addProfile(ResearchProfile profile)
 	{
 		// On trie les tâches de la plus coûteuse à la moins coûteuse
-		p.sort(Comparator.comparing(TentacleType::getComputationalCost).reversed());
+		profile.tentacles.sort(Comparator.comparing(TentacleType::getComputationalCost).reversed());
 		
-		profiles.put(mode, p);
-		ends.put(mode, end);
+		profiles.put(profile.name, profile);
 		return profiles.size() - 1;
 	}
 	
-	public List<TentacleType> getProfile(String mode) throws UnknownModeException
+	public ResearchProfile getProfile(String mode) throws UnknownModeException
 	{
-		List<TentacleType> out = profiles.get(mode);
+		ResearchProfile out = profiles.get(mode);
 		if(out == null)
 			throw new UnknownModeException(mode + " mode is unknown");
 		return out;
 	}
-	
-	public EndOfTrajectoryCheck getEndCheck(String mode) throws UnknownModeException
-	{
-		EndOfTrajectoryCheck out = ends.get(mode);
-		if(out == null)
-			throw new UnknownModeException(mode + " mode is unknown");
-		return out;
-	}
-
-/*	@Override
-	public Iterator<List<TentacleType>> iterator()
-	{
-		return profiles.iterator();
-	}*/
 }
