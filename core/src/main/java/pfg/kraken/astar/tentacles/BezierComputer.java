@@ -127,8 +127,9 @@ public class BezierComputer implements TentacleComputer
 			return null;
 		
 		double distanceBC = (a.getX()*uy - a.getY()*ux + c.getY()*ux - c.getX()*uy) / (ux*vy - uy*vx);
+
 		// on va arriver dans le mauvais sens
-		if(distanceBC < 0)
+		if(distanceBC <= 0)
 			return null;
 
 		pointB[indexThread].setX(arrivee.getPosition().getX() - distanceBC * vx);
@@ -208,12 +209,16 @@ public class BezierComputer implements TentacleComputer
 
 	private LinkedList<CinematiqueObs> constructBezierCubique(XY A, XY B, XY C, XY D, boolean enMarcheAvant, Cinematique cinematiqueInitiale, int indexThread)
 	{
+		if(A.squaredDistance(B) <= minimalDistance*minimalDistance
+				|| B.squaredDistance(C) <= minimalDistance*minimalDistance
+				|| C.squaredDistance(D) <= minimalDistance*minimalDistance)
+			return null;
+
 		double t = 1;
 		LinkedList<CinematiqueObs> out = new LinkedList<CinematiqueObs>();
 //		boolean first = true;
 		double lastCourbure = 0;
 //		double lastOrientation = 0;
-		
 		
 		while(t > 0)
 		{
@@ -412,6 +417,8 @@ public class BezierComputer implements TentacleComputer
 		return arc;
 	}
 	
+	public static final int minimalDistance = 30;
+	
 	/**
 	 * Construit la suite de points de la courbure de Bézier quadratique de
 	 * points de contrôle A, B et C.
@@ -424,9 +431,15 @@ public class BezierComputer implements TentacleComputer
 	 */
 	private LinkedList<CinematiqueObs> constructBezierQuad(XY A, XY B, XY C, boolean enMarcheAvant, Cinematique cinematiqueInitiale, int indexThread)
 	{
+		/*
+		 * Avoir une certaine distance entre les points permet d'éviter les cas dégénérés où la courbure est trop grande
+		 */
+		if(A.squaredDistance(B) <= minimalDistance*minimalDistance || B.squaredDistance(C) <= minimalDistance*minimalDistance)
+			return null;
+
 		double t = 1;
 		LinkedList<CinematiqueObs> out = new LinkedList<CinematiqueObs>();
-
+		
 		// l'accélération est constante pour une courbe quadratique
 		A.copy(a_tmp[indexThread]);
 		a_tmp[indexThread].scalar(2);
