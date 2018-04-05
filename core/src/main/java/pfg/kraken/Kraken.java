@@ -154,14 +154,14 @@ public class Kraken
 			for(ClothoTentacle t : ClothoTentacle.values())
 				tentaclesXY.add(t);
 			tentaclesXY.add(BezierTentacle.BEZIER_XYOC_TO_XY);
-			addMode(new ResearchProfile(tentaclesXY, "XY", 1.3, 5, new EndWithXY()));
+			addMode(new ResearchProfile(tentaclesXY, "XY", 1.3, 5, 0, new EndWithXY()));
 			
 			List<TentacleType> tentaclesXYO = new ArrayList<TentacleType>();
 			for(ClothoTentacle t : ClothoTentacle.values())
 				tentaclesXYO.add(t);
 			tentaclesXYO.add(BezierTentacle.BEZIER_XYO_TO_XYO);
 //			tentaclesXYO.add(BezierTentacle.BEZIER_XYOC_TO_XYO);
-			addMode(new ResearchProfile(tentaclesXYO, "XYO", 1.3, 0, new EndWithXYO()));
+			addMode(new ResearchProfile(tentaclesXYO, "XYO", 1.3, 0, 5, new EndWithXYO()));
 		} catch (InjectorException e) {
 			throw new RuntimeException("Fatal error", e);
 		}

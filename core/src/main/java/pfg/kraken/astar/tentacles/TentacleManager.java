@@ -33,6 +33,7 @@ import pfg.kraken.robot.Cinematique;
 import pfg.kraken.robot.CinematiqueObs;
 import pfg.kraken.robot.ItineraryPoint;
 import pfg.kraken.utils.XY;
+import pfg.kraken.utils.XYO;
 import pfg.graphic.GraphicDisplay;
 import pfg.log.Log;
 import pfg.graphic.printable.Layer;
@@ -294,6 +295,10 @@ public class TentacleManager implements Iterator<AStarNode>
 		Double h = dstarlite.heuristicCostCourbe(c, currentProfile.coeffDistanceError, currentProfile.coeffAngleError);
 		if(h == null)
 			return null;
+		if(currentProfile.coeffFinalAngleError > 0 && c.getPosition().distanceFast(arrivee.getPosition()) < 100)
+		{
+			h += currentProfile.coeffFinalAngleError*Math.abs(XYO.angleDifference(c.orientationReelle, arrivee.orientationReelle));
+		}
 		return (int) (1000.*(h / vitesseMax));
 	}
 
