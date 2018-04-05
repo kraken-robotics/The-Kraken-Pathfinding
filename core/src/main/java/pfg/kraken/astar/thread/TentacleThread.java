@@ -81,7 +81,7 @@ public class TentacleThread extends Thread
 			int duration = (int) (1000*successeur.getArc().getDuree(successeur.parent.getArc(), task.vitesseMax, tempsArret, maxLinearAcceleration, deltaSpeedFromStop));
 			successeur.robot.suitArcCourbe(successeur.getArc(), duration);
 			successeur.g_score = duration;
-			
+			assert successeur.getArc().vitesse == task.v : successeur.getArc().vitesse +" != "+ task.v;
 			successeurs.add(successeur);
 		}
 		else
