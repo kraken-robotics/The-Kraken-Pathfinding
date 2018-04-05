@@ -15,7 +15,7 @@ public class EndWithXYO implements EndOfTrajectoryCheck
 	public boolean isArrived(Cinematique endPoint, Cinematique robotPoint)
 	{
 		return robotPoint.getPosition().squaredDistance(endPoint.getPosition()) < 5
-				&& XYO.angleDifference(robotPoint.orientationReelle, endPoint.orientationReelle) < 0.05;
+				&& Math.abs(XYO.angleDifference(robotPoint.orientationReelle, endPoint.orientationReelle)) < 0.05;
 	}
 
 }
