@@ -10,6 +10,7 @@ import java.util.List;
 import pfg.graphic.GraphicDisplay;
 import pfg.graphic.printable.Layer;
 import pfg.kraken.Kraken;
+import pfg.kraken.SearchParameters;
 import pfg.kraken.exceptions.PathfindingException;
 import pfg.kraken.obstacles.Obstacle;
 import pfg.kraken.obstacles.RectangularObstacle;
@@ -42,9 +43,6 @@ public class ExampleEurobot2018
 		obs.add(new RectangularObstacle(new XY(-890, 50), 55, 100));
 		obs.add(new RectangularObstacle(new XY(890, 50), 55, 100));
 
-		obs.add(new RectangularObstacle(new XY(1300, 1675), 400, 650));
-		obs.add(new RectangularObstacle(new XY(-1300, 1675), 400, 650));
-
 		obs.add(new RectangularObstacle(new XY(1100-560/2, 2000-180/2), 560, 180));
 		obs.add(new RectangularObstacle(new XY(-1100+560/2, 2000-180/2), 560, 180));
 		
@@ -59,7 +57,7 @@ public class ExampleEurobot2018
 			obs.add(new RectangularObstacle(new XY(c.getX(), c.getY()-58), 58, 58));
 		}
 
-		RectangularObstacle robot = new RectangularObstacle(250, 80, 110, 110);
+		RectangularObstacle robot = new RectangularObstacle(248, 167, 182, 182);
 
 		Kraken kraken = new Kraken(robot, obs, new XY(-1500,0), new XY(1500, 2000), "kraken-examples.conf", "trajectory", "eurobot2018");
 
@@ -67,7 +65,7 @@ public class ExampleEurobot2018
 		
 		try
 		{
-			kraken.initializeNewSearch(new XYO(-1100, 200, Math.PI/2), new XY(900, 1500));
+			kraken.initializeNewSearch(new SearchParameters(new XYO(1200, 1600, -Math.PI/2), new XYO(365, 1355, 5)));
 			
 			List<ItineraryPoint> path = kraken.search();
 			

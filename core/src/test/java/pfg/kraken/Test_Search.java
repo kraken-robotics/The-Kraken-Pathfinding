@@ -13,9 +13,11 @@ import org.junit.Before;
 import org.junit.Test;
 
 import pfg.graphic.printable.Layer;
+import pfg.kraken.astar.DirectionStrategy;
 import pfg.kraken.astar.TentacularAStar;
 import pfg.kraken.obstacles.Obstacle;
 import pfg.kraken.obstacles.RectangularObstacle;
+import pfg.kraken.robot.Cinematique;
 import pfg.kraken.robot.ItineraryPoint;
 import pfg.kraken.utils.XY;
 import pfg.kraken.utils.XYO;
@@ -48,7 +50,7 @@ public class Test_Search extends JUnit_Test
 	@Test
 	public void test_exemple_1() throws Exception
 	{
-		pathfinding.initializeNewSearch(new XYO(0, 200, 0), new XY(1000, 1000));
+		pathfinding.initializeNewSearch(new Cinematique(new XYO(0, 200, 0)), new Cinematique(new XYO(1000, 1000, 0)), DirectionStrategy.FASTEST, "XY", null);
 
 		List<ItineraryPoint> path = pathfinding.search();
 		

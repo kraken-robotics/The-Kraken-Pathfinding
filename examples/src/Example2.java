@@ -10,6 +10,7 @@ import java.util.List;
 import pfg.graphic.GraphicDisplay;
 import pfg.graphic.printable.Layer;
 import pfg.kraken.Kraken;
+import pfg.kraken.SearchParameters;
 import pfg.kraken.obstacles.CircularObstacle;
 import pfg.kraken.obstacles.Obstacle;
 import pfg.kraken.obstacles.RectangularObstacle;
@@ -53,7 +54,7 @@ public class Example2
 
 		try
 		{
-			kraken.initializeNewSearch(new XYO(0, 200, 0), new XY(1000, 1000));
+			kraken.initializeNewSearch(new SearchParameters(new XYO(0, 200, 0), new XY(1000, 1000)));
 			List<ItineraryPoint> path = kraken.search();
 			
 			/*
@@ -97,7 +98,7 @@ public class Example2
 			obsDyn.add(newObs4);
 			
 			// Just as before
-			kraken.initializeNewSearch(new XYO(0, 200, 0), new XY(1000, 1000));
+			kraken.initializeNewSearch(new SearchParameters(new XYO(0, 200, 0), new XY(1000, 1000)));
 			path = kraken.search();
 			
 			/*
@@ -123,7 +124,7 @@ public class Example2
 			// Let's remove the dynamic obstacle
 			obsDyn.clear();
 			display.clearTemporaryPrintables();
-			kraken.initializeNewSearch(new XYO(0, 200, 0), new XY(1000, 1000));
+			kraken.initializeNewSearch(new SearchParameters(new XYO(0, 200, 0), new XY(1000, 1000)));
 			path = kraken.search();
 			
 			/*

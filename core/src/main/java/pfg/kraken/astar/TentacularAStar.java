@@ -30,8 +30,6 @@ import pfg.kraken.robot.Cinematique;
 import pfg.kraken.robot.ItineraryPoint;
 import pfg.kraken.robot.RobotState;
 import pfg.log.Log;
-import pfg.kraken.utils.XY;
-import pfg.kraken.utils.XYO;
 
 /**
  * A* qui utilise le D* Lite comme heuristique pour fournir une trajectoire
@@ -473,21 +471,6 @@ public class TentacularAStar
 //		return last;
 	}
 	
-	public void initializeNewSearch(XYO start, XY arrival) throws NoPathException
-	{
-		initializeNewSearch(new Cinematique(start), new Cinematique(new XYO(arrival.clone(), 0)), defaultStrategy, "XY");
-	}
-
-	public void initializeNewSearch(XYO start, XYO arrival) throws NoPathException
-	{
-		initializeNewSearch(new Cinematique(start), new Cinematique(arrival), defaultStrategy, "XYO");
-	}
-
-	public void initializeNewSearch(Cinematique start, Cinematique arrival, DirectionStrategy directionstrategy, String mode) throws NoPathException
-	{
-		initializeNewSearch(start, arrival, directionstrategy, mode, defaultSpeed);
-	}
-	
 	/**
 	 * Calcul de chemin classique
 	 * 
@@ -496,11 +479,11 @@ public class TentacularAStar
 	 * @param shoot
 	 * @throws NoPathException 
 	 */
-	public void initializeNewSearch(Cinematique start, Cinematique arrival, DirectionStrategy directionstrategy, String mode, double maxSpeed) throws NoPathException
+	public void initializeNewSearch(Cinematique start, Cinematique arrival, DirectionStrategy directionstrategy, String mode, Double maxSpeed) throws NoPathException
 	{
 		depart.init();
 		depart.robot.setCinematique(start);
-		arcmanager.configure(directionstrategy, maxSpeed, arrival, mode);
+		arcmanager.configure(directionstrategy == null ? defaultStrategy : directionstrategy, maxSpeed == null ? defaultSpeed : maxSpeed, arrival, mode);
 
 		/*
 		 * dstarlite.computeNewPath updates the heuristic.

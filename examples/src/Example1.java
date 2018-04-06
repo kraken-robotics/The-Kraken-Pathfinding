@@ -10,6 +10,7 @@ import java.util.List;
 import pfg.graphic.GraphicDisplay;
 import pfg.graphic.printable.Layer;
 import pfg.kraken.Kraken;
+import pfg.kraken.SearchParameters;
 import pfg.kraken.exceptions.PathfindingException;
 import pfg.kraken.obstacles.CircularObstacle;
 import pfg.kraken.obstacles.Obstacle;
@@ -86,7 +87,7 @@ public class Example1
 			 * We search a new path from the point (0,0) with orientation 0 to the point (1000, 1000).
 			 * The orientation is the classical trigonometric orientation : 0 to the right, pi/2 up, etc.
 			 */
-			kraken.initializeNewSearch(new XYO(0, 200, 0), new XY(1000, 1000));
+			kraken.initializeNewSearch(new SearchParameters(new XYO(0, 200, 0), new XY(1000, 1000)));
 			
 			/*
 			 * The pathfinder returns a list of ItineraryPoint, which contains all the cinematic information describing the path

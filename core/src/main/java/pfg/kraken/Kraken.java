@@ -20,7 +20,6 @@ import pfg.graphic.ConfigInfoGraphic;
 import pfg.graphic.DebugTool;
 import pfg.injector.Injector;
 import pfg.injector.InjectorException;
-import pfg.kraken.astar.DirectionStrategy;
 import pfg.kraken.astar.TentacularAStar;
 import pfg.kraken.astar.tentacles.EndWithXY;
 import pfg.kraken.astar.tentacles.EndWithXYO;
@@ -36,10 +35,8 @@ import pfg.kraken.obstacles.RectangularObstacle;
 import pfg.kraken.obstacles.container.DynamicObstacles;
 import pfg.kraken.obstacles.container.EmptyDynamicObstacles;
 import pfg.kraken.obstacles.container.StaticObstacles;
-import pfg.kraken.robot.Cinematique;
 import pfg.kraken.robot.ItineraryPoint;
 import pfg.kraken.utils.XY;
-import pfg.kraken.utils.XYO;
 
 /**
  * The manager of the tentacle pathfinder.
@@ -161,7 +158,7 @@ public class Kraken
 			for(ClothoTentacle t : ClothoTentacle.values())
 				tentaclesXYO.add(t);
 			tentaclesXYO.add(BezierTentacle.BEZIER_XYO_TO_XYO);
-//			tentaclesXYO.add(BezierTentacle.BEZIER_XYOC_TO_XYO);
+			tentaclesXYO.add(BezierTentacle.BEZIER_XYOC_TO_XYO);
 			addMode(new ResearchProfile(tentaclesXYO, "XYO", 1.3, 0, 5, new EndWithXYO()));
 			
 			List<TentacleType> tentaclesXYOC = new ArrayList<TentacleType>();
@@ -192,67 +189,11 @@ public class Kraken
 	 * @param directionstrategy
 	 * @throws NoPathException
 	 */
-	public void initializeNewSearch(XYO start, XY arrival, DirectionStrategy directionstrategy, double maxSpeed) throws NoPathException
+	public void initializeNewSearch(SearchParameters sp) throws NoPathException
 	{
-		astar.initializeNewSearch(new Cinematique(start), new Cinematique(new XYO(arrival.clone(), 0)), directionstrategy, "XY", maxSpeed);
+		astar.initializeNewSearch(sp.start, sp.arrival, sp.directionstrategy, sp.mode, sp.maxSpeed);
 	}
 	
-	/**
-	 * Initialize a new search from :
-	 * - a position and an orientation, to
-	 * - a position and an orientation
-	 * @param start
-	 * @param arrival
-	 * @param directionstrategy
-	 * @throws NoPathException
-	 */
-	public void initializeNewSearch(XYO start, XYO arrival, DirectionStrategy directionstrategy, double maxSpeed) throws NoPathException
-	{
-		astar.initializeNewSearch(new Cinematique(start), new Cinematique(arrival), directionstrategy, "XYO", maxSpeed);
-	}
-	
-	/**
-	 * Initialize a new search from :
-	 * - a position and an orientation, to
-	 * - a position and an orientation
-	 * @param start
-	 * @param arrival
-	 * @param directionstrategy
-	 * @throws NoPathException
-	 */
-	public void initializeNewSearch(Cinematique start, Cinematique arrival, DirectionStrategy directionstrategy, String mode, double maxSpeed) throws NoPathException
-	{
-		astar.initializeNewSearch(start, arrival, directionstrategy, mode, maxSpeed);
-	}
-	
-	/**
-	 * Initialize a new search from :
-	 * - a position and an orientation, to
-	 * - a position and an orientation
-	 * Use the default direction strategy
-	 * @param start
-	 * @param arrival
-	 * @throws NoPathException
-	 */
-	public void initializeNewSearch(XYO start, XYO arrival) throws NoPathException
-	{
-		astar.initializeNewSearch(start, arrival);
-	}
-	
-	/**
-	 * Initialize a new search from :
-	 * - a position and an orientation, to
-	 * - a position
-	 * Use the default direction strategy
-	 * @param start
-	 * @param arrival
-	 * @throws NoPathException
-	 */
-	public void initializeNewSearch(XYO start, XY arrival) throws NoPathException
-	{
-		astar.initializeNewSearch(start, arrival);
-	}
-
 	/**
 	 * Start the search. You must have called "initializeNewSearch" before the search.
 	 * @return

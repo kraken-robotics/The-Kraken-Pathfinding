@@ -10,6 +10,7 @@ import java.util.List;
 import pfg.graphic.GraphicDisplay;
 import pfg.graphic.printable.Layer;
 import pfg.kraken.Kraken;
+import pfg.kraken.SearchParameters;
 import pfg.kraken.exceptions.PathfindingException;
 import pfg.kraken.obstacles.CircularObstacle;
 import pfg.kraken.obstacles.Obstacle;
@@ -89,7 +90,7 @@ public class ExampleEurobot2017
 		
 		try
 		{
-			kraken.initializeNewSearch(new XYO(-850, 400, Math.PI/2), new XYO(850, 400, -Math.PI/2));
+			kraken.initializeNewSearch(new SearchParameters(new XYO(-850, 400, Math.PI/2), new XYO(850, 400, -Math.PI/2)));
 			
 			List<ItineraryPoint> path = kraken.search();
 			

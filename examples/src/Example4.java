@@ -10,6 +10,7 @@ import java.util.List;
 import pfg.graphic.GraphicDisplay;
 import pfg.graphic.printable.Layer;
 import pfg.kraken.Kraken;
+import pfg.kraken.SearchParameters;
 import pfg.kraken.exceptions.PathfindingException;
 import pfg.kraken.obstacles.CircularObstacle;
 import pfg.kraken.obstacles.Obstacle;
@@ -50,7 +51,7 @@ public class Example4
 			/*
 			 * A constraint on arrival orientation has been added
 			 */
-			kraken.initializeNewSearch(new XYO(0, 200, 0), new XYO(1000, 1000, -Math.PI/4));
+			kraken.initializeNewSearch(new SearchParameters(new XYO(0, 200, 0), new XYO(1000, 1000, -Math.PI/4)));
 			
 			List<ItineraryPoint> path = kraken.search();
 			

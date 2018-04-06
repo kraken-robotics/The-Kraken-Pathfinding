@@ -62,7 +62,7 @@ public class Test_Multithreading extends JUnit_Test
 		
 		try
 		{
-			kraken.initializeNewSearch(new XYO(800, 200, 0), new XY(1000, 900));
+			kraken.initializeNewSearch(new SearchParameters(new XYO(800, 200, 0), new XY(1000, 900)));
 
 			List<ItineraryPoint> path = kraken.search();
 			
