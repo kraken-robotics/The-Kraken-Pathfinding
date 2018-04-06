@@ -122,6 +122,18 @@ public class BezierComputer implements TentacleComputer
 		double vx = Math.cos(arrivee.orientationGeometrique);
 		double vy = Math.sin(arrivee.orientationGeometrique);
 
+		boolean rebrousse = false;
+		if((c.getX() - a.getX()) * ux + (c.getY() - a.getY()) * uy < 0)
+		{
+			ux = -ux;
+			uy = -uy;
+			vx = -vx;
+			vy = -vy;
+			rebrousse = true;
+		}
+		
+		boolean marcheAvant = rebrousse != cinematiqueInitiale.enMarcheAvant;
+
 		// Les orientations sont parallèles : on ne peut pas calculer leur intersection
 		if(Math.abs(vx*uy - vy*ux) < 0.1)
 			return null;
@@ -132,14 +144,14 @@ public class BezierComputer implements TentacleComputer
 		if(distanceBC <= 0)
 			return null;
 
-		pointB[indexThread].setX(arrivee.getPosition().getX() - distanceBC * vx);
-		pointB[indexThread].setY(arrivee.getPosition().getY() - distanceBC * vy);
+		pointB[indexThread].setX(c.getX() - distanceBC * vx);
+		pointB[indexThread].setY(c.getY() - distanceBC * vy);
 
 		// on part du mauvais sens
 		if((pointB[indexThread].getX() - a.getX()) * ux + (pointB[indexThread].getY() - a.getY()) * uy <= 0)
 			return null;
 		
-		LinkedList<CinematiqueObs> out = constructBezierQuad(cinematiqueInitiale.getPosition(), pointB[indexThread], arrivee.getPosition(), cinematiqueInitiale.enMarcheAvant, cinematiqueInitiale, indexThread);
+		LinkedList<CinematiqueObs> out = constructBezierQuad(a, pointB[indexThread], c, marcheAvant, cinematiqueInitiale, indexThread);
 
 		if(out == null)
 			return null;
@@ -155,15 +167,27 @@ public class BezierComputer implements TentacleComputer
 	 */
 	public DynamicTentacle cubicInterpolationXYOC2XYO(Cinematique cinematiqueInitiale, Cinematique arrivee, int indexThread)
 	{
-		// TODO orientation arrivée : réelle, pas géométrique
 		XY a = cinematiqueInitiale.getPosition();
 		XY d = arrivee.getPosition(); 
-		double ux = Math.cos(cinematiqueInitiale.orientationGeometrique);
-		double uy = Math.sin(cinematiqueInitiale.orientationGeometrique);
+		
+		double ux = Math.cos(cinematiqueInitiale.orientationReelle);
+		double uy = Math.sin(cinematiqueInitiale.orientationReelle);
 		double vx = Math.cos(arrivee.orientationGeometrique);
 		double vy = Math.sin(arrivee.orientationGeometrique);
-
-		// TODO : vérifier que D est bien du côté de la courbure actuelle
+		
+		boolean rebrousse = false;
+		if((d.getX() - a.getX()) * ux + (d.getY() - a.getY()) * uy < 0)
+		{
+			ux = -ux;
+			uy = -uy;
+			vx = -vx;
+			vy = -vy;
+			rebrousse = true;
+		}
+		
+		boolean marcheAvant = rebrousse != cinematiqueInitiale.enMarcheAvant;
+		
+		if(!cinematiqueInitiale.enMarcheAvant)
 		
 		// Les orientations sont parallèles : on ne peut pas calculer leur intersection
 		if(Math.abs(ux*vy - uy*vx) < 0.1)
@@ -182,24 +206,17 @@ public class BezierComputer implements TentacleComputer
 		
 		double distanceAB = a.distance(pointB[indexThread]);
 		double courbureDepart = cinematiqueInitiale.courbureGeometrique / 1000.;
-		
-/*		// on vérifie que C est entre B et D
-		if(courbureDepart * distanceAB >= 2*gamma*cos)
-		{
-			System.out.println("C pas entre B et D");
-			return null;
-		}*/
-		
+				
 		double distanceBC = 1.5 * courbureDepart * distanceAB * distanceAB / sin;
 
 		// si C est après D : on n'arrivera pas avec la bonne orientation
-		if(distanceBC >= distanceBD)
+		if(Math.abs(distanceBC) >= Math.abs(distanceBD))
 			return null;
 
 		pointC[indexThread].setX(pointB[indexThread].getX() + distanceBC * vx);
 		pointC[indexThread].setY(pointB[indexThread].getY() + distanceBC * vy);
-
-		LinkedList<CinematiqueObs> out = constructBezierCubique(a, pointB[indexThread], pointC[indexThread], d, cinematiqueInitiale.enMarcheAvant, cinematiqueInitiale, indexThread);
+		
+		LinkedList<CinematiqueObs> out = constructBezierCubique(a, pointB[indexThread], pointC[indexThread], d, marcheAvant, cinematiqueInitiale, indexThread);
 
 		if(out == null)
 			return null;

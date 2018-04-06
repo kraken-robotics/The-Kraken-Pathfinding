@@ -61,12 +61,28 @@ public class Test_BezierComputer extends JUnit_Test
 		DynamicTentacle arc = bezier.quadraticInterpolationXYO2XYO(c, arrivee, 0);
 
 		Assert.assertTrue(arc != null);
+		Assert.assertTrue(arc.getPoint(0).enMarcheAvant);
 		
 		display.addTemporaryPrintable(arc, Color.BLACK, Layer.FOREGROUND.layer);
 		for(int i = 0; i < arc.getNbPoints(); i++)
 			System.out.println(i + " " + arc.getPoint(i));
 	}
 
+	@Test
+	public void test_xyo_2_xyo_rebrousse() throws Exception
+	{
+		Cinematique c = new Cinematique(800, 1500, Math.PI / 2, true, 0, false);
+		Cinematique arrivee = new Cinematique(400, 1000, 0, false, 0, false);
+		log.write("Initial : " + c, LogCategoryKraken.TEST);
+		DynamicTentacle arc = bezier.quadraticInterpolationXYO2XYO(c, arrivee, 0);
+
+		Assert.assertTrue(arc != null);
+		Assert.assertTrue(!arc.getPoint(0).enMarcheAvant);
+		
+		display.addTemporaryPrintable(arc, Color.BLACK, Layer.FOREGROUND.layer);
+		for(int i = 0; i < arc.getNbPoints(); i++)
+			System.out.println(i + " " + arc.getPoint(i));
+	}
 	@Test
 	public void test_xyoc_2_xyo() throws Exception
 	{
