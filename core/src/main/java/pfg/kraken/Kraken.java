@@ -24,6 +24,7 @@ import pfg.kraken.astar.DirectionStrategy;
 import pfg.kraken.astar.TentacularAStar;
 import pfg.kraken.astar.tentacles.EndWithXY;
 import pfg.kraken.astar.tentacles.EndWithXYO;
+import pfg.kraken.astar.tentacles.EndWithXYOC0;
 import pfg.kraken.astar.tentacles.ResearchProfile;
 import pfg.kraken.astar.tentacles.ResearchProfileManager;
 import pfg.kraken.astar.tentacles.TentacleManager;
@@ -162,6 +163,12 @@ public class Kraken
 			tentaclesXYO.add(BezierTentacle.BEZIER_XYO_TO_XYO);
 //			tentaclesXYO.add(BezierTentacle.BEZIER_XYOC_TO_XYO);
 			addMode(new ResearchProfile(tentaclesXYO, "XYO", 1.3, 0, 5, new EndWithXYO()));
+			
+			List<TentacleType> tentaclesXYOC = new ArrayList<TentacleType>();
+			for(ClothoTentacle t : ClothoTentacle.values())
+				tentaclesXYOC.add(t);
+			tentaclesXYOC.add(BezierTentacle.BEZIER_XYOC_TO_XYO); // arrive avec une courbure nulle
+			addMode(new ResearchProfile(tentaclesXYOC, "XYOC0", 1.3, 0, 5, new EndWithXYOC0()));
 		} catch (InjectorException e) {
 			throw new RuntimeException("Fatal error", e);
 		}
