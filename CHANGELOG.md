@@ -1,4 +1,6 @@
 # Unreleased
+
+# v1.3.1
 - API : introduction of SearchParameters and ResearchProfile
 - API : can specify the maximal speed for a search
 - Add the XYOC0 mode
