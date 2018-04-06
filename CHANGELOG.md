@@ -1,4 +1,8 @@
 # Unreleased
+- API : introduction of SearchParameters and ResearchProfile
+- API : can specify the maximal speed for a search
+- Add the XYOC0 mode
+- Various bugfix
 
 # v1.3.0
 - New default research mode : aim either at XY or XYO
