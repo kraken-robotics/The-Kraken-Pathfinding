@@ -80,6 +80,7 @@ public class Cinematique implements Printable, Serializable
 			autre.enMarcheAvant = enMarcheAvant;
 			autre.courbureGeometrique = courbureGeometrique;
 			autre.courbureReelle = courbureReelle;
+			autre.stop = stop;
 		}
 	}
 
