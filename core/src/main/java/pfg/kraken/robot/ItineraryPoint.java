@@ -59,6 +59,18 @@ public class ItineraryPoint implements Printable
 	 */
 	public final double possibleSpeed;
 
+	public ItineraryPoint(double x, double y, double orientation, double curvature, boolean goingForward, double maxSpeed, double possibleSpeed, boolean stop)
+	{
+		this.x = x;
+		this.y = y;
+		this.orientation = orientation;
+		this.curvature = curvature;
+		this.goingForward = goingForward;
+		this.maxSpeed = maxSpeed;
+		this.possibleSpeed = possibleSpeed;
+		this.stop = stop;
+	}
+	
 	public ItineraryPoint(CinematiqueObs c, boolean stop)
 	{
 		goingForward = c.enMarcheAvant;
