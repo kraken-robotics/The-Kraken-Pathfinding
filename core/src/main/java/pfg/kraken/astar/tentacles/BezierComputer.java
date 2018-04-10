@@ -170,8 +170,8 @@ public class BezierComputer implements TentacleComputer
 		XY a = cinematiqueInitiale.getPosition();
 		XY d = arrivee.getPosition(); 
 		
-		double ux = Math.cos(cinematiqueInitiale.orientationReelle);
-		double uy = Math.sin(cinematiqueInitiale.orientationReelle);
+		double ux = Math.cos(cinematiqueInitiale.orientationGeometrique);
+		double uy = Math.sin(cinematiqueInitiale.orientationGeometrique);
 		double vx = Math.cos(arrivee.orientationGeometrique);
 		double vy = Math.sin(arrivee.orientationGeometrique);
 		
