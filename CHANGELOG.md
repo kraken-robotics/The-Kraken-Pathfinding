@@ -3,6 +3,7 @@
 # v1.3.1
 - API : introduction of SearchParameters and ResearchProfile
 - API : can specify the maximal speed for a search
+- Bezier curves can initiate a motion direction change
 - Add the XYOC0 mode
 - Various bugfix
 
