@@ -51,7 +51,7 @@ public class Kraken
 	private TentacularAStar astar;
 	private ResearchProfileManager profiles;
 	private TentacleManager tentaclemanager;
-	private static final String version = "1.3.1";
+	private static final String version = "1.4.0";
 	
 	/**
 	 * Get Kraken with :
