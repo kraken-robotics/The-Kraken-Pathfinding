@@ -3,34 +3,30 @@
  * Distributed under the MIT License.
  */
 
-package pfg.kraken.astar;
+package pfg.kraken.path;
 
 import java.util.LinkedList;
 import pfg.kraken.robot.Cinematique;
 import pfg.kraken.robot.ItineraryPoint;
-import pfg.log.Log;
 
 /**
- * Faux chemin, sert à la prévision d'itinéraire
- * FIXME UNUSED FOR THE MOMENT
+ * A path manager that can handle dynamic update
  * @author pf
  *
  */
 
-public class DefaultCheminPathfinding implements CheminPathfindingInterface
+public class DynamicPath implements PathManager
 {
 	private LinkedList<ItineraryPoint> path;
-	protected Log log;
 	
-	public DefaultCheminPathfinding(Log log)
-	{
-		this.log = log;
-	}
+	public DynamicPath()
+	{}
 
 	@Override
 	public synchronized void addToEnd(LinkedList<ItineraryPoint> points)
 	{
 		path = points;
+		notifyAll();
 	}
 
 	@Override
@@ -60,8 +56,10 @@ public class DefaultCheminPathfinding implements CheminPathfindingInterface
 		return null;
 	}
 
-	public void clear()
+	@Override
+	public synchronized void clear()
 	{
 		path = null;
+		notifyAll();
 	}
 }

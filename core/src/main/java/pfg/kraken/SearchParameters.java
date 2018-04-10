@@ -1,6 +1,8 @@
 package pfg.kraken;
 
 import pfg.kraken.astar.DirectionStrategy;
+import pfg.kraken.path.PathManager;
+import pfg.kraken.path.StaticPath;
 import pfg.kraken.robot.Cinematique;
 import pfg.kraken.utils.XY;
 import pfg.kraken.utils.XYO;
@@ -17,6 +19,7 @@ public class SearchParameters
 	public final String mode;
 	public DirectionStrategy directionstrategy = null;
 	public Double maxSpeed = null;
+	public PathManager pm = new StaticPath();
 	
 	public SearchParameters(XYO start, XYO arrival)
 	{
@@ -47,6 +50,11 @@ public class SearchParameters
 		this.start = start;
 		this.arrival = arrival;
 		this.mode = mode;
+	}
+	
+	public void setPathManager(PathManager pm)
+	{
+		this.pm = pm;
 	}
 	
 	public void setMaxSpeed(double maxSpeed)

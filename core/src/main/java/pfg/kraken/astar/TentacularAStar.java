@@ -26,6 +26,8 @@ import pfg.kraken.memory.CinemObsPool;
 import pfg.kraken.memory.MemPoolState;
 import pfg.kraken.memory.NodePool;
 import pfg.kraken.obstacles.RectangularObstacle;
+import pfg.kraken.path.PathManager;
+import pfg.kraken.path.StaticPath;
 import pfg.kraken.robot.Cinematique;
 import pfg.kraken.robot.ItineraryPoint;
 import pfg.kraken.robot.RobotState;
@@ -81,7 +83,7 @@ public class TentacularAStar
 	/*
 	 * Just a path container
 	 */
-	private DefaultCheminPathfinding defaultChemin;
+	private StaticPath defaultChemin;
 	
 	/*
 	 * Graphic parameters
@@ -161,7 +163,7 @@ public class TentacularAStar
 	/**
 	 * Constructeur du AStarCourbe
 	 */
-	public TentacularAStar(Log log, DefaultCheminPathfinding defaultChemin, DStarLite dstarlite, TentacleManager arcmanager, NodePool memorymanager, CinemObsPool rectMemory, GraphicDisplay buffer, RobotState chrono, Config config, RectangularObstacle vehicleTemplate)
+	public TentacularAStar(Log log, StaticPath defaultChemin, DStarLite dstarlite, TentacleManager arcmanager, NodePool memorymanager, CinemObsPool rectMemory, GraphicDisplay buffer, RobotState chrono, Config config, RectangularObstacle vehicleTemplate)
 	{
 		this.defaultChemin = defaultChemin;
 		this.log = log;
@@ -201,7 +203,7 @@ public class TentacularAStar
 	 * @throws PathfindingException
 	 * @throws MemoryPoolException
 	 */
-	private final synchronized void search(CheminPathfindingInterface chemin, boolean replanif) throws PathfindingException
+	private final synchronized void search(PathManager chemin, boolean replanif) throws PathfindingException
 	{
 //		if(!rechercheEnCours)
 //			throw new NotInitializedPathfindingException("updatePath appelé alors qu'aucune recherche n'est en cours !");
@@ -453,7 +455,7 @@ public class TentacularAStar
 	 * @param last
 	 * @throws PathfindingException
 	 */
-	private final void partialReconstruct(AStarNode best, CheminPathfindingInterface chemin)
+	private final void partialReconstruct(AStarNode best, PathManager chemin)
 	{
 		if(debugMode)
 		{

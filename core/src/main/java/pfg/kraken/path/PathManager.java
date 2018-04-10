@@ -3,7 +3,7 @@
  * Distributed under the MIT License.
  */
 
-package pfg.kraken.astar;
+package pfg.kraken.path;
 
 import java.util.LinkedList;
 
@@ -11,13 +11,12 @@ import pfg.kraken.robot.Cinematique;
 import pfg.kraken.robot.ItineraryPoint;
 
 /**
- * Interface pour pouvoir interchanger le vrai chemin de pathfinding et le faux
- * FIXME UNUSED FOR THE MOMENT
+ * Interface for the path managers
  * @author pf
  *
  */
 
-public interface CheminPathfindingInterface
+public interface PathManager
 {
 	public void addToEnd(LinkedList<ItineraryPoint> points);
 
@@ -28,4 +27,6 @@ public interface CheminPathfindingInterface
 	public boolean needStop();
 
 	public Cinematique getLastValidCinematique();
+	
+	public void clear();
 }
