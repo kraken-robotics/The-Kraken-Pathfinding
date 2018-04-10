@@ -84,7 +84,7 @@ public class Example2
 			display.clearTemporaryPrintables();
 
 			// We add a dynamic obstacle
-			Obstacle newObs1 = new CircularObstacle(new XY(-200,600), 200);
+			Obstacle newObs1 = new CircularObstacle(new XY(200,600), 200);
 			Obstacle newObs2 = new RectangularObstacle(new XY(1200,1500), 100, 100);
 			Obstacle newObs3 = new CircularObstacle(new XY(0,1200), 100);
 			Obstacle newObs4 = new CircularObstacle(new XY(-900,600), 400);
