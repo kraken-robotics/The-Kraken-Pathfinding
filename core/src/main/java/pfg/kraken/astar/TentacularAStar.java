@@ -18,6 +18,7 @@ import pfg.graphic.printable.Layer;
 import pfg.kraken.ConfigInfoKraken;
 import pfg.kraken.LogCategoryKraken;
 import pfg.kraken.astar.tentacles.TentacleManager;
+import pfg.kraken.astar.thread.DynamicPath;
 import pfg.kraken.dstarlite.DStarLite;
 import pfg.kraken.exceptions.NoPathException;
 import pfg.kraken.exceptions.PathfindingException;
@@ -26,9 +27,8 @@ import pfg.kraken.memory.CinemObsPool;
 import pfg.kraken.memory.MemPoolState;
 import pfg.kraken.memory.NodePool;
 import pfg.kraken.obstacles.RectangularObstacle;
-import pfg.kraken.path.PathManager;
-import pfg.kraken.path.StaticPath;
 import pfg.kraken.robot.Cinematique;
+import pfg.kraken.robot.CinematiqueObs;
 import pfg.kraken.robot.ItineraryPoint;
 import pfg.kraken.robot.RobotState;
 import pfg.log.Log;
@@ -83,7 +83,7 @@ public class TentacularAStar
 	/*
 	 * Just a path container
 	 */
-	private StaticPath defaultChemin;
+	private DynamicPath defaultChemin;
 	
 	/*
 	 * Graphic parameters
@@ -153,7 +153,7 @@ public class TentacularAStar
 	/*
 	 * Only used for the reconstruction
 	 */
-	private LinkedList<ItineraryPoint> trajectory = new LinkedList<ItineraryPoint>();
+	private LinkedList<CinematiqueObs> trajectory = new LinkedList<CinematiqueObs>();
 	
 	/*
 	 * For graphical display purpose only
@@ -163,7 +163,7 @@ public class TentacularAStar
 	/**
 	 * Constructeur du AStarCourbe
 	 */
-	public TentacularAStar(Log log, StaticPath defaultChemin, DStarLite dstarlite, TentacleManager arcmanager, NodePool memorymanager, CinemObsPool rectMemory, GraphicDisplay buffer, RobotState chrono, Config config, RectangularObstacle vehicleTemplate)
+	public TentacularAStar(Log log, DynamicPath defaultChemin, DStarLite dstarlite, TentacleManager arcmanager, NodePool memorymanager, CinemObsPool rectMemory, GraphicDisplay buffer, RobotState chrono, Config config, RectangularObstacle vehicleTemplate)
 	{
 		this.defaultChemin = defaultChemin;
 		this.log = log;
@@ -188,11 +188,11 @@ public class TentacularAStar
 		depart.setIndiceMemoryManager(-1);
 	}
 
-	public LinkedList<ItineraryPoint> search() throws PathfindingException
+	public List<ItineraryPoint> search() throws PathfindingException
 	{
 		defaultChemin.clear();
 		search(defaultChemin, false);
-		return defaultChemin.getPath();
+		return defaultChemin.getPathItineraryPoint();
 	}
 	
 	/**
@@ -203,7 +203,7 @@ public class TentacularAStar
 	 * @throws PathfindingException
 	 * @throws MemoryPoolException
 	 */
-	private final synchronized void search(PathManager chemin, boolean replanif) throws PathfindingException
+	private final synchronized void search(DynamicPath chemin, boolean replanif) throws PathfindingException
 	{
 //		if(!rechercheEnCours)
 //			throw new NotInitializedPathfindingException("updatePath appelé alors qu'aucune recherche n'est en cours !");
@@ -455,7 +455,7 @@ public class TentacularAStar
 	 * @param last
 	 * @throws PathfindingException
 	 */
-	private final void partialReconstruct(AStarNode best, PathManager chemin)
+	private final void partialReconstruct(AStarNode best, DynamicPath chemin)
 	{
 		if(debugMode)
 		{

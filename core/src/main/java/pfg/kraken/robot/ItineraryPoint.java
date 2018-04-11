@@ -71,14 +71,14 @@ public class ItineraryPoint implements Printable
 		this.stop = stop;
 	}
 	
-	public ItineraryPoint(CinematiqueObs c, boolean stop)
+	public ItineraryPoint(CinematiqueObs c)
 	{
 		goingForward = c.enMarcheAvant;
 		maxSpeed = c.maxSpeed;
 		possibleSpeed = c.possibleSpeed;
 		x = c.getPosition().getX();
 		y = c.getPosition().getY();
-		this.stop = stop;
+		this.stop = c.stop;
 		if(c.enMarcheAvant)
 		{
 			orientation = c.orientationGeometrique;

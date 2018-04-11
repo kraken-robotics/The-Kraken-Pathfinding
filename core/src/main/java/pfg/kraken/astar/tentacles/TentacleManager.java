@@ -31,7 +31,6 @@ import pfg.kraken.obstacles.container.DynamicObstacles;
 import pfg.kraken.obstacles.container.StaticObstacles;
 import pfg.kraken.robot.Cinematique;
 import pfg.kraken.robot.CinematiqueObs;
-import pfg.kraken.robot.ItineraryPoint;
 import pfg.kraken.utils.XY;
 import pfg.kraken.utils.XYO;
 import pfg.graphic.GraphicDisplay;
@@ -204,7 +203,7 @@ public class TentacleManager implements Iterator<AStarNode>
 			currentObstacles.add(iter.next());
 	}
 
-	public void reconstruct(LinkedList<ItineraryPoint> trajectory, AStarNode best)
+	public void reconstruct(LinkedList<CinematiqueObs> trajectory, AStarNode best)
 	{
 		AStarNode noeudParent = best;
 		Tentacle arcParent = best.getArc();
@@ -239,8 +238,9 @@ public class TentacleManager implements Iterator<AStarNode>
 					currentSpeed = Math.min(currentSpeed, maxSpeed);
 					current.possibleSpeed = currentSpeed;
 				}
+				current.stop = lastStop;
 				
-				trajectory.addFirst(new ItineraryPoint(current, lastStop));
+				trajectory.addFirst(current);
 				
 				// stop : on va devoir s'arrêter
 				lastPossibleSpeed = current.possibleSpeed;

@@ -8,7 +8,6 @@ package pfg.kraken;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import pfg.config.Config;
 import pfg.config.ConfigInfo;
@@ -28,6 +27,8 @@ import pfg.kraken.astar.tentacles.ResearchProfile;
 import pfg.kraken.astar.tentacles.ResearchProfileManager;
 import pfg.kraken.astar.tentacles.TentacleManager;
 import pfg.kraken.astar.tentacles.types.*;
+import pfg.kraken.astar.thread.AutoReplanningThread;
+import pfg.kraken.astar.thread.DynamicPath;
 import pfg.kraken.exceptions.NoPathException;
 import pfg.kraken.exceptions.PathfindingException;
 import pfg.kraken.obstacles.Obstacle;
@@ -65,20 +66,6 @@ public class Kraken
 	{
 		this(vehicleTemplate, fixedObstacles, new EmptyDynamicObstacles(), bottomLeftCorner, topRightCorner, configfile, profiles);
 	}
-	
-	/**
-	 * Get Kraken with :
-	 * @param vehicleTemplate : the shape of the vehicle
-	 * @param fixedObstacles : a list of fixed/permanent obstacles
-	 * @param dynObs : a dynamic/temporary obstacles manager that implements the DynamicObstacles interface
-	 * @param bottomLeftCorner : the bottom left corner of the search domain
-	 * @param topRightCorner : the top right corner of the search domain
-	 * @param configprofile : the config profiles
-	 */
-/*	public Kraken(RectangularObstacle vehicleTemplate, List<Obstacle> fixedObstacles, DynamicObstacles dynObs, XY bottomLeftCorner, XY topRightCorner, String...configprofile)
-	{
-		this(vehicleTemplate, fixedObstacles, dynObs, bottomLeftCorner, topRightCorner, configprofile);
-	}*/
 	
 	/**
 	 * Get Kraken with :
@@ -199,7 +186,7 @@ public class Kraken
 	 * @return
 	 * @throws PathfindingException
 	 */
-	public LinkedList<ItineraryPoint> search() throws PathfindingException
+	public List<ItineraryPoint> search() throws PathfindingException
 	{
 		return astar.search();
 	}
@@ -239,5 +226,33 @@ public class Kraken
 	public void displayOverriddenConfigValues()
 	{
 		config.printChangedValues();
+	}
+	
+	public void disableAutoReplanning()
+	{
+		try {
+			AutoReplanningThread rt = injector.getService(AutoReplanningThread.class);
+			// S'il n'est pas déjà démarré, on ne le démarre pas
+			rt.setEnable(false);
+		} catch (InjectorException e) {
+			e.printStackTrace();
+			assert false;
+		}
+	}
+	
+	public DynamicPath enableAutoReplanning()
+	{
+		try {
+			AutoReplanningThread rt = injector.getService(AutoReplanningThread.class);
+			// On le démarre (ou on le redémarre) si besoin est
+			if(!rt.isAlive())
+				rt.start();
+			rt.setEnable(true);
+			return injector.getService(DynamicPath.class);
+		} catch (InjectorException e) {
+			e.printStackTrace();
+			assert false;
+			return null;
+		}
 	}
 }

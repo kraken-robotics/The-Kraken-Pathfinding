@@ -3,10 +3,14 @@
  * Distributed under the MIT License.
  */
 
-package pfg.kraken.path;
+package pfg.kraken.astar.thread;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
+
 import pfg.kraken.robot.Cinematique;
+import pfg.kraken.robot.CinematiqueObs;
 import pfg.kraken.robot.ItineraryPoint;
 
 /**
@@ -15,51 +19,54 @@ import pfg.kraken.robot.ItineraryPoint;
  *
  */
 
-public class DynamicPath implements PathManager
+public class DynamicPath
 {
-	private LinkedList<ItineraryPoint> path;
+	private LinkedList<CinematiqueObs> path;
 	
 	public DynamicPath()
 	{}
 
-	@Override
-	public synchronized void addToEnd(LinkedList<ItineraryPoint> points)
+	public synchronized void addToEnd(LinkedList<CinematiqueObs> points)
 	{
 		path = points;
 		notifyAll();
 	}
 
-	@Override
 	public void setUptodate()
 	{}
 
-	public LinkedList<ItineraryPoint> getPath()
+	public LinkedList<CinematiqueObs> getPath()
 	{
 		return path;
 	}
 
-	@Override
 	public boolean aAssezDeMarge()
 	{
 		return true;
 	}
 
-	@Override
 	public boolean needStop()
 	{
 		return false;
 	}
 
-	@Override
 	public Cinematique getLastValidCinematique()
 	{
 		return null;
 	}
 
-	@Override
 	public synchronized void clear()
 	{
 		path = null;
 		notifyAll();
+	}
+
+	public List<ItineraryPoint> getPathItineraryPoint()
+	{
+		List<ItineraryPoint> pathIP = new ArrayList<ItineraryPoint>();
+		for(CinematiqueObs o : path)
+			pathIP.add(new ItineraryPoint(o));
+
+		return pathIP;
 	}
 }
