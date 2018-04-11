@@ -97,7 +97,7 @@ public class Cinematique implements Printable, Serializable
 	@Override
 	public String toString()
 	{
-		return position + ", " + formatter.format(orientationReelle) + ", " + (enMarcheAvant ? "marche avant" : "marche arrière") + ", courbure : " + formatter.format(courbureReelle);
+		return position + ", " + formatter.format(orientationReelle) + ", " + (enMarcheAvant ? "marche avant" : "marche arrière") + ", courbure : " + formatter.format(courbureReelle)+ (stop ? ", stop" : "");
 	}
 
 	@Override

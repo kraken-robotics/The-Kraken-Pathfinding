@@ -209,7 +209,8 @@ public class TentacleManager implements Iterator<AStarNode>
 		Tentacle arcParent = best.getArc();
 		
 		CinematiqueObs current;
-		boolean lastStop = true;
+		boolean lastStop = nbPointsMax == Integer.MAX_VALUE; // le dernier point n'est pas un stop en cas de replanification partielle
+		boolean nextStop;
 		double lastPossibleSpeed = 0;
 
 		while(noeudParent.parent != null)
@@ -224,6 +225,7 @@ public class TentacleManager implements Iterator<AStarNode>
 				double maxSpeed = current.possibleSpeed;
 				double currentSpeed = lastPossibleSpeed;
 				
+				nextStop = current.stop;
 				if(lastStop)
 					current.possibleSpeed = 0;
 				else if(currentSpeed < maxSpeed)
@@ -244,7 +246,7 @@ public class TentacleManager implements Iterator<AStarNode>
 				
 				// stop : on va devoir s'arrêter
 				lastPossibleSpeed = current.possibleSpeed;
-				lastStop = current.stop;
+				lastStop = nextStop;
 			}
 
 			for(int i = nbPointsMax; i < trajectory.size(); i++)

@@ -78,7 +78,8 @@ public class ItineraryPoint implements Printable
 		possibleSpeed = c.possibleSpeed;
 		x = c.getPosition().getX();
 		y = c.getPosition().getY();
-		this.stop = c.stop;
+		stop = c.stop;
+
 		if(c.enMarcheAvant)
 		{
 			orientation = c.orientationGeometrique;
