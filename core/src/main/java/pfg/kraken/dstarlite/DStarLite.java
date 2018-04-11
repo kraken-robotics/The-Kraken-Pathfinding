@@ -413,6 +413,7 @@ public class DStarLite
 	 */
 	public synchronized Double heuristicCostCourbe(Cinematique c, double coeffDistanceError, double coeffAngleError)
 	{
+		// TODO synchronized nécessaire ?
 		if(!statObs.isInsideSearchDomain(c.getPosition()))
 			return null;
 		NavmeshNode pos = navmesh.getNearest(c.getPosition());

@@ -203,7 +203,7 @@ public class TentacleManager implements Iterator<AStarNode>
 			currentObstacles.add(iter.next());
 	}
 
-	public void reconstruct(LinkedList<CinematiqueObs> trajectory, AStarNode best)
+	public void reconstruct(LinkedList<CinematiqueObs> trajectory, AStarNode best, int nbPointsMax)
 	{
 		AStarNode noeudParent = best;
 		Tentacle arcParent = best.getArc();
@@ -246,6 +246,9 @@ public class TentacleManager implements Iterator<AStarNode>
 				lastPossibleSpeed = current.possibleSpeed;
 				lastStop = current.stop;
 			}
+
+			for(int i = nbPointsMax; i < trajectory.size(); i++)
+				trajectory.removeLast();
 			
 			noeudParent = noeudParent.parent;
 			arcParent = noeudParent.getArc();

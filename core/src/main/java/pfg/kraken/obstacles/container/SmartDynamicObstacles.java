@@ -6,7 +6,6 @@
 package pfg.kraken.obstacles.container;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import pfg.kraken.obstacles.Obstacle;
 import pfg.kraken.robot.CinematiqueObs;
@@ -22,10 +21,10 @@ public abstract class SmartDynamicObstacles implements DynamicObstacles
 	private List<Obstacle> newObs = new ArrayList<Obstacle>();
 	
 	protected abstract void addObstacle(Obstacle obs);
-	protected abstract void addAllObstacles(Collection<Obstacle> c);
-	protected abstract boolean removeObstacle(Obstacle obs);
-	protected abstract boolean removeAllObstacles(Collection<Obstacle> c);
-	protected abstract void clearObstacles();
+//	protected abstract void addAllObstacles(Collection<Obstacle> c);
+//	protected abstract boolean removeObstacle(Obstacle obs);
+//	protected abstract boolean removeAllObstacles(Collection<Obstacle> c);
+//	protected abstract void clearObstacles();
 	
 	@Override
 	public synchronized int isThereCollision(List<CinematiqueObs> l)
@@ -49,20 +48,20 @@ public abstract class SmartDynamicObstacles implements DynamicObstacles
 		notify();
 	}
 
-	public synchronized void addAll(Collection<Obstacle> c)
+/*	public synchronized void addAll(Collection<Obstacle> c)
 	{
 		addAllObstacles(c);
 		newObs.addAll(c);
 		notify();
-	}
+	}*/
 	
-	public synchronized void remove(Obstacle obs)
+/*	public synchronized void remove(Obstacle obs)
 	{
 		if(removeObstacle(obs))
 			notify();
-	}
+	}*/
 	
-	public synchronized void removeAll(Collection<Obstacle> c)
+/*	public synchronized void removeAll(Collection<Obstacle> c)
 	{
 		if(removeAllObstacles(c))
 			notify();
@@ -73,5 +72,5 @@ public abstract class SmartDynamicObstacles implements DynamicObstacles
 		clearObstacles();
 		newObs.clear();
 		notify();
-	}
+	}*/
 }

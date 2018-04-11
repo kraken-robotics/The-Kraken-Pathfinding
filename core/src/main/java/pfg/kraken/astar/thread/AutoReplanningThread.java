@@ -6,6 +6,7 @@
 package pfg.kraken.astar.thread;
 
 import pfg.log.Log;
+import pfg.kraken.dstarlite.DStarLite;
 import pfg.kraken.obstacles.container.DynamicObstacles;
 
 /**
@@ -20,13 +21,15 @@ public class AutoReplanningThread extends Thread
 	protected Log log;
 	private DynamicObstacles dynObs;
 	private DynamicPath pm;
+	private DStarLite dstarlite;
 	private volatile boolean enable = false;
 	
-	public AutoReplanningThread(Log log, DynamicObstacles dynObs, DynamicPath pm)
+	public AutoReplanningThread(Log log, DynamicObstacles dynObs, DynamicPath pm, DStarLite dstarlite)
 	{
 		this.dynObs = dynObs;
 		this.log = log;
 		this.pm = pm;
+		this.dstarlite = dstarlite;
 		setDaemon(true);
 		setPriority(Thread.MAX_PRIORITY);
 	}
@@ -47,6 +50,7 @@ public class AutoReplanningThread extends Thread
 				synchronized(dynObs)
 				{
 					dynObs.isThereCollision(pm.getPath());
+					dstarlite.updateObstacles();
 					dynObs.wait();
 				}
 			}
