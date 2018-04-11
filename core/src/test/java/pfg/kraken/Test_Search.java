@@ -15,11 +15,11 @@ import org.junit.Test;
 import pfg.graphic.printable.Layer;
 import pfg.kraken.astar.DirectionStrategy;
 import pfg.kraken.astar.TentacularAStar;
+import pfg.kraken.exceptions.NotInitializedPathfindingException;
 import pfg.kraken.obstacles.Obstacle;
 import pfg.kraken.obstacles.RectangularObstacle;
 import pfg.kraken.robot.Cinematique;
 import pfg.kraken.robot.ItineraryPoint;
-import pfg.kraken.utils.XY;
 import pfg.kraken.utils.XYO;
 import pfg.kraken.utils.XY_RW;
 
@@ -60,6 +60,12 @@ public class Test_Search extends JUnit_Test
 			display.addPrintable(p, Color.BLACK, Layer.FOREGROUND.layer);
 			System.out.println(p);
 		}
+	}
+	
+	@Test(expected=NotInitializedPathfindingException.class)
+	public void test_no_initialization() throws Exception
+	{
+		pathfinding.search();
 	}
 	
 }

@@ -22,6 +22,7 @@ import pfg.kraken.astar.thread.DynamicPath;
 import pfg.kraken.dstarlite.DStarLite;
 import pfg.kraken.exceptions.NoPathException;
 import pfg.kraken.exceptions.NotFastEnoughException;
+import pfg.kraken.exceptions.NotInitializedPathfindingException;
 import pfg.kraken.exceptions.PathfindingException;
 import pfg.kraken.exceptions.TimeoutException;
 import pfg.kraken.memory.CinemObsPool;
@@ -111,6 +112,7 @@ public class TentacularAStar
 	 */
 	private int nbExpandedNodes;
 	private boolean debugMode;
+	private boolean initialized = false;
 	
 	/*
 	 * Check if a search ongoing FIXME unused
@@ -206,8 +208,8 @@ public class TentacularAStar
 	 */
 	private final synchronized void search(DynamicPath chemin) throws PathfindingException
 	{
-//		if(!rechercheEnCours)
-//			throw new NotInitializedPathfindingException("updatePath appelé alors qu'aucune recherche n'est en cours !");
+		if(!initialized)
+			throw new NotInitializedPathfindingException("Search not initialized !");
 
 		log.write("Path search begins.", LogCategoryKraken.PF);
 		trajetDeSecours = null;
@@ -477,6 +479,7 @@ public class TentacularAStar
 	 */
 	public void initializeNewSearch(Cinematique start, Cinematique arrival, DirectionStrategy directionstrategy, String mode, Double maxSpeed) throws NoPathException
 	{
+		initialized = true;
 		depart.init();
 		depart.robot.setCinematique(start);
 		arcmanager.configure(directionstrategy == null ? defaultStrategy : directionstrategy, maxSpeed == null ? defaultSpeed : maxSpeed, arrival, mode);
