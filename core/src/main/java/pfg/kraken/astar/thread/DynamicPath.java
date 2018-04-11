@@ -143,7 +143,7 @@ public class DynamicPath
 	
 	public List<ItineraryPoint> getPathItineraryPoint()
 	{
-		assert etat == State.UPTODATE_WITH_NEW_PATH;
+		assert etat == State.UPTODATE_WITH_NEW_PATH || etat == State.MODE_WITHOUT_REPLANING;
 		List<ItineraryPoint> pathIP = new ArrayList<ItineraryPoint>();
 		for(CinematiqueObs o : path)
 			pathIP.add(new ItineraryPoint(o));
