@@ -6,37 +6,28 @@
 package pfg.kraken.astar.thread;
 
 import pfg.log.Log;
-import pfg.kraken.dstarlite.DStarLite;
 import pfg.kraken.obstacles.container.DynamicObstacles;
 
 /**
- * Thread qui s'occupe de la replanification
+ * Thread qui s'occupe de la détection de collisions
  * 
  * @author pf
  *
  */
 
-public class AutoReplanningThread extends Thread
+public class CollisionDetectionThread extends Thread
 {
 	protected Log log;
 	private DynamicObstacles dynObs;
 	private DynamicPath pm;
-	private DStarLite dstarlite;
-	private volatile boolean enable = false;
 	
-	public AutoReplanningThread(Log log, DynamicObstacles dynObs, DynamicPath pm, DStarLite dstarlite)
+	public CollisionDetectionThread(Log log, DynamicObstacles dynObs, DynamicPath pm)
 	{
 		this.dynObs = dynObs;
 		this.log = log;
 		this.pm = pm;
-		this.dstarlite = dstarlite;
 		setDaemon(true);
 		setPriority(Thread.MAX_PRIORITY);
-	}
-	
-	public void setEnable(boolean enable)
-	{
-		this.enable = enable;
 	}
 
 	@Override
@@ -47,16 +38,29 @@ public class AutoReplanningThread extends Thread
 		{
 			while(true)
 			{
+				/*
+				 * On attend que la vérification de collision soit nécessaire
+				 */
+				synchronized(pm)
+				{
+					while(!pm.needCollisionCheck())
+						pm.wait();
+				}
+				
+				System.out.println("Collision à check");
+				
+				/*
+				 * On attend d'avoir des obstacles à vérifier
+				 */
 				synchronized(dynObs)
 				{
-					if(enable && dynObs.needCollisionCheck())
-					{
-						dstarlite.updateObstacles();
-						pm.updateCollision(dynObs);
-					}
-					else
+					while(!dynObs.needCollisionCheck())
 						dynObs.wait();
 				}
+
+				System.out.println("Nouvel obstacle à traiter !");
+
+				pm.updateCollision(dynObs);
 			}
 		}
 		catch(InterruptedException e)

@@ -27,9 +27,11 @@ import pfg.kraken.astar.tentacles.ResearchProfile;
 import pfg.kraken.astar.tentacles.ResearchProfileManager;
 import pfg.kraken.astar.tentacles.TentacleManager;
 import pfg.kraken.astar.tentacles.types.*;
-import pfg.kraken.astar.thread.AutoReplanningThread;
+import pfg.kraken.astar.thread.CollisionDetectionThread;
 import pfg.kraken.astar.thread.DynamicPath;
+import pfg.kraken.astar.thread.ReplanningThread;
 import pfg.kraken.exceptions.NoPathException;
+import pfg.kraken.exceptions.NotInitializedPathfindingException;
 import pfg.kraken.exceptions.PathfindingException;
 import pfg.kraken.obstacles.Obstacle;
 import pfg.kraken.obstacles.RectangularObstacle;
@@ -53,6 +55,7 @@ public class Kraken
 	private ResearchProfileManager profiles;
 	private TentacleManager tentaclemanager;
 	private static final String version = "1.4.0";
+	private boolean autoReplanningEnable = false;
 	
 	/**
 	 * Get Kraken with :
@@ -176,9 +179,12 @@ public class Kraken
 	 * @param directionstrategy
 	 * @throws NoPathException
 	 */
-	public void initializeNewSearch(SearchParameters sp) throws NoPathException
+	public void initializeNewSearch(SearchParameters sp) throws PathfindingException
 	{
-		astar.initializeNewSearch(sp.start, sp.arrival, sp.directionstrategy, sp.mode, sp.maxSpeed);
+		if(!autoReplanningEnable)
+			astar.initializeNewSearch(sp.start, sp.arrival, sp.directionstrategy, sp.mode, sp.maxSpeed);
+		else
+			throw new NotInitializedPathfindingException("initializeNewSearch() should be called before enabling the autoreplanning mode.");
 	}
 	
 	/**
@@ -188,7 +194,10 @@ public class Kraken
 	 */
 	public List<ItineraryPoint> search() throws PathfindingException
 	{
-		return astar.search();
+		if(!autoReplanningEnable)
+			return astar.searchWithoutReplanning();
+		else
+			throw new NotInitializedPathfindingException("search() isn't permitted in autoreplanning mode.");
 	}
 	
 	/**
@@ -228,26 +237,20 @@ public class Kraken
 		config.printChangedValues();
 	}
 	
-	public void disableAutoReplanning()
-	{
-		try {
-			AutoReplanningThread rt = injector.getService(AutoReplanningThread.class);
-			// S'il n'est pas déjà démarré, on ne le démarre pas
-			rt.setEnable(false);
-		} catch (InjectorException e) {
-			e.printStackTrace();
-			assert false;
-		}
-	}
-	
 	public DynamicPath enableAutoReplanning()
 	{
 		try {
-			AutoReplanningThread rt = injector.getService(AutoReplanningThread.class);
+			CollisionDetectionThread rt = injector.getService(CollisionDetectionThread.class);
 			// On le démarre (ou on le redémarre) si besoin est
 			if(!rt.isAlive())
 				rt.start();
-			rt.setEnable(true);
+			
+			ReplanningThread rep = injector.getService(ReplanningThread.class);
+			// idem
+			if(!rep.isAlive())
+				rep.start();
+			
+			autoReplanningEnable = true;
 			return injector.getService(DynamicPath.class);
 		} catch (InjectorException e) {
 			e.printStackTrace();

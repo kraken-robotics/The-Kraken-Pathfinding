@@ -194,8 +194,12 @@ public class TentacleManager implements Iterator<AStarNode>
 		this.vitesseMax = vitesseMax;
 		this.directionstrategyactuelle = directionstrategyactuelle;
 		currentProfile = profiles.getProfile(mode);
-		arrivee.copy(this.arrivee);
-		
+		arrivee.copy(this.arrivee);	
+		updateCurrentObstacles();
+	}
+	
+	public void updateCurrentObstacles()
+	{
 		// on récupère les obstacles courants une fois pour toutes
 		currentObstacles.clear();
 		Iterator<Obstacle> iter = dynamicObs.getCurrentDynamicObstacles();

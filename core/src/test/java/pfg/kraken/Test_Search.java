@@ -5,14 +5,12 @@
 
 package pfg.kraken;
 
-import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import pfg.graphic.printable.Layer;
 import pfg.kraken.astar.DirectionStrategy;
 import pfg.kraken.astar.TentacularAStar;
 import pfg.kraken.exceptions.NoPathException;
@@ -20,7 +18,6 @@ import pfg.kraken.exceptions.NotInitializedPathfindingException;
 import pfg.kraken.obstacles.Obstacle;
 import pfg.kraken.obstacles.RectangularObstacle;
 import pfg.kraken.robot.Cinematique;
-import pfg.kraken.robot.ItineraryPoint;
 import pfg.kraken.utils.XYO;
 import pfg.kraken.utils.XY_RW;
 
@@ -70,21 +67,13 @@ public class Test_Search extends JUnit_Test
 	public void test_exemple_1() throws Exception
 	{
 		pathfinding.initializeNewSearch(new Cinematique(new XYO(0, 200, 0)), new Cinematique(new XYO(1000, 1000, 0)), DirectionStrategy.FASTEST, "XY", null);
-
-		List<ItineraryPoint> path = pathfinding.search();
-		
-		System.out.println("Here is the trajectory :");
-		for(ItineraryPoint p : path)
-		{
-			display.addPrintable(p, Color.BLACK, Layer.FOREGROUND.layer);
-			System.out.println(p);
-		}
+		pathfinding.searchWithoutReplanning();
 	}
 	
 	@Test(expected=NotInitializedPathfindingException.class)
 	public void test_no_initialization() throws Exception
 	{
-		pathfinding.search();
+		pathfinding.searchWithoutReplanning();
 	}
 	
 }

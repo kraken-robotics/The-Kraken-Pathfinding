@@ -264,6 +264,7 @@ public class DStarLite
 			else if(o.isInObstacle(arrivee))
 				throw new NoPathException("Finish point in obstacle "+o);
 		
+		
 		changeGoal(arrivee);
 		updateObstacles();
 		updateHeuristic();
