@@ -27,4 +27,5 @@ public interface DynamicObstacles
 {
 	public int isThereCollision(List<CinematiqueObs> l);
 	public Iterator<Obstacle> getCurrentDynamicObstacles();
+	public boolean needCollisionCheck();
 }

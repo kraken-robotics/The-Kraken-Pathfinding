@@ -249,8 +249,8 @@ public class TentacleManager implements Iterator<AStarNode>
 				lastStop = nextStop;
 			}
 
-			for(int i = nbPointsMax; i < trajectory.size(); i++)
-				trajectory.removeLast();
+			if(nbPointsMax < trajectory.size())
+				trajectory.subList(nbPointsMax, trajectory.size()).clear();
 			
 			noeudParent = noeudParent.parent;
 			arcParent = noeudParent.getArc();

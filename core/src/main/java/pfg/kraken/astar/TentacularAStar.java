@@ -240,50 +240,41 @@ public class TentacularAStar
 			
 			nbExpandedNodes++;
 			
-			if(chemin.needStop())
-				throw new NotFastEnoughException("Obstacle seen too late, there is not enough margin.");
-
-			// On vérifie régulièrement qu'il ne faut pas fournir un chemin partiel
-			Cinematique cinemRestart = chemin.getLastValidCinematique();
-			boolean assezDeMarge = chemin.aAssezDeMarge();
-
-			if(cinemRestart != null || !assezDeMarge)
+			synchronized(chemin)
 			{
-				if(!assezDeMarge)
+				if(chemin.needStop())
+					throw new NotFastEnoughException("Obstacle seen too late, there is not enough margin.");
+	
+				int margeDemandee = chemin.margeSupplementaireDemandee();
+				// On vérifie régulièrement qu'il ne faut pas fournir un chemin partiel
+				if(margeDemandee > 0)
 				{
 					log.write("Partial rebuild required !", LogCategoryKraken.PF);
-					partialReconstruct(current, chemin, 2);
+					partialReconstruct(current, chemin, margeDemandee);
 					depart.robot.setCinematique(chemin.getPath().getLast());
 					
-					if(!chemin.aAssezDeMarge()) // toujours pas assez de marge
-												// : on doit arrêter
+					if(chemin.margeSupplementaireDemandee() > 0) // toujours pas assez de marge : on doit arrêter
 						throw new NotFastEnoughException("Not enough margin.");
+	
+					trajetDeSecours = null;
+					depart.parent = null;
+					depart.cameFromArcDynamique = null;
+					depart.g_score = 0;
+					heuristique = arcmanager.heuristicCostCourbe((depart.robot).getCinematique());
+	
+					if(heuristique == null)
+						throw new NoPathException("No path found by the D* Lite");
+	
+					depart.f_score = heuristique;
+	
+					memorymanager.empty();
+					cinemMemory.empty();
+					closedset.clear();
+					openset.clear();
+					
+					debutRecherche = System.currentTimeMillis();
+					current = depart;
 				}
-				else // il faut partir d'un autre point
-				{
-					log.write("The search is restarted from " + cinemRestart, LogCategoryKraken.REPLANIF);
-					depart.init();
-					depart.robot.setCinematique(cinemRestart);
-				}
-
-				trajetDeSecours = null;
-				depart.parent = null;
-				depart.cameFromArcDynamique = null;
-				depart.g_score = 0;
-				heuristique = arcmanager.heuristicCostCourbe((depart.robot).getCinematique());
-
-				if(heuristique == null)
-					throw new NoPathException("No path found by the D* Lite");
-
-				depart.f_score = heuristique;
-
-				memorymanager.empty();
-				cinemMemory.empty();
-				closedset.clear();
-				openset.clear();
-				
-				debutRecherche = System.currentTimeMillis();
-				current = depart;
 			}
 
 			// si on a déjà fait ce point ou un point très proche…

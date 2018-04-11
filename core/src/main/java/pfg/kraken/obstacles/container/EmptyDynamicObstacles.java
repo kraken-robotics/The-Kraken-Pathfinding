@@ -32,4 +32,10 @@ public class EmptyDynamicObstacles implements DynamicObstacles
 		return Collections.emptyIterator();
 	}
 
+	@Override
+	public boolean needCollisionCheck()
+	{
+		return false;
+	}
+
 }

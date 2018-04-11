@@ -48,6 +48,12 @@ public abstract class SmartDynamicObstacles implements DynamicObstacles
 		notify();
 	}
 
+	@Override
+	public boolean needCollisionCheck()
+	{
+		return !newObs.isEmpty();
+	}
+	
 /*	public synchronized void addAll(Collection<Obstacle> c)
 	{
 		addAllObstacles(c);

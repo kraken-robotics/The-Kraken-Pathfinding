@@ -45,13 +45,17 @@ public class AutoReplanningThread extends Thread
 		Thread.currentThread().setName(getClass().getSimpleName());
 		try
 		{
-			if(enable)
+			while(true)
 			{
 				synchronized(dynObs)
 				{
-					dynObs.isThereCollision(pm.getPath());
-					dstarlite.updateObstacles();
-					dynObs.wait();
+					if(enable && dynObs.needCollisionCheck())
+					{
+						dstarlite.updateObstacles();
+						pm.updateCollision(dynObs);
+					}
+					else
+						dynObs.wait();
 				}
 			}
 		}

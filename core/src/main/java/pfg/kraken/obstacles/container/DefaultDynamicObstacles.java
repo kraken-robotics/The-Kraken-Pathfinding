@@ -48,4 +48,10 @@ public class DefaultDynamicObstacles extends DynamicObstaclesWithoutReplanning
 		return obsList.iterator();
 	}
 
+	@Override
+	public boolean needCollisionCheck()
+	{
+		return false;
+	}
+
 }
