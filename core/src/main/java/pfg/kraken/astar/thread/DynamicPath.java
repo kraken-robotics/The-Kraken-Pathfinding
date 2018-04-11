@@ -26,14 +26,13 @@ public class DynamicPath
 {
 	private enum State
 	{
-		DISABLE, // pas de recherche en cours
-		UPTODATE, // recherche en cours, tout va bien
+		UPTODATE, // tout va bien
 		NEED_REPLANNING, // a besoin d'une replanif
 		STOP; // le robot doit s'arrêter
 	}
 	
 	private LinkedList<CinematiqueObs> path = new LinkedList<CinematiqueObs>();
-	private volatile State etat = State.DISABLE;
+	private volatile State etat = State.UPTODATE;
 	private volatile int indexFirst; // index du point où est le robot
 //	private volatile int firstDifferentPoint; // index du premier point différent dans la replanification
 	private final int margeNecessaire, margeInitiale, margeAvantCollision, margePreferable;
@@ -67,7 +66,7 @@ public class DynamicPath
 		/*
 		 * Si on est à jour, pas besoin de regarder le nombre de points restant (car il peut être normalement faible quand on arrive à destination)
 		 */
-		if(etat == State.UPTODATE || path.size() - indexFirst >= margePreferable)
+		if(etat != State.NEED_REPLANNING || path.size() - indexFirst >= margePreferable)
 			return 0;
 		else
 			/*
@@ -87,7 +86,7 @@ public class DynamicPath
 	
 	public boolean needStop()
 	{
-		return etat == State.STOP || path.size() - indexFirst < margeNecessaire;
+		return etat == State.STOP || (etat == State.NEED_REPLANNING && path.size() - indexFirst < margeNecessaire);
 	}
 	
 	public synchronized void clear()
@@ -109,7 +108,7 @@ public class DynamicPath
 	public synchronized void updateCollision(DynamicObstacles dynObs)
 	{
 		// on ne vérifie pas les collisions si on est éteint ou en état STOP
-		if(etat == State.STOP || etat == State.DISABLE)
+		if(etat != State.NEED_REPLANNING)
 			return;
 		
 		int firstDifferentPoint = dynObs.isThereCollision(path.subList(indexFirst, path.size())) + indexFirst;
