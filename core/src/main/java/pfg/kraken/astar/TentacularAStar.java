@@ -243,8 +243,7 @@ public class TentacularAStar
 			if(chemin.needStop())
 				throw new NotFastEnoughException("Obstacle seen too late, there is not enough margin.");
 
-			// On vérifie régulièremet s'il ne faut pas fournir un chemin
-			// partiel
+			// On vérifie régulièrement qu'il ne faut pas fournir un chemin partiel
 			Cinematique cinemRestart = chemin.getLastValidCinematique();
 			boolean assezDeMarge = chemin.aAssezDeMarge();
 

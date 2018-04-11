@@ -21,11 +21,21 @@ import pfg.kraken.robot.ItineraryPoint;
 
 public class DynamicPath
 {
+	private enum State
+	{
+		DISABLE, // pas de recherche en cours
+		UPTODATE, // recherche en cours, tout va bien
+		NEED_RESTART, // a besoin d'une replanif
+		EMPTY; // ??
+		
+	}
+	
 	private LinkedList<CinematiqueObs> path;
+	private volatile State etat = State.DISABLE;
 	
 	public DynamicPath()
 	{}
-
+	
 	public synchronized void addToEnd(LinkedList<CinematiqueObs> points)
 	{
 		path = points;
@@ -33,7 +43,9 @@ public class DynamicPath
 	}
 
 	public void setUptodate()
-	{}
+	{
+		etat = State.UPTODATE;
+	}
 
 	public LinkedList<CinematiqueObs> getPath()
 	{
@@ -60,7 +72,7 @@ public class DynamicPath
 		path = null;
 		notifyAll();
 	}
-
+	
 	public List<ItineraryPoint> getPathItineraryPoint()
 	{
 		List<ItineraryPoint> pathIP = new ArrayList<ItineraryPoint>();
