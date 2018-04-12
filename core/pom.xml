@@ -4,7 +4,7 @@
 
   <groupId>pfg.kraken</groupId>
   <artifactId>kraken</artifactId>
-  <version>1.4.0</version>
+  <version>1.4.0-SNAPSHOT</version>
 
   <packaging>jar</packaging>
 
@@ -46,34 +46,22 @@
     <repository>
         <id>config-pfg-mvn-repo</id>
         <url>https://raw.githubusercontent.com/PFGimenez/config/mvn-repo/</url>
-        <snapshots>
-            <enabled>true</enabled>
-            <updatePolicy>always</updatePolicy>
-        </snapshots>
     </repository>
     <repository>
         <id>injector-pfg-mvn-repo</id>
         <url>https://raw.githubusercontent.com/PFGimenez/dependency-injector/mvn-repo/</url>
-        <snapshots>
-            <enabled>true</enabled>
-            <updatePolicy>always</updatePolicy>
-        </snapshots>
     </repository>
     <repository>
         <id>graphic-pfg-mvn-repo</id>
         <url>https://raw.githubusercontent.com/PFGimenez/graphic-toolbox/mvn-repo/</url>
         <snapshots>
             <enabled>true</enabled>
-            <updatePolicy>always</updatePolicy>
+            <updatePolicy>never</updatePolicy>
         </snapshots>
     </repository>
     <repository>
         <id>log-pfg-mvn-repo</id>
         <url>https://raw.githubusercontent.com/PFGimenez/log/mvn-repo/</url>
-        <snapshots>
-            <enabled>true</enabled>
-            <updatePolicy>always</updatePolicy>
-        </snapshots>
     </repository>
 </repositories>
 
