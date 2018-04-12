@@ -47,8 +47,14 @@ If you want to use this library in one of your maven project, add this to your p
 
     <repositories>
         <repository>
-            <id>kraken-pfg-mvn-repo</id>
-            <url>https://raw.githubusercontent.com/PFGimenez/The-Kraken-Pathfinding/mvn-repo/</url>
+            <id>PFGimenez-Kraken</id>
+            <url>https://packagecloud.io/PFGimenez/Kraken/maven2</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
         </repository>
     </repositories>
 
@@ -57,7 +63,7 @@ and
     <dependency>
         <groupId>pfg.kraken</groupId>
         <artifactId>kraken</artifactId>
-        <version>[1.4.0,)</version>
+        <version>1.4.0-SNAPSHOT</version>
     </dependency>
 
 

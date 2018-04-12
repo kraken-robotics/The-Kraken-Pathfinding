@@ -43,52 +43,41 @@
 	</developers>
 
     <repositories>
-    <repository>
-        <id>config-pfg-mvn-repo</id>
-        <url>https://raw.githubusercontent.com/PFGimenez/config/mvn-repo/</url>
-    </repository>
-    <repository>
-        <id>injector-pfg-mvn-repo</id>
-        <url>https://raw.githubusercontent.com/PFGimenez/dependency-injector/mvn-repo/</url>
-    </repository>
-    <repository>
-        <id>graphic-pfg-mvn-repo</id>
-        <url>https://raw.githubusercontent.com/PFGimenez/graphic-toolbox/mvn-repo/</url>
-        <snapshots>
-            <enabled>true</enabled>
-            <updatePolicy>never</updatePolicy>
-        </snapshots>
-    </repository>
-    <repository>
-        <id>log-pfg-mvn-repo</id>
-        <url>https://raw.githubusercontent.com/PFGimenez/log/mvn-repo/</url>
-    </repository>
-</repositories>
+        <repository>
+            <id>PFGimenez-Kraken</id>
+            <url>https://packagecloud.io/PFGimenez/Kraken/maven2</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
 
   <dependencies>
-
     <dependency>
       <groupId>pfg.injector</groupId>
       <artifactId>dependency-injector</artifactId>
-      <version>[1.1,)</version>
+      <version>1.1</version>
     </dependency>
 
     <dependency>
       <groupId>pfg.config</groupId>
       <artifactId>config</artifactId>
-      <version>[1.4,)</version>
+      <version>1.4</version>
     </dependency>
 
     <dependency>
       <groupId>pfg.log</groupId>
       <artifactId>log</artifactId>
-      <version>[1.0,)</version>
+      <version>1.0</version>
     </dependency>
 
     <dependency>
       <groupId>pfg.graphic</groupId>
       <artifactId>graphic-toolbox</artifactId>
-      <version>[1.1,)</version>
+      <version>1.2-SNAPSHOT</version>
     </dependency>
 
     <dependency>
