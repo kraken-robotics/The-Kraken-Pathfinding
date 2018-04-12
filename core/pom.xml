@@ -101,11 +101,18 @@
   </dependencies>
 
 <distributionManagement>
-    <repository>
-        <id>internal.repo</id>
-        <name>Temporary Staging Repository</name>
-        <url>file://${project.build.directory}/mvn-repo</url>
-    </repository>
+  <repository>
+    <id>packagecloud-travis</id>
+    <url>
+        packagecloud+https://packagecloud.io/PFGimenez/Kraken
+    </url>
+  </repository>
+  <snapshotRepository>
+    <id>packagecloud-travis</id>
+    <url>
+        packagecloud+https://packagecloud.io/PFGimenez/Kraken
+    </url>
+  </snapshotRepository>
 </distributionManagement>
 
 <build>
@@ -167,6 +174,13 @@
   </plugin>
 
   </plugins>
+    <extensions>
+    <extension>
+      <groupId>io.packagecloud.maven.wagon</groupId>
+      <artifactId>maven-packagecloud-wagon</artifactId>
+      <version>0.0.4</version>
+    </extension>
+  </extensions>
   </build>
 
 </project>
