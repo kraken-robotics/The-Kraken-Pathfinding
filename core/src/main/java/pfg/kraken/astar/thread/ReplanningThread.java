@@ -66,7 +66,7 @@ public class ReplanningThread extends Thread
 						}
 					}
 					
-					pm.endSearch();
+					pm.endContinuousSearch();
 				} catch(PathfindingException e)
 				{
 					pm.stopResearch();

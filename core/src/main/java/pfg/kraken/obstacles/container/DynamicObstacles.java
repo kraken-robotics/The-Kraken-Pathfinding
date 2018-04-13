@@ -12,7 +12,6 @@
 package pfg.kraken.obstacles.container;
 
 import java.util.Iterator;
-import java.util.List;
 
 import pfg.kraken.obstacles.Obstacle;
 import pfg.kraken.robot.CinematiqueObs;
@@ -25,7 +24,7 @@ import pfg.kraken.robot.CinematiqueObs;
 
 public interface DynamicObstacles
 {
-	public int isThereCollision(List<CinematiqueObs> l);
+	public int isThereCollision(CinematiqueObs[] l, int from, int to);
 	public Iterator<Obstacle> getCurrentDynamicObstacles();
 	public boolean needCollisionCheck();
 }

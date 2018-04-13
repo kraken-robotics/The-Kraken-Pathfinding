@@ -516,7 +516,7 @@ public class TentacularAStar
 		if(!chemin.needReplanning())
 			return;
 		
-		log.write("Replanification lancée", LogCategoryKraken.REPLANIF);
+		log.write("Replanning started.", LogCategoryKraken.REPLANIF);
 
 		depart.init();
 		depart.robot.setCinematique(lastValid);

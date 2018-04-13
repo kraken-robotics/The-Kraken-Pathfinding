@@ -5,8 +5,6 @@
 
 package pfg.kraken.obstacles.container;
 
-import java.util.List;
-
 import pfg.kraken.robot.CinematiqueObs;
 
 /**
@@ -18,9 +16,9 @@ import pfg.kraken.robot.CinematiqueObs;
 public abstract class DynamicObstaclesWithoutReplanning implements DynamicObstacles
 {
 	@Override
-	public int isThereCollision(List<CinematiqueObs> l)
+	public int isThereCollision(CinematiqueObs[] l, int from, int to)
 	{
-		return l.size();
+		return to;
 	}
 
 }

@@ -50,58 +50,66 @@ public class Example5
 		 */
 		DefaultDynamicObstacles obsDyn = new DefaultDynamicObstacles();
 
-		Kraken kraken = new Kraken(robot, obs, obsDyn, new XY(-1500,0), new XY(1500, 2000), "kraken-examples.conf", "trajectory"/*, "detailed"*/);
+		Kraken kraken = new Kraken(robot, obs, obsDyn, new XY(-1500,0), new XY(1500, 2000), "kraken-examples.conf", "trajectory");
 		GraphicDisplay display = kraken.getGraphicDisplay();
 
 		try
 		{
-			kraken.initializeNewSearch(new SearchParameters(new XYO(0, 200, 0), new XY(1000, 1000)));
+			/*
+			 * We enable the autoreplanning
+			 * We won't use "kraken.initializeNewSearch()" or"kraken.search()"
+			 */
 			DynamicPath dpath = kraken.enableAutoReplanning();
-			dpath.startSearch();
+			kraken.startContinuousSearch(new SearchParameters(new XYO(0, 200, 0), new XY(1000, 1000)));
 			List<ItineraryPoint> path;
-			synchronized(dpath)
-			{
-				System.out.println("Attente de la fin…");
-				while(!dpath.isNewPathAvailable())
-				{
-					System.out.println("Pas de nouveau chemin : dodo");
-					dpath.wait();
-					System.out.println("Éveil !");
-				}
-				System.out.println("Chemin trouvé !");
-				path = dpath.getPathItineraryPoint();
-			}
+			
+			/*
+			 * The research part. We wait for dpath until a new path is available
+			 */
+			path = dpath.waitNewPath();
+			
 			for(ItineraryPoint p : path)
-			{
 				display.addTemporaryPrintable(p, Color.BLACK, Layer.FOREGROUND.layer);
-				System.out.println(p);
-			}
+
+			Thread.sleep(2000);
+			display.clearTemporaryPrintables();
+			
+			/*
+			 * The research is continuous : at the moment a new obstacle is added, Kraken tries to find a new path
+			 */
+			Obstacle newObs1 = new CircularObstacle(new XY(400,800), 100);
+			display.addTemporaryPrintable(newObs1, Color.BLUE, Layer.MIDDLE.layer);
+			obsDyn.add(newObs1);
+			
+			/*
+			 * We wait the new path
+			 */
+			path = dpath.waitNewPath();
+			
+			for(ItineraryPoint p : path)
+				display.addTemporaryPrintable(p, Color.BLACK, Layer.FOREGROUND.layer);
 			
 			Thread.sleep(2000);
 			display.clearTemporaryPrintables();
 			
-			Obstacle newObs1 = new CircularObstacle(new XY(400,800), 100);
+			/*
+			 * We add a second obstacle
+			 */
+			Obstacle newObs2 = new CircularObstacle(new XY(100,1200), 100);
 			display.addTemporaryPrintable(newObs1, Color.BLUE, Layer.MIDDLE.layer);
-			System.out.println("Ajout d'un obstacle !");
-			obsDyn.add(newObs1);
-			synchronized(dpath)
-			{
-				System.out.println("Attente de la fin…");
-				while(!dpath.isNewPathAvailable())
-				{
-					System.out.println("Pas de nouveau chemin : dodo");
-					dpath.wait();
-					System.out.println("Éveil !");
-				}
-				System.out.println("Chemin trouvé !");
-				path = dpath.getPathItineraryPoint();
-				for(ItineraryPoint p : path)
-				{
-					display.addTemporaryPrintable(p, Color.BLACK, Layer.FOREGROUND.layer);
-					System.out.println(p);
-				}
-			}
-			dpath.endSearch();
+			display.addTemporaryPrintable(newObs2, Color.BLUE, Layer.MIDDLE.layer);
+			obsDyn.add(newObs2);
+			
+			path = dpath.waitNewPath();
+			
+			for(ItineraryPoint p : path)
+				display.addTemporaryPrintable(p, Color.BLACK, Layer.FOREGROUND.layer);
+			
+			/*
+			 * When the continuous search isn't needed anymore, we can stop it.
+			 * You need to end the search to start a search with different parameters
+			 */
+			kraken.endContinuousSearch();
 		}
 		catch(PathfindingException e)
 		{

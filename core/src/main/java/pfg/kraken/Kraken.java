@@ -54,6 +54,7 @@ public class Kraken
 	private TentacularAStar astar;
 	private ResearchProfileManager profiles;
 	private TentacleManager tentaclemanager;
+	private DynamicPath dpath;
 	private static final String version = "1.4.0";
 	private boolean autoReplanningEnable = false;
 	
@@ -137,7 +138,8 @@ public class Kraken
 			astar = injector.getService(TentacularAStar.class);
 			tentaclemanager = injector.getService(TentacleManager.class);
 			profiles = injector.getService(ResearchProfileManager.class);			
-
+			dpath = injector.getService(DynamicPath.class);
+			
 			List<TentacleType> tentaclesXY = new ArrayList<TentacleType>();
 			for(ClothoTentacle t : ClothoTentacle.values())
 				tentaclesXY.add(t);
@@ -251,11 +253,36 @@ public class Kraken
 				rep.start();
 			
 			autoReplanningEnable = true;
-			return injector.getService(DynamicPath.class);
+			return dpath;
 		} catch (InjectorException e) {
 			e.printStackTrace();
 			assert false;
 			return null;
 		}
 	}
+
+	public void startContinuousSearch(SearchParameters sp) throws PathfindingException
+	{
+		if(dpath.isStarted())
+			throw new NotInitializedPathfindingException("");
+		else if(autoReplanningEnable)
+		{
+			astar.initializeNewSearch(sp.start, sp.arrival, sp.directionstrategy, sp.mode, sp.maxSpeed);
+			dpath.startContinuousSearch();
+		}
+		else
+			throw new NotInitializedPathfindingException("You should enable the continuous search before starting it.");
+	}
+
+	public void endContinuousSearch() throws NotInitializedPathfindingException
+	{
+		if(!dpath.isStarted())
+			throw new NotInitializedPathfindingException("");
+		else if(autoReplanningEnable)
+			dpath.endContinuousSearch();
+		else
+			throw new NotInitializedPathfindingException("You should enable the continuous search before starting it.");
+	}
+	
+	
 }

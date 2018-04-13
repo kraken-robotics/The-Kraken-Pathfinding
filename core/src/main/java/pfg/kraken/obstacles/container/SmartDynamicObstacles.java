@@ -23,11 +23,11 @@ public abstract class SmartDynamicObstacles implements DynamicObstacles
 	protected abstract void addObstacle(Obstacle obs);
 
 	@Override
-	public synchronized int isThereCollision(List<CinematiqueObs> l)
+	public synchronized int isThereCollision(CinematiqueObs[] l, int from, int to)
 	{
-		int i = 0;
-		for(CinematiqueObs c : l)
+		for(int i = from; i < to; i++)
 		{
+			CinematiqueObs c = l[i];
 			for(Obstacle o : newObs)
 				if(o.isColliding(c.obstacle))
 				{
@@ -37,7 +37,7 @@ public abstract class SmartDynamicObstacles implements DynamicObstacles
 			i++;
 		}
 		newObs.clear();
-		return i;
+		return to;
 	}
 	
 	protected synchronized void clear()
@@ -47,8 +47,6 @@ public abstract class SmartDynamicObstacles implements DynamicObstacles
 	
 	public synchronized void add(Obstacle obs)
 	{
-		System.out.println("Ajout d'un obstacle : "+obs);
-
 		addObstacle(obs);
 		newObs.add(obs);
 		notify();

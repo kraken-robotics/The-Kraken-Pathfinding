@@ -47,8 +47,6 @@ public class CollisionDetectionThread extends Thread
 						pm.wait();
 				}
 				
-				System.out.println("Collision à check");
-				
 				/*
 				 * On attend d'avoir des obstacles à vérifier
 				 */
@@ -57,8 +55,6 @@ public class CollisionDetectionThread extends Thread
 					while(!dynObs.needCollisionCheck())
 						dynObs.wait();
 				}
-
-				System.out.println("Nouvel obstacle à traiter !");
 
 				pm.updateCollision(dynObs);
 			}
