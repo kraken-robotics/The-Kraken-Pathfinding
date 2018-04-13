@@ -36,7 +36,7 @@ public class Cinematique implements Printable, Serializable
 	public volatile double orientationReelle;
 	public volatile double courbureReelle;
 	public volatile boolean stop;
-	private static NumberFormat formatter = new DecimalFormat("#0.000");
+	private final static NumberFormat formatter = new DecimalFormat("#0.000");
 	
 	public Cinematique(XYO xyo)
 	{

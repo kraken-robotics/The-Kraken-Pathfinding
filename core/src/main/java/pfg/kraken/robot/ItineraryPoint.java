@@ -6,6 +6,8 @@
 package pfg.kraken.robot;
 
 import java.awt.Graphics;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import pfg.graphic.GraphicPanel;
 import pfg.graphic.printable.Printable;
 
@@ -59,6 +61,8 @@ public class ItineraryPoint implements Printable
 	 */
 	public final double possibleSpeed;
 
+	private final static NumberFormat formatter = new DecimalFormat("#0.00");
+
 	public ItineraryPoint(double x, double y, double orientation, double curvature, boolean goingForward, double maxSpeed, double possibleSpeed, boolean stop)
 	{
 		this.x = x;
@@ -95,7 +99,13 @@ public class ItineraryPoint implements Printable
 	@Override
 	public String toString()
 	{
-		return "("+x+","+y+"), orientation = "+orientation+", curvature = "+curvature+" going "+(goingForward ? "forward" : "backward")+", max speed = "+maxSpeed+", possible speed = "+possibleSpeed+(stop ? ", ending with a stop":"");
+		return "(" + formatter.format(x) + "," + formatter.format(y) + ")"
+				+ ", o: " + formatter.format(orientation)
+				+ ", going "+(goingForward ? "forward" : "backward")
+				+ ", c: " + formatter.format(curvature)
+				+ ", max speed: "+formatter.format(maxSpeed)
+				+ ", possible speed: "+formatter.format(possibleSpeed)
+				+ (stop ? ", ending with a stop":"");
 	}
 
 	@Override
