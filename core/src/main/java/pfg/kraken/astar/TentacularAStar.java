@@ -467,10 +467,8 @@ public class TentacularAStar
 		arcmanager.reconstruct(trajectory, best, nbPointsMax);
 		
 		assert trajectory.size() <= nbPointsMax : trajectory.size()+" "+nbPointsMax;
-		chemin.addToEnd(trajectory);
+		chemin.addToEnd(trajectory, partial);
 		
-		if(!partial && chemin.isModeWithReplanning())
-			chemin.setUptodate();
 		
 		log.write("Research completed.", LogCategoryKraken.PF);
 	}

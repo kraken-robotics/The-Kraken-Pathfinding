@@ -1,0 +1,29 @@
+/*
+ * Copyright (C) 2013-2018 Pierre-François Gimenez
+ * Distributed under the MIT License.
+ */
+
+package pfg.kraken.astar.thread;
+
+import java.util.List;
+import pfg.kraken.robot.ItineraryPoint;
+
+/**
+ * A path diff
+ * @author pf
+ *
+ */
+
+public class PathDiff
+{
+	public final int firstDifferentPoint;
+	public final List<ItineraryPoint> diff;
+	public final boolean isComplete;
+	
+	public PathDiff(int firstDifferentPoint, List<ItineraryPoint> diff, boolean isComplete)
+	{
+		this.firstDifferentPoint = firstDifferentPoint;
+		this.diff = diff;
+		this.isComplete = isComplete;
+	}
+}

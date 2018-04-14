@@ -8,6 +8,7 @@ package pfg.kraken.astar.thread;
 import pfg.log.Log;
 import pfg.kraken.astar.TentacularAStar;
 import pfg.kraken.exceptions.PathfindingException;
+import pfg.kraken.robot.Cinematique;
 
 /**
  * Thread qui s'occupe de la replanification
@@ -51,29 +52,40 @@ public class ReplanningThread extends Thread
 					 */				
 					astar.searchWithReplanning();
 					
-					synchronized(pm)
+					while(true)
 					{
-						while(true)
+						Cinematique start;
+						synchronized(pm)
 						{
-							while(!pm.needReplanning())
+							while(!pm.needReplanning() && pm.isStarted())
 							{
 								pm.checkException();
 								pm.wait();
 							}
+							
 							// on vérifie si on doit arrêter la replanification
 							pm.checkException();
-							
-							if(!pm.needReplanning())
+
+							// La recherche a été arrêtée
+							if(!pm.isStarted())
 								break;
-							
-							// sinon, c'est qu'il faut replanifier
-							astar.updatePath(pm.getNewStart());
-						}
+														
+							assert pm.needReplanning();
+/*							if(!pm.needReplanning())
+							{
+								System.out.println("Pas besoin de replanif");
+								break;
+							}*/
+							start = pm.getNewStart();
+						}						
+						// sinon, c'est qu'il faut replanifier
+						astar.updatePath(start);
 					}
-					
-					pm.endContinuousSearch();
 				} catch(PathfindingException e)
 				{
+					/*
+					 * On propage l'exception
+					 */
 					pm.endContinuousSearchWithException(e);
 				}				
 			}

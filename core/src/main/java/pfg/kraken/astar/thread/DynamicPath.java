@@ -60,9 +60,9 @@ public class DynamicPath
 		if(margeNecessaire > margePreferable || margeInitiale < margePreferable)
 			throw new IllegalArgumentException();
 		
-		pathSize = 0;
 		for(int i = 0; i < path.length; i++)
 			path[i] = new CinematiqueObs(vehicleTemplate);
+		clear();
 	}
 	
 	public synchronized void initSearchWithoutPlanning()
@@ -91,25 +91,24 @@ public class DynamicPath
 	
 	public synchronized void endContinuousSearch()
 	{
-		etat = State.STANDBY;
+		clear();
 		notifyAll();
 	}
 	
-	public synchronized void addToEnd(LinkedList<CinematiqueObs> points)
+	public synchronized void addToEnd(LinkedList<CinematiqueObs> points, boolean partial)
 	{
 		for(int i = 0; i < points.size(); i++)
 			points.get(i).copy(path[pathSize + i]);
+		updateFirstDifferentPoint(pathSize);
+		
 		pathSize += points.size();
+		
+		if(!partial && isModeWithReplanning())
+			etat = State.UPTODATE_WITH_NEW_PATH;
+
 		notifyAll();
 	}
 
-	public synchronized void setUptodate()
-	{
-//		log.write("A path is available", LogCategoryKraken.REPLANIF);
-		etat = State.UPTODATE_WITH_NEW_PATH;
-		notifyAll();
-	}
-	
 	public synchronized int margeSupplementaireDemandee()
 	{
 		/*
@@ -155,31 +154,53 @@ public class DynamicPath
 	/**
 	 * La recherche est terminée, on retourne en STANDBY
 	 */
-	public synchronized void clear()
+	private synchronized void clear()
 	{
 //		log.write("Search ended, returns to STANDBY", LogCategoryKraken.REPLANIF);
+		firstDifferentPoint = Integer.MAX_VALUE;
 		pathSize = 0;
 		etat = State.STANDBY;
+	}
+	
+	public synchronized boolean isThereDiff() throws PathfindingException
+	{
+		checkException();
+		return firstDifferentPoint != Integer.MAX_VALUE;
+	}
+	
+	public synchronized PathDiff getDiff()
+	{
+		if(!isStarted())
+			return null;
+
+		PathDiff diff = new PathDiff(firstDifferentPoint, getPath(firstDifferentPoint), etat == State.UPTODATE || etat == State.UPTODATE_WITH_NEW_PATH);
+		firstDifferentPoint = Integer.MAX_VALUE;
+		return diff;
 	}
 	
 	public List<ItineraryPoint> getPath()
 	{
 		assert etat == State.UPTODATE_WITH_NEW_PATH || etat == State.MODE_WITHOUT_REPLANING;
-		List<ItineraryPoint> pathIP = new ArrayList<ItineraryPoint>();
-		for(int i = 0; i < pathSize; i++)
-			pathIP.add(new ItineraryPoint(path[i]));
 		etat = State.UPTODATE;
+		return getPath(0);
+	}
+	
+	private List<ItineraryPoint> getPath(int index)
+	{
+		List<ItineraryPoint> pathIP = new ArrayList<ItineraryPoint>();
+		for(int i = index; i < pathSize; i++)
+			pathIP.add(new ItineraryPoint(path[i]));
 		return pathIP;
 	}
 
 	public synchronized void updateCollision(DynamicObstacles dynObs)
 	{
 		// dans tous les cas, on vérifie les collisions afin de vider la liste des nouveaux obstacles
-		firstDifferentPoint = dynObs.isThereCollision(path, indexFirst, pathSize);
-
+		int firstDifferentPoint = dynObs.isThereCollision(path, indexFirst, pathSize);
+		
 		if(!needCollisionCheck())
 			return;
-		
+
 		if(firstDifferentPoint != pathSize)
 		{
 			// on retire des points corrects mais trop proche de la collision
@@ -193,10 +214,10 @@ public class DynamicPath
 			}
 			else
 			{
-				// Sinon on prévient qu'il faut une replanification et on détruit
+				// Sinon on prévient qu'il faut une replanification
 				etat = State.REPLANNING;
 				pathSize = firstDifferentPoint;
-//				assert !needToStopReplaning();
+				updateFirstDifferentPoint(firstDifferentPoint);
 			}
 			notifyAll();
 		}
@@ -209,7 +230,7 @@ public class DynamicPath
 	public Cinematique getNewStart()
 	{
 		assert etat == State.REPLANNING;
-		return path[firstDifferentPoint - 1];
+		return path[pathSize - 1];
 	}
 
 	/**
@@ -228,7 +249,7 @@ public class DynamicPath
 		return etat == State.REPLANNING;
 	}
 	
-	public boolean isStarted()
+	public synchronized boolean isStarted()
 	{
 		return etat != State.STANDBY;
 	}
@@ -261,12 +282,6 @@ public class DynamicPath
 	{
 		return etat == State.REPLANNING || etat == State.UPTODATE_WITH_NEW_PATH || etat == State.UPTODATE;
 	}
-
-/*	public synchronized void stopResearch()
-	{
-		etat = State.STOP;
-		notifyAll();
-	}*/
 	
 	public synchronized List<ItineraryPoint> waitNewPath() throws InterruptedException, PathfindingException
 	{
@@ -275,7 +290,20 @@ public class DynamicPath
 
 		return getPath();
 	}
+	
+	public synchronized PathDiff waitDiff() throws InterruptedException, PathfindingException
+	{
+		while(!isThereDiff())
+			wait();
 
+		return getDiff();
+	}
+
+	private void updateFirstDifferentPoint(int firstDifferentPoint)
+	{
+		this.firstDifferentPoint = Math.min(this.firstDifferentPoint, firstDifferentPoint);
+	}
+	
 	public void endContinuousSearchWithException(PathfindingException e)
 	{
 		this.e = e;
