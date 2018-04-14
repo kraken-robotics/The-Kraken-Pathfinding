@@ -55,10 +55,15 @@ public class ReplanningThread extends Thread
 					{
 						while(true)
 						{
-							while(!pm.needReplanning() && !pm.needToStopReplaning())
+							while(!pm.needReplanning())
+							{
+								pm.checkException();
 								pm.wait();
+							}
 							// on vérifie si on doit arrêter la replanification
-							if(pm.needToStopReplaning())
+							pm.checkException();
+							
+							if(!pm.needReplanning())
 								break;
 							
 							// sinon, c'est qu'il faut replanifier
@@ -69,7 +74,7 @@ public class ReplanningThread extends Thread
 					pm.endContinuousSearch();
 				} catch(PathfindingException e)
 				{
-					pm.stopResearchWithException(e);
+					pm.endContinuousSearchWithException(e);
 				}				
 			}
 		}

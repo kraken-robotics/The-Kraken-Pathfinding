@@ -11,6 +11,7 @@ import java.util.List;
 
 import pfg.config.Config;
 import pfg.kraken.ConfigInfoKraken;
+import pfg.kraken.exceptions.NoPathException;
 import pfg.kraken.exceptions.PathfindingException;
 import pfg.kraken.obstacles.RectangularObstacle;
 import pfg.kraken.obstacles.container.DynamicObstacles;
@@ -35,8 +36,8 @@ public class DynamicPath
 		SEARCHING, // le thread calcule la trajectoire initiale
 		UPTODATE_WITH_NEW_PATH, // on a un NOUVEAU chemin vers la destination
 		UPTODATE, // pas besoin de replanif
-		REPLANNING, // replanification nécessaire / en cours
-		STOP; // la planification doit s'arrêter
+		REPLANNING; // replanification nécessaire / en cours
+//		STOP; // la planification doit s'arrêter
 	}
 	
 	protected Log log;
@@ -56,6 +57,9 @@ public class DynamicPath
 		margePreferable = (int) Math.ceil(config.getDouble(ConfigInfoKraken.PREFERRED_MARGIN) / PRECISION_TRACE_MM);
 		margeAvantCollision = (int) Math.ceil(config.getInt(ConfigInfoKraken.MARGIN_BEFORE_COLLISION) / PRECISION_TRACE_MM);
 		margeInitiale = (int) Math.ceil(config.getInt(ConfigInfoKraken.INITIAL_MARGIN) / PRECISION_TRACE_MM);
+		if(margeNecessaire > margePreferable || margeInitiale < margePreferable)
+			throw new IllegalArgumentException();
+		
 		pathSize = 0;
 		for(int i = 0; i < path.length; i++)
 			path[i] = new CinematiqueObs(vehicleTemplate);
@@ -130,9 +134,22 @@ public class DynamicPath
 		return path[index];
 	}
 	
+	public void checkException() throws PathfindingException
+	{
+		if(e != null)
+		{
+			assert etat == State.STANDBY;
+			PathfindingException tmp = e;
+			e = null;
+			throw tmp;
+		}
+		if(etat == State.REPLANNING && pathSize - indexFirst < margeNecessaire)
+			throw new NoPathException("Pas assez de marge !");
+	}
+	
 	public boolean needToStopReplaning()
 	{
-		return etat == State.STOP || (etat == State.REPLANNING && pathSize - indexFirst < margeNecessaire);
+		return (etat == State.REPLANNING && pathSize - indexFirst < margeNecessaire);
 	}
 	
 	/**
@@ -171,7 +188,7 @@ public class DynamicPath
 			// Si la trajectoire restante est plus petite que la marge initiale désirée, il faut s'arrêter
 			if(firstDifferentPoint - indexFirst <= margeInitiale)
 			{
-				etat = State.STOP;
+				endContinuousSearchWithException(new NoPathException("Pas assez de marge"));
 				pathSize = indexFirst;
 			}
 			else
@@ -179,7 +196,7 @@ public class DynamicPath
 				// Sinon on prévient qu'il faut une replanification et on détruit
 				etat = State.REPLANNING;
 				pathSize = firstDifferentPoint;
-				assert !needToStopReplaning();
+//				assert !needToStopReplaning();
 			}
 			notifyAll();
 		}
@@ -202,12 +219,7 @@ public class DynamicPath
 	 */
 	public synchronized boolean isNewPathAvailable() throws PathfindingException
 	{
-		if(e != null)
-		{
-			PathfindingException tmp = e;
-			e = null;
-			throw tmp;
-		}
+		checkException();
 		return etat == State.UPTODATE_WITH_NEW_PATH;
 	}
 
@@ -250,11 +262,11 @@ public class DynamicPath
 		return etat == State.REPLANNING || etat == State.UPTODATE_WITH_NEW_PATH || etat == State.UPTODATE;
 	}
 
-	public synchronized void stopResearch()
+/*	public synchronized void stopResearch()
 	{
 		etat = State.STOP;
 		notifyAll();
-	}
+	}*/
 	
 	public synchronized List<ItineraryPoint> waitNewPath() throws InterruptedException, PathfindingException
 	{
@@ -264,9 +276,9 @@ public class DynamicPath
 		return getPath();
 	}
 
-	public void stopResearchWithException(PathfindingException e)
+	public void endContinuousSearchWithException(PathfindingException e)
 	{
 		this.e = e;
-		stopResearch();
+		endContinuousSearch();
 	}
 }

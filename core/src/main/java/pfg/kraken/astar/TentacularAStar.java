@@ -191,6 +191,7 @@ public class TentacularAStar
 	public List<ItineraryPoint> searchWithoutReplanning() throws PathfindingException
 	{
 		chemin.initSearchWithoutPlanning();
+		log.write("Path search begins.", LogCategoryKraken.PF);
 		search();
 		return chemin.endSearchWithoutPlanning();
 	}
@@ -198,6 +199,7 @@ public class TentacularAStar
 	public void searchWithReplanning() throws PathfindingException
 	{
 		chemin.setSearchInProgress();
+		log.write("Path search with autoreplanning begins.", LogCategoryKraken.PF);
 		search();
 	}
 	
@@ -214,7 +216,6 @@ public class TentacularAStar
 		if(!initialized)
 			throw new NotInitializedPathfindingException("Search not initialized !");
 
-		log.write("Path search begins.", LogCategoryKraken.PF);
 		trajetDeSecours = null;
 		depart.parent = null;
 		depart.cameFromArcDynamique = null;
@@ -249,9 +250,8 @@ public class TentacularAStar
 			{
 				synchronized(chemin)
 				{
-					if(chemin.needToStopReplaning())
-						return;
-	//					throw new NotFastEnoughException("Obstacle seen too late, there is not enough margin.");
+					// Doit-on s'arrêter ?
+					chemin.checkException();
 		
 					int margeDemandee = chemin.margeSupplementaireDemandee();
 					// On vérifie régulièrement qu'il ne faut pas fournir un chemin partiel
