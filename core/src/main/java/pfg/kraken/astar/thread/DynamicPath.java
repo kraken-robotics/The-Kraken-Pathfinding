@@ -11,6 +11,7 @@ import java.util.List;
 
 import pfg.config.Config;
 import pfg.kraken.ConfigInfoKraken;
+import pfg.kraken.exceptions.PathfindingException;
 import pfg.kraken.obstacles.RectangularObstacle;
 import pfg.kraken.obstacles.container.DynamicObstacles;
 import pfg.kraken.robot.Cinematique;
@@ -46,6 +47,7 @@ public class DynamicPath
 	private volatile int pathSize; // index du prochain point de la trajectoire
 	private volatile int firstDifferentPoint; // index du premier point différent dans la replanification
 	private final int margeNecessaire, margeInitiale, margeAvantCollision, margePreferable;
+	private volatile PathfindingException e;
 	
 	public DynamicPath(Log log, Config config, RectangularObstacle vehicleTemplate)
 	{
@@ -196,9 +198,16 @@ public class DynamicPath
 	/**
 	 * Is a new, complete path available ?
 	 * @return
+	 * @throws PathfindingException 
 	 */
-	public synchronized boolean isNewPathAvailable()
+	public synchronized boolean isNewPathAvailable() throws PathfindingException
 	{
+		if(e != null)
+		{
+			PathfindingException tmp = e;
+			e = null;
+			throw tmp;
+		}
 		return etat == State.UPTODATE_WITH_NEW_PATH;
 	}
 
@@ -247,11 +256,17 @@ public class DynamicPath
 		notifyAll();
 	}
 	
-	public synchronized List<ItineraryPoint> waitNewPath() throws InterruptedException
+	public synchronized List<ItineraryPoint> waitNewPath() throws InterruptedException, PathfindingException
 	{
 		while(!isNewPathAvailable())
 			wait();
 
 		return getPath();
+	}
+
+	public void stopResearchWithException(PathfindingException e)
+	{
+		this.e = e;
+		stopResearch();
 	}
 }
