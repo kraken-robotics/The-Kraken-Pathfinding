@@ -43,6 +43,11 @@ public class Cinematique implements Printable, Serializable
 		updateReel(xyo.position.getX(), xyo.position.getY(), xyo.orientation, 0);
 	}
 	
+	public XYO getXYO()
+	{
+		return new XYO(position, orientationReelle);
+	}
+	
 	public Cinematique(double x, double y, double orientationGeometrique, boolean enMarcheAvant, double courbure, boolean stop)
 	{
 		update(x, y, orientationGeometrique, enMarcheAvant, courbure, stop);

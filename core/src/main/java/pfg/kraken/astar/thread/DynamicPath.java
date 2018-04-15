@@ -67,14 +67,14 @@ public class DynamicPath
 	
 	public synchronized void initSearchWithoutPlanning()
 	{
-		assert pathSize == 0;
-		assert etat == State.STANDBY;
+		assert pathSize == 0 : pathSize;
+		assert etat == State.STANDBY : etat;
 		etat = State.MODE_WITHOUT_REPLANING;
 	}
 	
 	public synchronized List<ItineraryPoint> endSearchWithoutPlanning()
 	{
-		assert etat == State.MODE_WITHOUT_REPLANING;
+		assert etat == State.MODE_WITHOUT_REPLANING : etat;
 		List<ItineraryPoint> out = getPath();
 		clear();
 		return out;
@@ -82,8 +82,8 @@ public class DynamicPath
 	
 	public synchronized void startContinuousSearch()
 	{
-		assert etat == State.STANDBY;
-		assert pathSize == 0;
+		assert etat == State.STANDBY : etat;
+		assert pathSize == 0 : pathSize;
 //		log.write("Search request", LogCategoryKraken.REPLANIF);
 		etat = State.SEARCH_REQUEST;
 		notifyAll();
@@ -137,7 +137,7 @@ public class DynamicPath
 	{
 		if(e != null)
 		{
-			assert etat == State.STANDBY;
+			assert etat == State.STANDBY : etat;
 			PathfindingException tmp = e;
 			e = null;
 			throw tmp;
@@ -180,7 +180,7 @@ public class DynamicPath
 	
 	public List<ItineraryPoint> getPath()
 	{
-		assert etat == State.UPTODATE_WITH_NEW_PATH || etat == State.MODE_WITHOUT_REPLANING;
+		assert etat == State.UPTODATE_WITH_NEW_PATH || etat == State.MODE_WITHOUT_REPLANING : etat;
 		etat = State.UPTODATE;
 		return getPath(0);
 	}
@@ -229,7 +229,7 @@ public class DynamicPath
 	 */
 	public Cinematique getNewStart()
 	{
-		assert etat == State.REPLANNING;
+		assert etat == State.REPLANNING : etat;
 		return path[pathSize - 1];
 	}
 
@@ -256,7 +256,7 @@ public class DynamicPath
 	
 	public boolean isModeWithReplanning()
 	{
-		assert etat != State.STANDBY;
+		assert etat != State.STANDBY : etat;
 		// La replanification est désactivée lors d'une recherche "manuelle"
 		return etat != State.MODE_WITHOUT_REPLANING;
 	}
@@ -273,7 +273,7 @@ public class DynamicPath
 
 	public void setSearchInProgress()
 	{
-		assert etat == State.SEARCH_REQUEST;
+		assert etat == State.SEARCH_REQUEST : etat;
 //		log.write("Search begin", LogCategoryKraken.REPLANIF);
 		etat = State.SEARCHING;
 	}

@@ -16,8 +16,6 @@ import pfg.injector.Injector;
 import pfg.injector.InjectorException;
 import pfg.kraken.ColorKraken;
 import pfg.kraken.ConfigInfoKraken;
-import pfg.kraken.LogCategoryKraken;
-import pfg.kraken.SeverityCategoryKraken;
 import pfg.kraken.astar.AStarNode;
 import pfg.kraken.astar.DirectionStrategy;
 import pfg.kraken.astar.tentacles.types.TentacleType;
@@ -62,7 +60,6 @@ public class TentacleManager implements Iterator<AStarNode>
 	private DirectionStrategy directionstrategyactuelle;
 	private Cinematique arrivee = new Cinematique();
 	private ResearchProfileManager profiles;
-//	private List<StaticObstacles> disabledObstaclesFixes = new ArrayList<StaticObstacles>();
 	private List<TentacleTask> tasks = new ArrayList<TentacleTask>();
 	private BlockingQueue<AStarNode> successeurs = new LinkedBlockingQueue<AStarNode>();
 	private BlockingQueue<TentacleTask> buffer = new LinkedBlockingQueue<TentacleTask>();
@@ -142,7 +139,7 @@ public class TentacleManager implements Iterator<AStarNode>
 		// Collision avec un obstacle fixe?
 		for(Obstacle o : fixes.getObstacles())
 			for(int i = 0; i < nbOmbres; i++)
-				if(/*!disabledObstaclesFixes.contains(o) && */o.isColliding(node.getArc().getPoint(i).obstacle))
+				if(o.isColliding(node.getArc().getPoint(i).obstacle))
 				{
 					// log.debug("Collision avec "+o);
 					return false;
@@ -150,33 +147,11 @@ public class TentacleManager implements Iterator<AStarNode>
 
 		// Collision avec un obstacle de proximité ?
 
-		try {
-//			Iterator<Obstacle> iter = dynamicObs.getCurrentDynamicObstacles();
-			// TODO : utiliser getFutureDynamicObstacles
-			for(Obstacle n : currentObstacles)
-//			while(iter.hasNext())
-			{
-//				Obstacle n = iter.next();
-				for(int i = 0; i < nbOmbres; i++)
-					if(n.isColliding(node.getArc().getPoint(i).obstacle))
-					{
-						// log.debug("Collision avec un obstacle de proximité.");
-						return false;
-					}
-			}
-		} catch(NullPointerException e)
-		{
-			log.write(e.toString(), SeverityCategoryKraken.CRITICAL, LogCategoryKraken.PF);
-		}
-		/*
-		 * node.state.iterator.reinit();
-		 * while(node.state.iterator.hasNext())
-		 * if(node.state.iterator.next().isColliding(obs))
-		 * {
-		 * // log.debug("Collision avec un obstacle de proximité.");
-		 * return false;
-		 * }
-		 */
+		// TODO : utiliser getFutureDynamicObstacles
+		for(Obstacle n : currentObstacles)
+			for(int i = 0; i < nbOmbres; i++)
+				if(n.isColliding(node.getArc().getPoint(i).obstacle))
+					return false;
 
 		return true;
 	}
