@@ -6,6 +6,9 @@
 package pfg.kraken.utils;
 
 import java.io.Serializable;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
 
 /**
  * A structure with a position (x,y) and an orientation
@@ -19,6 +22,15 @@ public class XYO implements Serializable
 	public final XY_RW position;
 	public double orientation;
 	
+	private static final DecimalFormatSymbols symbols = new DecimalFormatSymbols();
+	private static final NumberFormat formatter;
+	
+	static
+	{
+		symbols.setDecimalSeparator('.');
+		formatter = new DecimalFormat("#0.00", symbols);
+	}
+
 	public XYO(double x, double y, double orientation)
 	{
 		this(new XY_RW(x,y), orientation);
@@ -49,5 +61,11 @@ public class XYO implements Serializable
 		else if(deltaO < -Math.PI)
 			deltaO += 2 * Math.PI;
 		return deltaO;
+	}
+	
+	@Override
+	public final String toString()
+	{
+		return position.toString() + ", o : " + formatter.format(orientation);
 	}
 }

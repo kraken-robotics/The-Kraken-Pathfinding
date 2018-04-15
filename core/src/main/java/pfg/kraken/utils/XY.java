@@ -23,8 +23,8 @@ public class XY implements Serializable, Position
 	private static final long serialVersionUID = 1L;
 	protected volatile double x;
 	protected volatile double y;
-	private static DecimalFormatSymbols symbols = new DecimalFormatSymbols();
-	private static NumberFormat formatter;
+	private static final DecimalFormatSymbols symbols = new DecimalFormatSymbols();
+	private static final NumberFormat formatter;
 	
 	static
 	{

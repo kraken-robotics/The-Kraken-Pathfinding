@@ -210,9 +210,9 @@ public class Cinematique implements Printable, Serializable
 	{
 		double n = 40;
 		XY_RW point1 = new XY_RW(n, 0), point2 = new XY_RW(-n / 2, n / 2), point3 = new XY_RW(-n / 2, -n / 2);
-		point1.rotate(orientationGeometrique).plus(position);
-		point2.rotate(orientationGeometrique).plus(position);
-		point3.rotate(orientationGeometrique).plus(position);
+		point1.rotate(orientationReelle).plus(position);
+		point2.rotate(orientationReelle).plus(position);
+		point3.rotate(orientationReelle).plus(position);
 		int[] X = { f.XtoWindow((int) point1.getX()), f.XtoWindow((int) point2.getX()), f.XtoWindow((int) point3.getX()) };
 		int[] Y = { f.YtoWindow((int) point1.getY()), f.YtoWindow((int) point2.getY()), f.YtoWindow((int) point3.getY()) };
 
