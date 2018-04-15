@@ -1,8 +1,15 @@
 # Unreleased
 
+# v1.4.0
+- Add the autoreplanning mode
+- Can get the complete path or the diff only
+- Maven package available at packagecloud.io
+- Add example 5 and 6
+
 # v1.3.1
 - API : introduction of SearchParameters and ResearchProfile
 - API : can specify the maximal speed for a search
+- Bezier curves can initiate a motion direction change
 - Add the XYOC0 mode
 - Various bugfix
 

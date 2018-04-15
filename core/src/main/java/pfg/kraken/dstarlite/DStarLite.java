@@ -16,6 +16,7 @@ import pfg.kraken.ConfigInfoKraken;
 import pfg.kraken.dstarlite.navmesh.Navmesh;
 import pfg.kraken.dstarlite.navmesh.NavmeshEdge;
 import pfg.kraken.dstarlite.navmesh.NavmeshNode;
+import pfg.kraken.exceptions.NoPathException;
 import pfg.kraken.obstacles.Obstacle;
 import pfg.kraken.obstacles.container.DynamicObstacles;
 import pfg.kraken.obstacles.container.StaticObstacles;
@@ -252,9 +253,18 @@ public class DStarLite
 	 * 
 	 * @param arrivee (un Vec2)
 	 * @param depart (un Vec2)
+	 * @throws NoPathException 
 	 */
-	public boolean computeNewPath(XY depart, XY arrivee)
+	public boolean computeNewPath(XY depart, XY arrivee) throws NoPathException
 	{
+		List<Obstacle> obs = statObs.getObstacles();
+		for(Obstacle o : obs)
+			if(o.isInObstacle(depart))
+				throw new NoPathException("Starting point in obstacle "+o);
+			else if(o.isInObstacle(arrivee))
+				throw new NoPathException("Finish point in obstacle "+o);
+		
+		
 		changeGoal(arrivee);
 		updateObstacles();
 		updateHeuristic();
@@ -265,9 +275,13 @@ public class DStarLite
 	 * Met à jour la destination
 	 * 
 	 * @param positionArrivee
+	 * @throws NoPathException 
 	 */
-	private synchronized void changeGoal(XY positionArrivee)
+	private synchronized void changeGoal(XY positionArrivee) throws NoPathException
 	{
+		if(!statObs.isInsideSearchDomain(positionArrivee))
+			throw new NoPathException("The goal is outside the search domain !");
+		
 		nbPF++;
 
 		this.positionArrivee = positionArrivee;
@@ -413,6 +427,7 @@ public class DStarLite
 	 */
 	public synchronized Double heuristicCostCourbe(Cinematique c, double coeffDistanceError, double coeffAngleError)
 	{
+		// TODO synchronized nécessaire ?
 		if(!statObs.isInsideSearchDomain(c.getPosition()))
 			return null;
 		NavmeshNode pos = navmesh.getNearest(c.getPosition());

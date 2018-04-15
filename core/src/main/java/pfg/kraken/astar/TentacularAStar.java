@@ -18,8 +18,11 @@ import pfg.graphic.printable.Layer;
 import pfg.kraken.ConfigInfoKraken;
 import pfg.kraken.LogCategoryKraken;
 import pfg.kraken.astar.tentacles.TentacleManager;
+import pfg.kraken.astar.thread.DynamicPath;
 import pfg.kraken.dstarlite.DStarLite;
 import pfg.kraken.exceptions.NoPathException;
+import pfg.kraken.exceptions.NotFastEnoughException;
+import pfg.kraken.exceptions.NotInitializedPathfindingException;
 import pfg.kraken.exceptions.PathfindingException;
 import pfg.kraken.exceptions.TimeoutException;
 import pfg.kraken.memory.CinemObsPool;
@@ -27,6 +30,7 @@ import pfg.kraken.memory.MemPoolState;
 import pfg.kraken.memory.NodePool;
 import pfg.kraken.obstacles.RectangularObstacle;
 import pfg.kraken.robot.Cinematique;
+import pfg.kraken.robot.CinematiqueObs;
 import pfg.kraken.robot.ItineraryPoint;
 import pfg.kraken.robot.RobotState;
 import pfg.log.Log;
@@ -68,6 +72,8 @@ public class TentacularAStar
 	 */
 	private AStarNode depart;
 	
+	private Cinematique arrival = new Cinematique();
+	
 	/*
 	 * The last node of a path that has been found (but better routes are expected)
 	 */
@@ -81,7 +87,7 @@ public class TentacularAStar
 	/*
 	 * Just a path container
 	 */
-	private DefaultCheminPathfinding defaultChemin;
+	private DynamicPath chemin;
 	
 	/*
 	 * Graphic parameters
@@ -108,12 +114,8 @@ public class TentacularAStar
 	 */
 	private int nbExpandedNodes;
 	private boolean debugMode;
+	private boolean initialized = false;
 	
-	/*
-	 * Check if a search ongoing FIXME unused
-	 */
-//	private volatile boolean rechercheEnCours = false;
-
 	/**
 	 * Comparateur de noeud utilisé par la priority queue.
 	 * 
@@ -151,7 +153,7 @@ public class TentacularAStar
 	/*
 	 * Only used for the reconstruction
 	 */
-	private LinkedList<ItineraryPoint> trajectory = new LinkedList<ItineraryPoint>();
+	private LinkedList<CinematiqueObs> trajectory = new LinkedList<CinematiqueObs>();
 	
 	/*
 	 * For graphical display purpose only
@@ -161,9 +163,9 @@ public class TentacularAStar
 	/**
 	 * Constructeur du AStarCourbe
 	 */
-	public TentacularAStar(Log log, DefaultCheminPathfinding defaultChemin, DStarLite dstarlite, TentacleManager arcmanager, NodePool memorymanager, CinemObsPool rectMemory, GraphicDisplay buffer, RobotState chrono, Config config, RectangularObstacle vehicleTemplate)
+	public TentacularAStar(Log log, DynamicPath defaultChemin, DStarLite dstarlite, TentacleManager arcmanager, NodePool memorymanager, CinemObsPool rectMemory, GraphicDisplay buffer, RobotState chrono, Config config, RectangularObstacle vehicleTemplate)
 	{
-		this.defaultChemin = defaultChemin;
+		this.chemin = defaultChemin;
 		this.log = log;
 		this.arcmanager = arcmanager;
 		this.memorymanager = memorymanager;
@@ -186,11 +188,19 @@ public class TentacularAStar
 		depart.setIndiceMemoryManager(-1);
 	}
 
-	public LinkedList<ItineraryPoint> search() throws PathfindingException
+	public List<ItineraryPoint> searchWithoutReplanning() throws PathfindingException
 	{
-		defaultChemin.clear();
-		search(defaultChemin, false);
-		return defaultChemin.getPath();
+		chemin.initSearchWithoutPlanning();
+		log.write("Path search begins.", LogCategoryKraken.PF);
+		search();
+		return chemin.endSearchWithoutPlanning();
+	}
+	
+	public void searchWithReplanning() throws PathfindingException
+	{
+		chemin.setSearchInProgress();
+		log.write("Path search with autoreplanning begins.", LogCategoryKraken.PF);
+		search();
 	}
 	
 	/**
@@ -201,12 +211,11 @@ public class TentacularAStar
 	 * @throws PathfindingException
 	 * @throws MemoryPoolException
 	 */
-	private final synchronized void search(CheminPathfindingInterface chemin, boolean replanif) throws PathfindingException
+	private final synchronized void search() throws PathfindingException
 	{
-//		if(!rechercheEnCours)
-//			throw new NotInitializedPathfindingException("updatePath appelé alors qu'aucune recherche n'est en cours !");
+		if(!initialized)
+			throw new NotInitializedPathfindingException("Search not initialized !");
 
-		log.write("Path search begins.", LogCategoryKraken.PF);
 		trajetDeSecours = null;
 		depart.parent = null;
 		depart.cameFromArcDynamique = null;
@@ -237,50 +246,45 @@ public class TentacularAStar
 			
 			nbExpandedNodes++;
 			
-			// FIXME : this part is currently disable
-/*			if(replanif && chemin.needStop())
-				throw new NotFastEnoughException("Obstacle seen too late, there is not enough margin.");
-
-			// On vérifie régulièremet s'il ne faut pas fournir un chemin
-			// partiel
-			Cinematique cinemRestart = chemin.getLastValidCinematique();
-			boolean assezDeMarge = chemin.aAssezDeMarge();
-
-			if(cinemRestart != null || !assezDeMarge)
+			if(chemin.isModeWithReplanning() && !chemin.isInitialSearch())
 			{
-				if(!assezDeMarge)
+				synchronized(chemin)
 				{
-					log.write("Partial rebuild required !", LogCategoryKraken.PF);
-					depart.robot.setCinematique(partialReconstruct(current, chemin, 2));
-					if(!chemin.aAssezDeMarge()) // toujours pas assez de marge
-												// : on doit arrêter
-						throw new NotFastEnoughException("Not enough margin.");
+					// Doit-on s'arrêter ?
+					chemin.checkException();
+		
+					int margeDemandee = chemin.margeSupplementaireDemandee();
+					// On vérifie régulièrement qu'il ne faut pas fournir un chemin partiel
+					if(margeDemandee > 0)
+					{
+						log.write("Partial rebuild required !", LogCategoryKraken.PF);
+						partialReconstruct(current, chemin, margeDemandee, true);
+						
+						if(chemin.margeSupplementaireDemandee() > 0) // toujours pas assez de marge : on doit arrêter
+							throw new NotFastEnoughException("Not enough margin.");
+		
+						depart.robot.setCinematique(chemin.getNewStart());
+						trajetDeSecours = null;
+						depart.parent = null;
+						depart.cameFromArcDynamique = null;
+						depart.g_score = 0;
+						heuristique = arcmanager.heuristicCostCourbe((depart.robot).getCinematique());
+		
+						if(heuristique == null)
+							throw new NoPathException("No path found by the D* Lite");
+		
+						depart.f_score = heuristique;
+		
+						memorymanager.empty();
+						cinemMemory.empty();
+						closedset.clear();
+						openset.clear();
+						
+						debutRecherche = System.currentTimeMillis();
+						current = depart;
+					}
 				}
-				else // il faut partir d'un autre point
-				{
-					log.write("The search is restarted from " + cinemRestart, LogCategoryKraken.REPLANIF);
-					depart.init();
-					depart.robot.setCinematique(cinemRestart);
-				}
-
-				trajetDeSecours = null;
-				depart.parent = null;
-				depart.cameFromArcDynamique = null;
-				depart.g_score = 0;
-				heuristique = arcmanager.heuristicCostCourbe((depart.robot).getCinematique());
-
-				if(heuristique == null)
-					throw new NoPathException("No path found by the D* Lite");
-
-				depart.f_score = heuristique / vitesseMax;
-
-				memorymanager.empty();
-				cinemMemory.empty();
-				closedset.clear();
-				openset.clear();
-
-				current = depart;
-			}*/
+			}
 
 			// si on a déjà fait ce point ou un point très proche…
 			// exception si c'est un point d'arrivée
@@ -323,8 +327,7 @@ public class TentacularAStar
 			// trajectoire de secours est la meilleure possible, donc on a fini
 			if(current == trajetDeSecours)
 			{
-				chemin.setUptodate();
-				partialReconstruct(current, chemin);
+				partialReconstruct(current, chemin, Integer.MAX_VALUE, false);
 				memorymanager.empty();
 				cinemMemory.empty();
 				return;
@@ -339,7 +342,7 @@ public class TentacularAStar
 				return;
 			}*/
 			
-			if(!replanif && elapsed > dureeMaxPF)
+			if(elapsed > dureeMaxPF)
 			{
 				/*
 				 * Timeout !
@@ -350,13 +353,12 @@ public class TentacularAStar
 				if(trajetDeSecours != null) // si on a un trajet de secours, on l'utilise
 				{
 					log.write("The backup path is used.", LogCategoryKraken.PF);
-					chemin.setUptodate();
-					partialReconstruct(trajetDeSecours, chemin);
+					partialReconstruct(trajetDeSecours, chemin, Integer.MAX_VALUE, false);
 					return;
 				}
 				
 				// sinon, on lève une exception
-				throw new TimeoutException("Pathfinding timeout !");
+				throw new TimeoutException("Timeout pathfinding !");
 			}
 
 			// On parcourt les voisins de current
@@ -400,11 +402,10 @@ public class TentacularAStar
 
 				// est qu'on est tombé sur l'arrivée ? alors ça fait un trajet de secours
 				// s'il y a déjà un trajet de secours, on prend le meilleur
-				// TODO
 				if(arcmanager.isArrived(successeur) && arcmanager.isReachable(successeur) && (trajetDeSecours == null || trajetDeSecours.f_score > successeur.f_score))
 				{
 					/*
-					 * Cela ne sert à rien de détruire l'ancien trajet de secours (qui est être dans l'openset)
+					 * Cela ne sert à rien de détruire l'ancien trajet de secours (qui est dans l'openset, car si on l'avait pioché de l'openset on aurait fini avec lui)
 					 * C'est juste qu'on garde le meilleur dans un coin.
 					 */
 
@@ -453,7 +454,7 @@ public class TentacularAStar
 	 * @param last
 	 * @throws PathfindingException
 	 */
-	private final void partialReconstruct(AStarNode best, CheminPathfindingInterface chemin)
+	private final void partialReconstruct(AStarNode best, DynamicPath chemin, int nbPointsMax, boolean partial)
 	{
 		if(debugMode)
 		{
@@ -463,12 +464,13 @@ public class TentacularAStar
 
 		trajectory.clear();
 
-		arcmanager.reconstruct(trajectory, best);
+		arcmanager.reconstruct(trajectory, best, nbPointsMax);
 		
-		chemin.addToEnd(trajectory);
+		assert trajectory.size() <= nbPointsMax : trajectory.size()+" "+nbPointsMax;
+		chemin.addToEnd(trajectory, partial);
+		
+		
 		log.write("Research completed.", LogCategoryKraken.PF);
-
-//		return last;
 	}
 	
 	/**
@@ -481,8 +483,10 @@ public class TentacularAStar
 	 */
 	public void initializeNewSearch(Cinematique start, Cinematique arrival, DirectionStrategy directionstrategy, String mode, Double maxSpeed) throws NoPathException
 	{
+		initialized = true;
 		depart.init();
 		depart.robot.setCinematique(start);
+		arrival.copy(this.arrival);
 		arcmanager.configure(directionstrategy == null ? defaultStrategy : directionstrategy, maxSpeed == null ? defaultSpeed : maxSpeed, arrival, mode);
 
 		/*
@@ -492,7 +496,7 @@ public class TentacularAStar
 		if(!dstarlite.computeNewPath(depart.robot.getCinematique().getPosition(), arrival.getPosition()))
 			throw new NoPathException("No path found by D* Lite !");
 	}
-
+	
 	/**
 	 * Replanification. On conserve la même DirectionStrategy ainsi que le même
 	 * SensFinal
@@ -504,37 +508,25 @@ public class TentacularAStar
 	 * @throws PathfindingException
 	 * @throws InterruptedException
 	 */
-/*	protected void updatePath(Cinematique lastValid) throws NotInitializedPathfindingException
+	public void updatePath(Cinematique lastValid) throws PathfindingException
 	{
-		// TODO : disabled
-		if(!rechercheEnCours)
-			throw new NotInitializedPathfindingException("updatePath is called before the initialization !");
-
-		log.write("Replanification lancée", LogCategoryKraken.REPLANIF);
+		assert chemin.needReplanning();
+		if(!chemin.needReplanning())
+			return;
+		
+		log.write("Replanning started.", LogCategoryKraken.REPLANIF);
 
 		depart.init();
-// TODO		state.copyAStarCourbe(depart.state);
-*/
-		/*
-		 * Forcément, on utilise le vrai chemin ici
-		 */
-/*
-		closedset.clear();
 		depart.robot.setCinematique(lastValid);
-*/
-/*		if(suppObsFixes)
-		{
-			CinematiqueObs obsDepart = cinemMemory.getNewNode();
-			Cinematique cinemDepart = depart.state.robot.getCinematique();
-			obsDepart.updateReel(cinemDepart.getPosition().getX(), cinemDepart.getPosition().getY(), cinemDepart.orientationReelle, cinemDepart.enMarcheAvant, cinemDepart.courbureReelle);
-			arcmanager.disableObstaclesFixes(symetrie, obsDepart);
-		}*/
-/*
-		// On met à jour le D* Lite
-		dstarlite.updateObstacles();
 
-//		process(realChemin, true);
-	}*/
+		// On met à jour le D* Lite
+		arcmanager.updateCurrentObstacles();
+		
+		if(!dstarlite.computeNewPath(depart.robot.getCinematique().getPosition(), arrival.getPosition()))
+			throw new NoPathException("No path found by D* Lite !");
+
+		search();
+	}
 	
 /*	private String checkOpenSet()
 	{

@@ -16,8 +16,6 @@ import pfg.injector.Injector;
 import pfg.injector.InjectorException;
 import pfg.kraken.ColorKraken;
 import pfg.kraken.ConfigInfoKraken;
-import pfg.kraken.LogCategoryKraken;
-import pfg.kraken.SeverityCategoryKraken;
 import pfg.kraken.astar.AStarNode;
 import pfg.kraken.astar.DirectionStrategy;
 import pfg.kraken.astar.tentacles.types.TentacleType;
@@ -31,7 +29,6 @@ import pfg.kraken.obstacles.container.DynamicObstacles;
 import pfg.kraken.obstacles.container.StaticObstacles;
 import pfg.kraken.robot.Cinematique;
 import pfg.kraken.robot.CinematiqueObs;
-import pfg.kraken.robot.ItineraryPoint;
 import pfg.kraken.utils.XY;
 import pfg.kraken.utils.XYO;
 import pfg.graphic.GraphicDisplay;
@@ -63,7 +60,6 @@ public class TentacleManager implements Iterator<AStarNode>
 	private DirectionStrategy directionstrategyactuelle;
 	private Cinematique arrivee = new Cinematique();
 	private ResearchProfileManager profiles;
-//	private List<StaticObstacles> disabledObstaclesFixes = new ArrayList<StaticObstacles>();
 	private List<TentacleTask> tasks = new ArrayList<TentacleTask>();
 	private BlockingQueue<AStarNode> successeurs = new LinkedBlockingQueue<AStarNode>();
 	private BlockingQueue<TentacleTask> buffer = new LinkedBlockingQueue<TentacleTask>();
@@ -143,7 +139,7 @@ public class TentacleManager implements Iterator<AStarNode>
 		// Collision avec un obstacle fixe?
 		for(Obstacle o : fixes.getObstacles())
 			for(int i = 0; i < nbOmbres; i++)
-				if(/*!disabledObstaclesFixes.contains(o) && */o.isColliding(node.getArc().getPoint(i).obstacle))
+				if(o.isColliding(node.getArc().getPoint(i).obstacle))
 				{
 					// log.debug("Collision avec "+o);
 					return false;
@@ -151,33 +147,11 @@ public class TentacleManager implements Iterator<AStarNode>
 
 		// Collision avec un obstacle de proximité ?
 
-		try {
-//			Iterator<Obstacle> iter = dynamicObs.getCurrentDynamicObstacles();
-			// TODO : utiliser getFutureDynamicObstacles
-			for(Obstacle n : currentObstacles)
-//			while(iter.hasNext())
-			{
-//				Obstacle n = iter.next();
-				for(int i = 0; i < nbOmbres; i++)
-					if(n.isColliding(node.getArc().getPoint(i).obstacle))
-					{
-						// log.debug("Collision avec un obstacle de proximité.");
-						return false;
-					}
-			}
-		} catch(NullPointerException e)
-		{
-			log.write(e.toString(), SeverityCategoryKraken.CRITICAL, LogCategoryKraken.PF);
-		}
-		/*
-		 * node.state.iterator.reinit();
-		 * while(node.state.iterator.hasNext())
-		 * if(node.state.iterator.next().isColliding(obs))
-		 * {
-		 * // log.debug("Collision avec un obstacle de proximité.");
-		 * return false;
-		 * }
-		 */
+		// TODO : utiliser getFutureDynamicObstacles
+		for(Obstacle n : currentObstacles)
+			for(int i = 0; i < nbOmbres; i++)
+				if(n.isColliding(node.getArc().getPoint(i).obstacle))
+					return false;
 
 		return true;
 	}
@@ -195,8 +169,12 @@ public class TentacleManager implements Iterator<AStarNode>
 		this.vitesseMax = vitesseMax;
 		this.directionstrategyactuelle = directionstrategyactuelle;
 		currentProfile = profiles.getProfile(mode);
-		arrivee.copy(this.arrivee);
-		
+		arrivee.copy(this.arrivee);	
+		updateCurrentObstacles();
+	}
+	
+	public void updateCurrentObstacles()
+	{
 		// on récupère les obstacles courants une fois pour toutes
 		currentObstacles.clear();
 		Iterator<Obstacle> iter = dynamicObs.getCurrentDynamicObstacles();
@@ -204,13 +182,14 @@ public class TentacleManager implements Iterator<AStarNode>
 			currentObstacles.add(iter.next());
 	}
 
-	public void reconstruct(LinkedList<ItineraryPoint> trajectory, AStarNode best)
+	public void reconstruct(LinkedList<CinematiqueObs> trajectory, AStarNode best, int nbPointsMax)
 	{
 		AStarNode noeudParent = best;
 		Tentacle arcParent = best.getArc();
 		
 		CinematiqueObs current;
-		boolean lastStop = true;
+		boolean lastStop = nbPointsMax == Integer.MAX_VALUE; // le dernier point n'est pas un stop en cas de replanification partielle
+		boolean nextStop;
 		double lastPossibleSpeed = 0;
 
 		while(noeudParent.parent != null)
@@ -225,6 +204,7 @@ public class TentacleManager implements Iterator<AStarNode>
 				double maxSpeed = current.possibleSpeed;
 				double currentSpeed = lastPossibleSpeed;
 				
+				nextStop = current.stop;
 				if(lastStop)
 					current.possibleSpeed = 0;
 				else if(currentSpeed < maxSpeed)
@@ -239,13 +219,17 @@ public class TentacleManager implements Iterator<AStarNode>
 					currentSpeed = Math.min(currentSpeed, maxSpeed);
 					current.possibleSpeed = currentSpeed;
 				}
+				current.stop = lastStop;
 				
-				trajectory.addFirst(new ItineraryPoint(current, lastStop));
+				trajectory.addFirst(current);
 				
 				// stop : on va devoir s'arrêter
 				lastPossibleSpeed = current.possibleSpeed;
-				lastStop = current.stop;
+				lastStop = nextStop;
 			}
+
+			if(nbPointsMax < trajectory.size())
+				trajectory.subList(nbPointsMax, trajectory.size()).clear();
 			
 			noeudParent = noeudParent.parent;
 			arcParent = noeudParent.getArc();

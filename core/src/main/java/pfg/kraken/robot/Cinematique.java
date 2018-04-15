@@ -36,11 +36,16 @@ public class Cinematique implements Printable, Serializable
 	public volatile double orientationReelle;
 	public volatile double courbureReelle;
 	public volatile boolean stop;
-	private static NumberFormat formatter = new DecimalFormat("#0.000");
+	private final static NumberFormat formatter = new DecimalFormat("#0.000");
 	
 	public Cinematique(XYO xyo)
 	{
-		updateReel(xyo.position.getX(), xyo.position.getY(), xyo.orientation, true, 0);
+		updateReel(xyo.position.getX(), xyo.position.getY(), xyo.orientation, 0);
+	}
+	
+	public XYO getXYO()
+	{
+		return new XYO(position, orientationReelle);
 	}
 	
 	public Cinematique(double x, double y, double orientationGeometrique, boolean enMarcheAvant, double courbure, boolean stop)
@@ -97,7 +102,7 @@ public class Cinematique implements Printable, Serializable
 	@Override
 	public String toString()
 	{
-		return position + ", " + formatter.format(orientationReelle) + ", " + (enMarcheAvant ? "marche avant" : "marche arrière") + ", courbure : " + formatter.format(courbureReelle);
+		return position + ", " + formatter.format(orientationReelle) + ", " + (enMarcheAvant ? "marche avant" : "marche arrière") + ", courbure : " + formatter.format(courbureReelle)+ (stop ? ", stop" : "");
 	}
 
 	@Override
@@ -160,7 +165,7 @@ public class Cinematique implements Printable, Serializable
 	 * @param enMarcheAvant
 	 * @param curvature
 	 */
-	public void updateReel(double x, double y, double orientationReelle, boolean enMarcheAvant, double courbureReelle)
+	public void updateReel(double x, double y, double orientationReelle, double courbureReelle)
 	{
 		if(enMarcheAvant)
 		{
@@ -176,7 +181,6 @@ public class Cinematique implements Printable, Serializable
 		position.setX(x);
 		position.setY(y);
 		this.orientationReelle = orientationReelle;
-		this.enMarcheAvant = enMarcheAvant;
 		this.courbureReelle = courbureReelle;
 	}
 
@@ -206,9 +210,9 @@ public class Cinematique implements Printable, Serializable
 	{
 		double n = 40;
 		XY_RW point1 = new XY_RW(n, 0), point2 = new XY_RW(-n / 2, n / 2), point3 = new XY_RW(-n / 2, -n / 2);
-		point1.rotate(orientationGeometrique).plus(position);
-		point2.rotate(orientationGeometrique).plus(position);
-		point3.rotate(orientationGeometrique).plus(position);
+		point1.rotate(orientationReelle).plus(position);
+		point2.rotate(orientationReelle).plus(position);
+		point3.rotate(orientationReelle).plus(position);
 		int[] X = { f.XtoWindow((int) point1.getX()), f.XtoWindow((int) point2.getX()), f.XtoWindow((int) point3.getX()) };
 		int[] Y = { f.YtoWindow((int) point1.getY()), f.YtoWindow((int) point2.getY()), f.YtoWindow((int) point3.getY()) };
 

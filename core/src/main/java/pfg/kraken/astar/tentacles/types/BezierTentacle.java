@@ -22,7 +22,7 @@ import pfg.kraken.robot.Cinematique;
 public enum BezierTentacle implements TentacleType
 {
 	BEZIER_XYOC_TO_XY(2),
-	BEZIER_XYOC_TO_XYO(3),
+	BEZIER_XYOC_TO_XYOC0(3),
 	BEZIER_XYO_TO_XYO(2);
 
 	// order est l'ordre du polynôme de Bézier correspondant (quadratique = 2, etc.)

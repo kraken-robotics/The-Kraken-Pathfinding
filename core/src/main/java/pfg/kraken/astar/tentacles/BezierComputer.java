@@ -5,14 +5,11 @@
 
 package pfg.kraken.astar.tentacles;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import pfg.config.Config;
 import pfg.kraken.ConfigInfoKraken;
 import pfg.kraken.astar.AStarNode;
 import pfg.kraken.astar.tentacles.types.BezierTentacle;
-import pfg.kraken.astar.tentacles.types.ClothoTentacle;
-import pfg.kraken.astar.tentacles.types.StraightingTentacle;
 import pfg.kraken.astar.tentacles.types.TentacleType;
 import pfg.kraken.memory.CinemObsPool;
 import pfg.kraken.obstacles.RectangularObstacle;
@@ -37,13 +34,11 @@ public class BezierComputer implements TentacleComputer
 	private double courbureMax;
 	private double rootedMaxAcceleration;
 	private double maxCurvatureDerivative;
-	private ClothoidesComputer clothocomputer;
 
-	public BezierComputer(Log log, CinemObsPool memory, ClothoidesComputer clothocomputer, Config config, RectangularObstacle vehicleTemplate)
+	public BezierComputer(Log log, CinemObsPool memory, Config config, RectangularObstacle vehicleTemplate)
 	{
 		this.log = log;
 		this.memory = memory;
-		this.clothocomputer = clothocomputer;
 
 		courbureMax = config.getDouble(ConfigInfoKraken.MAX_CURVATURE);
 		rootedMaxAcceleration = Math.sqrt(config.getDouble(ConfigInfoKraken.MAX_LATERAL_ACCELERATION));
@@ -165,7 +160,7 @@ public class BezierComputer implements TentacleComputer
 	 * @param arrivee
 	 * @return
 	 */
-	public DynamicTentacle cubicInterpolationXYOC2XYO(Cinematique cinematiqueInitiale, Cinematique arrivee, int indexThread)
+	public DynamicTentacle cubicInterpolationXYOC2XYOC0(Cinematique cinematiqueInitiale, Cinematique arrivee, int indexThread)
 	{
 		XY a = cinematiqueInitiale.getPosition();
 		XY d = arrivee.getPosition(); 
@@ -221,7 +216,7 @@ public class BezierComputer implements TentacleComputer
 		if(out == null)
 			return null;
 		
-		return new DynamicTentacle(out, BezierTentacle.BEZIER_XYOC_TO_XYO);
+		return new DynamicTentacle(out, BezierTentacle.BEZIER_XYOC_TO_XYOC0);
 	}
 
 	private LinkedList<CinematiqueObs> constructBezierCubique(XY A, XY B, XY C, XY D, boolean enMarcheAvant, boolean rebrousse, Cinematique cinematiqueInitiale, int indexThread)
@@ -361,6 +356,7 @@ public class BezierComputer implements TentacleComputer
 		
 		double ux = Math.cos(cinematiqueInitiale.orientationGeometrique);
 		double uy = Math.sin(cinematiqueInitiale.orientationGeometrique);
+		double courbureInitiale = cinematiqueInitiale.courbureGeometrique;
 		
 		boolean rebrousse = false;
 		if((arrivee.getX() - a.getX()) * ux + (arrivee.getY() - a.getY()) * uy < 0)
@@ -382,14 +378,22 @@ public class BezierComputer implements TentacleComputer
 		vecteurVitesse[indexThread].rotate(0, 1); // orthogonal à la vitesse
 
 		double d = vecteurVitesse[indexThread].dot(delta[indexThread]);
-
-		DynamicTentacle prefixe = null;
+		
+		// Si on rebrousse chemin ou que c'est nécessaire, on peut choisir la courbure initiale
+		if(Math.abs(courbureInitiale) < 0.1 || (courbureInitiale >= 0 != d >= 0) || rebrousse)
+		{
+			courbureInitiale = 1000./d; // heuristique qui a l'air de marcher
+			if(Math.abs(courbureInitiale) >= courbureMax)
+				return null;
+		}
+		
+/*		DynamicTentacle prefixe = null;
 
 		// il faut absolument que la courbure ait déjà le bon signe
 		// si la courbure est nulle, il faut aussi annuler
-		if(Math.abs(firstCinematique.courbureGeometrique) < 0.1 || firstCinematique.courbureGeometrique >= 0 ^ d >= 0)
+		if(Math.abs(courbureInitiale) < 0.1 || courbureInitiale >= 0 != d >= 0)
 		{
-			if(Math.abs(firstCinematique.courbureGeometrique) > 0.1)
+			if(Math.abs(courbureInitiale) > 0.1)
 			{
 				// log.debug("Préfixe nécessaire !");
 				prefixe = clothocomputer.getTrajectoireRamene(firstCinematique, StraightingTentacle.RAMENE_VOLANT, indexThread);
@@ -410,11 +414,12 @@ public class BezierComputer implements TentacleComputer
 			}
 
 			prefixe.getLast().copy(debut[indexThread]);
-
+			courbureInitiale = debut[indexThread].courbureGeometrique;
+			
 			arrivee.copy(delta[indexThread]);
 			delta[indexThread].minus(firstCinematique.getPosition());
-			vecteurVitesse[indexThread].setX(Math.cos(ux));
-			vecteurVitesse[indexThread].setY(Math.sin(uy));
+			vecteurVitesse[indexThread].setX(Math.cos(firstCinematique.orientationGeometrique));
+			vecteurVitesse[indexThread].setY(Math.sin(firstCinematique.orientationGeometrique));
 			vecteurVitesse[indexThread].rotate(0, 1); // orthogonal à la vitesse
 			d = vecteurVitesse[indexThread].dot(delta[indexThread]);
 		}
@@ -425,29 +430,29 @@ public class BezierComputer implements TentacleComputer
 			memory.destroy(prefixe.arcs);
 			return null;
 		}
+*/
+		XY_RW b = vecteurVitesse[indexThread];
+		b.rotate(0, -1);
+		b.scalar(Math.sqrt(d / (2 * courbureInitiale / 1000))); // c'est les maths qui le disent
+		b.plus(firstCinematique.getPosition());
 
-		vecteurVitesse[indexThread].rotate(0, -1);
-		vecteurVitesse[indexThread].scalar(Math.sqrt(d / (2 * firstCinematique.courbureGeometrique / 1000))); // c'est les maths qui le disent
-		vecteurVitesse[indexThread].plus(firstCinematique.getPosition());
-
-		LinkedList<CinematiqueObs> out = constructBezierQuad(debut[indexThread].getPosition(), vecteurVitesse[indexThread], arrivee, marcheAvant, rebrousse, debut[indexThread], indexThread);
+		LinkedList<CinematiqueObs> out = constructBezierQuad(debut[indexThread].getPosition(), b, arrivee, marcheAvant, rebrousse, debut[indexThread], indexThread);
 		if(out == null)
 		{
-			if(prefixe != null)
-				memory.destroy(prefixe.arcs);
+//			if(prefixe != null)
+//				memory.destroy(prefixe.arcs);
 			return null;
 		}
 		
-		DynamicTentacle arc = new DynamicTentacle(out, BezierTentacle.BEZIER_XYOC_TO_XY);
+		return new DynamicTentacle(out, BezierTentacle.BEZIER_XYOC_TO_XY);
 
 		// on lui colle son préfixe si besoin est
-		if(prefixe != null)
+/*		if(prefixe != null)
 		{
 			prefixe.arcs.addAll(arc.arcs);
 			prefixe.vitesse = BezierTentacle.BEZIER_XYOC_TO_XY;
 			return prefixe;
-		}
-		return arc;
+		}*/
 	}
 	
 	public static final int minimalDistance = 30;
@@ -569,9 +574,9 @@ public class BezierComputer implements TentacleComputer
 			modified.cameFromArcDynamique = t;
 			return true;
 		}
-		else if(tentacleType == BezierTentacle.BEZIER_XYOC_TO_XYO)
+		else if(tentacleType == BezierTentacle.BEZIER_XYOC_TO_XYOC0)
 		{
-			DynamicTentacle t = cubicInterpolationXYOC2XYO(current.robot.getCinematique(), arrival, indexThread);
+			DynamicTentacle t = cubicInterpolationXYOC2XYOC0(current.robot.getCinematique(), arrival, indexThread);
 			if(t == null)
 				return false;
 			modified.cameFromArcDynamique = t;

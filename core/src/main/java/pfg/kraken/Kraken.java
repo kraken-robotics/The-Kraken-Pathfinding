@@ -8,7 +8,6 @@ package pfg.kraken;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import pfg.config.Config;
 import pfg.config.ConfigInfo;
@@ -28,7 +27,11 @@ import pfg.kraken.astar.tentacles.ResearchProfile;
 import pfg.kraken.astar.tentacles.ResearchProfileManager;
 import pfg.kraken.astar.tentacles.TentacleManager;
 import pfg.kraken.astar.tentacles.types.*;
+import pfg.kraken.astar.thread.CollisionDetectionThread;
+import pfg.kraken.astar.thread.DynamicPath;
+import pfg.kraken.astar.thread.ReplanningThread;
 import pfg.kraken.exceptions.NoPathException;
+import pfg.kraken.exceptions.NotInitializedPathfindingException;
 import pfg.kraken.exceptions.PathfindingException;
 import pfg.kraken.obstacles.Obstacle;
 import pfg.kraken.obstacles.RectangularObstacle;
@@ -51,7 +54,9 @@ public class Kraken
 	private TentacularAStar astar;
 	private ResearchProfileManager profiles;
 	private TentacleManager tentaclemanager;
-	private static final String version = "1.3.1";
+	private DynamicPath dpath;
+	private static final String version = "1.4.0";
+	private boolean autoReplanningEnable = false;
 	
 	/**
 	 * Get Kraken with :
@@ -65,20 +70,6 @@ public class Kraken
 	{
 		this(vehicleTemplate, fixedObstacles, new EmptyDynamicObstacles(), bottomLeftCorner, topRightCorner, configfile, profiles);
 	}
-	
-	/**
-	 * Get Kraken with :
-	 * @param vehicleTemplate : the shape of the vehicle
-	 * @param fixedObstacles : a list of fixed/permanent obstacles
-	 * @param dynObs : a dynamic/temporary obstacles manager that implements the DynamicObstacles interface
-	 * @param bottomLeftCorner : the bottom left corner of the search domain
-	 * @param topRightCorner : the top right corner of the search domain
-	 * @param configprofile : the config profiles
-	 */
-/*	public Kraken(RectangularObstacle vehicleTemplate, List<Obstacle> fixedObstacles, DynamicObstacles dynObs, XY bottomLeftCorner, XY topRightCorner, String...configprofile)
-	{
-		this(vehicleTemplate, fixedObstacles, dynObs, bottomLeftCorner, topRightCorner, configprofile);
-	}*/
 	
 	/**
 	 * Get Kraken with :
@@ -147,7 +138,8 @@ public class Kraken
 			astar = injector.getService(TentacularAStar.class);
 			tentaclemanager = injector.getService(TentacleManager.class);
 			profiles = injector.getService(ResearchProfileManager.class);			
-
+			dpath = injector.getService(DynamicPath.class);
+			
 			List<TentacleType> tentaclesXY = new ArrayList<TentacleType>();
 			for(ClothoTentacle t : ClothoTentacle.values())
 				tentaclesXY.add(t);
@@ -158,13 +150,13 @@ public class Kraken
 			for(ClothoTentacle t : ClothoTentacle.values())
 				tentaclesXYO.add(t);
 			tentaclesXYO.add(BezierTentacle.BEZIER_XYO_TO_XYO);
-			tentaclesXYO.add(BezierTentacle.BEZIER_XYOC_TO_XYO);
+			tentaclesXYO.add(BezierTentacle.BEZIER_XYOC_TO_XYOC0);
 			addMode(new ResearchProfile(tentaclesXYO, "XYO", 1.3, 0, 5, new EndWithXYO()));
 			
 			List<TentacleType> tentaclesXYOC = new ArrayList<TentacleType>();
 			for(ClothoTentacle t : ClothoTentacle.values())
 				tentaclesXYOC.add(t);
-			tentaclesXYOC.add(BezierTentacle.BEZIER_XYOC_TO_XYO); // arrive avec une courbure nulle
+			tentaclesXYOC.add(BezierTentacle.BEZIER_XYOC_TO_XYOC0); // arrive avec une courbure nulle
 			addMode(new ResearchProfile(tentaclesXYOC, "XYOC0", 1.3, 0, 5, new EndWithXYOC0()));
 		} catch (InjectorException e) {
 			throw new RuntimeException("Fatal error", e);
@@ -189,9 +181,12 @@ public class Kraken
 	 * @param directionstrategy
 	 * @throws NoPathException
 	 */
-	public void initializeNewSearch(SearchParameters sp) throws NoPathException
+	public void initializeNewSearch(SearchParameters sp) throws PathfindingException
 	{
-		astar.initializeNewSearch(sp.start, sp.arrival, sp.directionstrategy, sp.mode, sp.maxSpeed);
+		if(!autoReplanningEnable)
+			astar.initializeNewSearch(sp.start, sp.arrival, sp.directionstrategy, sp.mode, sp.maxSpeed);
+		else
+			throw new NotInitializedPathfindingException("initializeNewSearch() should be called before enabling the autoreplanning mode.");
 	}
 	
 	/**
@@ -199,9 +194,12 @@ public class Kraken
 	 * @return
 	 * @throws PathfindingException
 	 */
-	public LinkedList<ItineraryPoint> search() throws PathfindingException
+	public List<ItineraryPoint> search() throws PathfindingException
 	{
-		return astar.search();
+		if(!autoReplanningEnable)
+			return astar.searchWithoutReplanning();
+		else
+			throw new NotInitializedPathfindingException("search() isn't permitted in autoreplanning mode.");
 	}
 	
 	/**
@@ -240,4 +238,51 @@ public class Kraken
 	{
 		config.printChangedValues();
 	}
+	
+	public DynamicPath enableAutoReplanning()
+	{
+		try {
+			CollisionDetectionThread rt = injector.getService(CollisionDetectionThread.class);
+			// On le démarre (ou on le redémarre) si besoin est
+			if(!rt.isAlive())
+				rt.start();
+			
+			ReplanningThread rep = injector.getService(ReplanningThread.class);
+			// idem
+			if(!rep.isAlive())
+				rep.start();
+			
+			autoReplanningEnable = true;
+			return dpath;
+		} catch (InjectorException e) {
+			e.printStackTrace();
+			assert false;
+			return null;
+		}
+	}
+
+	public void startContinuousSearch(SearchParameters sp) throws PathfindingException
+	{
+		if(dpath.isStarted())
+			throw new NotInitializedPathfindingException("");
+		else if(autoReplanningEnable)
+		{
+			astar.initializeNewSearch(sp.start, sp.arrival, sp.directionstrategy, sp.mode, sp.maxSpeed);
+			dpath.startContinuousSearch();
+		}
+		else
+			throw new NotInitializedPathfindingException("You should enable the continuous search before starting it.");
+	}
+
+	public void endContinuousSearch() throws NotInitializedPathfindingException
+	{
+		if(!dpath.isStarted())
+			throw new NotInitializedPathfindingException("");
+		else if(autoReplanningEnable)
+			dpath.endContinuousSearch();
+		else
+			throw new NotInitializedPathfindingException("You should enable the continuous search before starting it.");
+	}
+	
+	
 }

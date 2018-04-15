@@ -4,7 +4,7 @@
 
   <groupId>pfg.kraken</groupId>
   <artifactId>kraken</artifactId>
-  <version>1.3.1</version>
+  <version>1.4.0</version>
 
   <packaging>jar</packaging>
 
@@ -43,64 +43,41 @@
 	</developers>
 
     <repositories>
-    <repository>
-        <id>config-pfg-mvn-repo</id>
-        <url>https://raw.githubusercontent.com/PFGimenez/config/mvn-repo/</url>
-        <snapshots>
-            <enabled>true</enabled>
-            <updatePolicy>always</updatePolicy>
-        </snapshots>
-    </repository>
-    <repository>
-        <id>injector-pfg-mvn-repo</id>
-        <url>https://raw.githubusercontent.com/PFGimenez/dependency-injector/mvn-repo/</url>
-        <snapshots>
-            <enabled>true</enabled>
-            <updatePolicy>always</updatePolicy>
-        </snapshots>
-    </repository>
-    <repository>
-        <id>graphic-pfg-mvn-repo</id>
-        <url>https://raw.githubusercontent.com/PFGimenez/graphic-toolbox/mvn-repo/</url>
-        <snapshots>
-            <enabled>true</enabled>
-            <updatePolicy>always</updatePolicy>
-        </snapshots>
-    </repository>
-    <repository>
-        <id>log-pfg-mvn-repo</id>
-        <url>https://raw.githubusercontent.com/PFGimenez/log/mvn-repo/</url>
-        <snapshots>
-            <enabled>true</enabled>
-            <updatePolicy>always</updatePolicy>
-        </snapshots>
-    </repository>
-</repositories>
+        <repository>
+            <id>PFGimenez-Kraken</id>
+            <url>https://packagecloud.io/PFGimenez/Kraken/maven2</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
 
   <dependencies>
-
     <dependency>
       <groupId>pfg.injector</groupId>
       <artifactId>dependency-injector</artifactId>
-      <version>[1.1,)</version>
+      <version>1.1</version>
     </dependency>
 
     <dependency>
       <groupId>pfg.config</groupId>
       <artifactId>config</artifactId>
-      <version>[1.4,)</version>
+      <version>1.4</version>
     </dependency>
 
     <dependency>
       <groupId>pfg.log</groupId>
       <artifactId>log</artifactId>
-      <version>[1.0,)</version>
+      <version>1.0</version>
     </dependency>
 
     <dependency>
       <groupId>pfg.graphic</groupId>
       <artifactId>graphic-toolbox</artifactId>
-      <version>[1.1,)</version>
+      <version>1.2-SNAPSHOT</version>
     </dependency>
 
     <dependency>
@@ -113,11 +90,18 @@
   </dependencies>
 
 <distributionManagement>
-    <repository>
-        <id>internal.repo</id>
-        <name>Temporary Staging Repository</name>
-        <url>file://${project.build.directory}/mvn-repo</url>
-    </repository>
+  <repository>
+    <id>packagecloud-travis</id>
+    <url>
+        packagecloud+https://packagecloud.io/PFGimenez/Kraken
+    </url>
+  </repository>
+  <snapshotRepository>
+    <id>packagecloud-travis</id>
+    <url>
+        packagecloud+https://packagecloud.io/PFGimenez/Kraken
+    </url>
+  </snapshotRepository>
 </distributionManagement>
 
 <build>
@@ -130,61 +114,15 @@
             <enableAssertions>true</enableAssertions>
         </configuration>
     </plugin>
-              <plugin>
-        <artifactId>maven-deploy-plugin</artifactId>
-        <version>2.8.1</version>
-        <configuration>
-            <altDeploymentRepository>internal.repo::default::file://${project.build.directory}/mvn-repo</altDeploymentRepository>
-        </configuration>
-    </plugin>
-    <plugin>
-      <groupId>com.github.github</groupId>
-      <artifactId>site-maven-plugin</artifactId>
-      <version>0.12</version>
-      <configuration>
-          <message>Maven artifacts for ${project.version}</message>
-          <outputDirectory>${project.build.directory}/mvn-repo</outputDirectory>
-          <branch>refs/heads/mvn-repo</branch>
-          <noJekyll>true</noJekyll>
-          <includes><include>**/*</include></includes>
-      </configuration>
-      <executions>
-        <execution>
-          <goals>
-            <goal>site</goal>
-          </goals>
-          <phase>deploy</phase>
-        </execution>
-      </executions>
-    </plugin>
-
-        <plugin>
-      <groupId>org.apache.maven.plugins</groupId>
-      <artifactId>maven-source-plugin</artifactId>
-      <executions>
-        <execution>
-          <id>attach-sources</id>
-          <goals>
-            <goal>jar</goal>
-          </goals>
-        </execution>
-      </executions>
-  </plugin>
-
-    <plugin>
-      <groupId>org.apache.maven.plugins</groupId>
-      <artifactId>maven-source-plugin</artifactId>
-      <executions>
-        <execution>
-          <id>attach-javadocs</id>
-          <goals>
-            <goal>jar</goal>
-          </goals>
-        </execution>
-      </executions>
-  </plugin>
 
   </plugins>
+    <extensions>
+    <extension>
+      <groupId>io.packagecloud.maven.wagon</groupId>
+      <artifactId>maven-packagecloud-wagon</artifactId>
+      <version>0.0.6</version>
+    </extension>
+  </extensions>
   </build>
 
 </project>

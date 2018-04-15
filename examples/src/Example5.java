@@ -11,6 +11,7 @@ import pfg.graphic.GraphicDisplay;
 import pfg.graphic.printable.Layer;
 import pfg.kraken.Kraken;
 import pfg.kraken.SearchParameters;
+import pfg.kraken.astar.thread.DynamicPath;
 import pfg.kraken.obstacles.CircularObstacle;
 import pfg.kraken.obstacles.Obstacle;
 import pfg.kraken.obstacles.RectangularObstacle;
@@ -22,15 +23,15 @@ import pfg.kraken.utils.XYO;
 
 
 /**
- * Having fun with dynamic obstacles
+ * Example for replaning
  * @author pf
  *
  */
 
-public class Example2
+public class Example5
 {
 
-	public static void main(String[] args)
+	public static void main(String[] args) throws InterruptedException
 	{
 		List<Obstacle> obs = new ArrayList<Obstacle>();
 		obs.add(new RectangularObstacle(new XY(800,200), 200, 200));
@@ -49,94 +50,66 @@ public class Example2
 		 */
 		DefaultDynamicObstacles obsDyn = new DefaultDynamicObstacles();
 
-		Kraken kraken = new Kraken(robot, obs, obsDyn, new XY(-1500,0), new XY(1500, 2000), "kraken-examples.conf", "trajectory"/*, "detailed"*/);
+		Kraken kraken = new Kraken(robot, obs, obsDyn, new XY(-1500,0), new XY(1500, 2000), "kraken-examples.conf", "trajectory");
 		GraphicDisplay display = kraken.getGraphicDisplay();
 
 		try
 		{
-			kraken.initializeNewSearch(new SearchParameters(new XYO(0, 200, 0), new XY(1000, 1000)));
-			List<ItineraryPoint> path = kraken.search();
+			/*
+			 * We enable the autoreplanning
+			 * We won't use "kraken.initializeNewSearch()" or"kraken.search()"
+			 */
+			DynamicPath dpath = kraken.enableAutoReplanning();
+			kraken.startContinuousSearch(new SearchParameters(new XYO(0, 200, 0), new XY(1000, 1000)));
+			List<ItineraryPoint> path;
 			
 			/*
-			 * We have the first trajectory
+			 * The research part. We wait for dpath until a new path is available
 			 */
-			System.out.println("\nFirst search :");
+			path = dpath.waitNewPath();
+			
 			for(ItineraryPoint p : path)
-			{
 				display.addTemporaryPrintable(p, Color.BLACK, Layer.FOREGROUND.layer);
-				System.out.println(p);
-			}
-			display.refresh();
+
+			Thread.sleep(2000);
+			display.clearTemporaryPrintables();
 			
 			/*
-			 * Just a sleep to see clearly the different steps
+			 * The research is continuous : at the moment a new obstacle is added, Kraken tries to find a new path
 			 */
-			try
-			{
-				Thread.sleep(3000);
-			}
-			catch(InterruptedException e)
-			{
-				e.printStackTrace();
-			}
-
-			// Let's clear the previous trajectory
+			Obstacle newObs1 = new CircularObstacle(new XY(400,800), 100);
+			display.addTemporaryPrintable(newObs1, Color.BLUE, Layer.MIDDLE.layer);
+			obsDyn.add(newObs1);
+			
+			/*
+			 * We wait the new path
+			 */
+			path = dpath.waitNewPath();
+			
+			for(ItineraryPoint p : path)
+				display.addTemporaryPrintable(p, Color.BLACK, Layer.FOREGROUND.layer);
+			
+			Thread.sleep(2000);
 			display.clearTemporaryPrintables();
-
-			// We add a dynamic obstacle
-			Obstacle newObs1 = new CircularObstacle(new XY(200,600), 200);
-			Obstacle newObs2 = new RectangularObstacle(new XY(1200,1500), 100, 100);
-			Obstacle newObs3 = new CircularObstacle(new XY(0,1200), 100);
-			Obstacle newObs4 = new CircularObstacle(new XY(-900,600), 400);
+			
+			/*
+			 * We add a second obstacle
+			 */
+			Obstacle newObs2 = new CircularObstacle(new XY(100,1200), 100);
 			display.addTemporaryPrintable(newObs1, Color.BLUE, Layer.MIDDLE.layer);
 			display.addTemporaryPrintable(newObs2, Color.BLUE, Layer.MIDDLE.layer);
-			display.addTemporaryPrintable(newObs3, Color.BLUE, Layer.MIDDLE.layer);
-			display.addTemporaryPrintable(newObs4, Color.BLUE, Layer.MIDDLE.layer);
-			obsDyn.add(newObs1);
 			obsDyn.add(newObs2);
-			obsDyn.add(newObs3);
-			obsDyn.add(newObs4);
 			
-			// Just as before
-			kraken.initializeNewSearch(new SearchParameters(new XYO(0, 200, 0), new XY(1000, 1000)));
-			path = kraken.search();
+			path = dpath.waitNewPath();
+			
+			for(ItineraryPoint p : path)
+				display.addTemporaryPrintable(p, Color.BLACK, Layer.FOREGROUND.layer);
 			
 			/*
-			 * This time, the trajectory avoids the new obstacle
+			 * When the continuous search isn't needed anymore, we can stop it.
+			 * You need to end the search to start a search with different parameters
 			 */
-			System.out.println("\nSecond search :");
-			for(ItineraryPoint p : path)
-			{
-				display.addTemporaryPrintable(p, Color.BLACK, Layer.FOREGROUND.layer);
-				System.out.println(p);
-			}
-			display.refresh();
-			
-			try
-			{
-				Thread.sleep(3000);
-			}
-			catch(InterruptedException e)
-			{
-				e.printStackTrace();
-			}
-			
-			// Let's remove the dynamic obstacle
-			obsDyn.clear();
-			display.clearTemporaryPrintables();
-			kraken.initializeNewSearch(new SearchParameters(new XYO(0, 200, 0), new XY(1000, 1000)));
-			path = kraken.search();
-			
-			/*
-			 * It finds the same trajectory as before, when there wasn't any dynamic obstacle
-			 */
-			System.out.println("\nThird search :");
-			for(ItineraryPoint p : path)
-			{
-				display.addTemporaryPrintable(p, Color.BLACK, Layer.FOREGROUND.layer);
-				System.out.println(p);
-			}
-			display.refresh();
+			kraken.endContinuousSearch();
 		}
 		catch(PathfindingException e)
 		{

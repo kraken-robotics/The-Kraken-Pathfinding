@@ -90,7 +90,7 @@ public class Test_BezierComputer extends JUnit_Test
 		Cinematique c = new Cinematique(0, 1000, Math.PI / 2, true, courbureInitiale, false);
 		Cinematique arrivee = new Cinematique(1000, 1500, 0, false, 0, false);
 		log.write("Initial : " + c, LogCategoryKraken.TEST);
-		DynamicTentacle arc = bezier.cubicInterpolationXYOC2XYO(c, arrivee, 0);
+		DynamicTentacle arc = bezier.cubicInterpolationXYOC2XYOC0(c, arrivee, 0);
 
 		Assert.assertTrue(arc != null);
 		

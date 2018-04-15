@@ -7,7 +7,9 @@ package pfg.kraken.obstacles.container;
 
 import java.util.Collections;
 import java.util.Iterator;
+
 import pfg.kraken.obstacles.Obstacle;
+import pfg.kraken.robot.CinematiqueObs;
 
 /**
  * An empty dynamical obstacles manager
@@ -17,16 +19,22 @@ import pfg.kraken.obstacles.Obstacle;
 
 public class EmptyDynamicObstacles implements DynamicObstacles
 {
-/*	@Override
-	public Iterator<Obstacle> getFutureDynamicObstacles(long date)
+	@Override
+	public int isThereCollision(CinematiqueObs[] l, int from, int to)
 	{
-		return getCurrentDynamicObstacles();
-	}*/
+		return to;
+	}
 
 	@Override
 	public Iterator<Obstacle> getCurrentDynamicObstacles()
 	{
 		return Collections.emptyIterator();
+	}
+
+	@Override
+	public boolean needCollisionCheck()
+	{
+		return false;
 	}
 
 }

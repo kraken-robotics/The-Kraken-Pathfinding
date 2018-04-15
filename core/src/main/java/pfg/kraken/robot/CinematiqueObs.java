@@ -53,6 +53,7 @@ public class CinematiqueObs extends Cinematique implements Memorizable, Serializ
 	{
 		super.copy(autre);
 		autre.maxSpeed = maxSpeed;
+		autre.possibleSpeed = possibleSpeed;
 		obstacle.copy(autre.obstacle);
 	}
 
@@ -95,12 +96,12 @@ public class CinematiqueObs extends Cinematique implements Memorizable, Serializ
 	}
 	
 	
-	public void updateReel(double x, double y, double orientationReelle, boolean enMarcheAvant, double courbure, double rootedMaxAcceleration)
+/*	public void updateReel(double x, double y, double orientationReelle, double courbure, double rootedMaxAcceleration)
 	{
-		super.updateReel(x, y, orientationReelle, enMarcheAvant, courbure);
+		super.updateReel(x, y, orientationReelle, courbure);
 		maxSpeed = rootedMaxAcceleration * maxSpeedLUT[(int) Math.round(Math.abs(10*courbure))];
 		obstacle.update(position, orientationReelle);
-	}
+	}*/
 
 	private volatile MemPoolState state = MemPoolState.FREE;
 	
@@ -114,5 +115,13 @@ public class CinematiqueObs extends Cinematique implements Memorizable, Serializ
 	public MemPoolState getState()
 	{
 		return state;
+	}
+	
+	@Override
+	public CinematiqueObs clone()
+	{
+		CinematiqueObs out = new CinematiqueObs(obstacle);
+		copy(out);
+		return out;
 	}
 }

@@ -12,7 +12,9 @@
 package pfg.kraken.obstacles.container;
 
 import java.util.Iterator;
+
 import pfg.kraken.obstacles.Obstacle;
+import pfg.kraken.robot.CinematiqueObs;
 
 /**
  * The interface of a dynamic obstacles container
@@ -22,7 +24,7 @@ import pfg.kraken.obstacles.Obstacle;
 
 public interface DynamicObstacles
 {
-//	public Iterator<Obstacle> getFutureDynamicObstacles(long date);
-
+	public int isThereCollision(CinematiqueObs[] l, int from, int to);
 	public Iterator<Obstacle> getCurrentDynamicObstacles();
+	public boolean needCollisionCheck();
 }

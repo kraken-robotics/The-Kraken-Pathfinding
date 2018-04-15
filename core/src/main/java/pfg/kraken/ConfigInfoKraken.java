@@ -41,6 +41,11 @@ public enum ConfigInfoKraken implements ConfigInfo
 	LONGEST_EDGE_IN_NAVMESH(200), // in mm
 	NAVMESH_FILENAME("navmesh.krk"), // the filename of the navmesh
 	
+	NECESSARY_MARGIN(40), // minimun distance that MUST be available in the current path, in mm
+	PREFERRED_MARGIN(60), // preferred distance that should be available in the current path, in mm
+	MARGIN_BEFORE_COLLISION(100), // maximal distance before the detected collision, in mm
+	INITIAL_MARGIN(100), // distance of the trajectory after the current point that can't be modified, in mm
+	
 	/**
 	 * Research and mechanical parameter
 	 */
