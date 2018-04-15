@@ -67,7 +67,7 @@ public class TentacleManager implements Iterator<AStarNode>
 	
 	private int nbLeft;
 	
-	public TentacleManager(Log log, StaticObstacles fixes, DStarLite dstarlite, Config config, DynamicObstacles dynamicObs, Injector injector, ResearchProfileManager profiles, NodePool memorymanager, GraphicDisplay display) throws InjectorException
+	public TentacleManager(Log log, StaticObstacles fixes, NodePool memorymanager, DStarLite dstarlite, Config config, DynamicObstacles dynamicObs, Injector injector, ResearchProfileManager profiles, GraphicDisplay display) throws InjectorException
 	{
 		this.injector = injector;
 		this.fixes = fixes;
@@ -182,8 +182,15 @@ public class TentacleManager implements Iterator<AStarNode>
 			currentObstacles.add(iter.next());
 	}
 
-	public void reconstruct(LinkedList<CinematiqueObs> trajectory, AStarNode best, int nbPointsMax)
+	
+	/*
+	 * Only used for the reconstruction
+	 */
+	private LinkedList<CinematiqueObs> trajectory = new LinkedList<CinematiqueObs>();
+
+	public LinkedList<CinematiqueObs> reconstruct(AStarNode best, int nbPointsMax)
 	{
+		trajectory.clear();
 		AStarNode noeudParent = best;
 		Tentacle arcParent = best.getArc();
 		
@@ -234,7 +241,8 @@ public class TentacleManager implements Iterator<AStarNode>
 			noeudParent = noeudParent.parent;
 			arcParent = noeudParent.getArc();
 		}
-
+		
+		return trajectory;
 	}
 	
 	/**

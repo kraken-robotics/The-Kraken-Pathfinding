@@ -16,6 +16,7 @@ import pfg.kraken.dstarlite.DStarLite;
 import pfg.kraken.obstacles.Obstacle;
 import pfg.kraken.obstacles.RectangularObstacle;
 import pfg.kraken.utils.XY;
+import pfg.kraken.utils.XYO;
 import pfg.kraken.utils.XY_RW;
 
 /**
@@ -48,8 +49,8 @@ public class Test_DStarLite extends JUnit_Test
 	public void test_chemin_dstarlite_statique() throws Exception
 	{
 		pathfinding.computeNewPath(new XY(-800, 200), new XY(1200, 1200));
-		List<XY> l = pathfinding.itineraireBrut(new XY(-800, 200));
-		for(XY pos : l)
+		List<XYO> l = pathfinding.itineraireBrut(new XY(-800, 200));
+		for(XYO pos : l)
 			log.write(pos, LogCategoryKraken.TEST);
 	}	
 /*

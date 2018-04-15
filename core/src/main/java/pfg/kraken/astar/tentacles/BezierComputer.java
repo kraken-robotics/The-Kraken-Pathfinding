@@ -6,16 +6,19 @@
 package pfg.kraken.astar.tentacles;
 
 import java.util.LinkedList;
+import java.util.List;
 import pfg.config.Config;
 import pfg.kraken.ConfigInfoKraken;
 import pfg.kraken.astar.AStarNode;
 import pfg.kraken.astar.tentacles.types.BezierTentacle;
 import pfg.kraken.astar.tentacles.types.TentacleType;
+import pfg.kraken.dstarlite.DStarLite;
 import pfg.kraken.memory.CinemObsPool;
 import pfg.kraken.obstacles.RectangularObstacle;
 import pfg.kraken.robot.Cinematique;
 import pfg.kraken.robot.CinematiqueObs;
 import pfg.kraken.utils.XY;
+import pfg.kraken.utils.XYO;
 import pfg.kraken.utils.XY_RW;
 import pfg.log.Log;
 import static pfg.kraken.astar.tentacles.Tentacle.*;
@@ -34,11 +37,13 @@ public class BezierComputer implements TentacleComputer
 	private double courbureMax;
 	private double rootedMaxAcceleration;
 	private double maxCurvatureDerivative;
+	private DStarLite dstarlite;
 
-	public BezierComputer(Log log, CinemObsPool memory, Config config, RectangularObstacle vehicleTemplate)
+	public BezierComputer(Log log, DStarLite dstarlite, CinemObsPool memory, Config config, RectangularObstacle vehicleTemplate)
 	{
 		this.log = log;
 		this.memory = memory;
+		this.dstarlite = dstarlite;
 
 		courbureMax = config.getDouble(ConfigInfoKraken.MAX_CURVATURE);
 		rootedMaxAcceleration = Math.sqrt(config.getDouble(ConfigInfoKraken.MAX_LATERAL_ACCELERATION));
@@ -591,9 +596,56 @@ public class BezierComputer implements TentacleComputer
 			return true;
 		}
 		
+		else if(tentacleType == BezierTentacle.INTERMEDIATE_BEZIER_XYO_TO_XYO)
+		{
+			DynamicTentacle t = intermediateXYO2XYO(current, indexThread);
+			if(t == null)
+				return false;
+			assert modified.cameFromArcDynamique == null;
+			modified.cameFromArcDynamique = t;
+			return true;
+		}
+		else if(tentacleType == BezierTentacle.INTERMEDIATE_BEZIER_XYOC_TO_XY)
+		{
+			DynamicTentacle t = intermediateXYOC2XY(current, indexThread);
+			if(t == null)
+				return false;
+			assert modified.cameFromArcDynamique == null;
+			modified.cameFromArcDynamique = t;
+			return true;
+		}
+		
 		assert false;
 		return false;
 	}
 
+
+	public DynamicTentacle intermediateXYO2XYO(AStarNode current, int indexThread)
+	{
+		List<XYO> listePositions = dstarlite.itineraireBrut(current.robot.getCinematique().getPosition());
+		
+		if(listePositions.size() < 2)
+			return null;
+		
+		XYO middle = listePositions.get(listePositions.size() / 2);
+		DynamicTentacle out = quadraticInterpolationXYO2XYO(current.robot.getCinematique(), new Cinematique(middle), indexThread);
+		if(out != null)
+			out.vitesse = BezierTentacle.INTERMEDIATE_BEZIER_XYO_TO_XYO;
+		return out;
+	}
+	
+	public DynamicTentacle intermediateXYOC2XY(AStarNode current, int indexThread)
+	{
+		List<XYO> listePositions = dstarlite.itineraireBrut(current.robot.getCinematique().getPosition());
+		
+		if(listePositions.size() < 2)
+			return null;
+		
+		XYO middle = listePositions.get(listePositions.size() / 2);
+		DynamicTentacle out = quadraticInterpolationXYOC2XY(current.robot.getCinematique(), middle.position, indexThread);
+		if(out != null)
+			out.vitesse = BezierTentacle.INTERMEDIATE_BEZIER_XYOC_TO_XY;
+		return out;
+	}
 	
 }

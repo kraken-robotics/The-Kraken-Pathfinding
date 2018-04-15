@@ -51,7 +51,7 @@ public class Navmesh
 			}
 			catch(IOException e1)
 			{
-				log.write("Error during navmesh save ! " + e, SeverityCategoryKraken.CRITICAL, LogCategoryKraken.PF);
+				log.write("Error during navmesh save ! " + e1, SeverityCategoryKraken.CRITICAL, LogCategoryKraken.PF);
 			}
 		}
 		assert mesh != null;

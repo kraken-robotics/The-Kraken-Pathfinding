@@ -22,6 +22,7 @@ import pfg.kraken.obstacles.container.DynamicObstacles;
 import pfg.kraken.obstacles.container.StaticObstacles;
 import pfg.kraken.robot.Cinematique;
 import pfg.kraken.utils.XY;
+import pfg.kraken.utils.XYO;
 import pfg.log.Log;
 
 /**
@@ -55,6 +56,7 @@ public class DStarLite
 	private DStarLiteNode arrivee;
 	private GraphicDisplay buffer;
 	private long nbPF = 0;
+	private boolean printItineraire;
 
 	private Cle knew = new Cle();
 	private Cle kold = new Cle();
@@ -82,6 +84,7 @@ public class DStarLite
 			memory[i] = new DStarLiteNode(navmesh.mesh.nodes[i]);
 
 		graphicHeuristique = config.getBoolean(ConfigInfoKraken.GRAPHIC_HEURISTIC);
+		printItineraire = config.getBoolean(ConfigInfoKraken.GRAPHIC_D_STAR_LITE);
 	}
 
 	/**
@@ -362,15 +365,12 @@ public class DStarLite
 		assert ((str = checkInvariantOpenset()) == null) : str;
 	}
 
-	/**
-	 * Utilisé pour l'affichage et le debug
-	 * 
-	 * @return
-	 */
-	public synchronized List<XY> itineraireBrut(XY depart)
-	{
-		List<XY> trajet = new ArrayList<XY>();
+	private List<XYO> trajet = new ArrayList<XYO>();
 
+	public synchronized List<XYO> itineraireBrut(XY depart)
+	{
+		trajet.clear();
+		
 		DStarLiteNode node = getFromMemory(navmesh.getNearest(depart));
 		DStarLiteNode min = null;
 		int coutMin;
@@ -386,8 +386,9 @@ public class DStarLite
 			// Le noeud de départ peut exceptionnellement être inconsistent
 			assert node.isConsistent() : "A node in the path is not consistent !";
 			assert !trajet.contains(node.node.position) : "Cyclic path !";
-
-			trajet.add(node.node.position);
+			
+			assert node.heuristiqueOrientation != null;
+			trajet.add(new XYO(node.node.position.clone(), (double)node.heuristiqueOrientation));
 
 			coutMin = Integer.MAX_VALUE;
 
@@ -408,11 +409,13 @@ public class DStarLite
 			
 			assert min.g < node.g : "The distance to the goal increased !";
 
-			node.node.getNeighbourEdge(indexMin).highlight(true);
+			if(printItineraire)
+				node.node.getNeighbourEdge(indexMin).highlight(true);
+			
 			node = min;
 		}
 		
-		trajet.add(arrivee.node.position);
+		trajet.add(new XYO(arrivee.node.position.clone(), 0)); // pas d'heuristique d'orientation sur le point d'arrivée
 
 		return trajet;
 

@@ -151,11 +151,6 @@ public class TentacularAStar
 //	private Stack<Tentacle> pileTmp = new Stack<Tentacle>();
 	
 	/*
-	 * Only used for the reconstruction
-	 */
-	private LinkedList<CinematiqueObs> trajectory = new LinkedList<CinematiqueObs>();
-	
-	/*
 	 * For graphical display purpose only
 	 */
 	private List<AStarNode> outTentacles = new ArrayList<AStarNode>();
@@ -462,9 +457,7 @@ public class TentacularAStar
 			System.out.println("Number of expanded nodes : "+nbExpandedNodes);
 		}
 
-		trajectory.clear();
-
-		arcmanager.reconstruct(trajectory, best, nbPointsMax);
+		LinkedList<CinematiqueObs> trajectory = arcmanager.reconstruct(best, nbPointsMax);
 		
 		assert trajectory.size() <= nbPointsMax : trajectory.size()+" "+nbPointsMax;
 		chemin.addToEnd(trajectory, partial);
