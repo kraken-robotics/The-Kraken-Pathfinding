@@ -55,7 +55,7 @@ public class Kraken
 	private ResearchProfileManager profiles;
 	private TentacleManager tentaclemanager;
 	private DynamicPath dpath;
-	private static final String version = "1.4.0";
+	private static final String version = "1.4.1-SNAPSHOT";
 	private boolean autoReplanningEnable = false;
 	
 	/**
