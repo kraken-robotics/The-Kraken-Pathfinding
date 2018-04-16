@@ -7,6 +7,7 @@ package pfg.kraken.astar.tentacles;
 
 import java.util.List;
 
+import pfg.kraken.astar.tentacles.endCheck.EndOfTrajectoryCheck;
 import pfg.kraken.astar.tentacles.types.TentacleType;
 
 /**

@@ -18,6 +18,7 @@ import pfg.kraken.ColorKraken;
 import pfg.kraken.ConfigInfoKraken;
 import pfg.kraken.astar.AStarNode;
 import pfg.kraken.astar.DirectionStrategy;
+import pfg.kraken.astar.tentacles.endCheck.EndWithXYO;
 import pfg.kraken.astar.tentacles.types.TentacleType;
 import pfg.kraken.astar.thread.TentacleTask;
 import pfg.kraken.astar.thread.TentacleThread;

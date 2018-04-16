@@ -3,7 +3,7 @@
  * Distributed under the MIT License.
  */
 
-package pfg.kraken.astar.tentacles;
+package pfg.kraken.astar.tentacles.endCheck;
 
 import pfg.kraken.robot.Cinematique;
 import pfg.kraken.utils.XYO;
