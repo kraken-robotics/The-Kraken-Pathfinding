@@ -6,7 +6,6 @@
 package pfg.kraken.astar.thread;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 import pfg.config.Config;
@@ -37,7 +36,6 @@ public class DynamicPath
 		UPTODATE_WITH_NEW_PATH, // on a un NOUVEAU chemin vers la destination
 		UPTODATE, // pas besoin de replanif
 		REPLANNING; // replanification nécessaire / en cours
-//		STOP; // la planification doit s'arrêter
 	}
 	
 	protected Log log;
@@ -95,7 +93,7 @@ public class DynamicPath
 		notifyAll();
 	}
 	
-	public synchronized void addToEnd(LinkedList<CinematiqueObs> points, boolean partial)
+	public synchronized void addToEnd(List<CinematiqueObs> points, boolean partial)
 	{
 		for(int i = 0; i < points.size(); i++)
 			points.get(i).copy(path[pathSize + i]);
@@ -109,6 +107,20 @@ public class DynamicPath
 		notifyAll();
 	}
 
+	public synchronized void importPath(List<ItineraryPoint> pathInitial)
+	{
+		assert etat == State.STANDBY;
+		pathSize = 0;
+		updateFirstDifferentPoint(pathSize);
+		for(ItineraryPoint p : pathInitial)
+		{
+			path[pathSize].update(p);
+			pathSize++;
+		}
+		etat = State.UPTODATE_WITH_NEW_PATH;
+		notifyAll();
+	}
+	
 	public synchronized int margeSupplementaireDemandee()
 	{
 		/*
@@ -176,6 +188,11 @@ public class DynamicPath
 		PathDiff diff = new PathDiff(firstDifferentPoint, getPath(firstDifferentPoint), etat == State.UPTODATE || etat == State.UPTODATE_WITH_NEW_PATH);
 		firstDifferentPoint = Integer.MAX_VALUE;
 		return diff;
+	}
+	
+	public synchronized boolean isThereACompletePath()
+	{
+		return etat == State.UPTODATE || etat == State.UPTODATE_WITH_NEW_PATH;
 	}
 	
 	public List<ItineraryPoint> getPath()

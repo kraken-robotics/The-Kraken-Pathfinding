@@ -25,6 +25,7 @@ import pfg.kraken.dstarlite.DStarLite;
 import pfg.kraken.exceptions.UnknownModeException;
 import pfg.kraken.memory.NodePool;
 import pfg.kraken.obstacles.Obstacle;
+import pfg.kraken.obstacles.RectangularObstacle;
 import pfg.kraken.obstacles.container.DynamicObstacles;
 import pfg.kraken.obstacles.container.StaticObstacles;
 import pfg.kraken.robot.Cinematique;
@@ -56,6 +57,7 @@ public class TentacleManager implements Iterator<AStarNode>
 	private GraphicDisplay display;
 	private TentacleThread[] threads;
 	private ResearchProfile currentProfile;
+	private EndWithXYO endXYOCheck = new EndWithXYO();
 	
 	private DirectionStrategy directionstrategyactuelle;
 	private Cinematique arrivee = new Cinematique();
@@ -122,36 +124,29 @@ public class TentacleManager implements Iterator<AStarNode>
 	 * @return
 	 * @throws FinMatchException
 	 */
-	public boolean isReachable(AStarNode node)
+	public boolean isReachable(Iterable<RectangularObstacle> tentacle)
 	{
-		// le tout premier nœud n'a pas de parent
-		if(node.parent == null)
-			return true;
-
-		int nbOmbres = node.getArc().getNbPoints();
-		
-		// On vérifie la collision avec les murs
-		for(int j = 0; j < nbOmbres; j++)
+		for(RectangularObstacle co : tentacle)
+		{
+			// On vérifie la collision avec les murs
 			for(int i = 0; i < 4; i++)
-				if(node.getArc().getPoint(j).obstacle.isColliding(coins[i], coins[(i+1)&3]))
+				if(co.isColliding(coins[i], coins[(i+1)&3]))
 					return false;
-		
-		// Collision avec un obstacle fixe?
-		for(Obstacle o : fixes.getObstacles())
-			for(int i = 0; i < nbOmbres; i++)
-				if(o.isColliding(node.getArc().getPoint(i).obstacle))
+
+			// Collision avec un obstacle fixe?
+			for(Obstacle o : fixes.getObstacles())
+				if(o.isColliding(co))
 				{
 					// log.debug("Collision avec "+o);
 					return false;
 				}
 
-		// Collision avec un obstacle de proximité ?
-
-		// TODO : utiliser getFutureDynamicObstacles
-		for(Obstacle n : currentObstacles)
-			for(int i = 0; i < nbOmbres; i++)
-				if(n.isColliding(node.getArc().getPoint(i).obstacle))
+			// Collision avec un obstacle de proximité ?
+			// TODO : utiliser getFutureDynamicObstacles
+			for(Obstacle n : currentObstacles)
+				if(n.isColliding(co))
 					return false;
+		}
 
 		return true;
 	}
@@ -293,18 +288,23 @@ public class TentacleManager implements Iterator<AStarNode>
 		}
 		return (int) (1000.*(h / vitesseMax));
 	}
-
-	public boolean isArrived(AStarNode successeur)
+	
+	public final boolean isNearXYO(Cinematique a, Cinematique b)
 	{
-		return successeur.getArc() != null && currentProfile.end.isArrived(arrivee, successeur.getArc().getLast());
+		return endXYOCheck.isArrived(a, b);
+	}
+	
+	public final boolean isArrived(Cinematique last)
+	{
+		return currentProfile.end.isArrived(arrivee, last);
 	}
 
-	public void stopThreads()
+/*	public void stopThreads()
 	{
 		if(threads.length > 1)
 			for(int i = 0; i < threads.length; i++)
 				threads[i].interrupt();
-	}
+	}*/
 
 	private AStarNode next;
 	

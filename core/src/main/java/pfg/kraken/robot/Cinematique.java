@@ -229,4 +229,11 @@ public class Cinematique implements Printable, Serializable
 		copy(out);
 		return out;
 	}
+	
+	public void update(ItineraryPoint p)
+	{
+		enMarcheAvant = p.goingForward;
+		updateReel(p.x, p.y, p.orientation, p.curvature);
+		stop = p.stop;
+	}
 }

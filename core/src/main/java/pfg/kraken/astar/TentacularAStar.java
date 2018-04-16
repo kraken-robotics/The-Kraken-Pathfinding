@@ -20,6 +20,7 @@ import pfg.kraken.LogCategoryKraken;
 import pfg.kraken.astar.tentacles.TentacleManager;
 import pfg.kraken.astar.thread.DynamicPath;
 import pfg.kraken.dstarlite.DStarLite;
+import pfg.kraken.exceptions.InvalidPathException;
 import pfg.kraken.exceptions.NoPathException;
 import pfg.kraken.exceptions.NotFastEnoughException;
 import pfg.kraken.exceptions.NotInitializedPathfindingException;
@@ -33,6 +34,7 @@ import pfg.kraken.robot.Cinematique;
 import pfg.kraken.robot.CinematiqueObs;
 import pfg.kraken.robot.ItineraryPoint;
 import pfg.kraken.robot.RobotState;
+import pfg.kraken.utils.XY;
 import pfg.log.Log;
 
 /**
@@ -155,6 +157,8 @@ public class TentacularAStar
 	 */
 	private List<AStarNode> outTentacles = new ArrayList<AStarNode>();
 	
+	private RectangularObstacle vehicleTemplate;
+	
 	/**
 	 * Constructeur du AStarCourbe
 	 */
@@ -181,6 +185,7 @@ public class TentacularAStar
 		defaultSpeed = config.getDouble(ConfigInfoKraken.DEFAULT_MAX_SPEED);
 		this.depart = new AStarNode(chrono, vehicleTemplate);
 		depart.setIndiceMemoryManager(-1);
+		this.vehicleTemplate = vehicleTemplate;
 	}
 
 	public List<ItineraryPoint> searchWithoutReplanning() throws PathfindingException
@@ -189,6 +194,34 @@ public class TentacularAStar
 		log.write("Path search begins.", LogCategoryKraken.PF);
 		search();
 		return chemin.endSearchWithoutPlanning();
+	}
+	
+	private Cinematique tmp = new Cinematique();
+	private List<RectangularObstacle> initialObstacles = new ArrayList<RectangularObstacle>();
+
+	public void searchWithReplanningAndInitialPath(List<ItineraryPoint> initialPath) throws PathfindingException
+	{
+		tmp.update(initialPath.get(0));
+		if(arcmanager.isNearXYO(depart.robot.getCinematique(), tmp))
+			throw new InvalidPathException("The first point doesn't match the start.");
+		
+		tmp.update(initialPath.get(initialPath.size() - 1));
+		if(!arcmanager.isArrived(tmp))
+			throw new InvalidPathException("The final point doesn't match the finish.");
+		
+		initialObstacles.clear();
+		for(ItineraryPoint ip : initialPath)
+		{
+			RectangularObstacle o = vehicleTemplate.clone();
+			o.update(new XY(ip.x, ip.y), ip.orientation);
+			initialObstacles.add(o);
+		}
+		
+		if(!arcmanager.isReachable(initialObstacles))
+			throw new InvalidPathException("There are obstacles through the path.");
+		
+		chemin.importPath(initialPath);
+		log.write("Path search with autoreplanning begins.", LogCategoryKraken.PF);
 	}
 	
 	public void searchWithReplanning() throws PathfindingException
@@ -283,7 +316,7 @@ public class TentacularAStar
 
 			// si on a déjà fait ce point ou un point très proche…
 			// exception si c'est un point d'arrivée
-			if(!closedset.add(current.hashCode()) && !arcmanager.isArrived(current))
+			if(!closedset.add(current.hashCode()) && (current.getArc() == null || !arcmanager.isArrived(current.getArc().getLast())))
 			{
 				// we skip this point
 				if(current != depart)
@@ -297,8 +330,9 @@ public class TentacularAStar
 			// ce calcul étant un peu lourd, on ne le fait que si le noeud a été
 			// choisi, et pas à la sélection des voisins (dans hasNext par
 			// exemple) (expérimentalement vérifié sur pc et raspi)
-			if(!arcmanager.isReachable(current))
+			if(current.parent != null && !arcmanager.isReachable(current.getArc()))
 			{
+				assert current != depart;
 				if(current != depart)
 				{
 					memorymanager.destroyNode(current);
@@ -397,15 +431,12 @@ public class TentacularAStar
 
 				// est qu'on est tombé sur l'arrivée ? alors ça fait un trajet de secours
 				// s'il y a déjà un trajet de secours, on prend le meilleur
-				if(arcmanager.isArrived(successeur) && arcmanager.isReachable(successeur) && (trajetDeSecours == null || trajetDeSecours.f_score > successeur.f_score))
-				{
+				if(successeur.getArc() != null && arcmanager.isArrived(successeur.getArc().getLast()) && (successeur.getArc() == null || arcmanager.isReachable(successeur.getArc())) && (trajetDeSecours == null || trajetDeSecours.f_score > successeur.f_score))
+					trajetDeSecours = successeur;
 					/*
 					 * Cela ne sert à rien de détruire l'ancien trajet de secours (qui est dans l'openset, car si on l'avait pioché de l'openset on aurait fini avec lui)
 					 * C'est juste qu'on garde le meilleur dans un coin.
 					 */
-
-					trajetDeSecours = successeur;
-				}
 				
 				if(debugMode)
 				{

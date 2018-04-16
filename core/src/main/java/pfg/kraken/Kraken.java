@@ -260,11 +260,24 @@ public class Kraken
 			return null;
 		}
 	}
+	
+	public void startContinuousSearchWithInitialPath(SearchParameters sp, List<ItineraryPoint> initialPath) throws PathfindingException
+	{
+		if(dpath.isStarted())
+			throw new NotInitializedPathfindingException("You should end the previous continuous search before starting a new one.");
+		else if(autoReplanningEnable)
+		{
+			astar.initializeNewSearch(sp.start, sp.arrival, sp.directionstrategy, sp.mode, sp.maxSpeed);
+			astar.searchWithReplanningAndInitialPath(initialPath);
+		}
+		else
+			throw new NotInitializedPathfindingException("You should enable the continuous search before starting it.");
+	}
 
 	public void startContinuousSearch(SearchParameters sp) throws PathfindingException
 	{
 		if(dpath.isStarted())
-			throw new NotInitializedPathfindingException("");
+			throw new NotInitializedPathfindingException("You should end the previous continuous search before starting a new one.");
 		else if(autoReplanningEnable)
 		{
 			astar.initializeNewSearch(sp.start, sp.arrival, sp.directionstrategy, sp.mode, sp.maxSpeed);

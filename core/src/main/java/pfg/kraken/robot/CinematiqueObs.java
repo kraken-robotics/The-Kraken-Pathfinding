@@ -95,7 +95,6 @@ public class CinematiqueObs extends Cinematique implements Memorizable, Serializ
 		obstacle.update(position, orientationReelle);
 	}
 	
-	
 /*	public void updateReel(double x, double y, double orientationReelle, double courbure, double rootedMaxAcceleration)
 	{
 		super.updateReel(x, y, orientationReelle, courbure);
@@ -123,5 +122,13 @@ public class CinematiqueObs extends Cinematique implements Memorizable, Serializ
 		CinematiqueObs out = new CinematiqueObs(obstacle);
 		copy(out);
 		return out;
+	}
+
+	public void update(ItineraryPoint p)
+	{
+		super.update(p);
+		maxSpeed = p.maxSpeed;
+		possibleSpeed = p.possibleSpeed;
+		obstacle.update(position, orientationReelle);
 	}
 }

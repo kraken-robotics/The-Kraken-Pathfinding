@@ -43,14 +43,23 @@ public class ReplanningThread extends Thread
 				try {
 					synchronized(pm)
 					{
-						while(!pm.isThereSearchRequest())
+						assert !pm.isStarted();
+						while(!pm.isThereSearchRequest() && !pm.isThereACompletePath())
 							pm.wait();
 					}
 					
 					/*
-					 * Requête de début de recherche !
+					 * Deux possibilités :
+					 * - Soit il y a une demande de recherche, auquel cas on cherche
+					 * - Soit il y a déjà un chemin, donné manuellement, et on passe la recherche
 					 */				
-					astar.searchWithReplanning();
+
+					
+					if(pm.isThereSearchRequest())
+						//Requête de début de recherche !
+						astar.searchWithReplanning();
+					else
+						assert pm.isThereACompletePath();
 					
 					while(true)
 					{

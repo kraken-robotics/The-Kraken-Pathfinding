@@ -6,10 +6,13 @@
 package pfg.kraken.astar.tentacles;
 
 import java.awt.Graphics;
+import java.util.Iterator;
+
 import pfg.graphic.GraphicPanel;
 import pfg.graphic.printable.Printable;
 import pfg.graphic.printable.PrintablePoint;
 import pfg.kraken.astar.tentacles.types.TentacleType;
+import pfg.kraken.obstacles.RectangularObstacle;
 import pfg.kraken.robot.CinematiqueObs;
 
 /**
@@ -19,7 +22,7 @@ import pfg.kraken.robot.CinematiqueObs;
  *
  */
 
-public abstract class Tentacle implements Printable
+public abstract class Tentacle implements Printable, Iterable<RectangularObstacle>, Iterator<RectangularObstacle>
 {
 	public static final double PRECISION_TRACE = 0.02; // précision du tracé, en
 														// m (distance entre
@@ -43,7 +46,9 @@ public abstract class Tentacle implements Printable
 	private static final long serialVersionUID = 1268198325807123306L;
 
 	public TentacleType vitesse; // utilisé pour le debug
-
+	
+	private int indexIter;
+	
 	public abstract int getNbPoints();
 
 	public abstract CinematiqueObs getPoint(int indice);
@@ -141,4 +146,24 @@ public abstract class Tentacle implements Printable
 			new PrintablePoint(getPoint(i).getPosition().getX(), getPoint(i).getPosition().getY()).print(g, f);
 	}
 
+
+
+	@Override
+	public Iterator<RectangularObstacle> iterator()
+	{
+		indexIter = 0;
+		return this;
+	}
+
+	@Override
+	public boolean hasNext()
+	{
+		return indexIter < getNbPoints();
+	}
+
+	@Override
+	public RectangularObstacle next()
+	{
+		return getPoint(indexIter++).obstacle;
+	}
 }
