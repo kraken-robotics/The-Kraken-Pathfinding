@@ -41,9 +41,12 @@ public final class ReplanningThread extends Thread
 			while(true)
 			{
 				try {
+
 					synchronized(pm)
 					{
-						assert !pm.isStarted();
+						if(pm.shouldThreadStopSearch())
+							pm.threadReady();
+
 						while(!pm.isThereSearchRequest() && !pm.isThereACompletePath())
 							pm.wait();
 					}
@@ -66,7 +69,7 @@ public final class ReplanningThread extends Thread
 						Cinematique start;
 						synchronized(pm)
 						{
-							while(!pm.needReplanning() && pm.isStarted())
+							while(!pm.needReplanning() && !pm.shouldThreadStopSearch())
 							{
 								pm.checkException();
 								pm.wait();
@@ -76,7 +79,7 @@ public final class ReplanningThread extends Thread
 							pm.checkException();
 
 							// La recherche a été arrêtée
-							if(!pm.isStarted())
+							if(pm.shouldThreadStopSearch())
 								break;
 														
 							assert pm.needReplanning();

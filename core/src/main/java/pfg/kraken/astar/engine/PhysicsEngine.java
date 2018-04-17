@@ -15,6 +15,15 @@ import pfg.kraken.obstacles.RectangularObstacle;
 
 public interface PhysicsEngine
 {
+	/**
+	 * This function is called at the initialization and each time an obstacle changes
+	 */
 	public void update();
+	
+	/**
+	 * Is there a collision with a current obstacle ?
+	 * @param tentacle
+	 * @return
+	 */
 	public boolean isThereCollision(Iterable<RectangularObstacle> tentacle);
 }

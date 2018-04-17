@@ -275,6 +275,14 @@ public final class Kraken
 		}
 	}
 	
+	public void endAutoReplanning() throws NotInitializedPathfindingException
+	{
+		if(dpath.isStarted())
+			throw new NotInitializedPathfindingException("You should end the current search before disabling the autoreplanning mode.");
+
+		autoReplanningEnable = false;
+	}
+	
 	public void startContinuousSearchWithInitialPath(SearchParameters sp, List<ItineraryPoint> initialPath) throws PathfindingException
 	{
 		if(dpath.isStarted())

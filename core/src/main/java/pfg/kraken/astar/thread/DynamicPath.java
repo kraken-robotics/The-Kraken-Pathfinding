@@ -35,13 +35,14 @@ public final class DynamicPath
 		SEARCHING, // le thread calcule la trajectoire initiale
 		UPTODATE_WITH_NEW_PATH, // on a un NOUVEAU chemin vers la destination
 		UPTODATE, // pas besoin de replanif
-		REPLANNING; // replanification nécessaire / en cours
+		REPLANNING, // replanification nécessaire / en cours
+		WAITING_END; // attend que le thread soit bien au courant que la recherche est finie
 	}
 	
 	protected Log log;
 	
 	private CinematiqueObs[] path = new CinematiqueObs[1000];
-	private volatile State etat = State.STANDBY;
+	private volatile State etat;
 	private volatile int indexFirst; // index du point où est le robot
 	private volatile int pathSize; // index du prochain point de la trajectoire
 	private volatile int firstDifferentPoint; // index du premier point différent dans la replanification
@@ -61,6 +62,7 @@ public final class DynamicPath
 		for(int i = 0; i < path.length; i++)
 			path[i] = new CinematiqueObs(vehicleTemplate);
 		clear();
+		etat = State.STANDBY;
 	}
 	
 	public synchronized void initSearchWithoutPlanning()
@@ -75,6 +77,7 @@ public final class DynamicPath
 		assert etat == State.MODE_WITHOUT_REPLANING : etat;
 		List<ItineraryPoint> out = getPath();
 		clear();
+		etat = State.STANDBY;
 		return out;
 	}
 	
@@ -90,6 +93,14 @@ public final class DynamicPath
 	public synchronized void endContinuousSearch()
 	{
 		clear();
+		try
+		{
+			waitThread();
+		}
+		catch(InterruptedException e)
+		{
+			Thread.currentThread().interrupt();
+		}
 		notifyAll();
 	}
 	
@@ -149,7 +160,7 @@ public final class DynamicPath
 	{
 		if(e != null)
 		{
-			assert etat == State.STANDBY : etat;
+			assert etat == State.STANDBY || etat == State.WAITING_END : etat;
 			PathfindingException tmp = e;
 			e = null;
 			throw tmp;
@@ -163,6 +174,20 @@ public final class DynamicPath
 		return (etat == State.REPLANNING && pathSize - indexFirst < margeNecessaire);
 	}
 	
+	public synchronized void threadReady()
+	{
+		assert etat == State.WAITING_END;
+		etat = State.STANDBY;
+		notifyAll();
+	}
+	
+	private synchronized void waitThread() throws InterruptedException
+	{
+		while(etat == State.WAITING_END)
+			wait();
+		assert etat == State.STANDBY;
+	}
+	
 	/**
 	 * La recherche est terminée, on retourne en STANDBY
 	 */
@@ -171,7 +196,7 @@ public final class DynamicPath
 //		log.write("Search ended, returns to STANDBY", LogCategoryKraken.REPLANIF);
 		firstDifferentPoint = Integer.MAX_VALUE;
 		pathSize = 0;
-		etat = State.STANDBY;
+		etat = State.WAITING_END;
 	}
 	
 	public synchronized boolean isThereDiff() throws PathfindingException
@@ -210,7 +235,7 @@ public final class DynamicPath
 		return pathIP;
 	}
 
-	public synchronized void updateCollision(DynamicObstacles dynObs)
+	public synchronized void updateCollision(DynamicObstacles dynObs) throws InterruptedException
 	{
 		// dans tous les cas, on vérifie les collisions afin de vider la liste des nouveaux obstacles
 		int firstDifferentPoint = dynObs.isThereCollision(path, indexFirst, pathSize);
@@ -264,6 +289,11 @@ public final class DynamicPath
 	public synchronized boolean needReplanning()
 	{
 		return etat == State.REPLANNING;
+	}
+	
+	public synchronized boolean shouldThreadStopSearch()
+	{
+		return etat == State.WAITING_END;
 	}
 	
 	public synchronized boolean isStarted()
@@ -321,7 +351,7 @@ public final class DynamicPath
 		this.firstDifferentPoint = Math.min(this.firstDifferentPoint, firstDifferentPoint);
 	}
 	
-	public void endContinuousSearchWithException(PathfindingException e)
+	public void endContinuousSearchWithException(PathfindingException e) throws InterruptedException
 	{
 		this.e = e;
 		endContinuousSearch();
