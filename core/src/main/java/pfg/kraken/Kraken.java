@@ -20,6 +20,8 @@ import pfg.graphic.DebugTool;
 import pfg.injector.Injector;
 import pfg.injector.InjectorException;
 import pfg.kraken.astar.TentacularAStar;
+import pfg.kraken.astar.engine.DefaultPhysicsEngine;
+import pfg.kraken.astar.engine.PhysicsEngine;
 import pfg.kraken.astar.tentacles.ResearchProfile;
 import pfg.kraken.astar.tentacles.ResearchProfileManager;
 import pfg.kraken.astar.tentacles.TentacleManager;
@@ -80,12 +82,18 @@ public final class Kraken
 	 * @param topRightCorner : the top right corner of the search domain
 	 * @param configprofile : the config profiles
 	 */
-	public Kraken(RectangularObstacle vehicleTemplate, Iterable<Obstacle> fixedObstacles, DynamicObstacles dynObs, XY bottomLeftCorner, XY topRightCorner, String configfile, String...configprofile)
+	public Kraken(RectangularObstacle vehicleTemplate, Iterable<Obstacle> fixedObstacles, DynamicObstacles dynObs, XY bottomLeftCorner, XY topRightCorner, String configfile, String...profiles)
 	{	
+		
+		this(vehicleTemplate, null, fixedObstacles, dynObs, bottomLeftCorner, topRightCorner, configfile, profiles);
+	}
+	
+	public Kraken(RectangularObstacle vehicleTemplate, PhysicsEngine engine, Iterable<Obstacle> fixedObstacles, DynamicObstacles dynObs, XY bottomLeftCorner, XY topRightCorner, String configfile, String...configprofile)
+	{
 		injector = new Injector();
 		config = new Config(ConfigInfoKraken.values(), isJUnitTest(), configfile, configprofile);
 		injector.addService(RectangularObstacle.class, vehicleTemplate);
-		
+
 		/*
 		 * We adjust the maximal curvature in order to never be under the minimal speed
 		 */
@@ -110,6 +118,12 @@ public final class Kraken
 			injector.addService(DynamicObstacles.class, dynObs);		
 			injector.addService(this);
 			injector.addService(injector);
+
+			if(engine != null)
+				injector.addService(engine);
+			else
+				injector.addService(PhysicsEngine.class, injector.getService(DefaultPhysicsEngine.class));
+			
 
 			/*
 			 * Override the graphic config

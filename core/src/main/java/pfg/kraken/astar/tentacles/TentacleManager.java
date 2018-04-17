@@ -25,13 +25,8 @@ import pfg.kraken.astar.thread.TentacleThread;
 import pfg.kraken.dstarlite.DStarLite;
 import pfg.kraken.exceptions.UnknownModeException;
 import pfg.kraken.memory.NodePool;
-import pfg.kraken.obstacles.Obstacle;
-import pfg.kraken.obstacles.RectangularObstacle;
-import pfg.kraken.obstacles.container.DynamicObstacles;
-import pfg.kraken.obstacles.container.StaticObstacles;
 import pfg.kraken.robot.Cinematique;
 import pfg.kraken.robot.CinematiqueObs;
-import pfg.kraken.utils.XY;
 import pfg.kraken.utils.XYO;
 import pfg.graphic.GraphicDisplay;
 import pfg.log.Log;
@@ -49,11 +44,9 @@ public final class TentacleManager implements Iterator<AStarNode>
 {
 	protected Log log;
 	private DStarLite dstarlite;
-	private DynamicObstacles dynamicObs;
 	private double courbureMax, maxLinearAcceleration, vitesseMax;
 	private boolean printObstacles;
 	private Injector injector;
-	private StaticObstacles fixes;
 	private double deltaSpeedFromStop;
 	private GraphicDisplay display;
 	private TentacleThread[] threads;
@@ -66,15 +59,12 @@ public final class TentacleManager implements Iterator<AStarNode>
 	private List<TentacleTask> tasks = new ArrayList<TentacleTask>();
 	private BlockingQueue<AStarNode> successeurs = new LinkedBlockingQueue<AStarNode>();
 	private BlockingQueue<TentacleTask> buffer = new LinkedBlockingQueue<TentacleTask>();
-	private List<Obstacle> currentObstacles = new ArrayList<Obstacle>();
 	
 	private int nbLeft;
 	
-	public TentacleManager(Log log, StaticObstacles fixes, NodePool memorymanager, DStarLite dstarlite, Config config, DynamicObstacles dynamicObs, Injector injector, ResearchProfileManager profiles, GraphicDisplay display) throws InjectorException
+	public TentacleManager(Log log, NodePool memorymanager, DStarLite dstarlite, Config config, Injector injector, ResearchProfileManager profiles, GraphicDisplay display) throws InjectorException
 	{
 		this.injector = injector;
-		this.fixes = fixes;
-		this.dynamicObs = dynamicObs;
 		this.log = log;
 		this.dstarlite = dstarlite;
 		this.display = display;
@@ -98,10 +88,6 @@ public final class TentacleManager implements Iterator<AStarNode>
 		}
 		
 		courbureMax = config.getDouble(ConfigInfoKraken.MAX_CURVATURE);
-		coins[0] = fixes.getBottomLeftCorner();
-		coins[2] = fixes.getTopRightCorner();
-		coins[1] = new XY(coins[0].getX(), coins[2].getY());
-		coins[3] = new XY(coins[2].getX(), coins[0].getY());
 	}
 
 	public void updateProfiles(ResearchProfile mode)
@@ -116,41 +102,6 @@ public final class TentacleManager implements Iterator<AStarNode>
 		}
 	}
 	
-	private XY[] coins = new XY[4];
-	
-	/**
-	 * Retourne faux si un obstacle est sur la route
-	 * 
-	 * @param node
-	 * @return
-	 * @throws FinMatchException
-	 */
-	public boolean isReachable(Iterable<RectangularObstacle> tentacle)
-	{
-		for(RectangularObstacle co : tentacle)
-		{
-			// On vérifie la collision avec les murs
-			for(int i = 0; i < 4; i++)
-				if(co.isColliding(coins[i], coins[(i+1)&3]))
-					return false;
-
-			// Collision avec un obstacle fixe?
-			for(Obstacle o : fixes.getObstacles())
-				if(o.isColliding(co))
-				{
-					// log.debug("Collision avec "+o);
-					return false;
-				}
-
-			// Collision avec un obstacle de proximité ?
-			// TODO : utiliser getFutureDynamicObstacles
-			for(Obstacle n : currentObstacles)
-				if(n.isColliding(co))
-					return false;
-		}
-
-		return true;
-	}
 
 	/**
 	 * Initialise l'arc manager avec les infos donnée
@@ -166,18 +117,7 @@ public final class TentacleManager implements Iterator<AStarNode>
 		this.directionstrategyactuelle = directionstrategyactuelle;
 		currentProfile = profiles.getProfile(mode);
 		arrivee.copy(this.arrivee);	
-		updateCurrentObstacles();
 	}
-	
-	public void updateCurrentObstacles()
-	{
-		// on récupère les obstacles courants une fois pour toutes
-		currentObstacles.clear();
-		Iterator<Obstacle> iter = dynamicObs.getCurrentDynamicObstacles();
-		while(iter.hasNext())
-			currentObstacles.add(iter.next());
-	}
-
 	
 	/*
 	 * Only used for the reconstruction
@@ -299,13 +239,6 @@ public final class TentacleManager implements Iterator<AStarNode>
 	{
 		return currentProfile.end.isArrived(arrivee, last);
 	}
-
-/*	public void stopThreads()
-	{
-		if(threads.length > 1)
-			for(int i = 0; i < threads.length; i++)
-				threads[i].interrupt();
-	}*/
 
 	private AStarNode next;
 	

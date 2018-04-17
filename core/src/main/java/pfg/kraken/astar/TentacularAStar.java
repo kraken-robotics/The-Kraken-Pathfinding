@@ -17,6 +17,7 @@ import pfg.graphic.GraphicDisplay;
 import pfg.graphic.printable.Layer;
 import pfg.kraken.ConfigInfoKraken;
 import pfg.kraken.LogCategoryKraken;
+import pfg.kraken.astar.engine.PhysicsEngine;
 import pfg.kraken.astar.tentacles.TentacleManager;
 import pfg.kraken.astar.thread.DynamicPath;
 import pfg.kraken.dstarlite.DStarLite;
@@ -68,6 +69,8 @@ public final class TentacularAStar
 	 * Graphic display
 	 */
 	private GraphicDisplay buffer;
+	
+	private PhysicsEngine engine;
 	
 	/*
 	 * The departure node
@@ -162,8 +165,9 @@ public final class TentacularAStar
 	/**
 	 * Constructeur du AStarCourbe
 	 */
-	public TentacularAStar(Log log, DynamicPath defaultChemin, DStarLite dstarlite, TentacleManager arcmanager, NodePool memorymanager, CinemObsPool rectMemory, GraphicDisplay buffer, RobotState chrono, Config config, RectangularObstacle vehicleTemplate)
+	public TentacularAStar(Log log, PhysicsEngine engine, DynamicPath defaultChemin, DStarLite dstarlite, TentacleManager arcmanager, NodePool memorymanager, CinemObsPool rectMemory, GraphicDisplay buffer, RobotState chrono, Config config, RectangularObstacle vehicleTemplate)
 	{
+		this.engine = engine;
 		this.chemin = defaultChemin;
 		this.log = log;
 		this.arcmanager = arcmanager;
@@ -217,7 +221,7 @@ public final class TentacularAStar
 			initialObstacles.add(o);
 		}
 		
-		if(!arcmanager.isReachable(initialObstacles))
+		if(engine.isThereCollision(initialObstacles))
 			throw new InvalidPathException("There are obstacles through the path.");
 		
 		chemin.importPath(initialPath);
@@ -330,7 +334,7 @@ public final class TentacularAStar
 			// ce calcul étant un peu lourd, on ne le fait que si le noeud a été
 			// choisi, et pas à la sélection des voisins (dans hasNext par
 			// exemple) (expérimentalement vérifié sur pc et raspi)
-			if(current.parent != null && !arcmanager.isReachable(current.getArc()))
+			if(current.parent != null && engine.isThereCollision(current.getArc()))
 			{
 				assert current != depart;
 				if(current != depart)
@@ -431,7 +435,7 @@ public final class TentacularAStar
 
 				// est qu'on est tombé sur l'arrivée ? alors ça fait un trajet de secours
 				// s'il y a déjà un trajet de secours, on prend le meilleur
-				if(successeur.getArc() != null && arcmanager.isArrived(successeur.getArc().getLast()) && (successeur.getArc() == null || arcmanager.isReachable(successeur.getArc())) && (trajetDeSecours == null || trajetDeSecours.f_score > successeur.f_score))
+				if(successeur.getArc() != null && arcmanager.isArrived(successeur.getArc().getLast()) && (successeur.getArc() == null || !engine.isThereCollision(successeur.getArc())) && (trajetDeSecours == null || trajetDeSecours.f_score > successeur.f_score))
 					trajetDeSecours = successeur;
 					/*
 					 * Cela ne sert à rien de détruire l'ancien trajet de secours (qui est dans l'openset, car si on l'avait pioché de l'openset on aurait fini avec lui)
@@ -512,7 +516,8 @@ public final class TentacularAStar
 		depart.robot.setCinematique(start);
 		arrival.copy(this.arrival);
 		arcmanager.configure(directionstrategy == null ? defaultStrategy : directionstrategy, maxSpeed == null ? defaultSpeed : maxSpeed, arrival, mode);
-
+		engine.update();
+		
 		/*
 		 * dstarlite.computeNewPath updates the heuristic.
 		 * It returns false if there is no path between start and arrival
@@ -544,7 +549,7 @@ public final class TentacularAStar
 		depart.robot.setCinematique(lastValid);
 
 		// On met à jour le D* Lite
-		arcmanager.updateCurrentObstacles();
+		engine.update();
 		
 		if(!dstarlite.computeNewPath(depart.robot.getCinematique().getPosition(), arrival.getPosition()))
 			throw new NoPathException("No path found by D* Lite !");
