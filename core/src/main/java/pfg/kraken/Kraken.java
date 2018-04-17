@@ -57,7 +57,6 @@ public final class Kraken
 	private ResearchProfileManager profiles;
 	private TentacleManager tentaclemanager;
 	private DynamicPath dpath;
-	private static final String version = "1.4.1-SNAPSHOT";
 	private boolean autoReplanningEnable = false;
 	
 	/**
@@ -232,11 +231,6 @@ public final class Kraken
 	public GraphicDisplay getGraphicDisplay()
 	{
 		return injector.getExistingService(GraphicDisplay.class);
-	}
-	
-	public static String getVersion()
-	{
-		return version;
 	}
 	
 	public void addMode(ResearchProfile p)
