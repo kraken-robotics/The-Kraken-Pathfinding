@@ -63,4 +63,10 @@ public class SearchParameters
 	{
 		this.directionstrategy = directionstrategy;
 	}
+	
+	@Override
+	public String toString()
+	{
+		return "From "+start+" to "+arrival+", mode : "+mode+(maxSpeed == null ? "" : ", max speed : "+maxSpeed)+(directionstrategy == null ? "" : ", direction strategy : "+directionstrategy);
+	}
 }

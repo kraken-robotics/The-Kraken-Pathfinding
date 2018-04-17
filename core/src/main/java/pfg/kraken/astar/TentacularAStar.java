@@ -206,7 +206,7 @@ public final class TentacularAStar
 	public void searchWithReplanningAndInitialPath(List<ItineraryPoint> initialPath) throws PathfindingException
 	{
 		tmp.update(initialPath.get(0));
-		if(arcmanager.isNearXYO(depart.robot.getCinematique(), tmp))
+		if(!arcmanager.isNearXYO(depart.robot.getCinematique(), tmp))
 			throw new InvalidPathException("The first point doesn't match the start.");
 		
 		tmp.update(initialPath.get(initialPath.size() - 1));

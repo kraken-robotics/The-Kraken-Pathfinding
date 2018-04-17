@@ -18,7 +18,6 @@ import pfg.kraken.ColorKraken;
 import pfg.kraken.ConfigInfoKraken;
 import pfg.kraken.astar.AStarNode;
 import pfg.kraken.astar.DirectionStrategy;
-import pfg.kraken.astar.tentacles.endCheck.EndWithXYO;
 import pfg.kraken.astar.tentacles.types.TentacleType;
 import pfg.kraken.astar.thread.TentacleTask;
 import pfg.kraken.astar.thread.TentacleThread;
@@ -51,7 +50,6 @@ public final class TentacleManager implements Iterator<AStarNode>
 	private GraphicDisplay display;
 	private TentacleThread[] threads;
 	private ResearchProfile currentProfile;
-	private EndWithXYO endXYOCheck = new EndWithXYO();
 	
 	private DirectionStrategy directionstrategyactuelle;
 	private Cinematique arrivee = new Cinematique();
@@ -232,7 +230,8 @@ public final class TentacleManager implements Iterator<AStarNode>
 	
 	public final boolean isNearXYO(Cinematique a, Cinematique b)
 	{
-		return endXYOCheck.isArrived(a, b);
+		return a.getPosition().squaredDistance(b.getPosition()) - PRECISION_TRACE_MM * PRECISION_TRACE_MM < 1
+				&& Math.abs(XYO.angleDifference(a.orientationReelle, b.orientationReelle)) < 0.1;
 	}
 	
 	public final boolean isArrived(Cinematique last)
