@@ -75,7 +75,7 @@ public final class ReplanningThread extends Thread
 								pm.wait();
 							}
 							
-							// on vérifie si on doit arrêter la replanification
+							// on vérifie s'il y a eu un problème
 							pm.checkException();
 
 							// La recherche a été arrêtée
@@ -83,11 +83,6 @@ public final class ReplanningThread extends Thread
 								break;
 														
 							assert pm.needReplanning();
-/*							if(!pm.needReplanning())
-							{
-								System.out.println("Pas besoin de replanif");
-								break;
-							}*/
 							start = pm.getNewStart();
 						}						
 						// sinon, c'est qu'il faut replanifier

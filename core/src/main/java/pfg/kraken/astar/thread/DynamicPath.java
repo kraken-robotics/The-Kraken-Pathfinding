@@ -156,7 +156,7 @@ public final class DynamicPath
 		return path[index];
 	}
 	
-	public void checkException() throws PathfindingException
+	public synchronized void checkException() throws PathfindingException
 	{
 		if(e != null)
 		{
@@ -196,6 +196,7 @@ public final class DynamicPath
 //		log.write("Search ended, returns to STANDBY", LogCategoryKraken.REPLANIF);
 		firstDifferentPoint = Integer.MAX_VALUE;
 		pathSize = 0;
+		assert e == null : e;
 		etat = State.WAITING_END;
 	}
 	
