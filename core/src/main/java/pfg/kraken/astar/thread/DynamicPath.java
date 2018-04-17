@@ -211,7 +211,7 @@ public final class DynamicPath
 		if(!isStarted())
 			return null;
 
-		PathDiff diff = new PathDiff(firstDifferentPoint, getPath(firstDifferentPoint), etat == State.UPTODATE || etat == State.UPTODATE_WITH_NEW_PATH);
+		PathDiff diff = new PathDiff(firstDifferentPoint, getPossiblyPartialPath(), etat == State.UPTODATE || etat == State.UPTODATE_WITH_NEW_PATH);
 		firstDifferentPoint = Integer.MAX_VALUE;
 		return diff;
 	}
@@ -225,13 +225,13 @@ public final class DynamicPath
 	{
 		assert etat == State.UPTODATE_WITH_NEW_PATH || etat == State.MODE_WITHOUT_REPLANING : etat;
 		etat = State.UPTODATE;
-		return getPath(0);
+		return getPossiblyPartialPath();
 	}
 	
-	private List<ItineraryPoint> getPath(int index)
+	private List<ItineraryPoint> getPossiblyPartialPath()
 	{
 		List<ItineraryPoint> pathIP = new ArrayList<ItineraryPoint>();
-		for(int i = index; i < pathSize; i++)
+		for(int i = 0; i < pathSize; i++)
 			pathIP.add(new ItineraryPoint(path[i]));
 		return pathIP;
 	}

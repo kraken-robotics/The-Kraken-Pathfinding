@@ -67,13 +67,12 @@ public class Example7
 				display.addTemporaryPrintable(p, Color.BLACK, Layer.FOREGROUND.layer);
 
 			Thread.sleep(2000);
-			display.clearTemporaryPrintables();
 			
 			/*
 			 * The research is continuous : at the moment a new obstacle is added, Kraken tries to find a new path
 			 */
 			Obstacle newObs1 = new CircularObstacle(new XY(400,800), 100);
-			display.addTemporaryPrintable(newObs1, Color.BLUE, Layer.MIDDLE.layer);
+			display.addPrintable(newObs1, Color.BLUE, Layer.MIDDLE.layer);
 			obsDyn.add(newObs1);
 			
 			/*
@@ -81,22 +80,22 @@ public class Example7
 			 */
 			path = dpath.waitNewPath();
 			
+			display.clearTemporaryPrintables();
 			for(ItineraryPoint p : path)
 				display.addTemporaryPrintable(p, Color.BLACK, Layer.FOREGROUND.layer);
 			
 			Thread.sleep(2000);
-			display.clearTemporaryPrintables();
 			
 			/*
 			 * We add a second obstacle
 			 */
 			Obstacle newObs2 = new CircularObstacle(new XY(100,1200), 100);
-			display.addTemporaryPrintable(newObs1, Color.BLUE, Layer.MIDDLE.layer);
-			display.addTemporaryPrintable(newObs2, Color.BLUE, Layer.MIDDLE.layer);
+			display.addPrintable(newObs2, Color.BLUE, Layer.MIDDLE.layer);
 			obsDyn.add(newObs2);
 			
 			path = dpath.waitNewPath();
 			
+			display.clearTemporaryPrintables();
 			for(ItineraryPoint p : path)
 				display.addTemporaryPrintable(p, Color.BLACK, Layer.FOREGROUND.layer);
 			
