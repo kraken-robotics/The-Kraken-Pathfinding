@@ -41,6 +41,10 @@ For legacy reasons, mainly.
 
 ## Getting Kraken
 
+### Precompiled .jar
+
+You can download the latest stable and unstable versions of Kraken at https://packagecloud.io/PFGimenez/Kraken.
+
 ### Maven installation
 
 If you want to use this library in one of your maven project, add this to your pom.xml :
