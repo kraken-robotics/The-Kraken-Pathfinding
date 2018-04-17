@@ -45,7 +45,7 @@ import pfg.log.Log;
  *
  */
 
-public class TentacularAStar
+public final class TentacularAStar
 {
 	protected Log log;
 	

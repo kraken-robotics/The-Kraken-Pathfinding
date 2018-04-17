@@ -18,7 +18,7 @@ import pfg.kraken.utils.XY;
  *
  */
 
-public class NavmeshTriangle implements Serializable, Printable
+public final class NavmeshTriangle implements Serializable, Printable
 {
 	private static final long serialVersionUID = 1L;
 	transient NavmeshNode[] points = new NavmeshNode[3];

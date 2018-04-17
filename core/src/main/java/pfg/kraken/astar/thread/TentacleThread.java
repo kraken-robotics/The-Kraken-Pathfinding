@@ -22,7 +22,7 @@ import pfg.kraken.memory.NodePool;
  *
  */
 
-public class TentacleThread extends Thread
+public final class TentacleThread extends Thread
 {
 	protected Log log;
 	private NodePool memorymanager;

@@ -15,7 +15,7 @@ import pfg.kraken.obstacles.container.DynamicObstacles;
  *
  */
 
-public class CollisionDetectionThread extends Thread
+public final class CollisionDetectionThread extends Thread
 {
 	protected Log log;
 	private DynamicObstacles dynObs;

@@ -21,7 +21,7 @@ import pfg.kraken.utils.XY;
  *
  */
 
-public class NavmeshNode implements Printable, Serializable
+public final class NavmeshNode implements Printable, Serializable
 {
 	private static final long serialVersionUID = -6588410126587155794L;
 

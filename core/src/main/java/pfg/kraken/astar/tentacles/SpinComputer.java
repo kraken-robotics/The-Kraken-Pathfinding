@@ -22,7 +22,7 @@ import pfg.kraken.robot.CinematiqueObs;
  *
  */
 
-public class SpinComputer implements TentacleComputer
+public final class SpinComputer implements TentacleComputer
 {
 	private CinemObsPool memory;
 	private double rootedMaxAcceleration;

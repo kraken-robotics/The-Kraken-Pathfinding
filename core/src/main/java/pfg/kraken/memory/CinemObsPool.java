@@ -23,7 +23,7 @@ import pfg.log.Log;
  *
  */
 
-public class CinemObsPool extends MemoryPool<CinematiqueObs>
+public final class CinemObsPool extends MemoryPool<CinematiqueObs>
 {
 	private RectangularObstacle vehicleTemplate;
 	

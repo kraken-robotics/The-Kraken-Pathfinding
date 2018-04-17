@@ -24,7 +24,7 @@ import java.io.IOException;
  *
  */
 
-public class Navmesh
+public final class Navmesh
 {
 	protected Log log;
 	public TriangulatedMesh mesh;

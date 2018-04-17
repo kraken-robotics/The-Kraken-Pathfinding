@@ -39,7 +39,7 @@ import static pfg.kraken.astar.tentacles.Tentacle.*;
  *
  */
 
-public class ClothoidesComputer implements TentacleComputer
+public final class ClothoidesComputer implements TentacleComputer
 {
 	private Log log;
 	private CinemObsPool memory;

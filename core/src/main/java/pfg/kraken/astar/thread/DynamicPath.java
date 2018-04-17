@@ -25,7 +25,7 @@ import static pfg.kraken.astar.tentacles.Tentacle.PRECISION_TRACE_MM;
  *
  */
 
-public class DynamicPath
+public final class DynamicPath
 {
 	public enum State
 	{

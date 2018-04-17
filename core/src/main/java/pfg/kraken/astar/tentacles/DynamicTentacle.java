@@ -17,7 +17,7 @@ import pfg.kraken.robot.CinematiqueObs;
  *
  */
 
-public class DynamicTentacle extends Tentacle
+public final class DynamicTentacle extends Tentacle
 {
 	private static final long serialVersionUID = 2188028584717495182L;
 	public List<CinematiqueObs> arcs;

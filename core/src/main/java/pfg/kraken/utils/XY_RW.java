@@ -12,7 +12,7 @@ package pfg.kraken.utils;
  *
  */
 
-public class XY_RW extends XY
+public final class XY_RW extends XY
 {
 	private static final long serialVersionUID = 1L;
 

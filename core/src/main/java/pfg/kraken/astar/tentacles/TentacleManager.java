@@ -45,7 +45,7 @@ import static pfg.kraken.astar.tentacles.Tentacle.*;
  *
  */
 
-public class TentacleManager implements Iterator<AStarNode>
+public final class TentacleManager implements Iterator<AStarNode>
 {
 	protected Log log;
 	private DStarLite dstarlite;

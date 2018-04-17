@@ -19,7 +19,7 @@ import pfg.kraken.utils.XY_RW;
  *
  */
 
-public class DStarLiteNode implements Printable
+public final class DStarLiteNode implements Printable
 {
 	private static final long serialVersionUID = -6800876007134374180L;
 	public final NavmeshNode node;

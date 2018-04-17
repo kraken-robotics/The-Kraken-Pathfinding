@@ -25,7 +25,7 @@ import pfg.kraken.utils.XY_RW;
  *
  */
 
-public class NavmeshEdge implements Serializable, Printable
+public final class NavmeshEdge implements Serializable, Printable
 {
 	private static final long serialVersionUID = 7904466980326128967L;
 	int length;

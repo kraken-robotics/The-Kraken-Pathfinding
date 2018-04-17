@@ -37,7 +37,7 @@ import pfg.log.Log;
  *
  */
 
-public class DStarLite
+public final class DStarLite
 {
 	protected Log log;
 	private Navmesh navmesh;

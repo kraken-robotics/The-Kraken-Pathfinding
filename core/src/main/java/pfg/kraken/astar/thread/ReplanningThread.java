@@ -17,7 +17,7 @@ import pfg.kraken.robot.Cinematique;
  *
  */
 
-public class ReplanningThread extends Thread
+public final class ReplanningThread extends Thread
 {
 	protected Log log;
 	private TentacularAStar astar;

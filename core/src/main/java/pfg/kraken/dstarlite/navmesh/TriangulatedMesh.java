@@ -25,7 +25,7 @@ import pfg.kraken.ColorKraken;
  *
  */
 
-public class TriangulatedMesh implements Serializable
+public final class TriangulatedMesh implements Serializable
 {
 	private static final long serialVersionUID = 5706228066190218520L;
 	public final int obsHashCode;

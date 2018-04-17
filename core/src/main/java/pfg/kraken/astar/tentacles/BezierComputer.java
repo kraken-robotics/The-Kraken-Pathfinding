@@ -30,7 +30,7 @@ import static pfg.kraken.astar.tentacles.Tentacle.*;
  *
  */
 
-public class BezierComputer implements TentacleComputer
+public final class BezierComputer implements TentacleComputer
 {
 	protected Log log;
 	private CinemObsPool memory;

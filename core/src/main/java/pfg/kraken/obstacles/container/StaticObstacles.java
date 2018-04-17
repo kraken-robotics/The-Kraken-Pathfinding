@@ -16,7 +16,7 @@ import pfg.kraken.utils.XY;
  *
  */
 
-public class StaticObstacles
+public final class StaticObstacles
 {
 	private XY bottomLeftCorner, topRightCorner;
     private List<Obstacle> obstacles = new ArrayList<Obstacle>();

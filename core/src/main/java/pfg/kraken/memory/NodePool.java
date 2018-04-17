@@ -20,7 +20,7 @@ import pfg.log.Log;
  *
  */
 
-public class NodePool extends MemoryPool<AStarNode>
+public final class NodePool extends MemoryPool<AStarNode>
 {
 	private RectangularObstacle vehicleTemplate;
 	private CinemObsPool pool;

@@ -47,7 +47,7 @@ import pfg.kraken.utils.XY;
  * @author pf
  *
  */
-public class Kraken
+public final class Kraken
 {
 	private Config config;
 	private Injector injector;

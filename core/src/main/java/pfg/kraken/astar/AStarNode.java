@@ -24,7 +24,7 @@ import pfg.kraken.robot.RobotState;
  *
  */
 
-public class AStarNode implements Memorizable, Printable
+public final class AStarNode implements Memorizable, Printable
 {
 	private static final long serialVersionUID = -2120732124823178009L;
 	public RobotState robot; // the cinematic state + the duration since the beginning of the search

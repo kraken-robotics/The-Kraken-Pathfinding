@@ -14,7 +14,7 @@ import pfg.kraken.robot.ItineraryPoint;
  *
  */
 
-public class PathDiff
+public final class PathDiff
 {
 	public final int firstDifferentPoint;
 	public final List<ItineraryPoint> diff;

@@ -16,7 +16,7 @@ import pfg.kraken.obstacles.Obstacle;
  *
  */
 
-public class DefaultDynamicObstacles extends SmartDynamicObstacles
+public final class DefaultDynamicObstacles extends SmartDynamicObstacles
 {
 	private List<Obstacle> obsList = new ArrayList<Obstacle>();
 

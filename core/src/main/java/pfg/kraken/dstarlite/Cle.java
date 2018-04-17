@@ -12,7 +12,7 @@ package pfg.kraken.dstarlite;
  *
  */
 
-public class Cle
+public final class Cle
 {
 	// Quand un nœud est consistent, first = vraie distance + heuristique,
 	// second = vraie distance

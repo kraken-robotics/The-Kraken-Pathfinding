@@ -17,7 +17,7 @@ import pfg.kraken.robot.CinematiqueObs;
  *
  */
 
-public class EmptyDynamicObstacles implements DynamicObstacles
+public final class EmptyDynamicObstacles implements DynamicObstacles
 {
 	@Override
 	public int isThereCollision(CinematiqueObs[] l, int from, int to)

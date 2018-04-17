@@ -16,7 +16,7 @@ import java.text.NumberFormat;
  *
  */
 
-public class XYO implements Serializable
+public final class XYO implements Serializable
 {
 	private static final long serialVersionUID = -1530328162896631206L;
 	public final XY_RW position;

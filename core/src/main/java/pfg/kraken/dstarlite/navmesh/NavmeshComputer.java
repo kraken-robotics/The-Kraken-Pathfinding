@@ -26,7 +26,7 @@ import pfg.log.Log;
  *
  */
 
-public class NavmeshComputer
+public final class NavmeshComputer
 {
 	public class NavmeshTriangleComparator implements Comparator<NavmeshTriangle>
 	{

@@ -18,7 +18,7 @@ import pfg.kraken.obstacles.RectangularObstacle;
  *
  */
 
-public class CinematiqueObs extends Cinematique implements Memorizable, Serializable
+public final class CinematiqueObs extends Cinematique implements Memorizable, Serializable
 {
 	private static final long serialVersionUID = 1L;
 	public volatile RectangularObstacle obstacle;
