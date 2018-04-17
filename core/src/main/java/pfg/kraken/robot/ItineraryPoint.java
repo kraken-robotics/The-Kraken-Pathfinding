@@ -120,4 +120,19 @@ public class ItineraryPoint implements Printable
 		g.drawLine(f.XtoWindow(x), f.YtoWindow(y), f.XtoWindow(x)+deltaX, f.YtoWindow(y)-deltaY);
 	}
 
+	@Override
+	public boolean equals(Object o)
+	{
+		if(!(o instanceof ItineraryPoint))
+			return false;
+		ItineraryPoint ip = (ItineraryPoint) o;
+		return ip.goingForward == goingForward
+				&& ip.stop == stop
+				&& ip.x == x
+				&& ip.y == y
+				&& ip.curvature == curvature
+				&& ip.orientation == orientation
+				&& ip.maxSpeed == maxSpeed
+				&& ip.possibleSpeed == possibleSpeed;
+	}
 }

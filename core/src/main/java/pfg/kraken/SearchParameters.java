@@ -5,6 +5,7 @@
 
 package pfg.kraken;
 
+import java.io.Serializable;
 import pfg.kraken.astar.DirectionStrategy;
 import pfg.kraken.robot.Cinematique;
 import pfg.kraken.utils.XY;
@@ -16,8 +17,10 @@ import pfg.kraken.utils.XYO;
  *
  */
 
-public class SearchParameters
+public class SearchParameters implements Serializable
 {
+	private static final long serialVersionUID = 2287573842706477685L;
+	
 	public final Cinematique start, arrival;
 	public final String mode;
 	public DirectionStrategy directionstrategy = null;
