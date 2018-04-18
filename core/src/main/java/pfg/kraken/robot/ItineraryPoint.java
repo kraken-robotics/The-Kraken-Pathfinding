@@ -67,6 +67,13 @@ public class ItineraryPoint implements Printable
 	{
 		this.x = x;
 		this.y = y;
+		
+		orientation %= 2 * Math.PI;
+		if(orientation > Math.PI)
+			orientation -= 2 * Math.PI;
+		else if(orientation <= -Math.PI)
+			orientation += 2 * Math.PI;
+
 		this.orientation = orientation;
 		this.curvature = curvature;
 		this.goingForward = goingForward;
@@ -77,23 +84,7 @@ public class ItineraryPoint implements Printable
 	
 	public ItineraryPoint(CinematiqueObs c)
 	{
-		goingForward = c.enMarcheAvant;
-		maxSpeed = c.maxSpeed;
-		possibleSpeed = c.possibleSpeed;
-		x = c.getPosition().getX();
-		y = c.getPosition().getY();
-		stop = c.stop;
-
-		if(c.enMarcheAvant)
-		{
-			orientation = c.orientationGeometrique;
-			curvature = c.courbureGeometrique;
-		}
-		else
-		{
-			orientation = c.orientationGeometrique + Math.PI;
-			curvature = -c.courbureGeometrique;
-		}
+		this(c.getPosition().getX(), c.getPosition().getY(), c.orientationReelle, c.courbureReelle, c.enMarcheAvant, c.maxSpeed, c.possibleSpeed, c.stop);
 	}
 	
 	@Override
@@ -118,6 +109,12 @@ public class ItineraryPoint implements Printable
 		int deltaX = (int) (longueur * Math.cos(directionLigne));
 		int deltaY = (int) (longueur * Math.sin(directionLigne));
 		g.drawLine(f.XtoWindow(x), f.YtoWindow(y), f.XtoWindow(x)+deltaX, f.YtoWindow(y)-deltaY);
+	}
+	
+	@Override
+	public int hashCode()
+	{
+		return (int) Math.round(x * y);
 	}
 
 	@Override
