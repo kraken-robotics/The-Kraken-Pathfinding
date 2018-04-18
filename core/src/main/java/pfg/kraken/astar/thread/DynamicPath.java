@@ -93,6 +93,7 @@ public final class DynamicPath
 	public synchronized void endContinuousSearch()
 	{
 		clear();
+		notifyAll();
 		try
 		{
 			waitThread();
