@@ -3,7 +3,7 @@
  * Distributed under the MIT License.
  */
 
-package pfg.kraken.astar.thread;
+package pfg.kraken.astar.tentacles.computethread;
 
 import static pfg.kraken.astar.tentacles.Tentacle.PRECISION_TRACE;
 

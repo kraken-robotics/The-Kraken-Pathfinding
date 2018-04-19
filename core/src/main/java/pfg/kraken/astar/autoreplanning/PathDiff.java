@@ -3,7 +3,7 @@
  * Distributed under the MIT License.
  */
 
-package pfg.kraken.astar.thread;
+package pfg.kraken.astar.autoreplanning;
 
 import java.util.List;
 import pfg.kraken.robot.ItineraryPoint;

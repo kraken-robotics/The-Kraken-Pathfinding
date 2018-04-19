@@ -11,7 +11,7 @@ import pfg.graphic.GraphicDisplay;
 import pfg.graphic.printable.Layer;
 import pfg.kraken.Kraken;
 import pfg.kraken.SearchParameters;
-import pfg.kraken.astar.thread.DynamicPath;
+import pfg.kraken.astar.autoreplanning.DynamicPath;
 import pfg.kraken.obstacles.CircularObstacle;
 import pfg.kraken.obstacles.Obstacle;
 import pfg.kraken.obstacles.RectangularObstacle;

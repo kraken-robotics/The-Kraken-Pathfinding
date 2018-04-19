@@ -3,7 +3,7 @@
  * Distributed under the MIT License.
  */
 
-package pfg.kraken.astar.thread;
+package pfg.kraken.astar.tentacles.computethread;
 
 import pfg.kraken.astar.AStarNode;
 import pfg.kraken.astar.tentacles.TentacleComputer;
