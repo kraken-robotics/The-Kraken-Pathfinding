@@ -203,7 +203,7 @@ public final class TentacularAStar
 	private Cinematique tmp = new Cinematique();
 	private List<RectangularObstacle> initialObstacles = new ArrayList<RectangularObstacle>();
 
-	public void searchWithReplanningAndInitialPath(List<ItineraryPoint> initialPath) throws PathfindingException
+	public void checkAfterInitialization(List<ItineraryPoint> initialPath) throws InvalidPathException
 	{
 		tmp.update(initialPath.get(0));
 		if(!arcmanager.isNearXYO(depart.robot.getCinematique(), tmp))
@@ -223,6 +223,11 @@ public final class TentacularAStar
 		
 		if(engine.isThereCollision(initialObstacles))
 			throw new InvalidPathException("There are obstacles through the path.");
+	}
+	
+	public void searchWithReplanningAndInitialPath(List<ItineraryPoint> initialPath) throws PathfindingException
+	{
+		checkAfterInitialization(initialPath);
 		
 		chemin.importPath(initialPath);
 		log.write("Path search with autoreplanning begins.", LogCategoryKraken.PF);

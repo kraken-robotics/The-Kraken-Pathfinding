@@ -32,6 +32,7 @@ import pfg.kraken.astar.tentacles.types.*;
 import pfg.kraken.astar.thread.CollisionDetectionThread;
 import pfg.kraken.astar.thread.DynamicPath;
 import pfg.kraken.astar.thread.ReplanningThread;
+import pfg.kraken.exceptions.InvalidPathException;
 import pfg.kraken.exceptions.NoPathException;
 import pfg.kraken.exceptions.NotInitializedPathfindingException;
 import pfg.kraken.exceptions.PathfindingException;
@@ -269,12 +270,30 @@ public final class Kraken
 		}
 	}
 	
-	public void endAutoReplanning() throws NotInitializedPathfindingException
+	public void endAutoReplanning()
 	{
-		if(dpath.isStarted())
-			throw new NotInitializedPathfindingException("You should end the current search before disabling the autoreplanning mode.");
-
-		autoReplanningEnable = false;
+		if(autoReplanningEnable)
+		{
+			if(dpath.isStarted())
+				try {
+					endContinuousSearch();
+				} catch (NotInitializedPathfindingException e) {
+					e.printStackTrace();
+				}
+			injector.getExistingService(CollisionDetectionThread.class).interrupt();
+			injector.getExistingService(ReplanningThread.class).interrupt();
+			autoReplanningEnable = false;
+		}
+	}
+	
+	public boolean checkPath(List<ItineraryPoint> initialPath)
+	{
+		try {
+			astar.checkAfterInitialization(initialPath);
+			return true;
+		} catch (InvalidPathException e) {
+			return false;
+		}
 	}
 	
 	public void startContinuousSearchWithInitialPath(SearchParameters sp, List<ItineraryPoint> initialPath) throws PathfindingException
