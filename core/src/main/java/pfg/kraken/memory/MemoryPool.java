@@ -28,7 +28,7 @@ public abstract class MemoryPool<T extends Memorizable>
 	private final Class<T> classe;
 	protected Log log;
 	private volatile int firstAvailable;
-	private final int tailleMax = 1 << 24;
+	private static final int tailleMax = 1 << 24;
 
 	protected abstract void make(T[] nodes);
 	
