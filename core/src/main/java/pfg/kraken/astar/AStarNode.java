@@ -87,7 +87,7 @@ public final class AStarNode implements Memorizable, Printable
 	@Override
 	public boolean equals(Object o)
 	{
-		return o.hashCode() == hashCode();
+		return o != null && o.hashCode() == hashCode();
 	}
 
 	@Override

@@ -90,12 +90,12 @@ public class Test_MemoryPool extends JUnit_Test
 				}
 				Thread.sleep(1);
 				pool.destroy(liste);
-				synchronized(this)
+/*				synchronized(this)
 				{
 					done = true;
 					notify();
 					wait();
-				}
+				}*/
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}

@@ -153,7 +153,7 @@ public class Cinematique implements Printable, Serializable
 	@Override
 	public boolean equals(Object o)
 	{
-		return o.hashCode() == hashCode();
+		return o != null && o.hashCode() == hashCode();
 	}
 
 	/**

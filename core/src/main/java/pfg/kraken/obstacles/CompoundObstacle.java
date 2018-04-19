@@ -8,6 +8,7 @@ package pfg.kraken.obstacles;
 
 import java.awt.Graphics;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import pfg.graphic.GraphicPanel;
@@ -55,7 +56,7 @@ public class CompoundObstacle extends Obstacle
 	@Override
 	public String toString()
 	{
-		return "ObstacleCompound " + obs;
+		return "ObstacleCompound " + Arrays.toString(obs);
 	}
 
 	/**

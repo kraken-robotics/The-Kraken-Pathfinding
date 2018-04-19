@@ -54,7 +54,7 @@ public final class DStarLiteNode implements Printable
 	@Override
 	public final boolean equals(Object o)
 	{
-		return node.nb == o.hashCode();
+		return o != null && node.nb == o.hashCode();
 	}
 
 	@Override

@@ -383,12 +383,14 @@ public final class DStarLite
 		
 		while(!node.equals(arrivee))
 		{
+			assert node.heuristiqueOrientation != null;
+			XYO xyo = new XYO(node.node.position.clone(), (double)node.heuristiqueOrientation);
+			
 			// Le noeud de départ peut exceptionnellement être inconsistent
 			assert node.isConsistent() : "A node in the path is not consistent !";
-			assert !trajet.contains(node.node.position) : "Cyclic path !";
+			assert !trajet.contains(xyo) : "Cyclic path !";
 			
-			assert node.heuristiqueOrientation != null;
-			trajet.add(new XYO(node.node.position.clone(), (double)node.heuristiqueOrientation));
+			trajet.add(xyo);
 
 			coutMin = Integer.MAX_VALUE;
 
