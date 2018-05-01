@@ -150,7 +150,7 @@ public final class DynamicPath
 
 	public synchronized CinematiqueObs setCurrentTrajectoryIndex(int index)
 	{
-		if(index >= pathSize)
+		if(pathSize > 0 && index >= pathSize)
 			return path[pathSize-1]; // ça peut potentiellement arrivé à cause de la latence de la communication…
 		
 		indexFirst = index;
