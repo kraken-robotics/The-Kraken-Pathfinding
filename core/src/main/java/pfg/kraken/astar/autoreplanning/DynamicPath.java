@@ -92,6 +92,9 @@ public final class DynamicPath
 	
 	public synchronized void endContinuousSearch()
 	{
+		if(etat == State.STANDBY)
+			return;
+		
 		clear();
 		notifyAll();
 		try
@@ -355,6 +358,9 @@ public final class DynamicPath
 	
 	public void endContinuousSearchWithException(PathfindingException e) throws InterruptedException
 	{
+		if(etat == State.STANDBY)
+			return;
+
 		this.e = e;
 		endContinuousSearch();
 	}
