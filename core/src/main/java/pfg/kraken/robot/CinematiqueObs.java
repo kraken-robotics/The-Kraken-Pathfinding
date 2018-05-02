@@ -25,7 +25,7 @@ public final class CinematiqueObs extends Cinematique implements Memorizable, Se
 	public volatile double maxSpeed; // in m/s
 	public volatile double possibleSpeed; // in m/s
 
-	protected static double[] maxSpeedLUT;
+	public static final double[] maxSpeedLUT;
 
 	private volatile int indiceMemory;
 
@@ -34,7 +34,7 @@ public final class CinematiqueObs extends Cinematique implements Memorizable, Se
 		maxSpeedLUT = new double[500];
 		maxSpeedLUT[0] = Double.MAX_VALUE;
 		for(int i = 1; i < 500; i++)
-			maxSpeedLUT[i] = Math.sqrt(50. / i);
+			maxSpeedLUT[i] = Math.sqrt(10. / i);
 	}
 	
 	public String toString()
