@@ -49,7 +49,7 @@ public abstract class SmartDynamicObstacles implements DynamicObstacles
 	{
 		addObstacle(obs);
 		newObs.add(obs);
-		notify();
+		notifyAll();
 	}
 
 	@Override

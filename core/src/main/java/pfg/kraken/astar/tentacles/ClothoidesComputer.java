@@ -369,6 +369,7 @@ public final class ClothoidesComputer implements TentacleComputer
 		if(!vitesse.positif)
 			courbure = -courbure;
 
+		// TODO updateWithMaxSpeed ?
 		c.update(tmp[indexThread].getX(), tmp[indexThread].getY(), baseOrientation + orientationClotho, marcheAvant, courbure, rootedMaxAcceleration, i == 0 && vitesse.arret);
 		c.maxSpeed = Math.min(c.maxSpeed, vitesse.maxSpeed);
 	}
