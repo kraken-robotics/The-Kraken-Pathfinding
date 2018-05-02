@@ -27,7 +27,6 @@ public final class CollisionDetectionThread extends Thread
 		this.log = log;
 		this.pm = pm;
 		setDaemon(true);
-		setPriority(Thread.MAX_PRIORITY);
 	}
 
 	@Override
