@@ -162,6 +162,8 @@ public final class TentacularAStar
 	
 	private RectangularObstacle vehicleTemplate;
 	
+	private boolean fastMode;
+	
 	/**
 	 * Constructeur du AStarCourbe
 	 */
@@ -177,6 +179,7 @@ public final class TentacularAStar
 		this.buffer = buffer;
 		graphicTrajectory = config.getBoolean(ConfigInfoKraken.GRAPHIC_TENTACLES);
 		debugMode = config.getBoolean(ConfigInfoKraken.ENABLE_DEBUG_MODE);
+		fastMode = config.getBoolean(ConfigInfoKraken.FAST_AND_DIRTY);
 		if(debugMode)
 			dureeMaxPF = Integer.MAX_VALUE;
 		else
@@ -441,7 +444,17 @@ public final class TentacularAStar
 				// est qu'on est tombé sur l'arrivée ? alors ça fait un trajet de secours
 				// s'il y a déjà un trajet de secours, on prend le meilleur
 				if(successeur.getArc() != null && arcmanager.isArrived(successeur.getArc().getLast()) && (successeur.getArc() == null || !engine.isThereCollision(successeur.getArc())) && (trajetDeSecours == null || trajetDeSecours.f_score > successeur.f_score))
+				{
 					trajetDeSecours = successeur;
+					if(fastMode)
+					{
+						log.write("A fast-and-dirty path is used.", LogCategoryKraken.PF);
+						partialReconstruct(trajetDeSecours, chemin, Integer.MAX_VALUE, false);
+						memorymanager.empty();
+						cinemMemory.empty();
+						return;
+					}
+				}
 					/*
 					 * Cela ne sert à rien de détruire l'ancien trajet de secours (qui est dans l'openset, car si on l'avait pioché de l'openset on aurait fini avec lui)
 					 * C'est juste qu'on garde le meilleur dans un coin.

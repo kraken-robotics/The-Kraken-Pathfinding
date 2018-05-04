@@ -188,8 +188,9 @@ public final class TentacleManager implements Iterator<AStarNode>
 	public void computeTentacles(AStarNode current)
 	{
 		successeurs.clear();
+//		assert nbLeft == 0; // non, à cause du fast and dirty
+		nbLeft = 0;
 		int index = 0;
-		assert nbLeft == 0;
 
 		/*
 		 * On-line Largest Processing Time Rule algorithm
@@ -214,6 +215,8 @@ public final class TentacleManager implements Iterator<AStarNode>
 					buffer.add(tt);
 			}
 		}
+		
+		assert threads.length > 1 || successeurs.size() == nbLeft;
 	}
 
 	public synchronized Integer heuristicCostCourbe(Cinematique c)

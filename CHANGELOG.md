@@ -1,4 +1,5 @@
 # Unreleased
+- Fast and dirty mode, to find quickly any path
 
 # v1.4.1
 - May use an external physics engine
