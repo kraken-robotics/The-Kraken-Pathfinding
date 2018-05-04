@@ -361,7 +361,13 @@ public class RectangularObstacle extends Obstacle
 	
 	public RectangularObstacle update(XY position, double orientation)
 	{
-		position.copy(this.position);
+		return update(position.getX(), position.getY(), orientation);
+	}
+	
+	public RectangularObstacle update(double x, double y, double orientation)
+	{
+		this.position.setX(x);
+		this.position.setY(y);
 		this.angle = orientation;
 		cos = Math.cos(angle);
 		sin = Math.sin(angle);

@@ -120,6 +120,7 @@ public final class TentacularAStar
 	private int nbExpandedNodes;
 	private boolean debugMode;
 	private boolean initialized = false;
+	private boolean checkEachIteration;
 	
 	/**
 	 * Comparateur de noeud utilisé par la priority queue.
@@ -180,6 +181,7 @@ public final class TentacularAStar
 		graphicTrajectory = config.getBoolean(ConfigInfoKraken.GRAPHIC_TENTACLES);
 		debugMode = config.getBoolean(ConfigInfoKraken.ENABLE_DEBUG_MODE);
 		fastMode = config.getBoolean(ConfigInfoKraken.FAST_AND_DIRTY);
+		checkEachIteration = config.getBoolean(ConfigInfoKraken.CHECK_NEW_OBSTACLES);
 		if(debugMode)
 			dureeMaxPF = Integer.MAX_VALUE;
 		else
@@ -278,6 +280,11 @@ public final class TentacularAStar
 		do
 		{
 			current = openset.poll();
+			if(checkEachIteration)
+			{
+				engine.update();
+				dstarlite.updateObstacles();
+			}
 
 			assert current.parent != null || current == depart;
 			assert current == depart || current.parent == depart || current.parent.getArc() != null : current == depart ? "Départ" : current.parent.getArc();

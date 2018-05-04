@@ -22,13 +22,14 @@ import pfg.kraken.utils.XY;
 
 public final class DefaultPhysicsEngine implements PhysicsEngine
 {
-	private StaticObstacles fixes;
+	private List<Obstacle> fixed;
 	private DynamicObstacles dynamicObs;
 	private List<Obstacle> currentObstacles = new ArrayList<Obstacle>();
 
 	public DefaultPhysicsEngine(StaticObstacles fixes, DynamicObstacles dynamicObs)
 	{
-		this.fixes = fixes;
+//		this.fixes = fixes;
+		fixed = fixes.getObstacles();
 		this.dynamicObs = dynamicObs;
 		coins[0] = fixes.getBottomLeftCorner();
 		coins[2] = fixes.getTopRightCorner();
@@ -59,7 +60,7 @@ public final class DefaultPhysicsEngine implements PhysicsEngine
 					return true;
 
 			// Collision avec un obstacle fixe?
-			for(Obstacle o : fixes.getObstacles())
+			for(Obstacle o : fixed)
 				if(o.isColliding(co))
 					// log.debug("Collision avec "+o);
 					return true;
