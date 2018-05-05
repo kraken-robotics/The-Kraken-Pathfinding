@@ -203,7 +203,7 @@ public final class Kraken
 	public void initializeNewSearch(SearchParameters sp) throws PathfindingException
 	{
 		if(!autoReplanningEnable)
-			astar.initializeNewSearch(sp.start, sp.arrival, sp.directionstrategy, sp.mode, sp.maxSpeed);
+			astar.initializeNewSearch(sp.start, sp.arrival, sp.directionstrategy, sp.mode, sp.maxSpeed, sp.timeout);
 		else
 			throw new NotInitializedPathfindingException("initializeNewSearch() should be called before enabling the autoreplanning mode.");
 	}
@@ -307,7 +307,7 @@ public final class Kraken
 			throw new NotInitializedPathfindingException("You should end the previous continuous search before starting a new one.");
 		else if(autoReplanningEnable)
 		{
-			astar.initializeNewSearch(sp.start, sp.arrival, sp.directionstrategy, sp.mode, sp.maxSpeed);
+			astar.initializeNewSearch(sp.start, sp.arrival, sp.directionstrategy, sp.mode, sp.maxSpeed, sp.timeout);
 			astar.searchWithReplanningAndInitialPath(initialPath);
 		}
 		else
@@ -320,7 +320,7 @@ public final class Kraken
 			throw new NotInitializedPathfindingException("You should end the previous continuous search before starting a new one.");
 		else if(autoReplanningEnable)
 		{
-			astar.initializeNewSearch(sp.start, sp.arrival, sp.directionstrategy, sp.mode, sp.maxSpeed);
+			astar.initializeNewSearch(sp.start, sp.arrival, sp.directionstrategy, sp.mode, sp.maxSpeed, sp.timeout);
 			dpath.startContinuousSearch();
 		}
 		else

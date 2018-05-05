@@ -48,25 +48,25 @@ public class Test_Search extends JUnit_Test
 	@Test(expected=NoPathException.class)
 	public void test_out_of_bounds() throws Exception
 	{
-		pathfinding.initializeNewSearch(new Cinematique(new XYO(0, 200, 0)), new Cinematique(new XYO(10000, 10000, 0)), DirectionStrategy.FASTEST, "XY", null);
+		pathfinding.initializeNewSearch(new Cinematique(new XYO(0, 200, 0)), new Cinematique(new XYO(10000, 10000, 0)), DirectionStrategy.FASTEST, "XY", null, 3000);
 	}
 	
 	@Test(expected=NoPathException.class)
 	public void test_start_inside_obstacle() throws Exception
 	{
-		pathfinding.initializeNewSearch(new Cinematique(new XYO(50,1050, 0)), new Cinematique(new XYO(0, 200, 0)), DirectionStrategy.FASTEST, "XY", null);
+		pathfinding.initializeNewSearch(new Cinematique(new XYO(50,1050, 0)), new Cinematique(new XYO(0, 200, 0)), DirectionStrategy.FASTEST, "XY", null, 3000);
 	}
 	
 	@Test(expected=NoPathException.class)
 	public void test_finish_inside_obstacle() throws Exception
 	{
-		pathfinding.initializeNewSearch(new Cinematique(new XYO(0, 200, 0)), new Cinematique(new XYO(50,1050, 0)), DirectionStrategy.FASTEST, "XY", null);
+		pathfinding.initializeNewSearch(new Cinematique(new XYO(0, 200, 0)), new Cinematique(new XYO(50,1050, 0)), DirectionStrategy.FASTEST, "XY", null, 3000);
 	}
 	
 	@Test
 	public void test_exemple_1() throws Exception
 	{
-		pathfinding.initializeNewSearch(new Cinematique(new XYO(0, 200, 0)), new Cinematique(new XYO(1000, 1000, 0)), DirectionStrategy.FASTEST, "XY", null);
+		pathfinding.initializeNewSearch(new Cinematique(new XYO(0, 200, 0)), new Cinematique(new XYO(1000, 1000, 0)), DirectionStrategy.FASTEST, "XY", null, 3000);
 		pathfinding.searchWithoutReplanning();
 	}
 	

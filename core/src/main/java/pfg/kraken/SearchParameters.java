@@ -25,6 +25,7 @@ public class SearchParameters implements Serializable
 	public final String mode;
 	public DirectionStrategy directionstrategy = null;
 	public Double maxSpeed = null;
+	public Integer timeout = null;
 	
 	public SearchParameters(XYO start, XYO arrival)
 	{
@@ -55,6 +56,11 @@ public class SearchParameters implements Serializable
 		this.start = start;
 		this.arrival = arrival;
 		this.mode = mode;
+	}
+	
+	public void setTimeout(int timeout)
+	{
+		this.timeout = timeout;
 	}
 	
 	public void setMaxSpeed(double maxSpeed)

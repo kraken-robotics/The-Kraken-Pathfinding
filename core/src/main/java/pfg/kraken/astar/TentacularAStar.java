@@ -103,6 +103,7 @@ public final class TentacularAStar
 	 * Duration before timeout
 	 */
 	private int dureeMaxPF;
+	private int defaultTimeout;
 	
 	/*
 	 * The default direction strategy
@@ -185,9 +186,9 @@ public final class TentacularAStar
 		fastMode = config.getBoolean(ConfigInfoKraken.FAST_AND_DIRTY);
 		checkEachIteration = config.getBoolean(ConfigInfoKraken.CHECK_NEW_OBSTACLES);
 		if(debugMode)
-			dureeMaxPF = Integer.MAX_VALUE;
+			defaultTimeout = Integer.MAX_VALUE;
 		else
-			dureeMaxPF = config.getInt(ConfigInfoKraken.SEARCH_TIMEOUT);
+			defaultTimeout = config.getInt(ConfigInfoKraken.SEARCH_TIMEOUT);
 
 		if(config.getBoolean(ConfigInfoKraken.ALLOW_BACKWARD_MOTION))
 			defaultStrategy = DirectionStrategy.FASTEST;
@@ -538,13 +539,18 @@ public final class TentacularAStar
 	 * @param shoot
 	 * @throws NoPathException 
 	 */
-	public void initializeNewSearch(Cinematique start, Cinematique arrival, DirectionStrategy directionstrategy, String mode, Double maxSpeed) throws NoPathException
+	public void initializeNewSearch(Cinematique start, Cinematique arrival, DirectionStrategy directionstrategy, String mode, Double maxSpeed, Integer timeout) throws NoPathException
 	{
 		stop = false;
 		initialized = true;
 		depart.init();
 		depart.robot.setCinematique(start);
 		arrival.copy(this.arrival);
+		if(timeout == null)
+			dureeMaxPF = defaultTimeout;
+		else
+			dureeMaxPF = timeout;
+		
 		arcmanager.configure(directionstrategy == null ? defaultStrategy : directionstrategy, maxSpeed == null ? defaultSpeed : maxSpeed, arrival, mode);
 		engine.update();
 		if(mode.equals("XYO") || mode.equals("XYOC0"))
