@@ -121,7 +121,8 @@ public final class TentacularAStar
 	private boolean debugMode;
 	private boolean initialized = false;
 	private boolean checkEachIteration;
-	
+	public volatile boolean stop = false;
+
 	/**
 	 * Comparateur de noeud utilisé par la priority queue.
 	 * 
@@ -393,7 +394,7 @@ public final class TentacularAStar
 				return;
 			}*/
 			
-			if(elapsed > dureeMaxPF)
+			if(stop || elapsed > dureeMaxPF)
 			{
 				/*
 				 * Timeout !
@@ -539,6 +540,7 @@ public final class TentacularAStar
 	 */
 	public void initializeNewSearch(Cinematique start, Cinematique arrival, DirectionStrategy directionstrategy, String mode, Double maxSpeed) throws NoPathException
 	{
+		stop = false;
 		initialized = true;
 		depart.init();
 		depart.robot.setCinematique(start);
@@ -573,6 +575,7 @@ public final class TentacularAStar
 	 */
 	public void updatePath(Cinematique lastValid) throws PathfindingException
 	{
+		stop = false;
 		assert chemin.needReplanning();
 		if(!chemin.needReplanning())
 			return;

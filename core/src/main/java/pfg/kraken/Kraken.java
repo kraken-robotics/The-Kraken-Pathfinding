@@ -177,6 +177,11 @@ public final class Kraken
 		}
 	}
 	
+	public void stop()
+	{
+		astar.stop = true;
+	}
+	
 	private boolean isJUnitTest()
 	{
 	    StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
