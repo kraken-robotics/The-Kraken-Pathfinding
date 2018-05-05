@@ -164,7 +164,8 @@ public final class TentacularAStar
 	private RectangularObstacle vehicleTemplate;
 	
 	private boolean fastMode;
-	
+	private List<RectangularObstacle> finalPoint = new ArrayList<RectangularObstacle>();
+
 	/**
 	 * Constructeur du AStarCourbe
 	 */
@@ -194,7 +195,9 @@ public final class TentacularAStar
 		defaultSpeed = config.getDouble(ConfigInfoKraken.DEFAULT_MAX_SPEED);
 		this.depart = new AStarNode(chrono, vehicleTemplate);
 		depart.setIndiceMemoryManager(-1);
-		this.vehicleTemplate = vehicleTemplate;
+		this.vehicleTemplate = vehicleTemplate;		
+		finalPoint.add(vehicleTemplate.clone());
+		
 	}
 
 	public List<ItineraryPoint> searchWithoutReplanning() throws PathfindingException
@@ -542,6 +545,12 @@ public final class TentacularAStar
 		arrival.copy(this.arrival);
 		arcmanager.configure(directionstrategy == null ? defaultStrategy : directionstrategy, maxSpeed == null ? defaultSpeed : maxSpeed, arrival, mode);
 		engine.update();
+		if(mode.equals("XYO") || mode.equals("XYOC0"))
+		{
+			finalPoint.get(0).update(arrival.getPosition(), arrival.orientationReelle);
+			if(engine.isThereCollision(finalPoint))
+				throw new NoPathException("The endpoint in XYO mode collides an obstacle !");
+		}
 		
 		/*
 		 * dstarlite.computeNewPath updates the heuristic.
