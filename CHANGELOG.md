@@ -1,6 +1,9 @@
 # Unreleased
 - Fast and dirty mode, to find quickly any path
 - May check new obstacles while searching or not
+- Check the final position in XYO mode
+- API : add a timeout in SearchParameters
+- API : add a "stop()" function to end the current search
 
 # v1.4.1
 - May use an external physics engine
