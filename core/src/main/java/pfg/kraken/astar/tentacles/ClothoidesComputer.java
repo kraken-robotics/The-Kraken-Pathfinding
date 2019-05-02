@@ -50,7 +50,7 @@ public final class ClothoidesComputer implements TentacleComputer
 		private BigDecimal x, y; // utilisés dans le calcul de trajectoire
 	}
 	
-	private static final int S_MAX = 10; // courbure max qu'on puisse gérer
+	private static final int S_MAX = 10; // la moitié de la courbure max qu'on puisse gérer
 	private static final int INDICE_MAX = (int) (S_MAX / PRECISION_TRACE);
 	private XY[] trajectoire = new XY[2 * INDICE_MAX - 1];
 	private XY_RW[] tmp;
@@ -90,7 +90,7 @@ public final class ClothoidesComputer implements TentacleComputer
 
 	/**
 	 * Calcul grâce au développement limité d'Euler
-	 * Génère le point de la clothoïde unitaire de courbure = s
+	 * Génère le point de la clothoïde unitaire de courbure = 2 * s
 	 * 
 	 * @param s
 	 */
@@ -217,7 +217,7 @@ public final class ClothoidesComputer implements TentacleComputer
 		}
 
 		double coeffMultiplicatif = 1. / vitesse.squaredRootVitesse;
-		double sDepart = courbure / vitesse.squaredRootVitesse; // sDepart peut
+		double sDepart = courbure / 2 / vitesse.squaredRootVitesse; // sDepart peut
 																// parfaitement
 																// être négatif
 		if(!vitesse.positif)
@@ -282,7 +282,7 @@ public final class ClothoidesComputer implements TentacleComputer
 		boolean marcheAvant = cinematiqueInitiale.enMarcheAvant;
 
 		double coeffMultiplicatif = 1. / vitesse.squaredRootVitesse;
-		double sDepart = courbure / vitesse.squaredRootVitesse; // sDepart peut
+		double sDepart = courbure / 2 / vitesse.squaredRootVitesse; // sDepart peut
 																// parfaitement
 																// être négatif
 		if(!vitesse.positif)
@@ -364,7 +364,7 @@ public final class ClothoidesComputer implements TentacleComputer
 		if(!vitesse.positif)
 			orientationClotho = -orientationClotho;
 
-		double courbure = sDepart * vitesse.squaredRootVitesse;
+		double courbure = 2 * sDepart * vitesse.squaredRootVitesse;
 
 		if(!vitesse.positif)
 			courbure = -courbure;
@@ -554,7 +554,7 @@ public final class ClothoidesComputer implements TentacleComputer
 		boolean marcheAvant = rebrousse != cinematiqueInitiale.enMarcheAvant;
 
 		double coeffMultiplicatif = 1. / vitesse.squaredRootVitesse;
-		double sDepart = courbure / vitesse.squaredRootVitesse; // sDepart peut
+		double sDepart = courbure / 2 / vitesse.squaredRootVitesse; // sDepart peut
 																// parfaitement
 																// être négatif
 		if(!vitesse.positif)
