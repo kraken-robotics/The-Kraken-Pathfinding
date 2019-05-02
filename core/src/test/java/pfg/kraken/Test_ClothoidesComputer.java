@@ -88,6 +88,6 @@ public class Test_ClothoidesComputer extends JUnit_Test
 			}
 		}
 
-		Assert.assertEquals(0, arc[nbArc - 1].arcselems[arc[nbArc - 1].arcselems.length - 1].getPosition().distance(new XY(-220.06,1372.82)), 0.1);
+		Assert.assertEquals(0, arc[nbArc - 1].arcselems[arc[nbArc - 1].arcselems.length - 1].getPosition().distance(new XY(-166.41,1335.34)), 0.1);
 	}
 }
