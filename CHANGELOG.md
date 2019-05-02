@@ -1,5 +1,8 @@
 # Unreleased
 
+# v1.4.3
+- Fix the curvature of clothoids curves
+
 # v1.4.2
 - Fast and dirty mode, to find quickly any path
 - May check new obstacles while searching or not
