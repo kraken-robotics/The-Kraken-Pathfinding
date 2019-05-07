@@ -1,4 +1,5 @@
 # Unreleased
+- Abort the search when interrupted
 
 # v1.4.3
 - Fix the curvature of clothoids curves

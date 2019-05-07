@@ -284,6 +284,8 @@ public final class TentacularAStar
 		AStarNode current;
 		do
 		{
+			if(Thread.currentThread().isInterrupted())
+				throw new TimeoutException("The search has been interrupted!");
 			current = openset.poll();
 			if(checkEachIteration)
 			{
