@@ -553,6 +553,10 @@ public final class TentacularAStar
 		else
 			dureeMaxPF = timeout;
 		
+		finalPoint.get(0).update(start.getPosition(), start.orientationReelle);
+		if(engine.isThereCollision(finalPoint))
+			throw new NoPathException("The start point collides an obstacle !");
+		
 		arcmanager.configure(directionstrategy == null ? defaultStrategy : directionstrategy, maxSpeed == null ? defaultSpeed : maxSpeed, arrival, mode);
 		engine.update();
 		if(mode.equals("XYO") || mode.equals("XYOC0"))
