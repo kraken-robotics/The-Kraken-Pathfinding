@@ -66,7 +66,7 @@ public class Test_Search extends JUnit_Test
 	@Test
 	public void test_exemple_1() throws Exception
 	{
-		pathfinding.initializeNewSearch(new Cinematique(new XYO(0, 200, 0)), new Cinematique(new XYO(1000, 1000, 0)), DirectionStrategy.FASTEST, "XY", null, 3000);
+		pathfinding.initializeNewSearch(new Cinematique(new XYO(1000, 200, 0)), new Cinematique(new XYO(1000, 1000, 0)), DirectionStrategy.FASTEST, "XY", null, 3000);
 		pathfinding.searchWithoutReplanning();
 	}
 	
