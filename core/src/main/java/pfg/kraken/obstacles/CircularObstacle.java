@@ -113,6 +113,12 @@ public class CircularObstacle extends Obstacle
 	    return isInObstacle(pointA) || isInObstacle(pointB);
 	}
 	
+	public double squaredDistanceTo(RectangularObstacle o)
+	{
+		double out = (Math.sqrt(o.squaredDistance(position)) - radius);
+		return out * out;
+	}
+	
 	private boolean isCollidingLine(XY pointA, XY pointB)
 	{
 		XY C = position;

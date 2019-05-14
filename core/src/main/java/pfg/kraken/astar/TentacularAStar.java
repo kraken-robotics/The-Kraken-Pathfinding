@@ -130,7 +130,7 @@ public final class TentacularAStar
 	 * @author pf
 	 *
 	 */
-	private class AStarCourbeNodeComparator implements Comparator<AStarNode>
+	private static class AStarCourbeNodeComparator implements Comparator<AStarNode>
 	{
 		@Override
 		public final int compare(AStarNode arg0, AStarNode arg1)

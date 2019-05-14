@@ -49,7 +49,7 @@ public class RectangularObstacle extends Obstacle
 
 	protected double angle, cos, sin;
 
-	public RectangularObstacle(XY position, int sizeX, int sizeY)
+	public RectangularObstacle(XY position, double sizeX, double sizeY)
 	{
 		this(position, sizeX, sizeY, 0);
 	}
@@ -68,22 +68,22 @@ public class RectangularObstacle extends Obstacle
 	 * @param sizeY
 	 * @param angle
 	 */
-	public RectangularObstacle(XY position, int sizeX, int sizeY, double angle)
+	public RectangularObstacle(XY position, double sizeX, double sizeY, double angle)
 	{
 		this(position, sizeX / 2, sizeX / 2, sizeY / 2, sizeY / 2, angle);
 	}
 
-	public RectangularObstacle(int distanceToFront, int distanceToBack, int distanceToLeft, int distanceToRight)
+	public RectangularObstacle(double distanceToFront, double distanceToBack, double distanceToLeft, double distanceToRight)
 	{
 		this(distanceToFront, distanceToBack, distanceToLeft, distanceToRight, 0);
 	}
 
-	public RectangularObstacle(int distanceToFront, int distanceToBack, int distanceToLeft, int distanceToRight, double tiltAngle)
+	public RectangularObstacle(double distanceToFront, double distanceToBack, double distanceToLeft, double distanceToRight, double tiltAngle)
 	{
 		this(new XY(0,0), distanceToBack, distanceToFront, distanceToLeft, distanceToRight, tiltAngle);
 	}
 	
-	public RectangularObstacle(XY position, int sizeLeftX, int sizeRightX, int sizeUpY, int sizeDownY, double angle)
+	public RectangularObstacle(XY position, double sizeLeftX, double sizeRightX, double sizeUpY, double sizeDownY, double angle)
 	{
 		this(position, new XY(sizeRightX, sizeUpY), new XY(-sizeLeftX, -sizeDownY), angle);
 	}
@@ -261,6 +261,13 @@ public class RectangularObstacle extends Obstacle
 		return 0;
 	}
 
+	public double squaredDistanceTo(RectangularObstacle obs)
+	{
+		return Math.min(Math.min(squaredDistance(obs.coinBasDroiteRotate),
+				squaredDistance(obs.coinHautDroiteRotate)),
+				Math.min(squaredDistance(obs.coinHautGaucheRotate), squaredDistance(obs.coinBasGaucheRotate)));
+	}
+	
 	public double getDemieDiagonale()
 	{
 		return demieDiagonale;
@@ -379,6 +386,11 @@ public class RectangularObstacle extends Obstacle
 		centreGeometrique = centreGeometrique.plus(coinHautGaucheRotate).scalar(0.5);
 
 		return this;
+	}
+
+	public XY getCenter()
+	{
+		return position;
 	}
 
 }

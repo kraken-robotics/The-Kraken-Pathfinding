@@ -45,7 +45,7 @@ public final class ClothoidesComputer implements TentacleComputer
 	private CinemObsPool memory;
 	private double rootedMaxAcceleration;
 	
-	private class PosBigDecimal
+	private static class PosBigDecimal
 	{
 		private BigDecimal x, y; // utilisés dans le calcul de trajectoire
 	}

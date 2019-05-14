@@ -80,6 +80,14 @@ public class CompoundObstacle extends Obstacle
 		return min;
 	}
 
+	public double squaredDistanceTo(RectangularObstacle obs)
+	{
+		double out = Double.MAX_VALUE;
+		for(Obstacle o : this.obs)
+			out = Math.min(out, o.squaredDistanceTo(obs));
+		return out;
+	}
+	
 	@Override
 	public void print(Graphics g, GraphicPanel f)
 	{

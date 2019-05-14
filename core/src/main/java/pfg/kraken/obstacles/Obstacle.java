@@ -92,6 +92,13 @@ public abstract class Obstacle implements Printable, Serializable
 	public abstract boolean isColliding(RectangularObstacle obs);
 
 	/**
+	 * Renvoie
+	 * @param obs
+	 * @return
+	 */
+	public abstract double squaredDistanceTo(RectangularObstacle obs);
+	
+	/**
 	 * Is there a collision between this obstacle and this line ?
 	 * @param pointA
 	 * @param pointB
