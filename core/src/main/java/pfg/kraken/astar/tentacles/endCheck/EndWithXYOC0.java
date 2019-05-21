@@ -18,5 +18,5 @@ public class EndWithXYOC0 implements EndOfTrajectoryCheck
 				&& Math.abs(XYO.angleDifference(robotPoint.orientationReelle, endPoint.orientationReelle)) < 0.05
 				&& Math.abs(robotPoint.courbureReelle) < 0.1;
 	}
-
+	
 }

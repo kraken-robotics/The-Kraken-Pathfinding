@@ -423,14 +423,7 @@ public final class DStarLite
 
 	}
 
-	/**
-	 * Renvoie l'heuristique au A* courbe.
-	 * L'heuristique est une distance en mm
-	 * 
-	 * @param c
-	 * @return
-	 */
-	public synchronized Double heuristicCostCourbe(Cinematique c, double coeffDistanceError, double coeffAngleError)
+	public synchronized Double heuristicDistance(Cinematique c)
 	{
 		// TODO synchronized nécessaire ?
 		if(!statObs.isInsideSearchDomain(c.getPosition()))
@@ -452,25 +445,57 @@ public final class DStarLite
 		NavmeshNode voisin = pos.getNeighbour(premier.bestVoisin);
 		double erreurDistance = c.getPosition().distanceFast(voisin.position) + (memory[voisin.nb].rhs) / 1000. + arrivee.node.position.distanceFast(positionArrivee);
 		
+		return erreurDistance;	
+	}
+	
+	/**
+	 * Renvoie l'heuristique au A* courbe.
+	 * L'heuristique est une distance en mm
+	 * 
+	 * @param c
+	 * @return
+	 */
+	public synchronized Double heuristicOrientation(Cinematique c)
+	{
+		// TODO synchronized nécessaire ?
+		if(!statObs.isInsideSearchDomain(c.getPosition()))
+			return null;
+		NavmeshNode pos = navmesh.getNearest(c.getPosition());
+		
+		// si on est arrivé… on est arrivé.
+		if(pos.equals(arrivee.node))
+			return 0.;
+
+		DStarLiteNode premier = getFromMemory(pos);
+		
+		if(premier == arrivee)
+			return c.getPosition().distanceFast(positionArrivee);
+		
+		if(premier.heuristiqueOrientation == null)
+			return null;
+		
+//		NavmeshNode voisin = pos.getNeighbour(premier.bestVoisin);
+//		double erreurDistance = c.getPosition().distanceFast(voisin.position) + (memory[voisin.nb].rhs) / 1000. + arrivee.node.position.distanceFast(positionArrivee);
+		
 		double erreurOrientation = 0;
-		if(coeffAngleError > 0)
-		{
-			double orientationOptimale = premier.heuristiqueOrientation;
-	
-			// l'orientation est vérifiée modulo 2*pi : aller vers la destination ou
-			// s'en éloigner sont différenciés
-			erreurOrientation = (c.orientationGeometrique - orientationOptimale) % (2 * Math.PI);
-			if(erreurOrientation > Math.PI)
-				erreurOrientation -= 2 * Math.PI;
-	
-			erreurOrientation = Math.abs(erreurOrientation);
-		}
+//		if(coeffAngleError > 0)
+//		{
+		double orientationOptimale = premier.heuristiqueOrientation;
+
+		// l'orientation est vérifiée modulo 2*pi : aller vers la destination ou
+		// s'en éloigner sont différenciés
+		erreurOrientation = (c.orientationGeometrique - orientationOptimale) % (2 * Math.PI);
+		if(erreurOrientation > Math.PI)
+			erreurOrientation -= 2 * Math.PI;
+
+		erreurOrientation = Math.abs(erreurOrientation);
+//		}
 		// il faut toujours majorer la vraie distance, afin de ne pas chercher
 		// tous les trajets possibles…
 		// le poids de l'erreur d'orientation doit rester assez faible. Car
 		// vouloir trop coller à l'orientation, c'est risquer d'avoir une
 		// courbure impossible…
-		return coeffDistanceError * erreurDistance + coeffAngleError * erreurOrientation;		
+		return erreurOrientation;		
 	}
 	
 	/**

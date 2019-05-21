@@ -221,13 +221,33 @@ public final class TentacleManager implements Iterator<AStarNode>
 
 	public synchronized Integer heuristicCostCourbe(Cinematique c)
 	{
-		Double h = dstarlite.heuristicCostCourbe(c, currentProfile.coeffDistanceError, currentProfile.coeffAngleError);
-		if(h == null)
+		Double d = dstarlite.heuristicDistance(c);
+		if(d == null)
 			return null;
-		if(currentProfile.coeffFinalAngleError > 0 && c.getPosition().distanceFast(arrivee.getPosition()) < 100)
+	
+		Double o;
+		double h;
+		if(d < currentProfile.distanceForRealOrientation)
 		{
-			h += currentProfile.coeffFinalAngleError*Math.abs(XYO.angleDifference(c.orientationReelle, arrivee.orientationReelle));
+			o = (c.orientationGeometrique - arrivee.orientationReelle) % (2 * Math.PI);
+			if(o > Math.PI)
+				o -= 2 * Math.PI;
+			o = Math.abs(o);
+			h = currentProfile.coeffDistanceFinalError * d + currentProfile.coeffFinalAngleError * o;
 		}
+		else
+		{
+			if(currentProfile.coeffAngleError != 0)
+			{
+				o = dstarlite.heuristicOrientation(c);
+				if(o == null)
+					return null;
+				h = currentProfile.coeffDistanceError * d + currentProfile.coeffAngleError * o;
+			}
+			else
+				h = currentProfile.coeffDistanceError * d;
+		}
+		
 		return (int) (1000.*(h / vitesseMax));
 	}
 	
