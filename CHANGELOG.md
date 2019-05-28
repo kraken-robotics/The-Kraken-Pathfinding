@@ -1,5 +1,9 @@
 # Unreleased
+
+# v1.4.4
 - Abort the search when interrupted
+- Far better A* heuristic for XYO/XYOC0 search
+- New exceptions: StartPointException and EndPointException
 
 # v1.4.3
 - Fix the curvature of clothoids curves

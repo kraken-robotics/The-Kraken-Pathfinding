@@ -67,7 +67,7 @@ and
     <dependency>
         <groupId>pfg.kraken</groupId>
         <artifactId>kraken</artifactId>
-        <version>1.4.3</version>
+        <version>1.4.4</version>
     </dependency>
 
 
