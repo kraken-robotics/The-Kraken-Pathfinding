@@ -21,11 +21,13 @@ import pfg.kraken.astar.autoreplanning.DynamicPath;
 import pfg.kraken.astar.engine.PhysicsEngine;
 import pfg.kraken.astar.tentacles.TentacleManager;
 import pfg.kraken.dstarlite.DStarLite;
+import pfg.kraken.exceptions.EndPointException;
 import pfg.kraken.exceptions.InvalidPathException;
 import pfg.kraken.exceptions.NoPathException;
 import pfg.kraken.exceptions.NotFastEnoughException;
 import pfg.kraken.exceptions.NotInitializedPathfindingException;
 import pfg.kraken.exceptions.PathfindingException;
+import pfg.kraken.exceptions.StartPointException;
 import pfg.kraken.exceptions.TimeoutException;
 import pfg.kraken.memory.CinemObsPool;
 import pfg.kraken.memory.MemPoolState;
@@ -559,11 +561,18 @@ public final class TentacularAStar
 		
 		arcmanager.configure(directionstrategy == null ? defaultStrategy : directionstrategy, maxSpeed == null ? defaultSpeed : maxSpeed, arrival, mode);
 		engine.update();
+		
+		// check the start point
+		finalPoint.get(0).update(start.getPosition(), start.orientationReelle);		
+		if(engine.isThereCollision(finalPoint))
+			throw new StartPointException("The startpoint collides an obstacle !");
+		
 		if(mode.equals("XYO") || mode.equals("XYOC0"))
 		{
+			// check the end point if its orientation is known
 			finalPoint.get(0).update(arrival.getPosition(), arrival.orientationReelle);
 			if(engine.isThereCollision(finalPoint))
-				throw new NoPathException("The endpoint in XYO mode collides an obstacle !");
+				throw new EndPointException("The endpoint in XYO mode collides an obstacle !");
 		}
 		
 		/*
