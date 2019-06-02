@@ -5,16 +5,12 @@
 
 package pfg.kraken;
 
-import java.awt.Color;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import pfg.kraken.astar.tentacles.BezierComputer;
 import pfg.kraken.astar.tentacles.DynamicTentacle;
-import pfg.kraken.display.Layer;
-import pfg.kraken.obstacles.CircularObstacle;
 import pfg.kraken.robot.Cinematique;
-import pfg.kraken.utils.XY;
 
 /**
  * Test unitaire de BezierComputer
@@ -44,12 +40,8 @@ public class Test_BezierComputer extends JUnit_Test
 
 		Assert.assertTrue(arc != null);
 		
-		display.addTemporaryPrintable(arc, Color.BLACK, Layer.FOREGROUND.layer);
 		for(int i = 0; i < arc.getNbPoints(); i++)
 			System.out.println(i + " " + arc.getPoint(i));
-		
-		int rayonCourbure = (int) Math.round(1000. / courbureInitiale);
-		display.addPrintable(new CircularObstacle(new XY(-rayonCourbure, 1000), Math.abs(rayonCourbure)), Color.GRAY, Layer.FOREGROUND.layer);
 	}
 	
 	@Test
@@ -63,7 +55,6 @@ public class Test_BezierComputer extends JUnit_Test
 		Assert.assertTrue(arc != null);
 		Assert.assertTrue(arc.getPoint(0).enMarcheAvant);
 		
-		display.addTemporaryPrintable(arc, Color.BLACK, Layer.FOREGROUND.layer);
 		for(int i = 0; i < arc.getNbPoints(); i++)
 			System.out.println(i + " " + arc.getPoint(i));
 	}
@@ -79,7 +70,6 @@ public class Test_BezierComputer extends JUnit_Test
 		Assert.assertTrue(arc != null);
 		Assert.assertTrue(!arc.getPoint(0).enMarcheAvant);
 		
-		display.addTemporaryPrintable(arc, Color.BLACK, Layer.FOREGROUND.layer);
 		for(int i = 0; i < arc.getNbPoints(); i++)
 			System.out.println(i + " " + arc.getPoint(i));
 	}
@@ -94,11 +84,7 @@ public class Test_BezierComputer extends JUnit_Test
 
 		Assert.assertTrue(arc != null);
 		
-		display.addTemporaryPrintable(arc, Color.BLACK, Layer.FOREGROUND.layer);
 		for(int i = 0; i < arc.getNbPoints(); i++)
 			System.out.println(i + " " + arc.getPoint(i));
-
-		int rayonCourbure = (int) Math.round(1000. / courbureInitiale);
-		display.addPrintable(new CircularObstacle(new XY(-rayonCourbure, 1000), Math.abs(rayonCourbure)), Color.GRAY, Layer.FOREGROUND.layer);
 	}
 }
