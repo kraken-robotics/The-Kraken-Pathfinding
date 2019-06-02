@@ -15,6 +15,7 @@ import pfg.kraken.astar.TentacularAStar;
 import pfg.kraken.astar.autoreplanning.CollisionDetectionThread;
 import pfg.kraken.astar.autoreplanning.DynamicPath;
 import pfg.kraken.astar.autoreplanning.ReplanningThread;
+import pfg.kraken.astar.engine.QuadTreePhysicsEngine;
 import pfg.kraken.astar.engine.DefaultPhysicsEngine;
 import pfg.kraken.astar.engine.PhysicsEngine;
 import pfg.kraken.astar.tentacles.ResearchProfile;
@@ -63,43 +64,14 @@ public final class Kraken
 	 */
 	public Kraken(RectangularObstacle vehicleTemplate, Iterable<Obstacle> fixedObstacles, XY bottomLeftCorner, XY topRightCorner, String configfile, String...profiles)
 	{
-		this(vehicleTemplate, fixedObstacles, new EmptyDynamicObstacles(), bottomLeftCorner, topRightCorner, configfile, profiles);
+		this(new KrakenParameters(vehicleTemplate, fixedObstacles, bottomLeftCorner, topRightCorner, configfile, profiles));
 	}
 
-	public Kraken(RectangularObstacle vehicleTemplate, Display display, Iterable<Obstacle> fixedObstacles, XY bottomLeftCorner, XY topRightCorner, String configfile, String...profiles)
-	{
-		this(vehicleTemplate, display, null, fixedObstacles, new EmptyDynamicObstacles(), bottomLeftCorner, topRightCorner, configfile, profiles);
-	}
-
-	/**
-	 * Get Kraken with :
-	 * @param vehicleTemplate : the shape of the vehicle
-	 * @param fixedObstacles : a list of fixed/permanent obstacles
-	 * @param dynObs : a dynamic/temporary obstacles manager that implements the DynamicObstacles interface
-	 * @param bottomLeftCorner : the bottom left corner of the search domain
-	 * @param topRightCorner : the top right corner of the search domain
-	 * @param configprofile : the config profiles
-	 */
-	public Kraken(RectangularObstacle vehicleTemplate, Iterable<Obstacle> fixedObstacles, DynamicObstacles dynObs, XY bottomLeftCorner, XY topRightCorner, String configfile, String...profiles)
-	{			
-		this(vehicleTemplate, null, null, fixedObstacles, dynObs, bottomLeftCorner, topRightCorner, configfile, profiles);
-	}
-
-	public Kraken(RectangularObstacle vehicleTemplate, Display display, Iterable<Obstacle> fixedObstacles, DynamicObstacles dynObs, XY bottomLeftCorner, XY topRightCorner, String configfile, String...profiles)
-	{			
-		this(vehicleTemplate, display, null, fixedObstacles, dynObs, bottomLeftCorner, topRightCorner, configfile, profiles);
-	}
-
-	public Kraken(RectangularObstacle vehicleTemplate, PhysicsEngine engine, Iterable<Obstacle> fixedObstacles, DynamicObstacles dynObs, XY bottomLeftCorner, XY topRightCorner, String configfile, String...configprofile)
-	{
-		this(vehicleTemplate, null, engine, fixedObstacles, dynObs, bottomLeftCorner, topRightCorner, configfile, configprofile);
-	}
-	
-	public Kraken(RectangularObstacle vehicleTemplate, Display display, PhysicsEngine engine, Iterable<Obstacle> fixedObstacles, DynamicObstacles dynObs, XY bottomLeftCorner, XY topRightCorner, String configfile, String...configprofile)
+	public Kraken(KrakenParameters param)
 	{
 		injector = new Injector();
-		config = new Config(ConfigInfoKraken.values(), isJUnitTest(), configfile, configprofile);
-		injector.addService(RectangularObstacle.class, vehicleTemplate);
+		config = new Config(ConfigInfoKraken.values(), isJUnitTest(), param.configfile, param.configprofile);
+		injector.addService(RectangularObstacle.class, param.vehicleTemplate);
 
 		/*
 		 * We adjust the maximal curvature in order to never be under the minimal speed
@@ -113,25 +85,30 @@ public final class Kraken
 		
 		try {
 			StaticObstacles so = injector.getService(StaticObstacles.class); 
-			if(fixedObstacles != null)
-				for(Obstacle o : fixedObstacles)
+			if(param.fixedObstacles != null)
+				for(Obstacle o : param.fixedObstacles)
 					so.add(o);
-			so.setCorners(bottomLeftCorner, topRightCorner);
+			so.setCorners(param.bottomLeftCorner, param.topRightCorner);
 
-			Log log = new Log(SeverityCategoryKraken.INFO, configfile, configprofile);
+			Log log = new Log(SeverityCategoryKraken.INFO, param.configfile, param.configprofile);
 
+			if(param.dynObs == null)
+				param.dynObs = new EmptyDynamicObstacles();
+			
 			injector.addService(log);
 			injector.addService(config);
-			injector.addService(DynamicObstacles.class, dynObs);		
+			injector.addService(DynamicObstacles.class, param.dynObs);		
 			injector.addService(this);
 			injector.addService(injector);
 
-			if(engine != null)
-				injector.addService(engine);
+			if(param.engine != null)
+				injector.addService(param.engine);
+			else if(config.getBoolean(ConfigInfoKraken.ENABLE_QUADTREE))
+				injector.addService(PhysicsEngine.class, injector.getService(QuadTreePhysicsEngine.class));
 			else
 				injector.addService(PhysicsEngine.class, injector.getService(DefaultPhysicsEngine.class));
 			
-			injector.addService(Display.class, display); // may be null
+			injector.addService(Display.class, param.display); // may be null
 
 			astar = injector.getService(TentacularAStar.class);
 			tentaclemanager = injector.getService(TentacleManager.class);

@@ -1,7 +1,10 @@
 # Unreleased
+- New "KrakenParameters" class to easily handle the initialization parameters
+- QuadTree physics engine
 
 # v1.4.5
 - Remove the dependency to the home-made "graphic toolbox" library
+- Uses maven for the examples
 
 # v1.4.4
 - Abort the search when interrupted
@@ -26,7 +29,7 @@
 - Add the autoreplanning mode
 - May get the complete path or the diff only
 - Maven package available at packagecloud.io
-- Add example 5 and 6
+- Add examples 5 and 6
 
 # v1.3.1
 - API : introduction of SearchParameters and ResearchProfile

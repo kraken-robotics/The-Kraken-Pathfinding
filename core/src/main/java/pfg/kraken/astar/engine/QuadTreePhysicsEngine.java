@@ -20,16 +20,21 @@ import pfg.kraken.utils.XY;
  *
  */
 
-public final class DefaultPhysicsEngine implements PhysicsEngine
+public final class QuadTreePhysicsEngine implements PhysicsEngine
 {
-//	private QuadTree fixed;
-	private List<Obstacle> fixedObs;
+	private QuadTree fixed;
 	private DynamicObstacles dynamicObs;
 	private List<Obstacle> currentObstacles = new ArrayList<Obstacle>();
 
-	public DefaultPhysicsEngine(StaticObstacles fixes, DynamicObstacles dynamicObs)
+	public QuadTreePhysicsEngine(StaticObstacles fixes, DynamicObstacles dynamicObs, RectangularObstacle template)
 	{
-		fixedObs = fixes.getObstacles();
+		fixed = new QuadTree(fixes.getBottomLeftCorner().plusNewVector(fixes.getTopRightCorner()).scalar(0.5),
+				fixes.getTopRightCorner().getX() - fixes.getBottomLeftCorner().getX(),
+				fixes.getTopRightCorner().getY() - fixes.getBottomLeftCorner().getY(),
+				template.getDemieDiagonale() * template.getDemieDiagonale(), 0);
+		List<Obstacle> allFixed = fixes.getObstacles();
+		for(Obstacle o : allFixed)
+			fixed.insert(o);
 		this.dynamicObs = dynamicObs;
 		coins[0] = fixes.getBottomLeftCorner();
 		coins[2] = fixes.getTopRightCorner();
@@ -60,9 +65,8 @@ public final class DefaultPhysicsEngine implements PhysicsEngine
 					return true;
 
 			// Collision avec un obstacle fixe?
-			for(Obstacle o : fixedObs)
-				if(o.isColliding(co))
-					return true;
+			if(fixed.isThereCollision(co))
+				return true;
 
 			// Collision avec un obstacle de proximité ?
 			for(Obstacle n : currentObstacles)

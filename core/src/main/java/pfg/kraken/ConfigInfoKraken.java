@@ -46,6 +46,8 @@ public enum ConfigInfoKraken implements ConfigInfo
 	MARGIN_BEFORE_COLLISION(100), // maximal distance before the detected collision, in mm
 	INITIAL_MARGIN(100), // distance of the trajectory after the current point that can't be modified, in mm
 	
+	ENABLE_QUADTREE(false),
+	
 	/**
 	 * Research and mechanical parameter
 	 */
