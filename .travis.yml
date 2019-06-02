@@ -1,7 +1,6 @@
 language : java
 script :
     - cd core
-    - sed s/GRAPHIC_ENABLE\ =\ true// src/test/resources/kraken-test.conf -i
     - mvn install
     - cd ../examples
     - wget https://packagecloud.io/PFGimenez/Kraken/packages/java/pfg.graphic/graphic-toolbox-1.3-SNAPSHOT.jar .

@@ -5,7 +5,6 @@
 
 package pfg.kraken;
 
-import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +13,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import pfg.kraken.astar.TentacularAStar;
-import pfg.kraken.display.Layer;
 import pfg.kraken.exceptions.PathfindingException;
 import pfg.kraken.obstacles.CircularObstacle;
 import pfg.kraken.obstacles.Obstacle;
@@ -70,14 +68,11 @@ public class Test_Multithreading extends JUnit_Test
 			ItineraryPoint previous = null;
 			for(ItineraryPoint p : path)
 			{
-				display.addPrintable(p, Color.BLACK, Layer.FOREGROUND.layer);
 				System.out.println(p);
 				if(previous != null)
 					Assert.assertTrue((previous.x - p.x) * (previous.x - p.x) + (previous.y - p.y) * (previous.y - p.y) <= 27*27);
 				previous = p;
 			}
-
-			display.refresh();
 		}
 		catch(PathfindingException e)
 		{

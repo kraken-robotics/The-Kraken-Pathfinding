@@ -5,7 +5,6 @@
 
 package pfg.kraken;
 
-import java.awt.Color;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,7 +13,6 @@ import pfg.kraken.obstacles.RectangularObstacle;
 import pfg.kraken.astar.tentacles.ClothoidesComputer;
 import pfg.kraken.astar.tentacles.StaticTentacle;
 import pfg.kraken.astar.tentacles.types.ClothoTentacle;
-import pfg.kraken.display.Layer;
 import pfg.kraken.robot.Cinematique;
 import pfg.kraken.utils.XY;
 import static pfg.kraken.astar.tentacles.Tentacle.*;
@@ -66,8 +64,6 @@ public class Test_ClothoidesComputer extends JUnit_Test
 
 		for(int a = 0; a < nbArc; a++)
 		{
-			display.addTemporaryPrintable(arc[a], Color.BLACK, Layer.FOREGROUND.layer);
-
 			for(int i = 0; i < NB_POINTS; i++)
 			{
 				if(i > 0)
