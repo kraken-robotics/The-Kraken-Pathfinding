@@ -3,7 +3,7 @@ script :
     - cd core
     - mvn install
     - cd ../examples
-    - wget https://packagecloud.io/PFGimenez/Kraken/packages/java/pfg.graphic/graphic-toolbox-1.3-SNAPSHOT.jar .
+    - wget https://packagecloud.io/PFGimenez/Kraken/packages/java/pfg.graphic/graphic-toolbox-1.3-SNAPSHOT.jar
     - ant
     - cd ../core
 jdk : oraclejdk8
