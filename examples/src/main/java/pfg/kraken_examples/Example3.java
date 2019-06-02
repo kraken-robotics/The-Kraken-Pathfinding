@@ -59,7 +59,7 @@ public class Example3
 		 */
 		RectangularObstacle secondRobot = new RectangularObstacle(20, 20, 20, 20); 
 		KrakenParameters kp2 = new KrakenParameters(secondRobot, obs, new XY(-1500,0), new XY(1500, 2000), "kraken-examples.conf", "trajectory"/*, "detailed"*/);
-		kp.setDisplay(display);
+		kp2.setDisplay(display);
 		Kraken krakenSecondRobot = new Kraken(kp2);
 
 		try
