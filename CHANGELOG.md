@@ -1,5 +1,8 @@
 # Unreleased
 
+# v1.4.5
+- Remove the dependency to the home-made "graphic toolbox" library
+
 # v1.4.4
 - Abort the search when interrupted
 - Far better A* heuristic for XYO/XYOC0 search
