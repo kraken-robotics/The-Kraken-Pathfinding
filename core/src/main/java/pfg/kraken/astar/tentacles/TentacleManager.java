@@ -27,9 +27,9 @@ import pfg.kraken.memory.NodePool;
 import pfg.kraken.robot.Cinematique;
 import pfg.kraken.robot.CinematiqueObs;
 import pfg.kraken.utils.XYO;
-import pfg.graphic.GraphicDisplay;
 import pfg.log.Log;
-import pfg.graphic.printable.Layer;
+import pfg.kraken.display.Display;
+import pfg.kraken.display.Layer;
 import static pfg.kraken.astar.tentacles.Tentacle.*;
 
 /**
@@ -47,7 +47,7 @@ public final class TentacleManager implements Iterator<AStarNode>
 	private boolean printObstacles;
 	private Injector injector;
 	private double deltaSpeedFromStop;
-	private GraphicDisplay display;
+	private Display display;
 	private TentacleThread[] threads;
 	private ResearchProfile currentProfile;
 	
@@ -60,7 +60,7 @@ public final class TentacleManager implements Iterator<AStarNode>
 	
 	private int nbLeft;
 	
-	public TentacleManager(Log log, NodePool memorymanager, DStarLite dstarlite, Config config, Injector injector, ResearchProfileManager profiles, GraphicDisplay display) throws InjectorException
+	public TentacleManager(Log log, NodePool memorymanager, DStarLite dstarlite, Config config, Injector injector, ResearchProfileManager profiles, Display display) throws InjectorException
 	{
 		this.injector = injector;
 		this.log = log;

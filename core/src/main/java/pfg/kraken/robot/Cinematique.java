@@ -9,9 +9,8 @@ import java.awt.Graphics;
 import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-
-import pfg.graphic.GraphicPanel;
-import pfg.graphic.printable.Printable;
+import pfg.kraken.display.Display;
+import pfg.kraken.display.Printable;
 import pfg.kraken.utils.XY;
 import pfg.kraken.utils.XYO;
 import pfg.kraken.utils.XY_RW;
@@ -206,7 +205,7 @@ public class Cinematique implements Printable, Serializable
 	}
 
 	@Override
-	public void print(Graphics g, GraphicPanel f)
+	public void print(Graphics g, Display f)
 	{
 		double n = 40;
 		XY_RW point1 = new XY_RW(n, 0), point2 = new XY_RW(-n / 2, n / 2), point3 = new XY_RW(-n / 2, -n / 2);

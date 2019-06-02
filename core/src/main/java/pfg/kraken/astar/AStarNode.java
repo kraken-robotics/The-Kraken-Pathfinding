@@ -7,8 +7,8 @@ package pfg.kraken.astar;
 
 import java.awt.Graphics;
 
-import pfg.graphic.GraphicPanel;
-import pfg.graphic.printable.Printable;
+import pfg.kraken.display.Display;
+import pfg.kraken.display.Printable;
 import pfg.kraken.astar.tentacles.DynamicTentacle;
 import pfg.kraken.astar.tentacles.StaticTentacle;
 import pfg.kraken.astar.tentacles.Tentacle;
@@ -115,7 +115,7 @@ public final class AStarNode implements Memorizable, Printable
 	}
 
 	@Override
-	public void print(Graphics g, GraphicPanel f)
+	public void print(Graphics g, Display f)
 	{
 		Tentacle a = getArc();
 		if(a != null)

@@ -11,9 +11,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import pfg.graphic.GraphicPanel;
-import pfg.graphic.printable.Printable;
 import pfg.kraken.ColorKraken;
+import pfg.kraken.display.Display;
+import pfg.kraken.display.Printable;
 import pfg.kraken.obstacles.Obstacle;
 import pfg.kraken.utils.XY;
 import pfg.kraken.utils.XY_RW;
@@ -403,7 +403,7 @@ public final class NavmeshEdge implements Serializable, Printable
 	}
 
 	@Override
-	public void print(Graphics g, GraphicPanel f)
+	public void print(Graphics g, Display f)
 	{
 		if(highlight)
 			g.setColor(ColorKraken.RED.color);

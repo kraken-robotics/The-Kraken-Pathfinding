@@ -6,12 +6,12 @@
 package pfg.kraken.dstarlite.navmesh;
 
 import pfg.config.Config;
-import pfg.graphic.GraphicDisplay;
 import pfg.kraken.utils.XY;
 import pfg.log.Log;
 import pfg.kraken.ConfigInfoKraken;
 import pfg.kraken.LogCategoryKraken;
 import pfg.kraken.SeverityCategoryKraken;
+import pfg.kraken.display.Display;
 import pfg.kraken.obstacles.container.StaticObstacles;
 
 import java.io.IOException;
@@ -29,7 +29,7 @@ public final class Navmesh
 	protected Log log;
 	public TriangulatedMesh mesh;
 	
-	public Navmesh(Log log, Config config, StaticObstacles obs, GraphicDisplay buffer, NavmeshComputer computer)
+	public Navmesh(Log log, Config config, StaticObstacles obs, Display buffer, NavmeshComputer computer)
 	{
 		this.log = log;
 		String filename = config.getString(ConfigInfoKraken.NAVMESH_FILENAME);

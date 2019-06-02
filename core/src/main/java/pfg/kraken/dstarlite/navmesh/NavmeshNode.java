@@ -9,9 +9,8 @@ import java.awt.Graphics;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
-import pfg.graphic.GraphicPanel;
-import pfg.graphic.printable.Printable;
+import pfg.kraken.display.Display;
+import pfg.kraken.display.Printable;
 import pfg.kraken.utils.XY;
 
 /**
@@ -94,7 +93,7 @@ public final class NavmeshNode implements Printable, Serializable
 	}
 	
 	@Override
-	public void print(Graphics g, GraphicPanel f)
+	public void print(Graphics g, Display f)
 	{
 		int rayon = 15;
 		g.fillOval(f.XtoWindow(position.getX()) - f.distanceXtoWindow(rayon) / 2, f.YtoWindow(position.getY()) - f.distanceYtoWindow(rayon) / 2, f.distanceXtoWindow((int) (rayon)), f.distanceYtoWindow((int) (rayon)));

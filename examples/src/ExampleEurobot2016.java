@@ -6,11 +6,12 @@
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
-
-import pfg.graphic.GraphicDisplay;
+import pfg.graphic.DebugTool;
 import pfg.graphic.printable.Layer;
 import pfg.kraken.Kraken;
 import pfg.kraken.SearchParameters;
+import pfg.kraken.SeverityCategoryKraken;
+import pfg.kraken.display.Display;
 import pfg.kraken.exceptions.PathfindingException;
 import pfg.kraken.obstacles.CircularObstacle;
 import pfg.kraken.obstacles.Obstacle;
@@ -55,9 +56,13 @@ public class ExampleEurobot2016
 
 		RectangularObstacle robot = new RectangularObstacle(250, 80, 110, 110);
 
-		Kraken kraken = new Kraken(robot, obs, new XY(-1500,0), new XY(1500, 2000), "kraken-examples.conf", "trajectory", "eurobot2016");
+		DebugTool debug = DebugTool.getDebugTool(new XY(0,1000), new XY(0, 1000), SeverityCategoryKraken.INFO, "kraken-examples.conf", "trajectory", "eurobot2016");
+		Display display = debug.getDisplay();
+		for(Obstacle o : obs)
+			display.addPrintable(o, Color.BLACK, Layer.MIDDLE.layer);
 		
-		GraphicDisplay display = kraken.getGraphicDisplay();
+		Kraken kraken = new Kraken(robot, display, obs, new XY(-1500,0), new XY(1500, 2000), "kraken-examples.conf", "eurobot2016", "trajectory"/*, "detailed"*/);
+
 		
 		try
 		{

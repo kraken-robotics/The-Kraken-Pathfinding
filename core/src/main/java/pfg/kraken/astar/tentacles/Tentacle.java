@@ -8,9 +8,9 @@ package pfg.kraken.astar.tentacles;
 import java.awt.Graphics;
 import java.util.Iterator;
 
-import pfg.graphic.GraphicPanel;
-import pfg.graphic.printable.Printable;
-import pfg.graphic.printable.PrintablePoint;
+import pfg.kraken.display.Display;
+import pfg.kraken.display.Printable;
+import pfg.kraken.display.PrintablePoint;
 import pfg.kraken.astar.tentacles.types.TentacleType;
 import pfg.kraken.obstacles.RectangularObstacle;
 import pfg.kraken.robot.CinematiqueObs;
@@ -140,7 +140,7 @@ public abstract class Tentacle implements Printable, Iterable<RectangularObstacl
 	}
 
 	@Override
-	public void print(Graphics g, GraphicPanel f)
+	public void print(Graphics g, Display f)
 	{
 		for(int i = 0; i < getNbPoints(); i++)
 			new PrintablePoint(getPoint(i).getPosition().getX(), getPoint(i).getPosition().getY()).print(g, f);

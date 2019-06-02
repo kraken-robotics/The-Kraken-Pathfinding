@@ -8,8 +8,8 @@ package pfg.kraken.robot;
 import java.awt.Graphics;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import pfg.graphic.GraphicPanel;
-import pfg.graphic.printable.Printable;
+import pfg.kraken.display.Display;
+import pfg.kraken.display.Printable;
 
 /**
  * A point of the itinerary computed by Kraken
@@ -100,7 +100,7 @@ public class ItineraryPoint implements Printable
 	}
 
 	@Override
-	public void print(Graphics g, GraphicPanel f)
+	public void print(Graphics g, Display f)
 	{
 		int taille = 5;
 		g.fillOval(f.XtoWindow(x)-taille/2, f.YtoWindow(y)-taille/2, taille, taille);

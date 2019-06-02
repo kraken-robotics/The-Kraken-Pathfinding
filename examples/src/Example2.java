@@ -6,11 +6,12 @@
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
-
-import pfg.graphic.GraphicDisplay;
+import pfg.graphic.DebugTool;
 import pfg.graphic.printable.Layer;
 import pfg.kraken.Kraken;
 import pfg.kraken.SearchParameters;
+import pfg.kraken.SeverityCategoryKraken;
+import pfg.kraken.display.Display;
 import pfg.kraken.obstacles.CircularObstacle;
 import pfg.kraken.obstacles.Obstacle;
 import pfg.kraken.obstacles.RectangularObstacle;
@@ -49,8 +50,12 @@ public class Example2
 		 */
 		DefaultDynamicObstacles obsDyn = new DefaultDynamicObstacles();
 
-		Kraken kraken = new Kraken(robot, obs, obsDyn, new XY(-1500,0), new XY(1500, 2000), "kraken-examples.conf", "trajectory"/*, "detailed"*/);
-		GraphicDisplay display = kraken.getGraphicDisplay();
+		DebugTool debug = DebugTool.getDebugTool(new XY(0,1000), new XY(0, 1000), SeverityCategoryKraken.INFO, "kraken-examples.conf", "trajectory");
+		Display display = debug.getDisplay();
+		for(Obstacle o : obs)
+			display.addPrintable(o, Color.BLACK, Layer.MIDDLE.layer);
+		
+		Kraken kraken = new Kraken(robot, display, obs, obsDyn, new XY(-1500,0), new XY(1500, 2000), "kraken-examples.conf", "trajectory"/*, "detailed"*/);
 
 		try
 		{

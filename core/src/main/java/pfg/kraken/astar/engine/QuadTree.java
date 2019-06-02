@@ -4,8 +4,8 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.List;
-import pfg.graphic.GraphicPanel;
-import pfg.graphic.printable.Printable;
+import pfg.kraken.display.Display;
+import pfg.kraken.display.Printable;
 import pfg.kraken.obstacles.Obstacle;
 import pfg.kraken.obstacles.RectangularObstacle;
 import pfg.kraken.utils.XY;
@@ -160,7 +160,7 @@ public class QuadTree implements Printable
 	}
 	
 	@Override
-	public void print(Graphics g, GraphicPanel f)
+	public void print(Graphics g, Display f)
 	{
 		g.setColor(Color.GRAY);
 		rect.print(g,f);

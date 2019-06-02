@@ -7,9 +7,8 @@ package pfg.kraken.dstarlite.navmesh;
 
 import java.awt.Graphics;
 import java.io.Serializable;
-
-import pfg.graphic.GraphicPanel;
-import pfg.graphic.printable.Printable;
+import pfg.kraken.display.Display;
+import pfg.kraken.display.Printable;
 import pfg.kraken.utils.XY;
 
 /**
@@ -235,7 +234,7 @@ public final class NavmeshTriangle implements Serializable, Printable
 	}
 
 	@Override
-	public void print(Graphics g, GraphicPanel f)
+	public void print(Graphics g, Display f)
 	{
 		g.fillPolygon(new int[]{f.XtoWindow(points[0].position.getX()), f.XtoWindow(points[1].position.getX()), f.XtoWindow(points[2].position.getX())},
 				new int[]{f.YtoWindow(points[0].position.getY()), f.YtoWindow(points[1].position.getY()), f.YtoWindow(points[2].position.getY())},

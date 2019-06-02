@@ -6,11 +6,12 @@
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
-
-import pfg.graphic.GraphicDisplay;
-import pfg.graphic.printable.Layer;
+import pfg.graphic.DebugTool;
 import pfg.kraken.Kraken;
 import pfg.kraken.SearchParameters;
+import pfg.kraken.SeverityCategoryKraken;
+import pfg.kraken.display.Display;
+import pfg.kraken.display.Layer;
 import pfg.kraken.exceptions.PathfindingException;
 import pfg.kraken.obstacles.CircularObstacle;
 import pfg.kraken.obstacles.Obstacle;
@@ -36,7 +37,7 @@ public class Example1
 		 * the length are measured in mm
 		 * the curvature is measured in m^-1
 		 */
-		
+				
 		/*
 		 * The list of fixed, permanent obstacles
 		 * Obstacles partially outside the search domain and colliding obstacles are OK.
@@ -64,16 +65,19 @@ public class Example1
 		RectangularObstacle robot = new RectangularObstacle(250, 80, 110, 110); 
 		
 		/*
+		 * Create the graphical display
+		 */
+		DebugTool debug = DebugTool.getDebugTool(new XY(0,1000), new XY(0, 1000), SeverityCategoryKraken.INFO, "kraken-examples.conf", "trajectory");
+		Display display = debug.getDisplay();
+		for(Obstacle o : obs)
+			display.addPrintable(o, Color.BLACK, Layer.MIDDLE.layer);
+		
+		/*
 		 * Constructing Kraken
 		 * We restrain the search domain to the rectangle -1500 < x < 1500, 0 < y < 2000
 		 * You can uncomment the "detailed" profile to display the underneath pathfinder.
 		 */
-		Kraken kraken = new Kraken(robot, obs, new XY(-1500,0), new XY(1500, 2000), "kraken-examples.conf", "trajectory"/*, "detailed"*/);
-		
-		/*
-		 * The graphic display (optional)
-		 */
-		GraphicDisplay display = kraken.getGraphicDisplay();
+		Kraken kraken = new Kraken(robot, display, obs, new XY(-1500,0), new XY(1500, 2000), "kraken-examples.conf", "trajectory"/*, "detailed"*/);
 
 		try
 		{
