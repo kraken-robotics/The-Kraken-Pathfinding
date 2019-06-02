@@ -10,6 +10,7 @@ import java.util.List;
 import pfg.graphic.DebugTool;
 import pfg.graphic.printable.Layer;
 import pfg.kraken.Kraken;
+import pfg.kraken.KrakenParameters;
 import pfg.kraken.SearchParameters;
 import pfg.kraken.SeverityCategoryKraken;
 import pfg.kraken.astar.autoreplanning.DynamicPath;
@@ -53,9 +54,11 @@ public class Example7
 		for(Obstacle o : obs)
 			display.addPrintable(o, Color.BLACK, Layer.MIDDLE.layer);
 		
-		Kraken kraken = new Kraken(robot, display, obs, obsDyn, new XY(-1500,0), new XY(1500, 2000), "kraken-examples.conf", "trajectory"/*, "detailed"*/);
-
-
+		KrakenParameters kp = new KrakenParameters(robot, obs, new XY(-1500,0), new XY(1500, 2000), "kraken-examples.conf", "trajectory"/*, "detailed"*/);
+		kp.setDisplay(display);
+		kp.setDynamicObstacle(obsDyn);
+		Kraken kraken = new Kraken(kp);
+		
 		try
 		{
 			kraken.initializeNewSearch(new SearchParameters(new XYO(0, 200, 0), new XY(1000, 1000)));

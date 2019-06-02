@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import pfg.graphic.DebugTool;
 import pfg.kraken.Kraken;
+import pfg.kraken.KrakenParameters;
 import pfg.kraken.SearchParameters;
 import pfg.kraken.SeverityCategoryKraken;
 import pfg.kraken.display.Display;
@@ -78,7 +79,9 @@ public class Example1
 		 * We restrain the search domain to the rectangle -1500 < x < 1500, 0 < y < 2000
 		 * You can uncomment the "detailed" profile to display the underneath pathfinder.
 		 */
-		Kraken kraken = new Kraken(robot, display, obs, new XY(-1500,0), new XY(1500, 2000), "kraken-examples.conf", "trajectory"/*, "detailed"*/);
+		KrakenParameters kp = new KrakenParameters(robot, obs, new XY(-1500,0), new XY(1500, 2000), "kraken-examples.conf", "trajectory"/*, "detailed"*/);
+		kp.setDisplay(display);
+		Kraken kraken = new Kraken(kp);
 
 		try
 		{

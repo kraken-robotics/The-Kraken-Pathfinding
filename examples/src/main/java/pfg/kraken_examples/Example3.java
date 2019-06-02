@@ -10,6 +10,7 @@ import java.util.List;
 import pfg.graphic.DebugTool;
 import pfg.graphic.printable.Layer;
 import pfg.kraken.Kraken;
+import pfg.kraken.KrakenParameters;
 import pfg.kraken.SearchParameters;
 import pfg.kraken.SeverityCategoryKraken;
 import pfg.kraken.exceptions.PathfindingException;
@@ -50,13 +51,16 @@ public class Example3
 		for(Obstacle o : obs)
 			display.addPrintable(o, Color.BLACK, Layer.MIDDLE.layer);
 		
-		Kraken kraken = new Kraken(robot, display, obs, new XY(-1500,0), new XY(1500, 2000), "kraken-examples.conf", "trajectory"/*, "detailed"*/);
-
+		KrakenParameters kp = new KrakenParameters(robot, obs, new XY(-1500,0), new XY(1500, 2000), "kraken-examples.conf", "trajectory"/*, "detailed"*/);
+		kp.setDisplay(display);
+		Kraken kraken = new Kraken(kp);
 		/*
 		 * You can perfectly use two instances of Kraken (for example if two robots have different size)
 		 */
 		RectangularObstacle secondRobot = new RectangularObstacle(20, 20, 20, 20); 
-		Kraken krakenSecondRobot = new Kraken(secondRobot, display, obs, new XY(-1500,0), new XY(1500, 2000), "kraken-examples.conf", "trajectory"/*, "detailed"*/);
+		KrakenParameters kp2 = new KrakenParameters(secondRobot, obs, new XY(-1500,0), new XY(1500, 2000), "kraken-examples.conf", "trajectory"/*, "detailed"*/);
+		kp.setDisplay(display);
+		Kraken krakenSecondRobot = new Kraken(kp2);
 
 		try
 		{
