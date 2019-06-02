@@ -2,6 +2,7 @@
  * Copyright (C) 2013-2018 Pierre-François Gimenez
  * Distributed under the MIT License.
  */
+package pfg.kraken_examples;
 
 import java.awt.Color;
 import java.util.ArrayList;
@@ -12,6 +13,7 @@ import pfg.kraken.Kraken;
 import pfg.kraken.SearchParameters;
 import pfg.kraken.SeverityCategoryKraken;
 import pfg.kraken.astar.autoreplanning.DynamicPath;
+import pfg.kraken.astar.autoreplanning.PathDiff;
 import pfg.kraken.display.Display;
 import pfg.kraken.obstacles.CircularObstacle;
 import pfg.kraken.obstacles.Obstacle;
@@ -29,7 +31,7 @@ import pfg.kraken.utils.XYO;
  *
  */
 
-public class Example5
+public class Example6
 {
 
 	public static void main(String[] args) throws InterruptedException
@@ -66,15 +68,16 @@ public class Example5
 			 */
 			DynamicPath dpath = kraken.enableAutoReplanning();
 			kraken.startContinuousSearch(new SearchParameters(new XYO(0, 200, 0), new XY(1000, 1000)));
-			List<ItineraryPoint> path;
+			PathDiff diff;
 			
 			/*
 			 * The research part. We wait for dpath until a new path is available
 			 */
-			path = dpath.waitNewPath();
-			
-			for(ItineraryPoint p : path)
-				display.addTemporaryPrintable(p, Color.BLACK, Layer.FOREGROUND.layer);
+			do {
+				diff = dpath.waitDiff();
+				for(ItineraryPoint p : diff.diff)
+					display.addTemporaryPrintable(p, Color.BLACK, Layer.FOREGROUND.layer);
+			} while(!diff.isComplete);
 
 			Thread.sleep(2000);
 			display.clearTemporaryPrintables();
@@ -89,14 +92,15 @@ public class Example5
 			/*
 			 * We wait the new path
 			 */
-			path = dpath.waitNewPath();
-			
-			for(ItineraryPoint p : path)
-				display.addTemporaryPrintable(p, Color.BLACK, Layer.FOREGROUND.layer);
+			do {
+				diff = dpath.waitDiff();
+				for(ItineraryPoint p : diff.diff)
+					display.addTemporaryPrintable(p, Color.BLACK, Layer.FOREGROUND.layer);
+			} while(!diff.isComplete);
 			
 			Thread.sleep(2000);
 			display.clearTemporaryPrintables();
-			
+
 			/*
 			 * We add a second obstacle
 			 */
@@ -105,10 +109,11 @@ public class Example5
 			display.addTemporaryPrintable(newObs2, Color.BLUE, Layer.MIDDLE.layer);
 			obsDyn.add(newObs2);
 			
-			path = dpath.waitNewPath();
-			
-			for(ItineraryPoint p : path)
-				display.addTemporaryPrintable(p, Color.BLACK, Layer.FOREGROUND.layer);
+			do {
+				diff = dpath.waitDiff();
+				for(ItineraryPoint p : diff.diff)
+					display.addTemporaryPrintable(p, Color.BLACK, Layer.FOREGROUND.layer);
+			} while(!diff.isComplete);
 			
 			/*
 			 * When the continuous search isn't needed anymore, we can stop it.
