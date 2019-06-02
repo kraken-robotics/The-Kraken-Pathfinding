@@ -18,11 +18,11 @@ import java.util.List;
 import org.junit.After;
 
 import pfg.config.Config;
-import pfg.graphic.GraphicDisplay;
 import pfg.injector.Injector;
 import pfg.kraken.ConfigInfoKraken;
 import pfg.kraken.Kraken;
 import pfg.kraken.LogCategoryKraken;
+import pfg.kraken.display.Display;
 import pfg.kraken.obstacles.CircularObstacle;
 import pfg.kraken.obstacles.Obstacle;
 import pfg.kraken.obstacles.RectangularObstacle;
@@ -44,7 +44,7 @@ public abstract class JUnit_Test
 	protected Log log;
 	protected Injector injector;
 	protected Kraken kraken;
-	protected GraphicDisplay display;
+	protected Display display;
 	
 	@Rule
 	public TestName testName = new TestName();
@@ -113,7 +113,7 @@ public abstract class JUnit_Test
 		injector = (Injector) m.invoke(kraken);
 		config = injector.getService(Config.class);
 		log = injector.getService(Log.class);
-		display = kraken.getGraphicDisplay();
+		display = injector.getService(Display.class);
 		log.write("Test unitaire : " + testName.getMethodName(), LogCategoryKraken.TEST);
 		
 	}

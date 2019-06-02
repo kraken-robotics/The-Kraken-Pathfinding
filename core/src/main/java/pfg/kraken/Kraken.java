@@ -5,18 +5,10 @@
 
 package pfg.kraken;
 
-import java.awt.Color;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import pfg.config.Config;
-import pfg.config.ConfigInfo;
-import pfg.graphic.Vec2RO;
 import pfg.log.Log;
-import pfg.graphic.printable.Layer;
-import pfg.graphic.GraphicDisplay;
-import pfg.graphic.ConfigInfoGraphic;
-import pfg.graphic.DebugTool;
 import pfg.injector.Injector;
 import pfg.injector.InjectorException;
 import pfg.kraken.astar.TentacularAStar;
@@ -32,6 +24,7 @@ import pfg.kraken.astar.tentacles.endCheck.EndWithXY;
 import pfg.kraken.astar.tentacles.endCheck.EndWithXYO;
 import pfg.kraken.astar.tentacles.endCheck.EndWithXYOC0;
 import pfg.kraken.astar.tentacles.types.*;
+import pfg.kraken.display.Display;
 import pfg.kraken.exceptions.InvalidPathException;
 import pfg.kraken.exceptions.NoPathException;
 import pfg.kraken.exceptions.NotInitializedPathfindingException;
@@ -72,7 +65,12 @@ public final class Kraken
 	{
 		this(vehicleTemplate, fixedObstacles, new EmptyDynamicObstacles(), bottomLeftCorner, topRightCorner, configfile, profiles);
 	}
-	
+
+	public Kraken(RectangularObstacle vehicleTemplate, Display display, Iterable<Obstacle> fixedObstacles, XY bottomLeftCorner, XY topRightCorner, String configfile, String...profiles)
+	{
+		this(vehicleTemplate, display, null, fixedObstacles, new EmptyDynamicObstacles(), bottomLeftCorner, topRightCorner, configfile, profiles);
+	}
+
 	/**
 	 * Get Kraken with :
 	 * @param vehicleTemplate : the shape of the vehicle
@@ -83,12 +81,21 @@ public final class Kraken
 	 * @param configprofile : the config profiles
 	 */
 	public Kraken(RectangularObstacle vehicleTemplate, Iterable<Obstacle> fixedObstacles, DynamicObstacles dynObs, XY bottomLeftCorner, XY topRightCorner, String configfile, String...profiles)
-	{	
-		
-		this(vehicleTemplate, null, fixedObstacles, dynObs, bottomLeftCorner, topRightCorner, configfile, profiles);
+	{			
+		this(vehicleTemplate, null, null, fixedObstacles, dynObs, bottomLeftCorner, topRightCorner, configfile, profiles);
+	}
+
+	public Kraken(RectangularObstacle vehicleTemplate, Display display, Iterable<Obstacle> fixedObstacles, DynamicObstacles dynObs, XY bottomLeftCorner, XY topRightCorner, String configfile, String...profiles)
+	{			
+		this(vehicleTemplate, display, null, fixedObstacles, dynObs, bottomLeftCorner, topRightCorner, configfile, profiles);
+	}
+
+	public Kraken(RectangularObstacle vehicleTemplate, PhysicsEngine engine, Iterable<Obstacle> fixedObstacles, DynamicObstacles dynObs, XY bottomLeftCorner, XY topRightCorner, String configfile, String...configprofile)
+	{
+		this(vehicleTemplate, null, engine, fixedObstacles, dynObs, bottomLeftCorner, topRightCorner, configfile, configprofile);
 	}
 	
-	public Kraken(RectangularObstacle vehicleTemplate, PhysicsEngine engine, Iterable<Obstacle> fixedObstacles, DynamicObstacles dynObs, XY bottomLeftCorner, XY topRightCorner, String configfile, String...configprofile)
+	public Kraken(RectangularObstacle vehicleTemplate, Display display, PhysicsEngine engine, Iterable<Obstacle> fixedObstacles, DynamicObstacles dynObs, XY bottomLeftCorner, XY topRightCorner, String configfile, String...configprofile)
 	{
 		injector = new Injector();
 		config = new Config(ConfigInfoKraken.values(), isJUnitTest(), configfile, configprofile);
@@ -124,30 +131,7 @@ public final class Kraken
 			else
 				injector.addService(PhysicsEngine.class, injector.getService(DefaultPhysicsEngine.class));
 			
-
-			/*
-			 * Override the graphic config
-			 */
-			HashMap<ConfigInfo, Object> overrideGraphic = new HashMap<ConfigInfo, Object>();
-			overrideGraphic.put(ConfigInfoGraphic.SIZE_X_WITH_UNITARY_ZOOM, (int) (topRightCorner.getX() - bottomLeftCorner.getX()));
-			overrideGraphic.put(ConfigInfoGraphic.SIZE_Y_WITH_UNITARY_ZOOM, (int) (topRightCorner.getY() - bottomLeftCorner.getY()));
-			
-			DebugTool debug = DebugTool.getDebugTool(overrideGraphic, new Vec2RO((topRightCorner.getX() + bottomLeftCorner.getX()) / 2, (topRightCorner.getY() + bottomLeftCorner.getY()) / 2), SeverityCategoryKraken.INFO, configfile, configprofile);
-			injector.addService(debug.getGraphicDisplay());
-			
-			if(config.getBoolean(ConfigInfoKraken.GRAPHIC_ENABLE))
-			{
-				if(config.getBoolean(ConfigInfoKraken.GRAPHIC_SERVER))
-					debug.startPrintServer();
-				
-				if(fixedObstacles != null && config.getBoolean(ConfigInfoKraken.GRAPHIC_FIXED_OBSTACLES))
-				{
-					GraphicDisplay display = injector.getExistingService(GraphicDisplay.class);
-					for(Obstacle o : fixedObstacles)
-						display.addPrintable(o, Color.BLACK, Layer.MIDDLE.layer);
-				}
-			}
-
+			injector.addService(Display.class, display); // may be null
 
 			astar = injector.getService(TentacularAStar.class);
 			tentaclemanager = injector.getService(TentacleManager.class);
@@ -230,15 +214,6 @@ public final class Kraken
 		return injector;
 	}
 
-	/**
-	 * Get the graphic display
-	 * @return
-	 */
-	public GraphicDisplay getGraphicDisplay()
-	{
-		return injector.getExistingService(GraphicDisplay.class);
-	}
-	
 	public void addMode(ResearchProfile p)
 	{
 		profiles.addProfile(p);

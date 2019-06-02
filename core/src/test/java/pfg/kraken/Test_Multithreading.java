@@ -13,8 +13,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import pfg.graphic.printable.Layer;
 import pfg.kraken.astar.TentacularAStar;
+import pfg.kraken.display.Layer;
 import pfg.kraken.exceptions.PathfindingException;
 import pfg.kraken.obstacles.CircularObstacle;
 import pfg.kraken.obstacles.Obstacle;

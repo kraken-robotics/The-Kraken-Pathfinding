@@ -7,7 +7,7 @@
 package pfg.kraken;
 
 import java.awt.Color;
-import pfg.graphic.printable.Layer;
+import pfg.kraken.display.Layer;
 
 /**
  * Some predefined colors used by Kraken

@@ -9,7 +9,6 @@ import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
-import pfg.graphic.Position;
 
 /**
  * Vecteur en lecture seule
@@ -18,7 +17,7 @@ import pfg.graphic.Position;
  *
  */
 
-public class XY implements Serializable, Position
+public class XY implements Serializable
 {
 	private static final long serialVersionUID = 1L;
 	protected volatile double x;

@@ -9,8 +9,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import pfg.config.Config;
-import pfg.graphic.GraphicDisplay;
-import pfg.graphic.printable.Layer;
+import pfg.kraken.display.Display;
+import pfg.kraken.display.Layer;
 import pfg.kraken.ColorKraken;
 import pfg.kraken.ConfigInfoKraken;
 import pfg.kraken.dstarlite.navmesh.Navmesh;
@@ -54,7 +54,7 @@ public final class DStarLite
 
 	private EnhancedPriorityQueue openset;
 	private DStarLiteNode arrivee;
-	private GraphicDisplay buffer;
+	private Display buffer;
 	private long nbPF = 0;
 	private boolean printItineraire;
 
@@ -68,7 +68,7 @@ public final class DStarLite
 	 * @param log
 	 * @param gridspace
 	 */
-	public DStarLite(Log log, Navmesh navmesh, GraphicDisplay buffer, Config config, DynamicObstacles dynObs, StaticObstacles statObs)
+	public DStarLite(Log log, Navmesh navmesh, Display buffer, Config config, DynamicObstacles dynObs, StaticObstacles statObs)
 	{
 		this.log = log;
 		this.navmesh = navmesh;

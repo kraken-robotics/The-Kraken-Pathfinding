@@ -9,8 +9,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.List;
-
-import pfg.graphic.GraphicPanel;
+import pfg.kraken.display.Display;
 import pfg.kraken.utils.XY;
 import pfg.kraken.utils.XY_RW;
 
@@ -274,7 +273,7 @@ public class RectangularObstacle extends Obstacle
 	}
 
 	@Override
-	public void print(Graphics g, GraphicPanel f)
+	public void print(Graphics g, Display f)
 	{
 		int[] X = new int[4];
 		X[0] = (int) coinBasDroiteRotate.getX();
