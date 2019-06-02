@@ -2,6 +2,7 @@
  * Copyright (C) 2013-2018 Pierre-François Gimenez
  * Distributed under the MIT License.
  */
+package pfg.kraken_examples;
 
 import java.awt.Color;
 import java.util.ArrayList;
@@ -24,12 +25,12 @@ import pfg.kraken.utils.XYO;
 
 
 /**
- * Example for replaning with initial path
+ * Example for replaning
  * @author pf
  *
  */
 
-public class Example7
+public class Example5
 {
 
 	public static void main(String[] args) throws InterruptedException
@@ -45,8 +46,12 @@ public class Example7
 		
 		RectangularObstacle robot = new RectangularObstacle(250, 80, 110, 110); 
 
+		/*
+		 * The list of dynamic obstacles.
+		 * "DefaultDynamicObstacles" is the default manager ; you can use a manager of your own if you want/need to
+		 */
 		DefaultDynamicObstacles obsDyn = new DefaultDynamicObstacles();
-		
+
 		DebugTool debug = DebugTool.getDebugTool(new XY(0,1000), new XY(0, 1000), SeverityCategoryKraken.INFO, "kraken-examples.conf", "trajectory");
 		Display display = debug.getDisplay();
 		for(Obstacle o : obs)
@@ -54,14 +59,14 @@ public class Example7
 		
 		Kraken kraken = new Kraken(robot, display, obs, obsDyn, new XY(-1500,0), new XY(1500, 2000), "kraken-examples.conf", "trajectory"/*, "detailed"*/);
 
-
 		try
 		{
-			kraken.initializeNewSearch(new SearchParameters(new XYO(0, 200, 0), new XY(1000, 1000)));
-			List<ItineraryPoint> initialPath = kraken.search();
-			
+			/*
+			 * We enable the autoreplanning
+			 * We won't use "kraken.initializeNewSearch()" or"kraken.search()"
+			 */
 			DynamicPath dpath = kraken.enableAutoReplanning();
-			kraken.startContinuousSearchWithInitialPath(new SearchParameters(new XYO(0, 200, 0), new XY(1000, 1000)), initialPath);
+			kraken.startContinuousSearch(new SearchParameters(new XYO(0, 200, 0), new XY(1000, 1000)));
 			List<ItineraryPoint> path;
 			
 			/*
@@ -73,12 +78,13 @@ public class Example7
 				display.addTemporaryPrintable(p, Color.BLACK, Layer.FOREGROUND.layer);
 
 			Thread.sleep(2000);
+			display.clearTemporaryPrintables();
 			
 			/*
 			 * The research is continuous : at the moment a new obstacle is added, Kraken tries to find a new path
 			 */
 			Obstacle newObs1 = new CircularObstacle(new XY(400,800), 100);
-			display.addPrintable(newObs1, Color.BLUE, Layer.MIDDLE.layer);
+			display.addTemporaryPrintable(newObs1, Color.BLUE, Layer.MIDDLE.layer);
 			obsDyn.add(newObs1);
 			
 			/*
@@ -86,22 +92,22 @@ public class Example7
 			 */
 			path = dpath.waitNewPath();
 			
-			display.clearTemporaryPrintables();
 			for(ItineraryPoint p : path)
 				display.addTemporaryPrintable(p, Color.BLACK, Layer.FOREGROUND.layer);
 			
 			Thread.sleep(2000);
+			display.clearTemporaryPrintables();
 			
 			/*
 			 * We add a second obstacle
 			 */
-			Obstacle newObs2 = new CircularObstacle(new XY(100,1200), 100);
-			display.addPrintable(newObs2, Color.BLUE, Layer.MIDDLE.layer);
+			Obstacle newObs2 = new CircularObstacle(new XY(-200,800), 100);
+			display.addTemporaryPrintable(newObs1, Color.BLUE, Layer.MIDDLE.layer);
+			display.addTemporaryPrintable(newObs2, Color.BLUE, Layer.MIDDLE.layer);
 			obsDyn.add(newObs2);
 			
 			path = dpath.waitNewPath();
 			
-			display.clearTemporaryPrintables();
 			for(ItineraryPoint p : path)
 				display.addTemporaryPrintable(p, Color.BLACK, Layer.FOREGROUND.layer);
 			
