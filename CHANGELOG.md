@@ -1,6 +1,8 @@
 # Unreleased
 - New "KrakenParameters" class to easily handle the initialization parameters
 - QuadTree physics engine
+- Fast and dirty coeff instead of a boolean
+* The backup path can be disabled
 
 # v1.4.5
 - Remove the dependency to the home-made "graphic toolbox" library

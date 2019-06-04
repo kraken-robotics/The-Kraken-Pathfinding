@@ -466,7 +466,7 @@ public final class TentacularAStar
 				if(successeur.getArc() != null && arcmanager.isArrived(successeur.getArc().getLast()) && (successeur.getArc() == null || !engine.isThereCollision(successeur.getArc())) && (trajetDeSecours == null || trajetDeSecours.f_score > successeur.f_score))
 				{
 					trajetDeSecours = successeur;
-					if(successeur.f_score < fastFactor * openset.peek().f_score)
+					if(!openset.isEmpty() && successeur.f_score < fastFactor * openset.peek().f_score)
 					{
 						System.out.println(successeur.f_score);
 //						log.write("A fast-and-dirty path is used.", LogCategoryKraken.PF);
