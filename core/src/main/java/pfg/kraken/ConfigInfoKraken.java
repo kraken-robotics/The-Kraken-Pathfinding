@@ -65,6 +65,7 @@ public enum ConfigInfoKraken implements ConfigInfo
 	
 	ENABLE_DEBUG_MODE(false), // enable the debug mode
 	FAST_AND_DIRTY_COEFF(1.4),
+	ENABLE_BACKUP_PATH(true),
 	CHECK_NEW_OBSTACLES(false),
 	
 	/**

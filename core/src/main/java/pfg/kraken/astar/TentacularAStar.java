@@ -168,6 +168,7 @@ public final class TentacularAStar
 	private RectangularObstacle vehicleTemplate;
 	
 	private double fastFactor;
+	private boolean backup;
 	private List<RectangularObstacle> finalPoint = new ArrayList<RectangularObstacle>();
 
 	/**
@@ -185,6 +186,7 @@ public final class TentacularAStar
 		this.buffer = buffer;
 		graphicTrajectory = config.getBoolean(ConfigInfoKraken.GRAPHIC_TENTACLES);
 		debugMode = config.getBoolean(ConfigInfoKraken.ENABLE_DEBUG_MODE);
+		backup = config.getBoolean(ConfigInfoKraken.ENABLE_BACKUP_PATH);
 		fastFactor = config.getDouble(ConfigInfoKraken.FAST_AND_DIRTY_COEFF);
 		if(fastFactor < 1)
 			fastFactor = 1;
@@ -409,7 +411,7 @@ public final class TentacularAStar
 
 				memorymanager.empty();
 				cinemMemory.empty();
-				if(trajetDeSecours != null) // si on a un trajet de secours, on l'utilise
+				if(backup && trajetDeSecours != null) // si on a un trajet de secours, on l'utilise
 				{
 					log.write("The backup path is used.", LogCategoryKraken.PF);
 					partialReconstruct(trajetDeSecours, chemin, Integer.MAX_VALUE, false);
