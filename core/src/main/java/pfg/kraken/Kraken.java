@@ -140,7 +140,7 @@ public final class Kraken
 	
 	public void stop()
 	{
-		astar.stop = true;
+		astar.stop();
 	}
 	
 	private boolean isJUnitTest()

@@ -64,7 +64,7 @@ public enum ConfigInfoKraken implements ConfigInfo
 //	ALLOW_SPINNING(false), // can the robot spin ?
 	
 	ENABLE_DEBUG_MODE(false), // enable the debug mode
-	FAST_AND_DIRTY(false),
+	FAST_AND_DIRTY_COEFF(1.4),
 	CHECK_NEW_OBSTACLES(false),
 	
 	/**

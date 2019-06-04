@@ -167,7 +167,7 @@ public final class TentacularAStar
 	
 	private RectangularObstacle vehicleTemplate;
 	
-	private boolean fastMode;
+	private double fastFactor;
 	private List<RectangularObstacle> finalPoint = new ArrayList<RectangularObstacle>();
 
 	/**
@@ -185,7 +185,9 @@ public final class TentacularAStar
 		this.buffer = buffer;
 		graphicTrajectory = config.getBoolean(ConfigInfoKraken.GRAPHIC_TENTACLES);
 		debugMode = config.getBoolean(ConfigInfoKraken.ENABLE_DEBUG_MODE);
-		fastMode = config.getBoolean(ConfigInfoKraken.FAST_AND_DIRTY);
+		fastFactor = config.getDouble(ConfigInfoKraken.FAST_AND_DIRTY_COEFF);
+		if(fastFactor < 1)
+			fastFactor = 1;
 		checkEachIteration = config.getBoolean(ConfigInfoKraken.CHECK_NEW_OBSTACLES);
 		if(debugMode)
 			defaultTimeout = Integer.MAX_VALUE;
@@ -462,9 +464,10 @@ public final class TentacularAStar
 				if(successeur.getArc() != null && arcmanager.isArrived(successeur.getArc().getLast()) && (successeur.getArc() == null || !engine.isThereCollision(successeur.getArc())) && (trajetDeSecours == null || trajetDeSecours.f_score > successeur.f_score))
 				{
 					trajetDeSecours = successeur;
-					if(fastMode)
+					if(successeur.f_score < fastFactor * openset.peek().f_score)
 					{
-						log.write("A fast-and-dirty path is used.", LogCategoryKraken.PF);
+						System.out.println(successeur.f_score);
+//						log.write("A fast-and-dirty path is used.", LogCategoryKraken.PF);
 						partialReconstruct(trajetDeSecours, chemin, Integer.MAX_VALUE, false);
 						memorymanager.empty();
 						cinemMemory.empty();
@@ -627,5 +630,10 @@ public final class TentacularAStar
 	{
 		node.setState(state);
 		return true;
+	}
+	
+	public void stop()
+	{
+		this.stop = true;
 	}
 }
