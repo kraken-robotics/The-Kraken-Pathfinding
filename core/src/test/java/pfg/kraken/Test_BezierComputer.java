@@ -25,7 +25,7 @@ public class Test_BezierComputer extends JUnit_Test
 	@Before
 	public void setUp() throws Exception
 	{
-		super.setUpWith(null, "default", "graphic", "empty");
+		super.setUpWith(null, "default", "empty");
 		bezier = injector.getService(BezierComputer.class);
 	}
 

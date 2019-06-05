@@ -30,7 +30,7 @@ public class Test_ClothoidesComputer extends JUnit_Test
 	@Before
 	public void setUp() throws Exception
 	{
-		super.setUpStandard("default", "graphic");
+		super.setUpStandard("default");
 		clotho = injector.getService(ClothoidesComputer.class);
 	}
 

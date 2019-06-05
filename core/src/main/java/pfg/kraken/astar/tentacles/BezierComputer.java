@@ -36,6 +36,7 @@ public final class BezierComputer implements TentacleComputer
 	private double rootedMaxAcceleration;
 	private double maxCurvatureDerivative;
 	private DStarLite dstarlite;
+	private final double[] maxSpeedLUT;
 
 	public BezierComputer(DStarLite dstarlite, CinemObsPool memory, Config config, RectangularObstacle vehicleTemplate)
 	{
@@ -94,6 +95,11 @@ public final class BezierComputer implements TentacleComputer
 			debut[i] = new Cinematique();
 		}
 		
+
+		maxSpeedLUT = new double[500];
+		maxSpeedLUT[0] = Double.MAX_VALUE;
+		for(int i = 1; i < 500; i++)
+			maxSpeedLUT[i] = Math.sqrt(10. / i);
 
 	}
 
@@ -308,14 +314,13 @@ public final class BezierComputer implements TentacleComputer
 			
 			CinematiqueObs obs = memory.getNewNode();
 			out.addFirst(obs);
-			obs.updateWithMaxSpeed(
+			obs.update(
 					tmpPoint3[indexThread].getX(), // x
 					tmpPoint3[indexThread].getY(), // y
 					orientation,
 					enMarcheAvant,
 					courbure,
-					rootedMaxAcceleration,
-					maxSpeed,
+					Math.min(maxSpeed, rootedMaxAcceleration * maxSpeedLUT[(int) Math.round(Math.abs(10*courbure))]),
 					false);
 			
 			lastCourbure = obs.cinem.courbureGeometrique;
@@ -544,9 +549,9 @@ public final class BezierComputer implements TentacleComputer
 
 			t -= PRECISION_TRACE_MM / vitesse;
 			
-			obs.updateWithMaxSpeed(tmpPos[indexThread].getX(), // x
+			obs.update(tmpPos[indexThread].getX(), // x
 					tmpPos[indexThread].getY(), // y
-					orientation, enMarcheAvant, courbure, rootedMaxAcceleration, maxSpeed, false);
+					orientation, enMarcheAvant, courbure, Math.min(maxSpeed, rootedMaxAcceleration * maxSpeedLUT[(int) Math.round(Math.abs(10*courbure))]), false);
 			
 			lastCourbure = obs.cinem.courbureGeometrique;
 		}

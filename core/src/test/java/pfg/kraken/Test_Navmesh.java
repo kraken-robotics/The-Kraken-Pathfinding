@@ -35,7 +35,7 @@ public class Test_Navmesh extends JUnit_Test
 	@Test
 	public void test_empty() throws Exception
 	{
-		super.setUpWith(null, "default", "graphic", "navmesh", "empty");
+		super.setUpWith(null, "default", "empty");
 		navmesh = injector.getService(Navmesh.class);
 		Assert.assertNotEquals(0, navmesh.mesh.edges.length);
 		Assert.assertNotEquals(0, navmesh.mesh.nodes.length);

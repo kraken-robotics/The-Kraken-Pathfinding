@@ -42,7 +42,7 @@ public class Test_Multithreading extends JUnit_Test
 		obs.add(new RectangularObstacle(new XY_RW(100,410), 200, 200));
 		obs.add(new RectangularObstacle(new XY_RW(-600,300), 200, 200));
 		obs.add(new RectangularObstacle(new XY_RW(-1000,1900), 200, 200));
-		super.setUpWith(obs, "default", "graphic", "multithreading");
+		super.setUpWith(obs, "default", "multithreading");
 		astar = injector.getService(TentacularAStar.class);
 	}
 

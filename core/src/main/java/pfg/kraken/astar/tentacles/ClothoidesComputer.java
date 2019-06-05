@@ -39,7 +39,6 @@ import static pfg.kraken.astar.tentacles.Tentacle.*;
 public final class ClothoidesComputer implements TentacleComputer
 {
 	private CinemObsPool memory;
-	private double rootedMaxAcceleration;
 	
 	private static class PosBigDecimal
 	{
@@ -56,7 +55,6 @@ public final class ClothoidesComputer implements TentacleComputer
 	public ClothoidesComputer(Config config, CinemObsPool memory)
 	{
 		this.memory = memory;
-		rootedMaxAcceleration = Math.sqrt(config.getDouble(ConfigInfoKraken.MAX_LATERAL_ACCELERATION));
 		int indexThreadMax = config.getInt(ConfigInfoKraken.THREAD_NUMBER);
 		tmp = new XY_RW[indexThreadMax];
 		delta = new XY_RW[indexThreadMax];
@@ -362,8 +360,7 @@ public final class ClothoidesComputer implements TentacleComputer
 		if(!vitesse.positif)
 			courbure = -courbure;
 
-		c.update(tmp[indexThread].getX(), tmp[indexThread].getY(), baseOrientation + orientationClotho, marcheAvant, courbure, rootedMaxAcceleration, i == 0 && vitesse.arret);
-		c.maxSpeed = Math.min(c.maxSpeed, vitesse.maxSpeed);
+		c.update(tmp[indexThread].getX(), tmp[indexThread].getY(), baseOrientation + orientationClotho, marcheAvant, courbure, vitesse.maxSpeed, i == 0 && vitesse.arret);
 	}
 
 	/**
@@ -399,7 +396,7 @@ public final class ClothoidesComputer implements TentacleComputer
 			delta[indexThread].rotate(cos, sin);
 			centreCercle[indexThread].copy(tmp[indexThread]);
 			tmp[indexThread].minus(delta[indexThread]);			
-			modified.arcselems[i].update(tmp[indexThread].getX(), tmp[indexThread].getY(), orientation + angle * (i + 1), enMarcheAvant, courbure, rootedMaxAcceleration, i == 0 && vitesse.arret);
+			modified.arcselems[i].update(tmp[indexThread].getX(), tmp[indexThread].getY(), orientation + angle * (i + 1), enMarcheAvant, courbure, vitesse.maxSpeed, i == 0 && vitesse.arret);
 		}
 	}
 
@@ -421,7 +418,7 @@ public final class ClothoidesComputer implements TentacleComputer
 			double distance = (i + 1) * PRECISION_TRACE_MM;
 			tmp[indexThread].setX(position.getX() + distance * cos);
 			tmp[indexThread].setY(position.getY() + distance * sin);
-			modified.arcselems[i].update(tmp[indexThread].getX(), tmp[indexThread].getY(), orientation, enMarcheAvant, 0, rootedMaxAcceleration, i == 0 && vitesse.arret);
+			modified.arcselems[i].update(tmp[indexThread].getX(), tmp[indexThread].getY(), orientation, enMarcheAvant, 0, vitesse.maxSpeed, i == 0 && vitesse.arret);
 		}
 	}
 

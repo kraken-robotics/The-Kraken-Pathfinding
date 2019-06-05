@@ -25,17 +25,7 @@ public final class CinematiqueObs implements Memorizable, Serializable
 	public volatile RectangularObstacle obstacle;
 	public volatile double maxSpeed; // in m/s
 
-	public static final double[] maxSpeedLUT;
-
 	private volatile int indiceMemory;
-
-	static
-	{
-		maxSpeedLUT = new double[500];
-		maxSpeedLUT[0] = Double.MAX_VALUE;
-		for(int i = 1; i < 500; i++)
-			maxSpeedLUT[i] = Math.sqrt(10. / i);
-	}
 	
 	public String toString()
 	{
@@ -80,17 +70,10 @@ public final class CinematiqueObs implements Memorizable, Serializable
 	 * @param obstacle
 	 * @param r
 	 */
-	public void update(double x, double y, double orientationGeometrique, boolean enMarcheAvant, double courbure, double rootedMaxAcceleration, boolean stop)
+	public void update(double x, double y, double orientationGeometrique, boolean enMarcheAvant, double courbure, double maxSpeed, boolean stop)
 	{
 		cinem.update(x, y, orientationGeometrique, enMarcheAvant, courbure, stop);
-		maxSpeed = rootedMaxAcceleration * maxSpeedLUT[(int) Math.round(Math.abs(10*courbure))];
-		obstacle.update(cinem.position, cinem.orientationReelle);
-	}
-	
-	public void updateWithMaxSpeed(double x, double y, double orientationGeometrique, boolean enMarcheAvant, double courbure, double rootedMaxAcceleration, double maxSpeed, boolean stop)
-	{
-		cinem.update(x, y, orientationGeometrique, enMarcheAvant, courbure, stop);
-		this.maxSpeed = Math.min(maxSpeed, rootedMaxAcceleration * maxSpeedLUT[(int) Math.round(Math.abs(10*courbure))]);
+		this.maxSpeed = maxSpeed;
 		obstacle.update(cinem.position, cinem.orientationReelle);
 	}
 
