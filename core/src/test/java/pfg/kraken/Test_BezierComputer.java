@@ -51,7 +51,7 @@ public class Test_BezierComputer extends JUnit_Test
 		DynamicTentacle arc = bezier.quadraticInterpolationXYO2XYO(c, arrivee, 0);
 
 		Assert.assertTrue(arc != null);
-		Assert.assertTrue(arc.getPoint(0).enMarcheAvant);
+		Assert.assertTrue(arc.getPoint(0).cinem.enMarcheAvant);
 		
 		for(int i = 0; i < arc.getNbPoints(); i++)
 			System.out.println(i + " " + arc.getPoint(i));
@@ -65,7 +65,7 @@ public class Test_BezierComputer extends JUnit_Test
 		DynamicTentacle arc = bezier.quadraticInterpolationXYO2XYO(c, arrivee, 0);
 
 		Assert.assertTrue(arc != null);
-		Assert.assertTrue(!arc.getPoint(0).enMarcheAvant);
+		Assert.assertTrue(!arc.getPoint(0).cinem.enMarcheAvant);
 		
 		for(int i = 0; i < arc.getNbPoints(); i++)
 			System.out.println(i + " " + arc.getPoint(i));

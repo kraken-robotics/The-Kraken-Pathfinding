@@ -150,8 +150,8 @@ public final class TentacleManager implements Iterator<AStarNode>
 				if(printObstacles)
 					display.addTemporaryPrintable(current.obstacle.clone(), ColorKraken.ROBOT.color, Layer.BACKGROUND.layer);
 				
-				nextStop = current.stop;
-				current.stop = lastStop;
+				nextStop = current.cinem.stop;
+				current.cinem.stop = lastStop;
 				
 				trajectory.addFirst(current);
 				

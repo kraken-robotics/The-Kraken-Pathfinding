@@ -339,7 +339,7 @@ public final class TentacularAStar
 
 			// si on a déjà fait ce point ou un point très proche…
 			// exception si c'est un point d'arrivée
-			if(!closedset.add(current.hashCode()) && (current.getArc() == null || !arcmanager.isArrived(current.getArc().getLast())))
+			if(!closedset.add(current.hashCode()) && (current.getArc() == null || !arcmanager.isArrived(current.getArc().getLast().cinem)))
 			{
 				// we skip this point
 				if(current != depart)
@@ -423,9 +423,9 @@ public final class TentacularAStar
 				assert successeur.getArc().getNbPoints() > 0;
 				
 				// Il y a une trop grande distance
-				if(successeur.getArc().getPoint(0).getPosition().distanceFast(current.cinematique.getPosition()) > 2*PRECISION_TRACE_MM)
+				if(successeur.getArc().getPoint(0).cinem.getPosition().distanceFast(current.cinematique.getPosition()) > 2*PRECISION_TRACE_MM)
 				{
-					assert false : "Distance entre deux points trop élevée : " + successeur.getArc()+" "+current.cinematique.getPosition()+" "+successeur.getArc().getPoint(0).getPosition().distanceFast(current.cinematique.getPosition());
+					assert false : "Distance entre deux points trop élevée : " + successeur.getArc()+" "+current.cinematique.getPosition()+" "+successeur.getArc().getPoint(0).cinem.getPosition().distanceFast(current.cinematique.getPosition());
 					memorymanager.destroyNode(successeur);
 					continue;
 				}
@@ -453,7 +453,7 @@ public final class TentacularAStar
 
 				// est qu'on est tombé sur l'arrivée ? alors ça fait un trajet de secours
 				// s'il y a déjà un trajet de secours, on prend le meilleur
-				if(successeur.getArc() != null && arcmanager.isArrived(successeur.getArc().getLast()) && (successeur.getArc() == null || !engine.isThereCollision(successeur.getArc())) && (trajetDeSecours == null || trajetDeSecours.f_score > successeur.f_score))
+				if(successeur.getArc() != null && arcmanager.isArrived(successeur.getArc().getLast().cinem) && (successeur.getArc() == null || !engine.isThereCollision(successeur.getArc())) && (trajetDeSecours == null || trajetDeSecours.f_score > successeur.f_score))
 				{
 					trajetDeSecours = successeur;
 					if(!openset.isEmpty() && successeur.f_score < fastFactor * openset.peek().f_score)

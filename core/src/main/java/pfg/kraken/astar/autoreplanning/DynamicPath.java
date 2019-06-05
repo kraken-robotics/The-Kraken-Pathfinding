@@ -273,7 +273,7 @@ public final class DynamicPath
 	public Cinematique getNewStart()
 	{
 		assert etat == State.REPLANNING : etat;
-		return path[pathSize - 1];
+		return path[pathSize - 1].cinem;
 	}
 
 	/**

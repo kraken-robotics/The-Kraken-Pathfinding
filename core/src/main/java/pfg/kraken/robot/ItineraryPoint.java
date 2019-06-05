@@ -78,7 +78,7 @@ public class ItineraryPoint implements Printable
 	
 	public ItineraryPoint(CinematiqueObs c)
 	{
-		this(c.getPosition().getX(), c.getPosition().getY(), c.orientationReelle, c.courbureReelle, c.enMarcheAvant, c.maxSpeed, c.stop);
+		this(c.cinem.getX(), c.cinem.getY(), c.cinem.orientationReelle, c.cinem.courbureReelle, c.cinem.enMarcheAvant, c.maxSpeed, c.cinem.stop);
 	}
 	
 	@Override

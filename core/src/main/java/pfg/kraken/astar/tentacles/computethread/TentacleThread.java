@@ -70,7 +70,7 @@ public final class TentacleThread extends Thread
 			// Compute the travel time
 			int duration = (int) (1000*successeur.getArc().getDuree(successeur.parent.getArc(), task.vitesseMax, tempsArret));
 			successeur.date += duration;
-			successeur.getArc().getLast().copy(successeur.cinematique);
+			successeur.getArc().getLast().cinem.copy(successeur.cinematique);
 			successeur.g_score = duration;
 			assert successeur.getArc().vitesse == task.v : successeur.getArc().vitesse +" != "+ task.v;
 			successeurs.add(successeur);

@@ -154,7 +154,7 @@ public final class ClothoidesComputer implements TentacleComputer
 	public void getTrajectoire(Tentacle depart, ClothoTentacle vitesse, StaticTentacle modified, int indexThread)
 	{
 		CinematiqueObs last = depart.getLast();
-		getTrajectoire(last, vitesse, modified, indexThread);
+		getTrajectoire(last.cinem, vitesse, modified, indexThread);
 	}
 
 	/**

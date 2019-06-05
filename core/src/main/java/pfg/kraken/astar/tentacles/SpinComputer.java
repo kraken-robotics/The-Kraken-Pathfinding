@@ -44,8 +44,8 @@ public final class SpinComputer implements TentacleComputer
 		CinematiqueObs c = memory.getNewNode();
 		
 		Cinematique cinemInitiale = current.cinematique;
-		c.update(cinemInitiale.getPosition().getX(),
-				cinemInitiale.getPosition().getY(),
+		c.update(cinemInitiale.getX(),
+				cinemInitiale.getY(),
 				t.angle,
 				true,
 				0,

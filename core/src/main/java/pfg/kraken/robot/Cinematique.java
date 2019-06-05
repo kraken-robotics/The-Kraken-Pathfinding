@@ -92,6 +92,16 @@ public class Cinematique implements Printable, Serializable
 	{
 		return position;
 	}
+	
+	public final double getX()
+	{
+		return position.getX();
+	}
+	
+	public final double getY()
+	{
+		return position.getY();
+	}
 
 /*	public final XY_RW getPositionEcriture()
 	{

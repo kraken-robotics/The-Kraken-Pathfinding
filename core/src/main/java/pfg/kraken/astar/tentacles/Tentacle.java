@@ -85,7 +85,7 @@ public abstract class Tentacle implements Printable, Iterable<RectangularObstacl
 	public void print(Graphics g, Display f)
 	{
 		for(int i = 0; i < getNbPoints(); i++)
-			new PrintablePoint(getPoint(i).getPosition().getX(), getPoint(i).getPosition().getY()).print(g, f);
+			new PrintablePoint(getPoint(i).cinem.getX(), getPoint(i).cinem.getY()).print(g, f);
 	}
 
 

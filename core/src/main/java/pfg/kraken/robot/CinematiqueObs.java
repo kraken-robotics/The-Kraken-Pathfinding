@@ -18,8 +18,9 @@ import pfg.kraken.obstacles.RectangularObstacle;
  *
  */
 
-public final class CinematiqueObs extends Cinematique implements Memorizable, Serializable
+public final class CinematiqueObs implements Memorizable, Serializable
 {
+	public final Cinematique cinem;
 	private static final long serialVersionUID = 1L;
 	public volatile RectangularObstacle obstacle;
 	public volatile double maxSpeed; // in m/s
@@ -43,14 +44,14 @@ public final class CinematiqueObs extends Cinematique implements Memorizable, Se
 	
 	public CinematiqueObs(RectangularObstacle vehicleTemplate)
 	{
-		super();
+		cinem = new Cinematique();
 		obstacle = vehicleTemplate.clone();
 		maxSpeed = -1;
 	}
 
 	public void copy(CinematiqueObs autre)
 	{
-		super.copy(autre);
+		cinem.copy(autre.cinem);
 		autre.maxSpeed = maxSpeed;
 		obstacle.copy(autre.obstacle);
 	}
@@ -81,16 +82,16 @@ public final class CinematiqueObs extends Cinematique implements Memorizable, Se
 	 */
 	public void update(double x, double y, double orientationGeometrique, boolean enMarcheAvant, double courbure, double rootedMaxAcceleration, boolean stop)
 	{
-		super.update(x, y, orientationGeometrique, enMarcheAvant, courbure, stop);
+		cinem.update(x, y, orientationGeometrique, enMarcheAvant, courbure, stop);
 		maxSpeed = rootedMaxAcceleration * maxSpeedLUT[(int) Math.round(Math.abs(10*courbure))];
-		obstacle.update(position, orientationReelle);
+		obstacle.update(cinem.position, cinem.orientationReelle);
 	}
 	
 	public void updateWithMaxSpeed(double x, double y, double orientationGeometrique, boolean enMarcheAvant, double courbure, double rootedMaxAcceleration, double maxSpeed, boolean stop)
 	{
-		super.update(x, y, orientationGeometrique, enMarcheAvant, courbure, stop);
+		cinem.update(x, y, orientationGeometrique, enMarcheAvant, courbure, stop);
 		this.maxSpeed = Math.min(maxSpeed, rootedMaxAcceleration * maxSpeedLUT[(int) Math.round(Math.abs(10*courbure))]);
-		obstacle.update(position, orientationReelle);
+		obstacle.update(cinem.position, cinem.orientationReelle);
 	}
 
 	private volatile MemPoolState state = MemPoolState.FREE;
@@ -117,8 +118,8 @@ public final class CinematiqueObs extends Cinematique implements Memorizable, Se
 
 	public void update(ItineraryPoint p)
 	{
-		super.update(p);
+		cinem.update(p);
 		maxSpeed = p.maxSpeed;
-		obstacle.update(position, orientationReelle);
+		obstacle.update(cinem.position, cinem.orientationReelle);
 	}
 }

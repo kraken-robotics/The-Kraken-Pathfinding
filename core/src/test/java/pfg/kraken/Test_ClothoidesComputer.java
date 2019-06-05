@@ -66,22 +66,22 @@ public class Test_ClothoidesComputer extends JUnit_Test
 			{
 				if(i > 0)
 				{
-					double distance = arc[a].arcselems[i-1].getPosition().distance(arc[a].arcselems[i].getPosition());
+					double distance = arc[a].arcselems[i-1].cinem.getPosition().distance(arc[a].arcselems[i].cinem.getPosition());
 					assert distance <= PRECISION_TRACE_MM && distance >= PRECISION_TRACE_MM*0.97 : distance;
 				}
 				else if(a > 0)
 				{
-					double distance = arc[a-1].arcselems[NB_POINTS - 1].getPosition().distance(arc[a].arcselems[0].getPosition());
+					double distance = arc[a-1].arcselems[NB_POINTS - 1].cinem.getPosition().distance(arc[a].arcselems[0].cinem.getPosition());
 					assert distance <= PRECISION_TRACE_MM && distance >= PRECISION_TRACE_MM*0.97 : distance;
 				}
 			}
 			if(a == 0)
 			{
-				Assert.assertEquals(arc[0].arcselems[NB_POINTS - 1].getPosition().getX(), 0, 0.1);
-				Assert.assertEquals(arc[0].arcselems[NB_POINTS - 1].getPosition().getY(), 1000 + (int) DISTANCE_ARC_COURBE, 0.1);
+				Assert.assertEquals(arc[0].arcselems[NB_POINTS - 1].cinem.getX(), 0, 0.1);
+				Assert.assertEquals(arc[0].arcselems[NB_POINTS - 1].cinem.getY(), 1000 + (int) DISTANCE_ARC_COURBE, 0.1);
 			}
 		}
 
-		Assert.assertEquals(0, arc[nbArc - 1].arcselems[arc[nbArc - 1].arcselems.length - 1].getPosition().distance(new XY(-166.41,1335.34)), 0.1);
+		Assert.assertEquals(0, arc[nbArc - 1].arcselems[arc[nbArc - 1].arcselems.length - 1].cinem.getPosition().distance(new XY(-166.41,1335.34)), 0.1);
 	}
 }
