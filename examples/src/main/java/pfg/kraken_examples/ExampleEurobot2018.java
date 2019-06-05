@@ -82,7 +82,9 @@ public class ExampleEurobot2018
 				display.addPrintable(p, Color.BLACK, Layer.FOREGROUND.layer);
 				System.out.println(p);
 			}
-			
+
+			System.out.println(kraken.getTentaclesStatistics());
+
 			display.refresh();
 		}
 		catch(PathfindingException e)

@@ -4,6 +4,7 @@
 - Fast and dirty coeff instead of a boolean
 * The backup path can be disabled
 - Remove the linear acceleration simulation
+- Tentacles statistics are available
 
 # v1.4.5
 - Remove the dependency to the home-made "graphic toolbox" library

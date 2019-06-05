@@ -468,7 +468,7 @@ public final class TentacularAStar
 					trajetDeSecours = successeur;
 					if(!openset.isEmpty() && successeur.f_score < fastFactor * openset.peek().f_score)
 					{
-						System.out.println(successeur.f_score);
+//						System.out.println(successeur.f_score);
 //						log.write("A fast-and-dirty path is used.", LogCategoryKraken.PF);
 						partialReconstruct(trajetDeSecours, chemin, Integer.MAX_VALUE, false);
 						memorymanager.empty();

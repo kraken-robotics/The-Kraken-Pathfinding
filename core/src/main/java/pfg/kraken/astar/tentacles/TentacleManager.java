@@ -6,9 +6,11 @@
 package pfg.kraken.astar.tentacles;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import pfg.config.Config;
@@ -49,6 +51,7 @@ public final class TentacleManager implements Iterator<AStarNode>
 	private Display display;
 	private TentacleThread[] threads;
 	private ResearchProfile currentProfile;
+	private Map<TentacleType, Integer> tentaclesStats = new HashMap<TentacleType, Integer>();
 	
 	private DirectionStrategy directionstrategyactuelle;
 	private Cinematique arrivee = new Cinematique();
@@ -118,6 +121,16 @@ public final class TentacleManager implements Iterator<AStarNode>
 	 */
 	private LinkedList<CinematiqueObs> trajectory = new LinkedList<CinematiqueObs>();
 
+	public Map<TentacleType, Integer> getTentaclesStatistics()
+	{
+		return tentaclesStats;
+	}
+	
+	public void resetTentaclesStatistics()
+	{
+		tentaclesStats.clear();
+	}
+	
 	public LinkedList<CinematiqueObs> reconstruct(AStarNode best, int nbPointsMax)
 	{
 		trajectory.clear();
@@ -130,6 +143,10 @@ public final class TentacleManager implements Iterator<AStarNode>
 
 		while(noeudParent.parent != null)
 		{
+			Integer nb = tentaclesStats.get(arcParent.vitesse);
+			if(nb == null)
+				nb = 0;
+			tentaclesStats.put(arcParent.vitesse, nb+1);
 			for(int i = arcParent.getNbPoints() - 1; i >= 0; i--)
 			{
 				current = arcParent.getPoint(i);

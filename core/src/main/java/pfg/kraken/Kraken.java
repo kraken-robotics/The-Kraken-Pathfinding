@@ -7,6 +7,8 @@ package pfg.kraken;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
 import pfg.config.Config;
 import pfg.log.Log;
 import pfg.injector.Injector;
@@ -289,5 +291,15 @@ public final class Kraken
 			throw new NotInitializedPathfindingException("You should enable the continuous search before starting it.");
 	}
 	
+	public void resetTentaclesStatistics()
+	{
+		tentaclemanager.resetTentaclesStatistics();
+	}
+	
+	public Map<TentacleType, Integer> getTentaclesStatistics()
+	{
+		return tentaclemanager.getTentaclesStatistics();
+	}
+
 	
 }

@@ -79,6 +79,8 @@ public class ExampleEurobot2016
 				System.out.println(p);
 			}
 			
+			System.out.println(kraken.getTentaclesStatistics());
+
 			display.refresh();
 		}
 		catch(PathfindingException e)

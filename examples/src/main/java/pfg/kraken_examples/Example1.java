@@ -113,6 +113,11 @@ public class Example1
 			}
 
 			/*
+			 * Print some statistics of the Kraken paths
+			 */
+			System.out.println(kraken.getTentaclesStatistics());
+			
+			/*
 			 * Refresh the window frame.
 			 */
 			display.refresh();
