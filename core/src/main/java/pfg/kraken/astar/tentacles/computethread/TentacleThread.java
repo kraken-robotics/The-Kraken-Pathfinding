@@ -64,12 +64,13 @@ public final class TentacleThread extends Thread
 		assert successeur.cameFromArcDynamique == null;
 		successeur.parent = task.current;
 		
-		task.current.robot.copy(successeur.robot);
+		task.current.cinematique.copy(successeur.cinematique);
 		if(task.computer.compute(task.current, task.v, task.arrivee, successeur, nb))
 		{
 			// Compute the travel time
 			int duration = (int) (1000*successeur.getArc().getDuree(successeur.parent.getArc(), task.vitesseMax, tempsArret));
-			successeur.robot.suitArcCourbe(successeur.getArc(), duration);
+			successeur.date += duration;
+			successeur.getArc().getLast().copy(successeur.cinematique);
 			successeur.g_score = duration;
 			assert successeur.getArc().vitesse == task.v : successeur.getArc().vitesse +" != "+ task.v;
 			successeurs.add(successeur);

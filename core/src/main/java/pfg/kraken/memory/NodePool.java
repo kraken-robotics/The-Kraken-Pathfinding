@@ -10,7 +10,6 @@ import pfg.config.Config;
 import pfg.kraken.ConfigInfoKraken;
 import pfg.kraken.astar.AStarNode;
 import pfg.kraken.obstacles.RectangularObstacle;
-import pfg.kraken.robot.RobotState;
 
 /**
  * Memory Manager des nœuds du pathfinding courbe
@@ -36,7 +35,7 @@ public final class NodePool extends MemoryPool<AStarNode>
 	protected final void make(AStarNode[] nodes)
 	{
 		for(int i = 0; i < nodes.length; i++)
-			nodes[i] = new AStarNode(new RobotState(), vehicleTemplate);
+			nodes[i] = new AStarNode(vehicleTemplate);
 	}
 
 	@Override

@@ -43,7 +43,7 @@ public final class SpinComputer implements TentacleComputer
 		List<CinematiqueObs> l = new ArrayList<CinematiqueObs>();
 		CinematiqueObs c = memory.getNewNode();
 		
-		Cinematique cinemInitiale = current.robot.getCinematique();
+		Cinematique cinemInitiale = current.cinematique;
 		c.update(cinemInitiale.getPosition().getX(),
 				cinemInitiale.getPosition().getY(),
 				t.angle,

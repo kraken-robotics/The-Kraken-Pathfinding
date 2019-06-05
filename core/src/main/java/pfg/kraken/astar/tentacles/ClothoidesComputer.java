@@ -605,7 +605,7 @@ public final class ClothoidesComputer implements TentacleComputer
 //		if(current.getArc() == null && (!((ClothoTentacle) tentacleType).arret && !((ClothoTentacle) tentacleType).rebrousse))
 //			return false;
 
-		getTrajectoire(current.robot.getCinematique(), (ClothoTentacle) tentacleType, modified.cameFromArcStatique, indexThread);
+		getTrajectoire(current.cinematique, (ClothoTentacle) tentacleType, modified.cameFromArcStatique, indexThread);
 		return true;
 	}
 

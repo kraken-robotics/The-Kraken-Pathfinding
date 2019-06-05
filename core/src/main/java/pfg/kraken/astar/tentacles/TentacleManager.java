@@ -188,7 +188,7 @@ public final class TentacleManager implements Iterator<AStarNode>
 		
 		for(TentacleType v : currentProfile.tentacles)
 		{
-			if(v.isAcceptable(current.robot.getCinematique(), directionstrategyactuelle, courbureMax))
+			if(v.isAcceptable(current.cinematique, directionstrategyactuelle, courbureMax))
 			{
 				nbLeft++;
 				assert tasks.size() > index;

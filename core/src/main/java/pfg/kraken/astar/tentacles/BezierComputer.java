@@ -569,7 +569,7 @@ public final class BezierComputer implements TentacleComputer
 		assert tentacleType instanceof BezierTentacle : tentacleType;
 		if(tentacleType == BezierTentacle.BEZIER_XYOC_TO_XY)
 		{
-			DynamicTentacle t = quadraticInterpolationXYOC2XY(current.robot.getCinematique(), arrival.getPosition(), indexThread);
+			DynamicTentacle t = quadraticInterpolationXYOC2XY(current.cinematique, arrival.getPosition(), indexThread);
 			if(t == null)
 				return false;
 			assert modified.cameFromArcDynamique == null;
@@ -578,7 +578,7 @@ public final class BezierComputer implements TentacleComputer
 		}
 		else if(tentacleType == BezierTentacle.BEZIER_XYOC_TO_XYOC0)
 		{
-			DynamicTentacle t = cubicInterpolationXYOC2XYOC0(current.robot.getCinematique(), arrival, indexThread);
+			DynamicTentacle t = cubicInterpolationXYOC2XYOC0(current.cinematique, arrival, indexThread);
 			if(t == null)
 				return false;
 			modified.cameFromArcDynamique = t;
@@ -586,7 +586,7 @@ public final class BezierComputer implements TentacleComputer
 		}
 		else if(tentacleType == BezierTentacle.BEZIER_XYO_TO_XYO)
 		{
-			DynamicTentacle t = quadraticInterpolationXYO2XYO(current.robot.getCinematique(), arrival, indexThread);
+			DynamicTentacle t = quadraticInterpolationXYO2XYO(current.cinematique, arrival, indexThread);
 			if(t == null)
 				return false;
 			modified.cameFromArcDynamique = t;
@@ -619,13 +619,13 @@ public final class BezierComputer implements TentacleComputer
 
 	public DynamicTentacle intermediateXYO2XYO(AStarNode current, int indexThread)
 	{
-		List<XYO> listePositions = dstarlite.itineraireBrut(current.robot.getCinematique().getPosition());
+		List<XYO> listePositions = dstarlite.itineraireBrut(current.cinematique.getPosition());
 		
 		if(listePositions.size() < 2)
 			return null;
 		
 		XYO middle = listePositions.get(listePositions.size() / 2);
-		DynamicTentacle out = quadraticInterpolationXYO2XYO(current.robot.getCinematique(), new Cinematique(middle), indexThread);
+		DynamicTentacle out = quadraticInterpolationXYO2XYO(current.cinematique, new Cinematique(middle), indexThread);
 		if(out != null)
 			out.vitesse = BezierTentacle.INTERMEDIATE_BEZIER_XYO_TO_XYO;
 		return out;
@@ -633,13 +633,13 @@ public final class BezierComputer implements TentacleComputer
 	
 	public DynamicTentacle intermediateXYOC2XY(AStarNode current, int indexThread)
 	{
-		List<XYO> listePositions = dstarlite.itineraireBrut(current.robot.getCinematique().getPosition());
+		List<XYO> listePositions = dstarlite.itineraireBrut(current.cinematique.getPosition());
 		
 		if(listePositions.size() < 2)
 			return null;
 		
 		XYO middle = listePositions.get(listePositions.size() / 2);
-		DynamicTentacle out = quadraticInterpolationXYOC2XY(current.robot.getCinematique(), middle.position, indexThread);
+		DynamicTentacle out = quadraticInterpolationXYOC2XY(current.cinematique, middle.position, indexThread);
 		if(out != null)
 			out.vitesse = BezierTentacle.INTERMEDIATE_BEZIER_XYOC_TO_XY;
 		return out;
