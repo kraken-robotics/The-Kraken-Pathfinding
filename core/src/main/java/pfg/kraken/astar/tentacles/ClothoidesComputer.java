@@ -23,10 +23,10 @@ import pfg.kraken.astar.tentacles.types.ClothoTentacle;
 import pfg.kraken.astar.tentacles.types.StraightingTentacle;
 import pfg.kraken.astar.tentacles.types.TentacleType;
 import pfg.kraken.memory.CinemObsPool;
-import pfg.kraken.robot.Cinematique;
-import pfg.kraken.robot.CinematiqueObs;
-import pfg.kraken.utils.XY;
-import pfg.kraken.utils.XY_RW;
+import pfg.kraken.struct.Cinematique;
+import pfg.kraken.struct.CinematiqueObs;
+import pfg.kraken.struct.XY;
+import pfg.kraken.struct.XY_RW;
 import static pfg.kraken.astar.tentacles.Tentacle.*;
 
 /**

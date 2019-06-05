@@ -5,8 +5,8 @@
 
 package pfg.kraken.astar.tentacles.endCheck;
 
-import pfg.kraken.robot.Cinematique;
-import pfg.kraken.utils.XYO;
+import pfg.kraken.struct.Cinematique;
+import pfg.kraken.struct.XYO;
 
 public class EndWithXYO implements EndOfTrajectoryCheck
 {

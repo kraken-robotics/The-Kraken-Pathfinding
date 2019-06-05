@@ -3,7 +3,7 @@
  * Distributed under the MIT License.
  */
 
-package pfg.kraken.robot;
+package pfg.kraken.struct;
 
 import java.awt.Graphics;
 import java.text.DecimalFormat;

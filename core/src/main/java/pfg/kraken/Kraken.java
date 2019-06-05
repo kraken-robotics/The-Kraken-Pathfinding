@@ -36,8 +36,8 @@ import pfg.kraken.obstacles.RectangularObstacle;
 import pfg.kraken.obstacles.container.DynamicObstacles;
 import pfg.kraken.obstacles.container.EmptyDynamicObstacles;
 import pfg.kraken.obstacles.container.StaticObstacles;
-import pfg.kraken.robot.ItineraryPoint;
-import pfg.kraken.utils.XY;
+import pfg.kraken.struct.ItineraryPoint;
+import pfg.kraken.struct.XY;
 
 /**
  * The manager of the tentacle pathfinder.

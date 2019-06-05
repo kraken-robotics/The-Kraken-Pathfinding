@@ -8,7 +8,7 @@ package pfg.kraken.astar.tentacles;
 import java.util.List;
 
 import pfg.kraken.astar.tentacles.types.TentacleType;
-import pfg.kraken.robot.CinematiqueObs;
+import pfg.kraken.struct.CinematiqueObs;
 
 /**
  * Arc courbe de longueur inconnue à l'avance

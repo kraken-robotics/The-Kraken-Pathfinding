@@ -9,7 +9,7 @@ import java.awt.Graphics;
 import java.io.Serializable;
 import pfg.kraken.display.Display;
 import pfg.kraken.display.Printable;
-import pfg.kraken.utils.XY;
+import pfg.kraken.struct.XY;
 
 /**
  * A triangle of the navmesh

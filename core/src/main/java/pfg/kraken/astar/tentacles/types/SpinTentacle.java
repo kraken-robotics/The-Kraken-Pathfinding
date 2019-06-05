@@ -9,7 +9,7 @@ import java.awt.Color;
 import pfg.kraken.astar.DirectionStrategy;
 import pfg.kraken.astar.tentacles.SpinComputer;
 import pfg.kraken.astar.tentacles.TentacleComputer;
-import pfg.kraken.robot.Cinematique;
+import pfg.kraken.struct.Cinematique;
 
 /**
  * Arc où le robot tourne sur lui-même

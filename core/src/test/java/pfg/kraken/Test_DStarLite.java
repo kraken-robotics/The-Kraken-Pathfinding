@@ -14,9 +14,9 @@ import org.junit.Test;
 import pfg.kraken.dstarlite.DStarLite;
 import pfg.kraken.obstacles.Obstacle;
 import pfg.kraken.obstacles.RectangularObstacle;
-import pfg.kraken.utils.XY;
-import pfg.kraken.utils.XYO;
-import pfg.kraken.utils.XY_RW;
+import pfg.kraken.struct.XY;
+import pfg.kraken.struct.XYO;
+import pfg.kraken.struct.XY_RW;
 
 /**
  * Tests unitaires de la recherche de chemin.

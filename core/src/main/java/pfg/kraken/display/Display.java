@@ -3,7 +3,7 @@ package pfg.kraken.display;
 import java.awt.Color;
 import java.awt.image.ImageObserver;
 import java.util.PriorityQueue;
-import pfg.kraken.utils.XY;
+import pfg.kraken.struct.XY;
 
 public interface Display extends ImageObserver
 {

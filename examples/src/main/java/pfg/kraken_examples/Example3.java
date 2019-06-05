@@ -16,11 +16,11 @@ import pfg.kraken.exceptions.PathfindingException;
 import pfg.kraken.obstacles.CircularObstacle;
 import pfg.kraken.obstacles.Obstacle;
 import pfg.kraken.obstacles.RectangularObstacle;
+import pfg.kraken.struct.ItineraryPoint;
+import pfg.kraken.struct.XY;
+import pfg.kraken.struct.XYO;
 import pfg.kraken.astar.DirectionStrategy;
 import pfg.kraken.display.Display;
-import pfg.kraken.robot.ItineraryPoint;
-import pfg.kraken.utils.XY;
-import pfg.kraken.utils.XYO;
 
 
 /**

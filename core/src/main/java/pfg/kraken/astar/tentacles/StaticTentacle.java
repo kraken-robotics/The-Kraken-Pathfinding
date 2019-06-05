@@ -6,7 +6,7 @@
 package pfg.kraken.astar.tentacles;
 
 import pfg.kraken.obstacles.RectangularObstacle;
-import pfg.kraken.robot.CinematiqueObs;
+import pfg.kraken.struct.CinematiqueObs;
 
 /**
  * Arc courbe de longueur fixe

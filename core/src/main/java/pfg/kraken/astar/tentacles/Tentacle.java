@@ -13,7 +13,7 @@ import pfg.kraken.display.Printable;
 import pfg.kraken.display.PrintablePoint;
 import pfg.kraken.astar.tentacles.types.TentacleType;
 import pfg.kraken.obstacles.RectangularObstacle;
-import pfg.kraken.robot.CinematiqueObs;
+import pfg.kraken.struct.CinematiqueObs;
 
 /**
  * Un arc de trajectoire courbe. Juste une succession de points.

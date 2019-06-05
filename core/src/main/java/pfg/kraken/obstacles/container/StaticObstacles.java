@@ -8,7 +8,7 @@ package pfg.kraken.obstacles.container;
 import java.util.ArrayList;
 import java.util.List;
 import pfg.kraken.obstacles.Obstacle;
-import pfg.kraken.utils.XY;
+import pfg.kraken.struct.XY;
 
 /**
  * Classe qui contient les obstacles fixes

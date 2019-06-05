@@ -17,9 +17,9 @@ import pfg.kraken.exceptions.NoPathException;
 import pfg.kraken.exceptions.NotInitializedPathfindingException;
 import pfg.kraken.obstacles.Obstacle;
 import pfg.kraken.obstacles.RectangularObstacle;
-import pfg.kraken.robot.Cinematique;
-import pfg.kraken.utils.XYO;
-import pfg.kraken.utils.XY_RW;
+import pfg.kraken.struct.Cinematique;
+import pfg.kraken.struct.XYO;
+import pfg.kraken.struct.XY_RW;
 
 /**
  * Various test on search

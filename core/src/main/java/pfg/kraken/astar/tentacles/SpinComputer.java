@@ -13,8 +13,8 @@ import pfg.kraken.astar.AStarNode;
 import pfg.kraken.astar.tentacles.types.SpinTentacle;
 import pfg.kraken.astar.tentacles.types.TentacleType;
 import pfg.kraken.memory.CinemObsPool;
-import pfg.kraken.robot.Cinematique;
-import pfg.kraken.robot.CinematiqueObs;
+import pfg.kraken.struct.Cinematique;
+import pfg.kraken.struct.CinematiqueObs;
 
 /**
  * A simple computer

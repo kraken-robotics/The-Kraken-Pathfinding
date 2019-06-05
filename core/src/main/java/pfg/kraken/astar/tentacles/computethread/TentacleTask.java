@@ -8,7 +8,7 @@ package pfg.kraken.astar.tentacles.computethread;
 import pfg.kraken.astar.AStarNode;
 import pfg.kraken.astar.tentacles.TentacleComputer;
 import pfg.kraken.astar.tentacles.types.TentacleType;
-import pfg.kraken.robot.Cinematique;
+import pfg.kraken.struct.Cinematique;
 
 /**
  * A structure

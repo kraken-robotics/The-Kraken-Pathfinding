@@ -15,7 +15,7 @@ import pfg.kraken.astar.tentacles.Tentacle;
 import pfg.kraken.memory.MemPoolState;
 import pfg.kraken.memory.Memorizable;
 import pfg.kraken.obstacles.RectangularObstacle;
-import pfg.kraken.robot.Cinematique;
+import pfg.kraken.struct.Cinematique;
 
 /**
  * A node of the A*.

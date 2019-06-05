@@ -7,7 +7,7 @@ package pfg.kraken.astar.tentacles;
 
 import pfg.kraken.astar.AStarNode;
 import pfg.kraken.astar.tentacles.types.TentacleType;
-import pfg.kraken.robot.Cinematique;
+import pfg.kraken.struct.Cinematique;
 
 /**
  * An interface to add simply a new tentacle computer

@@ -15,7 +15,7 @@ import org.junit.Test;
 import pfg.kraken.dstarlite.navmesh.Navmesh;
 import pfg.kraken.obstacles.Obstacle;
 import pfg.kraken.obstacles.RectangularObstacle;
-import pfg.kraken.utils.XY_RW;
+import pfg.kraken.struct.XY_RW;
 
 /**
  * Tests unitaires du Navmesh

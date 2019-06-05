@@ -11,7 +11,7 @@ import org.junit.Test;
 
 import pfg.kraken.obstacles.CircularObstacle;
 import pfg.kraken.obstacles.RectangularObstacle;
-import pfg.kraken.utils.XY;
+import pfg.kraken.struct.XY;
 
 /**
  * Test unitaire des obstacles

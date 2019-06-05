@@ -7,9 +7,9 @@ package pfg.kraken;
 
 import java.io.Serializable;
 import pfg.kraken.astar.DirectionStrategy;
-import pfg.kraken.robot.Cinematique;
-import pfg.kraken.utils.XY;
-import pfg.kraken.utils.XYO;
+import pfg.kraken.struct.Cinematique;
+import pfg.kraken.struct.XY;
+import pfg.kraken.struct.XYO;
 
 /**
  * Structure for the search parameters

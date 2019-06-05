@@ -24,7 +24,7 @@ import pfg.kraken.Kraken;
 import pfg.kraken.obstacles.CircularObstacle;
 import pfg.kraken.obstacles.Obstacle;
 import pfg.kraken.obstacles.RectangularObstacle;
-import pfg.kraken.utils.XY;
+import pfg.kraken.struct.XY;
 
 /**
  * Classe mère de tous les tests.

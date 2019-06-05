@@ -6,11 +6,10 @@
 package pfg.kraken.dstarlite.navmesh;
 
 import pfg.config.Config;
-import pfg.kraken.utils.XY;
 import pfg.kraken.ConfigInfoKraken;
 import pfg.kraken.display.Display;
 import pfg.kraken.obstacles.container.StaticObstacles;
-
+import pfg.kraken.struct.XY;
 import java.io.IOException;
 
 /**

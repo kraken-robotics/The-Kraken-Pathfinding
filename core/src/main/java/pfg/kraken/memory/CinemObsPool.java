@@ -9,7 +9,7 @@ package pfg.kraken.memory;
 import pfg.config.Config;
 import pfg.kraken.ConfigInfoKraken;
 import pfg.kraken.obstacles.RectangularObstacle;
-import pfg.kraken.robot.CinematiqueObs;
+import pfg.kraken.struct.CinematiqueObs;
 
 /**
  * Classe qui fournit des objets CinematiqueObs

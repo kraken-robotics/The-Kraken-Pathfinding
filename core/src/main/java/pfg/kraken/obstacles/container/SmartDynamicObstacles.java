@@ -8,7 +8,7 @@ package pfg.kraken.obstacles.container;
 import java.util.ArrayList;
 import java.util.List;
 import pfg.kraken.obstacles.Obstacle;
-import pfg.kraken.robot.CinematiqueObs;
+import pfg.kraken.struct.CinematiqueObs;
 
 /**
  * A default dynamical obstacles manager

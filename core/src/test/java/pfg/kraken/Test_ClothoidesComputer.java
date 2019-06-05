@@ -9,11 +9,11 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import pfg.kraken.obstacles.RectangularObstacle;
+import pfg.kraken.struct.Cinematique;
+import pfg.kraken.struct.XY;
 import pfg.kraken.astar.tentacles.ClothoidesComputer;
 import pfg.kraken.astar.tentacles.StaticTentacle;
 import pfg.kraken.astar.tentacles.types.ClothoTentacle;
-import pfg.kraken.robot.Cinematique;
-import pfg.kraken.utils.XY;
 import static pfg.kraken.astar.tentacles.Tentacle.*;
 
 /**

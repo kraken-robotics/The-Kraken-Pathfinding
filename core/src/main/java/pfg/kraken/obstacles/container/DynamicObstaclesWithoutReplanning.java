@@ -5,7 +5,7 @@
 
 package pfg.kraken.obstacles.container;
 
-import pfg.kraken.robot.CinematiqueObs;
+import pfg.kraken.struct.CinematiqueObs;
 
 /**
  * An dynamical obstacles that works without replanning

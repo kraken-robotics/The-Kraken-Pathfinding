@@ -18,10 +18,10 @@ import pfg.kraken.obstacles.CircularObstacle;
 import pfg.kraken.obstacles.Obstacle;
 import pfg.kraken.obstacles.RectangularObstacle;
 import pfg.kraken.obstacles.container.DefaultDynamicObstacles;
-import pfg.kraken.robot.ItineraryPoint;
+import pfg.kraken.struct.ItineraryPoint;
+import pfg.kraken.struct.XY;
+import pfg.kraken.struct.XYO;
 import pfg.kraken.exceptions.PathfindingException;
-import pfg.kraken.utils.XY;
-import pfg.kraken.utils.XYO;
 
 
 /**

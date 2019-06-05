@@ -8,7 +8,7 @@ package pfg.kraken.astar.tentacles.types;
 import pfg.kraken.astar.DirectionStrategy;
 import pfg.kraken.astar.tentacles.ClothoidesComputer;
 import pfg.kraken.astar.tentacles.TentacleComputer;
-import pfg.kraken.robot.Cinematique;
+import pfg.kraken.struct.Cinematique;
 import static pfg.kraken.astar.tentacles.Tentacle.*;
 
 import java.awt.Color;

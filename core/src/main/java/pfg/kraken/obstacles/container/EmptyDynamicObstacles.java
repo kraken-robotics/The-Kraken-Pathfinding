@@ -9,7 +9,7 @@ import java.util.Collections;
 import java.util.Iterator;
 
 import pfg.kraken.obstacles.Obstacle;
-import pfg.kraken.robot.CinematiqueObs;
+import pfg.kraken.struct.CinematiqueObs;
 
 /**
  * An empty dynamical obstacles manager

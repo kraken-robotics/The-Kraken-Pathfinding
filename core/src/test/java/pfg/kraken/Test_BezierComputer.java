@@ -10,7 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 import pfg.kraken.astar.tentacles.BezierComputer;
 import pfg.kraken.astar.tentacles.DynamicTentacle;
-import pfg.kraken.robot.Cinematique;
+import pfg.kraken.struct.Cinematique;
 
 /**
  * Test unitaire de BezierComputer

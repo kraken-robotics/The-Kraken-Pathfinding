@@ -3,7 +3,7 @@
  * Distributed under the MIT License.
  */
 
-package pfg.kraken.utils;
+package pfg.kraken.struct;
 
 /**
  * Vecteur en lecture/écriture

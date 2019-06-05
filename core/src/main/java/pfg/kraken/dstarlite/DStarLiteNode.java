@@ -9,7 +9,7 @@ import java.awt.Graphics;
 import pfg.kraken.display.Display;
 import pfg.kraken.display.Printable;
 import pfg.kraken.dstarlite.navmesh.NavmeshNode;
-import pfg.kraken.utils.XY_RW;
+import pfg.kraken.struct.XY_RW;
 
 /**
  * Un nœud du D* Lite.

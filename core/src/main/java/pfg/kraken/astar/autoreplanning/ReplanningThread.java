@@ -7,7 +7,7 @@ package pfg.kraken.astar.autoreplanning;
 
 import pfg.kraken.astar.TentacularAStar;
 import pfg.kraken.exceptions.PathfindingException;
-import pfg.kraken.robot.Cinematique;
+import pfg.kraken.struct.Cinematique;
 
 /**
  * Thread qui s'occupe de la replanification

@@ -10,7 +10,7 @@ import java.awt.Color;
 import pfg.kraken.astar.DirectionStrategy;
 import pfg.kraken.astar.tentacles.ClothoidesComputer;
 import pfg.kraken.astar.tentacles.TentacleComputer;
-import pfg.kraken.robot.Cinematique;
+import pfg.kraken.struct.Cinematique;
 
 /**
  * Arc de clothoïde qui fait un demi-tour

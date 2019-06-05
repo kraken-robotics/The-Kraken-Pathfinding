@@ -32,10 +32,10 @@ import pfg.kraken.memory.CinemObsPool;
 import pfg.kraken.memory.MemPoolState;
 import pfg.kraken.memory.NodePool;
 import pfg.kraken.obstacles.RectangularObstacle;
-import pfg.kraken.robot.Cinematique;
-import pfg.kraken.robot.CinematiqueObs;
-import pfg.kraken.robot.ItineraryPoint;
-import pfg.kraken.utils.XY;
+import pfg.kraken.struct.Cinematique;
+import pfg.kraken.struct.CinematiqueObs;
+import pfg.kraken.struct.ItineraryPoint;
+import pfg.kraken.struct.XY;
 import static pfg.kraken.astar.tentacles.Tentacle.*;
 
 /**
