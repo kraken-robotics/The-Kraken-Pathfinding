@@ -1,8 +1,10 @@
 # Unreleased
+
+# v1.4.6
 - New "KrakenParameters" class to easily handle the initialization parameters
 - QuadTree physics engine
 - Fast and dirty coeff instead of a boolean
-* The backup path can be disabled
+- The backup path can be disabled
 - Remove the linear acceleration simulation
 - Tentacles statistics are available
 
