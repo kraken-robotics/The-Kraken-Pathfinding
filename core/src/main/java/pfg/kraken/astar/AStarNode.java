@@ -12,8 +12,8 @@ import pfg.kraken.display.Printable;
 import pfg.kraken.astar.tentacles.DynamicTentacle;
 import pfg.kraken.astar.tentacles.StaticTentacle;
 import pfg.kraken.astar.tentacles.Tentacle;
-import pfg.kraken.memory.MemPoolState;
 import pfg.kraken.memory.Memorizable;
+import pfg.kraken.memory.MemoryPool.MemPoolState;
 import pfg.kraken.obstacles.RectangularObstacle;
 import pfg.kraken.struct.Cinematique;
 

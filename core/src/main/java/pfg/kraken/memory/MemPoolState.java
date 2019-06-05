@@ -11,11 +11,3 @@ package pfg.kraken.memory;
  *
  */
 
-public enum MemPoolState
-{
-	FREE, // free
-	WAITING, // in open-set
-	STANDBY, // in closed set
-	CURRENT, // the current node
-	NEXT; // the successors
-}

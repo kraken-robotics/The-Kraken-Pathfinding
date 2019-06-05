@@ -11,7 +11,6 @@ import java.util.Iterator;
 import pfg.kraken.display.Display;
 import pfg.kraken.display.Printable;
 import pfg.kraken.display.PrintablePoint;
-import pfg.kraken.astar.tentacles.types.TentacleType;
 import pfg.kraken.obstacles.RectangularObstacle;
 import pfg.kraken.struct.CinematiqueObs;
 

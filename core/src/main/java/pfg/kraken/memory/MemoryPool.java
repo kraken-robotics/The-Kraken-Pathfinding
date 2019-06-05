@@ -20,6 +20,15 @@ import java.util.List;
 public abstract class MemoryPool<T extends Memorizable>
 {
 
+	public enum MemPoolState
+	{
+		FREE, // free
+		WAITING, // in open-set
+		STANDBY, // in closed set
+		CURRENT, // the current node
+		NEXT; // the successors
+	}
+
 	private int initialNbInstances;
 
 	private List<T[]> nodes = new ArrayList<T[]>();

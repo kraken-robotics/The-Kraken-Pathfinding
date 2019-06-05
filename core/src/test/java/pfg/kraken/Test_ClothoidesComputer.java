@@ -11,9 +11,9 @@ import org.junit.Test;
 import pfg.kraken.obstacles.RectangularObstacle;
 import pfg.kraken.struct.Cinematique;
 import pfg.kraken.struct.XY;
-import pfg.kraken.astar.tentacles.ClothoidesComputer;
 import pfg.kraken.astar.tentacles.StaticTentacle;
-import pfg.kraken.astar.tentacles.types.ClothoTentacle;
+import pfg.kraken.astar.tentacles.clothoid.ClothoTentacle;
+import pfg.kraken.astar.tentacles.clothoid.ClothoidesComputer;
 import static pfg.kraken.astar.tentacles.Tentacle.*;
 
 /**

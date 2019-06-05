@@ -7,8 +7,8 @@ package pfg.kraken.struct;
 
 import java.io.Serializable;
 
-import pfg.kraken.memory.MemPoolState;
 import pfg.kraken.memory.Memorizable;
+import pfg.kraken.memory.MemoryPool.MemPoolState;
 import pfg.kraken.obstacles.RectangularObstacle;
 
 /**

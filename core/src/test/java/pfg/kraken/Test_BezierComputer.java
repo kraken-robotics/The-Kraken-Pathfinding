@@ -8,8 +8,8 @@ package pfg.kraken;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import pfg.kraken.astar.tentacles.BezierComputer;
 import pfg.kraken.astar.tentacles.DynamicTentacle;
+import pfg.kraken.astar.tentacles.bezier.BezierComputer;
 import pfg.kraken.struct.Cinematique;
 
 /**

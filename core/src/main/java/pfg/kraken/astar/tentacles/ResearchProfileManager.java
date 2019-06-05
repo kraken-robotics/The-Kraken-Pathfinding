@@ -8,7 +8,6 @@ package pfg.kraken.astar.tentacles;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
-import pfg.kraken.astar.tentacles.types.TentacleType;
 import pfg.kraken.exceptions.UnknownModeException;
 
 /**

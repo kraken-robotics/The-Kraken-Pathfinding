@@ -3,15 +3,17 @@
  * Distributed under the MIT License.
  */
 
-package pfg.kraken.astar.tentacles;
+package pfg.kraken.astar.tentacles.bezier;
 
 import java.util.LinkedList;
 import java.util.List;
 import pfg.config.Config;
 import pfg.kraken.ConfigInfoKraken;
 import pfg.kraken.astar.AStarNode;
-import pfg.kraken.astar.tentacles.types.BezierTentacle;
-import pfg.kraken.astar.tentacles.types.TentacleType;
+import pfg.kraken.astar.tentacles.DynamicTentacle;
+import pfg.kraken.astar.tentacles.StaticTentacle;
+import pfg.kraken.astar.tentacles.TentacleComputer;
+import pfg.kraken.astar.tentacles.TentacleType;
 import pfg.kraken.dstarlite.DStarLite;
 import pfg.kraken.memory.CinemObsPool;
 import pfg.kraken.obstacles.RectangularObstacle;

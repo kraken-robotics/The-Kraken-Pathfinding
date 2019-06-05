@@ -6,6 +6,8 @@
 
 package pfg.kraken.memory;
 
+import pfg.kraken.memory.MemoryPool.MemPoolState;
+
 /**
  * Interface de ce qui est mémorisable par le MemoryManager
  * 

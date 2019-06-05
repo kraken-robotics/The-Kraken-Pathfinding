@@ -22,7 +22,6 @@ import pfg.kraken.astar.AStarNode;
 import pfg.kraken.astar.DirectionStrategy;
 import pfg.kraken.astar.tentacles.computethread.TentacleTask;
 import pfg.kraken.astar.tentacles.computethread.TentacleThread;
-import pfg.kraken.astar.tentacles.types.TentacleType;
 import pfg.kraken.dstarlite.DStarLite;
 import pfg.kraken.exceptions.UnknownModeException;
 import pfg.kraken.memory.NodePool;

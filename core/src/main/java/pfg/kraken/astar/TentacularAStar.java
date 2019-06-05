@@ -29,7 +29,7 @@ import pfg.kraken.exceptions.PathfindingException;
 import pfg.kraken.exceptions.StartPointException;
 import pfg.kraken.exceptions.TimeoutException;
 import pfg.kraken.memory.CinemObsPool;
-import pfg.kraken.memory.MemPoolState;
+import pfg.kraken.memory.MemoryPool.MemPoolState;
 import pfg.kraken.memory.NodePool;
 import pfg.kraken.obstacles.RectangularObstacle;
 import pfg.kraken.struct.Cinematique;

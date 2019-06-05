@@ -3,7 +3,7 @@
  * Distributed under the MIT License.
  */
 
-package pfg.kraken.astar.tentacles;
+package pfg.kraken.astar.tentacles.clothoid;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -19,9 +19,11 @@ import java.util.List;
 import pfg.config.Config;
 import pfg.kraken.ConfigInfoKraken;
 import pfg.kraken.astar.AStarNode;
-import pfg.kraken.astar.tentacles.types.ClothoTentacle;
-import pfg.kraken.astar.tentacles.types.StraightingTentacle;
-import pfg.kraken.astar.tentacles.types.TentacleType;
+import pfg.kraken.astar.tentacles.DynamicTentacle;
+import pfg.kraken.astar.tentacles.StaticTentacle;
+import pfg.kraken.astar.tentacles.Tentacle;
+import pfg.kraken.astar.tentacles.TentacleComputer;
+import pfg.kraken.astar.tentacles.TentacleType;
 import pfg.kraken.memory.CinemObsPool;
 import pfg.kraken.struct.Cinematique;
 import pfg.kraken.struct.CinematiqueObs;

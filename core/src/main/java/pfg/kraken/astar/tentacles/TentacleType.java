@@ -3,12 +3,11 @@
  * Distributed under the MIT License.
  */
 
-package pfg.kraken.astar.tentacles.types;
+package pfg.kraken.astar.tentacles;
 
 import java.awt.Color;
 
 import pfg.kraken.astar.DirectionStrategy;
-import pfg.kraken.astar.tentacles.TentacleComputer;
 import pfg.kraken.struct.Cinematique;
 
 /**
