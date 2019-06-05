@@ -5,7 +5,6 @@
 
 package pfg.kraken.astar.autoreplanning;
 
-import pfg.log.Log;
 import pfg.kraken.obstacles.container.DynamicObstacles;
 
 /**
@@ -17,14 +16,12 @@ import pfg.kraken.obstacles.container.DynamicObstacles;
 
 public final class CollisionDetectionThread extends Thread
 {
-	protected Log log;
 	private DynamicObstacles dynObs;
 	private DynamicPath pm;
 	
-	public CollisionDetectionThread(Log log, DynamicObstacles dynObs, DynamicPath pm)
+	public CollisionDetectionThread(DynamicObstacles dynObs, DynamicPath pm)
 	{
 		this.dynObs = dynObs;
-		this.log = log;
 		this.pm = pm;
 		setDaemon(true);
 	}

@@ -12,7 +12,6 @@ import pfg.graphic.printable.Layer;
 import pfg.kraken.Kraken;
 import pfg.kraken.KrakenParameters;
 import pfg.kraken.SearchParameters;
-import pfg.kraken.SeverityCategoryKraken;
 import pfg.kraken.display.Display;
 import pfg.kraken.obstacles.CircularObstacle;
 import pfg.kraken.obstacles.Obstacle;
@@ -52,7 +51,7 @@ public class Example2
 		 */
 		DefaultDynamicObstacles obsDyn = new DefaultDynamicObstacles();
 
-		DebugTool debug = DebugTool.getDebugTool(new XY(0,1000), new XY(0, 1000), SeverityCategoryKraken.INFO, "kraken-examples.conf", "trajectory");
+		DebugTool debug = DebugTool.getDebugTool(new XY(0,1000), new XY(0, 1000), null, "kraken-examples.conf", "trajectory");
 		Display display = debug.getDisplay();
 		for(Obstacle o : obs)
 			display.addPrintable(o, Color.BLACK, Layer.MIDDLE.layer);

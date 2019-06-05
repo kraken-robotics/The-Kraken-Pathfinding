@@ -20,7 +20,6 @@ import pfg.kraken.robot.CinematiqueObs;
 import pfg.kraken.utils.XY;
 import pfg.kraken.utils.XYO;
 import pfg.kraken.utils.XY_RW;
-import pfg.log.Log;
 import static pfg.kraken.astar.tentacles.Tentacle.*;
 
 /**
@@ -32,16 +31,14 @@ import static pfg.kraken.astar.tentacles.Tentacle.*;
 
 public final class BezierComputer implements TentacleComputer
 {
-	protected Log log;
 	private CinemObsPool memory;
 	private double courbureMax;
 	private double rootedMaxAcceleration;
 	private double maxCurvatureDerivative;
 	private DStarLite dstarlite;
 
-	public BezierComputer(Log log, DStarLite dstarlite, CinemObsPool memory, Config config, RectangularObstacle vehicleTemplate)
+	public BezierComputer(DStarLite dstarlite, CinemObsPool memory, Config config, RectangularObstacle vehicleTemplate)
 	{
-		this.log = log;
 		this.memory = memory;
 		this.dstarlite = dstarlite;
 

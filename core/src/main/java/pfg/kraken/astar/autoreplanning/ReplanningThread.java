@@ -5,7 +5,6 @@
 
 package pfg.kraken.astar.autoreplanning;
 
-import pfg.log.Log;
 import pfg.kraken.astar.TentacularAStar;
 import pfg.kraken.exceptions.PathfindingException;
 import pfg.kraken.robot.Cinematique;
@@ -19,14 +18,12 @@ import pfg.kraken.robot.Cinematique;
 
 public final class ReplanningThread extends Thread
 {
-	protected Log log;
 	private TentacularAStar astar;
 	private DynamicPath pm;
 	
-	public ReplanningThread(Log log, TentacularAStar astar, DynamicPath pm)
+	public ReplanningThread(TentacularAStar astar, DynamicPath pm)
 	{
 		this.astar = astar;
-		this.log = log;
 		this.pm = pm;
 		setDaemon(true);
 	}

@@ -1,4 +1,5 @@
 # Unreleased
+- Remove the "log" dependency
 
 # v1.4.6
 - New "KrakenParameters" class to easily handle the initialization parameters

@@ -8,7 +8,6 @@ package pfg.kraken;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import pfg.kraken.LogCategoryKraken;
 import pfg.kraken.obstacles.RectangularObstacle;
 import pfg.kraken.astar.tentacles.ClothoidesComputer;
 import pfg.kraken.astar.tentacles.StaticTentacle;
@@ -44,7 +43,6 @@ public class Test_ClothoidesComputer extends JUnit_Test
 			arc[i] = new StaticTentacle(injector.getService(RectangularObstacle.class));
 
 		Cinematique c = new Cinematique(0, 1000, Math.PI / 2, false, 0, false);
-		log.write("Initial : " + c, LogCategoryKraken.TEST);
 		clotho.getTrajectoire(c, ClothoTentacle.COURBURE_IDENTIQUE, arc[0], 0);
 		clotho.getTrajectoire(arc[0], ClothoTentacle.GAUCHE_2, arc[1], 0);
 		clotho.getTrajectoire(arc[1], ClothoTentacle.COURBURE_IDENTIQUE, arc[2], 0);

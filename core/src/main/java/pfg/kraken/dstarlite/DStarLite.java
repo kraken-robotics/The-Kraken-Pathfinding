@@ -23,7 +23,6 @@ import pfg.kraken.obstacles.container.StaticObstacles;
 import pfg.kraken.robot.Cinematique;
 import pfg.kraken.utils.XY;
 import pfg.kraken.utils.XYO;
-import pfg.log.Log;
 
 /**
  * Recherche de chemin avec replanification rapide.
@@ -39,7 +38,6 @@ import pfg.log.Log;
 
 public final class DStarLite
 {
-	protected Log log;
 	private Navmesh navmesh;
 	private boolean graphicHeuristique;
 	private DynamicObstacles dynObs;
@@ -68,9 +66,8 @@ public final class DStarLite
 	 * @param log
 	 * @param gridspace
 	 */
-	public DStarLite(Log log, Navmesh navmesh, Display buffer, Config config, DynamicObstacles dynObs, StaticObstacles statObs)
+	public DStarLite(Navmesh navmesh, Display buffer, Config config, DynamicObstacles dynObs, StaticObstacles statObs)
 	{
-		this.log = log;
 		this.navmesh = navmesh;
 		this.buffer = buffer;
 		this.dynObs = dynObs;

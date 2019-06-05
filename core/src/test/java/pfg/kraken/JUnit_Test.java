@@ -21,12 +21,10 @@ import pfg.config.Config;
 import pfg.injector.Injector;
 import pfg.kraken.ConfigInfoKraken;
 import pfg.kraken.Kraken;
-import pfg.kraken.LogCategoryKraken;
 import pfg.kraken.obstacles.CircularObstacle;
 import pfg.kraken.obstacles.Obstacle;
 import pfg.kraken.obstacles.RectangularObstacle;
 import pfg.kraken.utils.XY;
-import pfg.log.Log;
 
 /**
  * Classe mère de tous les tests.
@@ -40,7 +38,6 @@ import pfg.log.Log;
 public abstract class JUnit_Test
 {
 	protected Config config;
-	protected Log log;
 	protected Injector injector;
 	protected Kraken kraken;
 	
@@ -110,9 +107,7 @@ public abstract class JUnit_Test
 		m.setAccessible(true);
 		injector = (Injector) m.invoke(kraken);
 		config = injector.getService(Config.class);
-		log = injector.getService(Log.class);
-		log.write("Test unitaire : " + testName.getMethodName(), LogCategoryKraken.TEST);
-		
+		System.out.println("Test unitaire : " + testName.getMethodName());
 	}
 	
 	public void setUpWith(List<Obstacle> fixedObstacles, String... profiles) throws Exception

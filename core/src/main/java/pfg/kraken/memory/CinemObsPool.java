@@ -10,7 +10,6 @@ import pfg.config.Config;
 import pfg.kraken.ConfigInfoKraken;
 import pfg.kraken.obstacles.RectangularObstacle;
 import pfg.kraken.robot.CinematiqueObs;
-import pfg.log.Log;
 
 /**
  * Classe qui fournit des objets CinematiqueObs
@@ -27,9 +26,9 @@ public final class CinemObsPool extends MemoryPool<CinematiqueObs>
 {
 	private RectangularObstacle vehicleTemplate;
 	
-	public CinemObsPool(Log log, Config config, RectangularObstacle vehicleTemplate)
+	public CinemObsPool(Config config, RectangularObstacle vehicleTemplate)
 	{
-		super(CinematiqueObs.class, log);
+		super(CinematiqueObs.class);
 		this.vehicleTemplate = vehicleTemplate;
 		init(config.getInt(ConfigInfoKraken.OBSTACLES_MEMORY_POOL_SIZE));
 	}

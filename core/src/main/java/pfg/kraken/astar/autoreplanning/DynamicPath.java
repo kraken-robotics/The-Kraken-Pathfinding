@@ -17,7 +17,6 @@ import pfg.kraken.obstacles.container.DynamicObstacles;
 import pfg.kraken.robot.Cinematique;
 import pfg.kraken.robot.CinematiqueObs;
 import pfg.kraken.robot.ItineraryPoint;
-import pfg.log.Log;
 import static pfg.kraken.astar.tentacles.Tentacle.PRECISION_TRACE_MM;
 /**
  * A path manager that can handle dynamic update
@@ -39,8 +38,6 @@ public final class DynamicPath
 		WAITING_END; // attend que le thread soit bien au courant que la recherche est finie
 	}
 	
-	protected Log log;
-	
 	private CinematiqueObs[] path = new CinematiqueObs[1000];
 	private volatile State etat;
 	private volatile int indexFirst; // index du point où est le robot
@@ -49,9 +46,8 @@ public final class DynamicPath
 	private final int margeNecessaire, margeInitiale, margeAvantCollision, margePreferable;
 	private volatile PathfindingException e;
 	
-	public DynamicPath(Log log, Config config, RectangularObstacle vehicleTemplate)
+	public DynamicPath(Config config, RectangularObstacle vehicleTemplate)
 	{
-		this.log = log;
 		margeNecessaire = (int) Math.ceil(config.getDouble(ConfigInfoKraken.NECESSARY_MARGIN) / PRECISION_TRACE_MM);
 		margePreferable = (int) Math.ceil(config.getDouble(ConfigInfoKraken.PREFERRED_MARGIN) / PRECISION_TRACE_MM);
 		margeAvantCollision = (int) Math.ceil(config.getInt(ConfigInfoKraken.MARGIN_BEFORE_COLLISION) / PRECISION_TRACE_MM);
