@@ -55,15 +55,10 @@ public class ItineraryPoint implements Printable
 	 * The maximal speed
 	 */
 	public final double maxSpeed;
-	
-	/**
-	 * The recommended speed
-	 */
-	public final double possibleSpeed;
 
 	private final static NumberFormat formatter = new DecimalFormat("#0.00");
 
-	public ItineraryPoint(double x, double y, double orientation, double curvature, boolean goingForward, double maxSpeed, double possibleSpeed, boolean stop)
+	public ItineraryPoint(double x, double y, double orientation, double curvature, boolean goingForward, double maxSpeed, boolean stop)
 	{
 		this.x = x;
 		this.y = y;
@@ -78,13 +73,12 @@ public class ItineraryPoint implements Printable
 		this.curvature = curvature;
 		this.goingForward = goingForward;
 		this.maxSpeed = maxSpeed;
-		this.possibleSpeed = possibleSpeed;
 		this.stop = stop;
 	}
 	
 	public ItineraryPoint(CinematiqueObs c)
 	{
-		this(c.getPosition().getX(), c.getPosition().getY(), c.orientationReelle, c.courbureReelle, c.enMarcheAvant, c.maxSpeed, c.possibleSpeed, c.stop);
+		this(c.getPosition().getX(), c.getPosition().getY(), c.orientationReelle, c.courbureReelle, c.enMarcheAvant, c.maxSpeed, c.stop);
 	}
 	
 	@Override
@@ -95,7 +89,6 @@ public class ItineraryPoint implements Printable
 				+ ", going "+(goingForward ? "forward" : "backward")
 				+ ", c: " + formatter.format(curvature)
 				+ ", max speed: "+formatter.format(maxSpeed)
-				+ ", possible speed: "+formatter.format(possibleSpeed)
 				+ (stop ? ", ending with a stop":"");
 	}
 
@@ -129,7 +122,6 @@ public class ItineraryPoint implements Printable
 				&& ip.y == y
 				&& ip.curvature == curvature
 				&& ip.orientation == orientation
-				&& ip.maxSpeed == maxSpeed
-				&& ip.possibleSpeed == possibleSpeed;
+				&& ip.maxSpeed == maxSpeed;
 	}
 }

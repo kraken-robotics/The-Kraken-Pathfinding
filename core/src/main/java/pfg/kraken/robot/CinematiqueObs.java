@@ -23,7 +23,6 @@ public final class CinematiqueObs extends Cinematique implements Memorizable, Se
 	private static final long serialVersionUID = 1L;
 	public volatile RectangularObstacle obstacle;
 	public volatile double maxSpeed; // in m/s
-	public volatile double possibleSpeed; // in m/s
 
 	public static final double[] maxSpeedLUT;
 
@@ -53,7 +52,6 @@ public final class CinematiqueObs extends Cinematique implements Memorizable, Se
 	{
 		super.copy(autre);
 		autre.maxSpeed = maxSpeed;
-		autre.possibleSpeed = possibleSpeed;
 		obstacle.copy(autre.obstacle);
 	}
 
@@ -94,13 +92,6 @@ public final class CinematiqueObs extends Cinematique implements Memorizable, Se
 		this.maxSpeed = Math.min(maxSpeed, rootedMaxAcceleration * maxSpeedLUT[(int) Math.round(Math.abs(10*courbure))]);
 		obstacle.update(position, orientationReelle);
 	}
-	
-/*	public void updateReel(double x, double y, double orientationReelle, double courbure, double rootedMaxAcceleration)
-	{
-		super.updateReel(x, y, orientationReelle, courbure);
-		maxSpeed = rootedMaxAcceleration * maxSpeedLUT[(int) Math.round(Math.abs(10*courbure))];
-		obstacle.update(position, orientationReelle);
-	}*/
 
 	private volatile MemPoolState state = MemPoolState.FREE;
 	
@@ -128,7 +119,6 @@ public final class CinematiqueObs extends Cinematique implements Memorizable, Se
 	{
 		super.update(p);
 		maxSpeed = p.maxSpeed;
-		possibleSpeed = p.possibleSpeed;
 		obstacle.update(position, orientationReelle);
 	}
 }

@@ -53,7 +53,6 @@ public enum ConfigInfoKraken implements ConfigInfo
 	 */
 	MAX_CURVATURE_DERIVATIVE(5), // maximal curvature derivative, in m⁻¹s⁻¹
 	MAX_LATERAL_ACCELERATION(3), // maximal lateral acceleration, in m/s²
-	MAX_LINEAR_ACCELERATION(2), // maximal linear acceleration, in m/s²
 	DEFAULT_MAX_SPEED(1), // in m/s (or mm/ms)
 	MINIMAL_SPEED(0), // in m/s
 	MAX_CURVATURE(5), // in m⁻¹

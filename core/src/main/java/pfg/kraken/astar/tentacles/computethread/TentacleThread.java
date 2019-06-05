@@ -5,8 +5,6 @@
 
 package pfg.kraken.astar.tentacles.computethread;
 
-import static pfg.kraken.astar.tentacles.Tentacle.PRECISION_TRACE;
-
 import java.util.concurrent.BlockingQueue;
 
 import pfg.config.Config;
@@ -26,9 +24,7 @@ public final class TentacleThread extends Thread
 {
 	protected Log log;
 	private NodePool memorymanager;
-	private double maxLinearAcceleration;
 	private int tempsArret;
-	private double deltaSpeedFromStop;
 	private int nb;
 	public final BlockingQueue<TentacleTask> buffer;
 	public final BlockingQueue<AStarNode> successeurs;
@@ -41,8 +37,6 @@ public final class TentacleThread extends Thread
 		this.successeurs = successeurs;
 		this.memorymanager = memorymanager;
 		this.nb = nb;
-		maxLinearAcceleration = config.getDouble(ConfigInfoKraken.MAX_LINEAR_ACCELERATION);
-		deltaSpeedFromStop = Math.sqrt(2 * PRECISION_TRACE * maxLinearAcceleration);
 		tempsArret = config.getInt(ConfigInfoKraken.STOP_DURATION);
 		setDaemon(true);
 	}
@@ -77,7 +71,7 @@ public final class TentacleThread extends Thread
 		if(task.computer.compute(task.current, task.v, task.arrivee, successeur, nb))
 		{
 			// Compute the travel time
-			int duration = (int) (1000*successeur.getArc().getDuree(successeur.parent.getArc(), task.vitesseMax, tempsArret, maxLinearAcceleration, deltaSpeedFromStop));
+			int duration = (int) (1000*successeur.getArc().getDuree(successeur.parent.getArc(), task.vitesseMax, tempsArret));
 			successeur.robot.suitArcCourbe(successeur.getArc(), duration);
 			successeur.g_score = duration;
 			assert successeur.getArc().vitesse == task.v : successeur.getArc().vitesse +" != "+ task.v;

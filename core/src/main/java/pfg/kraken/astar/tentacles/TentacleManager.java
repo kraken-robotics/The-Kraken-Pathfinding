@@ -43,10 +43,9 @@ public final class TentacleManager implements Iterator<AStarNode>
 {
 	protected Log log;
 	private DStarLite dstarlite;
-	private double courbureMax, maxLinearAcceleration, vitesseMax;
+	private double courbureMax, vitesseMax;
 	private boolean printObstacles;
 	private Injector injector;
-	private double deltaSpeedFromStop;
 	private Display display;
 	private TentacleThread[] threads;
 	private ResearchProfile currentProfile;
@@ -70,10 +69,7 @@ public final class TentacleManager implements Iterator<AStarNode>
 		
 		for(int i = 0; i < 100; i++)
 			tasks.add(new TentacleTask());
-		
-		maxLinearAcceleration = config.getDouble(ConfigInfoKraken.MAX_LINEAR_ACCELERATION);
-		deltaSpeedFromStop = Math.sqrt(2 * PRECISION_TRACE * maxLinearAcceleration);
-
+	
 		printObstacles = config.getBoolean(ConfigInfoKraken.GRAPHIC_ROBOT_COLLISION);
 		int nbThreads = config.getInt(ConfigInfoKraken.THREAD_NUMBER);
 		
@@ -131,7 +127,6 @@ public final class TentacleManager implements Iterator<AStarNode>
 		CinematiqueObs current;
 		boolean lastStop = nbPointsMax == Integer.MAX_VALUE; // le dernier point n'est pas un stop en cas de replanification partielle
 		boolean nextStop;
-		double lastPossibleSpeed = 0;
 
 		while(noeudParent.parent != null)
 		{
@@ -141,31 +136,12 @@ public final class TentacleManager implements Iterator<AStarNode>
 				if(printObstacles)
 					display.addTemporaryPrintable(current.obstacle.clone(), ColorKraken.ROBOT.color, Layer.BACKGROUND.layer);
 				
-				// vitesse maximale du robot à ce point
-				double maxSpeed = current.possibleSpeed;
-				double currentSpeed = lastPossibleSpeed;
-				
 				nextStop = current.stop;
-				if(lastStop)
-					current.possibleSpeed = 0;
-				else if(currentSpeed < maxSpeed)
-				{
-					double deltaVitesse;
-					if(currentSpeed < 0.1)
-						deltaVitesse = deltaSpeedFromStop;
-					else
-						deltaVitesse = 2 * maxLinearAcceleration * PRECISION_TRACE / currentSpeed;
-
-					currentSpeed += deltaVitesse;
-					currentSpeed = Math.min(currentSpeed, maxSpeed);
-					current.possibleSpeed = currentSpeed;
-				}
 				current.stop = lastStop;
 				
 				trajectory.addFirst(current);
 				
 				// stop : on va devoir s'arrêter
-				lastPossibleSpeed = current.possibleSpeed;
 				lastStop = nextStop;
 			}
 
