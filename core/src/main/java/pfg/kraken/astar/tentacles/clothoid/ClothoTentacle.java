@@ -22,27 +22,27 @@ import java.awt.Color;
 
 public enum ClothoTentacle implements TentacleType
 {
-	COURBURE_IDENTIQUE(0),
-	GAUCHE_0(1),
-	DROITE_0(-1),
-	GAUCHE_1(4),
-	DROITE_1(-4),
-	GAUCHE_2(9),
-	DROITE_2(-9),
-	GAUCHE_3(16),
-	DROITE_3(-16),
+	SAME_CURVATURE(0),
+	LEFT_0(1),
+	RIGHT_0(-1),
+	LEFT_1(4),
+	RIGHT_1(-4),
+	LEFT_2(9),
+	RIGHT_2(-9),
+	LEFT_3(16),
+	RIGHT_3(-16),
 
-	COURBURE_IDENTIQUE_AFTER_STOP(0),
-	COURBURE_IDENTIQUE_G1_AFTER_STOP(1, 0),
-	COURBURE_IDENTIQUE_D1_AFTER_STOP(-1, 0),
-	COURBURE_IDENTIQUE_G3_AFTER_STOP(3, 0),
-	COURBURE_IDENTIQUE_D3_AFTER_STOP(-3, 0),
+	SAME_CURVATURE_AFTER_STOP(0),
+	SAME_CURVATURE_L1_AFTER_STOP(1, 0),
+	SAME_CURVATURE_R1_AFTER_STOP(-1, 0),
+	SAME_CURVATURE_L3_AFTER_STOP(3, 0),
+	SAME_CURVATURE_R3_AFTER_STOP(-3, 0),
 
-	COURBURE_IDENTIQUE_REBROUSSE(0, 0),
-	COURBURE_IDENTIQUE_G1_REBROUSSE(1, 0),
-	COURBURE_IDENTIQUE_D1_REBROUSSE(-1, 0),
-	COURBURE_IDENTIQUE_G3_REBROUSSE(3, 0),
-	COURBURE_IDENTIQUE_D3_REBROUSSE(-3, 0);
+	SAME_CURVATURE_CUSP(0, 0),
+	SAME_CURVATURE_L1_CUSP(1, 0),
+	SAME_CURVATURE_R1_CUSP(-1, 0),
+	SAME_CURVATURE_L3_CUSP(3, 0),
+	SAME_CURVATURE_R3_CUSP(-3, 0);
 
 	public final int vitesse; // vitesse en (1/m)/m = 1/m^2
 	public final int courbureInitiale; // courbure en m^-1
@@ -61,7 +61,7 @@ public enum ClothoTentacle implements TentacleType
 	private ClothoTentacle(int courbureInitiale, int vitesse)
 	{
 		this.courbureInitiale = courbureInitiale;
-		rebrousse = toString().endsWith("_REBROUSSE");
+		rebrousse = toString().endsWith("_CUSP");
 		arret = toString().endsWith("_AFTER_STOP") || rebrousse;
 		this.vitesse = vitesse;
 		positif = vitesse >= 0;

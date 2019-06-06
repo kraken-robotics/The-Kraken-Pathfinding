@@ -21,8 +21,8 @@ import pfg.kraken.struct.Kinematic;
 
 public enum TurnoverTentacle implements TentacleType
 {
-	DEMI_TOUR_DROITE(ClothoTentacle.DROITE_2),
-	DEMI_TOUR_GAUCHE(ClothoTentacle.GAUCHE_2);
+	RIGHT_TURN_OVER(ClothoTentacle.RIGHT_2),
+	LEFT_TURN_OVER(ClothoTentacle.LEFT_2);
 
 	public ClothoTentacle v;
 	public static ClothoidComputer computer;

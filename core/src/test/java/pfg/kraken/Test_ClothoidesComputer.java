@@ -43,22 +43,22 @@ public class Test_ClothoidesComputer extends JUnit_Test
 			arc[i] = new StaticTentacle(injector.getService(RectangularObstacle.class));
 
 		Kinematic c = new Kinematic(0, 1000, Math.PI / 2, false, 0, false);
-		clotho.getTrajectoire(c, ClothoTentacle.COURBURE_IDENTIQUE, arc[0], 0);
-		clotho.getTrajectoire(arc[0], ClothoTentacle.GAUCHE_2, arc[1], 0);
-		clotho.getTrajectoire(arc[1], ClothoTentacle.COURBURE_IDENTIQUE, arc[2], 0);
-		clotho.getTrajectoire(arc[2], ClothoTentacle.GAUCHE_1, arc[3], 0);
-		clotho.getTrajectoire(arc[3], ClothoTentacle.COURBURE_IDENTIQUE, arc[4], 0);
-		clotho.getTrajectoire(arc[4], ClothoTentacle.COURBURE_IDENTIQUE, arc[5], 0);
-		clotho.getTrajectoire(arc[5], ClothoTentacle.COURBURE_IDENTIQUE, arc[6], 0);
-		clotho.getTrajectoire(arc[6], ClothoTentacle.GAUCHE_1, arc[7], 0);
-		clotho.getTrajectoire(arc[7], ClothoTentacle.GAUCHE_2, arc[8], 0);
-		clotho.getTrajectoire(arc[8], ClothoTentacle.GAUCHE_2, arc[9], 0);
-		clotho.getTrajectoire(arc[9], ClothoTentacle.DROITE_1, arc[10], 0);
-		clotho.getTrajectoire(arc[10], ClothoTentacle.DROITE_1, arc[11], 0);
-		clotho.getTrajectoire(arc[11], ClothoTentacle.DROITE_1, arc[12], 0);
-		clotho.getTrajectoire(arc[12], ClothoTentacle.DROITE_1, arc[13], 0);
-		clotho.getTrajectoire(arc[13], ClothoTentacle.DROITE_1, arc[14], 0);
-		clotho.getTrajectoire(arc[14], ClothoTentacle.GAUCHE_2, arc[15], 0);
+		clotho.getTrajectoire(c, ClothoTentacle.SAME_CURVATURE, arc[0], 0);
+		clotho.getTrajectoire(arc[0], ClothoTentacle.LEFT_2, arc[1], 0);
+		clotho.getTrajectoire(arc[1], ClothoTentacle.SAME_CURVATURE, arc[2], 0);
+		clotho.getTrajectoire(arc[2], ClothoTentacle.LEFT_1, arc[3], 0);
+		clotho.getTrajectoire(arc[3], ClothoTentacle.SAME_CURVATURE, arc[4], 0);
+		clotho.getTrajectoire(arc[4], ClothoTentacle.SAME_CURVATURE, arc[5], 0);
+		clotho.getTrajectoire(arc[5], ClothoTentacle.SAME_CURVATURE, arc[6], 0);
+		clotho.getTrajectoire(arc[6], ClothoTentacle.LEFT_1, arc[7], 0);
+		clotho.getTrajectoire(arc[7], ClothoTentacle.LEFT_2, arc[8], 0);
+		clotho.getTrajectoire(arc[8], ClothoTentacle.LEFT_2, arc[9], 0);
+		clotho.getTrajectoire(arc[9], ClothoTentacle.RIGHT_1, arc[10], 0);
+		clotho.getTrajectoire(arc[10], ClothoTentacle.RIGHT_1, arc[11], 0);
+		clotho.getTrajectoire(arc[11], ClothoTentacle.RIGHT_1, arc[12], 0);
+		clotho.getTrajectoire(arc[12], ClothoTentacle.RIGHT_1, arc[13], 0);
+		clotho.getTrajectoire(arc[13], ClothoTentacle.RIGHT_1, arc[14], 0);
+		clotho.getTrajectoire(arc[14], ClothoTentacle.LEFT_2, arc[15], 0);
 
 		for(int a = 0; a < nbArc; a++)
 		{

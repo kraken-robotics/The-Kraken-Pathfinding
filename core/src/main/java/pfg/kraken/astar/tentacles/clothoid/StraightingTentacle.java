@@ -21,7 +21,7 @@ import pfg.kraken.struct.Kinematic;
 
 public enum StraightingTentacle implements TentacleType
 {
-	RAMENE_VOLANT(ClothoTentacle.GAUCHE_1, ClothoTentacle.DROITE_1); // ramène le
+	STRAIGHT(ClothoTentacle.LEFT_1, ClothoTentacle.RIGHT_1); // ramène le
 																	// volant au
 																	// centre
 
