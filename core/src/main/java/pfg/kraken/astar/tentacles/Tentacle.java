@@ -54,7 +54,7 @@ public abstract class Tentacle implements Printable, Iterable<RectangularObstacl
 
 	public abstract EmbodiedKinematic getLast();
 
-	public final double getDuree(Tentacle tentacleParent, double translationalSpeed, int tempsArret)
+	public final double getDuree(Tentacle tentacleParent, double translationalSpeed, int tempsArret, double curvaturePenalty)
 	{
 		boolean firstMove = tentacleParent == null; // le premier mouvement est particulier : on est déjà arrêté !
 		int nb = getNbPoints();
@@ -63,8 +63,10 @@ public abstract class Tentacle implements Printable, Iterable<RectangularObstacl
 		// l'arc courant est construit classiquement (ce cas est géré à la reconstruction de la trajectoire)
 		for(int i = 0; i < nb; i++)
 		{
-			getPoint(i).maxSpeed = Math.min(getPoint(i).maxSpeed, translationalSpeed);
-			out += PRECISION_TRACE_MM / getPoint(i).maxSpeed;
+			EmbodiedKinematic ek = getPoint(i);
+			ek.maxSpeed = Math.min(ek.maxSpeed, translationalSpeed);
+			out += PRECISION_TRACE_MM / ek.maxSpeed;
+			out += Math.abs(ek.cinem.courbureReelle) * curvaturePenalty;
 		}
 		assert vitesse.getNbArrets(firstMove) >= 0;
 		return out + vitesse.getNbArrets(firstMove) * tempsArret;

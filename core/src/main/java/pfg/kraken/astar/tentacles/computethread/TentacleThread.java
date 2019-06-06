@@ -24,6 +24,7 @@ public final class TentacleThread extends Thread
 	private NodePool memorymanager;
 	private int tempsArret;
 	private int nb;
+	private double curvaturePenalty;
 	public final BlockingQueue<TentacleTask> buffer;
 	public final BlockingQueue<AStarNode> successeurs;
 	public final static AStarNode placeholder = new AStarNode();
@@ -35,6 +36,7 @@ public final class TentacleThread extends Thread
 		this.memorymanager = memorymanager;
 		this.nb = nb;
 		tempsArret = config.getInt(ConfigInfoKraken.STOP_DURATION);
+		curvaturePenalty = config.getDouble(ConfigInfoKraken.CURVATURE_PENALTY);
 		setDaemon(true);
 	}
 
@@ -68,7 +70,7 @@ public final class TentacleThread extends Thread
 		if(task.computer.compute(task.current, task.v, task.arrivee, successeur, nb))
 		{
 			// Compute the travel time
-			int duration = (int) (1000*successeur.getArc().getDuree(successeur.parent.getArc(), task.vitesseMax, tempsArret));
+			int duration = (int) (1000*successeur.getArc().getDuree(successeur.parent.getArc(), task.vitesseMax, tempsArret, curvaturePenalty));
 			successeur.date += duration;
 			successeur.getArc().getLast().cinem.copy(successeur.cinematique);
 			successeur.g_score = duration;

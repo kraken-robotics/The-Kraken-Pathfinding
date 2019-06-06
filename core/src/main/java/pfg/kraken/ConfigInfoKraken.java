@@ -57,8 +57,8 @@ public enum ConfigInfoKraken implements ConfigInfo
 	DEFAULT_MAX_SPEED(1), // in m/s (or mm/ms)
 	MINIMAL_SPEED(0), // in m/s
 	MAX_CURVATURE(5), // in m⁻¹
-	STOP_DURATION(800), // temps qu'il faut au robot pour s'arrêter et repartir
-						// (par exemple à cause d'un rebroussement) in ms
+	STOP_DURATION(800), // temps qu'il faut au robot pour s'arrêter et repartir (par exemple à cause d'un rebroussement) in ms
+	CURVATURE_PENALTY(10), // in ms/m⁻¹
 	SEARCH_TIMEOUT(10000), // in ms
 	THREAD_NUMBER(1), // the number of threads for the tentacle computing. Recommended value for highest performance : nb cores + 1
 //	ALLOW_SPINNING(false), // can the robot spin ?
