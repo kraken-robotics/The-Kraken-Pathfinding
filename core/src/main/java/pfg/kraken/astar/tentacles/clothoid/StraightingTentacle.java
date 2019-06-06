@@ -10,7 +10,7 @@ import java.awt.Color;
 import pfg.kraken.astar.DirectionStrategy;
 import pfg.kraken.astar.tentacles.TentacleComputer;
 import pfg.kraken.astar.tentacles.TentacleType;
-import pfg.kraken.struct.Cinematique;
+import pfg.kraken.struct.Kinematic;
 
 /**
  * Arc de clothoïde qui ramène le volant au centre
@@ -26,7 +26,7 @@ public enum StraightingTentacle implements TentacleType
 																	// centre
 
 	public final ClothoTentacle vitesseGauche, vitesseDroite;
-	public static ClothoidesComputer computer;
+	public static ClothoidComputer computer;
 
 	private StraightingTentacle(ClothoTentacle vitesseGauche, ClothoTentacle vitesseDroite)
 	{
@@ -35,7 +35,7 @@ public enum StraightingTentacle implements TentacleType
 	}
 
 	@Override
-	public boolean isAcceptable(Cinematique c, DirectionStrategy directionstrategyactuelle, double courbureMax)
+	public boolean isAcceptable(Kinematic c, DirectionStrategy directionstrategyactuelle, double courbureMax)
 	{
 		double courbure = Math.abs(c.courbureGeometrique);
 		if(courbure < 0.1 || courbure > 3)

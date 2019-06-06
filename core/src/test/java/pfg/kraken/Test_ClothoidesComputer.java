@@ -9,11 +9,11 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import pfg.kraken.obstacles.RectangularObstacle;
-import pfg.kraken.struct.Cinematique;
+import pfg.kraken.struct.Kinematic;
 import pfg.kraken.struct.XY;
 import pfg.kraken.astar.tentacles.StaticTentacle;
 import pfg.kraken.astar.tentacles.clothoid.ClothoTentacle;
-import pfg.kraken.astar.tentacles.clothoid.ClothoidesComputer;
+import pfg.kraken.astar.tentacles.clothoid.ClothoidComputer;
 import static pfg.kraken.astar.tentacles.Tentacle.*;
 
 /**
@@ -25,13 +25,13 @@ import static pfg.kraken.astar.tentacles.Tentacle.*;
 
 public class Test_ClothoidesComputer extends JUnit_Test
 {
-	private ClothoidesComputer clotho;
+	private ClothoidComputer clotho;
 
 	@Before
 	public void setUp() throws Exception
 	{
 		super.setUpStandard("default");
-		clotho = injector.getService(ClothoidesComputer.class);
+		clotho = injector.getService(ClothoidComputer.class);
 	}
 
 	@Test
@@ -42,7 +42,7 @@ public class Test_ClothoidesComputer extends JUnit_Test
 		for(int i = 0; i < nbArc; i++)
 			arc[i] = new StaticTentacle(injector.getService(RectangularObstacle.class));
 
-		Cinematique c = new Cinematique(0, 1000, Math.PI / 2, false, 0, false);
+		Kinematic c = new Kinematic(0, 1000, Math.PI / 2, false, 0, false);
 		clotho.getTrajectoire(c, ClothoTentacle.COURBURE_IDENTIQUE, arc[0], 0);
 		clotho.getTrajectoire(arc[0], ClothoTentacle.GAUCHE_2, arc[1], 0);
 		clotho.getTrajectoire(arc[1], ClothoTentacle.COURBURE_IDENTIQUE, arc[2], 0);

@@ -3,15 +3,15 @@
  * Distributed under the MIT License.
  */
 
-package pfg.kraken.astar.endCheck;
+package pfg.kraken.astar.endcheck;
 
-import pfg.kraken.struct.Cinematique;
+import pfg.kraken.struct.Kinematic;
 
 public class EndWithXY implements EndOfTrajectoryCheck
 {
 
 	@Override
-	public boolean isArrived(Cinematique endPoint, Cinematique robotPoint)
+	public boolean isArrived(Kinematic endPoint, Kinematic robotPoint)
 	{
 		return robotPoint.getPosition().squaredDistance(endPoint.getPosition()) < 5;
 	}

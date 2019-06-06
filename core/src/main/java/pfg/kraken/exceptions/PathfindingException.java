@@ -27,4 +27,9 @@ public abstract class PathfindingException extends Exception
 		super(m);
 	}
 
+	public PathfindingException(String m, Throwable e)
+	{
+		super(m, e);
+	}	
+
 }

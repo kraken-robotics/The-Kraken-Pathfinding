@@ -6,7 +6,7 @@
 package pfg.kraken.astar.tentacles;
 
 import java.util.List;
-import pfg.kraken.struct.CinematiqueObs;
+import pfg.kraken.struct.EmbodiedKinematic;
 
 /**
  * Arc courbe de longueur inconnue à l'avance
@@ -18,9 +18,9 @@ import pfg.kraken.struct.CinematiqueObs;
 public final class DynamicTentacle extends Tentacle
 {
 	private static final long serialVersionUID = 2188028584717495182L;
-	public List<CinematiqueObs> arcs;
+	public List<EmbodiedKinematic> arcs;
 
-	public DynamicTentacle(List<CinematiqueObs> arcs, TentacleType v)
+	public DynamicTentacle(List<EmbodiedKinematic> arcs, TentacleType v)
 	{
 		vitesse = v;
 		this.arcs = arcs;
@@ -33,13 +33,13 @@ public final class DynamicTentacle extends Tentacle
 	}
 
 	@Override
-	public CinematiqueObs getPoint(int indice)
+	public EmbodiedKinematic getPoint(int indice)
 	{
 		return arcs.get(indice);
 	}
 
 	@Override
-	public CinematiqueObs getLast()
+	public EmbodiedKinematic getLast()
 	{
 		return arcs.get(arcs.size() - 1);
 	}

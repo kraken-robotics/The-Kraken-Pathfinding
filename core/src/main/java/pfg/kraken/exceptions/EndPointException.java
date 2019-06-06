@@ -26,5 +26,10 @@ public class EndPointException extends NoPathException
 	{
 		super(m);
 	}
+	
+	public EndPointException(String m, Throwable e)
+	{
+		super(m, e);
+	}	
 
 }

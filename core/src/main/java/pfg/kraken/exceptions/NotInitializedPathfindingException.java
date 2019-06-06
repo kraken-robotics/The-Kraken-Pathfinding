@@ -27,4 +27,9 @@ public class NotInitializedPathfindingException extends PathfindingException
 		super(m);
 	}
 
+	public NotInitializedPathfindingException(String m, Throwable e)
+	{
+		super(m, e);
+	}	
+
 }

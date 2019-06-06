@@ -15,10 +15,10 @@ import pfg.kraken.astar.tentacles.StaticTentacle;
 import pfg.kraken.astar.tentacles.TentacleComputer;
 import pfg.kraken.astar.tentacles.TentacleType;
 import pfg.kraken.dstarlite.DStarLite;
-import pfg.kraken.memory.CinemObsPool;
+import pfg.kraken.memory.EmbodiedKinematicPool;
 import pfg.kraken.obstacles.RectangularObstacle;
-import pfg.kraken.struct.Cinematique;
-import pfg.kraken.struct.CinematiqueObs;
+import pfg.kraken.struct.Kinematic;
+import pfg.kraken.struct.EmbodiedKinematic;
 import pfg.kraken.struct.XY;
 import pfg.kraken.struct.XYO;
 import pfg.kraken.struct.XY_RW;
@@ -33,14 +33,14 @@ import static pfg.kraken.astar.tentacles.Tentacle.*;
 
 public final class BezierComputer implements TentacleComputer
 {
-	private CinemObsPool memory;
+	private EmbodiedKinematicPool memory;
 	private double courbureMax;
 	private double rootedMaxAcceleration;
 	private double maxCurvatureDerivative;
 	private DStarLite dstarlite;
 	private final double[] maxSpeedLUT;
 
-	public BezierComputer(DStarLite dstarlite, CinemObsPool memory, Config config, RectangularObstacle vehicleTemplate)
+	public BezierComputer(DStarLite dstarlite, EmbodiedKinematicPool memory, Config config, RectangularObstacle vehicleTemplate)
 	{
 		this.memory = memory;
 		this.dstarlite = dstarlite;
@@ -70,7 +70,7 @@ public final class BezierComputer implements TentacleComputer
 		acc = new XY_RW[indexThreadMax];
 		vit = new XY_RW[indexThreadMax];
 		tmpPos = new XY_RW[indexThreadMax];
-		debut = new Cinematique[indexThreadMax];
+		debut = new Kinematic[indexThreadMax];
 		
 		for(int i = 0; i < indexThreadMax; i++)
 		{
@@ -94,7 +94,7 @@ public final class BezierComputer implements TentacleComputer
 			acc[i] = new XY_RW();
 			vit[i] = new XY_RW();
 			tmpPos[i] = new XY_RW();
-			debut[i] = new Cinematique();
+			debut[i] = new Kinematic();
 		}
 		
 
@@ -109,7 +109,7 @@ public final class BezierComputer implements TentacleComputer
 	private StaticTentacle[] tmp;
 
 	private XY_RW[] pointB, pointC, tmpPoint3;
-	private Cinematique[] debut;
+	private Kinematic[] debut;
 	private XY_RW[] a_tmp, b_tmp, c_tmp, d_tmp, acc, vit, tmpPos;
 
 	/**
@@ -118,7 +118,7 @@ public final class BezierComputer implements TentacleComputer
 	 * @param arrivee
 	 * @return
 	 */
-	public DynamicTentacle quadraticInterpolationXYO2XYO(Cinematique cinematiqueInitiale, Cinematique arrivee, int indexThread)
+	public DynamicTentacle quadraticInterpolationXYO2XYO(Kinematic cinematiqueInitiale, Kinematic arrivee, int indexThread)
 	{
 		XY a = cinematiqueInitiale.getPosition();
 		XY c = arrivee.getPosition(); 
@@ -156,7 +156,7 @@ public final class BezierComputer implements TentacleComputer
 		if((pointB[indexThread].getX() - a.getX()) * ux + (pointB[indexThread].getY() - a.getY()) * uy <= 0)
 			return null;
 		
-		LinkedList<CinematiqueObs> out = constructBezierQuad(a, pointB[indexThread], c, marcheAvant, rebrousse, cinematiqueInitiale, indexThread);
+		LinkedList<EmbodiedKinematic> out = constructBezierQuad(a, pointB[indexThread], c, marcheAvant, rebrousse, cinematiqueInitiale, indexThread);
 
 		if(out == null)
 			return null;
@@ -170,7 +170,7 @@ public final class BezierComputer implements TentacleComputer
 	 * @param arrivee
 	 * @return
 	 */
-	public DynamicTentacle cubicInterpolationXYOC2XYOC0(Cinematique cinematiqueInitiale, Cinematique arrivee, int indexThread)
+	public DynamicTentacle cubicInterpolationXYOC2XYOC0(Kinematic cinematiqueInitiale, Kinematic arrivee, int indexThread)
 	{
 		XY a = cinematiqueInitiale.getPosition();
 		XY d = arrivee.getPosition(); 
@@ -221,7 +221,7 @@ public final class BezierComputer implements TentacleComputer
 		pointC[indexThread].setX(pointB[indexThread].getX() + distanceBC * vx);
 		pointC[indexThread].setY(pointB[indexThread].getY() + distanceBC * vy);
 		
-		LinkedList<CinematiqueObs> out = constructBezierCubique(a, pointB[indexThread], pointC[indexThread], d, marcheAvant, rebrousse, cinematiqueInitiale, indexThread);
+		LinkedList<EmbodiedKinematic> out = constructBezierCubique(a, pointB[indexThread], pointC[indexThread], d, marcheAvant, rebrousse, cinematiqueInitiale, indexThread);
 
 		if(out == null)
 			return null;
@@ -229,7 +229,7 @@ public final class BezierComputer implements TentacleComputer
 		return new DynamicTentacle(out, BezierTentacle.BEZIER_XYOC_TO_XYOC0);
 	}
 
-	private LinkedList<CinematiqueObs> constructBezierCubique(XY A, XY B, XY C, XY D, boolean enMarcheAvant, boolean rebrousse, Cinematique cinematiqueInitiale, int indexThread)
+	private LinkedList<EmbodiedKinematic> constructBezierCubique(XY A, XY B, XY C, XY D, boolean enMarcheAvant, boolean rebrousse, Kinematic cinematiqueInitiale, int indexThread)
 	{
 		if(A.squaredDistance(B) <= minimalDistance*minimalDistance
 				|| B.squaredDistance(C) <= minimalDistance*minimalDistance
@@ -237,7 +237,7 @@ public final class BezierComputer implements TentacleComputer
 			return null;
 
 		double t = 1;
-		LinkedList<CinematiqueObs> out = new LinkedList<CinematiqueObs>();
+		LinkedList<EmbodiedKinematic> out = new LinkedList<EmbodiedKinematic>();
 //		boolean first = true;
 		double lastCourbure = 0;
 //		double lastOrientation = 0;
@@ -305,7 +305,7 @@ public final class BezierComputer implements TentacleComputer
 			if(Math.abs(courbure) > courbureMax)
 			{
 //				System.out.println("Courbure : "+courbure+" >? "+courbureMax);
-				for(CinematiqueObs c : out)
+				for(EmbodiedKinematic c : out)
 					memory.destroyNode(c);
 				return null;
 			}
@@ -314,7 +314,7 @@ public final class BezierComputer implements TentacleComputer
 			
 			t -= PRECISION_TRACE_MM / vitesse;
 			
-			CinematiqueObs obs = memory.getNewNode();
+			EmbodiedKinematic obs = memory.getNewNode();
 			out.addFirst(obs);
 			obs.update(
 					tmpPoint3[indexThread].getX(), // x
@@ -337,7 +337,7 @@ public final class BezierComputer implements TentacleComputer
 		assert out.getFirst().cinem.getPosition().distanceFast(cinematiqueInitiale.getPosition()) <= 32;
 		if(out.getFirst().cinem.getPosition().distanceFast(cinematiqueInitiale.getPosition()) > 32)
 		{
-			for(CinematiqueObs c : out)
+			for(EmbodiedKinematic c : out)
 				memory.destroyNode(c);
 			return null;
 		}
@@ -359,7 +359,7 @@ public final class BezierComputer implements TentacleComputer
 	 * @param vitesseMax
 	 * @return
 	 */
-	public DynamicTentacle quadraticInterpolationXYOC2XY(Cinematique cinematiqueInitiale, XY arrivee, int indexThread)
+	public DynamicTentacle quadraticInterpolationXYOC2XY(Kinematic cinematiqueInitiale, XY arrivee, int indexThread)
 	{
 		XY a = cinematiqueInitiale.getPosition();
 		
@@ -378,7 +378,7 @@ public final class BezierComputer implements TentacleComputer
 		boolean marcheAvant = rebrousse != cinematiqueInitiale.enMarcheAvant;
 		
 		cinematiqueInitiale.copy(debut[indexThread]);
-		Cinematique firstCinematique = debut[indexThread];
+		Kinematic firstCinematique = debut[indexThread];
 
 		arrivee.copy(delta[indexThread]);
 		delta[indexThread].minus(firstCinematique.getPosition());
@@ -445,7 +445,7 @@ public final class BezierComputer implements TentacleComputer
 		b.scalar(Math.sqrt(d / (2 * courbureInitiale / 1000))); // c'est les maths qui le disent
 		b.plus(firstCinematique.getPosition());
 
-		LinkedList<CinematiqueObs> out = constructBezierQuad(debut[indexThread].getPosition(), b, arrivee, marcheAvant, rebrousse, debut[indexThread], indexThread);
+		LinkedList<EmbodiedKinematic> out = constructBezierQuad(debut[indexThread].getPosition(), b, arrivee, marcheAvant, rebrousse, debut[indexThread], indexThread);
 		if(out == null)
 		{
 //			if(prefixe != null)
@@ -476,7 +476,7 @@ public final class BezierComputer implements TentacleComputer
 	 * @param position2
 	 * @return
 	 */
-	private LinkedList<CinematiqueObs> constructBezierQuad(XY A, XY B, XY C, boolean enMarcheAvant, boolean rebrousse, Cinematique cinematiqueInitiale, int indexThread)
+	private LinkedList<EmbodiedKinematic> constructBezierQuad(XY A, XY B, XY C, boolean enMarcheAvant, boolean rebrousse, Kinematic cinematiqueInitiale, int indexThread)
 	{
 		/*
 		 * Avoir une certaine distance entre les points permet d'éviter les cas dégénérés où la courbure est trop grande
@@ -485,7 +485,7 @@ public final class BezierComputer implements TentacleComputer
 			return null;
 
 		double t = 1;
-		LinkedList<CinematiqueObs> out = new LinkedList<CinematiqueObs>();
+		LinkedList<EmbodiedKinematic> out = new LinkedList<EmbodiedKinematic>();
 		
 		// l'accélération est constante pour une courbe quadratique
 		A.copy(a_tmp[indexThread]);
@@ -501,7 +501,7 @@ public final class BezierComputer implements TentacleComputer
 
 		while(t > 0)
 		{
-			CinematiqueObs obs = memory.getNewNode();
+			EmbodiedKinematic obs = memory.getNewNode();
 
 			double tm = 1-t;
 			double tm2 = tm * tm;
@@ -571,7 +571,7 @@ public final class BezierComputer implements TentacleComputer
 	}
 
 	@Override
-	public boolean compute(AStarNode current, TentacleType tentacleType, Cinematique arrival, AStarNode modified, int indexThread)
+	public boolean compute(AStarNode current, TentacleType tentacleType, Kinematic arrival, AStarNode modified, int indexThread)
 	{
 		assert tentacleType instanceof BezierTentacle : tentacleType;
 		if(tentacleType == BezierTentacle.BEZIER_XYOC_TO_XY)
@@ -632,7 +632,7 @@ public final class BezierComputer implements TentacleComputer
 			return null;
 		
 		XYO middle = listePositions.get(listePositions.size() / 2);
-		DynamicTentacle out = quadraticInterpolationXYO2XYO(current.cinematique, new Cinematique(middle), indexThread);
+		DynamicTentacle out = quadraticInterpolationXYO2XYO(current.cinematique, new Kinematic(middle), indexThread);
 		if(out != null)
 			out.vitesse = BezierTentacle.INTERMEDIATE_BEZIER_XYO_TO_XYO;
 		return out;

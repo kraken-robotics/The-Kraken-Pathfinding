@@ -5,7 +5,7 @@
 
 package pfg.kraken.obstacles.container;
 
-import pfg.kraken.struct.CinematiqueObs;
+import pfg.kraken.struct.EmbodiedKinematic;
 
 /**
  * An dynamical obstacles that works without replanning
@@ -16,7 +16,7 @@ import pfg.kraken.struct.CinematiqueObs;
 public abstract class DynamicObstaclesWithoutReplanning implements DynamicObstacles
 {
 	@Override
-	public int isThereCollision(CinematiqueObs[] l, int from, int to)
+	public int isThereCollision(EmbodiedKinematic[] l, int from, int to)
 	{
 		return to;
 	}

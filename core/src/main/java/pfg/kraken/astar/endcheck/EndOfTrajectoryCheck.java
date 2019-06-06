@@ -3,9 +3,9 @@
  * Distributed under the MIT License.
  */
 
-package pfg.kraken.astar.endCheck;
+package pfg.kraken.astar.endcheck;
 
-import pfg.kraken.struct.Cinematique;
+import pfg.kraken.struct.Kinematic;
 
 /**
  * 
@@ -15,5 +15,5 @@ import pfg.kraken.struct.Cinematique;
 
 public interface EndOfTrajectoryCheck
 {
-	public boolean isArrived(Cinematique endPoint, Cinematique robotPoint);
+	public boolean isArrived(Kinematic endPoint, Kinematic robotPoint);
 }

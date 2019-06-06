@@ -27,4 +27,9 @@ public class InvalidPathException extends PathfindingException
 		super(m);
 	}
 
+	public InvalidPathException(String m, Throwable e)
+	{
+		super(m, e);
+	}	
+
 }

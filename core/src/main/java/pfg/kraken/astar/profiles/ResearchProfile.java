@@ -3,10 +3,11 @@
  * Distributed under the MIT License.
  */
 
-package pfg.kraken.astar.tentacles;
+package pfg.kraken.astar.profiles;
 
 import java.util.List;
-import pfg.kraken.astar.endCheck.EndOfTrajectoryCheck;
+import pfg.kraken.astar.endcheck.EndOfTrajectoryCheck;
+import pfg.kraken.astar.tentacles.TentacleType;
 
 /**
  * Structure qui contient un profil de recherche

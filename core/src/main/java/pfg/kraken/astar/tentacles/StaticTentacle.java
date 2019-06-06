@@ -6,7 +6,7 @@
 package pfg.kraken.astar.tentacles;
 
 import pfg.kraken.obstacles.RectangularObstacle;
-import pfg.kraken.struct.CinematiqueObs;
+import pfg.kraken.struct.EmbodiedKinematic;
 
 /**
  * Arc courbe de longueur fixe
@@ -18,12 +18,12 @@ import pfg.kraken.struct.CinematiqueObs;
 public final class StaticTentacle extends Tentacle
 {
 	private static final long serialVersionUID = -5599092863248049576L;
-	public final CinematiqueObs[] arcselems = new CinematiqueObs[NB_POINTS];
+	public final EmbodiedKinematic[] arcselems = new EmbodiedKinematic[NB_POINTS];
 
 	public StaticTentacle(RectangularObstacle vehicleTemplate)
 	{
 		for(int i = 0; i < NB_POINTS; i++)
-			arcselems[i] = new CinematiqueObs(vehicleTemplate);
+			arcselems[i] = new EmbodiedKinematic(vehicleTemplate);
 	}
 
 	/**
@@ -44,13 +44,13 @@ public final class StaticTentacle extends Tentacle
 	}
 
 	@Override
-	public CinematiqueObs getPoint(int indice)
+	public EmbodiedKinematic getPoint(int indice)
 	{
 		return arcselems[indice];
 	}
 
 	@Override
-	public CinematiqueObs getLast()
+	public EmbodiedKinematic getLast()
 	{
 		return arcselems[NB_POINTS - 1];
 	}

@@ -8,7 +8,7 @@ package pfg.kraken.astar.tentacles.computethread;
 import pfg.kraken.astar.AStarNode;
 import pfg.kraken.astar.tentacles.TentacleComputer;
 import pfg.kraken.astar.tentacles.TentacleType;
-import pfg.kraken.struct.Cinematique;
+import pfg.kraken.struct.Kinematic;
 
 /**
  * A structure
@@ -20,7 +20,7 @@ public class TentacleTask {
 
 	public volatile AStarNode current;
 	public volatile TentacleType v;
-	public volatile Cinematique arrivee;
+	public volatile Kinematic arrivee;
 	public volatile TentacleComputer computer;
 	public volatile double vitesseMax;
 }

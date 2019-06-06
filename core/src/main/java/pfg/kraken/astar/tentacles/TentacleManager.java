@@ -19,13 +19,15 @@ import pfg.kraken.ColorKraken;
 import pfg.kraken.ConfigInfoKraken;
 import pfg.kraken.astar.AStarNode;
 import pfg.kraken.astar.DirectionStrategy;
+import pfg.kraken.astar.profiles.ResearchProfile;
+import pfg.kraken.astar.profiles.ResearchProfileManager;
 import pfg.kraken.astar.tentacles.computethread.TentacleTask;
 import pfg.kraken.astar.tentacles.computethread.TentacleThread;
 import pfg.kraken.dstarlite.DStarLite;
 import pfg.kraken.exceptions.UnknownModeException;
 import pfg.kraken.memory.NodePool;
-import pfg.kraken.struct.Cinematique;
-import pfg.kraken.struct.CinematiqueObs;
+import pfg.kraken.struct.Kinematic;
+import pfg.kraken.struct.EmbodiedKinematic;
 import pfg.kraken.struct.XYO;
 import pfg.kraken.display.Display;
 import pfg.kraken.display.Layer;
@@ -49,7 +51,7 @@ public final class TentacleManager implements Iterator<AStarNode>
 	private Map<TentacleType, Integer> tentaclesStats = new HashMap<TentacleType, Integer>();
 	
 	private DirectionStrategy directionstrategyactuelle;
-	private Cinematique arrivee = new Cinematique();
+	private Kinematic arrivee = new Kinematic();
 	private ResearchProfileManager profiles;
 	private List<TentacleTask> tasks = new ArrayList<TentacleTask>();
 	private BlockingQueue<AStarNode> successeurs = new LinkedBlockingQueue<AStarNode>();
@@ -88,7 +90,7 @@ public final class TentacleManager implements Iterator<AStarNode>
 	 * @param arrivee
 	 * @throws UnknownModeException 
 	 */
-	public void configure(DirectionStrategy directionstrategyactuelle, double vitesseMax, Cinematique arrivee, String mode) throws UnknownModeException
+	public void configure(DirectionStrategy directionstrategyactuelle, double vitesseMax, Kinematic arrivee, String mode) throws UnknownModeException
 	{
 		this.vitesseMax = vitesseMax;
 		this.directionstrategyactuelle = directionstrategyactuelle;
@@ -99,7 +101,7 @@ public final class TentacleManager implements Iterator<AStarNode>
 	/*
 	 * Only used for the reconstruction
 	 */
-	private LinkedList<CinematiqueObs> trajectory = new LinkedList<CinematiqueObs>();
+	private LinkedList<EmbodiedKinematic> trajectory = new LinkedList<EmbodiedKinematic>();
 
 	public Map<TentacleType, Integer> getTentaclesStatistics()
 	{
@@ -111,13 +113,13 @@ public final class TentacleManager implements Iterator<AStarNode>
 		tentaclesStats.clear();
 	}
 	
-	public LinkedList<CinematiqueObs> reconstruct(AStarNode best, int nbPointsMax)
+	public LinkedList<EmbodiedKinematic> reconstruct(AStarNode best, int nbPointsMax)
 	{
 		trajectory.clear();
 		AStarNode noeudParent = best;
 		Tentacle arcParent = best.getArc();
 		
-		CinematiqueObs current;
+		EmbodiedKinematic current;
 		boolean lastStop = nbPointsMax == Integer.MAX_VALUE; // le dernier point n'est pas un stop en cas de replanification partielle
 		boolean nextStop;
 
@@ -192,7 +194,7 @@ public final class TentacleManager implements Iterator<AStarNode>
 		assert threads.length > 1 || successeurs.size() == nbLeft;
 	}
 
-	public synchronized Integer heuristicCostCourbe(Cinematique c)
+	public synchronized Integer heuristicCostCourbe(Kinematic c)
 	{
 		Double d = dstarlite.heuristicDistance(c);
 		if(d == null)
@@ -224,13 +226,13 @@ public final class TentacleManager implements Iterator<AStarNode>
 		return (int) (1000.*(h / vitesseMax));
 	}
 	
-	public final boolean isNearXYO(Cinematique a, Cinematique b)
+	public final boolean isNearXYO(Kinematic a, Kinematic b)
 	{
 		return a.getPosition().squaredDistance(b.getPosition()) - PRECISION_TRACE_MM * PRECISION_TRACE_MM < 1
 				&& Math.abs(XYO.angleDifference(a.orientationReelle, b.orientationReelle)) < 0.1;
 	}
 	
-	public final boolean isArrived(Cinematique last)
+	public final boolean isArrived(Kinematic last)
 	{
 		return currentProfile.end.isArrived(arrivee, last);
 	}

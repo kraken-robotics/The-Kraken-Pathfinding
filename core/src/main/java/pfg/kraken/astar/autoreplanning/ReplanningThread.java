@@ -7,7 +7,7 @@ package pfg.kraken.astar.autoreplanning;
 
 import pfg.kraken.astar.TentacularAStar;
 import pfg.kraken.exceptions.PathfindingException;
-import pfg.kraken.struct.Cinematique;
+import pfg.kraken.struct.Kinematic;
 
 /**
  * Thread qui s'occupe de la replanification
@@ -62,7 +62,7 @@ public final class ReplanningThread extends Thread
 					
 					while(true)
 					{
-						Cinematique start;
+						Kinematic start;
 						synchronized(pm)
 						{
 							while(!pm.needReplanning() && !pm.shouldThreadStopSearch())

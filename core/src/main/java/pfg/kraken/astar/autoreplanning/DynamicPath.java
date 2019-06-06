@@ -14,8 +14,8 @@ import pfg.kraken.exceptions.NoPathException;
 import pfg.kraken.exceptions.PathfindingException;
 import pfg.kraken.obstacles.RectangularObstacle;
 import pfg.kraken.obstacles.container.DynamicObstacles;
-import pfg.kraken.struct.Cinematique;
-import pfg.kraken.struct.CinematiqueObs;
+import pfg.kraken.struct.Kinematic;
+import pfg.kraken.struct.EmbodiedKinematic;
 import pfg.kraken.struct.ItineraryPoint;
 import static pfg.kraken.astar.tentacles.Tentacle.PRECISION_TRACE_MM;
 /**
@@ -38,7 +38,7 @@ public final class DynamicPath
 		WAITING_END; // attend que le thread soit bien au courant que la recherche est finie
 	}
 	
-	private CinematiqueObs[] path = new CinematiqueObs[1000];
+	private EmbodiedKinematic[] path = new EmbodiedKinematic[1000];
 	private volatile State etat;
 	private volatile int indexFirst; // index du point où est le robot
 	private volatile int pathSize; // index du prochain point de la trajectoire
@@ -56,7 +56,7 @@ public final class DynamicPath
 			throw new IllegalArgumentException();
 		
 		for(int i = 0; i < path.length; i++)
-			path[i] = new CinematiqueObs(vehicleTemplate);
+			path[i] = new EmbodiedKinematic(vehicleTemplate);
 		clear();
 		etat = State.STANDBY;
 	}
@@ -104,7 +104,7 @@ public final class DynamicPath
 		notifyAll();
 	}
 	
-	public synchronized void addToEnd(List<CinematiqueObs> points, boolean partial)
+	public synchronized void addToEnd(List<EmbodiedKinematic> points, boolean partial)
 	{
 		for(int i = 0; i < points.size(); i++)
 			points.get(i).copy(path[pathSize + i]);
@@ -147,7 +147,7 @@ public final class DynamicPath
 			return 0;
 	}
 
-	public synchronized CinematiqueObs setCurrentTrajectoryIndex(int index)
+	public synchronized EmbodiedKinematic setCurrentTrajectoryIndex(int index)
 	{
 		if(pathSize > 0 && index >= pathSize)
 			return path[pathSize-1]; // ça peut potentiellement arrivé à cause de la latence de la communication…
@@ -270,7 +270,7 @@ public final class DynamicPath
 	 * Nouveau départ en replanification (après avoir calculé un bout de chemin partiel)
 	 * @return
 	 */
-	public Cinematique getNewStart()
+	public Kinematic getNewStart()
 	{
 		assert etat == State.REPLANNING : etat;
 		return path[pathSize - 1].cinem;

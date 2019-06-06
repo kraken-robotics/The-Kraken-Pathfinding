@@ -9,7 +9,7 @@ import java.util.Collections;
 import java.util.Iterator;
 
 import pfg.kraken.obstacles.Obstacle;
-import pfg.kraken.struct.CinematiqueObs;
+import pfg.kraken.struct.EmbodiedKinematic;
 
 /**
  * An empty dynamical obstacles manager
@@ -20,7 +20,7 @@ import pfg.kraken.struct.CinematiqueObs;
 public final class EmptyDynamicObstacles implements DynamicObstacles
 {
 	@Override
-	public int isThereCollision(CinematiqueObs[] l, int from, int to)
+	public int isThereCollision(EmbodiedKinematic[] l, int from, int to)
 	{
 		return to;
 	}

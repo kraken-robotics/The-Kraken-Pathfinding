@@ -27,4 +27,9 @@ public class NotFastEnoughException extends NoPathException
 		super(m);
 	}
 
+	public NotFastEnoughException(String m, Throwable e)
+	{
+		super(m, e);
+	}	
+
 }

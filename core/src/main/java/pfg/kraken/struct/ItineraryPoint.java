@@ -76,7 +76,7 @@ public class ItineraryPoint implements Printable
 		this.stop = stop;
 	}
 	
-	public ItineraryPoint(CinematiqueObs c)
+	public ItineraryPoint(EmbodiedKinematic c)
 	{
 		this(c.cinem.getX(), c.cinem.getY(), c.cinem.orientationReelle, c.cinem.courbureReelle, c.cinem.enMarcheAvant, c.maxSpeed, c.cinem.stop);
 	}

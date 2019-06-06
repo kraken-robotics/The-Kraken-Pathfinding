@@ -14,7 +14,7 @@ package pfg.kraken.obstacles.container;
 import java.util.Iterator;
 
 import pfg.kraken.obstacles.Obstacle;
-import pfg.kraken.struct.CinematiqueObs;
+import pfg.kraken.struct.EmbodiedKinematic;
 
 /**
  * The interface of a dynamic obstacles container
@@ -24,7 +24,7 @@ import pfg.kraken.struct.CinematiqueObs;
 
 public interface DynamicObstacles
 {
-	public int isThereCollision(CinematiqueObs[] l, int from, int to);
+	public int isThereCollision(EmbodiedKinematic[] l, int from, int to);
 	public Iterator<Obstacle> getCurrentDynamicObstacles();
 	public boolean needCollisionCheck();
 }

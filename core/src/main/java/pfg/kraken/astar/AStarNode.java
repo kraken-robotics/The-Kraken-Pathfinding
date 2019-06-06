@@ -15,7 +15,7 @@ import pfg.kraken.astar.tentacles.Tentacle;
 import pfg.kraken.memory.Memorizable;
 import pfg.kraken.memory.MemoryPool.MemPoolState;
 import pfg.kraken.obstacles.RectangularObstacle;
-import pfg.kraken.struct.Cinematique;
+import pfg.kraken.struct.Kinematic;
 
 /**
  * A node of the A*.
@@ -27,7 +27,7 @@ import pfg.kraken.struct.Cinematique;
 public final class AStarNode implements Memorizable, Printable
 {
 	private static final long serialVersionUID = -2120732124823178009L;
-	public Cinematique cinematique; // the cinematic state + the duration since the beginning of the search
+	public Kinematic cinematique; // the cinematic state + the duration since the beginning of the search
 	public volatile long date = 0;
 	public int g_score; // distance du point de départ à ce point
 	public int f_score; // g_score + heuristique = meilleure distance qu'on
@@ -62,7 +62,7 @@ public final class AStarNode implements Memorizable, Printable
 	public AStarNode(RectangularObstacle vehicleTemplate)
 	{
 		cameFromArcStatique = new StaticTentacle(vehicleTemplate);
-		this.cinematique = new Cinematique();
+		this.cinematique = new Kinematic();
 	}
 
 	public Tentacle getArc()

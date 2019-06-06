@@ -10,7 +10,7 @@ import java.awt.Color;
 import pfg.kraken.astar.DirectionStrategy;
 import pfg.kraken.astar.tentacles.TentacleComputer;
 import pfg.kraken.astar.tentacles.TentacleType;
-import pfg.kraken.struct.Cinematique;
+import pfg.kraken.struct.Kinematic;
 
 /**
  * Arc de clothoïde qui fait un demi-tour
@@ -25,7 +25,7 @@ public enum TurnoverTentacle implements TentacleType
 	DEMI_TOUR_GAUCHE(ClothoTentacle.GAUCHE_2);
 
 	public ClothoTentacle v;
-	public static ClothoidesComputer computer;
+	public static ClothoidComputer computer;
 
 	private TurnoverTentacle(ClothoTentacle v)
 	{
@@ -33,7 +33,7 @@ public enum TurnoverTentacle implements TentacleType
 	}
 
 	@Override
-	public boolean isAcceptable(Cinematique c, DirectionStrategy directionstrategyactuelle, double courbureMax)
+	public boolean isAcceptable(Kinematic c, DirectionStrategy directionstrategyactuelle, double courbureMax)
 	{
 		// on évite les demi-tours absurdes
 		if(((v.positif && c.courbureGeometrique < -1) || (!v.positif && c.courbureGeometrique > 1)))

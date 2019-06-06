@@ -12,7 +12,7 @@ import pfg.kraken.display.Display;
 import pfg.kraken.display.Printable;
 import pfg.kraken.display.PrintablePoint;
 import pfg.kraken.obstacles.RectangularObstacle;
-import pfg.kraken.struct.CinematiqueObs;
+import pfg.kraken.struct.EmbodiedKinematic;
 
 /**
  * Un arc de trajectoire courbe. Juste une succession de points.
@@ -50,9 +50,9 @@ public abstract class Tentacle implements Printable, Iterable<RectangularObstacl
 	
 	public abstract int getNbPoints();
 
-	public abstract CinematiqueObs getPoint(int indice);
+	public abstract EmbodiedKinematic getPoint(int indice);
 
-	public abstract CinematiqueObs getLast();
+	public abstract EmbodiedKinematic getLast();
 
 	public final double getDuree(Tentacle tentacleParent, double translationalSpeed, int tempsArret)
 	{

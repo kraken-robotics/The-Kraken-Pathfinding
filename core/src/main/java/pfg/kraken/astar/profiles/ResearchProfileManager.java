@@ -3,11 +3,12 @@
  * Distributed under the MIT License.
  */
 
-package pfg.kraken.astar.tentacles;
+package pfg.kraken.astar.profiles;
 
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
+import pfg.kraken.astar.tentacles.TentacleType;
 import pfg.kraken.exceptions.UnknownModeException;
 
 /**

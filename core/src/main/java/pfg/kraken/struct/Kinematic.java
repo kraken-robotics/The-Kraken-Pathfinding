@@ -19,7 +19,7 @@ import pfg.kraken.display.Printable;
  *
  */
 
-public class Cinematique implements Printable, Serializable
+public class Kinematic implements Printable, Serializable
 {
 	private static final long serialVersionUID = 1548985891767047059L;
 	protected final XY_RW position = new XY_RW();
@@ -34,7 +34,7 @@ public class Cinematique implements Printable, Serializable
 	public volatile boolean stop;
 	private final static NumberFormat formatter = new DecimalFormat("#0.000");
 	
-	public Cinematique(XYO xyo)
+	public Kinematic(XYO xyo)
 	{
 		updateReel(xyo.position.getX(), xyo.position.getY(), xyo.orientation, 0);
 	}
@@ -44,7 +44,7 @@ public class Cinematique implements Printable, Serializable
 		return new XYO(position, orientationReelle);
 	}
 	
-	public Cinematique(double x, double y, double orientationGeometrique, boolean enMarcheAvant, double courbure, boolean stop)
+	public Kinematic(double x, double y, double orientationGeometrique, boolean enMarcheAvant, double courbure, boolean stop)
 	{
 		update(x, y, orientationGeometrique, enMarcheAvant, courbure, stop);
 	}
@@ -63,7 +63,7 @@ public class Cinematique implements Printable, Serializable
 	/**
 	 * Cinématique vide
 	 */
-	public Cinematique()
+	public Kinematic()
 	{}
 
 	/**
@@ -71,7 +71,7 @@ public class Cinematique implements Printable, Serializable
 	 * 
 	 * @param autre
 	 */
-	public synchronized void copy(Cinematique autre)
+	public synchronized void copy(Kinematic autre)
 	{
 		synchronized(autre)
 		{
@@ -229,9 +229,9 @@ public class Cinematique implements Printable, Serializable
 	 * Doit être évité à tout prix
 	 */
 	@Override
-	public Cinematique clone()
+	public Kinematic clone()
 	{
-		Cinematique out = new Cinematique();
+		Kinematic out = new Kinematic();
 		copy(out);
 		return out;
 	}

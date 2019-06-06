@@ -9,7 +9,7 @@ package pfg.kraken.memory;
 import pfg.config.Config;
 import pfg.kraken.ConfigInfoKraken;
 import pfg.kraken.obstacles.RectangularObstacle;
-import pfg.kraken.struct.CinematiqueObs;
+import pfg.kraken.struct.EmbodiedKinematic;
 
 /**
  * Classe qui fournit des objets CinematiqueObs
@@ -22,21 +22,21 @@ import pfg.kraken.struct.CinematiqueObs;
  *
  */
 
-public final class CinemObsPool extends MemoryPool<CinematiqueObs>
+public final class EmbodiedKinematicPool extends MemoryPool<EmbodiedKinematic>
 {
 	private RectangularObstacle vehicleTemplate;
 	
-	public CinemObsPool(Config config, RectangularObstacle vehicleTemplate)
+	public EmbodiedKinematicPool(Config config, RectangularObstacle vehicleTemplate)
 	{
-		super(CinematiqueObs.class);
+		super(EmbodiedKinematic.class);
 		this.vehicleTemplate = vehicleTemplate;
 		init(config.getInt(ConfigInfoKraken.OBSTACLES_MEMORY_POOL_SIZE));
 	}
 
 	@Override
-	protected final void make(CinematiqueObs[] nodes)
+	protected final void make(EmbodiedKinematic[] nodes)
 	{
 		for(int i = 0; i < nodes.length; i++)
-			nodes[i] = new CinematiqueObs(vehicleTemplate);
+			nodes[i] = new EmbodiedKinematic(vehicleTemplate);
 	}
 }

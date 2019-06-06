@@ -27,4 +27,9 @@ public class UnknownModeException extends NoPathException
 		super(m);
 	}
 
+	public UnknownModeException(String m, Throwable e)
+	{
+		super(m, e);
+	}	
+
 }

@@ -12,7 +12,7 @@ package pfg.kraken.dstarlite;
  *
  */
 
-public final class Cle
+public final class Key
 {
 	// Quand un nœud est consistent, first = vraie distance + heuristique,
 	// second = vraie distance
@@ -25,9 +25,9 @@ public final class Cle
 	}
 
 	@Override
-	public Cle clone()
+	public Key clone()
 	{
-		Cle out = new Cle();
+		Key out = new Key();
 		copy(out);
 		return out;
 	}
@@ -38,7 +38,7 @@ public final class Cle
 	 * @param modified
 	 * @return
 	 */
-	void copy(Cle modified)
+	void copy(Key modified)
 	{
 		modified.set(first, second);
 	}
@@ -49,18 +49,18 @@ public final class Cle
 		return "first = " + first + ", second = " + second;
 	}
 
-	public final boolean isEqualsTo(Cle autre)
+	public final boolean isEqualsTo(Key autre)
 	{
 		return first == autre.first && second == autre.second;
 	}
 	
-	public final boolean lesserThan(Cle autre)
+	public final boolean lesserThan(Key autre)
 	{
 		int tmp = first - autre.first;
 		return tmp < 0 || (tmp == 0 && second - autre.second < 0);
 	}
 
-	public final boolean greaterThan(Cle autre)
+	public final boolean greaterThan(Key autre)
 	{
 		int tmp = first - autre.first;
 		return tmp > 0 || (tmp == 0 && second - autre.second > 0);

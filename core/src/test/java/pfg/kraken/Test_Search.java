@@ -17,7 +17,7 @@ import pfg.kraken.exceptions.NoPathException;
 import pfg.kraken.exceptions.NotInitializedPathfindingException;
 import pfg.kraken.obstacles.Obstacle;
 import pfg.kraken.obstacles.RectangularObstacle;
-import pfg.kraken.struct.Cinematique;
+import pfg.kraken.struct.Kinematic;
 import pfg.kraken.struct.XYO;
 import pfg.kraken.struct.XY_RW;
 
@@ -48,25 +48,25 @@ public class Test_Search extends JUnit_Test
 	@Test(expected=NoPathException.class)
 	public void test_out_of_bounds() throws Exception
 	{
-		pathfinding.initializeNewSearch(new Cinematique(new XYO(0, 200, 0)), new Cinematique(new XYO(10000, 10000, 0)), DirectionStrategy.FASTEST, "XY", null, 3000);
+		pathfinding.initializeNewSearch(new Kinematic(new XYO(0, 200, 0)), new Kinematic(new XYO(10000, 10000, 0)), DirectionStrategy.FASTEST, "XY", null, 3000);
 	}
 	
 	@Test(expected=NoPathException.class)
 	public void test_start_inside_obstacle() throws Exception
 	{
-		pathfinding.initializeNewSearch(new Cinematique(new XYO(50,1050, 0)), new Cinematique(new XYO(0, 200, 0)), DirectionStrategy.FASTEST, "XY", null, 3000);
+		pathfinding.initializeNewSearch(new Kinematic(new XYO(50,1050, 0)), new Kinematic(new XYO(0, 200, 0)), DirectionStrategy.FASTEST, "XY", null, 3000);
 	}
 	
 	@Test(expected=NoPathException.class)
 	public void test_finish_inside_obstacle() throws Exception
 	{
-		pathfinding.initializeNewSearch(new Cinematique(new XYO(0, 200, 0)), new Cinematique(new XYO(50,1050, 0)), DirectionStrategy.FASTEST, "XY", null, 3000);
+		pathfinding.initializeNewSearch(new Kinematic(new XYO(0, 200, 0)), new Kinematic(new XYO(50,1050, 0)), DirectionStrategy.FASTEST, "XY", null, 3000);
 	}
 	
 	@Test
 	public void test_exemple_1() throws Exception
 	{
-		pathfinding.initializeNewSearch(new Cinematique(new XYO(1000, 200, 0)), new Cinematique(new XYO(1000, 1000, 0)), DirectionStrategy.FASTEST, "XY", null, 3000);
+		pathfinding.initializeNewSearch(new Kinematic(new XYO(1000, 200, 0)), new Kinematic(new XYO(1000, 1000, 0)), DirectionStrategy.FASTEST, "XY", null, 3000);
 		pathfinding.searchWithoutReplanning();
 	}
 	

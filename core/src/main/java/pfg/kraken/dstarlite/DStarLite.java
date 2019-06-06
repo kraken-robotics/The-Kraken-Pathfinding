@@ -20,7 +20,7 @@ import pfg.kraken.exceptions.NoPathException;
 import pfg.kraken.obstacles.Obstacle;
 import pfg.kraken.obstacles.container.DynamicObstacles;
 import pfg.kraken.obstacles.container.StaticObstacles;
-import pfg.kraken.struct.Cinematique;
+import pfg.kraken.struct.Kinematic;
 import pfg.kraken.struct.XY;
 import pfg.kraken.struct.XYO;
 
@@ -56,9 +56,9 @@ public final class DStarLite
 	private long nbPF = 0;
 	private boolean printItineraire;
 
-	private Cle knew = new Cle();
-	private Cle kold = new Cle();
-	private Cle tmp = new Cle();
+	private Key knew = new Key();
+	private Key kold = new Key();
+	private Key tmp = new Key();
 
 	/**
 	 * Constructeur, rien à dire
@@ -90,7 +90,7 @@ public final class DStarLite
 	 * @param s
 	 * @return
 	 */
-	private final Cle calcKey(DStarLiteNode s)
+	private final Key calcKey(DStarLiteNode s)
 	{
 		return calcKey(s, s.cle);
 	}
@@ -102,7 +102,7 @@ public final class DStarLite
 	 * @param copy
 	 * @return
 	 */
-	private final Cle calcKey(DStarLiteNode s, Cle copy)
+	private final Key calcKey(DStarLiteNode s, Key copy)
 	{
 		copy.set(Math.min(s.g, s.rhs), Math.min(s.g, s.rhs));
 		return copy;
@@ -420,7 +420,7 @@ public final class DStarLite
 
 	}
 
-	public synchronized Double heuristicDistance(Cinematique c)
+	public synchronized Double heuristicDistance(Kinematic c)
 	{
 		// TODO synchronized nécessaire ?
 		if(!statObs.isInsideSearchDomain(c.getPosition()))
@@ -452,7 +452,7 @@ public final class DStarLite
 	 * @param c
 	 * @return
 	 */
-	public synchronized Double heuristicOrientation(Cinematique c)
+	public synchronized Double heuristicOrientation(Kinematic c)
 	{
 		// TODO synchronized nécessaire ?
 		if(!statObs.isInsideSearchDomain(c.getPosition()))

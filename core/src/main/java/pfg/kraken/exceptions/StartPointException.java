@@ -26,5 +26,10 @@ public class StartPointException extends NoPathException
 	{
 		super(m);
 	}
+	
+	public StartPointException(String m, Throwable e)
+	{
+		super(m, e);
+	}	
 
 }

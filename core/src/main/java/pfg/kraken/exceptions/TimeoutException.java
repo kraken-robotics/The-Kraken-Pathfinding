@@ -27,4 +27,9 @@ public class TimeoutException extends NoPathException
 		super(m);
 	}
 
+	public TimeoutException(String m, Throwable e)
+	{
+		super(m, e);
+	}	
+
 }

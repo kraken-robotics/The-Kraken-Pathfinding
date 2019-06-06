@@ -24,9 +24,9 @@ import pfg.kraken.astar.tentacles.StaticTentacle;
 import pfg.kraken.astar.tentacles.Tentacle;
 import pfg.kraken.astar.tentacles.TentacleComputer;
 import pfg.kraken.astar.tentacles.TentacleType;
-import pfg.kraken.memory.CinemObsPool;
-import pfg.kraken.struct.Cinematique;
-import pfg.kraken.struct.CinematiqueObs;
+import pfg.kraken.memory.EmbodiedKinematicPool;
+import pfg.kraken.struct.Kinematic;
+import pfg.kraken.struct.EmbodiedKinematic;
 import pfg.kraken.struct.XY;
 import pfg.kraken.struct.XY_RW;
 import static pfg.kraken.astar.tentacles.Tentacle.*;
@@ -38,9 +38,9 @@ import static pfg.kraken.astar.tentacles.Tentacle.*;
  *
  */
 
-public final class ClothoidesComputer implements TentacleComputer
+public final class ClothoidComputer implements TentacleComputer
 {
-	private CinemObsPool memory;
+	private EmbodiedKinematicPool memory;
 	
 	private static class PosBigDecimal
 	{
@@ -54,7 +54,7 @@ public final class ClothoidesComputer implements TentacleComputer
 	private XY_RW[] delta;
 	private XY_RW[] centreCercle;
 	
-	public ClothoidesComputer(Config config, CinemObsPool memory)
+	public ClothoidComputer(Config config, EmbodiedKinematicPool memory)
 	{
 		this.memory = memory;
 		int indexThreadMax = config.getInt(ConfigInfoKraken.THREAD_NUMBER);
@@ -153,7 +153,7 @@ public final class ClothoidesComputer implements TentacleComputer
 
 	public void getTrajectoire(Tentacle depart, ClothoTentacle vitesse, StaticTentacle modified, int indexThread)
 	{
-		CinematiqueObs last = depart.getLast();
+		EmbodiedKinematic last = depart.getLast();
 		getTrajectoire(last.cinem, vitesse, modified, indexThread);
 	}
 
@@ -183,7 +183,7 @@ public final class ClothoidesComputer implements TentacleComputer
 	 * @param distance_mm
 	 * @return
 	 */
-	public final void getTrajectoire(Cinematique cinematiqueInitiale, ClothoTentacle vitesse, StaticTentacle modified, int indexThread)
+	public final void getTrajectoire(Kinematic cinematiqueInitiale, ClothoTentacle vitesse, StaticTentacle modified, int indexThread)
 	{
 		// modified.v = vitesse;
 		// log.debug(vitesse);
@@ -262,7 +262,7 @@ public final class ClothoidesComputer implements TentacleComputer
 	 * @param vitesse
 	 * @return
 	 */
-	public final DynamicTentacle getTrajectoireRamene(Cinematique cinematiqueInitiale, StraightingTentacle vitesseRamene, int indexThread)
+	public final DynamicTentacle getTrajectoireRamene(Kinematic cinematiqueInitiale, StraightingTentacle vitesseRamene, int indexThread)
 	{
 		double courbure = cinematiqueInitiale.courbureGeometrique;
 		double orientation = cinematiqueInitiale.orientationGeometrique;
@@ -312,7 +312,7 @@ public final class ClothoidesComputer implements TentacleComputer
 		// dernier point de l'arc t et le premier de l'arc t+1)
 		double sDepartPrecedent;
 		int i = 0;
-		List<CinematiqueObs> out = new ArrayList<CinematiqueObs>();
+		List<EmbodiedKinematic> out = new ArrayList<EmbodiedKinematic>();
 		while(true)
 		{
 			sDepartPrecedent = sDepart;
@@ -320,7 +320,7 @@ public final class ClothoidesComputer implements TentacleComputer
 			if(Math.abs(sDepart) > Math.abs(sDepartPrecedent)) // on vérifie la
 																// courbure
 				break;
-			CinematiqueObs obs = memory.getNewNode();
+			EmbodiedKinematic obs = memory.getNewNode();
 			out.add(obs);
 			computePoint(pointDepart, vitesse, sDepart, coeffMultiplicatif, i, baseOrientation, cos, sin, marcheAvant, cinematiqueInitiale.getPosition(), obs, indexThread);
 			i++;
@@ -348,7 +348,7 @@ public final class ClothoidesComputer implements TentacleComputer
 	 * @param positionInitiale : la position au début du mouvement
 	 * @param c : la cinématique modifiée
 	 */
-	private void computePoint(int pointDepart, ClothoTentacle vitesse, double sDepart, double coeffMultiplicatif, int i, double baseOrientation, double cos, double sin, boolean marcheAvant, XY positionInitiale, CinematiqueObs c, int indexThread)
+	private void computePoint(int pointDepart, ClothoTentacle vitesse, double sDepart, double coeffMultiplicatif, int i, double baseOrientation, double cos, double sin, boolean marcheAvant, XY positionInitiale, EmbodiedKinematic c, int indexThread)
 	{
 		trajectoire[pointDepart + vitesse.squaredRootVitesse * (i + 1)].copy(tmp[indexThread]);
 		tmp[indexThread].minus(trajectoire[pointDepart]).scalar(coeffMultiplicatif).Ysym(!vitesse.positif).rotate(cos, sin).plus(positionInitiale);
@@ -594,7 +594,7 @@ public final class ClothoidesComputer implements TentacleComputer
 	}*/
 
 	@Override
-	public boolean compute(final AStarNode current, TentacleType tentacleType, Cinematique arrival, AStarNode modified, int indexThread)
+	public boolean compute(final AStarNode current, TentacleType tentacleType, Kinematic arrival, AStarNode modified, int indexThread)
 	{
 		assert tentacleType instanceof ClothoTentacle : tentacleType;
 		

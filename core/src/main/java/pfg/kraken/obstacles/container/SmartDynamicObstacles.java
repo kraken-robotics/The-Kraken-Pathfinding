@@ -8,7 +8,7 @@ package pfg.kraken.obstacles.container;
 import java.util.ArrayList;
 import java.util.List;
 import pfg.kraken.obstacles.Obstacle;
-import pfg.kraken.struct.CinematiqueObs;
+import pfg.kraken.struct.EmbodiedKinematic;
 
 /**
  * A default dynamical obstacles manager
@@ -23,11 +23,11 @@ public abstract class SmartDynamicObstacles implements DynamicObstacles
 	protected abstract void addObstacle(Obstacle obs);
 
 	@Override
-	public synchronized int isThereCollision(CinematiqueObs[] l, int from, int to)
+	public synchronized int isThereCollision(EmbodiedKinematic[] l, int from, int to)
 	{
 		for(int i = from; i < to; i++)
 		{
-			CinematiqueObs c = l[i];
+			EmbodiedKinematic c = l[i];
 			for(Obstacle o : newObs)
 				if(o.isColliding(c.obstacle))
 				{

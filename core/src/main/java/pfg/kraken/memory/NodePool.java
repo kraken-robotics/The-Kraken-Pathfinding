@@ -21,9 +21,9 @@ import pfg.kraken.obstacles.RectangularObstacle;
 public final class NodePool extends MemoryPool<AStarNode>
 {
 	private RectangularObstacle vehicleTemplate;
-	private CinemObsPool pool;
+	private EmbodiedKinematicPool pool;
 
-	public NodePool(Config config, RectangularObstacle vehicleTemplate, CinemObsPool pool)
+	public NodePool(Config config, RectangularObstacle vehicleTemplate, EmbodiedKinematicPool pool)
 	{
 		super(AStarNode.class);
 		this.pool = pool;

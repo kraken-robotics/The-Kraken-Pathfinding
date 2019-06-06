@@ -27,4 +27,9 @@ public class NoPathException extends PathfindingException
 		super(m);
 	}
 
+	public NoPathException(String m, Throwable e)
+	{
+		super(m, e);
+	}	
+
 }

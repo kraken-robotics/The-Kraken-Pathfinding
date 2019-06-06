@@ -9,7 +9,7 @@ import java.awt.Color;
 import pfg.kraken.astar.DirectionStrategy;
 import pfg.kraken.astar.tentacles.TentacleComputer;
 import pfg.kraken.astar.tentacles.TentacleType;
-import pfg.kraken.struct.Cinematique;
+import pfg.kraken.struct.Kinematic;
 
 /**
  * Arc où le robot tourne sur lui-même
@@ -40,7 +40,7 @@ public enum SpinTentacle implements TentacleType
 	}
 
 	@Override
-	public boolean isAcceptable(Cinematique c, DirectionStrategy directionstrategyactuelle, double courbureMax)
+	public boolean isAcceptable(Kinematic c, DirectionStrategy directionstrategyactuelle, double courbureMax)
 	{
 		return true;
 	}

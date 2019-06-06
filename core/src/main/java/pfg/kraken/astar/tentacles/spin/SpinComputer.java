@@ -13,9 +13,9 @@ import pfg.kraken.astar.AStarNode;
 import pfg.kraken.astar.tentacles.DynamicTentacle;
 import pfg.kraken.astar.tentacles.TentacleComputer;
 import pfg.kraken.astar.tentacles.TentacleType;
-import pfg.kraken.memory.CinemObsPool;
-import pfg.kraken.struct.Cinematique;
-import pfg.kraken.struct.CinematiqueObs;
+import pfg.kraken.memory.EmbodiedKinematicPool;
+import pfg.kraken.struct.Kinematic;
+import pfg.kraken.struct.EmbodiedKinematic;
 
 /**
  * A simple computer
@@ -25,26 +25,26 @@ import pfg.kraken.struct.CinematiqueObs;
 
 public final class SpinComputer implements TentacleComputer
 {
-	private CinemObsPool memory;
+	private EmbodiedKinematicPool memory;
 	private double rootedMaxAcceleration;
 	
-	public SpinComputer(CinemObsPool memory, Config config)
+	public SpinComputer(EmbodiedKinematicPool memory, Config config)
 	{
 		this.memory = memory;
 		rootedMaxAcceleration = Math.sqrt(config.getDouble(ConfigInfoKraken.MAX_LATERAL_ACCELERATION));
 	}
 	
 	@Override
-	public boolean compute(AStarNode current, TentacleType tentacleType, Cinematique arrival, AStarNode modified, int indexThread)
+	public boolean compute(AStarNode current, TentacleType tentacleType, Kinematic arrival, AStarNode modified, int indexThread)
 	{
 		assert tentacleType instanceof SpinTentacle : tentacleType;
 	
 		SpinTentacle t = (SpinTentacle) tentacleType;
 		
-		List<CinematiqueObs> l = new ArrayList<CinematiqueObs>();
-		CinematiqueObs c = memory.getNewNode();
+		List<EmbodiedKinematic> l = new ArrayList<EmbodiedKinematic>();
+		EmbodiedKinematic c = memory.getNewNode();
 		
-		Cinematique cinemInitiale = current.cinematique;
+		Kinematic cinemInitiale = current.cinematique;
 		c.update(cinemInitiale.getX(),
 				cinemInitiale.getY(),
 				t.angle,

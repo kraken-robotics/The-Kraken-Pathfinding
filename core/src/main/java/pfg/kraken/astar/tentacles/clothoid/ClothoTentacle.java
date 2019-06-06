@@ -8,7 +8,7 @@ package pfg.kraken.astar.tentacles.clothoid;
 import pfg.kraken.astar.DirectionStrategy;
 import pfg.kraken.astar.tentacles.TentacleComputer;
 import pfg.kraken.astar.tentacles.TentacleType;
-import pfg.kraken.struct.Cinematique;
+import pfg.kraken.struct.Kinematic;
 import static pfg.kraken.astar.tentacles.Tentacle.*;
 
 import java.awt.Color;
@@ -51,7 +51,7 @@ public enum ClothoTentacle implements TentacleType
 	public final boolean rebrousse;
 	public final boolean arret;
 	public double maxSpeed; // en m.s⁻¹
-	public static ClothoidesComputer computer;
+	public static ClothoidComputer computer;
 
 	private ClothoTentacle(int vitesse)
 	{
@@ -69,7 +69,7 @@ public enum ClothoTentacle implements TentacleType
 	}
 
 	@Override
-	public boolean isAcceptable(Cinematique c, DirectionStrategy directionstrategyactuelle, double courbureMax)
+	public boolean isAcceptable(Kinematic c, DirectionStrategy directionstrategyactuelle, double courbureMax)
 	{
 
 		// il y a un problème si :

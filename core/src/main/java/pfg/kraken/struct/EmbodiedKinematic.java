@@ -18,9 +18,9 @@ import pfg.kraken.obstacles.RectangularObstacle;
  *
  */
 
-public final class CinematiqueObs implements Memorizable, Serializable
+public final class EmbodiedKinematic implements Memorizable, Serializable
 {
-	public final Cinematique cinem;
+	public final Kinematic cinem;
 	private static final long serialVersionUID = 1L;
 	public volatile RectangularObstacle obstacle;
 	public volatile double maxSpeed; // in m/s
@@ -32,14 +32,14 @@ public final class CinematiqueObs implements Memorizable, Serializable
 		return super.toString()+", maxSpeed = "+maxSpeed;
 	}
 	
-	public CinematiqueObs(RectangularObstacle vehicleTemplate)
+	public EmbodiedKinematic(RectangularObstacle vehicleTemplate)
 	{
-		cinem = new Cinematique();
+		cinem = new Kinematic();
 		obstacle = vehicleTemplate.clone();
 		maxSpeed = -1;
 	}
 
-	public void copy(CinematiqueObs autre)
+	public void copy(EmbodiedKinematic autre)
 	{
 		cinem.copy(autre.cinem);
 		autre.maxSpeed = maxSpeed;
@@ -92,9 +92,9 @@ public final class CinematiqueObs implements Memorizable, Serializable
 	}
 	
 	@Override
-	public CinematiqueObs clone()
+	public EmbodiedKinematic clone()
 	{
-		CinematiqueObs out = new CinematiqueObs(obstacle);
+		EmbodiedKinematic out = new EmbodiedKinematic(obstacle);
 		copy(out);
 		return out;
 	}

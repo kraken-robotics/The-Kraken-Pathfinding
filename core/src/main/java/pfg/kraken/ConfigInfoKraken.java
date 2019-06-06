@@ -51,6 +51,7 @@ public enum ConfigInfoKraken implements ConfigInfo
 	/**
 	 * Research and mechanical parameter
 	 */
+	ALLOW_BACKWARD_MOTION(true), // allow the pathfinding to find a path with backward motion by default
 	MAX_CURVATURE_DERIVATIVE(5), // maximal curvature derivative, in m⁻¹s⁻¹
 	MAX_LATERAL_ACCELERATION(3), // maximal lateral acceleration, in m/s²
 	DEFAULT_MAX_SPEED(1), // in m/s (or mm/ms)
@@ -87,9 +88,7 @@ public enum ConfigInfoKraken implements ConfigInfo
 	GRAPHIC_ROBOT_COLLISION(false), // affiche les obstacles du robot lors de la
 									// vérification des collisions
 //	GRAPHIC_ROBOT_AND_SENSORS(true), // affiche le robot et ses capteurs
-	GRAPHIC_NAVMESH(false), // show the navmesh ?
-
-	ALLOW_BACKWARD_MOTION(true); // allow the pathfinding to find a path with backward motion by default
+	GRAPHIC_NAVMESH(false); // show the navmesh ?
 
 	private Object defaultValue;
 	public volatile boolean uptodate;

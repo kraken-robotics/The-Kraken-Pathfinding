@@ -28,12 +28,12 @@ import pfg.kraken.exceptions.NotInitializedPathfindingException;
 import pfg.kraken.exceptions.PathfindingException;
 import pfg.kraken.exceptions.StartPointException;
 import pfg.kraken.exceptions.TimeoutException;
-import pfg.kraken.memory.CinemObsPool;
+import pfg.kraken.memory.EmbodiedKinematicPool;
 import pfg.kraken.memory.MemoryPool.MemPoolState;
 import pfg.kraken.memory.NodePool;
 import pfg.kraken.obstacles.RectangularObstacle;
-import pfg.kraken.struct.Cinematique;
-import pfg.kraken.struct.CinematiqueObs;
+import pfg.kraken.struct.Kinematic;
+import pfg.kraken.struct.EmbodiedKinematic;
 import pfg.kraken.struct.ItineraryPoint;
 import pfg.kraken.struct.XY;
 import static pfg.kraken.astar.tentacles.Tentacle.*;
@@ -75,7 +75,7 @@ public final class TentacularAStar
 	 */
 	private AStarNode depart;
 	
-	private Cinematique arrival = new Cinematique();
+	private Kinematic arrival = new Kinematic();
 	
 	/*
 	 * The last node of a path that has been found (but better routes are expected)
@@ -85,7 +85,7 @@ public final class TentacularAStar
 	/*
 	 * Memory pool of obstacles
 	 */
-	private CinemObsPool cinemMemory;
+	private EmbodiedKinematicPool cinemMemory;
 	
 	/*
 	 * Just a path container
@@ -170,7 +170,7 @@ public final class TentacularAStar
 	/**
 	 * Constructeur du AStarCourbe
 	 */
-	public TentacularAStar(PhysicsEngine engine, DynamicPath defaultChemin, DStarLite dstarlite, TentacleManager arcmanager, NodePool memorymanager, CinemObsPool rectMemory, Display buffer, Config config, RectangularObstacle vehicleTemplate)
+	public TentacularAStar(PhysicsEngine engine, DynamicPath defaultChemin, DStarLite dstarlite, TentacleManager arcmanager, NodePool memorymanager, EmbodiedKinematicPool rectMemory, Display buffer, Config config, RectangularObstacle vehicleTemplate)
 	{
 		this.engine = engine;
 		this.chemin = defaultChemin;
@@ -210,7 +210,7 @@ public final class TentacularAStar
 		return chemin.endSearchWithoutPlanning();
 	}
 	
-	private Cinematique tmp = new Cinematique();
+	private Kinematic tmp = new Kinematic();
 	private List<RectangularObstacle> initialObstacles = new ArrayList<RectangularObstacle>();
 
 	public void checkAfterInitialization(List<ItineraryPoint> initialPath) throws InvalidPathException
@@ -521,7 +521,7 @@ public final class TentacularAStar
 			System.out.println("Number of expanded nodes : "+nbExpandedNodes);
 		}
 
-		LinkedList<CinematiqueObs> trajectory = arcmanager.reconstruct(best, nbPointsMax);
+		LinkedList<EmbodiedKinematic> trajectory = arcmanager.reconstruct(best, nbPointsMax);
 		
 		assert trajectory.size() <= nbPointsMax : trajectory.size()+" "+nbPointsMax;
 		chemin.addToEnd(trajectory, partial);
@@ -535,7 +535,7 @@ public final class TentacularAStar
 	 * @param shoot
 	 * @throws NoPathException 
 	 */
-	public void initializeNewSearch(Cinematique start, Cinematique arrival, DirectionStrategy directionstrategy, String mode, Double maxSpeed, Integer timeout) throws NoPathException
+	public void initializeNewSearch(Kinematic start, Kinematic arrival, DirectionStrategy directionstrategy, String mode, Double maxSpeed, Integer timeout) throws NoPathException
 	{
 		stop = false;
 		initialized = true;
@@ -586,7 +586,7 @@ public final class TentacularAStar
 	 * @throws PathfindingException
 	 * @throws InterruptedException
 	 */
-	public void updatePath(Cinematique lastValid) throws PathfindingException
+	public void updatePath(Kinematic lastValid) throws PathfindingException
 	{
 		stop = false;
 		assert chemin.needReplanning();
