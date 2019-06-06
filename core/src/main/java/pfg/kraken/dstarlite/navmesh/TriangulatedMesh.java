@@ -14,9 +14,9 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import pfg.kraken.display.ColorKraken;
 import pfg.kraken.display.Display;
 import pfg.kraken.display.Layer;
-import pfg.kraken.ColorKraken;
 
 /**
  * The mesh itself

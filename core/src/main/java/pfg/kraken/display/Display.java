@@ -15,9 +15,9 @@ public interface Display extends ImageObserver
 	public boolean removePrintable(Printable o);
 	
 
-	public XY getCurrentCoinHautDroite();
+	public XY getCurrentTopRightCorner();
 	
-	public XY getCurrentCoinBasGauche();
+	public XY getCurrentBottomLeftCorner();
 	
 	public int distanceXtoWindow(int dist);
 

@@ -24,7 +24,7 @@ import pfg.kraken.exceptions.EndPointException;
 import pfg.kraken.exceptions.InvalidPathException;
 import pfg.kraken.exceptions.NoPathException;
 import pfg.kraken.exceptions.NotFastEnoughException;
-import pfg.kraken.exceptions.NotInitializedPathfindingException;
+import pfg.kraken.exceptions.NotInitializedException;
 import pfg.kraken.exceptions.PathfindingException;
 import pfg.kraken.exceptions.StartPointException;
 import pfg.kraken.exceptions.TimeoutException;
@@ -259,7 +259,7 @@ public final class TentacularAStar
 	private final synchronized void search() throws PathfindingException
 	{
 		if(!initialized)
-			throw new NotInitializedPathfindingException("Search not initialized !");
+			throw new NotInitializedException("Search not initialized !");
 
 		trajetDeSecours = null;
 		depart.parent = null;

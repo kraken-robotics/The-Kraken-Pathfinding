@@ -10,8 +10,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-import pfg.kraken.ColorKraken;
+import pfg.kraken.display.ColorKraken;
 import pfg.kraken.display.Display;
 import pfg.kraken.display.Printable;
 import pfg.kraken.obstacles.Obstacle;

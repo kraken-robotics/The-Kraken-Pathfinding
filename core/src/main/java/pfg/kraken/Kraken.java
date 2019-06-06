@@ -36,7 +36,7 @@ import pfg.kraken.astar.tentacles.spin.SpinComputer;
 import pfg.kraken.astar.tentacles.spin.SpinTentacle;
 import pfg.kraken.display.Display;
 import pfg.kraken.exceptions.NoPathException;
-import pfg.kraken.exceptions.NotInitializedPathfindingException;
+import pfg.kraken.exceptions.NotInitializedException;
 import pfg.kraken.exceptions.PathfindingException;
 import pfg.kraken.obstacles.Obstacle;
 import pfg.kraken.obstacles.RectangularObstacle;
@@ -166,7 +166,7 @@ public final class Kraken
 		if(!autoReplanningEnable)
 			astar.initializeNewSearch(sp.start, sp.arrival, sp.directionstrategy, sp.mode, sp.maxSpeed, sp.timeout);
 		else
-			throw new NotInitializedPathfindingException("initializeNewSearch() should be called before enabling the autoreplanning mode.");
+			throw new NotInitializedException("initializeNewSearch() should be called before enabling the autoreplanning mode.");
 	}
 	
 	/**
@@ -179,7 +179,7 @@ public final class Kraken
 		if(!autoReplanningEnable)
 			return astar.searchWithoutReplanning();
 		else
-			throw new NotInitializedPathfindingException("search() isn't permitted in autoreplanning mode.");
+			throw new NotInitializedException("search() isn't permitted in autoreplanning mode.");
 	}
 	
 	/**
@@ -238,7 +238,7 @@ public final class Kraken
 			if(dpath.isStarted())
 				try {
 					endContinuousSearch();
-				} catch (NotInitializedPathfindingException e) {
+				} catch (NotInitializedException e) {
 					e.printStackTrace();
 				}
 			injector.getExistingService(CollisionDetectionThread.class).interrupt();
@@ -250,37 +250,37 @@ public final class Kraken
 	public void startContinuousSearchWithInitialPath(SearchParameters sp, List<ItineraryPoint> initialPath) throws PathfindingException
 	{
 		if(dpath.isStarted())
-			throw new NotInitializedPathfindingException("You should end the previous continuous search before starting a new one.");
+			throw new NotInitializedException("You should end the previous continuous search before starting a new one.");
 		else if(autoReplanningEnable)
 		{
 			astar.initializeNewSearch(sp.start, sp.arrival, sp.directionstrategy, sp.mode, sp.maxSpeed, sp.timeout);
 			astar.searchWithReplanningAndInitialPath(initialPath);
 		}
 		else
-			throw new NotInitializedPathfindingException("You should enable the continuous search before starting it.");
+			throw new NotInitializedException("You should enable the continuous search before starting it.");
 	}
 
 	public void startContinuousSearch(SearchParameters sp) throws PathfindingException
 	{
 		if(dpath.isStarted())
-			throw new NotInitializedPathfindingException("You should end the previous continuous search before starting a new one.");
+			throw new NotInitializedException("You should end the previous continuous search before starting a new one.");
 		else if(autoReplanningEnable)
 		{
 			astar.initializeNewSearch(sp.start, sp.arrival, sp.directionstrategy, sp.mode, sp.maxSpeed, sp.timeout);
 			dpath.startContinuousSearch();
 		}
 		else
-			throw new NotInitializedPathfindingException("You should enable the continuous search before starting it.");
+			throw new NotInitializedException("You should enable the continuous search before starting it.");
 	}
 
-	public void endContinuousSearch() throws NotInitializedPathfindingException
+	public void endContinuousSearch() throws NotInitializedException
 	{
 		if(!dpath.isStarted())
-			throw new NotInitializedPathfindingException("");
+			throw new NotInitializedException("");
 		else if(autoReplanningEnable)
 			dpath.endContinuousSearch();
 		else
-			throw new NotInitializedPathfindingException("You should enable the continuous search before starting it.");
+			throw new NotInitializedException("You should enable the continuous search before starting it.");
 	}
 	
 	/**

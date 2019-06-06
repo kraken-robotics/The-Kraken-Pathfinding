@@ -4,10 +4,9 @@
  */
 
 
-package pfg.kraken;
+package pfg.kraken.display;
 
 import java.awt.Color;
-import pfg.kraken.display.Layer;
 
 /**
  * Some predefined colors used by Kraken

@@ -12,22 +12,22 @@ package pfg.kraken.exceptions;
  *
  */
 
-public class NotInitializedPathfindingException extends PathfindingException
+public class NotInitializedException extends PathfindingException
 {
 
 	private static final long serialVersionUID = -960091158805232282L;
 
-	public NotInitializedPathfindingException()
+	public NotInitializedException()
 	{
 		super();
 	}
 
-	public NotInitializedPathfindingException(String m)
+	public NotInitializedException(String m)
 	{
 		super(m);
 	}
 
-	public NotInitializedPathfindingException(String m, Throwable e)
+	public NotInitializedException(String m, Throwable e)
 	{
 		super(m, e);
 	}	

@@ -14,7 +14,7 @@ import org.junit.Test;
 import pfg.kraken.astar.DirectionStrategy;
 import pfg.kraken.astar.TentacularAStar;
 import pfg.kraken.exceptions.NoPathException;
-import pfg.kraken.exceptions.NotInitializedPathfindingException;
+import pfg.kraken.exceptions.NotInitializedException;
 import pfg.kraken.obstacles.Obstacle;
 import pfg.kraken.obstacles.RectangularObstacle;
 import pfg.kraken.struct.Kinematic;
@@ -70,7 +70,7 @@ public class Test_Search extends JUnit_Test
 		pathfinding.searchWithoutReplanning();
 	}
 	
-	@Test(expected=NotInitializedPathfindingException.class)
+	@Test(expected=NotInitializedException.class)
 	public void test_no_initialization() throws Exception
 	{
 		pathfinding.searchWithoutReplanning();
