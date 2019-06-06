@@ -70,7 +70,7 @@ public class Test_Multithreading extends JUnit_Test
 			{
 				System.out.println(p);
 				if(previous != null)
-					Assert.assertTrue((previous.x - p.x) * (previous.x - p.x) + (previous.y - p.y) * (previous.y - p.y) <= 27*27);
+					Assert.assertTrue((previous.x - p.x) * (previous.x - p.x) + (previous.y - p.y) * (previous.y - p.y) <= 30*30);
 				previous = p;
 			}
 		}

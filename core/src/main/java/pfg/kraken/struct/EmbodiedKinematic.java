@@ -29,7 +29,7 @@ public final class EmbodiedKinematic implements Memorizable, Serializable
 	
 	public String toString()
 	{
-		return super.toString()+", maxSpeed = "+maxSpeed;
+		return cinem.toString()+", maxSpeed = "+maxSpeed;
 	}
 	
 	public EmbodiedKinematic(RectangularObstacle vehicleTemplate)
