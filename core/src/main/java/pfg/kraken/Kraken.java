@@ -44,7 +44,6 @@ import pfg.kraken.obstacles.container.DynamicObstacles;
 import pfg.kraken.obstacles.container.EmptyDynamicObstacles;
 import pfg.kraken.obstacles.container.StaticObstacles;
 import pfg.kraken.struct.ItineraryPoint;
-import pfg.kraken.struct.XY;
 
 /**
  * The API of the Kraken pathfinding
@@ -62,18 +61,9 @@ public final class Kraken
 	private boolean autoReplanningEnable = false;
 	
 	/**
-	 * Get Kraken with :
-	 * @param vehicleTemplate : the shape of the vehicle
-	 * @param fixedObstacles : a list of fixed/permanent obstacles
-	 * @param bottomLeftCorner : the bottom left corner of the search domain
-	 * @param topRightCorner : the top right corner of the search domain
-	 * @param configprofile : the config profiles
+	 * Get Kraken with the some parameters
+	 * @param param
 	 */
-	public Kraken(RectangularObstacle vehicleTemplate, Iterable<Obstacle> fixedObstacles, XY bottomLeftCorner, XY topRightCorner, String configfile, String...profiles)
-	{
-		this(new KrakenParameters(vehicleTemplate, fixedObstacles, bottomLeftCorner, topRightCorner, configfile, profiles));
-	}
-
 	public Kraken(KrakenParameters param)
 	{
 		injector = new Injector();
@@ -102,10 +92,9 @@ public final class Kraken
 			
 			injector.addService(config);
 			injector.addService(DynamicObstacles.class, param.dynObs);		
-			injector.addService(injector);
 
 			if(param.engine != null)
-				injector.addService(param.engine);
+				injector.addService(PhysicsEngine.class, param.engine);
 			else if(config.getBoolean(ConfigInfoKraken.ENABLE_QUADTREE))
 				injector.addService(PhysicsEngine.class, injector.getService(QuadTreePhysicsEngine.class));
 			else

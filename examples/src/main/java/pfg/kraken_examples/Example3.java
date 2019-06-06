@@ -50,14 +50,16 @@ public class Example3
 		for(Obstacle o : obs)
 			display.addPrintable(o, Color.BLACK, Layer.MIDDLE.layer);
 		
-		KrakenParameters kp = new KrakenParameters(robot, obs, new XY(-1500,0), new XY(1500, 2000), "kraken-examples.conf", "trajectory"/*, "detailed"*/);
+		KrakenParameters kp = new KrakenParameters(robot, new XY(-1500,0), new XY(1500, 2000), "kraken-examples.conf", "trajectory"/*, "detailed"*/);
+		kp.setFixedObstacles(obs);
 		kp.setDisplay(display);
 		Kraken kraken = new Kraken(kp);
 		/*
 		 * You can perfectly use two instances of Kraken (for example if two robots have different size)
 		 */
 		RectangularObstacle secondRobot = new RectangularObstacle(20, 20, 20, 20); 
-		KrakenParameters kp2 = new KrakenParameters(secondRobot, obs, new XY(-1500,0), new XY(1500, 2000), "kraken-examples.conf", "trajectory"/*, "detailed"*/);
+		KrakenParameters kp2 = new KrakenParameters(secondRobot, new XY(-1500,0), new XY(1500, 2000), "kraken-examples.conf", "trajectory"/*, "detailed"*/);
+		kp2.setFixedObstacles(obs);
 		kp2.setDisplay(display);
 		Kraken krakenSecondRobot = new Kraken(kp2);
 

@@ -53,7 +53,8 @@ public class Example7
 		for(Obstacle o : obs)
 			display.addPrintable(o, Color.BLACK, Layer.MIDDLE.layer);
 		
-		KrakenParameters kp = new KrakenParameters(robot, obs, new XY(-1500,0), new XY(1500, 2000), "kraken-examples.conf", "trajectory"/*, "detailed"*/);
+		KrakenParameters kp = new KrakenParameters(robot, new XY(-1500,0), new XY(1500, 2000), "kraken-examples.conf", "trajectory"/*, "detailed"*/);
+		kp.setFixedObstacles(obs);
 		kp.setDisplay(display);
 		kp.setDynamicObstacle(obsDyn);
 		Kraken kraken = new Kraken(kp);

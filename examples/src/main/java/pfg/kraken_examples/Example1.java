@@ -78,7 +78,8 @@ public class Example1
 		 * We restrain the search domain to the rectangle -1500 < x < 1500, 0 < y < 2000
 		 * You can uncomment the "detailed" profile to display the underneath pathfinder.
 		 */
-		KrakenParameters kp = new KrakenParameters(robot, obs, new XY(-1500,0), new XY(1500, 2000), "kraken-examples.conf", "trajectory"/*, "detailed"*/);
+		KrakenParameters kp = new KrakenParameters(robot, new XY(-1500,0), new XY(1500, 2000), "kraken-examples.conf", "trajectory"/*, "detailed"*/);
+		kp.setFixedObstacles(obs);
 		kp.setDisplay(display);
 		Kraken kraken = new Kraken(kp);
 

@@ -66,7 +66,8 @@ public class ExampleEurobot2018
 		for(Obstacle o : obs)
 			display.addPrintable(o, Color.BLACK, Layer.MIDDLE.layer);
 		
-		KrakenParameters kp = new KrakenParameters(robot, obs, new XY(-1500,0), new XY(1500, 2000), "kraken-examples.conf", "eurobot2018", "trajectory"/*, "detailed"*/);
+		KrakenParameters kp = new KrakenParameters(robot, new XY(-1500,0), new XY(1500, 2000), "kraken-examples.conf", "eurobot2018", "trajectory"/*, "detailed"*/);
+		kp.setFixedObstacles(obs);
 		kp.setDisplay(display);
 		Kraken kraken = new Kraken(kp);
 		
