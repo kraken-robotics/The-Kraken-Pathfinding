@@ -1,4 +1,6 @@
 # Unreleased
+- Penalty to high curvature in order to promote straighter path (config: CURVATURE_PENALTY)
+- New example: Eurobot 2019
 
 # v2.0.0
 - API change
