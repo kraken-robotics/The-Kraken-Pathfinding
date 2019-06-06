@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2018 Pierre-François Gimenez
+ * Copyright (C) 2013-2019 Pierre-François Gimenez
  * Distributed under the MIT License.
  */
 
@@ -21,12 +21,10 @@ import pfg.config.Config;
 import pfg.injector.Injector;
 import pfg.kraken.ConfigInfoKraken;
 import pfg.kraken.Kraken;
-import pfg.kraken.LogCategoryKraken;
 import pfg.kraken.obstacles.CircularObstacle;
 import pfg.kraken.obstacles.Obstacle;
 import pfg.kraken.obstacles.RectangularObstacle;
-import pfg.kraken.utils.XY;
-import pfg.log.Log;
+import pfg.kraken.struct.XY;
 
 /**
  * Classe mère de tous les tests.
@@ -40,7 +38,6 @@ import pfg.log.Log;
 public abstract class JUnit_Test
 {
 	protected Config config;
-	protected Log log;
 	protected Injector injector;
 	protected Kraken kraken;
 	
@@ -100,7 +97,9 @@ public abstract class JUnit_Test
 
 		RectangularObstacle robot = new RectangularObstacle(250, 80, 110, 110);
 
-		kraken = new Kraken(robot, obs, new XY(-1500,0), new XY(1500, 2000), "kraken-test.conf", profiles);
+		KrakenParameters kp = new KrakenParameters(robot, new XY(-1500,0), new XY(1500, 2000), "kraken-test.conf", profiles);
+		kp.setFixedObstacles(obs);
+		kraken = new Kraken(kp);
 		init(kraken);
 	}
 	
@@ -110,9 +109,7 @@ public abstract class JUnit_Test
 		m.setAccessible(true);
 		injector = (Injector) m.invoke(kraken);
 		config = injector.getService(Config.class);
-		log = injector.getService(Log.class);
-		log.write("Test unitaire : " + testName.getMethodName(), LogCategoryKraken.TEST);
-		
+		System.out.println("Test unitaire : " + testName.getMethodName());
 	}
 	
 	public void setUpWith(List<Obstacle> fixedObstacles, String... profiles) throws Exception
@@ -120,7 +117,9 @@ public abstract class JUnit_Test
 		System.out.println("----- TEST START : " + testName.getMethodName() + " -----");
 		RectangularObstacle robot = new RectangularObstacle(250, 80, 110, 110, 0); 
 
-		kraken = new Kraken(robot, fixedObstacles, new XY(-1500, 0), new XY(1500, 2000), "kraken-test.conf", profiles);
+		KrakenParameters kp = new KrakenParameters(robot, new XY(-1500,0), new XY(1500, 2000), "kraken-test.conf", profiles);
+		kp.setFixedObstacles(fixedObstacles);
+		kraken = new Kraken(kp);
 		init(kraken);
 	}
 

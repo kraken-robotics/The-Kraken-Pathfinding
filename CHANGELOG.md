@@ -1,5 +1,10 @@
 # Unreleased
 
+# v2.0.0
+- API change
+- Some missing translations
+- Remove the "log" dependency
+
 # v1.4.6
 - New "KrakenParameters" class to easily handle the initialization parameters
 - QuadTree physics engine

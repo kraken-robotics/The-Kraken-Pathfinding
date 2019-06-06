@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2018 Pierre-François Gimenez
+ * Copyright (C) 2013-2019 Pierre-François Gimenez
  * Distributed under the MIT License.
  */
 
@@ -9,7 +9,7 @@ import java.awt.Graphics;
 import pfg.kraken.display.Display;
 import pfg.kraken.display.Printable;
 import pfg.kraken.dstarlite.navmesh.NavmeshNode;
-import pfg.kraken.utils.XY_RW;
+import pfg.kraken.struct.XY_RW;
 
 /**
  * Un nœud du D* Lite.
@@ -23,7 +23,7 @@ public final class DStarLiteNode implements Printable
 	private static final long serialVersionUID = -6800876007134374180L;
 	public final NavmeshNode node;
 	public int bestVoisin;
-	public final Cle cle = new Cle();
+	public final Key cle = new Key();
 	public int g = Integer.MAX_VALUE, rhs = Integer.MAX_VALUE;
 	public Double heuristiqueOrientation = null;
 	public int indexPriorityQueue;

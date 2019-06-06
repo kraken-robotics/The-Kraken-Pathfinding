@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2018 Pierre-François Gimenez
+ * Copyright (C) 2013-2019 Pierre-François Gimenez
  * Distributed under the MIT License.
  */
 
@@ -9,9 +9,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import pfg.config.Config;
+import pfg.kraken.display.ColorKraken;
 import pfg.kraken.display.Display;
 import pfg.kraken.display.Layer;
-import pfg.kraken.ColorKraken;
 import pfg.kraken.ConfigInfoKraken;
 import pfg.kraken.dstarlite.navmesh.Navmesh;
 import pfg.kraken.dstarlite.navmesh.NavmeshEdge;
@@ -20,10 +20,9 @@ import pfg.kraken.exceptions.NoPathException;
 import pfg.kraken.obstacles.Obstacle;
 import pfg.kraken.obstacles.container.DynamicObstacles;
 import pfg.kraken.obstacles.container.StaticObstacles;
-import pfg.kraken.robot.Cinematique;
-import pfg.kraken.utils.XY;
-import pfg.kraken.utils.XYO;
-import pfg.log.Log;
+import pfg.kraken.struct.Kinematic;
+import pfg.kraken.struct.XY;
+import pfg.kraken.struct.XYO;
 
 /**
  * Recherche de chemin avec replanification rapide.
@@ -39,7 +38,6 @@ import pfg.log.Log;
 
 public final class DStarLite
 {
-	protected Log log;
 	private Navmesh navmesh;
 	private boolean graphicHeuristique;
 	private DynamicObstacles dynObs;
@@ -58,9 +56,9 @@ public final class DStarLite
 	private long nbPF = 0;
 	private boolean printItineraire;
 
-	private Cle knew = new Cle();
-	private Cle kold = new Cle();
-	private Cle tmp = new Cle();
+	private Key knew = new Key();
+	private Key kold = new Key();
+	private Key tmp = new Key();
 
 	/**
 	 * Constructeur, rien à dire
@@ -68,9 +66,8 @@ public final class DStarLite
 	 * @param log
 	 * @param gridspace
 	 */
-	public DStarLite(Log log, Navmesh navmesh, Display buffer, Config config, DynamicObstacles dynObs, StaticObstacles statObs)
+	public DStarLite(Navmesh navmesh, Display buffer, Config config, DynamicObstacles dynObs, StaticObstacles statObs)
 	{
-		this.log = log;
 		this.navmesh = navmesh;
 		this.buffer = buffer;
 		this.dynObs = dynObs;
@@ -93,7 +90,7 @@ public final class DStarLite
 	 * @param s
 	 * @return
 	 */
-	private final Cle calcKey(DStarLiteNode s)
+	private final Key calcKey(DStarLiteNode s)
 	{
 		return calcKey(s, s.cle);
 	}
@@ -105,7 +102,7 @@ public final class DStarLite
 	 * @param copy
 	 * @return
 	 */
-	private final Cle calcKey(DStarLiteNode s, Cle copy)
+	private final Key calcKey(DStarLiteNode s, Key copy)
 	{
 		copy.set(Math.min(s.g, s.rhs), Math.min(s.g, s.rhs));
 		return copy;
@@ -423,7 +420,7 @@ public final class DStarLite
 
 	}
 
-	public synchronized Double heuristicDistance(Cinematique c)
+	public synchronized Double heuristicDistance(Kinematic c)
 	{
 		// TODO synchronized nécessaire ?
 		if(!statObs.isInsideSearchDomain(c.getPosition()))
@@ -455,7 +452,7 @@ public final class DStarLite
 	 * @param c
 	 * @return
 	 */
-	public synchronized Double heuristicOrientation(Cinematique c)
+	public synchronized Double heuristicOrientation(Kinematic c)
 	{
 		// TODO synchronized nécessaire ?
 		if(!statObs.isInsideSearchDomain(c.getPosition()))

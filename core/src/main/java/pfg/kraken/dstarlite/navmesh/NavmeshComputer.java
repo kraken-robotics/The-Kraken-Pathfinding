@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2018 Pierre-François Gimenez
+ * Copyright (C) 2013-2019 Pierre-François Gimenez
  * Distributed under the MIT License.
  */
 
@@ -17,8 +17,7 @@ import pfg.kraken.ConfigInfoKraken;
 import pfg.kraken.obstacles.Obstacle;
 import pfg.kraken.obstacles.RectangularObstacle;
 import pfg.kraken.obstacles.container.StaticObstacles;
-import pfg.kraken.utils.XY;
-import pfg.log.Log;
+import pfg.kraken.struct.XY;
 
 /**
  * A navmesh computer
@@ -45,8 +44,6 @@ public final class NavmeshComputer
 			return o2.length - o1.length;
 		}
 	}
-	
-	protected Log log;
 
 	private LinkedList<NavmeshEdge> needFlipCheck;
 	private PriorityQueue<NavmeshTriangle> triangles;
@@ -56,9 +53,8 @@ public final class NavmeshComputer
 	private int expansion;
 	private int largestAllowedArea, longestAllowedLength;
 	
-	public NavmeshComputer(Log log, Config config)
+	public NavmeshComputer(Config config)
 	{
-		this.log = log;
 		expansion = config.getInt(ConfigInfoKraken.NAVMESH_OBSTACLE_DILATATION);
 		largestAllowedArea = config.getInt(ConfigInfoKraken.LARGEST_TRIANGLE_AREA_IN_NAVMESH);
 		longestAllowedLength = config.getInt(ConfigInfoKraken.LONGEST_EDGE_IN_NAVMESH)*1000; // converting mm to µm

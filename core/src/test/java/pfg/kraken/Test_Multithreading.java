@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2018 Pierre-François Gimenez
+ * Copyright (C) 2013-2019 Pierre-François Gimenez
  * Distributed under the MIT License.
  */
 
@@ -17,10 +17,10 @@ import pfg.kraken.exceptions.PathfindingException;
 import pfg.kraken.obstacles.CircularObstacle;
 import pfg.kraken.obstacles.Obstacle;
 import pfg.kraken.obstacles.RectangularObstacle;
-import pfg.kraken.robot.ItineraryPoint;
-import pfg.kraken.utils.XY;
-import pfg.kraken.utils.XYO;
-import pfg.kraken.utils.XY_RW;
+import pfg.kraken.struct.ItineraryPoint;
+import pfg.kraken.struct.XY;
+import pfg.kraken.struct.XYO;
+import pfg.kraken.struct.XY_RW;
 
 /**
  * Some multithreading test
@@ -42,7 +42,7 @@ public class Test_Multithreading extends JUnit_Test
 		obs.add(new RectangularObstacle(new XY_RW(100,410), 200, 200));
 		obs.add(new RectangularObstacle(new XY_RW(-600,300), 200, 200));
 		obs.add(new RectangularObstacle(new XY_RW(-1000,1900), 200, 200));
-		super.setUpWith(obs, "default", "graphic", "multithreading");
+		super.setUpWith(obs, "default", "multithreading");
 		astar = injector.getService(TentacularAStar.class);
 	}
 

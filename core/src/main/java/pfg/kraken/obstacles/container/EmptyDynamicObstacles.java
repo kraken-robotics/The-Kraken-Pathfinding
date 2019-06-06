@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2018 Pierre-François Gimenez
+ * Copyright (C) 2013-2019 Pierre-François Gimenez
  * Distributed under the MIT License.
  */
 
@@ -9,7 +9,7 @@ import java.util.Collections;
 import java.util.Iterator;
 
 import pfg.kraken.obstacles.Obstacle;
-import pfg.kraken.robot.CinematiqueObs;
+import pfg.kraken.struct.EmbodiedKinematic;
 
 /**
  * An empty dynamical obstacles manager
@@ -20,7 +20,7 @@ import pfg.kraken.robot.CinematiqueObs;
 public final class EmptyDynamicObstacles implements DynamicObstacles
 {
 	@Override
-	public int isThereCollision(CinematiqueObs[] l, int from, int to)
+	public int isThereCollision(EmbodiedKinematic[] l, int from, int to)
 	{
 		return to;
 	}

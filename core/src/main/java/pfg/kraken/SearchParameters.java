@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2018 Pierre-François Gimenez
+ * Copyright (C) 2013-2019 Pierre-François Gimenez
  * Distributed under the MIT License.
  */
 
@@ -7,9 +7,9 @@ package pfg.kraken;
 
 import java.io.Serializable;
 import pfg.kraken.astar.DirectionStrategy;
-import pfg.kraken.robot.Cinematique;
-import pfg.kraken.utils.XY;
-import pfg.kraken.utils.XYO;
+import pfg.kraken.struct.Kinematic;
+import pfg.kraken.struct.XY;
+import pfg.kraken.struct.XYO;
 
 /**
  * Structure for the search parameters
@@ -21,7 +21,7 @@ public class SearchParameters implements Serializable
 {
 	private static final long serialVersionUID = 2287573842706477685L;
 	
-	public final Cinematique start, arrival;
+	public final Kinematic start, arrival;
 	public final String mode;
 	public DirectionStrategy directionstrategy = null;
 	public Double maxSpeed = null;
@@ -39,19 +39,19 @@ public class SearchParameters implements Serializable
 	
 	public SearchParameters(XYO start, XY arrival, String mode)
 	{
-		this.start = new Cinematique(start);
-		this.arrival = new Cinematique(new XYO(arrival.clone(), 0));
+		this.start = new Kinematic(start);
+		this.arrival = new Kinematic(new XYO(arrival.clone(), 0));
 		this.mode = mode;
 	}
 	
 	public SearchParameters(XYO start, XYO arrival, String mode)
 	{
-		this.start = new Cinematique(start);
-		this.arrival = new Cinematique(arrival);
+		this.start = new Kinematic(start);
+		this.arrival = new Kinematic(arrival);
 		this.mode = mode;
 	}
 	
-	public SearchParameters(Cinematique start, Cinematique arrival, String mode)
+	public SearchParameters(Kinematic start, Kinematic arrival, String mode)
 	{
 		this.start = start;
 		this.arrival = arrival;

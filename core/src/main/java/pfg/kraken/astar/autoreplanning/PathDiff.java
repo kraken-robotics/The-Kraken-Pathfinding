@@ -1,12 +1,12 @@
 /*
- * Copyright (C) 2013-2018 Pierre-François Gimenez
+ * Copyright (C) 2013-2019 Pierre-François Gimenez
  * Distributed under the MIT License.
  */
 
 package pfg.kraken.astar.autoreplanning;
 
 import java.util.List;
-import pfg.kraken.robot.ItineraryPoint;
+import pfg.kraken.struct.ItineraryPoint;
 
 /**
  * A path diff

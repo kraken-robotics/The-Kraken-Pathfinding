@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2018 Pierre-François Gimenez
+ * Copyright (C) 2013-2019 Pierre-François Gimenez
  * Distributed under the MIT License.
  */
 
@@ -8,7 +8,6 @@ package pfg.kraken.astar.tentacles.computethread;
 import java.util.concurrent.BlockingQueue;
 
 import pfg.config.Config;
-import pfg.log.Log;
 import pfg.kraken.ConfigInfoKraken;
 import pfg.kraken.astar.AStarNode;
 import pfg.kraken.memory.NodePool;
@@ -22,7 +21,6 @@ import pfg.kraken.memory.NodePool;
 
 public final class TentacleThread extends Thread
 {
-	protected Log log;
 	private NodePool memorymanager;
 	private int tempsArret;
 	private int nb;
@@ -30,9 +28,8 @@ public final class TentacleThread extends Thread
 	public final BlockingQueue<AStarNode> successeurs;
 	public final static AStarNode placeholder = new AStarNode();
 	
-	public TentacleThread(Log log, Config config, NodePool memorymanager, int nb, BlockingQueue<AStarNode> successeurs, BlockingQueue<TentacleTask> buffer)
+	public TentacleThread(Config config, NodePool memorymanager, int nb, BlockingQueue<AStarNode> successeurs, BlockingQueue<TentacleTask> buffer)
 	{
-		this.log = log;
 		this.buffer = buffer;
 		this.successeurs = successeurs;
 		this.memorymanager = memorymanager;
@@ -67,12 +64,13 @@ public final class TentacleThread extends Thread
 		assert successeur.cameFromArcDynamique == null;
 		successeur.parent = task.current;
 		
-		task.current.robot.copy(successeur.robot);
+		task.current.cinematique.copy(successeur.cinematique);
 		if(task.computer.compute(task.current, task.v, task.arrivee, successeur, nb))
 		{
 			// Compute the travel time
 			int duration = (int) (1000*successeur.getArc().getDuree(successeur.parent.getArc(), task.vitesseMax, tempsArret));
-			successeur.robot.suitArcCourbe(successeur.getArc(), duration);
+			successeur.date += duration;
+			successeur.getArc().getLast().cinem.copy(successeur.cinematique);
 			successeur.g_score = duration;
 			assert successeur.getArc().vitesse == task.v : successeur.getArc().vitesse +" != "+ task.v;
 			successeurs.add(successeur);

@@ -2,9 +2,6 @@ language : java
 script :
     - cd core
     - mvn install
-    - cd ../examples
-    - mvn compile
-    - cd ../core
 jdk : oraclejdk8
 cache :
     directories : "$HOME/.m2"

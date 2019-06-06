@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2018 Pierre-François Gimenez
+ * Copyright (C) 2013-2019 Pierre-François Gimenez
  * Distributed under the MIT License.
  */
 
@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import pfg.kraken.display.Display;
 import pfg.kraken.display.Printable;
-import pfg.kraken.utils.XY;
+import pfg.kraken.struct.XY;
 
 /**
  * A node of the navmesh

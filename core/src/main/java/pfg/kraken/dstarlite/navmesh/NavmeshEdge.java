@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2018 Pierre-François Gimenez
+ * Copyright (C) 2013-2019 Pierre-François Gimenez
  * Distributed under the MIT License.
  */
 
@@ -10,13 +10,12 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-import pfg.kraken.ColorKraken;
+import pfg.kraken.display.ColorKraken;
 import pfg.kraken.display.Display;
 import pfg.kraken.display.Printable;
 import pfg.kraken.obstacles.Obstacle;
-import pfg.kraken.utils.XY;
-import pfg.kraken.utils.XY_RW;
+import pfg.kraken.struct.XY;
+import pfg.kraken.struct.XY_RW;
 
 /**
  * An edge of the navmesh

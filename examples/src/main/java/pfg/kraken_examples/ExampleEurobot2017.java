@@ -12,15 +12,14 @@ import pfg.graphic.printable.Layer;
 import pfg.kraken.Kraken;
 import pfg.kraken.KrakenParameters;
 import pfg.kraken.SearchParameters;
-import pfg.kraken.SeverityCategoryKraken;
 import pfg.kraken.display.Display;
 import pfg.kraken.exceptions.PathfindingException;
 import pfg.kraken.obstacles.CircularObstacle;
 import pfg.kraken.obstacles.Obstacle;
 import pfg.kraken.obstacles.RectangularObstacle;
-import pfg.kraken.robot.ItineraryPoint;
-import pfg.kraken.utils.XY;
-import pfg.kraken.utils.XYO;
+import pfg.kraken.struct.ItineraryPoint;
+import pfg.kraken.struct.XY;
+import pfg.kraken.struct.XYO;
 
 
 /**
@@ -87,12 +86,13 @@ public class ExampleEurobot2017
 
 		RectangularObstacle robot = new RectangularObstacle(250, 80, 110, 110);
 
-		DebugTool debug = DebugTool.getDebugTool(new XY(0,1000), new XY(0, 1000), SeverityCategoryKraken.INFO, "kraken-examples.conf", "trajectory", "eurobot2017");
+		DebugTool debug = DebugTool.getDebugTool(new XY(0,1000), new XY(0, 1000), null, "kraken-examples.conf", "trajectory", "eurobot2017");
 		Display display = debug.getDisplay();
 		for(Obstacle o : obs)
 			display.addPrintable(o, Color.BLACK, Layer.MIDDLE.layer);
 		
-		KrakenParameters kp = new KrakenParameters(robot, obs, new XY(-1500,0), new XY(1500, 2000), "kraken-examples.conf", "eurobot2017", "trajectory"/*, "detailed"*/);
+		KrakenParameters kp = new KrakenParameters(robot, new XY(-1500,0), new XY(1500, 2000), "kraken-examples.conf", "eurobot2017", "trajectory"/*, "detailed"*/);
+		kp.setFixedObstacles(obs);
 		kp.setDisplay(display);
 		Kraken kraken = new Kraken(kp);
 		

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2018 Pierre-François Gimenez
+ * Copyright (C) 2013-2019 Pierre-François Gimenez
  * Distributed under the MIT License.
  */
 
@@ -9,7 +9,7 @@ import java.awt.Graphics;
 import java.io.Serializable;
 import pfg.kraken.display.Display;
 import pfg.kraken.display.Printable;
-import pfg.kraken.utils.XY;
+import pfg.kraken.struct.XY;
 
 /**
  * A triangle of the navmesh

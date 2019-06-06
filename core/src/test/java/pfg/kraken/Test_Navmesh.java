@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2018 Pierre-François Gimenez
+ * Copyright (C) 2013-2019 Pierre-François Gimenez
  * Distributed under the MIT License.
  */
 
@@ -15,7 +15,7 @@ import org.junit.Test;
 import pfg.kraken.dstarlite.navmesh.Navmesh;
 import pfg.kraken.obstacles.Obstacle;
 import pfg.kraken.obstacles.RectangularObstacle;
-import pfg.kraken.utils.XY_RW;
+import pfg.kraken.struct.XY_RW;
 
 /**
  * Tests unitaires du Navmesh
@@ -35,7 +35,7 @@ public class Test_Navmesh extends JUnit_Test
 	@Test
 	public void test_empty() throws Exception
 	{
-		super.setUpWith(null, "default", "graphic", "navmesh", "empty");
+		super.setUpWith(null, "default", "empty");
 		navmesh = injector.getService(Navmesh.class);
 		Assert.assertNotEquals(0, navmesh.mesh.edges.length);
 		Assert.assertNotEquals(0, navmesh.mesh.nodes.length);

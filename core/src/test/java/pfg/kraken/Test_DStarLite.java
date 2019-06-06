@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2018 Pierre-François Gimenez
+ * Copyright (C) 2013-2019 Pierre-François Gimenez
  * Distributed under the MIT License.
  */
 
@@ -11,13 +11,12 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import pfg.kraken.LogCategoryKraken;
 import pfg.kraken.dstarlite.DStarLite;
 import pfg.kraken.obstacles.Obstacle;
 import pfg.kraken.obstacles.RectangularObstacle;
-import pfg.kraken.utils.XY;
-import pfg.kraken.utils.XYO;
-import pfg.kraken.utils.XY_RW;
+import pfg.kraken.struct.XY;
+import pfg.kraken.struct.XYO;
+import pfg.kraken.struct.XY_RW;
 
 /**
  * Tests unitaires de la recherche de chemin.
@@ -41,7 +40,7 @@ public class Test_DStarLite extends JUnit_Test
 		obs.add(new RectangularObstacle(new XY_RW(100,410), 200, 200));
 		obs.add(new RectangularObstacle(new XY_RW(-600,300), 200, 200));
 		obs.add(new RectangularObstacle(new XY_RW(-1000,1900), 200, 200));
-		super.setUpWith(obs, "default", "graphic", "navmesh", "dstarlite");
+		super.setUpWith(obs, "default");
 		pathfinding = injector.getService(DStarLite.class);
 	}
 	
@@ -51,7 +50,7 @@ public class Test_DStarLite extends JUnit_Test
 		pathfinding.computeNewPath(new XY(-800, 200), new XY(1200, 1200));
 		List<XYO> l = pathfinding.itineraireBrut(new XY(-800, 200));
 		for(XYO pos : l)
-			log.write(pos, LogCategoryKraken.TEST);
+			System.out.println(pos);
 	}	
 /*
 	@Test

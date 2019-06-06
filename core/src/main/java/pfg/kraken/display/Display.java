@@ -3,7 +3,7 @@ package pfg.kraken.display;
 import java.awt.Color;
 import java.awt.image.ImageObserver;
 import java.util.PriorityQueue;
-import pfg.kraken.utils.XY;
+import pfg.kraken.struct.XY;
 
 public interface Display extends ImageObserver
 {
@@ -15,9 +15,9 @@ public interface Display extends ImageObserver
 	public boolean removePrintable(Printable o);
 	
 
-	public XY getCurrentCoinHautDroite();
+	public XY getCurrentTopRightCorner();
 	
-	public XY getCurrentCoinBasGauche();
+	public XY getCurrentBottomLeftCorner();
 	
 	public int distanceXtoWindow(int dist);
 

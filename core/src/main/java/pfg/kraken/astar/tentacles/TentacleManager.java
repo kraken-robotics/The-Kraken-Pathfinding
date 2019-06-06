@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2018 Pierre-François Gimenez
+ * Copyright (C) 2013-2019 Pierre-François Gimenez
  * Distributed under the MIT License.
  */
 
@@ -14,22 +14,21 @@ import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import pfg.config.Config;
-import pfg.injector.Injector;
 import pfg.injector.InjectorException;
-import pfg.kraken.ColorKraken;
 import pfg.kraken.ConfigInfoKraken;
 import pfg.kraken.astar.AStarNode;
 import pfg.kraken.astar.DirectionStrategy;
+import pfg.kraken.astar.profiles.ResearchProfile;
+import pfg.kraken.astar.profiles.ResearchProfileManager;
 import pfg.kraken.astar.tentacles.computethread.TentacleTask;
 import pfg.kraken.astar.tentacles.computethread.TentacleThread;
-import pfg.kraken.astar.tentacles.types.TentacleType;
 import pfg.kraken.dstarlite.DStarLite;
 import pfg.kraken.exceptions.UnknownModeException;
 import pfg.kraken.memory.NodePool;
-import pfg.kraken.robot.Cinematique;
-import pfg.kraken.robot.CinematiqueObs;
-import pfg.kraken.utils.XYO;
-import pfg.log.Log;
+import pfg.kraken.struct.Kinematic;
+import pfg.kraken.struct.EmbodiedKinematic;
+import pfg.kraken.struct.XYO;
+import pfg.kraken.display.ColorKraken;
 import pfg.kraken.display.Display;
 import pfg.kraken.display.Layer;
 import static pfg.kraken.astar.tentacles.Tentacle.*;
@@ -43,18 +42,16 @@ import static pfg.kraken.astar.tentacles.Tentacle.*;
 
 public final class TentacleManager implements Iterator<AStarNode>
 {
-	protected Log log;
 	private DStarLite dstarlite;
 	private double courbureMax, vitesseMax;
 	private boolean printObstacles;
-	private Injector injector;
 	private Display display;
 	private TentacleThread[] threads;
 	private ResearchProfile currentProfile;
 	private Map<TentacleType, Integer> tentaclesStats = new HashMap<TentacleType, Integer>();
 	
 	private DirectionStrategy directionstrategyactuelle;
-	private Cinematique arrivee = new Cinematique();
+	private Kinematic arrivee = new Kinematic();
 	private ResearchProfileManager profiles;
 	private List<TentacleTask> tasks = new ArrayList<TentacleTask>();
 	private BlockingQueue<AStarNode> successeurs = new LinkedBlockingQueue<AStarNode>();
@@ -62,10 +59,8 @@ public final class TentacleManager implements Iterator<AStarNode>
 	
 	private int nbLeft;
 	
-	public TentacleManager(Log log, NodePool memorymanager, DStarLite dstarlite, Config config, Injector injector, ResearchProfileManager profiles, Display display) throws InjectorException
+	public TentacleManager(NodePool memorymanager, DStarLite dstarlite, Config config, ResearchProfileManager profiles, Display display) throws InjectorException
 	{
-		this.injector = injector;
-		this.log = log;
 		this.dstarlite = dstarlite;
 		this.display = display;
 		this.profiles = profiles;
@@ -79,26 +74,13 @@ public final class TentacleManager implements Iterator<AStarNode>
 		threads = new TentacleThread[nbThreads];
 		for(int i = 0; i < nbThreads; i++)
 		{
-			threads[i] = new TentacleThread(log, config, memorymanager, i, successeurs, buffer);
+			threads[i] = new TentacleThread(config, memorymanager, i, successeurs, buffer);
 			if(nbThreads != 1)
 				threads[i].start();
 		}
 		
 		courbureMax = config.getDouble(ConfigInfoKraken.MAX_CURVATURE);
 	}
-
-	public void updateProfiles(ResearchProfile mode)
-	{
-		try {
-			List<TentacleType> profile = mode.tentacles;
-			for(TentacleType t : profile)
-				injector.getService(t.getComputer());
-		} catch(InjectorException e)
-		{
-			e.printStackTrace();
-		}
-	}
-	
 
 	/**
 	 * Initialise l'arc manager avec les infos donnée
@@ -108,7 +90,7 @@ public final class TentacleManager implements Iterator<AStarNode>
 	 * @param arrivee
 	 * @throws UnknownModeException 
 	 */
-	public void configure(DirectionStrategy directionstrategyactuelle, double vitesseMax, Cinematique arrivee, String mode) throws UnknownModeException
+	public void configure(DirectionStrategy directionstrategyactuelle, double vitesseMax, Kinematic arrivee, String mode) throws UnknownModeException
 	{
 		this.vitesseMax = vitesseMax;
 		this.directionstrategyactuelle = directionstrategyactuelle;
@@ -119,7 +101,7 @@ public final class TentacleManager implements Iterator<AStarNode>
 	/*
 	 * Only used for the reconstruction
 	 */
-	private LinkedList<CinematiqueObs> trajectory = new LinkedList<CinematiqueObs>();
+	private LinkedList<EmbodiedKinematic> trajectory = new LinkedList<EmbodiedKinematic>();
 
 	public Map<TentacleType, Integer> getTentaclesStatistics()
 	{
@@ -131,13 +113,13 @@ public final class TentacleManager implements Iterator<AStarNode>
 		tentaclesStats.clear();
 	}
 	
-	public LinkedList<CinematiqueObs> reconstruct(AStarNode best, int nbPointsMax)
+	public LinkedList<EmbodiedKinematic> reconstruct(AStarNode best, int nbPointsMax)
 	{
 		trajectory.clear();
 		AStarNode noeudParent = best;
 		Tentacle arcParent = best.getArc();
 		
-		CinematiqueObs current;
+		EmbodiedKinematic current;
 		boolean lastStop = nbPointsMax == Integer.MAX_VALUE; // le dernier point n'est pas un stop en cas de replanification partielle
 		boolean nextStop;
 
@@ -153,8 +135,8 @@ public final class TentacleManager implements Iterator<AStarNode>
 				if(printObstacles)
 					display.addTemporaryPrintable(current.obstacle.clone(), ColorKraken.ROBOT.color, Layer.BACKGROUND.layer);
 				
-				nextStop = current.stop;
-				current.stop = lastStop;
+				nextStop = current.cinem.stop;
+				current.cinem.stop = lastStop;
 				
 				trajectory.addFirst(current);
 				
@@ -191,7 +173,7 @@ public final class TentacleManager implements Iterator<AStarNode>
 		
 		for(TentacleType v : currentProfile.tentacles)
 		{
-			if(v.isAcceptable(current.robot.getCinematique(), directionstrategyactuelle, courbureMax))
+			if(v.isAcceptable(current.cinematique, directionstrategyactuelle, courbureMax))
 			{
 				nbLeft++;
 				assert tasks.size() > index;
@@ -199,7 +181,7 @@ public final class TentacleManager implements Iterator<AStarNode>
 				tt.arrivee = arrivee;
 				tt.current = current;
 				tt.v = v;
-				tt.computer = injector.getExistingService(v.getComputer());
+				tt.computer = v.getComputer();
 				tt.vitesseMax = vitesseMax;
 				
 				if(threads.length == 1) // no multithreading in this case
@@ -212,7 +194,7 @@ public final class TentacleManager implements Iterator<AStarNode>
 		assert threads.length > 1 || successeurs.size() == nbLeft;
 	}
 
-	public synchronized Integer heuristicCostCourbe(Cinematique c)
+	public synchronized Integer heuristicCostCourbe(Kinematic c)
 	{
 		Double d = dstarlite.heuristicDistance(c);
 		if(d == null)
@@ -244,13 +226,13 @@ public final class TentacleManager implements Iterator<AStarNode>
 		return (int) (1000.*(h / vitesseMax));
 	}
 	
-	public final boolean isNearXYO(Cinematique a, Cinematique b)
+	public final boolean isNearXYO(Kinematic a, Kinematic b)
 	{
 		return a.getPosition().squaredDistance(b.getPosition()) - PRECISION_TRACE_MM * PRECISION_TRACE_MM < 1
 				&& Math.abs(XYO.angleDifference(a.orientationReelle, b.orientationReelle)) < 0.1;
 	}
 	
-	public final boolean isArrived(Cinematique last)
+	public final boolean isArrived(Kinematic last)
 	{
 		return currentProfile.end.isArrived(arrivee, last);
 	}

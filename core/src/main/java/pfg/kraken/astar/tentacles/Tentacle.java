@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2018 Pierre-François Gimenez
+ * Copyright (C) 2013-2019 Pierre-François Gimenez
  * Distributed under the MIT License.
  */
 
@@ -11,9 +11,8 @@ import java.util.Iterator;
 import pfg.kraken.display.Display;
 import pfg.kraken.display.Printable;
 import pfg.kraken.display.PrintablePoint;
-import pfg.kraken.astar.tentacles.types.TentacleType;
 import pfg.kraken.obstacles.RectangularObstacle;
-import pfg.kraken.robot.CinematiqueObs;
+import pfg.kraken.struct.EmbodiedKinematic;
 
 /**
  * Un arc de trajectoire courbe. Juste une succession de points.
@@ -51,9 +50,9 @@ public abstract class Tentacle implements Printable, Iterable<RectangularObstacl
 	
 	public abstract int getNbPoints();
 
-	public abstract CinematiqueObs getPoint(int indice);
+	public abstract EmbodiedKinematic getPoint(int indice);
 
-	public abstract CinematiqueObs getLast();
+	public abstract EmbodiedKinematic getLast();
 
 	public final double getDuree(Tentacle tentacleParent, double translationalSpeed, int tempsArret)
 	{
@@ -85,7 +84,7 @@ public abstract class Tentacle implements Printable, Iterable<RectangularObstacl
 	public void print(Graphics g, Display f)
 	{
 		for(int i = 0; i < getNbPoints(); i++)
-			new PrintablePoint(getPoint(i).getPosition().getX(), getPoint(i).getPosition().getY()).print(g, f);
+			new PrintablePoint(getPoint(i).cinem.getX(), getPoint(i).cinem.getY()).print(g, f);
 	}
 
 

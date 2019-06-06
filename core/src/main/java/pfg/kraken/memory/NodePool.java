@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2018 Pierre-François Gimenez
+ * Copyright (C) 2013-2019 Pierre-François Gimenez
  * Distributed under the MIT License.
  */
 
@@ -10,8 +10,6 @@ import pfg.config.Config;
 import pfg.kraken.ConfigInfoKraken;
 import pfg.kraken.astar.AStarNode;
 import pfg.kraken.obstacles.RectangularObstacle;
-import pfg.kraken.robot.RobotState;
-import pfg.log.Log;
 
 /**
  * Memory Manager des nœuds du pathfinding courbe
@@ -23,11 +21,11 @@ import pfg.log.Log;
 public final class NodePool extends MemoryPool<AStarNode>
 {
 	private RectangularObstacle vehicleTemplate;
-	private CinemObsPool pool;
+	private EmbodiedKinematicPool pool;
 
-	public NodePool(Log log, Config config, RectangularObstacle vehicleTemplate, CinemObsPool pool)
+	public NodePool(Config config, RectangularObstacle vehicleTemplate, EmbodiedKinematicPool pool)
 	{
-		super(AStarNode.class, log);
+		super(AStarNode.class);
 		this.pool = pool;
 		this.vehicleTemplate = vehicleTemplate;
 		init(config.getInt(ConfigInfoKraken.NODE_MEMORY_POOL_SIZE));
@@ -37,7 +35,7 @@ public final class NodePool extends MemoryPool<AStarNode>
 	protected final void make(AStarNode[] nodes)
 	{
 		for(int i = 0; i < nodes.length; i++)
-			nodes[i] = new AStarNode(new RobotState(), vehicleTemplate);
+			nodes[i] = new AStarNode(vehicleTemplate);
 	}
 
 	@Override

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2018 Pierre-François Gimenez
+ * Copyright (C) 2013-2019 Pierre-François Gimenez
  * Distributed under the MIT License.
  */
 
@@ -10,39 +10,43 @@ import java.util.List;
 import java.util.Map;
 
 import pfg.config.Config;
-import pfg.log.Log;
 import pfg.injector.Injector;
 import pfg.injector.InjectorException;
 import pfg.kraken.astar.TentacularAStar;
 import pfg.kraken.astar.autoreplanning.CollisionDetectionThread;
 import pfg.kraken.astar.autoreplanning.DynamicPath;
 import pfg.kraken.astar.autoreplanning.ReplanningThread;
+import pfg.kraken.astar.endcheck.EndWithXY;
+import pfg.kraken.astar.endcheck.EndWithXYO;
+import pfg.kraken.astar.endcheck.EndWithXYOC0;
 import pfg.kraken.astar.engine.QuadTreePhysicsEngine;
+import pfg.kraken.astar.profiles.ResearchProfile;
+import pfg.kraken.astar.profiles.ResearchProfileManager;
 import pfg.kraken.astar.engine.DefaultPhysicsEngine;
 import pfg.kraken.astar.engine.PhysicsEngine;
-import pfg.kraken.astar.tentacles.ResearchProfile;
-import pfg.kraken.astar.tentacles.ResearchProfileManager;
 import pfg.kraken.astar.tentacles.TentacleManager;
-import pfg.kraken.astar.tentacles.endCheck.EndWithXY;
-import pfg.kraken.astar.tentacles.endCheck.EndWithXYO;
-import pfg.kraken.astar.tentacles.endCheck.EndWithXYOC0;
-import pfg.kraken.astar.tentacles.types.*;
+import pfg.kraken.astar.tentacles.TentacleType;
+import pfg.kraken.astar.tentacles.bezier.BezierComputer;
+import pfg.kraken.astar.tentacles.bezier.BezierTentacle;
+import pfg.kraken.astar.tentacles.clothoid.ClothoTentacle;
+import pfg.kraken.astar.tentacles.clothoid.ClothoidComputer;
+import pfg.kraken.astar.tentacles.clothoid.StraightingTentacle;
+import pfg.kraken.astar.tentacles.clothoid.TurnoverTentacle;
+import pfg.kraken.astar.tentacles.spin.SpinComputer;
+import pfg.kraken.astar.tentacles.spin.SpinTentacle;
 import pfg.kraken.display.Display;
-import pfg.kraken.exceptions.InvalidPathException;
 import pfg.kraken.exceptions.NoPathException;
-import pfg.kraken.exceptions.NotInitializedPathfindingException;
+import pfg.kraken.exceptions.NotInitializedException;
 import pfg.kraken.exceptions.PathfindingException;
 import pfg.kraken.obstacles.Obstacle;
 import pfg.kraken.obstacles.RectangularObstacle;
 import pfg.kraken.obstacles.container.DynamicObstacles;
 import pfg.kraken.obstacles.container.EmptyDynamicObstacles;
 import pfg.kraken.obstacles.container.StaticObstacles;
-import pfg.kraken.robot.ItineraryPoint;
-import pfg.kraken.utils.XY;
+import pfg.kraken.struct.ItineraryPoint;
 
 /**
- * The manager of the tentacle pathfinder.
- * TentacularAStar wrapper.
+ * The API of the Kraken pathfinding
  * @author pf
  *
  */
@@ -57,18 +61,9 @@ public final class Kraken
 	private boolean autoReplanningEnable = false;
 	
 	/**
-	 * Get Kraken with :
-	 * @param vehicleTemplate : the shape of the vehicle
-	 * @param fixedObstacles : a list of fixed/permanent obstacles
-	 * @param bottomLeftCorner : the bottom left corner of the search domain
-	 * @param topRightCorner : the top right corner of the search domain
-	 * @param configprofile : the config profiles
+	 * Get Kraken with the some parameters
+	 * @param param
 	 */
-	public Kraken(RectangularObstacle vehicleTemplate, Iterable<Obstacle> fixedObstacles, XY bottomLeftCorner, XY topRightCorner, String configfile, String...profiles)
-	{
-		this(new KrakenParameters(vehicleTemplate, fixedObstacles, bottomLeftCorner, topRightCorner, configfile, profiles));
-	}
-
 	public Kraken(KrakenParameters param)
 	{
 		injector = new Injector();
@@ -92,19 +87,14 @@ public final class Kraken
 					so.add(o);
 			so.setCorners(param.bottomLeftCorner, param.topRightCorner);
 
-			Log log = new Log(SeverityCategoryKraken.INFO, param.configfile, param.configprofile);
-
 			if(param.dynObs == null)
 				param.dynObs = new EmptyDynamicObstacles();
 			
-			injector.addService(log);
 			injector.addService(config);
 			injector.addService(DynamicObstacles.class, param.dynObs);		
-			injector.addService(this);
-			injector.addService(injector);
 
 			if(param.engine != null)
-				injector.addService(param.engine);
+				injector.addService(PhysicsEngine.class, param.engine);
 			else if(config.getBoolean(ConfigInfoKraken.ENABLE_QUADTREE))
 				injector.addService(PhysicsEngine.class, injector.getService(QuadTreePhysicsEngine.class));
 			else
@@ -114,7 +104,12 @@ public final class Kraken
 
 			astar = injector.getService(TentacularAStar.class);
 			tentaclemanager = injector.getService(TentacleManager.class);
-			profiles = injector.getService(ResearchProfileManager.class);			
+			profiles = injector.getService(ResearchProfileManager.class);	
+			BezierTentacle.computer = injector.getService(BezierComputer.class);
+			ClothoTentacle.computer = injector.getService(ClothoidComputer.class);
+			StraightingTentacle.computer = injector.getService(ClothoidComputer.class);
+			TurnoverTentacle.computer = injector.getService(ClothoidComputer.class);
+			SpinTentacle.computer = injector.getService(SpinComputer.class);
 			dpath = injector.getService(DynamicPath.class);
 			
 			List<TentacleType> tentaclesXY = new ArrayList<TentacleType>();
@@ -140,6 +135,9 @@ public final class Kraken
 		}
 	}
 	
+	/**
+	 * Cancel an ongoing search
+	 */
 	public void stop()
 	{
 		astar.stop();
@@ -168,7 +166,7 @@ public final class Kraken
 		if(!autoReplanningEnable)
 			astar.initializeNewSearch(sp.start, sp.arrival, sp.directionstrategy, sp.mode, sp.maxSpeed, sp.timeout);
 		else
-			throw new NotInitializedPathfindingException("initializeNewSearch() should be called before enabling the autoreplanning mode.");
+			throw new NotInitializedException("initializeNewSearch() should be called before enabling the autoreplanning mode.");
 	}
 	
 	/**
@@ -181,7 +179,7 @@ public final class Kraken
 		if(!autoReplanningEnable)
 			return astar.searchWithoutReplanning();
 		else
-			throw new NotInitializedPathfindingException("search() isn't permitted in autoreplanning mode.");
+			throw new NotInitializedException("search() isn't permitted in autoreplanning mode.");
 	}
 	
 	/**
@@ -193,10 +191,14 @@ public final class Kraken
 		return injector;
 	}
 
-	public void addMode(ResearchProfile p)
+	/**
+	 * Add new custom tentacles
+	 * @param p
+	 * @throws InjectorException
+	 */
+	public void addMode(ResearchProfile p) throws InjectorException
 	{
 		profiles.addProfile(p);
-		tentaclemanager.updateProfiles(p);
 	}
 	
 	/**
@@ -236,7 +238,7 @@ public final class Kraken
 			if(dpath.isStarted())
 				try {
 					endContinuousSearch();
-				} catch (NotInitializedPathfindingException e) {
+				} catch (NotInitializedException e) {
 					e.printStackTrace();
 				}
 			injector.getExistingService(CollisionDetectionThread.class).interrupt();
@@ -245,61 +247,57 @@ public final class Kraken
 		}
 	}
 	
-	public boolean checkPath(List<ItineraryPoint> initialPath)
-	{
-		try {
-			astar.checkAfterInitialization(initialPath);
-			return true;
-		} catch (InvalidPathException e) {
-			return false;
-		}
-	}
-	
 	public void startContinuousSearchWithInitialPath(SearchParameters sp, List<ItineraryPoint> initialPath) throws PathfindingException
 	{
 		if(dpath.isStarted())
-			throw new NotInitializedPathfindingException("You should end the previous continuous search before starting a new one.");
+			throw new NotInitializedException("You should end the previous continuous search before starting a new one.");
 		else if(autoReplanningEnable)
 		{
 			astar.initializeNewSearch(sp.start, sp.arrival, sp.directionstrategy, sp.mode, sp.maxSpeed, sp.timeout);
 			astar.searchWithReplanningAndInitialPath(initialPath);
 		}
 		else
-			throw new NotInitializedPathfindingException("You should enable the continuous search before starting it.");
+			throw new NotInitializedException("You should enable the continuous search before starting it.");
 	}
 
 	public void startContinuousSearch(SearchParameters sp) throws PathfindingException
 	{
 		if(dpath.isStarted())
-			throw new NotInitializedPathfindingException("You should end the previous continuous search before starting a new one.");
+			throw new NotInitializedException("You should end the previous continuous search before starting a new one.");
 		else if(autoReplanningEnable)
 		{
 			astar.initializeNewSearch(sp.start, sp.arrival, sp.directionstrategy, sp.mode, sp.maxSpeed, sp.timeout);
 			dpath.startContinuousSearch();
 		}
 		else
-			throw new NotInitializedPathfindingException("You should enable the continuous search before starting it.");
+			throw new NotInitializedException("You should enable the continuous search before starting it.");
 	}
 
-	public void endContinuousSearch() throws NotInitializedPathfindingException
+	public void endContinuousSearch() throws NotInitializedException
 	{
 		if(!dpath.isStarted())
-			throw new NotInitializedPathfindingException("");
+			throw new NotInitializedException("");
 		else if(autoReplanningEnable)
 			dpath.endContinuousSearch();
 		else
-			throw new NotInitializedPathfindingException("You should enable the continuous search before starting it.");
+			throw new NotInitializedException("You should enable the continuous search before starting it.");
 	}
 	
+	/**
+	 * Reset to zero the tentacles statistics
+	 */
 	public void resetTentaclesStatistics()
 	{
 		tentaclemanager.resetTentaclesStatistics();
 	}
 	
+	/**
+	 * Get the number of tentacles used so far in resulting paths
+	 * @return
+	 */
 	public Map<TentacleType, Integer> getTentaclesStatistics()
 	{
 		return tentaclemanager.getTentaclesStatistics();
 	}
 
-	
 }

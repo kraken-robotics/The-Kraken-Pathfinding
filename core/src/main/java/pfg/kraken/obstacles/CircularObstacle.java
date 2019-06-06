@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2018 Pierre-François Gimenez
+ * Copyright (C) 2013-2019 Pierre-François Gimenez
  * Distributed under the MIT License.
  */
 
@@ -9,8 +9,8 @@ package pfg.kraken.obstacles;
 import java.awt.Color;
 import java.awt.Graphics;
 import pfg.kraken.display.Display;
-import pfg.kraken.utils.XY;
-import pfg.kraken.utils.XY_RW;
+import pfg.kraken.struct.XY;
+import pfg.kraken.struct.XY_RW;
 
 /**
  * Obstacle circulaire

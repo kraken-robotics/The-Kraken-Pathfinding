@@ -7,8 +7,7 @@ package pfg.kraken.display;
 
 import java.awt.Graphics;
 import java.io.Serializable;
-
-import pfg.kraken.utils.XY;
+import pfg.kraken.struct.XY;
 
 /**
  * Un point

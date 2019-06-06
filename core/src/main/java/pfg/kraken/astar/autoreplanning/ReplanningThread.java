@@ -1,14 +1,13 @@
 /*
- * Copyright (C) 2013-2018 Pierre-François Gimenez
+ * Copyright (C) 2013-2019 Pierre-François Gimenez
  * Distributed under the MIT License.
  */
 
 package pfg.kraken.astar.autoreplanning;
 
-import pfg.log.Log;
 import pfg.kraken.astar.TentacularAStar;
 import pfg.kraken.exceptions.PathfindingException;
-import pfg.kraken.robot.Cinematique;
+import pfg.kraken.struct.Kinematic;
 
 /**
  * Thread qui s'occupe de la replanification
@@ -19,14 +18,12 @@ import pfg.kraken.robot.Cinematique;
 
 public final class ReplanningThread extends Thread
 {
-	protected Log log;
 	private TentacularAStar astar;
 	private DynamicPath pm;
 	
-	public ReplanningThread(Log log, TentacularAStar astar, DynamicPath pm)
+	public ReplanningThread(TentacularAStar astar, DynamicPath pm)
 	{
 		this.astar = astar;
-		this.log = log;
 		this.pm = pm;
 		setDaemon(true);
 	}
@@ -65,7 +62,7 @@ public final class ReplanningThread extends Thread
 					
 					while(true)
 					{
-						Cinematique start;
+						Kinematic start;
 						synchronized(pm)
 						{
 							while(!pm.needReplanning() && !pm.shouldThreadStopSearch())

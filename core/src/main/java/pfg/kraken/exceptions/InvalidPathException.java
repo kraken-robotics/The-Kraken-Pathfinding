@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2018 Pierre-François Gimenez
+ * Copyright (C) 2013-2019 Pierre-François Gimenez
  * Distributed under the MIT License.
  */
 
@@ -26,5 +26,10 @@ public class InvalidPathException extends PathfindingException
 	{
 		super(m);
 	}
+
+	public InvalidPathException(String m, Throwable e)
+	{
+		super(m, e);
+	}	
 
 }

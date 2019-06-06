@@ -1,12 +1,12 @@
 /*
- * Copyright (C) 2013-2018 Pierre-François Gimenez
+ * Copyright (C) 2013-2019 Pierre-François Gimenez
  * Distributed under the MIT License.
  */
 
 package pfg.kraken;
 
 import org.junit.Test;
-import pfg.kraken.utils.XY_RW;
+import pfg.kraken.struct.XY_RW;
 import org.junit.Assert;
 import org.junit.Before;
 

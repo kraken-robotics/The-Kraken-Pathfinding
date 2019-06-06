@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2018 Pierre-François Gimenez
+ * Copyright (C) 2013-2019 Pierre-François Gimenez
  * Distributed under the MIT License.
  */
 
@@ -9,8 +9,6 @@ package pfg.kraken.memory;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
-import pfg.kraken.LogCategoryKraken;
-import pfg.log.Log;
 
 
 /**
@@ -22,20 +20,27 @@ import pfg.log.Log;
 public abstract class MemoryPool<T extends Memorizable>
 {
 
+	public enum MemPoolState
+	{
+		FREE, // free
+		WAITING, // in open-set
+		STANDBY, // in closed set
+		CURRENT, // the current node
+		NEXT; // the successors
+	}
+
 	private int initialNbInstances;
 
 	private List<T[]> nodes = new ArrayList<T[]>();
 	private final Class<T> classe;
-	protected Log log;
 	private volatile int firstAvailable;
 	private static final int tailleMax = 1 << 24;
 
 	protected abstract void make(T[] nodes);
 	
-	public MemoryPool(Class<T> classe, Log log)
+	public MemoryPool(Class<T> classe)
 	{
 		this.classe = classe;
-		this.log = log;
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -44,9 +49,6 @@ public abstract class MemoryPool<T extends Memorizable>
 		initialNbInstances = nb_instances;
 		nodes.add((T[]) Array.newInstance(classe, nb_instances));
 		firstAvailable = 0;
-		// on instancie une fois pour toutes les objets
-		log.write("Memory pool initialization (" + nb_instances + " instances of " + classe.getSimpleName() + ")", LogCategoryKraken.PF);
-
 		make(nodes.get(0));
 		for(int i = 0; i < nb_instances; i++)
 			nodes.get(0)[i].setIndiceMemoryManager(i);
