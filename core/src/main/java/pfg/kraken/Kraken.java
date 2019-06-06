@@ -26,10 +26,15 @@ import pfg.kraken.astar.tentacles.ResearchProfile;
 import pfg.kraken.astar.tentacles.ResearchProfileManager;
 import pfg.kraken.astar.tentacles.TentacleManager;
 import pfg.kraken.astar.tentacles.TentacleType;
+import pfg.kraken.astar.tentacles.bezier.BezierComputer;
 import pfg.kraken.astar.tentacles.bezier.BezierTentacle;
 import pfg.kraken.astar.tentacles.clothoid.ClothoTentacle;
+import pfg.kraken.astar.tentacles.clothoid.ClothoidesComputer;
+import pfg.kraken.astar.tentacles.clothoid.StraightingTentacle;
+import pfg.kraken.astar.tentacles.clothoid.TurnoverTentacle;
+import pfg.kraken.astar.tentacles.spin.SpinComputer;
+import pfg.kraken.astar.tentacles.spin.SpinTentacle;
 import pfg.kraken.display.Display;
-import pfg.kraken.exceptions.InvalidPathException;
 import pfg.kraken.exceptions.NoPathException;
 import pfg.kraken.exceptions.NotInitializedPathfindingException;
 import pfg.kraken.exceptions.PathfindingException;
@@ -42,8 +47,7 @@ import pfg.kraken.struct.ItineraryPoint;
 import pfg.kraken.struct.XY;
 
 /**
- * The manager of the tentacle pathfinder.
- * TentacularAStar wrapper.
+ * The API of the Kraken pathfinding
  * @author pf
  *
  */
@@ -98,7 +102,6 @@ public final class Kraken
 			
 			injector.addService(config);
 			injector.addService(DynamicObstacles.class, param.dynObs);		
-			injector.addService(this);
 			injector.addService(injector);
 
 			if(param.engine != null)
@@ -112,7 +115,12 @@ public final class Kraken
 
 			astar = injector.getService(TentacularAStar.class);
 			tentaclemanager = injector.getService(TentacleManager.class);
-			profiles = injector.getService(ResearchProfileManager.class);			
+			profiles = injector.getService(ResearchProfileManager.class);	
+			BezierTentacle.computer = injector.getService(BezierComputer.class);
+			ClothoTentacle.computer = injector.getService(ClothoidesComputer.class);
+			StraightingTentacle.computer = injector.getService(ClothoidesComputer.class);
+			TurnoverTentacle.computer = injector.getService(ClothoidesComputer.class);
+			SpinTentacle.computer = injector.getService(SpinComputer.class);
 			dpath = injector.getService(DynamicPath.class);
 			
 			List<TentacleType> tentaclesXY = new ArrayList<TentacleType>();
@@ -138,6 +146,9 @@ public final class Kraken
 		}
 	}
 	
+	/**
+	 * Cancel an ongoing search
+	 */
 	public void stop()
 	{
 		astar.stop();
@@ -191,10 +202,14 @@ public final class Kraken
 		return injector;
 	}
 
-	public void addMode(ResearchProfile p)
+	/**
+	 * Add new custom tentacles
+	 * @param p
+	 * @throws InjectorException
+	 */
+	public void addMode(ResearchProfile p) throws InjectorException
 	{
 		profiles.addProfile(p);
-		tentaclemanager.updateProfiles(p);
 	}
 	
 	/**
@@ -243,16 +258,6 @@ public final class Kraken
 		}
 	}
 	
-	public boolean checkPath(List<ItineraryPoint> initialPath)
-	{
-		try {
-			astar.checkAfterInitialization(initialPath);
-			return true;
-		} catch (InvalidPathException e) {
-			return false;
-		}
-	}
-	
 	public void startContinuousSearchWithInitialPath(SearchParameters sp, List<ItineraryPoint> initialPath) throws PathfindingException
 	{
 		if(dpath.isStarted())
@@ -289,15 +294,21 @@ public final class Kraken
 			throw new NotInitializedPathfindingException("You should enable the continuous search before starting it.");
 	}
 	
+	/**
+	 * Reset to zero the tentacles statistics
+	 */
 	public void resetTentaclesStatistics()
 	{
 		tentaclemanager.resetTentaclesStatistics();
 	}
 	
+	/**
+	 * Get the number of tentacles used so far in resulting paths
+	 * @return
+	 */
 	public Map<TentacleType, Integer> getTentaclesStatistics()
 	{
 		return tentaclemanager.getTentaclesStatistics();
 	}
 
-	
 }

@@ -29,6 +29,7 @@ public enum BezierTentacle implements TentacleType
 
 	// order est l'ordre du polynôme de Bézier correspondant (quadratique = 2, etc.)
 	private int order;
+	public static BezierComputer computer;
 
 	private BezierTentacle(int order)
 	{
@@ -53,9 +54,9 @@ public enum BezierTentacle implements TentacleType
 	}
 
 	@Override
-	public Class<? extends TentacleComputer> getComputer()
+	public TentacleComputer getComputer()
 	{
-		return BezierComputer.class;
+		return computer;
 	}
 
 	@Override

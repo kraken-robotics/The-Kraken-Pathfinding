@@ -51,6 +51,7 @@ public enum ClothoTentacle implements TentacleType
 	public final boolean rebrousse;
 	public final boolean arret;
 	public double maxSpeed; // en m.s⁻¹
+	public static ClothoidesComputer computer;
 
 	private ClothoTentacle(int vitesse)
 	{
@@ -124,9 +125,9 @@ public enum ClothoTentacle implements TentacleType
 	}
 	
 	@Override
-	public Class<? extends TentacleComputer> getComputer()
+	public TentacleComputer getComputer()
 	{
-		return ClothoidesComputer.class;
+		return computer;
 	}
 
 	@Override

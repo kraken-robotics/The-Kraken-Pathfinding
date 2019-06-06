@@ -26,6 +26,7 @@ public enum SpinTentacle implements TentacleType
 	LEFT(0);
 
 	public final double angle;
+	public static SpinComputer computer;
 	
 	private SpinTentacle(double angle)
 	{
@@ -33,9 +34,9 @@ public enum SpinTentacle implements TentacleType
 	}
 
 	@Override
-	public Class<? extends TentacleComputer> getComputer()
+	public TentacleComputer getComputer()
 	{
-		return SpinComputer.class;
+		return computer;
 	}
 
 	@Override

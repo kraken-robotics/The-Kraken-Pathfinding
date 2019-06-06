@@ -25,6 +25,7 @@ public enum TurnoverTentacle implements TentacleType
 	DEMI_TOUR_GAUCHE(ClothoTentacle.GAUCHE_2);
 
 	public ClothoTentacle v;
+	public static ClothoidesComputer computer;
 
 	private TurnoverTentacle(ClothoTentacle v)
 	{
@@ -54,9 +55,9 @@ public enum TurnoverTentacle implements TentacleType
 	}
 
 	@Override
-	public Class<? extends TentacleComputer> getComputer()
+	public TentacleComputer getComputer()
 	{
-		return ClothoidesComputer.class;
+		return computer;
 	}
 	
 	@Override

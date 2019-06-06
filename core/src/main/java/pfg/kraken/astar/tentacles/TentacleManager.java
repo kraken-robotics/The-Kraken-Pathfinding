@@ -14,7 +14,6 @@ import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import pfg.config.Config;
-import pfg.injector.Injector;
 import pfg.injector.InjectorException;
 import pfg.kraken.ColorKraken;
 import pfg.kraken.ConfigInfoKraken;
@@ -44,7 +43,6 @@ public final class TentacleManager implements Iterator<AStarNode>
 	private DStarLite dstarlite;
 	private double courbureMax, vitesseMax;
 	private boolean printObstacles;
-	private Injector injector;
 	private Display display;
 	private TentacleThread[] threads;
 	private ResearchProfile currentProfile;
@@ -59,9 +57,8 @@ public final class TentacleManager implements Iterator<AStarNode>
 	
 	private int nbLeft;
 	
-	public TentacleManager(NodePool memorymanager, DStarLite dstarlite, Config config, Injector injector, ResearchProfileManager profiles, Display display) throws InjectorException
+	public TentacleManager(NodePool memorymanager, DStarLite dstarlite, Config config, ResearchProfileManager profiles, Display display) throws InjectorException
 	{
-		this.injector = injector;
 		this.dstarlite = dstarlite;
 		this.display = display;
 		this.profiles = profiles;
@@ -82,19 +79,6 @@ public final class TentacleManager implements Iterator<AStarNode>
 		
 		courbureMax = config.getDouble(ConfigInfoKraken.MAX_CURVATURE);
 	}
-
-	public void updateProfiles(ResearchProfile mode)
-	{
-		try {
-			List<TentacleType> profile = mode.tentacles;
-			for(TentacleType t : profile)
-				injector.getService(t.getComputer());
-		} catch(InjectorException e)
-		{
-			e.printStackTrace();
-		}
-	}
-	
 
 	/**
 	 * Initialise l'arc manager avec les infos donnée
@@ -195,7 +179,7 @@ public final class TentacleManager implements Iterator<AStarNode>
 				tt.arrivee = arrivee;
 				tt.current = current;
 				tt.v = v;
-				tt.computer = injector.getExistingService(v.getComputer());
+				tt.computer = v.getComputer();
 				tt.vitesseMax = vitesseMax;
 				
 				if(threads.length == 1) // no multithreading in this case

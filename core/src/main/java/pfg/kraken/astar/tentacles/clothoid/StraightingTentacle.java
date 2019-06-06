@@ -26,6 +26,7 @@ public enum StraightingTentacle implements TentacleType
 																	// centre
 
 	public final ClothoTentacle vitesseGauche, vitesseDroite;
+	public static ClothoidesComputer computer;
 
 	private StraightingTentacle(ClothoTentacle vitesseGauche, ClothoTentacle vitesseDroite)
 	{
@@ -60,9 +61,9 @@ public enum StraightingTentacle implements TentacleType
 	}
 
 	@Override
-	public Class<? extends TentacleComputer> getComputer()
+	public TentacleComputer getComputer()
 	{
-		return ClothoidesComputer.class;
+		return computer;
 	}
 	
 	@Override
