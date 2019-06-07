@@ -16,7 +16,7 @@ import pfg.kraken.astar.tentacles.TentacleComputer;
 import pfg.kraken.astar.tentacles.TentacleType;
 import pfg.kraken.dstarlite.DStarLite;
 import pfg.kraken.memory.EmbodiedKinematicPool;
-import pfg.kraken.obstacles.RectangularObstacle;
+import pfg.kraken.obstacles.RobotShape;
 import pfg.kraken.struct.Kinematic;
 import pfg.kraken.struct.EmbodiedKinematic;
 import pfg.kraken.struct.XY;
@@ -40,7 +40,7 @@ public final class BezierComputer implements TentacleComputer
 	private DStarLite dstarlite;
 	private final double[] maxSpeedLUT;
 
-	public BezierComputer(DStarLite dstarlite, EmbodiedKinematicPool memory, Config config, RectangularObstacle vehicleTemplate)
+	public BezierComputer(DStarLite dstarlite, EmbodiedKinematicPool memory, Config config, RobotShape vehicleTemplate)
 	{
 		this.memory = memory;
 		this.dstarlite = dstarlite;

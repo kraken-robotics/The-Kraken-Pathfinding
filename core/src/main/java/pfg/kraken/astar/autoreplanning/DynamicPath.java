@@ -12,7 +12,7 @@ import pfg.config.Config;
 import pfg.kraken.ConfigInfoKraken;
 import pfg.kraken.exceptions.NoPathException;
 import pfg.kraken.exceptions.PathfindingException;
-import pfg.kraken.obstacles.RectangularObstacle;
+import pfg.kraken.obstacles.RobotShape;
 import pfg.kraken.obstacles.container.DynamicObstacles;
 import pfg.kraken.struct.Kinematic;
 import pfg.kraken.struct.EmbodiedKinematic;
@@ -46,7 +46,7 @@ public final class DynamicPath
 	private final int margeNecessaire, margeInitiale, margeAvantCollision, margePreferable;
 	private volatile PathfindingException e;
 	
-	public DynamicPath(Config config, RectangularObstacle vehicleTemplate)
+	public DynamicPath(Config config, RobotShape vehicleTemplate)
 	{
 		margeNecessaire = (int) Math.ceil(config.getDouble(ConfigInfoKraken.NECESSARY_MARGIN) / PRECISION_TRACE_MM);
 		margePreferable = (int) Math.ceil(config.getDouble(ConfigInfoKraken.PREFERRED_MARGIN) / PRECISION_TRACE_MM);

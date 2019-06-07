@@ -39,7 +39,6 @@ import pfg.kraken.exceptions.NoPathException;
 import pfg.kraken.exceptions.NotInitializedException;
 import pfg.kraken.exceptions.PathfindingException;
 import pfg.kraken.obstacles.Obstacle;
-import pfg.kraken.obstacles.RectangularObstacle;
 import pfg.kraken.obstacles.container.DynamicObstacles;
 import pfg.kraken.obstacles.container.EmptyDynamicObstacles;
 import pfg.kraken.obstacles.container.StaticObstacles;
@@ -68,7 +67,7 @@ public final class Kraken
 	{
 		injector = new Injector();
 		config = new Config(ConfigInfoKraken.values(), isJUnitTest(), param.configfile, param.configprofile);
-		injector.addService(RectangularObstacle.class, param.vehicleTemplate);
+		injector.addService(param.vehicleTemplate);
 
 		/*
 		 * We adjust the maximal curvature in order to never be under the minimal speed

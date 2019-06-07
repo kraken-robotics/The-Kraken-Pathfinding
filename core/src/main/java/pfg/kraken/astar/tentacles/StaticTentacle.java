@@ -5,7 +5,7 @@
 
 package pfg.kraken.astar.tentacles;
 
-import pfg.kraken.obstacles.RectangularObstacle;
+import pfg.kraken.obstacles.RobotShape;
 import pfg.kraken.struct.EmbodiedKinematic;
 
 /**
@@ -20,7 +20,7 @@ public final class StaticTentacle extends Tentacle
 	private static final long serialVersionUID = -5599092863248049576L;
 	public final EmbodiedKinematic[] arcselems = new EmbodiedKinematic[NB_POINTS];
 
-	public StaticTentacle(RectangularObstacle vehicleTemplate)
+	public StaticTentacle(RobotShape vehicleTemplate)
 	{
 		for(int i = 0; i < NB_POINTS; i++)
 			arcselems[i] = new EmbodiedKinematic(vehicleTemplate);

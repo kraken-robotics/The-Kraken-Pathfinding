@@ -9,7 +9,7 @@ import java.io.Serializable;
 
 import pfg.kraken.memory.Memorizable;
 import pfg.kraken.memory.MemoryPool.MemPoolState;
-import pfg.kraken.obstacles.RectangularObstacle;
+import pfg.kraken.obstacles.RobotShape;
 
 /**
  * Une cinématique + un obstacle associé
@@ -22,7 +22,7 @@ public final class EmbodiedKinematic implements Memorizable, Serializable
 {
 	public final Kinematic cinem;
 	private static final long serialVersionUID = 1L;
-	public volatile RectangularObstacle obstacle;
+	public volatile RobotShape obstacle;
 	public volatile double maxSpeed; // in m/s
 
 	private volatile int indiceMemory;
@@ -32,7 +32,7 @@ public final class EmbodiedKinematic implements Memorizable, Serializable
 		return cinem.toString()+", maxSpeed = "+maxSpeed;
 	}
 	
-	public EmbodiedKinematic(RectangularObstacle vehicleTemplate)
+	public EmbodiedKinematic(RobotShape vehicleTemplate)
 	{
 		cinem = new Kinematic();
 		obstacle = vehicleTemplate.clone();

@@ -8,7 +8,7 @@ package pfg.kraken.memory;
 
 import pfg.config.Config;
 import pfg.kraken.ConfigInfoKraken;
-import pfg.kraken.obstacles.RectangularObstacle;
+import pfg.kraken.obstacles.RobotShape;
 import pfg.kraken.struct.EmbodiedKinematic;
 
 /**
@@ -24,9 +24,9 @@ import pfg.kraken.struct.EmbodiedKinematic;
 
 public final class EmbodiedKinematicPool extends MemoryPool<EmbodiedKinematic>
 {
-	private RectangularObstacle vehicleTemplate;
+	private RobotShape vehicleTemplate;
 	
-	public EmbodiedKinematicPool(Config config, RectangularObstacle vehicleTemplate)
+	public EmbodiedKinematicPool(Config config, RobotShape vehicleTemplate)
 	{
 		super(EmbodiedKinematic.class);
 		this.vehicleTemplate = vehicleTemplate;

@@ -14,7 +14,7 @@ import pfg.kraken.astar.tentacles.StaticTentacle;
 import pfg.kraken.astar.tentacles.Tentacle;
 import pfg.kraken.memory.Memorizable;
 import pfg.kraken.memory.MemoryPool.MemPoolState;
-import pfg.kraken.obstacles.RectangularObstacle;
+import pfg.kraken.obstacles.RobotShape;
 import pfg.kraken.struct.Kinematic;
 
 /**
@@ -59,7 +59,7 @@ public final class AStarNode implements Memorizable, Printable
 		state = null;
 	}
 	
-	public AStarNode(RectangularObstacle vehicleTemplate)
+	public AStarNode(RobotShape vehicleTemplate)
 	{
 		cameFromArcStatique = new StaticTentacle(vehicleTemplate);
 		this.cinematique = new Kinematic();

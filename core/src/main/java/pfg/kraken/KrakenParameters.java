@@ -4,12 +4,13 @@ import pfg.kraken.astar.engine.PhysicsEngine;
 import pfg.kraken.display.Display;
 import pfg.kraken.obstacles.Obstacle;
 import pfg.kraken.obstacles.RectangularObstacle;
+import pfg.kraken.obstacles.RobotShape;
 import pfg.kraken.obstacles.container.DynamicObstacles;
 import pfg.kraken.struct.XY;
 
 public class KrakenParameters
 {
-	public RectangularObstacle vehicleTemplate;
+	public RobotShape vehicleTemplate;
 	public Display display;
 	public PhysicsEngine engine;
 	public Iterable<Obstacle> fixedObstacles;
@@ -21,7 +22,7 @@ public class KrakenParameters
 	
 	public KrakenParameters(RectangularObstacle vehicleTemplate, XY bottomLeftCorner, XY topRightCorner, String configfile, String...profiles)
 	{
-		this.vehicleTemplate = vehicleTemplate;
+		this.vehicleTemplate = new RobotShape(vehicleTemplate);
 		this.bottomLeftCorner = bottomLeftCorner;
 		this.topRightCorner = topRightCorner;
 		this.configfile = configfile;

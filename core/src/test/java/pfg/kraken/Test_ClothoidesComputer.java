@@ -8,7 +8,7 @@ package pfg.kraken;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import pfg.kraken.obstacles.RectangularObstacle;
+import pfg.kraken.obstacles.RobotShape;
 import pfg.kraken.struct.Kinematic;
 import pfg.kraken.struct.XY;
 import pfg.kraken.astar.tentacles.StaticTentacle;
@@ -40,7 +40,7 @@ public class Test_ClothoidesComputer extends JUnit_Test
 		int nbArc = 16;
 		StaticTentacle arc[] = new StaticTentacle[nbArc];
 		for(int i = 0; i < nbArc; i++)
-			arc[i] = new StaticTentacle(injector.getService(RectangularObstacle.class));
+			arc[i] = new StaticTentacle(injector.getService(RobotShape.class));
 
 		Kinematic c = new Kinematic(0, 1000, Math.PI / 2, false, 0, false);
 		clotho.getTrajectoire(c, ClothoTentacle.SAME_CURVATURE, arc[0], 0);

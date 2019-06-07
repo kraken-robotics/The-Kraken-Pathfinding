@@ -9,7 +9,7 @@ package pfg.kraken.memory;
 import pfg.config.Config;
 import pfg.kraken.ConfigInfoKraken;
 import pfg.kraken.astar.AStarNode;
-import pfg.kraken.obstacles.RectangularObstacle;
+import pfg.kraken.obstacles.RobotShape;
 
 /**
  * Memory Manager des nœuds du pathfinding courbe
@@ -20,10 +20,10 @@ import pfg.kraken.obstacles.RectangularObstacle;
 
 public final class NodePool extends MemoryPool<AStarNode>
 {
-	private RectangularObstacle vehicleTemplate;
+	private RobotShape vehicleTemplate;
 	private EmbodiedKinematicPool pool;
 
-	public NodePool(Config config, RectangularObstacle vehicleTemplate, EmbodiedKinematicPool pool)
+	public NodePool(Config config, RobotShape vehicleTemplate, EmbodiedKinematicPool pool)
 	{
 		super(AStarNode.class);
 		this.pool = pool;

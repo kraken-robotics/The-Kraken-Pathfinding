@@ -10,6 +10,7 @@ import java.util.Iterator;
 import java.util.List;
 import pfg.kraken.obstacles.Obstacle;
 import pfg.kraken.obstacles.RectangularObstacle;
+import pfg.kraken.obstacles.RobotShape;
 import pfg.kraken.obstacles.container.DynamicObstacles;
 import pfg.kraken.obstacles.container.StaticObstacles;
 import pfg.kraken.struct.XY;
@@ -26,7 +27,7 @@ public final class QuadTreePhysicsEngine implements PhysicsEngine
 	private DynamicObstacles dynamicObs;
 	private List<Obstacle> currentObstacles = new ArrayList<Obstacle>();
 
-	public QuadTreePhysicsEngine(StaticObstacles fixes, DynamicObstacles dynamicObs, RectangularObstacle template)
+	public QuadTreePhysicsEngine(StaticObstacles fixes, DynamicObstacles dynamicObs, RobotShape template)
 	{
 		fixed = new QuadTree(fixes.getBottomLeftCorner().plusNewVector(fixes.getTopRightCorner()).scalar(0.5),
 				fixes.getTopRightCorner().getX() - fixes.getBottomLeftCorner().getX(),

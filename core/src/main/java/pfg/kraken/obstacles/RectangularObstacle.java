@@ -87,7 +87,7 @@ public class RectangularObstacle extends Obstacle
 		this(position, new XY(sizeRightX, sizeUpY), new XY(-sizeLeftX, -sizeDownY), angle);
 	}
 
-	private RectangularObstacle(XY position, XY topRightCorner, XY bottomLeftCorner, double angle)
+	protected RectangularObstacle(XY position, XY topRightCorner, XY bottomLeftCorner, double angle)
 	{
 		// topRightCorner et bottomLeftCorner sont dans le repère de l'obstacle !
 		super(position);

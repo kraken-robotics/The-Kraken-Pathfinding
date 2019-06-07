@@ -32,6 +32,7 @@ import pfg.kraken.memory.EmbodiedKinematicPool;
 import pfg.kraken.memory.MemoryPool.MemPoolState;
 import pfg.kraken.memory.NodePool;
 import pfg.kraken.obstacles.RectangularObstacle;
+import pfg.kraken.obstacles.RobotShape;
 import pfg.kraken.struct.Kinematic;
 import pfg.kraken.struct.EmbodiedKinematic;
 import pfg.kraken.struct.ItineraryPoint;
@@ -161,7 +162,7 @@ public final class TentacularAStar
 	 */
 	private List<AStarNode> outTentacles = new ArrayList<AStarNode>();
 	
-	private RectangularObstacle vehicleTemplate;
+	private RobotShape vehicleTemplate;
 	
 	private double fastFactor;
 	private boolean backup;
@@ -170,7 +171,7 @@ public final class TentacularAStar
 	/**
 	 * Constructeur du AStarCourbe
 	 */
-	public TentacularAStar(PhysicsEngine engine, DynamicPath defaultChemin, DStarLite dstarlite, TentacleManager arcmanager, NodePool memorymanager, EmbodiedKinematicPool rectMemory, Display buffer, Config config, RectangularObstacle vehicleTemplate)
+	public TentacularAStar(PhysicsEngine engine, DynamicPath defaultChemin, DStarLite dstarlite, TentacleManager arcmanager, NodePool memorymanager, EmbodiedKinematicPool rectMemory, Display buffer, Config config, RobotShape vehicleTemplate)
 	{
 		this.engine = engine;
 		this.chemin = defaultChemin;
