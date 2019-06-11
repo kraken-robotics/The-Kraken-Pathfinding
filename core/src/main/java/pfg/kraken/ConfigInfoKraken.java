@@ -47,6 +47,8 @@ public enum ConfigInfoKraken implements ConfigInfo
 	INITIAL_MARGIN(100), // distance of the trajectory after the current point that can't be modified, in mm
 	
 	ENABLE_QUADTREE(false),
+	OBSTACLE_IMMUNITY_CIRCLE(200),
+	ENABLE_START_OBSTACLE_IMMUNITY(false),
 	
 	/**
 	 * Research and mechanical parameter
@@ -81,7 +83,6 @@ public enum ConfigInfoKraken implements ConfigInfo
 								// données par le D* Lite
 	GRAPHIC_ENABLE(false), // désactive tout affichage si faux (empêche le
 							// thread d'affichage de se lancer)
-	GRAPHIC_SERVER(false), // active le serveur d'affichage
 	GRAPHIC_D_STAR_LITE(false), // affiche les calculs du D* Lite
 	GRAPHIC_TENTACLES(false), // affiche les trajectoires temporaires
 	GRAPHIC_FIXED_OBSTACLES(false), // affiche les obstacles fixes

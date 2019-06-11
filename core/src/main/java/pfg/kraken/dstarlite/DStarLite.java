@@ -255,11 +255,11 @@ public final class DStarLite
 	 * @param depart (un Vec2)
 	 * @throws NoPathException 
 	 */
-	public boolean computeNewPath(XY depart, XY arrivee) throws NoPathException
+	public boolean computeNewPath(XY depart, XY arrivee, boolean checkStartPoint) throws NoPathException
 	{
 		List<Obstacle> obs = statObs.getObstacles();
 		for(Obstacle o : obs)
-			if(o.isInObstacle(depart))
+			if(checkStartPoint && o.isInObstacle(depart))
 				throw new NoPathException("Starting point in obstacle "+o);
 			else if(o.isInObstacle(arrivee))
 				throw new NoPathException("Finish point in obstacle "+o);

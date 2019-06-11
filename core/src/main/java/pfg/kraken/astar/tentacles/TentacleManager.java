@@ -18,6 +18,7 @@ import pfg.injector.InjectorException;
 import pfg.kraken.ConfigInfoKraken;
 import pfg.kraken.astar.AStarNode;
 import pfg.kraken.astar.DirectionStrategy;
+import pfg.kraken.astar.engine.PhysicsEngine;
 import pfg.kraken.astar.profiles.ResearchProfile;
 import pfg.kraken.astar.profiles.ResearchProfileManager;
 import pfg.kraken.astar.tentacles.computethread.TentacleTask;
@@ -26,6 +27,7 @@ import pfg.kraken.dstarlite.DStarLite;
 import pfg.kraken.exceptions.UnknownModeException;
 import pfg.kraken.memory.NodePool;
 import pfg.kraken.struct.Kinematic;
+import pfg.kraken.struct.XY;
 import pfg.kraken.struct.EmbodiedKinematic;
 import pfg.kraken.struct.XYO;
 import pfg.kraken.display.ColorKraken;
@@ -56,20 +58,30 @@ public final class TentacleManager implements Iterator<AStarNode>
 	private List<TentacleTask> tasks = new ArrayList<TentacleTask>();
 	private BlockingQueue<AStarNode> successeurs = new LinkedBlockingQueue<AStarNode>();
 	private BlockingQueue<TentacleTask> buffer = new LinkedBlockingQueue<TentacleTask>();
+	private PhysicsEngine engine;
 	
 	private int nbLeft;
+	private double squaredImmunityCircle;
+	private XY startPosition;
 	
-	public TentacleManager(NodePool memorymanager, DStarLite dstarlite, Config config, ResearchProfileManager profiles, Display display) throws InjectorException
+	public TentacleManager(NodePool memorymanager, PhysicsEngine engine, DStarLite dstarlite, Config config, ResearchProfileManager profiles, Display display) throws InjectorException
 	{
 		this.dstarlite = dstarlite;
 		this.display = display;
 		this.profiles = profiles;
+		this.engine = engine;
 		
 		for(int i = 0; i < 100; i++)
 			tasks.add(new TentacleTask());
 	
 		printObstacles = config.getBoolean(ConfigInfoKraken.GRAPHIC_ROBOT_COLLISION);
 		int nbThreads = config.getInt(ConfigInfoKraken.THREAD_NUMBER);
+		
+		squaredImmunityCircle = config.getDouble(ConfigInfoKraken.OBSTACLE_IMMUNITY_CIRCLE);
+		if(squaredImmunityCircle < 0)
+			squaredImmunityCircle = 0;
+		else
+			squaredImmunityCircle *= squaredImmunityCircle;
 		
 		threads = new TentacleThread[nbThreads];
 		for(int i = 0; i < nbThreads; i++)
@@ -263,6 +275,26 @@ public final class TentacleManager implements Iterator<AStarNode>
 	@Override
 	public AStarNode next()
 	{
+		if(startPosition != null)
+		{
+			Tentacle arc = next.getArc();
+			int nb = arc.getNbPoints();
+			for(int i = 0; i < nb; i++)
+			{
+				EmbodiedKinematic point = arc.getPoint(i);
+				if(startPosition.squaredDistance(point.cinem.getPosition()) < squaredImmunityCircle && engine.isThereCollision(point.obstacle))
+				{
+					point.ignoreCollision = true;
+					next.date += 10000000;
+				}
+			}
+		}
 		return next;
 	}
+
+	public void enableStartObstacleImmunity(XY startPosition)
+	{
+		this.startPosition = startPosition;
+	}
+
 }

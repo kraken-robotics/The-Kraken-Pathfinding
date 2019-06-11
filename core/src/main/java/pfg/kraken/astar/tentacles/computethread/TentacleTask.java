@@ -9,6 +9,7 @@ import pfg.kraken.astar.AStarNode;
 import pfg.kraken.astar.tentacles.TentacleComputer;
 import pfg.kraken.astar.tentacles.TentacleType;
 import pfg.kraken.struct.Kinematic;
+import pfg.kraken.struct.XY;
 
 /**
  * A structure
@@ -23,4 +24,5 @@ public class TentacleTask {
 	public volatile Kinematic arrivee;
 	public volatile TentacleComputer computer;
 	public volatile double vitesseMax;
+	public volatile XY startPosition;
 }

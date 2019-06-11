@@ -48,6 +48,8 @@ public abstract class Tentacle implements Printable, Iterable<RectangularObstacl
 	
 	private int indexIter;
 	
+	private int remainingNb;
+	
 	public abstract int getNbPoints();
 
 	public abstract EmbodiedKinematic getPoint(int indice);
@@ -95,18 +97,25 @@ public abstract class Tentacle implements Printable, Iterable<RectangularObstacl
 	public Iterator<RectangularObstacle> iterator()
 	{
 		indexIter = 0;
+		remainingNb = 0;
+		for(int i = 0; i < getNbPoints(); i++)
+			if(!getPoint(i).ignoreCollision)
+				remainingNb++;
 		return this;
 	}
 
 	@Override
 	public boolean hasNext()
 	{
-		return indexIter < getNbPoints();
+		return remainingNb > 0;
 	}
 
 	@Override
 	public RectangularObstacle next()
 	{
+		while(getPoint(indexIter).ignoreCollision)
+			indexIter++;
+		remainingNb--;
 		return getPoint(indexIter++).obstacle;
 	}
 }

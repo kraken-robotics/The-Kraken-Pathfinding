@@ -26,4 +26,6 @@ public interface PhysicsEngine
 	 * @return
 	 */
 	public boolean isThereCollision(Iterable<RectangularObstacle> tentacle);
+
+	public boolean isThereCollision(RectangularObstacle obstacle);
 }

@@ -1,5 +1,6 @@
 # Unreleased
 - Penalty to high curvature in order to promote straighter path (config: CURVATURE_PENALTY)
+- Kraken can find a path even if the start point is in an obstacle (config: ENABLE_START_OBSTACLE_IMMUNITY)
 - New example: Eurobot 2019
 
 # v2.0.0

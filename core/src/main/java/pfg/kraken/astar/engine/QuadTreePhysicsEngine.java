@@ -59,21 +59,28 @@ public final class QuadTreePhysicsEngine implements PhysicsEngine
 	public boolean isThereCollision(Iterable<RectangularObstacle> tentacle)
 	{
 		for(RectangularObstacle co : tentacle)
-		{
-			// On vérifie la collision avec les murs
-			for(int i = 0; i < 4; i++)
-				if(co.isColliding(coins[i], coins[(i+1)&3]))
-					return true;
+			if(isThereCollision(co))
+				return true;
+		
+		return false;
+	}
 
-			// Collision avec un obstacle fixe?
-			if(fixed.isThereCollision(co))
+	@Override
+	public boolean isThereCollision(RectangularObstacle co)
+	{
+		// On vérifie la collision avec les murs
+		for(int i = 0; i < 4; i++)
+			if(co.isColliding(coins[i], coins[(i+1)&3]))
 				return true;
 
-			// Collision avec un obstacle de proximité ?
-			for(Obstacle n : currentObstacles)
-				if(n.isColliding(co))
-					return true;
-		}
+		// Collision avec un obstacle fixe?
+		if(fixed.isThereCollision(co))
+			return true;
+
+		// Collision avec un obstacle de proximité ?
+		for(Obstacle n : currentObstacles)
+			if(n.isColliding(co))
+				return true;
 
 		return false;
 	}

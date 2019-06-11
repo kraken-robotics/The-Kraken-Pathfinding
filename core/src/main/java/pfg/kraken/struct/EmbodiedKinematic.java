@@ -24,7 +24,8 @@ public final class EmbodiedKinematic implements Memorizable, Serializable
 	private static final long serialVersionUID = 1L;
 	public volatile RobotShape obstacle;
 	public volatile double maxSpeed; // in m/s
-
+	public volatile boolean ignoreCollision;
+	
 	private volatile int indiceMemory;
 	
 	public String toString()
@@ -74,6 +75,7 @@ public final class EmbodiedKinematic implements Memorizable, Serializable
 	{
 		cinem.update(x, y, orientationGeometrique, enMarcheAvant, courbure, stop);
 		this.maxSpeed = maxSpeed;
+		ignoreCollision = false;
 		obstacle.update(cinem.position, cinem.orientationReelle);
 	}
 
@@ -103,6 +105,7 @@ public final class EmbodiedKinematic implements Memorizable, Serializable
 	{
 		cinem.update(p);
 		maxSpeed = p.maxSpeed;
+		ignoreCollision = false;
 		obstacle.update(cinem.position, cinem.orientationReelle);
 	}
 }

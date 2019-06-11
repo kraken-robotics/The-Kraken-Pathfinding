@@ -119,9 +119,12 @@ public final class TentacularAStar
 	 */
 	private int nbExpandedNodes;
 	private boolean debugMode;
+	
+	
 	private boolean initialized = false;
 	private boolean checkEachIteration;
 	public volatile boolean stop = false;
+	private boolean enableStartObstacleImmunity;
 
 	/**
 	 * Comparateur de noeud utilisé par la priority queue.
@@ -184,6 +187,7 @@ public final class TentacularAStar
 		debugMode = config.getBoolean(ConfigInfoKraken.ENABLE_DEBUG_MODE);
 		backup = config.getBoolean(ConfigInfoKraken.ENABLE_BACKUP_PATH);
 		fastFactor = config.getDouble(ConfigInfoKraken.FAST_AND_DIRTY_COEFF);
+		enableStartObstacleImmunity = config.getBoolean(ConfigInfoKraken.ENABLE_START_OBSTACLE_IMMUNITY);
 		if(fastFactor < 1)
 			fastFactor = 1;
 		checkEachIteration = config.getBoolean(ConfigInfoKraken.CHECK_NEW_OBSTACLES);
@@ -547,18 +551,26 @@ public final class TentacularAStar
 			dureeMaxPF = defaultTimeout;
 		else
 			dureeMaxPF = timeout;
-		
-		finalPoint.get(0).update(start.getPosition(), start.orientationReelle);
+
+/*		finalPoint.get(0).update(start.getPosition(), start.orientationReelle);
 		if(engine.isThereCollision(finalPoint))
-			throw new NoPathException("The start point collides an obstacle !");
+			throw new NoPathException("The start point collides an obstacle !");*/
 		
 		arcmanager.configure(directionstrategy == null ? defaultStrategy : directionstrategy, maxSpeed == null ? defaultSpeed : maxSpeed, arrival, mode);
 		engine.update();
 		
 		// check the start point
 		finalPoint.get(0).update(start.getPosition(), start.orientationReelle);		
+		arcmanager.enableStartObstacleImmunity(null);
+		
 		if(engine.isThereCollision(finalPoint))
-			throw new StartPointException("The startpoint collides an obstacle !");
+		{
+			if(enableStartObstacleImmunity)
+				arcmanager.enableStartObstacleImmunity(start.getPosition());
+			else
+				throw new StartPointException("The start point collides an obstacle !");
+				
+		}
 		
 		if(mode.equals("XYO") || mode.equals("XYOC0"))
 		{
@@ -572,7 +584,7 @@ public final class TentacularAStar
 		 * dstarlite.computeNewPath updates the heuristic.
 		 * It returns false if there is no path between start and arrival
 		 */
-		if(!dstarlite.computeNewPath(depart.cinematique.getPosition(), arrival.getPosition()))
+		if(!dstarlite.computeNewPath(depart.cinematique.getPosition(), arrival.getPosition(), !enableStartObstacleImmunity))
 			throw new NoPathException("No path found by D* Lite !");
 	}
 	
@@ -600,7 +612,7 @@ public final class TentacularAStar
 		// On met à jour le D* Lite
 		engine.update();
 		
-		if(!dstarlite.computeNewPath(depart.cinematique.getPosition(), arrival.getPosition()))
+		if(!dstarlite.computeNewPath(depart.cinematique.getPosition(), arrival.getPosition(), true))
 			throw new NoPathException("No path found by D* Lite !");
 
 		search();
