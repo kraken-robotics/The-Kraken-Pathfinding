@@ -47,7 +47,7 @@ public enum ConfigInfoKraken implements ConfigInfo
 	INITIAL_MARGIN(100), // distance of the trajectory after the current point that can't be modified, in mm
 	
 	ENABLE_QUADTREE(false),
-	OBSTACLE_IMMUNITY_CIRCLE(200),
+	OBSTACLE_IMMUNITY_CIRCLE(800),
 	ENABLE_START_OBSTACLE_IMMUNITY(false),
 	
 	/**

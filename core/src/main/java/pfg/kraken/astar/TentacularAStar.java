@@ -137,11 +137,7 @@ public final class TentacularAStar
 		@Override
 		public final int compare(AStarNode arg0, AStarNode arg1)
 		{
-			// Ordre lexico : on compare d'abord first, puis second
-			int tmp = (arg0.f_score - arg1.f_score);
-			if(tmp != 0)
-				return tmp;
-			return arg0.g_score - arg1.g_score;
+			return (int)(arg0.f_score - arg1.f_score);
 		}
 	}
 
@@ -384,6 +380,7 @@ public final class TentacularAStar
 			// trajectoire de secours est la meilleure possible, donc on a fini
 			if(current == trajetDeSecours)
 			{
+//				System.out.println("Trajet de secours optimal");
 				partialReconstruct(current, chemin, Integer.MAX_VALUE, false);
 				memorymanager.empty();
 				cinemMemory.empty();
@@ -409,6 +406,7 @@ public final class TentacularAStar
 				cinemMemory.empty();
 				if(backup && trajetDeSecours != null) // si on a un trajet de secours, on l'utilise
 				{
+//					System.out.println("Timeout");
 					partialReconstruct(trajetDeSecours, chemin, Integer.MAX_VALUE, false);
 					return;
 				}
@@ -455,14 +453,17 @@ public final class TentacularAStar
 				}
 
 				successeur.f_score = successeur.g_score + heuristique;
+//				System.out.println(successeur.getArc().vitesse+" "+successeur.f_score+" "+successeur.g_score+" "+heuristique);
 
 				// est qu'on est tombé sur l'arrivée ? alors ça fait un trajet de secours
 				// s'il y a déjà un trajet de secours, on prend le meilleur
 				if(successeur.getArc() != null && arcmanager.isArrived(successeur.getArc().getLast().cinem) && (successeur.getArc() == null || !engine.isThereCollision(successeur.getArc())) && (trajetDeSecours == null || trajetDeSecours.f_score > successeur.f_score))
 				{
 					trajetDeSecours = successeur;
-					if(!openset.isEmpty() && successeur.f_score < fastFactor * openset.peek().f_score)
+					if((openset.isEmpty() && successeur.f_score < fastFactor * arcmanager.heuristicCostCourbe(depart.cinematique)) ||
+							(!openset.isEmpty() && successeur.f_score < fastFactor * openset.peek().f_score))
 					{
+//						System.out.println("Fast and dirty");
 //						System.out.println(successeur.f_score);
 //						log.write("A fast-and-dirty path is used.", LogCategoryKraken.PF);
 						partialReconstruct(trajetDeSecours, chemin, Integer.MAX_VALUE, false);

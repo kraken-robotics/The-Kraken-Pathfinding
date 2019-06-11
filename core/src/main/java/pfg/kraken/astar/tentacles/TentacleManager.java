@@ -285,7 +285,7 @@ public final class TentacleManager implements Iterator<AStarNode>
 				if(startPosition.squaredDistance(point.cinem.getPosition()) < squaredImmunityCircle && engine.isThereCollision(point.obstacle))
 				{
 					point.ignoreCollision = true;
-					next.date += 10000000;
+					next.g_score += 100000000;
 				}
 			}
 		}
