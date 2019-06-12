@@ -18,6 +18,7 @@ import pfg.injector.InjectorException;
 import pfg.kraken.ConfigInfoKraken;
 import pfg.kraken.astar.AStarNode;
 import pfg.kraken.astar.DirectionStrategy;
+import pfg.kraken.astar.AStarNode.SearchDirection;
 import pfg.kraken.astar.engine.PhysicsEngine;
 import pfg.kraken.astar.profiles.ResearchProfile;
 import pfg.kraken.astar.profiles.ResearchProfileManager;
@@ -206,9 +207,9 @@ public final class TentacleManager implements Iterator<AStarNode>
 		assert threads.length > 1 || successeurs.size() == nbLeft;
 	}
 
-	public synchronized Integer heuristicCostCourbe(Kinematic c, boolean ignoreObstacle)
+	public synchronized Integer heuristicCostCourbe(Kinematic c, boolean ignoreObstacle, SearchDirection dir)
 	{
-		Double d = dstarlite.heuristicDistance(c, ignoreObstacle);
+		Double d = dstarlite.heuristicDistance(c, ignoreObstacle, dir);
 		if(d == null)
 			return null;
 	
@@ -226,7 +227,7 @@ public final class TentacleManager implements Iterator<AStarNode>
 		{
 			if(currentProfile.coeffAngleError != 0)
 			{
-				o = dstarlite.heuristicOrientation(c, ignoreObstacle);
+				o = dstarlite.heuristicOrientation(c, ignoreObstacle, dir);
 				if(o == null)
 					return null;
 				h = currentProfile.coeffDistanceError * d + currentProfile.coeffAngleError * o;

@@ -13,6 +13,7 @@ import pfg.kraken.display.ColorKraken;
 import pfg.kraken.display.Display;
 import pfg.kraken.display.Layer;
 import pfg.kraken.ConfigInfoKraken;
+import pfg.kraken.astar.AStarNode.SearchDirection;
 import pfg.kraken.dstarlite.navmesh.Navmesh;
 import pfg.kraken.dstarlite.navmesh.NavmeshEdge;
 import pfg.kraken.dstarlite.navmesh.NavmeshNode;
@@ -48,10 +49,10 @@ public final class DStarLite
 	private List<DStarLiteNode> overconsistentExpansion = new ArrayList<DStarLiteNode>(); 
 	private List<DStarLiteNode> underconsistentExpansion = new ArrayList<DStarLiteNode>(); 
 	
-	private DStarLiteNode[] memory;
+	private DStarLiteNode[][] memory;
 
-	private EnhancedPriorityQueue openset;
-	private DStarLiteNode arrivee;
+	private EnhancedPriorityQueue[] openset;
+	private DStarLiteNode[] arrivee = new DStarLiteNode[2];
 	private Display buffer;
 	private long nbPF = 0;
 	private boolean printItineraire;
@@ -74,11 +75,14 @@ public final class DStarLite
 		this.statObs = statObs;
 		
 		int nbPoints = navmesh.mesh.nodes.length;
-		openset = new EnhancedPriorityQueue(nbPoints);
+		openset = new EnhancedPriorityQueue[]{new EnhancedPriorityQueue(nbPoints), new EnhancedPriorityQueue(nbPoints)};
 		
-		memory = new DStarLiteNode[nbPoints];
+		memory = new DStarLiteNode[2][nbPoints];
 		for(int i = 0; i < nbPoints; i++)
-			memory[i] = new DStarLiteNode(navmesh.mesh.nodes[i]);
+		{
+			memory[0][i] = new DStarLiteNode(navmesh.mesh.nodes[i]);
+			memory[1][i] = new DStarLiteNode(navmesh.mesh.nodes[i]);
+		}
 
 		graphicHeuristique = config.getBoolean(ConfigInfoKraken.GRAPHIC_HEURISTIC);
 		printItineraire = config.getBoolean(ConfigInfoKraken.GRAPHIC_D_STAR_LITE);
@@ -108,9 +112,9 @@ public final class DStarLite
 		return copy;
 	}
 
-	private DStarLiteNode getFromMemory(NavmeshNode gridpoint)
+	private DStarLiteNode getFromMemory(NavmeshNode gridpoint, SearchDirection dir)
 	{
-		DStarLiteNode out = memory[gridpoint.nb];
+		DStarLiteNode out = memory[dir.ordinal()][gridpoint.nb];
 		out.update(nbPF);
 
 		return out;
@@ -121,7 +125,7 @@ public final class DStarLite
 	 * afin de conserver l'invariant : consistent <=> in openset
 	 * @param u
 	 */
-	private final void updateVertex(DStarLiteNode u)
+	private final void updateVertex(DStarLiteNode u, SearchDirection dir)
 	{
 		if(!u.isConsistent())
 		{
@@ -129,23 +133,23 @@ public final class DStarLite
 			calcKey(u);
 			if(u.inOpenSet)
 			{
-				assert openset.contains(u);
+				assert openset[dir.ordinal()].contains(u);
 				if(u.cle.greaterThan(tmp)) // la clé a augmenté
-					openset.percolateDown(u);
+					openset[dir.ordinal()].percolateDown(u);
 				else
-					openset.percolateUp(u);
+					openset[dir.ordinal()].percolateUp(u);
 			}
 			else
 			{
-				assert !openset.contains(u);
+				assert !openset[dir.ordinal()].contains(u);
 				u.inOpenSet = true;
-				openset.add(u);
+				openset[dir.ordinal()].add(u);
 			}
 		}
 		else if(u.inOpenSet)
 		{
-			assert openset.contains(u);
-			openset.remove(u);
+			assert openset[dir.ordinal()].contains(u);
+			openset[dir.ordinal()].remove(u);
 			u.inOpenSet = false;
 		}
 	}
@@ -154,16 +158,16 @@ public final class DStarLite
 	 * Renvoie true ssi un chemin a été trouvé
 	 * @return
 	 */
-	private void updateHeuristic()
+	private void updateHeuristic(SearchDirection dir)
 	{
 		overconsistentExpansion.clear();
 		underconsistentExpansion.clear();
 		DStarLiteNode u;
 		String str;
 		// on traite tous les nœuds une fois pour toute
-		while(!openset.isEmpty())
+		while(!openset[dir.ordinal()].isEmpty())
 		{
-			u = openset.peek();
+			u = openset[dir.ordinal()].peek();
 			assert ((str = checkExpansion(u)) == null) : str;
 			assert ((str = checkInvariantRhs()) == null) : str;
 			assert ((str = checkInvariantOpenset()) == null) : str;
@@ -176,21 +180,21 @@ public final class DStarLite
 				// la clé a augmenté
 //				System.out.println("Cas 1");
 				knew.copy(u.cle);
-				openset.percolateDown(u);
+				openset[dir.ordinal()].percolateDown(u);
 			}
 			else if(u.g > u.rhs)
 			{
 //				System.out.println("Cas 2");
 				u.g = u.rhs;
-				openset.poll();
+				openset[dir.ordinal()].poll();
 				u.inOpenSet = false;
 
 				int nbNeighbours = u.node.getNbNeighbours();
 				for(int i = 0; i < nbNeighbours; i++)
 				{
-					DStarLiteNode s = getFromMemory(u.node.getNeighbour(i));
+					DStarLiteNode s = getFromMemory(u.node.getNeighbour(i), dir);
 					s.rhs = Math.min(s.rhs, add(u.node.getNeighbourEdge(i).getDistance(), u.g));
-					updateVertex(s);
+					updateVertex(s, dir);
 				}
 
 			}
@@ -203,7 +207,7 @@ public final class DStarLite
 				for(int i = 0; i < nbNeighbours; i++)
 				{
 					NavmeshNode n = u.node.getNeighbour(i);
-					DStarLiteNode s = getFromMemory(n);
+					DStarLiteNode s = getFromMemory(n, dir);
 
 					if(s.rhs == add(u.node.getNeighbourEdge(i).getDistance(), gold) && !s.equals(arrivee))
 					{
@@ -212,12 +216,12 @@ public final class DStarLite
 						for(int j = 0; j < nbNeighbours2; j++)
 						{
 							NavmeshNode n2 = n.getNeighbour(j);
-							DStarLiteNode s2 = getFromMemory(n2);
+							DStarLiteNode s2 = getFromMemory(n2, dir);
 
 							s.rhs = Math.min(s.rhs, add(n.getNeighbourEdge(j).getDistance(), s2.g));
 						}
 					}
-					updateVertex(s);
+					updateVertex(s, dir);
 				}
 				// Dans la boucle, il faut aussi faire u.
 				if(u.rhs == gold && !u.equals(arrivee))
@@ -227,25 +231,25 @@ public final class DStarLite
 					for(int i = 0; i < nbNeighbours2; i++)
 					{
 						NavmeshNode n = u.node.getNeighbour(i);
-						DStarLiteNode s2 = getFromMemory(n);
+						DStarLiteNode s2 = getFromMemory(n, dir);
 
 						u.rhs = Math.min(u.rhs, add(u.node.getNeighbourEdge(i).getDistance(), s2.g));
 					}
 				}
 
-				updateVertex(u);
+				updateVertex(u, dir);
 			}
 
 		}
 		
-		for(int i = 0; i < memory.length; i++)
-			if(memory[i].nbPF == nbPF) // on met d'abord à jour tous les meilleurs voisins
-				if(memory[i] != arrivee && memory[i].rhs != Integer.MAX_VALUE)
-					memory[i].bestVoisin = getBestVoisin(memory[i].node);
+		for(int i = 0; i < memory[dir.ordinal()].length; i++)
+			if(memory[dir.ordinal()][i].nbPF == nbPF) // on met d'abord à jour tous les meilleurs voisins
+				if(memory[dir.ordinal()][i] != arrivee[dir.ordinal()] && memory[dir.ordinal()][i].rhs != Integer.MAX_VALUE)
+					memory[dir.ordinal()][i].bestVoisin = getBestVoisin(memory[dir.ordinal()][i].node, dir);
 
-		for(int i = 0; i < memory.length; i++)
-			if(memory[i].nbPF == nbPF) // ceux qui ne sont pas à jour auront de toute façon une heuristique nulle
-				updateOrientationHeuristic(memory[i]);
+		for(int i = 0; i < memory[dir.ordinal()].length; i++)
+			if(memory[dir.ordinal()][i].nbPF == nbPF) // ceux qui ne sont pas à jour auront de toute façon une heuristique nulle
+				updateOrientationHeuristic(memory[dir.ordinal()][i], dir);
 	}
 
 	/**
@@ -267,8 +271,9 @@ public final class DStarLite
 		
 		changeGoal(arrivee);
 		updateObstacles();
-		updateHeuristic();
-		return getFromMemory(navmesh.getNearestAvailable(depart)).rhs != Integer.MAX_VALUE;
+		updateHeuristic(SearchDirection.FORWARD);
+//		updateHeuristic(SearchDirection.BACKWARD);
+		return getFromMemory(navmesh.getNearestAvailable(depart), SearchDirection.FORWARD).rhs != Integer.MAX_VALUE;
 	}
 
 	/**
@@ -285,13 +290,13 @@ public final class DStarLite
 		nbPF++;
 
 		this.positionArrivee = positionArrivee;
-		arrivee = getFromMemory(navmesh.getNearest(positionArrivee));
-		arrivee.rhs = 0;
-		arrivee.cle.set(0, 0);
+		arrivee[SearchDirection.FORWARD.ordinal()] = getFromMemory(navmesh.getNearest(positionArrivee), SearchDirection.FORWARD);
+		arrivee[SearchDirection.FORWARD.ordinal()].rhs = 0;
+		arrivee[SearchDirection.FORWARD.ordinal()].cle.set(0, 0);
 
-		openset.clear();
-		openset.add(arrivee);
-		arrivee.inOpenSet = true;
+		openset[SearchDirection.FORWARD.ordinal()].clear();
+		openset[SearchDirection.FORWARD.ordinal()].add(arrivee[SearchDirection.FORWARD.ordinal()]);
+		arrivee[SearchDirection.FORWARD.ordinal()].inOpenSet = true;
 	}
 
 	/**
@@ -317,36 +322,40 @@ public final class DStarLite
 
 			if(!e.isBlocked())
 			{
-				for(int k = 0; k < 2; k++)
-				{
-					DStarLiteNode u = getFromMemory(e.points[k]);
-					DStarLiteNode v = getFromMemory(e.points[(k+1)%2]);
-	
-					u.rhs = Math.min(u.rhs, add(e.getDistance(), v.g));
-					updateVertex(u);
-				}
+				SearchDirection dir = SearchDirection.FORWARD;
+//				for(SearchDirection dir : SearchDirection.values())
+					for(int k = 0; k < 2; k++)
+					{
+						DStarLiteNode u = getFromMemory(e.points[k], dir);
+						DStarLiteNode v = getFromMemory(e.points[(k+1)%2], dir);
+		
+						u.rhs = Math.min(u.rhs, add(e.getDistance(), v.g));
+						updateVertex(u, dir);
+					}
 			}
 			else
 			{
-				for(int k = 0; k < 2; k++)
-				{
-					DStarLiteNode u = getFromMemory(e.points[k]);
-					DStarLiteNode v = getFromMemory(e.points[(k+1)%2]);
-	
-					// l'ancienne distance est la distance statique car c'est un
-					// ajout d'obstacle
-					if(u.rhs == add(e.getUnblockedDistance(), v.g) && !u.equals(arrivee))
+				SearchDirection dir = SearchDirection.FORWARD;
+//				for(SearchDirection dir : SearchDirection.values())
+					for(int k = 0; k < 2; k++)
 					{
-						u.rhs = Integer.MAX_VALUE;
-						int nbNeighbours = u.node.getNbNeighbours();
-						for(int i = 0; i < nbNeighbours; i++)
+						DStarLiteNode u = getFromMemory(e.points[k], dir);
+						DStarLiteNode v = getFromMemory(e.points[(k+1)%2], dir);
+		
+						// l'ancienne distance est la distance statique car c'est un
+						// ajout d'obstacle
+						if(u.rhs == add(e.getUnblockedDistance(), v.g) && !u.equals(arrivee))
 						{
-							NavmeshNode s = u.node.getNeighbour(i);
-							u.rhs = Math.min(u.rhs, add(u.node.getNeighbourEdge(i).getDistance(), getFromMemory(s).g));
+							u.rhs = Integer.MAX_VALUE;
+							int nbNeighbours = u.node.getNbNeighbours();
+							for(int i = 0; i < nbNeighbours; i++)
+							{
+								NavmeshNode s = u.node.getNeighbour(i);
+								u.rhs = Math.min(u.rhs, add(u.node.getNeighbourEdge(i).getDistance(), getFromMemory(s, dir).g));
+							}
 						}
+						updateVertex(u, dir);
 					}
-					updateVertex(u);
-				}
 				
 			}
 		}
@@ -368,7 +377,7 @@ public final class DStarLite
 	{
 		trajet.clear();
 		
-		DStarLiteNode node = getFromMemory(navmesh.getNearest(depart));
+		DStarLiteNode node = getFromMemory(navmesh.getNearest(depart), SearchDirection.FORWARD);
 		DStarLiteNode min = null;
 		int coutMin;
 
@@ -396,7 +405,7 @@ public final class DStarLite
 			min = null;
 			for(int i = 0; i < nbNeighbours; i++)
 			{
-				DStarLiteNode s = getFromMemory(node.node.getNeighbour(i));
+				DStarLiteNode s = getFromMemory(node.node.getNeighbour(i), SearchDirection.FORWARD);
 				int coutTmp = add(node.node.getNeighbourEdge(i).getDistance(), s.g);
 				if(coutTmp < coutMin)
 				{
@@ -414,13 +423,13 @@ public final class DStarLite
 			node = min;
 		}
 		
-		trajet.add(new XYO(arrivee.node.position.clone(), 0)); // pas d'heuristique d'orientation sur le point d'arrivée
+		trajet.add(new XYO(arrivee[SearchDirection.FORWARD.ordinal()].node.position.clone(), 0)); // pas d'heuristique d'orientation sur le point d'arrivée
 
 		return trajet;
 
 	}
 
-	public synchronized Double heuristicDistance(Kinematic c, boolean ignoreObstacle)
+	public synchronized Double heuristicDistance(Kinematic c, boolean ignoreObstacle, SearchDirection dir)
 	{
 		NavmeshNode pos;
 		if(ignoreObstacle)
@@ -433,19 +442,19 @@ public final class DStarLite
 		}
 		
 		// si on est arrivé… on est arrivé.
-		if(pos.equals(arrivee.node))
+		if(pos.equals(arrivee[dir.ordinal()].node))
 			return 0.;
 
-		DStarLiteNode premier = getFromMemory(pos);
+		DStarLiteNode premier = getFromMemory(pos, dir);
 		
-		if(premier == arrivee)
+		if(premier == arrivee[dir.ordinal()])
 			return c.getPosition().distanceFast(positionArrivee);
 		
 		if(premier.heuristiqueOrientation == null)
 			return null;
 		
 		NavmeshNode voisin = pos.getNeighbour(premier.bestVoisin);
-		double erreurDistance = c.getPosition().distanceFast(voisin.position) + (memory[voisin.nb].rhs) / 1000. + arrivee.node.position.distanceFast(positionArrivee);
+		double erreurDistance = c.getPosition().distanceFast(voisin.position) + (memory[dir.ordinal()][voisin.nb].rhs) / 1000. + arrivee[dir.ordinal()].node.position.distanceFast(positionArrivee);
 		
 		return erreurDistance;	
 	}
@@ -457,7 +466,7 @@ public final class DStarLite
 	 * @param c
 	 * @return
 	 */
-	public synchronized Double heuristicOrientation(Kinematic c, boolean ignoreObstacle)
+	public synchronized Double heuristicOrientation(Kinematic c, boolean ignoreObstacle, SearchDirection dir)
 	{
 		// TODO synchronized nécessaire ?
 		NavmeshNode pos;
@@ -471,12 +480,12 @@ public final class DStarLite
 		}
 		
 		// si on est arrivé… on est arrivé.
-		if(pos.equals(arrivee.node))
+		if(pos.equals(arrivee[dir.ordinal()].node))
 			return 0.;
 
-		DStarLiteNode premier = getFromMemory(pos);
+		DStarLiteNode premier = getFromMemory(pos, dir);
 		
-		if(premier == arrivee)
+		if(premier == arrivee[dir.ordinal()])
 			return c.getPosition().distanceFast(positionArrivee);
 		
 		if(premier.heuristiqueOrientation == null)
@@ -511,17 +520,17 @@ public final class DStarLite
 	 * @param node
 	 * @return
 	 */
-	private int getBestVoisin(NavmeshNode node)
+	private int getBestVoisin(NavmeshNode node, SearchDirection dir)
 	{
 		int nbVoisins = node.getNbNeighbours();
 		assert nbVoisins > 0; // un nœud a forcément au moins un voisin
 		int bestVoisin = 0;
-		int bestVoisinDistance = add(getFromMemory(node.getNeighbour(0)).rhs, node.getNeighbourEdge(0).getDistance());
+		int bestVoisinDistance = add(getFromMemory(node.getNeighbour(0), dir).rhs, node.getNeighbourEdge(0).getDistance());
 		
 		for(int i = 1; i < nbVoisins; i++)
 		{
 			NavmeshNode voisin = node.getNeighbour(i);
-			int candidatDistance = add(getFromMemory(voisin).rhs, node.getNeighbourEdge(i).getDistance());
+			int candidatDistance = add(getFromMemory(voisin, dir).rhs, node.getNeighbourEdge(i).getDistance());
 			assert candidatDistance >= 0 : "Distance négative ! "+candidatDistance;
 			if(candidatDistance < bestVoisinDistance)
 			{
@@ -539,22 +548,22 @@ public final class DStarLite
 	 * @param p
 	 * @return
 	 */
-	private void updateOrientationHeuristic(DStarLiteNode n)
+	private void updateOrientationHeuristic(DStarLiteNode n, SearchDirection dir)
 	{
-		if(n == arrivee) // cas particulier
+		if(n == arrivee[dir.ordinal()]) // cas particulier
 			n.heuristiqueOrientation = null;
 		else if(n.rhs == Integer.MAX_VALUE) // pas de chemin
 			n.heuristiqueOrientation = null;
 		else
 		{
 			int nbBestVoisin = n.bestVoisin;
-			assert nbBestVoisin == getBestVoisin(n.node);
+			assert nbBestVoisin == getBestVoisin(n.node, dir);
 			NavmeshNode bestVoisin = n.node.getNeighbour(nbBestVoisin); 
-			if(bestVoisin.equals(arrivee.node))
+			if(bestVoisin.equals(arrivee[dir.ordinal()].node))
 				n.heuristiqueOrientation = n.node.getNeighbourEdge(nbBestVoisin).getOrientation(n.node);
 			else
 			{
-				int nbBestVoisinDuVoisin = memory[bestVoisin.nb].bestVoisin; //getBestVoisin(bestVoisin);
+				int nbBestVoisinDuVoisin = memory[dir.ordinal()][bestVoisin.nb].bestVoisin; //getBestVoisin(bestVoisin);
 				double angle1 = n.node.getNeighbourEdge(nbBestVoisin).getOrientation(n.node);
 				double angle2 = bestVoisin.getNeighbourEdge(nbBestVoisinDuVoisin).getOrientation(bestVoisin);
 				double diff = (( angle1 - angle2 + 3 * Math.PI ) % (2 * Math.PI)) - Math.PI;
@@ -607,59 +616,65 @@ public final class DStarLite
 
 	private String checkKey()
 	{
-		for(int i = 0; i < memory.length; i++)
-		{
-			DStarLiteNode n = getFromMemory(memory[i].node);
-			if(n.inOpenSet && !n.cle.isEqualsTo(calcKey(n, tmp)))
-				return "A key is wrong ! "+n.cle+" "+tmp;
-		}
+		SearchDirection dir = SearchDirection.FORWARD;
+//		for(SearchDirection dir : SearchDirection.values())
+			for(int i = 0; i < memory[dir.ordinal()].length; i++)
+			{
+				DStarLiteNode n = getFromMemory(memory[dir.ordinal()][i].node, dir);
+				if(n.inOpenSet && !n.cle.isEqualsTo(calcKey(n, tmp)))
+					return "A key is wrong ! "+n.cle+" "+tmp;
+			}
 		return null;
 	}
 	
 	private String checkInvariantOpenset()
 	{
-		for(int i = 0; i < memory.length; i++)
-		{
-			DStarLiteNode n = getFromMemory(memory[i].node);
-			if(n.inOpenSet != openset.contains(n))
+		SearchDirection dir = SearchDirection.FORWARD;
+//		for(SearchDirection dir : SearchDirection.values())
+			for(int i = 0; i < memory[dir.ordinal()].length; i++)
 			{
-				if(n.inOpenSet)
-					return "inOpenSet = true mais n'y appartient pas !";
-				else
-					return "inOpenSet = false mais y appartient !";
+				DStarLiteNode n = getFromMemory(memory[dir.ordinal()][i].node, dir);
+				if(n.inOpenSet != openset[dir.ordinal()].contains(n))
+				{
+					if(n.inOpenSet)
+						return "inOpenSet = true mais n'y appartient pas !";
+					else
+						return "inOpenSet = false mais y appartient !";
+				}
+				if(n.inOpenSet && n.isConsistent())
+					return "Node "+n+" in the openset but consistent !";
+				if(!n.inOpenSet && !n.isConsistent())
+					return "Node "+n+" not in the openset but inconsistent !";
 			}
-			if(n.inOpenSet && n.isConsistent())
-				return "Node "+n+" in the openset but consistent !";
-			if(!n.inOpenSet && !n.isConsistent())
-				return "Node "+n+" not in the openset but inconsistent !";
-		}
 		return null;
 	}
 	
 	private String checkInvariantRhs()
 	{
-		for(int i = 0; i < memory.length; i++)
-		{
-			DStarLiteNode n = getFromMemory(memory[i].node);
-			if(n == arrivee)
+		SearchDirection dir = SearchDirection.FORWARD;
+//		for(SearchDirection dir : SearchDirection.values())
+			for(int i = 0; i < memory[dir.ordinal()].length; i++)
 			{
-				if(arrivee.rhs != 0)
-					return "rhs de l'arrivée non nul ! "+arrivee.rhs;
-			}
-			else
-			{
-				int best = Integer.MAX_VALUE;
-				NavmeshNode s = n.node;
-				for(int j = 0; j < s.getNbNeighbours(); j++)
+				DStarLiteNode n = getFromMemory(memory[dir.ordinal()][i].node, dir);
+				if(n == arrivee[dir.ordinal()])
 				{
-					int candidat = add(getFromMemory(s.getNeighbour(j)).g, s.getNeighbourEdge(j).getDistance());
-					if(candidat < best)
-						best = candidat;
+					if(arrivee[dir.ordinal()].rhs != 0)
+						return "rhs de l'arrivée non nul ! "+arrivee[dir.ordinal()].rhs;
 				}
-				if(n.rhs != best)
-					return "rhs invariant broken ! rhs = "+n.rhs+", min = "+best+" "+n;
+				else
+				{
+					int best = Integer.MAX_VALUE;
+					NavmeshNode s = n.node;
+					for(int j = 0; j < s.getNbNeighbours(); j++)
+					{
+						int candidat = add(getFromMemory(s.getNeighbour(j), dir).g, s.getNeighbourEdge(j).getDistance());
+						if(candidat < best)
+							best = candidat;
+					}
+					if(n.rhs != best)
+						return "rhs invariant broken ! rhs = "+n.rhs+", min = "+best+" "+n;
+				}
 			}
-		}
 		return null;
 	}
 	

@@ -16,6 +16,7 @@ import pfg.config.Config;
 import pfg.kraken.display.Display;
 import pfg.kraken.display.Layer;
 import pfg.kraken.ConfigInfoKraken;
+import pfg.kraken.astar.AStarNode.SearchDirection;
 import pfg.kraken.astar.autoreplanning.DynamicPath;
 import pfg.kraken.astar.engine.PhysicsEngine;
 import pfg.kraken.astar.tentacles.TentacleManager;
@@ -277,7 +278,7 @@ public final class TentacularAStar
 		depart.g_score = 0;
 		nbExpandedNodes = 0;
 		
-		Integer heuristique = arcmanager.heuristicCostCourbe(depart.cinematique, enableStartObstacleImmunity);
+		Integer heuristique = arcmanager.heuristicCostCourbe(depart.cinematique, enableStartObstacleImmunity, SearchDirection.FORWARD);
 
 		assert heuristique != null : "Null heuristic !"; // l'heuristique est vérifiée à l'initialisation
 		
@@ -330,7 +331,7 @@ public final class TentacularAStar
 						depart.parent = null;
 						depart.cameFromArcDynamique = null;
 						depart.g_score = 0;
-						heuristique = arcmanager.heuristicCostCourbe(depart.cinematique, enableStartObstacleImmunity);
+						heuristique = arcmanager.heuristicCostCourbe(depart.cinematique, enableStartObstacleImmunity, SearchDirection.FORWARD);
 						startPointHeuristic = heuristique;
 						
 						if(heuristique == null)
@@ -455,7 +456,7 @@ public final class TentacularAStar
 					continue;
 				}
 
-				heuristique = arcmanager.heuristicCostCourbe(successeur.cinematique, enableStartObstacleImmunity && successeur.cinematique.getPosition().squaredDistance(depart.cinematique.getPosition()) < squaredImmunityCircle);
+				heuristique = arcmanager.heuristicCostCourbe(successeur.cinematique, enableStartObstacleImmunity && successeur.cinematique.getPosition().squaredDistance(depart.cinematique.getPosition()) < squaredImmunityCircle, successeur.dir);
 				if(heuristique == null)
 				{
 					// Point inaccessible

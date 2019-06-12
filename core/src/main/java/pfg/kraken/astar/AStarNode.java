@@ -26,6 +26,12 @@ import pfg.kraken.struct.Kinematic;
 
 public final class AStarNode implements Memorizable, Printable
 {
+	public static enum SearchDirection
+	{
+		FORWARD,
+		BACKWARD;
+	}
+	
 	private static final long serialVersionUID = -2120732124823178009L;
 	public Kinematic cinematique; // the cinematic state + the duration since the beginning of the search
 	public volatile long date = 0;
@@ -33,6 +39,7 @@ public final class AStarNode implements Memorizable, Printable
 	public double f_score; // g_score + heuristique = meilleure distance qu'on
 							// peut espérer avec ce point
 	public AStarNode parent; // the parent of this node (used for reconstruction when a path is found)
+	public SearchDirection dir = SearchDirection.FORWARD; // the search direction
 	
 	/*
 	 * If a node has a parent, then we must have the arc between the parent and the node
