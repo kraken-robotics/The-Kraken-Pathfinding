@@ -6,7 +6,6 @@
 package pfg.kraken.astar.tentacles.bezier;
 
 import java.util.LinkedList;
-import java.util.List;
 import pfg.config.Config;
 import pfg.kraken.ConfigInfoKraken;
 import pfg.kraken.astar.AStarNode;
@@ -14,13 +13,11 @@ import pfg.kraken.astar.tentacles.DynamicTentacle;
 import pfg.kraken.astar.tentacles.StaticTentacle;
 import pfg.kraken.astar.tentacles.TentacleComputer;
 import pfg.kraken.astar.tentacles.TentacleType;
-import pfg.kraken.dstarlite.DStarLite;
 import pfg.kraken.memory.EmbodiedKinematicPool;
 import pfg.kraken.obstacles.RobotShape;
 import pfg.kraken.struct.Kinematic;
 import pfg.kraken.struct.EmbodiedKinematic;
 import pfg.kraken.struct.XY;
-import pfg.kraken.struct.XYO;
 import pfg.kraken.struct.XY_RW;
 import static pfg.kraken.astar.tentacles.Tentacle.*;
 
@@ -37,13 +34,11 @@ public final class BezierComputer implements TentacleComputer
 	private double courbureMax;
 	private double rootedMaxAcceleration;
 	private double maxCurvatureDerivative;
-	private DStarLite dstarlite;
 	private final double[] maxSpeedLUT;
 
-	public BezierComputer(DStarLite dstarlite, EmbodiedKinematicPool memory, Config config, RobotShape vehicleTemplate)
+	public BezierComputer(EmbodiedKinematicPool memory, Config config, RobotShape vehicleTemplate)
 	{
 		this.memory = memory;
-		this.dstarlite = dstarlite;
 
 		courbureMax = config.getDouble(ConfigInfoKraken.MAX_CURVATURE);
 		rootedMaxAcceleration = Math.sqrt(config.getDouble(ConfigInfoKraken.MAX_LATERAL_ACCELERATION));
@@ -600,7 +595,7 @@ public final class BezierComputer implements TentacleComputer
 			return true;
 		}
 		
-		else if(tentacleType == BezierTentacle.INTERMEDIATE_BEZIER_XYO_TO_XYO)
+/*		else if(tentacleType == BezierTentacle.INTERMEDIATE_BEZIER_XYO_TO_XYO)
 		{
 			DynamicTentacle t = intermediateXYO2XYO(current, indexThread);
 			if(t == null)
@@ -617,14 +612,14 @@ public final class BezierComputer implements TentacleComputer
 			assert modified.cameFromArcDynamique == null;
 			modified.cameFromArcDynamique = t;
 			return true;
-		}
+		}*/
 		
 		assert false;
 		return false;
 	}
 
 
-	public DynamicTentacle intermediateXYO2XYO(AStarNode current, int indexThread)
+/*	public DynamicTentacle intermediateXYO2XYO(AStarNode current, int indexThread)
 	{
 		List<XYO> listePositions = dstarlite.itineraireBrut(current.cinematique.getPosition());
 		
@@ -650,6 +645,6 @@ public final class BezierComputer implements TentacleComputer
 		if(out != null)
 			out.vitesse = BezierTentacle.INTERMEDIATE_BEZIER_XYOC_TO_XY;
 		return out;
-	}
+	}*/
 	
 }
