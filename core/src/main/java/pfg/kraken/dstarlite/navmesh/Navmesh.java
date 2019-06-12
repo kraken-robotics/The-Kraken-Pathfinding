@@ -57,6 +57,38 @@ public final class Navmesh
 		return mesh.toString();
 	}
 	
+	/**
+	 * Returns the nearest navmesh node not in an obstacle
+	 * @param position
+	 * @return
+	 */
+	public NavmeshNode getNearestAvailable(XY position)
+	{
+		NavmeshNode bestNode = null;
+		double smallestDistance = 0;
+		for(NavmeshNode n : mesh.nodes)
+		{
+			boolean anyAvailableEdge = false;
+			for(int i = 0; i < n.getNbNeighbours(); i++)
+				if(n.getNeighbourEdge(i).obstructingObstacles.isEmpty())
+				{
+					anyAvailableEdge = true;
+					break;
+				}
+			if(!anyAvailableEdge)
+				continue;
+				
+			double candidateDistance = position.squaredDistance(n.position);
+			if(bestNode == null || candidateDistance < smallestDistance)
+			{
+				bestNode = n;
+				smallestDistance = candidateDistance;
+			}
+		}
+		assert bestNode != null;
+		return bestNode;
+	}
+	
 	public NavmeshNode getNearest(XY position)
 	{
 		NavmeshNode bestNode = null;

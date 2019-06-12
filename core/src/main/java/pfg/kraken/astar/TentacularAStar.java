@@ -125,6 +125,7 @@ public final class TentacularAStar
 	private boolean checkEachIteration;
 	public volatile boolean stop = false;
 	private boolean enableStartObstacleImmunity;
+	private double squaredImmunityCircle;
 
 	/**
 	 * Comparateur de noeud utilisé par la priority queue.
@@ -166,6 +167,7 @@ public final class TentacularAStar
 	private double fastFactor;
 	private boolean backup;
 	private List<RectangularObstacle> finalPoint = new ArrayList<RectangularObstacle>();
+	private double startPointHeuristic;
 
 	/**
 	 * Constructeur du AStarCourbe
@@ -182,8 +184,15 @@ public final class TentacularAStar
 		graphicTrajectory = config.getBoolean(ConfigInfoKraken.GRAPHIC_TENTACLES);
 		debugMode = config.getBoolean(ConfigInfoKraken.ENABLE_DEBUG_MODE);
 		backup = config.getBoolean(ConfigInfoKraken.ENABLE_BACKUP_PATH);
-		fastFactor = config.getDouble(ConfigInfoKraken.FAST_AND_DIRTY_COEFF);
 		enableStartObstacleImmunity = config.getBoolean(ConfigInfoKraken.ENABLE_START_OBSTACLE_IMMUNITY);
+		
+		squaredImmunityCircle = config.getDouble(ConfigInfoKraken.OBSTACLE_IMMUNITY_CIRCLE);
+		if(squaredImmunityCircle < 0)
+			squaredImmunityCircle = 0;
+		else
+			squaredImmunityCircle *= squaredImmunityCircle;
+
+		fastFactor = config.getDouble(ConfigInfoKraken.FAST_AND_DIRTY_COEFF);
 		if(fastFactor < 1)
 			fastFactor = 1;
 		checkEachIteration = config.getBoolean(ConfigInfoKraken.CHECK_NEW_OBSTACLES);
@@ -268,10 +277,11 @@ public final class TentacularAStar
 		depart.g_score = 0;
 		nbExpandedNodes = 0;
 		
-		Integer heuristique = arcmanager.heuristicCostCourbe((depart.cinematique));
+		Integer heuristique = arcmanager.heuristicCostCourbe(depart.cinematique, enableStartObstacleImmunity);
 
 		assert heuristique != null : "Null heuristic !"; // l'heuristique est vérifiée à l'initialisation
-
+		
+		startPointHeuristic = heuristique;
 		depart.f_score = heuristique;
 		openset.clear();
 		assert setState(depart, MemPoolState.WAITING);
@@ -320,8 +330,9 @@ public final class TentacularAStar
 						depart.parent = null;
 						depart.cameFromArcDynamique = null;
 						depart.g_score = 0;
-						heuristique = arcmanager.heuristicCostCourbe((depart.cinematique));
-		
+						heuristique = arcmanager.heuristicCostCourbe(depart.cinematique, enableStartObstacleImmunity);
+						startPointHeuristic = heuristique;
+						
 						if(heuristique == null)
 							throw new NoPathException("No path found by the D* Lite");
 		
@@ -444,7 +455,7 @@ public final class TentacularAStar
 					continue;
 				}
 
-				heuristique = arcmanager.heuristicCostCourbe(successeur.cinematique);
+				heuristique = arcmanager.heuristicCostCourbe(successeur.cinematique, enableStartObstacleImmunity && successeur.cinematique.getPosition().squaredDistance(depart.cinematique.getPosition()) < squaredImmunityCircle);
 				if(heuristique == null)
 				{
 					// Point inaccessible
@@ -460,7 +471,7 @@ public final class TentacularAStar
 				if(successeur.getArc() != null && arcmanager.isArrived(successeur.getArc().getLast().cinem) && (successeur.getArc() == null || !engine.isThereCollision(successeur.getArc())) && (trajetDeSecours == null || trajetDeSecours.f_score > successeur.f_score))
 				{
 					trajetDeSecours = successeur;
-					if((openset.isEmpty() && successeur.f_score < fastFactor * arcmanager.heuristicCostCourbe(depart.cinematique)) ||
+					if((openset.isEmpty() && successeur.f_score < fastFactor * startPointHeuristic) ||
 							(!openset.isEmpty() && successeur.f_score < fastFactor * openset.peek().f_score))
 					{
 //						System.out.println("Fast and dirty");
@@ -585,7 +596,7 @@ public final class TentacularAStar
 		 * dstarlite.computeNewPath updates the heuristic.
 		 * It returns false if there is no path between start and arrival
 		 */
-		if(!dstarlite.computeNewPath(depart.cinematique.getPosition(), arrival.getPosition(), !enableStartObstacleImmunity))
+		if(!dstarlite.computeNewPath(depart.cinematique.getPosition(), arrival.getPosition(), !enableStartObstacleImmunity, true))
 			throw new NoPathException("No path found by D* Lite !");
 	}
 	
@@ -613,7 +624,7 @@ public final class TentacularAStar
 		// On met à jour le D* Lite
 		engine.update();
 		
-		if(!dstarlite.computeNewPath(depart.cinematique.getPosition(), arrival.getPosition(), true))
+		if(!dstarlite.computeNewPath(depart.cinematique.getPosition(), arrival.getPosition(), true, true))
 			throw new NoPathException("No path found by D* Lite !");
 
 		search();

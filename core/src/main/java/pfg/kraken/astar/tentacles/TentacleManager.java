@@ -206,9 +206,9 @@ public final class TentacleManager implements Iterator<AStarNode>
 		assert threads.length > 1 || successeurs.size() == nbLeft;
 	}
 
-	public synchronized Integer heuristicCostCourbe(Kinematic c)
+	public synchronized Integer heuristicCostCourbe(Kinematic c, boolean ignoreObstacle)
 	{
-		Double d = dstarlite.heuristicDistance(c);
+		Double d = dstarlite.heuristicDistance(c, ignoreObstacle);
 		if(d == null)
 			return null;
 	
@@ -226,7 +226,7 @@ public final class TentacleManager implements Iterator<AStarNode>
 		{
 			if(currentProfile.coeffAngleError != 0)
 			{
-				o = dstarlite.heuristicOrientation(c);
+				o = dstarlite.heuristicOrientation(c, ignoreObstacle);
 				if(o == null)
 					return null;
 				h = currentProfile.coeffDistanceError * d + currentProfile.coeffAngleError * o;

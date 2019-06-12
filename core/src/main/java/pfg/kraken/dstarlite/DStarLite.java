@@ -255,20 +255,20 @@ public final class DStarLite
 	 * @param depart (un Vec2)
 	 * @throws NoPathException 
 	 */
-	public boolean computeNewPath(XY depart, XY arrivee, boolean checkStartPoint) throws NoPathException
+	public boolean computeNewPath(XY depart, XY arrivee, boolean checkStartPoint, boolean checkEndPoint) throws NoPathException
 	{
 		List<Obstacle> obs = statObs.getObstacles();
 		for(Obstacle o : obs)
 			if(checkStartPoint && o.isInObstacle(depart))
 				throw new NoPathException("Starting point in obstacle "+o);
-			else if(o.isInObstacle(arrivee))
+			else if(checkEndPoint && o.isInObstacle(arrivee))
 				throw new NoPathException("Finish point in obstacle "+o);
 		
 		
 		changeGoal(arrivee);
 		updateObstacles();
 		updateHeuristic();
-		return getFromMemory(navmesh.getNearest(depart)).rhs != Integer.MAX_VALUE;
+		return getFromMemory(navmesh.getNearestAvailable(depart)).rhs != Integer.MAX_VALUE;
 	}
 
 	/**
@@ -420,12 +420,17 @@ public final class DStarLite
 
 	}
 
-	public synchronized Double heuristicDistance(Kinematic c)
+	public synchronized Double heuristicDistance(Kinematic c, boolean ignoreObstacle)
 	{
-		// TODO synchronized nécessaire ?
-		if(!statObs.isInsideSearchDomain(c.getPosition()))
-			return null;
-		NavmeshNode pos = navmesh.getNearest(c.getPosition());
+		NavmeshNode pos;
+		if(ignoreObstacle)
+			pos = navmesh.getNearestAvailable(c.getPosition());			
+		else
+		{
+			if(!statObs.isInsideSearchDomain(c.getPosition()))
+				return null;
+			pos = navmesh.getNearest(c.getPosition());
+		}
 		
 		// si on est arrivé… on est arrivé.
 		if(pos.equals(arrivee.node))
@@ -452,12 +457,18 @@ public final class DStarLite
 	 * @param c
 	 * @return
 	 */
-	public synchronized Double heuristicOrientation(Kinematic c)
+	public synchronized Double heuristicOrientation(Kinematic c, boolean ignoreObstacle)
 	{
 		// TODO synchronized nécessaire ?
-		if(!statObs.isInsideSearchDomain(c.getPosition()))
-			return null;
-		NavmeshNode pos = navmesh.getNearest(c.getPosition());
+		NavmeshNode pos;
+		if(ignoreObstacle)
+			pos = navmesh.getNearestAvailable(c.getPosition());			
+		else
+		{
+			if(!statObs.isInsideSearchDomain(c.getPosition()))
+				return null;
+			pos = navmesh.getNearest(c.getPosition());
+		}
 		
 		// si on est arrivé… on est arrivé.
 		if(pos.equals(arrivee.node))
