@@ -83,3 +83,20 @@
 - Add in configuration the *MINIMAL_SPEED* key. The maximal curvature is limited in order to generate paths that satisfy this minimal speed.
 - Taking into account the maximal linear acceleration (config key: *MAX_LINEAR_ACCELERATION*).
 - Add a "stop" attribute in ItineraryPoint structure.
+
+# v1.1.1
+- Workflow change: use maven instead of ant
+
+# v1.1.0
+- Kraken seeks the fastest path and not the shortest one.
+- With an upper bound for lateral acceleration, Kraken slows if necessary when the curvature is too high.
+- Path with low curvature is favored.
+- The maximum speed can be specified.
+
+# v1.0.1
+- PrintBuffer is renamed GraphicDisplay
+- The "destructor" method of Kraken does no longer exist
+
+# v1.0.0
+- First stable version
+- Configure Travis CI
