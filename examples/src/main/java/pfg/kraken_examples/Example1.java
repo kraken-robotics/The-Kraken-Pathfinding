@@ -45,13 +45,10 @@ public class Example1
 		 * The obstacle are either rectangular or circular.
 		 */
 		List<Obstacle> obs = new ArrayList<Obstacle>();
-		obs.add(new RectangularObstacle(new XY(800,200), 200, 200));
-		obs.add(new RectangularObstacle(new XY(800,300), 200, 200));
-		obs.add(new RectangularObstacle(new XY(-800,1200), 100, 200));
-		obs.add(new RectangularObstacle(new XY(-1000,300), 500, 500));
-		obs.add(new RectangularObstacle(new XY(200,1600), 800, 300));
-		obs.add(new RectangularObstacle(new XY(1450,700), 300, 100));
-		obs.add(new CircularObstacle(new XY(500,600), 100));
+		obs.add(new CircularObstacle(new XY(-1000,1500), 400));
+		obs.add(new RectangularObstacle(new XY(-300,500), 200, 1000));
+		obs.add(new RectangularObstacle(new XY(700,1500), 200, 1000));
+		obs.add(new CircularObstacle(new XY(600,700), 200));
 		
 		/*
 		 * The shape of the robot. It must fit into a rectangular obstacle (for collision check performance).
@@ -95,7 +92,7 @@ public class Example1
 			 * We search a new path from the point (0,0) with orientation 0 to the point (1000, 1000).
 			 * The orientation is the classical trigonometric orientation : 0 to the right, pi/2 up, etc.
 			 */
-			kraken.initializeNewSearch(new SearchParameters(new XYO(0, 200, 0), new XY(1000, 1000)));
+			kraken.initializeNewSearch(new SearchParameters(new XYO(-900, 200, Math.PI), new XY(1200, 1400)));
 			
 			/*
 			 * The pathfinder returns a list of ItineraryPoint, which contains all the cinematic information describing the path
