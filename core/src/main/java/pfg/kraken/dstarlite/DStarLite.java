@@ -268,11 +268,11 @@ public final class DStarLite
 			else if(checkEndPoint && o.isInObstacle(arrivee))
 				throw new NoPathException("Finish point in obstacle "+o);
 		
-		
-		changeGoal(arrivee);
+		changeGoal(arrivee, SearchDirection.FORWARD);
+		changeGoal(depart, SearchDirection.BACKWARD);
 		updateObstacles();
 		updateHeuristic(SearchDirection.FORWARD);
-//		updateHeuristic(SearchDirection.BACKWARD);
+		updateHeuristic(SearchDirection.BACKWARD);
 		return getFromMemory(navmesh.getNearestAvailable(depart), SearchDirection.FORWARD).rhs != Integer.MAX_VALUE;
 	}
 
@@ -282,7 +282,7 @@ public final class DStarLite
 	 * @param positionArrivee
 	 * @throws NoPathException 
 	 */
-	private synchronized void changeGoal(XY positionArrivee) throws NoPathException
+	private synchronized void changeGoal(XY positionArrivee, SearchDirection dir) throws NoPathException
 	{
 		if(!statObs.isInsideSearchDomain(positionArrivee))
 			throw new NoPathException("The goal is outside the search domain !");
@@ -290,13 +290,13 @@ public final class DStarLite
 		nbPF++;
 
 		this.positionArrivee = positionArrivee;
-		arrivee[SearchDirection.FORWARD.ordinal()] = getFromMemory(navmesh.getNearest(positionArrivee), SearchDirection.FORWARD);
-		arrivee[SearchDirection.FORWARD.ordinal()].rhs = 0;
-		arrivee[SearchDirection.FORWARD.ordinal()].cle.set(0, 0);
+		arrivee[dir.ordinal()] = getFromMemory(navmesh.getNearest(positionArrivee), dir);
+		arrivee[dir.ordinal()].rhs = 0;
+		arrivee[dir.ordinal()].cle.set(0, 0);
 
-		openset[SearchDirection.FORWARD.ordinal()].clear();
-		openset[SearchDirection.FORWARD.ordinal()].add(arrivee[SearchDirection.FORWARD.ordinal()]);
-		arrivee[SearchDirection.FORWARD.ordinal()].inOpenSet = true;
+		openset[dir.ordinal()].clear();
+		openset[dir.ordinal()].add(arrivee[dir.ordinal()]);
+		arrivee[dir.ordinal()].inOpenSet = true;
 	}
 
 	/**
@@ -322,8 +322,7 @@ public final class DStarLite
 
 			if(!e.isBlocked())
 			{
-				SearchDirection dir = SearchDirection.FORWARD;
-//				for(SearchDirection dir : SearchDirection.values())
+				for(SearchDirection dir : SearchDirection.values())
 					for(int k = 0; k < 2; k++)
 					{
 						DStarLiteNode u = getFromMemory(e.points[k], dir);
@@ -335,8 +334,7 @@ public final class DStarLite
 			}
 			else
 			{
-				SearchDirection dir = SearchDirection.FORWARD;
-//				for(SearchDirection dir : SearchDirection.values())
+				for(SearchDirection dir : SearchDirection.values())
 					for(int k = 0; k < 2; k++)
 					{
 						DStarLiteNode u = getFromMemory(e.points[k], dir);
@@ -429,7 +427,7 @@ public final class DStarLite
 
 	}
 
-	public synchronized Double heuristicDistance(Kinematic c, boolean ignoreObstacle, SearchDirection dir)
+	public Double heuristicDistance(Kinematic c, boolean ignoreObstacle, SearchDirection dir)
 	{
 		NavmeshNode pos;
 		if(ignoreObstacle)
@@ -466,9 +464,8 @@ public final class DStarLite
 	 * @param c
 	 * @return
 	 */
-	public synchronized Double heuristicOrientation(Kinematic c, boolean ignoreObstacle, SearchDirection dir)
+	public Double heuristicOrientation(Kinematic c, boolean ignoreObstacle, SearchDirection dir)
 	{
-		// TODO synchronized nécessaire ?
 		NavmeshNode pos;
 		if(ignoreObstacle)
 			pos = navmesh.getNearestAvailable(c.getPosition());			
@@ -571,7 +568,12 @@ public final class DStarLite
 				n.heuristiqueOrientation = mean;
 			}
 			if(graphicHeuristique)
-				buffer.addTemporaryPrintable(n, ColorKraken.HEURISTIQUE.color, Layer.MIDDLE.layer);
+			{
+				if(dir == SearchDirection.FORWARD)
+					buffer.addTemporaryPrintable(n, ColorKraken.FORWARD_HEURISTIQUE.color, Layer.MIDDLE.layer);
+				else
+					buffer.addTemporaryPrintable(n, ColorKraken.BACKWARD_HEURISTIQUE.color, Layer.MIDDLE.layer);
+			}
 		}
 	}
 
@@ -582,7 +584,7 @@ public final class DStarLite
 	 * @param b
 	 * @return
 	 */
-	private final int add(int a, int b)
+	private static final int add(int a, int b)
 	{
 		if(a == Integer.MAX_VALUE || b == Integer.MAX_VALUE)
 			return Integer.MAX_VALUE;
@@ -616,8 +618,7 @@ public final class DStarLite
 
 	private String checkKey()
 	{
-		SearchDirection dir = SearchDirection.FORWARD;
-//		for(SearchDirection dir : SearchDirection.values())
+		for(SearchDirection dir : SearchDirection.values())
 			for(int i = 0; i < memory[dir.ordinal()].length; i++)
 			{
 				DStarLiteNode n = getFromMemory(memory[dir.ordinal()][i].node, dir);
@@ -629,8 +630,7 @@ public final class DStarLite
 	
 	private String checkInvariantOpenset()
 	{
-		SearchDirection dir = SearchDirection.FORWARD;
-//		for(SearchDirection dir : SearchDirection.values())
+		for(SearchDirection dir : SearchDirection.values())
 			for(int i = 0; i < memory[dir.ordinal()].length; i++)
 			{
 				DStarLiteNode n = getFromMemory(memory[dir.ordinal()][i].node, dir);
@@ -651,8 +651,7 @@ public final class DStarLite
 	
 	private String checkInvariantRhs()
 	{
-		SearchDirection dir = SearchDirection.FORWARD;
-//		for(SearchDirection dir : SearchDirection.values())
+		for(SearchDirection dir : SearchDirection.values())
 			for(int i = 0; i < memory[dir.ordinal()].length; i++)
 			{
 				DStarLiteNode n = getFromMemory(memory[dir.ordinal()][i].node, dir);
