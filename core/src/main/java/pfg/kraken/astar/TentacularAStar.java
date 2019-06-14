@@ -76,6 +76,7 @@ public final class TentacularAStar
 	 * The departure node
 	 */
 	private AStarNode depart;
+	private AStarNode endPoint;
 	
 	private Kinematic arrival = new Kinematic();
 	
@@ -169,6 +170,7 @@ public final class TentacularAStar
 	private boolean backup;
 	private List<RectangularObstacle> finalPoint = new ArrayList<RectangularObstacle>();
 	private double startPointHeuristic;
+	private boolean bidirectionalSearch;
 
 	/**
 	 * Constructeur du AStarCourbe
@@ -193,6 +195,7 @@ public final class TentacularAStar
 		else
 			squaredImmunityCircle *= squaredImmunityCircle;
 
+		bidirectionalSearch = config.getBoolean(ConfigInfoKraken.BIDIRECTIONAL_SEARCH);
 		fastFactor = config.getDouble(ConfigInfoKraken.FAST_AND_DIRTY_COEFF);
 		if(fastFactor < 1)
 			fastFactor = 1;
@@ -209,6 +212,8 @@ public final class TentacularAStar
 		defaultSpeed = config.getDouble(ConfigInfoKraken.DEFAULT_MAX_SPEED);
 		this.depart = new AStarNode(vehicleTemplate);
 		depart.setIndiceMemoryManager(-1);
+		this.endPoint = new AStarNode(vehicleTemplate);
+		endPoint.setIndiceMemoryManager(-1);
 		this.vehicleTemplate = vehicleTemplate;		
 		finalPoint.add(vehicleTemplate.clone());
 		
@@ -557,7 +562,8 @@ public final class TentacularAStar
 	{
 		stop = false;
 		initialized = true;
-		depart.init();
+		depart.init(SearchDirection.FORWARD);
+			
 		start.copy(depart.cinematique);
 		arrival.copy(this.arrival);
 		if(timeout == null)
@@ -597,7 +603,7 @@ public final class TentacularAStar
 		 * dstarlite.computeNewPath updates the heuristic.
 		 * It returns false if there is no path between start and arrival
 		 */
-		if(!dstarlite.computeNewPath(depart.cinematique.getPosition(), arrival.getPosition(), !enableStartObstacleImmunity, true))
+		if(!dstarlite.computeNewPath(depart.cinematique.getPosition(), arrival.getPosition(), !enableStartObstacleImmunity, true, bidirectionalSearch))
 			throw new NoPathException("No path found by D* Lite !");
 	}
 	
@@ -619,13 +625,13 @@ public final class TentacularAStar
 		if(!chemin.needReplanning())
 			return;
 		
-		depart.init();
+		depart.init(SearchDirection.FORWARD);
 		lastValid.copy(depart.cinematique);
 
 		// On met à jour le D* Lite
 		engine.update();
 		
-		if(!dstarlite.computeNewPath(depart.cinematique.getPosition(), arrival.getPosition(), true, true))
+		if(!dstarlite.computeNewPath(depart.cinematique.getPosition(), arrival.getPosition(), true, true, false))
 			throw new NoPathException("No path found by D* Lite !");
 
 		search();

@@ -47,7 +47,16 @@ public class Test_DStarLite extends JUnit_Test
 	@Test
 	public void test_chemin_dstarlite_statique() throws Exception
 	{
-		pathfinding.computeNewPath(new XY(-800, 200), new XY(1200, 1200), true, true);
+		pathfinding.computeNewPath(new XY(-800, 200), new XY(1200, 1200), true, true, false);
+		List<XYO> l = pathfinding.itineraireBrut(new XY(-800, 200));
+		for(XYO pos : l)
+			System.out.println(pos);
+	}	
+	
+	@Test
+	public void test_chemin_dstarlite_statique_bidir() throws Exception
+	{
+		pathfinding.computeNewPath(new XY(-800, 200), new XY(1200, 1200), true, true, true);
 		List<XYO> l = pathfinding.itineraireBrut(new XY(-800, 200));
 		for(XYO pos : l)
 			System.out.println(pos);

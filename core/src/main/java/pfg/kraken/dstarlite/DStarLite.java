@@ -43,7 +43,7 @@ public final class DStarLite
 	private boolean graphicHeuristique;
 	private DynamicObstacles dynObs;
 	private StaticObstacles statObs;
-	private XY positionArrivee;
+	private XY[] positionArrivee = new XY[2];
 	private List<Obstacle> previousObstacles = new ArrayList<Obstacle>(), newObstacles = new ArrayList<Obstacle>();
 
 	private List<DStarLiteNode> overconsistentExpansion = new ArrayList<DStarLiteNode>(); 
@@ -259,7 +259,7 @@ public final class DStarLite
 	 * @param depart (un Vec2)
 	 * @throws NoPathException 
 	 */
-	public boolean computeNewPath(XY depart, XY arrivee, boolean checkStartPoint, boolean checkEndPoint) throws NoPathException
+	public boolean computeNewPath(XY depart, XY arrivee, boolean checkStartPoint, boolean checkEndPoint, boolean bidirect) throws NoPathException
 	{
 		List<Obstacle> obs = statObs.getObstacles();
 		for(Obstacle o : obs)
@@ -268,8 +268,7 @@ public final class DStarLite
 			else if(checkEndPoint && o.isInObstacle(arrivee))
 				throw new NoPathException("Finish point in obstacle "+o);
 		
-		changeGoal(arrivee, SearchDirection.FORWARD);
-		changeGoal(depart, SearchDirection.BACKWARD);
+		changeGoal(arrivee, depart, bidirect);
 		updateObstacles();
 		updateHeuristic(SearchDirection.FORWARD);
 		updateHeuristic(SearchDirection.BACKWARD);
@@ -282,21 +281,32 @@ public final class DStarLite
 	 * @param positionArrivee
 	 * @throws NoPathException 
 	 */
-	private synchronized void changeGoal(XY positionArrivee, SearchDirection dir) throws NoPathException
+	private synchronized void changeGoal(XY positionArrivee, XY positionDepart, boolean bidirect) throws NoPathException
 	{
 		if(!statObs.isInsideSearchDomain(positionArrivee))
 			throw new NoPathException("The goal is outside the search domain !");
 		
 		nbPF++;
 
-		this.positionArrivee = positionArrivee;
-		arrivee[dir.ordinal()] = getFromMemory(navmesh.getNearest(positionArrivee), dir);
-		arrivee[dir.ordinal()].rhs = 0;
-		arrivee[dir.ordinal()].cle.set(0, 0);
-
-		openset[dir.ordinal()].clear();
-		openset[dir.ordinal()].add(arrivee[dir.ordinal()]);
-		arrivee[dir.ordinal()].inOpenSet = true;
+		int max = bidirect ? 2 : 1;
+		
+		for(int i = 0; i < max; i++)
+		{
+			SearchDirection dir = SearchDirection.values()[i];
+			XY pos;
+			if(i == 0)
+				pos = positionArrivee;
+			else
+				pos = positionDepart;
+			this.positionArrivee[i] = pos;
+			arrivee[i] = getFromMemory(navmesh.getNearest(pos), dir);
+			arrivee[i].rhs = 0;
+			arrivee[i].cle.set(0, 0);
+	
+			openset[i].clear();
+			openset[i].add(arrivee[i]);
+			arrivee[i].inOpenSet = true;
+		}
 	}
 
 	/**
@@ -446,13 +456,13 @@ public final class DStarLite
 		DStarLiteNode premier = getFromMemory(pos, dir);
 		
 		if(premier == arrivee[dir.ordinal()])
-			return c.getPosition().distanceFast(positionArrivee);
+			return c.getPosition().distanceFast(positionArrivee[dir.ordinal()]);
 		
 		if(premier.heuristiqueOrientation == null)
 			return null;
 		
 		NavmeshNode voisin = pos.getNeighbour(premier.bestVoisin);
-		double erreurDistance = c.getPosition().distanceFast(voisin.position) + (memory[dir.ordinal()][voisin.nb].rhs) / 1000. + arrivee[dir.ordinal()].node.position.distanceFast(positionArrivee);
+		double erreurDistance = c.getPosition().distanceFast(voisin.position) + (memory[dir.ordinal()][voisin.nb].rhs) / 1000. + arrivee[dir.ordinal()].node.position.distanceFast(positionArrivee[dir.ordinal()]);
 		
 		return erreurDistance;	
 	}
@@ -483,7 +493,7 @@ public final class DStarLite
 		DStarLiteNode premier = getFromMemory(pos, dir);
 		
 		if(premier == arrivee[dir.ordinal()])
-			return c.getPosition().distanceFast(positionArrivee);
+			return c.getPosition().distanceFast(positionArrivee[dir.ordinal()]);
 		
 		if(premier.heuristiqueOrientation == null)
 			return null;
@@ -658,7 +668,7 @@ public final class DStarLite
 				if(n == arrivee[dir.ordinal()])
 				{
 					if(arrivee[dir.ordinal()].rhs != 0)
-						return "rhs de l'arrivée non nul ! "+arrivee[dir.ordinal()].rhs;
+						return "rhs de l'arrivée non nul ! "+arrivee[dir.ordinal()].rhs+" "+dir;
 				}
 				else
 				{
@@ -671,7 +681,7 @@ public final class DStarLite
 							best = candidat;
 					}
 					if(n.rhs != best)
-						return "rhs invariant broken ! rhs = "+n.rhs+", min = "+best+" "+n;
+						return "rhs invariant broken ! rhs = "+n.rhs+", min = "+best+" "+n+" "+dir;
 				}
 			}
 		return null;

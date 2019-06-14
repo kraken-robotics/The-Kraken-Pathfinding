@@ -85,11 +85,11 @@ public final class AStarNode implements Memorizable, Printable
 	/**
 	 * Initialisation for the A* (only used for the start point)
 	 */
-	public void init()
+	public void init(SearchDirection dir)
 	{
 		g_score = Integer.MAX_VALUE;
 		f_score = Integer.MAX_VALUE;
-//		date = 0;
+		this.dir = dir;
 	}
 
 	@Override
