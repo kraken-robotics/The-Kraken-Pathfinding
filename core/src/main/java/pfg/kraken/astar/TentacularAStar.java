@@ -78,7 +78,7 @@ public final class TentacularAStar
 	private AStarNode depart;
 	private AStarNode endPoint;
 	
-	private Kinematic arrival = new Kinematic();
+//	private Kinematic arrival = new Kinematic();
 	
 	/*
 	 * The last node of a path that has been found (but better routes are expected)
@@ -169,7 +169,7 @@ public final class TentacularAStar
 	private double fastFactor;
 	private boolean backup;
 	private List<RectangularObstacle> finalPoint = new ArrayList<RectangularObstacle>();
-	private double startPointHeuristic;
+	private Integer[] startPointHeuristics = new Integer[2];
 	private boolean bidirectionalSearch;
 
 	/**
@@ -281,17 +281,36 @@ public final class TentacularAStar
 		depart.parent = null;
 		depart.cameFromArcDynamique = null;
 		depart.g_score = 0;
+		
 		nbExpandedNodes = 0;
 		
-		Integer heuristique = arcmanager.heuristicCostCourbe(depart.cinematique, enableStartObstacleImmunity, SearchDirection.FORWARD);
-
-		assert heuristique != null : "Null heuristic !"; // l'heuristique est vérifiée à l'initialisation
-		
-		startPointHeuristic = heuristique;
-		depart.f_score = heuristique;
 		openset.clear();
+		
+		Integer heuristiqueStart = arcmanager.heuristicCostCourbe(depart.cinematique, enableStartObstacleImmunity, SearchDirection.FORWARD);
+		assert heuristiqueStart != null : "Null heuristic for start point"; // l'heuristique est vérifiée à l'initialisation
+
+		startPointHeuristics[0] = heuristiqueStart;
+		depart.f_score = heuristiqueStart;
+
 		assert setState(depart, MemPoolState.WAITING);
 		openset.add(depart); // Les nœuds à évaluer
+
+		if(bidirectionalSearch)
+		{
+			endPoint.parent = null;
+			endPoint.cameFromArcDynamique = null;
+			endPoint.g_score = 0;
+
+			Integer heuristiqueEnd = arcmanager.heuristicCostCourbe(endPoint.cinematique, false, SearchDirection.BACKWARD);
+			assert heuristiqueEnd != null : "Null heuristic for end point";
+	
+			startPointHeuristics[1] = heuristiqueEnd;
+			endPoint.f_score = heuristiqueEnd;
+			
+			assert setState(endPoint, MemPoolState.WAITING);
+			openset.add(endPoint);
+		}
+
 		closedset.clear();
 
 		long debutRecherche = System.currentTimeMillis();
@@ -305,7 +324,7 @@ public final class TentacularAStar
 			if(checkEachIteration)
 			{
 				engine.update();
-				dstarlite.updateObstacles();
+				dstarlite.updateObstacles(bidirectionalSearch);
 			}
 
 			assert current.parent != null || current == depart;
@@ -336,19 +355,19 @@ public final class TentacularAStar
 						depart.parent = null;
 						depart.cameFromArcDynamique = null;
 						depart.g_score = 0;
-						heuristique = arcmanager.heuristicCostCourbe(depart.cinematique, enableStartObstacleImmunity, SearchDirection.FORWARD);
-						startPointHeuristic = heuristique;
+						heuristiqueStart = arcmanager.heuristicCostCourbe(depart.cinematique, enableStartObstacleImmunity, SearchDirection.FORWARD);
+						startPointHeuristics[0] = heuristiqueStart;
 						
-						if(heuristique == null)
+						if(heuristiqueStart == null)
 							throw new NoPathException("No path found by the D* Lite");
 		
-						depart.f_score = heuristique;
+						depart.f_score = heuristiqueStart;
 		
 						memorymanager.empty();
 						cinemMemory.empty();
 						closedset.clear();
 						openset.clear();
-						
+						// no backward search this time
 						debutRecherche = System.currentTimeMillis();
 						current = depart;
 					}
@@ -461,7 +480,7 @@ public final class TentacularAStar
 					continue;
 				}
 
-				heuristique = arcmanager.heuristicCostCourbe(successeur.cinematique, enableStartObstacleImmunity && successeur.cinematique.getPosition().squaredDistance(depart.cinematique.getPosition()) < squaredImmunityCircle, successeur.dir);
+				Integer heuristique = arcmanager.heuristicCostCourbe(successeur.cinematique, enableStartObstacleImmunity && successeur.cinematique.getPosition().squaredDistance(depart.cinematique.getPosition()) < squaredImmunityCircle, successeur.dir);
 				if(heuristique == null)
 				{
 					// Point inaccessible
@@ -469,7 +488,7 @@ public final class TentacularAStar
 					continue;
 				}
 
-				successeur.f_score = successeur.g_score + heuristique;
+				successeur.f_score = successeur.g_score + startPointHeuristics[successeur.dir.ordinal()];
 //				System.out.println(successeur.getArc().vitesse+" "+successeur.f_score+" "+successeur.g_score+" "+heuristique);
 
 				// est qu'on est tombé sur l'arrivée ? alors ça fait un trajet de secours
@@ -477,7 +496,7 @@ public final class TentacularAStar
 				if(successeur.getArc() != null && arcmanager.isArrived(successeur.getArc().getLast().cinem) && (successeur.getArc() == null || !engine.isThereCollision(successeur.getArc())) && (trajetDeSecours == null || trajetDeSecours.f_score > successeur.f_score))
 				{
 					trajetDeSecours = successeur;
-					if((openset.isEmpty() && successeur.f_score < fastFactor * startPointHeuristic) ||
+					if((openset.isEmpty() && successeur.f_score < fastFactor * startPointHeuristics[successeur.dir.ordinal()]) ||
 							(!openset.isEmpty() && successeur.f_score < fastFactor * openset.peek().f_score))
 					{
 //						System.out.println("Fast and dirty");
@@ -563,9 +582,10 @@ public final class TentacularAStar
 		stop = false;
 		initialized = true;
 		depart.init(SearchDirection.FORWARD);
+		endPoint.init(SearchDirection.BACKWARD);
 			
 		start.copy(depart.cinematique);
-		arrival.copy(this.arrival);
+		arrival.copy(endPoint.cinematique);
 		if(timeout == null)
 			dureeMaxPF = defaultTimeout;
 		else
@@ -625,13 +645,14 @@ public final class TentacularAStar
 		if(!chemin.needReplanning())
 			return;
 		
+		// forward only
 		depart.init(SearchDirection.FORWARD);
 		lastValid.copy(depart.cinematique);
 
 		// On met à jour le D* Lite
 		engine.update();
 		
-		if(!dstarlite.computeNewPath(depart.cinematique.getPosition(), arrival.getPosition(), true, true, false))
+		if(!dstarlite.computeNewPath(depart.cinematique.getPosition(), endPoint.cinematique.getPosition(), true, true, false))
 			throw new NoPathException("No path found by D* Lite !");
 
 		search();

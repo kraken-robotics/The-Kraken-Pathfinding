@@ -50,7 +50,7 @@ public final class DStarLite
 	private List<DStarLiteNode> underconsistentExpansion = new ArrayList<DStarLiteNode>(); 
 	
 	private DStarLiteNode[][] memory;
-
+	
 	private EnhancedPriorityQueue[] openset;
 	private DStarLiteNode[] arrivee = new DStarLiteNode[2];
 	private Display buffer;
@@ -269,9 +269,10 @@ public final class DStarLite
 				throw new NoPathException("Finish point in obstacle "+o);
 		
 		changeGoal(arrivee, depart, bidirect);
-		updateObstacles();
+		updateObstacles(bidirect);
 		updateHeuristic(SearchDirection.FORWARD);
-		updateHeuristic(SearchDirection.BACKWARD);
+		if(bidirect)
+			updateHeuristic(SearchDirection.BACKWARD);
 		return getFromMemory(navmesh.getNearestAvailable(depart), SearchDirection.FORWARD).rhs != Integer.MAX_VALUE;
 	}
 
@@ -312,8 +313,14 @@ public final class DStarLite
 	/**
 	 * Met à jour le pathfinding
 	 */
-	public synchronized void updateObstacles()
+	public synchronized void updateObstacles(boolean bidirectionalSearch)
 	{
+		SearchDirection[] dirs;
+		if(bidirectionalSearch)
+			dirs = SearchDirection.values();
+		else
+			dirs = new SearchDirection[] {SearchDirection.FORWARD};
+		
 		Iterator<Obstacle> iter = dynObs.getCurrentDynamicObstacles();		
 		while(iter.hasNext())
 			newObstacles.add(iter.next());
@@ -332,7 +339,7 @@ public final class DStarLite
 
 			if(!e.isBlocked())
 			{
-				for(SearchDirection dir : SearchDirection.values())
+				for(SearchDirection dir : dirs)
 					for(int k = 0; k < 2; k++)
 					{
 						DStarLiteNode u = getFromMemory(e.points[k], dir);
@@ -344,7 +351,7 @@ public final class DStarLite
 			}
 			else
 			{
-				for(SearchDirection dir : SearchDirection.values())
+				for(SearchDirection dir : dirs)
 					for(int k = 0; k < 2; k++)
 					{
 						DStarLiteNode u = getFromMemory(e.points[k], dir);

@@ -69,7 +69,7 @@ public enum ConfigInfoKraken implements ConfigInfo
 	FAST_AND_DIRTY_COEFF(1.4),
 	ENABLE_BACKUP_PATH(true),
 	CHECK_NEW_OBSTACLES(false),
-	BIDIRECTIONAL_SEARCH(true),
+	BIDIRECTIONAL_SEARCH(false),
 	
 	/**
 	 * Paramètres sur la gestion de la mémoire
