@@ -209,7 +209,7 @@ public final class DStarLite
 					NavmeshNode n = u.node.getNeighbour(i);
 					DStarLiteNode s = getFromMemory(n, dir);
 
-					if(s.rhs == add(u.node.getNeighbourEdge(i).getDistance(), gold) && !s.equals(arrivee))
+					if(s.rhs == add(u.node.getNeighbourEdge(i).getDistance(), gold) && !s.equals(arrivee[dir.ordinal()]))
 					{
 						s.rhs = Integer.MAX_VALUE;
 						int nbNeighbours2 = n.getNbNeighbours();
@@ -224,7 +224,7 @@ public final class DStarLite
 					updateVertex(s, dir);
 				}
 				// Dans la boucle, il faut aussi faire u.
-				if(u.rhs == gold && !u.equals(arrivee))
+				if(u.rhs == gold && !u.equals(arrivee[dir.ordinal()]))
 				{
 					u.rhs = Integer.MAX_VALUE;
 					int nbNeighbours2 = u.node.getNbNeighbours();
@@ -344,7 +344,7 @@ public final class DStarLite
 		
 						// l'ancienne distance est la distance statique car c'est un
 						// ajout d'obstacle
-						if(u.rhs == add(e.getUnblockedDistance(), v.g) && !u.equals(arrivee))
+						if(u.rhs == add(e.getUnblockedDistance(), v.g) && !u.equals(arrivee[dir.ordinal()]))
 						{
 							u.rhs = Integer.MAX_VALUE;
 							int nbNeighbours = u.node.getNbNeighbours();
@@ -387,7 +387,7 @@ public final class DStarLite
 		assert ((str = checkInvariantRhs()) == null) : str;
 		assert ((str = checkInvariantOpenset()) == null) : str;
 		
-		while(!node.equals(arrivee))
+		while(!node.equals(arrivee[SearchDirection.FORWARD.ordinal()]))
 		{
 			assert node.heuristiqueOrientation != null;
 			XYO xyo = new XYO(node.node.position.clone(), (double)node.heuristiqueOrientation);
