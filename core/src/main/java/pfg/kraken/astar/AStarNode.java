@@ -34,7 +34,7 @@ public final class AStarNode implements Memorizable, Printable
 	
 	private static final long serialVersionUID = -2120732124823178009L;
 	public Kinematic cinematique; // the cinematic state + the duration since the beginning of the search
-	public volatile long date = 0;
+//	public volatile long date = 0;
 	public double g_score; // distance du point de départ à ce point
 	public double f_score; // g_score + heuristique = meilleure distance qu'on
 							// peut espérer avec ce point
@@ -89,7 +89,7 @@ public final class AStarNode implements Memorizable, Printable
 	{
 		g_score = Integer.MAX_VALUE;
 		f_score = Integer.MAX_VALUE;
-		date = 0;
+//		date = 0;
 	}
 
 	@Override

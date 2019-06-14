@@ -434,7 +434,7 @@ public final class ClothoidComputer implements TentacleComputer
 			FileOutputStream fichier;
 			ObjectOutputStream oos;
 
-			new File("clotho-" + S_MAX + ".dat").createNewFile();
+			new File("clotho-" + S_MAX + ".krk").createNewFile();
 			fichier = new FileOutputStream("clotho-" + S_MAX + ".krk");
 			oos = new ObjectOutputStream(fichier);
 			oos.writeObject(trajectoire);

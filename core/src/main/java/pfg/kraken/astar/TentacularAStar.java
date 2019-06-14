@@ -535,7 +535,7 @@ public final class TentacularAStar
 	{
 		if(debugMode)
 		{
-			System.out.println("Path duration : "+best.date);
+//			System.out.println("Path duration : "+best.date);
 			System.out.println("Number of expanded nodes : "+nbExpandedNodes);
 		}
 
