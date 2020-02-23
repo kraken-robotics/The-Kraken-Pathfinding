@@ -2,7 +2,7 @@ language : java
 script :
     - cd core
     - mvn install
-jdk : oraclejdk8
+jdk : oraclejdk13
 cache :
     directories : "$HOME/.m2"
 deploy:
