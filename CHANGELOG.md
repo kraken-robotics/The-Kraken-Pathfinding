@@ -2,6 +2,7 @@
 
 # v2.0.2
 - Bugfix: the "start in obstacle" option works with dynamic obstacles too
+- Allow trajectory with spinning (config: ENABLE_SPINNING)
 
 # v2.0.1
 - Penalty to high curvature in order to promote straighter path (config: CURVATURE_PENALTY)
