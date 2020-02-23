@@ -71,6 +71,7 @@ public class CircularObstacle extends Obstacle
 		g.setColor(cTransparent);
 		
 		g.fillOval(f.XtoWindow(position.getX() - radius), f.YtoWindow(position.getY() + radius), f.distanceXtoWindow((radius) * 2), f.distanceYtoWindow((radius) * 2));		
+		g.setColor(c);
 	}
 	
 	@Override

@@ -92,7 +92,8 @@ public class Example1
 			 * We search a new path from the point (0,0) with orientation 0 to the point (1000, 1000).
 			 * The orientation is the classical trigonometric orientation : 0 to the right, pi/2 up, etc.
 			 */
-			kraken.initializeNewSearch(new SearchParameters(new XYO(-900, 200, Math.PI), new XY(1200, 1400)));
+//			kraken.initializeNewSearch(new SearchParameters(new XYO(-900, 200, Math.PI), new XY(1200, 1400)));
+			kraken.initializeNewSearch(new SearchParameters(new XYO(-900, 100, Math.PI/2), new XY(-900, 800)));
 			
 			/*
 			 * The pathfinder returns a list of ItineraryPoint, which contains all the cinematic information describing the path

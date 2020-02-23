@@ -63,7 +63,7 @@ public enum ConfigInfoKraken implements ConfigInfo
 	CURVATURE_PENALTY(1), // in ms/m⁻¹ (it has a great influence on the research time)
 	SEARCH_TIMEOUT(10000), // in ms
 	THREAD_NUMBER(1), // the number of threads for the tentacle computing. Recommended value for highest performance : nb cores + 1
-//	ALLOW_SPINNING(false), // can the robot spin ?
+	ALLOW_SPINNING(false), // can the robot spin ?
 	
 	ENABLE_DEBUG_MODE(false), // enable the debug mode
 	FAST_AND_DIRTY_COEFF(1.4),

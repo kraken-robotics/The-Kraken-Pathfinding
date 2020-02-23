@@ -20,10 +20,16 @@ import pfg.kraken.struct.Kinematic;
 
 public enum SpinTentacle implements TentacleType
 {
+	UP_RIGHT(Math.PI/4),
 	UP(Math.PI/2),
+	UP_LEFT(3*Math.PI/4),
+	LEFT(Math.PI),
+	DOWN_LEFT(-3*Math.PI/2),
 	DOWN(-Math.PI/2),
-	RIGHT(Math.PI),
-	LEFT(0);
+	DOWN_RIGHT(-Math.PI/4),
+	RIGHT(0),
+	ENDPOINT(0),
+	HEURISTIC(0);
 
 	public final double angle;
 	public static SpinComputer computer;

@@ -299,6 +299,7 @@ public class RectangularObstacle extends Obstacle
 		g.setColor(cTransparent);
 		
 		g.fillPolygon(X, Y, 4);
+		g.setColor(c);
 	}
 	
 	@Override

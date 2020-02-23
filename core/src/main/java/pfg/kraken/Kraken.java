@@ -115,6 +115,12 @@ public final class Kraken
 			for(ClothoTentacle t : ClothoTentacle.values())
 				tentaclesXY.add(t);
 			tentaclesXY.add(BezierTentacle.BEZIER_XYOC_TO_XY);
+			if(config.getBoolean(ConfigInfoKraken.ALLOW_SPINNING))
+			{
+				for(SpinTentacle t : SpinTentacle.values())
+					tentaclesXY.add(t);
+				tentaclesXY.remove(SpinTentacle.ENDPOINT); // only with orientation at end-point
+			}
 			addMode(new ResearchProfile(tentaclesXY, "XY", 1.3, 1.3/3, 5, 0, -100, new EndWithXY()));
 			
 			List<TentacleType> tentaclesXYO = new ArrayList<TentacleType>();
@@ -122,11 +128,23 @@ public final class Kraken
 				tentaclesXYO.add(t);
 			tentaclesXYO.add(BezierTentacle.BEZIER_XYO_TO_XYO);
 			tentaclesXYO.add(BezierTentacle.BEZIER_XYOC_TO_XYOC0);
+			if(config.getBoolean(ConfigInfoKraken.ALLOW_SPINNING))
+			{
+				for(SpinTentacle t : SpinTentacle.values())
+					tentaclesXYO.add(t);
+				tentaclesXYO.add(BezierTentacle.BEZIER_XYOC_TO_XY);
+			}
 			addMode(new ResearchProfile(tentaclesXYO, "XYO", 1.3, 1.3/3, 0, 5, 500, new EndWithXYO()));
 			
 			List<TentacleType> tentaclesXYOC = new ArrayList<TentacleType>();
 			for(ClothoTentacle t : ClothoTentacle.values())
 				tentaclesXYOC.add(t);
+			if(config.getBoolean(ConfigInfoKraken.ALLOW_SPINNING))
+			{
+				for(SpinTentacle t : SpinTentacle.values())
+					tentaclesXYOC.add(t);
+				tentaclesXYOC.add(BezierTentacle.BEZIER_XYOC_TO_XY);
+			}
 			tentaclesXYOC.add(BezierTentacle.BEZIER_XYOC_TO_XYOC0); // arrive avec une courbure nulle
 			addMode(new ResearchProfile(tentaclesXYOC, "XYOC0", 1.3, 1.3/3, 0, 5, 500, new EndWithXYOC0()));
 		} catch (InjectorException e) {
