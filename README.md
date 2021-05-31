@@ -1,7 +1,6 @@
 <img align="right" src="https://raw.githubusercontent.com/PFGimenez/The-Kraken-Pathfinding/master/resources/logo.png">
 
-[![GitHub version](https://badge.fury.io/gh/PFGimenez%2FThe-Kraken-Pathfinding.svg)](https://github.com/PFGimenez/The-Kraken-Pathfinding)
-[![Build Status](https://travis-ci.org/PFGimenez/The-Kraken-Pathfinding.svg?branch=master)](https://travis-ci.org/PFGimenez/The-Kraken-Pathfinding)
+[![Build Status](https://travis-ci.org/kraken-robotics/The-Kraken-Pathfinding.svg?branch=master)](https://travis-ci.org/kraken-robotics/The-Kraken-Pathfinding)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
 
@@ -80,7 +79,7 @@ If you want the latest version:
     $ cd The-Kraken-Pathfinding/core
     $ mvn install
 
-Examples are available in the directory ```examples```.
+Examples are available in the directory `examples`. To execute an example, run `mvn compile` and then `mvn exec:java -Dexec.mainClass="pfg.kraken_examples.Example1"`.
 
 ## Great, I have a trajectory. How do my robot follow it ?
 

@@ -2,8 +2,8 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>pfg.kraken-examples</groupId>
-  <artifactId>kraken-examples</artifactId>
+  <groupId>pfg.kraken_examples</groupId>
+  <artifactId>kraken_examples</artifactId>
   <version>1.0</version>
 
   <packaging>jar</packaging>
@@ -14,8 +14,8 @@
   <url>https://github.com/PFGimenez/The-Kraken-Pathfinding</url>
 
   <properties>
-      <maven.compiler.source>13</maven.compiler.source>
-      <maven.compiler.target>13</maven.compiler.target>
+      <maven.compiler.source>11</maven.compiler.source>
+      <maven.compiler.target>11</maven.compiler.target>
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
       <github.global.server>github</github.global.server>
   </properties>
