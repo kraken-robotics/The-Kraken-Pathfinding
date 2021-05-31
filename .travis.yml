@@ -5,9 +5,3 @@ script :
 jdk : oraclejdk13
 cache :
     directories : "$HOME/.m2"
-deploy:
-  provider: script
-  script: "cp ../.travis.settings.xml $HOME/.m2/settings.xml && mvn jar:jar deploy:deploy || :"
-  skip_cleanup: true
-  on:
-    all_branches: true

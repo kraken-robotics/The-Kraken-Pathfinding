@@ -14,8 +14,8 @@
   <url>https://github.com/PFGimenez/The-Kraken-Pathfinding</url>
 
   <properties>
-      <maven.compiler.source>13</maven.compiler.source>
-      <maven.compiler.target>13</maven.compiler.target>
+      <maven.compiler.source>11</maven.compiler.source>
+      <maven.compiler.target>11</maven.compiler.target>
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
       <github.global.server>github</github.global.server>
   </properties>
@@ -42,18 +42,27 @@
 		</developer>
 	</developers>
 
-    <repositories>
+      <repositories>
         <repository>
-            <id>PFGimenez-Kraken</id>
-            <url>https://packagecloud.io/PFGimenez/Kraken/maven2</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
+          <id>central</id>
+          <url>https://repo1.maven.org/maven2</url>
         </repository>
-    </repositories>
+        <repository>
+          <id>github</id>
+          <url>https://maven.pkg.github.com/kraken-robotics/*</url>
+          <snapshots>
+            <enabled>true</enabled>
+          </snapshots>
+        </repository>
+      </repositories>
+
+    <distributionManagement>
+   <repository>
+     <id>github</id>
+     <name>GitHub Kraken-robotics Apache Maven Packages</name>
+     <url>https://maven.pkg.github.com/kraken-robotics/The-Kraken-Pathfinding</url>
+   </repository>
+</distributionManagement>
 
   <dependencies>
     <dependency>
@@ -77,21 +86,6 @@
 
   </dependencies>
 
-<distributionManagement>
-  <repository>
-    <id>packagecloud-travis</id>
-    <url>
-        packagecloud+https://packagecloud.io/PFGimenez/Kraken
-    </url>
-  </repository>
-  <snapshotRepository>
-    <id>packagecloud-travis</id>
-    <url>
-        packagecloud+https://packagecloud.io/PFGimenez/Kraken
-    </url>
-  </snapshotRepository>
-</distributionManagement>
-
 <build>
       <plugins>
     <plugin>
@@ -102,15 +96,7 @@
             <enableAssertions>true</enableAssertions>
         </configuration>
     </plugin>
-
   </plugins>
-    <extensions>
-    <extension>
-      <groupId>io.packagecloud.maven.wagon</groupId>
-      <artifactId>maven-packagecloud-wagon</artifactId>
-      <version>0.0.6</version>
-    </extension>
-  </extensions>
   </build>
 
 </project>

@@ -43,24 +43,25 @@ For legacy reasons, mainly.
 
 ### Precompiled .jar
 
-You can download the latest stable and unstable versions of Kraken at https://packagecloud.io/PFGimenez/Kraken.
+You can download the latest stable and unstable versions of Kraken at <https://github.com/orgs/kraken-robotics/packages>.
 
 ### Maven installation
 
 If you want to use this library in one of your maven project, add this to your pom.xml :
 
-    <repositories>
+      <repositories>
         <repository>
-            <id>PFGimenez-Kraken</id>
-            <url>https://packagecloud.io/PFGimenez/Kraken/maven2</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
+          <id>central</id>
+          <url>https://repo1.maven.org/maven2</url>
         </repository>
-    </repositories>
+        <repository>
+          <id>github</id>
+          <url>https://maven.pkg.github.com/kraken-robotics/*</url>
+          <snapshots>
+            <enabled>true</enabled>
+          </snapshots>
+        </repository>
+      </repositories>
 
 and
 
@@ -75,7 +76,7 @@ and
 
 If you want the latest version:
 
-    $ git clone https://github.com/PFGimenez/The-Kraken-Pathfinding.git --depth 1
+    $ git clone https://github.com/kraken-robotics/The-Kraken-Pathfinding --depth 1
     $ cd The-Kraken-Pathfinding/core
     $ mvn install
 
