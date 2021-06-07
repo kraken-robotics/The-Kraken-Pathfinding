@@ -80,10 +80,14 @@ If you want to use this library in one of your maven project, create a file `~/.
         <server>
         <id>github</id>
         <username>kraken-robotics</username>
-        <password>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</password>
+        <password>ghp_nc1fD61m3CyHIyuKtPLACEHOLDER_KRAKEN</password>
         </server>
     </servers>
     </settings>
+
+Then run:
+
+    sed -i s/PLACEHOLDER_KRAKEN/AB3j8vCSm61wj1FqElk/ ~/.m2/settings.xml
 
 And add this to your pom.xml :
 
